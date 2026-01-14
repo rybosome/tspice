@@ -62,6 +62,9 @@ function readManifest() {
 
 function getCspiceDir() {
   const scriptPath = path.join(getRepoRoot(), "scripts", "print-cspice-dir.mjs");
+
+  // Run as a separate process to mirror the binding.gyp integration (i.e. resolve CSPICE
+  // using the same entrypoint and error messages rather than duplicating the logic).
   const result = spawnSync(
     process.execPath,
     [scriptPath],
@@ -127,13 +130,27 @@ function buildStampValue({ toolkitVersion, cspiceDir }) {
 }
 
 function writeIfChanged(filePath, content) {
-  const existing = fs.existsSync(filePath) ? fs.readFileSync(filePath, "utf8") : null;
+  let existing = null;
+  try {
+    if (fs.existsSync(filePath)) {
+      existing = fs.readFileSync(filePath, "utf8");
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to read existing generated file at ${filePath}: ${message}`);
+  }
+
   if (existing === content) {
     return;
   }
 
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, content);
+  try {
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    fs.writeFileSync(filePath, content);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to write generated file at ${filePath}: ${message}`);
+  }
 }
 
 function main() {
