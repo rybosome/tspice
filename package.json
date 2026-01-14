@@ -5,7 +5,8 @@
   "packageManager": "pnpm@10.13.1",
   "scripts": {
     "check": "pnpm run build && pnpm run typecheck && pnpm run test",
-    "build": "turbo run build",
+    "fetch:cspice": "node scripts/fetch-cspice.mjs",
+    "build": "pnpm run fetch:cspice && turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test"
   },
