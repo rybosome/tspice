@@ -1,0 +1,8 @@
+node_modules
+dist
+.turbo
+
+*.tsbuildinfo
+
+packages/*/native/build
+packages/*/native/.node-gyp
