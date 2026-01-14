@@ -70,6 +70,8 @@ export function toNumber(kind: Kind): number {
 }
 ```
 
+When you add a new member to `Kind`, TypeScript will report an error at the `assertNever(kind, ...)` call until you handle the new case, enforcing exhaustiveness.
+
 ## API surface
 
 - `InvariantError extends Error`

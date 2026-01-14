@@ -75,7 +75,7 @@ When you add a new backend kind, you generally update:
 
 ## API surface
 
-- `BACKEND_KINDS: readonly ["node", "wasm", ...]`
+- `BACKEND_KINDS: readonly ["node", "wasm"]` (additional backend kinds may be added over time)
 - `BackendKind: (typeof BACKEND_KINDS)[number]`
 - `SpiceBackend` interface
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-WASM backend for `tspice`.
+WASM backend for `tspice` (currently a stub; it does not yet compile or execute real WebAssembly).
 
 ## Purpose / Why this exists
 

@@ -43,8 +43,8 @@ console.log(backend.spiceVersion());
 
 ## API surface
 
-- `createNodeBackend(): SpiceBackend`
-- `spiceVersion(): string`
+- `createNodeBackend(): SpiceBackend` (returns an object with methods like `spiceVersion(): string`)
+- `spiceVersion(): string` (exported convenience wrapper around the loaded native addon)
 
 ## Requirements (contributors)
 

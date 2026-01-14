@@ -19,7 +19,8 @@ At runtime, `createBackend()` chooses a backend and returns a `SpiceBackend` imp
   ├─ selects one of:
   │   ├─ @rybosome/tspice-backend-node (native addon)
   │   └─ @rybosome/tspice-backend-wasm (stub)
-  └─ uses shared types from @rybosome/tspice-backend-contract
+  ├─ uses shared types from @rybosome/tspice-backend-contract
+  └─ uses shared utilities from @rybosome/tspice-core
 ```
 
 ## Installation
