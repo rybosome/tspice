@@ -1,0 +1,35 @@
+{
+  "name": "@rybosome/tspice-backend-node",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "native/build/Release/*.node"
+  ],
+  "scripts": {
+    "build:native": "node-gyp rebuild --directory native",
+    "build": "node-gyp rebuild --directory native && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@rybosome/tspice-backend-contract": "workspace:*",
+    "@rybosome/tspice-core": "workspace:*",
+    "node-addon-api": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "node-gyp": "^11.2.0",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.8"
+  }
+}
