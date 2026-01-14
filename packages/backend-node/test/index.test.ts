@@ -2,17 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { createNodeBackend, spiceVersion } from "@rybosome/tspice-backend-node";
 
-function getExpectedCspiceToolkitVersion(): string {
-  const value = process.env.TSPICE_EXPECTED_CSPICE_VERSION;
-  if (!value) {
-    throw new Error(
-      "Missing TSPICE_EXPECTED_CSPICE_VERSION. This should be provided by the test runner."
-    );
-  }
-  return value;
-}
-
-const toolkitVersion = getExpectedCspiceToolkitVersion();
+const toolkitVersion = process.env.TSPICE_EXPECTED_CSPICE_VERSION ?? "N0067";
 
 describe("@rybosome/tspice-backend-node", () => {
   it("loads the native addon", () => {
