@@ -45,8 +45,9 @@ export function getNativeAddon(): NativeAddon {
   if (override) {
     const resolvedOverride = path.resolve(packageRoot, override);
     if (!fs.existsSync(resolvedOverride)) {
+      const { arch, platform } = process;
       throw new Error(
-        `TSPICE_BACKEND_NODE_BINDING_PATH points to a non-existent file: ${resolvedOverride}`
+        `TSPICE_BACKEND_NODE_BINDING_PATH points to a non-existent file: ${resolvedOverride} (platform=${platform}, arch=${arch}). Ensure it points to a built ${ADDON_FILE}.`
       );
     }
 
@@ -63,9 +64,9 @@ export function getNativeAddon(): NativeAddon {
   if (!existing) {
     const { arch, platform } = process;
     throw new Error(
-      `Native addon not found for ${platform}-${arch}. Looked for:\n` +
+      `Native addon ${ADDON_FILE} not found for ${platform}-${arch}. Looked for:\n` +
         candidates.map((p) => `- ${p}`).join("\n") +
-        `\nTry: pnpm -C packages/backend-node build:native`
+        `\n\nTry: pnpm -C packages/backend-node build:native`
     );
   }
 

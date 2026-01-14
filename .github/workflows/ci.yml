@@ -22,7 +22,7 @@ jobs:
       - name: Read pnpm version from package.json#packageManager
         id: pnpm-version
         run: |
-          version=$(node -e "const pm=require('./package.json').packageManager||''; const m=pm.match(/^pnpm@(.+)$/); if(!m) throw new Error('Expected package.json#packageManager to be set to \"pnpm@<version>\"'); process.stdout.write(m[1]);")
+          version=$(node -e "const pm=require('./package.json').packageManager||''; const m=pm.match(/^pnpm@(.+)$/); if(!m) throw new Error('Expected package.json#packageManager to be set to \"pnpm@<version>\", got: '+JSON.stringify(pm)); process.stdout.write(m[1]);")
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Setup pnpm
