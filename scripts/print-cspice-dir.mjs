@@ -53,6 +53,12 @@ function main() {
   );
 
   if (!validateCspiceDir(cspiceDir)) {
+    if (process.platform === "linux" && process.arch === "arm64") {
+      throw new Error(
+        `CSPICE not found at ${cspiceDir}. On linux-arm64 you must set TSPICE_CSPICE_DIR to a prebuilt CSPICE install.`
+      );
+    }
+
     throw new Error(
       `CSPICE not found at ${cspiceDir}. Run: pnpm run fetch:cspice (or set TSPICE_CSPICE_DIR).`
     );

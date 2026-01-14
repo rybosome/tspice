@@ -97,11 +97,6 @@ function resolveArchiveKey(manifest, platform, arch) {
     return exact;
   }
 
-  if (platform === "linux" && arch === "arm64" && manifest.archives?.["linux-x64"]) {
-    console.warn("No linux-arm64 CSPICE archive configured; using linux-x64 + local rebuild.");
-    return "linux-x64";
-  }
-
   const available = Object.keys(manifest.archives ?? {}).sort();
   throw new Error(
     `No CSPICE archive configured for ${exact}. Available: ${available.join(", ")}`
@@ -208,6 +203,25 @@ function validateCspiceDir(cspiceDir) {
 }
 
 async function main() {
+  const override = process.env.TSPICE_CSPICE_DIR;
+  if (override) {
+    const resolved = path.resolve(override);
+    if (!validateCspiceDir(resolved)) {
+      throw new Error(
+        `TSPICE_CSPICE_DIR does not look like a CSPICE install (missing include/ and lib/): ${resolved}`
+      );
+    }
+
+    console.log(`CSPICE ready: ${resolved}`);
+    return;
+  }
+
+  if (process.platform === "linux" && process.arch === "arm64") {
+    throw new Error(
+      "Automatic CSPICE fetch is not supported on linux-arm64. Set TSPICE_CSPICE_DIR to a prebuilt CSPICE install."
+    );
+  }
+
   const manifest = readManifest();
   const archiveKey = resolveArchiveKey(manifest, process.platform, process.arch);
   const { url, sha256 } = manifest.archives[archiveKey];
