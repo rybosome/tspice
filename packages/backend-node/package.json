@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build:native": "node-gyp rebuild --directory native",
-    "build": "pnpm run build:native && tsc -p tsconfig.json",
+    "build": "node-gyp rebuild --directory native && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },

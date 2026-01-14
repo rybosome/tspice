@@ -5,7 +5,7 @@ import { getNativeAddon } from "./native.js";
 
 export function spiceVersion(): string {
   const version = getNativeAddon().spiceVersion();
-  invariant(typeof version === "string");
+  invariant(typeof version === "string", "Expected native backend spiceVersion() to return a string");
   return version;
 }
 

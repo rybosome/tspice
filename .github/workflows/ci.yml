@@ -25,6 +25,7 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 10.13.1
+          run_install: false
 
       - name: Setup Node
         # Requires pnpm to be installed first for `cache: pnpm` to work.

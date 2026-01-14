@@ -88,6 +88,9 @@ importers:
       '@rybosome/tspice-backend-wasm':
         specifier: workspace:*
         version: link:../backend-wasm
+      '@rybosome/tspice-core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       '@types/node':
         specifier: ^22.10.2
