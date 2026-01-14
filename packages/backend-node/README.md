@@ -92,13 +92,13 @@ Example:
 ```bash
 TSPICE_BACKEND_NODE_BINDING_PATH=./native/build/Release/tspice_backend_node.node \
   node ./some-script.mjs
+```
 
 If you built a Debug addon locally, you can also point `TSPICE_BACKEND_NODE_BINDING_PATH` at it:
 
 ```bash
 TSPICE_BACKEND_NODE_BINDING_PATH=./native/build/Debug/tspice_backend_node.node \
   node ./some-script.mjs
-```
 ```
 
 ## Troubleshooting / FAQ
