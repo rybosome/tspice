@@ -7,6 +7,8 @@ extern "C" {
 #include "SpiceUsr.h"
 }
 
+#include "cspice_stamp.h"
+
 static std::mutex g_cspice_mutex;
 
 static std::string RTrim(std::string s) {
