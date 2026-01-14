@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 
@@ -7,10 +8,29 @@ export type NativeAddon = {
 
 let cachedAddon: NativeAddon | undefined;
 
+const ADDON_TARGET = "tspice_backend_node";
+const ADDON_FILE = `${ADDON_TARGET}.node`;
+
 function getPackageRoot(importMetaUrl: string): string {
   const require = createRequire(importMetaUrl);
   const packageJsonPath = require.resolve("../package.json");
   return path.dirname(packageJsonPath);
+}
+
+function loadAddon(require: NodeRequire, bindingPath: string): NativeAddon {
+  try {
+    return require(bindingPath) as NativeAddon;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const { arch, platform } = process;
+    throw new Error(
+      `Failed to load tspice native backend at "${bindingPath}" for ${platform}-${arch}. ` +
+        `Try building it: pnpm -C packages/backend-node build:native. ` +
+        `Or set TSPICE_BACKEND_NODE_BINDING_PATH to an explicit .node path. ` +
+        `Original error: ${errorMessage}`,
+      { cause: error }
+    );
+  }
 }
 
 export function getNativeAddon(): NativeAddon {
@@ -20,21 +40,27 @@ export function getNativeAddon(): NativeAddon {
 
   const require = createRequire(import.meta.url);
   const packageRoot = getPackageRoot(import.meta.url);
-  const bindingPathFromEnv = process.env.TSPICE_BACKEND_NODE_BINDING_PATH;
-  const bindingPath = bindingPathFromEnv
-    ? path.resolve(packageRoot, bindingPathFromEnv)
-    : path.join(packageRoot, "native", "build", "Release", "tspice_backend_node.node");
+  const override = process.env.TSPICE_BACKEND_NODE_BINDING_PATH;
+  if (override) {
+    cachedAddon = loadAddon(require, path.resolve(packageRoot, override));
+    return cachedAddon;
+  }
 
-  try {
-    cachedAddon = require(bindingPath) as NativeAddon;
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    const { arch, platform } = process;
+  const candidates = [
+    path.join(packageRoot, "native", "build", "Release", ADDON_FILE),
+    path.join(packageRoot, "native", "build", "Debug", ADDON_FILE),
+  ];
+
+  const existing = candidates.find((p) => fs.existsSync(p));
+  if (!existing) {
     throw new Error(
-      `Failed to load tspice native backend at "${bindingPath}" for ${platform}-${arch}. Ensure the native addon is built for this platform/arch. Original error: ${errorMessage}`,
-      { cause: error }
+      `Native addon not found. Looked for:\n` +
+        candidates.map((p) => `- ${p}`).join("\n") +
+        `\nTry: pnpm -C packages/backend-node build:native`
     );
   }
+
+  cachedAddon = loadAddon(require, existing);
 
   return cachedAddon;
 }

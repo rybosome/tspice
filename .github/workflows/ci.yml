@@ -19,12 +19,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read pnpm version from package.json#packageManager
+        id: pnpm-version
+        run: |
+          node -e "const pm=require('./package.json').packageManager||''; const m=pm.match(/^pnpm@(.+)$/); if(!m) throw new Error('Expected package.json#packageManager to be pnpm@<version>'); console.log('version='+m[1]);" >> "$GITHUB_OUTPUT"
+
       - name: Setup pnpm
         # Keep in sync with package.json#packageManager.
         # This must run before setup-node when using `cache: pnpm`.
         uses: pnpm/action-setup@v4
         with:
-          version: 10.13.1
+          version: ${{ steps.pnpm-version.outputs.version }}
           run_install: false
 
       - name: Setup Node
