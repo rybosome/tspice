@@ -11,7 +11,7 @@ extern "C" {
 // or TSPICE_CSPICE_DIR override).
 #include "cspice_stamp.h"
 
-[[maybe_unused]] static const char* kCspiceStamp = TSPICE_CSPICE_STAMP;
+static_assert(sizeof(TSPICE_CSPICE_STAMP) > 0);
 
 static std::mutex g_cspice_mutex;
 
