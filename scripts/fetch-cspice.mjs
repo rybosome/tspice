@@ -231,6 +231,7 @@ async function main() {
     const actual = await sha256File(archivePath);
     if (actual !== sha256) {
       fs.rmSync(archivePath, { force: true });
+      fs.rmSync(cspiceDir, { recursive: true, force: true });
     }
   }
 
@@ -240,6 +241,7 @@ async function main() {
     const actual = await sha256File(archivePath);
     if (actual !== sha256) {
       fs.rmSync(archivePath, { force: true });
+      fs.rmSync(cspiceDir, { recursive: true, force: true });
       throw new Error(
         `SHA256 mismatch for ${archiveName}. Expected ${sha256}, got ${actual}. URL: ${url}`
       );
