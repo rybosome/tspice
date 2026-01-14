@@ -23,14 +23,14 @@ function escapeCStringLiteral(value) {
         break;
       default: {
         const code = ch.codePointAt(0);
-        if (code !== undefined && (code < 0x20 || code > 0x7e)) {
-          if (code <= 0xff) {
-            result += `\\x${code.toString(16).padStart(2, "0")}`;
-          } else {
-            result += "?";
-          }
-        } else {
+        if (code !== undefined && code >= 0x20 && code <= 0x7e) {
           result += ch;
+          break;
+        }
+
+        const bytes = Buffer.from(ch, "utf8");
+        for (const b of bytes) {
+          result += `\\x${b.toString(16).padStart(2, "0")}`;
         }
       }
     }
@@ -48,8 +48,21 @@ function getRepoRoot() {
 
 function readManifest() {
   const manifestPath = path.join(getRepoRoot(), "scripts", "cspice.manifest.json");
-  const raw = fs.readFileSync(manifestPath, "utf8");
-  const parsed = JSON.parse(raw);
+  let raw;
+  try {
+    raw = fs.readFileSync(manifestPath, "utf8");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to read CSPICE manifest at ${manifestPath}: ${message}`);
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to parse CSPICE manifest JSON at ${manifestPath}: ${message}`);
+  }
   if (!parsed || typeof parsed !== "object") {
     throw new Error(`Invalid manifest JSON at ${manifestPath}`);
   }
@@ -89,16 +102,17 @@ function buildStampValue({ toolkitVersion, cspiceDir }) {
   const cspiceLibPath = path.join(cspiceDir, "lib", "cspice.a");
   const csupportLibPath = path.join(cspiceDir, "lib", "csupport.a");
 
-  if (!fs.existsSync(cspiceLibPath)) {
-    throw new Error(`Expected CSPICE library at ${cspiceLibPath}, but it was not found.`);
-  }
+  const safeStat = (libPath, label) => {
+    try {
+      return fs.statSync(libPath);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to stat ${label} at ${libPath}: ${message}`);
+    }
+  };
 
-  if (!fs.existsSync(csupportLibPath)) {
-    throw new Error(`Expected CSUPPORT library at ${csupportLibPath}, but it was not found.`);
-  }
-
-  const cspiceLibStat = fs.statSync(cspiceLibPath);
-  const csupportLibStat = fs.statSync(csupportLibPath);
+  const cspiceLibStat = safeStat(cspiceLibPath, "CSPICE library");
+  const csupportLibStat = safeStat(csupportLibPath, "CSUPPORT library");
 
   return JSON.stringify({
     toolkitVersion,
