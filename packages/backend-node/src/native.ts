@@ -26,7 +26,8 @@ function loadAddon(require: NodeRequire, bindingPath: string): NativeAddon {
     const { arch, platform } = process;
     throw new Error(
       `Failed to load tspice native backend at "${resolved}" for ${platform}-${arch}. ` +
-        `Try building it: pnpm -C packages/backend-node build:native. ` +
+        `Try rebuilding it: pnpm run fetch:cspice && pnpm -C packages/backend-node build:native. ` +
+        `Or set TSPICE_CSPICE_DIR=/abs/path/to/cspice (containing include/ and lib/). ` +
         `Or set TSPICE_BACKEND_NODE_BINDING_PATH to an explicit .node path. ` +
         `Original error: ${errorMessage}`,
       { cause: error }
@@ -66,7 +67,7 @@ export function getNativeAddon(): NativeAddon {
       `Native addon ${ADDON_FILE} not found for ${platform}-${arch}. Looked for:\n` +
         candidates.map((p) => `- ${p}`).join("\n") +
         `\n\nIf you built a Debug addon locally, set TSPICE_BACKEND_NODE_BINDING_PATH to its path.` +
-        `\n\nTry: pnpm -C packages/backend-node build:native`
+        `\n\nTry: pnpm run fetch:cspice && pnpm -C packages/backend-node build:native`
     );
   }
 

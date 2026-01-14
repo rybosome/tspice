@@ -58,12 +58,14 @@ Building the native addon requires a working `node-gyp` toolchain.
 ### Building the native addon
 
 ```bash
+pnpm run fetch:cspice
 pnpm -C packages/backend-node build:native
 ```
 
 ### Building everything in this package (native + TS)
 
 ```bash
+pnpm run fetch:cspice
 pnpm -C packages/backend-node build
 ```
 
@@ -75,6 +77,17 @@ pnpm -C packages/backend-node test
 ```
 
 ## Configuration
+
+### `TSPICE_CSPICE_DIR`
+
+By default, builds use CSPICE from the repo cache:
+
+- `.cache/cspice/<toolkitVersion>/<platform>-<arch>/cspice`
+
+If you set `TSPICE_CSPICE_DIR`, native builds will use CSPICE from that path instead. It must contain:
+
+- `include/` (e.g. `SpiceUsr.h`)
+- `lib/` (e.g. `cspice.a` and `csupport.a`)
 
 ### `TSPICE_BACKEND_NODE_BINDING_PATH`
 

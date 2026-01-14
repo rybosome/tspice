@@ -4,12 +4,16 @@ import { createNodeBackend, spiceVersion } from "@rybosome/tspice-backend-node";
 
 describe("@rybosome/tspice-backend-node", () => {
   it("loads the native addon", () => {
-    expect(spiceVersion()).toBe("cspice-stub");
+    const version = spiceVersion();
+    expect(version).not.toBe("");
+    expect(version).toMatch(/N\d{4}/);
   });
 
   it("creates a backend", () => {
     const backend = createNodeBackend();
     expect(backend.kind).toBe("node");
-    expect(backend.spiceVersion()).toBe("cspice-stub");
+    const version = backend.spiceVersion();
+    expect(version).not.toBe("");
+    expect(version).toMatch(/N\d{4}/);
   });
 });
