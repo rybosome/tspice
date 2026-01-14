@@ -130,6 +130,8 @@ async function main() {
     );
   }
 
+  // This script downloads/extracts prebuilt NAIF CSPICE archives only; it does not attempt to rebuild CSPICE.
+
   const manifest = readManifest();
   const archiveKey = resolveArchiveKey(manifest, process.platform, process.arch);
   const { url, sha256 } = manifest.archives[archiveKey];

@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { pipeline } from "node:stream/promises";
 import { fileURLToPath } from "node:url";
 
 function escapeCStringLiteral(value) {
@@ -122,12 +123,7 @@ function getCspiceDir() {
 
 async function sha256File(filePath) {
   const hash = crypto.createHash("sha256");
-  const stream = fs.createReadStream(filePath);
-  await new Promise((resolve, reject) => {
-    stream.on("data", (chunk) => hash.update(chunk));
-    stream.on("error", reject);
-    stream.on("end", resolve);
-  });
+  await pipeline(fs.createReadStream(filePath), hash);
   return hash.digest("hex");
 }
 
@@ -145,17 +141,17 @@ async function buildStampValue({ toolkitVersion, cspiceDir }) {
   const cspiceLibPath = path.join(cspiceDir, "lib", "cspice.a");
   const csupportLibPath = path.join(cspiceDir, "lib", "csupport.a");
 
-  const safeStat = (libPath, label) => {
-    try {
-      return fs.statSync(libPath);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to stat ${label} at ${libPath}: ${message}`);
-    }
-  };
-
-  const cspiceLibStat = safeStat(cspiceLibPath, "CSPICE library");
-  const csupportLibStat = safeStat(csupportLibPath, "CSUPPORT library");
+  let cspiceLibStat;
+  let csupportLibStat;
+  try {
+    [cspiceLibStat, csupportLibStat] = await Promise.all([
+      fs.promises.stat(cspiceLibPath),
+      fs.promises.stat(csupportLibPath),
+    ]);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to stat CSPICE libraries: ${message}`);
+  }
 
   const [cspiceSha256, csupportSha256] = await Promise.all([
     sha256File(cspiceLibPath),

@@ -8,7 +8,16 @@ try {
   let createBackend;
   try {
     ({ createBackend } = await import("@rybosome/tspice"));
-  } catch {
+  } catch (error) {
+    const shouldFallback =
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "ERR_MODULE_NOT_FOUND";
+    if (!shouldFallback) {
+      throw error;
+    }
+
     const tspiceEntry = pathToFileURL(
       path.join(repoRoot, "packages", "tspice", "dist", "index.js")
     );
