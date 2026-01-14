@@ -68,7 +68,7 @@ function getCspiceDir() {
   const result = spawnSync(
     process.execPath,
     [scriptPath],
-    { encoding: "utf8" }
+    { encoding: "utf8", cwd: getRepoRoot() }
   );
 
   if (result.error) {
