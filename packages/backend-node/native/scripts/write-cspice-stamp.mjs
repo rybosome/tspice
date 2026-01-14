@@ -46,8 +46,16 @@ function getRepoRoot() {
   return path.resolve(getNativeDir(), "..", "..", "..");
 }
 
+function getManifestPath() {
+  const override = process.env.TSPICE_CSPICE_MANIFEST;
+  if (override && override.trim() !== "") {
+    return override;
+  }
+  return path.join(getRepoRoot(), "scripts", "cspice.manifest.json");
+}
+
 function readManifest() {
-  const manifestPath = path.join(getRepoRoot(), "scripts", "cspice.manifest.json");
+  const manifestPath = getManifestPath();
   let raw;
   try {
     raw = fs.readFileSync(manifestPath, "utf8");
@@ -155,6 +163,9 @@ function main() {
   const cspiceDir = getCspiceDir();
 
   const generatedDir = path.join(getNativeDir(), "generated");
+  if (!path.isAbsolute(generatedDir)) {
+    throw new Error(`Expected absolute generatedDir, got: ${generatedDir}`);
+  }
   const headerPath = path.join(generatedDir, "cspice_stamp.h");
 
   const stampValue = buildStampValue({ toolkitVersion: manifest.toolkitVersion, cspiceDir });
