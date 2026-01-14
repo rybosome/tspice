@@ -72,7 +72,18 @@ function runChecked(command, args, options = {}) {
   }
 }
 
+function ensureTool(tool) {
+  const result = spawnSync("sh", ["-c", `command -v ${shQuote(tool)}`], { encoding: "utf8" });
+  if (result.status !== 0) {
+    throw new Error(
+      `Required tool "${tool}" not found on PATH. Install it, or set TSPICE_CSPICE_DIR to a prebuilt CSPICE install.`
+    );
+  }
+}
+
 function extractTarZ(archivePath, outDir) {
+  ensureTool("uncompress");
+  ensureTool("tar");
   ensureDir(outDir);
   runChecked("sh", [
     "-c",
@@ -87,6 +98,7 @@ function resolveArchiveKey(manifest, platform, arch) {
   }
 
   if (platform === "linux" && arch === "arm64" && manifest.archives?.["linux-x64"]) {
+    console.warn("No linux-arm64 CSPICE archive configured; using linux-x64 + local rebuild.");
     return "linux-x64";
   }
 
@@ -129,11 +141,22 @@ function detectLibArchToken(libPath, objectName) {
 
 function patchLinuxArm64Mkprodct(scriptPath) {
   let content = fs.readFileSync(scriptPath, "utf8");
-  content = content.replaceAll(/\s+-m64\b/g, "");
-  fs.writeFileSync(scriptPath, content);
+  if (!/\s+-m64\b/.test(content)) {
+    console.warn(`mkprodct.csh at ${scriptPath} did not contain -m64; skipping patch.`);
+    return;
+  }
+
+  const patched = content.replace(/\s+-m64\b/g, "");
+  if (patched !== content) {
+    console.log(`Patching -m64 from ${scriptPath} for linux-arm64 CSPICE rebuild.`);
+    fs.writeFileSync(scriptPath, patched);
+  }
 }
 
 function rebuildCspiceIfNeeded(cspiceDir) {
+  ensureTool("ar");
+  ensureTool("file");
+
   const libPath = path.join(cspiceDir, "lib", "cspice.a");
   const expectedToken = getExpectedLibArchToken(process.platform, process.arch);
   if (!expectedToken) {

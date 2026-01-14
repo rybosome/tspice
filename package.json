@@ -4,9 +4,9 @@
   "type": "module",
   "packageManager": "pnpm@10.13.1",
   "scripts": {
-    "check": "pnpm run build && pnpm run typecheck && pnpm run test",
+    "check": "pnpm run fetch:cspice && pnpm run build && pnpm run typecheck && pnpm run test",
     "fetch:cspice": "node scripts/fetch-cspice.mjs",
-    "build": "pnpm run fetch:cspice && turbo run build",
+    "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test"
   },

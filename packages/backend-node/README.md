@@ -57,15 +57,15 @@ Building the native addon requires a working `node-gyp` toolchain.
 
 ### Building the native addon
 
+This will fetch pinned CSPICE into the repo-local cache automatically (unless `TSPICE_CSPICE_DIR` is set).
+
 ```bash
-pnpm run fetch:cspice
 pnpm -C packages/backend-node build:native
 ```
 
 ### Building everything in this package (native + TS)
 
 ```bash
-pnpm run fetch:cspice
 pnpm -C packages/backend-node build
 ```
 
@@ -150,6 +150,8 @@ pnpm -C packages/backend-node build:native
 - Native build definition: `native/binding.gyp`
 - Native addon entrypoint: `native/src/addon.cc`
 - Loader + error handling: `src/native.ts`
+
+Note: the addon configures CSPICE error handling globally (e.g. sets the error action to `RETURN` so errors can be surfaced as JS exceptions).
 
 ## Versioning / stability notes
 
