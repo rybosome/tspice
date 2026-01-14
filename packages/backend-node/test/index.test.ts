@@ -1,14 +1,18 @@
 import { describe, expect, it } from "vitest";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { createNodeBackend, spiceVersion } from "@rybosome/tspice-backend-node";
 
-const testDir = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(testDir, "..", "..", "..");
-const cspiceManifestPath = path.join(repoRoot, "scripts", "cspice.manifest.json");
-const { toolkitVersion } = JSON.parse(fs.readFileSync(cspiceManifestPath, "utf8"));
+function getExpectedCspiceToolkitVersion(): string {
+  const value = process.env.TSPICE_EXPECTED_CSPICE_VERSION;
+  if (!value) {
+    throw new Error(
+      "Missing TSPICE_EXPECTED_CSPICE_VERSION. This should be provided by the test runner."
+    );
+  }
+  return value;
+}
+
+const toolkitVersion = getExpectedCspiceToolkitVersion();
 
 describe("@rybosome/tspice-backend-node", () => {
   it("loads the native addon", () => {
