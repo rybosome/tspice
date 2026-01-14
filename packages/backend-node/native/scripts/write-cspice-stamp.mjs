@@ -85,7 +85,9 @@ function getCspiceDir() {
   if (argv.length !== 1) {
     throw new Error(
       `Expected exactly one argument: CSPICE dir (got ${argv.length}). ` +
-        "Invoked as: node scripts/write-cspice-stamp.mjs <cspiceDir>"
+        `Invoked as: node scripts/write-cspice-stamp.mjs <cspiceDir>; args: ${JSON.stringify(
+          argv
+        )}`
     );
   }
 
@@ -93,7 +95,13 @@ function getCspiceDir() {
   if (!dir) {
     throw new Error("CSPICE dir argument was empty.");
   }
-  return dir;
+
+  const resolved = path.resolve(dir);
+  try {
+    return fs.realpathSync(resolved);
+  } catch {
+    return resolved;
+  }
 }
 
 function buildStampValue({ toolkitVersion, cspiceDir }) {

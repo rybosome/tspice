@@ -12,8 +12,8 @@ extern "C" {
 #include "cspice_stamp.h"
 
 // The value of TSPICE_CSPICE_STAMP is not used at runtime; this exists solely to create a
-// build dependency on the generated header so changes to the CSPICE toolkit/config trigger
-// a rebuild.
+// compile-time dependency on the generated header so changes to the CSPICE toolkit/config
+// trigger a rebuild.
 static_assert(sizeof(TSPICE_CSPICE_STAMP) > 0, "TSPICE_CSPICE_STAMP must be non-empty");
 
 static std::mutex g_cspice_mutex;
