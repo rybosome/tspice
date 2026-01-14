@@ -20,12 +20,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
+        # Keep in sync with package.json#packageManager.
+        # This must run before setup-node when using `cache: pnpm`.
         uses: pnpm/action-setup@v4
         with:
-          # Keep in sync with package.json#packageManager.
           version: 10.13.1
 
       - name: Setup Node
+        # Requires pnpm to be installed first for `cache: pnpm` to work.
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
