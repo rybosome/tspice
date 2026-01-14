@@ -24,10 +24,10 @@ function escapeCStringLiteral(value) {
       default: {
         const code = ch.codePointAt(0);
         if (code !== undefined && (code < 0x20 || code > 0x7e)) {
-          if (code <= 0xffff) {
-            result += `\\u${code.toString(16).padStart(4, "0")}`;
+          if (code <= 0xff) {
+            result += `\\x${code.toString(16).padStart(2, "0")}`;
           } else {
-            result += `\\U${code.toString(16).padStart(8, "0")}`;
+            result += "?";
           }
         } else {
           result += ch;
@@ -60,11 +60,17 @@ function readManifest() {
 }
 
 function getCspiceDir() {
-  const dir = (process.argv[2] ?? "").trim();
-  if (!dir) {
+  const argv = process.argv.slice(2);
+  if (argv.length !== 1) {
     throw new Error(
-      "Expected CSPICE dir as argv[2] (from binding.gyp). Run scripts/print-cspice-dir.mjs to resolve it."
+      `Expected exactly one argument: CSPICE dir (got ${argv.length}). ` +
+        "Invoked as: node scripts/write-cspice-stamp.mjs <cspiceDir>"
     );
+  }
+
+  const dir = argv[0].trim();
+  if (!dir) {
+    throw new Error("CSPICE dir argument was empty.");
   }
   return dir;
 }
