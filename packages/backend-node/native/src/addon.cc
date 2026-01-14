@@ -7,6 +7,8 @@ extern "C" {
 #include "SpiceUsr.h"
 }
 
+static std::mutex g_cspice_mutex;
+
 static std::string RTrim(std::string s) {
   while (!s.empty()) {
     const char c = s.back();
@@ -20,6 +22,7 @@ static std::string RTrim(std::string s) {
 }
 
 static std::string GetSpiceErrorMessageAndReset() {
+  // Caller must hold g_cspice_mutex.
   if (!failed_c()) {
     return "Unknown CSPICE error (failed_c() is false)";
   }
@@ -67,6 +70,7 @@ static Napi::String SpiceVersion(const Napi::CallbackInfo& info) {
     return Napi::String::New(env, "");
   }
 
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
   InitCspiceErrorHandlingOnce();
 
   const SpiceChar* version = tkvrsn_c("TOOLKIT");
