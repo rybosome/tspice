@@ -101,6 +101,8 @@ TSPICE_BACKEND_NODE_BINDING_PATH=./native/build/Debug/tspice_backend_node.node \
   node ./some-script.mjs
 ```
 
+Note: relative paths like `./native/build/Debug/tspice_backend_node.node` are resolved relative to this package root (the directory containing `packages/backend-node/package.json`).
+
 ## Troubleshooting / FAQ
 
 ### “Native addon tspice_backend_node.node not found”

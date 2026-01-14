@@ -65,6 +65,7 @@ export function getNativeAddon(): NativeAddon {
     throw new Error(
       `Native addon ${ADDON_FILE} not found for ${platform}-${arch}. Looked for:\n` +
         candidates.map((p) => `- ${p}`).join("\n") +
+        `\n\nIf you built a Debug addon locally, set TSPICE_BACKEND_NODE_BINDING_PATH to its path.` +
         `\n\nTry: pnpm -C packages/backend-node build:native`
     );
   }
