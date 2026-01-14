@@ -1,4 +1,3 @@
-import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,34 +60,12 @@ function readManifest() {
 }
 
 function getCspiceDir() {
-  const scriptPath = path.join(getRepoRoot(), "scripts", "print-cspice-dir.mjs");
-
-  // Run as a separate process to mirror the binding.gyp integration (i.e. resolve CSPICE
-  // using the same entrypoint and error messages rather than duplicating the logic).
-  const result = spawnSync(
-    process.execPath,
-    [scriptPath],
-    { encoding: "utf8", cwd: getRepoRoot() }
-  );
-
-  if (result.error) {
-    throw new Error(
-      `Failed to execute print-cspice-dir script at ${scriptPath}: ${result.error.message}`
-    );
-  }
-
-  if (result.status !== 0) {
-    const output = (result.stderr || result.stdout || "<no output>").trim();
-    throw new Error(
-      `print-cspice-dir script exited with code ${result.status} at ${scriptPath}: ${output}`
-    );
-  }
-
-  const dir = result.stdout.trim();
+  const dir = (process.argv[2] ?? "").trim();
   if (!dir) {
-    throw new Error(`print-cspice-dir script at ${scriptPath} returned an empty directory path`);
+    throw new Error(
+      "Expected CSPICE dir as argv[2] (from binding.gyp). Run scripts/print-cspice-dir.mjs to resolve it."
+    );
   }
-
   return dir;
 }
 

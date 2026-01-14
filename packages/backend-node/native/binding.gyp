@@ -1,7 +1,7 @@
 {
   "variables": {
     "tspice_cspice_dir": "<!(node ../../../scripts/print-cspice-dir.mjs)",
-    "tspice_native_generated_dir": "<!(node scripts/write-cspice-stamp.mjs)"
+    "tspice_native_generated_dir": "<!(node scripts/write-cspice-stamp.mjs <(tspice_cspice_dir))"
   },
   "targets": [
     {

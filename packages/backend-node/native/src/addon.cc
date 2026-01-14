@@ -11,6 +11,8 @@ extern "C" {
 // or TSPICE_CSPICE_DIR override).
 #include "cspice_stamp.h"
 
+[[maybe_unused]] static const char* kCspiceStamp = TSPICE_CSPICE_STAMP;
+
 static std::mutex g_cspice_mutex;
 
 static std::string RTrim(std::string s) {
