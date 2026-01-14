@@ -22,6 +22,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
+          # Keep in sync with package.json#packageManager.
           version: 10.13.1
 
       - name: Setup Node
