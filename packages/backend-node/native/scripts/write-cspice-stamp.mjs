@@ -4,12 +4,35 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 function escapeCStringLiteral(value) {
-  return value
-    .replaceAll("\\", "\\\\")
-    .replaceAll('"', '\\"')
-    .replaceAll("\n", "\\n")
-    .replaceAll("\r", "\\r")
-    .replaceAll("\t", "\\t");
+  let result = "";
+  for (const ch of value) {
+    switch (ch) {
+      case "\\":
+        result += "\\\\";
+        break;
+      case '"':
+        result += '\\"';
+        break;
+      case "\n":
+        result += "\\n";
+        break;
+      case "\r":
+        result += "\\r";
+        break;
+      case "\t":
+        result += "\\t";
+        break;
+      default: {
+        const code = ch.codePointAt(0);
+        if (code !== undefined && code < 0x20) {
+          result += `\\x${code.toString(16).padStart(2, "0")}`;
+        } else {
+          result += ch;
+        }
+      }
+    }
+  }
+  return result;
 }
 
 function getNativeDir() {
@@ -50,6 +73,14 @@ function getCspiceDir() {
 function buildStampValue({ toolkitVersion, cspiceDir }) {
   const cspiceLibPath = path.join(cspiceDir, "lib", "cspice.a");
   const csupportLibPath = path.join(cspiceDir, "lib", "csupport.a");
+
+  if (!fs.existsSync(cspiceLibPath)) {
+    throw new Error(`Expected CSPICE library at ${cspiceLibPath}, but it was not found.`);
+  }
+
+  if (!fs.existsSync(csupportLibPath)) {
+    throw new Error(`Expected CSUPPORT library at ${csupportLibPath}, but it was not found.`);
+  }
 
   const cspiceLibStat = fs.statSync(cspiceLibPath);
   const csupportLibStat = fs.statSync(csupportLibPath);
@@ -100,7 +131,10 @@ function main() {
 try {
   main();
 } catch (error) {
-  const message = error instanceof Error ? error.message : String(error);
-  console.error(message);
+  if (error instanceof Error) {
+    console.error(error.stack || error.message);
+  } else {
+    console.error(String(error));
+  }
   process.exitCode = 1;
 }
