@@ -121,10 +121,24 @@ function getCspiceDir() {
   return finalDir;
 }
 
-async function sha256File(filePath) {
+async function sha256File(filePath, label) {
   const hash = crypto.createHash("sha256");
-  await pipeline(fs.createReadStream(filePath), hash);
+  try {
+    await pipeline(fs.createReadStream(filePath), hash);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to hash ${label} at ${filePath}: ${message}`);
+  }
   return hash.digest("hex");
+}
+
+async function safeStat(filePath, label) {
+  try {
+    return await fs.promises.stat(filePath);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to stat ${label} at ${filePath}: ${message}`);
+  }
 }
 
 async function buildStampValue({ toolkitVersion, cspiceDir }) {
@@ -141,21 +155,14 @@ async function buildStampValue({ toolkitVersion, cspiceDir }) {
   const cspiceLibPath = path.join(cspiceDir, "lib", "cspice.a");
   const csupportLibPath = path.join(cspiceDir, "lib", "csupport.a");
 
-  let cspiceLibStat;
-  let csupportLibStat;
-  try {
-    [cspiceLibStat, csupportLibStat] = await Promise.all([
-      fs.promises.stat(cspiceLibPath),
-      fs.promises.stat(csupportLibPath),
-    ]);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to stat CSPICE libraries: ${message}`);
-  }
+  const [cspiceLibStat, csupportLibStat] = await Promise.all([
+    safeStat(cspiceLibPath, "CSPICE library"),
+    safeStat(csupportLibPath, "CSUPPORT library"),
+  ]);
 
   const [cspiceSha256, csupportSha256] = await Promise.all([
-    sha256File(cspiceLibPath),
-    sha256File(csupportLibPath),
+    sha256File(cspiceLibPath, "CSPICE library"),
+    sha256File(csupportLibPath, "CSUPPORT library"),
   ]);
 
   return JSON.stringify({
@@ -226,13 +233,15 @@ async function main() {
   process.stdout.write(generatedDir);
 }
 
-try {
-  await main();
-} catch (error) {
-  if (error instanceof Error) {
-    console.error(error.stack || error.message);
-  } else {
-    console.error(String(error));
+(async () => {
+  try {
+    await main();
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.stack || error.message);
+    } else {
+      console.error(String(error));
+    }
+    process.exitCode = 1;
   }
-  process.exitCode = 1;
-}
+})();

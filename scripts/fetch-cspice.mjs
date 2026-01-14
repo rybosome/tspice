@@ -130,7 +130,8 @@ async function main() {
     );
   }
 
-  // This script downloads/extracts prebuilt NAIF CSPICE archives only; it does not attempt to rebuild CSPICE.
+  // Note: we intentionally do not validate ELF/Mach-O arch or attempt to rebuild CSPICE here.
+  // If the prebuilt archives are incompatible with the current host, provide a compatible install via TSPICE_CSPICE_DIR.
 
   const manifest = readManifest();
   const archiveKey = resolveArchiveKey(manifest, process.platform, process.arch);

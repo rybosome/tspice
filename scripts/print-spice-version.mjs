@@ -27,6 +27,8 @@ try {
   const backend = createBackend({ backend: "node" });
   console.log(backend.spiceVersion());
 } catch (error) {
-  console.error("Failed to load built @rybosome/tspice. Ensure `pnpm run build` has succeeded.");
+  console.error(
+    "Failed to load @rybosome/tspice (from node_modules or local dist). Ensure it is built and its native bindings are available."
+  );
   throw error;
 }
