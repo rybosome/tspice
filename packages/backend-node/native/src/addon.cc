@@ -7,6 +7,8 @@ extern "C" {
 #include "SpiceUsr.h"
 }
 
+// Forces a rebuild/relink when the resolved CSPICE install changes (cache/toolkit bump
+// or TSPICE_CSPICE_DIR override).
 #include "cspice_stamp.h"
 
 static std::mutex g_cspice_mutex;

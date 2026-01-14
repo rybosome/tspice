@@ -24,8 +24,12 @@ function escapeCStringLiteral(value) {
         break;
       default: {
         const code = ch.codePointAt(0);
-        if (code !== undefined && code < 0x20) {
-          result += `\\x${code.toString(16).padStart(2, "0")}`;
+        if (code !== undefined && (code < 0x20 || code > 0x7e)) {
+          if (code <= 0xffff) {
+            result += `\\u${code.toString(16).padStart(4, "0")}`;
+          } else {
+            result += `\\U${code.toString(16).padStart(8, "0")}`;
+          }
         } else {
           result += ch;
         }
@@ -57,20 +61,45 @@ function readManifest() {
 }
 
 function getCspiceDir() {
+  const scriptPath = path.join(getRepoRoot(), "scripts", "print-cspice-dir.mjs");
   const result = spawnSync(
     process.execPath,
-    [path.join(getRepoRoot(), "scripts", "print-cspice-dir.mjs")],
+    [scriptPath],
     { encoding: "utf8" }
   );
 
-  if (result.status !== 0) {
-    throw new Error((result.stderr || result.stdout || "Failed to resolve CSPICE dir").trim());
+  if (result.error) {
+    throw new Error(
+      `Failed to execute print-cspice-dir script at ${scriptPath}: ${result.error.message}`
+    );
   }
 
-  return result.stdout.trim();
+  if (result.status !== 0) {
+    const output = (result.stderr || result.stdout || "<no output>").trim();
+    throw new Error(
+      `print-cspice-dir script exited with code ${result.status} at ${scriptPath}: ${output}`
+    );
+  }
+
+  const dir = result.stdout.trim();
+  if (!dir) {
+    throw new Error(`print-cspice-dir script at ${scriptPath} returned an empty directory path`);
+  }
+
+  return dir;
 }
 
 function buildStampValue({ toolkitVersion, cspiceDir }) {
+  if (typeof toolkitVersion !== "string" || toolkitVersion.trim() === "") {
+    throw new Error(
+      `Invalid toolkitVersion: expected non-empty string, got ${JSON.stringify(toolkitVersion)}`
+    );
+  }
+
+  if (typeof cspiceDir !== "string" || cspiceDir.trim() === "") {
+    throw new Error(`Invalid cspiceDir: expected non-empty string, got ${JSON.stringify(cspiceDir)}`);
+  }
+
   const cspiceLibPath = path.join(cspiceDir, "lib", "cspice.a");
   const csupportLibPath = path.join(cspiceDir, "lib", "csupport.a");
 
@@ -125,6 +154,8 @@ function main() {
 
   writeIfChanged(headerPath, header);
 
+  // Print the absolute generated directory path for consumption by binding.gyp via
+  // the tspice_native_generated_dir variable.
   process.stdout.write(generatedDir);
 }
 
