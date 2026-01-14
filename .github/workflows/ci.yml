@@ -22,7 +22,8 @@ jobs:
       - name: Read pnpm version from package.json#packageManager
         id: pnpm-version
         run: |
-          node -e "const pm=require('./package.json').packageManager||''; const m=pm.match(/^pnpm@(.+)$/); if(!m) throw new Error('Expected package.json#packageManager to be pnpm@<version>'); console.log('version='+m[1]);" >> "$GITHUB_OUTPUT"
+          version=$(node -e "const pm=require('./package.json').packageManager||''; const m=pm.match(/^pnpm@(.+)$/); if(!m) throw new Error('Expected package.json#packageManager to be set to \"pnpm@<version>\"'); process.stdout.write(m[1]);")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Setup pnpm
         # Keep in sync with package.json#packageManager.
