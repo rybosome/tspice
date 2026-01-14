@@ -7,7 +7,8 @@ if (typeof pm !== 'string') {
   throw new Error('package.json#packageManager must be a string');
 }
 
-const m = pm.match(new RegExp('^pnpm@([^\s]+)$'));
+// Expect packageManager to look like `pnpm@<exact-version>`.
+const m = pm.match(/^pnpm@([^\s]+)$/);
 if (!m) {
   throw new Error(
     `Expected packageManager to look like "pnpm@<version>", got: ${JSON.stringify(pm)}`

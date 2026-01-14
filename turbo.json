@@ -6,7 +6,7 @@
       "outputs": ["dist/**", "native/build/Release/*.node"]
     },
     "typecheck": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^typecheck"],
       "outputs": []
     },
     "test": {

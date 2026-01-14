@@ -80,8 +80,7 @@ pnpm -C packages/backend-node test
 
 By default, this package tries to load the addon from:
 
-- `packages/backend-node/native/build/Release/tspice_backend_node.node` (preferred)
-- `packages/backend-node/native/build/Debug/tspice_backend_node.node` (fallback; mostly useful in local dev)
+- `packages/backend-node/native/build/Release/tspice_backend_node.node`
 
 If you set `TSPICE_BACKEND_NODE_BINDING_PATH`, that overrides the `.node` file location.
 
@@ -93,6 +92,13 @@ Example:
 ```bash
 TSPICE_BACKEND_NODE_BINDING_PATH=./native/build/Release/tspice_backend_node.node \
   node ./some-script.mjs
+
+If you built a Debug addon locally, you can also point `TSPICE_BACKEND_NODE_BINDING_PATH` at it:
+
+```bash
+TSPICE_BACKEND_NODE_BINDING_PATH=./native/build/Debug/tspice_backend_node.node \
+  node ./some-script.mjs
+```
 ```
 
 ## Troubleshooting / FAQ

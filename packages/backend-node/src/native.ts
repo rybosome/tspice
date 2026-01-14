@@ -57,7 +57,6 @@ export function getNativeAddon(): NativeAddon {
 
   const candidates = [
     path.join(packageRoot, "native", "build", "Release", ADDON_FILE),
-    path.join(packageRoot, "native", "build", "Debug", ADDON_FILE),
   ];
 
   const existing = candidates.find((p) => fs.existsSync(p));
