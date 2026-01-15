@@ -4,6 +4,19 @@
 
 WASM backend for `tspice`, implemented with a prebuilt Emscripten-compiled CSPICE `.wasm`.
 
+## CSPICE / NAIF disclosure
+
+This project embeds components derived from the NAIF CSPICE Toolkit solely to support its TypeScript interface. It is not a general-purpose distribution of CSPICE.
+
+In this package, those components are incorporated into the prebuilt `.wasm` artifact.
+
+Use of CSPICE (including CSPICE-derived artifacts from this project) is subject to the NAIF rules linked below.
+
+- NAIF rules: https://naif.jpl.nasa.gov/naif/rules.html
+- Official NAIF toolkit download site: https://naif.jpl.nasa.gov/naif/toolkit.html
+
+For third-party notices and additional details, see [`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md) and the [`NOTICE`](./NOTICE) file in this package.
+
 ## Purpose / Why this exists
 
 This package exists to reserve a “WASM backend” slot in the architecture so we can evolve toward a portable (non-native-addon) backend over time.

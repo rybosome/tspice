@@ -4,6 +4,19 @@
 
 `@rybosome/tspice` is the public facade for this repo: it gives you a single `createBackend()` entrypoint and selects an underlying backend implementation (Node/native or WASM).
 
+## CSPICE / NAIF disclosure
+
+This project embeds components derived from the NAIF CSPICE Toolkit solely to support its TypeScript interface. It is not a general-purpose distribution of CSPICE.
+
+Depending on `@rybosome/tspice` will typically pull in backend packages that incorporate CSPICE-derived components.
+
+Use of CSPICE (including CSPICE-derived artifacts from this project) is subject to the NAIF rules linked below.
+
+- NAIF rules: https://naif.jpl.nasa.gov/naif/rules.html
+- Official NAIF toolkit download site: https://naif.jpl.nasa.gov/naif/toolkit.html
+
+For third-party notices and additional details, see [`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md) and the backend package `NOTICE` files ([`../backend-node/NOTICE`](../backend-node/NOTICE), [`../backend-wasm/NOTICE`](../backend-wasm/NOTICE)).
+
 ## Purpose / Why this exists
 
 The long-term goal is to expose a stable, ergonomic JavaScript/TypeScript API for SPICE functionality while keeping the “how” of execution (native addon, WASM, remote, etc.) behind an interface.

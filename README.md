@@ -10,6 +10,19 @@
 
 This project **does not** attempt to reimplement SPICE in TypeScript. Instead, it provides a clean, powerful API on top of an existing SPICE core.
 
+## CSPICE / NAIF disclosure
+
+This project embeds components derived from the NAIF CSPICE Toolkit solely to support its TypeScript interface. It is not a general-purpose distribution of CSPICE.
+
+The exact form of those components varies by backend; see the notices linked below for additional details.
+
+Use of CSPICE (including CSPICE-derived artifacts from this project) is subject to the NAIF rules linked below.
+
+- NAIF rules: https://naif.jpl.nasa.gov/naif/rules.html
+- Official NAIF toolkit download site: https://naif.jpl.nasa.gov/naif/toolkit.html
+
+For third-party notices and additional details, see [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) and the package `NOTICE` files ([`packages/backend-node/NOTICE`](./packages/backend-node/NOTICE), [`packages/backend-wasm/NOTICE`](./packages/backend-wasm/NOTICE)).
+
 ---
 
 ## 🧱 High-Level Architecture
@@ -44,7 +57,7 @@ interface RawSpiceBackend {
 
 Two implementations will exist:
 
-- **Node backend** — CSPICE via NAI
+- **Node backend** — native addon that links against the NAIF CSPICE Toolkit (see CSPICE / NAIF disclosure above)
 - **WASM backend** — CSPICE compiled with Emscripten  
 
 The rest of the system should not care which backend is active.
