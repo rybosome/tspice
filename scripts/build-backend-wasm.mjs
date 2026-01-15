@@ -172,4 +172,10 @@ if (!fs.existsSync(outputWasmPath)) {
   throw new Error(`Expected Emscripten to write ${outputWasmPath} but it was missing`);
 }
 
+const generatedHeader = `// GENERATED FILE - DO NOT EDIT.\n// Regenerate via: node scripts/build-backend-wasm.mjs\n\n`;
+const jsContents = fs.readFileSync(outputJsPath, "utf8");
+if (!jsContents.startsWith(generatedHeader)) {
+  fs.writeFileSync(outputJsPath, `${generatedHeader}${jsContents}`);
+}
+
 console.log(`Wrote ${outputJsPath}`);

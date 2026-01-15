@@ -54,6 +54,15 @@ export async function createWasmBackend(
     );
   }
 
+  if (
+    typeof module._tspice_tkvrsn_toolkit !== "function" ||
+    typeof module._malloc !== "function" ||
+    typeof module._free !== "function" ||
+    typeof module.UTF8ToString !== "function"
+  ) {
+    throw new Error("WASM module is missing expected exports");
+  }
+
   return {
     kind: "wasm",
     spiceVersion: () => {
