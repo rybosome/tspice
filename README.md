@@ -12,16 +12,7 @@ This project **does not** attempt to reimplement SPICE in TypeScript. Instead, i
 
 ## CSPICE / NAIF disclosure
 
-This project embeds components derived from the NAIF CSPICE Toolkit solely to support its TypeScript interface. It is not a general-purpose distribution of CSPICE.
-
-The exact form of those components varies by backend; see the notices linked below for additional details.
-
-Use of CSPICE (including CSPICE-derived artifacts from this project) is subject to the NAIF rules linked below.
-
-- NAIF rules: https://naif.jpl.nasa.gov/naif/rules.html
-- Official NAIF toolkit download site: https://naif.jpl.nasa.gov/naif/toolkit.html
-
-For third-party notices and additional details, see [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) and the package `NOTICE` files ([`packages/backend-node/NOTICE`](./packages/backend-node/NOTICE), [`packages/backend-wasm/NOTICE`](./packages/backend-wasm/NOTICE)).
+See [`docs/cspice-naif-disclosure.md`](./docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
 
 ---
 
