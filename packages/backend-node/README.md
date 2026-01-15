@@ -8,7 +8,7 @@ Node.js backend for `tspice`, implemented as a native addon (N-API via `node-gyp
 
 See [`docs/cspice-naif-disclosure.md`](../../docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
 
-In this package, CSPICE-derived components are statically linked into the native addon built under `native/`. See [`NOTICE`](./NOTICE) for authoritative details.
+This backend integrates CSPICE-derived components into the native addon built under `native/`. See [`NOTICE`](./NOTICE) for authoritative integration and redistribution details.
 
 ## Purpose / Why this exists
 
