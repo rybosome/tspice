@@ -43,3 +43,96 @@ jobs:
 
       - name: Run checks
         run: pnpm run check
+
+  check-native:
+    # Runs in parallel with `check` to surface native-only failures quickly.
+    # Assumes GitHub-hosted runners (Ubuntu with apt-get, macOS with Homebrew).
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        node: [20, 22]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read pnpm version from package.json#packageManager
+        id: pnpm-version
+        run: |
+          raw=$(node scripts/read-pnpm-version.cjs)
+          if [ -z "$raw" ]; then
+            echo "pnpm version not found in package.json#packageManager (scripts/read-pnpm-version.cjs returned empty)." >&2
+            exit 1
+          fi
+
+          version=${raw#pnpm@}
+          if ! echo "$version" | grep -Eq '^[0-9]+(\.[0-9]+){0,2}$'; then
+            echo "Unexpected pnpm version format: '$raw' (normalized to '$version')." >&2
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Setup pnpm
+        # Keep in sync with package.json#packageManager.
+        # This must run before setup-node when using `cache: pnpm`.
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ steps.pnpm-version.outputs.version }}
+          run_install: false
+
+      - name: Setup Node
+        # Requires pnpm to be installed first for `cache: pnpm` to work.
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+
+      - name: Install OS dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          # Assumes ubuntu-latest; update if the Linux distribution changes.
+          if ! command -v apt-get >/dev/null; then
+            echo "This step assumes an Ubuntu/Debian-based Linux runner with apt-get available. Update the workflow before using a different Linux image." >&2
+            exit 1
+          fi
+          sudo apt-get update
+          if ! sudo apt-get install -y --no-install-recommends ncompress; then
+            echo "Failed to install 'ncompress'. Verify that it is available on ubuntu-latest or adjust the workflow to use an alternative package/source." >&2
+            exit 1
+          fi
+
+      - name: Install OS dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          # Assumes Homebrew is available on the macOS runner.
+          if command -v uncompress >/dev/null; then
+            exit 0
+          fi
+          if ! command -v brew >/dev/null; then
+            echo "Homebrew is required to install ncompress on macOS CI runners. Install Homebrew on the runner or pre-install ncompress before running this workflow." >&2
+            exit 1
+          fi
+          brew install ncompress
+
+      - name: Cache CSPICE
+        # .cache/cspice is populated by `pnpm run fetch:cspice` (invoked via `pnpm run check:native`).
+        # The `.cache/cspice` path is defined in scripts/fetch-cspice.mjs.
+        # Cache is keyed by OS/arch + manifest hash so it can be reused across Node versions.
+        # `fetch:cspice` output is controlled by `scripts/cspice.manifest.json`.
+        # Cache key intentionally does not include Node version (cache contains CSPICE archives only).
+        # If `fetch:cspice` changes the on-disk cache layout, bump scripts/cspice.manifest.json.
+        uses: actions/cache@v4
+        with:
+          path: .cache/cspice
+          key: cspice-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
+          restore-keys: |
+            cspice-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run native checks
+        run: pnpm run check:native
