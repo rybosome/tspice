@@ -24,6 +24,13 @@ execFileSync("node", [path.join(repoRoot, "scripts", "fetch-cspice.mjs"), "--sou
   stdio: "inherit",
 });
 
+const wasmBuildCacheDir = path.join(repoRoot, ".cache");
+fs.mkdirSync(wasmBuildCacheDir, { recursive: true });
+
+const wasmBuildDir = fs.mkdtempSync(path.join(wasmBuildCacheDir, "wasm-build-"));
+const patchedCspiceSourceRoot = path.join(wasmBuildDir, "cspice");
+fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
+
 const wrapperPath = path.join(
   repoRoot,
   "packages",
@@ -38,7 +45,7 @@ if (!fs.existsSync(wrapperPath)) {
   throw new Error(`Missing wrapper C file at ${wrapperPath}`);
 }
 
-const cspiceSrcDir = path.join(cspiceSourceRoot, "src");
+const cspiceSrcDir = path.join(patchedCspiceSourceRoot, "src");
 const cspiceCspiceDir = path.join(cspiceSrcDir, "cspice");
 const cspiceCsupportDir = path.join(cspiceSrcDir, "csupport");
 
@@ -131,7 +138,7 @@ const sources = [
 ];
 
 const includeDirs = [
-  path.join(cspiceSourceRoot, "include"),
+  path.join(patchedCspiceSourceRoot, "include"),
   cspiceSrcDir,
   cspiceCspiceDir,
   cspiceCsupportDir,

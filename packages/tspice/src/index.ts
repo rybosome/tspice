@@ -19,9 +19,10 @@ export async function createBackend(
     case "node":
       return createNodeBackend();
     case "wasm":
-      return await createWasmBackend(
-        options.wasmUrl === undefined ? undefined : { wasmUrl: options.wasmUrl },
-      );
+      if (options.wasmUrl === undefined) {
+        return await createWasmBackend();
+      }
+      return await createWasmBackend({ wasmUrl: options.wasmUrl });
     default:
       return assertNever(backend, "Unsupported backend");
   }

@@ -19,6 +19,42 @@ type EmscriptenModule = {
   ): number;
 };
 
+function getToolkitVersion(module: EmscriptenModule): string {
+  const outMaxBytes = 256;
+  const errMaxBytes = 2048;
+  const outPtr = module._malloc(outMaxBytes);
+  const errPtr = module._malloc(errMaxBytes);
+
+  if (!outPtr || !errPtr) {
+    if (errPtr) {
+      module._free(errPtr);
+    }
+    if (outPtr) {
+      module._free(outPtr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const result = module._tspice_tkvrsn_toolkit(
+      outPtr,
+      outMaxBytes,
+      errPtr,
+      errMaxBytes,
+    );
+
+    if (result !== 0) {
+      const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
+      throw new Error(message || `CSPICE call failed with code ${result}`);
+    }
+
+    return module.UTF8ToString(outPtr, outMaxBytes).trim();
+  } finally {
+    module._free(errPtr);
+    module._free(outPtr);
+  }
+}
+
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackend> {
@@ -63,32 +99,10 @@ export async function createWasmBackend(
     throw new Error("WASM module is missing expected exports");
   }
 
+  const toolkitVersion = getToolkitVersion(module);
+
   return {
     kind: "wasm",
-    spiceVersion: () => {
-      const outMaxBytes = 256;
-      const errMaxBytes = 2048;
-      const outPtr = module._malloc(outMaxBytes);
-      const errPtr = module._malloc(errMaxBytes);
-
-      try {
-        const result = module._tspice_tkvrsn_toolkit(
-          outPtr,
-          outMaxBytes,
-          errPtr,
-          errMaxBytes,
-        );
-
-        if (result !== 0) {
-          const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
-          throw new Error(message || `CSPICE call failed with code ${result}`);
-        }
-
-        return module.UTF8ToString(outPtr, outMaxBytes);
-      } finally {
-        module._free(errPtr);
-        module._free(outPtr);
-      }
-    },
+    spiceVersion: () => toolkitVersion,
   };
 }
