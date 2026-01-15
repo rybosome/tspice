@@ -28,8 +28,10 @@ async function main() {
   console.log(backend.spiceVersion());
 }
 
-main();
+main().catch(console.error);
 ```
+
+The JS glue (`tspice_backend_wasm.js`) and WebAssembly binary (`tspice_backend_wasm.wasm`) are expected to be colocated. If your bundler or deployment setup relocates the `.wasm` asset, pass an explicit `wasmUrl`.
 
 ## API surface
 

@@ -3,6 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { WASM_BINARY_FILENAME, WASM_JS_FILENAME } from "./backend-wasm-assets.mjs";
+
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const cspiceManifestPath = path.join(repoRoot, "scripts", "cspice.manifest.json");
@@ -30,7 +32,7 @@ const wrapperPath = path.join(
   "tspice_backend_wasm_wrapper.c",
 );
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
-const outputJsPath = path.join(outputDir, "tspice_backend_wasm.js");
+const outputJsPath = path.join(outputDir, WASM_JS_FILENAME);
 
 if (!fs.existsSync(wrapperPath)) {
   throw new Error(`Missing wrapper C file at ${wrapperPath}`);
@@ -47,6 +49,15 @@ function patchReturnInt(filePath, symbol, indentation = "") {
 
   const original = fs.readFileSync(filePath, "utf8");
   let contents = original;
+
+  if (!original.includes(symbol)) {
+    throw new Error(`Expected to find ${symbol} in ${filePath} but did not`);
+  }
+
+  const needsPatch =
+    new RegExp(`\\bvoid\\s+${symbol}\\s*\\(`, "g").test(original) ||
+    new RegExp(`\\bVOID\\s+${symbol}\\s*\\(`, "g").test(original) ||
+    (symbol === "s_cat" && /\bVOID\s*\n/.test(original));
 
   contents = contents.replaceAll(
     new RegExp(`\\bvoid\\s+${symbol}\\s*\\(`, "g"),
@@ -70,7 +81,10 @@ function patchReturnInt(filePath, symbol, indentation = "") {
   }
 
   if (contents !== original) {
+    console.log(`Patched ${symbol} in ${filePath}`);
     fs.writeFileSync(filePath, contents);
+  } else if (needsPatch) {
+    throw new Error(`Expected to patch ${symbol} in ${filePath}, but no changes were made`);
   }
 }
 
@@ -88,6 +102,7 @@ patchReturnInt(path.join(cspiceCspiceDir, "rsfe.c"), "zzsetnnread_", "   ");
       "extern int s_copy(",
     );
     if (contents !== original) {
+      console.log(`Patched s_copy declaration in ${ef1ascPath}`);
       fs.writeFileSync(ef1ascPath, contents);
     }
   }
@@ -151,5 +166,10 @@ execFileSync(
     stdio: "inherit",
   },
 );
+
+const outputWasmPath = path.join(outputDir, WASM_BINARY_FILENAME);
+if (!fs.existsSync(outputWasmPath)) {
+  throw new Error(`Expected Emscripten to write ${outputWasmPath} but it was missing`);
+}
 
 console.log(`Wrote ${outputJsPath}`);

@@ -33,7 +33,7 @@ async function main() {
   console.log(backend.spiceVersion());
 }
 
-main();
+main().catch(console.error);
 ```
 
 ### Direct usage (mostly for debugging)

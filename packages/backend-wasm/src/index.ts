@@ -4,6 +4,9 @@ export type CreateWasmBackendOptions = {
   wasmUrl?: string | URL;
 };
 
+export const WASM_JS_FILENAME = "tspice_backend_wasm.js" as const;
+export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
+
 type EmscriptenModule = {
   _malloc(size: number): number;
   _free(ptr: number): void;
@@ -19,22 +22,37 @@ type EmscriptenModule = {
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackend> {
-  const defaultWasmUrl = new URL("./tspice_backend_wasm.wasm", import.meta.url);
+  const defaultWasmUrl = new URL(`./${WASM_BINARY_FILENAME}`, import.meta.url);
   const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
 
-  const moduleUrl = new URL("./tspice_backend_wasm.js", import.meta.url);
-  const { default: createEmscriptenModule } = (await import(moduleUrl.href)) as {
-    default: (opts: Record<string, unknown>) => Promise<unknown>;
-  };
+  const moduleUrl = new URL(`./${WASM_JS_FILENAME}`, import.meta.url);
 
-  const module = (await createEmscriptenModule({
-    locateFile(path: string, prefix: string) {
-      if (path === "tspice_backend_wasm.wasm") {
-        return wasmUrl;
-      }
-      return `${prefix}${path}`;
-    },
-  })) as EmscriptenModule;
+  let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
+  try {
+    ({ default: createEmscriptenModule } = (await import(moduleUrl.href)) as {
+      default: (opts: Record<string, unknown>) => Promise<unknown>;
+    });
+  } catch (error) {
+    throw new Error(
+      `Failed to load tspice WASM glue from ${moduleUrl.href}: ${String(error)}`,
+    );
+  }
+
+  let module: EmscriptenModule;
+  try {
+    module = (await createEmscriptenModule({
+      locateFile(path: string, prefix: string) {
+        if (path === WASM_BINARY_FILENAME) {
+          return wasmUrl;
+        }
+        return `${prefix}${path}`;
+      },
+    })) as EmscriptenModule;
+  } catch (error) {
+    throw new Error(
+      `Failed to initialize tspice WASM module (wasmUrl=${wasmUrl}): ${String(error)}`,
+    );
+  }
 
   return {
     kind: "wasm",
@@ -53,8 +71,8 @@ export async function createWasmBackend(
         );
 
         if (result !== 0) {
-          const message = module.UTF8ToString(errPtr, errMaxBytes);
-          throw new Error(message || "CSPICE call failed");
+          const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
+          throw new Error(message || `CSPICE call failed with code ${result}`);
         }
 
         return module.UTF8ToString(outPtr, outMaxBytes);

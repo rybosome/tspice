@@ -38,7 +38,7 @@ async function main() {
   console.log(backend.spiceVersion());
 }
 
-main();
+main().catch(console.error);
 ```
 
 ## API surface
@@ -59,7 +59,7 @@ async function main() {
   console.log(nodeBackend.kind, wasmBackend.kind);
 }
 
-main();
+main().catch(console.error);
 ```
 
 ### Backend notes

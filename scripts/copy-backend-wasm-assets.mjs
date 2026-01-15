@@ -2,13 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { WASM_BINARY_FILENAME, WASM_JS_FILENAME } from "./backend-wasm-assets.mjs";
+
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const backendWasmRoot = path.join(repoRoot, "packages", "backend-wasm");
 const srcDir = path.join(backendWasmRoot, "emscripten");
 const distDir = path.join(backendWasmRoot, "dist");
 
-const assets = ["tspice_backend_wasm.js", "tspice_backend_wasm.wasm"];
+const assets = [WASM_JS_FILENAME, WASM_BINARY_FILENAME];
 
 for (const asset of assets) {
   const srcPath = path.join(srcDir, asset);
