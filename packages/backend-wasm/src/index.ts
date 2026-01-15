@@ -20,17 +20,7 @@ export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackend> {
   const defaultWasmUrl = new URL("./tspice_backend_wasm.wasm", import.meta.url);
-  let wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
-
-  const isNode =
-    typeof process !== "undefined" &&
-    typeof process.versions === "object" &&
-    typeof process.versions.node === "string";
-
-  if (isNode && wasmUrl.startsWith("file:")) {
-    const { fileURLToPath } = await import("node:url");
-    wasmUrl = fileURLToPath(wasmUrl);
-  }
+  const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
 
   const moduleUrl = new URL("./tspice_backend_wasm.js", import.meta.url);
   const { default: createEmscriptenModule } = (await import(moduleUrl.href)) as {
@@ -39,7 +29,7 @@ export async function createWasmBackend(
 
   const module = (await createEmscriptenModule({
     locateFile(path: string, prefix: string) {
-      if (path.endsWith(".wasm")) {
+      if (path === "tspice_backend_wasm.wasm") {
         return wasmUrl;
       }
       return `${prefix}${path}`;

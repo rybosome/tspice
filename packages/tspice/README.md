@@ -18,7 +18,7 @@ At runtime, `createBackend()` chooses a backend and returns a `SpiceBackend` imp
 @rybosome/tspice
   ├─ selects one of:
   │   ├─ @rybosome/tspice-backend-node (native addon)
-  │   └─ @rybosome/tspice-backend-wasm (stub)
+  │   └─ @rybosome/tspice-backend-wasm (wasm)
   ├─ uses shared types from @rybosome/tspice-backend-contract
   └─ uses shared utilities from @rybosome/tspice-core
 ```
@@ -32,9 +32,13 @@ This repo is currently an A0 scaffold and packages are marked `private: true`, s
 ```ts
 import { createBackend } from "@rybosome/tspice";
 
-const backend = await createBackend();
-console.log(backend.kind); // "node" (default)
-console.log(backend.spiceVersion());
+async function main() {
+  const backend = await createBackend();
+  console.log(backend.kind); // "node" (default)
+  console.log(backend.spiceVersion());
+}
+
+main();
 ```
 
 ## API surface
@@ -49,8 +53,13 @@ console.log(backend.spiceVersion());
 ```ts
 import { createBackend } from "@rybosome/tspice";
 
-const nodeBackend = await createBackend({ backend: "node" });
-const wasmBackend = await createBackend({ backend: "wasm" });
+async function main() {
+  const nodeBackend = await createBackend({ backend: "node" });
+  const wasmBackend = await createBackend({ backend: "wasm" });
+  console.log(nodeBackend.kind, wasmBackend.kind);
+}
+
+main();
 ```
 
 ### Backend notes

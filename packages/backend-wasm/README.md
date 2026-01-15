@@ -22,9 +22,13 @@ You typically don’t install or import this directly. Most callers should use `
 ```ts
 import { createBackend } from "@rybosome/tspice";
 
-const backend = await createBackend({ backend: "wasm" });
-console.log(backend.kind); // "wasm"
-console.log(backend.spiceVersion());
+async function main() {
+  const backend = await createBackend({ backend: "wasm" });
+  console.log(backend.kind); // "wasm"
+  console.log(backend.spiceVersion());
+}
+
+main();
 ```
 
 ## API surface
@@ -44,6 +48,8 @@ pnpm -C packages/backend-wasm test
 ### “Where does the `.wasm` file come from?”
 
 The `.wasm` file is checked into the repo as a prebuilt artifact so the portable CI lane can load and execute it without requiring an Emscripten toolchain.
+
+To regenerate the checked-in artifact locally, run `node scripts/build-backend-wasm.mjs` (requires `emcc` in your `PATH`).
 
 ## Versioning / stability notes
 
