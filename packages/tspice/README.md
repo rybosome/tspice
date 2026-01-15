@@ -12,7 +12,7 @@ This package is the package most callers should depend on.
 
 ## How it fits into `tspice`
 
-At runtime, `createBackend()` chooses a backend and returns a `SpiceBackend` implementation.
+At runtime, `createBackend()` chooses a backend and returns a `Promise<SpiceBackend>`.
 
 ```
 @rybosome/tspice
