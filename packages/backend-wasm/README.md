@@ -8,7 +8,7 @@ WASM backend for `tspice`, implemented with a prebuilt Emscripten-compiled CSPIC
 
 See [`docs/cspice-naif-disclosure.md`](../../docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
 
-In this package, CSPICE-derived components are used by the prebuilt `.wasm` artifact. See [`NOTICE`](./NOTICE) for authoritative details.
+In this package, CSPICE-derived components are compiled and embedded into the prebuilt `.wasm` artifact. See [`NOTICE`](./NOTICE) for authoritative details.
 
 ## Purpose / Why this exists
 
