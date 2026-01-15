@@ -19,6 +19,10 @@ const missingOrUnreadable = [];
 for (const relativePath of requiredPaths) {
   const absolutePath = path.join(repoRoot, relativePath);
   try {
+    const stats = fs.statSync(absolutePath);
+    if (!stats.isFile()) {
+      throw new Error("Not a file");
+    }
     fs.accessSync(absolutePath, fs.constants.R_OK);
   } catch (error) {
     missingOrUnreadable.push({ path: relativePath, error });
