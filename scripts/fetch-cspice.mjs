@@ -110,42 +110,14 @@ function validateCspiceDir(cspiceDir) {
   return fs.existsSync(spiceUsr) && fs.existsSync(cspiceLib) && fs.existsSync(csupportLib);
 }
 
-async function main() {
-  const override = process.env.TSPICE_CSPICE_DIR;
-  if (override) {
-    const resolved = path.resolve(override);
-    if (!validateCspiceDir(resolved)) {
-      throw new Error(
-        `TSPICE_CSPICE_DIR does not look like a CSPICE install (missing include/ and lib/): ${resolved}`
-      );
-    }
+function validateCspiceSourceDir(cspiceDir) {
+  const spiceUsr = path.join(cspiceDir, "include", "SpiceUsr.h");
+  const srcDir = path.join(cspiceDir, "src");
 
-    console.log(`CSPICE ready: ${resolved}`);
-    return;
-  }
+  return fs.existsSync(spiceUsr) && fs.existsSync(srcDir);
+}
 
-  if (process.platform === "linux" && process.arch === "arm64") {
-    throw new Error(
-      "Automatic CSPICE fetch is not supported on linux-arm64. Set TSPICE_CSPICE_DIR to a prebuilt CSPICE install."
-    );
-  }
-
-  // Note: we intentionally do not validate ELF/Mach-O arch or attempt to rebuild CSPICE here.
-  // If the prebuilt archives are incompatible with the current host, provide a compatible install via TSPICE_CSPICE_DIR.
-
-  const manifest = readManifest();
-  const archiveKey = resolveArchiveKey(manifest, process.platform, process.arch);
-  const { url, sha256 } = manifest.archives[archiveKey];
-  const toolkitVersion = manifest.toolkitVersion;
-
-  const repoRoot = getRepoRoot();
-  const cacheDir = path.join(
-    repoRoot,
-    ".cache",
-    "cspice",
-    toolkitVersion,
-    `${process.platform}-${process.arch}`
-  );
+async function ensureCachedArchive({ url, sha256, cacheDir, validateDir }) {
   ensureDir(cacheDir);
 
   const archiveName = path.basename(new URL(url).pathname);
@@ -161,7 +133,7 @@ async function main() {
   }
 
   if (!fs.existsSync(archivePath)) {
-    console.log(`Downloading CSPICE ${toolkitVersion} (${archiveKey})...`);
+    console.log(`Downloading ${archiveName}...`);
     await downloadToFile(url, archivePath);
     const actual = await sha256File(archivePath);
     if (actual !== sha256) {
@@ -173,7 +145,7 @@ async function main() {
     }
   }
 
-  if (!validateCspiceDir(cspiceDir)) {
+  if (!validateDir(cspiceDir)) {
     console.log(`Extracting ${archiveName}...`);
 
     const extractDir = fs.mkdtempSync(path.join(cacheDir, "extract-"));
@@ -191,10 +163,80 @@ async function main() {
     }
   }
 
-  if (!validateCspiceDir(cspiceDir)) {
+  if (!validateDir(cspiceDir)) {
     throw new Error(`Invalid CSPICE install after extraction: ${cspiceDir}`);
   }
 
+  return cspiceDir;
+}
+
+async function main() {
+  const mode = process.argv.includes("--source") ? "source" : "archive";
+
+  const override = process.env.TSPICE_CSPICE_DIR;
+  if (override && mode === "archive") {
+    const resolved = path.resolve(override);
+    if (!validateCspiceDir(resolved)) {
+      throw new Error(
+        `TSPICE_CSPICE_DIR does not look like a CSPICE install (missing include/ and lib/): ${resolved}`
+      );
+    }
+
+    console.log(`CSPICE ready: ${resolved}`);
+    return;
+  }
+
+  if (mode === "archive" && process.platform === "linux" && process.arch === "arm64") {
+    throw new Error(
+      "Automatic CSPICE fetch is not supported on linux-arm64. Set TSPICE_CSPICE_DIR to a prebuilt CSPICE install."
+    );
+  }
+
+  // Note: we intentionally do not validate ELF/Mach-O arch or attempt to rebuild CSPICE here.
+  // If the prebuilt archives are incompatible with the current host, provide a compatible install via TSPICE_CSPICE_DIR.
+
+  const manifest = readManifest();
+  const toolkitVersion = manifest.toolkitVersion;
+  const repoRoot = getRepoRoot();
+
+  if (mode === "source") {
+    const source = manifest.source;
+    if (!source || typeof source !== "object") {
+      throw new Error(`No CSPICE source entry found in scripts/cspice.manifest.json`);
+    }
+    if (typeof source.url !== "string" || typeof source.sha256 !== "string") {
+      throw new Error(`Invalid CSPICE source entry in scripts/cspice.manifest.json`);
+    }
+
+    const cacheDir = path.join(repoRoot, ".cache", "cspice", toolkitVersion, "source");
+    const cspiceDir = await ensureCachedArchive({
+      url: source.url,
+      sha256: source.sha256,
+      cacheDir,
+      validateDir: validateCspiceSourceDir,
+    });
+    console.log(`CSPICE source ready: ${cspiceDir}`);
+    return;
+  }
+
+  const archiveKey = resolveArchiveKey(manifest, process.platform, process.arch);
+  const { url, sha256 } = manifest.archives[archiveKey];
+
+  const cacheDir = path.join(
+    repoRoot,
+    ".cache",
+    "cspice",
+    toolkitVersion,
+    `${process.platform}-${process.arch}`
+  );
+
+  console.log(`Ensuring CSPICE ${toolkitVersion} (${archiveKey})...`);
+  const cspiceDir = await ensureCachedArchive({
+    url,
+    sha256,
+    cacheDir,
+    validateDir: validateCspiceDir,
+  });
   console.log(`CSPICE ready: ${cspiceDir}`);
 }
 
