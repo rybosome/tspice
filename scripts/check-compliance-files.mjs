@@ -15,33 +15,22 @@ const requiredPaths = [
   path.join("packages", "backend-wasm", "NOTICE"),
 ];
 
-const missing = [];
-const errors = [];
+const missingOrUnreadable = [];
 for (const relativePath of requiredPaths) {
   const absolutePath = path.join(repoRoot, relativePath);
   try {
-    fs.statSync(absolutePath);
+    fs.accessSync(absolutePath, fs.constants.R_OK);
   } catch (error) {
-    if (error instanceof Error && "code" in error && error.code === "ENOENT") {
-      missing.push(relativePath);
-      continue;
-    }
-    errors.push({ path: relativePath, error });
+    missingOrUnreadable.push({ path: relativePath, error });
   }
 }
 
-if (missing.length > 0 || errors.length > 0) {
-  if (missing.length > 0) {
-    console.error("Missing compliance files:");
-    for (const p of missing) {
-      console.error(`- ${p}`);
-    }
-  }
-  if (errors.length > 0) {
-    console.error("Compliance file check errors:");
-    for (const entry of errors) {
-      console.error(`- ${entry.path}: ${entry.error instanceof Error ? entry.error.message : String(entry.error)}`);
-    }
+if (missingOrUnreadable.length > 0) {
+  console.error("Missing or unreadable compliance files:");
+  for (const entry of missingOrUnreadable) {
+    console.error(
+      `- ${entry.path}: ${entry.error instanceof Error ? entry.error.message : String(entry.error)}`,
+    );
   }
   process.exitCode = 1;
 } else {
