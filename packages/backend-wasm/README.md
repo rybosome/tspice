@@ -2,13 +2,13 @@
 
 ## Overview
 
-WASM backend for `tspice`, implemented with a prebuilt CSPICE-derived `.wasm`.
+WASM backend for `tspice`, implemented with a CSPICE-derived `.wasm`.
 
 ## CSPICE / NAIF disclosure
 
 See [`docs/cspice-naif-disclosure.md`](../../docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
 
-This backend ships a prebuilt CSPICE-derived `.wasm` artifact. See [`NOTICE`](./NOTICE) for authoritative build provenance, integration, and redistribution details.
+This backend provides a CSPICE-derived `.wasm` artifact. See [`NOTICE`](./NOTICE) for authoritative build provenance, integration, and redistribution details.
 
 ## Purpose / Why this exists
 

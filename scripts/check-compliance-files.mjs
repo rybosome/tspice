@@ -16,17 +16,32 @@ const requiredPaths = [
 ];
 
 const missing = [];
+const errors = [];
 for (const relativePath of requiredPaths) {
   const absolutePath = path.join(repoRoot, relativePath);
-  if (!fs.existsSync(absolutePath)) {
-    missing.push(relativePath);
+  try {
+    fs.statSync(absolutePath);
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+      missing.push(relativePath);
+      continue;
+    }
+    errors.push({ path: relativePath, error });
   }
 }
 
-if (missing.length > 0) {
-  console.error("Missing compliance files:");
-  for (const p of missing) {
-    console.error(`- ${p}`);
+if (missing.length > 0 || errors.length > 0) {
+  if (missing.length > 0) {
+    console.error("Missing compliance files:");
+    for (const p of missing) {
+      console.error(`- ${p}`);
+    }
+  }
+  if (errors.length > 0) {
+    console.error("Compliance file check errors:");
+    for (const entry of errors) {
+      console.error(`- ${entry.path}: ${entry.error instanceof Error ? entry.error.message : String(entry.error)}`);
+    }
   }
   process.exitCode = 1;
 } else {
