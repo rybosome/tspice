@@ -48,7 +48,7 @@ function getToolkitVersion(module: EmscriptenModule): string {
       throw new Error(message || `CSPICE call failed with code ${result}`);
     }
 
-    return module.UTF8ToString(outPtr, outMaxBytes).trim();
+    return module.UTF8ToString(outPtr, outMaxBytes);
   } finally {
     module._free(errPtr);
     module._free(outPtr);

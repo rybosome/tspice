@@ -27,7 +27,9 @@ execFileSync("node", [path.join(repoRoot, "scripts", "fetch-cspice.mjs"), "--sou
 const wasmBuildCacheDir = path.join(repoRoot, ".cache");
 fs.mkdirSync(wasmBuildCacheDir, { recursive: true });
 
-const wasmBuildDir = fs.mkdtempSync(path.join(wasmBuildCacheDir, "wasm-build-"));
+const wasmBuildDir = path.join(wasmBuildCacheDir, "wasm-build");
+fs.rmSync(wasmBuildDir, { recursive: true, force: true });
+fs.mkdirSync(wasmBuildDir, { recursive: true });
 const patchedCspiceSourceRoot = path.join(wasmBuildDir, "cspice");
 fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 
