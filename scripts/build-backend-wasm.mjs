@@ -30,6 +30,8 @@ fs.mkdirSync(wasmBuildCacheDir, { recursive: true });
 const wasmBuildDir = path.join(wasmBuildCacheDir, "wasm-build");
 fs.rmSync(wasmBuildDir, { recursive: true, force: true });
 fs.mkdirSync(wasmBuildDir, { recursive: true });
+
+// All CSPICE patching happens in this build tree; the downloaded sources remain untouched.
 const patchedCspiceSourceRoot = path.join(wasmBuildDir, "cspice");
 fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 

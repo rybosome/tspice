@@ -99,6 +99,7 @@ export async function createWasmBackend(
     throw new Error("WASM module is missing expected exports");
   }
 
+  // The toolkit version is constant for the lifetime of a loaded module.
   const toolkitVersion = getToolkitVersion(module);
 
   return {
