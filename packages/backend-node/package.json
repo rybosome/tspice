@@ -16,8 +16,8 @@
     "native/build/Release/*.node"
   ],
   "scripts": {
-    "build:native": "node-gyp rebuild --directory native",
-    "build": "node-gyp rebuild --directory native && tsc -p tsconfig.json",
+    "build:native": "pnpm -w fetch:cspice && node-gyp rebuild --directory native",
+    "build": "pnpm -w fetch:cspice && node-gyp rebuild --directory native && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
     "test": "vitest run"
   },

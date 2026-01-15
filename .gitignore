@@ -1,6 +1,8 @@
 node_modules
 dist
 .turbo
+.cache/cspice
+packages/backend-node/native/generated
 
 *.tsbuildinfo
 

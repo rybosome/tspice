@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["TSPICE_CSPICE_DIR", "TSPICE_CSPICE_MANIFEST"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
