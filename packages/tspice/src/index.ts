@@ -7,16 +7,19 @@ export type { BackendKind, SpiceBackend } from "@rybosome/tspice-backend-contrac
 
 export type CreateBackendOptions = {
   backend?: BackendKind;
+  wasmUrl?: string | URL;
 };
 
-export function createBackend(options: CreateBackendOptions = {}): SpiceBackend {
+export async function createBackend(
+  options: CreateBackendOptions = {},
+): Promise<SpiceBackend> {
   const backend = options.backend ?? "node";
 
   switch (backend) {
     case "node":
       return createNodeBackend();
     case "wasm":
-      return createWasmBackend();
+      return await createWasmBackend({ wasmUrl: options.wasmUrl });
     default:
       return assertNever(backend, "Unsupported backend");
   }
