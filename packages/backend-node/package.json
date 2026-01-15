@@ -13,7 +13,8 @@
   },
   "files": [
     "dist",
-    "native/build/Release/*.node"
+    "native/build/Release/*.node",
+    "NOTICE"
   ],
   "scripts": {
     "build:native": "pnpm -w fetch:cspice && node-gyp rebuild --directory native",
