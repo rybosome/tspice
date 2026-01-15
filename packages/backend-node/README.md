@@ -28,8 +28,12 @@ If you’re working in this repo, it’s a pnpm workspace package.
 ```ts
 import { createBackend } from "@rybosome/tspice";
 
-const backend = createBackend({ backend: "node" });
-console.log(backend.spiceVersion());
+async function main() {
+  const backend = await createBackend({ backend: "node" });
+  console.log(backend.spiceVersion());
+}
+
+main().catch(console.error);
 ```
 
 ### Direct usage (mostly for debugging)

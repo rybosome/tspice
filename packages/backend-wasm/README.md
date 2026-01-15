@@ -2,7 +2,7 @@
 
 ## Overview
 
-WASM backend for `tspice` (currently a stub; it does not yet compile or execute real WebAssembly).
+WASM backend for `tspice`, implemented with a prebuilt Emscripten-compiled CSPICE `.wasm`.
 
 ## Purpose / Why this exists
 
@@ -22,14 +22,20 @@ You typically don’t install or import this directly. Most callers should use `
 ```ts
 import { createBackend } from "@rybosome/tspice";
 
-const backend = createBackend({ backend: "wasm" });
-console.log(backend.kind); // "wasm"
-console.log(backend.spiceVersion()); // "wasm-stub" (for now)
+async function main() {
+  const backend = await createBackend({ backend: "wasm" });
+  console.log(backend.kind); // "wasm"
+  console.log(backend.spiceVersion());
+}
+
+main().catch(console.error);
 ```
+
+The JS glue (`tspice_backend_wasm.js`) and WebAssembly binary (`tspice_backend_wasm.wasm`) are expected to be colocated. If your bundler or deployment setup relocates the `.wasm` asset, pass an explicit `wasmUrl`.
 
 ## API surface
 
-- `createWasmBackend(): SpiceBackend`
+- `createWasmBackend(options?: { wasmUrl?: string | URL }): Promise<SpiceBackend>`
 
 ## Development
 
@@ -41,9 +47,11 @@ pnpm -C packages/backend-wasm test
 
 ## Troubleshooting / FAQ
 
-### “Is this a real WASM backend?”
+### “Where does the `.wasm` file come from?”
 
-Not yet. The current implementation is a stub and does not compile or execute any WebAssembly.
+The `.wasm` file is checked into the repo as a prebuilt artifact so the portable CI lane can load and execute it without requiring an Emscripten toolchain.
+
+To regenerate the checked-in artifact locally, run `node scripts/build-backend-wasm.mjs` (requires `emcc` in your `PATH`).
 
 ## Versioning / stability notes
 

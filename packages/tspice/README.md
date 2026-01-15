@@ -2,7 +2,7 @@
 
 ## Overview
 
-`@rybosome/tspice` is the public facade for this repo: it gives you a single `createBackend()` entrypoint and selects an underlying backend implementation (Node/native today, WASM stub for now).
+`@rybosome/tspice` is the public facade for this repo: it gives you a single `createBackend()` entrypoint and selects an underlying backend implementation (Node/native or WASM).
 
 ## Purpose / Why this exists
 
@@ -12,13 +12,13 @@ This package is the package most callers should depend on.
 
 ## How it fits into `tspice`
 
-At runtime, `createBackend()` chooses a backend and returns a `SpiceBackend` implementation.
+At runtime, `createBackend()` chooses a backend and returns a `Promise<SpiceBackend>`.
 
 ```
 @rybosome/tspice
   ├─ selects one of:
   │   ├─ @rybosome/tspice-backend-node (native addon)
-  │   └─ @rybosome/tspice-backend-wasm (stub)
+  │   └─ @rybosome/tspice-backend-wasm (wasm)
   ├─ uses shared types from @rybosome/tspice-backend-contract
   └─ uses shared utilities from @rybosome/tspice-core
 ```
@@ -32,14 +32,18 @@ This repo is currently an A0 scaffold and packages are marked `private: true`, s
 ```ts
 import { createBackend } from "@rybosome/tspice";
 
-const backend = createBackend();
-console.log(backend.kind); // "node" (default)
-console.log(backend.spiceVersion());
+async function main() {
+  const backend = await createBackend();
+  console.log(backend.kind); // "node" (default)
+  console.log(backend.spiceVersion());
+}
+
+main().catch(console.error);
 ```
 
 ## API surface
 
-- `createBackend(options?: { backend?: BackendKind }): SpiceBackend`
+- `createBackend(options?: { backend?: BackendKind; wasmUrl?: string | URL }): Promise<SpiceBackend>`
 - Types:
   - `BackendKind` (currently `"node" | "wasm"`)
   - `SpiceBackend`
@@ -49,14 +53,19 @@ console.log(backend.spiceVersion());
 ```ts
 import { createBackend } from "@rybosome/tspice";
 
-const nodeBackend = createBackend({ backend: "node" });
-const wasmBackend = createBackend({ backend: "wasm" });
+async function main() {
+  const nodeBackend = await createBackend({ backend: "node" });
+  const wasmBackend = await createBackend({ backend: "wasm" });
+  console.log(nodeBackend.kind, wasmBackend.kind);
+}
+
+main().catch(console.error);
 ```
 
 ### Backend notes
 
 - Node backend (`backend: "node"`): implemented by a native addon; requires a build step when working from source. See [`@rybosome/tspice-backend-node`](../backend-node/README.md).
-- WASM backend (`backend: "wasm"`): currently a stub and does not execute WebAssembly yet. See [`@rybosome/tspice-backend-wasm`](../backend-wasm/README.md).
+- WASM backend (`backend: "wasm"`): implemented with a prebuilt `.wasm`. See [`@rybosome/tspice-backend-wasm`](../backend-wasm/README.md).
 
 ## Development
 

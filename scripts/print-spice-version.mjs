@@ -24,7 +24,7 @@ try {
     ({ createBackend } = await import(tspiceEntry.href));
   }
 
-  const backend = createBackend({ backend: "node" });
+  const backend = await createBackend({ backend: "node" });
   console.log(backend.spiceVersion());
 } catch (error) {
   console.error(
