@@ -198,4 +198,15 @@ async function main() {
   console.log(`CSPICE ready: ${cspiceDir}`);
 }
 
-await main();
+(async () => {
+  try {
+    await main();
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.stack || error.message);
+    } else {
+      console.error(String(error));
+    }
+    process.exitCode = 1;
+  }
+})();
