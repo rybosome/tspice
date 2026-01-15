@@ -36,7 +36,7 @@ if (missingOrUnreadable.length > 0) {
       `- ${entry.path}: ${entry.error instanceof Error ? entry.error.message : String(entry.error)}`,
     );
   }
-  process.exitCode = 1;
-} else {
-  console.log("Compliance file check passed.");
+  process.exit(1);
 }
+
+console.log("Compliance file check passed.");
