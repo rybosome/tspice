@@ -1,6 +1,6 @@
 # Third-party notices
 
-This project uses the NAIF SPICE Toolkit (CSPICE), currently version N0067.
+This project uses the NAIF SPICE Toolkit (CSPICE).
 
 Rules Regarding Use of SPICE:
 
