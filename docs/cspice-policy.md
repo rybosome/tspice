@@ -30,7 +30,7 @@ NAIF explicitly permits including SPICE Toolkit modules (source and/or object fo
 
 **Project interpretation:** we understand embedding CSPICE-derived components behind a higher-level TypeScript interface to be a use case that NAIF’s rules are intended to allow, provided CSPICE remains subordinate to the derived tool and is not packaged as a general-purpose toolkit.
 
-## Project decision
+## Project policy
 
 `tspice` will:
 
@@ -78,6 +78,8 @@ Maintainers should re-evaluate this section if adding new datasets, kernels, or 
 
 PRs that add new datasets, kernels, or example data should explicitly mention export control considerations in the PR description.
 
+Maintainers should verify and document export control considerations for any PR that adds kernels, datasets, or example data.
+
 Maintainers should ensure contributor docs and/or PR templates include an explicit reminder to flag export control considerations when adding kernels, datasets, or example data.
 
 ## Required notices and disclosure
@@ -105,3 +107,5 @@ This project does not aim to:
 - Replace or mirror NAIF’s CSPICE distribution
 - Support use of embedded CSPICE-derived components outside the `tspice` API
 - Accept or distribute modified CSPICE source as a public toolkit
+
+Relaxing these non-goals would require re-evaluating compliance with the NAIF “Rules Regarding Use of SPICE”.
