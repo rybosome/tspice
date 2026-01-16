@@ -28,11 +28,11 @@ NAIF explicitly permits including SPICE Toolkit modules (source and/or object fo
 
 > “It is entirely appropriate to include SPICE Toolkit modules (source and/or object form), documentation, and some SPICE programs as part of a package supporting a customer-built SPICE-based tool… This includes providing a new 3rd-party interface.”
 
-**Project interpretation:** we understand embedding CSPICE-derived components behind a higher-level TypeScript interface to be a use case that NAIF’s rules are intended to allow, provided CSPICE remains subordinate to the derived tool and is not packaged as a general-purpose toolkit.
+**Project interpretation:** this project is operated under the assumption that embedding CSPICE-derived components behind a higher-level TypeScript interface is within the type of use cases that NAIF’s rules intend to allow, provided CSPICE remains subordinate to the derived tool and is not packaged as a general-purpose toolkit.
 
 ## Project policy
 
-`tspice` will:
+`tspice` is intended to:
 
 - Distribute embedded, compiled or otherwise transformed CSPICE-derived components in:
   - native `.node` form (optional, platform-specific)
@@ -79,7 +79,7 @@ When adding kernels, datasets, or example data:
 
 - PR authors should explicitly mention export control considerations in the PR description
 - Maintainers should verify and document export control considerations during review
-- Maintainers should ensure contributor docs and/or PR templates include an explicit reminder to flag export control considerations
+- Maintainers should ensure contributor docs and PR templates include an explicit reminder to flag export control considerations
 
 Maintainers should re-evaluate this section if adding new datasets, kernels, or example data.
 
@@ -110,3 +110,5 @@ This project does not aim to:
 - Accept or distribute modified CSPICE source as a public toolkit
 
 Relaxing these non-goals would require re-evaluating compliance with the NAIF “Rules Regarding Use of SPICE”.
+
+Maintainers should update the links in this document when moving or renaming any of the referenced notice or disclosure files.
