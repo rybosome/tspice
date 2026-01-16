@@ -48,8 +48,8 @@ interface RawSpiceBackend {
 
 Two implementations will exist:
 
-- **Node backend** — native addon that links against the NAIF CSPICE Toolkit (see CSPICE / NAIF disclosure above)
-- **WASM backend** — CSPICE compiled with Emscripten  
+- **Node backend** — native addon (see CSPICE / NAIF disclosure above)
+- **WASM backend** — prebuilt WebAssembly module (see CSPICE / NAIF disclosure above)
 
 The rest of the system should not care which backend is active.
 
