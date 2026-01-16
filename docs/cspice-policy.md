@@ -6,6 +6,8 @@ The authoritative source for CSPICE redistribution and derived works is the NAIF
 
 - https://naif.jpl.nasa.gov/naif/rules.html
 
+Last checked: 2026-01-16
+
 This policy is written to make the project’s intent explicit for contributors and downstream users.
 
 This document is an internal project interpretation of the NAIF rules and is not a legal restatement. In any conflict, the NAIF rules remain authoritative.
@@ -111,4 +113,7 @@ This project does not aim to:
 
 Relaxing these non-goals would require re-evaluating compliance with the NAIF “Rules Regarding Use of SPICE”.
 
-Maintainers should update the links in this document when moving or renaming any of the referenced notice or disclosure files.
+## Maintenance
+
+- Re-check the NAIF rules when changing CSPICE packaging/embedding strategies, and periodically to detect policy drift.
+- When moving or renaming any referenced notice or disclosure files, update the links in this document in the same PR.

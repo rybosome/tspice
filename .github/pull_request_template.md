@@ -1,4 +1,4 @@
 ### Compliance
 
 - [ ] This PR does not add raw/unmodified CSPICE toolkit archives or sources as published artifacts.
-- [ ] If this PR adds kernels, datasets, or example data: export control considerations are explicitly mentioned in the PR description.
+- [ ] This PR does not add kernels, datasets, or example data **or** the PR description explicitly documents export control considerations (including why the data is believed to be unrestricted).
