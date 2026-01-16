@@ -26,10 +26,7 @@ function describeError(error) {
           ? String(rawCode)
           : undefined;
     const rawMessage = "message" in error ? error.message : undefined;
-    const message =
-      typeof rawMessage === "string" || typeof rawMessage === "number"
-        ? String(rawMessage)
-        : undefined;
+    const message = rawMessage == null ? undefined : String(rawMessage);
 
     if (message !== undefined && message !== "") {
       return { code, message };
@@ -44,7 +41,13 @@ function describeError(error) {
 }
 
 function isOutsideRoot(root, target) {
+  // Returns true if `target` is outside `root` when interpreted on the local
+  // filesystem. Covers `..` escapes and cross-root resolutions (e.g., different
+  // drive letters on Windows).
   const rel = path.relative(root, target);
+  if (rel === "" || rel === ".") {
+    return false;
+  }
   return rel === ".." || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel);
 }
 
@@ -73,7 +76,6 @@ const requiredPaths = [
 ];
 
 const missingOrUnreadable = [];
-let hasConfigError = false;
 
 for (const relativePath of requiredPaths) {
   if (path.isAbsolute(relativePath)) {
@@ -84,7 +86,6 @@ for (const relativePath of requiredPaths) {
         message: "Path in requiredPaths must be repo-relative (configuration error)",
       },
     });
-    hasConfigError = true;
     continue;
   }
 
@@ -98,7 +99,6 @@ for (const relativePath of requiredPaths) {
           "Path in requiredPaths must resolve inside repo root (configuration error)",
       },
     });
-    hasConfigError = true;
     continue;
   }
 
@@ -113,7 +113,6 @@ for (const relativePath of requiredPaths) {
             "Path in requiredPaths must resolve inside repo root (configuration error)",
         },
       });
-      hasConfigError = true;
       continue;
     }
 
@@ -127,9 +126,6 @@ for (const relativePath of requiredPaths) {
           message: `Expected a regular file but found ${fileType}`,
         },
       });
-      if (stats.isDirectory()) {
-        hasConfigError = true;
-      }
       continue;
     }
 
@@ -138,6 +134,10 @@ for (const relativePath of requiredPaths) {
     missingOrUnreadable.push({ path: relativePath, error: describeError(error) });
   }
 }
+
+const hasConfigError = missingOrUnreadable.some((entry) =>
+  ["EABSOLUTE", "EOUTSIDE", "ENOTFILE"].includes(entry.error.code ?? ""),
+);
 
 if (missingOrUnreadable.length > 0) {
   console.error(
