@@ -37,6 +37,7 @@ NAIF explicitly permits including SPICE Toolkit modules (source and/or object fo
 - Distribute embedded, compiled or otherwise transformed CSPICE-derived components in:
   - native `.node` form (optional, platform-specific)
   - `.wasm` form (portable)
+- Not distribute canonical or unmodified CSPICE source or toolkit archives as part of any published artifact
 - Treat CSPICE strictly as an internal implementation dependency
 - Expose only the project’s TypeScript API as the supported interface
 
@@ -74,13 +75,13 @@ NAIF distributes SPICE worldwide and describes the toolkit as publicly available
 - `tspice` is intended not to include military-specific functionality
 - Users remain responsible for compliance with export regulations applicable to their own use cases
 
+When adding kernels, datasets, or example data:
+
+- PR authors should explicitly mention export control considerations in the PR description
+- Maintainers should verify and document export control considerations during review
+- Maintainers should ensure contributor docs and/or PR templates include an explicit reminder to flag export control considerations
+
 Maintainers should re-evaluate this section if adding new datasets, kernels, or example data.
-
-PRs that add new datasets, kernels, or example data should explicitly mention export control considerations in the PR description.
-
-Maintainers should verify and document export control considerations for any PR that adds kernels, datasets, or example data.
-
-Maintainers should ensure contributor docs and/or PR templates include an explicit reminder to flag export control considerations when adding kernels, datasets, or example data.
 
 ## Required notices and disclosure
 
