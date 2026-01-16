@@ -21,7 +21,7 @@ function describeError(error) {
       typeof error.code === "string" && error.code !== "" ? error.code : undefined;
     return {
       code,
-      message: error.message,
+      message: String(error.message ?? ""),
     };
   }
 
@@ -36,7 +36,10 @@ for (const relativePath of requiredPaths) {
   if (path.isAbsolute(relativePath)) {
     missingOrUnreadable.push({
       path: relativePath,
-      error: { code: "EABSOLUTE", message: "Path must be repo-relative" },
+      error: {
+        code: "EABSOLUTE",
+        message: "Path in requiredPaths must be repo-relative (configuration error)",
+      },
     });
     continue;
   }
@@ -50,7 +53,11 @@ for (const relativePath of requiredPaths) {
   ) {
     missingOrUnreadable.push({
       path: relativePath,
-      error: { code: "EOUTSIDE", message: "Path must be inside repo root" },
+      error: {
+        code: "EOUTSIDE",
+        message:
+          "Path in requiredPaths must resolve inside repo root (configuration error)",
+      },
     });
     continue;
   }
@@ -75,7 +82,7 @@ if (missingOrUnreadable.length > 0) {
   for (const entry of missingOrUnreadable) {
     const errorInfo = entry.error;
     const codeSuffix = errorInfo.code ? ` (${errorInfo.code})` : "";
-    console.error(`- ${entry.path}${codeSuffix} ${errorInfo.message}`);
+    console.error(`- ${entry.path}${codeSuffix}: ${errorInfo.message}`);
   }
   process.exit(1);
 }
