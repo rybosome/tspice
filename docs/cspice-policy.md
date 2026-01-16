@@ -38,6 +38,19 @@ NAIF explicitly permits including SPICE Toolkit modules (source and/or object fo
 
 The CSPICE toolkit is not presented, packaged, or documented as a stand-alone or reusable toolkit.
 
+## Contributor constraints
+
+To maintain alignment with the NAIF rules above, contributors must not:
+
+- Add raw or unmodified CSPICE toolkit archives/sources as published artifacts of this repo
+- Add API surfaces or documentation intended to expose CSPICE as a general-purpose toolkit outside the `tspice` TypeScript interface
+
+## Intended downstream usage
+
+This project is intended to be used as a dependency in applications and services that need SPICE functionality via the `tspice` TypeScript API.
+
+If you need CSPICE itself as a general-purpose toolkit, obtain it directly from NAIF.
+
 ## Rationale
 
 This approach is intended to remain consistent with the NAIF rules because:
@@ -58,6 +71,8 @@ NAIF distributes SPICE worldwide and describes the toolkit as publicly available
 - Users remain responsible for compliance with export regulations applicable to their own use cases
 
 Maintainers should re-evaluate this section if adding new datasets, kernels, or example data.
+
+PRs that add new datasets, kernels, or example data should explicitly mention export-control considerations in the PR description.
 
 ## Required notices and disclosure
 

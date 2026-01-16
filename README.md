@@ -14,7 +14,7 @@ This project **does not** attempt to reimplement SPICE in TypeScript. Instead, i
 
 See [`docs/cspice-naif-disclosure.md`](./docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
 
-See [`docs/cspice-policy.md`](./docs/cspice-policy.md) for the project’s CSPICE usage and distribution policy (including the mirror prohibition and derived-interface rationale).
+See [`docs/cspice-policy.md`](./docs/cspice-policy.md) for the project’s CSPICE usage and distribution policy (including the mirror-style redistribution prohibition and third-party interface allowance).
 
 ---
 
