@@ -24,13 +24,13 @@ NAIF explicitly permits including SPICE Toolkit modules (source and/or object fo
 
 > “It is entirely appropriate to include SPICE Toolkit modules (source and/or object form), documentation, and some SPICE programs as part of a package supporting a customer-built SPICE-based tool… This includes providing a new 3rd-party interface.”
 
-**Project interpretation:** embedding CSPICE-derived components behind a higher-level TypeScript interface is an allowed use case, as long as CSPICE remains subordinate to the derived tool and is not packaged as a general-purpose toolkit.
+**Project interpretation:** we understand embedding CSPICE-derived components behind a higher-level TypeScript interface to be a use case that NAIF’s rules are intended to allow, provided CSPICE remains subordinate to the derived tool and is not packaged as a general-purpose toolkit.
 
 ## Project decision
 
 `tspice` will:
 
-- Distribute embedded, compiled CSPICE-derived components in:
+- Distribute embedded, compiled or otherwise transformed CSPICE-derived components in:
   - native `.node` form (optional, platform-specific)
   - `.wasm` form (portable)
 - Treat CSPICE strictly as an internal implementation dependency
@@ -51,11 +51,13 @@ This approach is intended to remain consistent with the NAIF rules because:
 
 NAIF distributes SPICE worldwide and describes the toolkit as publicly available under U.S. export laws.
 
-**Project position:**
+**Project position (subject to periodic review):**
 
-- `tspice` does not include controlled data
-- `tspice` does not include military-specific functionality
+- `tspice` is intended not to include controlled data
+- `tspice` is intended not to include military-specific functionality
 - Users remain responsible for compliance with export regulations applicable to their own use cases
+
+Maintainers should re-evaluate this section if adding new datasets, kernels, or example data.
 
 ## Required notices and disclosure
 
@@ -73,6 +75,8 @@ For repository-wide third-party notices, see:
 - [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)
 
 ## Non-goals and explicit exclusions
+
+The following non-goals are chosen specifically to stay within NAIF’s rules regarding redistribution and third-party interfaces.
 
 This project does not aim to:
 
