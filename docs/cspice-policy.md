@@ -72,7 +72,7 @@ NAIF distributes SPICE worldwide and describes the toolkit as publicly available
 
 Maintainers should re-evaluate this section if adding new datasets, kernels, or example data.
 
-PRs that add new datasets, kernels, or example data should explicitly mention export-control considerations in the PR description.
+PRs that add new datasets, kernels, or example data should explicitly mention export control considerations in the PR description.
 
 ## Required notices and disclosure
 
