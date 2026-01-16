@@ -4,6 +4,12 @@
 
 Node.js backend for `tspice`, implemented as a native addon (N-API via `node-gyp` + `node-addon-api`).
 
+## CSPICE / NAIF disclosure
+
+See [`docs/cspice-naif-disclosure.md`](../../docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
+
+This backend uses CSPICE-derived components via the native addon built under `native/`. See [`NOTICE`](./NOTICE) for authoritative information on licensing, provenance, integration, and redistribution.
+
 ## Purpose / Why this exists
 
 This package is the “native” backend implementation that `@rybosome/tspice` uses by default. It’s where we expect the real SPICE bindings to live.

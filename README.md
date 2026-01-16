@@ -10,6 +10,10 @@
 
 This project **does not** attempt to reimplement SPICE in TypeScript. Instead, it provides a clean, powerful API on top of an existing SPICE core.
 
+## CSPICE / NAIF disclosure
+
+See [`docs/cspice-naif-disclosure.md`](./docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
+
 ---
 
 ## 🧱 High-Level Architecture
@@ -44,8 +48,8 @@ interface RawSpiceBackend {
 
 Two implementations will exist:
 
-- **Node backend** — CSPICE via NAI
-- **WASM backend** — CSPICE compiled with Emscripten  
+- **Node backend** — native addon (see CSPICE / NAIF disclosure above)
+- **WASM backend** — prebuilt WebAssembly module (see CSPICE / NAIF disclosure above)
 
 The rest of the system should not care which backend is active.
 
