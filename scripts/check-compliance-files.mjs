@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const scriptsDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptsDir, "..");
+const realRepoRoot = fs.realpathSync(repoRoot);
 
 /**
 * These files are linked from compliance-oriented documentation. If any move, we
@@ -28,25 +29,6 @@ function describeError(error) {
       code,
       message: String(error.message ?? ""),
     };
-  }
-
-  if (typeof error === "object" && error !== null) {
-    const rawMessage = "message" in error ? error.message : undefined;
-    const rawCode = "code" in error ? error.code : undefined;
-    const message =
-      typeof rawMessage === "string" || typeof rawMessage === "number"
-        ? String(rawMessage)
-        : undefined;
-    const code =
-      typeof rawCode === "string" && rawCode !== ""
-        ? rawCode
-        : typeof rawCode === "number"
-          ? String(rawCode)
-          : undefined;
-
-    if (message !== undefined) {
-      return { code, message };
-    }
   }
 
   return {
@@ -91,15 +73,39 @@ for (const relativePath of requiredPaths) {
   }
 
   try {
-    const stats = fs.statSync(absolutePath);
-    if (!stats.isFile()) {
+    const realAbsolutePath = fs.realpathSync(absolutePath);
+    const realRepoRelative = path.relative(realRepoRoot, realAbsolutePath);
+    if (
+      realRepoRelative === ".." ||
+      realRepoRelative.startsWith(`..${path.sep}`) ||
+      path.isAbsolute(realRepoRelative)
+    ) {
       missingOrUnreadable.push({
         path: relativePath,
-        error: { code: "ENOTFILE", message: "Not a file" },
+        error: {
+          code: "EOUTSIDE",
+          message:
+            "Path in requiredPaths must resolve inside repo root (configuration error)",
+        },
+      });
+      hasConfigError = true;
+      continue;
+    }
+
+    const stats = fs.statSync(realAbsolutePath);
+    if (!stats.isFile()) {
+      const fileType = stats.isDirectory() ? "directory" : "non-regular file";
+      missingOrUnreadable.push({
+        path: relativePath,
+        error: {
+          code: "ENOTFILE",
+          message: `Expected a regular file but found ${fileType}`,
+        },
       });
       continue;
     }
-    fs.accessSync(absolutePath, fs.constants.R_OK);
+
+    fs.accessSync(realAbsolutePath, fs.constants.R_OK);
   } catch (error) {
     missingOrUnreadable.push({ path: relativePath, error: describeError(error) });
   }
@@ -112,7 +118,7 @@ if (missingOrUnreadable.length > 0) {
       : "Missing or unreadable compliance files:",
   );
   for (const entry of missingOrUnreadable) {
-    const errorInfo = describeError(entry.error);
+    const errorInfo = entry.error;
     const codeSuffix = errorInfo.code ? ` (${errorInfo.code})` : "";
     console.error(`- ${entry.path}${codeSuffix}: ${errorInfo.message}`);
   }
