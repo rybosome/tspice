@@ -10,7 +10,11 @@ Last checked: 2026-01-16
 
 This policy is written to make the project’s intent explicit for contributors and downstream users.
 
+This document is a project policy/summary and is not legal advice.
+
 This document is an internal project interpretation of the NAIF rules and is not a legal restatement. In any conflict, the NAIF rules remain authoritative.
+
+If you’re unsure whether a change affects redistribution status, open an issue before publishing artifacts.
 
 Maintainers should revisit this policy whenever CSPICE packaging or embedding strategies change (for example, new artifact formats or redistribution patterns).
 
@@ -77,7 +81,7 @@ NAIF distributes SPICE worldwide and describes the toolkit as publicly available
 - `tspice` is intended not to include military-specific functionality
 - Users remain responsible for compliance with export regulations applicable to their own use cases
 
-When adding kernels, datasets, or example data:
+If a change adds kernels, datasets, or example data (not currently expected):
 
 - PR authors should explicitly mention export control considerations in the PR description
 - Maintainers should verify and document export control considerations during review
