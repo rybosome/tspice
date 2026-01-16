@@ -15,26 +15,67 @@ const requiredPaths = [
   path.join("packages", "backend-wasm", "NOTICE"),
 ];
 
+function describeError(error) {
+  if (error instanceof Error) {
+    const code =
+      typeof error.code === "string" && error.code !== "" ? error.code : undefined;
+    return {
+      code,
+      message: error.message,
+    };
+  }
+
+  return {
+    code: undefined,
+    message: String(error),
+  };
+}
+
 const missingOrUnreadable = [];
 for (const relativePath of requiredPaths) {
-  const absolutePath = path.join(repoRoot, relativePath);
+  if (path.isAbsolute(relativePath)) {
+    missingOrUnreadable.push({
+      path: relativePath,
+      error: { code: "EABSOLUTE", message: "Path must be repo-relative" },
+    });
+    continue;
+  }
+
+  const absolutePath = path.resolve(repoRoot, relativePath);
+  const repoRelative = path.relative(repoRoot, absolutePath);
+  if (
+    repoRelative === ".." ||
+    repoRelative.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(repoRelative)
+  ) {
+    missingOrUnreadable.push({
+      path: relativePath,
+      error: { code: "EOUTSIDE", message: "Path must be inside repo root" },
+    });
+    continue;
+  }
+
   try {
     const stats = fs.statSync(absolutePath);
     if (!stats.isFile()) {
-      throw new Error("Not a file");
+      missingOrUnreadable.push({
+        path: relativePath,
+        error: { code: "ENOTFILE", message: "Not a file" },
+      });
+      continue;
     }
     fs.accessSync(absolutePath, fs.constants.R_OK);
   } catch (error) {
-    missingOrUnreadable.push({ path: relativePath, error });
+    missingOrUnreadable.push({ path: relativePath, error: describeError(error) });
   }
 }
 
 if (missingOrUnreadable.length > 0) {
   console.error("Missing or unreadable compliance files:");
   for (const entry of missingOrUnreadable) {
-    console.error(
-      `- ${entry.path}: ${entry.error instanceof Error ? entry.error.message : String(entry.error)}`,
-    );
+    const errorInfo = entry.error;
+    const codeSuffix = errorInfo.code ? ` (${errorInfo.code})` : "";
+    console.error(`- ${entry.path}${codeSuffix} ${errorInfo.message}`);
   }
   process.exit(1);
 }
