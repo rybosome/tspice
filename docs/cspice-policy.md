@@ -83,6 +83,8 @@ When adding kernels, datasets, or example data:
 - Maintainers should verify and document export control considerations during review
 - Maintainers should ensure contributor docs and PR templates include an explicit reminder to flag export control considerations
 
+This document is the canonical source for CSPICE-related contributor obligations; PR templates and contributor docs should defer to it.
+
 Maintainers should re-evaluate this section if adding new datasets, kernels, or example data.
 
 ## Required notices and disclosure
@@ -116,4 +118,5 @@ Relaxing these non-goals would require re-evaluating compliance with the NAIF â€
 ## Maintenance
 
 - Re-check the NAIF rules when changing CSPICE packaging/embedding strategies, and periodically to detect policy drift.
+- Re-validate the export control position at least annually and whenever adding new kernels, datasets, or example data.
 - When moving or renaming any referenced notice or disclosure files, update the links in this document in the same PR.
