@@ -28,6 +28,8 @@ const wasmBuildCacheDir = path.join(repoRoot, ".cache");
 fs.mkdirSync(wasmBuildCacheDir, { recursive: true });
 
 const wasmBuildDir = path.join(wasmBuildCacheDir, "wasm-build");
+// This directory contains locally staged CSPICE sources (including patched copies).
+// It must never be committed.
 fs.rmSync(wasmBuildDir, { recursive: true, force: true });
 fs.mkdirSync(wasmBuildDir, { recursive: true });
 
