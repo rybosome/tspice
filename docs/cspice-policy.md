@@ -81,7 +81,7 @@ When adding kernels, datasets, or example data:
 
 - PR authors should explicitly mention export control considerations in the PR description
 - Maintainers should verify and document export control considerations during review
-- Maintainers should ensure contributor docs and PR templates include an explicit reminder to flag export control considerations
+- Maintainers should ensure contributor docs and PR templates include an explicit reminder to flag export control considerations; see the repository PR template for the current checklist.
 
 This document is the canonical source for CSPICE-related contributor obligations; PR templates and contributor docs should defer to it.
 
@@ -102,6 +102,8 @@ For repository-wide third-party notices, see:
 
 - [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)
 
+If any backend package is renamed, split, or relocated, these NOTICE paths must be updated in the same change.
+
 ## Non-goals and explicit exclusions
 
 The following non-goals are chosen specifically to stay within NAIFâ€™s rules regarding redistribution and third-party interfaces.
@@ -120,3 +122,5 @@ Relaxing these non-goals would require re-evaluating compliance with the NAIF â€
 - Re-check the NAIF rules when changing CSPICE packaging/embedding strategies, and periodically to detect policy drift.
 - Re-validate the export control position at least annually and whenever adding new kernels, datasets, or example data.
 - When moving or renaming any referenced notice or disclosure files, update the links in this document in the same PR.
+
+All contributor-facing documentation (including PR templates) should either link to this document or state that CSPICE-related questions are governed by `docs/cspice-policy.md`.

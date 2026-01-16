@@ -12,7 +12,7 @@ This project **does not** attempt to reimplement SPICE in TypeScript. Instead, i
 
 ## CSPICE disclosure & policy
 
-`tspice` embeds CSPICE-derived components only as an internal implementation detail to support its TypeScript API, and is not a general-purpose distribution of CSPICE.
+`tspice` embeds CSPICE-derived components only as an internal implementation detail to support its TypeScript API, and is not a general-purpose distribution of CSPICE. This section is an overview; see the policy doc for the canonical constraints.
 
 - See [`docs/cspice-naif-disclosure.md`](./docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
 - See [`docs/cspice-policy.md`](./docs/cspice-policy.md) for the project's CSPICE usage and distribution policy, including redistribution constraints and third-party interface guidance that contributors and maintainers are expected to follow.
