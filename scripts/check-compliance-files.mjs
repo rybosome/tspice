@@ -68,6 +68,9 @@ try {
 /**
 * These files are linked from compliance-oriented documentation. If any move, we
 * should fail CI so the "see notices" chain doesn't silently break.
+*
+* All entries must be repo-relative and must resolve inside the repo root after
+* following symlinks.
 */
 const requiredPaths = [
   "THIRD_PARTY_NOTICES.md",
