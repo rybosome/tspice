@@ -2,20 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const scriptsDir = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(scriptsDir, "..");
-const realRepoRoot = fs.realpathSync(repoRoot);
-
-/**
-* These files are linked from compliance-oriented documentation. If any move, we
-* should fail CI so the "see notices" chain doesn't silently break.
-*/
-const requiredPaths = [
-  "THIRD_PARTY_NOTICES.md",
-  path.join("packages", "backend-node", "NOTICE"),
-  path.join("packages", "backend-wasm", "NOTICE"),
-];
-
 function describeError(error) {
   if (error instanceof Error) {
     const rawCode = error.code;
@@ -27,15 +13,64 @@ function describeError(error) {
           : undefined;
     return {
       code,
-      message: String(error.message ?? ""),
+      message: error.message === "" ? "Unknown error" : String(error.message),
     };
   }
 
+  if (typeof error === "object" && error !== null) {
+    const rawCode = "code" in error ? error.code : undefined;
+    const code =
+      typeof rawCode === "string" && rawCode !== ""
+        ? rawCode
+        : typeof rawCode === "number"
+          ? String(rawCode)
+          : undefined;
+    const rawMessage = "message" in error ? error.message : undefined;
+    const message =
+      typeof rawMessage === "string" || typeof rawMessage === "number"
+        ? String(rawMessage)
+        : undefined;
+
+    if (message !== undefined && message !== "") {
+      return { code, message };
+    }
+  }
+
+  const message = String(error);
   return {
     code: undefined,
-    message: String(error),
+    message: message === "" ? "Unknown error" : message,
   };
 }
+
+function isOutsideRoot(root, target) {
+  const rel = path.relative(root, target);
+  return rel === ".." || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel);
+}
+
+const scriptsDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(scriptsDir, "..");
+
+let realRepoRoot;
+try {
+  realRepoRoot = fs.realpathSync(repoRoot);
+} catch (error) {
+  const err = describeError(error);
+  const codeSuffix = err.code ? ` (${err.code})` : "";
+  console.error("Configuration error resolving repo root (realpath):");
+  console.error(`- ${repoRoot}${codeSuffix}: ${err.message}`);
+  process.exit(1);
+}
+
+/**
+* These files are linked from compliance-oriented documentation. If any move, we
+* should fail CI so the "see notices" chain doesn't silently break.
+*/
+const requiredPaths = [
+  "THIRD_PARTY_NOTICES.md",
+  path.join("packages", "backend-node", "NOTICE"),
+  path.join("packages", "backend-wasm", "NOTICE"),
+];
 
 const missingOrUnreadable = [];
 let hasConfigError = false;
@@ -54,12 +89,7 @@ for (const relativePath of requiredPaths) {
   }
 
   const absolutePath = path.resolve(repoRoot, relativePath);
-  const repoRelative = path.relative(repoRoot, absolutePath);
-  if (
-    repoRelative === ".." ||
-    repoRelative.startsWith(`..${path.sep}`) ||
-    path.isAbsolute(repoRelative)
-  ) {
+  if (isOutsideRoot(repoRoot, absolutePath)) {
     missingOrUnreadable.push({
       path: relativePath,
       error: {
@@ -74,12 +104,7 @@ for (const relativePath of requiredPaths) {
 
   try {
     const realAbsolutePath = fs.realpathSync(absolutePath);
-    const realRepoRelative = path.relative(realRepoRoot, realAbsolutePath);
-    if (
-      realRepoRelative === ".." ||
-      realRepoRelative.startsWith(`..${path.sep}`) ||
-      path.isAbsolute(realRepoRelative)
-    ) {
+    if (isOutsideRoot(realRepoRoot, realAbsolutePath)) {
       missingOrUnreadable.push({
         path: relativePath,
         error: {
@@ -102,6 +127,9 @@ for (const relativePath of requiredPaths) {
           message: `Expected a regular file but found ${fileType}`,
         },
       });
+      if (stats.isDirectory()) {
+        hasConfigError = true;
+      }
       continue;
     }
 
