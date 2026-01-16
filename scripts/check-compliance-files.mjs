@@ -17,12 +17,36 @@ const requiredPaths = [
 
 function describeError(error) {
   if (error instanceof Error) {
+    const rawCode = error.code;
     const code =
-      typeof error.code === "string" && error.code !== "" ? error.code : undefined;
+      typeof rawCode === "string" && rawCode !== ""
+        ? rawCode
+        : typeof rawCode === "number"
+          ? String(rawCode)
+          : undefined;
     return {
       code,
       message: String(error.message ?? ""),
     };
+  }
+
+  if (typeof error === "object" && error !== null) {
+    const rawMessage = "message" in error ? error.message : undefined;
+    const rawCode = "code" in error ? error.code : undefined;
+    const message =
+      typeof rawMessage === "string" || typeof rawMessage === "number"
+        ? String(rawMessage)
+        : undefined;
+    const code =
+      typeof rawCode === "string" && rawCode !== ""
+        ? rawCode
+        : typeof rawCode === "number"
+          ? String(rawCode)
+          : undefined;
+
+    if (message !== undefined) {
+      return { code, message };
+    }
   }
 
   return {
@@ -32,6 +56,8 @@ function describeError(error) {
 }
 
 const missingOrUnreadable = [];
+let hasConfigError = false;
+
 for (const relativePath of requiredPaths) {
   if (path.isAbsolute(relativePath)) {
     missingOrUnreadable.push({
@@ -41,6 +67,7 @@ for (const relativePath of requiredPaths) {
         message: "Path in requiredPaths must be repo-relative (configuration error)",
       },
     });
+    hasConfigError = true;
     continue;
   }
 
@@ -59,6 +86,7 @@ for (const relativePath of requiredPaths) {
           "Path in requiredPaths must resolve inside repo root (configuration error)",
       },
     });
+    hasConfigError = true;
     continue;
   }
 
@@ -78,9 +106,13 @@ for (const relativePath of requiredPaths) {
 }
 
 if (missingOrUnreadable.length > 0) {
-  console.error("Missing or unreadable compliance files:");
+  console.error(
+    hasConfigError
+      ? "Configuration error in compliance file list (requiredPaths):"
+      : "Missing or unreadable compliance files:",
+  );
   for (const entry of missingOrUnreadable) {
-    const errorInfo = entry.error;
+    const errorInfo = describeError(entry.error);
     const codeSuffix = errorInfo.code ? ` (${errorInfo.code})` : "";
     console.error(`- ${entry.path}${codeSuffix}: ${errorInfo.message}`);
   }
