@@ -8,6 +8,10 @@ The authoritative source for CSPICE redistribution and derived works is the NAIF
 
 This policy is written to make the project’s intent explicit for contributors and downstream users.
 
+This document is an internal project interpretation of the NAIF rules and is not a legal restatement. In any conflict, the NAIF rules remain authoritative.
+
+Maintainers should revisit this policy whenever CSPICE packaging or embedding strategies change (for example, new artifact formats or redistribution patterns).
+
 ## Key rules and how `tspice` applies them
 
 ### Prohibition on mirror-style redistribution
@@ -73,6 +77,8 @@ NAIF distributes SPICE worldwide and describes the toolkit as publicly available
 Maintainers should re-evaluate this section if adding new datasets, kernels, or example data.
 
 PRs that add new datasets, kernels, or example data should explicitly mention export control considerations in the PR description.
+
+Maintainers should ensure contributor docs and/or PR templates include an explicit reminder to flag export control considerations when adding kernels, datasets, or example data.
 
 ## Required notices and disclosure
 
