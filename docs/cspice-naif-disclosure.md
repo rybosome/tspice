@@ -1,6 +1,6 @@
 # CSPICE / NAIF disclosure
 
-`tspice` includes or links against components derived from the NAIF CSPICE Toolkit to provide SPICE functionality behind its TypeScript API. It is not a general-purpose distribution of CSPICE.
+`tspice` includes or embeds components derived from the NAIF CSPICE Toolkit to provide SPICE functionality behind its TypeScript API. `tspice` is not a general-purpose distribution of CSPICE.
 
 The exact form of CSPICE-derived components varies by backend. For the authoritative backend-specific integration and redistribution details, see the backend package `NOTICE` files.
 
