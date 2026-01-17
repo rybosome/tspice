@@ -112,15 +112,6 @@ for (const docRel of complianceDocs) {
         linkedFromDocs.add(path.relative(repoRoot, path.resolve(docDir, target)));
         continue;
       }
-
-      if (target.includes("/")) {
-        const firstSegment = target.split("/")[0] ?? "";
-        if (firstSegment.includes(".") && !firstSegment.startsWith(".")) {
-          continue;
-        }
-      }
-
-      linkedFromDocs.add(path.relative(repoRoot, path.resolve(docDir, target)));
     }
   } catch {
     // The doc itself is validated below.
