@@ -6,15 +6,13 @@ The authoritative source for CSPICE redistribution and derived works is the NAIF
 
 - https://naif.jpl.nasa.gov/naif/rules.html
 
-Last checked: 2026-01-16
+Review trigger: update this policy when any CSPICE packaging/embedding/release process changes, or if NAIF’s rules change.
 
 This policy is written to make the project’s intent explicit for contributors and downstream users.
 
 This document is a project policy/summary and is not legal advice. It is an internal project interpretation of the NAIF rules and not a legal restatement. In any conflict, the NAIF rules remain authoritative.
 
 If you’re unsure whether a change affects redistribution status, open an issue before publishing artifacts.
-
-Maintainers should revisit this policy whenever CSPICE packaging or embedding strategies change (for example, new artifact formats or redistribution patterns).
 
 ## Key rules and how `tspice` applies them
 
@@ -69,21 +67,23 @@ This approach is intended to remain consistent with the NAIF rules because:
 - The package should not reasonably be used as a substitute for obtaining CSPICE from NAIF
 - The project constitutes a third-party interface, which NAIF explicitly permits
 
-## Export control considerations
+## Export control review process
 
 NAIF distributes SPICE worldwide and describes the toolkit as publicly available under U.S. export laws.
 
-**Project position (subject to periodic review):**
+This section is not legal advice. It documents the project’s release review process to reduce the risk of accidentally shipping controlled content.
 
-- `tspice` is intended not to include controlled data
-- `tspice` is intended not to include military-specific functionality
-- Users remain responsible for compliance with export regulations applicable to their own use cases
+This repo does not currently distribute any kernels, datasets, or other bundled data files. Before publishing a release, maintainers should confirm:
 
-If a future change adds kernels, datasets, or example data (not currently expected):
+- The release does not add non-CSPICE datasets, kernels, or other bundled data files.
+- The release does not introduce domain-specific “controlled content” beyond the CSPICE-derived backend artifacts described elsewhere in this policy.
 
-- PR authors should explicitly mention export control considerations in the PR description
-- Maintainers should verify and document export control considerations during review
-- Maintainers should ensure contributor docs and PR templates include an explicit reminder to flag export control considerations; see the repository PR template for the current checklist.
+If a change proposes adding any bundled data files (even as examples/tests):
+
+- The PR description must document provenance and why the data is believed to be publicly distributable.
+- A maintainer must explicitly confirm this during review (or block the release until clarified).
+
+Users remain responsible for compliance with export regulations applicable to their own use cases.
 
 This document is the canonical source for CSPICE-related contributor obligations; PR templates and contributor docs should defer to it.
 
@@ -121,8 +121,6 @@ Relaxing these non-goals would require re-evaluating compliance with the NAIF �
 
 ## Maintenance
 
-- Re-check the NAIF rules when changing CSPICE packaging/embedding strategies, and periodically to detect policy drift.
-- Re-validate the export control position at least annually and whenever adding new kernels, datasets, or example data.
-- When moving or renaming any referenced notice or disclosure files, update the links in this document in the same PR.
+When moving or renaming any referenced notice or disclosure files, update the links in this document in the same PR.
 
 All contributor-facing documentation (including PR templates) should either link to this document or state that CSPICE-related questions are governed by `docs/cspice-policy.md`.

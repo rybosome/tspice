@@ -66,16 +66,65 @@ try {
 }
 
 /**
-* These files are linked from compliance-oriented documentation. If any move, we
-* should fail CI so the "see notices" chain doesn't silently break.
+* These files are linked from compliance-oriented documentation. If any move,
+* we should fail CI so the "see notices" chain doesn't silently break.
 *
 * All entries must be repo-relative and must resolve inside the repo root after
 * following symlinks.
 */
+const complianceDocs = [
+  path.join("docs", "cspice-policy.md"),
+  path.join("docs", "cspice-naif-disclosure.md"),
+];
+
+const linkedFromDocs = new Set();
+const markdownLink = /\[[^\]]+\]\(([^)]+)\)/g;
+
+for (const docRel of complianceDocs) {
+  const docAbs = path.resolve(repoRoot, docRel);
+  const docDir = path.dirname(docAbs);
+
+  try {
+    const raw = fs.readFileSync(docAbs, "utf8");
+    for (const match of raw.matchAll(markdownLink)) {
+      const rawTarget = match[1]?.trim() ?? "";
+      if (
+        rawTarget === "" ||
+        rawTarget.startsWith("#") ||
+        rawTarget.startsWith("mailto:") ||
+        rawTarget.includes("://")
+      ) {
+        continue;
+      }
+
+      const [target, ...rest] = rawTarget.split("#");
+      if (rest.length > 0 && target === "") {
+        continue;
+      }
+
+      // Only enforce links that point at repo files.
+      if (target.startsWith("/")) {
+        linkedFromDocs.add(path.relative(repoRoot, path.resolve(repoRoot, target.slice(1))));
+        continue;
+      }
+
+      if (target.startsWith("./") || target.startsWith("../")) {
+        linkedFromDocs.add(path.relative(repoRoot, path.resolve(docDir, target)));
+      }
+    }
+  } catch {
+    // The doc itself is validated below.
+  }
+}
+
 const requiredPaths = [
-  "THIRD_PARTY_NOTICES.md",
-  path.join("packages", "backend-node", "NOTICE"),
-  path.join("packages", "backend-wasm", "NOTICE"),
+  ...new Set([
+    "THIRD_PARTY_NOTICES.md",
+    ...complianceDocs,
+    path.join("packages", "backend-node", "NOTICE"),
+    path.join("packages", "backend-wasm", "NOTICE"),
+    ...linkedFromDocs,
+  ]),
 ];
 
 const missingOrUnreadable = [];
