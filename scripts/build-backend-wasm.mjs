@@ -55,18 +55,19 @@ fs.mkdirSync(wasmBuildDir, { recursive: true });
 const patchedCspiceSourceRoot = path.join(wasmBuildDir, "cspice");
 fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 
-const wrapperPath = path.join(
+const shimPath = path.join(
   repoRoot,
   "packages",
-  "backend-wasm",
-  "emscripten",
-  "tspice_backend_wasm_wrapper.c",
+  "backend-shim-c",
+  "src",
+  "tspice_backend_shim.c",
 );
+const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
 const outputJsPath = path.join(outputDir, WASM_JS_FILENAME);
 
-if (!fs.existsSync(wrapperPath)) {
-  throw new Error(`Missing wrapper C file at ${wrapperPath}`);
+if (!fs.existsSync(shimPath)) {
+  throw new Error(`Missing shared shim C file at ${shimPath}`);
 }
 
 const cspiceSrcDir = path.join(patchedCspiceSourceRoot, "src");
@@ -155,13 +156,10 @@ function collectCFiles(dir) {
   return out;
 }
 
-const sources = [
-  wrapperPath,
-  ...collectCFiles(cspiceCspiceDir),
-  ...collectCFiles(cspiceCsupportDir),
-];
+const sources = [shimPath, ...collectCFiles(cspiceCspiceDir), ...collectCFiles(cspiceCsupportDir)];
 
 const includeDirs = [
+  shimIncludeDir,
   path.join(patchedCspiceSourceRoot, "include"),
   cspiceSrcDir,
   cspiceCspiceDir,
@@ -184,11 +182,15 @@ execFileSync(
     "-s",
     "ALLOW_MEMORY_GROWTH=1",
     "-s",
+    // Some Emscripten toolchains require initial memory to cover static data.
+    // (ALLOW_MEMORY_GROWTH does not help at link time.)
+    "INITIAL_MEMORY=134217728",
+    "-s",
     "FORCE_FILESYSTEM=1",
     "-s",
     "EXPORTED_RUNTIME_METHODS=['UTF8ToString','ccall','FS']",
     "-s",
-    "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_ktotal_all','_malloc','_free']",
+    "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_ktotal_all','_tspice_str2et','_tspice_et2utc','_tspice_pxform','_tspice_spkezr','_malloc','_free']",
     "-o",
     outputJsPath,
     ...includeDirs,
