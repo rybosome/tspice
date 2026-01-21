@@ -1,5 +1,4 @@
 import type { BackendKind, SpiceBackend } from "@rybosome/tspice-backend-contract";
-import { createNodeBackend } from "@rybosome/tspice-backend-node";
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 import { assertNever } from "@rybosome/tspice-core";
 
@@ -17,7 +16,21 @@ export async function createBackend(
 
   switch (backend) {
     case "node":
-      return createNodeBackend();
+      try {
+        // Keep this import non-static so JS-only CI can run without building
+        // the native backend package.
+        const nodeBackendSpecifier = "@rybosome/tspice-backend-" + "node";
+        const { createNodeBackend } = (await import(
+          nodeBackendSpecifier
+        )) as {
+          createNodeBackend: () => SpiceBackend;
+        };
+        return createNodeBackend();
+      } catch (error) {
+        throw new Error(
+          `Failed to load @rybosome/tspice-backend-node (required for backend=\"node\"): ${String(error)}`,
+        );
+      }
     case "wasm":
       if (options.wasmUrl === undefined) {
         return await createWasmBackend();

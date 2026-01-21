@@ -105,5 +105,11 @@ export async function createWasmBackend(
   return {
     kind: "wasm",
     spiceVersion: () => toolkitVersion,
+    tkvrsn: (item) => {
+      if (item !== "TOOLKIT") {
+        throw new Error(`Unsupported tkvrsn item: ${item}`);
+      }
+      return toolkitVersion;
+    },
   };
 }
