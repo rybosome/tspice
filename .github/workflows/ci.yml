@@ -19,37 +19,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Read pnpm version from package.json#packageManager
-        id: pnpm-version
-        run: |
-          raw=$(node scripts/read-pnpm-version.cjs)
-          if [ -z "$raw" ]; then
-            echo "pnpm version not found in package.json#packageManager (scripts/read-pnpm-version.cjs returned empty)." >&2
-            exit 1
-          fi
-
-          version=${raw#pnpm@}
-          if [ -z "$version" ] || [ "$version" = "$raw" ]; then
-            echo "Unexpected packageManager value: '$raw'" >&2
-            exit 1
-          fi
-
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Setup pnpm
-        # Keep in sync with package.json#packageManager.
-        # This must run before setup-node when using `cache: pnpm`.
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ steps.pnpm-version.outputs.version }}
-          run_install: false
-
-      - name: Setup Node
-        # Requires pnpm to be installed first for `cache: pnpm` to work.
-        uses: actions/setup-node@v4
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
         with:
           node-version: ${{ matrix.node }}
-          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -71,41 +44,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Read pnpm version from package.json#packageManager
-        id: pnpm-version
-        run: |
-          raw=$(node scripts/read-pnpm-version.cjs)
-          if [ -z "$raw" ]; then
-            echo "pnpm version not found in package.json#packageManager (scripts/read-pnpm-version.cjs returned empty)." >&2
-            exit 1
-          fi
-
-          version=${raw#pnpm@}
-          if [ -z "$version" ] || [ "$version" = "$raw" ]; then
-            echo "Unexpected packageManager value: '$raw'" >&2
-            exit 1
-          fi
-
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Setup pnpm
-        # Keep in sync with package.json#packageManager.
-        # This must run before setup-node when using `cache: pnpm`.
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ steps.pnpm-version.outputs.version }}
-          run_install: false
-
-      - name: Setup Node
-        # Requires pnpm to be installed first for `cache: pnpm` to work.
-        uses: actions/setup-node@v4
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
         with:
           node-version: ${{ matrix.node }}
-          cache: pnpm
 
       - name: Install OS dependencies (Ubuntu)
         if: runner.os == 'Linux'
         run: |
+          set -euo pipefail
+          if command -v uncompress >/dev/null; then
+            exit 0
+          fi
+
           # Assumes ubuntu-latest; update if the Linux distribution changes.
           if ! command -v apt-get >/dev/null; then
             echo "This step assumes an Ubuntu/Debian-based Linux runner with apt-get available. Update the workflow before using a different Linux image." >&2
@@ -116,10 +67,15 @@ jobs:
             echo "Failed to install 'ncompress'. Verify that it is available on ubuntu-latest or adjust the workflow to use an alternative package/source." >&2
             exit 1
           fi
+          if ! command -v uncompress >/dev/null; then
+            echo "'uncompress' still not found after installing ncompress." >&2
+            exit 1
+          fi
 
       - name: Install OS dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
+          set -euo pipefail
           # Assumes Homebrew is available on the macOS runner.
           if command -v uncompress >/dev/null 2>&1; then
             exit 0
@@ -155,9 +111,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/cspice
-          key: cspice-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
-          restore-keys: |
-            cspice-${{ runner.os }}-${{ runner.arch }}-
+          key: cspice-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

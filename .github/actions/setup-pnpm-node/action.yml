@@ -1,0 +1,50 @@
+name: Setup pnpm + Node
+description: Reads pnpm version from package.json#packageManager, installs pnpm, then sets up Node with pnpm caching.
+
+inputs:
+  node-version:
+    description: Node version to install
+    required: true
+
+outputs:
+  pnpm-version:
+    description: pnpm version read from package.json#packageManager
+    value: ${{ steps.pnpm-version.outputs.version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Read pnpm version from package.json#packageManager
+      id: pnpm-version
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        raw=$(node scripts/read-pnpm-version.cjs)
+        if [ -z "$raw" ]; then
+          echo "pnpm version not found in package.json#packageManager (scripts/read-pnpm-version.cjs returned empty)." >&2
+          exit 1
+        fi
+
+        version=${raw#pnpm@}
+        if [ -z "$version" ] || [ "$version" = "$raw" ]; then
+          echo "Unexpected packageManager value: '$raw'" >&2
+          exit 1
+        fi
+
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+
+    - name: Setup pnpm
+      # Keep in sync with package.json#packageManager.
+      # This must run before setup-node when using `cache: pnpm`.
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ steps.pnpm-version.outputs.version }}
+        run_install: false
+
+    - name: Setup Node
+      # Requires pnpm to be installed first for `cache: pnpm` to work.
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
