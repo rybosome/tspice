@@ -20,15 +20,23 @@ runs:
       run: |
         set -euo pipefail
 
-        raw=$(node scripts/read-pnpm-version.cjs)
+        raw=$(node scripts/read-pnpm-version.cjs | tr -d '\r')
         if [ -z "$raw" ]; then
           echo "pnpm version not found in package.json#packageManager (scripts/read-pnpm-version.cjs returned empty)." >&2
           exit 1
         fi
 
-        version=${raw#pnpm@}
-        if [ -z "$version" ] || [ "$version" = "$raw" ]; then
-          echo "Unexpected packageManager value: '$raw'" >&2
+        # Backwards-compatible parsing:
+        # - older scripts may output: `pnpm@<version>`
+        # - current scripts output: `<version>`
+        if [[ "$raw" == pnpm@* ]]; then
+          version=${raw#pnpm@}
+        else
+          version=$raw
+        fi
+
+        if [ -z "$version" ]; then
+          echo "Could not determine pnpm version from: '$raw' (expected 'pnpm@<version>' or '<version>')." >&2
           exit 1
         fi
 
