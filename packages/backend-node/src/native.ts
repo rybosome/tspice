@@ -4,6 +4,11 @@ import { createRequire } from "node:module";
 
 export type NativeAddon = {
   spiceVersion(): string;
+  furnsh(path: string): void;
+  unload(path: string): void;
+
+  /** Internal test helper (not part of the backend contract). */
+  __ktotalAll(): number;
 };
 
 let cachedAddon: NativeAddon | undefined;
