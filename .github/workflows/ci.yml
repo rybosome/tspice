@@ -121,14 +121,29 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           # Assumes Homebrew is available on the macOS runner.
-          if command -v uncompress >/dev/null; then
+          if command -v uncompress >/dev/null 2>&1; then
             exit 0
           fi
-          if ! command -v brew >/dev/null; then
-            echo "Homebrew is required to install ncompress on macOS CI runners. Install Homebrew on the runner or pre-install ncompress before running this workflow." >&2
+
+          if ! command -v brew >/dev/null 2>&1; then
+            echo "uncompress not found and Homebrew (brew) is missing; cannot install ncompress on the macOS CI runner." >&2
             exit 1
           fi
-          brew install ncompress
+
+          if ! brew update; then
+            echo "Homebrew update failed; cannot install ncompress to provide uncompress." >&2
+            exit 1
+          fi
+
+          if ! brew install ncompress; then
+            echo "Homebrew failed to install ncompress; cannot provide uncompress." >&2
+            exit 1
+          fi
+
+          if ! command -v uncompress >/dev/null 2>&1; then
+            echo "Installed ncompress but uncompress is still missing from PATH." >&2
+            exit 1
+          fi
 
       - name: Cache CSPICE
         # .cache/cspice is populated by `pnpm run fetch:cspice` (invoked via `pnpm run check:native`).
