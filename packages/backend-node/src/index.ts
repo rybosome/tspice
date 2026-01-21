@@ -1,4 +1,4 @@
-import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type { KernelSource, SpiceBackend } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import { getNativeAddon } from "./native.js";
@@ -13,6 +13,12 @@ export function createNodeBackend(): SpiceBackend {
   return {
     kind: "node",
     spiceVersion,
+    furnsh: (_kernel: KernelSource) => {
+      throw new Error("Node backend kernel loading is not implemented yet");
+    },
+    unload: (_path: string) => {
+      throw new Error("Node backend kernel unloading is not implemented yet");
+    },
     tkvrsn: (item) => {
       invariant(item === "TOOLKIT", `Unsupported tkvrsn item: ${item}`);
       return spiceVersion();
