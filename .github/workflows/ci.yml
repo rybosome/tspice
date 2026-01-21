@@ -21,7 +21,20 @@ jobs:
 
       - name: Read pnpm version from package.json#packageManager
         id: pnpm-version
-        run: echo version=$(node scripts/read-pnpm-version.cjs) >> $GITHUB_OUTPUT
+        run: |
+          raw=$(node scripts/read-pnpm-version.cjs)
+          if [ -z "$raw" ]; then
+            echo "pnpm version not found in package.json#packageManager (scripts/read-pnpm-version.cjs returned empty)." >&2
+            exit 1
+          fi
+
+          version=${raw#pnpm@}
+          if [ -z "$version" ] || [ "$version" = "$raw" ]; then
+            echo "Unexpected packageManager value: '$raw'" >&2
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Setup pnpm
         # Keep in sync with package.json#packageManager.
@@ -68,8 +81,8 @@ jobs:
           fi
 
           version=${raw#pnpm@}
-          if ! echo "$version" | grep -Eq '^[0-9]+(\.[0-9]+){0,2}$'; then
-            echo "Unexpected pnpm version format: '$raw' (normalized to '$version')." >&2
+          if [ -z "$version" ] || [ "$version" = "$raw" ]; then
+            echo "Unexpected packageManager value: '$raw'" >&2
             exit 1
           fi
 
