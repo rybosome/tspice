@@ -89,3 +89,56 @@ int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes
   out[n] = '\0';
   return 0;
 }
+
+int tspice_furnsh(const char *path, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  furnsh_c(path);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_unload(const char *path, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  unload_c(path);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_ktotal_all(SpiceInt *outCount, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  SpiceInt count = 0;
+  ktotal_c("ALL", &count);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outCount) {
+    *outCount = count;
+  }
+
+  return 0;
+}
