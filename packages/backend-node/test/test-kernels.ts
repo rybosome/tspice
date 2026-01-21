@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -11,9 +12,22 @@ async function downloadFile(url: string, outPath: string): Promise<void> {
   }
 
   const bytes = new Uint8Array(await res.arrayBuffer());
-  const tmpPath = `${outPath}.tmp`;
+  // Use a unique tmp filename so concurrent test runs don't stomp each other.
+  const tmpPath = `${outPath}.${process.pid}.${randomUUID()}.tmp`;
   fs.writeFileSync(tmpPath, bytes);
-  fs.renameSync(tmpPath, outPath);
+
+  try {
+    // On POSIX this is atomic and can overwrite. On Windows, rename can fail if
+    // the destination exists.
+    fs.renameSync(tmpPath, outPath);
+  } catch (error) {
+    // If another process won the race, keep the existing cached file.
+    if (fs.existsSync(outPath)) {
+      fs.rmSync(tmpPath, { force: true });
+      return;
+    }
+    throw error;
+  }
 }
 
 async function readCached(url: string): Promise<Uint8Array> {
