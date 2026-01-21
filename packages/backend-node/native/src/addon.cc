@@ -53,13 +53,13 @@ static Napi::Value Furnsh(const Napi::CallbackInfo& info) {
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
   std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  InitCspiceErrorHandlingOnce();
 
-  furnsh_c(path.c_str());
-  if (failed_c()) {
+  char err[2048];
+  const int rc = tspice_furnsh(path.c_str(), err, (int)sizeof(err));
+  if (rc != 0) {
     const std::string msg =
-      std::string("CSPICE failed while calling furnsh_c(\"") + path + "\"):\n" +
-      GetSpiceErrorMessageAndReset();
+      std::string("CSPICE failed while calling tspice_furnsh(\"") + path + "\"):\n" +
+      err;
     Napi::Error::New(env, msg).ThrowAsJavaScriptException();
     return env.Undefined();
   }
@@ -78,13 +78,13 @@ static Napi::Value Unload(const Napi::CallbackInfo& info) {
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
   std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  InitCspiceErrorHandlingOnce();
 
-  unload_c(path.c_str());
-  if (failed_c()) {
+  char err[2048];
+  const int rc = tspice_unload(path.c_str(), err, (int)sizeof(err));
+  if (rc != 0) {
     const std::string msg =
-      std::string("CSPICE failed while calling unload_c(\"") + path + "\"):\n" +
-      GetSpiceErrorMessageAndReset();
+      std::string("CSPICE failed while calling tspice_unload(\"") + path + "\"):\n" +
+      err;
     Napi::Error::New(env, msg).ThrowAsJavaScriptException();
     return env.Undefined();
   }
@@ -101,14 +101,13 @@ static Napi::Number KtotalAll(const Napi::CallbackInfo& info) {
   }
 
   std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  InitCspiceErrorHandlingOnce();
 
-  SpiceInt count = 0;
-  ktotal_c("ALL", &count);
-  if (failed_c()) {
+  char err[2048];
+  const int count = tspice_ktotal_all(err, (int)sizeof(err));
+  if (count < 0) {
     const std::string msg =
-      std::string("CSPICE failed while calling ktotal_c(\"ALL\"):\n") +
-      GetSpiceErrorMessageAndReset();
+      std::string("CSPICE failed while calling tspice_ktotal_all():\n") +
+      err;
     Napi::Error::New(env, msg).ThrowAsJavaScriptException();
     return Napi::Number::New(env, 0);
   }
