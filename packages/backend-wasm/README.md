@@ -59,6 +59,8 @@ The `.wasm` file is checked into the repo as a prebuilt artifact so the portable
 
 To regenerate the checked-in artifact locally, run `node scripts/build-backend-wasm.mjs` (requires `emcc` in your `PATH`).
 
+Note: this script stages CSPICE sources under `.cache/` (including `.cache/wasm-build/`). CSPICE sources/archives must never be committed.
+
 ## Versioning / stability notes
 
 This is an A0 scaffold (`0.0.0`) and the implementation is expected to change substantially.

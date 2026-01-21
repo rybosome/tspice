@@ -28,6 +28,26 @@ const wasmBuildCacheDir = path.join(repoRoot, ".cache");
 fs.mkdirSync(wasmBuildCacheDir, { recursive: true });
 
 const wasmBuildDir = path.join(wasmBuildCacheDir, "wasm-build");
+// This directory contains locally staged CSPICE sources (including patched copies).
+// It must never be committed.
+{
+  function isSubdir(parent, child) {
+    const rel = path.relative(parent, child);
+    if (rel === "") {
+      return false;
+    }
+    if (rel === ".." || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)) {
+      return false;
+    }
+    return true;
+  }
+
+  const cacheRoot = path.resolve(wasmBuildCacheDir);
+  const buildRoot = path.resolve(wasmBuildDir);
+  if (!isSubdir(cacheRoot, buildRoot)) {
+    throw new Error(`Expected wasm build dir to be under ${cacheRoot}, got: ${buildRoot}`);
+  }
+}
 fs.rmSync(wasmBuildDir, { recursive: true, force: true });
 fs.mkdirSync(wasmBuildDir, { recursive: true });
 
