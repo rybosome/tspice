@@ -40,7 +40,7 @@ import { createBackend } from "@rybosome/tspice";
 
 async function main() {
   const backend = await createBackend();
-  console.log(backend.kind); // "node" (default)
+  console.log(backend.kind); // "wasm" (default)
   console.log(backend.spiceVersion());
 }
 
@@ -70,7 +70,7 @@ main().catch(console.error);
 
 ### Backend notes
 
-- Node backend (`backend: "node"`): implemented by a native addon; requires a build step when working from source. See [`@rybosome/tspice-backend-node`](../backend-node/README.md).
+- Node backend (`backend: "node"`): implemented by a native addon. It's currently best-effort / smoke-only and must be explicitly opted into via `createBackend({ backend: "node" })`. See [`@rybosome/tspice-backend-node`](../backend-node/README.md).
 - WASM backend (`backend: "wasm"`): implemented with a prebuilt `.wasm`. See [`@rybosome/tspice-backend-wasm`](../backend-wasm/README.md).
 
 ## Development
@@ -85,7 +85,7 @@ pnpm -C packages/tspice test
 
 ### “Native addon tspice_backend_node.node not found” / “Failed to load tspice native backend ...”
 
-The default backend is the Node/native backend. If you’re running from the workspace and haven’t built the addon yet:
+If you opt into the Node/native backend from the workspace and haven’t built the addon yet:
 
 ```bash
 pnpm -C packages/backend-node build:native
