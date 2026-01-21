@@ -25,6 +25,11 @@ type EmscriptenModule = {
   };
   HEAP32: Int32Array;
 
+  // Historical signatures:
+  // - (outPtr, errPtr, errMaxBytes) -> 0 on success
+  // - (errPtr, errMaxBytes) -> count (or -1 on error)
+  _tspice_ktotal_all(...args: number[]): number;
+
   _tspice_tkvrsn_toolkit(
     outPtr: number,
     outMaxBytes: number,
@@ -43,7 +48,7 @@ function dirnamePosix(p: string): string {
 
 function callWithError(
   module: EmscriptenModule,
-  fn: "tspice_furnsh" | "tspice_unload" | "tspice_ktotal_all",
+  fn: "tspice_furnsh" | "tspice_unload",
   args: unknown[],
 ): void {
   const errMaxBytes = 2048;
@@ -64,6 +69,45 @@ function callWithError(
     if (result !== 0) {
       const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
       throw new Error(message || `CSPICE call failed with code ${result}`);
+    }
+  } finally {
+    module._free(errPtr);
+  }
+}
+
+function ktotalAllWithError(module: EmscriptenModule): number {
+  // Prefer calling the exported wrapper directly so we can support both
+  // historical signatures without relying on emscripten `ccall` argTypes.
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  if (!errPtr) {
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    if (module._tspice_ktotal_all.length === 2) {
+      const result = module._tspice_ktotal_all(errPtr, errMaxBytes);
+      if (result < 0) {
+        const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
+        throw new Error(message || "CSPICE call failed");
+      }
+      return result;
+    }
+
+    const outPtr = module._malloc(4);
+    if (!outPtr) {
+      throw new Error("WASM malloc failed");
+    }
+
+    try {
+      const rc = module._tspice_ktotal_all(outPtr, errPtr, errMaxBytes);
+      if (rc !== 0) {
+        const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
+        throw new Error(message || `CSPICE call failed with code ${rc}`);
+      }
+      return module.HEAP32[outPtr >> 2] ?? 0;
+    } finally {
+      module._free(outPtr);
     }
   } finally {
     module._free(errPtr);
@@ -185,17 +229,7 @@ export async function createWasmBackend(
 
   // Internal testing hook (not part of the public backend contract).
   (backend as SpiceBackend & { __ktotalAll(): number }).__ktotalAll = () => {
-    const outPtr = module._malloc(4);
-    if (!outPtr) {
-      throw new Error("WASM malloc failed");
-    }
-
-    try {
-      callWithError(module, "tspice_ktotal_all", [outPtr]);
-      return module.HEAP32[outPtr >> 2] ?? 0;
-    } finally {
-      module._free(outPtr);
-    }
+    return ktotalAllWithError(module);
   };
 
   return backend;
