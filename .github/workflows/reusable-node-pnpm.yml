@@ -63,15 +63,12 @@ jobs:
         # Cache is keyed by OS/arch + manifest hash so it can be reused across Node versions.
         # `fetch:cspice` output is controlled by `scripts/cspice.manifest.json`.
         # Cache key intentionally does not include Node version (cache contains CSPICE archives only).
-        # If `fetch:cspice` changes the on-disk cache layout, bump scripts/cspice.manifest.json.
+        # Cache key includes an explicit schema version (`v1`) we control; bump it if the on-disk cache layout changes.
         if: ${{ inputs.enable_cspice_cache }}
         uses: actions/cache@v4
         with:
           path: .cache/cspice
-          key: cspice-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
-          restore-keys: |
-            cspice-${{ runner.os }}-${{ runner.arch }}-
-
+          key: cspice-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
