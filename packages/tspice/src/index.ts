@@ -13,7 +13,7 @@ export type CreateBackendOptions = {
 export async function createBackend(
   options: CreateBackendOptions = {},
 ): Promise<SpiceBackend> {
-  const backend = options.backend ?? "node";
+  const backend = options.backend ?? "wasm";
 
   switch (backend) {
     case "node":
