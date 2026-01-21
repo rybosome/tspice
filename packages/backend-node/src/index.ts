@@ -12,6 +12,10 @@ export function spiceVersion(): string {
 export function createNodeBackend(): SpiceBackend {
   return {
     kind: "node",
-    spiceVersion
+    spiceVersion,
+    tkvrsn: (item) => {
+      invariant(item === "TOOLKIT", `Unsupported tkvrsn item: ${item}`);
+      return spiceVersion();
+    }
   };
 }
