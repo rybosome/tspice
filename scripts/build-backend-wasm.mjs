@@ -55,18 +55,19 @@ fs.mkdirSync(wasmBuildDir, { recursive: true });
 const patchedCspiceSourceRoot = path.join(wasmBuildDir, "cspice");
 fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 
-const wrapperPath = path.join(
+const shimPath = path.join(
   repoRoot,
   "packages",
-  "backend-wasm",
-  "emscripten",
-  "tspice_backend_wasm_wrapper.c",
+  "backend-shim-c",
+  "src",
+  "tspice_backend_shim.c",
 );
+const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
 const outputJsPath = path.join(outputDir, WASM_JS_FILENAME);
 
-if (!fs.existsSync(wrapperPath)) {
-  throw new Error(`Missing wrapper C file at ${wrapperPath}`);
+if (!fs.existsSync(shimPath)) {
+  throw new Error(`Missing shared shim C file at ${shimPath}`);
 }
 
 const cspiceSrcDir = path.join(patchedCspiceSourceRoot, "src");
@@ -155,13 +156,10 @@ function collectCFiles(dir) {
   return out;
 }
 
-const sources = [
-  wrapperPath,
-  ...collectCFiles(cspiceCspiceDir),
-  ...collectCFiles(cspiceCsupportDir),
-];
+const sources = [shimPath, ...collectCFiles(cspiceCspiceDir), ...collectCFiles(cspiceCsupportDir)];
 
 const includeDirs = [
+  shimIncludeDir,
   path.join(patchedCspiceSourceRoot, "include"),
   cspiceSrcDir,
   cspiceCspiceDir,
