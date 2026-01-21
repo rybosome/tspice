@@ -34,24 +34,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Read pnpm version from package.json#packageManager
-        id: pnpm-version
-        run: echo "version=$(node scripts/read-pnpm-version.cjs)" >> "$GITHUB_OUTPUT"
-
-      - name: Setup pnpm
-        # Keep in sync with package.json#packageManager.
-        # This must run before setup-node when using `cache: pnpm`.
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ steps.pnpm-version.outputs.version }}
-          run_install: false
-
-      - name: Setup Node
-        # Requires pnpm to be installed first for `cache: pnpm` to work.
-        uses: actions/setup-node@v4
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
         with:
           node-version: ${{ inputs.node_version }}
-          cache: pnpm
 
       - name: Pre-install
         if: ${{ inputs.pre_install != '' }}
@@ -68,9 +54,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/cspice
-          key: cspice-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
-          restore-keys: |
-            cspice-${{ runner.os }}-${{ runner.arch }}-
+          key: cspice-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
