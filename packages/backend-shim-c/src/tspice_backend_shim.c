@@ -1,5 +1,7 @@
 #include "tspice_backend_shim.h"
 
+#include "SpiceUsr.h"
+
 #include <stdbool.h>
 #include <string.h>
 
@@ -122,7 +124,7 @@ int tspice_unload(const char *path, char *err, int errMaxBytes) {
   return 0;
 }
 
-int tspice_ktotal_all(SpiceInt *outCount, char *err, int errMaxBytes) {
+int tspice_ktotal_all(char *err, int errMaxBytes) {
   InitCspiceErrorHandlingOnce();
 
   if (errMaxBytes > 0) {
@@ -133,12 +135,8 @@ int tspice_ktotal_all(SpiceInt *outCount, char *err, int errMaxBytes) {
   ktotal_c("ALL", &count);
   if (failed_c()) {
     GetSpiceErrorMessageAndReset(err, errMaxBytes);
-    return 1;
+    return -1;
   }
 
-  if (outCount) {
-    *outCount = count;
-  }
-
-  return 0;
+  return (int)count;
 }
