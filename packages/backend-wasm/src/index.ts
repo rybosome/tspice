@@ -444,7 +444,20 @@ export async function createWasmBackend(
       if (dir && dir !== "/") {
         module.FS.mkdirTree(dir);
       }
-      module.FS.writeFile(kernel.path, kernel.bytes);
+
+      // `kernel.bytes` is typed as `Uint8Array`, but in Node it's commonly a
+      // `Buffer` (also a `Uint8Array`) which may be a view into a larger backing
+      // store (non-zero `byteOffset`, pooled slabs, etc.). Some Emscripten FS
+      // implementations have had issues writing such views correctly.
+      //
+      // Normalize to an offset-0, tightly sized `Uint8Array` before writing.
+      const bytes =
+        kernel.bytes.byteOffset === 0 &&
+        kernel.bytes.byteLength === kernel.bytes.buffer.byteLength
+          ? kernel.bytes
+          : new Uint8Array(kernel.bytes);
+
+      module.FS.writeFile(kernel.path, bytes);
       callWithError(module, "tspice_furnsh", [kernel.path]);
     },
     unload: (path: string) => {
