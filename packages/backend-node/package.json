@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "@rybosome/tspice-backend-wasm": "workspace:*",
     "node-gyp": "^11.2.0",
     "typescript": "^5.9.3",
     "vitest": "^2.1.8"

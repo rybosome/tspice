@@ -182,11 +182,15 @@ execFileSync(
     "-s",
     "ALLOW_MEMORY_GROWTH=1",
     "-s",
+    // Some Emscripten toolchains require initial memory to cover static data.
+    // (ALLOW_MEMORY_GROWTH does not help at link time.)
+    "INITIAL_MEMORY=134217728",
+    "-s",
     "FORCE_FILESYSTEM=1",
     "-s",
     "EXPORTED_RUNTIME_METHODS=['UTF8ToString','ccall','FS']",
     "-s",
-    "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_ktotal_all','_malloc','_free']",
+    "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_ktotal_all','_tspice_str2et','_tspice_et2utc','_tspice_pxform','_tspice_spkezr','_malloc','_free']",
     "-o",
     outputJsPath,
     ...includeDirs,
