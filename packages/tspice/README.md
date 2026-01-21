@@ -47,12 +47,47 @@ async function main() {
 main().catch(console.error);
 ```
 
+## Usage (Mid-level API)
+
+Phase 4 introduces a thin, typed wrapper layer over the low-level SPICE primitives:
+
+```ts
+import { createSpice } from "@rybosome/tspice";
+
+async function main() {
+  const spice = await createSpice({ backend: "wasm" });
+
+  // Load kernels from disk (or provide { path, bytes } for in-memory kernels).
+  spice.loadKernel("/path/to/naif0012.tls");
+  spice.loadKernel("/path/to/de405s.bsp");
+
+  const et = spice.utcToEt("2000 JAN 01 12:00:00");
+
+  const state = spice.getState({
+    target: "EARTH",
+    observer: "SUN",
+    at: et,
+    frame: "J2000",
+    aberration: "NONE",
+  });
+
+  console.log(state.position, state.velocity, state.lightTime);
+}
+
+main().catch(console.error);
+```
+
 ## API surface
 
 - `createBackend(options?: { backend?: BackendKind; wasmUrl?: string | URL }): Promise<SpiceBackend>`
+- `createSpice(options?: { backend?: BackendKind; wasmUrl?: string | URL }): Promise<Spice>`
 - Types:
   - `BackendKind` (currently `"node" | "wasm"`)
   - `SpiceBackend`
+  - Mid-level:
+    - `Vec3`, `Vec6`, `Mat3`, `FrameName`, `AberrationCorrection`, `SpiceTime`
+    - `StateVector`
+    - `SpiceError`
 
 ### Selecting a backend
 
