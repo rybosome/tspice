@@ -94,8 +94,87 @@ static Napi::String SpiceVersion(const Napi::CallbackInfo& info) {
   return Napi::String::New(env, version);
 }
 
+static Napi::Value Furnsh(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1 || !info[0].IsString()) {
+    Napi::TypeError::New(env, "furnsh(path) expects a single string argument").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  const std::string path = info[0].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  furnsh_c(path.c_str());
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling furnsh_c(\"") + path + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  return env.Undefined();
+}
+
+static Napi::Value Unload(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1 || !info[0].IsString()) {
+    Napi::TypeError::New(env, "unload(path) expects a single string argument").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  const std::string path = info[0].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  unload_c(path.c_str());
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling unload_c(\"") + path + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  return env.Undefined();
+}
+
+static Napi::Number KtotalAll(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 0) {
+    Napi::TypeError::New(env, "__ktotalAll() does not take any arguments").ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceInt count = 0;
+  ktotal_c("ALL", &count);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling ktotal_c(\"ALL\"):\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  return Napi::Number::New(env, static_cast<double>(count));
+}
+
 static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("spiceVersion", Napi::Function::New(env, SpiceVersion));
+  exports.Set("furnsh", Napi::Function::New(env, Furnsh));
+  exports.Set("unload", Napi::Function::New(env, Unload));
+
+  // Internal test helper (not part of the backend contract).
+  exports.Set("__ktotalAll", Napi::Function::New(env, KtotalAll));
   return exports;
 }
 
