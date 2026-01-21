@@ -7,6 +7,17 @@ export type NativeAddon = {
   furnsh(path: string): void;
   unload(path: string): void;
 
+  str2et(time: string): number;
+  et2utc(et: number, format: string, prec: number): string;
+  pxform(from: string, to: string, et: number): number[];
+  spkezr(
+    target: string,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observer: string,
+  ): { state: number[]; lt: number };
+
   /** Internal test helper (not part of the backend contract). */
   __ktotalAll(): number;
 };

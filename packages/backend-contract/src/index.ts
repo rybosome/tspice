@@ -9,6 +9,32 @@ export type KernelSource =
       bytes: Uint8Array;
     };
 
+export type SpiceMatrix3x3 = [
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+];
+
+export type SpiceStateVector = [
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+];
+
+export type SpkezrResult = {
+  state: SpiceStateVector;
+  lt: number;
+};
+
 export interface SpiceBackend {
   kind: BackendKind;
   spiceVersion(): string;
@@ -33,4 +59,24 @@ export interface SpiceBackend {
    * Phase 1: only the TOOLKIT item is required.
    */
   tkvrsn(item: "TOOLKIT"): string;
+
+  // --- Phase 3 low-level primitives ---
+
+  /** Convert a time string to ET seconds past J2000. */
+  str2et(time: string): number;
+
+  /** Convert ET seconds past J2000 to a formatted UTC string. */
+  et2utc(et: number, format: string, prec: number): string;
+
+  /** Compute a 3x3 frame transformation matrix (row-major). */
+  pxform(from: string, to: string, et: number): SpiceMatrix3x3;
+
+  /** Compute state (6-vector) and light time via `spkezr`. */
+  spkezr(
+    target: string,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observer: string,
+  ): SpkezrResult;
 }

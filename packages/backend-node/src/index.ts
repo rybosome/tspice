@@ -3,7 +3,13 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 
-import type { KernelSource, SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type {
+  KernelSource,
+  SpiceBackend,
+  SpkezrResult,
+  SpiceMatrix3x3,
+  SpiceStateVector,
+} from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import { getNativeAddon } from "./native.js";
@@ -19,6 +25,13 @@ export function createNodeBackend(): SpiceBackend {
 
   invariant(typeof native.furnsh === "function", "Expected native addon to export furnsh(path)");
   invariant(typeof native.unload === "function", "Expected native addon to export unload(path)");
+  invariant(typeof native.str2et === "function", "Expected native addon to export str2et(time)");
+  invariant(typeof native.et2utc === "function", "Expected native addon to export et2utc(et, format, prec)");
+  invariant(typeof native.pxform === "function", "Expected native addon to export pxform(from, to, et)");
+  invariant(
+    typeof native.spkezr === "function",
+    "Expected native addon to export spkezr(target, et, ref, abcorr, observer)",
+  );
 
   const tempByVirtualPath = new Map<string, string>();
   let tempKernelRootDir: string | undefined;
@@ -90,7 +103,28 @@ export function createNodeBackend(): SpiceBackend {
     tkvrsn: (item) => {
       invariant(item === "TOOLKIT", `Unsupported tkvrsn item: ${item}`);
       return spiceVersion();
-    }
+    },
+
+    str2et: (time) => {
+      return native.str2et(time);
+    },
+    et2utc: (et, format, prec) => {
+      return native.et2utc(et, format, prec);
+    },
+    pxform: (from, to, et) => {
+      const m = native.pxform(from, to, et);
+      invariant(Array.isArray(m) && m.length === 9, "Expected pxform() to return a length-9 array");
+      return m as SpiceMatrix3x3;
+    },
+    spkezr: (target, et, ref, abcorr, observer) => {
+      const out = native.spkezr(target, et, ref, abcorr, observer);
+      invariant(out && typeof out === "object", "Expected spkezr() to return an object");
+      invariant(Array.isArray(out.state) && out.state.length === 6, "Expected spkezr().state to be a length-6 array");
+      invariant(typeof out.lt === "number", "Expected spkezr().lt to be a number");
+      const state = out.state as SpiceStateVector;
+      const result: SpkezrResult = { state, lt: out.lt };
+      return result;
+    },
   };
 
   // Internal testing hook (not part of the public backend contract).
