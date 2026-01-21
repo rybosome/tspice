@@ -20,7 +20,12 @@ runs:
       run: |
         set -euo pipefail
 
-        raw=$(node scripts/read-pnpm-version.cjs | tr -d '')
+        raw=$(node scripts/read-pnpm-version.cjs)
+
+
+        # Some environments emit CRLF. Strip any carriage returns at runtime.
+
+        raw=${raw//$'\r'/}
         if [ -z "$raw" ]; then
           echo "pnpm version not found in package.json#packageManager (scripts/read-pnpm-version.cjs returned empty)." >&2
           exit 1
