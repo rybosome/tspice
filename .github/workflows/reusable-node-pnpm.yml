@@ -1,0 +1,79 @@
+name: Reusable Node + pnpm
+
+on:
+  workflow_call:
+    inputs:
+      runs_on:
+        description: Runner label (e.g. ubuntu-latest, macos-latest)
+        required: true
+        type: string
+      node_version:
+        description: Node.js version (e.g. from a matrix)
+        required: true
+        type: string
+      pre_install:
+        description: Optional shell commands to run before `pnpm install`.
+        required: false
+        type: string
+        default: ''
+      command:
+        description: Commands to run after `pnpm install` (multiline supported)
+        required: true
+        type: string
+      enable_cspice_cache:
+        description: Enable the CSPICE cache used by `pnpm run check:native`.
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  run:
+    runs-on: ${{ inputs.runs_on }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read pnpm version from package.json#packageManager
+        id: pnpm-version
+        run: echo "version=$(node scripts/read-pnpm-version.cjs)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup pnpm
+        # Keep in sync with package.json#packageManager.
+        # This must run before setup-node when using `cache: pnpm`.
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ steps.pnpm-version.outputs.version }}
+          run_install: false
+
+      - name: Setup Node
+        # Requires pnpm to be installed first for `cache: pnpm` to work.
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: pnpm
+
+      - name: Pre-install
+        if: ${{ inputs.pre_install != '' }}
+        run: ${{ inputs.pre_install }}
+
+      - name: Cache CSPICE
+        # .cache/cspice is populated by `pnpm run fetch:cspice` (invoked via `pnpm run check:native`).
+        # The `.cache/cspice` path is defined in scripts/fetch-cspice.mjs.
+        # Cache is keyed by OS/arch + manifest hash so it can be reused across Node versions.
+        # `fetch:cspice` output is controlled by `scripts/cspice.manifest.json`.
+        # Cache key intentionally does not include Node version (cache contains CSPICE archives only).
+        # If `fetch:cspice` changes the on-disk cache layout, bump scripts/cspice.manifest.json.
+        if: ${{ inputs.enable_cspice_cache }}
+        uses: actions/cache@v4
+        with:
+          path: .cache/cspice
+          key: cspice-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
+          restore-keys: |
+            cspice-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run command
+        run: ${{ inputs.command }}
