@@ -49,6 +49,8 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.6)
 
+  packages/backend-shim-c: {}
+
   packages/backend-wasm:
     dependencies:
       '@rybosome/tspice-backend-contract':

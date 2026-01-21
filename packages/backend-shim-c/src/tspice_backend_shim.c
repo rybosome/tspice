@@ -1,4 +1,4 @@
-#include "SpiceUsr.h"
+#include "tspice_backend_shim.h"
 
 #include <stdbool.h>
 #include <string.h>
