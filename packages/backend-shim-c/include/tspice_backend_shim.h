@@ -11,6 +11,24 @@ int tspice_furnsh(const char *path, char *err, int errMaxBytes);
 
 int tspice_unload(const char *path, char *err, int errMaxBytes);
 
+int tspice_kclear(char *err, int errMaxBytes);
+
+int tspice_ktotal(const char *kind, int *outCount, char *err, int errMaxBytes);
+
+int tspice_kdata(
+    int which,
+    const char *kind,
+    char *file,
+    int fileMaxBytes,
+    char *filtyp,
+    int filtypMaxBytes,
+    char *source,
+    int sourceMaxBytes,
+    int *outHandle,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
 // Returns the number of loaded kernels, or -1 on error (with message in `err`).
 int tspice_ktotal_all(char *err, int errMaxBytes);
 

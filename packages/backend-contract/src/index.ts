@@ -9,6 +9,32 @@ export type KernelSource =
       bytes: Uint8Array;
     };
 
+/** Kernel types used by summary/introspection APIs. */
+export type KernelKind =
+  | "ALL"
+  | "SPK"
+  | "CK"
+  | "PCK"
+  | "LSK"
+  | "FK"
+  | "IK"
+  | "SCLK"
+  | "EK"
+  | "META";
+
+export type Found<T> =
+  | {
+      found: false;
+    }
+  | ({ found: true } & T);
+
+export type KernelData = {
+  file: string;
+  filtyp: string;
+  source: string;
+  handle: number;
+};
+
 export type SpiceMatrix3x3 = [
   number,
   number,
@@ -53,6 +79,15 @@ export interface SpiceBackend {
    */
   unload(path: string): void;
 
+  /** Clear all loaded kernels. */
+  kclear(): void;
+
+  /** Count loaded kernels of a given kind. */
+  ktotal(kind?: KernelKind): number;
+
+  /** Retrieve kernel metadata at position `which` for a given kind. */
+  kdata(which: number, kind?: KernelKind): Found<KernelData>;
+
   /**
    * Thin wrapper over the SPICE primitive `tkvrsn()`.
    *
@@ -92,6 +127,6 @@ export interface SpiceBackendWasm extends SpiceBackend {
   /** Write a file into the WASM in-memory filesystem. */
   writeFile(path: string, data: Uint8Array): void;
 
-  /** Load a kernel that already exists in the WASM filesystem. */
-  loadKernel(path: string): void;
+  /** Write and load a kernel into the WASM filesystem. */
+  loadKernel(path: string, data: Uint8Array): void;
 }

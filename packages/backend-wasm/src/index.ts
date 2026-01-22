@@ -1,4 +1,7 @@
 import type {
+  Found,
+  KernelData,
+  KernelKind,
   KernelSource,
   SpkezrResult,
   SpiceBackend,
@@ -56,7 +59,7 @@ function dirnamePosix(p: string): string {
 
 function callWithError(
   module: EmscriptenModule,
-  fn: "tspice_furnsh" | "tspice_unload",
+  fn: "tspice_furnsh" | "tspice_unload" | "tspice_kclear",
   args: unknown[],
 ): void {
   const errMaxBytes = 2048;
@@ -118,6 +121,137 @@ function ktotalAllWithError(module: EmscriptenModule): number {
       module._free(outPtr);
     }
   } finally {
+    module._free(errPtr);
+  }
+}
+
+function ktotalWithError(module: EmscriptenModule, kind: KernelKind): number {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  if (!errPtr) {
+    throw new Error("WASM malloc failed");
+  }
+
+  const outCountPtr = module._malloc(4);
+  if (!outCountPtr) {
+    module._free(errPtr);
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    // tspice_ktotal(kind, outCountPtr, errPtr, errMaxBytes)
+    const rc = module.ccall(
+      "tspice_ktotal",
+      "number",
+      ["string", "number", "number", "number"],
+      [kind, outCountPtr, errPtr, errMaxBytes],
+    ) as number;
+
+    if (rc !== 0) {
+      throw new Error(getErrorMessage(module, errPtr, errMaxBytes) || `CSPICE call failed with code ${rc}`);
+    }
+
+    return module.HEAP32[outCountPtr >> 2] ?? 0;
+  } finally {
+    module._free(outCountPtr);
+    module._free(errPtr);
+  }
+}
+
+function kdataWithError(
+  module: EmscriptenModule,
+  which: number,
+  kind: KernelKind,
+): Found<KernelData> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  if (!errPtr) {
+    throw new Error("WASM malloc failed");
+  }
+
+  const fileMaxBytes = 2048;
+  const filtypMaxBytes = 256;
+  const sourceMaxBytes = 2048;
+
+  const filePtr = module._malloc(fileMaxBytes);
+  const filtypPtr = module._malloc(filtypMaxBytes);
+  const sourcePtr = module._malloc(sourceMaxBytes);
+  const outHandlePtr = module._malloc(4);
+  const outFoundPtr = module._malloc(4);
+
+  if (!filePtr || !filtypPtr || !sourcePtr || !outHandlePtr || !outFoundPtr) {
+    if (filePtr) module._free(filePtr);
+    if (filtypPtr) module._free(filtypPtr);
+    if (sourcePtr) module._free(sourcePtr);
+    if (outHandlePtr) module._free(outHandlePtr);
+    if (outFoundPtr) module._free(outFoundPtr);
+    module._free(errPtr);
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    // tspice_kdata(which, kind, filePtr, fileMaxBytes, filtypPtr, filtypMaxBytes, sourcePtr,
+    //             sourceMaxBytes, outHandlePtr, outFoundPtr, errPtr, errMaxBytes)
+    const rc = module.ccall(
+      "tspice_kdata",
+      "number",
+      [
+        "number",
+        "string",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+      ],
+      [
+        which,
+        kind,
+        filePtr,
+        fileMaxBytes,
+        filtypPtr,
+        filtypMaxBytes,
+        sourcePtr,
+        sourceMaxBytes,
+        outHandlePtr,
+        outFoundPtr,
+        errPtr,
+        errMaxBytes,
+      ],
+    ) as number;
+
+    if (rc !== 0) {
+      throw new Error(getErrorMessage(module, errPtr, errMaxBytes) || `CSPICE call failed with code ${rc}`);
+    }
+
+    const found = (module.HEAP32[outFoundPtr >> 2] ?? 0) !== 0;
+    if (!found) {
+      return { found: false };
+    }
+
+    const file = module.UTF8ToString(filePtr, fileMaxBytes).trim();
+    const filtyp = module.UTF8ToString(filtypPtr, filtypMaxBytes).trim();
+    const source = module.UTF8ToString(sourcePtr, sourceMaxBytes).trim();
+    const handle = module.HEAP32[outHandlePtr >> 2] ?? 0;
+
+    return {
+      found: true,
+      file,
+      filtyp,
+      source,
+      handle,
+    };
+  } finally {
+    module._free(outFoundPtr);
+    module._free(outHandlePtr);
+    module._free(sourcePtr);
+    module._free(filtypPtr);
+    module._free(filePtr);
     module._free(errPtr);
   }
 }
@@ -424,9 +558,22 @@ export async function createWasmBackend(
     typeof module.ccall !== "function" ||
     typeof module.FS?.mkdirTree !== "function" ||
     typeof module.FS?.writeFile !== "function" ||
+    !(module.HEAP32 instanceof Int32Array) ||
     !(module.HEAPF64 instanceof Float64Array)
   ) {
     throw new Error("WASM module is missing expected exports");
+  }
+
+  // Phase 1 exports.
+  const moduleAny = module as unknown as Record<string, unknown>;
+  if (
+    typeof moduleAny._tspice_kclear !== "function" ||
+    typeof moduleAny._tspice_ktotal !== "function" ||
+    typeof moduleAny._tspice_kdata !== "function"
+  ) {
+    throw new Error(
+      "WASM module is missing expected Phase 1 kernel exports (_tspice_kclear/_tspice_ktotal/_tspice_kdata). Regenerate via scripts/build-backend-wasm.mjs",
+    );
   }
 
   // The toolkit version is constant for the lifetime of a loaded module.
@@ -452,8 +599,15 @@ export async function createWasmBackend(
     module.FS.writeFile(path, bytes);
   }
 
-  function loadKernel(path: string): void {
+  function furnshPath(path: string): void {
     callWithError(module, "tspice_furnsh", [path]);
+  }
+
+  function loadKernel(path: string, data: Uint8Array): void {
+    // Allow `loadKernel("naif0012.tls", bytes)` which prefixes /kernels and creates dirs.
+    const fullPath = path.startsWith("/") ? path : `/kernels/${path}`;
+    writeFile(fullPath, data);
+    furnshPath(fullPath);
   }
 
   const backend: SpiceBackendWasm = {
@@ -466,15 +620,25 @@ export async function createWasmBackend(
 
     furnsh: (kernel: KernelSource) => {
       if (typeof kernel === "string") {
-        loadKernel(kernel);
+        furnshPath(kernel);
         return;
       }
 
       writeFile(kernel.path, kernel.bytes);
-      loadKernel(kernel.path);
+      furnshPath(kernel.path);
     },
     unload: (path: string) => {
       callWithError(module, "tspice_unload", [path]);
+    },
+
+    kclear: () => {
+      callWithError(module, "tspice_kclear", []);
+    },
+    ktotal: (kind: KernelKind = "ALL") => {
+      return ktotalWithError(module, kind);
+    },
+    kdata: (which: number, kind: KernelKind = "ALL") => {
+      return kdataWithError(module, which, kind);
     },
     tkvrsn: (item) => {
       if (item !== "TOOLKIT") {
