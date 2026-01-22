@@ -169,7 +169,7 @@ execFileSync(
     "-s",
     "EXPORTED_RUNTIME_METHODS=['UTF8ToString','FS']",
     "-s",
-    "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_str2et','_tspice_et2utc','_tspice_timout','_malloc','_free']",
+    "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_str2et','_tspice_et2utc','_tspice_timout','_tspice_bodn2c','_tspice_bodc2n','_tspice_namfrm','_tspice_frmnam','_tspice_pxform','_tspice_sxform','_tspice_spkezr','_tspice_spkpos','_malloc','_free']",
     "-o",
     outputJsPath,
     ...includeDirs,

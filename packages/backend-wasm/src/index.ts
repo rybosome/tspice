@@ -7,6 +7,7 @@ import type {
   Matrix6,
   SpiceBackendWasm,
   State6,
+  Vector3,
 } from "@rybosome/tspice-backend-contract";
 
 export type CreateWasmBackendOptions = {
@@ -69,12 +70,72 @@ type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_bodn2c(namePtr: number, outCodePtr: number, foundPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_bodc2n(
+    code: number,
+    outNamePtr: number,
+    outNameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_namfrm(
+    frameNamePtr: number,
+    outFrameIdPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_frmnam(
+    frameId: number,
+    outFrameNamePtr: number,
+    outFrameNameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_pxform(
+    fromPtr: number,
+    toPtr: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sxform(
+    fromPtr: number,
+    toPtr: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkezr(
+    targetPtr: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    obsPtr: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkpos(
+    targetPtr: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    obsPtr: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   FS: any;
-};
-
-const NOT_IMPL = () => {
-  throw new Error("Not implemented yet");
 };
 
 function writeUtf8CString(module: EmscriptenModule, value: string): number {
@@ -341,6 +402,258 @@ function tspiceCallTimout(module: EmscriptenModule, et: number, picture: string)
   }
 }
 
+function tspiceCallFoundInt(
+  module: EmscriptenModule,
+  fn: (argPtr: number, outIntPtr: number, foundPtr: number, errPtr: number, errMaxBytes: number) => number,
+  arg: string,
+): Found<{ value: number }> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const argPtr = writeUtf8CString(module, arg);
+  const outPtr = module._malloc(4);
+  const foundPtr = module._malloc(4);
+
+  if (!errPtr || !argPtr || !outPtr || !foundPtr) {
+    for (const ptr of [foundPtr, outPtr, argPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAP32[outPtr >> 2] = 0;
+    module.HEAP32[foundPtr >> 2] = 0;
+    const result = fn(argPtr, outPtr, foundPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+    if (!found) {
+      return { found: false };
+    }
+    return { found: true, value: module.HEAP32[outPtr >> 2] ?? 0 };
+  } finally {
+    module._free(foundPtr);
+    module._free(outPtr);
+    module._free(argPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallFoundString(
+  module: EmscriptenModule,
+  fn: (
+    code: number,
+    outStrPtr: number,
+    outStrMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ) => number,
+  code: number,
+): Found<{ value: string }> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const outMaxBytes = 256;
+  const outPtr = module._malloc(outMaxBytes);
+  const foundPtr = module._malloc(4);
+
+  if (!errPtr || !outPtr || !foundPtr) {
+    for (const ptr of [foundPtr, outPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPU8[outPtr] = 0;
+    module.HEAP32[foundPtr >> 2] = 0;
+    const result = fn(code, outPtr, outMaxBytes, foundPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+    if (!found) {
+      return { found: false };
+    }
+    return { found: true, value: module.UTF8ToString(outPtr, outMaxBytes).trim() };
+  } finally {
+    module._free(foundPtr);
+    module._free(outPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et: number): Matrix3 {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const fromPtr = writeUtf8CString(module, from);
+  const toPtr = writeUtf8CString(module, to);
+  const outPtr = module._malloc(9 * 8);
+
+  if (!errPtr || !fromPtr || !toPtr || !outPtr) {
+    for (const ptr of [outPtr, toPtr, fromPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const result = module._tspice_pxform(fromPtr, toPtr, et, outPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 9));
+    return out as unknown as Matrix3;
+  } finally {
+    module._free(outPtr);
+    module._free(toPtr);
+    module._free(fromPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallSxform(module: EmscriptenModule, from: string, to: string, et: number): Matrix6 {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const fromPtr = writeUtf8CString(module, from);
+  const toPtr = writeUtf8CString(module, to);
+  const outPtr = module._malloc(36 * 8);
+
+  if (!errPtr || !fromPtr || !toPtr || !outPtr) {
+    for (const ptr of [outPtr, toPtr, fromPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const result = module._tspice_sxform(fromPtr, toPtr, et, outPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 36));
+    return out as unknown as Matrix6;
+  } finally {
+    module._free(outPtr);
+    module._free(toPtr);
+    module._free(fromPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallSpkezr(
+  module: EmscriptenModule,
+  target: string,
+  et: number,
+  ref: string,
+  abcorr: AbCorr,
+  obs: string,
+): { state: State6; lt: number } {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const targetPtr = writeUtf8CString(module, target);
+  const refPtr = writeUtf8CString(module, ref);
+  const abcorrPtr = writeUtf8CString(module, abcorr);
+  const obsPtr = writeUtf8CString(module, obs);
+  const outStatePtr = module._malloc(6 * 8);
+  const outLtPtr = module._malloc(8);
+
+  if (!errPtr || !targetPtr || !refPtr || !abcorrPtr || !obsPtr || !outStatePtr || !outLtPtr) {
+    for (const ptr of [outLtPtr, outStatePtr, obsPtr, abcorrPtr, refPtr, targetPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64[outLtPtr >> 3] = 0;
+    const result = module._tspice_spkezr(
+      targetPtr,
+      et,
+      refPtr,
+      abcorrPtr,
+      obsPtr,
+      outStatePtr,
+      outLtPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const state = Array.from(
+      module.HEAPF64.subarray(outStatePtr >> 3, (outStatePtr >> 3) + 6),
+    ) as unknown as State6;
+    const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
+    return { state, lt };
+  } finally {
+    module._free(outLtPtr);
+    module._free(outStatePtr);
+    module._free(obsPtr);
+    module._free(abcorrPtr);
+    module._free(refPtr);
+    module._free(targetPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallSpkpos(
+  module: EmscriptenModule,
+  target: string,
+  et: number,
+  ref: string,
+  abcorr: AbCorr,
+  obs: string,
+): { pos: Vector3; lt: number } {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const targetPtr = writeUtf8CString(module, target);
+  const refPtr = writeUtf8CString(module, ref);
+  const abcorrPtr = writeUtf8CString(module, abcorr);
+  const obsPtr = writeUtf8CString(module, obs);
+  const outPosPtr = module._malloc(3 * 8);
+  const outLtPtr = module._malloc(8);
+
+  if (!errPtr || !targetPtr || !refPtr || !abcorrPtr || !obsPtr || !outPosPtr || !outLtPtr) {
+    for (const ptr of [outLtPtr, outPosPtr, obsPtr, abcorrPtr, refPtr, targetPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64[outLtPtr >> 3] = 0;
+    const result = module._tspice_spkpos(
+      targetPtr,
+      et,
+      refPtr,
+      abcorrPtr,
+      obsPtr,
+      outPosPtr,
+      outLtPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const pos = Array.from(
+      module.HEAPF64.subarray(outPosPtr >> 3, (outPosPtr >> 3) + 3),
+    ) as unknown as Vector3;
+    const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
+    return { pos, lt };
+  } finally {
+    module._free(outLtPtr);
+    module._free(outPosPtr);
+    module._free(obsPtr);
+    module._free(abcorrPtr);
+    module._free(refPtr);
+    module._free(targetPtr);
+    module._free(errPtr);
+  }
+}
+
 function getToolkitVersion(module: EmscriptenModule): string {
   const outMaxBytes = 256;
   const errMaxBytes = 2048;
@@ -424,7 +737,15 @@ export async function createWasmBackend(
     typeof module._tspice_kdata !== "function" ||
     typeof module._tspice_str2et !== "function" ||
     typeof module._tspice_et2utc !== "function" ||
-    typeof module._tspice_timout !== "function"
+    typeof module._tspice_timout !== "function" ||
+    typeof module._tspice_bodn2c !== "function" ||
+    typeof module._tspice_bodc2n !== "function" ||
+    typeof module._tspice_namfrm !== "function" ||
+    typeof module._tspice_frmnam !== "function" ||
+    typeof module._tspice_pxform !== "function" ||
+    typeof module._tspice_sxform !== "function" ||
+    typeof module._tspice_spkezr !== "function" ||
+    typeof module._tspice_spkpos !== "function"
   ) {
     throw new Error("WASM module is missing expected exports");
   }
@@ -469,22 +790,42 @@ export async function createWasmBackend(
     },
 
     // Phase 2
-    bodn2c: NOT_IMPL as unknown as (name: string) => Found<{ code: number }>,
-    bodc2n: NOT_IMPL as unknown as (code: number) => Found<{ name: string }>,
-    namfrm: NOT_IMPL as unknown as (frameName: string) => Found<{ frameId: number }>,
-    frmnam: NOT_IMPL as unknown as (frameId: number) => Found<{ frameName: string }>,
+    bodn2c(name: string) {
+      const out = tspiceCallFoundInt(module, module._tspice_bodn2c, name);
+      if (!out.found) return { found: false };
+      return { found: true, code: out.value };
+    },
+    bodc2n(code: number) {
+      const out = tspiceCallFoundString(module, module._tspice_bodc2n, code);
+      if (!out.found) return { found: false };
+      return { found: true, name: out.value };
+    },
+    namfrm(frameName: string) {
+      const out = tspiceCallFoundInt(module, module._tspice_namfrm, frameName);
+      if (!out.found) return { found: false };
+      return { found: true, frameId: out.value };
+    },
+    frmnam(frameId: number) {
+      const out = tspiceCallFoundString(module, module._tspice_frmnam, frameId);
+      if (!out.found) return { found: false };
+      return { found: true, frameName: out.value };
+    },
 
     // Phase 3
-    spkezr: NOT_IMPL as unknown as (
-      target: string,
-      et: number,
-      ref: string,
-      abcorr: AbCorr,
-      obs: string,
-    ) => { state: State6; lt: number },
+    spkezr(target: string, et: number, ref: string, abcorr: AbCorr, obs: string) {
+      return tspiceCallSpkezr(module, target, et, ref, abcorr, obs);
+    },
 
-    pxform: NOT_IMPL as unknown as (from: string, to: string, et: number) => Matrix3,
-    sxform: NOT_IMPL as unknown as (from: string, to: string, et: number) => Matrix6,
+    spkpos(target: string, et: number, ref: string, abcorr: AbCorr, obs: string) {
+      return tspiceCallSpkpos(module, target, et, ref, abcorr, obs);
+    },
+
+    pxform(from: string, to: string, et: number) {
+      return tspiceCallPxform(module, from, to, et);
+    },
+    sxform(from: string, to: string, et: number) {
+      return tspiceCallSxform(module, from, to, et);
+    },
 
     // WASM-only
     writeFile(path: string, data: Uint8Array) {

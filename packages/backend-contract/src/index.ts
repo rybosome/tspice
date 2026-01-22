@@ -147,6 +147,14 @@ export interface SpiceBackend {
     obs: string,
   ): { state: State6; lt: number };
 
+  spkpos(
+    target: string,
+    et: number,
+    ref: string,
+    abcorr: AbCorr,
+    obs: string,
+  ): { pos: Vector3; lt: number };
+
   pxform(from: string, to: string, et: number): Matrix3;
   sxform(from: string, to: string, et: number): Matrix6;
 }

@@ -32,6 +32,14 @@ export type NativeAddon = {
     abcorr: string,
     obs: string
   ): { state: number[]; lt: number };
+
+  spkpos(
+    target: string,
+    et: number,
+    ref: string,
+    abcorr: string,
+    obs: string
+  ): { pos: number[]; lt: number };
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 };
