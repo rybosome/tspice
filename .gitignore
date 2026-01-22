@@ -2,6 +2,7 @@ node_modules
 dist
 .turbo
 .cache/cspice
+.cache/wasm-build
 packages/backend-node/native/generated
 
 *.tsbuildinfo

@@ -284,6 +284,30 @@ static Napi::Object Kdata(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static Napi::Number KtotalAll(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 0) {
+    Napi::TypeError::New(env, "__ktotalAll() does not take any arguments").ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceInt count = 0;
+  ktotal_c("ALL", &count);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling ktotal_c(\"ALL\"):\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  return Napi::Number::New(env, static_cast<double>(count));
+}
+
 static Napi::Number Str2et(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -774,6 +798,7 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("kclear", Napi::Function::New(env, Kclear));
   exports.Set("ktotal", Napi::Function::New(env, Ktotal));
   exports.Set("kdata", Napi::Function::New(env, Kdata));
+  exports.Set("__ktotalAll", Napi::Function::New(env, KtotalAll));
   exports.Set("str2et", Napi::Function::New(env, Str2et));
   exports.Set("et2utc", Napi::Function::New(env, Et2utc));
   exports.Set("timout", Napi::Function::New(env, Timout));

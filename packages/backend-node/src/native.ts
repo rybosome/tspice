@@ -44,6 +44,9 @@ export type NativeAddon = {
   ): { pos: number[]; lt: number };
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
+
+  /** Internal test helper (not part of the backend contract). */
+  __ktotalAll(): number;
 };
 
 let cachedAddon: NativeAddon | undefined;
