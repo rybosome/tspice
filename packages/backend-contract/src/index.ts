@@ -1,14 +1,15 @@
 export const BACKEND_KINDS = ["node", "wasm"] as const;
+
 export type BackendKind = (typeof BACKEND_KINDS)[number];
 
-/** A 3D vector. */
-export type Vector3 = readonly [number, number, number];
+export type KernelSource =
+  | string
+  | {
+      path: string;
+      bytes: Uint8Array;
+    };
 
-/** A 6-element state vector (position [km] + velocity [km/s]). */
-export type State6 = readonly [number, number, number, number, number, number];
-
-/** 3x3 matrix, row-major, flat length 9. */
-export type Matrix3 = readonly [
+export type SpiceMatrix3x3 = [
   number,
   number,
   number,
@@ -20,38 +21,7 @@ export type Matrix3 = readonly [
   number,
 ];
 
-/** 6x6 matrix, row-major, flat length 36. */
-export type Matrix6 = readonly [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
+export type SpiceStateVector = [
   number,
   number,
   number,
@@ -60,88 +30,62 @@ export type Matrix6 = readonly [
   number,
 ];
 
-/**
- * "Not found" wrapper used instead of returning `null`.
- *
- * Example:
- * - `{ found: false }`
- * - `{ found: true, name: "EARTH" }`
- */
-export type Found<T extends object> = { found: false } | ({ found: true } & T);
+export type SpkezrResult = {
+  state: SpiceStateVector;
+  lt: number;
+};
 
-/** SPICE aberration correction flags. */
-export type AbCorr =
-  | "NONE"
-  | "LT"
-  | "LT+S"
-  | "CN"
-  | "CN+S"
-  | "XLT"
-  | "XLT+S"
-  | "XCN"
-  | "XCN+S";
-
-/** Kernel types used by summary/introspection APIs. */
-export type KernelKind =
-  | "SPK"
-  | "CK"
-  | "PCK"
-  | "LSK"
-  | "FK"
-  | "IK"
-  | "SCLK"
-  | "EK"
-  | "META";
-
-/** Formats accepted by `et2utc`. */
-export type Et2UtcFormat = "C" | "D" | "J" | "ISOC" | "ISOD";
-
-/**
- * Shared backend contract.
- *
- * NOTE: Some methods may be unimplemented in early PRs; backends are allowed
- * to throw `Error("Not implemented yet")` until subsequent PRs provide real
- * implementations.
- */
 export interface SpiceBackend {
   kind: BackendKind;
-
-  // ---- Phase 0 / plumbing
   spiceVersion(): string;
 
-  // ---- Phase 1: kernels + time
-  furnsh(path: string): void;
+  /**
+   * Load a SPICE kernel.
+   *
+   * - If a string is provided, it is treated as a filesystem path.
+   * - If bytes are provided, the backend may write them to a virtual filesystem
+   *   at `path` before calling into SPICE.
+   */
+  furnsh(kernel: KernelSource): void;
+
+  /**
+   * Unload a SPICE kernel previously loaded via `furnsh()`.
+   */
   unload(path: string): void;
-  kclear(): void;
 
-  str2et(utc: string): number;
-  et2utc(et: number, format: Et2UtcFormat, prec: number): string;
+  /**
+   * Thin wrapper over the SPICE primitive `tkvrsn()`.
+   *
+   * Phase 1: only the TOOLKIT item is required.
+   */
+  tkvrsn(item: "TOOLKIT"): string;
 
-  // ---- Phase 2: IDs / names
-  bodn2c(name: string): Found<{ code: number }>;
-  bodc2n(code: number): Found<{ name: string }>;
+  // --- Phase 3 low-level primitives ---
 
-  namfrm(frameName: string): Found<{ frameId: number }>;
-  frmnam(frameId: number): Found<{ frameName: string }>;
+  /** Convert a time string to ET seconds past J2000. */
+  str2et(time: string): number;
 
-  // ---- Phase 3: geometry / transforms
+  /** Convert ET seconds past J2000 to a formatted UTC string. */
+  et2utc(et: number, format: string, prec: number): string;
+
+  /** Compute a 3x3 frame transformation matrix (row-major). */
+  pxform(from: string, to: string, et: number): SpiceMatrix3x3;
+
+  /** Compute state (6-vector) and light time via `spkezr`. */
   spkezr(
     target: string,
     et: number,
     ref: string,
-    abcorr: AbCorr,
-    obs: string,
-  ): { state: State6; lt: number };
-
-  pxform(from: string, to: string, et: number): Matrix3;
-  sxform(from: string, to: string, et: number): Matrix6;
+    abcorr: string,
+    observer: string,
+  ): SpkezrResult;
 }
 
 /**
- * WASM-only helpers (not available on the node backend).
- *
- * These are used to populate the in-memory FS and then load kernels.
- */
+* WASM-only helpers (not available on the node backend).
+*
+* These are used to populate the in-memory FS and then load kernels.
+*/
 export interface SpiceBackendWasm extends SpiceBackend {
   kind: "wasm";
 

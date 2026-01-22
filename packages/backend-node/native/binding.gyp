@@ -6,10 +6,14 @@
   "targets": [
     {
       "target_name": "tspice_backend_node",
-      "sources": ["src/addon.cc"],
+      "sources": [
+        "src/addon.cc",
+        "../../backend-shim-c/src/tspice_backend_shim.c"
+      ],
       "include_dirs": [
         "<!(node -p \"require('node-addon-api').include_dir\")",
         "<(tspice_cspice_dir)/include",
+        "../../backend-shim-c/include",
         "<(tspice_native_generated_dir)"
       ],
       "dependencies": ["<!(node -p \"require('node-addon-api').gyp\")"],

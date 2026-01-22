@@ -4,30 +4,22 @@ import { createRequire } from "node:module";
 
 export type NativeAddon = {
   spiceVersion(): string;
-
-  // Phase 1
   furnsh(path: string): void;
   unload(path: string): void;
-  kclear(): void;
-  str2et(utc: string): number;
+
+  str2et(time: string): number;
   et2utc(et: number, format: string, prec: number): string;
-
-  // Phase 2
-  bodn2c(name: string): { found: boolean; code?: number };
-  bodc2n(code: number): { found: boolean; name?: string };
-  namfrm(frameName: string): { found: boolean; frameId?: number };
-  frmnam(frameId: number): { found: boolean; frameName?: string };
-
-  // Phase 3
+  pxform(from: string, to: string, et: number): number[];
   spkezr(
     target: string,
     et: number,
     ref: string,
     abcorr: string,
-    obs: string
+    observer: string,
   ): { state: number[]; lt: number };
-  pxform(from: string, to: string, et: number): number[];
-  sxform(from: string, to: string, et: number): number[];
+
+  /** Internal test helper (not part of the backend contract). */
+  __ktotalAll(): number;
 };
 
 let cachedAddon: NativeAddon | undefined;
