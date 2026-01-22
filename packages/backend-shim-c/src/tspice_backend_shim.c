@@ -421,6 +421,10 @@ int tspice_namfrm(
   }
 
   SpiceInt frameId = 0;
+  // CSPICE N0067 `namfrm_c` signature is:
+  //   void namfrm_c ( ConstSpiceChar *frname, SpiceInt *frcode );
+  // It does not provide an explicit "found" output.
+  // Convention: a frame code of 0 means "not found".
   namfrm_c(frameName, &frameId);
   if (failed_c()) {
     GetSpiceErrorMessageAndReset(err, errMaxBytes);
