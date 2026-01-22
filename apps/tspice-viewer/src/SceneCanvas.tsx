@@ -98,8 +98,6 @@ export function SceneCanvas() {
       disposeMaterial(axes.material)
 
       renderer.dispose()
-      // Best-effort context cleanup. Some browsers may ignore this.
-      renderer.forceContextLoss?.()
     }
   }, [])
 
