@@ -15,7 +15,7 @@ describe("@rybosome/tspice-backend-wasm", () => {
   it("loads the wasm module", async () => {
     const backend = await createWasmBackend();
     expect(backend.kind).toBe("wasm");
-    const version = backend.spiceVersion();
+    const version = backend.tkvrsn("TOOLKIT");
     expect(version).not.toBe("");
     expect(version).toContain(toolkitVersion);
   });

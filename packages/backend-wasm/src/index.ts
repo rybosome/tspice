@@ -1,12 +1,13 @@
 import type {
-  AbCorr,
-  Et2UtcFormat,
   Found,
+  KernelData,
   KernelKind,
-  Matrix3,
-  Matrix6,
+  KernelSource,
+  SpkezrResult,
+  SpiceBackend,
   SpiceBackendWasm,
-  State6,
+  SpiceMatrix3x3,
+  SpiceStateVector,
 } from "@rybosome/tspice-backend-contract";
 
 export type CreateWasmBackendOptions = {
@@ -21,87 +22,45 @@ type EmscriptenModule = {
   _free(ptr: number): void;
   UTF8ToString(ptr: number, maxBytesToRead?: number): string;
 
-  HEAPU8: Uint8Array;
+  // Emscripten runtime helpers enabled via EXPORTED_RUNTIME_METHODS.
+  ccall: (
+    ident: string,
+    returnType: "number" | "string" | "void" | null,
+    argTypes: Array<"string" | "number" | "array" | "boolean">,
+    args: unknown[],
+  ) => unknown;
+  FS: {
+    mkdirTree(path: string): void;
+    writeFile(path: string, data: Uint8Array): void;
+  };
   HEAP32: Int32Array;
   HEAPF64: Float64Array;
+
+  // Historical signatures:
+  // - (outPtr, errPtr, errMaxBytes) -> 0 on success
+  // - (errPtr, errMaxBytes) -> count (or -1 on error)
+  _tspice_ktotal_all(...args: number[]): number;
+
   _tspice_tkvrsn_toolkit(
     outPtr: number,
     outMaxBytes: number,
     errPtr: number,
     errMaxBytes: number,
   ): number;
-
-  _tspice_furnsh(pathPtr: number, errPtr: number, errMaxBytes: number): number;
-  _tspice_unload(pathPtr: number, errPtr: number, errMaxBytes: number): number;
-  _tspice_kclear(errPtr: number, errMaxBytes: number): number;
-  _tspice_ktotal(kindPtr: number, outCountPtr: number, errPtr: number, errMaxBytes: number): number;
-  _tspice_kdata(
-    which: number,
-    kindPtr: number,
-    filePtr: number,
-    fileMaxBytes: number,
-    filtypPtr: number,
-    filtypMaxBytes: number,
-    sourcePtr: number,
-    sourceMaxBytes: number,
-    handlePtr: number,
-    foundPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-
-  _tspice_str2et(utcPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
-  _tspice_et2utc(
-    et: number,
-    formatPtr: number,
-    prec: number,
-    outPtr: number,
-    outMaxBytes: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_timout(
-    et: number,
-    picturePtr: number,
-    outPtr: number,
-    outMaxBytes: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  FS: any;
 };
 
-const NOT_IMPL = () => {
-  throw new Error("Not implemented yet");
-};
-
-function writeUtf8CString(module: EmscriptenModule, value: string): number {
-  const encoder = new TextEncoder();
-  const encoded = encoder.encode(value);
-  const ptr = module._malloc(encoded.length + 1);
-  if (!ptr) {
-    throw new Error("WASM malloc failed");
+function dirnamePosix(p: string): string {
+  const idx = p.lastIndexOf("/");
+  if (idx <= 0) {
+    return "/";
   }
-  module.HEAPU8.set(encoded, ptr);
-  module.HEAPU8[ptr + encoded.length] = 0;
-  return ptr;
+  return p.slice(0, idx);
 }
 
-function throwWasmSpiceError(
+function callWithError(
   module: EmscriptenModule,
-  errPtr: number,
-  errMaxBytes: number,
-  code: number,
-): never {
-  const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
-  throw new Error(message || `CSPICE call failed with code ${code}`);
-}
-
-function tspiceCall0(
-  module: EmscriptenModule,
-  fn: (errPtr: number, errMaxBytes: number) => number,
+  fn: "tspice_furnsh" | "tspice_unload" | "tspice_kclear",
+  args: unknown[],
 ): void {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
@@ -110,233 +69,189 @@ function tspiceCall0(
   }
 
   try {
-    const result = fn(errPtr, errMaxBytes);
+    const result = module.ccall(
+      fn,
+      "number",
+      // Note: ccall argTypes must match the args array passed below.
+      [...args.map((arg) => (typeof arg === "string" ? "string" : "number")), "number", "number"],
+      [...args, errPtr, errMaxBytes],
+    ) as number;
+
     if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
+      throw new Error(message || `CSPICE call failed with code ${result}`);
     }
   } finally {
     module._free(errPtr);
   }
 }
 
-function tspiceCall1Path(
-  module: EmscriptenModule,
-  fn: (pathPtr: number, errPtr: number, errMaxBytes: number) => number,
-  path: string,
-): void {
+function ktotalAllWithError(module: EmscriptenModule): number {
+  // Prefer calling the exported wrapper directly so we can support both
+  // historical signatures without relying on emscripten `ccall` argTypes.
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
-  const pathPtr = writeUtf8CString(module, path);
-  if (!errPtr || !pathPtr) {
-    if (pathPtr) module._free(pathPtr);
-    if (errPtr) module._free(errPtr);
+  if (!errPtr) {
     throw new Error("WASM malloc failed");
   }
 
   try {
-    const result = fn(pathPtr, errPtr, errMaxBytes);
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    if (module._tspice_ktotal_all.length === 2) {
+      const result = module._tspice_ktotal_all(errPtr, errMaxBytes);
+      if (result < 0) {
+        const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
+        throw new Error(message || "CSPICE call failed");
+      }
+      return result;
+    }
+
+    const outPtr = module._malloc(4);
+    if (!outPtr) {
+      throw new Error("WASM malloc failed");
+    }
+
+    try {
+      const rc = module._tspice_ktotal_all(outPtr, errPtr, errMaxBytes);
+      if (rc !== 0) {
+        const message = module.UTF8ToString(errPtr, errMaxBytes).trim();
+        throw new Error(message || `CSPICE call failed with code ${rc}`);
+      }
+      return module.HEAP32[outPtr >> 2] ?? 0;
+    } finally {
+      module._free(outPtr);
     }
   } finally {
-    module._free(pathPtr);
     module._free(errPtr);
   }
 }
 
-function tspiceCallKtotal(module: EmscriptenModule, kind: KernelKind): number {
+function ktotalWithError(module: EmscriptenModule, kind: KernelKind): number {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
-  const kindPtr = writeUtf8CString(module, kind);
+  if (!errPtr) {
+    throw new Error("WASM malloc failed");
+  }
+
   const outCountPtr = module._malloc(4);
-  if (!errPtr || !kindPtr || !outCountPtr) {
-    if (outCountPtr) module._free(outCountPtr);
-    if (kindPtr) module._free(kindPtr);
-    if (errPtr) module._free(errPtr);
+  if (!outCountPtr) {
+    module._free(errPtr);
     throw new Error("WASM malloc failed");
   }
 
   try {
-    module.HEAP32[outCountPtr >> 2] = 0;
-    const result = module._tspice_ktotal(kindPtr, outCountPtr, errPtr, errMaxBytes);
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    // tspice_ktotal(kind, outCountPtr, errPtr, errMaxBytes)
+    const rc = module.ccall(
+      "tspice_ktotal",
+      "number",
+      ["string", "number", "number", "number"],
+      [kind, outCountPtr, errPtr, errMaxBytes],
+    ) as number;
+
+    if (rc !== 0) {
+      throw new Error(getErrorMessage(module, errPtr, errMaxBytes) || `CSPICE call failed with code ${rc}`);
     }
+
     return module.HEAP32[outCountPtr >> 2] ?? 0;
   } finally {
     module._free(outCountPtr);
-    module._free(kindPtr);
     module._free(errPtr);
   }
 }
 
-function tspiceCallKdata(
+function kdataWithError(
   module: EmscriptenModule,
   which: number,
   kind: KernelKind,
-): Found<{ file: string; filtyp: string; source: string; handle: number }> {
+): Found<KernelData> {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
-  const kindPtr = writeUtf8CString(module, kind);
+  if (!errPtr) {
+    throw new Error("WASM malloc failed");
+  }
 
   const fileMaxBytes = 2048;
   const filtypMaxBytes = 256;
   const sourceMaxBytes = 2048;
+
   const filePtr = module._malloc(fileMaxBytes);
   const filtypPtr = module._malloc(filtypMaxBytes);
   const sourcePtr = module._malloc(sourceMaxBytes);
-  const handlePtr = module._malloc(4);
-  const foundPtr = module._malloc(4);
+  const outHandlePtr = module._malloc(4);
+  const outFoundPtr = module._malloc(4);
 
-  if (
-    !errPtr ||
-    !kindPtr ||
-    !filePtr ||
-    !filtypPtr ||
-    !sourcePtr ||
-    !handlePtr ||
-    !foundPtr
-  ) {
-    for (const ptr of [foundPtr, handlePtr, sourcePtr, filtypPtr, filePtr, kindPtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
+  if (!filePtr || !filtypPtr || !sourcePtr || !outHandlePtr || !outFoundPtr) {
+    if (filePtr) module._free(filePtr);
+    if (filtypPtr) module._free(filtypPtr);
+    if (sourcePtr) module._free(sourcePtr);
+    if (outHandlePtr) module._free(outHandlePtr);
+    if (outFoundPtr) module._free(outFoundPtr);
+    module._free(errPtr);
     throw new Error("WASM malloc failed");
   }
 
   try {
-    module.HEAP32[handlePtr >> 2] = 0;
-    module.HEAP32[foundPtr >> 2] = 0;
+    // tspice_kdata(which, kind, filePtr, fileMaxBytes, filtypPtr, filtypMaxBytes, sourcePtr,
+    //             sourceMaxBytes, outHandlePtr, outFoundPtr, errPtr, errMaxBytes)
+    const rc = module.ccall(
+      "tspice_kdata",
+      "number",
+      [
+        "number",
+        "string",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+      ],
+      [
+        which,
+        kind,
+        filePtr,
+        fileMaxBytes,
+        filtypPtr,
+        filtypMaxBytes,
+        sourcePtr,
+        sourceMaxBytes,
+        outHandlePtr,
+        outFoundPtr,
+        errPtr,
+        errMaxBytes,
+      ],
+    ) as number;
 
-    const result = module._tspice_kdata(
-      which,
-      kindPtr,
-      filePtr,
-      fileMaxBytes,
-      filtypPtr,
-      filtypMaxBytes,
-      sourcePtr,
-      sourceMaxBytes,
-      handlePtr,
-      foundPtr,
-      errPtr,
-      errMaxBytes,
-    );
-
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    if (rc !== 0) {
+      throw new Error(getErrorMessage(module, errPtr, errMaxBytes) || `CSPICE call failed with code ${rc}`);
     }
 
-    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+    const found = (module.HEAP32[outFoundPtr >> 2] ?? 0) !== 0;
     if (!found) {
       return { found: false };
     }
 
+    const file = module.UTF8ToString(filePtr, fileMaxBytes).trim();
+    const filtyp = module.UTF8ToString(filtypPtr, filtypMaxBytes).trim();
+    const source = module.UTF8ToString(sourcePtr, sourceMaxBytes).trim();
+    const handle = module.HEAP32[outHandlePtr >> 2] ?? 0;
+
     return {
       found: true,
-      file: module.UTF8ToString(filePtr, fileMaxBytes).trim(),
-      filtyp: module.UTF8ToString(filtypPtr, filtypMaxBytes).trim(),
-      source: module.UTF8ToString(sourcePtr, sourceMaxBytes).trim(),
-      handle: module.HEAP32[handlePtr >> 2] ?? 0,
+      file,
+      filtyp,
+      source,
+      handle,
     };
   } finally {
-    module._free(foundPtr);
-    module._free(handlePtr);
+    module._free(outFoundPtr);
+    module._free(outHandlePtr);
     module._free(sourcePtr);
     module._free(filtypPtr);
     module._free(filePtr);
-    module._free(kindPtr);
-    module._free(errPtr);
-  }
-}
-
-function tspiceCallStr2et(module: EmscriptenModule, utc: string): number {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const utcPtr = writeUtf8CString(module, utc);
-  const outEtPtr = module._malloc(8);
-
-  if (!errPtr || !utcPtr || !outEtPtr) {
-    for (const ptr of [outEtPtr, utcPtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAPF64[outEtPtr >> 3] = 0;
-    const result = module._tspice_str2et(utcPtr, outEtPtr, errPtr, errMaxBytes);
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-    return module.HEAPF64[outEtPtr >> 3] ?? 0;
-  } finally {
-    module._free(outEtPtr);
-    module._free(utcPtr);
-    module._free(errPtr);
-  }
-}
-
-function tspiceCallEt2utc(
-  module: EmscriptenModule,
-  et: number,
-  format: Et2UtcFormat,
-  prec: number,
-): string {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const formatPtr = writeUtf8CString(module, format);
-
-  // Buffer size includes terminating NUL.
-  const outMaxBytes = 2048;
-  const outPtr = module._malloc(outMaxBytes);
-
-  if (!errPtr || !formatPtr || !outPtr) {
-    for (const ptr of [outPtr, formatPtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAPU8[outPtr] = 0;
-    const result = module._tspice_et2utc(et, formatPtr, prec, outPtr, outMaxBytes, errPtr, errMaxBytes);
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-    return module.UTF8ToString(outPtr, outMaxBytes).trim();
-  } finally {
-    module._free(outPtr);
-    module._free(formatPtr);
-    module._free(errPtr);
-  }
-}
-
-function tspiceCallTimout(module: EmscriptenModule, et: number, picture: string): string {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const picturePtr = writeUtf8CString(module, picture);
-
-  // Buffer size includes terminating NUL.
-  const outMaxBytes = 2048;
-  const outPtr = module._malloc(outMaxBytes);
-
-  if (!errPtr || !picturePtr || !outPtr) {
-    for (const ptr of [outPtr, picturePtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAPU8[outPtr] = 0;
-    const result = module._tspice_timout(et, picturePtr, outPtr, outMaxBytes, errPtr, errMaxBytes);
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-    return module.UTF8ToString(outPtr, outMaxBytes).trim();
-  } finally {
-    module._free(outPtr);
-    module._free(picturePtr);
     module._free(errPtr);
   }
 }
@@ -377,6 +292,255 @@ function getToolkitVersion(module: EmscriptenModule): string {
   }
 }
 
+function getErrorMessage(
+  module: EmscriptenModule,
+  errPtr: number,
+  errMaxBytes: number,
+): string {
+  return module.UTF8ToString(errPtr, errMaxBytes).trim();
+}
+
+function str2etWithError(module: EmscriptenModule, time: string): number {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const outPtr = module._malloc(8);
+
+  if (!errPtr || !outPtr) {
+    if (errPtr) {
+      module._free(errPtr);
+    }
+    if (outPtr) {
+      module._free(outPtr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const rc = module.ccall(
+      "tspice_str2et",
+      "number",
+      ["string", "number", "number", "number"],
+      [time, outPtr, errPtr, errMaxBytes],
+    ) as number;
+
+    if (rc !== 0) {
+      const message = getErrorMessage(module, errPtr, errMaxBytes);
+      throw new Error(message || `CSPICE call failed with code ${rc}`);
+    }
+
+    return module.HEAPF64[outPtr >> 3] ?? 0;
+  } finally {
+    module._free(errPtr);
+    module._free(outPtr);
+  }
+}
+
+function et2utcWithError(
+  module: EmscriptenModule,
+  et: number,
+  format: string,
+  prec: number,
+): string {
+  const errMaxBytes = 2048;
+  const outMaxBytes = 256;
+  const errPtr = module._malloc(errMaxBytes);
+  const outPtr = module._malloc(outMaxBytes);
+
+  if (!errPtr || !outPtr) {
+    if (errPtr) {
+      module._free(errPtr);
+    }
+    if (outPtr) {
+      module._free(outPtr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const rc = module.ccall(
+      "tspice_et2utc",
+      "number",
+      [
+        "number",
+        "string",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+      ],
+      [et, format, prec, outPtr, outMaxBytes, errPtr, errMaxBytes],
+    ) as number;
+
+    if (rc !== 0) {
+      const message = getErrorMessage(module, errPtr, errMaxBytes);
+      throw new Error(message || `CSPICE call failed with code ${rc}`);
+    }
+
+    return module.UTF8ToString(outPtr, outMaxBytes);
+  } finally {
+    module._free(errPtr);
+    module._free(outPtr);
+  }
+}
+
+function timoutWithError(
+  module: EmscriptenModule,
+  et: number,
+  picture: string,
+): string {
+  const errMaxBytes = 2048;
+  const outMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const outPtr = module._malloc(outMaxBytes);
+
+  if (!errPtr || !outPtr) {
+    if (errPtr) {
+      module._free(errPtr);
+    }
+    if (outPtr) {
+      module._free(outPtr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const rc = module.ccall(
+      "tspice_timout",
+      "number",
+      ["number", "string", "number", "number", "number", "number"],
+      [et, picture, outPtr, outMaxBytes, errPtr, errMaxBytes],
+    ) as number;
+
+    if (rc !== 0) {
+      const message = getErrorMessage(module, errPtr, errMaxBytes);
+      throw new Error(message || `CSPICE call failed with code ${rc}`);
+    }
+
+    return module.UTF8ToString(outPtr, outMaxBytes);
+  } finally {
+    module._free(errPtr);
+    module._free(outPtr);
+  }
+}
+
+function pxformWithError(
+  module: EmscriptenModule,
+  from: string,
+  to: string,
+  et: number,
+): SpiceMatrix3x3 {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const outPtr = module._malloc(9 * 8);
+
+  if (!errPtr || !outPtr) {
+    if (errPtr) {
+      module._free(errPtr);
+    }
+    if (outPtr) {
+      module._free(outPtr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const rc = module.ccall(
+      "tspice_pxform",
+      "number",
+      ["string", "string", "number", "number", "number", "number"],
+      [from, to, et, outPtr, errPtr, errMaxBytes],
+    ) as number;
+
+    if (rc !== 0) {
+      const message = getErrorMessage(module, errPtr, errMaxBytes);
+      throw new Error(message || `CSPICE call failed with code ${rc}`);
+    }
+
+    const start = outPtr >> 3;
+    const m0 = module.HEAPF64[start + 0] ?? 0;
+    const m1 = module.HEAPF64[start + 1] ?? 0;
+    const m2 = module.HEAPF64[start + 2] ?? 0;
+    const m3 = module.HEAPF64[start + 3] ?? 0;
+    const m4 = module.HEAPF64[start + 4] ?? 0;
+    const m5 = module.HEAPF64[start + 5] ?? 0;
+    const m6 = module.HEAPF64[start + 6] ?? 0;
+    const m7 = module.HEAPF64[start + 7] ?? 0;
+    const m8 = module.HEAPF64[start + 8] ?? 0;
+    return [m0, m1, m2, m3, m4, m5, m6, m7, m8];
+  } finally {
+    module._free(errPtr);
+    module._free(outPtr);
+  }
+}
+
+function spkezrWithError(
+  module: EmscriptenModule,
+  target: string,
+  et: number,
+  ref: string,
+  abcorr: string,
+  observer: string,
+): SpkezrResult {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const statePtr = module._malloc(6 * 8);
+  const ltPtr = module._malloc(8);
+
+  if (!errPtr || !statePtr || !ltPtr) {
+    if (errPtr) {
+      module._free(errPtr);
+    }
+    if (statePtr) {
+      module._free(statePtr);
+    }
+    if (ltPtr) {
+      module._free(ltPtr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const rc = module.ccall(
+      "tspice_spkezr",
+      "number",
+      [
+        "string",
+        "number",
+        "string",
+        "string",
+        "string",
+        "number",
+        "number",
+        "number",
+        "number",
+      ],
+      [target, et, ref, abcorr, observer, statePtr, ltPtr, errPtr, errMaxBytes],
+    ) as number;
+
+    if (rc !== 0) {
+      const message = getErrorMessage(module, errPtr, errMaxBytes);
+      throw new Error(message || `CSPICE call failed with code ${rc}`);
+    }
+
+    const start = statePtr >> 3;
+    const s0 = module.HEAPF64[start + 0] ?? 0;
+    const s1 = module.HEAPF64[start + 1] ?? 0;
+    const s2 = module.HEAPF64[start + 2] ?? 0;
+    const s3 = module.HEAPF64[start + 3] ?? 0;
+    const s4 = module.HEAPF64[start + 4] ?? 0;
+    const s5 = module.HEAPF64[start + 5] ?? 0;
+    const state: SpiceStateVector = [s0, s1, s2, s3, s4, s5];
+
+    const lt = module.HEAPF64[ltPtr >> 3] ?? 0;
+    return { state, lt };
+  } finally {
+    module._free(errPtr);
+    module._free(statePtr);
+    module._free(ltPtr);
+  }
+}
+
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackendWasm> {
@@ -398,14 +562,28 @@ export async function createWasmBackend(
 
   let module: EmscriptenModule;
   try {
-    module = (await createEmscriptenModule({
+    const emscriptenOptions: Record<string, unknown> = {
       locateFile(path: string, prefix: string) {
         if (path === WASM_BINARY_FILENAME) {
           return wasmUrl;
         }
         return `${prefix}${path}`;
       },
-    })) as EmscriptenModule;
+    };
+
+    // Some Emscripten toolchains will attempt to use `fetch()` in Node if it's available
+    // (e.g. for `WebAssembly.instantiateStreaming`). Node's `fetch()` does not support
+    // `file://` URLs, so we preload the binary when running from the local filesystem.
+    if (typeof process !== "undefined" && process.versions?.node && wasmUrl.startsWith("file:")) {
+      const [{ readFile }, { fileURLToPath }] = await Promise.all([
+        import("node:fs/promises"),
+        import("node:url"),
+      ]);
+      const bytes = await readFile(fileURLToPath(wasmUrl));
+      emscriptenOptions.wasmBinary = new Uint8Array(bytes);
+    }
+
+    module = (await createEmscriptenModule(emscriptenOptions)) as EmscriptenModule;
   } catch (error) {
     throw new Error(
       `Failed to initialize tspice WASM module (wasmUrl=${wasmUrl}): ${String(error)}`,
@@ -417,85 +595,119 @@ export async function createWasmBackend(
     typeof module._malloc !== "function" ||
     typeof module._free !== "function" ||
     typeof module.UTF8ToString !== "function" ||
-    typeof module._tspice_furnsh !== "function" ||
-    typeof module._tspice_unload !== "function" ||
-    typeof module._tspice_kclear !== "function" ||
-    typeof module._tspice_ktotal !== "function" ||
-    typeof module._tspice_kdata !== "function" ||
-    typeof module._tspice_str2et !== "function" ||
-    typeof module._tspice_et2utc !== "function" ||
-    typeof module._tspice_timout !== "function"
+    typeof module.ccall !== "function" ||
+    typeof module.FS?.mkdirTree !== "function" ||
+    typeof module.FS?.writeFile !== "function" ||
+    !(module.HEAP32 instanceof Int32Array) ||
+    !(module.HEAPF64 instanceof Float64Array)
   ) {
     throw new Error("WASM module is missing expected exports");
+  }
+
+  // Phase 1 exports.
+  const moduleAny = module as unknown as Record<string, unknown>;
+  if (
+    typeof moduleAny._tspice_kclear !== "function" ||
+    typeof moduleAny._tspice_ktotal !== "function" ||
+    typeof moduleAny._tspice_kdata !== "function"
+  ) {
+    throw new Error(
+      "WASM module is missing expected Phase 1 kernel exports (_tspice_kclear/_tspice_ktotal/_tspice_kdata). Regenerate via scripts/build-backend-wasm.mjs",
+    );
   }
 
   // The toolkit version is constant for the lifetime of a loaded module.
   const toolkitVersion = getToolkitVersion(module);
 
-  return {
-    kind: "wasm",
+  function writeFile(path: string, data: Uint8Array): void {
+    const dir = dirnamePosix(path);
+    if (dir && dir !== "/") {
+      module.FS.mkdirTree(dir);
+    }
 
+    // `data` is typed as `Uint8Array`, but in Node it's commonly a `Buffer`
+    // (also a `Uint8Array`) which may be a view into a larger backing store
+    // (non-zero `byteOffset`, pooled slabs, etc.). Some Emscripten FS
+    // implementations have had issues writing such views correctly.
+    //
+    // Normalize to an offset-0, tightly sized `Uint8Array` before writing.
+    const bytes =
+      data.byteOffset === 0 && data.byteLength === data.buffer.byteLength
+        ? data
+        : new Uint8Array(data);
+
+    module.FS.writeFile(path, bytes);
+  }
+
+  function furnshPath(path: string): void {
+    callWithError(module, "tspice_furnsh", [path]);
+  }
+
+  function loadKernel(path: string, data: Uint8Array): void {
+    // Allow `loadKernel("naif0012.tls", bytes)` which prefixes /kernels and creates dirs.
+    const fullPath = path.startsWith("/") ? path : `/kernels/${path}`;
+    writeFile(fullPath, data);
+    furnshPath(fullPath);
+  }
+
+  const backend: SpiceBackendWasm = {
+    kind: "wasm",
     spiceVersion: () => toolkitVersion,
 
-    // Phase 1
-    furnsh(path: string) {
-      tspiceCall1Path(module, module._tspice_furnsh, path);
-    },
-    unload(path: string) {
-      tspiceCall1Path(module, module._tspice_unload, path);
-    },
-    kclear() {
-      tspiceCall0(module, module._tspice_kclear);
-    },
-
-    ktotal(kind: KernelKind = "ALL") {
-      return tspiceCallKtotal(module, kind);
-    },
-
-    kdata(which: number, kind: KernelKind = "ALL") {
-      return tspiceCallKdata(module, which, kind);
-    },
-
-    str2et(utc: string) {
-      return tspiceCallStr2et(module, utc);
-    },
-
-    et2utc(et: number, format: Et2UtcFormat, prec: number) {
-      return tspiceCallEt2utc(module, et, format, prec);
-    },
-
-    timout(et: number, picture: string) {
-      return tspiceCallTimout(module, et, picture);
-    },
-
-    // Phase 2
-    bodn2c: NOT_IMPL as unknown as (name: string) => Found<{ code: number }>,
-    bodc2n: NOT_IMPL as unknown as (code: number) => Found<{ name: string }>,
-    namfrm: NOT_IMPL as unknown as (frameName: string) => Found<{ frameId: number }>,
-    frmnam: NOT_IMPL as unknown as (frameId: number) => Found<{ frameName: string }>,
-
-    // Phase 3
-    spkezr: NOT_IMPL as unknown as (
-      target: string,
-      et: number,
-      ref: string,
-      abcorr: AbCorr,
-      obs: string,
-    ) => { state: State6; lt: number },
-
-    pxform: NOT_IMPL as unknown as (from: string, to: string, et: number) => Matrix3,
-    sxform: NOT_IMPL as unknown as (from: string, to: string, et: number) => Matrix6,
-
     // WASM-only
-    writeFile(path: string, data: Uint8Array) {
-      module.FS.writeFile(path, data);
+    writeFile,
+    loadKernel,
+
+    furnsh: (kernel: KernelSource) => {
+      if (typeof kernel === "string") {
+        furnshPath(kernel);
+        return;
+      }
+
+      writeFile(kernel.path, kernel.bytes);
+      furnshPath(kernel.path);
     },
-    loadKernel(path: string, data: Uint8Array) {
-      const resolvedPath = path.startsWith("/") ? path : `/kernels/${path}`;
-      const parent = resolvedPath.split("/").slice(0, -1).join("/") || "/";
-      module.FS.mkdirTree(parent);
-      module.FS.writeFile(resolvedPath, data);
-      tspiceCall1Path(module, module._tspice_furnsh, resolvedPath);
+    unload: (path: string) => {
+      callWithError(module, "tspice_unload", [path]);
+    },
+
+    kclear: () => {
+      callWithError(module, "tspice_kclear", []);
+    },
+    ktotal: (kind: KernelKind = "ALL") => {
+      return ktotalWithError(module, kind);
+    },
+    kdata: (which: number, kind: KernelKind = "ALL") => {
+      return kdataWithError(module, which, kind);
+    },
+    tkvrsn: (item) => {
+      if (item !== "TOOLKIT") {
+        throw new Error(`Unsupported tkvrsn item: ${item}`);
+      }
+      return toolkitVersion;
+    },
+
+    str2et: (time) => {
+      return str2etWithError(module, time);
+    },
+    et2utc: (et, format, prec) => {
+      return et2utcWithError(module, et, format, prec);
+    },
+    timout: (et, picture) => {
+      return timoutWithError(module, et, picture);
+    },
+    pxform: (from, to, et) => {
+      return pxformWithError(module, from, to, et);
+    },
+    spkezr: (target, et, ref, abcorr, observer) => {
+      return spkezrWithError(module, target, et, ref, abcorr, observer);
     },
   };
+
+  // Internal testing hook (not part of the public backend contract).
+  (backend as SpiceBackendWasm & { __ktotalAll(): number }).__ktotalAll = () => {
+    return ktotalAllWithError(module);
+  };
+
+  return backend;
 }

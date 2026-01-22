@@ -1,3 +1,5 @@
+#include "tspice_backend_shim.h"
+
 #include "SpiceUsr.h"
 
 #include <stdbool.h>
@@ -163,19 +165,18 @@ int tspice_ktotal(const char *kind, int *outCount, char *err, int errMaxBytes) {
 }
 
 int tspice_kdata(
-  int which,
-  const char *kind,
-  char *file,
-  int fileMaxBytes,
-  char *filtyp,
-  int filtypMaxBytes,
-  char *source,
-  int sourceMaxBytes,
-  int *handle,
-  int *foundOut,
-  char *err,
-  int errMaxBytes
-) {
+    int which,
+    const char *kind,
+    char *file,
+    int fileMaxBytes,
+    char *filtyp,
+    int filtypMaxBytes,
+    char *source,
+    int sourceMaxBytes,
+    int *outHandle,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
   InitCspiceErrorHandlingOnce();
 
   if (errMaxBytes > 0) {
@@ -190,56 +191,69 @@ int tspice_kdata(
   if (sourceMaxBytes > 0 && source) {
     source[0] = '\0';
   }
-  if (handle) {
-    *handle = 0;
+  if (outHandle) {
+    *outHandle = 0;
   }
-  if (foundOut) {
-    *foundOut = 0;
+  if (outFound) {
+    *outFound = 0;
   }
 
   SpiceInt handleC = 0;
   SpiceBoolean foundC = SPICEFALSE;
 
   kdata_c(
-    (SpiceInt)which,
-    kind,
-    (SpiceInt)fileMaxBytes,
-    (SpiceInt)filtypMaxBytes,
-    (SpiceInt)sourceMaxBytes,
-    file,
-    filtyp,
-    source,
-    &handleC,
-    &foundC
-  );
+      (SpiceInt)which,
+      kind,
+      (SpiceInt)fileMaxBytes,
+      (SpiceInt)filtypMaxBytes,
+      (SpiceInt)sourceMaxBytes,
+      file,
+      filtyp,
+      source,
+      &handleC,
+      &foundC);
 
   if (failed_c()) {
     GetSpiceErrorMessageAndReset(err, errMaxBytes);
     return 1;
   }
 
-  if (handle) {
-    *handle = (int)handleC;
+  if (outHandle) {
+    *outHandle = (int)handleC;
   }
-  if (foundOut) {
-    *foundOut = foundC == SPICETRUE ? 1 : 0;
+  if (outFound) {
+    *outFound = foundC == SPICETRUE ? 1 : 0;
   }
 
   return 0;
 }
 
-int tspice_str2et(const char *utc, double *outEt, char *err, int errMaxBytes) {
+int tspice_ktotal_all(char *err, int errMaxBytes) {
   InitCspiceErrorHandlingOnce();
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
-  if (outEt) {
-    *outEt = 0.0;
+
+  SpiceInt count = 0;
+  ktotal_c("ALL", &count);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return -1;
+  }
+
+  return (int)count;
+}
+
+int tspice_str2et(const char *time, double *outEt, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
   }
 
   SpiceDouble et = 0.0;
-  str2et_c(utc, &et);
+  str2et_c(time, &et);
   if (failed_c()) {
     GetSpiceErrorMessageAndReset(err, errMaxBytes);
     return 1;
@@ -253,21 +267,28 @@ int tspice_str2et(const char *utc, double *outEt, char *err, int errMaxBytes) {
 }
 
 int tspice_et2utc(
-  double et,
-  const char *format,
-  int prec,
-  char *out,
-  int outMaxBytes,
-  char *err,
-  int errMaxBytes
-) {
+    double et,
+    const char *format,
+    int prec,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes) {
   InitCspiceErrorHandlingOnce();
 
+  if (outMaxBytes > 0) {
+    out[0] = '\0';
+  }
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
-  if (outMaxBytes > 0 && out) {
-    out[0] = '\0';
+
+  if (outMaxBytes <= 0) {
+    if (errMaxBytes > 0) {
+      strncpy(err, "tspice_et2utc(): outMaxBytes must be > 0", (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+    return 1;
   }
 
   et2utc_c((SpiceDouble)et, format, (SpiceInt)prec, (SpiceInt)outMaxBytes, out);
@@ -280,26 +301,109 @@ int tspice_et2utc(
 }
 
 int tspice_timout(
-  double et,
-  const char *picture,
-  char *out,
-  int outMaxBytes,
-  char *err,
-  int errMaxBytes
-) {
+    double et,
+    const char *picture,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes) {
   InitCspiceErrorHandlingOnce();
 
+  if (outMaxBytes > 0) {
+    out[0] = '\0';
+  }
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
-  if (outMaxBytes > 0 && out) {
-    out[0] = '\0';
+
+  if (outMaxBytes <= 0) {
+    if (errMaxBytes > 0) {
+      strncpy(err, "tspice_timout(): outMaxBytes must be > 0", (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+    return 1;
   }
 
   timout_c((SpiceDouble)et, picture, (SpiceInt)outMaxBytes, out);
   if (failed_c()) {
     GetSpiceErrorMessageAndReset(err, errMaxBytes);
     return 1;
+  }
+
+  return 0;
+}
+
+int tspice_pxform(
+    const char *from,
+    const char *to,
+    double et,
+    double *outMatrix3x3,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  SpiceDouble m[3][3];
+  pxform_c(from, to, (SpiceDouble)et, m);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outMatrix3x3) {
+    outMatrix3x3[0] = (double)m[0][0];
+    outMatrix3x3[1] = (double)m[0][1];
+    outMatrix3x3[2] = (double)m[0][2];
+
+    outMatrix3x3[3] = (double)m[1][0];
+    outMatrix3x3[4] = (double)m[1][1];
+    outMatrix3x3[5] = (double)m[1][2];
+
+    outMatrix3x3[6] = (double)m[2][0];
+    outMatrix3x3[7] = (double)m[2][1];
+    outMatrix3x3[8] = (double)m[2][2];
+  }
+
+  return 0;
+}
+
+int tspice_spkezr(
+    const char *target,
+    double et,
+    const char *ref,
+    const char *abcorr,
+    const char *observer,
+    double *outState6,
+    double *outLt,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  SpiceDouble state[6];
+  SpiceDouble lt = 0.0;
+  spkezr_c(target, (SpiceDouble)et, ref, abcorr, observer, state, &lt);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outState6) {
+    outState6[0] = (double)state[0];
+    outState6[1] = (double)state[1];
+    outState6[2] = (double)state[2];
+    outState6[3] = (double)state[3];
+    outState6[4] = (double)state[4];
+    outState6[5] = (double)state[5];
+  }
+  if (outLt) {
+    *outLt = (double)lt;
   }
 
   return 0;
