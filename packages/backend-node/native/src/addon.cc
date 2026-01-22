@@ -461,8 +461,10 @@ static Napi::Object Namfrm(const Napi::CallbackInfo& info) {
   InitCspiceErrorHandlingOnce();
 
   SpiceInt frameId = 0;
-  SpiceBoolean found = SPICEFALSE;
-  namfrm_c(frameName.c_str(), &frameId, &found);
+  // CSPICE N0067 `namfrm_c` signature is:
+  //   void namfrm_c ( ConstSpiceChar *frname, SpiceInt *frcode );
+  // It does not provide an explicit "found" output.
+  namfrm_c(frameName.c_str(), &frameId);
   if (failed_c()) {
     const std::string msg =
       std::string("CSPICE failed while calling namfrm_c(\"") + frameName + "\"):\n" +
@@ -471,7 +473,7 @@ static Napi::Object Namfrm(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  if (found == SPICEFALSE) {
+  if (frameId == 0) {
     Napi::Object result = Napi::Object::New(env);
     result.Set("found", Napi::Boolean::New(env, false));
     return result;
