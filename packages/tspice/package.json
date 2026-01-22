@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
-    "test": "vitest run"
+    "test": "pnpm -r --filter @rybosome/tspice-backend-contract --filter @rybosome/tspice-core --filter @rybosome/tspice-backend-wasm --filter @rybosome/tspice build && vitest run"
   },
   "dependencies": {
     "@rybosome/tspice-backend-contract": "workspace:*",
