@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,7 +13,17 @@ const __dirname = path.dirname(__filename);
 const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 
 describe("Phase 1: kernel management", () => {
-  const itNode = it.runIf(process.arch !== "arm64");
+  const require = createRequire(import.meta.url);
+  const nodeBackendAvailable = (() => {
+    try {
+      require.resolve("@rybosome/tspice-backend-node");
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: furnsh/kclear/ktotal/kdata/unload", async () => {
     const backend = await createBackend({ backend: "node" });
@@ -72,14 +83,24 @@ describe("Phase 1: kernel management", () => {
 });
 
 describe("Phase 1: time", () => {
-  const itNode = it.runIf(process.arch !== "arm64");
+  const require = createRequire(import.meta.url);
+  const nodeBackendAvailable = (() => {
+    try {
+      require.resolve("@rybosome/tspice-backend-node");
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: str2et/et2utc/timout", async () => {
     const backend = await createBackend({ backend: "node" });
     backend.kclear();
     backend.furnsh(lskPath);
 
-    const et = backend.str2et("2000-01-01T12:00:00");
+    const et = backend.str2et("2000 JAN 01 12:00:00 TDB");
     expect(Math.abs(et)).toBeLessThan(1); // J2000 epoch
 
     const utc = backend.et2utc(0, "ISOC", 3);
@@ -95,7 +116,7 @@ describe("Phase 1: time", () => {
     backend.kclear();
     backend.loadKernel("naif0012.tls", lskBytes);
 
-    const et = backend.str2et("2000-01-01T12:00:00");
+    const et = backend.str2et("2000 JAN 01 12:00:00 TDB");
     expect(Math.abs(et)).toBeLessThan(1);
 
     const utc = backend.et2utc(0, "ISOC", 3);

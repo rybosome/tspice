@@ -17,7 +17,7 @@ describe("@rybosome/tspice-backend-node", () => {
   it("creates a backend", () => {
     const backend = createNodeBackend();
     expect(backend.kind).toBe("node");
-    const version = backend.spiceVersion();
+    const version = backend.tkvrsn("TOOLKIT");
     expect(version).not.toBe("");
     expect(version).toContain(toolkitVersion);
   });

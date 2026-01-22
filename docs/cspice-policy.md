@@ -1,0 +1,126 @@
+# CSPICE usage & distribution policy
+
+This document describes how `tspice` uses and redistributes artifacts derived from the NAIF SPICE Toolkit (CSPICE).
+
+The authoritative source for CSPICE redistribution and derived works is the NAIF “Rules Regarding Use of SPICE”:
+
+- https://naif.jpl.nasa.gov/naif/rules.html
+
+Review trigger: update this policy when any CSPICE packaging/embedding/release process changes, or if NAIF’s rules change.
+
+This policy is written to make the project’s intent explicit for contributors and downstream users.
+
+This document is a project policy/summary and is not legal advice. It is an internal project interpretation of the NAIF rules and not a legal restatement. In any conflict, the NAIF rules remain authoritative.
+
+If you’re unsure whether a change affects redistribution status, open an issue before publishing artifacts.
+
+## Key rules and how `tspice` applies them
+
+### Prohibition on mirror-style redistribution
+
+NAIF prohibits redistributing the SPICE Toolkit as an unmodified, stand-alone product, or acting as a mirror without prior written approval.
+
+> “You may not redistribute the SPICE Toolkit as an unmodified, stand-alone product, or as from a mirror site, without prior written approval from the NAIF Manager.”
+
+**Project constraint:** `tspice` must not become an alternative distribution channel for CSPICE as a stand-alone toolkit.
+
+### Allowance for derived tools and third-party interfaces
+
+NAIF explicitly permits including SPICE Toolkit modules (source and/or object form), documentation, and some SPICE programs as part of a package supporting a SPICE-based tool, including providing a new third-party interface.
+
+> “It is entirely appropriate to include SPICE Toolkit modules (source and/or object form), documentation, and some SPICE programs as part of a package supporting a customer-built SPICE-based tool… This includes providing a new 3rd-party interface.”
+
+**Project interpretation:** this project is operated under the assumption that embedding CSPICE-derived components behind a higher-level TypeScript interface is within the type of use cases that NAIF’s rules intend to allow, provided CSPICE remains subordinate to the derived tool and is not packaged as a general-purpose toolkit.
+
+## Project policy
+
+`tspice` is intended to:
+
+- Distribute embedded, compiled or otherwise transformed CSPICE-derived components in:
+  - native `.node` form (optional, platform-specific)
+  - `.wasm` form (portable)
+- Not distribute canonical or unmodified CSPICE source or toolkit archives as part of any published artifact
+- Treat CSPICE strictly as an internal implementation dependency
+- Expose only the project’s TypeScript API as the supported interface
+
+The CSPICE toolkit is not presented, packaged, or documented as a stand-alone or reusable toolkit.
+
+## Contributor constraints
+
+To maintain alignment with the NAIF rules above, contributors must not:
+
+- Add raw or unmodified CSPICE toolkit archives/sources as published artifacts of this repo
+- Add API surfaces or documentation intended to expose CSPICE as a general-purpose toolkit outside the `tspice` TypeScript interface
+
+## Intended downstream usage
+
+This project is intended to be used as a dependency in applications and services that need SPICE functionality via the `tspice` TypeScript API.
+
+If you need CSPICE itself as a general-purpose toolkit, obtain it directly from NAIF.
+
+## Rationale
+
+This approach is intended to remain consistent with the NAIF rules because:
+
+- The distributed artifacts are object or transformed forms, not canonical CSPICE source distributions
+- The embedded CSPICE components are not independently useful outside the project’s API
+- The package should not reasonably be used as a substitute for obtaining CSPICE from NAIF
+- The project constitutes a third-party interface, which NAIF explicitly permits
+
+## Export control review process
+
+NAIF distributes SPICE worldwide and describes the toolkit as publicly available under U.S. export laws.
+
+This section is not legal advice. It documents the project’s release review process to reduce the risk of accidentally shipping controlled content.
+
+This repo does not currently distribute any kernels, datasets, or other bundled data files. Before publishing a release, maintainers should confirm:
+
+- The release does not add non-CSPICE datasets, kernels, or other bundled data files.
+- The release does not introduce domain-specific “controlled content” beyond the CSPICE-derived backend artifacts described elsewhere in this policy.
+
+If a change proposes adding any bundled data files (even as examples/tests):
+
+- The PR description must document provenance and why the data is believed to be publicly distributable.
+- A maintainer must explicitly confirm this during review (or block the release until clarified).
+
+Users remain responsible for compliance with export regulations applicable to their own use cases.
+
+This document is the canonical source for CSPICE-related contributor obligations; PR templates and contributor docs should defer to it.
+
+Maintainers should re-evaluate this section if adding new datasets, kernels, or example data.
+
+## Required notices and disclosure
+
+For the canonical disclosure text and pointers to backend-specific notices, see:
+
+- [`docs/cspice-naif-disclosure.md`](./cspice-naif-disclosure.md)
+
+For backend-specific authoritative redistribution details, see the backend package `NOTICE` files:
+
+- [`packages/backend-node/NOTICE`](../packages/backend-node/NOTICE)
+- [`packages/backend-wasm/NOTICE`](../packages/backend-wasm/NOTICE)
+
+For repository-wide third-party notices, see:
+
+- [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)
+
+If any backend package is renamed, split, or relocated, these NOTICE paths must be updated in the same change.
+
+## Non-goals and explicit exclusions
+
+The following non-goals are chosen specifically to stay within NAIF’s rules regarding redistribution and third-party interfaces.
+
+This project does not aim to:
+
+- Provide a drop-in CSPICE development kit
+- Replace or mirror NAIF’s CSPICE distribution
+- Support use of embedded CSPICE-derived components outside the `tspice` API
+- Accept or distribute modified CSPICE source as a public toolkit
+
+Relaxing these non-goals would require re-evaluating compliance with the NAIF “Rules Regarding Use of SPICE”.
+
+## Maintenance
+
+When moving or renaming any referenced notice or disclosure files, update the links in this document in the same PR.
+
+All contributor-facing documentation (including PR templates) should either link to this document or state that CSPICE-related questions are governed by `docs/cspice-policy.md`.

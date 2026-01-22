@@ -40,8 +40,38 @@ import { createBackend } from "@rybosome/tspice";
 
 async function main() {
   const backend = await createBackend();
-  console.log(backend.kind); // "node" (default)
+  console.log(backend.kind); // "wasm" (default)
   console.log(backend.spiceVersion());
+}
+
+main().catch(console.error);
+```
+
+## Usage (Mid-level API)
+
+Phase 4 introduces a thin, typed wrapper layer over the low-level SPICE primitives:
+
+```ts
+import { createSpice } from "@rybosome/tspice";
+
+async function main() {
+  const spice = await createSpice({ backend: "wasm" });
+
+  // Load kernels from disk (or provide { path, bytes } for in-memory kernels).
+  spice.loadKernel("/path/to/naif0012.tls");
+  spice.loadKernel("/path/to/de405s.bsp");
+
+  const et = spice.utcToEt("2000 JAN 01 12:00:00");
+
+  const state = spice.getState({
+    target: "EARTH",
+    observer: "SUN",
+    at: et,
+    frame: "J2000",
+    aberration: "NONE",
+  });
+
+  console.log(state.position, state.velocity, state.lightTime);
 }
 
 main().catch(console.error);
@@ -50,9 +80,14 @@ main().catch(console.error);
 ## API surface
 
 - `createBackend(options?: { backend?: BackendKind; wasmUrl?: string | URL }): Promise<SpiceBackend>`
+- `createSpice(options?: { backend?: BackendKind; wasmUrl?: string | URL }): Promise<Spice>`
 - Types:
   - `BackendKind` (currently `"node" | "wasm"`)
   - `SpiceBackend`
+  - Mid-level:
+    - `Vec3`, `Vec6`, `Mat3`, `FrameName`, `AberrationCorrection`, `SpiceTime`
+    - `StateVector`
+    - `SpiceError`
 
 ### Selecting a backend
 
@@ -70,7 +105,7 @@ main().catch(console.error);
 
 ### Backend notes
 
-- Node backend (`backend: "node"`): implemented by a native addon; requires a build step when working from source. See [`@rybosome/tspice-backend-node`](../backend-node/README.md).
+- Node backend (`backend: "node"`): implemented by a native addon. It's currently best-effort / smoke-only and must be explicitly opted into via `createBackend({ backend: "node" })`. See [`@rybosome/tspice-backend-node`](../backend-node/README.md).
 - WASM backend (`backend: "wasm"`): implemented with a prebuilt `.wasm`. See [`@rybosome/tspice-backend-wasm`](../backend-wasm/README.md).
 
 ## Development
@@ -85,7 +120,7 @@ pnpm -C packages/tspice test
 
 ### “Native addon tspice_backend_node.node not found” / “Failed to load tspice native backend ...”
 
-The default backend is the Node/native backend. If you’re running from the workspace and haven’t built the addon yet:
+If you opt into the Node/native backend from the workspace and haven’t built the addon yet:
 
 ```bash
 pnpm -C packages/backend-node build:native

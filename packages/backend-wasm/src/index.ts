@@ -1,13 +1,16 @@
 import type {
   AbCorr,
-  Et2UtcFormat,
   Found,
+  KernelData,
   KernelKind,
-  Matrix3,
-  Matrix6,
+  KernelSource,
+  SpkezrResult,
+  SpkposResult,
   SpiceBackendWasm,
-  State6,
-  Vector3,
+  SpiceMatrix3x3,
+  SpiceMatrix6x6,
+  SpiceStateVector,
+  SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
 
 export type CreateWasmBackendOptions = {
@@ -235,7 +238,7 @@ function tspiceCallKdata(
   module: EmscriptenModule,
   which: number,
   kind: KernelKind,
-): Found<{ file: string; filtyp: string; source: string; handle: number }> {
+): Found<KernelData> {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const kindPtr = writeUtf8CString(module, kind);
@@ -340,7 +343,7 @@ function tspiceCallStr2et(module: EmscriptenModule, utc: string): number {
 function tspiceCallEt2utc(
   module: EmscriptenModule,
   et: number,
-  format: Et2UtcFormat,
+  format: string,
   prec: number,
 ): string {
   const errMaxBytes = 2048;
@@ -484,7 +487,7 @@ function tspiceCallFoundString(
   }
 }
 
-function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et: number): Matrix3 {
+function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et: number): SpiceMatrix3x3 {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const fromPtr = writeUtf8CString(module, from);
@@ -504,7 +507,7 @@ function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
     const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 9));
-    return out as unknown as Matrix3;
+    return out as unknown as SpiceMatrix3x3;
   } finally {
     module._free(outPtr);
     module._free(toPtr);
@@ -513,7 +516,7 @@ function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et
   }
 }
 
-function tspiceCallSxform(module: EmscriptenModule, from: string, to: string, et: number): Matrix6 {
+function tspiceCallSxform(module: EmscriptenModule, from: string, to: string, et: number): SpiceMatrix6x6 {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const fromPtr = writeUtf8CString(module, from);
@@ -533,7 +536,7 @@ function tspiceCallSxform(module: EmscriptenModule, from: string, to: string, et
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
     const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 36));
-    return out as unknown as Matrix6;
+    return out as unknown as SpiceMatrix6x6;
   } finally {
     module._free(outPtr);
     module._free(toPtr);
@@ -547,9 +550,9 @@ function tspiceCallSpkezr(
   target: string,
   et: number,
   ref: string,
-  abcorr: AbCorr,
+  abcorr: string,
   obs: string,
-): { state: State6; lt: number } {
+): SpkezrResult {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const targetPtr = writeUtf8CString(module, target);
@@ -584,7 +587,7 @@ function tspiceCallSpkezr(
     }
     const state = Array.from(
       module.HEAPF64.subarray(outStatePtr >> 3, (outStatePtr >> 3) + 6),
-    ) as unknown as State6;
+    ) as unknown as SpiceStateVector;
     const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
     return { state, lt };
   } finally {
@@ -603,9 +606,9 @@ function tspiceCallSpkpos(
   target: string,
   et: number,
   ref: string,
-  abcorr: AbCorr,
+  abcorr: string,
   obs: string,
-): { pos: Vector3; lt: number } {
+): SpkposResult {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const targetPtr = writeUtf8CString(module, target);
@@ -640,7 +643,7 @@ function tspiceCallSpkpos(
     }
     const pos = Array.from(
       module.HEAPF64.subarray(outPosPtr >> 3, (outPosPtr >> 3) + 3),
-    ) as unknown as Vector3;
+    ) as unknown as SpiceVector3;
     const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
     return { pos, lt };
   } finally {
@@ -753,14 +756,42 @@ export async function createWasmBackend(
   // The toolkit version is constant for the lifetime of a loaded module.
   const toolkitVersion = getToolkitVersion(module);
 
-  return {
+  function writeFile(path: string, data: Uint8Array): void {
+    const dir = path.split("/").slice(0, -1).join("/") || "/";
+    if (dir && dir !== "/") {
+      module.FS.mkdirTree(dir);
+    }
+
+    // Normalize to a tightly-sized, offset-0 view to avoid FS edge cases with Buffer pooling.
+    const bytes =
+      data.byteOffset === 0 && data.byteLength === data.buffer.byteLength
+        ? data
+        : new Uint8Array(data);
+
+    module.FS.writeFile(path, bytes);
+  }
+
+  const backend: SpiceBackendWasm = {
     kind: "wasm",
 
     spiceVersion: () => toolkitVersion,
 
+    tkvrsn: (item) => {
+      if (item !== "TOOLKIT") {
+        throw new Error(`Unsupported tkvrsn item: ${item}`);
+      }
+      return toolkitVersion;
+    },
+
     // Phase 1
-    furnsh(path: string) {
-      tspiceCall1Path(module, module._tspice_furnsh, path);
+    furnsh(kernel: KernelSource) {
+      if (typeof kernel === "string") {
+        tspiceCall1Path(module, module._tspice_furnsh, kernel);
+        return;
+      }
+
+      writeFile(kernel.path, kernel.bytes);
+      tspiceCall1Path(module, module._tspice_furnsh, kernel.path);
     },
     unload(path: string) {
       tspiceCall1Path(module, module._tspice_unload, path);
@@ -781,7 +812,7 @@ export async function createWasmBackend(
       return tspiceCallStr2et(module, utc);
     },
 
-    et2utc(et: number, format: Et2UtcFormat, prec: number) {
+    et2utc(et: number, format: string, prec: number) {
       return tspiceCallEt2utc(module, et, format, prec);
     },
 
@@ -812,12 +843,12 @@ export async function createWasmBackend(
     },
 
     // Phase 3
-    spkezr(target: string, et: number, ref: string, abcorr: AbCorr, obs: string) {
-      return tspiceCallSpkezr(module, target, et, ref, abcorr, obs);
+    spkezr(target: string, et: number, ref: string, abcorr: AbCorr | string, observer: string) {
+      return tspiceCallSpkezr(module, target, et, ref, abcorr, observer);
     },
 
-    spkpos(target: string, et: number, ref: string, abcorr: AbCorr, obs: string) {
-      return tspiceCallSpkpos(module, target, et, ref, abcorr, obs);
+    spkpos(target: string, et: number, ref: string, abcorr: AbCorr | string, observer: string) {
+      return tspiceCallSpkpos(module, target, et, ref, abcorr, observer);
     },
 
     pxform(from: string, to: string, et: number) {
@@ -828,15 +859,16 @@ export async function createWasmBackend(
     },
 
     // WASM-only
-    writeFile(path: string, data: Uint8Array) {
-      module.FS.writeFile(path, data);
-    },
+    writeFile,
     loadKernel(path: string, data: Uint8Array) {
       const resolvedPath = path.startsWith("/") ? path : `/kernels/${path}`;
-      const parent = resolvedPath.split("/").slice(0, -1).join("/") || "/";
-      module.FS.mkdirTree(parent);
-      module.FS.writeFile(resolvedPath, data);
+      writeFile(resolvedPath, data);
       tspiceCall1Path(module, module._tspice_furnsh, resolvedPath);
     },
   };
+
+  // Internal testing hook (not part of the public backend contract).
+  (backend as SpiceBackendWasm & { __ktotalAll(): number }).__ktotalAll = () => backend.ktotal("ALL");
+
+  return backend;
 }
