@@ -187,6 +187,21 @@ export interface SpiceBackend {
 
   pxform(from: string, to: string, et: number): Matrix3;
   sxform(from: string, to: string, et: number): Matrix6;
+
+  // ---- Phase 3: coordinate conversions + small vector/matrix helpers
+  reclat(rect: Vector3): { radius: number; lon: number; lat: number };
+  latrec(radius: number, lon: number, lat: number): Vector3;
+
+  recsph(rect: Vector3): { radius: number; colat: number; lon: number };
+  sphrec(radius: number, colat: number, lon: number): Vector3;
+
+  vnorm(v: Vector3): number;
+  vhat(v: Vector3): Vector3;
+  vdot(a: Vector3, b: Vector3): number;
+  vcrss(a: Vector3, b: Vector3): Vector3;
+
+  mxv(m: Matrix3, v: Vector3): Vector3;
+  mtxv(m: Matrix3, v: Vector3): Vector3;
 }
 
 /**

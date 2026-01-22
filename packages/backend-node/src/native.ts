@@ -59,6 +59,21 @@ export type NativeAddon = {
   ): { pos: number[]; lt: number };
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
+
+  // Phase 3: coordinate conversions + small vector/matrix helpers
+  reclat(rect: number[]): { radius: number; lon: number; lat: number };
+  latrec(radius: number, lon: number, lat: number): number[];
+
+  recsph(rect: number[]): { radius: number; colat: number; lon: number };
+  sphrec(radius: number, colat: number, lon: number): number[];
+
+  vnorm(v: number[]): number;
+  vhat(v: number[]): number[];
+  vdot(a: number[], b: number[]): number;
+  vcrss(a: number[], b: number[]): number[];
+
+  mxv(m: number[], v: number[]): number[];
+  mtxv(m: number[], v: number[]): number[];
 };
 
 let cachedAddon: NativeAddon | undefined;

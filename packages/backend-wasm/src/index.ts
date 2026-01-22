@@ -196,6 +196,49 @@ type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_reclat(
+    rectPtr: number,
+    outRadiusPtr: number,
+    outLonPtr: number,
+    outLatPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_latrec(
+    radius: number,
+    lon: number,
+    lat: number,
+    outRectPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_recsph(
+    rectPtr: number,
+    outRadiusPtr: number,
+    outColatPtr: number,
+    outLonPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_sphrec(
+    radius: number,
+    colat: number,
+    lon: number,
+    outRectPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_vnorm(vPtr: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vhat(vPtr: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vdot(aPtr: number, bPtr: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vcrss(aPtr: number, bPtr: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_mxv(mPtr: number, vPtr: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_mtxv(mPtr: number, vPtr: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   FS: any;
 };
@@ -888,6 +931,284 @@ function tspiceCallSxform(module: EmscriptenModule, from: string, to: string, et
   }
 }
 
+function tspiceWriteVector3(module: EmscriptenModule, v: Vector3): number {
+  const ptr = module._malloc(3 * 8);
+  if (!ptr) {
+    throw new Error("WASM malloc failed");
+  }
+  module.HEAPF64.set(v as unknown as number[], ptr >> 3);
+  return ptr;
+}
+
+function tspiceWriteMatrix3(module: EmscriptenModule, m: Matrix3): number {
+  const ptr = module._malloc(9 * 8);
+  if (!ptr) {
+    throw new Error("WASM malloc failed");
+  }
+  module.HEAPF64.set(m as unknown as number[], ptr >> 3);
+  return ptr;
+}
+
+function tspiceCallReclat(module: EmscriptenModule, rect: Vector3): { radius: number; lon: number; lat: number } {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const rectPtr = tspiceWriteVector3(module, rect);
+  const outRadiusPtr = module._malloc(8);
+  const outLonPtr = module._malloc(8);
+  const outLatPtr = module._malloc(8);
+
+  if (!errPtr || !rectPtr || !outRadiusPtr || !outLonPtr || !outLatPtr) {
+    for (const ptr of [outLatPtr, outLonPtr, outRadiusPtr, rectPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64[outRadiusPtr >> 3] = 0;
+    module.HEAPF64[outLonPtr >> 3] = 0;
+    module.HEAPF64[outLatPtr >> 3] = 0;
+    const result = module._tspice_reclat(rectPtr, outRadiusPtr, outLonPtr, outLatPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    return {
+      radius: module.HEAPF64[outRadiusPtr >> 3] ?? 0,
+      lon: module.HEAPF64[outLonPtr >> 3] ?? 0,
+      lat: module.HEAPF64[outLatPtr >> 3] ?? 0,
+    };
+  } finally {
+    module._free(outLatPtr);
+    module._free(outLonPtr);
+    module._free(outRadiusPtr);
+    module._free(rectPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallLatrec(module: EmscriptenModule, radius: number, lon: number, lat: number): Vector3 {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const outRectPtr = module._malloc(3 * 8);
+  if (!errPtr || !outRectPtr) {
+    for (const ptr of [outRectPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64.set([0, 0, 0], outRectPtr >> 3);
+    const result = module._tspice_latrec(radius, lon, lat, outRectPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const out = Array.from(module.HEAPF64.subarray(outRectPtr >> 3, (outRectPtr >> 3) + 3));
+    return out as unknown as Vector3;
+  } finally {
+    module._free(outRectPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallRecsph(module: EmscriptenModule, rect: Vector3): { radius: number; colat: number; lon: number } {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const rectPtr = tspiceWriteVector3(module, rect);
+  const outRadiusPtr = module._malloc(8);
+  const outColatPtr = module._malloc(8);
+  const outLonPtr = module._malloc(8);
+
+  if (!errPtr || !rectPtr || !outRadiusPtr || !outColatPtr || !outLonPtr) {
+    for (const ptr of [outLonPtr, outColatPtr, outRadiusPtr, rectPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64[outRadiusPtr >> 3] = 0;
+    module.HEAPF64[outColatPtr >> 3] = 0;
+    module.HEAPF64[outLonPtr >> 3] = 0;
+    const result = module._tspice_recsph(rectPtr, outRadiusPtr, outColatPtr, outLonPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    return {
+      radius: module.HEAPF64[outRadiusPtr >> 3] ?? 0,
+      colat: module.HEAPF64[outColatPtr >> 3] ?? 0,
+      lon: module.HEAPF64[outLonPtr >> 3] ?? 0,
+    };
+  } finally {
+    module._free(outLonPtr);
+    module._free(outColatPtr);
+    module._free(outRadiusPtr);
+    module._free(rectPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallSphrec(module: EmscriptenModule, radius: number, colat: number, lon: number): Vector3 {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const outRectPtr = module._malloc(3 * 8);
+  if (!errPtr || !outRectPtr) {
+    for (const ptr of [outRectPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64.set([0, 0, 0], outRectPtr >> 3);
+    const result = module._tspice_sphrec(radius, colat, lon, outRectPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const out = Array.from(module.HEAPF64.subarray(outRectPtr >> 3, (outRectPtr >> 3) + 3));
+    return out as unknown as Vector3;
+  } finally {
+    module._free(outRectPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallVnorm(module: EmscriptenModule, v: Vector3): number {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const vPtr = tspiceWriteVector3(module, v);
+  const outPtr = module._malloc(8);
+  if (!errPtr || !vPtr || !outPtr) {
+    for (const ptr of [outPtr, vPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+  try {
+    module.HEAPF64[outPtr >> 3] = 0;
+    const result = module._tspice_vnorm(vPtr, outPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    return module.HEAPF64[outPtr >> 3] ?? 0;
+  } finally {
+    module._free(outPtr);
+    module._free(vPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallVhat(module: EmscriptenModule, v: Vector3): Vector3 {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const vPtr = tspiceWriteVector3(module, v);
+  const outPtr = module._malloc(3 * 8);
+  if (!errPtr || !vPtr || !outPtr) {
+    for (const ptr of [outPtr, vPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+  try {
+    module.HEAPF64.set([0, 0, 0], outPtr >> 3);
+    const result = module._tspice_vhat(vPtr, outPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 3));
+    return out as unknown as Vector3;
+  } finally {
+    module._free(outPtr);
+    module._free(vPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallVdot(module: EmscriptenModule, a: Vector3, b: Vector3): number {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const aPtr = tspiceWriteVector3(module, a);
+  const bPtr = tspiceWriteVector3(module, b);
+  const outPtr = module._malloc(8);
+  if (!errPtr || !aPtr || !bPtr || !outPtr) {
+    for (const ptr of [outPtr, bPtr, aPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+  try {
+    module.HEAPF64[outPtr >> 3] = 0;
+    const result = module._tspice_vdot(aPtr, bPtr, outPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    return module.HEAPF64[outPtr >> 3] ?? 0;
+  } finally {
+    module._free(outPtr);
+    module._free(bPtr);
+    module._free(aPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallVcrss(module: EmscriptenModule, a: Vector3, b: Vector3): Vector3 {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const aPtr = tspiceWriteVector3(module, a);
+  const bPtr = tspiceWriteVector3(module, b);
+  const outPtr = module._malloc(3 * 8);
+  if (!errPtr || !aPtr || !bPtr || !outPtr) {
+    for (const ptr of [outPtr, bPtr, aPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+  try {
+    module.HEAPF64.set([0, 0, 0], outPtr >> 3);
+    const result = module._tspice_vcrss(aPtr, bPtr, outPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 3));
+    return out as unknown as Vector3;
+  } finally {
+    module._free(outPtr);
+    module._free(bPtr);
+    module._free(aPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallMxv(module: EmscriptenModule, m: Matrix3, v: Vector3, transpose: boolean): Vector3 {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const mPtr = tspiceWriteMatrix3(module, m);
+  const vPtr = tspiceWriteVector3(module, v);
+  const outPtr = module._malloc(3 * 8);
+  if (!errPtr || !mPtr || !vPtr || !outPtr) {
+    for (const ptr of [outPtr, vPtr, mPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+  try {
+    module.HEAPF64.set([0, 0, 0], outPtr >> 3);
+    const result = transpose
+      ? module._tspice_mtxv(mPtr, vPtr, outPtr, errPtr, errMaxBytes)
+      : module._tspice_mxv(mPtr, vPtr, outPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 3));
+    return out as unknown as Vector3;
+  } finally {
+    module._free(outPtr);
+    module._free(vPtr);
+    module._free(mPtr);
+    module._free(errPtr);
+  }
+}
+
 function tspiceCallSpkezr(
   module: EmscriptenModule,
   target: string,
@@ -1201,6 +1522,40 @@ export async function createWasmBackend(
     },
     sxform(from: string, to: string, et: number) {
       return tspiceCallSxform(module, from, to, et);
+    },
+
+    // Phase 3: coordinate conversions + small vector/matrix helpers
+    reclat(rect: Vector3) {
+      return tspiceCallReclat(module, rect);
+    },
+    latrec(radius: number, lon: number, lat: number) {
+      return tspiceCallLatrec(module, radius, lon, lat);
+    },
+
+    recsph(rect: Vector3) {
+      return tspiceCallRecsph(module, rect);
+    },
+    sphrec(radius: number, colat: number, lon: number) {
+      return tspiceCallSphrec(module, radius, colat, lon);
+    },
+
+    vnorm(v: Vector3) {
+      return tspiceCallVnorm(module, v);
+    },
+    vhat(v: Vector3) {
+      return tspiceCallVhat(module, v);
+    },
+    vdot(a: Vector3, b: Vector3) {
+      return tspiceCallVdot(module, a, b);
+    },
+    vcrss(a: Vector3, b: Vector3) {
+      return tspiceCallVcrss(module, a, b);
+    },
+    mxv(m: Matrix3, v: Vector3) {
+      return tspiceCallMxv(module, m, v, false);
+    },
+    mtxv(m: Matrix3, v: Vector3) {
+      return tspiceCallMxv(module, m, v, true);
     },
 
     // WASM-only

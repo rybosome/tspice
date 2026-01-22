@@ -230,5 +230,76 @@ export function createNodeBackend(): SpiceBackend {
       invariant(out.length === 36, "Expected sxform() to return length 36");
       return out as unknown as Matrix6;
     },
+
+    // Phase 3: coordinate conversions + small vector/matrix helpers
+    reclat(rect: Vector3) {
+      const result = getNativeAddon().reclat(rect as unknown as number[]);
+      invariant(typeof result.radius === "number", "Expected reclat().radius to be a number");
+      invariant(typeof result.lon === "number", "Expected reclat().lon to be a number");
+      invariant(typeof result.lat === "number", "Expected reclat().lat to be a number");
+      return { radius: result.radius, lon: result.lon, lat: result.lat };
+    },
+
+    latrec(radius: number, lon: number, lat: number) {
+      const out = getNativeAddon().latrec(radius, lon, lat);
+      invariant(Array.isArray(out), "Expected latrec() to return an array");
+      invariant(out.length === 3, "Expected latrec() to return length 3");
+      return out as unknown as Vector3;
+    },
+
+    recsph(rect: Vector3) {
+      const result = getNativeAddon().recsph(rect as unknown as number[]);
+      invariant(typeof result.radius === "number", "Expected recsph().radius to be a number");
+      invariant(typeof result.colat === "number", "Expected recsph().colat to be a number");
+      invariant(typeof result.lon === "number", "Expected recsph().lon to be a number");
+      return { radius: result.radius, colat: result.colat, lon: result.lon };
+    },
+
+    sphrec(radius: number, colat: number, lon: number) {
+      const out = getNativeAddon().sphrec(radius, colat, lon);
+      invariant(Array.isArray(out), "Expected sphrec() to return an array");
+      invariant(out.length === 3, "Expected sphrec() to return length 3");
+      return out as unknown as Vector3;
+    },
+
+    vnorm(v: Vector3) {
+      const out = getNativeAddon().vnorm(v as unknown as number[]);
+      invariant(typeof out === "number", "Expected vnorm() to return a number");
+      return out;
+    },
+
+    vhat(v: Vector3) {
+      const out = getNativeAddon().vhat(v as unknown as number[]);
+      invariant(Array.isArray(out), "Expected vhat() to return an array");
+      invariant(out.length === 3, "Expected vhat() to return length 3");
+      return out as unknown as Vector3;
+    },
+
+    vdot(a: Vector3, b: Vector3) {
+      const out = getNativeAddon().vdot(a as unknown as number[], b as unknown as number[]);
+      invariant(typeof out === "number", "Expected vdot() to return a number");
+      return out;
+    },
+
+    vcrss(a: Vector3, b: Vector3) {
+      const out = getNativeAddon().vcrss(a as unknown as number[], b as unknown as number[]);
+      invariant(Array.isArray(out), "Expected vcrss() to return an array");
+      invariant(out.length === 3, "Expected vcrss() to return length 3");
+      return out as unknown as Vector3;
+    },
+
+    mxv(m: Matrix3, v: Vector3) {
+      const out = getNativeAddon().mxv(m as unknown as number[], v as unknown as number[]);
+      invariant(Array.isArray(out), "Expected mxv() to return an array");
+      invariant(out.length === 3, "Expected mxv() to return length 3");
+      return out as unknown as Vector3;
+    },
+
+    mtxv(m: Matrix3, v: Vector3) {
+      const out = getNativeAddon().mtxv(m as unknown as number[], v as unknown as number[]);
+      invariant(Array.isArray(out), "Expected mtxv() to return an array");
+      invariant(out.length === 3, "Expected mtxv() to return length 3");
+      return out as unknown as Vector3;
+    },
   };
 }

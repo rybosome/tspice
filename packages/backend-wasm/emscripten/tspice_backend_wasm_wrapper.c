@@ -881,3 +881,345 @@ int tspice_spkpos(
 
   return 0;
 }
+
+int tspice_reclat(
+  const double *rect,
+  double *outRadius,
+  double *outLon,
+  double *outLat,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outRadius) *outRadius = 0.0;
+  if (outLon) *outLon = 0.0;
+  if (outLat) *outLat = 0.0;
+
+  SpiceDouble radius = 0.0;
+  SpiceDouble lon = 0.0;
+  SpiceDouble lat = 0.0;
+  SpiceDouble r[3] = {0.0, 0.0, 0.0};
+  if (rect) {
+    r[0] = rect[0];
+    r[1] = rect[1];
+    r[2] = rect[2];
+  }
+
+  reclat_c(r, &radius, &lon, &lat);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outRadius) *outRadius = (double)radius;
+  if (outLon) *outLon = (double)lon;
+  if (outLat) *outLat = (double)lat;
+  return 0;
+}
+
+int tspice_latrec(
+  double radius,
+  double lon,
+  double lat,
+  double *outRect,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outRect) {
+    for (int i = 0; i < 3; i++) {
+      outRect[i] = 0.0;
+    }
+  }
+
+  SpiceDouble rect[3] = {0.0, 0.0, 0.0};
+  latrec_c((SpiceDouble)radius, (SpiceDouble)lon, (SpiceDouble)lat, rect);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outRect) {
+    for (int i = 0; i < 3; i++) {
+      outRect[i] = (double)rect[i];
+    }
+  }
+  return 0;
+}
+
+int tspice_recsph(
+  const double *rect,
+  double *outRadius,
+  double *outColat,
+  double *outLon,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outRadius) *outRadius = 0.0;
+  if (outColat) *outColat = 0.0;
+  if (outLon) *outLon = 0.0;
+
+  SpiceDouble radius = 0.0;
+  SpiceDouble colat = 0.0;
+  SpiceDouble lon = 0.0;
+  SpiceDouble r[3] = {0.0, 0.0, 0.0};
+  if (rect) {
+    r[0] = rect[0];
+    r[1] = rect[1];
+    r[2] = rect[2];
+  }
+
+  recsph_c(r, &radius, &colat, &lon);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outRadius) *outRadius = (double)radius;
+  if (outColat) *outColat = (double)colat;
+  if (outLon) *outLon = (double)lon;
+  return 0;
+}
+
+int tspice_sphrec(
+  double radius,
+  double colat,
+  double lon,
+  double *outRect,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outRect) {
+    for (int i = 0; i < 3; i++) {
+      outRect[i] = 0.0;
+    }
+  }
+
+  SpiceDouble rect[3] = {0.0, 0.0, 0.0};
+  sphrec_c((SpiceDouble)radius, (SpiceDouble)colat, (SpiceDouble)lon, rect);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outRect) {
+    for (int i = 0; i < 3; i++) {
+      outRect[i] = (double)rect[i];
+    }
+  }
+  return 0;
+}
+
+int tspice_vnorm(const double *v, double *out, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (out) *out = 0.0;
+
+  SpiceDouble vin[3] = {0.0, 0.0, 0.0};
+  if (v) {
+    vin[0] = v[0];
+    vin[1] = v[1];
+    vin[2] = v[2];
+  }
+
+  SpiceDouble n = vnorm_c(vin);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (out) *out = (double)n;
+  return 0;
+}
+
+int tspice_vhat(const double *v, double *out, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (out) {
+    for (int i = 0; i < 3; i++) out[i] = 0.0;
+  }
+
+  SpiceDouble vin[3] = {0.0, 0.0, 0.0};
+  if (v) {
+    vin[0] = v[0];
+    vin[1] = v[1];
+    vin[2] = v[2];
+  }
+
+  SpiceDouble vout[3] = {0.0, 0.0, 0.0};
+  vhat_c(vin, vout);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (out) {
+    for (int i = 0; i < 3; i++) out[i] = (double)vout[i];
+  }
+  return 0;
+}
+
+int tspice_vdot(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (out) *out = 0.0;
+
+  SpiceDouble ain[3] = {0.0, 0.0, 0.0};
+  SpiceDouble bin[3] = {0.0, 0.0, 0.0};
+  if (a) {
+    ain[0] = a[0];
+    ain[1] = a[1];
+    ain[2] = a[2];
+  }
+  if (b) {
+    bin[0] = b[0];
+    bin[1] = b[1];
+    bin[2] = b[2];
+  }
+
+  SpiceDouble d = vdot_c(ain, bin);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (out) *out = (double)d;
+  return 0;
+}
+
+int tspice_vcrss(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (out) {
+    for (int i = 0; i < 3; i++) out[i] = 0.0;
+  }
+
+  SpiceDouble ain[3] = {0.0, 0.0, 0.0};
+  SpiceDouble bin[3] = {0.0, 0.0, 0.0};
+  if (a) {
+    ain[0] = a[0];
+    ain[1] = a[1];
+    ain[2] = a[2];
+  }
+  if (b) {
+    bin[0] = b[0];
+    bin[1] = b[1];
+    bin[2] = b[2];
+  }
+
+  SpiceDouble vout[3] = {0.0, 0.0, 0.0};
+  vcrss_c(ain, bin, vout);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (out) {
+    for (int i = 0; i < 3; i++) out[i] = (double)vout[i];
+  }
+  return 0;
+}
+
+static void ReadMat33FromFlat9(const double *flat, SpiceDouble m[3][3]) {
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      m[i][j] = flat ? (SpiceDouble)flat[i * 3 + j] : 0.0;
+    }
+  }
+}
+
+int tspice_mxv(const double *mFlat9, const double *v, double *out, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (out) {
+    for (int i = 0; i < 3; i++) out[i] = 0.0;
+  }
+
+  SpiceDouble m[3][3] = {{0}};
+  ReadMat33FromFlat9(mFlat9, m);
+
+  SpiceDouble vin[3] = {0.0, 0.0, 0.0};
+  if (v) {
+    vin[0] = v[0];
+    vin[1] = v[1];
+    vin[2] = v[2];
+  }
+
+  SpiceDouble vout[3] = {0.0, 0.0, 0.0};
+  mxv_c(m, vin, vout);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (out) {
+    for (int i = 0; i < 3; i++) out[i] = (double)vout[i];
+  }
+  return 0;
+}
+
+int tspice_mtxv(const double *mFlat9, const double *v, double *out, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (out) {
+    for (int i = 0; i < 3; i++) out[i] = 0.0;
+  }
+
+  SpiceDouble m[3][3] = {{0}};
+  ReadMat33FromFlat9(mFlat9, m);
+
+  SpiceDouble vin[3] = {0.0, 0.0, 0.0};
+  if (v) {
+    vin[0] = v[0];
+    vin[1] = v[1];
+    vin[2] = v[2];
+  }
+
+  SpiceDouble vout[3] = {0.0, 0.0, 0.0};
+  mtxv_c(m, vin, vout);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (out) {
+    for (int i = 0; i < 3; i++) out[i] = (double)vout[i];
+  }
+  return 0;
+}

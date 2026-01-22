@@ -79,6 +79,53 @@ static Napi::Array MakeNumberArray(Napi::Env env, const double* values, size_t c
   return arr;
 }
 
+static bool ReadNumberArray3(Napi::Env env, const Napi::Value& value, double out[3], const char* name) {
+  if (!value.IsArray()) {
+    Napi::TypeError::New(env, std::string(name) + " must be an array").ThrowAsJavaScriptException();
+    return false;
+  }
+  Napi::Array arr = value.As<Napi::Array>();
+  if (arr.Length() != 3) {
+    Napi::TypeError::New(env, std::string(name) + " must have length 3").ThrowAsJavaScriptException();
+    return false;
+  }
+  for (uint32_t i = 0; i < 3; i++) {
+    Napi::Value v = arr.Get(i);
+    if (!v.IsNumber()) {
+      Napi::TypeError::New(env, std::string(name) + " must contain only numbers").ThrowAsJavaScriptException();
+      return false;
+    }
+    out[i] = v.As<Napi::Number>().DoubleValue();
+  }
+  return true;
+}
+
+static bool ReadNumberArray9ToMat33(
+  Napi::Env env,
+  const Napi::Value& value,
+  double out[3][3],
+  const char* name
+) {
+  if (!value.IsArray()) {
+    Napi::TypeError::New(env, std::string(name) + " must be an array").ThrowAsJavaScriptException();
+    return false;
+  }
+  Napi::Array arr = value.As<Napi::Array>();
+  if (arr.Length() != 9) {
+    Napi::TypeError::New(env, std::string(name) + " must have length 9").ThrowAsJavaScriptException();
+    return false;
+  }
+  for (uint32_t i = 0; i < 9; i++) {
+    Napi::Value v = arr.Get(i);
+    if (!v.IsNumber()) {
+      Napi::TypeError::New(env, std::string(name) + " must contain only numbers").ThrowAsJavaScriptException();
+      return false;
+    }
+    out[i / 3][i % 3] = v.As<Napi::Number>().DoubleValue();
+  }
+  return true;
+}
+
 static Napi::Object MakeFoundNumber(Napi::Env env, const char* key, double value) {
   Napi::Object result = Napi::Object::New(env);
   result.Set("found", Napi::Boolean::New(env, true));
@@ -946,6 +993,308 @@ static Napi::Array Sxform(const Napi::CallbackInfo& info) {
   return MakeNumberArray(env, flat, 36);
 }
 
+static Napi::Object Reclat(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1) {
+    Napi::TypeError::New(env, "reclat(rect: number[3]) expects 1 argument")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  double rect[3] = {0};
+  if (!ReadNumberArray3(env, info[0], rect, "rect")) {
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble radius = 0;
+  SpiceDouble lon = 0;
+  SpiceDouble lat = 0;
+  reclat_c(rect, &radius, &lon, &lat);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling reclat_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("radius", Napi::Number::New(env, static_cast<double>(radius)));
+  result.Set("lon", Napi::Number::New(env, static_cast<double>(lon)));
+  result.Set("lat", Napi::Number::New(env, static_cast<double>(lat)));
+  return result;
+}
+
+static Napi::Array Latrec(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    Napi::TypeError::New(env, "latrec(radius: number, lon: number, lat: number) expects (number, number, number)")
+      .ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  const SpiceDouble radius = static_cast<SpiceDouble>(info[0].As<Napi::Number>().DoubleValue());
+  const SpiceDouble lon = static_cast<SpiceDouble>(info[1].As<Napi::Number>().DoubleValue());
+  const SpiceDouble lat = static_cast<SpiceDouble>(info[2].As<Napi::Number>().DoubleValue());
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble rect[3] = {0};
+  latrec_c(radius, lon, lat, rect);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling latrec_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  return MakeNumberArray(env, rect, 3);
+}
+
+static Napi::Object Recsph(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1) {
+    Napi::TypeError::New(env, "recsph(rect: number[3]) expects 1 argument")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  double rect[3] = {0};
+  if (!ReadNumberArray3(env, info[0], rect, "rect")) {
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble radius = 0;
+  SpiceDouble colat = 0;
+  SpiceDouble lon = 0;
+  recsph_c(rect, &radius, &colat, &lon);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling recsph_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("radius", Napi::Number::New(env, static_cast<double>(radius)));
+  result.Set("colat", Napi::Number::New(env, static_cast<double>(colat)));
+  result.Set("lon", Napi::Number::New(env, static_cast<double>(lon)));
+  return result;
+}
+
+static Napi::Array Sphrec(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    Napi::TypeError::New(env, "sphrec(radius: number, colat: number, lon: number) expects (number, number, number)")
+      .ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  const SpiceDouble radius = static_cast<SpiceDouble>(info[0].As<Napi::Number>().DoubleValue());
+  const SpiceDouble colat = static_cast<SpiceDouble>(info[1].As<Napi::Number>().DoubleValue());
+  const SpiceDouble lon = static_cast<SpiceDouble>(info[2].As<Napi::Number>().DoubleValue());
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble rect[3] = {0};
+  sphrec_c(radius, colat, lon, rect);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling sphrec_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  return MakeNumberArray(env, rect, 3);
+}
+
+static Napi::Number Vnorm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1) {
+    Napi::TypeError::New(env, "vnorm(v: number[3]) expects 1 argument")
+      .ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  double v[3] = {0};
+  if (!ReadNumberArray3(env, info[0], v, "v")) {
+    return Napi::Number::New(env, 0);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble out = vnorm_c(v);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling vnorm_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  return Napi::Number::New(env, static_cast<double>(out));
+}
+
+static Napi::Array Vhat(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1) {
+    Napi::TypeError::New(env, "vhat(v: number[3]) expects 1 argument")
+      .ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  double v[3] = {0};
+  if (!ReadNumberArray3(env, info[0], v, "v")) {
+    return Napi::Array::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble out[3] = {0};
+  vhat_c(v, out);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling vhat_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  return MakeNumberArray(env, out, 3);
+}
+
+static Napi::Number Vdot(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2) {
+    Napi::TypeError::New(env, "vdot(a: number[3], b: number[3]) expects 2 arguments")
+      .ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  double a[3] = {0};
+  double b[3] = {0};
+  if (!ReadNumberArray3(env, info[0], a, "a") || !ReadNumberArray3(env, info[1], b, "b")) {
+    return Napi::Number::New(env, 0);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble out = vdot_c(a, b);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling vdot_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  return Napi::Number::New(env, static_cast<double>(out));
+}
+
+static Napi::Array Vcrss(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2) {
+    Napi::TypeError::New(env, "vcrss(a: number[3], b: number[3]) expects 2 arguments")
+      .ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  double a[3] = {0};
+  double b[3] = {0};
+  if (!ReadNumberArray3(env, info[0], a, "a") || !ReadNumberArray3(env, info[1], b, "b")) {
+    return Napi::Array::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble out[3] = {0};
+  vcrss_c(a, b, out);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling vcrss_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  return MakeNumberArray(env, out, 3);
+}
+
+static Napi::Array Mxv(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2) {
+    Napi::TypeError::New(env, "mxv(m: number[9], v: number[3]) expects 2 arguments")
+      .ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  double m[3][3] = {{0}};
+  double v[3] = {0};
+  if (!ReadNumberArray9ToMat33(env, info[0], m, "m") || !ReadNumberArray3(env, info[1], v, "v")) {
+    return Napi::Array::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble out[3] = {0};
+  mxv_c(m, v, out);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling mxv_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  return MakeNumberArray(env, out, 3);
+}
+
+static Napi::Array Mtxv(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2) {
+    Napi::TypeError::New(env, "mtxv(m: number[9], v: number[3]) expects 2 arguments")
+      .ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  double m[3][3] = {{0}};
+  double v[3] = {0};
+  if (!ReadNumberArray9ToMat33(env, info[0], m, "m") || !ReadNumberArray3(env, info[1], v, "v")) {
+    return Napi::Array::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble out[3] = {0};
+  mtxv_c(m, v, out);
+  if (failed_c()) {
+    const std::string msg = std::string("CSPICE failed while calling mtxv_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Array::New(env);
+  }
+
+  return MakeNumberArray(env, out, 3);
+}
+
 static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("spiceVersion", Napi::Function::New(env, SpiceVersion));
   exports.Set("furnsh", Napi::Function::New(env, Furnsh));
@@ -970,6 +1319,18 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("spkpos", Napi::Function::New(env, Spkpos));
   exports.Set("pxform", Napi::Function::New(env, Pxform));
   exports.Set("sxform", Napi::Function::New(env, Sxform));
+
+  exports.Set("reclat", Napi::Function::New(env, Reclat));
+  exports.Set("latrec", Napi::Function::New(env, Latrec));
+  exports.Set("recsph", Napi::Function::New(env, Recsph));
+  exports.Set("sphrec", Napi::Function::New(env, Sphrec));
+
+  exports.Set("vnorm", Napi::Function::New(env, Vnorm));
+  exports.Set("vhat", Napi::Function::New(env, Vhat));
+  exports.Set("vdot", Napi::Function::New(env, Vdot));
+  exports.Set("vcrss", Napi::Function::New(env, Vcrss));
+  exports.Set("mxv", Napi::Function::New(env, Mxv));
+  exports.Set("mtxv", Napi::Function::New(env, Mtxv));
   return exports;
 }
 
