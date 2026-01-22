@@ -9,34 +9,34 @@ import { createBackend } from "@rybosome/tspice";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const nodeBackendAvailable = (() => {
+  // In JS-only CI we intentionally don't build @rybosome/tspice-backend-node.
+  // Skip node-backend tests unless both the JS entrypoint and native addon exist.
+  const distEntrypoint = path.resolve(__dirname, "..", "..", "backend-node", "dist", "index.js");
+  if (!fs.existsSync(distEntrypoint)) {
+    return false;
+  }
+
+  const releaseDir = path.resolve(
+    __dirname,
+    "..",
+    "..",
+    "backend-node",
+    "native",
+    "build",
+    "Release",
+  );
+
+  if (!fs.existsSync(releaseDir)) {
+    return false;
+  }
+
+  return fs.readdirSync(releaseDir).some((file) => file.endsWith(".node"));
+})();
+
 const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 
 describe("Phase 1: kernel management", () => {
-  const nodeBackendAvailable = (() => {
-    // In JS-only CI we intentionally don't build @rybosome/tspice-backend-node.
-    // Skip node-backend tests unless both the JS entrypoint and native addon exist.
-    const distEntrypoint = path.resolve(__dirname, "..", "..", "backend-node", "dist", "index.js");
-    if (!fs.existsSync(distEntrypoint)) {
-      return false;
-    }
-
-    const releaseDir = path.resolve(
-      __dirname,
-      "..",
-      "..",
-      "backend-node",
-      "native",
-      "build",
-      "Release",
-    );
-
-    if (!fs.existsSync(releaseDir)) {
-      return false;
-    }
-
-    return fs.readdirSync(releaseDir).some((file) => file.endsWith(".node"));
-  })();
-
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: furnsh/kclear/ktotal/kdata/unload", async () => {
@@ -93,5 +93,40 @@ describe("Phase 1: kernel management", () => {
 
     backend.kclear();
     expect(backend.ktotal("ALL")).toBe(0);
+  });
+});
+
+describe("Phase 1: time", () => {
+  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+
+  itNode("node backend: str2et/et2utc/timout", async () => {
+    const backend = await createBackend({ backend: "node" });
+    backend.kclear();
+    backend.furnsh(lskPath);
+
+    const et = backend.str2et("2000 JAN 01 12:00:00 TDB");
+    expect(Math.abs(et)).toBeLessThan(1); // J2000 epoch
+
+    const utc = backend.et2utc(0, "ISOC", 3);
+    expect(utc).toContain("2000-01-01");
+
+    const pic = backend.timout(0, "YYYY-MON-DD HR:MN:SC.### ::TDB");
+    expect(pic).toMatch(/^2000-JAN-01 12:00:00\.000/);
+  });
+
+  it("wasm backend: str2et/et2utc/timout", async () => {
+    const backend = await createBackend({ backend: "wasm" });
+    const lskBytes = fs.readFileSync(lskPath);
+    backend.kclear();
+    backend.loadKernel("naif0012.tls", lskBytes);
+
+    const et = backend.str2et("2000 JAN 01 12:00:00 TDB");
+    expect(Math.abs(et)).toBeLessThan(1);
+
+    const utc = backend.et2utc(0, "ISOC", 3);
+    expect(utc).toContain("2000-01-01");
+
+    const pic = backend.timout(0, "YYYY-MON-DD HR:MN:SC.### ::TDB");
+    expect(pic).toMatch(/^2000-JAN-01 12:00:00\.000/);
   });
 });
