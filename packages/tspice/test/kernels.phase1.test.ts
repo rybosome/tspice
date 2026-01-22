@@ -79,8 +79,14 @@ describe("Phase 1: time", () => {
     backend.kclear();
     backend.furnsh(lskPath);
 
-    const et = backend.str2et("2000-01-01T12:00:00");
-    expect(Math.abs(et)).toBeLessThan(1); // J2000 epoch
+    const utcIn = "2000-01-01T12:00:00";
+    const etUtc = backend.str2et(utcIn);
+    const utcOut = backend.et2utc(etUtc, "ISOC", 3);
+    expect(utcOut).toBe("2000-01-01T12:00:00.000");
+
+    // SPICE accepts TDB as a separate token with a space-delimited timestamp.
+    const etTdb = backend.str2et("2000-01-01 12:00:00 TDB");
+    expect(Math.abs(etTdb)).toBeLessThan(1); // J2000 epoch
 
     const utc = backend.et2utc(0, "ISOC", 3);
     expect(utc).toContain("2000-01-01");
@@ -95,8 +101,14 @@ describe("Phase 1: time", () => {
     backend.kclear();
     backend.loadKernel("naif0012.tls", lskBytes);
 
-    const et = backend.str2et("2000-01-01T12:00:00");
-    expect(Math.abs(et)).toBeLessThan(1);
+    const utcIn = "2000-01-01T12:00:00";
+    const etUtc = backend.str2et(utcIn);
+    const utcOut = backend.et2utc(etUtc, "ISOC", 3);
+    expect(utcOut).toBe("2000-01-01T12:00:00.000");
+
+    // SPICE accepts TDB as a separate token with a space-delimited timestamp.
+    const etTdb = backend.str2et("2000-01-01 12:00:00 TDB");
+    expect(Math.abs(etTdb)).toBeLessThan(1);
 
     const utc = backend.et2utc(0, "ISOC", 3);
     expect(utc).toContain("2000-01-01");
