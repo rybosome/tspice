@@ -2,6 +2,7 @@ import type {
   KernelSource,
   SpkezrResult,
   SpiceBackend,
+  SpiceBackendWasm,
   SpiceMatrix3x3,
   SpiceStateVector,
 } from "@rybosome/tspice-backend-contract";
@@ -368,7 +369,7 @@ function spkezrWithError(
 
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
-): Promise<SpiceBackend> {
+): Promise<SpiceBackendWasm> {
   const defaultWasmUrl = new URL(`./${WASM_BINARY_FILENAME}`, import.meta.url);
   const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
 
@@ -431,34 +432,46 @@ export async function createWasmBackend(
   // The toolkit version is constant for the lifetime of a loaded module.
   const toolkitVersion = getToolkitVersion(module);
 
-  const backend: SpiceBackend = {
+  function writeFile(path: string, data: Uint8Array): void {
+    const dir = dirnamePosix(path);
+    if (dir && dir !== "/") {
+      module.FS.mkdirTree(dir);
+    }
+
+    // `data` is typed as `Uint8Array`, but in Node it's commonly a `Buffer`
+    // (also a `Uint8Array`) which may be a view into a larger backing store
+    // (non-zero `byteOffset`, pooled slabs, etc.). Some Emscripten FS
+    // implementations have had issues writing such views correctly.
+    //
+    // Normalize to an offset-0, tightly sized `Uint8Array` before writing.
+    const bytes =
+      data.byteOffset === 0 && data.byteLength === data.buffer.byteLength
+        ? data
+        : new Uint8Array(data);
+
+    module.FS.writeFile(path, bytes);
+  }
+
+  function loadKernel(path: string): void {
+    callWithError(module, "tspice_furnsh", [path]);
+  }
+
+  const backend: SpiceBackendWasm = {
     kind: "wasm",
     spiceVersion: () => toolkitVersion,
+
+    // WASM-only
+    writeFile,
+    loadKernel,
+
     furnsh: (kernel: KernelSource) => {
       if (typeof kernel === "string") {
-        callWithError(module, "tspice_furnsh", [kernel]);
+        loadKernel(kernel);
         return;
       }
 
-      const dir = dirnamePosix(kernel.path);
-      if (dir && dir !== "/") {
-        module.FS.mkdirTree(dir);
-      }
-
-      // `kernel.bytes` is typed as `Uint8Array`, but in Node it's commonly a
-      // `Buffer` (also a `Uint8Array`) which may be a view into a larger backing
-      // store (non-zero `byteOffset`, pooled slabs, etc.). Some Emscripten FS
-      // implementations have had issues writing such views correctly.
-      //
-      // Normalize to an offset-0, tightly sized `Uint8Array` before writing.
-      const bytes =
-        kernel.bytes.byteOffset === 0 &&
-        kernel.bytes.byteLength === kernel.bytes.buffer.byteLength
-          ? kernel.bytes
-          : new Uint8Array(kernel.bytes);
-
-      module.FS.writeFile(kernel.path, bytes);
-      callWithError(module, "tspice_furnsh", [kernel.path]);
+      writeFile(kernel.path, kernel.bytes);
+      loadKernel(kernel.path);
     },
     unload: (path: string) => {
       callWithError(module, "tspice_unload", [path]);
@@ -485,7 +498,7 @@ export async function createWasmBackend(
   };
 
   // Internal testing hook (not part of the public backend contract).
-  (backend as SpiceBackend & { __ktotalAll(): number }).__ktotalAll = () => {
+  (backend as SpiceBackendWasm & { __ktotalAll(): number }).__ktotalAll = () => {
     return ktotalAllWithError(module);
   };
 

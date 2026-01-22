@@ -1,5 +1,6 @@
 import type { KernelSource, SpiceBackend } from "@rybosome/tspice-backend-contract";
 
+import type { CreateBackendOptions } from "./backend.js";
 import { createBackend } from "./backend.js";
 import { wrapSpiceError } from "./errors.js";
 import type {
@@ -12,7 +13,7 @@ import type {
   Vec3,
 } from "./types.js";
 
-export type CreateSpiceOptions = Parameters<typeof createBackend>[0] & {
+export type CreateSpiceOptions = CreateBackendOptions & {
   /**
    * If provided, `createSpice()` will wrap this backend instead of creating a new one.
    *

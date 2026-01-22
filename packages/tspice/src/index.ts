@@ -2,6 +2,7 @@ export type {
   BackendKind,
   KernelSource,
   SpiceBackend,
+  SpiceBackendWasm,
 } from "@rybosome/tspice-backend-contract";
 
 export type { CreateBackendOptions } from "./backend.js";

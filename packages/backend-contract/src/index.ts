@@ -80,3 +80,18 @@ export interface SpiceBackend {
     observer: string,
   ): SpkezrResult;
 }
+
+/**
+* WASM-only helpers (not available on the node backend).
+*
+* These are used to populate the in-memory FS and then load kernels.
+*/
+export interface SpiceBackendWasm extends SpiceBackend {
+  kind: "wasm";
+
+  /** Write a file into the WASM in-memory filesystem. */
+  writeFile(path: string, data: Uint8Array): void;
+
+  /** Load a kernel that already exists in the WASM filesystem. */
+  loadKernel(path: string): void;
+}
