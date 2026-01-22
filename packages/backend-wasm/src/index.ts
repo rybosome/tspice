@@ -23,6 +23,7 @@ type EmscriptenModule = {
 
   HEAPU8: Uint8Array;
   HEAP32: Int32Array;
+  HEAPF64: Float64Array;
   _tspice_tkvrsn_toolkit(
     outPtr: number,
     outMaxBytes: number,
@@ -45,6 +46,25 @@ type EmscriptenModule = {
     sourceMaxBytes: number,
     handlePtr: number,
     foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_str2et(utcPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_et2utc(
+    et: number,
+    formatPtr: number,
+    prec: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_timout(
+    et: number,
+    picturePtr: number,
+    outPtr: number,
+    outMaxBytes: number,
     errPtr: number,
     errMaxBytes: number,
   ): number;
@@ -229,6 +249,98 @@ function tspiceCallKdata(
   }
 }
 
+function tspiceCallStr2et(module: EmscriptenModule, utc: string): number {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const utcPtr = writeUtf8CString(module, utc);
+  const outEtPtr = module._malloc(8);
+
+  if (!errPtr || !utcPtr || !outEtPtr) {
+    for (const ptr of [outEtPtr, utcPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64[outEtPtr >> 3] = 0;
+    const result = module._tspice_str2et(utcPtr, outEtPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    return module.HEAPF64[outEtPtr >> 3] ?? 0;
+  } finally {
+    module._free(outEtPtr);
+    module._free(utcPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallEt2utc(
+  module: EmscriptenModule,
+  et: number,
+  format: Et2UtcFormat,
+  prec: number,
+): string {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const formatPtr = writeUtf8CString(module, format);
+
+  // Buffer size includes terminating NUL.
+  const outMaxBytes = 2048;
+  const outPtr = module._malloc(outMaxBytes);
+
+  if (!errPtr || !formatPtr || !outPtr) {
+    for (const ptr of [outPtr, formatPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPU8[outPtr] = 0;
+    const result = module._tspice_et2utc(et, formatPtr, prec, outPtr, outMaxBytes, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    return module.UTF8ToString(outPtr, outMaxBytes).trim();
+  } finally {
+    module._free(outPtr);
+    module._free(formatPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallTimout(module: EmscriptenModule, et: number, picture: string): string {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const picturePtr = writeUtf8CString(module, picture);
+
+  // Buffer size includes terminating NUL.
+  const outMaxBytes = 2048;
+  const outPtr = module._malloc(outMaxBytes);
+
+  if (!errPtr || !picturePtr || !outPtr) {
+    for (const ptr of [outPtr, picturePtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPU8[outPtr] = 0;
+    const result = module._tspice_timout(et, picturePtr, outPtr, outMaxBytes, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    return module.UTF8ToString(outPtr, outMaxBytes).trim();
+  } finally {
+    module._free(outPtr);
+    module._free(picturePtr);
+    module._free(errPtr);
+  }
+}
+
 function getToolkitVersion(module: EmscriptenModule): string {
   const outMaxBytes = 256;
   const errMaxBytes = 2048;
@@ -309,7 +421,10 @@ export async function createWasmBackend(
     typeof module._tspice_unload !== "function" ||
     typeof module._tspice_kclear !== "function" ||
     typeof module._tspice_ktotal !== "function" ||
-    typeof module._tspice_kdata !== "function"
+    typeof module._tspice_kdata !== "function" ||
+    typeof module._tspice_str2et !== "function" ||
+    typeof module._tspice_et2utc !== "function" ||
+    typeof module._tspice_timout !== "function"
   ) {
     throw new Error("WASM module is missing expected exports");
   }
@@ -340,8 +455,18 @@ export async function createWasmBackend(
     kdata(which: number, kind: KernelKind = "ALL") {
       return tspiceCallKdata(module, which, kind);
     },
-    str2et: NOT_IMPL,
-    et2utc: NOT_IMPL as unknown as (et: number, format: Et2UtcFormat, prec: number) => string,
+
+    str2et(utc: string) {
+      return tspiceCallStr2et(module, utc);
+    },
+
+    et2utc(et: number, format: Et2UtcFormat, prec: number) {
+      return tspiceCallEt2utc(module, et, format, prec);
+    },
+
+    timout(et: number, picture: string) {
+      return tspiceCallTimout(module, et, picture);
+    },
 
     // Phase 2
     bodn2c: NOT_IMPL as unknown as (name: string) => Found<{ code: number }>,

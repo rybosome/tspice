@@ -262,6 +262,98 @@ static Napi::Object Kdata(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static Napi::Number Str2et(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1 || !info[0].IsString()) {
+    Napi::TypeError::New(env, "str2et(utc: string) expects exactly one string argument")
+      .ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  const std::string utc = info[0].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble et = 0.0;
+  str2et_c(utc.c_str(), &et);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling str2et_c(\"") + utc + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  return Napi::Number::New(env, static_cast<double>(et));
+}
+
+static Napi::String Et2utc(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsString() || !info[2].IsNumber()) {
+    Napi::TypeError::New(env, "et2utc(et: number, format: string, prec: number) expects (number, string, number)")
+      .ThrowAsJavaScriptException();
+    return Napi::String::New(env, "");
+  }
+
+  const SpiceDouble et = static_cast<SpiceDouble>(info[0].As<Napi::Number>().DoubleValue());
+  const std::string format = info[1].As<Napi::String>().Utf8Value();
+  const SpiceInt prec = static_cast<SpiceInt>(info[2].As<Napi::Number>().Int32Value());
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  // Output length must include the terminating NUL.
+  constexpr SpiceInt kOutMax = 2048;
+  SpiceChar out[kOutMax] = {0};
+
+  et2utc_c(et, format.c_str(), prec, kOutMax, out);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling et2utc_c(et=") + std::to_string(et) +
+      ", format=\"" + format + "\", prec=" + std::to_string(prec) + "):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::String::New(env, "");
+  }
+
+  return Napi::String::New(env, RTrim(out));
+}
+
+static Napi::String Timout(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsString()) {
+    Napi::TypeError::New(env, "timout(et: number, picture: string) expects (number, string)")
+      .ThrowAsJavaScriptException();
+    return Napi::String::New(env, "");
+  }
+
+  const SpiceDouble et = static_cast<SpiceDouble>(info[0].As<Napi::Number>().DoubleValue());
+  const std::string picture = info[1].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  // Output length must include the terminating NUL.
+  constexpr SpiceInt kOutMax = 2048;
+  SpiceChar out[kOutMax] = {0};
+
+  timout_c(et, picture.c_str(), kOutMax, out);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling timout_c(et=") + std::to_string(et) +
+      ", picture=\"" + picture + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::String::New(env, "");
+  }
+
+  return Napi::String::New(env, RTrim(out));
+}
+
 static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("spiceVersion", Napi::Function::New(env, SpiceVersion));
   exports.Set("furnsh", Napi::Function::New(env, Furnsh));
@@ -269,6 +361,9 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("kclear", Napi::Function::New(env, Kclear));
   exports.Set("ktotal", Napi::Function::New(env, Ktotal));
   exports.Set("kdata", Napi::Function::New(env, Kdata));
+  exports.Set("str2et", Napi::Function::New(env, Str2et));
+  exports.Set("et2utc", Napi::Function::New(env, Et2utc));
+  exports.Set("timout", Napi::Function::New(env, Timout));
   return exports;
 }
 

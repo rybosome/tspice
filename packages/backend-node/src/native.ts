@@ -16,6 +16,7 @@ export type NativeAddon = {
   ): { found: boolean; file?: string; filtyp?: string; source?: string; handle?: number };
   str2et(utc: string): number;
   et2utc(et: number, format: string, prec: number): string;
+  timout(et: number, picture: string): string;
 
   // Phase 2
   bodn2c(name: string): { found: boolean; code?: number };

@@ -65,8 +65,23 @@ export function createNodeBackend(): SpiceBackend {
       } satisfies Found<{ file: string; filtyp: string; source: string; handle: number }>;
     },
 
-    str2et: NOT_IMPL,
-    et2utc: NOT_IMPL as unknown as (et: number, format: Et2UtcFormat, prec: number) => string,
+    str2et(utc: string) {
+      const et = getNativeAddon().str2et(utc);
+      invariant(typeof et === "number", "Expected native backend str2et() to return a number");
+      return et;
+    },
+
+    et2utc(et: number, format: Et2UtcFormat, prec: number) {
+      const out = getNativeAddon().et2utc(et, format, prec);
+      invariant(typeof out === "string", "Expected native backend et2utc() to return a string");
+      return out;
+    },
+
+    timout(et: number, picture: string) {
+      const out = getNativeAddon().timout(et, picture);
+      invariant(typeof out === "string", "Expected native backend timout() to return a string");
+      return out;
+    },
 
     // Phase 2
     bodn2c: NOT_IMPL as unknown as (name: string) => Found<{ code: number }>,

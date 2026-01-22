@@ -124,6 +124,13 @@ export interface SpiceBackend {
   str2et(utc: string): number;
   et2utc(et: number, format: Et2UtcFormat, prec: number): string;
 
+  /**
+   * Format an ephemeris time using a NAIF time picture.
+   *
+   * Wrapper around CSPICE `timout_c`.
+   */
+  timout(et: number, picture: string): string;
+
   // ---- Phase 2: IDs / names
   bodn2c(name: string): Found<{ code: number }>;
   bodc2n(code: number): Found<{ name: string }>;

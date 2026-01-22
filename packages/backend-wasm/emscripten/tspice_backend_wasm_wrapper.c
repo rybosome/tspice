@@ -227,3 +227,80 @@ int tspice_kdata(
 
   return 0;
 }
+
+int tspice_str2et(const char *utc, double *outEt, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outEt) {
+    *outEt = 0.0;
+  }
+
+  SpiceDouble et = 0.0;
+  str2et_c(utc, &et);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outEt) {
+    *outEt = (double)et;
+  }
+
+  return 0;
+}
+
+int tspice_et2utc(
+  double et,
+  const char *format,
+  int prec,
+  char *out,
+  int outMaxBytes,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outMaxBytes > 0 && out) {
+    out[0] = '\0';
+  }
+
+  et2utc_c((SpiceDouble)et, format, (SpiceInt)prec, (SpiceInt)outMaxBytes, out);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_timout(
+  double et,
+  const char *picture,
+  char *out,
+  int outMaxBytes,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outMaxBytes > 0 && out) {
+    out[0] = '\0';
+  }
+
+  timout_c((SpiceDouble)et, picture, (SpiceInt)outMaxBytes, out);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
