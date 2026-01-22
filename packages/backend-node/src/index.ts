@@ -4,6 +4,9 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 import type {
+  Found,
+  KernelData,
+  KernelKind,
   KernelSource,
   SpiceBackend,
   SpkezrResult,
@@ -25,6 +28,9 @@ export function createNodeBackend(): SpiceBackend {
 
   invariant(typeof native.furnsh === "function", "Expected native addon to export furnsh(path)");
   invariant(typeof native.unload === "function", "Expected native addon to export unload(path)");
+  invariant(typeof native.kclear === "function", "Expected native addon to export kclear()");
+  invariant(typeof native.ktotal === "function", "Expected native addon to export ktotal(kind?)");
+  invariant(typeof native.kdata === "function", "Expected native addon to export kdata(which, kind?)");
   invariant(typeof native.str2et === "function", "Expected native addon to export str2et(time)");
   invariant(typeof native.et2utc === "function", "Expected native addon to export et2utc(et, format, prec)");
   invariant(typeof native.pxform === "function", "Expected native addon to export pxform(from, to, et)");
@@ -99,6 +105,42 @@ export function createNodeBackend(): SpiceBackend {
       }
 
       native.unload(_path);
+    },
+
+    kclear: () => {
+      native.kclear();
+
+      // Clear any byte-backed kernels we staged to temp files.
+      for (const tempPath of tempByVirtualPath.values()) {
+        safeUnlink(tempPath);
+      }
+      tempByVirtualPath.clear();
+    },
+
+    ktotal: (kind: KernelKind = "ALL") => {
+      const total = native.ktotal(kind);
+      invariant(typeof total === "number", "Expected native backend ktotal() to return a number");
+      return total;
+    },
+
+    kdata: (which: number, kind: KernelKind = "ALL") => {
+      const result = native.kdata(which, kind);
+      if (!result.found) {
+        return { found: false };
+      }
+
+      invariant(typeof result.file === "string", "Expected kdata().file to be a string");
+      invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
+      invariant(typeof result.source === "string", "Expected kdata().source to be a string");
+      invariant(typeof result.handle === "number", "Expected kdata().handle to be a number");
+
+      return {
+        found: true,
+        file: result.file,
+        filtyp: result.filtyp,
+        source: result.source,
+        handle: result.handle,
+      } satisfies Found<KernelData>;
     },
     tkvrsn: (item) => {
       invariant(item === "TOOLKIT", `Unsupported tkvrsn item: ${item}`);
