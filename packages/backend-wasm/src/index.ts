@@ -196,6 +196,83 @@ type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_subpnt(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsPtr: number,
+    outSpointPtr: number,
+    outTrgepcPtr: number,
+    outSrfvecPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_subslr(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsPtr: number,
+    outSpointPtr: number,
+    outTrgepcPtr: number,
+    outSrfvecPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_sincpt(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsPtr: number,
+    drefPtr: number,
+    dvecPtr: number,
+    outSpointPtr: number,
+    outTrgepcPtr: number,
+    outSrfvecPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ilumin(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsPtr: number,
+    spointPtr: number,
+    outTrgepcPtr: number,
+    outSrfvecPtr: number,
+    outPhasePtr: number,
+    outSolarPtr: number,
+    outEmissnPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_occult(
+    frontPtr: number,
+    fshapePtr: number,
+    fframePtr: number,
+    backPtr: number,
+    bshapePtr: number,
+    bframePtr: number,
+    abcorrPtr: number,
+    obsPtr: number,
+    et: number,
+    outCodePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rectPtr: number,
     outRadiusPtr: number,
@@ -1321,6 +1398,481 @@ function tspiceCallSpkpos(
   }
 }
 
+function tspiceCallSubpnt(
+  module: EmscriptenModule,
+  method: string,
+  target: string,
+  et: number,
+  fixref: string,
+  abcorr: AbCorr,
+  obs: string,
+): { spoint: Vector3; trgepc: number; srfvec: Vector3 } {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const methodPtr = writeUtf8CString(module, method);
+  const targetPtr = writeUtf8CString(module, target);
+  const fixrefPtr = writeUtf8CString(module, fixref);
+  const abcorrPtr = writeUtf8CString(module, abcorr);
+  const obsPtr = writeUtf8CString(module, obs);
+  const outSpointPtr = module._malloc(3 * 8);
+  const outTrgepcPtr = module._malloc(8);
+  const outSrfvecPtr = module._malloc(3 * 8);
+
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !obsPtr ||
+    !outSpointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr
+  ) {
+    for (const ptr of [
+      outSrfvecPtr,
+      outTrgepcPtr,
+      outSpointPtr,
+      obsPtr,
+      abcorrPtr,
+      fixrefPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const result = module._tspice_subpnt(
+      methodPtr,
+      targetPtr,
+      et,
+      fixrefPtr,
+      abcorrPtr,
+      obsPtr,
+      outSpointPtr,
+      outTrgepcPtr,
+      outSrfvecPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const spoint = Array.from(
+      module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3),
+    ) as unknown as Vector3;
+    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as Vector3;
+    return { spoint, trgepc, srfvec };
+  } finally {
+    module._free(outSrfvecPtr);
+    module._free(outTrgepcPtr);
+    module._free(outSpointPtr);
+    module._free(obsPtr);
+    module._free(abcorrPtr);
+    module._free(fixrefPtr);
+    module._free(targetPtr);
+    module._free(methodPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallSubslr(
+  module: EmscriptenModule,
+  method: string,
+  target: string,
+  et: number,
+  fixref: string,
+  abcorr: AbCorr,
+  obs: string,
+): { spoint: Vector3; trgepc: number; srfvec: Vector3 } {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const methodPtr = writeUtf8CString(module, method);
+  const targetPtr = writeUtf8CString(module, target);
+  const fixrefPtr = writeUtf8CString(module, fixref);
+  const abcorrPtr = writeUtf8CString(module, abcorr);
+  const obsPtr = writeUtf8CString(module, obs);
+  const outSpointPtr = module._malloc(3 * 8);
+  const outTrgepcPtr = module._malloc(8);
+  const outSrfvecPtr = module._malloc(3 * 8);
+
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !obsPtr ||
+    !outSpointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr
+  ) {
+    for (const ptr of [
+      outSrfvecPtr,
+      outTrgepcPtr,
+      outSpointPtr,
+      obsPtr,
+      abcorrPtr,
+      fixrefPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    const result = module._tspice_subslr(
+      methodPtr,
+      targetPtr,
+      et,
+      fixrefPtr,
+      abcorrPtr,
+      obsPtr,
+      outSpointPtr,
+      outTrgepcPtr,
+      outSrfvecPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const spoint = Array.from(
+      module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3),
+    ) as unknown as Vector3;
+    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as Vector3;
+    return { spoint, trgepc, srfvec };
+  } finally {
+    module._free(outSrfvecPtr);
+    module._free(outTrgepcPtr);
+    module._free(outSpointPtr);
+    module._free(obsPtr);
+    module._free(abcorrPtr);
+    module._free(fixrefPtr);
+    module._free(targetPtr);
+    module._free(methodPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallSincpt(
+  module: EmscriptenModule,
+  method: string,
+  target: string,
+  et: number,
+  fixref: string,
+  abcorr: AbCorr,
+  obs: string,
+  dref: string,
+  dvec: Vector3,
+): Found<{ spoint: Vector3; trgepc: number; srfvec: Vector3 }> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const methodPtr = writeUtf8CString(module, method);
+  const targetPtr = writeUtf8CString(module, target);
+  const fixrefPtr = writeUtf8CString(module, fixref);
+  const abcorrPtr = writeUtf8CString(module, abcorr);
+  const obsPtr = writeUtf8CString(module, obs);
+  const drefPtr = writeUtf8CString(module, dref);
+  const dvecPtr = module._malloc(3 * 8);
+  const outSpointPtr = module._malloc(3 * 8);
+  const outTrgepcPtr = module._malloc(8);
+  const outSrfvecPtr = module._malloc(3 * 8);
+  const foundPtr = module._malloc(4);
+
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !obsPtr ||
+    !drefPtr ||
+    !dvecPtr ||
+    !outSpointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr ||
+    !foundPtr
+  ) {
+    for (const ptr of [
+      foundPtr,
+      outSrfvecPtr,
+      outTrgepcPtr,
+      outSpointPtr,
+      dvecPtr,
+      drefPtr,
+      obsPtr,
+      abcorrPtr,
+      fixrefPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64.set(dvec as unknown as number[], dvecPtr >> 3);
+    module.HEAP32[foundPtr >> 2] = 0;
+
+    const result = module._tspice_sincpt(
+      methodPtr,
+      targetPtr,
+      et,
+      fixrefPtr,
+      abcorrPtr,
+      obsPtr,
+      drefPtr,
+      dvecPtr,
+      outSpointPtr,
+      outTrgepcPtr,
+      outSrfvecPtr,
+      foundPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+
+    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+    if (!found) return { found: false };
+
+    const spoint = Array.from(
+      module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3),
+    ) as unknown as Vector3;
+    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as Vector3;
+    return { found: true, spoint, trgepc, srfvec };
+  } finally {
+    module._free(foundPtr);
+    module._free(outSrfvecPtr);
+    module._free(outTrgepcPtr);
+    module._free(outSpointPtr);
+    module._free(dvecPtr);
+    module._free(drefPtr);
+    module._free(obsPtr);
+    module._free(abcorrPtr);
+    module._free(fixrefPtr);
+    module._free(targetPtr);
+    module._free(methodPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallIlumin(
+  module: EmscriptenModule,
+  method: string,
+  target: string,
+  et: number,
+  fixref: string,
+  abcorr: AbCorr,
+  obs: string,
+  spoint: Vector3,
+): { trgepc: number; srfvec: Vector3; phase: number; solar: number; emissn: number } {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const methodPtr = writeUtf8CString(module, method);
+  const targetPtr = writeUtf8CString(module, target);
+  const fixrefPtr = writeUtf8CString(module, fixref);
+  const abcorrPtr = writeUtf8CString(module, abcorr);
+  const obsPtr = writeUtf8CString(module, obs);
+  const spointPtr = module._malloc(3 * 8);
+  const outTrgepcPtr = module._malloc(8);
+  const outSrfvecPtr = module._malloc(3 * 8);
+  const outPhasePtr = module._malloc(8);
+  const outSolarPtr = module._malloc(8);
+  const outEmissnPtr = module._malloc(8);
+
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !obsPtr ||
+    !spointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr ||
+    !outPhasePtr ||
+    !outSolarPtr ||
+    !outEmissnPtr
+  ) {
+    for (const ptr of [
+      outEmissnPtr,
+      outSolarPtr,
+      outPhasePtr,
+      outSrfvecPtr,
+      outTrgepcPtr,
+      spointPtr,
+      obsPtr,
+      abcorrPtr,
+      fixrefPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64.set(spoint as unknown as number[], spointPtr >> 3);
+
+    const result = module._tspice_ilumin(
+      methodPtr,
+      targetPtr,
+      et,
+      fixrefPtr,
+      abcorrPtr,
+      obsPtr,
+      spointPtr,
+      outTrgepcPtr,
+      outSrfvecPtr,
+      outPhasePtr,
+      outSolarPtr,
+      outEmissnPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+
+    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as Vector3;
+    const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
+    const solar = module.HEAPF64[outSolarPtr >> 3] ?? 0;
+    const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
+    return { trgepc, srfvec, phase, solar, emissn };
+  } finally {
+    module._free(outEmissnPtr);
+    module._free(outSolarPtr);
+    module._free(outPhasePtr);
+    module._free(outSrfvecPtr);
+    module._free(outTrgepcPtr);
+    module._free(spointPtr);
+    module._free(obsPtr);
+    module._free(abcorrPtr);
+    module._free(fixrefPtr);
+    module._free(targetPtr);
+    module._free(methodPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallOccult(
+  module: EmscriptenModule,
+  front: string,
+  fshape: string,
+  fframe: string,
+  back: string,
+  bshape: string,
+  bframe: string,
+  abcorr: AbCorr,
+  obs: string,
+  et: number,
+): -3 | -2 | -1 | 0 | 1 | 2 | 3 {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const frontPtr = writeUtf8CString(module, front);
+  const fshapePtr = writeUtf8CString(module, fshape);
+  const fframePtr = writeUtf8CString(module, fframe);
+  const backPtr = writeUtf8CString(module, back);
+  const bshapePtr = writeUtf8CString(module, bshape);
+  const bframePtr = writeUtf8CString(module, bframe);
+  const abcorrPtr = writeUtf8CString(module, abcorr);
+  const obsPtr = writeUtf8CString(module, obs);
+  const outCodePtr = module._malloc(4);
+
+  if (
+    !errPtr ||
+    !frontPtr ||
+    !fshapePtr ||
+    !fframePtr ||
+    !backPtr ||
+    !bshapePtr ||
+    !bframePtr ||
+    !abcorrPtr ||
+    !obsPtr ||
+    !outCodePtr
+  ) {
+    for (const ptr of [
+      outCodePtr,
+      obsPtr,
+      abcorrPtr,
+      bframePtr,
+      bshapePtr,
+      backPtr,
+      fframePtr,
+      fshapePtr,
+      frontPtr,
+      errPtr,
+    ]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAP32[outCodePtr >> 2] = 0;
+    const result = module._tspice_occult(
+      frontPtr,
+      fshapePtr,
+      fframePtr,
+      backPtr,
+      bshapePtr,
+      bframePtr,
+      abcorrPtr,
+      obsPtr,
+      et,
+      outCodePtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+
+    const code = module.HEAP32[outCodePtr >> 2] ?? 0;
+    if (code < -3 || code > 3) {
+      throw new Error(`occult() returned out-of-range code: ${code}`);
+    }
+    return code as -3 | -2 | -1 | 0 | 1 | 2 | 3;
+  } finally {
+    module._free(outCodePtr);
+    module._free(obsPtr);
+    module._free(abcorrPtr);
+    module._free(bframePtr);
+    module._free(bshapePtr);
+    module._free(backPtr);
+    module._free(fframePtr);
+    module._free(fshapePtr);
+    module._free(frontPtr);
+    module._free(errPtr);
+  }
+}
+
 function getToolkitVersion(module: EmscriptenModule): string {
   const outMaxBytes = 256;
   const errMaxBytes = 2048;
@@ -1418,7 +1970,12 @@ export async function createWasmBackend(
     typeof module._tspice_pxform !== "function" ||
     typeof module._tspice_sxform !== "function" ||
     typeof module._tspice_spkezr !== "function" ||
-    typeof module._tspice_spkpos !== "function"
+    typeof module._tspice_spkpos !== "function" ||
+    typeof module._tspice_subpnt !== "function" ||
+    typeof module._tspice_subslr !== "function" ||
+    typeof module._tspice_sincpt !== "function" ||
+    typeof module._tspice_ilumin !== "function" ||
+    typeof module._tspice_occult !== "function"
   ) {
     throw new Error("WASM module is missing expected exports");
   }
@@ -1522,6 +2079,46 @@ export async function createWasmBackend(
     },
     sxform(from: string, to: string, et: number) {
       return tspiceCallSxform(module, from, to, et);
+    },
+
+    // Phase 3: derived geometry
+    subpnt(method: string, target: string, et: number, fixref: string, abcorr: AbCorr, obs: string) {
+      return tspiceCallSubpnt(module, method, target, et, fixref, abcorr, obs);
+    },
+
+    subslr(method: string, target: string, et: number, fixref: string, abcorr: AbCorr, obs: string) {
+      return tspiceCallSubslr(module, method, target, et, fixref, abcorr, obs);
+    },
+
+    sincpt(
+      method: string,
+      target: string,
+      et: number,
+      fixref: string,
+      abcorr: AbCorr,
+      obs: string,
+      dref: string,
+      dvec: Vector3,
+    ) {
+      return tspiceCallSincpt(module, method, target, et, fixref, abcorr, obs, dref, dvec);
+    },
+
+    ilumin(method: string, target: string, et: number, fixref: string, abcorr: AbCorr, obs: string, spoint: Vector3) {
+      return tspiceCallIlumin(module, method, target, et, fixref, abcorr, obs, spoint);
+    },
+
+    occult(
+      front: string,
+      fshape: string,
+      fframe: string,
+      back: string,
+      bshape: string,
+      bframe: string,
+      abcorr: AbCorr,
+      obs: string,
+      et: number,
+    ) {
+      return tspiceCallOccult(module, front, fshape, fframe, back, bshape, bframe, abcorr, obs, et);
     },
 
     // Phase 3: coordinate conversions + small vector/matrix helpers

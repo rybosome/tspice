@@ -993,6 +993,345 @@ static Napi::Array Sxform(const Napi::CallbackInfo& info) {
   return MakeNumberArray(env, flat, 36);
 }
 
+static Napi::Object Subpnt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (
+    info.Length() != 6 ||
+    !info[0].IsString() ||
+    !info[1].IsString() ||
+    !info[2].IsNumber() ||
+    !info[3].IsString() ||
+    !info[4].IsString() ||
+    !info[5].IsString()
+  ) {
+    Napi::TypeError::New(env, "subpnt(method: string, target: string, et: number, fixref: string, abcorr: string, obs: string) expects (string, string, number, string, string, string)")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  const std::string method = info[0].As<Napi::String>().Utf8Value();
+  const std::string target = info[1].As<Napi::String>().Utf8Value();
+  const SpiceDouble et = static_cast<SpiceDouble>(info[2].As<Napi::Number>().DoubleValue());
+  const std::string fixref = info[3].As<Napi::String>().Utf8Value();
+  const std::string abcorr = info[4].As<Napi::String>().Utf8Value();
+  const std::string obs = info[5].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble spoint[3] = {0};
+  SpiceDouble trgepc = 0;
+  SpiceDouble srfvec[3] = {0};
+  subpnt_c(
+    method.c_str(),
+    target.c_str(),
+    et,
+    fixref.c_str(),
+    abcorr.c_str(),
+    obs.c_str(),
+    spoint,
+    &trgepc,
+    srfvec
+  );
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling subpnt_c(method=\"") + method +
+      "\", target=\"" + target +
+      "\", et=" + std::to_string(et) +
+      ", fixref=\"" + fixref +
+      "\", abcorr=\"" + abcorr +
+      "\", obs=\"" + obs + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("spoint", MakeNumberArray(env, spoint, 3));
+  result.Set("trgepc", Napi::Number::New(env, static_cast<double>(trgepc)));
+  result.Set("srfvec", MakeNumberArray(env, srfvec, 3));
+  return result;
+}
+
+static Napi::Object Subslr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (
+    info.Length() != 6 ||
+    !info[0].IsString() ||
+    !info[1].IsString() ||
+    !info[2].IsNumber() ||
+    !info[3].IsString() ||
+    !info[4].IsString() ||
+    !info[5].IsString()
+  ) {
+    Napi::TypeError::New(env, "subslr(method: string, target: string, et: number, fixref: string, abcorr: string, obs: string) expects (string, string, number, string, string, string)")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  const std::string method = info[0].As<Napi::String>().Utf8Value();
+  const std::string target = info[1].As<Napi::String>().Utf8Value();
+  const SpiceDouble et = static_cast<SpiceDouble>(info[2].As<Napi::Number>().DoubleValue());
+  const std::string fixref = info[3].As<Napi::String>().Utf8Value();
+  const std::string abcorr = info[4].As<Napi::String>().Utf8Value();
+  const std::string obs = info[5].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble spoint[3] = {0};
+  SpiceDouble trgepc = 0;
+  SpiceDouble srfvec[3] = {0};
+  subslr_c(
+    method.c_str(),
+    target.c_str(),
+    et,
+    fixref.c_str(),
+    abcorr.c_str(),
+    obs.c_str(),
+    spoint,
+    &trgepc,
+    srfvec
+  );
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling subslr_c(method=\"") + method +
+      "\", target=\"" + target +
+      "\", et=" + std::to_string(et) +
+      ", fixref=\"" + fixref +
+      "\", abcorr=\"" + abcorr +
+      "\", obs=\"" + obs + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("spoint", MakeNumberArray(env, spoint, 3));
+  result.Set("trgepc", Napi::Number::New(env, static_cast<double>(trgepc)));
+  result.Set("srfvec", MakeNumberArray(env, srfvec, 3));
+  return result;
+}
+
+static Napi::Object Sincpt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (
+    info.Length() != 8 ||
+    !info[0].IsString() ||
+    !info[1].IsString() ||
+    !info[2].IsNumber() ||
+    !info[3].IsString() ||
+    !info[4].IsString() ||
+    !info[5].IsString() ||
+    !info[6].IsString()
+  ) {
+    Napi::TypeError::New(env, "sincpt(method: string, target: string, et: number, fixref: string, abcorr: string, obs: string, dref: string, dvec: number[3]) expects (string, string, number, string, string, string, string, number[3])")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  double dvec[3] = {0};
+  if (!ReadNumberArray3(env, info[7], dvec, "dvec")) {
+    return Napi::Object::New(env);
+  }
+
+  const std::string method = info[0].As<Napi::String>().Utf8Value();
+  const std::string target = info[1].As<Napi::String>().Utf8Value();
+  const SpiceDouble et = static_cast<SpiceDouble>(info[2].As<Napi::Number>().DoubleValue());
+  const std::string fixref = info[3].As<Napi::String>().Utf8Value();
+  const std::string abcorr = info[4].As<Napi::String>().Utf8Value();
+  const std::string obs = info[5].As<Napi::String>().Utf8Value();
+  const std::string dref = info[6].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble spoint[3] = {0};
+  SpiceDouble trgepc = 0;
+  SpiceDouble srfvec[3] = {0};
+  SpiceBoolean found = SPICEFALSE;
+  sincpt_c(
+    method.c_str(),
+    target.c_str(),
+    et,
+    fixref.c_str(),
+    abcorr.c_str(),
+    obs.c_str(),
+    dref.c_str(),
+    dvec,
+    spoint,
+    &trgepc,
+    srfvec,
+    &found
+  );
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling sincpt_c(method=\"") + method +
+      "\", target=\"" + target +
+      "\", et=" + std::to_string(et) +
+      ", fixref=\"" + fixref +
+      "\", abcorr=\"" + abcorr +
+      "\", obs=\"" + obs +
+      "\", dref=\"" + dref + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  if (found == SPICEFALSE) {
+    result.Set("found", Napi::Boolean::New(env, false));
+    return result;
+  }
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("spoint", MakeNumberArray(env, spoint, 3));
+  result.Set("trgepc", Napi::Number::New(env, static_cast<double>(trgepc)));
+  result.Set("srfvec", MakeNumberArray(env, srfvec, 3));
+  return result;
+}
+
+static Napi::Object Ilumin(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (
+    info.Length() != 7 ||
+    !info[0].IsString() ||
+    !info[1].IsString() ||
+    !info[2].IsNumber() ||
+    !info[3].IsString() ||
+    !info[4].IsString() ||
+    !info[5].IsString()
+  ) {
+    Napi::TypeError::New(env, "ilumin(method: string, target: string, et: number, fixref: string, abcorr: string, obs: string, spoint: number[3]) expects (string, string, number, string, string, string, number[3])")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  double spointIn[3] = {0};
+  if (!ReadNumberArray3(env, info[6], spointIn, "spoint")) {
+    return Napi::Object::New(env);
+  }
+
+  const std::string method = info[0].As<Napi::String>().Utf8Value();
+  const std::string target = info[1].As<Napi::String>().Utf8Value();
+  const SpiceDouble et = static_cast<SpiceDouble>(info[2].As<Napi::Number>().DoubleValue());
+  const std::string fixref = info[3].As<Napi::String>().Utf8Value();
+  const std::string abcorr = info[4].As<Napi::String>().Utf8Value();
+  const std::string obs = info[5].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble spoint[3] = {spointIn[0], spointIn[1], spointIn[2]};
+  SpiceDouble trgepc = 0;
+  SpiceDouble srfvec[3] = {0};
+  SpiceDouble phase = 0;
+  SpiceDouble solar = 0;
+  SpiceDouble emissn = 0;
+  ilumin_c(
+    method.c_str(),
+    target.c_str(),
+    et,
+    fixref.c_str(),
+    abcorr.c_str(),
+    obs.c_str(),
+    spoint,
+    &trgepc,
+    srfvec,
+    &phase,
+    &solar,
+    &emissn
+  );
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling ilumin_c(method=\"") + method +
+      "\", target=\"" + target +
+      "\", et=" + std::to_string(et) +
+      ", fixref=\"" + fixref +
+      "\", abcorr=\"" + abcorr +
+      "\", obs=\"" + obs + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("trgepc", Napi::Number::New(env, static_cast<double>(trgepc)));
+  result.Set("srfvec", MakeNumberArray(env, srfvec, 3));
+  result.Set("phase", Napi::Number::New(env, static_cast<double>(phase)));
+  result.Set("solar", Napi::Number::New(env, static_cast<double>(solar)));
+  result.Set("emissn", Napi::Number::New(env, static_cast<double>(emissn)));
+  return result;
+}
+
+static Napi::Number Occult(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (
+    info.Length() != 9 ||
+    !info[0].IsString() ||
+    !info[1].IsString() ||
+    !info[2].IsString() ||
+    !info[3].IsString() ||
+    !info[4].IsString() ||
+    !info[5].IsString() ||
+    !info[6].IsString() ||
+    !info[7].IsString() ||
+    !info[8].IsNumber()
+  ) {
+    Napi::TypeError::New(env, "occult(front: string, fshape: string, fframe: string, back: string, bshape: string, bframe: string, abcorr: string, obs: string, et: number) expects (string, string, string, string, string, string, string, string, number)")
+      .ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  const std::string front = info[0].As<Napi::String>().Utf8Value();
+  const std::string fshape = info[1].As<Napi::String>().Utf8Value();
+  const std::string fframe = info[2].As<Napi::String>().Utf8Value();
+  const std::string back = info[3].As<Napi::String>().Utf8Value();
+  const std::string bshape = info[4].As<Napi::String>().Utf8Value();
+  const std::string bframe = info[5].As<Napi::String>().Utf8Value();
+  const std::string abcorr = info[6].As<Napi::String>().Utf8Value();
+  const std::string obs = info[7].As<Napi::String>().Utf8Value();
+  const SpiceDouble et = static_cast<SpiceDouble>(info[8].As<Napi::Number>().DoubleValue());
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceInt ocltid = 0;
+  occult_c(
+    front.c_str(),
+    fshape.c_str(),
+    fframe.c_str(),
+    back.c_str(),
+    bshape.c_str(),
+    bframe.c_str(),
+    abcorr.c_str(),
+    obs.c_str(),
+    et,
+    &ocltid
+  );
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling occult_c(front=\"") + front +
+      "\", fshape=\"" + fshape +
+      "\", fframe=\"" + fframe +
+      "\", back=\"" + back +
+      "\", bshape=\"" + bshape +
+      "\", bframe=\"" + bframe +
+      "\", abcorr=\"" + abcorr +
+      "\", obs=\"" + obs +
+      "\", et=" + std::to_string(et) + "):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  return Napi::Number::New(env, static_cast<double>(ocltid));
+}
+
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -1319,6 +1658,12 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("spkpos", Napi::Function::New(env, Spkpos));
   exports.Set("pxform", Napi::Function::New(env, Pxform));
   exports.Set("sxform", Napi::Function::New(env, Sxform));
+
+  exports.Set("subpnt", Napi::Function::New(env, Subpnt));
+  exports.Set("subslr", Napi::Function::New(env, Subslr));
+  exports.Set("sincpt", Napi::Function::New(env, Sincpt));
+  exports.Set("ilumin", Napi::Function::New(env, Ilumin));
+  exports.Set("occult", Napi::Function::New(env, Occult));
 
   exports.Set("reclat", Napi::Function::New(env, Reclat));
   exports.Set("latrec", Napi::Function::New(env, Latrec));

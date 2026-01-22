@@ -231,6 +231,114 @@ export function createNodeBackend(): SpiceBackend {
       return out as unknown as Matrix6;
     },
 
+    // Phase 3: derived geometry
+    subpnt(method: string, target: string, et: number, fixref: string, abcorr: AbCorr, obs: string) {
+      const result = getNativeAddon().subpnt(method, target, et, fixref, abcorr, obs);
+      invariant(Array.isArray(result.spoint), "Expected subpnt().spoint to be an array");
+      invariant(result.spoint.length === 3, "Expected subpnt().spoint to have length 3");
+      invariant(typeof result.trgepc === "number", "Expected subpnt().trgepc to be a number");
+      invariant(Array.isArray(result.srfvec), "Expected subpnt().srfvec to be an array");
+      invariant(result.srfvec.length === 3, "Expected subpnt().srfvec to have length 3");
+      return {
+        spoint: result.spoint as unknown as Vector3,
+        trgepc: result.trgepc,
+        srfvec: result.srfvec as unknown as Vector3,
+      };
+    },
+
+    subslr(method: string, target: string, et: number, fixref: string, abcorr: AbCorr, obs: string) {
+      const result = getNativeAddon().subslr(method, target, et, fixref, abcorr, obs);
+      invariant(Array.isArray(result.spoint), "Expected subslr().spoint to be an array");
+      invariant(result.spoint.length === 3, "Expected subslr().spoint to have length 3");
+      invariant(typeof result.trgepc === "number", "Expected subslr().trgepc to be a number");
+      invariant(Array.isArray(result.srfvec), "Expected subslr().srfvec to be an array");
+      invariant(result.srfvec.length === 3, "Expected subslr().srfvec to have length 3");
+      return {
+        spoint: result.spoint as unknown as Vector3,
+        trgepc: result.trgepc,
+        srfvec: result.srfvec as unknown as Vector3,
+      };
+    },
+
+    sincpt(
+      method: string,
+      target: string,
+      et: number,
+      fixref: string,
+      abcorr: AbCorr,
+      obs: string,
+      dref: string,
+      dvec: Vector3,
+    ) {
+      const result = getNativeAddon().sincpt(
+        method,
+        target,
+        et,
+        fixref,
+        abcorr,
+        obs,
+        dref,
+        dvec as unknown as number[],
+      );
+      if (!result.found) {
+        return { found: false };
+      }
+      invariant(Array.isArray(result.spoint), "Expected sincpt().spoint to be an array");
+      invariant(result.spoint.length === 3, "Expected sincpt().spoint to have length 3");
+      invariant(typeof result.trgepc === "number", "Expected sincpt().trgepc to be a number");
+      invariant(Array.isArray(result.srfvec), "Expected sincpt().srfvec to be an array");
+      invariant(result.srfvec.length === 3, "Expected sincpt().srfvec to have length 3");
+      return {
+        found: true,
+        spoint: result.spoint as unknown as Vector3,
+        trgepc: result.trgepc,
+        srfvec: result.srfvec as unknown as Vector3,
+      } satisfies Found<{ spoint: Vector3; trgepc: number; srfvec: Vector3 }>;
+    },
+
+    ilumin(method: string, target: string, et: number, fixref: string, abcorr: AbCorr, obs: string, spoint: Vector3) {
+      const result = getNativeAddon().ilumin(
+        method,
+        target,
+        et,
+        fixref,
+        abcorr,
+        obs,
+        spoint as unknown as number[],
+      );
+      invariant(typeof result.trgepc === "number", "Expected ilumin().trgepc to be a number");
+      invariant(Array.isArray(result.srfvec), "Expected ilumin().srfvec to be an array");
+      invariant(result.srfvec.length === 3, "Expected ilumin().srfvec to have length 3");
+      invariant(typeof result.phase === "number", "Expected ilumin().phase to be a number");
+      invariant(typeof result.solar === "number", "Expected ilumin().solar to be a number");
+      invariant(typeof result.emissn === "number", "Expected ilumin().emissn to be a number");
+      return {
+        trgepc: result.trgepc,
+        srfvec: result.srfvec as unknown as Vector3,
+        phase: result.phase,
+        solar: result.solar,
+        emissn: result.emissn,
+      };
+    },
+
+    occult(
+      front: string,
+      fshape: string,
+      fframe: string,
+      back: string,
+      bshape: string,
+      bframe: string,
+      abcorr: AbCorr,
+      obs: string,
+      et: number,
+    ) {
+      const out = getNativeAddon().occult(front, fshape, fframe, back, bshape, bframe, abcorr, obs, et);
+      invariant(typeof out === "number", "Expected occult() to return a number");
+      // Runtime validation (TypeScript return type is a narrow union).
+      invariant(out >= -3 && out <= 3, `Expected occult() to return within [-3..3], got ${out}`);
+      return out as -3 | -2 | -1 | 0 | 1 | 2 | 3;
+    },
+
     // Phase 3: coordinate conversions + small vector/matrix helpers
     reclat(rect: Vector3) {
       const result = getNativeAddon().reclat(rect as unknown as number[]);

@@ -188,6 +188,58 @@ export interface SpiceBackend {
   pxform(from: string, to: string, et: number): Matrix3;
   sxform(from: string, to: string, et: number): Matrix6;
 
+  // ---- Phase 3: derived geometry
+  subpnt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr,
+    obs: string,
+  ): { spoint: Vector3; trgepc: number; srfvec: Vector3 };
+
+  subslr(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr,
+    obs: string,
+  ): { spoint: Vector3; trgepc: number; srfvec: Vector3 };
+
+  sincpt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr,
+    obs: string,
+    dref: string,
+    dvec: Vector3,
+  ): Found<{ spoint: Vector3; trgepc: number; srfvec: Vector3 }>;
+
+  ilumin(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr,
+    obs: string,
+    spoint: Vector3,
+  ): { trgepc: number; srfvec: Vector3; phase: number; solar: number; emissn: number };
+
+  occult(
+    front: string,
+    fshape: string,
+    fframe: string,
+    back: string,
+    bshape: string,
+    bframe: string,
+    abcorr: AbCorr,
+    obs: string,
+    et: number,
+  ): -3 | -2 | -1 | 0 | 1 | 2 | 3;
+
   // ---- Phase 3: coordinate conversions + small vector/matrix helpers
   reclat(rect: Vector3): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): Vector3;

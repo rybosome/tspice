@@ -169,7 +169,7 @@ execFileSync(
     "-s",
     "EXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8','lengthBytesUTF8','FS','HEAP8','HEAPU8','HEAP16','HEAPU16','HEAP32','HEAPU32','HEAPF32','HEAPF64']",
     "-s",
-    "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_str2et','_tspice_et2utc','_tspice_timout','_tspice_bodn2c','_tspice_bodc2n','_tspice_namfrm','_tspice_frmnam','_tspice_cidfrm','_tspice_cnmfrm','_tspice_scs2e','_tspice_sce2s','_tspice_ckgp','_tspice_ckgpav','_tspice_pxform','_tspice_sxform','_tspice_spkezr','_tspice_spkpos','_tspice_reclat','_tspice_latrec','_tspice_recsph','_tspice_sphrec','_tspice_vnorm','_tspice_vhat','_tspice_vdot','_tspice_vcrss','_tspice_mxv','_tspice_mtxv','_malloc','_free']",
+    "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_str2et','_tspice_et2utc','_tspice_timout','_tspice_bodn2c','_tspice_bodc2n','_tspice_namfrm','_tspice_frmnam','_tspice_cidfrm','_tspice_cnmfrm','_tspice_scs2e','_tspice_sce2s','_tspice_ckgp','_tspice_ckgpav','_tspice_pxform','_tspice_sxform','_tspice_spkezr','_tspice_spkpos','_tspice_subpnt','_tspice_subslr','_tspice_sincpt','_tspice_ilumin','_tspice_occult','_tspice_reclat','_tspice_latrec','_tspice_recsph','_tspice_sphrec','_tspice_vnorm','_tspice_vhat','_tspice_vdot','_tspice_vcrss','_tspice_mxv','_tspice_mtxv','_malloc','_free']",
     "-o",
     outputJsPath,
     ...includeDirs,

@@ -882,6 +882,268 @@ int tspice_spkpos(
   return 0;
 }
 
+int tspice_subpnt(
+  const char *method,
+  const char *target,
+  double et,
+  const char *fixref,
+  const char *abcorr,
+  const char *obs,
+  double *outSpoint,
+  double *outTrgepc,
+  double *outSrfvec,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outSpoint) {
+    for (int i = 0; i < 3; i++) outSpoint[i] = 0.0;
+  }
+  if (outTrgepc) *outTrgepc = 0.0;
+  if (outSrfvec) {
+    for (int i = 0; i < 3; i++) outSrfvec[i] = 0.0;
+  }
+
+  SpiceDouble spoint[3] = {0};
+  SpiceDouble trgepc = 0.0;
+  SpiceDouble srfvec[3] = {0};
+  subpnt_c(method, target, (SpiceDouble)et, fixref, abcorr, obs, spoint, &trgepc, srfvec);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outSpoint) {
+    for (int i = 0; i < 3; i++) outSpoint[i] = (double)spoint[i];
+  }
+  if (outTrgepc) *outTrgepc = (double)trgepc;
+  if (outSrfvec) {
+    for (int i = 0; i < 3; i++) outSrfvec[i] = (double)srfvec[i];
+  }
+  return 0;
+}
+
+int tspice_subslr(
+  const char *method,
+  const char *target,
+  double et,
+  const char *fixref,
+  const char *abcorr,
+  const char *obs,
+  double *outSpoint,
+  double *outTrgepc,
+  double *outSrfvec,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outSpoint) {
+    for (int i = 0; i < 3; i++) outSpoint[i] = 0.0;
+  }
+  if (outTrgepc) *outTrgepc = 0.0;
+  if (outSrfvec) {
+    for (int i = 0; i < 3; i++) outSrfvec[i] = 0.0;
+  }
+
+  SpiceDouble spoint[3] = {0};
+  SpiceDouble trgepc = 0.0;
+  SpiceDouble srfvec[3] = {0};
+  subslr_c(method, target, (SpiceDouble)et, fixref, abcorr, obs, spoint, &trgepc, srfvec);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outSpoint) {
+    for (int i = 0; i < 3; i++) outSpoint[i] = (double)spoint[i];
+  }
+  if (outTrgepc) *outTrgepc = (double)trgepc;
+  if (outSrfvec) {
+    for (int i = 0; i < 3; i++) outSrfvec[i] = (double)srfvec[i];
+  }
+  return 0;
+}
+
+int tspice_sincpt(
+  const char *method,
+  const char *target,
+  double et,
+  const char *fixref,
+  const char *abcorr,
+  const char *obs,
+  const char *dref,
+  const double *dvec,
+  double *outSpoint,
+  double *outTrgepc,
+  double *outSrfvec,
+  int *foundOut,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outSpoint) {
+    for (int i = 0; i < 3; i++) outSpoint[i] = 0.0;
+  }
+  if (outTrgepc) *outTrgepc = 0.0;
+  if (outSrfvec) {
+    for (int i = 0; i < 3; i++) outSrfvec[i] = 0.0;
+  }
+  if (foundOut) *foundOut = 0;
+
+  SpiceDouble dvecC[3] = {0.0, 0.0, 0.0};
+  if (dvec) {
+    dvecC[0] = dvec[0];
+    dvecC[1] = dvec[1];
+    dvecC[2] = dvec[2];
+  }
+
+  SpiceDouble spoint[3] = {0};
+  SpiceDouble trgepc = 0.0;
+  SpiceDouble srfvec[3] = {0};
+  SpiceBoolean found = SPICEFALSE;
+  sincpt_c(
+    method,
+    target,
+    (SpiceDouble)et,
+    fixref,
+    abcorr,
+    obs,
+    dref,
+    dvecC,
+    spoint,
+    &trgepc,
+    srfvec,
+    &found
+  );
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outSpoint) {
+    for (int i = 0; i < 3; i++) outSpoint[i] = (double)spoint[i];
+  }
+  if (outTrgepc) *outTrgepc = (double)trgepc;
+  if (outSrfvec) {
+    for (int i = 0; i < 3; i++) outSrfvec[i] = (double)srfvec[i];
+  }
+  if (foundOut) *foundOut = found == SPICETRUE ? 1 : 0;
+  return 0;
+}
+
+int tspice_ilumin(
+  const char *method,
+  const char *target,
+  double et,
+  const char *fixref,
+  const char *abcorr,
+  const char *obs,
+  const double *spointIn,
+  double *outTrgepc,
+  double *outSrfvec,
+  double *outPhase,
+  double *outSolar,
+  double *outEmissn,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outTrgepc) *outTrgepc = 0.0;
+  if (outSrfvec) {
+    for (int i = 0; i < 3; i++) outSrfvec[i] = 0.0;
+  }
+  if (outPhase) *outPhase = 0.0;
+  if (outSolar) *outSolar = 0.0;
+  if (outEmissn) *outEmissn = 0.0;
+
+  SpiceDouble spoint[3] = {0.0, 0.0, 0.0};
+  if (spointIn) {
+    spoint[0] = spointIn[0];
+    spoint[1] = spointIn[1];
+    spoint[2] = spointIn[2];
+  }
+  SpiceDouble trgepc = 0.0;
+  SpiceDouble srfvec[3] = {0};
+  SpiceDouble phase = 0.0;
+  SpiceDouble solar = 0.0;
+  SpiceDouble emissn = 0.0;
+  ilumin_c(
+    method,
+    target,
+    (SpiceDouble)et,
+    fixref,
+    abcorr,
+    obs,
+    spoint,
+    &trgepc,
+    srfvec,
+    &phase,
+    &solar,
+    &emissn
+  );
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outTrgepc) *outTrgepc = (double)trgepc;
+  if (outSrfvec) {
+    for (int i = 0; i < 3; i++) outSrfvec[i] = (double)srfvec[i];
+  }
+  if (outPhase) *outPhase = (double)phase;
+  if (outSolar) *outSolar = (double)solar;
+  if (outEmissn) *outEmissn = (double)emissn;
+  return 0;
+}
+
+int tspice_occult(
+  const char *front,
+  const char *fshape,
+  const char *fframe,
+  const char *back,
+  const char *bshape,
+  const char *bframe,
+  const char *abcorr,
+  const char *obs,
+  double et,
+  int *outCode,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outCode) *outCode = 0;
+
+  SpiceInt code = 0;
+  occult_c(front, fshape, fframe, back, bshape, bframe, abcorr, obs, (SpiceDouble)et, &code);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outCode) *outCode = (int)code;
+  return 0;
+}
+
 int tspice_reclat(
   const double *rect,
   double *outRadius,

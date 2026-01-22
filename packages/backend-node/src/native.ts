@@ -60,6 +60,57 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  subpnt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    obs: string,
+  ): { spoint: number[]; trgepc: number; srfvec: number[] };
+
+  subslr(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    obs: string,
+  ): { spoint: number[]; trgepc: number; srfvec: number[] };
+
+  sincpt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    obs: string,
+    dref: string,
+    dvec: number[],
+  ): { found: boolean; spoint?: number[]; trgepc?: number; srfvec?: number[] };
+
+  ilumin(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    obs: string,
+    spoint: number[],
+  ): { trgepc: number; srfvec: number[]; phase: number; solar: number; emissn: number };
+
+  occult(
+    front: string,
+    fshape: string,
+    fframe: string,
+    back: string,
+    bshape: string,
+    bframe: string,
+    abcorr: string,
+    obs: string,
+    et: number,
+  ): number;
+
   // Phase 3: coordinate conversions + small vector/matrix helpers
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];

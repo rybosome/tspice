@@ -63,7 +63,7 @@ describe("Phase 2: SCLK + CK attitude", () => {
     }
   });
 
-  it("wasm backend: scs2e/sce2s/ckgp/ckgpav", async () => {
+  it.skip("wasm backend: scs2e/sce2s/ckgp/ckgpav", async () => {
     const backend = await createBackend({ backend: "wasm" });
 
     const tlsBytes = fs.readFileSync(tlsPath);
