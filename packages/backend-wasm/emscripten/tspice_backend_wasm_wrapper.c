@@ -438,6 +438,104 @@ int tspice_frmnam(
   return 0;
 }
 
+int tspice_cidfrm(
+  int center,
+  int *outFrcode,
+  char *outFrname,
+  int outFrnameMaxBytes,
+  int *foundOut,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrcode) {
+    *outFrcode = 0;
+  }
+  if (outFrnameMaxBytes > 0 && outFrname) {
+    outFrname[0] = '\0';
+  }
+  if (foundOut) {
+    *foundOut = 0;
+  }
+
+  SpiceInt frcode = 0;
+  SpiceBoolean found = SPICEFALSE;
+
+  cidfrm_c(
+    (SpiceInt)center,
+    (SpiceInt)outFrnameMaxBytes,
+    &frcode,
+    outFrname,
+    &found
+  );
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFrcode) {
+    *outFrcode = (int)frcode;
+  }
+  if (foundOut) {
+    *foundOut = found == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_cnmfrm(
+  const char *centerName,
+  int *outFrcode,
+  char *outFrname,
+  int outFrnameMaxBytes,
+  int *foundOut,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrcode) {
+    *outFrcode = 0;
+  }
+  if (outFrnameMaxBytes > 0 && outFrname) {
+    outFrname[0] = '\0';
+  }
+  if (foundOut) {
+    *foundOut = 0;
+  }
+
+  SpiceInt frcode = 0;
+  SpiceBoolean found = SPICEFALSE;
+
+  cnmfrm_c(
+    centerName,
+    (SpiceInt)outFrnameMaxBytes,
+    &frcode,
+    outFrname,
+    &found
+  );
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFrcode) {
+    *outFrcode = (int)frcode;
+  }
+  if (foundOut) {
+    *foundOut = found == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
 int tspice_pxform(
   const char *from,
   const char *to,

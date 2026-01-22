@@ -95,8 +95,10 @@ describe("Phase 1: time", () => {
     backend.kclear();
     backend.loadKernel("naif0012.tls", lskBytes);
 
+    // J2000 epoch expressed in UTC differs from ET/TDB by ~64.184 seconds.
     const et = backend.str2et("2000-01-01T12:00:00");
-    expect(Math.abs(et)).toBeLessThan(1);
+    expect(et).toBeGreaterThan(60);
+    expect(et).toBeLessThan(70);
 
     const utc = backend.et2utc(0, "ISOC", 3);
     expect(utc).toContain("2000-01-01");

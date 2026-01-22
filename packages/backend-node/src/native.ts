@@ -21,8 +21,10 @@ export type NativeAddon = {
   // Phase 2
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
-  namfrm(frameName: string): { found: boolean; frameId?: number };
-  frmnam(frameId: number): { found: boolean; frameName?: string };
+  namfrm(name: string): { found: boolean; code?: number };
+  frmnam(code: number): { found: boolean; name?: string };
+  cidfrm(center: number): { found: boolean; frcode?: number; frname?: string };
+  cnmfrm(centerName: string): { found: boolean; frcode?: number; frname?: string };
 
   // Phase 3
   spkezr(

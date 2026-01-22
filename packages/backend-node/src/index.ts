@@ -99,22 +99,50 @@ export function createNodeBackend(): SpiceBackend {
       return { found: true, name: result.name } satisfies Found<{ name: string }>;
     },
 
-    namfrm(frameName: string) {
-      const result = getNativeAddon().namfrm(frameName);
+    namfrm(name: string) {
+      const result = getNativeAddon().namfrm(name);
       if (!result.found) {
         return { found: false };
       }
-      invariant(typeof result.frameId === "number", "Expected namfrm().frameId to be a number");
-      return { found: true, frameId: result.frameId } satisfies Found<{ frameId: number }>;
+      invariant(typeof result.code === "number", "Expected namfrm().code to be a number");
+      return { found: true, code: result.code } satisfies Found<{ code: number }>;
     },
 
-    frmnam(frameId: number) {
-      const result = getNativeAddon().frmnam(frameId);
+    frmnam(code: number) {
+      const result = getNativeAddon().frmnam(code);
       if (!result.found) {
         return { found: false };
       }
-      invariant(typeof result.frameName === "string", "Expected frmnam().frameName to be a string");
-      return { found: true, frameName: result.frameName } satisfies Found<{ frameName: string }>;
+      invariant(typeof result.name === "string", "Expected frmnam().name to be a string");
+      return { found: true, name: result.name } satisfies Found<{ name: string }>;
+    },
+
+    cidfrm(center: number) {
+      const result = getNativeAddon().cidfrm(center);
+      if (!result.found) {
+        return { found: false };
+      }
+      invariant(typeof result.frcode === "number", "Expected cidfrm().frcode to be a number");
+      invariant(typeof result.frname === "string", "Expected cidfrm().frname to be a string");
+      return {
+        found: true,
+        frcode: result.frcode,
+        frname: result.frname,
+      } satisfies Found<{ frcode: number; frname: string }>;
+    },
+
+    cnmfrm(centerName: string) {
+      const result = getNativeAddon().cnmfrm(centerName);
+      if (!result.found) {
+        return { found: false };
+      }
+      invariant(typeof result.frcode === "number", "Expected cnmfrm().frcode to be a number");
+      invariant(typeof result.frname === "string", "Expected cnmfrm().frname to be a string");
+      return {
+        found: true,
+        frcode: result.frcode,
+        frname: result.frname,
+      } satisfies Found<{ frcode: number; frname: string }>;
     },
 
     // Phase 3

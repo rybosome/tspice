@@ -95,6 +95,26 @@ type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_cidfrm(
+    center: number,
+    outFrcodePtr: number,
+    outFrnamePtr: number,
+    outFrnameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_cnmfrm(
+    centerNamePtr: number,
+    outFrcodePtr: number,
+    outFrnamePtr: number,
+    outFrnameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_pxform(
     fromPtr: number,
     toPtr: number,
@@ -484,6 +504,112 @@ function tspiceCallFoundString(
   }
 }
 
+function tspiceCallCidfrm(
+  module: EmscriptenModule,
+  fn: (
+    center: number,
+    outFrcodePtr: number,
+    outFrnamePtr: number,
+    outFrnameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ) => number,
+  center: number,
+): Found<{ frcode: number; frname: string }> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const outNameMaxBytes = 256;
+  const outNamePtr = module._malloc(outNameMaxBytes);
+  const outCodePtr = module._malloc(4);
+  const foundPtr = module._malloc(4);
+
+  if (!errPtr || !outNamePtr || !outCodePtr || !foundPtr) {
+    for (const ptr of [foundPtr, outCodePtr, outNamePtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPU8[outNamePtr] = 0;
+    module.HEAP32[outCodePtr >> 2] = 0;
+    module.HEAP32[foundPtr >> 2] = 0;
+    const result = fn(center, outCodePtr, outNamePtr, outNameMaxBytes, foundPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+    if (!found) {
+      return { found: false };
+    }
+    return {
+      found: true,
+      frcode: module.HEAP32[outCodePtr >> 2] ?? 0,
+      frname: module.UTF8ToString(outNamePtr, outNameMaxBytes).trim(),
+    };
+  } finally {
+    module._free(foundPtr);
+    module._free(outCodePtr);
+    module._free(outNamePtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallCnmfrm(
+  module: EmscriptenModule,
+  fn: (
+    centerNamePtr: number,
+    outFrcodePtr: number,
+    outFrnamePtr: number,
+    outFrnameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ) => number,
+  centerName: string,
+): Found<{ frcode: number; frname: string }> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const centerNamePtr = writeUtf8CString(module, centerName);
+  const outNameMaxBytes = 256;
+  const outNamePtr = module._malloc(outNameMaxBytes);
+  const outCodePtr = module._malloc(4);
+  const foundPtr = module._malloc(4);
+
+  if (!errPtr || !centerNamePtr || !outNamePtr || !outCodePtr || !foundPtr) {
+    for (const ptr of [foundPtr, outCodePtr, outNamePtr, centerNamePtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPU8[outNamePtr] = 0;
+    module.HEAP32[outCodePtr >> 2] = 0;
+    module.HEAP32[foundPtr >> 2] = 0;
+    const result = fn(centerNamePtr, outCodePtr, outNamePtr, outNameMaxBytes, foundPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+    if (!found) {
+      return { found: false };
+    }
+    return {
+      found: true,
+      frcode: module.HEAP32[outCodePtr >> 2] ?? 0,
+      frname: module.UTF8ToString(outNamePtr, outNameMaxBytes).trim(),
+    };
+  } finally {
+    module._free(foundPtr);
+    module._free(outCodePtr);
+    module._free(outNamePtr);
+    module._free(centerNamePtr);
+    module._free(errPtr);
+  }
+}
+
 function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et: number): Matrix3 {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
@@ -742,6 +868,8 @@ export async function createWasmBackend(
     typeof module._tspice_bodc2n !== "function" ||
     typeof module._tspice_namfrm !== "function" ||
     typeof module._tspice_frmnam !== "function" ||
+    typeof module._tspice_cidfrm !== "function" ||
+    typeof module._tspice_cnmfrm !== "function" ||
     typeof module._tspice_pxform !== "function" ||
     typeof module._tspice_sxform !== "function" ||
     typeof module._tspice_spkezr !== "function" ||
@@ -803,12 +931,20 @@ export async function createWasmBackend(
     namfrm(frameName: string) {
       const out = tspiceCallFoundInt(module, module._tspice_namfrm, frameName);
       if (!out.found) return { found: false };
-      return { found: true, frameId: out.value };
+      return { found: true, code: out.value };
     },
-    frmnam(frameId: number) {
-      const out = tspiceCallFoundString(module, module._tspice_frmnam, frameId);
+    frmnam(code: number) {
+      const out = tspiceCallFoundString(module, module._tspice_frmnam, code);
       if (!out.found) return { found: false };
-      return { found: true, frameName: out.value };
+      return { found: true, name: out.value };
+    },
+
+    cidfrm(center: number) {
+      return tspiceCallCidfrm(module, module._tspice_cidfrm, center);
+    },
+
+    cnmfrm(centerName: string) {
+      return tspiceCallCnmfrm(module, module._tspice_cnmfrm, centerName);
     },
 
     // Phase 3
