@@ -47,6 +47,49 @@ int tspice_et2utc(
     char *err,
     int errMaxBytes);
 
+// timout_c: format ET using a time picture.
+int tspice_timout(
+    double et,
+    const char *picture,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// bodn2c_c: body name -> integer code.
+int tspice_bodn2c(
+    const char *name,
+    int *outCode,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// bodc2n_c: body code -> name.
+int tspice_bodc2n(
+    int code,
+    char *outName,
+    int outNameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// namfrm_c: frame name -> frame id.
+int tspice_namfrm(
+    const char *frameName,
+    int *outFrameId,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// frmnam_c: frame id -> frame name.
+int tspice_frmnam(
+    int frameId,
+    char *outFrameName,
+    int outFrameNameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
 // pxform_c: compute frame transformation matrix.
 //
 // Output matrix is written as 9 doubles in row-major order:
@@ -59,6 +102,17 @@ int tspice_pxform(
     char *err,
     int errMaxBytes);
 
+// sxform_c: compute state transformation matrix.
+//
+// Output matrix is written as 36 doubles in row-major order.
+int tspice_sxform(
+    const char *from,
+    const char *to,
+    double et,
+    double *outMatrix6x6,
+    char *err,
+    int errMaxBytes);
+
 // spkezr_c: compute state (6 doubles) and light time.
 int tspice_spkezr(
     const char *target,
@@ -67,6 +121,18 @@ int tspice_spkezr(
     const char *abcorr,
     const char *observer,
     double *outState6,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkpos_c: compute position (3 doubles) and light time.
+int tspice_spkpos(
+    const char *target,
+    double et,
+    const char *ref,
+    const char *abcorr,
+    const char *observer,
+    double *outPos3,
     double *outLt,
     char *err,
     int errMaxBytes);

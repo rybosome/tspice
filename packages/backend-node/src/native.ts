@@ -16,7 +16,16 @@ export type NativeAddon = {
 
   str2et(time: string): number;
   et2utc(et: number, format: string, prec: number): string;
+  timout(et: number, picture: string): string;
+
+  bodn2c(name: string): { found: boolean; code?: number };
+  bodc2n(code: number): { found: boolean; name?: string };
+
+  namfrm(frameName: string): { found: boolean; frameId?: number };
+  frmnam(frameId: number): { found: boolean; frameName?: string };
+
   pxform(from: string, to: string, et: number): number[];
+  sxform(from: string, to: string, et: number): number[];
   spkezr(
     target: string,
     et: number,
@@ -24,6 +33,14 @@ export type NativeAddon = {
     abcorr: string,
     observer: string,
   ): { state: number[]; lt: number };
+
+  spkpos(
+    target: string,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observer: string,
+  ): { pos: number[]; lt: number };
 
   /** Internal test helper (not part of the backend contract). */
   __ktotalAll(): number;
