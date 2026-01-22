@@ -6,33 +6,10 @@ import { describe, expect, it } from "vitest";
 
 import { createBackend } from "@rybosome/tspice";
 
+import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-const nodeBackendAvailable = (() => {
-  // In JS-only CI we intentionally don't build @rybosome/tspice-backend-node.
-  // Skip node-backend tests unless both the JS entrypoint and native addon exist.
-  const distEntrypoint = path.resolve(__dirname, "..", "..", "backend-node", "dist", "index.js");
-  if (!fs.existsSync(distEntrypoint)) {
-    return false;
-  }
-
-  const releaseDir = path.resolve(
-    __dirname,
-    "..",
-    "..",
-    "backend-node",
-    "native",
-    "build",
-    "Release",
-  );
-
-  if (!fs.existsSync(releaseDir)) {
-    return false;
-  }
-
-  return fs.readdirSync(releaseDir).some((file) => file.endsWith(".node"));
-})();
 
 const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 

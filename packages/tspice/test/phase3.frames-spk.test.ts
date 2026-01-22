@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 import { createBackend } from "@rybosome/tspice";
 
 import { ensureKernelFile } from "./helpers/kernels.js";
+import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,7 +41,7 @@ function mat3TimesMat3T(m: number[]): number[] {
 }
 
 describe("Phase 3: frames + SPK ephemerides", () => {
-  const itNode = it.runIf(process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: pxform/sxform/spkezr/spkpos", async () => {
     const backend = await createBackend({ backend: "node" });
