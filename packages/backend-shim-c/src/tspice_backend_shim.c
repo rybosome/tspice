@@ -300,6 +300,175 @@ int tspice_et2utc(
   return 0;
 }
 
+int tspice_timout(
+    double et,
+    const char *picture,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (outMaxBytes > 0) {
+    out[0] = '\0';
+  }
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  if (outMaxBytes <= 0) {
+    if (errMaxBytes > 0) {
+      strncpy(err, "tspice_timout(): outMaxBytes must be > 0", (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+    return 1;
+  }
+
+  timout_c((SpiceDouble)et, picture, (SpiceInt)outMaxBytes, out);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_bodn2c(
+    const char *name,
+    int *outCode,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outCode) {
+    *outCode = 0;
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceInt codeC = 0;
+  SpiceBoolean foundC = SPICEFALSE;
+  bodn2c_c(name, &codeC, &foundC);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outCode) {
+    *outCode = (int)codeC;
+  }
+  if (outFound) {
+    *outFound = foundC == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_bodc2n(
+    int code,
+    char *outName,
+    int outNameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outNameMaxBytes > 0 && outName) {
+    outName[0] = '\0';
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceBoolean foundC = SPICEFALSE;
+  bodc2n_c((SpiceInt)code, (SpiceInt)outNameMaxBytes, outName, &foundC);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFound) {
+    *outFound = foundC == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_namfrm(
+    const char *frameName,
+    int *outFrameId,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrameId) {
+    *outFrameId = 0;
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceInt frameId = 0;
+  namfrm_c(frameName, &frameId);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFrameId) {
+    *outFrameId = (int)frameId;
+  }
+  if (outFound) {
+    *outFound = frameId != 0 ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_frmnam(
+    int frameId,
+    char *outFrameName,
+    int outFrameNameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrameNameMaxBytes > 0 && outFrameName) {
+    outFrameName[0] = '\0';
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  frmnam_c((SpiceInt)frameId, (SpiceInt)outFrameNameMaxBytes, outFrameName);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFound) {
+    *outFound = (outFrameName && outFrameName[0] != '\0') ? 1 : 0;
+  }
+
+  return 0;
+}
+
 int tspice_pxform(
     const char *from,
     const char *to,
@@ -337,6 +506,37 @@ int tspice_pxform(
   return 0;
 }
 
+int tspice_sxform(
+    const char *from,
+    const char *to,
+    double et,
+    double *outMatrix6x6,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  SpiceDouble m[6][6];
+  sxform_c(from, to, (SpiceDouble)et, m);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outMatrix6x6) {
+    for (int i = 0; i < 6; i++) {
+      for (int j = 0; j < 6; j++) {
+        outMatrix6x6[i * 6 + j] = (double)m[i][j];
+      }
+    }
+  }
+
+  return 0;
+}
+
 int tspice_spkezr(
     const char *target,
     double et,
@@ -368,6 +568,42 @@ int tspice_spkezr(
     outState6[3] = (double)state[3];
     outState6[4] = (double)state[4];
     outState6[5] = (double)state[5];
+  }
+  if (outLt) {
+    *outLt = (double)lt;
+  }
+
+  return 0;
+}
+
+int tspice_spkpos(
+    const char *target,
+    double et,
+    const char *ref,
+    const char *abcorr,
+    const char *observer,
+    double *outPos3,
+    double *outLt,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  SpiceDouble pos[3];
+  SpiceDouble lt = 0.0;
+  spkpos_c(target, (SpiceDouble)et, ref, abcorr, observer, pos, &lt);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outPos3) {
+    outPos3[0] = (double)pos[0];
+    outPos3[1] = (double)pos[1];
+    outPos3[2] = (double)pos[2];
   }
   if (outLt) {
     *outLt = (double)lt;

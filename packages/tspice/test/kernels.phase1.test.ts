@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -13,14 +12,29 @@ const __dirname = path.dirname(__filename);
 const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 
 describe("Phase 1: kernel management", () => {
-  const require = createRequire(import.meta.url);
   const nodeBackendAvailable = (() => {
-    try {
-      require.resolve("@rybosome/tspice-backend-node");
-      return true;
-    } catch {
+    // In JS-only CI we intentionally don't build @rybosome/tspice-backend-node.
+    // Skip node-backend tests unless both the JS entrypoint and native addon exist.
+    const distEntrypoint = path.resolve(__dirname, "..", "..", "backend-node", "dist", "index.js");
+    if (!fs.existsSync(distEntrypoint)) {
       return false;
     }
+
+    const releaseDir = path.resolve(
+      __dirname,
+      "..",
+      "..",
+      "backend-node",
+      "native",
+      "build",
+      "Release",
+    );
+
+    if (!fs.existsSync(releaseDir)) {
+      return false;
+    }
+
+    return fs.readdirSync(releaseDir).some((file) => file.endsWith(".node"));
   })();
 
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
