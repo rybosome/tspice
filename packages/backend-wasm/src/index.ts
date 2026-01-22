@@ -1,4 +1,12 @@
-import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type {
+  AbCorr,
+  Et2UtcFormat,
+  Found,
+  Matrix3,
+  Matrix6,
+  SpiceBackendWasm,
+  State6,
+} from "@rybosome/tspice-backend-contract";
 
 export type CreateWasmBackendOptions = {
   wasmUrl?: string | URL;
@@ -17,6 +25,14 @@ type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+
+  // Future: FS + kernel loading exports.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  FS?: any;
+};
+
+const NOT_IMPL = () => {
+  throw new Error("Not implemented yet");
 };
 
 function getToolkitVersion(module: EmscriptenModule): string {
@@ -57,7 +73,7 @@ function getToolkitVersion(module: EmscriptenModule): string {
 
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
-): Promise<SpiceBackend> {
+): Promise<SpiceBackendWasm> {
   const defaultWasmUrl = new URL(`./${WASM_BINARY_FILENAME}`, import.meta.url);
   const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
 
@@ -104,6 +120,36 @@ export async function createWasmBackend(
 
   return {
     kind: "wasm",
+
     spiceVersion: () => toolkitVersion,
+
+    // Phase 1
+    furnsh: NOT_IMPL,
+    unload: NOT_IMPL,
+    kclear: NOT_IMPL,
+    str2et: NOT_IMPL,
+    et2utc: NOT_IMPL as unknown as (et: number, format: Et2UtcFormat, prec: number) => string,
+
+    // Phase 2
+    bodn2c: NOT_IMPL as unknown as (name: string) => Found<{ code: number }>,
+    bodc2n: NOT_IMPL as unknown as (code: number) => Found<{ name: string }>,
+    namfrm: NOT_IMPL as unknown as (frameName: string) => Found<{ frameId: number }>,
+    frmnam: NOT_IMPL as unknown as (frameId: number) => Found<{ frameName: string }>,
+
+    // Phase 3
+    spkezr: NOT_IMPL as unknown as (
+      target: string,
+      et: number,
+      ref: string,
+      abcorr: AbCorr,
+      obs: string,
+    ) => { state: State6; lt: number },
+
+    pxform: NOT_IMPL as unknown as (from: string, to: string, et: number) => Matrix3,
+    sxform: NOT_IMPL as unknown as (from: string, to: string, et: number) => Matrix6,
+
+    // WASM-only
+    writeFile: NOT_IMPL as unknown as (path: string, data: Uint8Array) => void,
+    loadKernel: NOT_IMPL as unknown as (path: string) => void,
   };
 }
