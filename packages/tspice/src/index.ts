@@ -16,6 +16,9 @@ export type CreateBackendOptions = {
   wasmUrl?: string | URL;
 };
 
+const NODE_BACKEND_MODULE = "@rybosome/tspice-backend-node";
+const WASM_BACKEND_MODULE = "@rybosome/tspice-backend-wasm";
+
 export function createBackend(options?: { backend?: "node" }): Promise<SpiceBackend>;
 export function createBackend(
   options: { backend: "wasm"; wasmUrl?: string | URL },
@@ -27,9 +30,9 @@ export async function createBackend(
 
   switch (backend) {
     case "node":
-      return (await import("@rybosome/tspice-backend-node")).createNodeBackend();
+      return (await import(NODE_BACKEND_MODULE)).createNodeBackend();
     case "wasm": {
-      const { createWasmBackend } = await import("@rybosome/tspice-backend-wasm");
+      const { createWasmBackend } = await import(WASM_BACKEND_MODULE);
       if (options.wasmUrl === undefined) {
         return (await createWasmBackend()) as SpiceBackendWasm;
       }

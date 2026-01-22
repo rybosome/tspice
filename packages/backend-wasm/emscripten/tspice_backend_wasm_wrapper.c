@@ -536,6 +536,188 @@ int tspice_cnmfrm(
   return 0;
 }
 
+int tspice_scs2e(int sc, const char *sclkch, double *outEt, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outEt) {
+    *outEt = 0.0;
+  }
+
+  SpiceDouble et = 0.0;
+  scs2e_c((SpiceInt)sc, sclkch, &et);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outEt) {
+    *outEt = (double)et;
+  }
+
+  return 0;
+}
+
+int tspice_sce2s(
+  int sc,
+  double et,
+  char *out,
+  int outMaxBytes,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outMaxBytes > 0 && out) {
+    out[0] = '\0';
+  }
+
+  // Output length must include the terminating NUL.
+  sce2s_c((SpiceInt)sc, (SpiceDouble)et, (SpiceInt)outMaxBytes, out);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_ckgp(
+  int inst,
+  double sclkdp,
+  double tol,
+  const char *ref,
+  double *outCmat,
+  double *outClkout,
+  int *foundOut,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outCmat) {
+    for (int i = 0; i < 9; i++) {
+      outCmat[i] = 0.0;
+    }
+  }
+  if (outClkout) {
+    *outClkout = 0.0;
+  }
+  if (foundOut) {
+    *foundOut = 0;
+  }
+
+  SpiceDouble cmat[3][3] = {{0}};
+  SpiceDouble clkout = 0.0;
+  SpiceBoolean found = SPICEFALSE;
+
+  ckgp_c((SpiceInt)inst, (SpiceDouble)sclkdp, (SpiceDouble)tol, ref, cmat, &clkout, &found);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outCmat) {
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        outCmat[i * 3 + j] = (double)cmat[i][j];
+      }
+    }
+  }
+  if (outClkout) {
+    *outClkout = (double)clkout;
+  }
+  if (foundOut) {
+    *foundOut = found == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_ckgpav(
+  int inst,
+  double sclkdp,
+  double tol,
+  const char *ref,
+  double *outCmat,
+  double *outAv,
+  double *outClkout,
+  int *foundOut,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outCmat) {
+    for (int i = 0; i < 9; i++) {
+      outCmat[i] = 0.0;
+    }
+  }
+  if (outAv) {
+    for (int i = 0; i < 3; i++) {
+      outAv[i] = 0.0;
+    }
+  }
+  if (outClkout) {
+    *outClkout = 0.0;
+  }
+  if (foundOut) {
+    *foundOut = 0;
+  }
+
+  SpiceDouble cmat[3][3] = {{0}};
+  SpiceDouble av[3] = {0};
+  SpiceDouble clkout = 0.0;
+  SpiceBoolean found = SPICEFALSE;
+
+  ckgpav_c(
+    (SpiceInt)inst,
+    (SpiceDouble)sclkdp,
+    (SpiceDouble)tol,
+    ref,
+    cmat,
+    av,
+    &clkout,
+    &found
+  );
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outCmat) {
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        outCmat[i * 3 + j] = (double)cmat[i][j];
+      }
+    }
+  }
+  if (outAv) {
+    for (int i = 0; i < 3; i++) {
+      outAv[i] = (double)av[i];
+    }
+  }
+  if (outClkout) {
+    *outClkout = (double)clkout;
+  }
+  if (foundOut) {
+    *foundOut = found == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
 int tspice_pxform(
   const char *from,
   const char *to,

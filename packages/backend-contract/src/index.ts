@@ -141,6 +141,33 @@ export interface SpiceBackend {
   cidfrm(center: number): Found<{ frcode: number; frname: string }>;
   cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
+  // ---- Phase 2: SCLK + CK attitude
+  /** Convert an encoded SCLK string to ephemeris time. */
+  scs2e(sc: number, sclkch: string): number;
+
+  /** Convert ephemeris time to an encoded SCLK string. */
+  sce2s(sc: number, et: number): string;
+
+  /**
+   * Get pointing (attitude) for a CK instrument at a given encoded spacecraft clock time.
+   */
+  ckgp(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    ref: string,
+  ): Found<{ cmat: Matrix3; clkout: number }>;
+
+  /**
+   * Get pointing + angular velocity for a CK instrument at a given encoded spacecraft clock time.
+   */
+  ckgpav(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    ref: string,
+  ): Found<{ cmat: Matrix3; av: Vector3; clkout: number }>;
+
   // ---- Phase 3: geometry / transforms
   spkezr(
     target: string,

@@ -145,6 +145,55 @@ export function createNodeBackend(): SpiceBackend {
       } satisfies Found<{ frcode: number; frname: string }>;
     },
 
+    scs2e(sc: number, sclkch: string) {
+      const et = getNativeAddon().scs2e(sc, sclkch);
+      invariant(typeof et === "number", "Expected native backend scs2e() to return a number");
+      return et;
+    },
+
+    sce2s(sc: number, et: number) {
+      const out = getNativeAddon().sce2s(sc, et);
+      invariant(typeof out === "string", "Expected native backend sce2s() to return a string");
+      return out;
+    },
+
+    ckgp(inst: number, sclkdp: number, tol: number, ref: string) {
+      const result = getNativeAddon().ckgp(inst, sclkdp, tol, ref);
+      if (!result.found) {
+        return { found: false };
+      }
+
+      invariant(Array.isArray(result.cmat), "Expected ckgp().cmat to be an array");
+      invariant(result.cmat.length === 9, "Expected ckgp().cmat to have length 9");
+      invariant(typeof result.clkout === "number", "Expected ckgp().clkout to be a number");
+
+      return {
+        found: true,
+        cmat: result.cmat as unknown as Matrix3,
+        clkout: result.clkout,
+      } satisfies Found<{ cmat: Matrix3; clkout: number }>;
+    },
+
+    ckgpav(inst: number, sclkdp: number, tol: number, ref: string) {
+      const result = getNativeAddon().ckgpav(inst, sclkdp, tol, ref);
+      if (!result.found) {
+        return { found: false };
+      }
+
+      invariant(Array.isArray(result.cmat), "Expected ckgpav().cmat to be an array");
+      invariant(result.cmat.length === 9, "Expected ckgpav().cmat to have length 9");
+      invariant(Array.isArray(result.av), "Expected ckgpav().av to be an array");
+      invariant(result.av.length === 3, "Expected ckgpav().av to have length 3");
+      invariant(typeof result.clkout === "number", "Expected ckgpav().clkout to be a number");
+
+      return {
+        found: true,
+        cmat: result.cmat as unknown as Matrix3,
+        av: result.av as unknown as Vector3,
+        clkout: result.clkout,
+      } satisfies Found<{ cmat: Matrix3; av: Vector3; clkout: number }>;
+    },
+
     // Phase 3
     spkezr(target: string, et: number, ref: string, abcorr: AbCorr, obs: string) {
       const result = getNativeAddon().spkezr(target, et, ref, abcorr, obs);

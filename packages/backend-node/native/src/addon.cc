@@ -599,6 +599,185 @@ static Napi::Object Cnmfrm(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static Napi::Number Scs2e(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsString()) {
+    Napi::TypeError::New(env, "scs2e(sc: number, sclkch: string) expects (number, string)")
+      .ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  const SpiceInt sc = static_cast<SpiceInt>(info[0].As<Napi::Number>().Int32Value());
+  const std::string sclkch = info[1].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble et = 0.0;
+  scs2e_c(sc, sclkch.c_str(), &et);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling scs2e_c(sc=") + std::to_string(sc) +
+      ", sclkch=\"" + sclkch + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  return Napi::Number::New(env, static_cast<double>(et));
+}
+
+static Napi::String Sce2s(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsNumber()) {
+    Napi::TypeError::New(env, "sce2s(sc: number, et: number) expects (number, number)")
+      .ThrowAsJavaScriptException();
+    return Napi::String::New(env, "");
+  }
+
+  const SpiceInt sc = static_cast<SpiceInt>(info[0].As<Napi::Number>().Int32Value());
+  const SpiceDouble et = static_cast<SpiceDouble>(info[1].As<Napi::Number>().DoubleValue());
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  // Output length must include the terminating NUL.
+  constexpr SpiceInt kOutMax = 2048;
+  SpiceChar out[kOutMax] = {0};
+
+  sce2s_c(sc, et, kOutMax, out);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling sce2s_c(sc=") + std::to_string(sc) +
+      ", et=" + std::to_string(et) + "):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::String::New(env, "");
+  }
+
+  return Napi::String::New(env, RTrim(out));
+}
+
+static Napi::Object Ckgp(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (
+    info.Length() != 4 ||
+    !info[0].IsNumber() ||
+    !info[1].IsNumber() ||
+    !info[2].IsNumber() ||
+    !info[3].IsString()
+  ) {
+    Napi::TypeError::New(env, "ckgp(inst: number, sclkdp: number, tol: number, ref: string) expects (number, number, number, string)")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  const SpiceInt inst = static_cast<SpiceInt>(info[0].As<Napi::Number>().Int32Value());
+  const SpiceDouble sclkdp = static_cast<SpiceDouble>(info[1].As<Napi::Number>().DoubleValue());
+  const SpiceDouble tol = static_cast<SpiceDouble>(info[2].As<Napi::Number>().DoubleValue());
+  const std::string ref = info[3].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble cmat[3][3] = {{0}};
+  SpiceDouble clkout = 0.0;
+  SpiceBoolean found = SPICEFALSE;
+
+  ckgp_c(inst, sclkdp, tol, ref.c_str(), cmat, &clkout, &found);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling ckgp_c(inst=") + std::to_string(inst) +
+      ", sclkdp=" + std::to_string(sclkdp) +
+      ", tol=" + std::to_string(tol) +
+      ", ref=\"" + ref + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  if (found == SPICEFALSE) {
+    result.Set("found", Napi::Boolean::New(env, false));
+    return result;
+  }
+
+  double flat[9] = {0};
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      flat[i * 3 + j] = cmat[i][j];
+    }
+  }
+
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("cmat", MakeNumberArray(env, flat, 9));
+  result.Set("clkout", Napi::Number::New(env, static_cast<double>(clkout)));
+  return result;
+}
+
+static Napi::Object Ckgpav(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (
+    info.Length() != 4 ||
+    !info[0].IsNumber() ||
+    !info[1].IsNumber() ||
+    !info[2].IsNumber() ||
+    !info[3].IsString()
+  ) {
+    Napi::TypeError::New(env, "ckgpav(inst: number, sclkdp: number, tol: number, ref: string) expects (number, number, number, string)")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  const SpiceInt inst = static_cast<SpiceInt>(info[0].As<Napi::Number>().Int32Value());
+  const SpiceDouble sclkdp = static_cast<SpiceDouble>(info[1].As<Napi::Number>().DoubleValue());
+  const SpiceDouble tol = static_cast<SpiceDouble>(info[2].As<Napi::Number>().DoubleValue());
+  const std::string ref = info[3].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceDouble cmat[3][3] = {{0}};
+  SpiceDouble av[3] = {0};
+  SpiceDouble clkout = 0.0;
+  SpiceBoolean found = SPICEFALSE;
+
+  ckgpav_c(inst, sclkdp, tol, ref.c_str(), cmat, av, &clkout, &found);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling ckgpav_c(inst=") + std::to_string(inst) +
+      ", sclkdp=" + std::to_string(sclkdp) +
+      ", tol=" + std::to_string(tol) +
+      ", ref=\"" + ref + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  if (found == SPICEFALSE) {
+    result.Set("found", Napi::Boolean::New(env, false));
+    return result;
+  }
+
+  double flat[9] = {0};
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      flat[i * 3 + j] = cmat[i][j];
+    }
+  }
+
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("cmat", MakeNumberArray(env, flat, 9));
+  result.Set("av", MakeNumberArray(env, av, 3));
+  result.Set("clkout", Napi::Number::New(env, static_cast<double>(clkout)));
+  return result;
+}
+
 static Napi::Object Spkezr(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -783,6 +962,10 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("frmnam", Napi::Function::New(env, Frmnam));
   exports.Set("cidfrm", Napi::Function::New(env, Cidfrm));
   exports.Set("cnmfrm", Napi::Function::New(env, Cnmfrm));
+  exports.Set("scs2e", Napi::Function::New(env, Scs2e));
+  exports.Set("sce2s", Napi::Function::New(env, Sce2s));
+  exports.Set("ckgp", Napi::Function::New(env, Ckgp));
+  exports.Set("ckgpav", Napi::Function::New(env, Ckgpav));
   exports.Set("spkezr", Napi::Function::New(env, Spkezr));
   exports.Set("spkpos", Napi::Function::New(env, Spkpos));
   exports.Set("pxform", Napi::Function::New(env, Pxform));
