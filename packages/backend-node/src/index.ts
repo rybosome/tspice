@@ -2,6 +2,7 @@ import type {
   AbCorr,
   Et2UtcFormat,
   Found,
+  KernelKind,
   Matrix3,
   Matrix6,
   SpiceBackend,
@@ -28,9 +29,41 @@ export function createNodeBackend(): SpiceBackend {
     spiceVersion,
 
     // Phase 1
-    furnsh: NOT_IMPL,
-    unload: NOT_IMPL,
-    kclear: NOT_IMPL,
+    furnsh(path: string) {
+      getNativeAddon().furnsh(path);
+    },
+    unload(path: string) {
+      getNativeAddon().unload(path);
+    },
+    kclear() {
+      getNativeAddon().kclear();
+    },
+
+    ktotal(kind: KernelKind = "ALL") {
+      const total = getNativeAddon().ktotal(kind);
+      invariant(typeof total === "number", "Expected native backend ktotal() to return a number");
+      return total;
+    },
+
+    kdata(which: number, kind: KernelKind = "ALL") {
+      const result = getNativeAddon().kdata(which, kind);
+      if (!result.found) {
+        return { found: false };
+      }
+
+      invariant(typeof result.file === "string", "Expected kdata().file to be a string");
+      invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
+      invariant(typeof result.source === "string", "Expected kdata().source to be a string");
+      invariant(typeof result.handle === "number", "Expected kdata().handle to be a number");
+
+      return {
+        found: true,
+        file: result.file!,
+        filtyp: result.filtyp!,
+        source: result.source!,
+        handle: result.handle!,
+      } satisfies Found<{ file: string; filtyp: string; source: string; handle: number }>;
+    },
 
     str2et: NOT_IMPL,
     et2utc: NOT_IMPL as unknown as (et: number, format: Et2UtcFormat, prec: number) => string,

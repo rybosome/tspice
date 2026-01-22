@@ -89,3 +89,141 @@ int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes
   out[n] = '\0';
   return 0;
 }
+
+int tspice_furnsh(const char *path, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  furnsh_c(path);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_unload(const char *path, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  unload_c(path);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_kclear(char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  kclear_c();
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_ktotal(const char *kind, int *outCount, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outCount) {
+    *outCount = 0;
+  }
+
+  SpiceInt count = 0;
+  ktotal_c(kind, &count);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outCount) {
+    *outCount = (int)count;
+  }
+
+  return 0;
+}
+
+int tspice_kdata(
+  int which,
+  const char *kind,
+  char *file,
+  int fileMaxBytes,
+  char *filtyp,
+  int filtypMaxBytes,
+  char *source,
+  int sourceMaxBytes,
+  int *handle,
+  int *foundOut,
+  char *err,
+  int errMaxBytes
+) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (fileMaxBytes > 0 && file) {
+    file[0] = '\0';
+  }
+  if (filtypMaxBytes > 0 && filtyp) {
+    filtyp[0] = '\0';
+  }
+  if (sourceMaxBytes > 0 && source) {
+    source[0] = '\0';
+  }
+  if (handle) {
+    *handle = 0;
+  }
+  if (foundOut) {
+    *foundOut = 0;
+  }
+
+  SpiceInt handleC = 0;
+  SpiceBoolean foundC = SPICEFALSE;
+
+  kdata_c(
+    (SpiceInt)which,
+    kind,
+    (SpiceInt)fileMaxBytes,
+    (SpiceInt)filtypMaxBytes,
+    (SpiceInt)sourceMaxBytes,
+    file,
+    filtyp,
+    source,
+    &handleC,
+    &foundC
+  );
+
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (handle) {
+    *handle = (int)handleC;
+  }
+  if (foundOut) {
+    *foundOut = foundC == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}

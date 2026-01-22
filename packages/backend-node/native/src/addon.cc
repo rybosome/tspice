@@ -94,8 +94,181 @@ static Napi::String SpiceVersion(const Napi::CallbackInfo& info) {
   return Napi::String::New(env, version);
 }
 
+static void Furnsh(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1 || !info[0].IsString()) {
+    Napi::TypeError::New(env, "furnsh(path: string) expects exactly one string argument")
+      .ThrowAsJavaScriptException();
+    return;
+  }
+
+  const std::string path = info[0].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  furnsh_c(path.c_str());
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling furnsh_c(\"") + path + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return;
+  }
+}
+
+static void Unload(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1 || !info[0].IsString()) {
+    Napi::TypeError::New(env, "unload(path: string) expects exactly one string argument")
+      .ThrowAsJavaScriptException();
+    return;
+  }
+
+  const std::string path = info[0].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  unload_c(path.c_str());
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling unload_c(\"") + path + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return;
+  }
+}
+
+static void Kclear(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 0) {
+    Napi::TypeError::New(env, "kclear() does not take any arguments").ThrowAsJavaScriptException();
+    return;
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  kclear_c();
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling kclear_c():\n") +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return;
+  }
+}
+
+static Napi::Number Ktotal(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  std::string kind = "ALL";
+  if (info.Length() > 1) {
+    Napi::TypeError::New(env, "ktotal(kind?: string) expects 0 or 1 arguments")
+      .ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  if (info.Length() == 1) {
+    if (!info[0].IsString()) {
+      Napi::TypeError::New(env, "ktotal(kind?: string) expects a string kind")
+        .ThrowAsJavaScriptException();
+      return Napi::Number::New(env, 0);
+    }
+    kind = info[0].As<Napi::String>().Utf8Value();
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  SpiceInt count = 0;
+  ktotal_c(kind.c_str(), &count);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling ktotal_c(\"") + kind + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Number::New(env, 0);
+  }
+
+  return Napi::Number::New(env, static_cast<double>(count));
+}
+
+static Napi::Object Kdata(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() < 1 || info.Length() > 2) {
+    Napi::TypeError::New(env, "kdata(which: number, kind?: string) expects 1 or 2 arguments")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  if (!info[0].IsNumber()) {
+    Napi::TypeError::New(env, "kdata(which: number, kind?: string) expects which to be a number")
+      .ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  const SpiceInt which = static_cast<SpiceInt>(info[0].As<Napi::Number>().Int32Value());
+  std::string kind = "ALL";
+  if (info.Length() == 2) {
+    if (!info[1].IsString()) {
+      Napi::TypeError::New(env, "kdata(which: number, kind?: string) expects kind to be a string")
+        .ThrowAsJavaScriptException();
+      return Napi::Object::New(env);
+    }
+    kind = info[1].As<Napi::String>().Utf8Value();
+  }
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  InitCspiceErrorHandlingOnce();
+
+  // Generous buffer sizes for path/source strings.
+  constexpr SpiceInt kFileMax = 2048;
+  constexpr SpiceInt kTypeMax = 256;
+  constexpr SpiceInt kSourceMax = 2048;
+
+  SpiceChar file[kFileMax + 1] = {0};
+  SpiceChar filtyp[kTypeMax + 1] = {0};
+  SpiceChar source[kSourceMax + 1] = {0};
+  SpiceInt handle = 0;
+  SpiceBoolean found = SPICEFALSE;
+
+  kdata_c(which, kind.c_str(), kFileMax, kTypeMax, kSourceMax, file, filtyp, source, &handle, &found);
+  if (failed_c()) {
+    const std::string msg =
+      std::string("CSPICE failed while calling kdata_c(which=") + std::to_string(which) +
+      ", kind=\"" + kind + "\"):\n" +
+      GetSpiceErrorMessageAndReset();
+    Napi::Error::New(env, msg).ThrowAsJavaScriptException();
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  if (found == SPICEFALSE) {
+    result.Set("found", Napi::Boolean::New(env, false));
+    return result;
+  }
+
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("file", Napi::String::New(env, file));
+  result.Set("filtyp", Napi::String::New(env, filtyp));
+  result.Set("source", Napi::String::New(env, source));
+  result.Set("handle", Napi::Number::New(env, static_cast<double>(handle)));
+  return result;
+}
+
 static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("spiceVersion", Napi::Function::New(env, SpiceVersion));
+  exports.Set("furnsh", Napi::Function::New(env, Furnsh));
+  exports.Set("unload", Napi::Function::New(env, Unload));
+  exports.Set("kclear", Napi::Function::New(env, Kclear));
+  exports.Set("ktotal", Napi::Function::New(env, Ktotal));
+  exports.Set("kdata", Napi::Function::New(env, Kdata));
   return exports;
 }
 

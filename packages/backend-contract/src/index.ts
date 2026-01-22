@@ -83,6 +83,7 @@ export type AbCorr =
 
 /** Kernel types used by summary/introspection APIs. */
 export type KernelKind =
+  | "ALL"
   | "SPK"
   | "CK"
   | "PCK"
@@ -113,6 +114,12 @@ export interface SpiceBackend {
   furnsh(path: string): void;
   unload(path: string): void;
   kclear(): void;
+
+  ktotal(kind?: KernelKind): number;
+  kdata(
+    which: number,
+    kind?: KernelKind,
+  ): Found<{ file: string; filtyp: string; source: string; handle: number }>;
 
   str2et(utc: string): number;
   et2utc(et: number, format: Et2UtcFormat, prec: number): string;
@@ -149,5 +156,5 @@ export interface SpiceBackendWasm extends SpiceBackend {
   writeFile(path: string, data: Uint8Array): void;
 
   /** Load a kernel that already exists in the WASM filesystem. */
-  loadKernel(path: string): void;
+  loadKernel(path: string, data: Uint8Array): void;
 }

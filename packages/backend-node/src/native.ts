@@ -9,6 +9,11 @@ export type NativeAddon = {
   furnsh(path: string): void;
   unload(path: string): void;
   kclear(): void;
+  ktotal(kind?: string): number;
+  kdata(
+    which: number,
+    kind?: string,
+  ): { found: boolean; file?: string; filtyp?: string; source?: string; handle?: number };
   str2et(utc: string): number;
   et2utc(et: number, format: string, prec: number): string;
 
