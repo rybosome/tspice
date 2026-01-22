@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import { createSpice } from "@rybosome/tspice";
 import { loadTestKernels } from "./test-kernels.js";
 
+const runNodeBackendTests = process.env.TSPICE_RUN_NODE_BACKEND_TESTS === "1";
+
 function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): void {
   const diff = Math.abs(a - b);
   const scale = Math.max(Math.abs(a), Math.abs(b));
@@ -10,17 +12,14 @@ function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): 
 }
 
 describe("mid-level API parity (node vs wasm)", () => {
-  it("getState matches within tolerance", async () => {
+  const itNode = it.runIf(runNodeBackendTests && process.arch !== "arm64");
+
+  itNode("getState matches within tolerance", async () => {
     const { lsk, spk } = await loadTestKernels();
 
     const wasm = await createSpice({ backend: "wasm" });
-    let node: Awaited<ReturnType<typeof createSpice>> | undefined;
-    try {
-      node = await createSpice({ backend: "node" });
-    } catch {
-      // JS-only CI does not build the native backend. In native CI, this should succeed.
-      return;
-    }
+    // If node-backend tests are enabled, the native backend must load.
+    const node = await createSpice({ backend: "node" });
 
     wasm.loadKernel({ path: "/kernels/naif0012.tls", bytes: lsk });
     wasm.loadKernel({ path: "/kernels/de405s.bsp", bytes: spk });

@@ -13,6 +13,8 @@ const __dirname = path.dirname(__filename);
 
 const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 
+const runNodeBackendTests = process.env.TSPICE_RUN_NODE_BACKEND_TESTS === "1";
+
 const PCK = {
   name: "pck00010.tpc",
   url: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/pck00010.tpc",
@@ -40,7 +42,7 @@ function mat3TimesMat3T(m: number[]): number[] {
 }
 
 describe("Phase 3: frames + SPK ephemerides", () => {
-  const itNode = it.runIf(process.arch !== "arm64");
+  const itNode = it.runIf(runNodeBackendTests && process.arch !== "arm64");
 
   itNode("node backend: pxform/sxform/spkezr/spkpos", async () => {
     const backend = await createBackend({ backend: "node" });
