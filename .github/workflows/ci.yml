@@ -85,4 +85,6 @@ jobs:
           fi
         fi
       enable_cspice_cache: true
-      command: pnpm run check:native
+      command: |
+        export TSPICE_RUN_NODE_BACKEND_TESTS=1
+        pnpm run check:native
