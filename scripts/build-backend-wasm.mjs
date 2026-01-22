@@ -162,6 +162,9 @@ execFileSync(
     "-s",
     "ENVIRONMENT=web,worker,node",
     "-s",
+    // Ensure enough initial memory for link step (even with growth enabled).
+    "INITIAL_MEMORY=134217728",
+    "-s",
     "ALLOW_MEMORY_GROWTH=1",
     "-s",
     "EXPORTED_RUNTIME_METHODS=['UTF8ToString','FS']",
