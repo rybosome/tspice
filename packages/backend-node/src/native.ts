@@ -5,7 +5,7 @@ import { createRequire } from "node:module";
 export type NativeAddon = {
   spiceVersion(): string;
 
-  // Phase 1
+  // Stage 1
   furnsh(path: string): void;
   unload(path: string): void;
   kclear(): void;
@@ -18,7 +18,7 @@ export type NativeAddon = {
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;
 
-  // Phase 2
+  // Stage 2
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
   namfrm(name: string): { found: boolean; code?: number };
@@ -26,7 +26,7 @@ export type NativeAddon = {
   cidfrm(center: number): { found: boolean; frcode?: number; frname?: string };
   cnmfrm(centerName: string): { found: boolean; frcode?: number; frname?: string };
 
-  // Phase 4
+  // Stage 4
   scs2e(sc: number, sclkch: string): number;
   sce2s(sc: number, et: number): string;
   ckgp(
@@ -42,7 +42,7 @@ export type NativeAddon = {
     ref: string,
   ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
 
-  // Phase 3
+  // Stage 3
   spkezr(
     target: string,
     et: number,
@@ -96,7 +96,7 @@ export type NativeAddon = {
     abcorr: string,
     observer: string,
     spoint: number[],
-  ): { trgepc: number; srfvec: number[]; phase: number; incdnc: number; emissn: number };
+  ): { trgepc: number; srfvec: number[]; observerIlluminatorAngle: number; incdnc: number; emissn: number };
 
   occult(
     targ1: string,
@@ -112,7 +112,7 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
-  // Phase 6
+  // Stage 6
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

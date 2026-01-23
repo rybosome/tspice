@@ -921,7 +921,7 @@ static Napi::Object Ilumin(const Napi::CallbackInfo& info) {
   char err[kErrMaxBytes];
   double trgepc = 0.0;
   double srfvec[3] = {0};
-  double phase = 0.0;
+  double observerIlluminatorAngle = 0.0;
   double incdnc = 0.0;
   double emissn = 0.0;
   const int code = tspice_ilumin(
@@ -934,7 +934,7 @@ static Napi::Object Ilumin(const Napi::CallbackInfo& info) {
     spoint,
     &trgepc,
     srfvec,
-    &phase,
+    &observerIlluminatorAngle,
     &incdnc,
     &emissn,
     err,
@@ -948,7 +948,7 @@ static Napi::Object Ilumin(const Napi::CallbackInfo& info) {
   Napi::Object result = Napi::Object::New(env);
   result.Set("trgepc", Napi::Number::New(env, trgepc));
   result.Set("srfvec", MakeNumberArray(env, srfvec, 3));
-  result.Set("phase", Napi::Number::New(env, phase));
+  result.Set("observerIlluminatorAngle", Napi::Number::New(env, observerIlluminatorAngle));
   result.Set("incdnc", Napi::Number::New(env, incdnc));
   result.Set("emissn", Napi::Number::New(env, emissn));
   return result;

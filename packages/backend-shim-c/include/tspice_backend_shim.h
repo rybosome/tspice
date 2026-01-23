@@ -32,7 +32,7 @@ int tspice_kdata(
 // Returns the number of loaded kernels, or -1 on error (with message in `err`).
 int tspice_ktotal_all(char *err, int errMaxBytes);
 
-// --- Phase 3 low-level primitives ---
+// --- Stage 3 low-level primitives ---
 
 // str2et_c: convert time string -> ET seconds past J2000.
 int tspice_str2et(const char *time, double *outEt, char *err, int errMaxBytes);
@@ -215,7 +215,7 @@ int tspice_ilumin(
     const double *spoint3,
     double *outTrgepc,
     double *outSrfvec3,
-    double *outPhase,
+    double *outObserverIlluminatorAngle,
     double *outIncdnc,
     double *outEmissn,
     char *err,
@@ -236,7 +236,7 @@ int tspice_occult(
     char *err,
     int errMaxBytes);
 
-// --- Phase 6: coordinate conversions + small vector/matrix helpers ---
+// --- Stage 6: coordinate conversions + small vector/matrix helpers ---
 
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
@@ -294,7 +294,7 @@ int tspice_mxv(const double *m3x3, const double *v3, double *outV3, char *err, i
 // Matrix input is expected as 9 doubles in row-major order.
 int tspice_mtxv(const double *m3x3, const double *v3, double *outV3, char *err, int errMaxBytes);
 
-// --- Phase 4: SCLK conversions + CK attitude ---
+// --- Stage 4: SCLK conversions + CK attitude ---
 
 // scs2e_c: convert an encoded SCLK string -> ET seconds past J2000.
 int tspice_scs2e(

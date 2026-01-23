@@ -19,7 +19,7 @@ const tcPath = path.join(__dirname, "fixtures", "kernels", "cook_01.tc");
 const sc = -77;
 const sclkch = "593328:90:5:0";
 
-describe("Phase 4: SCLK conversions + CK attitude", () => {
+describe("Stage 4: SCLK conversions + CK attitude", () => {
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: scs2e/sce2s", async () => {

@@ -11,7 +11,7 @@ function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): 
   expect(diff).toBeLessThanOrEqual(atol + rtol * scale);
 }
 
-describe("Phase 3 primitives parity (node vs wasm)", () => {
+describe("Stage 3 primitives parity (node vs wasm)", () => {
   const itNative = it.runIf(nodeAddonAvailable());
 
   itNative("matches for str2et / et2utc / pxform / spkezr", async () => {

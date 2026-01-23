@@ -882,7 +882,7 @@ int tspice_ilumin(
     const double *spoint3,
     double *outTrgepc,
     double *outSrfvec3,
-    double *outPhase,
+    double *outObserverIlluminatorAngle,
     double *outIncdnc,
     double *outEmissn,
     char *err,
@@ -912,11 +912,23 @@ int tspice_ilumin(
 
   SpiceDouble trgepc = 0.0;
   SpiceDouble srfvec[3];
-  SpiceDouble phase = 0.0;
+  SpiceDouble observerIlluminatorAngle = 0.0;
   SpiceDouble incdnc = 0.0;
   SpiceDouble emissn = 0.0;
 
-  ilumin_c(method, target, (SpiceDouble)et, fixref, abcorr, observer, spoint, &trgepc, srfvec, &phase, &incdnc, &emissn);
+  ilumin_c(
+      method,
+      target,
+      (SpiceDouble)et,
+      fixref,
+      abcorr,
+      observer,
+      spoint,
+      &trgepc,
+      srfvec,
+      &observerIlluminatorAngle,
+      &incdnc,
+      &emissn);
   if (failed_c()) {
     GetSpiceErrorMessageAndReset(err, errMaxBytes);
     return 1;
@@ -931,7 +943,7 @@ int tspice_ilumin(
     outSrfvec3[2] = (double)srfvec[2];
   }
   if (outPhase) {
-    *outPhase = (double)phase;
+    *outObserverIlluminatorAngle = (double)observerIlluminatorAngle;
   }
   if (outIncdnc) {
     *outIncdnc = (double)incdnc;

@@ -16,7 +16,7 @@ describe("createBackend() types", () => {
       wasmBackend.loadKernel;
       wasmBackend.writeFile;
 
-      // --- Phase 3 derived geometry ---
+      // --- Stage 3 derived geometry ---
       const sub = wasmBackend.subpnt(
         "Near point: ellipsoid",
         "EARTH",
@@ -54,7 +54,7 @@ describe("createBackend() types", () => {
         "SUN",
         [1, 2, 3],
       );
-      illum.phase;
+      illum.observerIlluminatorAngle;
       illum.incdnc;
       illum.emissn;
 

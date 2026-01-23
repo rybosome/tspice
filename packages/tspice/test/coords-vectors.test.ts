@@ -10,7 +10,7 @@ function expectVec3Close(actual: [number, number, number], expected: [number, nu
   }
 }
 
-describe("Phase 5: coordinate conversions + vector/matrix helpers", () => {
+describe("Stage 5: coordinate conversions + vector/matrix helpers", () => {
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   function runSharedTests(backend: Awaited<ReturnType<typeof createBackend>>) {

@@ -20,7 +20,7 @@ const PCK = {
   sha256: "59468328349aa730d18bf1f8d7e86efe6e40b75dfb921908f99321b3a7a701d2",
 } as const;
 
-describe("Phase 2: IDs / names", () => {
+describe("Stage 2: IDs / names", () => {
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: bodn2c/bodc2n/namfrm/frmnam/cidfrm/cnmfrm", async () => {
