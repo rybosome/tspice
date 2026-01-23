@@ -157,6 +157,85 @@ int tspice_spkpos(
     char *err,
     int errMaxBytes);
 
+// --- Derived geometry primitives ---
+
+// subpnt_c: compute the sub-observer point on a target body's surface.
+int tspice_subpnt(
+    const char *method,
+    const char *target,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *observer,
+    double *outSpoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    char *err,
+    int errMaxBytes);
+
+// subslr_c: compute the sub-solar point on a target body's surface.
+int tspice_subslr(
+    const char *method,
+    const char *target,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *observer,
+    double *outSpoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    char *err,
+    int errMaxBytes);
+
+// sincpt_c: compute the surface intercept point of a ray.
+int tspice_sincpt(
+    const char *method,
+    const char *target,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *observer,
+    const char *dref,
+    const double *dvec3,
+    double *outSpoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// ilumin_c: compute illumination angles at a surface point.
+int tspice_ilumin(
+    const char *method,
+    const char *target,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *observer,
+    const double *spoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    double *outPhase,
+    double *outIncdnc,
+    double *outEmissn,
+    char *err,
+    int errMaxBytes);
+
+// occult_c: determine occultation condition code for one target vs another.
+int tspice_occult(
+    const char *targ1,
+    const char *shape1,
+    const char *frame1,
+    const char *targ2,
+    const char *shape2,
+    const char *frame2,
+    const char *abcorr,
+    const char *observer,
+    double et,
+    int *outOcltid,
+    char *err,
+    int errMaxBytes);
+
 // --- Phase 6: coordinate conversions + small vector/matrix helpers ---
 
 // reclat_c: rectangular -> latitudinal coordinates.

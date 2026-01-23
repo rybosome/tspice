@@ -16,6 +16,61 @@ describe("createBackend() types", () => {
       wasmBackend.loadKernel;
       wasmBackend.writeFile;
 
+      // --- Phase 3 derived geometry ---
+      const sub = wasmBackend.subpnt(
+        "Near point: ellipsoid",
+        "EARTH",
+        0,
+        "IAU_EARTH",
+        "NONE",
+        "SUN",
+      );
+      sub.spoint;
+      sub.trgepc;
+      sub.srfvec;
+
+      const sin = wasmBackend.sincpt(
+        "Ellipsoid",
+        "EARTH",
+        0,
+        "IAU_EARTH",
+        "NONE",
+        "SUN",
+        "J2000",
+        [1, 0, 0],
+      );
+      if (sin.found) {
+        sin.spoint;
+        sin.trgepc;
+        sin.srfvec;
+      }
+
+      const illum = wasmBackend.ilumin(
+        "Ellipsoid",
+        "EARTH",
+        0,
+        "IAU_EARTH",
+        "NONE",
+        "SUN",
+        [1, 2, 3],
+      );
+      illum.phase;
+      illum.incdnc;
+      illum.emissn;
+
+      const ocltid = wasmBackend.occult(
+        "MOON",
+        "ELLIPSOID",
+        "IAU_MOON",
+        "SUN",
+        "ELLIPSOID",
+        "IAU_SUN",
+        "NONE",
+        "EARTH",
+        0,
+      );
+      ocltid;
+
       const nodeBackend = await createBackend({ backend: "node" });
       // If overloads are correct, these should *not* typecheck.
       // @ts-expect-error wasm-only helper not present on node backend
