@@ -44,10 +44,13 @@ jobs:
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
+          workingDirectory: apps/tspice-viewer
+          packageManager: pnpm
+          wranglerVersion: 3.90.0
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: >-
-            pages deploy apps/tspice-viewer/dist
+            pages deploy dist
             --project-name "${{ env.PAGES_PROJECT }}"
             --branch main
 
@@ -81,9 +84,12 @@ jobs:
       - name: Deploy to Cloudflare Pages (preview)
         uses: cloudflare/wrangler-action@v3
         with:
+          workingDirectory: apps/tspice-viewer
+          packageManager: pnpm
+          wranglerVersion: 3.90.0
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: >-
-            pages deploy apps/tspice-viewer/dist
+            pages deploy dist
             --project-name "${{ env.PAGES_PROJECT }}"
             --branch "${{ env.PREVIEW_BRANCH }}"
