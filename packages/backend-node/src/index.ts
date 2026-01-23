@@ -39,8 +39,10 @@ export function createNodeBackend(): SpiceBackend {
   invariant(typeof native.timout === "function", "Expected native addon to export timout(et, picture)");
   invariant(typeof native.bodn2c === "function", "Expected native addon to export bodn2c(name)");
   invariant(typeof native.bodc2n === "function", "Expected native addon to export bodc2n(code)");
-  invariant(typeof native.namfrm === "function", "Expected native addon to export namfrm(frameName)");
-  invariant(typeof native.frmnam === "function", "Expected native addon to export frmnam(frameId)");
+  invariant(typeof native.namfrm === "function", "Expected native addon to export namfrm(name)");
+  invariant(typeof native.frmnam === "function", "Expected native addon to export frmnam(code)");
+  invariant(typeof native.cidfrm === "function", "Expected native addon to export cidfrm(center)");
+  invariant(typeof native.cnmfrm === "function", "Expected native addon to export cnmfrm(centerName)");
   invariant(typeof native.pxform === "function", "Expected native addon to export pxform(from, to, et)");
   invariant(typeof native.sxform === "function", "Expected native addon to export sxform(from, to, et)");
   invariant(
@@ -186,21 +188,41 @@ export function createNodeBackend(): SpiceBackend {
       invariant(typeof out.name === "string", "Expected bodc2n().name to be a string");
       return { found: true, name: out.name };
     },
-    namfrm: (frameName) => {
-      const out = native.namfrm(frameName);
+    namfrm: (name) => {
+      const out = native.namfrm(name);
       if (!out.found) {
         return { found: false };
       }
-      invariant(typeof out.frameId === "number", "Expected namfrm().frameId to be a number");
-      return { found: true, frameId: out.frameId };
+      invariant(typeof out.code === "number", "Expected namfrm().code to be a number");
+      return { found: true, code: out.code };
     },
-    frmnam: (frameId) => {
-      const out = native.frmnam(frameId);
+    frmnam: (code) => {
+      const out = native.frmnam(code);
       if (!out.found) {
         return { found: false };
       }
-      invariant(typeof out.frameName === "string", "Expected frmnam().frameName to be a string");
-      return { found: true, frameName: out.frameName };
+      invariant(typeof out.name === "string", "Expected frmnam().name to be a string");
+      return { found: true, name: out.name };
+    },
+
+    cidfrm: (center) => {
+      const out = native.cidfrm(center);
+      if (!out.found) {
+        return { found: false };
+      }
+      invariant(typeof out.frcode === "number", "Expected cidfrm().frcode to be a number");
+      invariant(typeof out.frname === "string", "Expected cidfrm().frname to be a string");
+      return { found: true, frcode: out.frcode, frname: out.frname };
+    },
+
+    cnmfrm: (centerName) => {
+      const out = native.cnmfrm(centerName);
+      if (!out.found) {
+        return { found: false };
+      }
+      invariant(typeof out.frcode === "number", "Expected cnmfrm().frcode to be a number");
+      invariant(typeof out.frname === "string", "Expected cnmfrm().frname to be a string");
+      return { found: true, frcode: out.frcode, frname: out.frname };
     },
 
     pxform: (from, to, et) => {

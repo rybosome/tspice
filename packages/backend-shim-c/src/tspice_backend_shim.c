@@ -469,6 +469,104 @@ int tspice_frmnam(
   return 0;
 }
 
+int tspice_cidfrm(
+    int center,
+    int *outFrcode,
+    char *outFrname,
+    int outFrnameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrcode) {
+    *outFrcode = 0;
+  }
+  if (outFrnameMaxBytes > 0 && outFrname) {
+    outFrname[0] = '\0';
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceInt frcode = 0;
+  SpiceChar frname[32] = {0};
+  SpiceBoolean found = SPICEFALSE;
+
+  cidfrm_c((SpiceInt)center, (SpiceInt)sizeof(frname), &frcode, frname, &found);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFrcode) {
+    *outFrcode = (int)frcode;
+  }
+
+  if (outFrname && outFrnameMaxBytes > 0) {
+    strncpy(outFrname, frname, (size_t)outFrnameMaxBytes - 1);
+    outFrname[outFrnameMaxBytes - 1] = '\0';
+  }
+
+  if (outFound) {
+    *outFound = found == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_cnmfrm(
+    const char *centerName,
+    int *outFrcode,
+    char *outFrname,
+    int outFrnameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrcode) {
+    *outFrcode = 0;
+  }
+  if (outFrnameMaxBytes > 0 && outFrname) {
+    outFrname[0] = '\0';
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceInt frcode = 0;
+  SpiceChar frname[32] = {0};
+  SpiceBoolean found = SPICEFALSE;
+
+  cnmfrm_c(centerName, (SpiceInt)sizeof(frname), &frcode, frname, &found);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFrcode) {
+    *outFrcode = (int)frcode;
+  }
+
+  if (outFrname && outFrnameMaxBytes > 0) {
+    strncpy(outFrname, frname, (size_t)outFrnameMaxBytes - 1);
+    outFrname[outFrnameMaxBytes - 1] = '\0';
+  }
+
+  if (outFound) {
+    *outFound = found == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
 int tspice_pxform(
     const char *from,
     const char *to,

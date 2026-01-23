@@ -4,34 +4,35 @@ import { createRequire } from "node:module";
 
 export type NativeAddon = {
   spiceVersion(): string;
+
+  // Phase 1
   furnsh(path: string): void;
   unload(path: string): void;
-
   kclear(): void;
   ktotal(kind?: string): number;
   kdata(
     which: number,
     kind?: string,
   ): { found: boolean; file?: string; filtyp?: string; source?: string; handle?: number };
-
-  str2et(time: string): number;
+  str2et(utc: string): number;
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;
 
+  // Phase 2
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
+  namfrm(name: string): { found: boolean; code?: number };
+  frmnam(code: number): { found: boolean; name?: string };
+  cidfrm(center: number): { found: boolean; frcode?: number; frname?: string };
+  cnmfrm(centerName: string): { found: boolean; frcode?: number; frname?: string };
 
-  namfrm(frameName: string): { found: boolean; frameId?: number };
-  frmnam(frameId: number): { found: boolean; frameName?: string };
-
-  pxform(from: string, to: string, et: number): number[];
-  sxform(from: string, to: string, et: number): number[];
+  // Phase 3
   spkezr(
     target: string,
     et: number,
     ref: string,
     abcorr: string,
-    observer: string,
+    obs: string
   ): { state: number[]; lt: number };
 
   spkpos(
@@ -39,8 +40,10 @@ export type NativeAddon = {
     et: number,
     ref: string,
     abcorr: string,
-    observer: string,
+    obs: string
   ): { pos: number[]; lt: number };
+  pxform(from: string, to: string, et: number): number[];
+  sxform(from: string, to: string, et: number): number[];
 
   /** Internal test helper (not part of the backend contract). */
   __ktotalAll(): number;

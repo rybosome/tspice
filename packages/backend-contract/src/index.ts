@@ -173,8 +173,11 @@ export interface SpiceBackend {
   bodn2c(name: string): Found<{ code: number }>;
   bodc2n(code: number): Found<{ name: string }>;
 
-  namfrm(frameName: string): Found<{ frameId: number }>;
-  frmnam(frameId: number): Found<{ frameName: string }>;
+  namfrm(name: string): Found<{ code: number }>;
+  frmnam(code: number): Found<{ name: string }>;
+
+  cidfrm(center: number): Found<{ frcode: number; frname: string }>;
+  cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
   /** Compute a 3x3 frame transformation matrix (row-major). */
   pxform(from: string, to: string, et: number): SpiceMatrix3x3;
