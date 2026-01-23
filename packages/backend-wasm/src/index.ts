@@ -1052,6 +1052,8 @@ export async function createWasmBackend(
 
   let module: EmscriptenModule;
   try {
+    let instantiateWasmError: unknown;
+
     const emscriptenOpts: Record<string, unknown> = {
       locateFile(path: string, prefix: string) {
         if (path === WASM_BINARY_FILENAME) {
@@ -1065,49 +1067,80 @@ export async function createWasmBackend(
     if (isNode && wasmUrl.startsWith("file:")) {
       // Emscripten's default Node loader expects a filesystem path, but our
       // `locateFile` returns a `file:` URL (from `import.meta.url`). Override
-      // instantiation to load the bytes via Node fs and bypass any URL fetching.
+      // instantiation to load the bytes via Node fs.
       emscriptenOpts.instantiateWasm = (
         imports: unknown,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         successCallback: (instance: any) => void,
       ) => {
         void (async () => {
-          const [fs, { fileURLToPath }] = await Promise.all([
-            import("node:fs"),
-            import("node:url"),
-          ]);
+          try {
+            const [fs, { fileURLToPath }] = await Promise.all([
+              import("node:fs"),
+              import("node:url"),
+            ]);
 
-          const bytes = await fs.promises.readFile(fileURLToPath(wasmUrl));
+            const bytes = await fs.promises.readFile(fileURLToPath(wasmUrl));
 
-          // `WebAssembly` types live in DOM lib defs, which we don't include.
-          // Use `globalThis` to keep this package's TS config lean.
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const webAssembly = (globalThis as any)["WebAssembly"] as any;
-          if (!webAssembly?.instantiate) {
-            throw new Error("WebAssembly.instantiate is not available in this environment");
+            // `WebAssembly` types live in DOM lib defs, which we don't include.
+            // Use `globalThis` to keep this package's TS config lean.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const webAssembly = (globalThis as any).WebAssembly as any;
+            if (!webAssembly?.instantiate) {
+              throw new Error("WebAssembly.instantiate is not available in this environment");
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { instance } = (await webAssembly.instantiate(bytes, imports)) as any;
+            successCallback(instance);
+          } catch (error) {
+            instantiateWasmError = error;
+            const message = error instanceof Error ? error.message : String(error);
+            const errorMessage =
+              `Failed to instantiate tspice WASM binary from ${wasmUrl}: ${message}. ` +
+              "Note: Node fetch(file://...) is unsupported, so this must be loaded via fs.";
+
+            // Emscripten requires us to either call `successCallback` or abort. If we just throw
+            // here, module init can hang waiting on the "wasm-instantiate" run dependency.
+            //
+            // `imports` is the Emscripten `info` object (`{ env, wasi_snapshot_preview1 }`).
+            // Calling `env.abort()` will reject the module's ready promise.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const abort = (imports as any)?.env?.abort as unknown;
+            if (typeof abort === "function") {
+              // Ensure the actual failure reason is visible even if the abort error is generic.
+              // eslint-disable-next-line no-console
+              console.error(errorMessage);
+
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+              (abort as any)();
+              return;
+            }
+
+            throw new Error(errorMessage);
           }
-
-          const instantiated = await webAssembly.instantiate(bytes, imports);
-          const instance =
-            instantiated && typeof instantiated === "object" && "instance" in instantiated
-              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (instantiated as any).instance
-              : instantiated;
-
-          successCallback(instance);
-        })().catch((error) => {
-          const message = error instanceof Error ? error.message : String(error);
-          throw new Error(
-            `Failed to instantiate tspice WASM binary from ${wasmUrl}: ${message}`,
-          );
-        });
+        })();
 
         // Async instantiation sentinel (Emscripten pattern)
         return {};
       };
     }
 
-    module = (await createEmscriptenModule(emscriptenOpts)) as EmscriptenModule;
+    try {
+      module = (await createEmscriptenModule(emscriptenOpts)) as EmscriptenModule;
+    } catch (error) {
+      if (instantiateWasmError) {
+        const message =
+          instantiateWasmError instanceof Error
+            ? instantiateWasmError.message
+            : String(instantiateWasmError);
+        throw new Error(
+          `Failed to instantiate tspice WASM binary from ${wasmUrl}: ${message}. ` +
+            "Note: Node fetch(file://...) is unsupported, so this must be loaded via fs.",
+        );
+      }
+      throw error;
+    }
   } catch (error) {
     throw new Error(
       `Failed to initialize tspice WASM module (wasmUrl=${wasmUrl}): ${String(error)}`,
