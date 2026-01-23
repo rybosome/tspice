@@ -625,8 +625,10 @@ int tspice_sxform(
   }
 
   if (outMatrix6x6) {
-    for (int i = 0; i < 6; i++) {
-      for (int j = 0; j < 6; j++) {
+    int i;
+    int j;
+    for (i = 0; i < 6; i++) {
+      for (j = 0; j < 6; j++) {
         outMatrix6x6[i * 6 + j] = (double)m[i][j];
       }
     }
@@ -906,12 +908,24 @@ int tspice_vhat(const double *v3, double *outVhat3, char *err, int errMaxBytes) 
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
+  if (outVhat3) {
+    outVhat3[0] = 0.0;
+    outVhat3[1] = 0.0;
+    outVhat3[2] = 0.0;
+  }
 
   SpiceDouble v[3] = {0.0, 0.0, 0.0};
   if (v3) {
     v[0] = (SpiceDouble)v3[0];
     v[1] = (SpiceDouble)v3[1];
     v[2] = (SpiceDouble)v3[2];
+  }
+
+  // CSPICE's vhat_c signals an error on the zero vector.
+  // For tspice, we keep parity with prior WASM TS behavior and treat a zero input
+  // vector as success returning [0, 0, 0].
+  if (v[0] == 0.0 && v[1] == 0.0 && v[2] == 0.0) {
+    return 0;
   }
 
   SpiceDouble out[3] = {0.0, 0.0, 0.0};
@@ -1008,16 +1022,18 @@ int tspice_vcrss(
 }
 
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 3; j++) {
+  int i;
+  int j;
+  for (i = 0; i < 3; i++) {
+    for (j = 0; j < 3; j++) {
       out[i][j] = 0.0;
     }
   }
   if (!m3x3) {
     return;
   }
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 3; j++) {
+  for (i = 0; i < 3; i++) {
+    for (j = 0; j < 3; j++) {
       out[i][j] = (SpiceDouble)m3x3[i * 3 + j];
     }
   }
