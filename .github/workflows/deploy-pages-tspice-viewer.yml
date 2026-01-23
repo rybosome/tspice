@@ -24,7 +24,7 @@ jobs:
       contents: read
 
     env:
-      PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT || 'tspice-viewer' }}
+      PAGES_PROJECT: tspice-viewer
 
     steps:
       - name: Checkout
@@ -60,7 +60,7 @@ jobs:
       contents: read
 
     env:
-      PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT || 'tspice-viewer' }}
+      PAGES_PROJECT: tspice-viewer
       PREVIEW_BRANCH: pr-${{ github.event.pull_request.number }}
 
     steps:
