@@ -316,6 +316,15 @@ export interface SpiceBackend {
   sphrec(radius: number, colat: number, lon: number): SpiceVector3;
 
   vnorm(v: SpiceVector3): number;
+
+  /**
+   * Compute the unit vector of `v`.
+   *
+   * **Zero-vector behavior:** if `v` is `[0, 0, 0]`, this returns `[0, 0, 0]` and
+   * does **not** throw.
+   *
+   * This matches the NAIF CSPICE `vhat_c` definition.
+   */
   vhat(v: SpiceVector3): SpiceVector3;
   vdot(a: SpiceVector3, b: SpiceVector3): number;
   vcrss(a: SpiceVector3, b: SpiceVector3): SpiceVector3;

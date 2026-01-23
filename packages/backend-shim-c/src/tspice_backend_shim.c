@@ -1199,9 +1199,8 @@ int tspice_vhat(const double *v3, double *outVhat3, char *err, int errMaxBytes) 
     v[2] = (SpiceDouble)v3[2];
   }
 
-  // CSPICE's vhat_c signals an error on the zero vector.
-  // For tspice, we keep parity with prior WASM TS behavior and treat a zero input
-  // vector as success returning [0, 0, 0].
+  // NAIF defines vhat_c(0) = 0 (no error). We special-case here so we can
+  // immediately return the zero vector without calling into CSPICE.
   if (v[0] == 0.0 && v[1] == 0.0 && v[2] == 0.0) {
     return 0;
   }

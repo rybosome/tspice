@@ -278,6 +278,9 @@ int tspice_sphrec(
 int tspice_vnorm(const double *v3, double *outNorm, char *err, int errMaxBytes);
 
 // vhat_c: unit vector.
+//
+// Zero-vector behavior: if `v3` is [0, 0, 0], `outVhat3` is [0, 0, 0] and this
+// function returns success (no error).
 int tspice_vhat(const double *v3, double *outVhat3, char *err, int errMaxBytes);
 
 // vdot_c: dot product.
