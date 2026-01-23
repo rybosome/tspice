@@ -2,6 +2,8 @@
 
 Minimal Vite + React + TypeScript app that renders a basic Three.js scene using an imperative `canvas` setup (no `@react-three/fiber`).
 
+This workspace is intended to evolve into a renderer / Three.js viewer for tspice.
+
 ## Development
 
 From repo root:
@@ -15,30 +17,64 @@ From repo root:
 - `pnpm -C apps/tspice-viewer typecheck`
 - `pnpm -C apps/tspice-viewer test`
 
-## Taking a screenshot
+## Conventions
 
-1) Start the dev server:
+### Frames / world space
 
-```sh
-pnpm -C apps/tspice-viewer dev
-```
+- Canonical world (inertial) frame: `J2000`.
+- `x/y/z` axis mapping is **1:1** with Three.js world axes.
+- Handedness: follow SPICE conventions for the requested frame (for `J2000`, treat it as a right-handed inertial frame).
 
-2) Open the local URL in your browser.
+### Time
 
-- Vite typically uses `http://localhost:5173`, but the terminal output will print the exact URL (and any alternative port if 5173 is already taken).
+- `et` is **ephemeris time** in **seconds past the J2000 epoch**.
+- In this codebase we represent it as a plain `number` (`EtSeconds`).
 
-3) Capture a screenshot using your OS tooling.
+> Note: The exact J2000 epoch in SPICE is `2000-01-01 12:00:00 TT`.
 
-- macOS: `Shift` + `Command` + `4` (region) or `Shift` + `Command` + `5` (toolbar)
-- Windows: `Win` + `Shift` + `S` (Snipping Tool)
-- Linux: use your desktop screenshot tool (often `PrtSc` / GNOME Screenshot / Spectacle)
+### Units
 
-### Optional: headless screenshot (Playwright)
+- Positions are expressed in **kilometers** (`positionKm`).
+- Velocities are expressed in **kilometers per second** (`velocityKmPerSec`).
+- Radii (for rendering) are expressed in **kilometers** (`radiusKm`).
 
-If you want a repeatable, scriptable screenshot, you can use Playwright’s CLI (with the dev server running):
+### Scaling to renderer units
 
-```sh
-npx playwright screenshot http://localhost:5173 docs/assets/tspice-viewer.png --viewport-size=1280,720
-```
+SPICE scales are huge for typical WebGL scenes.
 
-Recommended location for committed screenshots: `docs/assets/`.
+A reasonable starting point is:
+
+- `1 threeUnit = 1,000 km` (`kmToWorld = 1 / 1000`)
+
+Tune this depending on camera near/far planes and desired precision.
+
+### Frame transforms
+
+`SpiceClient.getFrameTransform({ from, to, et })` returns a `Mat3` rotation matrix.
+
+- Representation: a flat `number[9]` in **column-major** order to match Three.js `Matrix3`.
+- Indexing:
+  - `m = [
+      m00, m10, m20,
+      m01, m11, m21,
+      m02, m12, m22
+    ]`
+  - This corresponds to columns `c0=(m00,m10,m20)`, `c1=(m01,m11,m21)`, `c2=(m02,m12,m22)`.
+
+The transform is intended to be applied as:
+
+- `v_to = M(from->to) * v_from`
+
+## What’s included
+
+- `src/spice/SpiceClient.ts`: a minimal renderer-facing interface
+- `src/spice/FakeSpiceClient.ts`: deterministic stubbed ephemerides for Sun/Earth/Moon
+- `src/scene/SceneModel.ts`: types describing bodies and render styling
+
+## Visual regression testing
+
+Playwright e2e tests live in `apps/tspice-viewer/e2e`.
+
+From repo root:
+
+- `pnpm -C apps/tspice-viewer e2e`

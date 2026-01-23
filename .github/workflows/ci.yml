@@ -20,6 +20,16 @@ jobs:
       node_version: ${{ matrix.node }}
       command: pnpm run check
 
+  viewer-e2e:
+    name: Viewer Playwright e2e (ubuntu + node 22)
+    uses: ./.github/workflows/reusable-node-pnpm.yml
+    with:
+      runs_on: ubuntu-latest
+      node_version: '22'
+      command: |
+        pnpm -C apps/tspice-viewer exec playwright install --with-deps chromium
+        pnpm -C apps/tspice-viewer e2e
+
   check-native:
     # Runs in parallel with `check` to surface native-only failures quickly.
     # Assumes GitHub-hosted runners (Ubuntu with apt-get, macOS with Homebrew).
