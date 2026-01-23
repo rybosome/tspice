@@ -96,7 +96,7 @@ export type NativeAddon = {
     abcorr: string,
     observer: string,
     spoint: number[],
-  ): { trgepc: number; srfvec: number[]; observerIlluminatorAngle: number; incdnc: number; emissn: number };
+  ): { trgepc: number; srfvec: number[]; phase: number; incdnc: number; emissn: number };
 
   occult(
     targ1: string,

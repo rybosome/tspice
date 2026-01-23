@@ -133,8 +133,8 @@ export type IluminResult = {
   trgepc: number;
   /** Vector from observer to `spoint`, expressed in `fixref` at `trgepc`. */
   srfvec: SpiceVector3;
-  /** Observer-illuminator angle at `spoint`, radians. */
-  observerIlluminatorAngle: number;
+  /** Phase angle at `spoint` (observer-illuminator angle), radians. */
+  phase: number;
   /** Solar incidence angle at `spoint`, radians. */
   incdnc: number;
   /** Emission angle at `spoint`, radians. */

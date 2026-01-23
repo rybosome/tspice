@@ -468,15 +468,15 @@ export function createNodeBackend(): SpiceBackend {
         "Expected ilumin().srfvec to be a length-3 array",
       );
       invariant(
-        typeof out.observerIlluminatorAngle === "number",
-        "Expected ilumin().observerIlluminatorAngle to be a number",
+        typeof out.phase === "number",
+        "Expected ilumin().phase to be a number",
       );
       invariant(typeof out.incdnc === "number", "Expected ilumin().incdnc to be a number");
       invariant(typeof out.emissn === "number", "Expected ilumin().emissn to be a number");
       return {
         trgepc: out.trgepc,
         srfvec: out.srfvec as SpiceVector3,
-        observerIlluminatorAngle: out.observerIlluminatorAngle,
+        phase: out.phase,
         incdnc: out.incdnc,
         emissn: out.emissn,
       } satisfies IluminResult;

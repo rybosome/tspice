@@ -54,7 +54,7 @@ describe("createBackend() types", () => {
         "SUN",
         [1, 2, 3],
       );
-      illum.observerIlluminatorAngle;
+      illum.phase;
       illum.incdnc;
       illum.emissn;
 

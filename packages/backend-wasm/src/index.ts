@@ -254,7 +254,7 @@ type EmscriptenModule = {
     spoint3Ptr: number,
     outTrgepcPtr: number,
     outSrfvec3Ptr: number,
-    outObserverIlluminatorAnglePtr: number,
+    outPhasePtr: number,
     outIncdncPtr: number,
     outEmissnPtr: number,
     errPtr: number,
@@ -1446,7 +1446,7 @@ function tspiceCallIlumin(
   const spointPtr = module._malloc(3 * 8);
   const outTrgepcPtr = module._malloc(8);
   const outSrfvecPtr = module._malloc(3 * 8);
-  const outObserverIlluminatorAnglePtr = module._malloc(8);
+  const outPhasePtr = module._malloc(8);
   const outIncdncPtr = module._malloc(8);
   const outEmissnPtr = module._malloc(8);
 
@@ -1460,14 +1460,14 @@ function tspiceCallIlumin(
     !spointPtr ||
     !outTrgepcPtr ||
     !outSrfvecPtr ||
-    !outObserverIlluminatorAnglePtr ||
+    !outPhasePtr ||
     !outIncdncPtr ||
     !outEmissnPtr
   ) {
     for (const ptr of [
       outEmissnPtr,
       outIncdncPtr,
-      outObserverIlluminatorAnglePtr,
+      outPhasePtr,
       outSrfvecPtr,
       outTrgepcPtr,
       spointPtr,
@@ -1486,7 +1486,7 @@ function tspiceCallIlumin(
   try {
     module.HEAPF64.set(spoint, spointPtr >> 3);
     module.HEAPF64[outTrgepcPtr >> 3] = 0;
-    module.HEAPF64[outObserverIlluminatorAnglePtr >> 3] = 0;
+    module.HEAPF64[outPhasePtr >> 3] = 0;
     module.HEAPF64[outIncdncPtr >> 3] = 0;
     module.HEAPF64[outEmissnPtr >> 3] = 0;
 
@@ -1500,7 +1500,7 @@ function tspiceCallIlumin(
       spointPtr,
       outTrgepcPtr,
       outSrfvecPtr,
-      outObserverIlluminatorAnglePtr,
+      outPhasePtr,
       outIncdncPtr,
       outEmissnPtr,
       errPtr,
@@ -1514,16 +1514,15 @@ function tspiceCallIlumin(
     const srfvec = Array.from(
       module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
     ) as unknown as SpiceVector3;
-    const observerIlluminatorAngle =
-      module.HEAPF64[outObserverIlluminatorAnglePtr >> 3] ?? 0;
+    const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
     const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
     const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
 
-    return { trgepc, srfvec, observerIlluminatorAngle, incdnc, emissn };
+    return { trgepc, srfvec, phase, incdnc, emissn };
   } finally {
     module._free(outEmissnPtr);
     module._free(outIncdncPtr);
-    module._free(outObserverIlluminatorAnglePtr);
+    module._free(outPhasePtr);
     module._free(outSrfvecPtr);
     module._free(outTrgepcPtr);
     module._free(spointPtr);

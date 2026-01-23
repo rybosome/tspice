@@ -215,7 +215,7 @@ int tspice_ilumin(
     const double *spoint3,
     double *outTrgepc,
     double *outSrfvec3,
-    double *outObserverIlluminatorAngle,
+    double *outPhase,
     double *outIncdnc,
     double *outEmissn,
     char *err,
