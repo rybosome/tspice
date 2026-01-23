@@ -157,6 +157,55 @@ int tspice_spkpos(
     char *err,
     int errMaxBytes);
 
+// --- Phase 4: SCLK conversions + CK attitude ---
+
+// scs2e_c: convert an encoded SCLK string -> ET seconds past J2000.
+int tspice_scs2e(
+    int sc,
+    const char *sclkch,
+    double *outEt,
+    char *err,
+    int errMaxBytes);
+
+// sce2s_c: convert ET seconds past J2000 -> an encoded SCLK string.
+int tspice_sce2s(
+    int sc,
+    double et,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// ckgp_c: get pointing (attitude) for a CK instrument at an encoded spacecraft clock time.
+//
+// Output matrix is written as 9 doubles in row-major order.
+int tspice_ckgp(
+    int inst,
+    double sclkdp,
+    double tol,
+    const char *ref,
+    double *outMatrix3x3,
+    double *outClkout,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// ckgpav_c: get pointing + angular velocity for a CK instrument at an encoded spacecraft clock time.
+//
+// Output matrix is written as 9 doubles in row-major order.
+// Output angular velocity is written as 3 doubles.
+int tspice_ckgpav(
+    int inst,
+    double sclkdp,
+    double tol,
+    const char *ref,
+    double *outMatrix3x3,
+    double *outAv3,
+    double *outClkout,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
 #ifdef __cplusplus
 }
 #endif
