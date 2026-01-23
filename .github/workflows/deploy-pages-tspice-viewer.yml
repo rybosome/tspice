@@ -52,7 +52,6 @@ jobs:
           command: >-
             pages deploy dist
             --project-name "${{ env.PAGES_PROJECT }}"
-            --branch main
 
   deploy-preview:
     name: Deploy preview (pull request)
