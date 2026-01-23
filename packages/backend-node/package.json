@@ -23,7 +23,8 @@
     "build:js": "pnpm run build",
     "build:full": "pnpm run build:native && pnpm run build",
     "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:native": "pnpm run build && pnpm run build:native && TSPICE_RUN_NODE_BACKEND_TESTS=1 pnpm run test"
   },
   "dependencies": {
     "@rybosome/tspice-backend-contract": "workspace:*",

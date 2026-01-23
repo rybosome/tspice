@@ -13,7 +13,7 @@
     "build:js": "turbo run build",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "test:js": "turbo run test --filter=!@rybosome/tspice-backend-node",
+    "test:js": "turbo run test --filter=!@rybosome/tspice",
     "test:native": "pnpm run fetch:cspice && pnpm -C packages/backend-node run build:native && pnpm run test",
     "test": "turbo run test"
   },

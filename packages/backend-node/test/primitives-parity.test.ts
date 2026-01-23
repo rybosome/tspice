@@ -1,16 +1,55 @@
-import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { createNodeBackend } from "@rybosome/tspice-backend-node";
+import { beforeAll, describe, expect, it } from "vitest";
+
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 import { loadTestKernels } from "./test-kernels.js";
 
-function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): void {
+const testDir = path.dirname(fileURLToPath(import.meta.url));
+
+const defaultBindingPath = path.resolve(
+  testDir,
+  "../native/build/Release/tspice_backend_node.node",
+);
+
+const bindingPath =
+  process.env.TSPICE_BACKEND_NODE_BINDING_PATH ?? defaultBindingPath;
+
+const runNativeTests = process.env.TSPICE_RUN_NODE_BACKEND_TESTS === "1";
+const bindingExists = fs.existsSync(bindingPath);
+
+if (!runNativeTests) {
+  console.warn(
+    "Skipping @rybosome/tspice-backend-node native tests (set TSPICE_RUN_NODE_BACKEND_TESTS=1 to enable).",
+  );
+} else if (!bindingExists) {
+  console.warn(
+    `Skipping @rybosome/tspice-backend-node native tests (native addon not found at ${bindingPath}).`,
+  );
+}
+
+const shouldRun = runNativeTests && bindingExists;
+const maybeDescribe = shouldRun ? describe : describe.skip;
+
+function expectClose(
+  a: number,
+  b: number,
+  { atol = 1e-6, rtol = 1e-12 } = {},
+): void {
   const diff = Math.abs(a - b);
   const scale = Math.max(Math.abs(a), Math.abs(b));
   expect(diff).toBeLessThanOrEqual(atol + rtol * scale);
 }
 
-describe("Phase 3 primitives parity (node vs wasm)", () => {
+maybeDescribe("Phase 3 primitives parity (node vs wasm)", () => {
+  let createNodeBackend: typeof import("@rybosome/tspice-backend-node").createNodeBackend;
+
+  beforeAll(async () => {
+    ({ createNodeBackend } = await import("@rybosome/tspice-backend-node"));
+  });
+
   it("matches for str2et / et2utc / pxform / spkezr", async () => {
     const { lsk, spk } = await loadTestKernels();
 
