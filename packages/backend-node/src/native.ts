@@ -26,6 +26,22 @@ export type NativeAddon = {
   cidfrm(center: number): { found: boolean; frcode?: number; frname?: string };
   cnmfrm(centerName: string): { found: boolean; frcode?: number; frname?: string };
 
+  // Phase 4
+  scs2e(sc: number, sclkch: string): number;
+  sce2s(sc: number, et: number): string;
+  ckgp(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    ref: string,
+  ): { found: boolean; cmat?: number[]; clkout?: number };
+  ckgpav(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    ref: string,
+  ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
+
   // Phase 3
   spkezr(
     target: string,

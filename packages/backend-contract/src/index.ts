@@ -179,6 +179,30 @@ export interface SpiceBackend {
   cidfrm(center: number): Found<{ frcode: number; frname: string }>;
   cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
+  // --- Phase 5 SCLK conversions + CK attitude ---
+
+  /** Convert an encoded SCLK string to ET seconds past J2000. */
+  scs2e(sc: number, sclkch: string): number;
+
+  /** Convert ET seconds past J2000 to an encoded SCLK string. */
+  sce2s(sc: number, et: number): string;
+
+  /** Get pointing (attitude) for a CK instrument at a given encoded spacecraft clock time. */
+  ckgp(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    ref: string,
+  ): Found<{ cmat: SpiceMatrix3x3; clkout: number }>;
+
+  /** Get pointing + angular velocity for a CK instrument at a given encoded spacecraft clock time. */
+  ckgpav(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    ref: string,
+  ): Found<{ cmat: SpiceMatrix3x3; av: SpiceVector3; clkout: number }>;
+
   /** Compute a 3x3 frame transformation matrix (row-major). */
   pxform(from: string, to: string, et: number): SpiceMatrix3x3;
 

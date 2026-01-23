@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { createNodeBackend } from "@rybosome/tspice-backend-node";
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 import { loadTestKernels } from "./test-kernels.js";
+import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
 
 function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): void {
   const diff = Math.abs(a - b);
@@ -11,7 +12,9 @@ function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): 
 }
 
 describe("Phase 3 primitives parity (node vs wasm)", () => {
-  it("matches for str2et / et2utc / pxform / spkezr", async () => {
+  const itNative = it.runIf(nodeAddonAvailable());
+
+  itNative("matches for str2et / et2utc / pxform / spkezr", async () => {
     const { lsk, spk } = await loadTestKernels();
 
     const node = createNodeBackend();
