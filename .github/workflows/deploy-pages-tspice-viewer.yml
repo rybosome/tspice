@@ -1,0 +1,89 @@
+name: Deploy Pages (tspice-viewer)
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    paths:
+      - "apps/tspice-viewer/**"
+      - "packages/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/deploy-pages-tspice-viewer.yml"
+      - ".github/actions/setup-pnpm-node/**"
+
+jobs:
+  deploy-production:
+    name: Deploy production (main)
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT || 'tspice-viewer' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build tspice-viewer
+        run: pnpm -C apps/tspice-viewer build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy apps/tspice-viewer/dist
+            --project-name "${{ env.PAGES_PROJECT }}"
+            --branch main
+
+  deploy-preview:
+    name: Deploy preview (pull request)
+    # Secrets aren't exposed to workflows triggered from forked PRs.
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT || 'tspice-viewer' }}
+      PREVIEW_BRANCH: pr-${{ github.event.pull_request.number }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build tspice-viewer
+        run: pnpm -C apps/tspice-viewer build
+
+      - name: Deploy to Cloudflare Pages (preview)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy apps/tspice-viewer/dist
+            --project-name "${{ env.PAGES_PROJECT }}"
+            --branch "${{ env.PREVIEW_BRANCH }}"
