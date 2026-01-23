@@ -420,7 +420,8 @@ int tspice_namfrm(
     *outFound = 0;
   }
 
-  const SpiceInt frameId = namfrm_c(frameName);
+  SpiceInt frameId = 0;
+  namfrm_c(frameName, &frameId);
   if (failed_c()) {
     GetSpiceErrorMessageAndReset(err, errMaxBytes);
     return 1;
