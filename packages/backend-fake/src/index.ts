@@ -1,0 +1,785 @@
+import type {
+  AbCorr,
+  Found,
+  IluminResult,
+  KernelData,
+  KernelKind,
+  KernelSource,
+  SpiceBackend,
+  SpiceMatrix3x3,
+  SpiceMatrix6x6,
+  SpiceStateVector,
+  SpiceVector3,
+  SpkposResult,
+  SpkezrResult,
+  SubPointResult,
+} from "@rybosome/tspice-backend-contract";
+
+/**
+ * A deterministic, pure-TS "toy" backend.
+ *
+ * This backend exists for:
+ * - tests
+ * - demos (e.g. viewer smoke tests)
+ * - environments where native + WASM backends are unavailable
+ *
+ * It is intentionally **not** a physically-accurate ephemeris.
+ *
+ * Time conversion notes:
+ * - `str2et` supports ISO-8601 / RFC3339-style UTC timestamps only.
+ * - Leap seconds are ignored.
+ * - The J2000 epoch is treated as `2000-01-01T12:00:00Z`.
+ */
+
+const TWO_PI = Math.PI * 2;
+
+export const FAKE_SPICE_VERSION = "tspice-fake-backend@0.0.0";
+
+const J2000_UTC_MS = Date.parse("2000-01-01T12:00:00.000Z");
+
+const BODY_IDS = {
+  SUN: 10,
+  EARTH: 399,
+  MOON: 301,
+} as const;
+
+type SupportedBodyName = keyof typeof BODY_IDS;
+
+type BodyMeta = {
+  id: number;
+  name: SupportedBodyName;
+  meanRadiusKm: number;
+};
+
+const BODY_META: readonly BodyMeta[] = [
+  { id: BODY_IDS.SUN, name: "SUN", meanRadiusKm: 695_700 },
+  { id: BODY_IDS.EARTH, name: "EARTH", meanRadiusKm: 6_371 },
+  { id: BODY_IDS.MOON, name: "MOON", meanRadiusKm: 1_737.4 },
+];
+
+const ID_TO_BODY = new Map<number, BodyMeta>(BODY_META.map((b) => [b.id, b]));
+const NAME_TO_ID = new Map<string, number>(
+  BODY_META.flatMap((b) => [
+    [b.name, b.id],
+    [b.name.toLowerCase(), b.id],
+  ]),
+);
+
+const FRAME_CODES = {
+  J2000: 1,
+  IAU_EARTH: 10013,
+  IAU_MOON: 10020,
+} as const;
+
+type SupportedFrameName = keyof typeof FRAME_CODES;
+
+const FRAME_NAME_TO_CODE = new Map<string, number>([
+  ["J2000", FRAME_CODES.J2000],
+  ["j2000", FRAME_CODES.J2000],
+  ["IAU_EARTH", FRAME_CODES.IAU_EARTH],
+  ["iau_earth", FRAME_CODES.IAU_EARTH],
+  ["IAU_MOON", FRAME_CODES.IAU_MOON],
+  ["iau_moon", FRAME_CODES.IAU_MOON],
+]);
+
+const FRAME_CODE_TO_NAME = new Map<number, SupportedFrameName>([
+  [FRAME_CODES.J2000, "J2000"],
+  [FRAME_CODES.IAU_EARTH, "IAU_EARTH"],
+  [FRAME_CODES.IAU_MOON, "IAU_MOON"],
+]);
+
+/**
+ * Frame spin rates (rad/s) relative to J2000.
+ *
+ * Used for deterministic `pxform`/`sxform`. These are not intended to be
+ * authoritative values.
+ */
+const FRAME_SPIN_RATE_RAD_PER_SEC: Record<SupportedFrameName, number> = {
+  J2000: 0,
+  // Approx sidereal rotation (deterministic constant).
+  IAU_EARTH: TWO_PI / 86164.0905,
+  // Approx synchronous rotation with orbital period (deterministic constant).
+  IAU_MOON: TWO_PI / (27.321661 * 24 * 60 * 60),
+};
+
+function normalizeName(name: string): string {
+  return name.trim();
+}
+
+function parseBodyRef(ref: string): number {
+  const trimmed = normalizeName(ref);
+
+  // Accept numeric IDs as strings.
+  if (/^-?\d+$/.test(trimmed)) {
+    return Number(trimmed);
+  }
+
+  const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
+  if (id === undefined) {
+    throw new Error(`Fake backend: unsupported body: ${JSON.stringify(ref)}`);
+  }
+  return id;
+}
+
+function parseFrameName(ref: string): SupportedFrameName {
+  const trimmed = normalizeName(ref);
+  const code = FRAME_NAME_TO_CODE.get(trimmed) ?? FRAME_NAME_TO_CODE.get(trimmed.toLowerCase());
+  const name = code === undefined ? undefined : FRAME_CODE_TO_NAME.get(code);
+  if (!name) {
+    throw new Error(`Fake backend: unsupported frame: ${JSON.stringify(ref)}`);
+  }
+  return name;
+}
+
+function getBodyRadiusKm(bodyId: number): number {
+  return ID_TO_BODY.get(bodyId)?.meanRadiusKm ?? 1;
+}
+
+function vadd(a: SpiceVector3, b: SpiceVector3): SpiceVector3 {
+  return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+}
+
+function vsub(a: SpiceVector3, b: SpiceVector3): SpiceVector3 {
+  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+}
+
+function vscale(s: number, v: SpiceVector3): SpiceVector3 {
+  return [s * v[0], s * v[1], s * v[2]];
+}
+
+function vdot(a: SpiceVector3, b: SpiceVector3): number {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+function vcrss(a: SpiceVector3, b: SpiceVector3): SpiceVector3 {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0],
+  ];
+}
+
+function vnorm(v: SpiceVector3): number {
+  return Math.sqrt(vdot(v, v));
+}
+
+function vhat(v: SpiceVector3): SpiceVector3 {
+  const n = vnorm(v);
+  if (n === 0) return [0, 0, 0];
+  return vscale(1 / n, v);
+}
+
+function clamp(x: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, x));
+}
+
+function angleBetween(a: SpiceVector3, b: SpiceVector3): number {
+  const na = vnorm(a);
+  const nb = vnorm(b);
+  if (na === 0 || nb === 0) return 0;
+  const c = clamp(vdot(a, b) / (na * nb), -1, 1);
+  return Math.acos(c);
+}
+
+function canonicalizeZero(n: number): number {
+  return Object.is(n, -0) ? 0 : n;
+}
+
+function rotZRowMajor(theta: number): SpiceMatrix3x3 {
+  const c = Math.cos(theta);
+  const s = Math.sin(theta);
+  return [
+    canonicalizeZero(c),
+    canonicalizeZero(-s),
+    0,
+    canonicalizeZero(s),
+    canonicalizeZero(c),
+    0,
+    0,
+    0,
+    1,
+  ];
+}
+
+function drotZRowMajor(theta: number, w: number): SpiceMatrix3x3 {
+  // d/dt rotZ(theta) = w * d/dtheta rotZ(theta)
+  const c = Math.cos(theta);
+  const s = Math.sin(theta);
+  return [
+    canonicalizeZero(-w * s),
+    canonicalizeZero(-w * c),
+    0,
+    canonicalizeZero(w * c),
+    canonicalizeZero(-w * s),
+    0,
+    0,
+    0,
+    0,
+  ];
+}
+
+function mmul3(a: SpiceMatrix3x3, b: SpiceMatrix3x3): SpiceMatrix3x3 {
+  // Row-major 3x3 multiply: out = a*b
+  const out: number[] = new Array(9).fill(0);
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 3; c++) {
+      let sum = 0;
+      for (let k = 0; k < 3; k++) {
+        sum += a[r * 3 + k]! * b[k * 3 + c]!;
+      }
+      out[r * 3 + c] = sum;
+    }
+  }
+  return out as SpiceMatrix3x3;
+}
+
+function mtx3(m: SpiceMatrix3x3): SpiceMatrix3x3 {
+  return [
+    m[0],
+    m[3],
+    m[6],
+    m[1],
+    m[4],
+    m[7],
+    m[2],
+    m[5],
+    m[8],
+  ];
+}
+
+function mxv(m: SpiceMatrix3x3, v: SpiceVector3): SpiceVector3 {
+  return [
+    m[0] * v[0] + m[1] * v[1] + m[2] * v[2],
+    m[3] * v[0] + m[4] * v[1] + m[5] * v[2],
+    m[6] * v[0] + m[7] * v[1] + m[8] * v[2],
+  ];
+}
+
+function mtxv(m: SpiceMatrix3x3, v: SpiceVector3): SpiceVector3 {
+  // (m^T) * v
+  return mxv(mtx3(m), v);
+}
+
+function sxformRowMajor(from: SupportedFrameName, to: SupportedFrameName, et: number): SpiceMatrix6x6 {
+  const wFrom = FRAME_SPIN_RATE_RAD_PER_SEC[from];
+  const wTo = FRAME_SPIN_RATE_RAD_PER_SEC[to];
+  const wDelta = wFrom - wTo;
+
+  const theta = wDelta * et;
+  const r = rotZRowMajor(theta);
+  const dr = drotZRowMajor(theta, wDelta);
+
+  // [ R 0 ; dR R ]
+  return [
+    // row 0
+    r[0], r[1], r[2], 0, 0, 0,
+    // row 1
+    r[3], r[4], r[5], 0, 0, 0,
+    // row 2
+    r[6], r[7], r[8], 0, 0, 0,
+
+    // row 3
+    dr[0], dr[1], dr[2], r[0], r[1], r[2],
+    // row 4
+    dr[3], dr[4], dr[5], r[3], r[4], r[5],
+    // row 5
+    dr[6], dr[7], dr[8], r[6], r[7], r[8],
+  ];
+}
+
+function mxv6(m: SpiceMatrix6x6, v: SpiceStateVector): SpiceStateVector {
+  const out: number[] = new Array(6).fill(0);
+  for (let r = 0; r < 6; r++) {
+    let sum = 0;
+    for (let c = 0; c < 6; c++) {
+      sum += m[r * 6 + c]! * v[c]!;
+    }
+    out[r] = sum;
+  }
+  return out as SpiceStateVector;
+}
+
+/**
+ * Deterministic toy ephemerides in J2000.
+ */
+function getAbsoluteStateInJ2000(bodyId: number, et: number): { posKm: SpiceVector3; velKmPerSec: SpiceVector3 } {
+  switch (bodyId) {
+    case BODY_IDS.SUN:
+      return { posKm: [0, 0, 0], velKmPerSec: [0, 0, 0] };
+
+    case BODY_IDS.EARTH: {
+      const rKm = 149_597_870.7; // 1 AU
+      const periodSec = 365.25 * 24 * 60 * 60;
+      const w = TWO_PI / periodSec;
+      const t = w * et;
+
+      const c = Math.cos(t);
+      const s = Math.sin(t);
+
+      const x = rKm * c;
+      const y = rKm * s;
+      const vx = -rKm * w * s;
+      const vy = rKm * w * c;
+
+      return { posKm: [x, y, 0], velKmPerSec: [vx, vy, 0] };
+    }
+
+    case BODY_IDS.MOON: {
+      const earth = getAbsoluteStateInJ2000(BODY_IDS.EARTH, et);
+
+      const rKm = 384_400;
+      const periodSec = 27.321661 * 24 * 60 * 60;
+      const w = TWO_PI / periodSec;
+      const t = w * et;
+
+      const c = Math.cos(t);
+      const s = Math.sin(t);
+
+      const xRel = rKm * c;
+      const yRel = rKm * s;
+      const vxRel = -rKm * w * s;
+      const vyRel = rKm * w * c;
+
+      return {
+        posKm: [earth.posKm[0] + xRel, earth.posKm[1] + yRel, 0],
+        velKmPerSec: [earth.velKmPerSec[0] + vxRel, earth.velKmPerSec[1] + vyRel, 0],
+      };
+    }
+
+    default:
+      throw new Error(`Fake backend: unsupported body id: ${bodyId}`);
+  }
+}
+
+function getRelativeStateInJ2000(target: string, observer: string, et: number): SpiceStateVector {
+  const targetId = parseBodyRef(target);
+  const observerId = parseBodyRef(observer);
+
+  const t = getAbsoluteStateInJ2000(targetId, et);
+  const o = getAbsoluteStateInJ2000(observerId, et);
+
+  const relPos = vsub(t.posKm, o.posKm);
+  const relVel = vsub(t.velKmPerSec, o.velKmPerSec);
+
+  return [relPos[0], relPos[1], relPos[2], relVel[0], relVel[1], relVel[2]];
+}
+
+function applyStateTransform(from: SupportedFrameName, to: SupportedFrameName, et: number, state: SpiceStateVector): SpiceStateVector {
+  const xform = sxformRowMajor(from, to, et);
+  return mxv6(xform, state);
+}
+
+function isIso8601OrRfc3339Utcish(s: string): boolean {
+  // Intentionally conservative. We only guarantee ISO/RFC3339-style parsing.
+  // Examples:
+  // - 2000-01-01T12:00:00Z
+  // - 2000-01-01T12:00:00.123Z
+  // - 2000-01-01T12:00:00+00:00
+  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(s);
+}
+
+function formatUtcFromMs(ms: number, prec: number): string {
+  const d = new Date(ms);
+  // Base always has 3 decimals.
+  const iso = d.toISOString();
+  const [head, fracZ] = iso.split(".");
+  const frac = (fracZ ?? "000Z").replace(/Z$/, "");
+
+  const clampedPrec = Math.max(0, Math.min(12, prec));
+  if (clampedPrec === 0) {
+    return `${head}Z`;
+  }
+
+  const padded = (frac + "000000000000").slice(0, clampedPrec);
+  return `${head}.${padded}Z`;
+}
+
+type KernelRecord = {
+  file: string;
+  source: string;
+  filtyp: string;
+  handle: number;
+  kind: KernelKind;
+};
+
+function guessKernelKind(path: string): KernelKind {
+  const lower = path.toLowerCase();
+  if (lower.endsWith(".bsp")) return "SPK";
+  if (lower.endsWith(".bc")) return "CK";
+  if (lower.endsWith(".tpc") || lower.endsWith(".pck")) return "PCK";
+  if (lower.endsWith(".tls") || lower.endsWith(".lsk")) return "LSK";
+  if (lower.endsWith(".tf") || lower.endsWith(".fk")) return "FK";
+  if (lower.endsWith(".ti") || lower.endsWith(".ik")) return "IK";
+  if (lower.endsWith(".tsc") || lower.endsWith(".sclk")) return "SCLK";
+  if (lower.endsWith(".tm") || lower.endsWith(".meta")) return "META";
+  return "ALL";
+}
+
+function kernelFiltyp(kind: KernelKind): string {
+  // Keep this close to NAIF-style strings, but it doesn't need to be exact.
+  switch (kind) {
+    case "SPK":
+    case "CK":
+    case "PCK":
+    case "LSK":
+    case "FK":
+    case "IK":
+    case "SCLK":
+    case "EK":
+    case "META":
+      return kind;
+    case "ALL":
+    default:
+      return "ALL";
+  }
+}
+
+export function createFakeBackend(): SpiceBackend {
+  let nextHandle = 1;
+  const kernels: KernelRecord[] = [];
+
+  const getKernelsOfKind = (kind: KernelKind): readonly KernelRecord[] => {
+    if (kind === "ALL") return kernels;
+    return kernels.filter((k) => k.kind === kind);
+  };
+
+  return {
+    kind: "fake",
+
+    spiceVersion: () => FAKE_SPICE_VERSION,
+
+    furnsh: (kernel: KernelSource) => {
+      const file = typeof kernel === "string" ? kernel : kernel.path;
+      const source = typeof kernel === "string" ? file : "bytes";
+
+      const kind = guessKernelKind(file);
+      const handle = nextHandle++;
+
+      kernels.push({
+        file,
+        source,
+        filtyp: kernelFiltyp(kind),
+        handle,
+        kind,
+      });
+    },
+
+    unload: (path: string) => {
+      const idx = kernels.findIndex((k) => k.file === path);
+      if (idx >= 0) {
+        kernels.splice(idx, 1);
+      }
+    },
+
+    kclear: () => {
+      kernels.length = 0;
+    },
+
+    ktotal: (kind: KernelKind = "ALL") => {
+      return getKernelsOfKind(kind).length;
+    },
+
+    kdata: (which: number, kind: KernelKind = "ALL") => {
+      const list = getKernelsOfKind(kind);
+      const k = list[which];
+      if (!k) return { found: false };
+      return {
+        found: true,
+        file: k.file,
+        filtyp: k.filtyp,
+        source: k.source,
+        handle: k.handle,
+      } satisfies Found<KernelData>;
+    },
+
+    tkvrsn: (item) => {
+      if (item !== "TOOLKIT") {
+        throw new Error(`Fake backend: unsupported tkvrsn item: ${String(item)}`);
+      }
+      return FAKE_SPICE_VERSION;
+    },
+
+    str2et: (time) => {
+      if (!isIso8601OrRfc3339Utcish(time)) {
+        throw new Error(
+          `Fake backend: str2et() only supports ISO-8601/RFC3339 timestamps (got ${JSON.stringify(time)})`,
+        );
+      }
+      const ms = Date.parse(time);
+      if (!Number.isFinite(ms)) {
+        throw new Error(`Fake backend: failed to parse time: ${JSON.stringify(time)}`);
+      }
+      return (ms - J2000_UTC_MS) / 1000;
+    },
+
+    et2utc: (et, _format, prec) => {
+      const ms = J2000_UTC_MS + et * 1000;
+      return formatUtcFromMs(ms, prec);
+    },
+
+    timout: (et, _picture) => {
+      // Picture formatting is out of scope for the fake backend; use ISO.
+      const ms = J2000_UTC_MS + et * 1000;
+      return formatUtcFromMs(ms, 3);
+    },
+
+    bodn2c: (name) => {
+      const trimmed = normalizeName(name);
+      const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
+      if (id === undefined) return { found: false };
+      return { found: true, code: id };
+    },
+
+    bodc2n: (code) => {
+      const meta = ID_TO_BODY.get(code);
+      if (!meta) return { found: false };
+      return { found: true, name: meta.name };
+    },
+
+    namfrm: (name) => {
+      const trimmed = normalizeName(name);
+      const code = FRAME_NAME_TO_CODE.get(trimmed) ?? FRAME_NAME_TO_CODE.get(trimmed.toLowerCase());
+      if (code === undefined) return { found: false };
+      return { found: true, code };
+    },
+
+    frmnam: (code) => {
+      const name = FRAME_CODE_TO_NAME.get(code);
+      if (!name) return { found: false };
+      return { found: true, name };
+    },
+
+    cidfrm: (center) => {
+      if (center === BODY_IDS.EARTH) {
+        return { found: true, frcode: FRAME_CODES.IAU_EARTH, frname: "IAU_EARTH" };
+      }
+      if (center === BODY_IDS.MOON) {
+        return { found: true, frcode: FRAME_CODES.IAU_MOON, frname: "IAU_MOON" };
+      }
+      return { found: false };
+    },
+
+    cnmfrm: (centerName) => {
+      const id = NAME_TO_ID.get(centerName) ?? NAME_TO_ID.get(centerName.toLowerCase());
+      if (id === undefined) return { found: false };
+      return (id === BODY_IDS.EARTH
+        ? { found: true, frcode: FRAME_CODES.IAU_EARTH, frname: "IAU_EARTH" }
+        : id === BODY_IDS.MOON
+          ? { found: true, frcode: FRAME_CODES.IAU_MOON, frname: "IAU_MOON" }
+          : { found: false }) satisfies Found<{ frcode: number; frname: string }>;
+    },
+
+    scs2e: (_sc, sclkch) => {
+      // Minimal deterministic stub: treat the string as a number of seconds.
+      const n = Number(sclkch);
+      return Number.isFinite(n) ? n : 0;
+    },
+
+    sce2s: (_sc, et) => {
+      // Minimal deterministic stub.
+      return String(et);
+    },
+
+    ckgp: (_inst, _sclkdp, _tol, _ref) => {
+      return { found: false };
+    },
+
+    ckgpav: (_inst, _sclkdp, _tol, _ref) => {
+      return { found: false };
+    },
+
+    pxform: (from, to, et) => {
+      const f = parseFrameName(from);
+      const t = parseFrameName(to);
+
+      const wFrom = FRAME_SPIN_RATE_RAD_PER_SEC[f];
+      const wTo = FRAME_SPIN_RATE_RAD_PER_SEC[t];
+
+      const theta = (wFrom - wTo) * et;
+      return rotZRowMajor(theta);
+    },
+
+    sxform: (from, to, et) => {
+      const f = parseFrameName(from);
+      const t = parseFrameName(to);
+      return sxformRowMajor(f, t, et);
+    },
+
+    spkezr: (target, et, ref, abcorr, observer) => {
+      // Keep these in the signature for API compatibility.
+      void (abcorr satisfies AbCorr | string);
+
+      const stateJ2000 = getRelativeStateInJ2000(target, observer, et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return { state, lt: 0 };
+    },
+
+    spkpos: (target, et, ref, abcorr, observer) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const { state } = ((): SpkezrResult => {
+        return {
+          state: getRelativeStateInJ2000(target, observer, et),
+          lt: 0,
+        };
+      })();
+
+      const outFrame = parseFrameName(ref);
+      const transformed = outFrame === "J2000"
+        ? state
+        : applyStateTransform("J2000", outFrame, et, state);
+
+      return {
+        pos: [transformed[0], transformed[1], transformed[2]],
+        lt: 0,
+      } satisfies SpkposResult;
+    },
+
+    subpnt: (_method, target, et, fixref, abcorr, observer) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const targetId = parseBodyRef(target);
+      const radius = getBodyRadiusKm(targetId);
+
+      // Position of observer relative target.
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      const frame = parseFrameName(fixref);
+      const obsPos = frame === "J2000" ? obsPosJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), obsPosJ);
+
+      const n = vhat(obsPos);
+      const spoint = vscale(radius, n);
+      const srfvec = vsub(spoint, obsPos);
+
+      return { spoint, trgepc: et, srfvec } satisfies SubPointResult;
+    },
+
+    subslr: (_method, target, et, fixref, abcorr, _observer) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const targetId = parseBodyRef(target);
+      const radius = getBodyRadiusKm(targetId);
+
+      // Position of Sun relative target.
+      const sunState = getRelativeStateInJ2000("SUN", target, et);
+      const sunPosJ = [sunState[0], sunState[1], sunState[2]] as SpiceVector3;
+
+      const frame = parseFrameName(fixref);
+      const sunPos = frame === "J2000" ? sunPosJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), sunPosJ);
+
+      const n = vhat(sunPos);
+      const spoint = vscale(radius, n);
+      const srfvec = vsub(spoint, sunPos);
+
+      return { spoint, trgepc: et, srfvec } satisfies SubPointResult;
+    },
+
+    sincpt: (_method, _target, _et, _fixref, _abcorr, _observer, _dref, _dvec) => {
+      return { found: false };
+    },
+
+    ilumin: (_method, target, et, fixref, abcorr, observer, spoint) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const frame = parseFrameName(fixref);
+      const inv = rotZRowMajor(FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et);
+
+      const spointJ = frame === "J2000" ? spoint : mxv(inv, spoint);
+
+      const sunState = getRelativeStateInJ2000("SUN", target, et);
+      const sunPosJ = [sunState[0], sunState[1], sunState[2]] as SpiceVector3;
+
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      // Vectors from surface point.
+      const srfToSunJ = vsub(sunPosJ, spointJ);
+      const srfToObsJ = vsub(obsPosJ, spointJ);
+
+      const normalJ = vhat(spointJ);
+
+      const phase = angleBetween(srfToSunJ, srfToObsJ);
+      const incdnc = angleBetween(normalJ, srfToSunJ);
+      const emissn = angleBetween(normalJ, srfToObsJ);
+
+      const srfvecJ = vsub(spointJ, obsPosJ);
+
+      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+
+      return {
+        trgepc: et,
+        srfvec,
+        phase,
+        incdnc,
+        emissn,
+      } satisfies IluminResult;
+    },
+
+    occult: (
+      _targ1,
+      _shape1,
+      _frame1,
+      _targ2,
+      _shape2,
+      _frame2,
+      abcorr,
+      _observer,
+      _et,
+    ) => {
+      void (abcorr satisfies AbCorr | string);
+      // Deterministic stub: 0 => "no occultation".
+      return 0;
+    },
+
+    reclat: (rect) => {
+      const x = rect[0];
+      const y = rect[1];
+      const z = rect[2];
+      const radius = vnorm(rect);
+      const lon = Math.atan2(y, x);
+      const lat = radius === 0 ? 0 : Math.asin(clamp(z / radius, -1, 1));
+      return { radius, lon, lat };
+    },
+
+    latrec: (radius, lon, lat) => {
+      const clat = Math.cos(lat);
+      return [
+        radius * clat * Math.cos(lon),
+        radius * clat * Math.sin(lon),
+        radius * Math.sin(lat),
+      ];
+    },
+
+    recsph: (rect) => {
+      const x = rect[0];
+      const y = rect[1];
+      const z = rect[2];
+      const radius = vnorm(rect);
+      const lon = Math.atan2(y, x);
+      const colat = radius === 0 ? 0 : Math.acos(clamp(z / radius, -1, 1));
+      return { radius, colat, lon };
+    },
+
+    sphrec: (radius, colat, lon) => {
+      const slat = Math.sin(Math.PI / 2 - colat);
+      const clat = Math.cos(Math.PI / 2 - colat);
+      return [
+        radius * clat * Math.cos(lon),
+        radius * clat * Math.sin(lon),
+        radius * slat,
+      ];
+    },
+
+    vnorm: (v) => vnorm(v),
+    vhat: (v) => vhat(v),
+    vdot: (a, b) => vdot(a, b),
+    vcrss: (a, b) => vcrss(a, b),
+
+    mxv: (m, v) => mxv(m, v),
+    mtxv: (m, v) => mtxv(m, v),
+  };
+}

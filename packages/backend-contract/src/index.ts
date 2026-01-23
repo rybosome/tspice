@@ -1,4 +1,4 @@
-export const BACKEND_KINDS = ["node", "wasm"] as const;
+export const BACKEND_KINDS = ["node", "wasm", "fake"] as const;
 
 export type BackendKind = (typeof BACKEND_KINDS)[number];
 

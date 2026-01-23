@@ -4,6 +4,6 @@ import { BACKEND_KINDS } from "@rybosome/tspice-backend-contract";
 
 describe("@rybosome/tspice-backend-contract", () => {
   it("exports backend kinds", () => {
-    expect(BACKEND_KINDS).toEqual(["node", "wasm"]);
+    expect(BACKEND_KINDS).toEqual(["node", "wasm", "fake"]);
   });
 });

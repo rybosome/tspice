@@ -20,10 +20,19 @@ export function SceneCanvas() {
     const search = new URLSearchParams(window.location.search)
     const isE2e = search.has('e2e')
     const et: EtSeconds = Number(search.get('et') ?? 0)
+    const backend = search.get('backend')
 
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
+
+    let disposed = false
+
+    // Resource cleanup lists.
+    const meshes: THREE.Mesh[] = []
+    const geometries: THREE.BufferGeometry[] = []
+    const materials: THREE.Material[] = []
+    const helpers: Array<THREE.Object3D> = []
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -49,86 +58,6 @@ export function SceneCanvas() {
     dir.position.set(4, 6, 2)
     scene.add(dir)
 
-    // New PR abstractions (SpiceClient + SceneModel) driving the rendered scene.
-    const spiceClient = new FakeSpiceClient()
-    const sceneModel: SceneModel = {
-      frame: J2000_FRAME,
-      observer: 'EARTH',
-      bodies: [
-        {
-          body: 'EARTH',
-          style: { radiusKm: 6_371, color: '#2a9d8f', label: 'Earth' },
-        },
-        {
-          body: 'MOON',
-          style: { radiusKm: 1_737.4, color: '#e9c46a', label: 'Moon' },
-        },
-      ],
-    }
-
-    const kmToWorld = 1 / 1_000_000
-    const radiusScale = 50
-
-    const meshes: THREE.Mesh[] = []
-    const geometries: THREE.BufferGeometry[] = []
-    const materials: THREE.Material[] = []
-
-    for (const body of sceneModel.bodies) {
-      const state = spiceClient.getBodyState({
-        target: body.body,
-        observer: sceneModel.observer,
-        frame: sceneModel.frame,
-        et,
-      })
-
-      const radiusWorld = body.style.radiusKm * kmToWorld * radiusScale
-      const geometry = new THREE.SphereGeometry(radiusWorld, 48, 24)
-      const material = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(body.style.color),
-        roughness: 0.9,
-        metalness: 0.0,
-      })
-
-      const mesh = new THREE.Mesh(geometry, material)
-      mesh.position.set(
-        state.positionKm[0] * kmToWorld,
-        state.positionKm[1] * kmToWorld,
-        state.positionKm[2] * kmToWorld
-      )
-
-      meshes.push(mesh)
-      geometries.push(geometry)
-      materials.push(material)
-      scene.add(mesh)
-    }
-
-    // Use the (fake) Sun vector to orient lighting deterministically.
-    const sunState = spiceClient.getBodyState({
-      target: 'SUN',
-      observer: sceneModel.observer,
-      frame: sceneModel.frame,
-      et,
-    })
-    const sunDir = new THREE.Vector3(
-      sunState.positionKm[0],
-      sunState.positionKm[1],
-      sunState.positionKm[2]
-    ).normalize()
-    dir.position.set(sunDir.x * 10, sunDir.y * 10, sunDir.z * 10)
-
-    // Basic orientation helpers are great for local dev, but they introduce
-    // lots of thin lines that can make visual snapshots flaky.
-    const helpers: Array<THREE.Object3D> = []
-    if (!isE2e) {
-      const grid = new THREE.GridHelper(10, 10)
-      scene.add(grid)
-      helpers.push(grid)
-
-      const axes = new THREE.AxesHelper(2)
-      scene.add(axes)
-      helpers.push(axes)
-    }
-
     const resize = () => {
       const width = container.clientWidth
       const height = container.clientHeight
@@ -144,13 +73,115 @@ export function SceneCanvas() {
     const resizeObserver = new ResizeObserver(resize)
     resizeObserver.observe(container)
 
-    resize()
-    renderer.render(scene, camera)
+    void (async () => {
+      try {
+        const spiceClient =
+          backend === 'fake'
+            ? await (async () => {
+                const [{ createSpice }, { createFakeBackend }, { TspiceSpiceClient }] =
+                  await Promise.all([
+                    import('@rybosome/tspice'),
+                    import('@rybosome/tspice-backend-fake'),
+                    import('./spice/TspiceSpiceClient.js'),
+                  ])
 
-    // Signals to Playwright tests that the WebGL scene has been rendered.
-    ;(window as any).__tspice_viewer__rendered_scene = true
+                const spice = await createSpice({
+                  backendInstance: createFakeBackend(),
+                })
+
+                return new TspiceSpiceClient(spice)
+              })()
+            : new FakeSpiceClient()
+
+        if (disposed) return
+
+        // New PR abstractions (SpiceClient + SceneModel) driving the rendered scene.
+        const sceneModel: SceneModel = {
+          frame: J2000_FRAME,
+          observer: 'EARTH',
+          bodies: [
+            {
+              body: 'EARTH',
+              style: { radiusKm: 6_371, color: '#2a9d8f', label: 'Earth' },
+            },
+            {
+              body: 'MOON',
+              style: { radiusKm: 1_737.4, color: '#e9c46a', label: 'Moon' },
+            },
+          ],
+        }
+
+        const kmToWorld = 1 / 1_000_000
+        const radiusScale = 50
+
+        for (const body of sceneModel.bodies) {
+          const state = spiceClient.getBodyState({
+            target: body.body,
+            observer: sceneModel.observer,
+            frame: sceneModel.frame,
+            et,
+          })
+
+          const radiusWorld = body.style.radiusKm * kmToWorld * radiusScale
+          const geometry = new THREE.SphereGeometry(radiusWorld, 48, 24)
+          const material = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(body.style.color),
+            roughness: 0.9,
+            metalness: 0.0,
+          })
+
+          const mesh = new THREE.Mesh(geometry, material)
+          mesh.position.set(
+            state.positionKm[0] * kmToWorld,
+            state.positionKm[1] * kmToWorld,
+            state.positionKm[2] * kmToWorld
+          )
+
+          meshes.push(mesh)
+          geometries.push(geometry)
+          materials.push(material)
+          scene.add(mesh)
+        }
+
+        // Use the (fake) Sun vector to orient lighting deterministically.
+        const sunState = spiceClient.getBodyState({
+          target: 'SUN',
+          observer: sceneModel.observer,
+          frame: sceneModel.frame,
+          et,
+        })
+        const sunDir = new THREE.Vector3(
+          sunState.positionKm[0],
+          sunState.positionKm[1],
+          sunState.positionKm[2]
+        ).normalize()
+        dir.position.set(sunDir.x * 10, sunDir.y * 10, sunDir.z * 10)
+
+        // Basic orientation helpers are great for local dev, but they introduce
+        // lots of thin lines that can make visual snapshots flaky.
+        if (!isE2e) {
+          const grid = new THREE.GridHelper(10, 10)
+          scene.add(grid)
+          helpers.push(grid)
+
+          const axes = new THREE.AxesHelper(2)
+          scene.add(axes)
+          helpers.push(axes)
+        }
+
+        resize()
+        renderer.render(scene, camera)
+
+        // Signals to Playwright tests that the WebGL scene has been rendered.
+        ;(window as any).__tspice_viewer__rendered_scene = true
+      } catch (err) {
+        // Surface initialization failures to the console so e2e tests can catch them.
+        console.error(err)
+      }
+    })()
 
     return () => {
+      disposed = true
       resizeObserver.disconnect()
 
       for (const helper of helpers) {
