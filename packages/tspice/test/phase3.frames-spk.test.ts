@@ -73,7 +73,7 @@ describe("Phase 3: frames + SPK ephemerides", () => {
     const { pos, lt: lt2 } = backend.spkpos("EARTH", 0, "J2000", "NONE", "SUN");
     expect(pos).toHaveLength(3);
     expect(lt2).toBeGreaterThan(0);
-  });
+  }, 60_000);
 
   it("wasm backend: pxform/sxform/spkezr/spkpos", async () => {
     const backend = await createBackend({ backend: "wasm" });

@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 import { createBackend } from "@rybosome/tspice";
 
 import { ensureKernelFile } from "./helpers/kernels.js";
+import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,7 +21,7 @@ const PCK = {
 } as const;
 
 describe("Phase 2: IDs / names", () => {
-  const itNode = it.runIf(process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: bodn2c/bodc2n/namfrm/frmnam/cidfrm/cnmfrm", async () => {
     const backend = await createBackend({ backend: "node" });
