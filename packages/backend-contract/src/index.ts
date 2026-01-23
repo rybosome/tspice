@@ -119,6 +119,28 @@ export type SpkposResult = {
   lt: number;
 };
 
+export type SubPointResult = {
+  /** Sub-point on target body surface, expressed in `fixref` at `trgepc`. */
+  spoint: SpiceVector3;
+  /** Target epoch associated with `spoint`, in seconds past J2000 TDB. */
+  trgepc: number;
+  /** Vector from observer to `spoint`, expressed in `fixref` at `trgepc`. */
+  srfvec: SpiceVector3;
+};
+
+export type IluminResult = {
+  /** Target epoch associated with `spoint`, in seconds past J2000 TDB. */
+  trgepc: number;
+  /** Vector from observer to `spoint`, expressed in `fixref` at `trgepc`. */
+  srfvec: SpiceVector3;
+  /** Phase angle at `spoint`, radians. */
+  phase: number;
+  /** Solar incidence angle at `spoint`, radians. */
+  incdnc: number;
+  /** Emission angle at `spoint`, radians. */
+  emissn: number;
+};
+
 export interface SpiceBackend {
   kind: BackendKind;
   spiceVersion(): string;
@@ -226,6 +248,64 @@ export interface SpiceBackend {
     abcorr: AbCorr | string,
     observer: string,
   ): SpkposResult;
+
+  // --- Derived geometry primitives ---
+
+  /** Compute the sub-observer point on a target body's surface. */
+  subpnt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    observer: string,
+  ): SubPointResult;
+
+  /** Compute the sub-solar point on a target body's surface. */
+  subslr(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    observer: string,
+  ): SubPointResult;
+
+  /** Compute the surface intercept point of a ray. */
+  sincpt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    observer: string,
+    dref: string,
+    dvec: SpiceVector3,
+  ): Found<SubPointResult>;
+
+  /** Compute illumination angles at a surface point. */
+  ilumin(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    observer: string,
+    spoint: SpiceVector3,
+  ): IluminResult;
+
+  /** Determine the occultation condition code for one target vs another. */
+  occult(
+    targ1: string,
+    shape1: string,
+    frame1: string,
+    targ2: string,
+    shape2: string,
+    frame2: string,
+    abcorr: AbCorr | string,
+    observer: string,
+    et: number,
+  ): number;
 
   // --- Phase 6: coordinate conversions + small vector/matrix helpers ---
 

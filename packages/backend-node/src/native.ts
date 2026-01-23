@@ -58,6 +58,57 @@ export type NativeAddon = {
     abcorr: string,
     obs: string
   ): { pos: number[]; lt: number };
+
+  subpnt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+  ): { spoint: number[]; trgepc: number; srfvec: number[] };
+
+  subslr(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+  ): { spoint: number[]; trgepc: number; srfvec: number[] };
+
+  sincpt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+    dref: string,
+    dvec: number[],
+  ): { found: boolean; spoint?: number[]; trgepc?: number; srfvec?: number[] };
+
+  ilumin(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+    spoint: number[],
+  ): { trgepc: number; srfvec: number[]; phase: number; incdnc: number; emissn: number };
+
+  occult(
+    targ1: string,
+    shape1: string,
+    frame1: string,
+    targ2: string,
+    shape2: string,
+    frame2: string,
+    abcorr: string,
+    observer: string,
+    et: number,
+  ): number;
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
