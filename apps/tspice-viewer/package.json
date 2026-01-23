@@ -8,9 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "e2e": "playwright test",
+    "test:e2e": "pnpm run e2e",
     "e2e:ui": "playwright test --ui",
     "typecheck": "node -e \"require('node:fs').mkdirSync('dist',{recursive:true})\" && tsc -p tsconfig.typecheck.json --noEmit --incremental --tsBuildInfoFile dist/.tsbuildinfo",
-    "test": "vitest run && pnpm run e2e"
+    "test": "vitest run"
   },
   "dependencies": {
     "react": "^19.2.0",
