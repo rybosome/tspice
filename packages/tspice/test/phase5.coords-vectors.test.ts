@@ -33,6 +33,8 @@ describe("Phase 5: coordinate conversions + vector/matrix helpers", () => {
     // vector helpers
     expect(backend.vnorm([3, 4, 0])).toBeCloseTo(5, 12);
     expectVec3Close(backend.vhat([3, 0, 0]), [1, 0, 0]);
+
+    // vhat: NAIF defines vhat([0, 0, 0]) = [0, 0, 0] (no throw)
     expectVec3Close(backend.vhat([0, 0, 0]), [0, 0, 0]);
     expect(backend.vdot([1, 2, 3], [4, 5, 6])).toBe(32);
     expectVec3Close(backend.vcrss([1, 0, 0], [0, 1, 0]), [0, 0, 1]);
