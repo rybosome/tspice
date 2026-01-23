@@ -1458,46 +1458,7 @@ export async function createWasmBackend(
     );
   }
 
-  // In Node, `fetch(file://...)` is not guaranteed to work, and Emscripten may
-  // still attempt it depending on toolchain output. Provide `wasmBinary` so the
-  // module can instantiate without needing fetch.
-  let wasmBinary: Uint8Array | undefined;
-  let wasmLocator = wasmUrl;
-  let restoreFetch: (() => void) | undefined;
-  try {
-    const wasmUrlObj = new URL(wasmUrl);
-    if (wasmUrlObj.protocol === "file:") {
-      const [{ readFile }, { fileURLToPath }] = await Promise.all([
-        import("node:fs/promises"),
-        import("node:url"),
-      ]);
-      wasmLocator = fileURLToPath(wasmUrlObj);
-      const bytes = await readFile(wasmLocator);
-      wasmBinary = bytes;
-
-      // Some Emscripten builds (and some Node versions) attempt to fetch the WASM
-      // via `fetch(file://...)`, which fails by default. Provide a narrow
-      // polyfill for the duration of module initialization.
-      const originalFetch = globalThis.fetch;
-      if (typeof originalFetch === "function") {
-        globalThis.fetch = (async (input: any, init?: any) => {
-          const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-          if (url.startsWith("file://")) {
-            const path = fileURLToPath(url);
-            const fileBytes = await readFile(path);
-            return new Response(fileBytes);
-          }
-          return originalFetch(input, init);
-        }) as any;
-
-        restoreFetch = () => {
-          globalThis.fetch = originalFetch;
-        };
-      }
-    }
-  } catch {
-    // Best-effort only: if we can't pre-read, let Emscripten try its own loading path.
-  }
+  const wasmLocator = wasmUrl;
 
   let module: EmscriptenModule;
   try {
@@ -1508,14 +1469,11 @@ export async function createWasmBackend(
         }
         return `${prefix}${path}`;
       },
-      wasmBinary,
     })) as EmscriptenModule;
   } catch (error) {
     throw new Error(
       `Failed to initialize tspice WASM module (wasmUrl=${wasmUrl}): ${String(error)}`,
     );
-  } finally {
-    restoreFetch?.();
   }
 
   if (
