@@ -168,6 +168,31 @@ export interface SpiceBackend {
    */
   timout(et: number, picture: string): string;
 
+  // --- Phase 4 SCLK conversion + CK pointing ---
+
+  /** Convert an SCLK string to ET seconds past J2000. */
+  scs2e(sc: number, sclkch: string): number;
+
+  /** Convert ET seconds past J2000 to an SCLK string. */
+  sce2s(sc: number, et: number): string;
+
+  /**
+   * Point an instrument using an encoded SCLK, returning a rotation matrix and
+   * the actual SCLK time used.
+   */
+  ckgp(inst: number, sclkdp: number, tol: number, ref: string): Found<{ cmat: SpiceMatrix3x3; clkout: number }>;
+
+  /**
+   * Point an instrument using an encoded SCLK, returning a rotation matrix,
+   * angular velocity, and the actual SCLK time used.
+   */
+  ckgpav(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    ref: string,
+  ): Found<{ cmat: SpiceMatrix3x3; av: SpiceVector3; clkout: number }>;
+
   // --- Phase 4 IDs / names ---
 
   bodn2c(name: string): Found<{ code: number }>;

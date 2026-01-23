@@ -281,6 +281,52 @@ static Napi::String Timout(const Napi::CallbackInfo& info) {
   return Napi::String::New(env, out);
 }
 
+static Napi::Number Scs2e(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "scs2e(sc: number, sclkch: string) expects (number, string)"));
+    return Napi::Number::New(env, 0);
+  }
+
+  const int sc = info[0].As<Napi::Number>().Int32Value();
+  const std::string sclkch = info[1].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  char err[kErrMaxBytes];
+  double et = 0.0;
+  const int code = tspice_scs2e(sc, sclkch.c_str(), &et, err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling scs2e", err);
+    return Napi::Number::New(env, 0);
+  }
+
+  return Napi::Number::New(env, et);
+}
+
+static Napi::String Sce2s(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sce2s(sc: number, et: number) expects (number, number)"));
+    return Napi::String::New(env, "");
+  }
+
+  const int sc = info[0].As<Napi::Number>().Int32Value();
+  const double et = info[1].As<Napi::Number>().DoubleValue();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  char err[kErrMaxBytes];
+  char out[kOutMaxBytes];
+  const int code = tspice_sce2s(sc, et, out, (int)sizeof(out), err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling sce2s", err);
+    return Napi::String::New(env, "");
+  }
+
+  return Napi::String::New(env, out);
+}
+
 static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -589,6 +635,84 @@ static Napi::Array Sxform(const Napi::CallbackInfo& info) {
   return MakeNumberArray(env, m, 36);
 }
 
+static Napi::Object Ckgp(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 4 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber() ||
+      !info[3].IsString()) {
+    ThrowSpiceError(
+      Napi::TypeError::New(env, "ckgp(inst: number, sclkdp: number, tol: number, ref: string) expects (number, number, number, string)")
+    );
+    return Napi::Object::New(env);
+  }
+
+  const int inst = info[0].As<Napi::Number>().Int32Value();
+  const double sclkdp = info[1].As<Napi::Number>().DoubleValue();
+  const double tol = info[2].As<Napi::Number>().DoubleValue();
+  const std::string ref = info[3].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  char err[kErrMaxBytes];
+  double cmat[9] = {0};
+  double clkout = 0.0;
+  int found = 0;
+  const int code = tspice_ckgp(inst, sclkdp, tol, ref.c_str(), cmat, &clkout, &found, err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling ckgp", err);
+    return Napi::Object::New(env);
+  }
+
+  if (!found) {
+    return MakeNotFound(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("cmat", MakeNumberArray(env, cmat, 9));
+  result.Set("clkout", Napi::Number::New(env, clkout));
+  return result;
+}
+
+static Napi::Object Ckgpav(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 4 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber() ||
+      !info[3].IsString()) {
+    ThrowSpiceError(
+      Napi::TypeError::New(env, "ckgpav(inst: number, sclkdp: number, tol: number, ref: string) expects (number, number, number, string)")
+    );
+    return Napi::Object::New(env);
+  }
+
+  const int inst = info[0].As<Napi::Number>().Int32Value();
+  const double sclkdp = info[1].As<Napi::Number>().DoubleValue();
+  const double tol = info[2].As<Napi::Number>().DoubleValue();
+  const std::string ref = info[3].As<Napi::String>().Utf8Value();
+
+  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  char err[kErrMaxBytes];
+  double cmat[9] = {0};
+  double av[3] = {0};
+  double clkout = 0.0;
+  int found = 0;
+  const int code = tspice_ckgpav(inst, sclkdp, tol, ref.c_str(), cmat, av, &clkout, &found, err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling ckgpav", err);
+    return Napi::Object::New(env);
+  }
+
+  if (!found) {
+    return MakeNotFound(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("cmat", MakeNumberArray(env, cmat, 9));
+  result.Set("av", MakeNumberArray(env, av, 3));
+  result.Set("clkout", Napi::Number::New(env, clkout));
+  return result;
+}
+
 static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("spiceVersion", Napi::Function::New(env, SpiceVersion));
   exports.Set("furnsh", Napi::Function::New(env, Furnsh));
@@ -600,6 +724,8 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("str2et", Napi::Function::New(env, Str2et));
   exports.Set("et2utc", Napi::Function::New(env, Et2utc));
   exports.Set("timout", Napi::Function::New(env, Timout));
+  exports.Set("scs2e", Napi::Function::New(env, Scs2e));
+  exports.Set("sce2s", Napi::Function::New(env, Sce2s));
   exports.Set("bodn2c", Napi::Function::New(env, Bodn2c));
   exports.Set("bodc2n", Napi::Function::New(env, Bodc2n));
   exports.Set("namfrm", Napi::Function::New(env, Namfrm));
@@ -610,6 +736,8 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("spkpos", Napi::Function::New(env, Spkpos));
   exports.Set("pxform", Napi::Function::New(env, Pxform));
   exports.Set("sxform", Napi::Function::New(env, Sxform));
+  exports.Set("ckgp", Napi::Function::New(env, Ckgp));
+  exports.Set("ckgpav", Napi::Function::New(env, Ckgpav));
   return exports;
 }
 

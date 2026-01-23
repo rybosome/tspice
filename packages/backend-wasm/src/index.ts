@@ -73,6 +73,39 @@ type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_scs2e(sc: number, sclkchPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_sce2s(
+    sc: number,
+    et: number,
+    outSclkchPtr: number,
+    outSclkchMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckgp(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    refPtr: number,
+    outCmatPtr: number,
+    outClkoutPtr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckgpav(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    refPtr: number,
+    outCmatPtr: number,
+    outAvPtr: number,
+    outClkoutPtr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_bodn2c(namePtr: number, outCodePtr: number, foundPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_bodc2n(
     code: number,
@@ -421,6 +454,185 @@ function tspiceCallTimout(module: EmscriptenModule, et: number, picture: string)
   } finally {
     module._free(outPtr);
     module._free(picturePtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallScs2e(module: EmscriptenModule, sc: number, sclkch: string): number {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const sclkchPtr = writeUtf8CString(module, sclkch);
+  const outEtPtr = module._malloc(8);
+
+  if (!errPtr || !sclkchPtr || !outEtPtr) {
+    for (const ptr of [outEtPtr, sclkchPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64[outEtPtr >> 3] = 0;
+    const result = module._tspice_scs2e(sc, sclkchPtr, outEtPtr, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    return module.HEAPF64[outEtPtr >> 3] ?? 0;
+  } finally {
+    module._free(outEtPtr);
+    module._free(sclkchPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallSce2s(module: EmscriptenModule, sc: number, et: number): string {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+
+  // Buffer size includes terminating NUL.
+  const outMaxBytes = 256;
+  const outPtr = module._malloc(outMaxBytes);
+
+  if (!errPtr || !outPtr) {
+    for (const ptr of [outPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPU8[outPtr] = 0;
+    const result = module._tspice_sce2s(sc, et, outPtr, outMaxBytes, errPtr, errMaxBytes);
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+    return module.UTF8ToString(outPtr, outMaxBytes).trim();
+  } finally {
+    module._free(outPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallCkgp(
+  module: EmscriptenModule,
+  inst: number,
+  sclkdp: number,
+  tol: number,
+  ref: string,
+): Found<{ cmat: SpiceMatrix3x3; clkout: number }> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const refPtr = writeUtf8CString(module, ref);
+  const outCmatPtr = module._malloc(9 * 8);
+  const outClkoutPtr = module._malloc(8);
+  const outFoundPtr = module._malloc(4);
+
+  if (!errPtr || !refPtr || !outCmatPtr || !outClkoutPtr || !outFoundPtr) {
+    for (const ptr of [outFoundPtr, outClkoutPtr, outCmatPtr, refPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64[outClkoutPtr >> 3] = 0;
+    module.HEAP32[outFoundPtr >> 2] = 0;
+
+    const result = module._tspice_ckgp(
+      inst,
+      sclkdp,
+      tol,
+      refPtr,
+      outCmatPtr,
+      outClkoutPtr,
+      outFoundPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+
+    const found = (module.HEAP32[outFoundPtr >> 2] ?? 0) !== 0;
+    if (!found) {
+      return { found: false };
+    }
+
+    const cmat = Array.from(
+      module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
+    ) as unknown as SpiceMatrix3x3;
+    const clkout = module.HEAPF64[outClkoutPtr >> 3] ?? 0;
+    return { found: true, cmat, clkout };
+  } finally {
+    module._free(outFoundPtr);
+    module._free(outClkoutPtr);
+    module._free(outCmatPtr);
+    module._free(refPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallCkgpav(
+  module: EmscriptenModule,
+  inst: number,
+  sclkdp: number,
+  tol: number,
+  ref: string,
+): Found<{ cmat: SpiceMatrix3x3; av: SpiceVector3; clkout: number }> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const refPtr = writeUtf8CString(module, ref);
+  const outCmatPtr = module._malloc(9 * 8);
+  const outAvPtr = module._malloc(3 * 8);
+  const outClkoutPtr = module._malloc(8);
+  const outFoundPtr = module._malloc(4);
+
+  if (!errPtr || !refPtr || !outCmatPtr || !outAvPtr || !outClkoutPtr || !outFoundPtr) {
+    for (const ptr of [outFoundPtr, outClkoutPtr, outAvPtr, outCmatPtr, refPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPF64[outClkoutPtr >> 3] = 0;
+    module.HEAP32[outFoundPtr >> 2] = 0;
+
+    const result = module._tspice_ckgpav(
+      inst,
+      sclkdp,
+      tol,
+      refPtr,
+      outCmatPtr,
+      outAvPtr,
+      outClkoutPtr,
+      outFoundPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+
+    const found = (module.HEAP32[outFoundPtr >> 2] ?? 0) !== 0;
+    if (!found) {
+      return { found: false };
+    }
+
+    const cmat = Array.from(
+      module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
+    ) as unknown as SpiceMatrix3x3;
+    const av = Array.from(
+      module.HEAPF64.subarray(outAvPtr >> 3, (outAvPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
+    const clkout = module.HEAPF64[outClkoutPtr >> 3] ?? 0;
+    return { found: true, cmat, av, clkout };
+  } finally {
+    module._free(outFoundPtr);
+    module._free(outClkoutPtr);
+    module._free(outAvPtr);
+    module._free(outCmatPtr);
+    module._free(refPtr);
     module._free(errPtr);
   }
 }
@@ -840,14 +1052,27 @@ export async function createWasmBackend(
 
   let module: EmscriptenModule;
   try {
-    module = (await createEmscriptenModule({
+    const emscriptenOpts: Record<string, unknown> = {
       locateFile(path: string, prefix: string) {
         if (path === WASM_BINARY_FILENAME) {
           return wasmUrl;
         }
         return `${prefix}${path}`;
       },
-    })) as EmscriptenModule;
+    };
+
+    // In newer Node versions, `fetch` exists but does not support `file://` URLs.
+    // Providing `wasmBinary` avoids Emscripten trying to fetch the WASM binary.
+    const isNode = typeof process !== "undefined" && !!process.versions?.node;
+    if (isNode && wasmUrl.startsWith("file:")) {
+      const [{ readFileSync }, { fileURLToPath }] = await Promise.all([
+        import("node:fs"),
+        import("node:url"),
+      ]);
+      emscriptenOpts.wasmBinary = readFileSync(fileURLToPath(wasmUrl));
+    }
+
+    module = (await createEmscriptenModule(emscriptenOpts)) as EmscriptenModule;
   } catch (error) {
     throw new Error(
       `Failed to initialize tspice WASM module (wasmUrl=${wasmUrl}): ${String(error)}`,
@@ -867,6 +1092,10 @@ export async function createWasmBackend(
     typeof module._tspice_str2et !== "function" ||
     typeof module._tspice_et2utc !== "function" ||
     typeof module._tspice_timout !== "function" ||
+    typeof module._tspice_scs2e !== "function" ||
+    typeof module._tspice_sce2s !== "function" ||
+    typeof module._tspice_ckgp !== "function" ||
+    typeof module._tspice_ckgpav !== "function" ||
     typeof module._tspice_bodn2c !== "function" ||
     typeof module._tspice_bodc2n !== "function" ||
     typeof module._tspice_namfrm !== "function" ||
@@ -944,6 +1173,22 @@ export async function createWasmBackend(
 
     timout(et: number, picture: string) {
       return tspiceCallTimout(module, et, picture);
+    },
+
+    scs2e(sc: number, sclkch: string) {
+      return tspiceCallScs2e(module, sc, sclkch);
+    },
+
+    sce2s(sc: number, et: number) {
+      return tspiceCallSce2s(module, sc, et);
+    },
+
+    ckgp(inst: number, sclkdp: number, tol: number, ref: string) {
+      return tspiceCallCkgp(module, inst, sclkdp, tol, ref);
+    },
+
+    ckgpav(inst: number, sclkdp: number, tol: number, ref: string) {
+      return tspiceCallCkgpav(module, inst, sclkdp, tol, ref);
     },
 
     // Phase 2

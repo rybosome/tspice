@@ -37,6 +37,10 @@ export function createNodeBackend(): SpiceBackend {
   invariant(typeof native.str2et === "function", "Expected native addon to export str2et(time)");
   invariant(typeof native.et2utc === "function", "Expected native addon to export et2utc(et, format, prec)");
   invariant(typeof native.timout === "function", "Expected native addon to export timout(et, picture)");
+  invariant(typeof native.scs2e === "function", "Expected native addon to export scs2e(sc, sclkch)");
+  invariant(typeof native.sce2s === "function", "Expected native addon to export sce2s(sc, et)");
+  invariant(typeof native.ckgp === "function", "Expected native addon to export ckgp(inst, sclkdp, tol, ref)");
+  invariant(typeof native.ckgpav === "function", "Expected native addon to export ckgpav(inst, sclkdp, tol, ref)");
   invariant(typeof native.bodn2c === "function", "Expected native addon to export bodn2c(name)");
   invariant(typeof native.bodc2n === "function", "Expected native addon to export bodc2n(code)");
   invariant(typeof native.namfrm === "function", "Expected native addon to export namfrm(name)");
@@ -170,6 +174,41 @@ export function createNodeBackend(): SpiceBackend {
     },
     timout: (et, picture) => {
       return native.timout(et, picture);
+    },
+
+    scs2e: (sc, sclkch) => {
+      const et = native.scs2e(sc, sclkch);
+      invariant(typeof et === "number", "Expected scs2e() to return a number");
+      return et;
+    },
+    sce2s: (sc, et) => {
+      const sclkch = native.sce2s(sc, et);
+      invariant(typeof sclkch === "string", "Expected sce2s() to return a string");
+      return sclkch;
+    },
+    ckgp: (inst, sclkdp, tol, ref) => {
+      const out = native.ckgp(inst, sclkdp, tol, ref);
+      if (!out.found) {
+        return { found: false };
+      }
+      invariant(Array.isArray(out.cmat) && out.cmat.length === 9, "Expected ckgp().cmat to be a length-9 array");
+      invariant(typeof out.clkout === "number", "Expected ckgp().clkout to be a number");
+      return { found: true, cmat: out.cmat as SpiceMatrix3x3, clkout: out.clkout };
+    },
+    ckgpav: (inst, sclkdp, tol, ref) => {
+      const out = native.ckgpav(inst, sclkdp, tol, ref);
+      if (!out.found) {
+        return { found: false };
+      }
+      invariant(Array.isArray(out.cmat) && out.cmat.length === 9, "Expected ckgpav().cmat to be a length-9 array");
+      invariant(Array.isArray(out.av) && out.av.length === 3, "Expected ckgpav().av to be a length-3 array");
+      invariant(typeof out.clkout === "number", "Expected ckgpav().clkout to be a number");
+      return {
+        found: true,
+        cmat: out.cmat as SpiceMatrix3x3,
+        av: out.av as SpiceVector3,
+        clkout: out.clkout,
+      };
     },
 
     bodn2c: (name) => {

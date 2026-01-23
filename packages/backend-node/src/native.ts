@@ -18,6 +18,22 @@ export type NativeAddon = {
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;
 
+  // Phase 4
+  scs2e(sc: number, sclkch: string): number;
+  sce2s(sc: number, et: number): string;
+  ckgp(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    ref: string,
+  ): { found: boolean; cmat?: number[]; clkout?: number };
+  ckgpav(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    ref: string,
+  ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
+
   // Phase 2
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
