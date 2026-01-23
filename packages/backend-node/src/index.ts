@@ -49,6 +49,16 @@ export function createNodeBackend(): SpiceBackend {
   invariant(typeof native.ckgpav === "function", "Expected native addon to export ckgpav(inst, sclkdp, tol, ref)");
   invariant(typeof native.pxform === "function", "Expected native addon to export pxform(from, to, et)");
   invariant(typeof native.sxform === "function", "Expected native addon to export sxform(from, to, et)");
+  invariant(typeof native.reclat === "function", "Expected native addon to export reclat(rect)");
+  invariant(typeof native.latrec === "function", "Expected native addon to export latrec(radius, lon, lat)");
+  invariant(typeof native.recsph === "function", "Expected native addon to export recsph(rect)");
+  invariant(typeof native.sphrec === "function", "Expected native addon to export sphrec(radius, colat, lon)");
+  invariant(typeof native.vnorm === "function", "Expected native addon to export vnorm(v)");
+  invariant(typeof native.vhat === "function", "Expected native addon to export vhat(v)");
+  invariant(typeof native.vdot === "function", "Expected native addon to export vdot(a, b)");
+  invariant(typeof native.vcrss === "function", "Expected native addon to export vcrss(a, b)");
+  invariant(typeof native.mxv === "function", "Expected native addon to export mxv(m, v)");
+  invariant(typeof native.mtxv === "function", "Expected native addon to export mtxv(m, v)");
   invariant(
     typeof native.spkezr === "function",
     "Expected native addon to export spkezr(target, et, ref, abcorr, observer)",
@@ -297,6 +307,72 @@ export function createNodeBackend(): SpiceBackend {
       const pos = out.pos as SpiceVector3;
       const result: SpkposResult = { pos, lt: out.lt };
       return result;
+    },
+
+    reclat: (rect) => {
+      const out = native.reclat(rect);
+      invariant(out && typeof out === "object", "Expected reclat() to return an object");
+      invariant(typeof out.radius === "number", "Expected reclat().radius to be a number");
+      invariant(typeof out.lon === "number", "Expected reclat().lon to be a number");
+      invariant(typeof out.lat === "number", "Expected reclat().lat to be a number");
+      return { radius: out.radius, lon: out.lon, lat: out.lat };
+    },
+
+    latrec: (radius, lon, lat) => {
+      const out = native.latrec(radius, lon, lat);
+      invariant(Array.isArray(out) && out.length === 3, "Expected latrec() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    recsph: (rect) => {
+      const out = native.recsph(rect);
+      invariant(out && typeof out === "object", "Expected recsph() to return an object");
+      invariant(typeof out.radius === "number", "Expected recsph().radius to be a number");
+      invariant(typeof out.colat === "number", "Expected recsph().colat to be a number");
+      invariant(typeof out.lon === "number", "Expected recsph().lon to be a number");
+      return { radius: out.radius, colat: out.colat, lon: out.lon };
+    },
+
+    sphrec: (radius, colat, lon) => {
+      const out = native.sphrec(radius, colat, lon);
+      invariant(Array.isArray(out) && out.length === 3, "Expected sphrec() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    vnorm: (v) => {
+      const out = native.vnorm(v);
+      invariant(typeof out === "number", "Expected vnorm() to return a number");
+      return out;
+    },
+
+    vhat: (v) => {
+      const out = native.vhat(v);
+      invariant(Array.isArray(out) && out.length === 3, "Expected vhat() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    vdot: (a, b) => {
+      const out = native.vdot(a, b);
+      invariant(typeof out === "number", "Expected vdot() to return a number");
+      return out;
+    },
+
+    vcrss: (a, b) => {
+      const out = native.vcrss(a, b);
+      invariant(Array.isArray(out) && out.length === 3, "Expected vcrss() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    mxv: (m, v) => {
+      const out = native.mxv(m, v);
+      invariant(Array.isArray(out) && out.length === 3, "Expected mxv() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    mtxv: (m, v) => {
+      const out = native.mtxv(m, v);
+      invariant(Array.isArray(out) && out.length === 3, "Expected mtxv() to return a length-3 array");
+      return out as SpiceVector3;
     },
   };
 

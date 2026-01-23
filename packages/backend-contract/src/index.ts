@@ -226,6 +226,22 @@ export interface SpiceBackend {
     abcorr: AbCorr | string,
     observer: string,
   ): SpkposResult;
+
+  // --- Phase 6: coordinate conversions + small vector/matrix helpers ---
+
+  reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
+  latrec(radius: number, lon: number, lat: number): SpiceVector3;
+
+  recsph(rect: SpiceVector3): { radius: number; colat: number; lon: number };
+  sphrec(radius: number, colat: number, lon: number): SpiceVector3;
+
+  vnorm(v: SpiceVector3): number;
+  vhat(v: SpiceVector3): SpiceVector3;
+  vdot(a: SpiceVector3, b: SpiceVector3): number;
+  vcrss(a: SpiceVector3, b: SpiceVector3): SpiceVector3;
+
+  mxv(m: SpiceMatrix3x3, v: SpiceVector3): SpiceVector3;
+  mtxv(m: SpiceMatrix3x3, v: SpiceVector3): SpiceVector3;
 }
 
 /**

@@ -1221,6 +1221,88 @@ export async function createWasmBackend(
       return tspiceCallSxform(module, from, to, et);
     },
 
+    // Phase 6: coordinate conversions + small vector/matrix helpers
+
+    reclat: (rect) => {
+      const [x, y, z] = rect;
+      const radius = Math.sqrt(x * x + y * y + z * z);
+      if (radius === 0) {
+        return { radius: 0, lon: 0, lat: 0 };
+      }
+      const lon = Math.atan2(y, x);
+      const lat = Math.atan2(z, Math.sqrt(x * x + y * y));
+      return { radius, lon, lat };
+    },
+
+    latrec: (radius, lon, lat) => {
+      const cosLat = Math.cos(lat);
+      const x = radius * cosLat * Math.cos(lon);
+      const y = radius * cosLat * Math.sin(lon);
+      const z = radius * Math.sin(lat);
+      return [x, y, z];
+    },
+
+    recsph: (rect) => {
+      const [x, y, z] = rect;
+      const radius = Math.sqrt(x * x + y * y + z * z);
+      if (radius === 0) {
+        return { radius: 0, colat: 0, lon: 0 };
+      }
+      const lon = Math.atan2(y, x);
+      const cosColat = z / radius;
+      // Guard against tiny floating-point drift.
+      const clamped = Math.min(1, Math.max(-1, cosColat));
+      const colat = Math.acos(clamped);
+      return { radius, colat, lon };
+    },
+
+    sphrec: (radius, colat, lon) => {
+      const sinColat = Math.sin(colat);
+      const x = radius * sinColat * Math.cos(lon);
+      const y = radius * sinColat * Math.sin(lon);
+      const z = radius * Math.cos(colat);
+      return [x, y, z];
+    },
+
+    vnorm: (v) => {
+      const [x, y, z] = v;
+      return Math.sqrt(x * x + y * y + z * z);
+    },
+
+    vhat: (v) => {
+      const norm = backend.vnorm(v);
+      if (norm === 0) {
+        return [0, 0, 0];
+      }
+      return [v[0] / norm, v[1] / norm, v[2] / norm];
+    },
+
+    vdot: (a, b) => {
+      return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    },
+
+    vcrss: (a, b) => {
+      return [
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0],
+      ];
+    },
+
+    mxv: (m, v) => {
+      const x = m[0] * v[0] + m[1] * v[1] + m[2] * v[2];
+      const y = m[3] * v[0] + m[4] * v[1] + m[5] * v[2];
+      const z = m[6] * v[0] + m[7] * v[1] + m[8] * v[2];
+      return [x, y, z];
+    },
+
+    mtxv: (m, v) => {
+      const x = m[0] * v[0] + m[3] * v[1] + m[6] * v[2];
+      const y = m[1] * v[0] + m[4] * v[1] + m[7] * v[2];
+      const z = m[2] * v[0] + m[5] * v[1] + m[8] * v[2];
+      return [x, y, z];
+    },
+
     // WASM-only
     writeFile,
     loadKernel(path: string, data: Uint8Array) {

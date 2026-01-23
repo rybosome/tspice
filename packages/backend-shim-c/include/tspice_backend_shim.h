@@ -157,6 +157,64 @@ int tspice_spkpos(
     char *err,
     int errMaxBytes);
 
+// --- Phase 6: coordinate conversions + small vector/matrix helpers ---
+
+// reclat_c: rectangular -> latitudinal coordinates.
+int tspice_reclat(
+    const double *rect3,
+    double *outRadius,
+    double *outLon,
+    double *outLat,
+    char *err,
+    int errMaxBytes);
+
+// latrec_c: latitudinal -> rectangular coordinates.
+int tspice_latrec(
+    double radius,
+    double lon,
+    double lat,
+    double *outRect3,
+    char *err,
+    int errMaxBytes);
+
+// recsph_c: rectangular -> spherical coordinates.
+int tspice_recsph(
+    const double *rect3,
+    double *outRadius,
+    double *outColat,
+    double *outLon,
+    char *err,
+    int errMaxBytes);
+
+// sphrec_c: spherical -> rectangular coordinates.
+int tspice_sphrec(
+    double radius,
+    double colat,
+    double lon,
+    double *outRect3,
+    char *err,
+    int errMaxBytes);
+
+// vnorm_c: vector norm.
+int tspice_vnorm(const double *v3, double *outNorm, char *err, int errMaxBytes);
+
+// vhat_c: unit vector.
+int tspice_vhat(const double *v3, double *outVhat3, char *err, int errMaxBytes);
+
+// vdot_c: dot product.
+int tspice_vdot(const double *a3, const double *b3, double *outDot, char *err, int errMaxBytes);
+
+// vcrss_c: cross product.
+int tspice_vcrss(const double *a3, const double *b3, double *outCross3, char *err, int errMaxBytes);
+
+// mxv_c: matrix times vector (3x3).
+// Matrix input is expected as 9 doubles in row-major order.
+int tspice_mxv(const double *m3x3, const double *v3, double *outV3, char *err, int errMaxBytes);
+
+// mtxv_c: transpose(matrix) times vector (3x3).
+// Matrix input is expected as 9 doubles in row-major order.
+int tspice_mtxv(const double *m3x3, const double *v3, double *outV3, char *err, int errMaxBytes);
+
 // --- Phase 4: SCLK conversions + CK attitude ---
 
 // scs2e_c: convert an encoded SCLK string -> ET seconds past J2000.
