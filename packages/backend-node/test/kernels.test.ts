@@ -5,11 +5,14 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import { createNodeBackend } from "@rybosome/tspice-backend-node";
+import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
 
 const testDir = path.dirname(fileURLToPath(import.meta.url));
 
 describe("@rybosome/tspice-backend-node kernels", () => {
-  it("can furnsh/unload path-backed kernels", () => {
+  const itNative = it.runIf(nodeAddonAvailable());
+
+  itNative("can furnsh/unload path-backed kernels", () => {
     const backend = createNodeBackend();
 
     const fixturePath = path.join(testDir, "fixtures", "minimal.tm");
@@ -24,7 +27,7 @@ describe("@rybosome/tspice-backend-node kernels", () => {
     expect(withTesting.__ktotalAll()).toBe(before);
   });
 
-  it("can furnsh/unload byte-backed kernels via a temp file", () => {
+  itNative("can furnsh/unload byte-backed kernels via a temp file", () => {
     const backend = createNodeBackend();
 
     const fixturePath = path.join(testDir, "fixtures", "minimal.tm");
