@@ -1061,15 +1061,50 @@ export async function createWasmBackend(
       },
     };
 
-    // In newer Node versions, `fetch` exists but does not support `file://` URLs.
-    // Providing `wasmBinary` avoids Emscripten trying to fetch the WASM binary.
     const isNode = typeof process !== "undefined" && !!process.versions?.node;
     if (isNode && wasmUrl.startsWith("file:")) {
-      const [{ readFileSync }, { fileURLToPath }] = await Promise.all([
-        import("node:fs"),
-        import("node:url"),
-      ]);
-      emscriptenOpts.wasmBinary = readFileSync(fileURLToPath(wasmUrl));
+      // Emscripten's default Node loader expects a filesystem path, but our
+      // `locateFile` returns a `file:` URL (from `import.meta.url`). Override
+      // instantiation to load the bytes via Node fs and bypass any URL fetching.
+      emscriptenOpts.instantiateWasm = (
+        imports: unknown,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        successCallback: (instance: any) => void,
+      ) => {
+        void (async () => {
+          const [fs, { fileURLToPath }] = await Promise.all([
+            import("node:fs"),
+            import("node:url"),
+          ]);
+
+          const bytes = await fs.promises.readFile(fileURLToPath(wasmUrl));
+
+          // `WebAssembly` types live in DOM lib defs, which we don't include.
+          // Use `globalThis` to keep this package's TS config lean.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const webAssembly = (globalThis as any)["WebAssembly"] as any;
+          if (!webAssembly?.instantiate) {
+            throw new Error("WebAssembly.instantiate is not available in this environment");
+          }
+
+          const instantiated = await webAssembly.instantiate(bytes, imports);
+          const instance =
+            instantiated && typeof instantiated === "object" && "instance" in instantiated
+              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (instantiated as any).instance
+              : instantiated;
+
+          successCallback(instance);
+        })().catch((error) => {
+          const message = error instanceof Error ? error.message : String(error);
+          throw new Error(
+            `Failed to instantiate tspice WASM binary from ${wasmUrl}: ${message}`,
+          );
+        });
+
+        // Async instantiation sentinel (Emscripten pattern)
+        return {};
+      };
     }
 
     module = (await createEmscriptenModule(emscriptenOpts)) as EmscriptenModule;
