@@ -3,6 +3,7 @@
 #include <mutex>
 #include <string>
 
+#include "napi_helpers.h"
 #include "tspice_backend_shim.h"
 
 // Forces a rebuild/relink when the resolved CSPICE install changes (cache/toolkit bump
@@ -19,41 +20,16 @@ static std::mutex g_cspice_mutex;
 constexpr int kErrMaxBytes = 2048;
 constexpr int kOutMaxBytes = 2048;
 
-static void ThrowSpiceError(Napi::Env env, const std::string& context, const char* err) {
-  std::string message = (err && err[0] != '\0') ? std::string(err) : "Unknown CSPICE error";
-  if (!context.empty()) {
-    message = context + ":\n" + message;
-  }
-  Napi::Error::New(env, message).ThrowAsJavaScriptException();
-}
-
-static Napi::Array MakeNumberArray(Napi::Env env, const double* values, size_t count) {
-  Napi::Array arr = Napi::Array::New(env, count);
-  for (size_t i = 0; i < count; i++) {
-    arr.Set(i, Napi::Number::New(env, values[i]));
-  }
-  return arr;
-}
-
-static Napi::Object MakeFoundNumber(Napi::Env env, const char* key, double value) {
-  Napi::Object result = Napi::Object::New(env);
-  result.Set("found", Napi::Boolean::New(env, true));
-  result.Set(key, Napi::Number::New(env, value));
-  return result;
-}
-
-static Napi::Object MakeFoundString(Napi::Env env, const char* key, const std::string& value) {
-  Napi::Object result = Napi::Object::New(env);
-  result.Set("found", Napi::Boolean::New(env, true));
-  result.Set(key, Napi::String::New(env, value));
-  return result;
-}
+using tspice_napi::MakeFound;
+using tspice_napi::MakeNotFound;
+using tspice_napi::MakeNumberArray;
+using tspice_napi::ThrowSpiceError;
 
 static Napi::String SpiceVersion(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 0) {
-    Napi::TypeError::New(env, "spiceVersion() does not take any arguments").ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "spiceVersion() does not take any arguments"));
     return Napi::String::New(env, "");
   }
 
@@ -74,8 +50,7 @@ static void Furnsh(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsString()) {
-    Napi::TypeError::New(env, "furnsh(path: string) expects exactly one string argument")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "furnsh(path: string) expects exactly one string argument"));
     return;
   }
 
@@ -93,8 +68,7 @@ static void Unload(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsString()) {
-    Napi::TypeError::New(env, "unload(path: string) expects exactly one string argument")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "unload(path: string) expects exactly one string argument"));
     return;
   }
 
@@ -112,7 +86,7 @@ static void Kclear(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 0) {
-    Napi::TypeError::New(env, "kclear() does not take any arguments").ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "kclear() does not take any arguments"));
     return;
   }
 
@@ -129,15 +103,13 @@ static Napi::Number Ktotal(const Napi::CallbackInfo& info) {
 
   std::string kind = "ALL";
   if (info.Length() > 1) {
-    Napi::TypeError::New(env, "ktotal(kind?: string) expects 0 or 1 arguments")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "ktotal(kind?: string) expects 0 or 1 arguments"));
     return Napi::Number::New(env, 0);
   }
 
   if (info.Length() == 1) {
     if (!info[0].IsString()) {
-      Napi::TypeError::New(env, "ktotal(kind?: string) expects a string kind")
-        .ThrowAsJavaScriptException();
+      ThrowSpiceError(Napi::TypeError::New(env, "ktotal(kind?: string) expects a string kind"));
       return Napi::Number::New(env, 0);
     }
     kind = info[0].As<Napi::String>().Utf8Value();
@@ -159,14 +131,12 @@ static Napi::Object Kdata(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() < 1 || info.Length() > 2) {
-    Napi::TypeError::New(env, "kdata(which: number, kind?: string) expects 1 or 2 arguments")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "kdata(which: number, kind?: string) expects 1 or 2 arguments"));
     return Napi::Object::New(env);
   }
 
   if (!info[0].IsNumber()) {
-    Napi::TypeError::New(env, "kdata(which: number, kind?: string) expects which to be a number")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "kdata(which: number, kind?: string) expects which to be a number"));
     return Napi::Object::New(env);
   }
 
@@ -174,8 +144,7 @@ static Napi::Object Kdata(const Napi::CallbackInfo& info) {
   std::string kind = "ALL";
   if (info.Length() == 2) {
     if (!info[1].IsString()) {
-      Napi::TypeError::New(env, "kdata(which: number, kind?: string) expects kind to be a string")
-        .ThrowAsJavaScriptException();
+      ThrowSpiceError(Napi::TypeError::New(env, "kdata(which: number, kind?: string) expects kind to be a string"));
       return Napi::Object::New(env);
     }
     kind = info[1].As<Napi::String>().Utf8Value();
@@ -211,9 +180,7 @@ static Napi::Object Kdata(const Napi::CallbackInfo& info) {
   }
 
   if (!found) {
-    Napi::Object result = Napi::Object::New(env);
-    result.Set("found", Napi::Boolean::New(env, false));
-    return result;
+    return MakeNotFound(env);
   }
 
   Napi::Object result = Napi::Object::New(env);
@@ -229,7 +196,7 @@ static Napi::Number KtotalAll(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 0) {
-    Napi::TypeError::New(env, "__ktotalAll() does not take any arguments").ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "__ktotalAll() does not take any arguments"));
     return Napi::Number::New(env, 0);
   }
 
@@ -247,8 +214,7 @@ static Napi::Number Str2et(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsString()) {
-    Napi::TypeError::New(env, "str2et(time: string) expects exactly one string argument")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "str2et(time: string) expects exactly one string argument"));
     return Napi::Number::New(env, 0);
   }
 
@@ -270,8 +236,9 @@ static Napi::String Et2utc(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsString() || !info[2].IsNumber()) {
-    Napi::TypeError::New(env, "et2utc(et: number, format: string, prec: number) expects (number, string, number)")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(
+      Napi::TypeError::New(env, "et2utc(et: number, format: string, prec: number) expects (number, string, number)")
+    );
     return Napi::String::New(env, "");
   }
 
@@ -295,8 +262,7 @@ static Napi::String Timout(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsString()) {
-    Napi::TypeError::New(env, "timout(et: number, picture: string) expects (number, string)")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "timout(et: number, picture: string) expects (number, string)"));
     return Napi::String::New(env, "");
   }
 
@@ -319,8 +285,7 @@ static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsString()) {
-    Napi::TypeError::New(env, "bodn2c(name: string) expects exactly one string argument")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "bodn2c(name: string) expects exactly one string argument"));
     return Napi::Object::New(env);
   }
 
@@ -337,20 +302,17 @@ static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   }
 
   if (!found) {
-    Napi::Object result = Napi::Object::New(env);
-    result.Set("found", Napi::Boolean::New(env, false));
-    return result;
+    return MakeNotFound(env);
   }
 
-  return MakeFoundNumber(env, "code", static_cast<double>(codeOut));
+  return MakeFound<double>(env, "code", static_cast<double>(codeOut));
 }
 
 static Napi::Object Bodc2n(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsNumber()) {
-    Napi::TypeError::New(env, "bodc2n(code: number) expects exactly one number argument")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "bodc2n(code: number) expects exactly one number argument"));
     return Napi::Object::New(env);
   }
 
@@ -367,20 +329,17 @@ static Napi::Object Bodc2n(const Napi::CallbackInfo& info) {
   }
 
   if (!found) {
-    Napi::Object result = Napi::Object::New(env);
-    result.Set("found", Napi::Boolean::New(env, false));
-    return result;
+    return MakeNotFound(env);
   }
 
-  return MakeFoundString(env, "name", nameOut);
+  return MakeFound<const char*>(env, "name", nameOut);
 }
 
 static Napi::Object Namfrm(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsString()) {
-    Napi::TypeError::New(env, "namfrm(name: string) expects exactly one string argument")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "namfrm(name: string) expects exactly one string argument"));
     return Napi::Object::New(env);
   }
 
@@ -397,20 +356,17 @@ static Napi::Object Namfrm(const Napi::CallbackInfo& info) {
   }
 
   if (!found) {
-    Napi::Object result = Napi::Object::New(env);
-    result.Set("found", Napi::Boolean::New(env, false));
-    return result;
+    return MakeNotFound(env);
   }
 
-  return MakeFoundNumber(env, "code", static_cast<double>(codeOut));
+  return MakeFound<double>(env, "code", static_cast<double>(codeOut));
 }
 
 static Napi::Object Frmnam(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsNumber()) {
-    Napi::TypeError::New(env, "frmnam(code: number) expects exactly one number argument")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "frmnam(code: number) expects exactly one number argument"));
     return Napi::Object::New(env);
   }
 
@@ -427,20 +383,17 @@ static Napi::Object Frmnam(const Napi::CallbackInfo& info) {
   }
 
   if (!found) {
-    Napi::Object result = Napi::Object::New(env);
-    result.Set("found", Napi::Boolean::New(env, false));
-    return result;
+    return MakeNotFound(env);
   }
 
-  return MakeFoundString(env, "name", nameOut);
+  return MakeFound<const char*>(env, "name", nameOut);
 }
 
 static Napi::Object Cidfrm(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsNumber()) {
-    Napi::TypeError::New(env, "cidfrm(center: number) expects exactly one number argument")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "cidfrm(center: number) expects exactly one number argument"));
     return Napi::Object::New(env);
   }
 
@@ -458,9 +411,7 @@ static Napi::Object Cidfrm(const Napi::CallbackInfo& info) {
   }
 
   if (!found) {
-    Napi::Object result = Napi::Object::New(env);
-    result.Set("found", Napi::Boolean::New(env, false));
-    return result;
+    return MakeNotFound(env);
   }
 
   Napi::Object result = Napi::Object::New(env);
@@ -474,8 +425,7 @@ static Napi::Object Cnmfrm(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsString()) {
-    Napi::TypeError::New(env, "cnmfrm(centerName: string) expects exactly one string argument")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "cnmfrm(centerName: string) expects exactly one string argument"));
     return Napi::Object::New(env);
   }
 
@@ -493,9 +443,7 @@ static Napi::Object Cnmfrm(const Napi::CallbackInfo& info) {
   }
 
   if (!found) {
-    Napi::Object result = Napi::Object::New(env);
-    result.Set("found", Napi::Boolean::New(env, false));
-    return result;
+    return MakeNotFound(env);
   }
 
   Napi::Object result = Napi::Object::New(env);
@@ -510,10 +458,10 @@ static Napi::Object Spkezr(const Napi::CallbackInfo& info) {
 
   if (info.Length() != 5 || !info[0].IsString() || !info[1].IsNumber() || !info[2].IsString() ||
       !info[3].IsString() || !info[4].IsString()) {
-    Napi::TypeError::New(
+    ThrowSpiceError(Napi::TypeError::New(
       env,
       "spkezr(target: string, et: number, ref: string, abcorr: string, observer: string) expects (string, number, string, string, string)"
-    ).ThrowAsJavaScriptException();
+    ));
     return Napi::Object::New(env);
   }
 
@@ -554,10 +502,10 @@ static Napi::Object Spkpos(const Napi::CallbackInfo& info) {
 
   if (info.Length() != 5 || !info[0].IsString() || !info[1].IsNumber() || !info[2].IsString() ||
       !info[3].IsString() || !info[4].IsString()) {
-    Napi::TypeError::New(
+    ThrowSpiceError(Napi::TypeError::New(
       env,
       "spkpos(target: string, et: number, ref: string, abcorr: string, observer: string) expects (string, number, string, string, string)"
-    ).ThrowAsJavaScriptException();
+    ));
     return Napi::Object::New(env);
   }
 
@@ -597,8 +545,7 @@ static Napi::Array Pxform(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 3 || !info[0].IsString() || !info[1].IsString() || !info[2].IsNumber()) {
-    Napi::TypeError::New(env, "pxform(from: string, to: string, et: number) expects (string, string, number)")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "pxform(from: string, to: string, et: number) expects (string, string, number)"));
     return Napi::Array::New(env);
   }
 
@@ -622,8 +569,7 @@ static Napi::Array Sxform(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 3 || !info[0].IsString() || !info[1].IsString() || !info[2].IsNumber()) {
-    Napi::TypeError::New(env, "sxform(from: string, to: string, et: number) expects (string, string, number)")
-      .ThrowAsJavaScriptException();
+    ThrowSpiceError(Napi::TypeError::New(env, "sxform(from: string, to: string, et: number) expects (string, string, number)"));
     return Napi::Array::New(env);
   }
 
