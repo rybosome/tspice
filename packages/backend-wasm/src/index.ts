@@ -1085,13 +1085,13 @@ export async function createWasmBackend(
             // `WebAssembly` types live in DOM lib defs, which we don't include.
             // Use `globalThis` to keep this package's TS config lean.
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const webAssembly = (globalThis as any).WebAssembly as any;
-            if (!webAssembly?.instantiate) {
+            const { WebAssembly } = globalThis as any;
+            if (!WebAssembly?.instantiate) {
               throw new Error("WebAssembly.instantiate is not available in this environment");
             }
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { instance } = (await webAssembly.instantiate(bytes, imports)) as any;
+            const { instance } = (await WebAssembly.instantiate(bytes, imports)) as any;
             successCallback(instance);
           } catch (error) {
             instantiateWasmError = error;
