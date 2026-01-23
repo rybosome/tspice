@@ -333,6 +333,203 @@ int tspice_timout(
   return 0;
 }
 
+int tspice_scs2e(int sc, const char *sclkch, double *outEt, char *err, int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outEt) {
+    *outEt = 0.0;
+  }
+
+  SpiceDouble et = 0.0;
+  scs2e_c((SpiceInt)sc, sclkch, &et);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outEt) {
+    *outEt = (double)et;
+  }
+
+  return 0;
+}
+
+int tspice_sce2s(
+    int sc,
+    double et,
+    char *outSclkch,
+    int outSclkchMaxBytes,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outSclkchMaxBytes > 0 && outSclkch) {
+    outSclkch[0] = '\0';
+  }
+
+  if (outSclkchMaxBytes <= 0) {
+    if (errMaxBytes > 0) {
+      strncpy(err, "tspice_sce2s(): outSclkchMaxBytes must be > 0", (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+    return 1;
+  }
+
+  sce2s_c((SpiceInt)sc, (SpiceDouble)et, (SpiceInt)outSclkchMaxBytes, outSclkch);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_ckgp(
+    int inst,
+    double sclkdp,
+    double tol,
+    const char *ref,
+    double *outMatrix3x3,
+    double *outClkout,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+  if (outClkout) {
+    *outClkout = 0.0;
+  }
+  if (outMatrix3x3) {
+    for (int i = 0; i < 9; i++) {
+      outMatrix3x3[i] = 0.0;
+    }
+  }
+
+  SpiceDouble cmat[3][3];
+  SpiceDouble clkout = 0.0;
+  SpiceBoolean found = SPICEFALSE;
+  ckgp_c((SpiceInt)inst, (SpiceDouble)sclkdp, (SpiceDouble)tol, ref, cmat, &clkout, &found);
+
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFound) {
+    *outFound = found == SPICETRUE ? 1 : 0;
+  }
+
+  if (found == SPICETRUE) {
+    if (outClkout) {
+      *outClkout = (double)clkout;
+    }
+
+    if (outMatrix3x3) {
+      outMatrix3x3[0] = (double)cmat[0][0];
+      outMatrix3x3[1] = (double)cmat[0][1];
+      outMatrix3x3[2] = (double)cmat[0][2];
+
+      outMatrix3x3[3] = (double)cmat[1][0];
+      outMatrix3x3[4] = (double)cmat[1][1];
+      outMatrix3x3[5] = (double)cmat[1][2];
+
+      outMatrix3x3[6] = (double)cmat[2][0];
+      outMatrix3x3[7] = (double)cmat[2][1];
+      outMatrix3x3[8] = (double)cmat[2][2];
+    }
+  }
+
+  return 0;
+}
+
+int tspice_ckgpav(
+    int inst,
+    double sclkdp,
+    double tol,
+    const char *ref,
+    double *outMatrix3x3,
+    double *outAv3,
+    double *outClkout,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+  if (outClkout) {
+    *outClkout = 0.0;
+  }
+  if (outAv3) {
+    outAv3[0] = 0.0;
+    outAv3[1] = 0.0;
+    outAv3[2] = 0.0;
+  }
+  if (outMatrix3x3) {
+    for (int i = 0; i < 9; i++) {
+      outMatrix3x3[i] = 0.0;
+    }
+  }
+
+  SpiceDouble cmat[3][3];
+  SpiceDouble av[3];
+  SpiceDouble clkout = 0.0;
+  SpiceBoolean found = SPICEFALSE;
+  ckgpav_c((SpiceInt)inst, (SpiceDouble)sclkdp, (SpiceDouble)tol, ref, cmat, av, &clkout, &found);
+
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFound) {
+    *outFound = found == SPICETRUE ? 1 : 0;
+  }
+
+  if (found == SPICETRUE) {
+    if (outClkout) {
+      *outClkout = (double)clkout;
+    }
+    if (outAv3) {
+      outAv3[0] = (double)av[0];
+      outAv3[1] = (double)av[1];
+      outAv3[2] = (double)av[2];
+    }
+
+    if (outMatrix3x3) {
+      outMatrix3x3[0] = (double)cmat[0][0];
+      outMatrix3x3[1] = (double)cmat[0][1];
+      outMatrix3x3[2] = (double)cmat[0][2];
+
+      outMatrix3x3[3] = (double)cmat[1][0];
+      outMatrix3x3[4] = (double)cmat[1][1];
+      outMatrix3x3[5] = (double)cmat[1][2];
+
+      outMatrix3x3[6] = (double)cmat[2][0];
+      outMatrix3x3[7] = (double)cmat[2][1];
+      outMatrix3x3[8] = (double)cmat[2][2];
+    }
+  }
+
+  return 0;
+}
+
 int tspice_bodn2c(
     const char *name,
     int *outCode,

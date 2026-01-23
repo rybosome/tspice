@@ -56,6 +56,52 @@ int tspice_timout(
     char *err,
     int errMaxBytes);
 
+// --- Phase 4 SCLK conversion + CK pointing ---
+
+// scs2e_c: convert spacecraft clock string -> ET.
+int tspice_scs2e(
+    int sc,
+    const char *sclkch,
+    double *outEt,
+    char *err,
+    int errMaxBytes);
+
+// sce2s_c: convert ET -> spacecraft clock string.
+int tspice_sce2s(
+    int sc,
+    double et,
+    char *outSclkch,
+    int outSclkchMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// ckgp_c: point an instrument (rotation matrix + encoded SCLK output).
+//
+// Output matrix is written as 9 doubles in row-major order.
+int tspice_ckgp(
+    int inst,
+    double sclkdp,
+    double tol,
+    const char *ref,
+    double *outMatrix3x3,
+    double *outClkout,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// ckgpav_c: point an instrument (rotation matrix + angular velocity + encoded SCLK output).
+int tspice_ckgpav(
+    int inst,
+    double sclkdp,
+    double tol,
+    const char *ref,
+    double *outMatrix3x3,
+    double *outAv3,
+    double *outClkout,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
 // bodn2c_c: body name -> integer code.
 int tspice_bodn2c(
     const char *name,
