@@ -10,10 +10,10 @@
     "check:js": "pnpm run check:compliance && pnpm run build:js && pnpm run typecheck && pnpm run test:js",
     "check:native": "pnpm run fetch:cspice && pnpm run build && pnpm run typecheck && pnpm run test",
     "fetch:cspice": "node scripts/fetch-cspice.mjs",
-    "build:js": "turbo run build --filter=!@rybosome/tspice-backend-node",
+    "build:js": "turbo run build --filter=!@rybosome/tspice-backend-node --filter=!@rybosome/tspice",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "test:js": "turbo run test --filter=!@rybosome/tspice-backend-node",
+    "test:js": "turbo run test --filter=!@rybosome/tspice-backend-node --filter=!@rybosome/tspice",
     "test:native": "pnpm run fetch:cspice && pnpm run test",
     "test": "turbo run test"
   },
