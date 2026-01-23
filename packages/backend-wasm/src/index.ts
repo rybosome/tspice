@@ -1460,6 +1460,26 @@ export async function createWasmBackend(
 
   const wasmLocator = wasmUrl;
 
+  const isNodeRuntime =
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    typeof process !== "undefined" &&
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    !!process.versions?.node;
+
+  // Node's built-in `fetch` can't load `file://...` URLs, so in Node we feed the
+  // bytes directly to Emscripten via `wasmBinary`.
+  const wasmBinary =
+    isNodeRuntime && wasmUrl.startsWith("file://")
+      ? await (async () => {
+          const [{ readFile }, { fileURLToPath }] = await Promise.all([
+            import("node:fs/promises"),
+            import("node:url"),
+          ]);
+          const wasmPath = fileURLToPath(wasmUrl);
+          return readFile(wasmPath);
+        })()
+      : undefined;
+
   let module: EmscriptenModule;
   try {
     module = (await createEmscriptenModule({
@@ -1469,6 +1489,7 @@ export async function createWasmBackend(
         }
         return `${prefix}${path}`;
       },
+      ...(wasmBinary ? { wasmBinary } : {}),
     })) as EmscriptenModule;
   } catch (error) {
     throw new Error(
