@@ -90,6 +90,26 @@ int tspice_frmnam(
     char *err,
     int errMaxBytes);
 
+// cidfrm_c: center id -> (frame code, frame name).
+int tspice_cidfrm(
+    int center,
+    int *outFrameCode,
+    char *outFrameName,
+    int outFrameNameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// cnmfrm_c: center name -> (frame code, frame name).
+int tspice_cnmfrm(
+    const char *centerName,
+    int *outFrameCode,
+    char *outFrameName,
+    int outFrameNameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
 // pxform_c: compute frame transformation matrix.
 //
 // Output matrix is written as 9 doubles in row-major order:

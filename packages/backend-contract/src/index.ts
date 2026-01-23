@@ -173,8 +173,25 @@ export interface SpiceBackend {
   bodn2c(name: string): Found<{ code: number }>;
   bodc2n(code: number): Found<{ name: string }>;
 
-  namfrm(frameName: string): Found<{ frameId: number }>;
-  frmnam(frameId: number): Found<{ frameName: string }>;
+  /**
+   * Map a reference frame name to its integer code.
+   *
+   * Note: CSPICE `namfrm_c` has no `found` flag; we treat `code !== 0` as found.
+   */
+  namfrm(name: string): Found<{ code: number }>;
+
+  /**
+   * Map a reference frame code to its name.
+   *
+   * Note: CSPICE `frmnam_c` returns a blank string when the code isn't mapped.
+   */
+  frmnam(code: number): Found<{ name: string }>;
+
+  /** Map a center ID to the ID/name of its associated reference frame. */
+  cidfrm(center: number): Found<{ frcode: number; frname: string }>;
+
+  /** Map a center name to the ID/name of its associated reference frame. */
+  cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
   /** Compute a 3x3 frame transformation matrix (row-major). */
   pxform(from: string, to: string, et: number): SpiceMatrix3x3;

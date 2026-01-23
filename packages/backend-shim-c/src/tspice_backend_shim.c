@@ -420,7 +420,8 @@ int tspice_namfrm(
     *outFound = 0;
   }
 
-  const SpiceInt frameId = namfrm_c(frameName);
+  SpiceInt frameId = 0;
+  namfrm_c(frameName, &frameId);
   if (failed_c()) {
     GetSpiceErrorMessageAndReset(err, errMaxBytes);
     return 1;
@@ -463,6 +464,98 @@ int tspice_frmnam(
 
   if (outFound) {
     *outFound = (outFrameName && outFrameName[0] != '\0') ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_cidfrm(
+    int center,
+    int *outFrameCode,
+    char *outFrameName,
+    int outFrameNameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrameCode) {
+    *outFrameCode = 0;
+  }
+  if (outFrameNameMaxBytes > 0 && outFrameName) {
+    outFrameName[0] = '\0';
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceBoolean foundC = SPICEFALSE;
+  SpiceInt frameCodeC = 0;
+  cidfrm_c(
+      (SpiceInt)center,
+      (SpiceInt)outFrameNameMaxBytes,
+      &frameCodeC,
+      outFrameName,
+      &foundC);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFound) {
+    *outFound = foundC == SPICETRUE ? 1 : 0;
+  }
+  if (foundC == SPICETRUE && outFrameCode) {
+    *outFrameCode = (int)frameCodeC;
+  }
+
+  return 0;
+}
+
+int tspice_cnmfrm(
+    const char *centerName,
+    int *outFrameCode,
+    char *outFrameName,
+    int outFrameNameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  InitCspiceErrorHandlingOnce();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrameCode) {
+    *outFrameCode = 0;
+  }
+  if (outFrameNameMaxBytes > 0 && outFrameName) {
+    outFrameName[0] = '\0';
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceBoolean foundC = SPICEFALSE;
+  SpiceInt frameCodeC = 0;
+  cnmfrm_c(
+      centerName,
+      (SpiceInt)outFrameNameMaxBytes,
+      &frameCodeC,
+      outFrameName,
+      &foundC);
+  if (failed_c()) {
+    GetSpiceErrorMessageAndReset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFound) {
+    *outFound = foundC == SPICETRUE ? 1 : 0;
+  }
+  if (foundC == SPICETRUE && outFrameCode) {
+    *outFrameCode = (int)frameCodeC;
   }
 
   return 0;

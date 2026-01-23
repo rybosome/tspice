@@ -3,9 +3,12 @@ dist
 .turbo
 .cache/cspice
 .cache/wasm-build
+.cache/emsdk
 packages/backend-node/native/generated
 
 *.tsbuildinfo
 
 packages/*/native/build
 packages/*/native/.node-gyp
+
+packages/*/test/.cache
