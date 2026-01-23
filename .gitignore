@@ -3,6 +3,7 @@ dist
 .turbo
 .cache/cspice
 .cache/wasm-build
+packages/tspice/test/.cache
 packages/backend-node/native/generated
 
 *.tsbuildinfo
