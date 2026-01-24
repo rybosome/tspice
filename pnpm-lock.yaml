@@ -14,6 +14,12 @@ importers:
 
   apps/tspice-viewer:
     dependencies:
+      '@rybosome/tspice':
+        specifier: workspace:*
+        version: link:../../packages/tspice
+      '@rybosome/tspice-backend-fake':
+        specifier: workspace:*
+        version: link:../../packages/backend-fake
       react:
         specifier: ^19.2.0
         version: 19.2.3
@@ -53,6 +59,22 @@ importers:
         version: 3.2.4(@types/node@24.10.9)
 
   packages/backend-contract:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.6
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.19.6)
+
+  packages/backend-fake:
+    dependencies:
+      '@rybosome/tspice-backend-contract':
+        specifier: workspace:*
+        version: link:../backend-contract
     devDependencies:
       '@types/node':
         specifier: ^22.10.2
@@ -127,6 +149,9 @@ importers:
       '@rybosome/tspice-backend-contract':
         specifier: workspace:*
         version: link:../backend-contract
+      '@rybosome/tspice-backend-fake':
+        specifier: workspace:*
+        version: link:../backend-fake
       '@rybosome/tspice-backend-wasm':
         specifier: workspace:*
         version: link:../backend-wasm

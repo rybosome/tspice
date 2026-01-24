@@ -17,6 +17,9 @@
       "path": "./packages/backend-wasm"
     },
     {
+      "path": "./packages/backend-fake"
+    },
+    {
       "path": "./packages/tspice"
     }
   ]

@@ -1,5 +1,5 @@
 {
-  "name": "@rybosome/tspice",
+  "name": "@rybosome/tspice-backend-fake",
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
@@ -21,22 +21,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@rybosome/tspice-backend-contract": "workspace:*",
-    "@rybosome/tspice-backend-fake": "workspace:*",
-    "@rybosome/tspice-backend-wasm": "workspace:*",
-    "@rybosome/tspice-core": "workspace:*"
-  },
-  "peerDependencies": {
-    "@rybosome/tspice-backend-node": "workspace:*"
-  },
-  "peerDependenciesMeta": {
-    "@rybosome/tspice-backend-node": {
-      "optional": true
-    }
+    "@rybosome/tspice-backend-contract": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "@rybosome/tspice-backend-node": "workspace:*",
     "typescript": "^5.9.3",
     "vitest": "^2.1.8"
   }

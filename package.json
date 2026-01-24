@@ -7,7 +7,8 @@
   "scripts": {
     "check": "pnpm run check:js",
     "check:compliance": "node scripts/check-compliance-files.mjs",
-    "check:js": "pnpm run check:compliance && pnpm run build:js && pnpm run typecheck && pnpm run test:js",
+    "lint": "pnpm -r --if-present lint",
+    "check:js": "pnpm run check:compliance && pnpm run lint && pnpm run build:js && pnpm run typecheck && pnpm run test:js",
     "check:native": "pnpm run fetch:cspice && pnpm -C packages/backend-node run build:native && pnpm run build && pnpm run typecheck && pnpm run test",
     "fetch:cspice": "node scripts/fetch-cspice.mjs",
     "build:js": "turbo run build --filter=!@rybosome/tspice-backend-node",
@@ -15,7 +16,10 @@
     "typecheck": "turbo run typecheck",
     "test:js": "turbo run test --filter=!@rybosome/tspice-backend-node",
     "test:native": "pnpm run fetch:cspice && pnpm -C packages/backend-node run build:native && pnpm run test",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "verify": "pnpm -w verify:js",
+    "verify:js": "pnpm -w check:js",
+    "verify:native": "pnpm -w check:native"
   },
   "devDependencies": {
     "turbo": "^2.5.5"
