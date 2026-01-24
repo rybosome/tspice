@@ -39,7 +39,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build tspice-viewer
-        run: pnpm -C apps/tspice-viewer build
+        run: pnpm exec turbo run build --filter=@rybosome/tspice-viewer... --filter=!@rybosome/tspice-backend-node
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
@@ -78,7 +78,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build tspice-viewer
-        run: pnpm -C apps/tspice-viewer build
+        run: pnpm exec turbo run build --filter=@rybosome/tspice-viewer... --filter=!@rybosome/tspice-backend-node
 
       - name: Deploy to Cloudflare Pages (preview)
         uses: cloudflare/wrangler-action@v3
