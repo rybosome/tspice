@@ -35,6 +35,125 @@ async function main() {
 main().catch(console.error);
 ```
 
+
+## Usage
+
+### Kernel loading (byte-backed; works in WASM)
+
+The WASM backend loads kernels from an in-memory filesystem. To make the same code work in Node **and** WASM, you can read kernel bytes yourself and pass them to `loadKernel()`:
+
+```ts
+import fs from "node:fs";
+import path from "node:path";
+
+import { createSpice } from "@rybosome/tspice";
+
+const readKernel = (name: string) =>
+  fs.readFileSync(path.join(process.cwd(), "kernels", name));
+
+async function main() {
+  const spice = await createSpice(); // defaults to WASM
+
+  // Put kernels under ./kernels in your project.
+  spice.loadKernel({
+    path: "/kernels/naif0012.tls",
+    bytes: readKernel("naif0012.tls"),
+  });
+
+  // (Load any additional kernels you need: SPKs, PCKs, etc.)
+}
+
+main().catch(console.error);
+```
+
+Node-only shortcut (native backend): if you select the Node backend, you can load kernels directly from disk paths:
+
+```ts
+import { createSpice } from "@rybosome/tspice";
+
+async function main() {
+  const spice = await createSpice({ backend: "node" });
+  spice.loadKernel("./kernels/naif0012.tls");
+}
+
+main().catch(console.error);
+```
+
+### Advanced: ephemeris state (`utcToEt` + `getState`)
+
+```ts
+import { createSpice } from "@rybosome/tspice";
+
+async function main() {
+  const spice = await createSpice();
+
+  // Requires you to have already loaded an LSK + SPK kernels.
+  const et = spice.utcToEt("2025-01-01T00:00:00Z");
+
+  const state = spice.getState({
+    target: "MARS",
+    observer: "EARTH",
+    at: et,
+    frame: "J2000",
+    aberration: "LT+S",
+  });
+
+  console.log(state.position, state.velocity, state.lightTime);
+}
+
+main().catch(console.error);
+```
+
+### Advanced: geometry (`subslr` + `reclat` + `ilumin`)
+
+This example computes the sub-solar point on a target body and then reports illumination angles at that point.
+
+```ts
+import { createSpice } from "@rybosome/tspice";
+
+const radToDeg = (radians: number) => (radians * 180) / Math.PI;
+
+async function main() {
+  const spice = await createSpice();
+
+  // Requires appropriate kernels (LSK + PCK + SPK, at minimum).
+  const et = spice.utcToEt("2025-01-01T00:00:00Z");
+
+  const backend = spice.backend;
+
+  const { spoint } = backend.subslr(
+    "Near Point: Ellipsoid",
+    "MARS",
+    et,
+    "IAU_MARS",
+    "LT+S",
+    "SUN",
+  );
+
+  const { lon, lat } = backend.reclat(spoint);
+
+  const { phase, solar, emissn } = backend.ilumin(
+    "Ellipsoid",
+    "MARS",
+    et,
+    "IAU_MARS",
+    "LT+S",
+    "SUN",
+    spoint,
+  );
+
+  console.log({
+    subSolarLonDeg: radToDeg(lon),
+    subSolarLatDeg: radToDeg(lat),
+    phaseDeg: radToDeg(phase),
+    solarIncidenceDeg: radToDeg(solar),
+    emissionDeg: radToDeg(emissn),
+  });
+}
+
+main().catch(console.error);
+```
+
 ## Monorepo / package map
 
 | Path | Package | Purpose |
