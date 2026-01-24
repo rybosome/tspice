@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "pree2e": "pnpm -r --filter @rybosome/tspice... --filter @rybosome/tspice-backend-fake... build",
     "e2e": "playwright test",
     "test:e2e": "pnpm run e2e",
     "e2e:ui": "playwright test --ui",
