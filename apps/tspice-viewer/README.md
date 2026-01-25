@@ -68,7 +68,8 @@ The transform is intended to be applied as:
 ## What’s included
 
 - `src/spice/SpiceClient.ts`: a minimal renderer-facing interface
-- `src/spice/FakeSpiceClient.ts`: deterministic stubbed ephemerides for Sun/Earth/Moon
+- `src/spice/createSpiceClient.ts`: viewer integration layer (defaults to the tspice fake backend)
+- `src/spice/createCachedSpiceClient.ts`: single-entry (`et`-keyed) cache wrapper for viewer perf
 - `src/scene/SceneModel.ts`: types describing bodies and render styling
 
 ## Visual regression testing

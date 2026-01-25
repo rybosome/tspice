@@ -31,7 +31,7 @@ test('rendered scene is visually stable (golden screenshot)', async ({ page, bas
     Math.random = () => 0.42
   })
 
-  // Use a fixed ET to drive FakeSpiceClient.
+  // Use a fixed ET to drive the (default) fake backend.
   await page.goto('/?e2e=1&et=1234567')
 
   await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
