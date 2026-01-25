@@ -5,7 +5,7 @@ test.use({
   deviceScaleFactor: 1,
 })
 
-test('viewer loads with ?backend=fake without console/page errors', async ({ page, baseURL }) => {
+test('viewer loads (default fake backend) without console/page errors', async ({ page, baseURL }) => {
   const allowedOrigin = baseURL ? new URL(baseURL).origin : 'http://127.0.0.1:4173'
 
   // Ensure the test is deterministic and doesn't accidentally hit the network.
@@ -30,9 +30,23 @@ test('viewer loads with ?backend=fake without console/page errors', async ({ pag
   })
 
   // Use a fixed ET and force deterministic render settings.
-  await page.goto('/?backend=fake&e2e=1&et=1234567')
+  await page.goto('/?e2e=1&et=1234567')
 
   await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
+
+  const frameTransform = await page.evaluate(() =>
+    (window as any).__tspice_viewer__e2e.getFrameTransform({
+      from: 'J2000',
+      to: 'J2000',
+      et: 1234567,
+    })
+  )
+
+  expect(frameTransform).toHaveLength(9)
+  for (const v of frameTransform) {
+    expect(typeof v).toBe('number')
+    expect(Number.isFinite(v)).toBe(true)
+  }
 
   expect(errors).toEqual([])
 

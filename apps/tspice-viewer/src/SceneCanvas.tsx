@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { CameraController } from './controls/CameraController.js'
 import { pickFirstIntersection } from './interaction/pick.js'
-import { FakeSpiceClient } from './spice/FakeSpiceClient.js'
+import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type EtSeconds } from './spice/SpiceClient.js'
 import type { SceneModel } from './scene/SceneModel.js'
 
@@ -21,8 +21,6 @@ export function SceneCanvas() {
   useEffect(() => {
     const search = new URLSearchParams(window.location.search)
     const isE2e = search.has('e2e')
-    const et: EtSeconds = Number(search.get('et') ?? 0)
-    const backend = search.get('backend')
 
     const canvas = canvasRef.current
     const container = containerRef.current
@@ -355,25 +353,26 @@ export function SceneCanvas() {
 
     void (async () => {
       try {
-        const spiceClient =
-          backend === 'fake'
-            ? await (async () => {
-                const [{ createSpice }, { createFakeBackend }, { TspiceSpiceClient }] =
-                  await Promise.all([
-                    import('@rybosome/tspice'),
-                    import('@rybosome/tspice-backend-fake'),
-                    import('./spice/TspiceSpiceClient.js'),
-                  ])
+        const { client: spiceClient, utcToEt } = await createSpiceClient({
+          searchParams: search,
+        })
 
-                const spice = await createSpice({
-                  backendInstance: createFakeBackend(),
-                })
+        const et: EtSeconds = (() => {
+          const utc = search.get('utc')
+          if (utc) return utcToEt(utc)
 
-                return new TspiceSpiceClient(spice)
-              })()
-            : new FakeSpiceClient()
+          const parsed = Number(search.get('et') ?? 0)
+          return Number.isFinite(parsed) ? parsed : 0
+        })()
 
         if (disposed) return
+
+        if (isE2e) {
+          ;(window as any).__tspice_viewer__e2e = {
+            getFrameTransform: ({ from, to, et }: { from: string; to: string; et: number }) =>
+              spiceClient.getFrameTransform({ from, to, et }),
+          }
+        }
 
         // New PR abstractions (SpiceClient + SceneModel) driving the rendered scene.
         const sceneModel: SceneModel = {
