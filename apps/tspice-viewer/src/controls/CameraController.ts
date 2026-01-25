@@ -72,4 +72,35 @@ export class CameraController {
     camera.position.copy(this.target).add(offset)
     camera.lookAt(this.target)
   }
+
+  /**
+   * Pans the camera target in the camera plane based on screen-space pixel deltas.
+   *
+   * This updates `target` only; call `applyToCamera()` afterwards.
+   */
+  pan(
+    dxPx: number,
+    dyPx: number,
+    camera: THREE.PerspectiveCamera,
+    viewport: { width: number; height: number }
+  ) {
+    const height = viewport.height || 1
+
+    // Convert pixels -> world units at the target plane.
+    const fovRad = THREE.MathUtils.degToRad(camera.fov)
+    const worldPerPx = (2 * this.radius * Math.tan(fovRad / 2)) / height
+
+    // Dragging right should move the scene right (camera left), so invert X.
+    const panX = -dxPx * worldPerPx
+    const panY = dyPx * worldPerPx
+
+    const dir = new THREE.Vector3()
+    camera.getWorldDirection(dir)
+
+    const right = new THREE.Vector3().crossVectors(dir, camera.up).normalize()
+    const up = new THREE.Vector3().crossVectors(right, dir).normalize()
+
+    this.target.addScaledVector(right, panX)
+    this.target.addScaledVector(up, panY)
+  }
 }

@@ -107,12 +107,25 @@ export function SceneCanvas() {
       const clickMoveThresholdPx = 6
       const orbitSensitivity = 0.006
       const wheelZoomScale = 0.001
+      const focusTweenMs = 320
 
       let selectedBodyId: string | undefined
+
+      let focusTweenFrame: number | null = null
+
+      const easeInOutCubic = (t: number) =>
+        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+
+      const cancelFocusTween = () => {
+        if (focusTweenFrame == null) return
+        window.cancelAnimationFrame(focusTweenFrame)
+        focusTweenFrame = null
+      }
 
       let pointerDown:
         | {
             pointerId: number
+            mode: 'orbit' | 'pan'
             startX: number
             startY: number
             lastX: number
@@ -158,11 +171,59 @@ export function SceneCanvas() {
         material.emissiveIntensity = 0.8
       }
 
+      const focusOn = (nextTarget: THREE.Vector3) => {
+        cancelFocusTween()
+
+        const startTarget = controller.target.clone()
+        const endTarget = nextTarget.clone()
+
+        // Skip tiny moves to avoid scheduling unnecessary animation frames.
+        if (startTarget.distanceToSquared(endTarget) < 1e-16) {
+          controller.target.copy(endTarget)
+          controller.applyToCamera(camera)
+          invalidate()
+          return
+        }
+
+        const startTime = performance.now()
+
+        const step = () => {
+          const now = performance.now()
+          const t = THREE.MathUtils.clamp((now - startTime) / focusTweenMs, 0, 1)
+          const eased = easeInOutCubic(t)
+
+          controller.target.copy(startTarget).lerp(endTarget, eased)
+          controller.applyToCamera(camera)
+          renderOnce()
+
+          if (t >= 1) {
+            focusTweenFrame = null
+            return
+          }
+
+          focusTweenFrame = window.requestAnimationFrame(step)
+        }
+
+        focusTweenFrame = window.requestAnimationFrame(step)
+      }
+
+      canvas.style.cursor = 'grab'
+
+      const onContextMenu = (ev: MouseEvent) => {
+        ev.preventDefault()
+      }
+
       const onPointerDown = (ev: PointerEvent) => {
-        if (ev.button !== 0) return
+        const isPan = ev.button === 2 || (ev.button === 0 && ev.shiftKey)
+        const isOrbit = ev.button === 0 && !ev.shiftKey
+
+        if (!isPan && !isOrbit) return
+
+        ev.preventDefault()
 
         pointerDown = {
           pointerId: ev.pointerId,
+          mode: isPan ? 'pan' : 'orbit',
           startX: ev.clientX,
           startY: ev.clientY,
           lastX: ev.clientX,
@@ -185,9 +246,12 @@ export function SceneCanvas() {
             return
           }
 
+          cancelFocusTween()
+
           pointerDown.isDragging = true
           pointerDown.lastX = ev.clientX
           pointerDown.lastY = ev.clientY
+          canvas.style.cursor = 'grabbing'
           return
         }
 
@@ -197,8 +261,14 @@ export function SceneCanvas() {
         pointerDown.lastX = ev.clientX
         pointerDown.lastY = ev.clientY
 
-        controller.yaw -= dx * orbitSensitivity
-        controller.pitch -= dy * orbitSensitivity
+        if (pointerDown.mode === 'orbit') {
+          controller.yaw -= dx * orbitSensitivity
+          controller.pitch -= dy * orbitSensitivity
+        } else {
+          const rect = canvas.getBoundingClientRect()
+          controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+        }
+
         controller.applyToCamera(camera)
         invalidate()
       }
@@ -207,7 +277,7 @@ export function SceneCanvas() {
         if (!pointerDown) return
         if (ev.pointerId !== pointerDown.pointerId) return
 
-        const wasDragging = pointerDown.isDragging
+        const { isDragging: wasDragging, mode } = pointerDown
         pointerDown = undefined
 
         try {
@@ -216,7 +286,12 @@ export function SceneCanvas() {
           // Ignore cases like pointercancel where the capture is already released.
         }
 
+        canvas.style.cursor = 'grab'
+
         if (wasDragging) return
+
+        // Only left-click (without shift) selects/focuses.
+        if (mode !== 'orbit') return
 
         const hit = pickFirstIntersection({
           clientX: ev.clientX,
@@ -243,13 +318,14 @@ export function SceneCanvas() {
 
         const target = new THREE.Vector3()
         hitMesh.getWorldPosition(target)
-        controller.target.copy(target)
-        controller.applyToCamera(camera)
-        invalidate()
+
+        focusOn(target)
       }
 
       const onWheel = (ev: WheelEvent) => {
         ev.preventDefault()
+
+        cancelFocusTween()
 
         controller.radius *= Math.exp(ev.deltaY * wheelZoomScale)
         controller.applyToCamera(camera)
@@ -261,6 +337,7 @@ export function SceneCanvas() {
       canvas.addEventListener('pointerup', onPointerUp)
       canvas.addEventListener('pointercancel', onPointerUp)
       canvas.addEventListener('wheel', onWheel, { passive: false })
+      canvas.addEventListener('contextmenu', onContextMenu)
 
       // Ensure listeners/material tweaks are cleaned up.
       cleanupInteractions = () => {
@@ -269,7 +346,9 @@ export function SceneCanvas() {
         canvas.removeEventListener('pointerup', onPointerUp)
         canvas.removeEventListener('pointercancel', onPointerUp)
         canvas.removeEventListener('wheel', onWheel)
+        canvas.removeEventListener('contextmenu', onContextMenu)
 
+        cancelFocusTween()
         setSelectedMesh(undefined)
       }
     }
