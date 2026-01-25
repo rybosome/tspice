@@ -46,7 +46,44 @@ A reasonable starting point is:
 
 - `1 threeUnit = 1,000 km` (`kmToWorld = 1 / 1000`)
 
-Tune this depending on camera near/far planes and desired precision.
+The current demo scene (`src/SceneCanvas.tsx`) uses a more aggressive scale:
+
+- `1 threeUnit = 1,000,000 km` (`kmToWorld = 1 / 1_000_000`)
+
+…and then applies a per-body visual `radiusScale` so planets are still visible.
+
+Tune this depending on camera near/far planes, desired look, and precision.
+
+## Precision strategy (Issue #68)
+
+This viewer implements **Strategy A — focus-origin rebasing ("floating origin")**.
+
+WebGL vertices end up in 32-bit float space; solar-system-scale positions (e.g. 1 AU in km) lose fine detail when used directly as world coordinates.
+
+Implementation in `src/scene/precision.ts` + `src/SceneCanvas.tsx`:
+
+- Query body positions in a stable inertial frame (`J2000`) relative to a stable observer (we use `SUN` for the fake backend).
+- Pick a **focus target** (defaults to Earth).
+- Each update, compute `rebasedKm = bodyPosKm - focusPosKm`.
+- Convert `rebasedKm` into renderer units via `kmToWorld` and assign to Three.js object positions.
+
+This keeps the camera and nearby bodies numerically close to the origin, improving effective precision.
+
+### Optional: logarithmic depth buffer
+
+You can opt-in to Three's logarithmic depth buffer with `?logDepth=1`.
+
+This is **not** the primary precision strategy (it helps with depth range / z-fighting more than large-coordinate jitter), but it can be useful when experimenting with bigger far planes.
+
+## Viewer controls
+
+In local dev (non-e2e), the viewer exposes a tiny overlay:
+
+- ET slider + play/pause
+- focus target selection (Sun/Earth/Moon)
+- optional debug axes:
+  - `J2000` axes at the origin
+  - body-fixed axes at each body (Earth: `IAU_EARTH`, Moon: `IAU_MOON`)
 
 ### Frame transforms
 

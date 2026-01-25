@@ -1,9 +1,12 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { CameraController } from './controls/CameraController.js'
 import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
-import { J2000_FRAME, type EtSeconds } from './spice/SpiceClient.js'
+import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId } from './spice/SpiceClient.js'
+import { createBodyMesh } from './scene/BodyMesh.js'
+import { createFrameAxes } from './scene/FrameAxes.js'
+import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
 
 function disposeMaterial(material: THREE.Material | THREE.Material[]) {
@@ -18,10 +21,61 @@ export function SceneCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
-  useEffect(() => {
-    const search = new URLSearchParams(window.location.search)
-    const isE2e = search.has('e2e')
+  const search = useMemo(() => new URLSearchParams(window.location.search), [])
+  const isE2e = search.has('e2e')
+  const enableLogDepth = search.has('logDepth')
 
+  const [et, setEt] = useState<EtSeconds>(() => {
+    const parsed = Number(search.get('et') ?? 0)
+    return Number.isFinite(parsed) ? parsed : 0
+  })
+
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
+  const [showJ2000Axes, setShowJ2000Axes] = useState(false)
+  const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
+
+  const updateSceneRef = useRef<
+    | ((next: {
+        et: EtSeconds
+        focusBody: BodyRef
+        showJ2000Axes: boolean
+        showBodyFixedAxes: boolean
+      }) => void)
+    | null
+  >(null)
+
+  // The renderer/bootstrap `useEffect` is mounted once, so it needs a ref to
+  // read the latest UI state when async init completes.
+  const latestUiRef = useRef({ et, focusBody, showJ2000Axes, showBodyFixedAxes })
+  latestUiRef.current = { et, focusBody, showJ2000Axes, showBodyFixedAxes }
+
+  useEffect(() => {
+    updateSceneRef.current?.({ et, focusBody, showJ2000Axes, showBodyFixedAxes })
+  }, [et, focusBody, showJ2000Axes, showBodyFixedAxes])
+
+  useEffect(() => {
+    if (isE2e) return
+    if (!isPlaying) return
+
+    const speedSecondsPerSecond = 86_400 // 1 day / second
+    let lastNow = performance.now()
+    let frame: number | null = null
+
+    const step = (now: number) => {
+      const dtSec = Math.max(0, (now - lastNow) / 1000)
+      lastNow = now
+      setEt((prev) => prev + dtSec * speedSecondsPerSecond)
+      frame = window.requestAnimationFrame(step)
+    }
+
+    frame = window.requestAnimationFrame(step)
+    return () => {
+      if (frame != null) window.cancelAnimationFrame(frame)
+    }
+  }, [isE2e, isPlaying])
+
+  useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
@@ -30,17 +84,16 @@ export function SceneCanvas() {
     let scheduledFrame: number | null = null
     let cleanupInteractions: (() => void) | undefined
 
-    // Resource cleanup lists.
-    const meshes: THREE.Mesh[] = []
+    // Resource cleanup + interaction lists.
     const pickables: THREE.Mesh[] = []
-    const geometries: THREE.BufferGeometry[] = []
-    const materials: THREE.Material[] = []
-    const helpers: Array<THREE.Object3D> = []
+    const sceneObjects: THREE.Object3D[] = []
+    const disposers: Array<() => void> = []
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: !isE2e,
       powerPreference: 'high-performance',
+      logarithmicDepthBuffer: enableLogDepth,
     })
 
     // Keep e2e snapshots stable by not depending on deviceScaleFactor.
@@ -357,13 +410,13 @@ export function SceneCanvas() {
           searchParams: search,
         })
 
-        const et: EtSeconds = (() => {
-          const utc = search.get('utc')
-          if (utc) return utcToEt(utc)
-
-          const parsed = Number(search.get('et') ?? 0)
-          return Number.isFinite(parsed) ? parsed : 0
-        })()
+        // Allow the URL to specify UTC for quick testing, but keep the slider
+        // driven by numeric ET.
+        const utc = search.get('utc')
+        if (utc) {
+          const nextEt = utcToEt(utc)
+          if (!disposed) setEt(nextEt)
+        }
 
         if (disposed) return
 
@@ -374,81 +427,156 @@ export function SceneCanvas() {
           }
         }
 
-        // New PR abstractions (SpiceClient + SceneModel) driving the rendered scene.
+        // Scene model driving the rendered scene.
         const sceneModel: SceneModel = {
           frame: J2000_FRAME,
-          observer: 'EARTH',
+          // Use a stable observer for all SPICE queries, then apply a precision
+          // strategy in the renderer (focus-origin rebasing).
+          observer: 'SUN',
           bodies: [
             {
+              body: 'SUN',
+              style: {
+                radiusKm: 695_700,
+                radiusScale: 2,
+                color: '#ffb703',
+                textureKind: 'sun',
+                label: 'Sun',
+              },
+            },
+            {
               body: 'EARTH',
-              style: { radiusKm: 6_371, color: '#2a9d8f', label: 'Earth' },
+              bodyFixedFrame: 'IAU_EARTH',
+              style: {
+                radiusKm: 6_371,
+                radiusScale: 50,
+                color: '#2a9d8f',
+                textureKind: 'earth',
+                label: 'Earth',
+              },
             },
             {
               body: 'MOON',
-              style: { radiusKm: 1_737.4, color: '#e9c46a', label: 'Moon' },
+              bodyFixedFrame: 'IAU_MOON',
+              style: {
+                radiusKm: 1_737.4,
+                radiusScale: 70,
+                color: '#e9c46a',
+                textureKind: 'moon',
+                label: 'Moon',
+              },
             },
           ],
         }
 
         const kmToWorld = 1 / 1_000_000
-        const radiusScale = 50
 
-        for (const body of sceneModel.bodies) {
-          const state = spiceClient.getBodyState({
-            target: body.body,
+        const bodies = sceneModel.bodies.map((body) => {
+          const { mesh, dispose } = createBodyMesh({
+            radiusKm: body.style.radiusKm,
+            kmToWorld,
+            radiusScale: body.style.radiusScale,
+            color: body.style.color,
+            textureKind: body.style.textureKind,
+          })
+
+          mesh.userData.bodyId = body.body
+
+          pickables.push(mesh)
+          sceneObjects.push(mesh)
+          disposers.push(dispose)
+          scene.add(mesh)
+
+          const axes = !isE2e && body.bodyFixedFrame
+            ? createFrameAxes({ sizeWorld: 0.45, opacity: 0.9 })
+            : undefined
+
+          if (axes) {
+            axes.object.visible = false
+            sceneObjects.push(axes.object)
+            disposers.push(axes.dispose)
+            scene.add(axes.object)
+          }
+
+          return {
+            body: body.body,
+            bodyFixedFrame: body.bodyFixedFrame,
+            mesh,
+            axes,
+          }
+        })
+
+        const j2000Axes = !isE2e ? createFrameAxes({ sizeWorld: 1.2, opacity: 0.9 }) : undefined
+        if (j2000Axes) {
+          j2000Axes.object.visible = false
+          sceneObjects.push(j2000Axes.object)
+          disposers.push(j2000Axes.dispose)
+          scene.add(j2000Axes.object)
+        }
+
+        const updateScene = (next: {
+          et: EtSeconds
+          focusBody: BodyRef
+          showJ2000Axes: boolean
+          showBodyFixedAxes: boolean
+        }) => {
+          const focusState = spiceClient.getBodyState({
+            target: next.focusBody,
             observer: sceneModel.observer,
             frame: sceneModel.frame,
-            et,
+            et: next.et,
           })
+          const focusPosKm = focusState.positionKm
 
-          const radiusWorld = body.style.radiusKm * kmToWorld * radiusScale
-          const geometry = new THREE.SphereGeometry(radiusWorld, 48, 24)
-          const material = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(body.style.color),
-            roughness: 0.9,
-            metalness: 0.0,
-          })
+          for (const b of bodies) {
+            const state = spiceClient.getBodyState({
+              target: b.body,
+              observer: sceneModel.observer,
+              frame: sceneModel.frame,
+              et: next.et,
+            })
 
-          const mesh = new THREE.Mesh(geometry, material)
-          mesh.userData.bodyId = body.body
-          mesh.position.set(
-            state.positionKm[0] * kmToWorld,
-            state.positionKm[1] * kmToWorld,
-            state.positionKm[2] * kmToWorld
-          )
+            const rebasedKm = rebasePositionKm(state.positionKm, focusPosKm)
+            b.mesh.position.set(
+              rebasedKm[0] * kmToWorld,
+              rebasedKm[1] * kmToWorld,
+              rebasedKm[2] * kmToWorld
+            )
 
-          meshes.push(mesh)
-          pickables.push(mesh)
-          geometries.push(geometry)
-          materials.push(material)
-          scene.add(mesh)
+            if (b.axes) {
+              const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
+              b.axes.object.visible = visible
+
+              if (visible && b.bodyFixedFrame) {
+                const rot = spiceClient.getFrameTransform({
+                  from: b.bodyFixedFrame as FrameId,
+                  to: sceneModel.frame,
+                  et: next.et,
+                })
+                b.axes.setPose({ position: b.mesh.position, rotationJ2000: rot })
+              }
+            }
+          }
+
+          if (j2000Axes) {
+            j2000Axes.object.visible = next.showJ2000Axes
+            if (next.showJ2000Axes) {
+              j2000Axes.setPose({ position: new THREE.Vector3(0, 0, 0) })
+            }
+          }
+
+          // Use the (fake) Sun vector to orient lighting deterministically.
+          const sun = bodies.find((b) => String(b.body) === 'SUN')
+          const sunPos = sun?.mesh.position ?? new THREE.Vector3(1, 1, 1)
+          const len2 = sunPos.lengthSq()
+          const dirPos = len2 > 1e-12 ? sunPos.clone().normalize() : new THREE.Vector3(1, 1, 1).normalize()
+          dir.position.copy(dirPos.multiplyScalar(10))
+
+          invalidate()
         }
 
-        // Use the (fake) Sun vector to orient lighting deterministically.
-        const sunState = spiceClient.getBodyState({
-          target: 'SUN',
-          observer: sceneModel.observer,
-          frame: sceneModel.frame,
-          et,
-        })
-        const sunDir = new THREE.Vector3(
-          sunState.positionKm[0],
-          sunState.positionKm[1],
-          sunState.positionKm[2]
-        ).normalize()
-        dir.position.set(sunDir.x * 10, sunDir.y * 10, sunDir.z * 10)
-
-        // Basic orientation helpers are great for local dev, but they introduce
-        // lots of thin lines that can make visual snapshots flaky.
-        if (!isE2e) {
-          const grid = new THREE.GridHelper(10, 10)
-          scene.add(grid)
-          helpers.push(grid)
-
-          const axes = new THREE.AxesHelper(2)
-          scene.add(axes)
-          helpers.push(axes)
-        }
+        updateSceneRef.current = updateScene
+        updateScene(latestUiRef.current)
 
         resize()
         controller.applyToCamera(camera)
@@ -475,28 +603,74 @@ export function SceneCanvas() {
         cleanupInteractions?.()
       }
 
-      for (const helper of helpers) {
-        scene.remove(helper)
+      updateSceneRef.current = null
 
-        // GridHelper/AxesHelper use line materials.
-        const h = helper as unknown as {
-          geometry?: THREE.BufferGeometry
-          material?: THREE.Material | THREE.Material[]
-        }
-        h.geometry?.dispose()
-        if (h.material) disposeMaterial(h.material)
-      }
-
-      for (const mesh of meshes) scene.remove(mesh)
-      for (const g of geometries) g.dispose()
-      for (const m of materials) m.dispose()
+      for (const obj of sceneObjects) scene.remove(obj)
+      for (const dispose of disposers) dispose()
 
       renderer.dispose()
     }
   }, [])
 
+  const etDays = et / 86_400
+
   return (
     <div ref={containerRef} className="scene">
+      {!isE2e ? (
+        <div className="sceneOverlay">
+          <div className="sceneOverlayRow">
+            <label className="sceneOverlayLabel">
+              ET (days)
+              <input
+                type="range"
+                min={0}
+                max={365.25}
+                step={0.1}
+                value={etDays}
+                onChange={(e) => setEt(Number(e.target.value) * 86_400)}
+              />
+            </label>
+            <span className="sceneOverlayValue">{etDays.toFixed(2)}</span>
+            <button className="sceneOverlayButton" onClick={() => setIsPlaying((p) => !p)}>
+              {isPlaying ? 'Pause' : 'Play'}
+            </button>
+          </div>
+
+          <div className="sceneOverlayRow">
+            <label className="sceneOverlayLabel">
+              Focus
+              <select
+                value={String(focusBody)}
+                onChange={(e) => {
+                  setFocusBody(e.target.value)
+                }}
+              >
+                <option value="EARTH">Earth</option>
+                <option value="MOON">Moon</option>
+                <option value="SUN">Sun</option>
+              </select>
+            </label>
+
+            <label className="sceneOverlayCheckbox">
+              <input
+                type="checkbox"
+                checked={showJ2000Axes}
+                onChange={(e) => setShowJ2000Axes(e.target.checked)}
+              />
+              J2000 axes
+            </label>
+            <label className="sceneOverlayCheckbox">
+              <input
+                type="checkbox"
+                checked={showBodyFixedAxes}
+                onChange={(e) => setShowBodyFixedAxes(e.target.checked)}
+              />
+              Body-fixed axes
+            </label>
+          </div>
+        </div>
+      ) : null}
+
       <canvas ref={canvasRef} className="sceneCanvas" />
     </div>
   )
