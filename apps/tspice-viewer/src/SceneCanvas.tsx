@@ -568,7 +568,7 @@ export function SceneCanvas() {
             }
           }
 
-          // Use the (fake) Sun vector to orient lighting deterministically.
+          // Use the Sun vector to orient lighting deterministically.
           const sun = bodies.find((b) => String(b.body) === 'SUN')
           const sunPos = sun?.mesh.position ?? new THREE.Vector3(1, 1, 1)
           const len2 = sunPos.lengthSq()

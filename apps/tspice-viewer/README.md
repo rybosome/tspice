@@ -11,6 +11,17 @@ From repo root:
 - `pnpm install`
 - `pnpm -C apps/tspice-viewer dev`
 
+## NAIF kernels
+
+This viewer ships a small set of **NAIF Generic Kernels** as static assets under `public/kernels/naif/`:
+
+- `naif0012.tls` (LSK)
+- `pck00011.tpc` (PCK)
+- `de432s.bsp` (SPK)
+
+These kernel files are redistributed **unmodified**, consistent with NAIF's rules:
+https://naif.jpl.nasa.gov/naif/rules.html
+
 ## Scripts
 
 - `pnpm -C apps/tspice-viewer build`
@@ -62,7 +73,7 @@ WebGL vertices end up in 32-bit float space; solar-system-scale positions (e.g. 
 
 Implementation in `src/scene/precision.ts` + `src/SceneCanvas.tsx`:
 
-- Query body positions in a stable inertial frame (`J2000`) relative to a stable observer (we use `SUN` for the fake backend).
+- Query body positions in a stable inertial frame (`J2000`) relative to a stable observer (we use `SUN`).
 - Pick a **focus target** (defaults to Earth).
 - Each update, compute `rebasedKm = bodyPosKm - focusPosKm`.
 - Convert `rebasedKm` into renderer units via `kmToWorld` and assign to Three.js object positions.
@@ -105,7 +116,7 @@ The transform is intended to be applied as:
 ## What’s included
 
 - `src/spice/SpiceClient.ts`: a minimal renderer-facing interface
-- `src/spice/createSpiceClient.ts`: viewer integration layer (defaults to the tspice fake backend)
+- `src/spice/createSpiceClient.ts`: viewer integration layer (WASM backend + default NAIF kernels)
 - `src/spice/createCachedSpiceClient.ts`: single-entry (`et`-keyed) cache wrapper for viewer perf
 - `src/scene/SceneModel.ts`: types describing bodies and render styling
 
