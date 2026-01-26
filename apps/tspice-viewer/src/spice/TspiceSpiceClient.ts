@@ -3,6 +3,7 @@ import type { Spice, SpiceTime } from "@rybosome/tspice";
 import type {
   BodyRef,
   BodyState,
+  EtSeconds,
   FrameId,
   GetBodyStateInput,
   GetFrameTransformInput,
@@ -71,5 +72,9 @@ export class TspiceSpiceClient implements SpiceClient {
     );
 
     return transposeMat3RowMajorToColumnMajor(m);
+  }
+
+  etToUtc(et: EtSeconds): string {
+    return this.spice.etToUtc(et as unknown as SpiceTime, "ISOC", 0);
   }
 }
