@@ -99,3 +99,155 @@
   height: 100%;
   display: block;
 }
+
+/* Playback Controls */
+.playbackControls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 260px;
+}
+
+.playbackRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.playbackTimeDisplay {
+  font-variant-numeric: tabular-nums;
+}
+
+.playbackLabel {
+  color: rgba(255, 255, 255, 0.6);
+  min-width: 28px;
+}
+
+.playbackValue {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.playbackUtc {
+  font-family: ui-monospace, 'SF Mono', monospace;
+  font-size: 11px;
+}
+
+.playbackSliderLabel {
+  flex: 1;
+}
+
+.playbackSlider {
+  width: 100%;
+  cursor: pointer;
+}
+
+.playbackButtons {
+  justify-content: center;
+  gap: 4px;
+}
+
+.playbackButton {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  min-width: 32px;
+  text-align: center;
+}
+
+.playbackButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.playbackButtonMain {
+  padding: 8px 16px;
+  min-width: 44px;
+}
+
+.playbackSpeedRow {
+  justify-content: center;
+  gap: 12px;
+}
+
+.playbackSpeedLabel {
+  min-width: 80px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+}
+
+.playbackSpeedButton {
+  font-size: 16px;
+  font-weight: bold;
+  min-width: 28px;
+  padding: 4px 8px;
+}
+
+.playbackPresets {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.playbackPreset {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.playbackPreset:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.playbackPresetActive {
+  background: rgba(100, 160, 255, 0.2);
+  border-color: rgba(100, 160, 255, 0.4);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.playbackAdvancedToggle {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 0;
+}
+
+.playbackAdvancedToggle:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.playbackAdvanced {
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.playbackAdvancedLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.playbackAdvancedInput {
+  width: 80px;
+  padding: 4px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  font-size: 11px;
+}

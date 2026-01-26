@@ -4,6 +4,7 @@
  * This intentionally covers only what the viewer needs:
  * - relative body state vectors (position/velocity)
  * - frame rotation transforms between reference frames
+ * - time conversion (ET to UTC)
  */
 
 export const J2000_FRAME = "J2000" as const;
@@ -103,6 +104,14 @@ export interface SpiceClient {
    * The returned matrix is column-major (`Mat3`), matching Three.js `Matrix3`.
    */
   getFrameTransform(input: GetFrameTransformInput): Mat3;
+
+  /**
+   * Convert ephemeris time (seconds past J2000) to a UTC string.
+   *
+   * @param et - Ephemeris time in seconds past J2000
+   * @returns UTC string (format may vary by implementation, typically ISO-8601)
+   */
+  etToUtc(et: EtSeconds): string;
 
   /** Optional: enumerate supported bodies (if known). */
   listBodies?(): readonly BodyMeta[];

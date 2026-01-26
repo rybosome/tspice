@@ -3,11 +3,14 @@ import * as THREE from 'three'
 import { CameraController } from './controls/CameraController.js'
 import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
-import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId } from './spice/SpiceClient.js'
+import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
 import { createFrameAxes } from './scene/FrameAxes.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
+import { timeStore } from './time/timeStore.js'
+import { usePlaybackTicker } from './time/usePlaybackTicker.js'
+import { PlaybackControls } from './ui/PlaybackControls.js'
 
 function disposeMaterial(material: THREE.Material | THREE.Material[]) {
   if (Array.isArray(material)) {
@@ -25,19 +28,17 @@ export function SceneCanvas() {
   const isE2e = search.has('e2e')
   const enableLogDepth = search.has('logDepth')
 
-  const [et, setEt] = useState<EtSeconds>(() => {
-    const parsed = Number(search.get('et') ?? 0)
-    return Number.isFinite(parsed) ? parsed : 0
-  })
-
-  const [isPlaying, setIsPlaying] = useState(false)
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
+  const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
+
+  // Start the playback ticker (handles time advancement)
+  usePlaybackTicker()
 
   const updateSceneRef = useRef<
     | ((next: {
-        et: EtSeconds
+        etSec: EtSeconds
         focusBody: BodyRef
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
@@ -47,33 +48,23 @@ export function SceneCanvas() {
 
   // The renderer/bootstrap `useEffect` is mounted once, so it needs a ref to
   // read the latest UI state when async init completes.
-  const latestUiRef = useRef({ et, focusBody, showJ2000Axes, showBodyFixedAxes })
-  latestUiRef.current = { et, focusBody, showJ2000Axes, showBodyFixedAxes }
+  const latestUiRef = useRef({ focusBody, showJ2000Axes, showBodyFixedAxes })
+  latestUiRef.current = { focusBody, showJ2000Axes, showBodyFixedAxes }
 
+  // Subscribe to time store changes and update the scene (without React rerenders)
   useEffect(() => {
-    updateSceneRef.current?.({ et, focusBody, showJ2000Axes, showBodyFixedAxes })
-  }, [et, focusBody, showJ2000Axes, showBodyFixedAxes])
+    const unsubscribe = timeStore.subscribe(() => {
+      const etSec = timeStore.getState().etSec
+      updateSceneRef.current?.({ etSec, ...latestUiRef.current })
+    })
+    return unsubscribe
+  }, [])
 
+  // Update scene when UI state changes (focus, axes toggles)
   useEffect(() => {
-    if (isE2e) return
-    if (!isPlaying) return
-
-    const speedSecondsPerSecond = 86_400 // 1 day / second
-    let lastNow = performance.now()
-    let frame: number | null = null
-
-    const step = (now: number) => {
-      const dtSec = Math.max(0, (now - lastNow) / 1000)
-      lastNow = now
-      setEt((prev) => prev + dtSec * speedSecondsPerSecond)
-      frame = window.requestAnimationFrame(step)
-    }
-
-    frame = window.requestAnimationFrame(step)
-    return () => {
-      if (frame != null) window.cancelAnimationFrame(frame)
-    }
-  }, [isE2e, isPlaying])
+    const etSec = timeStore.getState().etSec
+    updateSceneRef.current?.({ etSec, focusBody, showJ2000Axes, showBodyFixedAxes })
+  }, [focusBody, showJ2000Axes, showBodyFixedAxes])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -406,7 +397,7 @@ export function SceneCanvas() {
 
     void (async () => {
       try {
-        const { client: spiceClient, utcToEt } = await createSpiceClient({
+        const { client: loadedSpiceClient, utcToEt } = await createSpiceClient({
           searchParams: search,
         })
 
@@ -415,15 +406,27 @@ export function SceneCanvas() {
         const utc = search.get('utc')
         if (utc) {
           const nextEt = utcToEt(utc)
-          if (!disposed) setEt(nextEt)
+          if (!disposed) timeStore.setEtSec(nextEt)
+        }
+
+        // Parse initial ET from URL if provided
+        const etParam = search.get('et')
+        if (etParam) {
+          const parsed = Number(etParam)
+          if (Number.isFinite(parsed) && !disposed) {
+            timeStore.setEtSec(parsed)
+          }
         }
 
         if (disposed) return
 
+        // Store the spice client for the PlaybackControls
+        setSpiceClient(loadedSpiceClient)
+
         if (isE2e) {
           ;(window as any).__tspice_viewer__e2e = {
             getFrameTransform: ({ from, to, et }: { from: string; to: string; et: number }) =>
-              spiceClient.getFrameTransform({ from, to, et }),
+              loadedSpiceClient.getFrameTransform({ from, to, et }),
           }
         }
 
@@ -515,25 +518,25 @@ export function SceneCanvas() {
         }
 
         const updateScene = (next: {
-          et: EtSeconds
+          etSec: EtSeconds
           focusBody: BodyRef
           showJ2000Axes: boolean
           showBodyFixedAxes: boolean
         }) => {
-          const focusState = spiceClient.getBodyState({
+          const focusState = loadedSpiceClient.getBodyState({
             target: next.focusBody,
             observer: sceneModel.observer,
             frame: sceneModel.frame,
-            et: next.et,
+            et: next.etSec,
           })
           const focusPosKm = focusState.positionKm
 
           for (const b of bodies) {
-            const state = spiceClient.getBodyState({
+            const state = loadedSpiceClient.getBodyState({
               target: b.body,
               observer: sceneModel.observer,
               frame: sceneModel.frame,
-              et: next.et,
+              et: next.etSec,
             })
 
             const rebasedKm = rebasePositionKm(state.positionKm, focusPosKm)
@@ -548,10 +551,10 @@ export function SceneCanvas() {
               b.axes.object.visible = visible
 
               if (visible && b.bodyFixedFrame) {
-                const rot = spiceClient.getFrameTransform({
+                const rot = loadedSpiceClient.getFrameTransform({
                   from: b.bodyFixedFrame as FrameId,
                   to: sceneModel.frame,
-                  et: next.et,
+                  et: next.etSec,
                 })
                 b.axes.setPose({ position: b.mesh.position, rotationJ2000: rot })
               }
@@ -576,7 +579,9 @@ export function SceneCanvas() {
         }
 
         updateSceneRef.current = updateScene
-        updateScene(latestUiRef.current)
+        // Initial render with current time store state
+        const initialEt = timeStore.getState().etSec
+        updateScene({ etSec: initialEt, ...latestUiRef.current })
 
         resize()
         controller.applyToCamera(camera)
@@ -612,31 +617,13 @@ export function SceneCanvas() {
     }
   }, [])
 
-  const etDays = et / 86_400
-
   return (
     <div ref={containerRef} className="scene">
-      {!isE2e ? (
+      {!isE2e && spiceClient ? (
         <div className="sceneOverlay">
-          <div className="sceneOverlayRow">
-            <label className="sceneOverlayLabel">
-              ET (days)
-              <input
-                type="range"
-                min={0}
-                max={365.25}
-                step={0.1}
-                value={etDays}
-                onChange={(e) => setEt(Number(e.target.value) * 86_400)}
-              />
-            </label>
-            <span className="sceneOverlayValue">{etDays.toFixed(2)}</span>
-            <button className="sceneOverlayButton" onClick={() => setIsPlaying((p) => !p)}>
-              {isPlaying ? 'Pause' : 'Play'}
-            </button>
-          </div>
+          <PlaybackControls spiceClient={spiceClient} />
 
-          <div className="sceneOverlayRow">
+          <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
             <label className="sceneOverlayLabel">
               Focus
               <select
