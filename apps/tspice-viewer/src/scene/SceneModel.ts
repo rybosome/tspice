@@ -1,5 +1,7 @@
 import type { BodyRef, FrameId } from "../spice/SpiceClient.js";
 
+export type BodyTextureKind = "earth" | "moon" | "sun";
+
 /**
  * Renderer-facing scene description (types only).
  *
@@ -11,8 +13,14 @@ export interface SceneBodyStyle {
   /** Body radius in km. */
   radiusKm: number;
 
+  /** Visual-only multiplier to make bodies visible at large scale. */
+  radiusScale?: number;
+
   /** Renderer color hint (e.g. `"#ffffff"`, `"skyblue"`). */
   color: string;
+
+  /** Optional, lightweight procedural texture (no binary assets). */
+  textureKind?: BodyTextureKind;
 
   /** Optional label to show in UI. */
   label?: string;
@@ -21,6 +29,9 @@ export interface SceneBodyStyle {
 export interface SceneBody {
   /** NAIF ID or body name; fed into `SpiceClient.getBodyState`. */
   body: BodyRef;
+
+  /** Optional body-fixed frame for debug axes (e.g. `"IAU_EARTH"`). */
+  bodyFixedFrame?: FrameId;
 
   style: SceneBodyStyle;
 }

@@ -27,10 +27,71 @@
 .scene {
   width: 100%;
   height: 100%;
+  position: relative;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   overflow: hidden;
   background: #0f131a;
+}
+
+.sceneOverlay {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(10, 14, 20, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+  font-size: 12px;
+}
+
+.sceneOverlayRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sceneOverlayLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sceneOverlayLabel input[type='range'] {
+  width: 180px;
+}
+
+.sceneOverlayValue {
+  width: 54px;
+  text-align: right;
+  opacity: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.sceneOverlayButton {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sceneOverlayButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sceneOverlayCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.95;
 }
 
 .sceneCanvas {
