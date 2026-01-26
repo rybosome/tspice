@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "pree2e": "pnpm -r --filter @rybosome/tspice... --filter @rybosome/tspice-backend-fake... build",
+    "pree2e": "pnpm -r --filter @rybosome/tspice... --filter @rybosome/tspice-backend-wasm... build",
     "e2e": "playwright test",
     "test:e2e": "pnpm run e2e",
     "e2e:ui": "playwright test --ui",
@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@rybosome/tspice": "workspace:*",
-    "@rybosome/tspice-backend-fake": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "three": "0.160.1"

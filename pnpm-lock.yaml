@@ -17,9 +17,6 @@ importers:
       '@rybosome/tspice':
         specifier: workspace:*
         version: link:../../packages/tspice
-      '@rybosome/tspice-backend-fake':
-        specifier: workspace:*
-        version: link:../../packages/backend-fake
       react:
         specifier: ^19.2.0
         version: 19.2.3

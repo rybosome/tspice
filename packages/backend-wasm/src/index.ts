@@ -2009,19 +2009,25 @@ function getToolkitVersion(module: EmscriptenModule): string {
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackendWasm> {
-  const defaultWasmUrl = new URL(`./${WASM_BINARY_FILENAME}`, import.meta.url);
+  // NOTE: Keep this as a literal string so bundlers (Vite) don't generate a
+  // runtime glob map for *every* file in this directory (including *.d.ts.map),
+  // which can lead to JSON being imported as an ESM module.
+  const defaultWasmUrl = new URL("./tspice_backend_wasm.wasm", import.meta.url);
   const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
-
-  const moduleUrl = new URL(`./${WASM_JS_FILENAME}`, import.meta.url);
 
   let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
   try {
-    ({ default: createEmscriptenModule } = (await import(moduleUrl.href)) as {
+    // NOTE: This must be a literal import path so bundlers like Vite don't
+    // rewrite the glue JS into an asset URL module (via `new URL(..., import.meta.url)`
+    // + `?url`) which breaks `import()`.
+    ({ default: createEmscriptenModule } = (await import(
+      "./tspice_backend_wasm.js"
+    )) as {
       default: (opts: Record<string, unknown>) => Promise<unknown>;
     });
   } catch (error) {
     throw new Error(
-      `Failed to load tspice WASM glue from ${moduleUrl.href}: ${String(error)}`,
+      `Failed to load tspice WASM glue (./${WASM_JS_FILENAME}): ${String(error)}`,
     );
   }
 

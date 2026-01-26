@@ -12,7 +12,7 @@ import type { Vec3Km } from '../spice/SpiceClient.js'
 *
 * Implementation:
 * - Fetch each body's position in km in a stable inertial frame (J2000) relative to a
-*   stable observer (we use `SUN` in the fake backend).
+*   stable observer (we use `SUN`).
 * - Each frame/update, compute `rebasedKm = bodyPosKm - focusPosKm`.
 * - Convert to renderer units with `kmToWorld` and assign to Three.js object positions.
 */

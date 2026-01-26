@@ -5,7 +5,7 @@ test.use({
   deviceScaleFactor: 1,
 })
 
-test('viewer loads (default fake backend) without console/page errors', async ({ page, baseURL }) => {
+test('viewer loads (WASM backend) without console/page errors', async ({ page, baseURL }) => {
   const allowedOrigin = baseURL ? new URL(baseURL).origin : 'http://127.0.0.1:4173'
 
   // Ensure the test is deterministic and doesn't accidentally hit the network.
