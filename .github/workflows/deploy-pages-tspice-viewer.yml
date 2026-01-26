@@ -60,10 +60,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
+      pull-requests: write
 
     env:
       PAGES_PROJECT: tspice-viewer
       PREVIEW_BRANCH: pr-${{ github.event.pull_request.number }}
+      PREVIEW_URL: https://pr-${{ github.event.pull_request.number }}.tspice-viewer.pages.dev
 
     steps:
       - name: Checkout
@@ -92,3 +95,23 @@ jobs:
             pages deploy dist
             --project-name "${{ env.PAGES_PROJECT }}"
             --branch "${{ env.PREVIEW_BRANCH }}"
+
+      - name: Find existing tspice-viewer preview comment
+        id: find_preview_comment
+        uses: peter-evans/find-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: github-actions[bot]
+          body-includes: "<!-- tspice-viewer-preview-url -->"
+
+      - name: Create or update tspice-viewer preview comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.find_preview_comment.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            <!-- tspice-viewer-preview-url -->
+            **tspice-viewer preview:** ${{ env.PREVIEW_URL }}
