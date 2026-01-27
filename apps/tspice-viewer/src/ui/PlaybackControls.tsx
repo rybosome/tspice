@@ -4,8 +4,6 @@ import type { SpiceClient } from '../spice/SpiceClient.js';
 
 interface PlaybackControlsProps {
   spiceClient: SpiceClient;
-  showAdvanced: boolean;
-  onToggleAdvanced: () => void;
 }
 
 /**
@@ -53,7 +51,7 @@ function formatEtDays(etSec: number): string {
   return days.toFixed(2);
 }
 
-export function PlaybackControls({ spiceClient, showAdvanced, onToggleAdvanced }: PlaybackControlsProps) {
+export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
   const state = useTimeStore();
 
   const utcString = useMemo(() => {
@@ -66,13 +64,6 @@ export function PlaybackControls({ spiceClient, showAdvanced, onToggleAdvanced }
 
   const handleSliderChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     timeStore.setEtSec(Number(e.target.value));
-  }, []);
-
-  const handleQuantumChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    if (value > 0) {
-      timeStore.setQuantumSec(value);
-    }
   }, []);
 
   const isPlaying = state.rateSecPerSec !== 0;
@@ -186,34 +177,6 @@ export function PlaybackControls({ spiceClient, showAdvanced, onToggleAdvanced }
           </button>
         ))}
       </div>
-
-      {/* Advanced Section */}
-      <div className="playbackRow">
-        <button
-          className="playbackAdvancedToggle"
-          onClick={onToggleAdvanced}
-        >
-          {showAdvanced ? '▼ Advanced' : '▶ Advanced'}
-        </button>
-      </div>
-
-      {showAdvanced && (
-        <div className="playbackAdvanced">
-          <div className="playbackRow">
-            <label className="playbackAdvancedLabel">
-              Quantum (s):
-              <input
-                type="number"
-                className="playbackAdvancedInput"
-                min={0.001}
-                step={0.01}
-                value={state.quantumSec}
-                onChange={handleQuantumChange}
-              />
-            </label>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import * as THREE from 'three'
 import { CameraController } from './controls/CameraController.js'
 import { pickFirstIntersection } from './interaction/pick.js'
@@ -9,10 +9,11 @@ import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleScene
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
 import { createRingMesh } from './scene/RingMesh.js'
+import { createSelectionRing } from './scene/SelectionRing.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
-import { timeStore } from './time/timeStore.js'
+import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
@@ -52,6 +53,8 @@ export function SceneCanvas() {
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
 
+  const quantumSec = useTimeStoreSelector((s) => s.quantumSec)
+
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
   const sunOcclusionMarginRad = 0
@@ -62,38 +65,18 @@ export function SceneCanvas() {
   // inside the renderer effect.
   const kmToWorld = 1 / 1_000_000
 
-  const getIsSmallScreen = () =>
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia('(max-width: 720px)').matches
-      : false
-
-  const [isSmallScreen, setIsSmallScreen] = useState(getIsSmallScreen)
-  const [overlayOpen, setOverlayOpen] = useState(() => !getIsSmallScreen())
+  // Control pane collapsed state: starts expanded on all screen sizes
+  const [overlayOpen, setOverlayOpen] = useState(true)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   panModeEnabledRef.current = panModeEnabled
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
-
-    const mql = window.matchMedia('(max-width: 720px)')
-    const onChange = () => {
-      const small = mql.matches
-      setIsSmallScreen(small)
-      setOverlayOpen(!small)
+  const handleQuantumChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value)
+    if (value > 0) {
+      timeStore.setQuantumSec(value)
     }
-
-    onChange()
-
-    if (typeof mql.addEventListener === 'function') {
-      mql.addEventListener('change', onChange)
-      return () => mql.removeEventListener('change', onChange)
-    }
-
-    // Safari < 14
-    mql.addListener(onChange)
-    return () => mql.removeListener(onChange)
   }, [])
 
   const zoomBy = (factor: number) => {
@@ -343,9 +326,17 @@ export function SceneCanvas() {
     disposers.push(starfield.dispose)
     scene.add(starfield.object)
 
+    const selectionRing = !isE2e ? createSelectionRing() : undefined
+    if (selectionRing) {
+      sceneObjects.push(selectionRing.object)
+      disposers.push(selectionRing.dispose)
+      scene.add(selectionRing.object)
+    }
+
     const renderOnce = () => {
       if (disposed) return
       starfield.syncToCamera(camera)
+      selectionRing?.syncToCamera({ camera, nowMs: performance.now() })
       renderer.render(scene, camera)
     }
 
@@ -459,38 +450,54 @@ export function SceneCanvas() {
       let selected:
         | {
             mesh: THREE.Mesh
-            material: THREE.MeshStandardMaterial
-            prevEmissive: THREE.Color
-            prevEmissiveIntensity: number
           }
         | undefined
+
+      let selectionPulseFrame: number | null = null
+      const stopSelectionPulse = () => {
+        if (selectionPulseFrame == null) return
+        window.cancelAnimationFrame(selectionPulseFrame)
+        selectionPulseFrame = null
+      }
+
+      const startSelectionPulse = () => {
+        if (selectionPulseFrame != null) return
+
+        const step = () => {
+          if (disposed || !selected) {
+            selectionPulseFrame = null
+            return
+          }
+          invalidate()
+          selectionPulseFrame = window.requestAnimationFrame(step)
+        }
+
+        selectionPulseFrame = window.requestAnimationFrame(step)
+      }
 
       const setSelectedMesh = (mesh: THREE.Mesh | undefined) => {
         if (selected?.mesh === mesh) return
 
         if (selected) {
-          selected.material.emissive.copy(selected.prevEmissive)
-          selected.material.emissiveIntensity = selected.prevEmissiveIntensity
           selected = undefined
           selectedBodyId = undefined
+          selectionRing?.setTarget(undefined)
+          stopSelectionPulse()
+          invalidate()
         }
 
         if (!mesh) return
 
-        const material = mesh.material
-        if (!(material instanceof THREE.MeshStandardMaterial)) return
-
         selected = {
           mesh,
-          material,
-          prevEmissive: material.emissive.clone(),
-          prevEmissiveIntensity: material.emissiveIntensity,
         }
 
         selectedBodyId = String(mesh.userData.bodyId ?? '') || undefined
 
-        material.emissive.set('#f1c40f')
-        material.emissiveIntensity = 0.8
+        // Subtle world-space ring indicator around the selected body.
+        selectionRing?.setTarget(mesh)
+        startSelectionPulse()
+        invalidate()
       }
 
       focusOn = (nextTarget: THREE.Vector3, opts) => {
@@ -915,6 +922,7 @@ export function SceneCanvas() {
 
         cancelFocusTween?.()
         setSelectedMesh(undefined)
+        stopSelectionPulse()
       }
     }
 
@@ -1269,17 +1277,18 @@ export function SceneCanvas() {
           className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
         >
           <div className="sceneOverlayHeader">
-            {isSmallScreen ? (
-              <button
-                className="sceneOverlayButton"
-                onClick={() => setOverlayOpen((v) => !v)}
-                type="button"
-              >
-                {overlayOpen ? 'Hide controls' : 'Show controls'}
-              </button>
-            ) : (
-              <div className="sceneOverlayHeaderTitle">Controls</div>
-            )}
+            <div className="sceneOverlayHeaderTitle">Controls</div>
+
+            <button
+              className="sceneOverlayToggle"
+              onClick={() => setOverlayOpen((v) => !v)}
+              type="button"
+              aria-expanded={overlayOpen}
+              aria-controls="scene-overlay-body"
+              aria-label={overlayOpen ? 'Collapse controls' : 'Expand controls'}
+            >
+              {overlayOpen ? '▲' : '▼'}
+            </button>
 
             <div className="sceneOverlayHeaderActions">
               <button
@@ -1303,13 +1312,9 @@ export function SceneCanvas() {
             </div>
           </div>
 
-          {!isSmallScreen || overlayOpen ? (
-            <div className="sceneOverlayBody">
-              <PlaybackControls
-                spiceClient={spiceClient}
-                showAdvanced={showAdvanced}
-                onToggleAdvanced={() => setShowAdvanced((v) => !v)}
-              />
+          {overlayOpen ? (
+            <div id="scene-overlay-body" className="sceneOverlayBody">
+              <PlaybackControls spiceClient={spiceClient} />
 
               <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
                 <label className="sceneOverlayLabel">
@@ -1356,7 +1361,17 @@ export function SceneCanvas() {
                 </label>
               </div>
 
-              {/* Advanced tuning section (toggled via PlaybackControls) */}
+              {/* Advanced tuning section */}
+              <div className="sceneOverlayRow" style={{ marginTop: '8px' }}>
+                <button
+                  className="sceneOverlayButton"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  type="button"
+                >
+                  {showAdvanced ? '▼ Advanced' : '▶ Advanced'}
+                </button>
+              </div>
+
               {showAdvanced && (
                 <div className="sceneOverlayAdvanced" style={{ marginTop: '8px' }}>
                   <div className="sceneOverlayRow">
@@ -1383,6 +1398,20 @@ export function SceneCanvas() {
                         step={1}
                         value={sunScaleMultiplier}
                         onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Quantum (s)
+                      <input
+                        type="number"
+                        min={0.001}
+                        step={0.01}
+                        value={quantumSec}
+                        onChange={handleQuantumChange}
                         style={{ width: '100%' }}
                       />
                     </label>

@@ -543,6 +543,26 @@
   }
 }
 
+.sceneOverlayToggle {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sceneOverlayToggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .sceneOverlayHeaderActions {
   display: flex;
   align-items: center;
