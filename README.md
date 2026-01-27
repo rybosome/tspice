@@ -24,12 +24,12 @@ pnpm install
 Minimal usage (defaults to the WASM backend):
 
 ```ts
-import { createBackend } from "@rybosome/tspice";
+import { createSpice } from "@rybosome/tspice";
 
 async function main() {
-  const backend = await createBackend();
-  console.log(backend.kind); // "wasm" (default)
-  console.log(backend.spiceVersion());
+  const spice = await createSpice();
+  console.log(spice.backend.kind); // "wasm" (default)
+  console.log(spice.backend.spiceVersion());
 }
 
 main().catch(console.error);
@@ -38,42 +38,115 @@ main().catch(console.error);
 
 ## Usage
 
-### Kernel loading (byte-backed; works in WASM)
+### Backend selection
 
-The WASM backend loads kernels from an in-memory filesystem. To make the same code work in Node **and** WASM, you can read kernel bytes yourself and pass them to `loadKernel()`:
+`createSpice()` and `createBackend()` can run against multiple backend implementations:
+
+- `backend: "wasm"` (default): runs SPICE in WebAssembly.
+- `backend: "node"`: runs SPICE via a Node native addon.
+- `backend: "fake"`: deterministic stub (useful for tests / apps).
 
 ```ts
-import fs from "node:fs";
-import path from "node:path";
-
 import { createSpice } from "@rybosome/tspice";
 
-const readKernel = (name: string) =>
-  fs.readFileSync(path.join(process.cwd(), "kernels", name));
-
 async function main() {
-  const spice = await createSpice(); // defaults to WASM
+  const wasm = await createSpice();
+  const node = await createSpice({ backend: "node" });
 
-  // Put kernels under ./kernels in your project.
-  spice.loadKernel({
-    path: "/kernels/naif0012.tls",
-    bytes: readKernel("naif0012.tls"),
-  });
-
-  // (Load any additional kernels you need: SPKs, PCKs, etc.)
+  console.log(wasm.backend.kind); // "wasm"
+  console.log(node.backend.kind); // "node"
 }
 
 main().catch(console.error);
 ```
 
-Node-only shortcut (native backend): if you select the Node backend, you can load kernels directly from disk paths:
+### Kernel loading
+
+#### 10,000-foot view
+
+SPICE is *kernel driven*: before you can do anything interesting (time conversion, ephemeris, geometry, frames), you need to load one or more **kernels**.
+
+At a minimum, most apps will load:
+
+- **LSK** (leap seconds): required for `UTC` ↔ `ET` conversion.
+- **SPK** (ephemeris): required for most position/velocity queries.
+
+And often also:
+
+- **PCK** (body constants/shape/orientation)
+- **FK/CK/SCLK/IK** (frames, attitudes, spacecraft clocks, instrument geometry)
+
+How you load kernels depends heavily on backend and environment:
+
+1) **Node kernel loading** (native addon can load from disk paths)
+2) **WASM kernel loading** (browser-realistic: you typically fetch bytes and write to a virtual FS)
+
+#### Node kernel loading
+
+If you're using the Node backend (`createSpice({ backend: "node" })`), you can load kernels directly from filesystem paths.
 
 ```ts
 import { createSpice } from "@rybosome/tspice";
 
+// Example path. This file does not exist in this repo; use your own kernel layout.
+const LSK_ON_DISK = "/path/to/your/kernels/naif0012.tls";
+
 async function main() {
   const spice = await createSpice({ backend: "node" });
-  spice.loadKernel("./kernels/naif0012.tls");
+
+  // Node-only: load kernels directly from disk paths.
+  spice.loadKernel(LSK_ON_DISK);
+}
+
+main().catch(console.error);
+```
+
+If you want the *same* kernel-loading call site to work in both Node and WASM, you can provide bytes instead:
+
+```ts
+import fs from "node:fs";
+
+import { createSpice } from "@rybosome/tspice";
+
+// Example path. This file does not exist in this repo; use your own kernel layout.
+const LSK_ON_DISK = "/path/to/your/kernels/naif0012.tls";
+
+async function main() {
+  const spice = await createSpice({ backend: "node" });
+
+  spice.loadKernel({
+    // A stable identifier you can also use with `unloadKernel()`.
+    // For WASM this is also the path inside the in-memory filesystem.
+    path: "/kernels/naif0012.tls",
+    bytes: fs.readFileSync(LSK_ON_DISK),
+  });
+}
+
+main().catch(console.error);
+```
+
+#### WASM kernel loading (browser-realistic)
+
+In a browser you typically can’t read from arbitrary disk paths. Instead, you host kernels as static assets and **fetch their bytes**.
+
+```ts
+import { createSpice } from "@rybosome/tspice";
+
+async function fetchKernelBytes(url: string): Promise<Uint8Array> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch kernel ${url}: ${res.status} ${res.statusText}`);
+  }
+  return new Uint8Array(await res.arrayBuffer());
+}
+
+async function main() {
+  const spice = await createSpice({ backend: "wasm" });
+
+  spice.loadKernel({
+    path: "/kernels/naif0012.tls",
+    bytes: await fetchKernelBytes("/kernels/naif0012.tls"),
+  });
 }
 
 main().catch(console.error);
@@ -108,6 +181,8 @@ main().catch(console.error);
 
 This example computes the sub-solar point on a target body and then reports illumination angles at that point.
 
+Note: `createSpice()` currently exposes a *mid-level* API (`utcToEt`, `getState`, etc). Lower-level SPICE calls that aren't wrapped yet (like `subslr`) are available on `spice.backend`.
+
 ```ts
 import { createSpice } from "@rybosome/tspice";
 
@@ -119,9 +194,7 @@ async function main() {
   // Requires appropriate kernels (LSK + PCK + SPK, at minimum).
   const et = spice.utcToEt("2025-01-01T00:00:00Z");
 
-  const backend = spice.backend;
-
-  const { spoint } = backend.subslr(
+  const { spoint } = spice.backend.subslr(
     "Near Point: Ellipsoid",
     "MARS",
     et,
@@ -130,9 +203,9 @@ async function main() {
     "SUN",
   );
 
-  const { lon, lat } = backend.reclat(spoint);
+  const { lon, lat } = spice.backend.reclat(spoint);
 
-  const { phase, solar, emissn } = backend.ilumin(
+  const { phase, incdnc, emissn } = spice.backend.ilumin(
     "Ellipsoid",
     "MARS",
     et,
@@ -146,7 +219,7 @@ async function main() {
     subSolarLonDeg: radToDeg(lon),
     subSolarLatDeg: radToDeg(lat),
     phaseDeg: radToDeg(phase),
-    solarIncidenceDeg: radToDeg(solar),
+    solarIncidenceDeg: radToDeg(incdnc),
     emissionDeg: radToDeg(emissn),
   });
 }
@@ -161,31 +234,11 @@ main().catch(console.error);
 | `packages/tspice` | `@rybosome/tspice` | Public facade: `createBackend()`, `createSpice()`, exported types |
 | `packages/backend-wasm` | `@rybosome/tspice-backend-wasm` | WASM backend implementation (**default**) |
 | `packages/backend-node` | `@rybosome/tspice-backend-node` | Node.js native-addon backend implementation (opt-in) |
+| `packages/backend-fake` | `@rybosome/tspice-backend-fake` | Deterministic stub backend (tests / apps) |
 | `packages/backend-contract` | `@rybosome/tspice-backend-contract` | Shared backend interface + types |
 | `packages/core` | `@rybosome/tspice-core` | Shared utilities and small helpers |
 | `packages/backend-shim-c` | `@rybosome/tspice-backend-shim-c` | WIP / internal shim code |
 | `apps/tspice-viewer` | `@rybosome/tspice-viewer` | Example app + Playwright e2e tests |
-
-## Backend selection
-
-`@rybosome/tspice` is the entrypoint most callers should use. It selects an
-underlying backend implementation.
-
-- `createBackend()` defaults to `backend: "wasm"`.
-- The Node/native backend must be explicitly selected (and requires building the
-  native addon; see [`packages/backend-node`](./packages/backend-node/README.md)).
-
-```ts
-import { createBackend } from "@rybosome/tspice";
-
-async function main() {
-  const wasmBackend = await createBackend();
-  const nodeBackend = await createBackend({ backend: "node" });
-  console.log(wasmBackend.kind, nodeBackend.kind);
-}
-
-main().catch(console.error);
-```
 
 ## Verification
 
@@ -232,58 +285,39 @@ Compliance notes:
 
 ## 🧱 High-Level Architecture
 
-Three main layers:
+At a high level, this repo is a monorepo with a thin public facade, a shared backend contract, and multiple backend implementations.
 
----
+```mermaid
+flowchart LR
+  app["Your app"] --> tspice["@rybosome/tspice\n(createBackend / createSpice)"]
 
-### 1️⃣ Backend Layer — “Raw SPICE”
+  tspice --> contract["@rybosome/tspice-backend-contract\n(SpiceBackend types)"]
+  tspice --> core["@rybosome/tspice-core\n(utils)"]
 
-Internal interface for calling SPICE:
+  tspice -->|"backend: wasm"| wasm["@rybosome/tspice-backend-wasm\n(.wasm + JS glue)"]
+  tspice -->|"backend: node"| node["@rybosome/tspice-backend-node\n(native addon)"]
+  tspice -->|"backend: fake"| fake["@rybosome/tspice-backend-fake\n(deterministic stub)"]
 
-```ts
-interface RawSpiceBackend {
-  furnsh(path: string): void;
-  unload(path: string): void;
-
-  str2et(utc: string): number;
-  et2utc(et: number, format: string, prec: number): string;
-
-  spkezr(
-    target: string,
-    et: number,
-    ref: string,
-    abcorr: string,
-    obs: string
-  ): { state: number[]; lt: number };
-
-  pxform(from: string, to: string, et: number): number[]; // 3x3
-}
+  viewer["apps/tspice-viewer"] --> tspice
 ```
 
-Two implementations exist:
+### Packages (what lives where)
 
-- **Node backend** — native addon (see CSPICE / NAIF disclosure above)
-- **WASM backend** — prebuilt WebAssembly module (see CSPICE / NAIF disclosure above)
+- `packages/tspice` (`@rybosome/tspice`): public entrypoint.
+  - `createBackend()` selects and instantiates a backend.
+  - `createSpice()` wraps the backend with a small, typed convenience surface (`loadKernel`, `utcToEt`, `getState`, ...).
+- `packages/backend-contract` (`@rybosome/tspice-backend-contract`): the shared interface (`SpiceBackend`) that all backends implement.
+- `packages/backend-wasm` (`@rybosome/tspice-backend-wasm`): WASM backend.
+  - Loads kernels into an in-memory filesystem.
+- `packages/backend-node` (`@rybosome/tspice-backend-node`): Node backend.
+  - Loads kernels either directly from disk paths, or by staging byte-backed kernels to temp files.
+- `packages/backend-fake` (`@rybosome/tspice-backend-fake`): fake backend used by example apps/tests.
+- `packages/core` (`@rybosome/tspice-core`): small utilities shared across packages.
+- `apps/tspice-viewer`: example consumer + Playwright e2e.
 
-The rest of the system should not care which backend is active.
+### Reality check: `spice.backend` vs `spice.*`
 
----
+Today, only a subset of SPICE calls are wrapped directly on the `Spice` type returned by `createSpice()`.
 
-### 2️⃣ Core Layer — Typed, “SPICE-Flavored” API
-
-TypeScript-first interface wrapping backend calls.
-
-This layer remains faithful to SPICE concepts (kernels, ET, frames) but in a **safe, typed, ergonomic** package.
-
----
-
-### 3️⃣ Domain Helpers / High-Level Utilities
-
-Layered atop core services, targeting visualization and real-time applications:
-
-- Helpers for:
-  - Ground tracks
-  - Sun/Earth/target geometry
-  - Preconfigured kernel packs (e.g., DE440 + NAIF LSK)
-
-These are pure TypeScript compositions of the core layer.
+- If you want a stable, ergonomic surface: use `spice.loadKernel()`, `spice.utcToEt()`, `spice.getState()`, etc.
+- If you need a lower-level SPICE call that isn't wrapped yet: use `spice.backend.<fn>()`.
