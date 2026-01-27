@@ -7,7 +7,7 @@ import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClie
 import { createBodyMesh } from './scene/BodyMesh.js'
 import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
-import { createFrameAxes } from './scene/FrameAxes.js'
+import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
@@ -1144,17 +1144,26 @@ export function SceneCanvas() {
             })
             b.mesh.scale.setScalar(radiusWorld)
 
+            const bodyFixedRotation = b.bodyFixedFrame
+              ? loadedSpiceClient.getFrameTransform({
+                  from: b.bodyFixedFrame as FrameId,
+                  to: sceneModel.frame,
+                  et: next.etSec,
+                })
+              : undefined
+
+            // Apply the body-fixed frame orientation to the mesh so textures
+            // rotate with the body.
+            if (bodyFixedRotation) {
+              b.mesh.setRotationFromMatrix(mat3ToMatrix4(bodyFixedRotation))
+            }
+
             if (b.axes) {
               const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
               b.axes.object.visible = visible
 
               if (visible && b.bodyFixedFrame) {
-                const rot = loadedSpiceClient.getFrameTransform({
-                  from: b.bodyFixedFrame as FrameId,
-                  to: sceneModel.frame,
-                  et: next.etSec,
-                })
-                b.axes.setPose({ position: b.mesh.position, rotationJ2000: rot })
+                b.axes.setPose({ position: b.mesh.position, rotationJ2000: bodyFixedRotation })
               }
             }
           }

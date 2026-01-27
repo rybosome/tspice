@@ -10,7 +10,9 @@ export type CreateFrameAxesOptions = {
 const scratchM3 = new THREE.Matrix3()
 const scratchM4 = new THREE.Matrix4()
 
-function mat3ToMatrix4(m: Mat3): THREE.Matrix4 {
+// NOTE: This uses shared scratch matrices. Callers should treat the returned
+// matrix as ephemeral and not hold on to it.
+export function mat3ToMatrix4(m: Mat3): THREE.Matrix4 {
   // `Mat3` is column-major, matching Three's internal layout.
   scratchM3.fromArray(m as unknown as number[])
   scratchM4.identity().setFromMatrix3(scratchM3)
