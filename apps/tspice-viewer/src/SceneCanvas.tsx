@@ -356,11 +356,35 @@ export function SceneCanvas() {
     // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
     // world units away. Keep the far plane large enough so we can render the
     // full default scene (through Neptune).
-    const camera = new THREE.PerspectiveCamera(latestUiRef.current.cameraFovDeg, 1, 0.01, 10_000)
+    const DEFAULT_NEAR = 0.01
+    // Avoid ridiculous near/far ratios that can destroy depth precision.
+    // This only matters when users zoom extremely close.
+    const MIN_NEAR = 1e-5
+    // Keep the near plane well in front of the camera, but small enough that
+    // small-body auto-focus (e.g. the Moon) doesn't clip.
+    const NEAR_RADIUS_FRACTION = 0.1 // radius / 10
+
+    const camera = new THREE.PerspectiveCamera(latestUiRef.current.cameraFovDeg, 1, DEFAULT_NEAR, 10_000)
     camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
     const controller = CameraController.fromCamera(camera)
+
+    const syncCameraNear = () => {
+      // When zooming/focusing on very small bodies, the orbit radius can dip
+      // below the default near plane. If `near > (cameraDistance - bodyRadius)`
+      // the body will clip and it feels like we "zoomed inside".
+      const desiredNear = Math.min(
+        DEFAULT_NEAR,
+        Math.max(MIN_NEAR, controller.radius * NEAR_RADIUS_FRACTION)
+      )
+
+      // Only touch the projection matrix when the effective near plane changes.
+      if (Math.abs(camera.near - desiredNear) > 1e-9) {
+        camera.near = desiredNear
+        camera.updateProjectionMatrix()
+      }
+    }
 
     controllerRef.current = controller
     cameraRef.current = camera
@@ -398,6 +422,8 @@ export function SceneCanvas() {
 
     const renderOnce = (timeMs?: number) => {
       if (disposed) return
+
+      syncCameraNear()
 
       const nowMs = timeMs ?? performance.now()
       const timeSec = nowMs * 0.001
