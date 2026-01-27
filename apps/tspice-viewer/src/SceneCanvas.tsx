@@ -15,6 +15,8 @@ import { timeStore } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 
+
+import { HelpOverlay } from './ui/HelpOverlay.js'
 function disposeMaterial(material: THREE.Material | THREE.Material[]) {
   if (Array.isArray(material)) {
     for (const m of material) m.dispose()
@@ -52,6 +54,7 @@ export function SceneCanvas() {
   const [isSmallScreen, setIsSmallScreen] = useState(getIsSmallScreen)
   const [overlayOpen, setOverlayOpen] = useState(() => !getIsSmallScreen())
   const [panModeEnabled, setPanModeEnabled] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   panModeEnabledRef.current = panModeEnabled
 
@@ -1024,15 +1027,26 @@ export function SceneCanvas() {
               <div className="sceneOverlayHeaderTitle">Controls</div>
             )}
 
-            <button
-              className={`sceneOverlayButton ${panModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
-              aria-pressed={panModeEnabled}
-              onClick={() => setPanModeEnabled((v) => !v)}
-              type="button"
-              title="When enabled, 1-finger drag pans instead of orbiting"
-            >
-              Drag: {panModeEnabled ? 'Pan' : 'Orbit'}
-            </button>
+            <div className="sceneOverlayHeaderActions">
+              <button
+                className="helpButton"
+                onClick={() => setHelpOpen(true)}
+                type="button"
+                aria-label="What is this?"
+                title="What is this?"
+              >
+                ?
+              </button>
+              <button
+                className={`sceneOverlayButton ${panModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
+                aria-pressed={panModeEnabled}
+                onClick={() => setPanModeEnabled((v) => !v)}
+                type="button"
+                title="When enabled, 1-finger drag pans instead of orbiting"
+              >
+                Drag: {panModeEnabled ? 'Pan' : 'Orbit'}
+              </button>
+            </div>
           </div>
 
           {!isSmallScreen || overlayOpen ? (
@@ -1111,6 +1125,8 @@ export function SceneCanvas() {
       ) : null}
 
       <canvas ref={canvasRef} className="sceneCanvas" />
+
+      <HelpOverlay isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   )
 }
