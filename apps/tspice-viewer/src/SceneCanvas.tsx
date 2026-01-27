@@ -5,7 +5,7 @@ import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
-import { listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
+import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld, type ScaleMode } from './scene/bodyScaling.js'
 import { createFrameAxes } from './scene/FrameAxes.js'
 import { createStarfield } from './scene/Starfield.js'
@@ -802,12 +802,23 @@ export function SceneCanvas() {
         }
 
         // Scene model driving the rendered scene.
+        // TODO(#119): Temporary special-case to always render Earth's Moon.
+        // Longer-term we should have user-configurable visibility + kernel-pack
+        // downloads for moons/satellites.
+        const moonEntry = getBodyRegistryEntry('MOON')
         const sceneModel: SceneModel = {
           frame: J2000_FRAME,
           // Use a stable observer for all SPICE queries, then apply a precision
           // strategy in the renderer (focus-origin rebasing).
           observer: 'SUN',
-          bodies: listDefaultVisibleSceneBodies(),
+          bodies: [
+            ...listDefaultVisibleSceneBodies(),
+            {
+              body: moonEntry.body,
+              bodyFixedFrame: moonEntry.bodyFixedFrame,
+              style: moonEntry.style,
+            },
+          ],
         }
 
         const bodies = sceneModel.bodies.map((body) => {
@@ -894,10 +905,24 @@ export function SceneCanvas() {
                 mode: next.scaleMode,
               })
 
+              // TODO(#119): Make the default Earth view include the Moon orbit.
+              // Without this, the Moon can be rendered but remain off-screen
+              // due to the default focus zoom.
+              const earthMoonOrbitKm = 384_400
+              const earthMoonOrbitWorld = earthMoonOrbitKm * kmToWorld
+              const fovRad = THREE.MathUtils.degToRad(camera.fov)
+              const earthMoonMinCameraRadius =
+                (earthMoonOrbitWorld * 1.2) / Math.tan(fovRad / 2)
+
+              const autoRadius =
+                String(next.focusBody) === 'EARTH'
+                  ? Math.max(computeFocusRadius(radiusWorld), earthMoonMinCameraRadius)
+                  : computeFocusRadius(radiusWorld)
+
               // For focus-body selection (dropdown), force the camera to look at
               // the rebased origin and update radius immediately.
               focusOn?.(new THREE.Vector3(0, 0, 0), {
-                radius: computeFocusRadius(radiusWorld),
+                radius: autoRadius,
                 immediate: true,
               })
             }
