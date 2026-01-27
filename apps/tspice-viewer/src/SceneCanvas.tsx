@@ -1305,7 +1305,11 @@ export function SceneCanvas() {
 
           {!isSmallScreen || overlayOpen ? (
             <div className="sceneOverlayBody">
-              <PlaybackControls spiceClient={spiceClient} />
+              <PlaybackControls
+                spiceClient={spiceClient}
+                showAdvanced={showAdvanced}
+                onToggleAdvanced={() => setShowAdvanced((v) => !v)}
+              />
 
               <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
                 <label className="sceneOverlayLabel">
@@ -1352,17 +1356,7 @@ export function SceneCanvas() {
                 </label>
               </div>
 
-              {/* Advanced tuning section */}
-              <div className="sceneOverlayRow" style={{ marginTop: '8px' }}>
-                <button
-                  className="sceneOverlayButton"
-                  onClick={() => setShowAdvanced(!showAdvanced)}
-                  type="button"
-                >
-                  {showAdvanced ? '▼ Advanced' : '▶ Advanced'}
-                </button>
-              </div>
-
+              {/* Advanced tuning section (toggled via PlaybackControls) */}
               {showAdvanced && (
                 <div className="sceneOverlayAdvanced" style={{ marginTop: '8px' }}>
                   <div className="sceneOverlayRow">

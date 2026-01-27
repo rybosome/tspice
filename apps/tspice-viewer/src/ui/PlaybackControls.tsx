@@ -1,9 +1,11 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { timeStore, useTimeStore, RATE_LADDER } from '../time/timeStore.js';
 import type { SpiceClient } from '../spice/SpiceClient.js';
 
 interface PlaybackControlsProps {
   spiceClient: SpiceClient;
+  showAdvanced: boolean;
+  onToggleAdvanced: () => void;
 }
 
 /**
@@ -51,9 +53,8 @@ function formatEtDays(etSec: number): string {
   return days.toFixed(2);
 }
 
-export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
+export function PlaybackControls({ spiceClient, showAdvanced, onToggleAdvanced }: PlaybackControlsProps) {
   const state = useTimeStore();
-  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const utcString = useMemo(() => {
     try {
@@ -190,7 +191,7 @@ export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
       <div className="playbackRow">
         <button
           className="playbackAdvancedToggle"
-          onClick={() => setShowAdvanced(!showAdvanced)}
+          onClick={onToggleAdvanced}
         >
           {showAdvanced ? '▼ Advanced' : '▶ Advanced'}
         </button>
