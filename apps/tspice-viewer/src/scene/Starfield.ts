@@ -40,7 +40,7 @@ function makeStarSpriteTexture(): THREE.Texture {
   const g = ctx.createRadialGradient(16, 16, 0, 16, 16, 16)
   g.addColorStop(0, 'rgba(255,255,255,1)')
   g.addColorStop(0.25, 'rgba(255,255,255,0.85)')
-  g.addColorStop(0.55, 'rgba(255,255,255,0.22)')
+  g.addColorStop(0.55, 'rgba(255,255,255,0.35)')
   g.addColorStop(1, 'rgba(255,255,255,0)')
 
   ctx.fillStyle = g
@@ -87,7 +87,7 @@ export function createStarfield(options: CreateStarfieldOptions): {
 
     // Slight color temperature variation + brightness.
     const warm = rng() < 0.45
-    const brightness = 0.55 + 0.45 * rng()
+    const brightness = 0.65 + 0.35 * rng()
 
     const rCol = (warm ? 1.0 : 0.78) * brightness
     const gCol = (warm ? 0.93 : 0.88) * brightness
