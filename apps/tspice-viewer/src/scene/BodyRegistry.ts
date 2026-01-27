@@ -76,7 +76,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     defaultVisible: true,
     style: {
       radiusKm: 695_700,
-      radiusScale: 2,
       color: "#ffb703",
       textureUrl: "textures/planets/sun.png",
       label: "Sun",
@@ -92,7 +91,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: "IAU_MERCURY",
     style: {
       radiusKm: 2_439.7,
-      radiusScale: 150,
       color: "#9ca3af",
       textureUrl: "textures/planets/mercury.png",
       label: "Mercury",
@@ -107,7 +105,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: "IAU_VENUS",
     style: {
       radiusKm: 6_051.8,
-      radiusScale: 80,
       color: "#e9c46a",
       textureUrl: "textures/planets/venus.png",
       label: "Venus",
@@ -122,7 +119,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: "IAU_EARTH",
     style: {
       radiusKm: 6_371,
-      radiusScale: 50,
       color: "#2a9d8f",
       textureUrl: "textures/planets/earth.png",
       label: "Earth",
@@ -137,7 +133,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: "IAU_MARS",
     style: {
       radiusKm: 3_389.5,
-      radiusScale: 110,
       color: "#e76f51",
       textureUrl: "textures/planets/mars.png",
       label: "Mars",
@@ -152,7 +147,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: "IAU_JUPITER",
     style: {
       radiusKm: 69_911,
-      radiusScale: 5,
       color: "#f4a261",
       textureUrl: "textures/planets/jupiter.png",
       label: "Jupiter",
@@ -167,7 +161,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: "IAU_SATURN",
     style: {
       radiusKm: 58_232,
-      radiusScale: 6,
       color: "#f6bd60",
       textureUrl: "textures/planets/saturn.png",
       label: "Saturn",
@@ -182,7 +175,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: "IAU_URANUS",
     style: {
       radiusKm: 25_362,
-      radiusScale: 10,
       color: "#8ecae6",
       textureUrl: "textures/planets/uranus.png",
       label: "Uranus",
@@ -197,7 +189,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: "IAU_NEPTUNE",
     style: {
       radiusKm: 24_622,
-      radiusScale: 10,
       color: "#4361ee",
       textureUrl: "textures/planets/neptune.png",
       label: "Neptune",
@@ -217,7 +208,6 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: "IAU_MOON",
     style: {
       radiusKm: 1_737.4,
-      radiusScale: 70,
       color: "#e9c46a",
       textureUrl: "textures/planets/moon.png",
       label: "Moon",

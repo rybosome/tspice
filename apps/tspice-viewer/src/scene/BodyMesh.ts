@@ -3,12 +3,6 @@ import * as THREE from 'three'
 export type BodyTextureKind = 'earth' | 'moon' | 'sun'
 
 export type CreateBodyMeshOptions = {
-  radiusKm: number
-  kmToWorld: number
-
-  /** Visual-only multiplier to make bodies visible at solar-system scale. */
-  radiusScale?: number
-
   color: THREE.ColorRepresentation
 
   /**
@@ -135,15 +129,19 @@ function makeProceduralBodyTexture(kind: BodyTextureKind): THREE.Texture {
   })
 }
 
+/**
+ * Creates a body mesh with a unit sphere geometry.
+ *
+ * Use `mesh.scale.setScalar(radiusWorld)` to set the visual size.
+ * This allows updating scale without rebuilding geometry.
+ */
 export function createBodyMesh(options: CreateBodyMeshOptions): {
   mesh: THREE.Mesh
   dispose: () => void
   ready: Promise<void>
 } {
-  const radiusScale = options.radiusScale ?? 1
-  const radiusWorld = options.radiusKm * options.kmToWorld * radiusScale
-
-  const geometry = new THREE.SphereGeometry(radiusWorld, 48, 24)
+  // Unit sphere geometry - scale is applied via mesh.scale
+  const geometry = new THREE.SphereGeometry(1, 48, 24)
 
   let disposed = false
 

@@ -6,6 +6,7 @@ import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
 import { listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
+import { computeBodyRadiusWorld, type ScaleMode } from './scene/bodyScaling.js'
 import { createFrameAxes } from './scene/FrameAxes.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
@@ -38,6 +39,7 @@ export function SceneCanvas() {
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
+  const [scaleMode, setScaleMode] = useState<ScaleMode>('enhanced')
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
 
   const focusOptions = useMemo(() => listDefaultVisibleBodies(), [])
@@ -96,14 +98,15 @@ export function SceneCanvas() {
         focusBody: BodyRef
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
+        scaleMode: ScaleMode
       }) => void)
     | null
   >(null)
 
   // The renderer/bootstrap `useEffect` is mounted once, so it needs a ref to
   // read the latest UI state when async init completes.
-  const latestUiRef = useRef({ focusBody, showJ2000Axes, showBodyFixedAxes })
-  latestUiRef.current = { focusBody, showJ2000Axes, showBodyFixedAxes }
+  const latestUiRef = useRef({ focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode })
+  latestUiRef.current = { focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
   useEffect(() => {
@@ -114,11 +117,11 @@ export function SceneCanvas() {
     return unsubscribe
   }, [])
 
-  // Update scene when UI state changes (focus, axes toggles)
+  // Update scene when UI state changes (focus, axes toggles, scale mode)
   useEffect(() => {
     const etSec = timeStore.getState().etSec
-    updateSceneRef.current?.({ etSec, focusBody, showJ2000Axes, showBodyFixedAxes })
-  }, [focusBody, showJ2000Axes, showBodyFixedAxes])
+    updateSceneRef.current?.({ etSec, focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode })
+  }, [focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -770,15 +773,14 @@ export function SceneCanvas() {
 
         const bodies = sceneModel.bodies.map((body) => {
           const { mesh, dispose, ready } = createBodyMesh({
-            radiusKm: body.style.radiusKm,
-            kmToWorld,
-            radiusScale: body.style.radiusScale,
             color: body.style.color,
             textureUrl: body.style.textureUrl,
             textureKind: body.style.textureKind,
           })
 
           mesh.userData.bodyId = body.body
+          // Store radiusKm for dynamic scale updates
+          mesh.userData.radiusKm = body.style.radiusKm
 
           pickables.push(mesh)
           sceneObjects.push(mesh)
@@ -799,6 +801,7 @@ export function SceneCanvas() {
           return {
             body: body.body,
             bodyFixedFrame: body.bodyFixedFrame,
+            radiusKm: body.style.radiusKm,
             mesh,
             axes,
             ready,
@@ -822,6 +825,7 @@ export function SceneCanvas() {
           focusBody: BodyRef
           showJ2000Axes: boolean
           showBodyFixedAxes: boolean
+          scaleMode: ScaleMode
         }) => {
           const focusState = loadedSpiceClient.getBodyState({
             target: next.focusBody,
@@ -845,6 +849,14 @@ export function SceneCanvas() {
               rebasedKm[1] * kmToWorld,
               rebasedKm[2] * kmToWorld
             )
+
+            // Update mesh scale based on scale mode
+            const radiusWorld = computeBodyRadiusWorld({
+              radiusKm: b.radiusKm,
+              kmToWorld,
+              mode: next.scaleMode,
+            })
+            b.mesh.scale.setScalar(radiusWorld)
 
             if (b.axes) {
               const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
@@ -970,6 +982,17 @@ export function SceneCanvas() {
                         {b.style.label ?? b.id}
                       </option>
                     ))}
+                  </select>
+                </label>
+
+                <label className="sceneOverlayLabel">
+                  Scale
+                  <select
+                    value={scaleMode}
+                    onChange={(e) => setScaleMode(e.target.value as ScaleMode)}
+                  >
+                    <option value="enhanced">Enhanced</option>
+                    <option value="true">True</option>
                   </select>
                 </label>
 
