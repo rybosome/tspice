@@ -44,8 +44,7 @@ jobs:
       - name: Use local Node headers for node-gyp
         shell: bash
         run: |
-          NODE_ROOT="$(node -p "require('path').dirname(require('path').dirname(process.execPath))")"
-          echo "npm_config_nodedir=$NODE_ROOT" >> "$GITHUB_ENV"
+          echo "npm_config_nodedir=$(node -p \"require('path').dirname(require('path').dirname(process.execPath))\")" >> "$GITHUB_ENV"
 
       - name: Pre-install
         if: ${{ inputs.pre_install != '' }}
