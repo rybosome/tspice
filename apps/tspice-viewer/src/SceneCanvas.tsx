@@ -45,6 +45,10 @@ export function SceneCanvas() {
 
   const focusOptions = useMemo(() => listDefaultVisibleBodies(), [])
 
+  // Keep renderer units consistent across the app. This matches the value used
+  // inside the renderer effect.
+  const kmToWorld = 1 / 1_000_000
+
   const getIsSmallScreen = () =>
     typeof window !== 'undefined' && typeof window.matchMedia === 'function'
       ? window.matchMedia('(max-width: 720px)').matches
@@ -86,6 +90,111 @@ export function SceneCanvas() {
     cancelFocusTweenRef.current?.()
 
     controller.radius *= factor
+    controller.applyToCamera(camera)
+    invalidateRef.current?.()
+  }
+
+  const refocusSun = () => {
+    const controller = controllerRef.current
+    const camera = cameraRef.current
+    if (!controller || !camera || !spiceClient) return
+
+    // If a focus animation is in-flight, stop it so our manual camera move
+    // isn't immediately overwritten.
+    cancelFocusTweenRef.current?.()
+
+    // If the current focus IS the sun, this button shouldn't do anything.
+    if (String(focusBody) === 'SUN') return
+
+    const etSec = timeStore.getState().etSec
+    const focusState = spiceClient.getBodyState({
+      target: focusBody,
+      observer: 'SUN',
+      frame: J2000_FRAME,
+      et: etSec,
+    })
+
+    const focusPosKm = focusState.positionKm
+    const sunPosWorld = new THREE.Vector3(
+      -focusPosKm[0] * kmToWorld,
+      -focusPosKm[1] * kmToWorld,
+      -focusPosKm[2] * kmToWorld
+    )
+
+    if (sunPosWorld.lengthSq() < 1e-12) return
+
+    const sunDir = sunPosWorld.clone().normalize()
+
+    // Compute current forward direction (camera -> target) derived from yaw/pitch.
+    const cosPitch = Math.cos(controller.pitch)
+    const currentOffsetDir = new THREE.Vector3(
+      cosPitch * Math.cos(controller.yaw),
+      Math.sin(controller.pitch),
+      cosPitch * Math.sin(controller.yaw)
+    )
+    const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
+
+    // Margin used for both view-frustum checks and for ensuring the Sun isn't
+    // hidden behind the focused body.
+    const marginRad = THREE.MathUtils.degToRad(2)
+
+    // Ensure the Sun's center is offset from screen center by more than the
+    // focused body's angular radius, so it can't be fully occluded.
+    const focusMeta = focusOptions.find((b) => String(b.body) === String(focusBody))
+    const radiusWorld = focusMeta
+      ? computeBodyRadiusWorld({ radiusKm: focusMeta.style.radiusKm, kmToWorld, mode: scaleMode })
+      : undefined
+
+    const bodyAngRad =
+      radiusWorld && controller.radius > 1e-12
+        ? Math.asin(THREE.MathUtils.clamp(radiusWorld / controller.radius, 0, 1))
+        : 0
+    const minSeparationRad = bodyAngRad + marginRad
+
+    // If we're zoomed in too far, it may be geometrically impossible to place
+    // the Sun outside the body's projected disk while still staying in-frame.
+    // In that case, zoom out just enough to make it possible.
+    const halfV = THREE.MathUtils.degToRad(camera.fov) / 2
+    const halfH = Math.atan(Math.tan(halfV) * (camera.aspect || 1))
+    const half = Math.min(halfV, halfH)
+    const maxOffAxis = Math.max(0, half - marginRad)
+    const maxDesiredOffAxis = maxOffAxis * 0.8
+
+    if (
+      radiusWorld != null &&
+      minSeparationRad > maxDesiredOffAxis &&
+      maxDesiredOffAxis > marginRad + 1e-6
+    ) {
+      const maxBodyAng = maxDesiredOffAxis - marginRad
+      const minRadiusForBodyAng = radiusWorld / Math.sin(maxBodyAng)
+      controller.radius = Math.max(controller.radius, minRadiusForBodyAng)
+    }
+
+    const sunAngle = currentForwardDir.angleTo(sunDir)
+    const sunInFov = isDirectionWithinFov({
+      cameraForwardDir: currentForwardDir,
+      dirToPoint: sunDir,
+      cameraFovDeg: camera.fov,
+      cameraAspect: camera.aspect,
+      marginRad,
+    })
+    const sunNotOccluded = sunAngle >= minSeparationRad
+
+    if (!sunInFov || !sunNotOccluded) {
+      const angles = computeOrbitAnglesToKeepPointInView({
+        pointWorld: sunPosWorld,
+        cameraFovDeg: camera.fov,
+        cameraAspect: camera.aspect,
+        desiredOffAxisRad: minSeparationRad,
+        marginRad,
+      })
+
+      if (angles) {
+        controller.yaw = angles.yaw
+        controller.pitch = angles.pitch
+      }
+    }
+
     controller.applyToCamera(camera)
     invalidateRef.current?.()
   }
@@ -211,8 +320,6 @@ export function SceneCanvas() {
     const dir = new THREE.DirectionalLight(0xffffff, 0.9)
     dir.position.set(4, 6, 2)
     scene.add(dir)
-
-    const kmToWorld = 1 / 1_000_000
 
     // When focusing a body, also set a sensible default camera radius so the
     // body appears large enough without requiring a bunch of manual zoom.
@@ -895,6 +1002,8 @@ export function SceneCanvas() {
                 mode: next.scaleMode,
               })
 
+              const nextRadius = computeFocusRadius(radiusWorld)
+
               // When focusing a non-Sun body, bias the camera orientation so the
               // Sun remains visible (it provides important spatial context).
               if (String(next.focusBody) !== 'SUN') {
@@ -917,18 +1026,34 @@ export function SceneCanvas() {
                   )
                   const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
 
-                  const sunAlreadyVisible = isDirectionWithinFov({
+                  // Use the same angular margin for both frustum checks and for
+                  // ensuring the Sun isn't hidden behind the focused body.
+                  const marginRad = THREE.MathUtils.degToRad(2)
+
+                  // If the Sun is too close to the view center, it can be
+                  // completely occluded by the focused body (which is centered
+                  // at the camera target). So we require the Sun to be separated
+                  // from center by more than the body's angular radius.
+                  const bodyAngRad = Math.asin(THREE.MathUtils.clamp(radiusWorld / nextRadius, 0, 1))
+                  const minSeparationRad = bodyAngRad + marginRad
+
+                  const sunAngle = currentForwardDir.angleTo(sunDir)
+                  const sunInFov = isDirectionWithinFov({
                     cameraForwardDir: currentForwardDir,
                     dirToPoint: sunDir,
                     cameraFovDeg: camera.fov,
                     cameraAspect: camera.aspect,
+                    marginRad,
                   })
+                  const sunNotOccluded = sunAngle >= minSeparationRad
 
-                  if (!sunAlreadyVisible) {
+                  if (!sunInFov || !sunNotOccluded) {
                     const angles = computeOrbitAnglesToKeepPointInView({
                       pointWorld: sunPosWorld,
                       cameraFovDeg: camera.fov,
                       cameraAspect: camera.aspect,
+                      desiredOffAxisRad: minSeparationRad,
+                      marginRad,
                     })
 
                     if (angles) {
@@ -942,7 +1067,7 @@ export function SceneCanvas() {
               // For focus-body selection (dropdown), force the camera to look at
               // the rebased origin and update radius immediately.
               focusOn?.(new THREE.Vector3(0, 0, 0), {
-                radius: computeFocusRadius(radiusWorld),
+                radius: nextRadius,
                 immediate: true,
               })
             }
@@ -1104,7 +1229,7 @@ export function SceneCanvas() {
                 <button
                   className="sceneOverlayButton"
                   type="button"
-                  onClick={() => setFocusBody('SUN')}
+                  onClick={refocusSun}
                   disabled={String(focusBody) === 'SUN'}
                   title="Quickly refocus the scene on the Sun"
                 >
