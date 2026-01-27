@@ -25,6 +25,11 @@ export function SceneCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
+  const controllerRef = useRef<CameraController | null>(null)
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
+  const invalidateRef = useRef<(() => void) | null>(null)
+  const cancelFocusTweenRef = useRef<(() => void) | null>(null)
+
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
   const isE2e = search.has('e2e')
   const enableLogDepth = search.has('logDepth')
@@ -33,6 +38,51 @@ export function SceneCanvas() {
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
+
+  const getIsSmallScreen = () =>
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia('(max-width: 720px)').matches
+      : false
+
+  const [isSmallScreen, setIsSmallScreen] = useState(getIsSmallScreen)
+  const [overlayOpen, setOverlayOpen] = useState(() => !getIsSmallScreen())
+  const [panModeEnabled, setPanModeEnabled] = useState(false)
+  const panModeEnabledRef = useRef(panModeEnabled)
+  panModeEnabledRef.current = panModeEnabled
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
+
+    const mql = window.matchMedia('(max-width: 720px)')
+    const onChange = () => {
+      const small = mql.matches
+      setIsSmallScreen(small)
+      setOverlayOpen(!small)
+    }
+
+    onChange()
+
+    if (typeof mql.addEventListener === 'function') {
+      mql.addEventListener('change', onChange)
+      return () => mql.removeEventListener('change', onChange)
+    }
+
+    // Safari < 14
+    mql.addListener(onChange)
+    return () => mql.removeListener(onChange)
+  }, [])
+
+  const zoomBy = (factor: number) => {
+    const controller = controllerRef.current
+    const camera = cameraRef.current
+    if (!controller || !camera) return
+
+    cancelFocusTweenRef.current?.()
+
+    controller.radius *= factor
+    controller.applyToCamera(camera)
+    invalidateRef.current?.()
+  }
 
   // Start the playback ticker (handles time advancement)
   usePlaybackTicker()
@@ -101,6 +151,9 @@ export function SceneCanvas() {
 
     const controller = CameraController.fromCamera(camera)
 
+    controllerRef.current = controller
+    cameraRef.current = camera
+
     const starSeed = (() => {
       const fromUrl = search.get('starSeed') ?? search.get('seed')
       if (fromUrl) {
@@ -132,6 +185,8 @@ export function SceneCanvas() {
         renderOnce()
       })
     }
+
+    invalidateRef.current = invalidate
 
     const ambient = new THREE.AmbientLight(0xffffff, 0.6)
     scene.add(ambient)
@@ -182,10 +237,14 @@ export function SceneCanvas() {
         focusTweenFrame = null
       }
 
-      let pointerDown:
+      cancelFocusTweenRef.current = cancelFocusTween
+
+      type DragMode = 'orbit' | 'pan'
+
+      let mouseDown:
         | {
             pointerId: number
-            mode: 'orbit' | 'pan'
+            mode: DragMode
             startX: number
             startY: number
             lastX: number
@@ -193,6 +252,27 @@ export function SceneCanvas() {
             isDragging: boolean
           }
         | undefined
+
+      const activeTouches = new Map<number, { x: number; y: number }>()
+      let touchState:
+        | { kind: 'none' }
+        | {
+            kind: 'single'
+            pointerId: number
+            mode: DragMode
+            startX: number
+            startY: number
+            lastX: number
+            lastY: number
+            isDragging: boolean
+          }
+        | {
+            kind: 'pinch'
+            ids: [number, number]
+            lastCenterX: number
+            lastCenterY: number
+            lastDistance: number
+          } = { kind: 'none' }
 
       let selected:
         | {
@@ -274,6 +354,48 @@ export function SceneCanvas() {
       }
 
       const onPointerDown = (ev: PointerEvent) => {
+        if (ev.pointerType === 'touch') {
+          ev.preventDefault()
+
+          activeTouches.set(ev.pointerId, { x: ev.clientX, y: ev.clientY })
+          canvas.setPointerCapture(ev.pointerId)
+
+          if (activeTouches.size === 1) {
+            touchState = {
+              kind: 'single',
+              pointerId: ev.pointerId,
+              mode: panModeEnabledRef.current ? 'pan' : 'orbit',
+              startX: ev.clientX,
+              startY: ev.clientY,
+              lastX: ev.clientX,
+              lastY: ev.clientY,
+              isDragging: false,
+            }
+            return
+          }
+
+          if (activeTouches.size >= 2) {
+            cancelFocusTween()
+
+            const [a, b] = Array.from(activeTouches.entries())
+            const ids: [number, number] = [a[0], b[0]]
+            const dx = a[1].x - b[1].x
+            const dy = a[1].y - b[1].y
+            const centerX = (a[1].x + b[1].x) / 2
+            const centerY = (a[1].y + b[1].y) / 2
+            const dist = Math.sqrt(dx * dx + dy * dy)
+
+            touchState = {
+              kind: 'pinch',
+              ids,
+              lastCenterX: centerX,
+              lastCenterY: centerY,
+              lastDistance: dist,
+            }
+            return
+          }
+        }
+
         const isPan = ev.button === 2 || (ev.button === 0 && ev.shiftKey)
         const isOrbit = ev.button === 0 && !ev.shiftKey
 
@@ -281,7 +403,7 @@ export function SceneCanvas() {
 
         ev.preventDefault()
 
-        pointerDown = {
+        mouseDown = {
           pointerId: ev.pointerId,
           mode: isPan ? 'pan' : 'orbit',
           startX: ev.clientX,
@@ -295,33 +417,136 @@ export function SceneCanvas() {
       }
 
       const onPointerMove = (ev: PointerEvent) => {
-        if (!pointerDown) return
-        if (ev.pointerId !== pointerDown.pointerId) return
+        if (ev.pointerType === 'touch') {
+          if (!activeTouches.has(ev.pointerId)) return
 
-        const totalDx = ev.clientX - pointerDown.startX
-        const totalDy = ev.clientY - pointerDown.startY
+          ev.preventDefault()
+          activeTouches.set(ev.pointerId, { x: ev.clientX, y: ev.clientY })
 
-        if (!pointerDown.isDragging) {
+          const rect = canvas.getBoundingClientRect()
+
+          if (activeTouches.size >= 2) {
+            cancelFocusTween()
+
+            // Ensure pinch state if we have 2+ active pointers.
+            if (touchState.kind !== 'pinch') {
+              const [a, b] = Array.from(activeTouches.entries())
+              const dx = a[1].x - b[1].x
+              const dy = a[1].y - b[1].y
+              touchState = {
+                kind: 'pinch',
+                ids: [a[0], b[0]],
+                lastCenterX: (a[1].x + b[1].x) / 2,
+                lastCenterY: (a[1].y + b[1].y) / 2,
+                lastDistance: Math.sqrt(dx * dx + dy * dy),
+              }
+              return
+            }
+
+            const a = activeTouches.get(touchState.ids[0])
+            const b = activeTouches.get(touchState.ids[1])
+
+            if (!a || !b) {
+              // Pick the first two active touches.
+              const [na, nb] = Array.from(activeTouches.entries())
+              touchState = {
+                kind: 'pinch',
+                ids: [na[0], nb[0]],
+                lastCenterX: (na[1].x + nb[1].x) / 2,
+                lastCenterY: (na[1].y + nb[1].y) / 2,
+                lastDistance: Math.hypot(na[1].x - nb[1].x, na[1].y - nb[1].y),
+              }
+              return
+            }
+
+            const centerX = (a.x + b.x) / 2
+            const centerY = (a.y + b.y) / 2
+            const dist = Math.hypot(a.x - b.x, a.y - b.y)
+
+            const centerDx = centerX - touchState.lastCenterX
+            const centerDy = centerY - touchState.lastCenterY
+
+            // Two-finger pan is always enabled.
+            controller.pan(centerDx, centerDy, camera, { width: rect.width, height: rect.height })
+
+            // Pinch zoom.
+            if (dist > 0.5 && touchState.lastDistance > 0.5) {
+              const ratio = touchState.lastDistance / dist
+              controller.radius *= ratio
+            }
+
+            touchState.lastCenterX = centerX
+            touchState.lastCenterY = centerY
+            touchState.lastDistance = dist
+
+            controller.applyToCamera(camera)
+            invalidate()
+            return
+          }
+
+          if (touchState.kind !== 'single') return
+          if (ev.pointerId !== touchState.pointerId) return
+
+          const totalDx = ev.clientX - touchState.startX
+          const totalDy = ev.clientY - touchState.startY
+
+          if (!touchState.isDragging) {
+            if (totalDx * totalDx + totalDy * totalDy < clickMoveThresholdPx ** 2) {
+              return
+            }
+
+            cancelFocusTween()
+            touchState.isDragging = true
+            touchState.lastX = ev.clientX
+            touchState.lastY = ev.clientY
+            return
+          }
+
+          const dx = ev.clientX - touchState.lastX
+          const dy = ev.clientY - touchState.lastY
+
+          touchState.lastX = ev.clientX
+          touchState.lastY = ev.clientY
+
+          if (touchState.mode === 'orbit') {
+            controller.yaw -= dx * orbitSensitivity
+            controller.pitch -= dy * orbitSensitivity
+          } else {
+            controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+          }
+
+          controller.applyToCamera(camera)
+          invalidate()
+          return
+        }
+
+        if (!mouseDown) return
+        if (ev.pointerId !== mouseDown.pointerId) return
+
+        const totalDx = ev.clientX - mouseDown.startX
+        const totalDy = ev.clientY - mouseDown.startY
+
+        if (!mouseDown.isDragging) {
           if (totalDx * totalDx + totalDy * totalDy < clickMoveThresholdPx ** 2) {
             return
           }
 
           cancelFocusTween()
 
-          pointerDown.isDragging = true
-          pointerDown.lastX = ev.clientX
-          pointerDown.lastY = ev.clientY
+          mouseDown.isDragging = true
+          mouseDown.lastX = ev.clientX
+          mouseDown.lastY = ev.clientY
           canvas.style.cursor = 'grabbing'
           return
         }
 
-        const dx = ev.clientX - pointerDown.lastX
-        const dy = ev.clientY - pointerDown.lastY
+        const dx = ev.clientX - mouseDown.lastX
+        const dy = ev.clientY - mouseDown.lastY
 
-        pointerDown.lastX = ev.clientX
-        pointerDown.lastY = ev.clientY
+        mouseDown.lastX = ev.clientX
+        mouseDown.lastY = ev.clientY
 
-        if (pointerDown.mode === 'orbit') {
+        if (mouseDown.mode === 'orbit') {
           controller.yaw -= dx * orbitSensitivity
           controller.pitch -= dy * orbitSensitivity
         } else {
@@ -334,11 +559,92 @@ export function SceneCanvas() {
       }
 
       const onPointerUp = (ev: PointerEvent) => {
-        if (!pointerDown) return
-        if (ev.pointerId !== pointerDown.pointerId) return
+        if (ev.pointerType === 'touch') {
+          if (!activeTouches.has(ev.pointerId)) return
 
-        const { isDragging: wasDragging, mode } = pointerDown
-        pointerDown = undefined
+          ev.preventDefault()
+
+          const wasSingleTap =
+            touchState.kind === 'single' &&
+            touchState.pointerId === ev.pointerId &&
+            !touchState.isDragging &&
+            activeTouches.size === 1
+
+          activeTouches.delete(ev.pointerId)
+
+          try {
+            canvas.releasePointerCapture(ev.pointerId)
+          } catch {
+            // Ignore cases like pointercancel where the capture is already released.
+          }
+
+          if (wasSingleTap) {
+            const hit = pickFirstIntersection({
+              clientX: ev.clientX,
+              clientY: ev.clientY,
+              element: canvas,
+              camera,
+              pickables,
+              raycaster,
+            })
+
+            if (!hit) {
+              setSelectedMesh(undefined)
+              invalidate()
+            } else {
+              const hitMesh = hit.object
+              if (hitMesh instanceof THREE.Mesh) {
+                const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
+                if (nextSelectedBodyId !== selectedBodyId) {
+                  setSelectedMesh(hitMesh)
+                }
+
+                const target = new THREE.Vector3()
+                hitMesh.getWorldPosition(target)
+                focusOn(target)
+              }
+            }
+          }
+
+          if (activeTouches.size === 0) {
+            touchState = { kind: 'none' }
+            return
+          }
+
+          if (activeTouches.size === 1) {
+            const [nextId, nextPos] = Array.from(activeTouches.entries())[0]
+            touchState = {
+              kind: 'single',
+              pointerId: nextId,
+              mode: panModeEnabledRef.current ? 'pan' : 'orbit',
+              startX: nextPos.x,
+              startY: nextPos.y,
+              lastX: nextPos.x,
+              lastY: nextPos.y,
+              isDragging: false,
+            }
+            return
+          }
+
+          // 2+ touches: keep pinch state based on first two pointers.
+          const [a, b] = Array.from(activeTouches.entries())
+          const dx = a[1].x - b[1].x
+          const dy = a[1].y - b[1].y
+          touchState = {
+            kind: 'pinch',
+            ids: [a[0], b[0]],
+            lastCenterX: (a[1].x + b[1].x) / 2,
+            lastCenterY: (a[1].y + b[1].y) / 2,
+            lastDistance: Math.sqrt(dx * dx + dy * dy),
+          }
+          return
+        }
+
+        if (!mouseDown) return
+        if (ev.pointerId !== mouseDown.pointerId) return
+
+        const { isDragging: wasDragging, mode } = mouseDown
+        mouseDown = undefined
 
         try {
           canvas.releasePointerCapture(ev.pointerId)
@@ -392,10 +698,10 @@ export function SceneCanvas() {
         invalidate()
       }
 
-      canvas.addEventListener('pointerdown', onPointerDown)
-      canvas.addEventListener('pointermove', onPointerMove)
-      canvas.addEventListener('pointerup', onPointerUp)
-      canvas.addEventListener('pointercancel', onPointerUp)
+      canvas.addEventListener('pointerdown', onPointerDown, { passive: false })
+      canvas.addEventListener('pointermove', onPointerMove, { passive: false })
+      canvas.addEventListener('pointerup', onPointerUp, { passive: false })
+      canvas.addEventListener('pointercancel', onPointerUp, { passive: false })
       canvas.addEventListener('wheel', onWheel, { passive: false })
       canvas.addEventListener('contextmenu', onContextMenu)
 
@@ -626,6 +932,11 @@ export function SceneCanvas() {
         cleanupInteractions?.()
       }
 
+      controllerRef.current = null
+      cameraRef.current = null
+      invalidateRef.current = null
+      cancelFocusTweenRef.current = null
+
       updateSceneRef.current = null
 
       for (const obj of sceneObjects) scene.remove(obj)
@@ -638,41 +949,92 @@ export function SceneCanvas() {
   return (
     <div ref={containerRef} className="scene">
       {!isE2e && spiceClient ? (
-        <div className="sceneOverlay">
-          <PlaybackControls spiceClient={spiceClient} />
-
-          <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
-            <label className="sceneOverlayLabel">
-              Focus
-              <select
-                value={String(focusBody)}
-                onChange={(e) => {
-                  setFocusBody(e.target.value)
-                }}
+        <div
+          className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
+        >
+          <div className="sceneOverlayHeader">
+            {isSmallScreen ? (
+              <button
+                className="sceneOverlayButton"
+                onClick={() => setOverlayOpen((v) => !v)}
+                type="button"
               >
-                <option value="EARTH">Earth</option>
-                <option value="MOON">Moon</option>
-                <option value="SUN">Sun</option>
-              </select>
-            </label>
+                {overlayOpen ? 'Hide controls' : 'Show controls'}
+              </button>
+            ) : (
+              <div className="sceneOverlayHeaderTitle">Controls</div>
+            )}
 
-            <label className="sceneOverlayCheckbox">
-              <input
-                type="checkbox"
-                checked={showJ2000Axes}
-                onChange={(e) => setShowJ2000Axes(e.target.checked)}
-              />
-              J2000 axes
-            </label>
-            <label className="sceneOverlayCheckbox">
-              <input
-                type="checkbox"
-                checked={showBodyFixedAxes}
-                onChange={(e) => setShowBodyFixedAxes(e.target.checked)}
-              />
-              Body-fixed axes
-            </label>
+            <button
+              className={`sceneOverlayButton ${panModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
+              aria-pressed={panModeEnabled}
+              onClick={() => setPanModeEnabled((v) => !v)}
+              type="button"
+              title="When enabled, 1-finger drag pans instead of orbiting"
+            >
+              Drag: {panModeEnabled ? 'Pan' : 'Orbit'}
+            </button>
           </div>
+
+          {!isSmallScreen || overlayOpen ? (
+            <div className="sceneOverlayBody">
+              <PlaybackControls spiceClient={spiceClient} />
+
+              <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
+                <label className="sceneOverlayLabel">
+                  Focus
+                  <select
+                    value={String(focusBody)}
+                    onChange={(e) => {
+                      setFocusBody(e.target.value)
+                    }}
+                  >
+                    <option value="EARTH">Earth</option>
+                    <option value="MOON">Moon</option>
+                    <option value="SUN">Sun</option>
+                  </select>
+                </label>
+
+                <label className="sceneOverlayCheckbox">
+                  <input
+                    type="checkbox"
+                    checked={showJ2000Axes}
+                    onChange={(e) => setShowJ2000Axes(e.target.checked)}
+                  />
+                  J2000 axes
+                </label>
+                <label className="sceneOverlayCheckbox">
+                  <input
+                    type="checkbox"
+                    checked={showBodyFixedAxes}
+                    onChange={(e) => setShowBodyFixedAxes(e.target.checked)}
+                  />
+                  Body-fixed axes
+                </label>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
+      {!isE2e ? (
+        <div className="sceneZoomButtons">
+          <button
+            className="sceneZoomButton"
+            type="button"
+            onClick={() => zoomBy(1 / 1.15)}
+            aria-label="Zoom in"
+          >
+            +
+          </button>
+          <button
+            className="sceneZoomButton"
+            type="button"
+            onClick={() => zoomBy(1.15)}
+            aria-label="Zoom out"
+          >
+            −
+          </button>
         </div>
       ) : null}
 
