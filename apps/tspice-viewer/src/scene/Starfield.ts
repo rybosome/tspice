@@ -4,6 +4,13 @@ export type CreateStarfieldOptions = {
   /** Seed for deterministic star placement. */
   seed: number
 
+  /**
+   * Opt-in enhanced deterministic starfield.
+   *
+   * Defaults to `false` to preserve existing visuals.
+   */
+  enhanced?: boolean
+
   /** Number of stars/points. */
   count?: number
 
@@ -62,11 +69,190 @@ function sampleUnitSphere(rng: () => number): [number, number, number] {
   return [r * Math.cos(theta), r * Math.sin(theta), z]
 }
 
-export function createStarfield(options: CreateStarfieldOptions): {
+function fibonacciUnitSphere(i: number, n: number): [number, number, number] {
+  // Low-discrepancy sphere sampling (Fibonacci sphere).
+  // https://stackoverflow.com/a/26127012
+  const k = i + 0.5
+  const y = 1 - (2 * k) / n
+  const r = Math.sqrt(Math.max(0, 1 - y * y))
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5))
+  const theta = goldenAngle * k
+  return [r * Math.cos(theta), r * Math.sin(theta), y]
+}
+
+function randomQuaternion(rng: () => number): THREE.Quaternion {
+  // Deterministic quaternion from 3 randoms.
+  const u1 = rng()
+  const u2 = rng()
+  const u3 = rng()
+
+  const sqrt1MinusU1 = Math.sqrt(1 - u1)
+  const sqrtU1 = Math.sqrt(u1)
+  return new THREE.Quaternion(
+    sqrt1MinusU1 * Math.sin(2 * Math.PI * u2),
+    sqrt1MinusU1 * Math.cos(2 * Math.PI * u2),
+    sqrtU1 * Math.sin(2 * Math.PI * u3),
+    sqrtU1 * Math.cos(2 * Math.PI * u3),
+  )
+}
+
+function createStarLayer(opts: {
+  seed: number
+  count: number
+  radiusWorld: number
+  sizePx: number
+  baseBrightness: number
+  bandNormal: THREE.Vector3
+  bandWidth: number
+  bandBoost: number
+  warmChance: number
+}): {
   object: THREE.Points
+  dispose: () => void
+} {
+  const rng = createRng(opts.seed)
+  const rotation = randomQuaternion(rng)
+
+  const positions = new Float32Array(opts.count * 3)
+  const colors = new Float32Array(opts.count * 3)
+
+  for (let i = 0; i < opts.count; i++) {
+    const [x0, y0, z0] = fibonacciUnitSphere(i, opts.count)
+    const dir = new THREE.Vector3(x0, y0, z0).applyQuaternion(rotation)
+
+    const radius = opts.radiusWorld * (0.86 + 0.14 * rng())
+
+    const j = i * 3
+    positions[j + 0] = dir.x * radius
+    positions[j + 1] = dir.y * radius
+    positions[j + 2] = dir.z * radius
+
+    // Milky Way band bias: brighten stars that lie close to a deterministic plane.
+    const bandAmount = Math.abs(dir.dot(opts.bandNormal))
+    const bandFactor = Math.exp(-Math.pow(bandAmount / opts.bandWidth, 2))
+
+    const warm = rng() < opts.warmChance
+    const brightness = opts.baseBrightness * (0.65 + 0.35 * rng()) * (1 + opts.bandBoost * bandFactor)
+
+    const rCol = (warm ? 1.0 : 0.78) * brightness
+    const gCol = (warm ? 0.93 : 0.88) * brightness
+    const bCol = (warm ? 0.78 : 1.0) * brightness
+
+    colors[j + 0] = rCol
+    colors[j + 1] = gCol
+    colors[j + 2] = bCol
+  }
+
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), opts.radiusWorld * 1.1)
+
+  const sprite = makeStarSpriteTexture()
+
+  const material = new THREE.PointsMaterial({
+    size: opts.sizePx,
+    sizeAttenuation: false,
+    vertexColors: true,
+    map: sprite,
+    transparent: true,
+    opacity: 1,
+    blending: THREE.AdditiveBlending,
+    depthTest: true,
+    depthWrite: false,
+  })
+
+  const object = new THREE.Points(geometry, material)
+  object.frustumCulled = false
+  object.raycast = () => {}
+
+  return {
+    object,
+    dispose: () => {
+      geometry.dispose()
+      material.dispose()
+      sprite.dispose()
+    },
+  }
+}
+
+function createEnhancedStarfield(options: CreateStarfieldOptions): {
+  object: THREE.Object3D
   syncToCamera: (camera: THREE.Camera) => void
   dispose: () => void
 } {
+  const seed = options.seed
+  const group = new THREE.Group()
+  group.frustumCulled = false
+  group.raycast = () => {}
+
+  const rng = createRng(seed ^ 0x9e3779b9)
+  const bandNormal = new THREE.Vector3(0, 1, 0).applyQuaternion(randomQuaternion(rng)).normalize()
+
+  // Layer tuning: simple + deterministic.
+  const layers = [
+    // Far dust: lots of very small, faint stars.
+    {
+      count: 14_000,
+      radiusWorld: 1050,
+      sizePx: 1.0,
+      baseBrightness: 0.45,
+      bandWidth: 0.22,
+      bandBoost: 0.9,
+      warmChance: 0.35,
+    },
+    // Mid layer.
+    {
+      count: 6000,
+      radiusWorld: 900,
+      sizePx: 1.6,
+      baseBrightness: 0.75,
+      bandWidth: 0.18,
+      bandBoost: 1.2,
+      warmChance: 0.45,
+    },
+    // Bright accents.
+    {
+      count: 900,
+      radiusWorld: 820,
+      sizePx: 2.6,
+      baseBrightness: 1.15,
+      bandWidth: 0.16,
+      bandBoost: 1.6,
+      warmChance: 0.55,
+    },
+  ]
+
+  const created = layers.map((layer, idx) =>
+    createStarLayer({
+      seed: seed + 1013 * (idx + 1),
+      ...layer,
+      bandNormal,
+    }),
+  )
+
+  for (const { object } of created) group.add(object)
+
+  return {
+    object: group,
+    syncToCamera: (camera) => {
+      group.position.copy(camera.position)
+    },
+    dispose: () => {
+      for (const c of created) c.dispose()
+    },
+  }
+}
+
+export function createStarfield(options: CreateStarfieldOptions): {
+  object: THREE.Object3D
+  syncToCamera: (camera: THREE.Camera) => void
+  dispose: () => void
+} {
+  if (options.enhanced) {
+    return createEnhancedStarfield(options)
+  }
+
   const count = options.count ?? 6000
   const radiusWorld = options.radiusWorld ?? 900
   const sizePx = options.sizePx ?? 1.6

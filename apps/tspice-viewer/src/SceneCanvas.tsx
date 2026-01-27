@@ -32,8 +32,12 @@ export function SceneCanvas() {
 
   const controllerRef = useRef<CameraController | null>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
+  const sceneRef = useRef<THREE.Scene | null>(null)
   const invalidateRef = useRef<(() => void) | null>(null)
   const cancelFocusTweenRef = useRef<(() => void) | null>(null)
+
+  const starSeedRef = useRef<number>(1337)
+  const starfieldRef = useRef<ReturnType<typeof createStarfield> | null>(null)
 
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
   const isE2e = search.has('e2e')
@@ -47,6 +51,7 @@ export function SceneCanvas() {
   // Advanced tuning sliders (ephemeral, local state only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
+  const [enhancedStarfield, setEnhancedStarfield] = useState(false)
 
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
@@ -306,6 +311,7 @@ export function SceneCanvas() {
 
     const scene = new THREE.Scene()
     scene.background = new THREE.Color('#0f131a')
+    sceneRef.current = scene
 
     // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
     // world units away. Keep the far plane large enough so we can render the
@@ -330,14 +336,15 @@ export function SceneCanvas() {
       return isE2e ? 1 : 1337
     })()
 
-    const starfield = createStarfield({ seed: starSeed })
-    sceneObjects.push(starfield.object)
-    disposers.push(starfield.dispose)
+    starSeedRef.current = starSeed
+
+    const starfield = createStarfield({ seed: starSeed, enhanced: enhancedStarfield })
+    starfieldRef.current = starfield
     scene.add(starfield.object)
 
     const renderOnce = () => {
       if (disposed) return
-      starfield.syncToCamera(camera)
+      starfieldRef.current?.syncToCamera(camera)
       renderer.render(scene, camera)
     }
 
@@ -1206,8 +1213,15 @@ export function SceneCanvas() {
         cleanupInteractions?.()
       }
 
+      if (starfieldRef.current) {
+        scene.remove(starfieldRef.current.object)
+        starfieldRef.current.dispose()
+        starfieldRef.current = null
+      }
+
       controllerRef.current = null
       cameraRef.current = null
+      sceneRef.current = null
       invalidateRef.current = null
       cancelFocusTweenRef.current = null
 
@@ -1219,6 +1233,27 @@ export function SceneCanvas() {
       renderer.dispose()
     }
   }, [])
+
+  // Swap the starfield in-place when toggled (avoid rebuilding the entire scene).
+  useEffect(() => {
+    const scene = sceneRef.current
+    const camera = cameraRef.current
+    if (!scene || !camera) return
+
+    const prev = starfieldRef.current
+    if (!prev) return
+
+    scene.remove(prev.object)
+    prev.dispose()
+
+    const next = createStarfield({ seed: starSeedRef.current, enhanced: enhancedStarfield })
+    starfieldRef.current = next
+    scene.add(next.object)
+
+    // Ensure the new object is positioned correctly immediately.
+    next.syncToCamera(camera)
+    invalidateRef.current?.()
+  }, [enhancedStarfield])
 
   return (
     <div ref={containerRef} className="scene">
@@ -1335,6 +1370,17 @@ export function SceneCanvas() {
                         onChange={(e) => setCameraFovDeg(Number(e.target.value))}
                         style={{ width: '100%' }}
                       />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow" style={{ marginTop: '6px' }}>
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={enhancedStarfield}
+                        onChange={(e) => setEnhancedStarfield(e.target.checked)}
+                      />
+                      Enhanced starfield
                     </label>
                   </div>
                 </div>
