@@ -154,12 +154,13 @@ export function createSkydome(options: CreateSkydomeOptions): {
       float seed01 = fract(uSeed * 0.000001);
 
       // Spherical coordinates for 2D noise lookup.
-      float u = atan(dir.z, dir.x) / (2.0 * PI) + 0.5;
-      float v = asin(clamp(dir.y, -1.0, 1.0)) / PI + 0.5;
+      // Z-up world: RA is the azimuth in the XY plane, Dec is elevation (+Z = north).
+      float u = atan(dir.y, dir.x) / (2.0 * PI) + 0.5;
+      float v = asin(clamp(dir.z, -1.0, 1.0)) / PI + 0.5;
       vec2 uv = vec2(u, v);
 
       // Base gradient (slightly bluer at zenith).
-      float up = clamp(dir.y * 0.5 + 0.5, 0.0, 1.0);
+      float up = clamp(dir.z * 0.5 + 0.5, 0.0, 1.0);
       vec3 base = mix(vec3(0.03, 0.04, 0.06), vec3(0.01, 0.015, 0.03), up);
 
       // ---------------------------------------------------------------------
@@ -170,11 +171,11 @@ export function createSkydome(options: CreateSkydomeOptions): {
       //   Dec =  27.12825 deg
       //
       // Repo coordinate mapping:
-      // - Three.js uses Y as up/pole.
-      // - We define RA as the longitude used by atan(dir.z, dir.x):
+      // - Viewer world is Z-up (SPICE/J2000-style): +Z is north.
+      // - We define RA as the longitude used by atan(dir.y, dir.x):
       //     x = cos(dec) * cos(ra)
-      //     y = sin(dec)
-      //     z = cos(dec) * sin(ra)
+      //     y = cos(dec) * sin(ra)
+      //     z = sin(dec)
       // ---------------------------------------------------------------------
       const float NGP_RA_DEG = 192.85948;
       const float NGP_DEC_DEG = 27.12825;
@@ -184,8 +185,8 @@ export function createSkydome(options: CreateSkydomeOptions): {
 
       vec3 planeN = normalize(vec3(
         cos(ngpDec) * cos(ngpRa),
-        sin(ngpDec),
-        cos(ngpDec) * sin(ngpRa)
+        cos(ngpDec) * sin(ngpRa),
+        sin(ngpDec)
       ));
 
       float distToPlane = abs(dot(dir, planeN));
@@ -239,7 +240,7 @@ export function createSkydome(options: CreateSkydomeOptions): {
       col += starFromCell(cellR, f - vec2(1.0, 0.0), p);
 
       // Slight vignette to keep focus in the center.
-      float vign = 1.0 - smoothstep(0.3, 1.25, length(dir.xz));
+      float vign = 1.0 - smoothstep(0.3, 1.25, length(dir.xy));
       col *= mix(0.9, 1.05, vign);
 
       // Tone map + gentle lift.

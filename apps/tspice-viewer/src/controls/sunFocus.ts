@@ -59,7 +59,8 @@ export function computeOrbitAnglesToKeepPointInView(opts: {
     maxOffAxis * 0.8
   )
 
-  const worldUp = opts.worldUp ?? new THREE.Vector3(0, 1, 0)
+  // Viewer world is Z-up (SPICE/J2000-style): +Z is north.
+  const worldUp = opts.worldUp ?? new THREE.Vector3(0, 0, 1)
 
   let axis = new THREE.Vector3().crossVectors(dirToPoint, worldUp)
   if (axis.lengthSq() < eps) {
@@ -82,8 +83,9 @@ export function computeOrbitAnglesToKeepPointInView(opts: {
   // CameraController stores yaw/pitch for the offset direction (target -> camera).
   const offsetDir = forward.multiplyScalar(-1)
 
-  const yaw = Math.atan2(offsetDir.z, offsetDir.x)
-  const pitch = Math.asin(THREE.MathUtils.clamp(offsetDir.y, -1, 1))
+  // Match CameraController's Z-up yaw/pitch mapping.
+  const yaw = Math.atan2(offsetDir.y, offsetDir.x)
+  const pitch = Math.asin(THREE.MathUtils.clamp(offsetDir.z, -1, 1))
 
   return { yaw, pitch }
 }

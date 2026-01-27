@@ -165,8 +165,8 @@ export function SceneCanvas() {
     const cosPitch = Math.cos(controller.pitch)
     const currentOffsetDir = new THREE.Vector3(
       cosPitch * Math.cos(controller.yaw),
-      Math.sin(controller.pitch),
-      cosPitch * Math.sin(controller.yaw)
+      cosPitch * Math.sin(controller.yaw),
+      Math.sin(controller.pitch)
     )
     const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
 
@@ -351,6 +351,8 @@ export function SceneCanvas() {
     // world units away. Keep the far plane large enough so we can render the
     // full default scene (through Neptune).
     const camera = new THREE.PerspectiveCamera(latestUiRef.current.cameraFovDeg, 1, 0.01, 10_000)
+    // Z-up world (SPICE/J2000-friendly): +Z is north/up.
+    camera.up.set(0, 0, 1)
     camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
@@ -1190,8 +1192,8 @@ export function SceneCanvas() {
                   const cosPitch = Math.cos(controller.pitch)
                   const currentOffsetDir = new THREE.Vector3(
                     cosPitch * Math.cos(controller.yaw),
-                    Math.sin(controller.pitch),
-                    cosPitch * Math.sin(controller.yaw)
+                    cosPitch * Math.sin(controller.yaw),
+                    Math.sin(controller.pitch)
                   )
                   const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
 
