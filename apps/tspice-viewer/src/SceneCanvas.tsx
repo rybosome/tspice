@@ -5,6 +5,8 @@ import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
+import { listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
+import { computeBodyRadiusWorld, type ScaleMode } from './scene/bodyScaling.js'
 import { createFrameAxes } from './scene/FrameAxes.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
@@ -37,7 +39,10 @@ export function SceneCanvas() {
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
+  const [scaleMode, setScaleMode] = useState<ScaleMode>('enhanced')
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
+
+  const focusOptions = useMemo(() => listDefaultVisibleBodies(), [])
 
   const getIsSmallScreen = () =>
     typeof window !== 'undefined' && typeof window.matchMedia === 'function'
@@ -93,14 +98,15 @@ export function SceneCanvas() {
         focusBody: BodyRef
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
+        scaleMode: ScaleMode
       }) => void)
     | null
   >(null)
 
   // The renderer/bootstrap `useEffect` is mounted once, so it needs a ref to
   // read the latest UI state when async init completes.
-  const latestUiRef = useRef({ focusBody, showJ2000Axes, showBodyFixedAxes })
-  latestUiRef.current = { focusBody, showJ2000Axes, showBodyFixedAxes }
+  const latestUiRef = useRef({ focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode })
+  latestUiRef.current = { focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
   useEffect(() => {
@@ -111,11 +117,11 @@ export function SceneCanvas() {
     return unsubscribe
   }, [])
 
-  // Update scene when UI state changes (focus, axes toggles)
+  // Update scene when UI state changes (focus, axes toggles, scale mode)
   useEffect(() => {
     const etSec = timeStore.getState().etSec
-    updateSceneRef.current?.({ etSec, focusBody, showJ2000Axes, showBodyFixedAxes })
-  }, [focusBody, showJ2000Axes, showBodyFixedAxes])
+    updateSceneRef.current?.({ etSec, focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode })
+  }, [focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -125,6 +131,13 @@ export function SceneCanvas() {
     let disposed = false
     let scheduledFrame: number | null = null
     let cleanupInteractions: (() => void) | undefined
+
+    // Focus helpers are only enabled in interactive mode, but we keep the
+    // variables in outer scope so scene updates can cancel tweens / adjust zoom.
+    let cancelFocusTween: (() => void) | undefined
+    let focusOn:
+      | ((nextTarget: THREE.Vector3, opts?: { radius?: number; immediate?: boolean }) => void)
+      | undefined
 
     // Resource cleanup + interaction lists.
     const pickables: THREE.Mesh[] = []
@@ -145,7 +158,10 @@ export function SceneCanvas() {
     const scene = new THREE.Scene()
     scene.background = new THREE.Color('#0f131a')
 
-    const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 1000)
+    // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
+    // world units away. Keep the far plane large enough so we can render the
+    // full default scene (through Neptune).
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 10_000)
     camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
@@ -195,6 +211,20 @@ export function SceneCanvas() {
     dir.position.set(4, 6, 2)
     scene.add(dir)
 
+    const kmToWorld = 1 / 1_000_000
+
+    // When focusing a body, also set a sensible default camera radius so the
+    // body appears large enough without requiring a bunch of manual zoom.
+    const focusDistanceMultiplier = 4
+    // Minimum camera radius for auto-zoom. This used to be quite large, which
+    // made small bodies (e.g. Mercury) look tiny when selected from the focus
+    // dropdown.
+    const focusRadiusMin = 0.02
+    const focusRadiusMax = 50
+
+    const computeFocusRadius = (radiusWorld: number) =>
+      THREE.MathUtils.clamp(radiusWorld * focusDistanceMultiplier, focusRadiusMin, focusRadiusMax)
+
     const resize = () => {
       const width = container.clientWidth
       const height = container.clientHeight
@@ -231,7 +261,7 @@ export function SceneCanvas() {
       const easeInOutCubic = (t: number) =>
         t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
 
-      const cancelFocusTween = () => {
+      cancelFocusTween = () => {
         if (focusTweenFrame == null) return
         window.cancelAnimationFrame(focusTweenFrame)
         focusTweenFrame = null
@@ -311,15 +341,21 @@ export function SceneCanvas() {
         material.emissiveIntensity = 0.8
       }
 
-      const focusOn = (nextTarget: THREE.Vector3) => {
-        cancelFocusTween()
+      focusOn = (nextTarget: THREE.Vector3, opts) => {
+        cancelFocusTween?.()
 
         const startTarget = controller.target.clone()
         const endTarget = nextTarget.clone()
 
+        const startRadius = controller.radius
+        const endRadius = opts?.radius ?? startRadius
+
+        const immediate = Boolean(opts?.immediate)
+
         // Skip tiny moves to avoid scheduling unnecessary animation frames.
-        if (startTarget.distanceToSquared(endTarget) < 1e-16) {
+        if (immediate || (startTarget.distanceToSquared(endTarget) < 1e-16 && Math.abs(endRadius - startRadius) < 1e-9)) {
           controller.target.copy(endTarget)
+          controller.radius = endRadius
           controller.applyToCamera(camera)
           invalidate()
           return
@@ -333,6 +369,7 @@ export function SceneCanvas() {
           const eased = easeInOutCubic(t)
 
           controller.target.copy(startTarget).lerp(endTarget, eased)
+          controller.radius = THREE.MathUtils.lerp(startRadius, endRadius, eased)
           controller.applyToCamera(camera)
           renderOnce()
 
@@ -375,7 +412,7 @@ export function SceneCanvas() {
           }
 
           if (activeTouches.size >= 2) {
-            cancelFocusTween()
+            cancelFocusTween?.()
 
             const [a, b] = Array.from(activeTouches.entries())
             const ids: [number, number] = [a[0], b[0]]
@@ -426,7 +463,7 @@ export function SceneCanvas() {
           const rect = canvas.getBoundingClientRect()
 
           if (activeTouches.size >= 2) {
-            cancelFocusTween()
+            cancelFocusTween?.()
 
             // Ensure pinch state if we have 2+ active pointers.
             if (touchState.kind !== 'pinch') {
@@ -495,7 +532,7 @@ export function SceneCanvas() {
               return
             }
 
-            cancelFocusTween()
+            cancelFocusTween?.()
             touchState.isDragging = true
             touchState.lastX = ev.clientX
             touchState.lastY = ev.clientY
@@ -531,7 +568,7 @@ export function SceneCanvas() {
             return
           }
 
-          cancelFocusTween()
+          cancelFocusTween?.()
 
           mouseDown.isDragging = true
           mouseDown.lastX = ev.clientX
@@ -601,7 +638,7 @@ export function SceneCanvas() {
 
                 const target = new THREE.Vector3()
                 hitMesh.getWorldPosition(target)
-                focusOn(target)
+                focusOn?.(target)
               }
             }
           }
@@ -685,13 +722,23 @@ export function SceneCanvas() {
         const target = new THREE.Vector3()
         hitMesh.getWorldPosition(target)
 
-        focusOn(target)
+        const radiusKm = Number(hitMesh.userData.radiusKm)
+        if (Number.isFinite(radiusKm)) {
+          const radiusWorld = computeBodyRadiusWorld({
+            radiusKm,
+            kmToWorld,
+            mode: latestUiRef.current.scaleMode,
+          })
+          focusOn?.(target, { radius: computeFocusRadius(radiusWorld) })
+        } else {
+          focusOn?.(target)
+        }
       }
 
       const onWheel = (ev: WheelEvent) => {
         ev.preventDefault()
 
-        cancelFocusTween()
+        cancelFocusTween?.()
 
         controller.radius *= Math.exp(ev.deltaY * wheelZoomScale)
         controller.applyToCamera(camera)
@@ -714,7 +761,7 @@ export function SceneCanvas() {
         canvas.removeEventListener('wheel', onWheel)
         canvas.removeEventListener('contextmenu', onContextMenu)
 
-        cancelFocusTween()
+        cancelFocusTween?.()
         setSelectedMesh(undefined)
       }
     }
@@ -760,54 +807,19 @@ export function SceneCanvas() {
           // Use a stable observer for all SPICE queries, then apply a precision
           // strategy in the renderer (focus-origin rebasing).
           observer: 'SUN',
-          bodies: [
-            {
-              body: 'SUN',
-              style: {
-                radiusKm: 695_700,
-                radiusScale: 2,
-                color: '#ffb703',
-                textureKind: 'sun',
-                label: 'Sun',
-              },
-            },
-            {
-              body: 'EARTH',
-              bodyFixedFrame: 'IAU_EARTH',
-              style: {
-                radiusKm: 6_371,
-                radiusScale: 50,
-                color: '#2a9d8f',
-                textureKind: 'earth',
-                label: 'Earth',
-              },
-            },
-            {
-              body: 'MOON',
-              bodyFixedFrame: 'IAU_MOON',
-              style: {
-                radiusKm: 1_737.4,
-                radiusScale: 70,
-                color: '#e9c46a',
-                textureKind: 'moon',
-                label: 'Moon',
-              },
-            },
-          ],
+          bodies: listDefaultVisibleSceneBodies(),
         }
 
-        const kmToWorld = 1 / 1_000_000
-
         const bodies = sceneModel.bodies.map((body) => {
-          const { mesh, dispose } = createBodyMesh({
-            radiusKm: body.style.radiusKm,
-            kmToWorld,
-            radiusScale: body.style.radiusScale,
+          const { mesh, dispose, ready } = createBodyMesh({
             color: body.style.color,
+            textureUrl: body.style.textureUrl,
             textureKind: body.style.textureKind,
           })
 
           mesh.userData.bodyId = body.body
+          // Store radiusKm for dynamic scale updates
+          mesh.userData.radiusKm = body.style.radiusKm
 
           pickables.push(mesh)
           sceneObjects.push(mesh)
@@ -828,10 +840,16 @@ export function SceneCanvas() {
           return {
             body: body.body,
             bodyFixedFrame: body.bodyFixedFrame,
+            radiusKm: body.style.radiusKm,
             mesh,
             axes,
+            ready,
           }
         })
+
+        // Ensure textures are loaded before we mark the scene as rendered.
+        await Promise.all(bodies.map((b) => b.ready))
+        if (disposed) return
 
         const j2000Axes = !isE2e ? createFrameAxes({ sizeWorld: 1.2, opacity: 0.9 }) : undefined
         if (j2000Axes) {
@@ -841,12 +859,24 @@ export function SceneCanvas() {
           scene.add(j2000Axes.object)
         }
 
+        let lastAutoZoomFocusBody: BodyRef | undefined
+        let lastAutoZoomScaleMode: ScaleMode | undefined
+
         const updateScene = (next: {
           etSec: EtSeconds
           focusBody: BodyRef
           showJ2000Axes: boolean
           showBodyFixedAxes: boolean
+          scaleMode: ScaleMode
         }) => {
+          const shouldAutoZoom =
+            !isE2e &&
+            (next.focusBody !== lastAutoZoomFocusBody || next.scaleMode !== lastAutoZoomScaleMode)
+
+          if (shouldAutoZoom) {
+            cancelFocusTween?.()
+          }
+
           const focusState = loadedSpiceClient.getBodyState({
             target: next.focusBody,
             observer: sceneModel.observer,
@@ -854,6 +884,27 @@ export function SceneCanvas() {
             et: next.etSec,
           })
           const focusPosKm = focusState.positionKm
+
+          if (shouldAutoZoom) {
+            const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
+            if (focusBodyMeta) {
+              const radiusWorld = computeBodyRadiusWorld({
+                radiusKm: focusBodyMeta.radiusKm,
+                kmToWorld,
+                mode: next.scaleMode,
+              })
+
+              // For focus-body selection (dropdown), force the camera to look at
+              // the rebased origin and update radius immediately.
+              focusOn?.(new THREE.Vector3(0, 0, 0), {
+                radius: computeFocusRadius(radiusWorld),
+                immediate: true,
+              })
+            }
+
+            lastAutoZoomFocusBody = next.focusBody
+            lastAutoZoomScaleMode = next.scaleMode
+          }
 
           for (const b of bodies) {
             const state = loadedSpiceClient.getBodyState({
@@ -869,6 +920,14 @@ export function SceneCanvas() {
               rebasedKm[1] * kmToWorld,
               rebasedKm[2] * kmToWorld
             )
+
+            // Update mesh scale based on scale mode
+            const radiusWorld = computeBodyRadiusWorld({
+              radiusKm: b.radiusKm,
+              kmToWorld,
+              mode: next.scaleMode,
+            })
+            b.mesh.scale.setScalar(radiusWorld)
 
             if (b.axes) {
               const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
@@ -989,9 +1048,22 @@ export function SceneCanvas() {
                       setFocusBody(e.target.value)
                     }}
                   >
-                    <option value="EARTH">Earth</option>
-                    <option value="MOON">Moon</option>
-                    <option value="SUN">Sun</option>
+                    {focusOptions.map((b) => (
+                      <option key={b.id} value={String(b.body)}>
+                        {b.style.label ?? b.id}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="sceneOverlayLabel">
+                  Scale
+                  <select
+                    value={scaleMode}
+                    onChange={(e) => setScaleMode(e.target.value as ScaleMode)}
+                  >
+                    <option value="enhanced">Enhanced</option>
+                    <option value="true">True</option>
                   </select>
                 </label>
 

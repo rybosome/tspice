@@ -1,0 +1,31 @@
+# Planet texture credits
+
+This directory contains low-resolution, equirectangular-ish textures used by the `tspice-viewer` demo.
+
+All textures here are **256×128** PNGs.
+
+## Licensing notes
+
+- **NASA media** is generally not subject to copyright in the United States. NASA requests acknowledgement of NASA as the source and prohibits implying NASA endorsement.
+  - NASA guidelines: https://www.nasa.gov/multimedia/guidelines/index.html
+- **USGS authored/produced information** is generally in the U.S. public domain; USGS requests acknowledgement as the source.
+  - USGS FAQ: https://www.usgs.gov/faqs/are-usgs-reportspublications-copyrighted
+
+## Per-file sources
+
+| File | Source | Credit / license |
+| --- | --- | --- |
+| `mercury.png` | NASA Photojournal: “Enhanced Color Mercury Map” (PIA17386) https://science.nasa.gov/photojournal/enhanced-color-mercury-map/ (direct: https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia17/pia17386/PIA17386.jpg) | Credits listed on the NASA page: **NASA/Johns Hopkins University Applied Physics Laboratory/Carnegie Institution of Washington**. NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `venus.png` | USGS media image: “Global Mosaic of Venus from Magellan Mission” https://www.usgs.gov/media/images/global-mosaic-venus-magellan-mission (direct thumbnail used: https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/Venus_Magellan_C3-MDIR_Colorized_Global_Mosaic_1024.jpg) | USGS-produced material is generally **public domain**; please acknowledge **USGS** as the source (see USGS FAQ above). Downscaled to 256×128. |
+| `moon.png` | NASA SVS “CGI Moon Kit” https://svs.gsfc.nasa.gov/4720 (direct: https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_2k.jpg) | SVS credit line: **NASA's Scientific Visualization Studio**. NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `mars.png` | NASA Science “3D Resources: Mars” https://science.nasa.gov/3d-resources/mars/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/mars/Mars.jpg) | Credit listed on the NASA page: **NASA/Jet Propulsion Laboratory & Caltech**. NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `earth.png` | NASA Visible Earth (Blue Marble base map): https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.png | NASA-produced imagery (Visible Earth / GSFC). NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `jupiter.png` | NASA Science “3D Resources: Jupiter” https://science.nasa.gov/3d-resources/jupiter/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/jupiter/Jupiter.jpg) | Credit listed on the NASA page: **JPL & Caltech**. NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `saturn.png` | NASA Science “3D Resources: Saturn” https://science.nasa.gov/3d-resources/saturn/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/saturn/Saturn.jpg) | Credit listed on the NASA page: **JPL & Caltech** (generated planetary map). NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `uranus.png` | JPL “Solar System Simulator” Uranus texture map (direct: https://maps.jpl.nasa.gov/tmaps/pix/ura0fss1.jpg) (page: https://maps.jpl.nasa.gov/tmaps/uranus.html) | JPL/NASA generated map (noted as “fictional” on the source page). NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `neptune.png` | NASA Science “3D Resources: Neptune” https://science.nasa.gov/3d-resources/neptune/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/neptune/Neptune.jpg) | Credit listed on the NASA page: **Don Davis & JPL/Caltech** (generated planetary map). NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `sun.png` | NASA SVS (synoptic solar map): https://svs.gsfc.nasa.gov/3505/ (direct: https://svs.gsfc.nasa.gov/vis/a000000/a003500/a003505/SynopticIntensity.02004.jpg) | NASA SVS content is generally public domain unless otherwise noted (see SVS help page). NASA media guidelines apply (see above). Downscaled to 256×128. |
+
+## Follow-up ideas
+
+If we want higher-quality textures, we can increase resolution beyond 256×128 (keeping textures <= 2K per the viewer’s lightweight demo goal).

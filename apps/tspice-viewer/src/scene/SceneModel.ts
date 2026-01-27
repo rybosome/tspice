@@ -13,11 +13,15 @@ export interface SceneBodyStyle {
   /** Body radius in km. */
   radiusKm: number;
 
-  /** Visual-only multiplier to make bodies visible at large scale. */
-  radiusScale?: number;
-
   /** Renderer color hint (e.g. `"#ffffff"`, `"skyblue"`). */
   color: string;
+
+  /**
+   * Optional texture URL/path.
+   *
+   * If relative, it's resolved against Vite's `BASE_URL` at runtime.
+   */
+  textureUrl?: string;
 
   /** Optional, lightweight procedural texture (no binary assets). */
   textureKind?: BodyTextureKind;
