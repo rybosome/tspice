@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { createBackend, createSpice } from "@rybosome/tspice";
 
 describe("createBackend() types", () => {
   it("exposes wasm-only helpers only on wasm backend", async () => {
@@ -83,6 +83,29 @@ describe("createBackend() types", () => {
       fakeBackend.loadKernel;
       // @ts-expect-error wasm-only helper not present on fake backend
       fakeBackend.writeFile;
+    }
+  });
+});
+
+describe("createSpice() types", () => {
+  it("returns a facade + backend intersection", async () => {
+    // This test is about TypeScript types, not runtime behavior.
+    if (false) {
+      const spice = await createSpice({ backend: "wasm" });
+
+      // Facade helpers.
+      spice.loadKernel;
+      spice.utcToEt;
+      spice.getState;
+
+      // Backend primitives are available at the top-level.
+      spice.furnsh;
+      spice.str2et;
+      spice.kclear;
+
+      // Escape hatch stays available.
+      spice.backend.furnsh;
+      spice.backend.kind;
     }
   });
 });

@@ -22,7 +22,7 @@ export type CreateSpiceOptions = CreateBackendOptions & {
   backendInstance?: SpiceBackend;
 };
 
-export type Spice = {
+export type SpiceFacade = {
   backend: SpiceBackend;
 
   loadKernel(kernel: KernelSource): void;
@@ -35,6 +35,10 @@ export type Spice = {
 
   getState(args: GetStateArgs): StateVector;
 };
+
+// Public type: callers get the mid-level facade helpers *plus* the backend
+// primitive surface at the top-level.
+export type Spice = SpiceFacade & SpiceBackend;
 
 const DEFAULT_FRAME: FrameName = "J2000";
 const DEFAULT_ABERRATION: AberrationCorrection = "NONE";
@@ -51,7 +55,7 @@ function splitState(state: readonly [number, number, number, number, number, num
 export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spice> {
   const backend = options.backendInstance ?? (await createBackend(options));
 
-  return {
+  const facade: SpiceFacade = {
     backend,
 
     loadKernel: (kernel) => {
@@ -111,4 +115,67 @@ export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spi
       }
     },
   };
+
+  const backendMethodCache = new Map<PropertyKey, unknown>();
+
+  function maybeWrapBackendMethod(value: unknown, prop: PropertyKey): unknown {
+    if (typeof value !== "function") {
+      return value;
+    }
+
+    // Keep function identity stable per-property (helps with equality checks,
+    // and avoids allocating a new wrapper on every property access).
+    const cached = backendMethodCache.get(prop);
+    if (cached) {
+      return cached;
+    }
+
+    // Bind the backend method so `this` is always the backend instance.
+    const bound = (value as (...args: any[]) => any).bind(backend);
+
+    const wrapped = (...args: any[]): any => {
+      try {
+        const result = bound(...args);
+
+        // Most SpiceBackend methods are sync today, but handle Promise-like
+        // results defensively so we can consistently wrap async failures too.
+        if (
+          result &&
+          (typeof result === "object" || typeof result === "function") &&
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          typeof (result as any).then === "function"
+        ) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          return (result as any).catch((error: unknown) => {
+            throw wrapSpiceError(String(prop), error);
+          });
+        }
+
+        return result;
+      } catch (error) {
+        throw wrapSpiceError(String(prop), error);
+      }
+    };
+
+    backendMethodCache.set(prop, wrapped);
+    return wrapped;
+  }
+
+  // The returned object behaves like the facade, but any unknown property is
+  // forwarded to the backend. Facade keys win when there is overlap.
+  const spice = new Proxy(facade, {
+    get(target, prop, receiver) {
+      if (prop in target) {
+        return Reflect.get(target, prop, receiver);
+      }
+
+      const value = Reflect.get(backend as any, prop, backend as any);
+      return maybeWrapBackendMethod(value, prop);
+    },
+    has(target, prop) {
+      return prop in target || prop in (backend as any);
+    },
+  });
+
+  return spice as unknown as Spice;
 }

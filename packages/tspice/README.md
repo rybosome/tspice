@@ -72,6 +72,10 @@ async function main() {
   });
 
   console.log(state.position, state.velocity, state.lightTime);
+
+  // `createSpice()` also forwards the low-level backend primitives at the
+  // top-level, so you can call e.g. `spice.furnsh()` directly.
+  console.log(spice.tkvrsn("TOOLKIT"));
 }
 
 main().catch(console.error);
