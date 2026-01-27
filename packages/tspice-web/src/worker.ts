@@ -8,21 +8,6 @@ function bodyRefToSpiceString(body: number | string): string {
   return typeof body === "number" ? String(body) : body;
 }
 
-function transposeMat3RowMajorToColumnMajor(m: readonly [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-]): Mat3 {
-  // row-major => column-major
-  return [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]];
-}
-
 export function createTspiceWorkerApi(): TspiceWorkerApi {
   let spice:
     | {
@@ -30,17 +15,7 @@ export function createTspiceWorkerApi(): TspiceWorkerApi {
         unloadKernel(path: string): void;
         utcToEt(utc: string): SpiceTime;
         etToUtc(et: SpiceTime, format?: string, prec?: number): string;
-        frameTransform(from: string, to: string, et: SpiceTime): readonly [
-          number,
-          number,
-          number,
-          number,
-          number,
-          number,
-          number,
-          number,
-          number,
-        ];
+        frameTransform(from: string, to: string, et: SpiceTime): Mat3;
         getState(args: {
           target: string;
           observer: string;
@@ -97,13 +72,11 @@ export function createTspiceWorkerApi(): TspiceWorkerApi {
     },
 
     async getFrameTransform(input) {
-      const m = ensureInit().frameTransform(
+      return ensureInit().frameTransform(
         input.from,
         input.to,
         input.et as unknown as SpiceTime,
       );
-
-      return transposeMat3RowMajorToColumnMajor(m);
     },
   };
 }

@@ -32,15 +32,18 @@ export type Vec3Km = Vec3;
 export type Vec3KmPerSec = Vec3;
 
 /**
- * 3x3 rotation matrix in **column-major** order (Three.js compatible).
- *
- * Indexing:
- * `[
- *   m00, m10, m20,
- *   m01, m11, m21,
- *   m02, m12, m22
- * ]`
- */
+* 3x3 rotation matrix in **row-major** order (SPICE semantics).
+*
+* Indexing:
+* `[
+*   m00, m01, m02,
+*   m10, m11, m12,
+*   m20, m21, m22
+* ]`
+*
+* Note: Three.js stores matrices internally in column-major order, so callers
+* should convert at the rendering boundary.
+*/
 export type Mat3 = readonly [
   number,
   number,
@@ -101,7 +104,7 @@ export interface SpiceClient {
   /**
    * Rotation matrix from frame `from` into frame `to` at time `et`.
    *
-   * The returned matrix is column-major (`Mat3`), matching Three.js `Matrix3`.
+   * The returned matrix is row-major (`Mat3`), matching SPICE.
    */
   getFrameTransform(input: GetFrameTransformInput): Promise<Mat3>;
 

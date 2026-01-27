@@ -1,17 +1,6 @@
-import type { KernelSource } from "@rybosome/tspice";
+import type { KernelSource, Mat3, Vec3 } from "@rybosome/tspice";
 
-export type Vec3 = readonly [number, number, number];
-export type Mat3 = readonly [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-];
+export type { Mat3, Vec3 } from "@rybosome/tspice";
 
 export type TspiceWorkerApi = {
   /** Initialize the worker (creates the WASM backend). */
@@ -38,7 +27,7 @@ export type TspiceWorkerApi = {
     et: number;
   }): Promise<{ positionKm: Vec3; velocityKmPerSec: Vec3 }>;
 
-  /** Frame rotation matrix from `from` to `to` (column-major). */
+  /** Frame rotation matrix from `from` to `to` (row-major, SPICE semantics). */
   getFrameTransform(input: {
     from: string;
     to: string;

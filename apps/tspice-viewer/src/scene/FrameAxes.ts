@@ -10,9 +10,20 @@ export type CreateFrameAxesOptions = {
 const scratchM3 = new THREE.Matrix3()
 const scratchM4 = new THREE.Matrix4()
 
-function mat3ToMatrix4(m: Mat3): THREE.Matrix4 {
-  // `Mat3` is column-major, matching Three's internal layout.
-  scratchM3.fromArray(m as unknown as number[])
+function mat3RowMajorToMatrix4(m: Mat3): THREE.Matrix4 {
+  // `Mat3` is row-major (SPICE). Three's matrices are column-major internally,
+  // so we convert here at the rendering boundary.
+  scratchM3.set(
+    m[0],
+    m[1],
+    m[2],
+    m[3],
+    m[4],
+    m[5],
+    m[6],
+    m[7],
+    m[8],
+  )
   scratchM4.identity().setFromMatrix3(scratchM3)
   return scratchM4
 }
@@ -95,7 +106,7 @@ export function createFrameAxes(options: CreateFrameAxesOptions): {
         return
       }
 
-      object.setRotationFromMatrix(mat3ToMatrix4(rotationJ2000))
+      object.setRotationFromMatrix(mat3RowMajorToMatrix4(rotationJ2000))
     },
 
     dispose: () => {

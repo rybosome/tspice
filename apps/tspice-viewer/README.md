@@ -100,14 +100,16 @@ In local dev (non-e2e), the viewer exposes a tiny overlay:
 
 `SpiceClient.getFrameTransform({ from, to, et })` returns a `Mat3` rotation matrix.
 
-- Representation: a flat `number[9]` in **column-major** order to match Three.js `Matrix3`.
+- Representation: a flat `number[9]` in **row-major** order (SPICE semantics).
 - Indexing:
   - `m = [
-      m00, m10, m20,
-      m01, m11, m21,
-      m02, m12, m22
+      m00, m01, m02,
+      m10, m11, m12,
+      m20, m21, m22
     ]`
-  - This corresponds to columns `c0=(m00,m10,m20)`, `c1=(m01,m11,m21)`, `c2=(m02,m12,m22)`.
+
+Three.js stores matrices internally in column-major order, so the viewer converts
+`Mat3` at the rendering boundary.
 
 The transform is intended to be applied as:
 
