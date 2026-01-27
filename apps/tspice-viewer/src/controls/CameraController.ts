@@ -73,6 +73,23 @@ export class CameraController {
     camera.lookAt(this.target)
   }
 
+  snapshot(): CameraControllerState {
+    return {
+      target: this.target.clone(),
+      radius: this.radius,
+      yaw: this.yaw,
+      pitch: this.pitch,
+    }
+  }
+
+  restore(state: CameraControllerState) {
+    this.target.copy(state.target)
+    this.radius = state.radius
+    this.yaw = state.yaw
+    this.pitch = state.pitch
+    this.clampState()
+  }
+
   /**
    * Pans the camera target in the camera plane based on screen-space pixel deltas.
    *

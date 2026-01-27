@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { CameraController } from './controls/CameraController.js'
+import { CameraController, type CameraControllerState } from './controls/CameraController.js'
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
 import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
@@ -83,6 +83,7 @@ export function SceneCanvas() {
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   const focusOnOriginRef = useRef<(() => void) | null>(null)
+  const initialControllerStateRef = useRef<CameraControllerState | null>(null)
   panModeEnabledRef.current = panModeEnabled
 
   // Enable keyboard controls (disabled in e2e mode)
@@ -93,6 +94,7 @@ export function SceneCanvas() {
     invalidate: () => invalidateRef.current?.(),
     cancelFocusTween: () => cancelFocusTweenRef.current?.(),
     focusOnOrigin: () => focusOnOriginRef.current?.(),
+    initialControllerStateRef,
     enabled: !isE2e,
   })
 
@@ -1202,6 +1204,12 @@ export function SceneCanvas() {
                 radius: nextRadius,
                 immediate: true,
               })
+
+              // Capture the initial camera view (after first focus logic runs)
+              // so keyboard Reset (R) can return exactly to the page-load view.
+              if (!initialControllerStateRef.current) {
+                initialControllerStateRef.current = controller.snapshot()
+              }
             }
 
             lastAutoZoomFocusBody = next.focusBody
