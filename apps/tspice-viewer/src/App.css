@@ -348,3 +348,203 @@
   border-radius: 4px;
   font-size: 11px;
 }
+
+/* Help Overlay */
+.helpBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.helpDialog {
+  background: #1a1f28;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  max-width: 540px;
+  width: 100%;
+  max-height: calc(100vh - 32px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+}
+
+.helpHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.helpTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.helpCloseButton {
+  appearance: none;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.helpCloseButton:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.helpCloseButton:focus {
+  outline: 2px solid rgba(100, 160, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.helpContent {
+  padding: 20px;
+  overflow-y: auto;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.helpSection {
+  margin-bottom: 20px;
+}
+
+.helpSection:last-child {
+  margin-bottom: 0;
+}
+
+.helpSectionTitle {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.helpSection p {
+  margin: 0 0 10px 0;
+}
+
+.helpSection p:last-child {
+  margin-bottom: 0;
+}
+
+.helpSection a {
+  color: #6ab0ff;
+  text-decoration: none;
+}
+
+.helpSection a:hover {
+  text-decoration: underline;
+}
+
+.helpControls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.helpControlGroup h4 {
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.helpControlGroup p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.helpControlList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+}
+
+.helpControlList li {
+  margin-bottom: 4px;
+}
+
+.helpControlList li:last-child {
+  margin-bottom: 0;
+}
+
+.helpButton {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.helpButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 720px) {
+  .helpBackdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .helpDialog {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+  }
+
+  .helpHeader {
+    padding: 14px 16px;
+  }
+
+  .helpTitle {
+    font-size: 16px;
+  }
+
+  .helpContent {
+    padding: 16px;
+    font-size: 13px;
+  }
+
+  .helpSectionTitle {
+    font-size: 13px;
+  }
+}
+
+.sceneOverlayHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
