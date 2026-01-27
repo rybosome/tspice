@@ -42,9 +42,9 @@ export function createCachedSpiceClient(
   const quantumSec = options.quantumSec ?? DEFAULT_QUANTUM_SEC;
 
   let lastEtKey: string | undefined;
-  let bodyStateCache = new Map<string, BodyState>();
-  let frameTransformCache = new Map<string, Mat3>();
-  let utcCache = new Map<number, string>();
+  let bodyStateCache = new Map<string, Promise<BodyState>>();
+  let frameTransformCache = new Map<string, Promise<Mat3>>();
+  let utcCache = new Map<number, Promise<string>>();
 
   const ensureEt = (et: number) => {
     const quantizedEt = quantizeEt(et, quantumSec);
@@ -66,6 +66,7 @@ export function createCachedSpiceClient(
       // Use quantized ET for the actual query to ensure consistency
       const value = client.getBodyState({ ...input, et: quantizedEt });
       bodyStateCache.set(key, value);
+      void value.catch(() => bodyStateCache.delete(key));
       return value;
     },
 
@@ -77,6 +78,7 @@ export function createCachedSpiceClient(
       // Use quantized ET for the actual query to ensure consistency
       const value = client.getFrameTransform({ ...input, et: quantizedEt });
       frameTransformCache.set(key, value);
+      void value.catch(() => frameTransformCache.delete(key));
       return value;
     },
 
@@ -86,6 +88,7 @@ export function createCachedSpiceClient(
       if (cached) return cached;
       const value = client.etToUtc(quantizedEt);
       utcCache.set(quantizedEt, value);
+      void value.catch(() => utcCache.delete(quantizedEt));
       return value;
     },
 

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { timeStore, useTimeStore, RATE_LADDER } from '../time/timeStore.js';
 import type { SpiceClient } from '../spice/SpiceClient.js';
 
@@ -54,13 +54,24 @@ function formatEtDays(etSec: number): string {
 export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
   const state = useTimeStore();
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [utcString, setUtcString] = useState<string>('...');
 
-  const utcString = useMemo(() => {
-    try {
-      return spiceClient.etToUtc(state.etSec);
-    } catch {
-      return 'N/A';
-    }
+  useEffect(() => {
+    let cancelled = false;
+    setUtcString('...');
+
+    void spiceClient
+      .etToUtc(state.etSec)
+      .then((v) => {
+        if (!cancelled) setUtcString(v);
+      })
+      .catch(() => {
+        if (!cancelled) setUtcString('N/A');
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [spiceClient, state.etSec]);
 
   const handleSliderChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

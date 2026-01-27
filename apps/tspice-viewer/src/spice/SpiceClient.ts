@@ -96,14 +96,14 @@ export interface SpiceClient {
    * - position: km
    * - velocity: km/s
    */
-  getBodyState(input: GetBodyStateInput): BodyState;
+  getBodyState(input: GetBodyStateInput): Promise<BodyState>;
 
   /**
    * Rotation matrix from frame `from` into frame `to` at time `et`.
    *
    * The returned matrix is column-major (`Mat3`), matching Three.js `Matrix3`.
    */
-  getFrameTransform(input: GetFrameTransformInput): Mat3;
+  getFrameTransform(input: GetFrameTransformInput): Promise<Mat3>;
 
   /**
    * Convert ephemeris time (seconds past J2000) to a UTC string.
@@ -111,11 +111,11 @@ export interface SpiceClient {
    * @param et - Ephemeris time in seconds past J2000
    * @returns UTC string (format may vary by implementation, typically ISO-8601)
    */
-  etToUtc(et: EtSeconds): string;
+  etToUtc(et: EtSeconds): Promise<string>;
 
   /** Optional: enumerate supported bodies (if known). */
-  listBodies?(): readonly BodyMeta[];
+  listBodies?(): Promise<readonly BodyMeta[]>;
 
   /** Optional: get metadata for a single body (if known). */
-  getBodyMeta?(body: BodyRef): BodyMeta | undefined;
+  getBodyMeta?(body: BodyRef): Promise<BodyMeta | undefined>;
 }

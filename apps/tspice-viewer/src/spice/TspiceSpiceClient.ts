@@ -49,7 +49,7 @@ function transposeMat3RowMajorToColumnMajor(m: readonly [
 export class TspiceSpiceClient implements SpiceClient {
   constructor(private readonly spice: Spice) {}
 
-  getBodyState(input: GetBodyStateInput): BodyState {
+  async getBodyState(input: GetBodyStateInput): Promise<BodyState> {
     const state = this.spice.getState({
       target: bodyRefToSpiceString(input.target),
       observer: bodyRefToSpiceString(input.observer),
@@ -64,7 +64,7 @@ export class TspiceSpiceClient implements SpiceClient {
     };
   }
 
-  getFrameTransform(input: GetFrameTransformInput): Mat3 {
+  async getFrameTransform(input: GetFrameTransformInput): Promise<Mat3> {
     const m = this.spice.frameTransform(
       input.from as FrameId,
       input.to as FrameId,
@@ -74,7 +74,7 @@ export class TspiceSpiceClient implements SpiceClient {
     return transposeMat3RowMajorToColumnMajor(m);
   }
 
-  etToUtc(et: EtSeconds): string {
+  async etToUtc(et: EtSeconds): Promise<string> {
     return this.spice.etToUtc(et as unknown as SpiceTime, "ISOC", 0);
   }
 }

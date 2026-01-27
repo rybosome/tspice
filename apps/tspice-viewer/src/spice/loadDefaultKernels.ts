@@ -1,4 +1,9 @@
-import type { Spice } from "@rybosome/tspice";
+import { transferKernel } from "@rybosome/tspice-web/client";
+import type { KernelSource } from "@rybosome/tspice";
+
+type KernelLoader = {
+  loadKernel(kernel: KernelSource): Promise<void>;
+};
 
 const KERNELS = {
   lsk: {
@@ -31,7 +36,7 @@ async function fetchKernelBytes(url: URL): Promise<Uint8Array> {
 * - PCK (planetary constants)
 * - SPK (ephemeris)
 */
-export async function loadDefaultKernels(spice: Spice): Promise<void> {
+export async function loadDefaultKernels(spice: KernelLoader): Promise<void> {
   // In Vite, BASE_URL accounts for non-root deployments (e.g. GitHub pages).
   const base = new URL(import.meta.env.BASE_URL, window.location.href);
 
@@ -45,7 +50,7 @@ export async function loadDefaultKernels(spice: Spice): Promise<void> {
     fetchKernelBytes(spkUrl),
   ]);
 
-  spice.loadKernel({ path: KERNELS.lsk.fsPath, bytes: lskBytes });
-  spice.loadKernel({ path: KERNELS.pck.fsPath, bytes: pckBytes });
-  spice.loadKernel({ path: KERNELS.spk.fsPath, bytes: spkBytes });
+  await spice.loadKernel(transferKernel({ path: KERNELS.lsk.fsPath, bytes: lskBytes }));
+  await spice.loadKernel(transferKernel({ path: KERNELS.pck.fsPath, bytes: pckBytes }));
+  await spice.loadKernel(transferKernel({ path: KERNELS.spk.fsPath, bytes: spkBytes }));
 }

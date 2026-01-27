@@ -1,14 +1,13 @@
-import { createSpice, type Spice } from "@rybosome/tspice";
+import { wrapTspiceWorker } from "@rybosome/tspice-web/client";
 
 import type { EtSeconds, SpiceClient } from "./SpiceClient.js";
 import { createCachedSpiceClient } from "./createCachedSpiceClient.js";
-import { TspiceSpiceClient } from "./TspiceSpiceClient.js";
 import { loadDefaultKernels } from "./loadDefaultKernels.js";
 
 export type ViewerSpiceClientBundle = {
-  spice: Spice;
   client: SpiceClient;
-  utcToEt(utc: string): EtSeconds;
+  utcToEt(utc: string): Promise<EtSeconds>;
+  dispose(): void;
 };
 
 /**
@@ -23,14 +22,30 @@ export async function createSpiceClient(
   // Currently `searchParams` isn't used here, but we keep the option for API stability.
   void options;
 
-  const spice = await createSpice({ backend: "wasm" });
-  await loadDefaultKernels(spice);
+  const worker = new Worker(new URL("../workers/tspice.worker.ts", import.meta.url), {
+    type: "module",
+  });
 
-  const client = createCachedSpiceClient(new TspiceSpiceClient(spice));
+  const { api, dispose } = wrapTspiceWorker(worker);
 
-  return {
-    spice,
-    client,
-    utcToEt: (utc) => spice.utcToEt(utc) as unknown as EtSeconds,
-  };
+  try {
+    await api.init();
+
+    // Load the viewer's default kernels via RPC so the main thread stays responsive.
+    await loadDefaultKernels({
+      loadKernel: (kernel) => api.loadKernel(kernel),
+    });
+
+    const spiceClient = api as unknown as SpiceClient;
+    const client = createCachedSpiceClient(spiceClient);
+
+    return {
+      client,
+      utcToEt: async (utc) => (await api.utcToEt(utc)) as EtSeconds,
+      dispose,
+    };
+  } catch (err) {
+    dispose();
+    throw err;
+  }
 }

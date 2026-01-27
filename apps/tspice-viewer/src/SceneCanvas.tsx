@@ -74,6 +74,7 @@ export function SceneCanvas() {
     let disposed = false
     let scheduledFrame: number | null = null
     let cleanupInteractions: (() => void) | undefined
+    let disposeSpice: (() => void) | undefined
 
     // Resource cleanup + interaction lists.
     const pickables: THREE.Mesh[] = []
@@ -397,15 +398,17 @@ export function SceneCanvas() {
 
     void (async () => {
       try {
-        const { client: loadedSpiceClient, utcToEt } = await createSpiceClient({
+        const { client: loadedSpiceClient, utcToEt, dispose } = await createSpiceClient({
           searchParams: search,
         })
+
+        disposeSpice = dispose
 
         // Allow the URL to specify UTC for quick testing, but keep the slider
         // driven by numeric ET.
         const utc = search.get('utc')
         if (utc) {
-          const nextEt = utcToEt(utc)
+          const nextEt = await utcToEt(utc)
           if (!disposed) timeStore.setEtSec(nextEt)
         }
 
@@ -517,71 +520,112 @@ export function SceneCanvas() {
           scene.add(j2000Axes.object)
         }
 
+        // The render loop should remain responsive even if SPICE calls are slow.
+        // Strategy: allow only one in-flight update; while it runs, keep only
+        // the latest requested update and drop intermediate frames.
+        let inFlight = false
+        let pending:
+          | {
+              etSec: EtSeconds
+              focusBody: BodyRef
+              showJ2000Axes: boolean
+              showBodyFixedAxes: boolean
+            }
+          | null = null
+
+        const runUpdate = async () => {
+          if (inFlight) return
+          inFlight = true
+
+          try {
+            while (!disposed && pending) {
+              const next = pending
+              pending = null
+
+              const focusState = await loadedSpiceClient.getBodyState({
+                target: next.focusBody,
+                observer: sceneModel.observer,
+                frame: sceneModel.frame,
+                et: next.etSec,
+              })
+              const focusPosKm = focusState.positionKm
+
+              const bodyStates = await Promise.all(
+                bodies.map((b) =>
+                  loadedSpiceClient.getBodyState({
+                    target: b.body,
+                    observer: sceneModel.observer,
+                    frame: sceneModel.frame,
+                    et: next.etSec,
+                  })
+                )
+              )
+
+              for (let i = 0; i < bodies.length; i++) {
+                const b = bodies[i]!
+                const state = bodyStates[i]!
+
+                const rebasedKm = rebasePositionKm(state.positionKm, focusPosKm)
+                b.mesh.position.set(
+                  rebasedKm[0] * kmToWorld,
+                  rebasedKm[1] * kmToWorld,
+                  rebasedKm[2] * kmToWorld
+                )
+
+                if (b.axes) {
+                  const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
+                  b.axes.object.visible = visible
+
+                  if (visible && b.bodyFixedFrame) {
+                    const rot = await loadedSpiceClient.getFrameTransform({
+                      from: b.bodyFixedFrame as FrameId,
+                      to: sceneModel.frame,
+                      et: next.etSec,
+                    })
+                    b.axes.setPose({ position: b.mesh.position, rotationJ2000: rot })
+                  }
+                }
+              }
+
+              if (j2000Axes) {
+                j2000Axes.object.visible = next.showJ2000Axes
+                if (next.showJ2000Axes) {
+                  j2000Axes.setPose({ position: new THREE.Vector3(0, 0, 0) })
+                }
+              }
+
+              // Use the Sun vector to orient lighting deterministically.
+              const sun = bodies.find((b) => String(b.body) === 'SUN')
+              const sunPos = sun?.mesh.position ?? new THREE.Vector3(1, 1, 1)
+              const len2 = sunPos.lengthSq()
+              const dirPos =
+                len2 > 1e-12
+                  ? sunPos.clone().normalize()
+                  : new THREE.Vector3(1, 1, 1).normalize()
+              dir.position.copy(dirPos.multiplyScalar(10))
+
+              invalidate()
+            }
+          } finally {
+            inFlight = false
+          }
+        }
+
         const updateScene = (next: {
           etSec: EtSeconds
           focusBody: BodyRef
           showJ2000Axes: boolean
           showBodyFixedAxes: boolean
         }) => {
-          const focusState = loadedSpiceClient.getBodyState({
-            target: next.focusBody,
-            observer: sceneModel.observer,
-            frame: sceneModel.frame,
-            et: next.etSec,
-          })
-          const focusPosKm = focusState.positionKm
-
-          for (const b of bodies) {
-            const state = loadedSpiceClient.getBodyState({
-              target: b.body,
-              observer: sceneModel.observer,
-              frame: sceneModel.frame,
-              et: next.etSec,
-            })
-
-            const rebasedKm = rebasePositionKm(state.positionKm, focusPosKm)
-            b.mesh.position.set(
-              rebasedKm[0] * kmToWorld,
-              rebasedKm[1] * kmToWorld,
-              rebasedKm[2] * kmToWorld
-            )
-
-            if (b.axes) {
-              const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
-              b.axes.object.visible = visible
-
-              if (visible && b.bodyFixedFrame) {
-                const rot = loadedSpiceClient.getFrameTransform({
-                  from: b.bodyFixedFrame as FrameId,
-                  to: sceneModel.frame,
-                  et: next.etSec,
-                })
-                b.axes.setPose({ position: b.mesh.position, rotationJ2000: rot })
-              }
-            }
-          }
-
-          if (j2000Axes) {
-            j2000Axes.object.visible = next.showJ2000Axes
-            if (next.showJ2000Axes) {
-              j2000Axes.setPose({ position: new THREE.Vector3(0, 0, 0) })
-            }
-          }
-
-          // Use the Sun vector to orient lighting deterministically.
-          const sun = bodies.find((b) => String(b.body) === 'SUN')
-          const sunPos = sun?.mesh.position ?? new THREE.Vector3(1, 1, 1)
-          const len2 = sunPos.lengthSq()
-          const dirPos = len2 > 1e-12 ? sunPos.clone().normalize() : new THREE.Vector3(1, 1, 1).normalize()
-          dir.position.copy(dirPos.multiplyScalar(10))
-
-          invalidate()
+          pending = next
+          void runUpdate()
         }
 
         updateSceneRef.current = updateScene
         // Initial render with current time store state
         const initialEt = timeStore.getState().etSec
-        updateScene({ etSec: initialEt, ...latestUiRef.current })
+        pending = { etSec: initialEt, ...latestUiRef.current }
+        await runUpdate()
 
         resize()
         controller.applyToCamera(camera)
@@ -609,6 +653,8 @@ export function SceneCanvas() {
       }
 
       updateSceneRef.current = null
+
+      disposeSpice?.()
 
       for (const obj of sceneObjects) scene.remove(obj)
       for (const dispose of disposers) dispose()

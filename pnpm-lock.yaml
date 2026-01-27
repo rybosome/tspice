@@ -17,6 +17,9 @@ importers:
       '@rybosome/tspice':
         specifier: workspace:*
         version: link:../../packages/tspice
+      '@rybosome/tspice-web':
+        specifier: workspace:*
+        version: link:../../packages/tspice-web
       react:
         specifier: ^19.2.0
         version: 19.2.3
@@ -168,6 +171,22 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.6)
+
+  packages/tspice-web:
+    dependencies:
+      '@rybosome/tspice':
+        specifier: workspace:*
+        version: link:../tspice
+      comlink:
+        specifier: ^4.4.2
+        version: 4.4.2
+    devDependencies:
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.9
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
 packages:
 
@@ -897,6 +916,9 @@ packages:
 
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+
+  comlink@4.4.2:
+    resolution: {integrity: sha512-OxGdvBmJuNKSCMO4NTl1L47VRp6xn2wG4F/2hYzB6tiCb709otOxtEYCSvK80PtjODfXXZu8ds+Nw5kVCjqd2g==}
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
@@ -2173,6 +2195,8 @@ snapshots:
       color-name: 1.1.4
 
   color-name@1.1.4: {}
+
+  comlink@4.4.2: {}
 
   convert-source-map@2.0.0: {}
 
