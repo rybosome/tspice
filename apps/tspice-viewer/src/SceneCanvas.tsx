@@ -158,7 +158,10 @@ export function SceneCanvas() {
     const scene = new THREE.Scene()
     scene.background = new THREE.Color('#0f131a')
 
-    const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 1000)
+    // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
+    // world units away. Keep the far plane large enough so we can render the
+    // full default scene (through Neptune).
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 10_000)
     camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
@@ -213,7 +216,10 @@ export function SceneCanvas() {
     // When focusing a body, also set a sensible default camera radius so the
     // body appears large enough without requiring a bunch of manual zoom.
     const focusDistanceMultiplier = 4
-    const focusRadiusMin = 0.05
+    // Minimum camera radius for auto-zoom. This used to be quite large, which
+    // made small bodies (e.g. Mercury) look tiny when selected from the focus
+    // dropdown.
+    const focusRadiusMin = 0.02
     const focusRadiusMax = 50
 
     const computeFocusRadius = (radiusWorld: number) =>
@@ -406,7 +412,7 @@ export function SceneCanvas() {
           }
 
           if (activeTouches.size >= 2) {
-            cancelFocusTween()
+            cancelFocusTween?.()
 
             const [a, b] = Array.from(activeTouches.entries())
             const ids: [number, number] = [a[0], b[0]]
@@ -457,7 +463,7 @@ export function SceneCanvas() {
           const rect = canvas.getBoundingClientRect()
 
           if (activeTouches.size >= 2) {
-            cancelFocusTween()
+            cancelFocusTween?.()
 
             // Ensure pinch state if we have 2+ active pointers.
             if (touchState.kind !== 'pinch') {
@@ -526,7 +532,7 @@ export function SceneCanvas() {
               return
             }
 
-            cancelFocusTween()
+            cancelFocusTween?.()
             touchState.isDragging = true
             touchState.lastX = ev.clientX
             touchState.lastY = ev.clientY
@@ -632,7 +638,7 @@ export function SceneCanvas() {
 
                 const target = new THREE.Vector3()
                 hitMesh.getWorldPosition(target)
-                focusOn(target)
+                focusOn?.(target)
               }
             }
           }
