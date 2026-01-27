@@ -1,8 +1,8 @@
 # Planet texture credits
 
-This directory contains low-resolution, equirectangular-ish textures used by the `tspice-viewer` demo.
+This directory contains low-resolution textures used by the `tspice-viewer` demo.
 
-All textures here are **256×128** PNGs.
+Most textures here are **256×128** PNGs.
 
 ## Licensing notes
 
@@ -22,6 +22,7 @@ All textures here are **256×128** PNGs.
 | `earth.png` | NASA Visible Earth (Blue Marble base map): https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.png | NASA-produced imagery (Visible Earth / GSFC). NASA media guidelines apply (see above). Downscaled to 256×128. |
 | `jupiter.png` | NASA Science “3D Resources: Jupiter” https://science.nasa.gov/3d-resources/jupiter/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/jupiter/Jupiter.jpg) | Credit listed on the NASA page: **JPL & Caltech**. NASA media guidelines apply (see above). Downscaled to 256×128. |
 | `saturn.png` | NASA Science “3D Resources: Saturn” https://science.nasa.gov/3d-resources/saturn/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/saturn/Saturn.jpg) | Credit listed on the NASA page: **JPL & Caltech** (generated planetary map). NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `saturn-rings.png` | NASA Photojournal “Mosaic of Saturn’s Rings” (PIA02242) https://science.nasa.gov/photojournal/mosaic-of-saturns-rings/ (direct: https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia02/pia02242/PIA02242.jpg) | Credit line on the NASA page: **NASA/JPL**. The viewer texture was derived from the mosaic (converted into a small radial ring strip + alpha) and downscaled to **512×64**. |
 | `uranus.png` | JPL “Solar System Simulator” Uranus texture map (direct: https://maps.jpl.nasa.gov/tmaps/pix/ura0fss1.jpg) (page: https://maps.jpl.nasa.gov/tmaps/uranus.html) | JPL/NASA generated map (noted as “fictional” on the source page). NASA media guidelines apply (see above). Downscaled to 256×128. |
 | `neptune.png` | NASA Science “3D Resources: Neptune” https://science.nasa.gov/3d-resources/neptune/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/neptune/Neptune.jpg) | Credit listed on the NASA page: **Don Davis & JPL/Caltech** (generated planetary map). NASA media guidelines apply (see above). Downscaled to 256×128. |
 | `sun.png` | NASA SVS (synoptic solar map): https://svs.gsfc.nasa.gov/3505/ (direct: https://svs.gsfc.nasa.gov/vis/a000000/a003500/a003505/SynopticIntensity.02004.jpg) | NASA SVS content is generally public domain unless otherwise noted (see SVS help page). NASA media guidelines apply (see above). Downscaled to 256×128. |
