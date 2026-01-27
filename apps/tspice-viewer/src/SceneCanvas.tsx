@@ -11,6 +11,7 @@ import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
 import { createRingMesh } from './scene/RingMesh.js'
 import { createSelectionRing } from './scene/SelectionRing.js'
 import { createStarfield } from './scene/Starfield.js'
+import { createSkydome } from './scene/Skydome.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore } from './time/timeStore.js'
@@ -34,8 +35,15 @@ export function SceneCanvas() {
 
   const controllerRef = useRef<CameraController | null>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
+  const sceneRef = useRef<THREE.Scene | null>(null)
   const invalidateRef = useRef<(() => void) | null>(null)
+  const renderOnceRef = useRef<((timeMs?: number) => void) | null>(null)
+  const twinkleActiveRef = useRef(false)
   const cancelFocusTweenRef = useRef<(() => void) | null>(null)
+
+  const starSeedRef = useRef<number>(1337)
+  const starfieldRef = useRef<ReturnType<typeof createStarfield> | null>(null)
+  const skydomeRef = useRef<ReturnType<typeof createSkydome> | null>(null)
 
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
   const isE2e = search.has('e2e')
@@ -52,6 +60,11 @@ export function SceneCanvas() {
   // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
+  // Single toggle for animated sky effects (skydome shader + starfield twinkle).
+  // Disabled by default for e2e tests to keep snapshots deterministic.
+  const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
+
+  const twinkleEnabled = animatedSky && !isE2e
 
   // Planet visual scale multiplier (applies to all non-Sun bodies, including the Moon).
   // Uses a log-scale slider so the range can go "absurdly" large without being fiddly.
@@ -317,6 +330,7 @@ export function SceneCanvas() {
 
     const scene = new THREE.Scene()
     scene.background = new THREE.Color('#0f131a')
+    sceneRef.current = scene
 
     // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
     // world units away. Keep the far plane large enough so we can render the
@@ -341,9 +355,10 @@ export function SceneCanvas() {
       return isE2e ? 1 : 1337
     })()
 
-    const starfield = createStarfield({ seed: starSeed })
-    sceneObjects.push(starfield.object)
-    disposers.push(starfield.dispose)
+    starSeedRef.current = starSeed
+
+    const starfield = createStarfield({ seed: starSeed, twinkle: twinkleEnabled })
+    starfieldRef.current = starfield
     scene.add(starfield.object)
 
     const selectionRing = !isE2e ? createSelectionRing() : undefined
@@ -353,20 +368,42 @@ export function SceneCanvas() {
       scene.add(selectionRing.object)
     }
 
-    const renderOnce = () => {
+    // Skydome (Milky Way band shader background) - only when animatedSky is enabled
+    if (animatedSky && !isE2e) {
+      const skydome = createSkydome({ seed: starSeed })
+      skydomeRef.current = skydome
+      scene.add(skydome.object)
+    }
+
+    const renderOnce = (timeMs?: number) => {
       if (disposed) return
-      starfield.syncToCamera(camera)
-      selectionRing?.syncToCamera({ camera, nowMs: performance.now() })
+
+      const nowMs = timeMs ?? performance.now()
+      const timeSec = nowMs * 0.001
+
+      const starfield = starfieldRef.current
+      starfield?.update?.(timeSec)
+      starfield?.syncToCamera(camera)
+
+      selectionRing?.syncToCamera({ camera, nowMs })
+
+      const skydome = skydomeRef.current
+      skydome?.syncToCamera(camera)
+      skydome?.setTimeSeconds(timeSec)
       renderer.render(scene, camera)
     }
 
+    renderOnceRef.current = renderOnce
+
     const invalidate = () => {
       if (disposed) return
+      // When twinkling is enabled, we have a dedicated RAF loop.
+      if (twinkleActiveRef.current) return
       if (scheduledFrame != null) return
 
-      scheduledFrame = window.requestAnimationFrame(() => {
+      scheduledFrame = window.requestAnimationFrame((t) => {
         scheduledFrame = null
-        renderOnce()
+        renderOnce(t)
       })
     }
 
@@ -1284,9 +1321,23 @@ export function SceneCanvas() {
         cleanupInteractions?.()
       }
 
+      if (starfieldRef.current) {
+        scene.remove(starfieldRef.current.object)
+        starfieldRef.current.dispose()
+        starfieldRef.current = null
+      }
+
+      if (skydomeRef.current) {
+        scene.remove(skydomeRef.current.object)
+        skydomeRef.current.dispose()
+        skydomeRef.current = null
+      }
+
       controllerRef.current = null
       cameraRef.current = null
+      sceneRef.current = null
       invalidateRef.current = null
+      renderOnceRef.current = null
       cancelFocusTweenRef.current = null
 
       updateSceneRef.current = null
@@ -1297,6 +1348,65 @@ export function SceneCanvas() {
       renderer.dispose()
     }
   }, [])
+
+  // Swap the starfield and skydome in-place when animatedSky toggled.
+  useEffect(() => {
+    const scene = sceneRef.current
+    const camera = cameraRef.current
+    if (!scene || !camera) return
+
+    // Always recreate starfield (twinkle may have changed)
+    const prevStarfield = starfieldRef.current
+    if (prevStarfield) {
+      scene.remove(prevStarfield.object)
+      prevStarfield.dispose()
+    }
+
+    const nextStarfield = createStarfield({
+      seed: starSeedRef.current,
+      twinkle: twinkleEnabled,
+    })
+    starfieldRef.current = nextStarfield
+    scene.add(nextStarfield.object)
+    nextStarfield.syncToCamera(camera)
+
+    // Handle skydome based on animatedSky toggle
+    const prevSkydome = skydomeRef.current
+    const shouldHaveSkydome = animatedSky && !isE2e
+
+    if (prevSkydome && !shouldHaveSkydome) {
+      scene.remove(prevSkydome.object)
+      prevSkydome.dispose()
+      skydomeRef.current = null
+    } else if (!prevSkydome && shouldHaveSkydome) {
+      const nextSkydome = createSkydome({ seed: starSeedRef.current })
+      skydomeRef.current = nextSkydome
+      scene.add(nextSkydome.object)
+      nextSkydome.syncToCamera(camera)
+    }
+
+    invalidateRef.current?.()
+  }, [animatedSky, twinkleEnabled, isE2e])
+
+
+  // Lightweight RAF loop for twinkle animation.
+  useEffect(() => {
+    twinkleActiveRef.current = twinkleEnabled
+
+    if (!twinkleEnabled) return
+
+    let frame: number | null = null
+    const tick = (t: number) => {
+      if (!twinkleActiveRef.current) return
+      renderOnceRef.current?.(t)
+      frame = window.requestAnimationFrame(tick)
+    }
+
+    frame = window.requestAnimationFrame(tick)
+    return () => {
+      if (frame != null) window.cancelAnimationFrame(frame)
+    }
+  }, [twinkleEnabled])
 
   return (
     <div ref={containerRef} className="scene">
@@ -1443,6 +1553,16 @@ export function SceneCanvas() {
                         onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
                         style={{ width: '100%' }}
                       />
+                    </label>
+                  </div>
+                  <div className="sceneOverlayRow" style={{ marginTop: '6px' }}>
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={animatedSky}
+                        onChange={(e) => setAnimatedSky(e.target.checked)}
+                      />
+                      Animated sky
                     </label>
                   </div>
                 </div>
