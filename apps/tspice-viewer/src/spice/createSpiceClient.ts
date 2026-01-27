@@ -3,7 +3,8 @@ import { createSpice, type Spice } from "@rybosome/tspice";
 import type { EtSeconds, SpiceClient } from "./SpiceClient.js";
 import { createCachedSpiceClient } from "./createCachedSpiceClient.js";
 import { TspiceSpiceClient } from "./TspiceSpiceClient.js";
-import { loadDefaultKernels } from "./loadDefaultKernels.js";
+import { naifGenericKernelPack } from "./kernelPacks/naifGeneric.js";
+import { loadKernelPack } from "./loadKernelPack.js";
 
 export type ViewerSpiceClientBundle = {
   spice: Spice;
@@ -24,7 +25,7 @@ export async function createSpiceClient(
   void options;
 
   const spice = await createSpice({ backend: "wasm" });
-  await loadDefaultKernels(spice);
+  await loadKernelPack(spice, naifGenericKernelPack);
 
   const client = createCachedSpiceClient(new TspiceSpiceClient(spice));
 

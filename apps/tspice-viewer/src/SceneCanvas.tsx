@@ -5,6 +5,7 @@ import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
+import { listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
 import { createFrameAxes } from './scene/FrameAxes.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
@@ -38,6 +39,8 @@ export function SceneCanvas() {
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
+
+  const focusOptions = useMemo(() => listDefaultVisibleBodies(), [])
 
   const getIsSmallScreen = () =>
     typeof window !== 'undefined' && typeof window.matchMedia === 'function'
@@ -760,50 +763,18 @@ export function SceneCanvas() {
           // Use a stable observer for all SPICE queries, then apply a precision
           // strategy in the renderer (focus-origin rebasing).
           observer: 'SUN',
-          bodies: [
-            {
-              body: 'SUN',
-              style: {
-                radiusKm: 695_700,
-                radiusScale: 2,
-                color: '#ffb703',
-                textureKind: 'sun',
-                label: 'Sun',
-              },
-            },
-            {
-              body: 'EARTH',
-              bodyFixedFrame: 'IAU_EARTH',
-              style: {
-                radiusKm: 6_371,
-                radiusScale: 50,
-                color: '#2a9d8f',
-                textureKind: 'earth',
-                label: 'Earth',
-              },
-            },
-            {
-              body: 'MOON',
-              bodyFixedFrame: 'IAU_MOON',
-              style: {
-                radiusKm: 1_737.4,
-                radiusScale: 70,
-                color: '#e9c46a',
-                textureKind: 'moon',
-                label: 'Moon',
-              },
-            },
-          ],
+          bodies: listDefaultVisibleSceneBodies(),
         }
 
         const kmToWorld = 1 / 1_000_000
 
         const bodies = sceneModel.bodies.map((body) => {
-          const { mesh, dispose } = createBodyMesh({
+          const { mesh, dispose, ready } = createBodyMesh({
             radiusKm: body.style.radiusKm,
             kmToWorld,
             radiusScale: body.style.radiusScale,
             color: body.style.color,
+            textureUrl: body.style.textureUrl,
             textureKind: body.style.textureKind,
           })
 
@@ -830,8 +801,13 @@ export function SceneCanvas() {
             bodyFixedFrame: body.bodyFixedFrame,
             mesh,
             axes,
+            ready,
           }
         })
+
+        // Ensure textures are loaded before we mark the scene as rendered.
+        await Promise.all(bodies.map((b) => b.ready))
+        if (disposed) return
 
         const j2000Axes = !isE2e ? createFrameAxes({ sizeWorld: 1.2, opacity: 0.9 }) : undefined
         if (j2000Axes) {
@@ -989,9 +965,11 @@ export function SceneCanvas() {
                       setFocusBody(e.target.value)
                     }}
                   >
-                    <option value="EARTH">Earth</option>
-                    <option value="MOON">Moon</option>
-                    <option value="SUN">Sun</option>
+                    {focusOptions.map((b) => (
+                      <option key={b.id} value={String(b.body)}>
+                        {b.style.label ?? b.id}
+                      </option>
+                    ))}
                   </select>
                 </label>
 

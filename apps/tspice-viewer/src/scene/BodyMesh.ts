@@ -11,8 +11,20 @@ export type CreateBodyMeshOptions = {
 
   color: THREE.ColorRepresentation
 
+  /**
+   * Optional texture URL/path.
+   *
+   * If relative, it's resolved against Vite's `BASE_URL`.
+   */
+  textureUrl?: string
+
   /** Optional, lightweight procedural texture (no binary assets). */
   textureKind?: BodyTextureKind
+}
+
+function resolveVitePublicUrl(pathOrUrl: string): string {
+  const base = new URL(import.meta.env.BASE_URL, window.location.href)
+  return new URL(pathOrUrl, base).toString()
 }
 
 function makeCanvasTexture(draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => void) {
@@ -126,13 +138,41 @@ function makeProceduralBodyTexture(kind: BodyTextureKind): THREE.Texture {
 export function createBodyMesh(options: CreateBodyMeshOptions): {
   mesh: THREE.Mesh
   dispose: () => void
+  ready: Promise<void>
 } {
   const radiusScale = options.radiusScale ?? 1
   const radiusWorld = options.radiusKm * options.kmToWorld * radiusScale
 
   const geometry = new THREE.SphereGeometry(radiusWorld, 48, 24)
 
-  const map = options.textureKind ? makeProceduralBodyTexture(options.textureKind) : undefined
+  let disposed = false
+
+  let map: THREE.Texture | undefined = options.textureKind
+    ? makeProceduralBodyTexture(options.textureKind)
+    : undefined
+
+  const ready: Promise<void> = options.textureUrl
+    ? new THREE.TextureLoader()
+        .loadAsync(resolveVitePublicUrl(options.textureUrl))
+        .then((tex) => {
+          if (disposed) {
+            tex.dispose()
+            return
+          }
+
+          tex.colorSpace = THREE.SRGBColorSpace
+          tex.wrapS = THREE.RepeatWrapping
+          tex.wrapT = THREE.RepeatWrapping
+          tex.needsUpdate = true
+
+          map?.dispose()
+          map = tex
+        })
+        .catch((err) => {
+          // Keep rendering if a texture fails; surface failures for debugging.
+          console.warn('Failed to load body texture', options.textureUrl, err)
+        })
+    : Promise.resolve()
   const material = new THREE.MeshStandardMaterial({
     color: new THREE.Color(options.color),
     roughness: options.textureKind === 'sun' ? 0.2 : 0.9,
@@ -147,9 +187,18 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   return {
     mesh,
     dispose: () => {
+      disposed = true
       geometry.dispose()
       material.dispose()
       map?.dispose()
     },
+    ready: ready.then(() => {
+      // If the texture loaded after we created the material, apply it now.
+      if (disposed) return
+      if (!map) return
+
+      material.map = map
+      material.needsUpdate = true
+    }),
   }
 }
