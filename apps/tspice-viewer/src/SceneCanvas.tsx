@@ -62,39 +62,12 @@ export function SceneCanvas() {
   // inside the renderer effect.
   const kmToWorld = 1 / 1_000_000
 
-  const getIsSmallScreen = () =>
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia('(max-width: 720px)').matches
-      : false
-
-  const [isSmallScreen, setIsSmallScreen] = useState(getIsSmallScreen)
-  const [overlayOpen, setOverlayOpen] = useState(() => !getIsSmallScreen())
+  // Control pane collapsed state: starts expanded on all screen sizes
+  const [overlayOpen, setOverlayOpen] = useState(true)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   panModeEnabledRef.current = panModeEnabled
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
-
-    const mql = window.matchMedia('(max-width: 720px)')
-    const onChange = () => {
-      const small = mql.matches
-      setIsSmallScreen(small)
-      setOverlayOpen(!small)
-    }
-
-    onChange()
-
-    if (typeof mql.addEventListener === 'function') {
-      mql.addEventListener('change', onChange)
-      return () => mql.removeEventListener('change', onChange)
-    }
-
-    // Safari < 14
-    mql.addListener(onChange)
-    return () => mql.removeListener(onChange)
-  }, [])
 
   const zoomBy = (factor: number) => {
     const controller = controllerRef.current
@@ -1269,17 +1242,18 @@ export function SceneCanvas() {
           className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
         >
           <div className="sceneOverlayHeader">
-            {isSmallScreen ? (
-              <button
-                className="sceneOverlayButton"
-                onClick={() => setOverlayOpen((v) => !v)}
-                type="button"
-              >
-                {overlayOpen ? 'Hide controls' : 'Show controls'}
-              </button>
-            ) : (
-              <div className="sceneOverlayHeaderTitle">Controls</div>
-            )}
+            <div className="sceneOverlayHeaderTitle">Controls</div>
+
+            <button
+              className="sceneOverlayToggle"
+              onClick={() => setOverlayOpen((v) => !v)}
+              type="button"
+              aria-expanded={overlayOpen}
+              aria-controls="scene-overlay-body"
+              aria-label={overlayOpen ? 'Collapse controls' : 'Expand controls'}
+            >
+              {overlayOpen ? '▲' : '▼'}
+            </button>
 
             <div className="sceneOverlayHeaderActions">
               <button
@@ -1303,8 +1277,8 @@ export function SceneCanvas() {
             </div>
           </div>
 
-          {!isSmallScreen || overlayOpen ? (
-            <div className="sceneOverlayBody">
+          {overlayOpen ? (
+            <div id="scene-overlay-body" className="sceneOverlayBody">
               <PlaybackControls spiceClient={spiceClient} />
 
               <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
