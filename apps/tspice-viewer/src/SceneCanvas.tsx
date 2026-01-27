@@ -1312,11 +1312,25 @@ export function SceneCanvas() {
             }
           }
 
-          // Use the Sun vector to orient lighting deterministically.
-          const sun = bodies.find((b) => String(b.body) === 'SUN')
-          const sunPos = sun?.mesh.position ?? new THREE.Vector3(1, 1, 1)
-          const len2 = sunPos.lengthSq()
-          const dirPos = len2 > 1e-12 ? sunPos.clone().normalize() : new THREE.Vector3(1, 1, 1).normalize()
+          // SPICE-derived sun lighting direction.
+          // We compute the Sun's position relative to the focused body directly from SPICE,
+          // making the lighting independent of whether the Sun mesh is visible/filtered.
+          // This is computed in the J2000 (scene/world) frame, which keeps lighting consistent
+          // across all bodies - a single global sun direction is physically correct and avoids
+          // per-body lighting complexity that would add cost without visual benefit.
+          const sunStateForLighting = loadedSpiceClient.getBodyState({
+            target: 'SUN',
+            observer: next.focusBody,
+            frame: sceneModel.frame,
+            et: next.etSec,
+          })
+          const sunDirKm = sunStateForLighting.positionKm
+          const sunDirVec = new THREE.Vector3(sunDirKm[0], sunDirKm[1], sunDirKm[2])
+          const sunDirLen2 = sunDirVec.lengthSq()
+          // Normalize and use as directional light position (fallback to +X+Y+Z if degenerate).
+          const dirPos = sunDirLen2 > 1e-12 ? sunDirVec.normalize() : new THREE.Vector3(1, 1, 1).normalize()
+          // TODO: Eclipse/shadow occlusion could be added here by checking if another body
+          // lies along the sun direction, but this adds complexity for marginal visual benefit.
           dir.position.copy(dirPos.multiplyScalar(10))
 
           invalidate()
