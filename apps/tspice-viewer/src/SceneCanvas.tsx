@@ -14,6 +14,7 @@ import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
+import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
 
 function disposeMaterial(material: THREE.Material | THREE.Material[]) {
   if (Array.isArray(material)) {
@@ -894,6 +895,50 @@ export function SceneCanvas() {
                 mode: next.scaleMode,
               })
 
+              // When focusing a non-Sun body, bias the camera orientation so the
+              // Sun remains visible (it provides important spatial context).
+              if (String(next.focusBody) !== 'SUN') {
+                const sunPosWorld = new THREE.Vector3(
+                  -focusPosKm[0] * kmToWorld,
+                  -focusPosKm[1] * kmToWorld,
+                  -focusPosKm[2] * kmToWorld
+                )
+
+                if (sunPosWorld.lengthSq() > 1e-12) {
+                  const sunDir = sunPosWorld.clone().normalize()
+
+                  // Current forward direction (camera -> target) derived from the
+                  // controller's yaw/pitch (target/radius don't affect direction).
+                  const cosPitch = Math.cos(controller.pitch)
+                  const currentOffsetDir = new THREE.Vector3(
+                    cosPitch * Math.cos(controller.yaw),
+                    Math.sin(controller.pitch),
+                    cosPitch * Math.sin(controller.yaw)
+                  )
+                  const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
+
+                  const sunAlreadyVisible = isDirectionWithinFov({
+                    cameraForwardDir: currentForwardDir,
+                    dirToPoint: sunDir,
+                    cameraFovDeg: camera.fov,
+                    cameraAspect: camera.aspect,
+                  })
+
+                  if (!sunAlreadyVisible) {
+                    const angles = computeOrbitAnglesToKeepPointInView({
+                      pointWorld: sunPosWorld,
+                      cameraFovDeg: camera.fov,
+                      cameraAspect: camera.aspect,
+                    })
+
+                    if (angles) {
+                      controller.yaw = angles.yaw
+                      controller.pitch = angles.pitch
+                    }
+                  }
+                }
+              }
+
               // For focus-body selection (dropdown), force the camera to look at
               // the rebased origin and update radius immediately.
               focusOn?.(new THREE.Vector3(0, 0, 0), {
@@ -1055,6 +1100,16 @@ export function SceneCanvas() {
                     ))}
                   </select>
                 </label>
+
+                <button
+                  className="sceneOverlayButton"
+                  type="button"
+                  onClick={() => setFocusBody('SUN')}
+                  disabled={String(focusBody) === 'SUN'}
+                  title="Quickly refocus the scene on the Sun"
+                >
+                  Focus Sun
+                </button>
 
                 <label className="sceneOverlayLabel">
                   Scale
