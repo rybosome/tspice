@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { CameraController } from './controls/CameraController.js'
 import { pickFirstIntersection } from './interaction/pick.js'
@@ -12,6 +12,7 @@ import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore } from './time/timeStore.js'
+import { useKeyboardControls } from './controls/useKeyboardControls.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 
@@ -56,6 +57,7 @@ export function SceneCanvas() {
   const [panModeEnabled, setPanModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
+  const focusOnOriginRef = useRef<(() => void) | null>(null)
   panModeEnabledRef.current = panModeEnabled
 
   useEffect(() => {
@@ -91,6 +93,32 @@ export function SceneCanvas() {
     controller.applyToCamera(camera)
     invalidateRef.current?.()
   }
+
+  // Stable callback for keyboard controls to focus on origin
+  const focusOnOrigin = useCallback(() => {
+    focusOnOriginRef.current?.()
+  }, [])
+
+  // Stable callback for canceling focus tween
+  const cancelFocusTweenStable = useCallback(() => {
+    cancelFocusTweenRef.current?.()
+  }, [])
+
+  // Stable invalidate callback for keyboard controls
+  const invalidateStable = useCallback(() => {
+    invalidateRef.current?.()
+  }, [])
+
+  // Enable keyboard controls (disabled in e2e mode)
+  useKeyboardControls({
+    controllerRef,
+    cameraRef,
+    canvasRef,
+    invalidate: invalidateStable,
+    cancelFocusTween: cancelFocusTweenStable,
+    focusOnOrigin,
+    enabled: !isE2e,
+  })
 
   // Start the playback ticker (handles time advancement)
   usePlaybackTicker()
@@ -271,6 +299,16 @@ export function SceneCanvas() {
       }
 
       cancelFocusTweenRef.current = cancelFocusTween
+
+      // Expose focusOn to the keyboard controls via ref
+      focusOnOriginRef.current = () => {
+        // Focus on the origin (the currently focused body's position in the scene)
+        // Since we rebase positions around the focus body, origin is always (0,0,0)
+        const originTarget = new THREE.Vector3(0, 0, 0)
+        focusOn?.(originTarget, {
+          radius: controller.radius, // Keep current zoom level
+        })
+      }
 
       type DragMode = 'orbit' | 'pan'
 
@@ -997,6 +1035,7 @@ export function SceneCanvas() {
       controllerRef.current = null
       cameraRef.current = null
       invalidateRef.current = null
+      focusOnOriginRef.current = null
       cancelFocusTweenRef.current = null
 
       updateSceneRef.current = null

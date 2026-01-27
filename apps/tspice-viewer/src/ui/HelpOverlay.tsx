@@ -112,6 +112,30 @@ export function HelpOverlay({ isOpen, onClose }: HelpOverlayProps) {
           </section>
 
           <section className="helpSection">
+            <h3 className="helpSectionTitle">Keyboard shortcuts</h3>
+            <div className="helpControls">
+              <div className="helpControlGroup">
+                <h4 className="helpControlGroupTitle">Camera</h4>
+                <ul className="helpControlList">
+                  <li><strong>Arrow keys:</strong> Orbit (yaw/pitch)</li>
+                  <li><strong>Shift + Arrow keys:</strong> Pan</li>
+                  <li><strong>W / A / S / D:</strong> Pan (alternate)</li>
+                  <li><strong>+ / − (or =):</strong> Zoom in/out</li>
+                  <li><strong>F or C:</strong> Focus/center view</li>
+                  <li><strong>R or Home:</strong> Reset view</li>
+                </ul>
+              </div>
+              <div className="helpControlGroup">
+                <h4 className="helpControlGroupTitle">Time</h4>
+                <ul className="helpControlList">
+                  <li><strong>Space:</strong> Play/pause</li>
+                  <li><strong>[ / ]:</strong> Step time backward/forward</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section className="helpSection">
             <h3 className="helpSectionTitle">Data &amp; limitations</h3>
             <p>
               This demo uses a bundled set of SPICE kernel data (ephemeris files). The available
