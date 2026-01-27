@@ -212,7 +212,7 @@ export function SceneCanvas() {
 
     // When focusing a body, also set a sensible default camera radius so the
     // body appears large enough without requiring a bunch of manual zoom.
-    const focusDistanceMultiplier = 8
+    const focusDistanceMultiplier = 4
     const focusRadiusMin = 0.05
     const focusRadiusMax = 50
 
