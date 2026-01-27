@@ -53,6 +53,20 @@ export function SceneCanvas() {
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
 
+  // Planet visual scale multiplier (applies to all non-Sun bodies, including the Moon).
+  // Uses a log-scale slider so the range can go "absurdly" large without being fiddly.
+  // This is ephemeral (not persisted) and only affects rendered radii.
+  const [planetScaleSlider, setPlanetScaleSlider] = useState(0)
+
+  const planetScaleMultiplier = useMemo(() => Math.pow(10, planetScaleSlider / 20), [planetScaleSlider])
+
+  const formatScaleMultiplier = (m: number) => {
+    if (!Number.isFinite(m)) return String(m)
+    if (m < 10) return m.toFixed(2).replace(/\.00$/, '')
+    if (m < 1000) return String(Math.round(m))
+    return m.toExponential(1)
+  }
+
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
   const sunOcclusionMarginRad = 0
@@ -202,6 +216,7 @@ export function SceneCanvas() {
         showBodyFixedAxes: boolean
         cameraFovDeg: number
         sunScaleMultiplier: number
+        planetScaleMultiplier: number
       }) => void)
     | null
   >(null)
@@ -214,6 +229,7 @@ export function SceneCanvas() {
     showBodyFixedAxes,
     cameraFovDeg,
     sunScaleMultiplier,
+    planetScaleMultiplier,
   })
   latestUiRef.current = {
     focusBody,
@@ -221,6 +237,7 @@ export function SceneCanvas() {
     showBodyFixedAxes,
     cameraFovDeg,
     sunScaleMultiplier,
+    planetScaleMultiplier,
   }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
@@ -242,8 +259,9 @@ export function SceneCanvas() {
       showBodyFixedAxes,
       cameraFovDeg,
       sunScaleMultiplier,
+      planetScaleMultiplier,
     })
-  }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg, sunScaleMultiplier])
+  }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg, sunScaleMultiplier, planetScaleMultiplier])
 
   // Imperatively update camera FOV when the slider changes
   useEffect(() => {
@@ -1048,6 +1066,7 @@ export function SceneCanvas() {
           showBodyFixedAxes: boolean
           cameraFovDeg: number
           sunScaleMultiplier: number
+          planetScaleMultiplier: number
         }) => {
           const shouldAutoZoom =
             !isE2e &&
@@ -1172,6 +1191,8 @@ export function SceneCanvas() {
             // Apply Sun scale multiplier (Sun only)
             if (String(b.body) === 'SUN') {
               radiusWorld *= next.sunScaleMultiplier
+            } else {
+              radiusWorld *= next.planetScaleMultiplier
             }
 
             b.mesh.scale.setScalar(radiusWorld)
@@ -1389,6 +1410,21 @@ export function SceneCanvas() {
                         step={1}
                         value={sunScaleMultiplier}
                         onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Planet size ({formatScaleMultiplier(planetScaleMultiplier)}×)
+                      <input
+                        type="range"
+                        min={0}
+                        max={240}
+                        step={1}
+                        value={planetScaleSlider}
+                        onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
                         style={{ width: '100%' }}
                       />
                     </label>
