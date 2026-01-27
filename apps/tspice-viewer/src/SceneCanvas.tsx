@@ -4,7 +4,7 @@ import { CameraController, type CameraControllerState } from './controls/CameraC
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
 import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
-import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
+import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient, type Vec3Km } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
 import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
@@ -14,6 +14,7 @@ import { createSelectionRing } from './scene/SelectionRing.js'
 import { createStarfield } from './scene/Starfield.js'
 import { createSkydome } from './scene/Skydome.js'
 import { rebasePositionKm } from './scene/precision.js'
+import { OrbitPaths } from './scene/orbits/OrbitPaths.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
@@ -58,6 +59,13 @@ export function SceneCanvas() {
   // Advanced tuning sliders (ephemeral, local state only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
+
+  // Orbit path tuning (ephemeral)
+  const [orbitLineWidthPx, setOrbitLineWidthPx] = useState(1.5)
+  const [orbitSamplesPerOrbit, setOrbitSamplesPerOrbit] = useState(512)
+  const [orbitMaxTotalPoints, setOrbitMaxTotalPoints] = useState(10_000)
+  const ORBIT_MIN_POINTS_PER_ORBIT = 32
+  const [antialiasEnabled, setAntialiasEnabled] = useState(() => !isE2e)
   // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
@@ -271,6 +279,11 @@ export function SceneCanvas() {
         cameraFovDeg: number
         sunScaleMultiplier: number
         planetScaleMultiplier: number
+
+        orbitLineWidthPx: number
+        orbitSamplesPerOrbit: number
+        orbitMaxTotalPoints: number
+        antialiasEnabled: boolean
       }) => void)
     | null
   >(null)
@@ -284,6 +297,11 @@ export function SceneCanvas() {
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
+
+    orbitLineWidthPx,
+    orbitSamplesPerOrbit,
+    orbitMaxTotalPoints,
+    antialiasEnabled,
   })
   latestUiRef.current = {
     focusBody,
@@ -292,6 +310,11 @@ export function SceneCanvas() {
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
+
+    orbitLineWidthPx,
+    orbitSamplesPerOrbit,
+    orbitMaxTotalPoints,
+    antialiasEnabled,
   }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
@@ -314,8 +337,24 @@ export function SceneCanvas() {
       cameraFovDeg,
       sunScaleMultiplier,
       planetScaleMultiplier,
+
+      orbitLineWidthPx,
+      orbitSamplesPerOrbit,
+      orbitMaxTotalPoints,
+      antialiasEnabled,
     })
-  }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg, sunScaleMultiplier, planetScaleMultiplier])
+  }, [
+    focusBody,
+    showJ2000Axes,
+    showBodyFixedAxes,
+    cameraFovDeg,
+    sunScaleMultiplier,
+    planetScaleMultiplier,
+    orbitLineWidthPx,
+    orbitSamplesPerOrbit,
+    orbitMaxTotalPoints,
+    antialiasEnabled,
+  ])
 
   // Imperatively update camera FOV when the slider changes
   useEffect(() => {
@@ -347,9 +386,12 @@ export function SceneCanvas() {
     const sceneObjects: THREE.Object3D[] = []
     const disposers: Array<() => void> = []
 
+    let orbitPaths: OrbitPaths | undefined
+    const drawingBufferSize = new THREE.Vector2()
+
     const renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: !isE2e,
+      antialias: antialiasEnabled && !isE2e,
       powerPreference: 'high-performance',
       logarithmicDepthBuffer: enableLogDepth,
     })
@@ -492,6 +534,9 @@ export function SceneCanvas() {
 
       camera.aspect = width / height
       camera.updateProjectionMatrix()
+
+      const buffer = renderer.getDrawingBufferSize(drawingBufferSize)
+      orbitPaths?.setResolution(buffer.x, buffer.y)
     }
 
     const onResize = () => {
@@ -1062,7 +1107,7 @@ export function SceneCanvas() {
 
     void (async () => {
       try {
-        const { client: loadedSpiceClient, utcToEt } = await createSpiceClient({
+        const { client: loadedSpiceClient, rawClient: rawSpiceClient, utcToEt } = await createSpiceClient({
           searchParams: search,
         })
 
@@ -1174,6 +1219,16 @@ export function SceneCanvas() {
         await Promise.all(bodies.map((b) => b.ready))
         if (disposed) return
 
+        // Orbit paths (one full orbital period per body).
+        orbitPaths = new OrbitPaths({
+          spiceClient: rawSpiceClient,
+          kmToWorld,
+          bodies: sceneModel.bodies.map((b) => ({ body: b.body, color: b.style.color })),
+        })
+        sceneObjects.push(orbitPaths.object)
+        disposers.push(() => orbitPaths?.dispose())
+        scene.add(orbitPaths.object)
+
         const j2000Axes = !isE2e ? createFrameAxes({ sizeWorld: 1.2, opacity: 0.9 }) : undefined
         if (j2000Axes) {
           j2000Axes.object.visible = false
@@ -1184,6 +1239,9 @@ export function SceneCanvas() {
 
         let lastAutoZoomFocusBody: BodyRef | undefined
 
+        const bodyPosKmByKey = new Map<string, Vec3Km>()
+        const bodyVisibleByKey = new Map<string, boolean>()
+
         const updateScene = (next: {
           etSec: EtSeconds
           focusBody: BodyRef
@@ -1192,6 +1250,11 @@ export function SceneCanvas() {
           cameraFovDeg: number
           sunScaleMultiplier: number
           planetScaleMultiplier: number
+
+          orbitLineWidthPx: number
+          orbitSamplesPerOrbit: number
+          orbitMaxTotalPoints: number
+          antialiasEnabled: boolean
         }) => {
           const shouldAutoZoom =
             !isE2e &&
@@ -1301,6 +1364,9 @@ export function SceneCanvas() {
             lastAutoZoomFocusBody = next.focusBody
           }
 
+          bodyPosKmByKey.clear()
+          bodyVisibleByKey.clear()
+
           for (const b of bodies) {
             const state = loadedSpiceClient.getBodyState({
               target: b.body,
@@ -1308,6 +1374,9 @@ export function SceneCanvas() {
               frame: sceneModel.frame,
               et: next.etSec,
             })
+
+            bodyPosKmByKey.set(String(b.body), state.positionKm)
+            bodyVisibleByKey.set(String(b.body), b.mesh.visible)
 
             const rebasedKm = rebasePositionKm(state.positionKm, focusPosKm)
             b.mesh.position.set(
@@ -1355,6 +1424,21 @@ export function SceneCanvas() {
               }
             }
           }
+
+          // Update orbit paths after primary/body positions are known.
+          orbitPaths?.update({
+            etSec: next.etSec,
+            focusPosKm,
+            bodyPosKmByKey,
+            bodyVisibleByKey,
+            settings: {
+              lineWidthPx: next.orbitLineWidthPx,
+              samplesPerOrbit: next.orbitSamplesPerOrbit,
+              maxTotalPoints: next.orbitMaxTotalPoints,
+              minPointsPerOrbit: ORBIT_MIN_POINTS_PER_ORBIT,
+              antialias: next.antialiasEnabled,
+            },
+          })
 
           if (j2000Axes) {
             j2000Axes.object.visible = next.showJ2000Axes
@@ -1444,7 +1528,7 @@ export function SceneCanvas() {
 
       renderer.dispose()
     }
-  }, [])
+  }, [antialiasEnabled])
 
   // Swap the starfield and skydome in-place when animatedSky toggled.
   useEffect(() => {
@@ -1660,6 +1744,62 @@ export function SceneCanvas() {
                         onChange={(e) => setAnimatedSky(e.target.checked)}
                       />
                       Animated sky
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow" style={{ marginTop: '10px' }}>
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={antialiasEnabled && !isE2e}
+                        disabled={isE2e}
+                        onChange={(e) => setAntialiasEnabled(e.target.checked)}
+                      />
+                      Antialias (rebuild WebGL)
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Orbit line width ({orbitLineWidthPx.toFixed(1)}px)
+                      <input
+                        type="range"
+                        min={0.5}
+                        max={10}
+                        step={0.1}
+                        value={orbitLineWidthPx}
+                        onChange={(e) => setOrbitLineWidthPx(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Orbit samples/orbit ({orbitSamplesPerOrbit})
+                      <input
+                        type="range"
+                        min={32}
+                        max={2048}
+                        step={32}
+                        value={orbitSamplesPerOrbit}
+                        onChange={(e) => setOrbitSamplesPerOrbit(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Orbit max total points
+                      <input
+                        type="number"
+                        min={256}
+                        step={256}
+                        value={orbitMaxTotalPoints}
+                        onChange={(e) => setOrbitMaxTotalPoints(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
                     </label>
                   </div>
 

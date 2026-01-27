@@ -8,7 +8,11 @@ import { loadKernelPack } from "./loadKernelPack.js";
 
 export type ViewerSpiceClientBundle = {
   spice: Spice;
+  /** Cached client for per-frame rendering. */
   client: SpiceClient;
+
+  /** Uncached client for bulk sampling (orbit paths, etc). */
+  rawClient: SpiceClient;
   utcToEt(utc: string): EtSeconds;
 };
 
@@ -27,11 +31,13 @@ export async function createSpiceClient(
   const spice = await createSpice({ backend: "wasm" });
   await loadKernelPack(spice, naifGenericKernelPack);
 
-  const client = createCachedSpiceClient(new TspiceSpiceClient(spice));
+  const rawClient = new TspiceSpiceClient(spice);
+  const client = createCachedSpiceClient(rawClient);
 
   return {
     spice,
     client,
+    rawClient,
     utcToEt: (utc) => spice.utcToEt(utc) as unknown as EtSeconds,
   };
 }
