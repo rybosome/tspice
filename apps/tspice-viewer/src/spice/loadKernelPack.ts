@@ -1,6 +1,7 @@
 import type { Spice } from "@rybosome/tspice";
 
-export type KernelPackId = "naifGeneric";
+// Baseline packs are loaded up-front. Optional packs may be fetched later.
+export type KernelPackId = "naifGeneric" | "moon-default";
 
 export type KernelPackKernel = {
   urlPath: string;

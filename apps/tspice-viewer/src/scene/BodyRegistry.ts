@@ -17,12 +17,31 @@ export type BodyId =
 
 export type BodyKind = "star" | "planet" | "moon";
 
+export type NaifIds = {
+  /** The NAIF body ID (e.g. Earth=399, Jupiter=599). */
+  body: number;
+  /** Optional NAIF barycenter ID for ephemeris kernels that provide barycenters instead. */
+  barycenter?: number;
+};
+
 export interface BodyRegistryEntry {
   /** Stable viewer identifier (currently matches SPICE body name). */
   id: BodyId;
 
   /** NAIF ID or a SPICE-recognized body name; fed into `SpiceClient.getBodyState`. */
   body: BodyRef;
+
+  /**
+   * Intended NAIF numeric IDs for this entry.
+   *
+   * For the Sun this is always 10. For planets, `body` is the planet's own ID
+   * (199..899) and `barycenter` is the corresponding barycenter (1..8).
+   *
+   * NOTE: runtime SPICE lookups should continue to use `BodyRegistryEntry.body`
+   * (`BodyRef`), since some ephemeris kernels (e.g. de432s) provide barycenter
+   * states rather than planet body IDs.
+   */
+  naifIds?: NaifIds;
 
   kind: BodyKind;
 
@@ -52,6 +71,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
   {
     id: "SUN",
     body: "SUN",
+    naifIds: { body: 10 },
     kind: "star",
     defaultVisible: true,
     style: {
@@ -66,6 +86,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     id: "MERCURY",
     // NOTE: de432s has barycenters for most planets (not the planet body IDs).
     body: 1,
+    naifIds: { body: 199, barycenter: 1 },
     kind: "planet",
     defaultVisible: true,
     bodyFixedFrame: "IAU_MERCURY",
@@ -80,6 +101,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
   {
     id: "VENUS",
     body: 2,
+    naifIds: { body: 299, barycenter: 2 },
     kind: "planet",
     defaultVisible: true,
     bodyFixedFrame: "IAU_VENUS",
@@ -94,6 +116,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
   {
     id: "EARTH",
     body: "EARTH",
+    naifIds: { body: 399, barycenter: 3 },
     kind: "planet",
     defaultVisible: true,
     bodyFixedFrame: "IAU_EARTH",
@@ -108,6 +131,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
   {
     id: "MARS",
     body: 4,
+    naifIds: { body: 499, barycenter: 4 },
     kind: "planet",
     defaultVisible: true,
     bodyFixedFrame: "IAU_MARS",
@@ -122,6 +146,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
   {
     id: "JUPITER",
     body: 5,
+    naifIds: { body: 599, barycenter: 5 },
     kind: "planet",
     defaultVisible: true,
     bodyFixedFrame: "IAU_JUPITER",
@@ -136,6 +161,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
   {
     id: "SATURN",
     body: 6,
+    naifIds: { body: 699, barycenter: 6 },
     kind: "planet",
     defaultVisible: true,
     bodyFixedFrame: "IAU_SATURN",
@@ -150,6 +176,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
   {
     id: "URANUS",
     body: 7,
+    naifIds: { body: 799, barycenter: 7 },
     kind: "planet",
     defaultVisible: true,
     bodyFixedFrame: "IAU_URANUS",
@@ -164,6 +191,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
   {
     id: "NEPTUNE",
     body: 8,
+    naifIds: { body: 899, barycenter: 8 },
     kind: "planet",
     defaultVisible: true,
     bodyFixedFrame: "IAU_NEPTUNE",
@@ -179,11 +207,13 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     // Hooks-only (not rendered by default).
     id: "MOON",
     body: "MOON",
+    naifIds: { body: 301 },
     kind: "moon",
     parentId: "EARTH",
     defaultVisible: false,
     requiresKernelPack: true,
-    kernelPackId: "naifGeneric",
+    // Non-baseline: moons are intended to be download/opt-in later.
+    kernelPackId: "moon-default",
     bodyFixedFrame: "IAU_MOON",
     style: {
       radiusKm: 1_737.4,
