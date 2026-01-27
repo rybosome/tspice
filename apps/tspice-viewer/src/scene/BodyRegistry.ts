@@ -163,6 +163,13 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       radiusKm: 58_232,
       color: "#f6bd60",
       textureUrl: "textures/planets/saturn.png",
+      rings: {
+        // Roughly matches the main C/A ring span in units of Saturn radii.
+        innerRadiusRatio: 1.28,
+        outerRadiusRatio: 2.33,
+        textureUrl: "textures/planets/saturn-rings.png",
+        color: "#d7c7a0",
+      },
       label: "Saturn",
     },
   },

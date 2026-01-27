@@ -7,7 +7,8 @@ import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClie
 import { createBodyMesh } from './scene/BodyMesh.js'
 import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
-import { createFrameAxes } from './scene/FrameAxes.js'
+import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
+import { createRingMesh } from './scene/RingMesh.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
@@ -51,6 +52,9 @@ export function SceneCanvas() {
   // Advanced tuning sliders (ephemeral, local state only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
+  // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
+  // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
+  const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
   const [enhancedStarfield, setEnhancedStarfield] = useState(false)
 
   // Keep these baked-in for now (no user-facing tuning).
@@ -228,6 +232,7 @@ export function SceneCanvas() {
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
         cameraFovDeg: number
+        sunScaleMultiplier: number
       }) => void)
     | null
   >(null)
@@ -239,12 +244,14 @@ export function SceneCanvas() {
     showJ2000Axes,
     showBodyFixedAxes,
     cameraFovDeg,
+    sunScaleMultiplier,
   })
   latestUiRef.current = {
     focusBody,
     showJ2000Axes,
     showBodyFixedAxes,
     cameraFovDeg,
+    sunScaleMultiplier,
   }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
@@ -265,8 +272,9 @@ export function SceneCanvas() {
       showJ2000Axes,
       showBodyFixedAxes,
       cameraFovDeg,
+      sunScaleMultiplier,
     })
-  }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg])
+  }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg, sunScaleMultiplier])
 
   // Imperatively update camera FOV when the slider changes
   useEffect(() => {
@@ -979,6 +987,24 @@ export function SceneCanvas() {
             textureKind: body.style.textureKind,
           })
 
+          const rings = body.style.rings
+          const ringResult = rings
+            ? createRingMesh({
+                // Parent body is a unit sphere scaled by radius, so rings are
+                // specified in planet-radius units.
+                innerRadius: rings.innerRadiusRatio,
+                outerRadius: rings.outerRadiusRatio,
+                textureUrl: rings.textureUrl,
+                color: rings.color,
+              })
+            : undefined
+
+          if (ringResult) {
+            // Attach as a child so it inherits the body's pose and scale.
+            mesh.add(ringResult.mesh)
+            disposers.push(ringResult.dispose)
+          }
+
           mesh.userData.bodyId = body.body
           // Store radiusKm for dynamic scale updates
           mesh.userData.radiusKm = body.style.radiusKm
@@ -1005,7 +1031,7 @@ export function SceneCanvas() {
             radiusKm: body.style.radiusKm,
             mesh,
             axes,
-            ready,
+            ready: Promise.all([ready, ringResult?.ready]).then(() => undefined),
           }
         })
 
@@ -1029,6 +1055,7 @@ export function SceneCanvas() {
           showJ2000Axes: boolean
           showBodyFixedAxes: boolean
           cameraFovDeg: number
+          sunScaleMultiplier: number
         }) => {
           const shouldAutoZoom =
             !isE2e &&
@@ -1144,24 +1171,39 @@ export function SceneCanvas() {
             )
 
             // Update mesh scale (true scaling)
-            const radiusWorld = computeBodyRadiusWorld({
+            let radiusWorld = computeBodyRadiusWorld({
               radiusKm: b.radiusKm,
               kmToWorld,
               mode: 'true',
             })
+
+            // Apply Sun scale multiplier (Sun only)
+            if (String(b.body) === 'SUN') {
+              radiusWorld *= next.sunScaleMultiplier
+            }
+
             b.mesh.scale.setScalar(radiusWorld)
+
+            const bodyFixedRotation = b.bodyFixedFrame
+              ? loadedSpiceClient.getFrameTransform({
+                  from: b.bodyFixedFrame as FrameId,
+                  to: sceneModel.frame,
+                  et: next.etSec,
+                })
+              : undefined
+
+            // Apply the body-fixed frame orientation to the mesh so textures
+            // rotate with the body.
+            if (bodyFixedRotation) {
+              b.mesh.setRotationFromMatrix(mat3ToMatrix4(bodyFixedRotation))
+            }
 
             if (b.axes) {
               const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
               b.axes.object.visible = visible
 
               if (visible && b.bodyFixedFrame) {
-                const rot = loadedSpiceClient.getFrameTransform({
-                  from: b.bodyFixedFrame as FrameId,
-                  to: sceneModel.frame,
-                  et: next.etSec,
-                })
-                b.axes.setPose({ position: b.mesh.position, rotationJ2000: rot })
+                b.axes.setPose({ position: b.mesh.position, rotationJ2000: bodyFixedRotation })
               }
             }
           }
@@ -1368,6 +1410,20 @@ export function SceneCanvas() {
                         step={1}
                         value={cameraFovDeg}
                         onChange={(e) => setCameraFovDeg(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Sun size ({sunScaleMultiplier}×)
+                      <input
+                        type="range"
+                        min={1}
+                        max={20}
+                        step={1}
+                        value={sunScaleMultiplier}
+                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
                         style={{ width: '100%' }}
                       />
                     </label>
