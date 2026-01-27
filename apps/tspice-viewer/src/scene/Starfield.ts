@@ -86,14 +86,36 @@ function sampleUnitSphere(rng: () => number): [number, number, number] {
   return [r * Math.cos(theta), r * Math.sin(theta), z]
 }
 
-function fibonacciUnitSphere(i: number, n: number): [number, number, number] {
-  // Low-discrepancy sphere sampling (Fibonacci sphere).
-  // https://stackoverflow.com/a/26127012
-  const k = i + 0.5
-  const y = 1 - (2 * k) / n
+function mix32(x: number): number {
+  // Tiny 32-bit mixing function for stable, deterministic hashes.
+  x |= 0
+  x ^= x >>> 16
+  x = Math.imul(x, 0x7feb352d)
+  x ^= x >>> 15
+  x = Math.imul(x, 0x846ca68b)
+  x ^= x >>> 16
+  return x >>> 0
+}
+
+function hash01(seed: number, i: number, salt: number): number {
+  // Stable float in [0, 1) derived from (seed, i, salt).
+  const x = mix32(((seed ^ salt) + Math.imul(i, 0x9e3779b9)) | 0)
+  return x / 4294967296
+}
+
+function fibonacciUnitSphere(i: number, n: number, seed: number): [number, number, number] {
+  // Low-discrepancy-ish sphere sampling (Fibonacci sphere), but *scrambled*
+  // within each stratum to avoid visible concentric ring artifacts in the
+  // near layers.
+  //
+  // Based on: https://stackoverflow.com/a/26127012
+  const u = (i + hash01(seed, i, 0xa511e9b3)) / n
+  const y = 1 - 2 * u
   const r = Math.sqrt(Math.max(0, 1 - y * y))
+
   const goldenAngle = Math.PI * (3 - Math.sqrt(5))
-  const theta = goldenAngle * k
+  const theta = goldenAngle * (i + hash01(seed, i, 0x63d83595))
+
   return [r * Math.cos(theta), r * Math.sin(theta), y]
 }
 
@@ -145,7 +167,7 @@ function createStarLayer(opts: {
 
   for (let i = 0; i < opts.count; i++) {
     const [x0, y0, z0] =
-      distribution === 'random' ? sampleUnitSphere(rng) : fibonacciUnitSphere(i, opts.count)
+      distribution === 'random' ? sampleUnitSphere(rng) : fibonacciUnitSphere(i, opts.count, opts.seed)
     const dir = new THREE.Vector3(x0, y0, z0).applyQuaternion(rotation)
 
     const radius = opts.radiusWorld * (0.86 + 0.14 * rng())
