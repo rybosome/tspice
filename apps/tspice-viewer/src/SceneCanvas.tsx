@@ -8,6 +8,7 @@ import { createBodyMesh } from './scene/BodyMesh.js'
 import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { createFrameAxes } from './scene/FrameAxes.js'
+import { createSkydome } from './scene/Skydome.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
@@ -38,6 +39,8 @@ export function SceneCanvas() {
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
   const isE2e = search.has('e2e')
   const enableLogDepth = search.has('logDepth')
+  const backgroundMode = (search.get('background') ?? 'flat').toLowerCase()
+  const enableShaderSkydome = backgroundMode === 'shader' || backgroundMode === 'skydome'
 
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
@@ -330,6 +333,21 @@ export function SceneCanvas() {
       return isE2e ? 1 : 1337
     })()
 
+    // Optional shader-based background mode ("go for broke" skydome).
+    // Default stays as the existing flat background.
+    const skydome = enableShaderSkydome
+      ? createSkydome({
+          // Deterministic: seed derived from the existing star seed.
+          seed: starSeed,
+        })
+      : null
+
+    if (skydome) {
+      sceneObjects.push(skydome.object)
+      disposers.push(skydome.dispose)
+      scene.add(skydome.object)
+    }
+
     const starfield = createStarfield({ seed: starSeed })
     sceneObjects.push(starfield.object)
     disposers.push(starfield.dispose)
@@ -337,6 +355,11 @@ export function SceneCanvas() {
 
     const renderOnce = () => {
       if (disposed) return
+      const timeSeconds = isE2e ? 0 : performance.now() * 0.001
+      if (skydome) {
+        skydome.syncToCamera(camera)
+        skydome.setTimeSeconds(timeSeconds)
+      }
       starfield.syncToCamera(camera)
       renderer.render(scene, camera)
     }
