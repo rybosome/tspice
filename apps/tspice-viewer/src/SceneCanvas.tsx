@@ -6,6 +6,7 @@ import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
 import { createFrameAxes } from './scene/FrameAxes.js'
+import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore } from './time/timeStore.js'
@@ -100,8 +101,25 @@ export function SceneCanvas() {
 
     const controller = CameraController.fromCamera(camera)
 
+    const starSeed = (() => {
+      const fromUrl = search.get('starSeed') ?? search.get('seed')
+      if (fromUrl) {
+        const parsed = Number(fromUrl)
+        if (Number.isFinite(parsed)) return Math.floor(parsed)
+      }
+
+      // E2E snapshots must be stable regardless of Math.random overrides.
+      return isE2e ? 1 : 1337
+    })()
+
+    const starfield = createStarfield({ seed: starSeed })
+    sceneObjects.push(starfield.object)
+    disposers.push(starfield.dispose)
+    scene.add(starfield.object)
+
     const renderOnce = () => {
       if (disposed) return
+      starfield.syncToCamera(camera)
       renderer.render(scene, camera)
     }
 
