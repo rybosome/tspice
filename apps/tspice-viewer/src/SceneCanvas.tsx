@@ -26,6 +26,37 @@ function disposeMaterial(material: THREE.Material | THREE.Material[]) {
   material.dispose()
 }
 
+/** Storage key for persisting background toggles. */
+const STORAGE_KEY_SKYBOX = 'tspice-viewer:showSkybox'
+const STORAGE_KEY_STARS = 'tspice-viewer:showStars'
+
+function loadBoolFromStorage(key: string, fallback: boolean): boolean {
+  try {
+    const raw = window.localStorage.getItem(key)
+    if (raw === 'true') return true
+    if (raw === 'false') return false
+  } catch {
+    // localStorage may not be available (e.g., incognito mode).
+  }
+  return fallback
+}
+
+function saveBoolToStorage(key: string, value: boolean) {
+  try {
+    window.localStorage.setItem(key, value ? 'true' : 'false')
+  } catch {
+    // Ignore.
+  }
+}
+
+interface StarfieldHandle {
+  object: THREE.Points
+  syncToCamera: (camera: THREE.Camera) => void
+  dispose: () => void
+}
+
+type CubeTextureResources = { cubeTexture: THREE.CubeTexture; cubeRenderTarget: THREE.WebGLCubeRenderTarget }
+
 export function SceneCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -39,27 +70,23 @@ export function SceneCanvas() {
   const isE2e = search.has('e2e')
   const enableLogDepth = search.has('logDepth')
 
-  // Background is opt-in to avoid breaking existing snapshots.
-  // Supported values:
-  // - flat (default)
-  // - stars
-  // - skybox
-  // - skybox+stars
-  type BackgroundMode = 'flat' | 'stars' | 'skybox' | 'skybox+stars'
-  const backgroundMode: BackgroundMode = (() => {
+  // Parse initial background state from query params (for backwards compat / e2e).
+  // UI toggles become the source of truth after load.
+  const [initialSkybox, initialStars] = useMemo(() => {
     const raw = (search.get('background') ?? 'flat').toLowerCase()
-    if (raw === 'stars') return 'stars'
-    if (raw === 'skybox') return 'skybox'
-    if (raw === 'skybox+stars') return 'skybox+stars'
-    return 'flat'
-  })()
-
-  const backgroundHasStars = backgroundMode === 'stars' || backgroundMode === 'skybox+stars'
-  const backgroundHasSkybox = backgroundMode === 'skybox' || backgroundMode === 'skybox+stars'
+    const hasSkybox = raw === 'skybox' || raw === 'skybox+stars'
+    const hasStars = raw === 'stars' || raw === 'skybox+stars'
+    // Seed from localStorage if no URL override.
+    const skybox = search.has('background') ? hasSkybox : loadBoolFromStorage(STORAGE_KEY_SKYBOX, false)
+    const stars = search.has('background') ? hasStars : loadBoolFromStorage(STORAGE_KEY_STARS, false)
+    return [skybox, stars]
+  }, [search])
 
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
+  const [showSkybox, setShowSkybox] = useState(initialSkybox)
+  const [showStars, setShowStars] = useState(initialStars)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
 
   // Advanced tuning sliders (ephemeral, local state only)
@@ -75,6 +102,14 @@ export function SceneCanvas() {
   // Keep renderer units consistent across the app. This matches the value used
   // inside the renderer effect.
   const kmToWorld = 1 / 1_000_000
+
+  // Refs to manage skybox/starfield without rebuilding the renderer.
+  const sceneRef = useRef<THREE.Scene | null>(null)
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
+  const skyboxResourcesRef = useRef<CubeTextureResources | null>(null)
+  const starfieldRef = useRef<StarfieldHandle | null>(null)
+  const flatBackgroundColor = useRef(new THREE.Color('#0f131a'))
+  const starSeedRef = useRef<number>(1337)
 
   const getIsSmallScreen = () =>
     typeof window !== 'undefined' && typeof window.matchMedia === 'function'
@@ -283,6 +318,122 @@ export function SceneCanvas() {
     })
   }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg])
 
+  // ----------------------------------------------------------
+  // Skybox toggle effect: add/remove skybox without recreating renderer.
+  // ----------------------------------------------------------
+  useEffect(() => {
+    const scene = sceneRef.current
+    const renderer = rendererRef.current
+    if (!scene || !renderer) return
+
+    // Persist preference.
+    saveBoolToStorage(STORAGE_KEY_SKYBOX, showSkybox)
+
+    // If turning off skybox, revert to flat background.
+    if (!showSkybox) {
+      // Dispose previous resources if any.
+      if (skyboxResourcesRef.current) {
+        skyboxResourcesRef.current.cubeTexture.dispose()
+        skyboxResourcesRef.current.cubeRenderTarget.dispose()
+        skyboxResourcesRef.current = null
+      }
+      scene.background = flatBackgroundColor.current
+      invalidateRef.current?.()
+      return
+    }
+
+    // Load equirectangular texture and convert to cubemap.
+    const loader = new THREE.TextureLoader()
+    let aborted = false
+
+    loader.load(
+      '/sky/starmap_4k.jpg',
+      (texture) => {
+        if (aborted) {
+          texture.dispose()
+          return
+        }
+
+        texture.mapping = THREE.EquirectangularReflectionMapping
+        texture.colorSpace = THREE.SRGBColorSpace
+
+        // Apply filtering for sharper rendering.
+        texture.minFilter = THREE.LinearMipmapLinearFilter
+        texture.magFilter = THREE.LinearFilter
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy()
+        texture.generateMipmaps = true
+
+        // Convert to cubemap for better quality at poles.
+        const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024)
+        cubeRenderTarget.fromEquirectangularTexture(renderer, texture)
+
+        // Dispose the equirectangular source texture—we only need the cubemap.
+        texture.dispose()
+
+        // Dispose previous cubemap if any.
+        if (skyboxResourcesRef.current) {
+          skyboxResourcesRef.current.cubeTexture.dispose()
+          skyboxResourcesRef.current.cubeRenderTarget.dispose()
+        }
+
+        skyboxResourcesRef.current = {
+          cubeTexture: cubeRenderTarget.texture,
+          cubeRenderTarget,
+        }
+
+        scene.background = cubeRenderTarget.texture
+        invalidateRef.current?.()
+      },
+      undefined,
+      () => {
+        // On error, fall back to flat color.
+        if (!aborted) {
+          scene.background = flatBackgroundColor.current
+          invalidateRef.current?.()
+        }
+      }
+    )
+
+    return () => {
+      aborted = true
+    }
+  }, [showSkybox])
+
+  // ----------------------------------------------------------
+  // Stars toggle effect: add/remove starfield without recreating renderer.
+  // ----------------------------------------------------------
+  useEffect(() => {
+    const scene = sceneRef.current
+    if (!scene) return
+
+    saveBoolToStorage(STORAGE_KEY_STARS, showStars)
+
+    if (!showStars) {
+      // Remove starfield if present.
+      if (starfieldRef.current) {
+        scene.remove(starfieldRef.current.object)
+        starfieldRef.current.dispose()
+        starfieldRef.current = null
+        invalidateRef.current?.()
+      }
+      return
+    }
+
+    // Create and add starfield.
+    const starfield = createStarfield({ seed: starSeedRef.current })
+    starfieldRef.current = starfield
+    scene.add(starfield.object)
+    invalidateRef.current?.()
+
+    return () => {
+      if (starfieldRef.current === starfield) {
+        scene.remove(starfield.object)
+        starfield.dispose()
+        starfieldRef.current = null
+      }
+    }
+  }, [showStars])
+
   // Imperatively update camera FOV when the slider changes
   useEffect(() => {
     const camera = cameraRef.current
@@ -325,29 +476,11 @@ export function SceneCanvas() {
     renderer.outputColorSpace = THREE.SRGBColorSpace
 
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color('#0f131a')
+    scene.background = flatBackgroundColor.current
 
-    if (backgroundHasSkybox) {
-      // Load an equirectangular texture and use it as the scene background.
-      // This does not affect raycasting/picking because it's only used for
-      // clearing the framebuffer (no scene geometry).
-      const loader = new THREE.TextureLoader()
-      const skyTexture = loader.load(
-        '/sky/starmap_2020_1k.jpg',
-        (texture) => {
-          texture.mapping = THREE.EquirectangularReflectionMapping
-          texture.colorSpace = THREE.SRGBColorSpace
-          scene.background = texture
-          invalidate()
-        },
-        undefined,
-        () => {
-          // If the texture fails to load for any reason, keep the flat fallback.
-        }
-      )
-
-      disposers.push(() => skyTexture.dispose())
-    }
+    // Store refs so background toggle effects can access them.
+    sceneRef.current = scene
+    rendererRef.current = renderer
 
     // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
     // world units away. Keep the far plane large enough so we can render the
@@ -361,7 +494,8 @@ export function SceneCanvas() {
     controllerRef.current = controller
     cameraRef.current = camera
 
-    const starSeed = (() => {
+    // Compute star seed once for stable results.
+    starSeedRef.current = (() => {
       const fromUrl = search.get('starSeed') ?? search.get('seed')
       if (fromUrl) {
         const parsed = Number(fromUrl)
@@ -372,18 +506,10 @@ export function SceneCanvas() {
       return isE2e ? 1 : 1337
     })()
 
-    const starfield = backgroundHasStars ? createStarfield({ seed: starSeed }) : null
-    if (starfield) {
-      sceneObjects.push(starfield.object)
-      disposers.push(starfield.dispose)
-      scene.add(starfield.object)
-    }
-
     const renderOnce = () => {
       if (disposed) return
-
-      // Keep the procedural starfield as an overlay when configured.
-      starfield?.syncToCamera(camera)
+      // Sync starfield if present.
+      starfieldRef.current?.syncToCamera(camera)
       renderer.render(scene, camera)
     }
 
@@ -1235,6 +1361,23 @@ export function SceneCanvas() {
         scheduledFrame = null
       }
 
+      // Cleanup skybox resources.
+      if (skyboxResourcesRef.current) {
+        skyboxResourcesRef.current.cubeTexture.dispose()
+        skyboxResourcesRef.current.cubeRenderTarget.dispose()
+        skyboxResourcesRef.current = null
+      }
+
+      // Cleanup starfield.
+      if (starfieldRef.current) {
+        scene.remove(starfieldRef.current.object)
+        starfieldRef.current.dispose()
+        starfieldRef.current = null
+      }
+
+      sceneRef.current = null
+      rendererRef.current = null
+
       resizeObserver.disconnect()
 
       if (!isE2e) {
@@ -1326,7 +1469,25 @@ export function SceneCanvas() {
                 >
                   Focus Sun
                 </button>
+              </div>
 
+              <div className="sceneOverlayRow" style={{ marginTop: '8px' }}>
+                <label className="sceneOverlayCheckbox">
+                  <input
+                    type="checkbox"
+                    checked={showSkybox}
+                    onChange={(e) => setShowSkybox(e.target.checked)}
+                  />
+                  Skybox
+                </label>
+                <label className="sceneOverlayCheckbox">
+                  <input
+                    type="checkbox"
+                    checked={showStars}
+                    onChange={(e) => setShowStars(e.target.checked)}
+                  />
+                  Stars
+                </label>
                 <label className="sceneOverlayCheckbox">
                   <input
                     type="checkbox"
