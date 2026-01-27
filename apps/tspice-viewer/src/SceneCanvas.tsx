@@ -1,18 +1,21 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { CameraController } from './controls/CameraController.js'
+import { useKeyboardControls } from './controls/useKeyboardControls.js'
 import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
-import { listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
+import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
-import { createFrameAxes } from './scene/FrameAxes.js'
+import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
+import { createRingMesh } from './scene/RingMesh.js'
+import { createSelectionRing } from './scene/SelectionRing.js'
 import { createStarfield } from './scene/Starfield.js'
+import { createSkydome } from './scene/Skydome.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore } from './time/timeStore.js'
-import { useKeyboardControls } from './controls/useKeyboardControls.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
@@ -33,8 +36,15 @@ export function SceneCanvas() {
 
   const controllerRef = useRef<CameraController | null>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
+  const sceneRef = useRef<THREE.Scene | null>(null)
   const invalidateRef = useRef<(() => void) | null>(null)
+  const renderOnceRef = useRef<((timeMs?: number) => void) | null>(null)
+  const twinkleActiveRef = useRef(false)
   const cancelFocusTweenRef = useRef<(() => void) | null>(null)
+
+  const starSeedRef = useRef<number>(1337)
+  const starfieldRef = useRef<ReturnType<typeof createStarfield> | null>(null)
+  const skydomeRef = useRef<ReturnType<typeof createSkydome> | null>(null)
 
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
   const isE2e = search.has('e2e')
@@ -48,6 +58,14 @@ export function SceneCanvas() {
   // Advanced tuning sliders (ephemeral, local state only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
+  // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
+  // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
+  const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
+  // Single toggle for animated sky effects (skydome shader + starfield twinkle).
+  // Disabled by default for e2e tests to keep snapshots deterministic.
+  const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
+
+  const twinkleEnabled = animatedSky && !isE2e
 
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
@@ -59,40 +77,24 @@ export function SceneCanvas() {
   // inside the renderer effect.
   const kmToWorld = 1 / 1_000_000
 
-  const getIsSmallScreen = () =>
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia('(max-width: 720px)').matches
-      : false
-
-  const [isSmallScreen, setIsSmallScreen] = useState(getIsSmallScreen)
-  const [overlayOpen, setOverlayOpen] = useState(() => !getIsSmallScreen())
+  // Control pane collapsed state: starts expanded on all screen sizes
+  const [overlayOpen, setOverlayOpen] = useState(true)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   const focusOnOriginRef = useRef<(() => void) | null>(null)
   panModeEnabledRef.current = panModeEnabled
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
-
-    const mql = window.matchMedia('(max-width: 720px)')
-    const onChange = () => {
-      const small = mql.matches
-      setIsSmallScreen(small)
-      setOverlayOpen(!small)
-    }
-
-    onChange()
-
-    if (typeof mql.addEventListener === 'function') {
-      mql.addEventListener('change', onChange)
-      return () => mql.removeEventListener('change', onChange)
-    }
-
-    // Safari < 14
-    mql.addListener(onChange)
-    return () => mql.removeListener(onChange)
-  }, [])
+  // Enable keyboard controls (disabled in e2e mode)
+  useKeyboardControls({
+    controllerRef,
+    cameraRef,
+    canvasRef,
+    invalidate: () => invalidateRef.current?.(),
+    cancelFocusTween: () => cancelFocusTweenRef.current?.(),
+    focusOnOrigin: () => focusOnOriginRef.current?.(),
+    enabled: !isE2e,
+  })
 
   const zoomBy = (factor: number) => {
     const controller = controllerRef.current
@@ -105,33 +107,6 @@ export function SceneCanvas() {
     controller.applyToCamera(camera)
     invalidateRef.current?.()
   }
-
-
-  // Stable callback for keyboard controls to focus on origin
-  const focusOnOrigin = useCallback(() => {
-    focusOnOriginRef.current?.()
-  }, [])
-
-  // Stable callback for canceling focus tween
-  const cancelFocusTweenStable = useCallback(() => {
-    cancelFocusTweenRef.current?.()
-  }, [])
-
-  // Stable invalidate callback for keyboard controls
-  const invalidateStable = useCallback(() => {
-    invalidateRef.current?.()
-  }, [])
-
-  // Enable keyboard controls (disabled in e2e mode)
-  useKeyboardControls({
-    controllerRef,
-    cameraRef,
-    canvasRef,
-    invalidate: invalidateStable,
-    cancelFocusTween: cancelFocusTweenStable,
-    focusOnOrigin,
-    enabled: !isE2e,
-  })
 
   const refocusSun = () => {
     const controller = controllerRef.current
@@ -242,7 +217,6 @@ export function SceneCanvas() {
     invalidateRef.current?.()
   }
 
-
   // Start the playback ticker (handles time advancement)
   usePlaybackTicker()
 
@@ -253,6 +227,7 @@ export function SceneCanvas() {
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
         cameraFovDeg: number
+        sunScaleMultiplier: number
       }) => void)
     | null
   >(null)
@@ -264,12 +239,14 @@ export function SceneCanvas() {
     showJ2000Axes,
     showBodyFixedAxes,
     cameraFovDeg,
+    sunScaleMultiplier,
   })
   latestUiRef.current = {
     focusBody,
     showJ2000Axes,
     showBodyFixedAxes,
     cameraFovDeg,
+    sunScaleMultiplier,
   }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
@@ -290,8 +267,9 @@ export function SceneCanvas() {
       showJ2000Axes,
       showBodyFixedAxes,
       cameraFovDeg,
+      sunScaleMultiplier,
     })
-  }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg])
+  }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg, sunScaleMultiplier])
 
   // Imperatively update camera FOV when the slider changes
   useEffect(() => {
@@ -336,6 +314,7 @@ export function SceneCanvas() {
 
     const scene = new THREE.Scene()
     scene.background = new THREE.Color('#0f131a')
+    sceneRef.current = scene
 
     // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
     // world units away. Keep the far plane large enough so we can render the
@@ -360,24 +339,55 @@ export function SceneCanvas() {
       return isE2e ? 1 : 1337
     })()
 
-    const starfield = createStarfield({ seed: starSeed })
-    sceneObjects.push(starfield.object)
-    disposers.push(starfield.dispose)
+    starSeedRef.current = starSeed
+
+    const starfield = createStarfield({ seed: starSeed, twinkle: twinkleEnabled })
+    starfieldRef.current = starfield
     scene.add(starfield.object)
 
-    const renderOnce = () => {
+    const selectionRing = !isE2e ? createSelectionRing() : undefined
+    if (selectionRing) {
+      sceneObjects.push(selectionRing.object)
+      disposers.push(selectionRing.dispose)
+      scene.add(selectionRing.object)
+    }
+
+    // Skydome (Milky Way band shader background) - only when animatedSky is enabled
+    if (animatedSky && !isE2e) {
+      const skydome = createSkydome({ seed: starSeed })
+      skydomeRef.current = skydome
+      scene.add(skydome.object)
+    }
+
+    const renderOnce = (timeMs?: number) => {
       if (disposed) return
-      starfield.syncToCamera(camera)
+
+      const nowMs = timeMs ?? performance.now()
+      const timeSec = nowMs * 0.001
+
+      const starfield = starfieldRef.current
+      starfield?.update?.(timeSec)
+      starfield?.syncToCamera(camera)
+
+      selectionRing?.syncToCamera({ camera, nowMs })
+
+      const skydome = skydomeRef.current
+      skydome?.syncToCamera(camera)
+      skydome?.setTimeSeconds(timeSec)
       renderer.render(scene, camera)
     }
 
+    renderOnceRef.current = renderOnce
+
     const invalidate = () => {
       if (disposed) return
+      // When twinkling is enabled, we have a dedicated RAF loop.
+      if (twinkleActiveRef.current) return
       if (scheduledFrame != null) return
 
-      scheduledFrame = window.requestAnimationFrame(() => {
+      scheduledFrame = window.requestAnimationFrame((t) => {
         scheduledFrame = null
-        renderOnce()
+        renderOnce(t)
       })
     }
 
@@ -491,38 +501,54 @@ export function SceneCanvas() {
       let selected:
         | {
             mesh: THREE.Mesh
-            material: THREE.MeshStandardMaterial
-            prevEmissive: THREE.Color
-            prevEmissiveIntensity: number
           }
         | undefined
+
+      let selectionPulseFrame: number | null = null
+      const stopSelectionPulse = () => {
+        if (selectionPulseFrame == null) return
+        window.cancelAnimationFrame(selectionPulseFrame)
+        selectionPulseFrame = null
+      }
+
+      const startSelectionPulse = () => {
+        if (selectionPulseFrame != null) return
+
+        const step = () => {
+          if (disposed || !selected) {
+            selectionPulseFrame = null
+            return
+          }
+          invalidate()
+          selectionPulseFrame = window.requestAnimationFrame(step)
+        }
+
+        selectionPulseFrame = window.requestAnimationFrame(step)
+      }
 
       const setSelectedMesh = (mesh: THREE.Mesh | undefined) => {
         if (selected?.mesh === mesh) return
 
         if (selected) {
-          selected.material.emissive.copy(selected.prevEmissive)
-          selected.material.emissiveIntensity = selected.prevEmissiveIntensity
           selected = undefined
           selectedBodyId = undefined
+          selectionRing?.setTarget(undefined)
+          stopSelectionPulse()
+          invalidate()
         }
 
         if (!mesh) return
 
-        const material = mesh.material
-        if (!(material instanceof THREE.MeshStandardMaterial)) return
-
         selected = {
           mesh,
-          material,
-          prevEmissive: material.emissive.clone(),
-          prevEmissiveIntensity: material.emissiveIntensity,
         }
 
         selectedBodyId = String(mesh.userData.bodyId ?? '') || undefined
 
-        material.emissive.set('#f1c40f')
-        material.emissiveIntensity = 0.8
+        // Subtle world-space ring indicator around the selected body.
+        selectionRing?.setTarget(mesh)
+        startSelectionPulse()
+        invalidate()
       }
 
       focusOn = (nextTarget: THREE.Vector3, opts) => {
@@ -947,6 +973,7 @@ export function SceneCanvas() {
 
         cancelFocusTween?.()
         setSelectedMesh(undefined)
+        stopSelectionPulse()
       }
     }
 
@@ -986,12 +1013,23 @@ export function SceneCanvas() {
         }
 
         // Scene model driving the rendered scene.
+        // TODO(#119): Temporary special-case to always render Earth's Moon.
+        // Longer-term we should have user-configurable visibility + kernel-pack
+        // downloads for moons/satellites.
+        const moonEntry = getBodyRegistryEntry('MOON')
         const sceneModel: SceneModel = {
           frame: J2000_FRAME,
           // Use a stable observer for all SPICE queries, then apply a precision
           // strategy in the renderer (focus-origin rebasing).
           observer: 'SUN',
-          bodies: listDefaultVisibleSceneBodies(),
+          bodies: [
+            ...listDefaultVisibleSceneBodies(),
+            {
+              body: moonEntry.body,
+              bodyFixedFrame: moonEntry.bodyFixedFrame,
+              style: moonEntry.style,
+            },
+          ],
         }
 
         const bodies = sceneModel.bodies.map((body) => {
@@ -1000,6 +1038,24 @@ export function SceneCanvas() {
             textureUrl: body.style.textureUrl,
             textureKind: body.style.textureKind,
           })
+
+          const rings = body.style.rings
+          const ringResult = rings
+            ? createRingMesh({
+                // Parent body is a unit sphere scaled by radius, so rings are
+                // specified in planet-radius units.
+                innerRadius: rings.innerRadiusRatio,
+                outerRadius: rings.outerRadiusRatio,
+                textureUrl: rings.textureUrl,
+                color: rings.color,
+              })
+            : undefined
+
+          if (ringResult) {
+            // Attach as a child so it inherits the body's pose and scale.
+            mesh.add(ringResult.mesh)
+            disposers.push(ringResult.dispose)
+          }
 
           mesh.userData.bodyId = body.body
           // Store radiusKm for dynamic scale updates
@@ -1027,7 +1083,7 @@ export function SceneCanvas() {
             radiusKm: body.style.radiusKm,
             mesh,
             axes,
-            ready,
+            ready: Promise.all([ready, ringResult?.ready]).then(() => undefined),
           }
         })
 
@@ -1051,6 +1107,7 @@ export function SceneCanvas() {
           showJ2000Axes: boolean
           showBodyFixedAxes: boolean
           cameraFovDeg: number
+          sunScaleMultiplier: number
         }) => {
           const shouldAutoZoom =
             !isE2e &&
@@ -1166,24 +1223,39 @@ export function SceneCanvas() {
             )
 
             // Update mesh scale (true scaling)
-            const radiusWorld = computeBodyRadiusWorld({
+            let radiusWorld = computeBodyRadiusWorld({
               radiusKm: b.radiusKm,
               kmToWorld,
               mode: 'true',
             })
+
+            // Apply Sun scale multiplier (Sun only)
+            if (String(b.body) === 'SUN') {
+              radiusWorld *= next.sunScaleMultiplier
+            }
+
             b.mesh.scale.setScalar(radiusWorld)
+
+            const bodyFixedRotation = b.bodyFixedFrame
+              ? loadedSpiceClient.getFrameTransform({
+                  from: b.bodyFixedFrame as FrameId,
+                  to: sceneModel.frame,
+                  et: next.etSec,
+                })
+              : undefined
+
+            // Apply the body-fixed frame orientation to the mesh so textures
+            // rotate with the body.
+            if (bodyFixedRotation) {
+              b.mesh.setRotationFromMatrix(mat3ToMatrix4(bodyFixedRotation))
+            }
 
             if (b.axes) {
               const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
               b.axes.object.visible = visible
 
               if (visible && b.bodyFixedFrame) {
-                const rot = loadedSpiceClient.getFrameTransform({
-                  from: b.bodyFixedFrame as FrameId,
-                  to: sceneModel.frame,
-                  et: next.etSec,
-                })
-                b.axes.setPose({ position: b.mesh.position, rotationJ2000: rot })
+                b.axes.setPose({ position: b.mesh.position, rotationJ2000: bodyFixedRotation })
               }
             }
           }
@@ -1235,11 +1307,25 @@ export function SceneCanvas() {
         cleanupInteractions?.()
       }
 
+      if (starfieldRef.current) {
+        scene.remove(starfieldRef.current.object)
+        starfieldRef.current.dispose()
+        starfieldRef.current = null
+      }
+
+      if (skydomeRef.current) {
+        scene.remove(skydomeRef.current.object)
+        skydomeRef.current.dispose()
+        skydomeRef.current = null
+      }
+
       controllerRef.current = null
       cameraRef.current = null
+      sceneRef.current = null
       invalidateRef.current = null
-      focusOnOriginRef.current = null
+      renderOnceRef.current = null
       cancelFocusTweenRef.current = null
+      focusOnOriginRef.current = null
 
       updateSceneRef.current = null
 
@@ -1250,6 +1336,65 @@ export function SceneCanvas() {
     }
   }, [])
 
+  // Swap the starfield and skydome in-place when animatedSky toggled.
+  useEffect(() => {
+    const scene = sceneRef.current
+    const camera = cameraRef.current
+    if (!scene || !camera) return
+
+    // Always recreate starfield (twinkle may have changed)
+    const prevStarfield = starfieldRef.current
+    if (prevStarfield) {
+      scene.remove(prevStarfield.object)
+      prevStarfield.dispose()
+    }
+
+    const nextStarfield = createStarfield({
+      seed: starSeedRef.current,
+      twinkle: twinkleEnabled,
+    })
+    starfieldRef.current = nextStarfield
+    scene.add(nextStarfield.object)
+    nextStarfield.syncToCamera(camera)
+
+    // Handle skydome based on animatedSky toggle
+    const prevSkydome = skydomeRef.current
+    const shouldHaveSkydome = animatedSky && !isE2e
+
+    if (prevSkydome && !shouldHaveSkydome) {
+      scene.remove(prevSkydome.object)
+      prevSkydome.dispose()
+      skydomeRef.current = null
+    } else if (!prevSkydome && shouldHaveSkydome) {
+      const nextSkydome = createSkydome({ seed: starSeedRef.current })
+      skydomeRef.current = nextSkydome
+      scene.add(nextSkydome.object)
+      nextSkydome.syncToCamera(camera)
+    }
+
+    invalidateRef.current?.()
+  }, [animatedSky, twinkleEnabled, isE2e])
+
+
+  // Lightweight RAF loop for twinkle animation.
+  useEffect(() => {
+    twinkleActiveRef.current = twinkleEnabled
+
+    if (!twinkleEnabled) return
+
+    let frame: number | null = null
+    const tick = (t: number) => {
+      if (!twinkleActiveRef.current) return
+      renderOnceRef.current?.(t)
+      frame = window.requestAnimationFrame(tick)
+    }
+
+    frame = window.requestAnimationFrame(tick)
+    return () => {
+      if (frame != null) window.cancelAnimationFrame(frame)
+    }
+  }, [twinkleEnabled])
+
   return (
     <div ref={containerRef} className="scene">
       {!isE2e && spiceClient ? (
@@ -1257,17 +1402,18 @@ export function SceneCanvas() {
           className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
         >
           <div className="sceneOverlayHeader">
-            {isSmallScreen ? (
-              <button
-                className="sceneOverlayButton"
-                onClick={() => setOverlayOpen((v) => !v)}
-                type="button"
-              >
-                {overlayOpen ? 'Hide controls' : 'Show controls'}
-              </button>
-            ) : (
-              <div className="sceneOverlayHeaderTitle">Controls</div>
-            )}
+            <div className="sceneOverlayHeaderTitle">Controls</div>
+
+            <button
+              className="sceneOverlayToggle"
+              onClick={() => setOverlayOpen((v) => !v)}
+              type="button"
+              aria-expanded={overlayOpen}
+              aria-controls="scene-overlay-body"
+              aria-label={overlayOpen ? 'Collapse controls' : 'Expand controls'}
+            >
+              {overlayOpen ? '▲' : '▼'}
+            </button>
 
             <div className="sceneOverlayHeaderActions">
               <button
@@ -1291,8 +1437,8 @@ export function SceneCanvas() {
             </div>
           </div>
 
-          {!isSmallScreen || overlayOpen ? (
-            <div className="sceneOverlayBody">
+          {overlayOpen ? (
+            <div id="scene-overlay-body" className="sceneOverlayBody">
               <PlaybackControls spiceClient={spiceClient} />
 
               <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
@@ -1365,6 +1511,31 @@ export function SceneCanvas() {
                         onChange={(e) => setCameraFovDeg(Number(e.target.value))}
                         style={{ width: '100%' }}
                       />
+                    </label>
+                  </div>
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Sun size ({sunScaleMultiplier}×)
+                      <input
+                        type="range"
+                        min={1}
+                        max={20}
+                        step={1}
+                        value={sunScaleMultiplier}
+                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow" style={{ marginTop: '6px' }}>
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={animatedSky}
+                        onChange={(e) => setAnimatedSky(e.target.checked)}
+                      />
+                      Animated sky
                     </label>
                   </div>
                 </div>

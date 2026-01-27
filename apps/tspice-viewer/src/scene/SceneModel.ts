@@ -2,6 +2,17 @@ import type { BodyRef, FrameId } from "../spice/SpiceClient.js";
 
 export type BodyTextureKind = "earth" | "moon" | "sun";
 
+export interface SceneRingsStyle {
+  /** Inner radius relative to the parent body's radius. */
+  innerRadiusRatio: number
+  /** Outer radius relative to the parent body's radius. */
+  outerRadiusRatio: number
+  /** Ring texture URL/path (typically RGBA PNG). */
+  textureUrl: string
+  /** Optional material tint color. */
+  color?: string
+}
+
 /**
  * Renderer-facing scene description (types only).
  *
@@ -28,6 +39,9 @@ export interface SceneBodyStyle {
 
   /** Optional label to show in UI. */
   label?: string;
+
+  /** Optional rings style (rendered as a child mesh). */
+  rings?: SceneRingsStyle
 }
 
 export interface SceneBody {
