@@ -24,11 +24,20 @@ test('rendered scene is visually stable (golden screenshot)', async ({ page, bas
   })
 
   await page.addInitScript(() => {
-    // Basic determinism helpers.
+    // Basic determinism helpers for screenshot stability.
     const fixedNow = 1_700_000_000_000
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(Date as any).now = () => fixedNow
-    Math.random = () => 0.42
+
+    // Use a seeded PRNG (mulberry32) so Math.random is deterministic but not constant.
+    // A constant value breaks Comlink's UUID generation for worker message correlation.
+    let seed = 0x12345678
+    Math.random = () => {
+      seed = (seed + 0x6d2b79f5) | 0
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+    }
   })
 
   // Use a fixed ET to drive a deterministic render.

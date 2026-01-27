@@ -18,6 +18,11 @@ export default defineConfig({
       allow: [REPO_ROOT],
     },
   },
+  worker: {
+    // Use ES module format for workers; required since we use `type: 'module'`
+    // workers and code-splitting doesn't support IIFE.
+    format: 'es',
+  },
   test: {
     environment: 'node',
     // Prevent Vitest from trying to run Playwright specs.
