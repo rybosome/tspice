@@ -65,7 +65,8 @@ export function SceneCanvas() {
   const [orbitSamplesPerOrbit, setOrbitSamplesPerOrbit] = useState(512)
   const [orbitMaxTotalPoints, setOrbitMaxTotalPoints] = useState(10_000)
   const ORBIT_MIN_POINTS_PER_ORBIT = 32
-  const [antialiasEnabled, setAntialiasEnabled] = useState(() => !isE2e)
+  // Top-level orbit paths toggle (non-advanced, default on)
+  const [orbitPathsEnabled, setOrbitPathsEnabled] = useState(true)
   // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
@@ -283,7 +284,7 @@ export function SceneCanvas() {
         orbitLineWidthPx: number
         orbitSamplesPerOrbit: number
         orbitMaxTotalPoints: number
-        antialiasEnabled: boolean
+        orbitPathsEnabled: boolean
       }) => void)
     | null
   >(null)
@@ -301,7 +302,7 @@ export function SceneCanvas() {
     orbitLineWidthPx,
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
-    antialiasEnabled,
+    orbitPathsEnabled,
   })
   latestUiRef.current = {
     focusBody,
@@ -314,7 +315,7 @@ export function SceneCanvas() {
     orbitLineWidthPx,
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
-    antialiasEnabled,
+    orbitPathsEnabled,
   }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
@@ -341,7 +342,7 @@ export function SceneCanvas() {
       orbitLineWidthPx,
       orbitSamplesPerOrbit,
       orbitMaxTotalPoints,
-      antialiasEnabled,
+      orbitPathsEnabled,
     })
   }, [
     focusBody,
@@ -353,7 +354,7 @@ export function SceneCanvas() {
     orbitLineWidthPx,
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
-    antialiasEnabled,
+    orbitPathsEnabled,
   ])
 
   // Imperatively update camera FOV when the slider changes
@@ -391,7 +392,7 @@ export function SceneCanvas() {
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: antialiasEnabled && !isE2e,
+      antialias: !isE2e,
       powerPreference: 'high-performance',
       logarithmicDepthBuffer: enableLogDepth,
     })
@@ -1254,7 +1255,7 @@ export function SceneCanvas() {
           orbitLineWidthPx: number
           orbitSamplesPerOrbit: number
           orbitMaxTotalPoints: number
-          antialiasEnabled: boolean
+          orbitPathsEnabled: boolean
         }) => {
           const shouldAutoZoom =
             !isE2e &&
@@ -1426,19 +1427,24 @@ export function SceneCanvas() {
           }
 
           // Update orbit paths after primary/body positions are known.
-          orbitPaths?.update({
-            etSec: next.etSec,
-            focusPosKm,
-            bodyPosKmByKey,
-            bodyVisibleByKey,
-            settings: {
-              lineWidthPx: next.orbitLineWidthPx,
-              samplesPerOrbit: next.orbitSamplesPerOrbit,
-              maxTotalPoints: next.orbitMaxTotalPoints,
-              minPointsPerOrbit: ORBIT_MIN_POINTS_PER_ORBIT,
-              antialias: next.antialiasEnabled,
-            },
-          })
+          if (orbitPaths) {
+            orbitPaths.object.visible = next.orbitPathsEnabled
+            if (next.orbitPathsEnabled) {
+              orbitPaths.update({
+                etSec: next.etSec,
+                focusPosKm,
+                bodyPosKmByKey,
+                bodyVisibleByKey,
+                settings: {
+                  lineWidthPx: next.orbitLineWidthPx,
+                  samplesPerOrbit: next.orbitSamplesPerOrbit,
+                  maxTotalPoints: next.orbitMaxTotalPoints,
+                  minPointsPerOrbit: ORBIT_MIN_POINTS_PER_ORBIT,
+                  antialias: true,
+                },
+              })
+            }
+          }
 
           if (j2000Axes) {
             j2000Axes.object.visible = next.showJ2000Axes
@@ -1528,7 +1534,7 @@ export function SceneCanvas() {
 
       renderer.dispose()
     }
-  }, [antialiasEnabled])
+  }, [])
 
   // Swap the starfield and skydome in-place when animatedSky toggled.
   useEffect(() => {
@@ -1678,6 +1684,14 @@ export function SceneCanvas() {
                   />
                   Body-fixed axes
                 </label>
+                <label className="sceneOverlayCheckbox">
+                  <input
+                    type="checkbox"
+                    checked={orbitPathsEnabled}
+                    onChange={(e) => setOrbitPathsEnabled(e.target.checked)}
+                  />
+                  Orbit paths
+                </label>
               </div>
 
               {/* Advanced tuning section */}
@@ -1744,18 +1758,6 @@ export function SceneCanvas() {
                         onChange={(e) => setAnimatedSky(e.target.checked)}
                       />
                       Animated sky
-                    </label>
-                  </div>
-
-                  <div className="sceneOverlayRow" style={{ marginTop: '10px' }}>
-                    <label className="sceneOverlayCheckbox">
-                      <input
-                        type="checkbox"
-                        checked={antialiasEnabled && !isE2e}
-                        disabled={isE2e}
-                        onChange={(e) => setAntialiasEnabled(e.target.checked)}
-                      />
-                      Antialias (rebuild WebGL)
                     </label>
                   </div>
 
