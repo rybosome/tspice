@@ -8,6 +8,7 @@ import { createBodyMesh } from './scene/BodyMesh.js'
 import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
+import { createRingMesh } from './scene/RingMesh.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
@@ -979,6 +980,24 @@ export function SceneCanvas() {
             textureKind: body.style.textureKind,
           })
 
+          const rings = body.style.rings
+          const ringResult = rings
+            ? createRingMesh({
+                // Parent body is a unit sphere scaled by radius, so rings are
+                // specified in planet-radius units.
+                innerRadius: rings.innerRadiusRatio,
+                outerRadius: rings.outerRadiusRatio,
+                textureUrl: rings.textureUrl,
+                color: rings.color,
+              })
+            : undefined
+
+          if (ringResult) {
+            // Attach as a child so it inherits the body's pose and scale.
+            mesh.add(ringResult.mesh)
+            disposers.push(ringResult.dispose)
+          }
+
           mesh.userData.bodyId = body.body
           // Store radiusKm for dynamic scale updates
           mesh.userData.radiusKm = body.style.radiusKm
@@ -1005,7 +1024,7 @@ export function SceneCanvas() {
             radiusKm: body.style.radiusKm,
             mesh,
             axes,
-            ready,
+            ready: Promise.all([ready, ringResult?.ready]).then(() => undefined),
           }
         })
 

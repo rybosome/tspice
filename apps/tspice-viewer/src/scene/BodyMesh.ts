@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 
+import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
+
 export type BodyTextureKind = 'earth' | 'moon' | 'sun'
 
 export type CreateBodyMeshOptions = {
@@ -14,11 +16,6 @@ export type CreateBodyMeshOptions = {
 
   /** Optional, lightweight procedural texture (no binary assets). */
   textureKind?: BodyTextureKind
-}
-
-function resolveVitePublicUrl(pathOrUrl: string): string {
-  const base = new URL(import.meta.env.BASE_URL, window.location.href)
-  return new URL(pathOrUrl, base).toString()
 }
 
 function makeCanvasTexture(draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => void) {
