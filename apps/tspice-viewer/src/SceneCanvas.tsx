@@ -132,6 +132,13 @@ export function SceneCanvas() {
     let scheduledFrame: number | null = null
     let cleanupInteractions: (() => void) | undefined
 
+    // Focus helpers are only enabled in interactive mode, but we keep the
+    // variables in outer scope so scene updates can cancel tweens / adjust zoom.
+    let cancelFocusTween: (() => void) | undefined
+    let focusOn:
+      | ((nextTarget: THREE.Vector3, opts?: { radius?: number; immediate?: boolean }) => void)
+      | undefined
+
     // Resource cleanup + interaction lists.
     const pickables: THREE.Mesh[] = []
     const sceneObjects: THREE.Object3D[] = []
@@ -201,6 +208,17 @@ export function SceneCanvas() {
     dir.position.set(4, 6, 2)
     scene.add(dir)
 
+    const kmToWorld = 1 / 1_000_000
+
+    // When focusing a body, also set a sensible default camera radius so the
+    // body appears large enough without requiring a bunch of manual zoom.
+    const focusDistanceMultiplier = 8
+    const focusRadiusMin = 0.05
+    const focusRadiusMax = 50
+
+    const computeFocusRadius = (radiusWorld: number) =>
+      THREE.MathUtils.clamp(radiusWorld * focusDistanceMultiplier, focusRadiusMin, focusRadiusMax)
+
     const resize = () => {
       const width = container.clientWidth
       const height = container.clientHeight
@@ -237,7 +255,7 @@ export function SceneCanvas() {
       const easeInOutCubic = (t: number) =>
         t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
 
-      const cancelFocusTween = () => {
+      cancelFocusTween = () => {
         if (focusTweenFrame == null) return
         window.cancelAnimationFrame(focusTweenFrame)
         focusTweenFrame = null
@@ -317,15 +335,21 @@ export function SceneCanvas() {
         material.emissiveIntensity = 0.8
       }
 
-      const focusOn = (nextTarget: THREE.Vector3) => {
-        cancelFocusTween()
+      focusOn = (nextTarget: THREE.Vector3, opts) => {
+        cancelFocusTween?.()
 
         const startTarget = controller.target.clone()
         const endTarget = nextTarget.clone()
 
+        const startRadius = controller.radius
+        const endRadius = opts?.radius ?? startRadius
+
+        const immediate = Boolean(opts?.immediate)
+
         // Skip tiny moves to avoid scheduling unnecessary animation frames.
-        if (startTarget.distanceToSquared(endTarget) < 1e-16) {
+        if (immediate || (startTarget.distanceToSquared(endTarget) < 1e-16 && Math.abs(endRadius - startRadius) < 1e-9)) {
           controller.target.copy(endTarget)
+          controller.radius = endRadius
           controller.applyToCamera(camera)
           invalidate()
           return
@@ -339,6 +363,7 @@ export function SceneCanvas() {
           const eased = easeInOutCubic(t)
 
           controller.target.copy(startTarget).lerp(endTarget, eased)
+          controller.radius = THREE.MathUtils.lerp(startRadius, endRadius, eased)
           controller.applyToCamera(camera)
           renderOnce()
 
@@ -537,7 +562,7 @@ export function SceneCanvas() {
             return
           }
 
-          cancelFocusTween()
+          cancelFocusTween?.()
 
           mouseDown.isDragging = true
           mouseDown.lastX = ev.clientX
@@ -691,13 +716,23 @@ export function SceneCanvas() {
         const target = new THREE.Vector3()
         hitMesh.getWorldPosition(target)
 
-        focusOn(target)
+        const radiusKm = Number(hitMesh.userData.radiusKm)
+        if (Number.isFinite(radiusKm)) {
+          const radiusWorld = computeBodyRadiusWorld({
+            radiusKm,
+            kmToWorld,
+            mode: latestUiRef.current.scaleMode,
+          })
+          focusOn?.(target, { radius: computeFocusRadius(radiusWorld) })
+        } else {
+          focusOn?.(target)
+        }
       }
 
       const onWheel = (ev: WheelEvent) => {
         ev.preventDefault()
 
-        cancelFocusTween()
+        cancelFocusTween?.()
 
         controller.radius *= Math.exp(ev.deltaY * wheelZoomScale)
         controller.applyToCamera(camera)
@@ -720,7 +755,7 @@ export function SceneCanvas() {
         canvas.removeEventListener('wheel', onWheel)
         canvas.removeEventListener('contextmenu', onContextMenu)
 
-        cancelFocusTween()
+        cancelFocusTween?.()
         setSelectedMesh(undefined)
       }
     }
@@ -768,8 +803,6 @@ export function SceneCanvas() {
           observer: 'SUN',
           bodies: listDefaultVisibleSceneBodies(),
         }
-
-        const kmToWorld = 1 / 1_000_000
 
         const bodies = sceneModel.bodies.map((body) => {
           const { mesh, dispose, ready } = createBodyMesh({
@@ -820,6 +853,9 @@ export function SceneCanvas() {
           scene.add(j2000Axes.object)
         }
 
+        let lastAutoZoomFocusBody: BodyRef | undefined
+        let lastAutoZoomScaleMode: ScaleMode | undefined
+
         const updateScene = (next: {
           etSec: EtSeconds
           focusBody: BodyRef
@@ -827,6 +863,14 @@ export function SceneCanvas() {
           showBodyFixedAxes: boolean
           scaleMode: ScaleMode
         }) => {
+          const shouldAutoZoom =
+            !isE2e &&
+            (next.focusBody !== lastAutoZoomFocusBody || next.scaleMode !== lastAutoZoomScaleMode)
+
+          if (shouldAutoZoom) {
+            cancelFocusTween?.()
+          }
+
           const focusState = loadedSpiceClient.getBodyState({
             target: next.focusBody,
             observer: sceneModel.observer,
@@ -834,6 +878,27 @@ export function SceneCanvas() {
             et: next.etSec,
           })
           const focusPosKm = focusState.positionKm
+
+          if (shouldAutoZoom) {
+            const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
+            if (focusBodyMeta) {
+              const radiusWorld = computeBodyRadiusWorld({
+                radiusKm: focusBodyMeta.radiusKm,
+                kmToWorld,
+                mode: next.scaleMode,
+              })
+
+              // For focus-body selection (dropdown), force the camera to look at
+              // the rebased origin and update radius immediately.
+              focusOn?.(new THREE.Vector3(0, 0, 0), {
+                radius: computeFocusRadius(radiusWorld),
+                immediate: true,
+              })
+            }
+
+            lastAutoZoomFocusBody = next.focusBody
+            lastAutoZoomScaleMode = next.scaleMode
+          }
 
           for (const b of bodies) {
             const state = loadedSpiceClient.getBodyState({
