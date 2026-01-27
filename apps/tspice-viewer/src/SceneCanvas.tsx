@@ -91,7 +91,13 @@ export function SceneCanvas() {
   const focusDistanceMultiplier = 4
   const sunOcclusionMarginRad = 0
 
-  const focusOptions = useMemo(() => listDefaultVisibleBodies(), [])
+  const focusOptions = useMemo(() => {
+    // TODO(#119): Once moons are fully integrated into default visibility rules,
+    // this should probably become a dedicated helper (e.g. listFocusableBodies).
+    const base = listDefaultVisibleBodies()
+    const moon = getBodyRegistryEntry('MOON')
+    return base.some((b) => b.id === moon.id) ? base : [...base, moon]
+  }, [])
 
   // Keep renderer units consistent across the app. This matches the value used
   // inside the renderer effect.
@@ -874,13 +880,20 @@ export function SceneCanvas() {
               const hitMesh = hit.object
               if (hitMesh instanceof THREE.Mesh) {
                 const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
-                if (nextSelectedBodyId !== selectedBodyId) {
+                const selectionChanged = nextSelectedBodyId !== selectedBodyId
+                if (selectionChanged) {
                   setSelectedMesh(hitMesh)
+                  if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
                 }
 
-                const target = new THREE.Vector3()
-                hitMesh.getWorldPosition(target)
-                focusOn?.(target)
+                // When selection changes, rely on focus-body changes to center
+                // and auto-zoom (avoids focusing in the pre-rebase coordinate
+                // system).
+                if (!selectionChanged) {
+                  const target = new THREE.Vector3()
+                  hitMesh.getWorldPosition(target)
+                  focusOn?.(target)
+                }
               }
             }
           }
@@ -959,6 +972,9 @@ export function SceneCanvas() {
         const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
         if (nextSelectedBodyId !== selectedBodyId) {
           setSelectedMesh(hitMesh)
+          if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
+          // Let focus-body changes drive camera centering + auto-zoom.
+          return
         }
 
         const target = new THREE.Vector3()
