@@ -40,6 +40,24 @@ export function SceneCanvas() {
   const isE2e = search.has('e2e')
   const enableLogDepth = search.has('logDepth')
 
+  // Background is opt-in to avoid breaking existing snapshots.
+  // Supported values:
+  // - flat (default)
+  // - stars
+  // - skybox
+  // - skybox+stars
+  type BackgroundMode = 'flat' | 'stars' | 'skybox' | 'skybox+stars'
+  const backgroundMode: BackgroundMode = (() => {
+    const raw = (search.get('background') ?? 'flat').toLowerCase()
+    if (raw === 'stars') return 'stars'
+    if (raw === 'skybox') return 'skybox'
+    if (raw === 'skybox+stars') return 'skybox+stars'
+    return 'flat'
+  })()
+
+  const backgroundHasStars = backgroundMode === 'stars' || backgroundMode === 'skybox+stars'
+  const backgroundHasSkybox = backgroundMode === 'skybox' || backgroundMode === 'skybox+stars'
+
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
@@ -337,6 +355,28 @@ export function SceneCanvas() {
     const scene = new THREE.Scene()
     scene.background = new THREE.Color('#0f131a')
 
+    if (backgroundHasSkybox) {
+      // Load an equirectangular texture and use it as the scene background.
+      // This does not affect raycasting/picking because it's only used for
+      // clearing the framebuffer (no scene geometry).
+      const loader = new THREE.TextureLoader()
+      const skyTexture = loader.load(
+        '/sky/starmap_2020_1k.jpg',
+        (texture) => {
+          texture.mapping = THREE.EquirectangularReflectionMapping
+          texture.colorSpace = THREE.SRGBColorSpace
+          scene.background = texture
+          invalidate()
+        },
+        undefined,
+        () => {
+          // If the texture fails to load for any reason, keep the flat fallback.
+        }
+      )
+
+      disposers.push(() => skyTexture.dispose())
+    }
+
     // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
     // world units away. Keep the far plane large enough so we can render the
     // full default scene (through Neptune).
@@ -360,14 +400,18 @@ export function SceneCanvas() {
       return isE2e ? 1 : 1337
     })()
 
-    const starfield = createStarfield({ seed: starSeed })
-    sceneObjects.push(starfield.object)
-    disposers.push(starfield.dispose)
-    scene.add(starfield.object)
+    const starfield = backgroundHasStars ? createStarfield({ seed: starSeed }) : null
+    if (starfield) {
+      sceneObjects.push(starfield.object)
+      disposers.push(starfield.dispose)
+      scene.add(starfield.object)
+    }
 
     const renderOnce = () => {
       if (disposed) return
-      starfield.syncToCamera(camera)
+
+      // Keep the procedural starfield as an overlay when configured.
+      starfield?.syncToCamera(camera)
       renderer.render(scene, camera)
     }
 

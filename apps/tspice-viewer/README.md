@@ -84,6 +84,17 @@ This keeps the camera and nearby bodies numerically close to the origin, improvi
 
 You can opt-in to Three's logarithmic depth buffer with `?logDepth=1`.
 
+### Optional: background mode
+
+The default background remains the existing flat color.
+
+You can opt in to other backgrounds with `?background=...`:
+
+- `?background=flat` (default)
+- `?background=stars` (procedural starfield overlay)
+- `?background=skybox` (texture-based sky background)
+- `?background=skybox+stars` (texture background + procedural stars overlay)
+
 This is **not** the primary precision strategy (it helps with depth range / z-fighting more than large-coordinate jitter), but it can be useful when experimenting with bigger far planes.
 
 ## Viewer controls
