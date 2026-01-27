@@ -41,5 +41,8 @@ test('rendered scene is visually stable (golden screenshot)', async ({ page, bas
 
   await expect(canvas).toHaveScreenshot('rendered-scene.png', {
     animations: 'disabled',
+    // Minor single-pixel diffs can happen across runners/GPUs/drivers.
+    // Keep the golden screenshot check, but allow a tiny tolerance.
+    maxDiffPixels: 10,
   })
 })
