@@ -6,7 +6,7 @@ import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
 import { listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
-import { computeBodyRadiusWorld, type ScaleMode } from './scene/bodyScaling.js'
+import { computeBodyRadiusWorld, DEFAULT_ENHANCED_CONFIG, type ScaleMode } from './scene/bodyScaling.js'
 import { createFrameAxes } from './scene/FrameAxes.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
@@ -42,6 +42,13 @@ export function SceneCanvas() {
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
   const [scaleMode, setScaleMode] = useState<ScaleMode>('enhanced')
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
+
+  // Advanced tuning sliders (ephemeral, local state only)
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [enhancedPower, setEnhancedPower] = useState(DEFAULT_ENHANCED_CONFIG.power)
+  const [focusDistanceMultiplier, setFocusDistanceMultiplier] = useState(4)
+  const [cameraFovDeg, setCameraFovDeg] = useState(50)
+  const [sunOcclusionMarginDeg, setSunOcclusionMarginDeg] = useState(2)
 
   const focusOptions = useMemo(() => listDefaultVisibleBodies(), [])
 
@@ -136,13 +143,18 @@ export function SceneCanvas() {
 
     // Margin used for both view-frustum checks and for ensuring the Sun isn't
     // hidden behind the focused body.
-    const marginRad = THREE.MathUtils.degToRad(2)
+    const marginRad = THREE.MathUtils.degToRad(sunOcclusionMarginDeg)
 
     // Ensure the Sun's center is offset from screen center by more than the
     // focused body's angular radius, so it can't be fully occluded.
     const focusMeta = focusOptions.find((b) => String(b.body) === String(focusBody))
     const radiusWorld = focusMeta
-      ? computeBodyRadiusWorld({ radiusKm: focusMeta.style.radiusKm, kmToWorld, mode: scaleMode })
+      ? computeBodyRadiusWorld({
+          radiusKm: focusMeta.style.radiusKm,
+          kmToWorld,
+          mode: scaleMode,
+          enhancedConfig: { ...DEFAULT_ENHANCED_CONFIG, power: enhancedPower },
+        })
       : undefined
 
     const bodyAngRad =
@@ -154,7 +166,7 @@ export function SceneCanvas() {
     // If we're zoomed in too far, it may be geometrically impossible to place
     // the Sun outside the body's projected disk while still staying in-frame.
     // In that case, zoom out just enough to make it possible.
-    const halfV = THREE.MathUtils.degToRad(camera.fov) / 2
+    const halfV = THREE.MathUtils.degToRad(cameraFovDeg) / 2
     const halfH = Math.atan(Math.tan(halfV) * (camera.aspect || 1))
     const half = Math.min(halfV, halfH)
     const maxOffAxis = Math.max(0, half - marginRad)
@@ -174,7 +186,7 @@ export function SceneCanvas() {
     const sunInFov = isDirectionWithinFov({
       cameraForwardDir: currentForwardDir,
       dirToPoint: sunDir,
-      cameraFovDeg: camera.fov,
+      cameraFovDeg,
       cameraAspect: camera.aspect,
       marginRad,
     })
@@ -183,7 +195,7 @@ export function SceneCanvas() {
     if (!sunInFov || !sunNotOccluded) {
       const angles = computeOrbitAnglesToKeepPointInView({
         pointWorld: sunPosWorld,
-        cameraFovDeg: camera.fov,
+        cameraFovDeg,
         cameraAspect: camera.aspect,
         desiredOffAxisRad: minSeparationRad,
         marginRad,
@@ -209,14 +221,36 @@ export function SceneCanvas() {
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
         scaleMode: ScaleMode
+        enhancedPower: number
+        focusDistanceMultiplier: number
+        cameraFovDeg: number
+        sunOcclusionMarginDeg: number
       }) => void)
     | null
   >(null)
 
   // The renderer/bootstrap `useEffect` is mounted once, so it needs a ref to
   // read the latest UI state when async init completes.
-  const latestUiRef = useRef({ focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode })
-  latestUiRef.current = { focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode }
+  const latestUiRef = useRef({
+    focusBody,
+    showJ2000Axes,
+    showBodyFixedAxes,
+    scaleMode,
+    enhancedPower,
+    focusDistanceMultiplier,
+    cameraFovDeg,
+    sunOcclusionMarginDeg,
+  })
+  latestUiRef.current = {
+    focusBody,
+    showJ2000Axes,
+    showBodyFixedAxes,
+    scaleMode,
+    enhancedPower,
+    focusDistanceMultiplier,
+    cameraFovDeg,
+    sunOcclusionMarginDeg,
+  }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
   useEffect(() => {
@@ -227,11 +261,30 @@ export function SceneCanvas() {
     return unsubscribe
   }, [])
 
-  // Update scene when UI state changes (focus, axes toggles, scale mode)
+  // Update scene when UI state changes (focus, axes toggles, scale mode, advanced settings)
   useEffect(() => {
     const etSec = timeStore.getState().etSec
-    updateSceneRef.current?.({ etSec, focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode })
-  }, [focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode])
+    updateSceneRef.current?.({
+      etSec,
+      focusBody,
+      showJ2000Axes,
+      showBodyFixedAxes,
+      scaleMode,
+      enhancedPower,
+      focusDistanceMultiplier,
+      cameraFovDeg,
+      sunOcclusionMarginDeg,
+    })
+  }, [focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode, enhancedPower, focusDistanceMultiplier, cameraFovDeg, sunOcclusionMarginDeg])
+
+  // Imperatively update camera FOV when the slider changes
+  useEffect(() => {
+    const camera = cameraRef.current
+    if (!camera) return
+    camera.fov = cameraFovDeg
+    camera.updateProjectionMatrix()
+    invalidateRef.current?.()
+  }, [cameraFovDeg])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -271,7 +324,7 @@ export function SceneCanvas() {
     // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
     // world units away. Keep the far plane large enough so we can render the
     // full default scene (through Neptune).
-    const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 10_000)
+    const camera = new THREE.PerspectiveCamera(latestUiRef.current.cameraFovDeg, 1, 0.01, 10_000)
     camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
@@ -321,17 +374,14 @@ export function SceneCanvas() {
     dir.position.set(4, 6, 2)
     scene.add(dir)
 
-    // When focusing a body, also set a sensible default camera radius so the
-    // body appears large enough without requiring a bunch of manual zoom.
-    const focusDistanceMultiplier = 4
     // Minimum camera radius for auto-zoom. This used to be quite large, which
     // made small bodies (e.g. Mercury) look tiny when selected from the focus
     // dropdown.
     const focusRadiusMin = 0.02
     const focusRadiusMax = 50
 
-    const computeFocusRadius = (radiusWorld: number) =>
-      THREE.MathUtils.clamp(radiusWorld * focusDistanceMultiplier, focusRadiusMin, focusRadiusMax)
+    const computeFocusRadius = (radiusWorld: number, multiplier: number) =>
+      THREE.MathUtils.clamp(radiusWorld * multiplier, focusRadiusMin, focusRadiusMax)
 
     const resize = () => {
       const width = container.clientWidth
@@ -836,8 +886,9 @@ export function SceneCanvas() {
             radiusKm,
             kmToWorld,
             mode: latestUiRef.current.scaleMode,
+            enhancedConfig: { ...DEFAULT_ENHANCED_CONFIG, power: latestUiRef.current.enhancedPower },
           })
-          focusOn?.(target, { radius: computeFocusRadius(radiusWorld) })
+          focusOn?.(target, { radius: computeFocusRadius(radiusWorld, latestUiRef.current.focusDistanceMultiplier) })
         } else {
           focusOn?.(target)
         }
@@ -969,6 +1020,8 @@ export function SceneCanvas() {
 
         let lastAutoZoomFocusBody: BodyRef | undefined
         let lastAutoZoomScaleMode: ScaleMode | undefined
+        let lastAutoZoomEnhancedPower: number | undefined
+        let lastAutoZoomFocusDistanceMultiplier: number | undefined
 
         const updateScene = (next: {
           etSec: EtSeconds
@@ -976,10 +1029,17 @@ export function SceneCanvas() {
           showJ2000Axes: boolean
           showBodyFixedAxes: boolean
           scaleMode: ScaleMode
+          enhancedPower: number
+          focusDistanceMultiplier: number
+          cameraFovDeg: number
+          sunOcclusionMarginDeg: number
         }) => {
           const shouldAutoZoom =
             !isE2e &&
-            (next.focusBody !== lastAutoZoomFocusBody || next.scaleMode !== lastAutoZoomScaleMode)
+            (next.focusBody !== lastAutoZoomFocusBody ||
+              next.scaleMode !== lastAutoZoomScaleMode ||
+              next.enhancedPower !== lastAutoZoomEnhancedPower ||
+              next.focusDistanceMultiplier !== lastAutoZoomFocusDistanceMultiplier)
 
           if (shouldAutoZoom) {
             cancelFocusTween?.()
@@ -993,6 +1053,8 @@ export function SceneCanvas() {
           })
           const focusPosKm = focusState.positionKm
 
+          const enhancedConfig = { ...DEFAULT_ENHANCED_CONFIG, power: next.enhancedPower }
+
           if (shouldAutoZoom) {
             const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
             if (focusBodyMeta) {
@@ -1000,9 +1062,10 @@ export function SceneCanvas() {
                 radiusKm: focusBodyMeta.radiusKm,
                 kmToWorld,
                 mode: next.scaleMode,
+                enhancedConfig,
               })
 
-              const nextRadius = computeFocusRadius(radiusWorld)
+              const nextRadius = computeFocusRadius(radiusWorld, next.focusDistanceMultiplier)
 
               // When focusing a non-Sun body, bias the camera orientation so the
               // Sun remains visible (it provides important spatial context).
@@ -1028,7 +1091,7 @@ export function SceneCanvas() {
 
                   // Use the same angular margin for both frustum checks and for
                   // ensuring the Sun isn't hidden behind the focused body.
-                  const marginRad = THREE.MathUtils.degToRad(2)
+                  const marginRad = THREE.MathUtils.degToRad(next.sunOcclusionMarginDeg)
 
                   // If the Sun is too close to the view center, it can be
                   // completely occluded by the focused body (which is centered
@@ -1041,7 +1104,7 @@ export function SceneCanvas() {
                   const sunInFov = isDirectionWithinFov({
                     cameraForwardDir: currentForwardDir,
                     dirToPoint: sunDir,
-                    cameraFovDeg: camera.fov,
+                    cameraFovDeg: next.cameraFovDeg,
                     cameraAspect: camera.aspect,
                     marginRad,
                   })
@@ -1050,7 +1113,7 @@ export function SceneCanvas() {
                   if (!sunInFov || !sunNotOccluded) {
                     const angles = computeOrbitAnglesToKeepPointInView({
                       pointWorld: sunPosWorld,
-                      cameraFovDeg: camera.fov,
+                      cameraFovDeg: next.cameraFovDeg,
                       cameraAspect: camera.aspect,
                       desiredOffAxisRad: minSeparationRad,
                       marginRad,
@@ -1074,6 +1137,8 @@ export function SceneCanvas() {
 
             lastAutoZoomFocusBody = next.focusBody
             lastAutoZoomScaleMode = next.scaleMode
+            lastAutoZoomEnhancedPower = next.enhancedPower
+            lastAutoZoomFocusDistanceMultiplier = next.focusDistanceMultiplier
           }
 
           for (const b of bodies) {
@@ -1096,6 +1161,7 @@ export function SceneCanvas() {
               radiusKm: b.radiusKm,
               kmToWorld,
               mode: next.scaleMode,
+              enhancedConfig,
             })
             b.mesh.scale.setScalar(radiusWorld)
 
@@ -1264,6 +1330,79 @@ export function SceneCanvas() {
                   Body-fixed axes
                 </label>
               </div>
+
+              {/* Advanced tuning section */}
+              <div className="sceneOverlayRow" style={{ marginTop: '8px' }}>
+                <button
+                  className="sceneOverlayButton"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  type="button"
+                >
+                  {showAdvanced ? '▼ Advanced' : '▶ Advanced'}
+                </button>
+              </div>
+
+              {showAdvanced && (
+                <div className="sceneOverlayAdvanced" style={{ marginTop: '8px' }}>
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Enhanced power ({enhancedPower.toFixed(2)})
+                      <input
+                        type="range"
+                        min={0.2}
+                        max={1.0}
+                        step={0.01}
+                        value={enhancedPower}
+                        onChange={(e) => setEnhancedPower(Number(e.target.value))}
+                        disabled={scaleMode !== 'enhanced'}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Auto-zoom multiplier ({focusDistanceMultiplier.toFixed(1)})
+                      <input
+                        type="range"
+                        min={2}
+                        max={10}
+                        step={0.1}
+                        value={focusDistanceMultiplier}
+                        onChange={(e) => setFocusDistanceMultiplier(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Camera FOV ({cameraFovDeg}°)
+                      <input
+                        type="range"
+                        min={30}
+                        max={90}
+                        step={1}
+                        value={cameraFovDeg}
+                        onChange={(e) => setCameraFovDeg(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Sun margin ({sunOcclusionMarginDeg.toFixed(1)}°)
+                      <input
+                        type="range"
+                        min={0}
+                        max={10}
+                        step={0.5}
+                        value={sunOcclusionMarginDeg}
+                        onChange={(e) => setSunOcclusionMarginDeg(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              )}
             </div>
           ) : null}
         </div>
