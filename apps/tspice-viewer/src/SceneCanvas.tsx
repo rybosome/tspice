@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { CameraController } from './controls/CameraController.js'
+import { CameraController, type CameraControllerState } from './controls/CameraController.js'
+import { useKeyboardControls } from './controls/useKeyboardControls.js'
 import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
@@ -101,7 +102,21 @@ export function SceneCanvas() {
   const [panModeEnabled, setPanModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
+  const focusOnOriginRef = useRef<(() => void) | null>(null)
+  const initialControllerStateRef = useRef<CameraControllerState | null>(null)
   panModeEnabledRef.current = panModeEnabled
+
+  // Enable keyboard controls (disabled in e2e mode)
+  useKeyboardControls({
+    controllerRef,
+    cameraRef,
+    canvasRef,
+    invalidate: () => invalidateRef.current?.(),
+    cancelFocusTween: () => cancelFocusTweenRef.current?.(),
+    focusOnOrigin: () => focusOnOriginRef.current?.(),
+    initialControllerStateRef,
+    enabled: !isE2e,
+  })
 
   const zoomBy = (factor: number) => {
     const controller = controllerRef.current
@@ -469,6 +484,16 @@ export function SceneCanvas() {
       }
 
       cancelFocusTweenRef.current = cancelFocusTween
+
+      // Expose focusOn to the keyboard controls via ref
+      focusOnOriginRef.current = () => {
+        // Focus on the origin (the currently focused body's position in the scene)
+        // Since we rebase positions around the focus body, origin is always (0,0,0)
+        const originTarget = new THREE.Vector3(0, 0, 0)
+        focusOn?.(originTarget, {
+          radius: controller.radius, // Keep current zoom level
+        })
+      }
 
       type DragMode = 'orbit' | 'pan'
 
@@ -1214,6 +1239,12 @@ export function SceneCanvas() {
                 radius: nextRadius,
                 immediate: true,
               })
+
+              // Capture the initial camera view (after first focus logic runs)
+              // so keyboard Reset (R) can return exactly to the page-load view.
+              if (!initialControllerStateRef.current) {
+                initialControllerStateRef.current = controller.snapshot()
+              }
             }
 
             lastAutoZoomFocusBody = next.focusBody
@@ -1339,6 +1370,7 @@ export function SceneCanvas() {
       invalidateRef.current = null
       renderOnceRef.current = null
       cancelFocusTweenRef.current = null
+      focusOnOriginRef.current = null
 
       updateSceneRef.current = null
 
