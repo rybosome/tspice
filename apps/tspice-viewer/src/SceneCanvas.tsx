@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import * as THREE from 'three'
 import { CameraController, type CameraControllerState } from './controls/CameraController.js'
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
@@ -15,7 +15,7 @@ import { createStarfield } from './scene/Starfield.js'
 import { createSkydome } from './scene/Skydome.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
-import { timeStore } from './time/timeStore.js'
+import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
@@ -87,6 +87,8 @@ export function SceneCanvas() {
     return m.toExponential(1)
   }
 
+  const quantumSec = useTimeStoreSelector((s) => s.quantumSec)
+
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
   const sunOcclusionMarginRad = 0
@@ -106,6 +108,13 @@ export function SceneCanvas() {
   const initialControllerStateRef = useRef<CameraControllerState | null>(null)
   panModeEnabledRef.current = panModeEnabled
 
+  const handleQuantumChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value)
+    if (value > 0) {
+      timeStore.setQuantumSec(value)
+    }
+  }, [])
+  
   // Enable keyboard controls (disabled in e2e mode)
   useKeyboardControls({
     controllerRef,
@@ -1595,6 +1604,20 @@ export function SceneCanvas() {
                         onChange={(e) => setAnimatedSky(e.target.checked)}
                       />
                       Animated sky
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Quantum (s)
+                      <input
+                        type="number"
+                        min={0.001}
+                        step={0.01}
+                        value={quantumSec}
+                        onChange={handleQuantumChange}
+                        style={{ width: '100%' }}
+                      />
                     </label>
                   </div>
                 </div>
