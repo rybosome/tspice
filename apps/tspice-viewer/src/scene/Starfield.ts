@@ -11,6 +11,15 @@ export type CreateStarfieldOptions = {
    */
   enhanced?: boolean
 
+  /**
+   * Enable subtle twinkling animation.
+   *
+   * Defaults:
+   * - enhanced: `true`
+   * - legacy: `false`
+   */
+  twinkle?: boolean
+
   /** Number of stars/points. */
   count?: number
 
@@ -19,6 +28,14 @@ export type CreateStarfieldOptions = {
 
   /** Star size in pixels (because sizeAttenuation is disabled). */
   sizePx?: number
+}
+
+export type StarfieldHandle = {
+  object: THREE.Object3D
+  syncToCamera: (camera: THREE.Camera) => void
+  /** Optional per-frame update hook (used for twinkle). */
+  update?: (timeSec: number) => void
+  dispose: () => void
 }
 
 // Tiny deterministic PRNG (mulberry32).
@@ -106,8 +123,11 @@ function createStarLayer(opts: {
   bandWidth: number
   bandBoost: number
   warmChance: number
+  distribution?: 'fibonacci' | 'random'
+  twinkle?: boolean
 }): {
   object: THREE.Points
+  update?: (timeSec: number) => void
   dispose: () => void
 } {
   const rng = createRng(opts.seed)
@@ -116,8 +136,16 @@ function createStarLayer(opts: {
   const positions = new Float32Array(opts.count * 3)
   const colors = new Float32Array(opts.count * 3)
 
+  const twinkleEnabled = opts.twinkle === true
+  const twinklePhase = twinkleEnabled ? new Float32Array(opts.count) : undefined
+  const twinkleSpeed = twinkleEnabled ? new Float32Array(opts.count) : undefined
+  const twinkleAmp = twinkleEnabled ? new Float32Array(opts.count) : undefined
+
+  const distribution = opts.distribution ?? 'fibonacci'
+
   for (let i = 0; i < opts.count; i++) {
-    const [x0, y0, z0] = fibonacciUnitSphere(i, opts.count)
+    const [x0, y0, z0] =
+      distribution === 'random' ? sampleUnitSphere(rng) : fibonacciUnitSphere(i, opts.count)
     const dir = new THREE.Vector3(x0, y0, z0).applyQuaternion(rotation)
 
     const radius = opts.radiusWorld * (0.86 + 0.14 * rng())
@@ -141,11 +169,25 @@ function createStarLayer(opts: {
     colors[j + 0] = rCol
     colors[j + 1] = gCol
     colors[j + 2] = bCol
+
+    if (twinkleEnabled && twinklePhase && twinkleSpeed && twinkleAmp) {
+      // Only a subtle effect, and bias it towards brighter stars.
+      // Brightness can exceed 1 due to band boosts, so clamp.
+      const bright01 = THREE.MathUtils.clamp((brightness - 0.85) / 0.85, 0, 1)
+      twinkleAmp[i] = 0.18 * bright01
+      twinkleSpeed[i] = 0.7 + 1.6 * rng()
+      twinklePhase[i] = 2 * Math.PI * rng()
+    }
   }
 
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+  if (twinkleEnabled && twinklePhase && twinkleSpeed && twinkleAmp) {
+    geometry.setAttribute('aTwinklePhase', new THREE.BufferAttribute(twinklePhase, 1))
+    geometry.setAttribute('aTwinkleSpeed', new THREE.BufferAttribute(twinkleSpeed, 1))
+    geometry.setAttribute('aTwinkleAmp', new THREE.BufferAttribute(twinkleAmp, 1))
+  }
   geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), opts.radiusWorld * 1.1)
 
   const sprite = makeStarSpriteTexture()
@@ -162,12 +204,61 @@ function createStarLayer(opts: {
     depthWrite: false,
   })
 
+  let uTime: { value: number } | null = null
+  let lastTimeSec = 0
+  if (twinkleEnabled) {
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime = { value: lastTimeSec }
+      uTime = shader.uniforms.uTime as { value: number }
+
+      shader.vertexShader = shader.vertexShader
+        .replace(
+          '#include <common>',
+          [
+            '#include <common>',
+            'attribute float aTwinklePhase;',
+            'attribute float aTwinkleSpeed;',
+            'attribute float aTwinkleAmp;',
+            'uniform float uTime;',
+            'varying float vTwinkle;',
+          ].join('\n'),
+        )
+        .replace(
+          '#include <begin_vertex>',
+          [
+            '#include <begin_vertex>',
+            'vTwinkle = aTwinkleAmp * sin(uTime * aTwinkleSpeed + aTwinklePhase);',
+          ].join('\n'),
+        )
+
+      shader.fragmentShader = shader.fragmentShader
+        .replace('#include <common>', ['#include <common>', 'varying float vTwinkle;'].join('\n'))
+        .replace(
+          'vec4 diffuseColor = vec4( diffuse, opacity );',
+          [
+            'vec4 diffuseColor = vec4( diffuse, opacity );',
+            // Keep this subtle: amp is already <= 0.18.
+            'diffuseColor.rgb *= (1.0 + vTwinkle);',
+          ].join('\n'),
+        )
+    }
+
+    // Ensure we actually rebuild the program to include the new shader chunks.
+    material.needsUpdate = true
+  }
+
   const object = new THREE.Points(geometry, material)
   object.frustumCulled = false
   object.raycast = () => {}
 
   return {
     object,
+    update: twinkleEnabled
+      ? (timeSec) => {
+          lastTimeSec = timeSec
+          if (uTime) uTime.value = timeSec
+        }
+      : undefined,
     dispose: () => {
       geometry.dispose()
       material.dispose()
@@ -176,12 +267,9 @@ function createStarLayer(opts: {
   }
 }
 
-function createEnhancedStarfield(options: CreateStarfieldOptions): {
-  object: THREE.Object3D
-  syncToCamera: (camera: THREE.Camera) => void
-  dispose: () => void
-} {
+function createEnhancedStarfield(options: CreateStarfieldOptions): StarfieldHandle {
   const seed = options.seed
+  const twinkle = options.twinkle ?? true
   const group = new THREE.Group()
   group.frustumCulled = false
   group.raycast = () => {}
@@ -220,6 +308,10 @@ function createEnhancedStarfield(options: CreateStarfieldOptions): {
       bandWidth: 0.16,
       bandBoost: 1.6,
       warmChance: 0.55,
+      // The accent layer is intentionally less regular to avoid visible
+      // low-discrepancy “grid” patterns.
+      distribution: 'random' as const,
+      twinkle,
     },
   ]
 
@@ -238,17 +330,18 @@ function createEnhancedStarfield(options: CreateStarfieldOptions): {
     syncToCamera: (camera) => {
       group.position.copy(camera.position)
     },
+    update: twinkle
+      ? (timeSec) => {
+          for (const c of created) c.update?.(timeSec)
+        }
+      : undefined,
     dispose: () => {
       for (const c of created) c.dispose()
     },
   }
 }
 
-export function createStarfield(options: CreateStarfieldOptions): {
-  object: THREE.Object3D
-  syncToCamera: (camera: THREE.Camera) => void
-  dispose: () => void
-} {
+export function createStarfield(options: CreateStarfieldOptions): StarfieldHandle {
   if (options.enhanced) {
     return createEnhancedStarfield(options)
   }

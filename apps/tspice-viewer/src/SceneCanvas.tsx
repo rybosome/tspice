@@ -35,6 +35,8 @@ export function SceneCanvas() {
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
   const sceneRef = useRef<THREE.Scene | null>(null)
   const invalidateRef = useRef<(() => void) | null>(null)
+  const renderOnceRef = useRef<((timeMs?: number) => void) | null>(null)
+  const twinkleActiveRef = useRef(false)
   const cancelFocusTweenRef = useRef<(() => void) | null>(null)
 
   const starSeedRef = useRef<number>(1337)
@@ -56,6 +58,9 @@ export function SceneCanvas() {
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
   const [enhancedStarfield, setEnhancedStarfield] = useState(false)
+  const [twinkleStarfield, setTwinkleStarfield] = useState(() => !isE2e)
+
+  const twinkleEnabled = enhancedStarfield && twinkleStarfield && !isE2e
 
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
@@ -346,23 +351,29 @@ export function SceneCanvas() {
 
     starSeedRef.current = starSeed
 
-    const starfield = createStarfield({ seed: starSeed, enhanced: enhancedStarfield })
+    const starfield = createStarfield({ seed: starSeed, enhanced: enhancedStarfield, twinkle: twinkleEnabled })
     starfieldRef.current = starfield
     scene.add(starfield.object)
 
-    const renderOnce = () => {
+    const renderOnce = (timeMs?: number) => {
       if (disposed) return
+      const timeSec = (timeMs ?? performance.now()) * 0.001
+      starfieldRef.current?.update?.(timeSec)
       starfieldRef.current?.syncToCamera(camera)
       renderer.render(scene, camera)
     }
 
+    renderOnceRef.current = renderOnce
+
     const invalidate = () => {
       if (disposed) return
+      // When twinkling is enabled, we have a dedicated RAF loop.
+      if (twinkleActiveRef.current) return
       if (scheduledFrame != null) return
 
-      scheduledFrame = window.requestAnimationFrame(() => {
+      scheduledFrame = window.requestAnimationFrame((t) => {
         scheduledFrame = null
-        renderOnce()
+        renderOnce(t)
       })
     }
 
@@ -1265,6 +1276,7 @@ export function SceneCanvas() {
       cameraRef.current = null
       sceneRef.current = null
       invalidateRef.current = null
+      renderOnceRef.current = null
       cancelFocusTweenRef.current = null
 
       updateSceneRef.current = null
@@ -1288,14 +1300,37 @@ export function SceneCanvas() {
     scene.remove(prev.object)
     prev.dispose()
 
-    const next = createStarfield({ seed: starSeedRef.current, enhanced: enhancedStarfield })
+    const next = createStarfield({
+      seed: starSeedRef.current,
+      enhanced: enhancedStarfield,
+      twinkle: twinkleEnabled,
+    })
     starfieldRef.current = next
     scene.add(next.object)
 
     // Ensure the new object is positioned correctly immediately.
     next.syncToCamera(camera)
     invalidateRef.current?.()
-  }, [enhancedStarfield])
+  }, [enhancedStarfield, twinkleEnabled])
+
+  // Lightweight RAF loop for twinkle animation.
+  useEffect(() => {
+    twinkleActiveRef.current = twinkleEnabled
+
+    if (!twinkleEnabled) return
+
+    let frame: number | null = null
+    const tick = (t: number) => {
+      if (!twinkleActiveRef.current) return
+      renderOnceRef.current?.(t)
+      frame = window.requestAnimationFrame(tick)
+    }
+
+    frame = window.requestAnimationFrame(tick)
+    return () => {
+      if (frame != null) window.cancelAnimationFrame(frame)
+    }
+  }, [twinkleEnabled])
 
   return (
     <div ref={containerRef} className="scene">
@@ -1439,6 +1474,19 @@ export function SceneCanvas() {
                       Enhanced starfield
                     </label>
                   </div>
+
+                  {enhancedStarfield && !isE2e ? (
+                    <div className="sceneOverlayRow" style={{ marginTop: '6px' }}>
+                      <label className="sceneOverlayCheckbox">
+                        <input
+                          type="checkbox"
+                          checked={twinkleStarfield}
+                          onChange={(e) => setTwinkleStarfield(e.target.checked)}
+                        />
+                        Twinkle
+                      </label>
+                    </div>
+                  ) : null}
                 </div>
               )}
             </div>
