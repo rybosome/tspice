@@ -13,8 +13,8 @@ export class CameraController {
   yaw: number
   pitch: number
 
-  private readonly minRadius: number
-  private readonly maxRadius: number
+  readonly minRadius: number
+  readonly maxRadius: number
   private readonly minPitch: number
   private readonly maxPitch: number
 
@@ -32,8 +32,11 @@ export class CameraController {
     this.yaw = state.yaw
     this.pitch = state.pitch
 
-    this.minRadius = opts?.minRadius ?? 0.05
-    this.maxRadius = opts?.maxRadius ?? 100
+    // Default zoom limits. These are intentionally wide so:
+    // - small bodies like Mercury can fill the view when zoomed in
+    // - the full solar system can fit comfortably when zoomed out
+    this.minRadius = opts?.minRadius ?? 0.005
+    this.maxRadius = opts?.maxRadius ?? 500
 
     // Keep pitch away from the poles so orbit math stays stable.
     this.minPitch = opts?.minPitch ?? (-Math.PI / 2 + 0.01)

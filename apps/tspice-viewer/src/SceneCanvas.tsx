@@ -58,7 +58,13 @@ export function SceneCanvas() {
   // This is ephemeral (not persisted) and only affects rendered radii.
   const [planetScaleSlider, setPlanetScaleSlider] = useState(0)
 
-  const planetScaleMultiplier = useMemo(() => Math.pow(10, planetScaleSlider / 20), [planetScaleSlider])
+  const PLANET_SCALE_MAX = 800
+  const PLANET_SCALE_SLIDER_MAX = Math.round(20 * Math.log10(PLANET_SCALE_MAX))
+
+  const planetScaleMultiplier = useMemo(
+    () => Math.min(PLANET_SCALE_MAX, Math.pow(10, planetScaleSlider / 20)),
+    [planetScaleSlider]
+  )
 
   const formatScaleMultiplier = (m: number) => {
     if (!Number.isFinite(m)) return String(m)
@@ -143,13 +149,18 @@ export function SceneCanvas() {
     // Ensure the Sun's center is offset from screen center by more than the
     // focused body's angular radius, so it can't be fully occluded.
     const focusMeta = focusOptions.find((b) => String(b.body) === String(focusBody))
-    const radiusWorld = focusMeta
-      ? computeBodyRadiusWorld({
-          radiusKm: focusMeta.style.radiusKm,
-          kmToWorld,
-          mode: 'true',
-        })
-      : undefined
+    const radiusWorld = (() => {
+      if (!focusMeta) return undefined
+
+      const base = computeBodyRadiusWorld({
+        radiusKm: focusMeta.style.radiusKm,
+        kmToWorld,
+        mode: 'true',
+      })
+
+      // Keep occlusion math consistent with the rendered body size.
+      return String(focusBody) === 'SUN' ? base * sunScaleMultiplier : base * planetScaleMultiplier
+    })()
 
     const bodyAngRad =
       radiusWorld && controller.radius > 1e-12
@@ -368,14 +379,15 @@ export function SceneCanvas() {
     dir.position.set(4, 6, 2)
     scene.add(dir)
 
-    // Minimum camera radius for auto-zoom. This used to be quite large, which
-    // made small bodies (e.g. Mercury) look tiny when selected from the focus
-    // dropdown.
-    const focusRadiusMin = 0.02
-    const focusRadiusMax = 50
-
+    // Auto-zoom target radius when focusing bodies.
+    // Clamp to the controller's zoom limits so focus animations and manual zoom
+    // behavior always agree.
     const computeFocusRadius = (radiusWorld: number) =>
-      THREE.MathUtils.clamp(radiusWorld * focusDistanceMultiplier, focusRadiusMin, focusRadiusMax)
+      THREE.MathUtils.clamp(
+        radiusWorld * focusDistanceMultiplier,
+        controller.minRadius,
+        controller.maxRadius
+      )
 
     const resize = () => {
       const width = container.clientWidth
@@ -890,13 +902,13 @@ export function SceneCanvas() {
         const target = new THREE.Vector3()
         hitMesh.getWorldPosition(target)
 
-        const radiusKm = Number(hitMesh.userData.radiusKm)
-        if (Number.isFinite(radiusKm)) {
-          const radiusWorld = computeBodyRadiusWorld({
-            radiusKm,
-            kmToWorld,
-            mode: 'true',
-          })
+        // Use the mesh's current world scale so focus radius matches the
+        // visually-rendered (potentially scaled) body.
+        const worldScale = new THREE.Vector3()
+        hitMesh.getWorldScale(worldScale)
+        const radiusWorld = worldScale.x
+
+        if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
           focusOn?.(target, { radius: computeFocusRadius(radiusWorld) })
         } else {
           focusOn?.(target)
@@ -1087,11 +1099,15 @@ export function SceneCanvas() {
           if (shouldAutoZoom) {
             const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
             if (focusBodyMeta) {
-              const radiusWorld = computeBodyRadiusWorld({
+              let radiusWorld = computeBodyRadiusWorld({
                 radiusKm: focusBodyMeta.radiusKm,
                 kmToWorld,
                 mode: 'true',
               })
+
+              // Match the rendered size when auto-zooming.
+              radiusWorld *=
+                String(next.focusBody) === 'SUN' ? next.sunScaleMultiplier : next.planetScaleMultiplier
 
               const nextRadius = computeFocusRadius(radiusWorld)
 
@@ -1421,7 +1437,7 @@ export function SceneCanvas() {
                       <input
                         type="range"
                         min={0}
-                        max={240}
+                        max={PLANET_SCALE_SLIDER_MAX}
                         step={1}
                         value={planetScaleSlider}
                         onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}

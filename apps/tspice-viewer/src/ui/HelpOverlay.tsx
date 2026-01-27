@@ -108,6 +108,23 @@ export function HelpOverlay({ isOpen, onClose }: HelpOverlayProps) {
                   dropdown to jump to a specific body.
                 </p>
               </div>
+              <div className="helpControlGroup">
+                <h4 className="helpControlGroupTitle">Scaling tips</h4>
+                <ul className="helpControlList">
+                  <li>
+                    <strong>Sun size</strong> can help when focusing outer planets (keeps the Sun visible and
+                    easier to spot at long distances).
+                  </li>
+                  <li>
+                    <strong>Planet size</strong> can help when focusing the Sun (makes nearby planets big
+                    enough to click).
+                  </li>
+                </ul>
+                <p>
+                  These sliders only affect how bodies are rendered—they don’t change the underlying SPICE
+                  positions.
+                </p>
+              </div>
             </div>
           </section>
 
