@@ -47,6 +47,9 @@ export function SceneCanvas() {
   // Advanced tuning sliders (ephemeral, local state only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
+  // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
+  // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
+  const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
 
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
@@ -223,6 +226,7 @@ export function SceneCanvas() {
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
         cameraFovDeg: number
+        sunScaleMultiplier: number
       }) => void)
     | null
   >(null)
@@ -234,12 +238,14 @@ export function SceneCanvas() {
     showJ2000Axes,
     showBodyFixedAxes,
     cameraFovDeg,
+    sunScaleMultiplier,
   })
   latestUiRef.current = {
     focusBody,
     showJ2000Axes,
     showBodyFixedAxes,
     cameraFovDeg,
+    sunScaleMultiplier,
   }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
@@ -260,8 +266,9 @@ export function SceneCanvas() {
       showJ2000Axes,
       showBodyFixedAxes,
       cameraFovDeg,
+      sunScaleMultiplier,
     })
-  }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg])
+  }, [focusBody, showJ2000Axes, showBodyFixedAxes, cameraFovDeg, sunScaleMultiplier])
 
   // Imperatively update camera FOV when the slider changes
   useEffect(() => {
@@ -1022,6 +1029,7 @@ export function SceneCanvas() {
           showJ2000Axes: boolean
           showBodyFixedAxes: boolean
           cameraFovDeg: number
+          sunScaleMultiplier: number
         }) => {
           const shouldAutoZoom =
             !isE2e &&
@@ -1137,11 +1145,17 @@ export function SceneCanvas() {
             )
 
             // Update mesh scale (true scaling)
-            const radiusWorld = computeBodyRadiusWorld({
+            let radiusWorld = computeBodyRadiusWorld({
               radiusKm: b.radiusKm,
               kmToWorld,
               mode: 'true',
             })
+
+            // Apply Sun scale multiplier (Sun only)
+            if (String(b.body) === 'SUN') {
+              radiusWorld *= next.sunScaleMultiplier
+            }
+
             b.mesh.scale.setScalar(radiusWorld)
 
             const bodyFixedRotation = b.bodyFixedFrame
@@ -1342,6 +1356,20 @@ export function SceneCanvas() {
                         step={1}
                         value={cameraFovDeg}
                         onChange={(e) => setCameraFovDeg(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Sun size ({sunScaleMultiplier}×)
+                      <input
+                        type="range"
+                        min={1}
+                        max={20}
+                        step={1}
+                        value={sunScaleMultiplier}
+                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
                         style={{ width: '100%' }}
                       />
                     </label>
