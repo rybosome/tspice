@@ -10,6 +10,7 @@ import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
 import { createRingMesh } from './scene/RingMesh.js'
 import { createStarfield } from './scene/Starfield.js'
+import { createSkydome } from './scene/Skydome.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore } from './time/timeStore.js'
@@ -41,6 +42,7 @@ export function SceneCanvas() {
 
   const starSeedRef = useRef<number>(1337)
   const starfieldRef = useRef<ReturnType<typeof createStarfield> | null>(null)
+  const skydomeRef = useRef<ReturnType<typeof createSkydome> | null>(null)
 
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
   const isE2e = search.has('e2e')
@@ -57,10 +59,11 @@ export function SceneCanvas() {
   // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
-  const [enhancedStarfield, setEnhancedStarfield] = useState(false)
-  const [twinkleStarfield, setTwinkleStarfield] = useState(() => !isE2e)
+  // Single toggle for animated sky effects (skydome shader + starfield twinkle).
+  // Disabled by default for e2e tests to keep snapshots deterministic.
+  const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
 
-  const twinkleEnabled = enhancedStarfield && twinkleStarfield && !isE2e
+  const twinkleEnabled = animatedSky && !isE2e
 
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
@@ -351,15 +354,24 @@ export function SceneCanvas() {
 
     starSeedRef.current = starSeed
 
-    const starfield = createStarfield({ seed: starSeed, enhanced: enhancedStarfield, twinkle: twinkleEnabled })
+    const starfield = createStarfield({ seed: starSeed, twinkle: twinkleEnabled })
     starfieldRef.current = starfield
     scene.add(starfield.object)
+
+    // Skydome (Milky Way band shader background) - only when animatedSky is enabled
+    if (animatedSky && !isE2e) {
+      const skydome = createSkydome({ seed: starSeed })
+      skydomeRef.current = skydome
+      scene.add(skydome.object)
+    }
 
     const renderOnce = (timeMs?: number) => {
       if (disposed) return
       const timeSec = (timeMs ?? performance.now()) * 0.001
       starfieldRef.current?.update?.(timeSec)
       starfieldRef.current?.syncToCamera(camera)
+      skydomeRef.current?.syncToCamera(camera)
+      skydomeRef.current?.setTimeSeconds(timeSec)
       renderer.render(scene, camera)
     }
 
@@ -1272,6 +1284,12 @@ export function SceneCanvas() {
         starfieldRef.current = null
       }
 
+      if (skydomeRef.current) {
+        scene.remove(skydomeRef.current.object)
+        skydomeRef.current.dispose()
+        skydomeRef.current = null
+      }
+
       controllerRef.current = null
       cameraRef.current = null
       sceneRef.current = null
@@ -1288,30 +1306,45 @@ export function SceneCanvas() {
     }
   }, [])
 
-  // Swap the starfield in-place when toggled (avoid rebuilding the entire scene).
+  // Swap the starfield and skydome in-place when animatedSky toggled.
   useEffect(() => {
     const scene = sceneRef.current
     const camera = cameraRef.current
     if (!scene || !camera) return
 
-    const prev = starfieldRef.current
-    if (!prev) return
+    // Always recreate starfield (twinkle may have changed)
+    const prevStarfield = starfieldRef.current
+    if (prevStarfield) {
+      scene.remove(prevStarfield.object)
+      prevStarfield.dispose()
+    }
 
-    scene.remove(prev.object)
-    prev.dispose()
-
-    const next = createStarfield({
+    const nextStarfield = createStarfield({
       seed: starSeedRef.current,
-      enhanced: enhancedStarfield,
       twinkle: twinkleEnabled,
     })
-    starfieldRef.current = next
-    scene.add(next.object)
+    starfieldRef.current = nextStarfield
+    scene.add(nextStarfield.object)
+    nextStarfield.syncToCamera(camera)
 
-    // Ensure the new object is positioned correctly immediately.
-    next.syncToCamera(camera)
+    // Handle skydome based on animatedSky toggle
+    const prevSkydome = skydomeRef.current
+    const shouldHaveSkydome = animatedSky && !isE2e
+
+    if (prevSkydome && !shouldHaveSkydome) {
+      scene.remove(prevSkydome.object)
+      prevSkydome.dispose()
+      skydomeRef.current = null
+    } else if (!prevSkydome && shouldHaveSkydome) {
+      const nextSkydome = createSkydome({ seed: starSeedRef.current })
+      skydomeRef.current = nextSkydome
+      scene.add(nextSkydome.object)
+      nextSkydome.syncToCamera(camera)
+    }
+
     invalidateRef.current?.()
-  }, [enhancedStarfield, twinkleEnabled])
+  }, [animatedSky, twinkleEnabled, isE2e])
+
 
   // Lightweight RAF loop for twinkle animation.
   useEffect(() => {
@@ -1468,25 +1501,12 @@ export function SceneCanvas() {
                     <label className="sceneOverlayCheckbox">
                       <input
                         type="checkbox"
-                        checked={enhancedStarfield}
-                        onChange={(e) => setEnhancedStarfield(e.target.checked)}
+                        checked={animatedSky}
+                        onChange={(e) => setAnimatedSky(e.target.checked)}
                       />
-                      Enhanced starfield
+                      Animated sky
                     </label>
                   </div>
-
-                  {enhancedStarfield && !isE2e ? (
-                    <div className="sceneOverlayRow" style={{ marginTop: '6px' }}>
-                      <label className="sceneOverlayCheckbox">
-                        <input
-                          type="checkbox"
-                          checked={twinkleStarfield}
-                          onChange={(e) => setTwinkleStarfield(e.target.checked)}
-                        />
-                        Twinkle
-                      </label>
-                    </div>
-                  ) : null}
                 </div>
               )}
             </div>

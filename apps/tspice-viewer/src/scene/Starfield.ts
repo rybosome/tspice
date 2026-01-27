@@ -5,18 +5,9 @@ export type CreateStarfieldOptions = {
   seed: number
 
   /**
-   * Opt-in enhanced deterministic starfield.
-   *
-   * Defaults to `false` to preserve existing visuals.
-   */
-  enhanced?: boolean
-
-  /**
    * Enable subtle twinkling animation.
    *
-   * Defaults:
-   * - enhanced: `true`
-   * - legacy: `false`
+   * Defaults to `true`.
    */
   twinkle?: boolean
 
@@ -289,7 +280,11 @@ function createStarLayer(opts: {
   }
 }
 
-function createEnhancedStarfield(options: CreateStarfieldOptions): StarfieldHandle {
+/**
+ * Creates an enhanced deterministic starfield with multiple layers and optional twinkle.
+ * This is always the deterministic Fibonacci-based starfield.
+ */
+export function createStarfield(options: CreateStarfieldOptions): StarfieldHandle {
   const seed = options.seed
   const twinkle = options.twinkle ?? true
   const group = new THREE.Group()
@@ -331,7 +326,7 @@ function createEnhancedStarfield(options: CreateStarfieldOptions): StarfieldHand
       bandBoost: 1.6,
       warmChance: 0.55,
       // The accent layer is intentionally less regular to avoid visible
-      // low-discrepancy “grid” patterns.
+      // low-discrepancy "grid" patterns.
       distribution: 'random' as const,
       twinkle,
     },
@@ -359,82 +354,6 @@ function createEnhancedStarfield(options: CreateStarfieldOptions): StarfieldHand
       : undefined,
     dispose: () => {
       for (const c of created) c.dispose()
-    },
-  }
-}
-
-export function createStarfield(options: CreateStarfieldOptions): StarfieldHandle {
-  if (options.enhanced) {
-    return createEnhancedStarfield(options)
-  }
-
-  const count = options.count ?? 6000
-  const radiusWorld = options.radiusWorld ?? 900
-  const sizePx = options.sizePx ?? 1.6
-
-  const rng = createRng(options.seed)
-
-  const positions = new Float32Array(count * 3)
-  const colors = new Float32Array(count * 3)
-
-  for (let i = 0; i < count; i++) {
-    const [x, y, z] = sampleUnitSphere(rng)
-    const radius = radiusWorld * (0.86 + 0.14 * rng())
-
-    const j = i * 3
-    positions[j + 0] = x * radius
-    positions[j + 1] = y * radius
-    positions[j + 2] = z * radius
-
-    // Slight color temperature variation + brightness.
-    const warm = rng() < 0.45
-    const brightness = 0.65 + 0.35 * rng()
-
-    const rCol = (warm ? 1.0 : 0.78) * brightness
-    const gCol = (warm ? 0.93 : 0.88) * brightness
-    const bCol = (warm ? 0.78 : 1.0) * brightness
-
-    colors[j + 0] = rCol
-    colors[j + 1] = gCol
-    colors[j + 2] = bCol
-  }
-
-  const geometry = new THREE.BufferGeometry()
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-  // Keep visible even though we move the object around each render.
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), radiusWorld * 1.1)
-
-  const sprite = makeStarSpriteTexture()
-
-  const material = new THREE.PointsMaterial({
-    size: sizePx,
-    sizeAttenuation: false,
-    vertexColors: true,
-    map: sprite,
-    transparent: true,
-    opacity: 1,
-    blending: THREE.AdditiveBlending,
-    depthTest: true,
-    depthWrite: false,
-  })
-
-  const object = new THREE.Points(geometry, material)
-  object.frustumCulled = false
-  // Never allow the starfield to be picked.
-  object.raycast = () => {}
-
-  return {
-    object,
-
-    syncToCamera: (camera) => {
-      object.position.copy(camera.position)
-    },
-
-    dispose: () => {
-      geometry.dispose()
-      material.dispose()
-      sprite.dispose()
     },
   }
 }
