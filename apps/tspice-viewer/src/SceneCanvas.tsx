@@ -9,6 +9,7 @@ import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleScene
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
 import { createRingMesh } from './scene/RingMesh.js'
+import { createSelectionRing } from './scene/SelectionRing.js'
 import { createStarfield } from './scene/Starfield.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
@@ -316,9 +317,17 @@ export function SceneCanvas() {
     disposers.push(starfield.dispose)
     scene.add(starfield.object)
 
+    const selectionRing = !isE2e ? createSelectionRing() : undefined
+    if (selectionRing) {
+      sceneObjects.push(selectionRing.object)
+      disposers.push(selectionRing.dispose)
+      scene.add(selectionRing.object)
+    }
+
     const renderOnce = () => {
       if (disposed) return
       starfield.syncToCamera(camera)
+      selectionRing?.syncToCamera({ camera, nowMs: performance.now() })
       renderer.render(scene, camera)
     }
 
@@ -432,38 +441,54 @@ export function SceneCanvas() {
       let selected:
         | {
             mesh: THREE.Mesh
-            material: THREE.MeshStandardMaterial
-            prevEmissive: THREE.Color
-            prevEmissiveIntensity: number
           }
         | undefined
+
+      let selectionPulseFrame: number | null = null
+      const stopSelectionPulse = () => {
+        if (selectionPulseFrame == null) return
+        window.cancelAnimationFrame(selectionPulseFrame)
+        selectionPulseFrame = null
+      }
+
+      const startSelectionPulse = () => {
+        if (selectionPulseFrame != null) return
+
+        const step = () => {
+          if (disposed || !selected) {
+            selectionPulseFrame = null
+            return
+          }
+          invalidate()
+          selectionPulseFrame = window.requestAnimationFrame(step)
+        }
+
+        selectionPulseFrame = window.requestAnimationFrame(step)
+      }
 
       const setSelectedMesh = (mesh: THREE.Mesh | undefined) => {
         if (selected?.mesh === mesh) return
 
         if (selected) {
-          selected.material.emissive.copy(selected.prevEmissive)
-          selected.material.emissiveIntensity = selected.prevEmissiveIntensity
           selected = undefined
           selectedBodyId = undefined
+          selectionRing?.setTarget(undefined)
+          stopSelectionPulse()
+          invalidate()
         }
 
         if (!mesh) return
 
-        const material = mesh.material
-        if (!(material instanceof THREE.MeshStandardMaterial)) return
-
         selected = {
           mesh,
-          material,
-          prevEmissive: material.emissive.clone(),
-          prevEmissiveIntensity: material.emissiveIntensity,
         }
 
         selectedBodyId = String(mesh.userData.bodyId ?? '') || undefined
 
-        material.emissive.set('#f1c40f')
-        material.emissiveIntensity = 0.8
+        // Subtle world-space ring indicator around the selected body.
+        selectionRing?.setTarget(mesh)
+        startSelectionPulse()
+        invalidate()
       }
 
       focusOn = (nextTarget: THREE.Vector3, opts) => {
@@ -888,6 +913,7 @@ export function SceneCanvas() {
 
         cancelFocusTween?.()
         setSelectedMesh(undefined)
+        stopSelectionPulse()
       }
     }
 
