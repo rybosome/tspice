@@ -49,9 +49,11 @@ export class CameraController {
     const offset = camera.position.clone().sub(target)
     const radius = offset.length() || 1
 
-    // yaw: azimuth around +Y axis, 0 at +X.
-    const yaw = Math.atan2(offset.z, offset.x)
-    const pitch = Math.asin(THREE.MathUtils.clamp(offset.y / radius, -1, 1))
+    // Z-up orbit:
+    // - yaw: azimuth around +Z axis, 0 at +X
+    // - pitch: elevation from the XY plane toward +Z
+    const yaw = Math.atan2(offset.y, offset.x)
+    const pitch = Math.asin(THREE.MathUtils.clamp(offset.z / radius, -1, 1))
 
     return new CameraController({ target, radius, yaw, pitch })
   }
@@ -68,8 +70,8 @@ export class CameraController {
 
     const offset = new THREE.Vector3(
       this.radius * cosPitch * Math.cos(this.yaw),
-      this.radius * Math.sin(this.pitch),
-      this.radius * cosPitch * Math.sin(this.yaw)
+      this.radius * cosPitch * Math.sin(this.yaw),
+      this.radius * Math.sin(this.pitch)
     )
 
     camera.position.copy(this.target).add(offset)

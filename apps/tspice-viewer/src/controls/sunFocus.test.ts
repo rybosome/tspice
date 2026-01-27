@@ -7,8 +7,8 @@ function cameraForwardFromYawPitch(yaw: number, pitch: number) {
   const cosPitch = Math.cos(pitch)
   const offsetDir = new THREE.Vector3(
     cosPitch * Math.cos(yaw),
-    Math.sin(pitch),
-    cosPitch * Math.sin(yaw)
+    cosPitch * Math.sin(yaw),
+    Math.sin(pitch)
   )
   return offsetDir.multiplyScalar(-1).normalize()
 }
