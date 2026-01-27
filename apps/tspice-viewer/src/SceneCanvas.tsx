@@ -9,6 +9,7 @@ import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleScene
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
 import { createRingMesh } from './scene/RingMesh.js'
+import { createSelectionRing } from './scene/SelectionRing.js'
 import { createStarfield } from './scene/Starfield.js'
 import { createSkydome } from './scene/Skydome.js'
 import { rebasePositionKm } from './scene/precision.js'
@@ -75,39 +76,12 @@ export function SceneCanvas() {
   // inside the renderer effect.
   const kmToWorld = 1 / 1_000_000
 
-  const getIsSmallScreen = () =>
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia('(max-width: 720px)').matches
-      : false
-
-  const [isSmallScreen, setIsSmallScreen] = useState(getIsSmallScreen)
-  const [overlayOpen, setOverlayOpen] = useState(() => !getIsSmallScreen())
+  // Control pane collapsed state: starts expanded on all screen sizes
+  const [overlayOpen, setOverlayOpen] = useState(true)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   panModeEnabledRef.current = panModeEnabled
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
-
-    const mql = window.matchMedia('(max-width: 720px)')
-    const onChange = () => {
-      const small = mql.matches
-      setIsSmallScreen(small)
-      setOverlayOpen(!small)
-    }
-
-    onChange()
-
-    if (typeof mql.addEventListener === 'function') {
-      mql.addEventListener('change', onChange)
-      return () => mql.removeEventListener('change', onChange)
-    }
-
-    // Safari < 14
-    mql.addListener(onChange)
-    return () => mql.removeListener(onChange)
-  }, [])
 
   const zoomBy = (factor: number) => {
     const controller = controllerRef.current
@@ -358,6 +332,13 @@ export function SceneCanvas() {
     starfieldRef.current = starfield
     scene.add(starfield.object)
 
+    const selectionRing = !isE2e ? createSelectionRing() : undefined
+    if (selectionRing) {
+      sceneObjects.push(selectionRing.object)
+      disposers.push(selectionRing.dispose)
+      scene.add(selectionRing.object)
+    }
+
     // Skydome (Milky Way band shader background) - only when animatedSky is enabled
     if (animatedSky && !isE2e) {
       const skydome = createSkydome({ seed: starSeed })
@@ -367,11 +348,19 @@ export function SceneCanvas() {
 
     const renderOnce = (timeMs?: number) => {
       if (disposed) return
-      const timeSec = (timeMs ?? performance.now()) * 0.001
-      starfieldRef.current?.update?.(timeSec)
-      starfieldRef.current?.syncToCamera(camera)
-      skydomeRef.current?.syncToCamera(camera)
-      skydomeRef.current?.setTimeSeconds(timeSec)
+
+      const nowMs = timeMs ?? performance.now()
+      const timeSec = nowMs * 0.001
+
+      const starfield = starfieldRef.current
+      starfield?.update?.(timeSec)
+      starfield?.syncToCamera(camera)
+
+      selectionRing?.syncToCamera({ camera, nowMs })
+
+      const skydome = skydomeRef.current
+      skydome?.syncToCamera(camera)
+      skydome?.setTimeSeconds(timeSec)
       renderer.render(scene, camera)
     }
 
@@ -489,38 +478,54 @@ export function SceneCanvas() {
       let selected:
         | {
             mesh: THREE.Mesh
-            material: THREE.MeshStandardMaterial
-            prevEmissive: THREE.Color
-            prevEmissiveIntensity: number
           }
         | undefined
+
+      let selectionPulseFrame: number | null = null
+      const stopSelectionPulse = () => {
+        if (selectionPulseFrame == null) return
+        window.cancelAnimationFrame(selectionPulseFrame)
+        selectionPulseFrame = null
+      }
+
+      const startSelectionPulse = () => {
+        if (selectionPulseFrame != null) return
+
+        const step = () => {
+          if (disposed || !selected) {
+            selectionPulseFrame = null
+            return
+          }
+          invalidate()
+          selectionPulseFrame = window.requestAnimationFrame(step)
+        }
+
+        selectionPulseFrame = window.requestAnimationFrame(step)
+      }
 
       const setSelectedMesh = (mesh: THREE.Mesh | undefined) => {
         if (selected?.mesh === mesh) return
 
         if (selected) {
-          selected.material.emissive.copy(selected.prevEmissive)
-          selected.material.emissiveIntensity = selected.prevEmissiveIntensity
           selected = undefined
           selectedBodyId = undefined
+          selectionRing?.setTarget(undefined)
+          stopSelectionPulse()
+          invalidate()
         }
 
         if (!mesh) return
 
-        const material = mesh.material
-        if (!(material instanceof THREE.MeshStandardMaterial)) return
-
         selected = {
           mesh,
-          material,
-          prevEmissive: material.emissive.clone(),
-          prevEmissiveIntensity: material.emissiveIntensity,
         }
 
         selectedBodyId = String(mesh.userData.bodyId ?? '') || undefined
 
-        material.emissive.set('#f1c40f')
-        material.emissiveIntensity = 0.8
+        // Subtle world-space ring indicator around the selected body.
+        selectionRing?.setTarget(mesh)
+        startSelectionPulse()
+        invalidate()
       }
 
       focusOn = (nextTarget: THREE.Vector3, opts) => {
@@ -945,6 +950,7 @@ export function SceneCanvas() {
 
         cancelFocusTween?.()
         setSelectedMesh(undefined)
+        stopSelectionPulse()
       }
     }
 
@@ -1372,17 +1378,18 @@ export function SceneCanvas() {
           className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
         >
           <div className="sceneOverlayHeader">
-            {isSmallScreen ? (
-              <button
-                className="sceneOverlayButton"
-                onClick={() => setOverlayOpen((v) => !v)}
-                type="button"
-              >
-                {overlayOpen ? 'Hide controls' : 'Show controls'}
-              </button>
-            ) : (
-              <div className="sceneOverlayHeaderTitle">Controls</div>
-            )}
+            <div className="sceneOverlayHeaderTitle">Controls</div>
+
+            <button
+              className="sceneOverlayToggle"
+              onClick={() => setOverlayOpen((v) => !v)}
+              type="button"
+              aria-expanded={overlayOpen}
+              aria-controls="scene-overlay-body"
+              aria-label={overlayOpen ? 'Collapse controls' : 'Expand controls'}
+            >
+              {overlayOpen ? '▲' : '▼'}
+            </button>
 
             <div className="sceneOverlayHeaderActions">
               <button
@@ -1406,8 +1413,8 @@ export function SceneCanvas() {
             </div>
           </div>
 
-          {!isSmallScreen || overlayOpen ? (
-            <div className="sceneOverlayBody">
+          {overlayOpen ? (
+            <div id="scene-overlay-body" className="sceneOverlayBody">
               <PlaybackControls spiceClient={spiceClient} />
 
               <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
