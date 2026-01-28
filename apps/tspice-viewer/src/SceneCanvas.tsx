@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactNode } from 'react'
 import * as THREE from 'three'
 import { CameraController, type CameraControllerState } from './controls/CameraController.js'
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
@@ -25,6 +25,78 @@ import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './con
 
 import { HelpOverlay } from './ui/HelpOverlay.js'
 import { SelectionInspector } from './ui/SelectionInspector.js'
+
+// -----------------------------------------------------------------------------
+// Render HUD Component
+// -----------------------------------------------------------------------------
+interface RenderHudStats {
+  fps: number
+  drawCalls: number
+  triangles: number
+  lines: number
+  points: number
+  geometries: number
+  textures: number
+  meshCount: number
+  lineCount: number
+  pointsCount: number
+  cameraPosition: THREE.Vector3
+  cameraQuaternion: THREE.Quaternion
+  cameraEuler: THREE.Euler
+  targetDistance: number
+  focusBody: string
+}
+
+function RenderHud({ stats }: { stats: RenderHudStats | null }): ReactNode {
+  if (!stats) return null
+
+  const pos = stats.cameraPosition
+  const quat = stats.cameraQuaternion
+  const euler = stats.cameraEuler
+
+  // Convert radians to degrees for human-friendly display
+  const eulerDegX = THREE.MathUtils.radToDeg(euler.x).toFixed(1)
+  const eulerDegY = THREE.MathUtils.radToDeg(euler.y).toFixed(1)
+  const eulerDegZ = THREE.MathUtils.radToDeg(euler.z).toFixed(1)
+
+  return (
+    <>
+      {/* Top-right: Performance stats */}
+      <div className="renderHud renderHudTopRight">
+        <div className="renderHudTitle">Render Stats</div>
+        <div>FPS: {stats.fps.toFixed(1)}</div>
+        <div>Draw Calls: {stats.drawCalls}</div>
+        <div>Triangles: {stats.triangles.toLocaleString()}</div>
+        {stats.lines > 0 && <div>Lines: {stats.lines.toLocaleString()}</div>}
+        {stats.points > 0 && <div>Points: {stats.points.toLocaleString()}</div>}
+        <div className="renderHudDivider" />
+        <div>Geometries: {stats.geometries}</div>
+        <div>Textures: {stats.textures}</div>
+        <div className="renderHudDivider" />
+        <div>Visible Meshes: {stats.meshCount}</div>
+        {stats.lineCount > 0 && <div>Visible Lines: {stats.lineCount}</div>}
+        {stats.pointsCount > 0 && <div>Visible Points: {stats.pointsCount}</div>}
+      </div>
+
+      {/* Bottom-left: Camera info */}
+      <div className="renderHud renderHudBottomLeft">
+        <div className="renderHudTitle">Camera</div>
+        <div>
+          Position: ({pos.x.toFixed(4)}, {pos.y.toFixed(4)}, {pos.z.toFixed(4)})
+        </div>
+        <div>
+          Quaternion: ({quat.x.toFixed(3)}, {quat.y.toFixed(3)}, {quat.z.toFixed(3)}, {quat.w.toFixed(3)})
+        </div>
+        <div>
+          Euler (XYZ): ({eulerDegX}°, {eulerDegY}°, {eulerDegZ}°)
+        </div>
+        <div>Distance to Target: {stats.targetDistance.toFixed(4)}</div>
+        <div>Focus Body: {stats.focusBody}</div>
+      </div>
+    </>
+  )
+}
+
 function disposeMaterial(material: THREE.Material | THREE.Material[]) {
   if (Array.isArray(material)) {
     for (const m of material) m.dispose()
@@ -39,6 +111,7 @@ export function SceneCanvas() {
 
   const controllerRef = useRef<CameraController | null>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
   const sceneRef = useRef<THREE.Scene | null>(null)
   const invalidateRef = useRef<(() => void) | null>(null)
   const renderOnceRef = useRef<((timeMs?: number) => void) | null>(null)
@@ -65,6 +138,9 @@ export function SceneCanvas() {
   // Advanced tuning sliders (ephemeral, local state only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
+
+  // Render HUD toggle (ephemeral, not persisted)
+  const [showRenderHud, setShowRenderHud] = useState(false)
 
   // Orbit path tuning (ephemeral)
   const [orbitLineWidthPx, setOrbitLineWidthPx] = useState(1.5)
@@ -98,6 +174,14 @@ export function SceneCanvas() {
     () => Math.min(PLANET_SCALE_MAX, Math.pow(10, planetScaleSlider / 20)),
     [planetScaleSlider]
   )
+
+  // HUD stats state - updated on render frames when HUD is enabled
+  const [hudStats, setHudStats] = useState<RenderHudStats | null>(null)
+  // Refs for throttling HUD updates
+  const lastHudUpdateRef = useRef<number>(0)
+  const hudUpdateIntervalMs = 150 // ~6-7 Hz
+  // Smoothed FPS tracking
+  const fpsBufferRef = useRef<number[]>([])
 
   const formatScaleMultiplier = (m: number) => {
     if (!Number.isFinite(m)) return String(m)
@@ -314,6 +398,7 @@ export function SceneCanvas() {
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
+    showRenderHud,
 
     orbitLineWidthPx,
     orbitSamplesPerOrbit,
@@ -329,6 +414,7 @@ export function SceneCanvas() {
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
+    showRenderHud,
 
     orbitLineWidthPx,
     orbitSamplesPerOrbit,
@@ -414,12 +500,17 @@ export function SceneCanvas() {
     let orbitPaths: OrbitPaths | undefined
     const drawingBufferSize = new THREE.Vector2()
 
+    // For FPS calculation
+    let lastFrameTimeMs = performance.now()
+
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: !isE2e,
       powerPreference: 'high-performance',
       logarithmicDepthBuffer: enableLogDepth,
     })
+
+    rendererRef.current = renderer
 
     // Keep e2e snapshots stable by not depending on deviceScaleFactor.
     renderer.setPixelRatio(isE2e ? 1 : Math.min(window.devicePixelRatio, 2))
@@ -526,6 +617,61 @@ export function SceneCanvas() {
           ...labelOptions,
           selectedBodyId: selectedBodyIdRef.current,
         })
+      }
+
+      // Update HUD stats after render (only when HUD is enabled)
+      if (latestUiRef.current.showRenderHud) {
+        const now = performance.now()
+
+        // Compute instantaneous FPS from frame delta
+        const deltaMs = now - lastFrameTimeMs
+        if (deltaMs > 0) {
+          const instantFps = 1000 / deltaMs
+          const buffer = fpsBufferRef.current
+          buffer.push(instantFps)
+          // Keep last ~20 samples for smoothing
+          if (buffer.length > 20) buffer.shift()
+        }
+        lastFrameTimeMs = now
+
+        // Throttle React state updates
+        if (now - lastHudUpdateRef.current >= hudUpdateIntervalMs) {
+          lastHudUpdateRef.current = now
+
+          // Compute smoothed FPS
+          const buffer = fpsBufferRef.current
+          const smoothedFps = buffer.length > 0 ? buffer.reduce((a, b) => a + b, 0) / buffer.length : 0
+
+          // Count visible objects by type
+          let meshCount = 0
+          let lineCount = 0
+          let pointsCount = 0
+          scene.traverseVisible((obj) => {
+            if (obj instanceof THREE.Mesh) meshCount++
+            else if (obj instanceof THREE.Line) lineCount++
+            else if (obj instanceof THREE.Points) pointsCount++
+          })
+
+          const info = renderer.info
+          const controllerState = controllerRef.current
+          setHudStats({
+            fps: smoothedFps,
+            drawCalls: info.render.calls,
+            triangles: info.render.triangles,
+            lines: info.render.lines,
+            points: info.render.points,
+            geometries: info.memory.geometries,
+            textures: info.memory.textures,
+            meshCount,
+            lineCount,
+            pointsCount,
+            cameraPosition: camera.position.clone(),
+            cameraQuaternion: camera.quaternion.clone(),
+            cameraEuler: new THREE.Euler().setFromQuaternion(camera.quaternion, 'XYZ'),
+            targetDistance: controllerState?.radius ?? 0,
+            focusBody: String(latestUiRef.current.focusBody),
+          })
+        }
       }
     }
 
@@ -1608,6 +1754,7 @@ export function SceneCanvas() {
       controllerRef.current = null
       cameraRef.current = null
       sceneRef.current = null
+      rendererRef.current = null
       invalidateRef.current = null
       renderOnceRef.current = null
       cancelFocusTweenRef.current = null
@@ -1864,6 +2011,17 @@ export function SceneCanvas() {
                   </div>
 
                   <div className="sceneOverlayRow">
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={showRenderHud}
+                        onChange={(e) => setShowRenderHud(e.target.checked)}
+                      />
+                      Render HUD
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
                     <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
                       Orbit line width ({orbitLineWidthPx.toFixed(1)}px)
                       <input
@@ -1961,6 +2119,9 @@ export function SceneCanvas() {
         />
       ) : null}
       <canvas ref={canvasRef} className="sceneCanvas" />
+
+      {/* Render HUD overlays */}
+      {showRenderHud && <RenderHud stats={hudStats} />}
 
       <HelpOverlay isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
