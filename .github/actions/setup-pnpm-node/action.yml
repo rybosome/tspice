@@ -17,6 +17,9 @@ runs:
     - name: Read pnpm version from package.json#packageManager
       id: pnpm-version
       shell: bash
+      # Ensure this action works even when the calling workflow/job sets a
+      # non-root working directory.
+      working-directory: ${{ github.workspace }}
       run: |
         set -euo pipefail
 

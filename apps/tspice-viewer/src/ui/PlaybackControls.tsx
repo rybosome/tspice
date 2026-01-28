@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { timeStore, useTimeStore, RATE_LADDER } from '../time/timeStore.js';
 import type { SpiceClient } from '../spice/SpiceClient.js';
 
@@ -53,7 +53,6 @@ function formatEtDays(etSec: number): string {
 
 export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
   const state = useTimeStore();
-  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const utcString = useMemo(() => {
     try {
@@ -65,13 +64,6 @@ export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
 
   const handleSliderChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     timeStore.setEtSec(Number(e.target.value));
-  }, []);
-
-  const handleQuantumChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    if (value > 0) {
-      timeStore.setQuantumSec(value);
-    }
   }, []);
 
   const isPlaying = state.rateSecPerSec !== 0;
@@ -185,34 +177,6 @@ export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
           </button>
         ))}
       </div>
-
-      {/* Advanced Section */}
-      <div className="playbackRow">
-        <button
-          className="playbackAdvancedToggle"
-          onClick={() => setShowAdvanced(!showAdvanced)}
-        >
-          {showAdvanced ? '▼ Advanced' : '▶ Advanced'}
-        </button>
-      </div>
-
-      {showAdvanced && (
-        <div className="playbackAdvanced">
-          <div className="playbackRow">
-            <label className="playbackAdvancedLabel">
-              Quantum (s):
-              <input
-                type="number"
-                className="playbackAdvancedInput"
-                min={0.001}
-                step={0.01}
-                value={state.quantumSec}
-                onChange={handleQuantumChange}
-              />
-            </label>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

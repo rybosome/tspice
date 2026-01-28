@@ -1,22 +1,102 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactNode } from 'react'
 import * as THREE from 'three'
-import { CameraController } from './controls/CameraController.js'
+import { CameraController, type CameraControllerState } from './controls/CameraController.js'
+import { useKeyboardControls } from './controls/useKeyboardControls.js'
 import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
-import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient } from './spice/SpiceClient.js'
+import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient, type Vec3Km } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
-import { listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
-import { computeBodyRadiusWorld, type ScaleMode } from './scene/bodyScaling.js'
-import { createFrameAxes } from './scene/FrameAxes.js'
+import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies, type BodyId } from './scene/BodyRegistry.js'
+import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
+import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
+import { createRingMesh } from './scene/RingMesh.js'
+import { createSelectionRing } from './scene/SelectionRing.js'
 import { createStarfield } from './scene/Starfield.js'
+import { createSkydome } from './scene/Skydome.js'
 import { rebasePositionKm } from './scene/precision.js'
+import { OrbitPaths } from './scene/orbits/OrbitPaths.js'
 import type { SceneModel } from './scene/SceneModel.js'
-import { timeStore } from './time/timeStore.js'
+import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
+import { LabelOverlay, type LabelBody, type LabelOverlayUpdateOptions } from './labels/LabelOverlay.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
+import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
 
 
 import { HelpOverlay } from './ui/HelpOverlay.js'
+import { SelectionInspector } from './ui/SelectionInspector.js'
+
+// -----------------------------------------------------------------------------
+// Render HUD Component
+// -----------------------------------------------------------------------------
+interface RenderHudStats {
+  fps: number
+  drawCalls: number
+  triangles: number
+  lines: number
+  points: number
+  geometries: number
+  textures: number
+  meshCount: number
+  lineCount: number
+  pointsCount: number
+  cameraPosition: THREE.Vector3
+  cameraQuaternion: THREE.Quaternion
+  cameraEuler: THREE.Euler
+  targetDistance: number
+  focusBody: string
+}
+
+function RenderHud({ stats }: { stats: RenderHudStats | null }): ReactNode {
+  if (!stats) return null
+
+  const pos = stats.cameraPosition
+  const quat = stats.cameraQuaternion
+  const euler = stats.cameraEuler
+
+  // Convert radians to degrees for human-friendly display
+  const eulerDegX = THREE.MathUtils.radToDeg(euler.x).toFixed(1)
+  const eulerDegY = THREE.MathUtils.radToDeg(euler.y).toFixed(1)
+  const eulerDegZ = THREE.MathUtils.radToDeg(euler.z).toFixed(1)
+
+  return (
+    <>
+      {/* Top-right: Performance stats */}
+      <div className="renderHud renderHudTopRight">
+        <div className="renderHudTitle">Render Stats</div>
+        <div>FPS: {stats.fps.toFixed(1)}</div>
+        <div>Draw Calls: {stats.drawCalls}</div>
+        <div>Triangles: {stats.triangles.toLocaleString()}</div>
+        {stats.lines > 0 && <div>Lines: {stats.lines.toLocaleString()}</div>}
+        {stats.points > 0 && <div>Points: {stats.points.toLocaleString()}</div>}
+        <div className="renderHudDivider" />
+        <div>Geometries: {stats.geometries}</div>
+        <div>Textures: {stats.textures}</div>
+        <div className="renderHudDivider" />
+        <div>Visible Meshes: {stats.meshCount}</div>
+        {stats.lineCount > 0 && <div>Visible Lines: {stats.lineCount}</div>}
+        {stats.pointsCount > 0 && <div>Visible Points: {stats.pointsCount}</div>}
+      </div>
+
+      {/* Bottom-left: Camera info */}
+      <div className="renderHud renderHudBottomLeft">
+        <div className="renderHudTitle">Camera</div>
+        <div>
+          Position: ({pos.x.toFixed(4)}, {pos.y.toFixed(4)}, {pos.z.toFixed(4)})
+        </div>
+        <div>
+          Quaternion: ({quat.x.toFixed(3)}, {quat.y.toFixed(3)}, {quat.z.toFixed(3)}, {quat.w.toFixed(3)})
+        </div>
+        <div>
+          Euler (XYZ): ({eulerDegX}°, {eulerDegY}°, {eulerDegZ}°)
+        </div>
+        <div>Distance to Target: {stats.targetDistance.toFixed(4)}</div>
+        <div>Focus Body: {stats.focusBody}</div>
+      </div>
+    </>
+  )
+}
+
 function disposeMaterial(material: THREE.Material | THREE.Material[]) {
   if (Array.isArray(material)) {
     for (const m of material) m.dispose()
@@ -31,8 +111,18 @@ export function SceneCanvas() {
 
   const controllerRef = useRef<CameraController | null>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
+  const sceneRef = useRef<THREE.Scene | null>(null)
   const invalidateRef = useRef<(() => void) | null>(null)
+  const renderOnceRef = useRef<((timeMs?: number) => void) | null>(null)
+  const twinkleActiveRef = useRef(false)
   const cancelFocusTweenRef = useRef<(() => void) | null>(null)
+
+  const starSeedRef = useRef<number>(1337)
+  const starfieldRef = useRef<ReturnType<typeof createStarfield> | null>(null)
+  const labelOverlayRef = useRef<LabelOverlay | null>(null)
+  const latestLabelOverlayOptionsRef = useRef<LabelOverlayUpdateOptions | null>(null)
+  const skydomeRef = useRef<ReturnType<typeof createSkydome> | null>(null)
 
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
   const isE2e = search.has('e2e')
@@ -41,44 +131,121 @@ export function SceneCanvas() {
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
-  const [scaleMode, setScaleMode] = useState<ScaleMode>('enhanced')
+  // Selected body (promoted from local closure variable for inspector panel)
+  const [selectedBody, setSelectedBody] = useState<BodyRef | null>(null)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
 
-  const focusOptions = useMemo(() => listDefaultVisibleBodies(), [])
+  // Advanced tuning sliders (ephemeral, local state only)
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [cameraFovDeg, setCameraFovDeg] = useState(50)
 
-  const getIsSmallScreen = () =>
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia('(max-width: 720px)').matches
-      : false
+  // Render HUD toggle (ephemeral, not persisted)
+  const [showRenderHud, setShowRenderHud] = useState(false)
 
-  const [isSmallScreen, setIsSmallScreen] = useState(getIsSmallScreen)
-  const [overlayOpen, setOverlayOpen] = useState(() => !getIsSmallScreen())
+  // Orbit path tuning (ephemeral)
+  const [orbitLineWidthPx, setOrbitLineWidthPx] = useState(1.5)
+  const [orbitSamplesPerOrbit, setOrbitSamplesPerOrbit] = useState(512)
+  const [orbitMaxTotalPoints, setOrbitMaxTotalPoints] = useState(10_000)
+  const ORBIT_MIN_POINTS_PER_ORBIT = 32
+  // Top-level orbit paths toggle (non-advanced, default off)
+  const [orbitPathsEnabled, setOrbitPathsEnabled] = useState(false)
+  // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
+  // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
+  const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
+  // Labels toggle (non-advanced, default off)
+  const [labelsEnabled, setLabelsEnabled] = useState(false)
+  // Occlusion toggle for labels (advanced, default off)
+  const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
+  // Single toggle for animated sky effects (skydome shader + starfield twinkle).
+  // Disabled by default for e2e tests to keep snapshots deterministic.
+  const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
+
+  const twinkleEnabled = animatedSky && !isE2e
+
+  // Planet visual scale multiplier (applies to all non-Sun bodies, including the Moon).
+  // Uses a log-scale slider so the range can go "absurdly" large without being fiddly.
+  // This is ephemeral (not persisted) and only affects rendered radii.
+  const [planetScaleSlider, setPlanetScaleSlider] = useState(0)
+
+  const PLANET_SCALE_MAX = 800
+  const PLANET_SCALE_SLIDER_MAX = Math.round(20 * Math.log10(PLANET_SCALE_MAX))
+
+  const planetScaleMultiplier = useMemo(
+    () => Math.min(PLANET_SCALE_MAX, Math.pow(10, planetScaleSlider / 20)),
+    [planetScaleSlider]
+  )
+
+  // HUD stats state - updated on render frames when HUD is enabled
+  const [hudStats, setHudStats] = useState<RenderHudStats | null>(null)
+  // Refs for throttling HUD updates
+  const lastHudUpdateRef = useRef<number>(0)
+  const hudUpdateIntervalMs = 150 // ~6-7 Hz
+  // Smoothed FPS tracking
+  const fpsBufferRef = useRef<number[]>([])
+
+  const formatScaleMultiplier = (m: number) => {
+    if (!Number.isFinite(m)) return String(m)
+    if (m < 10) return m.toFixed(2).replace(/\.00$/, '')
+    if (m < 1000) return String(Math.round(m))
+    return m.toExponential(1)
+  }
+
+  const quantumSec = useTimeStoreSelector((s) => s.quantumSec)
+  // Current ET for inspector panel (subscribes to time store changes)
+  const etSec = useTimeStoreSelector((s) => s.etSec)
+
+  // Keep these baked-in for now (no user-facing tuning).
+  const focusDistanceMultiplier = 4
+  const sunOcclusionMarginRad = 0
+
+  const focusOptions = useMemo(() => {
+    // TODO(#119): Once moons are fully integrated into default visibility rules,
+    // this should probably become a dedicated helper (e.g. listFocusableBodies).
+    const base = listDefaultVisibleBodies()
+    const moon = getBodyRegistryEntry('MOON')
+    return base.some((b) => b.id === moon.id) ? base : [...base, moon]
+  }, [])
+
+  // Keep renderer units consistent across the app. This matches the value used
+  // inside the renderer effect.
+  const kmToWorld = 1 / 1_000_000
+
+  // Control pane collapsed state: starts collapsed on all screen sizes
+  const [overlayOpen, setOverlayOpen] = useState(false)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
+  // New: Look mode toggle for touch - when enabled, 1-finger drag does free-look instead of orbit
+  const [lookModeEnabled, setLookModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
+  const lookModeEnabledRef = useRef(lookModeEnabled)
+  const focusOnOriginRef = useRef<(() => void) | null>(null)
+  const selectedBodyIdRef = useRef<BodyId | undefined>(undefined)
+  const initialControllerStateRef = useRef<CameraControllerState | null>(null)
+  // Ref for resetting look offset (used by keyboard Escape and focus changes)
+  const resetLookOffsetRef = useRef<(() => void) | null>(null)
   panModeEnabledRef.current = panModeEnabled
+  lookModeEnabledRef.current = lookModeEnabled
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
-
-    const mql = window.matchMedia('(max-width: 720px)')
-    const onChange = () => {
-      const small = mql.matches
-      setIsSmallScreen(small)
-      setOverlayOpen(!small)
+  const handleQuantumChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value)
+    if (value > 0) {
+      timeStore.setQuantumSec(value)
     }
-
-    onChange()
-
-    if (typeof mql.addEventListener === 'function') {
-      mql.addEventListener('change', onChange)
-      return () => mql.removeEventListener('change', onChange)
-    }
-
-    // Safari < 14
-    mql.addListener(onChange)
-    return () => mql.removeListener(onChange)
   }, [])
+  
+  // Enable keyboard controls (disabled in e2e mode)
+  useKeyboardControls({
+    controllerRef,
+    cameraRef,
+    canvasRef,
+    invalidate: () => invalidateRef.current?.(),
+    cancelFocusTween: () => cancelFocusTweenRef.current?.(),
+    focusOnOrigin: () => focusOnOriginRef.current?.(),
+    resetLookOffset: () => resetLookOffsetRef.current?.(),
+    initialControllerStateRef,
+    toggleLabels: () => setLabelsEnabled((v) => !v),
+    enabled: !isE2e,
+  })
 
   const zoomBy = (factor: number) => {
     const controller = controllerRef.current
@@ -92,6 +259,120 @@ export function SceneCanvas() {
     invalidateRef.current?.()
   }
 
+  const refocusSun = () => {
+    const controller = controllerRef.current
+    const camera = cameraRef.current
+    if (!controller || !camera || !spiceClient) return
+
+    // If a focus animation is in-flight, stop it so our manual camera move
+    // isn't immediately overwritten.
+    cancelFocusTweenRef.current?.()
+
+    // If the current focus IS the sun, this button shouldn't do anything.
+    if (String(focusBody) === 'SUN') return
+
+    const etSec = timeStore.getState().etSec
+    const focusState = spiceClient.getBodyState({
+      target: focusBody,
+      observer: 'SUN',
+      frame: J2000_FRAME,
+      et: etSec,
+    })
+
+    const focusPosKm = focusState.positionKm
+    const sunPosWorld = new THREE.Vector3(
+      -focusPosKm[0] * kmToWorld,
+      -focusPosKm[1] * kmToWorld,
+      -focusPosKm[2] * kmToWorld
+    )
+
+    if (sunPosWorld.lengthSq() < 1e-12) return
+
+    const sunDir = sunPosWorld.clone().normalize()
+
+    // Compute current forward direction (camera -> target) derived from yaw/pitch.
+    const cosPitch = Math.cos(controller.pitch)
+    const currentOffsetDir = new THREE.Vector3(
+      cosPitch * Math.cos(controller.yaw),
+      cosPitch * Math.sin(controller.yaw),
+      Math.sin(controller.pitch)
+    )
+    const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
+
+    // No additional Sun margin: just ensure the Sun isn't hidden directly
+    // behind the focused body.
+    const marginRad = sunOcclusionMarginRad
+
+    // Ensure the Sun's center is offset from screen center by more than the
+    // focused body's angular radius, so it can't be fully occluded.
+    const focusMeta = focusOptions.find((b) => String(b.body) === String(focusBody))
+    const radiusWorld = (() => {
+      if (!focusMeta) return undefined
+
+      const base = computeBodyRadiusWorld({
+        radiusKm: focusMeta.style.radiusKm,
+        kmToWorld,
+        mode: 'true',
+      })
+
+      // Keep occlusion math consistent with the rendered body size.
+      return String(focusBody) === 'SUN' ? base * sunScaleMultiplier : base * planetScaleMultiplier
+    })()
+
+    const bodyAngRad =
+      radiusWorld && controller.radius > 1e-12
+        ? Math.asin(THREE.MathUtils.clamp(radiusWorld / controller.radius, 0, 1))
+        : 0
+    const minSeparationRad = bodyAngRad + marginRad
+
+    // If we're zoomed in too far, it may be geometrically impossible to place
+    // the Sun outside the body's projected disk while still staying in-frame.
+    // In that case, zoom out just enough to make it possible.
+    const halfV = THREE.MathUtils.degToRad(cameraFovDeg) / 2
+    const halfH = Math.atan(Math.tan(halfV) * (camera.aspect || 1))
+    const half = Math.min(halfV, halfH)
+    const maxOffAxis = Math.max(0, half - marginRad)
+    const maxDesiredOffAxis = maxOffAxis * 0.8
+
+    if (
+      radiusWorld != null &&
+      minSeparationRad > maxDesiredOffAxis &&
+      maxDesiredOffAxis > marginRad + 1e-6
+    ) {
+      const maxBodyAng = maxDesiredOffAxis - marginRad
+      const minRadiusForBodyAng = radiusWorld / Math.sin(maxBodyAng)
+      controller.radius = Math.max(controller.radius, minRadiusForBodyAng)
+    }
+
+    const sunAngle = currentForwardDir.angleTo(sunDir)
+    const sunInFov = isDirectionWithinFov({
+      cameraForwardDir: currentForwardDir,
+      dirToPoint: sunDir,
+      cameraFovDeg,
+      cameraAspect: camera.aspect,
+      marginRad,
+    })
+    const sunNotOccluded = sunAngle >= minSeparationRad
+
+    if (!sunInFov || !sunNotOccluded) {
+      const angles = computeOrbitAnglesToKeepPointInView({
+        pointWorld: sunPosWorld,
+        cameraFovDeg,
+        cameraAspect: camera.aspect,
+        desiredOffAxisRad: minSeparationRad,
+        marginRad,
+      })
+
+      if (angles) {
+        controller.yaw = angles.yaw
+        controller.pitch = angles.pitch
+      }
+    }
+
+    controller.applyToCamera(camera)
+    invalidateRef.current?.()
+  }
+
   // Start the playback ticker (handles time advancement)
   usePlaybackTicker()
 
@@ -101,15 +382,54 @@ export function SceneCanvas() {
         focusBody: BodyRef
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
-        scaleMode: ScaleMode
+        cameraFovDeg: number
+        sunScaleMultiplier: number
+        planetScaleMultiplier: number
+
+        orbitLineWidthPx: number
+        orbitSamplesPerOrbit: number
+        orbitMaxTotalPoints: number
+        orbitPathsEnabled: boolean
+        labelsEnabled: boolean
+        labelOcclusionEnabled: boolean
       }) => void)
     | null
   >(null)
 
   // The renderer/bootstrap `useEffect` is mounted once, so it needs a ref to
   // read the latest UI state when async init completes.
-  const latestUiRef = useRef({ focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode })
-  latestUiRef.current = { focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode }
+  const latestUiRef = useRef({
+    focusBody,
+    showJ2000Axes,
+    showBodyFixedAxes,
+    cameraFovDeg,
+    sunScaleMultiplier,
+    planetScaleMultiplier,
+    showRenderHud,
+
+    orbitLineWidthPx,
+    orbitSamplesPerOrbit,
+    orbitMaxTotalPoints,
+    orbitPathsEnabled,
+    labelsEnabled,
+    labelOcclusionEnabled,
+  })
+  latestUiRef.current = {
+    focusBody,
+    showJ2000Axes,
+    showBodyFixedAxes,
+    cameraFovDeg,
+    sunScaleMultiplier,
+    planetScaleMultiplier,
+    showRenderHud,
+
+    orbitLineWidthPx,
+    orbitSamplesPerOrbit,
+    orbitMaxTotalPoints,
+    orbitPathsEnabled,
+    labelsEnabled,
+    labelOcclusionEnabled,
+  }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
   useEffect(() => {
@@ -120,11 +440,48 @@ export function SceneCanvas() {
     return unsubscribe
   }, [])
 
-  // Update scene when UI state changes (focus, axes toggles, scale mode)
+  // Update scene when UI state changes (focus, axes toggles, camera options)
   useEffect(() => {
     const etSec = timeStore.getState().etSec
-    updateSceneRef.current?.({ etSec, focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode })
-  }, [focusBody, showJ2000Axes, showBodyFixedAxes, scaleMode])
+    updateSceneRef.current?.({
+      etSec,
+      focusBody,
+      showJ2000Axes,
+      showBodyFixedAxes,
+      cameraFovDeg,
+      sunScaleMultiplier,
+      planetScaleMultiplier,
+
+      orbitLineWidthPx,
+      orbitSamplesPerOrbit,
+      orbitMaxTotalPoints,
+      orbitPathsEnabled,
+      labelsEnabled,
+      labelOcclusionEnabled,
+    })
+  }, [
+    focusBody,
+    showJ2000Axes,
+    showBodyFixedAxes,
+    cameraFovDeg,
+    sunScaleMultiplier,
+    planetScaleMultiplier,
+    orbitLineWidthPx,
+    orbitSamplesPerOrbit,
+    orbitMaxTotalPoints,
+    orbitPathsEnabled,
+    labelsEnabled,
+    labelOcclusionEnabled,
+  ])
+
+  // Imperatively update camera FOV when the slider changes
+  useEffect(() => {
+    const camera = cameraRef.current
+    if (!camera) return
+    camera.fov = cameraFovDeg
+    camera.updateProjectionMatrix()
+    invalidateRef.current?.()
+  }, [cameraFovDeg])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -147,6 +504,12 @@ export function SceneCanvas() {
     const sceneObjects: THREE.Object3D[] = []
     const disposers: Array<() => void> = []
 
+    let orbitPaths: OrbitPaths | undefined
+    const drawingBufferSize = new THREE.Vector2()
+
+    // For FPS calculation
+    let lastFrameTimeMs = performance.now()
+
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: !isE2e,
@@ -154,24 +517,61 @@ export function SceneCanvas() {
       logarithmicDepthBuffer: enableLogDepth,
     })
 
+    rendererRef.current = renderer
+
     // Keep e2e snapshots stable by not depending on deviceScaleFactor.
     renderer.setPixelRatio(isE2e ? 1 : Math.min(window.devicePixelRatio, 2))
     renderer.outputColorSpace = THREE.SRGBColorSpace
 
     const scene = new THREE.Scene()
     scene.background = new THREE.Color('#0f131a')
+    sceneRef.current = scene
 
     // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
     // world units away. Keep the far plane large enough so we can render the
     // full default scene (through Neptune).
-    const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 10_000)
+    const DEFAULT_NEAR = 0.01
+    // Avoid ridiculous near/far ratios that can destroy depth precision.
+    // This only matters when users zoom extremely close.
+    const MIN_NEAR = 1e-5
+    // Keep the near plane well in front of the camera, but small enough that
+    // small-body auto-focus (e.g. the Moon) doesn't clip.
+    const NEAR_RADIUS_FRACTION = 0.1 // radius / 10
+
+    const camera = new THREE.PerspectiveCamera(latestUiRef.current.cameraFovDeg, 1, DEFAULT_NEAR, 10_000)
+
+    // Z-up to match SPICE/IAU north (+Z) and keep orbit controls consistent.
+    camera.up.set(0, 0, 1)
     camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
     const controller = CameraController.fromCamera(camera)
 
+    const syncCameraNear = () => {
+      // When zooming/focusing on very small bodies, the orbit radius can dip
+      // below the default near plane. If `near > (cameraDistance - bodyRadius)`
+      // the body will clip and it feels like we "zoomed inside".
+      const desiredNear = Math.min(
+        DEFAULT_NEAR,
+        Math.max(MIN_NEAR, controller.radius * NEAR_RADIUS_FRACTION)
+      )
+
+      // Only touch the projection matrix when the effective near plane changes.
+      if (Math.abs(camera.near - desiredNear) > 1e-9) {
+        camera.near = desiredNear
+        camera.updateProjectionMatrix()
+      }
+    }
+
     controllerRef.current = controller
     cameraRef.current = camera
+
+    // Expose resetLookOffset to keyboard controls
+    resetLookOffsetRef.current = () => {
+      controller.resetLookOffset()
+      controller.applyToCamera(camera)
+      invalidate()
+    }
 
     const starSeed = (() => {
       const fromUrl = search.get('starSeed') ?? search.get('seed')
@@ -184,24 +584,122 @@ export function SceneCanvas() {
       return isE2e ? 1 : 1337
     })()
 
-    const starfield = createStarfield({ seed: starSeed })
-    sceneObjects.push(starfield.object)
-    disposers.push(starfield.dispose)
+    starSeedRef.current = starSeed
+
+    const starfield = createStarfield({ seed: starSeed, twinkle: twinkleEnabled })
+    starfieldRef.current = starfield
     scene.add(starfield.object)
 
-    const renderOnce = () => {
-      if (disposed) return
-      starfield.syncToCamera(camera)
-      renderer.render(scene, camera)
+    const selectionRing = !isE2e ? createSelectionRing() : undefined
+    if (selectionRing) {
+      sceneObjects.push(selectionRing.object)
+      disposers.push(selectionRing.dispose)
+      scene.add(selectionRing.object)
     }
+
+    // Skydome (Milky Way band shader background) - only when animatedSky is enabled
+    if (animatedSky && !isE2e) {
+      const skydome = createSkydome({ seed: starSeed })
+      skydomeRef.current = skydome
+      scene.add(skydome.object)
+    }
+
+    const renderOnce = (timeMs?: number) => {
+      if (disposed) return
+
+      syncCameraNear()
+
+      const nowMs = timeMs ?? performance.now()
+      const timeSec = nowMs * 0.001
+
+      const starfield = starfieldRef.current
+      starfield?.update?.(timeSec)
+      starfield?.syncToCamera(camera)
+
+      selectionRing?.syncToCamera({ camera, nowMs })
+
+      const skydome = skydomeRef.current
+      skydome?.syncToCamera(camera)
+      skydome?.setTimeSeconds(timeSec)
+      renderer.render(scene, camera)
+
+      const labelOverlay = labelOverlayRef.current
+      const labelOptions = latestLabelOverlayOptionsRef.current
+      if (labelOverlay && labelOptions) {
+        // Keep selection in sync even when simulation time is paused.
+        labelOverlay.update({
+          ...labelOptions,
+          selectedBodyId: selectedBodyIdRef.current,
+        })
+      }
+
+      // Update HUD stats after render (only when HUD is enabled)
+      if (latestUiRef.current.showRenderHud) {
+        const now = performance.now()
+
+        // Compute instantaneous FPS from frame delta
+        const deltaMs = now - lastFrameTimeMs
+        if (deltaMs > 0) {
+          const instantFps = 1000 / deltaMs
+          const buffer = fpsBufferRef.current
+          buffer.push(instantFps)
+          // Keep last ~20 samples for smoothing
+          if (buffer.length > 20) buffer.shift()
+        }
+        lastFrameTimeMs = now
+
+        // Throttle React state updates
+        if (now - lastHudUpdateRef.current >= hudUpdateIntervalMs) {
+          lastHudUpdateRef.current = now
+
+          // Compute smoothed FPS
+          const buffer = fpsBufferRef.current
+          const smoothedFps = buffer.length > 0 ? buffer.reduce((a, b) => a + b, 0) / buffer.length : 0
+
+          // Count visible objects by type
+          let meshCount = 0
+          let lineCount = 0
+          let pointsCount = 0
+          scene.traverseVisible((obj) => {
+            if (obj instanceof THREE.Mesh) meshCount++
+            else if (obj instanceof THREE.Line) lineCount++
+            else if (obj instanceof THREE.Points) pointsCount++
+          })
+
+          const info = renderer.info
+          const controllerState = controllerRef.current
+          setHudStats({
+            fps: smoothedFps,
+            drawCalls: info.render.calls,
+            triangles: info.render.triangles,
+            lines: info.render.lines,
+            points: info.render.points,
+            geometries: info.memory.geometries,
+            textures: info.memory.textures,
+            meshCount,
+            lineCount,
+            pointsCount,
+            cameraPosition: camera.position.clone(),
+            cameraQuaternion: camera.quaternion.clone(),
+            cameraEuler: new THREE.Euler().setFromQuaternion(camera.quaternion, 'XYZ'),
+            targetDistance: controllerState?.radius ?? 0,
+            focusBody: String(latestUiRef.current.focusBody),
+          })
+        }
+      }
+    }
+
+    renderOnceRef.current = renderOnce
 
     const invalidate = () => {
       if (disposed) return
+      // When twinkling is enabled, we have a dedicated RAF loop.
+      if (twinkleActiveRef.current) return
       if (scheduledFrame != null) return
 
-      scheduledFrame = window.requestAnimationFrame(() => {
+      scheduledFrame = window.requestAnimationFrame((t) => {
         scheduledFrame = null
-        renderOnce()
+        renderOnce(t)
       })
     }
 
@@ -214,19 +712,15 @@ export function SceneCanvas() {
     dir.position.set(4, 6, 2)
     scene.add(dir)
 
-    const kmToWorld = 1 / 1_000_000
-
-    // When focusing a body, also set a sensible default camera radius so the
-    // body appears large enough without requiring a bunch of manual zoom.
-    const focusDistanceMultiplier = 4
-    // Minimum camera radius for auto-zoom. This used to be quite large, which
-    // made small bodies (e.g. Mercury) look tiny when selected from the focus
-    // dropdown.
-    const focusRadiusMin = 0.02
-    const focusRadiusMax = 50
-
+    // Auto-zoom target radius when focusing bodies.
+    // Clamp to the controller's zoom limits so focus animations and manual zoom
+    // behavior always agree.
     const computeFocusRadius = (radiusWorld: number) =>
-      THREE.MathUtils.clamp(radiusWorld * focusDistanceMultiplier, focusRadiusMin, focusRadiusMax)
+      THREE.MathUtils.clamp(
+        radiusWorld * focusDistanceMultiplier,
+        controller.minRadius,
+        controller.maxRadius
+      )
 
     const resize = () => {
       const width = container.clientWidth
@@ -238,6 +732,9 @@ export function SceneCanvas() {
 
       camera.aspect = width / height
       camera.updateProjectionMatrix()
+
+      const buffer = renderer.getDrawingBufferSize(drawingBufferSize)
+      orbitPaths?.setResolution(buffer.x, buffer.y)
     }
 
     const onResize = () => {
@@ -254,8 +751,11 @@ export function SceneCanvas() {
 
       const clickMoveThresholdPx = 6
       const orbitSensitivity = 0.006
+      const freeLookSensitivity = 0.003
+      const rollSensitivity = 0.005
       const wheelZoomScale = 0.001
       const focusTweenMs = 320
+      const ROLL_STEP_RAD = Math.PI / 36 // 5 degrees for Q/E keys
 
       let selectedBodyId: string | undefined
 
@@ -272,7 +772,18 @@ export function SceneCanvas() {
 
       cancelFocusTweenRef.current = cancelFocusTween
 
-      type DragMode = 'orbit' | 'pan'
+      // Expose focusOn to the keyboard controls via ref
+      focusOnOriginRef.current = () => {
+        // Focus on the origin (the currently focused body's position in the scene)
+        // Since we rebase positions around the focus body, origin is always (0,0,0)
+        const originTarget = new THREE.Vector3(0, 0, 0)
+        focusOn?.(originTarget, {
+          radius: controller.radius, // Keep current zoom level
+        })
+      }
+
+      // Drag modes: orbit, pan, freeLook, roll
+      type DragMode = 'orbit' | 'pan' | 'freeLook' | 'roll'
 
       let mouseDown:
         | {
@@ -287,12 +798,15 @@ export function SceneCanvas() {
         | undefined
 
       const activeTouches = new Map<number, { x: number; y: number }>()
+      // Track last angle for 2-finger rotation gesture
+      let lastTouchAngle: number | null = null
+      
       let touchState:
         | { kind: 'none' }
         | {
             kind: 'single'
             pointerId: number
-            mode: DragMode
+            mode: 'orbit' | 'pan' | 'freeLook'
             startX: number
             startY: number
             lastX: number
@@ -310,38 +824,64 @@ export function SceneCanvas() {
       let selected:
         | {
             mesh: THREE.Mesh
-            material: THREE.MeshStandardMaterial
-            prevEmissive: THREE.Color
-            prevEmissiveIntensity: number
           }
         | undefined
+
+      let selectionPulseFrame: number | null = null
+      const stopSelectionPulse = () => {
+        if (selectionPulseFrame == null) return
+        window.cancelAnimationFrame(selectionPulseFrame)
+        selectionPulseFrame = null
+      }
+
+      const startSelectionPulse = () => {
+        if (selectionPulseFrame != null) return
+
+        const step = () => {
+          if (disposed || !selected) {
+            selectionPulseFrame = null
+            return
+          }
+          invalidate()
+          selectionPulseFrame = window.requestAnimationFrame(step)
+        }
+
+        selectionPulseFrame = window.requestAnimationFrame(step)
+      }
 
       const setSelectedMesh = (mesh: THREE.Mesh | undefined) => {
         if (selected?.mesh === mesh) return
 
         if (selected) {
-          selected.material.emissive.copy(selected.prevEmissive)
-          selected.material.emissiveIntensity = selected.prevEmissiveIntensity
           selected = undefined
           selectedBodyId = undefined
+          selectedBodyIdRef.current = undefined
+          setSelectedBody(null)
+          selectionRing?.setTarget(undefined)
+          stopSelectionPulse()
+          invalidate()
         }
 
         if (!mesh) return
 
-        const material = mesh.material
-        if (!(material instanceof THREE.MeshStandardMaterial)) return
-
         selected = {
           mesh,
-          material,
-          prevEmissive: material.emissive.clone(),
-          prevEmissiveIntensity: material.emissiveIntensity,
         }
 
         selectedBodyId = String(mesh.userData.bodyId ?? '') || undefined
+        // Keep ref in sync for label overlay
+        const registry = BODY_REGISTRY.find((r) => String(r.body) === selectedBodyId)
+        selectedBodyIdRef.current = registry?.id
 
-        material.emissive.set('#f1c40f')
-        material.emissiveIntensity = 0.8
+        // Update React state for inspector panel
+        if (selectedBodyId) {
+          setSelectedBody(selectedBodyId)
+        }
+
+        // Subtle world-space ring indicator around the selected body.
+        selectionRing?.setTarget(mesh)
+        startSelectionPulse()
+        invalidate()
       }
 
       focusOn = (nextTarget: THREE.Vector3, opts) => {
@@ -401,10 +941,18 @@ export function SceneCanvas() {
           canvas.setPointerCapture(ev.pointerId)
 
           if (activeTouches.size === 1) {
+            // Determine mode based on toggles: Look > Pan > Orbit
+            let mode: 'orbit' | 'pan' | 'freeLook' = 'orbit'
+            if (lookModeEnabledRef.current) {
+              mode = 'freeLook'
+            } else if (panModeEnabledRef.current) {
+              mode = 'pan'
+            }
+            
             touchState = {
               kind: 'single',
               pointerId: ev.pointerId,
-              mode: panModeEnabledRef.current ? 'pan' : 'orbit',
+              mode,
               startX: ev.clientX,
               startY: ev.clientY,
               lastX: ev.clientX,
@@ -425,6 +973,9 @@ export function SceneCanvas() {
             const centerY = (a[1].y + b[1].y) / 2
             const dist = Math.sqrt(dx * dx + dy * dy)
 
+            // Initialize angle for rotation tracking
+            lastTouchAngle = Math.atan2(dy, dx)
+
             touchState = {
               kind: 'pinch',
               ids,
@@ -436,16 +987,37 @@ export function SceneCanvas() {
           }
         }
 
-        const isPan = ev.button === 2 || (ev.button === 0 && ev.shiftKey)
-        const isOrbit = ev.button === 0 && !ev.shiftKey
+        // Desktop pointer handling
+        // Button 0 = LMB, Button 1 = MMB, Button 2 = RMB
+        const isLMB = ev.button === 0
+        const isMMB = ev.button === 1
+        const isRMB = ev.button === 2
+        
+        // Determine mode:
+        // - LMB (no shift): orbit
+        // - LMB + Shift: pan
+        // - MMB: pan
+        // - RMB (no shift): free-look
+        // - RMB + Shift: roll
+        let mode: DragMode | null = null
+        
+        if (isLMB && !ev.shiftKey) {
+          mode = 'orbit'
+        } else if ((isLMB && ev.shiftKey) || isMMB) {
+          mode = 'pan'
+        } else if (isRMB && !ev.shiftKey) {
+          mode = 'freeLook'
+        } else if (isRMB && ev.shiftKey) {
+          mode = 'roll'
+        }
 
-        if (!isPan && !isOrbit) return
+        if (!mode) return
 
         ev.preventDefault()
 
         mouseDown = {
           pointerId: ev.pointerId,
-          mode: isPan ? 'pan' : 'orbit',
+          mode,
           startX: ev.clientX,
           startY: ev.clientY,
           lastX: ev.clientX,
@@ -473,6 +1045,7 @@ export function SceneCanvas() {
               const [a, b] = Array.from(activeTouches.entries())
               const dx = a[1].x - b[1].x
               const dy = a[1].y - b[1].y
+              lastTouchAngle = Math.atan2(dy, dx)
               touchState = {
                 kind: 'pinch',
                 ids: [a[0], b[0]],
@@ -489,6 +1062,9 @@ export function SceneCanvas() {
             if (!a || !b) {
               // Pick the first two active touches.
               const [na, nb] = Array.from(activeTouches.entries())
+              const dx = na[1].x - nb[1].x
+              const dy = na[1].y - nb[1].y
+              lastTouchAngle = Math.atan2(dy, dx)
               touchState = {
                 kind: 'pinch',
                 ids: [na[0], nb[0]],
@@ -514,6 +1090,22 @@ export function SceneCanvas() {
               const ratio = touchState.lastDistance / dist
               controller.radius *= ratio
             }
+
+            // 2-finger rotation gesture (twist) for roll
+            const dx = a.x - b.x
+            const dy = a.y - b.y
+            const currentAngle = Math.atan2(dy, dx)
+            
+            if (lastTouchAngle !== null) {
+              let deltaAngle = currentAngle - lastTouchAngle
+              // Wrap to [-PI, PI]
+              while (deltaAngle > Math.PI) deltaAngle -= 2 * Math.PI
+              while (deltaAngle < -Math.PI) deltaAngle += 2 * Math.PI
+              
+              // Apply roll (negative because twist direction)
+              controller.applyRollDelta(-deltaAngle)
+            }
+            lastTouchAngle = currentAngle
 
             touchState.lastCenterX = centerX
             touchState.lastCenterY = centerY
@@ -551,8 +1143,10 @@ export function SceneCanvas() {
           if (touchState.mode === 'orbit') {
             controller.yaw -= dx * orbitSensitivity
             controller.pitch -= dy * orbitSensitivity
-          } else {
+          } else if (touchState.mode === 'pan') {
             controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+          } else if (touchState.mode === 'freeLook') {
+            controller.applyFreeLookDelta(dx, dy, freeLookSensitivity)
           }
 
           controller.applyToCamera(camera)
@@ -589,9 +1183,14 @@ export function SceneCanvas() {
         if (mouseDown.mode === 'orbit') {
           controller.yaw -= dx * orbitSensitivity
           controller.pitch -= dy * orbitSensitivity
-        } else {
+        } else if (mouseDown.mode === 'pan') {
           const rect = canvas.getBoundingClientRect()
           controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+        } else if (mouseDown.mode === 'freeLook') {
+          controller.applyFreeLookDelta(dx, dy, freeLookSensitivity)
+        } else if (mouseDown.mode === 'roll') {
+          // Use horizontal movement for roll
+          controller.applyRollDelta(dx * rollSensitivity)
         }
 
         controller.applyToCamera(camera)
@@ -635,34 +1234,52 @@ export function SceneCanvas() {
               const hitMesh = hit.object
               if (hitMesh instanceof THREE.Mesh) {
                 const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
-                if (nextSelectedBodyId !== selectedBodyId) {
+                const selectionChanged = nextSelectedBodyId !== selectedBodyId
+                if (selectionChanged) {
                   setSelectedMesh(hitMesh)
+                  // Clear look offset when focusing new object
+                  controller.resetLookOffset()
+                  if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
                 }
 
-                const target = new THREE.Vector3()
-                hitMesh.getWorldPosition(target)
-                focusOn?.(target)
+                // When selection changes, rely on focus-body changes to center
+                // and auto-zoom (avoids focusing in the pre-rebase coordinate
+                // system).
+                if (!selectionChanged) {
+                  const target = new THREE.Vector3()
+                  hitMesh.getWorldPosition(target)
+                  focusOn?.(target)
+                }
               }
             }
           }
 
           if (activeTouches.size === 0) {
             touchState = { kind: 'none' }
+            lastTouchAngle = null
             return
           }
 
           if (activeTouches.size === 1) {
             const [nextId, nextPos] = Array.from(activeTouches.entries())[0]
+            // Determine mode based on toggles: Look > Pan > Orbit
+            let mode: 'orbit' | 'pan' | 'freeLook' = 'orbit'
+            if (lookModeEnabledRef.current) {
+              mode = 'freeLook'
+            } else if (panModeEnabledRef.current) {
+              mode = 'pan'
+            }
             touchState = {
               kind: 'single',
               pointerId: nextId,
-              mode: panModeEnabledRef.current ? 'pan' : 'orbit',
+              mode,
               startX: nextPos.x,
               startY: nextPos.y,
               lastX: nextPos.x,
               lastY: nextPos.y,
               isDragging: false,
             }
+            lastTouchAngle = null
             return
           }
 
@@ -670,6 +1287,7 @@ export function SceneCanvas() {
           const [a, b] = Array.from(activeTouches.entries())
           const dx = a[1].x - b[1].x
           const dy = a[1].y - b[1].y
+          lastTouchAngle = Math.atan2(dy, dx)
           touchState = {
             kind: 'pinch',
             ids: [a[0], b[0]],
@@ -720,18 +1338,23 @@ export function SceneCanvas() {
         const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
         if (nextSelectedBodyId !== selectedBodyId) {
           setSelectedMesh(hitMesh)
+          // Clear look offset when focusing new object
+          controller.resetLookOffset()
+          if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
+          // Let focus-body changes drive camera centering + auto-zoom.
+          return
         }
 
         const target = new THREE.Vector3()
         hitMesh.getWorldPosition(target)
 
-        const radiusKm = Number(hitMesh.userData.radiusKm)
-        if (Number.isFinite(radiusKm)) {
-          const radiusWorld = computeBodyRadiusWorld({
-            radiusKm,
-            kmToWorld,
-            mode: latestUiRef.current.scaleMode,
-          })
+        // Use the mesh's current world scale so focus radius matches the
+        // visually-rendered (potentially scaled) body.
+        const worldScale = new THREE.Vector3()
+        hitMesh.getWorldScale(worldScale)
+        const radiusWorld = worldScale.x
+
+        if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
           focusOn?.(target, { radius: computeFocusRadius(radiusWorld) })
         } else {
           focusOn?.(target)
@@ -766,12 +1389,13 @@ export function SceneCanvas() {
 
         cancelFocusTween?.()
         setSelectedMesh(undefined)
+        stopSelectionPulse()
       }
     }
 
     void (async () => {
       try {
-        const { client: loadedSpiceClient, utcToEt } = await createSpiceClient({
+        const { client: loadedSpiceClient, rawClient: rawSpiceClient, utcToEt } = await createSpiceClient({
           searchParams: search,
         })
 
@@ -805,12 +1429,23 @@ export function SceneCanvas() {
         }
 
         // Scene model driving the rendered scene.
+        // TODO(#119): Temporary special-case to always render Earth's Moon.
+        // Longer-term we should have user-configurable visibility + kernel-pack
+        // downloads for moons/satellites.
+        const moonEntry = getBodyRegistryEntry('MOON')
         const sceneModel: SceneModel = {
           frame: J2000_FRAME,
           // Use a stable observer for all SPICE queries, then apply a precision
           // strategy in the renderer (focus-origin rebasing).
           observer: 'SUN',
-          bodies: listDefaultVisibleSceneBodies(),
+          bodies: [
+            ...listDefaultVisibleSceneBodies(),
+            {
+              body: moonEntry.body,
+              bodyFixedFrame: moonEntry.bodyFixedFrame,
+              style: moonEntry.style,
+            },
+          ],
         }
 
         const bodies = sceneModel.bodies.map((body) => {
@@ -819,6 +1454,24 @@ export function SceneCanvas() {
             textureUrl: body.style.textureUrl,
             textureKind: body.style.textureKind,
           })
+
+          const rings = body.style.rings
+          const ringResult = rings
+            ? createRingMesh({
+                // Parent body is a unit sphere scaled by radius, so rings are
+                // specified in planet-radius units.
+                innerRadius: rings.innerRadiusRatio,
+                outerRadius: rings.outerRadiusRatio,
+                textureUrl: rings.textureUrl,
+                color: rings.color,
+              })
+            : undefined
+
+          if (ringResult) {
+            // Attach as a child so it inherits the body's pose and scale.
+            mesh.add(ringResult.mesh)
+            disposers.push(ringResult.dispose)
+          }
 
           mesh.userData.bodyId = body.body
           // Store radiusKm for dynamic scale updates
@@ -846,13 +1499,23 @@ export function SceneCanvas() {
             radiusKm: body.style.radiusKm,
             mesh,
             axes,
-            ready,
+            ready: Promise.all([ready, ringResult?.ready]).then(() => undefined),
           }
         })
 
         // Ensure textures are loaded before we mark the scene as rendered.
         await Promise.all(bodies.map((b) => b.ready))
         if (disposed) return
+
+        // Orbit paths (one full orbital period per body).
+        orbitPaths = new OrbitPaths({
+          spiceClient: rawSpiceClient,
+          kmToWorld,
+          bodies: sceneModel.bodies.map((b) => ({ body: b.body, color: b.style.color })),
+        })
+        sceneObjects.push(orbitPaths.object)
+        disposers.push(() => orbitPaths?.dispose())
+        scene.add(orbitPaths.object)
 
         const j2000Axes = !isE2e ? createFrameAxes({ sizeWorld: 1.2, opacity: 0.9 }) : undefined
         if (j2000Axes) {
@@ -862,22 +1525,60 @@ export function SceneCanvas() {
           scene.add(j2000Axes.object)
         }
 
+        // Label overlay (only in interactive mode)
+        if (!isE2e && container) {
+          const labelOverlay = new LabelOverlay({
+            container,
+            camera,
+            kmToWorld,
+          })
+          labelOverlayRef.current = labelOverlay
+          disposers.push(() => {
+            labelOverlay.dispose()
+            labelOverlayRef.current = null
+          })
+        }
+
         let lastAutoZoomFocusBody: BodyRef | undefined
-        let lastAutoZoomScaleMode: ScaleMode | undefined
+
+        const bodyPosKmByKey = new Map<string, Vec3Km>()
+        const bodyVisibleByKey = new Map<string, boolean>()
+
+        const labelBodies: LabelBody[] = bodies.map((b) => {
+          const registry = BODY_REGISTRY.find((r) => String(r.body) === String(b.body))
+          return {
+            id: (registry?.id ?? String(b.body)) as BodyId,
+            label: registry?.style.label ?? String(b.body),
+            kind: registry?.kind ?? 'planet',
+            mesh: b.mesh,
+            radiusKm: b.radiusKm,
+          }
+        })
 
         const updateScene = (next: {
           etSec: EtSeconds
           focusBody: BodyRef
           showJ2000Axes: boolean
           showBodyFixedAxes: boolean
-          scaleMode: ScaleMode
+          cameraFovDeg: number
+          sunScaleMultiplier: number
+          planetScaleMultiplier: number
+
+          orbitLineWidthPx: number
+          orbitSamplesPerOrbit: number
+          orbitMaxTotalPoints: number
+          orbitPathsEnabled: boolean
+          labelsEnabled: boolean
+          labelOcclusionEnabled: boolean
         }) => {
           const shouldAutoZoom =
             !isE2e &&
-            (next.focusBody !== lastAutoZoomFocusBody || next.scaleMode !== lastAutoZoomScaleMode)
+            next.focusBody !== lastAutoZoomFocusBody
 
           if (shouldAutoZoom) {
             cancelFocusTween?.()
+            // Clear look offset when auto-focusing a new body
+            controller.resetLookOffset()
           }
 
           const focusState = loadedSpiceClient.getBodyState({
@@ -891,23 +1592,97 @@ export function SceneCanvas() {
           if (shouldAutoZoom) {
             const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
             if (focusBodyMeta) {
-              const radiusWorld = computeBodyRadiusWorld({
+              let radiusWorld = computeBodyRadiusWorld({
                 radiusKm: focusBodyMeta.radiusKm,
                 kmToWorld,
-                mode: next.scaleMode,
+                mode: 'true',
               })
+
+              // Match the rendered size when auto-zooming.
+              radiusWorld *=
+                String(next.focusBody) === 'SUN' ? next.sunScaleMultiplier : next.planetScaleMultiplier
+
+              const nextRadius = computeFocusRadius(radiusWorld)
+
+              // When focusing a non-Sun body, bias the camera orientation so the
+              // Sun remains visible (it provides important spatial context).
+              if (String(next.focusBody) !== 'SUN') {
+                const sunPosWorld = new THREE.Vector3(
+                  -focusPosKm[0] * kmToWorld,
+                  -focusPosKm[1] * kmToWorld,
+                  -focusPosKm[2] * kmToWorld
+                )
+
+                if (sunPosWorld.lengthSq() > 1e-12) {
+                  const sunDir = sunPosWorld.clone().normalize()
+
+                  // Current forward direction (camera -> target) derived from the
+                  // controller's yaw/pitch (target/radius don't affect direction).
+                  const cosPitch = Math.cos(controller.pitch)
+                  const currentOffsetDir = new THREE.Vector3(
+                    cosPitch * Math.cos(controller.yaw),
+                    cosPitch * Math.sin(controller.yaw),
+                    Math.sin(controller.pitch)
+                  )
+                  const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
+
+                  // Use the same angular margin for both frustum checks and for
+                  // ensuring the Sun isn't hidden behind the focused body.
+                  const marginRad = sunOcclusionMarginRad
+
+                  // If the Sun is too close to the view center, it can be
+                  // completely occluded by the focused body (which is centered
+                  // at the camera target). So we require the Sun to be separated
+                  // from center by more than the body's angular radius.
+                  const bodyAngRad = Math.asin(THREE.MathUtils.clamp(radiusWorld / nextRadius, 0, 1))
+                  const minSeparationRad = bodyAngRad + marginRad
+
+                  const sunAngle = currentForwardDir.angleTo(sunDir)
+                  const sunInFov = isDirectionWithinFov({
+                    cameraForwardDir: currentForwardDir,
+                    dirToPoint: sunDir,
+                    cameraFovDeg: next.cameraFovDeg,
+                    cameraAspect: camera.aspect,
+                    marginRad,
+                  })
+                  const sunNotOccluded = sunAngle >= minSeparationRad
+
+                  if (!sunInFov || !sunNotOccluded) {
+                    const angles = computeOrbitAnglesToKeepPointInView({
+                      pointWorld: sunPosWorld,
+                      cameraFovDeg: next.cameraFovDeg,
+                      cameraAspect: camera.aspect,
+                      desiredOffAxisRad: minSeparationRad,
+                      marginRad,
+                    })
+
+                    if (angles) {
+                      controller.yaw = angles.yaw
+                      controller.pitch = angles.pitch
+                    }
+                  }
+                }
+              }
 
               // For focus-body selection (dropdown), force the camera to look at
               // the rebased origin and update radius immediately.
               focusOn?.(new THREE.Vector3(0, 0, 0), {
-                radius: computeFocusRadius(radiusWorld),
+                radius: nextRadius,
                 immediate: true,
               })
+
+              // Capture the initial camera view (after first focus logic runs)
+              // so keyboard Reset (R) can return exactly to the page-load view.
+              if (!initialControllerStateRef.current) {
+                initialControllerStateRef.current = controller.snapshot()
+              }
             }
 
             lastAutoZoomFocusBody = next.focusBody
-            lastAutoZoomScaleMode = next.scaleMode
           }
+
+          bodyPosKmByKey.clear()
+          bodyVisibleByKey.clear()
 
           for (const b of bodies) {
             const state = loadedSpiceClient.getBodyState({
@@ -917,6 +1692,9 @@ export function SceneCanvas() {
               et: next.etSec,
             })
 
+            bodyPosKmByKey.set(String(b.body), state.positionKm)
+            bodyVisibleByKey.set(String(b.body), b.mesh.visible)
+
             const rebasedKm = rebasePositionKm(state.positionKm, focusPosKm)
             b.mesh.position.set(
               rebasedKm[0] * kmToWorld,
@@ -924,26 +1702,63 @@ export function SceneCanvas() {
               rebasedKm[2] * kmToWorld
             )
 
-            // Update mesh scale based on scale mode
-            const radiusWorld = computeBodyRadiusWorld({
+            // Update mesh scale (true scaling)
+            let radiusWorld = computeBodyRadiusWorld({
               radiusKm: b.radiusKm,
               kmToWorld,
-              mode: next.scaleMode,
+              mode: 'true',
             })
+
+            // Apply Sun scale multiplier (Sun only)
+            if (String(b.body) === 'SUN') {
+              radiusWorld *= next.sunScaleMultiplier
+            } else {
+              radiusWorld *= next.planetScaleMultiplier
+            }
+
             b.mesh.scale.setScalar(radiusWorld)
+
+            const bodyFixedRotation = b.bodyFixedFrame
+              ? loadedSpiceClient.getFrameTransform({
+                  from: b.bodyFixedFrame as FrameId,
+                  to: sceneModel.frame,
+                  et: next.etSec,
+                })
+              : undefined
+
+            // Apply the body-fixed frame orientation to the mesh so textures
+            // rotate with the body.
+            if (bodyFixedRotation) {
+              b.mesh.setRotationFromMatrix(mat3ToMatrix4(bodyFixedRotation))
+            }
 
             if (b.axes) {
               const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
               b.axes.object.visible = visible
 
               if (visible && b.bodyFixedFrame) {
-                const rot = loadedSpiceClient.getFrameTransform({
-                  from: b.bodyFixedFrame as FrameId,
-                  to: sceneModel.frame,
-                  et: next.etSec,
-                })
-                b.axes.setPose({ position: b.mesh.position, rotationJ2000: rot })
+                b.axes.setPose({ position: b.mesh.position, rotationJ2000: bodyFixedRotation })
               }
+            }
+          }
+
+          // Update orbit paths after primary/body positions are known.
+          if (orbitPaths) {
+            orbitPaths.object.visible = next.orbitPathsEnabled
+            if (next.orbitPathsEnabled) {
+              orbitPaths.update({
+                etSec: next.etSec,
+                focusPosKm,
+                bodyPosKmByKey,
+                bodyVisibleByKey,
+                settings: {
+                  lineWidthPx: next.orbitLineWidthPx,
+                  samplesPerOrbit: next.orbitSamplesPerOrbit,
+                  maxTotalPoints: next.orbitMaxTotalPoints,
+                  minPointsPerOrbit: ORBIT_MIN_POINTS_PER_ORBIT,
+                  antialias: true,
+                },
+              })
             }
           }
 
@@ -954,12 +1769,38 @@ export function SceneCanvas() {
             }
           }
 
-          // Use the Sun vector to orient lighting deterministically.
-          const sun = bodies.find((b) => String(b.body) === 'SUN')
-          const sunPos = sun?.mesh.position ?? new THREE.Vector3(1, 1, 1)
-          const len2 = sunPos.lengthSq()
-          const dirPos = len2 > 1e-12 ? sunPos.clone().normalize() : new THREE.Vector3(1, 1, 1).normalize()
+          // SPICE-derived sun lighting direction.
+          // We compute the Sun's position relative to the focused body directly from SPICE,
+          // making the lighting independent of whether the Sun mesh is visible/filtered.
+          // This is computed in the J2000 (scene/world) frame, which keeps lighting consistent
+          // across all bodies - a single global sun direction is physically correct and avoids
+          // per-body lighting complexity that would add cost without visual benefit.
+          const sunStateForLighting = loadedSpiceClient.getBodyState({
+            target: 'SUN',
+            observer: next.focusBody,
+            frame: sceneModel.frame,
+            et: next.etSec,
+          })
+          const sunDirKm = sunStateForLighting.positionKm
+          const sunDirVec = new THREE.Vector3(sunDirKm[0], sunDirKm[1], sunDirKm[2])
+          const sunDirLen2 = sunDirVec.lengthSq()
+          // Normalize and use as directional light position (fallback to +X+Y+Z if degenerate).
+          const dirPos = sunDirLen2 > 1e-12 ? sunDirVec.normalize() : new THREE.Vector3(1, 1, 1).normalize()
+          // TODO: Eclipse/shadow occlusion could be added here by checking if another body
+          // lies along the sun direction, but this adds complexity for marginal visual benefit.
           dir.position.copy(dirPos.multiplyScalar(10))
+
+          // Record label overlay inputs so we can update it on camera movement.
+          latestLabelOverlayOptionsRef.current = {
+            bodies: labelBodies,
+            focusBodyId: BODY_REGISTRY.find((r) => String(r.body) === String(next.focusBody))?.id as BodyId | undefined,
+            selectedBodyId: selectedBodyIdRef.current,
+            labelsEnabled: next.labelsEnabled,
+            occlusionEnabled: next.labelOcclusionEnabled,
+            pickables,
+            sunScaleMultiplier: next.sunScaleMultiplier,
+            planetScaleMultiplier: next.planetScaleMultiplier,
+          }
 
           invalidate()
         }
@@ -994,10 +1835,27 @@ export function SceneCanvas() {
         cleanupInteractions?.()
       }
 
+      if (starfieldRef.current) {
+        scene.remove(starfieldRef.current.object)
+        starfieldRef.current.dispose()
+        starfieldRef.current = null
+      }
+
+      if (skydomeRef.current) {
+        scene.remove(skydomeRef.current.object)
+        skydomeRef.current.dispose()
+        skydomeRef.current = null
+      }
+
       controllerRef.current = null
       cameraRef.current = null
+      sceneRef.current = null
+      rendererRef.current = null
       invalidateRef.current = null
+      renderOnceRef.current = null
       cancelFocusTweenRef.current = null
+      focusOnOriginRef.current = null
+      resetLookOffsetRef.current = null
 
       updateSceneRef.current = null
 
@@ -1008,6 +1866,65 @@ export function SceneCanvas() {
     }
   }, [])
 
+  // Swap the starfield and skydome in-place when animatedSky toggled.
+  useEffect(() => {
+    const scene = sceneRef.current
+    const camera = cameraRef.current
+    if (!scene || !camera) return
+
+    // Always recreate starfield (twinkle may have changed)
+    const prevStarfield = starfieldRef.current
+    if (prevStarfield) {
+      scene.remove(prevStarfield.object)
+      prevStarfield.dispose()
+    }
+
+    const nextStarfield = createStarfield({
+      seed: starSeedRef.current,
+      twinkle: twinkleEnabled,
+    })
+    starfieldRef.current = nextStarfield
+    scene.add(nextStarfield.object)
+    nextStarfield.syncToCamera(camera)
+
+    // Handle skydome based on animatedSky toggle
+    const prevSkydome = skydomeRef.current
+    const shouldHaveSkydome = animatedSky && !isE2e
+
+    if (prevSkydome && !shouldHaveSkydome) {
+      scene.remove(prevSkydome.object)
+      prevSkydome.dispose()
+      skydomeRef.current = null
+    } else if (!prevSkydome && shouldHaveSkydome) {
+      const nextSkydome = createSkydome({ seed: starSeedRef.current })
+      skydomeRef.current = nextSkydome
+      scene.add(nextSkydome.object)
+      nextSkydome.syncToCamera(camera)
+    }
+
+    invalidateRef.current?.()
+  }, [animatedSky, twinkleEnabled, isE2e])
+
+
+  // Lightweight RAF loop for twinkle animation.
+  useEffect(() => {
+    twinkleActiveRef.current = twinkleEnabled
+
+    if (!twinkleEnabled) return
+
+    let frame: number | null = null
+    const tick = (t: number) => {
+      if (!twinkleActiveRef.current) return
+      renderOnceRef.current?.(t)
+      frame = window.requestAnimationFrame(tick)
+    }
+
+    frame = window.requestAnimationFrame(tick)
+    return () => {
+      if (frame != null) window.cancelAnimationFrame(frame)
+    }
+  }, [twinkleEnabled])
+
   return (
     <div ref={containerRef} className="scene">
       {!isE2e && spiceClient ? (
@@ -1015,17 +1932,18 @@ export function SceneCanvas() {
           className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
         >
           <div className="sceneOverlayHeader">
-            {isSmallScreen ? (
-              <button
-                className="sceneOverlayButton"
-                onClick={() => setOverlayOpen((v) => !v)}
-                type="button"
-              >
-                {overlayOpen ? 'Hide controls' : 'Show controls'}
-              </button>
-            ) : (
-              <div className="sceneOverlayHeaderTitle">Controls</div>
-            )}
+            <div className="sceneOverlayHeaderTitle">Controls</div>
+
+            <button
+              className="sceneOverlayToggle"
+              onClick={() => setOverlayOpen((v) => !v)}
+              type="button"
+              aria-expanded={overlayOpen}
+              aria-controls="scene-overlay-body"
+              aria-label={overlayOpen ? 'Collapse controls' : 'Expand controls'}
+            >
+              {overlayOpen ? '▲' : '▼'}
+            </button>
 
             <div className="sceneOverlayHeaderActions">
               <button
@@ -1038,19 +1956,28 @@ export function SceneCanvas() {
                 ?
               </button>
               <button
+                className={`sceneOverlayButton ${lookModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
+                aria-pressed={lookModeEnabled}
+                onClick={() => setLookModeEnabled((v) => !v)}
+                type="button"
+                title="When enabled, 1-finger drag does free-look instead of orbit"
+              >
+                Look
+              </button>
+              <button
                 className={`sceneOverlayButton ${panModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
                 aria-pressed={panModeEnabled}
                 onClick={() => setPanModeEnabled((v) => !v)}
                 type="button"
                 title="When enabled, 1-finger drag pans instead of orbiting"
               >
-                Drag: {panModeEnabled ? 'Pan' : 'Orbit'}
+                Pan
               </button>
             </div>
           </div>
 
-          {!isSmallScreen || overlayOpen ? (
-            <div className="sceneOverlayBody">
+          {overlayOpen ? (
+            <div id="scene-overlay-body" className="sceneOverlayBody">
               <PlaybackControls spiceClient={spiceClient} />
 
               <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
@@ -1070,16 +1997,15 @@ export function SceneCanvas() {
                   </select>
                 </label>
 
-                <label className="sceneOverlayLabel">
-                  Scale
-                  <select
-                    value={scaleMode}
-                    onChange={(e) => setScaleMode(e.target.value as ScaleMode)}
-                  >
-                    <option value="enhanced">Enhanced</option>
-                    <option value="true">True</option>
-                  </select>
-                </label>
+                <button
+                  className="sceneOverlayButton"
+                  type="button"
+                  onClick={refocusSun}
+                  disabled={String(focusBody) === 'SUN'}
+                  title="Quickly refocus the scene on the Sun"
+                >
+                  Focus Sun
+                </button>
 
                 <label className="sceneOverlayCheckbox">
                   <input
@@ -1097,7 +2023,169 @@ export function SceneCanvas() {
                   />
                   Body-fixed axes
                 </label>
+                <label className="sceneOverlayCheckbox">
+                  <input
+                    type="checkbox"
+                    checked={orbitPathsEnabled}
+                    onChange={(e) => setOrbitPathsEnabled(e.target.checked)}
+                  />
+                  Orbit paths
+                </label>
+                <label className="sceneOverlayCheckbox">
+                  <input
+                    type="checkbox"
+                    checked={labelsEnabled}
+                    onChange={(e) => setLabelsEnabled(e.target.checked)}
+                  />
+                  Labels
+                </label>
               </div>
+
+              {/* Advanced tuning section */}
+              <div className="sceneOverlayRow" style={{ marginTop: '8px' }}>
+                <button
+                  className="sceneOverlayButton"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  type="button"
+                >
+                  {showAdvanced ? '▼ Advanced' : '▶ Advanced'}
+                </button>
+              </div>
+
+              {showAdvanced && (
+                <div className="sceneOverlayAdvanced" style={{ marginTop: '8px' }}>
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Camera FOV ({cameraFovDeg}°)
+                      <input
+                        type="range"
+                        min={30}
+                        max={90}
+                        step={1}
+                        value={cameraFovDeg}
+                        onChange={(e) => setCameraFovDeg(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Sun size ({sunScaleMultiplier}×)
+                      <input
+                        type="range"
+                        min={1}
+                        max={20}
+                        step={1}
+                        value={sunScaleMultiplier}
+                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Planet size ({formatScaleMultiplier(planetScaleMultiplier)}×)
+                      <input
+                        type="range"
+                        min={0}
+                        max={PLANET_SCALE_SLIDER_MAX}
+                        step={1}
+                        value={planetScaleSlider}
+                        onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+                  <div className="sceneOverlayRow" style={{ marginTop: '6px' }}>
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={animatedSky}
+                        onChange={(e) => setAnimatedSky(e.target.checked)}
+                      />
+                      Animated sky
+                    </label>
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={labelOcclusionEnabled}
+                        onChange={(e) => setLabelOcclusionEnabled(e.target.checked)}
+                      />
+                      Label occlusion
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={showRenderHud}
+                        onChange={(e) => setShowRenderHud(e.target.checked)}
+                      />
+                      Render HUD
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Orbit line width ({orbitLineWidthPx.toFixed(1)}px)
+                      <input
+                        type="range"
+                        min={0.5}
+                        max={10}
+                        step={0.1}
+                        value={orbitLineWidthPx}
+                        onChange={(e) => setOrbitLineWidthPx(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Orbit samples/orbit ({orbitSamplesPerOrbit})
+                      <input
+                        type="range"
+                        min={32}
+                        max={2048}
+                        step={32}
+                        value={orbitSamplesPerOrbit}
+                        onChange={(e) => setOrbitSamplesPerOrbit(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Orbit max total points
+                      <input
+                        type="number"
+                        min={256}
+                        step={256}
+                        value={orbitMaxTotalPoints}
+                        onChange={(e) => setOrbitMaxTotalPoints(Number(e.target.value))}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Quantum (s)
+                      <input
+                        type="number"
+                        min={0.001}
+                        step={0.01}
+                        value={quantumSec}
+                        onChange={handleQuantumChange}
+                        style={{ width: '100%' }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              )}
             </div>
           ) : null}
         </div>
@@ -1124,7 +2212,22 @@ export function SceneCanvas() {
         </div>
       ) : null}
 
+
+      {/* Selection Inspector - shows when a body is selected */}
+      {!isE2e && selectedBody && spiceClient ? (
+        <SelectionInspector
+          selectedBody={selectedBody}
+          focusBody={focusBody}
+          spiceClient={spiceClient}
+          etSec={etSec}
+          observer="SUN"
+          frame={J2000_FRAME}
+        />
+      ) : null}
       <canvas ref={canvasRef} className="sceneCanvas" />
+
+      {/* Render HUD overlays */}
+      {showRenderHud && <RenderHud stats={hudStats} />}
 
       <HelpOverlay isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>

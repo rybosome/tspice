@@ -1,6 +1,32 @@
 :root {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+  /* --- Design Tokens --- */
+
+  /* Phosphor green palette (instrument panel aesthetic) */
+  --phosphor-fg: #8f8;         /* bright green for main text/elements */
+  --phosphor-dim: #3a7;        /* muted green for borders/secondary */
+  --phosphor-border: #3a7;     /* alias for clarity in border contexts */
+
+  /* Panel backgrounds */
+  --panel-bg: rgba(10, 14, 20, 0.85);
+  --panel-border: rgba(255, 255, 255, 0.1);
+  
+  /* Interactive state backgrounds (consistent with phosphor palette) */
+  --hover-bg: rgba(136, 255, 136, 0.08);
+  --active-bg: rgba(136, 255, 136, 0.15);
+  --active-border: rgba(136, 255, 136, 0.4);
+
+  /* Spacing / sizing */
+  --radius-xs: 3px;
+  --stroke-1: 1px;
+
+  /* Typography */
+  --font-ui: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
     sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', monospace;
+  --font-size-sm: 11px;
+
+  /* Legacy / existing site defaults */
+  font-family: var(--font-ui);
   color: rgba(255, 255, 255, 0.9);
   background: #0b0f14;
 }

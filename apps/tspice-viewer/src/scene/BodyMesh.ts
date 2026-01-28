@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 
+import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
+
 export type BodyTextureKind = 'earth' | 'moon' | 'sun'
 
 export type CreateBodyMeshOptions = {
@@ -14,11 +16,6 @@ export type CreateBodyMeshOptions = {
 
   /** Optional, lightweight procedural texture (no binary assets). */
   textureKind?: BodyTextureKind
-}
-
-function resolveVitePublicUrl(pathOrUrl: string): string {
-  const base = new URL(import.meta.env.BASE_URL, window.location.href)
-  return new URL(pathOrUrl, base).toString()
 }
 
 function makeCanvasTexture(draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => void) {
@@ -142,6 +139,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 } {
   // Unit sphere geometry - scale is applied via mesh.scale
   const geometry = new THREE.SphereGeometry(1, 48, 24)
+  // Three.js spheres have their poles on ±Y, but SPICE IAU_* body-fixed frames use +Z as
+  // the north pole. Rotate the geometry so the mesh's local +Z corresponds to geographic north.
+  geometry.rotateX(Math.PI / 2)
 
   let disposed = false
 
