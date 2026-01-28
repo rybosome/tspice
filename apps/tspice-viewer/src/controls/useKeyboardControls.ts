@@ -369,7 +369,7 @@ export function useKeyboardControls({
         key !== 's' &&
         key !== 'd' &&
         key !== 'q' &&
-        key !== 'e'
+        key !== 'e' &&
         key !== 'arrowleft' &&
         key !== 'arrowright' &&
         key !== 'arrowup' &&
