@@ -21,24 +21,6 @@
   overscroll-behavior: none;
 }
 
-.sceneTitle {
-  position: absolute;
-  top: calc(8px + env(safe-area-inset-top, 0px));
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
-  margin: 0;
-  padding: 0;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  line-height: 1;
-  opacity: 0.75;
-  user-select: none;
-  pointer-events: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-}
-
 .sceneOverlay {
   position: absolute;
   left: 12px;
