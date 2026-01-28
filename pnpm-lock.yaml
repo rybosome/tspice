@@ -168,6 +168,22 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.6)
+    optionalDependencies:
+      '@rybosome/tspice-native-darwin-arm64':
+        specifier: workspace:*
+        version: link:../tspice-native-darwin-arm64
+      '@rybosome/tspice-native-darwin-x64':
+        specifier: workspace:*
+        version: link:../tspice-native-darwin-x64
+      '@rybosome/tspice-native-linux-x64-gnu':
+        specifier: workspace:*
+        version: link:../tspice-native-linux-x64-gnu
+
+  packages/tspice-native-darwin-arm64: {}
+
+  packages/tspice-native-darwin-x64: {}
+
+  packages/tspice-native-linux-x64-gnu: {}
 
 packages:
 

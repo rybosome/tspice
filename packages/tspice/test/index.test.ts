@@ -4,9 +4,9 @@ import { createBackend } from "@rybosome/tspice";
 import { tkvrsnToolkitE2e } from "./e2e/tkvrsn.js";
 
 describe("@rybosome/tspice", () => {
-  it("defaults to wasm backend", async () => {
+  it("defaults to auto backend (native-first, wasm fallback)", async () => {
     const backend = await createBackend();
-    expect(backend.kind).toBe("wasm");
+    expect(["node", "wasm"]).toContain(backend.kind);
   });
 
   it("supports calling tkvrsn(\"TOOLKIT\") end-to-end via WASM", async () => {

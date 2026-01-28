@@ -85,7 +85,7 @@ main().catch(console.error);
 - `createBackend(options?: { backend?: BackendKind; wasmUrl?: string | URL }): Promise<SpiceBackend>`
 - `createSpice(options?: { backend?: BackendKind; wasmUrl?: string | URL }): Promise<Spice>`
 - Types:
-  - `BackendKind` (currently `"node" | "wasm"`)
+  - `BackendKind` (currently `"auto" | "node" | "wasm" | "fake"`)
   - `SpiceBackend`
   - `SpiceKit`, `Spice`
   - Mid-level:
@@ -99,9 +99,10 @@ main().catch(console.error);
 import { createBackend } from "@rybosome/tspice";
 
 async function main() {
+  const autoBackend = await createBackend();
   const nodeBackend = await createBackend({ backend: "node" });
   const wasmBackend = await createBackend({ backend: "wasm" });
-  console.log(nodeBackend.kind, wasmBackend.kind);
+  console.log(autoBackend.kind, nodeBackend.kind, wasmBackend.kind);
 }
 
 main().catch(console.error);
@@ -109,7 +110,8 @@ main().catch(console.error);
 
 ### Backend notes
 
-- Node backend (`backend: "node"`): implemented by a native addon. It's currently best-effort / smoke-only and must be explicitly opted into via `createBackend({ backend: "node" })`. See [`@rybosome/tspice-backend-node`](../backend-node/README.md).
+- Auto backend (`backend: "auto"`, default): tries native first (via optional platform packages), falling back to WASM.
+- Node backend (`backend: "node"`): implemented by a native addon. Requires a compatible native binding to be present.
 - WASM backend (`backend: "wasm"`): implemented with a prebuilt `.wasm`. See [`@rybosome/tspice-backend-wasm`](../backend-wasm/README.md).
 
 ## Development

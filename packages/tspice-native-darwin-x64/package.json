@@ -1,0 +1,18 @@
+{
+  "name": "@rybosome/tspice-native-darwin-x64",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./index.js",
+  "os": ["darwin"],
+  "cpu": ["x64"],
+  "files": [
+    "index.js",
+    "tspice_backend_node.node",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

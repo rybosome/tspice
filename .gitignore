@@ -4,6 +4,7 @@ dist
 .cache
 .cache/cspice
 .cache/wasm-build
+packages/*/dist-publish
 packages/backend-node/native/generated
 
 *.tsbuildinfo
