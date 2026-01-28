@@ -189,8 +189,8 @@ export function SceneCanvas() {
     const cosPitch = Math.cos(controller.pitch)
     const currentOffsetDir = new THREE.Vector3(
       cosPitch * Math.cos(controller.yaw),
-      Math.sin(controller.pitch),
-      cosPitch * Math.sin(controller.yaw)
+      cosPitch * Math.sin(controller.yaw),
+      Math.sin(controller.pitch)
     )
     const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
 
@@ -417,6 +417,9 @@ export function SceneCanvas() {
     const NEAR_RADIUS_FRACTION = 0.1 // radius / 10
 
     const camera = new THREE.PerspectiveCamera(latestUiRef.current.cameraFovDeg, 1, DEFAULT_NEAR, 10_000)
+
+    // Z-up to match SPICE/IAU north (+Z) and keep orbit controls consistent.
+    camera.up.set(0, 0, 1)
     camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
@@ -1305,8 +1308,8 @@ export function SceneCanvas() {
                   const cosPitch = Math.cos(controller.pitch)
                   const currentOffsetDir = new THREE.Vector3(
                     cosPitch * Math.cos(controller.yaw),
-                    Math.sin(controller.pitch),
-                    cosPitch * Math.sin(controller.yaw)
+                    cosPitch * Math.sin(controller.yaw),
+                    Math.sin(controller.pitch)
                   )
                   const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
 

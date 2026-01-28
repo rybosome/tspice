@@ -139,6 +139,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 } {
   // Unit sphere geometry - scale is applied via mesh.scale
   const geometry = new THREE.SphereGeometry(1, 48, 24)
+  // Three.js spheres have their poles on ±Y, but SPICE IAU_* body-fixed frames use +Z as
+  // the north pole. Rotate the geometry so the mesh's local +Z corresponds to geographic north.
+  geometry.rotateX(Math.PI / 2)
 
   let disposed = false
 
