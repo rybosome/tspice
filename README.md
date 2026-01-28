@@ -28,8 +28,8 @@ import { createSpice } from "@rybosome/tspice";
 
 async function main() {
   const spice = await createSpice();
-  console.log(spice.backend.kind); // "wasm" (default)
-  console.log(spice.backend.spiceVersion());
+  console.log(spice.cspice.kind); // "wasm" (default)
+  console.log(spice.kit.toolkitVersion());
 }
 
 main().catch(console.error);
@@ -53,8 +53,8 @@ async function main() {
   const wasm = await createSpice();
   const node = await createSpice({ backend: "node" });
 
-  console.log(wasm.backend.kind); // "wasm"
-  console.log(node.backend.kind); // "node"
+  console.log(wasm.cspice.kind); // "wasm"
+  console.log(node.cspice.kind); // "node"
 }
 
 main().catch(console.error);
@@ -95,7 +95,7 @@ async function main() {
   const spice = await createSpice({ backend: "node" });
 
   // Node-only: load kernels directly from disk paths.
-  spice.loadKernel(LSK_ON_DISK);
+  spice.kit.loadKernel(LSK_ON_DISK);
 }
 
 main().catch(console.error);
@@ -114,8 +114,8 @@ const LSK_ON_DISK = "/path/to/your/kernels/naif0012.tls";
 async function main() {
   const spice = await createSpice({ backend: "node" });
 
-  spice.loadKernel({
-    // A stable identifier you can also use with `unloadKernel()`.
+  spice.kit.loadKernel({
+    // A stable identifier you can also use with `spice.kit.unloadKernel()`.
     // For WASM this is also the path inside the in-memory filesystem.
     path: "/kernels/naif0012.tls",
     bytes: fs.readFileSync(LSK_ON_DISK),
@@ -143,7 +143,7 @@ async function fetchKernelBytes(url: string): Promise<Uint8Array> {
 async function main() {
   const spice = await createSpice({ backend: "wasm" });
 
-  spice.loadKernel({
+  spice.kit.loadKernel({
     path: "/kernels/naif0012.tls",
     bytes: await fetchKernelBytes("/kernels/naif0012.tls"),
   });
@@ -161,9 +161,9 @@ async function main() {
   const spice = await createSpice();
 
   // Requires you to have already loaded an LSK + SPK kernels.
-  const et = spice.utcToEt("2025-01-01T00:00:00Z");
+  const et = spice.kit.utcToEt("2025-01-01T00:00:00Z");
 
-  const state = spice.getState({
+  const state = spice.kit.getState({
     target: "MARS",
     observer: "EARTH",
     at: et,
@@ -181,7 +181,7 @@ main().catch(console.error);
 
 This example computes the sub-solar point on a target body and then reports illumination angles at that point.
 
-Note: `createSpice()` currently exposes a *mid-level* API (`utcToEt`, `getState`, etc). Lower-level SPICE calls that aren't wrapped yet (like `subslr`) are available on `spice.backend`.
+Note: `createSpice()` exposes both a *mid-level* API (`spice.kit`) and lower-level CSPICE primitives (`spice.cspice`).
 
 ```ts
 import { createSpice } from "@rybosome/tspice";
@@ -192,9 +192,9 @@ async function main() {
   const spice = await createSpice();
 
   // Requires appropriate kernels (LSK + PCK + SPK, at minimum).
-  const et = spice.utcToEt("2025-01-01T00:00:00Z");
+  const et = spice.kit.utcToEt("2025-01-01T00:00:00Z");
 
-  const { spoint } = spice.backend.subslr(
+  const { spoint } = spice.cspice.subslr(
     "Near Point: Ellipsoid",
     "MARS",
     et,
@@ -203,9 +203,9 @@ async function main() {
     "SUN",
   );
 
-  const { lon, lat } = spice.backend.reclat(spoint);
+  const { lon, lat } = spice.cspice.reclat(spoint);
 
-  const { phase, incdnc, emissn } = spice.backend.ilumin(
+  const { phase, incdnc, emissn } = spice.cspice.ilumin(
     "Ellipsoid",
     "MARS",
     et,
@@ -305,7 +305,7 @@ flowchart LR
 
 - `packages/tspice` (`@rybosome/tspice`): public entrypoint.
   - `createBackend()` selects and instantiates a backend.
-  - `createSpice()` wraps the backend with a small, typed convenience surface (`loadKernel`, `utcToEt`, `getState`, ...).
+  - `createSpice()` returns `{ cspice, kit }`, where `kit` is a small, typed convenience surface (`loadKernel`, `utcToEt`, `getState`, ...).
 - `packages/backend-contract` (`@rybosome/tspice-backend-contract`): the shared interface (`SpiceBackend`) that all backends implement.
 - `packages/backend-wasm` (`@rybosome/tspice-backend-wasm`): WASM backend.
   - Loads kernels into an in-memory filesystem.
@@ -315,9 +315,9 @@ flowchart LR
 - `packages/core` (`@rybosome/tspice-core`): small utilities shared across packages.
 - `apps/tspice-viewer`: example consumer + Playwright e2e.
 
-### Reality check: `spice.backend` vs `spice.*`
+### Reality check: `spice.kit` vs `spice.cspice`
 
-Today, only a subset of SPICE calls are wrapped directly on the `Spice` type returned by `createSpice()`.
+Today, only a subset of SPICE calls are wrapped directly on `spice.kit`.
 
-- If you want a stable, ergonomic surface: use `spice.loadKernel()`, `spice.utcToEt()`, `spice.getState()`, etc.
-- If you need a lower-level SPICE call that isn't wrapped yet: use `spice.backend.<fn>()`.
+- If you want a stable, ergonomic surface: use `spice.kit.loadKernel()`, `spice.kit.utcToEt()`, `spice.kit.getState()`, etc.
+- If you need a lower-level SPICE call that isn't wrapped yet: use `spice.cspice.<fn>()`.
