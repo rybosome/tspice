@@ -568,3 +568,85 @@
   align-items: center;
   gap: 8px;
 }
+
+/* Selection Inspector Panel */
+.selectionInspector {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 2;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(10, 14, 20, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  font-size: 12px;
+  min-width: 180px;
+  max-width: 260px;
+}
+
+.selectionInspectorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.selectionInspectorTitle {
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.selectionInspectorBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.selectionInspectorRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.selectionInspectorLabel {
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+.selectionInspectorValue {
+  color: rgba(255, 255, 255, 0.95);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Mobile: selection inspector becomes a compact panel above controls */
+@media (max-width: 720px) {
+  .selectionInspector {
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    bottom: auto;
+    max-width: none;
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .selectionInspectorHeader {
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+  }
+
+  .selectionInspectorTitle {
+    font-size: 13px;
+  }
+
+  .selectionInspectorRow {
+    gap: 8px;
+  }
+}
