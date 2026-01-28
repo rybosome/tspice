@@ -9,6 +9,11 @@
   /* Panel backgrounds */
   --panel-bg: rgba(10, 14, 20, 0.85);
   --panel-border: rgba(255, 255, 255, 0.1);
+  
+  /* Interactive state backgrounds (consistent with phosphor palette) */
+  --hover-bg: rgba(136, 255, 136, 0.08);
+  --active-bg: rgba(136, 255, 136, 0.15);
+  --active-border: rgba(136, 255, 136, 0.4);
 
   /* Spacing / sizing */
   --radius-xs: 3px;
