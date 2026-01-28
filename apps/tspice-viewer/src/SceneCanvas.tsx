@@ -213,12 +213,18 @@ export function SceneCanvas() {
   // Control pane collapsed state: starts collapsed on all screen sizes
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
+  // New: Look mode toggle for touch - when enabled, 1-finger drag does free-look instead of orbit
+  const [lookModeEnabled, setLookModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
+  const lookModeEnabledRef = useRef(lookModeEnabled)
   const focusOnOriginRef = useRef<(() => void) | null>(null)
   const selectedBodyIdRef = useRef<BodyId | undefined>(undefined)
   const initialControllerStateRef = useRef<CameraControllerState | null>(null)
+  // Ref for resetting look offset (used by keyboard Escape and focus changes)
+  const resetLookOffsetRef = useRef<(() => void) | null>(null)
   panModeEnabledRef.current = panModeEnabled
+  lookModeEnabledRef.current = lookModeEnabled
 
   const handleQuantumChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value)
@@ -235,6 +241,7 @@ export function SceneCanvas() {
     invalidate: () => invalidateRef.current?.(),
     cancelFocusTween: () => cancelFocusTweenRef.current?.(),
     focusOnOrigin: () => focusOnOriginRef.current?.(),
+    resetLookOffset: () => resetLookOffsetRef.current?.(),
     initialControllerStateRef,
     toggleLabels: () => setLabelsEnabled((v) => !v),
     enabled: !isE2e,
@@ -559,6 +566,13 @@ export function SceneCanvas() {
     controllerRef.current = controller
     cameraRef.current = camera
 
+    // Expose resetLookOffset to keyboard controls
+    resetLookOffsetRef.current = () => {
+      controller.resetLookOffset()
+      controller.applyToCamera(camera)
+      invalidate()
+    }
+
     const starSeed = (() => {
       const fromUrl = search.get('starSeed') ?? search.get('seed')
       if (fromUrl) {
@@ -737,8 +751,11 @@ export function SceneCanvas() {
 
       const clickMoveThresholdPx = 6
       const orbitSensitivity = 0.006
+      const freeLookSensitivity = 0.003
+      const rollSensitivity = 0.005
       const wheelZoomScale = 0.001
       const focusTweenMs = 320
+      const ROLL_STEP_RAD = Math.PI / 36 // 5 degrees for Q/E keys
 
       let selectedBodyId: string | undefined
 
@@ -765,7 +782,8 @@ export function SceneCanvas() {
         })
       }
 
-      type DragMode = 'orbit' | 'pan'
+      // Drag modes: orbit, pan, freeLook, roll
+      type DragMode = 'orbit' | 'pan' | 'freeLook' | 'roll'
 
       let mouseDown:
         | {
@@ -780,12 +798,15 @@ export function SceneCanvas() {
         | undefined
 
       const activeTouches = new Map<number, { x: number; y: number }>()
+      // Track last angle for 2-finger rotation gesture
+      let lastTouchAngle: number | null = null
+      
       let touchState:
         | { kind: 'none' }
         | {
             kind: 'single'
             pointerId: number
-            mode: DragMode
+            mode: 'orbit' | 'pan' | 'freeLook'
             startX: number
             startY: number
             lastX: number
@@ -920,10 +941,18 @@ export function SceneCanvas() {
           canvas.setPointerCapture(ev.pointerId)
 
           if (activeTouches.size === 1) {
+            // Determine mode based on toggles: Look > Pan > Orbit
+            let mode: 'orbit' | 'pan' | 'freeLook' = 'orbit'
+            if (lookModeEnabledRef.current) {
+              mode = 'freeLook'
+            } else if (panModeEnabledRef.current) {
+              mode = 'pan'
+            }
+            
             touchState = {
               kind: 'single',
               pointerId: ev.pointerId,
-              mode: panModeEnabledRef.current ? 'pan' : 'orbit',
+              mode,
               startX: ev.clientX,
               startY: ev.clientY,
               lastX: ev.clientX,
@@ -944,6 +973,9 @@ export function SceneCanvas() {
             const centerY = (a[1].y + b[1].y) / 2
             const dist = Math.sqrt(dx * dx + dy * dy)
 
+            // Initialize angle for rotation tracking
+            lastTouchAngle = Math.atan2(dy, dx)
+
             touchState = {
               kind: 'pinch',
               ids,
@@ -955,16 +987,37 @@ export function SceneCanvas() {
           }
         }
 
-        const isPan = ev.button === 2 || (ev.button === 0 && ev.shiftKey)
-        const isOrbit = ev.button === 0 && !ev.shiftKey
+        // Desktop pointer handling
+        // Button 0 = LMB, Button 1 = MMB, Button 2 = RMB
+        const isLMB = ev.button === 0
+        const isMMB = ev.button === 1
+        const isRMB = ev.button === 2
+        
+        // Determine mode:
+        // - LMB (no shift): orbit
+        // - LMB + Shift: pan
+        // - MMB: pan
+        // - RMB (no shift): free-look
+        // - RMB + Shift: roll
+        let mode: DragMode | null = null
+        
+        if (isLMB && !ev.shiftKey) {
+          mode = 'orbit'
+        } else if ((isLMB && ev.shiftKey) || isMMB) {
+          mode = 'pan'
+        } else if (isRMB && !ev.shiftKey) {
+          mode = 'freeLook'
+        } else if (isRMB && ev.shiftKey) {
+          mode = 'roll'
+        }
 
-        if (!isPan && !isOrbit) return
+        if (!mode) return
 
         ev.preventDefault()
 
         mouseDown = {
           pointerId: ev.pointerId,
-          mode: isPan ? 'pan' : 'orbit',
+          mode,
           startX: ev.clientX,
           startY: ev.clientY,
           lastX: ev.clientX,
@@ -992,6 +1045,7 @@ export function SceneCanvas() {
               const [a, b] = Array.from(activeTouches.entries())
               const dx = a[1].x - b[1].x
               const dy = a[1].y - b[1].y
+              lastTouchAngle = Math.atan2(dy, dx)
               touchState = {
                 kind: 'pinch',
                 ids: [a[0], b[0]],
@@ -1008,6 +1062,9 @@ export function SceneCanvas() {
             if (!a || !b) {
               // Pick the first two active touches.
               const [na, nb] = Array.from(activeTouches.entries())
+              const dx = na[1].x - nb[1].x
+              const dy = na[1].y - nb[1].y
+              lastTouchAngle = Math.atan2(dy, dx)
               touchState = {
                 kind: 'pinch',
                 ids: [na[0], nb[0]],
@@ -1033,6 +1090,22 @@ export function SceneCanvas() {
               const ratio = touchState.lastDistance / dist
               controller.radius *= ratio
             }
+
+            // 2-finger rotation gesture (twist) for roll
+            const dx = a.x - b.x
+            const dy = a.y - b.y
+            const currentAngle = Math.atan2(dy, dx)
+            
+            if (lastTouchAngle !== null) {
+              let deltaAngle = currentAngle - lastTouchAngle
+              // Wrap to [-PI, PI]
+              while (deltaAngle > Math.PI) deltaAngle -= 2 * Math.PI
+              while (deltaAngle < -Math.PI) deltaAngle += 2 * Math.PI
+              
+              // Apply roll (negative because twist direction)
+              controller.applyRollDelta(-deltaAngle)
+            }
+            lastTouchAngle = currentAngle
 
             touchState.lastCenterX = centerX
             touchState.lastCenterY = centerY
@@ -1070,8 +1143,10 @@ export function SceneCanvas() {
           if (touchState.mode === 'orbit') {
             controller.yaw -= dx * orbitSensitivity
             controller.pitch -= dy * orbitSensitivity
-          } else {
+          } else if (touchState.mode === 'pan') {
             controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+          } else if (touchState.mode === 'freeLook') {
+            controller.applyFreeLookDelta(dx, dy, freeLookSensitivity)
           }
 
           controller.applyToCamera(camera)
@@ -1108,9 +1183,14 @@ export function SceneCanvas() {
         if (mouseDown.mode === 'orbit') {
           controller.yaw -= dx * orbitSensitivity
           controller.pitch -= dy * orbitSensitivity
-        } else {
+        } else if (mouseDown.mode === 'pan') {
           const rect = canvas.getBoundingClientRect()
           controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+        } else if (mouseDown.mode === 'freeLook') {
+          controller.applyFreeLookDelta(dx, dy, freeLookSensitivity)
+        } else if (mouseDown.mode === 'roll') {
+          // Use horizontal movement for roll
+          controller.applyRollDelta(dx * rollSensitivity)
         }
 
         controller.applyToCamera(camera)
@@ -1157,6 +1237,8 @@ export function SceneCanvas() {
                 const selectionChanged = nextSelectedBodyId !== selectedBodyId
                 if (selectionChanged) {
                   setSelectedMesh(hitMesh)
+                  // Clear look offset when focusing new object
+                  controller.resetLookOffset()
                   if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
                 }
 
@@ -1174,21 +1256,30 @@ export function SceneCanvas() {
 
           if (activeTouches.size === 0) {
             touchState = { kind: 'none' }
+            lastTouchAngle = null
             return
           }
 
           if (activeTouches.size === 1) {
             const [nextId, nextPos] = Array.from(activeTouches.entries())[0]
+            // Determine mode based on toggles: Look > Pan > Orbit
+            let mode: 'orbit' | 'pan' | 'freeLook' = 'orbit'
+            if (lookModeEnabledRef.current) {
+              mode = 'freeLook'
+            } else if (panModeEnabledRef.current) {
+              mode = 'pan'
+            }
             touchState = {
               kind: 'single',
               pointerId: nextId,
-              mode: panModeEnabledRef.current ? 'pan' : 'orbit',
+              mode,
               startX: nextPos.x,
               startY: nextPos.y,
               lastX: nextPos.x,
               lastY: nextPos.y,
               isDragging: false,
             }
+            lastTouchAngle = null
             return
           }
 
@@ -1196,6 +1287,7 @@ export function SceneCanvas() {
           const [a, b] = Array.from(activeTouches.entries())
           const dx = a[1].x - b[1].x
           const dy = a[1].y - b[1].y
+          lastTouchAngle = Math.atan2(dy, dx)
           touchState = {
             kind: 'pinch',
             ids: [a[0], b[0]],
@@ -1246,6 +1338,8 @@ export function SceneCanvas() {
         const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
         if (nextSelectedBodyId !== selectedBodyId) {
           setSelectedMesh(hitMesh)
+          // Clear look offset when focusing new object
+          controller.resetLookOffset()
           if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
           // Let focus-body changes drive camera centering + auto-zoom.
           return
@@ -1483,6 +1577,8 @@ export function SceneCanvas() {
 
           if (shouldAutoZoom) {
             cancelFocusTween?.()
+            // Clear look offset when auto-focusing a new body
+            controller.resetLookOffset()
           }
 
           const focusState = loadedSpiceClient.getBodyState({
@@ -1759,6 +1855,7 @@ export function SceneCanvas() {
       renderOnceRef.current = null
       cancelFocusTweenRef.current = null
       focusOnOriginRef.current = null
+      resetLookOffsetRef.current = null
 
       updateSceneRef.current = null
 
@@ -1859,13 +1956,22 @@ export function SceneCanvas() {
                 ?
               </button>
               <button
+                className={`sceneOverlayButton ${lookModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
+                aria-pressed={lookModeEnabled}
+                onClick={() => setLookModeEnabled((v) => !v)}
+                type="button"
+                title="When enabled, 1-finger drag does free-look instead of orbit"
+              >
+                Look
+              </button>
+              <button
                 className={`sceneOverlayButton ${panModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
                 aria-pressed={panModeEnabled}
                 onClick={() => setPanModeEnabled((v) => !v)}
                 type="button"
                 title="When enabled, 1-finger drag pans instead of orbiting"
               >
-                Drag: {panModeEnabled ? 'Pan' : 'Orbit'}
+                Pan
               </button>
             </div>
           </div>

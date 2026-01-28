@@ -11,6 +11,8 @@ const ORBIT_SPEED_RAD_PER_SEC = ORBIT_STEP * 20
 const PAN_SPEED_PX_PER_SEC = 600
 /** Zoom factor per key press */
 const ZOOM_FACTOR = 1.15
+/** Roll step in radians per Q/E key press (5 degrees) */
+const ROLL_STEP_RAD = Math.PI / 36
 
 export interface KeyboardControlsOptions {
   /** CameraController ref */
@@ -27,6 +29,8 @@ export interface KeyboardControlsOptions {
   focusOnOrigin?: () => void
   /** Toggle labels visibility */
   toggleLabels?: () => void
+  /** Reset the free-look offset (recenter view) */
+  resetLookOffset?: () => void
   /** Snapshot of the initial controller state (used for Reset / R). */
   initialControllerStateRef?: React.RefObject<CameraControllerState | null>
   /** Whether keyboard controls are enabled */
@@ -53,8 +57,10 @@ function isEditableElement(target: EventTarget | null): boolean {
  * - Shift + Arrow keys: Pan
  * - W/A/S/D: Pan (alternate)
  * - +/=/- : Zoom in/out
+ * - Q/E: Roll left/right
  * - F/C: Focus/center on origin (reset view target)
  * - R/Home: Reset view
+ * - Escape: Recenter view (clear look offset only)
  * - Space: Play/pause time
  * - [ / ]: Step time backward/forward
  * - G: Go to selected (TODO: not implemented yet - requires selection state)
@@ -68,6 +74,7 @@ export function useKeyboardControls({
   cancelFocusTween,
   focusOnOrigin,
   toggleLabels,
+  resetLookOffset,
   initialControllerStateRef,
   enabled = true,
 }: KeyboardControlsOptions) {
@@ -76,13 +83,16 @@ export function useKeyboardControls({
   const cancelFocusTweenRef = useRef(cancelFocusTween)
   const focusOnOriginRef = useRef(focusOnOrigin)
   const toggleLabelsRef = useRef(toggleLabels)
+  const resetLookOffsetRef = useRef(resetLookOffset)
 
   useEffect(() => {
     invalidateRef.current = invalidate
     cancelFocusTweenRef.current = cancelFocusTween
     focusOnOriginRef.current = focusOnOrigin
     toggleLabelsRef.current = toggleLabels
-  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleLabels])
+    resetLookOffsetRef.current = resetLookOffset
+    toggleLabelsRef.current = toggleLabels
+  }, [invalidate, cancelFocusTween, focusOnOrigin, resetLookOffset, toggleLabels])
 
   useEffect(() => {
     if (!enabled) return
@@ -262,6 +272,12 @@ export function useKeyboardControls({
           e.preventDefault()
           timeStore.stepForward()
           return
+
+        case 'Escape':
+          // Recenter view: clear look offset only (keeps orbit position/target)
+          e.preventDefault()
+          resetLookOffsetRef.current?.()
+          return
       }
 
       // Camera-dependent shortcuts require controller + camera
@@ -287,6 +303,23 @@ export function useKeyboardControls({
           e.preventDefault()
           cancelFocusTweenRef.current?.()
           controller.radius *= ZOOM_FACTOR
+          doInvalidate()
+          break
+
+        // Roll controls: Q/E
+        case 'q':
+        case 'Q':
+          e.preventDefault()
+          cancelFocusTweenRef.current?.()
+          controller.applyRollDelta(-ROLL_STEP_RAD) // Roll left (counter-clockwise)
+          doInvalidate()
+          break
+
+        case 'e':
+        case 'E':
+          e.preventDefault()
+          cancelFocusTweenRef.current?.()
+          controller.applyRollDelta(ROLL_STEP_RAD) // Roll right (clockwise)
           doInvalidate()
           break
 
