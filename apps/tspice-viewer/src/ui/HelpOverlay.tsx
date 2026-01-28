@@ -104,8 +104,9 @@ export function HelpOverlay({ isOpen, onClose }: HelpOverlayProps) {
               <div className="helpControlGroup">
                 <h4 className="helpControlGroupTitle">Selection</h4>
                 <p>
-                  Click or tap any planet to select it and center the view. Use the <strong>Focus</strong>{' '}
-                  dropdown to jump to a specific body.
+                  Click or tap any planet to select it and center the view. Use the{' '}
+                  <strong>Focus</strong> dropdown to jump to a specific body. Selection inspector
+                  is coming in a future update.
                 </p>
               </div>
               <div className="helpControlGroup">
@@ -140,6 +141,7 @@ export function HelpOverlay({ isOpen, onClose }: HelpOverlayProps) {
                   <li><strong>+ / − (or =):</strong> Zoom in/out</li>
                   <li><strong>F or C:</strong> Focus/center view</li>
                   <li><strong>R or Home:</strong> Reset view</li>
+                  <li><strong>L:</strong> Toggle body labels</li>
                 </ul>
               </div>
               <div className="helpControlGroup">
