@@ -29,7 +29,9 @@ import { SelectionInspector } from './ui/SelectionInspector.js'
 // -----------------------------------------------------------------------------
 // Home camera presets (world units, target at origin)
 // -----------------------------------------------------------------------------
-const HOME_CAMERA_PRESETS: Partial<Record<string, CameraControllerState>> = {
+type HomePresetKey = 'EARTH' | 'VENUS'
+
+const HOME_CAMERA_PRESETS: Record<HomePresetKey, CameraControllerState> = {
   EARTH: CameraController.stateFromPose({
     position: new THREE.Vector3(0.0137, 0.0294, 0.0095),
     quaternion: new THREE.Quaternion(0.13, 0.585, 0.782, 0.174),
@@ -42,8 +44,28 @@ const HOME_CAMERA_PRESETS: Partial<Record<string, CameraControllerState>> = {
   }),
 }
 
+function getHomePresetAliases(key: HomePresetKey): readonly string[] {
+  // We accept both the symbolic name and the NAIF IDs used elsewhere in the UI.
+  switch (key) {
+    case 'EARTH':
+      // 3 = Earth-Moon barycenter, 399 = Earth
+      return ['EARTH', '3', '399']
+    case 'VENUS':
+      // 2 = Venus barycenter, 299 = Venus
+      return ['VENUS', '2', '299']
+  }
+}
+
+function getHomePresetKey(focusBody: BodyRef): HomePresetKey | null {
+  const key = String(focusBody).toUpperCase()
+  if (getHomePresetAliases('EARTH').includes(key)) return 'EARTH'
+  if (getHomePresetAliases('VENUS').includes(key)) return 'VENUS'
+  return null
+}
+
 function getHomePresetState(focusBody: BodyRef): CameraControllerState | null {
-  return HOME_CAMERA_PRESETS[String(focusBody)] ?? null
+  const key = getHomePresetKey(focusBody)
+  return key ? HOME_CAMERA_PRESETS[key] : null
 }
 
 // -----------------------------------------------------------------------------
@@ -251,10 +273,12 @@ export function SceneCanvas() {
   if (!resetControllerStateByBodyRef.current) {
     resetControllerStateByBodyRef.current = new Map<string, CameraControllerState>()
 
-    const earth = getHomePresetState('EARTH')
-    if (earth) resetControllerStateByBodyRef.current.set('EARTH', earth)
-    const venus = getHomePresetState('VENUS')
-    if (venus) resetControllerStateByBodyRef.current.set('VENUS', venus)
+    for (const presetKey of Object.keys(HOME_CAMERA_PRESETS) as HomePresetKey[]) {
+      const preset = HOME_CAMERA_PRESETS[presetKey]
+      for (const alias of getHomePresetAliases(presetKey)) {
+        resetControllerStateByBodyRef.current.set(alias, preset)
+      }
+    }
   }
   // Ref for resetting look offset (used by keyboard Escape and focus changes)
   const resetLookOffsetRef = useRef<(() => void) | null>(null)
