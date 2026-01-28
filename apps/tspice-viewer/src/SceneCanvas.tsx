@@ -6,7 +6,7 @@ import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient, type Vec3Km } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
-import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
+import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies, type BodyId } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
 import { createRingMesh } from './scene/RingMesh.js'
@@ -18,6 +18,7 @@ import { OrbitPaths } from './scene/orbits/OrbitPaths.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
+import { LabelOverlay, type LabelBody } from './labels/LabelOverlay.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
 
@@ -45,6 +46,7 @@ export function SceneCanvas() {
 
   const starSeedRef = useRef<number>(1337)
   const starfieldRef = useRef<ReturnType<typeof createStarfield> | null>(null)
+  const labelOverlayRef = useRef<LabelOverlay | null>(null)
   const skydomeRef = useRef<ReturnType<typeof createSkydome> | null>(null)
 
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
@@ -70,6 +72,10 @@ export function SceneCanvas() {
   // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
+  // Labels toggle (non-advanced, default off)
+  const [labelsEnabled, setLabelsEnabled] = useState(false)
+  // Occlusion toggle for labels (advanced, default off)
+  const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
   // Single toggle for animated sky effects (skydome shader + starfield twinkle).
   // Disabled by default for e2e tests to keep snapshots deterministic.
   const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
@@ -120,6 +126,7 @@ export function SceneCanvas() {
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   const focusOnOriginRef = useRef<(() => void) | null>(null)
+  const selectedBodyIdRef = useRef<BodyId | undefined>(undefined)
   const initialControllerStateRef = useRef<CameraControllerState | null>(null)
   panModeEnabledRef.current = panModeEnabled
 
@@ -139,6 +146,7 @@ export function SceneCanvas() {
     cancelFocusTween: () => cancelFocusTweenRef.current?.(),
     focusOnOrigin: () => focusOnOriginRef.current?.(),
     initialControllerStateRef,
+    toggleLabels: () => setLabelsEnabled((v) => !v),
     enabled: !isE2e,
   })
 
@@ -285,6 +293,8 @@ export function SceneCanvas() {
         orbitSamplesPerOrbit: number
         orbitMaxTotalPoints: number
         orbitPathsEnabled: boolean
+        labelsEnabled: boolean
+        labelOcclusionEnabled: boolean
       }) => void)
     | null
   >(null)
@@ -303,6 +313,8 @@ export function SceneCanvas() {
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
     orbitPathsEnabled,
+    labelsEnabled,
+    labelOcclusionEnabled,
   })
   latestUiRef.current = {
     focusBody,
@@ -316,6 +328,8 @@ export function SceneCanvas() {
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
     orbitPathsEnabled,
+    labelsEnabled,
+    labelOcclusionEnabled,
   }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
@@ -343,6 +357,8 @@ export function SceneCanvas() {
       orbitSamplesPerOrbit,
       orbitMaxTotalPoints,
       orbitPathsEnabled,
+      labelsEnabled,
+      labelOcclusionEnabled,
     })
   }, [
     focusBody,
@@ -355,6 +371,8 @@ export function SceneCanvas() {
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
     orbitPathsEnabled,
+    labelsEnabled,
+    labelOcclusionEnabled,
   ])
 
   // Imperatively update camera FOV when the slider changes
@@ -654,6 +672,7 @@ export function SceneCanvas() {
         if (selected) {
           selected = undefined
           selectedBodyId = undefined
+          selectedBodyIdRef.current = undefined
           selectionRing?.setTarget(undefined)
           stopSelectionPulse()
           invalidate()
@@ -666,6 +685,9 @@ export function SceneCanvas() {
         }
 
         selectedBodyId = String(mesh.userData.bodyId ?? '') || undefined
+        // Keep ref in sync for label overlay
+        const registry = BODY_REGISTRY.find((r) => String(r.body) === selectedBodyId)
+        selectedBodyIdRef.current = registry?.id
 
         // Subtle world-space ring indicator around the selected body.
         selectionRing?.setTarget(mesh)
@@ -1241,6 +1263,20 @@ export function SceneCanvas() {
           scene.add(j2000Axes.object)
         }
 
+        // Label overlay (only in interactive mode)
+        if (!isE2e && container) {
+          const labelOverlay = new LabelOverlay({
+            container,
+            camera,
+            kmToWorld,
+          })
+          labelOverlayRef.current = labelOverlay
+          disposers.push(() => {
+            labelOverlay.dispose()
+            labelOverlayRef.current = null
+          })
+        }
+
         let lastAutoZoomFocusBody: BodyRef | undefined
 
         const bodyPosKmByKey = new Map<string, Vec3Km>()
@@ -1259,6 +1295,8 @@ export function SceneCanvas() {
           orbitSamplesPerOrbit: number
           orbitMaxTotalPoints: number
           orbitPathsEnabled: boolean
+          labelsEnabled: boolean
+          labelOcclusionEnabled: boolean
         }) => {
           const shouldAutoZoom =
             !isE2e &&
@@ -1476,6 +1514,32 @@ export function SceneCanvas() {
           // TODO: Eclipse/shadow occlusion could be added here by checking if another body
           // lies along the sun direction, but this adds complexity for marginal visual benefit.
           dir.position.copy(dirPos.multiplyScalar(10))
+
+          // Update label overlay
+          if (labelOverlayRef.current) {
+            // Build label bodies from scene bodies
+            const labelBodies: LabelBody[] = bodies.map((b) => {
+              const registry = BODY_REGISTRY.find((r) => String(r.body) === String(b.body))
+              return {
+                id: (registry?.id ?? String(b.body)) as BodyId,
+                label: registry?.style.label ?? String(b.body),
+                kind: registry?.kind ?? 'planet',
+                mesh: b.mesh,
+                radiusKm: b.radiusKm,
+              }
+            })
+
+            labelOverlayRef.current.update({
+              bodies: labelBodies,
+              focusBodyId: (BODY_REGISTRY.find((r) => String(r.body) === String(next.focusBody))?.id) as BodyId | undefined,
+              selectedBodyId: selectedBodyIdRef.current,
+              labelsEnabled: next.labelsEnabled,
+              occlusionEnabled: next.labelOcclusionEnabled,
+              pickables,
+              sunScaleMultiplier: next.sunScaleMultiplier,
+              planetScaleMultiplier: next.planetScaleMultiplier,
+            })
+          }
 
           invalidate()
         }
@@ -1695,6 +1759,14 @@ export function SceneCanvas() {
                   />
                   Orbit paths
                 </label>
+                <label className="sceneOverlayCheckbox">
+                  <input
+                    type="checkbox"
+                    checked={labelsEnabled}
+                    onChange={(e) => setLabelsEnabled(e.target.checked)}
+                  />
+                  Labels
+                </label>
               </div>
 
               {/* Advanced tuning section */}
@@ -1761,6 +1833,14 @@ export function SceneCanvas() {
                         onChange={(e) => setAnimatedSky(e.target.checked)}
                       />
                       Animated sky
+                    </label>
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={labelOcclusionEnabled}
+                        onChange={(e) => setLabelOcclusionEnabled(e.target.checked)}
+                      />
+                      Label occlusion
                     </label>
                   </div>
 
