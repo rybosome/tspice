@@ -7,7 +7,7 @@ export type BodyTextureKind = 'earth' | 'moon' | 'sun'
 export type CreateBodyMeshOptions = {
   color: THREE.ColorRepresentation
 
-  /** Optional texture multiplier color (defaults to white). */
+  /** Optional texture multiplier color (defaults to `options.color`). */
   textureColor?: THREE.ColorRepresentation
 
   /**
@@ -181,7 +181,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // Use `options.color` as a fallback when no texture is present.
   // If a body needs dimming/tinting while textured, use `options.textureColor`.
   const baseColor = map
-    ? new THREE.Color(options.textureColor ?? '#ffffff')
+    ? new THREE.Color(options.textureColor ?? options.color)
     : new THREE.Color(options.color)
   const material = new THREE.MeshStandardMaterial({
     color: baseColor,
@@ -208,9 +208,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       if (!map) return
 
       material.map = map
-      // If a texture is present, default to white to avoid accidental tinting
-      // (override via `options.textureColor`).
-      material.color.set(options.textureColor ?? '#ffffff')
+      // Note: `material.color` multiplies `material.map`.
+      // Only override the default multiplier if `textureColor` is explicitly set.
+      material.color.set(options.textureColor ?? options.color)
       material.needsUpdate = true
     }),
   }

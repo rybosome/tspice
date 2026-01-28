@@ -121,6 +121,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     style: {
       radiusKm: 6_371,
       color: "#2a9d8f",
+      textureColor: "#ffffff",
       textureUrl: "textures/planets/earth.png",
       label: "Earth",
     },
