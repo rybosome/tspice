@@ -275,7 +275,7 @@ type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
-  // Phase 6: coordinate conversions + small vector/matrix helpers
+  // Coordinate conversions + small vector/matrix helpers
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -1624,7 +1624,7 @@ function tspiceCallOccult(
   }
 }
 
-// --- Phase 6: coordinate conversions + small vector/matrix helpers ---
+// --- coordinate conversions + small vector/matrix helpers ---
 
 function tspiceCallReclat(
   module: EmscriptenModule,
@@ -2139,7 +2139,6 @@ export async function createWasmBackend(
       return toolkitVersion;
     },
 
-    // Phase 1
     furnsh(kernel: KernelSource) {
       if (typeof kernel === "string") {
         tspiceCall1Path(module, module._tspice_furnsh, kernel);
@@ -2176,7 +2175,6 @@ export async function createWasmBackend(
       return tspiceCallTimout(module, et, picture);
     },
 
-    // Phase 2
     bodn2c(name: string) {
       const out = tspiceCallFoundInt(module, module._tspice_bodn2c, name);
       if (!out.found) return { found: false };
@@ -2222,7 +2220,6 @@ export async function createWasmBackend(
       return tspiceCallCkgpav(module, inst, sclkdp, tol, ref);
     },
 
-    // Phase 3
     spkezr(target: string, et: number, ref: string, abcorr: AbCorr | string, observer: string) {
       return tspiceCallSpkezr(module, target, et, ref, abcorr, observer);
     },
@@ -2280,8 +2277,6 @@ export async function createWasmBackend(
     sxform(from: string, to: string, et: number) {
       return tspiceCallSxform(module, from, to, et);
     },
-
-    // Phase 6: coordinate conversions + small vector/matrix helpers
 
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),

@@ -40,7 +40,7 @@ function mat3TimesMat3T(m: number[]): number[] {
   return out;
 }
 
-describe("Phase 3: frames + SPK ephemerides", () => {
+describe("frames + SPK ephemerides", () => {
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: pxform/sxform/spkezr/spkpos", async () => {

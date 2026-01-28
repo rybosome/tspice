@@ -171,11 +171,11 @@ export interface SpiceBackend {
   /**
    * Thin wrapper over the SPICE primitive `tkvrsn()`.
    *
-   * Phase 1: only the TOOLKIT item is required.
+   * Currently, only the TOOLKIT item is exposed.
    */
   tkvrsn(item: "TOOLKIT"): string;
 
-  // --- Phase 3 low-level primitives ---
+  // --- low-level primitives ---
 
   /** Convert a time string to ET seconds past J2000. */
   str2et(time: string): number;
@@ -190,7 +190,7 @@ export interface SpiceBackend {
    */
   timout(et: number, picture: string): string;
 
-  // --- Phase 4 IDs / names ---
+  // --- IDs / names ---
 
   bodn2c(name: string): Found<{ code: number }>;
   bodc2n(code: number): Found<{ name: string }>;
@@ -201,7 +201,7 @@ export interface SpiceBackend {
   cidfrm(center: number): Found<{ frcode: number; frname: string }>;
   cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
-  // --- Phase 5 SCLK conversions + CK attitude ---
+  // --- SCLK conversions + CK attitude ---
 
   /** Convert an encoded SCLK string to ET seconds past J2000. */
   scs2e(sc: number, sclkch: string): number;
@@ -307,7 +307,7 @@ export interface SpiceBackend {
     et: number,
   ): number;
 
-  // --- Phase 6: coordinate conversions + small vector/matrix helpers ---
+  // --- coordinate conversions + small vector/matrix helpers ---
 
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): SpiceVector3;
