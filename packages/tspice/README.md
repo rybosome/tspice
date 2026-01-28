@@ -33,6 +33,16 @@ At runtime, `createBackend()` chooses a backend and returns a `Promise<SpiceBack
 
 This repo is currently an A0 scaffold and packages are marked `private: true`, so you typically use it via the workspace.
 
+### ESM-only (published package)
+
+The published `@rybosome/tspice` package is **ESM-only** (`type: "module"`). It does not ship a CommonJS (`require()`) entrypoint.
+
+If you're in a CommonJS project, use a dynamic import:
+
+```js
+const { createBackend } = await import("@rybosome/tspice");
+```
+
 ## Usage (Quickstart)
 
 ```ts
