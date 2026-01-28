@@ -88,24 +88,24 @@ describe("createBackend() types", () => {
 });
 
 describe("createSpice() types", () => {
-  it("returns a facade + backend intersection", async () => {
+  it("returns { primitive, tools }", async () => {
     // This test is about TypeScript types, not runtime behavior.
     if (false) {
       const spice = await createSpice({ backend: "wasm" });
 
-      // Facade helpers.
-      spice.loadKernel;
-      spice.utcToEt;
-      spice.getState;
+      // Tools.
+      spice.tools.loadKernel;
+      spice.tools.utcToEt;
+      spice.tools.getState;
 
-      // Backend primitives are available at the top-level.
+      // Primitives.
+      spice.primitive.furnsh;
+      spice.primitive.str2et;
+      spice.primitive.kclear;
+
+      // No flattening onto the top-level.
+      // @ts-expect-error createSpice() no longer flattens primitives
       spice.furnsh;
-      spice.str2et;
-      spice.kclear;
-
-      // Escape hatch stays available.
-      spice.backend.furnsh;
-      spice.backend.kind;
     }
   });
 });

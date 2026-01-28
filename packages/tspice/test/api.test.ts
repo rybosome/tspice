@@ -22,24 +22,24 @@ describe("mid-level API parity (node vs wasm)", () => {
       return;
     }
 
-    wasm.loadKernel({ path: "/kernels/naif0012.tls", bytes: lsk });
-    wasm.loadKernel({ path: "/kernels/de405s.bsp", bytes: spk });
-    node.loadKernel({ path: "/kernels/naif0012.tls", bytes: lsk });
-    node.loadKernel({ path: "/kernels/de405s.bsp", bytes: spk });
+    wasm.tools.loadKernel({ path: "/kernels/naif0012.tls", bytes: lsk });
+    wasm.tools.loadKernel({ path: "/kernels/de405s.bsp", bytes: spk });
+    node.tools.loadKernel({ path: "/kernels/naif0012.tls", bytes: lsk });
+    node.tools.loadKernel({ path: "/kernels/de405s.bsp", bytes: spk });
 
     const time = "2000 JAN 01 12:00:00";
-    const etWasm = wasm.utcToEt(time);
-    const etNode = node.utcToEt(time);
+    const etWasm = wasm.tools.utcToEt(time);
+    const etNode = node.tools.utcToEt(time);
     expectClose(etNode, etWasm);
 
-    const stateWasm = wasm.getState({
+    const stateWasm = wasm.tools.getState({
       target: "EARTH",
       observer: "SUN",
       at: etWasm,
       frame: "J2000",
       aberration: "NONE",
     });
-    const stateNode = node.getState({
+    const stateNode = node.tools.getState({
       target: "EARTH",
       observer: "SUN",
       at: etNode,
@@ -53,9 +53,9 @@ describe("mid-level API parity (node vs wasm)", () => {
       expectClose(stateNode.velocity[i]!, stateWasm.velocity[i]!);
     }
 
-    wasm.unloadKernel("/kernels/de405s.bsp");
-    wasm.unloadKernel("/kernels/naif0012.tls");
-    node.unloadKernel("/kernels/de405s.bsp");
-    node.unloadKernel("/kernels/naif0012.tls");
+    wasm.tools.unloadKernel("/kernels/de405s.bsp");
+    wasm.tools.unloadKernel("/kernels/naif0012.tls");
+    node.tools.unloadKernel("/kernels/de405s.bsp");
+    node.tools.unloadKernel("/kernels/naif0012.tls");
   });
 });

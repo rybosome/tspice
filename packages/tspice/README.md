@@ -58,12 +58,12 @@ async function main() {
   const spice = await createSpice({ backend: "wasm" });
 
   // Load kernels from disk (or provide { path, bytes } for in-memory kernels).
-  spice.loadKernel("/path/to/naif0012.tls");
-  spice.loadKernel("/path/to/de405s.bsp");
+  spice.tools.loadKernel("/path/to/naif0012.tls");
+  spice.tools.loadKernel("/path/to/de405s.bsp");
 
-  const et = spice.utcToEt("2000 JAN 01 12:00:00");
+  const et = spice.tools.utcToEt("2000 JAN 01 12:00:00");
 
-  const state = spice.getState({
+  const state = spice.tools.getState({
     target: "EARTH",
     observer: "SUN",
     at: et,
@@ -73,9 +73,8 @@ async function main() {
 
   console.log(state.position, state.velocity, state.lightTime);
 
-  // `createSpice()` also forwards the low-level backend primitives at the
-  // top-level, so you can call e.g. `spice.furnsh()` directly.
-  console.log(spice.tkvrsn("TOOLKIT"));
+  // Low-level backend primitives are available under `spice.primitive`.
+  console.log(spice.primitive.tkvrsn("TOOLKIT"));
 }
 
 main().catch(console.error);
@@ -88,6 +87,7 @@ main().catch(console.error);
 - Types:
   - `BackendKind` (currently `"node" | "wasm"`)
   - `SpiceBackend`
+  - `SpicePrimitive`, `SpiceTools`, `Spice`
   - Mid-level:
     - `Vec3`, `Vec6`, `Mat3`, `FrameName`, `AberrationCorrection`, `SpiceTime`
     - `StateVector`
