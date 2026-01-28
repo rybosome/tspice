@@ -27,6 +27,9 @@ export interface KeyboardControlsOptions {
   cancelFocusTween?: () => void
   /** Focus on origin (reset camera target) */
   focusOnOrigin?: () => void
+
+  /** Toggle help overlay (e.g. `?`) */
+  toggleHelp?: () => void
   /** Toggle labels visibility */
   toggleLabels?: () => void
   /** Reset the free-look offset (recenter view) */
@@ -51,12 +54,17 @@ export interface KeyboardControlsOptions {
  * Check if keyboard event target is an editable element.
  * We don't want to capture shortcuts when typing in inputs.
  */
-function isEditableElement(target: EventTarget | null): boolean {
-  if (!target || !(target instanceof HTMLElement)) return false
-  const tagName = target.tagName.toLowerCase()
+export function isEditableElement(target: unknown): boolean {
+  if (!target) return false
+  const maybeEl = target as { tagName?: unknown; isContentEditable?: unknown }
+  const tagName = typeof maybeEl.tagName === 'string' ? maybeEl.tagName.toLowerCase() : ''
   if (tagName === 'input' || tagName === 'textarea' || tagName === 'select') return true
-  if (target.isContentEditable) return true
+  if (maybeEl.isContentEditable === true) return true
   return false
+}
+
+export function isHelpToggleShortcut(key: string, shiftKey: boolean): boolean {
+  return key === '?' || (key === '/' && shiftKey)
 }
 
 /**
@@ -83,6 +91,7 @@ export function useKeyboardControls({
   invalidate,
   cancelFocusTween,
   focusOnOrigin,
+  toggleHelp,
   toggleLabels,
   resetLookOffset,
   initialControllerStateRef,
@@ -94,6 +103,7 @@ export function useKeyboardControls({
   const invalidateRef = useRef(invalidate)
   const cancelFocusTweenRef = useRef(cancelFocusTween)
   const focusOnOriginRef = useRef(focusOnOrigin)
+  const toggleHelpRef = useRef(toggleHelp)
   const toggleLabelsRef = useRef(toggleLabels)
   const resetLookOffsetRef = useRef(resetLookOffset)
 
@@ -101,9 +111,10 @@ export function useKeyboardControls({
     invalidateRef.current = invalidate
     cancelFocusTweenRef.current = cancelFocusTween
     focusOnOriginRef.current = focusOnOrigin
+    toggleHelpRef.current = toggleHelp
     toggleLabelsRef.current = toggleLabels
     resetLookOffsetRef.current = resetLookOffset
-  }, [invalidate, cancelFocusTween, focusOnOrigin, resetLookOffset, toggleLabels])
+  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleHelp, toggleLabels, resetLookOffset])
 
   useEffect(() => {
     if (!enabled) return
@@ -241,6 +252,14 @@ export function useKeyboardControls({
       // Don't capture when focus is in editable elements
       if (isEditableElement(e.target)) return
 
+      if (!e.ctrlKey && !e.metaKey && !e.altKey && isHelpToggleShortcut(e.key, e.shiftKey)) {
+        const toggle = toggleHelpRef.current
+        if (!toggle) return
+        e.preventDefault()
+        toggle()
+        return
+      }
+
       const key = e.key.toLowerCase()
 
       // Track shift state so Shift+Arrow can pan continuously.
@@ -368,7 +387,7 @@ export function useKeyboardControls({
         case 'L':
           e.preventDefault()
           toggleLabelsRef.current?.()
-          break
+          return
       }
     }
 

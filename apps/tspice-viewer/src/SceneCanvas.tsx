@@ -300,6 +300,7 @@ export function SceneCanvas() {
     invalidate: () => invalidateRef.current?.(),
     cancelFocusTween: () => cancelFocusTweenRef.current?.(),
     focusOnOrigin: () => focusOnOriginRef.current?.(),
+    toggleHelp: () => setHelpOpen((open) => !open),
     resetLookOffset: () => resetLookOffsetRef.current?.(),
     initialControllerStateRef,
     resetControllerStateByBodyRef,
