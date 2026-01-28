@@ -18,7 +18,7 @@ import { OrbitPaths } from './scene/orbits/OrbitPaths.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
-import { LabelOverlay, type LabelBody } from './labels/LabelOverlay.js'
+import { LabelOverlay, type LabelBody, type LabelOverlayUpdateOptions } from './labels/LabelOverlay.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
 
@@ -47,6 +47,7 @@ export function SceneCanvas() {
   const starSeedRef = useRef<number>(1337)
   const starfieldRef = useRef<ReturnType<typeof createStarfield> | null>(null)
   const labelOverlayRef = useRef<LabelOverlay | null>(null)
+  const latestLabelOverlayOptionsRef = useRef<LabelOverlayUpdateOptions | null>(null)
   const skydomeRef = useRef<ReturnType<typeof createSkydome> | null>(null)
 
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
@@ -511,6 +512,16 @@ export function SceneCanvas() {
       skydome?.syncToCamera(camera)
       skydome?.setTimeSeconds(timeSec)
       renderer.render(scene, camera)
+
+      const labelOverlay = labelOverlayRef.current
+      const labelOptions = latestLabelOverlayOptionsRef.current
+      if (labelOverlay && labelOptions) {
+        // Keep selection in sync even when simulation time is paused.
+        labelOverlay.update({
+          ...labelOptions,
+          selectedBodyId: selectedBodyIdRef.current,
+        })
+      }
     }
 
     renderOnceRef.current = renderOnce
@@ -1282,6 +1293,17 @@ export function SceneCanvas() {
         const bodyPosKmByKey = new Map<string, Vec3Km>()
         const bodyVisibleByKey = new Map<string, boolean>()
 
+        const labelBodies: LabelBody[] = bodies.map((b) => {
+          const registry = BODY_REGISTRY.find((r) => String(r.body) === String(b.body))
+          return {
+            id: (registry?.id ?? String(b.body)) as BodyId,
+            label: registry?.style.label ?? String(b.body),
+            kind: registry?.kind ?? 'planet',
+            mesh: b.mesh,
+            radiusKm: b.radiusKm,
+          }
+        })
+
         const updateScene = (next: {
           etSec: EtSeconds
           focusBody: BodyRef
@@ -1515,30 +1537,16 @@ export function SceneCanvas() {
           // lies along the sun direction, but this adds complexity for marginal visual benefit.
           dir.position.copy(dirPos.multiplyScalar(10))
 
-          // Update label overlay
-          if (labelOverlayRef.current) {
-            // Build label bodies from scene bodies
-            const labelBodies: LabelBody[] = bodies.map((b) => {
-              const registry = BODY_REGISTRY.find((r) => String(r.body) === String(b.body))
-              return {
-                id: (registry?.id ?? String(b.body)) as BodyId,
-                label: registry?.style.label ?? String(b.body),
-                kind: registry?.kind ?? 'planet',
-                mesh: b.mesh,
-                radiusKm: b.radiusKm,
-              }
-            })
-
-            labelOverlayRef.current.update({
-              bodies: labelBodies,
-              focusBodyId: (BODY_REGISTRY.find((r) => String(r.body) === String(next.focusBody))?.id) as BodyId | undefined,
-              selectedBodyId: selectedBodyIdRef.current,
-              labelsEnabled: next.labelsEnabled,
-              occlusionEnabled: next.labelOcclusionEnabled,
-              pickables,
-              sunScaleMultiplier: next.sunScaleMultiplier,
-              planetScaleMultiplier: next.planetScaleMultiplier,
-            })
+          // Record label overlay inputs so we can update it on camera movement.
+          latestLabelOverlayOptionsRef.current = {
+            bodies: labelBodies,
+            focusBodyId: BODY_REGISTRY.find((r) => String(r.body) === String(next.focusBody))?.id as BodyId | undefined,
+            selectedBodyId: selectedBodyIdRef.current,
+            labelsEnabled: next.labelsEnabled,
+            occlusionEnabled: next.labelOcclusionEnabled,
+            pickables,
+            sunScaleMultiplier: next.sunScaleMultiplier,
+            planetScaleMultiplier: next.planetScaleMultiplier,
           }
 
           invalidate()
