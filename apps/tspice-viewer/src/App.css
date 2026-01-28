@@ -569,6 +569,100 @@
   gap: 8px;
 }
 
+/* Selection Inspector Panel */
+.selectionInspector {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 2;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(10, 14, 20, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  font-size: 12px;
+  min-width: 180px;
+  max-width: 280px;
+}
+
+.selectionInspectorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 8px;
+}
+
+.selectionInspectorTitle {
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.selectionInspectorToggle {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.selectionInspectorToggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.selectionInspectorToggleActive {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.selectionInspectorBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.selectionInspectorRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.selectionInspectorLabel {
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.selectionInspectorValue {
+  color: rgba(255, 255, 255, 0.95);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.selectionInspectorDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 0;
+}
+
 /* Render HUD */
 .renderHud {
   position: absolute;
@@ -608,6 +702,40 @@
 }
 
 @media (max-width: 720px) {
+  /* Mobile: selection inspector becomes a compact panel above controls */
+  .selectionInspector {
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    bottom: auto;
+    max-width: none;
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .selectionInspectorHeader {
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+  }
+
+  .selectionInspectorTitle {
+    font-size: 13px;
+  }
+
+  .selectionInspectorToggle {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+
+  .selectionInspectorRow {
+    gap: 8px;
+  }
+
+  .selectionInspectorLabel {
+    font-size: 10px;
+  }
+
   .renderHud {
     font-size: 10px;
     padding: 6px 10px;

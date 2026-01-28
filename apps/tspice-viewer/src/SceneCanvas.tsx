@@ -24,6 +24,8 @@ import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './con
 
 
 import { HelpOverlay } from './ui/HelpOverlay.js'
+import { SelectionInspector } from './ui/SelectionInspector.js'
+
 // -----------------------------------------------------------------------------
 // Render HUD Component
 // -----------------------------------------------------------------------------
@@ -129,6 +131,8 @@ export function SceneCanvas() {
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
+  // Selected body (promoted from local closure variable for inspector panel)
+  const [selectedBody, setSelectedBody] = useState<BodyRef | null>(null)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
 
   // Advanced tuning sliders (ephemeral, local state only)
@@ -187,6 +191,8 @@ export function SceneCanvas() {
   }
 
   const quantumSec = useTimeStoreSelector((s) => s.quantumSec)
+  // Current ET for inspector panel (subscribes to time store changes)
+  const etSec = useTimeStoreSelector((s) => s.etSec)
 
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
@@ -829,6 +835,7 @@ export function SceneCanvas() {
           selected = undefined
           selectedBodyId = undefined
           selectedBodyIdRef.current = undefined
+          setSelectedBody(null)
           selectionRing?.setTarget(undefined)
           stopSelectionPulse()
           invalidate()
@@ -844,6 +851,11 @@ export function SceneCanvas() {
         // Keep ref in sync for label overlay
         const registry = BODY_REGISTRY.find((r) => String(r.body) === selectedBodyId)
         selectedBodyIdRef.current = registry?.id
+
+        // Update React state for inspector panel
+        if (selectedBodyId) {
+          setSelectedBody(selectedBodyId)
+        }
 
         // Subtle world-space ring indicator around the selected body.
         selectionRing?.setTarget(mesh)
@@ -2094,6 +2106,18 @@ export function SceneCanvas() {
         </div>
       ) : null}
 
+
+      {/* Selection Inspector - shows when a body is selected */}
+      {!isE2e && selectedBody && spiceClient ? (
+        <SelectionInspector
+          selectedBody={selectedBody}
+          focusBody={focusBody}
+          spiceClient={spiceClient}
+          etSec={etSec}
+          observer="SUN"
+          frame={J2000_FRAME}
+        />
+      ) : null}
       <canvas ref={canvasRef} className="sceneCanvas" />
 
       {/* Render HUD overlays */}
