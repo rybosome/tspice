@@ -11,6 +11,8 @@ const ORBIT_SPEED_RAD_PER_SEC = ORBIT_STEP * 20
 const PAN_SPEED_PX_PER_SEC = 600
 /** Zoom factor per key press */
 const ZOOM_FACTOR = 1.15
+/** Roll speed (radians/sec) for continuous Q/E movement */
+const ROLL_SPEED_RAD_PER_SEC = (Math.PI / 36) * 20 // ~100 deg/sec
 
 export interface KeyboardControlsOptions {
   /** CameraController ref */
@@ -27,6 +29,8 @@ export interface KeyboardControlsOptions {
   focusOnOrigin?: () => void
   /** Toggle labels visibility */
   toggleLabels?: () => void
+  /** Reset the free-look offset (recenter view) */
+  resetLookOffset?: () => void
   /** Snapshot of the initial controller state (used for Reset / R). */
   initialControllerStateRef?: React.RefObject<CameraControllerState | null>
   /** Whether keyboard controls are enabled */
@@ -53,8 +57,10 @@ function isEditableElement(target: EventTarget | null): boolean {
  * - Shift + Arrow keys: Pan
  * - W/A/S/D: Pan (alternate)
  * - +/=/- : Zoom in/out
+ * - Q/E: Roll left/right
  * - F/C: Focus/center on origin (reset view target)
  * - R/Home: Reset view
+ * - Escape: Recenter view (clear look offset only)
  * - Space: Play/pause time
  * - [ / ]: Step time backward/forward
  * - G: Go to selected (TODO: not implemented yet - requires selection state)
@@ -68,6 +74,7 @@ export function useKeyboardControls({
   cancelFocusTween,
   focusOnOrigin,
   toggleLabels,
+  resetLookOffset,
   initialControllerStateRef,
   enabled = true,
 }: KeyboardControlsOptions) {
@@ -76,13 +83,15 @@ export function useKeyboardControls({
   const cancelFocusTweenRef = useRef(cancelFocusTween)
   const focusOnOriginRef = useRef(focusOnOrigin)
   const toggleLabelsRef = useRef(toggleLabels)
+  const resetLookOffsetRef = useRef(resetLookOffset)
 
   useEffect(() => {
     invalidateRef.current = invalidate
     cancelFocusTweenRef.current = cancelFocusTween
     focusOnOriginRef.current = focusOnOrigin
     toggleLabelsRef.current = toggleLabels
-  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleLabels])
+    resetLookOffsetRef.current = resetLookOffset
+  }, [invalidate, cancelFocusTween, focusOnOrigin, resetLookOffset, toggleLabels])
 
   useEffect(() => {
     if (!enabled) return
@@ -178,6 +187,11 @@ export function useKeyboardControls({
         const dyaw = yawDir * ORBIT_SPEED_RAD_PER_SEC * dtSec
         const dpitch = pitchDir * ORBIT_SPEED_RAD_PER_SEC * dtSec
 
+        let rollDir = 0
+        if (pressedKeys.has('q')) rollDir -= 1
+        if (pressedKeys.has('e')) rollDir += 1
+        const dRoll = rollDir * ROLL_SPEED_RAD_PER_SEC * dtSec
+
         let didMove = false
 
         if (dxPx !== 0 || dyPx !== 0) {
@@ -191,6 +205,11 @@ export function useKeyboardControls({
         if (dyaw !== 0 || dpitch !== 0) {
           controller.yaw += dyaw
           controller.pitch += dpitch
+          didMove = true
+        }
+
+        if (dRoll !== 0) {
+          controller.applyRollDelta(dRoll)
           didMove = true
         }
 
@@ -230,8 +249,15 @@ export function useKeyboardControls({
         return
       }
 
-      // Continuous WASD panning (key-repeat independent)
-      if (key === 'w' || key === 'a' || key === 's' || key === 'd') {
+      // Continuous WASD panning + Q/E rolling (key-repeat independent)
+      if (
+        key === 'w' ||
+        key === 'a' ||
+        key === 's' ||
+        key === 'd' ||
+        key === 'q' ||
+        key === 'e'
+      ) {
         e.preventDefault()
 
         // Ignore repeat events; key state is tracked by the set.
@@ -261,6 +287,12 @@ export function useKeyboardControls({
         case ']':
           e.preventDefault()
           timeStore.stepForward()
+          return
+
+        case 'Escape':
+          // Recenter view: clear look offset only (keeps orbit position/target)
+          e.preventDefault()
+          resetLookOffsetRef.current?.()
           return
       }
 
@@ -331,12 +363,13 @@ export function useKeyboardControls({
         shiftDown = false
         return
       }
-
       if (
         key !== 'w' &&
         key !== 'a' &&
         key !== 's' &&
         key !== 'd' &&
+        key !== 'q' &&
+        key !== 'e' &&
         key !== 'arrowleft' &&
         key !== 'arrowright' &&
         key !== 'arrowup' &&
