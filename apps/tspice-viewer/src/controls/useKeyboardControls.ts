@@ -33,6 +33,16 @@ export interface KeyboardControlsOptions {
   resetLookOffset?: () => void
   /** Snapshot of the initial controller state (used for Reset / R). */
   initialControllerStateRef?: React.RefObject<CameraControllerState | null>
+
+  /**
+   * Optional per-focus-body reset states.
+   *
+   * When provided, Reset (R/Home) will prefer the entry keyed by
+   * `String(focusBodyRef.current)`.
+   */
+  resetControllerStateByBodyRef?: React.RefObject<Map<string, CameraControllerState> | null>
+  /** Current focus body (used to choose per-body reset state). */
+  focusBodyRef?: React.RefObject<string | number | null>
   /** Whether keyboard controls are enabled */
   enabled?: boolean
 }
@@ -76,6 +86,8 @@ export function useKeyboardControls({
   toggleLabels,
   resetLookOffset,
   initialControllerStateRef,
+  resetControllerStateByBodyRef,
+  focusBodyRef,
   enabled = true,
 }: KeyboardControlsOptions) {
   // Keep refs to latest values to avoid stale closures
@@ -338,9 +350,15 @@ export function useKeyboardControls({
           e.preventDefault()
           cancelFocusTweenRef.current?.()
           {
-            const initial = initialControllerStateRef?.current
-            if (!initial) return
-            controller.restore(initial)
+            const focusKey = focusBodyRef?.current != null ? String(focusBodyRef.current) : undefined
+
+            const perBody = resetControllerStateByBodyRef?.current ?? null
+            const perBodyState = focusKey ? perBody?.get(focusKey) : undefined
+            const fallback = initialControllerStateRef?.current ?? null
+            const next = perBodyState ?? fallback
+
+            if (!next) return
+            controller.restore(next)
             doInvalidate()
           }
           break
@@ -396,5 +414,13 @@ export function useKeyboardControls({
       window.removeEventListener('blur', stopMotion)
       stopMotion()
     }
-  }, [enabled, controllerRef, cameraRef, canvasRef, initialControllerStateRef])
+  }, [
+    enabled,
+    controllerRef,
+    cameraRef,
+    canvasRef,
+    initialControllerStateRef,
+    resetControllerStateByBodyRef,
+    focusBodyRef,
+  ])
 }
