@@ -10,20 +10,23 @@ import type {
 } from "./types.js";
 
 /**
-* Low-level SPICE primitive surface.
+* Low-level CSPICE-like primitive surface.
 *
 * This is the raw backend contract (node addon, wasm backend, etc.).
 */
-export type SpicePrimitive = SpiceBackend;
+export type Cspice = SpiceBackend;
 
 /**
-* Higher-level helpers and convenience APIs built on top of {@link SpicePrimitive}.
+* Higher-level helpers and convenience APIs built on top of {@link Cspice}.
 */
-export type SpiceTools = {
+export type SpiceKit = {
   /** Load a SPICE kernel. */
   loadKernel(kernel: KernelSource): void;
   /** Unload a previously-loaded SPICE kernel. */
   unloadKernel(path: string): void;
+
+  /** Convenience wrapper around `tkvrsn(\"TOOLKIT\")`. */
+  toolkitVersion(): string;
 
   /** Convert UTC time string to ET seconds past J2000. */
   utcToEt(utc: string): SpiceTime;
@@ -41,8 +44,11 @@ export type SpiceTools = {
 * Top-level `createSpice()` return type.
 */
 export type Spice = {
+  /** Underlying backend instance. */
+  backend: SpiceBackend;
+
   /** Raw backend primitives (verbatim). */
-  primitive: SpicePrimitive;
+  cspice: Cspice;
   /** Higher-level helpers and typed conveniences. */
-  tools: SpiceTools;
+  kit: SpiceKit;
 };

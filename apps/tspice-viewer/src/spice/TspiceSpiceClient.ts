@@ -50,7 +50,7 @@ export class TspiceSpiceClient implements SpiceClient {
   constructor(private readonly spice: Spice) {}
 
   getBodyState(input: GetBodyStateInput): BodyState {
-    const state = this.spice.tools.getState({
+    const state = this.spice.kit.getState({
       target: bodyRefToSpiceString(input.target),
       observer: bodyRefToSpiceString(input.observer),
       at: input.et as unknown as SpiceTime,
@@ -65,7 +65,7 @@ export class TspiceSpiceClient implements SpiceClient {
   }
 
   getFrameTransform(input: GetFrameTransformInput): Mat3 {
-    const m = this.spice.tools.frameTransform(
+    const m = this.spice.kit.frameTransform(
       input.from as FrameId,
       input.to as FrameId,
       input.et as unknown as SpiceTime,
@@ -75,6 +75,6 @@ export class TspiceSpiceClient implements SpiceClient {
   }
 
   etToUtc(et: EtSeconds): string {
-    return this.spice.tools.etToUtc(et as unknown as SpiceTime, "ISOC", 0);
+    return this.spice.kit.etToUtc(et as unknown as SpiceTime, "ISOC", 0);
   }
 }

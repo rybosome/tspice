@@ -21,6 +21,6 @@ export type {
 
 export { SpiceError } from "./errors.js";
 
-export type { Spice, SpicePrimitive, SpiceTools } from "./spice-types.js";
+export type { Cspice, Spice, SpiceKit } from "./spice-types.js";
 export type { CreateSpiceOptions } from "./spice.js";
 export { createSpice } from "./spice.js";

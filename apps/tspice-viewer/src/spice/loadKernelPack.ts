@@ -35,6 +35,6 @@ export async function loadKernelPack(spice: Spice, pack: KernelPack): Promise<vo
 
   for (let i = 0; i < pack.kernels.length; i++) {
     const kernel = pack.kernels[i];
-    spice.tools.loadKernel({ path: kernel.fsPath, bytes: bytes[i] });
+    spice.kit.loadKernel({ path: kernel.fsPath, bytes: bytes[i] });
   }
 }

@@ -11,7 +11,7 @@ import type {
   Vec3,
 } from "./types.js";
 
-import type { Spice, SpiceTools } from "./spice-types.js";
+import type { Spice, SpiceKit } from "./spice-types.js";
 
 export type CreateSpiceOptions = CreateBackendOptions & {
   /**
@@ -35,34 +35,43 @@ function splitState(state: readonly [number, number, number, number, number, num
 }
 
 export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spice> {
-  const primitive = options.backendInstance ?? (await createBackend(options));
+  const backend = options.backendInstance ?? (await createBackend(options));
+  const cspice = backend;
 
-  const tools: SpiceTools = {
+  const kit: SpiceKit = {
     loadKernel: (kernel: KernelSource) => {
       try {
-        primitive.furnsh(kernel);
+        cspice.furnsh(kernel);
       } catch (error) {
         throw wrapSpiceError("loadKernel", error);
       }
     },
     unloadKernel: (path) => {
       try {
-        primitive.unload(path);
+        cspice.unload(path);
       } catch (error) {
         throw wrapSpiceError("unloadKernel", error);
       }
     },
 
+    toolkitVersion: () => {
+      try {
+        return cspice.tkvrsn("TOOLKIT");
+      } catch (error) {
+        throw wrapSpiceError("toolkitVersion", error);
+      }
+    },
+
     utcToEt: (utc) => {
       try {
-        return primitive.str2et(utc) as SpiceTime;
+        return cspice.str2et(utc) as SpiceTime;
       } catch (error) {
         throw wrapSpiceError("utcToEt", error);
       }
     },
     etToUtc: (et, format = "C", prec = 3) => {
       try {
-        return primitive.et2utc(et, format, prec);
+        return cspice.et2utc(et, format, prec);
       } catch (error) {
         throw wrapSpiceError("etToUtc", error);
       }
@@ -70,7 +79,7 @@ export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spi
 
     frameTransform: (from, to, et) => {
       try {
-        return primitive.pxform(from, to, et) as Mat3;
+        return cspice.pxform(from, to, et) as Mat3;
       } catch (error) {
         throw wrapSpiceError("frameTransform", error);
       }
@@ -78,7 +87,7 @@ export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spi
 
     getState: ({ target, observer, at, frame = DEFAULT_FRAME, aberration = DEFAULT_ABERRATION }) => {
       try {
-        const { state, lt } = primitive.spkezr(target, at, frame, aberration, observer);
+        const { state, lt } = cspice.spkezr(target, at, frame, aberration, observer);
         const { position, velocity } = splitState(state);
         return {
           et: at,
@@ -96,5 +105,5 @@ export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spi
     },
   };
 
-  return { primitive, tools };
+  return { backend, cspice, kit };
 }

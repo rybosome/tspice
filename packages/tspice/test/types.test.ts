@@ -88,20 +88,23 @@ describe("createBackend() types", () => {
 });
 
 describe("createSpice() types", () => {
-  it("returns { primitive, tools }", async () => {
+  it("returns { cspice, kit, backend }", async () => {
     // This test is about TypeScript types, not runtime behavior.
     if (false) {
       const spice = await createSpice({ backend: "wasm" });
 
-      // Tools.
-      spice.tools.loadKernel;
-      spice.tools.utcToEt;
-      spice.tools.getState;
+      // Kit.
+      spice.kit.loadKernel;
+      spice.kit.utcToEt;
+      spice.kit.getState;
 
-      // Primitives.
-      spice.primitive.furnsh;
-      spice.primitive.str2et;
-      spice.primitive.kclear;
+      // CSPICE surface.
+      spice.cspice.furnsh;
+      spice.cspice.str2et;
+      spice.cspice.kclear;
+
+      // Underlying backend.
+      spice.backend;
 
       // No flattening onto the top-level.
       // @ts-expect-error createSpice() no longer flattens primitives
