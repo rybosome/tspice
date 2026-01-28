@@ -37,6 +37,20 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
 
+      - name: Set package versions from tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_REF_NAME}" != v* ]]; then
+            echo "Release workflow must be run from a tag like vX.Y.Z (got: ${GITHUB_REF_NAME})." >&2
+            exit 1
+          fi
+
+          VERSION="${GITHUB_REF_NAME#v}"
+          node scripts/set-release-version.mjs "$VERSION"
+          node scripts/verify-native-package-versions.mjs
+
       # Node 22 + node-gyp can be flaky when it tries to download headers from nodejs.org.
       # Point node-gyp at the headers shipped with the installed Node runtime instead.
       - name: Use local Node headers for node-gyp
@@ -84,7 +98,20 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish platform package
-        run: npm publish packages/${{ matrix.pkg }} --access public
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PKG_DIR="packages/${{ matrix.pkg }}"
+          PKG_NAME=$(node -p "require('./${PKG_DIR}/package.json').name")
+          PKG_VERSION=$(node -p "require('./${PKG_DIR}/package.json').version")
+
+          if npm view "$PKG_NAME@$PKG_VERSION" version >/dev/null 2>&1; then
+            echo "$PKG_NAME@$PKG_VERSION already exists on npm; skipping publish."
+            exit 0
+          fi
+
+          npm publish "$PKG_DIR" --access public
 
   publish-tspice:
     name: Publish @rybosome/tspice
@@ -105,6 +132,20 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Set package versions from tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_REF_NAME}" != v* ]]; then
+            echo "Release workflow must be run from a tag like vX.Y.Z (got: ${GITHUB_REF_NAME})." >&2
+            exit 1
+          fi
+
+          VERSION="${GITHUB_REF_NAME#v}"
+          node scripts/set-release-version.mjs "$VERSION"
+          node scripts/verify-native-package-versions.mjs
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -124,4 +165,17 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @rybosome/tspice
-        run: npm publish packages/tspice/dist-publish --access public
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PKG_DIR="packages/tspice/dist-publish"
+          PKG_NAME=$(node -p "require('./${PKG_DIR}/package.json').name")
+          PKG_VERSION=$(node -p "require('./${PKG_DIR}/package.json').version")
+
+          if npm view "$PKG_NAME@$PKG_VERSION" version >/dev/null 2>&1; then
+            echo "$PKG_NAME@$PKG_VERSION already exists on npm; skipping publish."
+            exit 0
+          fi
+
+          npm publish "$PKG_DIR" --access public
