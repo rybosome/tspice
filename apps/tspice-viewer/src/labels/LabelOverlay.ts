@@ -355,23 +355,12 @@ export class LabelOverlay {
     // Create overlay container
     this.overlayDiv = document.createElement('div')
     this.overlayDiv.className = 'labelOverlay'
-    this.overlayDiv.style.cssText = `
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    `
+    // Styles are defined in App.css .labelOverlay
     this.container.appendChild(this.overlayDiv)
 
     // Create SVG for leader lines
     this.svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    this.svgElement.style.cssText = `
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    `
+    // Styles are defined in App.css .labelOverlay svg
     this.overlayDiv.appendChild(this.svgElement)
   }
 
@@ -506,29 +495,13 @@ export class LabelOverlay {
     const domElement = document.createElement('div')
     domElement.className = 'labelBox'
     domElement.textContent = body.label
-    domElement.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      padding: ${LABEL_PADDING_Y}px ${LABEL_PADDING_X}px;
-      background: rgba(10, 20, 15, 0.85);
-      border: 1px solid #3a7;
-      border-radius: 4px;
-      color: #8f8;
-      font-size: 11px;
-      font-family: system-ui, sans-serif;
-      white-space: nowrap;
-      pointer-events: none;
-      display: none;
-    `
+    // Base styles in App.css .labelBox, only dynamic display state here
+    domElement.style.display = 'none'
     this.overlayDiv.appendChild(domElement)
 
     // Create SVG polyline for leader line
     const leaderElement = document.createElementNS('http://www.w3.org/2000/svg', 'polyline')
-    leaderElement.setAttribute('fill', 'none')
-    leaderElement.setAttribute('stroke', '#3a7')
-    leaderElement.setAttribute('stroke-width', '1')
-    leaderElement.setAttribute('stroke-opacity', '0.7')
+    leaderElement.classList.add('labelLeader')
     leaderElement.style.display = 'none'
     this.svgElement.appendChild(leaderElement)
 

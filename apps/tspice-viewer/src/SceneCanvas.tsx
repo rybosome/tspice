@@ -27,6 +27,48 @@ import { HelpOverlay } from './ui/HelpOverlay.js'
 import { SelectionInspector } from './ui/SelectionInspector.js'
 
 // -----------------------------------------------------------------------------
+// Home camera presets (world units, target at origin)
+// -----------------------------------------------------------------------------
+type HomePresetKey = 'EARTH' | 'VENUS'
+
+const HOME_CAMERA_PRESETS: Record<HomePresetKey, CameraControllerState> = {
+  EARTH: CameraController.stateFromPose({
+    position: new THREE.Vector3(0.0137, 0.0294, 0.0095),
+    quaternion: new THREE.Quaternion(0.13, 0.585, 0.782, 0.174),
+    target: new THREE.Vector3(0, 0, 0),
+  }),
+  VENUS: CameraController.stateFromPose({
+    position: new THREE.Vector3(-0.0342, 0.022, 0.0062),
+    quaternion: new THREE.Quaternion(-0.312, 0.572, 0.666, -0.363),
+    target: new THREE.Vector3(0, 0, 0),
+  }),
+}
+
+function getHomePresetAliases(key: HomePresetKey): readonly string[] {
+  // We accept both the symbolic name and the NAIF IDs used elsewhere in the UI.
+  switch (key) {
+    case 'EARTH':
+      // 3 = Earth-Moon barycenter, 399 = Earth
+      return ['EARTH', '3', '399']
+    case 'VENUS':
+      // 2 = Venus barycenter, 299 = Venus
+      return ['VENUS', '2', '299']
+  }
+}
+
+function getHomePresetKey(focusBody: BodyRef): HomePresetKey | null {
+  const key = String(focusBody).toUpperCase()
+  if (getHomePresetAliases('EARTH').includes(key)) return 'EARTH'
+  if (getHomePresetAliases('VENUS').includes(key)) return 'VENUS'
+  return null
+}
+
+function getHomePresetState(focusBody: BodyRef): CameraControllerState | null {
+  const key = getHomePresetKey(focusBody)
+  return key ? HOME_CAMERA_PRESETS[key] : null
+}
+
+// -----------------------------------------------------------------------------
 // Render HUD Component
 // -----------------------------------------------------------------------------
 interface RenderHudStats {
@@ -213,12 +255,35 @@ export function SceneCanvas() {
   // Control pane collapsed state: starts collapsed on all screen sizes
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
+  // New: Look mode toggle for touch - when enabled, 1-finger drag does free-look instead of orbit
+  const [lookModeEnabled, setLookModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
+  const lookModeEnabledRef = useRef(lookModeEnabled)
   const focusOnOriginRef = useRef<(() => void) | null>(null)
   const selectedBodyIdRef = useRef<BodyId | undefined>(undefined)
   const initialControllerStateRef = useRef<CameraControllerState | null>(null)
+
+  // Track current focus body for keyboard reset logic.
+  const focusBodyRef = useRef<BodyRef | null>(focusBody)
+  focusBodyRef.current = focusBody
+
+  // Per-body reset presets (used by keyboard Reset / R).
+  const resetControllerStateByBodyRef = useRef<Map<string, CameraControllerState> | null>(null)
+  if (!resetControllerStateByBodyRef.current) {
+    resetControllerStateByBodyRef.current = new Map<string, CameraControllerState>()
+
+    for (const presetKey of Object.keys(HOME_CAMERA_PRESETS) as HomePresetKey[]) {
+      const preset = HOME_CAMERA_PRESETS[presetKey]
+      for (const alias of getHomePresetAliases(presetKey)) {
+        resetControllerStateByBodyRef.current.set(alias, preset)
+      }
+    }
+  }
+  // Ref for resetting look offset (used by keyboard Escape and focus changes)
+  const resetLookOffsetRef = useRef<(() => void) | null>(null)
   panModeEnabledRef.current = panModeEnabled
+  lookModeEnabledRef.current = lookModeEnabled
 
   const handleQuantumChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value)
@@ -236,7 +301,10 @@ export function SceneCanvas() {
     cancelFocusTween: () => cancelFocusTweenRef.current?.(),
     focusOnOrigin: () => focusOnOriginRef.current?.(),
     toggleHelp: () => setHelpOpen((open) => !open),
+    resetLookOffset: () => resetLookOffsetRef.current?.(),
     initialControllerStateRef,
+    resetControllerStateByBodyRef,
+    focusBodyRef,
     toggleLabels: () => setLabelsEnabled((v) => !v),
     enabled: !isE2e,
   })
@@ -539,7 +607,13 @@ export function SceneCanvas() {
     camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
-    const controller = CameraController.fromCamera(camera)
+    // If we have a home preset for the initial focus body, start there.
+    const initialHomePreset = getHomePresetState(latestUiRef.current.focusBody)
+    const controller = initialHomePreset ? new CameraController(initialHomePreset) : CameraController.fromCamera(camera)
+
+    if (initialHomePreset) {
+      controller.applyToCamera(camera)
+    }
 
     const syncCameraNear = () => {
       // When zooming/focusing on very small bodies, the orbit radius can dip
@@ -559,6 +633,13 @@ export function SceneCanvas() {
 
     controllerRef.current = controller
     cameraRef.current = camera
+
+    // Expose resetLookOffset to keyboard controls
+    resetLookOffsetRef.current = () => {
+      controller.resetLookOffset()
+      controller.applyToCamera(camera)
+      invalidate()
+    }
 
     const starSeed = (() => {
       const fromUrl = search.get('starSeed') ?? search.get('seed')
@@ -738,8 +819,11 @@ export function SceneCanvas() {
 
       const clickMoveThresholdPx = 6
       const orbitSensitivity = 0.006
+      const freeLookSensitivity = 0.003
+      const rollSensitivity = 0.005
       const wheelZoomScale = 0.001
       const focusTweenMs = 320
+      const ROLL_STEP_RAD = Math.PI / 36 // 5 degrees for Q/E keys
 
       let selectedBodyId: string | undefined
 
@@ -766,7 +850,8 @@ export function SceneCanvas() {
         })
       }
 
-      type DragMode = 'orbit' | 'pan'
+      // Drag modes: orbit, pan, freeLook, roll
+      type DragMode = 'orbit' | 'pan' | 'freeLook' | 'roll'
 
       let mouseDown:
         | {
@@ -781,12 +866,15 @@ export function SceneCanvas() {
         | undefined
 
       const activeTouches = new Map<number, { x: number; y: number }>()
+      // Track last angle for 2-finger rotation gesture
+      let lastTouchAngle: number | null = null
+      
       let touchState:
         | { kind: 'none' }
         | {
             kind: 'single'
             pointerId: number
-            mode: DragMode
+            mode: 'orbit' | 'pan' | 'freeLook'
             startX: number
             startY: number
             lastX: number
@@ -921,10 +1009,18 @@ export function SceneCanvas() {
           canvas.setPointerCapture(ev.pointerId)
 
           if (activeTouches.size === 1) {
+            // Determine mode based on toggles: Look > Pan > Orbit
+            let mode: 'orbit' | 'pan' | 'freeLook' = 'orbit'
+            if (lookModeEnabledRef.current) {
+              mode = 'freeLook'
+            } else if (panModeEnabledRef.current) {
+              mode = 'pan'
+            }
+            
             touchState = {
               kind: 'single',
               pointerId: ev.pointerId,
-              mode: panModeEnabledRef.current ? 'pan' : 'orbit',
+              mode,
               startX: ev.clientX,
               startY: ev.clientY,
               lastX: ev.clientX,
@@ -945,6 +1041,9 @@ export function SceneCanvas() {
             const centerY = (a[1].y + b[1].y) / 2
             const dist = Math.sqrt(dx * dx + dy * dy)
 
+            // Initialize angle for rotation tracking
+            lastTouchAngle = Math.atan2(dy, dx)
+
             touchState = {
               kind: 'pinch',
               ids,
@@ -956,16 +1055,37 @@ export function SceneCanvas() {
           }
         }
 
-        const isPan = ev.button === 2 || (ev.button === 0 && ev.shiftKey)
-        const isOrbit = ev.button === 0 && !ev.shiftKey
+        // Desktop pointer handling
+        // Button 0 = LMB, Button 1 = MMB, Button 2 = RMB
+        const isLMB = ev.button === 0
+        const isMMB = ev.button === 1
+        const isRMB = ev.button === 2
+        
+        // Determine mode:
+        // - LMB (no shift): orbit
+        // - LMB + Shift: pan
+        // - MMB: pan
+        // - RMB (no shift): free-look
+        // - RMB + Shift: roll
+        let mode: DragMode | null = null
+        
+        if (isLMB && !ev.shiftKey) {
+          mode = 'orbit'
+        } else if ((isLMB && ev.shiftKey) || isMMB) {
+          mode = 'pan'
+        } else if (isRMB && !ev.shiftKey) {
+          mode = 'freeLook'
+        } else if (isRMB && ev.shiftKey) {
+          mode = 'roll'
+        }
 
-        if (!isPan && !isOrbit) return
+        if (!mode) return
 
         ev.preventDefault()
 
         mouseDown = {
           pointerId: ev.pointerId,
-          mode: isPan ? 'pan' : 'orbit',
+          mode,
           startX: ev.clientX,
           startY: ev.clientY,
           lastX: ev.clientX,
@@ -993,6 +1113,7 @@ export function SceneCanvas() {
               const [a, b] = Array.from(activeTouches.entries())
               const dx = a[1].x - b[1].x
               const dy = a[1].y - b[1].y
+              lastTouchAngle = Math.atan2(dy, dx)
               touchState = {
                 kind: 'pinch',
                 ids: [a[0], b[0]],
@@ -1009,6 +1130,9 @@ export function SceneCanvas() {
             if (!a || !b) {
               // Pick the first two active touches.
               const [na, nb] = Array.from(activeTouches.entries())
+              const dx = na[1].x - nb[1].x
+              const dy = na[1].y - nb[1].y
+              lastTouchAngle = Math.atan2(dy, dx)
               touchState = {
                 kind: 'pinch',
                 ids: [na[0], nb[0]],
@@ -1034,6 +1158,22 @@ export function SceneCanvas() {
               const ratio = touchState.lastDistance / dist
               controller.radius *= ratio
             }
+
+            // 2-finger rotation gesture (twist) for roll
+            const dx = a.x - b.x
+            const dy = a.y - b.y
+            const currentAngle = Math.atan2(dy, dx)
+            
+            if (lastTouchAngle !== null) {
+              let deltaAngle = currentAngle - lastTouchAngle
+              // Wrap to [-PI, PI]
+              while (deltaAngle > Math.PI) deltaAngle -= 2 * Math.PI
+              while (deltaAngle < -Math.PI) deltaAngle += 2 * Math.PI
+              
+              // Apply roll (negative because twist direction)
+              controller.applyRollDelta(-deltaAngle)
+            }
+            lastTouchAngle = currentAngle
 
             touchState.lastCenterX = centerX
             touchState.lastCenterY = centerY
@@ -1071,8 +1211,10 @@ export function SceneCanvas() {
           if (touchState.mode === 'orbit') {
             controller.yaw -= dx * orbitSensitivity
             controller.pitch -= dy * orbitSensitivity
-          } else {
+          } else if (touchState.mode === 'pan') {
             controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+          } else if (touchState.mode === 'freeLook') {
+            controller.applyFreeLookDelta(dx, dy, freeLookSensitivity)
           }
 
           controller.applyToCamera(camera)
@@ -1109,9 +1251,14 @@ export function SceneCanvas() {
         if (mouseDown.mode === 'orbit') {
           controller.yaw -= dx * orbitSensitivity
           controller.pitch -= dy * orbitSensitivity
-        } else {
+        } else if (mouseDown.mode === 'pan') {
           const rect = canvas.getBoundingClientRect()
           controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+        } else if (mouseDown.mode === 'freeLook') {
+          controller.applyFreeLookDelta(dx, dy, freeLookSensitivity)
+        } else if (mouseDown.mode === 'roll') {
+          // Use horizontal movement for roll
+          controller.applyRollDelta(dx * rollSensitivity)
         }
 
         controller.applyToCamera(camera)
@@ -1158,6 +1305,8 @@ export function SceneCanvas() {
                 const selectionChanged = nextSelectedBodyId !== selectedBodyId
                 if (selectionChanged) {
                   setSelectedMesh(hitMesh)
+                  // Clear look offset when focusing new object
+                  controller.resetLookOffset()
                   if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
                 }
 
@@ -1175,21 +1324,30 @@ export function SceneCanvas() {
 
           if (activeTouches.size === 0) {
             touchState = { kind: 'none' }
+            lastTouchAngle = null
             return
           }
 
           if (activeTouches.size === 1) {
             const [nextId, nextPos] = Array.from(activeTouches.entries())[0]
+            // Determine mode based on toggles: Look > Pan > Orbit
+            let mode: 'orbit' | 'pan' | 'freeLook' = 'orbit'
+            if (lookModeEnabledRef.current) {
+              mode = 'freeLook'
+            } else if (panModeEnabledRef.current) {
+              mode = 'pan'
+            }
             touchState = {
               kind: 'single',
               pointerId: nextId,
-              mode: panModeEnabledRef.current ? 'pan' : 'orbit',
+              mode,
               startX: nextPos.x,
               startY: nextPos.y,
               lastX: nextPos.x,
               lastY: nextPos.y,
               isDragging: false,
             }
+            lastTouchAngle = null
             return
           }
 
@@ -1197,6 +1355,7 @@ export function SceneCanvas() {
           const [a, b] = Array.from(activeTouches.entries())
           const dx = a[1].x - b[1].x
           const dy = a[1].y - b[1].y
+          lastTouchAngle = Math.atan2(dy, dx)
           touchState = {
             kind: 'pinch',
             ids: [a[0], b[0]],
@@ -1247,6 +1406,8 @@ export function SceneCanvas() {
         const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
         if (nextSelectedBodyId !== selectedBodyId) {
           setSelectedMesh(hitMesh)
+          // Clear look offset when focusing new object
+          controller.resetLookOffset()
           if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
           // Let focus-body changes drive camera centering + auto-zoom.
           return
@@ -1482,8 +1643,16 @@ export function SceneCanvas() {
             !isE2e &&
             next.focusBody !== lastAutoZoomFocusBody
 
+          const homePreset = shouldAutoZoom ? getHomePresetState(next.focusBody) : null
+
           if (shouldAutoZoom) {
             cancelFocusTween?.()
+
+            // Clear look offset when auto-focusing a new body.
+            // Home presets supply their own look offset, so don't wipe it.
+            if (!homePreset) {
+              controller.resetLookOffset()
+            }
           }
 
           const focusState = loadedSpiceClient.getBodyState({
@@ -1495,6 +1664,19 @@ export function SceneCanvas() {
           const focusPosKm = focusState.positionKm
 
           if (shouldAutoZoom) {
+            // Home preset beats the normal auto-zoom + sun-in-view heuristics.
+            if (homePreset) {
+              controller.restore(homePreset)
+              controller.applyToCamera(camera)
+
+              // Capture the initial camera view (after first focus logic runs)
+              // so keyboard Reset (R) can return exactly to the page-load view.
+              if (!initialControllerStateRef.current) {
+                initialControllerStateRef.current = controller.snapshot()
+              }
+
+              lastAutoZoomFocusBody = next.focusBody
+            } else {
             const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
             if (focusBodyMeta) {
               let radiusWorld = computeBodyRadiusWorld({
@@ -1584,6 +1766,7 @@ export function SceneCanvas() {
             }
 
             lastAutoZoomFocusBody = next.focusBody
+            }
           }
 
           bodyPosKmByKey.clear()
@@ -1760,6 +1943,7 @@ export function SceneCanvas() {
       renderOnceRef.current = null
       cancelFocusTweenRef.current = null
       focusOnOriginRef.current = null
+      resetLookOffsetRef.current = null
 
       updateSceneRef.current = null
 
@@ -1835,9 +2019,8 @@ export function SceneCanvas() {
         <div
           className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
         >
+          {/* Header: Collapse toggle on left, title, help + mobile-only Look/Pan on right */}
           <div className="sceneOverlayHeader">
-            <div className="sceneOverlayHeaderTitle">Controls</div>
-
             <button
               className="sceneOverlayToggle"
               onClick={() => setOverlayOpen((v) => !v)}
@@ -1849,6 +2032,8 @@ export function SceneCanvas() {
               {overlayOpen ? '▲' : '▼'}
             </button>
 
+            <div className="sceneOverlayHeaderTitle">CONTROLS</div>
+
             <div className="sceneOverlayHeaderActions">
               <button
                 className="helpButton"
@@ -1859,26 +2044,41 @@ export function SceneCanvas() {
               >
                 ?
               </button>
+              {/* Mobile-only look/pan lock buttons */}
               <button
-                className={`sceneOverlayButton ${panModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
+                className={`sceneOverlayButton mobileOnly ${lookModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
+                aria-pressed={lookModeEnabled}
+                onClick={() => setLookModeEnabled((v) => !v)}
+                type="button"
+                title="When enabled, 1-finger drag does free-look instead of orbit"
+              >
+                Look
+              </button>
+              <button
+                className={`sceneOverlayButton mobileOnly ${panModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
                 aria-pressed={panModeEnabled}
                 onClick={() => setPanModeEnabled((v) => !v)}
                 type="button"
                 title="When enabled, 1-finger drag pans instead of orbiting"
               >
-                Drag: {panModeEnabled ? 'Pan' : 'Orbit'}
+                Pan
               </button>
             </div>
           </div>
 
           {overlayOpen ? (
             <div id="scene-overlay-body" className="sceneOverlayBody">
+              {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
               <PlaybackControls spiceClient={spiceClient} />
 
-              <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
-                <label className="sceneOverlayLabel">
-                  Focus
+              <div className="controlsDivider" />
+
+              {/* Focus Section */}
+              <div className="controlsSection">
+                <div className="focusRow">
+                  <span className="focusLabel">Focus:</span>
                   <select
+                    className="focusSelect"
                     value={String(focusBody)}
                     onChange={(e) => {
                       setFocusBody(e.target.value)
@@ -1890,68 +2090,103 @@ export function SceneCanvas() {
                       </option>
                     ))}
                   </select>
-                </label>
+                </div>
 
                 <button
-                  className="sceneOverlayButton"
+                  className={`asciiBtn asciiBtnWide ${String(focusBody) === 'SUN' ? 'asciiBtnDisabled' : ''}`}
                   type="button"
                   onClick={refocusSun}
                   disabled={String(focusBody) === 'SUN'}
                   title="Quickly refocus the scene on the Sun"
                 >
-                  Focus Sun
+                  <span className="asciiBtnBracket">[</span>
+                  <span className="asciiBtnContent">{String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}</span>
+                  <span className="asciiBtnBracket">]</span>
                 </button>
+              </div>
 
-                <label className="sceneOverlayCheckbox">
-                  <input
-                    type="checkbox"
-                    checked={showJ2000Axes}
-                    onChange={(e) => setShowJ2000Axes(e.target.checked)}
-                  />
-                  J2000 axes
+              {/* Checkbox grid: 2 columns */}
+              <div className="checkboxGrid">
+                <label className="asciiCheckbox">
+                  <span
+                    className="asciiCheckboxBox"
+                    onClick={() => setLabelsEnabled((v) => !v)}
+                  >
+                    [{labelsEnabled ? '✓' : '\u00A0'}]
+                  </span>
+                  <span
+                    className="asciiCheckboxLabel"
+                    onClick={() => setLabelsEnabled((v) => !v)}
+                  >
+                    Labels
+                  </span>
                 </label>
-                <label className="sceneOverlayCheckbox">
-                  <input
-                    type="checkbox"
-                    checked={showBodyFixedAxes}
-                    onChange={(e) => setShowBodyFixedAxes(e.target.checked)}
-                  />
-                  Body-fixed axes
+
+                <label className="asciiCheckbox">
+                  <span
+                    className="asciiCheckboxBox"
+                    onClick={() => setOrbitPathsEnabled((v) => !v)}
+                  >
+                    [{orbitPathsEnabled ? '✓' : '\u00A0'}]
+                  </span>
+                  <span
+                    className="asciiCheckboxLabel"
+                    onClick={() => setOrbitPathsEnabled((v) => !v)}
+                  >
+                    Orbits
+                  </span>
                 </label>
-                <label className="sceneOverlayCheckbox">
-                  <input
-                    type="checkbox"
-                    checked={orbitPathsEnabled}
-                    onChange={(e) => setOrbitPathsEnabled(e.target.checked)}
-                  />
-                  Orbit paths
+
+                <label className="asciiCheckbox">
+                  <span
+                    className="asciiCheckboxBox"
+                    onClick={() => setShowJ2000Axes((v) => !v)}
+                  >
+                    [{showJ2000Axes ? '✓' : '\u00A0'}]
+                  </span>
+                  <span
+                    className="asciiCheckboxLabel"
+                    onClick={() => setShowJ2000Axes((v) => !v)}
+                  >
+                    Axes
+                  </span>
                 </label>
-                <label className="sceneOverlayCheckbox">
-                  <input
-                    type="checkbox"
-                    checked={labelsEnabled}
-                    onChange={(e) => setLabelsEnabled(e.target.checked)}
-                  />
-                  Labels
+
+                <label className="asciiCheckbox">
+                  <span
+                    className="asciiCheckboxBox"
+                    onClick={() => setShowRenderHud((v) => !v)}
+                  >
+                    [{showRenderHud ? '✓' : '\u00A0'}]
+                  </span>
+                  <span
+                    className="asciiCheckboxLabel"
+                    onClick={() => setShowRenderHud((v) => !v)}
+                  >
+                    HUD
+                  </span>
                 </label>
               </div>
 
-              {/* Advanced tuning section */}
-              <div className="sceneOverlayRow" style={{ marginTop: '8px' }}>
-                <button
-                  className="sceneOverlayButton"
-                  onClick={() => setShowAdvanced(!showAdvanced)}
-                  type="button"
-                >
-                  {showAdvanced ? '▼ Advanced' : '▶ Advanced'}
-                </button>
-              </div>
+              <div className="controlsDivider" />
+
+              {/* Advanced disclosure row */}
+              <button
+                className="advancedToggle"
+                onClick={() => setShowAdvanced(!showAdvanced)}
+                type="button"
+              >
+                {showAdvanced ? '▼' : '▶'} ADVANCED
+              </button>
 
               {showAdvanced && (
-                <div className="sceneOverlayAdvanced" style={{ marginTop: '8px' }}>
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Camera FOV ({cameraFovDeg}°)
+                <div className="advancedPanel">
+                  <div className="advancedHeader">ADVANCED CONTROLS</div>
+
+                  {/* Group 1: Camera FOV, Planet Scale, Sun Scale */}
+                  <div className="advancedGroup">
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Camera FOV</span>
                       <input
                         type="range"
                         min={30}
@@ -1959,28 +2194,12 @@ export function SceneCanvas() {
                         step={1}
                         value={cameraFovDeg}
                         onChange={(e) => setCameraFovDeg(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Sun size ({sunScaleMultiplier}×)
-                      <input
-                        type="range"
-                        min={1}
-                        max={20}
-                        step={1}
-                        value={sunScaleMultiplier}
-                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
-                        style={{ width: '100%' }}
-                      />
-                    </label>
-                  </div>
+                      <span className="advancedSliderValue">{cameraFovDeg}°</span>
+                    </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Planet size ({formatScaleMultiplier(planetScaleMultiplier)}×)
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Planet Scale</span>
                       <input
                         type="range"
                         min={0}
@@ -1988,43 +2207,30 @@ export function SceneCanvas() {
                         step={1}
                         value={planetScaleSlider}
                         onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
-                  <div className="sceneOverlayRow" style={{ marginTop: '6px' }}>
-                    <label className="sceneOverlayCheckbox">
+                      <span className="advancedSliderValue">{formatScaleMultiplier(planetScaleMultiplier)}×</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Sun Scale</span>
                       <input
-                        type="checkbox"
-                        checked={animatedSky}
-                        onChange={(e) => setAnimatedSky(e.target.checked)}
+                        type="range"
+                        min={1}
+                        max={20}
+                        step={1}
+                        value={sunScaleMultiplier}
+                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
                       />
-                      Animated sky
-                    </label>
-                    <label className="sceneOverlayCheckbox">
-                      <input
-                        type="checkbox"
-                        checked={labelOcclusionEnabled}
-                        onChange={(e) => setLabelOcclusionEnabled(e.target.checked)}
-                      />
-                      Label occlusion
-                    </label>
+                      <span className="advancedSliderValue">{sunScaleMultiplier}×</span>
+                    </div>
                   </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayCheckbox">
-                      <input
-                        type="checkbox"
-                        checked={showRenderHud}
-                        onChange={(e) => setShowRenderHud(e.target.checked)}
-                      />
-                      Render HUD
-                    </label>
-                  </div>
+                  <div className="advancedDivider" />
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Orbit line width ({orbitLineWidthPx.toFixed(1)}px)
+                  {/* Group 2: Orbit Line Width, Samples/Orbit, Max Orbit Points, Quantum */}
+                  <div className="advancedGroup">
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Orbit Line Width</span>
                       <input
                         type="range"
                         min={0.5}
@@ -2032,14 +2238,12 @@ export function SceneCanvas() {
                         step={0.1}
                         value={orbitLineWidthPx}
                         onChange={(e) => setOrbitLineWidthPx(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
+                      <span className="advancedSliderValue">{orbitLineWidthPx.toFixed(1)}px</span>
+                    </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Orbit samples/orbit ({orbitSamplesPerOrbit})
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Samples / Orbit</span>
                       <input
                         type="range"
                         min={32}
@@ -2047,36 +2251,83 @@ export function SceneCanvas() {
                         step={32}
                         value={orbitSamplesPerOrbit}
                         onChange={(e) => setOrbitSamplesPerOrbit(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
+                      <span className="advancedSliderValue">{orbitSamplesPerOrbit}</span>
+                    </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Orbit max total points
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Max Orbit Points</span>
                       <input
                         type="number"
                         min={256}
                         step={256}
                         value={orbitMaxTotalPoints}
                         onChange={(e) => setOrbitMaxTotalPoints(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
+                    </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Quantum (s)
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Quantum (s)</span>
                       <input
                         type="number"
                         min={0.001}
                         step={0.01}
                         value={quantumSec}
                         onChange={handleQuantumChange}
-                        style={{ width: '100%' }}
                       />
+                    </div>
+                  </div>
+
+                  <div className="advancedDivider" />
+
+                  {/* Group 3: Animated Sky, Label Occlusion */}
+                  <div className="advancedCheckboxRow">
+                    <label className="asciiCheckbox">
+                      <span
+                        className="asciiCheckboxBox"
+                        onClick={() => setAnimatedSky((v) => !v)}
+                      >
+                        [{animatedSky ? '✓' : '\u00A0'}]
+                      </span>
+                      <span
+                        className="asciiCheckboxLabel"
+                        onClick={() => setAnimatedSky((v) => !v)}
+                      >
+                        Animated Sky
+                      </span>
+                    </label>
+
+                    <label className="asciiCheckbox">
+                      <span
+                        className="asciiCheckboxBox"
+                        onClick={() => setLabelOcclusionEnabled((v) => !v)}
+                      >
+                        [{labelOcclusionEnabled ? '✓' : '\u00A0'}]
+                      </span>
+                      <span
+                        className="asciiCheckboxLabel"
+                        onClick={() => setLabelOcclusionEnabled((v) => !v)}
+                      >
+                        Label Occlusion
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* Body-fixed axes - keep in advanced */}
+                  <div className="advancedCheckboxRow" style={{ marginTop: '6px' }}>
+                    <label className="asciiCheckbox">
+                      <span
+                        className="asciiCheckboxBox"
+                        onClick={() => setShowBodyFixedAxes((v) => !v)}
+                      >
+                        [{showBodyFixedAxes ? '✓' : '\u00A0'}]
+                      </span>
+                      <span
+                        className="asciiCheckboxLabel"
+                        onClick={() => setShowBodyFixedAxes((v) => !v)}
+                      >
+                        Body-fixed Axes
+                      </span>
                     </label>
                   </div>
                 </div>

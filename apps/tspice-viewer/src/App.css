@@ -1,22 +1,67 @@
+/* ============================================
+   Design System: Phosphor Green Instrument Panel
+   ============================================
+   Colors: --phosphor-fg (bright green), --phosphor-dim (muted green)
+   Background: --panel-bg (near-black with transparency)
+   Border: --phosphor-border (muted green), --panel-border (subtle white)
+   Radius: --radius-xs (3px max)
+   Fonts: --font-ui, --font-mono, --font-size-sm
+   ============================================ */
+
+/* --- Shared Utility Classes --- */
+
+.panel {
+  background: var(--panel-bg);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  backdrop-filter: blur(6px);
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-ui);
+}
+
+.btn {
+  appearance: none;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-fg);
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-ui);
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.btn:hover {
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+}
+
+.btn--active,
+.btn:active {
+  background: var(--active-bg);
+  border-color: var(--active-border);
+}
+
+/* --- Layout --- */
+
 .app {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.appHeader {
-  height: 41px;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.appHeading {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .main {
@@ -29,12 +74,22 @@
   width: 100%;
   height: 100%;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
   overflow: hidden;
   background: #0f131a;
   overscroll-behavior: none;
 }
+
+.sceneCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+/* --- Scene Overlay (Control Panel) --- */
 
 .sceneOverlay {
   position: absolute;
@@ -45,12 +100,21 @@
   gap: 8px;
   z-index: 2;
   padding: 10px 12px;
-  border-radius: 10px;
-  background: rgba(10, 14, 20, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--panel-bg);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
   backdrop-filter: blur(6px);
-  font-size: 12px;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-ui);
+  color: var(--phosphor-fg);
   max-width: min(520px, calc(100% - 24px));
+}
+
+/* When open, fix width to accommodate advanced section without resize */
+.sceneOverlayOpen {
+  min-width: 320px;
+  /* Constrain width to prevent advanced panel content from expanding the overlay */
+  width: 320px;
 }
 
 .sceneOverlayHeader {
@@ -62,7 +126,7 @@
 
 .sceneOverlayHeaderTitle {
   font-weight: 600;
-  opacity: 0.85;
+  color: var(--phosphor-fg);
   padding: 0 2px;
 }
 
@@ -70,6 +134,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  /* Prevent content overflow from affecting parent width */
+  overflow: hidden;
 }
 
 .sceneOverlayCollapsed .sceneOverlayBody {
@@ -86,6 +152,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  color: var(--phosphor-fg);
 }
 
 .sceneOverlayLabel input[type='range'] {
@@ -95,43 +162,66 @@
 .sceneOverlayValue {
   width: 54px;
   text-align: right;
-  opacity: 0.9;
+  color: var(--phosphor-fg);
   font-variant-numeric: tabular-nums;
+}
+
+.sceneOverlayToggle {
+  appearance: none;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-fg);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sceneOverlayToggle:hover {
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+}
+
+.sceneOverlayHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .sceneOverlayButton {
   appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-fg);
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-xs);
   cursor: pointer;
-}
-
-.sceneOverlayButtonActive {
-  background: rgba(100, 160, 255, 0.22);
-  border-color: rgba(100, 160, 255, 0.4);
+  font-size: var(--font-size-sm);
 }
 
 .sceneOverlayButton:hover {
-  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+}
+
+.sceneOverlayButtonActive {
+  background: var(--active-bg);
+  border-color: var(--active-border);
 }
 
 .sceneOverlayCheckbox {
   display: flex;
   align-items: center;
   gap: 6px;
-  opacity: 0.95;
+  color: var(--phosphor-fg);
 }
 
-.sceneCanvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-  touch-action: none;
-  overscroll-behavior: none;
-}
+/* --- Zoom Buttons --- */
 
 .sceneZoomButtons {
   position: absolute;
@@ -145,12 +235,12 @@
 
 .sceneZoomButton {
   appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(10, 14, 20, 0.72);
-  color: rgba(255, 255, 255, 0.9);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: var(--panel-bg);
+  color: var(--phosphor-fg);
   width: 38px;
   height: 38px;
-  border-radius: 10px;
+  border-radius: var(--radius-xs);
   cursor: pointer;
   font-size: 18px;
   line-height: 38px;
@@ -159,9 +249,474 @@
 }
 
 .sceneZoomButton:hover {
-  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
 }
 
+/* --- Playback Controls --- */
+
+.playbackControls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 260px;
+}
+
+.playbackRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.playbackTimeDisplay {
+  font-variant-numeric: tabular-nums;
+}
+
+.playbackLabel {
+  color: var(--phosphor-dim);
+  min-width: 28px;
+}
+
+.playbackValue {
+  color: var(--phosphor-fg);
+}
+
+.playbackUtc {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+.playbackSliderLabel {
+  flex: 1;
+}
+
+.playbackSlider {
+  width: 100%;
+  cursor: pointer;
+}
+
+.playbackButtons {
+  justify-content: center;
+  gap: 4px;
+}
+
+.playbackButton {
+  appearance: none;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-fg);
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 14px;
+  min-width: 32px;
+  text-align: center;
+}
+
+.playbackButton:hover {
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+}
+
+.playbackButtonMain {
+  padding: 8px 16px;
+  min-width: 44px;
+}
+
+.playbackSpeedRow {
+  justify-content: center;
+  gap: 12px;
+}
+
+.playbackSpeedLabel {
+  min-width: 80px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+}
+
+.playbackSpeedButton {
+  font-size: 16px;
+  font-weight: bold;
+  min-width: 28px;
+  padding: 4px 8px;
+}
+
+.playbackPresets {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.playbackPreset {
+  appearance: none;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-dim);
+  padding: 3px 6px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+.playbackPreset:hover {
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+  color: var(--phosphor-fg);
+}
+
+.playbackPresetActive {
+  background: var(--active-bg);
+  border-color: var(--active-border);
+  color: var(--phosphor-fg);
+}
+
+.playbackAdvancedToggle {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--phosphor-dim);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  padding: 2px 0;
+}
+
+.playbackAdvancedToggle:hover {
+  color: var(--phosphor-fg);
+}
+
+.playbackAdvanced {
+  padding-top: 4px;
+  border-top: var(--stroke-1) solid var(--phosphor-border);
+}
+
+.playbackAdvancedLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-sm);
+  color: var(--phosphor-dim);
+}
+
+.playbackAdvancedInput {
+  width: 80px;
+  padding: 4px 6px;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-fg);
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-sm);
+}
+
+/* --- Help Overlay --- */
+
+.helpBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.helpDialog {
+  background: #0a0e14;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  max-width: 540px;
+  width: 100%;
+  max-height: calc(100vh - 32px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.helpHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: var(--stroke-1) solid var(--phosphor-border);
+}
+
+.helpTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--phosphor-fg);
+}
+
+.helpCloseButton {
+  appearance: none;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-fg);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.helpCloseButton:hover {
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+}
+
+.helpCloseButton:focus {
+  outline: 2px solid var(--phosphor-dim);
+  outline-offset: 2px;
+}
+
+.helpContent {
+  padding: 20px;
+  overflow-y: auto;
+  color: var(--phosphor-fg);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.helpSection {
+  margin-bottom: 20px;
+}
+
+.helpSection:last-child {
+  margin-bottom: 0;
+}
+
+.helpSectionTitle {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--phosphor-fg);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.helpSection p {
+  margin: 0 0 10px 0;
+  color: var(--phosphor-dim);
+}
+
+.helpSection p:last-child {
+  margin-bottom: 0;
+}
+
+.helpSection a {
+  color: var(--phosphor-fg);
+  text-decoration: none;
+}
+
+.helpSection a:hover {
+  text-decoration: underline;
+}
+
+.helpControls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.helpControlGroup h4 {
+  margin: 0 0 6px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--phosphor-fg);
+}
+
+.helpControlGroup p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--phosphor-dim);
+}
+
+.helpControlList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--phosphor-dim);
+}
+
+.helpControlList li {
+  margin-bottom: 4px;
+}
+
+.helpControlList li:last-child {
+  margin-bottom: 0;
+}
+
+.helpControlList strong {
+  color: var(--phosphor-fg);
+}
+
+.helpButton {
+  appearance: none;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-fg);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.helpButton:hover {
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+}
+
+/* --- Selection Inspector Panel --- */
+
+.selectionInspector {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 2;
+  padding: 10px 14px;
+  background: var(--panel-bg);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  backdrop-filter: blur(6px);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-ui);
+  color: var(--phosphor-fg);
+  min-width: 180px;
+  max-width: 280px;
+}
+
+.selectionInspectorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: var(--stroke-1) solid var(--phosphor-border);
+  gap: 8px;
+}
+
+.selectionInspectorTitle {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--phosphor-fg);
+}
+
+.selectionInspectorToggle {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--phosphor-fg);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.selectionInspectorToggle:hover {
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+}
+
+.selectionInspectorToggleActive {
+  background: var(--active-bg);
+  border-color: var(--active-border);
+}
+
+.selectionInspectorBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.selectionInspectorRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.selectionInspectorLabel {
+  color: var(--phosphor-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.selectionInspectorValue {
+  color: var(--phosphor-fg);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.selectionInspectorDivider {
+  height: 1px;
+  background: var(--phosphor-border);
+  margin: 4px 0;
+}
+
+/* --- Render HUD --- */
+
+.renderHud {
+  position: absolute;
+  z-index: 3;
+  padding: 8px 12px;
+  border-radius: var(--radius-xs);
+  background: var(--panel-bg);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  backdrop-filter: blur(4px);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--phosphor-fg);
+  pointer-events: none;
+  line-height: 1.5;
+}
+
+.renderHudTopRight {
+  top: 12px;
+  right: 12px;
+}
+
+.renderHudBottomLeft {
+  bottom: 12px;
+  left: 12px;
+}
+
+.renderHudTitle {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--phosphor-fg);
+}
+
+.renderHudDivider {
+  height: 1px;
+  background: var(--phosphor-border);
+  margin: 4px 0;
+}
+
+/* --- Mobile Responsive --- */
 
 @media (max-width: 720px) {
   :root {
@@ -192,324 +747,7 @@
       env(safe-area-inset-bottom, 0px)
     );
   }
-}
 
-/* Playback Controls */
-.playbackControls {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 260px;
-}
-
-.playbackRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.playbackTimeDisplay {
-  font-variant-numeric: tabular-nums;
-}
-
-.playbackLabel {
-  color: rgba(255, 255, 255, 0.6);
-  min-width: 28px;
-}
-
-.playbackValue {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.playbackUtc {
-  font-family: ui-monospace, 'SF Mono', monospace;
-  font-size: 11px;
-}
-
-.playbackSliderLabel {
-  flex: 1;
-}
-
-.playbackSlider {
-  width: 100%;
-  cursor: pointer;
-}
-
-.playbackButtons {
-  justify-content: center;
-  gap: 4px;
-}
-
-.playbackButton {
-  appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  min-width: 32px;
-  text-align: center;
-}
-
-.playbackButton:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.playbackButtonMain {
-  padding: 8px 16px;
-  min-width: 44px;
-}
-
-.playbackSpeedRow {
-  justify-content: center;
-  gap: 12px;
-}
-
-.playbackSpeedLabel {
-  min-width: 80px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 11px;
-}
-
-.playbackSpeedButton {
-  font-size: 16px;
-  font-weight: bold;
-  min-width: 28px;
-  padding: 4px 8px;
-}
-
-.playbackPresets {
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
-}
-
-.playbackPreset {
-  appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.7);
-  padding: 3px 6px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 10px;
-}
-
-.playbackPreset:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.playbackPresetActive {
-  background: rgba(100, 160, 255, 0.2);
-  border-color: rgba(100, 160, 255, 0.4);
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.playbackAdvancedToggle {
-  appearance: none;
-  border: none;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  font-size: 11px;
-  padding: 2px 0;
-}
-
-.playbackAdvancedToggle:hover {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.playbackAdvanced {
-  padding-top: 4px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.playbackAdvancedLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.playbackAdvancedInput {
-  width: 80px;
-  padding: 4px 6px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
-  border-radius: 4px;
-  font-size: 11px;
-}
-
-/* Help Overlay */
-.helpBackdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-.helpDialog {
-  background: #1a1f28;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  max-width: 540px;
-  width: 100%;
-  max-height: calc(100vh - 32px);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
-}
-
-.helpHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.helpTitle {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.helpCloseButton {
-  appearance: none;
-  border: none;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.7);
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 22px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.helpCloseButton:hover {
-  background: rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.helpCloseButton:focus {
-  outline: 2px solid rgba(100, 160, 255, 0.5);
-  outline-offset: 2px;
-}
-
-.helpContent {
-  padding: 20px;
-  overflow-y: auto;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.helpSection {
-  margin-bottom: 20px;
-}
-
-.helpSection:last-child {
-  margin-bottom: 0;
-}
-
-.helpSectionTitle {
-  margin: 0 0 10px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.helpSection p {
-  margin: 0 0 10px 0;
-}
-
-.helpSection p:last-child {
-  margin-bottom: 0;
-}
-
-.helpSection a {
-  color: #6ab0ff;
-  text-decoration: none;
-}
-
-.helpSection a:hover {
-  text-decoration: underline;
-}
-
-.helpControls {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.helpControlGroup h4 {
-  margin: 0 0 6px 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.helpControlGroup p {
-  margin: 0;
-  font-size: 13px;
-}
-
-.helpControlList {
-  margin: 0;
-  padding-left: 18px;
-  font-size: 13px;
-}
-
-.helpControlList li {
-  margin-bottom: 4px;
-}
-
-.helpControlList li:last-child {
-  margin-bottom: 0;
-}
-
-.helpButton {
-  appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.helpButton:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-@media (max-width: 720px) {
   .helpBackdrop {
     padding: 0;
     align-items: flex-end;
@@ -518,7 +756,7 @@
   .helpDialog {
     max-width: 100%;
     max-height: 85vh;
-    border-radius: 20px 20px 0 0;
+    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
     border-bottom: none;
   }
 
@@ -527,178 +765,18 @@
   }
 
   .helpTitle {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .helpContent {
     padding: 16px;
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .helpSectionTitle {
-    font-size: 13px;
+    font-size: 12px;
   }
-}
 
-.sceneOverlayToggle {
-  appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sceneOverlayToggle:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.sceneOverlayHeaderActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Selection Inspector Panel */
-.selectionInspector {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  z-index: 2;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(10, 14, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(6px);
-  font-size: 12px;
-  min-width: 180px;
-  max-width: 280px;
-}
-
-.selectionInspectorHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  gap: 8px;
-}
-
-.selectionInspectorTitle {
-  font-weight: 600;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.selectionInspectorToggle {
-  width: 22px;
-  height: 22px;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s, border-color 0.15s;
-  flex-shrink: 0;
-}
-
-.selectionInspectorToggle:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.selectionInspectorToggleActive {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.35);
-}
-
-.selectionInspectorBody {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.selectionInspectorRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 12px;
-}
-
-.selectionInspectorLabel {
-  color: rgba(255, 255, 255, 0.6);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-}
-
-.selectionInspectorValue {
-  color: rgba(255, 255, 255, 0.95);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.selectionInspectorDivider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 4px 0;
-}
-
-/* Render HUD */
-.renderHud {
-  position: absolute;
-  z-index: 3;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: rgba(10, 14, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
-  font-size: 11px;
-  font-family: ui-monospace, 'SF Mono', monospace;
-  color: rgba(255, 255, 255, 0.85);
-  pointer-events: none;
-  line-height: 1.5;
-}
-
-.renderHudTopRight {
-  top: 12px;
-  right: 12px;
-}
-
-.renderHudBottomLeft {
-  bottom: 12px;
-  left: 12px;
-}
-
-.renderHudTitle {
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.renderHudDivider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 4px 0;
-}
-
-@media (max-width: 720px) {
   /* Mobile: selection inspector becomes a compact panel above controls */
   .selectionInspector {
     left: 10px;
@@ -707,7 +785,7 @@
     bottom: auto;
     max-width: none;
     padding: 8px 12px;
-    font-size: 11px;
+    font-size: var(--font-size-sm);
   }
 
   .selectionInspectorHeader {
@@ -716,7 +794,7 @@
   }
 
   .selectionInspectorTitle {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .selectionInspectorToggle {
@@ -730,11 +808,11 @@
   }
 
   .selectionInspectorLabel {
-    font-size: 10px;
+    font-size: var(--font-size-sm);
   }
 
   .renderHud {
-    font-size: 10px;
+    font-size: var(--font-size-sm);
     padding: 6px 10px;
   }
 
@@ -750,4 +828,438 @@
     bottom: auto;
     max-width: 200px;
   }
+}
+
+/* --- Label Overlay (Phase 4) --- */
+
+.labelOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.labelOverlay svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.labelBox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 4px 8px;
+  background: var(--panel-bg);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-ui);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.labelLeader {
+  fill: none;
+  stroke: var(--phosphor-dim);
+  stroke-width: var(--stroke-1);
+  stroke-opacity: 0.7;
+}
+
+/* ============================================
+   ASCII-Style UI Elements (Phase 3-5 Mockup)
+   ============================================ */
+
+/* --- ASCII Buttons --- */
+
+.asciiBtn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--phosphor-fg);
+  padding: 4px 2px;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  display: inline-flex;
+  line-height: 1;
+  align-items: center;
+  gap: 0;
+  white-space: nowrap;
+  transition: color 0.1s;
+}
+
+.asciiBtn:hover {
+  color: var(--phosphor-bright);
+}
+
+.asciiBtnBracket {
+  color: var(--phosphor-dim);
+}
+
+.asciiBtn:hover .asciiBtnBracket {
+  color: var(--phosphor-fg);
+}
+
+.asciiBtnContent {
+  padding: 0 4px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Reserve space for active indicators so button width stays stable */
+.asciiBtnContent::before {
+  content: '>';
+  visibility: hidden;
+  display: inline;
+  margin-right: 1px;
+}
+
+.asciiBtnContent::after {
+  content: '>';
+  visibility: hidden;
+  display: inline;
+  margin-left: 1px;
+}
+
+
+/* Active state: [>PLAY<] style */
+.asciiBtnActive .asciiBtnContent::before {
+  content: '>';
+  visibility: visible;
+  margin-right: 1px;
+}
+
+.asciiBtnActive .asciiBtnContent::after {
+  content: '<';
+  visibility: visible;
+  margin-left: 1px;
+}
+
+/* Disabled state: lowercase + dim */
+.asciiBtnDisabled,
+.asciiBtn:disabled {
+  color: var(--phosphor-dim);
+  cursor: not-allowed;
+  text-transform: lowercase;
+}
+
+.asciiBtnDisabled .asciiBtnBracket,
+.asciiBtn:disabled .asciiBtnBracket {
+  color: var(--phosphor-border);
+}
+
+/* Main play button is slightly larger */
+.asciiBtnMain {
+  font-size: 16px;
+}
+
+.asciiBtnMain .asciiBtnContent {
+  padding: 0 6px;
+  min-width: 24px;
+}
+
+/* Small buttons for +/- */
+.asciiBtnSmall {
+  font-size: var(--font-size-sm);
+}
+
+.asciiBtnSmall .asciiBtnContent {
+  padding: 0 3px;
+  min-width: 12px;
+}
+
+/* Wide buttons like Focus Sun */
+.asciiBtnWide {
+  width: 100%;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* --- ASCII Checkboxes --- */
+
+.asciiCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--phosphor-fg);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.asciiCheckboxBox {
+  color: var(--phosphor-dim);
+  white-space: pre;
+}
+
+.asciiCheckbox:hover .asciiCheckboxBox {
+  color: var(--phosphor-fg);
+}
+
+.asciiCheckboxLabel {
+  color: var(--phosphor-fg);
+}
+
+/* --- Updated Playback Controls --- */
+
+.playbackControls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+}
+
+.playbackTimeRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.playbackTimeLabel {
+  color: var(--phosphor-dim);
+  min-width: 28px;
+  font-size: var(--font-size-sm);
+}
+
+.playbackTimeValue {
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+}
+
+.playbackTimeMono {
+  font-family: var(--font-mono);
+}
+
+.playbackSliderRow {
+  padding: 4px 0;
+}
+
+.playbackSlider {
+  width: 100%;
+  cursor: pointer;
+}
+
+.playbackButtonsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.playbackRateRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.playbackRateLabel {
+  color: var(--phosphor-dim);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+}
+
+.playbackRateValue {
+  min-width: 56px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+}
+
+/* --- Control Panel Layout Updates --- */
+
+.controlsDivider {
+  height: 1px;
+  background: var(--phosphor-border);
+  margin: 8px 0;
+}
+
+.controlsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.focusRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.focusLabel {
+  color: var(--phosphor-dim);
+  font-size: var(--font-size-sm);
+}
+
+.focusSelect {
+  flex: 1;
+  padding: 4px 24px 4px 8px;
+  background-color: transparent;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-ui);
+  cursor: pointer;
+}
+
+.focusSelect:hover {
+  border-color: var(--phosphor-bright);
+}
+
+.focusSelect option {
+  background: #0a0e14;
+  color: var(--phosphor-fg);
+}
+
+/* Checkbox grid: 2 columns */
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+  padding: 8px 0;
+}
+
+/* Advanced toggle row */
+.advancedToggle {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--phosphor-dim);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
+  width: 100%;
+}
+
+.advancedToggle:hover {
+  color: var(--phosphor-fg);
+}
+
+/* Advanced panel */
+.advancedPanel {
+  margin-top: 8px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  /* Clip horizontal overflow to prevent width expansion; allow content to wrap naturally */
+  overflow-x: hidden;
+}
+
+.advancedHeader {
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--phosphor-fg);
+  margin-bottom: 10px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.advancedGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.advancedDivider {
+  height: 1px;
+  background: var(--phosphor-border);
+  margin: 10px 0;
+}
+
+.advancedSlider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.advancedSliderLabel {
+  flex: 0 0 auto;
+  min-width: 100px;
+  color: var(--phosphor-dim);
+  font-size: var(--font-size-sm);
+}
+
+.advancedSlider input[type="range"] {
+  flex: 1;
+  min-width: 80px;
+}
+
+.advancedSlider input[type="number"] {
+  flex: 1;
+  min-width: 60px;
+  padding: 4px 6px;
+  background: transparent;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+}
+
+.advancedSlider input[type="number"]:hover,
+.advancedSlider input[type="number"]:focus {
+  border-color: var(--phosphor-bright);
+  outline: none;
+}
+
+.advancedSliderValue {
+  flex: 0 0 auto;
+  min-width: 48px;
+  text-align: right;
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.advancedCheckboxRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* --- Mobile-only visibility --- */
+
+.mobileOnly {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .mobileOnly {
+    display: inline-flex;
+  }
+}
+
+/* --- Updated scene overlay header layout --- */
+
+.sceneOverlayHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sceneOverlayHeaderTitle {
+  flex: 1;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--phosphor-fg);
+  letter-spacing: 0.5px;
+}
+
+/* Move toggle to left side */
+.sceneOverlayToggle {
+  order: -1;
 }

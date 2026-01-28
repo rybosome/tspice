@@ -4,9 +4,8 @@ import { SceneCanvas } from './SceneCanvas'
 function App() {
   return (
     <div className="app">
-      <header className="appHeader">
-        <h1 className="appHeading">tspice viewer</h1>
-      </header>
+      {/* Visually-hidden heading for e2e smoke + accessibility. */}
+      <h1 className="sr-only">tspice viewer</h1>
       <main className="main">
         <SceneCanvas />
       </main>

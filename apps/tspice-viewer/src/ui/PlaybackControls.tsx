@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { timeStore, useTimeStore, RATE_LADDER } from '../time/timeStore.js';
+import { timeStore, useTimeStore } from '../time/timeStore.js';
 import type { SpiceClient } from '../spice/SpiceClient.js';
 
 interface PlaybackControlsProps {
@@ -44,11 +44,39 @@ function formatRateLabel(rate: number): string {
 }
 
 /**
- * Format ET as days since J2000.
+ * Format a rate as short display label for the RATE row
  */
-function formatEtDays(etSec: number): string {
-  const days = etSec / 86400;
-  return days.toFixed(2);
+function formatRateShort(rate: number): string {
+  if (rate === 0) return '0×';
+
+  const absRate = Math.abs(rate);
+  const sign = rate < 0 ? '-' : '';
+
+  if (absRate >= 86400 * 365) {
+    const years = absRate / (86400 * 365);
+    return `${sign}${years.toFixed(years % 1 === 0 ? 0 : 1)}y/s`;
+  }
+  if (absRate >= 86400 * 30) {
+    const months = absRate / (86400 * 30);
+    return `${sign}${months.toFixed(months % 1 === 0 ? 0 : 1)}mo/s`;
+  }
+  if (absRate >= 86400 * 7) {
+    const weeks = absRate / (86400 * 7);
+    return `${sign}${weeks.toFixed(weeks % 1 === 0 ? 0 : 1)}w/s`;
+  }
+  if (absRate >= 86400) {
+    const days = absRate / 86400;
+    return `${sign}${days.toFixed(days % 1 === 0 ? 0 : 1)}d/s`;
+  }
+  if (absRate >= 3600) {
+    const hours = absRate / 3600;
+    return `${sign}${hours.toFixed(hours % 1 === 0 ? 0 : 1)}h/s`;
+  }
+  if (absRate >= 60) {
+    const minutes = absRate / 60;
+    return `${sign}${minutes.toFixed(minutes % 1 === 0 ? 0 : 1)}m/s`;
+  }
+  return `${sign}${absRate}×`;
 }
 
 export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
@@ -62,6 +90,10 @@ export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
     }
   }, [spiceClient, state.etSec]);
 
+  const etString = useMemo(() => {
+    return `${state.etSec.toFixed(1)}s`;
+  }, [state.etSec]);
+
   const handleSliderChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     timeStore.setEtSec(Number(e.target.value));
   }, []);
@@ -71,111 +103,105 @@ export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
 
   return (
     <div className="playbackControls">
-      {/* Time Display */}
-      <div className="playbackRow playbackTimeDisplay">
-        <span className="playbackLabel">UTC:</span>
-        <span className="playbackValue playbackUtc">{utcString}</span>
+      {/* Time Display - stacked UTC and ET */}
+      <div className="playbackTimeRow">
+        <span className="playbackTimeLabel">UTC:</span>
+        <span className="playbackTimeValue playbackTimeMono">{utcString}</span>
       </div>
 
-      <div className="playbackRow playbackTimeDisplay">
-        <span className="playbackLabel">ET:</span>
-        <span className="playbackValue">
-          {state.etSec.toFixed(1)}s ({formatEtDays(state.etSec)} days)
-        </span>
+      <div className="playbackTimeRow">
+        <span className="playbackTimeLabel">ET:</span>
+        <span className="playbackTimeValue">{etString}</span>
       </div>
 
       {/* Scrub Slider */}
-      <div className="playbackRow">
-        <label className="playbackSliderLabel">
-          <input
-            type="range"
-            className="playbackSlider"
-            min={state.scrubMinEtSec}
-            max={state.scrubMaxEtSec}
-            step={state.quantumSec}
-            value={state.etSec}
-            onChange={handleSliderChange}
-          />
-        </label>
+      <div className="playbackSliderRow">
+        <input
+          type="range"
+          className="playbackSlider"
+          min={state.scrubMinEtSec}
+          max={state.scrubMaxEtSec}
+          step={state.quantumSec}
+          value={state.etSec}
+          onChange={handleSliderChange}
+        />
       </div>
 
-      {/* Playback Controls */}
-      <div className="playbackRow playbackButtons">
+      {/* Playback Buttons Row: [◀◀] [◀] [▶] [▶▶] */}
+      <div className="playbackButtonsRow">
         <button
-          className="playbackButton"
+          className={`asciiBtn ${isReverse ? 'asciiBtnActive' : ''}`}
           onClick={() => timeStore.reverse()}
           title="Reverse direction"
         >
-          {isReverse ? '⏪' : '◀'}
+          <span className="asciiBtnBracket">[</span>
+          <span className="asciiBtnContent">◀◀</span>
+          <span className="asciiBtnBracket">]</span>
         </button>
 
         <button
-          className="playbackButton"
+          className="asciiBtn"
           onClick={() => timeStore.stepBackward()}
           title={`Step back ${state.stepSec}s`}
         >
-          ⏮
+          <span className="asciiBtnBracket">[</span>
+          <span className="asciiBtnContent">◀</span>
+          <span className="asciiBtnBracket">]</span>
         </button>
 
         <button
-          className="playbackButton playbackButtonMain"
+          className={`asciiBtn asciiBtnMain ${isPlaying ? 'asciiBtnActive' : ''}`}
           onClick={() => timeStore.togglePlay()}
           title={isPlaying ? 'Pause' : 'Play'}
         >
-          {isPlaying ? '⏸' : '▶'}
+          <span className="asciiBtnBracket">[</span>
+          <span className="asciiBtnContent">{isPlaying ? '⏸' : '▶'}</span>
+          <span className="asciiBtnBracket">]</span>
         </button>
 
         <button
-          className="playbackButton"
+          className="asciiBtn"
           onClick={() => timeStore.stepForward()}
           title={`Step forward ${state.stepSec}s`}
         >
-          ⏭
+          <span className="asciiBtnBracket">[</span>
+          <span className="asciiBtnContent">▶</span>
+          <span className="asciiBtnBracket">]</span>
         </button>
 
         <button
-          className="playbackButton"
+          className={`asciiBtn ${!isReverse && state.rateSecPerSec !== 0 ? 'asciiBtnActive' : ''}`}
           onClick={() => timeStore.forward()}
           title="Forward direction"
         >
-          {!isReverse || state.rateSecPerSec === 0 ? '▶' : '⏩'}
+          <span className="asciiBtnBracket">[</span>
+          <span className="asciiBtnContent">▶▶</span>
+          <span className="asciiBtnBracket">]</span>
         </button>
       </div>
 
-      {/* Speed Controls */}
-      <div className="playbackRow playbackSpeedRow">
+      {/* RATE row: RATE: [-] 1d/s [+] */}
+      <div className="playbackRateRow">
+        <span className="playbackRateLabel">RATE:</span>
         <button
-          className="playbackButton playbackSpeedButton"
+          className="asciiBtn asciiBtnSmall"
           onClick={() => timeStore.slower()}
           title="Slower"
         >
-          −
+          <span className="asciiBtnBracket">[</span>
+          <span className="asciiBtnContent">−</span>
+          <span className="asciiBtnBracket">]</span>
         </button>
-
-        <span className="playbackSpeedLabel">
-          {formatRateLabel(state.rateSecPerSec)}
-        </span>
-
+        <span className="playbackRateValue">{formatRateShort(state.rateSecPerSec)}</span>
         <button
-          className="playbackButton playbackSpeedButton"
+          className="asciiBtn asciiBtnSmall"
           onClick={() => timeStore.faster()}
           title="Faster"
         >
-          +
+          <span className="asciiBtnBracket">[</span>
+          <span className="asciiBtnContent">+</span>
+          <span className="asciiBtnBracket">]</span>
         </button>
-      </div>
-
-      {/* Rate Preset Buttons */}
-      <div className="playbackRow playbackPresets">
-        {RATE_LADDER.filter((r) => r > 0).slice(0, 5).map((rate) => (
-          <button
-            key={rate}
-            className={`playbackPreset ${state.rateSecPerSec === rate ? 'playbackPresetActive' : ''}`}
-            onClick={() => timeStore.setRate(rate)}
-          >
-            {formatRateLabel(rate).replace('/s', '')}
-          </button>
-        ))}
       </div>
     </div>
   );

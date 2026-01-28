@@ -38,6 +38,6 @@ export async function createSpiceClient(
     spice,
     client,
     rawClient,
-    utcToEt: (utc) => spice.utcToEt(utc) as unknown as EtSeconds,
+    utcToEt: (utc) => spice.kit.utcToEt(utc) as unknown as EtSeconds,
   };
 }
