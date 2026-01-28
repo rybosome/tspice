@@ -1,0 +1,127 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  publish-native:
+    name: Publish native (${{ matrix.pkg }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs_on: macos-14
+            node_version: '22'
+            pkg: tspice-native-darwin-arm64
+          - runs_on: macos-13
+            node_version: '22'
+            pkg: tspice-native-darwin-x64
+          - runs_on: ubuntu-latest
+            node_version: '22'
+            pkg: tspice-native-linux-x64-gnu
+
+    runs-on: ${{ matrix.runs_on }}
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      # Node 22 + node-gyp can be flaky when it tries to download headers from nodejs.org.
+      # Point node-gyp at the headers shipped with the installed Node runtime instead.
+      - name: Use local Node headers for node-gyp
+        shell: bash
+        run: |
+          NODE_ROOT=$(node -p 'require("path").dirname(require("path").dirname(process.execPath))')
+          echo "npm_config_nodedir=$NODE_ROOT" >> "$GITHUB_ENV"
+
+      - name: Install ncompress (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ncompress
+
+      - name: Install ncompress (macOS)
+        if: ${{ runner.os == 'macOS' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v uncompress >/dev/null 2>&1; then
+            exit 0
+          fi
+          brew update
+          brew install ncompress
+
+      - name: Cache CSPICE
+        uses: actions/cache@v4
+        with:
+          path: .cache/cspice
+          key: cspice-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify native build + tests
+        run: pnpm run check:native
+
+      - name: Configure npm auth
+        shell: bash
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "$HOME/.npmrc"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish platform package
+        run: npm publish packages/${{ matrix.pkg }} --access public
+
+  publish-tspice:
+    name: Publish @rybosome/tspice
+    needs:
+      - publish-native
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify JS build + tests
+        run: pnpm run check:js
+
+      - name: Build dist-publish + verify pack
+        run: |
+          pnpm -w build
+          pnpm -C packages/tspice run verify:dist-publish
+
+      - name: Configure npm auth
+        shell: bash
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "$HOME/.npmrc"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @rybosome/tspice
+        run: npm publish packages/tspice/dist-publish --access public

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 
 export type NativeAddon = {
   spiceVersion(): string;
@@ -129,15 +130,26 @@ let cachedAddon: NativeAddon | undefined;
 const ADDON_TARGET = "tspice_backend_node";
 const ADDON_FILE = `${ADDON_TARGET}.node`;
 
+const NATIVE_PLATFORM_PACKAGES = {
+  darwin: {
+    arm64: "@rybosome/tspice-native-darwin-arm64",
+    x64: "@rybosome/tspice-native-darwin-x64",
+  },
+  linux: {
+    x64: "@rybosome/tspice-native-linux-x64-gnu",
+  },
+} as const;
+
 const BUILD_HINT =
   "Try rebuilding it: pnpm run fetch:cspice && pnpm -C packages/backend-node build:native. " +
   "Or set TSPICE_CSPICE_DIR=/abs/path/to/cspice (containing include/ and lib/). " +
   "Or set TSPICE_BACKEND_NODE_BINDING_PATH to an explicit .node path.";
 
 function getPackageRoot(importMetaUrl: string): string {
-  const require = createRequire(importMetaUrl);
-  const packageJsonPath = require.resolve("../package.json");
-  return path.dirname(packageJsonPath);
+  // Works both in the monorepo layout (`.../backend-node/dist/native.js`) and
+  // in the published `dist-publish/` layout where this code is vendored into
+  // `@rybosome/tspice`.
+  return path.resolve(path.dirname(fileURLToPath(importMetaUrl)), "..");
 }
 
 function loadAddon(require: NodeRequire, bindingPath: string): NativeAddon {
@@ -153,6 +165,42 @@ function loadAddon(require: NodeRequire, bindingPath: string): NativeAddon {
         `Original error: ${errorMessage}`,
       { cause: error }
     );
+  }
+}
+
+function tryGetPlatformBindingPath(require: NodeRequire): string | undefined {
+  const platform = process.platform as keyof typeof NATIVE_PLATFORM_PACKAGES;
+  const arch = process.arch as string;
+
+  const pkgName =
+    NATIVE_PLATFORM_PACKAGES[platform]?.[
+      arch as keyof (typeof NATIVE_PLATFORM_PACKAGES)[typeof platform]
+    ];
+
+  if (!pkgName) {
+    return undefined;
+  }
+
+  try {
+    const mod = require(pkgName) as unknown;
+    if (typeof mod === "string") {
+      return mod;
+    }
+    if (
+      typeof mod === "object" &&
+      mod !== null &&
+      "bindingPath" in mod &&
+      typeof (mod as { bindingPath?: unknown }).bindingPath === "string"
+    ) {
+      return (mod as { bindingPath: string }).bindingPath;
+    }
+    return undefined;
+  } catch (error) {
+    // If the platform package isn't installed, that's expected.
+    if ((error as NodeJS.ErrnoException | undefined)?.code === "MODULE_NOT_FOUND") {
+      return undefined;
+    }
+    throw error;
   }
 }
 
@@ -174,6 +222,12 @@ export function getNativeAddon(): NativeAddon {
     }
 
     cachedAddon = loadAddon(require, resolvedOverride);
+    return cachedAddon;
+  }
+
+  const platformBindingPath = tryGetPlatformBindingPath(require);
+  if (platformBindingPath) {
+    cachedAddon = loadAddon(require, platformBindingPath);
     return cachedAddon;
   }
 
