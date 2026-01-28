@@ -34,6 +34,7 @@
 }
 
 .btn:hover {
+  border-color: var(--phosphor-bright);
   background: var(--hover-bg);
 }
 
@@ -173,6 +174,7 @@
 }
 
 .sceneOverlayToggle:hover {
+  border-color: var(--phosphor-bright);
   background: var(--hover-bg);
 }
 
@@ -194,6 +196,7 @@
 }
 
 .sceneOverlayButton:hover {
+  border-color: var(--phosphor-bright);
   background: var(--hover-bg);
 }
 
@@ -237,6 +240,7 @@
 }
 
 .sceneZoomButton:hover {
+  border-color: var(--phosphor-bright);
   background: var(--hover-bg);
 }
 
@@ -301,6 +305,7 @@
 }
 
 .playbackButton:hover {
+  border-color: var(--phosphor-bright);
   background: var(--hover-bg);
 }
 
@@ -347,6 +352,7 @@
 }
 
 .playbackPreset:hover {
+  border-color: var(--phosphor-bright);
   background: var(--hover-bg);
   color: var(--phosphor-fg);
 }
@@ -452,6 +458,7 @@
 }
 
 .helpCloseButton:hover {
+  border-color: var(--phosphor-bright);
   background: var(--hover-bg);
 }
 
@@ -560,6 +567,7 @@
 }
 
 .helpButton:hover {
+  border-color: var(--phosphor-bright);
   background: var(--hover-bg);
 }
 
@@ -617,6 +625,7 @@
 }
 
 .selectionInspectorToggle:hover {
+  border-color: var(--phosphor-bright);
   background: var(--hover-bg);
 }
 
@@ -810,4 +819,43 @@
     bottom: auto;
     max-width: 200px;
   }
+}
+
+/* --- Label Overlay (Phase 4) --- */
+
+.labelOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.labelOverlay svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.labelBox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 4px 8px;
+  background: var(--panel-bg);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-ui);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.labelLeader {
+  fill: none;
+  stroke: var(--phosphor-dim);
+  stroke-width: var(--stroke-1);
+  stroke-opacity: 0.7;
 }
