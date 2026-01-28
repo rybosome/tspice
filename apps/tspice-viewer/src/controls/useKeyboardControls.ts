@@ -25,6 +25,8 @@ export interface KeyboardControlsOptions {
   cancelFocusTween?: () => void
   /** Focus on origin (reset camera target) */
   focusOnOrigin?: () => void
+  /** Toggle labels visibility */
+  toggleLabels?: () => void
   /** Snapshot of the initial controller state (used for Reset / R). */
   initialControllerStateRef?: React.RefObject<CameraControllerState | null>
   /** Whether keyboard controls are enabled */
@@ -56,7 +58,7 @@ function isEditableElement(target: EventTarget | null): boolean {
  * - Space: Play/pause time
  * - [ / ]: Step time backward/forward
  * - G: Go to selected (TODO: not implemented yet - requires selection state)
- * - L: Toggle labels (TODO: not implemented yet - no label system)
+* - L: Toggle labels
  */
 export function useKeyboardControls({
   controllerRef,
@@ -65,6 +67,7 @@ export function useKeyboardControls({
   invalidate,
   cancelFocusTween,
   focusOnOrigin,
+  toggleLabels,
   initialControllerStateRef,
   enabled = true,
 }: KeyboardControlsOptions) {
@@ -72,12 +75,14 @@ export function useKeyboardControls({
   const invalidateRef = useRef(invalidate)
   const cancelFocusTweenRef = useRef(cancelFocusTween)
   const focusOnOriginRef = useRef(focusOnOrigin)
+  const toggleLabelsRef = useRef(toggleLabels)
 
   useEffect(() => {
     invalidateRef.current = invalidate
     cancelFocusTweenRef.current = cancelFocusTween
     focusOnOriginRef.current = focusOnOrigin
-  }, [invalidate, cancelFocusTween, focusOnOrigin])
+    toggleLabelsRef.current = toggleLabels
+  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleLabels])
 
   useEffect(() => {
     if (!enabled) return
@@ -330,11 +335,12 @@ export function useKeyboardControls({
           }
           break
 
-        // TODO: G for "go to selected" - requires selection state to be passed in
-        // Currently there's no easy way to access the selected body from here.
-        // The selection logic is inside SceneCanvas's useEffect closure.
-
-        // TODO: L for "toggle labels" - no label system implemented yet
+        // Toggle labels
+        case 'l':
+        case 'L':
+          e.preventDefault()
+          toggleLabelsRef.current?.()
+          break
       }
     }
 

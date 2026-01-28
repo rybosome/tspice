@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactNode } from 'react'
 import * as THREE from 'three'
 import { CameraController, type CameraControllerState } from './controls/CameraController.js'
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
@@ -6,7 +6,7 @@ import { pickFirstIntersection } from './interaction/pick.js'
 import { createSpiceClient } from './spice/createSpiceClient.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient, type Vec3Km } from './spice/SpiceClient.js'
 import { createBodyMesh } from './scene/BodyMesh.js'
-import { getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies } from './scene/BodyRegistry.js'
+import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleBodies, listDefaultVisibleSceneBodies, type BodyId } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from './scene/FrameAxes.js'
 import { createRingMesh } from './scene/RingMesh.js'
@@ -18,11 +18,85 @@ import { OrbitPaths } from './scene/orbits/OrbitPaths.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
+import { LabelOverlay, type LabelBody, type LabelOverlayUpdateOptions } from './labels/LabelOverlay.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
 
 
 import { HelpOverlay } from './ui/HelpOverlay.js'
+import { SelectionInspector } from './ui/SelectionInspector.js'
+
+// -----------------------------------------------------------------------------
+// Render HUD Component
+// -----------------------------------------------------------------------------
+interface RenderHudStats {
+  fps: number
+  drawCalls: number
+  triangles: number
+  lines: number
+  points: number
+  geometries: number
+  textures: number
+  meshCount: number
+  lineCount: number
+  pointsCount: number
+  cameraPosition: THREE.Vector3
+  cameraQuaternion: THREE.Quaternion
+  cameraEuler: THREE.Euler
+  targetDistance: number
+  focusBody: string
+}
+
+function RenderHud({ stats }: { stats: RenderHudStats | null }): ReactNode {
+  if (!stats) return null
+
+  const pos = stats.cameraPosition
+  const quat = stats.cameraQuaternion
+  const euler = stats.cameraEuler
+
+  // Convert radians to degrees for human-friendly display
+  const eulerDegX = THREE.MathUtils.radToDeg(euler.x).toFixed(1)
+  const eulerDegY = THREE.MathUtils.radToDeg(euler.y).toFixed(1)
+  const eulerDegZ = THREE.MathUtils.radToDeg(euler.z).toFixed(1)
+
+  return (
+    <>
+      {/* Top-right: Performance stats */}
+      <div className="renderHud renderHudTopRight">
+        <div className="renderHudTitle">Render Stats</div>
+        <div>FPS: {stats.fps.toFixed(1)}</div>
+        <div>Draw Calls: {stats.drawCalls}</div>
+        <div>Triangles: {stats.triangles.toLocaleString()}</div>
+        {stats.lines > 0 && <div>Lines: {stats.lines.toLocaleString()}</div>}
+        {stats.points > 0 && <div>Points: {stats.points.toLocaleString()}</div>}
+        <div className="renderHudDivider" />
+        <div>Geometries: {stats.geometries}</div>
+        <div>Textures: {stats.textures}</div>
+        <div className="renderHudDivider" />
+        <div>Visible Meshes: {stats.meshCount}</div>
+        {stats.lineCount > 0 && <div>Visible Lines: {stats.lineCount}</div>}
+        {stats.pointsCount > 0 && <div>Visible Points: {stats.pointsCount}</div>}
+      </div>
+
+      {/* Bottom-left: Camera info */}
+      <div className="renderHud renderHudBottomLeft">
+        <div className="renderHudTitle">Camera</div>
+        <div>
+          Position: ({pos.x.toFixed(4)}, {pos.y.toFixed(4)}, {pos.z.toFixed(4)})
+        </div>
+        <div>
+          Quaternion: ({quat.x.toFixed(3)}, {quat.y.toFixed(3)}, {quat.z.toFixed(3)}, {quat.w.toFixed(3)})
+        </div>
+        <div>
+          Euler (XYZ): ({eulerDegX}°, {eulerDegY}°, {eulerDegZ}°)
+        </div>
+        <div>Distance to Target: {stats.targetDistance.toFixed(4)}</div>
+        <div>Focus Body: {stats.focusBody}</div>
+      </div>
+    </>
+  )
+}
+
 function disposeMaterial(material: THREE.Material | THREE.Material[]) {
   if (Array.isArray(material)) {
     for (const m of material) m.dispose()
@@ -37,6 +111,7 @@ export function SceneCanvas() {
 
   const controllerRef = useRef<CameraController | null>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
   const sceneRef = useRef<THREE.Scene | null>(null)
   const invalidateRef = useRef<(() => void) | null>(null)
   const renderOnceRef = useRef<((timeMs?: number) => void) | null>(null)
@@ -45,6 +120,8 @@ export function SceneCanvas() {
 
   const starSeedRef = useRef<number>(1337)
   const starfieldRef = useRef<ReturnType<typeof createStarfield> | null>(null)
+  const labelOverlayRef = useRef<LabelOverlay | null>(null)
+  const latestLabelOverlayOptionsRef = useRef<LabelOverlayUpdateOptions | null>(null)
   const skydomeRef = useRef<ReturnType<typeof createSkydome> | null>(null)
 
   const search = useMemo(() => new URLSearchParams(window.location.search), [])
@@ -54,11 +131,16 @@ export function SceneCanvas() {
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
+  // Selected body (promoted from local closure variable for inspector panel)
+  const [selectedBody, setSelectedBody] = useState<BodyRef | null>(null)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
 
   // Advanced tuning sliders (ephemeral, local state only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
+
+  // Render HUD toggle (ephemeral, not persisted)
+  const [showRenderHud, setShowRenderHud] = useState(false)
 
   // Orbit path tuning (ephemeral)
   const [orbitLineWidthPx, setOrbitLineWidthPx] = useState(1.5)
@@ -70,6 +152,11 @@ export function SceneCanvas() {
   // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
+  // Labels toggle (non-advanced, default off)
+  const [labelsEnabled, setLabelsEnabled] = useState(false)
+  // Occlusion toggle for labels (advanced, default off)
+  const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
+
   // Earth brightness boost factor.
   // 1.0 = full brightness (textureColor #ffffff), <1 dims, >1 saturates toward white.
   // This is ephemeral (not persisted) and only affects the Earth's rendered texture color.
@@ -94,6 +181,14 @@ export function SceneCanvas() {
     [planetScaleSlider]
   )
 
+  // HUD stats state - updated on render frames when HUD is enabled
+  const [hudStats, setHudStats] = useState<RenderHudStats | null>(null)
+  // Refs for throttling HUD updates
+  const lastHudUpdateRef = useRef<number>(0)
+  const hudUpdateIntervalMs = 150 // ~6-7 Hz
+  // Smoothed FPS tracking
+  const fpsBufferRef = useRef<number[]>([])
+
   const formatScaleMultiplier = (m: number) => {
     if (!Number.isFinite(m)) return String(m)
     if (m < 10) return m.toFixed(2).replace(/\.00$/, '')
@@ -102,6 +197,8 @@ export function SceneCanvas() {
   }
 
   const quantumSec = useTimeStoreSelector((s) => s.quantumSec)
+  // Current ET for inspector panel (subscribes to time store changes)
+  const etSec = useTimeStoreSelector((s) => s.etSec)
 
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
@@ -125,6 +222,7 @@ export function SceneCanvas() {
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   const focusOnOriginRef = useRef<(() => void) | null>(null)
+  const selectedBodyIdRef = useRef<BodyId | undefined>(undefined)
   const initialControllerStateRef = useRef<CameraControllerState | null>(null)
   panModeEnabledRef.current = panModeEnabled
 
@@ -144,6 +242,7 @@ export function SceneCanvas() {
     cancelFocusTween: () => cancelFocusTweenRef.current?.(),
     focusOnOrigin: () => focusOnOriginRef.current?.(),
     initialControllerStateRef,
+    toggleLabels: () => setLabelsEnabled((v) => !v),
     enabled: !isE2e,
   })
 
@@ -291,6 +390,8 @@ export function SceneCanvas() {
         orbitSamplesPerOrbit: number
         orbitMaxTotalPoints: number
         orbitPathsEnabled: boolean
+        labelsEnabled: boolean
+        labelOcclusionEnabled: boolean
       }) => void)
     | null
   >(null)
@@ -305,11 +406,14 @@ export function SceneCanvas() {
     sunScaleMultiplier,
     planetScaleMultiplier,
     earthBoostFactor,
+    showRenderHud,
 
     orbitLineWidthPx,
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
     orbitPathsEnabled,
+    labelsEnabled,
+    labelOcclusionEnabled,
   })
   latestUiRef.current = {
     focusBody,
@@ -319,11 +423,14 @@ export function SceneCanvas() {
     sunScaleMultiplier,
     planetScaleMultiplier,
     earthBoostFactor,
+    showRenderHud,
 
     orbitLineWidthPx,
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
     orbitPathsEnabled,
+    labelsEnabled,
+    labelOcclusionEnabled,
   }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
@@ -352,6 +459,8 @@ export function SceneCanvas() {
       orbitSamplesPerOrbit,
       orbitMaxTotalPoints,
       orbitPathsEnabled,
+      labelsEnabled,
+      labelOcclusionEnabled,
     })
   }, [
     focusBody,
@@ -365,6 +474,8 @@ export function SceneCanvas() {
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
     orbitPathsEnabled,
+    labelsEnabled,
+    labelOcclusionEnabled,
   ])
 
   // Imperatively update camera FOV when the slider changes
@@ -400,12 +511,17 @@ export function SceneCanvas() {
     let orbitPaths: OrbitPaths | undefined
     const drawingBufferSize = new THREE.Vector2()
 
+    // For FPS calculation
+    let lastFrameTimeMs = performance.now()
+
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: !isE2e,
       powerPreference: 'high-performance',
       logarithmicDepthBuffer: enableLogDepth,
     })
+
+    rendererRef.current = renderer
 
     // Keep e2e snapshots stable by not depending on deviceScaleFactor.
     renderer.setPixelRatio(isE2e ? 1 : Math.min(window.devicePixelRatio, 2))
@@ -503,6 +619,71 @@ export function SceneCanvas() {
       skydome?.syncToCamera(camera)
       skydome?.setTimeSeconds(timeSec)
       renderer.render(scene, camera)
+
+      const labelOverlay = labelOverlayRef.current
+      const labelOptions = latestLabelOverlayOptionsRef.current
+      if (labelOverlay && labelOptions) {
+        // Keep selection in sync even when simulation time is paused.
+        labelOverlay.update({
+          ...labelOptions,
+          selectedBodyId: selectedBodyIdRef.current,
+        })
+      }
+
+      // Update HUD stats after render (only when HUD is enabled)
+      if (latestUiRef.current.showRenderHud) {
+        const now = performance.now()
+
+        // Compute instantaneous FPS from frame delta
+        const deltaMs = now - lastFrameTimeMs
+        if (deltaMs > 0) {
+          const instantFps = 1000 / deltaMs
+          const buffer = fpsBufferRef.current
+          buffer.push(instantFps)
+          // Keep last ~20 samples for smoothing
+          if (buffer.length > 20) buffer.shift()
+        }
+        lastFrameTimeMs = now
+
+        // Throttle React state updates
+        if (now - lastHudUpdateRef.current >= hudUpdateIntervalMs) {
+          lastHudUpdateRef.current = now
+
+          // Compute smoothed FPS
+          const buffer = fpsBufferRef.current
+          const smoothedFps = buffer.length > 0 ? buffer.reduce((a, b) => a + b, 0) / buffer.length : 0
+
+          // Count visible objects by type
+          let meshCount = 0
+          let lineCount = 0
+          let pointsCount = 0
+          scene.traverseVisible((obj) => {
+            if (obj instanceof THREE.Mesh) meshCount++
+            else if (obj instanceof THREE.Line) lineCount++
+            else if (obj instanceof THREE.Points) pointsCount++
+          })
+
+          const info = renderer.info
+          const controllerState = controllerRef.current
+          setHudStats({
+            fps: smoothedFps,
+            drawCalls: info.render.calls,
+            triangles: info.render.triangles,
+            lines: info.render.lines,
+            points: info.render.points,
+            geometries: info.memory.geometries,
+            textures: info.memory.textures,
+            meshCount,
+            lineCount,
+            pointsCount,
+            cameraPosition: camera.position.clone(),
+            cameraQuaternion: camera.quaternion.clone(),
+            cameraEuler: new THREE.Euler().setFromQuaternion(camera.quaternion, 'XYZ'),
+            targetDistance: controllerState?.radius ?? 0,
+            focusBody: String(latestUiRef.current.focusBody),
+          })
+        }
+      }
     }
 
     renderOnceRef.current = renderOnce
@@ -664,6 +845,8 @@ export function SceneCanvas() {
         if (selected) {
           selected = undefined
           selectedBodyId = undefined
+          selectedBodyIdRef.current = undefined
+          setSelectedBody(null)
           selectionRing?.setTarget(undefined)
           stopSelectionPulse()
           invalidate()
@@ -676,6 +859,14 @@ export function SceneCanvas() {
         }
 
         selectedBodyId = String(mesh.userData.bodyId ?? '') || undefined
+        // Keep ref in sync for label overlay
+        const registry = BODY_REGISTRY.find((r) => String(r.body) === selectedBodyId)
+        selectedBodyIdRef.current = registry?.id
+
+        // Update React state for inspector panel
+        if (selectedBodyId) {
+          setSelectedBody(selectedBodyId)
+        }
 
         // Subtle world-space ring indicator around the selected body.
         selectionRing?.setTarget(mesh)
@@ -1252,10 +1443,35 @@ export function SceneCanvas() {
           scene.add(j2000Axes.object)
         }
 
+        // Label overlay (only in interactive mode)
+        if (!isE2e && container) {
+          const labelOverlay = new LabelOverlay({
+            container,
+            camera,
+            kmToWorld,
+          })
+          labelOverlayRef.current = labelOverlay
+          disposers.push(() => {
+            labelOverlay.dispose()
+            labelOverlayRef.current = null
+          })
+        }
+
         let lastAutoZoomFocusBody: BodyRef | undefined
 
         const bodyPosKmByKey = new Map<string, Vec3Km>()
         const bodyVisibleByKey = new Map<string, boolean>()
+
+        const labelBodies: LabelBody[] = bodies.map((b) => {
+          const registry = BODY_REGISTRY.find((r) => String(r.body) === String(b.body))
+          return {
+            id: (registry?.id ?? String(b.body)) as BodyId,
+            label: registry?.style.label ?? String(b.body),
+            kind: registry?.kind ?? 'planet',
+            mesh: b.mesh,
+            radiusKm: b.radiusKm,
+          }
+        })
 
         const updateScene = (next: {
           etSec: EtSeconds
@@ -1271,6 +1487,8 @@ export function SceneCanvas() {
           orbitSamplesPerOrbit: number
           orbitMaxTotalPoints: number
           orbitPathsEnabled: boolean
+          labelsEnabled: boolean
+          labelOcclusionEnabled: boolean
         }) => {
           const shouldAutoZoom =
             !isE2e &&
@@ -1501,6 +1719,18 @@ export function SceneCanvas() {
           // lies along the sun direction, but this adds complexity for marginal visual benefit.
           dir.position.copy(dirPos.multiplyScalar(10))
 
+          // Record label overlay inputs so we can update it on camera movement.
+          latestLabelOverlayOptionsRef.current = {
+            bodies: labelBodies,
+            focusBodyId: BODY_REGISTRY.find((r) => String(r.body) === String(next.focusBody))?.id as BodyId | undefined,
+            selectedBodyId: selectedBodyIdRef.current,
+            labelsEnabled: next.labelsEnabled,
+            occlusionEnabled: next.labelOcclusionEnabled,
+            pickables,
+            sunScaleMultiplier: next.sunScaleMultiplier,
+            planetScaleMultiplier: next.planetScaleMultiplier,
+          }
+
           invalidate()
         }
 
@@ -1549,6 +1779,7 @@ export function SceneCanvas() {
       controllerRef.current = null
       cameraRef.current = null
       sceneRef.current = null
+      rendererRef.current = null
       invalidateRef.current = null
       renderOnceRef.current = null
       cancelFocusTweenRef.current = null
@@ -1719,6 +1950,14 @@ export function SceneCanvas() {
                   />
                   Orbit paths
                 </label>
+                <label className="sceneOverlayCheckbox">
+                  <input
+                    type="checkbox"
+                    checked={labelsEnabled}
+                    onChange={(e) => setLabelsEnabled(e.target.checked)}
+                  />
+                  Labels
+                </label>
               </div>
 
               {/* Advanced tuning section */}
@@ -1799,6 +2038,25 @@ export function SceneCanvas() {
                         onChange={(e) => setAnimatedSky(e.target.checked)}
                       />
                       Animated sky
+                    </label>
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={labelOcclusionEnabled}
+                        onChange={(e) => setLabelOcclusionEnabled(e.target.checked)}
+                      />
+                      Label occlusion
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayCheckbox">
+                      <input
+                        type="checkbox"
+                        checked={showRenderHud}
+                        onChange={(e) => setShowRenderHud(e.target.checked)}
+                      />
+                      Render HUD
                     </label>
                   </div>
 
@@ -1887,7 +2145,22 @@ export function SceneCanvas() {
         </div>
       ) : null}
 
+
+      {/* Selection Inspector - shows when a body is selected */}
+      {!isE2e && selectedBody && spiceClient ? (
+        <SelectionInspector
+          selectedBody={selectedBody}
+          focusBody={focusBody}
+          spiceClient={spiceClient}
+          etSec={etSec}
+          observer="SUN"
+          frame={J2000_FRAME}
+        />
+      ) : null}
       <canvas ref={canvasRef} className="sceneCanvas" />
+
+      {/* Render HUD overlays */}
+      {showRenderHud && <RenderHud stats={hudStats} />}
 
       <HelpOverlay isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
