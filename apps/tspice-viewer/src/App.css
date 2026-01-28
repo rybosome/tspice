@@ -568,3 +568,65 @@
   align-items: center;
   gap: 8px;
 }
+
+/* Render HUD */
+.renderHud {
+  position: absolute;
+  z-index: 3;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(10, 14, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  font-size: 11px;
+  font-family: ui-monospace, 'SF Mono', monospace;
+  color: rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+  line-height: 1.5;
+}
+
+.renderHudTopRight {
+  top: 12px;
+  right: 12px;
+}
+
+.renderHudBottomLeft {
+  bottom: 12px;
+  left: 12px;
+}
+
+.renderHudTitle {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.renderHudDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 0;
+}
+
+@media (max-width: 720px) {
+  .renderHud {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+
+  .renderHudTopRight {
+    top: 10px;
+    right: 10px;
+    max-width: 140px;
+  }
+
+  .renderHudBottomLeft {
+    bottom: calc(
+      var(--mobile-bottom-inset) +
+      var(--mobile-overlay-min-height) +
+      8px +
+      env(safe-area-inset-bottom, 0px)
+    );
+    left: 10px;
+    max-width: 200px;
+  }
+}
