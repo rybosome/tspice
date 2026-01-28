@@ -3,10 +3,10 @@ import type * as THREE from 'three'
 import type { CameraController, CameraControllerState } from './CameraController.js'
 import { timeStore } from '../time/timeStore.js'
 
-/** Orbit step in radians per key press */
+/** Orbit step equivalent in radians (used to derive speed) */
 const ORBIT_STEP = 0.05
-/** Pan step in pixels equivalent */
-const PAN_STEP_PX = 30
+/** Orbit speed for continuous arrow-key orbit (roughly matches key-repeat feel) */
+const ORBIT_SPEED_RAD_PER_SEC = ORBIT_STEP * 20
 /** Pan speed for continuous WASD movement */
 const PAN_SPEED_PX_PER_SEC = 600
 /** Zoom factor per key press */
@@ -88,20 +88,23 @@ export function useKeyboardControls({
     if (!enabled) return
 
     const pressedKeys = new Set<string>()
-    let panFrame: number | null = null
-    let lastPanTimeMs: number | null = null
+    let shiftDown = false
 
-    const stopPan = () => {
-      if (panFrame != null) {
-        window.cancelAnimationFrame(panFrame)
-        panFrame = null
+    let motionFrame: number | null = null
+    let lastMotionTimeMs: number | null = null
+
+    const stopMotion = () => {
+      if (motionFrame != null) {
+        window.cancelAnimationFrame(motionFrame)
+        motionFrame = null
       }
-      lastPanTimeMs = null
+      lastMotionTimeMs = null
       pressedKeys.clear()
+      shiftDown = false
     }
 
-    const startPan = () => {
-      if (panFrame != null) return
+    const startMotion = () => {
+      if (motionFrame != null) return
 
       const step = (nowMs: number) => {
         const controller = controllerRef.current
@@ -110,27 +113,27 @@ export function useKeyboardControls({
 
         // Stop if we lose required refs.
         if (!controller || !camera || !canvas) {
-          stopPan()
+          stopMotion()
           return
         }
 
         // Don't move while typing.
         if (isEditableElement(document.activeElement)) {
-          stopPan()
+          stopMotion()
           return
         }
 
         // Stop when no movement keys are held.
         if (pressedKeys.size === 0) {
-          stopPan()
+          stopMotion()
           return
         }
 
         const dtSec =
-          lastPanTimeMs == null
+          lastMotionTimeMs == null
             ? 1 / 60
-            : Math.min(Math.max((nowMs - lastPanTimeMs) / 1000, 0), 0.05)
-        lastPanTimeMs = nowMs
+            : Math.min(Math.max((nowMs - lastMotionTimeMs) / 1000, 0), 0.05)
+        lastMotionTimeMs = nowMs
 
         let dirX = 0
         let dirY = 0
@@ -138,6 +141,14 @@ export function useKeyboardControls({
         if (pressedKeys.has('s')) dirY += 1
         if (pressedKeys.has('a')) dirX -= 1
         if (pressedKeys.has('d')) dirX += 1
+
+        // Shift + arrow keys: pan continuously.
+        if (shiftDown) {
+          if (pressedKeys.has('arrowup')) dirY -= 1
+          if (pressedKeys.has('arrowdown')) dirY += 1
+          if (pressedKeys.has('arrowleft')) dirX -= 1
+          if (pressedKeys.has('arrowright')) dirX += 1
+        }
 
         // Normalize diagonals so movement speed stays consistent.
         if (dirX !== 0 && dirY !== 0) {
@@ -148,20 +159,51 @@ export function useKeyboardControls({
         const dxPx = dirX * PAN_SPEED_PX_PER_SEC * dtSec
         const dyPx = dirY * PAN_SPEED_PX_PER_SEC * dtSec
 
+        // Arrow keys (without shift): orbit continuously.
+        let yawDir = 0
+        let pitchDir = 0
+        if (!shiftDown) {
+          if (pressedKeys.has('arrowleft')) yawDir -= 1
+          if (pressedKeys.has('arrowright')) yawDir += 1
+          if (pressedKeys.has('arrowup')) pitchDir += 1
+          if (pressedKeys.has('arrowdown')) pitchDir -= 1
+
+          // Normalize diagonals so orbit speed stays consistent.
+          if (yawDir !== 0 && pitchDir !== 0) {
+            yawDir *= Math.SQRT1_2
+            pitchDir *= Math.SQRT1_2
+          }
+        }
+
+        const dyaw = yawDir * ORBIT_SPEED_RAD_PER_SEC * dtSec
+        const dpitch = pitchDir * ORBIT_SPEED_RAD_PER_SEC * dtSec
+
+        let didMove = false
+
         if (dxPx !== 0 || dyPx !== 0) {
           controller.pan(dxPx, dyPx, camera, {
             width: canvas.clientWidth || 800,
             height: canvas.clientHeight || 600,
           })
+          didMove = true
+        }
+
+        if (dyaw !== 0 || dpitch !== 0) {
+          controller.yaw += dyaw
+          controller.pitch += dpitch
+          didMove = true
+        }
+
+        if (didMove) {
           controller.applyToCamera(camera)
           invalidateRef.current()
         }
 
-        panFrame = window.requestAnimationFrame(step)
+        motionFrame = window.requestAnimationFrame(step)
       }
 
-      lastPanTimeMs = null
-      panFrame = window.requestAnimationFrame(step)
+      lastMotionTimeMs = null
+      motionFrame = window.requestAnimationFrame(step)
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -169,6 +211,24 @@ export function useKeyboardControls({
       if (isEditableElement(e.target)) return
 
       const key = e.key.toLowerCase()
+
+      // Track shift state so Shift+Arrow can pan continuously.
+      if (e.key === 'Shift') {
+        if (!e.repeat) shiftDown = true
+        return
+      }
+
+      // Continuous arrow-key orbit (key-repeat independent)
+      if (key === 'arrowleft' || key === 'arrowright' || key === 'arrowup' || key === 'arrowdown') {
+        e.preventDefault()
+
+        if (!e.repeat) {
+          pressedKeys.add(key)
+          cancelFocusTweenRef.current?.()
+          startMotion()
+        }
+        return
+      }
 
       // Continuous WASD panning (key-repeat independent)
       if (key === 'w' || key === 'a' || key === 's' || key === 'd') {
@@ -178,14 +238,13 @@ export function useKeyboardControls({
         if (!e.repeat) {
           pressedKeys.add(key)
           cancelFocusTweenRef.current?.()
-          startPan()
+          startMotion()
         }
         return
       }
 
       const controller = controllerRef.current
       const camera = cameraRef.current
-      const canvas = canvasRef.current
 
       // Handle shortcuts that don't require camera
       switch (e.key) {
@@ -214,87 +273,6 @@ export function useKeyboardControls({
       }
 
       switch (e.key) {
-        // Orbit controls: Arrow keys (without Shift)
-        case 'ArrowLeft':
-          if (!e.shiftKey) {
-            e.preventDefault()
-            cancelFocusTweenRef.current?.()
-            controller.yaw -= ORBIT_STEP
-            doInvalidate()
-          } else {
-            // Shift + Arrow: Pan
-            e.preventDefault()
-            cancelFocusTweenRef.current?.()
-            if (canvas) {
-              controller.pan(-PAN_STEP_PX, 0, camera, {
-                width: canvas.clientWidth || 800,
-                height: canvas.clientHeight || 600,
-              })
-            }
-            doInvalidate()
-          }
-          break
-
-        case 'ArrowRight':
-          if (!e.shiftKey) {
-            e.preventDefault()
-            cancelFocusTweenRef.current?.()
-            controller.yaw += ORBIT_STEP
-            doInvalidate()
-          } else {
-            // Shift + Arrow: Pan
-            e.preventDefault()
-            cancelFocusTweenRef.current?.()
-            if (canvas) {
-              controller.pan(PAN_STEP_PX, 0, camera, {
-                width: canvas.clientWidth || 800,
-                height: canvas.clientHeight || 600,
-              })
-            }
-            doInvalidate()
-          }
-          break
-
-        case 'ArrowUp':
-          if (!e.shiftKey) {
-            e.preventDefault()
-            cancelFocusTweenRef.current?.()
-            controller.pitch += ORBIT_STEP
-            doInvalidate()
-          } else {
-            // Shift + Arrow: Pan
-            e.preventDefault()
-            cancelFocusTweenRef.current?.()
-            if (canvas) {
-              controller.pan(0, -PAN_STEP_PX, camera, {
-                width: canvas.clientWidth || 800,
-                height: canvas.clientHeight || 600,
-              })
-            }
-            doInvalidate()
-          }
-          break
-
-        case 'ArrowDown':
-          if (!e.shiftKey) {
-            e.preventDefault()
-            cancelFocusTweenRef.current?.()
-            controller.pitch -= ORBIT_STEP
-            doInvalidate()
-          } else {
-            // Shift + Arrow: Pan
-            e.preventDefault()
-            cancelFocusTweenRef.current?.()
-            if (canvas) {
-              controller.pan(0, PAN_STEP_PX, camera, {
-                width: canvas.clientWidth || 800,
-                height: canvas.clientHeight || 600,
-              })
-            }
-            doInvalidate()
-          }
-          break
-
         // Zoom controls
         case '+':
         case '=': // = key without shift produces =, with shift produces +
@@ -348,25 +326,42 @@ export function useKeyboardControls({
       if (isEditableElement(e.target)) return
 
       const key = e.key.toLowerCase()
-      if (key !== 'w' && key !== 'a' && key !== 's' && key !== 'd') return
+
+      if (e.key === 'Shift') {
+        shiftDown = false
+        return
+      }
+
+      if (
+        key !== 'w' &&
+        key !== 'a' &&
+        key !== 's' &&
+        key !== 'd' &&
+        key !== 'arrowleft' &&
+        key !== 'arrowright' &&
+        key !== 'arrowup' &&
+        key !== 'arrowdown'
+      ) {
+        return
+      }
 
       e.preventDefault()
       pressedKeys.delete(key)
 
       if (pressedKeys.size === 0) {
-        stopPan()
+        stopMotion()
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
-    window.addEventListener('blur', stopPan)
+    window.addEventListener('blur', stopMotion)
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
-      window.removeEventListener('blur', stopPan)
-      stopPan()
+      window.removeEventListener('blur', stopMotion)
+      stopMotion()
     }
   }, [enabled, controllerRef, cameraRef, canvasRef, initialControllerStateRef])
 }
