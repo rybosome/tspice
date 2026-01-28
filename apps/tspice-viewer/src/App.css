@@ -885,6 +885,7 @@
   font-size: var(--font-size-sm);
   font-family: var(--font-mono);
   display: inline-flex;
+  line-height: 1;
   align-items: center;
   gap: 0;
   white-space: nowrap;
@@ -1154,8 +1155,8 @@
   background: rgba(0, 0, 0, 0.2);
   border: var(--stroke-1) solid var(--phosphor-border);
   border-radius: var(--radius-xs);
-  /* Prevent content from expanding parent width */
-  overflow: hidden;
+  /* Clip horizontal overflow to prevent width expansion; allow content to wrap naturally */
+  overflow-x: hidden;
 }
 
 .advancedHeader {
