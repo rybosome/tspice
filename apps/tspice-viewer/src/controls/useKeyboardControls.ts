@@ -27,6 +27,8 @@ export interface KeyboardControlsOptions {
   focusOnOrigin?: () => void
   /** Toggle the help overlay */
   toggleHelp?: () => void
+  /** Toggle labels visibility */
+  toggleLabels?: () => void
   /** Snapshot of the initial controller state (used for Reset / R). */
   initialControllerStateRef?: React.RefObject<CameraControllerState | null>
   /** Whether keyboard controls are enabled */
@@ -72,7 +74,7 @@ export function isHelpToggleShortcut(key: string, shiftKey: boolean): boolean {
  * - Space: Play/pause time
  * - [ / ]: Step time backward/forward
  * - G: Go to selected (TODO: not implemented yet - requires selection state)
- * - L: Toggle labels (TODO: not implemented yet - no label system)
+* - L: Toggle labels
 * - ?: Toggle help
  */
 export function useKeyboardControls({
@@ -83,6 +85,7 @@ export function useKeyboardControls({
   cancelFocusTween,
   focusOnOrigin,
   toggleHelp,
+  toggleLabels,
   initialControllerStateRef,
   enabled = true,
 }: KeyboardControlsOptions) {
@@ -91,13 +94,15 @@ export function useKeyboardControls({
   const cancelFocusTweenRef = useRef(cancelFocusTween)
   const focusOnOriginRef = useRef(focusOnOrigin)
   const toggleHelpRef = useRef(toggleHelp)
+  const toggleLabelsRef = useRef(toggleLabels)
 
   useEffect(() => {
     invalidateRef.current = invalidate
     cancelFocusTweenRef.current = cancelFocusTween
     focusOnOriginRef.current = focusOnOrigin
     toggleHelpRef.current = toggleHelp
-  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleHelp])
+    toggleLabelsRef.current = toggleLabels
+  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleHelp, toggleLabels])
 
   useEffect(() => {
     if (!enabled) return
@@ -227,6 +232,15 @@ export function useKeyboardControls({
           e.preventDefault()
           timeStore.stepForward()
           return
+
+        case 'l':
+        case 'L': {
+          const toggle = toggleLabelsRef.current
+          if (!toggle) return
+          e.preventDefault()
+          toggle()
+          return
+        }
       }
 
       // Camera-dependent shortcuts require controller + camera
@@ -362,8 +376,6 @@ export function useKeyboardControls({
         // TODO: G for "go to selected" - requires selection state to be passed in
         // Currently there's no easy way to access the selected body from here.
         // The selection logic is inside SceneCanvas's useEffect closure.
-
-        // TODO: L for "toggle labels" - no label system implemented yet
       }
     }
 

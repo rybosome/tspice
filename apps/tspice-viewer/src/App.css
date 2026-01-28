@@ -4,6 +4,21 @@
   flex-direction: column;
 }
 
+.appHeader {
+  height: 41px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.appHeading {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
 .main {
   flex: 1;
   min-height: 0;
