@@ -113,6 +113,8 @@
 /* When open, fix width to accommodate advanced section without resize */
 .sceneOverlayOpen {
   min-width: 320px;
+  /* Constrain width to prevent advanced panel content from expanding the overlay */
+  width: 320px;
 }
 
 .sceneOverlayHeader {
@@ -132,6 +134,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  /* Prevent content overflow from affecting parent width */
+  overflow: hidden;
 }
 
 .sceneOverlayCollapsed .sceneOverlayBody {
@@ -906,11 +910,18 @@
 }
 
 /* Reserve space for active indicators so button width stays stable */
-.asciiBtnContent::before,
+.asciiBtnContent::before {
+  content: '>';
+  visibility: hidden;
+  display: inline;
+  margin-right: 1px;
+}
+
 .asciiBtnContent::after {
   content: '>';
   visibility: hidden;
   display: inline;
+  margin-left: 1px;
 }
 
 
@@ -1143,6 +1154,8 @@
   background: rgba(0, 0, 0, 0.2);
   border: var(--stroke-1) solid var(--phosphor-border);
   border-radius: var(--radius-xs);
+  /* Prevent content from expanding parent width */
+  overflow: hidden;
 }
 
 .advancedHeader {
