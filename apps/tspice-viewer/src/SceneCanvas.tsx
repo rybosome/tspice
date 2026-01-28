@@ -27,6 +27,26 @@ import { HelpOverlay } from './ui/HelpOverlay.js'
 import { SelectionInspector } from './ui/SelectionInspector.js'
 
 // -----------------------------------------------------------------------------
+// Home camera presets (world units, target at origin)
+// -----------------------------------------------------------------------------
+const HOME_CAMERA_PRESETS: Partial<Record<string, CameraControllerState>> = {
+  EARTH: CameraController.stateFromPose({
+    position: new THREE.Vector3(0.0137, 0.0294, 0.0095),
+    quaternion: new THREE.Quaternion(0.13, 0.585, 0.782, 0.174),
+    target: new THREE.Vector3(0, 0, 0),
+  }),
+  VENUS: CameraController.stateFromPose({
+    position: new THREE.Vector3(-0.0342, 0.022, 0.0062),
+    quaternion: new THREE.Quaternion(-0.312, 0.572, 0.666, -0.363),
+    target: new THREE.Vector3(0, 0, 0),
+  }),
+}
+
+function getHomePresetState(focusBody: BodyRef): CameraControllerState | null {
+  return HOME_CAMERA_PRESETS[String(focusBody)] ?? null
+}
+
+// -----------------------------------------------------------------------------
 // Render HUD Component
 // -----------------------------------------------------------------------------
 interface RenderHudStats {
@@ -221,6 +241,21 @@ export function SceneCanvas() {
   const focusOnOriginRef = useRef<(() => void) | null>(null)
   const selectedBodyIdRef = useRef<BodyId | undefined>(undefined)
   const initialControllerStateRef = useRef<CameraControllerState | null>(null)
+
+  // Track current focus body for keyboard reset logic.
+  const focusBodyRef = useRef<BodyRef | null>(focusBody)
+  focusBodyRef.current = focusBody
+
+  // Per-body reset presets (used by keyboard Reset / R).
+  const resetControllerStateByBodyRef = useRef<Map<string, CameraControllerState> | null>(null)
+  if (!resetControllerStateByBodyRef.current) {
+    resetControllerStateByBodyRef.current = new Map<string, CameraControllerState>()
+
+    const earth = getHomePresetState('EARTH')
+    if (earth) resetControllerStateByBodyRef.current.set('EARTH', earth)
+    const venus = getHomePresetState('VENUS')
+    if (venus) resetControllerStateByBodyRef.current.set('VENUS', venus)
+  }
   // Ref for resetting look offset (used by keyboard Escape and focus changes)
   const resetLookOffsetRef = useRef<(() => void) | null>(null)
   panModeEnabledRef.current = panModeEnabled
@@ -243,6 +278,8 @@ export function SceneCanvas() {
     focusOnOrigin: () => focusOnOriginRef.current?.(),
     resetLookOffset: () => resetLookOffsetRef.current?.(),
     initialControllerStateRef,
+    resetControllerStateByBodyRef,
+    focusBodyRef,
     toggleLabels: () => setLabelsEnabled((v) => !v),
     enabled: !isE2e,
   })
@@ -545,7 +582,13 @@ export function SceneCanvas() {
     camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
-    const controller = CameraController.fromCamera(camera)
+    // If we have a home preset for the initial focus body, start there.
+    const initialHomePreset = getHomePresetState(latestUiRef.current.focusBody)
+    const controller = initialHomePreset ? new CameraController(initialHomePreset) : CameraController.fromCamera(camera)
+
+    if (initialHomePreset) {
+      controller.applyToCamera(camera)
+    }
 
     const syncCameraNear = () => {
       // When zooming/focusing on very small bodies, the orbit radius can dip
@@ -1575,10 +1618,16 @@ export function SceneCanvas() {
             !isE2e &&
             next.focusBody !== lastAutoZoomFocusBody
 
+          const homePreset = shouldAutoZoom ? getHomePresetState(next.focusBody) : null
+
           if (shouldAutoZoom) {
             cancelFocusTween?.()
-            // Clear look offset when auto-focusing a new body
-            controller.resetLookOffset()
+
+            // Clear look offset when auto-focusing a new body.
+            // Home presets supply their own look offset, so don't wipe it.
+            if (!homePreset) {
+              controller.resetLookOffset()
+            }
           }
 
           const focusState = loadedSpiceClient.getBodyState({
@@ -1590,6 +1639,19 @@ export function SceneCanvas() {
           const focusPosKm = focusState.positionKm
 
           if (shouldAutoZoom) {
+            // Home preset beats the normal auto-zoom + sun-in-view heuristics.
+            if (homePreset) {
+              controller.restore(homePreset)
+              controller.applyToCamera(camera)
+
+              // Capture the initial camera view (after first focus logic runs)
+              // so keyboard Reset (R) can return exactly to the page-load view.
+              if (!initialControllerStateRef.current) {
+                initialControllerStateRef.current = controller.snapshot()
+              }
+
+              lastAutoZoomFocusBody = next.focusBody
+            } else {
             const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
             if (focusBodyMeta) {
               let radiusWorld = computeBodyRadiusWorld({
@@ -1679,6 +1741,7 @@ export function SceneCanvas() {
             }
 
             lastAutoZoomFocusBody = next.focusBody
+            }
           }
 
           bodyPosKmByKey.clear()

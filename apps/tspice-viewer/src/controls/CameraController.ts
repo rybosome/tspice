@@ -11,6 +11,15 @@ export type CameraControllerState = {
   lookRoll: number
 }
 
+export type CameraPose = {
+  /** Camera position in world coordinates. */
+  position: THREE.Vector3
+  /** Camera world-space orientation quaternion. */
+  quaternion: THREE.Quaternion
+  /** World-space look target (defaults to origin). */
+  target?: THREE.Vector3
+}
+
 export class CameraController {
   target: THREE.Vector3
   radius: number
@@ -40,7 +49,8 @@ export class CameraController {
       maxPitch?: number
     }
   ) {
-    this.target = state.target
+    // Always own our own target vector so external snapshots/presets stay immutable.
+    this.target = state.target.clone()
     this.radius = state.radius
     this.yaw = state.yaw
     this.pitch = state.pitch
@@ -72,6 +82,53 @@ export class CameraController {
     const pitch = Math.asin(THREE.MathUtils.clamp(offset.z / radius, -1, 1))
 
     return new CameraController({ target, radius, yaw, pitch, lookYaw: 0, lookPitch: 0, lookRoll: 0 })
+  }
+
+  /**
+   * Derive a `CameraControllerState` from a world-space camera pose.
+   *
+   * The controller applies its free-look offset *after* `camera.lookAt(target)` via:
+   * `rotateY(lookYaw) -> rotateX(lookPitch) -> rotateZ(lookRoll)`.
+   *
+   * This helper computes the offset quaternion relative to the deterministic base
+   * `lookAt` orientation and decomposes it using the matching intrinsic Euler
+   * order (`'YXZ'`).
+   */
+  static stateFromPose(pose: CameraPose): CameraControllerState {
+    const target = pose.target?.clone() ?? new THREE.Vector3(0, 0, 0)
+    const offset = pose.position.clone().sub(target)
+    const radius = offset.length() || 1
+
+    // Z-up orbit:
+    // - yaw: azimuth around +Z axis, 0 at +X
+    // - pitch: elevation from the XY plane toward +Z
+    const yaw = Math.atan2(offset.y, offset.x)
+    const pitch = Math.asin(THREE.MathUtils.clamp(offset.z / radius, -1, 1))
+
+    // Deterministic base orientation produced by `lookAt`.
+    const tmp = new THREE.PerspectiveCamera()
+    tmp.up.set(0, 0, 1)
+    tmp.position.copy(pose.position)
+    tmp.lookAt(target)
+    const baseQuat = tmp.quaternion.clone().normalize()
+
+    const desiredQuat = pose.quaternion.clone().normalize()
+
+    // desired = base * offset  =>  offset = base^-1 * desired
+    const offsetQuat = baseQuat.clone().invert().multiply(desiredQuat)
+
+    // Match `applyToCamera`'s rotateY -> rotateX -> rotateZ.
+    const euler = new THREE.Euler().setFromQuaternion(offsetQuat, 'YXZ')
+
+    return {
+      target,
+      radius,
+      yaw,
+      pitch,
+      lookYaw: euler.y,
+      lookPitch: euler.x,
+      lookRoll: euler.z,
+    }
   }
 
   clampState() {
