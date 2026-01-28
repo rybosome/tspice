@@ -511,12 +511,12 @@ export class LabelOverlay {
       top: 0;
       left: 0;
       padding: ${LABEL_PADDING_Y}px ${LABEL_PADDING_X}px;
-      background: rgba(10, 20, 15, 0.85);
-      border: 1px solid #3a7;
-      border-radius: 4px;
-      color: #8f8;
-      font-size: 11px;
-      font-family: system-ui, sans-serif;
+      background: var(--panel-bg);
+      border: var(--stroke-1) solid var(--phosphor-border);
+      border-radius: var(--radius-xs);
+      color: var(--phosphor-fg);
+      font-size: var(--font-size-sm);
+      font-family: var(--font-ui);
       white-space: nowrap;
       pointer-events: none;
       display: none;
@@ -526,9 +526,9 @@ export class LabelOverlay {
     // Create SVG polyline for leader line
     const leaderElement = document.createElementNS('http://www.w3.org/2000/svg', 'polyline')
     leaderElement.setAttribute('fill', 'none')
-    leaderElement.setAttribute('stroke', '#3a7')
-    leaderElement.setAttribute('stroke-width', '1')
-    leaderElement.setAttribute('stroke-opacity', '0.7')
+    leaderElement.style.stroke = 'var(--phosphor-dim)'
+    leaderElement.style.strokeWidth = 'var(--stroke-1)'
+    leaderElement.style.strokeOpacity = '0.7'
     leaderElement.style.display = 'none'
     this.svgElement.appendChild(leaderElement)
 
