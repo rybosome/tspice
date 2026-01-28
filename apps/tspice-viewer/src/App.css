@@ -620,13 +620,9 @@
   }
 
   .renderHudBottomLeft {
-    bottom: calc(
-      var(--mobile-bottom-inset) +
-      var(--mobile-overlay-min-height) +
-      8px +
-      env(safe-area-inset-bottom, 0px)
-    );
+    top: 10px;
     left: 10px;
+    bottom: auto;
     max-width: 200px;
   }
 }
