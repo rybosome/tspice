@@ -14,10 +14,8 @@ import type {
 *
 * This is the raw backend contract (node addon, wasm backend, etc.).
 */
-export type Cspice = SpiceBackend;
-
 /**
-* Higher-level helpers and convenience APIs built on top of {@link Cspice}.
+* Higher-level helpers and convenience APIs built on top of the raw backend.
 */
 export type SpiceKit = {
   /** Load a SPICE kernel. */
@@ -44,11 +42,8 @@ export type SpiceKit = {
 * Top-level `createSpice()` return type.
 */
 export type Spice = {
-  /** Underlying backend instance. */
-  backend: SpiceBackend;
-
   /** Raw backend primitives (verbatim). */
-  cspice: Cspice;
+  cspice: SpiceBackend;
   /** Higher-level helpers and typed conveniences. */
   kit: SpiceKit;
 };

@@ -87,7 +87,7 @@ main().catch(console.error);
 - Types:
   - `BackendKind` (currently `"node" | "wasm"`)
   - `SpiceBackend`
-  - `Cspice`, `SpiceKit`, `Spice`
+  - `SpiceKit`, `Spice`
   - Mid-level:
     - `Vec3`, `Vec6`, `Mat3`, `FrameName`, `AberrationCorrection`, `SpiceTime`
     - `StateVector`

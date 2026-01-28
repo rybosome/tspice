@@ -105,5 +105,5 @@ export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spi
     },
   };
 
-  return { backend, cspice, kit };
+  return { cspice, kit };
 }

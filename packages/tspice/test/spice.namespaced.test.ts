@@ -12,13 +12,12 @@ const __dirname = path.dirname(__filename);
 const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 
 describe("createSpice() namespaced return", () => {
-  it("returns { cspice, kit, backend } (no flattening)", async () => {
+  it("returns { cspice, kit } (no flattening)", async () => {
     const spice = await createSpice({ backend: "wasm" });
     const lskBytes = fs.readFileSync(lskPath);
 
     expect(spice).toHaveProperty("cspice");
     expect(spice).toHaveProperty("kit");
-    expect(spice).toHaveProperty("backend");
     expect((spice as any).furnsh).toBeUndefined();
     expect((spice as any).loadKernel).toBeUndefined();
 

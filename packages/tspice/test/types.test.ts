@@ -88,7 +88,7 @@ describe("createBackend() types", () => {
 });
 
 describe("createSpice() types", () => {
-  it("returns { cspice, kit, backend }", async () => {
+  it("returns { cspice, kit }", async () => {
     // This test is about TypeScript types, not runtime behavior.
     if (false) {
       const spice = await createSpice({ backend: "wasm" });
@@ -102,9 +102,6 @@ describe("createSpice() types", () => {
       spice.cspice.furnsh;
       spice.cspice.str2et;
       spice.cspice.kclear;
-
-      // Underlying backend.
-      spice.backend;
 
       // No flattening onto the top-level.
       // @ts-expect-error createSpice() no longer flattens primitives
