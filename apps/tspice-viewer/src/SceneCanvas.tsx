@@ -1167,6 +1167,7 @@ export function SceneCanvas() {
         const bodies = sceneModel.bodies.map((body) => {
           const { mesh, dispose, ready } = createBodyMesh({
             color: body.style.color,
+            textureColor: body.style.textureColor,
             textureUrl: body.style.textureUrl,
             textureKind: body.style.textureKind,
           })
