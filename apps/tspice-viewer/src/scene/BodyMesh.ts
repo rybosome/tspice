@@ -171,8 +171,14 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           console.warn('Failed to load body texture', options.textureUrl, err)
         })
     : Promise.resolve()
+
+  // Note: `MeshStandardMaterial.color` multiplies `map`.
+  // For full-color albedo textures (e.g. Earth), tinting the texture by a
+  // non-white base color can significantly darken / distort the result.
+  // Use `options.color` as a fallback when no texture is present.
+  const baseColor = map ? new THREE.Color('#ffffff') : new THREE.Color(options.color)
   const material = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(options.color),
+    color: baseColor,
     roughness: options.textureKind === 'sun' ? 0.2 : 0.9,
     metalness: 0.0,
     map,
@@ -196,6 +202,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       if (!map) return
 
       material.map = map
+      // If a texture is present, avoid tinting/darkening it with a non-white
+      // base color.
+      material.color.set('#ffffff')
       material.needsUpdate = true
     }),
   }
