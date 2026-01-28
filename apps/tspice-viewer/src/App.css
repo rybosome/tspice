@@ -110,6 +110,11 @@
   max-width: min(520px, calc(100% - 24px));
 }
 
+/* When open, fix width to accommodate advanced section without resize */
+.sceneOverlayOpen {
+  min-width: 320px;
+}
+
 .sceneOverlayHeader {
   display: flex;
   align-items: center;
@@ -900,14 +905,25 @@
   text-align: center;
 }
 
+/* Reserve space for active indicators so button width stays stable */
+.asciiBtnContent::before,
+.asciiBtnContent::after {
+  content: '>';
+  visibility: hidden;
+  display: inline;
+}
+
+
 /* Active state: [>PLAY<] style */
 .asciiBtnActive .asciiBtnContent::before {
   content: '>';
+  visibility: visible;
   margin-right: 1px;
 }
 
 .asciiBtnActive .asciiBtnContent::after {
   content: '<';
+  visibility: visible;
   margin-left: 1px;
 }
 
@@ -1075,8 +1091,8 @@
 
 .focusSelect {
   flex: 1;
-  padding: 4px 8px;
-  background: transparent;
+  padding: 4px 24px 4px 8px;
+  background-color: transparent;
   border: var(--stroke-1) solid var(--phosphor-border);
   border-radius: var(--radius-xs);
   color: var(--phosphor-fg);
