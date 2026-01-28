@@ -1830,6 +1830,7 @@ export function SceneCanvas() {
 
   return (
     <div ref={containerRef} className="scene">
+      <h1 className="sceneTitle">tspice viewer</h1>
       {!isE2e && spiceClient ? (
         <div
           className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
