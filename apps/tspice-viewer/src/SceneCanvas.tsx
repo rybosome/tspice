@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import * as THREE from 'three'
 import { CameraController, type CameraControllerState } from './controls/CameraController.js'
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
@@ -15,7 +15,7 @@ import { createStarfield } from './scene/Starfield.js'
 import { createSkydome } from './scene/Skydome.js'
 import { rebasePositionKm } from './scene/precision.js'
 import type { SceneModel } from './scene/SceneModel.js'
-import { timeStore } from './time/timeStore.js'
+import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
@@ -87,11 +87,19 @@ export function SceneCanvas() {
     return m.toExponential(1)
   }
 
+  const quantumSec = useTimeStoreSelector((s) => s.quantumSec)
+
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
   const sunOcclusionMarginRad = 0
 
-  const focusOptions = useMemo(() => listDefaultVisibleBodies(), [])
+  const focusOptions = useMemo(() => {
+    // TODO(#119): Once moons are fully integrated into default visibility rules,
+    // this should probably become a dedicated helper (e.g. listFocusableBodies).
+    const base = listDefaultVisibleBodies()
+    const moon = getBodyRegistryEntry('MOON')
+    return base.some((b) => b.id === moon.id) ? base : [...base, moon]
+  }, [])
 
   // Keep renderer units consistent across the app. This matches the value used
   // inside the renderer effect.
@@ -106,6 +114,13 @@ export function SceneCanvas() {
   const initialControllerStateRef = useRef<CameraControllerState | null>(null)
   panModeEnabledRef.current = panModeEnabled
 
+  const handleQuantumChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value)
+    if (value > 0) {
+      timeStore.setQuantumSec(value)
+    }
+  }, [])
+  
   // Enable keyboard controls (disabled in e2e mode)
   useKeyboardControls({
     controllerRef,
@@ -350,17 +365,38 @@ export function SceneCanvas() {
     // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
     // world units away. Keep the far plane large enough so we can render the
     // full default scene (through Neptune).
-    const camera = new THREE.PerspectiveCamera(latestUiRef.current.cameraFovDeg, 1, 0.01, 10_000)
+    const DEFAULT_NEAR = 0.01
+    // Avoid ridiculous near/far ratios that can destroy depth precision.
+    // This only matters when users zoom extremely close.
+    const MIN_NEAR = 1e-5
+    // Keep the near plane well in front of the camera, but small enough that
+    // small-body auto-focus (e.g. the Moon) doesn't clip.
+    const NEAR_RADIUS_FRACTION = 0.1 // radius / 10
+
+    const camera = new THREE.PerspectiveCamera(latestUiRef.current.cameraFovDeg, 1, DEFAULT_NEAR, 10_000)
 
     // Z-up to match SPICE/IAU north (+Z) and keep orbit controls consistent.
     camera.up.set(0, 0, 1)
-
-    // Initial view (before first focus/auto-zoom runs): keep it roughly in the
-    // equatorial (XY) plane so north is "up".
-    camera.position.set(2.2, -2.2, 0)
+    camera.position.set(2.2, 1.4, 2.2)
     camera.lookAt(0, 0, 0)
 
     const controller = CameraController.fromCamera(camera)
+
+    const syncCameraNear = () => {
+      // When zooming/focusing on very small bodies, the orbit radius can dip
+      // below the default near plane. If `near > (cameraDistance - bodyRadius)`
+      // the body will clip and it feels like we "zoomed inside".
+      const desiredNear = Math.min(
+        DEFAULT_NEAR,
+        Math.max(MIN_NEAR, controller.radius * NEAR_RADIUS_FRACTION)
+      )
+
+      // Only touch the projection matrix when the effective near plane changes.
+      if (Math.abs(camera.near - desiredNear) > 1e-9) {
+        camera.near = desiredNear
+        camera.updateProjectionMatrix()
+      }
+    }
 
     controllerRef.current = controller
     cameraRef.current = camera
@@ -398,6 +434,8 @@ export function SceneCanvas() {
 
     const renderOnce = (timeMs?: number) => {
       if (disposed) return
+
+      syncCameraNear()
 
       const nowMs = timeMs ?? performance.now()
       const timeSec = nowMs * 0.001
@@ -880,13 +918,20 @@ export function SceneCanvas() {
               const hitMesh = hit.object
               if (hitMesh instanceof THREE.Mesh) {
                 const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
-                if (nextSelectedBodyId !== selectedBodyId) {
+                const selectionChanged = nextSelectedBodyId !== selectedBodyId
+                if (selectionChanged) {
                   setSelectedMesh(hitMesh)
+                  if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
                 }
 
-                const target = new THREE.Vector3()
-                hitMesh.getWorldPosition(target)
-                focusOn?.(target)
+                // When selection changes, rely on focus-body changes to center
+                // and auto-zoom (avoids focusing in the pre-rebase coordinate
+                // system).
+                if (!selectionChanged) {
+                  const target = new THREE.Vector3()
+                  hitMesh.getWorldPosition(target)
+                  focusOn?.(target)
+                }
               }
             }
           }
@@ -965,6 +1010,9 @@ export function SceneCanvas() {
         const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
         if (nextSelectedBodyId !== selectedBodyId) {
           setSelectedMesh(hitMesh)
+          if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
+          // Let focus-body changes drive camera centering + auto-zoom.
+          return
         }
 
         const target = new THREE.Vector3()
@@ -1615,6 +1663,20 @@ export function SceneCanvas() {
                         onChange={(e) => setAnimatedSky(e.target.checked)}
                       />
                       Animated sky
+                    </label>
+                  </div>
+
+                  <div className="sceneOverlayRow">
+                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
+                      Quantum (s)
+                      <input
+                        type="number"
+                        min={0.001}
+                        step={0.01}
+                        value={quantumSec}
+                        onChange={handleQuantumChange}
+                        style={{ width: '100%' }}
+                      />
                     </label>
                   </div>
                 </div>

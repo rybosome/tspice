@@ -39,6 +39,14 @@ jobs:
         with:
           node-version: ${{ inputs.node_version }}
 
+      # Node 22 + node-gyp can be flaky when it tries to download headers from nodejs.org.
+      # Point node-gyp at the headers shipped with the installed Node runtime instead.
+      - name: Use local Node headers for node-gyp
+        shell: bash
+        run: |
+          NODE_ROOT=$(node -p 'require("path").dirname(require("path").dirname(process.execPath))')
+          echo "npm_config_nodedir=$NODE_ROOT" >> "$GITHUB_ENV"
+
       - name: Pre-install
         if: ${{ inputs.pre_install != '' }}
         run: ${{ inputs.pre_install }}
