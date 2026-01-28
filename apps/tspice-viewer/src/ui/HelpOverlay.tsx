@@ -133,6 +133,12 @@ export function HelpOverlay({ isOpen, onClose }: HelpOverlayProps) {
             <h3 className="helpSectionTitle">Keyboard shortcuts</h3>
             <div className="helpControls">
               <div className="helpControlGroup">
+                <h4 className="helpControlGroupTitle">UI</h4>
+                <ul className="helpControlList">
+                  <li><strong>?:</strong> Toggle help</li>
+                </ul>
+              </div>
+              <div className="helpControlGroup">
                 <h4 className="helpControlGroupTitle">Camera</h4>
                 <ul className="helpControlList">
                   <li><strong>Arrow keys:</strong> Orbit (yaw/pitch)</li>

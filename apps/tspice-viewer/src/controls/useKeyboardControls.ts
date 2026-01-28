@@ -3,10 +3,10 @@ import type * as THREE from 'three'
 import type { CameraController, CameraControllerState } from './CameraController.js'
 import { timeStore } from '../time/timeStore.js'
 
-/** Orbit step equivalent in radians (used to derive speed) */
+/** Orbit step in radians per key press */
 const ORBIT_STEP = 0.05
-/** Orbit speed for continuous arrow-key orbit (roughly matches key-repeat feel) */
-const ORBIT_SPEED_RAD_PER_SEC = ORBIT_STEP * 20
+/** Pan step in pixels equivalent */
+const PAN_STEP_PX = 30
 /** Pan speed for continuous WASD movement */
 const PAN_SPEED_PX_PER_SEC = 600
 /** Zoom factor per key press */
@@ -25,8 +25,8 @@ export interface KeyboardControlsOptions {
   cancelFocusTween?: () => void
   /** Focus on origin (reset camera target) */
   focusOnOrigin?: () => void
-  /** Toggle labels visibility */
-  toggleLabels?: () => void
+  /** Toggle the help overlay */
+  toggleHelp?: () => void
   /** Snapshot of the initial controller state (used for Reset / R). */
   initialControllerStateRef?: React.RefObject<CameraControllerState | null>
   /** Whether keyboard controls are enabled */
@@ -37,12 +37,26 @@ export interface KeyboardControlsOptions {
  * Check if keyboard event target is an editable element.
  * We don't want to capture shortcuts when typing in inputs.
  */
-function isEditableElement(target: EventTarget | null): boolean {
-  if (!target || !(target instanceof HTMLElement)) return false
-  const tagName = target.tagName.toLowerCase()
+export function isEditableElement(target: unknown): boolean {
+  if (!target) return false
+
+  const maybeEl = target as { tagName?: unknown; isContentEditable?: unknown }
+  const tagName = typeof maybeEl.tagName === 'string' ? maybeEl.tagName.toLowerCase() : ''
+
   if (tagName === 'input' || tagName === 'textarea' || tagName === 'select') return true
-  if (target.isContentEditable) return true
+  if (maybeEl.isContentEditable === true) return true
+
   return false
+}
+
+/**
+* Keyboard shortcut for toggling the help overlay.
+*
+* - Prefer `event.key === '?'`
+* - Also support `shift + /` in case the browser reports `/` + `shiftKey`
+*/
+export function isHelpToggleShortcut(key: string, shiftKey: boolean): boolean {
+  return key === '?' || (key === '/' && shiftKey)
 }
 
 /**
@@ -58,7 +72,8 @@ function isEditableElement(target: EventTarget | null): boolean {
  * - Space: Play/pause time
  * - [ / ]: Step time backward/forward
  * - G: Go to selected (TODO: not implemented yet - requires selection state)
-* - L: Toggle labels
+ * - L: Toggle labels (TODO: not implemented yet - no label system)
+* - ?: Toggle help
  */
 export function useKeyboardControls({
   controllerRef,
@@ -67,7 +82,7 @@ export function useKeyboardControls({
   invalidate,
   cancelFocusTween,
   focusOnOrigin,
-  toggleLabels,
+  toggleHelp,
   initialControllerStateRef,
   enabled = true,
 }: KeyboardControlsOptions) {
@@ -75,36 +90,33 @@ export function useKeyboardControls({
   const invalidateRef = useRef(invalidate)
   const cancelFocusTweenRef = useRef(cancelFocusTween)
   const focusOnOriginRef = useRef(focusOnOrigin)
-  const toggleLabelsRef = useRef(toggleLabels)
+  const toggleHelpRef = useRef(toggleHelp)
 
   useEffect(() => {
     invalidateRef.current = invalidate
     cancelFocusTweenRef.current = cancelFocusTween
     focusOnOriginRef.current = focusOnOrigin
-    toggleLabelsRef.current = toggleLabels
-  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleLabels])
+    toggleHelpRef.current = toggleHelp
+  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleHelp])
 
   useEffect(() => {
     if (!enabled) return
 
     const pressedKeys = new Set<string>()
-    let shiftDown = false
+    let panFrame: number | null = null
+    let lastPanTimeMs: number | null = null
 
-    let motionFrame: number | null = null
-    let lastMotionTimeMs: number | null = null
-
-    const stopMotion = () => {
-      if (motionFrame != null) {
-        window.cancelAnimationFrame(motionFrame)
-        motionFrame = null
+    const stopPan = () => {
+      if (panFrame != null) {
+        window.cancelAnimationFrame(panFrame)
+        panFrame = null
       }
-      lastMotionTimeMs = null
+      lastPanTimeMs = null
       pressedKeys.clear()
-      shiftDown = false
     }
 
-    const startMotion = () => {
-      if (motionFrame != null) return
+    const startPan = () => {
+      if (panFrame != null) return
 
       const step = (nowMs: number) => {
         const controller = controllerRef.current
@@ -113,27 +125,27 @@ export function useKeyboardControls({
 
         // Stop if we lose required refs.
         if (!controller || !camera || !canvas) {
-          stopMotion()
+          stopPan()
           return
         }
 
         // Don't move while typing.
         if (isEditableElement(document.activeElement)) {
-          stopMotion()
+          stopPan()
           return
         }
 
         // Stop when no movement keys are held.
         if (pressedKeys.size === 0) {
-          stopMotion()
+          stopPan()
           return
         }
 
         const dtSec =
-          lastMotionTimeMs == null
+          lastPanTimeMs == null
             ? 1 / 60
-            : Math.min(Math.max((nowMs - lastMotionTimeMs) / 1000, 0), 0.05)
-        lastMotionTimeMs = nowMs
+            : Math.min(Math.max((nowMs - lastPanTimeMs) / 1000, 0), 0.05)
+        lastPanTimeMs = nowMs
 
         let dirX = 0
         let dirY = 0
@@ -141,14 +153,6 @@ export function useKeyboardControls({
         if (pressedKeys.has('s')) dirY += 1
         if (pressedKeys.has('a')) dirX -= 1
         if (pressedKeys.has('d')) dirX += 1
-
-        // Shift + arrow keys: pan continuously.
-        if (shiftDown) {
-          if (pressedKeys.has('arrowup')) dirY -= 1
-          if (pressedKeys.has('arrowdown')) dirY += 1
-          if (pressedKeys.has('arrowleft')) dirX -= 1
-          if (pressedKeys.has('arrowright')) dirX += 1
-        }
 
         // Normalize diagonals so movement speed stays consistent.
         if (dirX !== 0 && dirY !== 0) {
@@ -159,76 +163,36 @@ export function useKeyboardControls({
         const dxPx = dirX * PAN_SPEED_PX_PER_SEC * dtSec
         const dyPx = dirY * PAN_SPEED_PX_PER_SEC * dtSec
 
-        // Arrow keys (without shift): orbit continuously.
-        let yawDir = 0
-        let pitchDir = 0
-        if (!shiftDown) {
-          if (pressedKeys.has('arrowleft')) yawDir -= 1
-          if (pressedKeys.has('arrowright')) yawDir += 1
-          if (pressedKeys.has('arrowup')) pitchDir += 1
-          if (pressedKeys.has('arrowdown')) pitchDir -= 1
-
-          // Normalize diagonals so orbit speed stays consistent.
-          if (yawDir !== 0 && pitchDir !== 0) {
-            yawDir *= Math.SQRT1_2
-            pitchDir *= Math.SQRT1_2
-          }
-        }
-
-        const dyaw = yawDir * ORBIT_SPEED_RAD_PER_SEC * dtSec
-        const dpitch = pitchDir * ORBIT_SPEED_RAD_PER_SEC * dtSec
-
-        let didMove = false
-
         if (dxPx !== 0 || dyPx !== 0) {
           controller.pan(dxPx, dyPx, camera, {
             width: canvas.clientWidth || 800,
             height: canvas.clientHeight || 600,
           })
-          didMove = true
-        }
-
-        if (dyaw !== 0 || dpitch !== 0) {
-          controller.yaw += dyaw
-          controller.pitch += dpitch
-          didMove = true
-        }
-
-        if (didMove) {
           controller.applyToCamera(camera)
           invalidateRef.current()
         }
 
-        motionFrame = window.requestAnimationFrame(step)
+        panFrame = window.requestAnimationFrame(step)
       }
 
-      lastMotionTimeMs = null
-      motionFrame = window.requestAnimationFrame(step)
+      lastPanTimeMs = null
+      panFrame = window.requestAnimationFrame(step)
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't capture when focus is in editable elements
       if (isEditableElement(e.target)) return
 
-      const key = e.key.toLowerCase()
-
-      // Track shift state so Shift+Arrow can pan continuously.
-      if (e.key === 'Shift') {
-        if (!e.repeat) shiftDown = true
-        return
-      }
-
-      // Continuous arrow-key orbit (key-repeat independent)
-      if (key === 'arrowleft' || key === 'arrowright' || key === 'arrowup' || key === 'arrowdown') {
+      // Help toggle (e.g. shift+/)
+      if (!e.ctrlKey && !e.metaKey && !e.altKey && isHelpToggleShortcut(e.key, e.shiftKey)) {
+        const toggle = toggleHelpRef.current
+        if (!toggle) return
         e.preventDefault()
-
-        if (!e.repeat) {
-          pressedKeys.add(key)
-          cancelFocusTweenRef.current?.()
-          startMotion()
-        }
+        toggle()
         return
       }
+
+      const key = e.key.toLowerCase()
 
       // Continuous WASD panning (key-repeat independent)
       if (key === 'w' || key === 'a' || key === 's' || key === 'd') {
@@ -238,13 +202,14 @@ export function useKeyboardControls({
         if (!e.repeat) {
           pressedKeys.add(key)
           cancelFocusTweenRef.current?.()
-          startMotion()
+          startPan()
         }
         return
       }
 
       const controller = controllerRef.current
       const camera = cameraRef.current
+      const canvas = canvasRef.current
 
       // Handle shortcuts that don't require camera
       switch (e.key) {
@@ -273,6 +238,87 @@ export function useKeyboardControls({
       }
 
       switch (e.key) {
+        // Orbit controls: Arrow keys (without Shift)
+        case 'ArrowLeft':
+          if (!e.shiftKey) {
+            e.preventDefault()
+            cancelFocusTweenRef.current?.()
+            controller.yaw -= ORBIT_STEP
+            doInvalidate()
+          } else {
+            // Shift + Arrow: Pan
+            e.preventDefault()
+            cancelFocusTweenRef.current?.()
+            if (canvas) {
+              controller.pan(-PAN_STEP_PX, 0, camera, {
+                width: canvas.clientWidth || 800,
+                height: canvas.clientHeight || 600,
+              })
+            }
+            doInvalidate()
+          }
+          break
+
+        case 'ArrowRight':
+          if (!e.shiftKey) {
+            e.preventDefault()
+            cancelFocusTweenRef.current?.()
+            controller.yaw += ORBIT_STEP
+            doInvalidate()
+          } else {
+            // Shift + Arrow: Pan
+            e.preventDefault()
+            cancelFocusTweenRef.current?.()
+            if (canvas) {
+              controller.pan(PAN_STEP_PX, 0, camera, {
+                width: canvas.clientWidth || 800,
+                height: canvas.clientHeight || 600,
+              })
+            }
+            doInvalidate()
+          }
+          break
+
+        case 'ArrowUp':
+          if (!e.shiftKey) {
+            e.preventDefault()
+            cancelFocusTweenRef.current?.()
+            controller.pitch += ORBIT_STEP
+            doInvalidate()
+          } else {
+            // Shift + Arrow: Pan
+            e.preventDefault()
+            cancelFocusTweenRef.current?.()
+            if (canvas) {
+              controller.pan(0, -PAN_STEP_PX, camera, {
+                width: canvas.clientWidth || 800,
+                height: canvas.clientHeight || 600,
+              })
+            }
+            doInvalidate()
+          }
+          break
+
+        case 'ArrowDown':
+          if (!e.shiftKey) {
+            e.preventDefault()
+            cancelFocusTweenRef.current?.()
+            controller.pitch -= ORBIT_STEP
+            doInvalidate()
+          } else {
+            // Shift + Arrow: Pan
+            e.preventDefault()
+            cancelFocusTweenRef.current?.()
+            if (canvas) {
+              controller.pan(0, PAN_STEP_PX, camera, {
+                width: canvas.clientWidth || 800,
+                height: canvas.clientHeight || 600,
+              })
+            }
+            doInvalidate()
+          }
+          break
+
         // Zoom controls
         case '+':
         case '=': // = key without shift produces =, with shift produces +
@@ -313,12 +359,11 @@ export function useKeyboardControls({
           }
           break
 
-        // Toggle labels
-        case 'l':
-        case 'L':
-          e.preventDefault()
-          toggleLabelsRef.current?.()
-          break
+        // TODO: G for "go to selected" - requires selection state to be passed in
+        // Currently there's no easy way to access the selected body from here.
+        // The selection logic is inside SceneCanvas's useEffect closure.
+
+        // TODO: L for "toggle labels" - no label system implemented yet
       }
     }
 
@@ -326,42 +371,25 @@ export function useKeyboardControls({
       if (isEditableElement(e.target)) return
 
       const key = e.key.toLowerCase()
-
-      if (e.key === 'Shift') {
-        shiftDown = false
-        return
-      }
-
-      if (
-        key !== 'w' &&
-        key !== 'a' &&
-        key !== 's' &&
-        key !== 'd' &&
-        key !== 'arrowleft' &&
-        key !== 'arrowright' &&
-        key !== 'arrowup' &&
-        key !== 'arrowdown'
-      ) {
-        return
-      }
+      if (key !== 'w' && key !== 'a' && key !== 's' && key !== 'd') return
 
       e.preventDefault()
       pressedKeys.delete(key)
 
       if (pressedKeys.size === 0) {
-        stopMotion()
+        stopPan()
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
-    window.addEventListener('blur', stopMotion)
+    window.addEventListener('blur', stopPan)
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
-      window.removeEventListener('blur', stopMotion)
-      stopMotion()
+      window.removeEventListener('blur', stopPan)
+      stopPan()
     }
   }, [enabled, controllerRef, cameraRef, canvasRef, initialControllerStateRef])
 }

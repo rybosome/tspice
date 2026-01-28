@@ -235,6 +235,7 @@ export function SceneCanvas() {
     invalidate: () => invalidateRef.current?.(),
     cancelFocusTween: () => cancelFocusTweenRef.current?.(),
     focusOnOrigin: () => focusOnOriginRef.current?.(),
+    toggleHelp: () => setHelpOpen((open) => !open),
     initialControllerStateRef,
     toggleLabels: () => setLabelsEnabled((v) => !v),
     enabled: !isE2e,
