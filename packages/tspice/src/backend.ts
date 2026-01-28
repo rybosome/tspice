@@ -32,6 +32,9 @@ export async function createBackend(
 ): Promise<SpiceBackend | SpiceBackendWasm> {
   const backend = options.backend ?? "auto";
 
+  let autoNativeLoadError: unknown | undefined;
+  let debugNative = false;
+
   const isNodeRuntime =
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     typeof process !== "undefined" &&
@@ -43,6 +46,8 @@ export async function createBackend(
       // If we're in Node and a matching platform package is installed, prefer
       // native. Otherwise, fall back to WASM.
       if (isNodeRuntime) {
+        debugNative = process.env.TSPICE_DEBUG_NATIVE === "1";
+
         const { createRequire } = await import("node:module");
         const require = createRequire(import.meta.url);
         const platform = process.platform as keyof typeof NATIVE_PLATFORM_PACKAGES;
@@ -53,7 +58,15 @@ export async function createBackend(
           ];
 
         if (nativePackage) {
+          let nativePackageResolved = false;
           try {
+            // Only swallow the expected "module not installed" case. If the
+            // package is present but fails to load (e.g. incompatible binary,
+            // missing transitive dependency), preserve the error so we can
+            // surface it when debugging and/or when WASM fallback fails.
+            require.resolve(nativePackage);
+            nativePackageResolved = true;
+
             // We only use this as a presence check here; the backend-node loader
             // will read its exported bindingPath.
             require(nativePackage);
@@ -67,8 +80,20 @@ export async function createBackend(
               createNodeBackend: () => SpiceBackend;
             };
             return createNodeBackend();
-          } catch {
-            // Native wasn't available/compatible; fall back to WASM.
+          } catch (error) {
+            const isExpectedAbsent =
+              !nativePackageResolved && (error as { code?: unknown }).code === "MODULE_NOT_FOUND";
+
+            if (!isExpectedAbsent) {
+              autoNativeLoadError = error;
+              if (debugNative) {
+                // eslint-disable-next-line no-console
+                console.warn(
+                  `tspice: native backend failed to load; falling back to WASM (TSPICE_DEBUG_NATIVE=1). platform=${process.platform} arch=${process.arch} pkg=${nativePackage}`,
+                  error,
+                );
+              }
+            }
           }
         }
       }
@@ -86,8 +111,22 @@ export async function createBackend(
         }
         return await createWasmBackend({ wasmUrl: options.wasmUrl });
       } catch (error) {
+        if (autoNativeLoadError !== undefined) {
+          if (debugNative) {
+            // eslint-disable-next-line no-console
+            console.warn(
+              `tspice: WASM backend fallback also failed after native load error (TSPICE_DEBUG_NATIVE=1).`,
+              error,
+            );
+          }
+          throw new Error(
+            `Failed to load WASM backend (required for backend=\"auto\" fallback) after native backend load failed: ${String(error)}`,
+            { cause: autoNativeLoadError },
+          );
+        }
         throw new Error(
           `Failed to load WASM backend (required for backend=\"auto\" fallback): ${String(error)}`,
+          { cause: error as unknown },
         );
       }
 
