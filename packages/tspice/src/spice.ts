@@ -6,12 +6,12 @@ import { wrapSpiceError } from "./errors.js";
 import type {
   AberrationCorrection,
   FrameName,
-  GetStateArgs,
   Mat3,
   SpiceTime,
-  StateVector,
   Vec3,
 } from "./types.js";
+
+import type { Spice, SpiceKit } from "./spice-types.js";
 
 export type CreateSpiceOptions = CreateBackendOptions & {
   /**
@@ -20,20 +20,6 @@ export type CreateSpiceOptions = CreateBackendOptions & {
    * Useful for testing or advanced callers.
    */
   backendInstance?: SpiceBackend;
-};
-
-export type Spice = {
-  backend: SpiceBackend;
-
-  loadKernel(kernel: KernelSource): void;
-  unloadKernel(path: string): void;
-
-  utcToEt(utc: string): SpiceTime;
-  etToUtc(et: SpiceTime, format?: string, prec?: number): string;
-
-  frameTransform(from: FrameName, to: FrameName, et: SpiceTime): Mat3;
-
-  getState(args: GetStateArgs): StateVector;
 };
 
 const DEFAULT_FRAME: FrameName = "J2000";
@@ -50,35 +36,42 @@ function splitState(state: readonly [number, number, number, number, number, num
 
 export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spice> {
   const backend = options.backendInstance ?? (await createBackend(options));
+  const cspice = backend;
 
-  return {
-    backend,
-
-    loadKernel: (kernel) => {
+  const kit: SpiceKit = {
+    loadKernel: (kernel: KernelSource) => {
       try {
-        backend.furnsh(kernel);
+        cspice.furnsh(kernel);
       } catch (error) {
         throw wrapSpiceError("loadKernel", error);
       }
     },
     unloadKernel: (path) => {
       try {
-        backend.unload(path);
+        cspice.unload(path);
       } catch (error) {
         throw wrapSpiceError("unloadKernel", error);
       }
     },
 
+    toolkitVersion: () => {
+      try {
+        return cspice.tkvrsn("TOOLKIT");
+      } catch (error) {
+        throw wrapSpiceError("toolkitVersion", error);
+      }
+    },
+
     utcToEt: (utc) => {
       try {
-        return backend.str2et(utc) as SpiceTime;
+        return cspice.str2et(utc) as SpiceTime;
       } catch (error) {
         throw wrapSpiceError("utcToEt", error);
       }
     },
     etToUtc: (et, format = "C", prec = 3) => {
       try {
-        return backend.et2utc(et, format, prec);
+        return cspice.et2utc(et, format, prec);
       } catch (error) {
         throw wrapSpiceError("etToUtc", error);
       }
@@ -86,7 +79,7 @@ export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spi
 
     frameTransform: (from, to, et) => {
       try {
-        return backend.pxform(from, to, et) as Mat3;
+        return cspice.pxform(from, to, et) as Mat3;
       } catch (error) {
         throw wrapSpiceError("frameTransform", error);
       }
@@ -94,7 +87,7 @@ export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spi
 
     getState: ({ target, observer, at, frame = DEFAULT_FRAME, aberration = DEFAULT_ABERRATION }) => {
       try {
-        const { state, lt } = backend.spkezr(target, at, frame, aberration, observer);
+        const { state, lt } = cspice.spkezr(target, at, frame, aberration, observer);
         const { position, velocity } = splitState(state);
         return {
           et: at,
@@ -111,4 +104,6 @@ export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spi
       }
     },
   };
+
+  return { cspice, kit };
 }

@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { createBackend, createSpice } from "@rybosome/tspice";
 
 describe("createBackend() types", () => {
   it("exposes wasm-only helpers only on wasm backend", async () => {
@@ -83,6 +83,29 @@ describe("createBackend() types", () => {
       fakeBackend.loadKernel;
       // @ts-expect-error wasm-only helper not present on fake backend
       fakeBackend.writeFile;
+    }
+  });
+});
+
+describe("createSpice() types", () => {
+  it("returns { cspice, kit }", async () => {
+    // This test is about TypeScript types, not runtime behavior.
+    if (false) {
+      const spice = await createSpice({ backend: "wasm" });
+
+      // Kit.
+      spice.kit.loadKernel;
+      spice.kit.utcToEt;
+      spice.kit.getState;
+
+      // CSPICE surface.
+      spice.cspice.furnsh;
+      spice.cspice.str2et;
+      spice.cspice.kclear;
+
+      // No flattening onto the top-level.
+      // @ts-expect-error createSpice() no longer flattens primitives
+      spice.furnsh;
     }
   });
 });
