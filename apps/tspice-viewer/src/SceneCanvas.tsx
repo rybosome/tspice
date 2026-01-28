@@ -198,6 +198,7 @@ export function SceneCanvas() {
   const [labelsEnabled, setLabelsEnabled] = useState(false)
   // Occlusion toggle for labels (advanced, default off)
   const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
+
   // Single toggle for animated sky effects (skydome shader + starfield twinkle).
   // Disabled by default for e2e tests to keep snapshots deterministic.
   const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
@@ -1519,6 +1520,7 @@ export function SceneCanvas() {
         const bodies = sceneModel.bodies.map((body) => {
           const { mesh, dispose, ready } = createBodyMesh({
             color: body.style.color,
+            textureColor: body.style.textureColor,
             textureUrl: body.style.textureUrl,
             textureKind: body.style.textureKind,
           })

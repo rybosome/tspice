@@ -77,6 +77,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     style: {
       radiusKm: 695_700,
       color: "#ffb703",
+      textureColor: "#ffb703",
       textureUrl: "textures/planets/sun.png",
       label: "Sun",
     },
@@ -120,6 +121,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     style: {
       radiusKm: 6_371,
       color: "#2a9d8f",
+      textureColor: "#e6e6e6",
       textureUrl: "textures/planets/earth.png",
       label: "Earth",
     },
@@ -134,6 +136,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     style: {
       radiusKm: 3_389.5,
       color: "#e76f51",
+      textureColor: "#e76f51",
       textureUrl: "textures/planets/mars.png",
       label: "Mars",
     },

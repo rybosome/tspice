@@ -28,6 +28,15 @@ export interface SceneBodyStyle {
   color: string;
 
   /**
+   * Optional material color multiplier to apply when a texture is present.
+   *
+   * Note: `MeshStandardMaterial.color` multiplies the texture (`map`). Most
+   * full-color albedo textures should use `"#ffffff"` here (the default) to
+   * avoid unintended tinting or darkening.
+   */
+  textureColor?: string;
+
+  /**
    * Optional texture URL/path.
    *
    * If relative, it's resolved against Vite's `BASE_URL` at runtime.

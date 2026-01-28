@@ -7,6 +7,9 @@ export type BodyTextureKind = 'earth' | 'moon' | 'sun'
 export type CreateBodyMeshOptions = {
   color: THREE.ColorRepresentation
 
+  /** Optional texture multiplier color (defaults to `options.color`). */
+  textureColor?: THREE.ColorRepresentation
+
   /**
    * Optional texture URL/path.
    *
@@ -171,8 +174,17 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           console.warn('Failed to load body texture', options.textureUrl, err)
         })
     : Promise.resolve()
+
+  // Note: `MeshStandardMaterial.color` multiplies `map`.
+  // For full-color albedo textures (e.g. Earth), tinting the texture by a
+  // non-white base color can significantly darken / distort the result.
+  // Use `options.color` as a fallback when no texture is present.
+  // If a body needs dimming/tinting while textured, use `options.textureColor`.
+  const baseColor = map
+    ? new THREE.Color(options.textureColor ?? options.color)
+    : new THREE.Color(options.color)
   const material = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(options.color),
+    color: baseColor,
     roughness: options.textureKind === 'sun' ? 0.2 : 0.9,
     metalness: 0.0,
     map,
@@ -196,6 +208,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       if (!map) return
 
       material.map = map
+      // Note: `material.color` multiplies `material.map`.
+      // Only override the default multiplier if `textureColor` is explicitly set.
+      material.color.set(options.textureColor ?? options.color)
       material.needsUpdate = true
     }),
   }
