@@ -859,3 +859,377 @@
   stroke-width: var(--stroke-1);
   stroke-opacity: 0.7;
 }
+
+/* ============================================
+   ASCII-Style UI Elements (Phase 3-5 Mockup)
+   ============================================ */
+
+/* --- ASCII Buttons --- */
+
+.asciiBtn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--phosphor-fg);
+  padding: 4px 2px;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  white-space: nowrap;
+  transition: color 0.1s;
+}
+
+.asciiBtn:hover {
+  color: var(--phosphor-bright);
+}
+
+.asciiBtnBracket {
+  color: var(--phosphor-dim);
+}
+
+.asciiBtn:hover .asciiBtnBracket {
+  color: var(--phosphor-fg);
+}
+
+.asciiBtnContent {
+  padding: 0 4px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Active state: [>PLAY<] style */
+.asciiBtnActive .asciiBtnContent::before {
+  content: '>';
+  margin-right: 1px;
+}
+
+.asciiBtnActive .asciiBtnContent::after {
+  content: '<';
+  margin-left: 1px;
+}
+
+/* Disabled state: lowercase + dim */
+.asciiBtnDisabled,
+.asciiBtn:disabled {
+  color: var(--phosphor-dim);
+  cursor: not-allowed;
+  text-transform: lowercase;
+}
+
+.asciiBtnDisabled .asciiBtnBracket,
+.asciiBtn:disabled .asciiBtnBracket {
+  color: var(--phosphor-border);
+}
+
+/* Main play button is slightly larger */
+.asciiBtnMain {
+  font-size: 16px;
+}
+
+.asciiBtnMain .asciiBtnContent {
+  padding: 0 6px;
+  min-width: 24px;
+}
+
+/* Small buttons for +/- */
+.asciiBtnSmall {
+  font-size: var(--font-size-sm);
+}
+
+.asciiBtnSmall .asciiBtnContent {
+  padding: 0 3px;
+  min-width: 12px;
+}
+
+/* Wide buttons like Focus Sun */
+.asciiBtnWide {
+  width: 100%;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* --- ASCII Checkboxes --- */
+
+.asciiCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--phosphor-fg);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.asciiCheckboxBox {
+  color: var(--phosphor-dim);
+  white-space: pre;
+}
+
+.asciiCheckbox:hover .asciiCheckboxBox {
+  color: var(--phosphor-fg);
+}
+
+.asciiCheckboxLabel {
+  color: var(--phosphor-fg);
+}
+
+/* --- Updated Playback Controls --- */
+
+.playbackControls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+}
+
+.playbackTimeRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.playbackTimeLabel {
+  color: var(--phosphor-dim);
+  min-width: 28px;
+  font-size: var(--font-size-sm);
+}
+
+.playbackTimeValue {
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+}
+
+.playbackTimeMono {
+  font-family: var(--font-mono);
+}
+
+.playbackSliderRow {
+  padding: 4px 0;
+}
+
+.playbackSlider {
+  width: 100%;
+  cursor: pointer;
+}
+
+.playbackButtonsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.playbackRateRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.playbackRateLabel {
+  color: var(--phosphor-dim);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+}
+
+.playbackRateValue {
+  min-width: 56px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+}
+
+/* --- Control Panel Layout Updates --- */
+
+.controlsDivider {
+  height: 1px;
+  background: var(--phosphor-border);
+  margin: 8px 0;
+}
+
+.controlsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.focusRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.focusLabel {
+  color: var(--phosphor-dim);
+  font-size: var(--font-size-sm);
+}
+
+.focusSelect {
+  flex: 1;
+  padding: 4px 8px;
+  background: transparent;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-ui);
+  cursor: pointer;
+}
+
+.focusSelect:hover {
+  border-color: var(--phosphor-bright);
+}
+
+.focusSelect option {
+  background: #0a0e14;
+  color: var(--phosphor-fg);
+}
+
+/* Checkbox grid: 2 columns */
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+  padding: 8px 0;
+}
+
+/* Advanced toggle row */
+.advancedToggle {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--phosphor-dim);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
+  width: 100%;
+}
+
+.advancedToggle:hover {
+  color: var(--phosphor-fg);
+}
+
+/* Advanced panel */
+.advancedPanel {
+  margin-top: 8px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+}
+
+.advancedHeader {
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--phosphor-fg);
+  margin-bottom: 10px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.advancedGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.advancedDivider {
+  height: 1px;
+  background: var(--phosphor-border);
+  margin: 10px 0;
+}
+
+.advancedSlider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.advancedSliderLabel {
+  flex: 0 0 auto;
+  min-width: 100px;
+  color: var(--phosphor-dim);
+  font-size: var(--font-size-sm);
+}
+
+.advancedSlider input[type="range"] {
+  flex: 1;
+  min-width: 80px;
+}
+
+.advancedSlider input[type="number"] {
+  flex: 1;
+  min-width: 60px;
+  padding: 4px 6px;
+  background: transparent;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+}
+
+.advancedSlider input[type="number"]:hover,
+.advancedSlider input[type="number"]:focus {
+  border-color: var(--phosphor-bright);
+  outline: none;
+}
+
+.advancedSliderValue {
+  flex: 0 0 auto;
+  min-width: 48px;
+  text-align: right;
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.advancedCheckboxRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* --- Mobile-only visibility --- */
+
+.mobileOnly {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .mobileOnly {
+    display: inline-flex;
+  }
+}
+
+/* --- Updated scene overlay header layout --- */
+
+.sceneOverlayHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sceneOverlayHeaderTitle {
+  flex: 1;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--phosphor-fg);
+  letter-spacing: 0.5px;
+}
+
+/* Move toggle to left side */
+.sceneOverlayToggle {
+  order: -1;
+}
