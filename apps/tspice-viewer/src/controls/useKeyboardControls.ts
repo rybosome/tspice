@@ -11,8 +11,8 @@ const ORBIT_SPEED_RAD_PER_SEC = ORBIT_STEP * 20
 const PAN_SPEED_PX_PER_SEC = 600
 /** Zoom factor per key press */
 const ZOOM_FACTOR = 1.15
-/** Roll step in radians per Q/E key press (5 degrees) */
-const ROLL_STEP_RAD = Math.PI / 36
+/** Roll speed (radians/sec) for continuous Q/E movement */
+const ROLL_SPEED_RAD_PER_SEC = (Math.PI / 36) * 20 // ~100 deg/sec
 
 export interface KeyboardControlsOptions {
   /** CameraController ref */
@@ -91,7 +91,6 @@ export function useKeyboardControls({
     focusOnOriginRef.current = focusOnOrigin
     toggleLabelsRef.current = toggleLabels
     resetLookOffsetRef.current = resetLookOffset
-    toggleLabelsRef.current = toggleLabels
   }, [invalidate, cancelFocusTween, focusOnOrigin, resetLookOffset, toggleLabels])
 
   useEffect(() => {
@@ -188,6 +187,11 @@ export function useKeyboardControls({
         const dyaw = yawDir * ORBIT_SPEED_RAD_PER_SEC * dtSec
         const dpitch = pitchDir * ORBIT_SPEED_RAD_PER_SEC * dtSec
 
+        let rollDir = 0
+        if (pressedKeys.has('q')) rollDir -= 1
+        if (pressedKeys.has('e')) rollDir += 1
+        const dRoll = rollDir * ROLL_SPEED_RAD_PER_SEC * dtSec
+
         let didMove = false
 
         if (dxPx !== 0 || dyPx !== 0) {
@@ -201,6 +205,11 @@ export function useKeyboardControls({
         if (dyaw !== 0 || dpitch !== 0) {
           controller.yaw += dyaw
           controller.pitch += dpitch
+          didMove = true
+        }
+
+        if (dRoll !== 0) {
+          controller.applyRollDelta(dRoll)
           didMove = true
         }
 
@@ -240,8 +249,15 @@ export function useKeyboardControls({
         return
       }
 
-      // Continuous WASD panning (key-repeat independent)
-      if (key === 'w' || key === 'a' || key === 's' || key === 'd') {
+      // Continuous WASD panning + Q/E rolling (key-repeat independent)
+      if (
+        key === 'w' ||
+        key === 'a' ||
+        key === 's' ||
+        key === 'd' ||
+        key === 'q' ||
+        key === 'e'
+      ) {
         e.preventDefault()
 
         // Ignore repeat events; key state is tracked by the set.
@@ -306,23 +322,6 @@ export function useKeyboardControls({
           doInvalidate()
           break
 
-        // Roll controls: Q/E
-        case 'q':
-        case 'Q':
-          e.preventDefault()
-          cancelFocusTweenRef.current?.()
-          controller.applyRollDelta(-ROLL_STEP_RAD) // Roll left (counter-clockwise)
-          doInvalidate()
-          break
-
-        case 'e':
-        case 'E':
-          e.preventDefault()
-          cancelFocusTweenRef.current?.()
-          controller.applyRollDelta(ROLL_STEP_RAD) // Roll right (clockwise)
-          doInvalidate()
-          break
-
         // Focus/center on origin
         case 'f':
         case 'F':
@@ -364,12 +363,13 @@ export function useKeyboardControls({
         shiftDown = false
         return
       }
-
       if (
         key !== 'w' &&
         key !== 'a' &&
         key !== 's' &&
         key !== 'd' &&
+        key !== 'q' &&
+        key !== 'e'
         key !== 'arrowleft' &&
         key !== 'arrowright' &&
         key !== 'arrowup' &&
