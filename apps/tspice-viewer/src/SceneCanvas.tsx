@@ -157,10 +157,6 @@ export function SceneCanvas() {
   // Occlusion toggle for labels (advanced, default off)
   const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
 
-  // Earth brightness boost factor.
-  // 1.0 = full brightness (textureColor #ffffff), <1 dims, >1 saturates toward white.
-  // Pinned (not user-configurable).
-  const EARTH_BOOST_FACTOR = 0.9
   // Single toggle for animated sky effects (skydome shader + starfield twinkle).
   // Disabled by default for e2e tests to keep snapshots deterministic.
   const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
@@ -1627,18 +1623,6 @@ export function SceneCanvas() {
             }
 
             b.mesh.scale.setScalar(radiusWorld)
-
-            // Apply Earth boost factor (live texture color update)
-            if (String(b.body) === 'EARTH') {
-              const material = b.mesh.material
-              if (material instanceof THREE.MeshStandardMaterial) {
-                // Boost factor: 1.0 = white (#ffffff), <1 dims, >1 clamps to white
-                const intensity = THREE.MathUtils.clamp(EARTH_BOOST_FACTOR, 0, 2)
-                const gray = Math.round(intensity * 255)
-                const hex = (gray << 16) | (gray << 8) | gray
-                material.color.setHex(hex)
-              }
-            }
 
             const bodyFixedRotation = b.bodyFixedFrame
               ? loadedSpiceClient.getFrameTransform({
