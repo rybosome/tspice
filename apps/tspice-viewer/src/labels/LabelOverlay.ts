@@ -355,23 +355,12 @@ export class LabelOverlay {
     // Create overlay container
     this.overlayDiv = document.createElement('div')
     this.overlayDiv.className = 'labelOverlay'
-    this.overlayDiv.style.cssText = `
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    `
+    // Styles are defined in App.css .labelOverlay
     this.container.appendChild(this.overlayDiv)
 
     // Create SVG for leader lines
     this.svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    this.svgElement.style.cssText = `
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    `
+    // Styles are defined in App.css .labelOverlay svg
     this.overlayDiv.appendChild(this.svgElement)
   }
 
@@ -506,29 +495,13 @@ export class LabelOverlay {
     const domElement = document.createElement('div')
     domElement.className = 'labelBox'
     domElement.textContent = body.label
-    domElement.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      padding: ${LABEL_PADDING_Y}px ${LABEL_PADDING_X}px;
-      background: var(--panel-bg);
-      border: var(--stroke-1) solid var(--phosphor-border);
-      border-radius: var(--radius-xs);
-      color: var(--phosphor-fg);
-      font-size: var(--font-size-sm);
-      font-family: var(--font-ui);
-      white-space: nowrap;
-      pointer-events: none;
-      display: none;
-    `
+    // Base styles in App.css .labelBox, only dynamic display state here
+    domElement.style.display = 'none'
     this.overlayDiv.appendChild(domElement)
 
     // Create SVG polyline for leader line
     const leaderElement = document.createElementNS('http://www.w3.org/2000/svg', 'polyline')
-    leaderElement.setAttribute('fill', 'none')
-    leaderElement.style.stroke = 'var(--phosphor-dim)'
-    leaderElement.style.strokeWidth = 'var(--stroke-1)'
-    leaderElement.style.strokeOpacity = '0.7'
+    leaderElement.classList.add('labelLeader')
     leaderElement.style.display = 'none'
     this.svgElement.appendChild(leaderElement)
 

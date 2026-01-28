@@ -1931,9 +1931,8 @@ export function SceneCanvas() {
         <div
           className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
         >
+          {/* Header: Collapse toggle on left, title, help + mobile-only Look/Pan on right */}
           <div className="sceneOverlayHeader">
-            <div className="sceneOverlayHeaderTitle">Controls</div>
-
             <button
               className="sceneOverlayToggle"
               onClick={() => setOverlayOpen((v) => !v)}
@@ -1945,6 +1944,8 @@ export function SceneCanvas() {
               {overlayOpen ? '▲' : '▼'}
             </button>
 
+            <div className="sceneOverlayHeaderTitle">CONTROLS</div>
+
             <div className="sceneOverlayHeaderActions">
               <button
                 className="helpButton"
@@ -1955,8 +1956,9 @@ export function SceneCanvas() {
               >
                 ?
               </button>
+              {/* Mobile-only look/pan lock buttons */}
               <button
-                className={`sceneOverlayButton ${lookModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
+                className={`sceneOverlayButton mobileOnly ${lookModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
                 aria-pressed={lookModeEnabled}
                 onClick={() => setLookModeEnabled((v) => !v)}
                 type="button"
@@ -1965,7 +1967,7 @@ export function SceneCanvas() {
                 Look
               </button>
               <button
-                className={`sceneOverlayButton ${panModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
+                className={`sceneOverlayButton mobileOnly ${panModeEnabled ? 'sceneOverlayButtonActive' : ''}`}
                 aria-pressed={panModeEnabled}
                 onClick={() => setPanModeEnabled((v) => !v)}
                 type="button"
@@ -1978,12 +1980,17 @@ export function SceneCanvas() {
 
           {overlayOpen ? (
             <div id="scene-overlay-body" className="sceneOverlayBody">
+              {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
               <PlaybackControls spiceClient={spiceClient} />
 
-              <div className="sceneOverlayRow" style={{ marginTop: '12px' }}>
-                <label className="sceneOverlayLabel">
-                  Focus
+              <div className="controlsDivider" />
+
+              {/* Focus Section */}
+              <div className="controlsSection">
+                <div className="focusRow">
+                  <span className="focusLabel">Focus:</span>
                   <select
+                    className="focusSelect"
                     value={String(focusBody)}
                     onChange={(e) => {
                       setFocusBody(e.target.value)
@@ -1995,68 +2002,103 @@ export function SceneCanvas() {
                       </option>
                     ))}
                   </select>
-                </label>
+                </div>
 
                 <button
-                  className="sceneOverlayButton"
+                  className={`asciiBtn asciiBtnWide ${String(focusBody) === 'SUN' ? 'asciiBtnDisabled' : ''}`}
                   type="button"
                   onClick={refocusSun}
                   disabled={String(focusBody) === 'SUN'}
                   title="Quickly refocus the scene on the Sun"
                 >
-                  Focus Sun
+                  <span className="asciiBtnBracket">[</span>
+                  <span className="asciiBtnContent">{String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}</span>
+                  <span className="asciiBtnBracket">]</span>
                 </button>
+              </div>
 
-                <label className="sceneOverlayCheckbox">
-                  <input
-                    type="checkbox"
-                    checked={showJ2000Axes}
-                    onChange={(e) => setShowJ2000Axes(e.target.checked)}
-                  />
-                  J2000 axes
+              {/* Checkbox grid: 2 columns */}
+              <div className="checkboxGrid">
+                <label className="asciiCheckbox">
+                  <span
+                    className="asciiCheckboxBox"
+                    onClick={() => setLabelsEnabled((v) => !v)}
+                  >
+                    [{labelsEnabled ? '✓' : '\u00A0'}]
+                  </span>
+                  <span
+                    className="asciiCheckboxLabel"
+                    onClick={() => setLabelsEnabled((v) => !v)}
+                  >
+                    Labels
+                  </span>
                 </label>
-                <label className="sceneOverlayCheckbox">
-                  <input
-                    type="checkbox"
-                    checked={showBodyFixedAxes}
-                    onChange={(e) => setShowBodyFixedAxes(e.target.checked)}
-                  />
-                  Body-fixed axes
+
+                <label className="asciiCheckbox">
+                  <span
+                    className="asciiCheckboxBox"
+                    onClick={() => setOrbitPathsEnabled((v) => !v)}
+                  >
+                    [{orbitPathsEnabled ? '✓' : '\u00A0'}]
+                  </span>
+                  <span
+                    className="asciiCheckboxLabel"
+                    onClick={() => setOrbitPathsEnabled((v) => !v)}
+                  >
+                    Orbits
+                  </span>
                 </label>
-                <label className="sceneOverlayCheckbox">
-                  <input
-                    type="checkbox"
-                    checked={orbitPathsEnabled}
-                    onChange={(e) => setOrbitPathsEnabled(e.target.checked)}
-                  />
-                  Orbit paths
+
+                <label className="asciiCheckbox">
+                  <span
+                    className="asciiCheckboxBox"
+                    onClick={() => setShowJ2000Axes((v) => !v)}
+                  >
+                    [{showJ2000Axes ? '✓' : '\u00A0'}]
+                  </span>
+                  <span
+                    className="asciiCheckboxLabel"
+                    onClick={() => setShowJ2000Axes((v) => !v)}
+                  >
+                    Axes
+                  </span>
                 </label>
-                <label className="sceneOverlayCheckbox">
-                  <input
-                    type="checkbox"
-                    checked={labelsEnabled}
-                    onChange={(e) => setLabelsEnabled(e.target.checked)}
-                  />
-                  Labels
+
+                <label className="asciiCheckbox">
+                  <span
+                    className="asciiCheckboxBox"
+                    onClick={() => setShowRenderHud((v) => !v)}
+                  >
+                    [{showRenderHud ? '✓' : '\u00A0'}]
+                  </span>
+                  <span
+                    className="asciiCheckboxLabel"
+                    onClick={() => setShowRenderHud((v) => !v)}
+                  >
+                    HUD
+                  </span>
                 </label>
               </div>
 
-              {/* Advanced tuning section */}
-              <div className="sceneOverlayRow" style={{ marginTop: '8px' }}>
-                <button
-                  className="sceneOverlayButton"
-                  onClick={() => setShowAdvanced(!showAdvanced)}
-                  type="button"
-                >
-                  {showAdvanced ? '▼ Advanced' : '▶ Advanced'}
-                </button>
-              </div>
+              <div className="controlsDivider" />
+
+              {/* Advanced disclosure row */}
+              <button
+                className="advancedToggle"
+                onClick={() => setShowAdvanced(!showAdvanced)}
+                type="button"
+              >
+                {showAdvanced ? '▼' : '▶'} ADVANCED
+              </button>
 
               {showAdvanced && (
-                <div className="sceneOverlayAdvanced" style={{ marginTop: '8px' }}>
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Camera FOV ({cameraFovDeg}°)
+                <div className="advancedPanel">
+                  <div className="advancedHeader">ADVANCED CONTROLS</div>
+
+                  {/* Group 1: Camera FOV, Planet Scale, Sun Scale */}
+                  <div className="advancedGroup">
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Camera FOV</span>
                       <input
                         type="range"
                         min={30}
@@ -2064,28 +2106,12 @@ export function SceneCanvas() {
                         step={1}
                         value={cameraFovDeg}
                         onChange={(e) => setCameraFovDeg(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Sun size ({sunScaleMultiplier}×)
-                      <input
-                        type="range"
-                        min={1}
-                        max={20}
-                        step={1}
-                        value={sunScaleMultiplier}
-                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
-                        style={{ width: '100%' }}
-                      />
-                    </label>
-                  </div>
+                      <span className="advancedSliderValue">{cameraFovDeg}°</span>
+                    </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Planet size ({formatScaleMultiplier(planetScaleMultiplier)}×)
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Planet Scale</span>
                       <input
                         type="range"
                         min={0}
@@ -2093,43 +2119,30 @@ export function SceneCanvas() {
                         step={1}
                         value={planetScaleSlider}
                         onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
-                  <div className="sceneOverlayRow" style={{ marginTop: '6px' }}>
-                    <label className="sceneOverlayCheckbox">
+                      <span className="advancedSliderValue">{formatScaleMultiplier(planetScaleMultiplier)}×</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Sun Scale</span>
                       <input
-                        type="checkbox"
-                        checked={animatedSky}
-                        onChange={(e) => setAnimatedSky(e.target.checked)}
+                        type="range"
+                        min={1}
+                        max={20}
+                        step={1}
+                        value={sunScaleMultiplier}
+                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
                       />
-                      Animated sky
-                    </label>
-                    <label className="sceneOverlayCheckbox">
-                      <input
-                        type="checkbox"
-                        checked={labelOcclusionEnabled}
-                        onChange={(e) => setLabelOcclusionEnabled(e.target.checked)}
-                      />
-                      Label occlusion
-                    </label>
+                      <span className="advancedSliderValue">{sunScaleMultiplier}×</span>
+                    </div>
                   </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayCheckbox">
-                      <input
-                        type="checkbox"
-                        checked={showRenderHud}
-                        onChange={(e) => setShowRenderHud(e.target.checked)}
-                      />
-                      Render HUD
-                    </label>
-                  </div>
+                  <div className="advancedDivider" />
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Orbit line width ({orbitLineWidthPx.toFixed(1)}px)
+                  {/* Group 2: Orbit Line Width, Samples/Orbit, Max Orbit Points, Quantum */}
+                  <div className="advancedGroup">
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Orbit Line Width</span>
                       <input
                         type="range"
                         min={0.5}
@@ -2137,14 +2150,12 @@ export function SceneCanvas() {
                         step={0.1}
                         value={orbitLineWidthPx}
                         onChange={(e) => setOrbitLineWidthPx(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
+                      <span className="advancedSliderValue">{orbitLineWidthPx.toFixed(1)}px</span>
+                    </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Orbit samples/orbit ({orbitSamplesPerOrbit})
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Samples / Orbit</span>
                       <input
                         type="range"
                         min={32}
@@ -2152,36 +2163,83 @@ export function SceneCanvas() {
                         step={32}
                         value={orbitSamplesPerOrbit}
                         onChange={(e) => setOrbitSamplesPerOrbit(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
+                      <span className="advancedSliderValue">{orbitSamplesPerOrbit}</span>
+                    </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Orbit max total points
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Max Orbit Points</span>
                       <input
                         type="number"
                         min={256}
                         step={256}
                         value={orbitMaxTotalPoints}
                         onChange={(e) => setOrbitMaxTotalPoints(Number(e.target.value))}
-                        style={{ width: '100%' }}
                       />
-                    </label>
-                  </div>
+                    </div>
 
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Quantum (s)
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Quantum (s)</span>
                       <input
                         type="number"
                         min={0.001}
                         step={0.01}
                         value={quantumSec}
                         onChange={handleQuantumChange}
-                        style={{ width: '100%' }}
                       />
+                    </div>
+                  </div>
+
+                  <div className="advancedDivider" />
+
+                  {/* Group 3: Animated Sky, Label Occlusion */}
+                  <div className="advancedCheckboxRow">
+                    <label className="asciiCheckbox">
+                      <span
+                        className="asciiCheckboxBox"
+                        onClick={() => setAnimatedSky((v) => !v)}
+                      >
+                        [{animatedSky ? '✓' : '\u00A0'}]
+                      </span>
+                      <span
+                        className="asciiCheckboxLabel"
+                        onClick={() => setAnimatedSky((v) => !v)}
+                      >
+                        Animated Sky
+                      </span>
+                    </label>
+
+                    <label className="asciiCheckbox">
+                      <span
+                        className="asciiCheckboxBox"
+                        onClick={() => setLabelOcclusionEnabled((v) => !v)}
+                      >
+                        [{labelOcclusionEnabled ? '✓' : '\u00A0'}]
+                      </span>
+                      <span
+                        className="asciiCheckboxLabel"
+                        onClick={() => setLabelOcclusionEnabled((v) => !v)}
+                      >
+                        Label Occlusion
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* Body-fixed axes - keep in advanced */}
+                  <div className="advancedCheckboxRow" style={{ marginTop: '6px' }}>
+                    <label className="asciiCheckbox">
+                      <span
+                        className="asciiCheckboxBox"
+                        onClick={() => setShowBodyFixedAxes((v) => !v)}
+                      >
+                        [{showBodyFixedAxes ? '✓' : '\u00A0'}]
+                      </span>
+                      <span
+                        className="asciiCheckboxLabel"
+                        onClick={() => setShowBodyFixedAxes((v) => !v)}
+                      >
+                        Body-fixed Axes
+                      </span>
                     </label>
                   </div>
                 </div>
