@@ -49,7 +49,7 @@ main().catch(console.error);
 
 ## Usage (Mid-level API)
 
-Phase 4 introduces a thin, typed wrapper layer over the low-level SPICE primitives:
+The mid-level API provides a thin, typed wrapper layer over the low-level SPICE primitives:
 
 ```ts
 import { createSpice } from "@rybosome/tspice";

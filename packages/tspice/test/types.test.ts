@@ -16,7 +16,7 @@ describe("createBackend() types", () => {
       wasmBackend.loadKernel;
       wasmBackend.writeFile;
 
-      // --- Phase 3 derived geometry ---
+      // --- derived geometry ---
       const sub = wasmBackend.subpnt(
         "Near point: ellipsoid",
         "EARTH",

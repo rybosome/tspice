@@ -5,7 +5,6 @@ import { createRequire } from "node:module";
 export type NativeAddon = {
   spiceVersion(): string;
 
-  // Phase 1
   furnsh(path: string): void;
   unload(path: string): void;
   kclear(): void;
@@ -18,7 +17,6 @@ export type NativeAddon = {
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;
 
-  // Phase 2
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
   namfrm(name: string): { found: boolean; code?: number };
@@ -26,7 +24,6 @@ export type NativeAddon = {
   cidfrm(center: number): { found: boolean; frcode?: number; frname?: string };
   cnmfrm(centerName: string): { found: boolean; frcode?: number; frname?: string };
 
-  // Phase 4
   scs2e(sc: number, sclkch: string): number;
   sce2s(sc: number, et: number): string;
   ckgp(
@@ -42,7 +39,6 @@ export type NativeAddon = {
     ref: string,
   ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
 
-  // Phase 3
   spkezr(
     target: string,
     et: number,
@@ -112,7 +108,6 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
-  // Phase 6
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };
