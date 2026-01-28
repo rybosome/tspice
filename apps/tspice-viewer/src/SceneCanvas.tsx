@@ -65,8 +65,8 @@ export function SceneCanvas() {
   const [orbitSamplesPerOrbit, setOrbitSamplesPerOrbit] = useState(512)
   const [orbitMaxTotalPoints, setOrbitMaxTotalPoints] = useState(10_000)
   const ORBIT_MIN_POINTS_PER_ORBIT = 32
-  // Top-level orbit paths toggle (non-advanced, default on)
-  const [orbitPathsEnabled, setOrbitPathsEnabled] = useState(true)
+  // Top-level orbit paths toggle (non-advanced, default off)
+  const [orbitPathsEnabled, setOrbitPathsEnabled] = useState(false)
   // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
@@ -114,8 +114,8 @@ export function SceneCanvas() {
   // inside the renderer effect.
   const kmToWorld = 1 / 1_000_000
 
-  // Control pane collapsed state: starts expanded on all screen sizes
-  const [overlayOpen, setOverlayOpen] = useState(true)
+  // Control pane collapsed state: starts collapsed on all screen sizes
+  const [overlayOpen, setOverlayOpen] = useState(false)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
