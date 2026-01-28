@@ -159,9 +159,8 @@ export function SceneCanvas() {
 
   // Earth brightness boost factor.
   // 1.0 = full brightness (textureColor #ffffff), <1 dims, >1 saturates toward white.
-  // This is ephemeral (not persisted) and only affects the Earth's rendered texture color.
-  const DEFAULT_EARTH_BOOST = 1.0
-  const [earthBoostFactor, setEarthBoostFactor] = useState(DEFAULT_EARTH_BOOST)
+  // Pinned (not user-configurable).
+  const EARTH_BOOST_FACTOR = 0.9
   // Single toggle for animated sky effects (skydome shader + starfield twinkle).
   // Disabled by default for e2e tests to keep snapshots deterministic.
   const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
@@ -384,7 +383,6 @@ export function SceneCanvas() {
         cameraFovDeg: number
         sunScaleMultiplier: number
         planetScaleMultiplier: number
-        earthBoostFactor: number
 
         orbitLineWidthPx: number
         orbitSamplesPerOrbit: number
@@ -405,7 +403,6 @@ export function SceneCanvas() {
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
-    earthBoostFactor,
     showRenderHud,
 
     orbitLineWidthPx,
@@ -422,7 +419,6 @@ export function SceneCanvas() {
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
-    earthBoostFactor,
     showRenderHud,
 
     orbitLineWidthPx,
@@ -453,7 +449,6 @@ export function SceneCanvas() {
       cameraFovDeg,
       sunScaleMultiplier,
       planetScaleMultiplier,
-      earthBoostFactor,
 
       orbitLineWidthPx,
       orbitSamplesPerOrbit,
@@ -469,7 +464,6 @@ export function SceneCanvas() {
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
-    earthBoostFactor,
     orbitLineWidthPx,
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
@@ -1481,7 +1475,6 @@ export function SceneCanvas() {
           cameraFovDeg: number
           sunScaleMultiplier: number
           planetScaleMultiplier: number
-          earthBoostFactor: number
 
           orbitLineWidthPx: number
           orbitSamplesPerOrbit: number
@@ -1640,7 +1633,7 @@ export function SceneCanvas() {
               const material = b.mesh.material
               if (material instanceof THREE.MeshStandardMaterial) {
                 // Boost factor: 1.0 = white (#ffffff), <1 dims, >1 clamps to white
-                const intensity = THREE.MathUtils.clamp(next.earthBoostFactor, 0, 2)
+                const intensity = THREE.MathUtils.clamp(EARTH_BOOST_FACTOR, 0, 2)
                 const gray = Math.round(intensity * 255)
                 const hex = (gray << 16) | (gray << 8) | gray
                 material.color.setHex(hex)
@@ -2012,20 +2005,6 @@ export function SceneCanvas() {
                         step={1}
                         value={planetScaleSlider}
                         onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
-                        style={{ width: '100%' }}
-                      />
-                    </label>
-                  </div>
-                  <div className="sceneOverlayRow">
-                    <label className="sceneOverlayLabel" style={{ flex: 1, minWidth: 0 }}>
-                      Earth brightness ({earthBoostFactor.toFixed(2)}×)
-                      <input
-                        type="range"
-                        min={0.5}
-                        max={2}
-                        step={0.05}
-                        value={earthBoostFactor}
-                        onChange={(e) => setEarthBoostFactor(Number(e.target.value))}
                         style={{ width: '100%' }}
                       />
                     </label>
