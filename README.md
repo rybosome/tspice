@@ -8,6 +8,46 @@ It provides a **typed, ergonomic API** on top of an existing SPICE core, while p
 
 ---
 
+## What does this enable?
+
+Below are screenshots from a [real, browser-based solar system visualization](https://tspice-viewer.ryboso.me/) built using `tspice`.
+
+All positions, orientations, body lighting and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
+
+<table>
+  <tr>
+    <td align="center">
+      <img
+        src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png"
+        alt="Earth with day/night terminator"
+        style="max-width: 100%; height: auto;"
+      />
+      <br />
+      <em>Earth lighting & day/night terminator</em>
+    </td>
+    <td align="center">
+      <img
+        src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
+        alt="Jupiter–Sun geometry with labels"
+        style="max-width: 100%; height: auto;"
+      />
+      <br />
+      <em>Labeled Jupiter–Sun geometry</em>
+    </td>
+    <td align="center">
+      <img
+        src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
+        alt="Solar system overview"
+        style="max-width: 100%; height: auto;"
+      />
+      <br />
+      <em>Solar system ephemerides</em>
+    </td>
+  </tr>
+</table>
+
+---
+
 ## What is `tspice`?
 
 `tspice` is a TypeScript library that:
@@ -16,8 +56,6 @@ It provides a **typed, ergonomic API** on top of an existing SPICE core, while p
 - Runs in **Node.js** and **WebAssembly (browser-realistic)** environments
 - Supports **multiple interchangeable backends**
 - Keeps CSPICE as an **implementation detail**, not a user-facing dependency
-
-`tspice` **does not** reimplement SPICE. It wraps it.
 
 ---
 
@@ -74,28 +112,14 @@ main().catch(console.error);
 
 ---
 
-## Core concepts (high level)
+## Usage
 
-Before diving into usage, there are two important ideas:
-
-### 1. Backends
+### Backend selection
 
 `tspice` runs SPICE through interchangeable **backends**, allowing the same API to work across environments.
 
 - **`wasm`** — Portable WebAssembly backend (browser-realistic), also runnable outside the browser
 - **`node`** — Native Node.js addon
-
-### 2. Kernels
-
-SPICE is **kernel-driven**. Before performing meaningful computations, you must load the appropriate kernels (LSK, SPK, etc.).
-
-Which kernels you load — and how — depends on your use case and environment.
-
----
-
-## Usage
-
-### Backend selection
 
 ```ts
 import { createSpice } from "@rybosome/tspice";
@@ -111,9 +135,12 @@ console.log(node.cspice.kind); // "node"
 
 ## Kernel loading
 
+SPICE is **kernel-driven**. Before performing meaningful computations, you must load the appropriate kernels (LSK, SPK, etc.).
+
+Which kernels you load — and how — depends on your use case and environment.
+
 ### TL;DR
 
-- SPICE requires kernels.
 - **Node** can load kernels directly from disk paths.
 - **Browsers / WASM** load kernel *bytes* into an in-memory filesystem.
 - `tspice` supports both with the same API.
@@ -175,27 +202,6 @@ spice.kit.loadKernel({
   bytes: await fetchKernel("/kernels/naif0012.tls"),
 });
 ```
-
----
-
-
-### Cross-backend kernel loading (byte-backed)
-
-If you want the *same* code to work in Node **and** WASM, load kernels as bytes.
-
-```ts
-import fs from "node:fs";
-import { createSpice } from "@rybosome/tspice";
-
-const spice = await createSpice({ backend: "node" });
-
-spice.kit.loadKernel({
-  path: "/kernels/naif0012.tls",
-  bytes: fs.readFileSync("/path/to/naif0012.tls"),
-});
-```
-
-The same call works unchanged in the browser.
 
 ---
 
@@ -268,3 +274,4 @@ Native builds require Python 3 and a working `node-gyp` toolchain.
 - See [`docs/cspice-policy.md`](./docs/cspice-policy.md)
 
 End users typically do **not** need to interact with this directly.
+
