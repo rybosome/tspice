@@ -176,7 +176,9 @@ fs.mkdirSync(outputDir, { recursive: true });
 execFileSync(
   "emcc",
   [
-    "-std=gnu89",
+    // We need C11 for shared shim sources (e.g. <stdatomic.h>).
+    // `gnu11` keeps GNU extensions enabled for the upstream CSPICE sources.
+    "-std=gnu11",
     "-O2",
     "-s",
     "MODULARIZE=1",

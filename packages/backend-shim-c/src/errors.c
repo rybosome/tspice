@@ -3,18 +3,19 @@
 #include "SpiceUsr.h"
 
 #include <stdbool.h>
+#include <stdatomic.h>
 #include <string.h>
 
-static bool g_initialized = false;
+static atomic_bool g_initialized = ATOMIC_VAR_INIT(false);
 
 void tspice_init_cspice_error_handling_once(void) {
-  if (g_initialized) {
+  bool expected = false;
+  if (!atomic_compare_exchange_strong(&g_initialized, &expected, true)) {
     return;
   }
 
   erract_c("SET", 0, "RETURN");
   errprt_c("SET", 0, "NONE");
-  g_initialized = true;
 }
 
 int tspice_get_spice_error_message_and_reset(char *out, int outMaxBytes) {
