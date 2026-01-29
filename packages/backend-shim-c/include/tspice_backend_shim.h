@@ -5,6 +5,18 @@
 extern "C" {
 #endif
 
+// --- CSPICE error handling helpers ---
+//
+// These helpers are a stable ABI surface. Callers should treat them as part of
+// the public C shim contract.
+void tspice_init_cspice_error_handling_once(void);
+
+// Writes the current CSPICE error message (if any) into `err` (up to
+// `errMaxBytes`, including a trailing NUL), then calls `reset_c()`.
+//
+// Returns 0.
+int tspice_get_spice_error_message_and_reset(char *err, int errMaxBytes);
+
 int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes);
 
 int tspice_furnsh(const char *path, char *err, int errMaxBytes);

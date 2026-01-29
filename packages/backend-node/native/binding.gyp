@@ -8,7 +8,14 @@
       "target_name": "tspice_backend_node",
       "sources": [
         "src/addon.cc",
-        "../../backend-shim-c/src/tspice_backend_shim.c"
+        "../../backend-shim-c/src/errors.c",
+        "../../backend-shim-c/src/domains/kernels.c",
+        "../../backend-shim-c/src/domains/time.c",
+        "../../backend-shim-c/src/domains/ids_names.c",
+        "../../backend-shim-c/src/domains/frames.c",
+        "../../backend-shim-c/src/domains/ephemeris.c",
+        "../../backend-shim-c/src/domains/geometry.c",
+        "../../backend-shim-c/src/domains/coords_vectors.c"
       ],
       "include_dirs": [
         "<!(node -p \"require('node-addon-api').include_dir\")",

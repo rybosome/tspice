@@ -1,0 +1,59 @@
+import type { AbCorr, Found, IluminResult, SubPointResult, SpiceVector3 } from "../shared/types.js";
+
+export interface GeometryApi {
+  /** Compute the sub-observer point on a target body's surface. */
+  subpnt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    observer: string,
+  ): SubPointResult;
+
+  /** Compute the sub-solar point on a target body's surface. */
+  subslr(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    observer: string,
+  ): SubPointResult;
+
+  /** Compute the surface intercept point of a ray. */
+  sincpt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    observer: string,
+    dref: string,
+    dvec: SpiceVector3,
+  ): Found<SubPointResult>;
+
+  /** Compute illumination angles at a surface point. */
+  ilumin(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    observer: string,
+    spoint: SpiceVector3,
+  ): IluminResult;
+
+  /** Determine the occultation condition code for one target vs another. */
+  occult(
+    targ1: string,
+    shape1: string,
+    frame1: string,
+    targ2: string,
+    shape2: string,
+    frame2: string,
+    abcorr: AbCorr | string,
+    observer: string,
+    et: number,
+  ): number;
+}

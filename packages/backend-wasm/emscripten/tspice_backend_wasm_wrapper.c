@@ -8,4 +8,12 @@
 // - CSPICE headers
 // - `packages/backend-shim-c/include`
 
-#include "../../backend-shim-c/src/tspice_backend_shim.c"
+#include "../../backend-shim-c/src/errors.c"
+
+#include "../../backend-shim-c/src/domains/kernels.c"
+#include "../../backend-shim-c/src/domains/time.c"
+#include "../../backend-shim-c/src/domains/ids_names.c"
+#include "../../backend-shim-c/src/domains/frames.c"
+#include "../../backend-shim-c/src/domains/ephemeris.c"
+#include "../../backend-shim-c/src/domains/geometry.c"
+#include "../../backend-shim-c/src/domains/coords_vectors.c"
