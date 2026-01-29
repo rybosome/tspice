@@ -26,7 +26,6 @@ export function createFramesApi(native: NativeAddon): FramesApi {
         return { found: false };
       }
       invariant(typeof out.name === "string", "Expected frmnam().name to be a string");
-      invariant(typeof out.name === "string", "Expected frmnam().name to be a string");
       return { found: true, name: out.name };
     },
 
