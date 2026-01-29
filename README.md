@@ -8,6 +8,40 @@ It provides a **typed, ergonomic API** on top of an existing SPICE core, while p
 
 ---
 
+## What does this enable?
+
+Below are screenshots from a real, browser-based solar system visualization
+built using `tspice`.
+
+All positions, orientations, lighting, and time evolution are computed using
+SPICE (via WebAssembly). Rendering is handled separately using WebGL.
+
+<details>
+<summary><strong>Example: Earth lighting and terminator</strong></summary>
+
+![Earth with day/night terminator](./docs/images/tspice-earth-lighting.png)
+
+Subsolar point, day/night terminator, and body orientation derived from SPICE kernels.
+</details>
+
+<details>
+<summary><strong>Example: Earth–Moon–Sun geometry</strong></summary>
+
+![Earth Moon Sun geometry](./docs/images/tspice-earth-moon-sun.png)
+
+Relative positions and vectors computed from ephemeris data at runtime.
+</details>
+
+<details>
+<summary><strong>Example: Solar system overview</strong></summary>
+
+![Solar system orbits](./docs/images/tspice-solar-system.png)
+
+Multi-body ephemerides with consistent time evolution across inner and outer planets.
+</details>
+
+---
+
 ## What is `tspice`?
 
 `tspice` is a TypeScript library that:
@@ -268,3 +302,4 @@ Native builds require Python 3 and a working `node-gyp` toolchain.
 - See [`docs/cspice-policy.md`](./docs/cspice-policy.md)
 
 End users typically do **not** need to interact with this directly.
+
