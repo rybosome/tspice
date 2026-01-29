@@ -20,18 +20,18 @@ export type CreateBackendOptions = {
 export function createBackend(options: { backend: "wasm"; wasmUrl?: string | URL }): Promise<SpiceBackendWasm>;
 export function createBackend(options: { backend: "node" }): Promise<SpiceBackend>;
 export function createBackend(options: CreateBackendOptions): Promise<SpiceBackend | SpiceBackendWasm>;
-export async function createBackend(
-  options?: CreateBackendOptions,
-): Promise<SpiceBackend | SpiceBackendWasm> {
+export async function createBackend(options: CreateBackendOptions): Promise<SpiceBackend | SpiceBackendWasm> {
   // Runtime validation for JS callers; TypeScript callers should already be
   // forced to provide an explicit backend selection.
-  if (options === undefined || (options as unknown as { backend?: unknown }).backend === undefined) {
+  const opts = options as unknown as CreateBackendOptions | undefined;
+
+  if (opts === undefined || (opts as unknown as { backend?: unknown }).backend === undefined) {
     throw new Error(
       'createBackend() requires an explicit backend selection: { backend: "node" } or { backend: "wasm" }',
     );
   }
 
-  const backend = options.backend;
+  const backend = opts.backend;
 
   switch (backend) {
     case "node":
@@ -56,10 +56,10 @@ export async function createBackend(
           createWasmBackend: (opts?: { wasmUrl?: string | URL }) => Promise<SpiceBackendWasm>;
         };
 
-        if (options.wasmUrl === undefined) {
+        if (opts.wasmUrl === undefined) {
           return await createWasmBackend();
         }
-        return await createWasmBackend({ wasmUrl: options.wasmUrl });
+        return await createWasmBackend({ wasmUrl: opts.wasmUrl });
       } catch (error) {
         throw new Error(
           `Failed to load WASM backend (required for backend=\"wasm\"): ${String(error)}`,
