@@ -34,7 +34,7 @@ function splitState(state: readonly [number, number, number, number, number, num
   return { position, velocity };
 }
 
-export async function createSpice(options: CreateSpiceOptions = {}): Promise<Spice> {
+export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   const backend = options.backendInstance ?? (await createBackend(options));
   const cspice = backend;
 
