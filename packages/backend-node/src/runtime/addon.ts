@@ -146,10 +146,10 @@ const BUILD_HINT =
   "Or set TSPICE_BACKEND_NODE_BINDING_PATH to an explicit .node path.";
 
 function getPackageRoot(importMetaUrl: string): string {
-  // Works both in the monorepo layout (`.../backend-node/dist/native.js`) and
+  // Works both in the monorepo layout (`.../backend-node/dist/runtime/addon.js`) and
   // in the published `dist-publish/` layout where this code is vendored into
   // `@rybosome/tspice`.
-  return path.resolve(path.dirname(fileURLToPath(importMetaUrl)), "..");
+  return path.resolve(path.dirname(fileURLToPath(importMetaUrl)), "..", "..");
 }
 
 function loadAddon(require: NodeRequire, bindingPath: string): NativeAddon {
