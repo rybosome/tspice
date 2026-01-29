@@ -55,19 +55,24 @@ fs.mkdirSync(wasmBuildDir, { recursive: true });
 const patchedCspiceSourceRoot = path.join(wasmBuildDir, "cspice");
 fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 
-const shimPath = path.join(
-  repoRoot,
-  "packages",
-  "backend-shim-c",
-  "src",
-  "tspice_backend_shim.c",
-);
+const shimSources = [
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "errors.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernels.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "time.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ids_names.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "frames.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ephemeris.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
+];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
 const outputJsPath = path.join(outputDir, WASM_JS_FILENAME);
 
-if (!fs.existsSync(shimPath)) {
-  throw new Error(`Missing shared shim C file at ${shimPath}`);
+for (const shimPath of shimSources) {
+  if (!fs.existsSync(shimPath)) {
+    throw new Error(`Missing shared shim C file at ${shimPath}`);
+  }
 }
 
 const cspiceSrcDir = path.join(patchedCspiceSourceRoot, "src");
@@ -156,7 +161,7 @@ function collectCFiles(dir) {
   return out;
 }
 
-const sources = [shimPath, ...collectCFiles(cspiceCspiceDir), ...collectCFiles(cspiceCsupportDir)];
+const sources = [...shimSources, ...collectCFiles(cspiceCspiceDir), ...collectCFiles(cspiceCsupportDir)];
 
 const includeDirs = [
   shimIncludeDir,
