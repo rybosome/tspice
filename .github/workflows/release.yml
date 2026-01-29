@@ -16,7 +16,8 @@ jobs:
           - runs_on: macos-14
             node_version: '22'
             pkg: tspice-native-darwin-arm64
-          - runs_on: macos-13
+          # macos-13 is retired; use an Intel runner label for x64 builds.
+          - runs_on: macos-15-intel
             node_version: '22'
             pkg: tspice-native-darwin-x64
           - runs_on: ubuntu-latest
@@ -111,7 +112,9 @@ jobs:
             exit 0
           fi
 
-          npm publish "$PKG_DIR" --access public
+          # IMPORTANT: without a leading `./`, npm can interpret `packages/foo/bar` as a
+          # GitHub repo shorthand and try to fetch over SSH.
+          npm publish "./$PKG_DIR" --access public
 
   publish-tspice:
     name: Publish @rybosome/tspice
@@ -179,7 +182,9 @@ jobs:
             exit 0
           fi
 
-          npm publish "$PKG_DIR" --access public
+          # IMPORTANT: without a leading `./`, npm can interpret `packages/foo/bar` as a
+          # GitHub repo shorthand and try to fetch over SSH.
+          npm publish "./$PKG_DIR" --access public
 
   validate-native-optional-deps:
     name: Validate native optionalDependencies (${{ matrix.runs_on }})
@@ -193,7 +198,8 @@ jobs:
           - runs_on: ubuntu-latest
             node_version: '22'
             native_pkg: '@rybosome/tspice-native-linux-x64-gnu'
-          - runs_on: macos-13
+          # macos-13 is retired; use an Intel runner label for x64 builds.
+          - runs_on: macos-15-intel
             node_version: '22'
             native_pkg: '@rybosome/tspice-native-darwin-x64'
           - runs_on: macos-14
