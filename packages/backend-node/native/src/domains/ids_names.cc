@@ -19,9 +19,9 @@ static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   }
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
 
-  char err[kErrMaxBytes];
+  char err[tspice_backend_node::kErrMaxBytes];
   int codeOut = 0;
   int found = 0;
   const int code = tspice_bodn2c(name.c_str(), &codeOut, &found, err, (int)sizeof(err));
@@ -46,10 +46,10 @@ static Napi::Object Bodc2n(const Napi::CallbackInfo& info) {
   }
 
   const int codeIn = info[0].As<Napi::Number>().Int32Value();
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
 
-  char err[kErrMaxBytes];
-  char nameOut[kOutMaxBytes];
+  char err[tspice_backend_node::kErrMaxBytes];
+  char nameOut[tspice_backend_node::kOutMaxBytes];
   int found = 0;
   const int code = tspice_bodc2n(codeIn, nameOut, (int)sizeof(nameOut), &found, err, (int)sizeof(err));
   if (code != 0) {

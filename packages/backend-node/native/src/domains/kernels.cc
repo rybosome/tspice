@@ -18,10 +18,10 @@ static Napi::String SpiceVersion(const Napi::CallbackInfo& info) {
     return Napi::String::New(env, "");
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
 
-  char out[kOutMaxBytes];
-  char err[kErrMaxBytes];
+  char out[tspice_backend_node::kOutMaxBytes];
+  char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_tkvrsn_toolkit(out, (int)sizeof(out), err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling tkvrsn_c(\"TOOLKIT\")", err);
@@ -43,8 +43,8 @@ static void Furnsh(const Napi::CallbackInfo& info) {
 
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_furnsh(path.c_str(), err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(
@@ -65,8 +65,8 @@ static void Unload(const Napi::CallbackInfo& info) {
 
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_unload(path.c_str(), err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(
@@ -84,8 +84,8 @@ static void Kclear(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_kclear(err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling kclear()", err);
@@ -109,8 +109,8 @@ static Napi::Number Ktotal(const Napi::CallbackInfo& info) {
     kind = info[0].As<Napi::String>().Utf8Value();
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   int count = 0;
   const int code = tspice_ktotal(kind.c_str(), &count, err, (int)sizeof(err));
   if (code != 0) {
@@ -153,12 +153,12 @@ static Napi::Object Kdata(const Napi::CallbackInfo& info) {
     kind = info[1].As<Napi::String>().Utf8Value();
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
 
-  char err[kErrMaxBytes];
-  char file[kOutMaxBytes];
-  char filtyp[kOutMaxBytes];
-  char source[kOutMaxBytes];
+  char err[tspice_backend_node::kErrMaxBytes];
+  char file[tspice_backend_node::kOutMaxBytes];
+  char filtyp[tspice_backend_node::kOutMaxBytes];
+  char source[tspice_backend_node::kOutMaxBytes];
   int handle = 0;
   int found = 0;
 
@@ -205,8 +205,8 @@ static Napi::Number KtotalAll(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   const int total = tspice_ktotal_all(err, (int)sizeof(err));
   if (total < 0) {
     ThrowSpiceError(env, "CSPICE failed while calling ktotal(\"ALL\")", err);

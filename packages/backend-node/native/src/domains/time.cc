@@ -17,9 +17,9 @@ static Napi::Number Str2et(const Napi::CallbackInfo& info) {
   }
 
   const std::string time = info[0].As<Napi::String>().Utf8Value();
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
 
-  char err[kErrMaxBytes];
+  char err[tspice_backend_node::kErrMaxBytes];
   double et = 0.0;
   const int code = tspice_str2et(time.c_str(), &et, err, (int)sizeof(err));
   if (code != 0) {
@@ -44,9 +44,9 @@ static Napi::String Et2utc(const Napi::CallbackInfo& info) {
   const std::string format = info[1].As<Napi::String>().Utf8Value();
   const int prec = info[2].As<Napi::Number>().Int32Value();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
-  char out[kOutMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  char out[tspice_backend_node::kOutMaxBytes];
   const int code =
       tspice_et2utc(et, format.c_str(), prec, out, (int)sizeof(out), err, (int)sizeof(err));
   if (code != 0) {
@@ -69,9 +69,9 @@ static Napi::String Timout(const Napi::CallbackInfo& info) {
   const double et = info[0].As<Napi::Number>().DoubleValue();
   const std::string picture = info[1].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
-  char out[kOutMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  char out[tspice_backend_node::kOutMaxBytes];
   const int code = tspice_timout(et, picture.c_str(), out, (int)sizeof(out), err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling timout", err);
@@ -93,8 +93,8 @@ static Napi::Number Scs2e(const Napi::CallbackInfo& info) {
   const int sc = info[0].As<Napi::Number>().Int32Value();
   const std::string sclkch = info[1].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double et = 0.0;
   const int code = tspice_scs2e(sc, sclkch.c_str(), &et, err, (int)sizeof(err));
   if (code != 0) {
@@ -116,9 +116,9 @@ static Napi::String Sce2s(const Napi::CallbackInfo& info) {
   const int sc = info[0].As<Napi::Number>().Int32Value();
   const double et = info[1].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
-  char out[kOutMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  char out[tspice_backend_node::kOutMaxBytes];
   const int code = tspice_sce2s(sc, et, out, (int)sizeof(out), err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling sce2s", err);

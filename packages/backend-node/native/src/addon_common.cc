@@ -4,6 +4,8 @@
 
 #include "napi_helpers.h"
 
+namespace tspice_backend_node {
+
 std::mutex g_cspice_mutex;
 
 using tspice_napi::ThrowSpiceError;
@@ -14,6 +16,12 @@ bool ReadNumberArrayFixed(
     size_t expectedLength,
     double* out,
     const char* name) {
+  if (out == nullptr) {
+    ThrowSpiceError(
+        Napi::Error::New(env, std::string("Internal error: out is null while reading ") + name));
+    return false;
+  }
+
   if (!value.IsArray()) {
     ThrowSpiceError(Napi::TypeError::New(env, std::string(name) + " must be an array"));
     return false;
@@ -51,3 +59,5 @@ bool ReadMat33RowMajor(
     const char* name) {
   return ReadNumberArrayFixed(env, value, 9, out, name);
 }
+
+}  // namespace tspice_backend_node

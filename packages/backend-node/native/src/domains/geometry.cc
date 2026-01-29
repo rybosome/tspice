@@ -28,8 +28,8 @@ static Napi::Object Subpnt(const Napi::CallbackInfo& info) {
   const std::string abcorr = info[4].As<Napi::String>().Utf8Value();
   const std::string observer = info[5].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double spoint[3] = {0};
   double trgepc = 0.0;
   double srfvec[3] = {0};
@@ -75,8 +75,8 @@ static Napi::Object Subslr(const Napi::CallbackInfo& info) {
   const std::string abcorr = info[4].As<Napi::String>().Utf8Value();
   const std::string observer = info[5].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double spoint[3] = {0};
   double trgepc = 0.0;
   double srfvec[3] = {0};
@@ -124,22 +124,13 @@ static Napi::Object Sincpt(const Napi::CallbackInfo& info) {
   const std::string observer = info[5].As<Napi::String>().Utf8Value();
   const std::string dref = info[6].As<Napi::String>().Utf8Value();
 
-  Napi::Array dvecArr = info[7].As<Napi::Array>();
-  if (dvecArr.Length() != 3 || !dvecArr.Get((uint32_t)0).IsNumber() ||
-      !dvecArr.Get((uint32_t)1).IsNumber() || !dvecArr.Get((uint32_t)2).IsNumber()) {
-    ThrowSpiceError(Napi::TypeError::New(
-        env,
-        "sincpt(..., dvec) expects dvec to be a length-3 number array"));
+  double dvec[3] = {0};
+  if (!tspice_backend_node::ReadVec3(env, info[7], dvec, "dvec")) {
     return Napi::Object::New(env);
   }
-  double dvec[3] = {
-      dvecArr.Get((uint32_t)0).As<Napi::Number>().DoubleValue(),
-      dvecArr.Get((uint32_t)1).As<Napi::Number>().DoubleValue(),
-      dvecArr.Get((uint32_t)2).As<Napi::Number>().DoubleValue(),
-  };
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double spoint[3] = {0};
   double trgepc = 0.0;
   double srfvec[3] = {0};
@@ -194,22 +185,13 @@ static Napi::Object Ilumin(const Napi::CallbackInfo& info) {
   const std::string abcorr = info[4].As<Napi::String>().Utf8Value();
   const std::string observer = info[5].As<Napi::String>().Utf8Value();
 
-  Napi::Array spointArr = info[6].As<Napi::Array>();
-  if (spointArr.Length() != 3 || !spointArr.Get((uint32_t)0).IsNumber() ||
-      !spointArr.Get((uint32_t)1).IsNumber() || !spointArr.Get((uint32_t)2).IsNumber()) {
-    ThrowSpiceError(Napi::TypeError::New(
-        env,
-        "ilumin(..., spoint) expects spoint to be a length-3 number array"));
+  double spoint[3] = {0};
+  if (!tspice_backend_node::ReadVec3(env, info[6], spoint, "spoint")) {
     return Napi::Object::New(env);
   }
-  double spoint[3] = {
-      spointArr.Get((uint32_t)0).As<Napi::Number>().DoubleValue(),
-      spointArr.Get((uint32_t)1).As<Napi::Number>().DoubleValue(),
-      spointArr.Get((uint32_t)2).As<Napi::Number>().DoubleValue(),
-  };
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double trgepc = 0.0;
   double srfvec[3] = {0};
   double phase = 0.0;
@@ -266,8 +248,8 @@ static Napi::Number Occult(const Napi::CallbackInfo& info) {
   const std::string observer = info[7].As<Napi::String>().Utf8Value();
   const double et = info[8].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   int ocltid = 0;
   const int code = tspice_occult(
       targ1.c_str(),

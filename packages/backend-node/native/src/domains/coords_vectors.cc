@@ -16,12 +16,12 @@ static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   }
 
   double rect[3] = {0};
-  if (!ReadVec3(env, info[0], rect, "rect")) {
+  if (!tspice_backend_node::ReadVec3(env, info[0], rect, "rect")) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double radius = 0.0;
   double lon = 0.0;
   double lat = 0.0;
@@ -52,8 +52,8 @@ static Napi::Array Latrec(const Napi::CallbackInfo& info) {
   const double lon = info[1].As<Napi::Number>().DoubleValue();
   const double lat = info[2].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double rect[3] = {0};
   const int code = tspice_latrec(radius, lon, lat, rect, err, (int)sizeof(err));
   if (code != 0) {
@@ -73,12 +73,12 @@ static Napi::Object Recsph(const Napi::CallbackInfo& info) {
   }
 
   double rect[3] = {0};
-  if (!ReadVec3(env, info[0], rect, "rect")) {
+  if (!tspice_backend_node::ReadVec3(env, info[0], rect, "rect")) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double radius = 0.0;
   double colat = 0.0;
   double lon = 0.0;
@@ -109,8 +109,8 @@ static Napi::Array Sphrec(const Napi::CallbackInfo& info) {
   const double colat = info[1].As<Napi::Number>().DoubleValue();
   const double lon = info[2].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double rect[3] = {0};
   const int code = tspice_sphrec(radius, colat, lon, rect, err, (int)sizeof(err));
   if (code != 0) {
@@ -130,12 +130,12 @@ static Napi::Number Vnorm(const Napi::CallbackInfo& info) {
   }
 
   double v[3] = {0};
-  if (!ReadVec3(env, info[0], v, "v")) {
+  if (!tspice_backend_node::ReadVec3(env, info[0], v, "v")) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double out = 0.0;
   const int code = tspice_vnorm(v, &out, err, (int)sizeof(err));
   if (code != 0) {
@@ -155,12 +155,12 @@ static Napi::Array Vhat(const Napi::CallbackInfo& info) {
   }
 
   double v[3] = {0};
-  if (!ReadVec3(env, info[0], v, "v")) {
+  if (!tspice_backend_node::ReadVec3(env, info[0], v, "v")) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_vhat(v, out, err, (int)sizeof(err));
   if (code != 0) {
@@ -181,15 +181,15 @@ static Napi::Number Vdot(const Napi::CallbackInfo& info) {
 
   double a[3] = {0};
   double b[3] = {0};
-  if (!ReadVec3(env, info[0], a, "a")) {
+  if (!tspice_backend_node::ReadVec3(env, info[0], a, "a")) {
     return Napi::Number::New(env, 0);
   }
-  if (!ReadVec3(env, info[1], b, "b")) {
+  if (!tspice_backend_node::ReadVec3(env, info[1], b, "b")) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double out = 0.0;
   const int code = tspice_vdot(a, b, &out, err, (int)sizeof(err));
   if (code != 0) {
@@ -210,15 +210,15 @@ static Napi::Array Vcrss(const Napi::CallbackInfo& info) {
 
   double a[3] = {0};
   double b[3] = {0};
-  if (!ReadVec3(env, info[0], a, "a")) {
+  if (!tspice_backend_node::ReadVec3(env, info[0], a, "a")) {
     return Napi::Array::New(env);
   }
-  if (!ReadVec3(env, info[1], b, "b")) {
+  if (!tspice_backend_node::ReadVec3(env, info[1], b, "b")) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_vcrss(a, b, out, err, (int)sizeof(err));
   if (code != 0) {
@@ -239,15 +239,15 @@ static Napi::Array Mxv(const Napi::CallbackInfo& info) {
 
   double m[9] = {0};
   double v[3] = {0};
-  if (!ReadMat33RowMajor(env, info[0], m, "m")) {
+  if (!tspice_backend_node::ReadMat33RowMajor(env, info[0], m, "m")) {
     return Napi::Array::New(env);
   }
-  if (!ReadVec3(env, info[1], v, "v")) {
+  if (!tspice_backend_node::ReadVec3(env, info[1], v, "v")) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_mxv(m, v, out, err, (int)sizeof(err));
   if (code != 0) {
@@ -268,15 +268,15 @@ static Napi::Array Mtxv(const Napi::CallbackInfo& info) {
 
   double m[9] = {0};
   double v[3] = {0};
-  if (!ReadMat33RowMajor(env, info[0], m, "m")) {
+  if (!tspice_backend_node::ReadMat33RowMajor(env, info[0], m, "m")) {
     return Napi::Array::New(env);
   }
-  if (!ReadVec3(env, info[1], v, "v")) {
+  if (!tspice_backend_node::ReadVec3(env, info[1], v, "v")) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(g_cspice_mutex);
-  char err[kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_mtxv(m, v, out, err, (int)sizeof(err));
   if (code != 0) {

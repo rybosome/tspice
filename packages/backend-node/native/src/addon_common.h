@@ -6,6 +6,8 @@
 
 // Shared globals/helpers used across multiple domain spokes.
 
+namespace tspice_backend_node {
+
 extern std::mutex g_cspice_mutex;
 
 inline constexpr int kErrMaxBytes = 2048;
@@ -25,3 +27,5 @@ bool ReadMat33RowMajor(
     const Napi::Value& value,
     double out[9],
     const char* name);
+
+}  // namespace tspice_backend_node
