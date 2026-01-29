@@ -56,7 +56,7 @@ function acceptsBackend(backend: SpiceBackend) {
 `BACKEND_KINDS` is the canonical list of supported backends. `BackendKind` is derived from it:
 
 ```ts
-export const BACKEND_KINDS = ["auto", "node", "wasm", "fake"] as const;
+export const BACKEND_KINDS = ["node", "wasm", "fake"] as const;
 export type BackendKind = (typeof BACKEND_KINDS)[number];
 ```
 
@@ -75,7 +75,7 @@ When you add a new backend kind, you generally update:
 
 ## API surface
 
-- `BACKEND_KINDS: readonly ["auto", "node", "wasm", "fake"]` (additional backend kinds may be added over time)
+- `BACKEND_KINDS: readonly ["node", "wasm", "fake"]` (additional backend kinds may be added over time)
 - `BackendKind: (typeof BACKEND_KINDS)[number]`
 - `SpiceBackend` interface
 

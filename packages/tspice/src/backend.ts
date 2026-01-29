@@ -10,8 +10,6 @@ export type { BackendKind, SpiceBackend, SpiceBackendWasm } from "@rybosome/tspi
 export type CreateBackendOptions = {
   /**
    * Explicitly select a backend implementation.
-   *
-   * Note: `auto` is intentionally not supported; callers must choose.
    */
   backend: "node" | "wasm";
   wasmUrl?: string | URL;
@@ -19,7 +17,7 @@ export type CreateBackendOptions = {
 
 export function createBackend(options: { backend: "wasm"; wasmUrl?: string | URL }): Promise<SpiceBackendWasm>;
 export function createBackend(options: { backend: "node" }): Promise<SpiceBackend>;
-export function createBackend(options: CreateBackendOptions): Promise<SpiceBackend | SpiceBackendWasm>;
+export function createBackend(options?: CreateBackendOptions): Promise<SpiceBackend | SpiceBackendWasm>;
 export async function createBackend(
   options?: CreateBackendOptions,
 ): Promise<SpiceBackend | SpiceBackendWasm> {
