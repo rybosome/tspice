@@ -21,11 +21,11 @@ export function createBackend(options: { backend: "wasm"; wasmUrl?: string | URL
 export function createBackend(options: { backend: "node" }): Promise<SpiceBackend>;
 export function createBackend(options: CreateBackendOptions): Promise<SpiceBackend | SpiceBackendWasm>;
 export async function createBackend(
-  options: CreateBackendOptions,
+  options?: CreateBackendOptions,
 ): Promise<SpiceBackend | SpiceBackendWasm> {
   // Runtime validation for JS callers; TypeScript callers should already be
   // forced to provide an explicit backend selection.
-  if ((options as unknown as { backend?: unknown }).backend === undefined) {
+  if (options === undefined || (options as unknown as { backend?: unknown }).backend === undefined) {
     throw new Error(
       'createBackend() requires an explicit backend selection: { backend: "node" } or { backend: "wasm" }',
     );
