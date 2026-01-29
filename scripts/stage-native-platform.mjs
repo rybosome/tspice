@@ -27,13 +27,27 @@ const TARGETS = {
   },
 };
 
-const platform = process.platform as keyof typeof TARGETS;
-const arch = process.arch as string;
+const platform = process.platform;
+const arch = process.arch;
 
-const targetPkg = TARGETS[platform]?.[arch as keyof (typeof TARGETS)[typeof platform]];
+const platformTargets = TARGETS[platform];
+const targetPkg = platformTargets?.[arch];
 
 if (!targetPkg) {
   // No supported platform package for this runtime.
+  const supportedPlatforms = Object.keys(TARGETS).join(", ");
+  const supportedArchs = platformTargets
+    ? Object.keys(platformTargets).join(", ")
+    : null;
+
+  const details = supportedArchs
+    ? `Supported arch for ${platform}: ${supportedArchs}`
+    : `Supported platforms: ${supportedPlatforms}`;
+
+  console.warn(
+    `[stage-native-platform] No native package for platform=${platform} arch=${arch}. ${details}. Skipping.`,
+  );
+
   process.exit(0);
 }
 
