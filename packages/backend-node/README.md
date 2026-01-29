@@ -12,16 +12,13 @@ This backend uses CSPICE-derived components via the native addon built under `na
 
 ## Purpose / Why this exists
 
-This package is the “native” backend implementation for `@rybosome/tspice`. The
-repo’s default backend is currently WASM; this backend is opt-in via
-`createBackend({ backend: "node" })`.
+This package is the “native” backend implementation that `@rybosome/tspice` uses when you select `createBackend({ backend: "node" })`. It’s where we expect the real SPICE bindings to live.
 
 Right now the addon is a stub that only implements `spiceVersion()`.
 
 ## How it fits into `tspice`
 
-- `@rybosome/tspice` calls `createNodeBackend()` from this package when
-  `createBackend({ backend: "node" })` is selected.
+- `@rybosome/tspice` calls `createNodeBackend()` from this package when `createBackend({ backend: "node" })` is selected.
 - This package implements the shared `SpiceBackend` interface from `@rybosome/tspice-backend-contract`.
 
 ## Installation
