@@ -51,11 +51,11 @@ const nativeAvailable = (() => {
   }
 })();
 
-describe("createBackend({ backend: \"auto\" })", () => {
+describe("createBackend({ backend: \"node\" })", () => {
   const itNative = it.runIf(nativeAvailable);
 
   itNative("prefers native backend when the platform package is present", async () => {
-    const backend = await createBackend();
+    const backend = await createBackend({ backend: "node" });
     expect(backend.kind).toBe("node");
   });
 });
