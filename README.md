@@ -10,7 +10,7 @@ It provides a **typed, ergonomic API** on top of an existing SPICE core, while p
 
 ## What does this enable?
 
-Below are screenshots from a real, browser-based [solar system visualization built using `tspice`](https://tspice-viewer.ryboso.me/).
+Below are screenshots from a [real, browser-based solar system visualization](https://tspice-viewer.ryboso.me/) built using `tspice`.
 
 All positions, orientations, body lighting and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
 
