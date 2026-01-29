@@ -8,6 +8,14 @@
       "target_name": "tspice_backend_node",
       "sources": [
         "src/addon.cc",
+        "src/addon_common.cc",
+        "src/domains/kernels.cc",
+        "src/domains/time.cc",
+        "src/domains/ids_names.cc",
+        "src/domains/frames.cc",
+        "src/domains/ephemeris.cc",
+        "src/domains/geometry.cc",
+        "src/domains/coords_vectors.cc",
         "../../backend-shim-c/src/tspice_backend_shim.c"
       ],
       "include_dirs": [
