@@ -28,7 +28,7 @@ All positions, orientations, body lighting and time evolution are computed using
     <td align="center">
       <img
         src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
-        alt="Earth–Moon–Sun geometry"
+        alt="Jupiter–Sun geometry with labels"
         style="max-width: 100%; height: auto;"
       />
       <br />
