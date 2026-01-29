@@ -60,13 +60,21 @@ function shouldCopyFile(basename) {
 
 function rewriteSpecifiersInFile(destPath) {
   const ext = path.extname(destPath);
-  if (ext !== ".js" && ext !== ".d.ts" && ext !== ".ts") {
+  const isCode = ext === ".js" || ext === ".d.ts" || ext === ".ts";
+  const isMarkdown = ext === ".md";
+  if (!isCode && !isMarkdown) {
     return;
   }
 
   const original = fs.readFileSync(destPath, "utf8");
   let next = original;
   for (const [from, to] of SPECIFIER_REWRITES.entries()) {
+    if (isMarkdown) {
+      // Rewrite bare package names in docs.
+      next = next.replaceAll(from, to).replaceAll(`${from}/`, `${to}/`);
+      continue;
+    }
+
     // Replace only in string literal import specifiers.
     // This intentionally avoids trying to parse JS/TS.
     next = next
@@ -177,7 +185,9 @@ function main() {
   for (const file of ["README.md", "LICENSE"]) {
     const src = path.join(tspiceRoot, file);
     if (fs.existsSync(src)) {
-      copyFile(src, path.join(distPublishRoot, file));
+      const dest = path.join(distPublishRoot, file);
+      copyFile(src, dest);
+      rewriteSpecifiersInFile(dest);
     }
   }
 

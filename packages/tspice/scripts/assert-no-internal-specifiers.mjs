@@ -26,14 +26,16 @@ function walkFiles(rootDir) {
 
 function isTextFileToScan(absPath) {
   const ext = path.extname(absPath);
-  // Keep this narrow to avoid false positives in docs / licenses.
+  // Keep this narrow to avoid false positives in licenses / large binaries,
+  // while still covering published docs like README.md.
   return (
     ext === ".js" ||
     ext === ".mjs" ||
     ext === ".cjs" ||
     ext === ".ts" ||
     ext === ".d.ts" ||
-    ext === ".json"
+    ext === ".json" ||
+    ext === ".md"
   );
 }
 
