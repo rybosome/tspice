@@ -10,8 +10,6 @@ export type { BackendKind, SpiceBackend, SpiceBackendWasm } from "@rybosome/tspi
 export type CreateBackendOptions = {
   /**
    * Explicitly select a backend implementation.
-   *
-   * Note: `auto` is intentionally not supported; callers must choose.
    */
   backend: "node" | "wasm";
   wasmUrl?: string | URL;
