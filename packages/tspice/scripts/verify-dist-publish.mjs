@@ -4,6 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { assertNoInternalWorkspaceSpecifiers } from "./assert-no-internal-specifiers.mjs";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -15,6 +17,10 @@ if (!fs.existsSync(path.join(distPublishRoot, "package.json"))) {
     `Missing dist-publish/package.json at ${distPublishRoot}. Run pnpm -C packages/tspice build:dist-publish first.`,
   );
 }
+
+// 0) Hard assertion: published tarball must not contain internal workspace
+//    specifiers that will not exist on npm.
+assertNoInternalWorkspaceSpecifiers({ rootDir: distPublishRoot });
 
 function run(cmd, args, opts = {}) {
   const result = spawnSync(cmd, args, { encoding: "utf8", ...opts });
