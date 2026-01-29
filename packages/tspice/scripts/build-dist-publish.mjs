@@ -11,22 +11,25 @@ const tspiceRoot = path.join(repoRoot, "packages", "tspice");
 const distPublishRoot = path.join(tspiceRoot, "dist-publish");
 
 /**
- * NOTE: The published `@rybosome/tspice` package must not depend on other
- * `@rybosome/*` packages existing on npm.
- *
- * We achieve this by copying our internal workspace package builds into
- * `dist-publish/` and rewriting their import specifiers to use subpath exports
- * of `@rybosome/tspice`.
- */
+* NOTE: The published `@rybosome/tspice` package must not depend on other
+* `@rybosome/*` packages existing on npm.
+*
+* We achieve this by copying our internal workspace package builds into
+* `dist-publish/` and rewriting their import specifiers to use *internal*
+* package.json `imports` aliases ("#...").
+*
+* This keeps the public surface area as **root-only** (`@rybosome/tspice`),
+* while still letting vendored internal modules reference each other.
+*/
 const SPECIFIER_REWRITES = new Map([
-  ["@rybosome/tspice-core", "@rybosome/tspice/core"],
-  ["@rybosome/tspice-backend-contract", "@rybosome/tspice/backend-contract"],
-  ["@rybosome/tspice-backend-wasm", "@rybosome/tspice/backend-wasm"],
-  ["@rybosome/tspice-backend-fake", "@rybosome/tspice/backend-fake"],
-  ["@rybosome/tspice-backend-node", "@rybosome/tspice/backend-node"],
+  ["@rybosome/tspice-core", "#core"],
+  ["@rybosome/tspice-backend-contract", "#backend-contract"],
+  ["@rybosome/tspice-backend-wasm", "#backend-wasm"],
+  ["@rybosome/tspice-backend-fake", "#backend-fake"],
+  ["@rybosome/tspice-backend-node", "#backend-node"],
   // Handles the bundler-safe dynamic import pattern:
   //   "@rybosome/tspice-backend-" + "node"
-  ["@rybosome/tspice-backend-", "@rybosome/tspice/backend-"],
+  ["@rybosome/tspice-backend-", "#backend-"],
 ]);
 
 function readJson(filePath) {
@@ -68,13 +71,27 @@ function rewriteSpecifiersInFile(destPath) {
 
   const original = fs.readFileSync(destPath, "utf8");
   let next = original;
-  for (const [from, to] of SPECIFIER_REWRITES.entries()) {
-    if (isMarkdown) {
-      // Rewrite bare package names in docs.
+
+  if (isMarkdown) {
+    // The published tarball must not mention internal workspace package
+    // specifiers that won't exist on npm. Avoid rewriting docs to private
+    // "#..." specifiers; use unscoped names for readability.
+    const markdownRewrites = new Map([
+      ["@rybosome/tspice-core", "tspice-core"],
+      ["@rybosome/tspice-backend-", "tspice-backend-"],
+    ]);
+
+    for (const [from, to] of markdownRewrites.entries()) {
       next = next.replaceAll(from, to).replaceAll(`${from}/`, `${to}/`);
-      continue;
     }
 
+    if (next !== original) {
+      fs.writeFileSync(destPath, next);
+    }
+    return;
+  }
+
+  for (const [from, to] of SPECIFIER_REWRITES.entries()) {
     // Replace only in string literal import specifiers.
     // This intentionally avoids trying to parse JS/TS.
     next = next
@@ -123,27 +140,6 @@ function buildExports() {
     ".": {
       types: "./dist/index.d.ts",
       default: "./dist/index.js",
-    },
-
-    "./backend-contract": {
-      types: "./backend-contract/dist/index.d.ts",
-      default: "./backend-contract/dist/index.js",
-    },
-    "./core": {
-      types: "./core/dist/index.d.ts",
-      default: "./core/dist/index.js",
-    },
-    "./backend-fake": {
-      types: "./backend-fake/dist/index.d.ts",
-      default: "./backend-fake/dist/index.js",
-    },
-    "./backend-wasm": {
-      types: "./backend-wasm/dist/index.d.ts",
-      default: "./backend-wasm/dist/index.js",
-    },
-    "./backend-node": {
-      types: "./backend-node/dist/index.d.ts",
-      default: "./backend-node/dist/index.js",
     },
   };
 }
@@ -213,6 +209,17 @@ function main() {
     version,
     license: tspicePkg.license,
     type: "module",
+
+    // Internal-only aliases for the vendored workspace packages.
+    // These are *not* available to consumers; only modules within this package
+    // can import "#..." specifiers.
+    imports: {
+      "#core": "./core/dist/index.js",
+      "#backend-contract": "./backend-contract/dist/index.js",
+      "#backend-fake": "./backend-fake/dist/index.js",
+      "#backend-wasm": "./backend-wasm/dist/index.js",
+      "#backend-node": "./backend-node/dist/index.js",
+    },
 
     // ESM entrypoints.
     main: "./dist/index.js",
