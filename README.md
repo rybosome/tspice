@@ -6,56 +6,12 @@
 
 It provides a **typed, ergonomic API** on top of an existing SPICE core, while preserving access to lower-level primitives when you need them.
 
----
-
-## What does this enable?
-
-Below are screenshots from a [real, browser-based solar system visualization](https://tspice-viewer.ryboso.me/) built using `tspice`.
-
-All positions, orientations, body lighting and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
-
-<table>
-  <tr>
-    <td align="center">
-      <img
-        src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png"
-        alt="Earth with day/night terminator"
-        style="max-width: 100%; height: auto;"
-      />
-      <br />
-      <em>Earth lighting & day/night terminator</em>
-    </td>
-    <td align="center">
-      <img
-        src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
-        alt="Jupiter–Sun geometry with labels"
-        style="max-width: 100%; height: auto;"
-      />
-      <br />
-      <em>Labeled Jupiter–Sun geometry</em>
-    </td>
-    <td align="center">
-      <img
-        src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
-        alt="Solar system overview"
-        style="max-width: 100%; height: auto;"
-      />
-      <br />
-      <em>Solar system ephemerides</em>
-    </td>
-  </tr>
-</table>
-
----
-
-## What is `tspice`?
-
-`tspice` is a TypeScript library that:
-
 - Exposes a **clean, typed API** for common SPICE workflows
-- Runs in **Node.js** and **WebAssembly (browser-realistic)** environments
+- Runs in **Node.js** and **WebAssembly** environments
 - Supports **multiple interchangeable backends**
 - Keeps CSPICE as an **implementation detail**, not a user-facing dependency
+
+> NOTE: This project is currently in a pre-0.1.0 state; API stability between versions is not guaranteed.
 
 ---
 
@@ -86,6 +42,36 @@ With `tspice`, you can:
 - Use the **same API** in Node and the browser
 - Drop down to **low-level CSPICE calls** when needed
 
+Below are screenshots from a [real, browser-based solar system visualization](https://tspice-viewer.ryboso.me/) built using `tspice`.
+
+All positions, orientations, lighting angles and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
+
+*Earth lighting & day/night terminator*
+<img src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png" alt="Earth with day/night terminator" />
+
+<table>
+  <tr>
+    <td align="center">
+      <img
+        src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
+        alt="Jupiter–Sun geometry with labels"
+        style="max-width: 100%; height: auto;"
+      />
+      <br />
+      <em>Labeled Jupiter–Sun geometry</em>
+    </td>
+    <td align="center">
+      <img
+        src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
+        alt="Solar system overview"
+        style="max-width: 100%; height: auto;"
+      />
+      <br />
+      <em>Solar system ephemerides</em>
+    </td>
+  </tr>
+</table>
+
 ---
 
 ## Quickstart
@@ -96,7 +82,7 @@ Install:
 pnpm add @rybosome/tspice
 ```
 
-Minimal usage (pick a backend explicitly — there is no auto-backend):
+Minimal usage
 
 ```ts
 import { createSpice } from "@rybosome/tspice";
@@ -139,8 +125,6 @@ console.log(node.cspice.kind); // "node"
 SPICE is **kernel-driven**. Before performing meaningful computations, you must load the appropriate kernels (LSK, SPK, etc.).
 
 Which kernels you load — and how — depends on your use case and environment.
-
-### TL;DR
 
 - **Node** can load kernels directly from disk paths.
 - **Browsers / WASM** load kernel *bytes* into an in-memory filesystem.
@@ -242,7 +226,7 @@ const { spoint } = spice.cspice.subslr(
 
 ---
 
-## Repository layout (for contributors)
+## Repository layout
 
 | Path | Purpose |
 | --- | --- |
