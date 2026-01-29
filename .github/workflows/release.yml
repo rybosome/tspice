@@ -1,0 +1,347 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  publish-native:
+    name: Publish native (${{ matrix.pkg }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs_on: macos-14
+            node_version: '22'
+            pkg: tspice-native-darwin-arm64
+          - runs_on: macos-13
+            node_version: '22'
+            pkg: tspice-native-darwin-x64
+          - runs_on: ubuntu-latest
+            node_version: '22'
+            pkg: tspice-native-linux-x64-gnu
+
+    runs-on: ${{ matrix.runs_on }}
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Set package versions from tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_REF_NAME}" != v* ]]; then
+            echo "Release workflow must be run from a tag like vX.Y.Z (got: ${GITHUB_REF_NAME})." >&2
+            exit 1
+          fi
+
+          VERSION="${GITHUB_REF_NAME#v}"
+          node scripts/set-release-version.mjs "$VERSION"
+          node scripts/verify-native-package-versions.mjs
+
+      # Node 22 + node-gyp can be flaky when it tries to download headers from nodejs.org.
+      # Point node-gyp at the headers shipped with the installed Node runtime instead.
+      - name: Use local Node headers for node-gyp
+        shell: bash
+        run: |
+          NODE_ROOT=$(node -p 'require("path").dirname(require("path").dirname(process.execPath))')
+          echo "npm_config_nodedir=$NODE_ROOT" >> "$GITHUB_ENV"
+
+      - name: Install ncompress (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ncompress
+
+      - name: Install ncompress (macOS)
+        if: ${{ runner.os == 'macOS' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v uncompress >/dev/null 2>&1; then
+            exit 0
+          fi
+          brew update
+          brew install ncompress
+
+      - name: Cache CSPICE
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .cache/cspice
+          key: cspice-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify native build + tests
+        run: pnpm run check:native
+
+      - name: Configure npm auth
+        shell: bash
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "$HOME/.npmrc"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish platform package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PKG_DIR="packages/${{ matrix.pkg }}"
+          PKG_NAME=$(node -p "require('./${PKG_DIR}/package.json').name")
+          PKG_VERSION=$(node -p "require('./${PKG_DIR}/package.json').version")
+
+          if npm view "$PKG_NAME@$PKG_VERSION" version >/dev/null 2>&1; then
+            echo "$PKG_NAME@$PKG_VERSION already exists on npm; skipping publish."
+            exit 0
+          fi
+
+          npm publish "$PKG_DIR" --access public
+
+  publish-tspice:
+    name: Publish @rybosome/tspice
+    needs:
+      - publish-native
+      - validate-native-optional-deps
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
+        with:
+          node-version: '22'
+
+      - name: Set package versions from tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_REF_NAME}" != v* ]]; then
+            echo "Release workflow must be run from a tag like vX.Y.Z (got: ${GITHUB_REF_NAME})." >&2
+            exit 1
+          fi
+
+          VERSION="${GITHUB_REF_NAME#v}"
+          node scripts/set-release-version.mjs "$VERSION"
+          node scripts/verify-native-package-versions.mjs
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify JS build + tests
+        run: pnpm run check:js
+
+      - name: Build dist-publish + verify pack
+        run: |
+          pnpm -w build
+          pnpm -C packages/tspice run verify:dist-publish
+
+      - name: Configure npm auth
+        shell: bash
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "$HOME/.npmrc"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @rybosome/tspice
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PKG_DIR="packages/tspice/dist-publish"
+          PKG_NAME=$(node -p "require('./${PKG_DIR}/package.json').name")
+          PKG_VERSION=$(node -p "require('./${PKG_DIR}/package.json').version")
+
+          if npm view "$PKG_NAME@$PKG_VERSION" version >/dev/null 2>&1; then
+            echo "$PKG_NAME@$PKG_VERSION already exists on npm; skipping publish."
+            exit 0
+          fi
+
+          npm publish "$PKG_DIR" --access public
+
+  validate-native-optional-deps:
+    name: Validate native optionalDependencies (${{ matrix.runs_on }})
+    needs:
+      - publish-native
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs_on: ubuntu-latest
+            node_version: '22'
+            native_pkg: '@rybosome/tspice-native-linux-x64-gnu'
+          - runs_on: macos-13
+            node_version: '22'
+            native_pkg: '@rybosome/tspice-native-darwin-x64'
+          - runs_on: macos-14
+            node_version: '22'
+            native_pkg: '@rybosome/tspice-native-darwin-arm64'
+
+    runs-on: ${{ matrix.runs_on }}
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Set package versions from tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_REF_NAME}" != v* ]]; then
+            echo "Release workflow must be run from a tag like vX.Y.Z (got: ${GITHUB_REF_NAME})." >&2
+            exit 1
+          fi
+
+          VERSION="${GITHUB_REF_NAME#v}"
+          node scripts/set-release-version.mjs "$VERSION"
+          node scripts/verify-native-package-versions.mjs
+
+      - name: Configure npm auth
+        shell: bash
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "$HOME/.npmrc"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Wait for native package to propagate
+        shell: bash
+        env:
+          VERSION: ${{ github.ref_name }}
+          NATIVE_PKG: ${{ matrix.native_pkg }}
+        run: |
+          set -euo pipefail
+
+          if [[ "${VERSION}" != v* ]]; then
+            echo "Expected VERSION to be a tag like vX.Y.Z (got: ${VERSION})." >&2
+            exit 1
+          fi
+          VERSION="${VERSION#v}"
+
+          echo "Waiting for ${NATIVE_PKG}@${VERSION} to be available on npm..."
+
+          max_attempts=10
+          for attempt in $(seq 1 "$max_attempts"); do
+            if npm view "${NATIVE_PKG}@${VERSION}" version >/dev/null 2>&1; then
+              echo "Found ${NATIVE_PKG}@${VERSION} on npm."
+              exit 0
+            fi
+
+            # Basic exponential backoff: 2s, 4s, 8s, ... (capped).
+            sleep_seconds=$(( 2 ** attempt ))
+            if [[ "$sleep_seconds" -gt 60 ]]; then
+              sleep_seconds=60
+            fi
+            echo "Not available yet (attempt ${attempt}/${max_attempts}); sleeping ${sleep_seconds}s..."
+            sleep "$sleep_seconds"
+          done
+
+          echo "Timed out waiting for ${NATIVE_PKG}@${VERSION} to propagate on npm." >&2
+          npm view "${NATIVE_PKG}" --json || true
+          exit 1
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build dist-publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm -w build
+          pnpm -C packages/tspice run build:dist-publish
+
+      - name: Pack dist-publish
+        id: pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd packages/tspice/dist-publish
+          TARBALL=$(npm pack --silent)
+          echo "tarball=${TARBALL}" >> "$GITHUB_OUTPUT"
+          echo "tarball_path=${PWD}/${TARBALL}" >> "$GITHUB_OUTPUT"
+
+      - name: Install packed tarball into a fresh project (with optional deps)
+        shell: bash
+        env:
+          TARBALL_PATH: ${{ steps.pack.outputs.tarball_path }}
+        run: |
+          set -euo pipefail
+
+          TMP_DIR=$(mktemp -d)
+          echo "Using temp project: ${TMP_DIR}"
+
+          cd "$TMP_DIR"
+          npm init -y >/dev/null
+
+          # Ensure ESM by default in the temp project.
+          node -e 'const fs=require("node:fs"); const p="package.json"; const j=JSON.parse(fs.readFileSync(p,"utf8")); j.type="module"; fs.writeFileSync(p, JSON.stringify(j,null,2)+"\n");'
+
+          max_attempts=5
+          installed=0
+          for attempt in $(seq 1 "$max_attempts"); do
+            if npm install --include=optional "${TARBALL_PATH}"; then
+              installed=1
+              break
+            fi
+
+            sleep_seconds=$(( 2 ** attempt ))
+            if [[ "$sleep_seconds" -gt 60 ]]; then
+              sleep_seconds=60
+            fi
+            echo "npm install failed (attempt ${attempt}/${max_attempts}); sleeping ${sleep_seconds}s before retry..." >&2
+            sleep "$sleep_seconds"
+          done
+
+          if [[ "$installed" -ne 1 ]]; then
+            echo "npm install failed after ${max_attempts} attempts." >&2
+            exit 1
+          fi
+
+          cat > smoke.mjs <<'EOF'
+          import { createBackend } from "@rybosome/tspice";
+
+          const backend = await createBackend({ backend: "node" });
+          if (backend.kind !== "node") {
+            throw new Error(`Expected backend.kind to be "node"; got: ${backend.kind}`);
+          }
+
+          const version = backend.spiceVersion();
+          if (typeof version !== "string" || version.length === 0) {
+            throw new Error(`Expected spiceVersion() to return a non-empty string; got: ${String(version)}`);
+          }
+
+          console.log(`Native backend loaded OK. CSPICE toolkit version: ${version}`);
+          EOF
+
+          node smoke.mjs

@@ -78,6 +78,7 @@ describe("createBackend() types", () => {
       // @ts-expect-error wasm-only helper not present on node backend
       nodeBackend.writeFile;
 
+      // @ts-expect-error `createBackend()` only supports { backend: "node" | "wasm" }
       const fakeBackend = await createBackend({ backend: "fake" });
       // @ts-expect-error wasm-only helper not present on fake backend
       fakeBackend.loadKernel;

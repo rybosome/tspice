@@ -96,7 +96,7 @@ Install:
 pnpm add @rybosome/tspice
 ```
 
-Minimal usage:
+Minimal usage (pick a backend explicitly — there is no auto-backend):
 
 ```ts
 import { createSpice } from "@rybosome/tspice";
@@ -104,6 +104,7 @@ import { createSpice } from "@rybosome/tspice";
 async function main() {
   const spice = await createSpice({ backend: "wasm" });
 
+  console.log(spice.cspice.kind); // "wasm"
   console.log(spice.kit.toolkitVersion());
 }
 
