@@ -19,7 +19,7 @@ SPICE (via WebAssembly). Rendering is handled separately using WebGL.
 <details>
 <summary><strong>Example: Earth lighting and terminator</strong></summary>
 
-![Earth with day/night terminator](./docs/images/tspice-earth-lighting.png)
+![Earth with day/night terminator](https://rybosome.github.io/tspice/images/tspice-earth-lighting.png)
 
 Subsolar point, day/night terminator, and body orientation derived from SPICE kernels.
 </details>
