@@ -12,39 +12,28 @@ It provides a **typed, ergonomic API** on top of an existing SPICE core, while p
 
 Below are screenshots from a [real, browser-based solar system visualization](https://tspice-viewer.ryboso.me/) built using `tspice`.
 
-All positions, orientations, body lighting and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
+All positions, orientations, lighting angles and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
 
-<table>
-  <tr>
-    <td align="center">
-      <img
-        src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png"
-        alt="Earth with day/night terminator"
-        style="max-width: 100%; height: auto;"
-      />
-      <br />
-      <em>Earth lighting & day/night terminator</em>
-    </td>
-    <td align="center">
-      <img
-        src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
-        alt="Jupiter–Sun geometry with labels"
-        style="max-width: 100%; height: auto;"
-      />
-      <br />
-      <em>Labeled Jupiter–Sun geometry</em>
-    </td>
-    <td align="center">
-      <img
-        src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
-        alt="Solar system overview"
-        style="max-width: 100%; height: auto;"
-      />
-      <br />
-      <em>Solar system ephemerides</em>
-    </td>
-  </tr>
-</table>
+<img
+    src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png"
+    alt="Earth with day/night terminator"
+    style="max-width: 100%; height: auto;"
+/>
+*Earth lighting & day/night terminator*
+
+<img
+  src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
+  alt="Jupiter–Sun geometry with labels"
+  style="max-width: 100%; height: auto;"
+/>
+*Labeled Jupiter–Sun geometry*
+
+<img
+  src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
+  alt="Solar system overview"
+  style="max-width: 100%; height: auto;"
+/>
+*Solar system ephemerides*
 
 ---
 
