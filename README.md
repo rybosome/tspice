@@ -49,13 +49,28 @@ All positions, orientations, lighting angles and time evolution are computed usi
 *Earth lighting & day/night terminator*
 <img src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png" alt="Earth with day/night terminator" />
 
-
-*Labeled Jupiter–Sun geometry*
-<img src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png" alt="Jupiter–Sun geometry with labels" />
-
-
-*Solar system ephemerides*
-<img src="https://rybosome.github.io/tspice/images/tspice-solar-system.png" alt="Solar system overview" />
+<table>
+  <tr>
+    <td align="center">
+      <img
+        src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
+        alt="Jupiter–Sun geometry with labels"
+        style="max-width: 100%; height: auto;"
+      />
+      <br />
+      <em>Labeled Jupiter–Sun geometry</em>
+    </td>
+    <td align="center">
+      <img
+        src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
+        alt="Solar system overview"
+        style="max-width: 100%; height: auto;"
+      />
+      <br />
+      <em>Solar system ephemerides</em>
+    </td>
+  </tr>
+</table>
 
 ---
 
