@@ -14,25 +14,13 @@ Below are screenshots from a [real, browser-based solar system visualization](ht
 
 All positions, orientations, lighting angles and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
 
-<img
-    src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png"
-    alt="Earth with day/night terminator"
-    style="max-width: 100%; height: auto;"
-/>
+<img src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png" alt="Earth with day/night terminator" />
 *Earth lighting & day/night terminator*
 
-<img
-  src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
-  alt="Jupiter–Sun geometry with labels"
-  style="max-width: 100%; height: auto;"
-/>
+<img src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png" alt="Jupiter–Sun geometry with labels" />
 *Labeled Jupiter–Sun geometry*
 
-<img
-  src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
-  alt="Solar system overview"
-  style="max-width: 100%; height: auto;"
-/>
+<img src="https://rybosome.github.io/tspice/images/tspice-solar-system.png" alt="Solar system overview" />
 *Solar system ephemerides*
 
 ---
