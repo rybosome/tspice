@@ -1,0 +1,81 @@
+name: Bug report
+description: Report incorrect behavior, crashes, or inconsistencies.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        Please read `CONTRIBUTING.md` before filing. This project is maintained on a best-effort basis.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues to avoid duplicates.
+          required: true
+        - label: I read `CONTRIBUTING.md` and included repro + environment details.
+          required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+      placeholder: A clear description of the incorrect behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Include a minimal repro if possible.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What did you expect to happen?
+    validations:
+      required: false
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: What actually happened? Include error messages if any.
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Provide the relevant environment details.
+      value: |
+        - Runtime: Node.js (version?) / Browser (which?)
+        - OS:
+        - Backend: (e.g. wasm / node native / other)
+        - Kernels used: (names + source if possible)
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / stack trace (if any)
+      description: Paste logs here. Avoid posting secrets.
+      render: shell
+    validations:
+      required: false
