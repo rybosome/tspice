@@ -129,6 +129,7 @@ jobs:
         pnpm run stage:native-platform
 
         PKG_DIR="packages/$TARGET_PKG"
+        TARGET_PKG_NAME=$(node -p "require('./$PKG_DIR/package.json').name")
         if [ ! -f "$PKG_DIR/tspice_backend_node.node" ]; then
           echo "[native-pack-smoke] Missing staged native addon at $PKG_DIR/tspice_backend_node.node" >&2
           exit 1
@@ -150,4 +151,4 @@ jobs:
         cd "$TMP_DIR"
         npm init -y >/dev/null
         npm install "$TARBALL_PATH" >/dev/null
-        node -e "require('$TARGET_PKG')"
+        node -e "require('$TARGET_PKG_NAME')"
