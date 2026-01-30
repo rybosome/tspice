@@ -16,7 +16,7 @@ export type CreateWasmBackendOptions = {
   wasmUrl?: string | URL;
 };
 
-export const WASM_JS_FILENAME = "tspice_backend_wasm.js" as const;
+export const WASM_JS_FILENAME = "tspice_backend_wasm.node.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
 export async function createWasmBackend(
@@ -34,7 +34,7 @@ export async function createWasmBackend(
     // rewrite the glue JS into an asset URL module (via `new URL(..., import.meta.url)`
     // + `?url`) which breaks `import()`.
     ({ default: createEmscriptenModule } = (await import(
-      "../tspice_backend_wasm.js"
+      "../tspice_backend_wasm.node.js"
     )) as {
       default: (opts: Record<string, unknown>) => Promise<unknown>;
     });
@@ -46,25 +46,18 @@ export async function createWasmBackend(
 
   const wasmLocator = wasmUrl;
 
-  const isNodeRuntime =
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    typeof process !== "undefined" &&
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    !!process.versions?.node;
-
   // Node's built-in `fetch` can't load `file://...` URLs, so in Node we feed the
   // bytes directly to Emscripten via `wasmBinary`.
-  const wasmBinary =
-    isNodeRuntime && wasmUrl.startsWith("file://")
-      ? await (async () => {
-          const [{ readFile }, { fileURLToPath }] = await Promise.all([
-            import("node:fs/promises"),
-            import("node:url"),
-          ]);
-          const wasmPath = fileURLToPath(wasmUrl);
-          return readFile(wasmPath);
-        })()
-      : undefined;
+  const wasmBinary = wasmUrl.startsWith("file://")
+    ? await (async () => {
+        const [{ readFile }, { fileURLToPath }] = await Promise.all([
+          import("node:fs/promises"),
+          import("node:url"),
+        ]);
+        const wasmPath = fileURLToPath(wasmUrl);
+        return readFile(wasmPath);
+      })()
+    : undefined;
 
   let module: EmscriptenModule;
   try {

@@ -217,7 +217,11 @@ function main() {
       "#core": "./core/dist/index.js",
       "#backend-contract": "./backend-contract/dist/index.js",
       "#backend-fake": "./backend-fake/dist/index.js",
-      "#backend-wasm": "./backend-wasm/dist/index.js",
+      "#backend-wasm": {
+        browser: "./backend-wasm/dist/index.web.js",
+        node: "./backend-wasm/dist/index.node.js",
+        default: "./backend-wasm/dist/index.web.js",
+      },
       "#backend-node": "./backend-node/dist/index.js",
     },
 

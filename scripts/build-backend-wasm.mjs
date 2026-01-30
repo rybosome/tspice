@@ -3,7 +3,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { WASM_BINARY_FILENAME, WASM_JS_FILENAME } from "./backend-wasm-assets.mjs";
+import {
+  WASM_BINARY_FILENAME,
+  WASM_NODE_JS_FILENAME,
+  WASM_WEB_JS_FILENAME,
+} from "./backend-wasm-assets.mjs";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -67,7 +71,8 @@ const shimSources = [
 ];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
-const outputJsPath = path.join(outputDir, WASM_JS_FILENAME);
+const outputWebJsPath = path.join(outputDir, WASM_WEB_JS_FILENAME);
+const outputNodeJsPath = path.join(outputDir, WASM_NODE_JS_FILENAME);
 
 for (const shimPath of shimSources) {
   if (!fs.existsSync(shimPath)) {
@@ -173,41 +178,53 @@ const includeDirs = [
 
 fs.mkdirSync(outputDir, { recursive: true });
 
-execFileSync(
-  "emcc",
-  [
-    // We need C11 for shared shim sources (e.g. <stdatomic.h>).
-    // `gnu11` keeps GNU extensions enabled for the upstream CSPICE sources.
-    "-std=gnu11",
-    "-O2",
-    "-s",
-    "MODULARIZE=1",
-    "-s",
-    "EXPORT_ES6=1",
-    "-s",
-    "ENVIRONMENT=node,worker",
-    "-s",
-    "ALLOW_MEMORY_GROWTH=1",
-    "-s",
-    // Some Emscripten toolchains require initial memory to cover static data.
-    // (ALLOW_MEMORY_GROWTH does not help at link time.)
-    "INITIAL_MEMORY=134217728",
-    "-s",
-    "FORCE_FILESYSTEM=1",
-    "-s",
-    "EXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8','lengthBytesUTF8','FS','HEAP8','HEAPU8','HEAP16','HEAPU16','HEAP32','HEAPU32','HEAPF32','HEAPF64']",
-    "-s",
-    "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_ktotal_all','_tspice_str2et','_tspice_et2utc','_tspice_timout','_tspice_bodn2c','_tspice_bodc2n','_tspice_namfrm','_tspice_frmnam','_tspice_cidfrm','_tspice_cnmfrm','_tspice_scs2e','_tspice_sce2s','_tspice_ckgp','_tspice_ckgpav','_tspice_pxform','_tspice_sxform','_tspice_spkezr','_tspice_spkpos','_tspice_subpnt','_tspice_subslr','_tspice_sincpt','_tspice_ilumin','_tspice_occult','_tspice_reclat','_tspice_latrec','_tspice_recsph','_tspice_sphrec','_tspice_vnorm','_tspice_vhat','_tspice_vdot','_tspice_vcrss','_tspice_mxv','_tspice_mtxv','_malloc','_free']",
-    "-o",
-    outputJsPath,
-    ...includeDirs,
-    ...sources,
-  ],
-  {
-    cwd: repoRoot,
-    stdio: "inherit",
-  },
-);
+const commonEmccArgs = [
+  // We need C11 for shared shim sources (e.g. <stdatomic.h>).
+  // `gnu11` keeps GNU extensions enabled for the upstream CSPICE sources.
+  "-std=gnu11",
+  "-O2",
+  "-s",
+  "MODULARIZE=1",
+  "-s",
+  "EXPORT_ES6=1",
+  "-s",
+  // Keep the binary filename stable regardless of JS glue output name.
+  `WASM_BINARY_FILE='${WASM_BINARY_FILENAME}'`,
+  "-s",
+  "ALLOW_MEMORY_GROWTH=1",
+  "-s",
+  // Some Emscripten toolchains require initial memory to cover static data.
+  // (ALLOW_MEMORY_GROWTH does not help at link time.)
+  "INITIAL_MEMORY=134217728",
+  "-s",
+  "FORCE_FILESYSTEM=1",
+  "-s",
+  "EXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8','lengthBytesUTF8','FS','HEAP8','HEAPU8','HEAP16','HEAPU16','HEAP32','HEAPU32','HEAPF32','HEAPF64']",
+  "-s",
+  "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_ktotal_all','_tspice_str2et','_tspice_et2utc','_tspice_timout','_tspice_bodn2c','_tspice_bodc2n','_tspice_namfrm','_tspice_frmnam','_tspice_cidfrm','_tspice_cnmfrm','_tspice_scs2e','_tspice_sce2s','_tspice_ckgp','_tspice_ckgpav','_tspice_pxform','_tspice_sxform','_tspice_spkezr','_tspice_spkpos','_tspice_subpnt','_tspice_subslr','_tspice_sincpt','_tspice_ilumin','_tspice_occult','_tspice_reclat','_tspice_latrec','_tspice_recsph','_tspice_sphrec','_tspice_vnorm','_tspice_vhat','_tspice_vdot','_tspice_vcrss','_tspice_mxv','_tspice_mtxv','_malloc','_free']",
+];
+
+function runEmcc({ environment, outputJsPath }) {
+  execFileSync(
+    "emcc",
+    [
+      ...commonEmccArgs,
+      "-s",
+      `ENVIRONMENT=${environment}`,
+      "-o",
+      outputJsPath,
+      ...includeDirs,
+      ...sources,
+    ],
+    {
+      cwd: repoRoot,
+      stdio: "inherit",
+    },
+  );
+}
+
+runEmcc({ environment: "web,worker", outputJsPath: outputWebJsPath });
+runEmcc({ environment: "node", outputJsPath: outputNodeJsPath });
 
 const outputWasmPath = path.join(outputDir, WASM_BINARY_FILENAME);
 if (!fs.existsSync(outputWasmPath)) {
@@ -215,9 +232,42 @@ if (!fs.existsSync(outputWasmPath)) {
 }
 
 const generatedHeader = `// GENERATED FILE - DO NOT EDIT.\n// Regenerate via: node scripts/build-backend-wasm.mjs\n\n`;
-const jsContents = fs.readFileSync(outputJsPath, "utf8");
-if (!jsContents.startsWith(generatedHeader)) {
-  fs.writeFileSync(outputJsPath, `${generatedHeader}${jsContents}`);
+
+function ensureGeneratedHeader(jsPath) {
+  const jsContents = fs.readFileSync(jsPath, "utf8");
+  if (!jsContents.startsWith(generatedHeader)) {
+    fs.writeFileSync(jsPath, `${generatedHeader}${jsContents}`);
+  }
 }
 
-console.log(`Wrote ${outputJsPath}`);
+// Emscripten still emits Node-only glue that assumes CommonJS globals
+// (`__dirname`, `require`). Inject them so the generated output works as ESM.
+const nodeEsmPreamble = [
+  'import { createRequire } from "node:module";',
+  'import { dirname } from "node:path";',
+  'import { fileURLToPath } from "node:url";',
+  "",
+  "const require = createRequire(import.meta.url);",
+  "const __dirname = dirname(fileURLToPath(import.meta.url));",
+  "",
+].join("\n");
+
+function ensureNodeEsmPreamble(jsPath) {
+  const jsContents = fs.readFileSync(jsPath, "utf8");
+  if (!jsContents.startsWith(generatedHeader)) {
+    throw new Error(`Expected ${jsPath} to start with generated header`);
+  }
+  if (jsContents.includes(nodeEsmPreamble)) {
+    return;
+  }
+  fs.writeFileSync(jsPath, `${generatedHeader}${nodeEsmPreamble}${jsContents.slice(generatedHeader.length)}`);
+}
+
+for (const jsPath of [outputWebJsPath, outputNodeJsPath]) {
+  ensureGeneratedHeader(jsPath);
+}
+
+ensureNodeEsmPreamble(outputNodeJsPath);
+
+console.log(`Wrote ${outputWebJsPath}`);
+console.log(`Wrote ${outputNodeJsPath}`);

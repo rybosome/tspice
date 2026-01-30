@@ -4,12 +4,14 @@
   "private": true,
   "license": "MIT",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.web.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "browser": "./dist/index.web.js",
+      "node": "./dist/index.node.js",
+      "default": "./dist/index.web.js"
     }
   },
   "files": [
