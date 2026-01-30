@@ -129,5 +129,19 @@ jobs:
         fi
 
         TARBALL=$(cd "$PKG_DIR" && npm pack --silent)
-        tar -tf "$PKG_DIR/$TARBALL" | grep -q '^package/tspice_backend_node\.node$'
-        rm -f "$PKG_DIR/$TARBALL"
+
+        # Install the packed tarball into a clean project and ensure it can be
+        # required at runtime (catches packaging + install/runtime issues, not
+        # just missing files).
+        TARBALL_PATH="$GITHUB_WORKSPACE/$PKG_DIR/$TARBALL"
+        TMP_DIR=$(mktemp -d)
+        cleanup() {
+          rm -rf "$TMP_DIR"
+          rm -f "$TARBALL_PATH"
+        }
+        trap cleanup EXIT
+
+        cd "$TMP_DIR"
+        npm init -y >/dev/null
+        npm install "$TARBALL_PATH" >/dev/null
+        node -e "require('$TARGET_PKG')"
