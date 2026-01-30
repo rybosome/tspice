@@ -6,6 +6,10 @@ on:
       - "v*"
   workflow_dispatch:
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   publish-native:
     name: Publish native (${{ matrix.pkg }})
@@ -123,7 +127,9 @@ jobs:
             exit 0
           fi
 
-          if grep -Eqi "cannot publish over (the )?previously published versions" "$PUBLISH_LOG"; then
+          # NOTE: `npm view` can race with npm registry propagation, so we also
+          # swallow a republish E403 here in case the preflight check misses.
+          if grep -Eqi "previously published" "$PUBLISH_LOG"; then
             echo "$PKG_NAME@$PKG_VERSION already exists on npm; treating publish as a no-op success."
             exit 0
           fi
@@ -209,7 +215,9 @@ jobs:
             exit 0
           fi
 
-          if grep -Eqi "cannot publish over (the )?previously published versions" "$PUBLISH_LOG"; then
+          # NOTE: `npm view` can race with npm registry propagation, so we also
+          # swallow a republish E403 here in case the preflight check misses.
+          if grep -Eqi "previously published" "$PUBLISH_LOG"; then
             echo "$PKG_NAME@$PKG_VERSION already exists on npm; treating publish as a no-op success."
             exit 0
           fi
