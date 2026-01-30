@@ -4,14 +4,16 @@
 
 `tspice` makes the SPICE toolkit usable from modern TypeScript environments, including WebAssembly-backed browser apps, without forcing you into C, Fortran, or Python bindings.
 
-It provides a **typed, ergonomic API** on top of an existing SPICE core, while preserving access to lower-level primitives when you need them.
+Until now, using SPICE from JavaScript meant shelling out, re-implementing math, or abandoning browser-based workflows entirely.
+
+`tspice` provides a **typed, ergonomic API** on top of an existing SPICE core, while preserving access to lower-level primitives when you need them.
 
 - Exposes a **clean, typed API** for common SPICE workflows
 - Runs in **Node.js** and **WebAssembly** environments
 - Supports **multiple interchangeable backends**
 - Keeps CSPICE as an **implementation detail**, not a user-facing dependency
 
-> NOTE: This project is currently in a pre-0.1.0 state; API stability between versions is not guaranteed.
+> NOTE: This project is currently pre-0.1.0. APIs may change as the design settles, though breaking changes will be intentional and documented.
 
 ---
 
@@ -26,8 +28,8 @@ It provides a **typed, ergonomic API** on top of an existing SPICE core, while p
 
 It may *not* be a good fit if you are looking for:
 
-- A kernel-free abstraction
-- A pure TypeScript reimplementation of SPICE (for now...)
+- A kernel-free abstraction (SPICE remains kernel-driven)
+- A pure TypeScript reimplementation of SPICE (for now…)
 - A minimal “just give me positions” black box
 
 ---
@@ -42,30 +44,29 @@ With `tspice`, you can:
 - Use the **same API** in Node and the browser
 - Drop down to **low-level CSPICE calls** when needed
 
+This unlocks SPICE-accurate ephemerides, lighting, and geometry **directly inside interactive browser visualizations**, without server round-trips or precomputed data.
+
 Below are screenshots from a [real, browser-based solar system visualization](https://tspice-viewer.ryboso.me/) built using `tspice`.
 
-All positions, orientations, lighting angles and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
+All positions, orientations, lighting angles, and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
 
 *Earth lighting & day/night terminator*
+
 <img src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png" alt="Earth with day/night terminator" />
 
 <table>
   <tr>
     <td align="center">
-      <img
-        src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
-        alt="Jupiter–Sun geometry with labels"
-        style="max-width: 100%; height: auto;"
-      />
+      <img src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
+           alt="Jupiter–Sun geometry with labels"
+           style="max-width: 100%; height: auto;" />
       <br />
       <em>Labeled Jupiter–Sun geometry</em>
     </td>
     <td align="center">
-      <img
-        src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
-        alt="Solar system overview"
-        style="max-width: 100%; height: auto;"
-      />
+      <img src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
+           alt="Solar system overview"
+           style="max-width: 100%; height: auto;" />
       <br />
       <em>Solar system ephemerides</em>
     </td>
@@ -82,7 +83,7 @@ Install:
 pnpm add @rybosome/tspice
 ```
 
-Minimal usage
+Minimal usage:
 
 ```ts
 import { createSpice } from "@rybosome/tspice";
@@ -104,6 +105,8 @@ main().catch(console.error);
 ### Backend selection
 
 `tspice` runs SPICE through interchangeable **backends**, allowing the same API to work across environments.
+
+Backends allow `tspice` to preserve a single API surface while adapting to very different runtime constraints.
 
 - **`wasm`** — Portable WebAssembly backend (browser-realistic), also runnable outside the browser
 - **`node`** — Native Node.js addon
@@ -157,13 +160,10 @@ https://naif.jpl.nasa.gov/naif/data.html
 
 ### Node kernel loading (filesystem paths)
 
-If you are using the Node backend, kernels can be loaded directly from disk.
-
 ```ts
 import { createSpice } from "@rybosome/tspice";
 
 const spice = await createSpice({ backend: "node" });
-
 spice.kit.loadKernel("/path/to/naif0012.tls");
 ```
 
@@ -204,14 +204,11 @@ const state = spice.kit.getState({
   frame: "J2000",
   aberration: "LT+S",
 });
-
 ```
 
 ---
 
 ### Geometry and illumination
-
-This example computes the sub-solar point and illumination angles on a body.
 
 ```ts
 const { spoint } = spice.cspice.subslr(
@@ -243,8 +240,8 @@ const { spoint } = spice.cspice.subslr(
 ## Development & verification
 
 ```bash
-pnpm check          # JS-only checks
-pnpm check:native   # Full native build
+pnpm check
+pnpm check:native
 ```
 
 Native builds require Python 3 and a working `node-gyp` toolchain.
@@ -255,8 +252,17 @@ Native builds require Python 3 and a working `node-gyp` toolchain.
 
 `tspice` embeds CSPICE-derived components only as an internal implementation detail and follows NAIF redistribution guidance.
 
-- See [`docs/cspice-naif-disclosure.md`](./docs/cspice-naif-disclosure.md)
-- See [`docs/cspice-policy.md`](./docs/cspice-policy.md)
+- See `docs/cspice-naif-disclosure.md`
+- See `docs/cspice-policy.md`
 
 End users typically do **not** need to interact with this directly.
 
+---
+
+## Contact
+
+If this project is relevant to your work and you’d like to reach out, you can email me at:
+
+**tspice@ryboso.me**
+
+I can’t promise rapid responses, but I do read everything.
