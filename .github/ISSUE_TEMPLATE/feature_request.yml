@@ -9,7 +9,7 @@ body:
       value: |
         Feature requests must start as discussion, not code.
 
-        Please read [CONTRIBUTING.md](../../blob/main/CONTRIBUTING.md) before filing. PRs opened without prior alignment will be closed.
+        Please read [CONTRIBUTING.md](https://github.com/rybosome/tspice/blob/main/CONTRIBUTING.md) before filing. PRs opened without prior alignment will be closed.
 
   - type: checkboxes
     id: preflight
