@@ -77,7 +77,19 @@ inline bool SetExportChecked(
     return false;
   }
 
-  exports.Set(safeKey, value);
+  const napi_status setStatus = napi_set_named_property(env, exports, safeKey, value);
+  if (setStatus != napi_ok) {
+    // Some N-API calls can fail when an exception is pending; preserve it.
+    if (env.IsExceptionPending()) {
+      return false;
+    }
+    ThrowSpiceError(
+        env,
+        std::string("Internal error: failed while exporting '") + safeKey + "' during " +
+            safeContext);
+    return false;
+  }
+
   return true;
 }
 

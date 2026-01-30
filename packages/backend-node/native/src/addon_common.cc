@@ -1,5 +1,6 @@
 #include "addon_common.h"
 
+#include <limits>
 #include <string>
 
 #include "napi_helpers.h"
@@ -31,21 +32,30 @@ bool ReadNumberArrayFixed(
     return false;
   }
 
+  if (expectedLength > std::numeric_limits<uint32_t>::max()) {
+    ThrowSpiceError(Napi::Error::New(
+        env,
+        std::string("Internal error: expectedLength is too large while reading ") + safeName));
+    return false;
+  }
+
   if (!value.IsArray()) {
     ThrowSpiceError(Napi::TypeError::New(env, std::string(safeName) + " must be an array"));
     return false;
   }
 
   Napi::Array arr = value.As<Napi::Array>();
-  if (arr.Length() != expectedLength) {
+  const uint32_t expectedLength32 = static_cast<uint32_t>(expectedLength);
+  if (arr.Length() != expectedLength32) {
     ThrowSpiceError(Napi::TypeError::New(
         env,
         std::string(safeName) + " must have length " + std::to_string(expectedLength)));
     return false;
   }
 
-  for (uint32_t i = 0; i < expectedLength; i++) {
-    const Napi::Value v = arr.Get(i);
+  for (size_t i = 0; i < expectedLength; i++) {
+    const uint32_t idx = static_cast<uint32_t>(i);
+    const Napi::Value v = arr.Get(idx);
     if (!v.IsNumber()) {
       ThrowSpiceError(
           Napi::TypeError::New(env, std::string(safeName) + " must contain only numbers"));
