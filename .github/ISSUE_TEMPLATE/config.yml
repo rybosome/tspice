@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation / README
+    url: https://github.com/rybosome/tspice#readme
+    about: Start here for install, usage, and repository layout.
+  - name: CSPICE policy (redistribution & compliance)
+    url: https://github.com/rybosome/tspice/blob/main/docs/cspice-policy.md
+    about: Please read before proposing changes that touch CSPICE fetching/packaging or bundled data.
+  - name: Security policy (placeholder)
+    url: https://github.com/rybosome/tspice/security/policy
+    about: If you believe you found a security issue, avoid filing a public issue.

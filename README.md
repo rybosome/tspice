@@ -267,6 +267,13 @@ Native builds require Python 3 and a working `node-gyp` toolchain.
 
 ---
 
+## Contributing
+
+- See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for local setup and PR expectations.
+- Please file bugs and feature requests using the GitHub issue forms (Bug Report / Feature Request).
+
+---
+
 ## CSPICE disclosure & policy
 
 `tspice` embeds CSPICE-derived components only as an internal implementation detail and follows NAIF redistribution guidance.

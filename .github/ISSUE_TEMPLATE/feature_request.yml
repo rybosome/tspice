@@ -1,0 +1,72 @@
+name: Feature request
+description: Suggest an improvement or new capability
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to propose an improvement.
+
+        If you're not sure whether an idea fits, start with a minimal problem statement and we'll discuss scope.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What are you trying to do that tspice doesn't support well today?
+      placeholder: |
+        I want to...
+        Today I have to...
+        This is painful because...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the API/behavior you’d like.
+      placeholder: |
+        Add `spice.kit.someNewCall(...)` that...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Backend impact
+      description: Which backend(s) should support this?
+      options:
+        - wasm
+        - node
+        - both
+        - not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches (including "do nothing") and why they aren’t enough.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: "This is a small change (docs/tests/ergonomics)"
+        - label: "This likely requires API design / a breaking change"
+        - label: "This likely touches CSPICE packaging / redistribution concerns"
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: "I'm willing to help implement this"
+        - label: "I'm willing to help test this"

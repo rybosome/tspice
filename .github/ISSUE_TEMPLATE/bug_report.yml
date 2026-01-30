@@ -1,0 +1,98 @@
+name: Bug report
+description: Report a reproducible problem in tspice
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug!
+
+        If this might be a security vulnerability, please do **not** open a public issue.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+      placeholder: "createSpice({ backend: 'wasm' }) throws ..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Backend
+      description: Which backend(s) does this affect?
+      options:
+        - wasm
+        - node
+        - both
+        - not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest set of steps/code to reproduce the issue.
+      placeholder: |
+        1. pnpm add @rybosome/tspice
+        2. Run this script...
+        3. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: false
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: tspice version
+      description: Output of `pnpm ls @rybosome/tspice` (or the exact version string).
+      placeholder: "@rybosome/tspice@x.y.z"
+    validations:
+      required: false
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Node version, OS, browser (if relevant), and anything else that might matter.
+      placeholder: |
+        Node: 22.x
+        OS: macOS 14 / Ubuntu 24.04
+        Browser: Chrome 120 (if WASM)
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / stack traces
+      description: Paste any relevant output.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Links, screenshots, related issues, etc.
+    validations:
+      required: false
