@@ -9,6 +9,7 @@
 using tspice_napi::MakeFound;
 using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
+using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
 static Napi::Object Namfrm(const Napi::CallbackInfo& info) {
@@ -191,12 +192,12 @@ static Napi::Array Sxform(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterFrames(Napi::Env env, Napi::Object exports) {
-  exports.Set("namfrm", Napi::Function::New(env, Namfrm));
-  exports.Set("frmnam", Napi::Function::New(env, Frmnam));
-  exports.Set("cidfrm", Napi::Function::New(env, Cidfrm));
-  exports.Set("cnmfrm", Napi::Function::New(env, Cnmfrm));
-  exports.Set("pxform", Napi::Function::New(env, Pxform));
-  exports.Set("sxform", Napi::Function::New(env, Sxform));
+  if (!SetExportChecked(env, exports, "namfrm", Napi::Function::New(env, Namfrm), __func__)) return;
+  if (!SetExportChecked(env, exports, "frmnam", Napi::Function::New(env, Frmnam), __func__)) return;
+  if (!SetExportChecked(env, exports, "cidfrm", Napi::Function::New(env, Cidfrm), __func__)) return;
+  if (!SetExportChecked(env, exports, "cnmfrm", Napi::Function::New(env, Cnmfrm), __func__)) return;
+  if (!SetExportChecked(env, exports, "pxform", Napi::Function::New(env, Pxform), __func__)) return;
+  if (!SetExportChecked(env, exports, "sxform", Napi::Function::New(env, Sxform), __func__)) return;
 }
 
 }  // namespace tspice_backend_node

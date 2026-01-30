@@ -1,8 +1,5 @@
 #include <napi.h>
 
-#include <string>
-#include <unordered_map>
-
 #include "domains/coords_vectors.h"
 #include "domains/ephemeris.h"
 #include "domains/frames.h"
@@ -20,72 +17,26 @@
 // trigger a rebuild.
 static_assert(sizeof(TSPICE_CSPICE_STAMP) > 0, "TSPICE_CSPICE_STAMP must be non-empty");
 
-static void RegisterDomainChecked(
-    Napi::Env env,
-    Napi::Object exports,
-    const char* name,
-    void (*registerFn)(Napi::Env, Napi::Object)) {
-  std::unordered_map<std::string, Napi::Value> before;
-  {
-    const Napi::Array keys = exports.GetPropertyNames();
-    before.reserve(keys.Length());
-
-    for (uint32_t i = 0; i < keys.Length(); i++) {
-      const Napi::Value k = keys.Get(i);
-      if (!k.IsString()) continue;
-
-      const std::string key = k.As<Napi::String>().Utf8Value();
-      before.emplace(key, exports.Get(key));
-    }
-  }
-
-  registerFn(env, exports);
-  if (env.IsExceptionPending()) return;
-
-  const Napi::Array afterKeys = exports.GetPropertyNames();
-  for (uint32_t i = 0; i < afterKeys.Length(); i++) {
-    const Napi::Value k = afterKeys.Get(i);
-    if (!k.IsString()) continue;
-
-    const std::string key = k.As<Napi::String>().Utf8Value();
-    auto it = before.find(key);
-    if (it == before.end()) continue;
-
-    const Napi::Value after = exports.Get(key);
-    if (!it->second.StrictEquals(after)) {
-      Napi::Error::New(
-          env,
-          std::string("Duplicate export key '") + key + "' detected while registering " + name)
-          .ThrowAsJavaScriptException();
-      return;
-    }
-  }
-}
-
 static Napi::Object Init(Napi::Env env, Napi::Object exports) {
-  RegisterDomainChecked(env, exports, "RegisterKernels", tspice_backend_node::RegisterKernels);
+  tspice_backend_node::RegisterKernels(env, exports);
   if (env.IsExceptionPending()) return exports;
 
-  RegisterDomainChecked(env, exports, "RegisterTime", tspice_backend_node::RegisterTime);
+  tspice_backend_node::RegisterTime(env, exports);
   if (env.IsExceptionPending()) return exports;
 
-  RegisterDomainChecked(env, exports, "RegisterIdsNames", tspice_backend_node::RegisterIdsNames);
+  tspice_backend_node::RegisterIdsNames(env, exports);
   if (env.IsExceptionPending()) return exports;
 
-  RegisterDomainChecked(env, exports, "RegisterFrames", tspice_backend_node::RegisterFrames);
+  tspice_backend_node::RegisterFrames(env, exports);
   if (env.IsExceptionPending()) return exports;
 
-  RegisterDomainChecked(env, exports, "RegisterEphemeris", tspice_backend_node::RegisterEphemeris);
+  tspice_backend_node::RegisterEphemeris(env, exports);
   if (env.IsExceptionPending()) return exports;
 
-  RegisterDomainChecked(env, exports, "RegisterGeometry", tspice_backend_node::RegisterGeometry);
+  tspice_backend_node::RegisterGeometry(env, exports);
   if (env.IsExceptionPending()) return exports;
 
-  RegisterDomainChecked(
-      env,
-      exports,
-      "RegisterCoordsVectors",
-      tspice_backend_node::RegisterCoordsVectors);
+  tspice_backend_node::RegisterCoordsVectors(env, exports);
   if (env.IsExceptionPending()) return exports;
 
   return exports;

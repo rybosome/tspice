@@ -35,6 +35,42 @@ inline Napi::Array MakeNumberArray(Napi::Env env, const double* values, size_t c
   return arr;
 }
 
+inline bool SetExportChecked(
+    Napi::Env env,
+    Napi::Object exports,
+    const char* key,
+    const Napi::Value& value,
+    const char* context) {
+  if (key == nullptr || key[0] == '\0') {
+    ThrowSpiceError(env, "Internal error: attempted to export with a null/empty key");
+    return false;
+  }
+
+  const char* safeKey = key;
+  const char* safeContext = (context != nullptr) ? context : "<unknown>";
+
+  bool has = false;
+  const napi_status status = napi_has_named_property(env, exports, safeKey, &has);
+  if (status != napi_ok) {
+    ThrowSpiceError(
+        env,
+        std::string("Internal error: failed while checking for existing export '") + safeKey +
+            "' during " + safeContext);
+    return false;
+  }
+
+  if (has) {
+    ThrowSpiceError(
+        env,
+        std::string("Duplicate export key '") + safeKey +
+            "' detected while registering " + safeContext);
+    return false;
+  }
+
+  exports.Set(safeKey, value);
+  return true;
+}
+
 template <class>
 inline constexpr bool kAlwaysFalseV = false;
 

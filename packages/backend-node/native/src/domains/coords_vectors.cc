@@ -5,6 +5,7 @@
 #include "tspice_backend_shim.h"
 
 using tspice_napi::MakeNumberArray;
+using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
@@ -290,17 +291,17 @@ static Napi::Array Mtxv(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
-  exports.Set("reclat", Napi::Function::New(env, Reclat));
-  exports.Set("latrec", Napi::Function::New(env, Latrec));
-  exports.Set("recsph", Napi::Function::New(env, Recsph));
-  exports.Set("sphrec", Napi::Function::New(env, Sphrec));
+  if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
+  if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
+  if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;
+  if (!SetExportChecked(env, exports, "sphrec", Napi::Function::New(env, Sphrec), __func__)) return;
 
-  exports.Set("vnorm", Napi::Function::New(env, Vnorm));
-  exports.Set("vhat", Napi::Function::New(env, Vhat));
-  exports.Set("vdot", Napi::Function::New(env, Vdot));
-  exports.Set("vcrss", Napi::Function::New(env, Vcrss));
-  exports.Set("mxv", Napi::Function::New(env, Mxv));
-  exports.Set("mtxv", Napi::Function::New(env, Mtxv));
+  if (!SetExportChecked(env, exports, "vnorm", Napi::Function::New(env, Vnorm), __func__)) return;
+  if (!SetExportChecked(env, exports, "vhat", Napi::Function::New(env, Vhat), __func__)) return;
+  if (!SetExportChecked(env, exports, "vdot", Napi::Function::New(env, Vdot), __func__)) return;
+  if (!SetExportChecked(env, exports, "vcrss", Napi::Function::New(env, Vcrss), __func__)) return;
+  if (!SetExportChecked(env, exports, "mxv", Napi::Function::New(env, Mxv), __func__)) return;
+  if (!SetExportChecked(env, exports, "mtxv", Napi::Function::New(env, Mtxv), __func__)) return;
 }
 
 }  // namespace tspice_backend_node

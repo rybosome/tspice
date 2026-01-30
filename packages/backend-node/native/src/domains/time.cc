@@ -6,6 +6,7 @@
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
 
+using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
 static Napi::Number Str2et(const Napi::CallbackInfo& info) {
@@ -131,11 +132,11 @@ static Napi::String Sce2s(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterTime(Napi::Env env, Napi::Object exports) {
-  exports.Set("str2et", Napi::Function::New(env, Str2et));
-  exports.Set("et2utc", Napi::Function::New(env, Et2utc));
-  exports.Set("timout", Napi::Function::New(env, Timout));
-  exports.Set("scs2e", Napi::Function::New(env, Scs2e));
-  exports.Set("sce2s", Napi::Function::New(env, Sce2s));
+  if (!SetExportChecked(env, exports, "str2et", Napi::Function::New(env, Str2et), __func__)) return;
+  if (!SetExportChecked(env, exports, "et2utc", Napi::Function::New(env, Et2utc), __func__)) return;
+  if (!SetExportChecked(env, exports, "timout", Napi::Function::New(env, Timout), __func__)) return;
+  if (!SetExportChecked(env, exports, "scs2e", Napi::Function::New(env, Scs2e), __func__)) return;
+  if (!SetExportChecked(env, exports, "sce2s", Napi::Function::New(env, Sce2s), __func__)) return;
 }
 
 }  // namespace tspice_backend_node

@@ -8,6 +8,7 @@
 
 using tspice_napi::MakeFound;
 using tspice_napi::MakeNotFound;
+using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
 static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
@@ -67,8 +68,8 @@ static Napi::Object Bodc2n(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterIdsNames(Napi::Env env, Napi::Object exports) {
-  exports.Set("bodn2c", Napi::Function::New(env, Bodn2c));
-  exports.Set("bodc2n", Napi::Function::New(env, Bodc2n));
+  if (!SetExportChecked(env, exports, "bodn2c", Napi::Function::New(env, Bodn2c), __func__)) return;
+  if (!SetExportChecked(env, exports, "bodc2n", Napi::Function::New(env, Bodc2n), __func__)) return;
 }
 
 }  // namespace tspice_backend_node

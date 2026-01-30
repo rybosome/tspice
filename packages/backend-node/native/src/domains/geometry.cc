@@ -8,6 +8,7 @@
 
 using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
+using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
 static Napi::Object Subpnt(const Napi::CallbackInfo& info) {
@@ -275,11 +276,11 @@ static Napi::Number Occult(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterGeometry(Napi::Env env, Napi::Object exports) {
-  exports.Set("subpnt", Napi::Function::New(env, Subpnt));
-  exports.Set("subslr", Napi::Function::New(env, Subslr));
-  exports.Set("sincpt", Napi::Function::New(env, Sincpt));
-  exports.Set("ilumin", Napi::Function::New(env, Ilumin));
-  exports.Set("occult", Napi::Function::New(env, Occult));
+  if (!SetExportChecked(env, exports, "subpnt", Napi::Function::New(env, Subpnt), __func__)) return;
+  if (!SetExportChecked(env, exports, "subslr", Napi::Function::New(env, Subslr), __func__)) return;
+  if (!SetExportChecked(env, exports, "sincpt", Napi::Function::New(env, Sincpt), __func__)) return;
+  if (!SetExportChecked(env, exports, "ilumin", Napi::Function::New(env, Ilumin), __func__)) return;
+  if (!SetExportChecked(env, exports, "occult", Napi::Function::New(env, Occult), __func__)) return;
 }
 
 }  // namespace tspice_backend_node

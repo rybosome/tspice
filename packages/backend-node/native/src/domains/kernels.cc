@@ -8,6 +8,7 @@
 
 using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
+using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
 static Napi::String SpiceVersion(const Napi::CallbackInfo& info) {
@@ -218,13 +219,13 @@ static Napi::Number KtotalAll(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterKernels(Napi::Env env, Napi::Object exports) {
-  exports.Set("spiceVersion", Napi::Function::New(env, SpiceVersion));
-  exports.Set("furnsh", Napi::Function::New(env, Furnsh));
-  exports.Set("unload", Napi::Function::New(env, Unload));
-  exports.Set("kclear", Napi::Function::New(env, Kclear));
-  exports.Set("ktotal", Napi::Function::New(env, Ktotal));
-  exports.Set("kdata", Napi::Function::New(env, Kdata));
-  exports.Set("__ktotalAll", Napi::Function::New(env, KtotalAll));
+  if (!SetExportChecked(env, exports, "spiceVersion", Napi::Function::New(env, SpiceVersion), __func__)) return;
+  if (!SetExportChecked(env, exports, "furnsh", Napi::Function::New(env, Furnsh), __func__)) return;
+  if (!SetExportChecked(env, exports, "unload", Napi::Function::New(env, Unload), __func__)) return;
+  if (!SetExportChecked(env, exports, "kclear", Napi::Function::New(env, Kclear), __func__)) return;
+  if (!SetExportChecked(env, exports, "ktotal", Napi::Function::New(env, Ktotal), __func__)) return;
+  if (!SetExportChecked(env, exports, "kdata", Napi::Function::New(env, Kdata), __func__)) return;
+  if (!SetExportChecked(env, exports, "__ktotalAll", Napi::Function::New(env, KtotalAll), __func__)) return;
 }
 
 }  // namespace tspice_backend_node

@@ -16,14 +16,23 @@ bool ReadNumberArrayFixed(
     size_t expectedLength,
     double* out,
     const char* name) {
+  const char* safeName = (name != nullptr) ? name : "<unnamed>";
+
   if (out == nullptr) {
     ThrowSpiceError(
-        Napi::Error::New(env, std::string("Internal error: out is null while reading ") + name));
+        Napi::Error::New(env, std::string("Internal error: out is null while reading ") + safeName));
+    return false;
+  }
+
+  if (expectedLength == 0) {
+    ThrowSpiceError(Napi::Error::New(
+        env,
+        std::string("Internal error: expectedLength is 0 while reading ") + safeName));
     return false;
   }
 
   if (!value.IsArray()) {
-    ThrowSpiceError(Napi::TypeError::New(env, std::string(name) + " must be an array"));
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(safeName) + " must be an array"));
     return false;
   }
 
@@ -31,7 +40,7 @@ bool ReadNumberArrayFixed(
   if (arr.Length() != expectedLength) {
     ThrowSpiceError(Napi::TypeError::New(
         env,
-        std::string(name) + " must have length " + std::to_string(expectedLength)));
+        std::string(safeName) + " must have length " + std::to_string(expectedLength)));
     return false;
   }
 
@@ -39,7 +48,7 @@ bool ReadNumberArrayFixed(
     const Napi::Value v = arr.Get(i);
     if (!v.IsNumber()) {
       ThrowSpiceError(
-          Napi::TypeError::New(env, std::string(name) + " must contain only numbers"));
+          Napi::TypeError::New(env, std::string(safeName) + " must contain only numbers"));
       return false;
     }
     out[i] = v.As<Napi::Number>().DoubleValue();

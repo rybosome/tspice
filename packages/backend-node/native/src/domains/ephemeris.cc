@@ -8,6 +8,7 @@
 
 using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
+using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
 static Napi::Object Ckgp(const Napi::CallbackInfo& info) {
@@ -186,10 +187,10 @@ static Napi::Object Spkpos(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
-  exports.Set("ckgp", Napi::Function::New(env, Ckgp));
-  exports.Set("ckgpav", Napi::Function::New(env, Ckgpav));
-  exports.Set("spkezr", Napi::Function::New(env, Spkezr));
-  exports.Set("spkpos", Napi::Function::New(env, Spkpos));
+  if (!SetExportChecked(env, exports, "ckgp", Napi::Function::New(env, Ckgp), __func__)) return;
+  if (!SetExportChecked(env, exports, "ckgpav", Napi::Function::New(env, Ckgpav), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkezr", Napi::Function::New(env, Spkezr), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkpos", Napi::Function::New(env, Spkpos), __func__)) return;
 }
 
 }  // namespace tspice_backend_node
