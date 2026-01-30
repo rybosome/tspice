@@ -9,7 +9,7 @@ body:
       value: |
         Thanks for taking the time to report a bug.
 
-        Please read `CONTRIBUTING.md` before filing. This project is maintained on a best-effort basis.
+        Please read [CONTRIBUTING.md](../../blob/main/CONTRIBUTING.md) before filing. This project is maintained on a best-effort basis.
 
   - type: checkboxes
     id: preflight
@@ -76,6 +76,6 @@ body:
     attributes:
       label: Logs / stack trace (if any)
       description: Paste logs here. Avoid posting secrets.
-      render: shell
+      render: text
     validations:
       required: false
