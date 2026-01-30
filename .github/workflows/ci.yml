@@ -151,4 +151,26 @@ jobs:
         cd "$TMP_DIR"
         npm init -y >/dev/null
         npm install "$TARBALL_PATH" >/dev/null
-        node -e "require('$TARGET_PKG_NAME')"
+        TARGET_PKG_NAME="$TARGET_PKG_NAME" node <<'NODE'
+        const pkgName = process.env.TARGET_PKG_NAME;
+        if (!pkgName) {
+          throw new Error("[native-pack-smoke] Missing TARGET_PKG_NAME env var");
+        }
+
+        const { bindingPath } = require(pkgName);
+        if (typeof bindingPath !== "string" || bindingPath.length === 0) {
+          throw new Error(`[native-pack-smoke] ${pkgName} did not export a non-empty bindingPath`);
+        }
+
+        const addon = require(bindingPath);
+        if (!addon || typeof addon.spiceVersion !== "function") {
+          throw new Error(`[native-pack-smoke] Native addon loaded from ${bindingPath} is missing spiceVersion()`);
+        }
+
+        const version = addon.spiceVersion();
+        if (typeof version !== "string" || version.trim().length === 0) {
+          throw new Error(`[native-pack-smoke] Expected addon.spiceVersion() to return a non-empty string, got: ${String(version)}`);
+        }
+
+        console.log(`[native-pack-smoke] CSPICE toolkit version: ${version}`);
+        NODE
