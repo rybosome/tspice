@@ -39,15 +39,7 @@ jobs:
       command: |
         set -euo pipefail
 
-        # Keep this job focused/fast: build only the packages required by
-        # packages/tspice/scripts/build-dist-publish.mjs.
-        pnpm -w turbo run build \
-          --filter=@rybosome/tspice \
-          --filter=@rybosome/tspice-core \
-          --filter=@rybosome/tspice-backend-contract \
-          --filter=@rybosome/tspice-backend-fake \
-          --filter=@rybosome/tspice-backend-wasm \
-          --filter=@rybosome/tspice-backend-node
+        ./packages/tspice/scripts/ci-build-dist-publish-deps.sh
 
         pnpm -C packages/tspice run build:dist-publish
         pnpm -C packages/tspice run verify:dist-publish
