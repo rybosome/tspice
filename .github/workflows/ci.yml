@@ -30,6 +30,28 @@ jobs:
         pnpm -C apps/tspice-viewer exec playwright install --with-deps chromium
         pnpm -C apps/tspice-viewer e2e
 
+  verify-dist-publish:
+    name: Verify dist-publish tarball (ubuntu + node 22)
+    uses: ./.github/workflows/reusable-node-pnpm.yml
+    with:
+      runs_on: ubuntu-latest
+      node_version: '22'
+      command: |
+        set -euo pipefail
+
+        # Keep this job focused/fast: build only the packages required by
+        # packages/tspice/scripts/build-dist-publish.mjs.
+        pnpm -w turbo run build \
+          --filter=@rybosome/tspice \
+          --filter=@rybosome/tspice-core \
+          --filter=@rybosome/tspice-backend-contract \
+          --filter=@rybosome/tspice-backend-fake \
+          --filter=@rybosome/tspice-backend-wasm \
+          --filter=@rybosome/tspice-backend-node
+
+        pnpm -C packages/tspice run build:dist-publish
+        pnpm -C packages/tspice run verify:dist-publish
+
   check-native:
     # Runs in parallel with `check` to surface native-only failures quickly.
     # Assumes GitHub-hosted runners (Ubuntu with apt-get, macOS with Homebrew).
@@ -95,4 +117,25 @@ jobs:
           fi
         fi
       enable_cspice_cache: true
-      command: pnpm run check:native
+      command: |
+        set -euo pipefail
+
+        pnpm run check:native
+
+        # Smoke-test packaging for the platform-native optionalDependency that
+        # was just staged/built on this runner.
+        TARGET_PKG=$(node -e 'const TARGETS={darwin:{arm64:"tspice-native-darwin-arm64",x64:"tspice-native-darwin-x64"},linux:{x64:"tspice-native-linux-x64-gnu"}};process.stdout.write(TARGETS[process.platform]?.[process.arch] ?? "");')
+        if [ -z "$TARGET_PKG" ]; then
+          echo "[native-pack-smoke] No supported platform package for runner; skipping."
+          exit 0
+        fi
+
+        PKG_DIR="packages/$TARGET_PKG"
+        if [ ! -f "$PKG_DIR/tspice_backend_node.node" ]; then
+          echo "[native-pack-smoke] Missing staged native addon at $PKG_DIR/tspice_backend_node.node" >&2
+          exit 1
+        fi
+
+        TARBALL=$(cd "$PKG_DIR" && npm pack --silent)
+        tar -tf "$PKG_DIR/$TARBALL" | grep -q '^package/tspice_backend_node\.node$'
+        rm -f "$PKG_DIR/$TARBALL"
