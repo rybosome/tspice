@@ -242,7 +242,21 @@ function ensureGeneratedHeader(jsPath) {
 
 // Emscripten still emits Node-only glue that assumes CommonJS globals
 // (`__dirname`, `require`). Inject them so the generated output works as ESM.
+const nodeEsmPreambleSentinel = "// NODE_ESM_PREAMBLE";
 const nodeEsmPreamble = [
+  nodeEsmPreambleSentinel,
+  'import { createRequire } from "node:module";',
+  'import { dirname } from "node:path";',
+  'import { fileURLToPath } from "node:url";',
+  "const require = createRequire(import.meta.url);",
+  "const __dirname = dirname(fileURLToPath(import.meta.url));",
+  "",
+  "",
+].join("\n");
+
+// Legacy version (before we added the sentinel). Keep stripping support so we
+// don't accidentally double-inject when regenerating older outputs.
+const legacyNodeEsmPreamble = [
   'import { createRequire } from "node:module";',
   'import { dirname } from "node:path";',
   'import { fileURLToPath } from "node:url";',
@@ -257,10 +271,24 @@ function ensureNodeEsmPreamble(jsPath) {
   if (!jsContents.startsWith(generatedHeader)) {
     throw new Error(`Expected ${jsPath} to start with generated header`);
   }
-  if (jsContents.includes(nodeEsmPreamble)) {
-    return;
+
+  let afterHeader = jsContents.slice(generatedHeader.length);
+
+  if (afterHeader.startsWith(legacyNodeEsmPreamble)) {
+    afterHeader = afterHeader.slice(legacyNodeEsmPreamble.length);
   }
-  fs.writeFileSync(jsPath, `${generatedHeader}${nodeEsmPreamble}${jsContents.slice(generatedHeader.length)}`);
+
+  if (afterHeader.startsWith(nodeEsmPreambleSentinel)) {
+    const endIdx = afterHeader.indexOf("\n\n");
+    if (endIdx === -1) {
+      throw new Error(
+        `Expected ${jsPath} to contain a blank line terminator after ${nodeEsmPreambleSentinel}`,
+      );
+    }
+    afterHeader = afterHeader.slice(endIdx + 2);
+  }
+
+  fs.writeFileSync(jsPath, `${generatedHeader}${nodeEsmPreamble}${afterHeader}`);
 }
 
 for (const jsPath of [outputWebJsPath, outputNodeJsPath]) {

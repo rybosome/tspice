@@ -121,6 +121,7 @@ main().catch(console.error);
 
 - Node backend (`backend: "node"`): implemented by a native addon. Requires a compatible native binding to be present.
 - WASM backend (`backend: "wasm"`): implemented with a prebuilt `.wasm`. See [`@rybosome/tspice-backend-wasm`](../backend-wasm/README.md).
+  - If you pass `wasmUrl`, supported URL schemes differ between Node vs browsers; see the backend-wasm README for details.
 
 ## Development
 

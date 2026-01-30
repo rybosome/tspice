@@ -19,6 +19,20 @@ export type CreateWasmBackendOptions = {
 export const WASM_JS_FILENAME = "tspice_backend_wasm.node.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
+function tryGetUrlProtocol(urlOrString: string | URL): string | null {
+  if (urlOrString instanceof URL) {
+    return urlOrString.protocol;
+  }
+
+  try {
+    return new URL(urlOrString).protocol;
+  } catch {
+    // Some consumers may pass relative paths. We let those through and let
+    // Emscripten handle resolution.
+    return null;
+  }
+}
+
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackendWasm> {
@@ -26,7 +40,16 @@ export async function createWasmBackend(
   // runtime glob map for *every* file in this directory (including *.d.ts.map),
   // which can lead to JSON being imported as an ESM module.
   const defaultWasmUrl = new URL("../tspice_backend_wasm.wasm", import.meta.url);
-  const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
+  const wasmUrlInput = options.wasmUrl ?? defaultWasmUrl;
+  const wasmUrl = wasmUrlInput.toString();
+
+  const protocol = tryGetUrlProtocol(wasmUrlInput);
+  if (protocol && protocol !== "file:" && protocol !== "http:" && protocol !== "https:") {
+    throw new Error(
+      `Unsupported wasmUrl protocol: ${protocol}. ` +
+        "In Node, supported protocols are file:, http:, and https:.",
+    );
+  }
 
   let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
   try {
@@ -48,7 +71,7 @@ export async function createWasmBackend(
 
   // Node's built-in `fetch` can't load `file://...` URLs, so in Node we feed the
   // bytes directly to Emscripten via `wasmBinary`.
-  const wasmBinary = wasmUrl.startsWith("file://")
+  const wasmBinary = protocol === "file:"
     ? await (async () => {
         const [{ readFile }, { fileURLToPath }] = await Promise.all([
           import("node:fs/promises"),
@@ -97,9 +120,6 @@ export async function createWasmBackend(
     // WASM-only
     ...fsApi,
   };
-
-  // Internal testing hook (not part of the public backend contract).
-  (backend as SpiceBackendWasm & { __ktotalAll(): number }).__ktotalAll = () => backend.ktotal("ALL");
 
   return backend;
 }

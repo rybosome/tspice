@@ -39,6 +39,16 @@ main().catch(console.error);
 
 The JS glue (`tspice_backend_wasm.web.js` in browsers, `tspice_backend_wasm.node.js` in Node) and WebAssembly binary (`tspice_backend_wasm.wasm`) are expected to be colocated. If your bundler or deployment setup relocates the `.wasm` asset, pass an explicit `wasmUrl`.
 
+### `wasmUrl` behavior / supported schemes
+
+`wasmUrl` can be a `string` or `URL`. If it includes a URL protocol/scheme:
+
+- **Browsers**: only `http:` / `https:` are supported. `file:`/`file://` is rejected with a clear error.
+- **Node**: `file:`, `http:`, and `https:` are supported.
+  - When you pass a `file:` URL, this package reads the `.wasm` from disk and feeds it to Emscripten via `wasmBinary` (because Node's built-in `fetch` cannot load `file://...`).
+
+Any other URL protocol is rejected up-front.
+
 ## API surface
 
 - `createWasmBackend(options?: { wasmUrl?: string | URL }): Promise<SpiceBackend>`

@@ -19,6 +19,19 @@ export type CreateWasmBackendOptions = {
 export const WASM_JS_FILENAME = "tspice_backend_wasm.web.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
+function tryGetUrlProtocol(urlOrString: string | URL): string | null {
+  if (urlOrString instanceof URL) {
+    return urlOrString.protocol;
+  }
+
+  try {
+    return new URL(urlOrString).protocol;
+  } catch {
+    // Relative paths (e.g. /tspice_backend_wasm.wasm) are valid in browsers.
+    return null;
+  }
+}
+
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackendWasm> {
@@ -26,7 +39,22 @@ export async function createWasmBackend(
   // runtime glob map for *every* file in this directory (including *.d.ts.map),
   // which can lead to JSON being imported as an ESM module.
   const defaultWasmUrl = new URL("../tspice_backend_wasm.wasm", import.meta.url);
-  const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
+  const wasmUrlInput = options.wasmUrl ?? defaultWasmUrl;
+  const wasmUrl = wasmUrlInput.toString();
+
+  const protocol = tryGetUrlProtocol(wasmUrlInput);
+  if (protocol === "file:") {
+    throw new Error(
+      "In browsers, wasmUrl cannot be a file:// URL. " +
+        "Serve the .wasm over http(s) or pass a relative/absolute web URL instead.",
+    );
+  }
+  if (protocol && protocol !== "http:" && protocol !== "https:") {
+    throw new Error(
+      `Unsupported wasmUrl protocol: ${protocol}. ` +
+        "In browsers, wasmUrl must be an http(s) URL (or a relative/absolute path).",
+    );
+  }
 
   let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
   try {
@@ -83,9 +111,6 @@ export async function createWasmBackend(
     // WASM-only
     ...fsApi,
   };
-
-  // Internal testing hook (not part of the public backend contract).
-  (backend as SpiceBackendWasm & { __ktotalAll(): number }).__ktotalAll = () => backend.ktotal("ALL");
 
   return backend;
 }
