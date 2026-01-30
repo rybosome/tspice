@@ -17,13 +17,15 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
 
     const kernelPath = "/kernels/minimal.tm";
 
-    const withTesting = backend as typeof backend & { __ktotalAll(): number };
+    // NOTE: SPICE supports the special kernel kind "ALL", but our public backend
+    // contract intentionally does not expose it.
+    const ktotalAll = () => backend.ktotal("ALL" as any);
 
-    const before = withTesting.__ktotalAll();
+    const before = ktotalAll();
     backend.furnsh({ path: kernelPath, bytes });
-    expect(withTesting.__ktotalAll()).toBe(before + 1);
+    expect(ktotalAll()).toBe(before + 1);
 
     backend.unload(kernelPath);
-    expect(withTesting.__ktotalAll()).toBe(before);
+    expect(ktotalAll()).toBe(before);
   });
 });

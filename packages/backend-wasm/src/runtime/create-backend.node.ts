@@ -12,9 +12,8 @@ import { createTimeApi, getToolkitVersion } from "../domains/time.js";
 
 import { createWasmFs } from "./fs.js";
 
-export type CreateWasmBackendOptions = {
-  wasmUrl?: string | URL;
-};
+export type { CreateWasmBackendOptions } from "./create-backend-options.js";
+import type { CreateWasmBackendOptions } from "./create-backend-options.js";
 
 export const WASM_JS_FILENAME = "tspice_backend_wasm.node.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
@@ -97,9 +96,6 @@ export async function createWasmBackend(
     // WASM-only
     ...fsApi,
   };
-
-  // Internal testing hook (not part of the public backend contract).
-  (backend as SpiceBackendWasm & { __ktotalAll(): number }).__ktotalAll = () => backend.ktotal("ALL");
 
   return backend;
 }

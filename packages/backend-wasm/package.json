@@ -10,6 +10,7 @@
     ".": {
       "types": "./dist/index.d.ts",
       "browser": "./dist/index.web.js",
+      "import": "./dist/index.node.js",
       "node": "./dist/index.node.js",
       "default": "./dist/index.web.js"
     }

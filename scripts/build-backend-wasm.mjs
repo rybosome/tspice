@@ -242,7 +242,9 @@ function ensureGeneratedHeader(jsPath) {
 
 // Emscripten still emits Node-only glue that assumes CommonJS globals
 // (`__dirname`, `require`). Inject them so the generated output works as ESM.
+const nodeEsmPreambleSentinel = "// tspice-backend-wasm:node-esm-preamble";
 const nodeEsmPreamble = [
+  nodeEsmPreambleSentinel,
   'import { createRequire } from "node:module";',
   'import { dirname } from "node:path";',
   'import { fileURLToPath } from "node:url";',
@@ -257,7 +259,7 @@ function ensureNodeEsmPreamble(jsPath) {
   if (!jsContents.startsWith(generatedHeader)) {
     throw new Error(`Expected ${jsPath} to start with generated header`);
   }
-  if (jsContents.includes(nodeEsmPreamble)) {
+  if (jsContents.includes(nodeEsmPreambleSentinel)) {
     return;
   }
   fs.writeFileSync(jsPath, `${generatedHeader}${nodeEsmPreamble}${jsContents.slice(generatedHeader.length)}`);
