@@ -9,7 +9,7 @@ body:
       value: |
         Thanks for taking the time to report a bug.
 
-        Please read [CONTRIBUTING.md](https://github.com/rybosome/tspice/blob/main/CONTRIBUTING.md) before filing. This project is maintained on a best-effort basis.
+        Please read [CONTRIBUTING.md](https://github.com/rybosome/tspice/blob/HEAD/CONTRIBUTING.md) before filing. This project is maintained on a best-effort basis.
 
   - type: checkboxes
     id: preflight
@@ -18,7 +18,7 @@ body:
       options:
         - label: I searched existing issues to avoid duplicates.
           required: true
-        - label: I read `CONTRIBUTING.md` and included repro + environment details.
+        - label: I read [CONTRIBUTING.md](https://github.com/rybosome/tspice/blob/HEAD/CONTRIBUTING.md) and included repro + environment details.
           required: true
 
   - type: textarea

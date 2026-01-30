@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Contribution expectations
-    url: https://github.com/rybosome/tspice/blob/main/CONTRIBUTING.md
+    url: https://github.com/rybosome/tspice/blob/HEAD/CONTRIBUTING.md
     about: Please read before opening issues or PRs.
   - name: Project documentation
-    url: https://github.com/rybosome/tspice/tree/main/docs
+    url: https://github.com/rybosome/tspice/tree/HEAD/docs
     about: Background docs (including CSPICE distribution policy).
