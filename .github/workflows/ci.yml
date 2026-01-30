@@ -122,6 +122,12 @@ jobs:
           exit 0
         fi
 
+        # `pnpm run check:native` stages the native addon early in the script,
+        # but later build/test steps may clean the workspace. Re-stage the
+        # platform-specific native addon right before packing so we verify the
+        # tarball includes `tspice_backend_node.node`.
+        pnpm run stage:native-platform
+
         PKG_DIR="packages/$TARGET_PKG"
         if [ ! -f "$PKG_DIR/tspice_backend_node.node" ]; then
           echo "[native-pack-smoke] Missing staged native addon at $PKG_DIR/tspice_backend_node.node" >&2
