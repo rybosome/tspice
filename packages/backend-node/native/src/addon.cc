@@ -18,26 +18,18 @@
 static_assert(sizeof(TSPICE_CSPICE_STAMP) > 0, "TSPICE_CSPICE_STAMP must be non-empty");
 
 static Napi::Object Init(Napi::Env env, Napi::Object exports) {
-  tspice_backend_node::RegisterKernels(env, exports);
-  if (env.IsExceptionPending()) return exports;
+  auto registerDomain = [&](void (*fn)(Napi::Env, Napi::Object)) -> bool {
+    fn(env, exports);
+    return !env.IsExceptionPending();
+  };
 
-  tspice_backend_node::RegisterTime(env, exports);
-  if (env.IsExceptionPending()) return exports;
-
-  tspice_backend_node::RegisterIdsNames(env, exports);
-  if (env.IsExceptionPending()) return exports;
-
-  tspice_backend_node::RegisterFrames(env, exports);
-  if (env.IsExceptionPending()) return exports;
-
-  tspice_backend_node::RegisterEphemeris(env, exports);
-  if (env.IsExceptionPending()) return exports;
-
-  tspice_backend_node::RegisterGeometry(env, exports);
-  if (env.IsExceptionPending()) return exports;
-
-  tspice_backend_node::RegisterCoordsVectors(env, exports);
-  if (env.IsExceptionPending()) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterKernels)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterTime)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterIdsNames)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterFrames)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterEphemeris)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterGeometry)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterCoordsVectors)) return exports;
 
   return exports;
 }
