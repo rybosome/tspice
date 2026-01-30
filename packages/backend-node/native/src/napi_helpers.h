@@ -41,6 +41,12 @@ inline bool SetExportChecked(
     const char* key,
     const Napi::Value& value,
     const char* context) {
+  // If a JavaScript exception is already pending, avoid throwing a new one.
+  // This lets callers preserve the original error context.
+  if (env.IsExceptionPending()) {
+    return false;
+  }
+
   if (key == nullptr || key[0] == '\0') {
     ThrowSpiceError(env, "Internal error: attempted to export with a null/empty key");
     return false;
@@ -52,6 +58,10 @@ inline bool SetExportChecked(
   bool has = false;
   const napi_status status = napi_has_named_property(env, exports, safeKey, &has);
   if (status != napi_ok) {
+    // Some N-API calls can fail when an exception is pending; preserve it.
+    if (env.IsExceptionPending()) {
+      return false;
+    }
     ThrowSpiceError(
         env,
         std::string("Internal error: failed while checking for existing export '") + safeKey +
