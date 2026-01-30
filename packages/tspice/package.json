@@ -1,7 +1,6 @@
 {
   "name": "@rybosome/tspice",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.3",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -13,8 +12,13 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:dist-publish": "node ./scripts/build-dist-publish.mjs",
