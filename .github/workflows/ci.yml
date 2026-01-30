@@ -30,6 +30,20 @@ jobs:
         pnpm -C apps/tspice-viewer exec playwright install --with-deps chromium
         pnpm -C apps/tspice-viewer e2e
 
+  verify-dist-publish:
+    name: Verify dist-publish tarball (ubuntu + node 22)
+    uses: ./.github/workflows/reusable-node-pnpm.yml
+    with:
+      runs_on: ubuntu-latest
+      node_version: '22'
+      command: |
+        set -euo pipefail
+
+        ./packages/tspice/scripts/ci-build-dist-publish-deps.sh
+
+        pnpm -C packages/tspice run build:dist-publish
+        pnpm -C packages/tspice run verify:dist-publish
+
   check-native:
     # Runs in parallel with `check` to surface native-only failures quickly.
     # Assumes GitHub-hosted runners (Ubuntu with apt-get, macOS with Homebrew).
@@ -95,4 +109,68 @@ jobs:
           fi
         fi
       enable_cspice_cache: true
-      command: pnpm run check:native
+      command: |
+        set -euo pipefail
+
+        pnpm run check:native
+
+        # Smoke-test packaging for the platform-native optionalDependency that
+        # was just staged/built on this runner.
+        TARGET_PKG=$(node -e 'const TARGETS={darwin:{arm64:"tspice-native-darwin-arm64",x64:"tspice-native-darwin-x64"},linux:{x64:"tspice-native-linux-x64-gnu"}};process.stdout.write(TARGETS[process.platform]?.[process.arch] ?? "");')
+        if [ -z "$TARGET_PKG" ]; then
+          echo "[native-pack-smoke] No supported platform package for runner; skipping."
+          exit 0
+        fi
+
+        # `pnpm run check:native` stages the native addon early in the script,
+        # but later build/test steps may clean the workspace. Re-stage the
+        # platform-specific native addon right before packing so we verify the
+        # tarball includes `tspice_backend_node.node`.
+        pnpm run stage:native-platform
+
+        PKG_DIR="packages/$TARGET_PKG"
+        TARGET_PKG_NAME=$(node -p "require('./$PKG_DIR/package.json').name")
+        if [ ! -f "$PKG_DIR/tspice_backend_node.node" ]; then
+          echo "[native-pack-smoke] Missing staged native addon at $PKG_DIR/tspice_backend_node.node" >&2
+          exit 1
+        fi
+
+        TARBALL=$(cd "$PKG_DIR" && npm pack --silent)
+
+        # Install the packed tarball into a clean project and ensure it can be
+        # required at runtime (catches packaging + install/runtime issues, not
+        # just missing files).
+        TARBALL_PATH="$GITHUB_WORKSPACE/$PKG_DIR/$TARBALL"
+        TMP_DIR=$(mktemp -d)
+        cleanup() {
+          rm -rf "$TMP_DIR"
+          rm -f "$TARBALL_PATH"
+        }
+        trap cleanup EXIT
+
+        cd "$TMP_DIR"
+        npm init -y >/dev/null
+        npm install "$TARBALL_PATH" >/dev/null
+        TARGET_PKG_NAME="$TARGET_PKG_NAME" node <<'NODE'
+        const pkgName = process.env.TARGET_PKG_NAME;
+        if (!pkgName) {
+          throw new Error("[native-pack-smoke] Missing TARGET_PKG_NAME env var");
+        }
+
+        const { bindingPath } = require(pkgName);
+        if (typeof bindingPath !== "string" || bindingPath.length === 0) {
+          throw new Error(`[native-pack-smoke] ${pkgName} did not export a non-empty bindingPath`);
+        }
+
+        const addon = require(bindingPath);
+        if (!addon || typeof addon.spiceVersion !== "function") {
+          throw new Error(`[native-pack-smoke] Native addon loaded from ${bindingPath} is missing spiceVersion()`);
+        }
+
+        const version = addon.spiceVersion();
+        if (typeof version !== "string" || version.trim().length === 0) {
+          throw new Error(`[native-pack-smoke] Expected addon.spiceVersion() to return a non-empty string, got: ${String(version)}`);
+        }
+
+        console.log(`[native-pack-smoke] CSPICE toolkit version: ${version}`);
+        NODE
