@@ -1,0 +1,73 @@
+name: Feature discussion
+description: Propose an idea and discuss scope/tradeoffs (no code yet).
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests must start as discussion, not code.
+
+        Please read [CONTRIBUTING.md](https://github.com/rybosome/tspice/blob/HEAD/CONTRIBUTING.md) before filing. PRs opened without prior alignment will be closed.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I read [CONTRIBUTING.md](https://github.com/rybosome/tspice/blob/HEAD/CONTRIBUTING.md).
+          required: true
+        - label: I understand this is a best-effort project and the request may be declined.
+          required: true
+        - label: I will not open a PR until there is explicit alignment from a maintainer.
+          required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What problem are you trying to solve? Who benefits?
+      placeholder: Describe the real-world workflow this would enable.
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this important / valuable?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach (high-level)
+      description: What’s your idea for solving it? Keep it conceptual.
+      placeholder: Describe the API shape / behavior you’re imagining.
+    validations:
+      required: false
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Be explicit about what is in scope vs out of scope.
+      placeholder: |
+        In scope:
+        - ...
+
+        Out of scope:
+        - ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: tradeoffs
+    attributes:
+      label: Tradeoffs / alternatives
+      description: What are the downsides or other options?
+      placeholder: Include any API clarity, cross-backend consistency, or maintenance concerns.
+    validations:
+      required: false
