@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { BodyRef, SpiceClient, EtSeconds, FrameId } from '../spice/SpiceClient.js'
 import { BODY_REGISTRY, type BodyRegistryEntry } from '../scene/BodyRegistry.js'
 import { getApproxOrbitalPeriodSec } from '../scene/orbits/orbitalPeriods.js'
+import { getNaifExtras, type NaifExtras } from '../data/naifExtras.js'
 
 interface SelectionInspectorProps {
   selectedBody: BodyRef
@@ -67,6 +68,70 @@ function formatOrbitalPeriod(seconds: number): string {
 /** Compute magnitude of a 3D vector. */
 function magnitude(v: readonly [number, number, number]): number {
   return Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+}
+
+const SUPERSCRIPT_MAP: Readonly<Record<string, string>> = {
+  '0': '⁰',
+  '1': '¹',
+  '2': '²',
+  '3': '³',
+  '4': '⁴',
+  '5': '⁵',
+  '6': '⁶',
+  '7': '⁷',
+  '8': '⁸',
+  '9': '⁹',
+  '-': '⁻',
+}
+
+function toSuperscript(n: number): string {
+  return String(n)
+    .split('')
+    .map((c) => SUPERSCRIPT_MAP[c] ?? c)
+    .join('')
+}
+
+function formatScientific(n: number, digits = 3): string {
+  const [mantissa, exponentRaw] = n.toExponential(digits).split('e')
+  const exponent = Number(exponentRaw)
+  return `${mantissa} × 10${toSuperscript(exponent)}`
+}
+
+function buildExtrasRows(extras: NaifExtras): Array<{ label: string; value: string }> {
+  const rows: Array<{ label: string; value: string }> = []
+
+  if (extras.classification) {
+    rows.push({ label: 'Classification', value: extras.classification })
+  }
+  if (extras.meanRadiusKm != null) {
+    rows.push({ label: 'Mean radius', value: formatRadius(extras.meanRadiusKm) })
+  }
+  if (extras.massKg != null) {
+    rows.push({ label: 'Mass', value: `${formatScientific(extras.massKg)} kg` })
+  }
+  if (extras.densityGcm3 != null) {
+    rows.push({ label: 'Density', value: `${extras.densityGcm3.toFixed(2)} g/cm³` })
+  }
+  if (extras.surfaceGravityMs2 != null) {
+    rows.push({ label: 'Gravity', value: `${extras.surfaceGravityMs2.toFixed(2)} m/s²` })
+  }
+  if (extras.escapeVelocityKms != null) {
+    rows.push({ label: 'Escape v', value: `${extras.escapeVelocityKms.toFixed(2)} km/s` })
+  }
+  if (extras.meanTemperatureK != null) {
+    rows.push({ label: 'Mean temp', value: `${extras.meanTemperatureK.toFixed(0)} K` })
+  }
+  if (extras.bondAlbedo != null) {
+    rows.push({ label: 'Bond albedo', value: extras.bondAlbedo.toFixed(3) })
+  }
+  if (extras.geometricAlbedo != null) {
+    rows.push({ label: 'Geom. albedo', value: extras.geometricAlbedo.toFixed(3) })
+  }
+  if (extras.atmosphereSummary) {
+    rows.push({ label: 'Atmosphere', value: extras.atmosphereSummary })
+  }
+
+  return rows
 }
 
 /** Look up body registry entry by BodyRef. */
@@ -170,6 +235,10 @@ export function SelectionInspector({
 
   const isFocused = String(selectedBody) === String(focusBody)
 
+  const naifId = registryEntry?.naifIds?.body
+  const extras = useMemo(() => getNaifExtras(naifId), [naifId])
+  const extrasRows = useMemo(() => (extras ? buildExtrasRows(extras) : []), [extras])
+
   return (
     <div className="selectionInspector">
       <div className="selectionInspectorHeader">
@@ -194,6 +263,19 @@ export function SelectionInspector({
               {formatBodyKind(registryEntry.kind)}
             </span>
           </div>
+        )}
+
+        {extrasRows.length > 0 && (
+          <>
+            <div className="selectionInspectorDivider" />
+            <div className="selectionInspectorSectionTitle">Extras</div>
+            {extrasRows.map(({ label, value }) => (
+              <div key={label} className="selectionInspectorRow">
+                <span className="selectionInspectorLabel">{label}:</span>
+                <span className="selectionInspectorValue">{value}</span>
+              </div>
+            ))}
+          </>
         )}
 
         {bodyInfo.distanceToFocusKm !== null && (
