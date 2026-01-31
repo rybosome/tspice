@@ -18,6 +18,7 @@ import { OrbitPaths } from './scene/orbits/OrbitPaths.js'
 import type { SceneModel } from './scene/SceneModel.js'
 import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
+import { computeViewerScrubRangeEt, validateViewerEtForLoadedKernels } from './time/viewerTimeBounds.js'
 import { LabelOverlay, type LabelBody, type LabelOverlayUpdateOptions } from './labels/LabelOverlay.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
@@ -1467,6 +1468,32 @@ export function SceneCanvas() {
         const { client: loadedSpiceClient, rawClient: rawSpiceClient, utcToEt } = await createSpiceClient({
           searchParams: search,
         })
+
+        // IMPORTANT: set the viewer's scrub range only after kernels load so
+        // `utcToEt` (SPICE `str2et`) is correct.
+        //
+        // Also: do this *before* applying URL `?utc=`/`?et=` overrides, because
+        // `timeStore.setEtSec` clamps to the current scrub range.
+        const scrubRange = computeViewerScrubRangeEt({
+          utcToEt,
+          validateEt: (et) => validateViewerEtForLoadedKernels({ spiceClient: rawSpiceClient, etSec: et }),
+        })
+
+        timeStore.setScrubRange(scrubRange.minEtSec, scrubRange.maxEtSec)
+
+        if (scrubRange.clampedToKernelCoverage) {
+          console.warn(
+            'Viewer scrub range was clamped to kernel coverage',
+            {
+              hardMinUtc: scrubRange.hardMinUtc,
+              hardMaxUtc: scrubRange.hardMaxUtc,
+              hardMinEtSec: scrubRange.hardMinEtSec,
+              hardMaxEtSec: scrubRange.hardMaxEtSec,
+              scrubMinEtSec: scrubRange.minEtSec,
+              scrubMaxEtSec: scrubRange.maxEtSec,
+            },
+          )
+        }
 
         // Allow the URL to specify UTC for quick testing, but keep the slider
         // driven by numeric ET.
