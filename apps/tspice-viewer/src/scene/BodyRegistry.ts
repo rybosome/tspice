@@ -188,13 +188,11 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       color: "#8ecae6",
       textureUrl: "textures/planets/uranus.png",
       rings: {
-        // Uranus' main rings are narrow and dark; we reuse the existing Saturn
-        // ring texture and tint it darker (no new assets).
-        // Radii are rough (in units of Uranus radii) but visually match the
-        // main ring region.
+        // Uranus' main rings are narrow and dark.
+        // Radii are rough (in units of Uranus radii) but visually match the main ring region.
         innerRadiusRatio: 1.55,
         outerRadiusRatio: 2.05,
-        textureUrl: "textures/planets/saturn-rings.png",
+        textureUrl: "textures/planets/uranus-rings.png",
         color: "#6b7280",
       },
       label: "Uranus",
