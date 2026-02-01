@@ -37,6 +37,10 @@ export function usePlaybackTicker(): void {
       return
     }
 
+    // If the playback rate changes while playing, reset the wallclock reference to
+    // avoid a large first delta due to effect restart.
+    lastTimeRef.current = null
+
     let frameId: number | null = null
 
     const tick = (now: number) => {
@@ -85,5 +89,5 @@ export function usePlaybackTicker(): void {
         cancelAnimationFrame(frameId)
       }
     }
-  }, [rate !== 0]) // Only re-run effect when rate transitions to/from zero
+  }, [rate])
 }

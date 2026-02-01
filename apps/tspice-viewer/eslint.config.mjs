@@ -58,8 +58,8 @@ export default [
       // Too noisy for copy-heavy UI.
       'react/no-unescaped-entities': 'off',
 
-      // Useful, but can be noisy in complex hooks; keep it opt-in for now.
-      'react-hooks/exhaustive-deps': 'off',
+      // Important correctness check for hooks.
+      'react-hooks/exhaustive-deps': 'error',
 
       '@typescript-eslint/no-unused-vars': [
         'error',

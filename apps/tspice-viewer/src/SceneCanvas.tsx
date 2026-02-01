@@ -121,6 +121,20 @@ export function SceneCanvas() {
   // inside the renderer effect.
   const kmToWorld = 1 / 1_000_000
 
+  // The renderer/bootstrap `useEffect` is mounted once, so capture the initial
+  // runtime config it needs without having to re-run on UI toggles.
+  const initRuntimeConfigRef = useRef({
+    search,
+    isE2e,
+    enableLogDepth,
+    starSeed,
+    initialUtc,
+    initialEt,
+    kmToWorld,
+    animatedSky,
+    twinkleEnabled,
+  })
+
   // Control pane collapsed state: starts collapsed on all screen sizes
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
@@ -420,6 +434,9 @@ export function SceneCanvas() {
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
+
+    const { search, isE2e, enableLogDepth, starSeed, animatedSky, twinkleEnabled, initialUtc, initialEt, kmToWorld } =
+      initRuntimeConfigRef.current
 
     let disposed = false
 

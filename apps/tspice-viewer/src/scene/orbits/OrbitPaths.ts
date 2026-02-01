@@ -67,6 +67,13 @@ function yieldToMainThread(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 0))
 }
 
+function setAlphaToCoverage(material: THREE.Material, enabled: boolean): void {
+  // `alphaToCoverage` is not present in all Three.js versions/materials.
+  // Guard to avoid relying on `any` casts.
+  if (!('alphaToCoverage' in material)) return
+  ;(material as THREE.Material & { alphaToCoverage: boolean }).alphaToCoverage = enabled
+}
+
 function computePointsPerOrbit(opts: {
   samplesPerOrbit: number
   maxTotalPoints: number
@@ -204,7 +211,7 @@ export class OrbitPaths {
       if (o.lastMaterialKey !== materialKey) {
         o.lastMaterialKey = materialKey
         o.material.linewidth = input.settings.lineWidthPx
-        ;(o.material as any).alphaToCoverage = Boolean(input.settings.antialias)
+        setAlphaToCoverage(o.material, Boolean(input.settings.antialias))
         o.material.needsUpdate = true
       }
 
