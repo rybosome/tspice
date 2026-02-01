@@ -13,6 +13,7 @@ import { createRingMesh } from './scene/RingMesh.js'
 import { createSelectionRing } from './scene/SelectionRing.js'
 import { createStarfield } from './scene/Starfield.js'
 import { createSkydome } from './scene/Skydome.js'
+import { createAsteroidBelt } from './scene/AsteroidBelt.js'
 import { rebasePositionKm } from './scene/precision.js'
 import { OrbitPaths } from './scene/orbits/OrbitPaths.js'
 import type { SceneModel } from './scene/SceneModel.js'
@@ -162,6 +163,7 @@ export function SceneCanvas() {
 
   const starSeedRef = useRef<number>(1337)
   const starfieldRef = useRef<ReturnType<typeof createStarfield> | null>(null)
+  const asteroidBeltRef = useRef<ReturnType<typeof createAsteroidBelt> | null>(null)
   const labelOverlayRef = useRef<LabelOverlay | null>(null)
   const latestLabelOverlayOptionsRef = useRef<LabelOverlayUpdateOptions | null>(null)
   const skydomeRef = useRef<ReturnType<typeof createSkydome> | null>(null)
@@ -191,6 +193,8 @@ export function SceneCanvas() {
   const ORBIT_MIN_POINTS_PER_ORBIT = 32
   // Top-level orbit paths toggle (non-advanced, default off)
   const [orbitPathsEnabled, setOrbitPathsEnabled] = useState(false)
+  // Asteroid belt visual effect (non-advanced, default on)
+  const [asteroidBeltEnabled, setAsteroidBeltEnabled] = useState(true)
   // Sun visual scale multiplier: 1 = true size, >1 = enlarged for visibility.
   // This is ephemeral (not persisted) and only affects the Sun's rendered radius.
   const [sunScaleMultiplier, setSunScaleMultiplier] = useState(1)
@@ -453,6 +457,7 @@ export function SceneCanvas() {
         orbitSamplesPerOrbit: number
         orbitMaxTotalPoints: number
         orbitPathsEnabled: boolean
+        asteroidBeltEnabled: boolean
         labelsEnabled: boolean
         labelOcclusionEnabled: boolean
       }) => void)
@@ -474,6 +479,7 @@ export function SceneCanvas() {
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
     orbitPathsEnabled,
+    asteroidBeltEnabled,
     labelsEnabled,
     labelOcclusionEnabled,
   })
@@ -490,6 +496,7 @@ export function SceneCanvas() {
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
     orbitPathsEnabled,
+    asteroidBeltEnabled,
     labelsEnabled,
     labelOcclusionEnabled,
   }
@@ -519,6 +526,7 @@ export function SceneCanvas() {
       orbitSamplesPerOrbit,
       orbitMaxTotalPoints,
       orbitPathsEnabled,
+      asteroidBeltEnabled,
       labelsEnabled,
       labelOcclusionEnabled,
     })
@@ -533,6 +541,7 @@ export function SceneCanvas() {
     orbitSamplesPerOrbit,
     orbitMaxTotalPoints,
     orbitPathsEnabled,
+    asteroidBeltEnabled,
     labelsEnabled,
     labelOcclusionEnabled,
   ])
@@ -658,6 +667,14 @@ export function SceneCanvas() {
     const starfield = createStarfield({ seed: starSeed, twinkle: twinkleEnabled })
     starfieldRef.current = starfield
     scene.add(starfield.object)
+
+    const asteroidBelt = createAsteroidBelt({
+      // Derive from the global seed but keep it visually independent of the starfield.
+      seed: starSeed ^ 0x4a7b1d3f,
+      kmToWorld,
+    })
+    asteroidBeltRef.current = asteroidBelt
+    scene.add(asteroidBelt.object)
 
     const selectionRing = !isE2e ? createSelectionRing() : undefined
     if (selectionRing) {
@@ -1638,6 +1655,7 @@ export function SceneCanvas() {
           orbitSamplesPerOrbit: number
           orbitMaxTotalPoints: number
           orbitPathsEnabled: boolean
+          asteroidBeltEnabled: boolean
           labelsEnabled: boolean
           labelOcclusionEnabled: boolean
         }) => {
@@ -1852,6 +1870,20 @@ export function SceneCanvas() {
             }
           }
 
+          const asteroidBelt = asteroidBeltRef.current
+          if (asteroidBelt) {
+            asteroidBelt.object.visible = next.asteroidBeltEnabled
+            if (next.asteroidBeltEnabled) {
+              asteroidBelt.update({
+                spiceClient: loadedSpiceClient,
+                frame: sceneModel.frame,
+                et: next.etSec,
+                sceneObserver: sceneModel.observer,
+                focusPosKm,
+              })
+            }
+          }
+
           if (j2000Axes) {
             j2000Axes.object.visible = next.showJ2000Axes
             if (next.showJ2000Axes) {
@@ -1929,6 +1961,12 @@ export function SceneCanvas() {
         scene.remove(starfieldRef.current.object)
         starfieldRef.current.dispose()
         starfieldRef.current = null
+      }
+
+      if (asteroidBeltRef.current) {
+        scene.remove(asteroidBeltRef.current.object)
+        asteroidBeltRef.current.dispose()
+        asteroidBeltRef.current = null
       }
 
       if (skydomeRef.current) {
@@ -2136,6 +2174,21 @@ export function SceneCanvas() {
                     onClick={() => setOrbitPathsEnabled((v) => !v)}
                   >
                     Orbits
+                  </span>
+                </label>
+
+                <label className="asciiCheckbox">
+                  <span
+                    className="asciiCheckboxBox"
+                    onClick={() => setAsteroidBeltEnabled((v) => !v)}
+                  >
+                    [{asteroidBeltEnabled ? '✓' : '\u00A0'}]
+                  </span>
+                  <span
+                    className="asciiCheckboxLabel"
+                    onClick={() => setAsteroidBeltEnabled((v) => !v)}
+                  >
+                    Asteroids
                   </span>
                 </label>
 
