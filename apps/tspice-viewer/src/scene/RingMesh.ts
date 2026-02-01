@@ -28,6 +28,32 @@ export function createRingMesh(options: CreateRingMeshOptions): {
 } {
   const geometry = new THREE.RingGeometry(options.innerRadius, options.outerRadius, options.segments ?? 192)
 
+  // `THREE.RingGeometry` ships with planar UVs (x/y mapped into [0, 1]).
+  // Our ring textures are authored as a radial strip (U = radius) that should wrap
+  // around the ring (V = angle), so we override UVs to be polar.
+  //
+  // u: radial fraction (inner -> outer)
+  // v: angular fraction (atan2)
+  const position = geometry.attributes.position
+  const uvs = new Float32Array(position.count * 2)
+  const radiusRange = options.outerRadius - options.innerRadius
+  for (let i = 0; i < position.count; i++) {
+    const x = position.getX(i)
+    const y = position.getY(i)
+    const r = Math.sqrt(x * x + y * y)
+
+    // Clamp for numeric stability (and to handle any future geometry changes).
+    const u = radiusRange === 0 ? 0 : THREE.MathUtils.clamp((r - options.innerRadius) / radiusRange, 0, 1)
+
+    // Map angle to [0, 1].
+    const v = (Math.atan2(y, x) + Math.PI) / (2 * Math.PI)
+
+    uvs[i * 2 + 0] = u
+    uvs[i * 2 + 1] = v
+  }
+
+  geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
+
   let disposed = false
 
   let map: THREE.Texture | undefined
@@ -41,8 +67,9 @@ export function createRingMesh(options: CreateRingMeshOptions): {
           }
 
           tex.colorSpace = THREE.SRGBColorSpace
-          tex.wrapS = THREE.RepeatWrapping
-          tex.wrapT = THREE.ClampToEdgeWrapping
+          // U (radius) should clamp; V (angle) should repeat.
+          tex.wrapS = THREE.ClampToEdgeWrapping
+          tex.wrapT = THREE.RepeatWrapping
           tex.needsUpdate = true
           map = tex
         })
