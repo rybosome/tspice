@@ -194,6 +194,10 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
         outerRadiusRatio: 2.05,
         textureUrl: "textures/planets/uranus-rings.png",
         color: "#6b7280",
+        // The Uranus rings texture only contains strong alpha for a narrow band
+        // near the inner edge; clamp alpha so the full annulus reads as a
+        // faint, thicker ring system.
+        baseOpacity: 0.12,
       },
       label: "Uranus",
     },

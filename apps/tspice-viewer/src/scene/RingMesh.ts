@@ -19,6 +19,16 @@ export type CreateRingMeshOptions = {
 
   /** Material tint color (useful for grayscale ring textures). */
   color?: THREE.ColorRepresentation
+
+  /**
+   * Baseline opacity applied across the entire ring (0..1).
+   *
+   * Some ring textures (e.g. Uranus) only provide alpha for a narrow band near
+   * the inner radius, which can make the ring read like a single ultra-thin
+   * strip. `baseOpacity` clamps the final alpha so the annulus remains faintly
+   * visible without affecting ring textures that rely on alpha for gaps.
+   */
+  baseOpacity?: number
 }
 
 export function createRingMesh(options: CreateRingMeshOptions): {
@@ -87,6 +97,26 @@ export function createRingMesh(options: CreateRingMeshOptions): {
     metalness: 0,
     map,
   })
+
+  const baseOpacity = THREE.MathUtils.clamp(options.baseOpacity ?? 0, 0, 1)
+  if (baseOpacity > 0) {
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.baseOpacity = { value: baseOpacity }
+
+      // NOTE: `output_fragment` was deprecated in r154; newer builds use
+      // `opaque_fragment`. Patch whichever include is present.
+      const outputInclude = shader.fragmentShader.includes('#include <opaque_fragment>')
+        ? '#include <opaque_fragment>'
+        : '#include <output_fragment>'
+
+      shader.fragmentShader = shader.fragmentShader
+        .replace('#include <common>', '#include <common>\nuniform float baseOpacity;')
+        .replace(outputInclude, `diffuseColor.a = max(diffuseColor.a, baseOpacity);\n${outputInclude}`)
+    }
+
+    // Ensure shader program cache differs by base opacity.
+    material.customProgramCacheKey = () => `ring-baseOpacity-${baseOpacity}`
+  }
 
   const mesh = new THREE.Mesh(geometry, material)
 

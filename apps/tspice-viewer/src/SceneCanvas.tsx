@@ -1534,6 +1534,7 @@ export function SceneCanvas() {
                 outerRadius: rings.outerRadiusRatio,
                 textureUrl: rings.textureUrl,
                 color: rings.color,
+                baseOpacity: rings.baseOpacity,
               })
             : undefined
 

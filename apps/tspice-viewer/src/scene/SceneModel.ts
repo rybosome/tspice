@@ -11,6 +11,9 @@ export interface SceneRingsStyle {
   textureUrl: string
   /** Optional material tint color. */
   color?: string
+
+  /** Optional baseline opacity applied across the whole annulus (0..1). */
+  baseOpacity?: number
 }
 
 /**
