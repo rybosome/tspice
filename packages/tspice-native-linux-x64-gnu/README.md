@@ -25,8 +25,8 @@ This package exists so package managers can install the correct prebuilt native 
 
 Relevant code:
 
-- `https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/runtime/addon.ts`
-- `https://github.com/rybosome/tspice/blob/main/packages/tspice/package.json` (`optionalDependencies`)
+- [`packages/backend-node/src/runtime/addon.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/runtime/addon.ts)
+- [`packages/tspice/package.json`](https://github.com/rybosome/tspice/blob/main/packages/tspice/package.json) (see `optionalDependencies`)
 
 ## Installation
 
