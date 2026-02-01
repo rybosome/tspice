@@ -82,11 +82,11 @@ When you add a new backend kind, you generally update:
 ## Development
 
 ```bash
-pnpm -C packages/backend-contract build
-pnpm -C packages/backend-contract typecheck
-pnpm -C packages/backend-contract test
+pnpm --filter @rybosome/tspice-backend-contract run build
+pnpm --filter @rybosome/tspice-backend-contract run typecheck
+pnpm --filter @rybosome/tspice-backend-contract run test
 ```
 
-## Versioning / stability notes
+## Versioning
 
-This is an A0 scaffold (`0.0.0`) and the contract may change as real backend functionality is added.
+This contract is under active development and may change as backend functionality is added.

@@ -70,20 +70,20 @@ Building the native addon requires a working `node-gyp` toolchain.
 This will fetch pinned CSPICE into the repo-local cache automatically (unless `TSPICE_CSPICE_DIR` is set).
 
 ```bash
-pnpm -C packages/backend-node build:native
+pnpm --filter @rybosome/tspice-backend-node run build:native
 ```
 
 ### Building everything in this package (native + TS)
 
 ```bash
-pnpm -C packages/backend-node build
+pnpm --filter @rybosome/tspice-backend-node run build
 ```
 
 ### Typecheck + tests
 
 ```bash
-pnpm -C packages/backend-node typecheck
-pnpm -C packages/backend-node test
+pnpm --filter @rybosome/tspice-backend-node run typecheck
+pnpm --filter @rybosome/tspice-backend-node run test
 ```
 
 ## Configuration
@@ -133,7 +133,7 @@ Note: relative paths like `./native/build/Debug/tspice_backend_node.node` are re
 You likely haven’t built the addon yet:
 
 ```bash
-pnpm -C packages/backend-node build:native
+pnpm --filter @rybosome/tspice-backend-node run build:native
 ```
 
 ### “Failed to load tspice native backend ...”
@@ -147,7 +147,7 @@ Rebuilding from a clean tree is often the quickest sanity check:
 
 ```bash
 rm -rf packages/backend-node/native/build
-pnpm -C packages/backend-node build:native
+pnpm --filter @rybosome/tspice-backend-node run build:native
 ```
 
 ### Common `node-gyp` failures
@@ -163,6 +163,6 @@ pnpm -C packages/backend-node build:native
 
 Note: the addon configures CSPICE error handling globally (e.g. sets the error action to `RETURN` so errors can be surfaced as JS exceptions).
 
-## Versioning / stability notes
+## Versioning
 
-This is an A0 scaffold (`0.0.0`). Expect changes to the addon build, layout, and exported surface as real bindings are implemented.
+This backend is under active development. Expect changes to the addon build, layout, and exported surface as real bindings are implemented.

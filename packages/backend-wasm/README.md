@@ -46,9 +46,9 @@ The JS glue (`tspice_backend_wasm.web.js` in browsers, `tspice_backend_wasm.node
 ## Development
 
 ```bash
-pnpm -C packages/backend-wasm build
-pnpm -C packages/backend-wasm typecheck
-pnpm -C packages/backend-wasm test
+pnpm --filter @rybosome/tspice-backend-wasm run build
+pnpm --filter @rybosome/tspice-backend-wasm run typecheck
+pnpm --filter @rybosome/tspice-backend-wasm run test
 ```
 
 ## Troubleshooting / FAQ
@@ -61,6 +61,6 @@ To regenerate the checked-in artifact locally, run `node scripts/build-backend-w
 
 Note: this script stages CSPICE sources under `.cache/` (including `.cache/wasm-build/`). CSPICE sources/archives must never be committed.
 
-## Versioning / stability notes
+## Versioning
 
-This is an A0 scaffold (`0.0.0`) and the implementation is expected to change substantially.
+This backend is under active development and the implementation is expected to change substantially.

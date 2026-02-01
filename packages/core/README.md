@@ -81,11 +81,11 @@ When you add a new member to `Kind`, TypeScript will report an error at the `ass
 ## Development
 
 ```bash
-pnpm -C packages/core build
-pnpm -C packages/core typecheck
-pnpm -C packages/core test
+pnpm --filter @rybosome/tspice-core run build
+pnpm --filter @rybosome/tspice-core run typecheck
+pnpm --filter @rybosome/tspice-core run test
 ```
 
-## Versioning / stability notes
+## Versioning
 
-This is an A0 scaffold (`0.0.0`) and these helpers may move/change as shared patterns settle.
+This package is under active development and may change as shared patterns settle.
