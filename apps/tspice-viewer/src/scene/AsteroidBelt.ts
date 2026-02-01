@@ -2,7 +2,6 @@ import * as THREE from 'three'
 
 import { J2000_FRAME, type BodyRef, type EtSeconds, type FrameId, type SpiceClient, type Vec3Km } from '../spice/SpiceClient.js'
 import { mat3ToMatrix4 } from './FrameAxes.js'
-import { rebasePositionKm } from './precision.js'
 
 const AU_KM = 149_597_870.7
 
@@ -68,30 +67,76 @@ function clamp(x: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, x))
 }
 
-function makeAsteroidSpriteTexture(): THREE.Texture {
+let sharedAsteroidSpriteTexture: THREE.Texture | null = null
+
+function createAsteroidSpriteTexture(): THREE.Texture {
   // Deterministic (no RNG): keeps e2e snapshots stable.
-  const canvas = document.createElement('canvas')
-  canvas.width = 16
-  canvas.height = 16
+  // Prefer CanvasTexture when DOM is available, but fall back to a DataTexture so
+  // this module remains importable in non-DOM environments (tests, SSR).
+  const size = 16
+  if (typeof document !== 'undefined') {
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
 
-  const ctx = canvas.getContext('2d')
-  if (!ctx) throw new Error('Failed to create 2D canvas context for asteroid sprite')
+    const ctx = canvas.getContext('2d')
+    if (!ctx) throw new Error('Failed to create 2D canvas context for asteroid sprite')
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-  const g = ctx.createRadialGradient(8, 8, 0, 8, 8, 8)
-  g.addColorStop(0, 'rgba(210,210,210,1)')
-  g.addColorStop(0.35, 'rgba(200,200,200,0.9)')
-  g.addColorStop(0.75, 'rgba(160,160,160,0.25)')
-  g.addColorStop(1, 'rgba(150,150,150,0)')
+    const r = size / 2
+    const g = ctx.createRadialGradient(r, r, 0, r, r, r)
+    g.addColorStop(0, 'rgba(210,210,210,1)')
+    g.addColorStop(0.35, 'rgba(200,200,200,0.9)')
+    g.addColorStop(0.75, 'rgba(160,160,160,0.25)')
+    g.addColorStop(1, 'rgba(150,150,150,0)')
 
-  ctx.fillStyle = g
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = g
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-  const texture = new THREE.CanvasTexture(canvas)
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.colorSpace = THREE.SRGBColorSpace
+    texture.needsUpdate = true
+    texture.generateMipmaps = false
+    texture.minFilter = THREE.LinearFilter
+    texture.magFilter = THREE.LinearFilter
+    return texture
+  }
+
+  const data = new Uint8Array(size * size * 4)
+  const cx = (size - 1) / 2
+  const cy = (size - 1) / 2
+  const rMax = size / 2
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const dx = x - cx
+      const dy = y - cy
+      const t = Math.min(1, Math.sqrt(dx * dx + dy * dy) / rMax)
+
+      // A simple smoothstep-ish alpha falloff.
+      const alpha01 = Math.pow(1 - t, 2.5)
+
+      const i = (y * size + x) * 4
+      data[i + 0] = 200
+      data[i + 1] = 200
+      data[i + 2] = 200
+      data[i + 3] = Math.round(alpha01 * 255)
+    }
+  }
+
+  const texture = new THREE.DataTexture(data, size, size)
   texture.colorSpace = THREE.SRGBColorSpace
   texture.needsUpdate = true
+  texture.generateMipmaps = false
+  texture.minFilter = THREE.LinearFilter
+  texture.magFilter = THREE.LinearFilter
   return texture
+}
+
+function getAsteroidSpriteTexture(): THREE.Texture {
+  sharedAsteroidSpriteTexture ??= createAsteroidSpriteTexture()
+  return sharedAsteroidSpriteTexture
 }
 
 function sampleRadiusAu(rng: () => number, innerAu: number, outerAu: number): number {
@@ -108,14 +153,6 @@ function sampleRadiusAu(rng: () => number, innerAu: number, outerAu: number): nu
   const bump = 0.18 * sampleGaussian(rng)
   const rBumped = clamp(rBase + bump, r1, r2)
   return rBumped
-}
-
-function computeEclipticToJ2000RotationMatrix4(): THREE.Matrix4 {
-  // If ECLIPJ2000 isn't available, we approximate it via a fixed obliquity.
-  // Mean obliquity at J2000 ~ 23.439281°.
-  // This matrix rotates vectors from ECLIPJ2000 -> J2000.
-  const epsRad = THREE.MathUtils.degToRad(23.439281)
-  return new THREE.Matrix4().makeRotationX(epsRad)
 }
 
 export function createAsteroidBelt(options: CreateAsteroidBeltOptions): AsteroidBeltHandle {
@@ -165,7 +202,7 @@ export function createAsteroidBelt(options: CreateAsteroidBeltOptions): Asteroid
   const outerWorld = outerRadiusAu * AU_KM * options.kmToWorld
   geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), outerWorld * 1.15)
 
-  const sprite = makeAsteroidSpriteTexture()
+  const sprite = getAsteroidSpriteTexture()
 
   const material = new THREE.PointsMaterial({
     size: sizePx,
@@ -183,11 +220,27 @@ export function createAsteroidBelt(options: CreateAsteroidBeltOptions): Asteroid
   points.name = 'AsteroidBelt'
   points.raycast = () => {}
 
-  // Cache state to avoid spamming warnings / unnecessary work.
-  let warnedEclipMissing = false
-  const eclToJ2k = computeEclipticToJ2000RotationMatrix4()
+  const kmToWorld = options.kmToWorld
+
+  // Cache matrices to minimize allocations and reduce SPICE calls.
   const rotMat = new THREE.Matrix4()
   const j2fMat = new THREE.Matrix4()
+  let eclToJ2000Mat: THREE.Matrix4 | null = null
+
+  let lastJ2000ToFrame: FrameId | null = null
+  let lastJ2000ToFrameEt: EtSeconds | null = null
+
+  const getEclToJ2000 = (spiceClient: SpiceClient, et: EtSeconds): THREE.Matrix4 => {
+    if (!eclToJ2000Mat) {
+      const eclToJ2k = spiceClient.getFrameTransform({
+        from: 'ECLIPJ2000',
+        to: J2000_FRAME,
+        et,
+      })
+      eclToJ2000Mat = new THREE.Matrix4().copy(mat3ToMatrix4(eclToJ2k))
+    }
+    return eclToJ2000Mat
+  }
 
   const update: AsteroidBeltHandle['update'] = (input) => {
     // Place the belt at the Sun's position in the current rebased scene.
@@ -197,37 +250,34 @@ export function createAsteroidBelt(options: CreateAsteroidBeltOptions): Asteroid
       frame: input.frame,
       et: input.et,
     })
-    const sunPosKmRebased = rebasePositionKm(sunState.positionKm, input.focusPosKm)
-
+    const sunPosKm = sunState.positionKm
+    const focusPosKm = input.focusPosKm
     points.position.set(
-      sunPosKmRebased[0] * options.kmToWorld,
-      sunPosKmRebased[1] * options.kmToWorld,
-      sunPosKmRebased[2] * options.kmToWorld,
+      (sunPosKm[0] - focusPosKm[0]) * kmToWorld,
+      (sunPosKm[1] - focusPosKm[1]) * kmToWorld,
+      (sunPosKm[2] - focusPosKm[2]) * kmToWorld,
     )
 
     // Orient the belt into the scene frame.
-    // Preferred: use a SPICE transform from ECLIPJ2000 -> scene frame.
-    // Fallback: approximate ECLIPJ2000 via fixed obliquity relative to J2000.
-    try {
-      const eclToFrame = input.spiceClient.getFrameTransform({
-        from: 'ECLIPJ2000',
-        to: input.frame,
-        et: input.et,
-      })
-      rotMat.copy(mat3ToMatrix4(eclToFrame))
-    } catch {
-      if (!warnedEclipMissing) {
-        warnedEclipMissing = true
-        console.warn('[tspice-viewer] ECLIPJ2000 frame unavailable; using fixed obliquity fallback')
+    // We treat the belt's intrinsic coordinates as ecliptic (ECLIPJ2000).
+    // Cache ECLIPJ2000 -> J2000 (time-invariant), and per-update compute only
+    // J2000 -> frame when needed.
+    const eclToJ2000 = getEclToJ2000(input.spiceClient, input.et)
+    if (input.frame === J2000_FRAME) {
+      rotMat.copy(eclToJ2000)
+    } else {
+      if (lastJ2000ToFrame !== input.frame || lastJ2000ToFrameEt !== input.et) {
+        const j2000ToFrame = input.spiceClient.getFrameTransform({
+          from: J2000_FRAME,
+          to: input.frame,
+          et: input.et,
+        })
+        j2fMat.copy(mat3ToMatrix4(j2000ToFrame))
+        lastJ2000ToFrame = input.frame
+        lastJ2000ToFrameEt = input.et
       }
 
-      const j2000ToFrame = input.spiceClient.getFrameTransform({
-        from: J2000_FRAME,
-        to: input.frame,
-        et: input.et,
-      })
-      j2fMat.copy(mat3ToMatrix4(j2000ToFrame))
-      rotMat.copy(j2fMat).multiply(eclToJ2k)
+      rotMat.copy(j2fMat).multiply(eclToJ2000)
     }
 
     points.setRotationFromMatrix(rotMat)
@@ -236,7 +286,6 @@ export function createAsteroidBelt(options: CreateAsteroidBeltOptions): Asteroid
   const dispose = () => {
     geometry.dispose()
     material.dispose()
-    sprite.dispose()
   }
 
   return { object: points, update, dispose }
