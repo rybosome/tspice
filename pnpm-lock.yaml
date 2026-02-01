@@ -15,8 +15,8 @@ importers:
   apps/tspice-viewer:
     dependencies:
       '@rybosome/tspice':
-        specifier: workspace:*
-        version: link:../../packages/tspice
+        specifier: 0.0.3
+        version: 0.0.3
       react:
         specifier: ^19.2.0
         version: 19.2.3
@@ -732,6 +732,24 @@ packages:
     resolution: {integrity: sha512-SPEpaL6DX4rmcXtnhdrQYgzQ5W2uW3SCJch88lB2zImhJRhIIK44fkUrgIV/Q8yUNfw5oyZ5vkeQsZLhCb06lw==}
     cpu: [x64]
     os: [win32]
+
+  '@rybosome/tspice-native-darwin-arm64@0.0.3':
+    resolution: {integrity: sha512-PrdEEeD+GpSau8kvAUpEv+QV5c6bH2RECI6A+UBaIvBPYsREXAuDdsFrSFmstLn/Ge5l2bMt9ZvpUA8zUgjtOw==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@rybosome/tspice-native-darwin-x64@0.0.3':
+    resolution: {integrity: sha512-z2HutizQnNAeYZwCgrfFyUaOwDAnpXS1aUU3B4Mj09/Ge/pZvWsxAaDA2HK1ijbWvHBJS7FxSoXSsk+JeFWhCg==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@rybosome/tspice-native-linux-x64-gnu@0.0.3':
+    resolution: {integrity: sha512-3ETBtxSLjL+tPDcErbhyoR08Y1q09OYE0dFXc2TMBWCTVqgcvKqzh9s8JXC9yrLSXwm1kYvmWRCkCbS+JOjcOg==}
+    cpu: [x64]
+    os: [linux]
+
+  '@rybosome/tspice@0.0.3':
+    resolution: {integrity: sha512-RmPNlIoviern74M4ivsXDCKgSVROzqnpezjrhbxMLce1gW1iwhRdz1pnWb7ADa6fl6jcovvzx2hh0z5Ey9E+pA==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -1969,6 +1987,21 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.55.1':
     optional: true
+
+  '@rybosome/tspice-native-darwin-arm64@0.0.3':
+    optional: true
+
+  '@rybosome/tspice-native-darwin-x64@0.0.3':
+    optional: true
+
+  '@rybosome/tspice-native-linux-x64-gnu@0.0.3':
+    optional: true
+
+  '@rybosome/tspice@0.0.3':
+    optionalDependencies:
+      '@rybosome/tspice-native-darwin-arm64': 0.0.3
+      '@rybosome/tspice-native-darwin-x64': 0.0.3
+      '@rybosome/tspice-native-linux-x64-gnu': 0.0.3
 
   '@types/babel__core@7.20.5':
     dependencies:
