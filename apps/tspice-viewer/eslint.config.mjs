@@ -13,9 +13,9 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
-  // Keep linting focused on correctness over strict typing in this app.
+  // E2E tests run in a mixed Node/browser context; allow `any` where needed.
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['e2e/**/*.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
     },

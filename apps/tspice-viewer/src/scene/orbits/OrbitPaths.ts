@@ -70,8 +70,16 @@ function yieldToMainThread(): Promise<void> {
 function setAlphaToCoverage(material: THREE.Material, enabled: boolean): void {
   // `alphaToCoverage` is not present in all Three.js versions/materials.
   // Guard to avoid relying on `any` casts.
-  if (!('alphaToCoverage' in material)) return
-  ;(material as THREE.Material & { alphaToCoverage: boolean }).alphaToCoverage = enabled
+  const m = material as unknown as Record<string, unknown>
+  if (!('alphaToCoverage' in m)) return
+
+  try {
+    const didSet = Reflect.set(m, 'alphaToCoverage', enabled)
+    if (!didSet) return
+    if (typeof m.alphaToCoverage !== 'boolean') return
+  } catch {
+    // If this is non-writable in a given Three.js version/material, fail silently.
+  }
 }
 
 function computePointsPerOrbit(opts: {
