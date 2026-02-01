@@ -136,6 +136,7 @@ export function SceneCanvas() {
   const [panModeEnabled, setPanModeEnabled] = useState(false)
   // New: Look mode toggle for touch - when enabled, 1-finger drag does free-look instead of orbit
   const [lookModeEnabled, setLookModeEnabled] = useState(false)
+
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   const lookModeEnabledRef = useRef(lookModeEnabled)

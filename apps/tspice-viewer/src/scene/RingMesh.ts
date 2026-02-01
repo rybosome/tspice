@@ -19,6 +19,16 @@ export type CreateRingMeshOptions = {
 
   /** Material tint color (useful for grayscale ring textures). */
   color?: THREE.ColorRepresentation
+
+  /**
+   * Baseline opacity applied across the entire ring (0..1).
+   *
+   * Some ring textures (e.g. Uranus) only provide alpha for a narrow band near
+   * the inner radius, which can make the ring read like a single ultra-thin
+   * strip. `baseOpacity` clamps the final alpha so the annulus remains faintly
+   * visible without affecting ring textures that rely on alpha for gaps.
+   */
+  baseOpacity?: number
 }
 
 export function createRingMesh(options: CreateRingMeshOptions): {
@@ -27,6 +37,32 @@ export function createRingMesh(options: CreateRingMeshOptions): {
   ready: Promise<void>
 } {
   const geometry = new THREE.RingGeometry(options.innerRadius, options.outerRadius, options.segments ?? 192)
+
+  // `THREE.RingGeometry` ships with planar UVs (x/y mapped into [0, 1]).
+  // Our ring textures are authored as a radial strip (U = radius) that should wrap
+  // around the ring (V = angle), so we override UVs to be polar.
+  //
+  // u: radial fraction (inner -> outer)
+  // v: angular fraction (atan2)
+  const position = geometry.attributes.position
+  const uvs = new Float32Array(position.count * 2)
+  const radiusRange = options.outerRadius - options.innerRadius
+  for (let i = 0; i < position.count; i++) {
+    const x = position.getX(i)
+    const y = position.getY(i)
+    const r = Math.sqrt(x * x + y * y)
+
+    // Clamp for numeric stability (and to handle any future geometry changes).
+    const u = radiusRange === 0 ? 0 : THREE.MathUtils.clamp((r - options.innerRadius) / radiusRange, 0, 1)
+
+    // Map angle to [0, 1].
+    const v = (Math.atan2(y, x) + Math.PI) / (2 * Math.PI)
+
+    uvs[i * 2 + 0] = u
+    uvs[i * 2 + 1] = v
+  }
+
+  geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
 
   let disposed = false
 
@@ -41,8 +77,9 @@ export function createRingMesh(options: CreateRingMeshOptions): {
           }
 
           tex.colorSpace = THREE.SRGBColorSpace
-          tex.wrapS = THREE.RepeatWrapping
-          tex.wrapT = THREE.ClampToEdgeWrapping
+          // U (radius) should clamp; V (angle) should repeat.
+          tex.wrapS = THREE.ClampToEdgeWrapping
+          tex.wrapT = THREE.RepeatWrapping
           tex.needsUpdate = true
           map = tex
         })
@@ -60,6 +97,30 @@ export function createRingMesh(options: CreateRingMeshOptions): {
     metalness: 0,
     map,
   })
+
+  // If `baseOpacity` is provided, enable a shader-side alpha clamp.
+  const baseOpacityEnabled = options.baseOpacity !== undefined
+  const baseOpacity = THREE.MathUtils.clamp(options.baseOpacity ?? 0, 0, 1)
+
+  if (baseOpacityEnabled) {
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.baseOpacity = { value: baseOpacity }
+
+      // NOTE: `output_fragment` was deprecated in r154; newer builds use
+      // `opaque_fragment`. Patch whichever include is present.
+      const outputInclude = shader.fragmentShader.includes('#include <opaque_fragment>')
+        ? '#include <opaque_fragment>'
+        : '#include <output_fragment>'
+
+      shader.fragmentShader = shader.fragmentShader
+        .replace('#include <common>', '#include <common>\nuniform float baseOpacity;')
+        .replace(outputInclude, `diffuseColor.a = max(diffuseColor.a, baseOpacity);\n${outputInclude}`)
+    }
+
+    // Ensure shader program cache differs when this feature is enabled.
+    // The baseOpacity value itself is a uniform (so it doesn't need to affect the cache key).
+    material.customProgramCacheKey = () => 'ring-baseOpacity-enabled'
+  }
 
   const mesh = new THREE.Mesh(geometry, material)
 
