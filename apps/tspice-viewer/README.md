@@ -9,7 +9,7 @@ This workspace is intended to evolve into a renderer / Three.js viewer for tspic
 From repo root:
 
 - `pnpm install`
-- `pnpm -C apps/tspice-viewer dev`
+- `pnpm --filter @rybosome/tspice-viewer run dev`
 
 ## NAIF kernels
 
@@ -24,9 +24,9 @@ https://naif.jpl.nasa.gov/naif/rules.html
 
 ## Scripts
 
-- `pnpm -C apps/tspice-viewer build`
-- `pnpm -C apps/tspice-viewer typecheck`
-- `pnpm -C apps/tspice-viewer test`
+- `pnpm --filter @rybosome/tspice-viewer run build`
+- `pnpm --filter @rybosome/tspice-viewer run typecheck`
+- `pnpm --filter @rybosome/tspice-viewer run test`
 
 ## Conventions
 
@@ -126,4 +126,4 @@ Playwright e2e tests live in `apps/tspice-viewer/e2e`.
 
 From repo root:
 
-- `pnpm -C apps/tspice-viewer e2e`
+- `pnpm --filter @rybosome/tspice-viewer run e2e`

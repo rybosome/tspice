@@ -244,6 +244,18 @@ pnpm check
 pnpm check:native
 ```
 
+### Repo commands
+
+When running package-level scripts from the repo root, prefer pnpm filters:
+
+```bash
+pnpm --filter @rybosome/tspice run build
+pnpm --filter @rybosome/tspice-backend-node run build:native
+pnpm --filter @rybosome/tspice-viewer run dev
+```
+
+For README conventions and templates, see `docs/readme-conventions.md`.
+
 Native builds require Python 3 and a working `node-gyp` toolchain.
 
 ---

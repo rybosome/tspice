@@ -31,7 +31,7 @@ At runtime, `createBackend()` creates the backend you request and returns a `Pro
 
 ## Installation
 
-This repo is currently an A0 scaffold and packages are marked `private: true`, so you typically use it via the workspace.
+In this repo, packages are typically used via the pnpm workspace and are marked `private: true`.
 
 ### ESM-only (published package)
 
@@ -125,9 +125,9 @@ main().catch(console.error);
 ## Development
 
 ```bash
-pnpm -C packages/tspice build
-pnpm -C packages/tspice typecheck
-pnpm -C packages/tspice test
+pnpm --filter @rybosome/tspice run build
+pnpm --filter @rybosome/tspice run typecheck
+pnpm --filter @rybosome/tspice run test
 ```
 
 ## Troubleshooting / FAQ
@@ -137,15 +137,11 @@ pnpm -C packages/tspice test
 If you selected the Node/native backend (`backend: "node"`) and you’re running from the workspace and haven’t built the addon yet:
 
 ```bash
-pnpm -C packages/backend-node build:native
+pnpm --filter @rybosome/tspice-backend-node run build:native
 ```
 
 For more details (including `TSPICE_BACKEND_NODE_BINDING_PATH`), see [`@rybosome/tspice-backend-node`](../backend-node/README.md).
 
-## Versioning / stability notes
+## Versioning
 
-This is an A0 scaffold (`0.0.0`) and the API shape is expected to churn.
-
-### Breaking change notes
-
-- `createBackend()` no longer has a default backend. Callers must explicitly choose `backend: "node"` or `backend: "wasm"`.
+This package is under active development and the API shape is expected to churn.
