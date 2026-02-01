@@ -61,6 +61,9 @@ export default [
       // Important correctness check for hooks.
       'react-hooks/exhaustive-deps': 'error',
 
+      // Keep `any` scoped to tests/tooling only.
+      '@typescript-eslint/no-explicit-any': 'error',
+
       '@typescript-eslint/no-unused-vars': [
         'error',
         {

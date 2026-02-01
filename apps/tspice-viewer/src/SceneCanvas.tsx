@@ -430,6 +430,10 @@ export function SceneCanvas() {
     invalidateRef.current?.()
   }, [cameraFovDeg])
 
+  // Intentionally runs once (renderer/bootstrap):
+  // - Uses refs / module singletons for anything that changes over time.
+  // - Do not capture React state in this closure; plumb dynamic changes through
+  //   `latestUiRef` + the dedicated update effects below.
   useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
