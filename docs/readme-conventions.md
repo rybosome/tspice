@@ -30,7 +30,7 @@ Use these headings (omit sections that don’t apply):
 - For apps, use the workspace name from `package.json`:
   - Example: `# @rybosome/tspice-viewer`
 
-## Repo commands (Option B)
+## Repo commands
 
 When a README includes repo-local commands, prefer running from the repo root using pnpm filters:
 
