@@ -11,12 +11,7 @@ import {
   type Vec3Km,
 } from '../../spice/SpiceClient.js'
 import { createBodyMesh } from '../BodyMesh.js'
-import {
-  BODY_REGISTRY,
-  getBodyRegistryEntry,
-  listDefaultVisibleSceneBodies,
-  type BodyId,
-} from '../BodyRegistry.js'
+import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleSceneBodies, type BodyId } from '../BodyRegistry.js'
 import { computeBodyRadiusWorld } from '../bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from '../FrameAxes.js'
 import { createRingMesh } from '../RingMesh.js'
@@ -130,7 +125,11 @@ export async function initSpiceSceneRuntime(args: {
   scene.add(dir)
   sceneObjects.push(dir)
 
-  const { client: loadedSpiceClient, rawClient: rawSpiceClient, utcToEt } = await createSpiceClient({
+  const {
+    client: loadedSpiceClient,
+    rawClient: rawSpiceClient,
+    utcToEt,
+  } = await createSpiceClient({
     searchParams,
   })
 
@@ -245,14 +244,13 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   // Orbit paths (one full orbital period per body).
-  let orbitPaths: OrbitPaths | undefined
-  orbitPaths = new OrbitPaths({
+  const orbitPaths = new OrbitPaths({
     spiceClient: rawSpiceClient,
     kmToWorld,
     bodies: sceneModel.bodies.map((b) => ({ body: b.body, color: b.style.color })),
   })
   sceneObjects.push(orbitPaths.object)
-  disposers.push(() => orbitPaths?.dispose())
+  disposers.push(() => orbitPaths.dispose())
   scene.add(orbitPaths.object)
 
   const j2000Axes = !isE2e ? createFrameAxes({ sizeWorld: 1.2, opacity: 0.9 }) : undefined

@@ -84,7 +84,7 @@ function computePointsPerOrbit(opts: {
   return THREE.MathUtils.clamp(
     Math.min(samplesPerOrbit, perOrbitBudget || samplesPerOrbit),
     Math.max(2, minPoints),
-    Math.max(2, samplesPerOrbit)
+    Math.max(2, samplesPerOrbit),
   )
 }
 
@@ -192,7 +192,11 @@ export class OrbitPaths {
 
       if (o.group.visible && primaryPosKm) {
         const rebasedKm = rebasePositionKm(primaryPosKm, input.focusPosKm)
-        o.group.position.set(rebasedKm[0] * this.kmToWorld, rebasedKm[1] * this.kmToWorld, rebasedKm[2] * this.kmToWorld)
+        o.group.position.set(
+          rebasedKm[0] * this.kmToWorld,
+          rebasedKm[1] * this.kmToWorld,
+          rebasedKm[2] * this.kmToWorld,
+        )
       }
 
       // Apply material settings even if hidden (so it looks correct when enabled).

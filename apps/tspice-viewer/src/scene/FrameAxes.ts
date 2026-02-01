@@ -31,46 +31,8 @@ export function createFrameAxes(options: CreateFrameAxesOptions): {
   //  - X: red
   //  - Y: green
   //  - Z: blue
-  const positions = new Float32Array([
-    0,
-    0,
-    0,
-    size,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    size,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    size,
-  ])
-  const colors = new Float32Array([
-    1,
-    0,
-    0,
-    1,
-    0,
-    0,
-    0,
-    1,
-    0,
-    0,
-    1,
-    0,
-    0,
-    0,
-    1,
-    0,
-    0,
-    1,
-  ])
+  const positions = new Float32Array([0, 0, 0, size, 0, 0, 0, 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size])
+  const colors = new Float32Array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1])
 
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))

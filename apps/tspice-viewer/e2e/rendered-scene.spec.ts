@@ -11,11 +11,7 @@ test('rendered scene is visually stable (golden screenshot)', async ({ page, bas
   // Ensure the test is deterministic and doesn't accidentally hit the network.
   await page.route('**/*', async (route) => {
     const url = route.request().url()
-    if (
-      url.startsWith(allowedOrigin) ||
-      url.startsWith('data:') ||
-      url.startsWith('blob:')
-    ) {
+    if (url.startsWith(allowedOrigin) || url.startsWith('data:') || url.startsWith('blob:')) {
       await route.continue()
       return
     }
@@ -26,7 +22,6 @@ test('rendered scene is visually stable (golden screenshot)', async ({ page, bas
   await page.addInitScript(() => {
     // Basic determinism helpers.
     const fixedNow = 1_700_000_000_000
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(Date as any).now = () => fixedNow
     Math.random = () => 0.42
   })

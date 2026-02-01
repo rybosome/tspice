@@ -5,11 +5,7 @@ import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './sun
 
 function cameraForwardFromYawPitch(yaw: number, pitch: number) {
   const cosPitch = Math.cos(pitch)
-  const offsetDir = new THREE.Vector3(
-    cosPitch * Math.cos(yaw),
-    cosPitch * Math.sin(yaw),
-    Math.sin(pitch)
-  )
+  const offsetDir = new THREE.Vector3(cosPitch * Math.cos(yaw), cosPitch * Math.sin(yaw), Math.sin(pitch))
   return offsetDir.multiplyScalar(-1).normalize()
 }
 
@@ -18,11 +14,7 @@ describe('sunFocus', () => {
     const cameraFovDeg = 50
     const cameraAspect = 900 / 650
 
-    const cases = [
-      new THREE.Vector3(1, 0, 0),
-      new THREE.Vector3(0.3, 0.9, 0.1),
-      new THREE.Vector3(-0.2, 0.1, 0.97),
-    ]
+    const cases = [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0.3, 0.9, 0.1), new THREE.Vector3(-0.2, 0.1, 0.97)]
 
     for (const pointWorld of cases) {
       const angles = computeOrbitAnglesToKeepPointInView({
@@ -43,7 +35,7 @@ describe('sunFocus', () => {
           dirToPoint,
           cameraFovDeg,
           cameraAspect,
-        })
+        }),
       ).toBe(true)
 
       // Ensure we didn't just center perfectly on the point.
