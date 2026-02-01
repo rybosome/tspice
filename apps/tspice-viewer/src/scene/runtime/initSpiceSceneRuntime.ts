@@ -71,9 +71,6 @@ export async function initSpiceSceneRuntime(args: {
   /** Called as soon as the (cached) SpiceClient is ready. */
   onSpiceClientLoaded?: (client: SpiceClient) => void
 
-  /** TEMP DEBUG: allow SceneCanvas UI to control Uranus ring opacity clamp. */
-  onUranusRingBaseOpacitySetter?: (setter: ((next: number) => void) | null) => void
-
   kmToWorld: number
   sunOcclusionMarginRad: number
 
@@ -106,7 +103,6 @@ export async function initSpiceSceneRuntime(args: {
     container,
     pickables,
     onSpiceClientLoaded,
-    onUranusRingBaseOpacitySetter,
     kmToWorld,
     sunOcclusionMarginRad,
     computeFocusRadius,
@@ -184,8 +180,6 @@ export async function initSpiceSceneRuntime(args: {
     ],
   }
 
-  const uranusBody = getBodyRegistryEntry('URANUS').body
-
   const bodies = sceneModel.bodies.map((body) => {
     const { mesh, dispose, ready } = createBodyMesh({
       color: body.style.color,
@@ -206,11 +200,6 @@ export async function initSpiceSceneRuntime(args: {
           baseOpacity: rings.baseOpacity,
         })
       : undefined
-
-    // TEMP DEBUG: expose Uranus ring opacity to SceneCanvas control panel.
-    if (ringResult && String(body.body) === String(uranusBody)) {
-      onUranusRingBaseOpacitySetter?.(ringResult.setBaseOpacity ?? null)
-    }
 
     if (ringResult) {
       // Attach as a child so it inherits the body's pose and scale.
@@ -573,9 +562,6 @@ export async function initSpiceSceneRuntime(args: {
 
   const dispose = () => {
     latestLabelOverlayOptions = null
-
-    // Ensure SceneCanvas doesn't keep a stale setter around.
-    onUranusRingBaseOpacitySetter?.(null)
 
     for (const obj of sceneObjects) scene.remove(obj)
     for (const dispose of disposers) dispose()

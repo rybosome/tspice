@@ -197,7 +197,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
         // The Uranus rings texture only contains strong alpha for a narrow band
         // near the inner edge; clamp alpha so the full annulus reads as a
         // faint, thicker ring system.
-        baseOpacity: 0.12,
+        baseOpacity: 0.4,
       },
       label: "Uranus",
     },

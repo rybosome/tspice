@@ -137,12 +137,6 @@ export function SceneCanvas() {
   // New: Look mode toggle for touch - when enabled, 1-finger drag does free-look instead of orbit
   const [lookModeEnabled, setLookModeEnabled] = useState(false)
 
-  // TEMP DEBUG: requested by rybosome to make Uranus rings visible/tunable.
-  const uranusRingDefaultBaseOpacity = getBodyRegistryEntry('URANUS').style.rings?.baseOpacity ?? 0
-  const [uranusRingBaseOpacity, setUranusRingBaseOpacity] = useState(uranusRingDefaultBaseOpacity)
-  const uranusRingBaseOpacityRef = useRef(uranusRingBaseOpacity)
-  const setUranusRingBaseOpacityRef = useRef<((next: number) => void) | null>(null)
-
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   const lookModeEnabledRef = useRef(lookModeEnabled)
@@ -175,12 +169,6 @@ export function SceneCanvas() {
   const resetLookOffsetRef = useRef<(() => void) | null>(null)
   panModeEnabledRef.current = panModeEnabled
   lookModeEnabledRef.current = lookModeEnabled
-
-  useEffect(() => {
-    uranusRingBaseOpacityRef.current = uranusRingBaseOpacity
-    setUranusRingBaseOpacityRef.current?.(uranusRingBaseOpacity)
-    invalidateRef.current?.()
-  }, [uranusRingBaseOpacity])
 
   const handleQuantumChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value)
@@ -552,10 +540,6 @@ export function SceneCanvas() {
           onSpiceClientLoaded: (client) => {
             if (!disposed) setSpiceClient(client)
           },
-          onUranusRingBaseOpacitySetter: (setter) => {
-            setUranusRingBaseOpacityRef.current = setter
-            setter?.(uranusRingBaseOpacityRef.current)
-          },
           kmToWorld,
           sunOcclusionMarginRad,
           computeFocusRadius,
@@ -601,7 +585,6 @@ export function SceneCanvas() {
 
     return () => {
       disposed = true
-      setUranusRingBaseOpacityRef.current = null
 
       spiceSceneRuntime?.dispose()
       spiceSceneRuntime = null
@@ -804,21 +787,6 @@ export function SceneCanvas() {
                     HUD
                   </span>
                 </label>
-              </div>
-
-              {/* TEMP DEBUG: Uranus ring visibility slider (requested by rybosome). */}
-              <div className="advancedSlider debugSlider">
-                <span className="advancedSliderLabel">Uranus rings (TEMP)</span>
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  value={uranusRingBaseOpacity}
-                  onChange={(e) => setUranusRingBaseOpacity(Number(e.target.value))}
-                  aria-label="Uranus ring opacity (temporary debug)"
-                />
-                <span className="advancedSliderValue">{Math.round(uranusRingBaseOpacity * 100)}%</span>
               </div>
 
               <div className="controlsDivider" />

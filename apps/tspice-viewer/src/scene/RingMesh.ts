@@ -35,8 +35,6 @@ export function createRingMesh(options: CreateRingMeshOptions): {
   mesh: THREE.Mesh
   dispose: () => void
   ready: Promise<void>
-  /** Update the base-opacity clamp at runtime (TEMP debug support). */
-  setBaseOpacity?: (next: number) => void
 } {
   const geometry = new THREE.RingGeometry(options.innerRadius, options.outerRadius, options.segments ?? 192)
 
@@ -101,22 +99,12 @@ export function createRingMesh(options: CreateRingMeshOptions): {
   })
 
   // If `baseOpacity` is provided, enable a shader-side alpha clamp.
-  //
-  // NOTE: This is also used by a TEMP debug UI control to adjust Uranus ring
-  // visibility at runtime.
   const baseOpacityEnabled = options.baseOpacity !== undefined
-  let baseOpacity = THREE.MathUtils.clamp(options.baseOpacity ?? 0, 0, 1)
-  const setBaseOpacity = (next: number) => {
-    baseOpacity = THREE.MathUtils.clamp(next, 0, 1)
-    const uniform = material.userData.baseOpacityUniform as { value: number } | undefined
-    if (uniform) uniform.value = baseOpacity
-  }
+  const baseOpacity = THREE.MathUtils.clamp(options.baseOpacity ?? 0, 0, 1)
 
   if (baseOpacityEnabled) {
     material.onBeforeCompile = (shader) => {
       shader.uniforms.baseOpacity = { value: baseOpacity }
-      // Expose the live uniform so UI controls can update without recompiling.
-      material.userData.baseOpacityUniform = shader.uniforms.baseOpacity
 
       // NOTE: `output_fragment` was deprecated in r154; newer builds use
       // `opaque_fragment`. Patch whichever include is present.
@@ -130,7 +118,7 @@ export function createRingMesh(options: CreateRingMeshOptions): {
     }
 
     // Ensure shader program cache differs when this feature is enabled.
-    // The baseOpacity value itself is a uniform (so it can be updated at runtime).
+    // The baseOpacity value itself is a uniform (so it doesn't need to affect the cache key).
     material.customProgramCacheKey = () => 'ring-baseOpacity-enabled'
   }
 
@@ -150,6 +138,5 @@ export function createRingMesh(options: CreateRingMeshOptions): {
       material.map = map
       material.needsUpdate = true
     }),
-    setBaseOpacity: baseOpacityEnabled ? setBaseOpacity : undefined,
   }
 }
