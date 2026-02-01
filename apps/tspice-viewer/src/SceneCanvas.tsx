@@ -258,6 +258,12 @@ export function SceneCanvas() {
   const [panModeEnabled, setPanModeEnabled] = useState(false)
   // New: Look mode toggle for touch - when enabled, 1-finger drag does free-look instead of orbit
   const [lookModeEnabled, setLookModeEnabled] = useState(false)
+
+  // TEMP DEBUG: requested by rybosome to make Uranus rings visible/tunable.
+  const uranusRingDefaultBaseOpacity = getBodyRegistryEntry('URANUS').style.rings?.baseOpacity ?? 0
+  const [uranusRingBaseOpacity, setUranusRingBaseOpacity] = useState(uranusRingDefaultBaseOpacity)
+  const uranusRingBaseOpacityRef = useRef(uranusRingBaseOpacity)
+  const setUranusRingBaseOpacityRef = useRef<((next: number) => void) | null>(null)
   const [helpOpen, setHelpOpen] = useState(false)
   const panModeEnabledRef = useRef(panModeEnabled)
   const lookModeEnabledRef = useRef(lookModeEnabled)
@@ -285,6 +291,12 @@ export function SceneCanvas() {
   const resetLookOffsetRef = useRef<(() => void) | null>(null)
   panModeEnabledRef.current = panModeEnabled
   lookModeEnabledRef.current = lookModeEnabled
+
+  useEffect(() => {
+    uranusRingBaseOpacityRef.current = uranusRingBaseOpacity
+    setUranusRingBaseOpacityRef.current?.(uranusRingBaseOpacity)
+    invalidateRef.current?.()
+  }, [uranusRingBaseOpacity])
 
   const handleQuantumChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value)
@@ -550,6 +562,8 @@ export function SceneCanvas() {
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
+
+    setUranusRingBaseOpacityRef.current = null
 
     let disposed = false
     let scheduledFrame: number | null = null
@@ -1538,6 +1552,13 @@ export function SceneCanvas() {
               })
             : undefined
 
+          // TEMP DEBUG: expose Uranus ring opacity to the control panel.
+          if (ringResult && String(body.body) === String(getBodyRegistryEntry('URANUS').body)) {
+            setUranusRingBaseOpacityRef.current = ringResult.setBaseOpacity ?? null
+            // Sync to the latest UI state without re-running the whole renderer effect.
+            ringResult.setBaseOpacity?.(uranusRingBaseOpacityRef.current)
+          }
+
           if (ringResult) {
             // Attach as a child so it inherits the body's pose and scale.
             mesh.add(ringResult.mesh)
@@ -1915,6 +1936,7 @@ export function SceneCanvas() {
 
     return () => {
       disposed = true
+      setUranusRingBaseOpacityRef.current = null
       if (scheduledFrame != null) {
         window.cancelAnimationFrame(scheduledFrame)
         scheduledFrame = null
@@ -2169,6 +2191,21 @@ export function SceneCanvas() {
                     HUD
                   </span>
                 </label>
+              </div>
+
+              {/* TEMP DEBUG: Uranus ring visibility slider (requested by rybosome). */}
+              <div className="advancedSlider debugSlider">
+                <span className="advancedSliderLabel">Uranus rings (TEMP)</span>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={uranusRingBaseOpacity}
+                  onChange={(e) => setUranusRingBaseOpacity(Number(e.target.value))}
+                  aria-label="Uranus ring opacity (temporary debug)"
+                />
+                <span className="advancedSliderValue">{Math.round(uranusRingBaseOpacity * 100)}%</span>
               </div>
 
               <div className="controlsDivider" />
