@@ -8,6 +8,13 @@ import { J2000_FRAME, type BodyRef, type EtSeconds, type SpiceClient, type Vec3K
 import { rebasePositionKm } from '../precision.js'
 import { getApproxOrbitalPeriodSec, getOrbitAnchorQuantumSec } from './orbitalPeriods.js'
 
+const DAY_SEC = 86_400
+// Outer planet orbital periods can exceed the coverage window of lightweight
+// ephemeris kernels (e.g. `de432s`), which can make sampling a full orbit fail
+// and hide the path. Clamp long orbits to a smaller time window to keep them
+// visible.
+const MAX_ORBIT_SAMPLE_WINDOW_SEC = 50 * 365.25 * DAY_SEC
+
 export type OrbitPathsSettings = {
   lineWidthPx: number
   samplesPerOrbit: number
@@ -240,8 +247,8 @@ export class OrbitPaths {
         if (o.inFlight?.token !== token) return
         o.inFlight = undefined
 
-        // If sampling succeeded but returned no positions, treat it as failure.
-        if (!positionsKm.length) {
+        // If sampling succeeded but returned too few positions, treat it as failure.
+        if (positionsKm.length < 2) {
           o.group.visible = false
           o.hasGeometry = false
           return
@@ -283,23 +290,34 @@ export class OrbitPaths {
   }): Promise<Vec3Km[]> {
     const points = Math.max(2, Math.floor(input.points))
 
+    const windowSec = Math.min(input.periodSec, MAX_ORBIT_SAMPLE_WINDOW_SEC)
     // Anchor to current time, centered in the window.
-    const startEt = input.anchorEtSec - input.periodSec * 0.5
-    const stepSec = input.periodSec / (points - 1)
+    const startEt = input.anchorEtSec - windowSec * 0.5
+    const stepSec = windowSec / (points - 1)
 
     const out: Vec3Km[] = []
     for (let i = 0; i < points; i++) {
       if (input.signal.aborted) return []
 
       const et = startEt + stepSec * i
-      const state = this.spiceClient.getBodyState({
-        target: input.target,
-        observer: input.primary,
-        frame: J2000_FRAME,
-        et,
-      })
-
-      out.push(state.positionKm)
+      try {
+        const state = this.spiceClient.getBodyState({
+          target: input.target,
+          observer: input.primary,
+          frame: J2000_FRAME,
+          et,
+        })
+        out.push(state.positionKm)
+      } catch (err) {
+        // Best-effort: skip individual failures (kernel coverage gaps, etc.)
+        // rather than hiding the entire orbit path.
+        //
+        // Note: this may connect segments across missing spans, but it's
+        // preferable to dropping the whole orbit for outer planets.
+        if (i === 0) {
+          console.warn('Orbit path sampling skipped point', { target: input.target, primary: input.primary, et }, err)
+        }
+      }
 
       // Yield occasionally so we don't block the main thread too badly on initial load.
       if (i % 16 === 15) {
