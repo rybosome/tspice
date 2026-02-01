@@ -14,7 +14,12 @@ import { HelpOverlay } from './ui/HelpOverlay.js'
 import { SelectionInspector } from './ui/SelectionInspector.js'
 import { markTspiceViewerRenderedScene } from './e2eHooks/index.js'
 import { installSceneInteractions, type SceneInteractions } from './interaction/installSceneInteractions.js'
-import { getHomePresetState, listHomePresetAliasesForKey } from './interaction/homePresets.js'
+import {
+  getHomePresetState,
+  getHomePresetStateForKey,
+  listHomePresetAliasesForKey,
+  type HomePresetKey,
+} from './interaction/homePresets.js'
 import { RenderHud, type RenderHudStats } from './renderer/RenderHud.js'
 import { createThreeRuntime, type ThreeRuntime } from './renderer/createThreeRuntime.js'
 import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig/sceneCanvasRuntimeConfig.js'
@@ -147,10 +152,10 @@ export function SceneCanvas() {
   if (!resetControllerStateByBodyRef.current) {
     const next = new Map<string, CameraControllerState>()
 
-    const register = (key: 'EARTH' | 'VENUS') => {
+    const register = (key: HomePresetKey) => {
+      const preset = getHomePresetStateForKey(key)
       for (const alias of listHomePresetAliasesForKey(key)) {
-        const preset = getHomePresetState(alias)
-        if (preset) next.set(alias, preset)
+        next.set(alias, preset)
       }
     }
 
@@ -443,6 +448,12 @@ export function SceneCanvas() {
     let interactions: SceneInteractions | null = null
     let spiceSceneRuntime: SpiceSceneRuntime | null = null
 
+    const hudApi = {
+      enabled: () => latestUiRef.current.showRenderHud,
+      getFocusBodyLabel: () => String(latestUiRef.current.focusBody),
+      setStats: (next: RenderHudStats) => setHudStats(next),
+    }
+
     const three = createThreeRuntime({
       canvas,
       container,
@@ -455,11 +466,7 @@ export function SceneCanvas() {
       initialFocusBody: latestUiRef.current.focusBody,
       initialCameraFovDeg: latestUiRef.current.cameraFovDeg,
       getHomePresetState,
-      hud: {
-        enabled: () => latestUiRef.current.showRenderHud,
-        getFocusBodyLabel: () => String(latestUiRef.current.focusBody),
-        setStats: (next) => setHudStats(next),
-      },
+      hud: () => hudApi,
     })
 
     rendererRuntimeRef.current = three
@@ -568,7 +575,7 @@ export function SceneCanvas() {
         three.renderOnce()
 
         // Signals to Playwright tests that the WebGL scene has been rendered.
-        markTspiceViewerRenderedScene()
+        markTspiceViewerRenderedScene({ isE2e })
       } catch (err) {
         // Surface initialization failures to the console so e2e tests can catch them.
         if (!disposed) console.error(err)

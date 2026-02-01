@@ -5,7 +5,7 @@ import type { BodyRef } from '../spice/SpiceClient.js'
 // -----------------------------------------------------------------------------
 // Home camera presets (world units, target at origin)
 // -----------------------------------------------------------------------------
-type HomePresetKey = 'EARTH' | 'VENUS'
+export type HomePresetKey = 'EARTH' | 'VENUS'
 
 const HOME_CAMERA_PRESETS: Record<HomePresetKey, CameraControllerState> = {
   EARTH: CameraController.stateFromPose({
@@ -20,16 +20,16 @@ const HOME_CAMERA_PRESETS: Record<HomePresetKey, CameraControllerState> = {
   }),
 }
 
-function getHomePresetAliases(key: HomePresetKey): readonly string[] {
+const HOME_PRESET_ALIASES: Record<HomePresetKey, readonly string[]> = {
   // We accept both the symbolic name and the NAIF IDs used elsewhere in the UI.
-  switch (key) {
-    case 'EARTH':
-      // 3 = Earth-Moon barycenter, 399 = Earth
-      return ['EARTH', '3', '399']
-    case 'VENUS':
-      // 2 = Venus barycenter, 299 = Venus
-      return ['VENUS', '2', '299']
-  }
+  // 3 = Earth-Moon barycenter, 399 = Earth
+  EARTH: ['EARTH', '3', '399'],
+  // 2 = Venus barycenter, 299 = Venus
+  VENUS: ['VENUS', '2', '299'],
+} as const
+
+function getHomePresetAliases(key: HomePresetKey): readonly string[] {
+  return HOME_PRESET_ALIASES[key]
 }
 
 function getHomePresetKey(focusBody: BodyRef): HomePresetKey | null {
@@ -39,11 +39,15 @@ function getHomePresetKey(focusBody: BodyRef): HomePresetKey | null {
   return null
 }
 
+export function getHomePresetStateForKey(key: HomePresetKey): CameraControllerState {
+  return HOME_CAMERA_PRESETS[key]
+}
+
 export function getHomePresetState(focusBody: BodyRef): CameraControllerState | null {
   const key = getHomePresetKey(focusBody)
   return key ? HOME_CAMERA_PRESETS[key] : null
 }
 
-export function listHomePresetAliasesForKey(key: 'EARTH' | 'VENUS'): readonly string[] {
+export function listHomePresetAliasesForKey(key: HomePresetKey): readonly string[] {
   return getHomePresetAliases(key)
 }

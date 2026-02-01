@@ -42,7 +42,11 @@ export function createThreeRuntime(args: {
   initialCameraFovDeg: number
   getHomePresetState: (focusBody: BodyRef) => CameraControllerState | null
 
-  hud?: {
+  /**
+   * HUD accessors are read during render, so expose them via a getter to avoid
+   * accidentally capturing stale values in closures.
+   */
+  hud?: () => {
     /** Read latest HUD enabled state. */
     enabled: () => boolean
 
@@ -132,6 +136,7 @@ export function createThreeRuntime(args: {
   // Sky / background elements (owned by this runtime)
   let starfield: StarfieldHandle | null = null
   let skydome: ReturnType<typeof createSkydome> | null = null
+  let skyState: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean } | null = null
 
   // Subtle selection ring (interactive-only)
   const selectionRing = !isE2e ? createSelectionRing() : undefined
@@ -140,15 +145,26 @@ export function createThreeRuntime(args: {
   }
 
   const ensureSky = (opts: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean }) => {
-    if (starfield) {
-      scene.remove(starfield.object)
-      starfield.dispose()
-      starfield = null
+    if (
+      skyState &&
+      skyState.animatedSky === opts.animatedSky &&
+      skyState.twinkleEnabled === opts.twinkleEnabled &&
+      skyState.isE2e === opts.isE2e
+    ) {
+      return
     }
 
-    starfield = createStarfield({ seed: starSeed, twinkle: opts.twinkleEnabled })
-    scene.add(starfield.object)
-    starfield.syncToCamera(camera)
+    // Starfield is always present; only recreate when twinkle toggles.
+    if (!starfield || !skyState || skyState.twinkleEnabled !== opts.twinkleEnabled) {
+      if (starfield) {
+        scene.remove(starfield.object)
+        starfield.dispose()
+      }
+
+      starfield = createStarfield({ seed: starSeed, twinkle: opts.twinkleEnabled })
+      scene.add(starfield.object)
+      starfield.syncToCamera(camera)
+    }
 
     const shouldHaveSkydome = opts.animatedSky && !opts.isE2e
 
@@ -162,6 +178,8 @@ export function createThreeRuntime(args: {
       scene.add(skydome.object)
       skydome.syncToCamera(camera)
     }
+
+    skyState = opts
   }
 
   ensureSky({ animatedSky: args.animatedSky, twinkleEnabled: args.twinkleEnabled, isE2e })
@@ -192,8 +210,10 @@ export function createThreeRuntime(args: {
 
     afterRender?.({ nowMs })
 
+    const hud = args.hud?.()
+
     // Update HUD stats after render (only when HUD is enabled)
-    if (args.hud?.enabled()) {
+    if (hud?.enabled()) {
       const deltaMs = nowMs - lastFrameTimeMs
       if (deltaMs > 0) {
         const instantFps = 1000 / deltaMs
@@ -218,7 +238,7 @@ export function createThreeRuntime(args: {
         })
 
         const info = renderer.info
-        args.hud.setStats({
+        hud.setStats({
           fps: smoothedFps,
           drawCalls: info.render.calls,
           triangles: info.render.triangles,
@@ -233,7 +253,7 @@ export function createThreeRuntime(args: {
           cameraQuaternion: camera.quaternion.clone(),
           cameraEuler: new THREE.Euler().setFromQuaternion(camera.quaternion, 'XYZ'),
           targetDistance: controller.radius,
-          focusBody: args.hud.getFocusBodyLabel(),
+          focusBody: hud.getFocusBodyLabel(),
         })
       }
     }

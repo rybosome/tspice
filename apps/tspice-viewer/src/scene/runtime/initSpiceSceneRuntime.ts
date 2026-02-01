@@ -147,15 +147,18 @@ export async function initSpiceSceneRuntime(args: {
   // driven by numeric ET.
   if (initialUtc) {
     const nextEt = utcToEt(initialUtc)
-    timeStore.setEtSec(nextEt)
+    if (!isDisposed()) timeStore.setEtSec(nextEt)
   }
 
   // Parse initial ET from URL if provided
   if (initialEt != null) {
-    timeStore.setEtSec(initialEt)
+    if (!isDisposed()) timeStore.setEtSec(initialEt)
   }
 
-  installTspiceViewerE2eApi({ isE2e, spiceClient: loadedSpiceClient })
+  if (!isDisposed()) {
+    const disposeE2e = installTspiceViewerE2eApi({ isE2e, spiceClient: loadedSpiceClient })
+    disposers.push(disposeE2e)
+  }
 
   // Scene model driving the rendered scene.
   // TODO(#119): Temporary special-case to always render Earth's Moon.

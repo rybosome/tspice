@@ -326,8 +326,6 @@ export function installSceneInteractions(args: {
       ev.preventDefault()
       activeTouches.set(ev.pointerId, { x: ev.clientX, y: ev.clientY })
 
-      const rect = canvas.getBoundingClientRect()
-
       if (activeTouches.size >= 2) {
         cancelFocusTween()
 
@@ -374,7 +372,9 @@ export function installSceneInteractions(args: {
         const centerDy = centerY - touchState.lastCenterY
 
         // Two-finger pan is always enabled.
-        controller.pan(centerDx, centerDy, camera, { width: rect.width, height: rect.height })
+        const width = canvas.clientWidth
+        const height = canvas.clientHeight
+        controller.pan(centerDx, centerDy, camera, { width, height })
 
         // Pinch zoom.
         if (dist > 0.5 && touchState.lastDistance > 0.5) {
@@ -435,7 +435,9 @@ export function installSceneInteractions(args: {
         controller.yaw -= dx * orbitSensitivity
         controller.pitch -= dy * orbitSensitivity
       } else if (touchState.mode === 'pan') {
-        controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+        const width = canvas.clientWidth
+        const height = canvas.clientHeight
+        controller.pan(dx, dy, camera, { width, height })
       } else if (touchState.mode === 'freeLook') {
         controller.applyFreeLookDelta(dx, dy, freeLookSensitivity)
       }
@@ -475,8 +477,9 @@ export function installSceneInteractions(args: {
       controller.yaw -= dx * orbitSensitivity
       controller.pitch -= dy * orbitSensitivity
     } else if (mouseDown.mode === 'pan') {
-      const rect = canvas.getBoundingClientRect()
-      controller.pan(dx, dy, camera, { width: rect.width, height: rect.height })
+      const width = canvas.clientWidth
+      const height = canvas.clientHeight
+      controller.pan(dx, dy, camera, { width, height })
     } else if (mouseDown.mode === 'freeLook') {
       controller.applyFreeLookDelta(dx, dy, freeLookSensitivity)
     } else if (mouseDown.mode === 'roll') {
