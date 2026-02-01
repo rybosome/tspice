@@ -35,9 +35,12 @@ type OrbitPathState = {
   anchorQuantumSec: number
 
   group: THREE.Group
-  geometry: LineGeometry
   material: LineMaterial
-  line: Line2
+
+  segments: {
+    geometry: LineGeometry
+    line: Line2
+  }[]
 
   hasGeometry: boolean
   wasVisible: boolean
@@ -113,8 +116,6 @@ export class OrbitPaths {
       const group = new THREE.Group()
       group.name = `OrbitPath(${String(b.body)})`
 
-      const geometry = new LineGeometry()
-
       const material = new LineMaterial({
         color: new THREE.Color(b.color).getHex(),
         linewidth: 1,
@@ -125,12 +126,6 @@ export class OrbitPaths {
         depthWrite: false,
       })
       material.resolution.copy(this.resolution)
-
-      const line = new Line2(geometry, material)
-      line.frustumCulled = false
-      line.name = `OrbitLine(${String(b.body)})`
-
-      group.add(line)
       this.object.add(group)
 
       orbits.push({
@@ -139,9 +134,8 @@ export class OrbitPaths {
         periodSec,
         anchorQuantumSec,
         group,
-        geometry,
         material,
-        line,
+        segments: [],
         hasGeometry: false,
         wasVisible: false,
       })
@@ -160,7 +154,11 @@ export class OrbitPaths {
   dispose() {
     for (const o of this.orbits) {
       o.inFlight?.abort.abort()
-      o.geometry.dispose()
+
+      for (const s of o.segments) {
+        s.geometry.dispose()
+      }
+
       o.material.dispose()
     }
   }
@@ -242,27 +240,33 @@ export class OrbitPaths {
       points: opts.points,
       signal: abort.signal,
     })
-      .then((positionsKm) => {
+      .then((segmentsKm) => {
         if (abort.signal.aborted) return
         if (o.inFlight?.token !== token) return
         o.inFlight = undefined
 
         // If sampling succeeded but returned too few positions, treat it as failure.
-        if (positionsKm.length < 2) {
-          o.group.visible = false
-          o.hasGeometry = false
+        if (segmentsKm.length === 0) {
+          // Hide only if we've never had usable geometry; otherwise keep the last good path.
+          if (!o.hasGeometry) {
+            o.group.visible = false
+          }
           return
         }
 
-        const positionsWorld: number[] = new Array(positionsKm.length * 3)
-        for (let i = 0; i < positionsKm.length; i++) {
-          const p = positionsKm[i]
-          positionsWorld[i * 3 + 0] = p[0] * this.kmToWorld
-          positionsWorld[i * 3 + 1] = p[1] * this.kmToWorld
-          positionsWorld[i * 3 + 2] = p[2] * this.kmToWorld
+        const segmentsWorld: number[][] = []
+        for (const segKm of segmentsKm) {
+          const positionsWorld: number[] = new Array(segKm.length * 3)
+          for (let i = 0; i < segKm.length; i++) {
+            const p = segKm[i]!
+            positionsWorld[i * 3 + 0] = p[0] * this.kmToWorld
+            positionsWorld[i * 3 + 1] = p[1] * this.kmToWorld
+            positionsWorld[i * 3 + 2] = p[2] * this.kmToWorld
+          }
+          segmentsWorld.push(positionsWorld)
         }
 
-        o.geometry.setPositions(positionsWorld)
+        this.setOrbitSegments(o, segmentsWorld)
         o.hasGeometry = true
       })
       .catch((err) => {
@@ -280,6 +284,30 @@ export class OrbitPaths {
       })
   }
 
+  private setOrbitSegments(o: OrbitPathState, segmentsWorld: readonly number[][]) {
+    // Ensure we have enough line objects.
+    for (let i = o.segments.length; i < segmentsWorld.length; i++) {
+      const geometry = new LineGeometry()
+      const line = new Line2(geometry, o.material)
+      line.frustumCulled = false
+      line.name = `OrbitLine(${String(o.target)})#${i}`
+      o.group.add(line)
+      o.segments.push({ geometry, line })
+    }
+
+    // Remove any extra line objects.
+    while (o.segments.length > segmentsWorld.length) {
+      const s = o.segments.pop()!
+      o.group.remove(s.line)
+      s.geometry.dispose()
+    }
+
+    // Update geometry positions.
+    for (let i = 0; i < segmentsWorld.length; i++) {
+      o.segments[i]!.geometry.setPositions(segmentsWorld[i]!)
+    }
+  }
+
   private async sampleOrbitPositionsKm(input: {
     target: BodyRef
     primary: BodyRef
@@ -287,15 +315,25 @@ export class OrbitPaths {
     periodSec: number
     points: number
     signal: AbortSignal
-  }): Promise<Vec3Km[]> {
-    const points = Math.max(2, Math.floor(input.points))
-
+  }): Promise<Vec3Km[][]> {
     const windowSec = Math.min(input.periodSec, MAX_ORBIT_SAMPLE_WINDOW_SEC)
+
+    // If we clamp the sampling window, scale down the number of points
+    // proportionally so point density (points/sec) stays stable.
+    const windowRatio = input.periodSec > 0 ? windowSec / input.periodSec : 1
+    const points = Math.max(2, Math.floor(Math.max(2, input.points) * windowRatio))
     // Anchor to current time, centered in the window.
     const startEt = input.anchorEtSec - windowSec * 0.5
     const stepSec = windowSec / (points - 1)
 
-    const out: Vec3Km[] = []
+    const segments: Vec3Km[][] = []
+    let current: Vec3Km[] = []
+
+    const finishSegment = () => {
+      if (current.length >= 2) segments.push(current)
+      current = []
+    }
+
     for (let i = 0; i < points; i++) {
       if (input.signal.aborted) return []
 
@@ -307,16 +345,11 @@ export class OrbitPaths {
           frame: J2000_FRAME,
           et,
         })
-        out.push(state.positionKm)
-      } catch (err) {
-        // Best-effort: skip individual failures (kernel coverage gaps, etc.)
-        // rather than hiding the entire orbit path.
-        //
-        // Note: this may connect segments across missing spans, but it's
-        // preferable to dropping the whole orbit for outer planets.
-        if (i === 0) {
-          console.warn('Orbit path sampling skipped point', { target: input.target, primary: input.primary, et }, err)
-        }
+        current.push(state.positionKm)
+      } catch {
+        // Best-effort: treat individual failures (kernel coverage gaps, etc.)
+        // as breaks in the polyline.
+        finishSegment()
       }
 
       // Yield occasionally so we don't block the main thread too badly on initial load.
@@ -324,6 +357,7 @@ export class OrbitPaths {
         await yieldToMainThread()
       }
     }
-    return out
+    finishSegment()
+    return segments
   }
 }
