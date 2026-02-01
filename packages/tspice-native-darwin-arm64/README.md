@@ -8,9 +8,9 @@ This is not meant to be imported directly by most users.
 
 ## CSPICE / NAIF disclosure
 
-See [`docs/cspice-naif-disclosure.md`](../../docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
+See [`docs/cspice-naif-disclosure.md`](https://github.com/rybosome/tspice/blob/main/docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
 
-See [`NOTICE`](./NOTICE) in this package for authoritative licensing and redistribution information.
+`NOTICE` is included in the published package. For easy viewing on GitHub, see [`packages/tspice-native-darwin-arm64/NOTICE`](https://github.com/rybosome/tspice/blob/main/packages/tspice-native-darwin-arm64/NOTICE).
 
 ## Purpose / Why this exists
 
@@ -25,8 +25,8 @@ This package exists so package managers can install the correct prebuilt native 
 
 Relevant code:
 
-- `packages/backend-node/src/runtime/addon.ts`
-- `packages/tspice/package.json` (`optionalDependencies`)
+- `https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/runtime/addon.ts`
+- `https://github.com/rybosome/tspice/blob/main/packages/tspice/package.json` (`optionalDependencies`)
 
 ## Installation
 
@@ -50,6 +50,8 @@ console.log(bindingPath);
 There are no build scripts in this package.
 
 If you’re working on the native addon itself, see [`@rybosome/tspice-backend-node`](../backend-node/README.md) and build it from the repo root:
+
+https://github.com/rybosome/tspice/blob/main/packages/backend-node/README.md
 
 ```bash
 pnpm --filter @rybosome/tspice-backend-node run build:native
