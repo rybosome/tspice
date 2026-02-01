@@ -256,26 +256,18 @@ export function SelectionInspector({
 
       <div className="selectionInspectorBody">
         {/* Basic fields */}
-        {registryEntry && (
+        {/*
+          The registry-driven `kind` is a coarse classification. When the NAIF extras dataset
+          provides a more specific/authoritative classification, prefer that and avoid showing
+          a duplicate label (e.g. "Planet" twice for Earth).
+        */}
+        {registryEntry && !extras?.classification && (
           <div className="selectionInspectorRow">
             <span className="selectionInspectorLabel">Type:</span>
             <span className="selectionInspectorValue">
               {formatBodyKind(registryEntry.kind)}
             </span>
           </div>
-        )}
-
-        {extrasRows.length > 0 && (
-          <>
-            <div className="selectionInspectorDivider" />
-            <div className="selectionInspectorSectionTitle">Extras</div>
-            {extrasRows.map(({ label, value }) => (
-              <div key={label} className="selectionInspectorRow">
-                <span className="selectionInspectorLabel">{label}:</span>
-                <span className="selectionInspectorValue">{value}</span>
-              </div>
-            ))}
-          </>
         )}
 
         {bodyInfo.distanceToFocusKm !== null && (
@@ -317,6 +309,19 @@ export function SelectionInspector({
         {/* Advanced fields */}
         {showAdvanced && (
           <>
+            {extrasRows.length > 0 && (
+              <>
+                <div className="selectionInspectorDivider" />
+                <div className="selectionInspectorSectionTitle">Extras</div>
+                {extrasRows.map(({ label, value }) => (
+                  <div key={label} className="selectionInspectorRow">
+                    <span className="selectionInspectorLabel">{label}:</span>
+                    <span className="selectionInspectorValue">{value}</span>
+                  </div>
+                ))}
+              </>
+            )}
+
             {registryEntry?.style.radiusKm && (
               <div className="selectionInspectorRow">
                 <span className="selectionInspectorLabel">Radius:</span>
