@@ -58,7 +58,7 @@ export function SceneCanvas() {
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
 
   const earthAppearanceDefaults = useMemo(() => {
-    const layers = getBodyRegistryEntry('EARTH').style.appearance.layers
+    const layers = getBodyRegistryEntry('EARTH').style.appearance?.layers
     return layers?.find(isEarthAppearanceLayer)?.earth
   }, [])
 

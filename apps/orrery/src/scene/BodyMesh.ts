@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import { loadTextureCached } from './loadTextureCached.js'
+import { isTextureCacheClearedError, loadTextureCached } from './loadTextureCached.js'
 import { createRingMesh } from './RingMesh.js'
 import { isEarthAppearanceLayer, type BodyAppearanceStyle, type BodyTextureKind } from './SceneModel.js'
 
@@ -174,14 +174,19 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   let mapRelease: (() => void) | undefined
 
   const disposeMap = () => {
-    if (mapRelease) {
-      mapRelease()
-    } else {
-      map?.dispose()
-    }
+    const release = mapRelease
+    const tex = map
 
+    // Clear references first so disposal is idempotent and re-entrancy safe.
     map = undefined
     mapRelease = undefined
+
+    if (release) {
+      release()
+      return
+    }
+
+    tex?.dispose()
   }
 
   if (textureUrl) {
@@ -202,6 +207,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           mapRelease = release
         })
         .catch((err) => {
+          if (isTextureCacheClearedError(err)) return
           // Keep rendering if a texture fails; surface failures for debugging.
           console.warn('Failed to load body texture', textureUrl, err)
         }),
@@ -543,6 +549,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             material.needsUpdate = true
           })
           .catch((err) => {
+            if (isTextureCacheClearedError(err)) return
             console.warn('Failed to load Earth night lights texture', earth.nightLightsTextureUrl, err)
           }),
       )
@@ -565,6 +572,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             cloudsMaterial.needsUpdate = true
           })
           .catch((err) => {
+            if (isTextureCacheClearedError(err)) return
             console.warn('Failed to load Earth clouds texture', earth.cloudsTextureUrl, err)
           }),
       )
@@ -587,6 +595,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             useWaterMaskUniform.value = 1.0
           })
           .catch((err) => {
+            if (isTextureCacheClearedError(err)) return
             console.warn('Failed to load Earth water mask texture', earth.waterMaskTextureUrl, err)
           }),
       )

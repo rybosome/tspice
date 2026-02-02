@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import { loadTextureCached } from './loadTextureCached.js'
+import { isTextureCacheClearedError, loadTextureCached } from './loadTextureCached.js'
 
 export type CreateRingMeshOptions = {
   /** Inner radius in parent-local units (e.g. multiples of planet radius when parent is unit sphere). */
@@ -85,6 +85,7 @@ export function createRingMesh(options: CreateRingMeshOptions): {
           mapRelease = release
         })
         .catch((err) => {
+          if (isTextureCacheClearedError(err)) return
           console.warn('Failed to load ring texture', options.textureUrl, err)
         })
     : Promise.resolve()

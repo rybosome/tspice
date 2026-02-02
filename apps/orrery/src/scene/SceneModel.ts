@@ -51,7 +51,14 @@ export interface UnknownBodyLayerStyle {
 export type BodyLayerStyle = EarthAppearanceLayerStyle | UnknownBodyLayerStyle
 
 export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
-  return typeof layer === 'object' && layer !== null && layer.kind === 'earth'
+  if (typeof layer !== 'object' || layer === null) return false
+
+  const maybeKind = (layer as { kind?: unknown }).kind
+  if (maybeKind !== 'earth') return false
+
+  // Validate payload shape beyond `kind === 'earth'`.
+  const earth = (layer as { earth?: unknown }).earth
+  return typeof earth === 'object' && earth !== null
 }
 
 export interface BodyAppearanceStyle {

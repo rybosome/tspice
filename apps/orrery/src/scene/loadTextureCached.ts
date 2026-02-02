@@ -17,11 +17,25 @@ export type CachedTextureHandle = {
   release: () => void
 }
 
+export class TextureCacheClearedError extends Error {
+  constructor() {
+    super('Texture cache was cleared')
+    this.name = 'TextureCacheClearedError'
+  }
+}
+
+export function isTextureCacheClearedError(err: unknown): err is TextureCacheClearedError {
+  return err instanceof TextureCacheClearedError
+}
+
+let cacheGeneration = 0
+
 const loader = new THREE.TextureLoader()
 
 type TextureCacheEntry = {
   resolvedUrl: string
   colorSpace: THREE.ColorSpace | undefined
+  generation: number
   refs: number
   texture?: THREE.Texture
   promise: Promise<THREE.Texture>
@@ -35,7 +49,11 @@ function makeKey(args: { resolvedUrl: string; colorSpace: THREE.ColorSpace | und
 
 function disposeEntry(key: string, entry: TextureCacheEntry) {
   entry.texture?.dispose()
-  entryByKey.delete(key)
+
+  // Avoid deleting a newer cache entry created after this one.
+  if (entryByKey.get(key) === entry) {
+    entryByKey.delete(key)
+  }
 }
 
 /**
@@ -44,23 +62,17 @@ function disposeEntry(key: string, entry: TextureCacheEntry) {
  * Call this from scene/runtime teardown to avoid leaked GPU resources.
  */
 export function clearTextureCache() {
+  // Invalidate in-flight loads so late resolves don't re-install textures
+  // after a clear/teardown.
+  cacheGeneration += 1
+
   const entries = Array.from(entryByKey.entries())
   entryByKey.clear()
 
   for (const [key, entry] of entries) {
-    // If the texture hasn't resolved yet, dispose it once it does.
-    if (!entry.texture) {
-      entry.promise
-        .then((tex) => tex.dispose())
-        .catch(() => {
-          // ignore
-        })
-      continue
-    }
-
-    // Resolved texture.
-    entry.texture.dispose()
-    // `key` unused now, but keep it to make future debugging easier.
+    // Dispose resolved textures immediately; in-flight loads will self-dispose
+    // when they resolve (via generation checks in the promise chain).
+    entry.texture?.dispose()
     void key
   }
 }
@@ -86,6 +98,7 @@ export async function loadTextureCached(
     const newEntry: TextureCacheEntry = {
       resolvedUrl,
       colorSpace,
+      generation: cacheGeneration,
       refs: 0,
       promise: Promise.resolve(null as unknown as THREE.Texture),
     }
@@ -98,6 +111,15 @@ export async function loadTextureCached(
         if (colorSpace !== undefined) tex.colorSpace = colorSpace
 
         tex.needsUpdate = true
+
+        // If the cache was cleared while this texture was in-flight,
+        // dispose it and fail the request so call sites don't reinstall
+        // textures after teardown.
+        if (newEntry.generation !== cacheGeneration) {
+          tex.dispose()
+          throw new TextureCacheClearedError()
+        }
+
         newEntry.texture = tex
 
         // If all consumers released while this was still loading, dispose
@@ -110,7 +132,9 @@ export async function loadTextureCached(
       })
       .catch((err) => {
         // Allow retries if a transient load fails.
-        entryByKey.delete(key)
+        if (entryByKey.get(key) === newEntry) {
+          entryByKey.delete(key)
+        }
         throw err
       })
 
