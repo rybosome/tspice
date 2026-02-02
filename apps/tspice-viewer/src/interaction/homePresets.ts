@@ -27,7 +27,8 @@ type HomePreset = {
 const HOME_PRESETS: Record<HomePresetKey, HomePreset> = {
   MERCURY: {
     state: CameraController.stateFromPose({
-      position: new THREE.Vector3(0.0017, -0.0076, -0.0058),
+      // Distance-to-target: 0.0256
+      position: new THREE.Vector3(0.00448183711556181, -0.02003644828133515, -0.01529097368838735),
       quaternion: new THREE.Quaternion(0.889, 0.095, 0.048, 0.446),
       target: new THREE.Vector3(0, 0, 0),
     }),
@@ -73,7 +74,8 @@ const HOME_PRESETS: Record<HomePresetKey, HomePreset> = {
   },
   JUPITER: {
     state: CameraController.stateFromPose({
-      position: new THREE.Vector3(0.4361, 0.1743, 0.065),
+      // Distance-to-target: 0.2352
+      position: new THREE.Vector3(0.2163396716510539, 0.08646641772249185, 0.03224507832450929),
       quaternion: new THREE.Quaternion(0.368, 0.544, 0.624, 0.423),
       target: new THREE.Vector3(0, 0, 0),
     }),
@@ -82,7 +84,8 @@ const HOME_PRESETS: Record<HomePresetKey, HomePreset> = {
   },
   SATURN: {
     state: CameraController.stateFromPose({
-      position: new THREE.Vector3(0.4172, 0.1644, 0.0381),
+      // Distance-to-target: 0.2184
+      position: new THREE.Vector3(0.20246366553742295, 0.0797819429874217, 0.018489610874822184),
       quaternion: new THREE.Quaternion(0.326, 0.584, 0.649, 0.362),
       target: new THREE.Vector3(0, 0, 0),
     }),
@@ -91,7 +94,8 @@ const HOME_PRESETS: Record<HomePresetKey, HomePreset> = {
   },
   URANUS: {
     state: CameraController.stateFromPose({
-      position: new THREE.Vector3(0.0342, -0.0797, -0.0526),
+      // Distance-to-target: 0.1506
+      position: new THREE.Vector3(0.05077796103776682, -0.1183334355178367, -0.07809709797036651),
       quaternion: new THREE.Quaternion(0.854, 0.175, 0.099, 0.481),
       target: new THREE.Vector3(0, 0, 0),
     }),

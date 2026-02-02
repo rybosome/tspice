@@ -359,8 +359,7 @@ export function useKeyboardControls({
           e.preventDefault()
           cancelFocusTweenRef.current?.()
           {
-            const focusKey =
-              focusBodyRef?.current != null ? String(focusBodyRef.current).toUpperCase() : undefined
+            const focusKey = focusBodyRef?.current != null ? String(focusBodyRef.current).toUpperCase() : undefined
 
             const perBody = resetControllerStateByBodyRef?.current ?? null
             const perBodyState = focusKey ? perBody?.get(focusKey) : undefined
