@@ -1,4 +1,5 @@
 import type { KernelSource, SpiceBackend } from "@rybosome/tspice-backend-contract";
+import { normalizeVirtualKernelPath } from "@rybosome/tspice-backend-contract";
 
 import type { CreateBackendOptions } from "./backend.js";
 import { createBackend } from "./backend.js";
@@ -25,49 +26,6 @@ export type CreateSpiceOptions = CreateBackendOptions & {
 const DEFAULT_FRAME: FrameName = "J2000";
 const DEFAULT_ABERRATION: AberrationCorrection = "NONE";
 
-function normalizeVirtualKernelPath(input: string): string {
-  // Normalize a *virtual* kernel identifier so the same `path` works across
-  // backends (Node temp-file staging vs WASM `/kernels/...` FS).
-  //
-  // This is intentionally stricter than general filesystem normalization:
-  // - `..` is rejected
-  // - leading slashes and `kernels/` prefixes are stripped
-  const raw = input.replaceAll("\\", "/").trim();
-  if (!raw) {
-    throw new Error("Kernel path must be non-empty");
-  }
-
-  // Strip leading slashes so `/kernels/foo.tls` behaves like `kernels/foo.tls`.
-  let rel = raw.replace(/^\/+/, "");
-
-  while (rel.startsWith("./")) {
-    rel = rel.slice(2);
-  }
-
-  // Strip a leading `kernels/` directory to keep user input flexible.
-  while (rel.startsWith("kernels/")) {
-    rel = rel.replace(/^kernels\/+/, "");
-  }
-
-  const segments = rel.split("/");
-  const out: string[] = [];
-  for (const seg of segments) {
-    if (!seg || seg === ".") {
-      continue;
-    }
-    if (seg === "..") {
-      throw new Error(`Invalid kernel path (.. not allowed): ${input}`);
-    }
-    out.push(seg);
-  }
-
-  if (out.length === 0) {
-    throw new Error(`Invalid kernel path: ${input}`);
-  }
-
-  return out.join("/");
-}
-
 function splitState(state: readonly [number, number, number, number, number, number]): {
   position: Vec3;
   velocity: Vec3;
@@ -79,11 +37,19 @@ function splitState(state: readonly [number, number, number, number, number, num
 
 export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   const backend = options.backendInstance ?? (await createBackend(options));
-  const raw = backend;
 
   // Track kernels loaded from bytes so `kit.unloadKernel()` can accept flexible
   // path forms (e.g. `/kernels/foo.tls`) across backends.
   const byteBackedKernelPaths = new Set<string>();
+
+  // Keep `raw.kclear()` and `kit`'s internal tracking in sync.
+  const raw: SpiceBackend = {
+    ...backend,
+    kclear: () => {
+      backend.kclear();
+      byteBackedKernelPaths.clear();
+    },
+  };
 
   const kit: SpiceKit = {
     loadKernel: (kernel: KernelSource) => {
@@ -94,8 +60,8 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
         }
 
         const normalized = normalizeVirtualKernelPath(kernel.path);
-        byteBackedKernelPaths.add(normalized);
         raw.furnsh({ ...kernel, path: normalized });
+        byteBackedKernelPaths.add(normalized);
       } catch (error) {
         throw wrapSpiceError("loadKernel", error);
       }
@@ -107,8 +73,11 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
         try {
           const normalized = normalizeVirtualKernelPath(path);
           if (byteBackedKernelPaths.has(normalized)) {
-            raw.unload(normalized);
-            byteBackedKernelPaths.delete(normalized);
+            try {
+              raw.unload(normalized);
+            } finally {
+              byteBackedKernelPaths.delete(normalized);
+            }
             return;
           }
         } catch {
@@ -118,6 +87,14 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
         raw.unload(path);
       } catch (error) {
         throw wrapSpiceError("unloadKernel", error);
+      }
+    },
+
+    kclear: () => {
+      try {
+        raw.kclear();
+      } catch (error) {
+        throw wrapSpiceError("kclear", error);
       }
     },
 

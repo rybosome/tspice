@@ -1,4 +1,5 @@
 import type { KernelSource } from "@rybosome/tspice-backend-contract";
+import { normalizeVirtualKernelPath } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import { tspiceCall1Path } from "../codec/calls.js";
@@ -10,52 +11,8 @@ export type WasmFsApi = {
 
 export function resolveKernelPath(path: string): string {
   // We treat kernel paths as *virtual* WASM-FS paths under `/kernels`.
-  //
-  // Callers may pass a variety of forms (e.g. `foo.tls`, `./foo.tls`,
-  // `/kernels/foo.tls`, `kernels//foo.tls`). Normalize all of them to a
-  // canonical absolute path.
-  //
-  // Notes:
-  // - We intentionally do not allow `..` path traversal.
-  // - Multiple slashes and `.` segments are collapsed.
-  const raw = path.replaceAll("\\", "/").trim();
-  if (!raw) {
-    throw new Error("Kernel path must be non-empty");
-  }
-
-  // Normalize to a relative virtual path first.
-  let rel = raw;
-
-  // Strip any leading slashes so `/foo` behaves like `foo`.
-  rel = rel.replace(/^\/+/, "");
-
-  // Strip leading `./` segments.
-  while (rel.startsWith("./")) {
-    rel = rel.slice(2);
-  }
-
-  // Avoid double-prefix when callers include a `kernels/` prefix.
-  while (rel.startsWith("kernels/")) {
-    rel = rel.replace(/^kernels\/+/, "");
-  }
-
-  const segments = rel.split("/");
-  const out: string[] = [];
-  for (const seg of segments) {
-    if (!seg || seg === ".") {
-      continue;
-    }
-    if (seg === "..") {
-      throw new Error(`Invalid kernel path (.. not allowed): ${path}`);
-    }
-    out.push(seg);
-  }
-
-  if (out.length === 0) {
-    throw new Error(`Invalid kernel path: ${path}`);
-  }
-
-  return `/kernels/${out.join("/")}`;
+  // Normalize to a canonical absolute path.
+  return `/kernels/${normalizeVirtualKernelPath(path)}`;
 }
 
 export function createWasmFs(module: EmscriptenModule): WasmFsApi {

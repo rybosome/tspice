@@ -29,26 +29,33 @@ const nativeAvailable = (() => {
     return false;
   }
 
-  try {
-    const require = createRequire(import.meta.url);
-    const mod = require(pkgName) as unknown;
-    const bindingPath =
-      typeof mod === "string"
-        ? mod
-        : typeof mod === "object" && mod !== null && "bindingPath" in mod
-          ? (mod as { bindingPath?: unknown }).bindingPath
-          : undefined;
+  const require = createRequire(import.meta.url);
 
-    if (typeof bindingPath !== "string" || !fs.existsSync(bindingPath)) {
+  let mod: unknown;
+  try {
+    mod = require(pkgName) as unknown;
+  } catch (err) {
+    // Skip only when the platform package is genuinely missing.
+    if ((err as NodeJS.ErrnoException | undefined)?.code === "MODULE_NOT_FOUND") {
       return false;
     }
+    throw err;
+  }
 
-    // Confirm it can actually be loaded.
-    require(bindingPath);
-    return true;
-  } catch {
+  const bindingPath =
+    typeof mod === "string"
+      ? mod
+      : typeof mod === "object" && mod !== null && "bindingPath" in mod
+        ? (mod as { bindingPath?: unknown }).bindingPath
+        : undefined;
+
+  if (typeof bindingPath !== "string" || !fs.existsSync(bindingPath)) {
     return false;
   }
+
+  // Confirm it can actually be loaded.
+  require(bindingPath);
+  return true;
 })();
 
 describe("createBackend({ backend: \"node\" })", () => {
