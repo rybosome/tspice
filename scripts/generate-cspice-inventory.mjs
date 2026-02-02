@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
@@ -8,9 +8,13 @@ const CSPICE_INDEX_URL =
   "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html";
 
 const REPO_ROOT = path.resolve(process.cwd());
-const BACKEND_CONTRACT_DOMAINS_DIR = path.join(
+const BACKEND_CONTRACT_INDEX_PATH = path.join(
   REPO_ROOT,
-  "packages/backend-contract/src/domains",
+  "packages/backend-contract/src/index.ts",
+);
+const CSPICE_FUNCTIONS_JSON_PATH = path.join(
+  REPO_ROOT,
+  "data/cspice-functions.json",
 );
 const OUTPUT_PATH = path.join(REPO_ROOT, "docs/cspice-function-inventory.md");
 
@@ -94,51 +98,162 @@ async function fetchCspiceIndex() {
   return await res.text();
 }
 
-function collectBackendContractApiMethods(sourceText) {
-  // We avoid a TypeScript AST dependency here.
-  // All current backend-contract domain files define interfaces with method
-  // signatures like:
-  //
-  //   export interface FooApi {
-  //     someMethod(arg: string): number;
-  //     otherMethod(
-  //       a: number,
-  //       b: number,
-  //     ): void;
-  //   }
-  //
-  // We can reliably extract method names by matching identifiers at the start
-  // of a line followed by an opening parenthesis.
+function usage() {
+  return [
+    "Usage: node scripts/generate-cspice-inventory.mjs [--refresh-from-naif|--check]",
+    "",
+    "Default: reads data/cspice-functions.json and regenerates docs/cspice-function-inventory.md.",
+    "",
+    "Modes:",
+    "  --refresh-from-naif  Fetch NAIF index and update/merge data/cspice-functions.json.",
+    "  --check              Fail if data/cspice-functions.json drifts from NAIF index.",
+  ].join("\n");
+}
 
+function parseArgs(argv) {
+  const args = new Set(argv);
+
+  if (args.has("--help") || args.has("-h")) {
+    process.stdout.write(usage() + "\n");
+    process.exit(0);
+  }
+
+  const refreshFromNaif = args.has("--refresh-from-naif");
+  const check = args.has("--check");
+
+  const allowed = new Set(["--refresh-from-naif", "--check"]);
+  for (const a of args) {
+    if (a.startsWith("-") && !allowed.has(a)) {
+      throw new Error(`Unknown arg: ${a}\n\n${usage()}`);
+    }
+  }
+
+  if (refreshFromNaif && check) {
+    throw new Error(`Cannot combine --refresh-from-naif and --check.\n\n${usage()}`);
+  }
+
+  return { refreshFromNaif, check };
+}
+
+function extractInterfaceBody(sourceText, interfaceName) {
+  // We avoid a TypeScript AST dependency here.
+  // This is a simple balanced-braces extractor for:
+  //   export interface Foo { ... }
+  //   export interface Foo extends Bar { ... }
+
+  const interfaceRe = new RegExp(
+    `export\\s+interface\\s+${interfaceName}\\b[^\\{]*\\{`,
+    "m",
+  );
+
+  const match = interfaceRe.exec(sourceText);
+  if (!match) {
+    throw new Error(`Could not find interface ${interfaceName}`);
+  }
+
+  const start = match.index + match[0].lastIndexOf("{") + 1;
+
+  let depth = 1;
+  for (let i = start; i < sourceText.length; i++) {
+    const ch = sourceText[i];
+    if (ch === "{") depth++;
+    else if (ch === "}") depth--;
+
+    if (depth === 0) {
+      return sourceText.slice(start, i);
+    }
+  }
+
+  throw new Error(`Unbalanced braces while parsing interface ${interfaceName}`);
+}
+
+function collectInterfaceMethodNames(interfaceBody) {
   /** @type {string[]} */
   const names = [];
   const methodRe = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:<[^>]*>)?\s*\(/gm;
 
   let match;
-  while ((match = methodRe.exec(sourceText))) {
+  while ((match = methodRe.exec(interfaceBody))) {
     const name = match[1];
 
-    // Exclude false positives.
-    if (name === "export" || name === "interface") continue;
+    // SpiceBackend also includes a small number of convenience helpers that
+    // aren't 1:1 CSPICE bindings (e.g. camelCase helpers). We only treat
+    // lower-case identifiers as CSPICE routine names.
+    if (!/^[a-z0-9_]+$/.test(name)) continue;
+
     names.push(name);
   }
 
   return names;
 }
 
-async function collectImplementedRoutineNames() {
-  const entries = await readdir(BACKEND_CONTRACT_DOMAINS_DIR, { withFileTypes: true });
-  const tsFiles = entries
-    .filter((e) => e.isFile() && e.name.endsWith(".ts"))
-    .map((e) => path.join(BACKEND_CONTRACT_DOMAINS_DIR, e.name))
-    .sort();
+function parseNamedImportsByName(sourceText) {
+  /** @type {Map<string, string>} */
+  const importByName = new Map();
+  const importRe =
+    /import\s+type\s+\{\s*([^}]+)\s*\}\s+from\s+"([^"]+)"\s*;/g;
+
+  let match;
+  while ((match = importRe.exec(sourceText))) {
+    const namesPart = match[1];
+    const from = match[2];
+    for (const raw of namesPart.split(",")) {
+      const name = raw.trim();
+      if (!name) continue;
+      importByName.set(name, from);
+    }
+  }
+
+  return importByName;
+}
+
+function parseSpiceBackendExtendsList(sourceText) {
+  const re = /export\s+interface\s+SpiceBackend\s+extends\s+([\s\S]*?)\s*\{/m;
+  const match = re.exec(sourceText);
+  if (!match) {
+    throw new Error("Could not find SpiceBackend interface extends list");
+  }
+
+  const raw = match[1];
+  const names = raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (names.length === 0) {
+    throw new Error("SpiceBackend extends list is empty");
+  }
+
+  return names;
+}
+
+async function collectImplementedRoutineNamesFromSpiceBackend() {
+  const indexText = await readFile(BACKEND_CONTRACT_INDEX_PATH, "utf8");
+  const extendsNames = parseSpiceBackendExtendsList(indexText);
+  const importByName = parseNamedImportsByName(indexText);
 
   /** @type {Set<string>} */
   const methodNames = new Set();
 
-  for (const filePath of tsFiles) {
-    const sourceText = await readFile(filePath, "utf8");
-    const methods = collectBackendContractApiMethods(sourceText);
+  const indexDir = path.dirname(BACKEND_CONTRACT_INDEX_PATH);
+
+  for (const interfaceName of extendsNames) {
+    const importPath = importByName.get(interfaceName);
+    if (!importPath) {
+      throw new Error(
+        `SpiceBackend extends ${interfaceName} but ${interfaceName} is not imported in backend-contract index.ts`,
+      );
+    }
+
+    // backend-contract uses .js specifiers even in .ts sources.
+    const importPathTs = importPath.endsWith(".js")
+      ? importPath.slice(0, -3) + ".ts"
+      : importPath;
+
+    const absPath = path.resolve(indexDir, importPathTs);
+    const sourceText = await readFile(absPath, "utf8");
+    const body = extractInterfaceBody(sourceText, interfaceName);
+    const methods = collectInterfaceMethodNames(body);
     for (const m of methods) {
       methodNames.add(m);
     }
@@ -147,21 +262,99 @@ async function collectImplementedRoutineNames() {
   /** @type {Set<string>} */
   const normalized = new Set();
   for (const m of methodNames) {
-    normalized.add(normalizeRoutineName(m));
+    normalized.add(normalizeRoutineName(m.toLowerCase()));
   }
 
-  return { methodNames, normalized };
+  return { extendsNames, methodNames, normalized };
 }
 
-function checkbox(checked) {
-  return checked ? "[x]" : "[ ]";
+function loadCspiceFunctionsJson(jsonText) {
+  const parsed = JSON.parse(jsonText);
+  if (!Array.isArray(parsed)) {
+    throw new Error("Expected data/cspice-functions.json to be a JSON array");
+  }
+
+  for (const [i, item] of parsed.entries()) {
+    if (!item || typeof item !== "object") {
+      throw new Error(`Invalid item at index ${i}: expected object`);
+    }
+    if (typeof item.name !== "string") {
+      throw new Error(`Invalid item at index ${i}: missing string 'name'`);
+    }
+    if (typeof item.purpose !== "string") {
+      throw new Error(`Invalid item at index ${i}: missing string 'purpose'`);
+    }
+    if (item.decision !== "planned" && item.decision !== "excluded") {
+      throw new Error(
+        `Invalid item at index ${i}: decision must be 'planned' or 'excluded'`,
+      );
+    }
+    if (item.justification != null && typeof item.justification !== "string") {
+      throw new Error(`Invalid item at index ${i}: justification must be string`);
+    }
+  }
+
+  return parsed;
+}
+
+function formatJson(value) {
+  return JSON.stringify(value, null, 2) + "\n";
+}
+
+function autoDecisionForNewRoutine({ name, purpose }) {
+  const { omit, justification } = shouldOmitTargetSupport({ name, purpose });
+  if (omit) {
+    return { decision: "excluded", justification };
+  }
+  return { decision: "planned" };
+}
+
+function mergeCspiceFunctionsFromNaif({ existing, naifRoutines }) {
+  const existingByName = new Map(existing.map((r) => [r.name, r]));
+
+  const merged = naifRoutines.map((r) => {
+    const prev = existingByName.get(r.name);
+    if (!prev) {
+      return { ...r, ...autoDecisionForNewRoutine(r) };
+    }
+
+    // Keep repo-owned fields, but refresh the NAIF purpose line.
+    return {
+      ...prev,
+      purpose: r.purpose,
+      decision: prev.decision ?? "planned",
+    };
+  });
+
+  merged.sort((a, b) => a.name.localeCompare(b.name));
+  return merged;
 }
 
 function escapeTableCell(text) {
   return text.replace(/\|/g, "\\|");
 }
 
-function renderMarkdown({ routines, implementedNormalized }) {
+function renderTable({ rows, includeDecision, includeJustification }) {
+  const lines = [];
+
+  const headers = ["Routine", "Purpose (1 line)"];
+  if (includeDecision) headers.push("Decision");
+  if (includeJustification) headers.push("Notes");
+
+  lines.push(`| ${headers.join(" | ")} |`);
+  lines.push(`| ${headers.map(() => "---").join(" | ")} |`);
+
+  for (const r of rows) {
+    const cells = [`\`${r.name}\``, escapeTableCell(r.purpose)];
+    if (includeDecision) cells.push(r.decision);
+    if (includeJustification) cells.push(escapeTableCell(r.justification ?? ""));
+    lines.push(`| ${cells.join(" | ")} |`);
+  }
+
+  return lines.join("\n");
+}
+
+function renderMarkdown({ functions, implementedNormalized, extendsNames }) {
   const lines = [];
 
   lines.push("# CSPICE routine inventory");
@@ -169,101 +362,209 @@ function renderMarkdown({ routines, implementedNormalized }) {
   lines.push(
     "This file is generated by `node scripts/generate-cspice-inventory.mjs`.",
   );
+  lines.push(
+    "The canonical routine list + decisions live in `data/cspice-functions.json`.",
+  );
   lines.push("");
   lines.push("Sources:");
   lines.push(
     `- CSPICE routine list + brief descriptions: ${CSPICE_INDEX_URL} (NAIF official index)`,
   );
   lines.push(
-    "- tspice implemented routines: backend contract method names in `packages/backend-contract/src/domains/*.ts`",
+    "- tspice implemented routines: backend contract surface via `SpiceBackend` in `packages/backend-contract/src/index.ts`",
   );
   lines.push("");
-  lines.push("Legend: `[x]` = yes, `[ ]` = no.");
-  lines.push("");
-
   lines.push(
-    "| Function | Purpose (1 line) | Implemented now? | Target support? | Justification |",
+    `SpiceBackend is composed from: ${extendsNames.map((n) => `\`${n}\``).join(", ")}.`,
   );
-  lines.push("| --- | --- | --- | --- | --- |");
+  lines.push("");
 
-  const omitted = [];
+  const implementedNow = [];
+  const planned = [];
+  const excluded = [];
 
-  for (const r of routines) {
-    const normalized = normalizeRoutineName(r.name);
-    const implementedNow = implementedNormalized.has(normalized);
+  for (const f of functions) {
+    const normalized = normalizeRoutineName(f.name);
+    const isImplementedNow = implementedNormalized.has(normalized);
 
-    const { omit, justification: omitJustification } = shouldOmitTargetSupport(r);
-
-    // If it's already implemented, it's by definition supported.
-    const targetSupport = implementedNow ? true : !omit;
-
-    let justification;
-    if (implementedNow) justification = "essential function";
-    else if (targetSupport) justification = "parity with CSPICE";
-    else justification = omitJustification;
-
-    if (!targetSupport) {
-      omitted.push({ ...r, justification });
+    if (isImplementedNow) {
+      implementedNow.push(f);
+    } else if (f.decision === "excluded") {
+      excluded.push(f);
+    } else {
+      planned.push(f);
     }
-
-    lines.push(
-      `| \`${r.name}\` | ${escapeTableCell(r.purpose)} | ${checkbox(implementedNow)} | ${checkbox(targetSupport)} | ${escapeTableCell(justification)} |`,
-    );
   }
 
+  lines.push("## Summary");
   lines.push("");
-  lines.push("## Omitted routines (not targeted)");
+  lines.push(`- Total routines (NAIF index): ${functions.length}`);
+  lines.push(`- Implemented now (SpiceBackend): ${implementedNow.length}`);
+  lines.push(`- Planned (not yet implemented): ${planned.length}`);
+  lines.push(`- Excluded: ${excluded.length}`);
   lines.push("");
 
-  if (omitted.length === 0) {
-    lines.push("None. All CSPICE routines are currently targeted for support.");
-    return lines.join("\n");
-  }
-
+  lines.push("## Implemented now");
+  lines.push("");
   lines.push(
-    `A small number of CSPICE routines are marked as not targeted (${omitted.length} total). These are routines that don't translate well to tspice's scope:`,
+    renderTable({
+      rows: implementedNow,
+      includeDecision: true,
+      includeJustification: true,
+    }),
   );
   lines.push("");
 
-  const grouped = new Map();
-  for (const r of omitted) {
-    const arr = grouped.get(r.justification) ?? [];
-    arr.push(r);
-    grouped.set(r.justification, arr);
-  }
+  lines.push("## Planned (not yet implemented)");
+  lines.push("");
+  lines.push(
+    renderTable({
+      rows: planned,
+      includeDecision: false,
+      includeJustification: true,
+    }),
+  );
+  lines.push("");
 
-  for (const [why, items] of [...grouped.entries()].sort((a, b) =>
-    a[0].localeCompare(b[0]),
-  )) {
-    const examples = items
-      .map((r) => `\`${r.name}\``)
-      .sort((a, b) => a.localeCompare(b))
-      .slice(0, 8)
-      .join(", ");
-    const suffix = items.length > 8 ? ", ..." : "";
-    lines.push(`- **${why}**: ${items.length} routines (e.g. ${examples}${suffix})`);
-  }
+  lines.push("## Excluded");
+  lines.push("");
+  lines.push(
+    renderTable({
+      rows: excluded,
+      includeDecision: false,
+      includeJustification: true,
+    }),
+  );
 
   return lines.join("\n");
 }
 
-async function main() {
+function assertJsonCoversImplemented({ functions, implementedNormalized }) {
+  const jsonNormalized = new Set(functions.map((f) => normalizeRoutineName(f.name)));
+  const missing = [...implementedNormalized].filter((n) => !jsonNormalized.has(n));
+  if (missing.length > 0) {
+    throw new Error(
+      `data/cspice-functions.json is missing ${missing.length} routines implemented by SpiceBackend: ${missing
+        .sort()
+        .join(", ")}`,
+    );
+  }
+}
+
+function assertNoExcludedImplemented({ functions, implementedNormalized }) {
+  const bad = functions.filter(
+    (f) =>
+      f.decision === "excluded" && implementedNormalized.has(normalizeRoutineName(f.name)),
+  );
+  if (bad.length > 0) {
+    throw new Error(
+      `Found ${bad.length} routines marked excluded but implemented by SpiceBackend: ${bad
+        .map((b) => b.name)
+        .sort()
+        .join(", ")}`,
+    );
+  }
+}
+
+async function readCspiceFunctionsJson() {
+  const jsonText = await readFile(CSPICE_FUNCTIONS_JSON_PATH, "utf8");
+  const functions = loadCspiceFunctionsJson(jsonText);
+  functions.sort((a, b) => a.name.localeCompare(b.name));
+  return functions;
+}
+
+async function refreshJsonFromNaif() {
   const html = await fetchCspiceIndex();
-  const routines = parseCspiceIndexHtml(html);
+  const naifRoutines = parseCspiceIndexHtml(html);
 
-  const { normalized: implementedNormalized } = await collectImplementedRoutineNames();
+  let existing = [];
+  try {
+    existing = await readCspiceFunctionsJson();
+  } catch {
+    // If missing, we'll create it.
+    existing = [];
+  }
 
-  const markdown = renderMarkdown({ routines, implementedNormalized });
+  const merged = mergeCspiceFunctionsFromNaif({ existing, naifRoutines });
 
+  await mkdir(path.dirname(CSPICE_FUNCTIONS_JSON_PATH), { recursive: true });
+  await writeFile(CSPICE_FUNCTIONS_JSON_PATH, formatJson(merged), "utf8");
+
+  return { naifRoutines, merged };
+}
+
+async function checkJsonDriftAgainstNaif() {
+  const html = await fetchCspiceIndex();
+  const naifRoutines = parseCspiceIndexHtml(html);
+  const functions = await readCspiceFunctionsJson();
+
+  const byNameNaif = new Map(naifRoutines.map((r) => [r.name, r]));
+  const byNameJson = new Map(functions.map((r) => [r.name, r]));
+
+  const missingInJson = naifRoutines
+    .filter((r) => !byNameJson.has(r.name))
+    .map((r) => r.name);
+  const extraInJson = functions
+    .filter((r) => !byNameNaif.has(r.name))
+    .map((r) => r.name);
+  const purposeDrift = naifRoutines
+    .filter((r) => byNameJson.has(r.name) && byNameJson.get(r.name).purpose !== r.purpose)
+    .map((r) => r.name);
+
+  if (missingInJson.length || extraInJson.length || purposeDrift.length) {
+    const parts = ["CSPICE inventory drift detected:"];
+    if (missingInJson.length) {
+      parts.push(
+        `- Missing in JSON: ${missingInJson.length} (${missingInJson.sort().join(", ")})`,
+      );
+    }
+    if (extraInJson.length) {
+      parts.push(
+        `- Extra in JSON (not in NAIF index): ${extraInJson.length} (${extraInJson.sort().join(", ")})`,
+      );
+    }
+    if (purposeDrift.length) {
+      parts.push(
+        `- Purpose drift vs NAIF index: ${purposeDrift.length} (${purposeDrift.sort().join(", ")})`,
+      );
+    }
+    parts.push("");
+    parts.push("Run: node scripts/generate-cspice-inventory.mjs --refresh-from-naif");
+    throw new Error(parts.join("\n"));
+  }
+
+  process.stdout.write("OK: data/cspice-functions.json matches NAIF index.\n");
+}
+
+async function main() {
+  const { refreshFromNaif, check } = parseArgs(process.argv.slice(2));
+
+  if (check) {
+    await checkJsonDriftAgainstNaif();
+    return;
+  }
+
+  if (refreshFromNaif) {
+    await refreshJsonFromNaif();
+  }
+
+  const functions = await readCspiceFunctionsJson();
+  const { normalized: implementedNormalized, extendsNames } =
+    await collectImplementedRoutineNamesFromSpiceBackend();
+
+  assertJsonCoversImplemented({ functions, implementedNormalized });
+  assertNoExcludedImplemented({ functions, implementedNormalized });
+
+  const markdown = renderMarkdown({ functions, implementedNormalized, extendsNames });
   await writeFile(OUTPUT_PATH, markdown + "\n", "utf8");
 
-  const total = routines.length;
-  const implementedCount = routines.filter((r) =>
+  const total = functions.length;
+  const implementedCount = functions.filter((r) =>
     implementedNormalized.has(normalizeRoutineName(r.name)),
   ).length;
 
   process.stdout.write(
-    `Wrote ${path.relative(REPO_ROOT, OUTPUT_PATH)} (CSPICE routines: ${total}, implemented by tspice: ${implementedCount}).\n`,
+    `Wrote ${path.relative(REPO_ROOT, OUTPUT_PATH)} (routines: ${total}, implemented now: ${implementedCount}).\n`,
   );
 }
 

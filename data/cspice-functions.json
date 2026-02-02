@@ -1,0 +1,3260 @@
+[
+  {
+    "name": "appndc_c",
+    "purpose": "Append an item to a character cell",
+    "decision": "planned"
+  },
+  {
+    "name": "appndd_c",
+    "purpose": "Append an item to a double precision cell",
+    "decision": "planned"
+  },
+  {
+    "name": "appndi_c",
+    "purpose": "Append an item to an integer cell",
+    "decision": "planned"
+  },
+  {
+    "name": "axisar_c",
+    "purpose": "Axis and angle to rotation",
+    "decision": "planned"
+  },
+  {
+    "name": "azlcpo_c",
+    "purpose": "AZ/EL, constant position observer state",
+    "decision": "planned"
+  },
+  {
+    "name": "azlrec_c",
+    "purpose": "AZ/EL to rectangular coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "b1900_c",
+    "purpose": "Besselian Date 1900.0",
+    "decision": "planned"
+  },
+  {
+    "name": "b1950_c",
+    "purpose": "Besselian Date 1950.0",
+    "decision": "planned"
+  },
+  {
+    "name": "badkpv_c",
+    "purpose": "Bad Kernel Pool Variable",
+    "decision": "planned"
+  },
+  {
+    "name": "bltfrm_c",
+    "purpose": "Built-in frame IDs",
+    "decision": "planned"
+  },
+  {
+    "name": "bodc2n_c",
+    "purpose": "Body ID code to name translation",
+    "decision": "planned"
+  },
+  {
+    "name": "bodc2s_c",
+    "purpose": "Body ID code to string translation",
+    "decision": "planned"
+  },
+  {
+    "name": "boddef_c",
+    "purpose": "Body name/ID code definition",
+    "decision": "planned"
+  },
+  {
+    "name": "bodfnd_c",
+    "purpose": "Find values from the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "bodn2c_c",
+    "purpose": "Body name to ID code translation",
+    "decision": "planned"
+  },
+  {
+    "name": "bods2c_c",
+    "purpose": "Body string to ID code translation",
+    "decision": "planned"
+  },
+  {
+    "name": "bodvar_c",
+    "purpose": "Return values from the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "bodvcd_c",
+    "purpose": "Return d.p. values from the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "bodvrd_c",
+    "purpose": "Return d.p. values from the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "brcktd_c",
+    "purpose": "Bracket a d.p. value within an interval",
+    "decision": "planned"
+  },
+  {
+    "name": "brckti_c",
+    "purpose": "Bracket an integer value within an interval",
+    "decision": "planned"
+  },
+  {
+    "name": "bschoc_c",
+    "purpose": "Binary search with order vector, character",
+    "decision": "planned"
+  },
+  {
+    "name": "bschoi_c",
+    "purpose": "Binary search with order vector, integer",
+    "decision": "planned"
+  },
+  {
+    "name": "bsrchc_c",
+    "purpose": "Binary search for a character string",
+    "decision": "planned"
+  },
+  {
+    "name": "bsrchd_c",
+    "purpose": "Binary search for a double precision value",
+    "decision": "planned"
+  },
+  {
+    "name": "bsrchi_c",
+    "purpose": "Binary search for an integer value",
+    "decision": "planned"
+  },
+  {
+    "name": "card_c",
+    "purpose": "Cardinality of a cell",
+    "decision": "planned"
+  },
+  {
+    "name": "ccifrm_c",
+    "purpose": "Class and class ID to associated frame",
+    "decision": "planned"
+  },
+  {
+    "name": "cgv2el_c",
+    "purpose": "Center and generating vectors to ellipse",
+    "decision": "planned"
+  },
+  {
+    "name": "chbder_c",
+    "purpose": "Derivatives of a Chebyshev expansion",
+    "decision": "planned"
+  },
+  {
+    "name": "chbigr_c",
+    "purpose": "Chebyshev expansion integral",
+    "decision": "planned"
+  },
+  {
+    "name": "chbint_c",
+    "purpose": "Interpolate a Chebyshev expansion",
+    "decision": "planned"
+  },
+  {
+    "name": "chbval_c",
+    "purpose": "Value of a Chebyshev polynomial expansion",
+    "decision": "planned"
+  },
+  {
+    "name": "chkin_c",
+    "purpose": "module Check In",
+    "decision": "planned"
+  },
+  {
+    "name": "chkout_c",
+    "purpose": "Module Check Out",
+    "decision": "planned"
+  },
+  {
+    "name": "cidfrm_c",
+    "purpose": "center SPK ID frame",
+    "decision": "planned"
+  },
+  {
+    "name": "ckcls_c",
+    "purpose": "CK, Close file",
+    "decision": "planned"
+  },
+  {
+    "name": "ckcov_c",
+    "purpose": "CK coverage",
+    "decision": "planned"
+  },
+  {
+    "name": "ckfrot_c",
+    "purpose": "CK frame, find position rotation",
+    "decision": "planned"
+  },
+  {
+    "name": "ckfxfm_c",
+    "purpose": "CK frame, find state transformation",
+    "decision": "planned"
+  },
+  {
+    "name": "ckgp_c",
+    "purpose": "C-kernel, get pointing",
+    "decision": "planned"
+  },
+  {
+    "name": "ckgpav_c",
+    "purpose": "C-kernel, get pointing and angular velocity",
+    "decision": "planned"
+  },
+  {
+    "name": "ckgr02_c",
+    "purpose": "C-kernel, get record, type 02",
+    "decision": "planned"
+  },
+  {
+    "name": "ckgr03_c",
+    "purpose": "C-kernel, get record, type 03",
+    "decision": "planned"
+  },
+  {
+    "name": "cklpf_c",
+    "purpose": "CK, load pointing file",
+    "decision": "planned"
+  },
+  {
+    "name": "ckmeta_c",
+    "purpose": "CK ID to associated SCLK",
+    "decision": "planned"
+  },
+  {
+    "name": "cknr02_c",
+    "purpose": "C-kernel, number of records, type 02",
+    "decision": "planned"
+  },
+  {
+    "name": "cknr03_c",
+    "purpose": "C-kernel, number of records, type 03",
+    "decision": "planned"
+  },
+  {
+    "name": "ckobj_c",
+    "purpose": "CK objects",
+    "decision": "planned"
+  },
+  {
+    "name": "ckopn_c",
+    "purpose": "CK, open new file.",
+    "decision": "planned"
+  },
+  {
+    "name": "ckupf_c",
+    "purpose": "CK, Unload pointing file",
+    "decision": "planned"
+  },
+  {
+    "name": "ckw01_c",
+    "purpose": "C-Kernel, write segment to C-kernel, data type 1",
+    "decision": "planned"
+  },
+  {
+    "name": "ckw02_c",
+    "purpose": "C-Kernel, write segment to C-kernel, data type 2",
+    "decision": "planned"
+  },
+  {
+    "name": "ckw03_c",
+    "purpose": "C-Kernel, write segment to C-kernel, data type 3",
+    "decision": "planned"
+  },
+  {
+    "name": "ckw05_c",
+    "purpose": "Write CK segment, type 5",
+    "decision": "planned"
+  },
+  {
+    "name": "clearc_c",
+    "purpose": "Clear a two-dimensional character array",
+    "decision": "planned"
+  },
+  {
+    "name": "cleard_c",
+    "purpose": "Clear a double precision array",
+    "decision": "planned"
+  },
+  {
+    "name": "cleari_c",
+    "purpose": "Clear an integer array",
+    "decision": "planned"
+  },
+  {
+    "name": "clight_c",
+    "purpose": "C, Speed of light in a vacuum",
+    "decision": "planned"
+  },
+  {
+    "name": "clpool_c",
+    "purpose": "Clear the pool of kernel variables",
+    "decision": "planned"
+  },
+  {
+    "name": "cmprss_c",
+    "purpose": "Compress a character string",
+    "decision": "planned"
+  },
+  {
+    "name": "cnmfrm_c",
+    "purpose": "Center name to associated frame",
+    "decision": "planned"
+  },
+  {
+    "name": "conics_c",
+    "purpose": "Determine state from conic elements",
+    "decision": "planned"
+  },
+  {
+    "name": "convrt_c",
+    "purpose": "Convert Units",
+    "decision": "planned"
+  },
+  {
+    "name": "copy_c",
+    "purpose": "Copy a SPICE cell",
+    "decision": "planned"
+  },
+  {
+    "name": "cpos_c",
+    "purpose": "Character position",
+    "decision": "planned"
+  },
+  {
+    "name": "cposr_c",
+    "purpose": "Character position, reverse",
+    "decision": "planned"
+  },
+  {
+    "name": "cvpool_c",
+    "purpose": "Check variable in the pool for update",
+    "decision": "planned"
+  },
+  {
+    "name": "cyllat_c",
+    "purpose": "Cylindrical to latitudinal",
+    "decision": "planned"
+  },
+  {
+    "name": "cylrec_c",
+    "purpose": "Cylindrical to rectangular",
+    "decision": "planned"
+  },
+  {
+    "name": "cylsph_c",
+    "purpose": "Cylindrical to spherical",
+    "decision": "planned"
+  },
+  {
+    "name": "dafac_c",
+    "purpose": "DAF add comments",
+    "decision": "planned"
+  },
+  {
+    "name": "dafbbs_c",
+    "purpose": "DAF, begin backward search",
+    "decision": "planned"
+  },
+  {
+    "name": "dafbfs_c",
+    "purpose": "DAF, begin forward search",
+    "decision": "planned"
+  },
+  {
+    "name": "dafcls_c",
+    "purpose": "DAF, close",
+    "decision": "planned"
+  },
+  {
+    "name": "dafcs_c",
+    "purpose": "DAF, continue search",
+    "decision": "planned"
+  },
+  {
+    "name": "dafdc_c",
+    "purpose": "DAF delete comments",
+    "decision": "planned"
+  },
+  {
+    "name": "dafec_c",
+    "purpose": "DAF extract comments",
+    "decision": "planned"
+  },
+  {
+    "name": "daffna_c",
+    "purpose": "DAF, find next array",
+    "decision": "planned"
+  },
+  {
+    "name": "daffpa_c",
+    "purpose": "DAF, find previous array",
+    "decision": "planned"
+  },
+  {
+    "name": "dafgda_c",
+    "purpose": "DAF, read data from address",
+    "decision": "planned"
+  },
+  {
+    "name": "dafgh_c",
+    "purpose": "DAF, get handle",
+    "decision": "planned"
+  },
+  {
+    "name": "dafgn_c",
+    "purpose": "DAF, get array name",
+    "decision": "planned"
+  },
+  {
+    "name": "dafgs_c",
+    "purpose": "DAF, get summary",
+    "decision": "planned"
+  },
+  {
+    "name": "dafgsr_c",
+    "purpose": "DAF, get summary/descriptor record",
+    "decision": "planned"
+  },
+  {
+    "name": "dafhsf_c",
+    "purpose": "DAF, handle to summary format",
+    "decision": "planned"
+  },
+  {
+    "name": "dafopr_c",
+    "purpose": "DAF, open for read",
+    "decision": "planned"
+  },
+  {
+    "name": "dafopw_c",
+    "purpose": "DAF, open for write",
+    "decision": "planned"
+  },
+  {
+    "name": "dafps_c",
+    "purpose": "DAF, pack summary",
+    "decision": "planned"
+  },
+  {
+    "name": "dafrda_c",
+    "purpose": "DAF, read data from address",
+    "decision": "planned"
+  },
+  {
+    "name": "dafrfr_c",
+    "purpose": "DAF, read file record",
+    "decision": "planned"
+  },
+  {
+    "name": "dafrs_c",
+    "purpose": "DAF, replace summary",
+    "decision": "planned"
+  },
+  {
+    "name": "dafus_c",
+    "purpose": "DAF, unpack summary",
+    "decision": "planned"
+  },
+  {
+    "name": "dasac_c",
+    "purpose": "DAS add comments",
+    "decision": "planned"
+  },
+  {
+    "name": "dasadc_c",
+    "purpose": "DAS, add data, character",
+    "decision": "planned"
+  },
+  {
+    "name": "dasadd_c",
+    "purpose": "DAS, add data, double precision",
+    "decision": "planned"
+  },
+  {
+    "name": "dasadi_c",
+    "purpose": "DAS, add data, integer",
+    "decision": "planned"
+  },
+  {
+    "name": "dascls_c",
+    "purpose": "DAS, close file",
+    "decision": "planned"
+  },
+  {
+    "name": "dasdc_c",
+    "purpose": "DAS, delete comments",
+    "decision": "planned"
+  },
+  {
+    "name": "dasec_c",
+    "purpose": "DAS extract comments",
+    "decision": "planned"
+  },
+  {
+    "name": "dashfn_c",
+    "purpose": "DAS, handle to file name",
+    "decision": "planned"
+  },
+  {
+    "name": "dashfs_c",
+    "purpose": "DAS, handle to file summary",
+    "decision": "planned"
+  },
+  {
+    "name": "daslla_c",
+    "purpose": "DAS, last logical addresses",
+    "decision": "planned"
+  },
+  {
+    "name": "dasllc_c",
+    "purpose": "DAS, low-level close",
+    "decision": "planned"
+  },
+  {
+    "name": "dasonw_c",
+    "purpose": "DAS, open new file",
+    "decision": "planned"
+  },
+  {
+    "name": "dasopr_c",
+    "purpose": "DAS, open for read",
+    "decision": "planned"
+  },
+  {
+    "name": "dasops_c",
+    "purpose": "DAS, open scratch",
+    "decision": "planned"
+  },
+  {
+    "name": "dasopw_c",
+    "purpose": "DAS, open for write",
+    "decision": "planned"
+  },
+  {
+    "name": "dasrdc_c",
+    "purpose": "DAS, read data, character",
+    "decision": "planned"
+  },
+  {
+    "name": "dasrdd_c",
+    "purpose": "DAS, read data, double precision",
+    "decision": "planned"
+  },
+  {
+    "name": "dasrdi_c",
+    "purpose": "DAS, read data, integer",
+    "decision": "planned"
+  },
+  {
+    "name": "dasrfr_c",
+    "purpose": "DAS, read file record",
+    "decision": "planned"
+  },
+  {
+    "name": "dasudc_c",
+    "purpose": "DAS, update data, character",
+    "decision": "planned"
+  },
+  {
+    "name": "dasudd_c",
+    "purpose": "DAS, update data, double precision",
+    "decision": "planned"
+  },
+  {
+    "name": "dasudi_c",
+    "purpose": "DAS, update data, integer",
+    "decision": "planned"
+  },
+  {
+    "name": "daswbr_c",
+    "purpose": "DAS, write buffered records",
+    "decision": "planned"
+  },
+  {
+    "name": "dazldr_c",
+    "purpose": "Derivative of AZ/EL w.r.t. rectangular",
+    "decision": "planned"
+  },
+  {
+    "name": "dcyldr_c",
+    "purpose": "Derivative of cylindrical w.r.t. rectangular",
+    "decision": "planned"
+  },
+  {
+    "name": "deltet_c",
+    "purpose": "Delta ET, ET - UTC",
+    "decision": "planned"
+  },
+  {
+    "name": "det_c",
+    "purpose": "Determinant of a double precision 3x3 matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "dgeodr_c",
+    "purpose": "Derivative of geodetic w.r.t. rectangular",
+    "decision": "planned"
+  },
+  {
+    "name": "diags2_c",
+    "purpose": "Diagonalize symmetric 2x2 matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "diff_c",
+    "purpose": "Difference of two sets",
+    "decision": "planned"
+  },
+  {
+    "name": "dlabbs_c",
+    "purpose": "DLA, begin backward search",
+    "decision": "planned"
+  },
+  {
+    "name": "dlabfs_c",
+    "purpose": "DLA, begin forward search",
+    "decision": "planned"
+  },
+  {
+    "name": "dlabns_c",
+    "purpose": "DLA, begin new segment",
+    "decision": "planned"
+  },
+  {
+    "name": "dlaens_c",
+    "purpose": "DLA, end new segment",
+    "decision": "planned"
+  },
+  {
+    "name": "dlafns_c",
+    "purpose": "DLA, find next segment",
+    "decision": "planned"
+  },
+  {
+    "name": "dlafps_c",
+    "purpose": "DLA, find previous segment",
+    "decision": "planned"
+  },
+  {
+    "name": "dlaopn_c",
+    "purpose": "DLA, open new file",
+    "decision": "planned"
+  },
+  {
+    "name": "dlatdr_c",
+    "purpose": "Derivative of latitudinal w.r.t. rectangular",
+    "decision": "planned"
+  },
+  {
+    "name": "dnearp_c",
+    "purpose": "Derivative of near point",
+    "decision": "planned"
+  },
+  {
+    "name": "dp2hx_c",
+    "purpose": "D.p. number to hexadecimal string",
+    "decision": "planned"
+  },
+  {
+    "name": "dpgrdr_c",
+    "purpose": "Derivative of planetographic w.r.t. rectangular",
+    "decision": "planned"
+  },
+  {
+    "name": "dpmax_c",
+    "purpose": "Largest DP number",
+    "decision": "planned"
+  },
+  {
+    "name": "dpmin_c",
+    "purpose": "Smallest DP number",
+    "decision": "planned"
+  },
+  {
+    "name": "dpr_c",
+    "purpose": "Degrees per radian",
+    "decision": "planned"
+  },
+  {
+    "name": "drdazl_c",
+    "purpose": "Derivative of rectangular w.r.t. AZ/EL",
+    "decision": "planned"
+  },
+  {
+    "name": "drdcyl_c",
+    "purpose": "Derivative of rectangular w.r.t. cylindrical",
+    "decision": "planned"
+  },
+  {
+    "name": "drdgeo_c",
+    "purpose": "Derivative of rectangular w.r.t. geodetic",
+    "decision": "planned"
+  },
+  {
+    "name": "drdlat_c",
+    "purpose": "Derivative of rectangular w.r.t. latitudinal",
+    "decision": "planned"
+  },
+  {
+    "name": "drdpgr_c",
+    "purpose": "Derivative of rectangular w.r.t. planetographic",
+    "decision": "planned"
+  },
+  {
+    "name": "drdsph_c",
+    "purpose": "Derivative of rectangular w.r.t. spherical",
+    "decision": "planned"
+  },
+  {
+    "name": "dskb02_c",
+    "purpose": "DSK, fetch type 2 bookkeeping data",
+    "decision": "planned"
+  },
+  {
+    "name": "dskcls_c",
+    "purpose": "DSK, close file",
+    "decision": "planned"
+  },
+  {
+    "name": "dskd02_c",
+    "purpose": "DSK, fetch d.p. type 2 data",
+    "decision": "planned"
+  },
+  {
+    "name": "dskgd_c",
+    "purpose": "DSK, return DSK segment descriptor",
+    "decision": "planned"
+  },
+  {
+    "name": "dskgtl_c",
+    "purpose": "DSK, get tolerance",
+    "decision": "planned"
+  },
+  {
+    "name": "dski02_c",
+    "purpose": "DSK, fetch integer type 2 data",
+    "decision": "planned"
+  },
+  {
+    "name": "dskmi2_c",
+    "purpose": "DSK, make spatial index for type 2 segment",
+    "decision": "planned"
+  },
+  {
+    "name": "dskn02_c",
+    "purpose": "DSK, type 2, compute normal vector for plate",
+    "decision": "planned"
+  },
+  {
+    "name": "dskobj_c",
+    "purpose": "DSK, get object IDs",
+    "decision": "planned"
+  },
+  {
+    "name": "dskopn_c",
+    "purpose": "DSK, open new file",
+    "decision": "planned"
+  },
+  {
+    "name": "dskp02_c",
+    "purpose": "DSK, fetch type 2 plate data",
+    "decision": "planned"
+  },
+  {
+    "name": "dskrb2_c",
+    "purpose": "DSK, determine range bounds for plate set",
+    "decision": "planned"
+  },
+  {
+    "name": "dsksrf_c",
+    "purpose": "DSK, get surface IDs for body",
+    "decision": "planned"
+  },
+  {
+    "name": "dskstl_c",
+    "purpose": "DSK, set tolerance",
+    "decision": "planned"
+  },
+  {
+    "name": "dskv02_c",
+    "purpose": "DSK, fetch type 2 vertex data",
+    "decision": "planned"
+  },
+  {
+    "name": "dskw02_c",
+    "purpose": "DSK, write type 2 segment",
+    "decision": "planned"
+  },
+  {
+    "name": "dskx02_c",
+    "purpose": "DSK, ray-surface intercept, type 2",
+    "decision": "planned"
+  },
+  {
+    "name": "dskxsi_c",
+    "purpose": "DSK, ray-surface intercept with source information",
+    "decision": "planned"
+  },
+  {
+    "name": "dskxv_c",
+    "purpose": "DSK, ray-surface intercept, vectorized",
+    "decision": "planned"
+  },
+  {
+    "name": "dskz02_c",
+    "purpose": "DSK, fetch type 2 model size parameters",
+    "decision": "planned"
+  },
+  {
+    "name": "dsphdr_c",
+    "purpose": "Derivative of spherical w.r.t. rectangular",
+    "decision": "planned"
+  },
+  {
+    "name": "dtpool_c",
+    "purpose": "Data for a kernel pool variable",
+    "decision": "planned"
+  },
+  {
+    "name": "ducrss_c",
+    "purpose": "Unit Normalized Cross Product and Derivative",
+    "decision": "planned"
+  },
+  {
+    "name": "dvcrss_c",
+    "purpose": "Derivative of Vector cross product",
+    "decision": "planned"
+  },
+  {
+    "name": "dvdot_c",
+    "purpose": "Derivative of Vector Dot Product, 3-D",
+    "decision": "planned"
+  },
+  {
+    "name": "dvhat_c",
+    "purpose": "Derivative and unit vector \"V-hat\" of a state",
+    "decision": "planned"
+  },
+  {
+    "name": "dvnorm_c",
+    "purpose": "Derivative of vector norm",
+    "decision": "planned"
+  },
+  {
+    "name": "dvpool_c",
+    "purpose": "Delete a variable from the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "dvsep_c",
+    "purpose": "Time derivative of separation angle",
+    "decision": "planned"
+  },
+  {
+    "name": "edlimb_c",
+    "purpose": "Ellipsoid Limb",
+    "decision": "planned"
+  },
+  {
+    "name": "ednmpt_c",
+    "purpose": "Ellipsoid normal vector to surface point",
+    "decision": "planned"
+  },
+  {
+    "name": "edpnt_c",
+    "purpose": "Ellipsoid point",
+    "decision": "planned"
+  },
+  {
+    "name": "edterm_c",
+    "purpose": "Ellipsoid terminator",
+    "decision": "planned"
+  },
+  {
+    "name": "ekacec_c",
+    "purpose": "EK, add character data to column",
+    "decision": "planned"
+  },
+  {
+    "name": "ekaced_c",
+    "purpose": "EK, add d.p. data to column",
+    "decision": "planned"
+  },
+  {
+    "name": "ekacei_c",
+    "purpose": "EK, add integer data to column",
+    "decision": "planned"
+  },
+  {
+    "name": "ekaclc_c",
+    "purpose": "EK, add character column to segment",
+    "decision": "planned"
+  },
+  {
+    "name": "ekacld_c",
+    "purpose": "EK, add double precision column to segment",
+    "decision": "planned"
+  },
+  {
+    "name": "ekacli_c",
+    "purpose": "EK, add integer column to segment",
+    "decision": "planned"
+  },
+  {
+    "name": "ekappr_c",
+    "purpose": "EK, append record onto segment",
+    "decision": "planned"
+  },
+  {
+    "name": "ekbseg_c",
+    "purpose": "EK, start new segment",
+    "decision": "planned"
+  },
+  {
+    "name": "ekccnt_c",
+    "purpose": "EK, column count",
+    "decision": "planned"
+  },
+  {
+    "name": "ekcii_c",
+    "purpose": "EK, column info by index",
+    "decision": "planned"
+  },
+  {
+    "name": "ekcls_c",
+    "purpose": "EK, close file",
+    "decision": "planned"
+  },
+  {
+    "name": "ekdelr_c",
+    "purpose": "EK, delete record from segment",
+    "decision": "planned"
+  },
+  {
+    "name": "ekffld_c",
+    "purpose": "EK, finish fast write",
+    "decision": "planned"
+  },
+  {
+    "name": "ekfind_c",
+    "purpose": "EK, find data",
+    "decision": "planned"
+  },
+  {
+    "name": "ekgc_c",
+    "purpose": "EK, get event data, character",
+    "decision": "planned"
+  },
+  {
+    "name": "ekgd_c",
+    "purpose": "EK, get event data, double precision",
+    "decision": "planned"
+  },
+  {
+    "name": "ekgi_c",
+    "purpose": "EK, get event data, integer",
+    "decision": "planned"
+  },
+  {
+    "name": "ekifld_c",
+    "purpose": "EK, initialize segment for fast write",
+    "decision": "planned"
+  },
+  {
+    "name": "ekinsr_c",
+    "purpose": "EK, insert record into segment",
+    "decision": "planned"
+  },
+  {
+    "name": "eklef_c",
+    "purpose": "EK, load event file",
+    "decision": "planned"
+  },
+  {
+    "name": "eknelt_c",
+    "purpose": "EK, get number of elements in column entry",
+    "decision": "planned"
+  },
+  {
+    "name": "eknseg_c",
+    "purpose": "EK, number of segments in file",
+    "decision": "planned"
+  },
+  {
+    "name": "ekntab_c",
+    "purpose": "EK, return number of loaded tables",
+    "decision": "planned"
+  },
+  {
+    "name": "ekopn_c",
+    "purpose": "EK, open new file",
+    "decision": "planned"
+  },
+  {
+    "name": "ekopr_c",
+    "purpose": "EK, open file for reading",
+    "decision": "planned"
+  },
+  {
+    "name": "ekops_c",
+    "purpose": "EK, open scratch file",
+    "decision": "planned"
+  },
+  {
+    "name": "ekopw_c",
+    "purpose": "EK, open file for writing",
+    "decision": "planned"
+  },
+  {
+    "name": "ekpsel_c",
+    "purpose": "EK, parse SELECT clause",
+    "decision": "planned"
+  },
+  {
+    "name": "ekrcec_c",
+    "purpose": "EK, read column entry element, character",
+    "decision": "planned"
+  },
+  {
+    "name": "ekrced_c",
+    "purpose": "EK, read column entry element, d.p.",
+    "decision": "planned"
+  },
+  {
+    "name": "ekrcei_c",
+    "purpose": "EK, read column entry element, integer",
+    "decision": "planned"
+  },
+  {
+    "name": "ekssum_c",
+    "purpose": "EK, return segment summary",
+    "decision": "planned"
+  },
+  {
+    "name": "ektnam_c",
+    "purpose": "EK, return name of loaded table",
+    "decision": "planned"
+  },
+  {
+    "name": "ekucec_c",
+    "purpose": "EK, update character column entry",
+    "decision": "planned"
+  },
+  {
+    "name": "ekuced_c",
+    "purpose": "EK, update d.p. column entry",
+    "decision": "planned"
+  },
+  {
+    "name": "ekucei_c",
+    "purpose": "EK, update integer column entry",
+    "decision": "planned"
+  },
+  {
+    "name": "ekuef_c",
+    "purpose": "EK, unload event file",
+    "decision": "planned"
+  },
+  {
+    "name": "el2cgv_c",
+    "purpose": "Ellipse to center and generating vectors",
+    "decision": "planned"
+  },
+  {
+    "name": "elemc_c",
+    "purpose": "Element of a character set",
+    "decision": "planned"
+  },
+  {
+    "name": "elemd_c",
+    "purpose": "Element of a double precision set",
+    "decision": "planned"
+  },
+  {
+    "name": "elemi_c",
+    "purpose": "Element of an integer set",
+    "decision": "planned"
+  },
+  {
+    "name": "eqncpv_c",
+    "purpose": "Equinoctial Elements to position and velocity",
+    "decision": "planned"
+  },
+  {
+    "name": "eqstr_c",
+    "purpose": "Equivalent strings",
+    "decision": "planned"
+  },
+  {
+    "name": "erract_c",
+    "purpose": "Get/Set Default Error Action",
+    "decision": "planned"
+  },
+  {
+    "name": "errch_c",
+    "purpose": "Insert String into Error Message Text",
+    "decision": "planned"
+  },
+  {
+    "name": "errdev_c",
+    "purpose": "Get/Set Error Output Device Name",
+    "decision": "planned"
+  },
+  {
+    "name": "errdp_c",
+    "purpose": "Insert D.P. Number into Error Message Text",
+    "decision": "planned"
+  },
+  {
+    "name": "errint_c",
+    "purpose": "Insert Integer into Error Message Text",
+    "decision": "planned"
+  },
+  {
+    "name": "errprt_c",
+    "purpose": "Get/Set Error Output Items",
+    "decision": "planned"
+  },
+  {
+    "name": "esrchc_c",
+    "purpose": "Equivalence search, character",
+    "decision": "planned"
+  },
+  {
+    "name": "et2lst_c",
+    "purpose": "ET to Local Solar Time",
+    "decision": "planned"
+  },
+  {
+    "name": "et2utc_c",
+    "purpose": "Ephemeris Time to UTC",
+    "decision": "planned"
+  },
+  {
+    "name": "etcal_c",
+    "purpose": "Convert ET to Calendar format",
+    "decision": "planned"
+  },
+  {
+    "name": "eul2m_c",
+    "purpose": "Euler angles to matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "eul2xf_c",
+    "purpose": "Euler angles and derivative to transformation",
+    "decision": "planned"
+  },
+  {
+    "name": "evsgp4_c",
+    "purpose": "Evaluate \"two-line\" element data",
+    "decision": "planned"
+  },
+  {
+    "name": "exists_c",
+    "purpose": "Does the file exist?",
+    "decision": "planned"
+  },
+  {
+    "name": "expool_c",
+    "purpose": "Confirm the existence of a pooled kernel variable",
+    "decision": "planned"
+  },
+  {
+    "name": "failed_c",
+    "purpose": "Error Status Indicator",
+    "decision": "planned"
+  },
+  {
+    "name": "filld_c",
+    "purpose": "Fill a double precision array",
+    "decision": "planned"
+  },
+  {
+    "name": "filli_c",
+    "purpose": "Fill an integer array",
+    "decision": "planned"
+  },
+  {
+    "name": "fovray_c",
+    "purpose": "Is ray in FOV at time?",
+    "decision": "planned"
+  },
+  {
+    "name": "fovtrg_c",
+    "purpose": "Is target in FOV at time?",
+    "decision": "planned"
+  },
+  {
+    "name": "frame_c",
+    "purpose": "Build a right handed coordinate frame",
+    "decision": "planned"
+  },
+  {
+    "name": "frinfo_c",
+    "purpose": "Frame Information",
+    "decision": "planned"
+  },
+  {
+    "name": "frmnam_c",
+    "purpose": "Frame to Name",
+    "decision": "planned"
+  },
+  {
+    "name": "ftncls_c",
+    "purpose": "Close file designated by Fortran unit",
+    "decision": "excluded",
+    "justification": "Fortran unit I/O (non-portable)"
+  },
+  {
+    "name": "furnsh_c",
+    "purpose": "Furnish a program with SPICE kernels",
+    "decision": "planned"
+  },
+  {
+    "name": "gcpool_c",
+    "purpose": "Get character data from the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "gdpool_c",
+    "purpose": "Get d.p. values from the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "georec_c",
+    "purpose": "Geodetic to rectangular coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "getcml_c",
+    "purpose": "Get the command line",
+    "decision": "excluded",
+    "justification": "interactive I/O / CLI"
+  },
+  {
+    "name": "getelm_c",
+    "purpose": "Get the components from two-line elements",
+    "decision": "planned"
+  },
+  {
+    "name": "getfat_c",
+    "purpose": "Get file architecture and type",
+    "decision": "planned"
+  },
+  {
+    "name": "getfov_c",
+    "purpose": "Get instrument FOV parameters",
+    "decision": "planned"
+  },
+  {
+    "name": "getfvn_c",
+    "purpose": "Get instrument FOV parameters, by instrument name",
+    "decision": "planned"
+  },
+  {
+    "name": "getmsg_c",
+    "purpose": "Get Error Message",
+    "decision": "planned"
+  },
+  {
+    "name": "gfbail_c",
+    "purpose": "GF, interrupt signal indicator",
+    "decision": "planned"
+  },
+  {
+    "name": "gfclrh_c",
+    "purpose": "GF, clear interrupt signal handler status",
+    "decision": "planned"
+  },
+  {
+    "name": "gfdist_c",
+    "purpose": "GF, distance search",
+    "decision": "planned"
+  },
+  {
+    "name": "gfevnt_c",
+    "purpose": "GF, geometric event finder",
+    "decision": "planned"
+  },
+  {
+    "name": "gffove_c",
+    "purpose": "GF, is target in FOV?",
+    "decision": "planned"
+  },
+  {
+    "name": "gfilum_c",
+    "purpose": "GF, illumination angle search",
+    "decision": "planned"
+  },
+  {
+    "name": "gfinth_c",
+    "purpose": "GF, interrupt signal handler",
+    "decision": "planned"
+  },
+  {
+    "name": "gfocce_c",
+    "purpose": "GF, occultation event",
+    "decision": "planned"
+  },
+  {
+    "name": "gfoclt_c",
+    "purpose": "GF, find occultation",
+    "decision": "planned"
+  },
+  {
+    "name": "gfpa_c",
+    "purpose": "GF, phase angle search",
+    "decision": "planned"
+  },
+  {
+    "name": "gfposc_c",
+    "purpose": "GF, observer-target vector coordinate search",
+    "decision": "planned"
+  },
+  {
+    "name": "gfrefn_c",
+    "purpose": "GF, default refinement estimator",
+    "decision": "planned"
+  },
+  {
+    "name": "gfrepf_c",
+    "purpose": "GF, progress report finalization",
+    "decision": "planned"
+  },
+  {
+    "name": "gfrepi_c",
+    "purpose": "GF, progress report initialization",
+    "decision": "planned"
+  },
+  {
+    "name": "gfrepu_c",
+    "purpose": "GF, progress report update",
+    "decision": "planned"
+  },
+  {
+    "name": "gfrfov_c",
+    "purpose": "GF, is ray in FOV?",
+    "decision": "planned"
+  },
+  {
+    "name": "gfrr_c",
+    "purpose": "GF, range rate search",
+    "decision": "planned"
+  },
+  {
+    "name": "gfsep_c",
+    "purpose": "GF, angular separation search",
+    "decision": "planned"
+  },
+  {
+    "name": "gfsntc_c",
+    "purpose": "GF, surface intercept vector coordinate search",
+    "decision": "planned"
+  },
+  {
+    "name": "gfsstp_c",
+    "purpose": "Geometry finder set step size",
+    "decision": "planned"
+  },
+  {
+    "name": "gfstep_c",
+    "purpose": "Geometry finder step size",
+    "decision": "planned"
+  },
+  {
+    "name": "gfstol_c",
+    "purpose": "GF, set a tolerance value for GF",
+    "decision": "planned"
+  },
+  {
+    "name": "gfsubc_c",
+    "purpose": "GF, subpoint vector coordinate search",
+    "decision": "planned"
+  },
+  {
+    "name": "gftfov_c",
+    "purpose": "GF, is target in FOV?",
+    "decision": "planned"
+  },
+  {
+    "name": "gfudb_c",
+    "purpose": "GF, user defined boolean",
+    "decision": "planned"
+  },
+  {
+    "name": "gfuds_c",
+    "purpose": "GF, user defined scalar",
+    "decision": "planned"
+  },
+  {
+    "name": "gipool_c",
+    "purpose": "Get integers from the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "gnpool_c",
+    "purpose": "Get names of kernel pool variables",
+    "decision": "planned"
+  },
+  {
+    "name": "halfpi_c",
+    "purpose": "Half the value of pi",
+    "decision": "planned"
+  },
+  {
+    "name": "hrmesp_c",
+    "purpose": "Hermite polynomial interpolation, equal spacing",
+    "decision": "planned"
+  },
+  {
+    "name": "hrmint_c",
+    "purpose": "Hermite polynomial interpolation",
+    "decision": "planned"
+  },
+  {
+    "name": "hx2dp_c",
+    "purpose": "Hexadecimal string to d.p. number",
+    "decision": "planned"
+  },
+  {
+    "name": "ident_c",
+    "purpose": "Return the 3x3 identity matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "illum_c",
+    "purpose": "Illumination angles",
+    "decision": "planned"
+  },
+  {
+    "name": "illum_pl02",
+    "purpose": "illumination angles using DSK type 2 plate model",
+    "decision": "planned"
+  },
+  {
+    "name": "illum_plid_pl02",
+    "purpose": "illumination angles using type 2 DSK",
+    "decision": "planned"
+  },
+  {
+    "name": "illumf_c",
+    "purpose": "Illumination angles, general source, return flags",
+    "decision": "planned"
+  },
+  {
+    "name": "illumg_c",
+    "purpose": "Illumination angles, general source",
+    "decision": "planned"
+  },
+  {
+    "name": "ilumin_c",
+    "purpose": "Illumination angles",
+    "decision": "planned"
+  },
+  {
+    "name": "inedpl_c",
+    "purpose": "Intersection of ellipsoid and plane",
+    "decision": "planned"
+  },
+  {
+    "name": "inelpl_c",
+    "purpose": "Intersection of ellipse and plane",
+    "decision": "planned"
+  },
+  {
+    "name": "inrypl_c",
+    "purpose": "Intersection of ray and plane",
+    "decision": "planned"
+  },
+  {
+    "name": "insrtc_c",
+    "purpose": "Insert an item into a character set",
+    "decision": "planned"
+  },
+  {
+    "name": "insrtd_c",
+    "purpose": "Insert an item into a double precision set",
+    "decision": "planned"
+  },
+  {
+    "name": "insrti_c",
+    "purpose": "Insert an item into an integer set",
+    "decision": "planned"
+  },
+  {
+    "name": "inter_c",
+    "purpose": "Intersection of two sets",
+    "decision": "planned"
+  },
+  {
+    "name": "intmax_c",
+    "purpose": "Largest integer number",
+    "decision": "planned"
+  },
+  {
+    "name": "intmin_c",
+    "purpose": "Smallest integer number",
+    "decision": "planned"
+  },
+  {
+    "name": "invert_c",
+    "purpose": "Invert a 3x3 matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "invort_c",
+    "purpose": "Invert nearly orthogonal matrices",
+    "decision": "planned"
+  },
+  {
+    "name": "invstm_c",
+    "purpose": "Inverse of state transformation matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "isordv_c",
+    "purpose": "Is array an order vector?",
+    "decision": "planned"
+  },
+  {
+    "name": "isrchc_c",
+    "purpose": "Search in a character array",
+    "decision": "planned"
+  },
+  {
+    "name": "isrchd_c",
+    "purpose": "Search in a double precision array",
+    "decision": "planned"
+  },
+  {
+    "name": "isrchi_c",
+    "purpose": "Search in an integer array",
+    "decision": "planned"
+  },
+  {
+    "name": "isrot_c",
+    "purpose": "Indicate whether a matrix is a rotation matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "iswhsp_c",
+    "purpose": "Determine whether a string is white space",
+    "decision": "planned"
+  },
+  {
+    "name": "j1900_c",
+    "purpose": "Julian Date of 1900.0 JAN 0.5",
+    "decision": "planned"
+  },
+  {
+    "name": "j1950_c",
+    "purpose": "Julian Date of 1950.0 JAN 1.0",
+    "decision": "planned"
+  },
+  {
+    "name": "j2000_c",
+    "purpose": "Julian Date of 2000 JAN 1.5",
+    "decision": "planned"
+  },
+  {
+    "name": "j2100_c",
+    "purpose": "Julian Date of 2100 JAN 1.5",
+    "decision": "planned"
+  },
+  {
+    "name": "jyear_c",
+    "purpose": "Seconds per julian year",
+    "decision": "planned"
+  },
+  {
+    "name": "kclear_c",
+    "purpose": "Keeper clear",
+    "decision": "planned"
+  },
+  {
+    "name": "kdata_c",
+    "purpose": "Kernel Data",
+    "decision": "planned"
+  },
+  {
+    "name": "kinfo_c",
+    "purpose": "Kernel Information",
+    "decision": "planned"
+  },
+  {
+    "name": "kplfrm_c",
+    "purpose": "Kernel pool frame IDs",
+    "decision": "planned"
+  },
+  {
+    "name": "ktotal_c",
+    "purpose": "Kernel Totals",
+    "decision": "planned"
+  },
+  {
+    "name": "kxtrct_c",
+    "purpose": "Extract a substring starting with a keyword",
+    "decision": "planned"
+  },
+  {
+    "name": "lastnb_c",
+    "purpose": "Last non-blank character",
+    "decision": "planned"
+  },
+  {
+    "name": "latcyl_c",
+    "purpose": "Latitudinal to cylindrical coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "latrec_c",
+    "purpose": "Latitudinal to rectangular coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "latsph_c",
+    "purpose": "Latitudinal to spherical coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "latsrf_c",
+    "purpose": "Latitudinal grid to surface points",
+    "decision": "planned"
+  },
+  {
+    "name": "lcase_c",
+    "purpose": "Convert to lowercase",
+    "decision": "planned"
+  },
+  {
+    "name": "ldpool_c",
+    "purpose": "Load variables from a kernel file into the pool",
+    "decision": "planned"
+  },
+  {
+    "name": "lgresp_c",
+    "purpose": "Lagrange interpolation on equally spaced points",
+    "decision": "planned"
+  },
+  {
+    "name": "lgrind_c",
+    "purpose": "Lagrange polynomial interpolation with derivative",
+    "decision": "planned"
+  },
+  {
+    "name": "lgrint_c",
+    "purpose": "Lagrange polynomial interpolation",
+    "decision": "planned"
+  },
+  {
+    "name": "limb_pl02",
+    "purpose": "Limb using DSK type 2 plate model",
+    "decision": "planned"
+  },
+  {
+    "name": "limbpt_c",
+    "purpose": "Limb points on an extended object",
+    "decision": "planned"
+  },
+  {
+    "name": "llgrid_pl02",
+    "purpose": "Lon/lat grid using DSK type 2 plate model",
+    "decision": "planned"
+  },
+  {
+    "name": "lmpool_c",
+    "purpose": "Load variables from memory into the pool",
+    "decision": "planned"
+  },
+  {
+    "name": "lparse_c",
+    "purpose": "Parse items from a list",
+    "decision": "planned"
+  },
+  {
+    "name": "lparsm_c",
+    "purpose": "Parse a list of items having multiple delimiters",
+    "decision": "planned"
+  },
+  {
+    "name": "lparss_c",
+    "purpose": "Parse a list of items; return a set",
+    "decision": "planned"
+  },
+  {
+    "name": "lspcn_c",
+    "purpose": "Longitude of the sun, planetocentric",
+    "decision": "planned"
+  },
+  {
+    "name": "lstlec_c",
+    "purpose": "Last character element less than or equal to.",
+    "decision": "planned"
+  },
+  {
+    "name": "lstled_c",
+    "purpose": "Last double precision element less than or equal",
+    "decision": "planned"
+  },
+  {
+    "name": "lstlei_c",
+    "purpose": "Last integer element less than or equal to",
+    "decision": "planned"
+  },
+  {
+    "name": "lstltc_c",
+    "purpose": "Last character element less than",
+    "decision": "planned"
+  },
+  {
+    "name": "lstltd_c",
+    "purpose": "Last double precision element less than",
+    "decision": "planned"
+  },
+  {
+    "name": "lstlti_c",
+    "purpose": "Last integer element less than",
+    "decision": "planned"
+  },
+  {
+    "name": "ltime_c",
+    "purpose": "Light Time",
+    "decision": "planned"
+  },
+  {
+    "name": "lx4dec_c",
+    "purpose": "Scan for decimal number",
+    "decision": "planned"
+  },
+  {
+    "name": "lx4num_c",
+    "purpose": "Scan for number",
+    "decision": "planned"
+  },
+  {
+    "name": "lx4sgn_c",
+    "purpose": "Scan for signed integer",
+    "decision": "planned"
+  },
+  {
+    "name": "lx4uns_c",
+    "purpose": "Scan for unsigned integer",
+    "decision": "planned"
+  },
+  {
+    "name": "lxqstr_c",
+    "purpose": "Lex quoted string",
+    "decision": "planned"
+  },
+  {
+    "name": "m2eul_c",
+    "purpose": "Matrix to Euler angles",
+    "decision": "planned"
+  },
+  {
+    "name": "m2q_c",
+    "purpose": "Matrix to quaternion",
+    "decision": "planned"
+  },
+  {
+    "name": "matchi_c",
+    "purpose": "Match string against wildcard template",
+    "decision": "planned"
+  },
+  {
+    "name": "matchw_c",
+    "purpose": "Match string against wildcard template",
+    "decision": "planned"
+  },
+  {
+    "name": "maxd_c",
+    "purpose": "Maximum of a set of double precision values",
+    "decision": "planned"
+  },
+  {
+    "name": "maxi_c",
+    "purpose": "Maximum of a set of integers",
+    "decision": "planned"
+  },
+  {
+    "name": "mequ_c",
+    "purpose": "Matrix equal to another, 3x3",
+    "decision": "planned"
+  },
+  {
+    "name": "mequg_c",
+    "purpose": "Matrix equal to another, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "mind_c",
+    "purpose": "Minimum of a set of double precision values",
+    "decision": "planned"
+  },
+  {
+    "name": "mini_c",
+    "purpose": "minimum of a set of integers",
+    "decision": "planned"
+  },
+  {
+    "name": "moved_c",
+    "purpose": "Move a double precision array to another",
+    "decision": "planned"
+  },
+  {
+    "name": "mtxm_c",
+    "purpose": "Matrix transpose times matrix, 3x3",
+    "decision": "planned"
+  },
+  {
+    "name": "mtxmg_c",
+    "purpose": "Matrix transpose times matrix, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "mtxv_c",
+    "purpose": "Matrix transpose times vector, 3x3",
+    "decision": "planned"
+  },
+  {
+    "name": "mtxvg_c",
+    "purpose": "Matrix transpose times vector, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "mxm_c",
+    "purpose": "Matrix times matrix, 3x3",
+    "decision": "planned"
+  },
+  {
+    "name": "mxmg_c",
+    "purpose": "Matrix times matrix, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "mxmt_c",
+    "purpose": "Matrix times matrix transpose, 3x3",
+    "decision": "planned"
+  },
+  {
+    "name": "mxmtg_c",
+    "purpose": "Matrix times matrix transpose, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "mxv_c",
+    "purpose": "Matrix times vector, 3x3",
+    "decision": "planned"
+  },
+  {
+    "name": "mxvg_c",
+    "purpose": "Matrix times vector, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "namfrm_c",
+    "purpose": "Name to frame",
+    "decision": "planned"
+  },
+  {
+    "name": "ncpos_c",
+    "purpose": "NOT Character position",
+    "decision": "planned"
+  },
+  {
+    "name": "ncposr_c",
+    "purpose": "Character position, reverse",
+    "decision": "planned"
+  },
+  {
+    "name": "nearpt_c",
+    "purpose": "Nearest point on an ellipsoid",
+    "decision": "planned"
+  },
+  {
+    "name": "nextwd_c",
+    "purpose": "Next word in a character string",
+    "decision": "planned"
+  },
+  {
+    "name": "npedln_c",
+    "purpose": "Nearest point on ellipsoid to line",
+    "decision": "planned"
+  },
+  {
+    "name": "npelpt_c",
+    "purpose": "Nearest point on ellipse to point",
+    "decision": "planned"
+  },
+  {
+    "name": "nplnpt_c",
+    "purpose": "Nearest point on line to point",
+    "decision": "planned"
+  },
+  {
+    "name": "nthwd_c",
+    "purpose": "n'th word in a character string",
+    "decision": "planned"
+  },
+  {
+    "name": "nvc2pl_c",
+    "purpose": "Normal vector and constant to plane",
+    "decision": "planned"
+  },
+  {
+    "name": "nvp2pl_c",
+    "purpose": "Normal vector and point to plane",
+    "decision": "planned"
+  },
+  {
+    "name": "occult_c",
+    "purpose": "find occultation type at time",
+    "decision": "planned"
+  },
+  {
+    "name": "ordc_c",
+    "purpose": "The ordinal position of an element in a set",
+    "decision": "planned"
+  },
+  {
+    "name": "ordd_c",
+    "purpose": "The ordinal position of an element in a set",
+    "decision": "planned"
+  },
+  {
+    "name": "orderc_c",
+    "purpose": "Order of a character array",
+    "decision": "planned"
+  },
+  {
+    "name": "orderd_c",
+    "purpose": "Order of a double precision array",
+    "decision": "planned"
+  },
+  {
+    "name": "orderi_c",
+    "purpose": "Order of an integer array",
+    "decision": "planned"
+  },
+  {
+    "name": "ordi_c",
+    "purpose": "The ordinal position of an element in a set",
+    "decision": "planned"
+  },
+  {
+    "name": "oscelt_c",
+    "purpose": "Determine conic elements from state",
+    "decision": "planned"
+  },
+  {
+    "name": "oscltx_c",
+    "purpose": "Extended osculating elements from state",
+    "decision": "planned"
+  },
+  {
+    "name": "pckcls_c",
+    "purpose": "PCK, close file",
+    "decision": "planned"
+  },
+  {
+    "name": "pckcov_c",
+    "purpose": "PCK coverage",
+    "decision": "planned"
+  },
+  {
+    "name": "pckfrm_c",
+    "purpose": "PCK, get reference frame class ID set",
+    "decision": "planned"
+  },
+  {
+    "name": "pcklof_c",
+    "purpose": "PCK, load binary file",
+    "decision": "planned"
+  },
+  {
+    "name": "pckopn_c",
+    "purpose": "PCK, open new file",
+    "decision": "planned"
+  },
+  {
+    "name": "pckuof_c",
+    "purpose": "PCK, unload binary file",
+    "decision": "planned"
+  },
+  {
+    "name": "pckw02_c",
+    "purpose": "PCK, write type 2 segment",
+    "decision": "planned"
+  },
+  {
+    "name": "pcpool_c",
+    "purpose": "Put character strings into the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "pdpool_c",
+    "purpose": "Put d.p.'s into the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "pgrrec_c",
+    "purpose": "Planetographic to rectangular",
+    "decision": "planned"
+  },
+  {
+    "name": "phaseq_c",
+    "purpose": "Phase angle quantity between bodies centers",
+    "decision": "planned"
+  },
+  {
+    "name": "pi_c",
+    "purpose": "Value of pi",
+    "decision": "planned"
+  },
+  {
+    "name": "pipool_c",
+    "purpose": "Put integers into the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "pjelpl_c",
+    "purpose": "Project ellipse onto plane",
+    "decision": "planned"
+  },
+  {
+    "name": "pl2nvc_c",
+    "purpose": "Plane to normal vector and constant",
+    "decision": "planned"
+  },
+  {
+    "name": "pl2nvp_c",
+    "purpose": "Plane to normal vector and point",
+    "decision": "planned"
+  },
+  {
+    "name": "pl2psv_c",
+    "purpose": "Plane to point and spanning vectors",
+    "decision": "planned"
+  },
+  {
+    "name": "pltar_c",
+    "purpose": "Compute area of plate set",
+    "decision": "planned"
+  },
+  {
+    "name": "pltexp_c",
+    "purpose": "Plate expander",
+    "decision": "planned"
+  },
+  {
+    "name": "pltnp_c",
+    "purpose": "Nearest point on triangular plate",
+    "decision": "planned"
+  },
+  {
+    "name": "pltnrm_c",
+    "purpose": "DSK, compute outward normal of plate",
+    "decision": "planned"
+  },
+  {
+    "name": "pltvol_c",
+    "purpose": "Compute volume of plate model",
+    "decision": "planned"
+  },
+  {
+    "name": "polyds_c",
+    "purpose": "Compute a Polynomial and its Derivatives",
+    "decision": "planned"
+  },
+  {
+    "name": "pos_c",
+    "purpose": "Position of substring",
+    "decision": "planned"
+  },
+  {
+    "name": "posr_c",
+    "purpose": "Position of substring, reverse search",
+    "decision": "planned"
+  },
+  {
+    "name": "prompt_c",
+    "purpose": "Prompt a user for a string",
+    "decision": "excluded",
+    "justification": "interactive I/O / CLI"
+  },
+  {
+    "name": "prop2b_c",
+    "purpose": "Propagate a two-body solution",
+    "decision": "planned"
+  },
+  {
+    "name": "prsdp_c",
+    "purpose": "Parse d.p. number with error checking",
+    "decision": "planned"
+  },
+  {
+    "name": "prsint_c",
+    "purpose": "Parse integer with error checking",
+    "decision": "planned"
+  },
+  {
+    "name": "psv2pl_c",
+    "purpose": "Point and spanning vectors to plane",
+    "decision": "planned"
+  },
+  {
+    "name": "putcml_c",
+    "purpose": "Get the command line",
+    "decision": "planned"
+  },
+  {
+    "name": "pxform_c",
+    "purpose": "Position Transformation Matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "pxfrm2_c",
+    "purpose": "Position Transform Matrix, Different Epochs",
+    "decision": "planned"
+  },
+  {
+    "name": "q2m_c",
+    "purpose": "Quaternion to matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "qcktrc_c",
+    "purpose": "Get Quick Traceback",
+    "decision": "planned"
+  },
+  {
+    "name": "qderiv_c",
+    "purpose": "Quadratic derivative",
+    "decision": "planned"
+  },
+  {
+    "name": "qdq2av_c",
+    "purpose": "Quaternion and quaternion derivative to a.v.",
+    "decision": "planned"
+  },
+  {
+    "name": "qxq_c",
+    "purpose": "Quaternion times quaternion",
+    "decision": "planned"
+  },
+  {
+    "name": "radrec_c",
+    "purpose": "Range, RA and DEC to rectangular coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "rav2xf_c",
+    "purpose": "Rotation and angular velocity to transform",
+    "decision": "planned"
+  },
+  {
+    "name": "raxisa_c",
+    "purpose": "Rotation axis of a matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "rdtext_c",
+    "purpose": "Read a line from a text file",
+    "decision": "planned"
+  },
+  {
+    "name": "recazl_c",
+    "purpose": "Rectangular coordinates to AZ/EL",
+    "decision": "planned"
+  },
+  {
+    "name": "reccyl_c",
+    "purpose": "Rectangular to cylindrical coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "recgeo_c",
+    "purpose": "Rectangular to geodetic",
+    "decision": "planned"
+  },
+  {
+    "name": "reclat_c",
+    "purpose": "Rectangular to latitudinal coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "recpgr_c",
+    "purpose": "Rectangular to planetographic",
+    "decision": "planned"
+  },
+  {
+    "name": "recrad_c",
+    "purpose": "Rectangular coordinates to RA and DEC",
+    "decision": "planned"
+  },
+  {
+    "name": "recsph_c",
+    "purpose": "Rectangular to spherical coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "removc_c",
+    "purpose": "Remove an item from a character set",
+    "decision": "planned"
+  },
+  {
+    "name": "removd_c",
+    "purpose": "Remove an item from a double precision set",
+    "decision": "planned"
+  },
+  {
+    "name": "removi_c",
+    "purpose": "Remove an item from an integer set",
+    "decision": "planned"
+  },
+  {
+    "name": "reordc_c",
+    "purpose": "Reorder a character array",
+    "decision": "planned"
+  },
+  {
+    "name": "reordd_c",
+    "purpose": "Reorder a double precision array",
+    "decision": "planned"
+  },
+  {
+    "name": "reordi_c",
+    "purpose": "Reorder an integer array",
+    "decision": "planned"
+  },
+  {
+    "name": "reordl_c",
+    "purpose": "Reorder a logical array",
+    "decision": "planned"
+  },
+  {
+    "name": "repmc_c",
+    "purpose": "Replace marker with character string",
+    "decision": "planned"
+  },
+  {
+    "name": "repmct_c",
+    "purpose": "Replace marker with cardinal text",
+    "decision": "planned"
+  },
+  {
+    "name": "repmd_c",
+    "purpose": "Replace marker with double precision number",
+    "decision": "planned"
+  },
+  {
+    "name": "repmf_c",
+    "purpose": "Replace marker with formatted d.p. value",
+    "decision": "planned"
+  },
+  {
+    "name": "repmi_c",
+    "purpose": "Replace marker with integer",
+    "decision": "planned"
+  },
+  {
+    "name": "repml_c",
+    "purpose": "Replace marker with logical value text",
+    "decision": "planned"
+  },
+  {
+    "name": "repmot_c",
+    "purpose": "Replace marker with ordinal text",
+    "decision": "planned"
+  },
+  {
+    "name": "reset_c",
+    "purpose": "Reset Error Status",
+    "decision": "planned"
+  },
+  {
+    "name": "return_c",
+    "purpose": "Immediate Return Indicator",
+    "decision": "planned"
+  },
+  {
+    "name": "rotate_c",
+    "purpose": "Generate a rotation matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "rotmat_c",
+    "purpose": "Rotate a matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "rotvec_c",
+    "purpose": "Transform a vector via a rotation",
+    "decision": "planned"
+  },
+  {
+    "name": "rpd_c",
+    "purpose": "Radians per degree",
+    "decision": "planned"
+  },
+  {
+    "name": "rquad_c",
+    "purpose": "Roots of a quadratic equation",
+    "decision": "planned"
+  },
+  {
+    "name": "saelgv_c",
+    "purpose": "Semi-axes of ellipse from generating vectors",
+    "decision": "planned"
+  },
+  {
+    "name": "scard_c",
+    "purpose": "Set the cardinality of a cell",
+    "decision": "planned"
+  },
+  {
+    "name": "scdecd_c",
+    "purpose": "Decode spacecraft clock",
+    "decision": "planned"
+  },
+  {
+    "name": "sce2c_c",
+    "purpose": "ET to continuous SCLK ticks",
+    "decision": "planned"
+  },
+  {
+    "name": "sce2s_c",
+    "purpose": "ET to SCLK string",
+    "decision": "planned"
+  },
+  {
+    "name": "sce2t_c",
+    "purpose": "ET to SCLK ticks",
+    "decision": "planned"
+  },
+  {
+    "name": "scencd_c",
+    "purpose": "Encode spacecraft clock",
+    "decision": "planned"
+  },
+  {
+    "name": "scfmt_c",
+    "purpose": "Convert SCLK \"ticks\" to character clock format",
+    "decision": "planned"
+  },
+  {
+    "name": "scpart_c",
+    "purpose": "Spacecraft Clock Partition Information",
+    "decision": "planned"
+  },
+  {
+    "name": "scs2e_c",
+    "purpose": "SCLK string to ET",
+    "decision": "planned"
+  },
+  {
+    "name": "sct2e_c",
+    "purpose": "SCLK ticks to ET",
+    "decision": "planned"
+  },
+  {
+    "name": "sctiks_c",
+    "purpose": "Convert spacecraft clock string to ticks.",
+    "decision": "planned"
+  },
+  {
+    "name": "sdiff_c",
+    "purpose": "Symmetric difference of two sets",
+    "decision": "planned"
+  },
+  {
+    "name": "set_c",
+    "purpose": "Compare sets",
+    "decision": "planned"
+  },
+  {
+    "name": "setmsg_c",
+    "purpose": "Set Long Error Message",
+    "decision": "planned"
+  },
+  {
+    "name": "shellc_c",
+    "purpose": "Shell sort a character array",
+    "decision": "planned"
+  },
+  {
+    "name": "shelld_c",
+    "purpose": "Shell sort a double precision array",
+    "decision": "planned"
+  },
+  {
+    "name": "shelli_c",
+    "purpose": "Shell sort an integer array",
+    "decision": "planned"
+  },
+  {
+    "name": "sigerr_c",
+    "purpose": "Signal Error Condition",
+    "decision": "planned"
+  },
+  {
+    "name": "sincpt_c",
+    "purpose": "Surface intercept",
+    "decision": "planned"
+  },
+  {
+    "name": "size_c",
+    "purpose": "Size of a cell",
+    "decision": "planned"
+  },
+  {
+    "name": "spd_c",
+    "purpose": "Seconds per day",
+    "decision": "planned"
+  },
+  {
+    "name": "sphcyl_c",
+    "purpose": "Spherical to cylindrical coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "sphlat_c",
+    "purpose": "Spherical to latitudinal coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "sphrec_c",
+    "purpose": "Spherical to rectangular coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "spk14a_c",
+    "purpose": "SPK, add data to a type 14 segment",
+    "decision": "planned"
+  },
+  {
+    "name": "spk14b_c",
+    "purpose": "SPK, begin a type 14 segment",
+    "decision": "planned"
+  },
+  {
+    "name": "spk14e_c",
+    "purpose": "SPK, end a type 14 segment",
+    "decision": "planned"
+  },
+  {
+    "name": "spkacs_c",
+    "purpose": "SPK, aberration corrected state",
+    "decision": "planned"
+  },
+  {
+    "name": "spkapo_c",
+    "purpose": "S/P Kernel, apparent position only",
+    "decision": "planned"
+  },
+  {
+    "name": "spkapp_c",
+    "purpose": "S/P Kernel, apparent state",
+    "decision": "planned"
+  },
+  {
+    "name": "spkaps_c",
+    "purpose": "SPK, apparent state",
+    "decision": "planned"
+  },
+  {
+    "name": "spkcls_c",
+    "purpose": "SPK, Close file",
+    "decision": "planned"
+  },
+  {
+    "name": "spkcov_c",
+    "purpose": "SPK coverage",
+    "decision": "planned"
+  },
+  {
+    "name": "spkcpo_c",
+    "purpose": "SPK, constant position observer state",
+    "decision": "planned"
+  },
+  {
+    "name": "spkcpt_c",
+    "purpose": "SPK, constant position target state",
+    "decision": "planned"
+  },
+  {
+    "name": "spkcvo_c",
+    "purpose": "SPK, constant velocity observer state",
+    "decision": "planned"
+  },
+  {
+    "name": "spkcvt_c",
+    "purpose": "SPK, constant velocity target state",
+    "decision": "planned"
+  },
+  {
+    "name": "spkez_c",
+    "purpose": "S/P Kernel, easy reader",
+    "decision": "planned"
+  },
+  {
+    "name": "spkezp_c",
+    "purpose": "S/P Kernel, easy position",
+    "decision": "planned"
+  },
+  {
+    "name": "spkezr_c",
+    "purpose": "S/P Kernel, easier reader",
+    "decision": "planned"
+  },
+  {
+    "name": "spkgeo_c",
+    "purpose": "S/P Kernel, geometric state",
+    "decision": "planned"
+  },
+  {
+    "name": "spkgps_c",
+    "purpose": "S/P Kernel, geometric position",
+    "decision": "planned"
+  },
+  {
+    "name": "spklef_c",
+    "purpose": "S/P Kernel, Load ephemeris file",
+    "decision": "planned"
+  },
+  {
+    "name": "spkltc_c",
+    "purpose": "S/P Kernel, light time corrected state",
+    "decision": "planned"
+  },
+  {
+    "name": "spkobj_c",
+    "purpose": "SPK objects",
+    "decision": "planned"
+  },
+  {
+    "name": "spkopa_c",
+    "purpose": "SPK open for addition",
+    "decision": "planned"
+  },
+  {
+    "name": "spkopn_c",
+    "purpose": "SPK, open new file.",
+    "decision": "planned"
+  },
+  {
+    "name": "spkpds_c",
+    "purpose": "SPK pack descriptor",
+    "decision": "planned"
+  },
+  {
+    "name": "spkpos_c",
+    "purpose": "S/P Kernel, position",
+    "decision": "planned"
+  },
+  {
+    "name": "spkpvn_c",
+    "purpose": "S/P Kernel, position and velocity in native frame",
+    "decision": "planned"
+  },
+  {
+    "name": "spksfs_c",
+    "purpose": "S/P Kernel, Select file and segment",
+    "decision": "planned"
+  },
+  {
+    "name": "spkssb_c",
+    "purpose": "S/P Kernel, solar system barycenter",
+    "decision": "planned"
+  },
+  {
+    "name": "spksub_c",
+    "purpose": "S/P Kernel, subset",
+    "decision": "planned"
+  },
+  {
+    "name": "spkuds_c",
+    "purpose": "SPK - unpack segment descriptor",
+    "decision": "planned"
+  },
+  {
+    "name": "spkuef_c",
+    "purpose": "SPK Kernel, Unload ephemeris file",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw02_c",
+    "purpose": "Write SPK segment, type 2",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw03_c",
+    "purpose": "Write SPK segment, type 3",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw05_c",
+    "purpose": "Write SPK segment, type 5",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw08_c",
+    "purpose": "Write SPK segment, type 8",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw09_c",
+    "purpose": "Write SPK segment, type 9",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw10_c",
+    "purpose": "SPK - write a type 10 segment",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw12_c",
+    "purpose": "Write SPK segment, type 12",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw13_c",
+    "purpose": "Write SPK segment, type 13",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw15_c",
+    "purpose": "SPK, write a type 15 segment",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw17_c",
+    "purpose": "SPK, write a type 17 segment",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw18_c",
+    "purpose": "Write SPK segment, type 18",
+    "decision": "planned"
+  },
+  {
+    "name": "spkw20_c",
+    "purpose": "Write SPK segment, type 20",
+    "decision": "planned"
+  },
+  {
+    "name": "srfc2s_c",
+    "purpose": "Surface and body ID codes to surface string",
+    "decision": "planned"
+  },
+  {
+    "name": "srfcss_c",
+    "purpose": "Surface ID and body string to surface string",
+    "decision": "planned"
+  },
+  {
+    "name": "srfnrm_c",
+    "purpose": "Map surface points to outward normal vectors",
+    "decision": "planned"
+  },
+  {
+    "name": "srfrec_c",
+    "purpose": "Surface to rectangular coordinates",
+    "decision": "planned"
+  },
+  {
+    "name": "srfs2c_c",
+    "purpose": "Surface and body strings to surface ID code",
+    "decision": "planned"
+  },
+  {
+    "name": "srfscc_c",
+    "purpose": "Surface string and body ID code to surface ID code",
+    "decision": "planned"
+  },
+  {
+    "name": "srfxpt_c",
+    "purpose": "Surface intercept point",
+    "decision": "planned"
+  },
+  {
+    "name": "ssize_c",
+    "purpose": "Set the size of a cell",
+    "decision": "planned"
+  },
+  {
+    "name": "stelab_c",
+    "purpose": "Stellar Aberration",
+    "decision": "planned"
+  },
+  {
+    "name": "stlabx_c",
+    "purpose": "Stellar aberration, transmission case",
+    "decision": "planned"
+  },
+  {
+    "name": "stpool_c",
+    "purpose": "String from pool",
+    "decision": "planned"
+  },
+  {
+    "name": "str2et_c",
+    "purpose": "String to ET",
+    "decision": "planned"
+  },
+  {
+    "name": "subpnt_c",
+    "purpose": "Sub-observer point",
+    "decision": "planned"
+  },
+  {
+    "name": "subpt_c",
+    "purpose": "Sub-observer point",
+    "decision": "planned"
+  },
+  {
+    "name": "subpt_pl02",
+    "purpose": "Sub-observer point using DSK type 2 plate model",
+    "decision": "planned"
+  },
+  {
+    "name": "subslr_c",
+    "purpose": "Sub-solar point",
+    "decision": "planned"
+  },
+  {
+    "name": "subsol_c",
+    "purpose": "Sub-solar point",
+    "decision": "planned"
+  },
+  {
+    "name": "subsol_pl02",
+    "purpose": "Sub-solar point using DSK type 2 plate model",
+    "decision": "planned"
+  },
+  {
+    "name": "sumad_c",
+    "purpose": "Sum of a double precision array",
+    "decision": "planned"
+  },
+  {
+    "name": "sumai_c",
+    "purpose": "Sum of an integer array",
+    "decision": "planned"
+  },
+  {
+    "name": "surfnm_c",
+    "purpose": "Surface normal vector on an ellipsoid",
+    "decision": "planned"
+  },
+  {
+    "name": "surfpt_c",
+    "purpose": "Surface point on an ellipsoid",
+    "decision": "planned"
+  },
+  {
+    "name": "surfpv_c",
+    "purpose": "Surface point and velocity",
+    "decision": "planned"
+  },
+  {
+    "name": "swpool_c",
+    "purpose": "Set watch on a pool variable",
+    "decision": "planned"
+  },
+  {
+    "name": "sxform_c",
+    "purpose": "State Transformation Matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "szpool_c",
+    "purpose": "Get size limitations of the kernel pool",
+    "decision": "planned"
+  },
+  {
+    "name": "tangpt_c",
+    "purpose": "Ray-ellipsoid tangent point",
+    "decision": "planned"
+  },
+  {
+    "name": "term_pl02",
+    "purpose": "Terminator using DSK type 2 plate model",
+    "decision": "planned"
+  },
+  {
+    "name": "termpt_c",
+    "purpose": "Terminator points on an extended object",
+    "decision": "planned"
+  },
+  {
+    "name": "timdef_c",
+    "purpose": "Time Software Defaults",
+    "decision": "planned"
+  },
+  {
+    "name": "timout_c",
+    "purpose": "Time Output",
+    "decision": "planned"
+  },
+  {
+    "name": "tipbod_c",
+    "purpose": "Transformation, inertial position to bodyfixed",
+    "decision": "planned"
+  },
+  {
+    "name": "tisbod_c",
+    "purpose": "Transformation, inertial state to bodyfixed",
+    "decision": "planned"
+  },
+  {
+    "name": "tkfram_c",
+    "purpose": "TK frame, find position rotation",
+    "decision": "planned"
+  },
+  {
+    "name": "tkvrsn_c",
+    "purpose": "Toolkit version strings",
+    "decision": "planned"
+  },
+  {
+    "name": "tparch_c",
+    "purpose": "Parse check---check format of strings",
+    "decision": "planned"
+  },
+  {
+    "name": "tparse_c",
+    "purpose": "Parse a UTC time string",
+    "decision": "planned"
+  },
+  {
+    "name": "tpictr_c",
+    "purpose": "Create a Time Format Picture",
+    "decision": "planned"
+  },
+  {
+    "name": "trace_c",
+    "purpose": "Trace of a 3x3 matrix",
+    "decision": "planned"
+  },
+  {
+    "name": "trcdep_c",
+    "purpose": "Traceback depth",
+    "decision": "planned"
+  },
+  {
+    "name": "trcnam_c",
+    "purpose": "Get module name from traceback",
+    "decision": "planned"
+  },
+  {
+    "name": "trcoff_c",
+    "purpose": "Turn tracing off",
+    "decision": "planned"
+  },
+  {
+    "name": "trgsep_c",
+    "purpose": "Separation quantity from observer",
+    "decision": "planned"
+  },
+  {
+    "name": "tsetyr_c",
+    "purpose": "Time --- set year expansion boundaries",
+    "decision": "planned"
+  },
+  {
+    "name": "twopi_c",
+    "purpose": "Twice the value of pi",
+    "decision": "planned"
+  },
+  {
+    "name": "twovec_c",
+    "purpose": "Two vectors defining an orthonormal frame",
+    "decision": "planned"
+  },
+  {
+    "name": "twovxf_c",
+    "purpose": "Two states defining a frame transformation",
+    "decision": "planned"
+  },
+  {
+    "name": "tyear_c",
+    "purpose": "Seconds per tropical year",
+    "decision": "planned"
+  },
+  {
+    "name": "ucase_c",
+    "purpose": "Convert to uppercase",
+    "decision": "planned"
+  },
+  {
+    "name": "ucrss_c",
+    "purpose": "Unitized cross product, 3x3",
+    "decision": "planned"
+  },
+  {
+    "name": "uddc_c",
+    "purpose": "Derivative of function less than zero, df(x)/dx < 0",
+    "decision": "planned"
+  },
+  {
+    "name": "uddf_c",
+    "purpose": "First derivative of a function, df(x)/dx",
+    "decision": "planned"
+  },
+  {
+    "name": "udf_c",
+    "purpose": "GF, dummy function",
+    "decision": "planned"
+  },
+  {
+    "name": "union_c",
+    "purpose": "Union of two sets",
+    "decision": "planned"
+  },
+  {
+    "name": "unitim_c",
+    "purpose": "Uniform time scale transformation",
+    "decision": "planned"
+  },
+  {
+    "name": "unload_c",
+    "purpose": "Unload a kernel",
+    "decision": "planned"
+  },
+  {
+    "name": "unorm_c",
+    "purpose": "Unit vector and norm, 3 dimensional",
+    "decision": "planned"
+  },
+  {
+    "name": "unormg_c",
+    "purpose": "Unit vector and norm, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "utc2et_c",
+    "purpose": "UTC to Ephemeris Time",
+    "decision": "planned"
+  },
+  {
+    "name": "vadd_c",
+    "purpose": "Vector addition, 3 dimensional",
+    "decision": "planned"
+  },
+  {
+    "name": "vaddg_c",
+    "purpose": "Vector addition, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "valid_c",
+    "purpose": "Validate a set",
+    "decision": "planned"
+  },
+  {
+    "name": "vcrss_c",
+    "purpose": "Vector cross product, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vdist_c",
+    "purpose": "Vector distance",
+    "decision": "planned"
+  },
+  {
+    "name": "vdistg_c",
+    "purpose": "Vector distance, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vdot_c",
+    "purpose": "Vector dot product, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vdotg_c",
+    "purpose": "Vector dot product, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vequ_c",
+    "purpose": "Vector equality, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vequg_c",
+    "purpose": "Vector equality, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vhat_c",
+    "purpose": "\"V-Hat\", unit vector along V, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vhatg_c",
+    "purpose": "\"V-Hat\", unit vector along V, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vlcom_c",
+    "purpose": "Vector linear combination, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vlcom3_c",
+    "purpose": "Vector linear combination, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vlcomg_c",
+    "purpose": "Vector linear combination, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vminug_c",
+    "purpose": "Negate vector, \"-v\", general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vminus_c",
+    "purpose": "Negate vector, \"-v\", 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vnorm_c",
+    "purpose": "Vector norm, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vnormg_c",
+    "purpose": "Vector norm, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vpack_c",
+    "purpose": "Pack three scalar components into a vector",
+    "decision": "planned"
+  },
+  {
+    "name": "vperp_c",
+    "purpose": "Perpendicular component of a 3-vector",
+    "decision": "planned"
+  },
+  {
+    "name": "vprjp_c",
+    "purpose": "Vector projection onto plane",
+    "decision": "planned"
+  },
+  {
+    "name": "vprjpi_c",
+    "purpose": "Vector projection onto plane, inverted",
+    "decision": "planned"
+  },
+  {
+    "name": "vproj_c",
+    "purpose": "Vector projection, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vprojg_c",
+    "purpose": "Vector projection, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vrel_c",
+    "purpose": "Vector relative difference, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vrelg_c",
+    "purpose": "Vector relative difference, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vrotv_c",
+    "purpose": "Vector rotation about an axis",
+    "decision": "planned"
+  },
+  {
+    "name": "vscl_c",
+    "purpose": "Vector scaling, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vsclg_c",
+    "purpose": "Vector scaling, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vsep_c",
+    "purpose": "Angular separation of vectors, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vsepg_c",
+    "purpose": "Angular separation of vectors, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vsub_c",
+    "purpose": "Vector subtraction, 3 dimensions",
+    "decision": "planned"
+  },
+  {
+    "name": "vsubg_c",
+    "purpose": "Vector subtraction, general dimension",
+    "decision": "planned"
+  },
+  {
+    "name": "vtmv_c",
+    "purpose": "Vector transpose times matrix times vector, 3 dim",
+    "decision": "planned"
+  },
+  {
+    "name": "vtmvg_c",
+    "purpose": "Vector transpose times matrix times vector",
+    "decision": "planned"
+  },
+  {
+    "name": "vupack_c",
+    "purpose": "Unpack three scalar components from a vector",
+    "decision": "planned"
+  },
+  {
+    "name": "vzero_c",
+    "purpose": "Is a vector the zero vector?",
+    "decision": "planned"
+  },
+  {
+    "name": "vzerog_c",
+    "purpose": "Is a vector the zero vector? -- general dim.",
+    "decision": "planned"
+  },
+  {
+    "name": "wncard_c",
+    "purpose": "Cardinality of a double precision window",
+    "decision": "planned"
+  },
+  {
+    "name": "wncomd_c",
+    "purpose": "Complement a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "wncond_c",
+    "purpose": "Contract the intervals of a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "wndifd_c",
+    "purpose": "Difference two DP windows",
+    "decision": "planned"
+  },
+  {
+    "name": "wnelmd_c",
+    "purpose": "Element of a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "wnexpd_c",
+    "purpose": "Expand the intervals of a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "wnextd_c",
+    "purpose": "Extract the endpoints from a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "wnfetd_c",
+    "purpose": "Fetch an interval from a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "wnfild_c",
+    "purpose": "Fill small gaps in a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "wnfltd_c",
+    "purpose": "Filter small intervals from a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "wnincd_c",
+    "purpose": "Included in a double precision window",
+    "decision": "planned"
+  },
+  {
+    "name": "wninsd_c",
+    "purpose": "Insert an interval into a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "wnintd_c",
+    "purpose": "Intersect two DP windows",
+    "decision": "planned"
+  },
+  {
+    "name": "wnreld_c",
+    "purpose": "Compare two DP windows",
+    "decision": "planned"
+  },
+  {
+    "name": "wnsumd_c",
+    "purpose": "Summary of a double precision window",
+    "decision": "planned"
+  },
+  {
+    "name": "wnunid_c",
+    "purpose": "Union two DP windows",
+    "decision": "planned"
+  },
+  {
+    "name": "wnvald_c",
+    "purpose": "Validate a DP window",
+    "decision": "planned"
+  },
+  {
+    "name": "xf2eul_c",
+    "purpose": "State transformation to Euler angles",
+    "decision": "planned"
+  },
+  {
+    "name": "xf2rav_c",
+    "purpose": "Transform to rotation and angular velocity",
+    "decision": "planned"
+  },
+  {
+    "name": "xfmsta_c",
+    "purpose": "Transform state between coordinate systems",
+    "decision": "planned"
+  },
+  {
+    "name": "xpose_c",
+    "purpose": "Transpose a matrix, 3x3",
+    "decision": "planned"
+  },
+  {
+    "name": "xpose6_c",
+    "purpose": "Transpose a matrix, 6x6",
+    "decision": "planned"
+  },
+  {
+    "name": "xposeg_c",
+    "purpose": "Transpose a matrix, general",
+    "decision": "planned"
+  }
+]
