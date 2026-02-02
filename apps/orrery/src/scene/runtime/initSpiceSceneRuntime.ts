@@ -14,7 +14,6 @@ import { createBodyMesh } from '../BodyMesh.js'
 import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleSceneBodies, type BodyId } from '../BodyRegistry.js'
 import { computeBodyRadiusWorld } from '../bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from '../FrameAxes.js'
-import { createRingMesh } from '../RingMesh.js'
 import { OrbitPaths } from '../orbits/OrbitPaths.js'
 import { rebasePositionKm } from '../precision.js'
 import type { SceneModel } from '../SceneModel.js'
@@ -203,31 +202,8 @@ export async function initSpiceSceneRuntime(args: {
 
     const { mesh, dispose, ready, update } = createBodyMesh({
       bodyId: registry?.id,
-      color: body.style.color,
-      textureColor: body.style.textureColor,
-      textureUrl: body.style.textureUrl,
-      textureKind: body.style.textureKind,
-      earthAppearance: body.style.earthAppearance,
+      appearance: body.style.appearance,
     })
-
-    const rings = body.style.rings
-    const ringResult = rings
-      ? createRingMesh({
-          // Parent body is a unit sphere scaled by radius, so rings are
-          // specified in planet-radius units.
-          innerRadius: rings.innerRadiusRatio,
-          outerRadius: rings.outerRadiusRatio,
-          textureUrl: rings.textureUrl,
-          color: rings.color,
-          baseOpacity: rings.baseOpacity,
-        })
-      : undefined
-
-    if (ringResult) {
-      // Attach as a child so it inherits the body's pose and scale.
-      mesh.add(ringResult.mesh)
-      disposers.push(ringResult.dispose)
-    }
 
     mesh.userData.bodyId = body.body
     // Store radiusKm for dynamic scale updates
@@ -254,7 +230,7 @@ export async function initSpiceSceneRuntime(args: {
       mesh,
       axes,
       update,
-      ready: Promise.all([ready, ringResult?.ready]).then(() => undefined),
+      ready,
     }
   })
 
@@ -271,7 +247,7 @@ export async function initSpiceSceneRuntime(args: {
   const orbitPaths = new OrbitPaths({
     spiceClient: rawSpiceClient,
     kmToWorld,
-    bodies: sceneModel.bodies.map((b) => ({ body: b.body, color: b.style.color })),
+    bodies: sceneModel.bodies.map((b) => ({ body: b.body, color: b.style.appearance.surface.color })),
   })
   sceneObjects.push(orbitPaths.object)
   disposers.push(() => orbitPaths.dispose())

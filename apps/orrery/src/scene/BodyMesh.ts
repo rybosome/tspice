@@ -1,31 +1,19 @@
 import * as THREE from 'three'
 
-import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
-import type { EarthAppearanceStyle } from './SceneModel.js'
-
-export type BodyTextureKind = 'earth' | 'moon' | 'sun'
+import { loadTextureCached } from './loadTextureCached.js'
+import { createRingMesh } from './RingMesh.js'
+import type {
+  BodyAppearanceStyle,
+  BodyLayerStyle,
+  BodyTextureKind,
+  EarthAppearanceLayerStyle,
+} from './SceneModel.js'
 
 export type CreateBodyMeshOptions = {
   /** Optional stable ID (e.g. `"EARTH"`) for body-specific rendering. */
   bodyId?: string
 
-  color: THREE.ColorRepresentation
-
-  /** Optional texture multiplier color (defaults to `options.color`). */
-  textureColor?: THREE.ColorRepresentation
-
-  /**
-   * Optional texture URL/path.
-   *
-   * If relative, it's resolved against Vite's `BASE_URL`.
-   */
-  textureUrl?: string
-
-  /** Optional, lightweight procedural texture (no binary assets). */
-  textureKind?: BodyTextureKind
-
-  /** Optional higher-fidelity Earth appearance layers (Earth-only). */
-  earthAppearance?: EarthAppearanceStyle
+  appearance: BodyAppearanceStyle
 }
 
 export type EarthAppearanceTuning = {
@@ -158,6 +146,12 @@ function makeProceduralBodyTexture(kind: BodyTextureKind): THREE.Texture {
   })
 }
 
+function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
+  if (typeof layer !== 'object' || layer === null) return false
+  if (!('kind' in layer)) return false
+  return (layer as { kind?: unknown }).kind === 'earth' && 'earth' in layer
+}
+
 /**
  * Creates a body mesh with a unit sphere geometry.
  *
@@ -178,18 +172,22 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   let disposed = false
 
-  let map: THREE.Texture | undefined = options.textureKind ? makeProceduralBodyTexture(options.textureKind) : undefined
+  const surface = options.appearance.surface
+  const surfaceTexture = surface.texture
+  const textureKind = surfaceTexture?.kind
+  const textureUrl = surfaceTexture?.url
+  const textureColor = surfaceTexture?.color
 
-  let ready: Promise<void> = options.textureUrl
-    ? new THREE.TextureLoader()
-        .loadAsync(resolveVitePublicUrl(options.textureUrl))
+  let map: THREE.Texture | undefined = textureKind ? makeProceduralBodyTexture(textureKind) : undefined
+
+  let ready: Promise<void> = textureUrl
+    ? loadTextureCached(textureUrl)
         .then((tex) => {
           if (disposed) {
             tex.dispose()
             return
           }
 
-          tex.colorSpace = THREE.SRGBColorSpace
           tex.wrapS = THREE.RepeatWrapping
           tex.wrapT = THREE.RepeatWrapping
           tex.needsUpdate = true
@@ -199,30 +197,48 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         })
         .catch((err) => {
           // Keep rendering if a texture fails; surface failures for debugging.
-          console.warn('Failed to load body texture', options.textureUrl, err)
+          console.warn('Failed to load body texture', textureUrl, err)
         })
     : Promise.resolve()
 
   // Note: `MeshStandardMaterial.color` multiplies `map`.
   // For full-color albedo textures (e.g. Earth), tinting the texture by a
   // non-white base color can significantly darken / distort the result.
-  // Use `options.color` as a fallback when no texture is present.
-  // If a body needs dimming/tinting while textured, use `options.textureColor`.
-  const baseColor = map ? new THREE.Color(options.textureColor ?? options.color) : new THREE.Color(options.color)
+  // Use `surface.color` as a fallback when no texture is present.
+  // If a body needs dimming/tinting while textured, use `surface.texture.color`.
+  const baseColor = map ? new THREE.Color(textureColor ?? surface.color) : new THREE.Color(surface.color)
   const material = new THREE.MeshStandardMaterial({
     color: baseColor,
-    roughness: options.textureKind === 'sun' ? 0.2 : 0.9,
+    roughness: textureKind === 'sun' ? 0.2 : 0.9,
     metalness: 0.0,
     map,
-    emissive: options.textureKind === 'sun' ? new THREE.Color('#ffcc55') : new THREE.Color('#000000'),
-    emissiveIntensity: options.textureKind === 'sun' ? 0.8 : 0.0,
+    emissive: textureKind === 'sun' ? new THREE.Color('#ffcc55') : new THREE.Color('#000000'),
+    emissiveIntensity: textureKind === 'sun' ? 0.8 : 0.0,
   })
 
   const mesh = new THREE.Mesh(geometry, material)
 
+  const ringResult = options.appearance.rings
+    ? createRingMesh({
+        // Parent body is a unit sphere scaled by radius, so rings are specified
+        // in planet-radius units.
+        innerRadius: options.appearance.rings.innerRadiusRatio,
+        outerRadius: options.appearance.rings.outerRadiusRatio,
+        textureUrl: options.appearance.rings.textureUrl,
+        color: options.appearance.rings.color,
+        baseOpacity: options.appearance.rings.baseOpacity,
+      })
+    : undefined
+
+  if (ringResult) {
+    // Attach as a child so it inherits the body's pose and scale.
+    mesh.add(ringResult.mesh)
+    ready = Promise.all([ready, ringResult.ready]).then(() => undefined)
+  }
+
   // Earth-only higher-fidelity appearance layers (night lights, clouds, atmosphere, ocean glint).
-  // This is kept opt-in via `style.earthAppearance` so other bodies remain unchanged.
-  const earth = options.earthAppearance
+  // This is kept opt-in via `appearance.layers` so other bodies remain unchanged.
+  const earth = options.appearance.layers?.find(isEarthAppearanceLayer)?.earth
   const isEarth = options.bodyId === 'EARTH'
 
   const extraTexturesToDispose: THREE.Texture[] = []
@@ -499,13 +515,11 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     cloudsDriftRadPerSec = earth.cloudsDriftRadPerSec ?? 0.0
 
     // Load optional textures.
-    const loader = new THREE.TextureLoader()
     const extras: Promise<void>[] = []
 
     if (earth.nightLightsTextureUrl) {
       extras.push(
-        loader
-          .loadAsync(resolveVitePublicUrl(earth.nightLightsTextureUrl))
+        loadTextureCached(earth.nightLightsTextureUrl)
           .then((tex) => {
             if (disposed) {
               tex.dispose()
@@ -529,8 +543,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     if (earth.cloudsTextureUrl && cloudsMaterial) {
       extras.push(
-        loader
-          .loadAsync(resolveVitePublicUrl(earth.cloudsTextureUrl))
+        loadTextureCached(earth.cloudsTextureUrl)
           .then((tex) => {
             if (disposed) {
               tex.dispose()
@@ -555,8 +568,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     if (earth.waterMaskTextureUrl) {
       extras.push(
-        loader
-          .loadAsync(resolveVitePublicUrl(earth.waterMaskTextureUrl))
+        loadTextureCached(earth.waterMaskTextureUrl)
           .then((tex) => {
             if (disposed) {
               tex.dispose()
@@ -606,6 +618,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       material.dispose()
       map?.dispose()
 
+      ringResult?.dispose()
+
       for (const tex of extraTexturesToDispose) tex.dispose()
       for (const mat of extraMaterialsToDispose) mat.dispose()
       for (const geo of extraGeometriesToDispose) geo.dispose()
@@ -618,7 +632,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       material.map = map
       // Note: `material.color` multiplies `material.map`.
       // Only override the default multiplier if `textureColor` is explicitly set.
-      material.color.set(options.textureColor ?? options.color)
+      material.color.set(textureColor ?? surface.color)
       material.needsUpdate = true
     }),
     update,

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
+import { loadTextureCached } from './loadTextureCached.js'
 
 export type CreateRingMeshOptions = {
   /** Inner radius in parent-local units (e.g. multiples of planet radius when parent is unit sphere). */
@@ -68,15 +68,13 @@ export function createRingMesh(options: CreateRingMeshOptions): {
 
   let map: THREE.Texture | undefined
   const ready: Promise<void> = options.textureUrl
-    ? new THREE.TextureLoader()
-        .loadAsync(resolveVitePublicUrl(options.textureUrl))
+    ? loadTextureCached(options.textureUrl)
         .then((tex) => {
           if (disposed) {
             tex.dispose()
             return
           }
 
-          tex.colorSpace = THREE.SRGBColorSpace
           // U (radius) should clamp; V (angle) should repeat.
           tex.wrapS = THREE.ClampToEdgeWrapping
           tex.wrapT = THREE.RepeatWrapping
