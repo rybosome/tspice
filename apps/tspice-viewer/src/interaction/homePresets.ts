@@ -121,7 +121,6 @@ function getHomePresetAliases(key: HomePresetKey): readonly string[] {
   return HOME_PRESETS[key].aliases
 }
 
-
 function normalizeHomePresetAlias(alias: string): string {
   return alias.toUpperCase()
 }
