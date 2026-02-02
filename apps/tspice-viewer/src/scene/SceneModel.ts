@@ -2,6 +2,35 @@ import type { BodyRef, FrameId } from "../spice/SpiceClient.js";
 
 export type BodyTextureKind = "earth" | "moon" | "sun";
 
+export interface EarthAppearanceStyle {
+  /** Optional night lights (emissive) texture; should be equirectangular 2:1. */
+  nightLightsTextureUrl?: string
+  /** Optional clouds texture; used as an alpha map (bright=opaque). */
+  cloudsTextureUrl?: string
+  /** Optional water mask (1=water, 0=land); enables better specular/glint control. */
+  waterMaskTextureUrl?: string
+
+  nightLightsIntensity?: number
+  /** Smoothstep band around terminator for night lights, in N·L space (0..1-ish). */
+  nightLightsTwilight?: number
+
+  cloudsRadiusRatio?: number
+  cloudsOpacity?: number
+  cloudsAlphaTest?: number
+  /** Additional clouds rotation around local +Z (north), in rad/sec of ET. */
+  cloudsDriftRadPerSec?: number
+
+  atmosphereRadiusRatio?: number
+  atmosphereColor?: string
+  atmosphereIntensity?: number
+  atmosphereRimPower?: number
+  /** 0 = symmetric rim, 1 = fully sun-biased rim. */
+  atmosphereSunBias?: number
+
+  oceanRoughness?: number
+  oceanSpecularIntensity?: number
+}
+
 export interface SceneRingsStyle {
   /** Inner radius relative to the parent body's radius. */
   innerRadiusRatio: number
@@ -54,6 +83,9 @@ export interface SceneBodyStyle {
 
   /** Optional rings style (rendered as a child mesh). */
   rings?: SceneRingsStyle
+
+  /** Optional higher-fidelity Earth-only appearance upgrades. */
+  earthAppearance?: EarthAppearanceStyle
 }
 
 export interface SceneBody {

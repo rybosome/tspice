@@ -181,11 +181,15 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   const bodies = sceneModel.bodies.map((body) => {
-    const { mesh, dispose, ready } = createBodyMesh({
+    const registry = BODY_REGISTRY.find((r) => String(r.body) === String(body.body))
+
+    const { mesh, dispose, ready, update } = createBodyMesh({
+      bodyId: registry?.id,
       color: body.style.color,
       textureColor: body.style.textureColor,
       textureUrl: body.style.textureUrl,
       textureKind: body.style.textureKind,
+      earthAppearance: body.style.earthAppearance,
     })
 
     const rings = body.style.rings
@@ -231,6 +235,7 @@ export async function initSpiceSceneRuntime(args: {
       radiusKm: body.style.radiusKm,
       mesh,
       axes,
+      update,
       ready: Promise.all([ready, ringResult?.ready]).then(() => undefined),
     }
   })
@@ -540,6 +545,12 @@ export async function initSpiceSceneRuntime(args: {
     // TODO: Eclipse/shadow occlusion could be added here by checking if another body
     // lies along the sun direction, but this adds complexity for marginal visual benefit.
     dir.position.copy(dirPos.multiplyScalar(10))
+
+    // Update any body-specific shader uniforms using the same sun direction.
+    const sunDirWorld = dir.position.clone().normalize()
+    for (const b of bodies) {
+      b.update?.({ sunDirWorld, etSec: next.etSec })
+    }
 
     // Record label overlay inputs so we can update it on camera movement.
     latestLabelOverlayOptions = {

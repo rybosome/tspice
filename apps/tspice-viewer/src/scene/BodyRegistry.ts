@@ -121,8 +121,32 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     style: {
       radiusKm: 6_371,
       color: "#2a9d8f",
-      textureColor: "#e6e6e6",
+      textureColor: "#ffffff",
       textureUrl: "textures/planets/earth.png",
+      earthAppearance: {
+        nightLightsTextureUrl: "textures/planets/earth-nightlights.jpg",
+        cloudsTextureUrl: "textures/planets/earth-clouds.jpg",
+        // Hook: we currently use a heuristic water factor (derived from albedo).
+        // If we add a dedicated mask later, set `waterMaskTextureUrl` here.
+        // waterMaskTextureUrl: 'textures/planets/earth-water-mask.png',
+
+        nightLightsIntensity: 1.35,
+        nightLightsTwilight: 0.12,
+
+        cloudsRadiusRatio: 1.01,
+        cloudsOpacity: 0.85,
+        cloudsAlphaTest: 0.02,
+        cloudsDriftRadPerSec: 0.00004,
+
+        atmosphereRadiusRatio: 1.015,
+        atmosphereColor: "#79b8ff",
+        atmosphereIntensity: 0.55,
+        atmosphereRimPower: 2.2,
+        atmosphereSunBias: 0.65,
+
+        oceanRoughness: 0.06,
+        oceanSpecularIntensity: 0.35,
+      },
       label: "Earth",
     },
   },

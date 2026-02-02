@@ -1,10 +1,14 @@
 import * as THREE from 'three'
 
 import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
+import type { EarthAppearanceStyle } from './SceneModel.js'
 
 export type BodyTextureKind = 'earth' | 'moon' | 'sun'
 
 export type CreateBodyMeshOptions = {
+  /** Optional stable ID (e.g. `"EARTH"`) for body-specific rendering. */
+  bodyId?: string
+
   color: THREE.ColorRepresentation
 
   /** Optional texture multiplier color (defaults to `options.color`). */
@@ -19,6 +23,19 @@ export type CreateBodyMeshOptions = {
 
   /** Optional, lightweight procedural texture (no binary assets). */
   textureKind?: BodyTextureKind
+
+  /** Optional higher-fidelity Earth appearance layers (Earth-only). */
+  earthAppearance?: EarthAppearanceStyle
+}
+
+export type BodyMeshUpdate = (args: { sunDirWorld: THREE.Vector3; etSec: number }) => void
+
+function make1x1TextureRGBA([r, g, b, a]: readonly [number, number, number, number]): THREE.DataTexture {
+  const data = new Uint8Array([r, g, b, a])
+  const tex = new THREE.DataTexture(data, 1, 1)
+  tex.needsUpdate = true
+  tex.colorSpace = THREE.NoColorSpace
+  return tex
 }
 
 function makeCanvasTexture(draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => void) {
@@ -139,6 +156,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   mesh: THREE.Mesh
   dispose: () => void
   ready: Promise<void>
+  update?: BodyMeshUpdate
 } {
   // Unit sphere geometry - scale is applied via mesh.scale
   const geometry = new THREE.SphereGeometry(1, 48, 24)
@@ -152,7 +170,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     ? makeProceduralBodyTexture(options.textureKind)
     : undefined
 
-  const ready: Promise<void> = options.textureUrl
+  let ready: Promise<void> = options.textureUrl
     ? new THREE.TextureLoader()
         .loadAsync(resolveVitePublicUrl(options.textureUrl))
         .then((tex) => {
@@ -194,6 +212,310 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   const mesh = new THREE.Mesh(geometry, material)
 
+  // Earth-only higher-fidelity appearance layers (night lights, clouds, atmosphere, ocean glint).
+  // This is kept opt-in via `style.earthAppearance` so other bodies remain unchanged.
+  const earth = options.earthAppearance
+  const isEarth = options.bodyId === 'EARTH'
+
+  const extraTexturesToDispose: THREE.Texture[] = []
+  const extraMaterialsToDispose: THREE.Material[] = []
+  const extraGeometriesToDispose: THREE.BufferGeometry[] = []
+
+  // Shared sun direction uniform for Earth shaders (mutated per-frame).
+  const uSunDirWorld = new THREE.Vector3(1, 1, 1).normalize()
+
+  // Used when optional maps are missing (prevents shader warnings and avoids showing a full white shell).
+  const black1x1 = make1x1TextureRGBA([0, 0, 0, 255])
+  extraTexturesToDispose.push(black1x1)
+
+  let update: BodyMeshUpdate | undefined
+
+  let cloudsMesh: THREE.Mesh | undefined
+  let cloudsDriftRadPerSec = 0
+
+  const waterMaskUniform = { value: black1x1 as THREE.Texture }
+  const useWaterMaskUniform = { value: 0.0 }
+
+  if (isEarth && earth) {
+    // Night lights + ocean glint (surface shader patch)
+    material.emissive.set('#000000')
+    material.emissiveIntensity = 1.0
+
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
+      shader.uniforms.uTwilight = { value: earth.nightLightsTwilight ?? 0.12 }
+      shader.uniforms.uNightLightsIntensity = { value: earth.nightLightsIntensity ?? 1.25 }
+      shader.uniforms.uOceanSpecIntensity = { value: earth.oceanSpecularIntensity ?? 0.35 }
+      shader.uniforms.uOceanRoughness = { value: earth.oceanRoughness ?? 0.06 }
+      shader.uniforms.uWaterMaskMap = waterMaskUniform
+      shader.uniforms.uUseWaterMask = useWaterMaskUniform
+
+      // Insert uniform declarations.
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <common>',
+        [
+          '#include <common>',
+          'uniform vec3 uSunDirWorld;',
+          'uniform float uTwilight;',
+          'uniform float uNightLightsIntensity;',
+          'uniform float uOceanSpecIntensity;',
+          'uniform float uOceanRoughness;',
+          'uniform sampler2D uWaterMaskMap;',
+          'uniform float uUseWaterMask;',
+        ].join('\n')
+      )
+
+      // Keep an Earth-local water factor around for later glint.
+      shader.fragmentShader = shader.fragmentShader.replace(
+        'vec3 totalEmissiveRadiance = emissive;',
+        ['vec3 totalEmissiveRadiance = emissive;', 'float earthWaterFactor = 0.0;'].join('\n')
+      )
+
+      // Ocean roughness modulation (mask or heuristic).
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <roughnessmap_fragment>',
+        [
+          '#include <roughnessmap_fragment>',
+          '',
+          '\t// Earth-only: ocean roughness heuristic / optional mask.',
+          '\t{',
+          '\t\tvec2 earthUv = vec2( 0.0 );',
+          '\t\t#ifdef USE_MAP',
+          '\t\t\tearthUv = vMapUv;',
+          '\t\t#elif defined( USE_UV )',
+          '\t\t\tearthUv = vUv;',
+          '\t\t#endif',
+          '',
+          '\t\tfloat waterMask = 0.0;',
+          '\t\tif ( uUseWaterMask > 0.5 ) {',
+          '\t\t\twaterMask = texture2D( uWaterMaskMap, earthUv ).r;',
+          '\t\t} else {',
+          '\t\t\tvec3 c = diffuseColor.rgb;',
+          '\t\t\tfloat blueDom = c.b - max( c.r, c.g );',
+          '\t\t\twaterMask = smoothstep( 0.02, 0.18, blueDom ) * smoothstep( 0.05, 0.65, c.b );',
+          '\t\t}',
+          '',
+          '\t\tearthWaterFactor = clamp( waterMask, 0.0, 1.0 );',
+          '\t\troughnessFactor = mix( roughnessFactor, uOceanRoughness, earthWaterFactor );',
+          '\t}',
+        ].join('\n')
+      )
+
+      // Night lights gating (terminator mask driven by N·L).
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <emissivemap_fragment>',
+        [
+          '#include <emissivemap_fragment>',
+          '',
+          '\t// Earth-only: gate night lights to the night side (soft terminator).',
+          '\t{',
+          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\tfloat ndotl = dot( normal, sunDirView );',
+          '\t\tfloat nightMask = 1.0 - smoothstep( -uTwilight, uTwilight, ndotl );',
+          '\t\ttotalEmissiveRadiance *= nightMask * uNightLightsIntensity;',
+          '\t}',
+        ].join('\n')
+      )
+
+      // Cheap ocean glint (adds a sharp highlight on water pixels).
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <lights_fragment_end>',
+        [
+          '#include <lights_fragment_end>',
+          '',
+          '\t// Earth-only: cheap ocean glint (fallback when a proper water mask is unavailable).',
+          '\t{',
+          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\tvec3 viewDir = normalize( vViewPosition );',
+          '\t\tfloat ndotl = max( dot( normal, sunDirView ), 0.0 );',
+          '\t\tvec3 h = normalize( sunDirView + viewDir );',
+          '\t\tfloat ndoth = max( dot( normal, h ), 0.0 );',
+          '\t\tfloat glint = pow( ndoth, 420.0 ) * ndotl * earthWaterFactor * uOceanSpecIntensity;',
+          '\t\treflectedLight.directSpecular += vec3( glint );',
+          '\t}',
+        ].join('\n')
+      )
+    }
+
+    // Atmosphere shell
+    const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
+    atmosphereGeo.rotateX(Math.PI / 2)
+    extraGeometriesToDispose.push(atmosphereGeo)
+
+    const atmosphereMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        uSunDirWorld: { value: uSunDirWorld },
+        uColor: { value: new THREE.Color(earth.atmosphereColor ?? '#79b8ff') },
+        uIntensity: { value: earth.atmosphereIntensity ?? 0.55 },
+        uRimPower: { value: earth.atmosphereRimPower ?? 2.2 },
+        uSunBias: { value: earth.atmosphereSunBias ?? 0.65 },
+      },
+      vertexShader: [
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
+        '  vWorldPos = worldPos.xyz;',
+        '  vWorldNormal = normalize( mat3( modelMatrix ) * normal );',
+        '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
+        '}',
+      ].join('\n'),
+      fragmentShader: [
+        'uniform vec3 uSunDirWorld;',
+        'uniform vec3 uColor;',
+        'uniform float uIntensity;',
+        'uniform float uRimPower;',
+        'uniform float uSunBias;',
+        '',
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec3 N = normalize( vWorldNormal );',
+        '  vec3 V = normalize( cameraPosition - vWorldPos );',
+        '  vec3 L = normalize( uSunDirWorld );',
+        '',
+        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
+        '  rim = pow( rim, uRimPower );',
+        '',
+        '  float ndotl = dot( N, L );',
+        '  float sunBias = smoothstep( -0.15, 0.45, ndotl );',
+        '  float glow = rim * mix( 1.0, sunBias, clamp( uSunBias, 0.0, 1.0 ) );',
+        '',
+        '  float alpha = glow * uIntensity;',
+        '  gl_FragColor = vec4( uColor, alpha );',
+        '}',
+      ].join('\n'),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      toneMapped: false,
+      side: THREE.BackSide,
+    })
+    extraMaterialsToDispose.push(atmosphereMaterial)
+
+    const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMaterial)
+    atmosphereMesh.scale.setScalar(earth.atmosphereRadiusRatio ?? 1.015)
+    atmosphereMesh.renderOrder = 2
+    mesh.add(atmosphereMesh)
+
+    // Clouds shell
+    const cloudsGeo = new THREE.SphereGeometry(1, 48, 24)
+    cloudsGeo.rotateX(Math.PI / 2)
+    extraGeometriesToDispose.push(cloudsGeo)
+
+    const cloudsMaterial = new THREE.MeshStandardMaterial({
+      color: '#ffffff',
+      transparent: true,
+      opacity: earth.cloudsOpacity ?? 0.85,
+      alphaTest: earth.cloudsAlphaTest ?? 0.02,
+      depthWrite: false,
+      roughness: 1.0,
+      metalness: 0.0,
+      alphaMap: black1x1,
+    })
+    extraMaterialsToDispose.push(cloudsMaterial)
+
+    cloudsMesh = new THREE.Mesh(cloudsGeo, cloudsMaterial)
+    cloudsMesh.scale.setScalar(earth.cloudsRadiusRatio ?? 1.01)
+    cloudsMesh.renderOrder = 1
+    mesh.add(cloudsMesh)
+
+    cloudsDriftRadPerSec = earth.cloudsDriftRadPerSec ?? 0.0
+
+    // Load optional textures.
+    const loader = new THREE.TextureLoader()
+    const extras: Promise<void>[] = []
+
+    if (earth.nightLightsTextureUrl) {
+      extras.push(
+        loader
+          .loadAsync(resolveVitePublicUrl(earth.nightLightsTextureUrl))
+          .then((tex) => {
+            if (disposed) {
+              tex.dispose()
+              return
+            }
+            tex.colorSpace = THREE.SRGBColorSpace
+            tex.wrapS = THREE.RepeatWrapping
+            tex.wrapT = THREE.RepeatWrapping
+            tex.needsUpdate = true
+            extraTexturesToDispose.push(tex)
+
+            material.emissive.set('#ffffff')
+            material.emissiveMap = tex
+            material.needsUpdate = true
+          })
+          .catch((err) => {
+            console.warn('Failed to load Earth night lights texture', earth.nightLightsTextureUrl, err)
+          })
+      )
+    }
+
+    if (earth.cloudsTextureUrl && cloudsMaterial) {
+      extras.push(
+        loader
+          .loadAsync(resolveVitePublicUrl(earth.cloudsTextureUrl))
+          .then((tex) => {
+            if (disposed) {
+              tex.dispose()
+              return
+            }
+            // Used as alpha map; keep consistent with the source JPG (sRGB).
+            // (Shader uses the sampled channel directly; GPU sRGB decode is the only conversion.)
+            tex.colorSpace = THREE.SRGBColorSpace
+            tex.wrapS = THREE.RepeatWrapping
+            tex.wrapT = THREE.RepeatWrapping
+            tex.needsUpdate = true
+            extraTexturesToDispose.push(tex)
+
+            cloudsMaterial.alphaMap = tex
+            cloudsMaterial.needsUpdate = true
+          })
+          .catch((err) => {
+            console.warn('Failed to load Earth clouds texture', earth.cloudsTextureUrl, err)
+          })
+      )
+    }
+
+    if (earth.waterMaskTextureUrl) {
+      extras.push(
+        loader
+          .loadAsync(resolveVitePublicUrl(earth.waterMaskTextureUrl))
+          .then((tex) => {
+            if (disposed) {
+              tex.dispose()
+              return
+            }
+            tex.colorSpace = THREE.NoColorSpace
+            tex.wrapS = THREE.RepeatWrapping
+            tex.wrapT = THREE.RepeatWrapping
+            tex.needsUpdate = true
+            extraTexturesToDispose.push(tex)
+
+            waterMaskUniform.value = tex
+            useWaterMaskUniform.value = 1.0
+          })
+          .catch((err) => {
+            console.warn('Failed to load Earth water mask texture', earth.waterMaskTextureUrl, err)
+          })
+      )
+    }
+
+    // Extend `ready` with extra Earth assets.
+    ready = Promise.all([ready, ...extras]).then(() => undefined)
+
+    update = ({ sunDirWorld, etSec }) => {
+      uSunDirWorld.copy(sunDirWorld).normalize()
+
+      if (cloudsMesh && cloudsDriftRadPerSec !== 0) {
+        const phase = (etSec * cloudsDriftRadPerSec) % (Math.PI * 2)
+        cloudsMesh.rotation.z = phase
+      }
+    }
+  }
+
   return {
     mesh,
     dispose: () => {
@@ -201,6 +523,10 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       geometry.dispose()
       material.dispose()
       map?.dispose()
+
+      for (const tex of extraTexturesToDispose) tex.dispose()
+      for (const mat of extraMaterialsToDispose) mat.dispose()
+      for (const geo of extraGeometriesToDispose) geo.dispose()
     },
     ready: ready.then(() => {
       // If the texture loaded after we created the material, apply it now.
@@ -213,5 +539,6 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       material.color.set(options.textureColor ?? options.color)
       material.needsUpdate = true
     }),
+    update,
   }
 }

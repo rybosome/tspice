@@ -1,8 +1,8 @@
 # Planet texture credits
 
-This directory contains low-resolution textures used by the `tspice-viewer` demo.
+This directory contains textures used by the `tspice-viewer` demo.
 
-Most textures here are **256×128** PNGs.
+Most textures here are **256×128** PNGs (lightweight demo goal), but a few Earth-specific layers are higher-resolution to support atmosphere / clouds / night lights.
 
 ## Licensing notes
 
@@ -19,7 +19,9 @@ Most textures here are **256×128** PNGs.
 | `venus.png` | USGS media image: “Global Mosaic of Venus from Magellan Mission” https://www.usgs.gov/media/images/global-mosaic-venus-magellan-mission (direct thumbnail used: https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/Venus_Magellan_C3-MDIR_Colorized_Global_Mosaic_1024.jpg) | USGS-produced material is generally **public domain**; please acknowledge **USGS** as the source (see USGS FAQ above). Downscaled to 256×128. |
 | `moon.png` | NASA SVS “CGI Moon Kit” https://svs.gsfc.nasa.gov/4720 (direct: https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_2k.jpg) | SVS credit line: **NASA's Scientific Visualization Studio**. NASA media guidelines apply (see above). Downscaled to 256×128. |
 | `mars.png` | NASA Science “3D Resources: Mars” https://science.nasa.gov/3d-resources/mars/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/mars/Mars.jpg) | Credit listed on the NASA page: **NASA/Jet Propulsion Laboratory & Caltech**. NASA media guidelines apply (see above). Downscaled to 256×128. |
-| `earth.png` | NASA Visible Earth (Blue Marble base map): https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.png | NASA-produced imagery (Visible Earth / GSFC). NASA media guidelines apply (see above). Downscaled to 256×128. |
+| `earth.png` | NASA Visible Earth (Blue Marble base map): https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.png | NASA-produced imagery (Visible Earth / GSFC). NASA media guidelines apply (see above). Used at **2048×1024**. |
+| `earth-clouds.jpg` | NASA Visible Earth (Blue Marble cloud layer): https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57747/cloud_combined_2048.jpg | NASA-produced imagery (Visible Earth / GSFC). Based on MODIS data (Blue Marble clouds). NASA media guidelines apply (see above). Used at **2048×1024**. |
+| `earth-nightlights.jpg` | NASA Earth Observatory / Visible Earth “Black Marble 2016” night lights map (page: https://www.visibleearth.nasa.gov/images/144898/earth-at-night-black-marble-2016-color-maps ; direct: https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/144000/144898/BlackMarble_2016_01deg.jpg) | Credit line from the NASA page: **NASA Earth Observatory image by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC**. NASA media guidelines apply (see above). Used at **3600×1800**. |
 | `jupiter.png` | NASA Science “3D Resources: Jupiter” https://science.nasa.gov/3d-resources/jupiter/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/jupiter/Jupiter.jpg) | Credit listed on the NASA page: **JPL & Caltech**. NASA media guidelines apply (see above). Downscaled to 256×128. |
 | `saturn.png` | NASA Science “3D Resources: Saturn” https://science.nasa.gov/3d-resources/saturn/ (direct: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/saturn/Saturn.jpg) | Credit listed on the NASA page: **JPL & Caltech** (generated planetary map). NASA media guidelines apply (see above). Downscaled to 256×128. |
 | `saturn-rings.png` | NASA Photojournal “Mosaic of Saturn’s Rings” (PIA02242) https://science.nasa.gov/photojournal/mosaic-of-saturns-rings/ (direct: https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia02/pia02242/PIA02242.jpg) | Credit line on the NASA page: **NASA/JPL**. The viewer texture was derived from the mosaic (converted into a small radial ring strip + alpha) and downscaled to **512×64**. |
@@ -30,4 +32,4 @@ Most textures here are **256×128** PNGs.
 
 ## Follow-up ideas
 
-If we want higher-quality textures, we can increase resolution beyond 256×128 (keeping textures <= 2K per the viewer’s lightweight demo goal).
+If we want higher-quality textures, we can increase resolution beyond 256×128 (keeping texture sizes reasonable for the viewer’s lightweight demo goal).
