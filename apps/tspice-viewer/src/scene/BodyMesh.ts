@@ -261,6 +261,26 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         ].join('\n'),
       )
 
+      // Darken the night side so the scene ambient light doesn't wash out Earth.
+      // (Emissive city lights remain visible via the emissive map.)
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <lights_fragment_begin>',
+        [
+          '\t// Earth-only: suppress ambient-lit albedo on the night side.',
+          '\t{',
+          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\tfloat ndotl = dot( normal, sunDirView );',
+          '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
+          '',
+          '\t\t// Keep a tiny floor so Earth is not totally invisible at night.',
+          '\t\tfloat nightAlbedo = 0.004;',
+          '\t\tdiffuseColor.rgb *= mix( nightAlbedo, 1.0, dayFactor );',
+          '\t}',
+          '',
+          '#include <lights_fragment_begin>',
+        ].join('\n'),
+      )
+
       // Keep an Earth-local water factor around for later glint.
       shader.fragmentShader = shader.fragmentShader.replace(
         'vec3 totalEmissiveRadiance = emissive;',
@@ -376,8 +396,12 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         '  rim = pow( rim, uRimPower );',
         '',
         '  float ndotl = dot( N, L );',
-        '  float sunBias = smoothstep( -0.15, 0.45, ndotl );',
-        '  float glow = rim * mix( 1.0, sunBias, clamp( uSunBias, 0.0, 1.0 ) );',
+        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
+        '  float k = clamp( uSunBias, 0.0, 1.0 );',
+        '  float start = mix( -0.15, 0.0, k );',
+        '  float end = mix( 0.45, 0.2, k );',
+        '  float dayFactor = smoothstep( start, end, ndotl );',
+        '  float glow = rim * dayFactor;',
         '',
         '  float alpha = glow * uIntensity;',
         '  gl_FragColor = vec4( uColor, alpha );',
@@ -412,6 +436,33 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       alphaMap: black1x1,
     })
     extraMaterialsToDispose.push(cloudsMaterial)
+
+    // Darken clouds on the night side as well (otherwise the global ambient light
+    // makes clouds show up nearly as brightly at night as during day).
+    cloudsMaterial.onBeforeCompile = (shader) => {
+      shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
+      shader.uniforms.uTwilight = { value: earth.nightLightsTwilight ?? 0.12 }
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <common>',
+        ['#include <common>', 'uniform vec3 uSunDirWorld;', 'uniform float uTwilight;'].join('\n'),
+      )
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <lights_fragment_begin>',
+        [
+          '\t// Earth-only: suppress ambient-lit clouds on the night side.',
+          '\t{',
+          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\tfloat ndotl = dot( normal, sunDirView );',
+          '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
+          '\t\tdiffuseColor.rgb *= dayFactor;',
+          '\t}',
+          '',
+          '#include <lights_fragment_begin>',
+        ].join('\n'),
+      )
+    }
 
     cloudsMesh = new THREE.Mesh(cloudsGeo, cloudsMaterial)
     cloudsMesh.scale.setScalar(earth.cloudsRadiusRatio ?? 1.01)
