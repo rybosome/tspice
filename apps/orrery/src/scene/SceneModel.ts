@@ -28,6 +28,35 @@ export interface BodySurfaceStyle {
 
   /** Optional surface texture settings. */
   texture?: BodySurfaceTextureStyle
+
+  /** Optional `MeshStandardMaterial` tuning. */
+  roughness?: number
+
+  /** Optional `MeshStandardMaterial` tuning. */
+  metalness?: number
+
+  /**
+   * Optional bump strength.
+   *
+   * If set and a texture map is present, the renderer will reuse the map as a
+   * cheap bump source to add some rocky/cratered relief.
+   */
+  bumpScale?: number
+
+  /**
+   * Optional night-side albedo floor (0..1).
+   *
+   * This suppresses ambient-lit albedo on the night side so planets don't look
+   * "washed out" under the scene's ambient light.
+   */
+  nightAlbedo?: number
+
+  /**
+   * Smoothstep band around the terminator, in N·L space (0..1-ish).
+   *
+   * Smaller values = sharper terminator.
+   */
+  terminatorTwilight?: number
 }
 
 export interface EarthAppearanceLayerStyle {

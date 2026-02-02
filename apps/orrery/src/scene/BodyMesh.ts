@@ -161,6 +161,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   let disposed = false
 
+  const isEarth = options.bodyId === 'EARTH'
+
   // Collect async assets so `ready` consistently represents "all appearance assets are ready".
   const readyExtras: Promise<void>[] = []
 
@@ -169,6 +171,14 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const textureKind = surfaceTexture?.kind
   const textureUrl = surfaceTexture?.url
   const textureColor = surfaceTexture?.color
+
+  const surfaceRoughness = surface.roughness ?? (textureKind === 'sun' ? 0.2 : 0.9)
+  const surfaceMetalness = surface.metalness ?? 0.0
+  const bumpScale = surface.bumpScale ?? 0.0
+
+  const nightAlbedo =
+    surface.nightAlbedo == null ? undefined : THREE.MathUtils.clamp(surface.nightAlbedo, 0.0, 1.0)
+  const terminatorTwilight = THREE.MathUtils.clamp(surface.terminatorTwilight ?? 0.08, 0.0, 1.0)
 
   let map: THREE.Texture | undefined = textureKind ? makeProceduralBodyTexture(textureKind) : undefined
   let mapRelease: (() => void) | undefined
@@ -188,8 +198,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       : new THREE.Color(surface.color)
   const material = new THREE.MeshStandardMaterial({
     color: baseColor,
-    roughness: textureKind === 'sun' ? 0.2 : 0.9,
-    metalness: 0.0,
+    roughness: surfaceRoughness,
+    metalness: surfaceMetalness,
     map,
     emissive: textureKind === 'sun' ? new THREE.Color('#ffcc55') : new THREE.Color('#000000'),
     emissiveIntensity: textureKind === 'sun' ? 0.8 : 0.0,
@@ -205,6 +215,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     // Ensure the material no longer references the texture.
     mat.map = null
+    mat.bumpMap = null
     mat.needsUpdate = true
 
     if (release) {
@@ -267,14 +278,13 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // Earth-only higher-fidelity appearance layers (night lights, clouds, atmosphere, ocean glint).
   // This is kept opt-in via `appearance.layers` so other bodies remain unchanged.
   const earth = options.appearance.layers?.find(isEarthAppearanceLayer)?.earth
-  const isEarth = options.bodyId === 'EARTH'
 
   const extraTexturesToDispose: THREE.Texture[] = []
   const extraTextureReleases: Array<() => void> = []
   const extraMaterialsToDispose: THREE.Material[] = []
   const extraGeometriesToDispose: THREE.BufferGeometry[] = []
 
-  // Shared sun direction uniform for Earth shaders (mutated per-frame).
+  // Shared sun direction uniform for body shaders (mutated per-frame).
   const uSunDirWorld = new THREE.Vector3(1, 1, 1).normalize()
 
   // Used when optional maps are missing (prevents shader warnings and avoids showing a full white shell).
@@ -282,6 +292,50 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   extraTexturesToDispose.push(black1x1)
 
   let update: BodyMeshUpdate | undefined
+
+  // Optional terminator/night-side albedo suppression.
+  // This avoids ambient light washing out airless bodies on the night side.
+  const useTerminatorDarkening = !isEarth && nightAlbedo != null && nightAlbedo < 1.0
+
+  if (useTerminatorDarkening) {
+    const uNightAlbedo = { value: nightAlbedo }
+    const uTerminatorTwilight = { value: terminatorTwilight }
+
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
+      shader.uniforms.uNightAlbedo = uNightAlbedo
+      shader.uniforms.uTerminatorTwilight = uTerminatorTwilight
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <common>',
+        [
+          '#include <common>',
+          'uniform vec3 uSunDirWorld;',
+          'uniform float uNightAlbedo;',
+          'uniform float uTerminatorTwilight;',
+        ].join('\n'),
+      )
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <lights_fragment_begin>',
+        [
+          '\t// Terminator darkening: suppress ambient-lit albedo on the night side.',
+          '\t{',
+          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\tfloat ndotl = dot( normal, sunDirView );',
+          '\t\tfloat dayFactor = smoothstep( 0.0, uTerminatorTwilight, ndotl );',
+          '\t\tdiffuseColor.rgb *= mix( uNightAlbedo, 1.0, dayFactor );',
+          '\t}',
+          '',
+          '#include <lights_fragment_begin>',
+        ].join('\n'),
+      )
+    }
+
+    update = ({ sunDirWorld }) => {
+      uSunDirWorld.copy(sunDirWorld)
+    }
+  }
 
   let cloudsMesh: THREE.Mesh | undefined
   let cloudsMaterial: THREE.MeshStandardMaterial | undefined
@@ -692,6 +746,12 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       if (!map) return
 
       material.map = map
+
+      if (bumpScale !== 0) {
+        material.bumpMap = map
+        material.bumpScale = bumpScale
+      }
+
       // Note: `material.color` multiplies `material.map`.
       // Only override the default multiplier if `textureColor` is explicitly set.
       material.color.set(textureColor ?? surface.color)
