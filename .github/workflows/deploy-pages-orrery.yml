@@ -121,7 +121,7 @@ jobs:
     env:
       PAGES_PROJECT: orrery
       PREVIEW_BRANCH: pr-${{ github.event.pull_request.number }}
-      PREVIEW_URL: https://pr-${{ github.event.pull_request.number }}.orrery.pages.dev
+      PREVIEW_URL: https://pr-${{ github.event.pull_request.number }}.orrery-c4f.pages.dev/
 
     steps:
       - name: Checkout
