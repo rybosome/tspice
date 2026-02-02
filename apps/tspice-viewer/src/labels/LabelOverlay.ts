@@ -94,7 +94,7 @@ const PLACEMENT_CANDIDATES: readonly Corner[] = ['NE', 'NW', 'SE', 'SW']
  */
 function projectToNDC(
   position: THREE.Vector3,
-  camera: THREE.PerspectiveCamera
+  camera: THREE.PerspectiveCamera,
 ): { x: number; y: number; z: number } | null {
   const pos = position.clone().project(camera)
 
@@ -118,11 +118,7 @@ function projectToNDC(
 /**
  * Convert NDC coordinates to screen pixel coordinates.
  */
-function ndcToScreen(
-  ndc: { x: number; y: number },
-  width: number,
-  height: number
-): { x: number; y: number } {
+function ndcToScreen(ndc: { x: number; y: number }, width: number, height: number): { x: number; y: number } {
   return {
     x: ((ndc.x + 1) / 2) * width,
     y: ((1 - ndc.y) / 2) * height,
@@ -136,7 +132,7 @@ function computeApparentRadiusPx(
   bodyWorldPos: THREE.Vector3,
   radiusWorld: number,
   camera: THREE.PerspectiveCamera,
-  height: number
+  height: number,
 ): number {
   const distance = bodyWorldPos.distanceTo(camera.position)
   if (distance < 1e-9) return 0
@@ -158,7 +154,7 @@ function isOccluded(
   targetMesh: THREE.Mesh,
   camera: THREE.PerspectiveCamera,
   pickables: THREE.Mesh[],
-  raycaster: THREE.Raycaster
+  raycaster: THREE.Raycaster,
 ): boolean {
   const targetPos = new THREE.Vector3()
   targetMesh.getWorldPosition(targetPos)
@@ -190,7 +186,7 @@ function computePlacement(
   screenRadius: number,
   corner: Corner,
   labelWidth: number,
-  labelHeight: number
+  labelHeight: number,
 ): LabelPlacement {
   // Anchor point on body edge
   const dirX = corner === 'NE' || corner === 'SE' ? 1 : -1
@@ -219,7 +215,7 @@ function generateLeaderPoints(
   screenPos: THREE.Vector2,
   placement: LabelPlacement,
   labelWidth: number,
-  labelHeight: number
+  labelHeight: number,
 ): string {
   // Start at body center
   const startX = screenPos.x
@@ -265,11 +261,7 @@ function rectsOverlap(a: Rect, b: Rect): boolean {
 /**
  * Greedy placement algorithm for labels.
  */
-function placeLabelsGreedy(
-  labels: LabelState[],
-  containerWidth: number,
-  containerHeight: number
-): void {
+function placeLabelsGreedy(labels: LabelState[], containerWidth: number, containerHeight: number): void {
   // Sort by priority (highest first)
   const sorted = [...labels].sort((a, b) => b.priority - a.priority)
 
@@ -295,7 +287,7 @@ function placeLabelsGreedy(
         Math.max(4, label.screenRadius),
         corner,
         labelWidth,
-        labelHeight
+        labelHeight,
       )
 
       const rect: Rect = {
@@ -306,12 +298,7 @@ function placeLabelsGreedy(
       }
 
       // Check bounds
-      if (
-        rect.x < 0 ||
-        rect.y < 0 ||
-        rect.x + rect.width > containerWidth ||
-        rect.y + rect.height > containerHeight
-      ) {
+      if (rect.x < 0 || rect.y < 0 || rect.x + rect.width > containerWidth || rect.y + rect.height > containerHeight) {
         continue
       }
 

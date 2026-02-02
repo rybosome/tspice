@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import type { CameraController, CameraControllerState } from './controls/CameraController.js'
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type SpiceClient } from './spice/SpiceClient.js'
-import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleBodies, type BodyId } from './scene/BodyRegistry.js'
+import { getBodyRegistryEntry, listDefaultVisibleBodies, type BodyId } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
@@ -40,19 +40,9 @@ export function SceneCanvas() {
 
   const rendererRuntimeRef = useRef<ThreeRuntime | null>(null)
 
-  const runtimeConfig = useMemo(
-    () => parseSceneCanvasRuntimeConfigFromLocationSearch(window.location.search),
-    [],
-  )
+  const runtimeConfig = useMemo(() => parseSceneCanvasRuntimeConfigFromLocationSearch(window.location.search), [])
 
-  const {
-    searchParams: search,
-    isE2e,
-    enableLogDepth,
-    starSeed,
-    initialUtc,
-    initialEt,
-  } = runtimeConfig
+  const { searchParams: search, isE2e, enableLogDepth, starSeed, initialUtc, initialEt } = runtimeConfig
 
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
@@ -101,7 +91,7 @@ export function SceneCanvas() {
 
   const planetScaleMultiplier = useMemo(
     () => Math.min(PLANET_SCALE_MAX, Math.pow(10, planetScaleSlider / 20)),
-    [planetScaleSlider]
+    [planetScaleSlider],
   )
 
   // HUD stats state - updated on render frames when HUD is enabled
@@ -150,6 +140,20 @@ export function SceneCanvas() {
   // inside the renderer effect.
   const kmToWorld = 1 / 1_000_000
 
+  // The renderer/bootstrap `useEffect` is mounted once, so capture the initial
+  // runtime config it needs without having to re-run on UI toggles.
+  const initRuntimeConfigRef = useRef({
+    search,
+    isE2e,
+    enableLogDepth,
+    starSeed,
+    initialUtc,
+    initialEt,
+    kmToWorld,
+    animatedSky,
+    twinkleEnabled,
+  })
+
   // Control pane collapsed state: starts collapsed on all screen sizes
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [panModeEnabled, setPanModeEnabled] = useState(false)
@@ -195,7 +199,7 @@ export function SceneCanvas() {
       timeStore.setQuantumSec(value)
     }
   }, [])
-  
+
   // Enable keyboard controls (disabled in e2e mode)
   useKeyboardControls({
     controllerRef,
@@ -249,7 +253,7 @@ export function SceneCanvas() {
     const sunPosWorld = new THREE.Vector3(
       -focusPosKm[0] * kmToWorld,
       -focusPosKm[1] * kmToWorld,
-      -focusPosKm[2] * kmToWorld
+      -focusPosKm[2] * kmToWorld,
     )
 
     if (sunPosWorld.lengthSq() < 1e-12) return
@@ -261,7 +265,7 @@ export function SceneCanvas() {
     const currentOffsetDir = new THREE.Vector3(
       cosPitch * Math.cos(controller.yaw),
       cosPitch * Math.sin(controller.yaw),
-      Math.sin(controller.pitch)
+      Math.sin(controller.pitch),
     )
     const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
 
@@ -300,11 +304,7 @@ export function SceneCanvas() {
     const maxOffAxis = Math.max(0, half - marginRad)
     const maxDesiredOffAxis = maxOffAxis * 0.8
 
-    if (
-      radiusWorld != null &&
-      minSeparationRad > maxDesiredOffAxis &&
-      maxDesiredOffAxis > marginRad + 1e-6
-    ) {
+    if (radiusWorld != null && minSeparationRad > maxDesiredOffAxis && maxDesiredOffAxis > marginRad + 1e-6) {
       const maxBodyAng = maxDesiredOffAxis - marginRad
       const minRadiusForBodyAng = radiusWorld / Math.sin(maxBodyAng)
       controller.radius = Math.max(controller.radius, minRadiusForBodyAng)
@@ -449,10 +449,17 @@ export function SceneCanvas() {
     invalidateRef.current?.()
   }, [cameraFovDeg])
 
+  // Intentionally runs once (renderer/bootstrap):
+  // - Uses refs / module singletons for anything that changes over time.
+  // - Do not capture React state in this closure; plumb dynamic changes through
+  //   `latestUiRef` + the dedicated update effects below.
   useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
+
+    const { search, isE2e, enableLogDepth, starSeed, animatedSky, twinkleEnabled, initialUtc, initialEt, kmToWorld } =
+      initRuntimeConfigRef.current
 
     let disposed = false
 
@@ -461,9 +468,7 @@ export function SceneCanvas() {
     // Focus helpers are only enabled in interactive mode, but we keep the
     // variables in outer scope so scene updates can cancel tweens / adjust zoom.
     let cancelFocusTween: (() => void) | undefined
-    let focusOn:
-      | ((nextTarget: THREE.Vector3, opts?: { radius?: number; immediate?: boolean }) => void)
-      | undefined
+    let focusOn: ((nextTarget: THREE.Vector3, opts?: { radius?: number; immediate?: boolean }) => void) | undefined
 
     let interactions: SceneInteractions | null = null
     let spiceSceneRuntime: SpiceSceneRuntime | null = null
@@ -508,7 +513,11 @@ export function SceneCanvas() {
     // Clamp to the controller's zoom limits so focus animations and manual zoom
     // behavior always agree.
     const computeFocusRadius = (radiusWorld: number) =>
-      THREE.MathUtils.clamp(radiusWorld * focusDistanceMultiplier, three.controller.minRadius, three.controller.maxRadius)
+      THREE.MathUtils.clamp(
+        radiusWorld * focusDistanceMultiplier,
+        three.controller.minRadius,
+        three.controller.maxRadius,
+      )
 
     if (!isE2e) {
       interactions = installSceneInteractions({
@@ -634,7 +643,6 @@ export function SceneCanvas() {
     rendererRuntimeRef.current?.updateSky({ animatedSky, twinkleEnabled, isE2e })
   }, [animatedSky, twinkleEnabled, isE2e])
 
-
   // Lightweight RAF loop for twinkle animation.
   useEffect(() => {
     twinkleActiveRef.current = twinkleEnabled
@@ -657,9 +665,7 @@ export function SceneCanvas() {
   return (
     <div ref={containerRef} className="scene">
       {!isE2e && spiceClient ? (
-        <div
-          className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}
-        >
+        <div className={`sceneOverlay ${overlayOpen ? 'sceneOverlayOpen' : 'sceneOverlayCollapsed'}`}>
           {/* Header: Collapse toggle on left, title, help + mobile-only Look/Pan on right */}
           <div className="sceneOverlayHeader">
             <button
@@ -749,61 +755,37 @@ export function SceneCanvas() {
               {/* Checkbox grid: 2 columns */}
               <div className="checkboxGrid">
                 <label className="asciiCheckbox">
-                  <span
-                    className="asciiCheckboxBox"
-                    onClick={() => setLabelsEnabled((v) => !v)}
-                  >
+                  <span className="asciiCheckboxBox" onClick={() => setLabelsEnabled((v) => !v)}>
                     [{labelsEnabled ? '✓' : '\u00A0'}]
                   </span>
-                  <span
-                    className="asciiCheckboxLabel"
-                    onClick={() => setLabelsEnabled((v) => !v)}
-                  >
+                  <span className="asciiCheckboxLabel" onClick={() => setLabelsEnabled((v) => !v)}>
                     Labels
                   </span>
                 </label>
 
                 <label className="asciiCheckbox">
-                  <span
-                    className="asciiCheckboxBox"
-                    onClick={() => setOrbitPathsEnabled((v) => !v)}
-                  >
+                  <span className="asciiCheckboxBox" onClick={() => setOrbitPathsEnabled((v) => !v)}>
                     [{orbitPathsEnabled ? '✓' : '\u00A0'}]
                   </span>
-                  <span
-                    className="asciiCheckboxLabel"
-                    onClick={() => setOrbitPathsEnabled((v) => !v)}
-                  >
+                  <span className="asciiCheckboxLabel" onClick={() => setOrbitPathsEnabled((v) => !v)}>
                     Orbits
                   </span>
                 </label>
 
                 <label className="asciiCheckbox">
-                  <span
-                    className="asciiCheckboxBox"
-                    onClick={() => setShowJ2000Axes((v) => !v)}
-                  >
+                  <span className="asciiCheckboxBox" onClick={() => setShowJ2000Axes((v) => !v)}>
                     [{showJ2000Axes ? '✓' : '\u00A0'}]
                   </span>
-                  <span
-                    className="asciiCheckboxLabel"
-                    onClick={() => setShowJ2000Axes((v) => !v)}
-                  >
+                  <span className="asciiCheckboxLabel" onClick={() => setShowJ2000Axes((v) => !v)}>
                     Axes
                   </span>
                 </label>
 
                 <label className="asciiCheckbox">
-                  <span
-                    className="asciiCheckboxBox"
-                    onClick={() => setShowRenderHud((v) => !v)}
-                  >
+                  <span className="asciiCheckboxBox" onClick={() => setShowRenderHud((v) => !v)}>
                     [{showRenderHud ? '✓' : '\u00A0'}]
                   </span>
-                  <span
-                    className="asciiCheckboxLabel"
-                    onClick={() => setShowRenderHud((v) => !v)}
-                  >
+                  <span className="asciiCheckboxLabel" onClick={() => setShowRenderHud((v) => !v)}>
                     HUD
                   </span>
                 </label>
@@ -812,11 +794,7 @@ export function SceneCanvas() {
               <div className="controlsDivider" />
 
               {/* Advanced disclosure row */}
-              <button
-                className="advancedToggle"
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                type="button"
-              >
+              <button className="advancedToggle" onClick={() => setShowAdvanced(!showAdvanced)} type="button">
                 {showAdvanced ? '▼' : '▶'} ADVANCED
               </button>
 
@@ -909,13 +887,7 @@ export function SceneCanvas() {
 
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel">Quantum (s)</span>
-                      <input
-                        type="number"
-                        min={0.001}
-                        step={0.01}
-                        value={quantumSec}
-                        onChange={handleQuantumChange}
-                      />
+                      <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
                     </div>
                   </div>
 
@@ -924,31 +896,19 @@ export function SceneCanvas() {
                   {/* Group 3: Animated Sky, Label Occlusion */}
                   <div className="advancedCheckboxRow">
                     <label className="asciiCheckbox">
-                      <span
-                        className="asciiCheckboxBox"
-                        onClick={() => setAnimatedSky((v) => !v)}
-                      >
+                      <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>
                         [{animatedSky ? '✓' : '\u00A0'}]
                       </span>
-                      <span
-                        className="asciiCheckboxLabel"
-                        onClick={() => setAnimatedSky((v) => !v)}
-                      >
+                      <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
                         Animated Sky
                       </span>
                     </label>
 
                     <label className="asciiCheckbox">
-                      <span
-                        className="asciiCheckboxBox"
-                        onClick={() => setLabelOcclusionEnabled((v) => !v)}
-                      >
+                      <span className="asciiCheckboxBox" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
                         [{labelOcclusionEnabled ? '✓' : '\u00A0'}]
                       </span>
-                      <span
-                        className="asciiCheckboxLabel"
-                        onClick={() => setLabelOcclusionEnabled((v) => !v)}
-                      >
+                      <span className="asciiCheckboxLabel" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
                         Label Occlusion
                       </span>
                     </label>
@@ -966,16 +926,10 @@ export function SceneCanvas() {
                   {/* Body-fixed axes - keep in advanced */}
                   <div className="advancedCheckboxRow" style={{ marginTop: '6px' }}>
                     <label className="asciiCheckbox">
-                      <span
-                        className="asciiCheckboxBox"
-                        onClick={() => setShowBodyFixedAxes((v) => !v)}
-                      >
+                      <span className="asciiCheckboxBox" onClick={() => setShowBodyFixedAxes((v) => !v)}>
                         [{showBodyFixedAxes ? '✓' : '\u00A0'}]
                       </span>
-                      <span
-                        className="asciiCheckboxLabel"
-                        onClick={() => setShowBodyFixedAxes((v) => !v)}
-                      >
+                      <span className="asciiCheckboxLabel" onClick={() => setShowBodyFixedAxes((v) => !v)}>
                         Body-fixed Axes
                       </span>
                     </label>
@@ -989,25 +943,14 @@ export function SceneCanvas() {
 
       {!isE2e ? (
         <div className="sceneZoomButtons">
-          <button
-            className="sceneZoomButton"
-            type="button"
-            onClick={() => zoomBy(1 / 1.15)}
-            aria-label="Zoom in"
-          >
+          <button className="sceneZoomButton" type="button" onClick={() => zoomBy(1 / 1.15)} aria-label="Zoom in">
             +
           </button>
-          <button
-            className="sceneZoomButton"
-            type="button"
-            onClick={() => zoomBy(1.15)}
-            aria-label="Zoom out"
-          >
+          <button className="sceneZoomButton" type="button" onClick={() => zoomBy(1.15)} aria-label="Zoom out">
             −
           </button>
         </div>
       ) : null}
-
 
       {/* Selection Inspector - shows when a body is selected */}
       {!isE2e && selectedBody && spiceClient ? (

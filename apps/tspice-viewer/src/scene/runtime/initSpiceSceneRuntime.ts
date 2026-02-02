@@ -11,11 +11,7 @@ import {
   type Vec3Km,
 } from '../../spice/SpiceClient.js'
 import { createBodyMesh } from '../BodyMesh.js'
-import {
-  BODY_REGISTRY,
-  getBodyRegistryEntry,
-  type BodyId,
-} from '../BodyRegistry.js'
+import { BODY_REGISTRY, getBodyRegistryEntry, type BodyId } from '../BodyRegistry.js'
 import { computeBodyRadiusWorld } from '../bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from '../FrameAxes.js'
 import { createRingMesh } from '../RingMesh.js'
@@ -24,6 +20,7 @@ import { rebasePositionKm } from '../precision.js'
 import type { SceneModel } from '../SceneModel.js'
 import { LabelOverlay, type LabelBody, type LabelOverlayUpdateOptions } from '../../labels/LabelOverlay.js'
 import { timeStore } from '../../time/timeStore.js'
+import { computeViewerScrubRangeEt } from '../../time/viewerTimeBounds.js'
 import { installTspiceViewerE2eApi } from '../../e2eHooks/index.js'
 import type { CameraController, CameraControllerState } from '../../controls/CameraController.js'
 
@@ -133,7 +130,11 @@ export async function initSpiceSceneRuntime(args: {
   scene.add(dir)
   sceneObjects.push(dir)
 
-  const { client: loadedSpiceClient, rawClient: rawSpiceClient, utcToEt } = await createSpiceClient({
+  const {
+    client: loadedSpiceClient,
+    rawClient: rawSpiceClient,
+    utcToEt,
+  } = await createSpiceClient({
     searchParams,
     cometsEnabled,
   })
@@ -146,6 +147,14 @@ export async function initSpiceSceneRuntime(args: {
     for (const dispose of disposers) dispose()
     throw new Error('SceneCanvas disposed during SPICE init')
   }
+
+  // IMPORTANT: set the viewer's scrub range only after kernels load so
+  // `utcToEt` (SPICE `str2et`) is correct.
+  //
+  // Also: do this *before* applying URL `?utc=`/`?et=` overrides, because
+  // `timeStore.setEtSec` clamps to the current scrub range.
+  const scrubRange = computeViewerScrubRangeEt({ utcToEt })
+  if (scrubRange) timeStore.setScrubRange(scrubRange.minEtSec, scrubRange.maxEtSec)
 
   // Allow the URL to specify UTC for quick testing, but keep the slider
   // driven by numeric ET.
@@ -256,8 +265,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   // Orbit paths (one full orbital period per body).
-  let orbitPaths: OrbitPaths | undefined
-  orbitPaths = new OrbitPaths({
+  const orbitPaths = new OrbitPaths({
     spiceClient: rawSpiceClient,
     kmToWorld,
     bodies: sceneModel.bodies.map((b) => {
@@ -266,7 +274,7 @@ export async function initSpiceSceneRuntime(args: {
     }),
   })
   sceneObjects.push(orbitPaths.object)
-  disposers.push(() => orbitPaths?.dispose())
+  disposers.push(() => orbitPaths.dispose())
   scene.add(orbitPaths.object)
 
   const j2000Axes = !isE2e ? createFrameAxes({ sizeWorld: 1.2, opacity: 0.9 }) : undefined

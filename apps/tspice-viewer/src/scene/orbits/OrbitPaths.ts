@@ -69,6 +69,21 @@ function yieldToMainThread(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 0))
 }
 
+function setAlphaToCoverage(material: THREE.Material, enabled: boolean): void {
+  // `alphaToCoverage` is not present in all Three.js versions/materials.
+  // Guard to avoid relying on `any` casts.
+  const m = material as unknown as Record<string, unknown>
+  if (!('alphaToCoverage' in m)) return
+
+  try {
+    const didSet = Reflect.set(m, 'alphaToCoverage', enabled)
+    if (!didSet) return
+    if (typeof m.alphaToCoverage !== 'boolean') return
+  } catch {
+    // If this is non-writable in a given Three.js version/material, fail silently.
+  }
+}
+
 function computePointsPerOrbit(opts: {
   samplesPerOrbit: number
   maxTotalPoints: number
@@ -86,7 +101,7 @@ function computePointsPerOrbit(opts: {
   return THREE.MathUtils.clamp(
     Math.min(samplesPerOrbit, perOrbitBudget || samplesPerOrbit),
     Math.max(2, minPoints),
-    Math.max(2, samplesPerOrbit)
+    Math.max(2, samplesPerOrbit),
   )
 }
 
@@ -200,7 +215,11 @@ export class OrbitPaths {
 
       if (o.group.visible && primaryPosKm) {
         const rebasedKm = rebasePositionKm(primaryPosKm, input.focusPosKm)
-        o.group.position.set(rebasedKm[0] * this.kmToWorld, rebasedKm[1] * this.kmToWorld, rebasedKm[2] * this.kmToWorld)
+        o.group.position.set(
+          rebasedKm[0] * this.kmToWorld,
+          rebasedKm[1] * this.kmToWorld,
+          rebasedKm[2] * this.kmToWorld,
+        )
       }
 
       // Apply material settings even if hidden (so it looks correct when enabled).
@@ -208,7 +227,7 @@ export class OrbitPaths {
       if (o.lastMaterialKey !== materialKey) {
         o.lastMaterialKey = materialKey
         o.material.linewidth = input.settings.lineWidthPx
-        ;(o.material as any).alphaToCoverage = Boolean(input.settings.antialias)
+        setAlphaToCoverage(o.material, Boolean(input.settings.antialias))
         o.material.needsUpdate = true
       }
 
