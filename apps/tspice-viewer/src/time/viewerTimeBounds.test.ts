@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import {
-  computeViewerScrubRangeEt,
-  VIEWER_SCRUB_UTC_HARD_MAX,
-  VIEWER_SCRUB_UTC_HARD_MIN,
-} from './viewerTimeBounds.js'
+import { computeViewerScrubRangeEt, VIEWER_SCRUB_UTC_HARD_MAX, VIEWER_SCRUB_UTC_HARD_MIN } from './viewerTimeBounds.js'
 
 describe('viewerTimeBounds', () => {
   it('converts the hard UTC endpoints to ET and returns them', () => {
