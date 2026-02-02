@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import type { BodyRef, SpiceClient, EtSeconds, FrameId } from '../spice/SpiceClient.js'
 import { BODY_REGISTRY, type BodyRegistryEntry } from '../scene/BodyRegistry.js'
 import { getApproxOrbitalPeriodSec } from '../scene/orbits/orbitalPeriods.js'
@@ -97,41 +97,68 @@ function formatScientific(n: number, digits = 3): string {
   return `${mantissa} × 10${toSuperscript(exponent)}`
 }
 
-function buildExtrasRows(extras: NaifExtras): Array<{ label: string; value: string }> {
-  const rows: Array<{ label: string; value: string }> = []
+type ExtrasRow = { label: string; value: string }
+type ExtrasGroup = { title: string; rows: ExtrasRow[] }
 
+function buildExtrasGroups(extras: NaifExtras): ExtrasGroup[] {
+  const groups: ExtrasGroup[] = []
+
+  const classificationRows: ExtrasRow[] = []
   if (extras.classification) {
-    rows.push({ label: 'Classification', value: extras.classification })
+    classificationRows.push({ label: 'Type', value: extras.classification })
   }
+  if (classificationRows.length > 0) {
+    groups.push({ title: 'Classification', rows: classificationRows })
+  }
+
+  const physicalRows: ExtrasRow[] = []
   if (extras.meanRadiusKm != null) {
-    rows.push({ label: 'Mean radius', value: formatRadius(extras.meanRadiusKm) })
+    physicalRows.push({ label: 'Mean radius', value: formatRadius(extras.meanRadiusKm) })
   }
   if (extras.massKg != null) {
-    rows.push({ label: 'Mass', value: `${formatScientific(extras.massKg)} kg` })
+    physicalRows.push({ label: 'Mass', value: `${formatScientific(extras.massKg)} kg` })
   }
   if (extras.densityGcm3 != null) {
-    rows.push({ label: 'Density', value: `${extras.densityGcm3.toFixed(2)} g/cm³` })
+    physicalRows.push({ label: 'Density', value: `${extras.densityGcm3.toFixed(2)} g/cm³` })
   }
-  if (extras.surfaceGravityMs2 != null) {
-    rows.push({ label: 'Gravity', value: `${extras.surfaceGravityMs2.toFixed(2)} m/s²` })
-  }
-  if (extras.escapeVelocityKms != null) {
-    rows.push({ label: 'Escape v', value: `${extras.escapeVelocityKms.toFixed(2)} km/s` })
-  }
-  if (extras.meanTemperatureK != null) {
-    rows.push({ label: 'Mean temp', value: `${extras.meanTemperatureK.toFixed(0)} K` })
-  }
-  if (extras.bondAlbedo != null) {
-    rows.push({ label: 'Bond albedo', value: extras.bondAlbedo.toFixed(3) })
-  }
-  if (extras.geometricAlbedo != null) {
-    rows.push({ label: 'Geom. albedo', value: extras.geometricAlbedo.toFixed(3) })
-  }
-  if (extras.atmosphereSummary) {
-    rows.push({ label: 'Atmosphere', value: extras.atmosphereSummary })
+  if (physicalRows.length > 0) {
+    groups.push({ title: 'Physical properties', rows: physicalRows })
   }
 
-  return rows
+  const dynamicsRows: ExtrasRow[] = []
+  if (extras.surfaceGravityMs2 != null) {
+    dynamicsRows.push({ label: 'Gravity', value: `${extras.surfaceGravityMs2.toFixed(2)} m/s²` })
+  }
+  if (extras.escapeVelocityKms != null) {
+    dynamicsRows.push({ label: 'Escape v', value: `${extras.escapeVelocityKms.toFixed(2)} km/s` })
+  }
+  if (dynamicsRows.length > 0) {
+    groups.push({ title: 'Dynamics', rows: dynamicsRows })
+  }
+
+  const reflectivityRows: ExtrasRow[] = []
+  if (extras.meanTemperatureK != null) {
+    reflectivityRows.push({ label: 'Mean temp', value: `${extras.meanTemperatureK.toFixed(0)} K` })
+  }
+  if (extras.bondAlbedo != null) {
+    reflectivityRows.push({ label: 'Bond albedo', value: extras.bondAlbedo.toFixed(3) })
+  }
+  if (extras.geometricAlbedo != null) {
+    reflectivityRows.push({ label: 'Geom. albedo', value: extras.geometricAlbedo.toFixed(3) })
+  }
+  if (reflectivityRows.length > 0) {
+    groups.push({ title: 'Reflectivity / thermal', rows: reflectivityRows })
+  }
+
+  const atmosphereRows: ExtrasRow[] = []
+  if (extras.atmosphereSummary) {
+    atmosphereRows.push({ label: 'Summary', value: extras.atmosphereSummary })
+  }
+  if (atmosphereRows.length > 0) {
+    groups.push({ title: 'Atmosphere', rows: atmosphereRows })
+  }
+
+  return groups
 }
 
 /** Look up body registry entry by BodyRef. */
@@ -237,7 +264,7 @@ export function SelectionInspector({
 
   const naifId = registryEntry?.naifIds?.body
   const extras = useMemo(() => getNaifExtras(naifId), [naifId])
-  const extrasRows = useMemo(() => (extras ? buildExtrasRows(extras) : []), [extras])
+  const extrasGroups = useMemo(() => (extras ? buildExtrasGroups(extras) : []), [extras])
 
   return (
     <div className="selectionInspector">
@@ -309,15 +336,21 @@ export function SelectionInspector({
         {/* Advanced fields */}
         {showAdvanced && (
           <>
-            {extrasRows.length > 0 && (
+            {extrasGroups.length > 0 && (
               <>
                 <div className="selectionInspectorDivider" />
-                <div className="selectionInspectorSectionTitle">Extras</div>
-                {extrasRows.map(({ label, value }) => (
-                  <div key={label} className="selectionInspectorRow">
-                    <span className="selectionInspectorLabel">{label}:</span>
-                    <span className="selectionInspectorValue">{value}</span>
-                  </div>
+                <div className="selectionInspectorSectionTitle">NAIF</div>
+                {extrasGroups.map((group, groupIndex) => (
+                  <Fragment key={group.title}>
+                    {groupIndex > 0 && <div className="selectionInspectorDivider" />}
+                    <div className="selectionInspectorGroupTitle">{group.title}</div>
+                    {group.rows.map(({ label, value }) => (
+                      <div key={`${group.title}-${label}`} className="selectionInspectorRow">
+                        <span className="selectionInspectorLabel">{label}:</span>
+                        <span className="selectionInspectorValue">{value}</span>
+                      </div>
+                    ))}
+                  </Fragment>
                 ))}
               </>
             )}
