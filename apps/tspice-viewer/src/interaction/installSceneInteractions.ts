@@ -184,10 +184,7 @@ export function installSceneInteractions(args: {
     const immediate = Boolean(opts?.immediate)
 
     // Skip tiny moves to avoid scheduling unnecessary animation frames.
-    if (
-      immediate ||
-      (startTarget.distanceToSquared(endTarget) < 1e-16 && Math.abs(endRadius - startRadius) < 1e-9)
-    ) {
+    if (immediate || (startTarget.distanceToSquared(endTarget) < 1e-16 && Math.abs(endRadius - startRadius) < 1e-9)) {
       controller.target.copy(endTarget)
       controller.radius = endRadius
       controller.applyToCamera(camera)
