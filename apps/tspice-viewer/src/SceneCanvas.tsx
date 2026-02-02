@@ -82,6 +82,9 @@ export function SceneCanvas() {
   // Occlusion toggle for labels (advanced, default off)
   const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
 
+  // Advanced: Comets toggle (default on)
+  const [cometsEnabled, setCometsEnabled] = useState(true)
+
   // Single toggle for animated sky effects (skydome shader + starfield twinkle).
   // Disabled by default for e2e tests to keep snapshots deterministic.
   const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
@@ -119,13 +122,29 @@ export function SceneCanvas() {
   const focusDistanceMultiplier = 4
   const sunOcclusionMarginRad = 0
 
+  const cometBodyKeys = useMemo(() => {
+    return new Set(BODY_REGISTRY.filter((b) => b.kind === 'comet').map((b) => String(b.body)))
+  }, [])
+
   const focusOptions = useMemo(() => {
     // TODO(#119): Once moons are fully integrated into default visibility rules,
     // this should probably become a dedicated helper (e.g. listFocusableBodies).
-    const base = listDefaultVisibleBodies()
+    const base = listDefaultVisibleBodies().filter((b) => cometsEnabled || b.kind !== 'comet')
     const moon = getBodyRegistryEntry('MOON')
     return base.some((b) => b.id === moon.id) ? base : [...base, moon]
-  }, [])
+  }, [cometsEnabled])
+
+  useEffect(() => {
+    if (cometsEnabled) return
+
+    // If comets are turned off, make sure we aren't focusing/selecting one.
+    if (cometBodyKeys.has(String(focusBody))) {
+      setFocusBody('EARTH')
+    }
+    if (selectedBody && cometBodyKeys.has(String(selectedBody))) {
+      setSelectedBody(null)
+    }
+  }, [cometsEnabled, cometBodyKeys, focusBody, selectedBody])
 
   // Keep renderer units consistent across the app. This matches the value used
   // inside the renderer effect.
@@ -532,6 +551,7 @@ export function SceneCanvas() {
           searchParams: search,
           initialUtc,
           initialEt,
+          cometsEnabled,
           scene: three.scene,
           camera: three.camera,
           controller: three.controller,
@@ -607,7 +627,7 @@ export function SceneCanvas() {
 
       updateSceneRef.current = null
     }
-  }, [])
+  }, [cometsEnabled])
 
   // Swap the starfield and skydome in-place when animatedSky toggled.
   useEffect(() => {
@@ -930,6 +950,15 @@ export function SceneCanvas() {
                         onClick={() => setLabelOcclusionEnabled((v) => !v)}
                       >
                         Label Occlusion
+                      </span>
+                    </label>
+
+                    <label className="asciiCheckbox">
+                      <span className="asciiCheckboxBox" onClick={() => setCometsEnabled((v) => !v)}>
+                        [{cometsEnabled ? '✓' : '\u00A0'}]
+                      </span>
+                      <span className="asciiCheckboxLabel" onClick={() => setCometsEnabled((v) => !v)}>
+                        Comets
                       </span>
                     </label>
                   </div>

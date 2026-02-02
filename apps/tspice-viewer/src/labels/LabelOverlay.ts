@@ -78,6 +78,7 @@ const KIND_PRIORITY: Record<BodyKind, number> = {
   star: 10,
   planet: 5,
   moon: 2,
+  comet: 1,
 }
 
 // Candidate placement offsets (NE, NW, SE, SW)

@@ -14,7 +14,6 @@ import { createBodyMesh } from '../BodyMesh.js'
 import {
   BODY_REGISTRY,
   getBodyRegistryEntry,
-  listDefaultVisibleSceneBodies,
   type BodyId,
 } from '../BodyRegistry.js'
 import { computeBodyRadiusWorld } from '../bodyScaling.js'
@@ -60,6 +59,9 @@ export async function initSpiceSceneRuntime(args: {
   initialUtc: string | null
   initialEt: number | null
 
+  /** If false, exclude comets from the scene and avoid loading comet kernels. */
+  cometsEnabled: boolean
+
   scene: THREE.Scene
   camera: THREE.PerspectiveCamera
   controller: CameraController
@@ -97,6 +99,7 @@ export async function initSpiceSceneRuntime(args: {
     searchParams,
     initialUtc,
     initialEt,
+    cometsEnabled,
     scene,
     camera,
     controller,
@@ -132,6 +135,7 @@ export async function initSpiceSceneRuntime(args: {
 
   const { client: loadedSpiceClient, rawClient: rawSpiceClient, utcToEt } = await createSpiceClient({
     searchParams,
+    cometsEnabled,
   })
 
   onSpiceClientLoaded?.(loadedSpiceClient)
@@ -165,13 +169,20 @@ export async function initSpiceSceneRuntime(args: {
   // Longer-term we should have user-configurable visibility + kernel-pack
   // downloads for moons/satellites.
   const moonEntry = getBodyRegistryEntry('MOON')
+
+  const defaultEntries = BODY_REGISTRY.filter((b) => b.defaultVisible && (cometsEnabled || b.kind !== 'comet'))
+
   const sceneModel: SceneModel = {
     frame: J2000_FRAME,
     // Use a stable observer for all SPICE queries, then apply a precision
     // strategy in the renderer (focus-origin rebasing).
     observer: 'SUN',
     bodies: [
-      ...listDefaultVisibleSceneBodies(),
+      ...defaultEntries.map((b) => ({
+        body: b.body,
+        bodyFixedFrame: b.bodyFixedFrame,
+        style: b.style,
+      })),
       {
         body: moonEntry.body,
         bodyFixedFrame: moonEntry.bodyFixedFrame,
@@ -249,7 +260,10 @@ export async function initSpiceSceneRuntime(args: {
   orbitPaths = new OrbitPaths({
     spiceClient: rawSpiceClient,
     kmToWorld,
-    bodies: sceneModel.bodies.map((b) => ({ body: b.body, color: b.style.color })),
+    bodies: sceneModel.bodies.map((b) => {
+      const registry = BODY_REGISTRY.find((r) => String(r.body) === String(b.body))
+      return { body: b.body, color: b.style.color, kind: registry?.kind }
+    }),
   })
   sceneObjects.push(orbitPaths.object)
   disposers.push(() => orbitPaths?.dispose())

@@ -1,5 +1,6 @@
 import type { BodyRef, FrameId } from "../spice/SpiceClient.js";
 import type { KernelPackId } from "../spice/loadKernelPack.js";
+import { COMET_EXTRAS, type CometBodyId } from "../data/naifExtras.js";
 
 import type { SceneBody, SceneBodyStyle } from "./SceneModel.js";
 
@@ -13,9 +14,10 @@ export type BodyId =
   | "SATURN"
   | "URANUS"
   | "NEPTUNE"
-  | "MOON";
+  | "MOON"
+  | CometBodyId;
 
-export type BodyKind = "star" | "planet" | "moon";
+export type BodyKind = "star" | "planet" | "moon" | "comet";
 
 export type NaifIds = {
   /** The NAIF body ID (e.g. Earth=399, Jupiter=599). */
@@ -216,6 +218,24 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       label: "Neptune",
     },
   },
+  ...COMET_EXTRAS.map(
+    (c): BodyRegistryEntry => ({
+      id: c.id,
+      body: c.body,
+      naifIds: { body: c.body },
+      kind: "comet",
+      defaultVisible: true,
+      style: {
+        // Rough nucleus scale. This viewer is primarily about ephemerides, so
+        // we trade physical accuracy for visibility.
+        radiusKm: 10,
+        color: "#cbd5e1",
+        textureColor: "#ffffff",
+        textureUrl: "textures/comets/PIA02142_Tempel1.jpg",
+        label: c.label,
+      },
+    }),
+  ),
   {
     // Hooks-only (not rendered by default).
     id: "MOON",

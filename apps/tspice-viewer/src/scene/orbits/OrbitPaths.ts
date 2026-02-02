@@ -6,6 +6,7 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
 import { quantizeEt } from '../../time/quantizeEt.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type SpiceClient, type Vec3Km } from '../../spice/SpiceClient.js'
 import { rebasePositionKm } from '../precision.js'
+import type { BodyKind } from '../BodyRegistry.js'
 import { getApproxOrbitalPeriodSec, getOrbitAnchorQuantumSec } from './orbitalPeriods.js'
 
 const DAY_SEC = 86_400
@@ -25,6 +26,7 @@ export type OrbitPathsSettings = {
 
 export type OrbitPathsBodySpec = {
   body: BodyRef
+  kind?: BodyKind
   color: THREE.ColorRepresentation
 }
 
@@ -108,7 +110,13 @@ export class OrbitPaths {
       const primary = getOrbitPrimary(b.body)
       if (!primary) continue
 
-      const periodSec = getApproxOrbitalPeriodSec(b.body)
+      let periodSec = getApproxOrbitalPeriodSec(b.body)
+      if ((!periodSec || !Number.isFinite(periodSec) || periodSec <= 0) && b.kind === 'comet') {
+        // Comets often don't have a meaningful "period" (and we don't want to
+        // manually maintain one). Use a fixed sampling window so their paths
+        // render when orbit paths are enabled.
+        periodSec = MAX_ORBIT_SAMPLE_WINDOW_SEC
+      }
       if (!periodSec || !Number.isFinite(periodSec) || periodSec <= 0) continue
 
       const anchorQuantumSec = getOrbitAnchorQuantumSec(b.body)
