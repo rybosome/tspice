@@ -409,30 +409,36 @@ function renderMarkdown({ functions, implementedNormalized, extendsNames }) {
   lines.push(
     renderTable({
       rows: implementedNow,
-      includeDecision: true,
-      includeJustification: true,
+      includeDecision: false,
+      includeJustification: false,
     }),
   );
   lines.push("");
 
   lines.push("## Planned (not yet implemented)");
   lines.push("");
+
+  const plannedHasNotes = planned.some((r) => (r.justification ?? "").trim().length > 0);
   lines.push(
     renderTable({
       rows: planned,
       includeDecision: false,
-      includeJustification: true,
+      includeJustification: plannedHasNotes,
     }),
   );
   lines.push("");
 
   lines.push("## Excluded");
   lines.push("");
+
+  const excludedHasNotes = excluded.some(
+    (r) => (r.justification ?? "").trim().length > 0,
+  );
   lines.push(
     renderTable({
       rows: excluded,
       includeDecision: false,
-      includeJustification: true,
+      includeJustification: excludedHasNotes,
     }),
   );
 
