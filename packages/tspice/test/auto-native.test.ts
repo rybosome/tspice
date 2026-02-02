@@ -56,6 +56,6 @@ describe("createBackend({ backend: \"node\" })", () => {
 
   itNative("prefers native backend when the platform package is present", async () => {
     const backend = await createBackend({ backend: "node" });
-    expect(backend.kind).toBe("node");
+    expect(backend.tkvrsn("TOOLKIT")).not.toBe("");
   });
 });

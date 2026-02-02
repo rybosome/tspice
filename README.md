@@ -91,7 +91,7 @@ import { createSpice } from "@rybosome/tspice";
 async function main() {
   const spice = await createSpice({ backend: "wasm" });
 
-  console.log(spice.cspice.kind); // "wasm"
+  console.log(spice.raw.tkvrsn("TOOLKIT"));
   console.log(spice.kit.toolkitVersion());
 }
 
@@ -117,8 +117,8 @@ import { createSpice } from "@rybosome/tspice";
 const wasm = await createSpice({ backend: "wasm" });
 const node = await createSpice({ backend: "node" });
 
-console.log(wasm.cspice.kind); // "wasm"
-console.log(node.cspice.kind); // "node"
+console.log(wasm.raw.tkvrsn("TOOLKIT"));
+console.log(node.raw.tkvrsn("TOOLKIT"));
 ```
 
 ---
@@ -211,7 +211,7 @@ const state = spice.kit.getState({
 ### Geometry and illumination
 
 ```ts
-const { spoint } = spice.cspice.subslr(
+const { spoint } = spice.raw.subslr(
   "Near Point: Ellipsoid",
   "MARS",
   et,

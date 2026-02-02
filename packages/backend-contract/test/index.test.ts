@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { BACKEND_KINDS } from "@rybosome/tspice-backend-contract";
+import * as contract from "@rybosome/tspice-backend-contract";
 
 describe("@rybosome/tspice-backend-contract", () => {
-  it("exports backend kinds", () => {
-    expect(BACKEND_KINDS).toEqual(["node", "wasm", "fake"]);
+  it("can be imported (type-only surface)", () => {
+    // This package is primarily TypeScript types; at runtime it should not
+    // need to export any values.
+    expect(Object.keys(contract)).toEqual([]);
   });
 });

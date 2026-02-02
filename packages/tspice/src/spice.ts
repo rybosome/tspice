@@ -36,19 +36,19 @@ function splitState(state: readonly [number, number, number, number, number, num
 
 export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   const backend = options.backendInstance ?? (await createBackend(options));
-  const cspice = backend;
+  const raw = backend;
 
   const kit: SpiceKit = {
     loadKernel: (kernel: KernelSource) => {
       try {
-        cspice.furnsh(kernel);
+        raw.furnsh(kernel);
       } catch (error) {
         throw wrapSpiceError("loadKernel", error);
       }
     },
     unloadKernel: (path) => {
       try {
-        cspice.unload(path);
+        raw.unload(path);
       } catch (error) {
         throw wrapSpiceError("unloadKernel", error);
       }
@@ -56,7 +56,7 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
     toolkitVersion: () => {
       try {
-        return cspice.tkvrsn("TOOLKIT");
+        return raw.tkvrsn("TOOLKIT");
       } catch (error) {
         throw wrapSpiceError("toolkitVersion", error);
       }
@@ -64,14 +64,14 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
     utcToEt: (utc) => {
       try {
-        return cspice.str2et(utc) as SpiceTime;
+        return raw.str2et(utc) as SpiceTime;
       } catch (error) {
         throw wrapSpiceError("utcToEt", error);
       }
     },
     etToUtc: (et, format = "C", prec = 3) => {
       try {
-        return cspice.et2utc(et, format, prec);
+        return raw.et2utc(et, format, prec);
       } catch (error) {
         throw wrapSpiceError("etToUtc", error);
       }
@@ -79,7 +79,7 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
     frameTransform: (from, to, et) => {
       try {
-        return cspice.pxform(from, to, et) as Mat3;
+        return raw.pxform(from, to, et) as Mat3;
       } catch (error) {
         throw wrapSpiceError("frameTransform", error);
       }
@@ -87,7 +87,7 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
     getState: ({ target, observer, at, frame = DEFAULT_FRAME, aberration = DEFAULT_ABERRATION }) => {
       try {
-        const { state, lt } = cspice.spkezr(target, at, frame, aberration, observer);
+        const { state, lt } = raw.spkezr(target, at, frame, aberration, observer);
         const { position, velocity } = splitState(state);
         return {
           et: at,
@@ -105,5 +105,5 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
     },
   };
 
-  return { cspice, kit };
+  return { raw, kit };
 }

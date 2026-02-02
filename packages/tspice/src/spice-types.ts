@@ -43,7 +43,7 @@ export type SpiceKit = {
 */
 export type Spice = {
   /** Raw backend primitives (verbatim). */
-  cspice: SpiceBackend;
+  raw: SpiceBackend;
   /** Higher-level helpers and typed conveniences. */
   kit: SpiceKit;
 };
