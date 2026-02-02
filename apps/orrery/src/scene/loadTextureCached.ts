@@ -28,6 +28,14 @@ export function isTextureCacheClearedError(err: unknown): err is TextureCacheCle
   return err instanceof TextureCacheClearedError
 }
 
+export class TextureCacheStaleError extends TextureCacheClearedError {
+  constructor() {
+    super()
+    this.message = 'Texture cache entry was replaced'
+    this.name = 'TextureCacheStaleError'
+  }
+}
+
 let cacheGeneration = 0
 
 const loader = new THREE.TextureLoader()
@@ -48,19 +56,17 @@ function makeKey(args: { resolvedUrl: string; colorSpace: THREE.ColorSpace }): s
 }
 
 function disposeEntry(key: string, entry: TextureCacheEntry) {
-  entry.texture?.dispose()
+  // Avoid deleting/disposing a newer cache entry created after this one.
+  if (entryByKey.get(key) !== entry) return
 
-  // Avoid deleting a newer cache entry created after this one.
-  if (entryByKey.get(key) === entry) {
-    entryByKey.delete(key)
-  }
+  entry.texture?.dispose()
+  entryByKey.delete(key)
 }
 
 function decrementAndMaybeDisposeEntry(key: string, entry: TextureCacheEntry) {
   entry.refs = Math.max(0, entry.refs - 1)
 
-  // If the entry was replaced in the map (or the map was cleared), we still want
-  // to track + dispose the specific entry that this handle acquired.
+  // If the entry was removed/replaced in the map, never mutate the map here.
   if (entry.refs === 0) {
     if (entry.texture) {
       disposeEntry(key, entry)
@@ -139,6 +145,14 @@ export async function loadTextureCached(url: string, options: LoadTextureCachedO
         if (newEntry.generation !== cacheGeneration) {
           tex.dispose()
           throw new TextureCacheClearedError()
+        }
+
+        // A newer entry for this key may have been installed while this request
+        // was in-flight (e.g. via cache clear + reload). In that case, treat
+        // this load as stale and avoid mutating/discarding the new entry.
+        if (entryByKey.get(key) !== newEntry) {
+          tex.dispose()
+          throw new TextureCacheStaleError()
         }
 
         newEntry.texture = tex

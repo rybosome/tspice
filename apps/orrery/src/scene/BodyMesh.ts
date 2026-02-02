@@ -181,6 +181,10 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     map = undefined
     mapRelease = undefined
 
+    // Ensure the material no longer references the texture.
+    material.map = null
+    material.needsUpdate = true
+
     if (release) {
       release()
       return
@@ -276,6 +280,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   let update: BodyMeshUpdate | undefined
 
   let cloudsMesh: THREE.Mesh | undefined
+  let cloudsMaterial: THREE.MeshStandardMaterial | undefined
   let cloudsDriftRadPerSec = 0
 
   const waterMaskUniform = { value: black1x1 as THREE.Texture }
@@ -482,8 +487,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     const cloudsGeo = new THREE.SphereGeometry(1, 48, 24)
     cloudsGeo.rotateX(Math.PI / 2)
     extraGeometriesToDispose.push(cloudsGeo)
-
-    const cloudsMaterial = new THREE.MeshStandardMaterial({
+    const newCloudsMaterial = new THREE.MeshStandardMaterial({
       color: '#ffffff',
       transparent: true,
       opacity: earth.cloudsOpacity ?? 0.85,
@@ -493,11 +497,12 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       metalness: 0.0,
       alphaMap: black1x1,
     })
-    extraMaterialsToDispose.push(cloudsMaterial)
+    cloudsMaterial = newCloudsMaterial
+    extraMaterialsToDispose.push(newCloudsMaterial)
 
     // Darken clouds on the night side as well (otherwise the global ambient light
     // makes clouds show up nearly as brightly at night as during day).
-    cloudsMaterial.onBeforeCompile = (shader) => {
+    newCloudsMaterial.onBeforeCompile = (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uTwilight = uTwilight
       shader.uniforms.uCloudsNightMultiplier = uCloudsNightMultiplier
@@ -528,7 +533,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       )
     }
 
-    cloudsMesh = new THREE.Mesh(cloudsGeo, cloudsMaterial)
+    cloudsMesh = new THREE.Mesh(cloudsGeo, newCloudsMaterial)
     cloudsMesh.scale.setScalar(earth.cloudsRadiusRatio ?? 1.01)
     cloudsMesh.renderOrder = 1
     mesh.add(cloudsMesh)
@@ -562,7 +567,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       )
     }
 
-    if (earth.cloudsTextureUrl && cloudsMaterial) {
+    if (earth.cloudsTextureUrl) {
       extras.push(
         loadTextureCached(earth.cloudsTextureUrl, { colorSpace: THREE.SRGBColorSpace })
           .then(({ texture: tex, release }) => {
@@ -575,8 +580,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             tex.needsUpdate = true
             extraTextureReleases.push(release)
 
-            cloudsMaterial.alphaMap = tex
-            cloudsMaterial.needsUpdate = true
+            newCloudsMaterial.alphaMap = tex
+            newCloudsMaterial.needsUpdate = true
           })
           .catch((err) => {
             if (isTextureCacheClearedError(err)) return
@@ -634,16 +639,33 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     mesh,
     dispose: () => {
       disposed = true
-      geometry.dispose()
-      material.dispose()
+
+      // Detach texture references before releasing/disposing them.
       disposeMap()
+
+      material.emissiveMap = null
+      material.needsUpdate = true
+
+      if (cloudsMaterial) {
+        cloudsMaterial.alphaMap = null
+        cloudsMaterial.needsUpdate = true
+      }
+
+      waterMaskUniform.value = black1x1
+      useWaterMaskUniform.value = 0.0
 
       ringResult?.dispose()
 
       for (const release of extraTextureReleases) release()
-      for (const tex of extraTexturesToDispose) tex.dispose()
+
+      geometry.dispose()
+      material.dispose()
+
+      // Dispose materials/geometries before placeholder textures (e.g. black1x1)
+      // so we don't leave a disposed texture referenced by a still-live material.
       for (const mat of extraMaterialsToDispose) mat.dispose()
       for (const geo of extraGeometriesToDispose) geo.dispose()
+      for (const tex of extraTexturesToDispose) tex.dispose()
     },
     ready: ready.then(() => {
       // If the texture loaded after we created the material, apply it now.
