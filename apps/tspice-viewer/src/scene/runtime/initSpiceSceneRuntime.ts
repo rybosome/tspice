@@ -20,6 +20,7 @@ import { rebasePositionKm } from '../precision.js'
 import type { SceneModel } from '../SceneModel.js'
 import { LabelOverlay, type LabelBody, type LabelOverlayUpdateOptions } from '../../labels/LabelOverlay.js'
 import { timeStore } from '../../time/timeStore.js'
+import { computeViewerScrubRangeEt } from '../../time/viewerTimeBounds.js'
 import { installTspiceViewerE2eApi } from '../../e2eHooks/index.js'
 import type { CameraController, CameraControllerState } from '../../controls/CameraController.js'
 
@@ -141,6 +142,14 @@ export async function initSpiceSceneRuntime(args: {
     for (const dispose of disposers) dispose()
     throw new Error('SceneCanvas disposed during SPICE init')
   }
+
+  // IMPORTANT: set the viewer's scrub range only after kernels load so
+  // `utcToEt` (SPICE `str2et`) is correct.
+  //
+  // Also: do this *before* applying URL `?utc=`/`?et=` overrides, because
+  // `timeStore.setEtSec` clamps to the current scrub range.
+  const scrubRange = computeViewerScrubRangeEt({ utcToEt })
+  if (scrubRange) timeStore.setScrubRange(scrubRange.minEtSec, scrubRange.maxEtSec)
 
   // Allow the URL to specify UTC for quick testing, but keep the slider
   // driven by numeric ET.
