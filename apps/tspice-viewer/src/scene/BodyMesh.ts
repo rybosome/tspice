@@ -258,13 +258,13 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           'uniform float uOceanRoughness;',
           'uniform sampler2D uWaterMaskMap;',
           'uniform float uUseWaterMask;',
-        ].join('\n')
+        ].join('\n'),
       )
 
       // Keep an Earth-local water factor around for later glint.
       shader.fragmentShader = shader.fragmentShader.replace(
         'vec3 totalEmissiveRadiance = emissive;',
-        ['vec3 totalEmissiveRadiance = emissive;', 'float earthWaterFactor = 0.0;'].join('\n')
+        ['vec3 totalEmissiveRadiance = emissive;', 'float earthWaterFactor = 0.0;'].join('\n'),
       )
 
       // Ocean roughness modulation (mask or heuristic).
@@ -294,7 +294,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '\t\tearthWaterFactor = clamp( waterMask, 0.0, 1.0 );',
           '\t\troughnessFactor = mix( roughnessFactor, uOceanRoughness, earthWaterFactor );',
           '\t}',
-        ].join('\n')
+        ].join('\n'),
       )
 
       // Night lights gating (terminator mask driven by N·L).
@@ -310,7 +310,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '\t\tfloat nightMask = 1.0 - smoothstep( -uTwilight, uTwilight, ndotl );',
           '\t\ttotalEmissiveRadiance *= nightMask * uNightLightsIntensity;',
           '\t}',
-        ].join('\n')
+        ].join('\n'),
       )
 
       // Cheap ocean glint (adds a sharp highlight on water pixels).
@@ -329,7 +329,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '\t\tfloat glint = pow( ndoth, 420.0 ) * ndotl * earthWaterFactor * uOceanSpecIntensity;',
           '\t\treflectedLight.directSpecular += vec3( glint );',
           '\t}',
-        ].join('\n')
+        ].join('\n'),
       )
     }
 
@@ -445,7 +445,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           })
           .catch((err) => {
             console.warn('Failed to load Earth night lights texture', earth.nightLightsTextureUrl, err)
-          })
+          }),
       )
     }
 
@@ -471,7 +471,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           })
           .catch((err) => {
             console.warn('Failed to load Earth clouds texture', earth.cloudsTextureUrl, err)
-          })
+          }),
       )
     }
 
@@ -495,7 +495,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           })
           .catch((err) => {
             console.warn('Failed to load Earth water mask texture', earth.waterMaskTextureUrl, err)
-          })
+          }),
       )
     }
 
