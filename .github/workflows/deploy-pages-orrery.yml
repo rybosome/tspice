@@ -41,6 +41,61 @@ jobs:
       - name: Build orrery
         run: pnpm exec turbo run build --filter=@rybosome/orrery... --filter=!@rybosome/tspice-backend-node
 
+      - name: Ensure Cloudflare Pages project exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PAGES_PROJECT: ${{ env.PAGES_PROJECT }}
+        run: |
+          set -euo pipefail
+
+          base_url="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects"
+
+          get_status="$(curl -sS -o pages_get.json -w '%{http_code}' \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "${base_url}/${PAGES_PROJECT}")"
+
+          if [[ "${get_status}" == "200" ]]; then
+            echo "Cloudflare Pages project exists: ${PAGES_PROJECT}"
+            exit 0
+          fi
+
+          if [[ "${get_status}" != "404" ]]; then
+            echo "Unexpected status checking Pages project (HTTP ${get_status})" >&2
+            cat pages_get.json >&2 || true
+            exit 1
+          fi
+
+          echo "Cloudflare Pages project not found; creating: ${PAGES_PROJECT}"
+
+          create_status="$(curl -sS -o pages_create.json -w '%{http_code}' \
+            -X POST \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data "{\"name\":\"${PAGES_PROJECT}\",\"production_branch\":\"main\"}" \
+            "${base_url}")"
+
+          if [[ "${create_status}" == "200" || "${create_status}" == "201" ]]; then
+            echo "Created Cloudflare Pages project: ${PAGES_PROJECT}"
+            exit 0
+          fi
+
+          # If we raced another deploy, confirm the project now exists.
+          if [[ "${create_status}" == "409" ]]; then
+            get_after_create_status="$(curl -sS -o pages_get_after_create.json -w '%{http_code}' \
+              -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${base_url}/${PAGES_PROJECT}")"
+
+            if [[ "${get_after_create_status}" == "200" ]]; then
+              echo "Cloudflare Pages project exists (after create conflict): ${PAGES_PROJECT}"
+              exit 0
+            fi
+          fi
+
+          echo "Failed creating Pages project (HTTP ${create_status})" >&2
+          cat pages_create.json >&2 || true
+          exit 1
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
@@ -82,6 +137,61 @@ jobs:
 
       - name: Build orrery
         run: pnpm exec turbo run build --filter=@rybosome/orrery... --filter=!@rybosome/tspice-backend-node
+
+      - name: Ensure Cloudflare Pages project exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PAGES_PROJECT: ${{ env.PAGES_PROJECT }}
+        run: |
+          set -euo pipefail
+
+          base_url="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects"
+
+          get_status="$(curl -sS -o pages_get.json -w '%{http_code}' \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "${base_url}/${PAGES_PROJECT}")"
+
+          if [[ "${get_status}" == "200" ]]; then
+            echo "Cloudflare Pages project exists: ${PAGES_PROJECT}"
+            exit 0
+          fi
+
+          if [[ "${get_status}" != "404" ]]; then
+            echo "Unexpected status checking Pages project (HTTP ${get_status})" >&2
+            cat pages_get.json >&2 || true
+            exit 1
+          fi
+
+          echo "Cloudflare Pages project not found; creating: ${PAGES_PROJECT}"
+
+          create_status="$(curl -sS -o pages_create.json -w '%{http_code}' \
+            -X POST \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data "{\"name\":\"${PAGES_PROJECT}\",\"production_branch\":\"main\"}" \
+            "${base_url}")"
+
+          if [[ "${create_status}" == "200" || "${create_status}" == "201" ]]; then
+            echo "Created Cloudflare Pages project: ${PAGES_PROJECT}"
+            exit 0
+          fi
+
+          # If we raced another deploy, confirm the project now exists.
+          if [[ "${create_status}" == "409" ]]; then
+            get_after_create_status="$(curl -sS -o pages_get_after_create.json -w '%{http_code}' \
+              -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${base_url}/${PAGES_PROJECT}")"
+
+            if [[ "${get_after_create_status}" == "200" ]]; then
+              echo "Cloudflare Pages project exists (after create conflict): ${PAGES_PROJECT}"
+              exit 0
+            fi
+          fi
+
+          echo "Failed creating Pages project (HTTP ${create_status})" >&2
+          cat pages_create.json >&2 || true
+          exit 1
 
       - name: Deploy to Cloudflare Pages (preview)
         uses: cloudflare/wrangler-action@v3
