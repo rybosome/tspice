@@ -9,6 +9,7 @@
   "files": [
     "index.js",
     "tspice_backend_node.node",
+    "README.md",
     "LICENSE",
     "NOTICE"
   ],

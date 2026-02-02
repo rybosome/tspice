@@ -10,7 +10,7 @@ This is not meant to be imported directly by most users.
 
 See [`docs/cspice-naif-disclosure.md`](https://github.com/rybosome/tspice/blob/main/docs/cspice-naif-disclosure.md) for the canonical disclosure text, NAIF links, and pointers to notice files.
 
-`NOTICE` is included in the published package. For easy viewing on GitHub, see [`packages/tspice-native-darwin-x64/NOTICE`](https://github.com/rybosome/tspice/blob/main/packages/tspice-native-darwin-x64/NOTICE).
+This package ships with a `NOTICE` file (see `NOTICE` in the installed package). For easy viewing on GitHub, see [`packages/tspice-native-darwin-x64/NOTICE`](https://github.com/rybosome/tspice/blob/main/packages/tspice-native-darwin-x64/NOTICE).
 
 ## Purpose / Why this exists
 
@@ -49,7 +49,7 @@ console.log(bindingPath);
 
 There are no build scripts in this package.
 
-If you’re working on the native addon itself, see [`@rybosome/tspice-backend-node`](../backend-node/README.md) and build it from the repo root:
+If you’re working on the native addon itself, see [`@rybosome/tspice-backend-node`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/README.md) and build it from the repo root:
 
 https://github.com/rybosome/tspice/blob/main/packages/backend-node/README.md
 

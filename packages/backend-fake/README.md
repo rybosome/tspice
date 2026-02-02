@@ -24,6 +24,8 @@ This package exists to:
 
 This is a workspace-internal package (`private: true`). You typically don’t install it outside this repo.
 
+If you’re looking to use `tspice` as a library, install the main supported package: [`@rybosome/tspice`](https://www.npmjs.com/package/@rybosome/tspice).
+
 ## Usage (Quickstart)
 
 ```ts
@@ -43,7 +45,7 @@ console.log(moonFromEarth.pos);
 
 ## Notes / limitations
 
-These behaviors are intentionally simplified (see `src/index.ts` for authoritative details):
+These behaviors are intentionally simplified (see [`src/index.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-fake/src/index.ts) for authoritative details):
 
 - `str2et` only supports ISO-8601 / RFC3339-style UTC timestamps.
 - Leap seconds are ignored.
