@@ -681,6 +681,18 @@
   margin: 4px 0;
 }
 
+.selectionInspectorSectionTitle {
+  font-weight: 600;
+  color: var(--phosphor-fg);
+  font-size: 12px;
+}
+
+.selectionInspectorGroupTitle {
+  font-weight: 600;
+  color: var(--phosphor-dim);
+  font-size: 11px;
+}
+
 /* --- Render HUD --- */
 
 .renderHud {
