@@ -42,6 +42,7 @@ export type SceneUiState = {
 
   // Debug/temporary tuning knobs (ephemeral; intended for dialing in Earth appearance).
   ambientLightIntensity: number
+  sunLightIntensity: number
 
   earthNightAlbedo: number
   earthTwilight: number
@@ -332,6 +333,7 @@ export async function initSpiceSceneRuntime(args: {
   const updateScene = (next: SceneUiState) => {
     // Lighting knobs
     ambient.intensity = next.ambientLightIntensity
+    dir.intensity = next.sunLightIntensity
 
     const earthTuning = {
       nightAlbedo: next.earthNightAlbedo,

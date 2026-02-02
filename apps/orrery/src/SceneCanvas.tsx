@@ -60,6 +60,7 @@ export function SceneCanvas() {
 
   // Debug Earth appearance knobs (ephemeral, for dialing in night brightness).
   const [ambientLightIntensity, setAmbientLightIntensity] = useState(0.6)
+  const [sunLightIntensity, setSunLightIntensity] = useState(0.9)
   const [earthNightAlbedo, setEarthNightAlbedo] = useState(0.004)
   const [earthTwilight, setEarthTwilight] = useState(earthAppearanceDefaults?.nightLightsTwilight ?? 0.12)
   const [earthNightLightsIntensity, setEarthNightLightsIntensity] = useState(
@@ -357,6 +358,7 @@ export function SceneCanvas() {
         labelOcclusionEnabled: boolean
 
         ambientLightIntensity: number
+        sunLightIntensity: number
         earthNightAlbedo: number
         earthTwilight: number
         earthNightLightsIntensity: number
@@ -385,6 +387,7 @@ export function SceneCanvas() {
     labelOcclusionEnabled,
 
     ambientLightIntensity,
+    sunLightIntensity,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -408,6 +411,7 @@ export function SceneCanvas() {
     labelOcclusionEnabled,
 
     ambientLightIntensity,
+    sunLightIntensity,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -444,6 +448,7 @@ export function SceneCanvas() {
       labelOcclusionEnabled,
 
       ambientLightIntensity,
+    sunLightIntensity,
       earthNightAlbedo,
       earthTwilight,
       earthNightLightsIntensity,
@@ -465,6 +470,7 @@ export function SceneCanvas() {
     labelOcclusionEnabled,
 
     ambientLightIntensity,
+    sunLightIntensity,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -973,6 +979,19 @@ export function SceneCanvas() {
                             onChange={(e) => setAmbientLightIntensity(Number(e.target.value))}
                           />
                           <span className="advancedSliderValue">{ambientLightIntensity.toFixed(2)}</span>
+                        </div>
+
+                        <div className="advancedSlider">
+                          <span className="advancedSliderLabel">Sunlight Intensity</span>
+                          <input
+                            type="range"
+                            min={0}
+                            max={2}
+                            step={0.01}
+                            value={sunLightIntensity}
+                            onChange={(e) => setSunLightIntensity(Number(e.target.value))}
+                          />
+                          <span className="advancedSliderValue">{sunLightIntensity.toFixed(2)}</span>
                         </div>
 
                         <div className="advancedSlider">
