@@ -219,7 +219,14 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // non-white base color can significantly darken / distort the result.
   // Use `surface.color` as a fallback when no texture is present.
   // If a body needs dimming/tinting while textured, use `surface.texture.color`.
-  const baseColor = map ? new THREE.Color(textureColor ?? surface.color) : new THREE.Color(surface.color)
+  // NOTE: URL-backed textures load async, so `map` is initially unset.
+  // Initialize `material.color` as if the texture is present to avoid a tinted
+  // flash before the texture finishes loading.
+  const baseColor = textureUrl
+    ? new THREE.Color(textureColor ?? '#ffffff')
+    : map
+      ? new THREE.Color(textureColor ?? surface.color)
+      : new THREE.Color(surface.color)
   const material = new THREE.MeshStandardMaterial({
     color: baseColor,
     roughness: textureKind === 'sun' ? 0.2 : 0.9,

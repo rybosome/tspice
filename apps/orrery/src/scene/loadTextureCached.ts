@@ -9,7 +9,7 @@ export type LoadTextureCachedOptions = {
    * Prefer passing this at call sites for readability and to avoid hidden
    * defaults (e.g. future non-sRGB maps).
    */
-  colorSpace?: THREE.ColorSpace
+  colorSpace: THREE.ColorSpace
 }
 
 export type CachedTextureHandle = {
@@ -34,7 +34,7 @@ const loader = new THREE.TextureLoader()
 
 type TextureCacheEntry = {
   resolvedUrl: string
-  colorSpace: THREE.ColorSpace | undefined
+  colorSpace: THREE.ColorSpace
   generation: number
   refs: number
   texture?: THREE.Texture
@@ -43,8 +43,8 @@ type TextureCacheEntry = {
 
 const entryByKey = new Map<string, TextureCacheEntry>()
 
-function makeKey(args: { resolvedUrl: string; colorSpace: THREE.ColorSpace | undefined }): string {
-  return `${args.resolvedUrl}|colorSpace:${args.colorSpace ?? 'unset'}`
+function makeKey(args: { resolvedUrl: string; colorSpace: THREE.ColorSpace }): string {
+  return `${args.resolvedUrl}|colorSpace:${args.colorSpace}`
 }
 
 function disposeEntry(key: string, entry: TextureCacheEntry) {
@@ -56,24 +56,48 @@ function disposeEntry(key: string, entry: TextureCacheEntry) {
   }
 }
 
+function decrementAndMaybeDisposeEntry(key: string, entry: TextureCacheEntry) {
+  entry.refs = Math.max(0, entry.refs - 1)
+
+  // If the entry was replaced in the map (or the map was cleared), we still want
+  // to track + dispose the specific entry that this handle acquired.
+  if (entry.refs === 0) {
+    if (entry.texture) {
+      disposeEntry(key, entry)
+      return
+    }
+
+    // If the texture is still in-flight and nobody references it anymore,
+    // remove it from the cache (but only if it's still the current entry).
+    if (entryByKey.get(key) === entry) {
+      entryByKey.delete(key)
+    }
+  }
+}
+
 /**
  * Dispose all cached textures and clear the cache.
  *
  * Call this from scene/runtime teardown to avoid leaked GPU resources.
+ *
+ * By default this is safe: it refuses to dispose textures that still have
+ * outstanding references. Pass `{ force: true }` during teardown.
  */
-export function clearTextureCache() {
-  // Invalidate in-flight loads so late resolves don't re-install textures
-  // after a clear/teardown.
-  cacheGeneration += 1
+export function clearTextureCache(options: { force?: boolean } = {}) {
+  const force = options.force ?? false
 
-  const entries = Array.from(entryByKey.entries())
-  entryByKey.clear()
+  // Only invalidate in-flight loads when we are forcing a clear. If we bumped the
+  // generation while callers still hold references, we'd make their loads fail
+  // unnecessarily.
+  if (force) cacheGeneration += 1
 
-  for (const [key, entry] of entries) {
-    // Dispose resolved textures immediately; in-flight loads will self-dispose
-    // when they resolve (via generation checks in the promise chain).
-    entry.texture?.dispose()
-    void key
+  for (const [key, entry] of entryByKey.entries()) {
+    if (!force && entry.refs > 0) {
+      console.warn(`clearTextureCache(): refusing to dispose in-use texture (refs=${entry.refs})`, entry.resolvedUrl)
+      continue
+    }
+
+    disposeEntry(key, entry)
   }
 }
 
@@ -85,10 +109,7 @@ export function clearTextureCache() {
  *
  * Callers must call `release()` when the texture is no longer needed.
  */
-export async function loadTextureCached(
-  url: string,
-  options: LoadTextureCachedOptions = {},
-): Promise<CachedTextureHandle> {
+export async function loadTextureCached(url: string, options: LoadTextureCachedOptions): Promise<CachedTextureHandle> {
   const resolvedUrl = resolveVitePublicUrl(url)
   const colorSpace = options.colorSpace
   const key = makeKey({ resolvedUrl, colorSpace })
@@ -108,7 +129,7 @@ export async function loadTextureCached(
       .then((tex) => {
         // Apply explicit options at the cache boundary so they're consistent
         // across all consumers.
-        if (colorSpace !== undefined) tex.colorSpace = colorSpace
+        tex.colorSpace = colorSpace
 
         tex.needsUpdate = true
 
@@ -147,8 +168,7 @@ export async function loadTextureCached(
   try {
     texture = await entry.promise
   } catch (err) {
-    const current = entryByKey.get(key)
-    if (current) current.refs = Math.max(0, current.refs - 1)
+    decrementAndMaybeDisposeEntry(key, entry)
     throw err
   }
 
@@ -157,14 +177,7 @@ export async function loadTextureCached(
     if (released) return
     released = true
 
-    const current = entryByKey.get(key)
-    // If the cache was cleared, there's nothing to do.
-    if (!current) return
-
-    current.refs = Math.max(0, current.refs - 1)
-    if (current.refs === 0 && current.texture) {
-      disposeEntry(key, current)
-    }
+    decrementAndMaybeDisposeEntry(key, entry)
   }
 
   return { texture, release }

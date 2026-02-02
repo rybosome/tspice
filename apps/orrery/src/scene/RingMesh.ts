@@ -100,6 +100,26 @@ export function createRingMesh(options: CreateRingMeshOptions): {
     map,
   })
 
+  const disposeMap = () => {
+    const release = mapRelease
+    const tex = map
+
+    // Clear references first so disposal is idempotent and re-entrancy safe.
+    map = undefined
+    mapRelease = undefined
+
+    // Ensure the material no longer references the texture.
+    material.map = null
+    material.needsUpdate = true
+
+    if (release) {
+      release()
+      return
+    }
+
+    tex?.dispose()
+  }
+
   // If `baseOpacity` is provided, enable a shader-side alpha clamp.
   const baseOpacityEnabled = options.baseOpacity !== undefined
   const baseOpacity = THREE.MathUtils.clamp(options.baseOpacity ?? 0, 0, 1)
@@ -130,9 +150,9 @@ export function createRingMesh(options: CreateRingMeshOptions): {
     mesh,
     dispose: () => {
       disposed = true
+      disposeMap()
       geometry.dispose()
       material.dispose()
-      mapRelease?.()
     },
     ready: ready.then(() => {
       if (disposed) return

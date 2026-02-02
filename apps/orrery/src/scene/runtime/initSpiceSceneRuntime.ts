@@ -150,7 +150,7 @@ export async function initSpiceSceneRuntime(args: {
     // Best-effort cleanup of any scene-owned objects created so far.
     for (const obj of sceneObjects) scene.remove(obj)
     for (const dispose of disposers) dispose()
-    clearTextureCache()
+    clearTextureCache({ force: true })
     throw new Error('SceneCanvas disposed during SPICE init')
   }
 
@@ -242,7 +242,7 @@ export async function initSpiceSceneRuntime(args: {
   if (isDisposed()) {
     for (const obj of sceneObjects) scene.remove(obj)
     for (const dispose of disposers) dispose()
-    clearTextureCache()
+    clearTextureCache({ force: true })
     throw new Error('SceneCanvas disposed during scene asset init')
   }
 
@@ -584,7 +584,7 @@ export async function initSpiceSceneRuntime(args: {
 
     for (const obj of sceneObjects) scene.remove(obj)
     for (const dispose of disposers) dispose()
-    clearTextureCache()
+    clearTextureCache({ force: true })
   }
 
   return {
