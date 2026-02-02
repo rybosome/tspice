@@ -39,15 +39,14 @@ describe("kernel management", () => {
     expect(backend.ktotal("ALL")).toBe(0);
   });
 
-  it("wasm backend: writeFile/loadKernel + kernel APIs", async () => {
+  it("wasm backend: furnsh({ path, bytes }) + kernel APIs", async () => {
     const backend = await createBackend({ backend: "wasm" });
     const lskBytes = fs.readFileSync(lskPath);
 
     backend.kclear();
     expect(backend.ktotal("ALL")).toBe(0);
 
-    // Exercise loadKernel(bareName, data) which prefixes /kernels and creates dirs.
-    backend.loadKernel("naif0012.tls", lskBytes);
+    backend.furnsh({ path: "/kernels/naif0012.tls", bytes: lskBytes });
     expect(backend.ktotal("ALL")).toBeGreaterThan(0);
 
     const first = backend.kdata(0, "ALL");
@@ -60,13 +59,6 @@ describe("kernel management", () => {
     }
 
     backend.unload("/kernels/naif0012.tls");
-    backend.kclear();
-    expect(backend.ktotal("ALL")).toBe(0);
-
-    // Exercise FS write + explicit furnsh now that /kernels exists.
-    backend.writeFile("/kernels/naif0012.tls", lskBytes);
-    backend.furnsh("/kernels/naif0012.tls");
-    expect(backend.ktotal("ALL")).toBeGreaterThan(0);
 
     backend.kclear();
     expect(backend.ktotal("ALL")).toBe(0);
@@ -95,7 +87,7 @@ describe("time", () => {
     const backend = await createBackend({ backend: "wasm" });
     const lskBytes = fs.readFileSync(lskPath);
     backend.kclear();
-    backend.loadKernel("naif0012.tls", lskBytes);
+    backend.furnsh({ path: "/kernels/naif0012.tls", bytes: lskBytes });
 
     const et = backend.str2et("2000 JAN 01 12:00:00 TDB");
     expect(Math.abs(et)).toBeLessThan(1);

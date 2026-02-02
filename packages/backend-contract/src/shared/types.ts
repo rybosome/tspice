@@ -1,7 +1,3 @@
-export const BACKEND_KINDS = ["node", "wasm", "fake"] as const;
-
-export type BackendKind = (typeof BACKEND_KINDS)[number];
-
 export type KernelSource =
   | string
   | {

@@ -50,8 +50,7 @@ import { createBackend } from "@rybosome/tspice";
 
 async function main() {
   const backend = await createBackend({ backend: "wasm" });
-  console.log(backend.kind); // "wasm"
-  console.log(backend.spiceVersion());
+  console.log(backend.tkvrsn("TOOLKIT"));
 }
 
 main().catch(console.error);
@@ -83,8 +82,8 @@ async function main() {
 
   console.log(state.position, state.velocity, state.lightTime);
 
-  // Low-level backend primitives are available under `spice.cspice`.
-  console.log(spice.cspice.tkvrsn("TOOLKIT"));
+  // Low-level backend primitives are available under `spice.raw`.
+  console.log(spice.raw.tkvrsn("TOOLKIT"));
 }
 
 main().catch(console.error);
@@ -95,7 +94,6 @@ main().catch(console.error);
 - `createBackend(options: { backend: 'node' | 'wasm'; wasmUrl?: string | URL }): Promise<SpiceBackend>`
 - `createSpice(options: { backend: 'node' | 'wasm'; wasmUrl?: string | URL }): Promise<Spice>`
 - Types:
-  - `BackendKind` (from `@rybosome/tspice-backend-contract`; `@rybosome/tspice` requires explicit `"node" | "wasm"` selection)
   - `SpiceBackend`
   - `SpiceKit`, `Spice`
   - Mid-level:
@@ -111,7 +109,7 @@ import { createBackend } from "@rybosome/tspice";
 async function main() {
   const nodeBackend = await createBackend({ backend: "node" });
   const wasmBackend = await createBackend({ backend: "wasm" });
-  console.log(nodeBackend.kind, wasmBackend.kind);
+  console.log(nodeBackend.tkvrsn("TOOLKIT"), wasmBackend.tkvrsn("TOOLKIT"));
 }
 
 main().catch(console.error);

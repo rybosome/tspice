@@ -3,17 +3,20 @@ import { describe, it } from "vitest";
 import { createBackend, createSpice } from "@rybosome/tspice";
 
 describe("createBackend() types", () => {
-  it("exposes wasm-only helpers only on wasm backend", async () => {
+  it("does not expose WASM-only helpers on the public backend type", async () => {
     // This test is about TypeScript types, not runtime behavior.
     //
     // In JS-only CI we intentionally do not build the native backend, so
     // `createBackend({ backend: "node" })` may fail at runtime.
     //
-    // Wrap in a dead-code branch so TS still typechecks the overloads.
+    // Wrap in a dead-code branch so TS still typechecks.
     if (false) {
       const wasmBackend = await createBackend({ backend: "wasm" });
-      // If overloads are correct, this should typecheck.
+
+      // WASM-only helpers should not be on the public backend contract.
+      // @ts-expect-error wasm-only helper is not part of SpiceBackend
       wasmBackend.loadKernel;
+      // @ts-expect-error wasm-only helper is not part of SpiceBackend
       wasmBackend.writeFile;
 
       // --- derived geometry ---
@@ -72,24 +75,23 @@ describe("createBackend() types", () => {
       ocltid;
 
       const nodeBackend = await createBackend({ backend: "node" });
-      // If overloads are correct, these should *not* typecheck.
-      // @ts-expect-error wasm-only helper not present on node backend
+      // @ts-expect-error wasm-only helper is not part of SpiceBackend
       nodeBackend.loadKernel;
-      // @ts-expect-error wasm-only helper not present on node backend
+      // @ts-expect-error wasm-only helper is not part of SpiceBackend
       nodeBackend.writeFile;
 
       // @ts-expect-error `createBackend()` only supports { backend: "node" | "wasm" }
       const fakeBackend = await createBackend({ backend: "fake" });
-      // @ts-expect-error wasm-only helper not present on fake backend
+      // @ts-expect-error wasm-only helper is not part of SpiceBackend
       fakeBackend.loadKernel;
-      // @ts-expect-error wasm-only helper not present on fake backend
+      // @ts-expect-error wasm-only helper is not part of SpiceBackend
       fakeBackend.writeFile;
     }
   });
 });
 
 describe("createSpice() types", () => {
-  it("returns { cspice, kit }", async () => {
+  it("returns { raw, kit }", async () => {
     // This test is about TypeScript types, not runtime behavior.
     if (false) {
       const spice = await createSpice({ backend: "wasm" });
@@ -99,10 +101,10 @@ describe("createSpice() types", () => {
       spice.kit.utcToEt;
       spice.kit.getState;
 
-      // CSPICE surface.
-      spice.cspice.furnsh;
-      spice.cspice.str2et;
-      spice.cspice.kclear;
+      // Raw backend surface.
+      spice.raw.furnsh;
+      spice.raw.str2et;
+      spice.raw.kclear;
 
       // No flattening onto the top-level.
       // @ts-expect-error createSpice() no longer flattens primitives

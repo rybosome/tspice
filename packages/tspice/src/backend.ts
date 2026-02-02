@@ -1,11 +1,9 @@
 import type {
-  BackendKind,
   SpiceBackend,
-  SpiceBackendWasm,
 } from "@rybosome/tspice-backend-contract";
 import { assertNever } from "@rybosome/tspice-core";
 
-export type { BackendKind, SpiceBackend, SpiceBackendWasm } from "@rybosome/tspice-backend-contract";
+export type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 export type CreateBackendOptions = {
   /**
@@ -15,10 +13,10 @@ export type CreateBackendOptions = {
   wasmUrl?: string | URL;
 };
 
-export function createBackend(options: { backend: "wasm"; wasmUrl?: string | URL }): Promise<SpiceBackendWasm>;
+export function createBackend(options: { backend: "wasm"; wasmUrl?: string | URL }): Promise<SpiceBackend>;
 export function createBackend(options: { backend: "node" }): Promise<SpiceBackend>;
-export function createBackend(options: CreateBackendOptions): Promise<SpiceBackend | SpiceBackendWasm>;
-export async function createBackend(options: CreateBackendOptions): Promise<SpiceBackend | SpiceBackendWasm> {
+export function createBackend(options: CreateBackendOptions): Promise<SpiceBackend>;
+export async function createBackend(options: CreateBackendOptions): Promise<SpiceBackend> {
   // Runtime validation for JS callers; TypeScript callers should already be
   // forced to provide an explicit backend selection.
   const opts = options as unknown as CreateBackendOptions | undefined;
@@ -51,7 +49,7 @@ export async function createBackend(options: CreateBackendOptions): Promise<Spic
         const { createWasmBackend } = (await import(
           "@rybosome/tspice-backend-wasm"
         )) as {
-          createWasmBackend: (opts?: { wasmUrl?: string | URL }) => Promise<SpiceBackendWasm>;
+          createWasmBackend: (opts?: { wasmUrl?: string | URL }) => Promise<SpiceBackend>;
         };
 
         if (opts.wasmUrl === undefined) {
