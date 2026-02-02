@@ -37,12 +37,12 @@ export class TextureCacheStaleError extends TextureCacheClearedError {
 }
 
 /**
-* Monotonically increasing "epoch" for cache entries.
-*
-* When `clearTextureCache({ force: true })` is called, we bump this generation
-* so that any in-flight loads from the previous generation are treated as
-* invalid and fail with `TextureCacheClearedError`.
-*/
+ * Monotonically increasing "epoch" for cache entries.
+ *
+ * When `clearTextureCache({ force: true })` is called, we bump this generation
+ * so that any in-flight loads from the previous generation are treated as
+ * invalid and fail with `TextureCacheClearedError`.
+ */
 let cacheGeneration = 0
 
 const loader = new THREE.TextureLoader()
