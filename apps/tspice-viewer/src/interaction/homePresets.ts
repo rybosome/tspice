@@ -121,12 +121,29 @@ function getHomePresetAliases(key: HomePresetKey): readonly string[] {
   return HOME_PRESETS[key].aliases
 }
 
-function getHomePresetKey(focusBody: BodyRef): HomePresetKey | null {
-  const key = String(focusBody).toUpperCase()
+
+function normalizeHomePresetAlias(alias: string): string {
+  return alias.toUpperCase()
+}
+
+const HOME_PRESET_KEY_BY_ALIAS: ReadonlyMap<string, HomePresetKey> = (() => {
+  const map = new Map<string, HomePresetKey>()
+
   for (const presetKey of HOME_PRESET_KEYS) {
-    if (getHomePresetAliases(presetKey).includes(key)) return presetKey
+    for (const alias of getHomePresetAliases(presetKey)) {
+      const normalizedAlias = normalizeHomePresetAlias(alias)
+
+      // If multiple presets share an alias, prefer the earlier entry in HOME_PRESET_KEYS.
+      if (!map.has(normalizedAlias)) map.set(normalizedAlias, presetKey)
+    }
   }
-  return null
+
+  return map
+})()
+
+function getHomePresetKey(focusBody: BodyRef): HomePresetKey | null {
+  const alias = normalizeHomePresetAlias(String(focusBody))
+  return HOME_PRESET_KEY_BY_ALIAS.get(alias) ?? null
 }
 
 export function getHomePresetStateForKey(key: HomePresetKey): CameraControllerState {
