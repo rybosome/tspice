@@ -51,7 +51,7 @@ function makeProceduralBodyTexture(kind: BodyTextureKind): THREE.Texture {
         canvas.height * 0.05,
         canvas.width * 0.5,
         canvas.height * 0.5,
-        canvas.height * 0.6
+        canvas.height * 0.6,
       )
       g.addColorStop(0, '#fff4b0')
       g.addColorStop(0.45, '#ffb703')
@@ -148,9 +148,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   let disposed = false
 
-  let map: THREE.Texture | undefined = options.textureKind
-    ? makeProceduralBodyTexture(options.textureKind)
-    : undefined
+  let map: THREE.Texture | undefined = options.textureKind ? makeProceduralBodyTexture(options.textureKind) : undefined
 
   const ready: Promise<void> = options.textureUrl
     ? new THREE.TextureLoader()
@@ -180,9 +178,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // non-white base color can significantly darken / distort the result.
   // Use `options.color` as a fallback when no texture is present.
   // If a body needs dimming/tinting while textured, use `options.textureColor`.
-  const baseColor = map
-    ? new THREE.Color(options.textureColor ?? options.color)
-    : new THREE.Color(options.color)
+  const baseColor = map ? new THREE.Color(options.textureColor ?? options.color) : new THREE.Color(options.color)
   const material = new THREE.MeshStandardMaterial({
     color: baseColor,
     roughness: options.textureKind === 'sun' ? 0.2 : 0.9,

@@ -118,10 +118,7 @@ export function createThreeRuntime(args: {
     // When zooming/focusing on very small bodies, the orbit radius can dip
     // below the default near plane. If `near > (cameraDistance - bodyRadius)`
     // the body will clip and it feels like we "zoomed inside".
-    const desiredNear = Math.min(
-      DEFAULT_NEAR,
-      Math.max(MIN_NEAR, controller.radius * NEAR_RADIUS_FRACTION),
-    )
+    const desiredNear = Math.min(DEFAULT_NEAR, Math.max(MIN_NEAR, controller.radius * NEAR_RADIUS_FRACTION))
 
     // Only touch the projection matrix when the effective near plane changes.
     if (Math.abs(camera.near - desiredNear) > 1e-9) {

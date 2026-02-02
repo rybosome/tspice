@@ -167,7 +167,7 @@ function findBodyRegistryEntry(bodyRef: BodyRef): BodyRegistryEntry | undefined 
       entry.id === bodyStr ||
       String(entry.body) === bodyStr ||
       entry.naifIds?.body === Number(bodyRef) ||
-      entry.naifIds?.barycenter === Number(bodyRef)
+      entry.naifIds?.barycenter === Number(bodyRef),
   )
 }
 
@@ -245,18 +245,18 @@ export function SelectionInspector({
   }
 
   const registryEntry = bodyInfo.registryEntry
-  const bodyLabel = registryEntry?.style.label ?? (
-    typeof selectedBody === 'string'
+  const bodyLabel =
+    registryEntry?.style.label ??
+    (typeof selectedBody === 'string'
       ? selectedBody.charAt(0).toUpperCase() + selectedBody.slice(1).toLowerCase()
-      : `Body ${selectedBody}`
-  )
+      : `Body ${selectedBody}`)
 
   const focusRegistryEntry = findBodyRegistryEntry(focusBody)
-  const focusLabel = focusRegistryEntry?.style.label ?? (
-    typeof focusBody === 'string'
+  const focusLabel =
+    focusRegistryEntry?.style.label ??
+    (typeof focusBody === 'string'
       ? focusBody.charAt(0).toUpperCase() + focusBody.slice(1).toLowerCase()
-      : `Body ${focusBody}`
-  )
+      : `Body ${focusBody}`)
 
   const isFocused = String(selectedBody) === String(focusBody)
 
@@ -310,43 +310,35 @@ export function SelectionInspector({
         {bodyInfo.distanceToFocusKm !== null && (
           <div className="selectionInspectorRow">
             <span className="selectionInspectorLabel">Distance to {focusLabel}:</span>
-            <span className="selectionInspectorValue">
-              {formatDistance(bodyInfo.distanceToFocusKm)}
-            </span>
+            <span className="selectionInspectorValue">{formatDistance(bodyInfo.distanceToFocusKm)}</span>
           </div>
         )}
 
         {isFocused && (
           <div className="selectionInspectorRow">
             <span className="selectionInspectorLabel">Distance from Sun:</span>
-            <span className="selectionInspectorValue">
-              {formatDistance(bodyInfo.positionMagnitude)}
-            </span>
+            <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionMagnitude)}</span>
           </div>
         )}
 
         {bodyInfo.velocityRelToFocusKmPerSec !== null && (
           <div className="selectionInspectorRow">
             <span className="selectionInspectorLabel">Velocity:</span>
-            <span className="selectionInspectorValue">
-              {formatVelocity(bodyInfo.velocityRelToFocusKmPerSec)}
-            </span>
+            <span className="selectionInspectorValue">{formatVelocity(bodyInfo.velocityRelToFocusKmPerSec)}</span>
           </div>
         )}
 
         {isFocused && (
           <div className="selectionInspectorRow">
             <span className="selectionInspectorLabel">Orbital velocity:</span>
-            <span className="selectionInspectorValue">
-              {formatVelocity(bodyInfo.velocityMagnitude)}
-            </span>
+            <span className="selectionInspectorValue">{formatVelocity(bodyInfo.velocityMagnitude)}</span>
           </div>
         )}
 
         {/* Advanced fields */}
         {showAdvanced && (
           <>
-            {extrasGroups.length > 0 && (
+            {extrasGroups.length > 0 ? (
               <>
                 <div className="selectionInspectorDivider" />
                 {extrasGroups.map((group, groupIndex) => (
@@ -361,27 +353,37 @@ export function SelectionInspector({
                   </Fragment>
                 ))}
               </>
+            ) : (
+              <>
+                {registryEntry?.style.radiusKm && (
+                  <div className="selectionInspectorRow">
+                    <span className="selectionInspectorLabel">Radius:</span>
+                    <span className="selectionInspectorValue">{formatRadius(registryEntry.style.radiusKm)}</span>
+                  </div>
+                )}
+
+                {bodyInfo.orbitalPeriodSec && (
+                  <div className="selectionInspectorRow">
+                    <span className="selectionInspectorLabel">Orbital period:</span>
+                    <span className="selectionInspectorValue">{formatOrbitalPeriod(bodyInfo.orbitalPeriodSec)}</span>
+                  </div>
+                )}
+              </>
             )}
 
             <div className="selectionInspectorDivider" />
 
             <div className="selectionInspectorRow">
               <span className="selectionInspectorLabel">Position (X):</span>
-              <span className="selectionInspectorValue">
-                {formatDistance(bodyInfo.positionKm[0])}
-              </span>
+              <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionKm[0])}</span>
             </div>
             <div className="selectionInspectorRow">
               <span className="selectionInspectorLabel">Position (Y):</span>
-              <span className="selectionInspectorValue">
-                {formatDistance(bodyInfo.positionKm[1])}
-              </span>
+              <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionKm[1])}</span>
             </div>
             <div className="selectionInspectorRow">
               <span className="selectionInspectorLabel">Position (Z):</span>
-              <span className="selectionInspectorValue">
-                {formatDistance(bodyInfo.positionKm[2])}
-              </span>
+              <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionKm[2])}</span>
             </div>
 
             {bodyInfo.velocityRelToFocusVector && (

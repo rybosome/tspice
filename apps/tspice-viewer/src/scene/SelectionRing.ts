@@ -16,12 +16,12 @@ export type SelectionRing = {
 }
 
 /**
-* A subtle world-space ring indicator for the currently selected body.
-*
-* - The ring is positioned in world space at the target's world position.
-* - The ring billboards to the camera for consistent appearance.
-* - The underlying body material is unchanged (no tint).
-*/
+ * A subtle world-space ring indicator for the currently selected body.
+ *
+ * - The ring is positioned in world space at the target's world position.
+ * - The ring billboards to the camera for consistent appearance.
+ * - The underlying body material is unchanged (no tint).
+ */
 export function createSelectionRing(options: CreateSelectionRingOptions = {}): SelectionRing {
   const material = new THREE.MeshBasicMaterial({
     color: options.color ?? '#ffe7a3',

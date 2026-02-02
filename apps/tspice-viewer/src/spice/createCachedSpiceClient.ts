@@ -1,5 +1,5 @@
-import { quantizeEt } from "../time/quantizeEt.js";
-import { DEFAULT_QUANTUM_SEC } from "../time/timeStore.js";
+import { quantizeEt } from '../time/quantizeEt.js'
+import { DEFAULT_QUANTUM_SEC } from '../time/timeStore.js'
 import type {
   BodyState,
   EtSeconds,
@@ -7,15 +7,15 @@ import type {
   GetFrameTransformInput,
   Mat3,
   SpiceClient,
-} from "./SpiceClient.js";
+} from './SpiceClient.js'
 
 function getBodyStateKey(input: GetBodyStateInput): string {
-  const abcorr = input.abcorr ?? "";
-  return `${String(input.target)}|${String(input.observer)}|${input.frame}|${abcorr}`;
+  const abcorr = input.abcorr ?? ''
+  return `${String(input.target)}|${String(input.observer)}|${input.frame}|${abcorr}`
 }
 
 function getFrameTransformKey(input: GetFrameTransformInput): string {
-  return `${input.from}|${input.to}`;
+  return `${input.from}|${input.to}`
 }
 
 export interface CachedSpiceClientOptions {
@@ -24,7 +24,7 @@ export interface CachedSpiceClientOptions {
    * Cache keys use quantized ET to improve hit rate.
    * Defaults to DEFAULT_QUANTUM_SEC (0.1s).
    */
-  quantumSec?: number;
+  quantumSec?: number
 }
 
 /**
@@ -35,61 +35,58 @@ export interface CachedSpiceClientOptions {
  * - Single-entry cache keyed by quantized `et` (clears when quantized `et` changes)
  * - Within a quantized `et`, memoize body states, frame transforms, and UTC strings
  */
-export function createCachedSpiceClient(
-  client: SpiceClient,
-  options: CachedSpiceClientOptions = {}
-): SpiceClient {
-  const quantumSec = options.quantumSec ?? DEFAULT_QUANTUM_SEC;
+export function createCachedSpiceClient(client: SpiceClient, options: CachedSpiceClientOptions = {}): SpiceClient {
+  const quantumSec = options.quantumSec ?? DEFAULT_QUANTUM_SEC
 
-  let lastEtKey: string | undefined;
-  let bodyStateCache = new Map<string, BodyState>();
-  let frameTransformCache = new Map<string, Mat3>();
-  let utcCache = new Map<number, string>();
+  let lastEtKey: string | undefined
+  let bodyStateCache = new Map<string, BodyState>()
+  let frameTransformCache = new Map<string, Mat3>()
+  let utcCache = new Map<number, string>()
 
   const ensureEt = (et: number) => {
-    const quantizedEt = quantizeEt(et, quantumSec);
-    const nextKey = String(quantizedEt);
-    if (nextKey === lastEtKey) return quantizedEt;
-    lastEtKey = nextKey;
-    bodyStateCache = new Map();
-    frameTransformCache = new Map();
-    utcCache = new Map();
-    return quantizedEt;
-  };
+    const quantizedEt = quantizeEt(et, quantumSec)
+    const nextKey = String(quantizedEt)
+    if (nextKey === lastEtKey) return quantizedEt
+    lastEtKey = nextKey
+    bodyStateCache = new Map()
+    frameTransformCache = new Map()
+    utcCache = new Map()
+    return quantizedEt
+  }
 
   return {
     getBodyState(input) {
-      const quantizedEt = ensureEt(input.et);
-      const key = getBodyStateKey(input);
-      const cached = bodyStateCache.get(key);
-      if (cached) return cached;
+      const quantizedEt = ensureEt(input.et)
+      const key = getBodyStateKey(input)
+      const cached = bodyStateCache.get(key)
+      if (cached) return cached
       // Use quantized ET for the actual query to ensure consistency
-      const value = client.getBodyState({ ...input, et: quantizedEt });
-      bodyStateCache.set(key, value);
-      return value;
+      const value = client.getBodyState({ ...input, et: quantizedEt })
+      bodyStateCache.set(key, value)
+      return value
     },
 
     getFrameTransform(input) {
-      const quantizedEt = ensureEt(input.et);
-      const key = getFrameTransformKey(input);
-      const cached = frameTransformCache.get(key);
-      if (cached) return cached;
+      const quantizedEt = ensureEt(input.et)
+      const key = getFrameTransformKey(input)
+      const cached = frameTransformCache.get(key)
+      if (cached) return cached
       // Use quantized ET for the actual query to ensure consistency
-      const value = client.getFrameTransform({ ...input, et: quantizedEt });
-      frameTransformCache.set(key, value);
-      return value;
+      const value = client.getFrameTransform({ ...input, et: quantizedEt })
+      frameTransformCache.set(key, value)
+      return value
     },
 
     etToUtc(et: EtSeconds) {
-      const quantizedEt = ensureEt(et);
-      const cached = utcCache.get(quantizedEt);
-      if (cached) return cached;
-      const value = client.etToUtc(quantizedEt);
-      utcCache.set(quantizedEt, value);
-      return value;
+      const quantizedEt = ensureEt(et)
+      const cached = utcCache.get(quantizedEt)
+      if (cached) return cached
+      const value = client.etToUtc(quantizedEt)
+      utcCache.set(quantizedEt, value)
+      return value
     },
 
     ...(client.listBodies ? { listBodies: () => client.listBodies!() } : {}),
     ...(client.getBodyMeta ? { getBodyMeta: (body) => client.getBodyMeta!(body) } : {}),
-  };
+  }
 }

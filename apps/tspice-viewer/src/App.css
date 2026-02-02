@@ -30,7 +30,9 @@
   cursor: pointer;
   font-size: var(--font-size-sm);
   font-family: var(--font-ui);
-  transition: background 0.1s, border-color 0.1s;
+  transition:
+    background 0.1s,
+    border-color 0.1s;
 }
 
 .btn:hover {
@@ -629,7 +631,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   flex-shrink: 0;
 }
 
@@ -753,10 +757,7 @@
   .sceneZoomButtons {
     right: 10px;
     bottom: calc(
-      var(--mobile-bottom-inset) +
-      var(--mobile-overlay-min-height) +
-      8px +
-      env(safe-area-inset-bottom, 0px)
+      var(--mobile-bottom-inset) + var(--mobile-overlay-min-height) + 8px + env(safe-area-inset-bottom, 0px)
     );
   }
 
@@ -936,7 +937,6 @@
   display: inline;
   margin-left: 1px;
 }
-
 
 /* Active state: [>PLAY<] style */
 .asciiBtnActive .asciiBtnContent::before {
@@ -1205,12 +1205,12 @@
   font-size: var(--font-size-sm);
 }
 
-.advancedSlider input[type="range"] {
+.advancedSlider input[type='range'] {
   flex: 1;
   min-width: 80px;
 }
 
-.advancedSlider input[type="number"] {
+.advancedSlider input[type='number'] {
   flex: 1;
   min-width: 60px;
   padding: 4px 6px;
@@ -1221,8 +1221,8 @@
   font-size: var(--font-size-sm);
 }
 
-.advancedSlider input[type="number"]:hover,
-.advancedSlider input[type="number"]:focus {
+.advancedSlider input[type='number']:hover,
+.advancedSlider input[type='number']:focus {
   border-color: var(--phosphor-bright);
   outline: none;
 }
