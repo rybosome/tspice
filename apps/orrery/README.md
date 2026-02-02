@@ -23,6 +23,7 @@ These kernel files are redistributed **unmodified**, consistent with NAIF's rule
 https://naif.jpl.nasa.gov/naif/rules.html
 
 ## Scripts
+
 From repo root:
 
 - `pnpm -C apps/orrery run format` (auto-format)
