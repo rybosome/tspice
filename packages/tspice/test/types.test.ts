@@ -1,115 +1,78 @@
-import { describe, it } from "vitest";
-
 import { createBackend, createSpice } from "@rybosome/tspice";
+import { describe, expect, it } from "vitest";
 
-describe("createBackend() types", () => {
-  it("does not expose WASM-only helpers on the public backend type", async () => {
-    // This test is about TypeScript types, not runtime behavior.
-    //
-    // In JS-only CI we intentionally do not build the native backend, so
-    // `createBackend({ backend: "node" })` may fail at runtime.
-    //
-    // Wrap in a dead-code branch so TS still typechecks.
-    if (false) {
-      const wasmBackend = await createBackend({ backend: "wasm" });
+type Assert<T extends true> = T;
+type AssertFalse<T extends false> = T;
+type HasKey<T, K extends PropertyKey> = K extends keyof T ? true : false;
 
-      // WASM-only helpers should not be on the public backend contract.
-      // @ts-expect-error wasm-only helper is not part of SpiceBackend
-      wasmBackend.loadKernel;
-      // @ts-expect-error wasm-only helper is not part of SpiceBackend
-      wasmBackend.writeFile;
+type Backend = Awaited<ReturnType<typeof createBackend>>;
+type Spice = Awaited<ReturnType<typeof createSpice>>;
 
-      // --- derived geometry ---
-      const sub = wasmBackend.subpnt(
-        "Near point: ellipsoid",
-        "EARTH",
-        0,
-        "IAU_EARTH",
-        "NONE",
-        "SUN",
-      );
-      sub.spoint;
-      sub.trgepc;
-      sub.srfvec;
+// --- createBackend() contract ---
 
-      const sin = wasmBackend.sincpt(
-        "Ellipsoid",
-        "EARTH",
-        0,
-        "IAU_EARTH",
-        "NONE",
-        "SUN",
-        "J2000",
-        [1, 0, 0],
-      );
-      if (sin.found === true) {
-        const sinFound = sin as Extract<typeof sin, { found: true }>;
-        sinFound.spoint;
-        sinFound.trgepc;
-        sinFound.srfvec;
-      }
+type BackendKind = Parameters<typeof createBackend>[0]["backend"];
+type _CreateBackendKindIsSupported = Assert<BackendKind extends "node" | "wasm" ? true : false>;
+type _CreateBackendKindDoesNotIncludeFake = AssertFalse<"fake" extends BackendKind ? true : false>;
 
-      const illum = wasmBackend.ilumin(
-        "Ellipsoid",
-        "EARTH",
-        0,
-        "IAU_EARTH",
-        "NONE",
-        "SUN",
-        [1, 2, 3],
-      );
-      illum.phase;
-      illum.incdnc;
-      illum.emissn;
+// WASM-only helpers are intentionally not part of the public `SpiceBackend` type.
+type _BackendHasNoLoadKernel = AssertFalse<HasKey<Backend, "loadKernel">>;
+type _BackendHasNoWriteFile = AssertFalse<HasKey<Backend, "writeFile">>;
 
-      const ocltid = wasmBackend.occult(
-        "MOON",
-        "ELLIPSOID",
-        "IAU_MOON",
-        "SUN",
-        "ELLIPSOID",
-        "IAU_SUN",
-        "NONE",
-        "EARTH",
-        0,
-      );
-      ocltid;
+// Spot-check some return types to catch accidental type regressions.
+type SubpntResult = ReturnType<Backend["subpnt"]>;
+type _SubpntHasFields = Assert<
+  HasKey<SubpntResult, "spoint"> extends true
+    ? HasKey<SubpntResult, "trgepc"> extends true
+      ? HasKey<SubpntResult, "srfvec"> extends true
+        ? true
+        : false
+      : false
+    : false
+>;
 
-      const nodeBackend = await createBackend({ backend: "node" });
-      // @ts-expect-error wasm-only helper is not part of SpiceBackend
-      nodeBackend.loadKernel;
-      // @ts-expect-error wasm-only helper is not part of SpiceBackend
-      nodeBackend.writeFile;
+type SincptResult = ReturnType<Backend["sincpt"]>;
+type SincptFound = Extract<SincptResult, { found: true }>;
+type _SincptFoundHasFields = Assert<
+  HasKey<SincptFound, "spoint"> extends true
+    ? HasKey<SincptFound, "trgepc"> extends true
+      ? HasKey<SincptFound, "srfvec"> extends true
+        ? true
+        : false
+      : false
+    : false
+>;
 
-      // @ts-expect-error `createBackend()` only supports { backend: "node" | "wasm" }
-      const fakeBackend = await createBackend({ backend: "fake" });
-      // @ts-expect-error wasm-only helper is not part of SpiceBackend
-      fakeBackend.loadKernel;
-      // @ts-expect-error wasm-only helper is not part of SpiceBackend
-      fakeBackend.writeFile;
-    }
-  });
-});
+type IlluminResult = ReturnType<Backend["ilumin"]>;
+type _IluminHasFields = Assert<
+  HasKey<IlluminResult, "phase"> extends true
+    ? HasKey<IlluminResult, "incdnc"> extends true
+      ? HasKey<IlluminResult, "emissn"> extends true
+        ? true
+        : false
+      : false
+    : false
+>;
 
-describe("createSpice() types", () => {
-  it("returns { raw, kit }", async () => {
-    // This test is about TypeScript types, not runtime behavior.
-    if (false) {
-      const spice = await createSpice({ backend: "wasm" });
+type OccultResult = ReturnType<Backend["occult"]>;
+type _OccultReturnsNumber = Assert<OccultResult extends number ? true : false>;
 
-      // Kit.
-      spice.kit.loadKernel;
-      spice.kit.utcToEt;
-      spice.kit.getState;
+// --- createSpice() contract ---
 
-      // Raw backend surface.
-      spice.raw.furnsh;
-      spice.raw.str2et;
-      spice.raw.kclear;
+type _SpiceHasRaw = Assert<HasKey<Spice, "raw">>;
+type _SpiceHasKit = Assert<HasKey<Spice, "kit">>;
 
-      // No flattening onto the top-level.
-      // @ts-expect-error createSpice() no longer flattens primitives
-      spice.furnsh;
-    }
+// No flattening onto the top-level.
+type _SpiceHasNoFurnsh = AssertFalse<HasKey<Spice, "furnsh">>;
+
+// Kit API surface.
+type Kit = Spice["kit"];
+type _KitHasLoadKernel = Assert<HasKey<Kit, "loadKernel">>;
+type _KitHasUnloadKernel = Assert<HasKey<Kit, "unloadKernel">>;
+type _KitHasUtcToEt = Assert<HasKey<Kit, "utcToEt">>;
+type _KitHasGetState = Assert<HasKey<Kit, "getState">>;
+
+describe("TypeScript type assertions", () => {
+  it("compiles", () => {
+    expect(true).toBe(true);
   });
 });
