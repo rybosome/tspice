@@ -2,6 +2,75 @@ import type { BodyRef, FrameId } from '../spice/SpiceClient.js'
 
 export type BodyTextureKind = 'earth' | 'moon' | 'sun'
 
+export interface BodySurfaceTextureStyle {
+  /**
+   * Optional texture URL/path.
+   *
+   * If relative, it's resolved against Vite's `BASE_URL` at runtime.
+   */
+  url?: string
+
+  /** Optional, lightweight procedural texture (no binary assets). */
+  kind?: BodyTextureKind
+
+  /**
+   * Optional material color multiplier to apply when a texture is present.
+   *
+   * Note: `MeshStandardMaterial.color` multiplies the texture (`map`). Most
+   * full-color albedo textures should use `"#ffffff"` here to avoid tinting.
+   */
+  color?: string
+}
+
+export interface BodySurfaceStyle {
+  /** Renderer color hint (e.g. `"#ffffff"`, `"skyblue"`). */
+  color: string
+
+  /** Optional surface texture settings. */
+  texture?: BodySurfaceTextureStyle
+}
+
+export interface EarthAppearanceLayerStyle {
+  kind: 'earth'
+  earth: EarthAppearanceStyle
+}
+
+export interface UnknownBodyLayerStyle {
+  kind: string
+  /**
+   * Payload for unrecognized layer kinds.
+   *
+   * This avoids allowing arbitrary top-level keys on layers, making registry
+   * mistakes easier to catch.
+   */
+  data: Record<string, unknown>
+}
+
+// Extensible: new layer kinds (atmosphere, clouds, decals, etc.) can be added later.
+// Keep this intentionally open, but structurally explicit.
+export type BodyLayerStyle = EarthAppearanceLayerStyle | UnknownBodyLayerStyle
+
+export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
+  if (typeof layer !== 'object' || layer === null) return false
+
+  const maybeKind = (layer as { kind?: unknown }).kind
+  if (maybeKind !== 'earth') return false
+
+  // Validate payload shape beyond `kind === 'earth'`.
+  const earth = (layer as { earth?: unknown }).earth
+  return typeof earth === 'object' && earth !== null
+}
+
+export interface BodyAppearanceStyle {
+  surface: BodySurfaceStyle
+
+  /** Optional rings style (rendered as a child mesh). */
+  rings?: SceneRingsStyle
+
+  /** Optional additional layers (clouds, atmosphere, etc). */
+  layers?: BodyLayerStyle[]
+}
+
 export interface EarthAppearanceStyle {
   /** Optional night lights (emissive) texture; should be equirectangular 2:1. */
   nightLightsTextureUrl?: string
@@ -56,36 +125,14 @@ export interface SceneBodyStyle {
   /** Body radius in km. */
   radiusKm: number
 
-  /** Renderer color hint (e.g. `"#ffffff"`, `"skyblue"`). */
-  color: string
-
-  /**
-   * Optional material color multiplier to apply when a texture is present.
-   *
-   * Note: `MeshStandardMaterial.color` multiplies the texture (`map`). Most
-   * full-color albedo textures should use `"#ffffff"` here (the default) to
-   * avoid unintended tinting or darkening.
-   */
-  textureColor?: string
-
-  /**
-   * Optional texture URL/path.
-   *
-   * If relative, it's resolved against Vite's `BASE_URL` at runtime.
-   */
-  textureUrl?: string
-
-  /** Optional, lightweight procedural texture (no binary assets). */
-  textureKind?: BodyTextureKind
+  /** Generalized appearance model (surface + optional rings + extensible layers). */
+  appearance: BodyAppearanceStyle
 
   /** Optional label to show in UI. */
   label?: string
 
-  /** Optional rings style (rendered as a child mesh). */
-  rings?: SceneRingsStyle
-
-  /** Optional higher-fidelity Earth-only appearance upgrades. */
-  earthAppearance?: EarthAppearanceStyle
+  // NOTE: layers like Earth night-lights/clouds/atmosphere now live under
+  // `appearance.layers` (see `EarthAppearanceLayerStyle`).
 }
 
 export interface SceneBody {

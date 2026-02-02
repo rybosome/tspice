@@ -76,9 +76,15 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     defaultVisible: true,
     style: {
       radiusKm: 695_700,
-      color: '#ffb703',
-      textureColor: '#ffb703',
-      textureUrl: 'textures/planets/sun.png',
+      appearance: {
+        surface: {
+          color: '#ffb703',
+          texture: {
+            url: 'textures/planets/sun.png',
+            color: '#ffb703',
+          },
+        },
+      },
       label: 'Sun',
     },
   },
@@ -92,8 +98,14 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: 'IAU_MERCURY',
     style: {
       radiusKm: 2_439.7,
-      color: '#9ca3af',
-      textureUrl: 'textures/planets/mercury.png',
+      appearance: {
+        surface: {
+          color: '#9ca3af',
+          texture: {
+            url: 'textures/planets/mercury.png',
+          },
+        },
+      },
       label: 'Mercury',
     },
   },
@@ -106,8 +118,14 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: 'IAU_VENUS',
     style: {
       radiusKm: 6_051.8,
-      color: '#e9c46a',
-      textureUrl: 'textures/planets/venus.png',
+      appearance: {
+        surface: {
+          color: '#e9c46a',
+          texture: {
+            url: 'textures/planets/venus.png',
+          },
+        },
+      },
       label: 'Venus',
     },
   },
@@ -120,32 +138,43 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: 'IAU_EARTH',
     style: {
       radiusKm: 6_371,
-      color: '#2a9d8f',
-      textureColor: '#e6e6e6',
-      textureUrl: 'textures/planets/earth.png',
-      earthAppearance: {
-        nightLightsTextureUrl: 'textures/planets/earth-nightlights.jpg',
-        cloudsTextureUrl: 'textures/planets/earth-clouds.jpg',
-        // Hook: we currently use a heuristic water factor (derived from albedo).
-        // If we add a dedicated mask later, set `waterMaskTextureUrl` here.
-        // waterMaskTextureUrl: 'textures/planets/earth-water-mask.png',
+      appearance: {
+        surface: {
+          color: '#2a9d8f',
+          texture: {
+            url: 'textures/planets/earth.png',
+            color: '#e6e6e6',
+          },
+        },
+        layers: [
+          {
+            kind: 'earth',
+            earth: {
+              nightLightsTextureUrl: 'textures/planets/earth-nightlights.jpg',
+              cloudsTextureUrl: 'textures/planets/earth-clouds.jpg',
+              // Hook: we currently use a heuristic water factor (derived from albedo).
+              // If we add a dedicated mask later, set `waterMaskTextureUrl` here.
+              // waterMaskTextureUrl: 'textures/planets/earth-water-mask.png',
 
-        nightLightsIntensity: 1.35,
-        nightLightsTwilight: 0.12,
+              nightLightsIntensity: 1.35,
+              nightLightsTwilight: 0.12,
 
-        cloudsRadiusRatio: 1.01,
-        cloudsOpacity: 0.85,
-        cloudsAlphaTest: 0.02,
-        cloudsDriftRadPerSec: 0.00004,
+              cloudsRadiusRatio: 1.01,
+              cloudsOpacity: 0.85,
+              cloudsAlphaTest: 0.02,
+              cloudsDriftRadPerSec: 0.00004,
 
-        atmosphereRadiusRatio: 1.015,
-        atmosphereColor: '#79b8ff',
-        atmosphereIntensity: 0.55,
-        atmosphereRimPower: 2.2,
-        atmosphereSunBias: 0.65,
+              atmosphereRadiusRatio: 1.015,
+              atmosphereColor: '#79b8ff',
+              atmosphereIntensity: 0.55,
+              atmosphereRimPower: 2.2,
+              atmosphereSunBias: 0.65,
 
-        oceanRoughness: 0.06,
-        oceanSpecularIntensity: 0.35,
+              oceanRoughness: 0.06,
+              oceanSpecularIntensity: 0.35,
+            },
+          },
+        ],
       },
       label: 'Earth',
     },
@@ -159,9 +188,15 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: 'IAU_MARS',
     style: {
       radiusKm: 3_389.5,
-      color: '#e76f51',
-      textureColor: '#e76f51',
-      textureUrl: 'textures/planets/mars.png',
+      appearance: {
+        surface: {
+          color: '#e76f51',
+          texture: {
+            url: 'textures/planets/mars.png',
+            color: '#e76f51',
+          },
+        },
+      },
       label: 'Mars',
     },
   },
@@ -174,8 +209,14 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: 'IAU_JUPITER',
     style: {
       radiusKm: 69_911,
-      color: '#f4a261',
-      textureUrl: 'textures/planets/jupiter.png',
+      appearance: {
+        surface: {
+          color: '#f4a261',
+          texture: {
+            url: 'textures/planets/jupiter.png',
+          },
+        },
+      },
       label: 'Jupiter',
     },
   },
@@ -188,14 +229,20 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: 'IAU_SATURN',
     style: {
       radiusKm: 58_232,
-      color: '#f6bd60',
-      textureUrl: 'textures/planets/saturn.png',
-      rings: {
-        // Roughly matches the main C/A ring span in units of Saturn radii.
-        innerRadiusRatio: 1.28,
-        outerRadiusRatio: 2.33,
-        textureUrl: 'textures/planets/saturn-rings.png',
-        color: '#d7c7a0',
+      appearance: {
+        surface: {
+          color: '#f6bd60',
+          texture: {
+            url: 'textures/planets/saturn.png',
+          },
+        },
+        rings: {
+          // Roughly matches the main C/A ring span in units of Saturn radii.
+          innerRadiusRatio: 1.28,
+          outerRadiusRatio: 2.33,
+          textureUrl: 'textures/planets/saturn-rings.png',
+          color: '#d7c7a0',
+        },
       },
       label: 'Saturn',
     },
@@ -209,19 +256,25 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: 'IAU_URANUS',
     style: {
       radiusKm: 25_362,
-      color: '#8ecae6',
-      textureUrl: 'textures/planets/uranus.png',
-      rings: {
-        // Uranus' main rings are narrow and dark.
-        // Radii are rough (in units of Uranus radii) but visually match the main ring region.
-        innerRadiusRatio: 1.55,
-        outerRadiusRatio: 2.05,
-        textureUrl: 'textures/planets/uranus-rings.png',
-        color: '#6b7280',
-        // The Uranus rings texture only contains strong alpha for a narrow band
-        // near the inner edge; clamp alpha so the full annulus reads as a
-        // faint, thicker ring system.
-        baseOpacity: 0.4,
+      appearance: {
+        surface: {
+          color: '#8ecae6',
+          texture: {
+            url: 'textures/planets/uranus.png',
+          },
+        },
+        rings: {
+          // Uranus' main rings are narrow and dark.
+          // Radii are rough (in units of Uranus radii) but visually match the main ring region.
+          innerRadiusRatio: 1.55,
+          outerRadiusRatio: 2.05,
+          textureUrl: 'textures/planets/uranus-rings.png',
+          color: '#6b7280',
+          // The Uranus rings texture only contains strong alpha for a narrow band
+          // near the inner edge; clamp alpha so the full annulus reads as a
+          // faint, thicker ring system.
+          baseOpacity: 0.4,
+        },
       },
       label: 'Uranus',
     },
@@ -235,8 +288,14 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: 'IAU_NEPTUNE',
     style: {
       radiusKm: 24_622,
-      color: '#4361ee',
-      textureUrl: 'textures/planets/neptune.png',
+      appearance: {
+        surface: {
+          color: '#4361ee',
+          texture: {
+            url: 'textures/planets/neptune.png',
+          },
+        },
+      },
       label: 'Neptune',
     },
   },
@@ -254,8 +313,14 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
     bodyFixedFrame: 'IAU_MOON',
     style: {
       radiusKm: 1_737.4,
-      color: '#e9c46a',
-      textureUrl: 'textures/planets/moon.png',
+      appearance: {
+        surface: {
+          color: '#e9c46a',
+          texture: {
+            url: 'textures/planets/moon.png',
+          },
+        },
+      },
       label: 'Moon',
     },
   },

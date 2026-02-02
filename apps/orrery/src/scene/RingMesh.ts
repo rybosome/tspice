@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
+import { isTextureCacheClearedError, loadTextureCached } from './loadTextureCached.js'
 
 export type CreateRingMeshOptions = {
   /** Inner radius in parent-local units (e.g. multiples of planet radius when parent is unit sphere). */
@@ -67,23 +67,25 @@ export function createRingMesh(options: CreateRingMeshOptions): {
   let disposed = false
 
   let map: THREE.Texture | undefined
+  let mapRelease: (() => void) | undefined
   const ready: Promise<void> = options.textureUrl
-    ? new THREE.TextureLoader()
-        .loadAsync(resolveVitePublicUrl(options.textureUrl))
-        .then((tex) => {
+    ? loadTextureCached(options.textureUrl, { colorSpace: THREE.SRGBColorSpace })
+        .then(({ texture: tex, release }) => {
           if (disposed) {
-            tex.dispose()
+            release()
             return
           }
 
-          tex.colorSpace = THREE.SRGBColorSpace
           // U (radius) should clamp; V (angle) should repeat.
           tex.wrapS = THREE.ClampToEdgeWrapping
           tex.wrapT = THREE.RepeatWrapping
           tex.needsUpdate = true
+
           map = tex
+          mapRelease = release
         })
         .catch((err) => {
+          if (isTextureCacheClearedError(err)) return
           console.warn('Failed to load ring texture', options.textureUrl, err)
         })
     : Promise.resolve()
@@ -97,6 +99,26 @@ export function createRingMesh(options: CreateRingMeshOptions): {
     metalness: 0,
     map,
   })
+
+  const disposeMap = () => {
+    const release = mapRelease
+    const tex = map
+
+    // Clear references first so disposal is idempotent and re-entrancy safe.
+    map = undefined
+    mapRelease = undefined
+
+    // Ensure the material no longer references the texture.
+    material.map = null
+    material.needsUpdate = true
+
+    if (release) {
+      release()
+      return
+    }
+
+    tex?.dispose()
+  }
 
   // If `baseOpacity` is provided, enable a shader-side alpha clamp.
   const baseOpacityEnabled = options.baseOpacity !== undefined
@@ -128,9 +150,9 @@ export function createRingMesh(options: CreateRingMeshOptions): {
     mesh,
     dispose: () => {
       disposed = true
+      disposeMap()
       geometry.dispose()
       material.dispose()
-      map?.dispose()
     },
     ready: ready.then(() => {
       if (disposed) return

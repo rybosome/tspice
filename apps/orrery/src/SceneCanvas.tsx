@@ -25,6 +25,7 @@ import { RenderHud, type RenderHudStats } from './renderer/RenderHud.js'
 import { createThreeRuntime, type ThreeRuntime } from './renderer/createThreeRuntime.js'
 import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig/sceneCanvasRuntimeConfig.js'
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
+import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
 export function SceneCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -56,7 +57,10 @@ export function SceneCanvas() {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
 
-  const earthAppearanceDefaults = useMemo(() => getBodyRegistryEntry('EARTH').style.earthAppearance, [])
+  const earthAppearanceDefaults = useMemo(() => {
+    const layers = getBodyRegistryEntry('EARTH').style.appearance?.layers
+    return layers?.find(isEarthAppearanceLayer)?.earth
+  }, [])
 
   // Earth appearance tuning (kept configurable in code; no longer exposed as debug sliders).
   const ambientLightIntensity = 0.2
