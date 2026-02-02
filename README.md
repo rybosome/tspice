@@ -91,7 +91,8 @@ import { createSpice } from "@rybosome/tspice";
 async function main() {
   const spice = await createSpice({ backend: "wasm" });
 
-  console.log(spice.raw.tkvrsn("TOOLKIT"));
+  // Useful for diagnostics, but not a way to distinguish backends:
+  // the CSPICE toolkit version is typically identical across backends.
   console.log(spice.kit.toolkitVersion());
 }
 
@@ -117,8 +118,10 @@ import { createSpice } from "@rybosome/tspice";
 const wasm = await createSpice({ backend: "wasm" });
 const node = await createSpice({ backend: "node" });
 
-console.log(wasm.raw.tkvrsn("TOOLKIT"));
-console.log(node.raw.tkvrsn("TOOLKIT"));
+// `toolkitVersion()` reports the underlying CSPICE toolkit version.
+// It is useful for debugging, but usually not different between backends.
+console.log(wasm.kit.toolkitVersion());
+console.log(node.kit.toolkitVersion());
 ```
 
 ---

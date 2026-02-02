@@ -8,6 +8,10 @@ export type WasmFsApi = {
   loadKernel(path: string, data: Uint8Array): void;
 };
 
+export function resolveKernelPath(path: string): string {
+  return path.startsWith("/") ? path : `/kernels/${path}`;
+}
+
 export function createWasmFs(module: EmscriptenModule): WasmFsApi {
   function writeFile(path: string, data: Uint8Array): void {
     const dir = path.split("/").slice(0, -1).join("/") || "/";
@@ -27,7 +31,7 @@ export function createWasmFs(module: EmscriptenModule): WasmFsApi {
   return {
     writeFile,
     loadKernel: (path: string, data: Uint8Array) => {
-      const resolvedPath = path.startsWith("/") ? path : `/kernels/${path}`;
+      const resolvedPath = resolveKernelPath(path);
       writeFile(resolvedPath, data);
       tspiceCall1Path(module, module._tspice_furnsh, resolvedPath);
     },
@@ -38,6 +42,8 @@ export function writeKernelSource(module: EmscriptenModule, fs: WasmFsApi, kerne
   if (typeof kernel === "string") {
     return kernel;
   }
-  fs.writeFile(kernel.path, kernel.bytes);
-  return kernel.path;
+
+  const resolved = resolveKernelPath(kernel.path);
+  fs.writeFile(resolved, kernel.bytes);
+  return resolved;
 }

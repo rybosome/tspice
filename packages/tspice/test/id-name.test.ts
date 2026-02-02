@@ -77,8 +77,8 @@ describe("IDs / names", () => {
     const lskBytes = fs.readFileSync(lskPath);
 
     backend.kclear();
-    backend.furnsh({ path: "/kernels/naif0012.tls", bytes: lskBytes });
-    backend.furnsh({ path: `/kernels/${PCK.name}`, bytes: pck.bytes });
+    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+    backend.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
 
     const earth = backend.bodn2c("EARTH");
     expect(earth.found).toBe(true);

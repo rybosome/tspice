@@ -12,7 +12,7 @@ import { tspiceCall0, tspiceCall1Path } from "../codec/calls.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import type { WasmFsApi } from "../runtime/fs.js";
-import { writeKernelSource } from "../runtime/fs.js";
+import { resolveKernelPath, writeKernelSource } from "../runtime/fs.js";
 
 function tspiceCallKtotal(module: EmscriptenModule, kind: KernelKind): number {
   const errMaxBytes = 2048;
@@ -114,11 +114,16 @@ function tspiceCallKdata(
 export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): KernelsApi {
   return {
     furnsh: (kernel: KernelSource) => {
+      if (typeof kernel === "string") {
+        tspiceCall1Path(module, module._tspice_furnsh, resolveKernelPath(kernel));
+        return;
+      }
+
       const path = writeKernelSource(module, fs, kernel);
       tspiceCall1Path(module, module._tspice_furnsh, path);
     },
     unload: (path: string) => {
-      tspiceCall1Path(module, module._tspice_unload, path);
+      tspiceCall1Path(module, module._tspice_unload, resolveKernelPath(path));
     },
     kclear: () => {
       tspiceCall0(module, module._tspice_kclear);

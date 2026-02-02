@@ -25,7 +25,7 @@
     "verify:dist-publish": "node ./scripts/verify-dist-publish.mjs",
     "prepack": "pnpm -w build",
     "release": "pnpm -w build && pnpm -C packages/tspice run verify:dist-publish && pnpm dlx np --contents dist-publish",
-    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly && tsc -p tsconfig.test.json --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
