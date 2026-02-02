@@ -1,6 +1,6 @@
-import type { BodyRef, FrameId } from "../spice/SpiceClient.js";
+import type { BodyRef, FrameId } from '../spice/SpiceClient.js'
 
-export type BodyTextureKind = "earth" | "moon" | "sun";
+export type BodyTextureKind = 'earth' | 'moon' | 'sun'
 
 export interface EarthAppearanceStyle {
   /** Optional night lights (emissive) texture; should be equirectangular 2:1. */
@@ -54,10 +54,10 @@ export interface SceneRingsStyle {
 
 export interface SceneBodyStyle {
   /** Body radius in km. */
-  radiusKm: number;
+  radiusKm: number
 
   /** Renderer color hint (e.g. `"#ffffff"`, `"skyblue"`). */
-  color: string;
+  color: string
 
   /**
    * Optional material color multiplier to apply when a texture is present.
@@ -66,20 +66,20 @@ export interface SceneBodyStyle {
    * full-color albedo textures should use `"#ffffff"` here (the default) to
    * avoid unintended tinting or darkening.
    */
-  textureColor?: string;
+  textureColor?: string
 
   /**
    * Optional texture URL/path.
    *
    * If relative, it's resolved against Vite's `BASE_URL` at runtime.
    */
-  textureUrl?: string;
+  textureUrl?: string
 
   /** Optional, lightweight procedural texture (no binary assets). */
-  textureKind?: BodyTextureKind;
+  textureKind?: BodyTextureKind
 
   /** Optional label to show in UI. */
-  label?: string;
+  label?: string
 
   /** Optional rings style (rendered as a child mesh). */
   rings?: SceneRingsStyle
@@ -90,20 +90,20 @@ export interface SceneBodyStyle {
 
 export interface SceneBody {
   /** NAIF ID or body name; fed into `SpiceClient.getBodyState`. */
-  body: BodyRef;
+  body: BodyRef
 
   /** Optional body-fixed frame for debug axes (e.g. `"IAU_EARTH"`). */
-  bodyFixedFrame?: FrameId;
+  bodyFixedFrame?: FrameId
 
-  style: SceneBodyStyle;
+  style: SceneBodyStyle
 }
 
 export interface SceneModel {
   /** Frame the scene is rendered in (default should be `"J2000"`). */
-  frame: FrameId;
+  frame: FrameId
 
   /** The observer/origin body for relative positions (e.g. `"SUN"`). */
-  observer: BodyRef;
+  observer: BodyRef
 
-  bodies: readonly SceneBody[];
+  bodies: readonly SceneBody[]
 }

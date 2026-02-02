@@ -238,10 +238,9 @@ function createStarLayer(opts: {
         )
         .replace(
           '#include <begin_vertex>',
-          [
-            '#include <begin_vertex>',
-            'vTwinkle = aTwinkleAmp * sin(uTime * aTwinkleSpeed + aTwinklePhase);',
-          ].join('\n'),
+          ['#include <begin_vertex>', 'vTwinkle = aTwinkleAmp * sin(uTime * aTwinkleSpeed + aTwinklePhase);'].join(
+            '\n',
+          ),
         )
 
       shader.fragmentShader = shader.fragmentShader

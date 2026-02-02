@@ -254,6 +254,8 @@ pnpm --filter @rybosome/tspice-backend-node run build:native
 pnpm --filter @rybosome/tspice-viewer run dev
 ```
 
+For repo navigation and contributor orientation, see `docs/how-to-be-effective.md` and `docs/README.md`.
+
 For README conventions and templates, see `docs/readme-conventions.md`.
 
 Native builds require Python 3 and a working `node-gyp` toolchain.

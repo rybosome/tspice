@@ -47,7 +47,7 @@ export class CameraController {
       maxRadius?: number
       minPitch?: number
       maxPitch?: number
-    }
+    },
   ) {
     // Always own our own target vector so external snapshots/presets stay immutable.
     this.target = state.target.clone()
@@ -65,8 +65,8 @@ export class CameraController {
     this.maxRadius = opts?.maxRadius ?? 500
 
     // Keep pitch away from the poles so orbit math stays stable.
-    this.minPitch = opts?.minPitch ?? (-Math.PI / 2 + 0.01)
-    this.maxPitch = opts?.maxPitch ?? (Math.PI / 2 - 0.01)
+    this.minPitch = opts?.minPitch ?? -Math.PI / 2 + 0.01
+    this.maxPitch = opts?.maxPitch ?? Math.PI / 2 - 0.01
 
     this.clampState()
   }
@@ -145,7 +145,7 @@ export class CameraController {
     const offset = new THREE.Vector3(
       this.radius * cosPitch * Math.cos(this.yaw),
       this.radius * cosPitch * Math.sin(this.yaw),
-      this.radius * Math.sin(this.pitch)
+      this.radius * Math.sin(this.pitch),
     )
 
     camera.position.copy(this.target).add(offset)
@@ -231,12 +231,7 @@ export class CameraController {
    *
    * This updates `target` only; call `applyToCamera()` afterwards.
    */
-  pan(
-    dxPx: number,
-    dyPx: number,
-    camera: THREE.PerspectiveCamera,
-    viewport: { width: number; height: number }
-  ) {
+  pan(dxPx: number, dyPx: number, camera: THREE.PerspectiveCamera, viewport: { width: number; height: number }) {
     const height = viewport.height || 1
 
     // Convert pixels -> world units at the target plane.

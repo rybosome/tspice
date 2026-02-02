@@ -11,11 +11,7 @@ test('viewer loads (WASM backend) without console/page errors', async ({ page, b
   // Ensure the test is deterministic and doesn't accidentally hit the network.
   await page.route('**/*', async (route) => {
     const url = route.request().url()
-    if (
-      url.startsWith(allowedOrigin) ||
-      url.startsWith('data:') ||
-      url.startsWith('blob:')
-    ) {
+    if (url.startsWith(allowedOrigin) || url.startsWith('data:') || url.startsWith('blob:')) {
       await route.continue()
       return
     }
@@ -39,7 +35,7 @@ test('viewer loads (WASM backend) without console/page errors', async ({ page, b
       from: 'J2000',
       to: 'J2000',
       et: 1234567,
-    })
+    }),
   )
 
   expect(frameTransform).toHaveLength(9)

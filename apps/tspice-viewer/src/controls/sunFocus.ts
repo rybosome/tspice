@@ -53,11 +53,7 @@ export function computeOrbitAnglesToKeepPointInView(opts: {
 
   // Keep the point comfortably inside view. Also keep a non-trivial offset so
   // the point isn't directly behind the focus body.
-  const offAxis = THREE.MathUtils.clamp(
-    desiredOffAxisRad,
-    THREE.MathUtils.degToRad(6),
-    maxOffAxis * 0.8
-  )
+  const offAxis = THREE.MathUtils.clamp(desiredOffAxisRad, THREE.MathUtils.degToRad(6), maxOffAxis * 0.8)
 
   const worldUp = opts.worldUp ?? new THREE.Vector3(0, 0, 1)
 
