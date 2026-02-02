@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
+import { loadTextureCached } from './loadTextureCached.js'
 
 export type CreateRingMeshOptions = {
   /** Inner radius in parent-local units (e.g. multiples of planet radius when parent is unit sphere). */
@@ -68,24 +68,15 @@ export function createRingMesh(options: CreateRingMeshOptions): {
 
   let map: THREE.Texture | undefined
   const ready: Promise<void> = options.textureUrl
-    ? new THREE.TextureLoader()
-        .loadAsync(resolveVitePublicUrl(options.textureUrl))
-        .then((tex) => {
-          if (disposed) {
-            tex.dispose()
-            return
-          }
-
-          tex.colorSpace = THREE.SRGBColorSpace
-          // U (radius) should clamp; V (angle) should repeat.
-          tex.wrapS = THREE.ClampToEdgeWrapping
-          tex.wrapT = THREE.RepeatWrapping
-          tex.needsUpdate = true
-          map = tex
-        })
-        .catch((err) => {
-          console.warn('Failed to load ring texture', options.textureUrl, err)
-        })
+    ? loadTextureCached(options.textureUrl, {
+        colorSpace: THREE.SRGBColorSpace,
+        // U (radius) should clamp; V (angle) should repeat.
+        wrapS: THREE.ClampToEdgeWrapping,
+        wrapT: THREE.RepeatWrapping,
+      }).then((tex) => {
+        if (disposed) return
+        map = tex
+      })
     : Promise.resolve()
 
   const material = new THREE.MeshStandardMaterial({
@@ -130,7 +121,6 @@ export function createRingMesh(options: CreateRingMeshOptions): {
       disposed = true
       geometry.dispose()
       material.dispose()
-      map?.dispose()
     },
     ready: ready.then(() => {
       if (disposed) return
