@@ -43,7 +43,7 @@ export function SceneCanvas() {
 
   const runtimeConfig = useMemo(() => parseSceneCanvasRuntimeConfigFromLocationSearch(window.location.search), [])
 
-  const { searchParams: search, isE2e, enableLogDepth, debug, starSeed, initialUtc, initialEt } = runtimeConfig
+  const { searchParams: search, isE2e, enableLogDepth, starSeed, initialUtc, initialEt } = runtimeConfig
 
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
@@ -58,18 +58,14 @@ export function SceneCanvas() {
 
   const earthAppearanceDefaults = useMemo(() => getBodyRegistryEntry('EARTH').style.earthAppearance, [])
 
-  // Debug Earth appearance knobs (ephemeral, for dialing in night brightness).
-  const [ambientLightIntensity, setAmbientLightIntensity] = useState(0.6)
-  const [sunLightIntensity, setSunLightIntensity] = useState(0.9)
-  const [earthNightAlbedo, setEarthNightAlbedo] = useState(0.004)
-  const [earthTwilight, setEarthTwilight] = useState(earthAppearanceDefaults?.nightLightsTwilight ?? 0.12)
-  const [earthNightLightsIntensity, setEarthNightLightsIntensity] = useState(
-    earthAppearanceDefaults?.nightLightsIntensity ?? 1.25,
-  )
-  const [earthAtmosphereIntensity, setEarthAtmosphereIntensity] = useState(
-    earthAppearanceDefaults?.atmosphereIntensity ?? 0.55,
-  )
-  const [earthCloudsNightMultiplier, setEarthCloudsNightMultiplier] = useState(0.0)
+  // Earth appearance tuning (kept configurable in code; no longer exposed as debug sliders).
+  const ambientLightIntensity = 0.2
+  const sunLightIntensity = 2.0
+  const earthNightAlbedo = 0.004
+  const earthTwilight = earthAppearanceDefaults?.nightLightsTwilight ?? 0.12
+  const earthNightLightsIntensity = earthAppearanceDefaults?.nightLightsIntensity ?? 1.25
+  const earthAtmosphereIntensity = earthAppearanceDefaults?.atmosphereIntensity ?? 0.55
+  const earthCloudsNightMultiplier = 0.0
 
   // Render HUD toggle (ephemeral, not persisted)
   const [showRenderHud, setShowRenderHud] = useState(false)
@@ -448,7 +444,7 @@ export function SceneCanvas() {
       labelOcclusionEnabled,
 
       ambientLightIntensity,
-    sunLightIntensity,
+      sunLightIntensity,
       earthNightAlbedo,
       earthTwilight,
       earthNightLightsIntensity,
@@ -962,105 +958,6 @@ export function SceneCanvas() {
                       </span>
                     </label>
                   </div>
-
-                  {debug ? (
-                    <>
-                      <div className="advancedDivider" />
-                      <div className="advancedHeader">EARTH APPEARANCE (DEBUG)</div>
-                      <div className="advancedGroup">
-                        <div className="advancedSlider">
-                          <span className="advancedSliderLabel">Ambient Light</span>
-                          <input
-                            type="range"
-                            min={0}
-                            max={2}
-                            step={0.01}
-                            value={ambientLightIntensity}
-                            onChange={(e) => setAmbientLightIntensity(Number(e.target.value))}
-                          />
-                          <span className="advancedSliderValue">{ambientLightIntensity.toFixed(2)}</span>
-                        </div>
-
-                        <div className="advancedSlider">
-                          <span className="advancedSliderLabel">Sunlight Intensity</span>
-                          <input
-                            type="range"
-                            min={0}
-                            max={2}
-                            step={0.01}
-                            value={sunLightIntensity}
-                            onChange={(e) => setSunLightIntensity(Number(e.target.value))}
-                          />
-                          <span className="advancedSliderValue">{sunLightIntensity.toFixed(2)}</span>
-                        </div>
-
-                        <div className="advancedSlider">
-                          <span className="advancedSliderLabel">Night Albedo Floor</span>
-                          <input
-                            type="range"
-                            min={0}
-                            max={0.05}
-                            step={0.0005}
-                            value={earthNightAlbedo}
-                            onChange={(e) => setEarthNightAlbedo(Number(e.target.value))}
-                          />
-                          <span className="advancedSliderValue">{earthNightAlbedo.toFixed(4)}</span>
-                        </div>
-
-                        <div className="advancedSlider">
-                          <span className="advancedSliderLabel">Night Lights</span>
-                          <input
-                            type="range"
-                            min={0}
-                            max={5}
-                            step={0.05}
-                            value={earthNightLightsIntensity}
-                            onChange={(e) => setEarthNightLightsIntensity(Number(e.target.value))}
-                          />
-                          <span className="advancedSliderValue">{earthNightLightsIntensity.toFixed(2)}</span>
-                        </div>
-
-                        <div className="advancedSlider">
-                          <span className="advancedSliderLabel">Atmosphere Intensity</span>
-                          <input
-                            type="range"
-                            min={0}
-                            max={2}
-                            step={0.01}
-                            value={earthAtmosphereIntensity}
-                            onChange={(e) => setEarthAtmosphereIntensity(Number(e.target.value))}
-                          />
-                          <span className="advancedSliderValue">{earthAtmosphereIntensity.toFixed(2)}</span>
-                        </div>
-
-                        <div className="advancedSlider">
-                          <span className="advancedSliderLabel">Clouds Night Mult</span>
-                          <input
-                            type="range"
-                            min={0}
-                            max={1}
-                            step={0.01}
-                            value={earthCloudsNightMultiplier}
-                            onChange={(e) => setEarthCloudsNightMultiplier(Number(e.target.value))}
-                          />
-                          <span className="advancedSliderValue">{earthCloudsNightMultiplier.toFixed(2)}</span>
-                        </div>
-
-                        <div className="advancedSlider">
-                          <span className="advancedSliderLabel">Terminator Twilight</span>
-                          <input
-                            type="range"
-                            min={0.01}
-                            max={0.5}
-                            step={0.005}
-                            value={earthTwilight}
-                            onChange={(e) => setEarthTwilight(Number(e.target.value))}
-                          />
-                          <span className="advancedSliderValue">{earthTwilight.toFixed(3)}</span>
-                        </div>
-                      </div>
-                    </>
-                  ) : null}
                 </div>
               )}
             </div>

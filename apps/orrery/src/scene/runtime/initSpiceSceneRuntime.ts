@@ -127,11 +127,11 @@ export async function initSpiceSceneRuntime(args: {
   const disposers: Array<() => void> = []
 
   // Lighting (owned by the scene runtime)
-  const ambient = new THREE.AmbientLight(0xffffff, 0.6)
+  const ambient = new THREE.AmbientLight(0xffffff, 0.2)
   scene.add(ambient)
   sceneObjects.push(ambient)
 
-  const dir = new THREE.DirectionalLight(0xffffff, 0.9)
+  const dir = new THREE.DirectionalLight(0xffffff, 2.0)
   dir.position.set(4, 6, 2)
   scene.add(dir)
   sceneObjects.push(dir)
