@@ -39,6 +39,15 @@ export type SceneUiState = {
   orbitPathsEnabled: boolean
   labelsEnabled: boolean
   labelOcclusionEnabled: boolean
+
+  // Debug/temporary tuning knobs (ephemeral; intended for dialing in Earth appearance).
+  ambientLightIntensity: number
+
+  earthNightAlbedo: number
+  earthTwilight: number
+  earthNightLightsIntensity: number
+  earthAtmosphereIntensity: number
+  earthCloudsNightMultiplier: number
 }
 
 export type SpiceSceneRuntime = {
@@ -321,6 +330,17 @@ export async function initSpiceSceneRuntime(args: {
   const ORBIT_MIN_POINTS_PER_ORBIT = 32
 
   const updateScene = (next: SceneUiState) => {
+    // Lighting knobs
+    ambient.intensity = next.ambientLightIntensity
+
+    const earthTuning = {
+      nightAlbedo: next.earthNightAlbedo,
+      twilight: next.earthTwilight,
+      nightLightsIntensity: next.earthNightLightsIntensity,
+      atmosphereIntensity: next.earthAtmosphereIntensity,
+      cloudsNightMultiplier: next.earthCloudsNightMultiplier,
+    }
+
     const shouldAutoZoom = !isE2e && next.focusBody !== lastAutoZoomFocusBody
 
     const homePreset = shouldAutoZoom ? getHomePresetState(next.focusBody) : null
@@ -556,7 +576,7 @@ export async function initSpiceSceneRuntime(args: {
     // Update any body-specific shader uniforms using the same sun direction.
     const sunDirWorld = dir.position.clone().normalize()
     for (const b of bodies) {
-      b.update?.({ sunDirWorld, etSec: next.etSec })
+      b.update?.({ sunDirWorld, etSec: next.etSec, earthTuning })
     }
 
     // Record label overlay inputs so we can update it on camera movement.

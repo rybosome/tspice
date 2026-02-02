@@ -28,7 +28,19 @@ export type CreateBodyMeshOptions = {
   earthAppearance?: EarthAppearanceStyle
 }
 
-export type BodyMeshUpdate = (args: { sunDirWorld: THREE.Vector3; etSec: number }) => void
+export type EarthAppearanceTuning = {
+  nightAlbedo: number
+  twilight: number
+  nightLightsIntensity: number
+  atmosphereIntensity: number
+  cloudsNightMultiplier: number
+}
+
+export type BodyMeshUpdate = (args: {
+  sunDirWorld: THREE.Vector3
+  etSec: number
+  earthTuning?: EarthAppearanceTuning
+}) => void
 
 function make1x1TextureRGBA([r, g, b, a]: readonly [number, number, number, number]): THREE.DataTexture {
   const data = new Uint8Array([r, g, b, a])
@@ -237,10 +249,18 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     material.emissive.set('#000000')
     material.emissiveIntensity = 1.0
 
+    // Runtime-tunable Earth appearance knobs (wired to debug sliders).
+    const uNightAlbedo = { value: 0.004 }
+    const uTwilight = { value: earth.nightLightsTwilight ?? 0.12 }
+    const uNightLightsIntensity = { value: earth.nightLightsIntensity ?? 1.25 }
+    const uAtmosphereIntensity = { value: earth.atmosphereIntensity ?? 0.55 }
+    const uCloudsNightMultiplier = { value: 0.0 }
+
     material.onBeforeCompile = (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
-      shader.uniforms.uTwilight = { value: earth.nightLightsTwilight ?? 0.12 }
-      shader.uniforms.uNightLightsIntensity = { value: earth.nightLightsIntensity ?? 1.25 }
+      shader.uniforms.uNightAlbedo = uNightAlbedo
+      shader.uniforms.uTwilight = uTwilight
+      shader.uniforms.uNightLightsIntensity = uNightLightsIntensity
       shader.uniforms.uOceanSpecIntensity = { value: earth.oceanSpecularIntensity ?? 0.35 }
       shader.uniforms.uOceanRoughness = { value: earth.oceanRoughness ?? 0.06 }
       shader.uniforms.uWaterMaskMap = waterMaskUniform
@@ -252,6 +272,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         [
           '#include <common>',
           'uniform vec3 uSunDirWorld;',
+          'uniform float uNightAlbedo;',
           'uniform float uTwilight;',
           'uniform float uNightLightsIntensity;',
           'uniform float uOceanSpecIntensity;',
@@ -273,7 +294,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
           '',
           '\t\t// Keep a tiny floor so Earth is not totally invisible at night.',
-          '\t\tfloat nightAlbedo = 0.004;',
+          '\t\tfloat nightAlbedo = uNightAlbedo;',
           '\t\tdiffuseColor.rgb *= mix( nightAlbedo, 1.0, dayFactor );',
           '\t}',
           '',
@@ -362,7 +383,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       uniforms: {
         uSunDirWorld: { value: uSunDirWorld },
         uColor: { value: new THREE.Color(earth.atmosphereColor ?? '#79b8ff') },
-        uIntensity: { value: earth.atmosphereIntensity ?? 0.55 },
+        uIntensity: uAtmosphereIntensity,
         uRimPower: { value: earth.atmosphereRimPower ?? 2.2 },
         uSunBias: { value: earth.atmosphereSunBias ?? 0.65 },
       },
@@ -441,11 +462,17 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     // makes clouds show up nearly as brightly at night as during day).
     cloudsMaterial.onBeforeCompile = (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
-      shader.uniforms.uTwilight = { value: earth.nightLightsTwilight ?? 0.12 }
+      shader.uniforms.uTwilight = uTwilight
+      shader.uniforms.uCloudsNightMultiplier = uCloudsNightMultiplier
 
       shader.fragmentShader = shader.fragmentShader.replace(
         '#include <common>',
-        ['#include <common>', 'uniform vec3 uSunDirWorld;', 'uniform float uTwilight;'].join('\n'),
+        [
+          '#include <common>',
+          'uniform vec3 uSunDirWorld;',
+          'uniform float uTwilight;',
+          'uniform float uCloudsNightMultiplier;',
+        ].join('\n'),
       )
 
       shader.fragmentShader = shader.fragmentShader.replace(
@@ -456,7 +483,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
           '\t\tfloat ndotl = dot( normal, sunDirView );',
           '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
-          '\t\tdiffuseColor.rgb *= dayFactor;',
+          '\t\tdiffuseColor.rgb *= mix( uCloudsNightMultiplier, 1.0, dayFactor );',
           '\t}',
           '',
           '#include <lights_fragment_begin>',
@@ -553,8 +580,16 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     // Extend `ready` with extra Earth assets.
     ready = Promise.all([ready, ...extras]).then(() => undefined)
 
-    update = ({ sunDirWorld, etSec }) => {
+    update = ({ sunDirWorld, etSec, earthTuning }) => {
       uSunDirWorld.copy(sunDirWorld).normalize()
+
+      if (earthTuning) {
+        uNightAlbedo.value = earthTuning.nightAlbedo
+        uTwilight.value = earthTuning.twilight
+        uNightLightsIntensity.value = earthTuning.nightLightsIntensity
+        uAtmosphereIntensity.value = earthTuning.atmosphereIntensity
+        uCloudsNightMultiplier.value = earthTuning.cloudsNightMultiplier
+      }
 
       if (cloudsMesh && cloudsDriftRadPerSec !== 0) {
         const phase = (etSec * cloudsDriftRadPerSec) % (Math.PI * 2)
