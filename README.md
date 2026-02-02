@@ -46,7 +46,7 @@ With `tspice`, you can:
 
 This unlocks SPICE-accurate ephemerides, lighting, and geometry **directly inside interactive browser visualizations**, without server round-trips or precomputed data.
 
-Below are screenshots from a [real, browser-based solar system visualization](https://tspice-viewer.ryboso.me/) built using `tspice`.
+Below are screenshots from a [real, browser-based solar system visualization](https://orrery.ryboso.me/) built using `tspice`.
 
 All positions, orientations, lighting angles, and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
 
@@ -233,7 +233,7 @@ const { spoint } = spice.cspice.subslr(
 | `packages/backend-fake` | Deterministic stub |
 | `packages/backend-contract` | Shared backend interface |
 | `packages/core` | Shared utilities |
-| `apps/tspice-viewer` | Internal example / visualization app |
+| `apps/orrery` | Internal example / visualization app |
 
 ---
 
@@ -251,7 +251,7 @@ When running package-level scripts from the repo root, prefer pnpm filters:
 ```bash
 pnpm --filter @rybosome/tspice run build
 pnpm --filter @rybosome/tspice-backend-node run build:native
-pnpm --filter @rybosome/tspice-viewer run dev
+pnpm --filter @rybosome/orrery run dev
 ```
 
 For repo navigation and contributor orientation, see `docs/how-to-be-effective.md` and `docs/README.md`.

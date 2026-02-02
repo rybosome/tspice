@@ -12,7 +12,7 @@ importers:
         specifier: ^2.5.5
         version: 2.7.4
 
-  apps/tspice-viewer:
+  apps/orrery:
     dependencies:
       '@rybosome/tspice':
         specifier: workspace:*

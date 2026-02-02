@@ -1,4 +1,4 @@
-# tspice-viewer
+# Orrery
 
 Minimal Vite + React + TypeScript app that renders a basic Three.js scene using an imperative `canvas` setup (no `@react-three/fiber`).
 
@@ -9,7 +9,7 @@ This workspace is intended to evolve into a renderer / Three.js viewer for tspic
 From repo root:
 
 - `pnpm install`
-- `pnpm --filter @rybosome/tspice-viewer run dev`
+- `pnpm --filter @rybosome/orrery run dev`
 
 ## NAIF kernels
 
@@ -26,13 +26,13 @@ https://naif.jpl.nasa.gov/naif/rules.html
 
 From repo root:
 
-- `pnpm -C apps/tspice-viewer run format` (auto-format)
-- `pnpm -C apps/tspice-viewer run format:check` (CI)
-- `pnpm -C apps/tspice-viewer run lint`
-- `pnpm -C apps/tspice-viewer run lint:fix`
-- `pnpm --filter @rybosome/tspice-viewer run build`
-- `pnpm --filter @rybosome/tspice-viewer run typecheck`
-- `pnpm --filter @rybosome/tspice-viewer run test`
+- `pnpm -C apps/orrery run format` (auto-format)
+- `pnpm -C apps/orrery run format:check` (CI)
+- `pnpm -C apps/orrery run lint`
+- `pnpm -C apps/orrery run lint:fix`
+- `pnpm --filter @rybosome/orrery run build`
+- `pnpm --filter @rybosome/orrery run typecheck`
+- `pnpm --filter @rybosome/orrery run test`
 
 ## Conventions
 
@@ -128,8 +128,8 @@ The transform is intended to be applied as:
 
 ## Visual regression testing
 
-Playwright e2e tests live in `apps/tspice-viewer/e2e`.
+Playwright e2e tests live in `apps/orrery/e2e`.
 
 From repo root:
 
-- `pnpm --filter @rybosome/tspice-viewer run e2e`
+- `pnpm --filter @rybosome/orrery run e2e`

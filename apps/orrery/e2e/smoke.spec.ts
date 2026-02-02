@@ -25,5 +25,5 @@ test('smoke: loads without runtime errors', async ({ page }) => {
   expect(consoleErrors, `console.error messages:\n${consoleErrors.join('\n')}`).toEqual([])
 
   // Basic readiness: app header appears.
-  await expect(page.getByRole('heading', { name: 'tspice viewer' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Orrery' })).toBeVisible()
 })
