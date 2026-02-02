@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { createSpice } from "@rybosome/tspice";
+import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 import { loadTestKernels } from "./test-kernels.js";
 
 function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): void {
@@ -17,19 +18,19 @@ describe("mid-level API parity (node vs wasm)", () => {
     wasm.kit.loadKernel({ path: "/kernels//naif0012.tls", bytes: lsk });
     expect(wasm.raw.ktotal("ALL")).toBeGreaterThan(0);
     wasm.kit.unloadKernel("naif0012.tls");
-    wasm.raw.kclear();
+    expect(wasm.raw.ktotal("ALL")).toBe(0);
+    wasm.kit.kclear();
     expect(wasm.raw.ktotal("ALL")).toBe(0);
 
     // Native backend isn't available in JS-only CI.
-    try {
+    if (nodeBackendAvailable) {
       const node = await createSpice({ backend: "node" });
       node.kit.loadKernel({ path: "/kernels//naif0012.tls", bytes: lsk });
       expect(node.raw.ktotal("ALL")).toBeGreaterThan(0);
       node.kit.unloadKernel("naif0012.tls");
-      node.raw.kclear();
       expect(node.raw.ktotal("ALL")).toBe(0);
-    } catch {
-      // ignore
+      node.kit.kclear();
+      expect(node.raw.ktotal("ALL")).toBe(0);
     }
   });
 
@@ -37,13 +38,12 @@ describe("mid-level API parity (node vs wasm)", () => {
     const { lsk, spk } = await loadTestKernels();
 
     const wasm = await createSpice({ backend: "wasm" });
-    let node: Awaited<ReturnType<typeof createSpice>> | undefined;
-    try {
-      node = await createSpice({ backend: "node" });
-    } catch {
-      // JS-only CI does not build the native backend. In native CI, this should succeed.
+    if (!nodeBackendAvailable) {
+      // JS-only CI does not build the native backend.
       return;
     }
+
+    const node = await createSpice({ backend: "node" });
 
     wasm.kit.loadKernel({ path: "naif0012.tls", bytes: lsk });
     wasm.kit.loadKernel({ path: "de405s.bsp", bytes: spk });
