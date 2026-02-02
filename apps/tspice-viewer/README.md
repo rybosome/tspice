@@ -9,7 +9,7 @@ This workspace is intended to evolve into a renderer / Three.js viewer for tspic
 From repo root:
 
 - `pnpm install`
-- `pnpm -C apps/tspice-viewer dev`
+- `pnpm --filter @rybosome/tspice-viewer run dev`
 
 ## NAIF kernels
 
@@ -24,9 +24,15 @@ https://naif.jpl.nasa.gov/naif/rules.html
 
 ## Scripts
 
-- `pnpm -C apps/tspice-viewer build`
-- `pnpm -C apps/tspice-viewer typecheck`
-- `pnpm -C apps/tspice-viewer test`
+From repo root:
+
+- `pnpm -C apps/tspice-viewer run format` (auto-format)
+- `pnpm -C apps/tspice-viewer run format:check` (CI)
+- `pnpm -C apps/tspice-viewer run lint`
+- `pnpm -C apps/tspice-viewer run lint:fix`
+- `pnpm --filter @rybosome/tspice-viewer run build`
+- `pnpm --filter @rybosome/tspice-viewer run typecheck`
+- `pnpm --filter @rybosome/tspice-viewer run test`
 
 ## Conventions
 
@@ -103,10 +109,10 @@ In local dev (non-e2e), the viewer exposes a tiny overlay:
 - Representation: a flat `number[9]` in **column-major** order to match Three.js `Matrix3`.
 - Indexing:
   - `m = [
-      m00, m10, m20,
-      m01, m11, m21,
-      m02, m12, m22
-    ]`
+  m00, m10, m20,
+  m01, m11, m21,
+  m02, m12, m22
+]`
   - This corresponds to columns `c0=(m00,m10,m20)`, `c1=(m01,m11,m21)`, `c2=(m02,m12,m22)`.
 
 The transform is intended to be applied as:
@@ -126,4 +132,4 @@ Playwright e2e tests live in `apps/tspice-viewer/e2e`.
 
 From repo root:
 
-- `pnpm -C apps/tspice-viewer e2e`
+- `pnpm --filter @rybosome/tspice-viewer run e2e`
