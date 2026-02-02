@@ -18,6 +18,7 @@ import {
   getHomePresetState,
   getHomePresetStateForKey,
   listHomePresetAliasesForKey,
+  HOME_PRESET_KEYS,
   type HomePresetKey,
 } from './interaction/homePresets.js'
 import { RenderHud, type RenderHudStats } from './renderer/RenderHud.js'
@@ -164,8 +165,9 @@ export function SceneCanvas() {
       }
     }
 
-    register('EARTH')
-    register('VENUS')
+    for (const key of HOME_PRESET_KEYS) {
+      register(key)
+    }
 
     resetControllerStateByBodyRef.current = next
   }
