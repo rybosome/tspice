@@ -28,7 +28,7 @@ Use these headings (omit sections that don’t apply):
 - For workspace packages, use the package name from `package.json`:
   - Example: `# @rybosome/tspice-backend-wasm`
 - For apps, use the workspace name from `package.json`:
-  - Example: `# @rybosome/tspice-viewer`
+  - Example: `# @rybosome/orrery`
 
 ## Repo commands
 
@@ -42,7 +42,7 @@ Examples:
 
 ```bash
 pnpm --filter @rybosome/tspice run typecheck
-pnpm --filter @rybosome/tspice-viewer run dev
+pnpm --filter @rybosome/orrery run dev
 ```
 
 Notes:

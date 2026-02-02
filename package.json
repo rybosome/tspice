@@ -8,7 +8,7 @@
     "check": "pnpm run check:js",
     "check:compliance": "node scripts/check-compliance-files.mjs",
     "check:versions": "node scripts/verify-native-package-versions.mjs",
-    "format:check": "pnpm -C apps/tspice-viewer run format:check",
+    "format:check": "pnpm -C apps/orrery run format:check",
     "lint": "pnpm -r --if-present lint",
     "check:js": "pnpm run check:compliance && pnpm run check:versions && pnpm run format:check && pnpm run lint && pnpm run build:js && pnpm run typecheck && pnpm run test:js",
     "stage:native-platform": "node scripts/stage-native-platform.mjs",

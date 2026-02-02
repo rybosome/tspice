@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="app">
       {/* Visually-hidden heading for e2e smoke + accessibility. */}
-      <h1 className="sr-only">tspice viewer</h1>
+      <h1 className="sr-only">Orrery</h1>
       <main className="main">
         <SceneCanvas />
       </main>

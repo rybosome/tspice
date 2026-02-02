@@ -20,7 +20,7 @@ This doc is a quick “mental map” for contributors. It’s intentionally shor
   - If you’re changing backend APIs, this is usually the first place to update.
   - Docs: [`../packages/backend-contract/README.md`](../packages/backend-contract/README.md)
 
-- **Example app / integration:** `apps/tspice-viewer`
+- **Example app / integration:** `apps/orrery`
 
 ## Fastest path to run checks/build/test
 

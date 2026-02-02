@@ -1,5 +1,5 @@
 {
-  "name": "@rybosome/tspice-viewer",
+  "name": "@rybosome/orrery",
   "private": true,
   "version": "0.0.3",
   "type": "module",
