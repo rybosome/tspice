@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 import { loadTextureCached } from './loadTextureCached.js'
 import { createRingMesh } from './RingMesh.js'
-import type { BodyAppearanceStyle, BodyLayerStyle, BodyTextureKind, EarthAppearanceLayerStyle } from './SceneModel.js'
+import { isEarthAppearanceLayer, type BodyAppearanceStyle, type BodyTextureKind } from './SceneModel.js'
 
 export type CreateBodyMeshOptions = {
   /** Optional stable ID (e.g. `"EARTH"`) for body-specific rendering. */
@@ -141,12 +141,6 @@ function makeProceduralBodyTexture(kind: BodyTextureKind): THREE.Texture {
   })
 }
 
-function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
-  if (typeof layer !== 'object' || layer === null) return false
-  if (!('kind' in layer)) return false
-  return (layer as { kind?: unknown }).kind === 'earth' && 'earth' in layer
-}
-
 /**
  * Creates a body mesh with a unit sphere geometry.
  *
@@ -167,6 +161,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   let disposed = false
 
+  // Collect async assets so `ready` consistently represents "all appearance assets are ready".
+  const readyExtras: Promise<void>[] = []
+
   const surface = options.appearance.surface
   const surfaceTexture = surface.texture
   const textureKind = surfaceTexture?.kind
@@ -174,12 +171,25 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const textureColor = surfaceTexture?.color
 
   let map: THREE.Texture | undefined = textureKind ? makeProceduralBodyTexture(textureKind) : undefined
+  let mapRelease: (() => void) | undefined
 
-  let ready: Promise<void> = textureUrl
-    ? loadTextureCached(textureUrl)
-        .then((tex) => {
+  const disposeMap = () => {
+    if (mapRelease) {
+      mapRelease()
+    } else {
+      map?.dispose()
+    }
+
+    map = undefined
+    mapRelease = undefined
+  }
+
+  if (textureUrl) {
+    readyExtras.push(
+      loadTextureCached(textureUrl, { colorSpace: THREE.SRGBColorSpace })
+        .then(({ texture: tex, release }) => {
           if (disposed) {
-            tex.dispose()
+            release()
             return
           }
 
@@ -187,14 +197,16 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           tex.wrapT = THREE.RepeatWrapping
           tex.needsUpdate = true
 
-          map?.dispose()
+          disposeMap()
           map = tex
+          mapRelease = release
         })
         .catch((err) => {
           // Keep rendering if a texture fails; surface failures for debugging.
           console.warn('Failed to load body texture', textureUrl, err)
-        })
-    : Promise.resolve()
+        }),
+    )
+  }
 
   // Note: `MeshStandardMaterial.color` multiplies `map`.
   // For full-color albedo textures (e.g. Earth), tinting the texture by a
@@ -228,7 +240,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   if (ringResult) {
     // Attach as a child so it inherits the body's pose and scale.
     mesh.add(ringResult.mesh)
-    ready = Promise.all([ready, ringResult.ready]).then(() => undefined)
+    readyExtras.push(ringResult.ready)
   }
 
   // Earth-only higher-fidelity appearance layers (night lights, clouds, atmosphere, ocean glint).
@@ -237,6 +249,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const isEarth = options.bodyId === 'EARTH'
 
   const extraTexturesToDispose: THREE.Texture[] = []
+  const extraTextureReleases: Array<() => void> = []
   const extraMaterialsToDispose: THREE.Material[] = []
   const extraGeometriesToDispose: THREE.BufferGeometry[] = []
 
@@ -514,17 +527,16 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     if (earth.nightLightsTextureUrl) {
       extras.push(
-        loadTextureCached(earth.nightLightsTextureUrl)
-          .then((tex) => {
+        loadTextureCached(earth.nightLightsTextureUrl, { colorSpace: THREE.SRGBColorSpace })
+          .then(({ texture: tex, release }) => {
             if (disposed) {
-              tex.dispose()
+              release()
               return
             }
-            tex.colorSpace = THREE.SRGBColorSpace
             tex.wrapS = THREE.RepeatWrapping
             tex.wrapT = THREE.RepeatWrapping
             tex.needsUpdate = true
-            extraTexturesToDispose.push(tex)
+            extraTextureReleases.push(release)
 
             material.emissive.set('#ffffff')
             material.emissiveMap = tex
@@ -538,19 +550,16 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     if (earth.cloudsTextureUrl && cloudsMaterial) {
       extras.push(
-        loadTextureCached(earth.cloudsTextureUrl)
-          .then((tex) => {
+        loadTextureCached(earth.cloudsTextureUrl, { colorSpace: THREE.SRGBColorSpace })
+          .then(({ texture: tex, release }) => {
             if (disposed) {
-              tex.dispose()
+              release()
               return
             }
-            // Used as alpha map; keep consistent with the source JPG (sRGB).
-            // (Shader uses the sampled channel directly; GPU sRGB decode is the only conversion.)
-            tex.colorSpace = THREE.SRGBColorSpace
             tex.wrapS = THREE.RepeatWrapping
             tex.wrapT = THREE.RepeatWrapping
             tex.needsUpdate = true
-            extraTexturesToDispose.push(tex)
+            extraTextureReleases.push(release)
 
             cloudsMaterial.alphaMap = tex
             cloudsMaterial.needsUpdate = true
@@ -563,17 +572,16 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     if (earth.waterMaskTextureUrl) {
       extras.push(
-        loadTextureCached(earth.waterMaskTextureUrl)
-          .then((tex) => {
+        loadTextureCached(earth.waterMaskTextureUrl, { colorSpace: THREE.NoColorSpace })
+          .then(({ texture: tex, release }) => {
             if (disposed) {
-              tex.dispose()
+              release()
               return
             }
-            tex.colorSpace = THREE.NoColorSpace
             tex.wrapS = THREE.RepeatWrapping
             tex.wrapT = THREE.RepeatWrapping
             tex.needsUpdate = true
-            extraTexturesToDispose.push(tex)
+            extraTextureReleases.push(release)
 
             waterMaskUniform.value = tex
             useWaterMaskUniform.value = 1.0
@@ -584,8 +592,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       )
     }
 
-    // Extend `ready` with extra Earth assets.
-    ready = Promise.all([ready, ...extras]).then(() => undefined)
+    readyExtras.push(...extras)
 
     update = ({ sunDirWorld, etSec, earthTuning }) => {
       uSunDirWorld.copy(sunDirWorld).normalize()
@@ -605,16 +612,19 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     }
   }
 
+  const ready = Promise.all(readyExtras).then(() => undefined)
+
   return {
     mesh,
     dispose: () => {
       disposed = true
       geometry.dispose()
       material.dispose()
-      map?.dispose()
+      disposeMap()
 
       ringResult?.dispose()
 
+      for (const release of extraTextureReleases) release()
       for (const tex of extraTexturesToDispose) tex.dispose()
       for (const mat of extraMaterialsToDispose) mat.dispose()
       for (const geo of extraGeometriesToDispose) geo.dispose()

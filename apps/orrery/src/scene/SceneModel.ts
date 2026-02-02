@@ -35,10 +35,24 @@ export interface EarthAppearanceLayerStyle {
   earth: EarthAppearanceStyle
 }
 
+export interface UnknownBodyLayerStyle {
+  kind: string
+  /**
+   * Payload for unrecognized layer kinds.
+   *
+   * This avoids allowing arbitrary top-level keys on layers, making registry
+   * mistakes easier to catch.
+   */
+  data: Record<string, unknown>
+}
+
 // Extensible: new layer kinds (atmosphere, clouds, decals, etc.) can be added later.
-// Keep this intentionally loose for now; `createBodyMesh` currently recognizes
-// the built-in `kind: 'earth'` layer.
-export type BodyLayerStyle = EarthAppearanceLayerStyle | ({ kind: string } & Record<string, unknown>)
+// Keep this intentionally open, but structurally explicit.
+export type BodyLayerStyle = EarthAppearanceLayerStyle | UnknownBodyLayerStyle
+
+export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
+  return typeof layer === 'object' && layer !== null && layer.kind === 'earth'
+}
 
 export interface BodyAppearanceStyle {
   surface: BodySurfaceStyle

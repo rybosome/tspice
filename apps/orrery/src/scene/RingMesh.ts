@@ -67,11 +67,12 @@ export function createRingMesh(options: CreateRingMeshOptions): {
   let disposed = false
 
   let map: THREE.Texture | undefined
+  let mapRelease: (() => void) | undefined
   const ready: Promise<void> = options.textureUrl
-    ? loadTextureCached(options.textureUrl)
-        .then((tex) => {
+    ? loadTextureCached(options.textureUrl, { colorSpace: THREE.SRGBColorSpace })
+        .then(({ texture: tex, release }) => {
           if (disposed) {
-            tex.dispose()
+            release()
             return
           }
 
@@ -79,7 +80,9 @@ export function createRingMesh(options: CreateRingMeshOptions): {
           tex.wrapS = THREE.ClampToEdgeWrapping
           tex.wrapT = THREE.RepeatWrapping
           tex.needsUpdate = true
+
           map = tex
+          mapRelease = release
         })
         .catch((err) => {
           console.warn('Failed to load ring texture', options.textureUrl, err)
@@ -128,7 +131,7 @@ export function createRingMesh(options: CreateRingMeshOptions): {
       disposed = true
       geometry.dispose()
       material.dispose()
-      map?.dispose()
+      mapRelease?.()
     },
     ready: ready.then(() => {
       if (disposed) return

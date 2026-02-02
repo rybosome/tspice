@@ -16,6 +16,7 @@ import { computeBodyRadiusWorld } from '../bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from '../FrameAxes.js'
 import { OrbitPaths } from '../orbits/OrbitPaths.js'
 import { rebasePositionKm } from '../precision.js'
+import { clearTextureCache } from '../loadTextureCached.js'
 import type { SceneModel } from '../SceneModel.js'
 import { LabelOverlay, type LabelBody, type LabelOverlayUpdateOptions } from '../../labels/LabelOverlay.js'
 import { timeStore } from '../../time/timeStore.js'
@@ -149,6 +150,7 @@ export async function initSpiceSceneRuntime(args: {
     // Best-effort cleanup of any scene-owned objects created so far.
     for (const obj of sceneObjects) scene.remove(obj)
     for (const dispose of disposers) dispose()
+    clearTextureCache()
     throw new Error('SceneCanvas disposed during SPICE init')
   }
 
@@ -240,6 +242,7 @@ export async function initSpiceSceneRuntime(args: {
   if (isDisposed()) {
     for (const obj of sceneObjects) scene.remove(obj)
     for (const dispose of disposers) dispose()
+    clearTextureCache()
     throw new Error('SceneCanvas disposed during scene asset init')
   }
 
@@ -581,6 +584,7 @@ export async function initSpiceSceneRuntime(args: {
 
     for (const obj of sceneObjects) scene.remove(obj)
     for (const dispose of disposers) dispose()
+    clearTextureCache()
   }
 
   return {

@@ -2,47 +2,146 @@ import * as THREE from 'three'
 
 import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
 
+export type LoadTextureCachedOptions = {
+  /**
+   * Explicitly set the texture color space.
+   *
+   * Prefer passing this at call sites for readability and to avoid hidden
+   * defaults (e.g. future non-sRGB maps).
+   */
+  colorSpace?: THREE.ColorSpace
+}
+
+export type CachedTextureHandle = {
+  texture: THREE.Texture
+  release: () => void
+}
+
 const loader = new THREE.TextureLoader()
 
-// Cache the *base* loaded texture by resolved URL.
-// Callers always receive a `clone()` so they can safely `dispose()`.
-const baseTextureByUrl = new Map<string, Promise<THREE.Texture>>()
+type TextureCacheEntry = {
+  resolvedUrl: string
+  colorSpace: THREE.ColorSpace | undefined
+  refs: number
+  texture?: THREE.Texture
+  promise: Promise<THREE.Texture>
+}
 
-async function loadBaseTexture(resolvedUrl: string): Promise<THREE.Texture> {
-  const existing = baseTextureByUrl.get(resolvedUrl)
-  if (existing) return existing
+const entryByKey = new Map<string, TextureCacheEntry>()
 
-  const promise = loader
-    .loadAsync(resolvedUrl)
-    .then((tex) => {
-      // Default assumption: most authored textures are sRGB.
-      // Callers can override (e.g. `NoColorSpace` for masks) on the returned clone.
-      tex.colorSpace = THREE.SRGBColorSpace
-      tex.needsUpdate = true
-      return tex
-    })
-    .catch((err) => {
-      // Allow retries if a transient load fails.
-      baseTextureByUrl.delete(resolvedUrl)
-      throw err
-    })
+function makeKey(args: { resolvedUrl: string; colorSpace: THREE.ColorSpace | undefined }): string {
+  return `${args.resolvedUrl}|colorSpace:${args.colorSpace ?? 'unset'}`
+}
 
-  baseTextureByUrl.set(resolvedUrl, promise)
-  return promise
+function disposeEntry(key: string, entry: TextureCacheEntry) {
+  entry.texture?.dispose()
+  entryByKey.delete(key)
 }
 
 /**
- * Load a texture with a shared cache, returning a fresh `Texture` instance per call.
+ * Dispose all cached textures and clear the cache.
  *
- * Why clone?
- * - Three.js doesn't refcount textures, so sharing a single `Texture` object makes
- *   it unsafe for one mesh to dispose without breaking other users.
+ * Call this from scene/runtime teardown to avoid leaked GPU resources.
  */
-export async function loadTextureCached(url: string): Promise<THREE.Texture> {
-  const resolvedUrl = resolveVitePublicUrl(url)
-  const base = await loadBaseTexture(resolvedUrl)
+export function clearTextureCache() {
+  const entries = Array.from(entryByKey.entries())
+  entryByKey.clear()
 
-  const clone = base.clone()
-  clone.needsUpdate = true
-  return clone
+  for (const [key, entry] of entries) {
+    // If the texture hasn't resolved yet, dispose it once it does.
+    if (!entry.texture) {
+      entry.promise
+        .then((tex) => tex.dispose())
+        .catch(() => {
+          // ignore
+        })
+      continue
+    }
+
+    // Resolved texture.
+    entry.texture.dispose()
+    // `key` unused now, but keep it to make future debugging easier.
+    void key
+  }
+}
+
+/**
+ * Load a texture through a shared cache.
+ *
+ * Unlike a clone-based cache, this shares the actual `Texture` instance (and
+ * therefore the GPU upload) across callers.
+ *
+ * Callers must call `release()` when the texture is no longer needed.
+ */
+export async function loadTextureCached(
+  url: string,
+  options: LoadTextureCachedOptions = {},
+): Promise<CachedTextureHandle> {
+  const resolvedUrl = resolveVitePublicUrl(url)
+  const colorSpace = options.colorSpace
+  const key = makeKey({ resolvedUrl, colorSpace })
+
+  let entry = entryByKey.get(key)
+  if (!entry) {
+    const newEntry: TextureCacheEntry = {
+      resolvedUrl,
+      colorSpace,
+      refs: 0,
+      promise: Promise.resolve(null as unknown as THREE.Texture),
+    }
+
+    newEntry.promise = loader
+      .loadAsync(resolvedUrl)
+      .then((tex) => {
+        // Apply explicit options at the cache boundary so they're consistent
+        // across all consumers.
+        if (colorSpace !== undefined) tex.colorSpace = colorSpace
+
+        tex.needsUpdate = true
+        newEntry.texture = tex
+
+        // If all consumers released while this was still loading, dispose
+        // immediately and remove from cache.
+        if (newEntry.refs <= 0) {
+          disposeEntry(key, newEntry)
+        }
+
+        return tex
+      })
+      .catch((err) => {
+        // Allow retries if a transient load fails.
+        entryByKey.delete(key)
+        throw err
+      })
+
+    entryByKey.set(key, newEntry)
+    entry = newEntry
+  }
+
+  entry.refs += 1
+  let texture: THREE.Texture
+  try {
+    texture = await entry.promise
+  } catch (err) {
+    const current = entryByKey.get(key)
+    if (current) current.refs = Math.max(0, current.refs - 1)
+    throw err
+  }
+
+  let released = false
+  const release = () => {
+    if (released) return
+    released = true
+
+    const current = entryByKey.get(key)
+    // If the cache was cleared, there's nothing to do.
+    if (!current) return
+
+    current.refs = Math.max(0, current.refs - 1)
+    if (current.refs === 0 && current.texture) {
+      disposeEntry(key, current)
+    }
+  }
+
+  return { texture, release }
 }

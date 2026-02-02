@@ -25,13 +25,7 @@ import { RenderHud, type RenderHudStats } from './renderer/RenderHud.js'
 import { createThreeRuntime, type ThreeRuntime } from './renderer/createThreeRuntime.js'
 import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig/sceneCanvasRuntimeConfig.js'
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
-import type { BodyLayerStyle, EarthAppearanceLayerStyle } from './scene/SceneModel.js'
-
-function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
-  if (typeof layer !== 'object' || layer === null) return false
-  if (!('kind' in layer)) return false
-  return (layer as { kind?: unknown }).kind === 'earth' && 'earth' in layer
-}
+import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
 export function SceneCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null)
