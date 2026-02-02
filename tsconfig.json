@@ -8,7 +8,7 @@
       "path": "./packages/core"
     },
     {
-      "path": "./apps/tspice-viewer"
+      "path": "./apps/orrery"
     },
     {
       "path": "./packages/backend-node"

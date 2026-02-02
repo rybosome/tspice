@@ -1,4 +1,4 @@
-name: Deploy Pages (tspice-viewer)
+name: Deploy Pages (orrery)
 
 on:
   push:
@@ -7,12 +7,12 @@ on:
 
   pull_request:
     paths:
-      - "apps/tspice-viewer/**"
+      - "apps/orrery/**"
       - "packages/**"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
-      - ".github/workflows/deploy-pages-tspice-viewer.yml"
+      - ".github/workflows/deploy-pages-orrery.yml"
       - ".github/actions/setup-pnpm-node/**"
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       contents: read
 
     env:
-      PAGES_PROJECT: tspice-viewer
+      PAGES_PROJECT: orrery
 
     steps:
       - name: Checkout
@@ -38,13 +38,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build tspice-viewer
-        run: pnpm exec turbo run build --filter=@rybosome/tspice-viewer... --filter=!@rybosome/tspice-backend-node
+      - name: Build orrery
+        run: pnpm exec turbo run build --filter=@rybosome/orrery... --filter=!@rybosome/tspice-backend-node
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
-          workingDirectory: apps/tspice-viewer
+          workingDirectory: apps/orrery
           packageManager: pnpm
           wranglerVersion: 3.90.0
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -64,9 +64,9 @@ jobs:
       pull-requests: write
 
     env:
-      PAGES_PROJECT: tspice-viewer
+      PAGES_PROJECT: orrery
       PREVIEW_BRANCH: pr-${{ github.event.pull_request.number }}
-      PREVIEW_URL: https://pr-${{ github.event.pull_request.number }}.tspice-viewer.pages.dev
+      PREVIEW_URL: https://pr-${{ github.event.pull_request.number }}.orrery.pages.dev
 
     steps:
       - name: Checkout
@@ -80,13 +80,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build tspice-viewer
-        run: pnpm exec turbo run build --filter=@rybosome/tspice-viewer... --filter=!@rybosome/tspice-backend-node
+      - name: Build orrery
+        run: pnpm exec turbo run build --filter=@rybosome/orrery... --filter=!@rybosome/tspice-backend-node
 
       - name: Deploy to Cloudflare Pages (preview)
         uses: cloudflare/wrangler-action@v3
         with:
-          workingDirectory: apps/tspice-viewer
+          workingDirectory: apps/orrery
           packageManager: pnpm
           wranglerVersion: 3.90.0
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -96,16 +96,16 @@ jobs:
             --project-name "${{ env.PAGES_PROJECT }}"
             --branch "${{ env.PREVIEW_BRANCH }}"
 
-      - name: Find existing tspice-viewer preview comment
+      - name: Find existing orrery preview comment
         id: find_preview_comment
         uses: peter-evans/find-comment@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: github-actions[bot]
-          body-includes: "<!-- tspice-viewer-preview-url -->"
+          body-includes: "<!-- orrery-preview-url -->"
 
-      - name: Create or update tspice-viewer preview comment
+      - name: Create or update orrery preview comment
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -113,5 +113,5 @@ jobs:
           comment-id: ${{ steps.find_preview_comment.outputs.comment-id }}
           edit-mode: replace
           body: |
-            <!-- tspice-viewer-preview-url -->
-            **tspice-viewer preview:** ${{ env.PREVIEW_URL }}
+            <!-- orrery-preview-url -->
+            **orrery preview:** ${{ env.PREVIEW_URL }}

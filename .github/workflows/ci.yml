@@ -20,15 +20,15 @@ jobs:
       node_version: ${{ matrix.node }}
       command: pnpm run check
 
-  viewer-e2e:
-    name: Viewer Playwright e2e (ubuntu + node 22)
+  orrery-e2e:
+    name: Orrery Playwright e2e (ubuntu + node 22)
     uses: ./.github/workflows/reusable-node-pnpm.yml
     with:
       runs_on: ubuntu-latest
       node_version: '22'
       command: |
-        pnpm -C apps/tspice-viewer exec playwright install --with-deps chromium
-        pnpm -C apps/tspice-viewer e2e
+        pnpm -C apps/orrery exec playwright install --with-deps chromium
+        pnpm -C apps/orrery e2e
 
   verify-dist-publish:
     name: Verify dist-publish tarball (ubuntu + node 22)

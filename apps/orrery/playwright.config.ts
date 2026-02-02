@@ -35,7 +35,7 @@ export default defineConfig({
   },
 
   webServer: {
-    command: `pnpm -C apps/tspice-viewer dev --port ${PORT} --strictPort --host 127.0.0.1`,
+    command: `pnpm -C apps/orrery dev --port ${PORT} --strictPort --host 127.0.0.1`,
     cwd: REPO_ROOT,
     url: `${BASE_URL}/`,
     reuseExistingServer: !process.env.CI,

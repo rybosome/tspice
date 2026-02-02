@@ -1,6 +1,6 @@
 # Planet texture credits
 
-This directory contains low-resolution textures used by the `tspice-viewer` demo.
+This directory contains low-resolution textures used by the Orrery demo.
 
 Most textures here are **256×128** PNGs.
 
