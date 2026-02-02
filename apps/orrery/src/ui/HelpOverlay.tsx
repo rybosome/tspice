@@ -55,7 +55,7 @@ export function HelpOverlay({ isOpen, onClose }: HelpOverlayProps) {
 
         <div className="helpContent">
           <section className="helpSection">
-            <h3 className="helpSectionTitle">About tspice viewer</h3>
+            <h3 className="helpSectionTitle">About Orrery</h3>
             <p>
               This is a 3D solar system visualization tool built with{' '}
               <a href="https://github.com/rybosome/tspice" target="_blank" rel="noopener noreferrer">
