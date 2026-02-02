@@ -105,7 +105,7 @@ function buildExtrasGroups(
   opts?: {
     orbitalPeriodSec?: number | null
     fallbackRadiusKm?: number | null
-  }
+  },
 ): ExtrasGroup[] {
   const groups: ExtrasGroup[] = []
 
@@ -240,11 +240,7 @@ export function SelectionInspector({
     }
   }, [selectedBody, focusBody, spiceClient, etSec, observer, frame])
 
-  if (!bodyInfo) {
-    return null
-  }
-
-  const registryEntry = bodyInfo.registryEntry
+  const registryEntry = bodyInfo?.registryEntry
   const bodyLabel =
     registryEntry?.style.label ??
     (typeof selectedBody === 'string'
@@ -265,10 +261,10 @@ export function SelectionInspector({
   const extrasGroups = useMemo(
     () =>
       buildExtrasGroups(extras ?? {}, {
-        orbitalPeriodSec: bodyInfo.orbitalPeriodSec,
-        fallbackRadiusKm: registryEntry?.style.radiusKm,
+        orbitalPeriodSec: bodyInfo?.orbitalPeriodSec ?? null,
+        fallbackRadiusKm: registryEntry?.style.radiusKm ?? null,
       }),
-    [extras, bodyInfo.orbitalPeriodSec, registryEntry?.style.radiusKm]
+    [extras, bodyInfo?.orbitalPeriodSec, registryEntry?.style.radiusKm],
   )
 
   const typeValue = extras?.classification
@@ -276,6 +272,10 @@ export function SelectionInspector({
     : registryEntry
       ? formatBodyKind(registryEntry.kind)
       : null
+
+  if (!bodyInfo) {
+    return null
+  }
 
   return (
     <div className="selectionInspector">
@@ -301,9 +301,7 @@ export function SelectionInspector({
         {typeValue && (
           <div className="selectionInspectorRow">
             <span className="selectionInspectorLabel">Type:</span>
-            <span className="selectionInspectorValue">
-              {typeValue}
-            </span>
+            <span className="selectionInspectorValue">{typeValue}</span>
           </div>
         )}
 
