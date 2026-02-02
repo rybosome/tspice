@@ -2,12 +2,7 @@ import * as THREE from 'three'
 
 import { loadTextureCached } from './loadTextureCached.js'
 import { createRingMesh } from './RingMesh.js'
-import type {
-  BodyAppearanceStyle,
-  BodyLayerStyle,
-  BodyTextureKind,
-  EarthAppearanceLayerStyle,
-} from './SceneModel.js'
+import type { BodyAppearanceStyle, BodyLayerStyle, BodyTextureKind, EarthAppearanceLayerStyle } from './SceneModel.js'
 
 export type CreateBodyMeshOptions = {
   /** Optional stable ID (e.g. `"EARTH"`) for body-specific rendering. */

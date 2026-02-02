@@ -32,12 +32,12 @@ async function loadBaseTexture(resolvedUrl: string): Promise<THREE.Texture> {
 }
 
 /**
-* Load a texture with a shared cache, returning a fresh `Texture` instance per call.
-*
-* Why clone?
-* - Three.js doesn't refcount textures, so sharing a single `Texture` object makes
-*   it unsafe for one mesh to dispose without breaking other users.
-*/
+ * Load a texture with a shared cache, returning a fresh `Texture` instance per call.
+ *
+ * Why clone?
+ * - Three.js doesn't refcount textures, so sharing a single `Texture` object makes
+ *   it unsafe for one mesh to dispose without breaking other users.
+ */
 export async function loadTextureCached(url: string): Promise<THREE.Texture> {
   const resolvedUrl = resolveVitePublicUrl(url)
   const base = await loadBaseTexture(resolvedUrl)
