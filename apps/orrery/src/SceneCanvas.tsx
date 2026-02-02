@@ -56,6 +56,17 @@ export function SceneCanvas() {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
 
+  const earthAppearanceDefaults = useMemo(() => getBodyRegistryEntry('EARTH').style.earthAppearance, [])
+
+  // Earth appearance tuning (kept configurable in code; no longer exposed as debug sliders).
+  const ambientLightIntensity = 0.2
+  const sunLightIntensity = 2.0
+  const earthNightAlbedo = 0.004
+  const earthTwilight = earthAppearanceDefaults?.nightLightsTwilight ?? 0.12
+  const earthNightLightsIntensity = earthAppearanceDefaults?.nightLightsIntensity ?? 1.25
+  const earthAtmosphereIntensity = earthAppearanceDefaults?.atmosphereIntensity ?? 0.55
+  const earthCloudsNightMultiplier = 0.0
+
   // Render HUD toggle (ephemeral, not persisted)
   const [showRenderHud, setShowRenderHud] = useState(false)
 
@@ -341,6 +352,14 @@ export function SceneCanvas() {
         orbitPathsEnabled: boolean
         labelsEnabled: boolean
         labelOcclusionEnabled: boolean
+
+        ambientLightIntensity: number
+        sunLightIntensity: number
+        earthNightAlbedo: number
+        earthTwilight: number
+        earthNightLightsIntensity: number
+        earthAtmosphereIntensity: number
+        earthCloudsNightMultiplier: number
       }) => void)
     | null
   >(null)
@@ -362,6 +381,14 @@ export function SceneCanvas() {
     orbitPathsEnabled,
     labelsEnabled,
     labelOcclusionEnabled,
+
+    ambientLightIntensity,
+    sunLightIntensity,
+    earthNightAlbedo,
+    earthTwilight,
+    earthNightLightsIntensity,
+    earthAtmosphereIntensity,
+    earthCloudsNightMultiplier,
   })
   latestUiRef.current = {
     focusBody,
@@ -378,6 +405,14 @@ export function SceneCanvas() {
     orbitPathsEnabled,
     labelsEnabled,
     labelOcclusionEnabled,
+
+    ambientLightIntensity,
+    sunLightIntensity,
+    earthNightAlbedo,
+    earthTwilight,
+    earthNightLightsIntensity,
+    earthAtmosphereIntensity,
+    earthCloudsNightMultiplier,
   }
 
   // Subscribe to time store changes and update the scene (without React rerenders)
@@ -407,6 +442,14 @@ export function SceneCanvas() {
       orbitPathsEnabled,
       labelsEnabled,
       labelOcclusionEnabled,
+
+      ambientLightIntensity,
+      sunLightIntensity,
+      earthNightAlbedo,
+      earthTwilight,
+      earthNightLightsIntensity,
+      earthAtmosphereIntensity,
+      earthCloudsNightMultiplier,
     })
   }, [
     focusBody,
@@ -421,6 +464,14 @@ export function SceneCanvas() {
     orbitPathsEnabled,
     labelsEnabled,
     labelOcclusionEnabled,
+
+    ambientLightIntensity,
+    sunLightIntensity,
+    earthNightAlbedo,
+    earthTwilight,
+    earthNightLightsIntensity,
+    earthAtmosphereIntensity,
+    earthCloudsNightMultiplier,
   ])
 
   // Imperatively update camera FOV when the slider changes

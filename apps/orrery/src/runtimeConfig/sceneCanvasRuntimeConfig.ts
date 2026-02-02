@@ -3,6 +3,9 @@ export type SceneCanvasRuntimeConfig = {
   isE2e: boolean
   enableLogDepth: boolean
 
+  /** Enables debug-only UI/knobs. */
+  debug: boolean
+
   /** Stable seed used for starfield + skydome noise. */
   starSeed: number
 
@@ -18,6 +21,14 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
 
   const isE2e = searchParams.has('e2e')
   const enableLogDepth = searchParams.has('logDepth')
+
+  const debug = (() => {
+    const raw = searchParams.get('debug')
+    if (raw == null) return false
+    if (raw === '') return true
+    const v = raw.toLowerCase()
+    return v === '1' || v === 'true'
+  })()
 
   const starSeed = (() => {
     const fromUrl = searchParams.get('starSeed') ?? searchParams.get('seed')
@@ -43,6 +54,7 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
     searchParams,
     isE2e,
     enableLogDepth,
+    debug,
     starSeed,
     initialUtc,
     initialEt,

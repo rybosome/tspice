@@ -39,6 +39,16 @@ export type SceneUiState = {
   orbitPathsEnabled: boolean
   labelsEnabled: boolean
   labelOcclusionEnabled: boolean
+
+  // Debug/temporary tuning knobs (ephemeral; intended for dialing in Earth appearance).
+  ambientLightIntensity: number
+  sunLightIntensity: number
+
+  earthNightAlbedo: number
+  earthTwilight: number
+  earthNightLightsIntensity: number
+  earthAtmosphereIntensity: number
+  earthCloudsNightMultiplier: number
 }
 
 export type SpiceSceneRuntime = {
@@ -117,11 +127,11 @@ export async function initSpiceSceneRuntime(args: {
   const disposers: Array<() => void> = []
 
   // Lighting (owned by the scene runtime)
-  const ambient = new THREE.AmbientLight(0xffffff, 0.6)
+  const ambient = new THREE.AmbientLight(0xffffff, 0.2)
   scene.add(ambient)
   sceneObjects.push(ambient)
 
-  const dir = new THREE.DirectionalLight(0xffffff, 0.9)
+  const dir = new THREE.DirectionalLight(0xffffff, 2.0)
   dir.position.set(4, 6, 2)
   scene.add(dir)
   sceneObjects.push(dir)
@@ -189,11 +199,15 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   const bodies = sceneModel.bodies.map((body) => {
-    const { mesh, dispose, ready } = createBodyMesh({
+    const registry = BODY_REGISTRY.find((r) => String(r.body) === String(body.body))
+
+    const { mesh, dispose, ready, update } = createBodyMesh({
+      bodyId: registry?.id,
       color: body.style.color,
       textureColor: body.style.textureColor,
       textureUrl: body.style.textureUrl,
       textureKind: body.style.textureKind,
+      earthAppearance: body.style.earthAppearance,
     })
 
     const rings = body.style.rings
@@ -239,6 +253,7 @@ export async function initSpiceSceneRuntime(args: {
       radiusKm: body.style.radiusKm,
       mesh,
       axes,
+      update,
       ready: Promise.all([ready, ringResult?.ready]).then(() => undefined),
     }
   })
@@ -316,6 +331,18 @@ export async function initSpiceSceneRuntime(args: {
   const ORBIT_MIN_POINTS_PER_ORBIT = 32
 
   const updateScene = (next: SceneUiState) => {
+    // Lighting knobs
+    ambient.intensity = next.ambientLightIntensity
+    dir.intensity = next.sunLightIntensity
+
+    const earthTuning = {
+      nightAlbedo: next.earthNightAlbedo,
+      twilight: next.earthTwilight,
+      nightLightsIntensity: next.earthNightLightsIntensity,
+      atmosphereIntensity: next.earthAtmosphereIntensity,
+      cloudsNightMultiplier: next.earthCloudsNightMultiplier,
+    }
+
     const shouldAutoZoom = !isE2e && next.focusBody !== lastAutoZoomFocusBody
 
     const homePreset = shouldAutoZoom ? getHomePresetState(next.focusBody) : null
@@ -547,6 +574,12 @@ export async function initSpiceSceneRuntime(args: {
     // TODO: Eclipse/shadow occlusion could be added here by checking if another body
     // lies along the sun direction, but this adds complexity for marginal visual benefit.
     dir.position.copy(dirPos.multiplyScalar(10))
+
+    // Update any body-specific shader uniforms using the same sun direction.
+    const sunDirWorld = dir.position.clone().normalize()
+    for (const b of bodies) {
+      b.update?.({ sunDirWorld, etSec: next.etSec, earthTuning })
+    }
 
     // Record label overlay inputs so we can update it on camera movement.
     latestLabelOverlayOptions = {
