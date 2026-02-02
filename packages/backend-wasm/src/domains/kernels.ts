@@ -115,10 +115,21 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
   return {
     furnsh: (kernel: KernelSource) => {
       if (typeof kernel === "string") {
+        // String kernels are treated as *WASM-FS paths*.
+        //
+        // In this backend, we normalize the provided path into the virtual
+        // `/kernels/...` directory (see `resolveKernelPath`). This means
+        // `furnsh("naif0012.tls")` and `furnsh("/kernels/naif0012.tls")` refer
+        // to the same virtual file.
+        //
+        // NOTE: This behavior is backend-specific. In the Node backend,
+        // `furnsh(string)` is an OS filesystem path.
         tspiceCall1Path(module, module._tspice_furnsh, resolveKernelPath(kernel));
         return;
       }
 
+      // Byte-backed kernels are written into the WASM-FS before loading.
+      // Callers should treat `kernel.path` as a *virtual* identifier.
       const path = writeKernelSource(module, fs, kernel);
       tspiceCall1Path(module, module._tspice_furnsh, path);
     },

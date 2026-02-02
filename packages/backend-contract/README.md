@@ -35,14 +35,39 @@ For reference implementations, see:
 ### Consuming types
 
 ```ts
+import fs from "node:fs/promises";
+
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
-export function acceptsBackend(backend: SpiceBackend) {
+export async function acceptsBackend(backend: SpiceBackend) {
   backend.kclear();
-  backend.furnsh("/path/to/kernel.tm");
+  // Prefer byte-backed kernel loading for backend portability.
+  const bytes = await fs.readFile("/path/to/kernel.tm");
+  backend.furnsh({ path: "kernel.tm", bytes });
+
+  // When unloading byte-backed kernels, pass the same `path` you used above.
+  backend.unload("kernel.tm");
   return backend.tkvrsn("TOOLKIT");
 }
 ```
+
+In browser/worker environments, you can fetch kernel bytes instead:
+
+```ts
+const res = await fetch("https://example.com/kernel.tm");
+const bytes = new Uint8Array(await res.arrayBuffer());
+backend.furnsh({ path: "kernel.tm", bytes });
+```
+
+### `furnsh(string)` is backend-dependent
+
+`furnsh("/path/to/kernel.tm")` is valid, but **what filesystem that path refers
+to depends on the backend**:
+
+- **Node backend:** OS filesystem path.
+- **WASM backend:** virtual WASM filesystem path (by convention under `/kernels`).
+
+If you want code that works across backends, prefer `furnsh({ path, bytes })`.
 
 ## Development
 

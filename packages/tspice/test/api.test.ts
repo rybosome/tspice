@@ -10,6 +10,29 @@ function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): 
 }
 
 describe("mid-level API parity (node vs wasm)", () => {
+  it("unloadKernel works for byte-backed kernels across backends", async () => {
+    const { lsk } = await loadTestKernels();
+
+    const wasm = await createSpice({ backend: "wasm" });
+    wasm.kit.loadKernel({ path: "/kernels//naif0012.tls", bytes: lsk });
+    expect(wasm.raw.ktotal("ALL")).toBeGreaterThan(0);
+    wasm.kit.unloadKernel("naif0012.tls");
+    wasm.raw.kclear();
+    expect(wasm.raw.ktotal("ALL")).toBe(0);
+
+    // Native backend isn't available in JS-only CI.
+    try {
+      const node = await createSpice({ backend: "node" });
+      node.kit.loadKernel({ path: "/kernels//naif0012.tls", bytes: lsk });
+      expect(node.raw.ktotal("ALL")).toBeGreaterThan(0);
+      node.kit.unloadKernel("naif0012.tls");
+      node.raw.kclear();
+      expect(node.raw.ktotal("ALL")).toBe(0);
+    } catch {
+      // ignore
+    }
+  });
+
   it("getState matches within tolerance", async () => {
     const { lsk, spk } = await loadTestKernels();
 

@@ -46,23 +46,30 @@ describe("kernel management", () => {
     backend.kclear();
     expect(backend.ktotal("ALL")).toBe(0);
 
-    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+    expect(() => backend.furnsh({ path: "../naif0012.tls", bytes: lskBytes })).toThrow(
+      /\.\./, // do not allow path traversal
+    );
+
+    // `kernel.path` is treated as a virtual identifier. WASM normalizes it into
+    // an absolute `/kernels/...` path (see `resolveKernelPath`).
+    backend.furnsh({ path: "./kernels//naif0012.tls", bytes: lskBytes });
     expect(backend.ktotal("ALL")).toBeGreaterThan(0);
 
     const first = backend.kdata(0, "ALL");
     expect(first.found).toBe(true);
     if (first.found) {
       expect(typeof first.file).toBe("string");
+      expect(first.file).toBe("/kernels/naif0012.tls");
       expect(typeof first.filtyp).toBe("string");
       expect(typeof first.source).toBe("string");
       expect(typeof first.handle).toBe("number");
     }
 
-    backend.unload("naif0012.tls");
+    backend.unload("/kernels//naif0012.tls");
 
-    // Ensure `furnsh(string)` has identical path semantics to `furnsh({ path, bytes })`.
-    // The kernel file should still exist in the WASM FS after unload, so re-loading by string should work.
-    backend.furnsh("naif0012.tls");
+    // `furnsh(string)` is WASM-FS backed. The kernel file should still exist in
+    // the WASM FS after unload, so re-loading by string should work.
+    backend.furnsh("kernels/naif0012.tls");
     expect(backend.ktotal("ALL")).toBeGreaterThan(0);
 
     backend.kclear();
