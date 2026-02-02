@@ -100,20 +100,20 @@ function formatScientific(n: number, digits = 3): string {
 type ExtrasRow = { label: string; value: string }
 type ExtrasGroup = { title: string; rows: ExtrasRow[] }
 
-function buildExtrasGroups(extras: NaifExtras): ExtrasGroup[] {
+function buildExtrasGroups(
+  extras: NaifExtras,
+  opts?: {
+    orbitalPeriodSec?: number | null
+    fallbackRadiusKm?: number | null
+  }
+): ExtrasGroup[] {
   const groups: ExtrasGroup[] = []
-
-  const classificationRows: ExtrasRow[] = []
-  if (extras.classification) {
-    classificationRows.push({ label: 'Type', value: extras.classification })
-  }
-  if (classificationRows.length > 0) {
-    groups.push({ title: 'Classification', rows: classificationRows })
-  }
 
   const physicalRows: ExtrasRow[] = []
   if (extras.meanRadiusKm != null) {
     physicalRows.push({ label: 'Mean radius', value: formatRadius(extras.meanRadiusKm) })
+  } else if (opts?.fallbackRadiusKm != null) {
+    physicalRows.push({ label: 'Radius', value: formatRadius(opts.fallbackRadiusKm) })
   }
   if (extras.massKg != null) {
     physicalRows.push({ label: 'Mass', value: `${formatScientific(extras.massKg)} kg` })
@@ -132,6 +132,9 @@ function buildExtrasGroups(extras: NaifExtras): ExtrasGroup[] {
   if (extras.escapeVelocityKms != null) {
     dynamicsRows.push({ label: 'Escape v', value: `${extras.escapeVelocityKms.toFixed(2)} km/s` })
   }
+  if (opts?.orbitalPeriodSec != null) {
+    dynamicsRows.push({ label: 'Orbital period', value: formatOrbitalPeriod(opts.orbitalPeriodSec) })
+  }
   if (dynamicsRows.length > 0) {
     groups.push({ title: 'Dynamics', rows: dynamicsRows })
   }
@@ -146,16 +149,11 @@ function buildExtrasGroups(extras: NaifExtras): ExtrasGroup[] {
   if (extras.geometricAlbedo != null) {
     reflectivityRows.push({ label: 'Geom. albedo', value: extras.geometricAlbedo.toFixed(3) })
   }
+  if (extras.atmosphereSummary) {
+    reflectivityRows.push({ label: 'Atmosphere', value: extras.atmosphereSummary })
+  }
   if (reflectivityRows.length > 0) {
     groups.push({ title: 'Reflectivity / thermal', rows: reflectivityRows })
-  }
-
-  const atmosphereRows: ExtrasRow[] = []
-  if (extras.atmosphereSummary) {
-    atmosphereRows.push({ label: 'Summary', value: extras.atmosphereSummary })
-  }
-  if (atmosphereRows.length > 0) {
-    groups.push({ title: 'Atmosphere', rows: atmosphereRows })
   }
 
   return groups
@@ -264,7 +262,20 @@ export function SelectionInspector({
 
   const naifId = registryEntry?.naifIds?.body
   const extras = useMemo(() => getNaifExtras(naifId), [naifId])
-  const extrasGroups = useMemo(() => (extras ? buildExtrasGroups(extras) : []), [extras])
+  const extrasGroups = useMemo(
+    () =>
+      buildExtrasGroups(extras ?? {}, {
+        orbitalPeriodSec: bodyInfo.orbitalPeriodSec,
+        fallbackRadiusKm: registryEntry?.style.radiusKm,
+      }),
+    [extras, bodyInfo.orbitalPeriodSec, registryEntry?.style.radiusKm]
+  )
+
+  const typeValue = extras?.classification
+    ? formatBodyKind(extras.classification)
+    : registryEntry
+      ? formatBodyKind(registryEntry.kind)
+      : null
 
   return (
     <div className="selectionInspector">
@@ -285,14 +296,13 @@ export function SelectionInspector({
         {/* Basic fields */}
         {/*
           The registry-driven `kind` is a coarse classification. When the NAIF extras dataset
-          provides a more specific/authoritative classification, prefer that and avoid showing
-          a duplicate label (e.g. "Planet" twice for Earth).
+          provides a more specific/authoritative classification, prefer that.
         */}
-        {registryEntry && !extras?.classification && (
+        {typeValue && (
           <div className="selectionInspectorRow">
             <span className="selectionInspectorLabel">Type:</span>
             <span className="selectionInspectorValue">
-              {formatBodyKind(registryEntry.kind)}
+              {typeValue}
             </span>
           </div>
         )}
@@ -339,11 +349,9 @@ export function SelectionInspector({
             {extrasGroups.length > 0 && (
               <>
                 <div className="selectionInspectorDivider" />
-                <div className="selectionInspectorSectionTitle">NAIF</div>
                 {extrasGroups.map((group, groupIndex) => (
                   <Fragment key={group.title}>
                     {groupIndex > 0 && <div className="selectionInspectorDivider" />}
-                    <div className="selectionInspectorGroupTitle">{group.title}</div>
                     {group.rows.map(({ label, value }) => (
                       <div key={`${group.title}-${label}`} className="selectionInspectorRow">
                         <span className="selectionInspectorLabel">{label}:</span>
@@ -353,24 +361,6 @@ export function SelectionInspector({
                   </Fragment>
                 ))}
               </>
-            )}
-
-            {registryEntry?.style.radiusKm && (
-              <div className="selectionInspectorRow">
-                <span className="selectionInspectorLabel">Radius:</span>
-                <span className="selectionInspectorValue">
-                  {formatRadius(registryEntry.style.radiusKm)}
-                </span>
-              </div>
-            )}
-
-            {bodyInfo.orbitalPeriodSec && (
-              <div className="selectionInspectorRow">
-                <span className="selectionInspectorLabel">Orbital period:</span>
-                <span className="selectionInspectorValue">
-                  {formatOrbitalPeriod(bodyInfo.orbitalPeriodSec)}
-                </span>
-              </div>
             )}
 
             <div className="selectionInspectorDivider" />
