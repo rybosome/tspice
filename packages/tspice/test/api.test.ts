@@ -22,10 +22,10 @@ describe("mid-level API parity (node vs wasm)", () => {
       return;
     }
 
-    wasm.kit.loadKernel({ path: "/kernels/naif0012.tls", bytes: lsk });
-    wasm.kit.loadKernel({ path: "/kernels/de405s.bsp", bytes: spk });
-    node.kit.loadKernel({ path: "/kernels/naif0012.tls", bytes: lsk });
-    node.kit.loadKernel({ path: "/kernels/de405s.bsp", bytes: spk });
+    wasm.kit.loadKernel({ path: "naif0012.tls", bytes: lsk });
+    wasm.kit.loadKernel({ path: "de405s.bsp", bytes: spk });
+    node.kit.loadKernel({ path: "naif0012.tls", bytes: lsk });
+    node.kit.loadKernel({ path: "de405s.bsp", bytes: spk });
 
     const time = "2000 JAN 01 12:00:00";
     const etWasm = wasm.kit.utcToEt(time);
@@ -53,9 +53,9 @@ describe("mid-level API parity (node vs wasm)", () => {
       expectClose(stateNode.velocity[i]!, stateWasm.velocity[i]!);
     }
 
-    wasm.kit.unloadKernel("/kernels/de405s.bsp");
-    wasm.kit.unloadKernel("/kernels/naif0012.tls");
-    node.kit.unloadKernel("/kernels/de405s.bsp");
-    node.kit.unloadKernel("/kernels/naif0012.tls");
+    wasm.kit.unloadKernel("de405s.bsp");
+    wasm.kit.unloadKernel("naif0012.tls");
+    node.kit.unloadKernel("de405s.bsp");
+    node.kit.unloadKernel("naif0012.tls");
   });
 });

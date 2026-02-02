@@ -46,7 +46,7 @@ describe("kernel management", () => {
     backend.kclear();
     expect(backend.ktotal("ALL")).toBe(0);
 
-    backend.furnsh({ path: "/kernels/naif0012.tls", bytes: lskBytes });
+    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
     expect(backend.ktotal("ALL")).toBeGreaterThan(0);
 
     const first = backend.kdata(0, "ALL");
@@ -58,7 +58,12 @@ describe("kernel management", () => {
       expect(typeof first.handle).toBe("number");
     }
 
-    backend.unload("/kernels/naif0012.tls");
+    backend.unload("naif0012.tls");
+
+    // Ensure `furnsh(string)` has identical path semantics to `furnsh({ path, bytes })`.
+    // The kernel file should still exist in the WASM FS after unload, so re-loading by string should work.
+    backend.furnsh("naif0012.tls");
+    expect(backend.ktotal("ALL")).toBeGreaterThan(0);
 
     backend.kclear();
     expect(backend.ktotal("ALL")).toBe(0);
@@ -87,7 +92,7 @@ describe("time", () => {
     const backend = await createBackend({ backend: "wasm" });
     const lskBytes = fs.readFileSync(lskPath);
     backend.kclear();
-    backend.furnsh({ path: "/kernels/naif0012.tls", bytes: lskBytes });
+    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
 
     const et = backend.str2et("2000 JAN 01 12:00:00 TDB");
     expect(Math.abs(et)).toBeLessThan(1);

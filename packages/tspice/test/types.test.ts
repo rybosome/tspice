@@ -42,10 +42,11 @@ describe("createBackend() types", () => {
         "J2000",
         [1, 0, 0],
       );
-      if (sin.found) {
-        sin.spoint;
-        sin.trgepc;
-        sin.srfvec;
+      if (sin.found === true) {
+        const sinFound = sin as Extract<typeof sin, { found: true }>;
+        sinFound.spoint;
+        sinFound.trgepc;
+        sinFound.srfvec;
       }
 
       const illum = wasmBackend.ilumin(

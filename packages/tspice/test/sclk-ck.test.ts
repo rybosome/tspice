@@ -68,8 +68,8 @@ describe("SCLK conversions + CK attitude", () => {
     const tscBytes = fs.readFileSync(tscPath);
 
     backend.kclear();
-    backend.furnsh({ path: "/kernels/naif0012.tls", bytes: lskBytes });
-    backend.furnsh({ path: "/kernels/cook_01.tsc", bytes: tscBytes });
+    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+    backend.furnsh({ path: "cook_01.tsc", bytes: tscBytes });
 
     const et = backend.scs2e(sc, sclkch);
     expect(Number.isFinite(et)).toBe(true);
@@ -100,11 +100,11 @@ describe("SCLK conversions + CK attitude", () => {
     const tcBytes = fs.readFileSync(tcPath);
 
     backend.kclear();
-    backend.furnsh({ path: "/kernels/naif0012.tls", bytes: lskBytes });
-    backend.furnsh({ path: "/kernels/cook_01.tsc", bytes: tscBytes });
+    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+    backend.furnsh({ path: "cook_01.tsc", bytes: tscBytes });
 
     // Transfer-format CKs (like cook_01.tc) are not loadable by CSPICE.
-    expect(() => backend.furnsh({ path: "/kernels/cook_01.tc", bytes: tcBytes })).toThrow(/TRANSFERFILE/i);
+    expect(() => backend.furnsh({ path: "cook_01.tc", bytes: tcBytes })).toThrow(/TRANSFERFILE/i);
   });
 
   // TODO: Add a binary CK (e.g. .bc) fixture so we can test ckgp/ckgpav

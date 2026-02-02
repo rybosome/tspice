@@ -25,10 +25,10 @@ describe("createSpice() namespaced return", () => {
     spice.raw.kclear();
     expect(spice.raw.ktotal("ALL")).toBe(0);
 
-    spice.raw.furnsh({ path: "/kernels/naif0012.tls", bytes: lskBytes });
+    spice.raw.furnsh({ path: "naif0012.tls", bytes: lskBytes });
     expect(spice.raw.ktotal("ALL")).toBeGreaterThan(0);
 
-    spice.raw.unload("/kernels/naif0012.tls");
+    spice.raw.unload("naif0012.tls");
     spice.raw.kclear();
     expect(spice.raw.ktotal("ALL")).toBe(0);
   });

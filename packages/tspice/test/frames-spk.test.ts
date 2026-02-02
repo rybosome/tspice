@@ -82,9 +82,9 @@ describe("frames + SPK ephemerides", () => {
     const spk = await ensureKernelFile(SPK);
 
     backend.kclear();
-    backend.furnsh({ path: "/kernels/naif0012.tls", bytes: lskBytes });
-    backend.furnsh({ path: `/kernels/${PCK.name}`, bytes: pck.bytes });
-    backend.furnsh({ path: `/kernels/${SPK.name}`, bytes: spk.bytes });
+    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+    backend.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
+    backend.furnsh({ path: `${SPK.name}`, bytes: spk.bytes });
 
     const rot = backend.pxform("J2000", "IAU_EARTH", 0);
     expect(rot).toHaveLength(9);
