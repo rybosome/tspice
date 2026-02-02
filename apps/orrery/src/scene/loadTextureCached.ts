@@ -36,6 +36,13 @@ export class TextureCacheStaleError extends TextureCacheClearedError {
   }
 }
 
+/**
+* Monotonically increasing "epoch" for cache entries.
+*
+* When `clearTextureCache({ force: true })` is called, we bump this generation
+* so that any in-flight loads from the previous generation are treated as
+* invalid and fail with `TextureCacheClearedError`.
+*/
 let cacheGeneration = 0
 
 const loader = new THREE.TextureLoader()
@@ -75,6 +82,12 @@ function decrementAndMaybeDisposeEntry(key: string, entry: TextureCacheEntry) {
 
     // If the texture is still in-flight and nobody references it anymore,
     // remove it from the cache (but only if it's still the current entry).
+    //
+    // Note: we cannot cancel the underlying network / decode work. Instead, when
+    // the load eventually resolves it will detect that it's no longer the active
+    // entry for this key (`entryByKey.get(key) !== entry`), dispose the texture,
+    // and fail with `TextureCacheStaleError`. This means stale in-flight entries
+    // can temporarily exist until their promises settle.
     if (entryByKey.get(key) === entry) {
       entryByKey.delete(key)
     }
@@ -97,7 +110,9 @@ export function clearTextureCache(options: { force?: boolean } = {}) {
   // unnecessarily.
   if (force) cacheGeneration += 1
 
-  for (const [key, entry] of entryByKey.entries()) {
+  // Snapshot first so we don't mutate `entryByKey` while iterating.
+  const entries = Array.from(entryByKey.entries())
+  for (const [key, entry] of entries) {
     if (!force && entry.refs > 0) {
       console.warn(`clearTextureCache(): refusing to dispose in-use texture (refs=${entry.refs})`, entry.resolvedUrl)
       continue

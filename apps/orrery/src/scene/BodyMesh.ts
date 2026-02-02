@@ -173,51 +173,6 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   let map: THREE.Texture | undefined = textureKind ? makeProceduralBodyTexture(textureKind) : undefined
   let mapRelease: (() => void) | undefined
 
-  const disposeMap = () => {
-    const release = mapRelease
-    const tex = map
-
-    // Clear references first so disposal is idempotent and re-entrancy safe.
-    map = undefined
-    mapRelease = undefined
-
-    // Ensure the material no longer references the texture.
-    material.map = null
-    material.needsUpdate = true
-
-    if (release) {
-      release()
-      return
-    }
-
-    tex?.dispose()
-  }
-
-  if (textureUrl) {
-    readyExtras.push(
-      loadTextureCached(textureUrl, { colorSpace: THREE.SRGBColorSpace })
-        .then(({ texture: tex, release }) => {
-          if (disposed) {
-            release()
-            return
-          }
-
-          tex.wrapS = THREE.RepeatWrapping
-          tex.wrapT = THREE.RepeatWrapping
-          tex.needsUpdate = true
-
-          disposeMap()
-          map = tex
-          mapRelease = release
-        })
-        .catch((err) => {
-          if (isTextureCacheClearedError(err)) return
-          // Keep rendering if a texture fails; surface failures for debugging.
-          console.warn('Failed to load body texture', textureUrl, err)
-        }),
-    )
-  }
-
   // Note: `MeshStandardMaterial.color` multiplies `map`.
   // For full-color albedo textures (e.g. Earth), tinting the texture by a
   // non-white base color can significantly darken / distort the result.
@@ -239,6 +194,55 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     emissive: textureKind === 'sun' ? new THREE.Color('#ffcc55') : new THREE.Color('#000000'),
     emissiveIntensity: textureKind === 'sun' ? 0.8 : 0.0,
   })
+
+  function disposeMap(mat: THREE.MeshStandardMaterial) {
+    const release = mapRelease
+    const tex = map
+
+    // Clear references first so disposal is idempotent and re-entrancy safe.
+    map = undefined
+    mapRelease = undefined
+
+    // Ensure the material no longer references the texture.
+    mat.map = null
+    mat.needsUpdate = true
+
+    if (release) {
+      release()
+      return
+    }
+
+    tex?.dispose()
+  }
+
+  if (textureUrl) {
+    readyExtras.push(
+      loadTextureCached(textureUrl, { colorSpace: THREE.SRGBColorSpace })
+        .then(({ texture: tex, release }) => {
+          let installed = false
+          try {
+            if (disposed) return
+
+            tex.wrapS = THREE.RepeatWrapping
+            tex.wrapT = THREE.RepeatWrapping
+            tex.needsUpdate = true
+
+            disposeMap(material)
+            map = tex
+            mapRelease = release
+            installed = true
+          } finally {
+            // If we didn't take ownership via `mapRelease`, release immediately.
+            if (!installed) release()
+          }
+        })
+        .catch((err) => {
+          if (isTextureCacheClearedError(err)) return
+          // Keep rendering if a texture fails; surface failures for debugging.
+          console.warn('Failed to load body texture', textureUrl, err)
+        }),
+    )
+  }
 
   const mesh = new THREE.Mesh(geometry, material)
 
@@ -547,18 +551,23 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       extras.push(
         loadTextureCached(earth.nightLightsTextureUrl, { colorSpace: THREE.SRGBColorSpace })
           .then(({ texture: tex, release }) => {
-            if (disposed) {
-              release()
-              return
-            }
-            tex.wrapS = THREE.RepeatWrapping
-            tex.wrapT = THREE.RepeatWrapping
-            tex.needsUpdate = true
-            extraTextureReleases.push(release)
+            let installed = false
+            try {
+              if (disposed) return
 
-            material.emissive.set('#ffffff')
-            material.emissiveMap = tex
-            material.needsUpdate = true
+              tex.wrapS = THREE.RepeatWrapping
+              tex.wrapT = THREE.RepeatWrapping
+              tex.needsUpdate = true
+
+              material.emissive.set('#ffffff')
+              material.emissiveMap = tex
+              material.needsUpdate = true
+
+              extraTextureReleases.push(release)
+              installed = true
+            } finally {
+              if (!installed) release()
+            }
           })
           .catch((err) => {
             if (isTextureCacheClearedError(err)) return
@@ -571,17 +580,22 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       extras.push(
         loadTextureCached(earth.cloudsTextureUrl, { colorSpace: THREE.SRGBColorSpace })
           .then(({ texture: tex, release }) => {
-            if (disposed) {
-              release()
-              return
-            }
-            tex.wrapS = THREE.RepeatWrapping
-            tex.wrapT = THREE.RepeatWrapping
-            tex.needsUpdate = true
-            extraTextureReleases.push(release)
+            let installed = false
+            try {
+              if (disposed) return
 
-            newCloudsMaterial.alphaMap = tex
-            newCloudsMaterial.needsUpdate = true
+              tex.wrapS = THREE.RepeatWrapping
+              tex.wrapT = THREE.RepeatWrapping
+              tex.needsUpdate = true
+
+              newCloudsMaterial.alphaMap = tex
+              newCloudsMaterial.needsUpdate = true
+
+              extraTextureReleases.push(release)
+              installed = true
+            } finally {
+              if (!installed) release()
+            }
           })
           .catch((err) => {
             if (isTextureCacheClearedError(err)) return
@@ -594,17 +608,22 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       extras.push(
         loadTextureCached(earth.waterMaskTextureUrl, { colorSpace: THREE.NoColorSpace })
           .then(({ texture: tex, release }) => {
-            if (disposed) {
-              release()
-              return
-            }
-            tex.wrapS = THREE.RepeatWrapping
-            tex.wrapT = THREE.RepeatWrapping
-            tex.needsUpdate = true
-            extraTextureReleases.push(release)
+            let installed = false
+            try {
+              if (disposed) return
 
-            waterMaskUniform.value = tex
-            useWaterMaskUniform.value = 1.0
+              tex.wrapS = THREE.RepeatWrapping
+              tex.wrapT = THREE.RepeatWrapping
+              tex.needsUpdate = true
+
+              waterMaskUniform.value = tex
+              useWaterMaskUniform.value = 1.0
+
+              extraTextureReleases.push(release)
+              installed = true
+            } finally {
+              if (!installed) release()
+            }
           })
           .catch((err) => {
             if (isTextureCacheClearedError(err)) return
@@ -641,7 +660,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       disposed = true
 
       // Detach texture references before releasing/disposing them.
-      disposeMap()
+      disposeMap(material)
 
       material.emissiveMap = null
       material.needsUpdate = true
