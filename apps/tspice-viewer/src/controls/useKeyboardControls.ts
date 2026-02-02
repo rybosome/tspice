@@ -82,7 +82,7 @@ export function isHelpToggleShortcut(key: string, shiftKey: boolean): boolean {
  * - Space: Play/pause time
  * - [ / ]: Step time backward/forward
  * - G: Go to selected (TODO: not implemented yet - requires selection state)
-* - L: Toggle labels
+ * - L: Toggle labels
  */
 export function useKeyboardControls({
   controllerRef,
@@ -161,10 +161,7 @@ export function useKeyboardControls({
           return
         }
 
-        const dtSec =
-          lastMotionTimeMs == null
-            ? 1 / 60
-            : Math.min(Math.max((nowMs - lastMotionTimeMs) / 1000, 0), 0.05)
+        const dtSec = lastMotionTimeMs == null ? 1 / 60 : Math.min(Math.max((nowMs - lastMotionTimeMs) / 1000, 0), 0.05)
         lastMotionTimeMs = nowMs
 
         let dirX = 0
@@ -281,14 +278,7 @@ export function useKeyboardControls({
       }
 
       // Continuous WASD panning + Q/E rolling (key-repeat independent)
-      if (
-        key === 'w' ||
-        key === 'a' ||
-        key === 's' ||
-        key === 'd' ||
-        key === 'q' ||
-        key === 'e'
-      ) {
+      if (key === 'w' || key === 'a' || key === 's' || key === 'd' || key === 'q' || key === 'e') {
         e.preventDefault()
 
         // Ignore repeat events; key state is tracked by the set.
@@ -369,7 +359,7 @@ export function useKeyboardControls({
           e.preventDefault()
           cancelFocusTweenRef.current?.()
           {
-            const focusKey = focusBodyRef?.current != null ? String(focusBodyRef.current) : undefined
+            const focusKey = focusBodyRef?.current != null ? String(focusBodyRef.current).toUpperCase() : undefined
 
             const perBody = resetControllerStateByBodyRef?.current ?? null
             const perBodyState = focusKey ? perBody?.get(focusKey) : undefined

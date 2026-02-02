@@ -13,9 +13,7 @@ export type SceneCanvasRuntimeConfig = {
   initialEt: number | null
 }
 
-export function parseSceneCanvasRuntimeConfigFromLocationSearch(
-  locationSearch: string,
-): SceneCanvasRuntimeConfig {
+export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: string): SceneCanvasRuntimeConfig {
   const searchParams = new URLSearchParams(locationSearch)
 
   const isE2e = searchParams.has('e2e')

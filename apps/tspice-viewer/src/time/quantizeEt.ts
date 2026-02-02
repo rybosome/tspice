@@ -11,7 +11,7 @@
  */
 export function quantizeEt(etSec: number, quantumSec: number): number {
   if (quantumSec <= 0) {
-    return etSec;
+    return etSec
   }
-  return Math.round(etSec / quantumSec) * quantumSec;
+  return Math.round(etSec / quantumSec) * quantumSec
 }

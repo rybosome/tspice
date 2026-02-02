@@ -25,10 +25,7 @@ export default defineConfig({
   outputDir: path.join(__dirname, 'playwright-report', 'test-results'),
   reporter: process.env.CI
     ? [['list']]
-    : [
-        ['list'],
-        ['html', { outputFolder: path.join(__dirname, 'playwright-report', 'html'), open: 'never' }],
-      ],
+    : [['list'], ['html', { outputFolder: path.join(__dirname, 'playwright-report', 'html'), open: 'never' }]],
 
   use: {
     baseURL: BASE_URL,
