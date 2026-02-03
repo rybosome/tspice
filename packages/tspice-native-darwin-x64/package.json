@@ -1,6 +1,6 @@
 {
   "name": "@rybosome/tspice-native-darwin-x64",
-  "version": "0.0.4",
+  "version": "0.0.3",
   "license": "MIT",
   "type": "commonjs",
   "main": "./index.js",
