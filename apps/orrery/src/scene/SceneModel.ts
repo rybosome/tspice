@@ -112,6 +112,16 @@ export interface SceneRingsStyle {
 
   /** Optional baseline opacity applied across the whole annulus (0..1). */
   baseOpacity?: number
+
+  /** Optional overall opacity multiplier for the rings (0..1). */
+  opacity?: number
+
+  /**
+   * Optional alpha test threshold (0..1).
+   *
+   * Useful for reducing edge halos from low-alpha pixels in ring textures.
+   */
+  alphaTest?: number
 }
 
 /**

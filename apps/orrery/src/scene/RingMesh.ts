@@ -29,6 +29,12 @@ export type CreateRingMeshOptions = {
    * visible without affecting ring textures that rely on alpha for gaps.
    */
   baseOpacity?: number
+
+  /** Optional overall opacity multiplier for the rings (0..1). */
+  opacity?: number
+
+  /** Optional alpha test threshold (0..1). */
+  alphaTest?: number
 }
 
 export function createRingMesh(options: CreateRingMeshOptions): {
@@ -90,9 +96,14 @@ export function createRingMesh(options: CreateRingMeshOptions): {
         })
     : Promise.resolve()
 
+  const opacity = THREE.MathUtils.clamp(options.opacity ?? 1, 0, 1)
+  const alphaTest = THREE.MathUtils.clamp(options.alphaTest ?? 0, 0, 1)
+
   const material = new THREE.MeshStandardMaterial({
     color: new THREE.Color(options.color ?? '#ffffff'),
     transparent: true,
+    opacity,
+    alphaTest,
     side: THREE.DoubleSide,
     depthWrite: false,
     roughness: 0.95,
