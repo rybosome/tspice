@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 import { isTextureCacheClearedError, loadTextureCached } from './loadTextureCached.js'
 import { createRingMesh } from './RingMesh.js'
-import { isEarthAppearanceLayer, type BodyAppearanceStyle, type BodyTextureKind } from './SceneModel.js'
+import { isEarthAppearanceLayer, isVenusAppearanceLayer, type BodyAppearanceStyle, type BodyTextureKind } from './SceneModel.js'
 
 export type CreateBodyMeshOptions = {
   /** Optional stable ID (e.g. `"EARTH"`) for body-specific rendering. */
@@ -49,6 +49,63 @@ function makeCanvasTexture(draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCan
   texture.wrapT = THREE.RepeatWrapping
   texture.needsUpdate = true
   return texture
+}
+
+function makeCanvasTextureNoColorSpace(draw: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => void) {
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 256
+
+  const ctx = canvas.getContext('2d')
+  if (!ctx) throw new Error('Failed to create 2D canvas context for texture')
+
+  draw(ctx, canvas)
+
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.colorSpace = THREE.NoColorSpace
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.RepeatWrapping
+  texture.needsUpdate = true
+  return texture
+}
+
+function makeProceduralVenusHazeAlphaMap(): THREE.Texture {
+  return makeCanvasTextureNoColorSpace((ctx, canvas) => {
+    // Deterministic: keep e2e snapshots stable.
+    const img = ctx.createImageData(canvas.width, canvas.height)
+    const w = canvas.width
+    const h = canvas.height
+
+    // Simple multi-sine "cloud" field.
+    for (let y = 0; y < h; y++) {
+      const v = y / h
+      // Slight latitude falloff so the poles aren't too busy.
+      const lat = Math.cos((v - 0.5) * Math.PI)
+
+      for (let x = 0; x < w; x++) {
+        const u = x / w
+
+        const a = Math.sin((u * 6.0 + v * 1.2) * Math.PI * 2)
+        const b = Math.sin((u * 11.0 - v * 3.1) * Math.PI * 2)
+        const c = Math.sin((u * 21.0 + Math.sin(v * Math.PI * 2) * 0.8) * Math.PI * 2)
+        const d = Math.cos(((u + v) * 9.0) * Math.PI * 2)
+        let n = (a * 0.55 + b * 0.25 + c * 0.15 + d * 0.05) * 0.5 + 0.5
+        n = n * lat
+
+        // Push into thicker patches with soft variation.
+        const alpha = Math.min(1, Math.max(0, (n - 0.18) / 0.55))
+        const g = Math.round(alpha * 255)
+
+        const i = (y * w + x) * 4
+        img.data[i + 0] = g
+        img.data[i + 1] = g
+        img.data[i + 2] = g
+        img.data[i + 3] = 255
+      }
+    }
+
+    ctx.putImageData(img, 0, 0)
+  })
 }
 
 function makeProceduralBodyTexture(kind: BodyTextureKind): THREE.Texture {
@@ -269,6 +326,10 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const earth = options.appearance.layers?.find(isEarthAppearanceLayer)?.earth
   const isEarth = options.bodyId === 'EARTH'
 
+  // Venus-only: thick clouds/haze + strong atmosphere rim.
+  const venus = options.appearance.layers?.find(isVenusAppearanceLayer)?.venus
+  const isVenus = options.bodyId === 'VENUS'
+
   const extraTexturesToDispose: THREE.Texture[] = []
   const extraTextureReleases: Array<() => void> = []
   const extraMaterialsToDispose: THREE.Material[] = []
@@ -286,6 +347,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   let cloudsMesh: THREE.Mesh | undefined
   let cloudsMaterial: THREE.MeshStandardMaterial | undefined
   let cloudsDriftRadPerSec = 0
+
+  let venusHazeMesh: THREE.Mesh | undefined
+  let venusHazeDriftRadPerSec = 0
 
   const waterMaskUniform = { value: black1x1 as THREE.Texture }
   const useWaterMaskUniform = { value: 0.0 }
@@ -648,6 +712,183 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       if (cloudsMesh && cloudsDriftRadPerSec !== 0) {
         const phase = (etSec * cloudsDriftRadPerSec) % (Math.PI * 2)
         cloudsMesh.rotation.z = phase
+      }
+    }
+  }
+
+  if (isVenus) {
+    // Make Venus read as matte cloud tops (avoid specular glints).
+    material.roughness = 1.0
+    material.metalness = 0.0
+
+    const uNightAlbedo = { value: venus?.nightAlbedo ?? 0.0015 }
+    const uTwilight = { value: venus?.twilight ?? 0.08 }
+
+    // Darken the night side so the scene ambient light doesn't wash out Venus.
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
+      shader.uniforms.uNightAlbedo = uNightAlbedo
+      shader.uniforms.uTwilight = uTwilight
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <common>',
+        [
+          '#include <common>',
+          'uniform vec3 uSunDirWorld;',
+          'uniform float uNightAlbedo;',
+          'uniform float uTwilight;',
+        ].join('\n'),
+      )
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <lights_fragment_begin>',
+        [
+          '\t// Venus-only: suppress ambient-lit albedo on the night side.',
+          '\t{',
+          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\tfloat ndotl = dot( normal, sunDirView );',
+          '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
+          '\t\tdiffuseColor.rgb *= mix( uNightAlbedo, 1.0, dayFactor );',
+          '\t}',
+          '',
+          '#include <lights_fragment_begin>',
+        ].join('\n'),
+      )
+    }
+
+    // Atmosphere rim glow (broader / softer than Earth).
+    const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
+    atmosphereGeo.rotateX(Math.PI / 2)
+    extraGeometriesToDispose.push(atmosphereGeo)
+
+    const atmosphereMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        uSunDirWorld: { value: uSunDirWorld },
+        uColor: { value: new THREE.Color(venus?.atmosphereColor ?? '#ffe6bf') },
+        uIntensity: { value: venus?.atmosphereIntensity ?? 0.9 },
+        uRimPower: { value: venus?.atmosphereRimPower ?? 1.25 },
+        uSunBias: { value: venus?.atmosphereSunBias ?? 0.8 },
+      },
+      vertexShader: [
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
+        '  vWorldPos = worldPos.xyz;',
+        '  vWorldNormal = normalize( mat3( modelMatrix ) * normal );',
+        '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
+        '}',
+      ].join('\n'),
+      fragmentShader: [
+        'uniform vec3 uSunDirWorld;',
+        'uniform vec3 uColor;',
+        'uniform float uIntensity;',
+        'uniform float uRimPower;',
+        'uniform float uSunBias;',
+        '',
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec3 N = normalize( vWorldNormal );',
+        '  vec3 V = normalize( cameraPosition - vWorldPos );',
+        '  vec3 L = normalize( uSunDirWorld );',
+        '',
+        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
+        '  rim = pow( rim, uRimPower );',
+        '',
+        '  float ndotl = dot( N, L );',
+        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
+        '  float k = clamp( uSunBias, 0.0, 1.0 );',
+        '  float start = mix( -0.15, 0.0, k );',
+        '  float end = mix( 0.45, 0.2, k );',
+        '  float dayFactor = smoothstep( start, end, ndotl );',
+        '  float glow = rim * dayFactor;',
+        '',
+        '  float alpha = glow * uIntensity;',
+        '  gl_FragColor = vec4( uColor, alpha );',
+        '}',
+      ].join('\n'),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      toneMapped: false,
+      side: THREE.BackSide,
+    })
+    extraMaterialsToDispose.push(atmosphereMaterial)
+
+    const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMaterial)
+    atmosphereMesh.scale.setScalar(venus?.atmosphereRadiusRatio ?? 1.035)
+    atmosphereMesh.renderOrder = 2
+    mesh.add(atmosphereMesh)
+
+    // Cloud/haze shell (kept non-pickable by not adding it to `pickables`).
+    const hazeGeo = new THREE.SphereGeometry(1, 48, 24)
+    hazeGeo.rotateX(Math.PI / 2)
+    extraGeometriesToDispose.push(hazeGeo)
+
+    const hazeAlphaMap = makeProceduralVenusHazeAlphaMap()
+    extraTexturesToDispose.push(hazeAlphaMap)
+
+    const hazeMaterial = new THREE.MeshStandardMaterial({
+      color: venus?.cloudsColor ?? '#fff2cc',
+      transparent: true,
+      opacity: venus?.cloudsOpacity ?? 0.9,
+      alphaTest: venus?.cloudsAlphaTest ?? 0.0,
+      depthWrite: false,
+      roughness: 1.0,
+      metalness: 0.0,
+      alphaMap: hazeAlphaMap,
+    })
+    extraMaterialsToDispose.push(hazeMaterial)
+
+    const uCloudsNightMultiplier = { value: venus?.cloudsNightMultiplier ?? 0.0 }
+
+    hazeMaterial.onBeforeCompile = (shader) => {
+      shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
+      shader.uniforms.uTwilight = uTwilight
+      shader.uniforms.uCloudsNightMultiplier = uCloudsNightMultiplier
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <common>',
+        [
+          '#include <common>',
+          'uniform vec3 uSunDirWorld;',
+          'uniform float uTwilight;',
+          'uniform float uCloudsNightMultiplier;',
+        ].join('\n'),
+      )
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <lights_fragment_begin>',
+        [
+          '\t// Venus-only: suppress ambient-lit haze on the night side.',
+          '\t{',
+          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\tfloat ndotl = dot( normal, sunDirView );',
+          '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
+          '\t\tdiffuseColor.rgb *= mix( uCloudsNightMultiplier, 1.0, dayFactor );',
+          '\t}',
+          '',
+          '#include <lights_fragment_begin>',
+        ].join('\n'),
+      )
+    }
+
+    venusHazeMesh = new THREE.Mesh(hazeGeo, hazeMaterial)
+    venusHazeMesh.scale.setScalar(venus?.cloudsRadiusRatio ?? 1.012)
+    venusHazeMesh.renderOrder = 1
+    mesh.add(venusHazeMesh)
+
+    venusHazeDriftRadPerSec = venus?.cloudsDriftRadPerSec ?? 0.00002
+
+    update = ({ sunDirWorld, etSec }) => {
+      uSunDirWorld.copy(sunDirWorld).normalize()
+
+      if (venusHazeMesh && venusHazeDriftRadPerSec !== 0) {
+        const phase = (etSec * venusHazeDriftRadPerSec) % (Math.PI * 2)
+        venusHazeMesh.rotation.z = phase
       }
     }
   }
