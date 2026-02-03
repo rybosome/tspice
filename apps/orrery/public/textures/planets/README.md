@@ -13,4 +13,4 @@ Most textures here are **256×128** PNGs (lightweight demo goal), but a few Eart
 
 ## Per-file sources
 
-- `mercury.jpg`: USGS Astrogeology Science Center — MESSENGER MDIS Basemap Enhanced Color Global Mosaic (665m). Source: https://astrogeology.usgs.gov/search/map/mercury_messenger_mdis_basemap_enhanced_color_global_mosaic_665m
+- `mercury.jpg`: USGS Astrogeology Science Center — MESSENGER MDIS Basemap Enhanced Color Global Mosaic (665m). Product page: https://astrogeology.usgs.gov/search/map/mercury_messenger_mdis_basemap_enhanced_color_global_mosaic_665m. Download: https://upload.wikimedia.org/wikipedia/commons/4/41/Mercury_MESSENGER_MDIS_Basemap_EnhancedColor_Mosaic_Global_32ppd.jpg
