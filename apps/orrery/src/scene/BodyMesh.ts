@@ -141,6 +141,59 @@ function makeProceduralBodyTexture(kind: BodyTextureKind): THREE.Texture {
   })
 }
 
+type ShaderSourceKey = 'fragmentShader' | 'vertexShader'
+
+type OnBeforeCompile = NonNullable<THREE.Material['onBeforeCompile']>
+type BeforeCompileShader = Parameters<OnBeforeCompile>[0]
+
+function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile) {
+  const prev = material.onBeforeCompile
+  material.onBeforeCompile = (shader, renderer) => {
+    prev?.(shader, renderer)
+    patch(shader, renderer)
+  }
+}
+
+function createWarnOnce() {
+  const seen = new Set<string>()
+  return (key: string, ...args: unknown[]) => {
+    if (seen.has(key)) return
+    seen.add(key)
+    console.warn(...args)
+  }
+}
+
+function safeShaderReplace(args: {
+  shader: BeforeCompileShader
+  source: ShaderSourceKey
+  needle: string
+  replacement: string
+  marker: string
+  warnOnce: (key: string, ...args: unknown[]) => void
+  warnKey: string
+}): boolean {
+  const { shader, source, needle, replacement, marker, warnOnce, warnKey } = args
+
+  const shaderSources = shader as unknown as Record<ShaderSourceKey, string>
+
+  const src = shaderSources[source]
+  if (src.includes(marker)) return true
+
+  if (!src.includes(needle)) {
+    warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing chunk)', { source, needle, marker })
+    return false
+  }
+
+  const next = src.replace(needle, replacement)
+  if (next === src || !next.includes(marker)) {
+    warnOnce(warnKey, '[BodyMesh] shader injection skipped (replace failed)', { source, needle, marker })
+    return false
+  }
+
+  shaderSources[source] = next
+  return true
+}
+
 /**
  * Creates a body mesh with a unit sphere geometry.
  *
@@ -161,6 +214,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   let disposed = false
 
+  const warnOnce = createWarnOnce()
+
   const isEarth = options.bodyId === 'EARTH'
 
   // Collect async assets so `ready` consistently represents "all appearance assets are ready".
@@ -172,9 +227,12 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const textureUrl = surfaceTexture?.url
   const textureColor = surfaceTexture?.color
 
-  const surfaceRoughness = surface.roughness ?? (textureKind === 'sun' ? 0.2 : 0.9)
-  const surfaceMetalness = surface.metalness ?? 0.0
-  const bumpScale = surface.bumpScale ?? 0.0
+  const surfaceRoughness = THREE.MathUtils.clamp(surface.roughness ?? (textureKind === 'sun' ? 0.2 : 0.9), 0.0, 1.0)
+  const surfaceMetalness = THREE.MathUtils.clamp(surface.metalness ?? 0.0, 0.0, 1.0)
+
+  // Three.js' bumpScale is unbounded but large values can cause extreme artifacts.
+  // We clamp to a conservative range to keep configs safe.
+  const bumpScale = THREE.MathUtils.clamp(surface.bumpScale ?? 0.0, 0.0, 10.0)
 
   const nightAlbedo = surface.nightAlbedo == null ? undefined : THREE.MathUtils.clamp(surface.nightAlbedo, 0.0, 1.0)
   const terminatorTwilight = THREE.MathUtils.clamp(surface.terminatorTwilight ?? 0.08, 0.0, 1.0)
@@ -300,24 +358,38 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     const uNightAlbedo = { value: nightAlbedo }
     const uTerminatorTwilight = { value: terminatorTwilight }
 
-    material.onBeforeCompile = (shader) => {
+    composeOnBeforeCompile(material, (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uNightAlbedo = uNightAlbedo
       shader.uniforms.uTerminatorTwilight = uTerminatorTwilight
 
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <common>',
-        [
+      const markerCommon = '// tspice:terminator-darkening:uniforms'
+      const okCommon = safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: '#include <common>',
+        marker: markerCommon,
+        replacement: [
           '#include <common>',
+          markerCommon,
           'uniform vec3 uSunDirWorld;',
           'uniform float uNightAlbedo;',
           'uniform float uTerminatorTwilight;',
         ].join('\n'),
-      )
+        warnOnce,
+        warnKey: 'terminator-darkening:uniforms',
+      })
 
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <lights_fragment_begin>',
-        [
+      if (!okCommon) return
+
+      const markerLights = '// tspice:terminator-darkening:lights'
+      safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: '#include <lights_fragment_begin>',
+        marker: markerLights,
+        replacement: [
+          markerLights,
           '\t// Terminator darkening: suppress ambient-lit albedo on the night side.',
           '\t{',
           '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
@@ -328,8 +400,10 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '',
           '#include <lights_fragment_begin>',
         ].join('\n'),
-      )
-    }
+        warnOnce,
+        warnKey: 'terminator-darkening:lights',
+      })
+    })
 
     update = ({ sunDirWorld }) => {
       uSunDirWorld.copy(sunDirWorld)
@@ -355,7 +429,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     const uAtmosphereIntensity = { value: earth.atmosphereIntensity ?? 0.55 }
     const uCloudsNightMultiplier = { value: 0.0 }
 
-    material.onBeforeCompile = (shader) => {
+    composeOnBeforeCompile(material, (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uNightAlbedo = uNightAlbedo
       shader.uniforms.uTwilight = uTwilight
@@ -366,10 +440,15 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       shader.uniforms.uUseWaterMask = useWaterMaskUniform
 
       // Insert uniform declarations.
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <common>',
-        [
+      const markerCommon = '// tspice:earth:uniforms'
+      const okCommon = safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: '#include <common>',
+        marker: markerCommon,
+        replacement: [
           '#include <common>',
+          markerCommon,
           'uniform vec3 uSunDirWorld;',
           'uniform float uNightAlbedo;',
           'uniform float uTwilight;',
@@ -379,13 +458,23 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           'uniform sampler2D uWaterMaskMap;',
           'uniform float uUseWaterMask;',
         ].join('\n'),
-      )
+        warnOnce,
+        warnKey: 'earth:uniforms',
+      })
+
+      // Without uniform declarations, any further injections may create a broken shader.
+      if (!okCommon) return
 
       // Darken the night side so the scene ambient light doesn't wash out Earth.
       // (Emissive city lights remain visible via the emissive map.)
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <lights_fragment_begin>',
-        [
+      const markerDarken = '// tspice:earth:night-side-darken'
+      safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: '#include <lights_fragment_begin>',
+        marker: markerDarken,
+        replacement: [
+          markerDarken,
           '\t// Earth-only: suppress ambient-lit albedo on the night side.',
           '\t{',
           '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
@@ -399,49 +488,80 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '',
           '#include <lights_fragment_begin>',
         ].join('\n'),
-      )
+        warnOnce,
+        warnKey: 'earth:night-side-darken',
+      })
 
       // Keep an Earth-local water factor around for later glint.
-      shader.fragmentShader = shader.fragmentShader.replace(
-        'vec3 totalEmissiveRadiance = emissive;',
-        ['vec3 totalEmissiveRadiance = emissive;', 'float earthWaterFactor = 0.0;'].join('\n'),
-      )
+      const markerWaterFactor = '// tspice:earth:water-factor'
+      const okWaterFactor = safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: 'vec3 totalEmissiveRadiance = emissive;',
+        marker: markerWaterFactor,
+        replacement: [
+          'vec3 totalEmissiveRadiance = emissive;',
+          markerWaterFactor,
+          'float earthWaterFactor = 0.0;',
+        ].join('\n'),
+        warnOnce,
+        warnKey: 'earth:water-factor',
+      })
 
       // Ocean roughness modulation (mask or heuristic).
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <roughnessmap_fragment>',
-        [
-          '#include <roughnessmap_fragment>',
-          '',
-          '\t// Earth-only: ocean roughness heuristic / optional mask.',
-          '\t{',
-          '\t\tvec2 earthUv = vec2( 0.0 );',
-          '\t\t#ifdef USE_MAP',
-          '\t\t\tearthUv = vMapUv;',
-          '\t\t#elif defined( USE_UV )',
-          '\t\t\tearthUv = vUv;',
-          '\t\t#endif',
-          '',
-          '\t\tfloat waterMask = 0.0;',
-          '\t\tif ( uUseWaterMask > 0.5 ) {',
-          '\t\t\twaterMask = texture2D( uWaterMaskMap, earthUv ).r;',
-          '\t\t} else {',
-          '\t\t\tvec3 c = diffuseColor.rgb;',
-          '\t\t\tfloat blueDom = c.b - max( c.r, c.g );',
-          '\t\t\twaterMask = smoothstep( 0.02, 0.18, blueDom ) * smoothstep( 0.05, 0.65, c.b );',
-          '\t\t}',
-          '',
-          '\t\tearthWaterFactor = clamp( waterMask, 0.0, 1.0 );',
-          '\t\troughnessFactor = mix( roughnessFactor, uOceanRoughness, earthWaterFactor );',
-          '\t}',
-        ].join('\n'),
-      )
+      if (okWaterFactor) {
+        const markerRoughness = '// tspice:earth:ocean-roughness'
+        safeShaderReplace({
+          shader,
+          source: 'fragmentShader',
+          needle: '#include <roughnessmap_fragment>',
+          marker: markerRoughness,
+          replacement: [
+            '#include <roughnessmap_fragment>',
+            markerRoughness,
+            '',
+            '\t// Earth-only: ocean roughness heuristic / optional mask.',
+            '\t{',
+            '\t\tvec2 earthUv = vec2( 0.0 );',
+            '\t\t#ifdef USE_MAP',
+            '\t\t\tearthUv = vMapUv;',
+            '\t\t#elif defined( USE_UV )',
+            '\t\t\tearthUv = vUv;',
+            '\t\t#endif',
+            '',
+            '\t\tfloat waterMask = 0.0;',
+            '\t\tif ( uUseWaterMask > 0.5 ) {',
+            '\t\t\twaterMask = texture2D( uWaterMaskMap, earthUv ).r;',
+            '\t\t} else {',
+            '\t\t\tvec3 c = diffuseColor.rgb;',
+            '\t\t\tfloat blueDom = c.b - max( c.r, c.g );',
+            '\t\t\twaterMask = smoothstep( 0.02, 0.18, blueDom ) * smoothstep( 0.05, 0.65, c.b );',
+            '\t\t}',
+            '',
+            '\t\tearthWaterFactor = clamp( waterMask, 0.0, 1.0 );',
+            '\t\troughnessFactor = mix( roughnessFactor, uOceanRoughness, earthWaterFactor );',
+            '\t}',
+          ].join('\n'),
+          warnOnce,
+          warnKey: 'earth:ocean-roughness',
+        })
+      } else {
+        warnOnce(
+          'earth:ocean-roughness:skipped',
+          '[BodyMesh] skipping ocean roughness patch (water factor declaration not injected)',
+        )
+      }
 
       // Night lights gating (terminator mask driven by N·L).
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <emissivemap_fragment>',
-        [
+      const markerNightLights = '// tspice:earth:night-lights'
+      safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: '#include <emissivemap_fragment>',
+        marker: markerNightLights,
+        replacement: [
           '#include <emissivemap_fragment>',
+          markerNightLights,
           '',
           '\t// Earth-only: gate night lights to the night side (soft terminator).',
           '\t{',
@@ -451,27 +571,38 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '\t\ttotalEmissiveRadiance *= nightMask * uNightLightsIntensity;',
           '\t}',
         ].join('\n'),
-      )
+        warnOnce,
+        warnKey: 'earth:night-lights',
+      })
 
       // Cheap ocean glint (adds a sharp highlight on water pixels).
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <lights_fragment_end>',
-        [
-          '#include <lights_fragment_end>',
-          '',
-          '\t// Earth-only: cheap ocean glint (fallback when a proper water mask is unavailable).',
-          '\t{',
-          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
-          '\t\tvec3 viewDir = normalize( vViewPosition );',
-          '\t\tfloat ndotl = max( dot( normal, sunDirView ), 0.0 );',
-          '\t\tvec3 h = normalize( sunDirView + viewDir );',
-          '\t\tfloat ndoth = max( dot( normal, h ), 0.0 );',
-          '\t\tfloat glint = pow( ndoth, 420.0 ) * ndotl * earthWaterFactor * uOceanSpecIntensity;',
-          '\t\treflectedLight.directSpecular += vec3( glint );',
-          '\t}',
-        ].join('\n'),
-      )
-    }
+      if (okWaterFactor) {
+        const markerGlint = '// tspice:earth:ocean-glint'
+        safeShaderReplace({
+          shader,
+          source: 'fragmentShader',
+          needle: '#include <lights_fragment_end>',
+          marker: markerGlint,
+          replacement: [
+            '#include <lights_fragment_end>',
+            markerGlint,
+            '',
+            '\t// Earth-only: cheap ocean glint (fallback when a proper water mask is unavailable).',
+            '\t{',
+            '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+            '\t\tvec3 viewDir = normalize( vViewPosition );',
+            '\t\tfloat ndotl = max( dot( normal, sunDirView ), 0.0 );',
+            '\t\tvec3 h = normalize( sunDirView + viewDir );',
+            '\t\tfloat ndoth = max( dot( normal, h ), 0.0 );',
+            '\t\tfloat glint = pow( ndoth, 420.0 ) * ndotl * earthWaterFactor * uOceanSpecIntensity;',
+            '\t\treflectedLight.directSpecular += vec3( glint );',
+            '\t}',
+          ].join('\n'),
+          warnOnce,
+          warnKey: 'earth:ocean-glint',
+        })
+      }
+    })
 
     // Atmosphere shell
     const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
@@ -559,24 +690,38 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     // Darken clouds on the night side as well (otherwise the global ambient light
     // makes clouds show up nearly as brightly at night as during day).
-    newCloudsMaterial.onBeforeCompile = (shader) => {
+    composeOnBeforeCompile(newCloudsMaterial, (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uTwilight = uTwilight
       shader.uniforms.uCloudsNightMultiplier = uCloudsNightMultiplier
 
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <common>',
-        [
+      const markerCommon = '// tspice:earth-clouds:uniforms'
+      const okCommon = safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: '#include <common>',
+        marker: markerCommon,
+        replacement: [
           '#include <common>',
+          markerCommon,
           'uniform vec3 uSunDirWorld;',
           'uniform float uTwilight;',
           'uniform float uCloudsNightMultiplier;',
         ].join('\n'),
-      )
+        warnOnce,
+        warnKey: 'earth-clouds:uniforms',
+      })
 
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <lights_fragment_begin>',
-        [
+      if (!okCommon) return
+
+      const markerLights = '// tspice:earth-clouds:night-side'
+      safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: '#include <lights_fragment_begin>',
+        marker: markerLights,
+        replacement: [
+          markerLights,
           '\t// Earth-only: suppress ambient-lit clouds on the night side.',
           '\t{',
           '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
@@ -587,8 +732,10 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '',
           '#include <lights_fragment_begin>',
         ].join('\n'),
-      )
-    }
+        warnOnce,
+        warnKey: 'earth-clouds:night-side',
+      })
+    })
 
     cloudsMesh = new THREE.Mesh(cloudsGeo, newCloudsMaterial)
     cloudsMesh.scale.setScalar(earth.cloudsRadiusRatio ?? 1.01)
