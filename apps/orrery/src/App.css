@@ -582,6 +582,192 @@
   background: var(--hover-bg);
 }
 
+/* --- Info Overlay (per-setting help) --- */
+
+.infoBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.infoDialog {
+  background: #0a0e14;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  max-width: 440px;
+  width: 100%;
+  max-height: calc(100vh - 32px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.infoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: var(--stroke-1) solid var(--phosphor-border);
+}
+
+.infoTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--phosphor-fg);
+}
+
+.infoCloseButton {
+  appearance: none;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-fg);
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infoCloseButton:hover {
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+}
+
+.infoContent {
+  padding: 16px;
+  overflow-y: auto;
+  color: var(--phosphor-dim);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.infoContent p {
+  margin: 0 0 10px 0;
+}
+
+.infoContent p:last-child {
+  margin-bottom: 0;
+}
+
+/* Mobile: bottom-sheet feel for small help dialogs */
+@media (max-width: 720px) {
+  .infoBackdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .infoDialog {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+    border-bottom: none;
+  }
+}
+
+/* --- Advanced panes (tabs + per-control help) --- */
+
+.advancedTabs {
+  display: flex;
+  gap: 6px;
+  margin: 6px 0 10px 0;
+  padding-bottom: 2px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.advancedTab {
+  appearance: none;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-dim);
+  padding: 5px 8px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.advancedTab:hover {
+  border-color: var(--phosphor-bright);
+  color: var(--phosphor-fg);
+  background: var(--hover-bg);
+}
+
+.advancedTabActive {
+  color: var(--phosphor-fg);
+  border-color: var(--active-border);
+  background: var(--active-bg);
+}
+
+.advancedPaneHeader {
+  margin-bottom: 10px;
+}
+
+.advancedPaneTitle {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--phosphor-fg);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.advancedPaneSummary {
+  font-size: 12px;
+  color: var(--phosphor-dim);
+  line-height: 1.4;
+}
+
+.advancedControlLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.controlHelpButton {
+  appearance: none;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  background: transparent;
+  color: var(--phosphor-fg);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.controlHelpButton:hover {
+  border-color: var(--phosphor-bright);
+  background: var(--hover-bg);
+}
+
+.advancedCheckboxWithHelp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.advancedCheckboxWithHelp .controlHelpButton {
+  margin-left: auto;
+}
+
 /* --- Selection Inspector Panel --- */
 
 .selectionInspector {

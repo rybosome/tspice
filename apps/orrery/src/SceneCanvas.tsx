@@ -11,6 +11,7 @@ import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
 
 import { HelpOverlay } from './ui/HelpOverlay.js'
+import { InfoOverlay } from './ui/InfoOverlay.js'
 import { SelectionInspector } from './ui/SelectionInspector.js'
 import { markTspiceViewerRenderedScene } from './e2eHooks/index.js'
 import { installSceneInteractions, type SceneInteractions } from './interaction/installSceneInteractions.js'
@@ -26,6 +27,160 @@ import { createThreeRuntime, type ThreeRuntime } from './renderer/createThreeRun
 import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig/sceneCanvasRuntimeConfig.js'
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
+
+
+type AdvancedPaneId = 'scaleCamera' | 'guides' | 'orbitsPerformance' | 'time' | 'debug'
+
+type AdvancedHelpTopicId =
+  | 'cameraFov'
+  | 'planetScale'
+  | 'sunScale'
+  | 'orbitLineWidth'
+  | 'orbitSamples'
+  | 'orbitMaxPoints'
+  | 'quantum'
+  | 'animatedSky'
+  | 'labelOcclusion'
+  | 'bodyFixedAxes'
+  | 'renderHud'
+  | 'j2000Axes'
+
+const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: string; summary: string }> = [
+  {
+    id: 'scaleCamera',
+    tabLabel: 'Scale',
+    title: 'Scale & Camera',
+    summary: 'Adjust framing and exaggerate body sizes for visibility. Rendering only; SPICE data is unchanged.',
+  },
+  {
+    id: 'guides',
+    tabLabel: 'Guides',
+    title: 'Overlays & Guides',
+    summary: 'Label readability and other on-screen guides.',
+  },
+  {
+    id: 'orbitsPerformance',
+    tabLabel: 'Orbits',
+    title: 'Orbits & Performance',
+    summary: 'Orbit line fidelity vs speed. These settings can strongly affect CPU/GPU and memory.',
+  },
+  {
+    id: 'time',
+    tabLabel: 'Time',
+    title: 'Time',
+    summary: 'Simulation stepping behavior for play/pause and step controls.',
+  },
+  {
+    id: 'debug',
+    tabLabel: 'Debug',
+    title: 'Debug',
+    summary: 'Diagnostics overlays and extra axes.',
+  },
+]
+
+const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string; body: string[] }> = {
+  cameraFov: {
+    title: 'Camera FOV',
+    short: 'Wider = more scene, narrower = more zoom.',
+    body: [
+      'Field-of-view controls how wide the camera sees (like a lens).',
+      'Lower values feel more zoomed-in; higher values feel wider/"fisheye".',
+      'This does not change body positions—only how the camera projects the scene.',
+    ],
+  },
+  planetScale: {
+    title: 'Planet scale',
+    short: 'Makes planets easier to see/click.',
+    body: [
+      'Boosts the rendered size of planets and moons (everything except the Sun).',
+      'Useful when zoomed far out or when focusing the Sun (so nearby planets are still clickable).',
+      'This is a visual exaggeration only; orbits/positions remain physically accurate.',
+    ],
+  },
+  sunScale: {
+    title: 'Sun scale',
+    short: 'Helps keep the Sun visible at long distances.',
+    body: [
+      'Boosts the rendered radius of the Sun only.',
+      'Useful when focusing outer planets so the Sun stays visible and easier to locate.',
+      'Visual-only; SPICE positions are unchanged.',
+    ],
+  },
+  orbitLineWidth: {
+    title: 'Orbit line width',
+    short: 'Thicker lines are easier to see (slightly heavier to draw).',
+    body: [
+      'Controls the on-screen thickness of orbit paths.',
+      'Higher values are more visible but can look busy and may cost a bit of GPU time.',
+    ],
+  },
+  orbitSamples: {
+    title: 'Samples per orbit',
+    short: 'More samples = smoother orbits, slower updates.',
+    body: [
+      'Number of points used to approximate each orbit path.',
+      'Higher values produce smoother curves but increase CPU work and memory.',
+      'If performance drops, lower this first.',
+    ],
+  },
+  orbitMaxPoints: {
+    title: 'Max orbit points',
+    short: 'Hard cap to keep orbit rendering bounded.',
+    body: [
+      'Caps the total number of orbit points kept across all bodies.',
+      'If you enable many orbits or use high samples-per-orbit, this prevents runaway memory use.',
+      'Lower values can improve performance but may reduce orbit detail.',
+    ],
+  },
+  quantum: {
+    title: 'Quantum (s)',
+    short: 'Minimum time step used by stepping/playback.',
+    body: [
+      'Sets the smallest time increment used when stepping simulation time.',
+      'Smaller values make stepping finer-grained but can increase work per second of playback.',
+    ],
+  },
+  animatedSky: {
+    title: 'Animated sky',
+    short: 'Twinkle + animated skydome (can cost GPU).',
+    body: [
+      'Enables the animated sky shader and starfield twinkle.',
+      'Turn off for maximum performance or to reduce visual motion.',
+    ],
+  },
+  labelOcclusion: {
+    title: 'Label occlusion',
+    short: 'Hide labels behind planets to reduce clutter.',
+    body: [
+      'When enabled, labels will hide when the body is behind something else in the scene.',
+      'This can reduce clutter when many labels overlap, but may hide labels you expect to see.',
+    ],
+  },
+  bodyFixedAxes: {
+    title: 'Body-fixed axes',
+    short: 'Axes that rotate with the selected body.',
+    body: [
+      'Shows a local coordinate frame that rotates with the focused body.',
+      'Useful for understanding rotation/orientation compared to inertial axes.',
+    ],
+  },
+  renderHud: {
+    title: 'Render HUD',
+    short: 'FPS + draw calls + camera stats overlay.',
+    body: [
+      'Shows a small on-screen heads-up display with render performance stats and camera values.',
+      'Useful for debugging and performance tuning.',
+    ],
+  },
+  j2000Axes: {
+    title: 'J2000 axes',
+    short: 'Global inertial reference frame axes.',
+    body: [
+      'Shows a fixed inertial axes widget (J2000 frame) for orientation reference.',
+      'This is separate from body-fixed axes, which rotate with a body.',
+    ],
+  },
+}
 
 export function SceneCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -55,6 +210,15 @@ export function SceneCanvas() {
 
   // Advanced tuning sliders (ephemeral, local state only)
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [advancedPane, setAdvancedPane] = useState<AdvancedPaneId>('scaleCamera')
+  const [advancedHelpTopic, setAdvancedHelpTopic] = useState<AdvancedHelpTopicId | null>(null)
+
+  const activeAdvancedPane = useMemo(() => ADVANCED_PANES.find((p) => p.id === advancedPane) ?? ADVANCED_PANES[0], [advancedPane])
+
+  // If the advanced panel is closed, make sure any open per-setting help closes too.
+  useEffect(() => {
+    if (!showAdvanced) setAdvancedHelpTopic(null)
+  }, [showAdvanced])
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
 
   const earthAppearanceDefaults = useMemo(() => {
@@ -197,6 +361,21 @@ export function SceneCanvas() {
       timeStore.setQuantumSec(value)
     }
   }, [])
+
+  const AdvancedHelpButton = ({ topic }: { topic: AdvancedHelpTopicId }) => {
+    const h = ADVANCED_HELP[topic]
+    return (
+      <button
+        className="controlHelpButton"
+        onClick={() => setAdvancedHelpTopic(topic)}
+        type="button"
+        aria-label={`Help: ${h.title}`}
+        title={h.short}
+      >
+        ?
+      </button>
+    )
+  }
 
   // Enable keyboard controls (disabled in e2e mode)
   useKeyboardControls({
@@ -837,131 +1016,216 @@ export function SceneCanvas() {
 
               {showAdvanced && (
                 <div className="advancedPanel">
-                  <div className="advancedHeader">ADVANCED CONTROLS</div>
+                  <div className="advancedHeader">ADVANCED</div>
 
-                  {/* Group 1: Camera FOV, Planet Scale, Sun Scale */}
-                  <div className="advancedGroup">
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel">Camera FOV</span>
-                      <input
-                        type="range"
-                        min={30}
-                        max={90}
-                        step={1}
-                        value={cameraFovDeg}
-                        onChange={(e) => setCameraFovDeg(Number(e.target.value))}
-                      />
-                      <span className="advancedSliderValue">{cameraFovDeg}°</span>
-                    </div>
-
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel">Planet Scale</span>
-                      <input
-                        type="range"
-                        min={0}
-                        max={PLANET_SCALE_SLIDER_MAX}
-                        step={1}
-                        value={planetScaleSlider}
-                        onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
-                      />
-                      <span className="advancedSliderValue">{formatScaleMultiplier(planetScaleMultiplier)}×</span>
-                    </div>
-
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel">Sun Scale</span>
-                      <input
-                        type="range"
-                        min={1}
-                        max={20}
-                        step={1}
-                        value={sunScaleMultiplier}
-                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
-                      />
-                      <span className="advancedSliderValue">{sunScaleMultiplier}×</span>
-                    </div>
+                  <div className="advancedTabs" role="tablist" aria-label="Advanced panes">
+                    {ADVANCED_PANES.map((pane) => (
+                      <button
+                        key={pane.id}
+                        className={`advancedTab ${advancedPane === pane.id ? 'advancedTabActive' : ''}`}
+                        type="button"
+                        role="tab"
+                        aria-selected={advancedPane === pane.id}
+                        onClick={() => setAdvancedPane(pane.id)}
+                      >
+                        {pane.tabLabel}
+                      </button>
+                    ))}
                   </div>
 
-                  <div className="advancedDivider" />
-
-                  {/* Group 2: Orbit Line Width, Samples/Orbit, Max Orbit Points, Quantum */}
-                  <div className="advancedGroup">
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel">Orbit Line Width</span>
-                      <input
-                        type="range"
-                        min={0.5}
-                        max={10}
-                        step={0.1}
-                        value={orbitLineWidthPx}
-                        onChange={(e) => setOrbitLineWidthPx(Number(e.target.value))}
-                      />
-                      <span className="advancedSliderValue">{orbitLineWidthPx.toFixed(1)}px</span>
-                    </div>
-
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel">Samples / Orbit</span>
-                      <input
-                        type="range"
-                        min={32}
-                        max={2048}
-                        step={32}
-                        value={orbitSamplesPerOrbit}
-                        onChange={(e) => setOrbitSamplesPerOrbit(Number(e.target.value))}
-                      />
-                      <span className="advancedSliderValue">{orbitSamplesPerOrbit}</span>
-                    </div>
-
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel">Max Orbit Points</span>
-                      <input
-                        type="number"
-                        min={256}
-                        step={256}
-                        value={orbitMaxTotalPoints}
-                        onChange={(e) => setOrbitMaxTotalPoints(Number(e.target.value))}
-                      />
-                    </div>
-
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel">Quantum (s)</span>
-                      <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
-                    </div>
+                  <div className="advancedPaneHeader">
+                    <div className="advancedPaneTitle">{activeAdvancedPane.title}</div>
+                    <div className="advancedPaneSummary">{activeAdvancedPane.summary}</div>
                   </div>
 
-                  <div className="advancedDivider" />
+                  {/* Pane: Scale & Camera */}
+                  {advancedPane === 'scaleCamera' ? (
+                    <div className="advancedGroup" role="tabpanel">
+                      <div className="advancedSlider">
+                        <span className="advancedSliderLabel advancedControlLabel">
+                          <span>Camera FOV</span>
+                          <AdvancedHelpButton topic="cameraFov" />
+                        </span>
+                        <input
+                          type="range"
+                          min={30}
+                          max={90}
+                          step={1}
+                          value={cameraFovDeg}
+                          onChange={(e) => setCameraFovDeg(Number(e.target.value))}
+                        />
+                        <span className="advancedSliderValue">{cameraFovDeg}°</span>
+                      </div>
 
-                  {/* Group 3: Animated Sky, Label Occlusion */}
-                  <div className="advancedCheckboxRow">
-                    <label className="asciiCheckbox">
-                      <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>
-                        [{animatedSky ? '✓' : '\u00A0'}]
-                      </span>
-                      <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
-                        Animated Sky
-                      </span>
-                    </label>
+                      <div className="advancedSlider">
+                        <span className="advancedSliderLabel advancedControlLabel">
+                          <span>Planet Scale</span>
+                          <AdvancedHelpButton topic="planetScale" />
+                        </span>
+                        <input
+                          type="range"
+                          min={0}
+                          max={PLANET_SCALE_SLIDER_MAX}
+                          step={1}
+                          value={planetScaleSlider}
+                          onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
+                        />
+                        <span className="advancedSliderValue">{formatScaleMultiplier(planetScaleMultiplier)}×</span>
+                      </div>
 
-                    <label className="asciiCheckbox">
-                      <span className="asciiCheckboxBox" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
-                        [{labelOcclusionEnabled ? '✓' : '\u00A0'}]
-                      </span>
-                      <span className="asciiCheckboxLabel" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
-                        Label Occlusion
-                      </span>
-                    </label>
-                  </div>
+                      <div className="advancedSlider">
+                        <span className="advancedSliderLabel advancedControlLabel">
+                          <span>Sun Scale</span>
+                          <AdvancedHelpButton topic="sunScale" />
+                        </span>
+                        <input
+                          type="range"
+                          min={1}
+                          max={20}
+                          step={1}
+                          value={sunScaleMultiplier}
+                          onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
+                        />
+                        <span className="advancedSliderValue">{sunScaleMultiplier}×</span>
+                      </div>
+                    </div>
+                  ) : null}
 
-                  {/* Body-fixed axes - keep in advanced */}
-                  <div className="advancedCheckboxRow" style={{ marginTop: '6px' }}>
-                    <label className="asciiCheckbox">
-                      <span className="asciiCheckboxBox" onClick={() => setShowBodyFixedAxes((v) => !v)}>
-                        [{showBodyFixedAxes ? '✓' : '\u00A0'}]
-                      </span>
-                      <span className="asciiCheckboxLabel" onClick={() => setShowBodyFixedAxes((v) => !v)}>
-                        Body-fixed Axes
-                      </span>
-                    </label>
-                  </div>
+                  {/* Pane: Overlays & Guides */}
+                  {advancedPane === 'guides' ? (
+                    <div className="advancedGroup" role="tabpanel">
+                      <div className="advancedCheckboxWithHelp">
+                        <label className="asciiCheckbox">
+                          <span className="asciiCheckboxBox" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
+                            [{labelOcclusionEnabled ? '✓' : ' '}]
+                          </span>
+                          <span className="asciiCheckboxLabel" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
+                            Label Occlusion
+                          </span>
+                        </label>
+                        <AdvancedHelpButton topic="labelOcclusion" />
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Pane: Orbits & Performance */}
+                  {advancedPane === 'orbitsPerformance' ? (
+                    <div className="advancedGroup" role="tabpanel">
+                      <div className="advancedSlider">
+                        <span className="advancedSliderLabel advancedControlLabel">
+                          <span>Orbit Line Width</span>
+                          <AdvancedHelpButton topic="orbitLineWidth" />
+                        </span>
+                        <input
+                          type="range"
+                          min={0.5}
+                          max={10}
+                          step={0.1}
+                          value={orbitLineWidthPx}
+                          onChange={(e) => setOrbitLineWidthPx(Number(e.target.value))}
+                        />
+                        <span className="advancedSliderValue">{orbitLineWidthPx.toFixed(1)}px</span>
+                      </div>
+
+                      <div className="advancedSlider">
+                        <span className="advancedSliderLabel advancedControlLabel">
+                          <span>Samples / Orbit</span>
+                          <AdvancedHelpButton topic="orbitSamples" />
+                        </span>
+                        <input
+                          type="range"
+                          min={32}
+                          max={2048}
+                          step={32}
+                          value={orbitSamplesPerOrbit}
+                          onChange={(e) => setOrbitSamplesPerOrbit(Number(e.target.value))}
+                        />
+                        <span className="advancedSliderValue">{orbitSamplesPerOrbit}</span>
+                      </div>
+
+                      <div className="advancedSlider">
+                        <span className="advancedSliderLabel advancedControlLabel">
+                          <span>Max Orbit Points</span>
+                          <AdvancedHelpButton topic="orbitMaxPoints" />
+                        </span>
+                        <input
+                          type="number"
+                          min={256}
+                          step={256}
+                          value={orbitMaxTotalPoints}
+                          onChange={(e) => setOrbitMaxTotalPoints(Number(e.target.value))}
+                        />
+                      </div>
+
+                      <div className="advancedDivider" />
+
+                      <div className="advancedCheckboxWithHelp">
+                        <label className="asciiCheckbox">
+                          <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>
+                            [{animatedSky ? '✓' : ' '}]
+                          </span>
+                          <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
+                            Animated Sky
+                          </span>
+                        </label>
+                        <AdvancedHelpButton topic="animatedSky" />
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Pane: Time */}
+                  {advancedPane === 'time' ? (
+                    <div className="advancedGroup" role="tabpanel">
+                      <div className="advancedSlider">
+                        <span className="advancedSliderLabel advancedControlLabel">
+                          <span>Quantum (s)</span>
+                          <AdvancedHelpButton topic="quantum" />
+                        </span>
+                        <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Pane: Debug */}
+                  {advancedPane === 'debug' ? (
+                    <div className="advancedGroup" role="tabpanel">
+                      <div className="advancedCheckboxWithHelp">
+                        <label className="asciiCheckbox">
+                          <span className="asciiCheckboxBox" onClick={() => setShowRenderHud((v) => !v)}>
+                            [{showRenderHud ? '✓' : ' '}]
+                          </span>
+                          <span className="asciiCheckboxLabel" onClick={() => setShowRenderHud((v) => !v)}>
+                            Render HUD
+                          </span>
+                        </label>
+                        <AdvancedHelpButton topic="renderHud" />
+                      </div>
+
+                      <div className="advancedCheckboxWithHelp">
+                        <label className="asciiCheckbox">
+                          <span className="asciiCheckboxBox" onClick={() => setShowJ2000Axes((v) => !v)}>
+                            [{showJ2000Axes ? '✓' : ' '}]
+                          </span>
+                          <span className="asciiCheckboxLabel" onClick={() => setShowJ2000Axes((v) => !v)}>
+                            J2000 Axes
+                          </span>
+                        </label>
+                        <AdvancedHelpButton topic="j2000Axes" />
+                      </div>
+
+                      <div className="advancedCheckboxWithHelp">
+                        <label className="asciiCheckbox">
+                          <span className="asciiCheckboxBox" onClick={() => setShowBodyFixedAxes((v) => !v)}>
+                            [{showBodyFixedAxes ? '✓' : ' '}]
+                          </span>
+                          <span className="asciiCheckboxLabel" onClick={() => setShowBodyFixedAxes((v) => !v)}>
+                            Body-fixed Axes
+                          </span>
+                        </label>
+                        <AdvancedHelpButton topic="bodyFixedAxes" />
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               )}
             </div>
@@ -995,6 +1259,20 @@ export function SceneCanvas() {
 
       {/* Render HUD overlays */}
       {showRenderHud && <RenderHud stats={hudStats} />}
+
+      <InfoOverlay
+        isOpen={advancedHelpTopic != null}
+        title={advancedHelpTopic ? ADVANCED_HELP[advancedHelpTopic].title : ''}
+        onClose={() => setAdvancedHelpTopic(null)}
+      >
+        {advancedHelpTopic ? (
+          <>
+            {ADVANCED_HELP[advancedHelpTopic].body.map((line, idx) => (
+              <p key={idx}>{line}</p>
+            ))}
+          </>
+        ) : null}
+      </InfoOverlay>
 
       <HelpOverlay isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
