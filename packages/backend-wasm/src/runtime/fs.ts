@@ -1,5 +1,5 @@
 import type { KernelSource } from "@rybosome/tspice-backend-contract";
-import { normalizeVirtualKernelPath } from "@rybosome/tspice-backend-contract";
+import { normalizeVirtualKernelPath} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import { tspiceCall1Path } from "../codec/calls.js";
@@ -50,3 +50,4 @@ export function writeKernelSource(module: EmscriptenModule, fs: WasmFsApi, kerne
   fs.writeFile(resolved, kernel.bytes);
   return resolved;
 }
+
