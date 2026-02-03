@@ -268,6 +268,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // This is kept opt-in via `appearance.layers` so other bodies remain unchanged.
   const earth = options.appearance.layers?.find(isEarthAppearanceLayer)?.earth
   const isEarth = options.bodyId === 'EARTH'
+  const isMoon = options.bodyId === 'MOON'
 
   const extraTexturesToDispose: THREE.Texture[] = []
   const extraTextureReleases: Array<() => void> = []
@@ -652,6 +653,81 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     }
   }
 
+  if (isMoon) {
+    // Moon readability tweaks:
+    // - Add subtle bump relief by re-using the albedo map as a bump map.
+    // - Darken the night side so ambient doesn't wash out the unlit hemisphere.
+
+    material.roughness = 0.95
+
+    const uNightAlbedo = { value: 0.01 }
+    const uTwilight = { value: 0.05 }
+
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
+      shader.uniforms.uNightAlbedo = uNightAlbedo
+      shader.uniforms.uTwilight = uTwilight
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <common>',
+        [
+          '#include <common>',
+          'uniform vec3 uSunDirWorld;',
+          'uniform float uNightAlbedo;',
+          'uniform float uTwilight;',
+        ].join('\n'),
+      )
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <lights_fragment_begin>',
+        [
+          '\t// Moon-only: suppress ambient-lit albedo on the night side.',
+          '\t{',
+          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\tfloat ndotl = dot( normal, sunDirView );',
+          '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
+          '\t\tdiffuseColor.rgb *= mix( uNightAlbedo, 1.0, dayFactor );',
+          '\t}',
+          '',
+          '#include <lights_fragment_begin>',
+        ].join('\n'),
+      )
+    }
+
+    if (textureUrl) {
+      readyExtras.push(
+        loadTextureCached(textureUrl, { colorSpace: THREE.NoColorSpace })
+          .then(({ texture: tex, release }) => {
+            let installed = false
+            try {
+              if (disposed) return
+
+              tex.wrapS = THREE.RepeatWrapping
+              tex.wrapT = THREE.RepeatWrapping
+              tex.needsUpdate = true
+
+              material.bumpMap = tex
+              material.bumpScale = 0.018
+              material.needsUpdate = true
+
+              extraTextureReleases.push(release)
+              installed = true
+            } finally {
+              if (!installed) release()
+            }
+          })
+          .catch((err) => {
+            if (isTextureCacheClearedError(err)) return
+            console.warn('Failed to load Moon bump texture', textureUrl, err)
+          }),
+      )
+    }
+
+    update = ({ sunDirWorld }) => {
+      uSunDirWorld.copy(sunDirWorld).normalize()
+    }
+  }
+
   const ready = Promise.all(readyExtras).then(() => undefined)
 
   return {
@@ -663,6 +739,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       disposeMap(material)
 
       material.emissiveMap = null
+      material.bumpMap = null
       material.needsUpdate = true
 
       if (cloudsMaterial) {
