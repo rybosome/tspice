@@ -5,6 +5,8 @@ describe("@rybosome/tspice-backend-contract", () => {
     // This package is intentionally *types only*.
     // Runtime imports should fail loudly to prevent accidental bundling.
     const specifier = "@rybosome/tspice-backend-contract";
-    await expect(import(/* @vite-ignore */ specifier)).rejects.toThrow();
+    await expect(import(/* @vite-ignore */ specifier)).rejects.toMatchObject({
+      message: expect.stringMatching(/tspice-backend-contract/i),
+    });
   });
 });

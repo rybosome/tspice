@@ -10,9 +10,27 @@ export type WasmFsApi = {
 };
 
 export function resolveKernelPath(path: string): string {
+  const raw = path.trim();
+  if (!raw) {
+    throw new Error("Kernel path must be non-empty");
+  }
+
+  // Fail fast for common non-virtual path forms. This improves debuggability for
+  // consumers who accidentally pass OS paths/URLs to the WASM backend.
+  //
+  // Note: `/kernels/...` is an allowed virtual path form.
+  if (
+    /^[a-zA-Z]+:/.test(raw) || // urls, `file:`, Windows drive letters, etc.
+    raw.startsWith("//") ||
+    raw.startsWith("\\\\") ||
+    (raw.startsWith("/") && !raw.startsWith("/kernels/"))
+  ) {
+    throw new Error(`WASM kernel paths must be virtual ids (e.g. "naif0012.tls"), not OS paths/URLs: ${path}`);
+  }
+
   // We treat kernel paths as *virtual* WASM-FS paths under `/kernels`.
   // Normalize to a canonical absolute path.
-  return `/kernels/${normalizeVirtualKernelPath(path)}`;
+  return `/kernels/${normalizeVirtualKernelPath(raw)}`;
 }
 
 export function createWasmFs(module: EmscriptenModule): WasmFsApi {

@@ -48,16 +48,19 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   // - prototype methods aren't lost (object spread only copies own props)
   // - methods are bound to the original backend instance (avoid mis-bound `this`)
   // - method identity is stable (`raw.furnsh === raw.furnsh`)
-  const boundMethods = new Map<PropertyKey, unknown>();
+  const boundMethods = new Map<PropertyKey, Function>();
   const handler: ProxyHandler<SpiceBackend> = {
-    get: (target, prop, receiver) => {
-      if (boundMethods.has(prop)) {
-        return boundMethods.get(prop);
-      }
-
-      const value = Reflect.get(target, prop, receiver) as unknown;
+    get: (target, prop) => {
+      // Use `target` as the receiver so accessor/prototype lookups see
+      // `this === target` (not the Proxy). Calls are still applied to `target`
+      // below to preserve `this` binding for methods.
+      const value = Reflect.get(target, prop, target) as unknown;
 
       if (prop === "kclear" && typeof value === "function") {
+        const existing = boundMethods.get(prop);
+        if (existing) {
+          return existing;
+        }
         const fn = value as unknown as () => void;
         const wrapped: SpiceBackend["kclear"] = () => {
           try {
@@ -71,6 +74,10 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
       }
 
       if (typeof value === "function") {
+        const existing = boundMethods.get(prop);
+        if (existing) {
+          return existing;
+        }
         const fn = value as unknown as (...args: unknown[]) => unknown;
         const wrapped = (...args: unknown[]) => Reflect.apply(fn, target, args);
         boundMethods.set(prop, wrapped);

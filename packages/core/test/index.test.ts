@@ -13,5 +13,9 @@ describe("@rybosome/tspice-core", () => {
 
   it("normalizes flexible virtual kernel path forms", () => {
     expect(normalizeVirtualKernelPath("/kernels//naif0012.tls")).toBe("naif0012.tls");
+
+    // Guard against the prefix-only edge case.
+    expect(() => normalizeVirtualKernelPath("/kernels")).toThrow("Invalid kernel path");
+    expect(() => normalizeVirtualKernelPath("kernels")).toThrow("Invalid kernel path");
   });
 });

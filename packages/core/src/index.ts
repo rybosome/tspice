@@ -41,6 +41,10 @@ export function normalizeVirtualKernelPath(input: string): string {
   }
 
   // Strip a leading `kernels/` directory to keep user input flexible.
+  // Treat a bare `kernels` segment as equivalent to `kernels/`.
+  if (rel === "kernels") {
+    rel = "";
+  }
   while (rel.startsWith("kernels/")) {
     rel = rel.replace(/^kernels\/+/, "");
   }
