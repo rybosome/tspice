@@ -43,13 +43,45 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   const byteBackedKernelPaths = new Set<string>();
 
   // Keep `raw.kclear()` and `kit`'s internal tracking in sync.
-  const raw: SpiceBackend = {
-    ...backend,
-    kclear: () => {
-      backend.kclear();
-      byteBackedKernelPaths.clear();
+  //
+  // Use a Proxy so:
+  // - prototype methods aren't lost (object spread only copies own props)
+  // - methods are bound to the original backend instance (avoid mis-bound `this`)
+  // - method identity is stable (`raw.furnsh === raw.furnsh`)
+  const boundMethods = new Map<PropertyKey, unknown>();
+  const handler: ProxyHandler<SpiceBackend> = {
+    get: (target, prop, receiver) => {
+      if (boundMethods.has(prop)) {
+        return boundMethods.get(prop);
+      }
+
+      const value = Reflect.get(target, prop, receiver) as unknown;
+
+      if (prop === "kclear" && typeof value === "function") {
+        const fn = value as unknown as () => void;
+        const wrapped: SpiceBackend["kclear"] = () => {
+          try {
+            Reflect.apply(fn, target, []);
+          } finally {
+            byteBackedKernelPaths.clear();
+          }
+        };
+        boundMethods.set(prop, wrapped);
+        return wrapped;
+      }
+
+      if (typeof value === "function") {
+        const fn = value as unknown as (...args: unknown[]) => unknown;
+        const wrapped = (...args: unknown[]) => Reflect.apply(fn, target, args);
+        boundMethods.set(prop, wrapped);
+        return wrapped;
+      }
+
+      return value;
     },
   };
+
+  const raw: SpiceBackend = new Proxy(backend, handler);
 
   const kit: SpiceKit = {
     loadKernel: (kernel: KernelSource) => {
@@ -68,23 +100,14 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
     },
     unloadKernel: (path) => {
       try {
-        // If this looks like the virtual path for a byte-backed kernel we
-        // loaded, normalize it and unload via the canonical identifier.
+        // `kit.unloadKernel()` is intentionally for *virtual* kernel identifiers.
+        // For backend-native unloading (e.g. OS filesystem paths), use `raw.unload()`.
+        const normalized = normalizeVirtualKernelPath(path);
         try {
-          const normalized = normalizeVirtualKernelPath(path);
-          if (byteBackedKernelPaths.has(normalized)) {
-            try {
-              raw.unload(normalized);
-            } finally {
-              byteBackedKernelPaths.delete(normalized);
-            }
-            return;
-          }
-        } catch {
-          // Ignore normalization errors and treat as a backend-native path.
+          raw.unload(normalized);
+        } finally {
+          byteBackedKernelPaths.delete(normalized);
         }
-
-        raw.unload(path);
       } catch (error) {
         throw wrapSpiceError("unloadKernel", error);
       }
