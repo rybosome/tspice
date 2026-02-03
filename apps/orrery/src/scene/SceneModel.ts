@@ -28,11 +28,34 @@ export interface BodySurfaceStyle {
 
   /** Optional surface texture settings. */
   texture?: BodySurfaceTextureStyle
+
+  /** Optional material roughness (0=mirror, 1=matte). */
+  roughness?: number
+
+  /** Optional night-side albedo suppression to avoid ambient washout. */
+  nightSide?: BodyNightSideStyle
+}
+
+export interface BodyNightSideStyle {
+  /**
+   * Base albedo multiplier on the night side.
+   *
+   * Keep this small but non-zero so the body is not totally invisible in shadow.
+   */
+  albedo?: number
+
+  /** Smoothstep band around terminator for night-side suppression, in N·L space. */
+  twilight?: number
 }
 
 export interface EarthAppearanceLayerStyle {
   kind: 'earth'
   earth: EarthAppearanceStyle
+}
+
+export interface AtmosphereAppearanceLayerStyle {
+  kind: 'atmosphere'
+  atmosphere: AtmosphereAppearanceStyle
 }
 
 export interface UnknownBodyLayerStyle {
@@ -48,7 +71,7 @@ export interface UnknownBodyLayerStyle {
 
 // Extensible: new layer kinds (atmosphere, clouds, decals, etc.) can be added later.
 // Keep this intentionally open, but structurally explicit.
-export type BodyLayerStyle = EarthAppearanceLayerStyle | UnknownBodyLayerStyle
+export type BodyLayerStyle = EarthAppearanceLayerStyle | AtmosphereAppearanceLayerStyle | UnknownBodyLayerStyle
 
 export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
   if (typeof layer !== 'object' || layer === null) return false
@@ -60,6 +83,17 @@ export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthApp
   const earth = (layer as { earth?: unknown }).earth
   return typeof earth === 'object' && earth !== null
 }
+
+export function isAtmosphereAppearanceLayer(layer: BodyLayerStyle): layer is AtmosphereAppearanceLayerStyle {
+  if (typeof layer !== 'object' || layer === null) return false
+
+  const maybeKind = (layer as { kind?: unknown }).kind
+  if (maybeKind !== 'atmosphere') return false
+
+  const atmosphere = (layer as { atmosphere?: unknown }).atmosphere
+  return typeof atmosphere === 'object' && atmosphere !== null
+}
+
 
 export interface BodyAppearanceStyle {
   surface: BodySurfaceStyle
@@ -99,6 +133,37 @@ export interface EarthAppearanceStyle {
   oceanRoughness?: number
   oceanSpecularIntensity?: number
 }
+
+export interface AtmosphereAppearanceStyle {
+  /**
+   * Rim glow sphere radius ratio relative to the parent body radius.
+   *
+   * Typical values: ~1.01..1.05.
+   */
+  radiusRatio?: number
+  color?: string
+  intensity?: number
+  rimPower?: number
+  /** 0 = symmetric rim, 1 = fully sun-biased rim. */
+  sunBias?: number
+
+  /** Optional very subtle high-altitude haze layer (transparent shell). */
+  haze?: AtmosphereHazeStyle
+}
+
+export interface AtmosphereHazeStyle {
+  radiusRatio?: number
+  color?: string
+  opacity?: number
+  alphaTest?: number
+
+  /** Optional alpha map to add structure to the haze. */
+  alphaTextureUrl?: string
+
+  /** Additional haze rotation around local +Z (north), in rad/sec of ET. */
+  driftRadPerSec?: number
+}
+
 
 export interface SceneRingsStyle {
   /** Inner radius relative to the parent body's radius. */

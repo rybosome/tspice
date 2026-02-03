@@ -211,11 +211,38 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       radiusKm: 69_911,
       appearance: {
         surface: {
+          // Keep the base color as a fallback when textures fail to load.
           color: '#f4a261',
           texture: {
             url: 'textures/planets/jupiter.png',
+            // Avoid tinting the albedo texture (stronger band contrast).
+            color: '#ffffff',
+          },
+          roughness: 0.88,
+          nightSide: {
+            albedo: 0.012,
+            twilight: 0.12,
           },
         },
+        layers: [
+          {
+            kind: 'atmosphere',
+            atmosphere: {
+              radiusRatio: 1.03,
+              color: '#cfe7ff',
+              intensity: 0.14,
+              rimPower: 2.3,
+              sunBias: 0.8,
+              haze: {
+                radiusRatio: 1.04,
+                // Ultra subtle: mostly visible as depth near the limb.
+                opacity: 0.06,
+                alphaTest: 0.02,
+                driftRadPerSec: 0.000015,
+              },
+            },
+          },
+        ],
       },
       label: 'Jupiter',
     },
