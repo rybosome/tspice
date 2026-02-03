@@ -179,6 +179,9 @@ function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Textur
     material.bumpMap = null
     material.bumpScale = 0
   }
+
+  // Ensure shader recompiles when toggling maps (e.g. null -> texture).
+  material.needsUpdate = true
 }
 
 type ShaderSource = Pick<BeforeCompileShader, ShaderSourceKey>
@@ -426,6 +429,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '\t// Terminator darkening: suppress ambient-lit albedo on the night side.',
           '\t{',
           '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\t// Assumes `normal` is the final view-space normal used for lighting (post bump/normal-map perturbation).',
           '\t\tfloat ndotl = dot( normal, sunDirView );',
           '\t\tfloat dayFactor = smoothstep( 0.0, uTerminatorTwilight, ndotl );',
           '\t\tdiffuseColor.rgb *= mix( uNightAlbedo, 1.0, dayFactor );',
