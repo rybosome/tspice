@@ -35,6 +35,11 @@ export interface EarthAppearanceLayerStyle {
   earth: EarthAppearanceStyle
 }
 
+export interface VenusAppearanceLayerStyle {
+  kind: 'venus'
+  venus: VenusAppearanceStyle
+}
+
 export interface UnknownBodyLayerStyle {
   kind: string
   /**
@@ -48,7 +53,7 @@ export interface UnknownBodyLayerStyle {
 
 // Extensible: new layer kinds (atmosphere, clouds, decals, etc.) can be added later.
 // Keep this intentionally open, but structurally explicit.
-export type BodyLayerStyle = EarthAppearanceLayerStyle | UnknownBodyLayerStyle
+export type BodyLayerStyle = EarthAppearanceLayerStyle | VenusAppearanceLayerStyle | UnknownBodyLayerStyle
 
 export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
   if (typeof layer !== 'object' || layer === null) return false
@@ -59,6 +64,17 @@ export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthApp
   // Validate payload shape beyond `kind === 'earth'`.
   const earth = (layer as { earth?: unknown }).earth
   return typeof earth === 'object' && earth !== null
+}
+
+export function isVenusAppearanceLayer(layer: BodyLayerStyle): layer is VenusAppearanceLayerStyle {
+  if (typeof layer !== 'object' || layer === null) return false
+
+  const maybeKind = (layer as { kind?: unknown }).kind
+  if (maybeKind !== 'venus') return false
+
+  // Validate payload shape beyond `kind === 'venus'`.
+  const venus = (layer as { venus?: unknown }).venus
+  return typeof venus === 'object' && venus !== null
 }
 
 export interface BodyAppearanceStyle {
@@ -98,6 +114,40 @@ export interface EarthAppearanceStyle {
 
   oceanRoughness?: number
   oceanSpecularIntensity?: number
+}
+
+export interface VenusAppearanceStyle {
+  /** Baseline multiplier for the night-side albedo (prevents ambient washout). */
+  nightAlbedo?: number
+  /** Smoothstep band around terminator, in N·L space (0..1-ish). */
+  twilight?: number
+
+  /**
+   * Optional cloud/haze shell.
+   *
+   * Venus is almost fully cloud-covered, so this shell should generally be
+   * present and relatively opaque.
+   */
+  cloudsRadiusRatio?: number
+  cloudsColor?: string
+  cloudsOpacity?: number
+  cloudsAlphaTest?: number
+  /** Additional clouds rotation around local +Z (north), in rad/sec of ET. */
+  cloudsDriftRadPerSec?: number
+  /** Night-side brightness multiplier for the haze shell (0 = fully dark). */
+  cloudsNightMultiplier?: number
+
+  /**
+   * Optional atmosphere rim glow.
+   *
+   * Venus should have a stronger / broader rim than Earth.
+   */
+  atmosphereRadiusRatio?: number
+  atmosphereColor?: string
+  atmosphereIntensity?: number
+  atmosphereRimPower?: number
+  /** 0 = symmetric rim, 1 = fully sun-biased rim. */
+  atmosphereSunBias?: number
 }
 
 export interface SceneRingsStyle {

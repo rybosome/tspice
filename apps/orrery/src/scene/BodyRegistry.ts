@@ -123,8 +123,35 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
           color: '#e9c46a',
           texture: {
             url: 'textures/planets/venus.png',
+            // Keep the albedo texture un-tinted; haze/atmosphere layers provide the warm color.
+            color: '#ffffff',
           },
         },
+        layers: [
+          {
+            kind: 'venus',
+            venus: {
+              // Keep the night side properly dark (no city lights).
+              nightAlbedo: 0.0015,
+              twilight: 0.08,
+
+              // Thick cloud/haze shell.
+              cloudsRadiusRatio: 1.012,
+              cloudsColor: '#fff2cc',
+              cloudsOpacity: 0.9,
+              cloudsAlphaTest: 0.0,
+              cloudsDriftRadPerSec: 0.00002,
+              cloudsNightMultiplier: 0.0,
+
+              // Stronger / broader atmosphere rim than Earth.
+              atmosphereRadiusRatio: 1.035,
+              atmosphereColor: '#ffe6bf',
+              atmosphereIntensity: 0.9,
+              atmosphereRimPower: 1.25,
+              atmosphereSunBias: 0.8,
+            },
+          },
+        ],
       },
       label: 'Venus',
     },
