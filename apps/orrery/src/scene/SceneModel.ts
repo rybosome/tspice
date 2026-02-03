@@ -110,6 +110,9 @@ export interface SceneRingsStyle {
   /** Optional material tint color. */
   color?: string
 
+  /** Optional alpha test threshold (0..1). Useful for crisp ring edges. */
+  alphaTest?: number
+
   /** Optional baseline opacity applied across the whole annulus (0..1). */
   baseOpacity?: number
 }
