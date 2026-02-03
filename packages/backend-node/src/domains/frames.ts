@@ -1,7 +1,7 @@
 import type {
   Found,
   FramesApi,
-  SpiceMatrix3x3,
+  Mat3RowMajor,
   SpiceMatrix6x6,
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
@@ -56,7 +56,7 @@ export function createFramesApi(native: NativeAddon): FramesApi {
       }
       invariant(Array.isArray(out.cmat) && out.cmat.length === 9, "Expected ckgp().cmat to be a length-9 array");
       invariant(typeof out.clkout === "number", "Expected ckgp().clkout to be a number");
-      return { found: true, cmat: out.cmat as SpiceMatrix3x3, clkout: out.clkout };
+      return { found: true, cmat: out.cmat as Mat3RowMajor, clkout: out.clkout };
     },
 
     ckgpav: (inst, sclkdp, tol, ref) => {
@@ -72,7 +72,7 @@ export function createFramesApi(native: NativeAddon): FramesApi {
       invariant(typeof out.clkout === "number", "Expected ckgpav().clkout to be a number");
       return {
         found: true,
-        cmat: out.cmat as SpiceMatrix3x3,
+        cmat: out.cmat as Mat3RowMajor,
         av: out.av as SpiceVector3,
         clkout: out.clkout,
       };
@@ -81,7 +81,7 @@ export function createFramesApi(native: NativeAddon): FramesApi {
     pxform: (from, to, et) => {
       const m = native.pxform(from, to, et);
       invariant(Array.isArray(m) && m.length === 9, "Expected pxform() to return a length-9 array");
-      return m as SpiceMatrix3x3;
+      return m as Mat3RowMajor;
     },
 
     sxform: (from, to, et) => {
