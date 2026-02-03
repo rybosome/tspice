@@ -290,7 +290,8 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       radiusKm: 24_622,
       appearance: {
         surface: {
-          color: '#4361ee',
+          // Deeper base tint so Neptune reads as a richer deep blue.
+          color: '#2b55ff',
           texture: {
             url: 'textures/planets/neptune.png',
           },
