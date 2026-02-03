@@ -176,8 +176,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const surfaceMetalness = surface.metalness ?? 0.0
   const bumpScale = surface.bumpScale ?? 0.0
 
-  const nightAlbedo =
-    surface.nightAlbedo == null ? undefined : THREE.MathUtils.clamp(surface.nightAlbedo, 0.0, 1.0)
+  const nightAlbedo = surface.nightAlbedo == null ? undefined : THREE.MathUtils.clamp(surface.nightAlbedo, 0.0, 1.0)
   const terminatorTwilight = THREE.MathUtils.clamp(surface.terminatorTwilight ?? 0.08, 0.0, 1.0)
 
   let map: THREE.Texture | undefined = textureKind ? makeProceduralBodyTexture(textureKind) : undefined
