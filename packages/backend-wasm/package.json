@@ -20,8 +20,8 @@
     "NOTICE"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && node ../../scripts/copy-backend-wasm-assets.mjs",
-    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "build": "tsc -b tsconfig.json && node ../../scripts/copy-backend-wasm-assets.mjs",
+    "typecheck": "tsc -b tsconfig.json --emitDeclarationOnly",
     "test": "vitest run"
   },
   "dependencies": {

@@ -4,6 +4,8 @@
 
 Shared TypeScript types that define the low-level **CSPICE-like** contract implemented by backend runtimes (native addon, WASM, etc.).
 
+> This package intentionally exports **no runtime values** (types only). Always `import type` from it.
+
 ## What’s in this package
 
 - `SpiceBackend`: the raw CSPICE-like function surface (`furnsh`, `kclear`, `pxform`, `spkezr`, ...)
