@@ -99,7 +99,7 @@ main().catch(console.error);
   - `SpiceBackend`
   - `SpiceKit`, `Spice`
   - Mid-level:
-    - `Vec3`, `Vec6`, `Mat3`, `FrameName`, `AberrationCorrection`, `SpiceTime`
+    - `Vec3`, `Vec6`, `Mat3` (wrapper), `Mat3RowMajor`, `Mat3ColMajor`, `FrameName`, `AberrationCorrection`, `SpiceTime`
     - `StateVector`
     - `SpiceError`
 
