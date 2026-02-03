@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { assertNever, invariant } from "@rybosome/tspice-core";
+import { assertNever, invariant, normalizeVirtualKernelPath } from "@rybosome/tspice-core";
 
 describe("@rybosome/tspice-core", () => {
   it("throws when condition is false", () => {
@@ -9,5 +9,9 @@ describe("@rybosome/tspice-core", () => {
 
   it("throws for assertNever", () => {
     expect(() => assertNever("nope" as never)).toThrow("Unexpected value");
+  });
+
+  it("normalizes flexible virtual kernel path forms", () => {
+    expect(normalizeVirtualKernelPath("/kernels//naif0012.tls")).toBe("naif0012.tls");
   });
 });
