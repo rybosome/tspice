@@ -656,14 +656,12 @@ export function SceneCanvas() {
             'sun-far': { radius: 18.0, yaw: 0.85, pitch: 0.35 },
           }
 
-          let lastPerfSample:
-            | {
-                cpuFrameMs: number
-                drawCalls: number
-                triangles: number
-                textures: number
-              }
-            | null = null
+          let lastPerfSample: {
+            cpuFrameMs: number
+            drawCalls: number
+            triangles: number
+            textures: number
+          } | null = null
 
           const samplePerfCounters = () => {
             const t0 = performance.now()

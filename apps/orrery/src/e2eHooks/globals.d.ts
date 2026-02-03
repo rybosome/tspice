@@ -33,14 +33,12 @@ declare global {
       }
 
       /** Return the last `samplePerfCounters()` result (or null if none). */
-      getLastPerfCounters?: () =>
-        | {
-            cpuFrameMs: number
-            drawCalls: number
-            triangles: number
-            textures: number
-          }
-        | null
+      getLastPerfCounters?: () => {
+        cpuFrameMs: number
+        drawCalls: number
+        triangles: number
+        textures: number
+      } | null
     }
 
     /** Signals to Playwright tests that the WebGL scene has rendered at least once. */
