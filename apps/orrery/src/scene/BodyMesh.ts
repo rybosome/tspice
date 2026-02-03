@@ -169,8 +169,26 @@ function createWarnOnce() {
   }
 }
 
-function getShaderSource(shader: BeforeCompileShader, source: ShaderSourceKey): string | undefined {
-  const value = (shader as unknown as Record<string, unknown>)[source]
+function applyMapAndBump(
+  material: THREE.MeshStandardMaterial,
+  map: THREE.Texture | undefined,
+  bumpScale: number,
+) {
+  material.map = map ?? null
+
+  if (map && bumpScale !== 0) {
+    material.bumpMap = map
+    material.bumpScale = bumpScale
+  } else {
+    material.bumpMap = null
+    material.bumpScale = 0
+  }
+}
+
+type ShaderSource = Pick<BeforeCompileShader, ShaderSourceKey>
+
+function getShaderSource(shader: ShaderSource, source: ShaderSourceKey): string | undefined {
+  const value = shader[source]
   return typeof value === 'string' ? value : undefined
 }
 
@@ -185,7 +203,9 @@ function safeShaderReplace(args: {
 }): boolean {
   const { shader, source, needle, replacement, marker, warnOnce, warnKey } = args
 
-  const src = getShaderSource(shader, source)
+  const shaderSources: ShaderSource = shader
+
+  const src = getShaderSource(shaderSources, source)
   if (src == null) {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing shader source)', { source, marker })
     return false
@@ -204,7 +224,7 @@ function safeShaderReplace(args: {
   }
 
   // `onBeforeCompile` expects us to mutate the shader in-place.
-  ;(shader as unknown as Record<string, unknown>)[source] = next
+  shaderSources[source] = next
   return true
 }
 
@@ -277,6 +297,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     emissiveIntensity: textureKind === 'sun' ? 0.8 : 0.0,
   })
 
+  // Centralize map + bump setup so sync/async paths match.
+  applyMapAndBump(material, map, bumpScale)
+
   function disposeMap(mat: THREE.MeshStandardMaterial) {
     const release = mapRelease
     const tex = map
@@ -286,8 +309,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     mapRelease = undefined
 
     // Ensure the material no longer references the texture.
-    mat.map = null
-    mat.bumpMap = null
+    applyMapAndBump(mat, undefined, 0)
     mat.needsUpdate = true
 
     if (release) {
@@ -906,12 +928,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       if (disposed) return
       if (!map) return
 
-      material.map = map
-
-      if (bumpScale !== 0) {
-        material.bumpMap = map
-        material.bumpScale = bumpScale
-      }
+      applyMapAndBump(material, map, bumpScale)
 
       // Note: `material.color` multiplies `material.map`.
       // Only override the default multiplier if `textureColor` is explicitly set.
