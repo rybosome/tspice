@@ -254,6 +254,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         outerRadius: options.appearance.rings.outerRadiusRatio,
         textureUrl: options.appearance.rings.textureUrl,
         color: options.appearance.rings.color,
+        alphaTest: options.appearance.rings.alphaTest,
         baseOpacity: options.appearance.rings.baseOpacity,
       })
     : undefined
@@ -268,6 +269,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // This is kept opt-in via `appearance.layers` so other bodies remain unchanged.
   const earth = options.appearance.layers?.find(isEarthAppearanceLayer)?.earth
   const isEarth = options.bodyId === 'EARTH'
+  const isUranus = options.bodyId === 'URANUS'
 
   const extraTexturesToDispose: THREE.Texture[] = []
   const extraTextureReleases: Array<() => void> = []
@@ -282,6 +284,118 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   extraTexturesToDispose.push(black1x1)
 
   let update: BodyMeshUpdate | undefined
+
+  // Uranus appearance tuning (subtle limb haze + darker night side).
+  if (isUranus) {
+    // Slightly smoother material response for a gas-giant look.
+    material.roughness = 0.82
+
+    // Suppress ambient-lit albedo on the night side so the disc doesn't read flat.
+    const uNightAlbedo = { value: 0.02 }
+    const uTwilight = { value: 0.18 }
+
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
+      shader.uniforms.uNightAlbedo = uNightAlbedo
+      shader.uniforms.uTwilight = uTwilight
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <common>',
+        [
+          '#include <common>',
+          'uniform vec3 uSunDirWorld;',
+          'uniform float uNightAlbedo;',
+          'uniform float uTwilight;',
+        ].join('\n'),
+      )
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <lights_fragment_begin>',
+        [
+          '\t// Uranus-only: darken the night side so ambient light does not wash out the disc.',
+          '\t{',
+          '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+          '\t\tfloat ndotl = dot( normal, sunDirView );',
+          '\t\tfloat dayFactor = smoothstep( -uTwilight, uTwilight, ndotl );',
+          '\t\tdiffuseColor.rgb *= mix( uNightAlbedo, 1.0, dayFactor );',
+          '\t}',
+          '',
+          '#include <lights_fragment_begin>',
+        ].join('\n'),
+      )
+    }
+
+    material.customProgramCacheKey = () => 'uranus-night-darkening'
+
+    // Very faint limb haze (cheap atmosphere shell)
+    const hazeGeo = new THREE.SphereGeometry(1, 48, 24)
+    hazeGeo.rotateX(Math.PI / 2)
+    extraGeometriesToDispose.push(hazeGeo)
+
+    const hazeMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        uSunDirWorld: { value: uSunDirWorld },
+        uColor: { value: new THREE.Color('#c8fbff') },
+        uIntensity: { value: 0.06 },
+        uRimPower: { value: 3.0 },
+        uSunBias: { value: 0.8 },
+      },
+      vertexShader: [
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
+        '  vWorldPos = worldPos.xyz;',
+        '  vWorldNormal = normalize( mat3( modelMatrix ) * normal );',
+        '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
+        '}',
+      ].join('\n'),
+      fragmentShader: [
+        'uniform vec3 uSunDirWorld;',
+        'uniform vec3 uColor;',
+        'uniform float uIntensity;',
+        'uniform float uRimPower;',
+        'uniform float uSunBias;',
+        '',
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec3 N = normalize( vWorldNormal );',
+        '  vec3 V = normalize( cameraPosition - vWorldPos );',
+        '  vec3 L = normalize( uSunDirWorld );',
+        '',
+        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
+        '  rim = pow( rim, uRimPower );',
+        '',
+        '  float ndotl = dot( N, L );',
+        '  float k = clamp( uSunBias, 0.0, 1.0 );',
+        '  float start = mix( -0.15, 0.0, k );',
+        '  float end = mix( 0.45, 0.2, k );',
+        '  float dayFactor = smoothstep( start, end, ndotl );',
+        '',
+        '  float alpha = rim * dayFactor * uIntensity;',
+        '  gl_FragColor = vec4( uColor, alpha );',
+        '}',
+      ].join('\n'),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      toneMapped: false,
+      side: THREE.BackSide,
+    })
+    extraMaterialsToDispose.push(hazeMaterial)
+
+    const hazeMesh = new THREE.Mesh(hazeGeo, hazeMaterial)
+    hazeMesh.scale.setScalar(1.012)
+    hazeMesh.renderOrder = 2
+    mesh.add(hazeMesh)
+
+    update = ({ sunDirWorld }) => {
+      uSunDirWorld.copy(sunDirWorld).normalize()
+    }
+  }
 
   let cloudsMesh: THREE.Mesh | undefined
   let cloudsMaterial: THREE.MeshStandardMaterial | undefined

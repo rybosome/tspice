@@ -258,7 +258,8 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       radiusKm: 25_362,
       appearance: {
         surface: {
-          color: '#8ecae6',
+          // Pale cyan, fairly smooth gas-giant read.
+          color: '#b9f3f6',
           texture: {
             url: 'textures/planets/uranus.png',
           },
@@ -266,14 +267,13 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
         rings: {
           // Uranus' main rings are narrow and dark.
           // Radii are rough (in units of Uranus radii) but visually match the main ring region.
-          innerRadiusRatio: 1.55,
-          outerRadiusRatio: 2.05,
+          innerRadiusRatio: 1.6,
+          outerRadiusRatio: 2.02,
           textureUrl: 'textures/planets/uranus-rings.png',
-          color: '#6b7280',
-          // The Uranus rings texture only contains strong alpha for a narrow band
-          // near the inner edge; clamp alpha so the full annulus reads as a
-          // faint, thicker ring system.
-          baseOpacity: 0.4,
+          color: '#9ca3af',
+          // Prefer the authored alpha (thin bands); discard near-zero alpha to
+          // avoid a wide translucent halo.
+          alphaTest: 0.08,
         },
       },
       label: 'Uranus',

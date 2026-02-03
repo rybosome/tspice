@@ -20,6 +20,9 @@ export type CreateRingMeshOptions = {
   /** Material tint color (useful for grayscale ring textures). */
   color?: THREE.ColorRepresentation
 
+  /** Optional alpha test threshold (0..1). */
+  alphaTest?: number
+
   /**
    * Baseline opacity applied across the entire ring (0..1).
    *
@@ -93,6 +96,7 @@ export function createRingMesh(options: CreateRingMeshOptions): {
   const material = new THREE.MeshStandardMaterial({
     color: new THREE.Color(options.color ?? '#ffffff'),
     transparent: true,
+    alphaTest: options.alphaTest,
     side: THREE.DoubleSide,
     depthWrite: false,
     roughness: 0.95,
