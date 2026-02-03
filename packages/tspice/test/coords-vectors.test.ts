@@ -45,7 +45,7 @@ describe("coordinate conversions + vector/matrix helpers", () => {
       1, 2, 3,
       4, 5, 6,
       7, 8, 9,
-    ] as unknown as Mat3RowMajor;
+    ] as Mat3RowMajor;
     expectVec3Close(backend.mxv(m, [1, 0, 0]), [1, 4, 7]);
     expectVec3Close(backend.mtxv(m, [1, 0, 0]), [1, 2, 3]);
   }

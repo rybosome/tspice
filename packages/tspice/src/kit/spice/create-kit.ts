@@ -18,7 +18,10 @@ export type CreateKitOptions = {
 
 export function createKit(cspice: SpiceBackend, options: CreateKitOptions = {}): SpiceKit {
   return {
-    ...createKernelKit(cspice, { byteBackedKernelPaths: options.byteBackedKernelPaths }),
+    ...createKernelKit(
+      cspice,
+      options.byteBackedKernelPaths ? { byteBackedKernelPaths: options.byteBackedKernelPaths } : {},
+    ),
     ...createTimeKit(cspice),
     ...createFramesKit(cspice),
     ...createStateKit(cspice),
