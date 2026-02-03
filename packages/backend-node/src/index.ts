@@ -25,8 +25,6 @@ export function createNodeBackend(): SpiceBackend {
   const stager = createKernelStager();
 
   const backend: SpiceBackend = {
-    kind: "node",
-
     ...createTimeApi(native),
     ...createKernelsApi(native, stager),
     ...createIdsNamesApi(native),

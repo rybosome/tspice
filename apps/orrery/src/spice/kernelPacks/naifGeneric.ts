@@ -13,15 +13,15 @@ export const naifGenericKernelPack: KernelPack = {
   kernels: [
     {
       urlPath: 'kernels/naif/naif0012.tls',
-      fsPath: '/kernels/naif/naif0012.tls',
+      fsPath: 'naif/naif0012.tls',
     },
     {
       urlPath: 'kernels/naif/pck00011.tpc',
-      fsPath: '/kernels/naif/pck00011.tpc',
+      fsPath: 'naif/pck00011.tpc',
     },
     {
       urlPath: 'kernels/naif/de432s.bsp',
-      fsPath: '/kernels/naif/de432s.bsp',
+      fsPath: 'naif/de432s.bsp',
     },
   ],
 } as const

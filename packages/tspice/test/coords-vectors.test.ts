@@ -7,7 +7,7 @@ import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
 function expectVec3Close(actual: [number, number, number], expected: [number, number, number], precision = 12) {
   for (let i = 0; i < 3; i++) {
-    expect(actual[i]).toBeCloseTo(expected[i], precision);
+    expect(actual[i]!).toBeCloseTo(expected[i]!, precision);
   }
 }
 

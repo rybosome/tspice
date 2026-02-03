@@ -30,8 +30,7 @@ import { createBackend } from "@rybosome/tspice";
 
 async function main() {
   const backend = await createBackend({ backend: "wasm" });
-  console.log(backend.kind); // "wasm"
-  console.log(backend.spiceVersion());
+  console.log(backend.tkvrsn("TOOLKIT"));
 }
 
 main().catch(console.error);

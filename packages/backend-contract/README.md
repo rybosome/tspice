@@ -2,82 +2,74 @@
 
 ## Overview
 
-Shared types and constants that define the contract between `@rybosome/tspice` and backend implementations.
+Shared TypeScript types that define the low-level **CSPICE-like** contract implemented by backend runtimes (native addon, WASM, etc.).
 
-## Purpose / Why this exists
+> This package intentionally exports **no runtime values** (types only). Always `import type` from it.
 
-Backends are intended to be swappable (native addon, WASM, remote, etc.). This package centralizes the interface they must implement so:
+## What’s in this package
 
-- backend packages can implement a shared `SpiceBackend` interface
-- the `@rybosome/tspice` facade can select a backend without importing backend-specific types
+- `SpiceBackend`: the raw CSPICE-like function surface (`furnsh`, `kclear`, `pxform`, `spkezr`, ...)
+- Supporting types used by that surface (for example `KernelSource`, `KernelKind`, `AbCorr`, matrix/vector shapes, etc.)
+
+Notably, this contract intentionally does **not** expose backend/runtime details like:
+
+- backend identification (`kind`)
+- WASM filesystem helpers (`writeFile`, `loadKernel`)
+
+Backends may have internal helpers, but they are not part of the public `SpiceBackend` type.
 
 ## How it fits into `tspice`
 
-- `@rybosome/tspice` re-exports `BackendKind` and `SpiceBackend` from here.
-- Backend implementations (`@rybosome/tspice-backend-node`, `@rybosome/tspice-backend-wasm`, and future backends) import these types to ensure they match the expected API.
+- Backend implementations (`@rybosome/tspice-backend-node`, `@rybosome/tspice-backend-wasm`, ...) implement `SpiceBackend`.
+- The public facade (`@rybosome/tspice`) consumes this type and re-exports `SpiceBackend`.
 
-## Installation
-
-You typically don’t install this package directly. It is a workspace-internal dependency of the facade and backend packages.
-
-## Usage (Quickstart)
+## Usage
 
 ### Implementing a backend
 
-```ts
-import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+Backends should return an object that is assignable to `SpiceBackend`.
 
-export function createExampleBackend(): SpiceBackend {
-  return {
-    kind: "node",
-    spiceVersion: () => "example"
-  };
-}
-```
+For reference implementations, see:
+
+- `packages/backend-node/src/index.ts`
+- `packages/backend-wasm/src/runtime/create-backend.*.ts`
 
 ### Consuming types
 
 ```ts
-import type { BackendKind, SpiceBackend } from "@rybosome/tspice-backend-contract";
+import fs from "node:fs/promises";
 
-export function acceptsBackendKind(kind: BackendKind): BackendKind {
-  return kind;
-}
+import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
-function acceptsBackend(backend: SpiceBackend) {
-  backend.spiceVersion();
+export async function acceptsBackend(backend: SpiceBackend) {
+  backend.kclear();
+  // Prefer byte-backed kernel loading for backend portability.
+  const bytes = await fs.readFile("/path/to/kernel.tm");
+  backend.furnsh({ path: "kernel.tm", bytes });
+
+  // When unloading byte-backed kernels, pass the same `path` you used above.
+  backend.unload("kernel.tm");
+  return backend.tkvrsn("TOOLKIT");
 }
 ```
 
-## Concepts
-
-### `BACKEND_KINDS` / `BackendKind`
-
-`BACKEND_KINDS` is the canonical list of supported backends. `BackendKind` is derived from it:
+In browser/worker environments, you can fetch kernel bytes instead:
 
 ```ts
-export const BACKEND_KINDS = ["node", "wasm", "fake"] as const;
-export type BackendKind = (typeof BACKEND_KINDS)[number];
+const res = await fetch("https://example.com/kernel.tm");
+const bytes = new Uint8Array(await res.arrayBuffer());
+backend.furnsh({ path: "kernel.tm", bytes });
 ```
 
-### `SpiceBackend`
+### `furnsh(string)` is backend-dependent
 
-`SpiceBackend` is the interface the facade (`@rybosome/tspice`) works with. Each backend package returns an object that implements this interface.
+`furnsh("/path/to/kernel.tm")` is valid, but **what filesystem that path refers
+to depends on the backend**:
 
-## Adding a new backend kind
+- **Node backend:** OS filesystem path.
+- **WASM backend:** virtual WASM filesystem path (by convention under `/kernels`).
 
-When you add a new backend kind, you generally update:
-
-1. `packages/backend-contract/src/index.ts`: add to `BACKEND_KINDS`.
-2. `packages/tspice/src/index.ts`: add a new `case` to `createBackend()`.
-3. Add a backend package (or update an existing one) that returns a `SpiceBackend` with `kind` set to your new value.
-4. Update tests to cover the new selection and behavior.
-
-## API surface
-
-- `BACKEND_KINDS: readonly ["node", "wasm", "fake"]` (additional backend kinds may be added over time)
-- `BackendKind: (typeof BACKEND_KINDS)[number]`
-- `SpiceBackend` interface
+If you want code that works across backends, prefer `furnsh({ path, bytes })`.
 
 ## Development
 
@@ -86,7 +78,3 @@ pnpm --filter @rybosome/tspice-backend-contract run build
 pnpm --filter @rybosome/tspice-backend-contract run typecheck
 pnpm --filter @rybosome/tspice-backend-contract run test
 ```
-
-## Versioning
-
-This contract is under active development and may change as backend functionality is added.

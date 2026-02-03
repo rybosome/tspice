@@ -8,7 +8,6 @@ export * from "./domains/ephemeris.js";
 export * from "./domains/geometry.js";
 export * from "./domains/coords-vectors.js";
 
-import type { BackendKind } from "./shared/types.js";
 import type { KernelsApi } from "./domains/kernels.js";
 import type { TimeApi } from "./domains/time.js";
 import type { IdsNamesApi } from "./domains/ids-names.js";
@@ -25,20 +24,5 @@ export interface SpiceBackend
     EphemerisApi,
     GeometryApi,
     CoordsVectorsApi {
-  kind: BackendKind;
 }
 
-/**
-* WASM-only helpers (not available on the node backend).
-*
-* These are used to populate the in-memory FS and then load kernels.
-*/
-export interface SpiceBackendWasm extends SpiceBackend {
-  kind: "wasm";
-
-  /** Write a file into the WASM in-memory filesystem. */
-  writeFile(path: string, data: Uint8Array): void;
-
-  /** Write and load a kernel into the WASM filesystem. */
-  loadKernel(path: string, data: Uint8Array): void;
-}

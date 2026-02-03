@@ -1,10 +1,8 @@
 export type {
-  BackendKind,
   KernelSource,
   Mat3ColMajor,
   Mat3RowMajor,
   SpiceBackend,
-  SpiceBackendWasm,
 } from "@rybosome/tspice-backend-contract";
 
 export type { CreateBackendOptions } from "./backend.js";

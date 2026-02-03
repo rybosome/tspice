@@ -444,7 +444,6 @@ export function createFakeBackend(): SpiceBackend {
   };
 
   return {
-    kind: "fake",
 
     spiceVersion: () => FAKE_SPICE_VERSION,
 
