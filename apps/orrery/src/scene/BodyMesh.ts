@@ -169,11 +169,7 @@ function createWarnOnce() {
   }
 }
 
-function applyMapAndBump(
-  material: THREE.MeshStandardMaterial,
-  map: THREE.Texture | undefined,
-  bumpScale: number,
-) {
+function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Texture | undefined, bumpScale: number) {
   material.map = map ?? null
 
   if (map && bumpScale !== 0) {
