@@ -109,7 +109,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
           nightAlbedo: 0.02,
           terminatorTwilight: 0.06,
           texture: {
-            url: 'textures/planets/mercury.png',
+            url: 'textures/planets/mercury.jpg',
             // Avoid unintentionally tinting/darkening the albedo texture.
             color: '#ffffff',
           },
