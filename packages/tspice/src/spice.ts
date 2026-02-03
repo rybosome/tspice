@@ -1,5 +1,5 @@
 import type { KernelSource, SpiceBackend } from "@rybosome/tspice-backend-contract";
-import { normalizeVirtualKernelPath } from "@rybosome/tspice-backend-contract";
+import { normalizeVirtualKernelPath } from "@rybosome/tspice-core";
 
 import type { CreateBackendOptions } from "./backend.js";
 import { createBackend } from "./backend.js";
