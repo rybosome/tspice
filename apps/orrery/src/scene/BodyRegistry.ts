@@ -234,6 +234,8 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
           color: '#f6bd60',
           texture: {
             url: 'textures/planets/saturn.png',
+            // Avoid tinting the full-color Saturn texture (keeps banding readable).
+            color: '#ffffff',
           },
         },
         rings: {
@@ -242,6 +244,9 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
           outerRadiusRatio: 2.33,
           textureUrl: 'textures/planets/saturn-rings.png',
           color: '#d7c7a0',
+          opacity: 0.95,
+          // Helps reduce edge halos from faint alpha in ring textures.
+          alphaTest: 0.1,
         },
       },
       label: 'Saturn',
