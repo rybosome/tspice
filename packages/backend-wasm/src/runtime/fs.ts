@@ -1,5 +1,5 @@
 import type { KernelSource } from "@rybosome/tspice-backend-contract";
-import { normalizeVirtualKernelPath} from "@rybosome/tspice-core";
+import { normalizeVirtualKernelPath } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import { tspiceCall1Path } from "../codec/calls.js";
