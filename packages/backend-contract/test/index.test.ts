@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { BACKEND_KINDS } from "@rybosome/tspice-backend-contract";
-
 describe("@rybosome/tspice-backend-contract", () => {
-  it("exports backend kinds", () => {
-    expect(BACKEND_KINDS).toEqual(["node", "wasm", "fake"]);
+  it("fails when imported at runtime (types-only package)", async () => {
+    // This package is intentionally *types only*.
+    // Runtime imports should fail loudly to prevent accidental bundling.
+    const specifier = "@rybosome/tspice-backend-contract";
+    await expect(import(/* @vite-ignore */ specifier)).rejects.toMatchObject({
+      message: expect.stringMatching(/tspice-backend-contract/i),
+    });
   });
 });

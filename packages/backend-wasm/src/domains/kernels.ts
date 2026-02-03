@@ -12,7 +12,7 @@ import { tspiceCall0, tspiceCall1Path } from "../codec/calls.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import type { WasmFsApi } from "../runtime/fs.js";
-import { writeKernelSource } from "../runtime/fs.js";
+import { resolveKernelPath, writeKernelSource } from "../runtime/fs.js";
 
 function tspiceCallKtotal(module: EmscriptenModule, kind: KernelKind): number {
   const errMaxBytes = 2048;
@@ -114,11 +114,27 @@ function tspiceCallKdata(
 export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): KernelsApi {
   return {
     furnsh: (kernel: KernelSource) => {
+      if (typeof kernel === "string") {
+        // String kernels are treated as *WASM-FS paths*.
+        //
+        // In this backend, we normalize the provided path into the virtual
+        // `/kernels/...` directory (see `resolveKernelPath`). This means
+        // `furnsh("naif0012.tls")` and `furnsh("/kernels/naif0012.tls")` refer
+        // to the same virtual file.
+        //
+        // NOTE: This behavior is backend-specific. In the Node backend,
+        // `furnsh(string)` is an OS filesystem path.
+        tspiceCall1Path(module, module._tspice_furnsh, resolveKernelPath(kernel));
+        return;
+      }
+
+      // Byte-backed kernels are written into the WASM-FS before loading.
+      // Callers should treat `kernel.path` as a *virtual* identifier.
       const path = writeKernelSource(module, fs, kernel);
       tspiceCall1Path(module, module._tspice_furnsh, path);
     },
     unload: (path: string) => {
-      tspiceCall1Path(module, module._tspice_unload, path);
+      tspiceCall1Path(module, module._tspice_unload, resolveKernelPath(path));
     },
     kclear: () => {
       tspiceCall0(module, module._tspice_kclear);

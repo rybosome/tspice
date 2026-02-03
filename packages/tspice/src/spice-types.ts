@@ -22,6 +22,8 @@ export type SpiceKit = {
   loadKernel(kernel: KernelSource): void;
   /** Unload a previously-loaded SPICE kernel. */
   unloadKernel(path: string): void;
+  /** Clear all loaded kernels (mirrors `raw.kclear()`), and resets kit tracking. */
+  kclear(): void;
 
   /** Convenience wrapper around `tkvrsn(\"TOOLKIT\")`. */
   toolkitVersion(): string;
@@ -43,7 +45,7 @@ export type SpiceKit = {
 */
 export type Spice = {
   /** Raw backend primitives (verbatim). */
-  cspice: SpiceBackend;
+  raw: SpiceBackend;
   /** Higher-level helpers and typed conveniences. */
   kit: SpiceKit;
 };

@@ -28,4 +28,11 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
     backend.unload(kernelPath);
     expect(ktotalAll()).toBe(before);
   });
+
+  it("rejects OS/URL-looking string paths (virtual ids only)", async () => {
+    const backend = await createWasmBackend();
+
+    expect(() => backend.furnsh("file:///tmp/naif0012.tls")).toThrow(/virtual ids/i);
+    expect(() => backend.unload("/var/data/naif0012.tls")).toThrow(/virtual ids/i);
+  });
 });

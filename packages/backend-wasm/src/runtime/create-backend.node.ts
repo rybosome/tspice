@@ -1,4 +1,4 @@
-import type { SpiceBackendWasm } from "@rybosome/tspice-backend-contract";
+import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import { assertEmscriptenModule, type EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -20,7 +20,7 @@ export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
-): Promise<SpiceBackendWasm> {
+): Promise<SpiceBackend> {
   // NOTE: Keep this as a literal string so bundlers (Vite) don't generate a
   // runtime glob map for *every* file in this directory (including *.d.ts.map),
   // which can lead to JSON being imported as an ESM module.
@@ -82,9 +82,7 @@ export async function createWasmBackend(
 
   const fsApi = createWasmFs(module);
 
-  const backend: SpiceBackendWasm = {
-    kind: "wasm",
-
+  const backend = {
     ...createTimeApi(module, toolkitVersion),
     ...createKernelsApi(module, fsApi),
     ...createIdsNamesApi(module),
@@ -93,9 +91,7 @@ export async function createWasmBackend(
     ...createGeometryApi(module),
     ...createCoordsVectorsApi(module),
 
-    // WASM-only
-    ...fsApi,
-  };
+  } satisfies SpiceBackend;
 
   return backend;
 }
