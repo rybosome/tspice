@@ -155,12 +155,23 @@ function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile
 }
 
 function createWarnOnce() {
+  // Avoid spamming end users in production; these warnings are mainly useful
+  // for shader-chunk drift during local development.
+  if (!import.meta.env.DEV) {
+    return (_key: string, ..._args: unknown[]) => {}
+  }
+
   const seen = new Set<string>()
   return (key: string, ...args: unknown[]) => {
     if (seen.has(key)) return
     seen.add(key)
     console.warn(...args)
   }
+}
+
+function getShaderSource(shader: BeforeCompileShader, source: ShaderSourceKey): string | undefined {
+  const value = (shader as unknown as Record<string, unknown>)[source]
+  return typeof value === 'string' ? value : undefined
 }
 
 function safeShaderReplace(args: {
@@ -174,9 +185,11 @@ function safeShaderReplace(args: {
 }): boolean {
   const { shader, source, needle, replacement, marker, warnOnce, warnKey } = args
 
-  const shaderSources = shader as unknown as Record<ShaderSourceKey, string>
-
-  const src = shaderSources[source]
+  const src = getShaderSource(shader, source)
+  if (src == null) {
+    warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing shader source)', { source, marker })
+    return false
+  }
   if (src.includes(marker)) return true
 
   if (!src.includes(needle)) {
@@ -190,7 +203,8 @@ function safeShaderReplace(args: {
     return false
   }
 
-  shaderSources[source] = next
+  // `onBeforeCompile` expects us to mutate the shader in-place.
+  ;(shader as unknown as Record<string, unknown>)[source] = next
   return true
 }
 
@@ -231,8 +245,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const surfaceMetalness = THREE.MathUtils.clamp(surface.metalness ?? 0.0, 0.0, 1.0)
 
   // Three.js' bumpScale is unbounded but large values can cause extreme artifacts.
-  // We clamp to a conservative range to keep configs safe.
-  const bumpScale = THREE.MathUtils.clamp(surface.bumpScale ?? 0.0, 0.0, 10.0)
+  // In practice our configs expect small values (~0.0–0.1). Clamp to a tighter,
+  // still-safe range.
+  const bumpScale = THREE.MathUtils.clamp(surface.bumpScale ?? 0.0, 0.0, 0.25)
 
   const nightAlbedo = surface.nightAlbedo == null ? undefined : THREE.MathUtils.clamp(surface.nightAlbedo, 0.0, 1.0)
   const terminatorTwilight = THREE.MathUtils.clamp(surface.terminatorTwilight ?? 0.08, 0.0, 1.0)
