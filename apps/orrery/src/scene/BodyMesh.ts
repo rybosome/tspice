@@ -170,8 +170,6 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const textureUrl = surfaceTexture?.url
   const textureColor = surfaceTexture?.color
 
-  const isSun = options.bodyId === 'SUN'
-
   let map: THREE.Texture | undefined = textureKind ? makeProceduralBodyTexture(textureKind) : undefined
   let mapRelease: (() => void) | undefined
 
@@ -188,24 +186,16 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     : map
       ? new THREE.Color(textureColor ?? surface.color)
       : new THREE.Color(surface.color)
-  const material: THREE.MeshStandardMaterial | THREE.MeshBasicMaterial = isSun
-    ? new THREE.MeshBasicMaterial({
-        // Unlit/emissive look for the Sun.
-        color: baseColor,
-        map,
-        // Keep the Sun bright even if the renderer uses tone mapping.
-        toneMapped: false,
-      })
-    : new THREE.MeshStandardMaterial({
-        color: baseColor,
-        roughness: textureKind === 'sun' ? 0.2 : 0.9,
-        metalness: 0.0,
-        map,
-        emissive: textureKind === 'sun' ? new THREE.Color('#ffcc55') : new THREE.Color('#000000'),
-        emissiveIntensity: textureKind === 'sun' ? 0.8 : 0.0,
-      })
+  const material = new THREE.MeshStandardMaterial({
+    color: baseColor,
+    roughness: textureKind === 'sun' ? 0.2 : 0.9,
+    metalness: 0.0,
+    map,
+    emissive: textureKind === 'sun' ? new THREE.Color('#ffcc55') : new THREE.Color('#000000'),
+    emissiveIntensity: textureKind === 'sun' ? 0.8 : 0.0,
+  })
 
-  function disposeMap(mat: THREE.MeshStandardMaterial | THREE.MeshBasicMaterial) {
+  function disposeMap(mat: THREE.MeshStandardMaterial) {
     const release = mapRelease
     const tex = map
 
@@ -293,106 +283,6 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   let update: BodyMeshUpdate | undefined
 
-  // Sun-only: subtle additive corona shell.
-  // - child mesh so it inherits the Sun's pose + scale
-  // - non-pickable (raycast disabled)
-  // - deterministic shader (no RNG) so e2e snapshots stay stable
-  if (isSun) {
-    const coronaGeo = new THREE.SphereGeometry(1, 48, 24)
-    coronaGeo.rotateX(Math.PI / 2)
-
-    const uTime = { value: 0 }
-
-    const coronaMat = new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      depthTest: true,
-      blending: THREE.AdditiveBlending,
-      side: THREE.BackSide,
-      uniforms: {
-        uTime,
-        uColor: { value: new THREE.Color('#ffda75') },
-        uIntensity: { value: 1.25 },
-        uPower: { value: 2.6 },
-      },
-      vertexShader: [
-        'varying vec3 vNormalView;',
-        'varying vec3 vViewDir;',
-        'varying vec2 vUv;',
-        'void main() {',
-        '  vUv = uv;',
-        '  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);',
-        '  vViewDir = normalize(-mvPosition.xyz);',
-        '  vNormalView = normalize(normalMatrix * normal);',
-        '  gl_Position = projectionMatrix * mvPosition;',
-        '}',
-      ].join('\n'),
-      fragmentShader: [
-        'uniform float uTime;',
-        'uniform vec3 uColor;',
-        'uniform float uIntensity;',
-        'uniform float uPower;',
-        'varying vec3 vNormalView;',
-        'varying vec3 vViewDir;',
-        'varying vec2 vUv;',
-        '',
-        // Deterministic, cheap 2D fbm (no external deps).
-        'float hash12(vec2 p) {',
-        '  vec3 p3 = fract(vec3(p.xyx) * 0.1031);',
-        '  p3 += dot(p3, p3.yzx + 33.33);',
-        '  return fract((p3.x + p3.y) * p3.z);',
-        '}',
-        '',
-        'float noise(vec2 p) {',
-        '  vec2 i = floor(p);',
-        '  vec2 f = fract(p);',
-        '  float a = hash12(i);',
-        '  float b = hash12(i + vec2(1.0, 0.0));',
-        '  float c = hash12(i + vec2(0.0, 1.0));',
-        '  float d = hash12(i + vec2(1.0, 1.0));',
-        '  vec2 u = f * f * (3.0 - 2.0 * f);',
-        '  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;',
-        '}',
-        '',
-        'float fbm(vec2 p) {',
-        '  float v = 0.0;',
-        '  float a = 0.5;',
-        '  for (int i = 0; i < 4; i++) {',
-        '    v += a * noise(p);',
-        '    p *= 2.0;',
-        '    a *= 0.5;',
-        '  }',
-        '  return v;',
-        '}',
-        '',
-        'void main() {',
-        '  float ndotv = max(0.0, dot(normalize(vNormalView), normalize(vViewDir)));',
-        '  float fresnel = pow(1.0 - ndotv, uPower);',
-        '',
-        '  vec2 drift = vec2(uTime * 0.02, uTime * 0.015);',
-        '  float n = fbm(vUv * 5.0 + drift);',
-        '  float alpha = fresnel * (0.55 + 0.45 * n);',
-        '',
-        '  vec3 col = uColor * (uIntensity * alpha);',
-        '  gl_FragColor = vec4(col, alpha);',
-        '}',
-      ].join('\n'),
-    })
-
-    const coronaMesh = new THREE.Mesh(coronaGeo, coronaMat)
-    coronaMesh.scale.setScalar(1.12)
-    coronaMesh.raycast = () => {}
-    mesh.add(coronaMesh)
-
-    extraMaterialsToDispose.push(coronaMat)
-    extraGeometriesToDispose.push(coronaGeo)
-
-    update = ({ etSec }) => {
-      // Keep the uniform in a numerically stable range (GPU floats).
-      uTime.value = etSec % 10_000
-    }
-  }
-
   let cloudsMesh: THREE.Mesh | undefined
   let cloudsMaterial: THREE.MeshStandardMaterial | undefined
   let cloudsDriftRadPerSec = 0
@@ -401,10 +291,6 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const useWaterMaskUniform = { value: 0.0 }
 
   if (isEarth && earth) {
-    if (!(material instanceof THREE.MeshStandardMaterial)) {
-      throw new Error('Earth appearance requires MeshStandardMaterial')
-    }
-
     // Night lights + ocean glint (surface shader patch)
     material.emissive.set('#000000')
     material.emissiveIntensity = 1.0
@@ -776,10 +662,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       // Detach texture references before releasing/disposing them.
       disposeMap(material)
 
-      if (material instanceof THREE.MeshStandardMaterial) {
-        material.emissiveMap = null
-        material.needsUpdate = true
-      }
+      material.emissiveMap = null
+      material.needsUpdate = true
 
       if (cloudsMaterial) {
         cloudsMaterial.alphaMap = null
