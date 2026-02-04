@@ -97,11 +97,11 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
   // at typical zoom levels and a low threshold/strong bloom can wash out most
   // of the frame.
   const sunBloomThresholdDefault =
-    sunPostprocessMode === 'sunIsolated' ? 0.78 : sunPostprocessMode === 'wholeFrame' ? 0.92 : 0.95
+    sunPostprocessMode === 'sunIsolated' ? 0.3 : sunPostprocessMode === 'wholeFrame' ? 0.92 : 0.95
   const sunBloomStrengthDefault =
-    sunPostprocessMode === 'sunIsolated' ? 0.8 : sunPostprocessMode === 'wholeFrame' ? 0.7 : 0.6
+    sunPostprocessMode === 'sunIsolated' ? 2.0 : sunPostprocessMode === 'wholeFrame' ? 0.7 : 0.6
   const sunBloomRadiusDefault =
-    sunPostprocessMode === 'sunIsolated' ? 0.17 : sunPostprocessMode === 'wholeFrame' ? 0.17 : 0.15
+    sunPostprocessMode === 'sunIsolated' ? 0.32 : sunPostprocessMode === 'wholeFrame' ? 0.17 : 0.15
 
   // Allow thresholds > 1: with HDR inputs this can be useful for controlling bloom pre-tonemap.
   const sunBloomThreshold = clamp(parseNumber(searchParams, 'sunBloomThreshold') ?? sunBloomThresholdDefault, 0, 10)
