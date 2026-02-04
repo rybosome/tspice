@@ -23,6 +23,7 @@ import { timeStore } from '../../time/timeStore.js'
 import { computeViewerScrubRangeEt } from '../../time/viewerTimeBounds.js'
 import { installTspiceViewerE2eApi } from '../../e2eHooks/index.js'
 import type { CameraController, CameraControllerState } from '../../controls/CameraController.js'
+import { shouldAutoZoomOnFocusChange } from './focusAutoZoom.js'
 
 export type SceneUiState = {
   etSec: EtSeconds
@@ -91,6 +92,13 @@ export async function initSpiceSceneRuntime(args: {
   getHomePresetState: (focusBody: BodyRef) => CameraControllerState | null
   initialControllerStateRef: { current: CameraControllerState | null }
 
+  /**
+   * When set to a body id, the next focus change to that body will skip the
+   * runtime's auto-zoom/home-preset camera overrides. This is consumed (cleared)
+   * after the focus change is observed.
+   */
+  skipAutoZoomForNextFocusBodyRef?: { current: BodyRef | null }
+
   selectedBodyIdRef: { current: BodyId | undefined }
 
   invalidate: () => void
@@ -117,6 +125,7 @@ export async function initSpiceSceneRuntime(args: {
     resetLookOffset,
     getHomePresetState,
     initialControllerStateRef,
+    skipAutoZoomForNextFocusBodyRef,
     selectedBodyIdRef,
     invalidate,
     isDisposed,
@@ -322,11 +331,45 @@ export async function initSpiceSceneRuntime(args: {
       cloudsNightMultiplier: next.earthCloudsNightMultiplier,
     }
 
-    const shouldAutoZoom = !isE2e && next.focusBody !== lastAutoZoomFocusBody
+    const skipAutoZoomForFocusBody = skipAutoZoomForNextFocusBodyRef?.current ?? null
 
-    const homePreset = shouldAutoZoom ? getHomePresetState(next.focusBody) : null
+    const shouldSkipAutoZoomForFocusBody =
+      skipAutoZoomForFocusBody != null &&
+      String(skipAutoZoomForFocusBody) === String(next.focusBody) &&
+      String(next.focusBody) !== String(lastAutoZoomFocusBody)
 
-    if (shouldAutoZoom) {
+    // `shouldSkipAutoZoomForFocusBody` is meant to be a one-shot override.
+    // Keep it mutually exclusive with any later auto-zoom + home-preset logic
+    // so we don't accidentally override the caller-preserved radius.
+    const shouldAutoZoomThisTick =
+      !shouldSkipAutoZoomForFocusBody &&
+      shouldAutoZoomOnFocusChange({
+        isE2e,
+        nextFocusBody: next.focusBody,
+        lastAutoZoomFocusBody,
+        skipAutoZoomForFocusBody,
+      })
+
+    const homePreset = shouldAutoZoomThisTick ? getHomePresetState(next.focusBody) : null
+
+    if (shouldSkipAutoZoomForFocusBody) {
+      cancelFocusTween?.()
+      resetLookOffset?.()
+
+      // Keep the caller-selected zoom, but force the camera to look at the
+      // rebased origin for the new focus body.
+      focusOn?.(new THREE.Vector3(0, 0, 0), {
+        radius: controller.radius,
+        immediate: true,
+      })
+
+      if (!initialControllerStateRef.current) {
+        initialControllerStateRef.current = controller.snapshot()
+      }
+
+      lastAutoZoomFocusBody = next.focusBody
+      if (skipAutoZoomForNextFocusBodyRef) skipAutoZoomForNextFocusBodyRef.current = null
+    } else if (shouldAutoZoomThisTick) {
       cancelFocusTween?.()
 
       // Clear look offset when auto-focusing a new body.
@@ -344,7 +387,7 @@ export async function initSpiceSceneRuntime(args: {
     })
     const focusPosKm = focusState.positionKm
 
-    if (shouldAutoZoom) {
+    if (shouldAutoZoomThisTick) {
       // Home preset beats the normal auto-zoom + sun-in-view heuristics.
       if (homePreset) {
         controller.restore(homePreset)
