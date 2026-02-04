@@ -1,0 +1,214 @@
+{
+  "fallbackDomain": "tbd",
+  "domains": [
+    {
+      "id": "time",
+      "title": "Time",
+      "description": "Time systems, UTC/ET conversions, SCLK, and time constants."
+    },
+    {
+      "id": "kernels",
+      "title": "Kernel management",
+      "description": "Kernel bookkeeping: listing, querying, extracting, clearing."
+    },
+    {
+      "id": "kernel-pool",
+      "title": "Kernel pool",
+      "description": "Kernel pool read/write/query utilities (the shared variable pool)."
+    },
+    {
+      "id": "ids-names",
+      "title": "IDs ↔ names",
+      "description": "Body/frame/surface ID and name translation utilities."
+    },
+    {
+      "id": "frames",
+      "title": "Frames & attitude (CK)",
+      "description": "Reference frame transformations, attitude representations, and CK routines."
+    },
+    {
+      "id": "ephemeris-spk",
+      "title": "Ephemeris (SPK)",
+      "description": "SPK access and SPK segment writing/coverage/object utilities (plus closely-related state/orbit helpers)."
+    },
+    {
+      "id": "pck",
+      "title": "Planetary constants (PCK)",
+      "description": "PCK access and PCK kernel utilities."
+    },
+    {
+      "id": "dsk",
+      "title": "Digital shape kernels (DSK)",
+      "description": "DSK access, DSK segment writing, and shape model utilities."
+    },
+    {
+      "id": "ek",
+      "title": "Event kernels (EK)",
+      "description": "EK access, segment building, query, and EK I/O utilities."
+    },
+    {
+      "id": "geometry",
+      "title": "Geometry & event finding",
+      "description": "Geometric computations (subpoints, intercepts, illumination, occultations, FOV) and GF event finding."
+    },
+    {
+      "id": "coords-vectors",
+      "title": "Coordinates, vectors, matrices",
+      "description": "Coordinate conversions and core vector/matrix/rotation utilities."
+    },
+    {
+      "id": "cells-windows",
+      "title": "Cells & windows",
+      "description": "SpiceCell set operations and window operations (WN* routines)."
+    },
+    {
+      "id": "file-io",
+      "title": "Low-level file I/O (DAF/DAS/DLA)",
+      "description": "Low-level DAF/DAS/DLA architecture routines and file record operations."
+    },
+    {
+      "id": "strings",
+      "title": "Strings & parsing",
+      "description": "String utilities not otherwise classified (search, replace, word parsing, formatting)."
+    },
+    {
+      "id": "math",
+      "title": "Math & numerics",
+      "description": "Numerical utilities (Chebyshev polynomials, interpolation, root finding, regression)."
+    },
+    {
+      "id": "error",
+      "title": "Error handling",
+      "description": "Error system entry/exit, message formatting, and failure-state routines."
+    },
+    {
+      "id": "tbd",
+      "title": "TBD (needs review)",
+      "description": "Uncertain classification; grouped here for follow-up review."
+    }
+  ],
+  "overrides": {
+    "cidfrm": "ids-names",
+    "srfc2s": "ids-names",
+    "srfcss": "ids-names",
+    "srfs2c": "ids-names",
+    "srfscc": "ids-names",
+    "srfnrm": "geometry",
+    "srfrec": "coords-vectors",
+    "srfxpt": "geometry",
+    "illum_pl02": "geometry",
+    "illum_plid_pl02": "geometry"
+  },
+  "rules": [
+    {
+      "domain": "error",
+      "type": "regex",
+      "pattern": "^(chkin|chkout|err|failed|getmsg|qcktrc|reset|return|setmsg|sigerr|trcdep|trcnam|trcoff)"
+    },
+    {
+      "domain": "file-io",
+      "type": "regex",
+      "pattern": "^(daf|das|dla|exists|getfat|rdtext)"
+    },
+    {
+      "domain": "dsk",
+      "type": "regex",
+      "pattern": "^(dsk|plt)"
+    },
+    {
+      "domain": "ek",
+      "type": "regex",
+      "pattern": "^ek"
+    },
+    {
+      "domain": "ephemeris-spk",
+      "type": "regex",
+      "pattern": "^(spk|conics|oscelt|oscltx|getelm|evsgp4|eqncpv|prop2b)"
+    },
+    {
+      "domain": "frames",
+      "type": "regex",
+      "pattern": "^(ck|pxform|sxform|eul2xf|xf2eul|rav2xf|xf2rav|twovxf|tisbod|ckfxfm|invstm|xfmsta|frame|tkfram|tipbod|qdq2av|qxq|raxisa|invort|isrot)"
+    },
+    {
+      "domain": "pck",
+      "type": "regex",
+      "pattern": "^pck"
+    },
+    {
+      "domain": "kernel-pool",
+      "type": "regex",
+      "pattern": "^(badkpv|clpool|cvpool|dtpool|dvpool|expool|gcpool|gdpool|gipool|gnpool|ldpool|lmpool|pcpool|pdpool|pipool|rdpool|stpool|swpool|szpool)"
+    },
+    {
+      "domain": "kernels",
+      "type": "regex",
+      "pattern": "^(furnsh|unload|kclear|kdata|kinfo|kplfrm|ktotal|kxtrct)"
+    },
+    {
+      "domain": "cells-windows",
+      "type": "regex",
+      "pattern": "^(wn|appnd|card|scard|ssize|size|clear[cdi]|copy|cmprss|diff|sdiff|inter|union|insrt|remov|reord|ord|lstle|lstlt|elem|order|shell|bsrch|bscho|esrch|isrch|valid|set|isordv)"
+    },
+    {
+      "domain": "ids-names",
+      "type": "regex",
+      "pattern": "^(bod|bltfrm|ccifrm|cnmfrm|frmnam|namfrm|pckfrm|pxfrm2|srfc2s|srfcss|srfs2c|srfscc|frinfo)"
+    },
+    {
+      "domain": "time",
+      "type": "regex",
+      "pattern": "^(b1900|b1950|deltet|et2|etcal|j1900|j1950|j2000|j2100|jyear|scdecd|sce2|scencd|scfmt|scpart|scs2e|sct2|sctiks|spd|str2et|timout|tparse|twopi|tyear|unitim|utc2et|timdef|tpictr|tsetyr)"
+    },
+    {
+      "domain": "geometry",
+      "type": "regex",
+      "pattern": "^(gf|illum|ilumin|occult|sub|sincpt|edlimb|edterm|ednmpt|edpnt|limbpt|limb_pl02|termpt|term_pl02|llgrid_pl02|fovray|fovtrg|getfov|getfvn|surf|surfnm|surfpt|surfpv|nearpt|dnearp|npelpt|nvp2pl|pl2nvp|pjelpl|saelgv|tangpt|phaseq|trgsep|lspcn|ltime|stelab|stlabx|nplnpt|npedln|npedpt|nvc2pl|inedpl|inell|inelpl|inrypl|pl2nvc|pl2psv|psv2pl|srfnrm|srfxpt|udd|udf)"
+    },
+    {
+      "domain": "math",
+      "type": "regex",
+      "pattern": "^(chb|brckt|lgr|intmax|intmin|dpmax|dpmin|halfpi|maxd|maxi|mind|mini|sumad|sumai|polyds|qderiv|rquad)"
+    },
+    {
+      "domain": "coords-vectors",
+      "type": "regex",
+      "pattern": "^(azl|cyl|lat|sph|rec|rad|geo|geod|georec|pgr|pgrrec|cgv|el2cgv|dpgrdr|d(azl|cyl|lat|sph|geo|pgr)|drd|du|dv|clight|convrt|dpr|pi|rpd|axisar|eul2m|m2eul|m2q|q2m|rotate|rotmat|rotvec|twovec|vlcom|vtmv|mx|mtx|mequ|xpose|ident|invert|invort|isrot|fill[di]|moved|det|diags2|trace|u?crss|unorm|unit|v)"
+    },
+    {
+      "domain": "strings",
+      "type": "regex",
+      "pattern": "^(lcase|ucase|lpars|lx4|prs|repm|eqstr|putcml)"
+    },
+    {
+      "domain": "strings",
+      "type": "purposeIncludes",
+      "pattern": "string"
+    },
+    {
+      "domain": "strings",
+      "type": "purposeIncludes",
+      "pattern": "character"
+    },
+    {
+      "domain": "strings",
+      "type": "purposeIncludes",
+      "pattern": "word"
+    },
+    {
+      "domain": "math",
+      "type": "purposeIncludes",
+      "pattern": "chebyshev"
+    },
+    {
+      "domain": "math",
+      "type": "purposeIncludes",
+      "pattern": "interpol"
+    },
+    {
+      "domain": "math",
+      "type": "purposeIncludes",
+      "pattern": "regress"
+    }
+  ]
+}
