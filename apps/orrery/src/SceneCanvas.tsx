@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import * as THREE from 'three'
 import type { CameraController, CameraControllerState } from './controls/CameraController.js'
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
@@ -204,6 +204,27 @@ const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string;
   },
 }
 
+function AdvancedHelpButton({
+  topic,
+  onOpen,
+}: {
+  topic: AdvancedHelpTopicId
+  onOpen: (topic: AdvancedHelpTopicId) => void
+}) {
+  const h = ADVANCED_HELP[topic]
+  return (
+    <button
+      className="controlHelpButton"
+      onClick={() => onOpen(topic)}
+      type="button"
+      aria-label={`Help: ${h.title}`}
+      title={h.short}
+    >
+      ?
+    </button>
+  )
+}
+
 const HOME_PRESET_RADII = HOME_PRESET_KEYS.map((k) => getHomePresetStateForKey(k).radius)
 const HOME_PRESET_RADIUS_MIN = Math.min(...HOME_PRESET_RADII)
 const HOME_PRESET_RADIUS_MAX = Math.max(...HOME_PRESET_RADII)
@@ -247,6 +268,8 @@ export function SceneCanvas() {
   // Advanced tuning sliders (ephemeral, local state only)
   const [advancedPane, setAdvancedPane] = useState<AdvancedPaneId>('time')
   const [advancedHelpTopic, setAdvancedHelpTopic] = useState<AdvancedHelpTopicId | null>(null)
+
+  const controlsTabsId = useId()
 
   const activeAdvancedPane = useMemo(
     () => ADVANCED_PANES.find((p) => p.id === advancedPane) ?? ADVANCED_PANES[0],
@@ -574,21 +597,6 @@ export function SceneCanvas() {
     },
     [planetScaleSliderForMultiplier, radiusForZoomSlider, zoomSliderForRadius],
   )
-
-  const AdvancedHelpButton = ({ topic }: { topic: AdvancedHelpTopicId }) => {
-    const h = ADVANCED_HELP[topic]
-    return (
-      <button
-        className="controlHelpButton"
-        onClick={() => setAdvancedHelpTopic(topic)}
-        type="button"
-        aria-label={`Help: ${h.title}`}
-        title={h.short}
-      >
-        ?
-      </button>
-    )
-  }
 
   // Enable keyboard controls (disabled in e2e mode)
   useKeyboardControls({
@@ -1226,18 +1234,26 @@ export function SceneCanvas() {
             <div id="scene-overlay-body" className="sceneOverlayBody">
               <div className="advancedPanel">
                 <div className="advancedTabs" role="tablist" aria-label="Controls panes">
-                  {ADVANCED_PANES.map((pane) => (
-                    <button
-                      key={pane.id}
-                      className={`advancedTab ${advancedPane === pane.id ? 'advancedTabActive' : ''}`}
-                      type="button"
-                      role="tab"
-                      aria-selected={advancedPane === pane.id}
-                      onClick={() => setAdvancedPane(pane.id)}
-                    >
-                      {pane.tabLabel}
-                    </button>
-                  ))}
+                  {ADVANCED_PANES.map((pane) => {
+                    const tabId = `${controlsTabsId}-tab-${pane.id}`
+                    const panelId = `${controlsTabsId}-panel-${pane.id}`
+
+                    return (
+                      <button
+                        key={pane.id}
+                        id={tabId}
+                        className={`advancedTab ${advancedPane === pane.id ? 'advancedTabActive' : ''}`}
+                        type="button"
+                        role="tab"
+                        aria-selected={advancedPane === pane.id}
+                        aria-controls={panelId}
+                        tabIndex={advancedPane === pane.id ? 0 : -1}
+                        onClick={() => setAdvancedPane(pane.id)}
+                      >
+                        {pane.tabLabel}
+                      </button>
+                    )
+                  })}
                 </div>
 
                 <div className="advancedPaneHeader">
@@ -1247,12 +1263,17 @@ export function SceneCanvas() {
 
                 {/* Pane: SCALE */}
                 {advancedPane === 'scale' ? (
-                  <div className="advancedGroup" role="tabpanel">
+                  <div
+                    className="advancedGroup"
+                    role="tabpanel"
+                    id={`${controlsTabsId}-panel-scale`}
+                    aria-labelledby={`${controlsTabsId}-tab-scale`}
+                  >
                     <div className="controlsSection">
                       <div className="advancedSlider">
                         <span className="advancedSliderLabel advancedControlLabel">
                           <span>Presets</span>
-                          <AdvancedHelpButton topic="scalePresets" />
+                          <AdvancedHelpButton topic="scalePresets" onOpen={setAdvancedHelpTopic} />
                         </span>
                         <div style={{ flex: 1, display: 'flex', gap: 6 }}>
                           <button
@@ -1281,7 +1302,7 @@ export function SceneCanvas() {
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Planet Scale</span>
-                        <AdvancedHelpButton topic="planetScale" />
+                        <AdvancedHelpButton topic="planetScale" onOpen={setAdvancedHelpTopic} />
                       </span>
                       <input
                         type="range"
@@ -1297,7 +1318,7 @@ export function SceneCanvas() {
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Sun Scale</span>
-                        <AdvancedHelpButton topic="sunScale" />
+                        <AdvancedHelpButton topic="sunScale" onOpen={setAdvancedHelpTopic} />
                       </span>
                       <input
                         type="range"
@@ -1313,7 +1334,7 @@ export function SceneCanvas() {
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Zoom</span>
-                        <AdvancedHelpButton topic="zoom" />
+                        <AdvancedHelpButton topic="zoom" onOpen={setAdvancedHelpTopic} />
                       </span>
                       <input
                         type="range"
@@ -1347,7 +1368,7 @@ export function SceneCanvas() {
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Camera FOV</span>
-                        <AdvancedHelpButton topic="cameraFov" />
+                        <AdvancedHelpButton topic="cameraFov" onOpen={setAdvancedHelpTopic} />
                       </span>
                       <input
                         type="range"
@@ -1364,14 +1385,23 @@ export function SceneCanvas() {
 
                 {/* Pane: ORBITS */}
                 {advancedPane === 'orbits' ? (
-                  <div className="advancedGroup" role="tabpanel">
+                  <div
+                    className="advancedGroup"
+                    role="tabpanel"
+                    id={`${controlsTabsId}-panel-orbits`}
+                    aria-labelledby={`${controlsTabsId}-tab-orbits`}
+                  >
                     <label className="asciiCheckbox">
-                      <span className="asciiCheckboxBox" onClick={() => setOrbitPathsEnabled((v) => !v)}>
+                      <input
+                        className="asciiCheckboxInput"
+                        type="checkbox"
+                        checked={orbitPathsEnabled}
+                        onChange={(e) => setOrbitPathsEnabled(e.target.checked)}
+                      />
+                      <span className="asciiCheckboxBox" aria-hidden="true">
                         [{orbitPathsEnabled ? '✓' : '\u00A0'}]
                       </span>
-                      <span className="asciiCheckboxLabel" onClick={() => setOrbitPathsEnabled((v) => !v)}>
-                        Orbit Paths
-                      </span>
+                      <span className="asciiCheckboxLabel">Orbit Paths</span>
                     </label>
 
                     <fieldset
@@ -1381,7 +1411,7 @@ export function SceneCanvas() {
                       <div className="advancedSlider">
                         <span className="advancedSliderLabel advancedControlLabel">
                           <span>Orbit Line Width</span>
-                          <AdvancedHelpButton topic="orbitLineWidth" />
+                          <AdvancedHelpButton topic="orbitLineWidth" onOpen={setAdvancedHelpTopic} />
                         </span>
                         <input
                           type="range"
@@ -1397,7 +1427,7 @@ export function SceneCanvas() {
                       <div className="advancedSlider">
                         <span className="advancedSliderLabel advancedControlLabel">
                           <span>Samples / Orbit</span>
-                          <AdvancedHelpButton topic="orbitSamples" />
+                          <AdvancedHelpButton topic="orbitSamples" onOpen={setAdvancedHelpTopic} />
                         </span>
                         <input
                           type="range"
@@ -1413,7 +1443,7 @@ export function SceneCanvas() {
                       <div className="advancedSlider">
                         <span className="advancedSliderLabel advancedControlLabel">
                           <span>Max Orbit Points</span>
-                          <AdvancedHelpButton topic="orbitMaxPoints" />
+                          <AdvancedHelpButton topic="orbitMaxPoints" onOpen={setAdvancedHelpTopic} />
                         </span>
                         <input
                           type="number"
@@ -1429,7 +1459,12 @@ export function SceneCanvas() {
 
                 {/* Pane: TIME */}
                 {advancedPane === 'time' ? (
-                  <div className="advancedGroup" role="tabpanel">
+                  <div
+                    className="advancedGroup"
+                    role="tabpanel"
+                    id={`${controlsTabsId}-panel-time`}
+                    aria-labelledby={`${controlsTabsId}-tab-time`}
+                  >
                     {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
                     <PlaybackControls spiceClient={spiceClient} />
 
@@ -1438,7 +1473,7 @@ export function SceneCanvas() {
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Quantum (s)</span>
-                        <AdvancedHelpButton topic="quantum" />
+                        <AdvancedHelpButton topic="quantum" onOpen={setAdvancedHelpTopic} />
                       </span>
                       <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
                       <span className="advancedSliderValue" />
@@ -1448,7 +1483,12 @@ export function SceneCanvas() {
 
                 {/* Pane: GUIDES */}
                 {advancedPane === 'guides' ? (
-                  <div className="advancedGroup" role="tabpanel">
+                  <div
+                    className="advancedGroup"
+                    role="tabpanel"
+                    id={`${controlsTabsId}-panel-guides`}
+                    aria-labelledby={`${controlsTabsId}-tab-guides`}
+                  >
                     <div className="controlsSection">
                       <div className="focusRow">
                         <span className="focusLabel">Focus:</span>
@@ -1485,91 +1525,124 @@ export function SceneCanvas() {
                     <div className="advancedDivider" />
 
                     <label className="asciiCheckbox">
-                      <span className="asciiCheckboxBox" onClick={() => setLabelsEnabled((v) => !v)}>
+                      <input
+                        className="asciiCheckboxInput"
+                        type="checkbox"
+                        checked={labelsEnabled}
+                        onChange={(e) => setLabelsEnabled(e.target.checked)}
+                      />
+                      <span className="asciiCheckboxBox" aria-hidden="true">
                         [{labelsEnabled ? '✓' : '\u00A0'}]
                       </span>
-                      <span className="asciiCheckboxLabel" onClick={() => setLabelsEnabled((v) => !v)}>
-                        Labels
-                      </span>
+                      <span className="asciiCheckboxLabel">Labels</span>
                     </label>
 
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
-                        <span className="asciiCheckboxBox" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
+                        <input
+                          className="asciiCheckboxInput"
+                          type="checkbox"
+                          checked={labelOcclusionEnabled}
+                          onChange={(e) => setLabelOcclusionEnabled(e.target.checked)}
+                        />
+                        <span className="asciiCheckboxBox" aria-hidden="true">
                           [{labelOcclusionEnabled ? '✓' : ' '}]
                         </span>
-                        <span className="asciiCheckboxLabel" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
-                          Label Occlusion
-                        </span>
+                        <span className="asciiCheckboxLabel">Label Occlusion</span>
                       </label>
-                      <AdvancedHelpButton topic="labelOcclusion" />
+                      <AdvancedHelpButton topic="labelOcclusion" onOpen={setAdvancedHelpTopic} />
                     </div>
 
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
-                        <span className="asciiCheckboxBox" onClick={() => setShowBodyFixedAxes((v) => !v)}>
+                        <input
+                          className="asciiCheckboxInput"
+                          type="checkbox"
+                          checked={showBodyFixedAxes}
+                          onChange={(e) => setShowBodyFixedAxes(e.target.checked)}
+                        />
+                        <span className="asciiCheckboxBox" aria-hidden="true">
                           [{showBodyFixedAxes ? '✓' : ' '}]
                         </span>
-                        <span className="asciiCheckboxLabel" onClick={() => setShowBodyFixedAxes((v) => !v)}>
-                          Body-fixed Axes
-                        </span>
+                        <span className="asciiCheckboxLabel">Body-fixed Axes</span>
                       </label>
-                      <AdvancedHelpButton topic="bodyFixedAxes" />
+                      <AdvancedHelpButton topic="bodyFixedAxes" onOpen={setAdvancedHelpTopic} />
                     </div>
 
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
-                        <span className="asciiCheckboxBox" onClick={() => setShowJ2000Axes((v) => !v)}>
+                        <input
+                          className="asciiCheckboxInput"
+                          type="checkbox"
+                          checked={showJ2000Axes}
+                          onChange={(e) => setShowJ2000Axes(e.target.checked)}
+                        />
+                        <span className="asciiCheckboxBox" aria-hidden="true">
                           [{showJ2000Axes ? '✓' : ' '}]
                         </span>
-                        <span className="asciiCheckboxLabel" onClick={() => setShowJ2000Axes((v) => !v)}>
-                          J2000 Axes
-                        </span>
+                        <span className="asciiCheckboxLabel">J2000 Axes</span>
                       </label>
-                      <AdvancedHelpButton topic="j2000Axes" />
+                      <AdvancedHelpButton topic="j2000Axes" onOpen={setAdvancedHelpTopic} />
                     </div>
                   </div>
                 ) : null}
 
                 {/* Pane: PERFORMANCE */}
                 {advancedPane === 'performance' ? (
-                  <div className="advancedGroup" role="tabpanel">
+                  <div
+                    className="advancedGroup"
+                    role="tabpanel"
+                    id={`${controlsTabsId}-panel-performance`}
+                    aria-labelledby={`${controlsTabsId}-tab-performance`}
+                  >
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
-                        <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>
+                        <input
+                          className="asciiCheckboxInput"
+                          type="checkbox"
+                          checked={animatedSky}
+                          onChange={(e) => setAnimatedSky(e.target.checked)}
+                        />
+                        <span className="asciiCheckboxBox" aria-hidden="true">
                           [{animatedSky ? '✓' : ' '}]
                         </span>
-                        <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
-                          Animated Skydome
-                        </span>
+                        <span className="asciiCheckboxLabel">Animated Skydome</span>
                       </label>
-                      <AdvancedHelpButton topic="animatedSky" />
+                      <AdvancedHelpButton topic="animatedSky" onOpen={setAdvancedHelpTopic} />
                     </div>
 
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
-                        <span className="asciiCheckboxBox" onClick={() => setSkyTwinkle((v) => !v)}>
+                        <input
+                          className="asciiCheckboxInput"
+                          type="checkbox"
+                          checked={skyTwinkle}
+                          onChange={(e) => setSkyTwinkle(e.target.checked)}
+                        />
+                        <span className="asciiCheckboxBox" aria-hidden="true">
                           [{skyTwinkle ? '✓' : ' '}]
                         </span>
-                        <span className="asciiCheckboxLabel" onClick={() => setSkyTwinkle((v) => !v)}>
-                          Sky Twinkle
-                        </span>
+                        <span className="asciiCheckboxLabel">Sky Twinkle</span>
                       </label>
-                      <AdvancedHelpButton topic="skyTwinkle" />
+                      <AdvancedHelpButton topic="skyTwinkle" onOpen={setAdvancedHelpTopic} />
                     </div>
 
                     <div className="advancedDivider" />
 
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
-                        <span className="asciiCheckboxBox" onClick={() => setShowRenderHud((v) => !v)}>
+                        <input
+                          className="asciiCheckboxInput"
+                          type="checkbox"
+                          checked={showRenderHud}
+                          onChange={(e) => setShowRenderHud(e.target.checked)}
+                        />
+                        <span className="asciiCheckboxBox" aria-hidden="true">
                           [{showRenderHud ? '✓' : ' '}]
                         </span>
-                        <span className="asciiCheckboxLabel" onClick={() => setShowRenderHud((v) => !v)}>
-                          Render HUD
-                        </span>
+                        <span className="asciiCheckboxLabel">Render HUD</span>
                       </label>
-                      <AdvancedHelpButton topic="renderHud" />
+                      <AdvancedHelpButton topic="renderHud" onOpen={setAdvancedHelpTopic} />
                     </div>
                   </div>
                 ) : null}

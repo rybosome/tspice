@@ -1209,6 +1209,23 @@
   user-select: none;
 }
 
+.asciiCheckboxInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.asciiCheckboxInput:focus-visible + .asciiCheckboxBox {
+  outline: 1px solid var(--phosphor-bright);
+  outline-offset: 2px;
+}
+
 .asciiCheckboxBox {
   color: var(--phosphor-dim);
   white-space: pre;

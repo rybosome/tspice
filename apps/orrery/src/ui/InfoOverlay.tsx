@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, type ReactNode } from 'react'
+import { useCallback, useEffect, useId, useRef, type ReactNode } from 'react'
 
 export interface InfoOverlayProps {
   isOpen: boolean
@@ -15,6 +15,7 @@ export interface InfoOverlayProps {
  */
 export function InfoOverlay({ isOpen, title, children, onClose }: InfoOverlayProps) {
   const dialogRef = useRef<HTMLDivElement | null>(null)
+  const titleId = useId()
 
   // Close on Escape
   useEffect(() => {
@@ -47,9 +48,9 @@ export function InfoOverlay({ isOpen, title, children, onClose }: InfoOverlayPro
 
   return (
     <div className="infoBackdrop" onClick={handleBackdropClick} role="presentation">
-      <div ref={dialogRef} className="infoDialog" role="dialog" aria-modal="true" aria-labelledby="info-title">
+      <div ref={dialogRef} className="infoDialog" role="dialog" aria-modal="true" aria-labelledby={titleId}>
         <div className="infoHeader">
-          <h2 id="info-title" className="infoTitle">
+          <h2 id={titleId} className="infoTitle">
             {title}
           </h2>
           <button className="infoCloseButton" onClick={onClose} type="button" aria-label="Close">
