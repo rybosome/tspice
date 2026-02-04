@@ -1,5 +1,4 @@
 import type { Mat3ColMajor, Mat3RowMajor } from "./types.js";
-import { __mat3ColMajorBrand, __mat3RowMajorBrand } from "./types.js";
 
 type FreezeMode = "never" | "dev" | "always";
 
@@ -20,6 +19,11 @@ export type BrandMat3Options = {
 };
 
 const DEFAULT_FREEZE_MODE: FreezeMode = "dev";
+
+// Runtime-only brands. These are intentionally module-private so we don't leak
+// symbols into the public API surface (brands are type-level only).
+const MAT3_ROW_MAJOR_BRAND = Symbol("Mat3RowMajor");
+const MAT3_COL_MAJOR_BRAND = Symbol("Mat3ColMajor");
 
 function isDevEnv(): boolean {
   // Safe in non-node runtimes.
@@ -45,12 +49,31 @@ function isFiniteNumber(x: unknown): x is number {
   return typeof x === "number" && Number.isFinite(x);
 }
 
+type TypedArrayView =
+  | Int8Array
+  | Uint8Array
+  | Uint8ClampedArray
+  | Int16Array
+  | Uint16Array
+  | Int32Array
+  | Uint32Array
+  | Float32Array
+  | Float64Array
+  | BigInt64Array
+  | BigUint64Array;
+
+function isTypedArrayView(x: unknown): x is TypedArrayView {
+  // `ArrayBuffer.isView()` is true for TypedArrays *and* DataView.
+  // We accept TypedArray views but explicitly reject DataView.
+  return ArrayBuffer.isView(x) && !(x instanceof DataView);
+}
+
 function isLength9ArrayLike(x: unknown): x is ArrayLike<unknown> {
   return (
     x !== null &&
     typeof x === "object" &&
-    // arrays + typed arrays
-    (Array.isArray(x) || ArrayBuffer.isView(x)) &&
+    // arrays + typed arrays (DataView is explicitly NOT supported)
+    (Array.isArray(x) || isTypedArrayView(x)) &&
     typeof (x as ArrayLike<unknown>).length === "number" &&
     (x as ArrayLike<unknown>).length === 9
   );
@@ -64,6 +87,11 @@ function isLength9ArrayLike(x: unknown): x is ArrayLike<unknown> {
 */
 export function assertMat3ArrayLike9(value: unknown, options?: { readonly label?: string }): asserts value is ArrayLike<number> {
   const label = options?.label ?? "Mat3";
+
+  if (value instanceof DataView) {
+    throw new Error(`${label}: DataView is not a supported Mat3 input (use a TypedArray or number[]).`);
+  }
+
   if (!isLength9ArrayLike(value)) {
     throw new Error(formatMat3Error(label, "wrong shape"));
   }
@@ -113,7 +141,7 @@ export function brandMat3RowMajor(value: unknown, options?: BrandMat3Options): M
 
   // Always copy to guarantee branding applies to the returned value.
   const arr = Array.from(value);
-  tryDefineBrand(arr, __mat3RowMajorBrand);
+  tryDefineBrand(arr, MAT3_ROW_MAJOR_BRAND);
   return maybeFreeze(arr, freeze) as unknown as Mat3RowMajor;
 }
 
@@ -128,16 +156,16 @@ export function brandMat3ColMajor(value: unknown, options?: BrandMat3Options): M
 
   // Always copy to guarantee branding applies to the returned value.
   const arr = Array.from(value);
-  tryDefineBrand(arr, __mat3ColMajorBrand);
+  tryDefineBrand(arr, MAT3_COL_MAJOR_BRAND);
   return maybeFreeze(arr, freeze) as unknown as Mat3ColMajor;
 }
 
 export function isMat3RowMajor(value: unknown): value is Mat3RowMajor {
   if (!isLength9ArrayLike(value)) return false;
-  return Boolean((value as unknown as Record<symbol, unknown>)[__mat3RowMajorBrand]);
+  return Boolean((value as unknown as Record<symbol, unknown>)[MAT3_ROW_MAJOR_BRAND]);
 }
 
 export function isMat3ColMajor(value: unknown): value is Mat3ColMajor {
   if (!isLength9ArrayLike(value)) return false;
-  return Boolean((value as unknown as Record<symbol, unknown>)[__mat3ColMajorBrand]);
+  return Boolean((value as unknown as Record<symbol, unknown>)[MAT3_COL_MAJOR_BRAND]);
 }

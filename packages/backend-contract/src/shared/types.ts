@@ -53,8 +53,8 @@ export type SpiceVector3 = [number, number, number];
  *
  * Row-major layout: `[m00,m01,m02, m10,m11,m12, m20,m21,m22]`.
  */
-/** Runtime + type-level brand for row-major Mat3 arrays. */
-export const __mat3RowMajorBrand = Symbol("Mat3RowMajor");
+// Type-only brand (no runtime Symbol export).
+declare const __mat3RowMajorBrand: unique symbol;
 export type Mat3RowMajor = readonly [
   number,
   number,
@@ -72,8 +72,8 @@ export type Mat3RowMajor = readonly [
  *
  * Column-major layout: `[m00,m10,m20, m01,m11,m21, m02,m12,m22]`.
  */
-/** Runtime + type-level brand for column-major Mat3 arrays. */
-export const __mat3ColMajorBrand = Symbol("Mat3ColMajor");
+// Type-only brand (no runtime Symbol export).
+declare const __mat3ColMajorBrand: unique symbol;
 export type Mat3ColMajor = readonly [
   number,
   number,
