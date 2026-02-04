@@ -641,6 +641,92 @@ export function SceneCanvas() {
         three.controller.applyToCamera(three.camera)
         three.renderOnce()
 
+        // -------------------------------------------------------------------
+        // E2E API: phase 0 guardrails for appearance iteration
+        // -------------------------------------------------------------------
+        // Note: this runs only in `?e2e=1` mode, and does not affect runtime visuals.
+        if (isE2e) {
+          type CameraPreset = 'sun-close' | 'sun-medium' | 'sun-far'
+
+          const SUN_CAMERA_PRESETS: Record<CameraPreset, { radius: number; yaw: number; pitch: number }> = {
+            // Sun radius is ~0.696 world units with `kmToWorld=1e-6`.
+            // These distances keep the sun comfortably within a 50° FOV.
+            'sun-close': { radius: 2.0, yaw: 0.85, pitch: 0.35 },
+            'sun-medium': { radius: 6.0, yaw: 0.85, pitch: 0.35 },
+            'sun-far': { radius: 18.0, yaw: 0.85, pitch: 0.35 },
+          }
+
+          let lastPerfSample: {
+            cpuFrameMs: number
+            drawCalls: number
+            triangles: number
+            textures: number
+          } | null = null
+
+          const samplePerfCounters = () => {
+            const t0 = performance.now()
+            three.renderOnce()
+            const t1 = performance.now()
+
+            const info = three.renderer.info
+            lastPerfSample = {
+              cpuFrameMs: t1 - t0,
+              drawCalls: info.render.calls,
+              triangles: info.render.triangles,
+              textures: info.memory.textures,
+            }
+
+            return lastPerfSample
+          }
+
+          const lockDeterministicLighting = () => {
+            // Scene lighting is controlled via UI state (even though the UI knobs
+            // are currently not exposed). Lock these values explicitly so future
+            // tuning does not silently invalidate golden images.
+            const etSec = timeStore.getState().etSec
+            updateSceneRef.current?.({
+              etSec,
+              ...latestUiRef.current,
+              ambientLightIntensity: 0.2,
+              sunLightIntensity: 2.0,
+            })
+          }
+
+          const setCameraPreset = (preset: CameraPreset) => {
+            // Ensure we are rebased around the Sun so the camera target at origin
+            // is always the Sun's center.
+            const etSec = timeStore.getState().etSec
+            updateSceneRef.current?.({
+              etSec,
+              ...latestUiRef.current,
+              focusBody: 'SUN',
+            })
+
+            const { radius, yaw, pitch } = SUN_CAMERA_PRESETS[preset]
+            three.controller.restore({
+              target: new THREE.Vector3(0, 0, 0),
+              radius,
+              yaw,
+              pitch,
+              lookYaw: 0,
+              lookPitch: 0,
+              lookRoll: 0,
+            })
+            three.controller.applyToCamera(three.camera)
+
+            // Render synchronously so Playwright can capture immediately.
+            samplePerfCounters()
+          }
+
+          const api = window.__tspice_viewer__e2e
+          if (!api) throw new Error('e2e API not initialized: __tspice_viewer__e2e')
+
+          api.setCameraPreset = setCameraPreset
+          api.lockDeterministicLighting = lockDeterministicLighting
+          api.samplePerfCounters = samplePerfCounters
+          api.getLastPerfCounters = () => lastPerfSample
+        }
+
         // Signals to Playwright tests that the WebGL scene has been rendered.
         markTspiceViewerRenderedScene({ isE2e })
       } catch (err) {
