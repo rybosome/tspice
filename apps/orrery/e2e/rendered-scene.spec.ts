@@ -7,18 +7,22 @@ test.use({
 
 test('rendered scene is visually stable (golden screenshot)', async ({ page, baseURL }) => {
   const allowedOrigin = baseURL ? new URL(baseURL).origin : 'http://127.0.0.1:4173'
-  const abortedTexturePaths = [
+  const abortedTexturePathnames = new Set([
     '/textures/planets/earth.png',
     '/textures/planets/earth-nightlights.jpg',
     '/textures/planets/earth-clouds.jpg',
-  ]
+  ])
 
   // Ensure the test is deterministic and doesn't accidentally hit the network.
   await page.route('**/*', async (route) => {
     const url = route.request().url()
 
+    // Parse first so our abort rules are deterministic (avoid substring matches
+    // in query strings / other assets).
+    const parsedUrl = new URL(url)
+
     // Abort large textures that can race GPU uploads and make screenshots flaky.
-    if (abortedTexturePaths.some((path) => url.includes(path))) {
+    if (abortedTexturePathnames.has(parsedUrl.pathname)) {
       await route.abort()
       return
     }
