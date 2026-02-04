@@ -28,7 +28,7 @@ import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
-type AdvancedPaneId = 'time' | 'scale' | 'guides' | 'orbits' | 'advanced'
+type AdvancedPaneId = 'time' | 'scale' | 'guides' | 'orbits' | 'performance'
 
 type AdvancedHelpTopicId =
   | 'zoom'
@@ -64,7 +64,7 @@ const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: strin
     id: 'guides',
     tabLabel: 'GUIDES',
     title: 'GUIDES',
-    summary: 'Labels, axes, sky effects, and debug overlays.',
+    summary: 'Focus target, labels, axes, and visual overlays.',
   },
   {
     id: 'orbits',
@@ -73,10 +73,10 @@ const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: strin
     summary: 'Orbit line fidelity vs speed. These settings can strongly affect CPU/GPU and memory.',
   },
   {
-    id: 'advanced',
-    tabLabel: 'ADVANCED',
-    title: 'ADVANCED',
-    summary: 'Focus target + camera lens controls.',
+    id: 'performance',
+    tabLabel: 'PERFORMANCE',
+    title: 'PERFORMANCE',
+    summary: 'Optional effects and overlays that may impact FPS or battery.',
   },
 ]
 
@@ -535,6 +535,10 @@ export function SceneCanvas() {
       controller.setRadiusLimits(CAMERA_RADIUS_LIMITS)
 
       if (preset === 'planetary') {
+        // The solar preset intentionally refocuses on the Sun; when switching back
+        // to planetary scale, return to the default Earth-centric view.
+        setFocusBody('EARTH')
+
         // Return to the same zoom level as initial page load.
         const initialRadius = initialPlanetaryRadiusRef.current
         if (initialRadius != null) {
@@ -1146,91 +1150,38 @@ export function SceneCanvas() {
                   <div className="advancedPaneSummary">{activeAdvancedPane.summary}</div>
                 </div>
 
-                {/* Pane: ADVANCED */}
-                {advancedPane === 'advanced' ? (
-                  <div className="advancedGroup" role="tabpanel">
-                    {/* Presets first (mobile above-the-fold) */}
-                    <div className="controlsSection">
-                      <div className="focusRow">
-                        <span className="focusLabel">Focus:</span>
-                        <select
-                          className="focusSelect"
-                          value={String(focusBody)}
-                          onChange={(e) => {
-                            setFocusBody(e.target.value)
-                          }}
-                        >
-                          {focusOptions.map((b) => (
-                            <option key={b.id} value={String(b.body)}>
-                              {b.style.label ?? b.id}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <button
-                        className={`asciiBtn asciiBtnWide ${String(focusBody) === 'SUN' ? 'asciiBtnDisabled' : ''}`}
-                        type="button"
-                        onClick={refocusSun}
-                        disabled={String(focusBody) === 'SUN'}
-                        title="Quickly refocus the scene on the Sun"
-                      >
-                        <span className="asciiBtnBracket">[</span>
-                        <span className="asciiBtnContent">
-                          {String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}
-                        </span>
-                        <span className="asciiBtnBracket">]</span>
-                      </button>
-                    </div>
-
-                    <div className="advancedDivider" />
-
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel advancedControlLabel">
-                        <span>Camera FOV</span>
-                        <AdvancedHelpButton topic="cameraFov" />
-                      </span>
-                      <input
-                        type="range"
-                        min={30}
-                        max={90}
-                        step={1}
-                        value={cameraFovDeg}
-                        onChange={(e) => setCameraFovDeg(Number(e.target.value))}
-                      />
-                      <span className="advancedSliderValue">{cameraFovDeg}°</span>
-                    </div>
-                  </div>
-                ) : null}
-
                 {/* Pane: SCALE */}
                 {advancedPane === 'scale' ? (
                   <div className="advancedGroup" role="tabpanel">
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel advancedControlLabel">
-                        <span>Presets</span>
-                        <AdvancedHelpButton topic="scalePresets" />
-                      </span>
-                      <div style={{ flex: 1, display: 'flex', gap: 6 }}>
-                        <button
-                          className="advancedTab"
-                          type="button"
-                          onClick={() => applyScalePreset('planetary')}
-                          title="Planetary scale preset"
-                        >
-                          planetary
-                        </button>
-                        <button
-                          className="advancedTab"
-                          type="button"
-                          onClick={() => applyScalePreset('solar')}
-                          title="Solar scale preset"
-                        >
-                          solar
-                        </button>
+                    <div className="controlsSection">
+                      <div className="advancedSlider">
+                        <span className="advancedSliderLabel advancedControlLabel">
+                          <span>Presets</span>
+                          <AdvancedHelpButton topic="scalePresets" />
+                        </span>
+                        <div style={{ flex: 1, display: 'flex', gap: 6 }}>
+                          <button
+                            className="advancedTab"
+                            type="button"
+                            onClick={() => applyScalePreset('planetary')}
+                            title="Planetary scale preset"
+                          >
+                            planetary
+                          </button>
+                          <button
+                            className="advancedTab"
+                            type="button"
+                            onClick={() => applyScalePreset('solar')}
+                            title="Solar scale preset"
+                          >
+                            solar
+                          </button>
+                        </div>
+                        <span className="advancedSliderValue" />
                       </div>
-                      <span className="advancedSliderValue" />
                     </div>
+
+                    <div className="advancedDivider" />
 
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
@@ -1264,9 +1215,6 @@ export function SceneCanvas() {
                       <span className="advancedSliderValue">{sunScaleMultiplier}×</span>
                     </div>
 
-                    <div className="advancedDivider" />
-
-                    {/* Manual zoom control below-the-fold on mobile */}
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Zoom</span>
@@ -1297,6 +1245,24 @@ export function SceneCanvas() {
                         onKeyUp={() => flushZoomSlider()}
                       />
                       <span className="advancedSliderValue">{formatZoomSliderPercent(zoomSlider)}</span>
+                    </div>
+
+                    <div className="advancedDivider" />
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Camera FOV</span>
+                        <AdvancedHelpButton topic="cameraFov" />
+                      </span>
+                      <input
+                        type="range"
+                        min={30}
+                        max={90}
+                        step={1}
+                        value={cameraFovDeg}
+                        onChange={(e) => setCameraFovDeg(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{cameraFovDeg}°</span>
                     </div>
                   </div>
                 ) : null}
@@ -1388,6 +1354,41 @@ export function SceneCanvas() {
                 {/* Pane: GUIDES */}
                 {advancedPane === 'guides' ? (
                   <div className="advancedGroup" role="tabpanel">
+                    <div className="controlsSection">
+                      <div className="focusRow">
+                        <span className="focusLabel">Focus:</span>
+                        <select
+                          className="focusSelect"
+                          value={String(focusBody)}
+                          onChange={(e) => {
+                            setFocusBody(e.target.value)
+                          }}
+                        >
+                          {focusOptions.map((b) => (
+                            <option key={b.id} value={String(b.body)}>
+                              {b.style.label ?? b.id}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <button
+                        className={`asciiBtn asciiBtnWide ${String(focusBody) === 'SUN' ? 'asciiBtnDisabled' : ''}`}
+                        type="button"
+                        onClick={refocusSun}
+                        disabled={String(focusBody) === 'SUN'}
+                        title="Quickly refocus the scene on the Sun"
+                      >
+                        <span className="asciiBtnBracket">[</span>
+                        <span className="asciiBtnContent">
+                          {String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}
+                        </span>
+                        <span className="asciiBtnBracket">]</span>
+                      </button>
+                    </div>
+
+                    <div className="advancedDivider" />
+
                     <label className="asciiCheckbox">
                       <span className="asciiCheckboxBox" onClick={() => setLabelsEnabled((v) => !v)}>
                         [{labelsEnabled ? '✓' : '\u00A0'}]
@@ -1432,9 +1433,12 @@ export function SceneCanvas() {
                       </label>
                       <AdvancedHelpButton topic="j2000Axes" />
                     </div>
+                  </div>
+                ) : null}
 
-                    <div className="advancedDivider" />
-
+                {/* Pane: PERFORMANCE */}
+                {advancedPane === 'performance' ? (
+                  <div className="advancedGroup" role="tabpanel">
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
                         <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>

@@ -114,9 +114,8 @@
 
 /* When open, fix width to accommodate advanced section without resize */
 .sceneOverlayOpen {
-  min-width: 320px;
-  /* Constrain width to prevent advanced panel content from expanding the overlay */
-  width: 320px;
+  /* Wider desktop overlay so the tabs don't need horizontal scrolling. */
+  width: 420px;
 }
 
 .sceneOverlayHeader {
