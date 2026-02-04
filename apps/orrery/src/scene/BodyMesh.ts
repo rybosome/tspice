@@ -181,17 +181,6 @@ function createWarnOnce() {
   }
 }
 
-function mapSignature(tex: THREE.Texture | null): string | null {
-  if (tex == null) return null
-
-  // Shader compilation can depend on texture attributes (e.g. video decode path,
-  // color space conversions). Track a minimal signature so swapping textures can
-  // trigger `material.needsUpdate` when required.
-  const colorSpace = String((tex as { colorSpace?: unknown }).colorSpace ?? 'unknown')
-  const isVideo = (tex as { isVideoTexture?: unknown }).isVideoTexture === true
-  return `${colorSpace}:${isVideo ? 'video' : 'image'}`
-}
-
 function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Texture | undefined, bumpScale: number) {
   const EPS = 1e-6
 
@@ -204,29 +193,16 @@ function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Textur
 
   // `needsUpdate` triggers a shader recompile, so avoid setting it unless we
   // actually toggle a feature define (e.g. USE_MAP / USE_BUMPMAP).
-  //
-  // Track a minimal texture signature in `userData` so in-place texture changes
-  // (e.g. video decode path, color space changes) can still trigger a recompile.
   const prevUseMap = material.map != null
   const prevUseBump = material.bumpMap != null
 
-  // If the map was cleared out-of-band, don't keep stale signatures around.
-  if (material.map == null) {
-    delete material.userData.tspiceMapSig
-  }
-
-  const prevMapSig =
-    typeof material.userData.tspiceMapSig === 'string' ? material.userData.tspiceMapSig : mapSignature(material.map)
-
-  const nextMapSig = nextUseMap ? mapSignature(nextMap) : null
-  if (nextMapSig == null) {
-    delete material.userData.tspiceMapSig
-  } else {
-    material.userData.tspiceMapSig = nextMapSig
-  }
-
+  // Be conservative when swapping one non-null map for another: Three.js shader
+  // compilation and sampling paths can depend on texture internals (color space,
+  // video textures, UV transforms, etc). To keep this robust, force a recompile
+  // on any map replacement.
+  const prevMap = material.map
   const needsUpdate =
-    prevUseMap !== nextUseMap || prevUseBump !== nextUseBump || (prevUseMap && nextUseMap && prevMapSig !== nextMapSig)
+    prevUseMap !== nextUseMap || prevUseBump !== nextUseBump || (prevUseMap && nextUseMap && prevMap !== nextMap)
 
   material.map = nextMap
   material.bumpMap = nextBumpMap
