@@ -171,18 +171,23 @@ function createWarnOnce() {
 }
 
 function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Texture | undefined, bumpScale: number) {
-  material.map = map ?? null
+  const nextMap = map ?? null
+  const useBump = map != null && bumpScale != 0
+  const nextBumpMap = useBump ? map : null
+  const nextBumpScale = useBump ? bumpScale : 0
 
-  if (map && bumpScale !== 0) {
-    material.bumpMap = map
-    material.bumpScale = bumpScale
-  } else {
-    material.bumpMap = null
-    material.bumpScale = 0
+  // `needsUpdate` triggers a shader recompile, so avoid setting it unless we
+  // actually toggle a feature define (e.g. USE_MAP / USE_BUMPMAP).
+  const needsUpdate =
+    (material.map != null) !== (nextMap != null) || (material.bumpMap != null) !== (nextBumpMap != null)
+
+  material.map = nextMap
+  material.bumpMap = nextBumpMap
+  material.bumpScale = nextBumpScale
+
+  if (needsUpdate) {
+    material.needsUpdate = true
   }
-
-  // Ensure shader recompiles when toggling maps (e.g. null -> texture).
-  material.needsUpdate = true
 }
 
 type ShaderSource = Pick<BeforeCompileShader, ShaderSourceKey>
@@ -330,7 +335,6 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     // Ensure the material no longer references the texture.
     applyMapAndBump(mat, undefined, 0)
-    mat.needsUpdate = true
 
     if (release) {
       release()
