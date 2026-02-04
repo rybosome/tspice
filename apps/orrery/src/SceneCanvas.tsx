@@ -86,8 +86,17 @@ export function SceneCanvas() {
 
   // Earth appearance tuning (kept configurable in code; no longer exposed as debug sliders).
   // TEMP DEBUG (PR-280): allow live tuning via always-on Sun debug pane.
-  const [ambientLightIntensity, setAmbientLightIntensity] = useState(0.2)
-  const [sunLightIntensity, setSunLightIntensity] = useState(2.0)
+  const AMBIENT_LIGHT_INTENSITY_DEFAULT = 0.5
+  const SUN_LIGHT_INTENSITY_DEFAULT = 4.5
+
+  // Sun emissive tuning (debug-only). Base emissive is also enabled via texture `kind: 'sun'`.
+  const SUN_EMISSIVE_INTENSITY_DEFAULT = 0.8
+  const SUN_EMISSIVE_COLOR_DEFAULT = '#ffcc55'
+
+  const [ambientLightIntensity, setAmbientLightIntensity] = useState(AMBIENT_LIGHT_INTENSITY_DEFAULT)
+  const [sunLightIntensity, setSunLightIntensity] = useState(SUN_LIGHT_INTENSITY_DEFAULT)
+  const [sunEmissiveIntensity, setSunEmissiveIntensity] = useState(SUN_EMISSIVE_INTENSITY_DEFAULT)
+  const [sunEmissiveColor, setSunEmissiveColor] = useState(SUN_EMISSIVE_COLOR_DEFAULT)
   const earthNightAlbedo = 0.004
   const earthTwilight = earthAppearanceDefaults?.nightLightsTwilight ?? 0.12
   const earthNightLightsIntensity = earthAppearanceDefaults?.nightLightsIntensity ?? 1.25
@@ -398,6 +407,9 @@ export function SceneCanvas() {
 
         ambientLightIntensity: number
         sunLightIntensity: number
+        sunEmissiveIntensity: number
+        sunEmissiveColor: string
+
         earthNightAlbedo: number
         earthTwilight: number
         earthNightLightsIntensity: number
@@ -427,6 +439,8 @@ export function SceneCanvas() {
 
     ambientLightIntensity,
     sunLightIntensity,
+    sunEmissiveIntensity,
+    sunEmissiveColor,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -451,6 +465,8 @@ export function SceneCanvas() {
 
     ambientLightIntensity,
     sunLightIntensity,
+    sunEmissiveIntensity,
+    sunEmissiveColor,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -488,6 +504,8 @@ export function SceneCanvas() {
 
       ambientLightIntensity,
       sunLightIntensity,
+      sunEmissiveIntensity,
+      sunEmissiveColor,
       earthNightAlbedo,
       earthTwilight,
       earthNightLightsIntensity,
@@ -510,6 +528,8 @@ export function SceneCanvas() {
 
     ambientLightIntensity,
     sunLightIntensity,
+    sunEmissiveIntensity,
+    sunEmissiveColor,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -1080,8 +1100,10 @@ export function SceneCanvas() {
                 setSunDebugBloomStrength(sunBloomStrength)
                 setSunDebugBloomRadius(sunBloomRadius)
                 setSunDebugBloomResolutionScale(sunBloomResolutionScale)
-                setAmbientLightIntensity(0.2)
-                setSunLightIntensity(2.0)
+                setAmbientLightIntensity(AMBIENT_LIGHT_INTENSITY_DEFAULT)
+                setSunLightIntensity(SUN_LIGHT_INTENSITY_DEFAULT)
+                setSunEmissiveIntensity(SUN_EMISSIVE_INTENSITY_DEFAULT)
+                setSunEmissiveColor(SUN_EMISSIVE_COLOR_DEFAULT)
               }}
               title="Reset to defaults"
             >
@@ -1133,7 +1155,7 @@ export function SceneCanvas() {
                 id="sun-debug-bloom-threshold"
                 type="range"
                 min={0}
-                max={3}
+                max={5}
                 step={0.01}
                 value={sunDebugBloomThreshold}
                 onChange={(e) => setSunDebugBloomThreshold(Number(e.target.value))}
@@ -1256,6 +1278,44 @@ export function SceneCanvas() {
                 step={0.1}
                 value={sunLightIntensity}
                 onChange={(e) => setSunLightIntensity(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-emissive">Sun emissive</label>
+              <input
+                id="sun-debug-emissive"
+                type="range"
+                min={0}
+                max={20}
+                step={0.1}
+                value={sunEmissiveIntensity}
+                onChange={(e) => setSunEmissiveIntensity(Number(e.target.value))}
+              />
+              <input
+                className="sunDebugNumber"
+                type="number"
+                min={0}
+                max={50}
+                step={0.1}
+                value={sunEmissiveIntensity}
+                onChange={(e) => setSunEmissiveIntensity(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-emissive-color">Emissive color</label>
+              <input
+                id="sun-debug-emissive-color"
+                type="color"
+                value={sunEmissiveColor}
+                onChange={(e) => setSunEmissiveColor(e.target.value)}
+              />
+              <input
+                className="sunDebugNumber"
+                type="text"
+                value={sunEmissiveColor}
+                onChange={(e) => setSunEmissiveColor(e.target.value)}
               />
             </div>
           </div>

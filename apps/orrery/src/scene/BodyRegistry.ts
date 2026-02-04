@@ -81,6 +81,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
           color: '#ffb703',
           texture: {
             url: 'textures/planets/sun.png',
+            kind: 'sun',
             color: '#ffb703',
           },
         },

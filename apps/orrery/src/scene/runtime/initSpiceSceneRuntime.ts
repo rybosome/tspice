@@ -45,6 +45,10 @@ export type SceneUiState = {
   ambientLightIntensity: number
   sunLightIntensity: number
 
+  // Debug-only: helps the Sun read as a glowing object at distance.
+  sunEmissiveIntensity: number
+  sunEmissiveColor: string
+
   earthNightAlbedo: number
   earthTwilight: number
   earthNightLightsIntensity: number
@@ -241,6 +245,13 @@ export async function initSpiceSceneRuntime(args: {
     }
   })
 
+  const sunMesh = bodies.find((b) => String(b.body) === 'SUN')?.mesh
+  const sunMaterial = (() => {
+    const m = sunMesh?.material
+    if (!m) return null
+    return (Array.isArray(m) ? m[0] : m) as THREE.Material
+  })()
+
   // Ensure textures are loaded before we mark the scene as rendered.
   await Promise.all(bodies.map((b) => b.ready))
 
@@ -318,6 +329,13 @@ export async function initSpiceSceneRuntime(args: {
     // Lighting knobs
     ambient.intensity = next.ambientLightIntensity
     dir.intensity = next.sunLightIntensity
+
+    // Sun glow tuning (debug-only UI).
+    if (sunMaterial && sunMaterial instanceof THREE.MeshStandardMaterial) {
+      const intensity = THREE.MathUtils.clamp(next.sunEmissiveIntensity, 0, 50)
+      sunMaterial.emissive.set(next.sunEmissiveColor)
+      sunMaterial.emissiveIntensity = intensity
+    }
 
     const earthTuning = {
       nightAlbedo: next.earthNightAlbedo,

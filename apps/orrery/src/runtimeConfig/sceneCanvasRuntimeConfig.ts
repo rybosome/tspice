@@ -79,28 +79,39 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
     return Number.isFinite(parsed) ? parsed : null
   })()
 
-  // TEMP DEBUG (PR-280): force whole-frame postprocessing while tuning Sun appearance.
-  // Keep E2E snapshots stable by still disabling postprocessing in `?e2e` mode.
-  let sunPostprocessMode: SunPostprocessMode = isE2e ? 'off' : 'wholeFrame'
+  // Sun postprocessing mode.
+  // Default behavior:
+  // - E2E (`?e2e=1`): disable postprocessing for snapshot stability.
+  // - Interactive: enable whole-frame postprocessing by default.
+  //
+  // In both modes, allow explicit overrides via `?sunPostprocessMode=...`.
+  const sunPostprocessModeDefault: SunPostprocessMode = isE2e ? 'off' : 'wholeFrame'
+  const sunPostprocessMode =
+    parseEnum(searchParams, 'sunPostprocessMode', ['off', 'wholeFrame', 'sunIsolated'] as const) ??
+    sunPostprocessModeDefault
 
-  const sunExposure = clamp(parseNumber(searchParams, 'sunExposure') ?? 1, 0, 100)
+  const sunExposure = clamp(parseNumber(searchParams, 'sunExposure') ?? 1.5, 0, 100)
 
-  // TEMP DEBUG (PR-280): with forced `wholeFrame`, default to a perceptual tone map.
-  // Users can still override via query params while tuning.
-  const sunToneMapDefault = sunPostprocessMode === 'wholeFrame' ? 'filmic' : 'none'
+  // Default to a perceptual tone map (postprocess-dependent in practice).
+  // Note: when `sunPostprocessMode` is `off`, this has no visual effect.
+  const sunToneMapDefault: SunToneMap = 'acesLike'
   const sunToneMap = parseEnum(searchParams, 'sunToneMap', ['none', 'filmic', 'acesLike'] as const) ?? sunToneMapDefault
 
-  // TEMP DEBUG (PR-280): we're forcing `wholeFrame`, so default bloom presets
-  // can be simplified while we tune luminance.
-  const sunBloomThresholdDefault = sunPostprocessMode === 'wholeFrame' ? 0.92 : 0.95
-  const sunBloomStrengthDefault = sunPostprocessMode === 'wholeFrame' ? 0.7 : 0.6
-  const sunBloomRadiusDefault = sunPostprocessMode === 'wholeFrame' ? 0.17 : 0.15
+  // Bloom defaults tuned for Sun appearance.
+  const sunBloomThresholdDefault = 1.5
+  const sunBloomStrengthDefault = 0.3
+  const sunBloomRadiusDefault = 0.05
+  const sunBloomResolutionScaleDefault = 1
 
   // Allow thresholds > 1: with HDR inputs this can be useful for controlling bloom pre-tonemap.
   const sunBloomThreshold = clamp(parseNumber(searchParams, 'sunBloomThreshold') ?? sunBloomThresholdDefault, 0, 10)
   const sunBloomStrength = clamp(parseNumber(searchParams, 'sunBloomStrength') ?? sunBloomStrengthDefault, 0, 20)
   const sunBloomRadius = clamp(parseNumber(searchParams, 'sunBloomRadius') ?? sunBloomRadiusDefault, 0, 1)
-  const sunBloomResolutionScale = clamp(parseNumber(searchParams, 'sunBloomResolutionScale') ?? 0.5, 0.1, 1)
+  const sunBloomResolutionScale = clamp(
+    parseNumber(searchParams, 'sunBloomResolutionScale') ?? sunBloomResolutionScaleDefault,
+    0.1,
+    1,
+  )
 
   return {
     searchParams,
