@@ -214,6 +214,16 @@ const HOME_PRESET_RADII = HOME_PRESET_KEYS.map((k) => getHomePresetStateForKey(k
 const HOME_PRESET_RADIUS_MIN = Math.min(...HOME_PRESET_RADII)
 const HOME_PRESET_RADIUS_MAX = Math.max(...HOME_PRESET_RADII)
 
+// Shared camera zoom limits used across both the "planetary" and "solar" scale
+// presets.
+//
+// Keeping these consistent avoids partitioning the zoom spectrum (where changing
+// presets silently remaps wheel/pinch/slider sensitivity).
+const CAMERA_RADIUS_LIMITS = {
+  minRadius: HOME_PRESET_RADIUS_MIN * 0.25,
+  maxRadius: HOME_PRESET_RADIUS_MAX * 20_000,
+} as const
+
 export function SceneCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -321,24 +331,18 @@ export function SceneCanvas() {
       if (!controller || !camera) return
 
       if (preset === 'planetary') {
-        // True-ish scale with a tighter zoom range.
+        // True-ish scale.
         setPlanetScaleSlider(planetScaleSliderForMultiplier(1))
         setSunScaleMultiplier(1)
-
-        controller.setRadiusLimits({
-          minRadius: HOME_PRESET_RADIUS_MIN * 0.25,
-          maxRadius: HOME_PRESET_RADIUS_MAX * 25,
-        })
       } else {
         // Aggressive exaggeration for AU-scale viewing.
         setPlanetScaleSlider(planetScaleSliderForMultiplier(800))
         setSunScaleMultiplier(12)
-
-        controller.setRadiusLimits({
-          minRadius: HOME_PRESET_RADIUS_MIN * 0.25,
-          maxRadius: HOME_PRESET_RADIUS_MAX * 20_000,
-        })
       }
+
+      // Keep zoom limits consistent across presets so wheel/pinch/slider mapping
+      // stays predictable.
+      controller.setRadiusLimits(CAMERA_RADIUS_LIMITS)
 
       controller.applyToCamera(camera)
       invalidateRef.current?.()
@@ -357,8 +361,6 @@ export function SceneCanvas() {
   }
 
   const quantumSec = useTimeStoreSelector((s) => s.quantumSec)
-  // Current ET for inspector panel (subscribes to time store changes)
-  const etSec = useTimeStoreSelector((s) => s.etSec)
 
   // Keep these baked-in for now (no user-facing tuning).
   const focusDistanceMultiplier = 4
@@ -1451,7 +1453,6 @@ export function SceneCanvas() {
           selectedBody={selectedBody}
           focusBody={focusBody}
           spiceClient={spiceClient}
-          etSec={etSec}
           observer="SUN"
           frame={J2000_FRAME}
         />
