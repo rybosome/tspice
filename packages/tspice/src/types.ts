@@ -11,18 +11,6 @@ export type Vec6 = readonly [
   number,
 ];
 
-/** 3x3 matrix, row-major. */
-export type Mat3 = readonly [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-];
 
 /** SPICE frame name (e.g. "J2000", "IAU_EARTH"). */
 export type FrameName = string;

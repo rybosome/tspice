@@ -1,8 +1,9 @@
 import type {
   CoordsVectorsApi,
-  SpiceMatrix3x3,
+  Mat3RowMajor,
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
+import { assertMat3ArrayLike9 } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -256,7 +257,8 @@ function tspiceCallVcrss(module: EmscriptenModule, a: SpiceVector3, b: SpiceVect
   }
 }
 
-function tspiceCallMxv(module: EmscriptenModule, m: SpiceMatrix3x3, v: SpiceVector3): SpiceVector3 {
+function tspiceCallMxv(module: EmscriptenModule, m: Mat3RowMajor, v: SpiceVector3): SpiceVector3 {
+  assertMat3ArrayLike9(m, { label: "mxv().m" });
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const mPtr = module._malloc(9 * 8);
@@ -287,7 +289,8 @@ function tspiceCallMxv(module: EmscriptenModule, m: SpiceMatrix3x3, v: SpiceVect
   }
 }
 
-function tspiceCallMtxv(module: EmscriptenModule, m: SpiceMatrix3x3, v: SpiceVector3): SpiceVector3 {
+function tspiceCallMtxv(module: EmscriptenModule, m: Mat3RowMajor, v: SpiceVector3): SpiceVector3 {
+  assertMat3ArrayLike9(m, { label: "mtxv().m" });
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const mPtr = module._malloc(9 * 8);

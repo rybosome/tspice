@@ -1,4 +1,28 @@
-export * from "./shared/types.js";
+export type {
+  AbCorr,
+  Found,
+  IluminResult,
+  KernelData,
+  KernelKind,
+  KernelSource,
+  Mat3ColMajor,
+  Mat3RowMajor,
+  SpiceMatrix6x6,
+  SpiceStateVector,
+  SpiceVector3,
+  SpkezrResult,
+  SpkposResult,
+  SubPointResult,
+} from "./shared/types.js";
+
+export type { BrandMat3Options } from "./shared/mat3.js";
+export {
+  assertMat3ArrayLike9,
+  brandMat3ColMajor,
+  brandMat3RowMajor,
+  isMat3ColMajor,
+  isMat3RowMajor,
+} from "./shared/mat3.js";
 
 export * from "./domains/kernels.js";
 export * from "./domains/time.js";

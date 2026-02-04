@@ -326,7 +326,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
         surface: {
           color: '#e9c46a',
           texture: {
-            url: 'textures/planets/moon.png',
+            url: 'textures/planets/moon-lroc-4k.jpg',
           },
         },
       },
