@@ -171,15 +171,30 @@ function createWarnOnce() {
 }
 
 function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Texture | undefined, bumpScale: number) {
+  const EPS = 1e-6
+
   const nextMap = map ?? null
-  const useBump = map != null && bumpScale != 0
-  const nextBumpMap = useBump ? map : null
-  const nextBumpScale = useBump ? bumpScale : 0
+  const nextUseMap = nextMap != null
+  const nextUseBump = nextUseMap && Math.abs(bumpScale) > EPS
+
+  const nextBumpMap = nextUseBump ? nextMap : null
+  const nextBumpScale = nextUseBump ? bumpScale : 0
 
   // `needsUpdate` triggers a shader recompile, so avoid setting it unless we
   // actually toggle a feature define (e.g. USE_MAP / USE_BUMPMAP).
-  const needsUpdate =
-    (material.map != null) !== (nextMap != null) || (material.bumpMap != null) !== (nextBumpMap != null)
+  //
+  // Track the flags in `userData` instead of inferring from `material.map` /
+  // `material.bumpMap` since those properties can drift from the shader's
+  // compiled defines when updated across async texture installs / disposals.
+  const prevUseMap =
+    typeof material.userData.tspiceUseMap === 'boolean' ? material.userData.tspiceUseMap : material.map != null
+  const prevUseBump =
+    typeof material.userData.tspiceUseBump === 'boolean' ? material.userData.tspiceUseBump : material.bumpMap != null
+
+  material.userData.tspiceUseMap = nextUseMap
+  material.userData.tspiceUseBump = nextUseBump
+
+  const needsUpdate = prevUseMap !== nextUseMap || prevUseBump !== nextUseBump
 
   material.map = nextMap
   material.bumpMap = nextBumpMap
@@ -454,8 +469,18 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '\t// Terminator darkening: suppress ambient-lit albedo on the night side.',
           '\t{',
           '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
-          '\t\t// Assumes `normal` is the final view-space normal used for lighting (post bump/normal-map perturbation).',
-          '\t\tfloat ndotl = dot( normal, sunDirView );',
+          '\t\t// Use the unperturbed geometric normal (view space) so the terminator mask',
+          '\t\t// is stable and not affected by bump/normal maps.',
+          '\t\tvec3 tspiceGeometricNormalView;',
+          '\t\t#ifndef FLAT_SHADED',
+          '\t\t\ttspiceGeometricNormalView = normalize( vNormal );',
+          '\t\t#else',
+          '\t\t\t// `vNormal` is not defined for flat shading; reconstruct from view-space position derivatives.',
+          '\t\t\tvec3 fdx = dFdx( vViewPosition );',
+          '\t\t\tvec3 fdy = dFdy( vViewPosition );',
+          '\t\t\ttspiceGeometricNormalView = normalize( cross( fdx, fdy ) );',
+          '\t\t#endif',
+          '\t\tfloat ndotl = dot( tspiceGeometricNormalView, sunDirView );',
           '\t\tfloat dayFactor = smoothstep( 0.0, uTerminatorTwilight, ndotl );',
           '\t\tdiffuseColor.rgb *= mix( uNightAlbedo, 1.0, dayFactor );',
           '\t}',
