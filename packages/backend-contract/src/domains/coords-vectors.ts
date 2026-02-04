@@ -1,4 +1,4 @@
-import type { SpiceMatrix3x3, SpiceVector3 } from "../shared/types.js";
+import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
 export interface CoordsVectorsApi {
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
@@ -21,6 +21,6 @@ export interface CoordsVectorsApi {
   vdot(a: SpiceVector3, b: SpiceVector3): number;
   vcrss(a: SpiceVector3, b: SpiceVector3): SpiceVector3;
 
-  mxv(m: SpiceMatrix3x3, v: SpiceVector3): SpiceVector3;
-  mtxv(m: SpiceMatrix3x3, v: SpiceVector3): SpiceVector3;
+  mxv(m: Mat3RowMajor, v: SpiceVector3): SpiceVector3;
+  mtxv(m: Mat3RowMajor, v: SpiceVector3): SpiceVector3;
 }

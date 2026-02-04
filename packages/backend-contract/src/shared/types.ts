@@ -45,7 +45,17 @@ export type AbCorr =
 
 export type SpiceVector3 = [number, number, number];
 
-export type SpiceMatrix3x3 = [
+
+// -- Matrix types -----------------------------------------------------------
+
+/**
+ * 3x3 matrix encoded as a length-9 array in **row-major** order.
+ *
+ * Row-major layout: `[m00,m01,m02, m10,m11,m12, m20,m21,m22]`.
+ */
+// Type-only brand (no runtime Symbol export).
+declare const __mat3RowMajorBrand: unique symbol;
+export type Mat3RowMajor = readonly [
   number,
   number,
   number,
@@ -55,7 +65,27 @@ export type SpiceMatrix3x3 = [
   number,
   number,
   number,
-];
+] & { readonly [__mat3RowMajorBrand]: true };
+
+/**
+ * 3x3 matrix encoded as a length-9 array in **column-major** order.
+ *
+ * Column-major layout: `[m00,m10,m20, m01,m11,m21, m02,m12,m22]`.
+ */
+// Type-only brand (no runtime Symbol export).
+declare const __mat3ColMajorBrand: unique symbol;
+export type Mat3ColMajor = readonly [
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+] & { readonly [__mat3ColMajorBrand]: true };
+
 
 export type SpiceMatrix6x6 = [
   number,

@@ -1,4 +1,4 @@
-import type { Found, SpiceMatrix3x3, SpiceMatrix6x6, SpiceVector3 } from "../shared/types.js";
+import type { Found, Mat3RowMajor, SpiceMatrix6x6, SpiceVector3 } from "../shared/types.js";
 
 export interface FramesApi {
   namfrm(name: string): Found<{ code: number }>;
@@ -13,7 +13,7 @@ export interface FramesApi {
     sclkdp: number,
     tol: number,
     ref: string,
-  ): Found<{ cmat: SpiceMatrix3x3; clkout: number }>;
+  ): Found<{ cmat: Mat3RowMajor; clkout: number }>;
 
   /** Get pointing + angular velocity for a CK instrument at a given encoded spacecraft clock time. */
   ckgpav(
@@ -21,10 +21,10 @@ export interface FramesApi {
     sclkdp: number,
     tol: number,
     ref: string,
-  ): Found<{ cmat: SpiceMatrix3x3; av: SpiceVector3; clkout: number }>;
+  ): Found<{ cmat: Mat3RowMajor; av: SpiceVector3; clkout: number }>;
 
   /** Compute a 3x3 frame transformation matrix (row-major). */
-  pxform(from: string, to: string, et: number): SpiceMatrix3x3;
+  pxform(from: string, to: string, et: number): Mat3RowMajor;
 
   /** Compute a 6x6 state transformation matrix (row-major). */
   sxform(from: string, to: string, et: number): SpiceMatrix6x6;
