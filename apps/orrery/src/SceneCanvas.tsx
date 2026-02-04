@@ -1092,43 +1092,6 @@ export function SceneCanvas() {
 
           {overlayOpen ? (
             <div id="scene-overlay-body" className="sceneOverlayBody">
-              {/* Quick controls: always visible regardless of selected pane */}
-              <div className="advancedGroup" aria-label="Quick controls">
-                <div className="advancedSlider">
-                  <span className="advancedSliderLabel advancedControlLabel">
-                    <span>Zoom</span>
-                    <AdvancedHelpButton topic="zoom" />
-                  </span>
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={0.5}
-                    value={zoomSlider}
-                    onChange={handleZoomSliderInput}
-                    onPointerDown={() => {
-                      zoomSliderDraggingRef.current = true
-                    }}
-                    onPointerUp={() => {
-                      zoomSliderDraggingRef.current = false
-                      flushZoomSlider()
-                    }}
-                    onPointerCancel={() => {
-                      zoomSliderDraggingRef.current = false
-                      flushZoomSlider()
-                    }}
-                    onBlur={() => {
-                      zoomSliderDraggingRef.current = false
-                      flushZoomSlider()
-                    }}
-                    onKeyUp={() => flushZoomSlider()}
-                  />
-                  <span className="advancedSliderValue">{formatZoomSliderPercent(zoomSlider)}</span>
-                </div>
-
-                <div className="advancedDivider" />
-              </div>
-
               <div className="advancedPanel">
                 <div className="advancedTabs" role="tablist" aria-label="Controls panes">
                   {ADVANCED_PANES.map((pane) => (
@@ -1172,6 +1135,40 @@ export function SceneCanvas() {
                 {/* Pane: Scale & Camera */}
                 {advancedPane === 'scaleCamera' ? (
                   <div className="advancedGroup" role="tabpanel">
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Zoom</span>
+                        <AdvancedHelpButton topic="zoom" />
+                      </span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={0.5}
+                        value={zoomSlider}
+                        onChange={handleZoomSliderInput}
+                        onPointerDown={() => {
+                          zoomSliderDraggingRef.current = true
+                        }}
+                        onPointerUp={() => {
+                          zoomSliderDraggingRef.current = false
+                          flushZoomSlider()
+                        }}
+                        onPointerCancel={() => {
+                          zoomSliderDraggingRef.current = false
+                          flushZoomSlider()
+                        }}
+                        onBlur={() => {
+                          zoomSliderDraggingRef.current = false
+                          flushZoomSlider()
+                        }}
+                        onKeyUp={() => flushZoomSlider()}
+                      />
+                      <span className="advancedSliderValue">{formatZoomSliderPercent(zoomSlider)}</span>
+                    </div>
+
+                    <div className="advancedDivider" />
+
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Camera FOV</span>
