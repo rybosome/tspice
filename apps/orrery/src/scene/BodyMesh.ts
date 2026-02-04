@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { isTextureCacheClearedError, loadTextureCached } from './loadTextureCached.js'
 import { createRingMesh } from './RingMesh.js'
 import { isEarthAppearanceLayer, type BodyAppearanceStyle, type BodyTextureKind } from './SceneModel.js'
+import { isDev } from '../utils/isDev.js'
 
 export type CreateBodyMeshOptions = {
   /** Optional stable ID (e.g. `"EARTH"`) for body-specific rendering. */
@@ -157,7 +158,7 @@ function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile
 function createWarnOnce() {
   // Avoid spamming end users in production; these warnings are mainly useful
   // for shader-chunk drift during local development.
-  if (!import.meta.env.DEV) {
+  if (!isDev()) {
     return (_key: string, ..._args: unknown[]) => {}
   }
 
@@ -211,8 +212,28 @@ function safeShaderReplace(args: {
   }
   if (src.includes(marker)) return true
 
-  if (!src.includes(needle)) {
+  // Safety: only inject when the needle is *uniquely* present, otherwise a shader
+  // chunk rename / refactor can lead to surprising partial patches.
+  let occurrences = 0
+  for (let i = 0; ; ) {
+    const next = src.indexOf(needle, i)
+    if (next === -1) break
+    occurrences++
+    i = next + needle.length
+  }
+
+  if (occurrences === 0) {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing chunk)', { source, needle, marker })
+    return false
+  }
+
+  if (occurrences > 1) {
+    warnOnce(warnKey, '[BodyMesh] shader injection skipped (needle not unique)', {
+      source,
+      needle,
+      occurrences,
+      marker,
+    })
     return false
   }
 

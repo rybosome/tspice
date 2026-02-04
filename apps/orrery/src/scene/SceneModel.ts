@@ -40,6 +40,13 @@ export interface BodySurfaceStyle {
    *
    * If set and a texture map is present, the renderer will reuse the map as a
    * cheap bump source to add some rocky/cratered relief.
+   *
+   * Notes:
+   * - Values are clamped to `0..0.25` (Three.js accepts unbounded values but
+   *   large scales can cause extreme artifacts).
+   * - Typical values are around `~0..0.1`.
+   * - We reuse the surface albedo as the height source; this is a shortcut and
+   *   can produce artifacts (e.g. relief correlated with lighting/color changes).
    */
   bumpScale?: number
 
