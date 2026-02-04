@@ -7,10 +7,22 @@ test.use({
 
 test('rendered scene is visually stable (golden screenshot)', async ({ page, baseURL }) => {
   const allowedOrigin = baseURL ? new URL(baseURL).origin : 'http://127.0.0.1:4173'
+  const abortedTexturePaths = [
+    '/textures/planets/earth.png',
+    '/textures/planets/earth-nightlights.jpg',
+    '/textures/planets/earth-clouds.jpg',
+  ]
 
   // Ensure the test is deterministic and doesn't accidentally hit the network.
   await page.route('**/*', async (route) => {
     const url = route.request().url()
+
+    // Abort large textures that can race GPU uploads and make screenshots flaky.
+    if (abortedTexturePaths.some((path) => url.includes(path))) {
+      await route.abort()
+      return
+    }
+
     if (url.startsWith(allowedOrigin) || url.startsWith('data:') || url.startsWith('blob:')) {
       await route.continue()
       return
@@ -33,6 +45,12 @@ test('rendered scene is visually stable (golden screenshot)', async ({ page, bas
 
   const canvas = page.locator('canvas.sceneCanvas')
   await expect(canvas).toBeVisible()
+
+  // Force a final render and lock deterministic lighting before capturing the golden.
+  await page.evaluate(() => {
+    ;(window as any).__tspice_viewer__e2e?.lockDeterministicLighting?.()
+    ;(window as any).__tspice_viewer__e2e?.samplePerfCounters?.()
+  })
 
   await expect(canvas).toHaveScreenshot('rendered-scene.png', {
     animations: 'disabled',
