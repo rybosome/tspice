@@ -287,6 +287,12 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     emissiveIntensity: textureKind === 'sun' ? 0.8 : 0.0,
   })
 
+  // We patch `material.onBeforeCompile` to inject shader modifications.
+  // Capture the original value and whether it was an own-prop so `dispose()` can
+  // correctly restore or clear it.
+  const onBeforeCompileWasOwn = Object.prototype.hasOwnProperty.call(material, 'onBeforeCompile')
+  const initialOnBeforeCompile = material.onBeforeCompile
+
   function disposeMap(mat: THREE.MeshStandardMaterial) {
     const release = mapRelease
     const tex = map
@@ -824,7 +830,15 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
       material.emissiveMap = null
       material.bumpMap = null
-      material.onBeforeCompile = () => {}
+
+      if (onBeforeCompileWasOwn) {
+        material.onBeforeCompile = initialOnBeforeCompile
+      } else {
+        // If we introduced `onBeforeCompile` as an own-prop during patching,
+        // clean it up so the material falls back to the prototype behavior.
+        // (Avoid leaving a no-op handler installed.)
+        delete (material as THREE.Material & { onBeforeCompile?: unknown }).onBeforeCompile
+      }
       material.needsUpdate = true
 
       if (cloudsMaterial) {

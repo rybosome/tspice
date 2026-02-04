@@ -14,5 +14,5 @@ export function isDev(): boolean {
 
   // Cross-runtime fallback (safe even when `process` doesn't exist).
   const nodeEnv = (globalThis as unknown as { process?: { env?: { NODE_ENV?: unknown } } })?.process?.env?.NODE_ENV
-  return typeof nodeEnv === 'string' ? nodeEnv !== 'production' : false
+  return typeof nodeEnv === 'string' ? nodeEnv !== 'production' : true
 }
