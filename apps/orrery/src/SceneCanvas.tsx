@@ -102,9 +102,18 @@ export function SceneCanvas() {
   // Occlusion toggle for labels (advanced, default off)
   const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
 
-  // Single toggle for animated sky effects (skydome shader + starfield twinkle).
+  // Single toggle for Milky Way background (skydome shader + starfield twinkle).
+  // Default OFF (less distracting); can be enabled via UI or `?milkyWay=1`.
   // Disabled by default for e2e tests to keep snapshots deterministic.
-  const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
+  const [animatedSky, setAnimatedSky] = useState(() => {
+    if (isE2e) return false
+    const searchParams = new URLSearchParams(window.location.search)
+    const raw = searchParams.get('milkyWay') ?? searchParams.get('animatedSky')
+    if (raw == null) return false
+    if (raw === '') return true
+    const v = raw.toLowerCase()
+    return v === '1' || v === 'true'
+  })
 
   const twinkleEnabled = animatedSky && !isE2e
 
@@ -969,7 +978,7 @@ export function SceneCanvas() {
                         [{animatedSky ? '✓' : '\u00A0'}]
                       </span>
                       <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
-                        Animated Sky
+                        Milky Way Background
                       </span>
                     </label>
 
