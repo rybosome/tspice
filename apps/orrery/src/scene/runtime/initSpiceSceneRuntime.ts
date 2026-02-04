@@ -23,6 +23,7 @@ import { timeStore } from '../../time/timeStore.js'
 import { computeViewerScrubRangeEt } from '../../time/viewerTimeBounds.js'
 import { installTspiceViewerE2eApi } from '../../e2eHooks/index.js'
 import type { CameraController, CameraControllerState } from '../../controls/CameraController.js'
+import { shouldAutoZoomOnFocusChange } from './focusAutoZoom.js'
 
 export type SceneUiState = {
   etSec: EtSeconds
@@ -91,6 +92,13 @@ export async function initSpiceSceneRuntime(args: {
   getHomePresetState: (focusBody: BodyRef) => CameraControllerState | null
   initialControllerStateRef: { current: CameraControllerState | null }
 
+  /**
+   * When set to a body id, the next focus change to that body will skip the
+   * runtime's auto-zoom/home-preset camera overrides. This is consumed (cleared)
+   * after the focus change is observed.
+   */
+  skipAutoZoomForNextFocusBodyRef?: { current: BodyRef | null }
+
   selectedBodyIdRef: { current: BodyId | undefined }
 
   invalidate: () => void
@@ -117,6 +125,7 @@ export async function initSpiceSceneRuntime(args: {
     resetLookOffset,
     getHomePresetState,
     initialControllerStateRef,
+    skipAutoZoomForNextFocusBodyRef,
     selectedBodyIdRef,
     invalidate,
     isDisposed,
@@ -322,9 +331,40 @@ export async function initSpiceSceneRuntime(args: {
       cloudsNightMultiplier: next.earthCloudsNightMultiplier,
     }
 
-    const shouldAutoZoom = !isE2e && next.focusBody !== lastAutoZoomFocusBody
+    const skipAutoZoomForFocusBody = skipAutoZoomForNextFocusBodyRef?.current ?? null
+
+    const shouldSkipAutoZoomForFocusBody =
+      skipAutoZoomForFocusBody != null &&
+      String(skipAutoZoomForFocusBody) === String(next.focusBody) &&
+      String(next.focusBody) !== String(lastAutoZoomFocusBody)
+
+    const shouldAutoZoom = shouldAutoZoomOnFocusChange({
+      isE2e,
+      nextFocusBody: next.focusBody,
+      lastAutoZoomFocusBody,
+      skipAutoZoomForFocusBody,
+    })
 
     const homePreset = shouldAutoZoom ? getHomePresetState(next.focusBody) : null
+
+    if (shouldSkipAutoZoomForFocusBody) {
+      cancelFocusTween?.()
+      resetLookOffset?.()
+
+      // Keep the caller-selected zoom, but force the camera to look at the
+      // rebased origin for the new focus body.
+      focusOn?.(new THREE.Vector3(0, 0, 0), {
+        radius: controller.radius,
+        immediate: true,
+      })
+
+      if (!initialControllerStateRef.current) {
+        initialControllerStateRef.current = controller.snapshot()
+      }
+
+      lastAutoZoomFocusBody = next.focusBody
+      if (skipAutoZoomForNextFocusBodyRef) skipAutoZoomForNextFocusBodyRef.current = null
+    }
 
     if (shouldAutoZoom) {
       cancelFocusTween?.()

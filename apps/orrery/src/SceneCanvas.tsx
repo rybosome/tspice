@@ -370,6 +370,7 @@ export function SceneCanvas() {
   const focusOnOriginRef = useRef<(() => void) | null>(null)
   const selectedBodyIdRef = useRef<BodyId | undefined>(undefined)
   const initialControllerStateRef = useRef<CameraControllerState | null>(null)
+  const skipAutoZoomForNextFocusBodyRef = useRef<BodyRef | null>(null)
   const initialPlanetaryRadiusRef = useRef<number | null>(null)
 
   // Track current focus body for keyboard reset logic.
@@ -550,6 +551,13 @@ export function SceneCanvas() {
         // Solar scale is intended for AU-scale viewing, so:
         // - focus the Sun (center the scene)
         // - zoom out to a reasonable baseline distance (~80% on the zoom slider)
+        if (String(focusBodyRef.current) !== 'SUN') {
+          // `initSpiceSceneRuntime.updateScene` will normally auto-zoom (and/or
+          // apply a home preset) whenever focus changes. For the Solar scale
+          // preset we explicitly choose a zoom baseline, so skip that behavior
+          // once for this focus change.
+          skipAutoZoomForNextFocusBodyRef.current = 'SUN'
+        }
         setFocusBody('SUN')
         controller.radius = THREE.MathUtils.clamp(
           radiusForZoomSlider(80, controller.minRadius, controller.maxRadius),
@@ -991,6 +999,7 @@ export function SceneCanvas() {
           resetLookOffset: () => three.controller.resetLookOffset(),
           getHomePresetState,
           initialControllerStateRef,
+          skipAutoZoomForNextFocusBodyRef,
           selectedBodyIdRef,
           invalidate: three.invalidate,
           isDisposed: () => disposed,
