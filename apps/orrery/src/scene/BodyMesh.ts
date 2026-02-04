@@ -147,11 +147,22 @@ type ShaderSourceKey = 'fragmentShader' | 'vertexShader'
 type OnBeforeCompile = NonNullable<THREE.Material['onBeforeCompile']>
 type BeforeCompileShader = Parameters<OnBeforeCompile>[0]
 
-function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile) {
+function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile): () => void {
   const prev = material.onBeforeCompile
-  material.onBeforeCompile = (shader, renderer) => {
+
+  const composed: OnBeforeCompile = (shader, renderer) => {
     prev?.(shader, renderer)
     patch(shader, renderer)
+  }
+
+  material.onBeforeCompile = composed
+
+  // Allow callers to restore the previous hook (useful for cleanup / testing).
+  // Guard against clobbering if `onBeforeCompile` was overwritten later.
+  return () => {
+    if (material.onBeforeCompile === composed) {
+      material.onBeforeCompile = prev
+    }
   }
 }
 
@@ -194,19 +205,18 @@ function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Textur
   // `needsUpdate` triggers a shader recompile, so avoid setting it unless we
   // actually toggle a feature define (e.g. USE_MAP / USE_BUMPMAP).
   //
-  // Track the flags in `userData` instead of inferring from `material.map` /
-  // `material.bumpMap` since those properties can drift from the shader's
-  // compiled defines when updated across async texture installs / disposals.
-  const prevUseMap =
-    typeof material.userData.tspiceUseMap === 'boolean' ? material.userData.tspiceUseMap : material.map != null
-  const prevUseBump =
-    typeof material.userData.tspiceUseBump === 'boolean' ? material.userData.tspiceUseBump : material.bumpMap != null
+  // Track a minimal texture signature in `userData` so in-place texture changes
+  // (e.g. video decode path, color space changes) can still trigger a recompile.
+  const prevUseMap = material.map != null
+  const prevUseBump = material.bumpMap != null
+
+  // If the map was cleared out-of-band, don't keep stale signatures around.
+  if (material.map == null) {
+    delete material.userData.tspiceMapSig
+  }
 
   const prevMapSig =
     typeof material.userData.tspiceMapSig === 'string' ? material.userData.tspiceMapSig : mapSignature(material.map)
-
-  material.userData.tspiceUseMap = nextUseMap
-  material.userData.tspiceUseBump = nextUseBump
 
   const nextMapSig = nextUseMap ? mapSignature(nextMap) : null
   if (nextMapSig == null) {
@@ -242,7 +252,7 @@ function safeShaderReplaceInSource(args: {
   marker: string
   warnOnce: (key: string, ...args: unknown[]) => void
   warnKey: string
-}): { ok: true; next: string } | { ok: false; next: string } {
+}): { ok: true; next: string } | { ok: false; next: string | undefined } {
   const { src, source, needle, replacement, marker, warnOnce, warnKey } = args
 
   if (src.includes(marker)) return { ok: true, next: src }
@@ -292,7 +302,7 @@ function safeShaderReplaceAll(args: {
   }>
   warnOnce: (key: string, ...args: unknown[]) => void
   warnKey: string
-}): { ok: true; next: string } | { ok: false; next: string } {
+}): { ok: true; next: string } | { ok: false; next: string | undefined } {
   const { shader, source, replacements, warnOnce, warnKey } = args
 
   const shaderSources: ShaderSource = shader
@@ -300,7 +310,7 @@ function safeShaderReplaceAll(args: {
   const src0 = getShaderSource(shaderSources, source)
   if (src0 == null) {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing shader source)', { source })
-    return { ok: false, next: '' }
+    return { ok: false, next: undefined }
   }
 
   return safeShaderReplaceAllInSource({ src: src0, source, replacements, warnOnce })
@@ -316,7 +326,7 @@ function safeShaderReplaceAllInSource(args: {
     warnKey: string
   }>
   warnOnce: (key: string, ...args: unknown[]) => void
-}): { ok: true; next: string } | { ok: false; next: string } {
+}): { ok: true; next: string } | { ok: false; next: string | undefined } {
   const { src: src0, source, replacements, warnOnce } = args
 
   let src = src0
@@ -405,6 +415,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     emissive: textureKind === 'sun' ? new THREE.Color('#ffcc55') : new THREE.Color('#000000'),
     emissiveIntensity: textureKind === 'sun' ? 0.8 : 0.0,
   })
+
+  const onBeforeCompileRestores: Array<() => void> = []
 
   // Centralize map + bump setup so sync/async paths match.
   applyMapAndBump(material, map, bumpScale)
@@ -503,12 +515,13 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     const uNightAlbedo = { value: nightAlbedo }
     const uTerminatorTwilight = { value: terminatorTwilight }
 
-    composeOnBeforeCompile(material, (shader) => {
+    const restoreTerminatorDarkening = composeOnBeforeCompile(material, (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uNightAlbedo = uNightAlbedo
       shader.uniforms.uTerminatorTwilight = uTerminatorTwilight
 
       const markerCommon = '// tspice:terminator-darkening:uniforms'
+      const markerNormal = '// tspice:terminator-darkening:geometry-normal'
       const markerLights = '// tspice:terminator-darkening:lights'
 
       const res = safeShaderReplaceAll({
@@ -530,6 +543,17 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             warnKey: 'terminator-darkening:uniforms',
           },
           {
+            needle: '#include <normal_fragment_begin>',
+            marker: markerNormal,
+            replacement: [
+              '#include <normal_fragment_begin>',
+              markerNormal,
+              '\t// Stable geometric normal (view space) before any normal map perturbations.',
+              '\tvec3 tspiceGeometryNormal = normal;',
+            ].join('\n'),
+            warnKey: 'terminator-darkening:geometry-normal',
+          },
+          {
             needle: '#include <lights_fragment_begin>',
             marker: markerLights,
             replacement: [
@@ -540,7 +564,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '\t\t// Use the unperturbed geometric normal (view space) so the terminator mask',
               '\t\t// is stable and not affected by bump/normal maps.',
               '\t\t// `nonPerturbedNormal` is provided by <normal_fragment_begin> (and also handles FLAT_SHADED).',
-              '\t\tfloat ndotl = dot( nonPerturbedNormal, sunDirView );',
+              '\t\tfloat ndotl = dot( tspiceGeometryNormal, sunDirView );',
               '\t\tfloat dayFactor = smoothstep( 0.0, uTerminatorTwilight, ndotl );',
               '\t\tdiffuseColor.rgb *= mix( uNightAlbedo, 1.0, dayFactor );',
               '\t}',
@@ -557,6 +581,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       const shaderSources: ShaderSource = shader
       shaderSources.fragmentShader = res.next
     })
+    onBeforeCompileRestores.push(restoreTerminatorDarkening)
 
     update = ({ sunDirWorld }) => {
       uSunDirWorld.copy(sunDirWorld)
@@ -582,7 +607,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     const uAtmosphereIntensity = { value: earth.atmosphereIntensity ?? 0.55 }
     const uCloudsNightMultiplier = { value: 0.0 }
 
-    composeOnBeforeCompile(material, (shader) => {
+    const restoreEarthSurface = composeOnBeforeCompile(material, (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uNightAlbedo = uNightAlbedo
       shader.uniforms.uTwilight = uTwilight
@@ -595,6 +620,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       // Apply shader injections atomically (all-or-nothing) so we don't end up
       // with partial patches if a future Three.js chunk changes.
       const markerCommon = '// tspice:earth:uniforms'
+      const markerNormal = '// tspice:earth:geometry-normal'
       const markerDarken = '// tspice:earth:night-side-darken'
       const markerNightLights = '// tspice:earth:night-lights'
 
@@ -622,6 +648,17 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             warnKey: 'earth:uniforms',
           },
           {
+            needle: '#include <normal_fragment_begin>',
+            marker: markerNormal,
+            replacement: [
+              '#include <normal_fragment_begin>',
+              markerNormal,
+              '\t// Stable geometric normal (view space) before any normal map perturbations.',
+              '\tvec3 tspiceGeometryNormal = normal;',
+            ].join('\n'),
+            warnKey: 'earth:geometry-normal',
+          },
+          {
             needle: '#include <lights_fragment_begin>',
             marker: markerDarken,
             replacement: [
@@ -631,7 +668,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
               '\t\t// Use the unperturbed geometric normal so the terminator mask is stable',
               '\t\t// (and not affected by bump/normal maps).',
-              '\t\tfloat ndotl = dot( nonPerturbedNormal, sunDirView );',
+              '\t\tfloat ndotl = dot( tspiceGeometryNormal, sunDirView );',
               '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
               '',
               '\t\t// Keep a tiny floor so Earth is not totally invisible at night.',
@@ -653,7 +690,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '\t// Earth-only: gate night lights to the night side (soft terminator).',
               '\t{',
               '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
-              '\t\tfloat ndotl = dot( nonPerturbedNormal, sunDirView );',
+              '\t\tfloat ndotl = dot( tspiceGeometryNormal, sunDirView );',
               '\t\tfloat nightMask = 1.0 - smoothstep( -uTwilight, uTwilight, ndotl );',
               '\t\ttotalEmissiveRadiance *= nightMask * uNightLightsIntensity;',
               '\t}',
@@ -746,6 +783,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       const shaderSources: ShaderSource = shader
       shaderSources.fragmentShader = nextFrag
     })
+    onBeforeCompileRestores.push(restoreEarthSurface)
 
     // Atmosphere shell
     const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
@@ -833,12 +871,13 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     // Darken clouds on the night side as well (otherwise the global ambient light
     // makes clouds show up nearly as brightly at night as during day).
-    composeOnBeforeCompile(newCloudsMaterial, (shader) => {
+    const restoreEarthClouds = composeOnBeforeCompile(newCloudsMaterial, (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uTwilight = uTwilight
       shader.uniforms.uCloudsNightMultiplier = uCloudsNightMultiplier
 
       const markerCommon = '// tspice:earth-clouds:uniforms'
+      const markerNormal = '// tspice:earth-clouds:geometry-normal'
       const markerLights = '// tspice:earth-clouds:night-side'
 
       const res = safeShaderReplaceAll({
@@ -860,6 +899,17 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             warnKey: 'earth-clouds:uniforms',
           },
           {
+            needle: '#include <normal_fragment_begin>',
+            marker: markerNormal,
+            replacement: [
+              '#include <normal_fragment_begin>',
+              markerNormal,
+              '\t// Stable geometric normal (view space) before any normal map perturbations.',
+              '\tvec3 tspiceGeometryNormal = normal;',
+            ].join('\n'),
+            warnKey: 'earth-clouds:geometry-normal',
+          },
+          {
             needle: '#include <lights_fragment_begin>',
             marker: markerLights,
             replacement: [
@@ -867,7 +917,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '\t// Earth-only: suppress ambient-lit clouds on the night side.',
               '\t{',
               '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
-              '\t\tfloat ndotl = dot( nonPerturbedNormal, sunDirView );',
+              '\t\tfloat ndotl = dot( tspiceGeometryNormal, sunDirView );',
               '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
               '\t\tdiffuseColor.rgb *= mix( uCloudsNightMultiplier, 1.0, dayFactor );',
               '\t}',
@@ -884,6 +934,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       const shaderSources: ShaderSource = shader
       shaderSources.fragmentShader = res.next
     })
+    onBeforeCompileRestores.push(restoreEarthClouds)
 
     cloudsMesh = new THREE.Mesh(cloudsGeo, newCloudsMaterial)
     cloudsMesh.scale.setScalar(earth.cloudsRadiusRatio ?? 1.01)
@@ -1006,6 +1057,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     mesh,
     dispose: () => {
       disposed = true
+
+      for (const restore of onBeforeCompileRestores) restore()
+      onBeforeCompileRestores.length = 0
 
       // Detach texture references before releasing/disposing them.
       disposeMap(material)
