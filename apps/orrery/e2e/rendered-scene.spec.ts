@@ -37,6 +37,7 @@ test('rendered scene is visually stable (golden screenshot)', async ({ page, bas
   await expect(canvas).toHaveScreenshot('rendered-scene.png', {
     animations: 'disabled',
     // CI can have minor GPU/driver anti-aliasing variance in WebGL star rendering.
-    maxDiffPixelRatio: 0.04,
+    maxDiffPixelRatio: 0.02,
+    maxDiffPixels: process.env.CI ? 2500 : 500,
   })
 })
