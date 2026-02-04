@@ -1,9 +1,9 @@
-import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type { SpiceBackend, SpiceBackendKind } from "@rybosome/tspice-backend-contract";
 import { assertNever } from "@rybosome/tspice-core";
 
 export type { SpiceBackend, SpiceBackendKind } from "@rybosome/tspice-backend-contract";
 
-export type BackendKind = "node" | "wasm";
+export type BackendKind = Exclude<SpiceBackendKind, "fake">;
 
 export type SpiceBackendOfKind<K extends BackendKind = BackendKind> = SpiceBackend & {
   kind: K;
