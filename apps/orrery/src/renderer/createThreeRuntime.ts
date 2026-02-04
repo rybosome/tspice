@@ -234,7 +234,7 @@ export function createThreeRuntime(args: {
   ensureSky({ animatedSky: args.animatedSky, twinkleEnabled: args.twinkleEnabled, isE2e })
 
   // Copy so TEMP debug controls can mutate without changing caller refs.
-  let sunPostprocess: SunPostprocessConfig = {
+  const sunPostprocess: SunPostprocessConfig = {
     ...args.sunPostprocess,
     bloom: { ...args.sunPostprocess.bloom },
   }

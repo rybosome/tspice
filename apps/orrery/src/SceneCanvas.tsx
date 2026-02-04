@@ -1199,7 +1199,9 @@ export function SceneCanvas() {
 
           <div className="sunDebugRows">
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-exposure">Exposure</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-exposure">
+                Exposure
+              </label>
               <input
                 id="sun-debug-exposure"
                 type="range"
@@ -1221,7 +1223,9 @@ export function SceneCanvas() {
             </div>
 
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-tonemap">Tone map</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-tonemap">
+                Tone map
+              </label>
               <select
                 id="sun-debug-tonemap"
                 className="sunDebugSelect"
@@ -1236,7 +1240,9 @@ export function SceneCanvas() {
             </div>
 
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-threshold">Bloom threshold</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-threshold">
+                Bloom threshold
+              </label>
               <input
                 id="sun-debug-bloom-threshold"
                 type="range"
@@ -1258,7 +1264,9 @@ export function SceneCanvas() {
             </div>
 
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-strength">Bloom strength</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-strength">
+                Bloom strength
+              </label>
               <input
                 id="sun-debug-bloom-strength"
                 type="range"
@@ -1280,7 +1288,9 @@ export function SceneCanvas() {
             </div>
 
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-radius">Bloom radius</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-radius">
+                Bloom radius
+              </label>
               <input
                 id="sun-debug-bloom-radius"
                 type="range"
@@ -1302,7 +1312,9 @@ export function SceneCanvas() {
             </div>
 
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-scale">Bloom res scale</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-scale">
+                Bloom res scale
+              </label>
               <input
                 id="sun-debug-bloom-scale"
                 type="range"
@@ -1324,7 +1336,9 @@ export function SceneCanvas() {
             </div>
 
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-ambient">Ambient light</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-ambient">
+                Ambient light
+              </label>
               <input
                 id="sun-debug-ambient"
                 type="range"
@@ -1346,7 +1360,9 @@ export function SceneCanvas() {
             </div>
 
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-sunlight">Sun light</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-sunlight">
+                Sun light
+              </label>
               <input
                 id="sun-debug-sunlight"
                 type="range"
@@ -1368,7 +1384,9 @@ export function SceneCanvas() {
             </div>
 
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-emissive">Sun emissive</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-emissive">
+                Sun emissive
+              </label>
               <input
                 id="sun-debug-emissive"
                 type="range"
@@ -1390,7 +1408,9 @@ export function SceneCanvas() {
             </div>
 
             <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-emissive-color">Emissive color</label>
+              <label className="sunDebugLabel" htmlFor="sun-debug-emissive-color">
+                Emissive color
+              </label>
               <input
                 id="sun-debug-emissive-color"
                 type="color"
