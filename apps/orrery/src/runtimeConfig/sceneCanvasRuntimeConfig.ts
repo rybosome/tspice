@@ -91,9 +91,14 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
 
   const sunToneMap = parseEnum(searchParams, 'sunToneMap', ['none', 'filmic', 'acesLike'] as const) ?? 'filmic'
 
-  const sunBloomThreshold = clamp(parseNumber(searchParams, 'sunBloomThreshold') ?? 0.8, 0, 1)
-  const sunBloomStrength = clamp(parseNumber(searchParams, 'sunBloomStrength') ?? 1.25, 0, 10)
-  const sunBloomRadius = clamp(parseNumber(searchParams, 'sunBloomRadius') ?? 0.5, 0, 1)
+  const sunBloomThresholdDefault = sunPostprocessMode === 'sunIsolated' ? 0.2 : 0.95
+  const sunBloomStrengthDefault = sunPostprocessMode === 'sunIsolated' ? 1.2 : 0.6
+  const sunBloomRadiusDefault = sunPostprocessMode === 'sunIsolated' ? 0.2 : 0.15
+
+  // Allow thresholds > 1: with HDR inputs this can be useful for controlling bloom pre-tonemap.
+  const sunBloomThreshold = clamp(parseNumber(searchParams, 'sunBloomThreshold') ?? sunBloomThresholdDefault, 0, 10)
+  const sunBloomStrength = clamp(parseNumber(searchParams, 'sunBloomStrength') ?? sunBloomStrengthDefault, 0, 20)
+  const sunBloomRadius = clamp(parseNumber(searchParams, 'sunBloomRadius') ?? sunBloomRadiusDefault, 0, 1)
   const sunBloomResolutionScale = clamp(parseNumber(searchParams, 'sunBloomResolutionScale') ?? 0.5, 0.1, 1)
 
   return {
