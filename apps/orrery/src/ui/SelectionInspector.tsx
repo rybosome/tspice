@@ -176,13 +176,7 @@ function formatBodyKind(kind: string): string {
   return kind.charAt(0).toUpperCase() + kind.slice(1)
 }
 
-export function SelectionInspector({
-  selectedBody,
-  focusBody,
-  spiceClient,
-  observer,
-  frame,
-}: SelectionInspectorProps) {
+export function SelectionInspector({ selectedBody, focusBody, spiceClient, observer, frame }: SelectionInspectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   // IMPORTANT:

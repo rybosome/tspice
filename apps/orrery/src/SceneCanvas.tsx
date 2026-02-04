@@ -28,7 +28,7 @@ import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
-type AdvancedPaneId = 'time' | 'scaleCamera' | 'guides' | 'orbitsPerformance' | 'advanced'
+type AdvancedPaneId = 'camera' | 'scale' | 'orbits' | 'time' | 'visuals'
 
 type AdvancedHelpTopicId =
   | 'zoom'
@@ -49,34 +49,34 @@ type AdvancedHelpTopicId =
 
 const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: string; summary: string }> = [
   {
-    id: 'time',
-    tabLabel: 'TIME',
-    title: 'Time & Playback',
-    summary: 'UTC/ET display, scrubber, and playback controls.',
+    id: 'camera',
+    tabLabel: 'CAMERA',
+    title: 'CAMERA',
+    summary: 'Focus target + camera lens controls.',
   },
   {
-    id: 'guides',
-    tabLabel: 'GUIDES',
-    title: 'Guides & Orientation',
-    summary: 'Focus, labels, and orientation overlays.',
+    id: 'scale',
+    tabLabel: 'SCALE',
+    title: 'SCALE',
+    summary: 'Scale presets and zoom range controls.',
   },
   {
-    id: 'orbitsPerformance',
-    tabLabel: 'Orbits',
-    title: 'Orbits & Performance',
+    id: 'orbits',
+    tabLabel: 'ORBITS',
+    title: 'ORBITS',
     summary: 'Orbit line fidelity vs speed. These settings can strongly affect CPU/GPU and memory.',
   },
   {
-    id: 'scaleCamera',
-    tabLabel: 'Scale',
-    title: 'Scale & Camera',
-    summary: 'Adjust framing and exaggerate body sizes for visibility. Rendering only; SPICE data is unchanged.',
+    id: 'time',
+    tabLabel: 'TIME',
+    title: 'TIME',
+    summary: 'UTC/ET display, scrubber, and playback controls.',
   },
   {
-    id: 'advanced',
-    tabLabel: 'Advanced',
-    title: 'Advanced',
-    summary: 'Diagnostics overlays + power-user toggles.',
+    id: 'visuals',
+    tabLabel: 'VISUALS',
+    title: 'VISUALS',
+    summary: 'Labels, axes, sky effects, and debug overlays.',
   },
 ]
 
@@ -163,18 +163,12 @@ const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string;
   animatedSky: {
     title: 'Animated sky',
     short: 'Enable the skydome shader (can cost GPU).',
-    body: [
-      'Enables the animated skydome shader.',
-      'Turn off for maximum performance or to reduce visual motion.',
-    ],
+    body: ['Enables the animated skydome shader.', 'Turn off for maximum performance or to reduce visual motion.'],
   },
   skyTwinkle: {
     title: 'Sky twinkle',
     short: 'Twinkling stars (adds a lightweight RAF loop).',
-    body: [
-      'Enables star twinkle in the background sky.',
-      'Turn off to reduce motion or slightly reduce GPU/CPU work.',
-    ],
+    body: ['Enables star twinkle in the background sky.', 'Turn off to reduce motion or slightly reduce GPU/CPU work.'],
   },
   labelOcclusion: {
     title: 'Label occlusion',
@@ -343,6 +337,20 @@ export function SceneCanvas() {
       // Keep zoom limits consistent across presets so wheel/pinch/slider mapping
       // stays predictable.
       controller.setRadiusLimits(CAMERA_RADIUS_LIMITS)
+
+      if (preset === 'solar') {
+        // Solar scale is intended for AU-scale viewing, so also:
+        // - focus the Sun (center the scene)
+        // - zoom out to a reasonable baseline distance
+        setFocusBody('SUN')
+
+        const baselineRadius = CAMERA_RADIUS_LIMITS.maxRadius * 0.4
+        controller.radius = THREE.MathUtils.clamp(
+          Math.max(controller.radius, baselineRadius),
+          controller.minRadius,
+          controller.maxRadius,
+        )
+      }
 
       controller.applyToCamera(camera)
       invalidateRef.current?.()
@@ -536,7 +544,6 @@ export function SceneCanvas() {
     },
     [scheduleApplyZoomSliderValue],
   )
-
 
   const AdvancedHelpButton = ({ topic }: { topic: AdvancedHelpTopicId }) => {
     const h = ADVANCED_HELP[topic]
@@ -1115,58 +1122,41 @@ export function SceneCanvas() {
                   <div className="advancedPaneSummary">{activeAdvancedPane.summary}</div>
                 </div>
 
-                {/* Pane: Time & Playback */}
-                {advancedPane === 'time' ? (
+                {/* Pane: CAMERA */}
+                {advancedPane === 'camera' ? (
                   <div className="advancedGroup" role="tabpanel">
-                    {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
-                    <PlaybackControls spiceClient={spiceClient} />
+                    {/* Presets first (mobile above-the-fold) */}
+                    <div className="controlsSection">
+                      <div className="focusRow">
+                        <span className="focusLabel">Focus:</span>
+                        <select
+                          className="focusSelect"
+                          value={String(focusBody)}
+                          onChange={(e) => {
+                            setFocusBody(e.target.value)
+                          }}
+                        >
+                          {focusOptions.map((b) => (
+                            <option key={b.id} value={String(b.body)}>
+                              {b.style.label ?? b.id}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
 
-                    <div className="advancedDivider" />
-
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel advancedControlLabel">
-                        <span>Quantum (s)</span>
-                        <AdvancedHelpButton topic="quantum" />
-                      </span>
-                      <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
-                      <span className="advancedSliderValue" />
-                    </div>
-                  </div>
-                ) : null}
-
-                {/* Pane: Scale & Camera */}
-                {advancedPane === 'scaleCamera' ? (
-                  <div className="advancedGroup" role="tabpanel">
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel advancedControlLabel">
-                        <span>Zoom</span>
-                        <AdvancedHelpButton topic="zoom" />
-                      </span>
-                      <input
-                        type="range"
-                        min={0}
-                        max={100}
-                        step={0.5}
-                        value={zoomSlider}
-                        onChange={handleZoomSliderInput}
-                        onPointerDown={() => {
-                          zoomSliderDraggingRef.current = true
-                        }}
-                        onPointerUp={() => {
-                          zoomSliderDraggingRef.current = false
-                          flushZoomSlider()
-                        }}
-                        onPointerCancel={() => {
-                          zoomSliderDraggingRef.current = false
-                          flushZoomSlider()
-                        }}
-                        onBlur={() => {
-                          zoomSliderDraggingRef.current = false
-                          flushZoomSlider()
-                        }}
-                        onKeyUp={() => flushZoomSlider()}
-                      />
-                      <span className="advancedSliderValue">{formatZoomSliderPercent(zoomSlider)}</span>
+                      <button
+                        className={`asciiBtn asciiBtnWide ${String(focusBody) === 'SUN' ? 'asciiBtnDisabled' : ''}`}
+                        type="button"
+                        onClick={refocusSun}
+                        disabled={String(focusBody) === 'SUN'}
+                        title="Quickly refocus the scene on the Sun"
+                      >
+                        <span className="asciiBtnBracket">[</span>
+                        <span className="asciiBtnContent">
+                          {String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}
+                        </span>
+                        <span className="asciiBtnBracket">]</span>
+                      </button>
                     </div>
 
                     <div className="advancedDivider" />
@@ -1186,7 +1176,12 @@ export function SceneCanvas() {
                       />
                       <span className="advancedSliderValue">{cameraFovDeg}°</span>
                     </div>
+                  </div>
+                ) : null}
 
+                {/* Pane: SCALE */}
+                {advancedPane === 'scale' ? (
+                  <div className="advancedGroup" role="tabpanel">
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Presets</span>
@@ -1244,96 +1239,46 @@ export function SceneCanvas() {
                       />
                       <span className="advancedSliderValue">{sunScaleMultiplier}×</span>
                     </div>
-                  </div>
-                ) : null}
-
-                {/* Pane: Guides & Orientation */}
-                {advancedPane === 'guides' ? (
-                  <div className="advancedGroup" role="tabpanel">
-                    <div className="controlsSection">
-                      <div className="focusRow">
-                        <span className="focusLabel">Focus:</span>
-                        <select
-                          className="focusSelect"
-                          value={String(focusBody)}
-                          onChange={(e) => {
-                            setFocusBody(e.target.value)
-                          }}
-                        >
-                          {focusOptions.map((b) => (
-                            <option key={b.id} value={String(b.body)}>
-                              {b.style.label ?? b.id}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <button
-                        className={`asciiBtn asciiBtnWide ${String(focusBody) === 'SUN' ? 'asciiBtnDisabled' : ''}`}
-                        type="button"
-                        onClick={refocusSun}
-                        disabled={String(focusBody) === 'SUN'}
-                        title="Quickly refocus the scene on the Sun"
-                      >
-                        <span className="asciiBtnBracket">[</span>
-                        <span className="asciiBtnContent">
-                          {String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}
-                        </span>
-                        <span className="asciiBtnBracket">]</span>
-                      </button>
-                    </div>
 
                     <div className="advancedDivider" />
 
-                    <label className="asciiCheckbox">
-                      <span className="asciiCheckboxBox" onClick={() => setLabelsEnabled((v) => !v)}>
-                        [{labelsEnabled ? '✓' : '\u00A0'}]
+                    {/* Manual zoom control below-the-fold on mobile */}
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Zoom</span>
+                        <AdvancedHelpButton topic="zoom" />
                       </span>
-                      <span className="asciiCheckboxLabel" onClick={() => setLabelsEnabled((v) => !v)}>
-                        Labels
-                      </span>
-                    </label>
-
-                    <div className="advancedCheckboxWithHelp">
-                      <label className="asciiCheckbox">
-                        <span className="asciiCheckboxBox" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
-                          [{labelOcclusionEnabled ? '✓' : ' '}]
-                        </span>
-                        <span className="asciiCheckboxLabel" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
-                          Label Occlusion
-                        </span>
-                      </label>
-                      <AdvancedHelpButton topic="labelOcclusion" />
-                    </div>
-
-                    <div className="advancedCheckboxWithHelp">
-                      <label className="asciiCheckbox">
-                        <span className="asciiCheckboxBox" onClick={() => setShowBodyFixedAxes((v) => !v)}>
-                          [{showBodyFixedAxes ? '✓' : ' '}]
-                        </span>
-                        <span className="asciiCheckboxLabel" onClick={() => setShowBodyFixedAxes((v) => !v)}>
-                          Body-fixed Axes
-                        </span>
-                      </label>
-                      <AdvancedHelpButton topic="bodyFixedAxes" />
-                    </div>
-
-                    <div className="advancedCheckboxWithHelp">
-                      <label className="asciiCheckbox">
-                        <span className="asciiCheckboxBox" onClick={() => setShowJ2000Axes((v) => !v)}>
-                          [{showJ2000Axes ? '✓' : ' '}]
-                        </span>
-                        <span className="asciiCheckboxLabel" onClick={() => setShowJ2000Axes((v) => !v)}>
-                          J2000 Axes
-                        </span>
-                      </label>
-                      <AdvancedHelpButton topic="j2000Axes" />
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={0.5}
+                        value={zoomSlider}
+                        onChange={handleZoomSliderInput}
+                        onPointerDown={() => {
+                          zoomSliderDraggingRef.current = true
+                        }}
+                        onPointerUp={() => {
+                          zoomSliderDraggingRef.current = false
+                          flushZoomSlider()
+                        }}
+                        onPointerCancel={() => {
+                          zoomSliderDraggingRef.current = false
+                          flushZoomSlider()
+                        }}
+                        onBlur={() => {
+                          zoomSliderDraggingRef.current = false
+                          flushZoomSlider()
+                        }}
+                        onKeyUp={() => flushZoomSlider()}
+                      />
+                      <span className="advancedSliderValue">{formatZoomSliderPercent(zoomSlider)}</span>
                     </div>
                   </div>
                 ) : null}
 
-                {/* Pane: Orbits & Performance */}
-                {advancedPane === 'orbitsPerformance' ? (
+                {/* Pane: ORBITS */}
+                {advancedPane === 'orbits' ? (
                   <div className="advancedGroup" role="tabpanel">
                     <label className="asciiCheckbox">
                       <span className="asciiCheckboxBox" onClick={() => setOrbitPathsEnabled((v) => !v)}>
@@ -1394,6 +1339,75 @@ export function SceneCanvas() {
                         />
                       </div>
                     </fieldset>
+                  </div>
+                ) : null}
+
+                {/* Pane: TIME */}
+                {advancedPane === 'time' ? (
+                  <div className="advancedGroup" role="tabpanel">
+                    {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
+                    <PlaybackControls spiceClient={spiceClient} />
+
+                    <div className="advancedDivider" />
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Quantum (s)</span>
+                        <AdvancedHelpButton topic="quantum" />
+                      </span>
+                      <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
+                      <span className="advancedSliderValue" />
+                    </div>
+                  </div>
+                ) : null}
+
+                {/* Pane: VISUALS */}
+                {advancedPane === 'visuals' ? (
+                  <div className="advancedGroup" role="tabpanel">
+                    <label className="asciiCheckbox">
+                      <span className="asciiCheckboxBox" onClick={() => setLabelsEnabled((v) => !v)}>
+                        [{labelsEnabled ? '✓' : '\u00A0'}]
+                      </span>
+                      <span className="asciiCheckboxLabel" onClick={() => setLabelsEnabled((v) => !v)}>
+                        Labels
+                      </span>
+                    </label>
+
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <span className="asciiCheckboxBox" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
+                          [{labelOcclusionEnabled ? '✓' : ' '}]
+                        </span>
+                        <span className="asciiCheckboxLabel" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
+                          Label Occlusion
+                        </span>
+                      </label>
+                      <AdvancedHelpButton topic="labelOcclusion" />
+                    </div>
+
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <span className="asciiCheckboxBox" onClick={() => setShowBodyFixedAxes((v) => !v)}>
+                          [{showBodyFixedAxes ? '✓' : ' '}]
+                        </span>
+                        <span className="asciiCheckboxLabel" onClick={() => setShowBodyFixedAxes((v) => !v)}>
+                          Body-fixed Axes
+                        </span>
+                      </label>
+                      <AdvancedHelpButton topic="bodyFixedAxes" />
+                    </div>
+
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <span className="asciiCheckboxBox" onClick={() => setShowJ2000Axes((v) => !v)}>
+                          [{showJ2000Axes ? '✓' : ' '}]
+                        </span>
+                        <span className="asciiCheckboxLabel" onClick={() => setShowJ2000Axes((v) => !v)}>
+                          J2000 Axes
+                        </span>
+                      </label>
+                      <AdvancedHelpButton topic="j2000Axes" />
+                    </div>
 
                     <div className="advancedDivider" />
 
@@ -1408,12 +1422,7 @@ export function SceneCanvas() {
                       </label>
                       <AdvancedHelpButton topic="animatedSky" />
                     </div>
-                  </div>
-                ) : null}
 
-                {/* Pane: Advanced */}
-                {advancedPane === 'advanced' ? (
-                  <div className="advancedGroup" role="tabpanel">
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
                         <span className="asciiCheckboxBox" onClick={() => setSkyTwinkle((v) => !v)}>
