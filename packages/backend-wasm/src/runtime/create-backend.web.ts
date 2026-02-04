@@ -20,7 +20,7 @@ export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
-): Promise<SpiceBackend> {
+): Promise<SpiceBackend & { kind: "wasm" }> {
   // NOTE: Keep this as a literal string so bundlers (Vite) don't generate a
   // runtime glob map for *every* file in this directory (including *.d.ts.map),
   // which can lead to JSON being imported as an ESM module.
@@ -69,6 +69,7 @@ export async function createWasmBackend(
   const fsApi = createWasmFs(module);
 
   const backend = {
+    kind: "wasm",
     ...createTimeApi(module, toolkitVersion),
     ...createKernelsApi(module, fsApi),
     ...createIdsNamesApi(module),

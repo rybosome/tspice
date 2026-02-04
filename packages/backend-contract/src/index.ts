@@ -40,6 +40,8 @@ import type { EphemerisApi } from "./domains/ephemeris.js";
 import type { GeometryApi } from "./domains/geometry.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
 
+export type SpiceBackendKind = "node" | "wasm" | "fake";
+
 export interface SpiceBackend
   extends TimeApi,
     KernelsApi,
@@ -48,5 +50,7 @@ export interface SpiceBackend
     EphemerisApi,
     GeometryApi,
     CoordsVectorsApi {
+  /** Which backend implementation is in use. */
+  readonly kind: SpiceBackendKind;
 }
 

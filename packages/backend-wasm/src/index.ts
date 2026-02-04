@@ -14,4 +14,4 @@ export declare const WASM_JS_FILENAME: string;
 
 export declare function createWasmBackend(
   options?: CreateWasmBackendOptions,
-): Promise<SpiceBackend>;
+): Promise<SpiceBackend & { kind: "wasm" }>;

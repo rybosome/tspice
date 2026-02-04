@@ -14,6 +14,7 @@ const { toolkitVersion } = JSON.parse(fs.readFileSync(cspiceManifestPath, "utf8"
 describe("@rybosome/tspice-backend-wasm", () => {
   it("loads the wasm module", async () => {
     const backend = await createWasmBackend();
+    expect(backend.kind).toBe("wasm");
     const version = backend.tkvrsn("TOOLKIT");
     expect(version).not.toBe("");
     expect(version).toContain(toolkitVersion);

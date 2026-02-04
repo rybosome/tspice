@@ -11,9 +11,10 @@ Shared TypeScript types that define the low-level **CSPICE-like** contract imple
 - `SpiceBackend`: the raw CSPICE-like function surface (`furnsh`, `kclear`, `pxform`, `spkezr`, ...)
 - Supporting types used by that surface (for example `KernelSource`, `KernelKind`, `AbCorr`, matrix/vector shapes, etc.)
 
-Notably, this contract intentionally does **not** expose backend/runtime details like:
+Notably, this contract intentionally keeps backend/runtime details minimal. It includes a
+small `kind` discriminator for basic backend identification, but does **not** expose
+backend-specific helpers like:
 
-- backend identification (`kind`)
 - WASM filesystem helpers (`writeFile`, `loadKernel`)
 
 Backends may have internal helpers, but they are not part of the public `SpiceBackend` type.
