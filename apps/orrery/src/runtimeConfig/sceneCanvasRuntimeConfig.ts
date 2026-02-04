@@ -81,7 +81,9 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
 
   const sunPostprocessMode =
     parseEnum(searchParams, 'sunPostprocessMode', ['off', 'wholeFrame', 'sunIsolated'] as const) ??
-    (isE2e ? 'off' : 'wholeFrame')
+    // Default to the more representative preset when no query params are provided.
+    // Preserve stable E2E snapshots by disabling postprocessing unless explicitly enabled.
+    (isE2e ? 'off' : 'sunIsolated')
 
   const sunExposure = clamp(parseNumber(searchParams, 'sunExposure') ?? 1, 0, 100)
 
