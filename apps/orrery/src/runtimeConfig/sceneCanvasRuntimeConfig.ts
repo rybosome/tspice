@@ -91,8 +91,7 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
   // remap the scene brightness/contrast. Users can opt into tonemapping via the
   // query params.
   const sunToneMapDefault = sunPostprocessMode === 'wholeFrame' ? 'filmic' : 'none'
-  const sunToneMap =
-    parseEnum(searchParams, 'sunToneMap', ['none', 'filmic', 'acesLike'] as const) ?? sunToneMapDefault
+  const sunToneMap = parseEnum(searchParams, 'sunToneMap', ['none', 'filmic', 'acesLike'] as const) ?? sunToneMapDefault
 
   // For `sunIsolated`, keep bloom conservative: the Sun can be extremely bright
   // at typical zoom levels and a low threshold/strong bloom can wash out most
