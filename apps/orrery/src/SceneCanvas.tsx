@@ -28,7 +28,6 @@ import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
-
 type AdvancedPaneId = 'time' | 'scaleCamera' | 'guides' | 'orbitsPerformance' | 'advanced'
 
 type AdvancedHelpTopicId =
@@ -236,7 +235,10 @@ export function SceneCanvas() {
   const [advancedPane, setAdvancedPane] = useState<AdvancedPaneId>('time')
   const [advancedHelpTopic, setAdvancedHelpTopic] = useState<AdvancedHelpTopicId | null>(null)
 
-  const activeAdvancedPane = useMemo(() => ADVANCED_PANES.find((p) => p.id === advancedPane) ?? ADVANCED_PANES[0], [advancedPane])
+  const activeAdvancedPane = useMemo(
+    () => ADVANCED_PANES.find((p) => p.id === advancedPane) ?? ADVANCED_PANES[0],
+    [advancedPane],
+  )
 
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
 
@@ -1097,7 +1099,14 @@ export function SceneCanvas() {
                         <span>Zoom</span>
                         <AdvancedHelpButton topic="zoom" />
                       </span>
-                      <input type="range" min={0} max={100} step={1} value={zoomSlider} onChange={handleZoomSliderChange} />
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={zoomSlider}
+                        onChange={handleZoomSliderChange}
+                      />
                       <span className="advancedSliderValue">{zoomSlider}%</span>
                     </div>
 
@@ -1206,7 +1215,9 @@ export function SceneCanvas() {
                         title="Quickly refocus the scene on the Sun"
                       >
                         <span className="asciiBtnBracket">[</span>
-                        <span className="asciiBtnContent">{String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}</span>
+                        <span className="asciiBtnContent">
+                          {String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}
+                        </span>
                         <span className="asciiBtnBracket">]</span>
                       </button>
                     </div>
