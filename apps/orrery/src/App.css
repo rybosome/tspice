@@ -936,8 +936,31 @@
     right: 10px;
     top: auto;
     bottom: calc(var(--mobile-bottom-inset) + env(safe-area-inset-bottom, 0px));
+    /* On mobile, let left/right fully define width. */
+    max-width: none;
+    padding: 12px 14px;
+    gap: 10px;
     max-height: 60%;
     overflow: auto;
+  }
+
+  /* Desktop open-state uses a fixed width; override on mobile to prevent shrink. */
+  .sceneOverlayOpen {
+    width: auto;
+    min-width: 0;
+  }
+
+  .sceneOverlayBody {
+    gap: 10px;
+  }
+
+  .advancedGroup,
+  .advancedFieldset {
+    gap: 10px;
+  }
+
+  .advancedDivider {
+    margin: 12px 0;
   }
 
   .sceneZoomButtons {

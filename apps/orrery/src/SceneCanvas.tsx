@@ -41,6 +41,7 @@ type AdvancedHelpTopicId =
   | 'orbitMaxPoints'
   | 'quantum'
   | 'animatedSky'
+  | 'skyTwinkle'
   | 'labelOcclusion'
   | 'bodyFixedAxes'
   | 'renderHud'
@@ -161,10 +162,18 @@ const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string;
   },
   animatedSky: {
     title: 'Animated sky',
-    short: 'Twinkle + animated skydome (can cost GPU).',
+    short: 'Enable the skydome shader (can cost GPU).',
     body: [
-      'Enables the animated sky shader and starfield twinkle.',
+      'Enables the animated skydome shader.',
       'Turn off for maximum performance or to reduce visual motion.',
+    ],
+  },
+  skyTwinkle: {
+    title: 'Sky twinkle',
+    short: 'Twinkling stars (adds a lightweight RAF loop).',
+    body: [
+      'Enables star twinkle in the background sky.',
+      'Turn off to reduce motion or slightly reduce GPU/CPU work.',
     ],
   },
   labelOcclusion: {
@@ -215,7 +224,7 @@ export function SceneCanvas() {
   const sceneRef = useRef<THREE.Scene | null>(null)
   const invalidateRef = useRef<(() => void) | null>(null)
   const renderOnceRef = useRef<((timeMs?: number) => void) | null>(null)
-  const twinkleActiveRef = useRef(false)
+  const skyAnimationActiveRef = useRef(false)
   const cancelFocusTweenRef = useRef<(() => void) | null>(null)
 
   const rendererRuntimeRef = useRef<ThreeRuntime | null>(null)
@@ -273,11 +282,12 @@ export function SceneCanvas() {
   // Occlusion toggle for labels (advanced, default off)
   const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
 
-  // Single toggle for animated sky effects (skydome shader + starfield twinkle).
-  // Disabled by default for e2e tests to keep snapshots deterministic.
+  // Sky effects. Disabled by default for e2e tests to keep snapshots deterministic.
   const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
+  const [skyTwinkle, setSkyTwinkle] = useState(() => !isE2e)
 
-  const twinkleEnabled = animatedSky && !isE2e
+  const twinkleEnabled = skyTwinkle && !isE2e
+  const skyAnimationActive = (animatedSky || twinkleEnabled) && !isE2e
 
   // Planet visual scale multiplier (applies to all non-Sun bodies, including the Moon).
   // Uses a log-scale slider so the range can go "absurdly" large without being fiddly.
@@ -430,13 +440,22 @@ export function SceneCanvas() {
   // Camera zoom (controller.radius) exposed as a log-scale slider.
   // 0 = closest (zoom in), 100 = farthest (zoom out).
   const [zoomSlider, setZoomSlider] = useState(50)
+  const zoomSliderDraggingRef = useRef(false)
+  const zoomSliderPendingValueRef = useRef<number | null>(null)
+  const zoomSliderRafRef = useRef<number | null>(null)
+
+  const formatZoomSliderPercent = (v: number) => {
+    const s = v.toFixed(1).replace(/\.0$/, '')
+    return `${s}%`
+  }
 
   const zoomSliderForRadius = useCallback((radius: number, minRadius: number, maxRadius: number) => {
     const r = THREE.MathUtils.clamp(radius, minRadius, maxRadius)
     const minL = Math.log(minRadius)
     const maxL = Math.log(maxRadius)
     const t = (Math.log(r) - minL) / (maxL - minL)
-    return THREE.MathUtils.clamp(Math.round(t * 100), 0, 100)
+    // Use half-steps for smoother dragging without overloading the controller.
+    return THREE.MathUtils.clamp(Math.round(t * 200) / 2, 0, 100)
   }, [])
 
   const radiusForZoomSlider = useCallback((slider: number, minRadius: number, maxRadius: number) => {
@@ -455,8 +474,10 @@ export function SceneCanvas() {
       const controller = controllerRef.current
       if (!controller) return
 
+      if (zoomSliderDraggingRef.current) return
+
       const next = zoomSliderForRadius(controller.radius, controller.minRadius, controller.maxRadius)
-      setZoomSlider((prev) => (Math.abs(prev - next) >= 1 ? next : prev))
+      setZoomSlider((prev) => (Math.abs(prev - next) >= 0.5 ? next : prev))
     }, 200)
 
     return () => {
@@ -464,11 +485,8 @@ export function SceneCanvas() {
     }
   }, [overlayOpen, zoomSliderForRadius])
 
-  const handleZoomSliderChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const value = Number(e.target.value)
-      setZoomSlider(value)
-
+  const applyZoomSliderValue = useCallback(
+    (value: number) => {
       const controller = controllerRef.current
       const camera = cameraRef.current
       if (!controller || !camera) return
@@ -481,6 +499,42 @@ export function SceneCanvas() {
     },
     [radiusForZoomSlider],
   )
+
+  const scheduleApplyZoomSliderValue = useCallback(
+    (value: number) => {
+      zoomSliderPendingValueRef.current = value
+      if (zoomSliderRafRef.current != null) return
+
+      zoomSliderRafRef.current = window.requestAnimationFrame(() => {
+        zoomSliderRafRef.current = null
+        const pending = zoomSliderPendingValueRef.current
+        if (pending == null) return
+        applyZoomSliderValue(pending)
+      })
+    },
+    [applyZoomSliderValue],
+  )
+
+  const flushZoomSlider = useCallback(() => {
+    const pending = zoomSliderPendingValueRef.current
+    if (pending == null) return
+
+    if (zoomSliderRafRef.current != null) {
+      window.cancelAnimationFrame(zoomSliderRafRef.current)
+      zoomSliderRafRef.current = null
+    }
+    applyZoomSliderValue(pending)
+  }, [applyZoomSliderValue])
+
+  const handleZoomSliderInput = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = Number(e.target.value)
+      setZoomSlider(value)
+      scheduleApplyZoomSliderValue(value)
+    },
+    [scheduleApplyZoomSliderValue],
+  )
+
 
   const AdvancedHelpButton = ({ topic }: { topic: AdvancedHelpTopicId }) => {
     const h = ADVANCED_HELP[topic]
@@ -513,19 +567,6 @@ export function SceneCanvas() {
     toggleLabels: () => setLabelsEnabled((v) => !v),
     enabled: !isE2e,
   })
-
-  const zoomBy = (factor: number) => {
-    const controller = controllerRef.current
-    const camera = cameraRef.current
-    if (!controller || !camera) return
-
-    cancelFocusTweenRef.current?.()
-
-    controller.radius *= factor
-    controller.applyToCamera(camera)
-    invalidateRef.current?.()
-  }
-
   const refocusSun = () => {
     const controller = controllerRef.current
     const camera = cameraRef.current
@@ -824,7 +865,7 @@ export function SceneCanvas() {
       starSeed,
       animatedSky,
       twinkleEnabled,
-      twinkleActiveRef,
+      skyAnimationActiveRef,
       initialFocusBody: latestUiRef.current.focusBody,
       initialCameraFovDeg: latestUiRef.current.cameraFovDeg,
       getHomePresetState,
@@ -979,15 +1020,15 @@ export function SceneCanvas() {
     rendererRuntimeRef.current?.updateSky({ animatedSky, twinkleEnabled, isE2e })
   }, [animatedSky, twinkleEnabled, isE2e])
 
-  // Lightweight RAF loop for twinkle animation.
+  // Lightweight RAF loop for sky animation (twinkle and/or skydome shader).
   useEffect(() => {
-    twinkleActiveRef.current = twinkleEnabled
+    skyAnimationActiveRef.current = skyAnimationActive
 
-    if (!twinkleEnabled) return
+    if (!skyAnimationActive) return
 
     let frame: number | null = null
     const tick = (t: number) => {
-      if (!twinkleActiveRef.current) return
+      if (!skyAnimationActiveRef.current) return
       renderOnceRef.current?.(t)
       frame = window.requestAnimationFrame(tick)
     }
@@ -996,7 +1037,7 @@ export function SceneCanvas() {
     return () => {
       if (frame != null) window.cancelAnimationFrame(frame)
     }
-  }, [twinkleEnabled])
+  }, [skyAnimationActive])
 
   return (
     <div ref={containerRef} className="scene">
@@ -1051,6 +1092,43 @@ export function SceneCanvas() {
 
           {overlayOpen ? (
             <div id="scene-overlay-body" className="sceneOverlayBody">
+              {/* Quick controls: always visible regardless of selected pane */}
+              <div className="advancedGroup" aria-label="Quick controls">
+                <div className="advancedSlider">
+                  <span className="advancedSliderLabel advancedControlLabel">
+                    <span>Zoom</span>
+                    <AdvancedHelpButton topic="zoom" />
+                  </span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    step={0.5}
+                    value={zoomSlider}
+                    onChange={handleZoomSliderInput}
+                    onPointerDown={() => {
+                      zoomSliderDraggingRef.current = true
+                    }}
+                    onPointerUp={() => {
+                      zoomSliderDraggingRef.current = false
+                      flushZoomSlider()
+                    }}
+                    onPointerCancel={() => {
+                      zoomSliderDraggingRef.current = false
+                      flushZoomSlider()
+                    }}
+                    onBlur={() => {
+                      zoomSliderDraggingRef.current = false
+                      flushZoomSlider()
+                    }}
+                    onKeyUp={() => flushZoomSlider()}
+                  />
+                  <span className="advancedSliderValue">{formatZoomSliderPercent(zoomSlider)}</span>
+                </div>
+
+                <div className="advancedDivider" />
+              </div>
+
               <div className="advancedPanel">
                 <div className="advancedTabs" role="tablist" aria-label="Controls panes">
                   {ADVANCED_PANES.map((pane) => (
@@ -1094,22 +1172,6 @@ export function SceneCanvas() {
                 {/* Pane: Scale & Camera */}
                 {advancedPane === 'scaleCamera' ? (
                   <div className="advancedGroup" role="tabpanel">
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel advancedControlLabel">
-                        <span>Zoom</span>
-                        <AdvancedHelpButton topic="zoom" />
-                      </span>
-                      <input
-                        type="range"
-                        min={0}
-                        max={100}
-                        step={1}
-                        value={zoomSlider}
-                        onChange={handleZoomSliderChange}
-                      />
-                      <span className="advancedSliderValue">{zoomSlider}%</span>
-                    </div>
-
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Camera FOV</span>
@@ -1342,7 +1404,7 @@ export function SceneCanvas() {
                           [{animatedSky ? '✓' : ' '}]
                         </span>
                         <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
-                          Animated Sky
+                          Animated Skydome
                         </span>
                       </label>
                       <AdvancedHelpButton topic="animatedSky" />
@@ -1353,6 +1415,20 @@ export function SceneCanvas() {
                 {/* Pane: Advanced */}
                 {advancedPane === 'advanced' ? (
                   <div className="advancedGroup" role="tabpanel">
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <span className="asciiCheckboxBox" onClick={() => setSkyTwinkle((v) => !v)}>
+                          [{skyTwinkle ? '✓' : ' '}]
+                        </span>
+                        <span className="asciiCheckboxLabel" onClick={() => setSkyTwinkle((v) => !v)}>
+                          Sky Twinkle
+                        </span>
+                      </label>
+                      <AdvancedHelpButton topic="skyTwinkle" />
+                    </div>
+
+                    <div className="advancedDivider" />
+
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
                         <span className="asciiCheckboxBox" onClick={() => setShowRenderHud((v) => !v)}>
@@ -1369,17 +1445,6 @@ export function SceneCanvas() {
               </div>
             </div>
           ) : null}
-        </div>
-      ) : null}
-
-      {!isE2e ? (
-        <div className="sceneZoomButtons">
-          <button className="sceneZoomButton" type="button" onClick={() => zoomBy(1 / 1.15)} aria-label="Zoom in">
-            +
-          </button>
-          <button className="sceneZoomButton" type="button" onClick={() => zoomBy(1.15)} aria-label="Zoom out">
-            −
-          </button>
         </div>
       ) : null}
 
