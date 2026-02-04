@@ -28,6 +28,7 @@ export type ThreeRuntime = {
   setOnDrawingBufferResize: (fn: ((bufferSize: { width: number; height: number }) => void) | null) => void
 
   updateSky: (opts: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean }) => void
+  updateSunPostprocess: (next: SunPostprocessUpdate) => void
   dispose: () => void
 }
 
@@ -45,6 +46,12 @@ export type SunPostprocessConfig = {
     radius: number
     resolutionScale: number
   }
+}
+
+export type SunPostprocessUpdate = {
+  exposure?: number
+  toneMap?: SunToneMap
+  bloom?: Partial<SunPostprocessConfig['bloom']>
 }
 
 export function createThreeRuntime(args: {
@@ -160,6 +167,9 @@ export function createThreeRuntime(args: {
   let skydome: ReturnType<typeof createSkydome> | null = null
   let skyState: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean } | null = null
 
+  // TEMP DEBUG (PR-280): disable starfield + skydome so background can't blow out.
+  const SKY_DISABLED = true
+
   // Subtle selection ring (interactive-only)
   const selectionRing = !isE2e ? createSelectionRing() : undefined
   if (selectionRing) {
@@ -167,6 +177,23 @@ export function createThreeRuntime(args: {
   }
 
   const ensureSky = (opts: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean }) => {
+    // TEMP DEBUG (PR-280): keep sky elements removed (tunable postprocessing only).
+    if (SKY_DISABLED) {
+      if (starfield) {
+        scene.remove(starfield.object)
+        starfield.dispose()
+        starfield = null
+      }
+
+      if (skydome) {
+        scene.remove(skydome.object)
+        skydome.dispose()
+        skydome = null
+      }
+
+      skyState = opts
+      return
+    }
     if (
       skyState &&
       skyState.animatedSky === opts.animatedSky &&
@@ -206,7 +233,21 @@ export function createThreeRuntime(args: {
 
   ensureSky({ animatedSky: args.animatedSky, twinkleEnabled: args.twinkleEnabled, isE2e })
 
-  const sunPostprocess = args.sunPostprocess
+  // Copy so TEMP debug controls can mutate without changing caller refs.
+  let sunPostprocess: SunPostprocessConfig = {
+    ...args.sunPostprocess,
+    bloom: { ...args.sunPostprocess.bloom },
+  }
+
+  const applyTonemapConfig = (pass: ShaderPass, cfg: { exposure: number; toneMap: SunToneMap }) => {
+    const u = pass.material.uniforms as unknown as {
+      exposure: { value: number }
+      toneMapMode: { value: number }
+    }
+    u.exposure.value = cfg.exposure
+    // Map string mode to numeric for GLSL switch (stable across minifiers).
+    u.toneMapMode.value = cfg.toneMap === 'none' ? 0 : cfg.toneMap === 'filmic' ? 1 : 2
+  }
 
   const createTonemapPass = (cfg: { exposure: number; toneMap: SunToneMap }) => {
     const shader = {
@@ -259,9 +300,7 @@ export function createThreeRuntime(args: {
     }
 
     const pass = new ShaderPass(shader)
-    // Map string mode to numeric for GLSL switch (stable across minifiers).
-    const u = pass.material.uniforms as unknown as { toneMapMode: { value: number } }
-    u.toneMapMode.value = cfg.toneMap === 'none' ? 0 : cfg.toneMap === 'filmic' ? 1 : 2
+    applyTonemapConfig(pass, cfg)
     return pass
   }
 
@@ -325,6 +364,8 @@ export function createThreeRuntime(args: {
         finalComposer: EffectComposer
       }
 
+  let tonemapPassRef: ShaderPass | null = null
+
   const postprocessRuntime: PostprocessRuntime = (() => {
     if (sunPostprocess.mode === 'off') return { mode: 'off' }
 
@@ -334,6 +375,8 @@ export function createThreeRuntime(args: {
       const bloomPass = createBloomPass(sunPostprocess.bloom)
       const tonemapPass = createTonemapPass({ exposure: sunPostprocess.exposure, toneMap: sunPostprocess.toneMap })
       const outputPass = new OutputPass()
+
+      tonemapPassRef = tonemapPass
 
       composer.addPass(renderPass)
       composer.addPass(bloomPass)
@@ -357,6 +400,8 @@ export function createThreeRuntime(args: {
     const mixPass = createMixBloomPass(bloomTexture)
     const tonemapPass = createTonemapPass({ exposure: sunPostprocess.exposure, toneMap: sunPostprocess.toneMap })
     const outputPass = new OutputPass()
+
+    tonemapPassRef = tonemapPass
 
     finalComposer.addPass(finalRenderPass)
     finalComposer.addPass(mixPass)
@@ -507,6 +552,45 @@ export function createThreeRuntime(args: {
     onDrawingBufferResize?.({ width: buffer.x, height: buffer.y })
   }
 
+  const updateSunPostprocess = (next: SunPostprocessUpdate) => {
+    if (disposed) return
+
+    // TEMP DEBUG (PR-280): allow live tuning of postprocessing parameters.
+    const prevResolutionScale = sunPostprocess.bloom.resolutionScale
+
+    if (next.exposure != null && Number.isFinite(next.exposure)) {
+      sunPostprocess.exposure = next.exposure
+    }
+
+    if (next.toneMap) {
+      sunPostprocess.toneMap = next.toneMap
+    }
+
+    if (next.bloom) {
+      sunPostprocess.bloom = { ...sunPostprocess.bloom, ...next.bloom }
+    }
+
+    if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
+      postprocessRuntime.bloomPass.threshold = sunPostprocess.bloom.threshold
+      postprocessRuntime.bloomPass.strength = sunPostprocess.bloom.strength
+      postprocessRuntime.bloomPass.radius = sunPostprocess.bloom.radius
+    }
+
+    if (tonemapPassRef) {
+      applyTonemapConfig(tonemapPassRef, {
+        exposure: sunPostprocess.exposure,
+        toneMap: sunPostprocess.toneMap,
+      })
+    }
+
+    // Resolution scale is applied via `bloomPass.setSize` inside `resize()`.
+    if (sunPostprocess.bloom.resolutionScale !== prevResolutionScale) {
+      resize()
+    }
+
+    invalidate()
+  }
+
   const onResize = () => {
     if (disposed) return
     resize()
@@ -579,6 +663,8 @@ export function createThreeRuntime(args: {
       ensureSky(opts)
       invalidate()
     },
+
+    updateSunPostprocess,
 
     dispose,
   }

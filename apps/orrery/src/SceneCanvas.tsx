@@ -67,6 +67,14 @@ export function SceneCanvas() {
   const [selectedBody, setSelectedBody] = useState<BodyRef | null>(null)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
 
+  // TEMP DEBUG (PR-280): always-on Sun tuning pane (postprocess + lighting).
+  const [sunDebugExposure, setSunDebugExposure] = useState(sunExposure)
+  const [sunDebugToneMap, setSunDebugToneMap] = useState(sunToneMap)
+  const [sunDebugBloomThreshold, setSunDebugBloomThreshold] = useState(sunBloomThreshold)
+  const [sunDebugBloomStrength, setSunDebugBloomStrength] = useState(sunBloomStrength)
+  const [sunDebugBloomRadius, setSunDebugBloomRadius] = useState(sunBloomRadius)
+  const [sunDebugBloomResolutionScale, setSunDebugBloomResolutionScale] = useState(sunBloomResolutionScale)
+
   // Advanced tuning sliders (ephemeral, local state only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
@@ -77,8 +85,9 @@ export function SceneCanvas() {
   }, [])
 
   // Earth appearance tuning (kept configurable in code; no longer exposed as debug sliders).
-  const ambientLightIntensity = 0.2
-  const sunLightIntensity = 2.0
+  // TEMP DEBUG (PR-280): allow live tuning via always-on Sun debug pane.
+  const [ambientLightIntensity, setAmbientLightIntensity] = useState(0.2)
+  const [sunLightIntensity, setSunLightIntensity] = useState(2.0)
   const earthNightAlbedo = 0.004
   const earthTwilight = earthAppearanceDefaults?.nightLightsTwilight ?? 0.12
   const earthNightLightsIntensity = earthAppearanceDefaults?.nightLightsIntensity ?? 1.25
@@ -721,6 +730,30 @@ export function SceneCanvas() {
     rendererRuntimeRef.current?.updateSky({ animatedSky, twinkleEnabled, isE2e })
   }, [animatedSky, twinkleEnabled, isE2e])
 
+  // TEMP DEBUG (PR-280): live-tune Sun postprocessing in-place (no reload / query params).
+  useEffect(() => {
+    if (isE2e) return
+
+    rendererRuntimeRef.current?.updateSunPostprocess({
+      exposure: sunDebugExposure,
+      toneMap: sunDebugToneMap,
+      bloom: {
+        threshold: sunDebugBloomThreshold,
+        strength: sunDebugBloomStrength,
+        radius: sunDebugBloomRadius,
+        resolutionScale: sunDebugBloomResolutionScale,
+      },
+    })
+  }, [
+    isE2e,
+    sunDebugExposure,
+    sunDebugToneMap,
+    sunDebugBloomThreshold,
+    sunDebugBloomStrength,
+    sunDebugBloomRadius,
+    sunDebugBloomResolutionScale,
+  ])
+
   // Lightweight RAF loop for twinkle animation.
   useEffect(() => {
     twinkleActiveRef.current = twinkleEnabled
@@ -1032,6 +1065,203 @@ export function SceneCanvas() {
           frame={J2000_FRAME}
         />
       ) : null}
+      {/* TEMP DEBUG (PR-280): always-on Sun/lighting tuning pane (bottom-left). */}
+      {!isE2e ? (
+        <div className="sunDebugOverlay">
+          <div className="sunDebugHeader">
+            <div className="sunDebugTitle">SUN DEBUG (TEMP PR-280)</div>
+            <button
+              className="sunDebugReset"
+              type="button"
+              onClick={() => {
+                setSunDebugExposure(sunExposure)
+                setSunDebugToneMap(sunToneMap)
+                setSunDebugBloomThreshold(sunBloomThreshold)
+                setSunDebugBloomStrength(sunBloomStrength)
+                setSunDebugBloomRadius(sunBloomRadius)
+                setSunDebugBloomResolutionScale(sunBloomResolutionScale)
+                setAmbientLightIntensity(0.2)
+                setSunLightIntensity(2.0)
+              }}
+              title="Reset to defaults"
+            >
+              Reset
+            </button>
+          </div>
+
+          <div className="sunDebugRows">
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-exposure">Exposure</label>
+              <input
+                id="sun-debug-exposure"
+                type="range"
+                min={0}
+                max={10}
+                step={0.01}
+                value={sunDebugExposure}
+                onChange={(e) => setSunDebugExposure(Number(e.target.value))}
+              />
+              <input
+                className="sunDebugNumber"
+                type="number"
+                min={0}
+                max={100}
+                step={0.01}
+                value={sunDebugExposure}
+                onChange={(e) => setSunDebugExposure(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-tonemap">Tone map</label>
+              <select
+                id="sun-debug-tonemap"
+                className="sunDebugSelect"
+                value={sunDebugToneMap}
+                onChange={(e) => setSunDebugToneMap(e.target.value as typeof sunToneMap)}
+              >
+                <option value="none">none</option>
+                <option value="filmic">filmic</option>
+                <option value="acesLike">acesLike</option>
+              </select>
+              <span className="sunDebugSpacer" />
+            </div>
+
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-threshold">Bloom threshold</label>
+              <input
+                id="sun-debug-bloom-threshold"
+                type="range"
+                min={0}
+                max={3}
+                step={0.01}
+                value={sunDebugBloomThreshold}
+                onChange={(e) => setSunDebugBloomThreshold(Number(e.target.value))}
+              />
+              <input
+                className="sunDebugNumber"
+                type="number"
+                min={0}
+                max={10}
+                step={0.01}
+                value={sunDebugBloomThreshold}
+                onChange={(e) => setSunDebugBloomThreshold(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-strength">Bloom strength</label>
+              <input
+                id="sun-debug-bloom-strength"
+                type="range"
+                min={0}
+                max={10}
+                step={0.05}
+                value={sunDebugBloomStrength}
+                onChange={(e) => setSunDebugBloomStrength(Number(e.target.value))}
+              />
+              <input
+                className="sunDebugNumber"
+                type="number"
+                min={0}
+                max={20}
+                step={0.05}
+                value={sunDebugBloomStrength}
+                onChange={(e) => setSunDebugBloomStrength(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-radius">Bloom radius</label>
+              <input
+                id="sun-debug-bloom-radius"
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={sunDebugBloomRadius}
+                onChange={(e) => setSunDebugBloomRadius(Number(e.target.value))}
+              />
+              <input
+                className="sunDebugNumber"
+                type="number"
+                min={0}
+                max={1}
+                step={0.01}
+                value={sunDebugBloomRadius}
+                onChange={(e) => setSunDebugBloomRadius(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-scale">Bloom res scale</label>
+              <input
+                id="sun-debug-bloom-scale"
+                type="range"
+                min={0.1}
+                max={1}
+                step={0.05}
+                value={sunDebugBloomResolutionScale}
+                onChange={(e) => setSunDebugBloomResolutionScale(Number(e.target.value))}
+              />
+              <input
+                className="sunDebugNumber"
+                type="number"
+                min={0.1}
+                max={1}
+                step={0.05}
+                value={sunDebugBloomResolutionScale}
+                onChange={(e) => setSunDebugBloomResolutionScale(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-ambient">Ambient light</label>
+              <input
+                id="sun-debug-ambient"
+                type="range"
+                min={0}
+                max={2}
+                step={0.01}
+                value={ambientLightIntensity}
+                onChange={(e) => setAmbientLightIntensity(Number(e.target.value))}
+              />
+              <input
+                className="sunDebugNumber"
+                type="number"
+                min={0}
+                max={5}
+                step={0.01}
+                value={ambientLightIntensity}
+                onChange={(e) => setAmbientLightIntensity(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sunDebugRow">
+              <label className="sunDebugLabel" htmlFor="sun-debug-sunlight">Sun light</label>
+              <input
+                id="sun-debug-sunlight"
+                type="range"
+                min={0}
+                max={10}
+                step={0.1}
+                value={sunLightIntensity}
+                onChange={(e) => setSunLightIntensity(Number(e.target.value))}
+              />
+              <input
+                className="sunDebugNumber"
+                type="number"
+                min={0}
+                max={20}
+                step={0.1}
+                value={sunLightIntensity}
+                onChange={(e) => setSunLightIntensity(Number(e.target.value))}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <canvas ref={canvasRef} className="sceneCanvas" />
 
       {/* Render HUD overlays */}
