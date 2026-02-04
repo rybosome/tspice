@@ -11,6 +11,7 @@ import {
   type Vec3Km,
 } from '../../spice/SpiceClient.js'
 import { createBodyMesh } from '../BodyMesh.js'
+import { SUN_BLOOM_LAYER } from '../../renderLayers.js'
 import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleSceneBodies, type BodyId } from '../BodyRegistry.js'
 import { computeBodyRadiusWorld } from '../bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from '../FrameAxes.js'
@@ -210,6 +211,10 @@ export async function initSpiceSceneRuntime(args: {
     mesh.userData.bodyId = body.body
     // Store radiusKm for dynamic scale updates
     mesh.userData.radiusKm = body.style.radiusKm
+
+    if (String(body.body) === 'SUN') {
+      mesh.layers.enable(SUN_BLOOM_LAYER)
+    }
 
     pickables.push(mesh)
     sceneObjects.push(mesh)

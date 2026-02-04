@@ -44,7 +44,21 @@ export function SceneCanvas() {
 
   const runtimeConfig = useMemo(() => parseSceneCanvasRuntimeConfigFromLocationSearch(window.location.search), [])
 
-  const { searchParams: search, isE2e, enableLogDepth, starSeed, initialUtc, initialEt } = runtimeConfig
+  const {
+    searchParams: search,
+    isE2e,
+    enableLogDepth,
+    starSeed,
+    initialUtc,
+    initialEt,
+    sunPostprocessMode,
+    sunExposure,
+    sunToneMap,
+    sunBloomThreshold,
+    sunBloomStrength,
+    sunBloomRadius,
+    sunBloomResolutionScale,
+  } = runtimeConfig
 
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
@@ -146,6 +160,13 @@ export function SceneCanvas() {
     starSeed,
     initialUtc,
     initialEt,
+    sunPostprocessMode,
+    sunExposure,
+    sunToneMap,
+    sunBloomThreshold,
+    sunBloomStrength,
+    sunBloomRadius,
+    sunBloomResolutionScale,
     kmToWorld,
     animatedSky,
     twinkleEnabled,
@@ -525,6 +546,17 @@ export function SceneCanvas() {
       starSeed,
       animatedSky,
       twinkleEnabled,
+      sunPostprocess: {
+        mode: initRuntimeConfigRef.current.sunPostprocessMode,
+        exposure: initRuntimeConfigRef.current.sunExposure,
+        toneMap: initRuntimeConfigRef.current.sunToneMap,
+        bloom: {
+          threshold: initRuntimeConfigRef.current.sunBloomThreshold,
+          strength: initRuntimeConfigRef.current.sunBloomStrength,
+          radius: initRuntimeConfigRef.current.sunBloomRadius,
+          resolutionScale: initRuntimeConfigRef.current.sunBloomResolutionScale,
+        },
+      },
       twinkleActiveRef,
       initialFocusBody: latestUiRef.current.focusBody,
       initialCameraFovDeg: latestUiRef.current.cameraFovDeg,

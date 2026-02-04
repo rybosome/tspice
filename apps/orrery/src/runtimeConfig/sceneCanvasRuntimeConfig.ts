@@ -1,3 +1,7 @@
+export type SunPostprocessMode = 'off' | 'wholeFrame' | 'sunIsolated'
+
+export type SunToneMap = 'none' | 'filmic' | 'acesLike'
+
 export type SceneCanvasRuntimeConfig = {
   searchParams: URLSearchParams
   isE2e: boolean
@@ -14,6 +18,35 @@ export type SceneCanvasRuntimeConfig = {
 
   /** Optional ET seconds for initial time. */
   initialEt: number | null
+
+  // Sun postprocessing (query params)
+  sunPostprocessMode: SunPostprocessMode
+  sunExposure: number
+  sunToneMap: SunToneMap
+  sunBloomThreshold: number
+  sunBloomStrength: number
+  sunBloomRadius: number
+  sunBloomResolutionScale: number
+}
+
+const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
+
+const parseNumber = (searchParams: URLSearchParams, key: string) => {
+  const raw = searchParams.get(key)
+  if (!raw) return null
+  const parsed = Number(raw)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+const parseEnum = <T extends string>(
+  searchParams: URLSearchParams,
+  key: string,
+  allowed: readonly T[],
+): T | null => {
+  const raw = searchParams.get(key)
+  if (!raw) return null
+  const normalized = raw.trim()
+  return (allowed as readonly string[]).includes(normalized) ? (normalized as T) : null
 }
 
 export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: string): SceneCanvasRuntimeConfig {
@@ -50,6 +83,19 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
     return Number.isFinite(parsed) ? parsed : null
   })()
 
+  const sunPostprocessMode =
+    parseEnum(searchParams, 'sunPostprocessMode', ['off', 'wholeFrame', 'sunIsolated'] as const) ??
+    (isE2e ? 'off' : 'wholeFrame')
+
+  const sunExposure = clamp(parseNumber(searchParams, 'sunExposure') ?? 1, 0, 100)
+
+  const sunToneMap = parseEnum(searchParams, 'sunToneMap', ['none', 'filmic', 'acesLike'] as const) ?? 'filmic'
+
+  const sunBloomThreshold = clamp(parseNumber(searchParams, 'sunBloomThreshold') ?? 0.8, 0, 1)
+  const sunBloomStrength = clamp(parseNumber(searchParams, 'sunBloomStrength') ?? 1.25, 0, 10)
+  const sunBloomRadius = clamp(parseNumber(searchParams, 'sunBloomRadius') ?? 0.5, 0, 1)
+  const sunBloomResolutionScale = clamp(parseNumber(searchParams, 'sunBloomResolutionScale') ?? 0.5, 0.1, 1)
+
   return {
     searchParams,
     isE2e,
@@ -58,5 +104,12 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
     starSeed,
     initialUtc,
     initialEt,
+    sunPostprocessMode,
+    sunExposure,
+    sunToneMap,
+    sunBloomThreshold,
+    sunBloomStrength,
+    sunBloomRadius,
+    sunBloomResolutionScale,
   }
 }

@@ -1,4 +1,10 @@
 import * as THREE from 'three'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+import { SUN_BLOOM_LAYER } from '../renderLayers.js'
 import { CameraController, type CameraControllerState } from '../controls/CameraController.js'
 import { createSelectionRing, type SelectionRing } from '../scene/SelectionRing.js'
 import { createSkydome, type CreateSkydomeOptions } from '../scene/Skydome.js'
@@ -23,7 +29,24 @@ export type ThreeRuntime = {
 
   updateSky: (opts: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean }) => void
   dispose: () => void
-}
+
+};
+
+export type SunPostprocessMode = 'off' | 'wholeFrame' | 'sunIsolated'
+
+export type SunToneMap = 'none' | 'filmic' | 'acesLike'
+
+export type SunPostprocessConfig = {
+  mode: SunPostprocessMode
+  exposure: number
+  toneMap: SunToneMap
+  bloom: {
+    threshold: number
+    strength: number
+    radius: number
+    resolutionScale: number
+  }
+};
 
 export function createThreeRuntime(args: {
   canvas: HTMLCanvasElement
@@ -34,6 +57,8 @@ export function createThreeRuntime(args: {
   starSeed: number
   animatedSky: boolean
   twinkleEnabled: boolean
+
+  sunPostprocess: SunPostprocessConfig
 
   /** Keep invalidate behavior in sync with the twinkle RAF loop. */
   twinkleActiveRef: { current: boolean }
@@ -84,6 +109,7 @@ export function createThreeRuntime(args: {
   // Keep e2e snapshots stable by not depending on deviceScaleFactor.
   renderer.setPixelRatio(isE2e ? 1 : Math.min(window.devicePixelRatio, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
+  renderer.toneMapping = THREE.NoToneMapping
 
   const scene = new THREE.Scene()
   scene.background = new THREE.Color('#0f131a')
@@ -181,6 +207,157 @@ export function createThreeRuntime(args: {
 
   ensureSky({ animatedSky: args.animatedSky, twinkleEnabled: args.twinkleEnabled, isE2e })
 
+
+  const sunPostprocess = args.sunPostprocess
+
+  const createTonemapPass = (cfg: { exposure: number; toneMap: SunToneMap }) => {
+    const shader = {
+      uniforms: {
+        tDiffuse: { value: null },
+        exposure: { value: cfg.exposure },
+        toneMapMode: { value: 0 },
+      },
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D tDiffuse;
+        uniform float exposure;
+        uniform int toneMapMode;
+        varying vec2 vUv;
+
+        vec3 filmicToneMap(vec3 x) {
+          x = max(vec3(0.0), x - 0.004);
+          return (x * (6.2 * x + 0.5)) / (x * (6.2 * x + 1.7) + 0.06);
+        }
+
+        vec3 acesLikeToneMap(vec3 x) {
+          // Narkowicz 2015, "ACES Filmic Tone Mapping Curve" (approx).
+          const float a = 2.51;
+          const float b = 0.03;
+          const float c = 2.43;
+          const float d = 0.59;
+          const float e = 0.14;
+          return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
+        }
+
+        void main() {
+          vec3 color = texture2D(tDiffuse, vUv).rgb;
+          color *= exposure;
+
+          if (toneMapMode == 1) {
+            color = filmicToneMap(color);
+          } else if (toneMapMode == 2) {
+            color = acesLikeToneMap(color);
+          }
+
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `,
+    };
+
+    const pass = new ShaderPass(shader);
+    // Map string mode to numeric for GLSL switch (stable across minifiers).
+    const u = pass.material.uniforms as unknown as { toneMapMode: { value: number } }
+    u.toneMapMode.value = cfg.toneMap === 'none' ? 0 : cfg.toneMap === 'filmic' ? 1 : 2
+    return pass;
+  }
+
+  const createBloomPass = (cfg: SunPostprocessConfig['bloom']) => {
+    const pass = new UnrealBloomPass(new THREE.Vector2(1, 1), cfg.strength, cfg.radius, cfg.threshold);
+    pass.threshold = cfg.threshold;
+    pass.strength = cfg.strength;
+    pass.radius = cfg.radius;
+    return pass;
+  }
+
+  const createMixBloomPass = (bloomTexture: THREE.Texture) => {
+    const shader = {
+      uniforms: {
+        tDiffuse: { value: null },
+        bloomTexture: { value: bloomTexture },
+      },
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D tDiffuse;
+        uniform sampler2D bloomTexture;
+        varying vec2 vUv;
+
+        void main() {
+          vec3 base = texture2D(tDiffuse, vUv).rgb;
+          vec3 bloom = texture2D(bloomTexture, vUv).rgb;
+          gl_FragColor = vec4(base + bloom, 1.0);
+        }
+      `,
+    };
+
+    return new ShaderPass(shader);
+  }
+
+  type PostprocessRuntime =
+    | { mode: 'off' }
+    | {
+        mode: 'wholeFrame'
+        composer: EffectComposer
+        bloomPass: UnrealBloomPass
+      }
+    | {
+        mode: 'sunIsolated'
+        bloomComposer: EffectComposer
+        bloomPass: UnrealBloomPass
+        finalComposer: EffectComposer
+      }
+
+  const postprocessRuntime: PostprocessRuntime = (() => {
+    if (sunPostprocess.mode === 'off') return { mode: 'off' }
+
+    if (sunPostprocess.mode === 'wholeFrame') {
+      const composer = new EffectComposer(renderer)
+      const renderPass = new RenderPass(scene, camera)
+      const bloomPass = createBloomPass(sunPostprocess.bloom)
+      const tonemapPass = createTonemapPass({ exposure: sunPostprocess.exposure, toneMap: sunPostprocess.toneMap })
+      const outputPass = new OutputPass()
+
+      composer.addPass(renderPass)
+      composer.addPass(bloomPass)
+      composer.addPass(tonemapPass)
+      composer.addPass(outputPass)
+
+      return { mode: 'wholeFrame', composer, bloomPass }
+    }
+
+    // sunIsolated
+    const bloomComposer = new EffectComposer(renderer)
+    bloomComposer.renderToScreen = false
+    const bloomRenderPass = new RenderPass(scene, camera)
+    const bloomPass = createBloomPass(sunPostprocess.bloom)
+    bloomComposer.addPass(bloomRenderPass)
+    bloomComposer.addPass(bloomPass)
+
+    const finalComposer = new EffectComposer(renderer)
+    const finalRenderPass = new RenderPass(scene, camera)
+    const mixPass = createMixBloomPass(bloomComposer.renderTarget2.texture)
+    const tonemapPass = createTonemapPass({ exposure: sunPostprocess.exposure, toneMap: sunPostprocess.toneMap })
+    const outputPass = new OutputPass()
+
+    finalComposer.addPass(finalRenderPass)
+    finalComposer.addPass(mixPass)
+    finalComposer.addPass(tonemapPass)
+    finalComposer.addPass(outputPass)
+
+    return { mode: 'sunIsolated', bloomComposer, bloomPass, finalComposer }
+  })()
+
   // For FPS calculation
   let lastFrameTimeMs = performance.now()
   let lastHudUpdateMs = 0
@@ -203,7 +380,19 @@ export function createThreeRuntime(args: {
     skydome?.syncToCamera(camera)
     skydome?.setTimeSeconds(timeSec)
 
-    renderer.render(scene, camera)
+    if (postprocessRuntime.mode === 'off') {
+      renderer.render(scene, camera)
+    } else if (postprocessRuntime.mode === 'wholeFrame') {
+      postprocessRuntime.composer.render()
+    } else {
+      // Render bloom only for Sun layer, then composite over the full scene.
+      const prevMask = camera.layers.mask
+      camera.layers.set(SUN_BLOOM_LAYER)
+      postprocessRuntime.bloomComposer.render()
+      camera.layers.mask = prevMask
+
+      postprocessRuntime.finalComposer.render()
+    }
 
     afterRender?.({ nowMs })
 
@@ -277,10 +466,30 @@ export function createThreeRuntime(args: {
     renderer.setPixelRatio(isE2e ? 1 : Math.min(window.devicePixelRatio, 2))
     renderer.setSize(width, height, false)
 
+    const pixelRatio = renderer.getPixelRatio()
+
+    if (postprocessRuntime.mode === 'wholeFrame') {
+      postprocessRuntime.composer.setPixelRatio(pixelRatio)
+      postprocessRuntime.composer.setSize(width, height)
+    } else if (postprocessRuntime.mode === 'sunIsolated') {
+      postprocessRuntime.bloomComposer.setPixelRatio(pixelRatio)
+      postprocessRuntime.bloomComposer.setSize(width, height)
+      postprocessRuntime.finalComposer.setPixelRatio(pixelRatio)
+      postprocessRuntime.finalComposer.setSize(width, height)
+    }
+
     camera.aspect = width / height
     camera.updateProjectionMatrix()
 
     const buffer = renderer.getDrawingBufferSize(drawingBufferSize)
+
+    if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
+      const scale = THREE.MathUtils.clamp(sunPostprocess.bloom.resolutionScale, 0.1, 1)
+      const scaledW = Math.max(1, Math.floor(buffer.x * scale))
+      const scaledH = Math.max(1, Math.floor(buffer.y * scale))
+      postprocessRuntime.bloomPass.setSize(scaledW, scaledH)
+    }
+
     onDrawingBufferResize?.({ width: buffer.x, height: buffer.y })
   }
 
@@ -322,6 +531,13 @@ export function createThreeRuntime(args: {
 
     afterRender = null
     onDrawingBufferResize = null
+
+    if (postprocessRuntime.mode === 'wholeFrame') {
+      postprocessRuntime.composer.dispose()
+    } else if (postprocessRuntime.mode === 'sunIsolated') {
+      postprocessRuntime.bloomComposer.dispose()
+      postprocessRuntime.finalComposer.dispose()
+    }
 
     renderer.dispose()
   }
