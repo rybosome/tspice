@@ -87,11 +87,19 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
 
   const sunExposure = clamp(parseNumber(searchParams, 'sunExposure') ?? 1, 0, 100)
 
-  const sunToneMap = parseEnum(searchParams, 'sunToneMap', ['none', 'filmic', 'acesLike'] as const) ?? 'filmic'
+  // In `sunIsolated` mode, we want a subtle, safe default that doesn't globally
+  // remap the scene brightness/contrast. Users can opt into tonemapping via the
+  // query params.
+  const sunToneMapDefault = sunPostprocessMode === 'wholeFrame' ? 'filmic' : 'none'
+  const sunToneMap =
+    parseEnum(searchParams, 'sunToneMap', ['none', 'filmic', 'acesLike'] as const) ?? sunToneMapDefault
 
-  const sunBloomThresholdDefault = sunPostprocessMode === 'sunIsolated' ? 0.2 : 0.95
-  const sunBloomStrengthDefault = sunPostprocessMode === 'sunIsolated' ? 1.2 : 0.6
-  const sunBloomRadiusDefault = sunPostprocessMode === 'sunIsolated' ? 0.2 : 0.15
+  // For `sunIsolated`, keep bloom conservative: the Sun can be extremely bright
+  // at typical zoom levels and a low threshold/strong bloom can wash out most
+  // of the frame.
+  const sunBloomThresholdDefault = sunPostprocessMode === 'sunIsolated' ? 0.85 : 0.95
+  const sunBloomStrengthDefault = sunPostprocessMode === 'sunIsolated' ? 0.4 : 0.6
+  const sunBloomRadiusDefault = sunPostprocessMode === 'sunIsolated' ? 0.12 : 0.15
 
   // Allow thresholds > 1: with HDR inputs this can be useful for controlling bloom pre-tonemap.
   const sunBloomThreshold = clamp(parseNumber(searchParams, 'sunBloomThreshold') ?? sunBloomThresholdDefault, 0, 10)

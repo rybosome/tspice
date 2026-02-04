@@ -28,7 +28,7 @@ const setupDeterminismAndNetworkBlock = async (page: any, baseURL?: string) => {
 test('sun postprocessing: whole-frame bloom + tonemap', async ({ page, baseURL }) => {
   await setupDeterminismAndNetworkBlock(page, baseURL)
 
-  await page.goto('/?e2e=1&et=1234567&sunPostprocessMode=wholeFrame')
+  await page.goto('/?e2e=1&et=1234567&sunPostprocessMode=wholeFrame&sunToneMap=filmic')
 
   await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
 
@@ -44,7 +44,7 @@ test('sun postprocessing: whole-frame bloom + tonemap', async ({ page, baseURL }
 test('sun postprocessing: sun-isolated selective bloom + tonemap', async ({ page, baseURL }) => {
   await setupDeterminismAndNetworkBlock(page, baseURL)
 
-  await page.goto('/?e2e=1&et=1234567&sunPostprocessMode=sunIsolated')
+  await page.goto('/?e2e=1&et=1234567&sunPostprocessMode=sunIsolated&sunToneMap=filmic')
 
   await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
 
