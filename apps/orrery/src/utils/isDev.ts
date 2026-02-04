@@ -1,10 +1,10 @@
 /**
-* Runtime dev-mode check that doesn't assume Vite's `ImportMetaEnv` typings.
-*
-* - In Vite, this resolves to `import.meta.env.DEV`.
-* - In other environments where `import.meta.env` is absent, we fall back to
-*   `process.env.NODE_ENV !== 'production'` when `process` is safely available.
-*/
+ * Runtime dev-mode check that doesn't assume Vite's `ImportMetaEnv` typings.
+ *
+ * - In Vite, this resolves to `import.meta.env.DEV`.
+ * - In other environments where `import.meta.env` is absent, we fall back to
+ *   `process.env.NODE_ENV !== 'production'` when `process` is safely available.
+ */
 export function isDev(): boolean {
   // Vite sets `import.meta.env` at build time.
   const viteEnv = (import.meta as unknown as { env?: { DEV?: unknown } } | undefined)?.env
