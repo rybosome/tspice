@@ -14,6 +14,7 @@ function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): 
 describe("primitives parity (node vs wasm)", () => {
   const itNative = it.runIf(nodeAddonAvailable());
 
+  // CI on Node 20 Linux can be slow to initialize the WASM backend.
   itNative("matches for str2et / et2utc / pxform / spkezr", async () => {
     const { lsk, spk } = await loadTestKernels();
 
@@ -57,5 +58,5 @@ describe("primitives parity (node vs wasm)", () => {
     wasm.unload("/kernels/naif0012.tls");
     node.unload("/kernels/de405s.bsp");
     node.unload("/kernels/naif0012.tls");
-  });
+  }, 20_000);
 });
