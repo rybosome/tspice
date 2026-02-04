@@ -220,6 +220,8 @@ function getShaderSource(shader: ShaderSource, source: ShaderSourceKey): string 
   return typeof value === 'string' ? value : undefined
 }
 
+type SafeShaderReplaceFailureReason = 'missingSource' | 'replaceFailed'
+
 function safeShaderReplaceInSource(args: {
   src: string
   source: ShaderSourceKey
@@ -228,7 +230,7 @@ function safeShaderReplaceInSource(args: {
   marker: string
   warnOnce: (key: string, ...args: unknown[]) => void
   warnKey: string
-}): { ok: true; next: string } | { ok: false; next: string | undefined } {
+}): { ok: true; next: string } | { ok: false; next: string; reason: 'replaceFailed' } {
   const { src, source, needle, replacement, marker, warnOnce, warnKey } = args
 
   if (src.includes(marker)) return { ok: true, next: src }
@@ -245,7 +247,7 @@ function safeShaderReplaceInSource(args: {
 
   if (occurrences === 0) {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing chunk)', { source, needle, marker })
-    return { ok: false, next: src }
+    return { ok: false, next: src, reason: 'replaceFailed' }
   }
 
   if (occurrences > 1) {
@@ -255,13 +257,13 @@ function safeShaderReplaceInSource(args: {
       occurrences,
       marker,
     })
-    return { ok: false, next: src }
+    return { ok: false, next: src, reason: 'replaceFailed' }
   }
 
   const next = src.replace(needle, replacement)
   if (next === src || !next.includes(marker)) {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (replace failed)', { source, needle, marker })
-    return { ok: false, next: src }
+    return { ok: false, next: src, reason: 'replaceFailed' }
   }
 
   return { ok: true, next }
@@ -278,7 +280,7 @@ function safeShaderReplaceAll(args: {
   }>
   warnOnce: (key: string, ...args: unknown[]) => void
   warnKey: string
-}): { ok: true; next: string } | { ok: false; next: string | undefined } {
+}): { ok: true; next: string } | { ok: false; next: string; reason: SafeShaderReplaceFailureReason } {
   const { shader, source, replacements, warnOnce, warnKey } = args
 
   const shaderSources: ShaderSource = shader
@@ -286,7 +288,7 @@ function safeShaderReplaceAll(args: {
   const src0 = getShaderSource(shaderSources, source)
   if (src0 == null) {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing shader source)', { source })
-    return { ok: false, next: undefined }
+    return { ok: false, next: '', reason: 'missingSource' }
   }
 
   return safeShaderReplaceAllInSource({ src: src0, source, replacements, warnOnce })
@@ -302,7 +304,7 @@ function safeShaderReplaceAllInSource(args: {
     warnKey: string
   }>
   warnOnce: (key: string, ...args: unknown[]) => void
-}): { ok: true; next: string } | { ok: false; next: string | undefined } {
+}): { ok: true; next: string } | { ok: false; next: string; reason: 'replaceFailed' } {
   const { src: src0, source, replacements, warnOnce } = args
 
   let src = src0
@@ -316,7 +318,7 @@ function safeShaderReplaceAllInSource(args: {
       warnOnce,
       warnKey: r.warnKey,
     })
-    if (!res.ok) return { ok: false, next: src0 }
+    if (!res.ok) return { ok: false, next: src0, reason: 'replaceFailed' }
     src = res.next
   }
 
@@ -525,7 +527,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '#include <normal_fragment_begin>',
               markerNormal,
               '\t// Stable geometric normal (view space) before any normal map perturbations.',
-              '\tvec3 tspiceGeometryNormal = normal;',
+              '\tvec3 tspiceGeometryNormal = nonPerturbedNormal;',
             ].join('\n'),
             warnKey: 'terminator-darkening:geometry-normal',
           },
@@ -630,7 +632,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '#include <normal_fragment_begin>',
               markerNormal,
               '\t// Stable geometric normal (view space) before any normal map perturbations.',
-              '\tvec3 tspiceGeometryNormal = normal;',
+              '\tvec3 tspiceGeometryNormal = nonPerturbedNormal;',
             ].join('\n'),
             warnKey: 'earth:geometry-normal',
           },
@@ -881,7 +883,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '#include <normal_fragment_begin>',
               markerNormal,
               '\t// Stable geometric normal (view space) before any normal map perturbations.',
-              '\tvec3 tspiceGeometryNormal = normal;',
+              '\tvec3 tspiceGeometryNormal = nonPerturbedNormal;',
             ].join('\n'),
             warnKey: 'earth-clouds:geometry-normal',
           },
