@@ -114,7 +114,7 @@ input[type='range']:focus::-moz-range-thumb {
 }
 
 /* --- Checkboxes --- */
-input[type='checkbox'] {
+input[type='checkbox']:not(.asciiCheckboxInput) {
   appearance: none;
   -webkit-appearance: none;
   width: 14px;
@@ -130,17 +130,17 @@ input[type='checkbox'] {
     border-color 0.1s;
 }
 
-input[type='checkbox']:hover {
+input[type='checkbox']:not(.asciiCheckboxInput):hover {
   border-color: var(--phosphor-bright);
 }
 
-input[type='checkbox']:checked {
+input[type='checkbox']:not(.asciiCheckboxInput):checked {
   background: var(--active-bg);
   border-color: var(--active-border);
 }
 
 /* Checkmark indicator */
-input[type='checkbox']:checked::after {
+input[type='checkbox']:not(.asciiCheckboxInput):checked::after {
   content: '';
   position: absolute;
   left: 3px;
@@ -152,7 +152,7 @@ input[type='checkbox']:checked::after {
   transform: rotate(45deg);
 }
 
-input[type='checkbox']:focus {
+input[type='checkbox']:not(.asciiCheckboxInput):focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(136, 255, 136, 0.3);
 }

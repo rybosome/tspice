@@ -1417,9 +1417,7 @@ export function SceneCanvas() {
                         checked={orbitPathsEnabled}
                         onChange={(e) => setOrbitPathsEnabled(e.target.checked)}
                       />
-                      <span className="asciiCheckboxBox" aria-hidden="true">
-                        [{orbitPathsEnabled ? '✓' : '\u00A0'}]
-                      </span>
+                      <span className="asciiCheckboxBox" aria-hidden="true" />
                       <span className="asciiCheckboxLabel">Orbit Paths</span>
                     </label>
 
@@ -1550,9 +1548,7 @@ export function SceneCanvas() {
                         checked={labelsEnabled}
                         onChange={(e) => setLabelsEnabled(e.target.checked)}
                       />
-                      <span className="asciiCheckboxBox" aria-hidden="true">
-                        [{labelsEnabled ? '✓' : '\u00A0'}]
-                      </span>
+                      <span className="asciiCheckboxBox" aria-hidden="true" />
                       <span className="asciiCheckboxLabel">Labels</span>
                     </label>
 
@@ -1564,9 +1560,7 @@ export function SceneCanvas() {
                           checked={labelOcclusionEnabled}
                           onChange={(e) => setLabelOcclusionEnabled(e.target.checked)}
                         />
-                        <span className="asciiCheckboxBox" aria-hidden="true">
-                          [{labelOcclusionEnabled ? '✓' : ' '}]
-                        </span>
+                        <span className="asciiCheckboxBox" aria-hidden="true" />
                         <span className="asciiCheckboxLabel">Label Occlusion</span>
                       </label>
                       <AdvancedHelpButton topic="labelOcclusion" onOpen={setAdvancedHelpTopic} />
@@ -1580,9 +1574,7 @@ export function SceneCanvas() {
                           checked={showBodyFixedAxes}
                           onChange={(e) => setShowBodyFixedAxes(e.target.checked)}
                         />
-                        <span className="asciiCheckboxBox" aria-hidden="true">
-                          [{showBodyFixedAxes ? '✓' : ' '}]
-                        </span>
+                        <span className="asciiCheckboxBox" aria-hidden="true" />
                         <span className="asciiCheckboxLabel">Body-fixed Axes</span>
                       </label>
                       <AdvancedHelpButton topic="bodyFixedAxes" onOpen={setAdvancedHelpTopic} />
@@ -1596,9 +1588,7 @@ export function SceneCanvas() {
                           checked={showJ2000Axes}
                           onChange={(e) => setShowJ2000Axes(e.target.checked)}
                         />
-                        <span className="asciiCheckboxBox" aria-hidden="true">
-                          [{showJ2000Axes ? '✓' : ' '}]
-                        </span>
+                        <span className="asciiCheckboxBox" aria-hidden="true" />
                         <span className="asciiCheckboxLabel">J2000 Axes</span>
                       </label>
                       <AdvancedHelpButton topic="j2000Axes" onOpen={setAdvancedHelpTopic} />
@@ -1622,9 +1612,7 @@ export function SceneCanvas() {
                           checked={animatedSky}
                           onChange={(e) => setAnimatedSky(e.target.checked)}
                         />
-                        <span className="asciiCheckboxBox" aria-hidden="true">
-                          [{animatedSky ? '✓' : ' '}]
-                        </span>
+                        <span className="asciiCheckboxBox" aria-hidden="true" />
                         <span className="asciiCheckboxLabel">Animated Skydome</span>
                       </label>
                       <AdvancedHelpButton topic="animatedSky" onOpen={setAdvancedHelpTopic} />
@@ -1638,9 +1626,7 @@ export function SceneCanvas() {
                           checked={skyTwinkle}
                           onChange={(e) => setSkyTwinkle(e.target.checked)}
                         />
-                        <span className="asciiCheckboxBox" aria-hidden="true">
-                          [{skyTwinkle ? '✓' : ' '}]
-                        </span>
+                        <span className="asciiCheckboxBox" aria-hidden="true" />
                         <span className="asciiCheckboxLabel">Sky Twinkle</span>
                       </label>
                       <AdvancedHelpButton topic="skyTwinkle" onOpen={setAdvancedHelpTopic} />
@@ -1656,9 +1642,7 @@ export function SceneCanvas() {
                           checked={showRenderHud}
                           onChange={(e) => setShowRenderHud(e.target.checked)}
                         />
-                        <span className="asciiCheckboxBox" aria-hidden="true">
-                          [{showRenderHud ? '✓' : ' '}]
-                        </span>
+                        <span className="asciiCheckboxBox" aria-hidden="true" />
                         <span className="asciiCheckboxLabel">Render HUD</span>
                       </label>
                       <AdvancedHelpButton topic="renderHud" onOpen={setAdvancedHelpTopic} />
