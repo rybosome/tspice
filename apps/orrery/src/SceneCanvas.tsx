@@ -28,7 +28,7 @@ import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
-type AdvancedPaneId = 'camera' | 'scale' | 'orbits' | 'time' | 'visuals'
+type AdvancedPaneId = 'time' | 'scale' | 'guides' | 'orbits' | 'advanced'
 
 type AdvancedHelpTopicId =
   | 'zoom'
@@ -49,10 +49,10 @@ type AdvancedHelpTopicId =
 
 const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: string; summary: string }> = [
   {
-    id: 'camera',
-    tabLabel: 'CAMERA',
-    title: 'CAMERA',
-    summary: 'Focus target + camera lens controls.',
+    id: 'time',
+    tabLabel: 'TIME',
+    title: 'TIME',
+    summary: 'UTC/ET display, scrubber, and playback controls.',
   },
   {
     id: 'scale',
@@ -61,22 +61,22 @@ const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: strin
     summary: 'Scale presets and zoom range controls.',
   },
   {
+    id: 'guides',
+    tabLabel: 'GUIDES',
+    title: 'GUIDES',
+    summary: 'Labels, axes, sky effects, and debug overlays.',
+  },
+  {
     id: 'orbits',
     tabLabel: 'ORBITS',
     title: 'ORBITS',
     summary: 'Orbit line fidelity vs speed. These settings can strongly affect CPU/GPU and memory.',
   },
   {
-    id: 'time',
-    tabLabel: 'TIME',
-    title: 'TIME',
-    summary: 'UTC/ET display, scrubber, and playback controls.',
-  },
-  {
-    id: 'visuals',
-    tabLabel: 'VISUALS',
-    title: 'VISUALS',
-    summary: 'Labels, axes, sky effects, and debug overlays.',
+    id: 'advanced',
+    tabLabel: 'ADVANCED',
+    title: 'ADVANCED',
+    summary: 'Focus target + camera lens controls.',
   },
 ]
 
@@ -316,48 +316,6 @@ export function SceneCanvas() {
     [PLANET_SCALE_SLIDER_MAX],
   )
 
-  const applyScalePreset = useCallback(
-    (preset: 'planetary' | 'solar') => {
-      cancelFocusTweenRef.current?.()
-
-      const controller = controllerRef.current
-      const camera = cameraRef.current
-      if (!controller || !camera) return
-
-      if (preset === 'planetary') {
-        // True-ish scale.
-        setPlanetScaleSlider(planetScaleSliderForMultiplier(1))
-        setSunScaleMultiplier(1)
-      } else {
-        // Aggressive exaggeration for AU-scale viewing.
-        setPlanetScaleSlider(planetScaleSliderForMultiplier(800))
-        setSunScaleMultiplier(12)
-      }
-
-      // Keep zoom limits consistent across presets so wheel/pinch/slider mapping
-      // stays predictable.
-      controller.setRadiusLimits(CAMERA_RADIUS_LIMITS)
-
-      if (preset === 'solar') {
-        // Solar scale is intended for AU-scale viewing, so also:
-        // - focus the Sun (center the scene)
-        // - zoom out to a reasonable baseline distance
-        setFocusBody('SUN')
-
-        const baselineRadius = CAMERA_RADIUS_LIMITS.maxRadius * 0.4
-        controller.radius = THREE.MathUtils.clamp(
-          Math.max(controller.radius, baselineRadius),
-          controller.minRadius,
-          controller.maxRadius,
-        )
-      }
-
-      controller.applyToCamera(camera)
-      invalidateRef.current?.()
-    },
-    [planetScaleSliderForMultiplier],
-  )
-
   // HUD stats state - updated on render frames when HUD is enabled
   const [hudStats, setHudStats] = useState<RenderHudStats | null>(null)
 
@@ -412,6 +370,7 @@ export function SceneCanvas() {
   const focusOnOriginRef = useRef<(() => void) | null>(null)
   const selectedBodyIdRef = useRef<BodyId | undefined>(undefined)
   const initialControllerStateRef = useRef<CameraControllerState | null>(null)
+  const initialPlanetaryRadiusRef = useRef<number | null>(null)
 
   // Track current focus body for keyboard reset logic.
   const focusBodyRef = useRef<BodyRef | null>(focusBody)
@@ -543,6 +502,65 @@ export function SceneCanvas() {
       scheduleApplyZoomSliderValue(value)
     },
     [scheduleApplyZoomSliderValue],
+  )
+
+  const applyScalePreset = useCallback(
+    (preset: 'planetary' | 'solar') => {
+      cancelFocusTweenRef.current?.()
+
+      const controller = controllerRef.current
+      const camera = cameraRef.current
+      if (!controller || !camera) return
+
+      // Cancel any in-flight slider drag/apply so preset changes are immediate.
+      zoomSliderDraggingRef.current = false
+      zoomSliderPendingValueRef.current = null
+      if (zoomSliderRafRef.current != null) {
+        window.cancelAnimationFrame(zoomSliderRafRef.current)
+        zoomSliderRafRef.current = null
+      }
+
+      if (preset === 'planetary') {
+        // True-ish scale.
+        setPlanetScaleSlider(planetScaleSliderForMultiplier(1))
+        setSunScaleMultiplier(1)
+      } else {
+        // Aggressive exaggeration for AU-scale viewing.
+        setPlanetScaleSlider(planetScaleSliderForMultiplier(800))
+        setSunScaleMultiplier(12)
+      }
+
+      // Keep zoom limits consistent across presets so wheel/pinch/slider mapping
+      // stays predictable.
+      controller.setRadiusLimits(CAMERA_RADIUS_LIMITS)
+
+      if (preset === 'planetary') {
+        // Return to the same zoom level as initial page load.
+        const initialRadius = initialPlanetaryRadiusRef.current
+        if (initialRadius != null) {
+          controller.radius = THREE.MathUtils.clamp(initialRadius, controller.minRadius, controller.maxRadius)
+        }
+      }
+
+      if (preset === 'solar') {
+        // Solar scale is intended for AU-scale viewing, so:
+        // - focus the Sun (center the scene)
+        // - zoom out to a reasonable baseline distance (~80% on the zoom slider)
+        setFocusBody('SUN')
+        controller.radius = THREE.MathUtils.clamp(
+          radiusForZoomSlider(80, controller.minRadius, controller.maxRadius),
+          controller.minRadius,
+          controller.maxRadius,
+        )
+      }
+
+      // Keep slider UI in-sync immediately (no need to wait for the overlay polling interval).
+      setZoomSlider(zoomSliderForRadius(controller.radius, controller.minRadius, controller.maxRadius))
+
+      controller.applyToCamera(camera)
+      invalidateRef.current?.()
+    },
+    [planetScaleSliderForMultiplier, radiusForZoomSlider, zoomSliderForRadius],
   )
 
   const AdvancedHelpButton = ({ topic }: { topic: AdvancedHelpTopicId }) => {
@@ -889,6 +907,12 @@ export function SceneCanvas() {
     invalidateRef.current = three.invalidate
     renderOnceRef.current = three.renderOnce
 
+    // Capture the initial radius (planetary default) so switching back to the
+    // planetary scale preset can reliably restore the original zoom.
+    if (initialPlanetaryRadiusRef.current == null) {
+      initialPlanetaryRadiusRef.current = three.controller.radius
+    }
+
     // Expose resetLookOffset to keyboard controls
     resetLookOffsetRef.current = () => {
       three.controller.resetLookOffset()
@@ -1122,8 +1146,8 @@ export function SceneCanvas() {
                   <div className="advancedPaneSummary">{activeAdvancedPane.summary}</div>
                 </div>
 
-                {/* Pane: CAMERA */}
-                {advancedPane === 'camera' ? (
+                {/* Pane: ADVANCED */}
+                {advancedPane === 'advanced' ? (
                   <div className="advancedGroup" role="tabpanel">
                     {/* Presets first (mobile above-the-fold) */}
                     <div className="controlsSection">
@@ -1361,8 +1385,8 @@ export function SceneCanvas() {
                   </div>
                 ) : null}
 
-                {/* Pane: VISUALS */}
-                {advancedPane === 'visuals' ? (
+                {/* Pane: GUIDES */}
+                {advancedPane === 'guides' ? (
                   <div className="advancedGroup" role="tabpanel">
                     <label className="asciiCheckbox">
                       <span className="asciiCheckboxBox" onClick={() => setLabelsEnabled((v) => !v)}>
