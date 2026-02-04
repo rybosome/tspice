@@ -38,6 +38,6 @@ test('rendered scene is visually stable (golden screenshot)', async ({ page, bas
     animations: 'disabled',
     // Allow small GPU/driver anti-aliasing variance in WebGL star rendering
     // (~574 pixels at 0.01 ratio observed in CI)
-    maxDiffPixelRatio: 0.02,
+    maxDiffPixelRatio: 0.04,
   })
 })

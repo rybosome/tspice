@@ -38,11 +38,7 @@ const parseNumber = (searchParams: URLSearchParams, key: string) => {
   return Number.isFinite(parsed) ? parsed : null
 }
 
-const parseEnum = <T extends string>(
-  searchParams: URLSearchParams,
-  key: string,
-  allowed: readonly T[],
-): T | null => {
+const parseEnum = <T extends string>(searchParams: URLSearchParams, key: string, allowed: readonly T[]): T | null => {
   const raw = searchParams.get(key)
   if (!raw) return null
   const normalized = raw.trim()

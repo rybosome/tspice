@@ -29,8 +29,7 @@ export type ThreeRuntime = {
 
   updateSky: (opts: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean }) => void
   dispose: () => void
-
-};
+}
 
 export type SunPostprocessMode = 'off' | 'wholeFrame' | 'sunIsolated'
 
@@ -46,7 +45,7 @@ export type SunPostprocessConfig = {
     radius: number
     resolutionScale: number
   }
-};
+}
 
 export function createThreeRuntime(args: {
   canvas: HTMLCanvasElement
@@ -207,7 +206,6 @@ export function createThreeRuntime(args: {
 
   ensureSky({ animatedSky: args.animatedSky, twinkleEnabled: args.twinkleEnabled, isE2e })
 
-
   const sunPostprocess = args.sunPostprocess
 
   const createTonemapPass = (cfg: { exposure: number; toneMap: SunToneMap }) => {
@@ -258,21 +256,21 @@ export function createThreeRuntime(args: {
           gl_FragColor = vec4(color, 1.0);
         }
       `,
-    };
+    }
 
-    const pass = new ShaderPass(shader);
+    const pass = new ShaderPass(shader)
     // Map string mode to numeric for GLSL switch (stable across minifiers).
     const u = pass.material.uniforms as unknown as { toneMapMode: { value: number } }
     u.toneMapMode.value = cfg.toneMap === 'none' ? 0 : cfg.toneMap === 'filmic' ? 1 : 2
-    return pass;
+    return pass
   }
 
   const createBloomPass = (cfg: SunPostprocessConfig['bloom']) => {
-    const pass = new UnrealBloomPass(new THREE.Vector2(1, 1), cfg.strength, cfg.radius, cfg.threshold);
-    pass.threshold = cfg.threshold;
-    pass.strength = cfg.strength;
-    pass.radius = cfg.radius;
-    return pass;
+    const pass = new UnrealBloomPass(new THREE.Vector2(1, 1), cfg.strength, cfg.radius, cfg.threshold)
+    pass.threshold = cfg.threshold
+    pass.strength = cfg.strength
+    pass.radius = cfg.radius
+    return pass
   }
 
   const createMixBloomPass = (bloomTexture: THREE.Texture) => {
@@ -299,9 +297,9 @@ export function createThreeRuntime(args: {
           gl_FragColor = vec4(base + bloom, 1.0);
         }
       `,
-    };
+    }
 
-    return new ShaderPass(shader);
+    return new ShaderPass(shader)
   }
 
   type PostprocessRuntime =
