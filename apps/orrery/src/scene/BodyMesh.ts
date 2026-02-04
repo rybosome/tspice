@@ -838,9 +838,12 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         // clean it up so the material falls back to the prototype behavior.
         // (Avoid leaving a no-op handler installed.)
         // TS doesn't allow `delete material.onBeforeCompile` because it's not
-        // typed as optional. Use an `any` cast here since we intentionally want
-        // to remove the own-prop.
-        const mat: any = material
+        // typed as optional. Re-type the material with an optional
+        // `onBeforeCompile` so we can cleanly remove the own-prop.
+        type MaterialWithOptionalOnBeforeCompile = Omit<THREE.Material, 'onBeforeCompile'> & {
+          onBeforeCompile?: THREE.Material['onBeforeCompile']
+        }
+        const mat = material as MaterialWithOptionalOnBeforeCompile
         delete mat.onBeforeCompile
       }
       material.needsUpdate = true
