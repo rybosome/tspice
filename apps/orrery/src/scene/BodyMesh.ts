@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { isTextureCacheClearedError, loadTextureCached } from './loadTextureCached.js'
 import { createRingMesh } from './RingMesh.js'
 import { isEarthAppearanceLayer, type BodyAppearanceStyle, type BodyTextureKind } from './SceneModel.js'
+import { isDev } from '../utils/isDev.js'
 
 export type CreateBodyMeshOptions = {
   /** Optional stable ID (e.g. `"EARTH"`) for body-specific rendering. */
@@ -141,6 +142,97 @@ function makeProceduralBodyTexture(kind: BodyTextureKind): THREE.Texture {
   })
 }
 
+type ShaderSourceKey = 'fragmentShader' | 'vertexShader'
+
+type OnBeforeCompile = NonNullable<THREE.Material['onBeforeCompile']>
+type BeforeCompileShader = Parameters<OnBeforeCompile>[0]
+
+function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile) {
+  const prev = material.onBeforeCompile
+  material.onBeforeCompile = (shader, renderer) => {
+    prev?.(shader, renderer)
+    patch(shader, renderer)
+  }
+}
+
+function createWarnOnce() {
+  // Avoid spamming end users in production; these warnings are mainly useful
+  // for shader-chunk drift during local development.
+  if (!isDev()) {
+    return (_key: string, ..._args: unknown[]) => {}
+  }
+
+  const seen = new Set<string>()
+  return (key: string, ...args: unknown[]) => {
+    if (seen.has(key)) return
+    seen.add(key)
+    console.warn(...args)
+  }
+}
+
+type ShaderSource = Pick<BeforeCompileShader, ShaderSourceKey>
+
+function getShaderSource(shader: ShaderSource, source: ShaderSourceKey): string | undefined {
+  const value = shader[source]
+  return typeof value === 'string' ? value : undefined
+}
+
+function safeShaderReplace(args: {
+  shader: BeforeCompileShader
+  source: ShaderSourceKey
+  needle: string
+  replacement: string
+  marker: string
+  warnOnce: (key: string, ...args: unknown[]) => void
+  warnKey: string
+}): boolean {
+  const { shader, source, needle, replacement, marker, warnOnce, warnKey } = args
+
+  const shaderSources: ShaderSource = shader
+
+  const src = getShaderSource(shaderSources, source)
+  if (src == null) {
+    warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing shader source)', { source, marker })
+    return false
+  }
+  if (src.includes(marker)) return true
+
+  // Safety: only inject when the needle is *uniquely* present, otherwise a shader
+  // chunk rename / refactor can lead to surprising partial patches.
+  let occurrences = 0
+  for (let i = 0; ; ) {
+    const next = src.indexOf(needle, i)
+    if (next === -1) break
+    occurrences++
+    i = next + needle.length
+  }
+
+  if (occurrences === 0) {
+    warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing chunk)', { source, needle, marker })
+    return false
+  }
+
+  if (occurrences > 1) {
+    warnOnce(warnKey, '[BodyMesh] shader injection skipped (needle not unique)', {
+      source,
+      needle,
+      occurrences,
+      marker,
+    })
+    return false
+  }
+
+  const next = src.replace(needle, replacement)
+  if (next === src || !next.includes(marker)) {
+    warnOnce(warnKey, '[BodyMesh] shader injection skipped (replace failed)', { source, needle, marker })
+    return false
+  }
+
+  // `onBeforeCompile` expects us to mutate the shader in-place.
+  shaderSources[source] = next
+  return true
+}
+
 /**
  * Creates a body mesh with a unit sphere geometry.
  *
@@ -274,6 +366,11 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const extraTextureReleases: Array<() => void> = []
   const extraMaterialsToDispose: THREE.Material[] = []
   const extraGeometriesToDispose: THREE.BufferGeometry[] = []
+
+  const warnOnce = createWarnOnce()
+
+  // Moon-only bump uses a clone of `map` (same image data; different colorSpace).
+  let moonBumpTexture: THREE.Texture | undefined
 
   // Shared sun direction uniform for Earth shaders (mutated per-frame).
   const uSunDirWorld = new THREE.Vector3(1, 1, 1).normalize()
@@ -663,24 +760,35 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     const uNightAlbedo = { value: 0.01 }
     const uTwilight = { value: 0.05 }
 
-    material.onBeforeCompile = (shader) => {
+    composeOnBeforeCompile(material, (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uNightAlbedo = uNightAlbedo
       shader.uniforms.uTwilight = uTwilight
 
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <common>',
-        [
+      const markerCommon = '// [BodyMesh] moon: common uniforms'
+      safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: '#include <common>',
+        replacement: [
           '#include <common>',
+          markerCommon,
           'uniform vec3 uSunDirWorld;',
           'uniform float uNightAlbedo;',
           'uniform float uTwilight;',
         ].join('\n'),
-      )
+        marker: markerCommon,
+        warnOnce,
+        warnKey: 'moon.common',
+      })
 
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <lights_fragment_begin>',
-        [
+      const markerLights = '// [BodyMesh] moon: night-side ambient clamp'
+      safeShaderReplace({
+        shader,
+        source: 'fragmentShader',
+        needle: '#include <lights_fragment_begin>',
+        replacement: [
+          markerLights,
           '\t// Moon-only: suppress ambient-lit albedo on the night side.',
           '\t{',
           '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
@@ -691,40 +799,16 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '',
           '#include <lights_fragment_begin>',
         ].join('\n'),
-      )
-    }
+        marker: markerLights,
+        warnOnce,
+        warnKey: 'moon.lights',
+      })
+    })
 
-    if (textureUrl) {
-      readyExtras.push(
-        loadTextureCached(textureUrl, { colorSpace: THREE.NoColorSpace })
-          .then(({ texture: tex, release }) => {
-            let installed = false
-            try {
-              if (disposed) return
-
-              tex.wrapS = THREE.RepeatWrapping
-              tex.wrapT = THREE.RepeatWrapping
-              tex.needsUpdate = true
-
-              material.bumpMap = tex
-              material.bumpScale = 0.018
-              material.needsUpdate = true
-
-              extraTextureReleases.push(release)
-              installed = true
-            } finally {
-              if (!installed) release()
-            }
-          })
-          .catch((err) => {
-            if (isTextureCacheClearedError(err)) return
-            console.warn('Failed to load Moon bump texture', textureUrl, err)
-          }),
-      )
-    }
-
-    update = ({ sunDirWorld }) => {
-      uSunDirWorld.copy(sunDirWorld).normalize()
+    const prevUpdate = update
+    update = (args) => {
+      prevUpdate?.(args)
+      uSunDirWorld.copy(args.sunDirWorld).normalize()
     }
   }
 
@@ -740,6 +824,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
       material.emissiveMap = null
       material.bumpMap = null
+      material.onBeforeCompile = () => {}
       material.needsUpdate = true
 
       if (cloudsMaterial) {
@@ -769,6 +854,20 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       if (!map) return
 
       material.map = map
+
+      if (isMoon) {
+        if (!moonBumpTexture) {
+          const bump = map.clone()
+          bump.colorSpace = THREE.NoColorSpace
+          bump.needsUpdate = true
+          moonBumpTexture = bump
+          extraTexturesToDispose.push(bump)
+        }
+
+        material.bumpMap = moonBumpTexture
+        material.bumpScale = 0.018
+      }
+
       // Note: `material.color` multiplies `material.map`.
       // Only override the default multiplier if `textureColor` is explicitly set.
       material.color.set(textureColor ?? surface.color)
