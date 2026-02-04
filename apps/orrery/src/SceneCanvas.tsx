@@ -1448,6 +1448,39 @@ export function SceneCanvas() {
               />
             </div>
           </div>
+
+          {/* Background controls: keep separate from Sun tuning knobs. */}
+          <div
+            style={{
+              marginTop: '10px',
+              paddingTop: '8px',
+              borderTop: '1px solid var(--phosphor-border)',
+            }}
+          >
+            <div className="sunDebugTitle" style={{ marginBottom: '6px' }}>
+              BACKGROUND
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label className="asciiCheckbox">
+                <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>
+                  [{animatedSky ? '✓' : '\u00A0'}]
+                </span>
+                <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
+                  Sky (Milky Way)
+                </span>
+              </label>
+
+              <label className="asciiCheckbox">
+                <span className="asciiCheckboxBox" onClick={() => setTwinkleEnabledUi((v) => !v)}>
+                  [{twinkleEnabledUi ? '✓' : '\u00A0'}]
+                </span>
+                <span className="asciiCheckboxLabel" onClick={() => setTwinkleEnabledUi((v) => !v)}>
+                  Star twinkle
+                </span>
+              </label>
+            </div>
+          </div>
         </div>
       ) : null}
 
