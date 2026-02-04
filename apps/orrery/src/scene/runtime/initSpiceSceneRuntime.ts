@@ -27,6 +27,15 @@ import type { CameraController, CameraControllerState } from '../../controls/Cam
 export type SceneUiState = {
   etSec: EtSeconds
   focusBody: BodyRef
+  /**
+   * When `focusBody` changes, the runtime normally auto-adjusts the camera
+   * (zoom + sometimes view angles) so the newly-focused body is framed.
+   *
+   * Some callers (e.g. scale presets) want to change focus while preserving an
+   * explicitly-chosen zoom level, so this flag disables the auto-zoom behavior
+   * for that focus change.
+   */
+  focusAutoZoomOnChange: boolean
   showJ2000Axes: boolean
   showBodyFixedAxes: boolean
   cameraFovDeg: number
@@ -49,6 +58,25 @@ export type SceneUiState = {
   earthNightLightsIntensity: number
   earthAtmosphereIntensity: number
   earthCloudsNightMultiplier: number
+}
+
+export function computeFocusAutoZoomTransition(args: {
+  isE2e: boolean
+  lastFocusBody: BodyRef | undefined
+  nextFocusBody: BodyRef
+  focusAutoZoomOnChange: boolean
+}): {
+  focusChanged: boolean
+  shouldAutoZoom: boolean
+  nextLastFocusBody: BodyRef | undefined
+} {
+  const focusChanged = args.nextFocusBody !== args.lastFocusBody
+  const shouldAutoZoom = !args.isE2e && focusChanged && args.focusAutoZoomOnChange
+  return {
+    focusChanged,
+    shouldAutoZoom,
+    nextLastFocusBody: focusChanged ? args.nextFocusBody : args.lastFocusBody,
+  }
 }
 
 export type SpiceSceneRuntime = {
@@ -322,17 +350,32 @@ export async function initSpiceSceneRuntime(args: {
       cloudsNightMultiplier: next.earthCloudsNightMultiplier,
     }
 
-    const shouldAutoZoom = !isE2e && next.focusBody !== lastAutoZoomFocusBody
+    const { focusChanged, shouldAutoZoom, nextLastFocusBody } = computeFocusAutoZoomTransition({
+      isE2e,
+      lastFocusBody: lastAutoZoomFocusBody,
+      nextFocusBody: next.focusBody,
+      focusAutoZoomOnChange: next.focusAutoZoomOnChange,
+    })
 
     const homePreset = shouldAutoZoom ? getHomePresetState(next.focusBody) : null
 
-    if (shouldAutoZoom) {
+    if (focusChanged) {
       cancelFocusTween?.()
 
-      // Clear look offset when auto-focusing a new body.
-      // Home presets supply their own look offset, so don't wipe it.
-      if (!homePreset) {
-        resetLookOffset?.()
+      if (shouldAutoZoom) {
+        // Clear look offset when auto-focusing a new body.
+        // Home presets supply their own look offset, so don't wipe it.
+        if (!homePreset) {
+          resetLookOffset?.()
+        }
+      } else {
+        // Focus changed, but caller explicitly requested *no* auto-zoom. Still
+        // re-center the camera target on the rebased origin (0,0,0) so focus
+        // changes don't leave the camera panned off-target.
+        focusOn?.(new THREE.Vector3(0, 0, 0), {
+          radius: controller.radius,
+          immediate: true,
+        })
       }
     }
 
@@ -356,7 +399,7 @@ export async function initSpiceSceneRuntime(args: {
           initialControllerStateRef.current = controller.snapshot()
         }
 
-        lastAutoZoomFocusBody = next.focusBody
+        lastAutoZoomFocusBody = nextLastFocusBody
       } else {
         const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
         if (focusBodyMeta) {
@@ -445,8 +488,15 @@ export async function initSpiceSceneRuntime(args: {
           }
         }
 
-        lastAutoZoomFocusBody = next.focusBody
+        lastAutoZoomFocusBody = nextLastFocusBody
       }
+    }
+
+    // If focus changed but auto-zoom was suppressed, we still need to advance
+    // the focus-change tracker so we don't treat the same focus as "new" on the
+    // next update.
+    if (!shouldAutoZoom) {
+      lastAutoZoomFocusBody = nextLastFocusBody
     }
 
     bodyPosKmByKey.clear()

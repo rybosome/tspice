@@ -238,6 +238,11 @@ export function SceneCanvas() {
   const { searchParams: search, isE2e, enableLogDepth, starSeed, initialUtc, initialEt } = runtimeConfig
 
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
+
+  // When `focusBody` changes, the runtime normally auto-zooms the camera to
+  // frame the newly-focused body. Scale presets want to set an explicit zoom
+  // level, so they can suppress the auto-zoom for that focus change.
+  const [focusAutoZoomOnChange, setFocusAutoZoomOnChange] = useState(true)
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
   // Selected body (promoted from local closure variable for inspector panel)
@@ -375,6 +380,27 @@ export function SceneCanvas() {
   // Track current focus body for keyboard reset logic.
   const focusBodyRef = useRef<BodyRef | null>(focusBody)
   focusBodyRef.current = focusBody
+
+  // Keep suppression one-shot: if a caller disables auto-zoom for a focus
+  // change, restore the default behavior after the focus change is applied.
+  useEffect(() => {
+    if (!focusAutoZoomOnChange) setFocusAutoZoomOnChange(true)
+  }, [focusBody, focusAutoZoomOnChange])
+
+  const requestFocusBody = useCallback(
+    (body: BodyRef, opts?: { autoZoomOnChange?: boolean }) => {
+      // If the focus body isn't changing, don't toggle auto-zoom behavior.
+      // This prevents accidental suppression when re-applying presets.
+      if (String(body) === String(focusBody)) return
+
+      if (opts?.autoZoomOnChange != null) {
+        setFocusAutoZoomOnChange(opts.autoZoomOnChange)
+      }
+
+      setFocusBody(body)
+    },
+    [focusBody],
+  )
 
   // Per-body reset presets (used by keyboard Reset / R).
   const resetControllerStateByBodyRef = useRef<Map<string, CameraControllerState> | null>(null)
@@ -537,7 +563,7 @@ export function SceneCanvas() {
       if (preset === 'planetary') {
         // The solar preset intentionally refocuses on the Sun; when switching back
         // to planetary scale, return to the default Earth-centric view.
-        setFocusBody('EARTH')
+        requestFocusBody('EARTH', { autoZoomOnChange: false })
 
         // Return to the same zoom level as initial page load.
         const initialRadius = initialPlanetaryRadiusRef.current
@@ -550,7 +576,7 @@ export function SceneCanvas() {
         // Solar scale is intended for AU-scale viewing, so:
         // - focus the Sun (center the scene)
         // - zoom out to a reasonable baseline distance (~80% on the zoom slider)
-        setFocusBody('SUN')
+        requestFocusBody('SUN', { autoZoomOnChange: false })
         controller.radius = THREE.MathUtils.clamp(
           radiusForZoomSlider(80, controller.minRadius, controller.maxRadius),
           controller.minRadius,
@@ -564,7 +590,7 @@ export function SceneCanvas() {
       controller.applyToCamera(camera)
       invalidateRef.current?.()
     },
-    [planetScaleSliderForMultiplier, radiusForZoomSlider, zoomSliderForRadius],
+    [planetScaleSliderForMultiplier, radiusForZoomSlider, requestFocusBody, zoomSliderForRadius],
   )
 
   const AdvancedHelpButton = ({ topic }: { topic: AdvancedHelpTopicId }) => {
@@ -715,6 +741,7 @@ export function SceneCanvas() {
     | ((next: {
         etSec: EtSeconds
         focusBody: BodyRef
+        focusAutoZoomOnChange: boolean
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
         cameraFovDeg: number
@@ -743,6 +770,7 @@ export function SceneCanvas() {
   // read the latest UI state when async init completes.
   const latestUiRef = useRef({
     focusBody,
+    focusAutoZoomOnChange,
     showJ2000Axes,
     showBodyFixedAxes,
     cameraFovDeg,
@@ -767,6 +795,7 @@ export function SceneCanvas() {
   })
   latestUiRef.current = {
     focusBody,
+    focusAutoZoomOnChange,
     showJ2000Axes,
     showBodyFixedAxes,
     cameraFovDeg,
@@ -805,6 +834,7 @@ export function SceneCanvas() {
     updateSceneRef.current?.({
       etSec,
       focusBody,
+      focusAutoZoomOnChange,
       showJ2000Axes,
       showBodyFixedAxes,
       cameraFovDeg,
@@ -828,6 +858,7 @@ export function SceneCanvas() {
     })
   }, [
     focusBody,
+    focusAutoZoomOnChange,
     showJ2000Axes,
     showBodyFixedAxes,
     cameraFovDeg,
