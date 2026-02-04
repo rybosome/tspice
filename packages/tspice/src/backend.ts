@@ -10,7 +10,7 @@ export type SpiceBackendWithKind<K extends BackendKind = BackendKind> = SpiceBac
    * Which backend implementation is in use.
    *
    * Note: this is added by `@rybosome/tspice`'s `createBackend()` wrapper; it is
-   * not part of `@rybosome/tspice-backend-contract`.
+   * not part of the `SpiceBackend` contract.
    */
   kind: K;
 };
