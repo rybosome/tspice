@@ -133,7 +133,19 @@ export function SceneCanvas() {
     return v === '1' || v === 'true'
   })
 
-  const twinkleEnabled = animatedSky && !isE2e
+  // Star twinkle is separate from the skydome toggle.
+  // Default: match `animatedSky` unless explicitly overridden by `?twinkle=...`.
+  const [twinkleEnabledUi, setTwinkleEnabledUi] = useState(() => {
+    if (isE2e) return false
+    const searchParams = new URLSearchParams(window.location.search)
+    const raw = searchParams.get('twinkle')
+    if (raw == null) return animatedSky
+    if (raw === '') return true
+    const v = raw.toLowerCase()
+    return v === '1' || v === 'true'
+  })
+
+  const twinkleEnabled = twinkleEnabledUi && !isE2e
 
   // Planet visual scale multiplier (applies to all non-Sun bodies, including the Moon).
   // Uses a log-scale slider so the range can go "absurdly" large without being fiddly.
@@ -831,7 +843,7 @@ export function SceneCanvas() {
     }
   }, [])
 
-  // Swap the starfield and skydome in-place when animatedSky toggled.
+  // Swap the background elements in-place when toggled.
   useEffect(() => {
     rendererRuntimeRef.current?.updateSky({ animatedSky, twinkleEnabled, isE2e })
   }, [animatedSky, twinkleEnabled, isE2e])
@@ -1110,7 +1122,7 @@ export function SceneCanvas() {
 
                   <div className="advancedDivider" />
 
-                  {/* Group 3: Animated Sky, Label Occlusion */}
+                  {/* Group 3: Background + Label Occlusion */}
                   <div className="advancedCheckboxRow">
                     <label className="asciiCheckbox">
                       <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>
@@ -1121,6 +1133,17 @@ export function SceneCanvas() {
                       </span>
                     </label>
 
+                    <label className="asciiCheckbox">
+                      <span className="asciiCheckboxBox" onClick={() => setTwinkleEnabledUi((v) => !v)}>
+                        [{twinkleEnabledUi ? '✓' : '\u00A0'}]
+                      </span>
+                      <span className="asciiCheckboxLabel" onClick={() => setTwinkleEnabledUi((v) => !v)}>
+                        Star Twinkle
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="advancedCheckboxRow" style={{ marginTop: '6px' }}>
                     <label className="asciiCheckbox">
                       <span className="asciiCheckboxBox" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
                         [{labelOcclusionEnabled ? '✓' : '\u00A0'}]
