@@ -1,14 +1,14 @@
 import { Fragment, useMemo, useState } from 'react'
-import type { BodyRef, SpiceClient, EtSeconds, FrameId } from '../spice/SpiceClient.js'
+import type { BodyRef, SpiceClient, FrameId } from '../spice/SpiceClient.js'
 import { BODY_REGISTRY, type BodyRegistryEntry } from '../scene/BodyRegistry.js'
 import { getApproxOrbitalPeriodSec } from '../scene/orbits/orbitalPeriods.js'
 import { getNaifExtras, type NaifExtras } from '../data/naifExtras.js'
+import { useTimeStoreSelector } from '../time/timeStore.js'
 
 interface SelectionInspectorProps {
   selectedBody: BodyRef
   focusBody: BodyRef
   spiceClient: SpiceClient
-  etSec: EtSeconds
   observer: BodyRef
   frame: FrameId
 }
@@ -176,15 +176,15 @@ function formatBodyKind(kind: string): string {
   return kind.charAt(0).toUpperCase() + kind.slice(1)
 }
 
-export function SelectionInspector({
-  selectedBody,
-  focusBody,
-  spiceClient,
-  etSec,
-  observer,
-  frame,
-}: SelectionInspectorProps) {
+export function SelectionInspector({ selectedBody, focusBody, spiceClient, observer, frame }: SelectionInspectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
+
+  // IMPORTANT:
+  // This component is the only place that needs live ET updates for the inspector.
+  // Keeping the subscription here prevents the entire <SceneCanvas> tree from
+  // re-rendering every animation frame when playback is running (which can feel
+  // like taps/gestures are being "eaten" on mobile).
+  const etSec = useTimeStoreSelector((s) => s.etSec)
 
   const bodyInfo = useMemo(() => {
     try {

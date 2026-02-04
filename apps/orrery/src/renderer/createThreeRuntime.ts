@@ -67,8 +67,8 @@ export function createThreeRuntime(args: {
 
   sunPostprocess: SunPostprocessConfig
 
-  /** Keep invalidate behavior in sync with the twinkle RAF loop. */
-  twinkleActiveRef: { current: boolean }
+  /** Keep invalidate behavior in sync with the sky animation RAF loop. */
+  skyAnimationActiveRef: { current: boolean }
 
   initialFocusBody: BodyRef
   initialCameraFovDeg: number
@@ -94,7 +94,7 @@ export function createThreeRuntime(args: {
     isE2e,
     enableLogDepth,
     starSeed,
-    twinkleActiveRef,
+    skyAnimationActiveRef,
     initialFocusBody,
     initialCameraFovDeg,
     getHomePresetState,
@@ -718,8 +718,8 @@ export function createThreeRuntime(args: {
   const invalidate = () => {
     if (disposed) return
 
-    // When twinkling is enabled, we have a dedicated RAF loop.
-    if (twinkleActiveRef.current) return
+    // When sky animation is enabled, we have a dedicated RAF loop.
+    if (skyAnimationActiveRef.current) return
     if (scheduledFrame != null) return
 
     scheduledFrame = window.requestAnimationFrame((t) => {
