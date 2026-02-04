@@ -111,7 +111,8 @@ export function brandMat3RowMajor(value: unknown, options?: BrandMat3Options): M
 
   assertMat3ArrayLike9(value, { label });
 
-  const arr = Array.isArray(value) ? value : Array.from(value as ArrayLike<number>);
+  // Always copy to guarantee branding applies to the returned value.
+  const arr = Array.from(value);
   tryDefineBrand(arr, __mat3RowMajorBrand);
   return maybeFreeze(arr, freeze) as unknown as Mat3RowMajor;
 }
@@ -125,7 +126,8 @@ export function brandMat3ColMajor(value: unknown, options?: BrandMat3Options): M
 
   assertMat3ArrayLike9(value, { label });
 
-  const arr = Array.isArray(value) ? value : Array.from(value as ArrayLike<number>);
+  // Always copy to guarantee branding applies to the returned value.
+  const arr = Array.from(value);
   tryDefineBrand(arr, __mat3ColMajorBrand);
   return maybeFreeze(arr, freeze) as unknown as Mat3ColMajor;
 }
