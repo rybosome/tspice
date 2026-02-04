@@ -142,17 +142,58 @@ function makeProceduralBodyTexture(kind: BodyTextureKind): THREE.Texture {
   })
 }
 
+function copyTextureSamplerParams(src: THREE.Texture, dst: THREE.Texture) {
+  dst.wrapS = src.wrapS
+  dst.wrapT = src.wrapT
+  dst.repeat.copy(src.repeat)
+  dst.offset.copy(src.offset)
+  dst.center.copy(src.center)
+  dst.rotation = src.rotation
+  dst.flipY = src.flipY
+  dst.premultiplyAlpha = src.premultiplyAlpha
+  dst.magFilter = src.magFilter
+  dst.minFilter = src.minFilter
+  dst.anisotropy = src.anisotropy
+  dst.generateMipmaps = src.generateMipmaps
+  dst.colorSpace = src.colorSpace
+}
+
 type ShaderSourceKey = 'fragmentShader' | 'vertexShader'
 
 type OnBeforeCompile = NonNullable<THREE.Material['onBeforeCompile']>
 type BeforeCompileShader = Parameters<OnBeforeCompile>[0]
 
-function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile) {
+type MaterialWithOptionalOnBeforeCompile = Omit<THREE.Material, 'onBeforeCompile'> & {
+  onBeforeCompile?: THREE.Material['onBeforeCompile']
+}
+
+function patchOnBeforeCompile(material: THREE.Material, next: OnBeforeCompile): () => void {
+  const hadOwn = Object.prototype.hasOwnProperty.call(material, 'onBeforeCompile')
   const prev = material.onBeforeCompile
-  material.onBeforeCompile = (shader, renderer) => {
+
+  material.onBeforeCompile = next
+
+  // Reversible-by-identity: only unpatch if nobody swapped the handler after we did.
+  return () => {
+    if (material.onBeforeCompile !== next) return
+    if (hadOwn) {
+      material.onBeforeCompile = prev
+      return
+    }
+
+    // We introduced `onBeforeCompile` as an own-prop; delete it to fall back to
+    // the prototype behavior.
+    delete (material as MaterialWithOptionalOnBeforeCompile).onBeforeCompile
+  }
+}
+
+function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile): () => void {
+  const prev = material.onBeforeCompile
+  const wrapped: OnBeforeCompile = (shader, renderer) => {
     prev?.(shader, renderer)
     patch(shader, renderer)
   }
+  return patchOnBeforeCompile(material, wrapped)
 }
 
 function createWarnOnce() {
@@ -183,10 +224,12 @@ function safeShaderReplace(args: {
   needle: string
   replacement: string
   marker: string
+  mode?: 'unique' | 'first' | 'all'
   warnOnce: (key: string, ...args: unknown[]) => void
   warnKey: string
 }): boolean {
   const { shader, source, needle, replacement, marker, warnOnce, warnKey } = args
+  const mode = args.mode ?? (isDev() ? 'unique' : 'first')
 
   const shaderSources: ShaderSource = shader
 
@@ -197,8 +240,7 @@ function safeShaderReplace(args: {
   }
   if (src.includes(marker)) return true
 
-  // Safety: only inject when the needle is *uniquely* present, otherwise a shader
-  // chunk rename / refactor can lead to surprising partial patches.
+  // Safety: count occurrences of the needle so injection can be policy-driven.
   let occurrences = 0
   for (let i = 0; ; ) {
     const next = src.indexOf(needle, i)
@@ -212,17 +254,32 @@ function safeShaderReplace(args: {
     return false
   }
 
-  if (occurrences > 1) {
+  if (occurrences > 1 && mode === 'unique') {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (needle not unique)', {
       source,
       needle,
       occurrences,
       marker,
+      mode,
     })
     return false
   }
 
-  const next = src.replace(needle, replacement)
+  if (occurrences > 1 && mode !== 'unique') {
+    warnOnce(warnKey, '[BodyMesh] shader injection: needle not unique (proceeding)', {
+      source,
+      needle,
+      occurrences,
+      marker,
+      mode,
+    })
+  }
+
+  const next =
+    mode === 'all'
+      ? src.split(needle).join(replacement)
+      : // `String#replace` (string needle) replaces the first match.
+        src.replace(needle, replacement)
   if (next === src || !next.includes(marker)) {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (replace failed)', { source, needle, marker })
     return false
@@ -288,10 +345,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   })
 
   // We patch `material.onBeforeCompile` to inject shader modifications.
-  // Capture the original value and whether it was an own-prop so `dispose()` can
-  // correctly restore or clear it.
-  const onBeforeCompileWasOwn = Object.prototype.hasOwnProperty.call(material, 'onBeforeCompile')
-  const initialOnBeforeCompile = material.onBeforeCompile
+  // Store an identity-based unpatch function so `dispose()` can restore our
+  // changes without clobbering later mutations.
+  let unpatchMaterialOnBeforeCompile: (() => void) | undefined
 
   function disposeMap(mat: THREE.MeshStandardMaterial) {
     const release = mapRelease
@@ -406,7 +462,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     const uAtmosphereIntensity = { value: earth.atmosphereIntensity ?? 0.55 }
     const uCloudsNightMultiplier = { value: 0.0 }
 
-    material.onBeforeCompile = (shader) => {
+    unpatchMaterialOnBeforeCompile = patchOnBeforeCompile(material, (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uNightAlbedo = uNightAlbedo
       shader.uniforms.uTwilight = uTwilight
@@ -522,7 +578,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           '\t}',
         ].join('\n'),
       )
-    }
+    })
 
     // Atmosphere shell
     const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
@@ -766,7 +822,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     const uNightAlbedo = { value: 0.01 }
     const uTwilight = { value: 0.05 }
 
-    composeOnBeforeCompile(material, (shader) => {
+    unpatchMaterialOnBeforeCompile = composeOnBeforeCompile(material, (shader) => {
       shader.uniforms.uSunDirWorld = { value: uSunDirWorld }
       shader.uniforms.uNightAlbedo = uNightAlbedo
       shader.uniforms.uTwilight = uTwilight
@@ -831,21 +887,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       material.emissiveMap = null
       material.bumpMap = null
 
-      if (onBeforeCompileWasOwn) {
-        material.onBeforeCompile = initialOnBeforeCompile
-      } else {
-        // If we introduced `onBeforeCompile` as an own-prop during patching,
-        // clean it up so the material falls back to the prototype behavior.
-        // (Avoid leaving a no-op handler installed.)
-        // TS doesn't allow `delete material.onBeforeCompile` because it's not
-        // typed as optional. Re-type the material with an optional
-        // `onBeforeCompile` so we can cleanly remove the own-prop.
-        type MaterialWithOptionalOnBeforeCompile = Omit<THREE.Material, 'onBeforeCompile'> & {
-          onBeforeCompile?: THREE.Material['onBeforeCompile']
-        }
-        const mat = material as MaterialWithOptionalOnBeforeCompile
-        delete mat.onBeforeCompile
-      }
+      unpatchMaterialOnBeforeCompile?.()
       material.needsUpdate = true
 
       if (cloudsMaterial) {
@@ -879,6 +921,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       if (isMoon) {
         if (!moonBumpTexture) {
           const bump = map.clone()
+          // Keep bump sampling in lockstep with the albedo texture.
+          copyTextureSamplerParams(map, bump)
+          // Bump maps are non-color data.
           bump.colorSpace = THREE.NoColorSpace
           bump.needsUpdate = true
           moonBumpTexture = bump
