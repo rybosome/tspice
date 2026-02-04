@@ -1,12 +1,12 @@
 import type { BodyRef } from '../../spice/SpiceClient.js'
 
 /**
-* Determines whether `updateScene` should run its focus-change auto-zoom logic.
-*
-* Some UI flows (e.g. scale presets) intentionally set a specific camera radius
-* while also changing `focusBody`. In those cases we want to skip the runtime's
-* body-size-based auto-zoom for exactly one focus change.
-*/
+ * Determines whether `updateScene` should run its focus-change auto-zoom logic.
+ *
+ * Some UI flows (e.g. scale presets) intentionally set a specific camera radius
+ * while also changing `focusBody`. In those cases we want to skip the runtime's
+ * body-size-based auto-zoom for exactly one focus change.
+ */
 export function shouldAutoZoomOnFocusChange(args: {
   isE2e: boolean
   nextFocusBody: BodyRef
