@@ -1372,6 +1372,21 @@
   gap: 8px;
 }
 
+.advancedFieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.advancedFieldsetDisabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
 .advancedDivider {
   height: 1px;
   background: var(--phosphor-border);

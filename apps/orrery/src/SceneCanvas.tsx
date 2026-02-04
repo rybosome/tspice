@@ -29,7 +29,7 @@ import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/i
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
 
-type AdvancedPaneId = 'scaleCamera' | 'guides' | 'orbitsPerformance' | 'time' | 'debug'
+type AdvancedPaneId = 'scaleCamera' | 'guides' | 'orbitsPerformance' | 'advanced'
 
 type AdvancedHelpTopicId =
   | 'cameraFov'
@@ -47,16 +47,10 @@ type AdvancedHelpTopicId =
 
 const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: string; summary: string }> = [
   {
-    id: 'scaleCamera',
-    tabLabel: 'Scale',
-    title: 'Scale & Camera',
-    summary: 'Adjust framing and exaggerate body sizes for visibility. Rendering only; SPICE data is unchanged.',
-  },
-  {
     id: 'guides',
-    tabLabel: 'Guides',
-    title: 'Overlays & Guides',
-    summary: 'Label readability and other on-screen guides.',
+    tabLabel: 'GUIDES',
+    title: 'Guides & Orientation',
+    summary: 'Focus, labels, and orientation overlays.',
   },
   {
     id: 'orbitsPerformance',
@@ -65,16 +59,16 @@ const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: strin
     summary: 'Orbit line fidelity vs speed. These settings can strongly affect CPU/GPU and memory.',
   },
   {
-    id: 'time',
-    tabLabel: 'Time',
-    title: 'Time',
-    summary: 'Simulation stepping behavior for play/pause and step controls.',
+    id: 'scaleCamera',
+    tabLabel: 'Scale',
+    title: 'Scale & Camera',
+    summary: 'Adjust framing and exaggerate body sizes for visibility. Rendering only; SPICE data is unchanged.',
   },
   {
-    id: 'debug',
-    tabLabel: 'Debug',
-    title: 'Debug',
-    summary: 'Diagnostics overlays and extra axes.',
+    id: 'advanced',
+    tabLabel: 'Advanced',
+    title: 'Advanced',
+    summary: 'Time stepping + diagnostics overlays.',
   },
 ]
 
@@ -209,16 +203,11 @@ export function SceneCanvas() {
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
 
   // Advanced tuning sliders (ephemeral, local state only)
-  const [showAdvanced, setShowAdvanced] = useState(false)
-  const [advancedPane, setAdvancedPane] = useState<AdvancedPaneId>('scaleCamera')
+  const [advancedPane, setAdvancedPane] = useState<AdvancedPaneId>('guides')
   const [advancedHelpTopic, setAdvancedHelpTopic] = useState<AdvancedHelpTopicId | null>(null)
 
   const activeAdvancedPane = useMemo(() => ADVANCED_PANES.find((p) => p.id === advancedPane) ?? ADVANCED_PANES[0], [advancedPane])
 
-  // If the advanced panel is closed, make sure any open per-setting help closes too.
-  useEffect(() => {
-    if (!showAdvanced) setAdvancedHelpTopic(null)
-  }, [showAdvanced])
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
 
   const earthAppearanceDefaults = useMemo(() => {
@@ -936,181 +925,181 @@ export function SceneCanvas() {
 
               <div className="controlsDivider" />
 
-              {/* Focus Section */}
-              <div className="controlsSection">
-                <div className="focusRow">
-                  <span className="focusLabel">Focus:</span>
-                  <select
-                    className="focusSelect"
-                    value={String(focusBody)}
-                    onChange={(e) => {
-                      setFocusBody(e.target.value)
-                    }}
-                  >
-                    {focusOptions.map((b) => (
-                      <option key={b.id} value={String(b.body)}>
-                        {b.style.label ?? b.id}
-                      </option>
-                    ))}
-                  </select>
+              <div className="advancedPanel">
+                <div className="advancedHeader">SETTINGS</div>
+
+                <div className="advancedTabs" role="tablist" aria-label="Settings panes">
+                  {ADVANCED_PANES.map((pane) => (
+                    <button
+                      key={pane.id}
+                      className={`advancedTab ${advancedPane === pane.id ? 'advancedTabActive' : ''}`}
+                      type="button"
+                      role="tab"
+                      aria-selected={advancedPane === pane.id}
+                      onClick={() => setAdvancedPane(pane.id)}
+                    >
+                      {pane.tabLabel}
+                    </button>
+                  ))}
                 </div>
 
-                <button
-                  className={`asciiBtn asciiBtnWide ${String(focusBody) === 'SUN' ? 'asciiBtnDisabled' : ''}`}
-                  type="button"
-                  onClick={refocusSun}
-                  disabled={String(focusBody) === 'SUN'}
-                  title="Quickly refocus the scene on the Sun"
-                >
-                  <span className="asciiBtnBracket">[</span>
-                  <span className="asciiBtnContent">{String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}</span>
-                  <span className="asciiBtnBracket">]</span>
-                </button>
-              </div>
+                <div className="advancedPaneHeader">
+                  <div className="advancedPaneTitle">{activeAdvancedPane.title}</div>
+                  <div className="advancedPaneSummary">{activeAdvancedPane.summary}</div>
+                </div>
 
-              {/* Checkbox grid: 2 columns */}
-              <div className="checkboxGrid">
-                <label className="asciiCheckbox">
-                  <span className="asciiCheckboxBox" onClick={() => setLabelsEnabled((v) => !v)}>
-                    [{labelsEnabled ? '✓' : '\u00A0'}]
-                  </span>
-                  <span className="asciiCheckboxLabel" onClick={() => setLabelsEnabled((v) => !v)}>
-                    Labels
-                  </span>
-                </label>
+                {/* Pane: Scale & Camera */}
+                {advancedPane === 'scaleCamera' ? (
+                  <div className="advancedGroup" role="tabpanel">
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Camera FOV</span>
+                        <AdvancedHelpButton topic="cameraFov" />
+                      </span>
+                      <input
+                        type="range"
+                        min={30}
+                        max={90}
+                        step={1}
+                        value={cameraFovDeg}
+                        onChange={(e) => setCameraFovDeg(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{cameraFovDeg}°</span>
+                    </div>
 
-                <label className="asciiCheckbox">
-                  <span className="asciiCheckboxBox" onClick={() => setOrbitPathsEnabled((v) => !v)}>
-                    [{orbitPathsEnabled ? '✓' : '\u00A0'}]
-                  </span>
-                  <span className="asciiCheckboxLabel" onClick={() => setOrbitPathsEnabled((v) => !v)}>
-                    Orbits
-                  </span>
-                </label>
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Planet Scale</span>
+                        <AdvancedHelpButton topic="planetScale" />
+                      </span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={PLANET_SCALE_SLIDER_MAX}
+                        step={1}
+                        value={planetScaleSlider}
+                        onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{formatScaleMultiplier(planetScaleMultiplier)}×</span>
+                    </div>
 
-                <label className="asciiCheckbox">
-                  <span className="asciiCheckboxBox" onClick={() => setShowJ2000Axes((v) => !v)}>
-                    [{showJ2000Axes ? '✓' : '\u00A0'}]
-                  </span>
-                  <span className="asciiCheckboxLabel" onClick={() => setShowJ2000Axes((v) => !v)}>
-                    Axes
-                  </span>
-                </label>
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Sun Scale</span>
+                        <AdvancedHelpButton topic="sunScale" />
+                      </span>
+                      <input
+                        type="range"
+                        min={1}
+                        max={20}
+                        step={1}
+                        value={sunScaleMultiplier}
+                        onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunScaleMultiplier}×</span>
+                    </div>
+                  </div>
+                ) : null}
 
-                <label className="asciiCheckbox">
-                  <span className="asciiCheckboxBox" onClick={() => setShowRenderHud((v) => !v)}>
-                    [{showRenderHud ? '✓' : '\u00A0'}]
-                  </span>
-                  <span className="asciiCheckboxLabel" onClick={() => setShowRenderHud((v) => !v)}>
-                    HUD
-                  </span>
-                </label>
-              </div>
+                {/* Pane: Guides & Orientation */}
+                {advancedPane === 'guides' ? (
+                  <div className="advancedGroup" role="tabpanel">
+                    <div className="controlsSection">
+                      <div className="focusRow">
+                        <span className="focusLabel">Focus:</span>
+                        <select
+                          className="focusSelect"
+                          value={String(focusBody)}
+                          onChange={(e) => {
+                            setFocusBody(e.target.value)
+                          }}
+                        >
+                          {focusOptions.map((b) => (
+                            <option key={b.id} value={String(b.body)}>
+                              {b.style.label ?? b.id}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
 
-              <div className="controlsDivider" />
-
-              {/* Advanced disclosure row */}
-              <button className="advancedToggle" onClick={() => setShowAdvanced(!showAdvanced)} type="button">
-                {showAdvanced ? '▼' : '▶'} ADVANCED
-              </button>
-
-              {showAdvanced && (
-                <div className="advancedPanel">
-                  <div className="advancedHeader">ADVANCED</div>
-
-                  <div className="advancedTabs" role="tablist" aria-label="Advanced panes">
-                    {ADVANCED_PANES.map((pane) => (
                       <button
-                        key={pane.id}
-                        className={`advancedTab ${advancedPane === pane.id ? 'advancedTabActive' : ''}`}
+                        className={`asciiBtn asciiBtnWide ${String(focusBody) === 'SUN' ? 'asciiBtnDisabled' : ''}`}
                         type="button"
-                        role="tab"
-                        aria-selected={advancedPane === pane.id}
-                        onClick={() => setAdvancedPane(pane.id)}
+                        onClick={refocusSun}
+                        disabled={String(focusBody) === 'SUN'}
+                        title="Quickly refocus the scene on the Sun"
                       >
-                        {pane.tabLabel}
+                        <span className="asciiBtnBracket">[</span>
+                        <span className="asciiBtnContent">{String(focusBody) === 'SUN' ? 'focus sun' : 'Focus Sun'}</span>
+                        <span className="asciiBtnBracket">]</span>
                       </button>
-                    ))}
-                  </div>
-
-                  <div className="advancedPaneHeader">
-                    <div className="advancedPaneTitle">{activeAdvancedPane.title}</div>
-                    <div className="advancedPaneSummary">{activeAdvancedPane.summary}</div>
-                  </div>
-
-                  {/* Pane: Scale & Camera */}
-                  {advancedPane === 'scaleCamera' ? (
-                    <div className="advancedGroup" role="tabpanel">
-                      <div className="advancedSlider">
-                        <span className="advancedSliderLabel advancedControlLabel">
-                          <span>Camera FOV</span>
-                          <AdvancedHelpButton topic="cameraFov" />
-                        </span>
-                        <input
-                          type="range"
-                          min={30}
-                          max={90}
-                          step={1}
-                          value={cameraFovDeg}
-                          onChange={(e) => setCameraFovDeg(Number(e.target.value))}
-                        />
-                        <span className="advancedSliderValue">{cameraFovDeg}°</span>
-                      </div>
-
-                      <div className="advancedSlider">
-                        <span className="advancedSliderLabel advancedControlLabel">
-                          <span>Planet Scale</span>
-                          <AdvancedHelpButton topic="planetScale" />
-                        </span>
-                        <input
-                          type="range"
-                          min={0}
-                          max={PLANET_SCALE_SLIDER_MAX}
-                          step={1}
-                          value={planetScaleSlider}
-                          onChange={(e) => setPlanetScaleSlider(Number(e.target.value))}
-                        />
-                        <span className="advancedSliderValue">{formatScaleMultiplier(planetScaleMultiplier)}×</span>
-                      </div>
-
-                      <div className="advancedSlider">
-                        <span className="advancedSliderLabel advancedControlLabel">
-                          <span>Sun Scale</span>
-                          <AdvancedHelpButton topic="sunScale" />
-                        </span>
-                        <input
-                          type="range"
-                          min={1}
-                          max={20}
-                          step={1}
-                          value={sunScaleMultiplier}
-                          onChange={(e) => setSunScaleMultiplier(Number(e.target.value))}
-                        />
-                        <span className="advancedSliderValue">{sunScaleMultiplier}×</span>
-                      </div>
                     </div>
-                  ) : null}
 
-                  {/* Pane: Overlays & Guides */}
-                  {advancedPane === 'guides' ? (
-                    <div className="advancedGroup" role="tabpanel">
-                      <div className="advancedCheckboxWithHelp">
-                        <label className="asciiCheckbox">
-                          <span className="asciiCheckboxBox" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
-                            [{labelOcclusionEnabled ? '✓' : ' '}]
-                          </span>
-                          <span className="asciiCheckboxLabel" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
-                            Label Occlusion
-                          </span>
-                        </label>
-                        <AdvancedHelpButton topic="labelOcclusion" />
-                      </div>
+                    <div className="advancedDivider" />
+
+                    <label className="asciiCheckbox">
+                      <span className="asciiCheckboxBox" onClick={() => setLabelsEnabled((v) => !v)}>
+                        [{labelsEnabled ? '✓' : '\u00A0'}]
+                      </span>
+                      <span className="asciiCheckboxLabel" onClick={() => setLabelsEnabled((v) => !v)}>
+                        Labels
+                      </span>
+                    </label>
+
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <span className="asciiCheckboxBox" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
+                          [{labelOcclusionEnabled ? '✓' : ' '}]
+                        </span>
+                        <span className="asciiCheckboxLabel" onClick={() => setLabelOcclusionEnabled((v) => !v)}>
+                          Label Occlusion
+                        </span>
+                      </label>
+                      <AdvancedHelpButton topic="labelOcclusion" />
                     </div>
-                  ) : null}
 
-                  {/* Pane: Orbits & Performance */}
-                  {advancedPane === 'orbitsPerformance' ? (
-                    <div className="advancedGroup" role="tabpanel">
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <span className="asciiCheckboxBox" onClick={() => setShowBodyFixedAxes((v) => !v)}>
+                          [{showBodyFixedAxes ? '✓' : ' '}]
+                        </span>
+                        <span className="asciiCheckboxLabel" onClick={() => setShowBodyFixedAxes((v) => !v)}>
+                          Body-fixed Axes
+                        </span>
+                      </label>
+                      <AdvancedHelpButton topic="bodyFixedAxes" />
+                    </div>
+
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <span className="asciiCheckboxBox" onClick={() => setShowJ2000Axes((v) => !v)}>
+                          [{showJ2000Axes ? '✓' : ' '}]
+                        </span>
+                        <span className="asciiCheckboxLabel" onClick={() => setShowJ2000Axes((v) => !v)}>
+                          J2000 Axes
+                        </span>
+                      </label>
+                      <AdvancedHelpButton topic="j2000Axes" />
+                    </div>
+                  </div>
+                ) : null}
+
+                {/* Pane: Orbits & Performance */}
+                {advancedPane === 'orbitsPerformance' ? (
+                  <div className="advancedGroup" role="tabpanel">
+                    <label className="asciiCheckbox">
+                      <span className="asciiCheckboxBox" onClick={() => setOrbitPathsEnabled((v) => !v)}>
+                        [{orbitPathsEnabled ? '✓' : '\u00A0'}]
+                      </span>
+                      <span className="asciiCheckboxLabel" onClick={() => setOrbitPathsEnabled((v) => !v)}>
+                        Orbit Paths
+                      </span>
+                    </label>
+
+                    <fieldset
+                      disabled={!orbitPathsEnabled}
+                      className={`advancedFieldset ${!orbitPathsEnabled ? 'advancedFieldsetDisabled' : ''}`}
+                    >
                       <div className="advancedSlider">
                         <span className="advancedSliderLabel advancedControlLabel">
                           <span>Orbit Line Width</span>
@@ -1156,78 +1145,49 @@ export function SceneCanvas() {
                           onChange={(e) => setOrbitMaxTotalPoints(Number(e.target.value))}
                         />
                       </div>
+                    </fieldset>
 
-                      <div className="advancedDivider" />
+                    <div className="advancedDivider" />
 
-                      <div className="advancedCheckboxWithHelp">
-                        <label className="asciiCheckbox">
-                          <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>
-                            [{animatedSky ? '✓' : ' '}]
-                          </span>
-                          <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
-                            Animated Sky
-                          </span>
-                        </label>
-                        <AdvancedHelpButton topic="animatedSky" />
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {/* Pane: Time */}
-                  {advancedPane === 'time' ? (
-                    <div className="advancedGroup" role="tabpanel">
-                      <div className="advancedSlider">
-                        <span className="advancedSliderLabel advancedControlLabel">
-                          <span>Quantum (s)</span>
-                          <AdvancedHelpButton topic="quantum" />
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>
+                          [{animatedSky ? '✓' : ' '}]
                         </span>
-                        <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
-                      </div>
+                        <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
+                          Animated Sky
+                        </span>
+                      </label>
+                      <AdvancedHelpButton topic="animatedSky" />
                     </div>
-                  ) : null}
+                  </div>
+                ) : null}
 
-                  {/* Pane: Debug */}
-                  {advancedPane === 'debug' ? (
-                    <div className="advancedGroup" role="tabpanel">
-                      <div className="advancedCheckboxWithHelp">
-                        <label className="asciiCheckbox">
-                          <span className="asciiCheckboxBox" onClick={() => setShowRenderHud((v) => !v)}>
-                            [{showRenderHud ? '✓' : ' '}]
-                          </span>
-                          <span className="asciiCheckboxLabel" onClick={() => setShowRenderHud((v) => !v)}>
-                            Render HUD
-                          </span>
-                        </label>
-                        <AdvancedHelpButton topic="renderHud" />
-                      </div>
-
-                      <div className="advancedCheckboxWithHelp">
-                        <label className="asciiCheckbox">
-                          <span className="asciiCheckboxBox" onClick={() => setShowJ2000Axes((v) => !v)}>
-                            [{showJ2000Axes ? '✓' : ' '}]
-                          </span>
-                          <span className="asciiCheckboxLabel" onClick={() => setShowJ2000Axes((v) => !v)}>
-                            J2000 Axes
-                          </span>
-                        </label>
-                        <AdvancedHelpButton topic="j2000Axes" />
-                      </div>
-
-                      <div className="advancedCheckboxWithHelp">
-                        <label className="asciiCheckbox">
-                          <span className="asciiCheckboxBox" onClick={() => setShowBodyFixedAxes((v) => !v)}>
-                            [{showBodyFixedAxes ? '✓' : ' '}]
-                          </span>
-                          <span className="asciiCheckboxLabel" onClick={() => setShowBodyFixedAxes((v) => !v)}>
-                            Body-fixed Axes
-                          </span>
-                        </label>
-                        <AdvancedHelpButton topic="bodyFixedAxes" />
-                      </div>
+                {/* Pane: Advanced */}
+                {advancedPane === 'advanced' ? (
+                  <div className="advancedGroup" role="tabpanel">
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Quantum (s)</span>
+                        <AdvancedHelpButton topic="quantum" />
+                      </span>
+                      <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
                     </div>
-                  ) : null}
-                </div>
-              )}
+
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <span className="asciiCheckboxBox" onClick={() => setShowRenderHud((v) => !v)}>
+                          [{showRenderHud ? '✓' : ' '}]
+                        </span>
+                        <span className="asciiCheckboxLabel" onClick={() => setShowRenderHud((v) => !v)}>
+                          Render HUD
+                        </span>
+                      </label>
+                      <AdvancedHelpButton topic="renderHud" />
+                    </div>
+                  </div>
+                ) : null}
+              </div>
             </div>
           ) : null}
         </div>
