@@ -29,9 +29,10 @@ import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/i
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
 
-type AdvancedPaneId = 'scaleCamera' | 'guides' | 'orbitsPerformance' | 'advanced'
+type AdvancedPaneId = 'time' | 'scaleCamera' | 'guides' | 'orbitsPerformance' | 'advanced'
 
 type AdvancedHelpTopicId =
+  | 'zoom'
   | 'cameraFov'
   | 'scalePresets'
   | 'planetScale'
@@ -47,6 +48,12 @@ type AdvancedHelpTopicId =
   | 'j2000Axes'
 
 const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: string; summary: string }> = [
+  {
+    id: 'time',
+    tabLabel: 'TIME',
+    title: 'Time & Playback',
+    summary: 'UTC/ET display, scrubber, and playback controls.',
+  },
   {
     id: 'guides',
     tabLabel: 'GUIDES',
@@ -69,11 +76,20 @@ const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: strin
     id: 'advanced',
     tabLabel: 'Advanced',
     title: 'Advanced',
-    summary: 'Time stepping + diagnostics overlays.',
+    summary: 'Diagnostics overlays + power-user toggles.',
   },
 ]
 
 const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string; body: string[] }> = {
+  zoom: {
+    title: 'Zoom',
+    short: 'Adjust camera distance (same as wheel/pinch zoom).',
+    body: [
+      "Zoom controls the camera's distance from the current target.",
+      'It is equivalent to using the scroll wheel (desktop) or pinch gesture (touch).',
+      'The available zoom range depends on the current scale preset.',
+    ],
+  },
   cameraFov: {
     title: 'Camera FOV',
     short: 'Wider = more scene, narrower = more zoom.',
@@ -217,7 +233,7 @@ export function SceneCanvas() {
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
 
   // Advanced tuning sliders (ephemeral, local state only)
-  const [advancedPane, setAdvancedPane] = useState<AdvancedPaneId>('guides')
+  const [advancedPane, setAdvancedPane] = useState<AdvancedPaneId>('time')
   const [advancedHelpTopic, setAdvancedHelpTopic] = useState<AdvancedHelpTopicId | null>(null)
 
   const activeAdvancedPane = useMemo(() => ADVANCED_PANES.find((p) => p.id === advancedPane) ?? ADVANCED_PANES[0], [advancedPane])
@@ -408,6 +424,61 @@ export function SceneCanvas() {
       timeStore.setQuantumSec(value)
     }
   }, [])
+
+  // Camera zoom (controller.radius) exposed as a log-scale slider.
+  // 0 = closest (zoom in), 100 = farthest (zoom out).
+  const [zoomSlider, setZoomSlider] = useState(50)
+
+  const zoomSliderForRadius = useCallback((radius: number, minRadius: number, maxRadius: number) => {
+    const r = THREE.MathUtils.clamp(radius, minRadius, maxRadius)
+    const minL = Math.log(minRadius)
+    const maxL = Math.log(maxRadius)
+    const t = (Math.log(r) - minL) / (maxL - minL)
+    return THREE.MathUtils.clamp(Math.round(t * 100), 0, 100)
+  }, [])
+
+  const radiusForZoomSlider = useCallback((slider: number, minRadius: number, maxRadius: number) => {
+    const minL = Math.log(minRadius)
+    const maxL = Math.log(maxRadius)
+    const t = THREE.MathUtils.clamp(slider, 0, 100) / 100
+    return Math.exp(minL + t * (maxL - minL))
+  }, [])
+
+  useEffect(() => {
+    if (!overlayOpen) return
+
+    // Poll occasionally so the slider stays in sync with wheel/pinch/keyboard zoom
+    // without re-rendering every animation frame.
+    const interval = window.setInterval(() => {
+      const controller = controllerRef.current
+      if (!controller) return
+
+      const next = zoomSliderForRadius(controller.radius, controller.minRadius, controller.maxRadius)
+      setZoomSlider((prev) => (Math.abs(prev - next) >= 1 ? next : prev))
+    }, 200)
+
+    return () => {
+      window.clearInterval(interval)
+    }
+  }, [overlayOpen, zoomSliderForRadius])
+
+  const handleZoomSliderChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = Number(e.target.value)
+      setZoomSlider(value)
+
+      const controller = controllerRef.current
+      const camera = cameraRef.current
+      if (!controller || !camera) return
+
+      cancelFocusTweenRef.current?.()
+
+      controller.radius = radiusForZoomSlider(value, controller.minRadius, controller.maxRadius)
+      controller.applyToCamera(camera)
+      invalidateRef.current?.()
+    },
+    [radiusForZoomSlider],
+  )
 
   const AdvancedHelpButton = ({ topic }: { topic: AdvancedHelpTopicId }) => {
     const h = ADVANCED_HELP[topic]
@@ -978,15 +1049,8 @@ export function SceneCanvas() {
 
           {overlayOpen ? (
             <div id="scene-overlay-body" className="sceneOverlayBody">
-              {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
-              <PlaybackControls spiceClient={spiceClient} />
-
-              <div className="controlsDivider" />
-
               <div className="advancedPanel">
-                <div className="advancedHeader">SETTINGS</div>
-
-                <div className="advancedTabs" role="tablist" aria-label="Settings panes">
+                <div className="advancedTabs" role="tablist" aria-label="Controls panes">
                   {ADVANCED_PANES.map((pane) => (
                     <button
                       key={pane.id}
@@ -1006,9 +1070,37 @@ export function SceneCanvas() {
                   <div className="advancedPaneSummary">{activeAdvancedPane.summary}</div>
                 </div>
 
+                {/* Pane: Time & Playback */}
+                {advancedPane === 'time' ? (
+                  <div className="advancedGroup" role="tabpanel">
+                    {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
+                    <PlaybackControls spiceClient={spiceClient} />
+
+                    <div className="advancedDivider" />
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Quantum (s)</span>
+                        <AdvancedHelpButton topic="quantum" />
+                      </span>
+                      <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
+                      <span className="advancedSliderValue" />
+                    </div>
+                  </div>
+                ) : null}
+
                 {/* Pane: Scale & Camera */}
                 {advancedPane === 'scaleCamera' ? (
                   <div className="advancedGroup" role="tabpanel">
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Zoom</span>
+                        <AdvancedHelpButton topic="zoom" />
+                      </span>
+                      <input type="range" min={0} max={100} step={1} value={zoomSlider} onChange={handleZoomSliderChange} />
+                      <span className="advancedSliderValue">{zoomSlider}%</span>
+                    </div>
+
                     <div className="advancedSlider">
                       <span className="advancedSliderLabel advancedControlLabel">
                         <span>Camera FOV</span>
@@ -1250,14 +1342,6 @@ export function SceneCanvas() {
                 {/* Pane: Advanced */}
                 {advancedPane === 'advanced' ? (
                   <div className="advancedGroup" role="tabpanel">
-                    <div className="advancedSlider">
-                      <span className="advancedSliderLabel advancedControlLabel">
-                        <span>Quantum (s)</span>
-                        <AdvancedHelpButton topic="quantum" />
-                      </span>
-                      <input type="number" min={0.001} step={0.01} value={quantumSec} onChange={handleQuantumChange} />
-                    </div>
-
                     <div className="advancedCheckboxWithHelp">
                       <label className="asciiCheckbox">
                         <span className="asciiCheckboxBox" onClick={() => setShowRenderHud((v) => !v)}>

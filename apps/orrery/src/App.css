@@ -936,15 +936,12 @@
     right: 10px;
     top: auto;
     bottom: calc(var(--mobile-bottom-inset) + env(safe-area-inset-bottom, 0px));
-    max-height: 52%;
+    max-height: 60%;
     overflow: auto;
   }
 
   .sceneZoomButtons {
-    right: 10px;
-    bottom: calc(
-      var(--mobile-bottom-inset) + var(--mobile-overlay-min-height) + 8px + env(safe-area-inset-bottom, 0px)
-    );
+    display: none;
   }
 
   .helpBackdrop {
@@ -1276,12 +1273,6 @@
 
 /* --- Control Panel Layout Updates --- */
 
-.controlsDivider {
-  height: 1px;
-  background: var(--phosphor-border);
-  margin: 8px 0;
-}
-
 .controlsSection {
   display: flex;
   flex-direction: column;
@@ -1348,22 +1339,12 @@
 
 /* Advanced panel */
 .advancedPanel {
-  margin-top: 8px;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.2);
-  border: var(--stroke-1) solid var(--phosphor-border);
-  border-radius: var(--radius-xs);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
   /* Clip horizontal overflow to prevent width expansion; allow content to wrap naturally */
   overflow-x: hidden;
-}
-
-.advancedHeader {
-  font-size: var(--font-size-sm);
-  font-family: var(--font-mono);
-  color: var(--phosphor-fg);
-  margin-bottom: 10px;
-  text-align: center;
-  letter-spacing: 0.5px;
 }
 
 .advancedGroup {
