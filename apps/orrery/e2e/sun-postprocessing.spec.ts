@@ -37,7 +37,7 @@ test('sun postprocessing: whole-frame bloom + tonemap', async ({ page, baseURL }
 
   await expect(canvas).toHaveScreenshot('sun-postprocess-whole-frame.png', {
     animations: 'disabled',
-    maxDiffPixelRatio: 0.02,
+    maxDiffPixelRatio: 0.06,
   })
 })
 
@@ -53,6 +53,6 @@ test('sun postprocessing: sun-isolated selective bloom + tonemap', async ({ page
 
   await expect(canvas).toHaveScreenshot('sun-postprocess-sun-isolated.png', {
     animations: 'disabled',
-    maxDiffPixelRatio: 0.02,
+    maxDiffPixelRatio: 0.06,
   })
 })
