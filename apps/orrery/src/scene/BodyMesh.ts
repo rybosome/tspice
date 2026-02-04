@@ -203,9 +203,7 @@ function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Textur
     typeof material.userData.tspiceUseBump === 'boolean' ? material.userData.tspiceUseBump : material.bumpMap != null
 
   const prevMapSig =
-    typeof material.userData.tspiceMapSig === 'string'
-      ? material.userData.tspiceMapSig
-      : mapSignature(material.map)
+    typeof material.userData.tspiceMapSig === 'string' ? material.userData.tspiceMapSig : mapSignature(material.map)
 
   material.userData.tspiceUseMap = nextUseMap
   material.userData.tspiceUseBump = nextUseBump
@@ -218,9 +216,7 @@ function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Textur
   }
 
   const needsUpdate =
-    prevUseMap !== nextUseMap ||
-    prevUseBump !== nextUseBump ||
-    (prevUseMap && nextUseMap && prevMapSig !== nextMapSig)
+    prevUseMap !== nextUseMap || prevUseBump !== nextUseBump || (prevUseMap && nextUseMap && prevMapSig !== nextMapSig)
 
   material.map = nextMap
   material.bumpMap = nextBumpMap
@@ -543,8 +539,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
               '\t\t// Use the unperturbed geometric normal (view space) so the terminator mask',
               '\t\t// is stable and not affected by bump/normal maps.',
-              '\t\t// `geometryNormal` is provided by <normal_fragment_begin> (and also handles FLAT_SHADED).',
-              '\t\tfloat ndotl = dot( geometryNormal, sunDirView );',
+              '\t\t// `nonPerturbedNormal` is provided by <normal_fragment_begin> (and also handles FLAT_SHADED).',
+              '\t\tfloat ndotl = dot( nonPerturbedNormal, sunDirView );',
               '\t\tfloat dayFactor = smoothstep( 0.0, uTerminatorTwilight, ndotl );',
               '\t\tdiffuseColor.rgb *= mix( uNightAlbedo, 1.0, dayFactor );',
               '\t}',
@@ -635,7 +631,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
               '\t\t// Use the unperturbed geometric normal so the terminator mask is stable',
               '\t\t// (and not affected by bump/normal maps).',
-              '\t\tfloat ndotl = dot( geometryNormal, sunDirView );',
+              '\t\tfloat ndotl = dot( nonPerturbedNormal, sunDirView );',
               '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
               '',
               '\t\t// Keep a tiny floor so Earth is not totally invisible at night.',
@@ -657,7 +653,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '\t// Earth-only: gate night lights to the night side (soft terminator).',
               '\t{',
               '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
-              '\t\tfloat ndotl = dot( geometryNormal, sunDirView );',
+              '\t\tfloat ndotl = dot( nonPerturbedNormal, sunDirView );',
               '\t\tfloat nightMask = 1.0 - smoothstep( -uTwilight, uTwilight, ndotl );',
               '\t\ttotalEmissiveRadiance *= nightMask * uNightLightsIntensity;',
               '\t}',
@@ -871,7 +867,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '\t// Earth-only: suppress ambient-lit clouds on the night side.',
               '\t{',
               '\t\tvec3 sunDirView = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
-              '\t\tfloat ndotl = dot( geometryNormal, sunDirView );',
+              '\t\tfloat ndotl = dot( nonPerturbedNormal, sunDirView );',
               '\t\tfloat dayFactor = smoothstep( 0.0, uTwilight, ndotl );',
               '\t\tdiffuseColor.rgb *= mix( uCloudsNightMultiplier, 1.0, dayFactor );',
               '\t}',
