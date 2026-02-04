@@ -4,6 +4,7 @@ vi.mock("@rybosome/tspice-backend-node", () => {
   return {
     createNodeBackend: () => {
       return {
+        kind: "node",
         spiceVersion: () => "mock-node",
       };
     },
@@ -14,6 +15,7 @@ vi.mock("@rybosome/tspice-backend-wasm", () => {
   return {
     createWasmBackend: async () => {
       return {
+        kind: "wasm",
         spiceVersion: () => "mock-wasm",
       };
     },

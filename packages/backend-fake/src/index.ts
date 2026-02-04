@@ -440,7 +440,7 @@ function kernelFiltyp(kind: KernelKind): string {
   }
 }
 
-export function createFakeBackend(): SpiceBackend {
+export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   const kernels: KernelRecord[] = [];
 
@@ -450,6 +450,7 @@ export function createFakeBackend(): SpiceBackend {
   };
 
   return {
+    kind: "fake",
 
     spiceVersion: () => FAKE_SPICE_VERSION,
 
