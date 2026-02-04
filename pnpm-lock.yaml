@@ -142,6 +142,9 @@ importers:
       '@rybosome/tspice-backend-contract':
         specifier: workspace:*
         version: link:../backend-contract
+      '@rybosome/tspice-core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       '@types/node':
         specifier: ^22.10.2

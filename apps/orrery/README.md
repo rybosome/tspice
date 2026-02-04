@@ -2,7 +2,7 @@
 
 Minimal Vite + React + TypeScript app that renders a basic Three.js scene using an imperative `canvas` setup (no `@react-three/fiber`).
 
-This workspace is intended to evolve into a renderer / Three.js viewer for tspice.
+This workspace is a renderer / Three.js viewer for tspice.
 
 ## Development
 

@@ -1,24 +1,29 @@
-import type {
-  BackendKind,
-  SpiceBackend,
-  SpiceBackendWasm,
-} from "@rybosome/tspice-backend-contract";
+import type { SpiceBackend, SpiceBackendKind } from "@rybosome/tspice-backend-contract";
 import { assertNever } from "@rybosome/tspice-core";
 
-export type { BackendKind, SpiceBackend, SpiceBackendWasm } from "@rybosome/tspice-backend-contract";
+export type { SpiceBackend, SpiceBackendKind } from "@rybosome/tspice-backend-contract";
+
+export type BackendKind = Exclude<SpiceBackendKind, "fake">;
+
+export type SpiceBackendOfKind<K extends BackendKind = BackendKind> = SpiceBackend & {
+  kind: K;
+};
 
 export type CreateBackendOptions = {
   /**
    * Explicitly select a backend implementation.
    */
-  backend: "node" | "wasm";
+  backend: BackendKind;
   wasmUrl?: string | URL;
 };
 
-export function createBackend(options: { backend: "wasm"; wasmUrl?: string | URL }): Promise<SpiceBackendWasm>;
-export function createBackend(options: { backend: "node" }): Promise<SpiceBackend>;
-export function createBackend(options: CreateBackendOptions): Promise<SpiceBackend | SpiceBackendWasm>;
-export async function createBackend(options: CreateBackendOptions): Promise<SpiceBackend | SpiceBackendWasm> {
+export function createBackend(options: {
+  backend: "wasm";
+  wasmUrl?: string | URL;
+}): Promise<SpiceBackendOfKind<"wasm">>;
+export function createBackend(options: { backend: "node" }): Promise<SpiceBackendOfKind<"node">>;
+export function createBackend(options: CreateBackendOptions): Promise<SpiceBackendOfKind>;
+export async function createBackend(options: CreateBackendOptions): Promise<SpiceBackendOfKind> {
   // Runtime validation for JS callers; TypeScript callers should already be
   // forced to provide an explicit backend selection.
   const opts = options as unknown as CreateBackendOptions | undefined;
@@ -38,31 +43,31 @@ export async function createBackend(options: CreateBackendOptions): Promise<Spic
         // the native backend package.
         const nodeBackendSpecifier = "@rybosome/tspice-backend-" + "node";
         const { createNodeBackend } = (await import(nodeBackendSpecifier)) as {
-          createNodeBackend: () => SpiceBackend;
+          createNodeBackend: () => SpiceBackendOfKind<"node">;
         };
+
         return createNodeBackend();
       } catch (error) {
         throw new Error(
-          `Failed to load native backend (required for backend=\"node\"): ${String(error)}`,
+          `Failed to load native backend (required for backend="node"): ${String(error)}`,
         );
       }
+
     case "wasm":
       try {
-        const { createWasmBackend } = (await import(
-          "@rybosome/tspice-backend-wasm"
-        )) as {
-          createWasmBackend: (opts?: { wasmUrl?: string | URL }) => Promise<SpiceBackendWasm>;
+        const { createWasmBackend } = (await import("@rybosome/tspice-backend-wasm")) as {
+          createWasmBackend: (opts?: { wasmUrl?: string | URL }) => Promise<SpiceBackendOfKind<"wasm">>;
         };
 
-        if (opts.wasmUrl === undefined) {
-          return await createWasmBackend();
-        }
-        return await createWasmBackend({ wasmUrl: opts.wasmUrl });
+        return await createWasmBackend(
+          opts.wasmUrl === undefined ? undefined : { wasmUrl: opts.wasmUrl },
+        );
       } catch (error) {
         throw new Error(
-          `Failed to load WASM backend (required for backend=\"wasm\"): ${String(error)}`,
+          `Failed to load WASM backend (required for backend="wasm"): ${String(error)}`,
         );
       }
+
     default:
       return assertNever(backend, "Unsupported backend");
   }

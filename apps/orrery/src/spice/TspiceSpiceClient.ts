@@ -63,7 +63,7 @@ export class TspiceSpiceClient implements SpiceClient {
       input.et as unknown as SpiceTime,
     )
 
-    return transposeMat3RowMajorToColumnMajor(m)
+    return transposeMat3RowMajorToColumnMajor(m.rowMajor)
   }
 
   etToUtc(et: EtSeconds): string {

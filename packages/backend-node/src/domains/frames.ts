@@ -1,10 +1,9 @@
 import type {
-  Found,
   FramesApi,
-  SpiceMatrix3x3,
   SpiceMatrix6x6,
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
+import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
@@ -54,9 +53,9 @@ export function createFramesApi(native: NativeAddon): FramesApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(Array.isArray(out.cmat) && out.cmat.length === 9, "Expected ckgp().cmat to be a length-9 array");
+      const cmat = brandMat3RowMajor(out.cmat, { label: "ckgp().cmat" });
       invariant(typeof out.clkout === "number", "Expected ckgp().clkout to be a number");
-      return { found: true, cmat: out.cmat as SpiceMatrix3x3, clkout: out.clkout };
+      return { found: true, cmat, clkout: out.clkout };
     },
 
     ckgpav: (inst, sclkdp, tol, ref) => {
@@ -64,15 +63,12 @@ export function createFramesApi(native: NativeAddon): FramesApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(
-        Array.isArray(out.cmat) && out.cmat.length === 9,
-        "Expected ckgpav().cmat to be a length-9 array",
-      );
+      const cmat = brandMat3RowMajor(out.cmat, { label: "ckgpav().cmat" });
       invariant(Array.isArray(out.av) && out.av.length === 3, "Expected ckgpav().av to be a length-3 array");
       invariant(typeof out.clkout === "number", "Expected ckgpav().clkout to be a number");
       return {
         found: true,
-        cmat: out.cmat as SpiceMatrix3x3,
+        cmat,
         av: out.av as SpiceVector3,
         clkout: out.clkout,
       };
@@ -80,8 +76,7 @@ export function createFramesApi(native: NativeAddon): FramesApi {
 
     pxform: (from, to, et) => {
       const m = native.pxform(from, to, et);
-      invariant(Array.isArray(m) && m.length === 9, "Expected pxform() to return a length-9 array");
-      return m as SpiceMatrix3x3;
+      return brandMat3RowMajor(m, { label: "pxform()" });
     },
 
     sxform: (from, to, et) => {

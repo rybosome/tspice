@@ -20,13 +20,12 @@ export function spiceVersion(): string {
   return version;
 }
 
-export function createNodeBackend(): SpiceBackend {
+export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const native = getNodeBinding();
   const stager = createKernelStager();
 
-  const backend: SpiceBackend = {
+  const backend: SpiceBackend & { kind: "node" } = {
     kind: "node",
-
     ...createTimeApi(native),
     ...createKernelsApi(native, stager),
     ...createIdsNamesApi(native),
