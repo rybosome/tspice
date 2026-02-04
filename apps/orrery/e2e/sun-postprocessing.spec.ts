@@ -56,3 +56,20 @@ test('sun postprocessing: sun-isolated selective bloom + tonemap', async ({ page
     maxDiffPixelRatio: 0.06,
   })
 })
+
+test('sun postprocessing: sun-isolated selective bloom (default tonemap)', async ({ page, baseURL }) => {
+  await setupDeterminismAndNetworkBlock(page, baseURL)
+
+  // Intentionally omit `sunToneMap` so we cover the `sunIsolated` default (none).
+  await page.goto('/?e2e=1&et=1234567&sunPostprocessMode=sunIsolated')
+
+  await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
+
+  const canvas = page.locator('canvas.sceneCanvas')
+  await expect(canvas).toBeVisible()
+
+  await expect(canvas).toHaveScreenshot('sun-postprocess-sun-isolated-default-tonemap.png', {
+    animations: 'disabled',
+    maxDiffPixelRatio: 0.06,
+  })
+})

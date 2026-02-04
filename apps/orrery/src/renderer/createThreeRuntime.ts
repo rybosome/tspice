@@ -302,6 +302,15 @@ export function createThreeRuntime(args: {
     return new ShaderPass(shader)
   }
 
+  const getBloomOnlyTexture = (bloomPass: UnrealBloomPass): THREE.Texture | null => {
+    // three@0.160's `UnrealBloomPass` renders the bloom-only composite into
+    // `renderTargetsHorizontal[0]`, then *additively blends* that over the input
+    // buffer. For selective bloom we want the bloom-only texture (otherwise we
+    // double-add the Sun/background when compositing).
+    const unsafe = bloomPass as unknown as { renderTargetsHorizontal?: Array<{ texture: THREE.Texture }> }
+    return unsafe.renderTargetsHorizontal?.[0]?.texture ?? null
+  }
+
   type PostprocessRuntime =
     | { mode: 'off' }
     | {
@@ -337,14 +346,15 @@ export function createThreeRuntime(args: {
     // sunIsolated
     const bloomComposer = new EffectComposer(renderer)
     bloomComposer.renderToScreen = false
-    const bloomRenderPass = new RenderPass(scene, camera)
+    const bloomRenderPass = new RenderPass(scene, camera, null, new THREE.Color(0x000000), 1)
     const bloomPass = createBloomPass(sunPostprocess.bloom)
     bloomComposer.addPass(bloomRenderPass)
     bloomComposer.addPass(bloomPass)
 
     const finalComposer = new EffectComposer(renderer)
     const finalRenderPass = new RenderPass(scene, camera)
-    const mixPass = createMixBloomPass(bloomComposer.renderTarget2.texture)
+    const bloomTexture = getBloomOnlyTexture(bloomPass) ?? bloomComposer.readBuffer.texture
+    const mixPass = createMixBloomPass(bloomTexture)
     const tonemapPass = createTonemapPass({ exposure: sunPostprocess.exposure, toneMap: sunPostprocess.toneMap })
     const outputPass = new OutputPass()
 
@@ -385,9 +395,15 @@ export function createThreeRuntime(args: {
     } else {
       // Render bloom only for Sun layer, then composite over the full scene.
       const prevMask = camera.layers.mask
+      const prevBackground = scene.background
       camera.layers.set(SUN_BLOOM_LAYER)
-      postprocessRuntime.bloomComposer.render()
-      camera.layers.mask = prevMask
+      scene.background = null
+      try {
+        postprocessRuntime.bloomComposer.render()
+      } finally {
+        scene.background = prevBackground
+        camera.layers.mask = prevMask
+      }
 
       postprocessRuntime.finalComposer.render()
     }
