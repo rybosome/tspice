@@ -90,7 +90,7 @@ export function SceneCanvas() {
   const SUN_LIGHT_INTENSITY_DEFAULT = 4.5
 
   // Sun emissive tuning (debug-only). Base emissive is also enabled via texture `kind: 'sun'`.
-  const SUN_EMISSIVE_INTENSITY_DEFAULT = 0.8
+  const SUN_EMISSIVE_INTENSITY_DEFAULT = 5
   const SUN_EMISSIVE_COLOR_DEFAULT = '#ffcc55'
 
   const [ambientLightIntensity, setAmbientLightIntensity] = useState(AMBIENT_LIGHT_INTENSITY_DEFAULT)

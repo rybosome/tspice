@@ -391,7 +391,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     metalness: surfaceMetalness,
     map,
     emissive: textureKind === 'sun' ? new THREE.Color('#ffcc55') : new THREE.Color('#000000'),
-    emissiveIntensity: textureKind === 'sun' ? 0.8 : 0.0,
+    emissiveIntensity: textureKind === 'sun' ? 5 : 0.0,
   })
 
   const onBeforeCompileRestores: Array<() => void> = []
