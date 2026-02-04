@@ -49,13 +49,18 @@ const tspiceSpecifier = "@rybosome/tspice";
 
 let tspiceResolved;
 let resolutionMethod;
-if (typeof import.meta.resolve === "function") {
+// `import.meta.resolve()` is implemented in Node, but its signature/behavior has
+// been inconsistent across Node versions (e.g. Node 22 on GitHub Actions treats
+// the 2nd arg as ignored, resolving relative to this script instead of the temp
+// project).
+//
+// Prefer `createRequire(...).resolve()` anchored to the temp project, which is
+// stable across supported Node versions.
+if (typeof import.meta.resolve === "function" && import.meta.resolve.length >= 2) {
   // Resolve as if imported from the temp project's `package.json`.
   tspiceResolved = import.meta.resolve(tspiceSpecifier, projectPackageJsonUrl);
-  resolutionMethod = "import.meta.resolve";
+  resolutionMethod = "import.meta.resolve(parentURL)";
 } else {
-  // Compatibility fallback for older Node versions: resolve using a CJS resolver
-  // anchored to the temp project, then import via file URL.
   const requireFromProject = createRequire(projectPackageJsonPath);
   const resolvedPath = requireFromProject.resolve(tspiceSpecifier);
   tspiceResolved = pathToFileURL(resolvedPath).href;
