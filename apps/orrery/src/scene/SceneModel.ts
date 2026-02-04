@@ -38,8 +38,14 @@ export interface BodySurfaceStyle {
   /**
    * Optional bump strength.
    *
-   * If set and a texture map is present, the renderer will reuse the map as a
-   * cheap bump source to add some rocky/cratered relief.
+   * If set and a texture map is present, the renderer will reuse the albedo map
+   * as a height source (cheap bump mapping) to add some rocky/cratered relief.
+   *
+   * Values are clamped to `0..0.25`; typical values are ~`0.0–0.1`.
+   *
+   * Note: because the albedo map is not a true height map, this can introduce
+   * artifacts (e.g. bumps correlated with surface color/lighting baked into the
+   * texture).
    */
   bumpScale?: number
 

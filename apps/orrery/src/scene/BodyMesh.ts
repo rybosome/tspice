@@ -154,10 +154,25 @@ function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile
   }
 }
 
+function isDev(): boolean {
+  // Prefer Vite's build-time `import.meta.env.DEV` when available, but avoid
+  // throwing if `import.meta.env` is missing.
+  try {
+    const viteDev = (import.meta as { env?: { DEV?: unknown } }).env?.DEV
+    if (typeof viteDev === 'boolean') return viteDev
+  } catch {
+    // ignore
+  }
+
+  // Fall back to Node-style `NODE_ENV` when present (e.g. tests or non-Vite builds).
+  const nodeEnv = (globalThis as { process?: { env?: { NODE_ENV?: unknown } } }).process?.env?.NODE_ENV
+  return typeof nodeEnv === 'string' ? nodeEnv !== 'production' : false
+}
+
 function createWarnOnce() {
   // Avoid spamming end users in production; these warnings are mainly useful
   // for shader-chunk drift during local development.
-  if (!import.meta.env.DEV) {
+  if (!isDev()) {
     return (_key: string, ..._args: unknown[]) => {}
   }
 
@@ -211,12 +226,23 @@ function safeShaderReplace(args: {
   }
   if (src.includes(marker)) return true
 
-  if (!src.includes(needle)) {
+  const firstNeedleIndex = src.indexOf(needle)
+  if (firstNeedleIndex === -1) {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (missing chunk)', { source, needle, marker })
     return false
   }
 
-  const next = src.replace(needle, replacement)
+  const secondNeedleIndex = src.indexOf(needle, firstNeedleIndex + needle.length)
+  if (secondNeedleIndex !== -1) {
+    warnOnce(warnKey, '[BodyMesh] shader injection skipped (non-unique chunk match)', {
+      source,
+      needle,
+      marker,
+    })
+    return false
+  }
+
+  const next = `${src.slice(0, firstNeedleIndex)}${replacement}${src.slice(firstNeedleIndex + needle.length)}`
   if (next === src || !next.includes(marker)) {
     warnOnce(warnKey, '[BodyMesh] shader injection skipped (replace failed)', { source, needle, marker })
     return false
