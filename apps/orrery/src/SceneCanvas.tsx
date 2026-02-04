@@ -271,10 +271,18 @@ export function SceneCanvas() {
 
   const controlsTabsId = useId()
 
-  const activeAdvancedPane = useMemo(
-    () => ADVANCED_PANES.find((p) => p.id === advancedPane) ?? ADVANCED_PANES[0],
-    [advancedPane],
-  )
+  const activeAdvancedPane = useMemo(() => {
+    const found = ADVANCED_PANES.find((p) => p.id === advancedPane)
+    if (found) return found
+
+    const fallback = ADVANCED_PANES[0]
+    if (fallback) return fallback
+
+    // Defensive fallback: keep the UI from crashing if the panes list ever
+    // becomes empty/conditional.
+    const label = advancedPane.toUpperCase()
+    return { id: advancedPane, tabLabel: label, title: label, summary: '' }
+  }, [advancedPane])
 
   const [cameraFovDeg, setCameraFovDeg] = useState(50)
 
@@ -475,6 +483,14 @@ export function SceneCanvas() {
 
     return () => {
       window.clearInterval(interval)
+
+      // Ensure we don't apply stale zoom work after close/unmount.
+      if (zoomSliderRafRef.current != null) {
+        window.cancelAnimationFrame(zoomSliderRafRef.current)
+        zoomSliderRafRef.current = null
+      }
+      zoomSliderPendingValueRef.current = null
+      zoomSliderDraggingRef.current = false
     }
   }, [overlayOpen, zoomSliderForRadius])
 
@@ -502,6 +518,7 @@ export function SceneCanvas() {
         zoomSliderRafRef.current = null
         const pending = zoomSliderPendingValueRef.current
         if (pending == null) return
+        zoomSliderPendingValueRef.current = null
         applyZoomSliderValue(pending)
       })
     },
@@ -511,6 +528,8 @@ export function SceneCanvas() {
   const flushZoomSlider = useCallback(() => {
     const pending = zoomSliderPendingValueRef.current
     if (pending == null) return
+
+    zoomSliderPendingValueRef.current = null
 
     if (zoomSliderRafRef.current != null) {
       window.cancelAnimationFrame(zoomSliderRafRef.current)

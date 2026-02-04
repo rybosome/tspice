@@ -338,14 +338,19 @@ export async function initSpiceSceneRuntime(args: {
       String(skipAutoZoomForFocusBody) === String(next.focusBody) &&
       String(next.focusBody) !== String(lastAutoZoomFocusBody)
 
-    const shouldAutoZoom = shouldAutoZoomOnFocusChange({
-      isE2e,
-      nextFocusBody: next.focusBody,
-      lastAutoZoomFocusBody,
-      skipAutoZoomForFocusBody,
-    })
+    // `shouldSkipAutoZoomForFocusBody` is meant to be a one-shot override.
+    // Keep it mutually exclusive with any later auto-zoom + home-preset logic
+    // so we don't accidentally override the caller-preserved radius.
+    const shouldAutoZoomThisTick =
+      !shouldSkipAutoZoomForFocusBody &&
+      shouldAutoZoomOnFocusChange({
+        isE2e,
+        nextFocusBody: next.focusBody,
+        lastAutoZoomFocusBody,
+        skipAutoZoomForFocusBody,
+      })
 
-    const homePreset = shouldAutoZoom ? getHomePresetState(next.focusBody) : null
+    const homePreset = shouldAutoZoomThisTick ? getHomePresetState(next.focusBody) : null
 
     if (shouldSkipAutoZoomForFocusBody) {
       cancelFocusTween?.()
@@ -364,9 +369,7 @@ export async function initSpiceSceneRuntime(args: {
 
       lastAutoZoomFocusBody = next.focusBody
       if (skipAutoZoomForNextFocusBodyRef) skipAutoZoomForNextFocusBodyRef.current = null
-    }
-
-    if (shouldAutoZoom) {
+    } else if (shouldAutoZoomThisTick) {
       cancelFocusTween?.()
 
       // Clear look offset when auto-focusing a new body.
@@ -384,7 +387,7 @@ export async function initSpiceSceneRuntime(args: {
     })
     const focusPosKm = focusState.positionKm
 
-    if (shouldAutoZoom) {
+    if (shouldAutoZoomThisTick) {
       // Home preset beats the normal auto-zoom + sun-in-view heuristics.
       if (homePreset) {
         controller.restore(homePreset)
