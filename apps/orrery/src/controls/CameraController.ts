@@ -31,8 +31,8 @@ export class CameraController {
   lookPitch: number = 0
   lookRoll: number = 0
 
-  readonly minRadius: number
-  readonly maxRadius: number
+  minRadius: number
+  maxRadius: number
   private readonly minPitch: number
   private readonly maxPitch: number
 
@@ -135,6 +135,12 @@ export class CameraController {
     this.radius = THREE.MathUtils.clamp(this.radius, this.minRadius, this.maxRadius)
     this.pitch = THREE.MathUtils.clamp(this.pitch, this.minPitch, this.maxPitch)
     this.lookPitch = THREE.MathUtils.clamp(this.lookPitch, this.minLookPitch, this.maxLookPitch)
+  }
+
+  setRadiusLimits(limits: { minRadius?: number; maxRadius?: number }) {
+    if (limits.minRadius != null) this.minRadius = limits.minRadius
+    if (limits.maxRadius != null) this.maxRadius = limits.maxRadius
+    this.clampState()
   }
 
   applyToCamera(camera: THREE.Camera) {

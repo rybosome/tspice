@@ -33,6 +33,7 @@ type AdvancedPaneId = 'scaleCamera' | 'guides' | 'orbitsPerformance' | 'advanced
 
 type AdvancedHelpTopicId =
   | 'cameraFov'
+  | 'scalePresets'
   | 'planetScale'
   | 'sunScale'
   | 'orbitLineWidth'
@@ -80,6 +81,15 @@ const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string;
       'Field-of-view controls how wide the camera sees (like a lens).',
       'Lower values feel more zoomed-in; higher values feel wider/"fisheye".',
       'This does not change body positions—only how the camera projects the scene.',
+    ],
+  },
+  scalePresets: {
+    title: 'Scale presets',
+    short: 'Quickly switch between common scale + zoom ranges.',
+    body: [
+      'Planetary: realistic-ish body sizes and a tighter zoom range (good for close-up planet/moon views).',
+      'Solar: heavily exaggerated body sizes and a much larger zoom range (good for seeing planets at AU-scale distances).',
+      'Presets only affect rendering + camera zoom limits; SPICE data is unchanged.',
     ],
   },
   planetScale: {
@@ -176,6 +186,10 @@ const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string;
   },
 }
 
+const HOME_PRESET_RADII = HOME_PRESET_KEYS.map((k) => getHomePresetStateForKey(k).radius)
+const HOME_PRESET_RADIUS_MIN = Math.min(...HOME_PRESET_RADII)
+const HOME_PRESET_RADIUS_MAX = Math.max(...HOME_PRESET_RADII)
+
 export function SceneCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -258,6 +272,50 @@ export function SceneCanvas() {
   const planetScaleMultiplier = useMemo(
     () => Math.min(PLANET_SCALE_MAX, Math.pow(10, planetScaleSlider / 20)),
     [planetScaleSlider],
+  )
+
+  const planetScaleSliderForMultiplier = useCallback(
+    (multiplier: number) => {
+      if (!Number.isFinite(multiplier) || multiplier <= 1) return 0
+
+      const raw = 20 * Math.log10(multiplier)
+      return THREE.MathUtils.clamp(Math.round(raw), 0, PLANET_SCALE_SLIDER_MAX)
+    },
+    [PLANET_SCALE_SLIDER_MAX],
+  )
+
+  const applyScalePreset = useCallback(
+    (preset: 'planetary' | 'solar') => {
+      cancelFocusTweenRef.current?.()
+
+      const controller = controllerRef.current
+      const camera = cameraRef.current
+      if (!controller || !camera) return
+
+      if (preset === 'planetary') {
+        // True-ish scale with a tighter zoom range.
+        setPlanetScaleSlider(planetScaleSliderForMultiplier(1))
+        setSunScaleMultiplier(1)
+
+        controller.setRadiusLimits({
+          minRadius: HOME_PRESET_RADIUS_MIN * 0.25,
+          maxRadius: HOME_PRESET_RADIUS_MAX * 25,
+        })
+      } else {
+        // Aggressive exaggeration for AU-scale viewing.
+        setPlanetScaleSlider(planetScaleSliderForMultiplier(800))
+        setSunScaleMultiplier(12)
+
+        controller.setRadiusLimits({
+          minRadius: HOME_PRESET_RADIUS_MIN * 0.25,
+          maxRadius: HOME_PRESET_RADIUS_MAX * 20_000,
+        })
+      }
+
+      controller.applyToCamera(camera)
+      invalidateRef.current?.()
+    },
+    [planetScaleSliderForMultiplier],
   )
 
   // HUD stats state - updated on render frames when HUD is enabled
@@ -965,6 +1023,32 @@ export function SceneCanvas() {
                         onChange={(e) => setCameraFovDeg(Number(e.target.value))}
                       />
                       <span className="advancedSliderValue">{cameraFovDeg}°</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel advancedControlLabel">
+                        <span>Presets</span>
+                        <AdvancedHelpButton topic="scalePresets" />
+                      </span>
+                      <div style={{ flex: 1, display: 'flex', gap: 6 }}>
+                        <button
+                          className="advancedTab"
+                          type="button"
+                          onClick={() => applyScalePreset('planetary')}
+                          title="Planetary scale preset"
+                        >
+                          planetary
+                        </button>
+                        <button
+                          className="advancedTab"
+                          type="button"
+                          onClick={() => applyScalePreset('solar')}
+                          title="Solar scale preset"
+                        >
+                          solar
+                        </button>
+                      </div>
+                      <span className="advancedSliderValue" />
                     </div>
 
                     <div className="advancedSlider">
