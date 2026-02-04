@@ -12,3 +12,8 @@ Most textures here are **256×128** PNGs (lightweight demo goal), but a few Eart
   - USGS FAQ: https://www.usgs.gov/faqs/are-usgs-reportspublications-copyrighted
 
 ## Per-file sources
+
+- `moon-lroc-4k.jpg`
+  - Source (SVS): https://svs.gsfc.nasa.gov/4720/ ("CGI Moon Kit")
+  - Credit: NASA's Scientific Visualization Studio
+  - Notes: derived from LRO / LROC WAC global mosaic products (ASU), with additional LOLA products (per SVS page)
