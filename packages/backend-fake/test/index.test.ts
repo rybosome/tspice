@@ -10,6 +10,8 @@ describe("@rybosome/tspice-backend-fake", () => {
   it("is deterministic for spkezr/spkpos", () => {
     const b = createFakeBackend();
 
+    expect(b.kind).toBe("fake");
+
     const a = b.spkezr("MOON", 123.456, "J2000", "NONE", "EARTH");
     const c = b.spkezr("MOON", 123.456, "J2000", "NONE", "EARTH");
 

@@ -102,8 +102,17 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       appearance: {
         surface: {
           color: '#9ca3af',
+          // Mercury: rough, rocky, and airless.
+          roughness: 0.98,
+          metalness: 0.0,
+          bumpScale: 0.035,
+          // Suppress ambient-lit washout on the night side.
+          nightAlbedo: 0.02,
+          terminatorTwilight: 0.06,
           texture: {
-            url: 'textures/planets/mercury.png',
+            url: 'textures/planets/mercury.jpg',
+            // Avoid unintentionally tinting/darkening the albedo texture.
+            color: '#ffffff',
           },
         },
       },
@@ -318,7 +327,7 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
         surface: {
           color: '#e9c46a',
           texture: {
-            url: 'textures/planets/moon.png',
+            url: 'textures/planets/moon-lroc-4k.jpg',
           },
         },
       },

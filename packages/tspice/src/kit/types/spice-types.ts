@@ -4,24 +4,21 @@ import type {
   AberrationCorrection,
   FrameName,
   GetStateArgs,
-  Mat3,
   SpiceTime,
   StateVector,
-} from "./types.js";
+} from "../../types.js";
+import type { Mat3 } from "../math/mat3.js";
 
 /**
-* Low-level CSPICE-like primitive surface.
-*
-* This is the raw backend contract (node addon, wasm backend, etc.).
-*/
-/**
-* Higher-level helpers and convenience APIs built on top of the raw backend.
-*/
+ * Higher-level helpers and convenience APIs built on top of the raw backend.
+ */
 export type SpiceKit = {
   /** Load a SPICE kernel. */
   loadKernel(kernel: KernelSource): void;
   /** Unload a previously-loaded SPICE kernel. */
   unloadKernel(path: string): void;
+  /** Clear all loaded kernels (mirrors `raw.kclear()`), and resets kit tracking. */
+  kclear(): void;
 
   /** Convenience wrapper around `tkvrsn(\"TOOLKIT\")`. */
   toolkitVersion(): string;
@@ -31,7 +28,7 @@ export type SpiceKit = {
   /** Convert ET seconds past J2000 to a formatted UTC string. */
   etToUtc(et: SpiceTime, format?: string, prec?: number): string;
 
-  /** Compute a 3x3 frame transformation matrix (row-major). */
+  /** Compute a 3x3 frame transformation matrix. */
   frameTransform(from: FrameName, to: FrameName, et: SpiceTime): Mat3;
 
   /** Convenience wrapper around `spkezr` that returns a structured state vector. */
@@ -39,11 +36,11 @@ export type SpiceKit = {
 };
 
 /**
-* Top-level `createSpice()` return type.
-*/
+ * Top-level `createSpice()` return type.
+ */
 export type Spice = {
   /** Raw backend primitives (verbatim). */
-  cspice: SpiceBackend;
+  raw: SpiceBackend;
   /** Higher-level helpers and typed conveniences. */
   kit: SpiceKit;
 };

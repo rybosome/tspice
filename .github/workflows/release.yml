@@ -91,6 +91,34 @@ jobs:
       - name: Verify native build + tests
         run: pnpm run check:native
 
+      - name: Pre-publish smoke test (@rybosome/tspice + native optionalDependency)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Pack the to-be-published @rybosome/tspice tarball
+          cd packages/tspice/dist-publish
+          TSPICE_TARBALL=$(npm pack --silent)
+          TSPICE_TARBALL_PATH="${PWD}/${TSPICE_TARBALL}"
+
+          # Pack the platform native package tarball
+          cd "${GITHUB_WORKSPACE}/packages/${{ matrix.pkg }}"
+          NATIVE_TARBALL=$(npm pack --silent)
+          NATIVE_TARBALL_PATH="${PWD}/${NATIVE_TARBALL}"
+
+          TMP_DIR=$(mktemp -d)
+          echo "Using temp project: ${TMP_DIR}"
+          cd "${TMP_DIR}"
+
+          npm init -y >/dev/null
+
+          # Ensure ESM by default in the temp project.
+          node -e 'const fs=require("node:fs"); const p="package.json"; const j=JSON.parse(fs.readFileSync(p,"utf8")); j.type="module"; fs.writeFileSync(p, JSON.stringify(j,null,2)+"\n");'
+
+          npm install --include=optional "${TSPICE_TARBALL_PATH}" "${NATIVE_TARBALL_PATH}"
+
+          node "${GITHUB_WORKSPACE}/scripts/smoke-tspice-native.mjs"
+
       - name: Configure npm auth
         shell: bash
         run: |
@@ -334,20 +362,4 @@ jobs:
             exit 1
           fi
 
-          cat > smoke.mjs <<'EOF'
-          import { createBackend } from "@rybosome/tspice";
-
-          const backend = await createBackend({ backend: "node" });
-          if (backend.kind !== "node") {
-            throw new Error(`Expected backend.kind to be "node"; got: ${backend.kind}`);
-          }
-
-          const version = backend.spiceVersion();
-          if (typeof version !== "string" || version.length === 0) {
-            throw new Error(`Expected spiceVersion() to return a non-empty string; got: ${String(version)}`);
-          }
-
-          console.log(`Native backend loaded OK. CSPICE toolkit version: ${version}`);
-          EOF
-
-          node smoke.mjs
+          node "${GITHUB_WORKSPACE}/scripts/smoke-tspice-native.mjs"

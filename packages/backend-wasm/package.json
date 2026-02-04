@@ -1,6 +1,6 @@
 {
   "name": "@rybosome/tspice-backend-wasm",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -20,12 +20,13 @@
     "NOTICE"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && node ../../scripts/copy-backend-wasm-assets.mjs",
-    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "build": "tsc -b tsconfig.json && node ../../scripts/copy-backend-wasm-assets.mjs",
+    "typecheck": "tsc -b tsconfig.json --emitDeclarationOnly",
     "test": "vitest run"
   },
   "dependencies": {
-    "@rybosome/tspice-backend-contract": "workspace:*"
+    "@rybosome/tspice-backend-contract": "workspace:*",
+    "@rybosome/tspice-core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

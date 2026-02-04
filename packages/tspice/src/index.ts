@@ -1,8 +1,16 @@
 export type {
-  BackendKind,
   KernelSource,
+  Mat3ColMajor,
+  Mat3RowMajor,
   SpiceBackend,
-  SpiceBackendWasm,
+} from "@rybosome/tspice-backend-contract";
+
+export {
+  assertMat3ArrayLike9,
+  brandMat3ColMajor,
+  brandMat3RowMajor,
+  isMat3ColMajor,
+  isMat3RowMajor,
 } from "@rybosome/tspice-backend-contract";
 
 export type { CreateBackendOptions } from "./backend.js";
@@ -12,7 +20,6 @@ export type {
   AberrationCorrection,
   FrameName,
   GetStateArgs,
-  Mat3,
   SpiceTime,
   StateVector,
   Vec3,
@@ -21,6 +28,7 @@ export type {
 
 export { SpiceError } from "./errors.js";
 
-export type { Spice, SpiceKit } from "./spice-types.js";
+export { Mat3 } from "./kit/math/mat3.js";
+export type { Spice, SpiceKit } from "./kit/types/spice-types.js";
 export type { CreateSpiceOptions } from "./spice.js";
 export { createSpice } from "./spice.js";

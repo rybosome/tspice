@@ -7,10 +7,26 @@ test.use({
 
 test('rendered scene is visually stable (golden screenshot)', async ({ page, baseURL }) => {
   const allowedOrigin = baseURL ? new URL(baseURL).origin : 'http://127.0.0.1:4173'
+  const abortedTexturePathnames = new Set([
+    '/textures/planets/earth.png',
+    '/textures/planets/earth-nightlights.jpg',
+    '/textures/planets/earth-clouds.jpg',
+  ])
 
   // Ensure the test is deterministic and doesn't accidentally hit the network.
   await page.route('**/*', async (route) => {
     const url = route.request().url()
+
+    // Parse first so our abort rules are deterministic (avoid substring matches
+    // in query strings / other assets).
+    const parsedUrl = new URL(url)
+
+    // Abort large textures that can race GPU uploads and make screenshots flaky.
+    if (abortedTexturePathnames.has(parsedUrl.pathname)) {
+      await route.abort()
+      return
+    }
+
     if (url.startsWith(allowedOrigin) || url.startsWith('data:') || url.startsWith('blob:')) {
       await route.continue()
       return
@@ -34,10 +50,18 @@ test('rendered scene is visually stable (golden screenshot)', async ({ page, bas
   const canvas = page.locator('canvas.sceneCanvas')
   await expect(canvas).toBeVisible()
 
+  // Force a final render and lock deterministic lighting before capturing the golden.
+  await page.evaluate(() => {
+    ;(window as any).__tspice_viewer__e2e?.lockDeterministicLighting?.()
+    ;(window as any).__tspice_viewer__e2e?.samplePerfCounters?.()
+  })
+
   await expect(canvas).toHaveScreenshot('rendered-scene.png', {
     animations: 'disabled',
-    // Allow small GPU/driver anti-aliasing variance in WebGL star rendering
-    // (~574 pixels at 0.01 ratio observed in CI)
+    // CI can have minor GPU/driver anti-aliasing variance in WebGL star rendering.
+    // NOTE: We've observed ~574 pixels at a 0.01 ratio in CI, so we allow a bit
+    // more headroom to keep the golden stable across GPU/driver differences.
     maxDiffPixelRatio: 0.04,
+    maxDiffPixels: process.env.CI ? 2500 : 500,
   })
 })

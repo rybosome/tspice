@@ -12,3 +12,9 @@ Most textures here are **256×128** PNGs (lightweight demo goal), but a few Eart
   - USGS FAQ: https://www.usgs.gov/faqs/are-usgs-reportspublications-copyrighted
 
 ## Per-file sources
+
+- `mercury.jpg`: USGS Astrogeology Science Center — MESSENGER MDIS Basemap Enhanced Color Global Mosaic (665m). Product page: https://astrogeology.usgs.gov/search/map/mercury_messenger_mdis_basemap_enhanced_color_global_mosaic_665m. Download: https://upload.wikimedia.org/wikipedia/commons/4/41/Mercury_MESSENGER_MDIS_Basemap_EnhancedColor_Mosaic_Global_32ppd.jpg
+- `moon-lroc-4k.jpg`
+  - Source (SVS): https://svs.gsfc.nasa.gov/4720/ ("CGI Moon Kit")
+  - Credit: NASA's Scientific Visualization Studio
+  - Notes: derived from LRO / LROC WAC global mosaic products (ASU), with additional LOLA products (per SVS page)

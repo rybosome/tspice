@@ -11,6 +11,13 @@ const REPO_ROOT = path.resolve(__dirname, '../..')
 const PORT = 4173
 const BASE_URL = `http://127.0.0.1:${PORT}`
 
+// Note: `--disable-gpu` can cause SwiftShader WebGL to render without textures
+// on some ARM64 environments. Keep it enabled on x64 (where it historically
+// improved determinism), but skip it on arm64 so e2e snapshots render correctly.
+const BASE_CHROMIUM_LAUNCH_ARGS = ['--use-gl=swiftshader', '--disable-dev-shm-usage'] as const
+const CHROMIUM_LAUNCH_ARGS =
+  process.arch !== 'arm64' ? [...BASE_CHROMIUM_LAUNCH_ARGS, '--disable-gpu'] : [...BASE_CHROMIUM_LAUNCH_ARGS]
+
 export default defineConfig({
   testDir: 'e2e',
   timeout: 60_000,
@@ -48,7 +55,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         launchOptions: {
-          args: ['--use-gl=swiftshader', '--disable-gpu', '--disable-dev-shm-usage'],
+          args: CHROMIUM_LAUNCH_ARGS,
         },
       },
     },
