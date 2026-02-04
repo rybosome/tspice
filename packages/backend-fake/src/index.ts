@@ -14,6 +14,7 @@ import type {
   SpkezrResult,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
+import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 
 /**
  * A deterministic, pure-TS "toy" backend.
@@ -188,34 +189,40 @@ function canonicalizeZero(n: number): number {
 function rotZRowMajor(theta: number): Mat3RowMajor {
   const c = Math.cos(theta);
   const s = Math.sin(theta);
-  return [
-    canonicalizeZero(c),
-    canonicalizeZero(-s),
-    0,
-    canonicalizeZero(s),
-    canonicalizeZero(c),
-    0,
-    0,
-    0,
-    1,
-  ] as Mat3RowMajor;
+  return brandMat3RowMajor(
+    [
+      canonicalizeZero(c),
+      canonicalizeZero(-s),
+      0,
+      canonicalizeZero(s),
+      canonicalizeZero(c),
+      0,
+      0,
+      0,
+      1,
+    ] as const,
+    { label: "fake.rotZRowMajor" },
+  );
 }
 
 function drotZRowMajor(theta: number, w: number): Mat3RowMajor {
   // d/dt rotZ(theta) = w * d/dtheta rotZ(theta)
   const c = Math.cos(theta);
   const s = Math.sin(theta);
-  return [
-    canonicalizeZero(-w * s),
-    canonicalizeZero(-w * c),
-    0,
-    canonicalizeZero(w * c),
-    canonicalizeZero(-w * s),
-    0,
-    0,
-    0,
-    0,
-  ] as Mat3RowMajor;
+  return brandMat3RowMajor(
+    [
+      canonicalizeZero(-w * s),
+      canonicalizeZero(-w * c),
+      0,
+      canonicalizeZero(w * c),
+      canonicalizeZero(-w * s),
+      0,
+      0,
+      0,
+      0,
+    ] as const,
+    { label: "fake.drotZRowMajor" },
+  );
 }
 
 function mmul3(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
@@ -230,21 +237,20 @@ function mmul3(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
       out[r * 3 + c] = sum;
     }
   }
-  return out as Mat3RowMajor;
+  // Return a real tuple (and brand) instead of exposing a mutable `number[]`.
+  return brandMat3RowMajor(
+    [out[0]!, out[1]!, out[2]!, out[3]!, out[4]!, out[5]!, out[6]!, out[7]!, out[8]!] as const,
+    {
+      label: "fake.mmul3",
+    },
+  );
 }
 
 function mtx3(m: Mat3RowMajor): Mat3RowMajor {
-  return [
-    m[0],
-    m[3],
-    m[6],
-    m[1],
-    m[4],
-    m[7],
-    m[2],
-    m[5],
-    m[8],
-  ] as Mat3RowMajor;
+  return brandMat3RowMajor(
+    [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]] as const,
+    { label: "fake.mtx3" },
+  );
 }
 
 function mxv(m: Mat3RowMajor, v: SpiceVector3): SpiceVector3 {

@@ -5,6 +5,14 @@ export type {
   SpiceBackend,
 } from "@rybosome/tspice-backend-contract";
 
+export {
+  assertMat3ArrayLike9,
+  brandMat3ColMajor,
+  brandMat3RowMajor,
+  isMat3ColMajor,
+  isMat3RowMajor,
+} from "@rybosome/tspice-backend-contract";
+
 export type { CreateBackendOptions } from "./backend.js";
 export { createBackend } from "./backend.js";
 

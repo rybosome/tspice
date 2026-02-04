@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
-import type { Mat3RowMajor } from "@rybosome/tspice";
+import { brandMat3RowMajor, createBackend } from "@rybosome/tspice";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
@@ -41,11 +40,14 @@ describe("coordinate conversions + vector/matrix helpers", () => {
     expectVec3Close(backend.vcrss([1, 0, 0], [0, 1, 0]), [0, 0, 1]);
 
     // matrix-vector helpers (row-major)
-    const m = [
-      1, 2, 3,
-      4, 5, 6,
-      7, 8, 9,
-    ] as Mat3RowMajor;
+    const m = brandMat3RowMajor(
+      [
+        1, 2, 3,
+        4, 5, 6,
+        7, 8, 9,
+      ] as const,
+      { label: "test.mxv.m" },
+    );
     expectVec3Close(backend.mxv(m, [1, 0, 0]), [1, 4, 7]);
     expectVec3Close(backend.mtxv(m, [1, 0, 0]), [1, 2, 3]);
   }

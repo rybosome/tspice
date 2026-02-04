@@ -53,8 +53,9 @@ export type SpiceVector3 = [number, number, number];
  *
  * Row-major layout: `[m00,m01,m02, m10,m11,m12, m20,m21,m22]`.
  */
-declare const __mat3RowMajorBrand: unique symbol;
-export type Mat3RowMajor = [
+/** Runtime + type-level brand for row-major Mat3 arrays. */
+export const __mat3RowMajorBrand = Symbol("Mat3RowMajor");
+export type Mat3RowMajor = readonly [
   number,
   number,
   number,
@@ -64,15 +65,16 @@ export type Mat3RowMajor = [
   number,
   number,
   number,
-] & { readonly [__mat3RowMajorBrand]: "Mat3RowMajor" };
+] & { readonly [__mat3RowMajorBrand]: true };
 
 /**
  * 3x3 matrix encoded as a length-9 array in **column-major** order.
  *
  * Column-major layout: `[m00,m10,m20, m01,m11,m21, m02,m12,m22]`.
  */
-declare const __mat3ColMajorBrand: unique symbol;
-export type Mat3ColMajor = [
+/** Runtime + type-level brand for column-major Mat3 arrays. */
+export const __mat3ColMajorBrand = Symbol("Mat3ColMajor");
+export type Mat3ColMajor = readonly [
   number,
   number,
   number,
@@ -82,7 +84,7 @@ export type Mat3ColMajor = [
   number,
   number,
   number,
-] & { readonly [__mat3ColMajorBrand]: "Mat3ColMajor" };
+] & { readonly [__mat3ColMajorBrand]: true };
 
 
 export type SpiceMatrix6x6 = [

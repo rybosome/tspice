@@ -118,8 +118,8 @@ export type NativeAddon = {
   vhat(v: number[]): number[];
   vdot(a: number[], b: number[]): number;
   vcrss(a: number[], b: number[]): number[];
-  mxv(m: number[], v: number[]): number[];
-  mtxv(m: number[], v: number[]): number[];
+  mxv(m: readonly number[], v: readonly number[]): number[];
+  mtxv(m: readonly number[], v: readonly number[]): number[];
 
   /** Internal test helper (not part of the backend contract). */
   __ktotalAll(): number;

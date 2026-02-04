@@ -1,4 +1,5 @@
 export * from "./shared/types.js";
+export * from "./shared/mat3.js";
 
 export * from "./domains/kernels.js";
 export * from "./domains/time.js";

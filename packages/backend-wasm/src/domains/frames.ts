@@ -5,6 +5,7 @@ import type {
   SpiceMatrix6x6,
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
+import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -149,9 +150,10 @@ function tspiceCallCkgp(
     if (!found) {
       return { found: false };
     }
-    const cmat = Array.from(
-      module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
-    ) as unknown as Mat3RowMajor;
+    const cmat = brandMat3RowMajor(
+      Array.from(module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9)),
+      { label: "ckgp().cmat" },
+    );
     const clkout = module.HEAPF64[outClkoutPtr >> 3] ?? 0;
     return { found: true, cmat, clkout };
   } finally {
@@ -206,9 +208,10 @@ function tspiceCallCkgpav(
     if (!found) {
       return { found: false };
     }
-    const cmat = Array.from(
-      module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
-    ) as unknown as Mat3RowMajor;
+    const cmat = brandMat3RowMajor(
+      Array.from(module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9)),
+      { label: "ckgpav().cmat" },
+    );
     const av = Array.from(
       module.HEAPF64.subarray(outAvPtr >> 3, (outAvPtr >> 3) + 3),
     ) as unknown as SpiceVector3;
@@ -244,7 +247,7 @@ function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
     const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 9));
-    return out as unknown as Mat3RowMajor;
+    return brandMat3RowMajor(out, { label: "pxform()" });
   } finally {
     module._free(outPtr);
     module._free(toPtr);

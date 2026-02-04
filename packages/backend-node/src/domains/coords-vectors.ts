@@ -1,4 +1,5 @@
 import type { CoordsVectorsApi, SpiceVector3 } from "@rybosome/tspice-backend-contract";
+import { assertMat3ArrayLike9 } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
@@ -60,12 +61,14 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
     },
 
     mxv: (m, v) => {
+      assertMat3ArrayLike9(m, { label: "mxv().m" });
       const out = native.mxv(m, v);
       invariant(Array.isArray(out) && out.length === 3, "Expected mxv() to return a length-3 array");
       return out as SpiceVector3;
     },
 
     mtxv: (m, v) => {
+      assertMat3ArrayLike9(m, { label: "mtxv().m" });
       const out = native.mtxv(m, v);
       invariant(Array.isArray(out) && out.length === 3, "Expected mtxv() to return a length-3 array");
       return out as SpiceVector3;
