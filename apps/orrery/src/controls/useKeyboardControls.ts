@@ -124,7 +124,15 @@ export function useKeyboardControls({
     toggleLabelsRef.current = toggleLabels
     resetLookOffsetRef.current = resetLookOffset
     getDefaultResumeRateSecPerSecRef.current = getDefaultResumeRateSecPerSec
-  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleHelp, toggleLabels, resetLookOffset, getDefaultResumeRateSecPerSec])
+  }, [
+    invalidate,
+    cancelFocusTween,
+    focusOnOrigin,
+    toggleHelp,
+    toggleLabels,
+    resetLookOffset,
+    getDefaultResumeRateSecPerSec,
+  ])
 
   useEffect(() => {
     if (!enabled) return

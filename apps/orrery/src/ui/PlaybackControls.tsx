@@ -71,7 +71,10 @@ export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }:
   const isPlaying = state.rateSecPerSec !== 0
   const isReverse = state.rateSecPerSec < 0
 
-  const getDefaultResumeRate = useCallback(() => getDefaultResumeRateSecPerSec?.() ?? 86400, [getDefaultResumeRateSecPerSec])
+  const getDefaultResumeRate = useCallback(
+    () => getDefaultResumeRateSecPerSec?.() ?? 86400,
+    [getDefaultResumeRateSecPerSec],
+  )
 
   return (
     <div className="playbackControls">

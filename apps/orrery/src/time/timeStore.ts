@@ -130,7 +130,8 @@ function createTimeStore() {
 
   const resolveDefaultResumeRateSecPerSec = (defaultResumeRateSecPerSec: number | undefined): number => {
     if (defaultResumeRateSecPerSec == null) return DEFAULT_RESUME_RATE_SEC_PER_SEC
-    if (!Number.isFinite(defaultResumeRateSecPerSec) || defaultResumeRateSecPerSec == 0) return DEFAULT_RESUME_RATE_SEC_PER_SEC
+    if (!Number.isFinite(defaultResumeRateSecPerSec) || defaultResumeRateSecPerSec == 0)
+      return DEFAULT_RESUME_RATE_SEC_PER_SEC
     return Math.abs(defaultResumeRateSecPerSec)
   }
 

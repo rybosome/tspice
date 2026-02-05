@@ -1592,7 +1592,10 @@ export function SceneCanvas() {
                     aria-labelledby={`${controlsTabsId}-tab-time`}
                   >
                     {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
-                    <PlaybackControls spiceClient={spiceClient} getDefaultResumeRateSecPerSec={getDefaultResumeRateSecPerSec} />
+                    <PlaybackControls
+                      spiceClient={spiceClient}
+                      getDefaultResumeRateSecPerSec={getDefaultResumeRateSecPerSec}
+                    />
 
                     <div className="advancedDivider" />
 
