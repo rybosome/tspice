@@ -25,28 +25,27 @@ export type RaDecGuideOverlay = {
 const RA_DEC_GUIDE_TUNING = {
   // Keep this overlay visually subordinate to the selection overlay and axes.
   colors: {
-    // Slightly more "instrument-like" than the previous very light gray, so it
-    // remains visible against a dark sky when zoomed far out.
-    equator: '#79b8ff',
-    grid: '#79b8ff',
+    // Pure white, but kept subtle via opacity/linewidth so it stays secondary.
+    equator: '#ffffff',
+    grid: '#ffffff',
   },
 
   opacity: {
-    equator: 0.2,
-    grid: 0.12,
+    equator: 0.24,
+    grid: 0.15,
   },
 
   lineWidthPx: {
-    equator: 0.9,
-    grid: 0.65,
+    equator: 1.05,
+    grid: 0.8,
   },
 
   // Keep the grid visually lower-priority via spacing instead of extremely
   // low contrast.
   dash: {
     grid: {
-      dashSize: 0.35,
-      gapSize: 0.25,
+      dashSize: 0.42,
+      gapSize: 0.3,
     },
   },
 
