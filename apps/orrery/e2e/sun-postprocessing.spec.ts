@@ -37,7 +37,8 @@ test('sun postprocessing: whole-frame bloom + tonemap', async ({ page, baseURL }
 
   await expect(canvas).toHaveScreenshot('sun-postprocess-whole-frame.png', {
     animations: 'disabled',
-    maxDiffPixelRatio: 0.06,
+    // Bloom + tonemapping can vary slightly across GPUs / OSes; allow a bit more diff here.
+    maxDiffPixelRatio: 0.1,
   })
 })
 
