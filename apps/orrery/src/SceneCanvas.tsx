@@ -47,6 +47,7 @@ type AdvancedHelpTopicId =
   | 'bodyFixedAxes'
   | 'renderHud'
   | 'j2000Axes'
+  | 'raDecGuide'
 
 const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: string; summary: string }> = [
   {
@@ -210,6 +211,15 @@ const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string;
     body: [
       'Shows a fixed inertial axes widget (J2000 frame) for orientation reference.',
       'This is separate from body-fixed axes, which rotate with a body.',
+    ],
+  },
+  raDecGuide: {
+    title: 'RA/Dec guide',
+    short: 'Celestial equator + right ascension/declination guide lines.',
+    body: [
+      'Shows a subtle right ascension/declination guide centered on the focused body.',
+      'The overlay includes the celestial equator plus a small set of RA meridians and Dec parallels.',
+      'This is a visual orientation aid only; it does not affect SPICE positions or frames.',
     ],
   },
 }
@@ -1712,16 +1722,19 @@ export function SceneCanvas() {
                       <AdvancedHelpButton topic="j2000Axes" onOpen={setAdvancedHelpTopic} />
                     </div>
 
-                    <label className="asciiCheckbox">
-                      <input
-                        className="asciiCheckboxInput"
-                        type="checkbox"
-                        checked={showRaDecGuide}
-                        onChange={(e) => setShowRaDecGuide(e.target.checked)}
-                      />
-                      <span className="asciiCheckboxBox" aria-hidden="true" />
-                      <span className="asciiCheckboxLabel">RA/Dec</span>
-                    </label>
+                    <div className="advancedCheckboxWithHelp">
+                      <label className="asciiCheckbox">
+                        <input
+                          className="asciiCheckboxInput"
+                          type="checkbox"
+                          checked={showRaDecGuide}
+                          onChange={(e) => setShowRaDecGuide(e.target.checked)}
+                        />
+                        <span className="asciiCheckboxBox" aria-hidden="true" />
+                        <span className="asciiCheckboxLabel">RA/Dec</span>
+                      </label>
+                      <AdvancedHelpButton topic="raDecGuide" onOpen={setAdvancedHelpTopic} />
+                    </div>
                   </div>
                 ) : null}
 

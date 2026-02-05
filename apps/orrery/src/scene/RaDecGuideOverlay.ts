@@ -25,18 +25,29 @@ export type RaDecGuideOverlay = {
 const RA_DEC_GUIDE_TUNING = {
   // Keep this overlay visually subordinate to the selection overlay and axes.
   colors: {
-    equator: '#d3dae6',
-    grid: '#c6d0df',
+    // Slightly more "instrument-like" than the previous very light gray, so it
+    // remains visible against a dark sky when zoomed far out.
+    equator: '#79b8ff',
+    grid: '#79b8ff',
   },
 
   opacity: {
-    equator: 0.14,
-    grid: 0.09,
+    equator: 0.2,
+    grid: 0.12,
   },
 
   lineWidthPx: {
-    equator: 0.85,
+    equator: 0.9,
     grid: 0.65,
+  },
+
+  // Keep the grid visually lower-priority via spacing instead of extremely
+  // low contrast.
+  dash: {
+    grid: {
+      dashSize: 0.35,
+      gapSize: 0.25,
+    },
   },
 
   // A small, stable grid: equator + a few meridians/parallels.
@@ -126,7 +137,14 @@ export function createRaDecGuideOverlay(): RaDecGuideOverlay {
 
   const resolution = new THREE.Vector2(1, 1)
 
-  const makeMaterial = (opts: { color: THREE.ColorRepresentation; lineWidthPx: number; opacity: number }) => {
+  const makeMaterial = (opts: {
+    color: THREE.ColorRepresentation
+    lineWidthPx: number
+    opacity: number
+    dashed?: boolean
+    dashSize?: number
+    gapSize?: number
+  }) => {
     const material = new LineMaterial({
       color: new THREE.Color(opts.color).getHex(),
       linewidth: opts.lineWidthPx,
@@ -135,6 +153,9 @@ export function createRaDecGuideOverlay(): RaDecGuideOverlay {
       opacity: opts.opacity,
       depthTest: false,
       depthWrite: false,
+      dashed: opts.dashed,
+      dashSize: opts.dashSize,
+      gapSize: opts.gapSize,
     })
 
     material.resolution.copy(resolution)
@@ -152,6 +173,9 @@ export function createRaDecGuideOverlay(): RaDecGuideOverlay {
     color: tuning.colors.grid,
     lineWidthPx: tuning.lineWidthPx.grid,
     opacity: tuning.opacity.grid,
+    dashed: true,
+    dashSize: tuning.dash.grid.dashSize,
+    gapSize: tuning.dash.grid.gapSize,
   })
 
   const geometries: LineGeometry[] = []
