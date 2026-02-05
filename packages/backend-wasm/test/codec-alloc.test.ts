@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { decodeWasmSpiceError, mallocOrThrow, withAllocs, withMalloc } from "../src/codec/alloc.js";
+import {
+  WASM_MAX_ALLOC_BYTES,
+  decodeWasmSpiceError,
+  mallocOrThrow,
+  withAllocs,
+  withMalloc,
+} from "../src/codec/alloc.js";
 
 describe("backend-wasm codec alloc helpers", () => {
   it("mallocOrThrow throws when malloc returns 0", () => {
@@ -8,6 +14,22 @@ describe("backend-wasm codec alloc helpers", () => {
       _malloc: () => 0,
     };
     expect(() => mallocOrThrow(moduleLike as any, 16)).toThrow(/malloc failed/i);
+  });
+
+  it.each([
+    [NaN, /finite/i],
+    [Infinity, /finite/i],
+    [1.5, /safe integer|integer/i],
+    [0, /> 0/i],
+    [-1, /> 0/i],
+    [WASM_MAX_ALLOC_BYTES + 1, /max/i],
+  ])("mallocOrThrow rejects invalid size %s", (size, re) => {
+    const moduleLike = {
+      _malloc: () => {
+        throw new Error("_malloc should not be called for invalid sizes");
+      },
+    };
+    expect(() => mallocOrThrow(moduleLike as any, size as any)).toThrow(re);
   });
 
   it("withMalloc always frees", () => {
@@ -39,6 +61,22 @@ describe("backend-wasm codec alloc helpers", () => {
     };
 
     expect(() => withAllocs(moduleLike as any, [8, 16], () => undefined)).toThrow(/malloc failed/i);
+    expect(freed).toEqual([111]);
+  });
+
+  it("withAllocs frees previously allocated pointers when a later alloc size is invalid", () => {
+    const freed: number[] = [];
+    let call = 0;
+    const moduleLike = {
+      _malloc: () => {
+        call++;
+        if (call === 1) return 111;
+        return 222;
+      },
+      _free: (ptr: number) => freed.push(ptr),
+    };
+
+    expect(() => withAllocs(moduleLike as any, [8, Infinity], () => undefined)).toThrow(/invalid wasm malloc size/i);
     expect(freed).toEqual([111]);
   });
 
