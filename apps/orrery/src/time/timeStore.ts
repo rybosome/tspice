@@ -1,5 +1,10 @@
 import { useSyncExternalStore } from 'react'
 import { quantizeEt } from './quantizeEt.js'
+import {
+  DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC,
+  DEFAULT_RESUME_RATE_HOUR_SEC_PER_SEC,
+  DEFAULT_RESUME_RATE_WEEK_SEC_PER_SEC,
+} from './defaultPlaybackRate.js'
 
 /**
  * Default scrub window: 10 years from J2000 epoch (0 to ~10 years in seconds).
@@ -126,10 +131,23 @@ function createTimeStore() {
     }
   }
 
-  const play = () => {
+  const DEFAULT_RESUME_RATE_SEC_PER_SEC = DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC
+  const MIN_RESUME_RATE_SEC_PER_SEC = DEFAULT_RESUME_RATE_HOUR_SEC_PER_SEC
+  const MAX_RESUME_RATE_SEC_PER_SEC = DEFAULT_RESUME_RATE_WEEK_SEC_PER_SEC
+
+  const resolveDefaultResumeRateSecPerSec = (defaultResumeRateSecPerSec: number | undefined): number => {
+    // `defaultResumeRateSecPerSec` is expected to be a positive value.
+    // Treat <= 0 (and non-finite) as invalid, then clamp to a reasonable UX range.
+    if (defaultResumeRateSecPerSec == null) return DEFAULT_RESUME_RATE_SEC_PER_SEC
+    if (!Number.isFinite(defaultResumeRateSecPerSec) || defaultResumeRateSecPerSec <= 0)
+      return DEFAULT_RESUME_RATE_SEC_PER_SEC
+
+    return Math.max(MIN_RESUME_RATE_SEC_PER_SEC, Math.min(MAX_RESUME_RATE_SEC_PER_SEC, defaultResumeRateSecPerSec))
+  }
+
+  const play = (defaultResumeRateSecPerSec?: number) => {
     if (state.rateSecPerSec === 0) {
-      // Default to 1 day/s when resuming from pause
-      setState({ rateSecPerSec: 86400 })
+      setState({ rateSecPerSec: resolveDefaultResumeRateSecPerSec(defaultResumeRateSecPerSec) })
     }
   }
 
@@ -137,9 +155,9 @@ function createTimeStore() {
     setState({ rateSecPerSec: 0 })
   }
 
-  const togglePlay = () => {
+  const togglePlay = (defaultResumeRateSecPerSec?: number) => {
     if (state.rateSecPerSec === 0) {
-      play()
+      play(defaultResumeRateSecPerSec)
     } else {
       pause()
     }
@@ -174,11 +192,11 @@ function createTimeStore() {
 
   /**
    * Toggle playback direction while maintaining approximate speed.
-   * If paused, starts reverse at -1 day/s.
+   * If paused, starts reverse using the provided default (fallback: -1 day/s).
    */
-  const reverse = () => {
+  const reverse = (defaultResumeRateSecPerSec?: number) => {
     if (state.rateSecPerSec === 0) {
-      setState({ rateSecPerSec: -86400 })
+      setState({ rateSecPerSec: -resolveDefaultResumeRateSecPerSec(defaultResumeRateSecPerSec) })
     } else {
       setState({ rateSecPerSec: -state.rateSecPerSec })
     }
@@ -186,11 +204,11 @@ function createTimeStore() {
 
   /**
    * Set direction to forward if currently going backward.
-   * If paused, starts forward at 1 day/s.
+   * If paused, starts forward using the provided default (fallback: 1 day/s).
    */
-  const forward = () => {
+  const forward = (defaultResumeRateSecPerSec?: number) => {
     if (state.rateSecPerSec === 0) {
-      setState({ rateSecPerSec: 86400 })
+      setState({ rateSecPerSec: resolveDefaultResumeRateSecPerSec(defaultResumeRateSecPerSec) })
     } else if (state.rateSecPerSec < 0) {
       setState({ rateSecPerSec: -state.rateSecPerSec })
     }
