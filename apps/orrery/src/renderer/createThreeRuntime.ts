@@ -7,7 +7,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import { SUN_BLOOM_LAYER } from '../renderLayers.js'
 import { CameraController, type CameraControllerState } from '../controls/CameraController.js'
-import { createSelectionRing, type SelectionRing } from '../scene/SelectionRing.js'
+import { createSelectionOverlay, type SelectionOverlay } from '../scene/SelectionOverlay.js'
 import { createSkydome, type CreateSkydomeOptions } from '../scene/Skydome.js'
 import { createStarfield, type StarfieldHandle } from '../scene/Starfield.js'
 import type { BodyRef } from '../spice/SpiceClient.js'
@@ -19,7 +19,7 @@ export type ThreeRuntime = {
   camera: THREE.PerspectiveCamera
   controller: CameraController
 
-  selectionRing?: SelectionRing
+  selectionOverlay?: SelectionOverlay
 
   renderOnce: (timeMs?: number) => void
   invalidate: () => void
@@ -181,11 +181,9 @@ export function createThreeRuntime(args: {
   let skydome: ReturnType<typeof createSkydome> | null = null
   let skyState: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean } | null = null
 
-  // Subtle selection ring (interactive-only)
-  const selectionRing = !isE2e ? createSelectionRing() : undefined
-  if (selectionRing) {
-    scene.add(selectionRing.object)
-  }
+  // Selection overlay (interactive-only)
+  const selectionOverlay = !isE2e ? createSelectionOverlay() : undefined
+  if (selectionOverlay) scene.add(selectionOverlay.object)
 
   const ensureSky = (opts: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean }) => {
     if (
@@ -629,7 +627,7 @@ export function createThreeRuntime(args: {
     starfield?.update?.(timeSec)
     starfield?.syncToCamera(camera)
 
-    selectionRing?.syncToCamera({ camera, nowMs })
+    selectionOverlay?.syncToCamera({ camera, nowMs, viewportHeightPx: container.clientHeight })
 
     skydome?.syncToCamera(camera)
     skydome?.setTimeSeconds(timeSec)
@@ -759,6 +757,8 @@ export function createThreeRuntime(args: {
 
     const buffer = renderer.getDrawingBufferSize(drawingBufferSize)
 
+    selectionOverlay?.setResolution(buffer.x, buffer.y)
+
     if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
       const scale = THREE.MathUtils.clamp(sunPostprocess.bloom.resolutionScale, 0.1, 1)
       const scaledW = Math.max(1, Math.floor(buffer.x * scale))
@@ -849,9 +849,9 @@ export function createThreeRuntime(args: {
       skydome = null
     }
 
-    if (selectionRing) {
-      scene.remove(selectionRing.object)
-      selectionRing.dispose()
+    if (selectionOverlay) {
+      scene.remove(selectionOverlay.object)
+      selectionOverlay.dispose()
     }
 
     afterRender = null
@@ -872,7 +872,7 @@ export function createThreeRuntime(args: {
     scene,
     camera,
     controller,
-    selectionRing,
+    selectionOverlay,
 
     renderOnce,
     invalidate,
