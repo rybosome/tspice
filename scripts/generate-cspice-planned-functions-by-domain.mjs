@@ -305,7 +305,7 @@ async function main() {
   /** @type {{ routine: string; matchedDomains: string[]; chosenDomain: string; overriddenTo: string | null }[]} */
   const overlaps = [];
 
-  /** @type {{ routine: string; matchedDomains: string[]; overrideDomain: string }[]} */
+  /** @type {{ routine: string; matchedDomains: string[]; overrideDomain: string; rulesWouldChooseDomain: string }[]} */
   const overrideDisagreements = [];
 
   for (const r of planned) {
@@ -320,14 +320,17 @@ async function main() {
 
     const matchedDomains = Array.from(matchedDomainsSet);
 
-    const overriddenTo = override ?? null;
-    const chosenDomain = override ?? matchedDomains[0] ?? ruleConfig.fallbackDomain;
+    const ruleChosenDomain = matchedDomains[0] ?? ruleConfig.fallbackDomain;
 
-    if (override != null && !matchedDomains.includes(override)) {
+    const overriddenTo = override ?? null;
+    const chosenDomain = override ?? ruleChosenDomain;
+
+    if (override != null && override !== ruleChosenDomain) {
       overrideDisagreements.push({
         routine: r.baseName,
         matchedDomains,
         overrideDomain: override,
+        rulesWouldChooseDomain: ruleChosenDomain,
       });
     }
 
@@ -382,9 +385,13 @@ async function main() {
       `\nOverride audit: ${overrideDisagreements.length} routine(s) have overrides that disagree with rule matches:\n`,
     );
     for (const o of overrideDisagreements) {
-      const matches = o.matchedDomains.length === 0 ? "(no rule matches)" : o.matchedDomains.join(", ");
-      process.stderr.write(`- ${o.routine} (override: ${o.overrideDomain})\n`);
-      process.stderr.write(`  matches: ${matches}\n`);
+      process.stderr.write(
+        `- ${o.routine} (override: ${o.overrideDomain}, rulesWouldChoose: ${o.rulesWouldChooseDomain})\n`,
+      );
+      if (o.matchedDomains.length > 0) {
+        const matches = verbose ? o.matchedDomains.join(" -> ") : o.matchedDomains.join(", ");
+        process.stderr.write(`  matches: ${matches}\n`);
+      }
     }
     process.stderr.write("\n");
   }
