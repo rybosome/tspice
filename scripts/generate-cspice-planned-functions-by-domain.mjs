@@ -63,7 +63,7 @@ function parseArgs(argv) {
       if (!v || v.startsWith("-")) {
         throw new Error(`--out requires a path\n\n${usage()}`);
       }
-      out.outPath = path.isAbsolute(v) ? v : path.join(REPO_ROOT, v);
+      out.outPath = path.isAbsolute(v) ? path.resolve(v) : path.resolve(REPO_ROOT, v);
       i++;
       continue;
     }
@@ -71,6 +71,8 @@ function parseArgs(argv) {
     if (a.startsWith("-")) {
       throw new Error(`Unknown arg: ${a}\n\n${usage()}`);
     }
+
+    throw new Error(`Unexpected positional arg: ${a}\n\n${usage()}`);
   }
 
   if (out.check && out.stdout) {
@@ -279,10 +281,19 @@ async function main() {
   await mkdir(path.dirname(outPath), { recursive: true });
 
   if (check) {
-    const existing = await readFile(outPath, "utf8").catch(() => null);
+    const existing = await readFile(outPath, "utf8").catch((err) => {
+      if (err?.code === "ENOENT") return null;
+      throw err;
+    });
     if (existing !== md) {
+      const relOutPath = path.relative(REPO_ROOT, outPath);
+      const outFlag =
+        path.resolve(outPath) === path.resolve(DEFAULT_OUTPUT_PATH)
+          ? ""
+          : ` --out ${relOutPath}`;
+
       process.stderr.write(
-        `${path.relative(REPO_ROOT, outPath)} is out of date. Re-run:\n\n  node scripts/generate-cspice-planned-functions-by-domain.mjs\n`,
+        `${relOutPath} is ${existing === null ? "missing" : "out of date"}. Re-run:\n\n  node scripts/generate-cspice-planned-functions-by-domain.mjs${outFlag}\n`,
       );
       process.exit(1);
     }
