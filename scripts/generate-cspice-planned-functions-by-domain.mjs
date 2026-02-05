@@ -120,11 +120,14 @@ function compileRules(ruleConfig) {
   const compiled = [];
 
   for (const rule of ruleConfig.rules ?? []) {
-    if (!rule.domain || !rule.type || !rule.pattern) {
+    if (!rule.domain || !rule.type) {
       throw new Error(`Invalid rule: ${JSON.stringify(rule)}`);
     }
 
     if (rule.type === "regex") {
+      if (!rule.pattern) {
+        throw new Error(`Invalid regex rule: ${JSON.stringify(rule)}`);
+      }
       const re = new RegExp(rule.pattern, "i");
       compiled.push({
         domain: rule.domain,
@@ -134,10 +137,37 @@ function compileRules(ruleConfig) {
     }
 
     if (rule.type === "purposeIncludes") {
+      if (!rule.pattern) {
+        throw new Error(`Invalid purposeIncludes rule: ${JSON.stringify(rule)}`);
+      }
       const needle = String(rule.pattern).toLowerCase();
       compiled.push({
         domain: rule.domain,
         test: ({ purpose }) => purpose.toLowerCase().includes(needle),
+      });
+      continue;
+    }
+
+    if (rule.type === "names") {
+      if (!Array.isArray(rule.names) || rule.names.length === 0) {
+        throw new Error(`Invalid names rule: ${JSON.stringify(rule)}`);
+      }
+      const names = new Set(rule.names.map((n) => normalizeRoutineName(String(n))));
+      compiled.push({
+        domain: rule.domain,
+        test: ({ baseName }) => names.has(baseName),
+      });
+      continue;
+    }
+
+    if (rule.type === "prefix") {
+      if (!Array.isArray(rule.prefixes) || rule.prefixes.length === 0) {
+        throw new Error(`Invalid prefix rule: ${JSON.stringify(rule)}`);
+      }
+      const prefixes = rule.prefixes.map((p) => normalizeRoutineName(String(p)));
+      compiled.push({
+        domain: rule.domain,
+        test: ({ baseName }) => prefixes.some((p) => baseName.startsWith(p)),
       });
       continue;
     }
@@ -275,19 +305,31 @@ async function main() {
   /** @type {{ routine: string; matchedDomains: string[]; chosenDomain: string; overriddenTo: string | null }[]} */
   const overlaps = [];
 
+  /** @type {{ routine: string; matchedDomains: string[]; overrideDomain: string }[]} */
+  const overrideDisagreements = [];
+
   for (const r of planned) {
     const override = overrides.get(r.baseName);
-
-    /** @type {string[]} */
-    const matchedDomains = [];
+    /** @type {Set<string>} */
+    const matchedDomainsSet = new Set();
     for (const rule of compiledRules) {
       if (rule.test(r)) {
-        matchedDomains.push(rule.domain);
+        matchedDomainsSet.add(rule.domain);
       }
     }
 
+    const matchedDomains = Array.from(matchedDomainsSet);
+
     const overriddenTo = override ?? null;
     const chosenDomain = override ?? matchedDomains[0] ?? ruleConfig.fallbackDomain;
+
+    if (override != null && !matchedDomains.includes(override)) {
+      overrideDisagreements.push({
+        routine: r.baseName,
+        matchedDomains,
+        overrideDomain: override,
+      });
+    }
 
     if (matchedDomains.length === 0 && override == null) {
       fallbackCount++;
@@ -335,6 +377,18 @@ async function main() {
     process.stderr.write("\n");
   }
 
+  if (shouldAudit && overrideDisagreements.length > 0) {
+    process.stderr.write(
+      `\nOverride audit: ${overrideDisagreements.length} routine(s) have overrides that disagree with rule matches:\n`,
+    );
+    for (const o of overrideDisagreements) {
+      const matches = o.matchedDomains.length === 0 ? "(no rule matches)" : o.matchedDomains.join(", ");
+      process.stderr.write(`- ${o.routine} (override: ${o.overrideDomain})\n`);
+      process.stderr.write(`  matches: ${matches}\n`);
+    }
+    process.stderr.write("\n");
+  }
+
   if (check) {
     const existing = await readFile(outPath, "utf8").catch((err) => {
       if (err?.code === "ENOENT") return null;
@@ -354,6 +408,8 @@ async function main() {
     }
   }
 
+  const wouldFailOnOverlap = failOnOverlap && overlaps.length > 0;
+
   if (stdout) {
     process.stdout.write(md);
     if (!md.endsWith("\n")) process.stdout.write("\n");
@@ -361,14 +417,19 @@ async function main() {
       `Fallback (${JSON.stringify(ruleConfig.fallbackDomain)}) classified: ${fallbackCount}\n`,
     );
   } else if (!check) {
-    await writeFile(outPath, md, "utf8");
-    process.stdout.write(`Wrote ${path.relative(REPO_ROOT, outPath)}\n`);
-    process.stdout.write(
-      `Fallback (${JSON.stringify(ruleConfig.fallbackDomain)}) classified: ${fallbackCount}\n`,
-    );
+    if (wouldFailOnOverlap) {
+      process.stderr.write(
+        `Refusing to write ${path.relative(REPO_ROOT, outPath)} because --fail-on-overlap would fail.\n`,
+      );
+    } else {
+      await writeFile(outPath, md, "utf8");
+      process.stdout.write(`Wrote ${path.relative(REPO_ROOT, outPath)}\n`);
+      process.stdout.write(
+        `Fallback (${JSON.stringify(ruleConfig.fallbackDomain)}) classified: ${fallbackCount}\n`,
+      );
+    }
   }
-
-  if (failOnOverlap && overlaps.length > 0) {
+  if (wouldFailOnOverlap) {
     process.stderr.write("Overlapping domain rules detected (failing due to --fail-on-overlap).\n");
     process.exitCode = 2;
   }

@@ -22,9 +22,9 @@ Planned routines: **648**
 | `dsk` | 25 | DSK access, DSK segment writing, and shape model utilities. |
 | `ek` | 37 | EK access, segment building, query, and EK I/O utilities. |
 | `geometry` | 84 | Geometric computations (subpoints, intercepts, illumination, occultations, FOV) and GF event finding. |
-| `coords-vectors` | 120 | Coordinate conversions and core vector/matrix/rotation utilities. |
+| `coords-vectors` | 121 | Coordinate conversions and core vector/matrix/rotation utilities. |
 | `cells-windows` | 73 | SpiceCell set operations and window operations (WN* routines). |
-| `file-io` | 56 | Low-level DAF/DAS/DLA architecture routines and file record operations. |
+| `file-io` | 55 | Low-level DAF/DAS/DLA architecture routines and file record operations. |
 | `strings` | 37 | String utilities not otherwise classified (search, replace, word parsing, formatting). |
 | `math` | 25 | Numerical utilities (Chebyshev polynomials, interpolation, root finding, regression). |
 | `error` | 18 | Error system entry/exit, message formatting, and failure-state routines. |
@@ -395,6 +395,7 @@ Planned routines: **648**
 - `det_c` — Determinant of a double precision 3x3 matrix
 - `dgeodr_c` — Derivative of geodetic w.r.t. rectangular
 - `diags2_c` — Diagonalize symmetric 2x2 matrix
+- `dlatdr_c` — Derivative of latitudinal w.r.t. rectangular
 - `dpgrdr_c` — Derivative of planetographic w.r.t. rectangular
 - `dpr_c` — Degrees per radian
 - `drdazl_c` — Derivative of rectangular w.r.t. AZ/EL
@@ -632,7 +633,6 @@ Planned routines: **648**
 - `dlafns_c` — DLA, find next segment
 - `dlafps_c` — DLA, find previous segment
 - `dlaopn_c` — DLA, open new file
-- `dlatdr_c` — Derivative of latitudinal w.r.t. rectangular
 - `exists_c` — Does the file exist?
 - `getfat_c` — Get file architecture and type
 - `rdtext_c` — Read a line from a text file
