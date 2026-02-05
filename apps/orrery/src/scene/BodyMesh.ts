@@ -608,8 +608,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     const uSunFilamentScale = { value: 6.0 }
     const uSunFilamentSpeed = { value: 0.06 }
-    const uSunFilamentIntensity = { value: 0.18 }
-    const uSunFilamentThreshold = { value: 0.62 }
+    const uSunFilamentIntensity = { value: 0.28 }
+    const uSunFilamentThreshold = { value: 0.5 }
     const uSunFilamentLatitudeBias = { value: 0.35 }
 
     const uSunLimbStrength = { value: 0.35 }
@@ -636,6 +636,25 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       const markerVertNormal = '// tspice:sun-surface:vertex-obj-normal'
       const markerFragCommon = '// tspice:sun-surface:fragment-common'
       const markerFragLights = '// tspice:sun-surface:lights'
+
+      // Preflight: the fragment patch relies on internal Three.js identifiers (e.g.
+      // `totalEmissiveRadiance`). If Three.js refactors these, fail soft with a
+      // warn-once instead of breaking shader compilation.
+      const fragSrc0 = getShaderSource(shader, 'fragmentShader')
+      if (fragSrc0 != null) {
+        const requiredTokens = ['totalEmissiveRadiance', 'diffuseColor', 'nonPerturbedNormal', 'vViewPosition']
+        const missing = requiredTokens.filter((t) => !fragSrc0.includes(t))
+        if (missing.length > 0) {
+          warnOnce(
+            'sun-surface:fragment:preflight',
+            '[BodyMesh] sun surface injection skipped (fragment tokens missing)',
+            {
+              missing,
+            },
+          )
+          return
+        }
+      }
 
       const vert = safeShaderReplaceAll({
         shader,
@@ -819,9 +838,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '',
               '\t\tvec3 pFil = nRot * uSunFilamentScale + seedVec * 0.005;',
               '\t\tfloat rid = tspiceRidgedFbm2( pFil );',
-              '\t\tfloat filMask = smoothstep( uSunFilamentThreshold, uSunFilamentThreshold + 0.25, rid ) * latBias;',
+              '\t\tfloat filMask = smoothstep( uSunFilamentThreshold, uSunFilamentThreshold + 0.22, rid ) * latBias;',
               '\t\tfloat act = tspiceFbm2( pFil * 0.35 + seedVec + vec3( 0.0, uSunTime * uSunFilamentSpeed * 0.07, 0.0 ) );',
-              '\t\tfloat actMask = smoothstep( 0.58, 0.86, act ) * latBias;',
+              '\t\tfloat actMask = smoothstep( 0.52, 0.82, act ) * latBias;',
               '',
               '\t\t// Limb darkening (view-space): keep it subtle so bloom stays stable.',
               '\t\tvec3 viewDir = normalize( vViewPosition );',
@@ -829,15 +848,20 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
               '\t\tfloat muShaped = pow( mu, 0.35 );',
               '\t\tfloat limb = mix( 1.0 - uSunLimbStrength, 1.0, muShaped );',
               '',
-              '\t\tfloat detail = 1.0;',
-              '\t\tdetail += uSunGranulationIntensity * ( gran - 0.5 ) * 0.85;',
-              '\t\tdetail += uSunFilamentIntensity * ( actMask * 0.55 - filMask * 0.35 );',
-              '\t\tdetail = max( detail, 0.0 );',
+              '\t\tfloat granTerm = uSunGranulationIntensity * ( gran - 0.5 ) * 0.85;',
+              '\t\t// Filaments are hard to see when they only darken (bloom + tonemap tends to wash',
+              '\t\t// out subtle dark lines). Bias towards an additive emissive contribution, while',
+              '\t\t// keeping a smaller multiplicative darkening term for contrast.',
+              '\t\tfloat filDark = uSunFilamentIntensity * filMask * 0.18;',
+              '\t\tfloat filBright = uSunFilamentIntensity * ( actMask * 0.65 + filMask * 0.45 );',
               '',
-              '\t\tfloat surfaceMul = detail * limb;',
+              '\t\tfloat surfaceMul = ( 1.0 + granTerm - filDark ) * limb;',
+              '\t\tsurfaceMul = max( surfaceMul, 0.0 );',
               '',
               '\t\t// Apply mostly to emissive so the pattern survives in the postprocess HDR pipeline.',
+              '\t\tvec3 emissive0 = totalEmissiveRadiance;',
               '\t\ttotalEmissiveRadiance *= surfaceMul;',
+              '\t\ttotalEmissiveRadiance += emissive0 * filBright * 0.35;',
               '\t\t// Keep a smaller impact on albedo so lighting is not dramatically affected.',
               '\t\tdiffuseColor.rgb *= mix( 1.0, surfaceMul, 0.35 );',
               '\t}',
