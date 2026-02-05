@@ -253,10 +253,7 @@ export function SelectionInspector({
     () => resolveBodyRefForSpice(focusBody, focusRegistryEntry),
     [focusBody, focusRegistryEntry],
   )
-  const observerForSpice = useMemo(
-    () => resolveBodyRefForSpice(observer, findBodyRegistryEntry(observer)),
-    [observer],
-  )
+  const observerForSpice = useMemo(() => resolveBodyRefForSpice(observer, findBodyRegistryEntry(observer)), [observer])
 
   const bodyInfo = useMemo(() => {
     try {
@@ -465,7 +462,9 @@ export function SelectionInspector({
                     {bodyInfo.orbitalPeriodSec && (
                       <div className="selectionInspectorRow">
                         <span className="selectionInspectorLabel">Orbital period:</span>
-                        <span className="selectionInspectorValue">{formatOrbitalPeriod(bodyInfo.orbitalPeriodSec)}</span>
+                        <span className="selectionInspectorValue">
+                          {formatOrbitalPeriod(bodyInfo.orbitalPeriodSec)}
+                        </span>
                       </div>
                     )}
                   </>
