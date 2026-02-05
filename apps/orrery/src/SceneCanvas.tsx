@@ -270,6 +270,8 @@ export function SceneCanvas() {
     isE2e,
     enableLogDepth,
     starSeed,
+    animatedSky: animatedSkyDefault,
+    skyTwinkle: skyTwinkleDefault,
     initialUtc,
     initialEt,
     sunPostprocessMode,
@@ -357,29 +359,10 @@ export function SceneCanvas() {
   const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
 
   // Sky effects.
-  // Default ON for interactive runs; can be overridden via `?milkyWay=...`.
-  // Disabled by default for e2e tests to keep snapshots deterministic.
-  const [animatedSky, setAnimatedSky] = useState(() => {
-    if (isE2e) return false
-    const searchParams = new URLSearchParams(window.location.search)
-    const raw = searchParams.get('milkyWay') ?? searchParams.get('animatedSky')
-    if (raw == null) return true
-    if (raw === '') return true
-    const v = raw.toLowerCase()
-    return v === '1' || v === 'true'
-  })
+  const [animatedSky, setAnimatedSky] = useState(animatedSkyDefault)
 
   // Star twinkle is separate from the Milky Way toggle.
-  // Default OFF unless explicitly enabled via `?twinkle=...`.
-  const [skyTwinkle, setSkyTwinkle] = useState(() => {
-    if (isE2e) return false
-    const searchParams = new URLSearchParams(window.location.search)
-    const raw = searchParams.get('twinkle')
-    if (raw == null) return false
-    if (raw === '') return true
-    const v = raw.toLowerCase()
-    return v === '1' || v === 'true'
-  })
+  const [skyTwinkle, setSkyTwinkle] = useState(skyTwinkleDefault)
 
   const twinkleEnabled = skyTwinkle && !isE2e
   const skyAnimationActive = (animatedSky || twinkleEnabled) && !isE2e
@@ -1953,8 +1936,7 @@ export function SceneCanvas() {
           frame={J2000_FRAME}
         />
       ) : null}
-      
-      
+
       <canvas ref={canvasRef} className="sceneCanvas" />
 
       {/* Render HUD overlays */}

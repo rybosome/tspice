@@ -26,6 +26,8 @@ import { installTspiceViewerE2eApi } from '../../e2eHooks/index.js'
 import type { CameraController, CameraControllerState } from '../../controls/CameraController.js'
 import { shouldAutoZoomOnFocusChange } from './focusAutoZoom.js'
 
+const SUN_BODY_ID: BodyId = 'SUN'
+
 export type SceneUiState = {
   etSec: EtSeconds
   focusBody: BodyRef
@@ -215,17 +217,18 @@ export async function initSpiceSceneRuntime(args: {
 
   const bodies = sceneModel.bodies.map((body) => {
     const registry = BODY_REGISTRY.find((r) => String(r.body) === String(body.body))
+    const bodyId = registry?.id
 
     const { mesh, dispose, ready, update } = createBodyMesh({
-      bodyId: registry?.id,
+      bodyId,
       appearance: body.style.appearance,
     })
 
-    mesh.userData.bodyId = body.body
+    mesh.userData.bodyId = bodyId ?? body.body
     // Store radiusKm for dynamic scale updates
     mesh.userData.radiusKm = body.style.radiusKm
 
-    if (String(body.body) === 'SUN') {
+    if (bodyId === SUN_BODY_ID) {
       mesh.layers.enable(SUN_BLOOM_LAYER)
     }
 
@@ -245,6 +248,7 @@ export async function initSpiceSceneRuntime(args: {
 
     return {
       body: body.body,
+      bodyId,
       bodyFixedFrame: body.bodyFixedFrame,
       radiusKm: body.style.radiusKm,
       mesh,
@@ -254,7 +258,7 @@ export async function initSpiceSceneRuntime(args: {
     }
   })
 
-  const sunMesh = bodies.find((b) => String(b.body) === 'SUN')?.mesh
+  const sunMesh = bodies.find((b) => b.bodyId === SUN_BODY_ID)?.mesh
   const sunMaterial = (() => {
     const m = sunMesh?.material
     if (!m) return null
@@ -433,13 +437,13 @@ export async function initSpiceSceneRuntime(args: {
           })
 
           // Match the rendered size when auto-zooming.
-          radiusWorld *= String(next.focusBody) === 'SUN' ? next.sunScaleMultiplier : next.planetScaleMultiplier
+          radiusWorld *= String(next.focusBody) === SUN_BODY_ID ? next.sunScaleMultiplier : next.planetScaleMultiplier
 
           const nextRadius = computeFocusRadius(radiusWorld)
 
           // When focusing a non-Sun body, bias the camera orientation so the
           // Sun remains visible (it provides important spatial context).
-          if (String(next.focusBody) !== 'SUN') {
+          if (String(next.focusBody) !== SUN_BODY_ID) {
             const sunPosWorld = new THREE.Vector3(
               -focusPosKm[0] * kmToWorld,
               -focusPosKm[1] * kmToWorld,
@@ -540,7 +544,7 @@ export async function initSpiceSceneRuntime(args: {
       })
 
       // Apply Sun scale multiplier (Sun only)
-      if (String(b.body) === 'SUN') {
+      if (b.bodyId === SUN_BODY_ID) {
         radiusWorld *= next.sunScaleMultiplier
       } else {
         radiusWorld *= next.planetScaleMultiplier

@@ -13,6 +13,12 @@ export type SceneCanvasRuntimeConfig = {
   /** Stable seed used for starfield + skydome noise. */
   starSeed: number
 
+  /** Enables Milky Way / skydome background effects. */
+  animatedSky: boolean
+
+  /** Enables background sky twinkle. */
+  skyTwinkle: boolean
+
   /** Optional UTC timestamp for initial time (higher precedence than `initialEt`). */
   initialUtc: string | null
 
@@ -30,6 +36,19 @@ export type SceneCanvasRuntimeConfig = {
 }
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
+
+const parseBoolean = (searchParams: URLSearchParams, key: string) => {
+  const raw = searchParams.get(key)
+  if (raw == null) return null
+  if (raw === '') return true
+
+  const v = raw.toLowerCase()
+
+  if (v === '1' || v === 'true') return true
+  if (v === '0' || v === 'false') return false
+
+  return null
+}
 
 const parseNumber = (searchParams: URLSearchParams, key: string) => {
   const raw = searchParams.get(key)
@@ -68,6 +87,25 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
 
     // E2E snapshots must be stable regardless of Math.random overrides.
     return isE2e ? 1 : 1337
+  })()
+
+  // Sky effects.
+  // Default ON for interactive runs; can be overridden via `?milkyWay=...`.
+  // Disabled by default for e2e tests to keep snapshots deterministic.
+  const animatedSky = (() => {
+    if (isE2e) return false
+
+    const fromUrl = parseBoolean(searchParams, 'milkyWay') ?? parseBoolean(searchParams, 'animatedSky')
+    return fromUrl ?? true
+  })()
+
+  // Star twinkle is separate from the Milky Way toggle.
+  // Default OFF unless explicitly enabled via `?twinkle=...`.
+  const skyTwinkle = (() => {
+    if (isE2e) return false
+
+    const fromUrl = parseBoolean(searchParams, 'twinkle')
+    return fromUrl ?? false
   })()
 
   const initialUtc = searchParams.get('utc')
@@ -119,6 +157,8 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
     enableLogDepth,
     debug,
     starSeed,
+    animatedSky,
+    skyTwinkle,
     initialUtc,
     initialEt,
     sunPostprocessMode,
