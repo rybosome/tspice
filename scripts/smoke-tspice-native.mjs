@@ -79,11 +79,16 @@ function isTempProjectResolution(resolvedUrl) {
 }
 
 if (typeof import.meta.resolve === "function") {
-  const candidate = import.meta.resolve(tspiceSpecifier, projectPackageJsonUrl);
-  if (isTempProjectResolution(candidate)) {
-    tspiceResolved = candidate;
-    resolutionMethod = "import.meta.resolve(parentURL)";
-  } else {
+  try {
+    const candidate = import.meta.resolve(tspiceSpecifier, projectPackageJsonUrl);
+    if (isTempProjectResolution(candidate)) {
+      tspiceResolved = candidate;
+      resolutionMethod = "import.meta.resolve(parentURL)";
+    } else {
+      tspiceResolved = resolveViaRequire();
+      resolutionMethod = "createRequire(...).resolve (fallback)";
+    }
+  } catch {
     tspiceResolved = resolveViaRequire();
     resolutionMethod = "createRequire(...).resolve (fallback)";
   }
