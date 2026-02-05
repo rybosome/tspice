@@ -148,7 +148,7 @@
     {
       "domain": "cells-windows",
       "type": "regex",
-      "pattern": "^(wn|appnd|card|scard|ssize|size|clear[cdi]|copy|cmprss|diff|sdiff|inter|union|insrt|remov|reord|ord|lstle|lstlt|elem|order|shell|bsrch|bscho|esrch|isrch|valid|set$|isordv)"
+      "pattern": "^(wn|appnd|card$|scard$|ssize$|size$|clear[cdi]$|copy$|cmprss$|diff$|sdiff$|inter$|union$|insrt|remov|reord[cdil]$|ord[cdi]$|lstle[cdi]$|lstlt[cdi]$|elem[cdi]$|order[cdi]$|shell|bsrch[cdi]$|bscho[ci]$|esrchc$|isrch[cdi]$|valid$|set$|isordv$)"
     },
     {
       "domain": "ids-names",

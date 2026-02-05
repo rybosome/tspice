@@ -21,7 +21,7 @@ function normalizeRoutineName(name) {
 
 function usage() {
   return [
-    "Usage: node scripts/generate-cspice-planned-functions-by-domain.mjs [--out <path>] [--stdout] [--check]",
+    "Usage: node scripts/generate-cspice-planned-functions-by-domain.mjs [--out <path>] [--stdout] [--check] [--audit] [--verbose]",
     "",
     "Default: regenerate docs/cspice-planned-functions-by-domain.md from data/cspice-functions.json.",
     "",
@@ -29,14 +29,18 @@ function usage() {
     "  --out <path>  Write output to this path (default: docs/cspice-planned-functions-by-domain.md).",
     "  --stdout      Write markdown to stdout (status/logs to stderr).",
     "  --check       Fail if output file is out of date.",
+    "  --audit       Report routines that match multiple domain rules.",
+    "  --verbose     More detailed audit output (implies --audit).",
   ].join("\n");
 }
 
 function parseArgs(argv) {
-  /** @type {{ check: boolean; stdout: boolean; outPath: string }} */
+  /** @type {{ check: boolean; stdout: boolean; audit: boolean; verbose: boolean; outPath: string }} */
   const out = {
     check: false,
     stdout: false,
+    audit: false,
+    verbose: false,
     outPath: DEFAULT_OUTPUT_PATH,
   };
 
@@ -55,6 +59,17 @@ function parseArgs(argv) {
 
     if (a === "--stdout") {
       out.stdout = true;
+      continue;
+    }
+
+    if (a === "--audit") {
+      out.audit = true;
+      continue;
+    }
+
+    if (a === "--verbose") {
+      out.audit = true;
+      out.verbose = true;
       continue;
     }
 
@@ -80,6 +95,10 @@ function parseArgs(argv) {
   }
 
   return out;
+}
+
+function quoteIfNeeded(s) {
+  return /\s/.test(s) ? JSON.stringify(s) : s;
 }
 
 function normalizePurpose(purpose) {
@@ -187,7 +206,7 @@ function renderMarkdown({ plannedRoutines, domains, grouped, fallbackDomain, unm
 }
 
 async function main() {
-  const { check, stdout, outPath } = parseArgs(process.argv.slice(2));
+  const { check, stdout, outPath, audit, verbose } = parseArgs(process.argv.slice(2));
 
   const [rawFunctionsJson, rawRulesJson] = await Promise.all([
     readFile(CSPICE_FUNCTIONS_JSON_PATH, "utf8"),
@@ -213,7 +232,7 @@ async function main() {
   const domainIds = new Set(ruleConfig.domains.map((d) => d.id));
   if (!domainIds.has(ruleConfig.fallbackDomain)) {
     throw new Error(
-      `fallbackDomain=\"${ruleConfig.fallbackDomain}\" is not present in domains list`,
+      `fallbackDomain=${JSON.stringify(ruleConfig.fallbackDomain)} is not present in domains list`,
     );
   }
 
@@ -245,16 +264,29 @@ async function main() {
 
   let fallbackCount = 0;
 
+  /** @type {{ routine: string; matchedDomains: string[] }[]} */
+  const multiMatches = [];
+
   for (const r of planned) {
     const override = overrides.get(r.baseName);
     let domain = override;
 
     if (!domain) {
+      /** @type {string[]} */
+      const matchedDomains = [];
       for (const rule of compiledRules) {
         if (rule.test(r)) {
-          domain = rule.domain;
-          break;
+          matchedDomains.push(rule.domain);
         }
+      }
+
+      if (matchedDomains.length > 0) {
+        domain = matchedDomains[0];
+      }
+
+      if (matchedDomains.length > 1) {
+        // Keep the full set for observability; rule order still determines the chosen domain.
+        multiMatches.push({ routine: r.baseName, matchedDomains });
       }
     }
 
@@ -280,6 +312,20 @@ async function main() {
 
   await mkdir(path.dirname(outPath), { recursive: true });
 
+  // Always show audit output during --check so CI runs surface potential rule overlaps.
+  const shouldAudit = audit || check;
+
+  if (shouldAudit && multiMatches.length > 0) {
+    process.stderr.write(
+      `\nRule audit: ${multiMatches.length} routine(s) matched multiple rules (first match wins):\n`,
+    );
+    for (const m of multiMatches) {
+      const detail = verbose ? `  ${m.matchedDomains.join(" -> ")}` : `  ${m.matchedDomains.join(", ")}`;
+      process.stderr.write(`- ${m.routine}${detail ? `\n${detail}\n` : "\n"}`);
+    }
+    process.stderr.write("\n");
+  }
+
   if (check) {
     const existing = await readFile(outPath, "utf8").catch((err) => {
       if (err?.code === "ENOENT") return null;
@@ -290,7 +336,7 @@ async function main() {
       const outFlag =
         path.resolve(outPath) === path.resolve(DEFAULT_OUTPUT_PATH)
           ? ""
-          : ` --out ${relOutPath}`;
+          : ` --out ${quoteIfNeeded(relOutPath)}`;
 
       process.stderr.write(
         `${relOutPath} is ${existing === null ? "missing" : "out of date"}. Re-run:\n\n  node scripts/generate-cspice-planned-functions-by-domain.mjs${outFlag}\n`,
@@ -303,13 +349,17 @@ async function main() {
   if (stdout) {
     process.stdout.write(md);
     if (!md.endsWith("\n")) process.stdout.write("\n");
-    process.stderr.write(`Fallback (\\\"${ruleConfig.fallbackDomain}\\\") classified: ${fallbackCount}\n`);
+    process.stderr.write(
+      `Fallback (${JSON.stringify(ruleConfig.fallbackDomain)}) classified: ${fallbackCount}\n`,
+    );
     return;
   }
 
   await writeFile(outPath, md, "utf8");
   process.stdout.write(`Wrote ${path.relative(REPO_ROOT, outPath)}\n`);
-  process.stdout.write(`Fallback (\\\"${ruleConfig.fallbackDomain}\\\") classified: ${fallbackCount}\n`);
+  process.stdout.write(
+    `Fallback (${JSON.stringify(ruleConfig.fallbackDomain)}) classified: ${fallbackCount}\n`,
+  );
 }
 
 main().catch((err) => {
