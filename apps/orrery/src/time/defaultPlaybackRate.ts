@@ -10,6 +10,9 @@ export const DEFAULT_RESUME_RATE_HOUR_SEC_PER_SEC = 60 * 60
 export const DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC = 24 * 60 * 60
 export const DEFAULT_RESUME_RATE_WEEK_SEC_PER_SEC = 7 * DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC
 
+const ZOOM_SLIDER_ONE_THIRD = 100 / 3
+const ZOOM_SLIDER_TWO_THIRDS = (100 * 2) / 3
+
 /**
  * Compute the default resume/playback rate for a given zoom slider position.
  *
@@ -18,7 +21,11 @@ export const DEFAULT_RESUME_RATE_WEEK_SEC_PER_SEC = 7 * DEFAULT_RESUME_RATE_DAY_
 export function computeDefaultResumeRateSecPerSecForZoomSlider(zoomSlider: number): number {
   const z = Math.max(0, Math.min(100, zoomSlider))
 
-  if (z < 100 / 3) return DEFAULT_RESUME_RATE_HOUR_SEC_PER_SEC
-  if (z < (100 * 2) / 3) return DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC
+  // Inclusivity:
+  //   [0 .. 100/3)       => 1 hour/s
+  //   [100/3 .. 2*100/3) => 1 day/s
+  //   [2*100/3 .. 100]   => 1 week/s
+  if (z < ZOOM_SLIDER_ONE_THIRD) return DEFAULT_RESUME_RATE_HOUR_SEC_PER_SEC
+  if (z < ZOOM_SLIDER_TWO_THIRDS) return DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC
   return DEFAULT_RESUME_RATE_WEEK_SEC_PER_SEC
 }

@@ -27,4 +27,16 @@ describe('defaultPlaybackRate', () => {
     expect(computeDefaultResumeRateSecPerSecForZoomSlider(-100)).toBe(DEFAULT_RESUME_RATE_HOUR_SEC_PER_SEC)
     expect(computeDefaultResumeRateSecPerSecForZoomSlider(1000)).toBe(DEFAULT_RESUME_RATE_WEEK_SEC_PER_SEC)
   })
+
+  it('treats the 1/3 and 2/3 thresholds as inclusive of the next segment', () => {
+    const oneThird = 100 / 3
+    const twoThirds = (2 * 100) / 3
+
+    // [0 .. 1/3) is hour, [1/3 .. 2/3) is day, [2/3 .. 100] is week
+    expect(computeDefaultResumeRateSecPerSecForZoomSlider(oneThird - 1e-6)).toBe(DEFAULT_RESUME_RATE_HOUR_SEC_PER_SEC)
+    expect(computeDefaultResumeRateSecPerSecForZoomSlider(oneThird)).toBe(DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC)
+
+    expect(computeDefaultResumeRateSecPerSecForZoomSlider(twoThirds - 1e-6)).toBe(DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC)
+    expect(computeDefaultResumeRateSecPerSecForZoomSlider(twoThirds)).toBe(DEFAULT_RESUME_RATE_WEEK_SEC_PER_SEC)
+  })
 })

@@ -1,5 +1,10 @@
 import { useSyncExternalStore } from 'react'
 import { quantizeEt } from './quantizeEt.js'
+import {
+  DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC,
+  DEFAULT_RESUME_RATE_HOUR_SEC_PER_SEC,
+  DEFAULT_RESUME_RATE_WEEK_SEC_PER_SEC,
+} from './defaultPlaybackRate.js'
 
 /**
  * Default scrub window: 10 years from J2000 epoch (0 to ~10 years in seconds).
@@ -126,13 +131,18 @@ function createTimeStore() {
     }
   }
 
-  const DEFAULT_RESUME_RATE_SEC_PER_SEC = 86400
+  const DEFAULT_RESUME_RATE_SEC_PER_SEC = DEFAULT_RESUME_RATE_DAY_SEC_PER_SEC
+  const MIN_RESUME_RATE_SEC_PER_SEC = DEFAULT_RESUME_RATE_HOUR_SEC_PER_SEC
+  const MAX_RESUME_RATE_SEC_PER_SEC = DEFAULT_RESUME_RATE_WEEK_SEC_PER_SEC
 
   const resolveDefaultResumeRateSecPerSec = (defaultResumeRateSecPerSec: number | undefined): number => {
+    // `defaultResumeRateSecPerSec` is expected to be a positive value.
+    // Treat <= 0 (and non-finite) as invalid, then clamp to a reasonable UX range.
     if (defaultResumeRateSecPerSec == null) return DEFAULT_RESUME_RATE_SEC_PER_SEC
-    if (!Number.isFinite(defaultResumeRateSecPerSec) || defaultResumeRateSecPerSec == 0)
+    if (!Number.isFinite(defaultResumeRateSecPerSec) || defaultResumeRateSecPerSec <= 0)
       return DEFAULT_RESUME_RATE_SEC_PER_SEC
-    return Math.abs(defaultResumeRateSecPerSec)
+
+    return Math.max(MIN_RESUME_RATE_SEC_PER_SEC, Math.min(MAX_RESUME_RATE_SEC_PER_SEC, defaultResumeRateSecPerSec))
   }
 
   const play = (defaultResumeRateSecPerSec?: number) => {

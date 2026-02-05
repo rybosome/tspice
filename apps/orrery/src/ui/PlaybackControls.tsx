@@ -71,11 +71,6 @@ export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }:
   const isPlaying = state.rateSecPerSec !== 0
   const isReverse = state.rateSecPerSec < 0
 
-  const getDefaultResumeRate = useCallback(
-    () => getDefaultResumeRateSecPerSec?.() ?? 86400,
-    [getDefaultResumeRateSecPerSec],
-  )
-
   return (
     <div className="playbackControls">
       {/* Time Display - stacked UTC and ET */}
@@ -106,7 +101,7 @@ export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }:
       <div className="playbackButtonsRow">
         <button
           className={`asciiBtn ${isReverse ? 'asciiBtnActive' : ''}`}
-          onClick={() => timeStore.reverse(getDefaultResumeRate())}
+          onClick={() => timeStore.reverse(getDefaultResumeRateSecPerSec?.())}
           title="Reverse direction"
         >
           <span className="asciiBtnBracket">[</span>
@@ -122,7 +117,7 @@ export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }:
 
         <button
           className={`asciiBtn asciiBtnMain ${isPlaying ? 'asciiBtnActive' : ''}`}
-          onClick={() => timeStore.togglePlay(getDefaultResumeRate())}
+          onClick={() => timeStore.togglePlay(getDefaultResumeRateSecPerSec?.())}
           title={isPlaying ? 'Pause' : 'Play'}
         >
           <span className="asciiBtnBracket">[</span>
@@ -138,7 +133,7 @@ export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }:
 
         <button
           className={`asciiBtn ${!isReverse && state.rateSecPerSec !== 0 ? 'asciiBtnActive' : ''}`}
-          onClick={() => timeStore.forward(getDefaultResumeRate())}
+          onClick={() => timeStore.forward(getDefaultResumeRateSecPerSec?.())}
           title="Forward direction"
         >
           <span className="asciiBtnBracket">[</span>
