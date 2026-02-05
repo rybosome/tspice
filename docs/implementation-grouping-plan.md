@@ -7,6 +7,37 @@ Context:
 
 This doc expands the proposed “PR-sized implementation groups” into **actionable implementation plans**.
 
+## Table of contents
+
+- [Guiding principles](#guiding-principles)
+- [Naming / routing conventions (what exists today)](#naming-routing-conventions)
+- [Enabler PRs (A–D)](#enabler-prs-a-d)
+  - [Enabler A — SpiceCell + SpiceWindow core types + marshalling](#enabler-a)
+  - [Enabler B — String array + fixed-width output string buffers](#enabler-b)
+  - [Enabler C — File-handle + DAF/DAS/DLA plumbing](#enabler-c)
+  - [Enabler D — Error-system mapping + `Found` conventions](#enabler-d)
+- [Dependency graph](#dependency-graph)
+  - [Mermaid diagram](#dependency-graph-mermaid-diagram)
+  - [Dependency table](#dependency-graph-dependency-table)
+- [Group-by-group implementation plans](#group-by-group-implementation-plans)
+  - [Group 1 — Foundational contract + shared runtime utilities](#group-1)
+  - [Group 2 — (Enabler A) SpiceCell/SpiceWindow types + basic ops](#group-2)
+  - [Group 3 — (Enabler B) String array + fixed-width output-buffer conventions](#group-3)
+  - [Group 4 — (Enabler D) Error system + status utilities](#group-4)
+  - [Group 5 — Kernel pool read/write core](#group-5)
+  - [Group 6 — IDs↔names & frame name utilities](#group-6)
+  - [Group 7 — Time expansions (non-core conversions)](#group-7)
+  - [Group 8 — Vector/matrix “bulk add” (no kernels required)](#group-8)
+  - [Group 9 — Frame transforms & attitude (CK read-only first)](#group-9)
+  - [Group 10 — (Enabler C) File handles + DAF/DAS/DLA core](#group-10)
+  - [Group 11 — Kernel management “full” (beyond furnsh/kclear)](#group-11)
+  - [Group 12 — SPK read APIs + coverage/object queries](#group-12)
+  - [Group 13 — Geometry “classic” (subpoints, intercepts, illumination)](#group-13)
+  - [Group 14 — GF event finding tranche 1 (infra + 1–2 search families)](#group-14)
+  - [Group 15 — Writers: SPK/CK/PCK (segment creation)](#group-15)
+  - [Group 16 — DSK + EK “big subsystems” (split further)](#group-16)
+
+<a id="guiding-principles"></a>
 ## Guiding principles
 
 - **Each group is sized for one PR.** It should be possible to land it without coordinating large cross-cutting refactors.
@@ -26,6 +57,7 @@ Related docs / code pointers:
 - WASM backend package overview: [`packages/backend-wasm/README.md`](../packages/backend-wasm/README.md)
 - Contract domains folder (current surface): [`packages/backend-contract/src/domains/`](../packages/backend-contract/src/domains/)
 
+<a id="naming-routing-conventions"></a>
 ## Naming / routing conventions (what exists today)
 
 - Contract composes the backend surface in `packages/backend-contract/src/index.ts` via `SpiceBackend extends TimeApi, KernelsApi, ...`.
@@ -37,6 +69,7 @@ Related docs / code pointers:
   - Shared C shim sources (compiled into WASM): `packages/backend-shim-c/src/domains/*.c` (wired in `scripts/build-backend-wasm.mjs`)
   - TS-side marshalling helpers live under `packages/backend-wasm/src/codec/*`.
 
+<a id="enabler-prs-a-d"></a>
 ## Enabler PRs (A–D)
 
 The lettered “enabler” PRs are called out because they unlock many later routines. In the numbered plan, they correspond to:
@@ -51,6 +84,7 @@ The lettered “enabler” PRs are called out because they unlock many later rou
 The remainder of this doc uses the numbered groups as the primary identifiers, and annotates where a group is also an enabler.
 
 
+<a id="enabler-a"></a>
 ### Enabler A — SpiceCell + SpiceWindow core types + marshalling
 
 **Purpose / what it unlocks**: introduces SPICE’s `CELL`/`WINDOW` collection types so later PRs can expose coverage windows (`spkcov`, `ckcov`, …), object sets (`spkobj`, `ckobj`, …), and GF confinement/result windows.
@@ -65,6 +99,7 @@ The remainder of this doc uses the numbered groups as the primary identifiers, a
 
 **Concrete deliverables / tests / DoD**: implemented as **Group 2** below (this enabler is intentionally not separate work from Group 2).
 
+<a id="enabler-b"></a>
 ### Enabler B — String array + fixed-width output string buffers
 
 **Purpose / what it unlocks**: unlocks routines with “`char[][len]`” outputs and multi-string results (`kdata`, pool getters, EK metadata, etc.).
@@ -79,6 +114,7 @@ The remainder of this doc uses the numbered groups as the primary identifiers, a
 
 **Concrete deliverables / tests / DoD**: implemented as **Group 3** below.
 
+<a id="enabler-c"></a>
 ### Enabler C — File-handle + DAF/DAS/DLA plumbing
 
 **Purpose / what it unlocks**: provides the low-level I/O substrate for kernel readers/writers (SPK/CK/PCK/DSK/EK) and many “coverage/object query” APIs.
@@ -93,6 +129,7 @@ The remainder of this doc uses the numbered groups as the primary identifiers, a
 
 **Concrete deliverables / tests / DoD**: implemented as **Group 10** below.
 
+<a id="enabler-d"></a>
 ### Enabler D — Error-system mapping + `Found` conventions
 
 **Purpose / what it unlocks**: makes failure behavior consistent (throw vs `{found:false}`) and enables reliable wrapping of routines with “found” outputs.
@@ -109,8 +146,10 @@ The remainder of this doc uses the numbered groups as the primary identifiers, a
 
 ---
 
+<a id="dependency-graph"></a>
 ## Dependency graph
 
+<a id="dependency-graph-mermaid-diagram"></a>
 ### Mermaid diagram
 
 ```mermaid
@@ -181,6 +220,7 @@ graph TD
   G10 --> G16
 ```
 
+<a id="dependency-graph-dependency-table"></a>
 ### Dependency table
 
 > “Deps” are other **groups** that must be merged first.
@@ -229,10 +269,12 @@ This is a dependency-respecting ordering that keeps “unlocking power” high. 
 
 ---
 
+<a id="group-by-group-implementation-plans"></a>
 # Group-by-group implementation plans
 
 Each group below is scoped and written as if it were the checklist for a PR.
 
+<a id="group-1"></a>
 ## Group 1 — Foundational contract + shared runtime utilities
 
 **Purpose / unlocks**
@@ -301,6 +343,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-2"></a>
 ## Group 2 — (Enabler A) SpiceCell/SpiceWindow types + basic ops
 
 **Purpose / unlocks**
@@ -390,6 +433,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-3"></a>
 ## Group 3 — (Enabler B) String array + fixed-width output-buffer conventions
 
 **Purpose / unlocks**
@@ -455,6 +499,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-4"></a>
 ## Group 4 — (Enabler D) Error system + status utilities
 
 **Purpose / unlocks**
@@ -527,6 +572,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-5"></a>
 ## Group 5 — Kernel pool read/write core
 
 **Purpose / unlocks**
@@ -596,6 +642,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-6"></a>
 ## Group 6 — IDs↔names & frame name utilities
 
 **Purpose / unlocks**
@@ -662,6 +709,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-7"></a>
 ## Group 7 — Time expansions (non-core conversions)
 
 **Purpose / unlocks**
@@ -718,6 +766,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-8"></a>
 ## Group 8 — Vector/matrix “bulk add” (no kernels required)
 
 **Purpose / unlocks**
@@ -777,6 +826,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-9"></a>
 ## Group 9 — Frame transforms & attitude (CK read-only first)
 
 **Purpose / unlocks**
@@ -831,6 +881,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-10"></a>
 ## Group 10 — (Enabler C) File handles + DAF/DAS/DLA core
 
 **Purpose / unlocks**
@@ -905,6 +956,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-11"></a>
 ## Group 11 — Kernel management “full” (beyond furnsh/kclear)
 
 **Purpose / unlocks**
@@ -966,6 +1018,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-12"></a>
 ## Group 12 — SPK read APIs + coverage/object queries
 
 **Purpose / unlocks**
@@ -1028,6 +1081,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-13"></a>
 ## Group 13 — Geometry “classic” (subpoints, intercepts, illumination)
 
 **Purpose / unlocks**
@@ -1083,6 +1137,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-14"></a>
 ## Group 14 — GF event finding tranche 1 (infra + 1–2 search families)
 
 **Purpose / unlocks**
@@ -1143,6 +1198,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-15"></a>
 ## Group 15 — Writers: SPK/CK/PCK (segment creation)
 
 **Purpose / unlocks**
@@ -1204,6 +1260,7 @@ Each group below is scoped and written as if it were the checklist for a PR.
 
 ---
 
+<a id="group-16"></a>
 ## Group 16 — DSK + EK “big subsystems” (split further)
 
 **Purpose / unlocks**
