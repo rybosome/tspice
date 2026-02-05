@@ -62,11 +62,16 @@ function resolveViaRequire() {
 }
 
 function isPathInside(baseDir, candidatePath) {
-  const rel = path.relative(baseDir, candidatePath);
+  const rel = path.relative(path.resolve(baseDir), path.resolve(candidatePath));
   // `path.relative()` can return paths starting with `..` when the candidate is
   // outside. Guard against also returning an absolute path (e.g. different drive
   // letters on Windows).
-  return rel && !rel.startsWith("..") && !path.isAbsolute(rel);
+
+  // If `candidatePath === baseDir`, relative() returns an empty string.
+  if (rel === "") return true;
+
+  // Only treat `..` and `../...` (or Windows equivalents) as outside.
+  return rel !== ".." && !rel.startsWith(`..${path.sep}`) && !path.isAbsolute(rel);
 }
 
 function isTempProjectResolution(resolvedUrl) {
@@ -75,9 +80,17 @@ function isTempProjectResolution(resolvedUrl) {
     if (resolvedFileUrl.protocol !== "file:") return false;
 
     const resolvedFsPath = fileURLToPath(resolvedFileUrl);
-    // The package should resolve from within the temp project's node_modules.
-    const nodeModulesDir = path.resolve(projectRoot, "node_modules");
-    return isPathInside(nodeModulesDir, resolvedFsPath) && fs.existsSync(resolvedFsPath);
+    // The package should resolve from within the temp project's installation.
+    const installedPackageRoot = path.resolve(
+      projectRoot,
+      "node_modules",
+      ...tspiceSpecifier.split("/"),
+    );
+
+    return (
+      isPathInside(installedPackageRoot, resolvedFsPath) &&
+      fs.existsSync(resolvedFsPath)
+    );
   } catch {
     return false;
   }
@@ -90,26 +103,35 @@ try {
   }
   tspiceResolved = candidate;
   resolutionMethod = "createRequire(...).resolve";
-} catch {
+} catch (err) {
   if (typeof import.meta.resolve === "function") {
-    const candidate = import.meta.resolve(tspiceSpecifier, projectPackageJsonUrl);
-    if (isTempProjectResolution(candidate)) {
-      tspiceResolved = candidate;
-      resolutionMethod = "import.meta.resolve(parentURL) (fallback)";
-    } else {
+    let candidate;
+    try {
+      candidate = import.meta.resolve(tspiceSpecifier, projectPackageJsonUrl);
+    } catch (resolveErr) {
       throw new Error(
-        "Failed to resolve @rybosome/tspice from temp project via createRequire() or import.meta.resolve(parentURL)",
+        "import.meta.resolve() failed while resolving @rybosome/tspice from the temp project",
+        { cause: new AggregateError([err, resolveErr]) },
       );
     }
+    if (!isTempProjectResolution(candidate)) {
+      throw new Error(
+        "Failed to resolve @rybosome/tspice from temp project via createRequire() or import.meta.resolve(parentURL)",
+        { cause: err },
+      );
+    }
+
+    tspiceResolved = candidate;
+    resolutionMethod = "import.meta.resolve(parentURL) (fallback)";
   } else {
     throw new Error(
       "Failed to resolve @rybosome/tspice from temp project via createRequire(); import.meta.resolve is unavailable",
+      { cause: err },
     );
   }
 }
 
 console.log(
-
   `[smoke] resolving ${tspiceSpecifier} via ${resolutionMethod} => ${tspiceResolved}`,
 );
 
