@@ -56,6 +56,42 @@ let resolutionMethod;
 // Prefer deterministic resolution anchored to the temp project.
 const requireFromProject = createRequire(projectPackageJsonPath);
 
+let projectNodeModulesRoot;
+let tspicePkgRoot;
+
+function getProjectNodeModulesRoot() {
+  if (projectNodeModulesRoot !== undefined) return projectNodeModulesRoot;
+
+  const nodeModulesPath = path.join(projectRoot, "node_modules");
+  if (!fs.existsSync(nodeModulesPath)) {
+    projectNodeModulesRoot = null;
+    return projectNodeModulesRoot;
+  }
+
+  try {
+    projectNodeModulesRoot = fs.realpathSync(nodeModulesPath);
+  } catch {
+    projectNodeModulesRoot = null;
+  }
+
+  return projectNodeModulesRoot;
+}
+
+function getTspicePkgRoot() {
+  if (tspicePkgRoot !== undefined) return tspicePkgRoot;
+
+  try {
+    const tspicePkgJsonPath = requireFromProject.resolve(
+      `${tspiceSpecifier}/package.json`,
+    );
+    tspicePkgRoot = path.dirname(fs.realpathSync(tspicePkgJsonPath));
+  } catch {
+    tspicePkgRoot = null;
+  }
+
+  return tspicePkgRoot;
+}
+
 function resolveViaRequire() {
   const resolvedPath = requireFromProject.resolve(tspiceSpecifier);
   return pathToFileURL(resolvedPath).href;
@@ -80,16 +116,19 @@ function isTempProjectResolution(resolvedUrl) {
     if (resolvedFileUrl.protocol !== "file:") return false;
 
     const resolvedFsPath = fileURLToPath(resolvedFileUrl);
-    // The package should resolve from within the temp project's installation.
-    const installedPackageRoot = path.resolve(
-      projectRoot,
-      "node_modules",
-      ...tspiceSpecifier.split("/"),
-    );
+    if (!fs.existsSync(resolvedFsPath)) return false;
+
+    // If `resolvedFsPath` is a symlink (common with pnpm), validate based on the
+    // real filesystem path.
+    const resolvedRealPath = fs.realpathSync(resolvedFsPath);
+
+    const nodeModulesRoot = getProjectNodeModulesRoot();
+    const pkgRoot = getTspicePkgRoot();
+    if (!nodeModulesRoot || !pkgRoot) return false;
 
     return (
-      isPathInside(installedPackageRoot, resolvedFsPath) &&
-      fs.existsSync(resolvedFsPath)
+      isPathInside(nodeModulesRoot, resolvedRealPath) &&
+      isPathInside(pkgRoot, resolvedRealPath)
     );
   } catch {
     return false;

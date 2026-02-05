@@ -13,6 +13,11 @@ retry() {
     return 2
   fi
 
+  if ! [[ "$tries" =~ ^[0-9]+$ ]] || [ "$tries" -lt 1 ]; then
+    echo "[retry] tries must be a positive integer (>=1); got: $tries" >&2
+    return 2
+  fi
+
   local n=1
   local cmd=("$@")
 

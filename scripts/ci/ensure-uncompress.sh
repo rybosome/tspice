@@ -48,7 +48,7 @@ ensure_macos() {
   fi
 
   log "installing ncompress via Homebrew"
-  if brew install ncompress; then
+  if retry 3 brew install ncompress; then
     :
   else
     local install_status=$?
@@ -61,8 +61,8 @@ ensure_macos() {
     fi
 
     log "re-attempting brew install ncompress"
-    if ! brew install ncompress; then
-      echo "Failed to install ncompress via Homebrew, even after a best-effort brew update." >&2
+    if ! retry 3 brew install ncompress; then
+      echo "Failed to install ncompress via Homebrew, even after a best-effort brew update + retries." >&2
       exit 1
     fi
   fi
