@@ -5,7 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 /**
  * Find the nearest directory at/above `startDir` that contains a `package.json`.
@@ -49,17 +49,100 @@ const tspiceSpecifier = "@rybosome/tspice";
 
 let tspiceResolved;
 let resolutionMethod;
-if (typeof import.meta.resolve === "function") {
-  // Resolve as if imported from the temp project's `package.json`.
-  tspiceResolved = import.meta.resolve(tspiceSpecifier, projectPackageJsonUrl);
-  resolutionMethod = "import.meta.resolve";
-} else {
-  // Compatibility fallback for older Node versions: resolve using a CJS resolver
-  // anchored to the temp project, then import via file URL.
-  const requireFromProject = createRequire(projectPackageJsonPath);
+// `import.meta.resolve()` is implemented in Node, but its signature/behavior has
+// been inconsistent across Node versions (notably: the 2nd arg may be ignored,
+// which would resolve relative to this script instead of the temp project).
+//
+// Prefer deterministic resolution anchored to the temp project.
+const requireFromProject = createRequire(projectPackageJsonPath);
+
+function resolveViaRequire() {
   const resolvedPath = requireFromProject.resolve(tspiceSpecifier);
-  tspiceResolved = pathToFileURL(resolvedPath).href;
+  return pathToFileURL(resolvedPath).href;
+}
+
+function isPathInside(baseDir, candidatePath) {
+  const rel = path.relative(path.resolve(baseDir), path.resolve(candidatePath));
+  // `path.relative()` can return paths starting with `..` when the candidate is
+  // outside. Guard against also returning an absolute path (e.g. different drive
+  // letters on Windows).
+
+  // If `candidatePath === baseDir`, relative() returns an empty string.
+  if (rel === "") return true;
+
+  // Only treat `..` and `../...` (or Windows equivalents) as outside.
+  return rel !== ".." && !rel.startsWith(`..${path.sep}`) && !path.isAbsolute(rel);
+}
+
+function isTempProjectResolution(resolvedUrl) {
+  try {
+    const resolvedFileUrl = new URL(resolvedUrl);
+    if (resolvedFileUrl.protocol !== "file:") return false;
+
+    const resolvedFsPath = fileURLToPath(resolvedFileUrl);
+
+    // The package should resolve from within the temp project's installation.
+    //
+    // NOTE: With pnpm, the resolved file may live under
+    // `node_modules/.pnpm/.../node_modules/@rybosome/tspice/...`, and depending
+    // on whether Node preserves symlinks, the resolved path may differ from its
+    // realpath.
+    const projectNodeModulesDir = path.resolve(projectRoot, "node_modules");
+    const isUnderNodeModules = isPathInside(projectNodeModulesDir, resolvedFsPath);
+
+    let isRealpathUnderNodeModules = false;
+    try {
+      const resolvedRealpath = fs.realpathSync(resolvedFsPath);
+      isRealpathUnderNodeModules = isPathInside(
+        projectNodeModulesDir,
+        resolvedRealpath,
+      );
+    } catch {
+      // ignore; fall back to checking the raw resolved path
+    }
+
+    return (
+      (isUnderNodeModules || isRealpathUnderNodeModules) &&
+      fs.existsSync(resolvedFsPath)
+    );
+  } catch {
+    return false;
+  }
+}
+
+try {
+  const candidate = resolveViaRequire();
+  if (!isTempProjectResolution(candidate)) {
+    throw new Error("createRequire(...).resolve() resolved outside temp project");
+  }
+  tspiceResolved = candidate;
   resolutionMethod = "createRequire(...).resolve";
+} catch (err) {
+  if (typeof import.meta.resolve === "function") {
+    let candidate;
+    try {
+      candidate = import.meta.resolve(tspiceSpecifier, projectPackageJsonUrl);
+    } catch (resolveErr) {
+      throw new Error(
+        "import.meta.resolve() failed while resolving @rybosome/tspice from the temp project",
+        { cause: new AggregateError([err, resolveErr]) },
+      );
+    }
+    if (!isTempProjectResolution(candidate)) {
+      throw new Error(
+        "Failed to resolve @rybosome/tspice from temp project via createRequire() or import.meta.resolve(parentURL)",
+        { cause: err },
+      );
+    }
+
+    tspiceResolved = candidate;
+    resolutionMethod = "import.meta.resolve(parentURL) (fallback)";
+  } else {
+    throw new Error(
+      "Failed to resolve @rybosome/tspice from temp project via createRequire(); import.meta.resolve is unavailable",
+      { cause: err },
+    );
+  }
 }
 
 console.log(

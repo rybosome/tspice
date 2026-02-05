@@ -6,6 +6,7 @@ import { J2000_FRAME, type BodyRef, type EtSeconds, type SpiceClient } from './s
 import { getBodyRegistryEntry, listDefaultVisibleBodies, type BodyId } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
+import { computeDefaultResumeRateSecPerSecForZoomSlider } from './time/defaultPlaybackRate.js'
 import { usePlaybackTicker } from './time/usePlaybackTicker.js'
 import { PlaybackControls } from './ui/PlaybackControls.js'
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from './controls/sunFocus.js'
@@ -573,6 +574,17 @@ export function SceneCanvas() {
     return Math.exp(minL + t * (maxL - minL))
   }, [])
 
+  const getDefaultResumeRateSecPerSec = useCallback(() => {
+    const controller = controllerRef.current
+    if (controller) {
+      const slider = zoomSliderForRadius(controller.radius, controller.minRadius, controller.maxRadius)
+      return computeDefaultResumeRateSecPerSecForZoomSlider(slider)
+    }
+
+    // Fallback: use the last-known slider UI state if the controller is not ready.
+    return computeDefaultResumeRateSecPerSecForZoomSlider(zoomSlider)
+  }, [zoomSlider, zoomSliderForRadius])
+
   useEffect(() => {
     if (!overlayOpen) return
 
@@ -738,6 +750,7 @@ export function SceneCanvas() {
     resetControllerStateByBodyRef,
     focusBodyRef,
     toggleLabels: () => setLabelsEnabled((v) => !v),
+    getDefaultResumeRateSecPerSec,
     enabled: !isE2e,
   })
   const refocusSun = () => {
@@ -1696,7 +1709,10 @@ export function SceneCanvas() {
                     aria-labelledby={`${controlsTabsId}-tab-time`}
                   >
                     {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
-                    <PlaybackControls spiceClient={spiceClient} />
+                    <PlaybackControls
+                      spiceClient={spiceClient}
+                      getDefaultResumeRateSecPerSec={getDefaultResumeRateSecPerSec}
+                    />
 
                     <div className="advancedDivider" />
 
