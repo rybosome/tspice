@@ -28,6 +28,21 @@ import { shouldAutoZoomOnFocusChange } from './focusAutoZoom.js'
 
 const SUN_BODY_ID: BodyId = 'SUN'
 
+const normalizeHexColor = (input: string): string | null => {
+  const m = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.exec(input.trim())
+  if (!m) return null
+
+  let hex = m[1].toLowerCase()
+  if (hex.length === 3) {
+    hex = hex
+      .split('')
+      .map((c) => c + c)
+      .join('')
+  }
+
+  return `#${hex}`
+}
+
 export type SceneUiState = {
   etSec: EtSeconds
   focusBody: BodyRef
@@ -346,7 +361,10 @@ export async function initSpiceSceneRuntime(args: {
     // Sun glow tuning.
     if (sunMaterial && sunMaterial instanceof THREE.MeshStandardMaterial) {
       const intensity = THREE.MathUtils.clamp(next.sunEmissiveIntensity, 0, 50)
-      sunMaterial.emissive.set(next.sunEmissiveColor)
+      const color = normalizeHexColor(next.sunEmissiveColor)
+      if (color) {
+        sunMaterial.emissive.set(color)
+      }
       sunMaterial.emissiveIntensity = intensity
     }
 
