@@ -4,6 +4,11 @@ import type { SpiceClient } from '../spice/SpiceClient.js'
 
 interface PlaybackControlsProps {
   spiceClient: SpiceClient
+  /**
+   * Provides a zoom-dependent default rate (sim seconds per wall-clock second)
+   * to use when resuming from pause.
+   */
+  getDefaultResumeRateSecPerSec?: () => number
 }
 
 /**
@@ -42,7 +47,9 @@ function formatRateShort(rate: number): string {
   return `${sign}${absRate}×`
 }
 
-export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
+const PAUSE_ICON = '⏸\uFE0E'
+
+export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }: PlaybackControlsProps) {
   const state = useTimeStore()
 
   const utcString = useMemo(() => {
@@ -63,6 +70,8 @@ export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
 
   const isPlaying = state.rateSecPerSec !== 0
   const isReverse = state.rateSecPerSec < 0
+
+  const getDefaultResumeRate = useCallback(() => getDefaultResumeRateSecPerSec?.() ?? 86400, [getDefaultResumeRateSecPerSec])
 
   return (
     <div className="playbackControls">
@@ -94,7 +103,7 @@ export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
       <div className="playbackButtonsRow">
         <button
           className={`asciiBtn ${isReverse ? 'asciiBtnActive' : ''}`}
-          onClick={() => timeStore.reverse()}
+          onClick={() => timeStore.reverse(getDefaultResumeRate())}
           title="Reverse direction"
         >
           <span className="asciiBtnBracket">[</span>
@@ -110,11 +119,11 @@ export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
 
         <button
           className={`asciiBtn asciiBtnMain ${isPlaying ? 'asciiBtnActive' : ''}`}
-          onClick={() => timeStore.togglePlay()}
+          onClick={() => timeStore.togglePlay(getDefaultResumeRate())}
           title={isPlaying ? 'Pause' : 'Play'}
         >
           <span className="asciiBtnBracket">[</span>
-          <span className="asciiBtnContent">{isPlaying ? '⏸' : '▶'}</span>
+          <span className="asciiBtnContent">{isPlaying ? PAUSE_ICON : '▶'}</span>
           <span className="asciiBtnBracket">]</span>
         </button>
 
@@ -126,7 +135,7 @@ export function PlaybackControls({ spiceClient }: PlaybackControlsProps) {
 
         <button
           className={`asciiBtn ${!isReverse && state.rateSecPerSec !== 0 ? 'asciiBtnActive' : ''}`}
-          onClick={() => timeStore.forward()}
+          onClick={() => timeStore.forward(getDefaultResumeRate())}
           title="Forward direction"
         >
           <span className="asciiBtnBracket">[</span>

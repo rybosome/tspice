@@ -126,10 +126,17 @@ function createTimeStore() {
     }
   }
 
-  const play = () => {
+  const DEFAULT_RESUME_RATE_SEC_PER_SEC = 86400
+
+  const resolveDefaultResumeRateSecPerSec = (defaultResumeRateSecPerSec: number | undefined): number => {
+    if (defaultResumeRateSecPerSec == null) return DEFAULT_RESUME_RATE_SEC_PER_SEC
+    if (!Number.isFinite(defaultResumeRateSecPerSec) || defaultResumeRateSecPerSec == 0) return DEFAULT_RESUME_RATE_SEC_PER_SEC
+    return Math.abs(defaultResumeRateSecPerSec)
+  }
+
+  const play = (defaultResumeRateSecPerSec?: number) => {
     if (state.rateSecPerSec === 0) {
-      // Default to 1 day/s when resuming from pause
-      setState({ rateSecPerSec: 86400 })
+      setState({ rateSecPerSec: resolveDefaultResumeRateSecPerSec(defaultResumeRateSecPerSec) })
     }
   }
 
@@ -137,9 +144,9 @@ function createTimeStore() {
     setState({ rateSecPerSec: 0 })
   }
 
-  const togglePlay = () => {
+  const togglePlay = (defaultResumeRateSecPerSec?: number) => {
     if (state.rateSecPerSec === 0) {
-      play()
+      play(defaultResumeRateSecPerSec)
     } else {
       pause()
     }
@@ -174,11 +181,11 @@ function createTimeStore() {
 
   /**
    * Toggle playback direction while maintaining approximate speed.
-   * If paused, starts reverse at -1 day/s.
+   * If paused, starts reverse using the provided default (fallback: -1 day/s).
    */
-  const reverse = () => {
+  const reverse = (defaultResumeRateSecPerSec?: number) => {
     if (state.rateSecPerSec === 0) {
-      setState({ rateSecPerSec: -86400 })
+      setState({ rateSecPerSec: -resolveDefaultResumeRateSecPerSec(defaultResumeRateSecPerSec) })
     } else {
       setState({ rateSecPerSec: -state.rateSecPerSec })
     }
@@ -186,11 +193,11 @@ function createTimeStore() {
 
   /**
    * Set direction to forward if currently going backward.
-   * If paused, starts forward at 1 day/s.
+   * If paused, starts forward using the provided default (fallback: 1 day/s).
    */
-  const forward = () => {
+  const forward = (defaultResumeRateSecPerSec?: number) => {
     if (state.rateSecPerSec === 0) {
-      setState({ rateSecPerSec: 86400 })
+      setState({ rateSecPerSec: resolveDefaultResumeRateSecPerSec(defaultResumeRateSecPerSec) })
     } else if (state.rateSecPerSec < 0) {
       setState({ rateSecPerSec: -state.rateSecPerSec })
     }

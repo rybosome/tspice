@@ -46,6 +46,13 @@ export interface KeyboardControlsOptions {
   resetControllerStateByBodyRef?: React.RefObject<Map<string, CameraControllerState> | null>
   /** Current focus body (used to choose per-body reset state). */
   focusBodyRef?: React.RefObject<string | number | null>
+
+  /**
+   * Provides a zoom-dependent default rate (sim seconds per wall-clock second)
+   * to use when resuming from pause via keyboard shortcuts.
+   */
+  getDefaultResumeRateSecPerSec?: () => number
+
   /** Whether keyboard controls are enabled */
   enabled?: boolean
 }
@@ -97,6 +104,7 @@ export function useKeyboardControls({
   initialControllerStateRef,
   resetControllerStateByBodyRef,
   focusBodyRef,
+  getDefaultResumeRateSecPerSec,
   enabled = true,
 }: KeyboardControlsOptions) {
   // Keep refs to latest values to avoid stale closures
@@ -106,6 +114,7 @@ export function useKeyboardControls({
   const toggleHelpRef = useRef(toggleHelp)
   const toggleLabelsRef = useRef(toggleLabels)
   const resetLookOffsetRef = useRef(resetLookOffset)
+  const getDefaultResumeRateSecPerSecRef = useRef(getDefaultResumeRateSecPerSec)
 
   useEffect(() => {
     invalidateRef.current = invalidate
@@ -114,7 +123,8 @@ export function useKeyboardControls({
     toggleHelpRef.current = toggleHelp
     toggleLabelsRef.current = toggleLabels
     resetLookOffsetRef.current = resetLookOffset
-  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleHelp, toggleLabels, resetLookOffset])
+    getDefaultResumeRateSecPerSecRef.current = getDefaultResumeRateSecPerSec
+  }, [invalidate, cancelFocusTween, focusOnOrigin, toggleHelp, toggleLabels, resetLookOffset, getDefaultResumeRateSecPerSec])
 
   useEffect(() => {
     if (!enabled) return
@@ -297,7 +307,7 @@ export function useKeyboardControls({
       switch (e.key) {
         case ' ':
           e.preventDefault()
-          timeStore.togglePlay()
+          timeStore.togglePlay(getDefaultResumeRateSecPerSecRef.current?.())
           return
 
         case '[':
