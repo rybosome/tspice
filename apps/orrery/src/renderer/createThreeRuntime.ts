@@ -1,4 +1,11 @@
 import * as THREE from 'three'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+import { SUN_BLOOM_LAYER } from '../renderLayers.js'
 import { CameraController, type CameraControllerState } from '../controls/CameraController.js'
 import { createSelectionRing, type SelectionRing } from '../scene/SelectionRing.js'
 import { createSkydome, type CreateSkydomeOptions } from '../scene/Skydome.js'
@@ -22,7 +29,30 @@ export type ThreeRuntime = {
   setOnDrawingBufferResize: (fn: ((bufferSize: { width: number; height: number }) => void) | null) => void
 
   updateSky: (opts: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean }) => void
+  updateSunPostprocess: (next: SunPostprocessUpdate) => void
   dispose: () => void
+}
+
+export type SunPostprocessMode = 'off' | 'wholeFrame' | 'sunIsolated'
+
+export type SunToneMap = 'none' | 'filmic' | 'acesLike'
+
+export type SunPostprocessConfig = {
+  mode: SunPostprocessMode
+  exposure: number
+  toneMap: SunToneMap
+  bloom: {
+    threshold: number
+    strength: number
+    radius: number
+    resolutionScale: number
+  }
+}
+
+export type SunPostprocessUpdate = {
+  exposure?: number
+  toneMap?: SunToneMap
+  bloom?: Partial<SunPostprocessConfig['bloom']>
 }
 
 export function createThreeRuntime(args: {
@@ -34,6 +64,8 @@ export function createThreeRuntime(args: {
   starSeed: number
   animatedSky: boolean
   twinkleEnabled: boolean
+
+  sunPostprocess: SunPostprocessConfig
 
   /** Keep invalidate behavior in sync with the sky animation RAF loop. */
   skyAnimationActiveRef: { current: boolean }
@@ -81,12 +113,26 @@ export function createThreeRuntime(args: {
     logarithmicDepthBuffer: enableLogDepth,
   })
 
+  // We render the background first, then draw the postprocessed foreground
+  // over it. Disable implicit clears so nothing can accidentally wipe the
+  // background when the composer renders to screen.
+  renderer.autoClear = false
+
   // Keep e2e snapshots stable by not depending on deviceScaleFactor.
   renderer.setPixelRatio(isE2e ? 1 : Math.min(window.devicePixelRatio, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
+  renderer.toneMapping = THREE.NoToneMapping
 
+  const CLEAR_COLOR = new THREE.Color('#0f131a')
+
+  // Foreground scene: planets, Sun, orbits, interactions, etc.
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color('#0f131a')
+  // Keep background fully owned by `bgScene`.
+  scene.background = null
+
+  // Background scene: starfield + skydome (must be outside the post chain).
+  const bgScene = new THREE.Scene()
+  bgScene.background = null
 
   // NOTE: With `kmToWorld = 1e-6`, outer planets can be several thousand
   // world units away. Keep the far plane large enough so we can render the
@@ -151,28 +197,36 @@ export function createThreeRuntime(args: {
       return
     }
 
-    // Starfield is always present; only recreate when twinkle toggles.
-    if (!starfield || !skyState || skyState.twinkleEnabled !== opts.twinkleEnabled) {
+    // Keep e2e snapshots stable: no starfield / skydome at all.
+    const shouldHaveStarfield = !opts.isE2e
+    const shouldHaveSkydome = opts.animatedSky && !opts.isE2e
+
+    // Starfield is present in interactive mode; only recreate when twinkle toggles.
+    if (!shouldHaveStarfield) {
       if (starfield) {
-        scene.remove(starfield.object)
+        bgScene.remove(starfield.object)
+        starfield.dispose()
+        starfield = null
+      }
+    } else if (!starfield || !skyState || skyState.twinkleEnabled !== opts.twinkleEnabled) {
+      if (starfield) {
+        bgScene.remove(starfield.object)
         starfield.dispose()
       }
 
       starfield = createStarfield({ seed: starSeed, twinkle: opts.twinkleEnabled })
-      scene.add(starfield.object)
+      bgScene.add(starfield.object)
       starfield.syncToCamera(camera)
     }
 
-    const shouldHaveSkydome = opts.animatedSky && !opts.isE2e
-
     if (skydome && !shouldHaveSkydome) {
-      scene.remove(skydome.object)
+      bgScene.remove(skydome.object)
       skydome.dispose()
       skydome = null
     } else if (!skydome && shouldHaveSkydome) {
       const skydomeOpts: CreateSkydomeOptions = { seed: starSeed }
       skydome = createSkydome(skydomeOpts)
-      scene.add(skydome.object)
+      bgScene.add(skydome.object)
       skydome.syncToCamera(camera)
     }
 
@@ -180,6 +234,383 @@ export function createThreeRuntime(args: {
   }
 
   ensureSky({ animatedSky: args.animatedSky, twinkleEnabled: args.twinkleEnabled, isE2e })
+
+  // Copy so TEMP debug controls can mutate without changing caller refs.
+  const sunPostprocess: SunPostprocessConfig = {
+    ...args.sunPostprocess,
+    bloom: { ...args.sunPostprocess.bloom },
+  }
+
+  const applyTonemapConfig = (pass: ShaderPass, cfg: { exposure: number; toneMap: SunToneMap }) => {
+    const u = pass.material.uniforms as unknown as {
+      exposure: { value: number }
+      toneMapMode: { value: number }
+    }
+    u.exposure.value = cfg.exposure
+    // Map string mode to numeric for GLSL switch (stable across minifiers).
+    u.toneMapMode.value = cfg.toneMap === 'none' ? 0 : cfg.toneMap === 'filmic' ? 1 : 2
+  }
+
+  const createTonemapPass = (cfg: { exposure: number; toneMap: SunToneMap }) => {
+    const shader = {
+      uniforms: {
+        tDiffuse: { value: null },
+        exposure: { value: cfg.exposure },
+        toneMapMode: { value: 0 },
+      },
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D tDiffuse;
+        uniform float exposure;
+        uniform int toneMapMode;
+        varying vec2 vUv;
+
+        vec3 filmicToneMap(vec3 x) {
+          x = max(vec3(0.0), x - 0.004);
+          return (x * (6.2 * x + 0.5)) / (x * (6.2 * x + 1.7) + 0.06);
+        }
+
+        vec3 acesLikeToneMap(vec3 x) {
+          // Narkowicz 2015, "ACES Filmic Tone Mapping Curve" (approx).
+          const float a = 2.51;
+          const float b = 0.03;
+          const float c = 2.43;
+          const float d = 0.59;
+          const float e = 0.14;
+          return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
+        }
+
+        void main() {
+          vec4 texel = texture2D(tDiffuse, vUv);
+          vec3 color = texel.rgb;
+          color *= exposure;
+
+          if (toneMapMode == 1) {
+            color = filmicToneMap(color);
+          } else if (toneMapMode == 2) {
+            color = acesLikeToneMap(color);
+          }
+
+          gl_FragColor = vec4(color, texel.a);
+        }
+      `,
+    }
+
+    const pass = new ShaderPass(shader)
+    applyTonemapConfig(pass, cfg)
+    return pass
+  }
+
+  const createBloomPass = (cfg: SunPostprocessConfig['bloom']) => {
+    const pass = new UnrealBloomPass(new THREE.Vector2(1, 1), cfg.strength, cfg.radius, cfg.threshold)
+    pass.threshold = cfg.threshold
+    pass.strength = cfg.strength
+    pass.radius = cfg.radius
+    return pass
+  }
+
+  const createMixBloomPass = (bloomTexture: THREE.Texture) => {
+    // NOTE: `ShaderPass` will clone uniforms when given a "shader" object.
+    // Render-target textures (e.g. `WebGLRenderTarget.texture`) cannot be
+    // cloned via `UniformsUtils.clone()`, so construct a `ShaderMaterial`
+    // directly and pass it to `ShaderPass` to keep uniforms intact.
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        tDiffuse: { value: null },
+        bloomTexture: { value: bloomTexture },
+      },
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D tDiffuse;
+        uniform sampler2D bloomTexture;
+        varying vec2 vUv;
+
+        void main() {
+          vec4 baseTex = texture2D(tDiffuse, vUv);
+          vec3 base = baseTex.rgb;
+          vec3 bloom = texture2D(bloomTexture, vUv).rgb;
+          gl_FragColor = vec4(base + bloom, baseTex.a);
+        }
+      `,
+    })
+
+    return new ShaderPass(material)
+  }
+
+  const createRestoreAlphaPass = (alphaTexture: THREE.Texture) => {
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        tDiffuse: { value: null },
+        alphaTexture: { value: alphaTexture },
+      },
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D tDiffuse;
+        uniform sampler2D alphaTexture;
+        varying vec2 vUv;
+
+        void main() {
+          vec4 col = texture2D(tDiffuse, vUv);
+          float a = texture2D(alphaTexture, vUv).a;
+          gl_FragColor = vec4(col.rgb, a);
+        }
+      `,
+    })
+
+    return new ShaderPass(material)
+  }
+
+  const createBloomOverlayPass = (args: {
+    bloomTexture: THREE.Texture
+    alphaTexture: THREE.Texture
+    exposure: number
+    toneMap: SunToneMap
+  }) => {
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        // `ShaderPass` will set this if present. This pass doesn't use it, but
+        // include it as a no-op to avoid any surprises.
+        tDiffuse: { value: null },
+        bloomTexture: { value: args.bloomTexture },
+        alphaTexture: { value: args.alphaTexture },
+        exposure: { value: args.exposure },
+        toneMapMode: { value: 0 },
+      },
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D bloomTexture;
+        uniform sampler2D alphaTexture;
+        uniform float exposure;
+        uniform int toneMapMode;
+        varying vec2 vUv;
+
+        vec3 filmicToneMap(vec3 x) {
+          x = max(vec3(0.0), x - 0.004);
+          return (x * (6.2 * x + 0.5)) / (x * (6.2 * x + 1.7) + 0.06);
+        }
+
+        vec3 acesLikeToneMap(vec3 x) {
+          const float a = 2.51;
+          const float b = 0.03;
+          const float c = 2.43;
+          const float d = 0.59;
+          const float e = 0.14;
+          return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
+        }
+
+        void main() {
+          // Only apply bloom where no foreground coverage exists.
+          // (The base post chain already includes bloom where objects render.)
+          float fgA = texture2D(alphaTexture, vUv).a;
+          float w = 1.0 - fgA;
+
+          vec3 color = texture2D(bloomTexture, vUv).rgb;
+          color *= exposure;
+
+          if (toneMapMode == 1) {
+            color = filmicToneMap(color);
+          } else if (toneMapMode == 2) {
+            color = acesLikeToneMap(color);
+          }
+
+          gl_FragColor = vec4(color * w, 1.0);
+        }
+      `,
+    })
+
+    const pass = new ShaderPass(material)
+    // Reuse the same string->int mapping as the main tonemap pass.
+    const u = pass.material.uniforms as unknown as { toneMapMode: { value: number } }
+    u.toneMapMode.value = args.toneMap === 'none' ? 0 : args.toneMap === 'filmic' ? 1 : 2
+    return pass
+  }
+
+  const getBloomOnlyTexture = (bloomPass: UnrealBloomPass): THREE.Texture | null => {
+    // three@0.160's `UnrealBloomPass` renders the bloom-only composite into
+    // `renderTargetsHorizontal[0]`, then *additively blends* that over the input
+    // buffer. For selective bloom we want the bloom-only texture (otherwise we
+    // double-add the Sun/background when compositing).
+    const unsafe = bloomPass as unknown as { renderTargetsHorizontal?: Array<{ texture: THREE.Texture }> }
+    return unsafe.renderTargetsHorizontal?.[0]?.texture ?? null
+  }
+
+  type PostprocessRuntime =
+    | { mode: 'off' }
+    | {
+        mode: 'wholeFrame'
+        bloomComposer: EffectComposer
+        bloomPass: UnrealBloomPass
+        finalComposer: EffectComposer
+        alphaSavePass: SavePass
+        bloomOverlayComposer: EffectComposer
+        bloomOverlayPass: ShaderPass
+        outputPass: OutputPass
+        bloomOverlayOutputPass: OutputPass
+      }
+    | {
+        mode: 'sunIsolated'
+        bloomComposer: EffectComposer
+        bloomPass: UnrealBloomPass
+        finalComposer: EffectComposer
+        alphaSavePass: SavePass
+        bloomOverlayComposer: EffectComposer
+        bloomOverlayPass: ShaderPass
+        outputPass: OutputPass
+        bloomOverlayOutputPass: OutputPass
+      }
+
+  let tonemapPassRef: ShaderPass | null = null
+
+  const postprocessRuntime: PostprocessRuntime = (() => {
+    if (sunPostprocess.mode === 'off') return { mode: 'off' }
+
+    if (sunPostprocess.mode === 'wholeFrame') {
+      const bloomComposer = new EffectComposer(renderer)
+      bloomComposer.renderToScreen = false
+      const bloomRenderPass = new RenderPass(scene, camera, null, new THREE.Color(0x000000), 0)
+      const bloomPass = createBloomPass(sunPostprocess.bloom)
+
+      bloomComposer.addPass(bloomRenderPass)
+      bloomComposer.addPass(bloomPass)
+
+      const finalComposer = new EffectComposer(renderer)
+      const finalRenderPass = new RenderPass(scene, camera, null, new THREE.Color(0x000000), 0)
+      const alphaSavePass = new SavePass()
+      const bloomTexture = getBloomOnlyTexture(bloomPass) ?? bloomComposer.readBuffer.texture
+      const mixPass = createMixBloomPass(bloomTexture)
+      const tonemapPass = createTonemapPass({ exposure: sunPostprocess.exposure, toneMap: sunPostprocess.toneMap })
+      const restoreAlphaPass = createRestoreAlphaPass(alphaSavePass.renderTarget.texture)
+      const outputPass = new OutputPass()
+
+      // Output should blend over the already-rendered background.
+      outputPass.material.transparent = true
+      outputPass.material.blending = THREE.NormalBlending
+      outputPass.material.depthTest = false
+      outputPass.material.depthWrite = false
+
+      tonemapPassRef = tonemapPass
+
+      finalComposer.addPass(finalRenderPass)
+      finalComposer.addPass(alphaSavePass)
+      finalComposer.addPass(mixPass)
+      finalComposer.addPass(tonemapPass)
+      finalComposer.addPass(restoreAlphaPass)
+      finalComposer.addPass(outputPass)
+
+      // Separate additive bloom overlay for pixels not covered by the base pass.
+      const bloomOverlayComposer = new EffectComposer(renderer)
+      const bloomOverlayPass = createBloomOverlayPass({
+        bloomTexture,
+        alphaTexture: alphaSavePass.renderTarget.texture,
+        exposure: sunPostprocess.exposure,
+        toneMap: sunPostprocess.toneMap,
+      })
+      const bloomOverlayOutputPass = new OutputPass()
+      bloomOverlayOutputPass.material.transparent = true
+      bloomOverlayOutputPass.material.blending = THREE.AdditiveBlending
+      bloomOverlayOutputPass.material.depthTest = false
+      bloomOverlayOutputPass.material.depthWrite = false
+
+      bloomOverlayComposer.addPass(bloomOverlayPass)
+      bloomOverlayComposer.addPass(bloomOverlayOutputPass)
+
+      return {
+        mode: 'wholeFrame',
+        bloomComposer,
+        bloomPass,
+        finalComposer,
+        alphaSavePass,
+        bloomOverlayComposer,
+        bloomOverlayPass,
+        outputPass,
+        bloomOverlayOutputPass,
+      }
+    }
+
+    // sunIsolated
+    const bloomComposer = new EffectComposer(renderer)
+    bloomComposer.renderToScreen = false
+    const bloomRenderPass = new RenderPass(scene, camera, null, new THREE.Color(0x000000), 0)
+    const bloomPass = createBloomPass(sunPostprocess.bloom)
+    bloomComposer.addPass(bloomRenderPass)
+    bloomComposer.addPass(bloomPass)
+
+    const finalComposer = new EffectComposer(renderer)
+    const finalRenderPass = new RenderPass(scene, camera, null, new THREE.Color(0x000000), 0)
+    const alphaSavePass = new SavePass()
+    const bloomTexture = getBloomOnlyTexture(bloomPass) ?? bloomComposer.readBuffer.texture
+    const mixPass = createMixBloomPass(bloomTexture)
+    const tonemapPass = createTonemapPass({ exposure: sunPostprocess.exposure, toneMap: sunPostprocess.toneMap })
+    const restoreAlphaPass = createRestoreAlphaPass(alphaSavePass.renderTarget.texture)
+    const outputPass = new OutputPass()
+
+    // Output should blend over the already-rendered background.
+    outputPass.material.transparent = true
+    outputPass.material.blending = THREE.NormalBlending
+    outputPass.material.depthTest = false
+    outputPass.material.depthWrite = false
+
+    tonemapPassRef = tonemapPass
+
+    finalComposer.addPass(finalRenderPass)
+    finalComposer.addPass(alphaSavePass)
+    finalComposer.addPass(mixPass)
+    finalComposer.addPass(tonemapPass)
+    finalComposer.addPass(restoreAlphaPass)
+    finalComposer.addPass(outputPass)
+
+    const bloomOverlayComposer = new EffectComposer(renderer)
+    const bloomOverlayPass = createBloomOverlayPass({
+      bloomTexture,
+      alphaTexture: alphaSavePass.renderTarget.texture,
+      exposure: sunPostprocess.exposure,
+      toneMap: sunPostprocess.toneMap,
+    })
+    const bloomOverlayOutputPass = new OutputPass()
+    bloomOverlayOutputPass.material.transparent = true
+    bloomOverlayOutputPass.material.blending = THREE.AdditiveBlending
+    bloomOverlayOutputPass.material.depthTest = false
+    bloomOverlayOutputPass.material.depthWrite = false
+
+    bloomOverlayComposer.addPass(bloomOverlayPass)
+    bloomOverlayComposer.addPass(bloomOverlayOutputPass)
+
+    return {
+      mode: 'sunIsolated',
+      bloomComposer,
+      bloomPass,
+      finalComposer,
+      alphaSavePass,
+      bloomOverlayComposer,
+      bloomOverlayPass,
+      outputPass,
+      bloomOverlayOutputPass,
+    }
+  })()
 
   // For FPS calculation
   let lastFrameTimeMs = performance.now()
@@ -203,7 +634,42 @@ export function createThreeRuntime(args: {
     skydome?.syncToCamera(camera)
     skydome?.setTimeSeconds(timeSec)
 
-    renderer.render(scene, camera)
+    // Clear once per frame (then draw bg + fg). We intentionally clear to an
+    // opaque color even though the post chain uses alpha for compositing.
+    renderer.setRenderTarget(null)
+    renderer.setClearColor(CLEAR_COLOR, 1)
+    renderer.clear(true, true, true)
+
+    // Background first (outside postprocessing).
+    if (starfield || skydome) {
+      renderer.render(bgScene, camera)
+    }
+
+    // Foreground should not be depth-tested against the background.
+    renderer.clearDepth()
+
+    if (postprocessRuntime.mode === 'off') {
+      renderer.render(scene, camera)
+    } else if (postprocessRuntime.mode === 'wholeFrame') {
+      postprocessRuntime.bloomComposer.render()
+      postprocessRuntime.finalComposer.render()
+      postprocessRuntime.bloomOverlayComposer.render()
+    } else {
+      // Render bloom only for Sun layer, then composite over the full scene.
+      const prevMask = camera.layers.mask
+      const prevBackground = scene.background
+      camera.layers.set(SUN_BLOOM_LAYER)
+      scene.background = null
+      try {
+        postprocessRuntime.bloomComposer.render()
+      } finally {
+        scene.background = prevBackground
+        camera.layers.mask = prevMask
+      }
+
+      postprocessRuntime.finalComposer.render()
+      postprocessRuntime.bloomOverlayComposer.render()
+    }
 
     afterRender?.({ nowMs })
 
@@ -277,11 +743,79 @@ export function createThreeRuntime(args: {
     renderer.setPixelRatio(isE2e ? 1 : Math.min(window.devicePixelRatio, 2))
     renderer.setSize(width, height, false)
 
+    const pixelRatio = renderer.getPixelRatio()
+
+    if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
+      postprocessRuntime.bloomComposer.setPixelRatio(pixelRatio)
+      postprocessRuntime.bloomComposer.setSize(width, height)
+      postprocessRuntime.finalComposer.setPixelRatio(pixelRatio)
+      postprocessRuntime.finalComposer.setSize(width, height)
+      postprocessRuntime.bloomOverlayComposer.setPixelRatio(pixelRatio)
+      postprocessRuntime.bloomOverlayComposer.setSize(width, height)
+    }
+
     camera.aspect = width / height
     camera.updateProjectionMatrix()
 
     const buffer = renderer.getDrawingBufferSize(drawingBufferSize)
+
+    if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
+      const scale = THREE.MathUtils.clamp(sunPostprocess.bloom.resolutionScale, 0.1, 1)
+      const scaledW = Math.max(1, Math.floor(buffer.x * scale))
+      const scaledH = Math.max(1, Math.floor(buffer.y * scale))
+      postprocessRuntime.bloomPass.setSize(scaledW, scaledH)
+    }
+
     onDrawingBufferResize?.({ width: buffer.x, height: buffer.y })
+  }
+
+  const updateSunPostprocess = (next: SunPostprocessUpdate) => {
+    if (disposed) return
+
+    // Allow live tuning of postprocessing parameters (via UI).
+    const prevResolutionScale = sunPostprocess.bloom.resolutionScale
+
+    if (next.exposure != null && Number.isFinite(next.exposure)) {
+      sunPostprocess.exposure = next.exposure
+    }
+
+    if (next.toneMap) {
+      sunPostprocess.toneMap = next.toneMap
+    }
+
+    if (next.bloom) {
+      sunPostprocess.bloom = { ...sunPostprocess.bloom, ...next.bloom }
+    }
+
+    if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
+      postprocessRuntime.bloomPass.threshold = sunPostprocess.bloom.threshold
+      postprocessRuntime.bloomPass.strength = sunPostprocess.bloom.strength
+      postprocessRuntime.bloomPass.radius = sunPostprocess.bloom.radius
+    }
+
+    if (tonemapPassRef) {
+      applyTonemapConfig(tonemapPassRef, {
+        exposure: sunPostprocess.exposure,
+        toneMap: sunPostprocess.toneMap,
+      })
+    }
+
+    // Keep bloom overlay in sync with the main tonemap params.
+    if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
+      const u = postprocessRuntime.bloomOverlayPass.material.uniforms as unknown as {
+        exposure: { value: number }
+        toneMapMode: { value: number }
+      }
+      u.exposure.value = sunPostprocess.exposure
+      u.toneMapMode.value = sunPostprocess.toneMap === 'none' ? 0 : sunPostprocess.toneMap === 'filmic' ? 1 : 2
+    }
+
+    // Resolution scale is applied via `bloomPass.setSize` inside `resize()`.
+    if (sunPostprocess.bloom.resolutionScale !== prevResolutionScale) {
+      resize()
+    }
+
+    invalidate()
   }
 
   const onResize = () => {
@@ -304,13 +838,13 @@ export function createThreeRuntime(args: {
     resizeObserver.disconnect()
 
     if (starfield) {
-      scene.remove(starfield.object)
+      bgScene.remove(starfield.object)
       starfield.dispose()
       starfield = null
     }
 
     if (skydome) {
-      scene.remove(skydome.object)
+      bgScene.remove(skydome.object)
       skydome.dispose()
       skydome = null
     }
@@ -322,6 +856,13 @@ export function createThreeRuntime(args: {
 
     afterRender = null
     onDrawingBufferResize = null
+
+    if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
+      postprocessRuntime.bloomComposer.dispose()
+      postprocessRuntime.finalComposer.dispose()
+      postprocessRuntime.alphaSavePass.dispose()
+      postprocessRuntime.bloomOverlayComposer.dispose()
+    }
 
     renderer.dispose()
   }
@@ -349,6 +890,8 @@ export function createThreeRuntime(args: {
       ensureSky(opts)
       invalidate()
     },
+
+    updateSunPostprocess,
 
     dispose,
   }

@@ -28,7 +28,7 @@ import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
-type AdvancedPaneId = 'time' | 'scale' | 'guides' | 'orbits' | 'performance'
+type AdvancedPaneId = 'time' | 'scale' | 'guides' | 'orbits' | 'performance' | 'rendering'
 
 type AdvancedHelpTopicId =
   | 'zoom'
@@ -77,6 +77,12 @@ const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: strin
     tabLabel: 'PERFORMANCE',
     title: 'PERFORMANCE',
     summary: 'Optional effects and overlays that may impact FPS or battery.',
+  },
+  {
+    id: 'rendering',
+    tabLabel: 'RENDERING',
+    title: 'RENDERING',
+    summary: 'Sun postprocessing and lighting/emissive tuning.',
   },
 ]
 
@@ -161,9 +167,12 @@ const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string;
     ],
   },
   animatedSky: {
-    title: 'Animated sky',
-    short: 'Enable the skydome shader (can cost GPU).',
-    body: ['Enables the animated skydome shader.', 'Turn off for maximum performance or to reduce visual motion.'],
+    title: 'Milky Way',
+    short: 'Toggle the background Milky Way skydome (can cost GPU).',
+    body: [
+      'Enables the Milky Way skydome shader.',
+      'Turn off for maximum performance, to reduce motion, or for deterministic screenshots.',
+    ],
   },
   skyTwinkle: {
     title: 'Sky twinkle',
@@ -256,7 +265,23 @@ export function SceneCanvas() {
 
   const runtimeConfig = useMemo(() => parseSceneCanvasRuntimeConfigFromLocationSearch(window.location.search), [])
 
-  const { searchParams: search, isE2e, enableLogDepth, starSeed, initialUtc, initialEt } = runtimeConfig
+  const {
+    searchParams: search,
+    isE2e,
+    enableLogDepth,
+    starSeed,
+    animatedSky: animatedSkyDefault,
+    skyTwinkle: skyTwinkleDefault,
+    initialUtc,
+    initialEt,
+    sunPostprocessMode,
+    sunExposure,
+    sunToneMap,
+    sunBloomThreshold,
+    sunBloomStrength,
+    sunBloomRadius,
+    sunBloomResolutionScale,
+  } = runtimeConfig
 
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
@@ -264,6 +289,14 @@ export function SceneCanvas() {
   // Selected body (promoted from local closure variable for inspector panel)
   const [selectedBody, setSelectedBody] = useState<BodyRef | null>(null)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
+
+  // Sun postprocess tuning (ephemeral; adjustable live via the RENDERING pane).
+  const [sunPostprocessExposure, setSunPostprocessExposure] = useState(sunExposure)
+  const [sunPostprocessToneMap, setSunPostprocessToneMap] = useState(sunToneMap)
+  const [sunPostprocessBloomThreshold, setSunPostprocessBloomThreshold] = useState(sunBloomThreshold)
+  const [sunPostprocessBloomStrength, setSunPostprocessBloomStrength] = useState(sunBloomStrength)
+  const [sunPostprocessBloomRadius, setSunPostprocessBloomRadius] = useState(sunBloomRadius)
+  const [sunPostprocessBloomResolutionScale, setSunPostprocessBloomResolutionScale] = useState(sunBloomResolutionScale)
 
   // Advanced tuning sliders (ephemeral, local state only)
   const [advancedPane, setAdvancedPane] = useState<AdvancedPaneId>('time')
@@ -291,9 +324,17 @@ export function SceneCanvas() {
     return layers?.find(isEarthAppearanceLayer)?.earth
   }, [])
 
-  // Earth appearance tuning (kept configurable in code; no longer exposed as debug sliders).
-  const ambientLightIntensity = 0.2
-  const sunLightIntensity = 2.0
+  // Lighting + Sun appearance defaults.
+  const AMBIENT_LIGHT_INTENSITY_DEFAULT = 0.45
+  const SUN_LIGHT_INTENSITY_DEFAULT = 3.5
+  // Sun emissive is in addition to the base texture `kind: 'sun'`.
+  const SUN_EMISSIVE_INTENSITY_DEFAULT = 10
+  const SUN_EMISSIVE_COLOR_DEFAULT = '#ffcc55'
+
+  const [ambientLightIntensity, setAmbientLightIntensity] = useState(AMBIENT_LIGHT_INTENSITY_DEFAULT)
+  const [sunLightIntensity, setSunLightIntensity] = useState(SUN_LIGHT_INTENSITY_DEFAULT)
+  const [sunEmissiveIntensity, setSunEmissiveIntensity] = useState(SUN_EMISSIVE_INTENSITY_DEFAULT)
+  const [sunEmissiveColor, setSunEmissiveColor] = useState(SUN_EMISSIVE_COLOR_DEFAULT)
   const earthNightAlbedo = 0.004
   const earthTwilight = earthAppearanceDefaults?.nightLightsTwilight ?? 0.12
   const earthNightLightsIntensity = earthAppearanceDefaults?.nightLightsIntensity ?? 1.25
@@ -317,9 +358,11 @@ export function SceneCanvas() {
   // Occlusion toggle for labels (advanced, default off)
   const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
 
-  // Sky effects. Disabled by default for e2e tests to keep snapshots deterministic.
-  const [animatedSky, setAnimatedSky] = useState(() => !isE2e)
-  const [skyTwinkle, setSkyTwinkle] = useState(() => !isE2e)
+  // Sky effects.
+  const [animatedSky, setAnimatedSky] = useState(animatedSkyDefault)
+
+  // Star twinkle is separate from the Milky Way toggle.
+  const [skyTwinkle, setSkyTwinkle] = useState(skyTwinkleDefault)
 
   const twinkleEnabled = skyTwinkle && !isE2e
   const skyAnimationActive = (animatedSky || twinkleEnabled) && !isE2e
@@ -384,6 +427,13 @@ export function SceneCanvas() {
     starSeed,
     initialUtc,
     initialEt,
+    sunPostprocessMode,
+    sunExposure,
+    sunToneMap,
+    sunBloomThreshold,
+    sunBloomStrength,
+    sunBloomRadius,
+    sunBloomResolutionScale,
     kmToWorld,
     animatedSky,
     twinkleEnabled,
@@ -765,6 +815,9 @@ export function SceneCanvas() {
 
         ambientLightIntensity: number
         sunLightIntensity: number
+        sunEmissiveIntensity: number
+        sunEmissiveColor: string
+
         earthNightAlbedo: number
         earthTwilight: number
         earthNightLightsIntensity: number
@@ -794,6 +847,8 @@ export function SceneCanvas() {
 
     ambientLightIntensity,
     sunLightIntensity,
+    sunEmissiveIntensity,
+    sunEmissiveColor,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -818,6 +873,8 @@ export function SceneCanvas() {
 
     ambientLightIntensity,
     sunLightIntensity,
+    sunEmissiveIntensity,
+    sunEmissiveColor,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -855,6 +912,8 @@ export function SceneCanvas() {
 
       ambientLightIntensity,
       sunLightIntensity,
+      sunEmissiveIntensity,
+      sunEmissiveColor,
       earthNightAlbedo,
       earthTwilight,
       earthNightLightsIntensity,
@@ -877,6 +936,8 @@ export function SceneCanvas() {
 
     ambientLightIntensity,
     sunLightIntensity,
+    sunEmissiveIntensity,
+    sunEmissiveColor,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -931,6 +992,17 @@ export function SceneCanvas() {
       starSeed,
       animatedSky,
       twinkleEnabled,
+      sunPostprocess: {
+        mode: initRuntimeConfigRef.current.sunPostprocessMode,
+        exposure: initRuntimeConfigRef.current.sunExposure,
+        toneMap: initRuntimeConfigRef.current.sunToneMap,
+        bloom: {
+          threshold: initRuntimeConfigRef.current.sunBloomThreshold,
+          strength: initRuntimeConfigRef.current.sunBloomStrength,
+          radius: initRuntimeConfigRef.current.sunBloomRadius,
+          resolutionScale: initRuntimeConfigRef.current.sunBloomResolutionScale,
+        },
+      },
       skyAnimationActiveRef,
       initialFocusBody: latestUiRef.current.focusBody,
       initialCameraFovDeg: latestUiRef.current.cameraFovDeg,
@@ -1174,10 +1246,34 @@ export function SceneCanvas() {
     }
   }, [])
 
-  // Swap the starfield and skydome in-place when animatedSky toggled.
+  // Swap the background elements in-place when toggled.
   useEffect(() => {
     rendererRuntimeRef.current?.updateSky({ animatedSky, twinkleEnabled, isE2e })
   }, [animatedSky, twinkleEnabled, isE2e])
+
+  // Live-tune Sun postprocessing in-place (no reload / query params).
+  useEffect(() => {
+    if (isE2e) return
+
+    rendererRuntimeRef.current?.updateSunPostprocess({
+      exposure: sunPostprocessExposure,
+      toneMap: sunPostprocessToneMap,
+      bloom: {
+        threshold: sunPostprocessBloomThreshold,
+        strength: sunPostprocessBloomStrength,
+        radius: sunPostprocessBloomRadius,
+        resolutionScale: sunPostprocessBloomResolutionScale,
+      },
+    })
+  }, [
+    isE2e,
+    sunPostprocessExposure,
+    sunPostprocessToneMap,
+    sunPostprocessBloomThreshold,
+    sunPostprocessBloomStrength,
+    sunPostprocessBloomRadius,
+    sunPostprocessBloomResolutionScale,
+  ])
 
   // Lightweight RAF loop for sky animation (twinkle and/or skydome shader).
   useEffect(() => {
@@ -1613,7 +1709,7 @@ export function SceneCanvas() {
                           onChange={(e) => setAnimatedSky(e.target.checked)}
                         />
                         <span className="asciiCheckboxBox" aria-hidden="true" />
-                        <span className="asciiCheckboxLabel">Animated Skydome</span>
+                        <span className="asciiCheckboxLabel">Milky Way</span>
                       </label>
                       <AdvancedHelpButton topic="animatedSky" onOpen={setAdvancedHelpTopic} />
                     </div>
@@ -1649,6 +1745,181 @@ export function SceneCanvas() {
                     </div>
                   </div>
                 ) : null}
+
+                {/* Pane: RENDERING */}
+                {advancedPane === 'rendering' ? (
+                  <div
+                    className="advancedGroup"
+                    role="tabpanel"
+                    id={`${controlsTabsId}-panel-rendering`}
+                    aria-labelledby={`${controlsTabsId}-tab-rendering`}
+                  >
+                    <div className="controlsSection">
+                      <button
+                        className="asciiBtn asciiBtnWide"
+                        type="button"
+                        onClick={() => {
+                          setSunPostprocessExposure(sunExposure)
+                          setSunPostprocessToneMap(sunToneMap)
+                          setSunPostprocessBloomThreshold(sunBloomThreshold)
+                          setSunPostprocessBloomStrength(sunBloomStrength)
+                          setSunPostprocessBloomRadius(sunBloomRadius)
+                          setSunPostprocessBloomResolutionScale(sunBloomResolutionScale)
+                          setAmbientLightIntensity(AMBIENT_LIGHT_INTENSITY_DEFAULT)
+                          setSunLightIntensity(SUN_LIGHT_INTENSITY_DEFAULT)
+                          setSunEmissiveIntensity(SUN_EMISSIVE_INTENSITY_DEFAULT)
+                          setSunEmissiveColor(SUN_EMISSIVE_COLOR_DEFAULT)
+                        }}
+                        title="Reset rendering settings"
+                      >
+                        <span className="asciiBtnBracket">[</span>
+                        <span className="asciiBtnContent">Reset</span>
+                        <span className="asciiBtnBracket">]</span>
+                      </button>
+                    </div>
+
+                    <div className="advancedDivider" />
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Exposure</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={10}
+                        step={0.01}
+                        value={sunPostprocessExposure}
+                        onChange={(e) => setSunPostprocessExposure(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessExposure.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Tone map</span>
+                      <select
+                        className="focusSelect"
+                        value={sunPostprocessToneMap}
+                        onChange={(e) => setSunPostprocessToneMap(e.target.value as typeof sunToneMap)}
+                      >
+                        <option value="none">none</option>
+                        <option value="filmic">filmic</option>
+                        <option value="acesLike">acesLike</option>
+                      </select>
+                      <span className="advancedSliderValue" />
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Bloom threshold</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={5}
+                        step={0.01}
+                        value={sunPostprocessBloomThreshold}
+                        onChange={(e) => setSunPostprocessBloomThreshold(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessBloomThreshold.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Bloom strength</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={2}
+                        step={0.01}
+                        value={sunPostprocessBloomStrength}
+                        onChange={(e) => setSunPostprocessBloomStrength(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessBloomStrength.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Bloom radius</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        value={sunPostprocessBloomRadius}
+                        onChange={(e) => setSunPostprocessBloomRadius(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessBloomRadius.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Bloom res scale</span>
+                      <input
+                        type="range"
+                        min={0.1}
+                        max={1}
+                        step={0.05}
+                        value={sunPostprocessBloomResolutionScale}
+                        onChange={(e) => setSunPostprocessBloomResolutionScale(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessBloomResolutionScale.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedDivider" />
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Ambient light</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={2}
+                        step={0.01}
+                        value={ambientLightIntensity}
+                        onChange={(e) => setAmbientLightIntensity(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{ambientLightIntensity.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Sun light</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={10}
+                        step={0.1}
+                        value={sunLightIntensity}
+                        onChange={(e) => setSunLightIntensity(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunLightIntensity.toFixed(1)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Sun emissive</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={20}
+                        step={0.1}
+                        value={sunEmissiveIntensity}
+                        onChange={(e) => setSunEmissiveIntensity(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunEmissiveIntensity.toFixed(1)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Emissive color</span>
+                      <div style={{ flex: 1, display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <input
+                          type="color"
+                          value={sunEmissiveColor}
+                          onChange={(e) => setSunEmissiveColor(e.target.value)}
+                          aria-label="Sun emissive color"
+                        />
+                        <input
+                          className="advancedTextInput"
+                          type="text"
+                          value={sunEmissiveColor}
+                          onChange={(e) => setSunEmissiveColor(e.target.value)}
+                        />
+                      </div>
+                      <span className="advancedSliderValue" />
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           ) : null}
@@ -1665,6 +1936,7 @@ export function SceneCanvas() {
           frame={J2000_FRAME}
         />
       ) : null}
+
       <canvas ref={canvasRef} className="sceneCanvas" />
 
       {/* Render HUD overlays */}

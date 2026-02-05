@@ -1464,6 +1464,25 @@
   outline: none;
 }
 
+.advancedTextInput {
+  flex: 1;
+  min-width: 60px;
+  width: 100%;
+  padding: 4px 6px;
+  background: transparent;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+}
+
+.advancedTextInput:hover,
+.advancedTextInput:focus {
+  border-color: var(--phosphor-bright);
+  outline: none;
+}
+
 .advancedSliderValue {
   flex: 0 0 auto;
   min-width: 48px;
