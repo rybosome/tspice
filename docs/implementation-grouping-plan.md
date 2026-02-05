@@ -1,4 +1,4 @@
-# Step 2: PR-sized implementation grouping plan (A–D + 1–16)
+# PR-sized implementation grouping plan (A–D + 1–16)
 
 Context:
 
