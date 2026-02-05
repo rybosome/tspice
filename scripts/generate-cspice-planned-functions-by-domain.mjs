@@ -31,7 +31,7 @@ function usage() {
     "  --check       Fail if output file is out of date.",
     "  --audit       Report routines that match multiple domain rules.",
     "  --verbose     More detailed audit output (implies --audit).",
-    "  --fail-on-overlap  Exit non-zero (2) if any routines match multiple domain rules.",
+    "  --fail-on-overlap  Exit with code 2 if any routines match multiple domain rules.",
   ].join("\n");
 }
 
@@ -286,11 +286,14 @@ async function main() {
       }
     }
 
-    const chosenDomain = matchedDomains[0];
     const overriddenTo = override ?? null;
+    const chosenDomain = override ?? matchedDomains[0] ?? ruleConfig.fallbackDomain;
+
+    if (matchedDomains.length === 0 && override == null) {
+      fallbackCount++;
+    }
 
     if (matchedDomains.length > 1) {
-      // Keep the full set for observability; rule order still determines the chosen domain.
       overlaps.push({
         routine: r.baseName,
         matchedDomains,
@@ -299,12 +302,7 @@ async function main() {
       });
     }
 
-    let domain = overriddenTo ?? chosenDomain;
-
-    if (!domain) {
-      domain = ruleConfig.fallbackDomain;
-      fallbackCount++;
-    }
+    const domain = chosenDomain;
 
     if (!domainIds.has(domain)) {
       throw new Error(`Routine ${r.name} assigned unknown domain: ${domain}`);
@@ -327,24 +325,14 @@ async function main() {
   const shouldAudit = audit || check;
 
   if (shouldAudit && overlaps.length > 0) {
-    process.stderr.write(
-      `\nRule audit: ${overlaps.length} routine(s) matched multiple rules (first match wins):\n`,
-    );
+    process.stderr.write(`\nRule overlap audit: ${overlaps.length} routine(s) matched multiple rules:\n`);
     for (const o of overlaps) {
-      const chosen = o.overriddenTo
-        ? `${o.chosenDomain} (overridden to ${o.overriddenTo})`
-        : o.chosenDomain;
-      const detail = verbose
-        ? `  matched: ${o.matchedDomains.join(" -> ")}`
-        : `  matched: ${o.matchedDomains.join(", ")}`;
-      process.stderr.write(`- ${o.routine} (chosen: ${chosen})\n${detail}\n`);
+      const overrideNote = o.overriddenTo ? ` (override: ${o.overriddenTo})` : "";
+      const matches = verbose ? o.matchedDomains.join(" -> ") : o.matchedDomains.join(", ");
+      process.stderr.write(`- ${o.routine} (chosen: ${o.chosenDomain})${overrideNote}\n`);
+      process.stderr.write(`  matches: ${matches}\n`);
     }
     process.stderr.write("\n");
-  }
-
-  if (failOnOverlap && overlaps.length > 0) {
-    // Run fully (including --check diff detection), but fail the command to allow CI opt-in.
-    process.exitCode = 2;
   }
 
   if (check) {
@@ -364,7 +352,6 @@ async function main() {
       );
       process.exit(1);
     }
-    return;
   }
 
   if (stdout) {
@@ -373,14 +360,18 @@ async function main() {
     process.stderr.write(
       `Fallback (${JSON.stringify(ruleConfig.fallbackDomain)}) classified: ${fallbackCount}\n`,
     );
-    return;
+  } else if (!check) {
+    await writeFile(outPath, md, "utf8");
+    process.stdout.write(`Wrote ${path.relative(REPO_ROOT, outPath)}\n`);
+    process.stdout.write(
+      `Fallback (${JSON.stringify(ruleConfig.fallbackDomain)}) classified: ${fallbackCount}\n`,
+    );
   }
 
-  await writeFile(outPath, md, "utf8");
-  process.stdout.write(`Wrote ${path.relative(REPO_ROOT, outPath)}\n`);
-  process.stdout.write(
-    `Fallback (${JSON.stringify(ruleConfig.fallbackDomain)}) classified: ${fallbackCount}\n`,
-  );
+  if (failOnOverlap && overlaps.length > 0) {
+    process.stderr.write("Overlapping domain rules detected (failing due to --fail-on-overlap).\n");
+    process.exitCode = 2;
+  }
 }
 
 main().catch((err) => {
