@@ -5,7 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 /**
  * Find the nearest directory at/above `startDir` that contains a `package.json`.
@@ -50,20 +50,45 @@ const tspiceSpecifier = "@rybosome/tspice";
 let tspiceResolved;
 let resolutionMethod;
 // `import.meta.resolve()` is implemented in Node, but its signature/behavior has
-// been inconsistent across Node versions (e.g. Node 22 on GitHub Actions treats
-// the 2nd arg as ignored, resolving relative to this script instead of the temp
-// project).
+// been inconsistent across Node versions (notably: the 2nd arg may be ignored,
+// which would resolve relative to this script instead of the temp project).
 //
-// Prefer `createRequire(...).resolve()` anchored to the temp project, which is
-// stable across supported Node versions.
-if (typeof import.meta.resolve === "function" && import.meta.resolve.length >= 2) {
-  // Resolve as if imported from the temp project's `package.json`.
-  tspiceResolved = import.meta.resolve(tspiceSpecifier, projectPackageJsonUrl);
-  resolutionMethod = "import.meta.resolve(parentURL)";
-} else {
-  const requireFromProject = createRequire(projectPackageJsonPath);
+// Prefer deterministic resolution anchored to the temp project; if
+// `import.meta.resolve(spec, parentURL)` returns a URL that doesn't actually live
+// under the temp project's `node_modules`, fall back to
+// `createRequire(...).resolve()`.
+const requireFromProject = createRequire(projectPackageJsonPath);
+
+function resolveViaRequire() {
   const resolvedPath = requireFromProject.resolve(tspiceSpecifier);
-  tspiceResolved = pathToFileURL(resolvedPath).href;
+  return pathToFileURL(resolvedPath).href;
+}
+
+function isTempProjectResolution(resolvedUrl) {
+  try {
+    const resolvedFileUrl = new URL(resolvedUrl);
+    if (resolvedFileUrl.protocol !== "file:") return false;
+
+    const resolvedFsPath = fileURLToPath(resolvedFileUrl);
+    // The package should resolve from within the temp project's node_modules.
+    const expectedPrefix = path.normalize(path.join(projectRoot, "node_modules"));
+    return resolvedFsPath.startsWith(expectedPrefix) && fs.existsSync(resolvedFsPath);
+  } catch {
+    return false;
+  }
+}
+
+if (typeof import.meta.resolve === "function") {
+  const candidate = import.meta.resolve(tspiceSpecifier, projectPackageJsonUrl);
+  if (isTempProjectResolution(candidate)) {
+    tspiceResolved = candidate;
+    resolutionMethod = "import.meta.resolve(parentURL)";
+  } else {
+    tspiceResolved = resolveViaRequire();
+    resolutionMethod = "createRequire(...).resolve (fallback)";
+  }
+} else {
+  tspiceResolved = resolveViaRequire();
   resolutionMethod = "createRequire(...).resolve";
 }
 
