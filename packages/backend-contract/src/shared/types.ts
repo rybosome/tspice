@@ -18,11 +18,30 @@ export type KernelKind =
   | "EK"
   | "META";
 
+/**
+* Optional-return convention for lookups where "not found" is a normal outcome.
+*
+* Conventions:
+* - Return `{ found: false }` when the underlying value simply doesn't exist
+*   (e.g. name-to-code lookups for names that aren't present in loaded kernels).
+* - Throw for invalid arguments, SPICE errors, and other exceptional failures.
+* - When `found: true`, extra fields are present on the returned object.
+*/
 export type Found<T> =
   | {
       found: false;
     }
   | ({ found: true } & T);
+
+/** Convenience alias for the most common Found payload shape. */
+export type FoundValue<T> = Found<{ value: T }>;
+
+export type FoundString = FoundValue<string>;
+export type FoundInt = FoundValue<number>;
+export type FoundDouble = FoundValue<number>;
+
+/** Extract the payload type of a `Found<...>` result. */
+export type FoundPayload<T> = T extends Found<infer P> ? P : never;
 
 export type KernelData = {
   file: string;
@@ -44,6 +63,18 @@ export type AbCorr =
   | "XCN+S";
 
 export type SpiceVector3 = [number, number, number];
+
+// -- Branded vector/matrix helpers -----------------------------------------
+
+// Type-only brands (no runtime Symbol export).
+declare const __vec3Brand: unique symbol;
+export type Vec3 = readonly [number, number, number] & { readonly [__vec3Brand]: true };
+
+// Type-only brands (no runtime Symbol export).
+declare const __vec6Brand: unique symbol;
+export type Vec6 = readonly [number, number, number, number, number, number] & {
+  readonly [__vec6Brand]: true;
+};
 
 
 // -- Matrix types -----------------------------------------------------------
@@ -125,6 +156,15 @@ export type SpiceMatrix6x6 = [
   number,
   number,
 ];
+
+/**
+* 6x6 matrix encoded as a length-36 array in **row-major** order.
+*
+* Row-major layout: `[m00,m01,...,m05, m10,m11,...,m15, ..., m50,...,m55]`.
+*/
+// Type-only brand (no runtime Symbol export).
+declare const __mat6RowMajorBrand: unique symbol;
+export type Mat6RowMajor = Readonly<SpiceMatrix6x6> & { readonly [__mat6RowMajorBrand]: true };
 
 export type SpiceStateVector = [
   number,
