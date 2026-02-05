@@ -9,7 +9,6 @@ interface SelectionInspectorProps {
   selectedBody: BodyRef
   focusBody: BodyRef
   spiceClient: SpiceClient
-  showRaDec: boolean
   observer: BodyRef
   frame: FrameId
 }
@@ -71,36 +70,6 @@ function magnitude(v: readonly [number, number, number]): number {
   return Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
 }
 
-function pad2(n: number): string {
-  return String(n).padStart(2, '0')
-}
-
-function formatHoursHms(hours: number): string {
-  if (!Number.isFinite(hours)) return String(hours)
-
-  // Normalize to [0, 24)
-  const wrapped = ((hours % 24) + 24) % 24
-  const totalSeconds = Math.round(wrapped * 3600) % (24 * 3600)
-
-  const hh = Math.floor(totalSeconds / 3600)
-  const mm = Math.floor((totalSeconds % 3600) / 60)
-  const ss = totalSeconds % 60
-  return `${pad2(hh)}:${pad2(mm)}:${pad2(ss)}`
-}
-
-function formatDegreesDms(degrees: number): string {
-  if (!Number.isFinite(degrees)) return String(degrees)
-
-  const sign = degrees < 0 ? '-' : '+'
-  const absDeg = Math.abs(degrees)
-  const totalArcSeconds = Math.round(absDeg * 3600)
-
-  const dd = Math.floor(totalArcSeconds / 3600)
-  const mm = Math.floor((totalArcSeconds % 3600) / 60)
-  const ss = totalArcSeconds % 60
-
-  return `${sign}${pad2(dd)}:${pad2(mm)}:${pad2(ss)}`
-}
 
 const SUPERSCRIPT_MAP: Readonly<Record<string, string>> = {
   '0': '⁰',
@@ -229,7 +198,6 @@ export function SelectionInspector({
   selectedBody,
   focusBody,
   spiceClient,
-  showRaDec,
   observer,
   frame,
 }: SelectionInspectorProps) {
@@ -337,25 +305,6 @@ export function SelectionInspector({
       ? formatBodyKind(registryEntry.kind)
       : null
 
-  const raDec = useMemo(() => {
-    if (!bodyInfo) return null
-
-    const [x, y, z] = bodyInfo.positionKm
-    const r = magnitude(bodyInfo.positionKm)
-    if (!Number.isFinite(r) || r === 0) return null
-
-    let raRad = Math.atan2(y, x)
-    if (raRad < 0) raRad += 2 * Math.PI
-    const decRad = Math.asin(Math.max(-1, Math.min(1, z / r)))
-
-    const raHours = (raRad * 12) / Math.PI
-    const decDeg = (decRad * 180) / Math.PI
-    return {
-      ra: formatHoursHms(raHours),
-      dec: formatDegreesDms(decDeg),
-    }
-  }, [bodyInfo])
-
   return (
     <div className="selectionInspector">
       <div className="selectionInspectorHeader">
@@ -389,19 +338,6 @@ export function SelectionInspector({
                 <span className="selectionInspectorLabel">Type:</span>
                 <span className="selectionInspectorValue">{typeValue}</span>
               </div>
-            )}
-
-            {showRaDec && raDec && (
-              <>
-                <div className="selectionInspectorRow">
-                  <span className="selectionInspectorLabel">RA (J2000):</span>
-                  <span className="selectionInspectorValue">{raDec.ra}</span>
-                </div>
-                <div className="selectionInspectorRow">
-                  <span className="selectionInspectorLabel">Dec (J2000):</span>
-                  <span className="selectionInspectorValue">{raDec.dec}</span>
-                </div>
-              </>
             )}
 
             {bodyInfo.distanceToFocusKm !== null && (

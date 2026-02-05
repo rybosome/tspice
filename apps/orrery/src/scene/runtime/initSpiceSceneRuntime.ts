@@ -15,6 +15,7 @@ import { SUN_BLOOM_LAYER } from '../../renderLayers.js'
 import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleSceneBodies, type BodyId } from '../BodyRegistry.js'
 import { computeBodyRadiusWorld } from '../bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from '../FrameAxes.js'
+import { createRaDecGuideOverlay } from '../RaDecGuideOverlay.js'
 import { OrbitPaths } from '../orbits/OrbitPaths.js'
 import { rebasePositionKm } from '../precision.js'
 import { clearTextureCache } from '../loadTextureCached.js'
@@ -33,6 +34,7 @@ export type SceneUiState = {
   focusBody: BodyRef
   showJ2000Axes: boolean
   showBodyFixedAxes: boolean
+  showRaDecGuide: boolean
   cameraFovDeg: number
   sunScaleMultiplier: number
   planetScaleMultiplier: number
@@ -258,6 +260,11 @@ export async function initSpiceSceneRuntime(args: {
     }
   })
 
+  const meshByBodyId = new Map<string, THREE.Object3D>()
+  for (const b of bodies) {
+    meshByBodyId.set(String(b.mesh.userData.bodyId), b.mesh)
+  }
+
   const sunMesh = bodies.find((b) => b.bodyId === SUN_BODY_ID)?.mesh
   const sunMaterial = (() => {
     const m = sunMesh?.material
@@ -293,6 +300,15 @@ export async function initSpiceSceneRuntime(args: {
     scene.add(j2000Axes.object)
   }
 
+
+  const raDecGuide = !isE2e ? createRaDecGuideOverlay() : undefined
+  if (raDecGuide) {
+    raDecGuide.object.visible = false
+    sceneObjects.push(raDecGuide.object)
+    disposers.push(raDecGuide.dispose)
+    scene.add(raDecGuide.object)
+  }
+
   // Label overlay (only in interactive mode)
   let labelOverlay: LabelOverlay | null = null
   if (!isE2e) {
@@ -310,14 +326,22 @@ export async function initSpiceSceneRuntime(args: {
 
   let latestLabelOverlayOptions: LabelOverlayUpdateOptions | null = null
 
+  let showRaDecGuideEnabled = false
   const afterRender = () => {
-    if (!labelOverlay || !latestLabelOverlayOptions) return
+    if (labelOverlay && latestLabelOverlayOptions) {
+      // Keep selection in sync even when simulation time is paused.
+      labelOverlay.update({
+        ...latestLabelOverlayOptions,
+        selectedBodyId: selectedBodyIdRef.current,
+      })
+    }
 
-    // Keep selection in sync even when simulation time is paused.
-    labelOverlay.update({
-      ...latestLabelOverlayOptions,
-      selectedBodyId: selectedBodyIdRef.current,
-    })
+    if (raDecGuide) {
+      raDecGuide.setEnabled(showRaDecGuideEnabled)
+      const selected = selectedBodyIdRef.current ? meshByBodyId.get(String(selectedBodyIdRef.current)) : undefined
+      raDecGuide.setTarget(selected)
+      raDecGuide.syncToCamera({ camera, viewportHeightPx: container.clientHeight })
+    }
   }
 
   const labelBodies: LabelBody[] = bodies.map((b) => {
@@ -339,6 +363,8 @@ export async function initSpiceSceneRuntime(args: {
   const ORBIT_MIN_POINTS_PER_ORBIT = 32
 
   const updateScene = (next: SceneUiState) => {
+    showRaDecGuideEnabled = next.showRaDecGuide
+
     // Lighting knobs
     ambient.intensity = next.ambientLightIntensity
     dir.intensity = next.sunLightIntensity
@@ -647,6 +673,7 @@ export async function initSpiceSceneRuntime(args: {
 
   const onDrawingBufferResize = ({ width, height }: { width: number; height: number }) => {
     orbitPaths?.setResolution(width, height)
+    raDecGuide?.setResolution(width, height)
   }
 
   const dispose = () => {

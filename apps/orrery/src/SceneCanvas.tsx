@@ -816,6 +816,7 @@ export function SceneCanvas() {
         focusBody: BodyRef
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
+        showRaDecGuide: boolean
         cameraFovDeg: number
         sunScaleMultiplier: number
         planetScaleMultiplier: number
@@ -847,6 +848,7 @@ export function SceneCanvas() {
     focusBody,
     showJ2000Axes,
     showBodyFixedAxes,
+    showRaDecGuide,
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
@@ -873,6 +875,7 @@ export function SceneCanvas() {
     focusBody,
     showJ2000Axes,
     showBodyFixedAxes,
+    showRaDecGuide,
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
@@ -913,6 +916,7 @@ export function SceneCanvas() {
       focusBody,
       showJ2000Axes,
       showBodyFixedAxes,
+      showRaDecGuide,
       cameraFovDeg,
       sunScaleMultiplier,
       planetScaleMultiplier,
@@ -938,6 +942,7 @@ export function SceneCanvas() {
     focusBody,
     showJ2000Axes,
     showBodyFixedAxes,
+    showRaDecGuide,
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
@@ -1960,7 +1965,6 @@ export function SceneCanvas() {
           selectedBody={selectedBody}
           focusBody={focusBody}
           spiceClient={spiceClient}
-          showRaDec={showRaDecGuide}
           observer="SUN"
           frame={J2000_FRAME}
         />
