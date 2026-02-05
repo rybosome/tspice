@@ -287,6 +287,7 @@ export function SceneCanvas() {
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
+  const [showRaDecGuide, setShowRaDecGuide] = useState(false)
   // Selected body (promoted from local closure variable for inspector panel)
   const [selectedBody, setSelectedBody] = useState<BodyRef | null>(null)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
@@ -1705,6 +1706,17 @@ export function SceneCanvas() {
                       </label>
                       <AdvancedHelpButton topic="j2000Axes" onOpen={setAdvancedHelpTopic} />
                     </div>
+
+                    <label className="asciiCheckbox">
+                      <input
+                        className="asciiCheckboxInput"
+                        type="checkbox"
+                        checked={showRaDecGuide}
+                        onChange={(e) => setShowRaDecGuide(e.target.checked)}
+                      />
+                      <span className="asciiCheckboxBox" aria-hidden="true" />
+                      <span className="asciiCheckboxLabel">RA/Dec</span>
+                    </label>
                   </div>
                 ) : null}
 
@@ -1948,6 +1960,7 @@ export function SceneCanvas() {
           selectedBody={selectedBody}
           focusBody={focusBody}
           spiceClient={spiceClient}
+          showRaDec={showRaDecGuide}
           observer="SUN"
           frame={J2000_FRAME}
         />

@@ -9,6 +9,7 @@ interface SelectionInspectorProps {
   selectedBody: BodyRef
   focusBody: BodyRef
   spiceClient: SpiceClient
+  showRaDec: boolean
   observer: BodyRef
   frame: FrameId
 }
@@ -68,6 +69,37 @@ function formatOrbitalPeriod(seconds: number): string {
 /** Compute magnitude of a 3D vector. */
 function magnitude(v: readonly [number, number, number]): number {
   return Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+}
+
+function pad2(n: number): string {
+  return String(n).padStart(2, '0')
+}
+
+function formatHoursHms(hours: number): string {
+  if (!Number.isFinite(hours)) return String(hours)
+
+  // Normalize to [0, 24)
+  const wrapped = ((hours % 24) + 24) % 24
+  const totalSeconds = Math.round(wrapped * 3600) % (24 * 3600)
+
+  const hh = Math.floor(totalSeconds / 3600)
+  const mm = Math.floor((totalSeconds % 3600) / 60)
+  const ss = totalSeconds % 60
+  return `${pad2(hh)}:${pad2(mm)}:${pad2(ss)}`
+}
+
+function formatDegreesDms(degrees: number): string {
+  if (!Number.isFinite(degrees)) return String(degrees)
+
+  const sign = degrees < 0 ? '-' : '+'
+  const absDeg = Math.abs(degrees)
+  const totalArcSeconds = Math.round(absDeg * 3600)
+
+  const dd = Math.floor(totalArcSeconds / 3600)
+  const mm = Math.floor((totalArcSeconds % 3600) / 60)
+  const ss = totalArcSeconds % 60
+
+  return `${sign}${pad2(dd)}:${pad2(mm)}:${pad2(ss)}`
 }
 
 const SUPERSCRIPT_MAP: Readonly<Record<string, string>> = {
@@ -171,12 +203,36 @@ function findBodyRegistryEntry(bodyRef: BodyRef): BodyRegistryEntry | undefined 
   )
 }
 
+function resolveBodyRefForSpice(bodyRef: BodyRef, registryEntry: BodyRegistryEntry | undefined): BodyRef {
+  // If the caller passed a BodyRegistry `id` (e.g. "MARS"), use the registry's
+  // preferred SPICE lookup key (often the barycenter numeric ID for de432s).
+  if (typeof bodyRef === 'string' && registryEntry?.id === bodyRef) {
+    return registryEntry.body
+  }
+
+  // If we're carrying around numeric IDs as strings (e.g. from <select />),
+  // normalize them back to numbers for `SpiceClient.getBodyState`.
+  if (typeof bodyRef === 'string') {
+    const n = Number(bodyRef)
+    if (Number.isFinite(n) && String(n) === bodyRef.trim()) return n
+  }
+
+  return bodyRef
+}
+
 /** Format body kind for display. */
 function formatBodyKind(kind: string): string {
   return kind.charAt(0).toUpperCase() + kind.slice(1)
 }
 
-export function SelectionInspector({ selectedBody, focusBody, spiceClient, observer, frame }: SelectionInspectorProps) {
+export function SelectionInspector({
+  selectedBody,
+  focusBody,
+  spiceClient,
+  showRaDec,
+  observer,
+  frame,
+}: SelectionInspectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   // IMPORTANT:
@@ -186,12 +242,28 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
   // like taps/gestures are being "eaten" on mobile).
   const etSec = useTimeStoreSelector((s) => s.etSec)
 
+  const registryEntry = useMemo(() => findBodyRegistryEntry(selectedBody), [selectedBody])
+  const focusRegistryEntry = useMemo(() => findBodyRegistryEntry(focusBody), [focusBody])
+
+  const selectedBodyForSpice = useMemo(
+    () => resolveBodyRefForSpice(selectedBody, registryEntry),
+    [selectedBody, registryEntry],
+  )
+  const focusBodyForSpice = useMemo(
+    () => resolveBodyRefForSpice(focusBody, focusRegistryEntry),
+    [focusBody, focusRegistryEntry],
+  )
+  const observerForSpice = useMemo(
+    () => resolveBodyRefForSpice(observer, findBodyRegistryEntry(observer)),
+    [observer],
+  )
+
   const bodyInfo = useMemo(() => {
     try {
       // Get selected body's state relative to scene observer
       const selectedState = spiceClient.getBodyState({
-        target: selectedBody,
-        observer,
+        target: selectedBodyForSpice,
+        observer: observerForSpice,
         frame,
         et: etSec,
       })
@@ -207,10 +279,10 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
       let velocityRelToFocusKmPerSec: number | null = null
       let velocityRelToFocusVector: readonly [number, number, number] | null = null
 
-      if (String(selectedBody) !== String(focusBody)) {
+      if (String(selectedBodyForSpice) !== String(focusBodyForSpice)) {
         const relState = spiceClient.getBodyState({
-          target: selectedBody,
-          observer: focusBody,
+          target: selectedBodyForSpice,
+          observer: focusBodyForSpice,
           frame,
           et: etSec,
         })
@@ -219,9 +291,7 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
         velocityRelToFocusVector = relState.velocityKmPerSec
       }
 
-      // Look up registry info
-      const registryEntry = findBodyRegistryEntry(selectedBody)
-      const orbitalPeriodSec = getApproxOrbitalPeriodSec(selectedBody)
+      const orbitalPeriodSec = getApproxOrbitalPeriodSec(selectedBodyForSpice)
 
       return {
         positionKm,
@@ -231,30 +301,27 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
         distanceToFocusKm,
         velocityRelToFocusKmPerSec,
         velocityRelToFocusVector,
-        registryEntry,
         orbitalPeriodSec,
       }
     } catch (err) {
       console.warn('SelectionInspector: error computing body state', err)
       return null
     }
-  }, [selectedBody, focusBody, spiceClient, etSec, observer, frame])
+  }, [selectedBodyForSpice, focusBodyForSpice, spiceClient, etSec, observerForSpice, frame])
 
-  const registryEntry = bodyInfo?.registryEntry
   const bodyLabel =
     registryEntry?.style.label ??
     (typeof selectedBody === 'string'
       ? selectedBody.charAt(0).toUpperCase() + selectedBody.slice(1).toLowerCase()
       : `Body ${selectedBody}`)
 
-  const focusRegistryEntry = findBodyRegistryEntry(focusBody)
   const focusLabel =
     focusRegistryEntry?.style.label ??
     (typeof focusBody === 'string'
       ? focusBody.charAt(0).toUpperCase() + focusBody.slice(1).toLowerCase()
       : `Body ${focusBody}`)
 
-  const isFocused = String(selectedBody) === String(focusBody)
+  const isFocused = String(selectedBodyForSpice) === String(focusBodyForSpice)
 
   const naifId = registryEntry?.naifIds?.body
   const extras = useMemo(() => getNaifExtras(naifId), [naifId])
@@ -273,9 +340,24 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
       ? formatBodyKind(registryEntry.kind)
       : null
 
-  if (!bodyInfo) {
-    return null
-  }
+  const raDec = useMemo(() => {
+    if (!bodyInfo) return null
+
+    const [x, y, z] = bodyInfo.positionKm
+    const r = magnitude(bodyInfo.positionKm)
+    if (!Number.isFinite(r) || r === 0) return null
+
+    let raRad = Math.atan2(y, x)
+    if (raRad < 0) raRad += 2 * Math.PI
+    const decRad = Math.asin(Math.max(-1, Math.min(1, z / r)))
+
+    const raHours = (raRad * 12) / Math.PI
+    const decDeg = (decRad * 180) / Math.PI
+    return {
+      ra: formatHoursHms(raHours),
+      dec: formatDegreesDms(decDeg),
+    }
+  }, [bodyInfo])
 
   return (
     <div className="selectionInspector">
@@ -293,118 +375,140 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
       </div>
 
       <div className="selectionInspectorBody">
-        {/* Basic fields */}
-        {/*
-          The registry-driven `kind` is a coarse classification. When the NAIF extras dataset
-          provides a more specific/authoritative classification, prefer that.
-        */}
-        {typeValue && (
+        {!bodyInfo ? (
           <div className="selectionInspectorRow">
-            <span className="selectionInspectorLabel">Type:</span>
-            <span className="selectionInspectorValue">{typeValue}</span>
+            <span className="selectionInspectorLabel">State:</span>
+            <span className="selectionInspectorValue">Unavailable (missing kernels or unsupported target)</span>
           </div>
-        )}
-
-        {bodyInfo.distanceToFocusKm !== null && (
-          <div className="selectionInspectorRow">
-            <span className="selectionInspectorLabel">Distance to {focusLabel}:</span>
-            <span className="selectionInspectorValue">{formatDistance(bodyInfo.distanceToFocusKm)}</span>
-          </div>
-        )}
-
-        {isFocused && (
-          <div className="selectionInspectorRow">
-            <span className="selectionInspectorLabel">Distance from Sun:</span>
-            <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionMagnitude)}</span>
-          </div>
-        )}
-
-        {bodyInfo.velocityRelToFocusKmPerSec !== null && (
-          <div className="selectionInspectorRow">
-            <span className="selectionInspectorLabel">Velocity:</span>
-            <span className="selectionInspectorValue">{formatVelocity(bodyInfo.velocityRelToFocusKmPerSec)}</span>
-          </div>
-        )}
-
-        {isFocused && (
-          <div className="selectionInspectorRow">
-            <span className="selectionInspectorLabel">Orbital velocity:</span>
-            <span className="selectionInspectorValue">{formatVelocity(bodyInfo.velocityMagnitude)}</span>
-          </div>
-        )}
-
-        {/* Advanced fields */}
-        {showAdvanced && (
+        ) : (
           <>
-            {extrasGroups.length > 0 ? (
-              <>
-                <div className="selectionInspectorDivider" />
-                {extrasGroups.map((group, groupIndex) => (
-                  <Fragment key={group.title}>
-                    {groupIndex > 0 && <div className="selectionInspectorDivider" />}
-                    {group.rows.map(({ label, value }) => (
-                      <div key={`${group.title}-${label}`} className="selectionInspectorRow">
-                        <span className="selectionInspectorLabel">{label}:</span>
-                        <span className="selectionInspectorValue">{value}</span>
-                      </div>
-                    ))}
-                  </Fragment>
-                ))}
-              </>
-            ) : (
-              <>
-                {registryEntry?.style.radiusKm && (
-                  <div className="selectionInspectorRow">
-                    <span className="selectionInspectorLabel">Radius:</span>
-                    <span className="selectionInspectorValue">{formatRadius(registryEntry.style.radiusKm)}</span>
-                  </div>
-                )}
+            {/* Basic fields */}
+            {/*
+              The registry-driven `kind` is a coarse classification. When the NAIF extras dataset
+              provides a more specific/authoritative classification, prefer that.
+            */}
+            {typeValue && (
+              <div className="selectionInspectorRow">
+                <span className="selectionInspectorLabel">Type:</span>
+                <span className="selectionInspectorValue">{typeValue}</span>
+              </div>
+            )}
 
-                {bodyInfo.orbitalPeriodSec && (
-                  <div className="selectionInspectorRow">
-                    <span className="selectionInspectorLabel">Orbital period:</span>
-                    <span className="selectionInspectorValue">{formatOrbitalPeriod(bodyInfo.orbitalPeriodSec)}</span>
-                  </div>
-                )}
+            {showRaDec && raDec && (
+              <>
+                <div className="selectionInspectorRow">
+                  <span className="selectionInspectorLabel">RA (J2000):</span>
+                  <span className="selectionInspectorValue">{raDec.ra}</span>
+                </div>
+                <div className="selectionInspectorRow">
+                  <span className="selectionInspectorLabel">Dec (J2000):</span>
+                  <span className="selectionInspectorValue">{raDec.dec}</span>
+                </div>
               </>
             )}
 
-            <div className="selectionInspectorDivider" />
+            {bodyInfo.distanceToFocusKm !== null && (
+              <div className="selectionInspectorRow">
+                <span className="selectionInspectorLabel">Distance to {focusLabel}:</span>
+                <span className="selectionInspectorValue">{formatDistance(bodyInfo.distanceToFocusKm)}</span>
+              </div>
+            )}
 
-            <div className="selectionInspectorRow">
-              <span className="selectionInspectorLabel">Position (X):</span>
-              <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionKm[0])}</span>
-            </div>
-            <div className="selectionInspectorRow">
-              <span className="selectionInspectorLabel">Position (Y):</span>
-              <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionKm[1])}</span>
-            </div>
-            <div className="selectionInspectorRow">
-              <span className="selectionInspectorLabel">Position (Z):</span>
-              <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionKm[2])}</span>
-            </div>
+            {isFocused && (
+              <div className="selectionInspectorRow">
+                <span className="selectionInspectorLabel">Distance from Sun:</span>
+                <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionMagnitude)}</span>
+              </div>
+            )}
 
-            {bodyInfo.velocityRelToFocusVector && (
+            {bodyInfo.velocityRelToFocusKmPerSec !== null && (
+              <div className="selectionInspectorRow">
+                <span className="selectionInspectorLabel">Velocity:</span>
+                <span className="selectionInspectorValue">{formatVelocity(bodyInfo.velocityRelToFocusKmPerSec)}</span>
+              </div>
+            )}
+
+            {isFocused && (
+              <div className="selectionInspectorRow">
+                <span className="selectionInspectorLabel">Orbital velocity:</span>
+                <span className="selectionInspectorValue">{formatVelocity(bodyInfo.velocityMagnitude)}</span>
+              </div>
+            )}
+
+            {/* Advanced fields */}
+            {showAdvanced && (
               <>
+                {extrasGroups.length > 0 ? (
+                  <>
+                    <div className="selectionInspectorDivider" />
+                    {extrasGroups.map((group, groupIndex) => (
+                      <Fragment key={group.title}>
+                        {groupIndex > 0 && <div className="selectionInspectorDivider" />}
+                        {group.rows.map(({ label, value }) => (
+                          <div key={`${group.title}-${label}`} className="selectionInspectorRow">
+                            <span className="selectionInspectorLabel">{label}:</span>
+                            <span className="selectionInspectorValue">{value}</span>
+                          </div>
+                        ))}
+                      </Fragment>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {registryEntry?.style.radiusKm && (
+                      <div className="selectionInspectorRow">
+                        <span className="selectionInspectorLabel">Radius:</span>
+                        <span className="selectionInspectorValue">{formatRadius(registryEntry.style.radiusKm)}</span>
+                      </div>
+                    )}
+
+                    {bodyInfo.orbitalPeriodSec && (
+                      <div className="selectionInspectorRow">
+                        <span className="selectionInspectorLabel">Orbital period:</span>
+                        <span className="selectionInspectorValue">{formatOrbitalPeriod(bodyInfo.orbitalPeriodSec)}</span>
+                      </div>
+                    )}
+                  </>
+                )}
+
                 <div className="selectionInspectorDivider" />
+
                 <div className="selectionInspectorRow">
-                  <span className="selectionInspectorLabel">Velocity (X):</span>
-                  <span className="selectionInspectorValue">
-                    {formatVelocity(bodyInfo.velocityRelToFocusVector[0])}
-                  </span>
+                  <span className="selectionInspectorLabel">Position (X):</span>
+                  <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionKm[0])}</span>
                 </div>
                 <div className="selectionInspectorRow">
-                  <span className="selectionInspectorLabel">Velocity (Y):</span>
-                  <span className="selectionInspectorValue">
-                    {formatVelocity(bodyInfo.velocityRelToFocusVector[1])}
-                  </span>
+                  <span className="selectionInspectorLabel">Position (Y):</span>
+                  <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionKm[1])}</span>
                 </div>
                 <div className="selectionInspectorRow">
-                  <span className="selectionInspectorLabel">Velocity (Z):</span>
-                  <span className="selectionInspectorValue">
-                    {formatVelocity(bodyInfo.velocityRelToFocusVector[2])}
-                  </span>
+                  <span className="selectionInspectorLabel">Position (Z):</span>
+                  <span className="selectionInspectorValue">{formatDistance(bodyInfo.positionKm[2])}</span>
                 </div>
+
+                {bodyInfo.velocityRelToFocusVector && (
+                  <>
+                    <div className="selectionInspectorDivider" />
+                    <div className="selectionInspectorRow">
+                      <span className="selectionInspectorLabel">Velocity (X):</span>
+                      <span className="selectionInspectorValue">
+                        {formatVelocity(bodyInfo.velocityRelToFocusVector[0])}
+                      </span>
+                    </div>
+                    <div className="selectionInspectorRow">
+                      <span className="selectionInspectorLabel">Velocity (Y):</span>
+                      <span className="selectionInspectorValue">
+                        {formatVelocity(bodyInfo.velocityRelToFocusVector[1])}
+                      </span>
+                    </div>
+                    <div className="selectionInspectorRow">
+                      <span className="selectionInspectorLabel">Velocity (Z):</span>
+                      <span className="selectionInspectorValue">
+                        {formatVelocity(bodyInfo.velocityRelToFocusVector[2])}
+                      </span>
+                    </div>
+                  </>
+                )}
               </>
             )}
           </>
