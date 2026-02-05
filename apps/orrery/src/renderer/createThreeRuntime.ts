@@ -316,7 +316,11 @@ export function createThreeRuntime(args: {
   }
 
   const createMixBloomPass = (bloomTexture: THREE.Texture) => {
-    const shader = {
+    // NOTE: `ShaderPass` will clone uniforms when given a "shader" object.
+    // Render-target textures (e.g. `WebGLRenderTarget.texture`) cannot be
+    // cloned via `UniformsUtils.clone()`, so construct a `ShaderMaterial`
+    // directly and pass it to `ShaderPass` to keep uniforms intact.
+    const material = new THREE.ShaderMaterial({
       uniforms: {
         tDiffuse: { value: null },
         bloomTexture: { value: bloomTexture },
@@ -340,13 +344,13 @@ export function createThreeRuntime(args: {
           gl_FragColor = vec4(base + bloom, baseTex.a);
         }
       `,
-    }
+    })
 
-    return new ShaderPass(shader)
+    return new ShaderPass(material)
   }
 
   const createRestoreAlphaPass = (alphaTexture: THREE.Texture) => {
-    const shader = {
+    const material = new THREE.ShaderMaterial({
       uniforms: {
         tDiffuse: { value: null },
         alphaTexture: { value: alphaTexture },
@@ -369,9 +373,9 @@ export function createThreeRuntime(args: {
           gl_FragColor = vec4(col.rgb, a);
         }
       `,
-    }
+    })
 
-    return new ShaderPass(shader)
+    return new ShaderPass(material)
   }
 
   const createBloomOverlayPass = (args: {
@@ -380,8 +384,11 @@ export function createThreeRuntime(args: {
     exposure: number
     toneMap: SunToneMap
   }) => {
-    const shader = {
+    const material = new THREE.ShaderMaterial({
       uniforms: {
+        // `ShaderPass` will set this if present. This pass doesn't use it, but
+        // include it as a no-op to avoid any surprises.
+        tDiffuse: { value: null },
         bloomTexture: { value: args.bloomTexture },
         alphaTexture: { value: args.alphaTexture },
         exposure: { value: args.exposure },
@@ -433,9 +440,9 @@ export function createThreeRuntime(args: {
           gl_FragColor = vec4(color * w, 1.0);
         }
       `,
-    }
+    })
 
-    const pass = new ShaderPass(shader)
+    const pass = new ShaderPass(material)
     // Reuse the same string->int mapping as the main tonemap pass.
     const u = pass.material.uniforms as unknown as { toneMapMode: { value: number } }
     u.toneMapMode.value = args.toneMap === 'none' ? 0 : args.toneMap === 'filmic' ? 1 : 2
