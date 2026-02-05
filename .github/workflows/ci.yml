@@ -60,52 +60,65 @@ jobs:
       pre_install: |
         set -euo pipefail
 
+        retry() {
+          local tries=${1:-3}
+          shift || true
+          local n=1
+          while true; do
+            if "$@"; then
+              return 0
+            fi
+            if [ "$n" -ge "$tries" ]; then
+              return 1
+            fi
+            n=$((n + 1))
+            sleep 2
+          done
+        }
+
         if [ "$RUNNER_OS" = "Linux" ]; then
           if command -v uncompress >/dev/null; then
-            exit 0
-          fi
+            echo "[pre_install] uncompress already present"
+          else
+            # Assumes ubuntu-latest; update if the Linux distribution changes.
+            if ! command -v apt-get >/dev/null; then
+              echo "This step assumes an Ubuntu/Debian-based Linux runner with apt-get available. Update the workflow before using a different Linux image." >&2
+              exit 1
+            fi
 
-          # Assumes ubuntu-latest; update if the Linux distribution changes.
-          if ! command -v apt-get >/dev/null; then
-            echo "This step assumes an Ubuntu/Debian-based Linux runner with apt-get available. Update the workflow before using a different Linux image." >&2
-            exit 1
-          fi
+            retry 3 sudo apt-get update
 
-          sudo apt-get update
+            if ! sudo apt-get install -y --no-install-recommends ncompress; then
+              echo "Failed to install 'ncompress'. Verify that it is available on ubuntu-latest or adjust the workflow to use an alternative package/source." >&2
+              exit 1
+            fi
 
-          if ! sudo apt-get install -y --no-install-recommends ncompress; then
-            echo "Failed to install 'ncompress'. Verify that it is available on ubuntu-latest or adjust the workflow to use an alternative package/source." >&2
-            exit 1
-          fi
-
-          if ! command -v uncompress >/dev/null; then
-            echo "'uncompress' still not found after installing ncompress." >&2
-            exit 1
+            if ! command -v uncompress >/dev/null; then
+              echo "'uncompress' still not found after installing ncompress." >&2
+              exit 1
+            fi
           fi
         elif [ "$RUNNER_OS" = "macOS" ]; then
           # Assumes Homebrew is available on the macOS runner.
           if command -v uncompress >/dev/null 2>&1; then
-            exit 0
-          fi
+            echo "[pre_install] uncompress already present"
+          else
+            if ! command -v brew >/dev/null 2>&1; then
+              echo "uncompress not found and Homebrew (brew) is missing; cannot install ncompress on the macOS CI runner." >&2
+              exit 1
+            fi
 
-          if ! command -v brew >/dev/null 2>&1; then
-            echo "uncompress not found and Homebrew (brew) is missing; cannot install ncompress on the macOS CI runner." >&2
-            exit 1
-          fi
+            # Avoid unconditional `brew update` (which can be flaky). Try install
+            # first, and only update with retries if needed.
+            if ! brew install ncompress; then
+              retry 3 brew update
+              brew install ncompress
+            fi
 
-          if ! brew update; then
-            echo "Homebrew update failed; cannot install ncompress to provide uncompress." >&2
-            exit 1
-          fi
-
-          if ! brew install ncompress; then
-            echo "Homebrew failed to install ncompress; cannot provide uncompress." >&2
-            exit 1
-          fi
-
-          if ! command -v uncompress >/dev/null 2>&1; then
-            echo "Installed ncompress but uncompress is still missing from PATH." >&2
-            exit 1
+            if ! command -v uncompress >/dev/null 2>&1; then
+              echo "Installed ncompress but uncompress is still missing from PATH." >&2
+              exit 1
+            fi
           fi
         fi
       enable_cspice_cache: true
@@ -286,7 +299,11 @@ jobs:
         NATIVE_TARBALL_PATH="${PWD}/${NATIVE_TARBALL}"
 
         TMP_DIR=$(mktemp -d)
-        trap 'rm -rf "$TMP_DIR"' EXIT
+        cleanup() {
+          rm -rf "$TMP_DIR"
+          rm -f "$TSPICE_TARBALL_PATH" "$NATIVE_TARBALL_PATH"
+        }
+        trap cleanup EXIT
         echo "[tspice-native-smoke] Using temp project: ${TMP_DIR}"
         cd "${TMP_DIR}"
 
