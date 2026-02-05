@@ -80,15 +80,29 @@ function isTempProjectResolution(resolvedUrl) {
     if (resolvedFileUrl.protocol !== "file:") return false;
 
     const resolvedFsPath = fileURLToPath(resolvedFileUrl);
+
     // The package should resolve from within the temp project's installation.
-    const installedPackageRoot = path.resolve(
-      projectRoot,
-      "node_modules",
-      ...tspiceSpecifier.split("/"),
-    );
+    //
+    // NOTE: With pnpm, the resolved file may live under
+    // `node_modules/.pnpm/.../node_modules/@rybosome/tspice/...`, and depending
+    // on whether Node preserves symlinks, the resolved path may differ from its
+    // realpath.
+    const projectNodeModulesDir = path.resolve(projectRoot, "node_modules");
+    const isUnderNodeModules = isPathInside(projectNodeModulesDir, resolvedFsPath);
+
+    let isRealpathUnderNodeModules = false;
+    try {
+      const resolvedRealpath = fs.realpathSync(resolvedFsPath);
+      isRealpathUnderNodeModules = isPathInside(
+        projectNodeModulesDir,
+        resolvedRealpath,
+      );
+    } catch {
+      // ignore; fall back to checking the raw resolved path
+    }
 
     return (
-      isPathInside(installedPackageRoot, resolvedFsPath) &&
+      (isUnderNodeModules || isRealpathUnderNodeModules) &&
       fs.existsSync(resolvedFsPath)
     );
   } catch {

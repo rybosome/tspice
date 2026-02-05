@@ -23,7 +23,8 @@ ensure_linux() {
 
   retry 3 sudo apt-get update
 
-  if ! sudo apt-get install -y --no-install-recommends ncompress; then
+  log "installing ncompress via apt-get"
+  if ! retry 3 sudo apt-get install -y --no-install-recommends ncompress; then
     echo "Failed to install 'ncompress'. Verify that it is available on ubuntu-latest or adjust the workflow to use an alternative package/source." >&2
     exit 1
   fi
@@ -48,11 +49,10 @@ ensure_macos() {
   fi
 
   log "installing ncompress via Homebrew"
-  if brew install ncompress; then
-    :
-  else
-    local install_status=$?
-    log "brew install ncompress failed (exit $install_status)"
+  # Homebrew installs can flake in CI, and `brew install` may also implicitly
+  # run `brew update` unless disabled.
+  if ! HOMEBREW_NO_AUTO_UPDATE=1 retry 3 brew install ncompress; then
+    log "brew install ncompress failed; attempting a best-effort brew update"
 
     # `brew update` can be flaky; do best-effort updates with retries but don't
     # hard fail on an update failure.
@@ -61,7 +61,7 @@ ensure_macos() {
     fi
 
     log "re-attempting brew install ncompress"
-    if ! brew install ncompress; then
+    if ! HOMEBREW_NO_AUTO_UPDATE=1 retry 3 brew install ncompress; then
       echo "Failed to install ncompress via Homebrew, even after a best-effort brew update." >&2
       exit 1
     fi
