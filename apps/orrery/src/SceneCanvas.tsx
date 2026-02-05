@@ -366,7 +366,7 @@ export function SceneCanvas() {
   const [sunEmissiveColor, setSunEmissiveColor] = useState(SUN_EMISSIVE_COLOR_DEFAULT)
 
   // Sun surface tuning sliders (granulation + filaments).
-  // Defaults are parsed from URL params (see sceneCanvasRuntimeConfig.ts).
+  // Defaults are intentionally NOT query-param driven (see sceneCanvasRuntimeConfig.ts).
   const [sunGranulationScale, setSunGranulationScale] = useState(sunGranulationScaleDefault)
   const [sunGranulationSpeed, setSunGranulationSpeed] = useState(sunGranulationSpeedDefault)
   const [sunGranulationIntensity, setSunGranulationIntensity] = useState(sunGranulationIntensityDefault)

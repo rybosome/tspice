@@ -49,8 +49,12 @@ export type SceneCanvasRuntimeConfig = {
 }
 export type NumericRange = { min: number; max: number; step: number }
 
-// Keep URL-param clamping aligned with the UI slider ranges so values round-trip
-// cleanly between query params and the Advanced pane.
+// Keep clamping aligned with the UI slider ranges.
+//
+// Note: Sun *postprocess* params are intentionally supported via query params
+// for quick sharing/debugging. Sun *surface tuning* (granulation/filaments)
+// is intentionally NOT supported via query params — those are driven only by
+// the sliders in the Advanced pane.
 export const SUN_EXPOSURE_RANGE: NumericRange = { min: 0, max: 10, step: 0.01 }
 export const SUN_BLOOM_THRESHOLD_RANGE: NumericRange = { min: 0, max: 5, step: 0.01 }
 export const SUN_BLOOM_STRENGTH_RANGE: NumericRange = { min: 0, max: 2, step: 0.01 }
@@ -205,64 +209,25 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
   // ---------------------------------------------------------------------------
   // Sun surface tuning (shader uniforms)
   // ---------------------------------------------------------------------------
+  // Intentionally NOT query-param driven (see note above).
 
-  const sunSeed = (() => {
-    const fromUrl = parseNumber(searchParams, 'sunSeed')
-    if (fromUrl != null && Number.isFinite(fromUrl)) return Math.floor(fromUrl)
-    // Default: reuse the app-wide stable seed so sky + Sun move together.
-    return starSeed
-  })()
+  // Default: reuse the app-wide stable seed so sky + Sun move together.
+  const sunSeed = starSeed
 
   // Keep defaults subtle to avoid fighting bloom/tonemap.
-  const sunGranulationScale = clamp(
-    parseNumber(searchParams, 'sunGranScale') ?? 45.0,
-    SUN_GRANULATION_SCALE_RANGE.min,
-    SUN_GRANULATION_SCALE_RANGE.max,
-  )
-  const sunGranulationSpeed = clamp(
-    parseNumber(searchParams, 'sunGranSpeed') ?? 0.08,
-    SUN_GRANULATION_SPEED_RANGE.min,
-    SUN_GRANULATION_SPEED_RANGE.max,
-  )
-  const sunGranulationIntensity = clamp(
-    parseNumber(searchParams, 'sunGranIntensity') ?? 0.25,
-    SUN_GRANULATION_INTENSITY_RANGE.min,
-    SUN_GRANULATION_INTENSITY_RANGE.max,
-  )
+  const sunGranulationScale = clamp(45.0, SUN_GRANULATION_SCALE_RANGE.min, SUN_GRANULATION_SCALE_RANGE.max)
+  const sunGranulationSpeed = clamp(0.08, SUN_GRANULATION_SPEED_RANGE.min, SUN_GRANULATION_SPEED_RANGE.max)
+  const sunGranulationIntensity = clamp(0.25, SUN_GRANULATION_INTENSITY_RANGE.min, SUN_GRANULATION_INTENSITY_RANGE.max)
 
-  const sunFilamentScale = clamp(
-    parseNumber(searchParams, 'sunFilScale') ?? 6.0,
-    SUN_FILAMENT_SCALE_RANGE.min,
-    SUN_FILAMENT_SCALE_RANGE.max,
-  )
-  const sunFilamentSpeed = clamp(
-    parseNumber(searchParams, 'sunFilSpeed') ?? 0.06,
-    SUN_FILAMENT_SPEED_RANGE.min,
-    SUN_FILAMENT_SPEED_RANGE.max,
-  )
-  const sunFilamentIntensity = clamp(
-    parseNumber(searchParams, 'sunFilIntensity') ?? 0.28,
-    SUN_FILAMENT_INTENSITY_RANGE.min,
-    SUN_FILAMENT_INTENSITY_RANGE.max,
-  )
-  const sunFilamentThreshold = clamp(
-    parseNumber(searchParams, 'sunFilThreshold') ?? 0.5,
-    SUN_FILAMENT_THRESHOLD_RANGE.min,
-    SUN_FILAMENT_THRESHOLD_RANGE.max,
-  )
-  const sunFilamentLatitudeBias = clamp(
-    parseNumber(searchParams, 'sunFilLatBias') ?? 0.35,
-    SUN_FILAMENT_LATITUDE_BIAS_RANGE.min,
-    SUN_FILAMENT_LATITUDE_BIAS_RANGE.max,
-  )
+  const sunFilamentScale = clamp(6.0, SUN_FILAMENT_SCALE_RANGE.min, SUN_FILAMENT_SCALE_RANGE.max)
+  const sunFilamentSpeed = clamp(0.06, SUN_FILAMENT_SPEED_RANGE.min, SUN_FILAMENT_SPEED_RANGE.max)
+  const sunFilamentIntensity = clamp(0.28, SUN_FILAMENT_INTENSITY_RANGE.min, SUN_FILAMENT_INTENSITY_RANGE.max)
+  const sunFilamentThreshold = clamp(0.5, SUN_FILAMENT_THRESHOLD_RANGE.min, SUN_FILAMENT_THRESHOLD_RANGE.max)
+  const sunFilamentLatitudeBias = clamp(0.35, SUN_FILAMENT_LATITUDE_BIAS_RANGE.min, SUN_FILAMENT_LATITUDE_BIAS_RANGE.max)
 
-  const sunLimbStrength = clamp(
-    parseNumber(searchParams, 'sunLimbStrength') ?? 0.35,
-    SUN_LIMB_STRENGTH_RANGE.min,
-    SUN_LIMB_STRENGTH_RANGE.max,
-  )
+  const sunLimbStrength = clamp(0.35, SUN_LIMB_STRENGTH_RANGE.min, SUN_LIMB_STRENGTH_RANGE.max)
   const sunDifferentialRotationStrength = clamp(
-    parseNumber(searchParams, 'sunDiffRot') ?? 0.0,
+    0.0,
     SUN_DIFF_ROTATION_STRENGTH_RANGE.min,
     SUN_DIFF_ROTATION_STRENGTH_RANGE.max,
   )

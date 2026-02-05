@@ -244,6 +244,34 @@ function getShaderSource(shader: ShaderSource, source: ShaderSourceKey): string 
   return typeof value === 'string' ? value : undefined
 }
 
+function expandShaderIncludes(args: { src: string; warnOnce: (key: string, ...args: unknown[]) => void; warnKey: string }) {
+  const { src, warnOnce, warnKey } = args
+  const includePattern = /^[ \t]*#include <([^>]+)>/gm
+
+  const expand = (current: string, depth: number): string => {
+    // Depth guard: Three.js chunks are nested but bounded; this prevents a bad
+    // chunk cycle from hanging the app.
+    if (depth > 32) {
+      warnOnce(warnKey, '[BodyMesh] shader include expansion exceeded max depth')
+      return current
+    }
+
+    return current.replace(includePattern, (_match, includeName: string) => {
+      const chunk = (THREE.ShaderChunk as Record<string, unknown>)[includeName]
+      if (typeof chunk !== 'string') {
+        // Keep the original include directive so (a) we don't silently produce
+        // invalid GLSL and (b) the rest of the preflight can still run.
+        warnOnce(warnKey, '[BodyMesh] shader include expansion missing chunk', { includeName })
+        return `#include <${includeName}>`
+      }
+
+      return expand(chunk, depth + 1)
+    })
+  }
+
+  return expand(src, 0)
+}
+
 type SafeShaderReplaceFailureReason = 'missingSource' | 'replaceFailed'
 
 function safeShaderReplaceInSource(args: {
@@ -637,21 +665,28 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       const markerFragCommon = '// tspice:sun-surface:fragment-common'
       const markerFragLights = '// tspice:sun-surface:lights'
 
-      // Preflight: the fragment patch relies on internal Three.js identifiers (e.g.
-      // `totalEmissiveRadiance`). If Three.js refactors these, fail soft with a
-      // warn-once instead of breaking shader compilation.
+      // Preflight: the fragment patch relies on internal Three.js identifiers
+      // (e.g. `totalEmissiveRadiance`). If Three.js refactors these, fail soft
+      // with a warn-once instead of breaking shader compilation.
+      //
+      // IMPORTANT: `onBeforeCompile` sees shaders *before* Three expands
+      // `#include <...>` chunks. Expand them here so token checks are meaningful
+      // (otherwise we can get false negatives for tokens provided by chunks like
+      // `normal_fragment_begin`).
       const fragSrc0 = getShaderSource(shader, 'fragmentShader')
       if (fragSrc0 != null) {
+        const fragSrcExpanded = expandShaderIncludes({
+          src: fragSrc0,
+          warnOnce,
+          warnKey: 'sun-surface:fragment:include-expand',
+        })
+
         const requiredTokens = ['totalEmissiveRadiance', 'diffuseColor', 'nonPerturbedNormal', 'vViewPosition']
-        const missing = requiredTokens.filter((t) => !fragSrc0.includes(t))
+        const missing = requiredTokens.filter((t) => !fragSrcExpanded.includes(t))
         if (missing.length > 0) {
-          warnOnce(
-            'sun-surface:fragment:preflight',
-            '[BodyMesh] sun surface injection skipped (fragment tokens missing)',
-            {
-              missing,
-            },
-          )
+          warnOnce('sun-surface:fragment:preflight', '[BodyMesh] sun surface injection skipped (fragment tokens missing)', {
+            missing,
+          })
           return
         }
       }
