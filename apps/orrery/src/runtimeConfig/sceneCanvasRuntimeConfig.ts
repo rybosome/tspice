@@ -223,7 +223,11 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
   const sunFilamentSpeed = clamp(0.06, SUN_FILAMENT_SPEED_RANGE.min, SUN_FILAMENT_SPEED_RANGE.max)
   const sunFilamentIntensity = clamp(0.28, SUN_FILAMENT_INTENSITY_RANGE.min, SUN_FILAMENT_INTENSITY_RANGE.max)
   const sunFilamentThreshold = clamp(0.5, SUN_FILAMENT_THRESHOLD_RANGE.min, SUN_FILAMENT_THRESHOLD_RANGE.max)
-  const sunFilamentLatitudeBias = clamp(0.35, SUN_FILAMENT_LATITUDE_BIAS_RANGE.min, SUN_FILAMENT_LATITUDE_BIAS_RANGE.max)
+  const sunFilamentLatitudeBias = clamp(
+    0.35,
+    SUN_FILAMENT_LATITUDE_BIAS_RANGE.min,
+    SUN_FILAMENT_LATITUDE_BIAS_RANGE.max,
+  )
 
   const sunLimbStrength = clamp(0.35, SUN_LIMB_STRENGTH_RANGE.min, SUN_LIMB_STRENGTH_RANGE.max)
   const sunDifferentialRotationStrength = clamp(

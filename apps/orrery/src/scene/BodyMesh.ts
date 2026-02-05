@@ -244,7 +244,11 @@ function getShaderSource(shader: ShaderSource, source: ShaderSourceKey): string 
   return typeof value === 'string' ? value : undefined
 }
 
-function expandShaderIncludes(args: { src: string; warnOnce: (key: string, ...args: unknown[]) => void; warnKey: string }) {
+function expandShaderIncludes(args: {
+  src: string
+  warnOnce: (key: string, ...args: unknown[]) => void
+  warnKey: string
+}) {
   const { src, warnOnce, warnKey } = args
   const includePattern = /^[ \t]*#include <([^>]+)>/gm
 
@@ -684,9 +688,13 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         const requiredTokens = ['totalEmissiveRadiance', 'diffuseColor', 'nonPerturbedNormal', 'vViewPosition']
         const missing = requiredTokens.filter((t) => !fragSrcExpanded.includes(t))
         if (missing.length > 0) {
-          warnOnce('sun-surface:fragment:preflight', '[BodyMesh] sun surface injection skipped (fragment tokens missing)', {
-            missing,
-          })
+          warnOnce(
+            'sun-surface:fragment:preflight',
+            '[BodyMesh] sun surface injection skipped (fragment tokens missing)',
+            {
+              missing,
+            },
+          )
           return
         }
       }
