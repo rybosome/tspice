@@ -91,7 +91,11 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3)
 }
 
-function computeWorldPerPixel(opts: { camera: THREE.PerspectiveCamera; distanceWorld: number; viewportHeightPx: number }) {
+function computeWorldPerPixel(opts: {
+  camera: THREE.PerspectiveCamera
+  distanceWorld: number
+  viewportHeightPx: number
+}) {
   const { camera, distanceWorld, viewportHeightPx } = opts
   const heightPx = Math.max(1, viewportHeightPx)
   const fovRad = THREE.MathUtils.degToRad(camera.fov)
@@ -120,6 +124,11 @@ function schedule(anim: ElementAnim, nowMs: number, nextTarget: number, duration
 }
 
 function evalAnim(anim: ElementAnim, nowMs: number) {
+  // Support delayed tracks (where `startMs` may be in the future).
+  // During the delay, preserve the current value so we don't snap back to
+  // `startValue` every frame.
+  if (nowMs < anim.startMs) return true
+
   const t = (nowMs - anim.startMs) / anim.durationMs
   const p = THREE.MathUtils.clamp(t, 0, 1)
   const eased = easeOutCubic(p)
@@ -148,7 +157,7 @@ export function createSelectionOverlay(): SelectionOverlay {
       worldUnits: false,
       transparent: true,
       opacity: opts.opacity,
-      depthTest: true,
+      depthTest: false,
       depthWrite: false,
     })
 
@@ -163,7 +172,14 @@ export function createSelectionOverlay(): SelectionOverlay {
     opacity: 0,
   })
 
-  const frameMaterial = makeMaterial({
+  // X and Y use independent materials so we can fade them independently.
+  const xMaterial = makeMaterial({
+    color: tuning.colors.frame,
+    lineWidthPx: tuning.xyLineWidthPx,
+    opacity: 0,
+  })
+
+  const yMaterial = makeMaterial({
     color: tuning.colors.frame,
     lineWidthPx: tuning.xyLineWidthPx,
     opacity: 0,
@@ -179,11 +195,11 @@ export function createSelectionOverlay(): SelectionOverlay {
   const unitLineGeom = new LineGeometry()
   unitLineGeom.setPositions([-1, 0, 0, 1, 0, 0])
 
-  const xAxis = new Line2(unitLineGeom, frameMaterial)
+  const xAxis = new Line2(unitLineGeom, xMaterial)
   xAxis.name = 'SelectionOverlayXAxis'
   xAxis.computeLineDistances()
 
-  const yAxis = new Line2(unitLineGeom, frameMaterial)
+  const yAxis = new Line2(unitLineGeom, yMaterial)
   yAxis.name = 'SelectionOverlayYAxis'
   yAxis.rotation.z = Math.PI / 2
   yAxis.computeLineDistances()
@@ -236,9 +252,13 @@ export function createSelectionOverlay(): SelectionOverlay {
     return { mode: 'none' as const, target: undefined }
   }
 
-  const computeZoomTier = (opts: { bodyRadiusWorld: number; camera: THREE.PerspectiveCamera; viewportHeightPx: number }) => {
-    const { bodyRadiusWorld, camera, viewportHeightPx } = opts
-    const distanceWorld = camera.position.distanceTo(object.position)
+  const computeZoomTier = (opts: {
+    bodyRadiusWorld: number
+    camera: THREE.PerspectiveCamera
+    viewportHeightPx: number
+    distanceWorld: number
+  }) => {
+    const { bodyRadiusWorld, camera, viewportHeightPx, distanceWorld } = opts
     const wpp = computeWorldPerPixel({ camera, distanceWorld, viewportHeightPx })
     const bodyRadiusPx = wpp > 1e-12 ? bodyRadiusWorld / wpp : 0
 
@@ -266,7 +286,11 @@ export function createSelectionOverlay(): SelectionOverlay {
     }
   }
 
-  const scheduleModeTransition = (nowMs: number, mode: OverlayMode, desired: ReturnType<typeof computeDesiredOpacities>) => {
+  const scheduleModeTransition = (
+    nowMs: number,
+    mode: OverlayMode,
+    desired: ReturnType<typeof computeDesiredOpacities>,
+  ) => {
     if (mode === 'selected') {
       schedule(anim.z, nowMs, desired.z, tuning.selectFadeMs)
       schedule(anim.ring, nowMs + tuning.selectRingDelayMs, desired.ring, tuning.selectFadeMs)
@@ -292,14 +316,13 @@ export function createSelectionOverlay(): SelectionOverlay {
     bodyRadiusWorld: number
     camera: THREE.PerspectiveCamera
     viewportHeightPx: number
-    nowMs: number
+    distanceWorld: number
   }) => {
-    const { bodyRadiusWorld, camera, viewportHeightPx } = opts
+    const { bodyRadiusWorld, camera, viewportHeightPx, distanceWorld } = opts
 
-    const distanceWorld = camera.position.distanceTo(object.position)
-    lastDistanceWorld = Number.isFinite(distanceWorld) && distanceWorld > 0 ? distanceWorld : lastDistanceWorld
+    const safeDistanceWorld = Number.isFinite(distanceWorld) && distanceWorld > 0 ? distanceWorld : 1
 
-    const wpp = computeWorldPerPixel({ camera, distanceWorld: lastDistanceWorld, viewportHeightPx })
+    const wpp = computeWorldPerPixel({ camera, distanceWorld: safeDistanceWorld, viewportHeightPx })
 
     const base = bodyRadiusWorld * tuning.axisExtentRadiusMult
     const minWorld = tuning.axisMinPx * wpp
@@ -310,7 +333,15 @@ export function createSelectionOverlay(): SelectionOverlay {
     ring.scale.setScalar(axisExtentWorld * tuning.ringRadiusMult)
   }
 
-  const syncToCamera = ({ camera, nowMs, viewportHeightPx }: { camera: THREE.PerspectiveCamera; nowMs: number; viewportHeightPx: number }) => {
+  const syncToCamera = ({
+    camera,
+    nowMs,
+    viewportHeightPx,
+  }: {
+    camera: THREE.PerspectiveCamera
+    nowMs: number
+    viewportHeightPx: number
+  }) => {
     const { mode, target } = getActive()
 
     // Update pose from active target if we have one.
@@ -326,6 +357,11 @@ export function createSelectionOverlay(): SelectionOverlay {
       if (Number.isFinite(r) && r > 0) {
         lastBodyRadiusWorld = r
       }
+
+      const d = camera.position.distanceTo(object.position)
+      if (Number.isFinite(d) && d > 0) {
+        lastDistanceWorld = d
+      }
     }
 
     // If we're fully hidden and we have no active target, bail early.
@@ -337,7 +373,14 @@ export function createSelectionOverlay(): SelectionOverlay {
 
     object.visible = true
 
-    const zoomTier = computeZoomTier({ bodyRadiusWorld: lastBodyRadiusWorld, camera, viewportHeightPx })
+    const zoomTier = target
+      ? computeZoomTier({
+          bodyRadiusWorld: lastBodyRadiusWorld,
+          camera,
+          viewportHeightPx,
+          distanceWorld: lastDistanceWorld,
+        })
+      : (lastZoomTier ?? 'mid')
     const desired = computeDesiredOpacities(mode, zoomTier)
 
     const modeOrTargetChanged = mode !== activeMode || target !== activeTarget
@@ -370,8 +413,8 @@ export function createSelectionOverlay(): SelectionOverlay {
     zMaterial.opacity = anim.z.value
     ringMaterial.opacity = anim.ring.value
 
-    // `frameMaterial` is shared for X/Y; we drive per-object opacity via `visible`.
-    frameMaterial.opacity = Math.max(anim.x.value, anim.y.value)
+    xMaterial.opacity = anim.x.value
+    yMaterial.opacity = anim.y.value
     xAxis.visible = anim.x.value > 1e-3
     yAxis.visible = anim.y.value > 1e-3
 
@@ -384,7 +427,7 @@ export function createSelectionOverlay(): SelectionOverlay {
       return
     }
 
-    applySizing({ bodyRadiusWorld: lastBodyRadiusWorld, camera, viewportHeightPx, nowMs })
+    applySizing({ bodyRadiusWorld: lastBodyRadiusWorld, camera, viewportHeightPx, distanceWorld: lastDistanceWorld })
 
     // Keep animatingUntilMs conservative while there is any active tween.
     if (aZ || aRing || aX || aY) {
@@ -412,18 +455,14 @@ export function createSelectionOverlay(): SelectionOverlay {
     animatingUntilMs = Math.max(animatingUntilMs, nowMs + tuning.hoverFadeMs)
   }
 
-  const isAnimating = (nowMs: number) => {
-    if (nowMs < animatingUntilMs) return true
-
-    // If we have any visible alpha, assume we may need another frame to settle.
-    return anim.z.value > 1e-3 || anim.ring.value > 1e-3 || anim.x.value > 1e-3 || anim.y.value > 1e-3
-  }
+  const isAnimating = (nowMs: number) => nowMs < animatingUntilMs
 
   const setResolution = (widthPx: number, heightPx: number) => {
     resolution.set(Math.max(1, widthPx), Math.max(1, heightPx))
     zMaterial.resolution.copy(resolution)
     ringMaterial.resolution.copy(resolution)
-    frameMaterial.resolution.copy(resolution)
+    xMaterial.resolution.copy(resolution)
+    yMaterial.resolution.copy(resolution)
   }
 
   const dispose = () => {
@@ -431,7 +470,8 @@ export function createSelectionOverlay(): SelectionOverlay {
     ringGeom.dispose()
     zMaterial.dispose()
     ringMaterial.dispose()
-    frameMaterial.dispose()
+    xMaterial.dispose()
+    yMaterial.dispose()
   }
 
   return {
