@@ -21,7 +21,7 @@ function normalizeRoutineName(name) {
 
 function usage() {
   return [
-    "Usage: node scripts/generate-cspice-planned-functions-by-domain.mjs [--out <path>] [--stdout] [--check] [--audit] [--verbose]",
+    "Usage: node scripts/generate-cspice-planned-functions-by-domain.mjs [--out <path>] [--stdout] [--check] [--audit] [--verbose] [--fail-on-overlap]",
     "",
     "Default: regenerate docs/cspice-planned-functions-by-domain.md from data/cspice-functions.json.",
     "",
@@ -31,16 +31,18 @@ function usage() {
     "  --check       Fail if output file is out of date.",
     "  --audit       Report routines that match multiple domain rules.",
     "  --verbose     More detailed audit output (implies --audit).",
+    "  --fail-on-overlap  Exit non-zero (2) if any routines match multiple domain rules.",
   ].join("\n");
 }
 
 function parseArgs(argv) {
-  /** @type {{ check: boolean; stdout: boolean; audit: boolean; verbose: boolean; outPath: string }} */
+  /** @type {{ check: boolean; stdout: boolean; audit: boolean; verbose: boolean; failOnOverlap: boolean; outPath: string }} */
   const out = {
     check: false,
     stdout: false,
     audit: false,
     verbose: false,
+    failOnOverlap: false,
     outPath: DEFAULT_OUTPUT_PATH,
   };
 
@@ -70,6 +72,12 @@ function parseArgs(argv) {
     if (a === "--verbose") {
       out.audit = true;
       out.verbose = true;
+      continue;
+    }
+
+    if (a === "--fail-on-overlap") {
+      out.audit = true;
+      out.failOnOverlap = true;
       continue;
     }
 
@@ -206,7 +214,7 @@ function renderMarkdown({ plannedRoutines, domains, grouped, fallbackDomain, unm
 }
 
 async function main() {
-  const { check, stdout, outPath, audit, verbose } = parseArgs(process.argv.slice(2));
+  const { check, stdout, outPath, audit, verbose, failOnOverlap } = parseArgs(process.argv.slice(2));
 
   const [rawFunctionsJson, rawRulesJson] = await Promise.all([
     readFile(CSPICE_FUNCTIONS_JSON_PATH, "utf8"),
@@ -264,31 +272,34 @@ async function main() {
 
   let fallbackCount = 0;
 
-  /** @type {{ routine: string; matchedDomains: string[] }[]} */
-  const multiMatches = [];
+  /** @type {{ routine: string; matchedDomains: string[]; chosenDomain: string; overriddenTo: string | null }[]} */
+  const overlaps = [];
 
   for (const r of planned) {
     const override = overrides.get(r.baseName);
-    let domain = override;
 
-    if (!domain) {
-      /** @type {string[]} */
-      const matchedDomains = [];
-      for (const rule of compiledRules) {
-        if (rule.test(r)) {
-          matchedDomains.push(rule.domain);
-        }
-      }
-
-      if (matchedDomains.length > 0) {
-        domain = matchedDomains[0];
-      }
-
-      if (matchedDomains.length > 1) {
-        // Keep the full set for observability; rule order still determines the chosen domain.
-        multiMatches.push({ routine: r.baseName, matchedDomains });
+    /** @type {string[]} */
+    const matchedDomains = [];
+    for (const rule of compiledRules) {
+      if (rule.test(r)) {
+        matchedDomains.push(rule.domain);
       }
     }
+
+    const chosenDomain = matchedDomains[0];
+    const overriddenTo = override ?? null;
+
+    if (matchedDomains.length > 1) {
+      // Keep the full set for observability; rule order still determines the chosen domain.
+      overlaps.push({
+        routine: r.baseName,
+        matchedDomains,
+        chosenDomain,
+        overriddenTo,
+      });
+    }
+
+    let domain = overriddenTo ?? chosenDomain;
 
     if (!domain) {
       domain = ruleConfig.fallbackDomain;
@@ -315,15 +326,25 @@ async function main() {
   // Always show audit output during --check so CI runs surface potential rule overlaps.
   const shouldAudit = audit || check;
 
-  if (shouldAudit && multiMatches.length > 0) {
+  if (shouldAudit && overlaps.length > 0) {
     process.stderr.write(
-      `\nRule audit: ${multiMatches.length} routine(s) matched multiple rules (first match wins):\n`,
+      `\nRule audit: ${overlaps.length} routine(s) matched multiple rules (first match wins):\n`,
     );
-    for (const m of multiMatches) {
-      const detail = verbose ? `  ${m.matchedDomains.join(" -> ")}` : `  ${m.matchedDomains.join(", ")}`;
-      process.stderr.write(`- ${m.routine}${detail ? `\n${detail}\n` : "\n"}`);
+    for (const o of overlaps) {
+      const chosen = o.overriddenTo
+        ? `${o.chosenDomain} (overridden to ${o.overriddenTo})`
+        : o.chosenDomain;
+      const detail = verbose
+        ? `  matched: ${o.matchedDomains.join(" -> ")}`
+        : `  matched: ${o.matchedDomains.join(", ")}`;
+      process.stderr.write(`- ${o.routine} (chosen: ${chosen})\n${detail}\n`);
     }
     process.stderr.write("\n");
+  }
+
+  if (failOnOverlap && overlaps.length > 0) {
+    // Run fully (including --check diff detection), but fail the command to allow CI opt-in.
+    process.exitCode = 2;
   }
 
   if (check) {
