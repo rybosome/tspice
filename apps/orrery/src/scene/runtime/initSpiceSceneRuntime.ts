@@ -339,7 +339,7 @@ export async function initSpiceSceneRuntime(args: {
     ambient.intensity = next.ambientLightIntensity
     dir.intensity = next.sunLightIntensity
 
-    // Sun glow tuning (debug-only UI).
+    // Sun glow tuning.
     if (sunMaterial && sunMaterial instanceof THREE.MeshStandardMaterial) {
       const intensity = THREE.MathUtils.clamp(next.sunEmissiveIntensity, 0, 50)
       sunMaterial.emissive.set(next.sunEmissiveColor)

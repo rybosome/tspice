@@ -772,7 +772,7 @@ export function createThreeRuntime(args: {
   const updateSunPostprocess = (next: SunPostprocessUpdate) => {
     if (disposed) return
 
-    // TEMP DEBUG (PR-280): allow live tuning of postprocessing parameters.
+    // Allow live tuning of postprocessing parameters (via UI).
     const prevResolutionScale = sunPostprocess.bloom.resolutionScale
 
     if (next.exposure != null && Number.isFinite(next.exposure)) {

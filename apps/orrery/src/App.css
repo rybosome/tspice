@@ -1464,6 +1464,25 @@
   outline: none;
 }
 
+.advancedTextInput {
+  flex: 1;
+  min-width: 60px;
+  width: 100%;
+  padding: 4px 6px;
+  background: transparent;
+  border: var(--stroke-1) solid var(--phosphor-border);
+  border-radius: var(--radius-xs);
+  color: var(--phosphor-fg);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+}
+
+.advancedTextInput:hover,
+.advancedTextInput:focus {
+  border-color: var(--phosphor-bright);
+  outline: none;
+}
+
 .advancedSliderValue {
   flex: 0 0 auto;
   min-width: 48px;
@@ -1513,93 +1532,3 @@
   order: -1;
 }
 
-/* ============================================
-   TEMP DEBUG (PR-280): Sun postprocess tuning
-   ============================================ */
-
-.sunDebugOverlay {
-  position: absolute;
-  left: 12px;
-  bottom: 12px;
-  z-index: 3;
-  padding: 10px 12px;
-  background: var(--panel-bg);
-  border: var(--stroke-1) solid var(--phosphor-border);
-  border-radius: var(--radius-xs);
-  backdrop-filter: blur(6px);
-  font-size: var(--font-size-sm);
-  font-family: var(--font-ui);
-  color: var(--phosphor-fg);
-  width: 340px;
-  max-width: min(380px, calc(100% - 24px));
-}
-
-.sunDebugHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.sunDebugTitle {
-  font-weight: 600;
-  color: var(--phosphor-fg);
-}
-
-.sunDebugReset {
-  appearance: none;
-  border: var(--stroke-1) solid var(--phosphor-border);
-  background: transparent;
-  color: var(--phosphor-fg);
-  padding: 4px 8px;
-  border-radius: var(--radius-xs);
-  cursor: pointer;
-  font-size: var(--font-size-sm);
-}
-
-.sunDebugReset:hover {
-  border-color: var(--phosphor-bright);
-  background: var(--hover-bg);
-}
-
-.sunDebugRows {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.sunDebugRow {
-  display: grid;
-  grid-template-columns: 120px 1fr 70px;
-  gap: 8px;
-  align-items: center;
-}
-
-.sunDebugLabel {
-  color: var(--phosphor-fg);
-}
-
-.sunDebugRow input[type='range'] {
-  width: 100%;
-}
-
-.sunDebugNumber,
-.sunDebugSelect {
-  width: 70px;
-  background: transparent;
-  border: var(--stroke-1) solid var(--phosphor-border);
-  color: var(--phosphor-fg);
-  border-radius: var(--radius-xs);
-  padding: 3px 6px;
-}
-
-.sunDebugNumber {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-}
-
-.sunDebugSpacer {
-  display: block;
-  width: 70px;
-}

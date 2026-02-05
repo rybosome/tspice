@@ -28,7 +28,7 @@ import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
-type AdvancedPaneId = 'time' | 'scale' | 'guides' | 'orbits' | 'performance'
+type AdvancedPaneId = 'time' | 'scale' | 'guides' | 'orbits' | 'performance' | 'rendering'
 
 type AdvancedHelpTopicId =
   | 'zoom'
@@ -77,6 +77,12 @@ const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: strin
     tabLabel: 'PERFORMANCE',
     title: 'PERFORMANCE',
     summary: 'Optional effects and overlays that may impact FPS or battery.',
+  },
+  {
+    id: 'rendering',
+    tabLabel: 'RENDERING',
+    title: 'RENDERING',
+    summary: 'Sun postprocessing and lighting/emissive tuning.',
   },
 ]
 
@@ -161,9 +167,12 @@ const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string;
     ],
   },
   animatedSky: {
-    title: 'Animated sky',
-    short: 'Enable the skydome shader (can cost GPU).',
-    body: ['Enables the animated skydome shader.', 'Turn off for maximum performance or to reduce visual motion.'],
+    title: 'Milky Way',
+    short: 'Toggle the background Milky Way skydome (can cost GPU).',
+    body: [
+      'Enables the Milky Way skydome shader.',
+      'Turn off for maximum performance, to reduce motion, or for deterministic screenshots.',
+    ],
   },
   skyTwinkle: {
     title: 'Sky twinkle',
@@ -279,13 +288,13 @@ export function SceneCanvas() {
   const [selectedBody, setSelectedBody] = useState<BodyRef | null>(null)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
 
-  // TEMP DEBUG (PR-280): always-on Sun tuning pane (postprocess + lighting).
-  const [sunDebugExposure, setSunDebugExposure] = useState(sunExposure)
-  const [sunDebugToneMap, setSunDebugToneMap] = useState(sunToneMap)
-  const [sunDebugBloomThreshold, setSunDebugBloomThreshold] = useState(sunBloomThreshold)
-  const [sunDebugBloomStrength, setSunDebugBloomStrength] = useState(sunBloomStrength)
-  const [sunDebugBloomRadius, setSunDebugBloomRadius] = useState(sunBloomRadius)
-  const [sunDebugBloomResolutionScale, setSunDebugBloomResolutionScale] = useState(sunBloomResolutionScale)
+  // Sun postprocess tuning (ephemeral; adjustable live via the RENDERING pane).
+  const [sunPostprocessExposure, setSunPostprocessExposure] = useState(sunExposure)
+  const [sunPostprocessToneMap, setSunPostprocessToneMap] = useState(sunToneMap)
+  const [sunPostprocessBloomThreshold, setSunPostprocessBloomThreshold] = useState(sunBloomThreshold)
+  const [sunPostprocessBloomStrength, setSunPostprocessBloomStrength] = useState(sunBloomStrength)
+  const [sunPostprocessBloomRadius, setSunPostprocessBloomRadius] = useState(sunBloomRadius)
+  const [sunPostprocessBloomResolutionScale, setSunPostprocessBloomResolutionScale] = useState(sunBloomResolutionScale)
 
   // Advanced tuning sliders (ephemeral, local state only)
   const [advancedPane, setAdvancedPane] = useState<AdvancedPaneId>('time')
@@ -313,13 +322,11 @@ export function SceneCanvas() {
     return layers?.find(isEarthAppearanceLayer)?.earth
   }, [])
 
-  // Earth appearance tuning (kept configurable in code; no longer exposed as debug sliders).
-  // TEMP DEBUG (PR-280): allow live tuning via always-on Sun debug pane.
-  const AMBIENT_LIGHT_INTENSITY_DEFAULT = 0.5
-  const SUN_LIGHT_INTENSITY_DEFAULT = 4.5
-
-  // Sun emissive tuning (debug-only). Base emissive is also enabled via texture `kind: 'sun'`.
-  const SUN_EMISSIVE_INTENSITY_DEFAULT = 5
+  // Lighting + Sun appearance defaults.
+  const AMBIENT_LIGHT_INTENSITY_DEFAULT = 0.45
+  const SUN_LIGHT_INTENSITY_DEFAULT = 3.5
+  // Sun emissive is in addition to the base texture `kind: 'sun'`.
+  const SUN_EMISSIVE_INTENSITY_DEFAULT = 10
   const SUN_EMISSIVE_COLOR_DEFAULT = '#ffcc55'
 
   const [ambientLightIntensity, setAmbientLightIntensity] = useState(AMBIENT_LIGHT_INTENSITY_DEFAULT)
@@ -350,25 +357,25 @@ export function SceneCanvas() {
   const [labelOcclusionEnabled, setLabelOcclusionEnabled] = useState(false)
 
   // Sky effects.
-  // Default OFF (less distracting); can be enabled via UI or `?milkyWay=1`.
+  // Default ON for interactive runs; can be overridden via `?milkyWay=...`.
   // Disabled by default for e2e tests to keep snapshots deterministic.
   const [animatedSky, setAnimatedSky] = useState(() => {
     if (isE2e) return false
     const searchParams = new URLSearchParams(window.location.search)
     const raw = searchParams.get('milkyWay') ?? searchParams.get('animatedSky')
-    if (raw == null) return false
+    if (raw == null) return true
     if (raw === '') return true
     const v = raw.toLowerCase()
     return v === '1' || v === 'true'
   })
 
-  // Star twinkle is separate from the skydome toggle.
-  // Default: match `animatedSky` unless explicitly overridden by `?twinkle=...`.
+  // Star twinkle is separate from the Milky Way toggle.
+  // Default OFF unless explicitly enabled via `?twinkle=...`.
   const [skyTwinkle, setSkyTwinkle] = useState(() => {
     if (isE2e) return false
     const searchParams = new URLSearchParams(window.location.search)
     const raw = searchParams.get('twinkle')
-    if (raw == null) return animatedSky
+    if (raw == null) return false
     if (raw === '') return true
     const v = raw.toLowerCase()
     return v === '1' || v === 'true'
@@ -1261,28 +1268,28 @@ export function SceneCanvas() {
     rendererRuntimeRef.current?.updateSky({ animatedSky, twinkleEnabled, isE2e })
   }, [animatedSky, twinkleEnabled, isE2e])
 
-  // TEMP DEBUG (PR-280): live-tune Sun postprocessing in-place (no reload / query params).
+  // Live-tune Sun postprocessing in-place (no reload / query params).
   useEffect(() => {
     if (isE2e) return
 
     rendererRuntimeRef.current?.updateSunPostprocess({
-      exposure: sunDebugExposure,
-      toneMap: sunDebugToneMap,
+      exposure: sunPostprocessExposure,
+      toneMap: sunPostprocessToneMap,
       bloom: {
-        threshold: sunDebugBloomThreshold,
-        strength: sunDebugBloomStrength,
-        radius: sunDebugBloomRadius,
-        resolutionScale: sunDebugBloomResolutionScale,
+        threshold: sunPostprocessBloomThreshold,
+        strength: sunPostprocessBloomStrength,
+        radius: sunPostprocessBloomRadius,
+        resolutionScale: sunPostprocessBloomResolutionScale,
       },
     })
   }, [
     isE2e,
-    sunDebugExposure,
-    sunDebugToneMap,
-    sunDebugBloomThreshold,
-    sunDebugBloomStrength,
-    sunDebugBloomRadius,
-    sunDebugBloomResolutionScale,
+    sunPostprocessExposure,
+    sunPostprocessToneMap,
+    sunPostprocessBloomThreshold,
+    sunPostprocessBloomStrength,
+    sunPostprocessBloomRadius,
+    sunPostprocessBloomResolutionScale,
   ])
 
   // Lightweight RAF loop for sky animation (twinkle and/or skydome shader).
@@ -1719,7 +1726,7 @@ export function SceneCanvas() {
                           onChange={(e) => setAnimatedSky(e.target.checked)}
                         />
                         <span className="asciiCheckboxBox" aria-hidden="true" />
-                        <span className="asciiCheckboxLabel">Animated Skydome</span>
+                        <span className="asciiCheckboxLabel">Milky Way</span>
                       </label>
                       <AdvancedHelpButton topic="animatedSky" onOpen={setAdvancedHelpTopic} />
                     </div>
@@ -1755,6 +1762,181 @@ export function SceneCanvas() {
                     </div>
                   </div>
                 ) : null}
+
+                {/* Pane: RENDERING */}
+                {advancedPane === 'rendering' ? (
+                  <div
+                    className="advancedGroup"
+                    role="tabpanel"
+                    id={`${controlsTabsId}-panel-rendering`}
+                    aria-labelledby={`${controlsTabsId}-tab-rendering`}
+                  >
+                    <div className="controlsSection">
+                      <button
+                        className="asciiBtn asciiBtnWide"
+                        type="button"
+                        onClick={() => {
+                          setSunPostprocessExposure(sunExposure)
+                          setSunPostprocessToneMap(sunToneMap)
+                          setSunPostprocessBloomThreshold(sunBloomThreshold)
+                          setSunPostprocessBloomStrength(sunBloomStrength)
+                          setSunPostprocessBloomRadius(sunBloomRadius)
+                          setSunPostprocessBloomResolutionScale(sunBloomResolutionScale)
+                          setAmbientLightIntensity(AMBIENT_LIGHT_INTENSITY_DEFAULT)
+                          setSunLightIntensity(SUN_LIGHT_INTENSITY_DEFAULT)
+                          setSunEmissiveIntensity(SUN_EMISSIVE_INTENSITY_DEFAULT)
+                          setSunEmissiveColor(SUN_EMISSIVE_COLOR_DEFAULT)
+                        }}
+                        title="Reset rendering settings"
+                      >
+                        <span className="asciiBtnBracket">[</span>
+                        <span className="asciiBtnContent">Reset</span>
+                        <span className="asciiBtnBracket">]</span>
+                      </button>
+                    </div>
+
+                    <div className="advancedDivider" />
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Exposure</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={10}
+                        step={0.01}
+                        value={sunPostprocessExposure}
+                        onChange={(e) => setSunPostprocessExposure(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessExposure.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Tone map</span>
+                      <select
+                        className="focusSelect"
+                        value={sunPostprocessToneMap}
+                        onChange={(e) => setSunPostprocessToneMap(e.target.value as typeof sunToneMap)}
+                      >
+                        <option value="none">none</option>
+                        <option value="filmic">filmic</option>
+                        <option value="acesLike">acesLike</option>
+                      </select>
+                      <span className="advancedSliderValue" />
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Bloom threshold</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={5}
+                        step={0.01}
+                        value={sunPostprocessBloomThreshold}
+                        onChange={(e) => setSunPostprocessBloomThreshold(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessBloomThreshold.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Bloom strength</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={2}
+                        step={0.01}
+                        value={sunPostprocessBloomStrength}
+                        onChange={(e) => setSunPostprocessBloomStrength(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessBloomStrength.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Bloom radius</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        value={sunPostprocessBloomRadius}
+                        onChange={(e) => setSunPostprocessBloomRadius(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessBloomRadius.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Bloom res scale</span>
+                      <input
+                        type="range"
+                        min={0.1}
+                        max={1}
+                        step={0.05}
+                        value={sunPostprocessBloomResolutionScale}
+                        onChange={(e) => setSunPostprocessBloomResolutionScale(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunPostprocessBloomResolutionScale.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedDivider" />
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Ambient light</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={2}
+                        step={0.01}
+                        value={ambientLightIntensity}
+                        onChange={(e) => setAmbientLightIntensity(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{ambientLightIntensity.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Sun light</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={10}
+                        step={0.1}
+                        value={sunLightIntensity}
+                        onChange={(e) => setSunLightIntensity(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunLightIntensity.toFixed(1)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Sun emissive</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={20}
+                        step={0.1}
+                        value={sunEmissiveIntensity}
+                        onChange={(e) => setSunEmissiveIntensity(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunEmissiveIntensity.toFixed(1)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Emissive color</span>
+                      <div style={{ flex: 1, display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <input
+                          type="color"
+                          value={sunEmissiveColor}
+                          onChange={(e) => setSunEmissiveColor(e.target.value)}
+                          aria-label="Sun emissive color"
+                        />
+                        <input
+                          className="advancedTextInput"
+                          type="text"
+                          value={sunEmissiveColor}
+                          onChange={(e) => setSunEmissiveColor(e.target.value)}
+                        />
+                      </div>
+                      <span className="advancedSliderValue" />
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           ) : null}
@@ -1771,296 +1953,8 @@ export function SceneCanvas() {
           frame={J2000_FRAME}
         />
       ) : null}
-      {/* TEMP DEBUG (PR-280): always-on Sun/lighting tuning pane (bottom-left). */}
-      {!isE2e ? (
-        <div className="sunDebugOverlay">
-          <div className="sunDebugHeader">
-            <div className="sunDebugTitle">SUN DEBUG (TEMP PR-280)</div>
-            <button
-              className="sunDebugReset"
-              type="button"
-              onClick={() => {
-                setSunDebugExposure(sunExposure)
-                setSunDebugToneMap(sunToneMap)
-                setSunDebugBloomThreshold(sunBloomThreshold)
-                setSunDebugBloomStrength(sunBloomStrength)
-                setSunDebugBloomRadius(sunBloomRadius)
-                setSunDebugBloomResolutionScale(sunBloomResolutionScale)
-                setAmbientLightIntensity(AMBIENT_LIGHT_INTENSITY_DEFAULT)
-                setSunLightIntensity(SUN_LIGHT_INTENSITY_DEFAULT)
-                setSunEmissiveIntensity(SUN_EMISSIVE_INTENSITY_DEFAULT)
-                setSunEmissiveColor(SUN_EMISSIVE_COLOR_DEFAULT)
-              }}
-              title="Reset to defaults"
-            >
-              Reset
-            </button>
-          </div>
-
-          <div className="sunDebugRows">
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-exposure">
-                Exposure
-              </label>
-              <input
-                id="sun-debug-exposure"
-                type="range"
-                min={0}
-                max={10}
-                step={0.01}
-                value={sunDebugExposure}
-                onChange={(e) => setSunDebugExposure(Number(e.target.value))}
-              />
-              <input
-                className="sunDebugNumber"
-                type="number"
-                min={0}
-                max={100}
-                step={0.01}
-                value={sunDebugExposure}
-                onChange={(e) => setSunDebugExposure(Number(e.target.value))}
-              />
-            </div>
-
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-tonemap">
-                Tone map
-              </label>
-              <select
-                id="sun-debug-tonemap"
-                className="sunDebugSelect"
-                value={sunDebugToneMap}
-                onChange={(e) => setSunDebugToneMap(e.target.value as typeof sunToneMap)}
-              >
-                <option value="none">none</option>
-                <option value="filmic">filmic</option>
-                <option value="acesLike">acesLike</option>
-              </select>
-              <span className="sunDebugSpacer" />
-            </div>
-
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-threshold">
-                Bloom threshold
-              </label>
-              <input
-                id="sun-debug-bloom-threshold"
-                type="range"
-                min={0}
-                max={5}
-                step={0.01}
-                value={sunDebugBloomThreshold}
-                onChange={(e) => setSunDebugBloomThreshold(Number(e.target.value))}
-              />
-              <input
-                className="sunDebugNumber"
-                type="number"
-                min={0}
-                max={10}
-                step={0.01}
-                value={sunDebugBloomThreshold}
-                onChange={(e) => setSunDebugBloomThreshold(Number(e.target.value))}
-              />
-            </div>
-
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-strength">
-                Bloom strength
-              </label>
-              <input
-                id="sun-debug-bloom-strength"
-                type="range"
-                min={0}
-                max={10}
-                step={0.05}
-                value={sunDebugBloomStrength}
-                onChange={(e) => setSunDebugBloomStrength(Number(e.target.value))}
-              />
-              <input
-                className="sunDebugNumber"
-                type="number"
-                min={0}
-                max={20}
-                step={0.05}
-                value={sunDebugBloomStrength}
-                onChange={(e) => setSunDebugBloomStrength(Number(e.target.value))}
-              />
-            </div>
-
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-radius">
-                Bloom radius
-              </label>
-              <input
-                id="sun-debug-bloom-radius"
-                type="range"
-                min={0}
-                max={1}
-                step={0.01}
-                value={sunDebugBloomRadius}
-                onChange={(e) => setSunDebugBloomRadius(Number(e.target.value))}
-              />
-              <input
-                className="sunDebugNumber"
-                type="number"
-                min={0}
-                max={1}
-                step={0.01}
-                value={sunDebugBloomRadius}
-                onChange={(e) => setSunDebugBloomRadius(Number(e.target.value))}
-              />
-            </div>
-
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-bloom-scale">
-                Bloom res scale
-              </label>
-              <input
-                id="sun-debug-bloom-scale"
-                type="range"
-                min={0.1}
-                max={1}
-                step={0.05}
-                value={sunDebugBloomResolutionScale}
-                onChange={(e) => setSunDebugBloomResolutionScale(Number(e.target.value))}
-              />
-              <input
-                className="sunDebugNumber"
-                type="number"
-                min={0.1}
-                max={1}
-                step={0.05}
-                value={sunDebugBloomResolutionScale}
-                onChange={(e) => setSunDebugBloomResolutionScale(Number(e.target.value))}
-              />
-            </div>
-
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-ambient">
-                Ambient light
-              </label>
-              <input
-                id="sun-debug-ambient"
-                type="range"
-                min={0}
-                max={2}
-                step={0.01}
-                value={ambientLightIntensity}
-                onChange={(e) => setAmbientLightIntensity(Number(e.target.value))}
-              />
-              <input
-                className="sunDebugNumber"
-                type="number"
-                min={0}
-                max={5}
-                step={0.01}
-                value={ambientLightIntensity}
-                onChange={(e) => setAmbientLightIntensity(Number(e.target.value))}
-              />
-            </div>
-
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-sunlight">
-                Sun light
-              </label>
-              <input
-                id="sun-debug-sunlight"
-                type="range"
-                min={0}
-                max={10}
-                step={0.1}
-                value={sunLightIntensity}
-                onChange={(e) => setSunLightIntensity(Number(e.target.value))}
-              />
-              <input
-                className="sunDebugNumber"
-                type="number"
-                min={0}
-                max={20}
-                step={0.1}
-                value={sunLightIntensity}
-                onChange={(e) => setSunLightIntensity(Number(e.target.value))}
-              />
-            </div>
-
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-emissive">
-                Sun emissive
-              </label>
-              <input
-                id="sun-debug-emissive"
-                type="range"
-                min={0}
-                max={20}
-                step={0.1}
-                value={sunEmissiveIntensity}
-                onChange={(e) => setSunEmissiveIntensity(Number(e.target.value))}
-              />
-              <input
-                className="sunDebugNumber"
-                type="number"
-                min={0}
-                max={50}
-                step={0.1}
-                value={sunEmissiveIntensity}
-                onChange={(e) => setSunEmissiveIntensity(Number(e.target.value))}
-              />
-            </div>
-
-            <div className="sunDebugRow">
-              <label className="sunDebugLabel" htmlFor="sun-debug-emissive-color">
-                Emissive color
-              </label>
-              <input
-                id="sun-debug-emissive-color"
-                type="color"
-                value={sunEmissiveColor}
-                onChange={(e) => setSunEmissiveColor(e.target.value)}
-              />
-              <input
-                className="sunDebugNumber"
-                type="text"
-                value={sunEmissiveColor}
-                onChange={(e) => setSunEmissiveColor(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Background controls: keep separate from Sun tuning knobs. */}
-          <div
-            style={{
-              marginTop: '10px',
-              paddingTop: '8px',
-              borderTop: '1px solid var(--phosphor-border)',
-            }}
-          >
-            <div className="sunDebugTitle" style={{ marginBottom: '6px' }}>
-              BACKGROUND
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label className="asciiCheckbox">
-                <span className="asciiCheckboxBox" onClick={() => setAnimatedSky((v) => !v)}>
-                  [{animatedSky ? '✓' : '\u00A0'}]
-                </span>
-                <span className="asciiCheckboxLabel" onClick={() => setAnimatedSky((v) => !v)}>
-                  Sky (Milky Way)
-                </span>
-              </label>
-
-              <label className="asciiCheckbox">
-                <span className="asciiCheckboxBox" onClick={() => setSkyTwinkle((v) => !v)}>
-                  [{skyTwinkle ? '✓' : '\u00A0'}]
-                </span>
-                <span className="asciiCheckboxLabel" onClick={() => setSkyTwinkle((v) => !v)}>
-                  Star twinkle
-                </span>
-              </label>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
+      
+      
       <canvas ref={canvasRef} className="sceneCanvas" />
 
       {/* Render HUD overlays */}

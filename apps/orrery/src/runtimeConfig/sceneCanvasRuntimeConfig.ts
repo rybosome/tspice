@@ -7,7 +7,7 @@ export type SceneCanvasRuntimeConfig = {
   isE2e: boolean
   enableLogDepth: boolean
 
-  /** Enables debug-only UI/knobs. */
+  /** Enables additional debug UI/knobs. */
   debug: boolean
 
   /** Stable seed used for starfield + skydome noise. */
@@ -99,7 +99,7 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
 
   // Bloom defaults tuned for Sun appearance.
   const sunBloomThresholdDefault = 1.5
-  const sunBloomStrengthDefault = 0.3
+  const sunBloomStrengthDefault = 0.15
   const sunBloomRadiusDefault = 0.05
   const sunBloomResolutionScaleDefault = 1
 
