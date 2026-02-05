@@ -131,6 +131,17 @@ export function installSceneInteractions(args: {
     overlayAnimFrame = null
   }
 
+  // Throttle hover raycasts to at most one per frame.
+  let hoverPickFrame: number | null = null
+  let pendingHoverPick: { x: number; y: number } | null = null
+
+  const stopHoverPick = () => {
+    pendingHoverPick = null
+    if (hoverPickFrame == null) return
+    window.cancelAnimationFrame(hoverPickFrame)
+    hoverPickFrame = null
+  }
+
   const startOverlayAnim = () => {
     if (!selectionOverlay) return
     if (overlayAnimFrame != null) return
@@ -213,6 +224,7 @@ export function installSceneInteractions(args: {
       controller.radius = endRadius
       controller.applyToCamera(camera)
       invalidate()
+      startOverlayAnim()
       return
     }
 
@@ -425,6 +437,7 @@ export function installSceneInteractions(args: {
 
         controller.applyToCamera(camera)
         invalidate()
+        startOverlayAnim()
         return
       }
 
@@ -465,25 +478,41 @@ export function installSceneInteractions(args: {
 
       controller.applyToCamera(camera)
       invalidate()
+      startOverlayAnim()
       return
     }
 
     // Desktop hover tracking (skip during any active drag / pointer capture).
     if (!mouseDown) {
-      const hit = pickFirstIntersection({
-        clientX: ev.clientX,
-        clientY: ev.clientY,
-        element: canvas,
-        camera,
-        pickables,
-        raycaster,
-      })
+      pendingHoverPick = { x: ev.clientX, y: ev.clientY }
 
-      const nextMesh = hit?.object instanceof THREE.Mesh ? hit.object : undefined
+      if (hoverPickFrame == null) {
+        hoverPickFrame = window.requestAnimationFrame(() => {
+          hoverPickFrame = null
+          if (isDisposed()) return
+          if (mouseDown) return
 
-      // If a mesh is selected, keep hover state around for quick fallback but
-      // let the overlay implementation prefer selection.
-      setHoveredMesh(nextMesh)
+          const p = pendingHoverPick
+          if (!p) return
+          pendingHoverPick = null
+
+          const hit = pickFirstIntersection({
+            clientX: p.x,
+            clientY: p.y,
+            element: canvas,
+            camera,
+            pickables,
+            raycaster,
+          })
+
+          const nextMesh = hit?.object instanceof THREE.Mesh ? hit.object : undefined
+
+          // If a mesh is selected, keep hover state around for quick fallback but
+          // let the overlay implementation prefer selection.
+          setHoveredMesh(nextMesh)
+        })
+      }
+
       return
     }
 
@@ -528,6 +557,7 @@ export function installSceneInteractions(args: {
 
     controller.applyToCamera(camera)
     invalidate()
+    startOverlayAnim()
   }
 
   const onPointerUp = (ev: PointerEvent) => {
@@ -702,9 +732,11 @@ export function installSceneInteractions(args: {
     controller.radius *= Math.exp(ev.deltaY * wheelZoomScale)
     controller.applyToCamera(camera)
     invalidate()
+    startOverlayAnim()
   }
 
   const onPointerLeave = () => {
+    stopHoverPick()
     setHoveredMesh(undefined)
   }
 
@@ -729,6 +761,7 @@ export function installSceneInteractions(args: {
     setSelectedMesh(undefined)
     setHoveredMesh(undefined)
     stopOverlayAnim()
+    stopHoverPick()
   }
 
   return {
