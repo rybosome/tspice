@@ -1053,7 +1053,7 @@ export function SceneCanvas() {
         setFocusBody: (body) => setFocusBody(body),
         setSelectedBody: (body) => setSelectedBody(body),
         selectedBodyIdRef,
-        selectionRing: three.selectionRing,
+        selectionOverlay: three.selectionOverlay,
         panModeEnabledRef,
         lookModeEnabledRef,
         isDisposed: () => disposed,

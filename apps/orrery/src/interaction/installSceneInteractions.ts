@@ -3,8 +3,10 @@ import type { CameraController } from '../controls/CameraController.js'
 import { pickFirstIntersection } from './pick.js'
 import { BODY_REGISTRY, type BodyId } from '../scene/BodyRegistry.js'
 
-export type SelectionRingTarget = {
-  setTarget: (mesh: THREE.Object3D | undefined) => void
+export type SelectionOverlayTarget = {
+  setSelectedTarget: (mesh: THREE.Object3D | undefined) => void
+  setHoveredTarget: (mesh: THREE.Object3D | undefined) => void
+  isAnimating: (nowMs: number) => boolean
 }
 
 export type SceneInteractions = {
@@ -27,7 +29,7 @@ export function installSceneInteractions(args: {
   setSelectedBody: (body: string | null) => void
   selectedBodyIdRef: { current: BodyId | undefined }
 
-  selectionRing?: SelectionRingTarget
+  selectionOverlay?: SelectionOverlayTarget
   panModeEnabledRef: { current: boolean }
   lookModeEnabledRef: { current: boolean }
 
@@ -44,7 +46,7 @@ export function installSceneInteractions(args: {
     setFocusBody,
     setSelectedBody,
     selectedBodyIdRef,
-    selectionRing,
+    selectionOverlay,
     panModeEnabledRef,
     lookModeEnabledRef,
     isDisposed,
@@ -116,26 +118,49 @@ export function installSceneInteractions(args: {
       }
     | undefined
 
-  let selectionPulseFrame: number | null = null
-  const stopSelectionPulse = () => {
-    if (selectionPulseFrame == null) return
-    window.cancelAnimationFrame(selectionPulseFrame)
-    selectionPulseFrame = null
+  let hovered:
+    | {
+        mesh: THREE.Mesh
+      }
+    | undefined
+
+  let overlayAnimFrame: number | null = null
+  const stopOverlayAnim = () => {
+    if (overlayAnimFrame == null) return
+    window.cancelAnimationFrame(overlayAnimFrame)
+    overlayAnimFrame = null
   }
 
-  const startSelectionPulse = () => {
-    if (selectionPulseFrame != null) return
+  const startOverlayAnim = () => {
+    if (!selectionOverlay) return
+    if (overlayAnimFrame != null) return
 
-    const step = () => {
-      if (isDisposed() || !selected) {
-        selectionPulseFrame = null
+    const step = (t: number) => {
+      if (isDisposed()) {
+        overlayAnimFrame = null
         return
       }
+
+      if (!selectionOverlay.isAnimating(t)) {
+        overlayAnimFrame = null
+        return
+      }
+
       invalidate()
-      selectionPulseFrame = window.requestAnimationFrame(step)
+      overlayAnimFrame = window.requestAnimationFrame(step)
     }
 
-    selectionPulseFrame = window.requestAnimationFrame(step)
+    overlayAnimFrame = window.requestAnimationFrame(step)
+  }
+
+  const setHoveredMesh = (mesh: THREE.Mesh | undefined) => {
+    if (hovered?.mesh === mesh) return
+
+    hovered = mesh ? { mesh } : undefined
+
+    selectionOverlay?.setHoveredTarget(mesh)
+    startOverlayAnim()
+    invalidate()
   }
 
   const setSelectedMesh = (mesh: THREE.Mesh | undefined) => {
@@ -146,8 +171,8 @@ export function installSceneInteractions(args: {
       selectedBodyId = undefined
       selectedBodyIdRef.current = undefined
       setSelectedBody(null)
-      selectionRing?.setTarget(undefined)
-      stopSelectionPulse()
+      selectionOverlay?.setSelectedTarget(undefined)
+      startOverlayAnim()
       invalidate()
     }
 
@@ -166,9 +191,8 @@ export function installSceneInteractions(args: {
       setSelectedBody(selectedBodyId)
     }
 
-    // Subtle world-space ring indicator around the selected body.
-    selectionRing?.setTarget(mesh)
-    startSelectionPulse()
+    selectionOverlay?.setSelectedTarget(mesh)
+    startOverlayAnim()
     invalidate()
   }
 
@@ -444,7 +468,25 @@ export function installSceneInteractions(args: {
       return
     }
 
-    if (!mouseDown) return
+    // Desktop hover tracking (skip during any active drag / pointer capture).
+    if (!mouseDown) {
+      const hit = pickFirstIntersection({
+        clientX: ev.clientX,
+        clientY: ev.clientY,
+        element: canvas,
+        camera,
+        pickables,
+        raycaster,
+      })
+
+      const nextMesh = hit?.object instanceof THREE.Mesh ? hit.object : undefined
+
+      // If a mesh is selected, keep hover state around for quick fallback but
+      // let the overlay implementation prefer selection.
+      setHoveredMesh(nextMesh)
+      return
+    }
+
     if (ev.pointerId !== mouseDown.pointerId) return
 
     const totalDx = ev.clientX - mouseDown.startX
@@ -662,10 +704,15 @@ export function installSceneInteractions(args: {
     invalidate()
   }
 
+  const onPointerLeave = () => {
+    setHoveredMesh(undefined)
+  }
+
   canvas.addEventListener('pointerdown', onPointerDown, { passive: false })
   canvas.addEventListener('pointermove', onPointerMove, { passive: false })
   canvas.addEventListener('pointerup', onPointerUp, { passive: false })
   canvas.addEventListener('pointercancel', onPointerUp, { passive: false })
+  canvas.addEventListener('pointerleave', onPointerLeave)
   canvas.addEventListener('wheel', onWheel, { passive: false })
   canvas.addEventListener('contextmenu', onContextMenu)
 
@@ -674,12 +721,14 @@ export function installSceneInteractions(args: {
     canvas.removeEventListener('pointermove', onPointerMove)
     canvas.removeEventListener('pointerup', onPointerUp)
     canvas.removeEventListener('pointercancel', onPointerUp)
+    canvas.removeEventListener('pointerleave', onPointerLeave)
     canvas.removeEventListener('wheel', onWheel)
     canvas.removeEventListener('contextmenu', onContextMenu)
 
     cancelFocusTween()
     setSelectedMesh(undefined)
-    stopSelectionPulse()
+    setHoveredMesh(undefined)
+    stopOverlayAnim()
   }
 
   return {
