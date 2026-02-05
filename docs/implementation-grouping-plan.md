@@ -10,14 +10,13 @@ This doc expands the proposed “PR-sized implementation groups” into **action
 ## Table of contents
 
 - [Guiding principles](#guiding-principles)
-- [Naming / routing conventions (what exists today)](#naming-routing-conventions)
+- [Naming routing conventions](#naming-routing-conventions)
 - [Enabler PRs (A–D)](#enabler-prs-a-d)
   - [Enabler A — SpiceCell + SpiceWindow core types + marshalling](#enabler-a)
   - [Enabler B — String array + fixed-width output string buffers](#enabler-b)
   - [Enabler C — File-handle + DAF/DAS/DLA plumbing](#enabler-c)
   - [Enabler D — Error-system mapping + `Found` conventions](#enabler-d)
-- [Dependency graph](#dependency-graph)
-  - [Dependency table](#dependency-table)
+- [Dependency table](#dependency-table)
 - [Group-by-group implementation plans](#group-by-group-implementation-plans)
   - [Group 1 — Foundational contract + shared runtime utilities](#group-1)
   - [Group 2 — (Enabler A) SpiceCell/SpiceWindow types + basic ops](#group-2)
@@ -148,9 +147,7 @@ The remainder of this doc uses the numbered groups as the primary identifiers, a
 
 ---
 
-## Dependency graph
-
-### Dependency table
+## Dependency table
 
 > “Deps” are other **groups** that must be merged first.
 
