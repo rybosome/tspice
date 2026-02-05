@@ -33,6 +33,19 @@ export type SceneCanvasRuntimeConfig = {
   sunBloomStrength: number
   sunBloomRadius: number
   sunBloomResolutionScale: number
+
+  // Sun surface tuning (granulation/filaments).
+  sunSeed: number
+  sunGranulationScale: number
+  sunGranulationSpeed: number
+  sunGranulationIntensity: number
+  sunFilamentScale: number
+  sunFilamentSpeed: number
+  sunFilamentIntensity: number
+  sunFilamentThreshold: number
+  sunFilamentLatitudeBias: number
+  sunLimbStrength: number
+  sunDifferentialRotationStrength: number
 }
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
@@ -151,6 +164,31 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
     1,
   )
 
+  // ---------------------------------------------------------------------------
+  // Sun surface tuning (shader uniforms)
+  // ---------------------------------------------------------------------------
+
+  const sunSeed = (() => {
+    const fromUrl = parseNumber(searchParams, 'sunSeed')
+    if (fromUrl != null && Number.isFinite(fromUrl)) return Math.floor(fromUrl)
+    // Default: reuse the app-wide stable seed so sky + Sun move together.
+    return starSeed
+  })()
+
+  // Keep defaults subtle to avoid fighting bloom/tonemap.
+  const sunGranulationScale = clamp(parseNumber(searchParams, 'sunGranScale') ?? 45.0, 1, 200)
+  const sunGranulationSpeed = clamp(parseNumber(searchParams, 'sunGranSpeed') ?? 0.08, 0, 2)
+  const sunGranulationIntensity = clamp(parseNumber(searchParams, 'sunGranIntensity') ?? 0.25, 0, 1)
+
+  const sunFilamentScale = clamp(parseNumber(searchParams, 'sunFilScale') ?? 6.0, 0.1, 80)
+  const sunFilamentSpeed = clamp(parseNumber(searchParams, 'sunFilSpeed') ?? 0.06, 0, 2)
+  const sunFilamentIntensity = clamp(parseNumber(searchParams, 'sunFilIntensity') ?? 0.18, 0, 1)
+  const sunFilamentThreshold = clamp(parseNumber(searchParams, 'sunFilThreshold') ?? 0.62, 0, 1)
+  const sunFilamentLatitudeBias = clamp(parseNumber(searchParams, 'sunFilLatBias') ?? 0.35, 0, 1)
+
+  const sunLimbStrength = clamp(parseNumber(searchParams, 'sunLimbStrength') ?? 0.35, 0, 1)
+  const sunDifferentialRotationStrength = clamp(parseNumber(searchParams, 'sunDiffRot') ?? 0.0, 0, 1)
+
   return {
     searchParams,
     isE2e,
@@ -168,5 +206,17 @@ export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: 
     sunBloomStrength,
     sunBloomRadius,
     sunBloomResolutionScale,
+
+    sunSeed,
+    sunGranulationScale,
+    sunGranulationSpeed,
+    sunGranulationIntensity,
+    sunFilamentScale,
+    sunFilamentSpeed,
+    sunFilamentIntensity,
+    sunFilamentThreshold,
+    sunFilamentLatitudeBias,
+    sunLimbStrength,
+    sunDifferentialRotationStrength,
   }
 }

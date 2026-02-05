@@ -20,10 +20,34 @@ export type EarthAppearanceTuning = {
   cloudsNightMultiplier: number
 }
 
+export type SunAppearanceTuning = {
+  /** Stable, deterministic seed (no per-frame RNG). */
+  seed: number
+
+  // Granulation (small scale)
+  granulationScale: number
+  granulationSpeed: number
+  granulationIntensity: number
+
+  // Filaments / active regions (mid/large scale)
+  filamentScale: number
+  filamentSpeed: number
+  filamentIntensity: number
+  filamentThreshold: number
+  filamentLatitudeBias: number
+
+  // Limb darkening
+  limbStrength: number
+
+  // Optional differential rotation (0 = rigid rotation)
+  differentialRotationStrength: number
+}
+
 export type BodyMeshUpdate = (args: {
   sunDirWorld: THREE.Vector3
   etSec: number
   earthTuning?: EarthAppearanceTuning
+  sunTuning?: SunAppearanceTuning
 }) => void
 
 function make1x1TextureRGBA([r, g, b, a]: readonly [number, number, number, number]): THREE.DataTexture {
@@ -355,6 +379,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const surface = options.appearance.surface
   const surfaceTexture = surface.texture
   const textureKind = surfaceTexture?.kind
+
+  const isSun = options.bodyId === 'SUN' || textureKind === 'sun'
   const textureUrl = surfaceTexture?.url
   const textureColor = surfaceTexture?.color
 
@@ -563,6 +589,297 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     update = ({ sunDirWorld }) => {
       uSunDirWorld.copy(sunDirWorld)
+    }
+  }
+
+  // Sun surface details (granulation + filaments/active regions).
+  // Implemented as a lightweight shader patch on top of MeshStandardMaterial so it
+  // plays nicely with the app's existing HDR + bloom + tonemap pipeline.
+  if (isSun) {
+    // Time is derived from ET, but rebased to avoid large absolute values (precision).
+    let sunTimeOriginEt: number | null = null
+
+    const uSunTime = { value: 0.0 }
+    const uSunSeed = { value: 1.0 }
+
+    const uSunGranulationScale = { value: 45.0 }
+    const uSunGranulationSpeed = { value: 0.08 }
+    const uSunGranulationIntensity = { value: 0.25 }
+
+    const uSunFilamentScale = { value: 6.0 }
+    const uSunFilamentSpeed = { value: 0.06 }
+    const uSunFilamentIntensity = { value: 0.18 }
+    const uSunFilamentThreshold = { value: 0.62 }
+    const uSunFilamentLatitudeBias = { value: 0.35 }
+
+    const uSunLimbStrength = { value: 0.35 }
+    const uSunDifferentialRotationStrength = { value: 0.0 }
+
+    const restoreSunSurface = composeOnBeforeCompile(material, (shader) => {
+      shader.uniforms.uSunTime = uSunTime
+      shader.uniforms.uSunSeed = uSunSeed
+
+      shader.uniforms.uSunGranulationScale = uSunGranulationScale
+      shader.uniforms.uSunGranulationSpeed = uSunGranulationSpeed
+      shader.uniforms.uSunGranulationIntensity = uSunGranulationIntensity
+
+      shader.uniforms.uSunFilamentScale = uSunFilamentScale
+      shader.uniforms.uSunFilamentSpeed = uSunFilamentSpeed
+      shader.uniforms.uSunFilamentIntensity = uSunFilamentIntensity
+      shader.uniforms.uSunFilamentThreshold = uSunFilamentThreshold
+      shader.uniforms.uSunFilamentLatitudeBias = uSunFilamentLatitudeBias
+
+      shader.uniforms.uSunLimbStrength = uSunLimbStrength
+      shader.uniforms.uSunDifferentialRotationStrength = uSunDifferentialRotationStrength
+
+      const markerVertCommon = '// tspice:sun-surface:vertex-common'
+      const markerVertNormal = '// tspice:sun-surface:vertex-obj-normal'
+      const markerFragCommon = '// tspice:sun-surface:fragment-common'
+      const markerFragLights = '// tspice:sun-surface:lights'
+
+      const vert = safeShaderReplaceAll({
+        shader,
+        source: 'vertexShader',
+        warnOnce,
+        warnKey: 'sun-surface:vertex:patch',
+        replacements: [
+          {
+            needle: '#include <common>',
+            marker: markerVertCommon,
+            replacement: ['#include <common>', markerVertCommon, 'varying vec3 vTspiceSunObjNormal;'].join('\n'),
+            warnKey: 'sun-surface:vertex:common',
+          },
+          {
+            needle: '#include <beginnormal_vertex>',
+            marker: markerVertNormal,
+            replacement: [
+              '#include <beginnormal_vertex>',
+              markerVertNormal,
+              'vTspiceSunObjNormal = normalize( objectNormal );',
+            ].join('\n'),
+            warnKey: 'sun-surface:vertex:obj-normal',
+          },
+        ],
+      })
+
+      const frag = safeShaderReplaceAll({
+        shader,
+        source: 'fragmentShader',
+        warnOnce,
+        warnKey: 'sun-surface:fragment:patch',
+        replacements: [
+          {
+            needle: '#include <common>',
+            marker: markerFragCommon,
+            replacement: [
+              '#include <common>',
+              markerFragCommon,
+              'uniform float uSunTime;',
+              'uniform float uSunSeed;',
+              'uniform float uSunGranulationScale;',
+              'uniform float uSunGranulationSpeed;',
+              'uniform float uSunGranulationIntensity;',
+              'uniform float uSunFilamentScale;',
+              'uniform float uSunFilamentSpeed;',
+              'uniform float uSunFilamentIntensity;',
+              'uniform float uSunFilamentThreshold;',
+              'uniform float uSunFilamentLatitudeBias;',
+              'uniform float uSunLimbStrength;',
+              'uniform float uSunDifferentialRotationStrength;',
+              '',
+              'varying vec3 vTspiceSunObjNormal;',
+              '',
+              'float tspiceHash31( vec3 p ) {',
+              '  // Deterministic hash (no per-frame RNG).',
+              '  // Offset by seed so multiple runs can produce distinct, stable Suns.',
+              '  float h = dot( p, vec3( 127.1, 311.7, 74.7 ) ) + uSunSeed * 0.113;',
+              '  return fract( sin( h ) * 43758.5453123 );',
+              '}',
+              '',
+              'float tspiceValueNoise3( vec3 p ) {',
+              '  vec3 i = floor( p );',
+              '  vec3 f = fract( p );',
+              '  // Smooth interpolation',
+              '  f = f * f * ( 3.0 - 2.0 * f );',
+              '',
+              '  float n000 = tspiceHash31( i + vec3( 0.0, 0.0, 0.0 ) );',
+              '  float n100 = tspiceHash31( i + vec3( 1.0, 0.0, 0.0 ) );',
+              '  float n010 = tspiceHash31( i + vec3( 0.0, 1.0, 0.0 ) );',
+              '  float n110 = tspiceHash31( i + vec3( 1.0, 1.0, 0.0 ) );',
+              '  float n001 = tspiceHash31( i + vec3( 0.0, 0.0, 1.0 ) );',
+              '  float n101 = tspiceHash31( i + vec3( 1.0, 0.0, 1.0 ) );',
+              '  float n011 = tspiceHash31( i + vec3( 0.0, 1.0, 1.0 ) );',
+              '  float n111 = tspiceHash31( i + vec3( 1.0, 1.0, 1.0 ) );',
+              '',
+              '  float n00 = mix( n000, n100, f.x );',
+              '  float n10 = mix( n010, n110, f.x );',
+              '  float n01 = mix( n001, n101, f.x );',
+              '  float n11 = mix( n011, n111, f.x );',
+              '  float n0 = mix( n00, n10, f.y );',
+              '  float n1 = mix( n01, n11, f.y );',
+              '  return mix( n0, n1, f.z );',
+              '}',
+              '',
+              'float tspiceFbm2( vec3 p ) {',
+              '  float v = 0.0;',
+              '  float a = 0.5;',
+              '  float sum = 0.0;',
+              '  v += a * tspiceValueNoise3( p );',
+              '  sum += a;',
+              '  p *= 2.02;',
+              '  a *= 0.5;',
+              '  v += a * tspiceValueNoise3( p );',
+              '  sum += a;',
+              '  return v / sum;',
+              '}',
+              '',
+              'float tspiceFbm3( vec3 p ) {',
+              '  float v = 0.0;',
+              '  float a = 0.5;',
+              '  float sum = 0.0;',
+              '  v += a * tspiceValueNoise3( p );',
+              '  sum += a;',
+              '  p *= 2.02;',
+              '  a *= 0.5;',
+              '  v += a * tspiceValueNoise3( p );',
+              '  sum += a;',
+              '  p *= 2.03;',
+              '  a *= 0.5;',
+              '  v += a * tspiceValueNoise3( p );',
+              '  sum += a;',
+              '  return v / sum;',
+              '}',
+              '',
+              'float tspiceRidgedFbm2( vec3 p ) {',
+              '  float v = 0.0;',
+              '  float a = 0.55;',
+              '  float sum = 0.0;',
+              '',
+              '  float n0 = tspiceValueNoise3( p );',
+              '  float r0 = 1.0 - abs( 2.0 * n0 - 1.0 );',
+              '  r0 *= r0;',
+              '  v += a * r0;',
+              '  sum += a;',
+              '  p *= 2.0;',
+              '  a *= 0.55;',
+              '',
+              '  float n1 = tspiceValueNoise3( p );',
+              '  float r1 = 1.0 - abs( 2.0 * n1 - 1.0 );',
+              '  r1 *= r1;',
+              '  v += a * r1;',
+              '  sum += a;',
+              '',
+              '  return v / sum;',
+              '}',
+              '',
+              'vec2 tspiceRot2( vec2 p, float a ) {',
+              '  float c = cos( a );',
+              '  float s = sin( a );',
+              '  return vec2( c * p.x - s * p.y, s * p.x + c * p.y );',
+              '}',
+            ].join('\n'),
+            warnKey: 'sun-surface:fragment:common',
+          },
+          {
+            needle: '#include <lights_fragment_begin>',
+            marker: markerFragLights,
+            replacement: [
+              markerFragLights,
+              '\t// Sun surface detail: domain-warped fBm granulation + ridged filaments.',
+              '\t{',
+              '\t\tvec3 nObj = normalize( vTspiceSunObjNormal );',
+              '\t\tvec3 seedVec = vec3( uSunSeed, uSunSeed * 1.37, uSunSeed * 2.11 );',
+              '',
+              '\t\t// ----------------------------',
+              '\t\t// Granulation (small-scale)',
+              '\t\t// ----------------------------',
+              '\t\tfloat tGran = uSunTime * uSunGranulationSpeed;',
+              '\t\tvec3 pGran = nObj * uSunGranulationScale + seedVec * 0.01;',
+              '\t\tvec3 w = vec3(',
+              '\t\t\ttspiceValueNoise3( pGran * 0.35 + seedVec + vec3( 0.0, tGran * 0.21, 0.0 ) ),',
+              '\t\t\ttspiceValueNoise3( pGran * 0.35 + seedVec + vec3( 19.1, -tGran * 0.19, 7.2 ) ),',
+              '\t\t\ttspiceValueNoise3( pGran * 0.35 + seedVec + vec3( -11.7, tGran * 0.17, 3.4 ) )',
+              '\t\t);',
+              '\t\tpGran += ( w - 0.5 ) * 2.2;',
+              '\t\tfloat g1 = tspiceFbm3( pGran + vec3( 0.0, tGran, 0.0 ) );',
+              '\t\tfloat g2 = tspiceFbm2( pGran * 1.9 + 17.3 - vec3( tGran * 0.7, 0.0, tGran * 0.3 ) );',
+              '\t\tfloat gran = clamp( ( g1 - 0.65 * g2 ) * 1.4 + 0.5, 0.0, 1.0 );',
+              '',
+              '\t\t// ----------------------------',
+              '\t\t// Filaments + active regions',
+              '\t\t// ----------------------------',
+              '\t\tfloat lat2 = nObj.z * nObj.z;',
+              '\t\tfloat omega = uSunFilamentSpeed * ( 1.0 - uSunDifferentialRotationStrength * lat2 );',
+              '\t\tfloat ang = uSunTime * omega;',
+              '\t\tvec2 rotXY = tspiceRot2( nObj.xy, ang );',
+              '\t\tvec3 nRot = vec3( rotXY, nObj.z );',
+              '',
+              '\t\tfloat equatorBias = 1.0 - smoothstep( 0.35, 0.95, abs( nObj.z ) );',
+              '\t\tfloat latBias = mix( 1.0, equatorBias, clamp( uSunFilamentLatitudeBias, 0.0, 1.0 ) );',
+              '',
+              '\t\tvec3 pFil = nRot * uSunFilamentScale + seedVec * 0.005;',
+              '\t\tfloat rid = tspiceRidgedFbm2( pFil );',
+              '\t\tfloat filMask = smoothstep( uSunFilamentThreshold, uSunFilamentThreshold + 0.25, rid ) * latBias;',
+              '\t\tfloat act = tspiceFbm2( pFil * 0.35 + seedVec + vec3( 0.0, uSunTime * uSunFilamentSpeed * 0.07, 0.0 ) );',
+              '\t\tfloat actMask = smoothstep( 0.58, 0.86, act ) * latBias;',
+              '',
+              '\t\t// Limb darkening (view-space): keep it subtle so bloom stays stable.',
+              '\t\tvec3 viewDir = normalize( vViewPosition );',
+              '\t\tfloat mu = clamp( dot( normalize( nonPerturbedNormal ), viewDir ), 0.0, 1.0 );',
+              '\t\tfloat muShaped = pow( mu, 0.35 );',
+              '\t\tfloat limb = mix( 1.0 - uSunLimbStrength, 1.0, muShaped );',
+              '',
+              '\t\tfloat detail = 1.0;',
+              '\t\tdetail += uSunGranulationIntensity * ( gran - 0.5 ) * 0.85;',
+              '\t\tdetail += uSunFilamentIntensity * ( actMask * 0.55 - filMask * 0.35 );',
+              '\t\tdetail = max( detail, 0.0 );',
+              '',
+              '\t\tfloat surfaceMul = detail * limb;',
+              '',
+              '\t\t// Apply mostly to emissive so the pattern survives in the postprocess HDR pipeline.',
+              '\t\ttotalEmissiveRadiance *= surfaceMul;',
+              '\t\t// Keep a smaller impact on albedo so lighting is not dramatically affected.',
+              '\t\tdiffuseColor.rgb *= mix( 1.0, surfaceMul, 0.35 );',
+              '\t}',
+              '',
+              '#include <lights_fragment_begin>',
+            ].join('\n'),
+            warnKey: 'sun-surface:fragment:lights',
+          },
+        ],
+      })
+
+      if (!vert.ok || !frag.ok) return
+
+      const shaderSources: ShaderSource = shader
+      shaderSources.vertexShader = vert.next
+      shaderSources.fragmentShader = frag.next
+    })
+    onBeforeCompileRestores.push(restoreSunSurface)
+
+    const prevUpdate = update
+    update = ({ sunDirWorld, etSec, earthTuning, sunTuning }) => {
+      prevUpdate?.({ sunDirWorld, etSec, earthTuning, sunTuning })
+
+      if (sunTimeOriginEt == null) sunTimeOriginEt = etSec
+      uSunTime.value = etSec - sunTimeOriginEt
+
+      if (sunTuning) {
+        uSunSeed.value = sunTuning.seed
+
+        uSunGranulationScale.value = sunTuning.granulationScale
+        uSunGranulationSpeed.value = sunTuning.granulationSpeed
+        uSunGranulationIntensity.value = sunTuning.granulationIntensity
+
+        uSunFilamentScale.value = sunTuning.filamentScale
+        uSunFilamentSpeed.value = sunTuning.filamentSpeed
+        uSunFilamentIntensity.value = sunTuning.filamentIntensity
+        uSunFilamentThreshold.value = sunTuning.filamentThreshold
+        uSunFilamentLatitudeBias.value = sunTuning.filamentLatitudeBias
+
+        uSunLimbStrength.value = sunTuning.limbStrength
+        uSunDifferentialRotationStrength.value = sunTuning.differentialRotationStrength
+      }
     }
   }
 
