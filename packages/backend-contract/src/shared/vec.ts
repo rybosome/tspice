@@ -57,9 +57,18 @@ type TypedArrayView =
   | Float64Array;
 
 function isTypedArrayView(x: unknown): x is TypedArrayView {
-  // `ArrayBuffer.isView()` is true for TypedArrays *and* DataView.
-  // We accept TypedArray views but explicitly reject DataView.
-  return ArrayBuffer.isView(x) && !(x instanceof DataView);
+  // We intentionally only accept numeric TypedArrays (not BigInt views, not DataView).
+  return (
+    x instanceof Int8Array ||
+    x instanceof Uint8Array ||
+    x instanceof Uint8ClampedArray ||
+    x instanceof Int16Array ||
+    x instanceof Uint16Array ||
+    x instanceof Int32Array ||
+    x instanceof Uint32Array ||
+    x instanceof Float32Array ||
+    x instanceof Float64Array
+  );
 }
 
 function isLengthArrayLike(x: unknown, expectedLength: number): x is ArrayLike<unknown> {
@@ -151,12 +160,50 @@ export function brandVec6(value: unknown, options?: BrandVecOptions): Vec6 {
   return maybeFreeze(arr, freeze) as unknown as Vec6;
 }
 
-export function isVec3(value: unknown): value is Vec3 {
+/**
+* Structural check: accepts number[] and numeric TypedArrays (excludes DataView).
+*
+* This does **not** assert/require that the value is branded as a `Vec3`.
+*/
+export function isVec3ArrayLike3(value: unknown): value is ArrayLike<number> {
+  if (value instanceof DataView) return false;
+  if (!isLengthArrayLike(value, 3)) return false;
+  for (let i = 0; i < 3; i++) {
+    if (!isFiniteNumber(value[i])) return false;
+  }
+  return true;
+}
+
+/**
+* Structural check: accepts number[] and numeric TypedArrays (excludes DataView).
+*
+* This does **not** assert/require that the value is branded as a `Vec6`.
+*/
+export function isVec6ArrayLike6(value: unknown): value is ArrayLike<number> {
+  if (value instanceof DataView) return false;
+  if (!isLengthArrayLike(value, 6)) return false;
+  for (let i = 0; i < 6; i++) {
+    if (!isFiniteNumber(value[i])) return false;
+  }
+  return true;
+}
+
+/**
+* Brand-only check: verifies that a value was produced by `brandVec3()`.
+*
+* Note: this intentionally rejects structurally-valid TypedArrays.
+*/
+export function isBrandedVec3(value: unknown): value is Vec3 {
   if (!isLengthArrayLike(value, 3)) return false;
   return Boolean((value as unknown as Record<symbol, unknown>)[VEC3_BRAND]);
 }
 
-export function isVec6(value: unknown): value is Vec6 {
+/**
+* Brand-only check: verifies that a value was produced by `brandVec6()`.
+*
+* Note: this intentionally rejects structurally-valid TypedArrays.
+*/
+export function isBrandedVec6(value: unknown): value is Vec6 {
   if (!isLengthArrayLike(value, 6)) return false;
   return Boolean((value as unknown as Record<symbol, unknown>)[VEC6_BRAND]);
 }

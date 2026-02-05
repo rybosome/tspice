@@ -55,9 +55,18 @@ type TypedArrayView =
   | Float64Array;
 
 function isTypedArrayView(x: unknown): x is TypedArrayView {
-  // `ArrayBuffer.isView()` is true for TypedArrays *and* DataView.
-  // We accept TypedArray views but explicitly reject DataView.
-  return ArrayBuffer.isView(x) && !(x instanceof DataView);
+  // We intentionally only accept numeric TypedArrays (not BigInt views, not DataView).
+  return (
+    x instanceof Int8Array ||
+    x instanceof Uint8Array ||
+    x instanceof Uint8ClampedArray ||
+    x instanceof Int16Array ||
+    x instanceof Uint16Array ||
+    x instanceof Int32Array ||
+    x instanceof Uint32Array ||
+    x instanceof Float32Array ||
+    x instanceof Float64Array
+  );
 }
 
 function isLength36ArrayLike(x: unknown): x is ArrayLike<unknown> {
@@ -97,6 +106,20 @@ export function assertMat6ArrayLike36(
   }
 }
 
+/**
+* Structural check: accepts number[] and numeric TypedArrays (excludes DataView).
+*
+* This does **not** assert/require that the value is branded as a row-major Mat6.
+*/
+export function isMat6ArrayLike36(value: unknown): value is ArrayLike<number> {
+  if (value instanceof DataView) return false;
+  if (!isLength36ArrayLike(value)) return false;
+  for (let i = 0; i < 36; i++) {
+    if (!isFiniteNumber(value[i])) return false;
+  }
+  return true;
+}
+
 function tryDefineBrand(target: object, brand: symbol): void {
   try {
     // Non-enumerable to avoid surprising JSON/stringification behavior.
@@ -132,7 +155,10 @@ export function brandMat6RowMajor(value: unknown, options?: BrandMat6Options): M
   return maybeFreeze(arr, freeze) as unknown as Mat6RowMajor;
 }
 
-export function isMat6RowMajor(value: unknown): value is Mat6RowMajor {
+/**
+* Brand-only check: verifies that a value was produced by `brandMat6RowMajor()`.
+*/
+export function isBrandedMat6RowMajor(value: unknown): value is Mat6RowMajor {
   if (!isLength36ArrayLike(value)) return false;
   return Boolean((value as unknown as Record<symbol, unknown>)[MAT6_ROW_MAJOR_BRAND]);
 }

@@ -7,10 +7,11 @@ export type {
 
 export {
   assertMat3ArrayLike9,
+  isMat3ArrayLike9,
   brandMat3ColMajor,
   brandMat3RowMajor,
-  isMat3ColMajor,
-  isMat3RowMajor,
+  isBrandedMat3ColMajor,
+  isBrandedMat3RowMajor,
 } from "@rybosome/tspice-backend-contract";
 
 export type { CreateBackendOptions } from "./backend.js";
