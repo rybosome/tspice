@@ -2,8 +2,10 @@
 
 #include <napi.h>
 
+#include <cctype>
 #include <string>
 #include <type_traits>
+#include <vector>
 
 namespace tspice_napi {
 
@@ -108,6 +110,76 @@ inline Napi::Object MakeNotFound(Napi::Env env) {
   Napi::Object result = Napi::Object::New(env);
   result.Set("found", Napi::Boolean::New(env, false));
   return result;
+}
+
+inline Napi::String FixedWidthToJsString(Napi::Env env, const char* buf, size_t width) {
+  if (buf == nullptr || width == 0) {
+    return Napi::String::New(env, "");
+  }
+
+  size_t len = 0;
+  for (; len < width; len++) {
+    if (buf[len] == '\0') {
+      break;
+    }
+  }
+
+  std::string out(buf, len);
+  while (!out.empty() && std::isspace(static_cast<unsigned char>(out.back()))) {
+    out.pop_back();
+  }
+
+  return Napi::String::New(env, out);
+}
+
+/**
+* Parsed JS `string[]` argument with stable `c_str()` pointers for the duration of the call.
+*/
+struct JsStringArrayArg {
+  std::vector<std::string> values;
+  std::vector<const char*> ptrs;
+};
+
+inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArrayArg* out, const char* name) {
+  const char* safeName = (name != nullptr) ? name : "<unnamed>";
+
+  if (out == nullptr) {
+    ThrowSpiceError(
+        Napi::Error::New(env, std::string("Internal error: out is null while reading ") + safeName));
+    return false;
+  }
+
+  if (!value.IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(safeName) + " must be an array"));
+    return false;
+  }
+
+  // NOTE: we intentionally keep capacity between calls (clear() does not shrink).
+  // These helpers are often called in hot paths and reusing allocations reduces churn.
+  out->values.clear();
+  out->ptrs.clear();
+
+  Napi::Array arr = value.As<Napi::Array>();
+  const uint32_t len = arr.Length();
+
+  out->values.reserve(len);
+
+  for (uint32_t i = 0; i < len; i++) {
+    const Napi::Value v = arr.Get(i);
+    if (!v.IsString()) {
+      ThrowSpiceError(
+          Napi::TypeError::New(env, std::string(safeName) + " must contain only strings"));
+      return false;
+    }
+    out->values.push_back(v.As<Napi::String>().Utf8Value());
+  }
+
+  out->ptrs.reserve(out->values.size());
+  for (const std::string& s : out->values) {
+    out->ptrs.push_back(s.c_str());
+  }
+
+  return true;
 }
 
 } // namespace tspice_napi

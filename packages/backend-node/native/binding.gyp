@@ -16,6 +16,7 @@
         "src/domains/ephemeris.cc",
         "src/domains/geometry.cc",
         "src/domains/coords_vectors.cc",
+        "src/test_exports.cc",
         "../../backend-shim-c/src/errors.c",
         "../../backend-shim-c/src/domains/kernels.c",
         "../../backend-shim-c/src/domains/time.c",
