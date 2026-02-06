@@ -367,19 +367,19 @@ const BODY_REGISTRY_BY_RESOLVE_KEY = new Map<string, BodyRegistryEntry>()
 const INTEGER_RESOLVE_KEY_RE = /^[+-]?\d+$/
 
 /**
-* Convert an arbitrary resolve-key string into the canonical key used by
-* `resolveBodyRegistryEntry`.
-*
-* Contract:
-* - Returns `''` for empty / whitespace-only inputs.
-* - For base-10 integer strings (`/^[+-]?\d+$/`):
-*   - If the value is a safe integer, return `String(Number(s))`.
-*     - This normalizes leading zeros (`'00399' -> '399'`), leading `+`
-*       (`'+00399' -> '399'`), and `-0` (`'-0' -> '0'`).
-*   - Otherwise treat the input as an opaque, case-insensitive string key.
-*     - Strip a leading `+` when returning the string key.
-* - For all other strings, return `trimmed.toUpperCase()`.
-*/
+ * Convert an arbitrary resolve-key string into the canonical key used by
+ * `resolveBodyRegistryEntry`.
+ *
+ * Contract:
+ * - Returns `''` for empty / whitespace-only inputs.
+ * - For base-10 integer strings (`/^[+-]?\d+$/`):
+ *   - If the value is a safe integer, return `String(Number(s))`.
+ *     - This normalizes leading zeros (`'00399' -> '399'`), leading `+`
+ *       (`'+00399' -> '399'`), and `-0` (`'-0' -> '0'`).
+ *   - Otherwise treat the input as an opaque, case-insensitive string key.
+ *     - Strip a leading `+` when returning the string key.
+ * - For all other strings, return `trimmed.toUpperCase()`.
+ */
 const canonicalizeResolveKey = (raw: string) => {
   const trimmed = raw.trim()
   if (!trimmed) return ''
