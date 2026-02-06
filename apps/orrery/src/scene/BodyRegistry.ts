@@ -361,8 +361,27 @@ const BODY_REGISTRY_BY_BODY_REF_KEY = new Map<string, BodyRegistryEntry>()
  */
 const BODY_REGISTRY_BY_RESOLVE_KEY = new Map<string, BodyRegistryEntry>()
 
-const addResolveKey = (key: string, entry: BodyRegistryEntry) => {
+const NUMERIC_RESOLVE_KEY_RE = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?$/
+
+const canonicalizeResolveKey = (raw: string) => {
+  const trimmed = raw.trim()
+  if (!trimmed) return ''
+
+  // Treat numeric strings as base-10 (optionally scientific notation) and
+  // normalize to JS's canonical string form (e.g. '003' -> '3').
+  if (NUMERIC_RESOLVE_KEY_RE.test(trimmed)) {
+    const n = Number(trimmed)
+    if (Number.isFinite(n)) return String(n)
+  }
+
+  // Body ids / names are treated as case-insensitive.
+  return trimmed.toUpperCase()
+}
+
+const addResolveKey = (rawKey: string, entry: BodyRegistryEntry) => {
+  const key = canonicalizeResolveKey(rawKey)
   if (!key) return
+
   // Defensive: preserve the first entry if a later registry item accidentally
   // duplicates a resolve key.
   if (!BODY_REGISTRY_BY_RESOLVE_KEY.has(key)) {
@@ -382,8 +401,6 @@ for (const entry of BODY_REGISTRY) {
 
   // Unified resolver keys.
   addResolveKey(entry.id, entry)
-  addResolveKey(entry.id.toUpperCase(), entry)
-  addResolveKey(entry.id.toLowerCase(), entry)
   addResolveKey(key, entry)
   if (entry.naifIds) {
     addResolveKey(String(entry.naifIds.body), entry)
@@ -409,25 +426,9 @@ export function getBodyRegistryEntryByBodyRef(body: BodyRef): BodyRegistryEntry 
  * `raw` may be a `BodyId` (e.g. 'EARTH') or a SPICE `BodyRef` (e.g. '3').
  */
 export function resolveBodyRegistryEntry(raw: string): BodyRegistryEntry | undefined {
-  const trimmed = raw.trim()
-  if (!trimmed) return undefined
-
-  // Prefer stable ids. Treat ids as case-insensitive.
-  const idKey = trimmed.toUpperCase() as BodyId
-  const byId = BODY_REGISTRY_BY_ID.get(idKey)
-  if (byId) return byId
-
-  const direct = BODY_REGISTRY_BY_RESOLVE_KEY.get(trimmed)
-  if (direct) return direct
-
-  // Normalize numeric strings (e.g. "003" -> "3") so we can resolve a wider
-  // range of URL param values.
-  const n = Number(trimmed)
-  if (Number.isFinite(n)) {
-    return BODY_REGISTRY_BY_RESOLVE_KEY.get(String(n))
-  }
-
-  return undefined
+  const key = canonicalizeResolveKey(raw)
+  if (!key) return undefined
+  return BODY_REGISTRY_BY_RESOLVE_KEY.get(key)
 }
 
 export function listDefaultVisibleBodies(): readonly BodyRegistryEntry[] {
