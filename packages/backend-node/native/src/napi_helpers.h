@@ -179,6 +179,11 @@ inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArr
     return true;
   }
 
+  // Perf note: `arr.Get(i)` crosses the N-API boundary, so keep the loop single-pass
+  // and avoid any extra `Get()`/conversion work.
+  //
+  // Also: `ptrs` points into `values`, so we must reserve upfront to prevent vector reallocation
+  // invalidating stored pointers.
   out->values.reserve(len);
   out->ptrs.reserve(len);
 
@@ -189,11 +194,9 @@ inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArr
           Napi::TypeError::New(env, std::string(safeName) + " must contain only strings"));
       return false;
     }
-    out->values.push_back(v.As<Napi::String>().Utf8Value());
-  }
 
-  for (const std::string& s : out->values) {
-    out->ptrs.push_back(s.c_str());
+    out->values.emplace_back(v.As<Napi::String>().Utf8Value());
+    out->ptrs.push_back(out->values.back().c_str());
   }
 
   return true;

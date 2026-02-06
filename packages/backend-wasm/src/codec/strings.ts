@@ -35,18 +35,23 @@ export function writeUtf8CStringArray(module: EmscriptenModule, values: string[]
 
   // This helper intentionally targets wasm32 (32-bit pointers).
   // If we ever add wasm64, this should be revisited to use the correct pointer heap.
-  if (module.HEAP32.BYTES_PER_ELEMENT !== 4) {
+  const ptrBytes = module.HEAPU32.BYTES_PER_ELEMENT;
+  if (ptrBytes !== 4) {
     throw new Error('writeUtf8CStringArray assumes 32-bit pointers (wasm32).');
   }
 
-  const ptr = mallocOrThrow(module, values.length * 4);
+  const ptr = mallocOrThrow(module, values.length * ptrBytes);
+  const baseIndex = ptr / ptrBytes;
+  if (!Number.isInteger(baseIndex)) {
+    throw new Error(`Internal error: unaligned pointer array base index (ptr=${ptr}, ptrBytes=${ptrBytes})`);
+  }
 
   const itemPtrs: number[] = [];
   try {
     for (let i = 0; i < values.length; i++) {
       const itemPtr = writeUtf8CString(module, values[i]!);
       itemPtrs.push(itemPtr);
-      module.HEAP32[(ptr >>> 2) + i] = itemPtr;
+      module.HEAPU32[baseIndex + i] = itemPtr;
     }
     return { ptr, itemPtrs };
   } catch (error) {
@@ -62,8 +67,12 @@ export function freeUtf8CStringArray(module: EmscriptenModule, arr: Utf8CStringA
   for (const itemPtr of arr.itemPtrs) {
     module._free(itemPtr);
   }
+  // Make the helper idempotent (safe to call twice).
+  arr.itemPtrs.length = 0;
+
   if (arr.ptr) {
     module._free(arr.ptr);
+    arr.ptr = 0;
   }
 }
 

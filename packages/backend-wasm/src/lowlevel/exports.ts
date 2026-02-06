@@ -8,6 +8,7 @@ export type EmscriptenModule = {
   UTF8ToString(ptr: number, maxBytesToRead?: number): string;
 
   HEAPU8: Uint8Array;
+  HEAPU32: Uint32Array;
   HEAP32: Int32Array;
   HEAPF64: Float64Array;
   _tspice_tkvrsn_toolkit(
