@@ -2,6 +2,28 @@ import * as THREE from 'three'
 
 import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
 
+// E2E-only diagnostic counter for async texture loading.
+//
+// Playwright screenshot tests can be significantly slower in CI (e.g. SwiftShader
+// software rendering). This counter helps tests wait until all initial textures
+// have finished loading before capturing golden screenshots.
+function ensurePendingTextureLoadsInitialized() {
+  if (typeof window === 'undefined') return
+  window.__tspice_viewer__pending_texture_loads ??= 0
+}
+
+function incrementPendingTextureLoads() {
+  if (typeof window === 'undefined') return
+  ensurePendingTextureLoadsInitialized()
+  window.__tspice_viewer__pending_texture_loads = (window.__tspice_viewer__pending_texture_loads ?? 0) + 1
+}
+
+function decrementPendingTextureLoads() {
+  if (typeof window === 'undefined') return
+  ensurePendingTextureLoadsInitialized()
+  window.__tspice_viewer__pending_texture_loads = Math.max(0, (window.__tspice_viewer__pending_texture_loads ?? 0) - 1)
+}
+
 export type LoadTextureCachedOptions = {
   /**
    * Explicitly set the texture color space.
@@ -145,6 +167,8 @@ export async function loadTextureCached(url: string, options: LoadTextureCachedO
       promise: Promise.resolve(null as unknown as THREE.Texture),
     }
 
+    incrementPendingTextureLoads()
+
     newEntry.promise = loader
       .loadAsync(resolvedUrl)
       .then((tex) => {
@@ -186,6 +210,9 @@ export async function loadTextureCached(url: string, options: LoadTextureCachedO
           entryByKey.delete(key)
         }
         throw err
+      })
+      .finally(() => {
+        decrementPendingTextureLoads()
       })
 
     entryByKey.set(key, newEntry)

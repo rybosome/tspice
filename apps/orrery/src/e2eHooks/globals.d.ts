@@ -43,6 +43,9 @@ declare global {
 
     /** Signals to Playwright tests that the WebGL scene has rendered at least once. */
     __tspice_viewer__rendered_scene?: boolean
+
+    /** Number of in-flight async texture loads (e2e only). */
+    __tspice_viewer__pending_texture_loads?: number
   }
 }
 
