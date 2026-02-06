@@ -15,6 +15,11 @@ describe('canonicalizeResolveKey', () => {
   it('treats unsafe integers as opaque strings (and strips leading +)', () => {
     expect(__testing.canonicalizeResolveKey('+9007199254740992')).toBe('9007199254740992')
     expect(__testing.canonicalizeResolveKey('-9007199254740992')).toBe('-9007199254740992')
+
+    // Still trim whitespace and strip leading `+`, but preserve leading zeros
+    // to avoid accidental key collisions.
+    expect(__testing.canonicalizeResolveKey('  +0009007199254740992  ')).toBe('0009007199254740992')
+    expect(__testing.canonicalizeResolveKey('  -0009007199254740992  ')).toBe('-0009007199254740992')
   })
 })
 

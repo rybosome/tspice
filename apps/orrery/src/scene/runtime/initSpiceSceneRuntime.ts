@@ -326,15 +326,23 @@ export async function initSpiceSceneRuntime(args: {
     }
   }
 
-  const labelBodies: LabelBody[] = bodies.map((b) => {
+  const labelBodies: LabelBody[] = bodies.flatMap((b) => {
     const registry = resolveBodyRegistryEntry(String(b.body)) ?? getBodyRegistryEntryByBodyRef(b.body)
-    return {
-      id: (registry?.id ?? String(b.body)) as BodyId,
-      label: registry?.style.label ?? String(b.body),
-      kind: registry?.kind ?? 'planet',
-      mesh: b.mesh,
-      radiusKm: b.radiusKm,
-    }
+
+    // `LabelOverlay` keys labels by `BodyId`, so avoid inventing ids for
+    // unregistered bodies. (Unregistered bodies can still be interacted with,
+    // they just won't participate in label overlay state.)
+    if (!registry) return []
+
+    return [
+      {
+        id: registry.id,
+        label: registry.style.label ?? String(b.body),
+        kind: registry.kind,
+        mesh: b.mesh,
+        radiusKm: b.radiusKm,
+      },
+    ]
   })
 
   let lastAutoZoomFocusBody: BodyRef | undefined
