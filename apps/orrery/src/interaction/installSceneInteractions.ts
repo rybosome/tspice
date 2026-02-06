@@ -69,13 +69,15 @@ export function installSceneInteractions(args: {
   // with numeric registry resolve-keys like '3' / '399'.)
   const UI_SELECTION_PREFIX = 'mesh:'
 
-  let selectedBodyId: string | undefined
+  // This is the UI selection key used for de-duping clicks and driving the
+  // inspector panel. It is NOT necessarily a SPICE focus target.
+  let selectedUiId: string | undefined
 
   const resolveMeshBody = (mesh: THREE.Mesh) => {
     const raw = String(mesh.userData.bodyId ?? '').trim() || undefined
     if (!raw) {
       return {
-        selectedId: undefined as string | undefined,
+        selectedUiId: undefined as string | undefined,
         focusBody: undefined as BodyRef | undefined,
         registryId: undefined as BodyId | undefined,
       }
@@ -85,12 +87,12 @@ export function installSceneInteractions(args: {
     // but keep a stable string id for UI/selection bookkeeping.
     const registry = resolveBodyRegistryEntry(raw)
     const registryId = registry?.id
-    const selectedId = registryId ?? `${UI_SELECTION_PREFIX}${raw}`
+    const selectedUiId = registryId ?? `${UI_SELECTION_PREFIX}${raw}`
     // IMPORTANT: don't pass arbitrary strings to SPICE. Only update focus-body
     // when we can resolve via the registry.
     const focusBody = registry?.body
 
-    return { selectedId, focusBody, registryId }
+    return { selectedUiId, focusBody, registryId }
   }
 
   let focusTweenFrame: number | null = null
@@ -209,7 +211,7 @@ export function installSceneInteractions(args: {
 
     if (selected) {
       selected = undefined
-      selectedBodyId = undefined
+      selectedUiId = undefined
       selectedBodyIdRef.current = undefined
       setSelectedBody(null)
       selectionOverlay?.setSelectedTarget(undefined)
@@ -222,14 +224,14 @@ export function installSceneInteractions(args: {
     selected = { mesh }
 
     const resolved = resolveMeshBody(mesh)
-    selectedBodyId = resolved.selectedId
+    selectedUiId = resolved.selectedUiId
 
     // Keep ref in sync for label overlay
     selectedBodyIdRef.current = resolved.registryId
 
     // Update React state for inspector panel
-    if (resolved.selectedId) {
-      setSelectedBody(resolved.selectedId)
+    if (resolved.selectedUiId) {
+      setSelectedBody(resolved.selectedUiId)
     }
 
     selectionOverlay?.setSelectedTarget(mesh)
@@ -634,13 +636,29 @@ export function installSceneInteractions(args: {
           const hitMesh = hit.object
           if (hitMesh instanceof THREE.Mesh) {
             const resolved = resolveMeshBody(hitMesh)
-            const nextSelectedBodyId = resolved.selectedId
-            const selectionChanged = nextSelectedBodyId !== selectedBodyId
+            const nextSelectedUiId = resolved.selectedUiId
+            const selectionChanged = nextSelectedUiId !== selectedUiId
             if (selectionChanged) {
               setSelectedMesh(hitMesh)
               // Clear look offset when focusing new object
               controller.resetLookOffset()
-              if (resolved.focusBody) setFocusBody(resolved.focusBody)
+              if (resolved.focusBody) {
+                setFocusBody(resolved.focusBody)
+              } else {
+                // Registry resolution failed, so we can't safely focus via
+                // SPICE. Fall back to focusing by world position.
+                const target = new THREE.Vector3()
+                hitMesh.getWorldPosition(target)
+
+                const worldScale = new THREE.Vector3()
+                hitMesh.getWorldScale(worldScale)
+                const radiusWorld = worldScale.x
+                if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
+                  focusOn(target, { radius: computeFocusRadius(radiusWorld) })
+                } else {
+                  focusOn(target)
+                }
+              }
             }
 
             // When selection changes, rely on focus-body changes to center
@@ -737,13 +755,33 @@ export function installSceneInteractions(args: {
     if (!(hitMesh instanceof THREE.Mesh)) return
 
     const resolved = resolveMeshBody(hitMesh)
-    const nextSelectedBodyId = resolved.selectedId
-    if (nextSelectedBodyId !== selectedBodyId) {
+    const nextSelectedUiId = resolved.selectedUiId
+    if (nextSelectedUiId !== selectedUiId) {
       setSelectedMesh(hitMesh)
       // Clear look offset when focusing new object
       controller.resetLookOffset()
-      if (resolved.focusBody) setFocusBody(resolved.focusBody)
-      // Let focus-body changes drive camera centering + auto-zoom.
+
+      if (resolved.focusBody) {
+        setFocusBody(resolved.focusBody)
+        // Let focus-body changes drive camera centering + auto-zoom.
+        return
+      }
+
+      // Registry resolution failed, so we can't safely focus via SPICE. Fall
+      // back to focusing by world position.
+      const target = new THREE.Vector3()
+      hitMesh.getWorldPosition(target)
+
+      // Use the mesh's current world scale so focus radius matches the
+      // visually-rendered (potentially scaled) body.
+      const worldScale = new THREE.Vector3()
+      hitMesh.getWorldScale(worldScale)
+      const radiusWorld = worldScale.x
+      if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
+        focusOn(target, { radius: computeFocusRadius(radiusWorld) })
+      } else {
+        focusOn(target)
+      }
       return
     }
 

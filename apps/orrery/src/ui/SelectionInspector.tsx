@@ -164,32 +164,34 @@ function findBodyRegistryEntry(bodyRef: BodyRef): BodyRegistryEntry | undefined 
   return resolveBodyRegistryEntry(String(bodyRef))
 }
 
-const NUMERIC_BODY_REF_RE = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?$/
+const INTEGER_BODY_REF_RE = /^[+-]?\d+$/
 
 function tryNormalizeNumericBodyRef(raw: string): number | null {
-  // We only normalize when the string is unambiguously numeric *and* produces
-  // an integer ID.
+  // We only normalize when the string is an unambiguous base-10 integer.
   //
-  // This accepts scientific notation (e.g. '1e3' -> 1000) and leading zeros
-  // (e.g. '003' -> 3) while rejecting SPICE name-ish strings.
+  // IMPORTANT: this intentionally does NOT accept decimals / exponent notation
+  // so it stays aligned with the registry resolver policy.
   const s = raw.trim()
   if (!s) return null
-  if (!NUMERIC_BODY_REF_RE.test(s)) return null
+  if (!INTEGER_BODY_REF_RE.test(s)) return null
 
   const n = Number(s)
-  if (!Number.isFinite(n) || !Number.isInteger(n)) return null
-
+  if (!Number.isSafeInteger(n)) return null
   return n
 }
 
-function resolveBodyRefForSpice(bodyRef: BodyRef, registryEntry: BodyRegistryEntry | undefined): BodyRef {
-  if (typeof bodyRef !== 'string') return bodyRef
+function resolveBodyRefForSpice(bodyRef: BodyRef, registryEntry: BodyRegistryEntry | undefined): BodyRef | null {
+  if (typeof bodyRef !== 'string') {
+    return Number.isSafeInteger(bodyRef) ? bodyRef : null
+  }
 
   const trimmed = bodyRef.trim()
-  if (!trimmed) return bodyRef
+  if (!trimmed) return null
 
   // If the caller passed a BodyRegistry `id` (e.g. "MARS"), use the registry's
   // preferred SPICE lookup key (often the barycenter numeric ID for de432s).
+  //
+  // This avoids passing arbitrary strings into SPICE.
   if (registryEntry && trimmed.toUpperCase() === registryEntry.id) {
     return registryEntry.body
   }
@@ -199,9 +201,12 @@ function resolveBodyRefForSpice(bodyRef: BodyRef, registryEntry: BodyRegistryEnt
   const numeric = tryNormalizeNumericBodyRef(trimmed)
   if (numeric != null) return numeric
 
-  // Last resort: pass the trimmed string through (SPICE names are generally
-  // whitespace-insensitive, but trimming avoids surprises like ' mars ').
-  return trimmed
+  // If we resolved via the registry (e.g. from URL params / mesh.userData),
+  // use the registry's preferred SPICE key.
+  if (registryEntry) return registryEntry.body
+
+  // Refuse to pass unknown strings into SPICE.
+  return null
 }
 
 /** Format body kind for display. */
@@ -236,9 +241,14 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
     [observer, observerRegistryEntry],
   )
 
-  const orbitalPeriodSec = useMemo(() => getApproxOrbitalPeriodSec(selectedBodyForSpice), [selectedBodyForSpice])
+  const orbitalPeriodSec = useMemo(
+    () => (selectedBodyForSpice != null ? getApproxOrbitalPeriodSec(selectedBodyForSpice) : null),
+    [selectedBodyForSpice],
+  )
 
   const bodyInfo = useMemo(() => {
+    if (selectedBodyForSpice == null || observerForSpice == null || focusBodyForSpice == null) return null
+
     try {
       // Get selected body's state relative to scene observer
       const selectedState = spiceClient.getBodyState({
@@ -299,7 +309,20 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
       ? focusBody.charAt(0).toUpperCase() + focusBody.slice(1).toLowerCase()
       : `Body ${focusBody}`)
 
-  const isFocused = String(selectedBodyForSpice) === String(focusBodyForSpice)
+  const isFocused = useMemo(() => {
+    // Match UI semantics: compare by stable registry ids when possible.
+    if (registryEntry && focusRegistryEntry) {
+      return registryEntry.id === focusRegistryEntry.id
+    }
+
+    // Fall back to comparing normalized numeric refs, then raw string forms.
+    const selectedNorm = typeof selectedBody === 'string' ? tryNormalizeNumericBodyRef(selectedBody) : selectedBody
+    const focusNorm = typeof focusBody === 'string' ? tryNormalizeNumericBodyRef(focusBody) : focusBody
+    if (selectedNorm != null && focusNorm != null) {
+      return String(selectedNorm) === String(focusNorm)
+    }
+    return String(selectedBody) === String(focusBody)
+  }, [registryEntry, focusRegistryEntry, selectedBody, focusBody])
 
   const naifId = registryEntry?.naifIds?.body
   const extras = useMemo(() => getNaifExtras(naifId), [naifId])

@@ -370,21 +370,29 @@ const canonicalizeResolveKey = (raw: string) => {
   const trimmed = raw.trim()
   if (!trimmed) return ''
 
-  // Treat base-10 integer strings as numeric ids and normalize without using
-  // `Number()` (avoid accepting exponent/decimal forms; preserve sign).
+  // Treat base-10 integer strings as numeric ids.
+  //
+  // IMPORTANT: gate on safe integers and avoid accepting exponent/decimal
+  // notation. This keeps resolve keys stable and prevents precision loss.
   //
   // Examples:
   // - '003'   -> '3'
-  // - '+003'  -> '+3'
-  // - '-000'  -> '-0'
+  // - '+003'  -> '3'
+  // - '-000'  -> '0'
   if (INTEGER_RESOLVE_KEY_RE.test(trimmed)) {
-    const sign = trimmed[0] === '+' || trimmed[0] === '-' ? trimmed[0] : ''
-    let digits = sign ? trimmed.slice(1) : trimmed
+    const n = Number(trimmed)
+    if (Number.isSafeInteger(n)) {
+      // `String(n)` also canonicalizes:
+      // - leading '+'
+      // - leading zeros
+      // - -0
+      return String(n)
+    }
 
-    digits = digits.replace(/^0+/, '')
-    if (!digits) digits = '0'
-
-    return `${sign}${digits}`
+    // If it's an integer string but not a safe integer, treat it as a
+    // non-numeric key to avoid accidental collisions.
+    const withoutPlus = trimmed[0] === '+' ? trimmed.slice(1) : trimmed
+    return withoutPlus.toUpperCase()
   }
 
   // Body ids / names are treated as case-insensitive.

@@ -398,9 +398,22 @@ export function createSelectionOverlay(): SelectionOverlay {
     y: { value: 0, startValue: 0, targetValue: 0, startMs: 0, durationMs: 1 },
   }
 
+  const getNowMs = () => (globalThis.performance?.now ? globalThis.performance.now() : Date.now())
+
   // Used to force at least one RAF cycle after hover/selection changes so we
   // can schedule tweens inside `syncToCamera`.
-  let needsSync = false
+  //
+  // IMPORTANT: this must be time-bound so it can't keep an invalidation RAF
+  // loop alive indefinitely if rendering pauses.
+  let needsSyncUntilMs = 0
+
+  const markNeedsSync = () => {
+    // Give the renderer a short window to pick up the new target and schedule
+    // fade tweens. If rendering is paused, this will self-clear.
+    const ttlMs = 250
+    const now = getNowMs()
+    needsSyncUntilMs = Math.max(needsSyncUntilMs, now + ttlMs)
+  }
 
   const getActive = () => {
     if (selectedTarget) return { mode: 'selected' as const, target: selectedTarget }
@@ -530,7 +543,7 @@ export function createSelectionOverlay(): SelectionOverlay {
     viewportHeightPx: number
   }) => {
     // Clear any pending "force RAF" state as soon as we get a sync.
-    needsSync = false
+    needsSyncUntilMs = 0
 
     const { mode, target } = getActive()
 
@@ -697,7 +710,7 @@ export function createSelectionOverlay(): SelectionOverlay {
     selectedTarget = mesh
 
     // Ensure we get at least one render so we can schedule fades.
-    needsSync = true
+    markNeedsSync()
   }
 
   const setHoveredTarget = (mesh: THREE.Object3D | undefined) => {
@@ -705,7 +718,7 @@ export function createSelectionOverlay(): SelectionOverlay {
     hoveredTarget = mesh
 
     // Ensure we get at least one render so we can schedule fades.
-    needsSync = true
+    markNeedsSync()
   }
 
   const isTrackActive = (track: ElementAnim, nowMs: number) => {
@@ -715,7 +728,7 @@ export function createSelectionOverlay(): SelectionOverlay {
   // IMPORTANT: keep semantics tight here so the caller's RAF invalidation loop
   // can stop when there are no active tweens.
   const isAnimating = (nowMs: number) =>
-    needsSync ||
+    nowMs < needsSyncUntilMs ||
     isTrackActive(anim.z, nowMs) ||
     isTrackActive(anim.ring, nowMs) ||
     isTrackActive(anim.x, nowMs) ||
@@ -747,7 +760,7 @@ export function createSelectionOverlay(): SelectionOverlay {
     anim.ring.value = 0
     anim.x.value = 0
     anim.y.value = 0
-    needsSync = false
+    needsSyncUntilMs = 0
 
     object.visible = false
 
