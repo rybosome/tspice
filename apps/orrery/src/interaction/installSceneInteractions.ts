@@ -352,6 +352,13 @@ export function installSceneInteractions(args: {
 
     ev.preventDefault()
 
+    // We treat any desktop pointer capture as the start of an interaction/drag.
+    // Clear hover immediately so the hover overlay can't linger during drags,
+    // and cancel any pending hover pick work so it can't re-apply hover while
+    // the pointer is captured.
+    stopHoverPick()
+    setHoveredMesh(undefined)
+
     mouseDown = {
       pointerId: ev.pointerId,
       mode,
