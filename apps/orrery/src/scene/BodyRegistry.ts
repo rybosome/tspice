@@ -205,6 +205,15 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
           roughness: 0.93,
           metalness: 0.0,
 
+          // TODO(appearance/mars): Use DEM-derived normals + roughness proxy instead of
+          // any albedo-as-bump hacks.
+          //
+          // Source direction: Global MOLA MEGDR DEM (USGS Astropedia, CC0/public domain).
+          // See `public/textures/planets/README.md` for links + generation notes.
+          // normalTexture: { url: 'textures/planets/mars-mola-normal-2k.png' },
+          // normalScale: 0.45,
+          // roughnessTexture: { url: 'textures/planets/mars-roughness-proxy-2k.png' },
+
           // Suppress ambient washout on the night side (Mars has no strong emissive features).
           nightAlbedo: 0.0008,
           terminatorTwilight: 0.08,

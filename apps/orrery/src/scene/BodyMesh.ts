@@ -237,6 +237,53 @@ function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Textur
   }
 }
 
+function applySurfaceMaps(args: {
+  material: THREE.MeshStandardMaterial
+  map: THREE.Texture | undefined
+  bumpScale: number
+  normalMap: THREE.Texture | undefined
+  roughnessMap: THREE.Texture | undefined
+  normalScale: undefined | number | { x: number; y: number }
+}) {
+  const { material, map, bumpScale, normalMap, roughnessMap, normalScale } = args
+
+  // Centralize map+bump so sync/async paths match.
+  applyMapAndBump(material, map, bumpScale)
+
+  const nextNormalMap = normalMap ?? null
+  const nextRoughnessMap = roughnessMap ?? null
+
+  const prevUseNormalMap = material.normalMap != null
+  const prevUseRoughnessMap = material.roughnessMap != null
+  const prevNormalMap = material.normalMap
+  const prevRoughnessMap = material.roughnessMap
+
+  const nextUseNormalMap = nextNormalMap != null
+  const nextUseRoughnessMap = nextRoughnessMap != null
+
+  // Be conservative when swapping one non-null map for another: force a recompile.
+  const needsUpdate =
+    prevUseNormalMap !== nextUseNormalMap ||
+    prevUseRoughnessMap !== nextUseRoughnessMap ||
+    (prevUseNormalMap && nextUseNormalMap && prevNormalMap !== nextNormalMap) ||
+    (prevUseRoughnessMap && nextUseRoughnessMap && prevRoughnessMap !== nextRoughnessMap)
+
+  material.normalMap = nextNormalMap
+  material.roughnessMap = nextRoughnessMap
+
+  if (normalScale == null) {
+    material.normalScale.set(1, 1)
+  } else if (typeof normalScale === 'number') {
+    material.normalScale.set(normalScale, normalScale)
+  } else {
+    material.normalScale.set(normalScale.x, normalScale.y)
+  }
+
+  if (needsUpdate) {
+    material.needsUpdate = true
+  }
+}
+
 type ShaderSource = Pick<BeforeCompileShader, ShaderSourceKey>
 
 function getShaderSource(shader: ShaderSource, source: ShaderSourceKey): string | undefined {
@@ -382,6 +429,10 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const textureUrl = surfaceTexture?.url
   const textureColor = surfaceTexture?.color
 
+  const normalTextureUrl = surface.normalTexture?.url
+  const roughnessTextureUrl = surface.roughnessTexture?.url
+  const normalScale = surface.normalScale
+
   const surfaceRoughness = THREE.MathUtils.clamp(surface.roughness ?? (textureKind === 'sun' ? 0.2 : 0.9), 0.0, 1.0)
   const surfaceMetalness = THREE.MathUtils.clamp(surface.metalness ?? 0.0, 0.0, 1.0)
 
@@ -400,6 +451,12 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   let map: THREE.Texture | undefined = textureKind ? makeProceduralBodyTexture(textureKind) : undefined
   let mapRelease: (() => void) | undefined
+
+  let normalMap: THREE.Texture | undefined
+  let normalMapRelease: (() => void) | undefined
+
+  let roughnessMap: THREE.Texture | undefined
+  let roughnessMapRelease: (() => void) | undefined
 
   // Note: `MeshStandardMaterial.color` multiplies `map`.
   // For full-color albedo textures (e.g. Earth), tinting the texture by a
@@ -425,8 +482,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   const onBeforeCompileRestores: Array<() => void> = []
 
-  // Centralize map + bump setup so sync/async paths match.
-  applyMapAndBump(material, map, bumpScale)
+  // Centralize surface map setup so sync/async paths match.
+  applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
 
   function disposeMap(mat: THREE.MeshStandardMaterial) {
     const release = mapRelease
@@ -438,6 +495,52 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     // Ensure the material no longer references the texture.
     applyMapAndBump(mat, undefined, 0)
+
+    if (release) {
+      release()
+      return
+    }
+
+    tex?.dispose()
+  }
+
+  function disposeNormalMap(mat: THREE.MeshStandardMaterial) {
+    const release = normalMapRelease
+    const tex = normalMap
+
+    // Clear references first so disposal is idempotent and re-entrancy safe.
+    normalMap = undefined
+    normalMapRelease = undefined
+
+    const prevUseNormal = mat.normalMap != null
+    mat.normalMap = null
+    mat.normalScale.set(1, 1)
+
+    if (prevUseNormal) {
+      mat.needsUpdate = true
+    }
+
+    if (release) {
+      release()
+      return
+    }
+
+    tex?.dispose()
+  }
+
+  function disposeRoughnessMap(mat: THREE.MeshStandardMaterial) {
+    const release = roughnessMapRelease
+    const tex = roughnessMap
+
+    roughnessMap = undefined
+    roughnessMapRelease = undefined
+
+    const prevUseRoughness = mat.roughnessMap != null
+    mat.roughnessMap = null
+
+    if (prevUseRoughness) {
+      mat.needsUpdate = true
+    }
 
     if (release) {
       release()
@@ -472,6 +575,60 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           if (isTextureCacheClearedError(err)) return
           // Keep rendering if a texture fails; surface failures for debugging.
           console.warn('Failed to load body texture', textureUrl, err)
+        }),
+    )
+  }
+
+  if (normalTextureUrl) {
+    readyExtras.push(
+      loadTextureCached(normalTextureUrl, { colorSpace: THREE.NoColorSpace })
+        .then(({ texture: tex, release }) => {
+          let installed = false
+          try {
+            if (disposed) return
+
+            tex.wrapS = THREE.RepeatWrapping
+            tex.wrapT = THREE.RepeatWrapping
+            tex.needsUpdate = true
+
+            disposeNormalMap(material)
+            normalMap = tex
+            normalMapRelease = release
+            installed = true
+          } finally {
+            if (!installed) release()
+          }
+        })
+        .catch((err) => {
+          if (isTextureCacheClearedError(err)) return
+          console.warn('Failed to load body normal map', normalTextureUrl, err)
+        }),
+    )
+  }
+
+  if (roughnessTextureUrl) {
+    readyExtras.push(
+      loadTextureCached(roughnessTextureUrl, { colorSpace: THREE.NoColorSpace })
+        .then(({ texture: tex, release }) => {
+          let installed = false
+          try {
+            if (disposed) return
+
+            tex.wrapS = THREE.RepeatWrapping
+            tex.wrapT = THREE.RepeatWrapping
+            tex.needsUpdate = true
+
+            disposeRoughnessMap(material)
+            roughnessMap = tex
+            roughnessMapRelease = release
+            installed = true
+          } finally {
+            if (!installed) release()
+          }
+        })
+        .catch((err) => {
+          if (isTextureCacheClearedError(err)) return
+          console.warn('Failed to load body roughness map', roughnessTextureUrl, err)
         }),
     )
   }
@@ -1252,6 +1409,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
       // Detach texture references before releasing/disposing them.
       disposeMap(material)
+      disposeNormalMap(material)
+      disposeRoughnessMap(material)
 
       material.emissiveMap = null
       material.needsUpdate = true
@@ -1280,13 +1439,12 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     ready: ready.then(() => {
       // If the texture loaded after we created the material, apply it now.
       if (disposed) return
-      if (!map) return
 
-      applyMapAndBump(material, map, bumpScale)
+      applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
 
       // Note: `material.color` multiplies `material.map`.
-      // Only override the default multiplier if `textureColor` is explicitly set.
-      material.color.set(textureColor ?? surface.color)
+      // Only override the default multiplier if a map is actually present.
+      material.color.set(map ? (textureColor ?? surface.color) : surface.color)
       material.needsUpdate = true
     }),
     update,

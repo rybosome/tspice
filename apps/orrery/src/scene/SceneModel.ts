@@ -29,6 +29,19 @@ export interface BodySurfaceStyle {
   /** Optional surface texture settings. */
   texture?: BodySurfaceTextureStyle
 
+  /** Optional normal map (tangent-space) texture; should be equirectangular 2:1. */
+  normalTexture?: { url: string }
+
+  /** Optional roughness map texture; should be equirectangular 2:1. */
+  roughnessTexture?: { url: string }
+
+  /**
+   * Optional normal-map strength.
+   *
+   * Three.js uses a `Vector2` for `normalScale`; allow a scalar shortcut.
+   */
+  normalScale?: number | { x: number; y: number }
+
   /** Optional `MeshStandardMaterial` tuning. */
   roughness?: number
 
