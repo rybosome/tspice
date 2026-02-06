@@ -596,7 +596,6 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     })
   }
 
-
   // Optional subtle macro/detail variation (procedural; seam-safe; no tiling textures).
   if (textureKind !== 'sun' && detailNoiseStrength > 0 && detailNoiseScale > 0) {
     const uDetailNoiseStrength = { value: detailNoiseStrength }

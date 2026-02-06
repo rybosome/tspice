@@ -25,10 +25,7 @@ const setupDeterminismAndNetworkBlock = async (page: any, baseURL?: string) => {
   })
 }
 
-const waitForViewerReadyForScreenshot = async (
-  page: any,
-  opts?: { renders?: number; delayMs?: number },
-) => {
+const waitForViewerReadyForScreenshot = async (page: any, opts?: { renders?: number; delayMs?: number }) => {
   await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
 
   // In CI we occasionally observed screenshots taken before async textures were
