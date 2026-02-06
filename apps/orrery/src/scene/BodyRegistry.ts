@@ -366,52 +366,34 @@ const BODY_REGISTRY_BY_RESOLVE_KEY = new Map<string, BodyRegistryEntry>()
 // NOTE: This intentionally does NOT accept decimals / exponent notation.
 const INTEGER_RESOLVE_KEY_RE = /^[+-]?\d+$/
 
-// Avoid `Number()` parsing here to prevent accepting formats like exponent
-// notation and to avoid precision loss for out-of-range integers.
-//
-// This is the string form of `Number.MAX_SAFE_INTEGER`.
-const MAX_SAFE_INTEGER_STR = '9007199254740991'
-
-const isSafeIntegerMagnitudeStr = (digitsNoLeadingZeros: string) => {
-  // `digitsNoLeadingZeros` is expected to be non-empty and contain only digits.
-  if (digitsNoLeadingZeros === '0') return true
-  if (digitsNoLeadingZeros.length < MAX_SAFE_INTEGER_STR.length) return true
-  if (digitsNoLeadingZeros.length > MAX_SAFE_INTEGER_STR.length) return false
-  // Same length: lexicographic compare works for equal-length digit strings.
-  return digitsNoLeadingZeros <= MAX_SAFE_INTEGER_STR
-}
-
+/**
+* Convert an arbitrary resolve-key string into the canonical key used by
+* `resolveBodyRegistryEntry`.
+*
+* Contract:
+* - Returns `''` for empty / whitespace-only inputs.
+* - For base-10 integer strings (`/^[+-]?\d+$/`):
+*   - If the value is a safe integer, return `String(Number(s))`.
+*     - This normalizes leading zeros (`'00399' -> '399'`), leading `+`
+*       (`'+00399' -> '399'`), and `-0` (`'-0' -> '0'`).
+*   - Otherwise treat the input as an opaque, case-insensitive string key.
+*     - Strip a leading `+` when returning the string key.
+* - For all other strings, return `trimmed.toUpperCase()`.
+*/
 const canonicalizeResolveKey = (raw: string) => {
   const trimmed = raw.trim()
   if (!trimmed) return ''
 
-  // Treat base-10 integer strings as numeric ids.
-  //
-  // IMPORTANT: gate on safe integers and avoid accepting exponent/decimal
-  // notation. This keeps resolve keys stable and prevents precision loss.
-  //
-  // Examples:
-  // - '003'   -> '3'
-  // - '+003'  -> '3'
-  // - '-000'  -> '0'
+  // Treat base-10 integer strings as numeric ids (safe-int only).
   if (INTEGER_RESOLVE_KEY_RE.test(trimmed)) {
-    const sign = trimmed[0] === '-' || trimmed[0] === '+' ? trimmed[0] : ''
-    const digits = sign ? trimmed.slice(1) : trimmed
-
-    // Strip leading zeros for safe numeric keys (matches `String(Number(...))`
-    // behavior for in-range integers).
-    const digitsNoLeadingZeros = digits.replace(/^0+/, '') || '0'
-
-    if (isSafeIntegerMagnitudeStr(digitsNoLeadingZeros)) {
-      const unsigned = digitsNoLeadingZeros
-      // Canonicalize -0 to 0.
-      if (sign === '-' && unsigned !== '0') return `-${unsigned}`
-      return unsigned
+    const n = Number(trimmed)
+    if (Number.isSafeInteger(n)) {
+      return String(n)
     }
 
     // If it's an integer string but not a safe integer, treat it as a
     // non-numeric key to avoid accidental collisions.
-    const withoutPlus = trimmed[0] === '+' ? trimmed.slice(1) : trimmed
+    const withoutPlus = trimmed.startsWith('+') ? trimmed.slice(1) : trimmed
     return withoutPlus.toUpperCase()
   }
 
@@ -482,4 +464,8 @@ export function listDefaultVisibleSceneBodies(): readonly SceneBody[] {
     bodyFixedFrame: b.bodyFixedFrame,
     style: b.style,
   }))
+}
+
+export const __testing = {
+  canonicalizeResolveKey,
 }

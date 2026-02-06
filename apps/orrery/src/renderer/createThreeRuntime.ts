@@ -104,6 +104,7 @@ export function createThreeRuntime(args: {
 
   let scheduledFrame: number | null = null
   let scheduledResizeFrame: number | null = null
+  let scheduledPrimeResizeFrame: number | null = null
 
   let lastResizeKey: string | null = null
 
@@ -745,6 +746,13 @@ export function createThreeRuntime(args: {
 
     // Avoid repeating expensive resize work when the observable inputs haven't
     // changed (e.g. init-time prime + ResizeObserver fire in the same layout).
+    //
+    // Contract: if you change resize logic, ensure `resizeKey` includes *all*
+    // inputs that affect resize work.
+    // - container size (`clientWidth`/`clientHeight`)
+    // - effective pixel ratio (incl `isE2e` clamping)
+    // - postprocess mode (affects which composers exist)
+    // - bloom resolution scale (affects `bloomPass.setSize`)
     const resizeKey = `${width}x${height}@${nextPixelRatio}|${postprocessRuntime.mode}|${sunPostprocess.bloom.resolutionScale}`
     if (resizeKey === lastResizeKey) return
     lastResizeKey = resizeKey
@@ -857,7 +865,10 @@ export function createThreeRuntime(args: {
   // Prime drawing-buffer-dependent state so the first render has correct
   // sizes (camera aspect, SelectionOverlay line material resolution, bloom
   // render targets, etc.).
-  window.requestAnimationFrame(onResize)
+  scheduledPrimeResizeFrame = window.requestAnimationFrame(() => {
+    scheduledPrimeResizeFrame = null
+    onResize()
+  })
 
   const dispose = () => {
     disposed = true
@@ -870,6 +881,11 @@ export function createThreeRuntime(args: {
     if (scheduledResizeFrame != null) {
       window.cancelAnimationFrame(scheduledResizeFrame)
       scheduledResizeFrame = null
+    }
+
+    if (scheduledPrimeResizeFrame != null) {
+      window.cancelAnimationFrame(scheduledPrimeResizeFrame)
+      scheduledPrimeResizeFrame = null
     }
 
     resizeObserver.disconnect()

@@ -746,6 +746,14 @@ export function createSelectionOverlay(): SelectionOverlay {
     yNegMaterial.resolution.copy(resolution)
   }
 
+  const resetTrack = (track: ElementAnim) => {
+    track.value = 0
+    track.startValue = 0
+    track.targetValue = 0
+    track.startMs = 0
+    track.durationMs = 0
+  }
+
   const dispose = () => {
     // Teardown hardening: ensure callers can't accidentally keep "ghost" overlay
     // state around after disposing the object.
@@ -756,10 +764,10 @@ export function createSelectionOverlay(): SelectionOverlay {
     lastZoomTier = undefined
     lastSizing = undefined
 
-    anim.z.value = 0
-    anim.ring.value = 0
-    anim.x.value = 0
-    anim.y.value = 0
+    resetTrack(anim.z)
+    resetTrack(anim.ring)
+    resetTrack(anim.x)
+    resetTrack(anim.y)
     needsSyncUntilMs = 0
 
     object.visible = false

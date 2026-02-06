@@ -222,7 +222,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   const bodies = sceneModel.bodies.map((body) => {
-    const registry = getBodyRegistryEntryByBodyRef(body.body)
+    const registry = resolveBodyRegistryEntry(String(body.body)) ?? getBodyRegistryEntryByBodyRef(body.body)
     const bodyId = registry?.id
 
     const { mesh, dispose, ready, update } = createBodyMesh({
@@ -327,7 +327,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   const labelBodies: LabelBody[] = bodies.map((b) => {
-    const registry = getBodyRegistryEntryByBodyRef(b.body)
+    const registry = resolveBodyRegistryEntry(String(b.body)) ?? getBodyRegistryEntryByBodyRef(b.body)
     return {
       id: (registry?.id ?? String(b.body)) as BodyId,
       label: registry?.style.label ?? String(b.body),

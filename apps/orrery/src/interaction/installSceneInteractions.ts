@@ -634,6 +634,7 @@ export function installSceneInteractions(args: {
         })
 
         if (!hit) {
+          setHoveredMesh(undefined)
           setSelectedMesh(undefined)
           invalidate()
         } else {
@@ -750,6 +751,7 @@ export function installSceneInteractions(args: {
     })
 
     if (!hit) {
+      setHoveredMesh(undefined)
       setSelectedMesh(undefined)
       invalidate()
       return

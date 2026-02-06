@@ -241,6 +241,24 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
     [observer, observerRegistryEntry],
   )
 
+  const unavailableReason = useMemo(() => {
+    const selectedJson = JSON.stringify(selectedBody)
+
+    if (selectedBodyForSpice == null) {
+      return `Unsupported target: selectedBody=${selectedJson}`
+    }
+
+    if (observerForSpice == null) {
+      return `Unsupported observer: observer=${JSON.stringify(observer)} (selectedBody=${selectedJson})`
+    }
+
+    if (focusBodyForSpice == null) {
+      return `Unsupported focus: focusBody=${JSON.stringify(focusBody)} (selectedBody=${selectedJson})`
+    }
+
+    return null
+  }, [selectedBodyForSpice, observerForSpice, focusBodyForSpice, selectedBody, observer, focusBody])
+
   const orbitalPeriodSec = useMemo(
     () => (selectedBodyForSpice != null ? getApproxOrbitalPeriodSec(selectedBodyForSpice) : null),
     [selectedBodyForSpice],
@@ -360,7 +378,7 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
         {!bodyInfo && (
           <div className="selectionInspectorRow">
             <span className="selectionInspectorLabel">State:</span>
-            <span className="selectionInspectorValue">Unavailable (missing kernels or unsupported target)</span>
+            <span className="selectionInspectorValue">{unavailableReason ?? 'Unavailable (missing kernels?)'}</span>
           </div>
         )}
 
