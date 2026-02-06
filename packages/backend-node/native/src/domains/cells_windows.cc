@@ -5,8 +5,6 @@
 
 #include "tspice_backend_shim.h"
 
-#include "SpiceUsr.h"
-
 #include <cstdint>
 #include <unordered_map>
 
@@ -515,16 +513,21 @@ static Napi::String CellGetc(const Napi::CallbackInfo& info) {
   const uintptr_t ptr = GetCellPtrOrThrow(env, handle, "cellGetc");
   if (env.IsExceptionPending()) return Napi::String::New(env, "");
 
-  // `ptr` is a `SpiceCell*` allocated by the shim.
-  const SpiceCell* cell = reinterpret_cast<const SpiceCell*>(ptr);
-  int outMaxBytes = (int)cell->length;
+  char err[tspice_backend_node::kErrMaxBytes];
+
+  int outMaxBytes = 0;
+  const int lengthCode = tspice_char_cell_length(ptr, &outMaxBytes, err, (int)sizeof(err));
+  if (lengthCode != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling cellGetc", err);
+    return Napi::String::New(env, "");
+  }
   if (outMaxBytes <= 0) {
     outMaxBytes = 2048;
   }
+
   std::string out;
   out.resize((size_t)outMaxBytes, '\0');
 
-  char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_cell_getc(ptr, index, out.data(), outMaxBytes, err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling cellGetc", err);

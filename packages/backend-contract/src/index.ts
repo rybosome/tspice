@@ -53,6 +53,13 @@ export {
   isBrandedMat6RowMajor,
 } from "./shared/mat6.js";
 
+export {
+  SPICE_INT32_MIN,
+  SPICE_INT32_MAX,
+  assertSpiceInt32,
+  assertSpiceInt32NonNegative,
+} from "./shared/spice-int.js";
+
 export * from "./domains/kernels.js";
 export * from "./domains/time.js";
 export * from "./domains/ids-names.js";

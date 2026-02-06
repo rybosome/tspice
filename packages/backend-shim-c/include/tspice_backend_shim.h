@@ -463,6 +463,10 @@ int tspice_new_window(int maxIntervals, uintptr_t *outWindow, char *err, int err
 int tspice_free_cell(uintptr_t cell, char *err, int errMaxBytes);
 int tspice_free_window(uintptr_t window, char *err, int errMaxBytes);
 
+// Return the fixed string length (including trailing NUL) for a `SPICE_CHR`
+// cell created by this shim.
+int tspice_char_cell_length(uintptr_t cell, int *outLength, char *err, int errMaxBytes);
+
 int tspice_ssize(int size, uintptr_t cell, char *err, int errMaxBytes);
 int tspice_scard(int card, uintptr_t cell, char *err, int errMaxBytes);
 int tspice_card(uintptr_t cell, int *outCard, char *err, int errMaxBytes);

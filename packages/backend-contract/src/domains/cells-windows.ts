@@ -82,13 +82,28 @@ export interface CellsWindowsApi {
 
   // -- Cell element inspection (copies, no raw data views) -------------------
 
+  /**
+   * Element inspection helpers.
+   *
+   * These are intentionally part of the public backend contract so callers can
+   * write tests / diagnostics without exposing raw memory views.
+   *
+   * Notes:
+   * - These methods **copy** data out of the underlying cell.
+   * - They are not intended as a high-performance bulk read API.
+   */
+
   /** Fetch the `index`th element of an integer cell. */
   cellGeti(cell: SpiceIntCell, index: number): number;
 
   /** Fetch the `index`th element of a double cell. */
   cellGetd(cell: SpiceDoubleCell, index: number): number;
 
-  /** Fetch the `index`th element of a character cell. */
+  /**
+   * Fetch the `index`th element of a character cell.
+   *
+   * Backends may right-trim whitespace to match common CSPICE string handling.
+   */
   cellGetc(cell: SpiceCharCell, index: number): string;
 
   // -- Windows ----------------------------------------------------------------

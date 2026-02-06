@@ -341,6 +341,35 @@ int tspice_free_window(uintptr_t windowHandle, char *err, int errMaxBytes) {
   return tspice_free_cell(windowHandle, err, errMaxBytes);
 }
 
+int tspice_char_cell_length(uintptr_t cellHandle, int *outLength, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outLength) {
+    *outLength = 0;
+  }
+
+  if (cellHandle == 0) {
+    return tspice_write_error(err, errMaxBytes, "tspice_char_cell_length(): cell must be non-null");
+  }
+
+  SpiceCell *cell = tspice_as_cell(cellHandle);
+  if (cell->dtype != SPICE_CHR) {
+    return tspice_write_error(err, errMaxBytes, "tspice_char_cell_length(): expected SPICE_CHR cell");
+  }
+
+  const SpiceInt length = cell->length;
+  if (length <= 0 || length > INT_MAX) {
+    return tspice_write_error(err, errMaxBytes, "tspice_char_cell_length(): invalid cell length");
+  }
+
+  if (outLength) {
+    *outLength = (int)length;
+  }
+  return 0;
+}
+
 int tspice_ssize(int size, uintptr_t cellHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
