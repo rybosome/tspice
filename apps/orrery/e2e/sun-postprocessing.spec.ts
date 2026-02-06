@@ -71,6 +71,8 @@ test('sun postprocessing: sun-isolated selective bloom (default tonemap)', async
 
   await expect(canvas).toHaveScreenshot('sun-postprocess-sun-isolated-default-tonemap.png', {
     animations: 'disabled',
-    maxDiffPixelRatio: 0.06,
+    // Minor GPU + driver differences sometimes push this over 0.06 on ubuntu runners.
+    // Keep this stricter than the whole-frame bloom test, but allow a bit more slack.
+    maxDiffPixelRatio: 0.08,
   })
 })
