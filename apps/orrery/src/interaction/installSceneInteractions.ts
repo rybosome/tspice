@@ -179,9 +179,8 @@ export function installSceneInteractions(args: {
     if (overlayAnimFrame != null) return
     if (isDisposed()) return
 
-    // Ensure we get at least one deterministic render/sync when starting the
-    // overlay RAF loop (clears SelectionOverlay's internal `needsSync` TTL).
-    renderOnce(performance.now())
+    // Avoid scheduling a RAF loop when there's nothing to animate.
+    if (!selectionOverlay.isAnimating(performance.now())) return
 
     const step = (t: number) => {
       if (isDisposed()) {
@@ -657,7 +656,7 @@ export function installSceneInteractions(args: {
 
                 const worldScale = new THREE.Vector3()
                 hitMesh.getWorldScale(worldScale)
-                const radiusWorld = worldScale.x
+                const radiusWorld = Math.max(Math.abs(worldScale.x), Math.abs(worldScale.y), Math.abs(worldScale.z))
                 if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
                   focusOn(target, { radius: computeFocusRadius(radiusWorld) })
                 } else {
@@ -781,7 +780,7 @@ export function installSceneInteractions(args: {
       // visually-rendered (potentially scaled) body.
       const worldScale = new THREE.Vector3()
       hitMesh.getWorldScale(worldScale)
-      const radiusWorld = worldScale.x
+      const radiusWorld = Math.max(Math.abs(worldScale.x), Math.abs(worldScale.y), Math.abs(worldScale.z))
       if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
         focusOn(target, { radius: computeFocusRadius(radiusWorld) })
       } else {
@@ -797,7 +796,7 @@ export function installSceneInteractions(args: {
     // visually-rendered (potentially scaled) body.
     const worldScale = new THREE.Vector3()
     hitMesh.getWorldScale(worldScale)
-    const radiusWorld = worldScale.x
+    const radiusWorld = Math.max(Math.abs(worldScale.x), Math.abs(worldScale.y), Math.abs(worldScale.z))
 
     if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
       focusOn(target, { radius: computeFocusRadius(radiusWorld) })
