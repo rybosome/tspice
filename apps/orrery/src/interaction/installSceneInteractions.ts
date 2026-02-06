@@ -177,6 +177,11 @@ export function installSceneInteractions(args: {
   const startOverlayAnim = () => {
     if (!selectionOverlay) return
     if (overlayAnimFrame != null) return
+    if (isDisposed()) return
+
+    // Ensure we get at least one deterministic render/sync when starting the
+    // overlay RAF loop (clears SelectionOverlay's internal `needsSync` TTL).
+    renderOnce(performance.now())
 
     const step = (t: number) => {
       if (isDisposed()) {
