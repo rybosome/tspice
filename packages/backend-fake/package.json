@@ -18,6 +18,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "pretest": "pnpm run build",
     "test": "vitest run"
   },
   "dependencies": {
