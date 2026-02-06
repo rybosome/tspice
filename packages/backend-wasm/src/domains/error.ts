@@ -33,7 +33,7 @@ export function createErrorApi(module: EmscriptenModule): ErrorApi {
     getmsg: (which) => {
       assertGetmsgWhich(which);
       const errMaxBytes = WASM_ERR_MAX_BYTES;
-      const outMaxBytes = 2048;
+      const outMaxBytes = WASM_ERR_MAX_BYTES;
       const whichPtr = writeUtf8CString(module, which);
       try {
         return withAllocs(module, [outMaxBytes, errMaxBytes], (outPtr, errPtr) => {

@@ -209,10 +209,12 @@ int tspice_sigerr(const char *shortMsg, char *err, int errMaxBytes) {
     err[0] = '\0';
   }
 
-  // NOTE: sigerr_c sets the SPICE error status; with erract=RETURN it returns
-  // control to the caller. We treat this as a successful call that *sets*
-  // `failed()` rather than as a failure of the wrapper itself.
   sigerr_c(shortMsg);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
   return 0;
 }
 
