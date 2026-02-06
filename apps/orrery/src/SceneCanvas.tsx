@@ -47,7 +47,6 @@ type AdvancedHelpTopicId =
   | 'bodyFixedAxes'
   | 'renderHud'
   | 'j2000Axes'
-  | 'raDecGuide'
 
 const ADVANCED_PANES: Array<{ id: AdvancedPaneId; tabLabel: string; title: string; summary: string }> = [
   {
@@ -213,15 +212,6 @@ const ADVANCED_HELP: Record<AdvancedHelpTopicId, { title: string; short: string;
       'This is separate from body-fixed axes, which rotate with a body.',
     ],
   },
-  raDecGuide: {
-    title: 'RA/Dec guide',
-    short: 'Celestial equator + right ascension/declination guide lines.',
-    body: [
-      'Shows a subtle right ascension/declination guide centered on the focused body.',
-      'The overlay includes the celestial equator plus a small set of RA meridians and Dec parallels.',
-      'This is a visual orientation aid only; it does not affect SPICE positions or frames.',
-    ],
-  },
 }
 
 function AdvancedHelpButton({
@@ -297,7 +287,6 @@ export function SceneCanvas() {
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
   const [showJ2000Axes, setShowJ2000Axes] = useState(false)
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
-  const [showRaDecGuide, setShowRaDecGuide] = useState(false)
   // Selected body (promoted from local closure variable for inspector panel)
   const [selectedBody, setSelectedBody] = useState<BodyRef | null>(null)
   const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
@@ -826,7 +815,6 @@ export function SceneCanvas() {
         focusBody: BodyRef
         showJ2000Axes: boolean
         showBodyFixedAxes: boolean
-        showRaDecGuide: boolean
         cameraFovDeg: number
         sunScaleMultiplier: number
         planetScaleMultiplier: number
@@ -858,7 +846,6 @@ export function SceneCanvas() {
     focusBody,
     showJ2000Axes,
     showBodyFixedAxes,
-    showRaDecGuide,
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
@@ -885,7 +872,6 @@ export function SceneCanvas() {
     focusBody,
     showJ2000Axes,
     showBodyFixedAxes,
-    showRaDecGuide,
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
@@ -926,7 +912,6 @@ export function SceneCanvas() {
       focusBody,
       showJ2000Axes,
       showBodyFixedAxes,
-      showRaDecGuide,
       cameraFovDeg,
       sunScaleMultiplier,
       planetScaleMultiplier,
@@ -952,7 +937,6 @@ export function SceneCanvas() {
     focusBody,
     showJ2000Axes,
     showBodyFixedAxes,
-    showRaDecGuide,
     cameraFovDeg,
     sunScaleMultiplier,
     planetScaleMultiplier,
@@ -1720,20 +1704,6 @@ export function SceneCanvas() {
                         <span className="asciiCheckboxLabel">J2000 Axes</span>
                       </label>
                       <AdvancedHelpButton topic="j2000Axes" onOpen={setAdvancedHelpTopic} />
-                    </div>
-
-                    <div className="advancedCheckboxWithHelp">
-                      <label className="asciiCheckbox">
-                        <input
-                          className="asciiCheckboxInput"
-                          type="checkbox"
-                          checked={showRaDecGuide}
-                          onChange={(e) => setShowRaDecGuide(e.target.checked)}
-                        />
-                        <span className="asciiCheckboxBox" aria-hidden="true" />
-                        <span className="asciiCheckboxLabel">RA/Dec</span>
-                      </label>
-                      <AdvancedHelpButton topic="raDecGuide" onOpen={setAdvancedHelpTopic} />
                     </div>
                   </div>
                 ) : null}

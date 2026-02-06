@@ -63,6 +63,19 @@ export function installSceneInteractions(args: {
 
   let selectedBodyId: string | undefined
 
+  const resolveMeshBody = (mesh: THREE.Mesh) => {
+    const raw = String(mesh.userData.bodyId ?? '') || undefined
+    if (!raw) return { selectedId: undefined as string | undefined, focusBody: undefined as string | undefined }
+
+    // Prefer the registry's `body` (numeric SPICE target, often barycenter ids like 5/6/7) for focusing,
+    // but keep a stable string id for UI/selection bookkeeping.
+    const registry = BODY_REGISTRY.find((r) => String(r.id) === raw || String(r.body) === raw)
+    const selectedId = registry?.id ?? raw
+    const focusBody = registry ? String(registry.body) : raw
+
+    return { selectedId, focusBody }
+  }
+
   let focusTweenFrame: number | null = null
 
   const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
@@ -191,15 +204,15 @@ export function installSceneInteractions(args: {
 
     selected = { mesh }
 
-    selectedBodyId = String(mesh.userData.bodyId ?? '') || undefined
+    const resolved = resolveMeshBody(mesh)
+    selectedBodyId = resolved.selectedId
 
     // Keep ref in sync for label overlay
-    const registry = BODY_REGISTRY.find((r) => String(r.body) === selectedBodyId)
-    selectedBodyIdRef.current = registry?.id
+    selectedBodyIdRef.current = resolved.selectedId as BodyId | undefined
 
     // Update React state for inspector panel
-    if (selectedBodyId) {
-      setSelectedBody(selectedBodyId)
+    if (resolved.selectedId) {
+      setSelectedBody(resolved.selectedId)
     }
 
     selectionOverlay?.setSelectedTarget(mesh)
@@ -596,13 +609,14 @@ export function installSceneInteractions(args: {
         } else {
           const hitMesh = hit.object
           if (hitMesh instanceof THREE.Mesh) {
-            const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
+            const resolved = resolveMeshBody(hitMesh)
+            const nextSelectedBodyId = resolved.selectedId
             const selectionChanged = nextSelectedBodyId !== selectedBodyId
             if (selectionChanged) {
               setSelectedMesh(hitMesh)
               // Clear look offset when focusing new object
               controller.resetLookOffset()
-              if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
+              if (resolved.focusBody) setFocusBody(resolved.focusBody)
             }
 
             // When selection changes, rely on focus-body changes to center
@@ -698,12 +712,13 @@ export function installSceneInteractions(args: {
     const hitMesh = hit.object
     if (!(hitMesh instanceof THREE.Mesh)) return
 
-    const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
+    const resolved = resolveMeshBody(hitMesh)
+    const nextSelectedBodyId = resolved.selectedId
     if (nextSelectedBodyId !== selectedBodyId) {
       setSelectedMesh(hitMesh)
       // Clear look offset when focusing new object
       controller.resetLookOffset()
-      if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
+      if (resolved.focusBody) setFocusBody(resolved.focusBody)
       // Let focus-body changes drive camera centering + auto-zoom.
       return
     }

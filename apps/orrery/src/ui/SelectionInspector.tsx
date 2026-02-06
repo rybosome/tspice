@@ -70,7 +70,6 @@ function magnitude(v: readonly [number, number, number]): number {
   return Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
 }
 
-
 const SUPERSCRIPT_MAP: Readonly<Record<string, string>> = {
   '0': '⁰',
   '1': '¹',
@@ -194,13 +193,7 @@ function formatBodyKind(kind: string): string {
   return kind.charAt(0).toUpperCase() + kind.slice(1)
 }
 
-export function SelectionInspector({
-  selectedBody,
-  focusBody,
-  spiceClient,
-  observer,
-  frame,
-}: SelectionInspectorProps) {
+export function SelectionInspector({ selectedBody, focusBody, spiceClient, observer, frame }: SelectionInspectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   // IMPORTANT:
