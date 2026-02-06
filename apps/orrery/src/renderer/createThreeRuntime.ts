@@ -827,6 +827,11 @@ export function createThreeRuntime(args: {
   const resizeObserver = new ResizeObserver(onResize)
   resizeObserver.observe(container)
 
+  // Prime drawing-buffer-dependent state so the first render has correct
+  // sizes (camera aspect, SelectionOverlay line material resolution, bloom
+  // render targets, etc.).
+  resize()
+
   const dispose = () => {
     disposed = true
 

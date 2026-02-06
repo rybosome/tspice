@@ -679,7 +679,11 @@ export function createSelectionOverlay(): SelectionOverlay {
   const isTrackActive = (track: ElementAnim, nowMs: number) => {
     const eps = 1e-4
     if (Math.abs(track.targetValue - track.startValue) <= eps) return false
-    if (nowMs < track.startMs) return false
+
+    // Delayed tracks are still "active" so callers can keep their RAF
+    // invalidation loop running until the delayed fade stages begin.
+    if (nowMs < track.startMs) return true
+
     return nowMs <= track.startMs + track.durationMs
   }
 

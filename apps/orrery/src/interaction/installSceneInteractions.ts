@@ -66,17 +66,24 @@ export function installSceneInteractions(args: {
 
   const resolveMeshBody = (mesh: THREE.Mesh) => {
     const raw = String(mesh.userData.bodyId ?? '').trim() || undefined
-    if (!raw) return { selectedId: undefined as string | undefined, focusBody: undefined as BodyRef | undefined }
+    if (!raw) {
+      return {
+        selectedId: undefined as string | undefined,
+        focusBody: undefined as BodyRef | undefined,
+        registryId: undefined as BodyId | undefined,
+      }
+    }
 
     // Prefer the registry's `body` (numeric SPICE target, often barycenter ids like 5/6/7) for focusing,
     // but keep a stable string id for UI/selection bookkeeping.
     const registry = resolveBodyRegistryEntry(raw)
-    const selectedId = registry?.id ?? raw
+    const registryId = registry?.id
+    const selectedId = registryId ?? raw
     // IMPORTANT: don't pass arbitrary strings to SPICE. Only update focus-body
     // when we can resolve via the registry.
     const focusBody = registry?.body
 
-    return { selectedId, focusBody }
+    return { selectedId, focusBody, registryId }
   }
 
   let focusTweenFrame: number | null = null
@@ -211,7 +218,7 @@ export function installSceneInteractions(args: {
     selectedBodyId = resolved.selectedId
 
     // Keep ref in sync for label overlay
-    selectedBodyIdRef.current = resolved.selectedId as BodyId | undefined
+    selectedBodyIdRef.current = resolved.registryId
 
     // Update React state for inspector panel
     if (resolved.selectedId) {
