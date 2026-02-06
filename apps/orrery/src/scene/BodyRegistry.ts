@@ -238,6 +238,17 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
               sunBias: 0.9,
             },
           },
+          {
+            kind: 'aerosol',
+            aerosol: {
+              // Stylized warm dust/haze rim (non-physical).
+              radiusRatio: 1.012,
+              color: '#f0b07a',
+              intensity: 0.05,
+              rimPower: 3.8,
+              sunBias: 0.85,
+            },
+          },
         ],
       },
       label: 'Mars',

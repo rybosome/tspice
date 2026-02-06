@@ -4,6 +4,7 @@ import { isTextureCacheClearedError, loadTextureCached } from './loadTextureCach
 import { createRingMesh } from './RingMesh.js'
 import {
   isAtmosphereAppearanceLayer,
+  isAerosolAppearanceLayer,
   isEarthAppearanceLayer,
   type BodyAppearanceStyle,
   type BodyTextureKind,
@@ -657,6 +658,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // This is kept opt-in via `appearance.layers` so other bodies remain unchanged.
   const earth = options.appearance.layers?.find(isEarthAppearanceLayer)?.earth
   const atmosphere = options.appearance.layers?.find(isAtmosphereAppearanceLayer)?.atmosphere
+  const aerosol = options.appearance.layers?.find(isAerosolAppearanceLayer)?.aerosol
 
   const extraTexturesToDispose: THREE.Texture[] = []
   const extraTextureReleases: Array<() => void> = []
@@ -928,6 +930,88 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     mesh.add(atmosphereMesh)
 
     // Install an update loop for shader elements that depend on the sun direction.
+    update = composeUpdate(update, ({ sunDirWorld }) => {
+      uSunDirWorld.copy(sunDirWorld).normalize()
+    })
+  }
+
+  // Generic aerosol/dust shell layer (stylized rim glow; e.g. Mars dust haze).
+  if (aerosol) {
+    // Clamp to keep configs safe and prevent inverted shells / huge overdraw.
+    const aerosolRadiusRatio = THREE.MathUtils.clamp(aerosol.radiusRatio ?? 1.01, 1.001, 1.25)
+    const aerosolIntensity = THREE.MathUtils.clamp(aerosol.intensity ?? 0.08, 0.0, 2.0)
+    const aerosolRimPower = THREE.MathUtils.clamp(aerosol.rimPower ?? 3.0, 0.1, 10.0)
+    const aerosolSunBias = THREE.MathUtils.clamp(aerosol.sunBias ?? 0.8, 0.0, 1.0)
+
+    const aerosolGeo = new THREE.SphereGeometry(1, 48, 24)
+    aerosolGeo.rotateX(Math.PI / 2)
+    extraGeometriesToDispose.push(aerosolGeo)
+
+    const aerosolMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        uSunDirWorld: { value: uSunDirWorld },
+        uColor: { value: new THREE.Color(aerosol.color ?? '#ffffff') },
+        uIntensity: { value: aerosolIntensity },
+        uRimPower: { value: aerosolRimPower },
+        uSunBias: { value: aerosolSunBias },
+      },
+      vertexShader: [
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
+        '  vWorldPos = worldPos.xyz;',
+        '  vec3 nView = normalize( normalMatrix * normal );',
+        '  vWorldNormal = normalize( mat3( transpose( viewMatrix ) ) * nView );',
+        '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
+        '}',
+      ].join('\n'),
+      fragmentShader: [
+        'uniform vec3 uSunDirWorld;',
+        'uniform vec3 uColor;',
+        'uniform float uIntensity;',
+        'uniform float uRimPower;',
+        'uniform float uSunBias;',
+        '',
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec3 N = normalize( vWorldNormal );',
+        '  vec3 V = normalize( cameraPosition - vWorldPos );',
+        '  vec3 L = normalize( uSunDirWorld );',
+        '',
+        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
+        '  rim = pow( rim, uRimPower );',
+        '',
+        '  float ndotl = dot( N, L );',
+        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
+        '  float k = clamp( uSunBias, 0.0, 1.0 );',
+        '  float start = mix( -0.15, 0.0, k );',
+        '  float end = mix( 0.45, 0.2, k );',
+        '  float dayFactor = smoothstep( start, end, ndotl );',
+        '  float glow = rim * dayFactor;',
+        '',
+        '  float alpha = glow * uIntensity;',
+        '  gl_FragColor = vec4( uColor, alpha );',
+        '}',
+      ].join('\n'),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      toneMapped: false,
+      side: THREE.BackSide,
+    })
+    extraMaterialsToDispose.push(aerosolMaterial)
+
+    const aerosolMesh = new THREE.Mesh(aerosolGeo, aerosolMaterial)
+    aerosolMesh.scale.setScalar(aerosolRadiusRatio)
+    aerosolMesh.renderOrder = 2
+    // Avoid interaction/picking regressions if a future raycast becomes recursive.
+    aerosolMesh.raycast = () => {}
+    mesh.add(aerosolMesh)
+
     update = composeUpdate(update, ({ sunDirWorld }) => {
       uSunDirWorld.copy(sunDirWorld).normalize()
     })

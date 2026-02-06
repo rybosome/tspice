@@ -327,7 +327,7 @@ export function SceneCanvas() {
 
   // Lighting + Sun appearance defaults.
   const AMBIENT_LIGHT_INTENSITY_DEFAULT = 0.45
-  const SUN_LIGHT_INTENSITY_DEFAULT = 3.5
+  const SUN_LIGHT_INTENSITY_DEFAULT = 2.1
   // Sun emissive is in addition to the base texture `kind: 'sun'`.
   const SUN_EMISSIVE_INTENSITY_DEFAULT = 10
   const SUN_EMISSIVE_COLOR_DEFAULT = '#ffcc55'

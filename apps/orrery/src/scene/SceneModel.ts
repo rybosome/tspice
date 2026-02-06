@@ -115,6 +115,22 @@ export interface AtmosphereAppearanceLayerStyle {
   }
 }
 
+export interface AerosolAppearanceLayerStyle {
+  kind: 'aerosol'
+  aerosol: {
+    /** Shell radius relative to the body radius. */
+    radiusRatio?: number
+    /** Additive glow color. */
+    color?: string
+    /** Opacity/intensity scalar (0..1-ish). */
+    intensity?: number
+    /** Rim falloff exponent (higher = tighter rim). */
+    rimPower?: number
+    /** 0 = symmetric rim, 1 = fully sun-biased rim. */
+    sunBias?: number
+  }
+}
+
 export interface UnknownBodyLayerStyle {
   kind: string
   /**
@@ -128,7 +144,11 @@ export interface UnknownBodyLayerStyle {
 
 // Extensible: new layer kinds (atmosphere, clouds, decals, etc.) can be added later.
 // Keep this intentionally open, but structurally explicit.
-export type BodyLayerStyle = EarthAppearanceLayerStyle | AtmosphereAppearanceLayerStyle | UnknownBodyLayerStyle
+export type BodyLayerStyle =
+  | EarthAppearanceLayerStyle
+  | AtmosphereAppearanceLayerStyle
+  | AerosolAppearanceLayerStyle
+  | UnknownBodyLayerStyle
 
 export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
   if (typeof layer !== 'object' || layer === null) return false
@@ -149,6 +169,16 @@ export function isAtmosphereAppearanceLayer(layer: BodyLayerStyle): layer is Atm
 
   const atmosphere = (layer as { atmosphere?: unknown }).atmosphere
   return typeof atmosphere === 'object' && atmosphere !== null
+}
+
+export function isAerosolAppearanceLayer(layer: BodyLayerStyle): layer is AerosolAppearanceLayerStyle {
+  if (typeof layer !== 'object' || layer === null) return false
+
+  const maybeKind = (layer as { kind?: unknown }).kind
+  if (maybeKind !== 'aerosol') return false
+
+  const aerosol = (layer as { aerosol?: unknown }).aerosol
+  return typeof aerosol === 'object' && aerosol !== null
 }
 
 export interface BodyAppearanceStyle {
