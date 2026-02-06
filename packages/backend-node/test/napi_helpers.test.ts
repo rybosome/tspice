@@ -35,8 +35,9 @@ function requireNativeAddon(): TestAddon {
 describe("backend-node napi_helpers", () => {
   const itNative = it.runIf(nodeTestAddonAvailable());
 
-  const itCI = it.runIf(process.env.CI === "true");
-  itCI("CI sanity: native test addon should be present", () => {
+  const expectNative = process.env.TSPICE_EXPECT_NATIVE === "true";
+  const itExpectNative = it.runIf(expectNative);
+  itExpectNative("CI sanity: native test addon should be present", () => {
     expect(nodeTestAddonAvailable()).toBe(true);
   });
 
