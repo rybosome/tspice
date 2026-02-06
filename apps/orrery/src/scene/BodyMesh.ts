@@ -277,12 +277,15 @@ function applySurfaceMaps(args: {
   material.normalMap = nextNormalMap
   material.roughnessMap = nextRoughnessMap
 
-  if (normalScale == null) {
-    material.normalScale.set(1, 1)
-  } else if (typeof normalScale === 'number') {
-    material.normalScale.set(normalScale, normalScale)
-  } else {
-    material.normalScale.set(normalScale.x, normalScale.y)
+  // Only touch `normalScale` when a normal map is present. Otherwise we can
+  // leave it unchanged (it is ignored by Three.js when `normalMap` is null).
+  if (nextUseNormalMap) {
+    const nextScale = normalScale ?? 0.25
+    if (typeof nextScale === 'number') {
+      material.normalScale.set(nextScale, nextScale)
+    } else {
+      material.normalScale.set(nextScale.x, nextScale.y)
+    }
   }
 
   if (needsUpdate) {
