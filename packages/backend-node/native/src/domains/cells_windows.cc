@@ -6,6 +6,7 @@
 #include "tspice_backend_shim.h"
 
 #include <cstdint>
+#include <mutex>
 #include <unordered_map>
 
 using tspice_napi::SetExportChecked;
@@ -13,10 +14,12 @@ using tspice_napi::ThrowSpiceError;
 
 namespace {
 
+std::mutex g_cell_handles_mutex;
 std::unordered_map<uint32_t, uintptr_t> g_cell_handles;
 uint32_t g_next_cell_handle = 1;
 
 uint32_t AddCellHandle(uintptr_t ptr) {
+  std::lock_guard<std::mutex> lock(g_cell_handles_mutex);
   uint32_t h = g_next_cell_handle++;
   if (h == 0) {
     h = g_next_cell_handle++;
@@ -26,6 +29,7 @@ uint32_t AddCellHandle(uintptr_t ptr) {
 }
 
 bool TryGetCellPtr(uint32_t handle, uintptr_t* outPtr) {
+  std::lock_guard<std::mutex> lock(g_cell_handles_mutex);
   const auto it = g_cell_handles.find(handle);
   if (it == g_cell_handles.end()) {
     return false;
@@ -37,6 +41,7 @@ bool TryGetCellPtr(uint32_t handle, uintptr_t* outPtr) {
 }
 
 bool RemoveCellPtr(uint32_t handle, uintptr_t* outPtr) {
+  std::lock_guard<std::mutex> lock(g_cell_handles_mutex);
   const auto it = g_cell_handles.find(handle);
   if (it == g_cell_handles.end()) {
     return false;
