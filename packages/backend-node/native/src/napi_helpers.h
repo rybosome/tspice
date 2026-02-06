@@ -162,7 +162,12 @@ inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArr
   Napi::Array arr = value.As<Napi::Array>();
   const uint32_t len = arr.Length();
 
+  if (len == 0) {
+    return true;
+  }
+
   out->values.reserve(len);
+  out->ptrs.reserve(len);
 
   for (uint32_t i = 0; i < len; i++) {
     const Napi::Value v = arr.Get(i);
@@ -174,7 +179,6 @@ inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArr
     out->values.push_back(v.As<Napi::String>().Utf8Value());
   }
 
-  out->ptrs.reserve(out->values.size());
   for (const std::string& s : out->values) {
     out->ptrs.push_back(s.c_str());
   }

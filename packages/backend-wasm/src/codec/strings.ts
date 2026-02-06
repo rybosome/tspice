@@ -11,10 +11,11 @@ type Utf8CStringArray = {
 
 // Re-use a shared decoder to avoid allocating one per call.
 const UTF8_DECODER = new TextDecoder();
+// Re-use a shared encoder to avoid allocating one per call.
+const UTF8_ENCODER = new TextEncoder();
 
 export function writeUtf8CString(module: EmscriptenModule, value: string): number {
-  const encoder = new TextEncoder();
-  const encoded = encoder.encode(value);
+  const encoded = UTF8_ENCODER.encode(value);
   const ptr = mallocOrThrow(module, encoded.length + 1);
   module.HEAPU8.set(encoded, ptr);
   module.HEAPU8[ptr + encoded.length] = 0;
@@ -93,9 +94,9 @@ export function readFixedWidthCStringArray(
     return [];
   }
 
-  const out: string[] = [];
+  const out = new Array<string>(count);
   for (let i = 0; i < count; i++) {
-    out.push(readFixedWidthCString(module, ptr + i * width, width));
+    out[i] = readFixedWidthCString(module, ptr + i * width, width);
   }
   return out;
 }
