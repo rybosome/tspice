@@ -84,7 +84,8 @@ export type Vec6 = readonly [number, number, number, number, number, number] & {
  * This is a **type-only** brand used for clarity/documentation. It does not perform any
  * runtime validation, and it does not guarantee the string length.
  */
-export type FixedString<Max extends number> = string & { readonly __fixedStringMax?: Max };
+declare const __fixedStringMaxBrand: unique symbol;
+export type FixedString<Max extends number> = string & { readonly [__fixedStringMaxBrand]: Max };
 
 /**
  * Result wrapper for APIs that return an array of strings.

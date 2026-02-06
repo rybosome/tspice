@@ -123,9 +123,6 @@ export type NativeAddon = {
 
   /** Internal test helper (not part of the backend contract). */
   __ktotalAll(): number;
-
-  /** Internal test helper (not part of the backend contract). */
-  __testFixedWidthToJsString?(buf: Buffer, width: number): string;
 };
 
 let cachedAddon: NativeAddon | undefined;

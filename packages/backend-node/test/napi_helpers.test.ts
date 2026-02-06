@@ -5,19 +5,21 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
+const ADDON_FILE = "tspice_backend_node_test.node";
 
-const ADDON_FILE = "tspice_backend_node.node";
+function getTestAddonPath(): string {
+  const testDir = path.dirname(fileURLToPath(import.meta.url));
+  const packageRoot = path.resolve(testDir, "..");
+  return path.join(packageRoot, "native", "build", "Release", ADDON_FILE);
+}
+
+function nodeTestAddonAvailable(): boolean {
+  return fs.existsSync(getTestAddonPath());
+}
 
 function requireNativeAddon(): any {
   const require = createRequire(import.meta.url);
-  const testDir = path.dirname(fileURLToPath(import.meta.url));
-  const packageRoot = path.resolve(testDir, "..");
-
-  const override = process.env.TSPICE_BACKEND_NODE_BINDING_PATH;
-  const bindingPath = override
-    ? path.resolve(packageRoot, override)
-    : path.join(packageRoot, "native", "build", "Release", ADDON_FILE);
+  const bindingPath = getTestAddonPath();
 
   if (!fs.existsSync(bindingPath)) {
     throw new Error(`Native addon not found at ${bindingPath}`);
@@ -27,7 +29,7 @@ function requireNativeAddon(): any {
 }
 
 describe("backend-node napi_helpers", () => {
-  const itNative = it.runIf(nodeAddonAvailable());
+  const itNative = it.runIf(nodeTestAddonAvailable());
 
   itNative("__testFixedWidthToJsString: stops at NUL terminator", () => {
     const addon = requireNativeAddon();

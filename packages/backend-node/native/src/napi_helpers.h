@@ -2,7 +2,6 @@
 
 #include <napi.h>
 
-#include <cctype>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -112,6 +111,20 @@ inline Napi::Object MakeNotFound(Napi::Env env) {
   return result;
 }
 
+inline bool IsAsciiWhitespace(unsigned char c) {
+  switch (c) {
+    case ' ':
+    case '\t':
+    case '\n':
+    case '\r':
+    case '\f':
+    case '\v':
+      return true;
+    default:
+      return false;
+  }
+}
+
 inline Napi::String FixedWidthToJsString(Napi::Env env, const char* buf, size_t width) {
   if (buf == nullptr || width == 0) {
     return Napi::String::New(env, "");
@@ -125,7 +138,7 @@ inline Napi::String FixedWidthToJsString(Napi::Env env, const char* buf, size_t 
   }
 
   std::string out(buf, len);
-  while (!out.empty() && std::isspace(static_cast<unsigned char>(out.back()))) {
+  while (!out.empty() && IsAsciiWhitespace(static_cast<unsigned char>(out.back()))) {
     out.pop_back();
   }
 

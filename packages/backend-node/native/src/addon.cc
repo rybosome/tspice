@@ -7,7 +7,6 @@
 #include "domains/ids_names.h"
 #include "domains/kernels.h"
 #include "domains/time.h"
-#include "test_exports.h"
 
 // Forces a rebuild/relink when the resolved CSPICE install changes (cache/toolkit bump
 // or TSPICE_CSPICE_DIR override).
@@ -31,7 +30,6 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   if (!registerDomain(tspice_backend_node::RegisterEphemeris)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterGeometry)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterCoordsVectors)) return exports;
-  if (!registerDomain(tspice_backend_node::RegisterTestExports)) return exports;
 
   return exports;
 }
