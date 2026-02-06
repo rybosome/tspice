@@ -26,10 +26,8 @@ import jpegPkg from 'jpeg-js'
 const { PNG } = pngjsPkg
 const jpeg = jpegPkg
 
-const MOLA_IMG_URL =
-  'https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/mgsl_300x/meg016/megt90n000eb.img'
-const MOLA_LBL_URL =
-  'https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/mgsl_300x/meg016/megt90n000eb.lbl'
+const MOLA_IMG_URL = 'https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/mgsl_300x/meg016/megt90n000eb.img'
+const MOLA_LBL_URL = 'https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/mgsl_300x/meg016/megt90n000eb.lbl'
 
 const TARGET_W = 2048
 const TARGET_H = 1024
