@@ -44,6 +44,11 @@ function stableHash01(input: string): number {
   return (h >>> 0) / 4294967296
 }
 
+function clampFinite(v: number | undefined | null, min: number, max: number, fallback: number): number {
+  const x = Number.isFinite(v) ? (v as number) : fallback
+  return THREE.MathUtils.clamp(x, min, max)
+}
+
 function make1x1TextureRGBA([r, g, b, a]: readonly [number, number, number, number]): THREE.DataTexture {
   const data = new Uint8Array([r, g, b, a])
   const tex = new THREE.DataTexture(data, 1, 1)
@@ -567,6 +572,10 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             map = tex
             mapRelease = release
             installed = true
+
+            // Apply immediately so textures show up as soon as they load (don't rely on `ready`).
+            applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
+            material.color.set(textureColor ?? surface.color)
           } finally {
             // If we didn't take ownership via `mapRelease`, release immediately.
             if (!installed) release()
@@ -596,6 +605,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             normalMap = tex
             normalMapRelease = release
             installed = true
+
+            // Apply immediately so maps show up as soon as they load (don't rely on `ready`).
+            applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
           } finally {
             if (!installed) release()
           }
@@ -623,6 +635,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             roughnessMap = tex
             roughnessMapRelease = release
             installed = true
+
+            // Apply immediately so maps show up as soon as they load (don't rely on `ready`).
+            applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
           } finally {
             if (!installed) release()
           }
@@ -674,11 +689,105 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   let update: BodyMeshUpdate | undefined
 
+  let sunDirUpdateInstalled = false
+  const ensureSunDirWorldUpdate = () => {
+    if (sunDirUpdateInstalled) return
+    sunDirUpdateInstalled = true
+
+    const sunUpdate: BodyMeshUpdate = ({ sunDirWorld }) => {
+      uSunDirWorld.copy(sunDirWorld).normalize()
+    }
+
+    // Prepend so any later-composed updaters can safely rely on `uSunDirWorld`.
+    update = update ? composeUpdate(sunUpdate, update) : sunUpdate
+  }
+
+  const createRimGlowShell = (args: {
+    radiusRatio: number
+    renderOrder: number
+    color: THREE.ColorRepresentation
+    intensity: { value: number }
+    rimPower: { value: number }
+    sunBias: { value: number }
+  }) => {
+    const geo = new THREE.SphereGeometry(1, 48, 24)
+    geo.rotateX(Math.PI / 2)
+    extraGeometriesToDispose.push(geo)
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        uSunDirWorld: { value: uSunDirWorld },
+        uColor: { value: new THREE.Color(args.color) },
+        uIntensity: args.intensity,
+        uRimPower: args.rimPower,
+        uSunBias: args.sunBias,
+      },
+      // Use view-space normals so non-uniform scaling is handled correctly via `normalMatrix`.
+      vertexShader: [
+        'varying vec3 vViewPos;',
+        'varying vec3 vViewNormal;',
+        '',
+        'void main() {',
+        '  vec4 viewPos = modelViewMatrix * vec4( position, 1.0 );',
+        '  vViewPos = viewPos.xyz;',
+        '  vViewNormal = normalize( normalMatrix * normal );',
+        '  gl_Position = projectionMatrix * viewPos;',
+        '}',
+      ].join('\n'),
+      fragmentShader: [
+        'uniform vec3 uSunDirWorld;',
+        'uniform vec3 uColor;',
+        'uniform float uIntensity;',
+        'uniform float uRimPower;',
+        'uniform float uSunBias;',
+        '',
+        'varying vec3 vViewPos;',
+        'varying vec3 vViewNormal;',
+        '',
+        'void main() {',
+        '  vec3 N = normalize( vViewNormal );',
+        '  vec3 V = normalize( -vViewPos );',
+        '  vec3 L = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+        '',
+        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
+        '  rim = pow( rim, uRimPower );',
+        '',
+        '  float ndotl = dot( N, L );',
+        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
+        '  float k = clamp( uSunBias, 0.0, 1.0 );',
+        '  float start = mix( -0.15, 0.0, k );',
+        '  float end = mix( 0.45, 0.2, k );',
+        '  float dayFactor = smoothstep( start, end, ndotl );',
+        '  float glow = rim * dayFactor;',
+        '',
+        '  float alpha = glow * uIntensity;',
+        '  gl_FragColor = vec4( uColor, alpha );',
+        '}',
+      ].join('\n'),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      toneMapped: false,
+      side: THREE.BackSide,
+    })
+    extraMaterialsToDispose.push(material)
+
+    const shellMesh = new THREE.Mesh(geo, material)
+    shellMesh.scale.setScalar(args.radiusRatio)
+    shellMesh.renderOrder = args.renderOrder
+    // Avoid interaction/picking regressions if a future raycast becomes recursive.
+    shellMesh.raycast = () => {}
+    mesh.add(shellMesh)
+
+    ensureSunDirWorldUpdate()
+  }
+
   // Optional terminator/night-side albedo suppression.
   // This avoids ambient light washing out airless bodies on the night side.
   const useTerminatorDarkening = !isEarth && nightAlbedo != null && nightAlbedo < 1.0
 
   if (useTerminatorDarkening) {
+    material.userData.tspiceNightSideDarkening = true
     const uNightAlbedo = { value: nightAlbedo }
     const uTerminatorTwilight = { value: terminatorTwilight }
 
@@ -750,9 +859,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     })
     onBeforeCompileRestores.push(restoreTerminatorDarkening)
 
-    update = composeUpdate(update, ({ sunDirWorld }) => {
-      uSunDirWorld.copy(sunDirWorld).normalize()
-    })
+    ensureSunDirWorldUpdate()
   }
 
   // Optional subtle macro/detail variation (procedural; seam-safe; no tiling textures).
@@ -855,165 +962,36 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // Note: Earth uses its dedicated `earth` layer for atmosphere, clouds, etc.
   if (!isEarth && atmosphere) {
     // Clamp to keep configs safe and prevent inverted shells / huge overdraw.
-    const atmosphereRadiusRatio = THREE.MathUtils.clamp(atmosphere.radiusRatio ?? 1.01, 1.001, 1.25)
-    const atmosphereIntensity = THREE.MathUtils.clamp(atmosphere.intensity ?? 0.25, 0.0, 2.0)
-    const atmosphereRimPower = THREE.MathUtils.clamp(atmosphere.rimPower ?? 2.4, 0.1, 10.0)
-    const atmosphereSunBias = THREE.MathUtils.clamp(atmosphere.sunBias ?? 0.75, 0.0, 1.0)
+    const atmosphereRadiusRatio = clampFinite(atmosphere.radiusRatio, 1.001, 1.25, 1.01)
+    const atmosphereIntensity = clampFinite(atmosphere.intensity, 0.0, 2.0, 0.25)
+    const atmosphereRimPower = clampFinite(atmosphere.rimPower, 0.1, 10.0, 2.4)
+    const atmosphereSunBias = clampFinite(atmosphere.sunBias, 0.0, 1.0, 0.75)
 
-    const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
-    atmosphereGeo.rotateX(Math.PI / 2)
-    extraGeometriesToDispose.push(atmosphereGeo)
-
-    const atmosphereMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uSunDirWorld: { value: uSunDirWorld },
-        uColor: { value: new THREE.Color(atmosphere.color ?? '#ffffff') },
-        uIntensity: { value: atmosphereIntensity },
-        uRimPower: { value: atmosphereRimPower },
-        uSunBias: { value: atmosphereSunBias },
-      },
-      vertexShader: [
-        'varying vec3 vWorldPos;',
-        'varying vec3 vWorldNormal;',
-        '',
-        'void main() {',
-        '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
-        '  vWorldPos = worldPos.xyz;',
-        '  vec3 nView = normalize( normalMatrix * normal );',
-        '  vWorldNormal = normalize( mat3( transpose( viewMatrix ) ) * nView );',
-        '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
-        '}',
-      ].join('\n'),
-      fragmentShader: [
-        'uniform vec3 uSunDirWorld;',
-        'uniform vec3 uColor;',
-        'uniform float uIntensity;',
-        'uniform float uRimPower;',
-        'uniform float uSunBias;',
-        '',
-        'varying vec3 vWorldPos;',
-        'varying vec3 vWorldNormal;',
-        '',
-        'void main() {',
-        '  vec3 N = normalize( vWorldNormal );',
-        '  vec3 V = normalize( cameraPosition - vWorldPos );',
-        '  vec3 L = normalize( uSunDirWorld );',
-        '',
-        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
-        '  rim = pow( rim, uRimPower );',
-        '',
-        '  float ndotl = dot( N, L );',
-        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
-        '  float k = clamp( uSunBias, 0.0, 1.0 );',
-        '  float start = mix( -0.15, 0.0, k );',
-        '  float end = mix( 0.45, 0.2, k );',
-        '  float dayFactor = smoothstep( start, end, ndotl );',
-        '  float glow = rim * dayFactor;',
-        '',
-        '  float alpha = glow * uIntensity;',
-        '  gl_FragColor = vec4( uColor, alpha );',
-        '}',
-      ].join('\n'),
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false,
-      toneMapped: false,
-      side: THREE.BackSide,
-    })
-    extraMaterialsToDispose.push(atmosphereMaterial)
-
-    const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMaterial)
-    atmosphereMesh.scale.setScalar(atmosphereRadiusRatio)
-    atmosphereMesh.renderOrder = 1
-    // Avoid interaction/picking regressions if a future raycast becomes recursive.
-    atmosphereMesh.raycast = () => {}
-    mesh.add(atmosphereMesh)
-
-    // Install an update loop for shader elements that depend on the sun direction.
-    update = composeUpdate(update, ({ sunDirWorld }) => {
-      uSunDirWorld.copy(sunDirWorld).normalize()
+    createRimGlowShell({
+      radiusRatio: atmosphereRadiusRatio,
+      renderOrder: 1,
+      color: atmosphere.color ?? '#ffffff',
+      intensity: { value: atmosphereIntensity },
+      rimPower: { value: atmosphereRimPower },
+      sunBias: { value: atmosphereSunBias },
     })
   }
 
   // Generic aerosol/dust shell layer (stylized rim glow; e.g. Mars dust haze).
   if (aerosol) {
     // Clamp to keep configs safe and prevent inverted shells / huge overdraw.
-    const aerosolRadiusRatio = THREE.MathUtils.clamp(aerosol.radiusRatio ?? 1.01, 1.001, 1.25)
-    const aerosolIntensity = THREE.MathUtils.clamp(aerosol.intensity ?? 0.08, 0.0, 2.0)
-    const aerosolRimPower = THREE.MathUtils.clamp(aerosol.rimPower ?? 3.0, 0.1, 10.0)
-    const aerosolSunBias = THREE.MathUtils.clamp(aerosol.sunBias ?? 0.8, 0.0, 1.0)
+    const aerosolRadiusRatio = clampFinite(aerosol.radiusRatio, 1.001, 1.25, 1.01)
+    const aerosolIntensity = clampFinite(aerosol.intensity, 0.0, 2.0, 0.08)
+    const aerosolRimPower = clampFinite(aerosol.rimPower, 0.1, 10.0, 3.0)
+    const aerosolSunBias = clampFinite(aerosol.sunBias, 0.0, 1.0, 0.8)
 
-    const aerosolGeo = new THREE.SphereGeometry(1, 48, 24)
-    aerosolGeo.rotateX(Math.PI / 2)
-    extraGeometriesToDispose.push(aerosolGeo)
-
-    const aerosolMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uSunDirWorld: { value: uSunDirWorld },
-        uColor: { value: new THREE.Color(aerosol.color ?? '#ffffff') },
-        uIntensity: { value: aerosolIntensity },
-        uRimPower: { value: aerosolRimPower },
-        uSunBias: { value: aerosolSunBias },
-      },
-      vertexShader: [
-        'varying vec3 vWorldPos;',
-        'varying vec3 vWorldNormal;',
-        '',
-        'void main() {',
-        '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
-        '  vWorldPos = worldPos.xyz;',
-        '  vec3 nView = normalize( normalMatrix * normal );',
-        '  vWorldNormal = normalize( mat3( transpose( viewMatrix ) ) * nView );',
-        '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
-        '}',
-      ].join('\n'),
-      fragmentShader: [
-        'uniform vec3 uSunDirWorld;',
-        'uniform vec3 uColor;',
-        'uniform float uIntensity;',
-        'uniform float uRimPower;',
-        'uniform float uSunBias;',
-        '',
-        'varying vec3 vWorldPos;',
-        'varying vec3 vWorldNormal;',
-        '',
-        'void main() {',
-        '  vec3 N = normalize( vWorldNormal );',
-        '  vec3 V = normalize( cameraPosition - vWorldPos );',
-        '  vec3 L = normalize( uSunDirWorld );',
-        '',
-        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
-        '  rim = pow( rim, uRimPower );',
-        '',
-        '  float ndotl = dot( N, L );',
-        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
-        '  float k = clamp( uSunBias, 0.0, 1.0 );',
-        '  float start = mix( -0.15, 0.0, k );',
-        '  float end = mix( 0.45, 0.2, k );',
-        '  float dayFactor = smoothstep( start, end, ndotl );',
-        '  float glow = rim * dayFactor;',
-        '',
-        '  float alpha = glow * uIntensity;',
-        '  gl_FragColor = vec4( uColor, alpha );',
-        '}',
-      ].join('\n'),
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false,
-      toneMapped: false,
-      side: THREE.BackSide,
-    })
-    extraMaterialsToDispose.push(aerosolMaterial)
-
-    const aerosolMesh = new THREE.Mesh(aerosolGeo, aerosolMaterial)
-    aerosolMesh.scale.setScalar(aerosolRadiusRatio)
-    aerosolMesh.renderOrder = 2
-    // Avoid interaction/picking regressions if a future raycast becomes recursive.
-    aerosolMesh.raycast = () => {}
-    mesh.add(aerosolMesh)
-
-    update = composeUpdate(update, ({ sunDirWorld }) => {
-      uSunDirWorld.copy(sunDirWorld).normalize()
+    createRimGlowShell({
+      radiusRatio: aerosolRadiusRatio,
+      renderOrder: 2,
+      color: aerosol.color ?? '#ffffff',
+      intensity: { value: aerosolIntensity },
+      rimPower: { value: aerosolRimPower },
+      sunBias: { value: aerosolSunBias },
     })
   }
 
@@ -1025,6 +1003,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const useWaterMaskUniform = { value: 0.0 }
 
   if (isEarth && earth) {
+    ensureSunDirWorldUpdate()
     // Night lights + ocean glint (surface shader patch)
     material.emissive.set('#000000')
     material.emissiveIntensity = 1.0
@@ -1215,72 +1194,14 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     onBeforeCompileRestores.push(restoreEarthSurface)
 
     // Atmosphere shell
-    const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
-    atmosphereGeo.rotateX(Math.PI / 2)
-    extraGeometriesToDispose.push(atmosphereGeo)
-
-    const atmosphereMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uSunDirWorld: { value: uSunDirWorld },
-        uColor: { value: new THREE.Color(earth.atmosphereColor ?? '#79b8ff') },
-        uIntensity: uAtmosphereIntensity,
-        uRimPower: { value: earth.atmosphereRimPower ?? 2.2 },
-        uSunBias: { value: earth.atmosphereSunBias ?? 0.65 },
-      },
-      vertexShader: [
-        'varying vec3 vWorldPos;',
-        'varying vec3 vWorldNormal;',
-        '',
-        'void main() {',
-        '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
-        '  vWorldPos = worldPos.xyz;',
-        '  vec3 nView = normalize( normalMatrix * normal );',
-        '  vWorldNormal = normalize( mat3( transpose( viewMatrix ) ) * nView );',
-        '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
-        '}',
-      ].join('\n'),
-      fragmentShader: [
-        'uniform vec3 uSunDirWorld;',
-        'uniform vec3 uColor;',
-        'uniform float uIntensity;',
-        'uniform float uRimPower;',
-        'uniform float uSunBias;',
-        '',
-        'varying vec3 vWorldPos;',
-        'varying vec3 vWorldNormal;',
-        '',
-        'void main() {',
-        '  vec3 N = normalize( vWorldNormal );',
-        '  vec3 V = normalize( cameraPosition - vWorldPos );',
-        '  vec3 L = normalize( uSunDirWorld );',
-        '',
-        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
-        '  rim = pow( rim, uRimPower );',
-        '',
-        '  float ndotl = dot( N, L );',
-        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
-        '  float k = clamp( uSunBias, 0.0, 1.0 );',
-        '  float start = mix( -0.15, 0.0, k );',
-        '  float end = mix( 0.45, 0.2, k );',
-        '  float dayFactor = smoothstep( start, end, ndotl );',
-        '  float glow = rim * dayFactor;',
-        '',
-        '  float alpha = glow * uIntensity;',
-        '  gl_FragColor = vec4( uColor, alpha );',
-        '}',
-      ].join('\n'),
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false,
-      toneMapped: false,
-      side: THREE.BackSide,
+    createRimGlowShell({
+      radiusRatio: earth.atmosphereRadiusRatio ?? 1.015,
+      renderOrder: 2,
+      color: earth.atmosphereColor ?? '#79b8ff',
+      intensity: uAtmosphereIntensity,
+      rimPower: { value: earth.atmosphereRimPower ?? 2.2 },
+      sunBias: { value: earth.atmosphereSunBias ?? 0.65 },
     })
-    extraMaterialsToDispose.push(atmosphereMaterial)
-
-    const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMaterial)
-    atmosphereMesh.scale.setScalar(earth.atmosphereRadiusRatio ?? 1.015)
-    atmosphereMesh.renderOrder = 2
-    mesh.add(atmosphereMesh)
 
     // Clouds shell
     const cloudsGeo = new THREE.SphereGeometry(1, 48, 24)
@@ -1463,9 +1384,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     readyExtras.push(...extras)
 
-    update = composeUpdate(update, ({ sunDirWorld, etSec, earthTuning }) => {
-      uSunDirWorld.copy(sunDirWorld).normalize()
-
+    update = composeUpdate(update, ({ sunDirWorld: _sunDirWorld, etSec, earthTuning }) => {
       if (earthTuning) {
         uNightAlbedo.value = earthTuning.nightAlbedo
         uTwilight.value = earthTuning.twilight
