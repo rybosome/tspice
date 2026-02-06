@@ -14,6 +14,13 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.str2et === "function", "Expected native addon to export str2et(time)");
   invariant(typeof native.et2utc === "function", "Expected native addon to export et2utc(et, format, prec)");
   invariant(typeof native.timout === "function", "Expected native addon to export timout(et, picture)");
+  invariant(typeof native.failed === "function", "Expected native addon to export failed()");
+  invariant(typeof native.reset === "function", "Expected native addon to export reset()");
+  invariant(typeof native.getmsg === "function", "Expected native addon to export getmsg(which)");
+  invariant(typeof native.setmsg === "function", "Expected native addon to export setmsg(message)");
+  invariant(typeof native.sigerr === "function", "Expected native addon to export sigerr(short)");
+  invariant(typeof native.chkin === "function", "Expected native addon to export chkin(name)");
+  invariant(typeof native.chkout === "function", "Expected native addon to export chkout(name)");
   invariant(typeof native.bodn2c === "function", "Expected native addon to export bodn2c(name)");
   invariant(typeof native.bodc2n === "function", "Expected native addon to export bodc2n(code)");
   invariant(typeof native.namfrm === "function", "Expected native addon to export namfrm(name)");

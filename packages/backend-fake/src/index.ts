@@ -615,6 +615,11 @@ function kernelFiltyp(kind: KernelKind): string {
 
 export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
+  let spiceFailed = false;
+  let spiceShort = "";
+  let spiceLong = "";
+  let spiceExplain = "";
+  const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
 
   const getKernelsOfKind = (kind: KernelKind): readonly KernelRecord[] => {
@@ -627,6 +632,35 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     spiceVersion: () => FAKE_SPICE_VERSION,
 
+    failed: () => spiceFailed,
+    reset: () => {
+      spiceFailed = false;
+      spiceShort = "";
+      spiceLong = "";
+      spiceExplain = "";
+      traceStack.length = 0;
+    },
+    getmsg: (which) => {
+      if (which === "SHORT") return spiceShort;
+      if (which === "LONG") return spiceLong;
+      if (which === "EXPLAIN") return spiceExplain;
+      return "";
+    },
+    setmsg: (message: string) => {
+      spiceLong = message;
+    },
+    sigerr: (short: string) => {
+      spiceFailed = true;
+      spiceShort = short;
+      spiceExplain = `Fake backend signaled error: ${short}`;
+    },
+    chkin: (name: string) => {
+      traceStack.push(name);
+    },
+    chkout: (name: string) => {
+      const idx = traceStack.lastIndexOf(name);
+      if (idx >= 0) traceStack.splice(idx, 1);
+    },
     furnsh: (kernel: KernelSource) => {
       const file = typeof kernel === "string" ? kernel : kernel.path;
       const source = typeof kernel === "string" ? file : "bytes";

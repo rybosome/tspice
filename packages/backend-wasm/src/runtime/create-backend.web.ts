@@ -9,6 +9,7 @@ import { createGeometryApi } from "../domains/geometry.js";
 import { createIdsNamesApi } from "../domains/ids-names.js";
 import { createKernelsApi } from "../domains/kernels.js";
 import { createTimeApi, getToolkitVersion } from "../domains/time.js";
+import { createErrorApi } from "../domains/error.js";
 
 import { createWasmFs } from "./fs.js";
 
@@ -75,8 +76,8 @@ export async function createWasmBackend(
     ...createIdsNamesApi(module),
     ...createFramesApi(module),
     ...createEphemerisApi(module),
-    ...createGeometryApi(module),
-    ...createCoordsVectorsApi(module),
+    ...createGeometryApi(module),    ...createCoordsVectorsApi(module),
+    ...createErrorApi(module),
 
   } satisfies SpiceBackend;
 
