@@ -33,6 +33,12 @@ export function writeUtf8CStringArray(module: EmscriptenModule, values: string[]
     return { ptr: 0, itemPtrs: [] };
   }
 
+  // This helper intentionally targets wasm32 (32-bit pointers).
+  // If we ever add wasm64, this should be revisited to use the correct pointer heap.
+  if (module.HEAP32.BYTES_PER_ELEMENT !== 4) {
+    throw new Error('writeUtf8CStringArray assumes 32-bit pointers (wasm32).');
+  }
+
   const ptr = mallocOrThrow(module, values.length * 4);
 
   const itemPtrs: number[] = [];
@@ -40,7 +46,7 @@ export function writeUtf8CStringArray(module: EmscriptenModule, values: string[]
     for (let i = 0; i < values.length; i++) {
       const itemPtr = writeUtf8CString(module, values[i]!);
       itemPtrs.push(itemPtr);
-      module.HEAP32[ptr / 4 + i] = itemPtr;
+      module.HEAP32[(ptr >>> 2) + i] = itemPtr;
     }
     return { ptr, itemPtrs };
   } catch (error) {
