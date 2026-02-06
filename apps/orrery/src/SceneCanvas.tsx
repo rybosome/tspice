@@ -1161,6 +1161,18 @@ export function SceneCanvas() {
             textures: number
           } | null = null
 
+          const nextAnimationFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+
+          const renderNTimes = async (n: number) => {
+            const count = Math.max(0, Math.floor(n))
+            for (let i = 0; i < count; i++) {
+              three.renderOnce()
+              // Allow the browser to advance a frame so async texture uploads/effects
+              // have a chance to settle before the next forced render.
+              await nextAnimationFrame()
+            }
+          }
+
           const samplePerfCounters = () => {
             const t0 = performance.now()
             three.renderOnce()
@@ -1213,7 +1225,7 @@ export function SceneCanvas() {
             three.controller.applyToCamera(three.camera)
 
             // Render synchronously so Playwright can capture immediately.
-            samplePerfCounters()
+            three.renderOnce()
           }
 
           const api = window.__tspice_viewer__e2e
@@ -1221,6 +1233,7 @@ export function SceneCanvas() {
 
           api.setCameraPreset = setCameraPreset
           api.lockDeterministicLighting = lockDeterministicLighting
+          api.renderNTimes = renderNTimes
           api.samplePerfCounters = samplePerfCounters
           api.getLastPerfCounters = () => lastPerfSample
         }

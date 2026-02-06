@@ -32,6 +32,7 @@ Snapshots are stored alongside each spec in `*-snapshots/` directories.
   `window.__tspice_viewer__e2e`:
   - `setCameraPreset('sun-close' | 'sun-medium' | 'sun-far')`
   - `lockDeterministicLighting()`
+  - `renderNTimes(n)` (force N renders for texture upload flush)
   - `samplePerfCounters()` / `getLastPerfCounters()`
 
 These APIs are only installed in e2e mode and should not affect runtime visuals.
