@@ -188,9 +188,6 @@ const commonEmccArgs = [
   "-s",
   "EXPORT_ES6=1",
   "-s",
-  // Keep the binary filename stable regardless of JS glue output name.
-  `WASM_BINARY_FILE='${WASM_BINARY_FILENAME}'`,
-  "-s",
   "ALLOW_MEMORY_GROWTH=1",
   "-s",
   // Some Emscripten toolchains require initial memory to cover static data.
@@ -201,7 +198,7 @@ const commonEmccArgs = [
   "-s",
   "EXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8','lengthBytesUTF8','FS','HEAP8','HEAPU8','HEAP16','HEAPU16','HEAP32','HEAPU32','HEAPF32','HEAPF64']",
   "-s",
-  "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_ktotal_all','_tspice_str2et','_tspice_et2utc','_tspice_timout','_tspice_bodn2c','_tspice_bodc2n','_tspice_namfrm','_tspice_frmnam','_tspice_cidfrm','_tspice_cnmfrm','_tspice_scs2e','_tspice_sce2s','_tspice_ckgp','_tspice_ckgpav','_tspice_pxform','_tspice_sxform','_tspice_spkezr','_tspice_spkpos','_tspice_subpnt','_tspice_subslr','_tspice_sincpt','_tspice_ilumin','_tspice_occult','_tspice_reclat','_tspice_latrec','_tspice_recsph','_tspice_sphrec','_tspice_vnorm','_tspice_vhat','_tspice_vdot','_tspice_vcrss','_tspice_mxv','_tspice_mtxv','_malloc','_free']",
+  "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_ktotal_all','_tspice_str2et','_tspice_et2utc','_tspice_timout','_tspice_bodn2c','_tspice_bodc2n','_tspice_namfrm','_tspice_frmnam','_tspice_cidfrm','_tspice_cnmfrm','_tspice_scs2e','_tspice_sce2s','_tspice_ckgp','_tspice_ckgpav','_tspice_pxform','_tspice_sxform','_tspice_spkezr','_tspice_spkpos','_tspice_subpnt','_tspice_subslr','_tspice_sincpt','_tspice_ilumin','_tspice_occult','_tspice_reclat','_tspice_latrec','_tspice_recsph','_tspice_sphrec','_tspice_vnorm','_tspice_vhat','_tspice_vdot','_tspice_vcrss','_tspice_mxv','_tspice_mtxv','_tspice_mxm','_tspice_vadd','_tspice_vsub','_tspice_vminus','_tspice_vscl','_tspice_rotate','_tspice_rotmat','_tspice_axisar','_tspice_georec','_tspice_recgeo','_malloc','_free']",
 ];
 
 function runEmcc({ environment, outputJsPath }) {
@@ -226,10 +223,36 @@ function runEmcc({ environment, outputJsPath }) {
 runEmcc({ environment: "web,worker", outputJsPath: outputWebJsPath });
 runEmcc({ environment: "node", outputJsPath: outputNodeJsPath });
 
+const outputWebWasmPath = outputWebJsPath.replace(/\.js$/, ".wasm");
+const outputNodeWasmPath = outputNodeJsPath.replace(/\.js$/, ".wasm");
 const outputWasmPath = path.join(outputDir, WASM_BINARY_FILENAME);
-if (!fs.existsSync(outputWasmPath)) {
-  throw new Error(`Expected Emscripten to write ${outputWasmPath} but it was missing`);
+
+if (!fs.existsSync(outputWebWasmPath)) {
+  throw new Error(`Expected Emscripten to write ${outputWebWasmPath} but it was missing`);
 }
+if (!fs.existsSync(outputNodeWasmPath)) {
+  throw new Error(`Expected Emscripten to write ${outputNodeWasmPath} but it was missing`);
+}
+
+// emcc derives the wasm filename from the JS glue output filename (e.g. *.web.wasm / *.node.wasm).
+// Keep a single checked-in wasm artifact, and patch both JS outputs to reference it.
+fs.copyFileSync(outputWebWasmPath, outputWasmPath);
+
+{
+  const webWasmBasename = path.basename(outputWebWasmPath);
+  const nodeWasmBasename = path.basename(outputNodeWasmPath);
+
+  const patchWasmBasename = (jsPath, oldBasename) => {
+    const jsContents = fs.readFileSync(jsPath, "utf8");
+    fs.writeFileSync(jsPath, jsContents.replaceAll(oldBasename, WASM_BINARY_FILENAME));
+  };
+
+  patchWasmBasename(outputWebJsPath, webWasmBasename);
+  patchWasmBasename(outputNodeJsPath, nodeWasmBasename);
+}
+
+fs.rmSync(outputWebWasmPath);
+fs.rmSync(outputNodeWasmPath);
 
 const generatedHeader = `// GENERATED FILE - DO NOT EDIT.\n// Regenerate via: node scripts/build-backend-wasm.mjs\n\n`;
 

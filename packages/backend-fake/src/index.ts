@@ -246,6 +246,147 @@ function mmul3(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
   );
 }
 
+
+function rotateRowMajor(angle: number, axis: number): Mat3RowMajor {
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+
+  switch (axis) {
+    case 1:
+      return brandMat3RowMajor(
+        [
+          1,
+          0,
+          0,
+          0,
+          canonicalizeZero(c),
+          canonicalizeZero(-s),
+          0,
+          canonicalizeZero(s),
+          canonicalizeZero(c),
+        ] as const,
+        { label: "fake.rotate" },
+      );
+    case 2:
+      return brandMat3RowMajor(
+        [
+          canonicalizeZero(c),
+          0,
+          canonicalizeZero(s),
+          0,
+          1,
+          0,
+          canonicalizeZero(-s),
+          0,
+          canonicalizeZero(c),
+        ] as const,
+        { label: "fake.rotate" },
+      );
+    case 3:
+      return brandMat3RowMajor(
+        [
+          canonicalizeZero(c),
+          canonicalizeZero(-s),
+          0,
+          canonicalizeZero(s),
+          canonicalizeZero(c),
+          0,
+          0,
+          0,
+          1,
+        ] as const,
+        { label: "fake.rotate" },
+      );
+    default:
+      throw new Error(`Fake backend: rotate(): invalid axis: ${axis} (expected 1, 2, or 3)`);
+  }
+}
+
+function axisAngleToRotationRowMajor(axis: SpiceVector3, angle: number): Mat3RowMajor {
+  const u = vhat(axis);
+  const ux = u[0];
+  const uy = u[1];
+  const uz = u[2];
+
+  // If axis is zero, treat as identity rotation.
+  if (ux === 0 && uy === 0 && uz === 0) {
+    return brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1] as const, { label: "fake.axisar" });
+  }
+
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+  const t = 1 - c;
+
+  return brandMat3RowMajor(
+    [
+      canonicalizeZero(t * ux * ux + c),
+      canonicalizeZero(t * ux * uy - s * uz),
+      canonicalizeZero(t * ux * uz + s * uy),
+
+      canonicalizeZero(t * ux * uy + s * uz),
+      canonicalizeZero(t * uy * uy + c),
+      canonicalizeZero(t * uy * uz - s * ux),
+
+      canonicalizeZero(t * ux * uz - s * uy),
+      canonicalizeZero(t * uy * uz + s * ux),
+      canonicalizeZero(t * uz * uz + c),
+    ] as const,
+    { label: "fake.axisar" },
+  );
+}
+
+function georec(lon: number, lat: number, alt: number, re: number, f: number): SpiceVector3 {
+  // Standard geodetic-to-rectangular conversion.
+  const rp = re * (1 - f);
+  const e2 = 1 - (rp * rp) / (re * re);
+
+  const slat = Math.sin(lat);
+  const clat = Math.cos(lat);
+  const slon = Math.sin(lon);
+  const clon = Math.cos(lon);
+
+  const n = re / Math.sqrt(1 - e2 * slat * slat);
+
+  const x = (n + alt) * clat * clon;
+  const y = (n + alt) * clat * slon;
+  const z = (n * (1 - e2) + alt) * slat;
+
+  return [x, y, z];
+}
+
+function recgeo(rect: SpiceVector3, re: number, f: number): { lon: number; lat: number; alt: number } {
+  // Bowring's method (non-iterative) for rectangular to geodetic.
+  const x = rect[0];
+  const y = rect[1];
+  const z = rect[2];
+
+  const rp = re * (1 - f);
+  const e2 = 1 - (rp * rp) / (re * re);
+  const ep2 = (re * re - rp * rp) / (rp * rp);
+
+  const lon = Math.atan2(y, x);
+  const p = Math.sqrt(x * x + y * y);
+
+  // Handle poles.
+  if (p === 0) {
+    const lat = z >= 0 ? Math.PI / 2 : -Math.PI / 2;
+    const alt = Math.abs(z) - rp;
+    return { lon, lat, alt };
+  }
+
+  const theta = Math.atan2(z * re, p * rp);
+  const st = Math.sin(theta);
+  const ct = Math.cos(theta);
+
+  const lat = Math.atan2(z + ep2 * rp * st * st * st, p - e2 * re * ct * ct * ct);
+
+  const slat = Math.sin(lat);
+  const n = re / Math.sqrt(1 - e2 * slat * slat);
+  const alt = p / Math.cos(lat) - n;
+
+  return { lon, lat, alt };
+}
+
 function mtx3(m: Mat3RowMajor): Mat3RowMajor {
   return brandMat3RowMajor(
     [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]] as const,
@@ -787,5 +928,20 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     mxv: (m, v) => mxv(m, v),
     mtxv: (m, v) => mtxv(m, v),
+
+
+    vadd: (a, b) => vadd(a, b),
+    vsub: (a, b) => vsub(a, b),
+    vminus: (v) => vscale(-1, v),
+    vscl: (s, v) => vscale(s, v),
+
+    mxm: (a, b) => mmul3(a, b),
+
+    rotate: (angle, axis) => rotateRowMajor(angle, axis),
+    rotmat: (m, angle, axis) => mmul3(rotateRowMajor(angle, axis), m),
+    axisar: (axis, angle) => axisAngleToRotationRowMajor(axis, angle),
+
+    georec: (lon, lat, alt, re, f) => georec(lon, lat, alt, re, f),
+    recgeo: (rect, re, f) => recgeo(rect, re, f),
   };
 }

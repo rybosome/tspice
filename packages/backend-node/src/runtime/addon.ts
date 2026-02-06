@@ -121,6 +121,19 @@ export type NativeAddon = {
   mxv(m: readonly number[], v: readonly number[]): number[];
   mtxv(m: readonly number[], v: readonly number[]): number[];
 
+  vadd(a: readonly number[], b: readonly number[]): number[];
+  vsub(a: readonly number[], b: readonly number[]): number[];
+  vminus(v: readonly number[]): number[];
+  vscl(s: number, v: readonly number[]): number[];
+
+  mxm(a: readonly number[], b: readonly number[]): number[];
+  rotate(angle: number, axis: number): number[];
+  rotmat(m: readonly number[], angle: number, axis: number): number[];
+  axisar(axis: readonly number[], angle: number): number[];
+
+  georec(lon: number, lat: number, alt: number, re: number, f: number): number[];
+  recgeo(rect: readonly number[], re: number, f: number): { lon: number; lat: number; alt: number };
+
   /** Internal test helper (not part of the backend contract). */
   __ktotalAll(): number;
 };
