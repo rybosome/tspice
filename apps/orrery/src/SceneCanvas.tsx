@@ -1164,13 +1164,23 @@ export function SceneCanvas() {
           const nextAnimationFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
 
           const renderNTimes = async (n: number) => {
-            const count = Math.max(0, Math.floor(n))
+            // In CI we occasionally observed Playwright screenshots taken before
+            // async textures were fully uploaded/visible. Clamp to at least one
+            // render, then synchronously wait for GPU completion for determinism.
+            //
+            // Note: this is e2e-only (installed only in `?e2e=1` mode) and should
+            // not impact production runtime behavior.
+            const count = Math.max(1, Number.isFinite(n) ? Math.floor(n) : 1)
             for (let i = 0; i < count; i++) {
               three.renderOnce()
               // Allow the browser to advance a frame so async texture uploads/effects
               // have a chance to settle before the next forced render.
               await nextAnimationFrame()
             }
+
+            // Block until all pending WebGL commands complete (helps stabilize
+            // golden screenshot capture timing).
+            three.renderer.getContext().finish()
           }
 
           const samplePerfCounters = () => {
