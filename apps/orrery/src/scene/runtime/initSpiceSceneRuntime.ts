@@ -639,7 +639,7 @@ export async function initSpiceSceneRuntime(args: {
     // Record label overlay inputs so we can update it on camera movement.
     latestLabelOverlayOptions = {
       bodies: labelBodies,
-      focusBodyId: resolveBodyRegistryEntry(String(next.focusBody))?.id as BodyId | undefined,
+      focusBodyId: resolveBodyRegistryEntry(String(next.focusBody))?.id,
       selectedBodyId: selectedBodyIdRef.current,
       labelsEnabled: next.labelsEnabled,
       occlusionEnabled: next.labelOcclusionEnabled,

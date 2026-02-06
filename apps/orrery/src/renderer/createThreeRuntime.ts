@@ -103,6 +103,9 @@ export function createThreeRuntime(args: {
   let disposed = false
 
   let scheduledFrame: number | null = null
+  let scheduledResizeFrame: number | null = null
+
+  let lastResizeKey: string | null = null
 
   const drawingBufferSize = new THREE.Vector2()
 
@@ -738,7 +741,15 @@ export function createThreeRuntime(args: {
     const height = container.clientHeight
     if (width <= 0 || height <= 0) return
 
-    renderer.setPixelRatio(isE2e ? 1 : Math.min(window.devicePixelRatio, 2))
+    const nextPixelRatio = isE2e ? 1 : Math.min(window.devicePixelRatio, 2)
+
+    // Avoid repeating expensive resize work when the observable inputs haven't
+    // changed (e.g. init-time prime + ResizeObserver fire in the same layout).
+    const resizeKey = `${width}x${height}@${nextPixelRatio}|${postprocessRuntime.mode}|${sunPostprocess.bloom.resolutionScale}`
+    if (resizeKey === lastResizeKey) return
+    lastResizeKey = resizeKey
+
+    renderer.setPixelRatio(nextPixelRatio)
     renderer.setSize(width, height, false)
 
     const pixelRatio = renderer.getPixelRatio()
@@ -820,17 +831,33 @@ export function createThreeRuntime(args: {
 
   const onResize = () => {
     if (disposed) return
+
+    const width = container.clientWidth
+    const height = container.clientHeight
+    if (width <= 0 || height <= 0) return
+
     resize()
     invalidate()
   }
 
-  const resizeObserver = new ResizeObserver(onResize)
+  // Throttle ResizeObserver events to at most one resize per frame.
+  const onResizeObserved = () => {
+    if (disposed) return
+    if (scheduledResizeFrame != null) return
+
+    scheduledResizeFrame = window.requestAnimationFrame(() => {
+      scheduledResizeFrame = null
+      onResize()
+    })
+  }
+
+  const resizeObserver = new ResizeObserver(onResizeObserved)
   resizeObserver.observe(container)
 
   // Prime drawing-buffer-dependent state so the first render has correct
   // sizes (camera aspect, SelectionOverlay line material resolution, bloom
   // render targets, etc.).
-  resize()
+  window.requestAnimationFrame(onResize)
 
   const dispose = () => {
     disposed = true
@@ -838,6 +865,11 @@ export function createThreeRuntime(args: {
     if (scheduledFrame != null) {
       window.cancelAnimationFrame(scheduledFrame)
       scheduledFrame = null
+    }
+
+    if (scheduledResizeFrame != null) {
+      window.cancelAnimationFrame(scheduledResizeFrame)
+      scheduledResizeFrame = null
     }
 
     resizeObserver.disconnect()
