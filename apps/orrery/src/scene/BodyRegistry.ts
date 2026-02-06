@@ -201,17 +201,20 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       appearance: {
         surface: {
           color: '#e76f51',
-          // Keep Mars slightly less rough than the default so surface features read better.
-          roughness: 0.86,
+          // Keep Mars quite rough so the Viking mosaic reads as albedo (avoid plastic/gloss).
+          roughness: 0.93,
+          metalness: 0.0,
 
           // Suppress ambient washout on the night side (Mars has no strong emissive features).
           nightAlbedo: 0.0008,
           terminatorTwilight: 0.08,
+          // Subtle, seam-safe macro variation (no tiling textures).
+          detailNoise: { strength: 0.035, scale: 10.0 },
 
           texture: {
             url: 'textures/planets/mars-viking-colorized-4k.jpg',
             // Full-color albedo texture; keep tint subtle so we don't lose surface contrast.
-            color: '#fff2e8',
+            color: '#ffffff',
           },
         },
         layers: [

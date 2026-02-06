@@ -31,6 +31,18 @@ export type BodyMeshUpdate = (args: {
   earthTuning?: EarthAppearanceTuning
 }) => void
 
+function stableHash01(input: string): number {
+  // Deterministic (no RNG): keep e2e snapshots stable.
+  // FNV-1a-ish 32-bit hash -> [0, 1).
+  let h = 2166136261
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  // Unsigned -> [0, 1).
+  return (h >>> 0) / 4294967296
+}
+
 function make1x1TextureRGBA([r, g, b, a]: readonly [number, number, number, number]): THREE.DataTexture {
   const data = new Uint8Array([r, g, b, a])
   const tex = new THREE.DataTexture(data, 1, 1)
@@ -168,6 +180,13 @@ function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile
     if (material.onBeforeCompile === composed) {
       material.onBeforeCompile = prev
     }
+  }
+}
+
+function composeUpdate(prev: BodyMeshUpdate | undefined, next: BodyMeshUpdate): BodyMeshUpdate {
+  return (args) => {
+    prev?.(args)
+    next(args)
   }
 }
 
@@ -374,6 +393,11 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const nightAlbedo = surface.nightAlbedo == null ? undefined : THREE.MathUtils.clamp(surface.nightAlbedo, 0.0, 1.0)
   const terminatorTwilight = THREE.MathUtils.clamp(surface.terminatorTwilight ?? 0.08, 0.0, 1.0)
 
+  const detailNoise = surface.detailNoise
+  const detailNoiseStrength = THREE.MathUtils.clamp(detailNoise?.strength ?? 0.0, 0.0, 0.15)
+  const detailNoiseScale = THREE.MathUtils.clamp(detailNoise?.scale ?? 0.0, 0.0, 128.0)
+  const detailNoiseSeed = detailNoise?.seed ?? stableHash01(options.bodyId ?? '')
+
   let map: THREE.Texture | undefined = textureKind ? makeProceduralBodyTexture(textureKind) : undefined
   let mapRelease: (() => void) | undefined
 
@@ -567,14 +591,117 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     })
     onBeforeCompileRestores.push(restoreTerminatorDarkening)
 
-    update = ({ sunDirWorld }) => {
-      uSunDirWorld.copy(sunDirWorld)
-    }
+    update = composeUpdate(update, ({ sunDirWorld }) => {
+      uSunDirWorld.copy(sunDirWorld).normalize()
+    })
+  }
+
+
+  // Optional subtle macro/detail variation (procedural; seam-safe; no tiling textures).
+  if (textureKind !== 'sun' && detailNoiseStrength > 0 && detailNoiseScale > 0) {
+    const uDetailNoiseStrength = { value: detailNoiseStrength }
+    const uDetailNoiseScale = { value: detailNoiseScale }
+    const uDetailNoiseSeed = { value: detailNoiseSeed }
+
+    const restoreDetailNoise = composeOnBeforeCompile(material, (shader) => {
+      shader.uniforms.uDetailNoiseStrength = uDetailNoiseStrength
+      shader.uniforms.uDetailNoiseScale = uDetailNoiseScale
+      shader.uniforms.uDetailNoiseSeed = uDetailNoiseSeed
+
+      const markerCommon = '// tspice:detail-noise:common'
+      const markerApply = '// tspice:detail-noise:apply'
+
+      const res = safeShaderReplaceAll({
+        shader,
+        source: 'fragmentShader',
+        warnOnce,
+        warnKey: 'detail-noise:required:patch',
+        replacements: [
+          {
+            needle: '#include <common>',
+            marker: markerCommon,
+            replacement: [
+              '#include <common>',
+              markerCommon,
+              'uniform float uDetailNoiseStrength;',
+              'uniform float uDetailNoiseScale;',
+              'uniform float uDetailNoiseSeed;',
+              '',
+              '// Cheap deterministic value noise (adapted from Skydome.ts).',
+              'float tspice_hash31( vec3 p ) {',
+              '  p = fract( p * 0.1031 );',
+              '  p += dot( p, p.yzx + 33.33 );',
+              '  return fract( (p.x + p.y) * p.z );',
+              '}',
+              '',
+              'float tspice_valueNoise3( vec3 p ) {',
+              '  vec3 i = floor( p );',
+              '  vec3 f = fract( p );',
+              '  f = f * f * ( 3.0 - 2.0 * f );',
+              '',
+              '  float n000 = tspice_hash31( i + vec3( 0.0, 0.0, 0.0 ) );',
+              '  float n100 = tspice_hash31( i + vec3( 1.0, 0.0, 0.0 ) );',
+              '  float n010 = tspice_hash31( i + vec3( 0.0, 1.0, 0.0 ) );',
+              '  float n110 = tspice_hash31( i + vec3( 1.0, 1.0, 0.0 ) );',
+              '  float n001 = tspice_hash31( i + vec3( 0.0, 0.0, 1.0 ) );',
+              '  float n101 = tspice_hash31( i + vec3( 1.0, 0.0, 1.0 ) );',
+              '  float n011 = tspice_hash31( i + vec3( 0.0, 1.0, 1.0 ) );',
+              '  float n111 = tspice_hash31( i + vec3( 1.0, 1.0, 1.0 ) );',
+              '',
+              '  float nx00 = mix( n000, n100, f.x );',
+              '  float nx10 = mix( n010, n110, f.x );',
+              '  float nx01 = mix( n001, n101, f.x );',
+              '  float nx11 = mix( n011, n111, f.x );',
+              '  float nxy0 = mix( nx00, nx10, f.y );',
+              '  float nxy1 = mix( nx01, nx11, f.y );',
+              '  return mix( nxy0, nxy1, f.z );',
+              '}',
+              '',
+              'vec3 tspice_dirFromEquirectUv( vec2 uv ) {',
+              '  float phi = uv.x * 6.28318530718;',
+              '  float theta = uv.y * 3.14159265359;',
+              '  float st = sin( theta );',
+              '  return vec3( st * cos( phi ), cos( theta ), st * sin( phi ) );',
+              '}',
+            ].join('\n'),
+            warnKey: 'detail-noise:common',
+          },
+          {
+            needle: '#include <map_fragment>',
+            marker: markerApply,
+            replacement: [
+              '#include <map_fragment>',
+              markerApply,
+              '#ifdef USE_UV',
+              '  vec3 d = tspice_dirFromEquirectUv( vUv );',
+              '  float n = tspice_valueNoise3( d * uDetailNoiseScale + vec3( uDetailNoiseSeed ) );',
+              '  float k = ( n - 0.5 ) * uDetailNoiseStrength;',
+              '  diffuseColor.rgb *= clamp( 1.0 + k, 0.0, 2.0 );',
+              '#endif',
+            ].join('\n'),
+            warnKey: 'detail-noise:apply',
+          },
+        ],
+      })
+
+      if (!res.ok) return
+
+      const shaderSources: ShaderSource = shader
+      shaderSources.fragmentShader = res.next
+    })
+
+    onBeforeCompileRestores.push(restoreDetailNoise)
   }
 
   // Generic atmosphere shell layer (used for thin/low-intensity atmospheres like Mars).
   // Note: Earth uses its dedicated `earth` layer for atmosphere, clouds, etc.
   if (!isEarth && atmosphere) {
+    // Clamp to keep configs safe and prevent inverted shells / huge overdraw.
+    const atmosphereRadiusRatio = THREE.MathUtils.clamp(atmosphere.radiusRatio ?? 1.01, 1.001, 1.25)
+    const atmosphereIntensity = THREE.MathUtils.clamp(atmosphere.intensity ?? 0.25, 0.0, 2.0)
+    const atmosphereRimPower = THREE.MathUtils.clamp(atmosphere.rimPower ?? 2.4, 0.1, 10.0)
+    const atmosphereSunBias = THREE.MathUtils.clamp(atmosphere.sunBias ?? 0.75, 0.0, 1.0)
+
     const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
     atmosphereGeo.rotateX(Math.PI / 2)
     extraGeometriesToDispose.push(atmosphereGeo)
@@ -583,9 +710,9 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
       uniforms: {
         uSunDirWorld: { value: uSunDirWorld },
         uColor: { value: new THREE.Color(atmosphere.color ?? '#ffffff') },
-        uIntensity: { value: atmosphere.intensity ?? 0.25 },
-        uRimPower: { value: atmosphere.rimPower ?? 2.4 },
-        uSunBias: { value: atmosphere.sunBias ?? 0.75 },
+        uIntensity: { value: atmosphereIntensity },
+        uRimPower: { value: atmosphereRimPower },
+        uSunBias: { value: atmosphereSunBias },
       },
       vertexShader: [
         'varying vec3 vWorldPos;',
@@ -594,7 +721,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         'void main() {',
         '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
         '  vWorldPos = worldPos.xyz;',
-        '  vWorldNormal = normalize( mat3( modelMatrix ) * normal );',
+        '  vec3 nView = normalize( normalMatrix * normal );',
+        '  vWorldNormal = normalize( mat3( transpose( viewMatrix ) ) * nView );',
         '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
         '}',
       ].join('\n'),
@@ -637,18 +765,16 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     extraMaterialsToDispose.push(atmosphereMaterial)
 
     const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMaterial)
-    atmosphereMesh.scale.setScalar(atmosphere.radiusRatio ?? 1.01)
+    atmosphereMesh.scale.setScalar(atmosphereRadiusRatio)
     atmosphereMesh.renderOrder = 1
     // Avoid interaction/picking regressions if a future raycast becomes recursive.
     atmosphereMesh.raycast = () => {}
     mesh.add(atmosphereMesh)
 
-    // Install a minimal update loop for shader elements that depend on the sun direction.
-    if (!update) {
-      update = ({ sunDirWorld }) => {
-        uSunDirWorld.copy(sunDirWorld)
-      }
-    }
+    // Install an update loop for shader elements that depend on the sun direction.
+    update = composeUpdate(update, ({ sunDirWorld }) => {
+      uSunDirWorld.copy(sunDirWorld).normalize()
+    })
   }
 
   let cloudsMesh: THREE.Mesh | undefined
@@ -868,7 +994,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         'void main() {',
         '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
         '  vWorldPos = worldPos.xyz;',
-        '  vWorldNormal = normalize( mat3( modelMatrix ) * normal );',
+        '  vec3 nView = normalize( normalMatrix * normal );',
+        '  vWorldNormal = normalize( mat3( transpose( viewMatrix ) ) * nView );',
         '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
         '}',
       ].join('\n'),
@@ -1096,7 +1223,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     readyExtras.push(...extras)
 
-    update = ({ sunDirWorld, etSec, earthTuning }) => {
+    update = composeUpdate(update, ({ sunDirWorld, etSec, earthTuning }) => {
       uSunDirWorld.copy(sunDirWorld).normalize()
 
       if (earthTuning) {
@@ -1111,7 +1238,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         const phase = (etSec * cloudsDriftRadPerSec) % (Math.PI * 2)
         cloudsMesh.rotation.z = phase
       }
-    }
+    })
   }
 
   const ready = Promise.all(readyExtras).then(() => undefined)

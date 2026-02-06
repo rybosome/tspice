@@ -64,6 +64,21 @@ export interface BodySurfaceStyle {
    * Smaller values = sharper terminator.
    */
   terminatorTwilight?: number
+
+  /**
+   * Optional, subtle procedural albedo modulation for macro/detail variation
+   * without obvious tiling or additional texture assets.
+   *
+   * Values are applied conservatively in shader space; keep `strength` small.
+   */
+  detailNoise?: {
+    /** Multiplier for the albedo modulation (0..~0.1). */
+    strength?: number
+    /** Frequency for seam-safe direction-space noise (higher = finer detail). */
+    scale?: number
+    /** Optional seed offset for deterministic variation between bodies. */
+    seed?: number
+  }
 }
 
 export interface EarthAppearanceLayerStyle {
