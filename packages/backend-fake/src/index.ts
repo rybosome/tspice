@@ -248,10 +248,18 @@ function mmul3(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
 
 
 function rotateRowMajor(angle: number, axis: number): Mat3RowMajor {
+  // CSPICE reduces `iaxis` mod 3 (treating 0 as 3). Mirror that for parity.
+  if (!Number.isFinite(axis)) {
+    throw new Error(`Fake backend: rotate(): invalid axis: ${axis} (expected a finite number)`);
+  }
+  const iaxis = Math.trunc(axis);
+  const reduced = ((iaxis % 3) + 3) % 3;
+  const spiceAxis = (reduced === 0 ? 3 : reduced) as 1 | 2 | 3;
+
   const c = Math.cos(angle);
   const s = Math.sin(angle);
 
-  switch (axis) {
+  switch (spiceAxis) {
     case 1:
       return brandMat3RowMajor(
         [
@@ -297,8 +305,10 @@ function rotateRowMajor(angle: number, axis: number): Mat3RowMajor {
         ] as const,
         { label: "fake.rotate" },
       );
-    default:
-      throw new Error(`Fake backend: rotate(): invalid axis: ${axis} (expected 1, 2, or 3)`);
+    default: {
+      const _exhaustive: never = spiceAxis;
+      throw new Error(`Fake backend: rotate(): unreachable axis: ${String(_exhaustive)}`);
+    }
   }
 }
 
@@ -308,7 +318,7 @@ function axisAngleToRotationRowMajor(axis: SpiceVector3, angle: number): Mat3Row
   const uy = u[1];
   const uz = u[2];
 
-  // If axis is zero, treat as identity rotation.
+  // Parity with CSPICE axisar_c: if axis is zero, return identity rotation.
   if (ux === 0 && uy === 0 && uz === 0) {
     return brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1] as const, { label: "fake.axisar" });
   }
@@ -336,6 +346,14 @@ function axisAngleToRotationRowMajor(axis: SpiceVector3, angle: number): Mat3Row
 }
 
 function georec(lon: number, lat: number, alt: number, re: number, f: number): SpiceVector3 {
+  // Match CSPICE validation semantics where feasible.
+  if (!Number.isFinite(re) || re <= 0) {
+    throw new Error(`Fake backend: georec(): invalid re: ${re} (expected > 0)`);
+  }
+  if (!Number.isFinite(f) || f >= 1) {
+    throw new Error(`Fake backend: georec(): invalid f: ${f} (expected < 1)`);
+  }
+
   // Standard geodetic-to-rectangular conversion.
   const rp = re * (1 - f);
   const e2 = 1 - (rp * rp) / (re * re);
@@ -355,6 +373,14 @@ function georec(lon: number, lat: number, alt: number, re: number, f: number): S
 }
 
 function recgeo(rect: SpiceVector3, re: number, f: number): { lon: number; lat: number; alt: number } {
+  // Match CSPICE validation semantics where feasible.
+  if (!Number.isFinite(re) || re <= 0) {
+    throw new Error(`Fake backend: recgeo(): invalid re: ${re} (expected > 0)`);
+  }
+  if (!Number.isFinite(f) || f >= 1) {
+    throw new Error(`Fake backend: recgeo(): invalid f: ${f} (expected < 1)`);
+  }
+
   // Bowring's method (non-iterative) for rectangular to geodetic.
   const x = rect[0];
   const y = rect[1];
@@ -938,6 +964,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     mxm: (a, b) => mmul3(a, b),
 
     rotate: (angle, axis) => rotateRowMajor(angle, axis),
+    // CSPICE rotmat_c left-multiplies: mout = rotate(angle, axis) * m
     rotmat: (m, angle, axis) => mmul3(rotateRowMajor(angle, axis), m),
     axisar: (axis, angle) => axisAngleToRotationRowMajor(axis, angle),
 

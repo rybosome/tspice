@@ -242,9 +242,18 @@ fs.copyFileSync(outputWebWasmPath, outputWasmPath);
   const webWasmBasename = path.basename(outputWebWasmPath);
   const nodeWasmBasename = path.basename(outputNodeWasmPath);
 
+  const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\[\]\\]/g, "\$&");
+
   const patchWasmBasename = (jsPath, oldBasename) => {
     const jsContents = fs.readFileSync(jsPath, "utf8");
-    fs.writeFileSync(jsPath, jsContents.replaceAll(oldBasename, WASM_BINARY_FILENAME));
+
+    // Only patch quoted occurrences of the derived wasm filename.
+    const re = new RegExp(`(['"])${escapeRegExp(oldBasename)}\\1`, "g");
+    const patched = jsContents.replace(re, `$1${WASM_BINARY_FILENAME}$1`);
+    if (patched === jsContents) {
+      throw new Error(`Expected to patch wasm basename in ${jsPath} but no changes were made`);
+    }
+    fs.writeFileSync(jsPath, patched);
   };
 
   patchWasmBasename(outputWebJsPath, webWasmBasename);

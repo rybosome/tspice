@@ -4,6 +4,10 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
     reclat: (rect) => {
@@ -132,12 +136,17 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
     },
 
     recgeo: (rect, re, f) => {
-      const out = native.recgeo(rect, re, f);
-      invariant(out && typeof out === "object", "Expected recgeo() to return an object");
-      invariant(typeof (out as any).lon === "number", "Expected recgeo().lon to be a number");
-      invariant(typeof (out as any).lat === "number", "Expected recgeo().lat to be a number");
-      invariant(typeof (out as any).alt === "number", "Expected recgeo().alt to be a number");
-      return { lon: (out as any).lon, lat: (out as any).lat, alt: (out as any).alt };
+      const out = native.recgeo(rect, re, f) as unknown;
+      invariant(isPlainObject(out), "Expected recgeo() to return an object");
+
+      const lon = out.lon;
+      const lat = out.lat;
+      const alt = out.alt;
+      invariant(typeof lon === "number", "Expected recgeo().lon to be a number");
+      invariant(typeof lat === "number", "Expected recgeo().lat to be a number");
+      invariant(typeof alt === "number", "Expected recgeo().alt to be a number");
+
+      return { lon, lat, alt };
     },
   };
 }
