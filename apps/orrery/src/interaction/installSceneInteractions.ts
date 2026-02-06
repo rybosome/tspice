@@ -179,8 +179,16 @@ export function installSceneInteractions(args: {
     if (overlayAnimFrame != null) return
     if (isDisposed()) return
 
-    // Avoid scheduling a RAF loop when there's nothing to animate.
-    if (!selectionOverlay.isAnimating(performance.now())) return
+    // IMPORTANT: always schedule at least one RAF tick.
+    //
+    // `SelectionOverlay.isAnimating()` can become true only *after* the next
+    // render runs `syncToCamera` (e.g. when camera zoom changes affect desired
+    // opacities). If we bail out early here, we can miss that transition and
+    // end up with a one-frame overlay update.
+    //
+    // We call `invalidate()` first so the next render is scheduled before this
+    // RAF callback, ensuring `syncToCamera` has a chance to run.
+    invalidate()
 
     const step = (t: number) => {
       if (isDisposed()) {

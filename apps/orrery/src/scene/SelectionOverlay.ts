@@ -36,6 +36,19 @@ export type SelectionOverlay = {
   dispose: () => void
 }
 
+export type CreateSelectionOverlayOptions = {
+  /**
+   * Optional drawing-buffer resolution (in *device* pixels) to use for the very
+   * first paint.
+   *
+   * The overlay line materials depend on `LineMaterial.resolution` for correct
+   * line widths. Callers typically update this via `setResolution()` inside
+   * their resize handler, but providing an initial value avoids a first-frame
+   * "wrong thickness" paint when resize work is throttled to RAF.
+   */
+  initialResolution?: { widthPx: number; heightPx: number }
+}
+
 // ---------------------------------------------------------------------------
 // Tuning
 // ---------------------------------------------------------------------------
@@ -209,7 +222,7 @@ function maxComponent(v: THREE.Vector3) {
   return Math.max(v.x, v.y, v.z)
 }
 
-export function createSelectionOverlay(): SelectionOverlay {
+export function createSelectionOverlay(opts?: CreateSelectionOverlayOptions): SelectionOverlay {
   const tuning = SELECTION_OVERLAY_TUNING
 
   const object = new THREE.Group()
@@ -217,7 +230,13 @@ export function createSelectionOverlay(): SelectionOverlay {
   object.visible = false
   object.renderOrder = 10_000
 
-  const resolution = new THREE.Vector2(1, 1)
+  const initialW = opts?.initialResolution?.widthPx
+  const initialH = opts?.initialResolution?.heightPx
+
+  const resolution = new THREE.Vector2(
+    Math.max(1, typeof initialW === 'number' && Number.isFinite(initialW) ? Math.floor(initialW) : 1),
+    Math.max(1, typeof initialH === 'number' && Number.isFinite(initialH) ? Math.floor(initialH) : 1),
+  )
 
   const makeMaterial = (opts: { color: THREE.ColorRepresentation; lineWidthPx: number; opacity: number }) => {
     const material = new LineMaterial({

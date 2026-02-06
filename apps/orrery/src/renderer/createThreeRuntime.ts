@@ -186,7 +186,25 @@ export function createThreeRuntime(args: {
   let skyState: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean } | null = null
 
   // Selection overlay (interactive-only)
-  const selectionOverlay = !isE2e ? createSelectionOverlay() : undefined
+  const selectionOverlay =
+    !isE2e
+      ? createSelectionOverlay({
+          // ResizeObserver work is throttled to RAF; prime a best-effort
+          // initial resolution so the overlay's first paint has correct line
+          // widths.
+          initialResolution: (() => {
+            const width = container.clientWidth
+            const height = container.clientHeight
+            if (width <= 0 || height <= 0) return undefined
+
+            const pixelRatio = Math.min(window.devicePixelRatio, 2)
+            return {
+              widthPx: Math.max(1, Math.floor(width * pixelRatio)),
+              heightPx: Math.max(1, Math.floor(height * pixelRatio)),
+            }
+          })(),
+        })
+      : undefined
   if (selectionOverlay) scene.add(selectionOverlay.object)
 
   const ensureSky = (opts: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean }) => {
