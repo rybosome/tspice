@@ -65,17 +65,79 @@ async function pathExists(p) {
   }
 }
 
-async function downloadToFile(url, outPath) {
+async function downloadToFile(url, outPath, opts = {}) {
+  const expectedBytes = opts.expectedBytes
+  const minBytes = opts.minBytes ?? 1
+
+  if (typeof fetch !== 'function') {
+    throw new Error('Global fetch() is not available. Run this script with Node 18+ (or install/use undici fetch).')
+  }
+
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error(`Failed to download ${url}: ${res.status} ${res.statusText}`)
   }
 
+  if (!res.body) {
+    throw new Error(`Failed to download ${url}: missing response body`)
+  }
+
+  const contentLengthRaw = res.headers.get('content-length')
+  const contentLength = contentLengthRaw ? Number(contentLengthRaw) : undefined
+
   await fsp.mkdir(path.dirname(outPath), { recursive: true })
 
-  // Node's fetch returns a web stream; convert for pipeline().
-  const body = Readable.fromWeb(res.body)
-  await pipeline(body, fs.createWriteStream(outPath))
+  const tmpPath = `${outPath}.tmp-${process.pid}`
+
+  try {
+    // Node's fetch returns a web stream; convert for pipeline().
+    const body = Readable.fromWeb(res.body)
+    await pipeline(body, fs.createWriteStream(tmpPath))
+
+    const size = (await fsp.stat(tmpPath)).size
+
+    if (!Number.isFinite(size) || size < minBytes) {
+      throw new Error(`Downloaded file too small: ${tmpPath} (${size} bytes)`)
+    }
+
+    if (expectedBytes !== undefined && size !== expectedBytes) {
+      throw new Error(`Downloaded file size mismatch: ${tmpPath} (${size} bytes, expected ${expectedBytes})`)
+    }
+
+    if (Number.isFinite(contentLength) && contentLength > 0 && size !== contentLength) {
+      throw new Error(
+        `Downloaded file size mismatch: ${tmpPath} (${size} bytes, expected content-length ${contentLength})`,
+      )
+    }
+
+    // Replace atomically.
+    await fsp.rename(tmpPath, outPath)
+  } catch (err) {
+    await fsp.rm(tmpPath, { force: true })
+    throw err
+  }
+}
+
+async function ensureDownloadedFile(args) {
+  const { url, outPath, force, minBytes, expectedBytes, label } = args
+
+  const exists = await pathExists(outPath)
+  if (exists && !force) {
+    const size = (await fsp.stat(outPath)).size
+    const ok =
+      Number.isFinite(size) && size >= (minBytes ?? 1) && (expectedBytes === undefined || size === expectedBytes)
+
+    if (ok) return
+
+    console.warn(`Cached download invalid; re-downloading (${label ?? outPath})`, {
+      outPath,
+      size,
+      expectedBytes,
+    })
+  }
+
+  console.log(`Downloading ${label ?? url}...`)
+  await downloadToFile(url, outPath, { minBytes, expectedBytes })
 }
 
 function parsePdsLabel(lblText) {
@@ -104,6 +166,22 @@ function parsePdsLabel(lblText) {
     out[key] = Number.isFinite(num) && value !== '' ? num : value
   }
   return out
+}
+
+function requireLabelNumber(label, key, lblPath) {
+  const v = label[key]
+  if (!Number.isFinite(v)) {
+    throw new Error(`Missing/invalid ${key} in PDS label (${lblPath}): got ${String(v)}`)
+  }
+  return v
+}
+
+function requireLabelString(label, key, lblPath) {
+  const v = label[key]
+  if (typeof v !== 'string' || v.length === 0) {
+    throw new Error(`Missing/invalid ${key} in PDS label (${lblPath}): got ${String(v)}`)
+  }
+  return v
 }
 
 function clamp(v, lo, hi) {
@@ -140,28 +218,29 @@ async function main() {
   await fsp.mkdir(dataDir, { recursive: true })
 
   if (!args.skipDownload) {
-    if (args.force || !(await pathExists(molaLblPath))) {
-      console.log('Downloading PDS label...')
-      await downloadToFile(MOLA_LBL_URL, molaLblPath)
-    }
-
-    if (args.force || !(await pathExists(molaImgPath))) {
-      console.log('Downloading PDS IMG DEM (this is ~33MB)...')
-      await downloadToFile(MOLA_IMG_URL, molaImgPath)
-    }
+    await ensureDownloadedFile({
+      url: MOLA_LBL_URL,
+      outPath: molaLblPath,
+      force: args.force,
+      minBytes: 32,
+      label: 'PDS label',
+    })
   }
 
   const lblText = await fsp.readFile(molaLblPath, 'utf8')
   const label = parsePdsLabel(lblText)
 
-  const srcW = label.LINE_SAMPLES
-  const srcH = label.LINES
-  const sampleBits = label.SAMPLE_BITS
-  const sampleType = label.SAMPLE_TYPE
+  const srcW = requireLabelNumber(label, 'LINE_SAMPLES', molaLblPath)
+  const srcH = requireLabelNumber(label, 'LINES', molaLblPath)
+  const sampleBits = requireLabelNumber(label, 'SAMPLE_BITS', molaLblPath)
+  const sampleType = requireLabelString(label, 'SAMPLE_TYPE', molaLblPath)
 
-  if (!Number.isFinite(srcW) || !Number.isFinite(srcH)) {
-    throw new Error(`Missing DEM dimensions in label (LINES / LINE_SAMPLES)`)
-  }
+  console.log('Label summary:', {
+    LINE_SAMPLES: srcW,
+    LINES: srcH,
+    SAMPLE_BITS: sampleBits,
+    SAMPLE_TYPE: sampleType,
+  })
 
   // Requirements/assumptions for this script:
   // - 16-bit signed integer samples
@@ -183,9 +262,22 @@ async function main() {
   if (scalingFactor != 1 || offset != 0) {
     console.log(`Applying scaling: meters = raw * ${scalingFactor} + ${offset}`)
   }
-  const imgBuf = await fsp.readFile(molaImgPath)
 
   const expectedBytes = srcW * srcH * 2
+
+  if (!args.skipDownload) {
+    await ensureDownloadedFile({
+      url: MOLA_IMG_URL,
+      outPath: molaImgPath,
+      force: args.force,
+      // Validate exact expected size so partial/corrupt downloads fail early.
+      expectedBytes,
+      minBytes: expectedBytes,
+      label: 'PDS IMG DEM',
+    })
+  }
+
+  const imgBuf = await fsp.readFile(molaImgPath)
   if (imgBuf.length !== expectedBytes) {
     throw new Error(`Unexpected IMG size: got ${imgBuf.length} bytes, expected ${expectedBytes}`)
   }
