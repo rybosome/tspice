@@ -1,10 +1,16 @@
 export type {
   AbCorr,
   Found,
+  FoundDouble,
+  FoundInt,
+  FoundPayload,
+  FoundString,
+  FoundValue,
   IluminResult,
   KernelData,
   KernelKind,
   KernelSource,
+  Mat6RowMajor,
   Mat3ColMajor,
   Mat3RowMajor,
   SpiceMatrix6x6,
@@ -13,16 +19,39 @@ export type {
   SpkezrResult,
   SpkposResult,
   SubPointResult,
+  Vec3,
+  Vec6,
 } from "./shared/types.js";
 
 export type { BrandMat3Options } from "./shared/mat3.js";
 export {
   assertMat3ArrayLike9,
+  isMat3ArrayLike9,
   brandMat3ColMajor,
   brandMat3RowMajor,
-  isMat3ColMajor,
-  isMat3RowMajor,
+  isBrandedMat3ColMajor,
+  isBrandedMat3RowMajor,
 } from "./shared/mat3.js";
+
+export type { BrandVecOptions } from "./shared/vec.js";
+export {
+  assertVec3ArrayLike3,
+  assertVec6ArrayLike6,
+  isVec3ArrayLike3,
+  isVec6ArrayLike6,
+  brandVec3,
+  brandVec6,
+  isBrandedVec3,
+  isBrandedVec6,
+} from "./shared/vec.js";
+
+export type { BrandMat6Options } from "./shared/mat6.js";
+export {
+  assertMat6ArrayLike36,
+  isMat6ArrayLike36,
+  brandMat6RowMajor,
+  isBrandedMat6RowMajor,
+} from "./shared/mat6.js";
 
 export * from "./domains/kernels.js";
 export * from "./domains/time.js";

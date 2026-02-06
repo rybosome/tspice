@@ -58,14 +58,21 @@ type TypedArrayView =
   | Int32Array
   | Uint32Array
   | Float32Array
-  | Float64Array
-  | BigInt64Array
-  | BigUint64Array;
+  | Float64Array;
 
 function isTypedArrayView(x: unknown): x is TypedArrayView {
-  // `ArrayBuffer.isView()` is true for TypedArrays *and* DataView.
-  // We accept TypedArray views but explicitly reject DataView.
-  return ArrayBuffer.isView(x) && !(x instanceof DataView);
+  // We intentionally only accept numeric TypedArrays (not BigInt views, not DataView).
+  return (
+    x instanceof Int8Array ||
+    x instanceof Uint8Array ||
+    x instanceof Uint8ClampedArray ||
+    x instanceof Int16Array ||
+    x instanceof Uint16Array ||
+    x instanceof Int32Array ||
+    x instanceof Uint32Array ||
+    x instanceof Float32Array ||
+    x instanceof Float64Array
+  );
 }
 
 function isLength9ArrayLike(x: unknown): x is ArrayLike<unknown> {
@@ -102,6 +109,20 @@ export function assertMat3ArrayLike9(value: unknown, options?: { readonly label?
       throw new Error(formatMat3Error(label, `index ${i} was ${String(v)}`));
     }
   }
+}
+
+/**
+* Structural check: accepts number[] and numeric TypedArrays (excludes DataView).
+*
+* This does **not** assert/require that the value is branded as a row/col-major Mat3.
+*/
+export function isMat3ArrayLike9(value: unknown): value is ArrayLike<number> {
+  if (value instanceof DataView) return false;
+  if (!isLength9ArrayLike(value)) return false;
+  for (let i = 0; i < 9; i++) {
+    if (!isFiniteNumber(value[i])) return false;
+  }
+  return true;
 }
 
 function tryDefineBrand(target: object, brand: symbol): void {
@@ -160,12 +181,18 @@ export function brandMat3ColMajor(value: unknown, options?: BrandMat3Options): M
   return maybeFreeze(arr, freeze) as unknown as Mat3ColMajor;
 }
 
-export function isMat3RowMajor(value: unknown): value is Mat3RowMajor {
+/**
+* Brand-only check: verifies that a value was produced by `brandMat3RowMajor()`.
+*/
+export function isBrandedMat3RowMajor(value: unknown): value is Mat3RowMajor {
   if (!isLength9ArrayLike(value)) return false;
   return Boolean((value as unknown as Record<symbol, unknown>)[MAT3_ROW_MAJOR_BRAND]);
 }
 
-export function isMat3ColMajor(value: unknown): value is Mat3ColMajor {
+/**
+* Brand-only check: verifies that a value was produced by `brandMat3ColMajor()`.
+*/
+export function isBrandedMat3ColMajor(value: unknown): value is Mat3ColMajor {
   if (!isLength9ArrayLike(value)) return false;
   return Boolean((value as unknown as Record<symbol, unknown>)[MAT3_COL_MAJOR_BRAND]);
 }
