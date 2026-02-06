@@ -955,6 +955,76 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       return 0;
     },
 
+    // -- Cells + windows -----------------------------------------------------
+    //
+    // The fake backend is intentionally minimal and does not attempt to
+    // simulate CSPICE cell/window semantics.
+
+    newIntCell: (_size) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    newDoubleCell: (_size) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    newCharCell: (_size, _length) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    newWindow: (_maxIntervals) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    freeCell: (_cell) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    freeWindow: (_window) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+
+    ssize: (_size, _cell) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    scard: (_card, _cell) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    card: (_cell) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    size: (_cell) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    valid: (_size, _n, _cell) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    insrti: (_item, _cell) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    insrtd: (_item, _cell) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    insrtc: (_item, _cell) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    cellGeti: (_cell, _index) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    cellGetd: (_cell, _index) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    cellGetc: (_cell, _index) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    wninsd: (_left, _right, _window) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    wncard: (_window) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    wnfetd: (_window, _index) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+    wnvald: (_size, _n, _window) => {
+      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

@@ -386,6 +386,70 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  // Cells + windows
+  _tspice_new_int_cell(size: number, outCellPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_new_double_cell(size: number, outCellPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_new_char_cell(
+    size: number,
+    length: number,
+    outCellPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_new_window(
+    maxIntervals: number,
+    outWindowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_free_cell(cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_free_window(window: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ssize(size: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_scard(card: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_card(cell: number, outCardPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_size(cell: number, outSizePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_valid(size: number, n: number, cell: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_insrti(item: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_insrtd(item: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_insrtc(itemPtr: number, cell: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_cell_geti(
+    cell: number,
+    index: number,
+    outItemPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cell_getd(
+    cell: number,
+    index: number,
+    outItemPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cell_getc(
+    cell: number,
+    index: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_wninsd(left: number, right: number, window: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_wncard(window: number, outCardPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_wnfetd(
+    window: number,
+    index: number,
+    outLeftPtr: number,
+    outRightPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnvald(size: number, n: number, window: number, errPtr: number, errMaxBytes: number): number;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   FS: any;
 };
@@ -437,17 +501,38 @@ export function assertEmscriptenModule(module: unknown): asserts module is Emscr
     typeof m._tspice_vdot !== "function" ||
     typeof m._tspice_vcrss !== "function" ||
     typeof m._tspice_mxv !== "function" ||
-    typeof m._tspice_mtxv !== "function"
-    || typeof m._tspice_mxm !== "function"
-    || typeof m._tspice_vadd !== "function"
-    || typeof m._tspice_vsub !== "function"
-    || typeof m._tspice_vminus !== "function"
-    || typeof m._tspice_vscl !== "function"
-    || typeof m._tspice_rotate !== "function"
-    || typeof m._tspice_rotmat !== "function"
-    || typeof m._tspice_axisar !== "function"
-    || typeof m._tspice_georec !== "function"
-    || typeof m._tspice_recgeo !== "function"
+    typeof m._tspice_mtxv !== "function" ||
+    typeof m._tspice_mxm !== "function" ||
+    typeof m._tspice_vadd !== "function" ||
+    typeof m._tspice_vsub !== "function" ||
+    typeof m._tspice_vminus !== "function" ||
+    typeof m._tspice_vscl !== "function" ||
+    typeof m._tspice_rotate !== "function" ||
+    typeof m._tspice_rotmat !== "function" ||
+    typeof m._tspice_axisar !== "function" ||
+    typeof m._tspice_georec !== "function" ||
+    typeof m._tspice_recgeo !== "function" ||
+    typeof m._tspice_new_int_cell !== "function" ||
+    typeof m._tspice_new_double_cell !== "function" ||
+    typeof m._tspice_new_char_cell !== "function" ||
+    typeof m._tspice_new_window !== "function" ||
+    typeof m._tspice_free_cell !== "function" ||
+    typeof m._tspice_free_window !== "function" ||
+    typeof m._tspice_ssize !== "function" ||
+    typeof m._tspice_scard !== "function" ||
+    typeof m._tspice_card !== "function" ||
+    typeof m._tspice_size !== "function" ||
+    typeof m._tspice_valid !== "function" ||
+    typeof m._tspice_insrti !== "function" ||
+    typeof m._tspice_insrtd !== "function" ||
+    typeof m._tspice_insrtc !== "function" ||
+    typeof m._tspice_cell_geti !== "function" ||
+    typeof m._tspice_cell_getd !== "function" ||
+    typeof m._tspice_cell_getc !== "function" ||
+    typeof m._tspice_wninsd !== "function" ||
+    typeof m._tspice_wncard !== "function" ||
+    typeof m._tspice_wnfetd !== "function" ||
+    typeof m._tspice_wnvald !== "function"
   ) {
     throw new Error("WASM module is missing expected exports");
   }

@@ -1,6 +1,8 @@
 #ifndef TSPICE_BACKEND_SHIM_H
 #define TSPICE_BACKEND_SHIM_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -436,6 +438,61 @@ int tspice_ckgpav(
     int *outFound,
     char *err,
     int errMaxBytes);
+
+// --- Cells + windows --------------------------------------------------------
+
+// Creation functions allocate on the heap and return an opaque pointer value.
+//
+// For the Node backend, these pointers are stored in a handle table so JS sees
+// stable opaque integers. For the WASM backend, the pointer value itself is
+// used as the JS-visible handle.
+
+int tspice_new_int_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes);
+int tspice_new_double_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes);
+int tspice_new_char_cell(
+    int size,
+    int length,
+    uintptr_t *outCell,
+    char *err,
+    int errMaxBytes);
+
+// `maxIntervals` is the number of intervals the window can hold. The underlying
+// DP cell size is `2*maxIntervals` endpoints.
+int tspice_new_window(int maxIntervals, uintptr_t *outWindow, char *err, int errMaxBytes);
+
+int tspice_free_cell(uintptr_t cell, char *err, int errMaxBytes);
+int tspice_free_window(uintptr_t window, char *err, int errMaxBytes);
+
+int tspice_ssize(int size, uintptr_t cell, char *err, int errMaxBytes);
+int tspice_scard(int card, uintptr_t cell, char *err, int errMaxBytes);
+int tspice_card(uintptr_t cell, int *outCard, char *err, int errMaxBytes);
+int tspice_size(uintptr_t cell, int *outSize, char *err, int errMaxBytes);
+int tspice_valid(int size, int n, uintptr_t cell, char *err, int errMaxBytes);
+
+int tspice_insrti(int item, uintptr_t cell, char *err, int errMaxBytes);
+int tspice_insrtd(double item, uintptr_t cell, char *err, int errMaxBytes);
+int tspice_insrtc(const char *item, uintptr_t cell, char *err, int errMaxBytes);
+
+int tspice_cell_geti(uintptr_t cell, int index, int *outItem, char *err, int errMaxBytes);
+int tspice_cell_getd(uintptr_t cell, int index, double *outItem, char *err, int errMaxBytes);
+int tspice_cell_getc(
+    uintptr_t cell,
+    int index,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_wninsd(double left, double right, uintptr_t window, char *err, int errMaxBytes);
+int tspice_wncard(uintptr_t window, int *outCard, char *err, int errMaxBytes);
+int tspice_wnfetd(
+    uintptr_t window,
+    int index,
+    double *outLeft,
+    double *outRight,
+    char *err,
+    int errMaxBytes);
+int tspice_wnvald(int size, int n, uintptr_t window, char *err, int errMaxBytes);
 
 #ifdef __cplusplus
 }
