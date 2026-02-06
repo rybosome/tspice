@@ -18,6 +18,12 @@ static char g_last_short[1841];
 static char g_last_long[1841];
 static char g_last_trace[1841];
 
+static void tspice_clear_last_error_buffers(void) {
+  g_last_short[0] = '\0';
+  g_last_long[0] = '\0';
+  g_last_trace[0] = '\0';
+}
+
 static void tspice_copy_string(char *dst, size_t dstBytes, const char *src) {
   if (dst == NULL || dstBytes == 0) {
     return;
@@ -42,6 +48,10 @@ void tspice_init_cspice_error_handling_once(void) {
   if (!atomic_compare_exchange_strong(&g_initialized, &expected, true)) {
     return;
   }
+
+  // Make sure consumers never see stale structured fields before the first
+  // CSPICE error is captured.
+  tspice_clear_last_error_buffers();
 
   // Ensure SPICE routines return control to us so we can surface rich JS errors.
   erract_c("SET", 0, "RETURN");
@@ -164,6 +174,13 @@ int tspice_reset(char *err, int errMaxBytes) {
   }
 
   reset_c();
+
+  // `reset_c()` clears the CSPICE error status, but does not clear our
+  // process-global structured error buffers.
+  //
+  // Without this, later non-CSPICE errors can incorrectly pick up stale
+  // `spiceShort` / `spiceLong` / `spiceTrace` fields.
+  tspice_clear_last_error_buffers();
   return 0;
 }
 
