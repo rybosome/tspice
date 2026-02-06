@@ -62,6 +62,13 @@ export function installSceneInteractions(args: {
   const wheelZoomScale = 0.001
   const focusTweenMs = 320
 
+  // Disambiguate UI selection ids coming from non-registry meshes.
+  //
+  // (Registry entries already have stable `BodyId`s. For other pickables we
+  // still want a stable string key, but we should avoid accidental collisions
+  // with numeric registry resolve-keys like '3' / '399'.)
+  const UI_SELECTION_PREFIX = 'mesh:'
+
   let selectedBodyId: string | undefined
 
   const resolveMeshBody = (mesh: THREE.Mesh) => {
@@ -78,7 +85,7 @@ export function installSceneInteractions(args: {
     // but keep a stable string id for UI/selection bookkeeping.
     const registry = resolveBodyRegistryEntry(raw)
     const registryId = registry?.id
-    const selectedId = registryId ?? raw
+    const selectedId = registryId ?? `${UI_SELECTION_PREFIX}${raw}`
     // IMPORTANT: don't pass arbitrary strings to SPICE. Only update focus-body
     // when we can resolve via the registry.
     const focusBody = registry?.body

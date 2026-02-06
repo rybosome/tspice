@@ -361,17 +361,30 @@ const BODY_REGISTRY_BY_BODY_REF_KEY = new Map<string, BodyRegistryEntry>()
  */
 const BODY_REGISTRY_BY_RESOLVE_KEY = new Map<string, BodyRegistryEntry>()
 
-const NUMERIC_RESOLVE_KEY_RE = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?$/
+// Only treat *base-10 integer* strings as numeric keys.
+//
+// NOTE: This intentionally does NOT accept decimals / exponent notation.
+const INTEGER_RESOLVE_KEY_RE = /^[+-]?\d+$/
 
 const canonicalizeResolveKey = (raw: string) => {
   const trimmed = raw.trim()
   if (!trimmed) return ''
 
-  // Treat numeric strings as base-10 (optionally scientific notation) and
-  // normalize to JS's canonical string form (e.g. '003' -> '3').
-  if (NUMERIC_RESOLVE_KEY_RE.test(trimmed)) {
-    const n = Number(trimmed)
-    if (Number.isFinite(n)) return String(n)
+  // Treat base-10 integer strings as numeric ids and normalize without using
+  // `Number()` (avoid accepting exponent/decimal forms; preserve sign).
+  //
+  // Examples:
+  // - '003'   -> '3'
+  // - '+003'  -> '+3'
+  // - '-000'  -> '-0'
+  if (INTEGER_RESOLVE_KEY_RE.test(trimmed)) {
+    const sign = trimmed[0] === '+' || trimmed[0] === '-' ? trimmed[0] : ''
+    let digits = sign ? trimmed.slice(1) : trimmed
+
+    digits = digits.replace(/^0+/, '')
+    if (!digits) digits = '0'
+
+    return `${sign}${digits}`
   }
 
   // Body ids / names are treated as case-insensitive.
