@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import type { CameraController } from '../controls/CameraController.js'
 import { pickFirstIntersection } from './pick.js'
-import { BODY_REGISTRY, type BodyId } from '../scene/BodyRegistry.js'
+import { resolveBodyRegistryEntry, type BodyId } from '../scene/BodyRegistry.js'
 
 export type SelectionOverlayTarget = {
   setSelectedTarget: (mesh: THREE.Object3D | undefined) => void
@@ -69,7 +69,7 @@ export function installSceneInteractions(args: {
 
     // Prefer the registry's `body` (numeric SPICE target, often barycenter ids like 5/6/7) for focusing,
     // but keep a stable string id for UI/selection bookkeeping.
-    const registry = BODY_REGISTRY.find((r) => String(r.id) === raw || String(r.body) === raw)
+    const registry = resolveBodyRegistryEntry(raw)
     const selectedId = registry?.id ?? raw
     const focusBody = registry ? String(registry.body) : raw
 

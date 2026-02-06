@@ -12,7 +12,13 @@ import {
 } from '../../spice/SpiceClient.js'
 import { createBodyMesh } from '../BodyMesh.js'
 import { SUN_BLOOM_LAYER } from '../../renderLayers.js'
-import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleSceneBodies, type BodyId } from '../BodyRegistry.js'
+import {
+  getBodyRegistryEntry,
+  getBodyRegistryEntryByBodyRef,
+  resolveBodyRegistryEntry,
+  listDefaultVisibleSceneBodies,
+  type BodyId,
+} from '../BodyRegistry.js'
 import { computeBodyRadiusWorld } from '../bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from '../FrameAxes.js'
 import { OrbitPaths } from '../orbits/OrbitPaths.js'
@@ -216,7 +222,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   const bodies = sceneModel.bodies.map((body) => {
-    const registry = BODY_REGISTRY.find((r) => String(r.body) === String(body.body))
+    const registry = getBodyRegistryEntryByBodyRef(body.body)
     const bodyId = registry?.id
 
     const { mesh, dispose, ready, update } = createBodyMesh({
@@ -257,11 +263,6 @@ export async function initSpiceSceneRuntime(args: {
       ready,
     }
   })
-
-  const meshByBodyId = new Map<string, THREE.Object3D>()
-  for (const b of bodies) {
-    meshByBodyId.set(String(b.mesh.userData.bodyId), b.mesh)
-  }
 
   const sunMesh = bodies.find((b) => b.bodyId === SUN_BODY_ID)?.mesh
   const sunMaterial = (() => {
@@ -326,7 +327,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   const labelBodies: LabelBody[] = bodies.map((b) => {
-    const registry = BODY_REGISTRY.find((r) => String(r.body) === String(b.body))
+    const registry = getBodyRegistryEntryByBodyRef(b.body)
     return {
       id: (registry?.id ?? String(b.body)) as BodyId,
       label: registry?.style.label ?? String(b.body),
@@ -638,7 +639,7 @@ export async function initSpiceSceneRuntime(args: {
     // Record label overlay inputs so we can update it on camera movement.
     latestLabelOverlayOptions = {
       bodies: labelBodies,
-      focusBodyId: BODY_REGISTRY.find((r) => String(r.body) === String(next.focusBody))?.id as BodyId | undefined,
+      focusBodyId: resolveBodyRegistryEntry(String(next.focusBody))?.id as BodyId | undefined,
       selectedBodyId: selectedBodyIdRef.current,
       labelsEnabled: next.labelsEnabled,
       occlusionEnabled: next.labelOcclusionEnabled,

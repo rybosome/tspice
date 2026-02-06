@@ -204,6 +204,15 @@ export function createSelectionOverlay(): SelectionOverlay {
     return material
   }
 
+  // We intentionally create *multiple* LineMaterial instances.
+  //
+  // Each axis is split into +/- halves so we can attenuate the far-side segment
+  // based on camera direction (e.g. fade the back-facing half of the axis).
+  // `LineMaterial.opacity` is a single scalar, so we need distinct materials per
+  // half in order to set independent opacities every frame.
+  //
+  // Additionally, the equatorial ring uses separate near/far materials to avoid
+  // over-brightening the far-side arc.
   const zPosMaterial = makeMaterial({
     color: tuning.colors.spinAxis,
     lineWidthPx: tuning.zLineWidthPx,
@@ -339,6 +348,17 @@ export function createSelectionOverlay(): SelectionOverlay {
   // Keep the last known pose/sizing so we can fade out cleanly.
   let lastBodyRadiusWorld = 1
   let lastDistanceWorld = 1
+
+  // Cache sizing inputs so we don't redo math + object graph writes when the
+  // camera/viewport hasn't changed materially.
+  let lastSizing:
+    | {
+        bodyRadiusWorld: number
+        distanceWorld: number
+        viewportHeightPx: number
+        fov: number
+      }
+    | undefined
 
   const anim: Record<ElementKey, ElementAnim> = {
     z: { value: 0, startValue: 0, targetValue: 0, startMs: 0, durationMs: 1 },
@@ -614,7 +634,34 @@ export function createSelectionOverlay(): SelectionOverlay {
       return
     }
 
-    applySizing({ bodyRadiusWorld: lastBodyRadiusWorld, camera, viewportHeightPx, distanceWorld: lastDistanceWorld })
+    const nextSizing = {
+      bodyRadiusWorld: lastBodyRadiusWorld,
+      distanceWorld: lastDistanceWorld,
+      viewportHeightPx,
+      fov: camera.fov,
+    }
+
+    const nearlyEqual = (a: number, b: number) => {
+      const eps = 1e-4
+      return Math.abs(a - b) <= eps * Math.max(1, Math.abs(a), Math.abs(b))
+    }
+
+    const sizingUnchanged =
+      lastSizing &&
+      nearlyEqual(lastSizing.bodyRadiusWorld, nextSizing.bodyRadiusWorld) &&
+      nearlyEqual(lastSizing.distanceWorld, nextSizing.distanceWorld) &&
+      lastSizing.viewportHeightPx === nextSizing.viewportHeightPx &&
+      lastSizing.fov === nextSizing.fov
+
+    if (!sizingUnchanged) {
+      lastSizing = nextSizing
+      applySizing({
+        bodyRadiusWorld: lastBodyRadiusWorld,
+        camera,
+        viewportHeightPx,
+        distanceWorld: lastDistanceWorld,
+      })
+    }
 
     // Keep animatingUntilMs conservative while there is any active tween.
     if (aZ || aRing || aX || aY) {
@@ -657,6 +704,23 @@ export function createSelectionOverlay(): SelectionOverlay {
   }
 
   const dispose = () => {
+    // Teardown hardening: ensure callers can't accidentally keep "ghost" overlay
+    // state around after disposing the object.
+    selectedTarget = undefined
+    hoveredTarget = undefined
+    activeMode = 'none'
+    activeTarget = undefined
+    lastZoomTier = undefined
+    lastSizing = undefined
+
+    anim.z.value = 0
+    anim.ring.value = 0
+    anim.x.value = 0
+    anim.y.value = 0
+    animatingUntilMs = 0
+
+    object.visible = false
+
     unitSegGeom.dispose()
     ringNearGeom.dispose()
     ringFarGeom.dispose()

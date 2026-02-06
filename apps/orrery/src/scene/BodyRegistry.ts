@@ -336,12 +336,51 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
   },
 ] as const
 
+// ---------------------------------------------------------------------------
+// Registry indexes
+// ---------------------------------------------------------------------------
+
+/** Fast lookup by stable `BodyId`. */
+const BODY_REGISTRY_BY_ID = new Map<BodyId, BodyRegistryEntry>()
+
+/**
+* Fast lookup by the SPICE target passed to `SpiceClient.getBodyState`.
+*
+* NOTE: this key is stringified because `BodyRef` can be a number or a string,
+* and consumers often carry it around as a string in `userData`.
+*/
+const BODY_REGISTRY_BY_BODY_REF_KEY = new Map<string, BodyRegistryEntry>()
+
+for (const entry of BODY_REGISTRY) {
+  BODY_REGISTRY_BY_ID.set(entry.id, entry)
+
+  const key = String(entry.body)
+  // Defensive: preserve the first entry if a later registry item accidentally
+  // duplicates a `body` ref.
+  if (!BODY_REGISTRY_BY_BODY_REF_KEY.has(key)) {
+    BODY_REGISTRY_BY_BODY_REF_KEY.set(key, entry)
+  }
+}
+
 export function getBodyRegistryEntry(id: BodyId): BodyRegistryEntry {
-  const found = BODY_REGISTRY.find((b) => b.id === id)
+  const found = BODY_REGISTRY_BY_ID.get(id)
   if (!found) {
     throw new Error(`BodyRegistry: missing registry entry for ${JSON.stringify(id)}`)
   }
   return found
+}
+
+export function getBodyRegistryEntryByBodyRef(body: BodyRef): BodyRegistryEntry | undefined {
+  return BODY_REGISTRY_BY_BODY_REF_KEY.get(String(body))
+}
+
+/**
+* Best-effort resolver for strings coming from URL params / `mesh.userData`.
+*
+* `raw` may be a `BodyId` (e.g. 'EARTH') or a SPICE `BodyRef` (e.g. '3').
+*/
+export function resolveBodyRegistryEntry(raw: string): BodyRegistryEntry | undefined {
+  return (BODY_REGISTRY_BY_ID.get(raw as BodyId) ?? BODY_REGISTRY_BY_BODY_REF_KEY.get(raw))
 }
 
 export function listDefaultVisibleBodies(): readonly BodyRegistryEntry[] {
