@@ -1178,9 +1178,37 @@ export function SceneCanvas() {
               await nextAnimationFrame()
             }
 
-            // Block until all pending WebGL commands complete (helps stabilize
-            // golden screenshot capture timing).
-            three.renderer.getContext().finish()
+            // Best-effort bounded GPU sync to stabilize golden screenshot capture timing.
+            // Avoid `gl.finish()` here; it can hang indefinitely in some environments.
+            const gl = three.renderer.getContext()
+
+            const isWebGL2 = typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext
+            if (isWebGL2) {
+              const gl2 = gl as WebGL2RenderingContext
+              const sync = gl2.fenceSync(gl2.SYNC_GPU_COMMANDS_COMPLETE, 0)
+              gl2.flush()
+
+              if (sync) {
+                const startMs = performance.now()
+                const MAX_FRAMES = 30
+                const MAX_MS = 500
+
+                for (let frames = 0; frames < MAX_FRAMES; frames++) {
+                  const status = gl2.clientWaitSync(sync, 0, 0)
+                  if (status === gl2.ALREADY_SIGNALED || status === gl2.CONDITION_SATISFIED) break
+
+                  if (performance.now() - startMs > MAX_MS) break
+                  await nextAnimationFrame()
+                }
+
+                gl2.deleteSync(sync)
+              }
+            } else {
+              // WebGL1 fallback: flush and yield a couple frames to let uploads settle.
+              gl.flush()
+              await nextAnimationFrame()
+              await nextAnimationFrame()
+            }
           }
 
           const samplePerfCounters = () => {

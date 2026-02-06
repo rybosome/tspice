@@ -202,6 +202,13 @@ function uint8FromUnit(v) {
   return Math.round(clamp(v * 0.5 + 0.5, 0, 1) * 255)
 }
 
+function srgbToLinear01(c) {
+  // IEC 61966-2-1:1999 sRGB transfer function.
+  // Input/output are in [0, 1].
+  if (c <= 0.04045) return c / 12.92
+  return Math.pow((c + 0.055) / 1.055, 2.4)
+}
+
 function percentileSample(values, p, maxSamples = 120_000) {
   // Approximate percentile via uniform sampling to avoid sorting huge arrays.
   const step = Math.max(1, Math.floor(values.length / maxSamples))
@@ -329,13 +336,19 @@ async function main() {
   const albedoH = albedoDecoded.height
   const albedoData = albedoDecoded.data
 
-  // Precompute source luminance (linear combo; texture is effectively sRGB but this is a heuristic proxy).
+  // Precompute source luminance in linear space (albedo JPEG is sRGB).
   const albedoLumaSrc = new Float32Array(albedoW * albedoH)
   for (let i = 0; i < albedoW * albedoH; i++) {
-    const r = albedoData[i * 4 + 0]
-    const g = albedoData[i * 4 + 1]
-    const b = albedoData[i * 4 + 2]
-    albedoLumaSrc[i] = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
+    const r01 = albedoData[i * 4 + 0] / 255
+    const g01 = albedoData[i * 4 + 1] / 255
+    const b01 = albedoData[i * 4 + 2] / 255
+
+    const r = srgbToLinear01(r01)
+    const g = srgbToLinear01(g01)
+    const b = srgbToLinear01(b01)
+
+    // Relative luminance (Rec. 709) in linear space.
+    albedoLumaSrc[i] = 0.2126 * r + 0.7152 * g + 0.0722 * b
   }
 
   console.log(`Resampling albedo luminance -> ${TARGET_W}×${TARGET_H}...`)
