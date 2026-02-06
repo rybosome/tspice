@@ -37,4 +37,10 @@ describe("SPICE errors (node backend)", () => {
     // bodn2c is a Found-style routine: unknown names are not exceptional.
     expect(backend.bodn2c("NOT_A_BODY")).toEqual({ found: false });
   });
+
+  itNative("rejects invalid getmsg(which) selectors at the boundary", () => {
+    const backend = createNodeBackend();
+    expect(() => backend.getmsg("NOPE" as never)).toThrow(/getmsg\(which\)/i);
+    expect(() => backend.getmsg("NOPE" as never)).toThrow(/SHORT|LONG|EXPLAIN/);
+  });
 });

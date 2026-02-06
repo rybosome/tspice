@@ -34,4 +34,9 @@ describe("SPICE errors (wasm backend)", () => {
   it("preserves Found-style {found:false} behavior", () => {
     expect(backend.bodn2c("NOT_A_BODY")).toEqual({ found: false });
   });
+
+  it("rejects invalid getmsg(which) selectors at the boundary", () => {
+    expect(() => backend.getmsg("NOPE" as never)).toThrow(/getmsg\(which\)/i);
+    expect(() => backend.getmsg("NOPE" as never)).toThrow(/SHORT|LONG|EXPLAIN/);
+  });
 });

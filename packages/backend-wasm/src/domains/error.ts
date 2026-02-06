@@ -1,4 +1,4 @@
-import type { ErrorApi } from "@rybosome/tspice-backend-contract";
+import { assertGetmsgWhich, type ErrorApi } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -31,6 +31,7 @@ export function createErrorApi(module: EmscriptenModule): ErrorApi {
     },
 
     getmsg: (which) => {
+      assertGetmsgWhich(which);
       const errMaxBytes = WASM_ERR_MAX_BYTES;
       const outMaxBytes = 2048;
       const whichPtr = writeUtf8CString(module, which);

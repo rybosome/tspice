@@ -85,4 +85,34 @@ describe("@rybosome/tspice-backend-fake", () => {
     approx(out.lat, Math.PI / 2);
     expect(Number.isFinite(out.alt)).toBe(true);
   });
+
+  it("matches CSPICE-style error message conventions (setmsg + sigerr)", () => {
+    const b = createFakeBackend();
+
+    b.setmsg("something went wrong");
+    b.sigerr("SPICE(FAKE)");
+
+    expect(b.failed()).toBe(true);
+    expect(b.getmsg("SHORT")).toBe("SPICE(FAKE)");
+    expect(b.getmsg("LONG")).toBe("something went wrong");
+    expect(b.getmsg("EXPLAIN")).toContain("something went wrong");
+
+    // `sigerr(short)` should not overwrite the long message.
+    expect(b.getmsg("LONG")).toBe("something went wrong");
+  });
+
+  it("includes trace info in EXPLAIN when available", () => {
+    const b = createFakeBackend();
+    b.chkin("A");
+    b.chkin("B");
+    b.setmsg("long message");
+    b.sigerr("SPICE(TRACE)");
+    expect(b.getmsg("EXPLAIN")).toContain("Trace:");
+    expect(b.getmsg("EXPLAIN")).toContain("A -> B");
+  });
+
+  it("rejects invalid getmsg(which) selectors", () => {
+    const b = createFakeBackend();
+    expect(() => b.getmsg("NOPE" as never)).toThrow(/getmsg\(which\)/i);
+  });
 });

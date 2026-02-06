@@ -14,7 +14,7 @@ import type {
   SpkezrResult,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
-import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import { assertGetmsgWhich, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 
 /**
  * A deterministic, pure-TS "toy" backend.
@@ -618,7 +618,6 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   let spiceFailed = false;
   let spiceShort = "";
   let spiceLong = "";
-  let spiceExplain = "";
   const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
 
@@ -637,14 +636,23 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       spiceFailed = false;
       spiceShort = "";
       spiceLong = "";
-      spiceExplain = "";
       traceStack.length = 0;
     },
     getmsg: (which) => {
+      assertGetmsgWhich(which);
       if (which === "SHORT") return spiceShort;
       if (which === "LONG") return spiceLong;
-      if (which === "EXPLAIN") return spiceExplain;
-      return "";
+
+      // EXPLAIN
+      // CSPICE convention is typically:
+      //   setmsg(long)
+      //   sigerr(short)
+      // so we avoid overwriting the long message when signaling.
+      const trace = traceStack.length > 0 ? traceStack.join(" -> ") : "";
+      if (!spiceLong && !trace) return "";
+      if (spiceLong && !trace) return spiceLong;
+      if (!spiceLong && trace) return `Trace: ${trace}`;
+      return `${spiceLong}\n\nTrace: ${trace}`;
     },
     setmsg: (message: string) => {
       spiceLong = message;
@@ -652,7 +660,6 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     sigerr: (short: string) => {
       spiceFailed = true;
       spiceShort = short;
-      spiceExplain = `Fake backend signaled error: ${short}`;
     },
     chkin: (name: string) => {
       traceStack.push(name);

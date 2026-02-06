@@ -1,4 +1,4 @@
-import type { ErrorApi } from "@rybosome/tspice-backend-contract";
+import { assertGetmsgWhich, type ErrorApi } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
@@ -16,6 +16,7 @@ export function createErrorApi(native: NativeAddon): ErrorApi {
     },
 
     getmsg: (which) => {
+      assertGetmsgWhich(which);
       const out = native.getmsg(which);
       invariant(typeof out === "string", "Expected native backend getmsg() to return a string");
       return out;
