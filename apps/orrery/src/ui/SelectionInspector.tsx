@@ -236,10 +236,7 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
     [observer, observerRegistryEntry],
   )
 
-  const orbitalPeriodSec = useMemo(
-    () => getApproxOrbitalPeriodSec(selectedBodyForSpice),
-    [selectedBodyForSpice],
-  )
+  const orbitalPeriodSec = useMemo(() => getApproxOrbitalPeriodSec(selectedBodyForSpice), [selectedBodyForSpice])
 
   const bodyInfo = useMemo(() => {
     try {
@@ -444,15 +441,21 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
                     <div className="selectionInspectorDivider" />
                     <div className="selectionInspectorRow">
                       <span className="selectionInspectorLabel">Velocity (X):</span>
-                      <span className="selectionInspectorValue">{formatVelocity(bodyInfo.velocityRelToFocusVector[0])}</span>
+                      <span className="selectionInspectorValue">
+                        {formatVelocity(bodyInfo.velocityRelToFocusVector[0])}
+                      </span>
                     </div>
                     <div className="selectionInspectorRow">
                       <span className="selectionInspectorLabel">Velocity (Y):</span>
-                      <span className="selectionInspectorValue">{formatVelocity(bodyInfo.velocityRelToFocusVector[1])}</span>
+                      <span className="selectionInspectorValue">
+                        {formatVelocity(bodyInfo.velocityRelToFocusVector[1])}
+                      </span>
                     </div>
                     <div className="selectionInspectorRow">
                       <span className="selectionInspectorLabel">Velocity (Z):</span>
-                      <span className="selectionInspectorValue">{formatVelocity(bodyInfo.velocityRelToFocusVector[2])}</span>
+                      <span className="selectionInspectorValue">
+                        {formatVelocity(bodyInfo.velocityRelToFocusVector[2])}
+                      </span>
                     </div>
                   </>
                 )}
