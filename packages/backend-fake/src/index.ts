@@ -621,6 +621,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
 
+  const spiceCellUnsupported =
+    "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
+
   const getKernelsOfKind = (kind: KernelKind): readonly KernelRecord[] => {
     if (kind === "ALL") return kernels;
     return kernels.filter((k) => k.kind === kind);
@@ -961,68 +964,68 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     // simulate CSPICE cell/window semantics.
 
     newIntCell: (_size) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     newDoubleCell: (_size) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     newCharCell: (_size, _length) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     newWindow: (_maxIntervals) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     freeCell: (_cell) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     freeWindow: (_window) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
 
     ssize: (_size, _cell) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     scard: (_card, _cell) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     card: (_cell) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     size: (_cell) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     valid: (_size, _n, _cell) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     insrti: (_item, _cell) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     insrtd: (_item, _cell) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     insrtc: (_item, _cell) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     cellGeti: (_cell, _index) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     cellGetd: (_cell, _index) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     cellGetc: (_cell, _index) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     wninsd: (_left, _right, _window) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     wncard: (_window) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     wnfetd: (_window, _index) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
     wnvald: (_size, _n, _window) => {
-      throw new Error("Fake backend: SpiceCell/SpiceWindow is not implemented");
+      throw new Error(spiceCellUnsupported);
     },
 
     reclat: (rect) => {

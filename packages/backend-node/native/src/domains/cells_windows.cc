@@ -14,12 +14,17 @@ using tspice_napi::ThrowSpiceError;
 
 namespace {
 
-std::mutex g_cell_handles_mutex;
+// IMPORTANT:
+// `g_cell_handles` and `g_next_cell_handle` are protected by
+// `tspice_backend_node::g_cspice_mutex` and MUST only be accessed while that
+// mutex is held.
+//
+// Rationale: all CSPICE entrypoints already serialize on `g_cspice_mutex`. Using
+// a second mutex for the handle table introduces lock-order / deadlock risk.
 std::unordered_map<uint32_t, uintptr_t> g_cell_handles;
 uint32_t g_next_cell_handle = 1;
 
 uint32_t AddCellHandle(uintptr_t ptr) {
-  std::lock_guard<std::mutex> lock(g_cell_handles_mutex);
   uint32_t h = g_next_cell_handle++;
   if (h == 0) {
     h = g_next_cell_handle++;
@@ -29,7 +34,6 @@ uint32_t AddCellHandle(uintptr_t ptr) {
 }
 
 bool TryGetCellPtr(uint32_t handle, uintptr_t* outPtr) {
-  std::lock_guard<std::mutex> lock(g_cell_handles_mutex);
   const auto it = g_cell_handles.find(handle);
   if (it == g_cell_handles.end()) {
     return false;
@@ -41,7 +45,6 @@ bool TryGetCellPtr(uint32_t handle, uintptr_t* outPtr) {
 }
 
 bool RemoveCellPtr(uint32_t handle, uintptr_t* outPtr) {
-  std::lock_guard<std::mutex> lock(g_cell_handles_mutex);
   const auto it = g_cell_handles.find(handle);
   if (it == g_cell_handles.end()) {
     return false;
