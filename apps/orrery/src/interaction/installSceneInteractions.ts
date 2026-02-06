@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import type { CameraController } from '../controls/CameraController.js'
 import { pickFirstIntersection } from './pick.js'
 import { resolveBodyRegistryEntry, type BodyId } from '../scene/BodyRegistry.js'
+import type { BodyRef } from '../spice/SpiceClient.js'
 
 export type SelectionOverlayTarget = {
   setSelectedTarget: (mesh: THREE.Object3D | undefined) => void
@@ -25,7 +26,7 @@ export function installSceneInteractions(args: {
 
   computeFocusRadius: (radiusWorld: number) => number
 
-  setFocusBody: (body: string) => void
+  setFocusBody: (body: BodyRef) => void
   setSelectedBody: (body: string | null) => void
   selectedBodyIdRef: { current: BodyId | undefined }
 
@@ -64,14 +65,16 @@ export function installSceneInteractions(args: {
   let selectedBodyId: string | undefined
 
   const resolveMeshBody = (mesh: THREE.Mesh) => {
-    const raw = String(mesh.userData.bodyId ?? '') || undefined
-    if (!raw) return { selectedId: undefined as string | undefined, focusBody: undefined as string | undefined }
+    const raw = String(mesh.userData.bodyId ?? '').trim() || undefined
+    if (!raw) return { selectedId: undefined as string | undefined, focusBody: undefined as BodyRef | undefined }
 
     // Prefer the registry's `body` (numeric SPICE target, often barycenter ids like 5/6/7) for focusing,
     // but keep a stable string id for UI/selection bookkeeping.
     const registry = resolveBodyRegistryEntry(raw)
     const selectedId = registry?.id ?? raw
-    const focusBody = registry ? String(registry.body) : raw
+    // IMPORTANT: don't pass arbitrary strings to SPICE. Only update focus-body
+    // when we can resolve via the registry.
+    const focusBody = registry?.body
 
     return { selectedId, focusBody }
   }

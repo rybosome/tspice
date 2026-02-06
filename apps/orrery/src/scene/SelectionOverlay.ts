@@ -165,13 +165,12 @@ function evalAnim(anim: ElementAnim, nowMs: number) {
   // Support delayed tracks (where `startMs` may be in the future).
   // During the delay, preserve the current value so we don't snap back to
   // `startValue` every frame.
-  if (nowMs < anim.startMs) return true
+  if (nowMs < anim.startMs) return
 
   const t = (nowMs - anim.startMs) / anim.durationMs
   const p = THREE.MathUtils.clamp(t, 0, 1)
   const eased = easeOutCubic(p)
   anim.value = THREE.MathUtils.lerp(anim.startValue, anim.targetValue, eased)
-  return p < 1
 }
 
 function maxComponent(v: THREE.Vector3) {
@@ -367,7 +366,9 @@ export function createSelectionOverlay(): SelectionOverlay {
     y: { value: 0, startValue: 0, targetValue: 0, startMs: 0, durationMs: 1 },
   }
 
-  let animatingUntilMs = 0
+  // Used to force at least one RAF cycle after hover/selection changes so we
+  // can schedule tweens inside `syncToCamera`.
+  let needsSync = false
 
   const getActive = () => {
     if (selectedTarget) return { mode: 'selected' as const, target: selectedTarget }
@@ -426,13 +427,6 @@ export function createSelectionOverlay(): SelectionOverlay {
       schedule(anim.x, nowMs, desired.x, fadeMs)
       schedule(anim.y, nowMs, desired.y, fadeMs)
     }
-
-    animatingUntilMs = Math.max(
-      anim.z.startMs + anim.z.durationMs,
-      anim.ring.startMs + anim.ring.durationMs,
-      anim.x.startMs + anim.x.durationMs,
-      anim.y.startMs + anim.y.durationMs,
-    )
   }
 
   const applySizing = (opts: {
@@ -503,6 +497,9 @@ export function createSelectionOverlay(): SelectionOverlay {
     nowMs: number
     viewportHeightPx: number
   }) => {
+    // Clear any pending "force RAF" state as soon as we get a sync.
+    needsSync = false
+
     const { mode, target } = getActive()
 
     // Update pose from active target if we have one.
@@ -561,14 +558,13 @@ export function createSelectionOverlay(): SelectionOverlay {
       schedule(anim.ring, nowMs, desired.ring, quick)
       schedule(anim.x, nowMs, desired.x, quick)
       schedule(anim.y, nowMs, desired.y, quick)
-      animatingUntilMs = Math.max(animatingUntilMs, nowMs + quick)
     }
 
     // Evaluate animations.
-    const aZ = evalAnim(anim.z, nowMs)
-    const aRing = evalAnim(anim.ring, nowMs)
-    const aX = evalAnim(anim.x, nowMs)
-    const aY = evalAnim(anim.y, nowMs)
+    evalAnim(anim.z, nowMs)
+    evalAnim(anim.ring, nowMs)
+    evalAnim(anim.x, nowMs)
+    evalAnim(anim.y, nowMs)
 
     // Compute camera direction in overlay-local coordinates so we can attenuate
     // far-side segments and orient the ring arc.
@@ -662,34 +658,39 @@ export function createSelectionOverlay(): SelectionOverlay {
         distanceWorld: lastDistanceWorld,
       })
     }
-
-    // Keep animatingUntilMs conservative while there is any active tween.
-    if (aZ || aRing || aX || aY) {
-      animatingUntilMs = Math.max(animatingUntilMs, nowMs + 16)
-    }
   }
 
   const setSelectedTarget = (mesh: THREE.Object3D | undefined) => {
     if (selectedTarget === mesh) return
     selectedTarget = mesh
 
-    // Ensure we get at least one render so the fade can start.
-    const nowMs = performance.now()
-    const { mode } = getActive()
-    if (mode !== activeMode || mesh !== activeTarget) {
-      animatingUntilMs = Math.max(animatingUntilMs, nowMs + tuning.selectAxesDelayMs + tuning.selectFadeMs)
-    }
+    // Ensure we get at least one render so we can schedule fades.
+    needsSync = true
   }
 
   const setHoveredTarget = (mesh: THREE.Object3D | undefined) => {
     if (hoveredTarget === mesh) return
     hoveredTarget = mesh
 
-    const nowMs = performance.now()
-    animatingUntilMs = Math.max(animatingUntilMs, nowMs + tuning.hoverFadeMs)
+    // Ensure we get at least one render so we can schedule fades.
+    needsSync = true
   }
 
-  const isAnimating = (nowMs: number) => nowMs < animatingUntilMs
+  const isTrackActive = (track: ElementAnim, nowMs: number) => {
+    const eps = 1e-4
+    if (Math.abs(track.targetValue - track.startValue) <= eps) return false
+    if (nowMs < track.startMs) return false
+    return nowMs <= track.startMs + track.durationMs
+  }
+
+  // IMPORTANT: keep semantics tight here so the caller's RAF invalidation loop
+  // can stop when there are no active tweens.
+  const isAnimating = (nowMs: number) =>
+    needsSync ||
+    isTrackActive(anim.z, nowMs) ||
+    isTrackActive(anim.ring, nowMs) ||
+    isTrackActive(anim.x, nowMs) ||
+    isTrackActive(anim.y, nowMs)
 
   const setResolution = (widthPx: number, heightPx: number) => {
     resolution.set(Math.max(1, widthPx), Math.max(1, heightPx))
@@ -717,7 +718,7 @@ export function createSelectionOverlay(): SelectionOverlay {
     anim.ring.value = 0
     anim.x.value = 0
     anim.y.value = 0
-    animatingUntilMs = 0
+    needsSync = false
 
     object.visible = false
 

@@ -1,6 +1,6 @@
 import { Fragment, useMemo, useState } from 'react'
 import type { BodyRef, SpiceClient, FrameId } from '../spice/SpiceClient.js'
-import { BODY_REGISTRY, type BodyRegistryEntry } from '../scene/BodyRegistry.js'
+import { resolveBodyRegistryEntry, type BodyRegistryEntry } from '../scene/BodyRegistry.js'
 import { getApproxOrbitalPeriodSec } from '../scene/orbits/orbitalPeriods.js'
 import { getNaifExtras, type NaifExtras } from '../data/naifExtras.js'
 import { useTimeStoreSelector } from '../time/timeStore.js'
@@ -161,14 +161,7 @@ function buildExtrasGroups(
 
 /** Look up body registry entry by BodyRef. */
 function findBodyRegistryEntry(bodyRef: BodyRef): BodyRegistryEntry | undefined {
-  const bodyStr = String(bodyRef)
-  return BODY_REGISTRY.find(
-    (entry) =>
-      entry.id === bodyStr ||
-      String(entry.body) === bodyStr ||
-      entry.naifIds?.body === Number(bodyRef) ||
-      entry.naifIds?.barycenter === Number(bodyRef),
-  )
+  return resolveBodyRegistryEntry(String(bodyRef))
 }
 
 function resolveBodyRefForSpice(bodyRef: BodyRef, registryEntry: BodyRegistryEntry | undefined): BodyRef {
