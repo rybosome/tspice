@@ -236,6 +236,18 @@ if (!fs.existsSync(outputNodeWasmPath)) {
 
 // emcc derives the wasm filename from the JS glue output filename (e.g. *.web.wasm / *.node.wasm).
 // Keep a single checked-in wasm artifact, and patch both JS outputs to reference it.
+{
+  const web = fs.readFileSync(outputWebWasmPath);
+  const node = fs.readFileSync(outputNodeWasmPath);
+  if (web.length !== node.length || !web.equals(node)) {
+    throw new Error(
+      `Expected web/node wasm outputs to be identical, but they differ:\n` +
+        `- ${outputWebWasmPath}\n` +
+        `- ${outputNodeWasmPath}`,
+    );
+  }
+}
+
 fs.copyFileSync(outputWebWasmPath, outputWasmPath);
 
 {
@@ -253,6 +265,14 @@ fs.copyFileSync(outputWebWasmPath, outputWasmPath);
     if (patched === jsContents) {
       throw new Error(`Expected to patch wasm basename in ${jsPath} but no changes were made`);
     }
+
+    if (patched.includes(oldBasename)) {
+      throw new Error(`Expected ${jsPath} to no longer reference ${oldBasename} after patching`);
+    }
+    if (!patched.includes(WASM_BINARY_FILENAME)) {
+      throw new Error(`Expected ${jsPath} to reference ${WASM_BINARY_FILENAME} after patching`);
+    }
+
     fs.writeFileSync(jsPath, patched);
   };
 

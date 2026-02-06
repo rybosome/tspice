@@ -66,4 +66,23 @@ describe("@rybosome/tspice-backend-fake", () => {
     const b = createFakeBackend();
     expect(b.pxform("J2000", "J2000", 0)).toEqual([1, 0, 0, 0, 1, 0, 0, 0, 1]);
   });
+
+  it("rejects non-integer rotate() axes for CSPICE parity", () => {
+    const b = createFakeBackend();
+    expect(() => b.rotate(0.123, 1.9)).toThrow(/expected a finite integer/i);
+  });
+
+  it("handles near-pole recgeo() inputs without numerical instability", () => {
+    const b = createFakeBackend();
+
+    // Use an x/y magnitude small enough to trip the tolerance-based pole guard.
+    const re = 6378.137;
+    const f = 1 / 298.257223563;
+    const rect: [number, number, number] = [1e-20, -1e-20, re];
+
+    const out = b.recgeo(rect, re, f);
+    expect(out.lon).toBe(0);
+    approx(out.lat, Math.PI / 2);
+    expect(Number.isFinite(out.alt)).toBe(true);
+  });
 });

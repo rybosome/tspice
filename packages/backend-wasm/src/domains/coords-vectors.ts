@@ -21,6 +21,9 @@ function mallocChecked(module: EmscriptenModule, bytes: number, allocated: numbe
     for (let i = allocated.length - 1; i >= 0; i--) {
       module._free(allocated[i]!);
     }
+    // Defensively clear so callers can't accidentally double-free if they
+    // recover from this error and keep using the same allocation list.
+    allocated.length = 0;
     throw new Error("WASM malloc failed");
   }
   allocated.push(ptr);
@@ -36,7 +39,9 @@ function writeVec3(module: EmscriptenModule, ptr: number, v: SpiceVector3): void
 }
 
 function readVec3(module: EmscriptenModule, ptr: number): SpiceVector3 {
-  return Array.from(module.HEAPF64.subarray(ptr >> 3, (ptr >> 3) + 3)) as unknown as SpiceVector3;
+  const i = ptr >> 3;
+  const h = module.HEAPF64;
+  return [h[i] ?? 0, h[i + 1] ?? 0, h[i + 2] ?? 0] as unknown as SpiceVector3;
 }
 
 function writeMat3(module: EmscriptenModule, ptr: number, m: Mat3RowMajor): void {
@@ -45,8 +50,20 @@ function writeMat3(module: EmscriptenModule, ptr: number, m: Mat3RowMajor): void
 }
 
 function readMat3(module: EmscriptenModule, ptr: number, label: string): Mat3RowMajor {
+  const i = ptr >> 3;
+  const h = module.HEAPF64;
   return brandMat3RowMajor(
-    Array.from(module.HEAPF64.subarray(ptr >> 3, (ptr >> 3) + 9)),
+    [
+      h[i] ?? 0,
+      h[i + 1] ?? 0,
+      h[i + 2] ?? 0,
+      h[i + 3] ?? 0,
+      h[i + 4] ?? 0,
+      h[i + 5] ?? 0,
+      h[i + 6] ?? 0,
+      h[i + 7] ?? 0,
+      h[i + 8] ?? 0,
+    ],
     { label },
   );
 }

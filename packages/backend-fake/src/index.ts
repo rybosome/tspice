@@ -249,10 +249,12 @@ function mmul3(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
 
 function rotateRowMajor(angle: number, axis: number): Mat3RowMajor {
   // CSPICE reduces `iaxis` mod 3 (treating 0 as 3). Mirror that for parity.
-  if (!Number.isFinite(axis)) {
-    throw new Error(`Fake backend: rotate(): invalid axis: ${axis} (expected a finite number)`);
+  if (!Number.isFinite(axis) || !Number.isInteger(axis)) {
+    throw new Error(
+      `Fake backend: rotate(): invalid axis: ${axis} (expected a finite integer)`,
+    );
   }
-  const iaxis = Math.trunc(axis);
+  const iaxis = axis;
   const reduced = ((iaxis % 3) + 3) % 3;
   const spiceAxis = (reduced === 0 ? 3 : reduced) as 1 | 2 | 3;
 
@@ -393,11 +395,15 @@ function recgeo(rect: SpiceVector3, re: number, f: number): { lon: number; lat: 
   const lon = Math.atan2(y, x);
   const p = Math.sqrt(x * x + y * y);
 
-  // Handle poles.
-  if (p === 0) {
-    const lat = z >= 0 ? Math.PI / 2 : -Math.PI / 2;
-    const alt = Math.abs(z) - rp;
-    return { lon, lat, alt };
+  // Handle poles / near-pole numerical stability.
+  // Avoid the general-case `alt = p / cos(lat) - n` path when `p` is tiny.
+  // (Near-pole cases are extremely sensitive as `cos(lat) -> 0`.)
+  const poleTol = 1e-14 * re;
+  if (p <= poleTol) {
+    const poleLon = 0;
+    const poleLat = z >= 0 ? Math.PI / 2 : -Math.PI / 2;
+    const poleAlt = Math.abs(z) - rp;
+    return { lon: poleLon, lat: poleLat, alt: poleAlt };
   }
 
   const theta = Math.atan2(z * re, p * rp);
