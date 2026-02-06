@@ -158,18 +158,50 @@ function schedule(anim: ElementAnim, nowMs: number, nextTarget: number, duration
   anim.startValue = anim.value
   anim.targetValue = nextTarget
   anim.startMs = nowMs
-  anim.durationMs = Math.max(1, durationMs)
+  anim.durationMs = Math.max(0, durationMs)
+}
+
+type TrackPhase =
+  | { kind: 'inactive' }
+  | { kind: 'delayed' }
+  | {
+      kind: 'active'
+      /** Normalized track phase [0..1]. */
+      t01: number
+    }
+
+function getTrackPhase(track: ElementAnim, nowMs: number): TrackPhase {
+  const eps = 1e-4
+  if (Math.abs(track.targetValue - track.startValue) <= eps) return { kind: 'inactive' }
+  if (!(track.durationMs > 0)) return { kind: 'inactive' }
+
+  // Delayed tracks are still "active" so callers can keep their RAF
+  // invalidation loop running until the delayed fade stages begin.
+  if (nowMs < track.startMs) return { kind: 'delayed' }
+
+  const endMs = track.startMs + track.durationMs
+  if (!(nowMs < endMs)) return { kind: 'inactive' }
+
+  const t = (nowMs - track.startMs) / track.durationMs
+  return { kind: 'active', t01: THREE.MathUtils.clamp(t, 0, 1) }
 }
 
 function evalAnim(anim: ElementAnim, nowMs: number) {
-  // Support delayed tracks (where `startMs` may be in the future).
+  const phase = getTrackPhase(anim, nowMs)
+
   // During the delay, preserve the current value so we don't snap back to
   // `startValue` every frame.
-  if (nowMs < anim.startMs) return
+  if (phase.kind === 'delayed') return
 
-  const t = (nowMs - anim.startMs) / anim.durationMs
-  const p = THREE.MathUtils.clamp(t, 0, 1)
-  const eased = easeOutCubic(p)
+  if (phase.kind === 'inactive') {
+    // If the track has ended (or has a zero duration), snap cleanly.
+    if (nowMs >= anim.startMs) {
+      anim.value = anim.targetValue
+    }
+    return
+  }
+
+  const eased = easeOutCubic(phase.t01)
   anim.value = THREE.MathUtils.lerp(anim.startValue, anim.targetValue, eased)
 }
 
@@ -677,14 +709,7 @@ export function createSelectionOverlay(): SelectionOverlay {
   }
 
   const isTrackActive = (track: ElementAnim, nowMs: number) => {
-    const eps = 1e-4
-    if (Math.abs(track.targetValue - track.startValue) <= eps) return false
-
-    // Delayed tracks are still "active" so callers can keep their RAF
-    // invalidation loop running until the delayed fade stages begin.
-    if (nowMs < track.startMs) return true
-
-    return nowMs <= track.startMs + track.durationMs
+    return getTrackPhase(track, nowMs).kind !== 'inactive'
   }
 
   // IMPORTANT: keep semantics tight here so the caller's RAF invalidation loop
