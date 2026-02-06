@@ -1,0 +1,5 @@
+# Downloaded source assets for texture generation.
+#
+# Keep these out of git; they can be re-downloaded by scripts.
+*
+!.gitignore

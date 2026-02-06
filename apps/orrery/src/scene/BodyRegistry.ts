@@ -202,17 +202,17 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
         surface: {
           color: '#e76f51',
           // Keep Mars quite rough so the Viking mosaic reads as albedo (avoid plastic/gloss).
-          roughness: 0.93,
+          // With a roughness map, `roughness` is treated as a multiplier (Three.js behavior).
+          roughness: 1.0,
           metalness: 0.0,
 
-          // TODO(appearance/mars): Use DEM-derived normals + roughness proxy instead of
-          // any albedo-as-bump hacks.
-          //
-          // Source direction: Global MOLA MEGDR DEM (USGS Astropedia, CC0/public domain).
-          // See `public/textures/planets/README.md` for links + generation notes.
-          // normalTexture: { url: 'textures/planets/mars-mola-normal-2k.png' },
-          // normalScale: 0.45,
-          // roughnessTexture: { url: 'textures/planets/mars-roughness-proxy-2k.png' },
+          // Disable bump mapping (we use a real normal map for Mars).
+          bumpScale: 0.0,
+
+          // DEM-derived normals + roughness proxy (see texture README for sources + generation notes).
+          normalTexture: { url: 'textures/planets/mars-mola-normal-2k.png' },
+          normalScale: 0.45,
+          roughnessTexture: { url: 'textures/planets/mars-roughness-proxy-2k.png' },
 
           // Suppress ambient washout on the night side (Mars has no strong emissive features).
           nightAlbedo: 0.0008,
