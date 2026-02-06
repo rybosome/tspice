@@ -2,24 +2,33 @@ import * as THREE from 'three'
 
 import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
 
-// E2E-only diagnostic counter for async texture loading.
+// E2E/dev-only diagnostic counter for async texture loading.
 //
 // Playwright screenshot tests can be significantly slower in CI (e.g. SwiftShader
 // software rendering). This counter helps tests wait until all initial textures
 // have finished loading before capturing golden screenshots.
+function shouldTrackPendingTextureLoads() {
+  if (typeof window === 'undefined') return false
+
+  // `import.meta.env.DEV` is true for the dev server, but false for production
+  // builds (even with custom modes). Our e2e screenshot tests run using a
+  // dedicated Vite mode (`--mode e2e`).
+  return import.meta.env.DEV || import.meta.env.MODE === 'e2e'
+}
+
 function ensurePendingTextureLoadsInitialized() {
-  if (typeof window === 'undefined') return
+  if (!shouldTrackPendingTextureLoads()) return
   window.__tspice_viewer__pending_texture_loads ??= 0
 }
 
 function incrementPendingTextureLoads() {
-  if (typeof window === 'undefined') return
+  if (!shouldTrackPendingTextureLoads()) return
   ensurePendingTextureLoadsInitialized()
   window.__tspice_viewer__pending_texture_loads = (window.__tspice_viewer__pending_texture_loads ?? 0) + 1
 }
 
 function decrementPendingTextureLoads() {
-  if (typeof window === 'undefined') return
+  if (!shouldTrackPendingTextureLoads()) return
   ensurePendingTextureLoadsInitialized()
   window.__tspice_viewer__pending_texture_loads = Math.max(0, (window.__tspice_viewer__pending_texture_loads ?? 0) - 1)
 }
