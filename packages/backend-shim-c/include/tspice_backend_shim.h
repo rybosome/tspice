@@ -309,6 +309,69 @@ int tspice_mxv(const double *m3x3, const double *v3, double *outV3, char *err, i
 // Matrix input is expected as 9 doubles in row-major order.
 int tspice_mtxv(const double *m3x3, const double *v3, double *outV3, char *err, int errMaxBytes);
 
+// mxm_c: matrix times matrix (3x3).
+// Matrix inputs/outputs are expected as 9 doubles in row-major order.
+int tspice_mxm(
+    const double *a3x3,
+    const double *b3x3,
+    double *outM3x3,
+    char *err,
+    int errMaxBytes);
+
+// vadd_c: vector addition.
+int tspice_vadd(const double *a3, const double *b3, double *out3, char *err, int errMaxBytes);
+
+// vsub_c: vector subtraction.
+int tspice_vsub(const double *a3, const double *b3, double *out3, char *err, int errMaxBytes);
+
+// vminus_c: vector negation.
+int tspice_vminus(const double *v3, double *out3, char *err, int errMaxBytes);
+
+// vscl_c: vector scaling.
+int tspice_vscl(double s, const double *v3, double *out3, char *err, int errMaxBytes);
+
+// rotate_c: generate a rotation matrix about a coordinate axis.
+int tspice_rotate(double angle, int axis, double *outM3x3, char *err, int errMaxBytes);
+
+// rotmat_c: rotate a matrix about a coordinate axis.
+int tspice_rotmat(
+    const double *m3x3,
+    double angle,
+    int axis,
+    double *outM3x3,
+    char *err,
+    int errMaxBytes);
+
+// axisar_c: axis and angle to rotation matrix.
+int tspice_axisar(
+    const double *axis3,
+    double angle,
+    double *outM3x3,
+    char *err,
+    int errMaxBytes);
+
+// georec_c: geodetic coordinates to rectangular coordinates.
+int tspice_georec(
+    double lon,
+    double lat,
+    double alt,
+    double re,
+    double f,
+    double *outRect3,
+    char *err,
+    int errMaxBytes);
+
+// recgeo_c: rectangular coordinates to geodetic coordinates.
+int tspice_recgeo(
+    const double *rect3,
+    double re,
+    double f,
+    double *outLon,
+    double *outLat,
+    double *outAlt,
+    char *err,
+    int errMaxBytes);
+
 // --- SCLK conversions + CK attitude ---
 
 // scs2e_c: convert an encoded SCLK string -> ET seconds past J2000.

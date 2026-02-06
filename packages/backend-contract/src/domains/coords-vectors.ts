@@ -27,6 +27,35 @@ export interface CoordsVectorsApi {
   vdot(a: SpiceVector3, b: SpiceVector3): number;
   vcrss(a: SpiceVector3, b: SpiceVector3): SpiceVector3;
 
+  vadd(a: SpiceVector3, b: SpiceVector3): SpiceVector3;
+  vsub(a: SpiceVector3, b: SpiceVector3): SpiceVector3;
+  vminus(v: SpiceVector3): SpiceVector3;
+  vscl(s: number, v: SpiceVector3): SpiceVector3;
+
+  mxm(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor;
+
+  /**
+   * Generate a rotation matrix representing a rotation about a coordinate axis.
+   *
+   * Axis is 1=x, 2=y, 3=z.
+   */
+  rotate(angle: number, axis: number): Mat3RowMajor;
+
+  /**
+   * Rotate a matrix about a coordinate axis.
+   *
+   * Axis is 1=x, 2=y, 3=z.
+   */
+  rotmat(m: Mat3RowMajor, angle: number, axis: number): Mat3RowMajor;
+
+  /**
+   * Convert an axis and angle to a rotation matrix.
+   */
+  axisar(axis: SpiceVector3, angle: number): Mat3RowMajor;
+
+  georec(lon: number, lat: number, alt: number, re: number, f: number): SpiceVector3;
+  recgeo(rect: SpiceVector3, re: number, f: number): { lon: number; lat: number; alt: number };
+
   mxv(m: Mat3RowMajor, v: SpiceVector3): SpiceVector3;
   mtxv(m: Mat3RowMajor, v: SpiceVector3): SpiceVector3;
 }

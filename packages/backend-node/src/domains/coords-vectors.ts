@@ -1,8 +1,12 @@
 import type { CoordsVectorsApi, SpiceVector3 } from "@rybosome/tspice-backend-contract";
-import { assertMat3ArrayLike9 } from "@rybosome/tspice-backend-contract";
+import { assertMat3ArrayLike9, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
 
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
@@ -72,6 +76,77 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       const out = native.mtxv(m, v);
       invariant(Array.isArray(out) && out.length === 3, "Expected mtxv() to return a length-3 array");
       return out as SpiceVector3;
+    },
+
+    vadd: (a, b) => {
+      const out = native.vadd(a, b);
+      invariant(Array.isArray(out) && out.length === 3, "Expected vadd() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    vsub: (a, b) => {
+      const out = native.vsub(a, b);
+      invariant(Array.isArray(out) && out.length === 3, "Expected vsub() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    vminus: (v) => {
+      const out = native.vminus(v);
+      invariant(Array.isArray(out) && out.length === 3, "Expected vminus() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    vscl: (s, v) => {
+      const out = native.vscl(s, v);
+      invariant(Array.isArray(out) && out.length === 3, "Expected vscl() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    mxm: (a, b) => {
+      assertMat3ArrayLike9(a, { label: "mxm().a" });
+      assertMat3ArrayLike9(b, { label: "mxm().b" });
+      const out = native.mxm(a, b);
+      invariant(Array.isArray(out) && out.length === 9, "Expected mxm() to return a length-9 array");
+      return brandMat3RowMajor(out, { label: "mxm()" });
+    },
+
+    rotate: (angle, axis) => {
+      const out = native.rotate(angle, axis);
+      invariant(Array.isArray(out) && out.length === 9, "Expected rotate() to return a length-9 array");
+      return brandMat3RowMajor(out, { label: "rotate()" });
+    },
+
+    rotmat: (m, angle, axis) => {
+      assertMat3ArrayLike9(m, { label: "rotmat().m" });
+      const out = native.rotmat(m, angle, axis);
+      invariant(Array.isArray(out) && out.length === 9, "Expected rotmat() to return a length-9 array");
+      return brandMat3RowMajor(out, { label: "rotmat()" });
+    },
+
+    axisar: (axis, angle) => {
+      const out = native.axisar(axis, angle);
+      invariant(Array.isArray(out) && out.length === 9, "Expected axisar() to return a length-9 array");
+      return brandMat3RowMajor(out, { label: "axisar()" });
+    },
+
+    georec: (lon, lat, alt, re, f) => {
+      const out = native.georec(lon, lat, alt, re, f);
+      invariant(Array.isArray(out) && out.length === 3, "Expected georec() to return a length-3 array");
+      return out as SpiceVector3;
+    },
+
+    recgeo: (rect, re, f) => {
+      const out = native.recgeo(rect, re, f) as unknown;
+      invariant(isPlainObject(out), "Expected recgeo() to return an object");
+
+      const lon = out.lon;
+      const lat = out.lat;
+      const alt = out.alt;
+      invariant(typeof lon === "number", "Expected recgeo().lon to be a number");
+      invariant(typeof lat === "number", "Expected recgeo().lat to be a number");
+      invariant(typeof alt === "number", "Expected recgeo().alt to be a number");
+
+      return { lon, lat, alt };
     },
   };
 }

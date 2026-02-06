@@ -36,6 +36,16 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.vcrss === "function", "Expected native addon to export vcrss(a, b)");
   invariant(typeof native.mxv === "function", "Expected native addon to export mxv(m, v)");
   invariant(typeof native.mtxv === "function", "Expected native addon to export mtxv(m, v)");
+  invariant(typeof native.vadd === "function", "Expected native addon to export vadd(a, b)");
+  invariant(typeof native.vsub === "function", "Expected native addon to export vsub(a, b)");
+  invariant(typeof native.vminus === "function", "Expected native addon to export vminus(v)");
+  invariant(typeof native.vscl === "function", "Expected native addon to export vscl(s, v)");
+  invariant(typeof native.mxm === "function", "Expected native addon to export mxm(a, b)");
+  invariant(typeof native.rotate === "function", "Expected native addon to export rotate(angle, axis)");
+  invariant(typeof native.rotmat === "function", "Expected native addon to export rotmat(m, angle, axis)");
+  invariant(typeof native.axisar === "function", "Expected native addon to export axisar(axis, angle)");
+  invariant(typeof native.georec === "function", "Expected native addon to export georec(lon, lat, alt, re, f)");
+  invariant(typeof native.recgeo === "function", "Expected native addon to export recgeo(rect, re, f)");
   invariant(
     typeof native.spkezr === "function",
     "Expected native addon to export spkezr(target, et, ref, abcorr, observer)",
