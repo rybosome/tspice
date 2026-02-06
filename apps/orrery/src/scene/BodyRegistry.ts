@@ -352,13 +352,13 @@ const BODY_REGISTRY_BY_ID = new Map<BodyId, BodyRegistryEntry>()
 const BODY_REGISTRY_BY_BODY_REF_KEY = new Map<string, BodyRegistryEntry>()
 
 /**
-* Best-effort lookup key map for strings coming from URL params / `mesh.userData`.
-*
-* Covers:
-* - `BodyRegistryEntry.id` (case-insensitive)
-* - `BodyRegistryEntry.body` (stringified)
-* - `BodyRegistryEntry.naifIds.body` / `.barycenter` (stringified)
-*/
+ * Best-effort lookup key map for strings coming from URL params / `mesh.userData`.
+ *
+ * Covers:
+ * - `BodyRegistryEntry.id` (case-insensitive)
+ * - `BodyRegistryEntry.body` (stringified)
+ * - `BodyRegistryEntry.naifIds.body` / `.barycenter` (stringified)
+ */
 const BODY_REGISTRY_BY_RESOLVE_KEY = new Map<string, BodyRegistryEntry>()
 
 const addResolveKey = (key: string, entry: BodyRegistryEntry) => {
