@@ -11,9 +11,9 @@ function shouldTrackPendingTextureLoads() {
   if (typeof window === 'undefined') return false
 
   // `import.meta.env.DEV` is true for the dev server, but false for production
-  // builds (even with custom modes). Our e2e screenshot tests run using a
-  // dedicated Vite mode (`--mode e2e`).
-  return import.meta.env.DEV || import.meta.env.MODE === 'e2e'
+  // builds (even with custom modes). Our Playwright screenshot tests signal
+  // e2e mode via the `?e2e` query param.
+  return import.meta.env.DEV || new URLSearchParams(window.location.search).has('e2e')
 }
 
 function ensurePendingTextureLoadsInitialized() {
