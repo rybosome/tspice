@@ -2,7 +2,12 @@ import * as THREE from 'three'
 
 import { isTextureCacheClearedError, loadTextureCached } from './loadTextureCached.js'
 import { createRingMesh } from './RingMesh.js'
-import { isEarthAppearanceLayer, type BodyAppearanceStyle, type BodyTextureKind } from './SceneModel.js'
+import {
+  isAtmosphereAppearanceLayer,
+  isEarthAppearanceLayer,
+  type BodyAppearanceStyle,
+  type BodyTextureKind,
+} from './SceneModel.js'
 import { isDev } from '../utils/isDev.js'
 
 export type CreateBodyMeshOptions = {
@@ -470,6 +475,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // Earth-only higher-fidelity appearance layers (night lights, clouds, atmosphere, ocean glint).
   // This is kept opt-in via `appearance.layers` so other bodies remain unchanged.
   const earth = options.appearance.layers?.find(isEarthAppearanceLayer)?.earth
+  const atmosphere = options.appearance.layers?.find(isAtmosphereAppearanceLayer)?.atmosphere
 
   const extraTexturesToDispose: THREE.Texture[] = []
   const extraTextureReleases: Array<() => void> = []
@@ -563,6 +569,85 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     update = ({ sunDirWorld }) => {
       uSunDirWorld.copy(sunDirWorld)
+    }
+  }
+
+  // Generic atmosphere shell layer (used for thin/low-intensity atmospheres like Mars).
+  // Note: Earth uses its dedicated `earth` layer for atmosphere, clouds, etc.
+  if (!isEarth && atmosphere) {
+    const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
+    atmosphereGeo.rotateX(Math.PI / 2)
+    extraGeometriesToDispose.push(atmosphereGeo)
+
+    const atmosphereMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        uSunDirWorld: { value: uSunDirWorld },
+        uColor: { value: new THREE.Color(atmosphere.color ?? '#ffffff') },
+        uIntensity: { value: atmosphere.intensity ?? 0.25 },
+        uRimPower: { value: atmosphere.rimPower ?? 2.4 },
+        uSunBias: { value: atmosphere.sunBias ?? 0.75 },
+      },
+      vertexShader: [
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
+        '  vWorldPos = worldPos.xyz;',
+        '  vWorldNormal = normalize( mat3( modelMatrix ) * normal );',
+        '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
+        '}',
+      ].join('\n'),
+      fragmentShader: [
+        'uniform vec3 uSunDirWorld;',
+        'uniform vec3 uColor;',
+        'uniform float uIntensity;',
+        'uniform float uRimPower;',
+        'uniform float uSunBias;',
+        '',
+        'varying vec3 vWorldPos;',
+        'varying vec3 vWorldNormal;',
+        '',
+        'void main() {',
+        '  vec3 N = normalize( vWorldNormal );',
+        '  vec3 V = normalize( cameraPosition - vWorldPos );',
+        '  vec3 L = normalize( uSunDirWorld );',
+        '',
+        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
+        '  rim = pow( rim, uRimPower );',
+        '',
+        '  float ndotl = dot( N, L );',
+        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
+        '  float k = clamp( uSunBias, 0.0, 1.0 );',
+        '  float start = mix( -0.15, 0.0, k );',
+        '  float end = mix( 0.45, 0.2, k );',
+        '  float dayFactor = smoothstep( start, end, ndotl );',
+        '  float glow = rim * dayFactor;',
+        '',
+        '  float alpha = glow * uIntensity;',
+        '  gl_FragColor = vec4( uColor, alpha );',
+        '}',
+      ].join('\n'),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      toneMapped: false,
+      side: THREE.BackSide,
+    })
+    extraMaterialsToDispose.push(atmosphereMaterial)
+
+    const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMaterial)
+    atmosphereMesh.scale.setScalar(atmosphere.radiusRatio ?? 1.01)
+    atmosphereMesh.renderOrder = 1
+    // Avoid interaction/picking regressions if a future raycast becomes recursive.
+    atmosphereMesh.raycast = () => {}
+    mesh.add(atmosphereMesh)
+
+    // Install a minimal update loop for shader elements that depend on the sun direction.
+    if (!update) {
+      update = ({ sunDirWorld }) => {
+        uSunDirWorld.copy(sunDirWorld)
+      }
     }
   }
 

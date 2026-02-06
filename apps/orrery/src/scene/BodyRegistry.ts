@@ -201,11 +201,32 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       appearance: {
         surface: {
           color: '#e76f51',
+          // Keep Mars slightly less rough than the default so surface features read better.
+          roughness: 0.86,
+
+          // Suppress ambient washout on the night side (Mars has no strong emissive features).
+          nightAlbedo: 0.0008,
+          terminatorTwilight: 0.08,
+
           texture: {
-            url: 'textures/planets/mars.png',
-            color: '#e76f51',
+            url: 'textures/planets/mars-viking-colorized-4k.jpg',
+            // Full-color albedo texture; keep tint subtle so we don't lose surface contrast.
+            color: '#fff2e8',
           },
         },
+        layers: [
+          {
+            kind: 'atmosphere',
+            atmosphere: {
+              // Very thin + subtle vs Earth.
+              radiusRatio: 1.006,
+              color: '#d9a16c',
+              intensity: 0.14,
+              rimPower: 2.8,
+              sunBias: 0.9,
+            },
+          },
+        ],
       },
       label: 'Mars',
     },
