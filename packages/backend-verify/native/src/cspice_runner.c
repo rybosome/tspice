@@ -320,6 +320,35 @@ static int jsmn_find_object_key(const char *json, const jsmntok_t *tokens,
   return -1;
 }
 
+// Return index of array element `elemIndex` within array token at `arrayIndex`.
+// Returns -1 if out of bounds or invalid.
+static int jsmn_get_array_elem(const jsmntok_t *tokens, const int arrayIndex,
+                               const int elemIndex, const int tokenCount) {
+  if (arrayIndex < 0 || arrayIndex >= tokenCount) {
+    return -1;
+  }
+  const jsmntok_t *arr = &tokens[arrayIndex];
+  if (arr->type != JSMN_ARRAY) {
+    return -1;
+  }
+  if (elemIndex < 0 || elemIndex >= arr->size) {
+    return -1;
+  }
+
+  int i = arrayIndex + 1;
+  for (int e = 0; e < arr->size; e++) {
+    if (i >= tokenCount) {
+      return -1;
+    }
+    if (e == elemIndex) {
+      return i;
+    }
+    i = jsmn_skip_subtree(tokens, i, tokenCount);
+  }
+
+  return -1;
+}
+
 static char *jsmn_strdup(const char *json, const jsmntok_t *tok) {
   if (tok->type != JSMN_STRING) {
     return NULL;
@@ -406,10 +435,16 @@ static void write_error_json(const char *message, const char *spiceShort,
   fputs("}}\n", stdout);
 }
 
+#define CSPICE_RUNNER_MAX_STDIN_BYTES (1024 * 1024)
+
 static char *read_all_stdin(size_t *outLen) {
   *outLen = 0;
 
   size_t cap = 4096;
+  if (cap > (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1) {
+    cap = (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1;
+  }
+
   char *buf = (char *)malloc(cap);
   if (!buf) {
     return NULL;
@@ -417,18 +452,42 @@ static char *read_all_stdin(size_t *outLen) {
 
   size_t len = 0;
   while (1) {
-    if (len + 2048 >= cap) {
-      cap *= 2;
-      char *next = (char *)realloc(buf, cap);
+    if (len + 1 >= cap) {
+      if (cap >= (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1) {
+        // Input too large.
+        errno = EOVERFLOW;
+        free(buf);
+        return NULL;
+      }
+
+      // Grow with overflow guard, but never beyond the max.
+      size_t nextCap = cap * 2;
+      if (nextCap < cap) {
+        errno = EOVERFLOW;
+        free(buf);
+        return NULL;
+      }
+      if (nextCap > (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1) {
+        nextCap = (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1;
+      }
+
+      char *next = (char *)realloc(buf, nextCap);
       if (!next) {
         free(buf);
         return NULL;
       }
       buf = next;
+      cap = nextCap;
     }
 
     size_t n = fread(buf + len, 1, cap - len - 1, stdin);
     len += n;
+
+    if (len > (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES) {
+      errno = EOVERFLOW;
+      free(buf);
+      return NULL;
+    }
 
     if (n == 0) {
       if (ferror(stdin)) {
@@ -465,7 +524,11 @@ int main(void) {
   size_t inputLen = 0;
   char *input = read_all_stdin(&inputLen);
   if (input == NULL) {
-    write_error_json("Failed to read stdin", NULL, NULL, NULL);
+    if (errno == EOVERFLOW) {
+      write_error_json("stdin too large", NULL, NULL, NULL);
+    } else {
+      write_error_json("Failed to read stdin", NULL, NULL, NULL);
+    }
     return 0;
   }
 
@@ -579,7 +642,7 @@ int main(void) {
           goto done;
         }
 
-        idx++;
+        idx = jsmn_skip_subtree(tokens, idx, tokenCount);
       }
     }
   }
@@ -606,8 +669,8 @@ int main(void) {
     goto done;
   }
 
-  int arg0Tok = argsTok + 1;
-  if (arg0Tok >= tokenCount || tokens[arg0Tok].type != JSMN_STRING) {
+  int arg0Tok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+  if (arg0Tok < 0 || arg0Tok >= tokenCount || tokens[arg0Tok].type != JSMN_STRING) {
     write_error_json("time.str2et expects args[0] to be a string", NULL, NULL, NULL);
     goto done;
   }

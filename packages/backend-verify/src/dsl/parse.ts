@@ -40,7 +40,12 @@ function parseCase(raw: unknown, index: number, sourceDir: string): ScenarioCase
     throw new TypeError(`cases[${index}] must be a mapping/object (got ${JSON.stringify(raw)})`);
   }
 
-  const id = assertString(raw.id ?? `case-${index}`, `cases[${index}].id`);
+  if (raw.id === null) {
+    // Treat `null` as explicit invalid input; only `undefined` counts as “missing”.
+    throw new TypeError(`cases[${index}].id must be a string (got null)`);
+  }
+
+  const id = raw.id === undefined ? `case-${index}` : assertString(raw.id, `cases[${index}].id`);
   const call = assertString(raw.call, `cases[${index}].call`);
   const args = raw.args === undefined ? [] : raw.args;
 

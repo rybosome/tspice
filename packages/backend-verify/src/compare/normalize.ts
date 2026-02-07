@@ -1,3 +1,11 @@
+function sortKey(value: unknown): string {
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (typeof value !== "object" || value === null) return false;
   if (Array.isArray(value)) return false;
@@ -34,11 +42,38 @@ export function normalizeForCompare(value: unknown): unknown {
   }
 
   if (value instanceof Map) {
-    return Array.from(value.entries()).map(([k, v]) => [normalizeForCompare(k), normalizeForCompare(v)]);
+    const out = Array.from(value.entries()).map(
+      ([k, v]) => [normalizeForCompare(k), normalizeForCompare(v)] as const,
+    );
+
+    out.sort((a, b) => {
+      const ak = sortKey(a[0]);
+      const bk = sortKey(b[0]);
+      if (ak < bk) return -1;
+      if (ak > bk) return 1;
+
+      const av = sortKey(a[1]);
+      const bv = sortKey(b[1]);
+      if (av < bv) return -1;
+      if (av > bv) return 1;
+      return 0;
+    });
+
+    return out;
   }
 
   if (value instanceof Set) {
-    return Array.from(value.values()).map((v) => normalizeForCompare(v));
+    const out = Array.from(value.values()).map((v) => normalizeForCompare(v));
+
+    out.sort((a, b) => {
+      const ak = sortKey(a);
+      const bk = sortKey(b);
+      if (ak < bk) return -1;
+      if (ak > bk) return 1;
+      return 0;
+    });
+
+    return out;
   }
 
   if (isPlainObject(value)) {

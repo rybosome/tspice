@@ -50,11 +50,14 @@ export function readCspiceRunnerBuildState(): CspiceRunnerBuildState | null {
 }
 
 export function isCspiceRunnerAvailable(): boolean {
+  const bin = getCspiceRunnerBinaryPath();
+  // Binary existence should be the source of truth; the build state file can be stale.
+  if (fs.existsSync(bin)) return true;
+
   const state = readCspiceRunnerBuildState();
   if (state && state.available === false) return false;
 
-  const bin = getCspiceRunnerBinaryPath();
-  return fs.existsSync(bin);
+  return false;
 }
 
 function safeErrorReport(error: unknown): RunnerErrorReport {
@@ -83,50 +86,113 @@ type CRunnerError = {
 type CRunnerResponse = CRunnerOk | CRunnerError;
 
 async function invokeRunner(binaryPath: string, input: RunCaseInput): Promise<CRunnerResponse> {
+  const timeoutMs = 15_000;
+  const maxStdoutChars = 1_000_000;
+  const maxStderrChars = 1_000_000;
+
   return await new Promise((resolve, reject) => {
+    let settled = false;
+
     const child = spawn(binaryPath, [], {
       stdio: ["pipe", "pipe", "pipe"],
     });
 
     let stdout = "";
     let stderr = "";
+    let stdoutTruncated = false;
+    let stderrTruncated = false;
 
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");
 
+    const finish = (fn: () => void) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      fn();
+    };
+
+    const timer = setTimeout(() => {
+      // Best-effort: kill the child; `close` should follow.
+      try {
+        child.kill("SIGKILL");
+      } catch {
+        // ignore
+      }
+    }, timeoutMs);
+
+    const appendCapped = (
+      prev: string,
+      chunk: string,
+      maxChars: number,
+    ): { next: string; truncated: boolean } => {
+      if (prev.length >= maxChars) {
+        return { next: prev, truncated: true };
+      }
+      const remaining = maxChars - prev.length;
+      if (chunk.length <= remaining) {
+        return { next: prev + chunk, truncated: false };
+      }
+      return { next: prev + chunk.slice(0, remaining), truncated: true };
+    };
+
     child.stdout.on("data", (chunk) => {
-      stdout += chunk;
+      const r = appendCapped(stdout, chunk, maxStdoutChars);
+      stdout = r.next;
+      stdoutTruncated ||= r.truncated;
+
+      // If stdout truncates, the JSON will no longer parse; bail early.
+      if (stdoutTruncated) {
+        try {
+          child.kill("SIGKILL");
+        } catch {
+          // ignore
+        }
+      }
     });
     child.stderr.on("data", (chunk) => {
-      stderr += chunk;
+      const r = appendCapped(stderr, chunk, maxStderrChars);
+      stderr = r.next;
+      stderrTruncated ||= r.truncated;
     });
 
     child.on("error", (err) => {
-      reject(err);
+      finish(() => reject(err));
     });
 
     child.on("close", (code, signal) => {
-      const out = stdout.trim();
+      finish(() => {
+        if (stdoutTruncated) {
+          reject(
+            new Error(
+              `cspice-runner output exceeded limit (stdout capped at ${maxStdoutChars} chars). code=${code} signal=${signal} stderr=${stderrTruncated ? "(truncated)" : JSON.stringify(stderr.trim())}`,
+            ),
+          );
+          return;
+        }
 
-      if (!out) {
-        reject(
-          new Error(
-            `cspice-runner produced no JSON output (code=${code}, signal=${signal}, stderr=${stderr.trim()})`,
-          ),
-        );
-        return;
-      }
+        const out = stdout.trim();
 
-      try {
-        const parsed = JSON.parse(out) as CRunnerResponse;
-        resolve(parsed);
-      } catch (e) {
-        reject(
-          new Error(
-            `Failed to parse cspice-runner JSON output. stdout=${JSON.stringify(out)} stderr=${JSON.stringify(stderr.trim())}`,
-          ),
-        );
-      }
+        if (!out) {
+          reject(
+            new Error(
+              `cspice-runner produced no JSON output (code=${code}, signal=${signal}, stderr=${stderr.trim()})`,
+            ),
+          );
+          return;
+        }
+
+        try {
+          const parsed = JSON.parse(out) as CRunnerResponse;
+          resolve(parsed);
+        } catch {
+          reject(
+            new Error(
+              `Failed to parse cspice-runner JSON output. stdout=${JSON.stringify(out)} stderr=${JSON.stringify(stderr.trim())}`,
+            ),
+          );
+        }
+      });
     });
 
     child.stdin.end(`${JSON.stringify(input)}\n`);
