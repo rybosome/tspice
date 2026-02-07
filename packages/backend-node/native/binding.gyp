@@ -50,7 +50,11 @@
         "src/test_addon.cc",
         "src/test_exports.cc"
       ],
-      "include_dirs": ["<!(node -p \"require('node-addon-api').include_dir\")"],
+      "include_dirs": [
+        "<!(node -p \"require('node-addon-api').include_dir\")",
+        "../../backend-shim-c/include",
+        "<(tspice_native_generated_dir)"
+      ],
       "dependencies": ["<!(node -p \"require('node-addon-api').gyp\")"],
       "defines": ["NODE_ADDON_API_DISABLE_CPP_EXCEPTIONS"],
       "cflags": ["-fno-exceptions"],
