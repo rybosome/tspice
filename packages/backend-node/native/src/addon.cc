@@ -1,6 +1,7 @@
 #include <napi.h>
 
 #include "domains/coords_vectors.h"
+#include "domains/error.h"
 #include "domains/ephemeris.h"
 #include "domains/file_io.h"
 #include "domains/frames.h"
@@ -32,6 +33,7 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   if (!registerDomain(tspice_backend_node::RegisterGeometry)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterCoordsVectors)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterFileIo)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterError)) return exports;
 
   return exports;
 }

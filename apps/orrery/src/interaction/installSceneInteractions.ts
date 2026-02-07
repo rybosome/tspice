@@ -1,10 +1,13 @@
 import * as THREE from 'three'
 import type { CameraController } from '../controls/CameraController.js'
 import { pickFirstIntersection } from './pick.js'
-import { BODY_REGISTRY, type BodyId } from '../scene/BodyRegistry.js'
+import { resolveBodyRegistryEntry, type BodyId } from '../scene/BodyRegistry.js'
+import type { BodyRef } from '../spice/SpiceClient.js'
 
-export type SelectionRingTarget = {
-  setTarget: (mesh: THREE.Object3D | undefined) => void
+export type SelectionOverlayTarget = {
+  setSelectedTarget: (mesh: THREE.Object3D | undefined) => void
+  setHoveredTarget: (mesh: THREE.Object3D | undefined) => void
+  isAnimating: (nowMs: number) => boolean
 }
 
 export type SceneInteractions = {
@@ -23,11 +26,11 @@ export function installSceneInteractions(args: {
 
   computeFocusRadius: (radiusWorld: number) => number
 
-  setFocusBody: (body: string) => void
+  setFocusBody: (body: BodyRef) => void
   setSelectedBody: (body: string | null) => void
   selectedBodyIdRef: { current: BodyId | undefined }
 
-  selectionRing?: SelectionRingTarget
+  selectionOverlay?: SelectionOverlayTarget
   panModeEnabledRef: { current: boolean }
   lookModeEnabledRef: { current: boolean }
 
@@ -44,7 +47,7 @@ export function installSceneInteractions(args: {
     setFocusBody,
     setSelectedBody,
     selectedBodyIdRef,
-    selectionRing,
+    selectionOverlay,
     panModeEnabledRef,
     lookModeEnabledRef,
     isDisposed,
@@ -59,7 +62,38 @@ export function installSceneInteractions(args: {
   const wheelZoomScale = 0.001
   const focusTweenMs = 320
 
-  let selectedBodyId: string | undefined
+  // Disambiguate UI selection ids coming from non-registry meshes.
+  //
+  // (Registry entries already have stable `BodyId`s. For other pickables we
+  // still want a stable string key, but we should avoid accidental collisions
+  // with numeric registry resolve-keys like '3' / '399'.)
+  const UI_SELECTION_PREFIX = 'mesh:'
+
+  // This is the UI selection key used for de-duping clicks and driving the
+  // inspector panel. It is NOT necessarily a SPICE focus target.
+  let selectedUiId: string | undefined
+
+  const resolveMeshBody = (mesh: THREE.Mesh) => {
+    const raw = String(mesh.userData.bodyId ?? '').trim() || undefined
+    if (!raw) {
+      return {
+        selectedUiId: undefined as string | undefined,
+        focusBody: undefined as BodyRef | undefined,
+        registryId: undefined as BodyId | undefined,
+      }
+    }
+
+    // Prefer the registry's `body` (numeric SPICE target, often barycenter ids like 5/6/7) for focusing,
+    // but keep a stable string id for UI/selection bookkeeping.
+    const registry = resolveBodyRegistryEntry(raw)
+    const registryId = registry?.id
+    const selectedUiId = registryId ?? `${UI_SELECTION_PREFIX}${raw}`
+    // IMPORTANT: don't pass arbitrary strings to SPICE. Only update focus-body
+    // when we can resolve via the registry.
+    const focusBody = registry?.body
+
+    return { selectedUiId, focusBody, registryId }
+  }
 
   let focusTweenFrame: number | null = null
 
@@ -116,26 +150,84 @@ export function installSceneInteractions(args: {
       }
     | undefined
 
-  let selectionPulseFrame: number | null = null
-  const stopSelectionPulse = () => {
-    if (selectionPulseFrame == null) return
-    window.cancelAnimationFrame(selectionPulseFrame)
-    selectionPulseFrame = null
+  let hovered:
+    | {
+        mesh: THREE.Mesh
+      }
+    | undefined
+
+  let overlayAnimFrame: number | null = null
+  const stopOverlayAnim = () => {
+    if (overlayAnimFrame == null) return
+    window.cancelAnimationFrame(overlayAnimFrame)
+    overlayAnimFrame = null
   }
 
-  const startSelectionPulse = () => {
-    if (selectionPulseFrame != null) return
+  // Throttle hover raycasts to at most one per frame.
+  let hoverPickFrame: number | null = null
+  let pendingHoverPick: { x: number; y: number } | null = null
 
-    const step = () => {
-      if (isDisposed() || !selected) {
-        selectionPulseFrame = null
+  const stopHoverPick = () => {
+    pendingHoverPick = null
+    if (hoverPickFrame == null) return
+    window.cancelAnimationFrame(hoverPickFrame)
+    hoverPickFrame = null
+  }
+
+  const startOverlayAnim = () => {
+    if (!selectionOverlay) return
+    if (overlayAnimFrame != null) return
+    if (isDisposed()) return
+
+    // IMPORTANT: always schedule at least one RAF tick.
+    //
+    // `SelectionOverlay.isAnimating()` can become true only *after* a render
+    // runs `syncToCamera` (e.g. when camera zoom changes affect desired
+    // opacities). Many call sites already call `invalidate()` when they mutate
+    // camera state / hover / selection.
+    //
+    // To avoid an eager double-invalidate (one here + one in the RAF loop), we
+    // don't invalidate immediately. Instead, the first RAF tick will "kick" a
+    // render if the overlay still isn't animating yet.
+
+    let didKick = false
+
+    const step = (t: number) => {
+      if (isDisposed()) {
+        overlayAnimFrame = null
         return
       }
+
+      const animating = selectionOverlay.isAnimating(t)
+      if (!animating) {
+        // If the overlay needs one render to schedule tracks (via
+        // `syncToCamera`), request a frame and re-check on the next tick.
+        if (!didKick) {
+          didKick = true
+          invalidate()
+          overlayAnimFrame = window.requestAnimationFrame(step)
+          return
+        }
+
+        overlayAnimFrame = null
+        return
+      }
+
       invalidate()
-      selectionPulseFrame = window.requestAnimationFrame(step)
+      overlayAnimFrame = window.requestAnimationFrame(step)
     }
 
-    selectionPulseFrame = window.requestAnimationFrame(step)
+    overlayAnimFrame = window.requestAnimationFrame(step)
+  }
+
+  const setHoveredMesh = (mesh: THREE.Mesh | undefined) => {
+    if (hovered?.mesh === mesh) return
+
+    hovered = mesh ? { mesh } : undefined
+
+    selectionOverlay?.setHoveredTarget(mesh)
+    startOverlayAnim()
+    invalidate()
   }
 
   const setSelectedMesh = (mesh: THREE.Mesh | undefined) => {
@@ -143,11 +235,11 @@ export function installSceneInteractions(args: {
 
     if (selected) {
       selected = undefined
-      selectedBodyId = undefined
+      selectedUiId = undefined
       selectedBodyIdRef.current = undefined
       setSelectedBody(null)
-      selectionRing?.setTarget(undefined)
-      stopSelectionPulse()
+      selectionOverlay?.setSelectedTarget(undefined)
+      startOverlayAnim()
       invalidate()
     }
 
@@ -155,20 +247,19 @@ export function installSceneInteractions(args: {
 
     selected = { mesh }
 
-    selectedBodyId = String(mesh.userData.bodyId ?? '') || undefined
+    const resolved = resolveMeshBody(mesh)
+    selectedUiId = resolved.selectedUiId
 
     // Keep ref in sync for label overlay
-    const registry = BODY_REGISTRY.find((r) => String(r.body) === selectedBodyId)
-    selectedBodyIdRef.current = registry?.id
+    selectedBodyIdRef.current = resolved.registryId
 
     // Update React state for inspector panel
-    if (selectedBodyId) {
-      setSelectedBody(selectedBodyId)
+    if (resolved.selectedUiId) {
+      setSelectedBody(resolved.selectedUiId)
     }
 
-    // Subtle world-space ring indicator around the selected body.
-    selectionRing?.setTarget(mesh)
-    startSelectionPulse()
+    selectionOverlay?.setSelectedTarget(mesh)
+    startOverlayAnim()
     invalidate()
   }
 
@@ -189,6 +280,7 @@ export function installSceneInteractions(args: {
       controller.radius = endRadius
       controller.applyToCamera(camera)
       invalidate()
+      startOverlayAnim()
       return
     }
 
@@ -303,6 +395,13 @@ export function installSceneInteractions(args: {
 
     ev.preventDefault()
 
+    // We treat any desktop pointer capture as the start of an interaction/drag.
+    // Clear hover immediately so the hover overlay can't linger during drags,
+    // and cancel any pending hover pick work so it can't re-apply hover while
+    // the pointer is captured.
+    stopHoverPick()
+    setHoveredMesh(undefined)
+
     mouseDown = {
       pointerId: ev.pointerId,
       mode,
@@ -401,6 +500,7 @@ export function installSceneInteractions(args: {
 
         controller.applyToCamera(camera)
         invalidate()
+        startOverlayAnim()
         return
       }
 
@@ -441,10 +541,44 @@ export function installSceneInteractions(args: {
 
       controller.applyToCamera(camera)
       invalidate()
+      startOverlayAnim()
       return
     }
 
-    if (!mouseDown) return
+    // Desktop hover tracking (skip during any active drag / pointer capture).
+    if (!mouseDown) {
+      pendingHoverPick = { x: ev.clientX, y: ev.clientY }
+
+      if (hoverPickFrame == null) {
+        hoverPickFrame = window.requestAnimationFrame(() => {
+          hoverPickFrame = null
+          if (isDisposed()) return
+          if (mouseDown) return
+
+          const p = pendingHoverPick
+          if (!p) return
+          pendingHoverPick = null
+
+          const hit = pickFirstIntersection({
+            clientX: p.x,
+            clientY: p.y,
+            element: canvas,
+            camera,
+            pickables,
+            raycaster,
+          })
+
+          const nextMesh = hit?.object instanceof THREE.Mesh ? hit.object : undefined
+
+          // If a mesh is selected, keep hover state around for quick fallback but
+          // let the overlay implementation prefer selection.
+          setHoveredMesh(nextMesh)
+        })
+      }
+
+      return
+    }
+
     if (ev.pointerId !== mouseDown.pointerId) return
 
     const totalDx = ev.clientX - mouseDown.startX
@@ -486,6 +620,7 @@ export function installSceneInteractions(args: {
 
     controller.applyToCamera(camera)
     invalidate()
+    startOverlayAnim()
   }
 
   const onPointerUp = (ev: PointerEvent) => {
@@ -519,18 +654,36 @@ export function installSceneInteractions(args: {
         })
 
         if (!hit) {
+          setHoveredMesh(undefined)
           setSelectedMesh(undefined)
           invalidate()
         } else {
           const hitMesh = hit.object
           if (hitMesh instanceof THREE.Mesh) {
-            const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
-            const selectionChanged = nextSelectedBodyId !== selectedBodyId
+            const resolved = resolveMeshBody(hitMesh)
+            const nextSelectedUiId = resolved.selectedUiId
+            const selectionChanged = nextSelectedUiId !== selectedUiId
             if (selectionChanged) {
               setSelectedMesh(hitMesh)
               // Clear look offset when focusing new object
               controller.resetLookOffset()
-              if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
+              if (resolved.focusBody) {
+                setFocusBody(resolved.focusBody)
+              } else {
+                // Registry resolution failed, so we can't safely focus via
+                // SPICE. Fall back to focusing by world position.
+                const target = new THREE.Vector3()
+                hitMesh.getWorldPosition(target)
+
+                const worldScale = new THREE.Vector3()
+                hitMesh.getWorldScale(worldScale)
+                const radiusWorld = Math.max(Math.abs(worldScale.x), Math.abs(worldScale.y), Math.abs(worldScale.z))
+                if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
+                  focusOn(target, { radius: computeFocusRadius(radiusWorld) })
+                } else {
+                  focusOn(target)
+                }
+              }
             }
 
             // When selection changes, rely on focus-body changes to center
@@ -618,6 +771,7 @@ export function installSceneInteractions(args: {
     })
 
     if (!hit) {
+      setHoveredMesh(undefined)
       setSelectedMesh(undefined)
       invalidate()
       return
@@ -626,13 +780,34 @@ export function installSceneInteractions(args: {
     const hitMesh = hit.object
     if (!(hitMesh instanceof THREE.Mesh)) return
 
-    const nextSelectedBodyId = String(hitMesh.userData.bodyId ?? '') || undefined
-    if (nextSelectedBodyId !== selectedBodyId) {
+    const resolved = resolveMeshBody(hitMesh)
+    const nextSelectedUiId = resolved.selectedUiId
+    if (nextSelectedUiId !== selectedUiId) {
       setSelectedMesh(hitMesh)
       // Clear look offset when focusing new object
       controller.resetLookOffset()
-      if (nextSelectedBodyId) setFocusBody(nextSelectedBodyId)
-      // Let focus-body changes drive camera centering + auto-zoom.
+
+      if (resolved.focusBody) {
+        setFocusBody(resolved.focusBody)
+        // Let focus-body changes drive camera centering + auto-zoom.
+        return
+      }
+
+      // Registry resolution failed, so we can't safely focus via SPICE. Fall
+      // back to focusing by world position.
+      const target = new THREE.Vector3()
+      hitMesh.getWorldPosition(target)
+
+      // Use the mesh's current world scale so focus radius matches the
+      // visually-rendered (potentially scaled) body.
+      const worldScale = new THREE.Vector3()
+      hitMesh.getWorldScale(worldScale)
+      const radiusWorld = Math.max(Math.abs(worldScale.x), Math.abs(worldScale.y), Math.abs(worldScale.z))
+      if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
+        focusOn(target, { radius: computeFocusRadius(radiusWorld) })
+      } else {
+        focusOn(target)
+      }
       return
     }
 
@@ -643,7 +818,7 @@ export function installSceneInteractions(args: {
     // visually-rendered (potentially scaled) body.
     const worldScale = new THREE.Vector3()
     hitMesh.getWorldScale(worldScale)
-    const radiusWorld = worldScale.x
+    const radiusWorld = Math.max(Math.abs(worldScale.x), Math.abs(worldScale.y), Math.abs(worldScale.z))
 
     if (Number.isFinite(radiusWorld) && radiusWorld > 0) {
       focusOn(target, { radius: computeFocusRadius(radiusWorld) })
@@ -660,12 +835,19 @@ export function installSceneInteractions(args: {
     controller.radius *= Math.exp(ev.deltaY * wheelZoomScale)
     controller.applyToCamera(camera)
     invalidate()
+    startOverlayAnim()
+  }
+
+  const onPointerLeave = () => {
+    stopHoverPick()
+    setHoveredMesh(undefined)
   }
 
   canvas.addEventListener('pointerdown', onPointerDown, { passive: false })
   canvas.addEventListener('pointermove', onPointerMove, { passive: false })
   canvas.addEventListener('pointerup', onPointerUp, { passive: false })
   canvas.addEventListener('pointercancel', onPointerUp, { passive: false })
+  canvas.addEventListener('pointerleave', onPointerLeave)
   canvas.addEventListener('wheel', onWheel, { passive: false })
   canvas.addEventListener('contextmenu', onContextMenu)
 
@@ -674,12 +856,15 @@ export function installSceneInteractions(args: {
     canvas.removeEventListener('pointermove', onPointerMove)
     canvas.removeEventListener('pointerup', onPointerUp)
     canvas.removeEventListener('pointercancel', onPointerUp)
+    canvas.removeEventListener('pointerleave', onPointerLeave)
     canvas.removeEventListener('wheel', onWheel)
     canvas.removeEventListener('contextmenu', onContextMenu)
 
     cancelFocusTween()
     setSelectedMesh(undefined)
-    stopSelectionPulse()
+    setHoveredMesh(undefined)
+    stopOverlayAnim()
+    stopHoverPick()
   }
 
   return {

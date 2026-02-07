@@ -17,6 +17,22 @@ void tspice_init_cspice_error_handling_once(void);
 // Returns 0.
 int tspice_get_spice_error_message_and_reset(char *err, int errMaxBytes);
 
+// Retrieve the most recent error message parts captured by
+// tspice_get_spice_error_message_and_reset(). These do not modify CSPICE error
+// status.
+int tspice_get_last_error_short(char *out, int outMaxBytes);
+int tspice_get_last_error_long(char *out, int outMaxBytes);
+int tspice_get_last_error_trace(char *out, int outMaxBytes);
+
+// --- CSPICE error/status utilities ---
+int tspice_failed(int *outFailed, char *err, int errMaxBytes);
+int tspice_reset(char *err, int errMaxBytes);
+int tspice_getmsg(const char *which, char *out, int outMaxBytes, char *err, int errMaxBytes);
+int tspice_setmsg(const char *message, char *err, int errMaxBytes);
+int tspice_sigerr(const char *shortMsg, char *err, int errMaxBytes);
+int tspice_chkin(const char *name, char *err, int errMaxBytes);
+int tspice_chkout(const char *name, char *err, int errMaxBytes);
+
 int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes);
 
 int tspice_furnsh(const char *path, char *err, int errMaxBytes);
@@ -357,6 +373,69 @@ int tspice_mxv(const double *m3x3, const double *v3, double *outV3, char *err, i
 // mtxv_c: transpose(matrix) times vector (3x3).
 // Matrix input is expected as 9 doubles in row-major order.
 int tspice_mtxv(const double *m3x3, const double *v3, double *outV3, char *err, int errMaxBytes);
+
+// mxm_c: matrix times matrix (3x3).
+// Matrix inputs/outputs are expected as 9 doubles in row-major order.
+int tspice_mxm(
+    const double *a3x3,
+    const double *b3x3,
+    double *outM3x3,
+    char *err,
+    int errMaxBytes);
+
+// vadd_c: vector addition.
+int tspice_vadd(const double *a3, const double *b3, double *out3, char *err, int errMaxBytes);
+
+// vsub_c: vector subtraction.
+int tspice_vsub(const double *a3, const double *b3, double *out3, char *err, int errMaxBytes);
+
+// vminus_c: vector negation.
+int tspice_vminus(const double *v3, double *out3, char *err, int errMaxBytes);
+
+// vscl_c: vector scaling.
+int tspice_vscl(double s, const double *v3, double *out3, char *err, int errMaxBytes);
+
+// rotate_c: generate a rotation matrix about a coordinate axis.
+int tspice_rotate(double angle, int axis, double *outM3x3, char *err, int errMaxBytes);
+
+// rotmat_c: rotate a matrix about a coordinate axis.
+int tspice_rotmat(
+    const double *m3x3,
+    double angle,
+    int axis,
+    double *outM3x3,
+    char *err,
+    int errMaxBytes);
+
+// axisar_c: axis and angle to rotation matrix.
+int tspice_axisar(
+    const double *axis3,
+    double angle,
+    double *outM3x3,
+    char *err,
+    int errMaxBytes);
+
+// georec_c: geodetic coordinates to rectangular coordinates.
+int tspice_georec(
+    double lon,
+    double lat,
+    double alt,
+    double re,
+    double f,
+    double *outRect3,
+    char *err,
+    int errMaxBytes);
+
+// recgeo_c: rectangular coordinates to geodetic coordinates.
+int tspice_recgeo(
+    const double *rect3,
+    double re,
+    double f,
+    double *outLon,
+    double *outLat,
+    double *outAlt,
+    char *err,
+    int errMaxBytes);
 
 // --- SCLK conversions + CK attitude ---
 

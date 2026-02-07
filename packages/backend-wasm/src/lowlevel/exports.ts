@@ -10,6 +10,25 @@ export type EmscriptenModule = {
   HEAPU8: Uint8Array;
   HEAP32: Int32Array;
   HEAPF64: Float64Array;
+  // --- error/status utilities ---
+  _tspice_get_last_error_short(outPtr: number, outMaxBytes: number): number;
+  _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;
+  _tspice_get_last_error_trace(outPtr: number, outMaxBytes: number): number;
+
+  _tspice_failed(outFailedPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_reset(errPtr: number, errMaxBytes: number): number;
+  _tspice_getmsg(
+    whichPtr: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_setmsg(messagePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_sigerr(shortPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_chkin(namePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_chkout(namePtr: number, errPtr: number, errMaxBytes: number): number;
+
   _tspice_tkvrsn_toolkit(
     outPtr: number,
     outMaxBytes: number,
@@ -369,6 +388,53 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_mxm(
+    a3x3Ptr: number,
+    b3x3Ptr: number,
+    outM3x3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_vadd(a3Ptr: number, b3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vsub(a3Ptr: number, b3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vminus(v3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vscl(s: number, v3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_rotate(angle: number, axis: number, outM3x3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_rotmat(
+    m3x3Ptr: number,
+    angle: number,
+    axis: number,
+    outM3x3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_axisar(axis3Ptr: number, angle: number, outM3x3Ptr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_georec(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outRect3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_recgeo(
+    rect3Ptr: number,
+    re: number,
+    f: number,
+    outLonPtr: number,
+    outLatPtr: number,
+    outAltPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   FS: any;
 };
@@ -406,6 +472,16 @@ export function assertEmscriptenModule(module: unknown): asserts module is Emscr
     typeof m._tspice_frmnam !== "function" ||
     typeof m._tspice_scs2e !== "function" ||
     typeof m._tspice_sce2s !== "function" ||
+    typeof m._tspice_get_last_error_short !== "function" ||
+    typeof m._tspice_get_last_error_long !== "function" ||
+    typeof m._tspice_get_last_error_trace !== "function" ||
+    typeof m._tspice_failed !== "function" ||
+    typeof m._tspice_reset !== "function" ||
+    typeof m._tspice_getmsg !== "function" ||
+    typeof m._tspice_setmsg !== "function" ||
+    typeof m._tspice_sigerr !== "function" ||
+    typeof m._tspice_chkin !== "function" ||
+    typeof m._tspice_chkout !== "function" ||
     typeof m._tspice_ckgp !== "function" ||
     typeof m._tspice_ckgpav !== "function" ||
     typeof m._tspice_pxform !== "function" ||
@@ -422,6 +498,16 @@ export function assertEmscriptenModule(module: unknown): asserts module is Emscr
     typeof m._tspice_vcrss !== "function" ||
     typeof m._tspice_mxv !== "function" ||
     typeof m._tspice_mtxv !== "function"
+    || typeof m._tspice_mxm !== "function"
+    || typeof m._tspice_vadd !== "function"
+    || typeof m._tspice_vsub !== "function"
+    || typeof m._tspice_vminus !== "function"
+    || typeof m._tspice_vscl !== "function"
+    || typeof m._tspice_rotate !== "function"
+    || typeof m._tspice_rotmat !== "function"
+    || typeof m._tspice_axisar !== "function"
+    || typeof m._tspice_georec !== "function"
+    || typeof m._tspice_recgeo !== "function"
   ) {
     throw new Error("WASM module is missing expected exports");
   }

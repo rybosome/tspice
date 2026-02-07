@@ -6,6 +6,15 @@ import { fileURLToPath } from "node:url";
 export type NativeAddon = {
   spiceVersion(): string;
 
+  // --- error/status utilities ---
+  failed(): boolean;
+  reset(): void;
+  getmsg(which: "SHORT" | "LONG" | "EXPLAIN"): string;
+  setmsg(message: string): void;
+  sigerr(short: string): void;
+  chkin(name: string): void;
+  chkout(name: string): void;
+
   furnsh(path: string): void;
   unload(path: string): void;
   kclear(): void;
@@ -137,6 +146,19 @@ export type NativeAddon = {
   vcrss(a: number[], b: number[]): number[];
   mxv(m: readonly number[], v: readonly number[]): number[];
   mtxv(m: readonly number[], v: readonly number[]): number[];
+
+  vadd(a: readonly number[], b: readonly number[]): number[];
+  vsub(a: readonly number[], b: readonly number[]): number[];
+  vminus(v: readonly number[]): number[];
+  vscl(s: number, v: readonly number[]): number[];
+
+  mxm(a: readonly number[], b: readonly number[]): number[];
+  rotate(angle: number, axis: number): number[];
+  rotmat(m: readonly number[], angle: number, axis: number): number[];
+  axisar(axis: readonly number[], angle: number): number[];
+
+  georec(lon: number, lat: number, alt: number, re: number, f: number): number[];
+  recgeo(rect: readonly number[], re: number, f: number): { lon: number; lat: number; alt: number };
 
   /** Internal test helper (not part of the backend contract). */
   __ktotalAll(): number;

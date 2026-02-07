@@ -15,6 +15,14 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.et2utc === "function", "Expected native addon to export et2utc(et, format, prec)");
   invariant(typeof native.timout === "function", "Expected native addon to export timout(et, picture)");
 
+  invariant(typeof native.failed === "function", "Expected native addon to export failed()");
+  invariant(typeof native.reset === "function", "Expected native addon to export reset()");
+  invariant(typeof native.getmsg === "function", "Expected native addon to export getmsg(which)");
+  invariant(typeof native.setmsg === "function", "Expected native addon to export setmsg(message)");
+  invariant(typeof native.sigerr === "function", "Expected native addon to export sigerr(short)");
+  invariant(typeof native.chkin === "function", "Expected native addon to export chkin(name)");
+  invariant(typeof native.chkout === "function", "Expected native addon to export chkout(name)");
+
   invariant(typeof native.exists === "function", "Expected native addon to export exists(path)");
   invariant(typeof native.getfat === "function", "Expected native addon to export getfat(path)");
 
@@ -29,6 +37,7 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.dlaopn === "function", "Expected native addon to export dlaopn(path, ftype, ifname, ncomch)");
   invariant(typeof native.dlabfs === "function", "Expected native addon to export dlabfs(handle)");
   invariant(typeof native.dlafns === "function", "Expected native addon to export dlafns(handle, descr)");
+
   invariant(typeof native.bodn2c === "function", "Expected native addon to export bodn2c(name)");
   invariant(typeof native.bodc2n === "function", "Expected native addon to export bodc2n(code)");
   invariant(typeof native.namfrm === "function", "Expected native addon to export namfrm(name)");
@@ -51,6 +60,16 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.vcrss === "function", "Expected native addon to export vcrss(a, b)");
   invariant(typeof native.mxv === "function", "Expected native addon to export mxv(m, v)");
   invariant(typeof native.mtxv === "function", "Expected native addon to export mtxv(m, v)");
+  invariant(typeof native.vadd === "function", "Expected native addon to export vadd(a, b)");
+  invariant(typeof native.vsub === "function", "Expected native addon to export vsub(a, b)");
+  invariant(typeof native.vminus === "function", "Expected native addon to export vminus(v)");
+  invariant(typeof native.vscl === "function", "Expected native addon to export vscl(s, v)");
+  invariant(typeof native.mxm === "function", "Expected native addon to export mxm(a, b)");
+  invariant(typeof native.rotate === "function", "Expected native addon to export rotate(angle, axis)");
+  invariant(typeof native.rotmat === "function", "Expected native addon to export rotmat(m, angle, axis)");
+  invariant(typeof native.axisar === "function", "Expected native addon to export axisar(axis, angle)");
+  invariant(typeof native.georec === "function", "Expected native addon to export georec(lon, lat, alt, re, f)");
+  invariant(typeof native.recgeo === "function", "Expected native addon to export recgeo(rect, re, f)");
   invariant(
     typeof native.spkezr === "function",
     "Expected native addon to export spkezr(target, et, ref, abcorr, observer)",

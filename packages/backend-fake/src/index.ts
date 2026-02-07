@@ -14,7 +14,7 @@ import type {
   SpkezrResult,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
-import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import { assertGetmsgWhich, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 
 /**
  * A deterministic, pure-TS "toy" backend.
@@ -246,6 +246,179 @@ function mmul3(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
   );
 }
 
+
+function rotateRowMajor(angle: number, axis: number): Mat3RowMajor {
+  // CSPICE reduces `iaxis` mod 3 (treating 0 as 3). Mirror that for parity.
+  if (!Number.isFinite(axis) || !Number.isInteger(axis)) {
+    throw new Error(
+      `Fake backend: rotate(): invalid axis: ${axis} (expected a finite integer)`,
+    );
+  }
+  const iaxis = axis;
+  const reduced = ((iaxis % 3) + 3) % 3;
+  const spiceAxis = (reduced === 0 ? 3 : reduced) as 1 | 2 | 3;
+
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+
+  switch (spiceAxis) {
+    case 1:
+      return brandMat3RowMajor(
+        [
+          1,
+          0,
+          0,
+          0,
+          canonicalizeZero(c),
+          canonicalizeZero(-s),
+          0,
+          canonicalizeZero(s),
+          canonicalizeZero(c),
+        ] as const,
+        { label: "fake.rotate" },
+      );
+    case 2:
+      return brandMat3RowMajor(
+        [
+          canonicalizeZero(c),
+          0,
+          canonicalizeZero(s),
+          0,
+          1,
+          0,
+          canonicalizeZero(-s),
+          0,
+          canonicalizeZero(c),
+        ] as const,
+        { label: "fake.rotate" },
+      );
+    case 3:
+      return brandMat3RowMajor(
+        [
+          canonicalizeZero(c),
+          canonicalizeZero(-s),
+          0,
+          canonicalizeZero(s),
+          canonicalizeZero(c),
+          0,
+          0,
+          0,
+          1,
+        ] as const,
+        { label: "fake.rotate" },
+      );
+    default: {
+      const _exhaustive: never = spiceAxis;
+      throw new Error(`Fake backend: rotate(): unreachable axis: ${String(_exhaustive)}`);
+    }
+  }
+}
+
+function axisAngleToRotationRowMajor(axis: SpiceVector3, angle: number): Mat3RowMajor {
+  const u = vhat(axis);
+  const ux = u[0];
+  const uy = u[1];
+  const uz = u[2];
+
+  // Parity with CSPICE axisar_c: if axis is zero, return identity rotation.
+  if (ux === 0 && uy === 0 && uz === 0) {
+    return brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1] as const, { label: "fake.axisar" });
+  }
+
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+  const t = 1 - c;
+
+  return brandMat3RowMajor(
+    [
+      canonicalizeZero(t * ux * ux + c),
+      canonicalizeZero(t * ux * uy - s * uz),
+      canonicalizeZero(t * ux * uz + s * uy),
+
+      canonicalizeZero(t * ux * uy + s * uz),
+      canonicalizeZero(t * uy * uy + c),
+      canonicalizeZero(t * uy * uz - s * ux),
+
+      canonicalizeZero(t * ux * uz - s * uy),
+      canonicalizeZero(t * uy * uz + s * ux),
+      canonicalizeZero(t * uz * uz + c),
+    ] as const,
+    { label: "fake.axisar" },
+  );
+}
+
+function georec(lon: number, lat: number, alt: number, re: number, f: number): SpiceVector3 {
+  // Match CSPICE validation semantics where feasible.
+  if (!Number.isFinite(re) || re <= 0) {
+    throw new Error(`Fake backend: georec(): invalid re: ${re} (expected > 0)`);
+  }
+  if (!Number.isFinite(f) || f >= 1) {
+    throw new Error(`Fake backend: georec(): invalid f: ${f} (expected < 1)`);
+  }
+
+  // Standard geodetic-to-rectangular conversion.
+  const rp = re * (1 - f);
+  const e2 = 1 - (rp * rp) / (re * re);
+
+  const slat = Math.sin(lat);
+  const clat = Math.cos(lat);
+  const slon = Math.sin(lon);
+  const clon = Math.cos(lon);
+
+  const n = re / Math.sqrt(1 - e2 * slat * slat);
+
+  const x = (n + alt) * clat * clon;
+  const y = (n + alt) * clat * slon;
+  const z = (n * (1 - e2) + alt) * slat;
+
+  return [x, y, z];
+}
+
+function recgeo(rect: SpiceVector3, re: number, f: number): { lon: number; lat: number; alt: number } {
+  // Match CSPICE validation semantics where feasible.
+  if (!Number.isFinite(re) || re <= 0) {
+    throw new Error(`Fake backend: recgeo(): invalid re: ${re} (expected > 0)`);
+  }
+  if (!Number.isFinite(f) || f >= 1) {
+    throw new Error(`Fake backend: recgeo(): invalid f: ${f} (expected < 1)`);
+  }
+
+  // Bowring's method (non-iterative) for rectangular to geodetic.
+  const x = rect[0];
+  const y = rect[1];
+  const z = rect[2];
+
+  const rp = re * (1 - f);
+  const e2 = 1 - (rp * rp) / (re * re);
+  const ep2 = (re * re - rp * rp) / (rp * rp);
+
+  const lon = Math.atan2(y, x);
+  const p = Math.sqrt(x * x + y * y);
+
+  // Handle poles / near-pole numerical stability.
+  // Avoid the general-case `alt = p / cos(lat) - n` path when `p` is tiny.
+  // (Near-pole cases are extremely sensitive as `cos(lat) -> 0`.)
+  const poleTol = 1e-14 * re;
+  if (p <= poleTol) {
+    const poleLon = 0;
+    const poleLat = z >= 0 ? Math.PI / 2 : -Math.PI / 2;
+    const poleAlt = Math.abs(z) - rp;
+    return { lon: poleLon, lat: poleLat, alt: poleAlt };
+  }
+
+  const theta = Math.atan2(z * re, p * rp);
+  const st = Math.sin(theta);
+  const ct = Math.cos(theta);
+
+  const lat = Math.atan2(z + ep2 * rp * st * st * st, p - e2 * re * ct * ct * ct);
+
+  const slat = Math.sin(lat);
+  const n = re / Math.sqrt(1 - e2 * slat * slat);
+  const alt = p / Math.cos(lat) - n;
+
+  return { lon, lat, alt };
+}
+
 function mtx3(m: Mat3RowMajor): Mat3RowMajor {
   return brandMat3RowMajor(
     [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]] as const,
@@ -442,6 +615,10 @@ function kernelFiltyp(kind: KernelKind): string {
 
 export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
+  let spiceFailed = false;
+  let spiceShort = "";
+  let spiceLong = "";
+  const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
 
   const getKernelsOfKind = (kind: KernelKind): readonly KernelRecord[] => {
@@ -454,6 +631,43 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     spiceVersion: () => FAKE_SPICE_VERSION,
 
+    failed: () => spiceFailed,
+    reset: () => {
+      spiceFailed = false;
+      spiceShort = "";
+      spiceLong = "";
+      traceStack.length = 0;
+    },
+    getmsg: (which) => {
+      assertGetmsgWhich(which);
+      if (which === "SHORT") return spiceShort;
+      if (which === "LONG") return spiceLong;
+
+      // EXPLAIN
+      // CSPICE convention is typically:
+      //   setmsg(long)
+      //   sigerr(short)
+      // so we avoid overwriting the long message when signaling.
+      const trace = traceStack.length > 0 ? traceStack.join(" -> ") : "";
+      if (!spiceLong && !trace) return "";
+      if (spiceLong && !trace) return spiceLong;
+      if (!spiceLong && trace) return `Trace: ${trace}`;
+      return `${spiceLong}\n\nTrace: ${trace}`;
+    },
+    setmsg: (message: string) => {
+      spiceLong = message;
+    },
+    sigerr: (short: string) => {
+      spiceFailed = true;
+      spiceShort = short;
+    },
+    chkin: (name: string) => {
+      traceStack.push(name);
+    },
+    chkout: (name: string) => {
+      const idx = traceStack.lastIndexOf(name);
+      if (idx >= 0) traceStack.splice(idx, 1);
+    },
     furnsh: (kernel: KernelSource) => {
       const file = typeof kernel === "string" ? kernel : kernel.path;
       const source = typeof kernel === "string" ? file : "bytes";
@@ -826,5 +1040,21 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     mxv: (m, v) => mxv(m, v),
     mtxv: (m, v) => mtxv(m, v),
+
+
+    vadd: (a, b) => vadd(a, b),
+    vsub: (a, b) => vsub(a, b),
+    vminus: (v) => vscale(-1, v),
+    vscl: (s, v) => vscale(s, v),
+
+    mxm: (a, b) => mmul3(a, b),
+
+    rotate: (angle, axis) => rotateRowMajor(angle, axis),
+    // CSPICE rotmat_c left-multiplies: mout = rotate(angle, axis) * m
+    rotmat: (m, angle, axis) => mmul3(rotateRowMajor(angle, axis), m),
+    axisar: (axis, angle) => axisAngleToRotationRowMajor(axis, angle),
+
+    georec: (lon, lat, alt, re, f) => georec(lon, lat, alt, re, f),
+    recgeo: (rect, re, f) => recgeo(rect, re, f),
   };
 }
