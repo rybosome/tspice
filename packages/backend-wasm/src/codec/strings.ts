@@ -52,6 +52,11 @@ export function writeUtf8CStringArray(module: EmscriptenModule, values: string[]
 
     for (let i = 0; i < values.length; i++) {
       const itemPtr = writeUtf8CString(module, values[i]!);
+      // Safety: HEAPU32 stores unsigned 32-bit pointers; guard against accidental truncation.
+      if (!Number.isInteger(itemPtr) || itemPtr < 0 || itemPtr > 0xffff_ffff) {
+        throw new Error(`Internal error: string item pointer out of u32 range (itemPtr=${itemPtr})`);
+      }
+
       arr.itemPtrs.push(itemPtr);
       module.HEAPU32[baseIndex + i] = itemPtr;
     }

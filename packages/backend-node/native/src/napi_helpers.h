@@ -209,25 +209,17 @@ inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArr
     return false;
   }
 
-  // NOTE: we intentionally keep capacity between calls (clear() does not shrink).
-  // These helpers are often called in hot paths and reusing allocations reduces churn.
-  out->values.clear();
-  out->ptrs.clear();
-
   Napi::Array arr = value.As<Napi::Array>();
   const uint32_t len = arr.Length();
 
-  if (len == 0) {
-    return true;
-  }
-
-  // Perf note: `arr.Get(i)` crosses the N-API boundary, so keep the loop single-pass
-  // and avoid any extra `Get()`/conversion work.
+  // Build into locals so callers never observe a partially-filled `out` on failure.
   //
-  // Also: `ptrs` points into `values`, so we must reserve upfront to prevent vector reallocation
-  // invalidating stored pointers.
-  out->values.reserve(len);
-  out->ptrs.reserve(len);
+  // Pointer stability: we fill `values` to its final size first, then build `ptrs` in a second pass
+  // so each `c_str()` pointer is taken only after the vector is fully populated.
+  std::vector<std::string> values;
+  std::vector<const char*> ptrs;
+  values.resize(len);
+  ptrs.resize(len);
 
   for (uint32_t i = 0; i < len; i++) {
     const Napi::Value v = arr.Get(i);
@@ -237,10 +229,15 @@ inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArr
       return false;
     }
 
-    out->values.emplace_back(v.As<Napi::String>().Utf8Value());
-    out->ptrs.push_back(out->values.back().c_str());
+    values[i] = v.As<Napi::String>().Utf8Value();
   }
 
+  for (uint32_t i = 0; i < len; i++) {
+    ptrs[i] = values[i].c_str();
+  }
+
+  out->values.swap(values);
+  out->ptrs.swap(ptrs);
   return true;
 }
 
