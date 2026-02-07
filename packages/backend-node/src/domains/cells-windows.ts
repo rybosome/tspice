@@ -42,9 +42,11 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
     },
 
     freeCell: (cell) => {
+      assertSpiceInt32NonNegative(cell as unknown as number, "freeCell(cell)");
       native.freeCell(cell);
     },
     freeWindow: (window) => {
+      assertSpiceInt32NonNegative(window as unknown as number, "freeWindow(window)");
       native.freeWindow(window);
     },
 
