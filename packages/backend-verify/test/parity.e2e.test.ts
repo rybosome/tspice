@@ -1,7 +1,6 @@
 import * as path from "node:path";
 import * as fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
 
 import { describe, expect, it } from "vitest";
 
@@ -17,19 +16,6 @@ import { parseScenario } from "../src/dsl/parse.js";
 import { executeScenario } from "../src/dsl/execute.js";
 import { compareValues } from "../src/compare/compare.js";
 import { formatMismatchReport } from "../src/compare/report.js";
-
-const require = createRequire(import.meta.url);
-
-function hasNodeBackendDist(): boolean {
-  try {
-    // In JS-only CI we typically don't build the native backend package.
-    // If its dist entry doesn't exist, skip this e2e test.
-    require.resolve("@rybosome/tspice-backend-node");
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 function cspiceRunnerReady(): boolean {
   if (!isCspiceRunnerAvailable()) {
@@ -47,19 +33,11 @@ function cspiceRunnerReady(): boolean {
     console.error(`[backend-verify] skipping cspice parity test: ${hint}`);
     return false;
   }
-
-  const state = readCspiceRunnerBuildState();
-  if (state?.available === false) {
-    // eslint-disable-next-line no-console
-    console.error(`[backend-verify] skipping cspice parity test: ${state.reason || state.error}`);
-    return false;
-  }
-
   return true;
 }
 
 describe("backend-verify (tspice vs cspice parity)", () => {
-  const maybeIt = hasNodeBackendDist() && cspiceRunnerReady() ? it : it.skip;
+  const maybeIt = cspiceRunnerReady() ? it : it.skip;
 
   maybeIt("matches time.str2et basic scenario", async () => {
     const scenarioPath = path.resolve(

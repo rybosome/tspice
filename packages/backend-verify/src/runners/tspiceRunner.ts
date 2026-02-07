@@ -1,3 +1,6 @@
+import * as path from "node:path";
+import { readFile } from "node:fs/promises";
+
 import { createBackend, type SpiceBackend } from "@rybosome/tspice";
 
 import type { CaseRunner, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
@@ -93,18 +96,75 @@ function captureSpiceErrorState(backend: SpiceBackend): SpiceErrorState {
   return spice;
 }
 
-export async function createTspiceRunner(): Promise<CaseRunner> {
-  const backend = await createBackend({ backend: "node" });
+export type TspiceRunnerBackend = "auto" | "node" | "wasm";
+
+export type CreateTspiceRunnerOptions = {
+  backend?: TspiceRunnerBackend;
+};
+
+function parseBackendEnv(value: unknown): TspiceRunnerBackend | undefined {
+  if (value === "node" || value === "wasm" || value === "auto") return value;
+  return undefined;
+}
+
+function isMissingNativeAddon(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  const msg = error.message;
+  if (/tspice_backend_node\.node/.test(msg)) return true;
+  if (/Cannot find module/.test(msg) && /tspice-native-/.test(msg)) return true;
+  if (
+    /tspice-backend-node/.test(msg) &&
+    (/Cannot find module/.test(msg) || /ERR_MODULE_NOT_FOUND/.test(msg) || /Failed to resolve entry/.test(msg))
+  ) {
+    return true;
+  }
+  return false;
+}
+
+async function createBackendForRunner(
+  backend: TspiceRunnerBackend,
+): Promise<{ backend: SpiceBackend; kind: string }> {
+  if (backend === "node") {
+    return { backend: await createBackend({ backend: "node" }), kind: "tspice(node)" };
+  }
+  if (backend === "wasm") {
+    return { backend: await createBackend({ backend: "wasm" }), kind: "tspice(wasm)" };
+  }
+
+  // auto: prefer node, but fall back to wasm when the native addon isn't staged.
+  try {
+    return { backend: await createBackend({ backend: "node" }), kind: "tspice(node)" };
+  } catch (error) {
+    if (isMissingNativeAddon(error)) {
+      return { backend: await createBackend({ backend: "wasm" }), kind: "tspice(wasm)" };
+    }
+    throw error;
+  }
+}
+
+export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}): Promise<CaseRunner> {
+  const requested =
+    options.backend ?? parseBackendEnv(process.env.TSPICE_BACKEND_VERIFY_BACKEND) ?? "auto";
+
+  const { backend, kind } = await createBackendForRunner(requested);
 
   return {
-    kind: "tspice(node)",
+    kind,
 
     async runCase(input: RunCaseInput): Promise<RunCaseResult> {
       isolateCase(backend);
 
       try {
         for (const kernel of input.setup?.kernels ?? []) {
-          backend.furnsh(kernel);
+          if (backend.kind === "wasm") {
+            // Scenarios provide OS filesystem paths, but the WASM backend treats
+            // string kernels as *virtual* identifiers. When running on WASM,
+            // load kernel bytes from disk and provide an explicit virtual id.
+            const bytes = await readFile(kernel);
+            backend.furnsh({ path: path.basename(kernel), bytes });
+          } else {
+            backend.furnsh(kernel);
+          }
         }
 
         const fn = DISPATCH[input.call];

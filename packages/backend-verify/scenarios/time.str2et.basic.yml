@@ -7,4 +7,4 @@ cases:
   - id: j2000
     call: time.str2et
     args:
-      - 2000 JAN 01 12:00:00
+      - 2000 JAN 01 12:00:00 TDB
