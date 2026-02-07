@@ -21,6 +21,9 @@
     },
     {
       "path": "./packages/tspice"
+    },
+    {
+      "path": "./packages/backend-verify"
     }
   ]
 }
