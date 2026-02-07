@@ -15,6 +15,7 @@
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pretest": "node ./scripts/pretest-cspice-runner.mjs",
     "test": "vitest run"
   },
   "dependencies": {

@@ -13,6 +13,7 @@ export type SpiceErrorState = {
   short?: string;
   long?: string;
   explain?: string;
+  trace?: string;
 };
 
 export type RunnerErrorReport = {
