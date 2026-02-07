@@ -12,7 +12,13 @@ import {
 } from '../../spice/SpiceClient.js'
 import { createBodyMesh } from '../BodyMesh.js'
 import { SUN_BLOOM_LAYER } from '../../renderLayers.js'
-import { BODY_REGISTRY, getBodyRegistryEntry, listDefaultVisibleSceneBodies, type BodyId } from '../BodyRegistry.js'
+import {
+  getBodyRegistryEntry,
+  getBodyRegistryEntryByBodyRef,
+  resolveBodyRegistryEntry,
+  listDefaultVisibleSceneBodies,
+  type BodyId,
+} from '../BodyRegistry.js'
 import { computeBodyRadiusWorld } from '../bodyScaling.js'
 import { createFrameAxes, mat3ToMatrix4 } from '../FrameAxes.js'
 import { OrbitPaths } from '../orbits/OrbitPaths.js'
@@ -216,7 +222,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   const bodies = sceneModel.bodies.map((body) => {
-    const registry = BODY_REGISTRY.find((r) => String(r.body) === String(body.body))
+    const registry = resolveBodyRegistryEntry(String(body.body)) ?? getBodyRegistryEntryByBodyRef(body.body)
     const bodyId = registry?.id
 
     const { mesh, dispose, ready, update } = createBodyMesh({
@@ -311,24 +317,32 @@ export async function initSpiceSceneRuntime(args: {
   let latestLabelOverlayOptions: LabelOverlayUpdateOptions | null = null
 
   const afterRender = () => {
-    if (!labelOverlay || !latestLabelOverlayOptions) return
-
-    // Keep selection in sync even when simulation time is paused.
-    labelOverlay.update({
-      ...latestLabelOverlayOptions,
-      selectedBodyId: selectedBodyIdRef.current,
-    })
+    if (labelOverlay && latestLabelOverlayOptions) {
+      // Keep selection in sync even when simulation time is paused.
+      labelOverlay.update({
+        ...latestLabelOverlayOptions,
+        selectedBodyId: selectedBodyIdRef.current,
+      })
+    }
   }
 
-  const labelBodies: LabelBody[] = bodies.map((b) => {
-    const registry = BODY_REGISTRY.find((r) => String(r.body) === String(b.body))
-    return {
-      id: (registry?.id ?? String(b.body)) as BodyId,
-      label: registry?.style.label ?? String(b.body),
-      kind: registry?.kind ?? 'planet',
-      mesh: b.mesh,
-      radiusKm: b.radiusKm,
-    }
+  const labelBodies: LabelBody[] = bodies.flatMap((b) => {
+    const registry = resolveBodyRegistryEntry(String(b.body)) ?? getBodyRegistryEntryByBodyRef(b.body)
+
+    // `LabelOverlay` keys labels by `BodyId`, so avoid inventing ids for
+    // unregistered bodies. (Unregistered bodies can still be interacted with,
+    // they just won't participate in label overlay state.)
+    if (!registry) return []
+
+    return [
+      {
+        id: registry.id,
+        label: registry.style.label ?? String(b.body),
+        kind: registry.kind,
+        mesh: b.mesh,
+        radiusKm: b.radiusKm,
+      },
+    ]
   })
 
   let lastAutoZoomFocusBody: BodyRef | undefined
@@ -633,7 +647,7 @@ export async function initSpiceSceneRuntime(args: {
     // Record label overlay inputs so we can update it on camera movement.
     latestLabelOverlayOptions = {
       bodies: labelBodies,
-      focusBodyId: BODY_REGISTRY.find((r) => String(r.body) === String(next.focusBody))?.id as BodyId | undefined,
+      focusBodyId: resolveBodyRegistryEntry(String(next.focusBody))?.id,
       selectedBodyId: selectedBodyIdRef.current,
       labelsEnabled: next.labelsEnabled,
       occlusionEnabled: next.labelOcclusionEnabled,

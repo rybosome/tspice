@@ -7,7 +7,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import { SUN_BLOOM_LAYER } from '../renderLayers.js'
 import { CameraController, type CameraControllerState } from '../controls/CameraController.js'
-import { createSelectionRing, type SelectionRing } from '../scene/SelectionRing.js'
+import { createSelectionOverlay, type SelectionOverlay } from '../scene/SelectionOverlay.js'
 import { createSkydome, type CreateSkydomeOptions } from '../scene/Skydome.js'
 import { createStarfield, type StarfieldHandle } from '../scene/Starfield.js'
 import type { BodyRef } from '../spice/SpiceClient.js'
@@ -19,7 +19,7 @@ export type ThreeRuntime = {
   camera: THREE.PerspectiveCamera
   controller: CameraController
 
-  selectionRing?: SelectionRing
+  selectionOverlay?: SelectionOverlay
 
   renderOnce: (timeMs?: number) => void
   invalidate: () => void
@@ -103,6 +103,10 @@ export function createThreeRuntime(args: {
   let disposed = false
 
   let scheduledFrame: number | null = null
+  let scheduledResizeFrame: number | null = null
+  let scheduledPrimeResizeFrame: number | null = null
+
+  let lastResizeKey: string | null = null
 
   const drawingBufferSize = new THREE.Vector2()
 
@@ -181,11 +185,26 @@ export function createThreeRuntime(args: {
   let skydome: ReturnType<typeof createSkydome> | null = null
   let skyState: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean } | null = null
 
-  // Subtle selection ring (interactive-only)
-  const selectionRing = !isE2e ? createSelectionRing() : undefined
-  if (selectionRing) {
-    scene.add(selectionRing.object)
-  }
+  // Selection overlay (interactive-only)
+  const selectionOverlay = !isE2e
+    ? createSelectionOverlay({
+        // ResizeObserver work is throttled to RAF; prime a best-effort
+        // initial resolution so the overlay's first paint has correct line
+        // widths.
+        initialResolution: (() => {
+          const width = container.clientWidth
+          const height = container.clientHeight
+          if (width <= 0 || height <= 0) return undefined
+
+          const pixelRatio = Math.min(window.devicePixelRatio, 2)
+          return {
+            widthPx: Math.max(1, Math.floor(width * pixelRatio)),
+            heightPx: Math.max(1, Math.floor(height * pixelRatio)),
+          }
+        })(),
+      })
+    : undefined
+  if (selectionOverlay) scene.add(selectionOverlay.object)
 
   const ensureSky = (opts: { animatedSky: boolean; twinkleEnabled: boolean; isE2e: boolean }) => {
     if (
@@ -629,7 +648,7 @@ export function createThreeRuntime(args: {
     starfield?.update?.(timeSec)
     starfield?.syncToCamera(camera)
 
-    selectionRing?.syncToCamera({ camera, nowMs })
+    selectionOverlay?.syncToCamera({ camera, nowMs, viewportHeightPx: container.clientHeight })
 
     skydome?.syncToCamera(camera)
     skydome?.setTimeSeconds(timeSec)
@@ -740,7 +759,22 @@ export function createThreeRuntime(args: {
     const height = container.clientHeight
     if (width <= 0 || height <= 0) return
 
-    renderer.setPixelRatio(isE2e ? 1 : Math.min(window.devicePixelRatio, 2))
+    const nextPixelRatio = isE2e ? 1 : Math.min(window.devicePixelRatio, 2)
+
+    // Avoid repeating expensive resize work when the observable inputs haven't
+    // changed (e.g. init-time prime + ResizeObserver fire in the same layout).
+    //
+    // Contract: if you change resize logic, ensure `resizeKey` includes *all*
+    // inputs that affect resize work.
+    // - container size (`clientWidth`/`clientHeight`)
+    // - effective pixel ratio (incl `isE2e` clamping)
+    // - postprocess mode (affects which composers exist)
+    // - bloom resolution scale (affects `bloomPass.setSize`)
+    const resizeKey = `${width}x${height}@${nextPixelRatio}|${postprocessRuntime.mode}|${sunPostprocess.bloom.resolutionScale}`
+    if (resizeKey === lastResizeKey) return
+    lastResizeKey = resizeKey
+
+    renderer.setPixelRatio(nextPixelRatio)
     renderer.setSize(width, height, false)
 
     const pixelRatio = renderer.getPixelRatio()
@@ -758,6 +792,8 @@ export function createThreeRuntime(args: {
     camera.updateProjectionMatrix()
 
     const buffer = renderer.getDrawingBufferSize(drawingBufferSize)
+
+    selectionOverlay?.setResolution(buffer.x, buffer.y)
 
     if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
       const scale = THREE.MathUtils.clamp(sunPostprocess.bloom.resolutionScale, 0.1, 1)
@@ -820,12 +856,36 @@ export function createThreeRuntime(args: {
 
   const onResize = () => {
     if (disposed) return
+
+    const width = container.clientWidth
+    const height = container.clientHeight
+    if (width <= 0 || height <= 0) return
+
     resize()
     invalidate()
   }
 
-  const resizeObserver = new ResizeObserver(onResize)
+  // Throttle ResizeObserver events to at most one resize per frame.
+  const onResizeObserved = () => {
+    if (disposed) return
+    if (scheduledResizeFrame != null) return
+
+    scheduledResizeFrame = window.requestAnimationFrame(() => {
+      scheduledResizeFrame = null
+      onResize()
+    })
+  }
+
+  const resizeObserver = new ResizeObserver(onResizeObserved)
   resizeObserver.observe(container)
+
+  // Prime drawing-buffer-dependent state so the first render has correct
+  // sizes (camera aspect, SelectionOverlay line material resolution, bloom
+  // render targets, etc.).
+  scheduledPrimeResizeFrame = window.requestAnimationFrame(() => {
+    scheduledPrimeResizeFrame = null
+    onResize()
+  })
 
   const dispose = () => {
     disposed = true
@@ -833,6 +893,16 @@ export function createThreeRuntime(args: {
     if (scheduledFrame != null) {
       window.cancelAnimationFrame(scheduledFrame)
       scheduledFrame = null
+    }
+
+    if (scheduledResizeFrame != null) {
+      window.cancelAnimationFrame(scheduledResizeFrame)
+      scheduledResizeFrame = null
+    }
+
+    if (scheduledPrimeResizeFrame != null) {
+      window.cancelAnimationFrame(scheduledPrimeResizeFrame)
+      scheduledPrimeResizeFrame = null
     }
 
     resizeObserver.disconnect()
@@ -849,9 +919,9 @@ export function createThreeRuntime(args: {
       skydome = null
     }
 
-    if (selectionRing) {
-      scene.remove(selectionRing.object)
-      selectionRing.dispose()
+    if (selectionOverlay) {
+      scene.remove(selectionOverlay.object)
+      selectionOverlay.dispose()
     }
 
     afterRender = null
@@ -872,7 +942,7 @@ export function createThreeRuntime(args: {
     scene,
     camera,
     controller,
-    selectionRing,
+    selectionOverlay,
 
     renderOnce,
     invalidate,
