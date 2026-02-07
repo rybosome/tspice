@@ -3,6 +3,7 @@
 #include "SpiceUsr.h"
 #include "SpiceZmc.h"
 
+#include <inttypes.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -15,6 +16,125 @@ static int tspice_write_error(char *err, int errMaxBytes, const char *message) {
     err[errMaxBytes - 1] = '\0';
   }
   return 1;
+
+// ---- Handle validation + checked casts ------------------------------------
+
+typedef struct {
+  SpiceCell **items;
+  size_t len;
+  size_t cap;
+} tspice_cell_registry;
+
+static tspice_cell_registry tspice_cells_registry = {0};
+
+static int tspice_registry_contains(SpiceCell *cell) {
+  if (!cell) return 0;
+  for (size_t i = 0; i < tspice_cells_registry.len; i++) {
+    if (tspice_cells_registry.items[i] == cell) return 1;
+  }
+  return 0;
+}
+
+static int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxBytes) {
+  if (!cell) {
+    return tspice_write_error(err, errMaxBytes, "tspice_registry_add(): cell must be non-null");
+  }
+  if (tspice_registry_contains(cell)) {
+    return 0;
+  }
+  if (tspice_cells_registry.len == tspice_cells_registry.cap) {
+    const size_t nextCap = tspice_cells_registry.cap == 0 ? 16 : tspice_cells_registry.cap * 2;
+    SpiceCell **next = (SpiceCell **)realloc(tspice_cells_registry.items, nextCap * sizeof(SpiceCell *));
+    if (!next) {
+      char buf[160];
+      snprintf(buf, sizeof(buf), "%s: failed to grow cell registry", ctx);
+      return tspice_write_error(err, errMaxBytes, buf);
+    }
+    tspice_cells_registry.items = next;
+    tspice_cells_registry.cap = nextCap;
+  }
+  tspice_cells_registry.items[tspice_cells_registry.len++] = cell;
+  return 0;
+}
+
+static int tspice_registry_remove(SpiceCell *cell) {
+  if (!cell) return 0;
+  for (size_t i = 0; i < tspice_cells_registry.len; i++) {
+    if (tspice_cells_registry.items[i] == cell) {
+      tspice_cells_registry.items[i] = tspice_cells_registry.items[tspice_cells_registry.len - 1];
+      tspice_cells_registry.len--;
+      return 1;
+    }
+  }
+  return 0;
+}
+
+static SpiceCell *tspice_validate_handle(
+    uintptr_t handle,
+    const char *kind,
+    const char *ctx,
+    char *err,
+    int errMaxBytes) {
+  if (handle == 0) {
+    char buf[160];
+    snprintf(buf, sizeof(buf), "%s: %s handle must be non-null", ctx, kind);
+    tspice_write_error(err, errMaxBytes, buf);
+    return NULL;
+  }
+
+  SpiceCell *cell = (SpiceCell *)handle;
+  if (!tspice_registry_contains(cell)) {
+    char buf[200];
+    snprintf(
+        buf,
+        sizeof(buf),
+        "%s: unknown/expired %s handle (%" PRIuPTR ")",
+        ctx,
+        kind,
+        handle);
+    tspice_write_error(err, errMaxBytes, buf);
+    return NULL;
+  }
+
+  return cell;
+}
+
+static int tspice_int_to_spice_int_checked(
+    int value,
+    SpiceInt *out,
+    const char *ctx,
+    char *err,
+    int errMaxBytes) {
+  if (!out) return tspice_write_error(err, errMaxBytes, "tspice_int_to_spice_int_checked(): out must be non-null");
+  const SpiceInt v = (SpiceInt)value;
+  if ((int)v != value) {
+    char buf[200];
+    snprintf(buf, sizeof(buf), "%s: int value out of SpiceInt range (%d)", ctx, value);
+    return tspice_write_error(err, errMaxBytes, buf);
+  }
+  *out = v;
+  return 0;
+}
+
+static int tspice_spice_int_to_int_checked(
+    SpiceInt value,
+    int *out,
+    const char *ctx,
+    char *err,
+    int errMaxBytes) {
+  if (!out) return tspice_write_error(err, errMaxBytes, "tspice_spice_int_to_int_checked(): out must be non-null");
+  const int v = (int)value;
+  if ((SpiceInt)v != value) {
+    char buf[220];
+    snprintf(buf, sizeof(buf), "%s: SpiceInt value out of int range (%" PRIdMAX ")", ctx, (intmax_t)value);
+    return tspice_write_error(err, errMaxBytes, buf);
+  }
+  *out = v;
+  return 0;
+}
+
+// ---------------------------------------------------------------------------
+
 }
 
 static SpiceCell *tspice_as_cell(uintptr_t handle) { return (SpiceCell *)handle; }
@@ -238,10 +358,24 @@ int tspice_new_int_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes
     err[0] = '\0';
   }
 
-  if (size > INT_MAX) {
-    return tspice_write_error(err, errMaxBytes, "tspice_new_int_cell(): size too large");
+  SpiceInt sz = 0;
+  if (tspice_int_to_spice_int_checked(size, &sz, "tspice_new_int_cell()", err, errMaxBytes) != 0) {
+    return 1;
   }
-  return tspice_alloc_and_init_int_cell((SpiceInt)size, outCell, err, errMaxBytes);
+
+  const int code = tspice_alloc_and_init_int_cell(sz, outCell, err, errMaxBytes);
+  if (code != 0) return code;
+
+  if (outCell && *outCell) {
+    SpiceCell *cell = (SpiceCell *)(*outCell);
+    const int reg = tspice_registry_add(cell, "tspice_new_int_cell()", err, errMaxBytes);
+    if (reg != 0) {
+      tspice_free_cell(*outCell, NULL, 0);
+      *outCell = 0;
+      return 1;
+    }
+  }
+  return 0;
 }
 
 int tspice_new_double_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes) {
@@ -250,10 +384,24 @@ int tspice_new_double_cell(int size, uintptr_t *outCell, char *err, int errMaxBy
     err[0] = '\0';
   }
 
-  if (size > INT_MAX) {
-    return tspice_write_error(err, errMaxBytes, "tspice_new_double_cell(): size too large");
+  SpiceInt sz = 0;
+  if (tspice_int_to_spice_int_checked(size, &sz, "tspice_new_double_cell()", err, errMaxBytes) != 0) {
+    return 1;
   }
-  return tspice_alloc_and_init_double_cell((SpiceInt)size, outCell, err, errMaxBytes);
+
+  const int code = tspice_alloc_and_init_double_cell(sz, outCell, err, errMaxBytes);
+  if (code != 0) return code;
+
+  if (outCell && *outCell) {
+    SpiceCell *cell = (SpiceCell *)(*outCell);
+    const int reg = tspice_registry_add(cell, "tspice_new_double_cell()", err, errMaxBytes);
+    if (reg != 0) {
+      tspice_free_cell(*outCell, NULL, 0);
+      *outCell = 0;
+      return 1;
+    }
+  }
+  return 0;
 }
 
 int tspice_new_char_cell(
@@ -267,15 +415,29 @@ int tspice_new_char_cell(
     err[0] = '\0';
   }
 
-  if (size > INT_MAX) {
-    return tspice_write_error(err, errMaxBytes, "tspice_new_char_cell(): size too large");
+  SpiceInt sz = 0;
+  SpiceInt len = 0;
+  if (tspice_int_to_spice_int_checked(size, &sz, "tspice_new_char_cell()", err, errMaxBytes) != 0) {
+    return 1;
   }
-  if (length > INT_MAX) {
-    return tspice_write_error(err, errMaxBytes, "tspice_new_char_cell(): length too large");
+  if (tspice_int_to_spice_int_checked(length, &len, "tspice_new_char_cell()", err, errMaxBytes) != 0) {
+    return 1;
   }
 
-  return tspice_alloc_and_init_char_cell(
-      (SpiceInt)size, (SpiceInt)length, outCell, err, errMaxBytes);
+  const int code = tspice_alloc_and_init_char_cell(sz, len, outCell, err, errMaxBytes);
+  if (code != 0) return code;
+
+  if (outCell && *outCell) {
+    SpiceCell *cell = (SpiceCell *)(*outCell);
+    const int reg = tspice_registry_add(cell, "tspice_new_char_cell()", err, errMaxBytes);
+    if (reg != 0) {
+      tspice_free_cell(*outCell, NULL, 0);
+      *outCell = 0;
+      return 1;
+    }
+  }
+
+  return 0;
 }
 
 int tspice_new_window(int maxIntervals, uintptr_t *outWindow, char *err, int errMaxBytes) {
@@ -291,16 +453,27 @@ int tspice_new_window(int maxIntervals, uintptr_t *outWindow, char *err, int err
     return tspice_write_error(err, errMaxBytes, "tspice_new_window(): maxIntervals too large");
   }
 
-  const SpiceInt endpoints = (SpiceInt)(2 * maxIntervals);
+  SpiceInt endpoints = 0;
+  if (tspice_int_to_spice_int_checked(2 * maxIntervals, &endpoints, "tspice_new_window()", err, errMaxBytes) != 0) {
+    return 1;
+  }
+
   const int code =
       tspice_alloc_and_init_double_cell_uninitialized(endpoints, outWindow, err, errMaxBytes);
   if (code != 0) {
     return code;
   }
 
+  SpiceCell *window = (SpiceCell *)(*outWindow);
+  const int reg = tspice_registry_add(window, "tspice_new_window()", err, errMaxBytes);
+  if (reg != 0) {
+    tspice_free_cell(*outWindow, NULL, 0);
+    *outWindow = 0;
+    return 1;
+  }
+
   // Initialize the cell control area in the backing `base` array; window
   // routines (e.g. `wninsd`) call `sized_`/`cardd_` on the base array.
-  SpiceCell *window = tspice_as_cell(*outWindow);
   ssize_c(endpoints, window);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -322,14 +495,16 @@ int tspice_new_window(int maxIntervals, uintptr_t *outWindow, char *err, int err
 int tspice_free_cell(uintptr_t cellHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
 
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_free_cell(): cell must be non-null");
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_free_cell()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
   }
 
-  SpiceCell *cell = tspice_as_cell(cellHandle);
+  (void)tspice_registry_remove(cell);
+
   if (cell->base) {
     free(cell->base);
   }
@@ -338,48 +513,73 @@ int tspice_free_cell(uintptr_t cellHandle, char *err, int errMaxBytes) {
 }
 
 int tspice_free_window(uintptr_t windowHandle, char *err, int errMaxBytes) {
-  return tspice_free_cell(windowHandle, err, errMaxBytes);
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) {
+    err[0] = ' ';
+  }
+
+  SpiceCell *window = tspice_validate_handle(windowHandle, "window", "tspice_free_window()", err, errMaxBytes);
+  if (!window) {
+    return 1;
+  }
+
+  (void)tspice_registry_remove(window);
+
+  if (window->base) {
+    free(window->base);
+  }
+  free(window);
+  return 0;
 }
 
 int tspice_char_cell_length(uintptr_t cellHandle, int *outLength, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
   if (outLength) {
     *outLength = 0;
   }
 
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_char_cell_length(): cell must be non-null");
+  SpiceCell *cell = tspice_validate_handle(
+      cellHandle, "cell", "tspice_char_cell_length()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
   }
 
-  SpiceCell *cell = tspice_as_cell(cellHandle);
   if (cell->dtype != SPICE_CHR) {
     return tspice_write_error(err, errMaxBytes, "tspice_char_cell_length(): expected SPICE_CHR cell");
   }
 
   const SpiceInt length = cell->length;
-  if (length <= 0 || length > INT_MAX) {
+  if (length <= 0) {
     return tspice_write_error(err, errMaxBytes, "tspice_char_cell_length(): invalid cell length");
   }
 
   if (outLength) {
-    *outLength = (int)length;
+    return tspice_spice_int_to_int_checked(length, outLength, "tspice_char_cell_length()", err, errMaxBytes);
   }
+
   return 0;
 }
 
 int tspice_ssize(int size, uintptr_t cellHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
 
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_ssize(): cell must be non-null");
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_ssize()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
   }
-  ssize_c((SpiceInt)size, tspice_as_cell(cellHandle));
+
+  SpiceInt sz = 0;
+  if (tspice_int_to_spice_int_checked(size, &sz, "tspice_ssize()", err, errMaxBytes) != 0) {
+    return 1;
+  }
+
+  ssize_c(sz, cell);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
@@ -390,13 +590,20 @@ int tspice_ssize(int size, uintptr_t cellHandle, char *err, int errMaxBytes) {
 int tspice_scard(int card, uintptr_t cellHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
-  }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_scard(): cell must be non-null");
+    err[0] = ' ';
   }
 
-  scard_c((SpiceInt)card, tspice_as_cell(cellHandle));
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_scard()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
+  }
+
+  SpiceInt c = 0;
+  if (tspice_int_to_spice_int_checked(card, &c, "tspice_scard()", err, errMaxBytes) != 0) {
+    return 1;
+  }
+
+  scard_c(c, cell);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
@@ -407,61 +614,74 @@ int tspice_scard(int card, uintptr_t cellHandle, char *err, int errMaxBytes) {
 int tspice_card(uintptr_t cellHandle, int *outCard, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
   if (outCard) {
     *outCard = 0;
   }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_card(): cell must be non-null");
+
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_card()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
   }
 
-  SpiceInt card = card_c(tspice_as_cell(cellHandle));
+  SpiceInt card = card_c(cell);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
 
   if (outCard) {
-    *outCard = (int)card;
+    return tspice_spice_int_to_int_checked(card, outCard, "tspice_card()", err, errMaxBytes);
   }
+
   return 0;
 }
 
 int tspice_size(uintptr_t cellHandle, int *outSize, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
   if (outSize) {
     *outSize = 0;
   }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_size(): cell must be non-null");
+
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_size()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
   }
 
-  SpiceInt size = size_c(tspice_as_cell(cellHandle));
+  SpiceInt size = size_c(cell);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
 
   if (outSize) {
-    *outSize = (int)size;
+    return tspice_spice_int_to_int_checked(size, outSize, "tspice_size()", err, errMaxBytes);
   }
+
   return 0;
 }
 
 int tspice_valid(int size, int n, uintptr_t cellHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
-  }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_valid(): cell must be non-null");
+    err[0] = ' ';
   }
 
-  valid_c((SpiceInt)size, (SpiceInt)n, tspice_as_cell(cellHandle));
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_valid()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
+  }
+
+  SpiceInt sz = 0;
+  SpiceInt nn = 0;
+  if (tspice_int_to_spice_int_checked(size, &sz, "tspice_valid()", err, errMaxBytes) != 0) return 1;
+  if (tspice_int_to_spice_int_checked(n, &nn, "tspice_valid()", err, errMaxBytes) != 0) return 1;
+
+  valid_c(sz, nn, cell);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
@@ -472,18 +692,24 @@ int tspice_valid(int size, int n, uintptr_t cellHandle, char *err, int errMaxByt
 int tspice_insrti(int item, uintptr_t cellHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
-  }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_insrti(): cell must be non-null");
+    err[0] = ' ';
   }
 
-  SpiceCell *cell = tspice_as_cell(cellHandle);
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_insrti()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
+  }
+
   if (cell->dtype != SPICE_INT) {
     return tspice_write_error(err, errMaxBytes, "tspice_insrti(): expected SPICE_INT cell");
   }
 
-  insrti_c((SpiceInt)item, cell);
+  SpiceInt it = 0;
+  if (tspice_int_to_spice_int_checked(item, &it, "tspice_insrti()", err, errMaxBytes) != 0) {
+    return 1;
+  }
+
+  insrti_c(it, cell);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
@@ -495,13 +721,14 @@ int tspice_insrti(int item, uintptr_t cellHandle, char *err, int errMaxBytes) {
 int tspice_insrtd(double item, uintptr_t cellHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
-  }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_insrtd(): cell must be non-null");
+    err[0] = ' ';
   }
 
-  SpiceCell *cell = tspice_as_cell(cellHandle);
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_insrtd()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
+  }
+
   if (cell->dtype != SPICE_DP) {
     return tspice_write_error(err, errMaxBytes, "tspice_insrtd(): expected SPICE_DP cell");
   }
@@ -518,16 +745,17 @@ int tspice_insrtd(double item, uintptr_t cellHandle, char *err, int errMaxBytes)
 int tspice_insrtc(const char *item, uintptr_t cellHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
-  }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_insrtc(): cell must be non-null");
+    err[0] = ' ';
   }
   if (!item) {
     return tspice_write_error(err, errMaxBytes, "tspice_insrtc(): item must be non-null");
   }
 
-  SpiceCell *cell = tspice_as_cell(cellHandle);
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_insrtc()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
+  }
+
   if (cell->dtype != SPICE_CHR) {
     return tspice_write_error(err, errMaxBytes, "tspice_insrtc(): expected SPICE_CHR cell");
   }
@@ -544,52 +772,68 @@ int tspice_insrtc(const char *item, uintptr_t cellHandle, char *err, int errMaxB
 int tspice_cell_geti(uintptr_t cellHandle, int index, int *outItem, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
   if (outItem) {
     *outItem = 0;
   }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_cell_geti(): cell must be non-null");
+
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_cell_geti()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
   }
 
-  SpiceCell *cell = tspice_as_cell(cellHandle);
   if (cell->dtype != SPICE_INT) {
     return tspice_write_error(err, errMaxBytes, "tspice_cell_geti(): expected SPICE_INT cell");
   }
 
+  SpiceInt idx = 0;
+  if (tspice_int_to_spice_int_checked(index, &idx, "tspice_cell_geti()", err, errMaxBytes) != 0) {
+    return 1;
+  }
+
   const SpiceInt card = card_c(cell);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
-  if (index < 0 || (SpiceInt)index >= card) {
+  if (idx < 0 || idx >= card) {
     return tspice_write_error(err, errMaxBytes, "tspice_cell_geti(): index out of range");
   }
 
   SpiceInt item = 0;
-  SPICE_CELL_GET_I(cell, (SpiceInt)index, &item);
+  SPICE_CELL_GET_I(cell, idx, &item);
+
   if (outItem) {
-    *outItem = (int)item;
+    return tspice_spice_int_to_int_checked(item, outItem, "tspice_cell_geti()", err, errMaxBytes);
   }
+
   return 0;
 }
+
+
 
 int tspice_cell_getd(uintptr_t cellHandle, int index, double *outItem, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
   if (outItem) {
     *outItem = 0.0;
   }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_cell_getd(): cell must be non-null");
+
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_cell_getd()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
   }
 
-  SpiceCell *cell = tspice_as_cell(cellHandle);
   if (cell->dtype != SPICE_DP) {
     return tspice_write_error(err, errMaxBytes, "tspice_cell_getd(): expected SPICE_DP cell");
+  }
+
+  SpiceInt idx = 0;
+  if (tspice_int_to_spice_int_checked(index, &idx, "tspice_cell_getd()", err, errMaxBytes) != 0) {
+    return 1;
   }
 
   const SpiceInt card = card_c(cell);
@@ -597,17 +841,19 @@ int tspice_cell_getd(uintptr_t cellHandle, int index, double *outItem, char *err
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
-  if (index < 0 || (SpiceInt)index >= card) {
+  if (idx < 0 || idx >= card) {
     return tspice_write_error(err, errMaxBytes, "tspice_cell_getd(): index out of range");
   }
 
   SpiceDouble item = 0.0;
-  SPICE_CELL_GET_D(cell, (SpiceInt)index, &item);
+  SPICE_CELL_GET_D(cell, idx, &item);
   if (outItem) {
     *outItem = (double)item;
   }
   return 0;
 }
+
+
 
 int tspice_cell_getc(
     uintptr_t cellHandle,
@@ -618,21 +864,32 @@ int tspice_cell_getc(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
   if (out && outMaxBytes > 0) {
-    out[0] = '\0';
-  }
-  if (cellHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_cell_getc(): cell must be non-null");
+    out[0] = ' ';
   }
   if (!out || outMaxBytes <= 0) {
     return tspice_write_error(err, errMaxBytes, "tspice_cell_getc(): outMaxBytes must be > 0");
   }
 
-  SpiceCell *cell = tspice_as_cell(cellHandle);
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", "tspice_cell_getc()", err, errMaxBytes);
+  if (!cell) {
+    return 1;
+  }
+
   if (cell->dtype != SPICE_CHR) {
     return tspice_write_error(err, errMaxBytes, "tspice_cell_getc(): expected SPICE_CHR cell");
+  }
+
+  SpiceInt idx = 0;
+  if (tspice_int_to_spice_int_checked(index, &idx, "tspice_cell_getc()", err, errMaxBytes) != 0) {
+    return 1;
+  }
+
+  SpiceInt outMax = 0;
+  if (tspice_int_to_spice_int_checked(outMaxBytes, &outMax, "tspice_cell_getc()", err, errMaxBytes) != 0) {
+    return 1;
   }
 
   const SpiceInt card = card_c(cell);
@@ -640,29 +897,31 @@ int tspice_cell_getc(
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
-  if (index < 0 || (SpiceInt)index >= card) {
+  if (idx < 0 || idx >= card) {
     return tspice_write_error(err, errMaxBytes, "tspice_cell_getc(): index out of range");
   }
 
-  SPICE_CELL_GET_C(cell, (SpiceInt)index, (SpiceInt)outMaxBytes, out);
+  SPICE_CELL_GET_C(cell, idx, outMax, out);
   return 0;
 }
+
+
 
 int tspice_wninsd(double left, double right, uintptr_t windowHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
-  }
-  if (windowHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_wninsd(): window must be non-null");
+    err[0] = ' ';
   }
 
-  SpiceCell *window = tspice_as_cell(windowHandle);
+  SpiceCell *window = tspice_validate_handle(windowHandle, "window", "tspice_wninsd()", err, errMaxBytes);
+  if (!window) {
+    return 1;
+  }
+
   if (window->dtype != SPICE_DP) {
     return tspice_write_error(err, errMaxBytes, "tspice_wninsd(): expected SPICE_DP window");
   }
 
-  // Force CSPICE to resync the cell control area from the descriptor.
   window->init = SPICEFALSE;
 
   wninsd_c((SpiceDouble)left, (SpiceDouble)right, window);
@@ -674,19 +933,22 @@ int tspice_wninsd(double left, double right, uintptr_t windowHandle, char *err, 
   return 0;
 }
 
+
+
 int tspice_wncard(uintptr_t windowHandle, int *outCard, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
   if (outCard) {
     *outCard = 0;
   }
-  if (windowHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_wncard(): window must be non-null");
+
+  SpiceCell *window = tspice_validate_handle(windowHandle, "window", "tspice_wncard()", err, errMaxBytes);
+  if (!window) {
+    return 1;
   }
 
-  SpiceCell *window = tspice_as_cell(windowHandle);
   if (window->dtype != SPICE_DP) {
     return tspice_write_error(err, errMaxBytes, "tspice_wncard(): expected SPICE_DP window");
   }
@@ -700,10 +962,13 @@ int tspice_wncard(uintptr_t windowHandle, int *outCard, char *err, int errMaxByt
   }
 
   if (outCard) {
-    *outCard = (int)card;
+    return tspice_spice_int_to_int_checked(card, outCard, "tspice_wncard()", err, errMaxBytes);
   }
+
   return 0;
 }
+
+
 
 int tspice_wnfetd(
     uintptr_t windowHandle,
@@ -714,7 +979,7 @@ int tspice_wnfetd(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
+    err[0] = ' ';
   }
   if (outLeft) {
     *outLeft = 0.0;
@@ -722,20 +987,26 @@ int tspice_wnfetd(
   if (outRight) {
     *outRight = 0.0;
   }
-  if (windowHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_wnfetd(): window must be non-null");
+
+  SpiceCell *window = tspice_validate_handle(windowHandle, "window", "tspice_wnfetd()", err, errMaxBytes);
+  if (!window) {
+    return 1;
   }
 
-  SpiceCell *window = tspice_as_cell(windowHandle);
   if (window->dtype != SPICE_DP) {
     return tspice_write_error(err, errMaxBytes, "tspice_wnfetd(): expected SPICE_DP window");
+  }
+
+  SpiceInt idx = 0;
+  if (tspice_int_to_spice_int_checked(index, &idx, "tspice_wnfetd()", err, errMaxBytes) != 0) {
+    return 1;
   }
 
   window->init = SPICEFALSE;
 
   SpiceDouble left = 0.0;
   SpiceDouble right = 0.0;
-  wnfetd_c(window, (SpiceInt)index, &left, &right);
+  wnfetd_c(window, idx, &left, &right);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
@@ -750,23 +1021,31 @@ int tspice_wnfetd(
   return 0;
 }
 
+
+
 int tspice_wnvald(int size, int n, uintptr_t windowHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
-    err[0] = '\0';
-  }
-  if (windowHandle == 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_wnvald(): window must be non-null");
+    err[0] = ' ';
   }
 
-  SpiceCell *window = tspice_as_cell(windowHandle);
+  SpiceCell *window = tspice_validate_handle(windowHandle, "window", "tspice_wnvald()", err, errMaxBytes);
+  if (!window) {
+    return 1;
+  }
+
   if (window->dtype != SPICE_DP) {
     return tspice_write_error(err, errMaxBytes, "tspice_wnvald(): expected SPICE_DP window");
   }
 
+  SpiceInt sz = 0;
+  SpiceInt nn = 0;
+  if (tspice_int_to_spice_int_checked(size, &sz, "tspice_wnvald()", err, errMaxBytes) != 0) return 1;
+  if (tspice_int_to_spice_int_checked(n, &nn, "tspice_wnvald()", err, errMaxBytes) != 0) return 1;
+
   window->init = SPICEFALSE;
 
-  wnvald_c((SpiceInt)size, (SpiceInt)n, window);
+  wnvald_c(sz, nn, window);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;

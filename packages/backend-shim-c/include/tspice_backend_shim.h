@@ -441,11 +441,14 @@ int tspice_ckgpav(
 
 // --- Cells + windows --------------------------------------------------------
 
-// Creation functions allocate on the heap and return an opaque pointer value.
+// Creation functions allocate on the heap and return an opaque handle.
 //
-// For the Node backend, these pointers are stored in a handle table so JS sees
-// stable opaque integers. For the WASM backend, the pointer value itself is
-// used as the JS-visible handle.
+// - Node backend: the shim pointer is stored in a handle table and JS sees a
+//   stable opaque integer.
+// - WASM backend: JS receives the raw pointer value as an opaque integer *handle*,
+//   but the C shim validates every handle against an internal allocation registry
+//   before dereferencing or freeing it. (This prevents forged handles from
+//   becoming arbitrary pointers.)
 
 int tspice_new_int_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes);
 int tspice_new_double_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes);

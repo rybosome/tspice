@@ -9,14 +9,25 @@ export type AssertSpiceInt32Options = {
 };
 
 /**
-* Runtime validation for inputs that will be passed to CSPICE as `SpiceInt`.
-*
-* Implementation note:
-* - Both the Node native addon and WASM backend ultimately consume these values
-*   as **32-bit signed integers** (`Int32Value` / `i32`).
-* - If callers pass non-integers or values outside the 32-bit range, JS →
-*   native conversion will wrap/truncate.
-*/
+ * Runtime validation for values that will cross the JS → native boundary as a
+ * CSPICE `SpiceInt`.
+ *
+ * What this checks:
+ * - `value` is a **safe integer** (no fractional values, no `NaN`, no `Infinity`).
+ * - `value` is within the **signed 32-bit** range.
+ * - Optional extra bounds (`opts.min` / `opts.max`).
+ *
+ * What this does *not* check:
+ * - That the value is valid for a specific CSPICE call (e.g. an index being in
+ *   range for a particular cell/window).
+ * - That the host platform's `SpiceInt` is 32-bit. (Many CSPICE builds use a
+ *   wider integer type.) We intentionally validate to 32-bit because:
+ *   - the Node addon reads numbers via `Int32Value()`, and
+ *   - the WASM backend consumes values as `i32`.
+ *
+ * If callers pass values outside the 32-bit range, JS → native conversion would
+ * otherwise wrap/truncate.
+ */
 export function assertSpiceInt32(
   value: number,
   label: string,
