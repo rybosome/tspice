@@ -1,6 +1,9 @@
 #include "file_io.h"
 
 #include <string>
+#include <cmath>
+#include <cstdint>
+#include <limits>
 
 #include "../addon_common.h"
 #include "../napi_helpers.h"
@@ -27,8 +30,18 @@ static bool ReadDlaDescriptorField(
     return false;
   }
 
+  const double d = value.As<Napi::Number>().DoubleValue();
+  const double lo = (double)std::numeric_limits<int32_t>::min();
+  const double hi = (double)std::numeric_limits<int32_t>::max();
+  if (!std::isfinite(d) || std::floor(d) != d || d < lo || d > hi) {
+    ThrowSpiceError(Napi::TypeError::New(
+        env,
+        std::string("Expected DLA descriptor field '") + key + "' to be a 32-bit signed integer"));
+    return false;
+  }
+
   if (out) {
-    *out = value.As<Napi::Number>().Int32Value();
+    *out = (int32_t)d;
   }
   return true;
 }
@@ -239,6 +252,24 @@ static void Dascls(const Napi::CallbackInfo& info) {
   }
 }
 
+static void Dlacls(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1 || !info[0].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dlacls(handle: number) expects exactly one numeric handle"));
+    return;
+  }
+
+  const int handle = info[0].As<Napi::Number>().Int32Value();
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int code = tspice_dlacls(handle, err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, std::string("CSPICE failed while calling dlacls(handle=") + std::to_string(handle) + ")", err);
+  }
+}
+
 static Napi::Number Dlaopn(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -350,6 +381,8 @@ void RegisterFileIo(Napi::Env env, Napi::Object exports) {
 
   if (!SetExportChecked(env, exports, "dasopr", Napi::Function::New(env, Dasopr), __func__)) return;
   if (!SetExportChecked(env, exports, "dascls", Napi::Function::New(env, Dascls), __func__)) return;
+
+  if (!SetExportChecked(env, exports, "dlacls", Napi::Function::New(env, Dlacls), __func__)) return;
 
   if (!SetExportChecked(env, exports, "dlaopn", Napi::Function::New(env, Dlaopn), __func__)) return;
   if (!SetExportChecked(env, exports, "dlabfs", Napi::Function::New(env, Dlabfs), __func__)) return;

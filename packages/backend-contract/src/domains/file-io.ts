@@ -11,6 +11,12 @@ import type { SpiceHandle } from "../shared/types.js";
 * Plain-object representation of CSPICE `SpiceDLADescr`.
 *
 * These are the 8 integer components of a DLA descriptor.
+*
+* ## Portability
+*
+* Each field is an **int32** (32-bit signed integer). Backend implementations
+* must reject (throw) non-integers and values outside the int32 range to
+* prevent silent truncation across native/WASM boundaries.
 */
 export type DlaDescriptor = {
   bwdptr: number;

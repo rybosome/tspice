@@ -109,6 +109,9 @@ int tspice_dlafns(
     char *err,
     int errMaxBytes);
 
+// Close a DLA handle (DLA is DAS-backed).
+int tspice_dlacls(int handle, char *err, int errMaxBytes);
+
 // --- low-level primitives ---
 
 // str2et_c: convert time string -> ET seconds past J2000.

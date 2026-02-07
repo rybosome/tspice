@@ -4,6 +4,26 @@
 #include "SpiceDLA.h"
 
 #include <string.h>
+#include <stdio.h>
+#include <stdint.h>
+
+// --- ABI guard ---------------------------------------------------------
+//
+// This shim intentionally exposes 32-bit integers for DLA descriptor fields
+// (and many other CSPICE integer surfaces). Refuse to build if the CSPICE
+// toolkit was compiled with a non-32-bit SpiceInt to avoid silent truncation.
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
+_Static_assert(sizeof(SpiceInt) == 4, "tspice_backend_shim requires sizeof(SpiceInt)==4");
+#else
+typedef char tspice_spiceint_must_be_32bit[(sizeof(SpiceInt) == 4) ? 1 : -1];
+#endif
+
+
+static void tspice_write_error(char *err, int errMaxBytes, const char *msg) {
+  if (!err || errMaxBytes <= 0 || !msg) return;
+  // Ensure stable, NUL-terminated error strings.
+  snprintf(err, (size_t)errMaxBytes, "%s", msg);
+}
 
 static void tspice_write_dla_descr8(const SpiceDLADescr *descr, int *outDescr8) {
   if (!descr || !outDescr8) return;
@@ -31,8 +51,14 @@ static void tspice_read_dla_descr8(const int *descr8, SpiceDLADescr *outDescr) {
 
 int tspice_exists(const char *path, int *outExists, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+
+  if (err && errMaxBytes > 0) err[0] = '\0';
   if (outExists) *outExists = 0;
+
+  if (!path || path[0] == '\0') {
+    tspice_write_error(err, errMaxBytes, "tspice_exists: path must be a non-empty string");
+    return 1;
+  }
 
   const SpiceBoolean exists = exists_c(path);
   if (failed_c()) {
@@ -55,9 +81,25 @@ int tspice_getfat(
     char *err,
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+
+  if (err && errMaxBytes > 0) err[0] = '\0';
   if (outArch && outArchMaxBytes > 0) outArch[0] = '\0';
   if (outType && outTypeMaxBytes > 0) outType[0] = '\0';
+
+  if (!path || path[0] == '\0') {
+    tspice_write_error(err, errMaxBytes, "tspice_getfat: path must be a non-empty string");
+    return 1;
+  }
+
+  if (!outArch || outArchMaxBytes <= 0) {
+    tspice_write_error(err, errMaxBytes, "tspice_getfat: outArch must be non-NULL with outArchMaxBytes > 0");
+    return 1;
+  }
+
+  if (!outType || outTypeMaxBytes <= 0) {
+    tspice_write_error(err, errMaxBytes, "tspice_getfat: outType must be non-NULL with outTypeMaxBytes > 0");
+    return 1;
+  }
 
   getfat_c(path, (SpiceInt)outArchMaxBytes, (SpiceInt)outTypeMaxBytes, outArch, outType);
   if (failed_c()) {
@@ -157,6 +199,12 @@ int tspice_dascls(int handle, char *err, int errMaxBytes) {
   }
   return 0;
 }
+
+int tspice_dlacls(int handle, char *err, int errMaxBytes) {
+  // DLA segments are stored in DAS files; close via DAS close helper.
+  return tspice_dascls(handle, err, errMaxBytes);
+}
+
 
 int tspice_dlaopn(
     const char *path,

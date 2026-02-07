@@ -1,11 +1,13 @@
 import type {
   AbCorr,
+  DlaDescriptor,
   Found,
   IluminResult,
   KernelData,
   KernelKind,
   KernelSource,
   SpiceBackend,
+  SpiceHandle,
   Mat3RowMajor,
   SpiceMatrix6x6,
   SpiceStateVector,
@@ -966,31 +968,31 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     dafopr: (_path: string) => {
       throw new Error("Fake backend: dafopr() is not implemented");
     },
-    dafcls: (_handle: number) => {
+    dafcls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dafcls() is not implemented");
     },
-    dafbfs: (_handle: number) => {
+    dafbfs: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dafbfs() is not implemented");
     },
-    daffna: (_handle: number) => {
+    daffna: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: daffna() is not implemented");
     },
     dasopr: (_path: string) => {
       throw new Error("Fake backend: dasopr() is not implemented");
     },
-    dascls: (_handle: number) => {
+    dascls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dascls() is not implemented");
     },
     dlaopn: (_path: string, _ftype: string, _ifname: string, _ncomch: number) => {
       throw new Error("Fake backend: dlaopn() is not implemented");
     },
-    dlabfs: (_handle: number) => {
+    dlabfs: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dlabfs() is not implemented");
     },
-    dlafns: (_handle: number, _descr: unknown) => {
+    dlafns: (_handle: SpiceHandle, _descr: DlaDescriptor) => {
       throw new Error("Fake backend: dlafns() is not implemented");
     },
-    dlacls: (_handle: number) => {
+    dlacls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dlacls() is not implemented");
     },
 

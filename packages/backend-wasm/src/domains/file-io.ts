@@ -13,6 +13,9 @@ import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
 
 type HandleKind = "DAF" | "DAS" | "DLA";
+const I32_MIN = -2147483648;
+const I32_MAX = 2147483647;
+
 type HandleEntry = {
   kind: HandleKind;
   nativeHandle: number;
@@ -69,8 +72,14 @@ function assertDlaDescriptor(value: unknown, context: string): asserts value is 
   }
   const obj = value as Record<string, unknown>;
   for (const key of DESCR_KEYS) {
-    if (typeof obj[key] !== "number") {
-      throw new Error(`${context}: expected ${key} to be a number`);
+    const v = obj[key];
+    if (
+      typeof v !== "number" ||
+      !Number.isInteger(v) ||
+      v < I32_MIN ||
+      v > I32_MAX
+    ) {
+      throw new Error(`${context}: expected ${key} to be a 32-bit signed integer`);
     }
   }
 }
@@ -127,8 +136,8 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
       );
     }
 
-    handles.delete(handleId);
     closeNative(entry.nativeHandle);
+    handles.delete(handleId);
   }
 
   return {
@@ -336,6 +345,6 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
       );
     },
 
-    dlacls: (handle: SpiceHandle) => close(handle, "DLA", (h) => callVoidHandle(module, module._tspice_dascls, h)),
+    dlacls: (handle: SpiceHandle) => close(handle, "DLA", (h) => callVoidHandle(module, module._tspice_dlacls, h)),
   } satisfies FileIoApi;
 }

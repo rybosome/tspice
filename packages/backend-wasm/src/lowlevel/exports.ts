@@ -104,6 +104,8 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dlacls(handle: number, errPtr: number, errMaxBytes: number): number;
+
   _tspice_str2et(utcPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_et2utc(
     et: number,
@@ -463,6 +465,7 @@ export function assertEmscriptenModule(module: unknown): asserts module is Emscr
     typeof m._tspice_dlaopn !== "function" ||
     typeof m._tspice_dlabfs !== "function" ||
     typeof m._tspice_dlafns !== "function" ||
+    typeof m._tspice_dlacls !== "function" ||
     typeof m._tspice_str2et !== "function" ||
     typeof m._tspice_et2utc !== "function" ||
     typeof m._tspice_timout !== "function" ||

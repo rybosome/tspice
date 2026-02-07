@@ -43,6 +43,8 @@ export type NativeAddon = {
   dlaopn(path: string, ftype: string, ifname: string, ncomch: number): number;
   dlabfs(handle: number): { found: boolean; descr?: Record<string, unknown> };
   dlafns(handle: number, descr: Record<string, unknown>): { found: boolean; descr?: Record<string, unknown> };
+  dlacls(handle: number): void;
+
 
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };

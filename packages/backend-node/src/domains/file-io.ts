@@ -9,6 +9,9 @@ import { invariant } from "@rybosome/tspice-core";
 import type { NativeAddon } from "../runtime/addon.js";
 
 type HandleKind = "DAF" | "DAS" | "DLA";
+const I32_MIN = -2147483648;
+const I32_MAX = 2147483647;
+
 type HandleEntry = {
   kind: HandleKind;
   nativeHandle: number;
@@ -35,7 +38,14 @@ function assertDlaDescriptor(value: unknown, context: string): asserts value is 
     "cbase",
     "csize",
   ] as const) {
-    invariant(typeof obj[key] === "number", `${context}: expected ${key} to be a number`);
+    const v = obj[key];
+    invariant(
+      typeof v === "number" &&
+        Number.isInteger(v) &&
+        v >= I32_MIN &&
+        v <= I32_MAX,
+      `${context}: expected ${key} to be a 32-bit signed integer`,
+    );
   }
 }
 
@@ -93,9 +103,9 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
       );
     }
 
-    // Close-once semantics + avoid leaking registry entries.
-    handles.delete(handleId);
+    // Close-once semantics: only forget the handle after the native close succeeds.
     closeNative(entry.nativeHandle);
+    handles.delete(handleId);
   }
 
   return {
@@ -138,6 +148,6 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
         "dlafns()",
       ),
 
-    dlacls: (handle: SpiceHandle) => close(handle, "DLA", (h) => native.dascls(h)),
+    dlacls: (handle: SpiceHandle) => close(handle, "DLA", (h) => native.dlacls(h)),
   } satisfies FileIoApi;
 }
