@@ -14,7 +14,7 @@ import type {
   SpkezrResult,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
-import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import { assertGetmsgWhich, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 
 /**
  * A deterministic, pure-TS "toy" backend.
@@ -615,6 +615,10 @@ function kernelFiltyp(kind: KernelKind): string {
 
 export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
+  let spiceFailed = false;
+  let spiceShort = "";
+  let spiceLong = "";
+  const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
 
   const getKernelsOfKind = (kind: KernelKind): readonly KernelRecord[] => {
@@ -627,6 +631,43 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     spiceVersion: () => FAKE_SPICE_VERSION,
 
+    failed: () => spiceFailed,
+    reset: () => {
+      spiceFailed = false;
+      spiceShort = "";
+      spiceLong = "";
+      traceStack.length = 0;
+    },
+    getmsg: (which) => {
+      assertGetmsgWhich(which);
+      if (which === "SHORT") return spiceShort;
+      if (which === "LONG") return spiceLong;
+
+      // EXPLAIN
+      // CSPICE convention is typically:
+      //   setmsg(long)
+      //   sigerr(short)
+      // so we avoid overwriting the long message when signaling.
+      const trace = traceStack.length > 0 ? traceStack.join(" -> ") : "";
+      if (!spiceLong && !trace) return "";
+      if (spiceLong && !trace) return spiceLong;
+      if (!spiceLong && trace) return `Trace: ${trace}`;
+      return `${spiceLong}\n\nTrace: ${trace}`;
+    },
+    setmsg: (message: string) => {
+      spiceLong = message;
+    },
+    sigerr: (short: string) => {
+      spiceFailed = true;
+      spiceShort = short;
+    },
+    chkin: (name: string) => {
+      traceStack.push(name);
+    },
+    chkout: (name: string) => {
+      const idx = traceStack.lastIndexOf(name);
+      if (idx >= 0) traceStack.splice(idx, 1);
+    },
     furnsh: (kernel: KernelSource) => {
       const file = typeof kernel === "string" ? kernel : kernel.path;
       const source = typeof kernel === "string" ? file : "bytes";
