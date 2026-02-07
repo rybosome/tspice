@@ -3,7 +3,7 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 import { mallocOrThrow } from "./alloc.js";
 
 type Utf8CStringArray = {
-  /** Pointer to a contiguous `char*[]` array (`HEAP32`), or `0` for empty arrays. */
+  /** Pointer to a contiguous `char*[]` array (written via `HEAPU32`), or `0` for empty arrays. */
   ptr: number;
   /** Pointers to each allocated null-terminated string. */
   itemPtrs: number[];
@@ -43,6 +43,8 @@ export function writeUtf8CStringArray(module: EmscriptenModule, values: string[]
   const ptr = mallocOrThrow(module, values.length * ptrBytes);
   const baseIndex = ptr / ptrBytes;
   if (!Number.isInteger(baseIndex)) {
+    // Defensive cleanup: if this ever triggers, avoid leaking the allocated pointer array.
+    module._free(ptr);
     throw new Error(`Internal error: unaligned pointer array base index (ptr=${ptr}, ptrBytes=${ptrBytes})`);
   }
 
