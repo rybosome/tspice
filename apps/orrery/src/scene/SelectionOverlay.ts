@@ -818,7 +818,6 @@ export function createSelectionOverlay(opts?: CreateSelectionOverlayOptions): Se
   }
 }
 
-
 export const __testing = {
   schedule,
   getTrackPhaseKind: (track: ElementAnim, nowMs: number) => getTrackPhase(track, nowMs).kind,
