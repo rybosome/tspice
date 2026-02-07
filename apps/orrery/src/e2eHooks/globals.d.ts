@@ -20,6 +20,13 @@ declare global {
       lockDeterministicLighting?: () => void
 
       /**
+       * Render N frames (via `renderOnce()` + `requestAnimationFrame` stepping).
+       *
+       * Intended for flushing async texture uploads before screenshots.
+       */
+      renderNTimes?: (n: number) => Promise<void>
+
+      /**
        * Render one frame and return basic perf counters.
        *
        * NOTE: this measures CPU time around a single `renderOnce()` call; it is

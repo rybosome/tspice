@@ -327,7 +327,7 @@ export function SceneCanvas() {
 
   // Lighting + Sun appearance defaults.
   const AMBIENT_LIGHT_INTENSITY_DEFAULT = 0.45
-  const SUN_LIGHT_INTENSITY_DEFAULT = 3.5
+  const SUN_LIGHT_INTENSITY_DEFAULT = 2.1
   // Sun emissive is in addition to the base texture `kind: 'sun'`.
   const SUN_EMISSIVE_INTENSITY_DEFAULT = 10
   const SUN_EMISSIVE_COLOR_DEFAULT = '#ffcc55'
@@ -1161,6 +1161,56 @@ export function SceneCanvas() {
             textures: number
           } | null = null
 
+          const nextAnimationFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+
+          const renderNTimes = async (n: number) => {
+            // In CI we occasionally observed Playwright screenshots taken before
+            // async textures were fully uploaded/visible. Clamp to at least one
+            // render, then synchronously wait for GPU completion for determinism.
+            //
+            // Note: this is e2e-only (installed only in `?e2e=1` mode) and should
+            // not impact production runtime behavior.
+            const count = Math.max(1, Number.isFinite(n) ? Math.floor(n) : 1)
+            for (let i = 0; i < count; i++) {
+              three.renderOnce()
+              // Allow the browser to advance a frame so async texture uploads/effects
+              // have a chance to settle before the next forced render.
+              await nextAnimationFrame()
+            }
+
+            // Best-effort bounded GPU sync to stabilize golden screenshot capture timing.
+            // Avoid `gl.finish()` here; it can hang indefinitely in some environments.
+            const gl = three.renderer.getContext()
+
+            const isWebGL2 = typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext
+            if (isWebGL2) {
+              const gl2 = gl as WebGL2RenderingContext
+              const sync = gl2.fenceSync(gl2.SYNC_GPU_COMMANDS_COMPLETE, 0)
+              gl2.flush()
+
+              if (sync) {
+                const startMs = performance.now()
+                const MAX_FRAMES = 30
+                const MAX_MS = 500
+
+                for (let frames = 0; frames < MAX_FRAMES; frames++) {
+                  const status = gl2.clientWaitSync(sync, 0, 0)
+                  if (status === gl2.ALREADY_SIGNALED || status === gl2.CONDITION_SATISFIED) break
+
+                  if (performance.now() - startMs > MAX_MS) break
+                  await nextAnimationFrame()
+                }
+
+                gl2.deleteSync(sync)
+              }
+            } else {
+              // WebGL1 fallback: flush and yield a couple frames to let uploads settle.
+              gl.flush()
+              await nextAnimationFrame()
+              await nextAnimationFrame()
+            }
+          }
+
           const samplePerfCounters = () => {
             const t0 = performance.now()
             three.renderOnce()
@@ -1213,7 +1263,7 @@ export function SceneCanvas() {
             three.controller.applyToCamera(three.camera)
 
             // Render synchronously so Playwright can capture immediately.
-            samplePerfCounters()
+            three.renderOnce()
           }
 
           const api = window.__tspice_viewer__e2e
@@ -1221,6 +1271,7 @@ export function SceneCanvas() {
 
           api.setCameraPreset = setCameraPreset
           api.lockDeterministicLighting = lockDeterministicLighting
+          api.renderNTimes = renderNTimes
           api.samplePerfCounters = samplePerfCounters
           api.getLastPerfCounters = () => lastPerfSample
         }

@@ -2,7 +2,13 @@ import * as THREE from 'three'
 
 import { isTextureCacheClearedError, loadTextureCached } from './loadTextureCached.js'
 import { createRingMesh } from './RingMesh.js'
-import { isEarthAppearanceLayer, type BodyAppearanceStyle, type BodyTextureKind } from './SceneModel.js'
+import {
+  isAtmosphereAppearanceLayer,
+  isAerosolAppearanceLayer,
+  isEarthAppearanceLayer,
+  type BodyAppearanceStyle,
+  type BodyTextureKind,
+} from './SceneModel.js'
 import { isDev } from '../utils/isDev.js'
 
 export type CreateBodyMeshOptions = {
@@ -25,6 +31,23 @@ export type BodyMeshUpdate = (args: {
   etSec: number
   earthTuning?: EarthAppearanceTuning
 }) => void
+
+function stableHash01(input: string): number {
+  // Deterministic (no RNG): keep e2e snapshots stable.
+  // FNV-1a-ish 32-bit hash -> [0, 1).
+  let h = 2166136261
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  // Unsigned -> [0, 1).
+  return (h >>> 0) / 4294967296
+}
+
+function clampFinite(v: number | undefined | null, min: number, max: number, fallback: number): number {
+  const x = Number.isFinite(v) ? (v as number) : fallback
+  return THREE.MathUtils.clamp(x, min, max)
+}
 
 function make1x1TextureRGBA([r, g, b, a]: readonly [number, number, number, number]): THREE.DataTexture {
   const data = new Uint8Array([r, g, b, a])
@@ -166,6 +189,13 @@ function composeOnBeforeCompile(material: THREE.Material, patch: OnBeforeCompile
   }
 }
 
+function composeUpdate(prev: BodyMeshUpdate | undefined, next: BodyMeshUpdate): BodyMeshUpdate {
+  return (args) => {
+    prev?.(args)
+    next(args)
+  }
+}
+
 function createWarnOnce() {
   // Avoid spamming end users in production; these warnings are mainly useful
   // for shader-chunk drift during local development.
@@ -207,6 +237,56 @@ function applyMapAndBump(material: THREE.MeshStandardMaterial, map: THREE.Textur
   material.map = nextMap
   material.bumpMap = nextBumpMap
   material.bumpScale = nextBumpScale
+
+  if (needsUpdate) {
+    material.needsUpdate = true
+  }
+}
+
+function applySurfaceMaps(args: {
+  material: THREE.MeshStandardMaterial
+  map: THREE.Texture | undefined
+  bumpScale: number
+  normalMap: THREE.Texture | undefined
+  roughnessMap: THREE.Texture | undefined
+  normalScale: undefined | number | { x: number; y: number }
+}) {
+  const { material, map, bumpScale, normalMap, roughnessMap, normalScale } = args
+
+  // Centralize map+bump so sync/async paths match.
+  applyMapAndBump(material, map, bumpScale)
+
+  const nextNormalMap = normalMap ?? null
+  const nextRoughnessMap = roughnessMap ?? null
+
+  const prevUseNormalMap = material.normalMap != null
+  const prevUseRoughnessMap = material.roughnessMap != null
+  const prevNormalMap = material.normalMap
+  const prevRoughnessMap = material.roughnessMap
+
+  const nextUseNormalMap = nextNormalMap != null
+  const nextUseRoughnessMap = nextRoughnessMap != null
+
+  // Be conservative when swapping one non-null map for another: force a recompile.
+  const needsUpdate =
+    prevUseNormalMap !== nextUseNormalMap ||
+    prevUseRoughnessMap !== nextUseRoughnessMap ||
+    (prevUseNormalMap && nextUseNormalMap && prevNormalMap !== nextNormalMap) ||
+    (prevUseRoughnessMap && nextUseRoughnessMap && prevRoughnessMap !== nextRoughnessMap)
+
+  material.normalMap = nextNormalMap
+  material.roughnessMap = nextRoughnessMap
+
+  // Only touch `normalScale` when a normal map is present. Otherwise we can
+  // leave it unchanged (it is ignored by Three.js when `normalMap` is null).
+  if (nextUseNormalMap) {
+    const nextScale = normalScale ?? 0.25
+    if (typeof nextScale === 'number') {
+      material.normalScale.set(nextScale, nextScale)
+    } else {
+      material.normalScale.set(nextScale.x, nextScale.y)
+    }
+  }
 
   if (needsUpdate) {
     material.needsUpdate = true
@@ -358,6 +438,10 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const textureUrl = surfaceTexture?.url
   const textureColor = surfaceTexture?.color
 
+  const normalTextureUrl = surface.normalTexture?.url
+  const roughnessTextureUrl = surface.roughnessTexture?.url
+  const normalScale = surface.normalScale
+
   const surfaceRoughness = THREE.MathUtils.clamp(surface.roughness ?? (textureKind === 'sun' ? 0.2 : 0.9), 0.0, 1.0)
   const surfaceMetalness = THREE.MathUtils.clamp(surface.metalness ?? 0.0, 0.0, 1.0)
 
@@ -369,8 +453,24 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const nightAlbedo = surface.nightAlbedo == null ? undefined : THREE.MathUtils.clamp(surface.nightAlbedo, 0.0, 1.0)
   const terminatorTwilight = THREE.MathUtils.clamp(surface.terminatorTwilight ?? 0.08, 0.0, 1.0)
 
+  const detailNoise = surface.detailNoise
+  const detailNoiseStrength = THREE.MathUtils.clamp(detailNoise?.strength ?? 0.0, 0.0, 0.15)
+  const detailNoiseScale = THREE.MathUtils.clamp(detailNoise?.scale ?? 0.0, 0.0, 128.0)
+
+  // If the caller omits `bodyId`, avoid hashing the empty string (which would make
+  // many bodies share the same noise seed). For truly stable per-body results,
+  // pass `bodyId` or explicitly set `detailNoise.seed`.
+  const detailNoiseSeedInput = options.bodyId ?? JSON.stringify(options.appearance)
+  const detailNoiseSeed = detailNoise?.seed ?? stableHash01(detailNoiseSeedInput)
+
   let map: THREE.Texture | undefined = textureKind ? makeProceduralBodyTexture(textureKind) : undefined
   let mapRelease: (() => void) | undefined
+
+  let normalMap: THREE.Texture | undefined
+  let normalMapRelease: (() => void) | undefined
+
+  let roughnessMap: THREE.Texture | undefined
+  let roughnessMapRelease: (() => void) | undefined
 
   // Note: `MeshStandardMaterial.color` multiplies `map`.
   // For full-color albedo textures (e.g. Earth), tinting the texture by a
@@ -396,8 +496,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   const onBeforeCompileRestores: Array<() => void> = []
 
-  // Centralize map + bump setup so sync/async paths match.
-  applyMapAndBump(material, map, bumpScale)
+  // Centralize surface map setup so sync/async paths match.
+  applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
 
   function disposeMap(mat: THREE.MeshStandardMaterial) {
     const release = mapRelease
@@ -409,6 +509,51 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     // Ensure the material no longer references the texture.
     applyMapAndBump(mat, undefined, 0)
+
+    if (release) {
+      release()
+      return
+    }
+
+    tex?.dispose()
+  }
+
+  function disposeNormalMap(mat: THREE.MeshStandardMaterial) {
+    const release = normalMapRelease
+    const tex = normalMap
+
+    // Clear references first so disposal is idempotent and re-entrancy safe.
+    normalMap = undefined
+    normalMapRelease = undefined
+
+    const prevUseNormal = mat.normalMap != null
+    mat.normalMap = null
+
+    if (prevUseNormal) {
+      mat.needsUpdate = true
+    }
+
+    if (release) {
+      release()
+      return
+    }
+
+    tex?.dispose()
+  }
+
+  function disposeRoughnessMap(mat: THREE.MeshStandardMaterial) {
+    const release = roughnessMapRelease
+    const tex = roughnessMap
+
+    roughnessMap = undefined
+    roughnessMapRelease = undefined
+
+    const prevUseRoughness = mat.roughnessMap != null
+    mat.roughnessMap = null
+
+    if (prevUseRoughness) {
+      mat.needsUpdate = true
+    }
 
     if (release) {
       release()
@@ -434,6 +579,10 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
             map = tex
             mapRelease = release
             installed = true
+
+            // Apply immediately so textures show up as soon as they load (don't rely on `ready`).
+            applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
+            material.color.set(textureColor ?? surface.color)
           } finally {
             // If we didn't take ownership via `mapRelease`, release immediately.
             if (!installed) release()
@@ -443,6 +592,66 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
           if (isTextureCacheClearedError(err)) return
           // Keep rendering if a texture fails; surface failures for debugging.
           console.warn('Failed to load body texture', textureUrl, err)
+        }),
+    )
+  }
+
+  if (normalTextureUrl) {
+    readyExtras.push(
+      loadTextureCached(normalTextureUrl, { colorSpace: THREE.NoColorSpace })
+        .then(({ texture: tex, release }) => {
+          let installed = false
+          try {
+            if (disposed) return
+
+            tex.wrapS = THREE.RepeatWrapping
+            tex.wrapT = THREE.RepeatWrapping
+            tex.needsUpdate = true
+
+            disposeNormalMap(material)
+            normalMap = tex
+            normalMapRelease = release
+            installed = true
+
+            // Apply immediately so maps show up as soon as they load (don't rely on `ready`).
+            applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
+          } finally {
+            if (!installed) release()
+          }
+        })
+        .catch((err) => {
+          if (isTextureCacheClearedError(err)) return
+          console.warn('Failed to load body normal map', normalTextureUrl, err)
+        }),
+    )
+  }
+
+  if (roughnessTextureUrl) {
+    readyExtras.push(
+      loadTextureCached(roughnessTextureUrl, { colorSpace: THREE.NoColorSpace })
+        .then(({ texture: tex, release }) => {
+          let installed = false
+          try {
+            if (disposed) return
+
+            tex.wrapS = THREE.RepeatWrapping
+            tex.wrapT = THREE.RepeatWrapping
+            tex.needsUpdate = true
+
+            disposeRoughnessMap(material)
+            roughnessMap = tex
+            roughnessMapRelease = release
+            installed = true
+
+            // Apply immediately so maps show up as soon as they load (don't rely on `ready`).
+            applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
+          } finally {
+            if (!installed) release()
+          }
+        })
+        .catch((err) => {
+          if (isTextureCacheClearedError(err)) return
+          console.warn('Failed to load body roughness map', roughnessTextureUrl, err)
         }),
     )
   }
@@ -470,6 +679,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   // Earth-only higher-fidelity appearance layers (night lights, clouds, atmosphere, ocean glint).
   // This is kept opt-in via `appearance.layers` so other bodies remain unchanged.
   const earth = options.appearance.layers?.find(isEarthAppearanceLayer)?.earth
+  const atmosphere = options.appearance.layers?.find(isAtmosphereAppearanceLayer)?.atmosphere
+  const aerosol = options.appearance.layers?.find(isAerosolAppearanceLayer)?.aerosol
 
   const extraTexturesToDispose: THREE.Texture[] = []
   const extraTextureReleases: Array<() => void> = []
@@ -485,11 +696,105 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
   let update: BodyMeshUpdate | undefined
 
+  let sunDirUpdateInstalled = false
+  const ensureSunDirWorldUpdate = () => {
+    if (sunDirUpdateInstalled) return
+    sunDirUpdateInstalled = true
+
+    const sunUpdate: BodyMeshUpdate = ({ sunDirWorld }) => {
+      uSunDirWorld.copy(sunDirWorld).normalize()
+    }
+
+    // Prepend so any later-composed updaters can safely rely on `uSunDirWorld`.
+    update = update ? composeUpdate(sunUpdate, update) : sunUpdate
+  }
+
+  const createRimGlowShell = (args: {
+    radiusRatio: number
+    renderOrder: number
+    color: THREE.ColorRepresentation
+    intensity: { value: number }
+    rimPower: { value: number }
+    sunBias: { value: number }
+  }) => {
+    const geo = new THREE.SphereGeometry(1, 48, 24)
+    geo.rotateX(Math.PI / 2)
+    extraGeometriesToDispose.push(geo)
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        uSunDirWorld: { value: uSunDirWorld },
+        uColor: { value: new THREE.Color(args.color) },
+        uIntensity: args.intensity,
+        uRimPower: args.rimPower,
+        uSunBias: args.sunBias,
+      },
+      // Use view-space normals so non-uniform scaling is handled correctly via `normalMatrix`.
+      vertexShader: [
+        'varying vec3 vViewPos;',
+        'varying vec3 vViewNormal;',
+        '',
+        'void main() {',
+        '  vec4 viewPos = modelViewMatrix * vec4( position, 1.0 );',
+        '  vViewPos = viewPos.xyz;',
+        '  vViewNormal = normalize( normalMatrix * normal );',
+        '  gl_Position = projectionMatrix * viewPos;',
+        '}',
+      ].join('\n'),
+      fragmentShader: [
+        'uniform vec3 uSunDirWorld;',
+        'uniform vec3 uColor;',
+        'uniform float uIntensity;',
+        'uniform float uRimPower;',
+        'uniform float uSunBias;',
+        '',
+        'varying vec3 vViewPos;',
+        'varying vec3 vViewNormal;',
+        '',
+        'void main() {',
+        '  vec3 N = normalize( vViewNormal );',
+        '  vec3 V = normalize( -vViewPos );',
+        '  vec3 L = normalize( ( viewMatrix * vec4( uSunDirWorld, 0.0 ) ).xyz );',
+        '',
+        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
+        '  rim = pow( rim, uRimPower );',
+        '',
+        '  float ndotl = dot( N, L );',
+        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
+        '  float k = clamp( uSunBias, 0.0, 1.0 );',
+        '  float start = mix( -0.15, 0.0, k );',
+        '  float end = mix( 0.45, 0.2, k );',
+        '  float dayFactor = smoothstep( start, end, ndotl );',
+        '  float glow = rim * dayFactor;',
+        '',
+        '  float alpha = glow * uIntensity;',
+        '  gl_FragColor = vec4( uColor, alpha );',
+        '}',
+      ].join('\n'),
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      toneMapped: false,
+      side: THREE.BackSide,
+    })
+    extraMaterialsToDispose.push(material)
+
+    const shellMesh = new THREE.Mesh(geo, material)
+    shellMesh.scale.setScalar(args.radiusRatio)
+    shellMesh.renderOrder = args.renderOrder
+    // Avoid interaction/picking regressions if a future raycast becomes recursive.
+    shellMesh.raycast = () => {}
+    mesh.add(shellMesh)
+
+    ensureSunDirWorldUpdate()
+  }
+
   // Optional terminator/night-side albedo suppression.
   // This avoids ambient light washing out airless bodies on the night side.
   const useTerminatorDarkening = !isEarth && nightAlbedo != null && nightAlbedo < 1.0
 
   if (useTerminatorDarkening) {
+    material.userData.tspiceNightSideDarkening = true
     const uNightAlbedo = { value: nightAlbedo }
     const uTerminatorTwilight = { value: terminatorTwilight }
 
@@ -561,9 +866,140 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     })
     onBeforeCompileRestores.push(restoreTerminatorDarkening)
 
-    update = ({ sunDirWorld }) => {
-      uSunDirWorld.copy(sunDirWorld)
-    }
+    ensureSunDirWorldUpdate()
+  }
+
+  // Optional subtle macro/detail variation (procedural; seam-safe; no tiling textures).
+  if (textureKind !== 'sun' && detailNoiseStrength > 0 && detailNoiseScale > 0) {
+    const uDetailNoiseStrength = { value: detailNoiseStrength }
+    const uDetailNoiseScale = { value: detailNoiseScale }
+    const uDetailNoiseSeed = { value: detailNoiseSeed }
+
+    const restoreDetailNoise = composeOnBeforeCompile(material, (shader) => {
+      shader.uniforms.uDetailNoiseStrength = uDetailNoiseStrength
+      shader.uniforms.uDetailNoiseScale = uDetailNoiseScale
+      shader.uniforms.uDetailNoiseSeed = uDetailNoiseSeed
+
+      const markerCommon = '// tspice:detail-noise:common'
+      const markerApply = '// tspice:detail-noise:apply'
+
+      const res = safeShaderReplaceAll({
+        shader,
+        source: 'fragmentShader',
+        warnOnce,
+        warnKey: 'detail-noise:required:patch',
+        replacements: [
+          {
+            needle: '#include <common>',
+            marker: markerCommon,
+            replacement: [
+              '#include <common>',
+              markerCommon,
+              'uniform float uDetailNoiseStrength;',
+              'uniform float uDetailNoiseScale;',
+              'uniform float uDetailNoiseSeed;',
+              '',
+              '// Cheap deterministic value noise (adapted from Skydome.ts).',
+              'float tspice_hash31( vec3 p ) {',
+              '  p = fract( p * 0.1031 );',
+              '  p += dot( p, p.yzx + 33.33 );',
+              '  return fract( (p.x + p.y) * p.z );',
+              '}',
+              '',
+              'float tspice_valueNoise3( vec3 p ) {',
+              '  vec3 i = floor( p );',
+              '  vec3 f = fract( p );',
+              '  f = f * f * ( 3.0 - 2.0 * f );',
+              '',
+              '  float n000 = tspice_hash31( i + vec3( 0.0, 0.0, 0.0 ) );',
+              '  float n100 = tspice_hash31( i + vec3( 1.0, 0.0, 0.0 ) );',
+              '  float n010 = tspice_hash31( i + vec3( 0.0, 1.0, 0.0 ) );',
+              '  float n110 = tspice_hash31( i + vec3( 1.0, 1.0, 0.0 ) );',
+              '  float n001 = tspice_hash31( i + vec3( 0.0, 0.0, 1.0 ) );',
+              '  float n101 = tspice_hash31( i + vec3( 1.0, 0.0, 1.0 ) );',
+              '  float n011 = tspice_hash31( i + vec3( 0.0, 1.0, 1.0 ) );',
+              '  float n111 = tspice_hash31( i + vec3( 1.0, 1.0, 1.0 ) );',
+              '',
+              '  float nx00 = mix( n000, n100, f.x );',
+              '  float nx10 = mix( n010, n110, f.x );',
+              '  float nx01 = mix( n001, n101, f.x );',
+              '  float nx11 = mix( n011, n111, f.x );',
+              '  float nxy0 = mix( nx00, nx10, f.y );',
+              '  float nxy1 = mix( nx01, nx11, f.y );',
+              '  return mix( nxy0, nxy1, f.z );',
+              '}',
+              '',
+              'vec3 tspice_dirFromEquirectUv( vec2 uv ) {',
+              '  float phi = uv.x * 6.28318530718;',
+              '  float theta = uv.y * 3.14159265359;',
+              '  float st = sin( theta );',
+              '  return vec3( st * cos( phi ), cos( theta ), st * sin( phi ) );',
+              '}',
+            ].join('\n'),
+            warnKey: 'detail-noise:common',
+          },
+          {
+            needle: '#include <map_fragment>',
+            marker: markerApply,
+            replacement: [
+              '#include <map_fragment>',
+              markerApply,
+              '#ifdef USE_UV',
+              '  vec3 d = tspice_dirFromEquirectUv( vUv );',
+              '  float n = tspice_valueNoise3( d * uDetailNoiseScale + vec3( uDetailNoiseSeed ) );',
+              '  float k = ( n - 0.5 ) * uDetailNoiseStrength;',
+              '  diffuseColor.rgb *= clamp( 1.0 + k, 0.0, 2.0 );',
+              '#endif',
+            ].join('\n'),
+            warnKey: 'detail-noise:apply',
+          },
+        ],
+      })
+
+      if (!res.ok) return
+
+      const shaderSources: ShaderSource = shader
+      shaderSources.fragmentShader = res.next
+    })
+
+    onBeforeCompileRestores.push(restoreDetailNoise)
+  }
+
+  // Generic atmosphere shell layer (used for thin/low-intensity atmospheres like Mars).
+  // Note: Earth uses its dedicated `earth` layer for atmosphere, clouds, etc.
+  if (!isEarth && atmosphere) {
+    // Clamp to keep configs safe and prevent inverted shells / huge overdraw.
+    const atmosphereRadiusRatio = clampFinite(atmosphere.radiusRatio, 1.001, 1.25, 1.01)
+    const atmosphereIntensity = clampFinite(atmosphere.intensity, 0.0, 2.0, 0.25)
+    const atmosphereRimPower = clampFinite(atmosphere.rimPower, 0.1, 10.0, 2.4)
+    const atmosphereSunBias = clampFinite(atmosphere.sunBias, 0.0, 1.0, 0.75)
+
+    createRimGlowShell({
+      radiusRatio: atmosphereRadiusRatio,
+      renderOrder: 1,
+      color: atmosphere.color ?? '#ffffff',
+      intensity: { value: atmosphereIntensity },
+      rimPower: { value: atmosphereRimPower },
+      sunBias: { value: atmosphereSunBias },
+    })
+  }
+
+  // Generic aerosol/dust shell layer (stylized rim glow; e.g. Mars dust haze).
+  if (aerosol) {
+    // Clamp to keep configs safe and prevent inverted shells / huge overdraw.
+    const aerosolRadiusRatio = clampFinite(aerosol.radiusRatio, 1.001, 1.25, 1.01)
+    const aerosolIntensity = clampFinite(aerosol.intensity, 0.0, 2.0, 0.08)
+    const aerosolRimPower = clampFinite(aerosol.rimPower, 0.1, 10.0, 3.0)
+    const aerosolSunBias = clampFinite(aerosol.sunBias, 0.0, 1.0, 0.8)
+
+    createRimGlowShell({
+      radiusRatio: aerosolRadiusRatio,
+      renderOrder: 2,
+      color: aerosol.color ?? '#ffffff',
+      intensity: { value: aerosolIntensity },
+      rimPower: { value: aerosolRimPower },
+      sunBias: { value: aerosolSunBias },
+    })
   }
 
   let cloudsMesh: THREE.Mesh | undefined
@@ -574,6 +1010,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
   const useWaterMaskUniform = { value: 0.0 }
 
   if (isEarth && earth) {
+    ensureSunDirWorldUpdate()
     // Night lights + ocean glint (surface shader patch)
     material.emissive.set('#000000')
     material.emissiveIntensity = 1.0
@@ -764,71 +1201,14 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     onBeforeCompileRestores.push(restoreEarthSurface)
 
     // Atmosphere shell
-    const atmosphereGeo = new THREE.SphereGeometry(1, 48, 24)
-    atmosphereGeo.rotateX(Math.PI / 2)
-    extraGeometriesToDispose.push(atmosphereGeo)
-
-    const atmosphereMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uSunDirWorld: { value: uSunDirWorld },
-        uColor: { value: new THREE.Color(earth.atmosphereColor ?? '#79b8ff') },
-        uIntensity: uAtmosphereIntensity,
-        uRimPower: { value: earth.atmosphereRimPower ?? 2.2 },
-        uSunBias: { value: earth.atmosphereSunBias ?? 0.65 },
-      },
-      vertexShader: [
-        'varying vec3 vWorldPos;',
-        'varying vec3 vWorldNormal;',
-        '',
-        'void main() {',
-        '  vec4 worldPos = modelMatrix * vec4( position, 1.0 );',
-        '  vWorldPos = worldPos.xyz;',
-        '  vWorldNormal = normalize( mat3( modelMatrix ) * normal );',
-        '  gl_Position = projectionMatrix * viewMatrix * worldPos;',
-        '}',
-      ].join('\n'),
-      fragmentShader: [
-        'uniform vec3 uSunDirWorld;',
-        'uniform vec3 uColor;',
-        'uniform float uIntensity;',
-        'uniform float uRimPower;',
-        'uniform float uSunBias;',
-        '',
-        'varying vec3 vWorldPos;',
-        'varying vec3 vWorldNormal;',
-        '',
-        'void main() {',
-        '  vec3 N = normalize( vWorldNormal );',
-        '  vec3 V = normalize( cameraPosition - vWorldPos );',
-        '  vec3 L = normalize( uSunDirWorld );',
-        '',
-        '  float rim = 1.0 - max( dot( N, V ), 0.0 );',
-        '  rim = pow( rim, uRimPower );',
-        '',
-        '  float ndotl = dot( N, L );',
-        '  // Bias the glow towards the sun-lit hemisphere so the night side stays dark.',
-        '  float k = clamp( uSunBias, 0.0, 1.0 );',
-        '  float start = mix( -0.15, 0.0, k );',
-        '  float end = mix( 0.45, 0.2, k );',
-        '  float dayFactor = smoothstep( start, end, ndotl );',
-        '  float glow = rim * dayFactor;',
-        '',
-        '  float alpha = glow * uIntensity;',
-        '  gl_FragColor = vec4( uColor, alpha );',
-        '}',
-      ].join('\n'),
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false,
-      toneMapped: false,
-      side: THREE.BackSide,
+    createRimGlowShell({
+      radiusRatio: earth.atmosphereRadiusRatio ?? 1.015,
+      renderOrder: 2,
+      color: earth.atmosphereColor ?? '#79b8ff',
+      intensity: uAtmosphereIntensity,
+      rimPower: { value: earth.atmosphereRimPower ?? 2.2 },
+      sunBias: { value: earth.atmosphereSunBias ?? 0.65 },
     })
-    extraMaterialsToDispose.push(atmosphereMaterial)
-
-    const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMaterial)
-    atmosphereMesh.scale.setScalar(earth.atmosphereRadiusRatio ?? 1.015)
-    atmosphereMesh.renderOrder = 2
-    mesh.add(atmosphereMesh)
 
     // Clouds shell
     const cloudsGeo = new THREE.SphereGeometry(1, 48, 24)
@@ -1011,9 +1391,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
     readyExtras.push(...extras)
 
-    update = ({ sunDirWorld, etSec, earthTuning }) => {
-      uSunDirWorld.copy(sunDirWorld).normalize()
-
+    update = composeUpdate(update, ({ sunDirWorld: _sunDirWorld, etSec, earthTuning }) => {
       if (earthTuning) {
         uNightAlbedo.value = earthTuning.nightAlbedo
         uTwilight.value = earthTuning.twilight
@@ -1026,7 +1404,7 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
         const phase = (etSec * cloudsDriftRadPerSec) % (Math.PI * 2)
         cloudsMesh.rotation.z = phase
       }
-    }
+    })
   }
 
   const ready = Promise.all(readyExtras).then(() => undefined)
@@ -1041,6 +1419,8 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
 
       // Detach texture references before releasing/disposing them.
       disposeMap(material)
+      disposeNormalMap(material)
+      disposeRoughnessMap(material)
 
       material.emissiveMap = null
       material.needsUpdate = true
@@ -1069,13 +1449,12 @@ export function createBodyMesh(options: CreateBodyMeshOptions): {
     ready: ready.then(() => {
       // If the texture loaded after we created the material, apply it now.
       if (disposed) return
-      if (!map) return
 
-      applyMapAndBump(material, map, bumpScale)
+      applySurfaceMaps({ material, map, bumpScale, normalMap, roughnessMap, normalScale })
 
       // Note: `material.color` multiplies `material.map`.
-      // Only override the default multiplier if `textureColor` is explicitly set.
-      material.color.set(textureColor ?? surface.color)
+      // Only override the default multiplier if a map is actually present.
+      material.color.set(map ? (textureColor ?? surface.color) : surface.color)
       material.needsUpdate = true
     }),
     update,

@@ -201,11 +201,55 @@ export const BODY_REGISTRY: readonly BodyRegistryEntry[] = [
       appearance: {
         surface: {
           color: '#e76f51',
+          // Keep Mars quite rough so the Viking mosaic reads as albedo (avoid plastic/gloss).
+          // With a roughness map, `roughness` is treated as a multiplier (Three.js behavior).
+          roughness: 1.0,
+          metalness: 0.0,
+
+          // Disable bump mapping (we use a real normal map for Mars).
+          bumpScale: 0.0,
+
+          // DEM-derived normals + roughness proxy (see texture README for sources + generation notes).
+          normalTexture: { url: 'textures/planets/mars-mola-normal-2k.png' },
+          normalScale: 0.45,
+          roughnessTexture: { url: 'textures/planets/mars-roughness-proxy-2k.png' },
+
+          // Suppress ambient washout on the night side (Mars has no strong emissive features).
+          nightAlbedo: 0.0008,
+          terminatorTwilight: 0.08,
+          // Subtle, seam-safe macro variation (no tiling textures).
+          detailNoise: { strength: 0.035, scale: 10.0 },
+
           texture: {
-            url: 'textures/planets/mars.png',
-            color: '#e76f51',
+            url: 'textures/planets/mars-viking-colorized-4k.jpg',
+            // Full-color albedo texture; keep tint subtle so we don't lose surface contrast.
+            color: '#ffffff',
           },
         },
+        layers: [
+          {
+            kind: 'atmosphere',
+            atmosphere: {
+              // Very thin + subtle vs Earth.
+              radiusRatio: 1.006,
+              color: '#d9a16c',
+              intensity: 0.14,
+              rimPower: 2.8,
+              sunBias: 0.9,
+            },
+          },
+          {
+            kind: 'aerosol',
+            aerosol: {
+              // Stylized warm dust/haze rim (non-physical).
+              radiusRatio: 1.012,
+              color: '#f0b07a',
+              intensity: 0.05,
+              rimPower: 3.8,
+              sunBias: 0.85,
+            },
+          },
+        ],
       },
       label: 'Mars',
     },

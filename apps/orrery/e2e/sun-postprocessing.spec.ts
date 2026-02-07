@@ -25,12 +25,29 @@ const setupDeterminismAndNetworkBlock = async (page: any, baseURL?: string) => {
   })
 }
 
+const waitForViewerReadyForScreenshot = async (page: any, opts?: { renders?: number }) => {
+  await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
+
+  // In CI we occasionally observed screenshots taken before async textures were
+  // fully uploaded/visible. Force a few synchronous renders via the e2e API to
+  // ensure the current frame reflects final assets.
+  await page.waitForFunction(() => (window as any).__tspice_viewer__e2e?.renderNTimes != null)
+
+  const renders = opts?.renders ?? 2
+
+  await page.evaluate(async (renders) => {
+    const api = (window as any).__tspice_viewer__e2e
+    if (!api?.renderNTimes) throw new Error('Missing e2e API: renderNTimes')
+    await api.renderNTimes(renders)
+  }, renders)
+}
+
 test('sun postprocessing: whole-frame bloom + tonemap', async ({ page, baseURL }) => {
   await setupDeterminismAndNetworkBlock(page, baseURL)
 
   await page.goto('/?e2e=1&et=1234567&sunPostprocessMode=wholeFrame&sunToneMap=filmic')
 
-  await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
+  await waitForViewerReadyForScreenshot(page)
 
   const canvas = page.locator('canvas.sceneCanvas')
   await expect(canvas).toBeVisible()
@@ -47,7 +64,7 @@ test('sun postprocessing: sun-isolated selective bloom + tonemap', async ({ page
 
   await page.goto('/?e2e=1&et=1234567&sunPostprocessMode=sunIsolated&sunToneMap=filmic')
 
-  await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
+  await waitForViewerReadyForScreenshot(page)
 
   const canvas = page.locator('canvas.sceneCanvas')
   await expect(canvas).toBeVisible()
@@ -64,7 +81,7 @@ test('sun postprocessing: sun-isolated selective bloom (default tonemap)', async
   // Intentionally omit `sunToneMap` so we cover the `sunIsolated` default (none).
   await page.goto('/?e2e=1&et=1234567&sunPostprocessMode=sunIsolated')
 
-  await page.waitForFunction(() => (window as any).__tspice_viewer__rendered_scene === true)
+  await waitForViewerReadyForScreenshot(page, { renders: 8 })
 
   const canvas = page.locator('canvas.sceneCanvas')
   await expect(canvas).toBeVisible()

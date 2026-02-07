@@ -29,6 +29,19 @@ export interface BodySurfaceStyle {
   /** Optional surface texture settings. */
   texture?: BodySurfaceTextureStyle
 
+  /** Optional normal map (tangent-space) texture; should be equirectangular 2:1. */
+  normalTexture?: { url: string }
+
+  /** Optional roughness map texture; should be equirectangular 2:1. */
+  roughnessTexture?: { url: string }
+
+  /**
+   * Optional normal-map strength.
+   *
+   * Three.js uses a `Vector2` for `normalScale`; allow a scalar shortcut.
+   */
+  normalScale?: number | { x: number; y: number }
+
   /** Optional `MeshStandardMaterial` tuning. */
   roughness?: number
 
@@ -64,11 +77,58 @@ export interface BodySurfaceStyle {
    * Smaller values = sharper terminator.
    */
   terminatorTwilight?: number
+
+  /**
+   * Optional, subtle procedural albedo modulation for macro/detail variation
+   * without obvious tiling or additional texture assets.
+   *
+   * Values are applied conservatively in shader space; keep `strength` small.
+   */
+  detailNoise?: {
+    /** Multiplier for the albedo modulation (0..~0.1). */
+    strength?: number
+    /** Frequency for seam-safe direction-space noise (higher = finer detail). */
+    scale?: number
+    /** Optional seed offset for deterministic variation between bodies. */
+    seed?: number
+  }
 }
 
 export interface EarthAppearanceLayerStyle {
   kind: 'earth'
   earth: EarthAppearanceStyle
+}
+
+export interface AtmosphereAppearanceLayerStyle {
+  kind: 'atmosphere'
+  atmosphere: {
+    /** Shell radius relative to the body radius. */
+    radiusRatio?: number
+    /** Additive glow color. */
+    color?: string
+    /** Opacity/intensity scalar (0..1-ish). */
+    intensity?: number
+    /** Rim falloff exponent (higher = tighter rim). */
+    rimPower?: number
+    /** 0 = symmetric rim, 1 = fully sun-biased rim. */
+    sunBias?: number
+  }
+}
+
+export interface AerosolAppearanceLayerStyle {
+  kind: 'aerosol'
+  aerosol: {
+    /** Shell radius relative to the body radius. */
+    radiusRatio?: number
+    /** Additive glow color. */
+    color?: string
+    /** Opacity/intensity scalar (0..1-ish). */
+    intensity?: number
+    /** Rim falloff exponent (higher = tighter rim). */
+    rimPower?: number
+    /** 0 = symmetric rim, 1 = fully sun-biased rim. */
+    sunBias?: number
+  }
 }
 
 export interface UnknownBodyLayerStyle {
@@ -84,7 +144,11 @@ export interface UnknownBodyLayerStyle {
 
 // Extensible: new layer kinds (atmosphere, clouds, decals, etc.) can be added later.
 // Keep this intentionally open, but structurally explicit.
-export type BodyLayerStyle = EarthAppearanceLayerStyle | UnknownBodyLayerStyle
+export type BodyLayerStyle =
+  | EarthAppearanceLayerStyle
+  | AtmosphereAppearanceLayerStyle
+  | AerosolAppearanceLayerStyle
+  | UnknownBodyLayerStyle
 
 export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthAppearanceLayerStyle {
   if (typeof layer !== 'object' || layer === null) return false
@@ -95,6 +159,26 @@ export function isEarthAppearanceLayer(layer: BodyLayerStyle): layer is EarthApp
   // Validate payload shape beyond `kind === 'earth'`.
   const earth = (layer as { earth?: unknown }).earth
   return typeof earth === 'object' && earth !== null
+}
+
+export function isAtmosphereAppearanceLayer(layer: BodyLayerStyle): layer is AtmosphereAppearanceLayerStyle {
+  if (typeof layer !== 'object' || layer === null) return false
+
+  const maybeKind = (layer as { kind?: unknown }).kind
+  if (maybeKind !== 'atmosphere') return false
+
+  const atmosphere = (layer as { atmosphere?: unknown }).atmosphere
+  return typeof atmosphere === 'object' && atmosphere !== null
+}
+
+export function isAerosolAppearanceLayer(layer: BodyLayerStyle): layer is AerosolAppearanceLayerStyle {
+  if (typeof layer !== 'object' || layer === null) return false
+
+  const maybeKind = (layer as { kind?: unknown }).kind
+  if (maybeKind !== 'aerosol') return false
+
+  const aerosol = (layer as { aerosol?: unknown }).aerosol
+  return typeof aerosol === 'object' && aerosol !== null
 }
 
 export interface BodyAppearanceStyle {
