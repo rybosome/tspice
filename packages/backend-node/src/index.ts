@@ -13,6 +13,7 @@ import { createGeometryApi } from "./domains/geometry.js";
 import { createIdsNamesApi } from "./domains/ids-names.js";
 import { createKernelsApi } from "./domains/kernels.js";
 import { createTimeApi } from "./domains/time.js";
+import { createErrorApi } from "./domains/error.js";
 
 export function spiceVersion(): string {
   const version = getNativeAddon().spiceVersion();
@@ -33,6 +34,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     ...createEphemerisApi(native),
     ...createGeometryApi(native),
     ...createCoordsVectorsApi(native),
+    ...createErrorApi(native),
   };
 
   // Internal testing hook (not part of the public backend contract).

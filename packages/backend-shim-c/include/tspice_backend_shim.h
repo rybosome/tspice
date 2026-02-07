@@ -17,6 +17,22 @@ void tspice_init_cspice_error_handling_once(void);
 // Returns 0.
 int tspice_get_spice_error_message_and_reset(char *err, int errMaxBytes);
 
+// Retrieve the most recent error message parts captured by
+// tspice_get_spice_error_message_and_reset(). These do not modify CSPICE error
+// status.
+int tspice_get_last_error_short(char *out, int outMaxBytes);
+int tspice_get_last_error_long(char *out, int outMaxBytes);
+int tspice_get_last_error_trace(char *out, int outMaxBytes);
+
+// --- CSPICE error/status utilities ---
+int tspice_failed(int *outFailed, char *err, int errMaxBytes);
+int tspice_reset(char *err, int errMaxBytes);
+int tspice_getmsg(const char *which, char *out, int outMaxBytes, char *err, int errMaxBytes);
+int tspice_setmsg(const char *message, char *err, int errMaxBytes);
+int tspice_sigerr(const char *shortMsg, char *err, int errMaxBytes);
+int tspice_chkin(const char *name, char *err, int errMaxBytes);
+int tspice_chkout(const char *name, char *err, int errMaxBytes);
+
 int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes);
 
 int tspice_furnsh(const char *path, char *err, int errMaxBytes);

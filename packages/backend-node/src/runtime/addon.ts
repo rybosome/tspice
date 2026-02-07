@@ -6,6 +6,15 @@ import { fileURLToPath } from "node:url";
 export type NativeAddon = {
   spiceVersion(): string;
 
+  // --- error/status utilities ---
+  failed(): boolean;
+  reset(): void;
+  getmsg(which: "SHORT" | "LONG" | "EXPLAIN"): string;
+  setmsg(message: string): void;
+  sigerr(short: string): void;
+  chkin(name: string): void;
+  chkout(name: string): void;
+
   furnsh(path: string): void;
   unload(path: string): void;
   kclear(): void;
