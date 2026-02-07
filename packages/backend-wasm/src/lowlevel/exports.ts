@@ -11,6 +11,25 @@ export type EmscriptenModule = {
   HEAPU32: Uint32Array;
   HEAP32: Int32Array;
   HEAPF64: Float64Array;
+  // --- error/status utilities ---
+  _tspice_get_last_error_short(outPtr: number, outMaxBytes: number): number;
+  _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;
+  _tspice_get_last_error_trace(outPtr: number, outMaxBytes: number): number;
+
+  _tspice_failed(outFailedPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_reset(errPtr: number, errMaxBytes: number): number;
+  _tspice_getmsg(
+    whichPtr: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_setmsg(messagePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_sigerr(shortPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_chkin(namePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_chkout(namePtr: number, errPtr: number, errMaxBytes: number): number;
+
   _tspice_tkvrsn_toolkit(
     outPtr: number,
     outMaxBytes: number,
@@ -394,6 +413,16 @@ export function assertEmscriptenModule(module: unknown): asserts module is Emscr
     typeof m._tspice_frmnam !== "function" ||
     typeof m._tspice_scs2e !== "function" ||
     typeof m._tspice_sce2s !== "function" ||
+    typeof m._tspice_get_last_error_short !== "function" ||
+    typeof m._tspice_get_last_error_long !== "function" ||
+    typeof m._tspice_get_last_error_trace !== "function" ||
+    typeof m._tspice_failed !== "function" ||
+    typeof m._tspice_reset !== "function" ||
+    typeof m._tspice_getmsg !== "function" ||
+    typeof m._tspice_setmsg !== "function" ||
+    typeof m._tspice_sigerr !== "function" ||
+    typeof m._tspice_chkin !== "function" ||
+    typeof m._tspice_chkout !== "function" ||
     typeof m._tspice_ckgp !== "function" ||
     typeof m._tspice_ckgpav !== "function" ||
     typeof m._tspice_pxform !== "function" ||

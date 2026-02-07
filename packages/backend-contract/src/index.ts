@@ -62,6 +62,7 @@ export * from "./domains/frames.js";
 export * from "./domains/ephemeris.js";
 export * from "./domains/geometry.js";
 export * from "./domains/coords-vectors.js";
+export * from "./domains/error.js";
 
 import type { KernelsApi } from "./domains/kernels.js";
 import type { TimeApi } from "./domains/time.js";
@@ -70,6 +71,7 @@ import type { FramesApi } from "./domains/frames.js";
 import type { EphemerisApi } from "./domains/ephemeris.js";
 import type { GeometryApi } from "./domains/geometry.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
+import type { ErrorApi } from "./domains/error.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
 
@@ -80,7 +82,8 @@ export interface SpiceBackend
     FramesApi,
     EphemerisApi,
     GeometryApi,
-    CoordsVectorsApi {
+    CoordsVectorsApi,
+    ErrorApi {
   /** Which backend implementation is in use. */
   readonly kind: SpiceBackendKind;
 }

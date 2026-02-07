@@ -2,6 +2,8 @@
 
 #include <napi.h>
 
+#include "tspice_backend_shim.h"
+
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -21,11 +23,42 @@ inline void ThrowSpiceError(Napi::Env env, const char* message) {
 }
 
 inline void ThrowSpiceError(Napi::Env env, const std::string& context, const char* err) {
+  // This overload is used for CSPICE-signaled failures, where the C shim has
+  // already captured/cleared SPICE error status and produced an error message.
   std::string message = (err && err[0] != '\0') ? std::string(err) : "Unknown CSPICE error";
   if (!context.empty()) {
     message = context + ":\n" + message;
   }
-  ThrowSpiceError(env, message);
+
+  Napi::Error jsErr = Napi::Error::New(env, message);
+  Napi::Object obj = jsErr.Value().As<Napi::Object>();
+
+  // Attach structured SPICE error details when available.
+  //
+  // These are best-effort: they may be empty if no SPICE error was captured or
+  // if the error originated outside of CSPICE.
+  char shortMsg[1841];
+  char longMsg[1841];
+  char traceMsg[1841];
+  shortMsg[0] = '\0';
+  longMsg[0] = '\0';
+  traceMsg[0] = '\0';
+
+  tspice_get_last_error_short(shortMsg, (int)sizeof(shortMsg));
+  tspice_get_last_error_long(longMsg, (int)sizeof(longMsg));
+  tspice_get_last_error_trace(traceMsg, (int)sizeof(traceMsg));
+
+  if (shortMsg[0] != '\0') {
+    obj.Set("spiceShort", Napi::String::New(env, shortMsg));
+  }
+  if (longMsg[0] != '\0') {
+    obj.Set("spiceLong", Napi::String::New(env, longMsg));
+  }
+  if (traceMsg[0] != '\0') {
+    obj.Set("spiceTrace", Napi::String::New(env, traceMsg));
+  }
+
+  ThrowSpiceError(jsErr);
 }
 
 inline Napi::Array MakeNumberArray(Napi::Env env, const double* values, size_t count) {
