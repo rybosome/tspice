@@ -194,11 +194,14 @@ static Napi::Number NewWindow(const Napi::CallbackInfo& info) {
   return Napi::Number::New(env, (double)handle);
 }
 
+using FreeHandleFn = int (*)(uintptr_t ptr, char* err, int errMaxBytes);
+
 static void FreeHandleCommon(
     Napi::Env env,
     uint32_t handle,
     const char* context,
-    const char* kindLabel) {
+    const char* kindLabel,
+    FreeHandleFn freeHandle) {
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
 
   uintptr_t ptr = 0;
@@ -210,9 +213,7 @@ static void FreeHandleCommon(
   }
 
   char err[tspice_backend_node::kErrMaxBytes];
-  const int code = (std::string(kindLabel) == "window")
-      ? tspice_free_window(ptr, err, (int)sizeof(err))
-      : tspice_free_cell(ptr, err, (int)sizeof(err));
+  const int code = freeHandle(ptr, err, (int)sizeof(err));
   if (code != 0) {
     // Note: handle is removed even if free fails; otherwise double-frees are easy.
     ThrowSpiceError(env, std::string("CSPICE failed while calling ") + context, err);
@@ -232,7 +233,7 @@ static Napi::Value FreeCell(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
-  FreeHandleCommon(env, handle, "freeCell", "cell");
+  FreeHandleCommon(env, handle, "freeCell", "cell", tspice_free_cell);
   return env.Undefined();
 }
 
@@ -249,7 +250,7 @@ static Napi::Value FreeWindow(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
-  FreeHandleCommon(env, handle, "freeWindow", "window");
+  FreeHandleCommon(env, handle, "freeWindow", "window", tspice_free_window);
   return env.Undefined();
 }
 
