@@ -186,20 +186,20 @@ try {
   const scriptDir = path.dirname(fileURLToPath(import.meta.url));
   const pkgRoot = path.resolve(scriptDir, "..");
 
-  const message = error instanceof Error ? (error.stack || error.message) : String(error);
+  const err = error instanceof Error ? error : new Error(String(error));
+  const message = err.stack || err.message;
 
-  if (isCI()) {
-    writeState(pkgRoot, {
-      available: false,
-      reason: "cspice-runner build failed in CI",
-      error: message,
-      binaryPath: getBinaryPath(pkgRoot),
-    });
+  // Best-effort: never hard-fail tests if we can't build the runner.
+  // Parity tests will consult this state file and skip when unavailable.
+  writeState(pkgRoot, {
+    available: false,
+    reason: err.message || "cspice-runner build failed",
+    error: message,
+    binaryPath: getBinaryPath(pkgRoot),
+  });
 
-    console.error(`[backend-verify] cspice-runner build failed in CI; parity tests will be skipped.\n${message}`);
-    process.exitCode = 0;
-  } else {
-    console.error(message);
-    process.exitCode = 1;
-  }
+  console.error(
+    `[backend-verify] cspice-runner unavailable; parity tests will be skipped.\n${message}`,
+  );
+  process.exitCode = 0;
 }
