@@ -14,6 +14,21 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.str2et === "function", "Expected native addon to export str2et(time)");
   invariant(typeof native.et2utc === "function", "Expected native addon to export et2utc(et, format, prec)");
   invariant(typeof native.timout === "function", "Expected native addon to export timout(et, picture)");
+
+  invariant(typeof native.exists === "function", "Expected native addon to export exists(path)");
+  invariant(typeof native.getfat === "function", "Expected native addon to export getfat(path)");
+
+  invariant(typeof native.dafopr === "function", "Expected native addon to export dafopr(path)");
+  invariant(typeof native.dafcls === "function", "Expected native addon to export dafcls(handle)");
+  invariant(typeof native.dafbfs === "function", "Expected native addon to export dafbfs(handle)");
+  invariant(typeof native.daffna === "function", "Expected native addon to export daffna(handle)");
+
+  invariant(typeof native.dasopr === "function", "Expected native addon to export dasopr(path)");
+  invariant(typeof native.dascls === "function", "Expected native addon to export dascls(handle)");
+
+  invariant(typeof native.dlaopn === "function", "Expected native addon to export dlaopn(path, ftype, ifname, ncomch)");
+  invariant(typeof native.dlabfs === "function", "Expected native addon to export dlabfs(handle)");
+  invariant(typeof native.dlafns === "function", "Expected native addon to export dlafns(handle, descr)");
   invariant(typeof native.bodn2c === "function", "Expected native addon to export bodn2c(name)");
   invariant(typeof native.bodc2n === "function", "Expected native addon to export bodc2n(code)");
   invariant(typeof native.namfrm === "function", "Expected native addon to export namfrm(name)");

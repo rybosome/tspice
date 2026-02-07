@@ -741,6 +741,45 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       return 0;
     },
 
+    // --- file i/o primitives (not implemented in fake backend) ---
+
+    exists: (_path: string) => {
+      throw new Error("Fake backend: exists() is not implemented");
+    },
+    getfat: (_path: string) => {
+      throw new Error("Fake backend: getfat() is not implemented");
+    },
+    dafopr: (_path: string) => {
+      throw new Error("Fake backend: dafopr() is not implemented");
+    },
+    dafcls: (_handle: number) => {
+      throw new Error("Fake backend: dafcls() is not implemented");
+    },
+    dafbfs: (_handle: number) => {
+      throw new Error("Fake backend: dafbfs() is not implemented");
+    },
+    daffna: (_handle: number) => {
+      throw new Error("Fake backend: daffna() is not implemented");
+    },
+    dasopr: (_path: string) => {
+      throw new Error("Fake backend: dasopr() is not implemented");
+    },
+    dascls: (_handle: number) => {
+      throw new Error("Fake backend: dascls() is not implemented");
+    },
+    dlaopn: (_path: string, _ftype: string, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: dlaopn() is not implemented");
+    },
+    dlabfs: (_handle: number) => {
+      throw new Error("Fake backend: dlabfs() is not implemented");
+    },
+    dlafns: (_handle: number, _descr: unknown) => {
+      throw new Error("Fake backend: dlafns() is not implemented");
+    },
+    dlacls: (_handle: number) => {
+      throw new Error("Fake backend: dlacls() is not implemented");
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

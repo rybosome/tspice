@@ -9,6 +9,7 @@ import { createGeometryApi } from "../domains/geometry.js";
 import { createIdsNamesApi } from "../domains/ids-names.js";
 import { createKernelsApi } from "../domains/kernels.js";
 import { createTimeApi, getToolkitVersion } from "../domains/time.js";
+import { createFileIoApi } from "../domains/file-io.js";
 
 import { createWasmFs } from "./fs.js";
 
@@ -91,6 +92,7 @@ export async function createWasmBackend(
     ...createEphemerisApi(module),
     ...createGeometryApi(module),
     ...createCoordsVectorsApi(module),
+    ...createFileIoApi(module),
 
   } satisfies SpiceBackend;
 

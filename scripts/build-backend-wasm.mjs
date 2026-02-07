@@ -68,11 +68,15 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ephemeris.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
 ];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
 const outputWebJsPath = path.join(outputDir, WASM_WEB_JS_FILENAME);
 const outputNodeJsPath = path.join(outputDir, WASM_NODE_JS_FILENAME);
+// We build to a stable basename so Emscripten emits `tspice_backend_wasm.wasm`
+// without relying on `-s WASM_BINARY_FILE` (not supported by some toolchains).
+const outputBaseJsPath = path.join(outputDir, "tspice_backend_wasm.js");
 
 for (const shimPath of shimSources) {
   if (!fs.existsSync(shimPath)) {
@@ -188,9 +192,6 @@ const commonEmccArgs = [
   "-s",
   "EXPORT_ES6=1",
   "-s",
-  // Keep the binary filename stable regardless of JS glue output name.
-  `WASM_BINARY_FILE='${WASM_BINARY_FILENAME}'`,
-  "-s",
   "ALLOW_MEMORY_GROWTH=1",
   "-s",
   // Some Emscripten toolchains require initial memory to cover static data.
@@ -201,7 +202,7 @@ const commonEmccArgs = [
   "-s",
   "EXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8','lengthBytesUTF8','FS','HEAP8','HEAPU8','HEAP16','HEAPU16','HEAP32','HEAPU32','HEAPF32','HEAPF64']",
   "-s",
-  "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_ktotal_all','_tspice_str2et','_tspice_et2utc','_tspice_timout','_tspice_bodn2c','_tspice_bodc2n','_tspice_namfrm','_tspice_frmnam','_tspice_cidfrm','_tspice_cnmfrm','_tspice_scs2e','_tspice_sce2s','_tspice_ckgp','_tspice_ckgpav','_tspice_pxform','_tspice_sxform','_tspice_spkezr','_tspice_spkpos','_tspice_subpnt','_tspice_subslr','_tspice_sincpt','_tspice_ilumin','_tspice_occult','_tspice_reclat','_tspice_latrec','_tspice_recsph','_tspice_sphrec','_tspice_vnorm','_tspice_vhat','_tspice_vdot','_tspice_vcrss','_tspice_mxv','_tspice_mtxv','_malloc','_free']",
+  "EXPORTED_FUNCTIONS=['_tspice_tkvrsn_toolkit','_tspice_furnsh','_tspice_unload','_tspice_kclear','_tspice_ktotal','_tspice_kdata','_tspice_ktotal_all','_tspice_exists','_tspice_getfat','_tspice_dafopr','_tspice_dafcls','_tspice_dafbfs','_tspice_daffna','_tspice_dasopr','_tspice_dascls','_tspice_dlaopn','_tspice_dlabfs','_tspice_dlafns','_tspice_str2et','_tspice_et2utc','_tspice_timout','_tspice_bodn2c','_tspice_bodc2n','_tspice_namfrm','_tspice_frmnam','_tspice_cidfrm','_tspice_cnmfrm','_tspice_scs2e','_tspice_sce2s','_tspice_ckgp','_tspice_ckgpav','_tspice_pxform','_tspice_sxform','_tspice_spkezr','_tspice_spkpos','_tspice_subpnt','_tspice_subslr','_tspice_sincpt','_tspice_ilumin','_tspice_occult','_tspice_reclat','_tspice_latrec','_tspice_recsph','_tspice_sphrec','_tspice_vnorm','_tspice_vhat','_tspice_vdot','_tspice_vcrss','_tspice_mxv','_tspice_mtxv','_malloc','_free']",
 ];
 
 function runEmcc({ environment, outputJsPath }) {
@@ -223,8 +224,13 @@ function runEmcc({ environment, outputJsPath }) {
   );
 }
 
-runEmcc({ environment: "web,worker", outputJsPath: outputWebJsPath });
-runEmcc({ environment: "node", outputJsPath: outputNodeJsPath });
+runEmcc({ environment: "web,worker", outputJsPath: outputBaseJsPath });
+fs.rmSync(outputWebJsPath, { force: true });
+fs.renameSync(outputBaseJsPath, outputWebJsPath);
+
+runEmcc({ environment: "node", outputJsPath: outputBaseJsPath });
+fs.rmSync(outputNodeJsPath, { force: true });
+fs.renameSync(outputBaseJsPath, outputNodeJsPath);
 
 const outputWasmPath = path.join(outputDir, WASM_BINARY_FILENAME);
 if (!fs.existsSync(outputWasmPath)) {

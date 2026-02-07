@@ -44,6 +44,55 @@ int tspice_kdata(
 // Returns the number of loaded kernels, or -1 on error (with message in `err`).
 int tspice_ktotal_all(char *err, int errMaxBytes);
 
+// --- file i/o primitives ---------------------------------------------------
+
+int tspice_exists(const char *path, int *outExists, char *err, int errMaxBytes);
+
+int tspice_getfat(
+    const char *path,
+    char *outArch,
+    int outArchMaxBytes,
+    char *outType,
+    int outTypeMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// --- DAF -------------------------------------------------------------------
+
+int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes);
+int tspice_dafcls(int handle, char *err, int errMaxBytes);
+int tspice_dafbfs(int handle, char *err, int errMaxBytes);
+
+// Selects the current DAF via `dafcs_c(handle)` and then calls `daffna_c`.
+int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes);
+
+// --- DAS -------------------------------------------------------------------
+
+int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes);
+int tspice_dascls(int handle, char *err, int errMaxBytes);
+
+// --- DLA (DAS-backed) ------------------------------------------------------
+
+int tspice_dlaopn(
+    const char *path,
+    const char *ftype,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+// Writes a DLA descriptor as 8 ints in this order:
+// [bwdptr, fwdptr, ibase, isize, dbase, dsize, cbase, csize]
+int tspice_dlabfs(int handle, int *outDescr8, int *outFound, char *err, int errMaxBytes);
+int tspice_dlafns(
+    int handle,
+    const int *descr8,
+    int *outNextDescr8,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
 // --- low-level primitives ---
 
 // str2et_c: convert time string -> ET seconds past J2000.

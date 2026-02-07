@@ -13,6 +13,7 @@ export type {
   Mat6RowMajor,
   Mat3ColMajor,
   Mat3RowMajor,
+  SpiceHandle,
   SpiceMatrix6x6,
   SpiceStateVector,
   SpiceVector3,
@@ -60,6 +61,7 @@ export * from "./domains/frames.js";
 export * from "./domains/ephemeris.js";
 export * from "./domains/geometry.js";
 export * from "./domains/coords-vectors.js";
+export * from "./domains/file-io.js";
 
 import type { KernelsApi } from "./domains/kernels.js";
 import type { TimeApi } from "./domains/time.js";
@@ -68,6 +70,7 @@ import type { FramesApi } from "./domains/frames.js";
 import type { EphemerisApi } from "./domains/ephemeris.js";
 import type { GeometryApi } from "./domains/geometry.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
+import type { FileIoApi } from "./domains/file-io.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
 
@@ -78,7 +81,8 @@ export interface SpiceBackend
     FramesApi,
     EphemerisApi,
     GeometryApi,
-    CoordsVectorsApi {
+    CoordsVectorsApi,
+    FileIoApi {
   /** Which backend implementation is in use. */
   readonly kind: SpiceBackendKind;
 }

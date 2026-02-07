@@ -36,6 +36,55 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  // --- file i/o primitives ---
+
+  _tspice_exists(pathPtr: number, outExistsPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_getfat(
+    pathPtr: number,
+    outArchPtr: number,
+    outArchMaxBytes: number,
+    outTypePtr: number,
+    outTypeMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dafopr(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dafcls(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dafbfs(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_daffna(handle: number, outFoundPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_dasopr(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dascls(handle: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_dlaopn(
+    pathPtr: number,
+    ftypePtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlabfs(
+    handle: number,
+    outDescr8Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlafns(
+    handle: number,
+    descr8Ptr: number,
+    outNextDescr8Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_str2et(utcPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_et2utc(
     et: number,
@@ -337,6 +386,17 @@ export function assertEmscriptenModule(module: unknown): asserts module is Emscr
     typeof m._tspice_kclear !== "function" ||
     typeof m._tspice_ktotal !== "function" ||
     typeof m._tspice_kdata !== "function" ||
+    typeof m._tspice_exists !== "function" ||
+    typeof m._tspice_getfat !== "function" ||
+    typeof m._tspice_dafopr !== "function" ||
+    typeof m._tspice_dafcls !== "function" ||
+    typeof m._tspice_dafbfs !== "function" ||
+    typeof m._tspice_daffna !== "function" ||
+    typeof m._tspice_dasopr !== "function" ||
+    typeof m._tspice_dascls !== "function" ||
+    typeof m._tspice_dlaopn !== "function" ||
+    typeof m._tspice_dlabfs !== "function" ||
+    typeof m._tspice_dlafns !== "function" ||
     typeof m._tspice_str2et !== "function" ||
     typeof m._tspice_et2utc !== "function" ||
     typeof m._tspice_timout !== "function" ||
