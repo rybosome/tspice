@@ -15,6 +15,11 @@ Included domains (from `packages/backend-contract/src/domains/`):
 - `geometry`
 - `coords-vectors`
 
+> Note: This mapping is intended to be complete (method-level) for all domains listed here.
+> Follow-up work is primarily around parity tests, fixtures for kernel-heavy routines (CK/FK/IK), and per-routine edge-case semantics.
+>
+> Recommended first parity-test targets (lowest fixture complexity): `time`, `ids-names`, `frames`. This is a prioritization hint only — not a statement about completeness of the other domains.
+
 ## Contract + type conventions (shared)
 
 Shared types are defined in `packages/backend-contract/src/shared/types.ts`.
@@ -139,6 +144,11 @@ Notes:
 | `kernels.ktotal(kind?)` | `ktotal_c` | `(kind?: KernelKind): number` | `number` | exact integer match | **stateful**: returns count of currently loaded kernels (optionally filtered) |
 | `kernels.kdata(which, kind?)` | `kdata_c` | `(which: number, kind?: KernelKind): Found<KernelData>` | `Found<KernelData>` | exact string/integer match | **stateful**: queries loaded-kernel table; returns `{ found: false }` when `which` is out of range for the selected kind |
 
+Notes:
+
+- **Global state + determinism:** `furnsh` mutates process-global CSPICE state (kernel pool + loaded-kernel table). Load order can affect results. For deterministic tests, prefer an explicit load order and call `kernels.kclear()` between tests/suites to avoid cross-test leakage.
+- **`KernelSource` bytes safety:** when `KernelSource` is `{ path, bytes }`, backends should treat `path` as **untrusted** input. Write bytes only into a backend-controlled directory / virtual FS namespace, reject absolute paths and `..` segments, and (ideally) clean up temp artifacts on `unload()` / `kclear()` or process exit.
+
 ---
 
 ## Domain: `error` (`ErrorApi`)
@@ -149,9 +159,14 @@ Notes:
 | `error.reset()` | `reset_c` | `(): void` | `void` | n/a | **stateful**: clears the CSPICE error status and stored messages |
 | `error.getmsg(which)` | `getmsg_c` | `(which: "SHORT" \| "LONG" \| "EXPLAIN"): string` | `string` | exact string match | **stateful**: reads CSPICE error message buffers |
 | `error.setmsg(message)` | `setmsg_c` | `(message: string): void` | `void` | n/a | **stateful**: sets the long message text used by `sigerr` |
-| `error.sigerr(short)` | `sigerr_c` | `(short: string): void` | `void` | n/a | **stateful**: signals an error; typically causes subsequent backend calls to throw unless reset |
+| `error.sigerr(short)` | `sigerr_c` | `(short: string): void` | `void` | n/a | **stateful**: signals an error; tspice backends configure CSPICE to `RETURN` and surface this as a thrown JS/TS error (and typically capture + reset CSPICE error state) |
 | `error.chkin(name)` | `chkin_c` | `(name: string): void` | `void` | n/a | **stateful**: pushes `name` onto the SPICE traceback stack |
 | `error.chkout(name)` | `chkout_c` | `(name: string): void` | `void` | n/a | **stateful**: pops `name` from the SPICE traceback stack |
+
+Notes:
+
+- **Project convention:** tspice backends configure CSPICE error handling to be deterministic (`erract_c("SET", 0, "RETURN")`, `errprt_c("SET", 0, "NONE")`, or equivalent). Backend domain methods then translate CSPICE failures into thrown JS/TS errors.
+- **`setmsg` + `sigerr`:** `setmsg(long)` sets the long message used by the next `sigerr(short)`. In Node/WASM backends, `sigerr()` is expected to throw and the backend will capture + reset CSPICE error state so subsequent calls are not poisoned.
 
 ---
 
