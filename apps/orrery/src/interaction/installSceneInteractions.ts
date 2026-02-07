@@ -181,14 +181,16 @@ export function installSceneInteractions(args: {
 
     // IMPORTANT: always schedule at least one RAF tick.
     //
-    // `SelectionOverlay.isAnimating()` can become true only *after* the next
-    // render runs `syncToCamera` (e.g. when camera zoom changes affect desired
-    // opacities). If we bail out early here, we can miss that transition and
-    // end up with a one-frame overlay update.
+    // `SelectionOverlay.isAnimating()` can become true only *after* a render
+    // runs `syncToCamera` (e.g. when camera zoom changes affect desired
+    // opacities). Many call sites already call `invalidate()` when they mutate
+    // camera state / hover / selection.
     //
-    // We call `invalidate()` first so the next render is scheduled before this
-    // RAF callback, ensuring `syncToCamera` has a chance to run.
-    invalidate()
+    // To avoid an eager double-invalidate (one here + one in the RAF loop), we
+    // don't invalidate immediately. Instead, the first RAF tick will "kick" a
+    // render if the overlay still isn't animating yet.
+
+    let didKick = false
 
     const step = (t: number) => {
       if (isDisposed()) {
@@ -196,7 +198,17 @@ export function installSceneInteractions(args: {
         return
       }
 
-      if (!selectionOverlay.isAnimating(t)) {
+      const animating = selectionOverlay.isAnimating(t)
+      if (!animating) {
+        // If the overlay needs one render to schedule tracks (via
+        // `syncToCamera`), request a frame and re-check on the next tick.
+        if (!didKick) {
+          didKick = true
+          invalidate()
+          overlayAnimFrame = window.requestAnimationFrame(step)
+          return
+        }
+
         overlayAnimFrame = null
         return
       }

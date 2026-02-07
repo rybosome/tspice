@@ -8,7 +8,7 @@ type ZoomTier = 'far' | 'mid' | 'close'
 
 type ElementKey = 'z' | 'ring' | 'x' | 'y'
 
-type ElementAnim = {
+export type ElementAnim = {
   value: number
   startValue: number
   targetValue: number
@@ -186,11 +186,14 @@ type TrackPhase =
 function getTrackPhase(track: ElementAnim, nowMs: number): TrackPhase {
   const eps = 1e-4
   if (Math.abs(track.targetValue - track.startValue) <= eps) return { kind: 'inactive' }
-  if (!(track.durationMs > 0)) return { kind: 'inactive' }
 
-  // Delayed tracks are still "active" so callers can keep their RAF
-  // invalidation loop running until the delayed fade stages begin.
+  // NOTE: we treat *any* future-start track as `delayed`, even if the duration
+  // is 0ms. A 0ms duration means "snap to target at startMs" (handled in
+  // `evalAnim`), but the caller still needs to keep its invalidation loop alive
+  // until `startMs` arrives.
   if (nowMs < track.startMs) return { kind: 'delayed' }
+
+  if (!(track.durationMs > 0)) return { kind: 'inactive' }
 
   const endMs = track.startMs + track.durationMs
   if (!(nowMs < endMs)) return { kind: 'inactive' }
@@ -813,4 +816,11 @@ export function createSelectionOverlay(opts?: CreateSelectionOverlayOptions): Se
     syncToCamera,
     dispose,
   }
+}
+
+
+export const __testing = {
+  schedule,
+  getTrackPhaseKind: (track: ElementAnim, nowMs: number) => getTrackPhase(track, nowMs).kind,
+  evalAnim,
 }
