@@ -372,7 +372,11 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
     cellGetc: (cell, index) => {
       assertSpiceInt32NonNegative(index, "cellGetc(index)");
       assertKnownCell(cell as unknown as number, "cellGetc()");
-      const outMaxBytes = charCellLengths.get(cell as unknown as number) ?? 2048;
+      const handle = cell as unknown as number;
+      const outMaxBytes = charCellLengths.get(handle);
+      if (outMaxBytes === undefined) {
+        throw new Error(`cellGetc(): unknown char cell handle ${handle}`);
+      }
       return tspiceCallCellGetc(module, cell, index, outMaxBytes);
     },
 
