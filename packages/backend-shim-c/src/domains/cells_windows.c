@@ -16,6 +16,7 @@ static int tspice_write_error(char *err, int errMaxBytes, const char *message) {
     err[errMaxBytes - 1] = '\0';
   }
   return 1;
+}
 
 // ---- Handle validation + checked casts ------------------------------------
 
@@ -134,8 +135,6 @@ static int tspice_spice_int_to_int_checked(
 }
 
 // ---------------------------------------------------------------------------
-
-}
 
 static SpiceCell *tspice_as_cell(uintptr_t handle) { return (SpiceCell *)handle; }
 
