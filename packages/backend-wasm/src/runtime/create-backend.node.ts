@@ -77,7 +77,16 @@ export async function createWasmBackend(
     );
   }
 
-  assertEmscriptenModule(module);
+
+  const skipAssertViaEnv =
+    process.env.TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT === "1" ||
+    process.env.TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT === "true";
+
+  const validateEmscriptenModule = options.validateEmscriptenModule ?? !skipAssertViaEnv;
+  if (validateEmscriptenModule) {
+    assertEmscriptenModule(module);
+  }
+
 
   // The toolkit version is constant for the lifetime of a loaded module.
   const toolkitVersion = getToolkitVersion(module);

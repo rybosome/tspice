@@ -63,7 +63,12 @@ export async function createWasmBackend(
     );
   }
 
-  assertEmscriptenModule(module);
+
+  const validateEmscriptenModule = options.validateEmscriptenModule ?? true;
+  if (validateEmscriptenModule) {
+    assertEmscriptenModule(module);
+  }
+
 
   // The toolkit version is constant for the lifetime of a loaded module.
   const toolkitVersion = getToolkitVersion(module);
