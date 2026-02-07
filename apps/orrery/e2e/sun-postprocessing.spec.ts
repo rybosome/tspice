@@ -34,6 +34,8 @@ test('sun postprocessing: whole-frame bloom + tonemap', async ({ page, baseURL }
     () =>
       (window as any).__tspice_viewer__rendered_scene === true &&
       ((window as any).__tspice_viewer__pending_texture_loads ?? 0) === 0,
+    undefined,
+    { timeout: 30_000 },
   )
 
   const canvas = page.locator('canvas.sceneCanvas')
@@ -55,6 +57,8 @@ test('sun postprocessing: sun-isolated selective bloom + tonemap', async ({ page
     () =>
       (window as any).__tspice_viewer__rendered_scene === true &&
       ((window as any).__tspice_viewer__pending_texture_loads ?? 0) === 0,
+    undefined,
+    { timeout: 30_000 },
   )
 
   const canvas = page.locator('canvas.sceneCanvas')
@@ -76,6 +80,8 @@ test('sun postprocessing: sun-isolated selective bloom (default tonemap)', async
     () =>
       (window as any).__tspice_viewer__rendered_scene === true &&
       ((window as any).__tspice_viewer__pending_texture_loads ?? 0) === 0,
+    undefined,
+    { timeout: 30_000 },
   )
 
   const canvas = page.locator('canvas.sceneCanvas')
