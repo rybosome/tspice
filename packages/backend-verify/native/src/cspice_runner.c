@@ -439,6 +439,8 @@ static void write_error_json(const char *message, const char *spiceShort,
 
 static char *read_all_stdin(size_t *outLen) {
   *outLen = 0;
+  // Ensure callers don't accidentally classify failures based on a stale errno.
+  errno = 0;
 
   size_t cap = 4096;
   if (cap > (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1) {
@@ -447,6 +449,7 @@ static char *read_all_stdin(size_t *outLen) {
 
   char *buf = (char *)malloc(cap);
   if (!buf) {
+    errno = ENOMEM;
     return NULL;
   }
 
@@ -473,6 +476,7 @@ static char *read_all_stdin(size_t *outLen) {
 
       char *next = (char *)realloc(buf, nextCap);
       if (!next) {
+        errno = ENOMEM;
         free(buf);
         return NULL;
       }
@@ -491,6 +495,9 @@ static char *read_all_stdin(size_t *outLen) {
 
     if (n == 0) {
       if (ferror(stdin)) {
+        if (errno == 0) {
+          errno = EIO;
+        }
         free(buf);
         return NULL;
       }

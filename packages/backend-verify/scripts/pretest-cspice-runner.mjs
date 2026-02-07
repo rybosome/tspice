@@ -15,16 +15,63 @@ function getRepoRoot(pkgRoot) {
 
 function readManifest(repoRoot) {
   const manifestPath = path.join(repoRoot, "scripts", "cspice.manifest.json");
-  const raw = fs.readFileSync(manifestPath, "utf8");
-  return JSON.parse(raw);
+
+  let raw;
+  try {
+    raw = fs.readFileSync(manifestPath, "utf8");
+  } catch (cause) {
+    // Keep the message here friendly; detailed error is still surfaced via `error`
+    // in the state file written by the outer try/catch.
+    if (cause && typeof cause === "object" && "code" in cause && cause.code === "ENOENT") {
+      throw new Error(
+        `CSPICE manifest missing (reason: missing file) at ${manifestPath}`,
+        { cause },
+      );
+    }
+    throw new Error(`Failed to read CSPICE manifest (reason: read error) at ${manifestPath}`, {
+      cause,
+    });
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (cause) {
+    throw new Error(
+      `Failed to parse CSPICE manifest (reason: parse error) at ${manifestPath}`,
+      { cause },
+    );
+  }
+  if (!parsed || typeof parsed !== "object") {
+    throw new Error(`Invalid CSPICE manifest (reason: not an object) at ${manifestPath}`);
+  }
+  if (typeof parsed.toolkitVersion !== "string") {
+    throw new Error(`Invalid CSPICE manifest (reason: missing toolkitVersion) at ${manifestPath}`);
+  }
+  return parsed;
 }
 
 function validateCspiceDir(cspiceDir) {
-  return (
-    fs.existsSync(path.join(cspiceDir, "include", "SpiceUsr.h")) &&
-    fs.existsSync(path.join(cspiceDir, "lib", "cspice.a")) &&
-    fs.existsSync(path.join(cspiceDir, "lib", "csupport.a"))
-  );
+  // Expect the layout produced by `pnpm -w fetch:cspice`:
+  //   - include/SpiceUsr.h
+  //   - lib/cspice.a
+  //   - lib/csupport.a
+  const required = [
+    "include/SpiceUsr.h",
+    "lib/cspice.a",
+    "lib/csupport.a",
+  ];
+
+  const missing = required.filter((rel) => !fs.existsSync(path.join(cspiceDir, rel)));
+  if (missing.length === 0) return { ok: true };
+
+  return {
+    ok: false,
+    reason:
+      `Invalid CSPICE directory: ${cspiceDir}. ` +
+      `Expected NAIF toolkit layout (include/SpiceUsr.h, lib/cspice.a, lib/csupport.a). ` +
+      `Missing: ${missing.join(", ")}`,
+  };
 }
 
 function resolveDefaultCspiceDir(repoRoot) {
@@ -100,7 +147,8 @@ function main() {
     ? path.resolve(process.env.TSPICE_CSPICE_DIR)
     : resolveDefaultCspiceDir(repoRoot);
 
-  if (!validateCspiceDir(cspiceDir)) {
+  const validation = validateCspiceDir(cspiceDir);
+  if (!validation.ok) {
     if (process.platform === "linux" && process.arch === "arm64") {
       if (isCI()) {
         writeState(pkgRoot, {
@@ -109,6 +157,7 @@ function main() {
             "Automatic CSPICE fetch is not supported on linux-arm64 (set TSPICE_CSPICE_DIR to a prebuilt CSPICE install)",
           binaryPath,
           cspiceDir,
+          details: validation.reason,
         });
         return;
       }
@@ -125,6 +174,7 @@ function main() {
           "CSPICE not available in CI (set TSPICE_CSPICE_DIR or prefetch .cache/cspice)",
         binaryPath,
         cspiceDir,
+        details: validation.reason,
       });
       return;
     }
@@ -138,9 +188,11 @@ function main() {
     }
 
     cspiceDir = resolveDefaultCspiceDir(repoRoot);
-    if (!validateCspiceDir(cspiceDir)) {
+    const postFetchValidation = validateCspiceDir(cspiceDir);
+    if (!postFetchValidation.ok) {
       throw new Error(
-        `CSPICE still not found after fetch at ${cspiceDir}. Try setting TSPICE_CSPICE_DIR.`,
+        `CSPICE still not usable after fetch. ${postFetchValidation.reason}. ` +
+          `Try setting TSPICE_CSPICE_DIR to a CSPICE install.`,
       );
     }
   }
