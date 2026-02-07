@@ -40,43 +40,45 @@ export function writeUtf8CStringArray(module: EmscriptenModule, values: string[]
     throw new Error('writeUtf8CStringArray assumes 32-bit pointers (wasm32).');
   }
 
-  const ptr = mallocOrThrow(module, values.length * ptrBytes);
-  const baseIndex = ptr / ptrBytes;
-  if (!Number.isInteger(baseIndex)) {
-    // Defensive cleanup: if this ever triggers, avoid leaking the allocated pointer array.
-    module._free(ptr);
-    throw new Error(`Internal error: unaligned pointer array base index (ptr=${ptr}, ptrBytes=${ptrBytes})`);
-  }
+  const arr: Utf8CStringArray = { ptr: 0, itemPtrs: [] };
+  arr.ptr = mallocOrThrow(module, values.length * ptrBytes);
 
-  const itemPtrs: number[] = [];
   try {
+    if (arr.ptr % ptrBytes !== 0) {
+      throw new Error(`Internal error: unaligned pointer array base pointer (ptr=${arr.ptr}, ptrBytes=${ptrBytes})`);
+    }
+
+    const baseIndex = arr.ptr / ptrBytes;
+
     for (let i = 0; i < values.length; i++) {
       const itemPtr = writeUtf8CString(module, values[i]!);
-      itemPtrs.push(itemPtr);
+      arr.itemPtrs.push(itemPtr);
       module.HEAPU32[baseIndex + i] = itemPtr;
     }
-    return { ptr, itemPtrs };
-  } catch (error) {
-    for (const itemPtr of itemPtrs) {
-      module._free(itemPtr);
-    }
-    module._free(ptr);
-    throw error;
+
+    return arr;
+  } catch (e) {
+    freeUtf8CStringArray(module, arr);
+    throw e;
   }
 }
 
 export function freeUtf8CStringArray(module: EmscriptenModule, arr: Utf8CStringArray): void {
   for (const itemPtr of arr.itemPtrs) {
-    module._free(itemPtr);
+    if (itemPtr) {
+      module._free(itemPtr);
+    }
   }
+
   // Make the helper idempotent (safe to call twice).
   arr.itemPtrs.length = 0;
 
   if (arr.ptr) {
     module._free(arr.ptr);
-    arr.ptr = 0;
   }
+  arr.ptr = 0;
 }
+
 
 /**
  * Reads a fixed-width C string (padded/truncated) from the WASM heap.

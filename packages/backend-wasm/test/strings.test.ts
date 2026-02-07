@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { readFixedWidthCString, readFixedWidthCStringArray } from "../src/codec/strings.js";
 
+const UTF8 = new TextEncoder();
+
 function makeModule(bytes: number[]) {
   return { HEAPU8: Uint8Array.from(bytes) };
 }
@@ -9,9 +11,9 @@ function makeModule(bytes: number[]) {
 describe("backend-wasm codec/strings", () => {
   it("readFixedWidthCString: stops at NUL terminator", () => {
     const module = makeModule([
-      ...new TextEncoder().encode("abc"),
+      ...UTF8.encode("abc"),
       0,
-      ...new TextEncoder().encode("def"),
+      ...UTF8.encode("def"),
     ]);
 
     expect(readFixedWidthCString(module, 0, 7)).toBe("abc");
@@ -19,9 +21,9 @@ describe("backend-wasm codec/strings", () => {
 
   it("readFixedWidthCString: stops at embedded NUL", () => {
     const module = makeModule([
-      ...new TextEncoder().encode("ab"),
+      ...UTF8.encode("ab"),
       0,
-      ...new TextEncoder().encode("c"),
+      ...UTF8.encode("c"),
       0,
     ]);
 
@@ -30,7 +32,7 @@ describe("backend-wasm codec/strings", () => {
 
   it("readFixedWidthCString: right-trims only", () => {
     const module = makeModule([
-      ...new TextEncoder().encode("  hi  "),
+      ...UTF8.encode("  hi  "),
       0,
     ]);
 
@@ -43,7 +45,7 @@ describe("backend-wasm codec/strings", () => {
     const bytes: number[] = [];
 
     // "a" padded
-    bytes.push(...new TextEncoder().encode("a"));
+    bytes.push(...UTF8.encode("a"));
     bytes.push(...Array(width - 1).fill(" ".charCodeAt(0)));
 
     // "b" + NUL + garbage padding (should stop at NUL)

@@ -158,6 +158,15 @@ inline bool IsAsciiWhitespace(unsigned char c) {
   }
 }
 
+/**
+ * Converts a CSPICE-style fixed-width output buffer to a JS string.
+ *
+ * - Reads at most `width` bytes.
+ * - Stops at the first `\0` byte (embedded NUL terminates).
+ * - Trims trailing ASCII whitespace bytes only (not Unicode-aware).
+ *
+ * This matches how many CSPICE APIs return fixed-width, space-padded buffers.
+ */
 inline Napi::String FixedWidthToJsString(Napi::Env env, const char* buf, size_t width) {
   if (buf == nullptr || width == 0) {
     return Napi::String::New(env, "");
