@@ -2,14 +2,25 @@ import { describe, expect, it } from "vitest";
 
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 
+const CELLS_WINDOWS_UNSUPPORTED_MSG = 'Cells/windows are not supported by this tspice WASM artifact (missing exported functions). Rebuild the WASM backend (scripts/build-backend-wasm.mjs).';
+
+async function createBackendOrSkip() {
+  const b = await createWasmBackend();
+  try {
+    const cell = b.newIntCell(1);
+    b.freeCell(cell);
+    return b;
+  } catch (e) {
+    expect(String((e as Error)?.message ?? e)).toBe(CELLS_WINDOWS_UNSUPPORTED_MSG);
+    return null;
+  }
+}
+
+
 describe("@rybosome/tspice-backend-wasm cells/windows", () => {
   it("supports basic set cells (ordering + de-dupe + getters)", async () => {
-    const b = await createWasmBackend();
-
-    if (!(b as any).cellsWindowsSupported) {
-      expect(() => b.newIntCell(10)).toThrow(/not supported|missing exported functions/i);
-      return;
-    }
+    const b = await createBackendOrSkip();
+    if (!b) return;
 
     const icell = b.newIntCell(10);
     const dcell = b.newDoubleCell(10);
@@ -49,12 +60,8 @@ describe("@rybosome/tspice-backend-wasm cells/windows", () => {
   });
 
   it("supports basic windows (insert + merge + fetch)", async () => {
-    const b = await createWasmBackend();
-
-    if (!(b as any).cellsWindowsSupported) {
-      expect(() => b.newWindow(4)).toThrow(/not supported|missing exported functions/i);
-      return;
-    }
+    const b = await createBackendOrSkip();
+    if (!b) return;
 
     const win = b.newWindow(4);
 
@@ -71,12 +78,8 @@ describe("@rybosome/tspice-backend-wasm cells/windows", () => {
   });
 
   it("throws on capacity overflow (CSPICE-like)", async () => {
-    const b = await createWasmBackend();
-
-    if (!(b as any).cellsWindowsSupported) {
-      expect(() => b.newIntCell(2)).toThrow(/not supported|missing exported functions/i);
-      return;
-    }
+    const b = await createBackendOrSkip();
+    if (!b) return;
 
     const icell = b.newIntCell(2);
     try {

@@ -6,6 +6,20 @@ import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 
 import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
 
+const CELLS_WINDOWS_UNSUPPORTED_MSG = 'Cells/windows are not supported by this tspice WASM artifact (missing exported functions). Rebuild the WASM backend (scripts/build-backend-wasm.mjs).';
+
+function assertCellsWindowsSupportedOrSkip(b: SpiceBackend): boolean {
+  try {
+    const cell = b.newIntCell(1);
+    b.freeCell(cell);
+    return true;
+  } catch (e) {
+    expect(String((e as Error)?.message ?? e)).toBe(CELLS_WINDOWS_UNSUPPORTED_MSG);
+    return false;
+  }
+}
+
+
 function runScenario(b: SpiceBackend) {
   const icell = b.newIntCell(10);
   const dcell = b.newDoubleCell(10);
@@ -49,12 +63,8 @@ describe("cells/windows parity (node vs wasm)", () => {
   itNative("matches for basic cells + windows ops", async () => {
     const node = createNodeBackend();
     const wasm = await createWasmBackend();
+    if (!assertCellsWindowsSupportedOrSkip(wasm)) return;
 
-    if (!(wasm as any).cellsWindowsSupported) {
-      // This repo can include prebuilt WASM artifacts; if the artifact in-tree
-      // does not include the cells/windows exports, don't fail native CI runs.
-      return;
-    }
 
     const nodeOut = runScenario(node);
     const wasmOut = runScenario(wasm);

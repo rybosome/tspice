@@ -188,14 +188,25 @@ int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes) 
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (outHandle) *outHandle = 0;
 
+  if (!path || path[0] == '\0') {
+    tspice_write_error(err, errMaxBytes, "tspice_dasopr: path must be a non-empty string");
+    return 1;
+  }
+
+  if (!outHandle) {
+    tspice_write_error(err, errMaxBytes, "tspice_dasopr: outHandle must be non-NULL");
+    return 1;
+  }
+
   SpiceInt handleC = 0;
   dasopr_c(path, &handleC);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    if (err && errMaxBytes > 0) err[errMaxBytes - 1] = '\0';
     return 1;
   }
 
-  if (outHandle) *outHandle = (int)handleC;
+  *outHandle = (int)handleC;
   return 0;
 }
 
@@ -229,14 +240,40 @@ int tspice_dlaopn(
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (outHandle) *outHandle = 0;
 
+  if (!path || path[0] == '\0') {
+    tspice_write_error(err, errMaxBytes, "tspice_dlaopn: path must be a non-empty string");
+    return 1;
+  }
+
+  if (!ftype || ftype[0] == '\0') {
+    tspice_write_error(err, errMaxBytes, "tspice_dlaopn: ftype must be a non-empty string");
+    return 1;
+  }
+
+  if (!ifname || ifname[0] == '\0') {
+    tspice_write_error(err, errMaxBytes, "tspice_dlaopn: ifname must be a non-empty string");
+    return 1;
+  }
+
+  if (ncomch < 0) {
+    tspice_write_error(err, errMaxBytes, "tspice_dlaopn: ncomch must be >= 0");
+    return 1;
+  }
+
+  if (!outHandle) {
+    tspice_write_error(err, errMaxBytes, "tspice_dlaopn: outHandle must be non-NULL");
+    return 1;
+  }
+
   SpiceInt handleC = 0;
   dlaopn_c(path, ftype, ifname, (SpiceInt)ncomch, &handleC);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    if (err && errMaxBytes > 0) err[errMaxBytes - 1] = '\0';
     return 1;
   }
 
-  if (outHandle) *outHandle = (int)handleC;
+  *outHandle = (int)handleC;
   return 0;
 }
 

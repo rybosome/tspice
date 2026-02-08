@@ -602,12 +602,21 @@ export function assertEmscriptenModule(m: unknown): asserts m is EmscriptenModul
   if (!(m.HEAPU8 instanceof Uint8Array)) invalid.push("HEAPU8");
   if (!(m.HEAP32 instanceof Int32Array)) invalid.push("HEAP32");
   if (!(m.HEAPF64 instanceof Float64Array)) invalid.push("HEAPF64");
-  if (typeof m.FS !== "object" || m.FS === null) invalid.push("FS");
+
+  if (typeof m.FS !== "object" || m.FS === null) {
+    invalid.push("FS");
+  } else {
+    // We rely on this for file I/O (see createWasmFs + file-io domain).
+    if (typeof (m.FS as any).mkdirTree !== "function") {
+      invalid.push("FS.mkdirTree");
+    }
+  }
 
   if (invalid.length > 0) {
     throw new TypeError(
       `Invalid tspice WASM module (missing/invalid exports): ${invalid.join(", ")}. ` +
         `You can disable this validation via CreateWasmBackendOptions.validateEmscriptenModule=false ` +
         `(Node also supports TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT=1).`,
-    );  }
+    );
+  }
 }
