@@ -70,6 +70,37 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.axisar === "function", "Expected native addon to export axisar(axis, angle)");
   invariant(typeof native.georec === "function", "Expected native addon to export georec(lon, lat, alt, re, f)");
   invariant(typeof native.recgeo === "function", "Expected native addon to export recgeo(rect, re, f)");
+
+  invariant(typeof native.newIntCell === "function", "Expected native addon to export newIntCell(size)");
+  invariant(
+    typeof native.newDoubleCell === "function",
+    "Expected native addon to export newDoubleCell(size)",
+  );
+  invariant(
+    typeof native.newCharCell === "function",
+    "Expected native addon to export newCharCell(size, length)",
+  );
+  invariant(typeof native.newWindow === "function", "Expected native addon to export newWindow(maxIntervals)");
+  invariant(typeof native.freeCell === "function", "Expected native addon to export freeCell(cell)");
+  invariant(typeof native.freeWindow === "function", "Expected native addon to export freeWindow(window)");
+  invariant(typeof native.ssize === "function", "Expected native addon to export ssize(size, cell)");
+  invariant(typeof native.scard === "function", "Expected native addon to export scard(card, cell)");
+  invariant(typeof native.card === "function", "Expected native addon to export card(cell)");
+  invariant(typeof native.size === "function", "Expected native addon to export size(cell)");
+  invariant(typeof native.valid === "function", "Expected native addon to export valid(size, n, cell)");
+  invariant(typeof native.insrti === "function", "Expected native addon to export insrti(item, cell)");
+  invariant(typeof native.insrtd === "function", "Expected native addon to export insrtd(item, cell)");
+  invariant(typeof native.insrtc === "function", "Expected native addon to export insrtc(item, cell)");
+  invariant(typeof native.cellGeti === "function", "Expected native addon to export cellGeti(cell, index)");
+  invariant(typeof native.cellGetd === "function", "Expected native addon to export cellGetd(cell, index)");
+  invariant(typeof native.cellGetc === "function", "Expected native addon to export cellGetc(cell, index)");
+  invariant(
+    typeof native.wninsd === "function",
+    "Expected native addon to export wninsd(left, right, window)",
+  );
+  invariant(typeof native.wncard === "function", "Expected native addon to export wncard(window)");
+  invariant(typeof native.wnfetd === "function", "Expected native addon to export wnfetd(window, index)");
+  invariant(typeof native.wnvald === "function", "Expected native addon to export wnvald(size, n, window)");
   invariant(
     typeof native.spkezr === "function",
     "Expected native addon to export spkezr(target, et, ref, abcorr, observer)",

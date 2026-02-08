@@ -54,6 +54,13 @@ export {
   isBrandedMat6RowMajor,
 } from "./shared/mat6.js";
 
+export {
+  SPICE_INT32_MIN,
+  SPICE_INT32_MAX,
+  assertSpiceInt32,
+  assertSpiceInt32NonNegative,
+} from "./shared/spice-int.js";
+
 export * from "./domains/kernels.js";
 export * from "./domains/time.js";
 export * from "./domains/ids-names.js";
@@ -63,6 +70,7 @@ export * from "./domains/geometry.js";
 export * from "./domains/coords-vectors.js";
 export * from "./domains/file-io.js";
 export * from "./domains/error.js";
+export * from "./domains/cells-windows.js";
 
 import type { KernelsApi } from "./domains/kernels.js";
 import type { TimeApi } from "./domains/time.js";
@@ -73,6 +81,7 @@ import type { GeometryApi } from "./domains/geometry.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
 import type { FileIoApi } from "./domains/file-io.js";
 import type { ErrorApi } from "./domains/error.js";
+import type { CellsWindowsApi } from "./domains/cells-windows.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
 
@@ -85,8 +94,8 @@ export interface SpiceBackend
     GeometryApi,
     CoordsVectorsApi,
     FileIoApi,
-    ErrorApi {
+    ErrorApi,
+    CellsWindowsApi {
   /** Which backend implementation is in use. */
   readonly kind: SpiceBackendKind;
 }
-

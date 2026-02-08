@@ -3,6 +3,7 @@ import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 import { assertEmscriptenModule, type EmscriptenModule } from "../lowlevel/exports.js";
 
 import { createCoordsVectorsApi } from "../domains/coords-vectors.js";
+import { createCellsWindowsApi } from "../domains/cells-windows.js";
 import { createEphemerisApi } from "../domains/ephemeris.js";
 import { createFramesApi } from "../domains/frames.js";
 import { createGeometryApi } from "../domains/geometry.js";
@@ -63,7 +64,12 @@ export async function createWasmBackend(
     );
   }
 
-  assertEmscriptenModule(module);
+
+  const validateEmscriptenModule = options.validateEmscriptenModule ?? true;
+  if (validateEmscriptenModule) {
+    assertEmscriptenModule(module);
+  }
+
 
   // The toolkit version is constant for the lifetime of a loaded module.
   const toolkitVersion = getToolkitVersion(module);
@@ -81,6 +87,7 @@ export async function createWasmBackend(
     ...createCoordsVectorsApi(module),
     ...createFileIoApi(module),
     ...createErrorApi(module),
+    ...createCellsWindowsApi(module),
 
 
   } satisfies SpiceBackend;

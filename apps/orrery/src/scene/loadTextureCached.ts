@@ -2,6 +2,37 @@ import * as THREE from 'three'
 
 import { resolveVitePublicUrl } from './resolveVitePublicUrl.js'
 
+// E2E/dev-only diagnostic counter for async texture loading.
+//
+// Playwright screenshot tests can be significantly slower in CI (e.g. SwiftShader
+// software rendering). This counter helps tests wait until all initial textures
+// have finished loading before capturing golden screenshots.
+function shouldTrackPendingTextureLoads() {
+  if (typeof window === 'undefined') return false
+
+  // `import.meta.env.DEV` is true for the dev server, but false for production
+  // builds (even with custom modes). Our Playwright screenshot tests signal
+  // e2e mode via the `?e2e` query param.
+  return import.meta.env.DEV || new URLSearchParams(window.location.search).has('e2e')
+}
+
+function ensurePendingTextureLoadsInitialized() {
+  if (!shouldTrackPendingTextureLoads()) return
+  window.__tspice_viewer__pending_texture_loads ??= 0
+}
+
+function incrementPendingTextureLoads() {
+  if (!shouldTrackPendingTextureLoads()) return
+  ensurePendingTextureLoadsInitialized()
+  window.__tspice_viewer__pending_texture_loads = (window.__tspice_viewer__pending_texture_loads ?? 0) + 1
+}
+
+function decrementPendingTextureLoads() {
+  if (!shouldTrackPendingTextureLoads()) return
+  ensurePendingTextureLoadsInitialized()
+  window.__tspice_viewer__pending_texture_loads = Math.max(0, (window.__tspice_viewer__pending_texture_loads ?? 0) - 1)
+}
+
 export type LoadTextureCachedOptions = {
   /**
    * Explicitly set the texture color space.
@@ -145,6 +176,8 @@ export async function loadTextureCached(url: string, options: LoadTextureCachedO
       promise: Promise.resolve(null as unknown as THREE.Texture),
     }
 
+    incrementPendingTextureLoads()
+
     newEntry.promise = loader
       .loadAsync(resolvedUrl)
       .then((tex) => {
@@ -186,6 +219,9 @@ export async function loadTextureCached(url: string, options: LoadTextureCachedO
           entryByKey.delete(key)
         }
         throw err
+      })
+      .finally(() => {
+        decrementPendingTextureLoads()
       })
 
     entryByKey.set(key, newEntry)

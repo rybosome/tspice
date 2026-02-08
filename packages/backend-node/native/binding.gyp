@@ -18,6 +18,7 @@
         "src/domains/coords_vectors.cc",
         "src/domains/file_io.cc",
         "src/domains/error.cc",
+        "src/domains/cells_windows.cc",
         "../../backend-shim-c/src/errors.c",
         "../../backend-shim-c/src/domains/kernels.c",
         "../../backend-shim-c/src/domains/time.c",
@@ -26,7 +27,8 @@
         "../../backend-shim-c/src/domains/ephemeris.c",
         "../../backend-shim-c/src/domains/geometry.c",
         "../../backend-shim-c/src/domains/coords_vectors.c",
-        "../../backend-shim-c/src/domains/file_io.c"
+        "../../backend-shim-c/src/domains/file_io.c",
+        "../../backend-shim-c/src/domains/cells_windows.c"
       ],
       "include_dirs": [
         "<!(node -p \"require('node-addon-api').include_dir\")",

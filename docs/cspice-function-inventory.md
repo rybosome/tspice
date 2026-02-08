@@ -7,46 +7,66 @@ Sources:
 - CSPICE routine list + brief descriptions: https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html (NAIF official index)
 - tspice implemented routines: backend contract surface via `SpiceBackend` in `packages/backend-contract/src/index.ts`
 
-SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `CoordsVectorsApi`.
+SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `CoordsVectorsApi`, `ErrorApi`, `CellsWindowsApi`.
 
 ## Summary
 
 - Total routines (NAIF index): 651
-- Implemented now (SpiceBackend): 38
-- Planned (not yet implemented): 610
+- Implemented now (SpiceBackend): 67
+- Planned (not yet implemented): 581
 - Excluded: 3
 
 ## Implemented now
 
 | Routine | Purpose (1 line) |
 | --- | --- |
+| `axisar_c` | Axis and angle to rotation |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodn2c_c` | Body name to ID code translation |
+| `card_c` | Cardinality of a cell |
+| `chkin_c` | module Check In |
+| `chkout_c` | Module Check Out |
 | `cidfrm_c` | center SPK ID frame |
 | `ckgp_c` | C-kernel, get pointing |
 | `ckgpav_c` | C-kernel, get pointing and angular velocity |
 | `cnmfrm_c` | Center name to associated frame |
 | `et2utc_c` | Ephemeris Time to UTC |
+| `failed_c` | Error Status Indicator |
 | `frmnam_c` | Frame to Name |
 | `furnsh_c` | Furnish a program with SPICE kernels |
+| `georec_c` | Geodetic to rectangular coordinates |
+| `getmsg_c` | Get Error Message |
 | `ilumin_c` | Illumination angles |
+| `insrtc_c` | Insert an item into a character set |
+| `insrtd_c` | Insert an item into a double precision set |
+| `insrti_c` | Insert an item into an integer set |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
 | `ktotal_c` | Kernel Totals |
 | `latrec_c` | Latitudinal to rectangular coordinates |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
+| `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
 | `namfrm_c` | Name to frame |
 | `occult_c` | find occultation type at time |
 | `pxform_c` | Position Transformation Matrix |
+| `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
+| `reset_c` | Reset Error Status |
+| `rotate_c` | Generate a rotation matrix |
+| `rotmat_c` | Rotate a matrix |
+| `scard_c` | Set the cardinality of a cell |
 | `sce2s_c` | ET to SCLK string |
 | `scs2e_c` | SCLK string to ET |
+| `setmsg_c` | Set Long Error Message |
+| `sigerr_c` | Signal Error Condition |
 | `sincpt_c` | Surface intercept |
+| `size_c` | Size of a cell |
 | `sphrec_c` | Spherical to rectangular coordinates |
 | `spkezr_c` | S/P Kernel, easier reader |
 | `spkpos_c` | S/P Kernel, position |
+| `ssize_c` | Set the size of a cell |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
@@ -54,10 +74,19 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `timout_c` | Time Output |
 | `tkvrsn_c` | Toolkit version strings |
 | `unload_c` | Unload a kernel |
+| `vadd_c` | Vector addition, 3 dimensional |
+| `valid_c` | Validate a set |
 | `vcrss_c` | Vector cross product, 3 dimensions |
 | `vdot_c` | Vector dot product, 3 dimensions |
 | `vhat_c` | "V-Hat", unit vector along V, 3 dimensions |
+| `vminus_c` | Negate vector, "-v", 3 dimensions |
 | `vnorm_c` | Vector norm, 3 dimensions |
+| `vscl_c` | Vector scaling, 3 dimensions |
+| `vsub_c` | Vector subtraction, 3 dimensions |
+| `wncard_c` | Cardinality of a double precision window |
+| `wnfetd_c` | Fetch an interval from a DP window |
+| `wninsd_c` | Insert an interval into a DP window |
+| `wnvald_c` | Validate a DP window |
 
 ## Planned (not yet implemented)
 
@@ -66,7 +95,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `appndc_c` | Append an item to a character cell |
 | `appndd_c` | Append an item to a double precision cell |
 | `appndi_c` | Append an item to an integer cell |
-| `axisar_c` | Axis and angle to rotation |
 | `azlcpo_c` | AZ/EL, constant position observer state |
 | `azlrec_c` | AZ/EL to rectangular coordinates |
 | `b1900_c` | Besselian Date 1900.0 |
@@ -87,15 +115,12 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `bsrchc_c` | Binary search for a character string |
 | `bsrchd_c` | Binary search for a double precision value |
 | `bsrchi_c` | Binary search for an integer value |
-| `card_c` | Cardinality of a cell |
 | `ccifrm_c` | Class and class ID to associated frame |
 | `cgv2el_c` | Center and generating vectors to ellipse |
 | `chbder_c` | Derivatives of a Chebyshev expansion |
 | `chbigr_c` | Chebyshev expansion integral |
 | `chbint_c` | Interpolate a Chebyshev expansion |
 | `chbval_c` | Value of a Chebyshev polynomial expansion |
-| `chkin_c` | module Check In |
-| `chkout_c` | Module Check Out |
 | `ckcls_c` | CK, Close file |
 | `ckcov_c` | CK coverage |
 | `ckfrot_c` | CK frame, find position rotation |
@@ -290,7 +315,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `evsgp4_c` | Evaluate "two-line" element data |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
-| `failed_c` | Error Status Indicator |
 | `filld_c` | Fill a double precision array |
 | `filli_c` | Fill an integer array |
 | `fovray_c` | Is ray in FOV at time? |
@@ -299,12 +323,10 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `frinfo_c` | Frame Information |
 | `gcpool_c` | Get character data from the kernel pool |
 | `gdpool_c` | Get d.p. values from the kernel pool |
-| `georec_c` | Geodetic to rectangular coordinates |
 | `getelm_c` | Get the components from two-line elements |
 | `getfat_c` | Get file architecture and type |
 | `getfov_c` | Get instrument FOV parameters |
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
-| `getmsg_c` | Get Error Message |
 | `gfbail_c` | GF, interrupt signal indicator |
 | `gfclrh_c` | GF, clear interrupt signal handler status |
 | `gfdist_c` | GF, distance search |
@@ -346,9 +368,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `inedpl_c` | Intersection of ellipsoid and plane |
 | `inelpl_c` | Intersection of ellipse and plane |
 | `inrypl_c` | Intersection of ray and plane |
-| `insrtc_c` | Insert an item into a character set |
-| `insrtd_c` | Insert an item into a double precision set |
-| `insrti_c` | Insert an item into an integer set |
 | `inter_c` | Intersection of two sets |
 | `intmax_c` | Largest integer number |
 | `intmin_c` | Smallest integer number |
@@ -412,7 +431,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `mtxm_c` | Matrix transpose times matrix, 3x3 |
 | `mtxmg_c` | Matrix transpose times matrix, general dimension |
 | `mtxvg_c` | Matrix transpose times vector, general dimension |
-| `mxm_c` | Matrix times matrix, 3x3 |
 | `mxmg_c` | Matrix times matrix, general dimension |
 | `mxmt_c` | Matrix times matrix transpose, 3x3 |
 | `mxmtg_c` | Matrix times matrix transpose, general dimension |
@@ -477,7 +495,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `rdtext_c` | Read a line from a text file |
 | `recazl_c` | Rectangular coordinates to AZ/EL |
 | `reccyl_c` | Rectangular to cylindrical coordinates |
-| `recgeo_c` | Rectangular to geodetic |
 | `recpgr_c` | Rectangular to planetographic |
 | `recrad_c` | Rectangular coordinates to RA and DEC |
 | `removc_c` | Remove an item from a character set |
@@ -494,15 +511,11 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `repmi_c` | Replace marker with integer |
 | `repml_c` | Replace marker with logical value text |
 | `repmot_c` | Replace marker with ordinal text |
-| `reset_c` | Reset Error Status |
 | `return_c` | Immediate Return Indicator |
-| `rotate_c` | Generate a rotation matrix |
-| `rotmat_c` | Rotate a matrix |
 | `rotvec_c` | Transform a vector via a rotation |
 | `rpd_c` | Radians per degree |
 | `rquad_c` | Roots of a quadratic equation |
 | `saelgv_c` | Semi-axes of ellipse from generating vectors |
-| `scard_c` | Set the cardinality of a cell |
 | `scdecd_c` | Decode spacecraft clock |
 | `sce2c_c` | ET to continuous SCLK ticks |
 | `sce2t_c` | ET to SCLK ticks |
@@ -513,12 +526,9 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `sctiks_c` | Convert spacecraft clock string to ticks. |
 | `sdiff_c` | Symmetric difference of two sets |
 | `set_c` | Compare sets |
-| `setmsg_c` | Set Long Error Message |
 | `shellc_c` | Shell sort a character array |
 | `shelld_c` | Shell sort a double precision array |
 | `shelli_c` | Shell sort an integer array |
-| `sigerr_c` | Signal Error Condition |
-| `size_c` | Size of a cell |
 | `spd_c` | Seconds per day |
 | `sphcyl_c` | Spherical to cylindrical coordinates |
 | `sphlat_c` | Spherical to latitudinal coordinates |
@@ -570,7 +580,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `srfs2c_c` | Surface and body strings to surface ID code |
 | `srfscc_c` | Surface string and body ID code to surface ID code |
 | `srfxpt_c` | Surface intercept point |
-| `ssize_c` | Set the size of a cell |
 | `stelab_c` | Stellar Aberration |
 | `stlabx_c` | Stellar aberration, transmission case |
 | `stpool_c` | String from pool |
@@ -615,9 +624,7 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `unorm_c` | Unit vector and norm, 3 dimensional |
 | `unormg_c` | Unit vector and norm, general dimension |
 | `utc2et_c` | UTC to Ephemeris Time |
-| `vadd_c` | Vector addition, 3 dimensional |
 | `vaddg_c` | Vector addition, general dimension |
-| `valid_c` | Validate a set |
 | `vdist_c` | Vector distance |
 | `vdistg_c` | Vector distance, general dimension |
 | `vdotg_c` | Vector dot product, general dimension |
@@ -628,7 +635,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `vlcom3_c` | Vector linear combination, 3 dimensions |
 | `vlcomg_c` | Vector linear combination, general dimension |
 | `vminug_c` | Negate vector, "-v", general dimension |
-| `vminus_c` | Negate vector, "-v", 3 dimensions |
 | `vnormg_c` | Vector norm, general dimension |
 | `vpack_c` | Pack three scalar components into a vector |
 | `vperp_c` | Perpendicular component of a 3-vector |
@@ -639,34 +645,28 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `vrel_c` | Vector relative difference, 3 dimensions |
 | `vrelg_c` | Vector relative difference, general dimension |
 | `vrotv_c` | Vector rotation about an axis |
-| `vscl_c` | Vector scaling, 3 dimensions |
 | `vsclg_c` | Vector scaling, general dimension |
 | `vsep_c` | Angular separation of vectors, 3 dimensions |
 | `vsepg_c` | Angular separation of vectors, general dimension |
-| `vsub_c` | Vector subtraction, 3 dimensions |
 | `vsubg_c` | Vector subtraction, general dimension |
 | `vtmv_c` | Vector transpose times matrix times vector, 3 dim |
 | `vtmvg_c` | Vector transpose times matrix times vector |
 | `vupack_c` | Unpack three scalar components from a vector |
 | `vzero_c` | Is a vector the zero vector? |
 | `vzerog_c` | Is a vector the zero vector? -- general dim. |
-| `wncard_c` | Cardinality of a double precision window |
 | `wncomd_c` | Complement a DP window |
 | `wncond_c` | Contract the intervals of a DP window |
 | `wndifd_c` | Difference two DP windows |
 | `wnelmd_c` | Element of a DP window |
 | `wnexpd_c` | Expand the intervals of a DP window |
 | `wnextd_c` | Extract the endpoints from a DP window |
-| `wnfetd_c` | Fetch an interval from a DP window |
 | `wnfild_c` | Fill small gaps in a DP window |
 | `wnfltd_c` | Filter small intervals from a DP window |
 | `wnincd_c` | Included in a double precision window |
-| `wninsd_c` | Insert an interval into a DP window |
 | `wnintd_c` | Intersect two DP windows |
 | `wnreld_c` | Compare two DP windows |
 | `wnsumd_c` | Summary of a double precision window |
 | `wnunid_c` | Union two DP windows |
-| `wnvald_c` | Validate a DP window |
 | `xf2eul_c` | State transformation to Euler angles |
 | `xf2rav_c` | Transform to rotation and angular velocity |
 | `xfmsta_c` | Transform state between coordinate systems |
