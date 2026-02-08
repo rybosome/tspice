@@ -40,6 +40,21 @@ const DESCR_KEYS = [
   "csize",
 ] as const;
 
+function readHeapI32(module: EmscriptenModule, idx: number, context: string): number {
+  const heap = module.HEAP32;
+  const v = heap[idx];
+
+  // Typed array OOB reads return `undefined`. We should treat that as a bug
+  // rather than silently fabricating a `0` value.
+  if (v === undefined) {
+    throw new RangeError(
+      `${context}: out-of-bounds HEAP32 read (idx=${idx}, heapLen=${heap.length})`,
+    );
+  }
+
+  return v;
+}
+
 function writeDlaDescr8(module: EmscriptenModule, ptr: number, descr: DlaDescriptor): void {
   const base = ptr >> 2;
   module.HEAP32[base + 0] = descr.bwdptr | 0;
@@ -161,7 +176,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
           if (code !== 0) {
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
-          return (module.HEAP32[outExistsPtr >> 2] ?? 0) !== 0;
+          return readHeapI32(module, outExistsPtr >> 2, "exists(outExistsPtr)") !== 0;
         });
       } finally {
         module._free(pathPtr);
@@ -210,7 +225,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
           if (code !== 0) {
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
-          return module.HEAP32[outHandlePtr >> 2] ?? 0;
+          return readHeapI32(module, outHandlePtr >> 2, "dafopr(outHandlePtr)");
         });
         return register("DAF", nativeHandle);
       } finally {
@@ -232,7 +247,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
         if (code !== 0) {
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
         }
-        return (module.HEAP32[outFoundPtr >> 2] ?? 0) !== 0;
+        return readHeapI32(module, outFoundPtr >> 2, "daffna(outFoundPtr)") !== 0;
       });
     },
 
@@ -246,7 +261,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
           if (code !== 0) {
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
-          return module.HEAP32[outHandlePtr >> 2] ?? 0;
+          return readHeapI32(module, outHandlePtr >> 2, "dasopr(outHandlePtr)");
         });
         return register("DAS", nativeHandle);
       } finally {
@@ -286,7 +301,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
           if (code !== 0) {
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
-          return module.HEAP32[outHandlePtr >> 2] ?? 0;
+          return readHeapI32(module, outHandlePtr >> 2, "dlaopn(outHandlePtr)");
         });
 
         return register("DLA", nativeHandle);
@@ -313,7 +328,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
         }
 
-        const found = (module.HEAP32[outFoundPtr >> 2] ?? 0) !== 0;
+        const found = readHeapI32(module, outFoundPtr >> 2, "dlabfs(outFoundPtr)") !== 0;
         if (!found) {
           return { found: false };
         }
@@ -345,7 +360,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
 
-          const found = (module.HEAP32[outFoundPtr >> 2] ?? 0) !== 0;
+          const found = readHeapI32(module, outFoundPtr >> 2, "dlafns(outFoundPtr)") !== 0;
           if (!found) {
             return { found: false };
           }
