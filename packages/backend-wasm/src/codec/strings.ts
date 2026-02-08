@@ -54,6 +54,12 @@ export function writeUtf8CStringArray(module: Utf8CStringArrayWriteModule, value
 
     const baseIndex = arr.ptr / ptrBytes;
 
+    // IMPORTANT: With `ALLOW_MEMORY_GROWTH=1`, any allocation (including the `_malloc()`
+    // inside `writeUtf8CString()`) may grow the WASM memory and cause Emscripten to
+    // recreate the `HEAP*` typed array views. Do not cache `module.HEAPU8` /
+    // `module.HEAPU32` across allocations; always access them at point-of-use after
+    // the allocation completes.
+
     for (let i = 0; i < values.length; i++) {
       const itemPtr = writeUtf8CString(module, values[i]!);
       // Safety: HEAPU32 stores unsigned 32-bit pointers; guard against accidental truncation.
