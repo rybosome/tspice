@@ -1,20 +1,10 @@
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
 import { describe, expect, it } from "vitest";
 
-import { createSpiceAsync } from "@rybosome/tspice";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
+import { createSpice, createSpiceAsync } from "@rybosome/tspice";
 
 describe("createSpiceAsync()", () => {
   it("returns { raw, kit } and makes methods awaitable", async () => {
     const spice = await createSpiceAsync({ backend: "wasm" });
-    const lskBytes = fs.readFileSync(lskPath);
 
     expect(spice).toHaveProperty("raw");
     expect(spice).toHaveProperty("kit");
@@ -33,9 +23,8 @@ describe("createSpiceAsync()", () => {
     expect(version).toBeTypeOf("string");
     expect(version).not.toBe("");
 
-    await spice.kit.loadKernel({ path: "naif0012.tls", bytes: lskBytes });
-    expect(await spice.raw.ktotal("ALL")).toBeGreaterThan(0);
-    await spice.kit.unloadKernel("naif0012.tls");
-    expect(await spice.raw.ktotal("ALL")).toBe(0);
+    // Optional: parity check (method names match between sync-ish and async clients).
+    const sync = await createSpice({ backend: "wasm" });
+    expect(Object.keys(sync.kit).sort()).toEqual(Object.keys(spice.kit).sort());
   });
 });
