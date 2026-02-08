@@ -460,10 +460,11 @@ static char *read_all_stdin(size_t *outLen) {
   size_t len = 0;
   while (1) {
     // If we've hit the byte budget, only accept EOF; otherwise the input is too
-    // large.
+    // large. (Use fread here to avoid mixing fgetc/fread buffering.)
     if (len >= maxBytes) {
-      int c = fgetc(stdin);
-      if (c == EOF) {
+      unsigned char extra;
+      size_t n = fread(&extra, 1, 1, stdin);
+      if (n == 0) {
         if (ferror(stdin)) {
           if (errno == 0) {
             errno = EIO;
@@ -471,6 +472,7 @@ static char *read_all_stdin(size_t *outLen) {
           free(buf);
           return NULL;
         }
+        // EOF exactly at the limit.
         break;
       }
 
