@@ -18,6 +18,10 @@ type CacheEntry = {
   expiresAt?: number;
 };
 
+type Unrefable = {
+  unref?: () => void;
+};
+
 function defaultKey(op: string, args: unknown[]): string | null {
   try {
     return JSON.stringify([op, args]);
@@ -56,9 +60,7 @@ export function withCaching(
      */
     key?: (op: string, args: unknown[]) => string | null;
   },
-): CachingTransport {
-  const keyFn = opts?.key ?? defaultKey;
-
+): SpiceTransport | CachingTransport {
   const rawMaxEntries = opts?.maxEntries;
   const maxEntries = rawMaxEntries ?? 1000;
   const maxEntriesLimit =
@@ -70,6 +72,12 @@ export function withCaching(
   const cachingEnabled =
     (ttlMs === undefined || ttlMs > 0) &&
     (maxEntriesLimit === undefined || maxEntriesLimit > 0);
+
+  // True no-op mode: preserve the input object identity and avoid allocating
+  // any wrapper state when caching is disabled.
+  if (!cachingEnabled) return base;
+
+  const keyFn = opts?.key ?? defaultKey;
 
   const cache = new Map<string, CacheEntry>();
   let sweepTimer: ReturnType<typeof setInterval> | undefined;
@@ -95,7 +103,7 @@ export function withCaching(
       // In Node, interval timers keep the event loop alive by default. `unref()`
       // prevents this from pinning test runners / CLIs. Browsers return a
       // numeric id (no-op).
-      (sweepTimer as any)?.unref?.();
+      (sweepTimer as unknown as Unrefable).unref?.();
     }
   }
 

@@ -21,7 +21,7 @@ describe("withCaching()", () => {
 
     expect(base.request).toHaveBeenCalledTimes(1);
 
-    cached.dispose();
+    if ("dispose" in cached) cached.dispose();
   });
 
   it("disables caching when ttlMs <= 0", async () => {
@@ -33,12 +33,13 @@ describe("withCaching()", () => {
 
     const cached = withCaching(base, { ttlMs: 0 });
 
+    // No-op mode should preserve input identity and avoid allocating wrapper state.
+    expect(cached).toBe(base);
+
     await cached.request("op", [1]);
     await cached.request("op", [1]);
 
     expect(base.request).toHaveBeenCalledTimes(2);
-
-    cached.dispose();
   });
 
   it("skips caching when the default key cannot be generated", async () => {
@@ -58,7 +59,7 @@ describe("withCaching()", () => {
 
     expect(base.request).toHaveBeenCalledTimes(2);
 
-    cached.dispose();
+    if ("dispose" in cached) cached.dispose();
   });
 
   it("can sweep expired entries periodically (opt-in)", async () => {
@@ -85,6 +86,6 @@ describe("withCaching()", () => {
     // After the sweep runs, the entry should be removed and a new request should hit base.
     expect(await cached.request("op", [])).toBe(2);
 
-    cached.dispose();
+    if ("dispose" in cached) cached.dispose();
   });
 });

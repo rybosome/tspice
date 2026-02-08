@@ -69,6 +69,31 @@ describe("createWorkerTransport()", () => {
     expect(w.terminated).toBe(true);
   });
 
+  it("lets dispose() win over an already-received response message", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    vi.useFakeTimers();
+
+    const w = new FakeWorker();
+    const transport = createWorkerTransport({ worker: () => w as any });
+
+    const p = transport.request("op", []);
+    const posted = w.posted[0];
+
+    // The transport defers settling by 1 macrotask to avoid a dispose-vs-message race.
+    w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
+    transport.dispose();
+
+    // Attach a handler immediately to avoid an unhandled rejection warning.
+    const expectation = expect(p).rejects.toThrow(/disposed/i);
+
+    await vi.runAllTimersAsync();
+    await expectation;
+    expect(w.terminated).toBe(true);
+  });
+
   it("rejects and cleans up on timeout", async () => {
     const { createWorkerTransport } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components"

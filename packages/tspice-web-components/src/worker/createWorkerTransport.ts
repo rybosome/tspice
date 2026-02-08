@@ -94,6 +94,7 @@ export function createWorkerTransport(opts: {
   type Pending = {
     resolve: (value: unknown) => void;
     reject: (reason: unknown) => void;
+    cleanup: () => void;
   };
 
   const pendingById = new Map<number, Pending>();
@@ -110,17 +111,27 @@ export function createWorkerTransport(opts: {
     const msg = ev.data as Partial<RpcResponse> | null | undefined;
     if (!msg || msg.type !== "tspice:response" || typeof msg.id !== "number") return;
 
-    const pending = pendingById.get(msg.id);
+    const id = msg.id;
+
+    const pending = pendingById.get(id);
     if (!pending) return;
-    pendingById.delete(msg.id);
 
-    if (msg.ok === true) {
-      pending.resolve((msg as Extract<RpcResponse, { ok: true }>).value);
-      return;
-    }
+    // Clean up request-specific resources immediately (abort listeners, timers),
+    // but defer settling to a macrotask so `dispose()` can deterministically win.
+    pending.cleanup();
 
-    const err = deserializeError((msg as Extract<RpcResponse, { ok: false }>).error);
-    pending.reject(err);
+    setTimeout(() => {
+      if (pendingById.get(id) !== pending) return;
+      pendingById.delete(id);
+
+      if (msg.ok === true) {
+        pending.resolve((msg as Extract<RpcResponse, { ok: true }>).value);
+        return;
+      }
+
+      const err = deserializeError((msg as Extract<RpcResponse, { ok: false }>).error);
+      pending.reject(err);
+    }, 0);
   };
 
   const onError = (ev: ErrorEvent): void => {
@@ -176,8 +187,12 @@ export function createWorkerTransport(opts: {
 
     return await new Promise<unknown>((resolve, reject) => {
       let timeout: ReturnType<typeof setTimeout> | undefined;
+      let cleanedUp = false;
 
       const cleanup = (): void => {
+        if (cleanedUp) return;
+        cleanedUp = true;
+
         if (timeout !== undefined) {
           clearTimeout(timeout);
           timeout = undefined;
@@ -196,7 +211,7 @@ export function createWorkerTransport(opts: {
         reject(reason);
       };
 
-      const pending: Pending = { resolve: safeResolve, reject: safeReject };
+      const pending: Pending = { resolve: safeResolve, reject: safeReject, cleanup };
       pendingById.set(id, pending);
 
       const onAbort = (): void => {
