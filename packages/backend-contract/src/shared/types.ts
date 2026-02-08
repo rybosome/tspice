@@ -84,6 +84,29 @@ export type Vec6 = readonly [number, number, number, number, number, number] & {
   readonly [__vec6Brand]: true;
 };
 
+// -- Fixed-width string helpers ----------------------------------------------
+
+/**
+ * A string returned from (or destined for) a fixed-width output buffer of length `Max`.
+ *
+ * This is a **type-only** brand used for clarity/documentation. It does not perform any
+ * runtime validation, and it does not guarantee the string length.
+ */
+declare const __fixedStringMaxBrand: unique symbol;
+export type FixedString<Max extends number> = string & { readonly [__fixedStringMaxBrand]: Max };
+
+/**
+ * Result wrapper for APIs that return an array of strings.
+ *
+ * `truncated` is backend-dependent and should only be set to `true` when the backend can
+ * *detect* truncation (for example: when reading fixed-width output buffers).
+ */
+export interface StringArrayResult {
+  values: string[];
+  truncated: boolean;
+}
+
+
 
 // -- Matrix types -----------------------------------------------------------
 
