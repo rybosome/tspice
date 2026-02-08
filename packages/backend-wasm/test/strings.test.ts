@@ -10,6 +10,7 @@ import {
 } from "../src/codec/strings.js";
 
 const UTF8 = new TextEncoder();
+const UTF8_DECODER = new TextDecoder();
 
 function makeModule(bytes: number[]) {
   return { HEAPU8: Uint8Array.from(bytes) };
@@ -56,8 +57,6 @@ function readCString(heap: Uint8Array, ptr: number): string {
   }
   return UTF8_DECODER.decode(heap.subarray(ptr, end));
 }
-
-const UTF8_DECODER = new TextDecoder();
 
 describe("backend-wasm codec/strings", () => {
   it("readFixedWidthCString: stops at NUL terminator", () => {
