@@ -65,6 +65,8 @@ jobs:
       command: |
         set -euo pipefail
 
+        export TSPICE_EXPECT_NATIVE=true
+
         pnpm run check:native
 
         # Smoke-test packaging for the platform-native optionalDependency that

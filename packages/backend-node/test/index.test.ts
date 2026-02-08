@@ -11,6 +11,12 @@ const toolkitVersion = resolveExpectedCspiceToolkitVersion(
 describe("@rybosome/tspice-backend-node", () => {
   const itNative = it.runIf(nodeAddonAvailable());
 
+  const expectNative = process.env.TSPICE_EXPECT_NATIVE === "true";
+  const itExpectNative = it.runIf(expectNative);
+  itExpectNative("CI sanity: native addon should be present", () => {
+    expect(nodeAddonAvailable()).toBe(true);
+  });
+
   itNative("loads the native addon", () => {
     const version = spiceVersion();
     expect(version).not.toBe("");
