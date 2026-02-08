@@ -3,7 +3,7 @@ import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 import type { CreateBackendOptions } from "./backend.js";
 import { createBackend } from "./backend.js";
 
-import type { Spice } from "./kit/types/spice-types.js";
+import type { Spice, SpiceAsync } from "./kit/types/spice-types.js";
 import { createKit } from "./kit/spice/create-kit.js";
 
 export type CreateSpiceOptions = CreateBackendOptions & {
@@ -14,6 +14,8 @@ export type CreateSpiceOptions = CreateBackendOptions & {
    */
   backendInstance?: SpiceBackend;
 };
+
+export type CreateSpiceAsyncOptions = CreateSpiceOptions;
 
 export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   const backend = options.backendInstance ?? (await createBackend(options));
@@ -72,4 +74,45 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   const kit = createKit(raw, { byteBackedKernelPaths });
 
   return { raw, kit };
+}
+
+function promisifyApi<T extends object>(target: T): T {
+  const boundMethods = new Map<PropertyKey, Function>();
+  const handler: ProxyHandler<T> = {
+    get: (t, prop) => {
+      const value = Reflect.get(t, prop, t) as unknown;
+
+      if (typeof value === "function") {
+        const existing = boundMethods.get(prop);
+        if (existing) {
+          return existing;
+        }
+
+        const fn = value as unknown as (...args: unknown[]) => unknown;
+        const wrapped = (...args: unknown[]) =>
+          Promise.resolve().then(() => Reflect.apply(fn, t, args));
+        boundMethods.set(prop, wrapped);
+        return wrapped;
+      }
+
+      return value;
+    },
+  };
+
+  return new Proxy(target, handler);
+}
+
+/**
+* Create an async client with the same surface area as `createSpice()`, but
+* with all methods returning `Promise`s.
+*/
+export async function createSpiceAsync(
+  options: CreateSpiceAsyncOptions,
+): Promise<SpiceAsync> {
+  const { raw, kit } = await createSpice(options);
+
+  return {
+    raw: promisifyApi(raw) as unknown as SpiceAsync["raw"],
+    kit: promisifyApi(kit) as unknown as SpiceAsync["kit"],
+  };
 }
