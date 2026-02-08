@@ -997,8 +997,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
     dlacls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dlacls() is not implemented");
+    },
 
-// -- Cells + windows -----------------------------------------------------
+    // -- Cells + windows -----------------------------------------------------
     //
     // The fake backend is intentionally minimal and does not attempt to
     // simulate CSPICE cell/window semantics.

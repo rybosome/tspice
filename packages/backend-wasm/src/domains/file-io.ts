@@ -54,15 +54,25 @@ function writeDlaDescr8(module: EmscriptenModule, ptr: number, descr: DlaDescrip
 
 function readDlaDescr8(module: EmscriptenModule, ptr: number): DlaDescriptor {
   const base = ptr >> 2;
+  const heap = module.HEAP32;
+
+  // HEAP32 returns `undefined` for out-of-bounds reads. That can mask bugs and
+  // lead to silently-corrupted DLA descriptors, so fail fast instead.
+  if (base < 0 || base + 7 >= heap.length) {
+    throw new RangeError(
+      `readDlaDescr8: descriptor pointer out of bounds (ptr=${ptr}, base=${base}, heapLen=${heap.length})`,
+    );
+  }
+
   return {
-    bwdptr: module.HEAP32[base + 0] ?? 0,
-    fwdptr: module.HEAP32[base + 1] ?? 0,
-    ibase: module.HEAP32[base + 2] ?? 0,
-    isize: module.HEAP32[base + 3] ?? 0,
-    dbase: module.HEAP32[base + 4] ?? 0,
-    dsize: module.HEAP32[base + 5] ?? 0,
-    cbase: module.HEAP32[base + 6] ?? 0,
-    csize: module.HEAP32[base + 7] ?? 0,
+    bwdptr: heap[base + 0]!,
+    fwdptr: heap[base + 1]!,
+    ibase: heap[base + 2]!,
+    isize: heap[base + 3]!,
+    dbase: heap[base + 4]!,
+    dsize: heap[base + 5]!,
+    cbase: heap[base + 6]!,
+    csize: heap[base + 7]!,
   };
 }
 

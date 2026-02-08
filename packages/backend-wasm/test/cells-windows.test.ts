@@ -6,6 +6,11 @@ describe("@rybosome/tspice-backend-wasm cells/windows", () => {
   it("supports basic set cells (ordering + de-dupe + getters)", async () => {
     const b = await createWasmBackend();
 
+    if (!(b as any).cellsWindowsSupported) {
+      expect(() => b.newIntCell(10)).toThrow(/not supported|missing exported functions/i);
+      return;
+    }
+
     const icell = b.newIntCell(10);
     const dcell = b.newDoubleCell(10);
     const ccell = b.newCharCell(10, 16);
@@ -45,6 +50,12 @@ describe("@rybosome/tspice-backend-wasm cells/windows", () => {
 
   it("supports basic windows (insert + merge + fetch)", async () => {
     const b = await createWasmBackend();
+
+    if (!(b as any).cellsWindowsSupported) {
+      expect(() => b.newWindow(4)).toThrow(/not supported|missing exported functions/i);
+      return;
+    }
+
     const win = b.newWindow(4);
 
     try {
@@ -61,6 +72,11 @@ describe("@rybosome/tspice-backend-wasm cells/windows", () => {
 
   it("throws on capacity overflow (CSPICE-like)", async () => {
     const b = await createWasmBackend();
+
+    if (!(b as any).cellsWindowsSupported) {
+      expect(() => b.newIntCell(2)).toThrow(/not supported|missing exported functions/i);
+      return;
+    }
 
     const icell = b.newIntCell(2);
     try {

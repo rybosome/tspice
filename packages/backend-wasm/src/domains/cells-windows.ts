@@ -251,6 +251,48 @@ function tspiceCallWnvald(module: EmscriptenModule, size: number, n: number, win
 }
 
 export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
+  const supported =
+    typeof module._tspice_new_int_cell === "function" &&
+    typeof module._tspice_new_double_cell === "function" &&
+    typeof module._tspice_new_char_cell === "function" &&
+    typeof module._tspice_new_window === "function";
+
+  if (!supported) {
+    const msg =
+      "Cells/windows are not supported by this tspice WASM artifact (missing exported functions). " +
+      "Rebuild the WASM backend (scripts/build-backend-wasm.mjs).";
+
+    const unsupported = (): never => {
+      throw new Error(msg);
+    };
+
+    // Provide a full surface area so the backend still satisfies the contract,
+    // but fail fast when invoked.
+    return {
+      newIntCell: unsupported,
+      newDoubleCell: unsupported,
+      newCharCell: unsupported,
+      newWindow: unsupported,
+      freeCell: unsupported,
+      freeWindow: unsupported,
+      ssize: unsupported,
+      scard: unsupported,
+      card: unsupported,
+      size: unsupported,
+      valid: unsupported,
+      insrti: unsupported,
+      insrtd: unsupported,
+      insrtc: unsupported,
+      cellGeti: unsupported,
+      cellGetd: unsupported,
+      cellGetc: unsupported,
+      wninsd: unsupported,
+      wncard: unsupported,
+      wnfetd: unsupported,
+      wnvald: unsupported,
+    };
+  }
+
   // Security + correctness: track allocated pointers per backend instance.
   //
   // In the WASM backend, cell/window handles are raw pointers. Without this

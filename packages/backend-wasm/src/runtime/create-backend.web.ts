@@ -23,7 +23,7 @@ export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
-): Promise<SpiceBackend & { kind: "wasm" }> {
+): Promise<SpiceBackend & { kind: "wasm"; cellsWindowsSupported: boolean }> {
   // NOTE: Keep this as a literal string so bundlers (Vite) don't generate a
   // runtime glob map for *every* file in this directory (including *.d.ts.map),
   // which can lead to JSON being imported as an ESM module.
@@ -76,7 +76,13 @@ export async function createWasmBackend(
 
   const fsApi = createWasmFs(module);
 
-  const backend = {
+  const cellsWindowsSupported =
+    typeof module._tspice_new_int_cell === "function" &&
+    typeof module._tspice_new_double_cell === "function" &&
+    typeof module._tspice_new_char_cell === "function" &&
+    typeof module._tspice_new_window === "function";
+
+  const backendBase = {
     kind: "wasm",
     ...createTimeApi(module, toolkitVersion),
     ...createKernelsApi(module, fsApi),
@@ -88,9 +94,7 @@ export async function createWasmBackend(
     ...createFileIoApi(module),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
-
-
   } satisfies SpiceBackend;
 
-  return backend;
+  return { ...backendBase, cellsWindowsSupported } as SpiceBackend & { kind: "wasm"; cellsWindowsSupported: boolean };
 }

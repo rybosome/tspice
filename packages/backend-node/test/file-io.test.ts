@@ -16,13 +16,18 @@ describe("@rybosome/tspice-backend-node file-io", () => {
 
     const { spk } = await loadTestKernels();
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
-    const spkPath = path.join(tmpDir, "de405s.bsp");
-    fs.writeFileSync(spkPath, spk);
 
-    const handle = backend.dafopr(spkPath);
-    backend.dafbfs(handle);
-    expect(backend.daffna(handle)).toBe(true);
-    backend.dafcls(handle);
+    try {
+      const spkPath = path.join(tmpDir, "de405s.bsp");
+      fs.writeFileSync(spkPath, spk);
+
+      const handle = backend.dafopr(spkPath);
+      backend.dafbfs(handle);
+      expect(backend.daffna(handle)).toBe(true);
+      backend.dafcls(handle);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 
   itNative("throws on double-close", async () => {
@@ -30,12 +35,17 @@ describe("@rybosome/tspice-backend-node file-io", () => {
 
     const { spk } = await loadTestKernels();
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
-    const spkPath = path.join(tmpDir, "de405s.bsp");
-    fs.writeFileSync(spkPath, spk);
 
-    const handle = backend.dafopr(spkPath);
-    backend.dafcls(handle);
-    expect(() => backend.dafcls(handle)).toThrow(/invalid|closed/i);
+    try {
+      const spkPath = path.join(tmpDir, "de405s.bsp");
+      fs.writeFileSync(spkPath, spk);
+
+      const handle = backend.dafopr(spkPath);
+      backend.dafcls(handle);
+      expect(() => backend.dafcls(handle)).toThrow(/invalid|closed/i);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 
   itNative("throws on invalid handle usage", () => {
@@ -44,26 +54,36 @@ describe("@rybosome/tspice-backend-node file-io", () => {
     expect(() => backend.dafcls(123 as any)).toThrow(/invalid|closed/i);
 
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
-    const dlaPath = path.join(tmpDir, "test.dla");
 
-    const dlaHandle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
-    backend.dlacls(dlaHandle);
+    try {
+      const dlaPath = path.join(tmpDir, "test.dla");
 
-    const dasHandle = backend.dasopr(dlaPath);
-    expect(() => backend.dafbfs(dasHandle as any)).toThrow(/DAF/i);
-    backend.dascls(dasHandle);
+      const dlaHandle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      backend.dlacls(dlaHandle);
+
+      const dasHandle = backend.dasopr(dlaPath);
+      expect(() => backend.dafbfs(dasHandle as any)).toThrow(/DAF/i);
+      backend.dascls(dasHandle);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 
   itNative("can create and close a DLA file", () => {
     const backend = createNodeBackend();
 
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
-    const dlaPath = path.join(tmpDir, "create-close.dla");
 
-    const handle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
-    expect(backend.dlabfs(handle)).toEqual({ found: false });
-    backend.dlacls(handle);
+    try {
+      const dlaPath = path.join(tmpDir, "create-close.dla");
 
-    expect(backend.exists(dlaPath)).toBe(true);
+      const handle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      expect(backend.dlabfs(handle)).toEqual({ found: false });
+      backend.dlacls(handle);
+
+      expect(backend.exists(dlaPath)).toBe(true);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 });

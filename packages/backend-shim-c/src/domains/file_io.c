@@ -111,8 +111,19 @@ int tspice_getfat(
 
 int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+
+  if (err && errMaxBytes > 0) err[0] = '\0';
   if (outHandle) *outHandle = 0;
+
+  if (!path || path[0] == '\0') {
+    tspice_write_error(err, errMaxBytes, "tspice_dafopr: path must be a non-empty string");
+    return 1;
+  }
+
+  if (!outHandle) {
+    tspice_write_error(err, errMaxBytes, "tspice_dafopr: outHandle must be non-NULL");
+    return 1;
+  }
 
   SpiceInt handleC = 0;
   dafopr_c(path, &handleC);
