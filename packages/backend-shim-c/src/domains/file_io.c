@@ -20,9 +20,14 @@ typedef char tspice_spiceint_must_be_32bit[(sizeof(SpiceInt) == 4) ? 1 : -1];
 
 
 static void tspice_write_error(char *err, int errMaxBytes, const char *msg) {
-  if (!err || errMaxBytes <= 0 || !msg) return;
+  if (!err || errMaxBytes <= 0) return;
+
   // Ensure stable, NUL-terminated error strings.
-  snprintf(err, (size_t)errMaxBytes, "%s", msg);
+  //
+  // Note: snprintf() always NUL-terminates if size > 0, but we defensively set the
+  // last byte as well so callers can rely on termination even if code changes.
+  snprintf(err, (size_t)errMaxBytes, "%s", msg ? msg : "");
+  err[errMaxBytes - 1] = '\0';
 }
 
 static void tspice_write_dla_descr8(const SpiceDLADescr *descr, int *outDescr8) {
@@ -202,7 +207,6 @@ int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes) 
   dasopr_c(path, &handleC);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
-    if (err && errMaxBytes > 0) err[errMaxBytes - 1] = '\0';
     return 1;
   }
 
@@ -269,7 +273,6 @@ int tspice_dlaopn(
   dlaopn_c(path, ftype, ifname, (SpiceInt)ncomch, &handleC);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
-    if (err && errMaxBytes > 0) err[errMaxBytes - 1] = '\0';
     return 1;
   }
 

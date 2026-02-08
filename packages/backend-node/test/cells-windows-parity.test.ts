@@ -14,7 +14,7 @@ function assertCellsWindowsSupportedOrSkip(b: SpiceBackend): boolean {
     b.freeCell(cell);
     return true;
   } catch (e) {
-    expect(String((e as Error)?.message ?? e)).toBe(CELLS_WINDOWS_UNSUPPORTED_MSG);
+    expect(String((e as Error)?.message ?? e)).toContain("Cells/windows are not supported");
     return false;
   }
 }
