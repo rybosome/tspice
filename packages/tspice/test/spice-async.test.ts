@@ -3,13 +3,12 @@ import { describe, expect, it } from "vitest";
 import { createSpice, createSpiceAsync } from "@rybosome/tspice";
 
 describe("createSpiceAsync()", () => {
-  it("returns { raw, kit } and makes methods awaitable", async () => {
+  it("returns exactly { raw, kit } and makes methods awaitable", async () => {
     const spice = await createSpiceAsync({ backend: "wasm" });
 
-    expect(spice).toHaveProperty("raw");
-    expect(spice).toHaveProperty("kit");
-    expect((spice as any).furnsh).toBeUndefined();
-    expect((spice as any).loadKernel).toBeUndefined();
+    // Tight runtime assertion: prevent accidental extra top-level exports like
+    // `{ raw, kit, version }`.
+    expect(Object.keys(spice).sort()).toEqual(["kit", "raw"]);
 
     // Non-function properties should pass through.
     expect(spice.raw.kind).toBe("wasm");
