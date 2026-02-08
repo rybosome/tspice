@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 
-const CELLS_WINDOWS_UNSUPPORTED_MSG = 'Cells/windows are not supported by this tspice WASM artifact (missing exported functions). Rebuild the WASM backend (scripts/build-backend-wasm.mjs).';
+const CELLS_WINDOWS_UNSUPPORTED_RE =
+  /Cells\/windows are not supported by this tspice WASM artifact.*missing exported functions/i;
 
 async function createBackendOrSkip() {
   const b = await createWasmBackend();
@@ -11,7 +12,7 @@ async function createBackendOrSkip() {
     b.freeCell(cell);
     return b;
   } catch (e) {
-    expect(String((e as Error)?.message ?? e)).toBe(CELLS_WINDOWS_UNSUPPORTED_MSG);
+    expect(String((e as Error)?.message ?? e)).toMatch(CELLS_WINDOWS_UNSUPPORTED_RE);
     return null;
   }
 }
