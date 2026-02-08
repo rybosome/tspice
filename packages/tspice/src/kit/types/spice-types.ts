@@ -35,11 +35,11 @@ export type SpiceKit = {
   getState(args: GetStateArgs): StateVector;
 };
 
-type PromisifyFn<T> = T extends (...args: infer A) => infer R
+export type PromisifyFn<T> = T extends (...args: infer A) => infer R
   ? (...args: A) => Promise<Awaited<R>>
   : T;
 
-type PromisifyObject<T> = {
+export type PromisifyObject<T extends object> = {
   [K in keyof T]: PromisifyFn<T[K]>;
 };
 
