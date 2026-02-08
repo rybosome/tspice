@@ -162,9 +162,17 @@ function main() {
         return;
       }
 
-      throw new Error(
-        "Automatic CSPICE fetch is not supported on linux-arm64. Set TSPICE_CSPICE_DIR to a prebuilt CSPICE install.",
-      );
+      // Local dev: don't throw (and print a scary stack trace). Parity tests will
+      // just skip when the runner is unavailable.
+      writeState(pkgRoot, {
+        available: false,
+        reason:
+          "Automatic CSPICE fetch is not supported on linux-arm64 (set TSPICE_CSPICE_DIR to a prebuilt CSPICE install)",
+        binaryPath,
+        cspiceDir,
+        details: validation.reason,
+      });
+      return;
     }
 
     if (isCI()) {

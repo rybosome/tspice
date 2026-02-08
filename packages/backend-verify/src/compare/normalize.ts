@@ -83,6 +83,14 @@ export function normalizeForCompare(value: unknown): unknown {
     return value.map((v) => normalizeForCompare(v));
   }
 
+  // TypedArrays + DataView
+  //
+  // NOTE: DataView is *not* a numeric ArrayLike, so Array.from(new DataView(...))
+  // produces an empty array. Normalize it to the underlying bytes explicitly.
+  if (value instanceof DataView) {
+    return Array.from(new Uint8Array(value.buffer, value.byteOffset, value.byteLength));
+  }
+
   if (ArrayBuffer.isView(value)) {
     return Array.from(value as unknown as ArrayLike<number>);
   }
@@ -92,38 +100,43 @@ export function normalizeForCompare(value: unknown): unknown {
   }
 
   if (value instanceof Map) {
-    const out = Array.from(value.entries()).map(
-      ([k, v]) => [normalizeForCompare(k), normalizeForCompare(v)] as const,
-    );
+    // Cache sort keys so we don't recompute expensive keys repeatedly during sort.
+    // This preserves deterministic ordering identical to the comparator logic.
+    const outWithKeys = Array.from(value.entries()).map(([k, v]) => {
+      const nk = normalizeForCompare(k);
+      const nv = normalizeForCompare(v);
+      return {
+        entry: [nk, nv] as const,
+        keyKey: sortKey(nk),
+        valueKey: sortKey(nv),
+      };
+    });
 
-    out.sort((a, b) => {
-      const ak = sortKey(a[0]);
-      const bk = sortKey(b[0]);
-      if (ak < bk) return -1;
-      if (ak > bk) return 1;
-
-      const av = sortKey(a[1]);
-      const bv = sortKey(b[1]);
-      if (av < bv) return -1;
-      if (av > bv) return 1;
+    outWithKeys.sort((a, b) => {
+      if (a.keyKey < b.keyKey) return -1;
+      if (a.keyKey > b.keyKey) return 1;
+      if (a.valueKey < b.valueKey) return -1;
+      if (a.valueKey > b.valueKey) return 1;
       return 0;
     });
 
-    return out;
+    return outWithKeys.map((x) => x.entry);
   }
 
   if (value instanceof Set) {
-    const out = Array.from(value.values()).map((v) => normalizeForCompare(v));
+    // Same caching approach as Map normalization.
+    const outWithKeys = Array.from(value.values()).map((v) => {
+      const nv = normalizeForCompare(v);
+      return { value: nv, key: sortKey(nv) };
+    });
 
-    out.sort((a, b) => {
-      const ak = sortKey(a);
-      const bk = sortKey(b);
-      if (ak < bk) return -1;
-      if (ak > bk) return 1;
+    outWithKeys.sort((a, b) => {
+      if (a.key < b.key) return -1;
+      if (a.key > b.key) return 1;
       return 0;
     });
 
-    return out;
+    return outWithKeys.map((x) => x.value);
   }
 
   if (isPlainObject(value)) {
