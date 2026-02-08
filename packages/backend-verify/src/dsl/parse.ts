@@ -2,6 +2,7 @@ import * as path from "node:path";
 import * as fs from "node:fs";
 
 import type { ScenarioAst, ScenarioCaseAst, ScenarioSetupAst, ScenarioYamlFile } from "./types.js";
+import type { KernelEntry } from "../runners/types.js";
 import { resolveMetaKernelKernelsToLoad } from "../kernels/metaKernel.js";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -97,7 +98,7 @@ function getFixturesRoot(sourceDir: string): string {
   return fixturesRoot;
 }
 
-function expandFixturePackDir(dirPath: string, originalEntry: string): string[] {
+function expandFixturePackDir(dirPath: string, originalEntry: string): KernelEntry {
   const metaKernel = path.join(dirPath, `${path.basename(dirPath)}.tm`);
   if (!fileExists(metaKernel)) {
     throw new Error(
@@ -117,14 +118,17 @@ function expandFixturePackDir(dirPath: string, originalEntry: string): string[] 
     );
   }
 
-  return kernels;
+
+  // Preserve the meta-kernel itself (pool assignments), but annotate it with the
+  // pack directory restriction so WASM expansion can't escape the pack.
+  return { path: metaKernel, restrictToDir: dirPath };
 }
 
-function resolveKernelPaths(p: string, sourceDir: string): string[] {
-  const resolveMaybePack = (resolved: string): string[] => {
+function resolveKernelPaths(p: string, sourceDir: string): KernelEntry[] {
+  const resolveMaybePack = (resolved: string): KernelEntry[] => {
     // If it exists and is a directory, treat it as a fixture-pack alias.
     if (isExistingDir(resolved)) {
-      return expandFixturePackDir(resolved, p);
+      return [expandFixturePackDir(resolved, p)];
     }
 
     // Otherwise it should be a kernel file path (it may or may not exist yet).

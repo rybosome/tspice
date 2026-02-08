@@ -9,7 +9,7 @@ import {
   sanitizeMetaKernelTextForWasm,
 } from "../kernels/metaKernel.js";
 
-import type { CaseRunner, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
+import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
 
 type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown;
 
@@ -158,19 +158,23 @@ async function kernelVirtualIdFromOsPath(osPath: string): Promise<string> {
   return `ospath/${hash}/${base}`;
 }
 
-function restrictDirForPackMetaKernel(metaKernelPath: string): string | undefined {
-  const dir = path.dirname(metaKernelPath);
-  const base = path.basename(dir);
-  if (path.basename(metaKernelPath) === `${base}.tm`) {
-    return dir;
-  }
-  return undefined;
+function normalizeKernelEntry(entry: KernelEntry): { path: string; restrictToDir?: string } {
+  return typeof entry === "string" ? { path: entry } : entry;
+}
+
+function isWithinOrEqualDir(resolved: string, baseDir: string): boolean {
+  const rel = path.relative(baseDir, resolved);
+  // rel === '' means `resolved === baseDir` which is acceptable.
+  if (rel === "") return true;
+
+  return !(rel === ".." || rel.startsWith(`..${path.sep}`));
 }
 
 async function furnshOsKernelForWasm(
   backend: SpiceBackend,
   osPath: string,
   loaded: Set<string>,
+  restrictToDir?: string,
 ): Promise<void> {
   const absPath = path.resolve(osPath);
   if (loaded.has(absPath)) return;
@@ -181,7 +185,6 @@ async function furnshOsKernelForWasm(
     // from the host filesystem, so we expand `KERNELS_TO_LOAD` ourselves.
     const metaKernelText = await readFile(absPath, "utf8");
 
-    const restrictToDir = restrictDirForPackMetaKernel(absPath);
     const kernelsToLoad = resolveMetaKernelKernelsToLoad(
       metaKernelText,
       absPath,
@@ -194,7 +197,8 @@ async function furnshOsKernelForWasm(
     backend.furnsh({ path: kernelVirtualIdFromOsPath(absPath), bytes: Buffer.from(sanitized, "utf8") });
 
     for (const k of kernelsToLoad) {
-      await furnshOsKernelForWasm(backend, k, loaded);
+      const nextRestrict = restrictToDir && isWithinOrEqualDir(k, restrictToDir) ? restrictToDir : undefined;
+      await furnshOsKernelForWasm(backend, k, loaded, nextRestrict);
     }
     return;
   }
@@ -217,11 +221,12 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
 
       try {
         const loadedKernels = new Set<string>();
-        for (const kernel of input.setup?.kernels ?? []) {
+        for (const kernelEntry of input.setup?.kernels ?? []) {
+          const kernel = normalizeKernelEntry(kernelEntry);
           if (backend.kind === "wasm") {
-            await furnshOsKernelForWasm(backend, kernel, loadedKernels);
+            await furnshOsKernelForWasm(backend, kernel.path, loadedKernels, kernel.restrictToDir);
           } else {
-            backend.furnsh(kernel);
+            backend.furnsh(kernel.path);
           }
         }
 

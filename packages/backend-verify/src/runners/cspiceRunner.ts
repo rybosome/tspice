@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import type {
   CaseRunner,
+  KernelEntry,
   RunCaseInput,
   RunCaseResult,
   RunnerErrorReport,
@@ -62,6 +63,16 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
   }
 
   return { message: String(error) };
+}
+
+function kernelEntryPath(entry: KernelEntry): string {
+  return typeof entry === "string" ? entry : entry.path;
+}
+
+function normalizeInputForNativeRunner(input: RunCaseInput): RunCaseInput {
+  const kernels = input.setup?.kernels;
+  if (!kernels) return input;
+  return { ...input, setup: { ...input.setup, kernels: kernels.map(kernelEntryPath) } };
 }
 
 type CRunnerOk = { ok: true; result: unknown };
@@ -397,7 +408,7 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
       }
 
       try {
-        const out = await invokeRunner(binaryPath, input);
+        const out = await invokeRunner(binaryPath, normalizeInputForNativeRunner(input));
         if (out.ok) {
           return { ok: true, result: out.result };
         }
