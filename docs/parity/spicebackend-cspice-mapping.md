@@ -50,6 +50,10 @@ These tolerances are a reasonable *starting point*; tighten/loosen as needed for
 - Ephemeris/geometry vectors in km: `atol = 1e-9` km
 - Epochs/light time in seconds: `atol = 1e-9` s
 
+> Note: Element-wise `atol` is not always sufficient.
+> For transforms (e.g. `pxform`/`sxform`), also check invariants like orthonormality (`R·Rᵀ ≈ I`) and `det(R) ≈ +1`.
+> For ephemeris/geometry (`spkezr`/`spkpos`, etc.), tolerances may need to vary by `abcorr`, loaded kernels, and platform.
+
 
 ## Kernel fixtures present in this repo
 
@@ -142,12 +146,20 @@ Notes:
 | `kernels.unload(path)` | `unload_c` | `(path: string): void` | `void` | n/a | **stateful**: unloads a previously loaded kernel |
 | `kernels.kclear()` | `kclear_c` | `(): void` | `void` | n/a | **stateful**: clears all loaded kernels and the kernel pool |
 | `kernels.ktotal(kind?)` | `ktotal_c` | `(kind?: KernelKind): number` | `number` | exact integer match | **stateful**: returns count of currently loaded kernels (optionally filtered) |
-| `kernels.kdata(which, kind?)` | `kdata_c` | `(which: number, kind?: KernelKind): Found<KernelData>` | `Found<KernelData>` | exact string/integer match | **stateful**: queries loaded-kernel table; returns `{ found: false }` when `which` is out of range for the selected kind |
+| `kernels.kdata(which, kind?)` | `kdata_c` | `(which: number, kind?: KernelKind): Found<KernelData>` | `Found<KernelData>` | `filtyp` exact; path-like fields may require normalization (see Notes) | **stateful**: queries loaded-kernel table; returns `{ found: false }` when `which` is out of range for the selected kind |
 
 Notes:
 
 - **Global state + determinism:** `furnsh` mutates process-global CSPICE state (kernel pool + loaded-kernel table). Load order can affect results. For deterministic tests, prefer an explicit load order and call `kernels.kclear()` between tests/suites to avoid cross-test leakage.
 - **`KernelSource` bytes safety:** when `KernelSource` is `{ path, bytes }`, backends should treat `path` as **untrusted** input. Write bytes only into a backend-controlled directory / virtual FS namespace, reject absolute paths and `..` segments, and (ideally) clean up temp artifacts on `unload()` / `kclear()` or process exit.
+- **`KernelSource.path` portability + `kdata()` observability:** `KernelSource` does **not** have a single portable path semantics across backends:
+  - In Node, `furnsh(string)` is an OS filesystem path.
+  - In WASM, `furnsh(string)` is typically a virtual WASM-FS path (commonly under `/kernels/...`).
+
+  For cross-backend parity tests, prefer `furnsh({ path, bytes })` and treat `path` as a *virtual identifier* (POSIX-style, normalized; no `..`, optional `/kernels/` prefix).
+  Backends may rewrite this identifier to an internal storage path (temp files, virtual FS namespaces), but should do so deterministically and keep it observable:
+  - `unload(path)` should accept the normalized virtual identifier (even if internally rewritten).
+  - `kdata()` should return a stable identifier for byte-backed kernels (ideally the normalized virtual path), rather than leaking randomized temp-file paths that would break parity.
 
 ---
 
