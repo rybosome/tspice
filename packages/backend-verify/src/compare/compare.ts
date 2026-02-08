@@ -2,8 +2,11 @@ import type { CompareOptions, CompareResult, Mismatch } from "./types.js";
 import { normalizeForCompare } from "./normalize.js";
 import { safeStringify } from "./safeStringify.js";
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== "object" || value === null) return false;
+  if (Array.isArray(value)) return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
 }
 
 function joinPath(base: string, key: string | number): string {
@@ -96,15 +99,13 @@ function compareInner(
     return;
   }
 
-  if (!isRecord(actual) || !isRecord(expected)) {
-    if (safeStringify(actual) !== safeStringify(expected)) {
-      mismatches.push({
-        path,
-        actual,
-        expected,
-        message: "non-plain object mismatch",
-      });
-    }
+  if (!isPlainObject(actual) || !isPlainObject(expected)) {
+    mismatches.push({
+      path,
+      actual,
+      expected,
+      message: "non-plain object mismatch (post-normalization)",
+    });
     return;
   }
 

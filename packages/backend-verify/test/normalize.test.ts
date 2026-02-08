@@ -9,20 +9,29 @@ describe("normalizeForCompare (deterministic sorting)", () => {
       [null, -0],
     ]);
 
-    const out = normalizeForCompare(input) as Array<[unknown, unknown]>;
+    const out = normalizeForCompare(input) as {
+      $type: string;
+      $tag: string;
+      props: { entries: Array<[unknown, unknown]> };
+    };
+
+    expect(out.$type).toBe("Map");
+    expect(out.$tag).toBe("[object Map]");
+
+    const entries = out.props.entries;
 
     // Sorting should be deterministic even though JSON.stringify(NaN) === "null"
     // and JSON.stringify(-0) === "0".
-    expect(out).toHaveLength(2);
+    expect(entries).toHaveLength(2);
 
     // Keys: null should sort before NaN with our deterministic keying.
-    expect(out[0]?.[0]).toBe(null);
-    expect(typeof out[1]?.[0]).toBe("number");
-    expect(Number.isNaN(out[1]?.[0] as number)).toBe(true);
+    expect(entries[0]?.[0]).toBe(null);
+    expect(typeof entries[1]?.[0]).toBe("number");
+    expect(Number.isNaN(entries[1]?.[0] as number)).toBe(true);
 
     // Values: preserve the sign of zero.
-    expect(Object.is(out[0]?.[1], -0)).toBe(true);
-    expect(Object.is(out[1]?.[1], 0)).toBe(true);
+    expect(Object.is(entries[0]?.[1], -0)).toBe(true);
+    expect(Object.is(entries[1]?.[1], 0)).toBe(true);
   });
 
   it("can sort objects containing bigint without throwing", () => {
@@ -31,9 +40,11 @@ describe("normalizeForCompare (deterministic sorting)", () => {
       [{ a: 1n }, "x"],
     ]);
 
-    const out = normalizeForCompare(input) as Array<[unknown, unknown]>;
+    const out = normalizeForCompare(input) as {
+      props: { entries: Array<[unknown, unknown]> };
+    };
 
-    expect(out).toEqual([
+    expect(out.props.entries).toEqual([
       [{ a: 1n }, "x"],
       [{ a: 2n }, "x"],
     ]);
@@ -42,12 +53,21 @@ describe("normalizeForCompare (deterministic sorting)", () => {
   it("sorts Set values deterministically when JSON.stringify collides", () => {
     const input = new Set<unknown>([Infinity, null, NaN]);
 
-    const out = normalizeForCompare(input) as unknown[];
+    const out = normalizeForCompare(input) as {
+      $type: string;
+      $tag: string;
+      props: { values: unknown[] };
+    };
+
+    expect(out.$type).toBe("Set");
+    expect(out.$tag).toBe("[object Set]");
+
+    const values = out.props.values;
 
     // Should contain the same values, but in a deterministic order.
-    expect(out).toHaveLength(3);
-    expect(out[0]).toBe(null);
-    expect(out[1]).toBe(Infinity);
-    expect(Number.isNaN(out[2] as number)).toBe(true);
+    expect(values).toHaveLength(3);
+    expect(values[0]).toBe(null);
+    expect(values[1]).toBe(Infinity);
+    expect(Number.isNaN(values[2] as number)).toBe(true);
   });
 });

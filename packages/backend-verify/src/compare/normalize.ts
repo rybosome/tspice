@@ -5,6 +5,26 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return proto === Object.prototype || proto === null;
 }
 
+function normalizePlainObject(value: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  const keys = Object.keys(value).sort();
+  for (const k of keys) {
+    out[k] = normalizeForCompare(value[k]);
+  }
+  return out;
+}
+
+function taggedObject(value: object, props: Record<string, unknown>): Record<string, unknown> {
+  const ctor = (value as { constructor?: { name?: unknown } }).constructor;
+  const $type = typeof ctor?.name === "string" && ctor.name.length > 0 ? ctor.name : "Object";
+
+  return {
+    $type,
+    $tag: Object.prototype.toString.call(value),
+    props: normalizePlainObject(props),
+  };
+}
+
 /**
  * A deterministic key for sorting normalized values.
  *
@@ -76,27 +96,11 @@ export function normalizeForCompare(value: unknown): unknown {
   }
 
   if (value instanceof Date) {
-    return value.toISOString();
-  }
-
-  if (Array.isArray(value)) {
-    return value.map((v) => normalizeForCompare(v));
-  }
-
-  // TypedArrays + DataView
-  //
-  // NOTE: DataView is *not* a numeric ArrayLike, so Array.from(new DataView(...))
-  // produces an empty array. Normalize it to the underlying bytes explicitly.
-  if (value instanceof DataView) {
-    return Array.from(new Uint8Array(value.buffer, value.byteOffset, value.byteLength));
-  }
-
-  if (ArrayBuffer.isView(value)) {
-    return Array.from(value as unknown as ArrayLike<number>);
-  }
-
-  if (value instanceof ArrayBuffer) {
-    return Array.from(new Uint8Array(value));
+    const timeMs = value.getTime();
+    return taggedObject(value, {
+      timeMs,
+      ...(Number.isFinite(timeMs) ? { iso: value.toISOString() } : {}),
+    });
   }
 
   if (value instanceof Map) {
@@ -120,7 +124,10 @@ export function normalizeForCompare(value: unknown): unknown {
       return 0;
     });
 
-    return outWithKeys.map((x) => x.entry);
+    return taggedObject(value, {
+      size: value.size,
+      entries: outWithKeys.map((x) => x.entry),
+    });
   }
 
   if (value instanceof Set) {
@@ -136,22 +143,76 @@ export function normalizeForCompare(value: unknown): unknown {
       return 0;
     });
 
-    return outWithKeys.map((x) => x.value);
+    return taggedObject(value, {
+      size: value.size,
+      values: outWithKeys.map((x) => x.value),
+    });
+  }
+
+  if (value instanceof Error) {
+    const err = value as Error & { cause?: unknown };
+    const props: Record<string, unknown> = {
+      name: err.name,
+      message: err.message,
+    };
+
+    if ("cause" in err && err.cause !== undefined) {
+      props.cause = err.cause;
+    }
+
+    // Include any custom enumerable fields (e.g. `code`, `spiceShort`, etc.).
+    for (const k of Object.keys(err).sort()) {
+      if (k === "name" || k === "message" || k === "cause") continue;
+      try {
+        props[k] = (err as unknown as Record<string, unknown>)[k];
+      } catch (e) {
+        props[k] = `[throws ${e instanceof Error ? e.message : String(e)}]`;
+      }
+    }
+
+    return taggedObject(err, props);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((v) => normalizeForCompare(v));
+  }
+
+  // TypedArrays + DataView
+  //
+  // NOTE: DataView is *not* a numeric ArrayLike, so Array.from(new DataView(...))
+  // produces an empty array. Normalize it to the underlying bytes explicitly.
+  if (value instanceof DataView) {
+    return Array.from(new Uint8Array(value.buffer, value.byteOffset, value.byteLength));
+  }
+
+  if (ArrayBuffer.isView(value)) {
+    return Array.from(value as unknown as ArrayLike<number>);
+  }
+
+  if (value instanceof ArrayBuffer) {
+    return Array.from(new Uint8Array(value));
   }
 
   if (isPlainObject(value)) {
-    const out: Record<string, unknown> = {};
-    const keys = Object.keys(value).sort();
-    for (const k of keys) {
-      out[k] = normalizeForCompare(value[k]);
-    }
-    return out;
+    return normalizePlainObject(value);
   }
 
-  // Fallback: best-effort stable representation.
-  try {
-    return JSON.parse(JSON.stringify(value));
-  } catch {
-    return String(value);
+  if (typeof value === "object" && value !== null) {
+    const props: Record<string, unknown> = {};
+
+    // Use enumerable props only; non-enumerables (like `Error.stack`) are often
+    // environment-dependent and not stable.
+    for (const k of Object.keys(value as Record<string, unknown>)) {
+      try {
+        props[k] = (value as Record<string, unknown>)[k];
+      } catch (e) {
+        props[k] = `[throws ${e instanceof Error ? e.message : String(e)}]`;
+      }
+    }
+
+    return taggedObject(value, props);
   }
+
+  // Fallback (e.g. symbols/functions): best-effort stable representation.
+  return String(value);
 }

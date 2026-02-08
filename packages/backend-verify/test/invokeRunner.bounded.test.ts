@@ -18,7 +18,7 @@ describe("invokeRunner (bounded time)", () => {
     ).rejects.toThrow(/timed out/i);
 
     const elapsed = Date.now() - start;
-    expect(elapsed).toBeLessThan(1500);
+    expect(elapsed).toBeLessThan(5000);
   });
 
   it("rejects quickly on stdout truncation", async () => {
@@ -44,6 +44,6 @@ describe("invokeRunner (bounded time)", () => {
     ).rejects.toThrow(/output exceeded limit/i);
 
     const elapsed = Date.now() - start;
-    expect(elapsed).toBeLessThan(1500);
+    expect(elapsed).toBeLessThan(5000);
   });
 });

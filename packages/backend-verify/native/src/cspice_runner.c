@@ -498,6 +498,12 @@ static char *read_all_stdin(size_t *outLen) {
     size_t n = fread(buf + len, 1, toRead, stdin);
     len += n;
 
+    if (len > maxBytes) {
+      errno = EOVERFLOW;
+      free(buf);
+      return NULL;
+    }
+
     if (n < toRead) {
       if (ferror(stdin)) {
         if (errno == 0) {
