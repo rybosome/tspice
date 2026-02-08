@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsc -b tsconfig.json && node ../../scripts/copy-backend-wasm-assets.mjs",
     "typecheck": "tsc -b tsconfig.json --emitDeclarationOnly",
-    "test": "vitest run"
+    "test": "node ../../scripts/copy-backend-wasm-assets.mjs && vitest run"
   },
   "dependencies": {
     "@rybosome/tspice-backend-contract": "workspace:*",
