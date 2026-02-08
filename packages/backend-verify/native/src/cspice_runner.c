@@ -442,9 +442,13 @@ static char *read_all_stdin(size_t *outLen) {
   // Ensure callers don't accidentally classify failures based on a stale errno.
   errno = 0;
 
+  const size_t maxBytes = (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES;
+  // +1 for the trailing NUL terminator.
+  const size_t maxCap = maxBytes + 1;
+
   size_t cap = 4096;
-  if (cap > (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1) {
-    cap = (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1;
+  if (cap > maxCap) {
+    cap = maxCap;
   }
 
   char *buf = (char *)malloc(cap);
@@ -455,14 +459,28 @@ static char *read_all_stdin(size_t *outLen) {
 
   size_t len = 0;
   while (1) {
-    if (len + 1 >= cap) {
-      if (cap >= (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1) {
-        // Input too large.
-        errno = EOVERFLOW;
-        free(buf);
-        return NULL;
+    // If we've hit the byte budget, only accept EOF; otherwise the input is too
+    // large.
+    if (len >= maxBytes) {
+      int c = fgetc(stdin);
+      if (c == EOF) {
+        if (ferror(stdin)) {
+          if (errno == 0) {
+            errno = EIO;
+          }
+          free(buf);
+          return NULL;
+        }
+        break;
       }
 
+      errno = EOVERFLOW;
+      free(buf);
+      return NULL;
+    }
+
+    // Ensure there is always room for at least 1 more byte and the trailing NUL.
+    if (len + 1 >= cap) {
       // Grow with overflow guard, but never beyond the max.
       size_t nextCap = cap * 2;
       if (nextCap < cap) {
@@ -470,8 +488,13 @@ static char *read_all_stdin(size_t *outLen) {
         free(buf);
         return NULL;
       }
-      if (nextCap > (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1) {
-        nextCap = (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES + 1;
+      if (nextCap > maxCap) {
+        nextCap = maxCap;
+      }
+      if (nextCap <= cap) {
+        errno = EOVERFLOW;
+        free(buf);
+        return NULL;
       }
 
       char *next = (char *)realloc(buf, nextCap);
@@ -484,16 +507,15 @@ static char *read_all_stdin(size_t *outLen) {
       cap = nextCap;
     }
 
-    size_t n = fread(buf + len, 1, cap - len - 1, stdin);
+    const size_t remainingBudget = maxBytes - len;
+    const size_t remainingBuf = cap - len - 1;
+    const size_t toRead =
+        remainingBuf < remainingBudget ? remainingBuf : remainingBudget;
+
+    size_t n = fread(buf + len, 1, toRead, stdin);
     len += n;
 
-    if (len > (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES) {
-      errno = EOVERFLOW;
-      free(buf);
-      return NULL;
-    }
-
-    if (n == 0) {
+    if (n < toRead) {
       if (ferror(stdin)) {
         if (errno == 0) {
           errno = EIO;
