@@ -2,6 +2,10 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 import { mallocOrThrow } from "./alloc.js";
 
+type Utf8CStringWriteModule = Pick<EmscriptenModule, "_malloc" | "HEAPU8">;
+type Utf8CStringArrayWriteModule = Pick<EmscriptenModule, "_malloc" | "_free" | "HEAPU8" | "HEAPU32">;
+type Utf8CStringArrayFreeModule = Pick<EmscriptenModule, "_free">;
+
 type Utf8CStringArray = {
   /** Pointer to a contiguous `char*[]` array (written via `HEAPU32`), or `0` for empty arrays. */
   ptr: number;
@@ -14,7 +18,7 @@ const UTF8_DECODER = new TextDecoder();
 // Re-use a shared encoder to avoid allocating one per call.
 const UTF8_ENCODER = new TextEncoder();
 
-export function writeUtf8CString(module: EmscriptenModule, value: string): number {
+export function writeUtf8CString(module: Utf8CStringWriteModule, value: string): number {
   const encoded = UTF8_ENCODER.encode(value);
   const ptr = mallocOrThrow(module, encoded.length + 1);
   module.HEAPU8.set(encoded, ptr);
@@ -28,7 +32,7 @@ export function writeUtf8CString(module: EmscriptenModule, value: string): numbe
  *
  * The caller owns the returned memory and must free it with {@link freeUtf8CStringArray}.
  */
-export function writeUtf8CStringArray(module: EmscriptenModule, values: string[]): Utf8CStringArray {
+export function writeUtf8CStringArray(module: Utf8CStringArrayWriteModule, values: string[]): Utf8CStringArray {
   if (values.length === 0) {
     return { ptr: 0, itemPtrs: [] };
   }
@@ -68,7 +72,7 @@ export function writeUtf8CStringArray(module: EmscriptenModule, values: string[]
   }
 }
 
-export function freeUtf8CStringArray(module: EmscriptenModule, arr: Utf8CStringArray): void {
+export function freeUtf8CStringArray(module: Utf8CStringArrayFreeModule, arr: Utf8CStringArray): void {
   for (const itemPtr of arr.itemPtrs) {
     if (itemPtr) {
       module._free(itemPtr);
