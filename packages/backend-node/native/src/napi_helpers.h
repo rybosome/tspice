@@ -195,6 +195,10 @@ struct JsStringArrayArg {
   std::vector<const char*> ptrs;
 };
 
+// Hard cap to defend against pathological sparse arrays with enormous `.length`
+// values that would otherwise trigger massive native allocations.
+inline constexpr uint32_t kMaxStringArrayLen = 1'000'000;
+
 inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArrayArg* out, const char* name) {
   const char* safeName = (name != nullptr) ? name : "<unnamed>";
 
@@ -212,14 +216,22 @@ inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArr
   Napi::Array arr = value.As<Napi::Array>();
   const uint32_t len = arr.Length();
 
+  if (len > kMaxStringArrayLen) {
+    Napi::RangeError::New(
+        env,
+        std::string(safeName) + " is too long (length " + std::to_string(len) +
+            "; max " + std::to_string(kMaxStringArrayLen) + ")")
+        .ThrowAsJavaScriptException();
+    return false;
+  }
+
   // Build into locals so callers never observe a partially-filled `out` on failure.
   //
-  // Pointer stability: we fill `values` to its final size first, then build `ptrs` in a second pass
-  // so each `c_str()` pointer is taken only after the vector is fully populated.
+  // Pointer stability: we collect all strings first, then build `ptrs` in a second pass so each
+  // `c_str()` pointer is taken only after the vector is fully populated.
   std::vector<std::string> values;
   std::vector<const char*> ptrs;
-  values.resize(len);
-  ptrs.resize(len);
+  values.reserve(len);
 
   for (uint32_t i = 0; i < len; i++) {
     const Napi::Value v = arr.Get(i);
@@ -229,11 +241,12 @@ inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArr
       return false;
     }
 
-    values[i] = v.As<Napi::String>().Utf8Value();
+    values.emplace_back(v.As<Napi::String>().Utf8Value());
   }
 
-  for (uint32_t i = 0; i < len; i++) {
-    ptrs[i] = values[i].c_str();
+  ptrs.reserve(values.size());
+  for (const std::string& s : values) {
+    ptrs.push_back(s.c_str());
   }
 
   out->values.swap(values);
