@@ -6,6 +6,7 @@
 
 #include <string>
 #include <type_traits>
+#include <vector>
 
 namespace tspice_napi {
 
@@ -141,6 +142,116 @@ inline Napi::Object MakeNotFound(Napi::Env env) {
   Napi::Object result = Napi::Object::New(env);
   result.Set("found", Napi::Boolean::New(env, false));
   return result;
+}
+
+inline bool IsAsciiWhitespace(unsigned char c) {
+  switch (c) {
+    case ' ':
+    case '\t':
+    case '\n':
+    case '\r':
+    case '\f':
+    case '\v':
+      return true;
+    default:
+      return false;
+  }
+}
+
+/**
+ * Converts a CSPICE-style fixed-width output buffer to a JS string.
+ *
+ * - Reads at most `width` bytes.
+ * - Stops at the first `\0` byte (embedded NUL terminates).
+ * - Trims trailing ASCII whitespace bytes only (not Unicode-aware).
+ *
+ * This matches how many CSPICE APIs return fixed-width, space-padded buffers.
+ */
+inline Napi::String FixedWidthToJsString(Napi::Env env, const char* buf, size_t width) {
+  if (buf == nullptr || width == 0) {
+    return Napi::String::New(env, "");
+  }
+
+  size_t len = 0;
+  for (; len < width; len++) {
+    if (buf[len] == '\0') {
+      break;
+    }
+  }
+
+  std::string out(buf, len);
+  while (!out.empty() && IsAsciiWhitespace(static_cast<unsigned char>(out.back()))) {
+    out.pop_back();
+  }
+
+  return Napi::String::New(env, out);
+}
+
+/**
+* Parsed JS `string[]` argument with stable `c_str()` pointers for the duration of the call.
+*/
+struct JsStringArrayArg {
+  std::vector<std::string> values;
+  std::vector<const char*> ptrs;
+};
+
+// Hard cap to defend against pathological sparse arrays with enormous `.length`
+// values that would otherwise trigger massive native allocations.
+inline constexpr uint32_t kMaxStringArrayLen = 1'000'000;
+
+inline bool ReadStringArray(Napi::Env env, const Napi::Value& value, JsStringArrayArg* out, const char* name) {
+  const char* safeName = (name != nullptr) ? name : "<unnamed>";
+
+  if (out == nullptr) {
+    ThrowSpiceError(
+        Napi::Error::New(env, std::string("Internal error: out is null while reading ") + safeName));
+    return false;
+  }
+
+  if (!value.IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(safeName) + " must be an array"));
+    return false;
+  }
+
+  Napi::Array arr = value.As<Napi::Array>();
+  const uint32_t len = arr.Length();
+
+  if (len > kMaxStringArrayLen) {
+    Napi::RangeError::New(
+        env,
+        std::string(safeName) + " is too long (length " + std::to_string(len) +
+            "; max " + std::to_string(kMaxStringArrayLen) + ")")
+        .ThrowAsJavaScriptException();
+    return false;
+  }
+
+  // Build into locals so callers never observe a partially-filled `out` on failure.
+  //
+  // Pointer stability: we collect all strings first, then build `ptrs` in a second pass so each
+  // `c_str()` pointer is taken only after the vector is fully populated.
+  std::vector<std::string> values;
+  std::vector<const char*> ptrs;
+  values.reserve(len);
+
+  for (uint32_t i = 0; i < len; i++) {
+    const Napi::Value v = arr.Get(i);
+    if (!v.IsString()) {
+      ThrowSpiceError(
+          Napi::TypeError::New(env, std::string(safeName) + " must contain only strings"));
+      return false;
+    }
+
+    values.emplace_back(v.As<Napi::String>().Utf8Value());
+  }
+
+  ptrs.reserve(values.size());
+  for (const std::string& s : values) {
+    ptrs.push_back(s.c_str());
+  }
+
+  out->values.swap(values);
+  out->ptrs.swap(ptrs);
+  return true;
 }
 
 } // namespace tspice_napi

@@ -1,5 +1,6 @@
 export type {
   AbCorr,
+  FixedString,
   Found,
   FoundDouble,
   FoundInt,
@@ -18,6 +19,7 @@ export type {
   SpiceVector3,
   SpkezrResult,
   SpkposResult,
+  StringArrayResult,
   SubPointResult,
   Vec3,
   Vec6,
