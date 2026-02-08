@@ -69,6 +69,22 @@ function kernelEntryPath(entry: KernelEntry): string {
   return typeof entry === "string" ? entry : entry.path;
 }
 
+function fixturePackCwdFromKernels(kernels: KernelEntry[] | undefined): string | undefined {
+  if (!kernels) return undefined;
+
+  // Fixture-pack meta-kernels use PATH_VALUES=("."), which CSPICE resolves relative
+  // to the process cwd when furnishing the meta-kernel.
+  const dirs = new Set<string>();
+  for (const k of kernels) {
+    if (typeof k !== "string" && k.restrictToDir && path.extname(k.path).toLowerCase() === ".tm") {
+      dirs.add(k.restrictToDir);
+    }
+  }
+
+  if (dirs.size !== 1) return undefined;
+  return [...dirs][0];
+}
+
 function normalizeInputForNativeRunner(input: RunCaseInput): RunCaseInput {
   const kernels = input.setup?.kernels;
   if (!kernels) return input;
@@ -115,6 +131,7 @@ export type InvokeRunnerOptions = {
   maxStdoutChars?: number;
   maxStderrChars?: number;
   args?: string[];
+  cwd?: string;
 };
 
 /** @internal (exported for bounded-time tests) */
@@ -138,6 +155,7 @@ export async function invokeRunner(
 
     const child = spawn(binaryPath, args, {
       stdio: ["pipe", "pipe", "pipe"],
+      cwd: opts.cwd,
     });
 
     let stdout = "";
@@ -408,7 +426,8 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
       }
 
       try {
-        const out = await invokeRunner(binaryPath, normalizeInputForNativeRunner(input));
+        const cwd = fixturePackCwdFromKernels(input.setup?.kernels);
+        const out = await invokeRunner(binaryPath, normalizeInputForNativeRunner(input), { cwd });
         if (out.ok) {
           return { ok: true, result: out.result };
         }

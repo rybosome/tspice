@@ -226,7 +226,21 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           if (backend.kind === "wasm") {
             await furnshOsKernelForWasm(backend, kernel.path, loadedKernels, kernel.restrictToDir);
           } else {
-            backend.furnsh(kernel.path);
+            const restrictToDir = kernel.restrictToDir;
+            if (restrictToDir && path.extname(kernel.path).toLowerCase() === ".tm") {
+              // CSPICE resolves relative PATH_VALUES entries (e.g. '.') against the current
+              // working directory when furnishing a meta-kernel. Our fixture packs use
+              // PATH_VALUES = ('.'), so temporarily chdir into the pack directory.
+              const prevCwd = process.cwd();
+              try {
+                process.chdir(restrictToDir);
+                backend.furnsh(kernel.path);
+              } finally {
+                process.chdir(prevCwd);
+              }
+            } else {
+              backend.furnsh(kernel.path);
+            }
           }
         }
 
