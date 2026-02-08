@@ -91,6 +91,11 @@ export function withCaching(
     const sweepIntervalMs = opts?.sweepIntervalMs;
     if (sweepIntervalMs !== undefined && sweepIntervalMs > 0) {
       sweepTimer = setInterval(() => cleanupExpired(Date.now()), sweepIntervalMs);
+
+      // In Node, interval timers keep the event loop alive by default. `unref()`
+      // prevents this from pinning test runners / CLIs. Browsers return a
+      // numeric id (no-op).
+      (sweepTimer as any)?.unref?.();
     }
   }
 
