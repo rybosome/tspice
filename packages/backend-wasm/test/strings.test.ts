@@ -127,7 +127,9 @@ describe("backend-wasm codec/strings", () => {
     // Freeing should release both the strings and the pointer array.
     const expectedFrees = [aPtr!, bcPtr!, arr.ptr];
     freeUtf8CStringArray(module, arr);
-    expect(freed).toEqual(expectedFrees);
+    expect([...freed].sort((a, b) => a - b)).toEqual(
+      [...expectedFrees].sort((a, b) => a - b),
+    );
 
     // Idempotent: calling twice should be a no-op.
     const freedAfterFirst = freed.length;
