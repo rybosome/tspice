@@ -121,7 +121,9 @@ export async function invokeRunner(
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");
 
-    const cleanup = () => {
+    type CleanupMode = "success" | "bailout";
+
+    const cleanup = (mode: CleanupMode) => {
       // Avoid keeping the event loop alive after we've already settled.
       try {
         child.stdout.removeAllListeners();
@@ -131,29 +133,34 @@ export async function invokeRunner(
         // ignore
       }
 
-      // Best-effort: close streams so the parent doesn't hang on pending I/O.
+      // Best-effort: close stdin so the parent doesn't hang on pending writes.
       try {
         child.stdin.destroy();
       } catch {
         // ignore
       }
-      try {
-        child.stdout.destroy();
-      } catch {
-        // ignore
-      }
-      try {
-        child.stderr.destroy();
-      } catch {
-        // ignore
+
+      // On bailout paths we may have SIGKILLed the child (or otherwise stopped
+      // caring about its output); force-close the readable streams.
+      if (mode === "bailout") {
+        try {
+          child.stdout.destroy();
+        } catch {
+          // ignore
+        }
+        try {
+          child.stderr.destroy();
+        } catch {
+          // ignore
+        }
       }
     };
 
-    const finish = (fn: () => void) => {
+    const finish = (mode: CleanupMode, fn: () => void) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
-      cleanup();
+      cleanup(mode);
       fn();
     };
 
@@ -164,7 +171,7 @@ export async function invokeRunner(
       } catch {
         // ignore
       }
-      finish(() =>
+      finish("bailout", () =>
         reject(
           new Error(
             [
@@ -207,7 +214,7 @@ export async function invokeRunner(
           // ignore
         }
 
-        finish(() =>
+        finish("bailout", () =>
           reject(
             new Error(
               [
@@ -227,11 +234,11 @@ export async function invokeRunner(
     });
 
     child.on("error", (err) => {
-      finish(() => reject(err));
+      finish("bailout", () => reject(err));
     });
 
     child.on("close", (code, signal) => {
-      finish(() => {
+      finish("success", () => {
         const out = stdout.trim();
 
         if (!out) {

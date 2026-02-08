@@ -443,8 +443,10 @@ static char *read_all_stdin(size_t *outLen) {
   errno = 0;
 
   const size_t maxBytes = (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES;
+  // Read 1 extra byte beyond the budget as a deterministic overflow sentinel.
+  const size_t maxRead = maxBytes + 1;
   // +1 for the trailing NUL terminator.
-  const size_t maxCap = maxBytes + 1;
+  const size_t maxCap = maxRead + 1;
 
   size_t cap = 4096;
   if (cap > maxCap) {
@@ -458,31 +460,7 @@ static char *read_all_stdin(size_t *outLen) {
   }
 
   size_t len = 0;
-  while (1) {
-    // If we've hit the byte budget, only accept EOF; otherwise the input is too
-    // large. (Use fread here to avoid mixing fgetc/fread buffering.)
-    if (len >= maxBytes) {
-      unsigned char extra;
-      size_t n = fread(&extra, 1, 1, stdin);
-      if (n == 0) {
-        if (ferror(stdin)) {
-          if (errno == 0) {
-            errno = EIO;
-          }
-          free(buf);
-          return NULL;
-        }
-        // EOF exactly at the limit.
-        break;
-      }
-
-      if (n == 1) {
-        (void)ungetc((int)extra, stdin);
-      }
-      errno = EOVERFLOW;
-      free(buf);
-      return NULL;
-    }
+  while (len < maxRead) {
 
     // Ensure there is always room for at least 1 more byte and the trailing NUL.
     if (len + 1 >= cap) {
@@ -512,7 +490,7 @@ static char *read_all_stdin(size_t *outLen) {
       cap = nextCap;
     }
 
-    const size_t remainingBudget = maxBytes - len;
+    const size_t remainingBudget = maxRead - len;
     const size_t remainingBuf = cap - len - 1;
     const size_t toRead =
         remainingBuf < remainingBudget ? remainingBuf : remainingBudget;
@@ -533,6 +511,12 @@ static char *read_all_stdin(size_t *outLen) {
   }
 
   buf[len] = '\0';
+
+  if (len > maxBytes) {
+    errno = EOVERFLOW;
+    free(buf);
+    return NULL;
+  }
   *outLen = len;
   return buf;
 }

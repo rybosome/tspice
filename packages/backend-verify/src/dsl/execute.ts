@@ -12,7 +12,7 @@ export type ExecuteScenarioResult = {
 };
 
 function mergeSetup(a: ScenarioSetupAst | undefined, b: ScenarioSetupAst | undefined): ScenarioSetupAst {
-  const kernels = [...(a?.kernels ?? []), ...(b?.kernels ?? [])];
+  const kernels = Array.from(new Set([...(a?.kernels ?? []), ...(b?.kernels ?? [])]));
   return kernels.length === 0 ? {} : { kernels };
 }
 
