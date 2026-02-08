@@ -1,4 +1,5 @@
 import * as path from "node:path";
+import * as fs from "node:fs";
 
 import type { ScenarioAst, ScenarioCaseAst, ScenarioSetupAst, ScenarioYamlFile } from "./types.js";
 
@@ -19,6 +20,79 @@ function asStringArray(value: unknown, label: string): string[] {
   return value.map((v, i) => assertString(v, `${label}[${i}]`));
 }
 
+function fileExists(p: string): boolean {
+  try {
+    fs.accessSync(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function findRepoRoot(startDir: string): string | undefined {
+  let dir = path.resolve(startDir);
+
+  while (true) {
+    if (fileExists(path.join(dir, "pnpm-workspace.yaml")) || fileExists(path.join(dir, ".git"))) {
+      return dir;
+    }
+
+    const parent = path.dirname(dir);
+    if (parent === dir) return undefined;
+    dir = parent;
+  }
+}
+
+function getFixturesRoot(sourceDir: string): string {
+  const env = process.env.TSPICE_FIXTURES_DIR;
+  if (env !== undefined && env.trim() !== "") {
+    const raw = env.trim();
+    return path.isAbsolute(raw) ? raw : path.resolve(process.cwd(), raw);
+  }
+
+  const repoRoot = findRepoRoot(sourceDir) ?? findRepoRoot(process.cwd());
+  if (repoRoot === undefined) {
+    throw new Error(
+      "Unable to locate monorepo root (looked for pnpm-workspace.yaml or .git). " +
+        "Set TSPICE_FIXTURES_DIR to an explicit fixtures directory.",
+    );
+  }
+
+  return path.resolve(repoRoot, "packages/tspice/test/fixtures/kernels");
+}
+
+function resolvePackDirAlias(p: string): string {
+  try {
+    if (!fs.statSync(p).isDirectory()) return p;
+  } catch {
+    // Doesn't exist yet; defer errors until later.
+    return p;
+  }
+
+  const metaKernel = path.join(p, `${path.basename(p)}.tm`);
+  if (!fileExists(metaKernel)) {
+    throw new Error(
+      `Kernel pack directory alias '${p}' requires meta-kernel '${metaKernel}', but it does not exist`,
+    );
+  }
+  return metaKernel;
+}
+
+function resolveKernelPath(p: string, sourceDir: string): string {
+  // Absolute paths are passed through directly.
+  if (path.isAbsolute(p)) return resolvePackDirAlias(p);
+
+  // Expand `$FIXTURES/...` to the fixtures root.
+  if (p === "$FIXTURES" || p.startsWith("$FIXTURES/") || p.startsWith("$FIXTURES\\")) {
+    const suffix = p.slice("$FIXTURES".length).replace(/^[/\\]/, "");
+    const fixturesRoot = getFixturesRoot(sourceDir);
+    return resolvePackDirAlias(path.resolve(fixturesRoot, suffix));
+  }
+
+  // Otherwise resolve relative to the scenario file.
+  return resolvePackDirAlias(path.resolve(sourceDir, p));
+}
+
 function parseSetup(raw: unknown, sourceDir: string): ScenarioSetupAst {
   if (raw === undefined) return {};
   if (!isRecord(raw)) {
@@ -26,11 +100,7 @@ function parseSetup(raw: unknown, sourceDir: string): ScenarioSetupAst {
   }
 
   const kernelsRaw = raw.kernels;
-  const kernels = asStringArray(kernelsRaw, "setup.kernels").map((p) => {
-    // Resolve relative paths against the scenario file.
-    if (path.isAbsolute(p)) return p;
-    return path.resolve(sourceDir, p);
-  });
+  const kernels = asStringArray(kernelsRaw, "setup.kernels").map((p) => resolveKernelPath(p, sourceDir));
 
   return kernels.length === 0 ? {} : { kernels };
 }
