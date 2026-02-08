@@ -85,15 +85,38 @@ type CRunnerError = {
 
 type CRunnerResponse = CRunnerOk | CRunnerError;
 
-async function invokeRunner(binaryPath: string, input: RunCaseInput): Promise<CRunnerResponse> {
-  const timeoutMs = 15_000;
-  const maxStdoutChars = 1_000_000;
-  const maxStderrChars = 1_000_000;
+export type InvokeRunnerOptions = {
+  /**
+   * Hard timeout for the child process (ms).
+   *
+   * Note: tests override this to keep runtimes bounded.
+   */
+  timeoutMs?: number;
+  maxStdoutChars?: number;
+  maxStderrChars?: number;
+  args?: string[];
+};
+
+/** @internal (exported for bounded-time tests) */
+export async function invokeRunner(
+  binaryPath: string,
+  input: RunCaseInput,
+  opts: InvokeRunnerOptions = {},
+): Promise<CRunnerResponse> {
+  const timeoutMs = opts.timeoutMs ?? 15_000;
+  const maxStdoutChars = opts.maxStdoutChars ?? 1_000_000;
+  const maxStderrChars = opts.maxStderrChars ?? 1_000_000;
+  const args = opts.args ?? [];
+
+  const preview = (s: string, maxChars: number): string => {
+    if (s.length <= maxChars) return s;
+    return `${s.slice(0, maxChars)}… (+${s.length - maxChars} chars)`;
+  };
 
   return await new Promise((resolve, reject) => {
     let settled = false;
 
-    const child = spawn(binaryPath, [], {
+    const child = spawn(binaryPath, args, {
       stdio: ["pipe", "pipe", "pipe"],
     });
 
@@ -105,21 +128,62 @@ async function invokeRunner(binaryPath: string, input: RunCaseInput): Promise<CR
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");
 
+    const cleanup = () => {
+      // Avoid keeping the event loop alive after we've already settled.
+      try {
+        child.stdout.removeAllListeners();
+        child.stderr.removeAllListeners();
+        child.removeAllListeners();
+      } catch {
+        // ignore
+      }
+
+      // Best-effort: close streams so the parent doesn't hang on pending I/O.
+      try {
+        child.stdin.destroy();
+      } catch {
+        // ignore
+      }
+      try {
+        child.stdout.destroy();
+      } catch {
+        // ignore
+      }
+      try {
+        child.stderr.destroy();
+      } catch {
+        // ignore
+      }
+    };
+
     const finish = (fn: () => void) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
+      cleanup();
       fn();
     };
 
     const timer = setTimeout(() => {
-      // Best-effort: kill the child; `close` should follow.
+      // Best-effort: kill the child.
       try {
         child.kill("SIGKILL");
       } catch {
         // ignore
       }
+      finish(() =>
+        reject(
+          new Error(
+            [
+              `cspice-runner timed out after ${timeoutMs}ms`,
+              `stdout=${JSON.stringify(preview(stdout, 4_000))}${stdoutTruncated ? " (truncated)" : ""}`,
+              `stderr=${JSON.stringify(preview(stderr, 4_000))}${stderrTruncated ? " (truncated)" : ""}`,
+            ].join(" "),
+          ),
+        ),
+      );
     }, timeoutMs);
+    timer.unref?.();
 
     const appendCapped = (
       prev: string,
@@ -139,15 +203,28 @@ async function invokeRunner(binaryPath: string, input: RunCaseInput): Promise<CR
     child.stdout.on("data", (chunk) => {
       const r = appendCapped(stdout, chunk, maxStdoutChars);
       stdout = r.next;
+      const justTruncated = !stdoutTruncated && r.truncated;
       stdoutTruncated ||= r.truncated;
 
       // If stdout truncates, the JSON will no longer parse; bail early.
-      if (stdoutTruncated) {
+      if (justTruncated) {
         try {
           child.kill("SIGKILL");
         } catch {
           // ignore
         }
+
+        finish(() =>
+          reject(
+            new Error(
+              [
+                `cspice-runner output exceeded limit (stdout capped at ${maxStdoutChars} chars)`,
+                `stdout=${JSON.stringify(preview(stdout, 4_000))} (truncated)`,
+                `stderr=${JSON.stringify(preview(stderr, 4_000))}${stderrTruncated ? " (truncated)" : ""}`,
+              ].join(" "),
+            ),
+          ),
+        );
       }
     });
     child.stderr.on("data", (chunk) => {
@@ -162,15 +239,6 @@ async function invokeRunner(binaryPath: string, input: RunCaseInput): Promise<CR
 
     child.on("close", (code, signal) => {
       finish(() => {
-        if (stdoutTruncated) {
-          reject(
-            new Error(
-              `cspice-runner output exceeded limit (stdout capped at ${maxStdoutChars} chars). code=${code} signal=${signal} stderr=${stderrTruncated ? "(truncated)" : JSON.stringify(stderr.trim())}`,
-            ),
-          );
-          return;
-        }
-
         const out = stdout.trim();
 
         if (!out) {
@@ -188,14 +256,22 @@ async function invokeRunner(binaryPath: string, input: RunCaseInput): Promise<CR
         } catch {
           reject(
             new Error(
-              `Failed to parse cspice-runner JSON output. stdout=${JSON.stringify(out)} stderr=${JSON.stringify(stderr.trim())}`,
+              [
+                `Failed to parse cspice-runner JSON output (code=${code}, signal=${signal}).`,
+                `stdout=${JSON.stringify(preview(out, 4_000))}${stdoutTruncated ? " (truncated)" : ""}`,
+                `stderr=${JSON.stringify(preview(stderr.trim(), 4_000))}${stderrTruncated ? " (truncated)" : ""}`,
+              ].join(" "),
             ),
           );
         }
       });
     });
 
-    child.stdin.end(`${JSON.stringify(input)}\n`);
+    try {
+      child.stdin.end(`${JSON.stringify(input)}\n`);
+    } catch {
+      // ignore
+    }
   });
 }
 

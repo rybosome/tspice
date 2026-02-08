@@ -37,15 +37,12 @@ function compareNumbers(
 }
 
 function compareInner(
-  actualRaw: unknown,
-  expectedRaw: unknown,
+  actual: unknown,
+  expected: unknown,
   path: string,
   opts: CompareOptions,
   mismatches: Mismatch[],
 ): void {
-  const actual = normalizeForCompare(actualRaw);
-  const expected = normalizeForCompare(expectedRaw);
-
   if (typeof actual === "number" && typeof expected === "number") {
     const m = compareNumbers(actual, expected, path, opts);
     if (m) mismatches.push(m);
@@ -144,6 +141,8 @@ function compareInner(
 
 export function compareValues(actual: unknown, expected: unknown, opts: CompareOptions = {}): CompareResult {
   const mismatches: Mismatch[] = [];
-  compareInner(actual, expected, "$", opts, mismatches);
+  const actualNorm = normalizeForCompare(actual);
+  const expectedNorm = normalizeForCompare(expected);
+  compareInner(actualNorm, expectedNorm, "$", opts, mismatches);
   return mismatches.length === 0 ? { ok: true } : { ok: false, mismatches };
 }
