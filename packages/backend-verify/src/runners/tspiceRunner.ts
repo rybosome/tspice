@@ -4,6 +4,11 @@ import { readFile, realpath } from "node:fs/promises";
 
 import { createBackend, type SpiceBackend } from "@rybosome/tspice";
 
+import {
+  resolveMetaKernelKernelsToLoad,
+  sanitizeMetaKernelTextForWasm,
+} from "../kernels/metaKernel.js";
+
 import type { CaseRunner, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
 
 type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown;
@@ -153,45 +158,13 @@ async function kernelVirtualIdFromOsPath(osPath: string): Promise<string> {
   return `ospath/${hash}/${base}`;
 }
 
-function extractMetaKernelStringList(text: string, name: string): string[] {
-  const re = new RegExp(String.raw`\b${name}\b\s*=\s*\(([\s\S]*?)\)`, "i");
-  const match = text.match(re);
-  if (!match) return [];
-
-  const body = match[1] ?? "";
-  const items: string[] = [];
-  for (const m of body.matchAll(/'([^']+)'|"([^"]+)"/g)) {
-    const v = m[1] ?? m[2];
-    if (v !== undefined) items.push(v);
+function restrictDirForPackMetaKernel(metaKernelPath: string): string | undefined {
+  const dir = path.dirname(metaKernelPath);
+  const base = path.basename(dir);
+  if (path.basename(metaKernelPath) === `${base}.tm`) {
+    return dir;
   }
-  return items;
-}
-
-function resolveMetaKernelKernelsToLoad(metaKernelText: string, metaKernelPath: string): string[] {
-  const metaKernelDir = path.dirname(metaKernelPath);
-
-  const symbols = extractMetaKernelStringList(metaKernelText, "PATH_SYMBOLS");
-  const valuesRaw = extractMetaKernelStringList(metaKernelText, "PATH_VALUES");
-  const values = valuesRaw.map((v) => (path.isAbsolute(v) ? v : path.resolve(metaKernelDir, v)));
-
-  const symbolMap = new Map<string, string>();
-  for (let i = 0; i < Math.min(symbols.length, values.length); i++) {
-    symbolMap.set(symbols[i]!, values[i]!);
-  }
-
-  const kernels = extractMetaKernelStringList(metaKernelText, "KERNELS_TO_LOAD");
-  return kernels.map((k) => {
-    const m = k.match(/^\$([A-Za-z0-9_]+)([/\\].*)?$/);
-    if (m) {
-      const base = symbolMap.get(m[1]!);
-      if (base !== undefined) {
-        const suffix = (m[2] ?? "").replace(/^[/\\]/, "");
-        return path.resolve(base, suffix);
-      }
-    }
-
-    return path.isAbsolute(k) ? k : path.resolve(metaKernelDir, k);
-  });
+  return undefined;
 }
 
 async function furnshOsKernelForWasm(
@@ -207,7 +180,19 @@ async function furnshOsKernelForWasm(
     // The WASM backend can't directly load nested kernels referenced by a meta-kernel
     // from the host filesystem, so we expand `KERNELS_TO_LOAD` ourselves.
     const metaKernelText = await readFile(absPath, "utf8");
-    const kernelsToLoad = resolveMetaKernelKernelsToLoad(metaKernelText, absPath);
+
+    const restrictToDir = restrictDirForPackMetaKernel(absPath);
+    const kernelsToLoad = resolveMetaKernelKernelsToLoad(
+      metaKernelText,
+      absPath,
+      restrictToDir ? { restrictToDir } : {},
+    );
+
+    // Load a sanitized copy of the meta-kernel itself so any pool assignments apply,
+    // but without allowing it to try to load OS-path kernels in WASM.
+    const sanitized = sanitizeMetaKernelTextForWasm(metaKernelText);
+    backend.furnsh({ path: kernelVirtualIdFromOsPath(absPath), bytes: Buffer.from(sanitized, "utf8") });
+
     for (const k of kernelsToLoad) {
       await furnshOsKernelForWasm(backend, k, loaded);
     }
