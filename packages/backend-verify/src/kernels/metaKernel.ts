@@ -99,9 +99,25 @@ export function resolveMetaKernelKernelsToLoad(
  * For WASM: we may want to furnish the meta-kernel text itself (so any pool
  * assignments apply), but we *must not* let CSPICE try to load OS-path kernels.
  *
- * We achieve this by emptying `KERNELS_TO_LOAD` assignments.
+ * We achieve this by removing `KERNELS_TO_LOAD` assignments.
  */
 export function sanitizeMetaKernelTextForWasm(metaKernelText: string): string {
-  // Replace both `KERNELS_TO_LOAD = ( ... )` and `KERNELS_TO_LOAD += ( ... )`.
-  return metaKernelText.replace(/\bKERNELS_TO_LOAD\b\s*\+?=\s*\(([\s\S]*?)\)/gi, "KERNELS_TO_LOAD = ( )");
+  const clean = stripMetaKernelBegintextBlocks(metaKernelText);
+
+  // Remove both `KERNELS_TO_LOAD = ( ... )` and `KERNELS_TO_LOAD += ( ... )`.
+  // Note: `KERNELS_TO_LOAD = ( )` is not valid CSPICE syntax (BADVARASSIGN).
+  const re = /^\s*KERNELS_TO_LOAD\s*\+?=\s*\([\s\S]*?\)\s*/gim;
+
+  // Ideally, only operate in the data section to avoid touching header text.
+  // If \\begindata is absent, fall back to sanitizing the whole file.
+  const m = clean.match(/\\begindata/i);
+  if (!m || m.index === undefined) {
+    return clean.replace(re, "");
+  }
+
+  const start = m.index + m[0].length;
+  const head = clean.slice(0, start);
+  const tail = clean.slice(start);
+
+  return head + tail.replace(re, "");
 }
