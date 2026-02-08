@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
+import type { SpiceHandle } from "@rybosome/tspice-backend-contract";
 
 describe("@rybosome/tspice-backend-wasm file-io", () => {
   it("can create and close a DLA file in the emscripten FS", async () => {
@@ -26,14 +27,14 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
   it("throws on invalid handle usage", async () => {
     const backend = await createWasmBackend();
 
-    expect(() => backend.dafcls(123 as any)).toThrow(/invalid|closed/i);
+    expect(() => backend.dafcls(123 as unknown as SpiceHandle)).toThrow(/invalid|closed/i);
 
     const path = "file-io/kind-mismatch.dla";
     const dlaHandle = backend.dlaopn(path, "DLA", "TSPICE", 0);
     backend.dlacls(dlaHandle);
 
     const dasHandle = backend.dasopr(path);
-    expect(() => backend.dafbfs(dasHandle as any)).toThrow(/DAF/i);
+    expect(() => backend.dafbfs(dasHandle as unknown as SpiceHandle)).toThrow(/DAF/i);
     backend.dascls(dasHandle);
   });
 });

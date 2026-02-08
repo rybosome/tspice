@@ -5,6 +5,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { createNodeBackend } from "@rybosome/tspice-backend-node";
+import type { SpiceHandle } from "@rybosome/tspice-backend-contract";
 import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
 import { loadTestKernels } from "./test-kernels.js";
 
@@ -51,7 +52,7 @@ describe("@rybosome/tspice-backend-node file-io", () => {
   itNative("throws on invalid handle usage", () => {
     const backend = createNodeBackend();
 
-    expect(() => backend.dafcls(123 as any)).toThrow(/invalid|closed/i);
+    expect(() => backend.dafcls(123 as unknown as SpiceHandle)).toThrow(/invalid|closed/i);
 
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
 
@@ -62,7 +63,7 @@ describe("@rybosome/tspice-backend-node file-io", () => {
       backend.dlacls(dlaHandle);
 
       const dasHandle = backend.dasopr(dlaPath);
-      expect(() => backend.dafbfs(dasHandle as any)).toThrow(/DAF/i);
+      expect(() => backend.dafbfs(dasHandle as unknown as SpiceHandle)).toThrow(/DAF/i);
       backend.dascls(dasHandle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });

@@ -138,7 +138,7 @@ int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes) 
 
 int tspice_dafcls(int handle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+  if (err && errMaxBytes > 0) err[0] = '\0';
 
   dafcls_c((SpiceInt)handle);
   if (failed_c()) {
@@ -150,7 +150,7 @@ int tspice_dafcls(int handle, char *err, int errMaxBytes) {
 
 int tspice_dafbfs(int handle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+  if (err && errMaxBytes > 0) err[0] = '\0';
 
   dafbfs_c((SpiceInt)handle);
   if (failed_c()) {
@@ -162,7 +162,7 @@ int tspice_dafbfs(int handle, char *err, int errMaxBytes) {
 
 int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+  if (err && errMaxBytes > 0) err[0] = '\0';
   if (outFound) *outFound = 0;
 
   // DAF search state is global; select the handle so callers can interleave.
@@ -185,7 +185,7 @@ int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes) {
 
 int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+  if (err && errMaxBytes > 0) err[0] = '\0';
   if (outHandle) *outHandle = 0;
 
   SpiceInt handleC = 0;
@@ -201,7 +201,7 @@ int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes) 
 
 int tspice_dascls(int handle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+  if (err && errMaxBytes > 0) err[0] = '\0';
 
   dascls_c((SpiceInt)handle);
   if (failed_c()) {
@@ -226,7 +226,7 @@ int tspice_dlaopn(
     char *err,
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+  if (err && errMaxBytes > 0) err[0] = '\0';
   if (outHandle) *outHandle = 0;
 
   SpiceInt handleC = 0;
@@ -242,7 +242,7 @@ int tspice_dlaopn(
 
 int tspice_dlabfs(int handle, int *outDescr8, int *outFound, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+  if (err && errMaxBytes > 0) err[0] = '\0';
   if (outFound) *outFound = 0;
   if (outDescr8) memset(outDescr8, 0, sizeof(int) * 8);
 
@@ -270,12 +270,25 @@ int tspice_dlafns(
     char *err,
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
-  if (errMaxBytes > 0) err[0] = '\0';
+  if (err && errMaxBytes > 0) err[0] = '\0';
   if (outFound) *outFound = 0;
   if (outNextDescr8) memset(outNextDescr8, 0, sizeof(int) * 8);
 
-  SpiceDLADescr current;
-  SpiceDLADescr next;
+  if (!descr8) {
+    tspice_write_error(err, errMaxBytes, "tspice_dlafns: descr8 must be non-NULL");
+    return 1;
+  }
+  if (!outNextDescr8) {
+    tspice_write_error(err, errMaxBytes, "tspice_dlafns: outNextDescr8 must be non-NULL");
+    return 1;
+  }
+  if (!outFound) {
+    tspice_write_error(err, errMaxBytes, "tspice_dlafns: outFound must be non-NULL");
+    return 1;
+  }
+
+  SpiceDLADescr current = {0};
+  SpiceDLADescr next = {0};
   tspice_read_dla_descr8(descr8, &current);
 
   SpiceBoolean foundC = SPICEFALSE;
@@ -285,8 +298,8 @@ int tspice_dlafns(
     return 1;
   }
 
-  if (outFound) *outFound = foundC == SPICETRUE ? 1 : 0;
-  if (outNextDescr8 && foundC == SPICETRUE) {
+  *outFound = foundC == SPICETRUE ? 1 : 0;
+  if (foundC == SPICETRUE) {
     tspice_write_dla_descr8(&next, outNextDescr8);
   }
 
