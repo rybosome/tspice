@@ -14,7 +14,7 @@
   },
   "files": [
     "dist",
-    "native/build/Release/*.node",
+    "native/build/Release/tspice_backend_node.node",
     "NOTICE"
   ],
   "scripts": {

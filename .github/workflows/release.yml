@@ -89,6 +89,8 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Verify native build + tests
+        env:
+          TSPICE_EXPECT_NATIVE: "true"
         run: pnpm run check:native
 
       - name: Pre-publish smoke test (@rybosome/tspice + native optionalDependency)
