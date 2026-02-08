@@ -386,69 +386,186 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  // Cells + windows
+  _tspice_new_int_cell(size: number, outCellPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_new_double_cell(size: number, outCellPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_new_char_cell(
+    size: number,
+    length: number,
+    outCellPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_new_window(
+    maxIntervals: number,
+    outWindowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_free_cell(cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_free_window(window: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ssize(size: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_scard(card: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_card(cell: number, outCardPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_size(cell: number, outSizePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_valid(size: number, n: number, cell: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_insrti(item: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_insrtd(item: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_insrtc(itemPtr: number, cell: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_cell_geti(
+    cell: number,
+    index: number,
+    outItemPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cell_getd(
+    cell: number,
+    index: number,
+    outItemPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cell_getc(
+    cell: number,
+    index: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_wninsd(left: number, right: number, window: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_wncard(window: number, outCardPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_wnfetd(
+    window: number,
+    index: number,
+    outLeftPtr: number,
+    outRightPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnvald(size: number, n: number, window: number, errPtr: number, errMaxBytes: number): number;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   FS: any;
 };
 
-export function assertEmscriptenModule(module: unknown): asserts module is EmscriptenModule {
-  const m = module as Partial<EmscriptenModule> | null | undefined;
-  if (
-    !m ||
-    typeof m._tspice_tkvrsn_toolkit !== "function" ||
-    typeof m._malloc !== "function" ||
-    typeof m._free !== "function" ||
-    typeof m.UTF8ToString !== "function" ||
-    typeof m._tspice_furnsh !== "function" ||
-    typeof m._tspice_unload !== "function" ||
-    typeof m._tspice_kclear !== "function" ||
-    typeof m._tspice_ktotal !== "function" ||
-    typeof m._tspice_kdata !== "function" ||
-    typeof m._tspice_str2et !== "function" ||
-    typeof m._tspice_et2utc !== "function" ||
-    typeof m._tspice_timout !== "function" ||
-    typeof m._tspice_bodn2c !== "function" ||
-    typeof m._tspice_bodc2n !== "function" ||
-    typeof m._tspice_namfrm !== "function" ||
-    typeof m._tspice_frmnam !== "function" ||
-    typeof m._tspice_scs2e !== "function" ||
-    typeof m._tspice_sce2s !== "function" ||
-    typeof m._tspice_get_last_error_short !== "function" ||
-    typeof m._tspice_get_last_error_long !== "function" ||
-    typeof m._tspice_get_last_error_trace !== "function" ||
-    typeof m._tspice_failed !== "function" ||
-    typeof m._tspice_reset !== "function" ||
-    typeof m._tspice_getmsg !== "function" ||
-    typeof m._tspice_setmsg !== "function" ||
-    typeof m._tspice_sigerr !== "function" ||
-    typeof m._tspice_chkin !== "function" ||
-    typeof m._tspice_chkout !== "function" ||
-    typeof m._tspice_ckgp !== "function" ||
-    typeof m._tspice_ckgpav !== "function" ||
-    typeof m._tspice_pxform !== "function" ||
-    typeof m._tspice_sxform !== "function" ||
-    typeof m._tspice_spkezr !== "function" ||
-    typeof m._tspice_spkpos !== "function" ||
-    typeof m._tspice_reclat !== "function" ||
-    typeof m._tspice_latrec !== "function" ||
-    typeof m._tspice_recsph !== "function" ||
-    typeof m._tspice_sphrec !== "function" ||
-    typeof m._tspice_vnorm !== "function" ||
-    typeof m._tspice_vhat !== "function" ||
-    typeof m._tspice_vdot !== "function" ||
-    typeof m._tspice_vcrss !== "function" ||
-    typeof m._tspice_mxv !== "function" ||
-    typeof m._tspice_mtxv !== "function"
-    || typeof m._tspice_mxm !== "function"
-    || typeof m._tspice_vadd !== "function"
-    || typeof m._tspice_vsub !== "function"
-    || typeof m._tspice_vminus !== "function"
-    || typeof m._tspice_vscl !== "function"
-    || typeof m._tspice_rotate !== "function"
-    || typeof m._tspice_rotmat !== "function"
-    || typeof m._tspice_axisar !== "function"
-    || typeof m._tspice_georec !== "function"
-    || typeof m._tspice_recgeo !== "function"
-  ) {
-    throw new Error("WASM module is missing expected exports");
+const REQUIRED_FUNCTION_EXPORTS = [
+  "_malloc",
+  "_free",
+  "UTF8ToString",
+  "_tspice_get_last_error_short",
+  "_tspice_get_last_error_long",
+  "_tspice_get_last_error_trace",
+  "_tspice_failed",
+  "_tspice_reset",
+  "_tspice_getmsg",
+  "_tspice_setmsg",
+  "_tspice_sigerr",
+  "_tspice_chkin",
+  "_tspice_chkout",
+  "_tspice_tkvrsn_toolkit",
+  "_tspice_furnsh",
+  "_tspice_unload",
+  "_tspice_kclear",
+  "_tspice_ktotal",
+  "_tspice_kdata",
+  "_tspice_str2et",
+  "_tspice_et2utc",
+  "_tspice_timout",
+  "_tspice_bodn2c",
+  "_tspice_bodc2n",
+  "_tspice_namfrm",
+  "_tspice_frmnam",
+  "_tspice_cidfrm",
+  "_tspice_cnmfrm",
+  "_tspice_scs2e",
+  "_tspice_sce2s",
+  "_tspice_ckgp",
+  "_tspice_ckgpav",
+  "_tspice_pxform",
+  "_tspice_sxform",
+  "_tspice_spkezr",
+  "_tspice_spkpos",
+  "_tspice_subpnt",
+  "_tspice_subslr",
+  "_tspice_sincpt",
+  "_tspice_ilumin",
+  "_tspice_occult",
+  "_tspice_reclat",
+  "_tspice_latrec",
+  "_tspice_recsph",
+  "_tspice_sphrec",
+  "_tspice_vnorm",
+  "_tspice_vhat",
+  "_tspice_vdot",
+  "_tspice_vcrss",
+  "_tspice_mxv",
+  "_tspice_mtxv",
+  "_tspice_mxm",
+  "_tspice_vadd",
+  "_tspice_vsub",
+  "_tspice_vminus",
+  "_tspice_vscl",
+  "_tspice_rotate",
+  "_tspice_rotmat",
+  "_tspice_axisar",
+  "_tspice_georec",
+  "_tspice_recgeo",
+  "_tspice_new_int_cell",
+  "_tspice_new_double_cell",
+  "_tspice_new_char_cell",
+  "_tspice_new_window",
+  "_tspice_free_cell",
+  "_tspice_free_window",
+  "_tspice_ssize",
+  "_tspice_scard",
+  "_tspice_card",
+  "_tspice_size",
+  "_tspice_valid",
+  "_tspice_insrti",
+  "_tspice_insrtd",
+  "_tspice_insrtc",
+  "_tspice_cell_geti",
+  "_tspice_cell_getd",
+  "_tspice_cell_getc",
+  "_tspice_wninsd",
+  "_tspice_wncard",
+  "_tspice_wnfetd",
+  "_tspice_wnvald",
+] as const;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+export function assertEmscriptenModule(m: unknown): asserts m is EmscriptenModule {
+  if (!isRecord(m)) {
+    throw new TypeError("Expected Emscripten module to be an object");
+  }
+
+  const invalid: string[] = [];
+
+  for (const key of REQUIRED_FUNCTION_EXPORTS) {
+    if (typeof m[key] !== "function") {
+      invalid.push(key);
+    }
+  }
+
+  if (!(m.HEAPU8 instanceof Uint8Array)) invalid.push("HEAPU8");
+  if (!(m.HEAP32 instanceof Int32Array)) invalid.push("HEAP32");
+  if (!(m.HEAPF64 instanceof Float64Array)) invalid.push("HEAPF64");
+  if (typeof m.FS !== "object" || m.FS === null) invalid.push("FS");
+
+  if (invalid.length > 0) {
+    throw new TypeError(
+      `Invalid tspice WASM module (missing/invalid exports): ${invalid.join(", ")}. ` +
+        `You can disable this validation via CreateWasmBackendOptions.validateEmscriptenModule=false ` +
+        `(Node also supports TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT=1).`,
+    );
   }
 }
