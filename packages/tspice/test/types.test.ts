@@ -1,4 +1,4 @@
-import { createBackend, createSpice } from "@rybosome/tspice";
+import { createBackend, createSpice, createSpiceAsync } from "@rybosome/tspice";
 import { describe, expect, it } from "vitest";
 
 type Assert<T extends true> = T;
@@ -7,6 +7,7 @@ type HasKey<T, K extends PropertyKey> = K extends keyof T ? true : false;
 
 type Backend = Awaited<ReturnType<typeof createBackend>>;
 type Spice = Awaited<ReturnType<typeof createSpice>>;
+type SpiceAsync = Awaited<ReturnType<typeof createSpiceAsync>>;
 
 // --- createBackend() contract ---
 
@@ -70,6 +71,32 @@ type _KitHasLoadKernel = Assert<HasKey<Kit, "loadKernel">>;
 type _KitHasUnloadKernel = Assert<HasKey<Kit, "unloadKernel">>;
 type _KitHasUtcToEt = Assert<HasKey<Kit, "utcToEt">>;
 type _KitHasGetState = Assert<HasKey<Kit, "getState">>;
+
+// --- createSpiceAsync() contract ---
+
+type KeysEqual<A extends object, B extends object> = [keyof A] extends [keyof B]
+  ? [keyof B] extends [keyof A]
+    ? true
+    : false
+  : false;
+
+type _SpiceAsyncHasRaw = Assert<HasKey<SpiceAsync, "raw">>;
+type _SpiceAsyncHasKit = Assert<HasKey<SpiceAsync, "kit">>;
+type _SpiceAsyncHasNoFurnsh = AssertFalse<HasKey<SpiceAsync, "furnsh">>;
+
+type _AsyncRawKeysMatch = Assert<KeysEqual<SpiceAsync["raw"], Spice["raw"]>>;
+type _AsyncKitKeysMatch = Assert<KeysEqual<SpiceAsync["kit"], Spice["kit"]>>;
+
+// Spot-check a few async return types.
+type _AsyncToolkitVersionReturnsPromise = Assert<
+  ReturnType<SpiceAsync["kit"]["toolkitVersion"]> extends Promise<string> ? true : false
+>;
+type _AsyncKtotalReturnsPromise = Assert<
+  ReturnType<SpiceAsync["raw"]["ktotal"]> extends Promise<number> ? true : false
+>;
+type _AsyncRawKindIsNotPromise = AssertFalse<
+  SpiceAsync["raw"]["kind"] extends Promise<unknown> ? true : false
+>;
 
 describe("TypeScript type assertions", () => {
   it("compiles", () => {
