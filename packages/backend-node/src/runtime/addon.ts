@@ -143,6 +143,34 @@ export type NativeAddon = {
   georec(lon: number, lat: number, alt: number, re: number, f: number): number[];
   recgeo(rect: readonly number[], re: number, f: number): { lon: number; lat: number; alt: number };
 
+  // Cells + windows
+  newIntCell(size: number): number;
+  newDoubleCell(size: number): number;
+  newCharCell(size: number, length: number): number;
+  newWindow(maxIntervals: number): number;
+
+  freeCell(cell: number): void;
+  freeWindow(window: number): void;
+
+  ssize(size: number, cell: number): void;
+  scard(card: number, cell: number): void;
+  card(cell: number): number;
+  size(cell: number): number;
+  valid(size: number, n: number, cell: number): void;
+
+  insrti(item: number, cell: number): void;
+  insrtd(item: number, cell: number): void;
+  insrtc(item: string, cell: number): void;
+
+  cellGeti(cell: number, index: number): number;
+  cellGetd(cell: number, index: number): number;
+  cellGetc(cell: number, index: number): string;
+
+  wninsd(left: number, right: number, window: number): void;
+  wncard(window: number): number;
+  wnfetd(window: number, index: number): number[];
+  wnvald(size: number, n: number, window: number): void;
+
   /** Internal test helper (not part of the backend contract). */
   __ktotalAll(): number;
 };
