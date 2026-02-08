@@ -1,15 +1,6 @@
 import type { CompareOptions, CompareResult, Mismatch } from "./types.js";
 import { normalizeForCompare } from "./normalize.js";
-
-function safeStringify(value: unknown): string {
-  if (typeof value === "bigint") return `${value.toString()}n`;
-  try {
-    const s = JSON.stringify(value, (_k, v) => (typeof v === "bigint" ? `${v.toString()}n` : v));
-    return s ?? String(value);
-  } catch {
-    return String(value);
-  }
-}
+import { safeStringify } from "./safeStringify.js";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);

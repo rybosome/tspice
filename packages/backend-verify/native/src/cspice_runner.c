@@ -476,6 +476,9 @@ static char *read_all_stdin(size_t *outLen) {
         break;
       }
 
+      if (n == 1) {
+        (void)ungetc((int)extra, stdin);
+      }
       errno = EOVERFLOW;
       free(buf);
       return NULL;
