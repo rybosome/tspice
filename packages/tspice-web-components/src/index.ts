@@ -20,4 +20,10 @@ export type {
 } from "./worker/createWorkerTransport.js";
 export { createWorkerTransport } from "./worker/createWorkerTransport.js";
 
+export { exposeTransportToWorker } from "./worker/exposeTransportToWorker.js";
+
+export { createSpiceWorker } from "./worker/createSpiceWorker.js";
+export type { SpiceWorkerClient } from "./worker/createSpiceWorkerClient.js";
+export { createSpiceWorkerClient } from "./worker/createSpiceWorkerClient.js";
+
 export { createSpiceAsyncFromTransport } from "./client/createSpiceAsyncFromTransport.js";

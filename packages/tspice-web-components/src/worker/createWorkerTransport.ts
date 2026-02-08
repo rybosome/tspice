@@ -1,38 +1,19 @@
 import type { SpiceTransport } from "../types.js";
 
+import type { RpcDispose, RpcRequest, RpcResponse } from "./rpcProtocol.js";
+import {
+  deserializeError,
+  tspiceRpcDisposeType,
+  tspiceRpcRequestType,
+  tspiceRpcResponseType,
+} from "./rpcProtocol.js";
+
 export type WorkerLike = {
   postMessage(message: unknown): void;
   addEventListener(type: string, listener: (ev: unknown) => void): void;
   removeEventListener(type: string, listener: (ev: unknown) => void): void;
   terminate(): void;
 };
-
-type RpcRequest = {
-  type: "tspice:request";
-  id: number;
-  op: string;
-  args: unknown[];
-};
-
-type SerializedError = {
-  message: string;
-  name?: string;
-  stack?: string;
-};
-
-type RpcResponse =
-  | {
-      type: "tspice:response";
-      id: number;
-      ok: true;
-      value: unknown;
-    }
-  | {
-      type: "tspice:response";
-      id: number;
-      ok: false;
-      error: SerializedError;
-    };
 
 export type WorkerTransportRequestOptions = {
   /** Abort waiting for a response and clean up pending state. */
@@ -61,18 +42,6 @@ export type WorkerTransport = Omit<SpiceTransport, "request"> & {
    */
   dispose(): void;
 };
-
-function deserializeError(err: unknown): Error {
-  if (err && typeof err === "object") {
-    const e = err as Partial<SerializedError>;
-    const out = new Error(typeof e.message === "string" ? e.message : "Worker request failed");
-    if (typeof e.name === "string") out.name = e.name;
-    if (typeof e.stack === "string") out.stack = e.stack;
-    return out;
-  }
-
-  return new Error(typeof err === "string" ? err : "Worker request failed");
-}
 
 function createAbortError(): Error {
   // DOMException is the most accurate in browser contexts, but isn't guaranteed
@@ -219,7 +188,7 @@ export function createWorkerTransport(opts: {
       | Partial<RpcResponse>
       | null
       | undefined;
-    if (!msg || msg.type !== "tspice:response" || typeof msg.id !== "number") return;
+    if (!msg || msg.type !== tspiceRpcResponseType || typeof msg.id !== "number") return;
 
     const id = msg.id;
 
@@ -322,6 +291,19 @@ export function createWorkerTransport(opts: {
 
     if (!worker) return;
 
+    // Best-effort: tell the worker it should dispose any server-side resources.
+    //
+    // - When we don't own the worker (`terminateOnDispose: false`), this is the
+    //   only way to request cleanup.
+    // - When we do own the worker and will terminate it, this message may not
+    //   be processed (terminate is immediate), but it's still cheap + harmless.
+    try {
+      const msg: RpcDispose = { type: tspiceRpcDisposeType };
+      worker.postMessage(msg);
+    } catch {
+      // ignore
+    }
+
     worker.removeEventListener("message", onMessage);
     worker.removeEventListener("error", onError);
     worker.removeEventListener("messageerror", onMessageError);
@@ -409,7 +391,7 @@ export function createWorkerTransport(opts: {
         }, timeoutMs);
       }
 
-      const msg: RpcRequest = { type: "tspice:request", id, op, args };
+      const msg: RpcRequest = { type: tspiceRpcRequestType, id, op, args };
       try {
         w.postMessage(msg);
       } catch (err) {

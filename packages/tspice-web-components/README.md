@@ -10,6 +10,10 @@ This package is currently intended for **internal workspace use**.
 - `createSpiceAsyncFromTransport()` — builds a `SpiceAsync` `{ raw, kit }` client from a transport.
 - `createWorkerTransport()` — request/response RPC over `Worker.postMessage()` (timeout + dispose support).
   - Types: `WorkerTransport`, `WorkerTransportRequestOptions`
+- `exposeTransportToWorker()` — worker-side helper that serves a `SpiceTransport` over the same RPC protocol.
+- `createSpiceWorker()` — spawns the built-in tspice Web Worker entry.
+- `createSpiceWorkerClient()` — batteries-included Worker + transport + `SpiceAsync` client.
+  - Type: `SpiceWorkerClient`
 - `withCaching()` — memoized transport wrapper (in-flight dedupe + LRU + optional TTL).
   - When caching is disabled (e.g. `ttlMs <= 0` or `maxEntries <= 0`), returns the input transport unchanged.
   - Use `isCachingTransport()` to narrow before calling `clear()`/`dispose()`.
@@ -43,7 +47,19 @@ ownedTransport.dispose(); // rejects pending + terminates worker
 sharedTransport.dispose(); // rejects pending only (does not terminate sharedWorker)
 ```
 
-## Roadmap
+## Canonical Web Worker client
 
-A canonical, batteries-included Web Worker client is coming soon:
-https://github.com/rybosome/tspice/issues/334
+```ts
+import { createSpiceWorkerClient, withCaching } from "@rybosome/tspice-web-components";
+
+const { spice, dispose } = createSpiceWorkerClient({
+  wrapTransport: (t) => withCaching(t, { maxEntries: 1000, ttlMs: 5_000 }),
+});
+
+const et = await spice.kit.utcToEt("2026-01-01T00:00:00Z");
+console.log(et);
+
+dispose();
+```
+
+The built-in worker entry initializes tspice with `createSpiceAsync({ backend: "wasm" })`.
