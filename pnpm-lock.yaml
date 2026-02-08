@@ -240,6 +240,16 @@ importers:
 
   packages/tspice-native-linux-x64-gnu: {}
 
+  packages/tspice-web-components:
+    dependencies:
+      '@rybosome/tspice':
+        specifier: workspace:*
+        version: link:../tspice
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
 packages:
 
   '@babel/code-frame@7.28.6':
