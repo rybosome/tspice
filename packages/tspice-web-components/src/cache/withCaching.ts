@@ -12,6 +12,44 @@ export type CachingTransport = SpiceTransport & {
   dispose(): void;
 };
 
+export type WithCachingOptions = {
+  /**
+   * Maximum number of entries to retain (LRU-evicted on overflow).
+   *
+   * - `undefined` => defaults to `1000`
+   * - `Infinity` => unbounded
+   * - `<= 0` => caching disabled
+   */
+  maxEntries?: number;
+  /**
+   * Time-to-live in milliseconds, measured from the time the value resolves.
+   *
+   * - `undefined`/`null` => no TTL (cache forever, LRU-bounded)
+   * - `<= 0` => caching disabled
+   * - `> 0` => absolute TTL (non-sliding)
+   */
+  ttlMs?: number | null;
+  /**
+   * Optional periodic TTL sweep. Without this, TTL eviction is lazy (only on
+   * subsequent `request()` calls).
+   */
+  sweepIntervalMs?: number;
+  /**
+   * Cache key function. Returning `null` disables caching for that call.
+   */
+  key?: (op: string, args: unknown[]) => string | null;
+};
+
+export type WithCachingResult = SpiceTransport | CachingTransport;
+
+/**
+ * Type guard for narrowing a transport returned by `withCaching()`.
+ */
+export function isCachingTransport(t: SpiceTransport): t is CachingTransport {
+  const maybe = t as Partial<CachingTransport>;
+  return typeof maybe.clear === "function" && typeof maybe.dispose === "function";
+}
+
 type CacheEntry = {
   promise: Promise<unknown>;
   /** Epoch ms (exclusive). `undefined` => no TTL */
@@ -19,7 +57,7 @@ type CacheEntry = {
 };
 
 type Unrefable = {
-  unref?: () => void;
+  unref?: unknown;
 };
 
 function defaultKey(op: string, args: unknown[]): string | null {
@@ -33,34 +71,8 @@ function defaultKey(op: string, args: unknown[]): string | null {
 
 export function withCaching(
   base: SpiceTransport,
-  opts?: {
-    /**
-     * Maximum number of entries to retain (LRU-evicted on overflow).
-     *
-     * - `undefined` => defaults to `1000`
-     * - `Infinity` => unbounded
-     * - `<= 0` => caching disabled
-     */
-    maxEntries?: number;
-    /**
-     * Time-to-live in milliseconds, measured from the time the value resolves.
-     *
-     * - `undefined`/`null` => no TTL (cache forever, LRU-bounded)
-     * - `<= 0` => caching disabled
-     * - `> 0` => absolute TTL (non-sliding)
-     */
-    ttlMs?: number | null;
-    /**
-     * Optional periodic TTL sweep. Without this, TTL eviction is lazy (only on
-     * subsequent `request()` calls).
-     */
-    sweepIntervalMs?: number;
-    /**
-     * Cache key function. Returning `null` disables caching for that call.
-     */
-    key?: (op: string, args: unknown[]) => string | null;
-  },
-): SpiceTransport | CachingTransport {
+  opts?: WithCachingOptions,
+): WithCachingResult {
   const rawMaxEntries = opts?.maxEntries;
   const maxEntries = rawMaxEntries ?? 1000;
   const maxEntriesLimit =
@@ -103,7 +115,8 @@ export function withCaching(
       // In Node, interval timers keep the event loop alive by default. `unref()`
       // prevents this from pinning test runners / CLIs. Browsers return a
       // numeric id (no-op).
-      (sweepTimer as unknown as Unrefable).unref?.();
+      const unref = (sweepTimer as unknown as Unrefable).unref;
+      if (typeof unref === "function") unref.call(sweepTimer);
     }
   }
 

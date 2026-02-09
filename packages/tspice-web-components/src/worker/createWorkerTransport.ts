@@ -35,6 +35,13 @@ export type WorkerTransportRequestOptions = {
 };
 
 export type WorkerTransport = Omit<SpiceTransport, "request"> & {
+  /**
+   * Send an RPC request to the worker.
+   *
+   * Note: Worker responses are always settled on a later macrotask (via
+   * `setTimeout(..., 0)`) so calling `dispose()` in the same tick
+   * deterministically wins.
+   */
   request(
     op: string,
     args: unknown[],
@@ -72,6 +79,20 @@ function createAbortError(): Error {
   }
 }
 
+/**
+ * Create a `SpiceTransport` backed by a `Worker`.
+ *
+ * ## Macrotask settlement ordering
+ *
+ * Worker responses are resolved/rejected on a later macrotask (via
+ * `setTimeout(..., 0)`) so that calling `dispose()` in the same tick
+ * deterministically wins.
+ *
+ * Implications:
+ * - Requests never resolve/reject on the same tick a response is received.
+ * - A response received in the current tick may be ignored if `dispose()` is
+ *   called before the next tick.
+ */
 export function createWorkerTransport(opts: {
   worker: Worker | (() => Worker);
   /** Default request timeout (ms). Use <= 0 or `undefined` to disable. */
@@ -92,6 +113,7 @@ export function createWorkerTransport(opts: {
     opts.terminateOnDispose ?? (typeof opts.worker === "function" ? true : false);
 
   type Pending = {
+    // These always run per-request cleanup before settling.
     resolve: (value: unknown) => void;
     reject: (reason: unknown) => void;
     cleanup: () => void;
@@ -102,6 +124,9 @@ export function createWorkerTransport(opts: {
 
   const rejectAllPending = (reason: unknown): void => {
     for (const [id, pending] of pendingById) {
+      // cleanup() is idempotent; call it explicitly so it's clear that every
+      // request is cleaned up even though `pending.reject()` also cleans up.
+      pending.cleanup();
       pendingById.delete(id);
       pending.reject(reason);
     }
@@ -201,17 +226,17 @@ export function createWorkerTransport(opts: {
         if (signal) signal.removeEventListener("abort", onAbort);
       };
 
-      const safeResolve = (value: unknown): void => {
+      const resolveAndCleanup = (value: unknown): void => {
         cleanup();
         resolve(value);
       };
 
-      const safeReject = (reason: unknown): void => {
+      const rejectAndCleanup = (reason: unknown): void => {
         cleanup();
         reject(reason);
       };
 
-      const pending: Pending = { resolve: safeResolve, reject: safeReject, cleanup };
+      const pending: Pending = { resolve: resolveAndCleanup, reject: rejectAndCleanup, cleanup };
       pendingById.set(id, pending);
 
       const onAbort = (): void => {
