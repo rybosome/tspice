@@ -286,8 +286,18 @@ int tspice_dlaopn(
 int tspice_dlabfs(int handle, int *outDescr8, int *outFound, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
-  if (outFound) *outFound = 0;
-  if (outDescr8) memset(outDescr8, 0, sizeof(int) * 8);
+
+  if (!outDescr8) {
+    tspice_write_error(err, errMaxBytes, "tspice_dlabfs: outDescr8 must be non-NULL");
+    return 1;
+  }
+  if (!outFound) {
+    tspice_write_error(err, errMaxBytes, "tspice_dlabfs: outFound must be non-NULL");
+    return 1;
+  }
+
+  *outFound = 0;
+  memset(outDescr8, 0, sizeof(int) * 8);
 
   SpiceDLADescr descr;
   SpiceBoolean foundC = SPICEFALSE;
@@ -298,8 +308,8 @@ int tspice_dlabfs(int handle, int *outDescr8, int *outFound, char *err, int errM
     return 1;
   }
 
-  if (outFound) *outFound = foundC == SPICETRUE ? 1 : 0;
-  if (outDescr8 && foundC == SPICETRUE) {
+  *outFound = foundC == SPICETRUE ? 1 : 0;
+  if (foundC == SPICETRUE) {
     tspice_write_dla_descr8(&descr, outDescr8);
   }
   return 0;

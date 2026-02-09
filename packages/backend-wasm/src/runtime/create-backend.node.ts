@@ -108,5 +108,5 @@ export async function createWasmBackend(
     ...createCellsWindowsApi(module),
   } satisfies SpiceBackend;
 
-  return backendBase as SpiceBackend & { kind: "wasm" };
+  return backendBase;
 }
