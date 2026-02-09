@@ -2,11 +2,11 @@ import type {
   Found,
   KernelData,
   KernelInfo,
-  KernelKind,
   KernelKindInput,
   KernelSource,
   KernelsApi,
 } from "@rybosome/tspice-backend-contract";
+import { kxtrctJs, matchesKernelKind, normalizeKindInput } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -16,76 +16,6 @@ import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import type { WasmFsApi } from "../runtime/fs.js";
 import { resolveKernelPath, writeKernelSource } from "../runtime/fs.js";
-
-function extLower(path: string): string {
-  const base = path.split(/[/\\]/).pop() ?? path;
-  const idx = base.lastIndexOf(".");
-  if (idx < 0) {
-    return "";
-  }
-  return base.slice(idx).toLowerCase();
-}
-
-function guessTextKernelSubtype(path: string): KernelKind {
-  switch (extLower(path)) {
-    case ".tls":
-    case ".lsk":
-      return "LSK";
-    case ".tf":
-    case ".fk":
-      return "FK";
-    case ".ti":
-    case ".ik":
-      return "IK";
-    case ".tsc":
-    case ".sclk":
-      return "SCLK";
-    default:
-      return "TEXT";
-  }
-}
-
-function normalizeKindInput(kind: KernelKindInput | undefined): readonly string[] {
-  if (kind == null) {
-    return ["ALL"];
-  }
-  if (Array.isArray(kind)) {
-    return kind;
-  }
-
-  // Allow callers to pass CSPICE-style multi-kind strings.
-  const raw = String(kind);
-  if (/\s/.test(raw)) {
-    const parts = raw
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-    return parts;
-  }
-
-  return [raw];
-}
-
-function matchesKernelKind(requested: ReadonlySet<string>, kernel: KernelData): boolean {
-  if (requested.size === 0) {
-    return false;
-  }
-  if (requested.has("ALL")) {
-    return true;
-  }
-
-  const filtyp = kernel.filtyp.toUpperCase();
-  if (filtyp === "TEXT") {
-    if (requested.has("TEXT")) {
-      return true;
-    }
-
-    const subtype = guessTextKernelSubtype(kernel.file);
-    return requested.has(subtype);
-  }
-
-  return requested.has(filtyp);
-}
 
 function tspiceCallKtotal(module: EmscriptenModule, kind: string): number {
   const errMaxBytes = 2048;
@@ -241,38 +171,8 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
     },
 
     kxtrct: (keywd, terms, wordsq) => {
-      const termSet = new Set(terms);
-      const words = [...wordsq.matchAll(/\S+/g)].map((m) => ({
-        text: m[0],
-        start: m.index ?? 0,
-        end: (m.index ?? 0) + m[0].length - 1,
-      }));
-
-      const keyIndex = words.findIndex((w) => w.text === keywd);
-      if (keyIndex < 0) {
-        return { found: false };
-      }
-
-      let termIndex = -1;
-      for (let i = keyIndex + 1; i < words.length; i++) {
-        if (termSet.has(words[i]!.text)) {
-          termIndex = i;
-          break;
-        }
-      }
-
-      const startSub = words[keyIndex + 1]?.start;
-      const endSub = termIndex >= 0 ? words[termIndex]!.start : wordsq.length;
-      const substr = startSub == null ? "" : wordsq.slice(startSub, endSub);
-
-      const removalStart = words[keyIndex]!.start;
-      const removalEnd =
-        termIndex >= 0 ? words[(termIndex - 1) as number]!.end + 1 : wordsq.length;
-      const newWordsq = wordsq.slice(0, removalStart) + wordsq.slice(removalEnd);
-
-      return { found: true, wordsq: newWordsq, substr };
+      return kxtrctJs(keywd, terms, wordsq);
     },
-
     kplfrm: (_frmcls, idset) => {
       // The WASM bundle doesn't currently export `tspice_kplfrm`; best-effort
       // approximation is to clear the output set.

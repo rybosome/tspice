@@ -23,6 +23,9 @@ import {
   assertGetmsgWhich,
   assertSpiceInt32,
   brandMat3RowMajor,
+  kxtrctJs,
+  matchesKernelKind,
+  normalizeKindInput,
 } from "@rybosome/tspice-backend-contract";
 
 /**
@@ -708,49 +711,6 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   const spiceCellUnsupported =
     "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
 
-  function normalizeKindInput(kind: KernelKindInput | undefined): readonly string[] {
-    if (kind == null) {
-      return ["ALL"];
-    }
-    if (Array.isArray(kind)) {
-      return kind;
-    }
-
-    // Allow CSPICE-style multi-kind strings.
-    const raw = String(kind);
-    if (/\s/.test(raw)) {
-      return raw
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean);
-    }
-
-    return [raw];
-  }
-
-  const textKinds = new Set(["TEXT", "LSK", "FK", "IK", "SCLK"]);
-
-  function matchesKernelKind(requested: ReadonlySet<string>, k: KernelRecord): boolean {
-    if (requested.size === 0) {
-      return false;
-    }
-    if (requested.has("ALL")) {
-      return true;
-    }
-
-    const kind = k.kind.toUpperCase();
-    if (requested.has(kind)) {
-      return true;
-    }
-
-    // CSPICE TEXT covers all non-meta text kernels.
-    if (requested.has("TEXT") && textKinds.has(kind)) {
-      return true;
-    }
-
-    return false;
-  }
-
   const getKernelsOfKind = (kind: KernelKindInput | undefined): readonly KernelRecord[] => {
     const requested = new Set(normalizeKindInput(kind).map((k) => k.toUpperCase()));
     return kernels.filter((k) => matchesKernelKind(requested, k));
@@ -843,37 +803,8 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     kxtrct: (keywd, terms, wordsq) => {
-      const termSet = new Set(terms);
-      const words = [...wordsq.matchAll(/\S+/g)].map((m) => ({
-        text: m[0],
-        start: m.index ?? 0,
-        end: (m.index ?? 0) + m[0].length - 1,
-      }));
-
-      const keyIndex = words.findIndex((w) => w.text === keywd);
-      if (keyIndex < 0) {
-        return { found: false };
-      }
-
-      let termIndex = -1;
-      for (let i = keyIndex + 1; i < words.length; i++) {
-        if (termSet.has(words[i]!.text)) {
-          termIndex = i;
-          break;
-        }
-      }
-
-      const startSub = words[keyIndex + 1]?.start;
-      const endSub = termIndex >= 0 ? words[termIndex]!.start : wordsq.length;
-      const substr = startSub == null ? "" : wordsq.slice(startSub, endSub);
-
-      const removalStart = words[keyIndex]!.start;
-      const removalEnd = termIndex >= 0 ? words[(termIndex - 1) as number]!.end + 1 : wordsq.length;
-      const newWordsq = wordsq.slice(0, removalStart) + wordsq.slice(removalEnd);
-
-      return { found: true, wordsq: newWordsq, substr };
+      return kxtrctJs(keywd, terms, wordsq);
     },
-
     kplfrm: (_frmcls, _idset) => {
       throw new Error(spiceCellUnsupported);
     },

@@ -2,65 +2,15 @@ import type {
   Found,
   KernelData,
   KernelInfo,
-  KernelKind,
   KernelKindInput,
   KernelSource,
   KernelsApi,
 } from "@rybosome/tspice-backend-contract";
+import { matchesKernelKind, normalizeKindInput } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
-
-function extLower(path: string): string {
-  // Handle both POSIX and Windows separators.
-  const base = path.split(/[/\\]/).pop() ?? path;
-  const idx = base.lastIndexOf(".");
-  if (idx < 0) {
-    return "";
-  }
-  return base.slice(idx).toLowerCase();
-}
-
-function guessTextKernelSubtype(path: string): KernelKind {
-  switch (extLower(path)) {
-    case ".tls":
-    case ".lsk":
-      return "LSK";
-    case ".tf":
-    case ".fk":
-      return "FK";
-    case ".ti":
-    case ".ik":
-      return "IK";
-    case ".tsc":
-    case ".sclk":
-      return "SCLK";
-    default:
-      return "TEXT";
-  }
-}
-
-function normalizeKindInput(kind: KernelKindInput | undefined): readonly string[] {
-  if (kind == null) {
-    return ["ALL"];
-  }
-  if (Array.isArray(kind)) {
-    return kind;
-  }
-
-  // Allow callers to pass CSPICE-style multi-kind strings.
-  const raw = String(kind);
-  if (/\s/.test(raw)) {
-    const parts = raw
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-    return parts;
-  }
-
-  return [raw];
-}
 
 const NATIVE_KIND_SET = new Set<string>([
   "ALL",
@@ -107,27 +57,6 @@ function nativeKindQueryOrNull(kindsUpper: readonly string[]): string | null {
   }
 
   return nativeKinds.length === 0 ? null : nativeKinds.join(" ");
-}
-
-function matchesKernelKind(requested: ReadonlySet<string>, kernel: KernelData): boolean {
-  if (requested.size === 0) {
-    return false;
-  }
-  if (requested.has("ALL")) {
-    return true;
-  }
-
-  const filtyp = kernel.filtyp.toUpperCase();
-  if (filtyp === "TEXT") {
-    if (requested.has("TEXT")) {
-      return true;
-    }
-
-    const subtype = guessTextKernelSubtype(kernel.file);
-    return requested.has(subtype);
-  }
-
-  return requested.has(filtyp);
 }
 
 export function createKernelsApi(native: NativeAddon, stager: KernelStager): KernelsApi {
