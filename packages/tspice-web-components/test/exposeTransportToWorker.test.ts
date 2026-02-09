@@ -1,9 +1,16 @@
 import { describe, expect, it, vi } from "vitest";
 
-type Listener = (ev: any) => void;
+import type { RpcMessageFromMain, RpcMessageFromWorker } from "../src/worker/rpcProtocol.js";
+import {
+  tspiceRpcDisposeType,
+  tspiceRpcRequestType,
+  tspiceRpcResponseType,
+} from "../src/worker/rpcProtocol.js";
+
+type Listener = (ev: MessageEvent<unknown>) => void;
 
 class FakeWorkerSelf {
-  posted: any[] = [];
+  posted: RpcMessageFromWorker[] = [];
   closed = false;
 
   private listeners = new Set<Listener>();
@@ -18,17 +25,17 @@ class FakeWorkerSelf {
     this.listeners.delete(listener);
   }
 
-  postMessage(msg: any): void {
-    this.posted.push(msg);
+  postMessage(msg: unknown): void {
+    this.posted.push(msg as RpcMessageFromWorker);
   }
 
   close(): void {
     this.closed = true;
   }
 
-  emitMessage(data: any): void {
+  emitMessage(data: RpcMessageFromMain): void {
     for (const listener of this.listeners) {
-      listener({ data });
+      listener({ data } as MessageEvent<RpcMessageFromMain>);
     }
   }
 }
@@ -52,7 +59,7 @@ describe("exposeTransportToWorker()", () => {
     exposeTransportToWorker({ transport, self, closeOnDispose: false });
 
     self.emitMessage({
-      type: "tspice:request",
+      type: tspiceRpcRequestType,
       id: 1,
       op: "kit.utcToEt",
       args: ["2026-01-01T00:00:00Z"],
@@ -62,7 +69,7 @@ describe("exposeTransportToWorker()", () => {
 
     expect(transport.request).toHaveBeenCalledWith("kit.utcToEt", ["2026-01-01T00:00:00Z"]);
     expect(self.posted[0]).toMatchObject({
-      type: "tspice:response",
+      type: tspiceRpcResponseType,
       id: 1,
       ok: true,
       value: 123,
@@ -86,23 +93,22 @@ describe("exposeTransportToWorker()", () => {
 
     exposeTransportToWorker({ transport, self, onDispose });
 
-    self.emitMessage({ type: "tspice:request", id: 2, op: "op", args: [] });
+    self.emitMessage({ type: tspiceRpcRequestType, id: 2, op: "op", args: [] });
     await flush();
 
     expect(self.posted[0]).toMatchObject({
-      type: "tspice:response",
+      type: tspiceRpcResponseType,
       id: 2,
       ok: false,
       error: { message: "nope" },
     });
 
-    self.emitMessage({ type: "tspice:dispose" });
+    self.emitMessage({ type: tspiceRpcDisposeType });
     await flush();
 
     expect(onDispose).toHaveBeenCalledTimes(1);
     expect(self.closed).toBe(true);
   });
-
 
   it("does not post responses after dispose", async () => {
     const { exposeTransportToWorker } = await import(
@@ -124,14 +130,14 @@ describe("exposeTransportToWorker()", () => {
     exposeTransportToWorker({ transport, self, closeOnDispose: false });
 
     self.emitMessage({
-      type: "tspice:request",
+      type: tspiceRpcRequestType,
       id: 1,
       op: "kit.utcToEt",
       args: [],
     });
 
     // Dispose before the request resolves.
-    self.emitMessage({ type: "tspice:dispose" });
+    self.emitMessage({ type: tspiceRpcDisposeType });
 
     resolveRequest?.(123);
     await flush();

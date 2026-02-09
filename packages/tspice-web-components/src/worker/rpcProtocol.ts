@@ -37,27 +37,49 @@ export type RpcMessageFromMain = RpcRequest | RpcDispose;
 export type RpcMessageFromWorker = RpcResponse;
 
 export function serializeError(err: unknown): SerializedError {
-  if (err && typeof err === "object") {
-    const anyErr = err as any;
+  const defaultMessage = "Worker request failed";
 
-    // Native Errors (including DOMException) typically have `message` and
-    // `name`, and may have `stack`.
-    const message =
-      typeof anyErr.message === "string"
-        ? anyErr.message
-        : typeof anyErr.toString === "function"
-          ? String(anyErr)
-          : "Worker request failed";
+  const readStringProp = (
+    obj: unknown,
+    key: string,
+  ): string | undefined => {
+    if (!obj || typeof obj !== "object") return undefined;
+    const v = (obj as Record<string, unknown>)[key];
+    return typeof v === "string" ? v : undefined;
+  };
 
-    const out: SerializedError = { message };
-    if (typeof anyErr.name === "string") out.name = anyErr.name;
-    if (typeof anyErr.stack === "string") out.stack = anyErr.stack;
+  if (err instanceof Error) {
+    const out: SerializedError = { message: err.message || defaultMessage };
+    if (typeof err.name === "string" && err.name) out.name = err.name;
+    if (typeof err.stack === "string") out.stack = err.stack;
     return out;
   }
 
-  return {
-    message: typeof err === "string" ? err : "Worker request failed",
-  };
+  if (typeof err === "string") {
+    return { message: err };
+  }
+
+  if (err && typeof err === "object") {
+    const message = readStringProp(err, "message") ?? defaultMessage;
+    const name = readStringProp(err, "name");
+    const stack = readStringProp(err, "stack");
+
+    const out: SerializedError = { message };
+    if (typeof name === "string" && name) out.name = name;
+    if (typeof stack === "string") out.stack = stack;
+    return out;
+  }
+
+  // Only stringify primitives (avoid calling an arbitrary `.toString()` on objects).
+  if (
+    typeof err === "number" ||
+    typeof err === "boolean" ||
+    typeof err === "bigint"
+  ) {
+    return { message: String(err) };
+  }
+
+  return { message: defaultMessage };
 }
 
 export function deserializeError(err: unknown): Error {
