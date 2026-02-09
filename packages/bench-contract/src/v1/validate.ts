@@ -54,7 +54,9 @@ function validateFixtureRoots(
   const cleaned: Record<string, string> = {};
 
   for (const [rootName, rootPath] of Object.entries(record)) {
-    if (!isNonEmptyString(rootName)) {
+    const trimmedName = rootName.trim();
+
+    if (trimmedName.length === 0) {
       pushError(
         errors,
         [...pathSegments, rootName],
@@ -72,10 +74,39 @@ function validateFixtureRoots(
       continue;
     }
 
-    cleaned[rootName] = rootPath;
+    const trimmedPath = rootPath.trim();
+
+    if (trimmedPath.length === 0) {
+      pushError(
+        errors,
+        [...pathSegments, rootName],
+        "Fixture root paths must be non-empty strings.",
+      );
+      continue;
+    }
+
+    if (path.posix.isAbsolute(trimmedPath) || path.win32.isAbsolute(trimmedPath)) {
+      pushError(
+        errors,
+        [...pathSegments, rootName],
+        "Fixture root paths must be relative (absolute paths are not allowed).",
+      );
+      continue;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(cleaned, trimmedName)) {
+      pushError(
+        errors,
+        [...pathSegments, rootName],
+        `Duplicate fixture root name '${trimmedName}'. Fixture root names must be unique.`,
+      );
+      continue;
+    }
+
+    cleaned[trimmedName] = trimmedPath;
 
     if (shouldCheckFixtureExistence(options)) {
-      const absoluteRoot = path.resolve(options.repoRoot, rootPath);
+      const absoluteRoot = path.resolve(options.repoRoot, trimmedPath);
       try {
         const stat = fs.statSync(absoluteRoot);
         if (!stat.isDirectory()) {
@@ -164,12 +195,18 @@ function validateVarRefs(
   errors: ValidationError[],
   pathSegments: readonly PathSegment[],
   knownVars: ReadonlySet<string>,
+  visited: WeakSet<object> = new WeakSet(),
 ): void {
   if (value === undefined) return;
 
+  if (typeof value === "object" && value !== null) {
+    if (visited.has(value)) return;
+    visited.add(value);
+  }
+
   if (Array.isArray(value)) {
     for (let i = 0; i < value.length; i += 1) {
-      validateVarRefs(value[i], errors, [...pathSegments, i], knownVars);
+      validateVarRefs(value[i], errors, [...pathSegments, i], knownVars, visited);
     }
     return;
   }
@@ -223,7 +260,7 @@ function validateVarRefs(
   }
 
   for (const [key, child] of Object.entries(value)) {
-    validateVarRefs(child, errors, [...pathSegments, key], knownVars);
+    validateVarRefs(child, errors, [...pathSegments, key], knownVars, visited);
   }
 }
 
@@ -378,7 +415,7 @@ function validateBenchmark(
       [...pathSegments, "kind"],
       "Benchmark 'kind' must be 'micro' or 'workflow'.",
     );
-    return record as unknown as BenchmarkV1;
+    return null;
   }
 
   const kind = record.kind;
@@ -388,7 +425,7 @@ function validateBenchmark(
       [...pathSegments, "kind"],
       "Benchmark 'kind' must be 'micro' or 'workflow'.",
     );
-    return record as unknown as BenchmarkV1;
+    return null;
   }
 
   if (hasOwn(record, "setup")) {
@@ -463,16 +500,26 @@ export function validateBenchmarkSuiteV1(
 
     for (let i = 0; i < record.benchmarks.length; i += 1) {
       const benchmarkPath = ["benchmarks", i] satisfies PathSegment[];
+
+      const benchmarkValue = record.benchmarks[i];
+      const benchmarkRecord = isRecord(benchmarkValue) ? benchmarkValue : null;
+      const benchmarkId =
+        benchmarkRecord !== null && typeof benchmarkRecord.id === "string"
+          ? benchmarkRecord.id
+          : null;
+
       const benchmark = validateBenchmark(
-        record.benchmarks[i],
+        benchmarkValue,
         errors,
         benchmarkPath,
         options,
         fixtureRoots,
       );
 
-      if (benchmark !== null && typeof (benchmark as { id?: unknown }).id === "string") {
-        const id = (benchmark as { id: string }).id;
+      // Keep duplicate-id detection at the suite level, even when a benchmark is
+      // otherwise structurally invalid.
+      if (benchmarkId !== null) {
+        const id = benchmarkId;
         if (seenIds.has(id)) {
           pushError(
             errors,
