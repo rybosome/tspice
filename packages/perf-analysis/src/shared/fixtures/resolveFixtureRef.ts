@@ -1,3 +1,5 @@
+import { notImplemented } from "../notImplemented.js";
+
 import type { FixtureRef, FixtureRoots, ResolvedFixtureRef } from "./types.js";
 
 /**
@@ -9,5 +11,5 @@ export function resolveFixtureRef(
   _ref: FixtureRef,
   _fixtureRoots: FixtureRoots,
 ): ResolvedFixtureRef {
-  throw new Error("not implemented");
+  return notImplemented("resolveFixtureRef()");
 }

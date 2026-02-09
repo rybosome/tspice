@@ -1,3 +1,5 @@
+import { notImplemented } from "../../../shared/notImplemented.js";
+
 import type { BenchmarkContractV1 } from "./types.js";
 
 /**
@@ -6,5 +8,5 @@ import type { BenchmarkContractV1 } from "./types.js";
  * NOTE: v1 validation is intentionally unimplemented in this scaffold.
  */
 export function validate(_value: unknown): BenchmarkContractV1 {
-  throw new Error("not implemented");
+  return notImplemented("validate()");
 }

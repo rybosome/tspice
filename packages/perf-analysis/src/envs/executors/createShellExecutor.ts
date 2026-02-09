@@ -1,3 +1,5 @@
+import { notImplemented } from "../../shared/notImplemented.js";
+
 import type { Executor } from "./types.js";
 
 /**
@@ -6,5 +8,5 @@ import type { Executor } from "./types.js";
  * NOTE: execution is intentionally unimplemented in this scaffold.
  */
 export function createShellExecutor(): Executor {
-  throw new Error("not implemented");
+  return notImplemented("createShellExecutor()");
 }

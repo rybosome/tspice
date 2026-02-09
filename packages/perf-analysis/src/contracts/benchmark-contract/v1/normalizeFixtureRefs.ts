@@ -1,3 +1,5 @@
+import { notImplemented } from "../../../shared/notImplemented.js";
+
 import type { BenchmarkContractV1, NormalizeFixtureRefsOptions } from "./types.js";
 
 /**
@@ -9,5 +11,5 @@ export function normalizeFixtureRefs(
   _contract: BenchmarkContractV1,
   _options: NormalizeFixtureRefsOptions = {},
 ): BenchmarkContractV1 {
-  throw new Error("not implemented");
+  return notImplemented("normalizeFixtureRefs()");
 }

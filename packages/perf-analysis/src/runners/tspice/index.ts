@@ -1,3 +1,5 @@
+import { notImplemented } from "../../shared/notImplemented.js";
+
 import type { Runner } from "../types.js";
 
 export interface CreateTspiceRunnerOptions {
@@ -10,5 +12,5 @@ export interface CreateTspiceRunnerOptions {
  * NOTE: runner orchestration is intentionally unimplemented in this scaffold.
  */
 export function createTspiceRunner(_options: CreateTspiceRunnerOptions = {}): Runner {
-  throw new Error("not implemented");
+  return notImplemented("createTspiceRunner()");
 }
