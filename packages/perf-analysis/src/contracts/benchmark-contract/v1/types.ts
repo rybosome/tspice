@@ -4,20 +4,11 @@
  * These types are intentionally minimal and may evolve as the contract is implemented.
  */
 
-export type BenchmarkContractVersion = "v1";
+import type { FixtureRef } from "../../../shared/fixtures/types.js";
 
-export type FixtureRefV1 =
-  | {
-      /** Reference by a logical fixture id (resolved against `fixtureRoots`). */
-      readonly kind: "id";
-      readonly id: string;
-    }
-  | {
-      /** Reference by a path-like string (relative or absolute). */
-      readonly kind: "path";
-      readonly path: string;
-    };
+export type BenchmarkContractVersion = 1;
 
+export type FixtureRefV1 = FixtureRef;
 export interface BenchmarkCaseV1 {
   /** Stable id for the benchmark case within the suite. */
   readonly id: string;

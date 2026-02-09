@@ -1,4 +1,4 @@
-import type { BenchmarkContractV1 } from "../contracts/benchmark-contract/v1/types.js";
+import type { BenchmarkContract } from "../contracts/index.js";
 
 export interface RunSuiteOptions {
   /** Optional fixture roots used to resolve suite fixture references. */
@@ -12,5 +12,5 @@ export interface RunnerResult {
 export interface Runner {
   readonly kind: string;
 
-  runSuite(contract: BenchmarkContractV1, options?: RunSuiteOptions): Promise<RunnerResult>;
+  runSuite(contract: BenchmarkContract, options?: RunSuiteOptions): Promise<RunnerResult>;
 }
