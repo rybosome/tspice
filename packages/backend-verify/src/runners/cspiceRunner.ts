@@ -289,10 +289,24 @@ export async function invokeRunner(
       });
     });
 
+    // If we can't write the request payload to the child (e.g. broken pipe),
+    // treat that as a hard failure.
+    child.stdin.on("error", (err) => {
+      finish("bailout", () => reject(err));
+    });
+
     try {
       child.stdin.end(`${JSON.stringify(input)}\n`);
-    } catch {
-      // ignore
+    } catch (err) {
+      finish(
+        "bailout",
+        () =>
+          reject(
+            err instanceof Error
+              ? err
+              : new Error(`Failed to write request to cspice-runner stdin: ${String(err)}`),
+          ),
+      );
     }
   });
 }
