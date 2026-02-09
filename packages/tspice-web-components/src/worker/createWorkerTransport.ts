@@ -126,9 +126,15 @@ export function createWorkerTransport(opts: {
   // while still allowing `dispose()` (and worker errors) to deterministically
   // win before settlement.
   const settlingById = new Map<number, Pending>();
+  const settleTimeoutById = new Map<number, ReturnType<typeof setTimeout>>();
   let nextId = 1;
 
   const rejectAllPending = (reason: unknown): void => {
+    // Cancel deferred settlement timers so they don't keep work queued after
+    // we've already rejected the associated requests.
+    for (const t of settleTimeoutById.values()) clearTimeout(t);
+    settleTimeoutById.clear();
+
     for (const [id, pending] of pendingById) {
       pendingById.delete(id);
       pending.reject(reason); // reject already cleans up
@@ -161,7 +167,8 @@ export function createWorkerTransport(opts: {
     // reject it before the next tick.
     settlingById.set(id, pending);
 
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
+      settleTimeoutById.delete(id);
       if (settlingById.get(id) !== pending) return;
       settlingById.delete(id);
 
@@ -178,6 +185,8 @@ export function createWorkerTransport(opts: {
       const err = deserializeError((msg as Extract<RpcResponse, { ok: false }>).error);
       pending.reject(err);
     }, 0);
+
+    settleTimeoutById.set(id, timeout);
   };
 
   const onError = (ev: ErrorEvent): void => {

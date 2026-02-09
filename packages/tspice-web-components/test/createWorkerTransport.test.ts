@@ -84,7 +84,9 @@ describe("createWorkerTransport()", () => {
 
     // The transport defers settling by 1 macrotask to avoid a dispose-vs-message race.
     w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
+    expect(vi.getTimerCount()).toBe(1);
     transport.dispose();
+    expect(vi.getTimerCount()).toBe(0);
 
     // Attach a handler immediately to avoid an unhandled rejection warning.
     const expectation = expect(p).rejects.toThrow(/disposed/i);
