@@ -6,7 +6,7 @@ export type {
   WithCachingOptions,
   WithCachingResult,
 } from "./cache/withCaching.js";
-export { isCachingTransport, withCaching } from "./cache/withCaching.js";
+export { defaultSpiceCacheKey, isCachingTransport, withCaching } from "./cache/withCaching.js";
 
 export type {
   WorkerTransport,

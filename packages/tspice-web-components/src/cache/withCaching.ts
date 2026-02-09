@@ -129,8 +129,78 @@ function tryUnrefTimer(timer: unknown): void {
   }
 }
 
-function defaultKey(op: string, args: unknown[]): string | null {
+function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean {
+  if (value == null) return false;
+
+  // Node: Buffer
+  const BufferCtor = (globalThis as any).Buffer as
+    | undefined
+    | {
+        isBuffer?: (v: unknown) => boolean;
+      };
+  if (BufferCtor && typeof BufferCtor.isBuffer === "function" && BufferCtor.isBuffer(value)) {
+    return true;
+  }
+
+  // ArrayBuffer / TypedArrays / DataView
+  if (typeof ArrayBuffer !== "undefined") {
+    if (value instanceof ArrayBuffer) return true;
+    if (ArrayBuffer.isView(value)) return true;
+  }
+
+  // SharedArrayBuffer (when available)
+  const SharedArrayBufferCtor = (globalThis as any).SharedArrayBuffer as
+    | undefined
+    | (new (...args: any[]) => any);
+  if (SharedArrayBufferCtor && value instanceof SharedArrayBufferCtor) return true;
+
+  // Blob / File (when available)
+  if (typeof Blob !== "undefined" && value instanceof Blob) return true;
+  if (typeof File !== "undefined" && value instanceof File) return true;
+
+  const t = typeof value;
+  if (t !== "object" && t !== "function") return false;
+
+  const obj = value as object;
+  if (seen.has(obj)) return false;
+  seen.add(obj);
+
+  if (Array.isArray(value)) {
+    for (const v of value) {
+      if (containsBinaryLikeData(v, seen)) return true;
+    }
+    return false;
+  }
+
+  if (value instanceof Map) {
+    for (const [k, v] of value) {
+      if (containsBinaryLikeData(k, seen)) return true;
+      if (containsBinaryLikeData(v, seen)) return true;
+    }
+    return false;
+  }
+
+  if (value instanceof Set) {
+    for (const v of value) {
+      if (containsBinaryLikeData(v, seen)) return true;
+    }
+    return false;
+  }
+
+  for (const v of Object.values(value as Record<string, unknown>)) {
+    if (containsBinaryLikeData(v, seen)) return true;
+  }
+
+  return false;
+}
+
+export function defaultSpiceCacheKey(op: string, args: unknown[]): string | null {
   try {
+    const seen = new WeakSet<object>();
+    for (const arg of args) {
+      if (containsBinaryLikeData(arg, seen)) return null;
+    }
+
     return JSON.stringify([op, args]);
   } catch {
     // Safer failure mode: if we can't build a stable key, don't cache.
@@ -158,7 +228,7 @@ export function withCaching(
   // any wrapper state when caching is disabled.
   if (!cachingEnabled) return base;
 
-  const keyFn = opts?.key ?? defaultKey;
+  const keyFn = opts?.key ?? defaultSpiceCacheKey;
   const policyByOp = opts?.policy;
   // Normalize once up-front so callers can't accidentally pass whitespace or
   // an empty string that behaves like a wildcard (`op.startsWith("") === true`).

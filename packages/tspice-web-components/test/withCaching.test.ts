@@ -110,6 +110,79 @@ describe("withCaching()", () => {
     if ("dispose" in cached) cached.dispose();
   });
 
+  it("defaultSpiceCacheKey returns null for binary-like args", async () => {
+    const { defaultSpiceCacheKey } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components",
+    );
+
+    const SharedArrayBufferCtor = (globalThis as any).SharedArrayBuffer as
+      | undefined
+      | (new (...args: any[]) => any);
+    const BufferCtor = (globalThis as any).Buffer as
+      | undefined
+      | {
+          from?: (data: any) => unknown;
+        };
+    const FileCtor = (globalThis as any).File as
+      | undefined
+      | (new (...args: any[]) => any);
+
+    const cases: Array<{ name: string; value: unknown | undefined }> = [
+      { name: "ArrayBuffer", value: new ArrayBuffer(1) },
+      { name: "DataView", value: new DataView(new ArrayBuffer(1)) },
+      { name: "Uint8Array", value: new Uint8Array([1, 2, 3]) },
+      {
+        name: "SharedArrayBuffer",
+        value: SharedArrayBufferCtor ? new SharedArrayBufferCtor(1) : undefined,
+      },
+      { name: "Buffer", value: BufferCtor?.from ? BufferCtor.from([1, 2, 3]) : undefined },
+      {
+        name: "Blob",
+        value:
+          typeof Blob !== "undefined" ? new Blob([new Uint8Array([1, 2, 3])]) : undefined,
+      },
+      {
+        name: "File",
+        value:
+          FileCtor && typeof Blob !== "undefined"
+            ? // Note: `File` extends `Blob` where present.
+              new FileCtor([new Uint8Array([1, 2, 3])], "a.bin")
+            : undefined,
+      },
+    ];
+
+    for (const { name, value } of cases) {
+      if (value === undefined) continue;
+
+      expect(defaultSpiceCacheKey("op", [value]), name).toBeNull();
+      expect(defaultSpiceCacheKey("op", [{ nested: value }]), `${name} (nested)`).toBeNull();
+    }
+  });
+
+  it("bypasses cache when args contain binary-like data", async () => {
+    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    let calls = 0;
+    const base = {
+      request: vi.fn(async () => ++calls),
+    };
+
+    const cached = withCaching(base);
+
+    const payload = {
+      nested: {
+        bytes: new Uint8Array([1, 2, 3]),
+      },
+    };
+
+    expect(await cached.request("op", [payload])).toBe(1);
+    expect(await cached.request("op", [payload])).toBe(2);
+
+    expect(base.request).toHaveBeenCalledTimes(2);
+
+    if ("dispose" in cached) cached.dispose();
+  });
+
   it("can sweep expired entries periodically (opt-in)", async () => {
     const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
