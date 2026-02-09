@@ -7,7 +7,15 @@
 import type { Found, KernelData, KernelInfo, KernelKind, KernelSource } from "../shared/types.js";
 import type { SpiceIntCell } from "./cells-windows.js";
 
-export type KernelKindInput = KernelKind | readonly KernelKind[];
+/**
+ * Kernel kind selector used by `ktotal()` / `kdata()`.
+ *
+ * Supports:
+ * - a single `KernelKind`
+ * - an array of `KernelKind` (treated as an OR query)
+ * - a CSPICE-style multi-kind string (whitespace-separated, e.g. `"SPK CK"`)
+ */
+export type KernelKindInput = KernelKind | readonly KernelKind[] | string;
 
 export interface KernelsApi {
   /**

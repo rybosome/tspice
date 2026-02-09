@@ -716,7 +716,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       return kind;
     }
 
-    // Allow CSPICE-style multi-kind strings via casting.
+    // Allow CSPICE-style multi-kind strings.
     const raw = String(kind);
     if (/\s/.test(raw)) {
       return raw

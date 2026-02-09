@@ -53,7 +53,7 @@ function normalizeKindInput(kind: KernelKindInput | undefined): readonly string[
     return kind;
   }
 
-  // Allow callers to pass CSPICE-style multi-kind strings via casting.
+  // Allow callers to pass CSPICE-style multi-kind strings.
   const raw = String(kind);
   if (/\s/.test(raw)) {
     const parts = raw
