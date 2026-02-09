@@ -114,8 +114,48 @@ function tspiceCallKdata(
 }
 
 export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): KernelsApi {
+  let kinfoCache: Map<string, KernelInfo> | null = null;
+
+  const clearKinfoCache = (): void => {
+    kinfoCache = null;
+  };
+
+  const getKinfoCache = (): Map<string, KernelInfo> => {
+    if (kinfoCache != null) {
+      return kinfoCache;
+    }
+
+    const totalAll = tspiceCallKtotal(module, "ALL");
+    const map = new Map<string, KernelInfo>();
+    for (let i = 0; i < totalAll; i++) {
+      const kd = tspiceCallKdata(module, i, "ALL");
+      if (!kd.found) {
+        continue;
+      }
+
+      // `kd.file` is already normalized for this backend (see `furnsh` below), but
+      // normalize again to safely accept equivalent inputs like `kernels/foo.tls`,
+      // `/kernels//foo.tls`, etc.
+      const key = resolveKernelPath(kd.file);
+      if (map.has(key)) {
+        continue;
+      }
+
+      map.set(key, {
+        filtyp: kd.filtyp,
+        source: kd.source,
+        handle: kd.handle,
+      });
+    }
+
+    kinfoCache = map;
+    return map;
+  };
+
   return {
     furnsh: (kernel: KernelSource) => {
+      clearKinfoCache();
+
       if (typeof kernel === "string") {
         // String kernels are treated as *WASM-FS paths*.
         //
@@ -136,37 +176,22 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
       tspiceCall1Path(module, module._tspice_furnsh, path);
     },
     unload: (path: string) => {
+      clearKinfoCache();
       tspiceCall1Path(module, module._tspice_unload, resolveKernelPath(path));
     },
     kclear: () => {
+      clearKinfoCache();
       tspiceCall0(module, module._tspice_kclear);
     },
 
     kinfo: (path: string) => {
       const resolved = resolveKernelPath(path);
-      const totalAll = tspiceCallKtotal(module, "ALL");
-      for (let i = 0; i < totalAll; i++) {
-        const kd = tspiceCallKdata(module, i, "ALL");
-        if (!kd.found) {
-          continue;
-        }
-
-        // `kd.file` is already normalized for this backend (see `furnsh` above),
-        // but normalize again to safely accept equivalent inputs like
-        // `kernels/foo.tls`, `/kernels//foo.tls`, etc.
-        if (resolveKernelPath(kd.file) !== resolved) {
-          continue;
-        }
-
-        return {
-          found: true,
-          filtyp: kd.filtyp,
-          source: kd.source,
-          handle: kd.handle,
-        } satisfies Found<KernelInfo>;
+      const info = getKinfoCache().get(resolved);
+      if (info == null) {
+        return { found: false };
       }
 
-      return { found: false };
+      return { found: true, ...info } satisfies Found<KernelInfo>;
     },
 
     kxtrct: (keywd, terms, wordsq) => {
