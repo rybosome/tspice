@@ -246,6 +246,9 @@ importers:
         specifier: workspace:*
         version: link:../tspice
     devDependencies:
+      '@rybosome/tspice-backend-fake':
+        specifier: workspace:*
+        version: link:../backend-fake
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.6

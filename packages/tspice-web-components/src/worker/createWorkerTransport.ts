@@ -243,6 +243,7 @@ export function createWorkerTransport(opts: {
     return await new Promise<unknown>((resolve, reject) => {
       let timeout: ReturnType<typeof setTimeout> | undefined;
       let cleanedUp = false;
+      let onAbort: (() => void) | undefined;
 
       const cleanup = (): void => {
         if (cleanedUp) return;
@@ -253,7 +254,7 @@ export function createWorkerTransport(opts: {
           timeout = undefined;
         }
 
-        if (signal) signal.removeEventListener("abort", onAbort);
+        if (signal && onAbort) signal.removeEventListener("abort", onAbort);
       };
 
       const resolveAndCleanup = (value: unknown): void => {
@@ -269,7 +270,7 @@ export function createWorkerTransport(opts: {
       const pending: Pending = { resolve: resolveAndCleanup, reject: rejectAndCleanup, cleanup };
       pendingById.set(id, pending);
 
-      const onAbort = (): void => {
+      onAbort = (): void => {
         if (pendingById.get(id) !== pending) return;
         pendingById.delete(id);
         pending.reject(createAbortError());

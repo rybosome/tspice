@@ -143,7 +143,11 @@ export function withCaching(
 
   const keyFn = opts?.key ?? defaultKey;
   const policyByOp = opts?.policy;
-  const noStorePrefixes = opts?.noStorePrefixes;
+  // Normalize once up-front so callers can't accidentally pass whitespace or
+  // an empty string that behaves like a wildcard (`op.startsWith("") === true`).
+  const noStorePrefixes = opts?.noStorePrefixes
+    ?.map((p) => p.trim())
+    .filter((p) => p.length > 0);
   const allowUnsafePolicyOverrides = opts?.allowUnsafePolicyOverrides === true;
 
   const getPolicy = (op: string): CachePolicy => {

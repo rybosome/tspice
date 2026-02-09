@@ -244,13 +244,37 @@ describe("withCaching()", () => {
 
     const cached = withCaching(base, {
       key,
-      noStorePrefixes: ["unsafe."],
+      noStorePrefixes: ["  unsafe.  ", "", "   "],
     });
 
     await cached.request("unsafe.op", []);
     await cached.request("unsafe.op", []);
     expect(base.request).toHaveBeenCalledTimes(2);
     expect(key).not.toHaveBeenCalled();
+
+    if ("dispose" in cached) cached.dispose();
+  });
+
+  it("does not treat empty noStorePrefixes as a wildcard", async () => {
+    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const key = vi.fn(() => "k");
+    let calls = 0;
+    const base = {
+      request: vi.fn(async () => ++calls),
+    };
+
+    const cached = withCaching(base, {
+      key,
+      // If an empty string were treated as a real prefix, `startsWith("")`
+      // would match everything and accidentally disable caching broadly.
+      noStorePrefixes: [""],
+    });
+
+    expect(await cached.request("op", [])).toBe(1);
+    expect(await cached.request("op", [])).toBe(1);
+    expect(base.request).toHaveBeenCalledTimes(1);
+    expect(key).toHaveBeenCalledTimes(2);
 
     if ("dispose" in cached) cached.dispose();
   });
