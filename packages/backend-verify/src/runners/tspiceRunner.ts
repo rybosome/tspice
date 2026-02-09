@@ -6,6 +6,7 @@ import { createBackend, type SpiceBackend } from "@rybosome/tspice";
 
 import {
   resolveMetaKernelKernelsToLoad,
+  sanitizeMetaKernelTextForNative,
   sanitizeMetaKernelTextForWasm,
 } from "../kernels/metaKernel.js";
 
@@ -228,16 +229,9 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           } else {
             const restrictToDir = kernel.restrictToDir;
             if (restrictToDir && path.extname(kernel.path).toLowerCase() === ".tm") {
-              // CSPICE resolves relative PATH_VALUES entries (e.g. '.') against the current
-              // working directory when furnishing a meta-kernel. Our fixture packs use
-              // PATH_VALUES = ('.'), so temporarily chdir into the pack directory.
-              const prevCwd = process.cwd();
-              try {
-                process.chdir(restrictToDir);
-                backend.furnsh(kernel.path);
-              } finally {
-                process.chdir(prevCwd);
-              }
+              const metaKernelText = await readFile(kernel.path, "utf8");
+              const sanitized = sanitizeMetaKernelTextForNative(metaKernelText, restrictToDir);
+              backend.furnsh({ path: kernel.path, bytes: Buffer.from(sanitized, "utf8") });
             } else {
               backend.furnsh(kernel.path);
             }

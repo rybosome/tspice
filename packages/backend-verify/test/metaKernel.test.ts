@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   resolveMetaKernelKernelsToLoad,
+  sanitizeMetaKernelTextForNative,
   sanitizeMetaKernelTextForWasm,
 } from "../src/kernels/metaKernel.js";
 
@@ -40,7 +41,7 @@ describe("sanitizeMetaKernelTextForWasm", () => {
 
     // KERNELS_TO_LOAD should be removed.
     expect(out).not.toContain("KERNELS_TO_LOAD");
-    expect(out).not.toMatch(/\\$PACK\\/a\\.bsp/);
+    expect(out).not.toContain("$PACK/a.bsp");
   });
 
   it("only sanitizes within begindata when present", () => {
@@ -59,6 +60,37 @@ describe("sanitizeMetaKernelTextForWasm", () => {
 
     // Data section should be removed.
     expect(out).not.toContain("x.bsp");
+  });
+});
+
+describe("sanitizeMetaKernelTextForNative", () => {
+  it("rewrites relative PATH_VALUES and KERNELS_TO_LOAD entries to be cwd-independent", () => {
+    const input = [
+      "KPL/MK",
+      "",
+      "\\begintext",
+      "  PATH_VALUES = ( 'should-not-parse' )",
+      "\\begindata",
+      "  PATH_VALUES  = ( '.' '../rel' '/abs' )",
+      "  KERNELS_TO_LOAD = ( '$PACK/a.bsp' 'b.bsp' '../c.bsp' '/d.bsp' )",
+      "",
+    ].join("\n");
+
+    const out = sanitizeMetaKernelTextForNative(input, "/pack/dir");
+
+    // begintext blocks should be stripped.
+    expect(out).not.toContain("should-not-parse");
+
+    // PATH_VALUES should be fully qualified.
+    expect(out).toContain(`'/pack/dir'`);
+    expect(out).toContain(`'/pack/rel'`);
+    expect(out).toContain(`'/abs'`);
+
+    // KERNELS_TO_LOAD should be fully qualified (except for symbol expansions).
+    expect(out).toContain("'$PACK/a.bsp'");
+    expect(out).toContain(`'/pack/dir/b.bsp'`);
+    expect(out).toContain(`'/pack/c.bsp'`);
+    expect(out).toContain(`'/d.bsp'`);
   });
 });
 
