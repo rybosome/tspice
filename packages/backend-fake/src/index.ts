@@ -5,6 +5,7 @@ import type {
   KernelData,
   KernelKind,
   KernelSource,
+  KernelPoolVarType,
   SpiceBackend,
   Mat3RowMajor,
   SpiceMatrix6x6,
@@ -621,6 +622,23 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
 
+  type KernelPoolEntry =
+    | { type: "N"; values: number[] }
+    | { type: "C"; values: string[] };
+
+  const kernelPool = new Map<string, KernelPoolEntry>();
+
+  // swpool/cvpool "agent" state.
+  const kernelPoolWatches = new Map<string, { names: string[]; dirty: boolean }>();
+
+  const markKernelPoolUpdated = (name: string) => {
+    for (const watch of kernelPoolWatches.values()) {
+      if (watch.names.includes(name)) {
+        watch.dirty = true;
+      }
+    }
+  };
+
   const spiceCellUnsupported =
     "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
 
@@ -696,6 +714,8 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     kclear: () => {
       kernels.length = 0;
+      kernelPool.clear();
+      kernelPoolWatches.clear();
     },
 
     ktotal: (kind: KernelKind = "ALL") => {
@@ -713,6 +733,128 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
         source: k.source,
         handle: k.handle,
       } satisfies Found<KernelData>;
+    },
+
+    gdpool: (name, start, room) => {
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      if (entry.type !== "N") {
+        throw new Error(`Fake backend: gdpool only supports numeric variables (got ${entry.type})`);
+      }
+
+      const start0 = Math.max(0, Math.trunc(start));
+      const room0 = Math.trunc(room);
+      if (room0 < 0) {
+        throw new Error("Fake backend: gdpool expects room >= 0");
+      }
+
+      return {
+        found: true,
+        values: entry.values.slice(start0, start0 + room0),
+      } satisfies Found<{ values: number[] }>;
+    },
+
+    gipool: (name, start, room) => {
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      if (entry.type !== "N") {
+        throw new Error(`Fake backend: gipool only supports numeric variables (got ${entry.type})`);
+      }
+
+      const start0 = Math.max(0, Math.trunc(start));
+      const room0 = Math.trunc(room);
+      if (room0 < 0) {
+        throw new Error("Fake backend: gipool expects room >= 0");
+      }
+
+      return {
+        found: true,
+        values: entry.values.slice(start0, start0 + room0).map((v) => v | 0),
+      } satisfies Found<{ values: number[] }>;
+    },
+
+    gcpool: (name, start, room) => {
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      if (entry.type !== "C") {
+        throw new Error(`Fake backend: gcpool only supports character variables (got ${entry.type})`);
+      }
+
+      const start0 = Math.max(0, Math.trunc(start));
+      const room0 = Math.trunc(room);
+      if (room0 < 0) {
+        throw new Error("Fake backend: gcpool expects room >= 0");
+      }
+
+      return {
+        found: true,
+        values: entry.values.slice(start0, start0 + room0),
+      } satisfies Found<{ values: string[] }>;
+    },
+
+    gnpool: (template, start, room) => {
+      const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\[\]\\]/g, "\\$&");
+      const reSrc = `^${escapeRegex(template).replace(/\\\*/g, ".*").replace(/%/g, ".")}$`;
+      const re = new RegExp(reSrc);
+
+      const matches = Array.from(kernelPool.keys()).filter((k) => re.test(k)).sort();
+      if (matches.length === 0) {
+        return { found: false };
+      }
+
+      const start0 = Math.max(0, Math.trunc(start));
+      const room0 = Math.trunc(room);
+      if (room0 < 0) {
+        throw new Error("Fake backend: gnpool expects room >= 0");
+      }
+
+      return {
+        found: true,
+        values: matches.slice(start0, start0 + room0),
+      } satisfies Found<{ values: string[] }>;
+    },
+
+    dtpool: (name) => {
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      return {
+        found: true,
+        n: entry.values.length,
+        type: entry.type as KernelPoolVarType,
+      } satisfies Found<{ n: number; type: KernelPoolVarType }>;
+    },
+
+    pdpool: (name, values) => {
+      kernelPool.set(name, { type: "N", values: [...values] });
+      markKernelPoolUpdated(name);
+    },
+
+    pipool: (name, values) => {
+      kernelPool.set(name, { type: "N", values: values.map((v) => v | 0) });
+      markKernelPoolUpdated(name);
+    },
+
+    pcpool: (name, values) => {
+      kernelPool.set(name, { type: "C", values: [...values] });
+      markKernelPoolUpdated(name);
+    },
+
+    swpool: (agent, names) => {
+      // CSPICE guarantees the next cvpool(agent) returns true.
+      kernelPoolWatches.set(agent, { names: [...names], dirty: true });
+    },
+
+    cvpool: (agent) => {
+      const watch = kernelPoolWatches.get(agent);
+      if (!watch) return false;
+      const dirty = watch.dirty;
+      watch.dirty = false;
+      return dirty;
+    },
+
+    expool: (name) => {
+      const entry = kernelPool.get(name);
+      return entry?.type === "N";
     },
 
     tkvrsn: (item) => {

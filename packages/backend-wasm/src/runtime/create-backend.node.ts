@@ -9,6 +9,7 @@ import { createFramesApi } from "../domains/frames.js";
 import { createGeometryApi } from "../domains/geometry.js";
 import { createIdsNamesApi } from "../domains/ids-names.js";
 import { createKernelsApi } from "../domains/kernels.js";
+import { createKernelPoolApi } from "../domains/kernel-pool.js";
 import { createTimeApi, getToolkitVersion } from "../domains/time.js";
 import { createErrorApi } from "../domains/error.js";
 
@@ -97,6 +98,7 @@ export async function createWasmBackend(
     kind: "wasm",
     ...createTimeApi(module, toolkitVersion),
     ...createKernelsApi(module, fsApi),
+    ...createKernelPoolApi(module),
     ...createIdsNamesApi(module),
     ...createFramesApi(module),
     ...createEphemerisApi(module),

@@ -8,6 +8,7 @@
 #include "domains/geometry.h"
 #include "domains/ids_names.h"
 #include "domains/kernels.h"
+#include "domains/kernel_pool.h"
 #include "domains/time.h"
 
 // Forces a rebuild/relink when the resolved CSPICE install changes (cache/toolkit bump
@@ -26,6 +27,7 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   };
 
   if (!registerDomain(tspice_backend_node::RegisterKernels)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterKernelPool)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterTime)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterIdsNames)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterFrames)) return exports;

@@ -56,6 +56,111 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  // --- kernel pool ---
+  _tspice_gdpool(
+    namePtr: number,
+    start: number,
+    room: number,
+    outNPtr: number,
+    outValuesPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_gipool(
+    namePtr: number,
+    start: number,
+    room: number,
+    outNPtr: number,
+    outValuesPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_gcpool(
+    namePtr: number,
+    start: number,
+    room: number,
+    cvalen: number,
+    outNPtr: number,
+    outCvalsPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_gnpool(
+    namePtr: number,
+    start: number,
+    room: number,
+    cvalen: number,
+    outNPtr: number,
+    outCvalsPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dtpool(
+    namePtr: number,
+    foundPtr: number,
+    outNPtr: number,
+    outTypePtr: number,
+    outTypeMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_pdpool(
+    namePtr: number,
+    n: number,
+    valuesPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_pipool(
+    namePtr: number,
+    n: number,
+    valuesPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_pcpool(
+    namePtr: number,
+    n: number,
+    lenvals: number,
+    cvalsPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_swpool(
+    agentPtr: number,
+    nnames: number,
+    namlen: number,
+    namesPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_cvpool(
+    agentPtr: number,
+    outUpdatePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_expool(
+    namePtr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_str2et(utcPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_et2utc(
     et: number,
@@ -475,6 +580,19 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_kclear",
   "_tspice_ktotal",
   "_tspice_kdata",
+
+  "_tspice_gdpool",
+  "_tspice_gipool",
+  "_tspice_gcpool",
+  "_tspice_gnpool",
+  "_tspice_dtpool",
+  "_tspice_pdpool",
+  "_tspice_pipool",
+  "_tspice_pcpool",
+  "_tspice_swpool",
+  "_tspice_cvpool",
+  "_tspice_expool",
+
   "_tspice_str2et",
   "_tspice_et2utc",
   "_tspice_timout",

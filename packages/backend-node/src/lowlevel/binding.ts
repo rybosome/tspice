@@ -11,6 +11,18 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.kclear === "function", "Expected native addon to export kclear()");
   invariant(typeof native.ktotal === "function", "Expected native addon to export ktotal(kind?)");
   invariant(typeof native.kdata === "function", "Expected native addon to export kdata(which, kind?)");
+
+  invariant(typeof native.gdpool === "function", "Expected native addon to export gdpool(name, start, room)");
+  invariant(typeof native.gipool === "function", "Expected native addon to export gipool(name, start, room)");
+  invariant(typeof native.gcpool === "function", "Expected native addon to export gcpool(name, start, room)");
+  invariant(typeof native.gnpool === "function", "Expected native addon to export gnpool(template, start, room)");
+  invariant(typeof native.dtpool === "function", "Expected native addon to export dtpool(name)");
+  invariant(typeof native.pdpool === "function", "Expected native addon to export pdpool(name, values)");
+  invariant(typeof native.pipool === "function", "Expected native addon to export pipool(name, values)");
+  invariant(typeof native.pcpool === "function", "Expected native addon to export pcpool(name, values)");
+  invariant(typeof native.swpool === "function", "Expected native addon to export swpool(agent, names)");
+  invariant(typeof native.cvpool === "function", "Expected native addon to export cvpool(agent)");
+  invariant(typeof native.expool === "function", "Expected native addon to export expool(name)");
   invariant(typeof native.str2et === "function", "Expected native addon to export str2et(time)");
   invariant(typeof native.et2utc === "function", "Expected native addon to export et2utc(et, format, prec)");
   invariant(typeof native.timout === "function", "Expected native addon to export timout(et, picture)");
