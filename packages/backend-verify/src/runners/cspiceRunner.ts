@@ -427,7 +427,8 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
 
       try {
         const cwd = fixturePackCwdFromKernels(input.setup?.kernels);
-        const out = await invokeRunner(binaryPath, normalizeInputForNativeRunner(input), { cwd });
+        const invokeOpts = cwd === undefined ? {} : { cwd };
+        const out = await invokeRunner(binaryPath, normalizeInputForNativeRunner(input), invokeOpts);
         if (out.ok) {
           return { ok: true, result: out.result };
         }
