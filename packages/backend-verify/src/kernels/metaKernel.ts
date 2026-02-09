@@ -102,7 +102,21 @@ export function resolveMetaKernelKernelsToLoad(
   const allowedDirReal = restrictToDir ? canonicalizeForRestriction(restrictToDir) : undefined;
 
   const symbols = extractMetaKernelStringList(metaKernelText, "PATH_SYMBOLS");
+  if (symbols.length === 0 && hasMetaKernelListAssignment(metaKernelText, "PATH_SYMBOLS")) {
+    throw new Error(
+      `Meta-kernel contained a PATH_SYMBOLS assignment but no entries were parsed. ` +
+        `Ensure the assignment contains one or more quoted strings. metaKernel=${JSON.stringify(metaKernelPath)}`,
+    );
+  }
+
   const valuesRaw = extractMetaKernelStringList(metaKernelText, "PATH_VALUES");
+  if (valuesRaw.length === 0 && hasMetaKernelListAssignment(metaKernelText, "PATH_VALUES")) {
+    throw new Error(
+      `Meta-kernel contained a PATH_VALUES assignment but no entries were parsed. ` +
+        `Ensure the assignment contains one or more quoted strings. metaKernel=${JSON.stringify(metaKernelPath)}`,
+    );
+  }
+
   const values = valuesRaw.map((v) => (path.isAbsolute(v) ? path.resolve(v) : path.resolve(metaKernelDir, v)));
 
   const symbolMap = new Map<string, string>();

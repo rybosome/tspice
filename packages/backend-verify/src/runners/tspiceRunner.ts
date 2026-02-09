@@ -170,8 +170,9 @@ async function furnshOsKernelForWasm(
   restrictToDir?: string,
 ): Promise<void> {
   const absPath = path.resolve(osPath);
-  if (loaded.has(absPath)) return;
-  loaded.add(absPath);
+  const loadedKey = `bytes:${absPath}`;
+  if (loaded.has(loadedKey)) return;
+  loaded.add(loadedKey);
 
   if (path.extname(absPath).toLowerCase() === ".tm") {
     // The WASM backend can't directly load nested kernels referenced by a meta-kernel
@@ -208,8 +209,13 @@ async function furnshOsKernelForNative(
   restrictToDir?: string,
 ): Promise<void> {
   const absPath = path.resolve(osPath);
-  if (loaded.has(absPath)) return;
-  loaded.add(absPath);
+
+  // Native can load via OS-path or via bytes (sanitized meta-kernel). Keep those
+  // distinct so we don't incorrectly dedupe across modes.
+  const mode = restrictToDir && path.extname(absPath).toLowerCase() === ".tm" ? "bytes" : "ospath";
+  const loadedKey = `${mode}:${absPath}`;
+  if (loaded.has(loadedKey)) return;
+  loaded.add(loadedKey);
 
   if (restrictToDir && path.extname(absPath).toLowerCase() === ".tm") {
     // Mirror the WASM behavior:
