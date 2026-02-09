@@ -1,0 +1,30 @@
+{
+  "name": "@rybosome/tspice-backend-verify",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && node ./scripts/pretest-cspice-runner.mjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@rybosome/tspice": "workspace:*",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.8"
+  }
+}
