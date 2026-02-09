@@ -7,6 +7,7 @@ import {
   tspiceRpcRequestType,
   tspiceRpcResponseType,
 } from "./rpcProtocol.js";
+import { decodeRpcValue, encodeRpcValue } from "./rpcValueCodec.js";
 
 type WorkerGlobalScopeLike = {
   addEventListener(type: "message", listener: (ev: MessageEvent<unknown>) => void): void;
@@ -49,12 +50,12 @@ export function exposeTransportToWorker(opts: {
 
       void (async () => {
         try {
-          const value = await opts.transport.request(op, args);
+          const value = await opts.transport.request(op, args.map(decodeRpcValue));
           const res: RpcResponse = {
             type: tspiceRpcResponseType,
             id,
             ok: true,
-            value,
+            value: encodeRpcValue(value),
           };
           self.postMessage(res);
         } catch (err) {

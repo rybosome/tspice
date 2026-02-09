@@ -7,6 +7,7 @@ import {
   tspiceRpcRequestType,
   tspiceRpcResponseType,
 } from "./rpcProtocol.js";
+import { decodeRpcValue, encodeRpcValue } from "./rpcValueCodec.js";
 
 export type WorkerLike = {
   postMessage(message: unknown): void;
@@ -219,7 +220,7 @@ export function createWorkerTransport(opts: {
         );
       } else {
         kind = "resolve";
-        value = (msg as Extract<RpcResponse, { ok: true }>).value;
+        value = decodeRpcValue((msg as Extract<RpcResponse, { ok: true }>).value);
       }
     } else if (msg.ok === false) {
       if (!("error" in msg)) {
@@ -393,7 +394,7 @@ export function createWorkerTransport(opts: {
 
       const msg: RpcRequest = { type: tspiceRpcRequestType, id, op, args };
       try {
-        w.postMessage(msg);
+        w.postMessage({ ...msg, args: args.map(encodeRpcValue) });
       } catch (err) {
         if (pendingById.get(id) === pending) pendingById.delete(id);
 
