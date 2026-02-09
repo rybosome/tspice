@@ -167,6 +167,12 @@ export function createWorkerTransport(opts: {
     // reject it before the next tick.
     settlingById.set(id, pending);
 
+    // Extract response fields up-front so the deferred macrotask doesn't close
+    // over the full `msg` payload.
+    const ok = msg.ok === true;
+    const value = ok ? (msg as Extract<RpcResponse, { ok: true }>).value : undefined;
+    const error = ok ? undefined : (msg as Extract<RpcResponse, { ok: false }>).error;
+
     const timeout = setTimeout(() => {
       settleTimeoutById.delete(id);
       if (settlingById.get(id) !== pending) return;
@@ -177,12 +183,12 @@ export function createWorkerTransport(opts: {
         return;
       }
 
-      if (msg.ok === true) {
-        pending.resolve((msg as Extract<RpcResponse, { ok: true }>).value);
+      if (ok) {
+        pending.resolve(value);
         return;
       }
 
-      const err = deserializeError((msg as Extract<RpcResponse, { ok: false }>).error);
+      const err = deserializeError(error);
       pending.reject(err);
     }, 0);
 

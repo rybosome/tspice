@@ -2,7 +2,7 @@ import type { SpiceTransport } from "../types.js";
 
 export type CachePolicy = "cache" | "no-store";
 
-const DEFAULT_UNSAFE_NO_STORE_PREFIXES = [
+const DEFAULT_UNSAFE_NO_STORE_OPS: readonly string[] = [
   // Kernel-loading / kernel pool mutation operations. These can contain large
   // binary payloads, and caching them can break correctness by skipping
   // side-effects.
@@ -12,7 +12,7 @@ const DEFAULT_UNSAFE_NO_STORE_PREFIXES = [
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",
-] as const;
+];
 
 const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): boolean => {
   if (!prefixes || prefixes.length === 0) return false;
@@ -112,6 +112,23 @@ type Unrefable = {
   unref?: unknown;
 };
 
+function tryUnrefTimer(timer: unknown): void {
+  let unref: unknown;
+  try {
+    unref = (timer as Unrefable).unref;
+  } catch {
+    return;
+  }
+
+  if (typeof unref !== "function") return;
+
+  try {
+    unref.call(timer);
+  } catch {
+    // Ignore. Some runtimes / shims may throw for `unref` even when present.
+  }
+}
+
 function defaultKey(op: string, args: unknown[]): string | null {
   try {
     return JSON.stringify([op, args]);
@@ -152,7 +169,7 @@ export function withCaching(
 
   const getPolicy = (op: string): CachePolicy => {
     const explicit = policyByOp?.[op];
-    const isUnsafeDefault = matchesAnyPrefix(op, DEFAULT_UNSAFE_NO_STORE_PREFIXES);
+    const isUnsafeDefault = DEFAULT_UNSAFE_NO_STORE_OPS.includes(op);
 
     if (explicit === "cache") {
       if (isUnsafeDefault && !allowUnsafePolicyOverrides) return "no-store";
@@ -190,8 +207,7 @@ export function withCaching(
       // In Node, interval timers keep the event loop alive by default. `unref()`
       // prevents this from pinning test runners / CLIs. Browsers return a
       // numeric id (no-op).
-      const unref = (sweepTimer as unknown as Unrefable).unref;
-      if (typeof unref === "function") unref.call(sweepTimer);
+      tryUnrefTimer(sweepTimer);
     }
   }
 

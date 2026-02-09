@@ -170,6 +170,52 @@ describe("withCaching()", () => {
     if ("dispose" in cached) cached.dispose();
   });
 
+
+  it("treats built-in unsafe defaults as exact-match (not prefix)", async () => {
+    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const key = vi.fn(() => "k");
+    let calls = 0;
+    const base = {
+      request: vi.fn(async () => ++calls),
+    };
+
+    const cached = withCaching(base, { key });
+
+    // `kit.loadKernel` is a built-in default no-store op. We should NOT
+    // accidentally treat `kit.loadKernelExtra` (a different op) as no-store just
+    // because it shares a prefix.
+    expect(await cached.request("kit.loadKernelExtra", [])).toBe(1);
+    expect(await cached.request("kit.loadKernelExtra", [])).toBe(1);
+
+    expect(base.request).toHaveBeenCalledTimes(1);
+    expect(key).toHaveBeenCalledTimes(2);
+
+    if ("dispose" in cached) cached.dispose();
+  });
+
+  it("treats user-provided noStorePrefixes as prefixes", async () => {
+    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const key = vi.fn(() => "k");
+    const base = {
+      request: vi.fn(async () => 123),
+    };
+
+    const cached = withCaching(base, {
+      key,
+      noStorePrefixes: ["kit.loadKernel"],
+    });
+
+    await cached.request("kit.loadKernelExtra", []);
+    await cached.request("kit.loadKernelExtra", []);
+
+    expect(base.request).toHaveBeenCalledTimes(2);
+    expect(key).not.toHaveBeenCalled();
+
+    if ("dispose" in cached) cached.dispose();
+  });
+
   it("supports per-op cache policy overrides", async () => {
     const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
