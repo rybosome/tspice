@@ -27,3 +27,9 @@ export type { SpiceWorkerClient } from "./worker/createSpiceWorkerClient.js";
 export { createSpiceWorkerClient } from "./worker/createSpiceWorkerClient.js";
 
 export { createSpiceAsyncFromTransport } from "./client/createSpiceAsyncFromTransport.js";
+
+export type { KernelPack, KernelPackKernel, LoadKernelPackOptions } from "./kernels/kernelPack.js";
+export { loadKernelPack } from "./kernels/kernelPack.js";
+
+export type { CreatePublicKernelsOptions, PublicKernelId, PublicKernelsBuilder } from "./kernels/publicKernels.js";
+export { createPublicKernels, publicKernels } from "./kernels/publicKernels.js";
