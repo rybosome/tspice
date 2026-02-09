@@ -10,7 +10,6 @@ import { kxtrctJs, matchesKernelKind, normalizeKindInput } from "@rybosome/tspic
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { WASM_ERR_MAX_BYTES, withMalloc } from "../codec/alloc.js";
 import { tspiceCall0, tspiceCall1Path } from "../codec/calls.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
@@ -173,17 +172,9 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
     kxtrct: (keywd, terms, wordsq) => {
       return kxtrctJs(keywd, terms, wordsq);
     },
-    kplfrm: (_frmcls, idset) => {
-      // The WASM bundle doesn't currently export `tspice_kplfrm`; best-effort
-      // approximation is to clear the output set.
-      withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-        const result = module._tspice_scard(0, idset as unknown as number, errPtr, WASM_ERR_MAX_BYTES);
-        if (result !== 0) {
-          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-        }
-      });
+    kplfrm: (_frmcls, _idset) => {
+      throw new Error("kplfrm not supported in current WASM bundle");
     },
-
     ktotal: (kind: KernelKindInput = "ALL") => {
       const kinds = normalizeKindInput(kind).map((k) => k.toUpperCase());
       const requested = new Set(kinds);

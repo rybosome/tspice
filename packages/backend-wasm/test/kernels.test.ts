@@ -54,6 +54,25 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
     expect(ktotalAll()).toBe(before);
   });
 
+  it("throws for kplfrm until the WASM export is implemented", async () => {
+    const backend = await createWasmBackend();
+
+    const idset = backend.newIntCell(4);
+
+    try {
+      backend.insrti(1, idset);
+      backend.insrti(2, idset);
+      expect(backend.card(idset)).toBe(2);
+
+      expect(() => backend.kplfrm(1, idset)).toThrow(/kplfrm.*not supported/i);
+
+      // Ensure we don't silently clear/modify the output set.
+      expect(backend.card(idset)).toBe(2);
+    } finally {
+      backend.freeCell(idset);
+    }
+  });
+
   it("rejects OS/URL-looking string paths (virtual ids only)", async () => {
     const backend = await createWasmBackend();
 
