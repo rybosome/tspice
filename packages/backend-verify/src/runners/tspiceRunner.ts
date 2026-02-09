@@ -6,7 +6,6 @@ import { createBackend, type SpiceBackend } from "@rybosome/tspice";
 
 import {
   resolveMetaKernelKernelsToLoad,
-  sanitizeMetaKernelTextForNative,
   sanitizeMetaKernelTextForWasm,
 } from "../kernels/metaKernel.js";
 
@@ -230,8 +229,16 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
             const restrictToDir = kernel.restrictToDir;
             if (restrictToDir && path.extname(kernel.path).toLowerCase() === ".tm") {
               const metaKernelText = await readFile(kernel.path, "utf8");
-              const sanitized = sanitizeMetaKernelTextForNative(metaKernelText, restrictToDir);
-              backend.furnsh({ path: kernel.path, bytes: Buffer.from(sanitized, "utf8") });
+              const kernelsToLoad = resolveMetaKernelKernelsToLoad(metaKernelText, kernel.path, {
+                restrictToDir,
+              });
+
+              // For fixture packs on native backends, furnishing the meta-kernel text itself
+              // can be problematic if we need to rewrite PATH_VALUES (CSPICE has a per-string
+              // element limit). Instead, resolve & furnish each kernel path directly.
+              for (const k of kernelsToLoad) {
+                backend.furnsh(k);
+              }
             } else {
               backend.furnsh(kernel.path);
             }
