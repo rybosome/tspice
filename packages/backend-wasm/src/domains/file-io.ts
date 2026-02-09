@@ -55,20 +55,43 @@ function readHeapI32(module: EmscriptenModule, idx: number, context: string): nu
   return v;
 }
 
+function heap32IndexFromPtr(ptr: number, context: string): number {
+  if (!Number.isFinite(ptr) || !Number.isInteger(ptr)) {
+    throw new TypeError(`${context}: expected ptr to be a finite integer (got ${ptr})`);
+  }
+  if (ptr < 0) {
+    throw new RangeError(`${context}: expected ptr to be >= 0 (got ${ptr})`);
+  }
+  if (ptr % 4 !== 0) {
+    throw new RangeError(`${context}: expected ptr to be 4-byte aligned (got ${ptr})`);
+  }
+  return ptr / 4;
+}
+
 function writeDlaDescr8(module: EmscriptenModule, ptr: number, descr: DlaDescriptor): void {
-  const base = ptr >> 2;
-  module.HEAP32[base + 0] = descr.bwdptr | 0;
-  module.HEAP32[base + 1] = descr.fwdptr | 0;
-  module.HEAP32[base + 2] = descr.ibase | 0;
-  module.HEAP32[base + 3] = descr.isize | 0;
-  module.HEAP32[base + 4] = descr.dbase | 0;
-  module.HEAP32[base + 5] = descr.dsize | 0;
-  module.HEAP32[base + 6] = descr.cbase | 0;
-  module.HEAP32[base + 7] = descr.csize | 0;
+  const base = heap32IndexFromPtr(ptr, "writeDlaDescr8(ptr)");
+  const heap = module.HEAP32;
+
+  // Typed array out-of-bounds writes are ignored, which can mask bugs and
+  // lead to silently-corrupted descriptors. Fail fast instead.
+  if (base < 0 || base + 7 >= heap.length) {
+    throw new RangeError(
+      `writeDlaDescr8: descriptor pointer out of bounds (ptr=${ptr}, base=${base}, heapLen=${heap.length})`,
+    );
+  }
+
+  heap[base + 0] = descr.bwdptr | 0;
+  heap[base + 1] = descr.fwdptr | 0;
+  heap[base + 2] = descr.ibase | 0;
+  heap[base + 3] = descr.isize | 0;
+  heap[base + 4] = descr.dbase | 0;
+  heap[base + 5] = descr.dsize | 0;
+  heap[base + 6] = descr.cbase | 0;
+  heap[base + 7] = descr.csize | 0;
 }
 
 function readDlaDescr8(module: EmscriptenModule, ptr: number): DlaDescriptor {
-  const base = ptr >> 2;
+  const base = heap32IndexFromPtr(ptr, "readDlaDescr8(ptr)");
   const heap = module.HEAP32;
 
   // HEAP32 returns `undefined` for out-of-bounds reads. That can mask bugs and
