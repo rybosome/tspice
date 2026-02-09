@@ -1,6 +1,11 @@
 export type { SpiceTransport } from "./types.js";
 
-export type { CachingTransport, WithCachingOptions, WithCachingResult } from "./cache/withCaching.js";
+export type {
+  CachePolicy,
+  CachingTransport,
+  WithCachingOptions,
+  WithCachingResult,
+} from "./cache/withCaching.js";
 export { isCachingTransport, withCaching } from "./cache/withCaching.js";
 
 export type {

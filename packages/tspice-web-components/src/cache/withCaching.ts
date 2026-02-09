@@ -1,5 +1,19 @@
 import type { SpiceTransport } from "../types.js";
 
+export type CachePolicy = "cache" | "no-store";
+
+const DEFAULT_NO_STORE_OPS = new Set<string>([
+  // Kernel-loading / kernel pool mutation operations. These can contain large
+  // binary payloads, and caching them can break correctness by skipping
+  // side-effects.
+  "kit.loadKernel",
+  "kit.unloadKernel",
+  "kit.kclear",
+  "raw.furnsh",
+  "raw.unload",
+  "raw.kclear",
+]);
+
 export type CachingTransport = SpiceTransport & {
   /**
    * Clear all cached entries.
@@ -38,6 +52,17 @@ export type WithCachingOptions = {
    * Cache key function. Returning `null` disables caching for that call.
    */
   key?: (op: string, args: unknown[]) => string | null;
+
+  /**
+   * Optional per-op cache policy.
+   *
+   * - `"cache"` => normal caching behavior
+   * - `"no-store"` => bypass cache entirely (no key computation, no read/write)
+   *
+   * By default, kernel-mutating ops (e.g. `kit.loadKernel`, `raw.furnsh`) are
+   * treated as `"no-store"`.
+   */
+  policy?: Record<string, CachePolicy>;
 };
 
 export type WithCachingResult = SpiceTransport | CachingTransport;
@@ -92,6 +117,13 @@ export function withCaching(
   if (!cachingEnabled) return base;
 
   const keyFn = opts?.key ?? defaultKey;
+  const policyByOp = opts?.policy;
+
+  const getPolicy = (op: string): CachePolicy => {
+    const explicit = policyByOp?.[op];
+    if (explicit === "cache" || explicit === "no-store") return explicit;
+    return DEFAULT_NO_STORE_OPS.has(op) ? "no-store" : "cache";
+  };
 
   const cache = new Map<string, CacheEntry>();
   let sweepTimer: ReturnType<typeof setInterval> | undefined;
@@ -153,6 +185,10 @@ export function withCaching(
   const request = (op: string, args: unknown[]): Promise<unknown> => {
     // Explicit “no cache” mode.
     if (!cachingEnabled) return base.request(op, args);
+
+    // Per-method cache policy. When bypassing, skip *all* cache work (no key
+    // computation, no reads/writes, no TTL sweeps).
+    if (getPolicy(op) === "no-store") return base.request(op, args);
 
     const k = keyFn(op, args);
     if (k == null) return base.request(op, args);
