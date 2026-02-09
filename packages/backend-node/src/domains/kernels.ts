@@ -61,10 +61,10 @@ function nativeKindQueryOrNull(kindsUpper: readonly string[]): string | null {
 
 export function createKernelsApi(native: NativeAddon, stager: KernelStager): KernelsApi {
   const kernelDataFromNative = (result: {
-    file: unknown;
-    filtyp: unknown;
-    source: unknown;
-    handle: unknown;
+    file?: unknown;
+    filtyp?: unknown;
+    source?: unknown;
+    handle?: unknown;
   }): KernelData => {
     invariant(typeof result.file === "string", "Expected kdata().file to be a string");
     invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
