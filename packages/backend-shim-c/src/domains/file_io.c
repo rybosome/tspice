@@ -30,7 +30,7 @@ static void tspice_write_error(char *err, int errMaxBytes, const char *msg) {
   err[errMaxBytes - 1] = '\0';
 }
 
-static void tspice_write_dla_descr8(const SpiceDLADescr *descr, int *outDescr8) {
+static void tspice_write_dla_descr8(const SpiceDLADescr *descr, int32_t *outDescr8) {
   if (!descr || !outDescr8) return;
   outDescr8[0] = (int)descr->bwdptr;
   outDescr8[1] = (int)descr->fwdptr;
@@ -42,7 +42,7 @@ static void tspice_write_dla_descr8(const SpiceDLADescr *descr, int *outDescr8) 
   outDescr8[7] = (int)descr->csize;
 }
 
-static void tspice_read_dla_descr8(const int *descr8, SpiceDLADescr *outDescr) {
+static void tspice_read_dla_descr8(const int32_t *descr8, SpiceDLADescr *outDescr) {
   if (!descr8 || !outDescr) return;
   outDescr->bwdptr = (SpiceInt)descr8[0];
   outDescr->fwdptr = (SpiceInt)descr8[1];
@@ -168,7 +168,12 @@ int tspice_dafbfs(int handle, char *err, int errMaxBytes) {
 int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
-  if (outFound) *outFound = 0;
+  if (!outFound) {
+    tspice_write_error(err, errMaxBytes, "tspice_daffna: outFound must be non-NULL");
+    return 1;
+  }
+
+  *outFound = 0;
 
   // DAF search state is global; select the handle so callers can interleave.
   dafcs_c((SpiceInt)handle);
@@ -184,7 +189,7 @@ int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes) {
     return 1;
   }
 
-  if (outFound) *outFound = foundC == SPICETRUE ? 1 : 0;
+  *outFound = foundC == SPICETRUE ? 1 : 0;
   return 0;
 }
 
@@ -283,7 +288,7 @@ int tspice_dlaopn(
   return 0;
 }
 
-int tspice_dlabfs(int handle, int *outDescr8, int *outFound, char *err, int errMaxBytes) {
+int tspice_dlabfs(int handle, int32_t *outDescr8, int *outFound, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
 
@@ -297,7 +302,7 @@ int tspice_dlabfs(int handle, int *outDescr8, int *outFound, char *err, int errM
   }
 
   *outFound = 0;
-  memset(outDescr8, 0, sizeof(int) * 8);
+  memset(outDescr8, 0, sizeof(int32_t) * 8);
 
   SpiceDLADescr descr;
   SpiceBoolean foundC = SPICEFALSE;
@@ -317,8 +322,8 @@ int tspice_dlabfs(int handle, int *outDescr8, int *outFound, char *err, int errM
 
 int tspice_dlafns(
     int handle,
-    const int *descr8,
-    int *outNextDescr8,
+    const int32_t *descr8,
+    int32_t *outNextDescr8,
     int *outFound,
     char *err,
     int errMaxBytes) {
@@ -339,7 +344,7 @@ int tspice_dlafns(
   }
 
   *outFound = 0;
-  memset(outNextDescr8, 0, sizeof(int) * 8);
+  memset(outNextDescr8, 0, sizeof(int32_t) * 8);
 
   SpiceDLADescr current = {0};
   SpiceDLADescr next = {0};

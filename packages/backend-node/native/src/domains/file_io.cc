@@ -85,7 +85,7 @@ static bool ReadDlaDescriptor(Napi::Env env, const Napi::Value& value, int32_t o
       ReadDlaDescriptorField(env, obj, "csize", &outDescr8[7]);
 }
 
-static Napi::Object MakeDlaDescriptor(Napi::Env env, const int descr8[8]) {
+static Napi::Object MakeDlaDescriptor(Napi::Env env, const int32_t descr8[8]) {
   Napi::Object descr = Napi::Object::New(env);
   descr.Set("bwdptr", Napi::Number::New(env, (double)descr8[0]));
   descr.Set("fwdptr", Napi::Number::New(env, (double)descr8[1]));
@@ -363,7 +363,7 @@ static Napi::Object Dlabfs(const Napi::CallbackInfo& info) {
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
-  int descr8[8] = {0};
+  int32_t descr8[8] = {0};
   int found = 0;
   const int code = tspice_dlabfs(handle, descr8, &found, err, (int)sizeof(err));
   if (code != 0) {
@@ -393,19 +393,14 @@ static Napi::Object Dlafns(const Napi::CallbackInfo& info) {
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
     return Napi::Object::New(env);
   }
-  int32_t descr8_i32[8] = {0};
-  if (!ReadDlaDescriptor(env, info[1], descr8_i32)) {
+  int32_t descr8[8] = {0};
+  if (!ReadDlaDescriptor(env, info[1], descr8)) {
     return Napi::Object::New(env);
-  }
-
-  int descr8[8] = {0};
-  for (int i = 0; i < 8; i++) {
-    descr8[i] = (int)descr8_i32[i];
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
-  int nextDescr8[8] = {0};
+  int32_t nextDescr8[8] = {0};
   int found = 0;
   const int code = tspice_dlafns(handle, descr8, nextDescr8, &found, err, (int)sizeof(err));
   if (code != 0) {

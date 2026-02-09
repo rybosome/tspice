@@ -82,6 +82,9 @@ int tspice_dafcls(int handle, char *err, int errMaxBytes);
 int tspice_dafbfs(int handle, char *err, int errMaxBytes);
 
 // Selects the current DAF via `dafcs_c(handle)` and then calls `daffna_c`.
+//
+// `outFound` is required (non-NULL) to keep ABI usage explicit and consistent
+// with the DLA APIs.
 int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes);
 
 // --- DAS -------------------------------------------------------------------
@@ -100,13 +103,13 @@ int tspice_dlaopn(
     char *err,
     int errMaxBytes);
 
-// Writes a DLA descriptor as 8 ints in this order:
+// Writes a DLA descriptor as 8 int32s in this order:
 // [bwdptr, fwdptr, ibase, isize, dbase, dsize, cbase, csize]
-int tspice_dlabfs(int handle, int *outDescr8, int *outFound, char *err, int errMaxBytes);
+int tspice_dlabfs(int handle, int32_t *outDescr8, int *outFound, char *err, int errMaxBytes);
 int tspice_dlafns(
     int handle,
-    const int *descr8,
-    int *outNextDescr8,
+    const int32_t *descr8,
+    int32_t *outNextDescr8,
     int *outFound,
     char *err,
     int errMaxBytes);

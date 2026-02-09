@@ -10,7 +10,7 @@ import {
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-backend-contract";
 
-import type { EmscriptenModule } from "../lowlevel/exports.js";
+import { assertEmscriptenModule, type EmscriptenModule } from "../lowlevel/exports.js";
 
 import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
@@ -250,49 +250,10 @@ function tspiceCallWnvald(module: EmscriptenModule, size: number, n: number, win
   });
 }
 
-function assertCellsWindowsExports(module: EmscriptenModule): void {
-  const requiredExports = [
-    "_tspice_new_int_cell",
-    "_tspice_new_double_cell",
-    "_tspice_new_char_cell",
-    "_tspice_new_window",
-    "_tspice_free_cell",
-    "_tspice_free_window",
-    "_tspice_ssize",
-    "_tspice_scard",
-    "_tspice_card",
-    "_tspice_size",
-    "_tspice_valid",
-    "_tspice_insrti",
-    "_tspice_insrtd",
-    "_tspice_insrtc",
-    "_tspice_cell_geti",
-    "_tspice_cell_getd",
-    "_tspice_cell_getc",
-    "_tspice_wninsd",
-    "_tspice_wncard",
-    "_tspice_wnfetd",
-    "_tspice_wnvald",
-  ] as const;
-
-  const missing: string[] = [];
-  for (const key of requiredExports) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (typeof (module as any)[key] !== "function") {
-      missing.push(key);
-    }
-  }
-
-  if (missing.length > 0) {
-    throw new TypeError(
-      `Invalid tspice WASM module (missing required cells/windows exports): ${missing.join(", ")}. ` +
-        `Rebuild the WASM backend (scripts/build-backend-wasm.mjs).`,
-    );
-  }
-}
-
 export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
-  assertCellsWindowsExports(module);
+  // Single source of truth for required exports.
+  // (Cells/windows are runtime-required; see REQUIRED_FUNCTION_EXPORTS.)
+  assertEmscriptenModule(module);
 
   // Security + correctness: track allocated pointers per backend instance.
   //
