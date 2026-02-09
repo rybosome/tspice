@@ -1,11 +1,70 @@
-import { createSpiceAsync } from "@rybosome/tspice";
+import { createSpiceAsync, type SpiceAsync } from "@rybosome/tspice";
 
 import type { SpiceTransport } from "../types.js";
 import { exposeTransportToWorker } from "./exposeTransportToWorker.js";
 
+const blockedStringKeys = new Set<string>([
+  // Promise / thenable
+  "then",
+
+  // Prototype / constructor escapes
+  "__proto__",
+  "prototype",
+  "constructor",
+
+  // Common stringification / inspection hooks
+  "toJSON",
+  "inspect",
+
+  // Object.prototype keys (avoid accidental RPC calls during introspection)
+  "toString",
+  "valueOf",
+  "toLocaleString",
+  "hasOwnProperty",
+  "isPrototypeOf",
+  "propertyIsEnumerable",
+  "__defineGetter__",
+  "__defineSetter__",
+  "__lookupGetter__",
+  "__lookupSetter__",
+]);
+
 const isSafeRpcKey = (key: string): boolean => /^[A-Za-z_$][\w$]*$/.test(key);
 
-function createSpiceTransportFromSpiceAsync(spice: unknown): SpiceTransport {
+type RpcNamespace = "raw" | "kit";
+
+type RpcAllowlist = Partial<Record<RpcNamespace, ReadonlySet<string>>>;
+
+const allowedKitMethodList = [
+  "loadKernel",
+  "unloadKernel",
+  "kclear",
+  "toolkitVersion",
+  "utcToEt",
+  "etToUtc",
+  "frameTransform",
+  "getState",
+] as const satisfies readonly (keyof SpiceAsync["kit"])[];
+
+const defaultAllowlist: RpcAllowlist = {
+  // NOTE: `kit` is deliberately allowlisted because it's a small, curated API.
+  // `raw` is intentionally not allowlisted here (see module comment below).
+  kit: new Set<string>(allowedKitMethodList),
+};
+
+function createSpiceTransportFromSpiceAsync(
+  spice: SpiceAsync,
+  opts?: {
+    /**
+     * Optional allowlist by namespace.
+     *
+     * When provided for a namespace, any non-allowlisted method name is rejected.
+     */
+    allowlist?: RpcAllowlist;
+  },
+): SpiceTransport {
+  const allowlist = opts?.allowlist ?? defaultAllowlist;
+
   return {
     request: async (op: string, args: unknown[]): Promise<unknown> => {
       const dot = op.indexOf(".");
@@ -20,17 +79,26 @@ function createSpiceTransportFromSpiceAsync(spice: unknown): SpiceTransport {
         throw new Error(`Unknown namespace: ${namespace}`);
       }
 
-      if (!isSafeRpcKey(method)) {
+      if (!isSafeRpcKey(method) || blockedStringKeys.has(method)) {
         throw new Error(`Invalid method name: ${method}`);
       }
 
-      const target = (spice as any)[namespace];
-      const fn = target?.[method];
+      const ns = namespace satisfies RpcNamespace;
+
+      const nsAllowlist = allowlist[ns];
+      if (nsAllowlist && !nsAllowlist.has(method)) {
+        throw new Error(`Disallowed op: ${op}`);
+      }
+
+      const target = spice[ns] as unknown as Record<string, unknown>;
+      const fn = target[method];
       if (typeof fn !== "function") {
         throw new Error(`Unknown op: ${op}`);
       }
 
-      return await fn(...args);
+      // `spice.raw` and `spice.kit` are proxies that return bound/wrapped
+      // functions, but use Reflect.apply to be defensive about `this`.
+      return await Reflect.apply(fn as (...a: unknown[]) => unknown, target, args);
     },
   };
 }
@@ -38,6 +106,13 @@ function createSpiceTransportFromSpiceAsync(spice: unknown): SpiceTransport {
 void (async () => {
   // NOTE: This file is meant to be loaded as a Web Worker module.
   // It intentionally has no exports and runs as a side-effect.
+  //
+  // Security/design note:
+  // - This worker entry is intended for internal workspace use.
+  // - It intentionally exposes the full tspice `SpiceAsync` RPC surface area
+  //   (subject to the blocked key checks above).
+  // - If you need a tighter RPC capability set (especially for `raw.*`), create
+  //   a custom worker entry and provide an explicit allowlist.
   const spice = await createSpiceAsync({ backend: "wasm" });
 
   const transport = createSpiceTransportFromSpiceAsync(spice);
@@ -48,7 +123,7 @@ void (async () => {
       // Best-effort cleanup. Worker termination also releases resources, but
       // this helps callers who keep the worker alive.
       try {
-        await (spice as any).raw?.kclear?.();
+        await spice.raw.kclear();
       } catch {
         // ignore
       }

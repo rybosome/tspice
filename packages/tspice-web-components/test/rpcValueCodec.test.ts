@@ -37,4 +37,17 @@ describe("rpcValueCodec", () => {
     expect(decoded.nested[1]).toBeInstanceOf(Mat3);
     expect(Array.from(decoded.nested[1].rowMajor)).toEqual([9, 8, 7, 6, 5, 4, 3, 2, 1]);
   });
+
+  it("preserves non-plain objects (e.g. TypedArrays)", () => {
+    const bytes = new Uint8Array([1, 2, 3]);
+
+    const encoded = encodeRpcValue(bytes);
+    const decoded = decodeRpcValue(encoded);
+
+    expect(encoded).toBe(bytes);
+    expect(decoded).toBe(bytes);
+    expect(decoded).toBeInstanceOf(Uint8Array);
+    expect(Array.from(decoded as Uint8Array)).toEqual([1, 2, 3]);
+  });
+
 });

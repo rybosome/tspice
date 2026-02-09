@@ -6,6 +6,29 @@ import { createSpiceAsyncFromTransport } from "../client/createSpiceAsyncFromTra
 import { createWorkerTransport, type WorkerTransport } from "./createWorkerTransport.js";
 import { createSpiceWorker } from "./createSpiceWorker.js";
 
+type DisposeFn = () => void | Promise<void>;
+
+type DisposableLike = {
+  dispose?: DisposeFn;
+};
+
+function getDisposeFn(value: unknown): DisposeFn | undefined {
+  if (value === null) return undefined;
+  const t = typeof value;
+  if (t !== "object" && t !== "function") return undefined;
+
+  const dispose = (value as DisposableLike).dispose;
+  return typeof dispose === "function" ? dispose : undefined;
+}
+
+function isPromiseLike<T = unknown>(value: unknown): value is PromiseLike<T> {
+  if (value === null) return false;
+  const t = typeof value;
+  if (t !== "object" && t !== "function") return false;
+
+  return typeof (value as { then?: unknown }).then === "function";
+}
+
 export type SpiceWorkerClient<TTransport extends SpiceTransport = WorkerTransport> = {
   worker: Worker;
   /** The underlying request/response RPC transport (always a WorkerTransport). */
@@ -16,6 +39,11 @@ export type SpiceWorkerClient<TTransport extends SpiceTransport = WorkerTranspor
   spice: SpiceAsync;
   /** Dispose wrapper transport (if any) and the worker transport. */
   dispose: () => void;
+  /**
+   * Async dispose variant that awaits wrapper transport cleanup (if any) before
+   * disposing the underlying worker transport.
+   */
+  disposeAsync: () => Promise<void>;
 };
 
 export function createSpiceWorkerClient<TTransport extends SpiceTransport = WorkerTransport>(opts?: {
@@ -50,14 +78,36 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
 
   const spice = createSpiceAsyncFromTransport(transport);
 
-  const dispose = (): void => {
-    // If a wrapper transport supports cleanup, run it before disposing the
-    // underlying worker transport.
-    if (transport !== (baseTransport as unknown as TTransport)) {
-      (transport as any)?.dispose?.();
-    }
+  let disposePromise: Promise<void> | undefined;
 
-    baseTransport.dispose();
+  const disposeAsync = (): Promise<void> => {
+    if (disposePromise) return disposePromise;
+
+    disposePromise = (async () => {
+      try {
+        // If a wrapper transport supports cleanup, run it before disposing the
+        // underlying worker transport.
+        if (transport !== (baseTransport as unknown as TTransport)) {
+          const wrapperDispose = getDisposeFn(transport);
+          if (wrapperDispose) {
+            const result = wrapperDispose.call(transport as unknown as object);
+            if (isPromiseLike(result)) await result;
+          }
+        }
+      } finally {
+        baseTransport.dispose();
+      }
+    })();
+
+    return disposePromise;
+  };
+
+  const dispose = (): void => {
+    // Fire-and-forget. Ensure we don't surface unhandled rejections if wrapper
+    // cleanup fails.
+    void disposeAsync().catch(() => {
+      // ignore
+    });
   };
 
   return {
@@ -66,5 +116,6 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
     transport,
     spice,
     dispose,
+    disposeAsync,
   };
 }

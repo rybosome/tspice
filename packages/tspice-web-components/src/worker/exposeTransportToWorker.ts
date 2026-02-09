@@ -33,44 +33,18 @@ export function exposeTransportToWorker(opts: {
 
   let disposed = false;
 
+  const inFlight = new Set<Promise<void>>();
+
+  const trackInFlight = (p: Promise<void>): void => {
+    inFlight.add(p);
+    void p.finally(() => {
+      inFlight.delete(p);
+    });
+  };
+
   const onMessage = (ev: MessageEvent<unknown>): void => {
     const msg = ev.data as Partial<RpcMessageFromMain> | null | undefined;
     if (!msg || typeof msg.type !== "string") return;
-
-    if (msg.type === tspiceRpcRequestType) {
-      const req = msg as Partial<RpcRequest>;
-
-      const id = req.id;
-      const op = req.op;
-      const args = req.args;
-
-      if (typeof id !== "number" || typeof op !== "string" || !Array.isArray(args)) {
-        return;
-      }
-
-      void (async () => {
-        try {
-          const value = await opts.transport.request(op, args.map(decodeRpcValue));
-          const res: RpcResponse = {
-            type: tspiceRpcResponseType,
-            id,
-            ok: true,
-            value: encodeRpcValue(value),
-          };
-          self.postMessage(res);
-        } catch (err) {
-          const res: RpcResponse = {
-            type: tspiceRpcResponseType,
-            id,
-            ok: false,
-            error: serializeError(err),
-          };
-          self.postMessage(res);
-        }
-      })();
-
-      return;
-    }
 
     if (msg.type === tspiceRpcDisposeType) {
       // Dispose is a one-way signal; ignore any further traffic.
@@ -96,6 +70,50 @@ export function exposeTransportToWorker(opts: {
 
       return;
     }
+
+    // Ignore any further traffic after disposal (including in-flight requests
+    // that may finish later).
+    if (disposed) return;
+
+    if (msg.type === tspiceRpcRequestType) {
+      const req = msg as Partial<RpcRequest>;
+
+      const id = req.id;
+      const op = req.op;
+      const args = req.args;
+
+      if (typeof id !== "number" || typeof op !== "string" || !Array.isArray(args)) {
+        return;
+      }
+
+      const p = (async () => {
+        try {
+          const value = await opts.transport.request(op, args.map(decodeRpcValue));
+          if (disposed) return;
+
+          const res: RpcResponse = {
+            type: tspiceRpcResponseType,
+            id,
+            ok: true,
+            value: encodeRpcValue(value),
+          };
+          self.postMessage(res);
+        } catch (err) {
+          if (disposed) return;
+
+          const res: RpcResponse = {
+            type: tspiceRpcResponseType,
+            id,
+            ok: false,
+            error: serializeError(err),
+          };
+          self.postMessage(res);
+        }
+      })();
+
+      trackInFlight(p);
+      return;
+    }
   };
 
   self.addEventListener("message", onMessage);
@@ -103,6 +121,11 @@ export function exposeTransportToWorker(opts: {
   const dispose = (): void => {
     if (disposed) return;
     disposed = true;
+
+    // Prevent any further responses from being posted (including from in-flight
+    // request handlers).
+    inFlight.clear();
+
     self.removeEventListener("message", onMessage);
   };
 

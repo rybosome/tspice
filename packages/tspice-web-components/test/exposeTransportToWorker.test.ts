@@ -102,4 +102,41 @@ describe("exposeTransportToWorker()", () => {
     expect(onDispose).toHaveBeenCalledTimes(1);
     expect(self.closed).toBe(true);
   });
+
+
+  it("does not post responses after dispose", async () => {
+    const { exposeTransportToWorker } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const self = new FakeWorkerSelf();
+
+    let resolveRequest: ((value: number) => void) | undefined;
+
+    const transport = {
+      request: vi.fn(async () =>
+        await new Promise<number>((resolve) => {
+          resolveRequest = resolve;
+        }),
+      ),
+    };
+
+    exposeTransportToWorker({ transport, self, closeOnDispose: false });
+
+    self.emitMessage({
+      type: "tspice:request",
+      id: 1,
+      op: "kit.utcToEt",
+      args: [],
+    });
+
+    // Dispose before the request resolves.
+    self.emitMessage({ type: "tspice:dispose" });
+
+    resolveRequest?.(123);
+    await flush();
+
+    expect(transport.request).toHaveBeenCalledTimes(1);
+    expect(self.posted).toHaveLength(0);
+  });
 });
