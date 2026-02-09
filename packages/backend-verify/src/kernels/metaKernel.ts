@@ -53,10 +53,31 @@ function canonicalizeForRestriction(p: string): string {
   // `realpath` resolves symlinks (preventing link-based escapes), but it throws
   // for non-existent files. When that happens, fall back to a normalized absolute
   // path so we can still enforce `..`-based escapes.
+  //
+  // Note: some platforms (e.g. macOS) have symlinked temp dirs like `/tmp -> /private/tmp`.
+  // In that case, a non-existent *file* under an existing symlinked directory will cause
+  // `realpath` to throw, which can make the child path appear to escape when compared to
+  // a realpathed base dir. We try to realpath the deepest existing parent directory and
+  // then re-append the remaining path segments.
   try {
     return fs.realpathSync.native(p);
   } catch {
-    return path.resolve(p);
+    let cur = path.resolve(p);
+    const suffix: string[] = [];
+
+    // Walk up until we find an existing path we can realpath.
+    // (This is intentionally sync; it's used during parsing / verification.)
+    while (cur !== path.dirname(cur) && !fs.existsSync(cur)) {
+      suffix.unshift(path.basename(cur));
+      cur = path.dirname(cur);
+    }
+
+    try {
+      const baseReal = fs.realpathSync.native(cur);
+      return path.join(baseReal, ...suffix);
+    } catch {
+      return path.resolve(p);
+    }
   }
 }
 
