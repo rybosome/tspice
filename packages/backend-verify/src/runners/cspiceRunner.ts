@@ -69,7 +69,8 @@ function kernelEntryPath(entry: KernelEntry): string {
   return typeof entry === "string" ? entry : entry.path;
 }
 
-function fixturePackCwdFromKernels(kernels: KernelEntry[] | undefined): string | undefined {
+/** @internal (exported for tests) */
+export function fixturePackCwdFromKernels(kernels: KernelEntry[] | undefined): string | undefined {
   if (!kernels) return undefined;
 
   // Fixture-pack meta-kernels use PATH_VALUES=("."), which CSPICE resolves relative
@@ -79,6 +80,15 @@ function fixturePackCwdFromKernels(kernels: KernelEntry[] | undefined): string |
     if (typeof k !== "string" && k.restrictToDir && path.extname(k.path).toLowerCase() === ".tm") {
       dirs.add(k.restrictToDir);
     }
+  }
+
+  if (dirs.size > 1) {
+    const list = [...dirs].sort();
+    throw new Error(
+      `Multiple fixture packs were detected for this case; unable to choose a single cwd for CSPICE. ` +
+        `Either load kernels from exactly one fixture pack, or provide explicit PATH_VALUES in a single meta-kernel. ` +
+        `packs=${JSON.stringify(list)}`,
+    );
   }
 
   if (dirs.size !== 1) return undefined;

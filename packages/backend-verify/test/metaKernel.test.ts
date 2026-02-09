@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { sanitizeMetaKernelTextForWasm } from "../src/kernels/metaKernel.js";
+import {
+  resolveMetaKernelKernelsToLoad,
+  sanitizeMetaKernelTextForWasm,
+} from "../src/kernels/metaKernel.js";
 
 describe("sanitizeMetaKernelTextForWasm", () => {
   it("strips begintext blocks and removes KERNELS_TO_LOAD assignments in begindata", () => {
@@ -52,5 +55,33 @@ describe("sanitizeMetaKernelTextForWasm", () => {
 
     // Data section should be removed.
     expect(out).not.toContain("x.bsp");
+  });
+});
+
+describe("resolveMetaKernelKernelsToLoad", () => {
+  it("throws when KERNELS_TO_LOAD is present but parses empty", () => {
+    const input = [
+      "KPL/MK",
+      "\\begindata",
+      "KERNELS_TO_LOAD = ( )",
+      "",
+    ].join("\n");
+
+    expect(() =>
+      resolveMetaKernelKernelsToLoad(input, "/abs/path/to/meta.tm"),
+    ).toThrow(/KERNELS_TO_LOAD assignment but no kernel entries were parsed/i);
+  });
+
+  it("throws when KERNELS_TO_LOAD contains no quoted entries", () => {
+    const input = [
+      "KPL/MK",
+      "\\begindata",
+      "KERNELS_TO_LOAD = ( unquoted-kernel.bsp )",
+      "",
+    ].join("\n");
+
+    expect(() =>
+      resolveMetaKernelKernelsToLoad(input, "/abs/path/to/meta.tm"),
+    ).toThrow(/KERNELS_TO_LOAD assignment but no kernel entries were parsed/i);
   });
 });

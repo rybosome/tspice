@@ -37,6 +37,12 @@ export function extractMetaKernelStringList(text: string, name: string): string[
   return items;
 }
 
+function hasMetaKernelListAssignment(text: string, name: string): boolean {
+  const clean = stripMetaKernelBegintextBlocks(text);
+  const re = new RegExp(String.raw`\b${escapeRegExp(name)}\b\s*(\+?=)\s*\(`, "i");
+  return re.test(clean);
+}
+
 function ensureWithinDirOrThrow(resolved: string, baseDir: string, message: string): void {
   const rel = path.relative(baseDir, resolved);
   // rel === '' means `resolved === baseDir` which is acceptable.
@@ -64,6 +70,12 @@ export function resolveMetaKernelKernelsToLoad(
   }
 
   const kernels = extractMetaKernelStringList(metaKernelText, "KERNELS_TO_LOAD");
+  if (kernels.length === 0 && hasMetaKernelListAssignment(metaKernelText, "KERNELS_TO_LOAD")) {
+    throw new Error(
+      `Meta-kernel contained a KERNELS_TO_LOAD assignment but no kernel entries were parsed. ` +
+        `Ensure the assignment contains one or more quoted strings. metaKernel=${JSON.stringify(metaKernelPath)}`,
+    );
+  }
   return kernels.map((k) => {
     const explicitAbsolute = path.isAbsolute(k);
 

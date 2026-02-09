@@ -136,7 +136,9 @@ function resolveKernelPaths(p: string, sourceDir: string): KernelEntry[] {
   };
 
   // Absolute paths are passed through directly.
-  if (path.isAbsolute(p)) return resolveMaybePack(p);
+  // Still canonicalize (e.g. remove `..` segments) so downstream comparisons and
+  // fixture-pack cwd selection behave consistently.
+  if (path.isAbsolute(p)) return resolveMaybePack(path.resolve(p));
 
   // Expand `$FIXTURES/...` to the fixtures root.
   if (p === "$FIXTURES" || p.startsWith("$FIXTURES/") || p.startsWith("$FIXTURES\\")) {
