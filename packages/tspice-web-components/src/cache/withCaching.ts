@@ -2,7 +2,7 @@ import type { SpiceTransport } from "../types.js";
 
 export type CachePolicy = "cache" | "no-store";
 
-const DEFAULT_NO_STORE_OPS = new Set<string>([
+const DEFAULT_UNSAFE_NO_STORE_PREFIXES = [
   // Kernel-loading / kernel pool mutation operations. These can contain large
   // binary payloads, and caching them can break correctness by skipping
   // side-effects.
@@ -12,7 +12,15 @@ const DEFAULT_NO_STORE_OPS = new Set<string>([
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",
-]);
+] as const;
+
+const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): boolean => {
+  if (!prefixes || prefixes.length === 0) return false;
+  for (const prefix of prefixes) {
+    if (prefix && op.startsWith(prefix)) return true;
+  }
+  return false;
+};
 
 export type CachingTransport = SpiceTransport & {
   /**
@@ -63,6 +71,23 @@ export type WithCachingOptions = {
    * treated as `"no-store"`.
    */
   policy?: Record<string, CachePolicy>;
+
+  /**
+   * Optional list of op-name prefixes that should default to `"no-store"`.
+   *
+   * This is useful for future-proofing (e.g. if new kernel mutation ops are
+   * introduced upstream).
+   */
+  noStorePrefixes?: string[];
+
+  /**
+   * If `true`, allows `policy` to override built-in unsafe default `"no-store"`
+   * ops to `"cache"`.
+   *
+   * Without this, attempts to force-cache these ops will be treated as
+   * `"no-store"` as a guardrail.
+   */
+  allowUnsafePolicyOverrides?: boolean;
 };
 
 export type WithCachingResult = SpiceTransport | CachingTransport;
@@ -118,11 +143,23 @@ export function withCaching(
 
   const keyFn = opts?.key ?? defaultKey;
   const policyByOp = opts?.policy;
+  const noStorePrefixes = opts?.noStorePrefixes;
+  const allowUnsafePolicyOverrides = opts?.allowUnsafePolicyOverrides === true;
 
   const getPolicy = (op: string): CachePolicy => {
     const explicit = policyByOp?.[op];
-    if (explicit === "cache" || explicit === "no-store") return explicit;
-    return DEFAULT_NO_STORE_OPS.has(op) ? "no-store" : "cache";
+    const isUnsafeDefault = matchesAnyPrefix(op, DEFAULT_UNSAFE_NO_STORE_PREFIXES);
+
+    if (explicit === "cache") {
+      if (isUnsafeDefault && !allowUnsafePolicyOverrides) return "no-store";
+      return "cache";
+    }
+
+    if (explicit === "no-store") return "no-store";
+
+    if (isUnsafeDefault) return "no-store";
+    if (matchesAnyPrefix(op, noStorePrefixes)) return "no-store";
+    return "cache";
   };
 
   const cache = new Map<string, CacheEntry>();
