@@ -62,6 +62,53 @@ function normalizeKindInput(kind: KernelKindInput | undefined): readonly string[
   return [raw];
 }
 
+const NATIVE_KIND_SET = new Set<string>([
+  "ALL",
+  "SPK",
+  "CK",
+  "PCK",
+  "DSK",
+  "TEXT",
+  "EK",
+  "META",
+]);
+
+const TEXT_SUBTYPE_SET = new Set<string>(["LSK", "FK", "IK", "SCLK"]);
+
+function nativeKindQueryOrNull(kindsUpper: readonly string[]): string | null {
+  if (kindsUpper.length === 0) {
+    return null;
+  }
+
+  const requested = new Set(kindsUpper);
+  if (requested.has("ALL")) {
+    return "ALL";
+  }
+
+  const hasText = requested.has("TEXT");
+  const hasTextSubtype = kindsUpper.some((k) => TEXT_SUBTYPE_SET.has(k));
+  const hasUnknown = kindsUpper.some((k) => !NATIVE_KIND_SET.has(k) && !TEXT_SUBTYPE_SET.has(k));
+
+  // Only forward when the request is representable as a CSPICE kind string.
+  if (hasUnknown) {
+    return null;
+  }
+  if (hasTextSubtype && !hasText) {
+    return null;
+  }
+
+  const seen = new Set<string>();
+  const nativeKinds: string[] = [];
+  for (const k of kindsUpper) {
+    if (!NATIVE_KIND_SET.has(k) || k === "ALL") continue;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    nativeKinds.push(k);
+  }
+
+  return nativeKinds.length === 0 ? null : nativeKinds.join(" ");
+}
+
 function matchesKernelKind(requested: ReadonlySet<string>, kernel: KernelData): boolean {
   if (requested.size === 0) {
     return false;
@@ -84,6 +131,25 @@ function matchesKernelKind(requested: ReadonlySet<string>, kernel: KernelData): 
 }
 
 export function createKernelsApi(native: NativeAddon, stager: KernelStager): KernelsApi {
+  const kernelDataFromNative = (result: {
+    file: unknown;
+    filtyp: unknown;
+    source: unknown;
+    handle: unknown;
+  }): KernelData => {
+    invariant(typeof result.file === "string", "Expected kdata().file to be a string");
+    invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
+    invariant(typeof result.source === "string", "Expected kdata().source to be a string");
+    invariant(typeof result.handle === "number", "Expected kdata().handle to be a number");
+
+    return {
+      file: stager.virtualizePathFromSpice(result.file),
+      filtyp: result.filtyp,
+      source: stager.virtualizePathFromSpice(result.source),
+      handle: result.handle,
+    };
+  };
+
   return {
     furnsh: (kernel: KernelSource) => {
       stager.furnsh(kernel, native);
@@ -135,6 +201,17 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
 
     ktotal: (kind: KernelKindInput = "ALL") => {
       const kinds = normalizeKindInput(kind).map((k) => k.toUpperCase());
+      if (kinds.length === 0) {
+        return 0;
+      }
+
+      const nativeQuery = nativeKindQueryOrNull(kinds);
+      if (nativeQuery != null) {
+        const total = native.ktotal(nativeQuery);
+        invariant(typeof total === "number", "Expected native backend ktotal() to return a number");
+        return total;
+      }
+
       const requested = new Set(kinds);
 
       const totalAll = native.ktotal("ALL");
@@ -147,18 +224,7 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
           continue;
         }
 
-        invariant(typeof result.file === "string", "Expected kdata().file to be a string");
-        invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
-        invariant(typeof result.source === "string", "Expected kdata().source to be a string");
-        invariant(typeof result.handle === "number", "Expected kdata().handle to be a number");
-
-        const kernel: KernelData = {
-          file: stager.virtualizePathFromSpice(result.file),
-          filtyp: result.filtyp,
-          source: stager.virtualizePathFromSpice(result.source),
-          handle: result.handle,
-        };
-
+        const kernel = kernelDataFromNative(result);
         if (matchesKernelKind(requested, kernel)) {
           count++;
         }
@@ -172,6 +238,21 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
       }
 
       const kinds = normalizeKindInput(kind).map((k) => k.toUpperCase());
+      if (kinds.length === 0) {
+        return { found: false };
+      }
+
+      const nativeQuery = nativeKindQueryOrNull(kinds);
+      if (nativeQuery != null) {
+        const result = native.kdata(which, nativeQuery);
+        if (!result.found) {
+          return { found: false };
+        }
+
+        const kernel = kernelDataFromNative(result);
+        return { found: true, ...kernel } satisfies Found<KernelData>;
+      }
+
       const requested = new Set(kinds);
 
       const totalAll = native.ktotal("ALL");
@@ -184,17 +265,7 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
           continue;
         }
 
-        invariant(typeof result.file === "string", "Expected kdata().file to be a string");
-        invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
-        invariant(typeof result.source === "string", "Expected kdata().source to be a string");
-        invariant(typeof result.handle === "number", "Expected kdata().handle to be a number");
-
-        const kernel: KernelData = {
-          file: stager.virtualizePathFromSpice(result.file),
-          filtyp: result.filtyp,
-          source: stager.virtualizePathFromSpice(result.source),
-          handle: result.handle,
-        };
+        const kernel = kernelDataFromNative(result);
 
         if (!matchesKernelKind(requested, kernel)) {
           continue;
