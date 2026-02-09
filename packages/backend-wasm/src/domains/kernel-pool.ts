@@ -18,6 +18,45 @@ const UTF8_ENCODER = new TextEncoder();
 const POOL_STRING_MAX_BYTES = 2048;
 const POOL_NAME_MAX_BYTES = 64;
 
+function assertNonEmptyString(fn: string, field: string, value: string): void {
+  if (value.trim().length === 0) {
+    throw new RangeError(`${fn}(): ${field} must be a non-empty string`);
+  }
+}
+
+function assertNonEmptyStringArray(
+  fn: string,
+  field: string,
+  values: readonly string[],
+): void {
+  if (values.length === 0) {
+    throw new RangeError(`${fn}(): ${field} must be a non-empty array`);
+  }
+  for (const v of values) {
+    if (v.trim().length === 0) {
+      throw new RangeError(`${fn}(): ${field} must not contain empty strings`);
+    }
+  }
+}
+
+function assertAllFinite(fn: string, field: string, values: readonly number[]): void {
+  for (const v of values) {
+    if (!Number.isFinite(v)) {
+      throw new RangeError(`${fn}(): ${field} must contain only finite numbers`);
+    }
+  }
+}
+
+function assertAllInt32(fn: string, field: string, values: readonly number[]): void {
+  for (const v of values) {
+    if (!Number.isInteger(v) || v < -2147483648 || v > 2147483647) {
+      throw new RangeError(
+        `${fn}(): ${field} must contain only 32-bit integers (got ${String(v)})`,
+      );
+    }
+  }
+}
+
 
 function assertPoolRange(fn: string, start: number, room: number): void {
   if (!Number.isFinite(start) || !Number.isInteger(start) || start < 0) {
@@ -332,6 +371,9 @@ function tspiceCallDtpool(
 }
 
 function tspiceCallPdpool(module: EmscriptenModule, name: string, values: readonly number[]): void {
+  assertNonEmptyString("pdpool", "name", name);
+  assertAllFinite("pdpool", "values", values);
+
   const namePtr = writeUtf8CString(module, name);
 
   try {
@@ -354,15 +396,23 @@ function tspiceCallPdpool(module: EmscriptenModule, name: string, values: readon
 }
 
 function tspiceCallPipool(module: EmscriptenModule, name: string, values: readonly number[]): void {
+  assertNonEmptyString("pipool", "name", name);
+  assertAllInt32("pipool", "values", values);
+
   const namePtr = writeUtf8CString(module, name);
 
   try {
     const n = values.length;
     const valuesBytes = Math.max(4, n * 4);
 
-    withAllocs(module, [WASM_ERR_MAX_BYTES, valuesBytes], (errPtr, valuesPtr) => {
+    // Ensure 4-byte alignment for `HEAP32` writes.
+    // Mirror the `gdpool` pattern (padding + align) to be safe even if our
+    // allocator doesn't guarantee alignment.
+    withAllocs(module, [WASM_ERR_MAX_BYTES, valuesBytes + 3], (errPtr, rawValuesPtr) => {
+      const valuesPtr = (rawValuesPtr + 3) & ~3;
+
       if (n > 0) {
-        module.HEAP32.set(values.map((v) => v | 0), valuesPtr >> 2);
+        module.HEAP32.set(values, valuesPtr >> 2);
       }
 
       const result = module._tspice_pipool(namePtr, n, valuesPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -376,6 +426,9 @@ function tspiceCallPipool(module: EmscriptenModule, name: string, values: readon
 }
 
 function tspiceCallPcpool(module: EmscriptenModule, name: string, values: readonly string[]): void {
+  assertNonEmptyString("pcpool", "name", name);
+  assertNonEmptyStringArray("pcpool", "values", values);
+
   const namePtr = writeUtf8CString(module, name);
 
   try {
@@ -397,6 +450,9 @@ function tspiceCallPcpool(module: EmscriptenModule, name: string, values: readon
 }
 
 function tspiceCallSwpool(module: EmscriptenModule, agent: string, names: readonly string[]): void {
+  assertNonEmptyString("swpool", "agent", agent);
+  assertNonEmptyStringArray("swpool", "names", names);
+
   const agentPtr = writeUtf8CString(module, agent);
 
   try {
@@ -418,6 +474,8 @@ function tspiceCallSwpool(module: EmscriptenModule, agent: string, names: readon
 }
 
 function tspiceCallCvpool(module: EmscriptenModule, agent: string): boolean {
+  assertNonEmptyString("cvpool", "agent", agent);
+
   const agentPtr = writeUtf8CString(module, agent);
 
   try {
@@ -435,6 +493,8 @@ function tspiceCallCvpool(module: EmscriptenModule, agent: string): boolean {
 }
 
 function tspiceCallExpool(module: EmscriptenModule, name: string): boolean {
+  assertNonEmptyString("expool", "name", name);
+
   const namePtr = writeUtf8CString(module, name);
 
   try {

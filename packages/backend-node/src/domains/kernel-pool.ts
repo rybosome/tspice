@@ -51,7 +51,11 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
       }
       invariant(typeof out.n === "number", "Expected dtpool().n to be a number");
       invariant(typeof out.type === "string", "Expected dtpool().type to be a string");
-      return { found: true, n: out.n, type: out.type as KernelPoolVarType };
+      const t = out.type.trim();
+      if (t !== "C" && t !== "N") {
+        throw new Error(`dtpool(): unexpected type '${t}' for ${name}`);
+      }
+      return { found: true, n: out.n, type: t };
     },
 
     pdpool: (name, values) => {
