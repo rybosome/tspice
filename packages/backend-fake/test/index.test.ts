@@ -90,6 +90,28 @@ describe("@rybosome/tspice-backend-fake", () => {
     expect(() => b.gnpool("NO_MATCHES", 0, 0)).toThrow(/room > 0/i);
   });
 
+  it("validates pipool/gipool integer ranges (no JS bitwise wrapping)", () => {
+    const b = createFakeBackend();
+
+    // pipool(): rejects non-integers
+    expect(() => b.pipool("I", [1.5])).toThrow(TypeError);
+
+    // pipool(): rejects out-of-range int32
+    expect(() => b.pipool("I", [2147483648])).toThrow(RangeError);
+    expect(() => b.pipool("I", [-2147483649])).toThrow(RangeError);
+
+    // pipool(): accepts int32 edge values and preserves them
+    b.pipool("I", [-2147483648, 2147483647]);
+    expect(b.gipool("I", 0, 10)).toEqual({
+      found: true,
+      values: [-2147483648, 2147483647],
+    });
+
+    // gipool(): throws if the stored numeric variable isn't representable as int32
+    b.pdpool("NUM", [1.1]);
+    expect(() => b.gipool("NUM", 0, 10)).toThrow(TypeError);
+  });
+
   it("supports escaping wildcards in gnpool templates", () => {
     const b = createFakeBackend();
     b.pdpool("A*B", [1]);

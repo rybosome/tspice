@@ -15,7 +15,11 @@ import type {
   SpkezrResult,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
-import { assertGetmsgWhich, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import {
+  assertGetmsgWhich,
+  assertSpiceInt32,
+  brandMat3RowMajor,
+} from "@rybosome/tspice-backend-contract";
 
 /**
  * A deterministic, pure-TS "toy" backend.
@@ -775,7 +779,10 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
       return {
         found: true,
-        values: entry.values.slice(start0, start0 + room0).map((v) => v | 0),
+        values: entry.values.slice(start0, start0 + room0).map((v, i) => {
+          assertSpiceInt32(v, `gipool(): values[${start0 + i}]`);
+          return v;
+        }),
       } satisfies Found<{ values: number[] }>;
     },
 
@@ -870,7 +877,10 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     pipool: (name, values) => {
-      kernelPool.set(name, { type: "N", values: values.map((v) => v | 0) });
+      for (let i = 0; i < values.length; i++) {
+        assertSpiceInt32(values[i]!, `pipool(): values[${i}]`);
+      }
+      kernelPool.set(name, { type: "N", values: [...values] });
       markKernelPoolUpdated(name);
     },
 
