@@ -17,6 +17,9 @@ import type { SpiceHandle } from "../shared/types.js";
 * Each field is an **int32** (32-bit signed integer). Backend implementations
 * must reject (throw) non-integers and values outside the int32 range to
 * prevent silent truncation across native/WASM boundaries.
+*
+* This matches tspice's project-wide assumption that `SpiceInt` is 32-bit
+* (`sizeof(SpiceInt) == 4`) in all supported builds.
 */
 export type DlaDescriptor = {
   bwdptr: number;

@@ -638,8 +638,9 @@ export function assertEmscriptenModule(m: unknown): asserts m is EmscriptenModul
   if (invalid.length > 0) {
     throw new TypeError(
       `Invalid tspice WASM module (missing/invalid exports): ${invalid.join(", ")}. ` +
-        `You can disable this validation via CreateWasmBackendOptions.validateEmscriptenModule=false ` +
-        `(Node also supports TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT=1).`,
+        `tspice requires the full export surface (core wrappers + cells/windows helpers + Emscripten FS incl FS.mkdirTree). ` +
+        `You can skip this check for debugging via CreateWasmBackendOptions.validateEmscriptenModule=false ` +
+        `(Node: TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT=1), but missing exports will still crash later.`,
     );
   }
 }

@@ -113,7 +113,7 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
     handles.delete(handleId);
   }
 
-  return {
+  const api = {
     exists: (path: string) => {
       const exists = native.exists(path);
       invariant(typeof exists === "boolean", "Expected native backend exists() to return a boolean");
@@ -155,4 +155,11 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
 
     dlacls: (handle: SpiceHandle) => close(handle, "DLA", (h) => native.dlacls(h)),
   } satisfies FileIoApi;
+
+  Object.defineProperty(api, "__debugOpenHandleCount", {
+    value: () => handles.size,
+    enumerable: false,
+  });
+
+  return api;
 }

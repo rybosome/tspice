@@ -46,26 +46,8 @@ static bool ReadDlaDescriptorField(
   }
 
   const Napi::Value value = obj.Get(key);
-  if (!value.IsNumber()) {
-    ThrowSpiceError(
-        Napi::TypeError::New(env, std::string("Expected DLA descriptor field '") + key + "' to be a number"));
-    return false;
-  }
-
-  const double d = value.As<Napi::Number>().DoubleValue();
-  const double lo = (double)std::numeric_limits<int32_t>::min();
-  const double hi = (double)std::numeric_limits<int32_t>::max();
-  if (!std::isfinite(d) || std::floor(d) != d || d < lo || d > hi) {
-    ThrowSpiceError(Napi::TypeError::New(
-        env,
-        std::string("Expected DLA descriptor field '") + key + "' to be a 32-bit signed integer"));
-    return false;
-  }
-
-  if (out) {
-    *out = (int32_t)d;
-  }
-  return true;
+  const std::string label = std::string("DLA descriptor field '") + key + "'";
+  return ReadInt32Checked(env, value, label.c_str(), out);
 }
 
 static bool ReadDlaDescriptor(Napi::Env env, const Napi::Value& value, int32_t outDescr8[8]) {
@@ -364,7 +346,7 @@ static Napi::Object Dlabfs(const Napi::CallbackInfo& info) {
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int32_t descr8[8] = {0};
-  int found = 0;
+  int32_t found = 0;
   const int code = tspice_dlabfs(handle, descr8, &found, err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, std::string("CSPICE failed while calling dlabfs(handle=") + std::to_string(handle) + ")", err);
@@ -401,7 +383,7 @@ static Napi::Object Dlafns(const Napi::CallbackInfo& info) {
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int32_t nextDescr8[8] = {0};
-  int found = 0;
+  int32_t found = 0;
   const int code = tspice_dlafns(handle, descr8, nextDescr8, &found, err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, std::string("CSPICE failed while calling dlafns(handle=") + std::to_string(handle) + ")", err);

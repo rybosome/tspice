@@ -32,14 +32,14 @@ static void tspice_write_error(char *err, int errMaxBytes, const char *msg) {
 
 static void tspice_write_dla_descr8(const SpiceDLADescr *descr, int32_t *outDescr8) {
   if (!descr || !outDescr8) return;
-  outDescr8[0] = (int)descr->bwdptr;
-  outDescr8[1] = (int)descr->fwdptr;
-  outDescr8[2] = (int)descr->ibase;
-  outDescr8[3] = (int)descr->isize;
-  outDescr8[4] = (int)descr->dbase;
-  outDescr8[5] = (int)descr->dsize;
-  outDescr8[6] = (int)descr->cbase;
-  outDescr8[7] = (int)descr->csize;
+  outDescr8[0] = (int32_t)descr->bwdptr;
+  outDescr8[1] = (int32_t)descr->fwdptr;
+  outDescr8[2] = (int32_t)descr->ibase;
+  outDescr8[3] = (int32_t)descr->isize;
+  outDescr8[4] = (int32_t)descr->dbase;
+  outDescr8[5] = (int32_t)descr->dsize;
+  outDescr8[6] = (int32_t)descr->cbase;
+  outDescr8[7] = (int32_t)descr->csize;
 }
 
 static void tspice_read_dla_descr8(const int32_t *descr8, SpiceDLADescr *outDescr) {
@@ -288,7 +288,7 @@ int tspice_dlaopn(
   return 0;
 }
 
-int tspice_dlabfs(int handle, int32_t *outDescr8, int *outFound, char *err, int errMaxBytes) {
+int tspice_dlabfs(int handle, int32_t *outDescr8, int32_t *outFound, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
 
@@ -324,7 +324,7 @@ int tspice_dlafns(
     int handle,
     const int32_t *descr8,
     int32_t *outNextDescr8,
-    int *outFound,
+    int32_t *outFound,
     char *err,
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();

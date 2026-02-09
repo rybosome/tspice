@@ -105,12 +105,12 @@ int tspice_dlaopn(
 
 // Writes a DLA descriptor as 8 int32s in this order:
 // [bwdptr, fwdptr, ibase, isize, dbase, dsize, cbase, csize]
-int tspice_dlabfs(int handle, int32_t *outDescr8, int *outFound, char *err, int errMaxBytes);
+int tspice_dlabfs(int handle, int32_t *outDescr8, int32_t *outFound, char *err, int errMaxBytes);
 int tspice_dlafns(
     int handle,
     const int32_t *descr8,
     int32_t *outNextDescr8,
-    int *outFound,
+    int32_t *outFound,
     char *err,
     int errMaxBytes);
 
