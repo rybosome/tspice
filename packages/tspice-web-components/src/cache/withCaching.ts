@@ -220,9 +220,6 @@ export function withCaching(
   };
 
   const request = (op: string, args: unknown[]): Promise<unknown> => {
-    // Explicit “no cache” mode.
-    if (!cachingEnabled) return base.request(op, args);
-
     // Per-method cache policy. When bypassing, skip *all* cache work (no key
     // computation, no reads/writes, no TTL sweeps).
     if (getPolicy(op) === "no-store") return base.request(op, args);
@@ -242,29 +239,30 @@ export function withCaching(
 
     if (existing) cache.delete(k);
 
-    // Insert immediately to dedupe in-flight requests.
-    const entry: CacheEntry = {
-      promise: Promise.resolve(undefined),
-    };
-
-    cache.set(k, entry);
-    enforceMaxEntries();
-
-    entry.promise = base.request(op, args).then(
+    // Cache the in-flight promise to dedupe concurrent callers.
+    let promise!: Promise<unknown>;
+    promise = base.request(op, args).then(
       (value) => {
-        if (ttlMs !== undefined && ttlMs > 0 && cache.get(k) === entry) {
-          entry.expiresAt = Date.now() + ttlMs;
+        if (ttlMs !== undefined && ttlMs > 0) {
+          const current = cache.get(k);
+          if (current?.promise === promise) {
+            current.expiresAt = Date.now() + ttlMs;
+          }
         }
         return value;
       },
       (err) => {
         // Never cache rejections.
-        if (cache.get(k) === entry) cache.delete(k);
+        const current = cache.get(k);
+        if (current?.promise === promise) cache.delete(k);
         throw err;
       },
     );
 
-    return entry.promise;
+    cache.set(k, { promise });
+    enforceMaxEntries();
+
+    return promise;
   };
 
   return {

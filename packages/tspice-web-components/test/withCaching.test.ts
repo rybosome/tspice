@@ -24,6 +24,54 @@ describe("withCaching()", () => {
     if ("dispose" in cached) cached.dispose();
   });
 
+  it("dedupes in-flight requests", async () => {
+    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    let resolve!: (value: number) => void;
+    const pending = new Promise<number>((res) => {
+      resolve = res;
+    });
+
+    const base = {
+      request: vi.fn(() => pending),
+    };
+
+    const cached = withCaching(base);
+
+    const p1 = cached.request("op", [1]);
+    const p2 = cached.request("op", [1]);
+
+    expect(p2).toBe(p1);
+    expect(base.request).toHaveBeenCalledTimes(1);
+
+    resolve(123);
+
+    expect(await p1).toBe(123);
+    expect(await p2).toBe(123);
+
+    if ("dispose" in cached) cached.dispose();
+  });
+
+  it("does not cache rejections", async () => {
+    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const base = {
+      request: vi
+        .fn<[], Promise<unknown>>()
+        .mockRejectedValueOnce(new Error("boom"))
+        .mockResolvedValueOnce(123),
+    };
+
+    const cached = withCaching(base);
+
+    await expect(cached.request("op", [])).rejects.toThrow("boom");
+    expect(await cached.request("op", [])).toBe(123);
+
+    expect(base.request).toHaveBeenCalledTimes(2);
+
+    if ("dispose" in cached) cached.dispose();
+  });
+
   it("disables caching when ttlMs <= 0", async () => {
     const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
