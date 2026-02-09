@@ -98,6 +98,9 @@ export function resolveMetaKernelKernelsToLoad(
 ): string[] {
   const metaKernelDir = path.dirname(metaKernelPath);
 
+  const restrictToDir = options.restrictToDir;
+  const allowedDirReal = restrictToDir ? canonicalizeForRestriction(restrictToDir) : undefined;
+
   const symbols = extractMetaKernelStringList(metaKernelText, "PATH_SYMBOLS");
   const valuesRaw = extractMetaKernelStringList(metaKernelText, "PATH_VALUES");
   const values = valuesRaw.map((v) => (path.isAbsolute(v) ? path.resolve(v) : path.resolve(metaKernelDir, v)));
@@ -114,6 +117,7 @@ export function resolveMetaKernelKernelsToLoad(
         `Ensure the assignment contains one or more quoted strings. metaKernel=${JSON.stringify(metaKernelPath)}`,
     );
   }
+
   return kernels.map((k) => {
     const m = k.match(/^\$([A-Za-z0-9_]+)([/\\].*)?$/);
     let resolved: string;
@@ -129,9 +133,7 @@ export function resolveMetaKernelKernelsToLoad(
       resolved = path.isAbsolute(k) ? path.resolve(k) : path.resolve(metaKernelDir, k);
     }
 
-    const restrictToDir = options.restrictToDir;
-    if (restrictToDir) {
-      const allowedDirReal = canonicalizeForRestriction(restrictToDir);
+    if (allowedDirReal) {
       const resolvedReal = canonicalizeForRestriction(resolved);
 
       ensureWithinDirOrThrow(
@@ -146,7 +148,6 @@ export function resolveMetaKernelKernelsToLoad(
     return resolved;
   });
 }
-
 
 function rewriteMetaKernelStringList(
   text: string,
@@ -202,22 +203,42 @@ export function sanitizeMetaKernelTextForNative(metaKernelText: string, intended
  * We achieve this by removing `KERNELS_TO_LOAD` assignments.
  */
 export function sanitizeMetaKernelTextForWasm(metaKernelText: string): string {
-  const clean = stripMetaKernelBegintextBlocks(metaKernelText);
-
   // Remove both `KERNELS_TO_LOAD = ( ... )` and `KERNELS_TO_LOAD += ( ... )`.
   // Note: `KERNELS_TO_LOAD = ( )` is not valid CSPICE syntax (BADVARASSIGN).
   const re = /^\s*KERNELS_TO_LOAD\s*\+?=\s*\([\s\S]*?\)\s*/gim;
 
   // Ideally, only operate in the data section to avoid touching header text.
   // If \\begindata is absent, fall back to sanitizing the whole file.
-  const m = clean.match(/\\{1,2}begindata/i);
+  const m = metaKernelText.match(/\\{1,2}begindata/i);
   if (!m || m.index === undefined) {
-    return clean.replace(re, "");
+    return metaKernelText.replace(re, "");
   }
 
   const start = m.index + m[0].length;
-  const head = clean.slice(0, start);
-  const tail = clean.slice(start);
+  const head = metaKernelText.slice(0, start);
+  const rest = metaKernelText.slice(start);
 
-  return head + tail.replace(re, "");
+  // Preserve begintext/commentary after the data section.
+  // If \\begintext is absent, treat the rest of the file as data.
+  const textMarker = rest.match(/\\{1,2}begintext/i);
+  if (!textMarker || textMarker.index === undefined) {
+    return head + rest.replace(re, "");
+  }
+
+  const data = rest.slice(0, textMarker.index);
+  const tail = rest.slice(textMarker.index);
+
+  return head + data.replace(re, "") + tail;
+}
+
+/**
+ * For native: when we expand meta-kernels ourselves (e.g. for `restrictToDir`),
+ * we still want to furnish the meta-kernel so pool assignments apply, but we
+ * must remove `KERNELS_TO_LOAD` assignments to avoid double-loading and/or
+ * bypassing restrictions.
+ */
+export function sanitizeMetaKernelTextForNativeNoKernels(metaKernelText: string): string {
+  // Currently identical to the WASM sanitizer; kept separate for clarity and to
+  // allow future divergence (e.g. native-specific rewriting).
+  return sanitizeMetaKernelTextForWasm(metaKernelText);
 }

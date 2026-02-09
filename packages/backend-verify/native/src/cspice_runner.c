@@ -1,7 +1,7 @@
 // Tiny CSPICE runner for backend-verify.
 //
 // Protocol:
-//   stdin:  { setup: { kernels?: string[] }, call: string, args: any }
+//   stdin:  { setup: { kernels?: (string | { path: string, restrictToDir?: string })[] }, call: string, args: any }
 //   stdout: { ok:true, result:any } OR { ok:false, error:{ message, spiceShort?, spiceLong?, spiceTrace? } }
 //
 // Implements:
@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 // --- Minimal JSON parsing via jsmn (public domain) --------------------------
 // https://github.com/zserge/jsmn
@@ -687,7 +688,7 @@ int main(void) {
     int kernelsTok = jsmn_find_object_key(input, tokens, setupTok, "kernels", tokenCount);
     if (kernelsTok >= 0) {
       if (tokens[kernelsTok].type != JSMN_ARRAY) {
-        write_error_json("setup.kernels must be an array of strings", NULL, NULL, NULL);
+        write_error_json("setup.kernels must be an array", NULL, NULL, NULL);
         goto done;
       }
 
@@ -698,19 +699,91 @@ int main(void) {
           write_error_json("setup.kernels parse error", NULL, NULL, NULL);
           goto done;
         }
-        if (tokens[idx].type != JSMN_STRING) {
-          write_error_json("setup.kernels must contain only strings", NULL, NULL, NULL);
+
+        char *kernelPath = NULL;
+        char *restrictToDir = NULL;
+
+        if (tokens[idx].type == JSMN_STRING) {
+          kernelPath = jsmn_strdup(input, &tokens[idx]);
+          if (kernelPath == NULL) {
+            write_error_json("Out of memory", NULL, NULL, NULL);
+            goto done;
+          }
+        } else if (tokens[idx].type == JSMN_OBJECT) {
+          int pathTok = jsmn_find_object_key(input, tokens, idx, "path", tokenCount);
+          if (pathTok < 0 || tokens[pathTok].type != JSMN_STRING) {
+            write_error_json("setup.kernels entries must have a string 'path' field", NULL, NULL, NULL);
+            goto done;
+          }
+
+          kernelPath = jsmn_strdup(input, &tokens[pathTok]);
+          if (kernelPath == NULL) {
+            write_error_json("Out of memory", NULL, NULL, NULL);
+            goto done;
+          }
+
+          int restrictTok = jsmn_find_object_key(input, tokens, idx, "restrictToDir", tokenCount);
+          if (restrictTok >= 0) {
+            if (tokens[restrictTok].type != JSMN_STRING) {
+              write_error_json("setup.kernels[].restrictToDir must be a string", NULL, NULL, NULL);
+              free(kernelPath);
+              goto done;
+            }
+
+            restrictToDir = jsmn_strdup(input, &tokens[restrictTok]);
+            if (restrictToDir == NULL) {
+              write_error_json("Out of memory", NULL, NULL, NULL);
+              free(kernelPath);
+              goto done;
+            }
+          }
+        } else {
+          write_error_json("setup.kernels entries must be strings or objects", NULL, NULL, NULL);
           goto done;
         }
 
-        char *kernel = jsmn_strdup(input, &tokens[idx]);
-        if (kernel == NULL) {
-          write_error_json("Out of memory", NULL, NULL, NULL);
-          goto done;
+        char *prevCwd = NULL;
+        if (restrictToDir != NULL) {
+          prevCwd = getcwd(NULL, 0);
+          if (prevCwd == NULL) {
+            write_error_json("Failed to getcwd before kernel load", NULL, NULL, NULL);
+            free(kernelPath);
+            free(restrictToDir);
+            goto done;
+          }
+
+          if (chdir(restrictToDir) != 0) {
+            char msg[512];
+            snprintf(msg, sizeof(msg),
+                     "Failed to chdir to restrictToDir: %s (dir=%s)",
+                     strerror(errno), restrictToDir);
+            write_error_json(msg, NULL, NULL, NULL);
+            free(prevCwd);
+            free(kernelPath);
+            free(restrictToDir);
+            goto done;
+          }
         }
 
-        furnsh_c(kernel);
-        free(kernel);
+        furnsh_c(kernelPath);
+
+        if (prevCwd != NULL) {
+          if (chdir(prevCwd) != 0) {
+            char msg[512];
+            snprintf(msg, sizeof(msg),
+                     "Failed to restore cwd after kernel load: %s (cwd=%s)",
+                     strerror(errno), prevCwd);
+            write_error_json(msg, NULL, NULL, NULL);
+            free(prevCwd);
+            free(kernelPath);
+            free(restrictToDir);
+            goto done;
+          }
+          free(prevCwd);
+        }
+
+        free(kernelPath);
+        free(restrictToDir);
 
         if (failed_c() == SPICETRUE) {
           char shortMsg[1841];

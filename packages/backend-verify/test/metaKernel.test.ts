@@ -11,7 +11,7 @@ import {
 } from "../src/kernels/metaKernel.js";
 
 describe("sanitizeMetaKernelTextForWasm", () => {
-  it("strips begintext blocks and removes KERNELS_TO_LOAD assignments in begindata", () => {
+  it("preserves begintext blocks and removes KERNELS_TO_LOAD assignments in begindata", () => {
     const input = [
       "KPL/MK",
       "",
@@ -31,17 +31,16 @@ describe("sanitizeMetaKernelTextForWasm", () => {
 
     const out = sanitizeMetaKernelTextForWasm(input);
 
-    // The begintext region should be removed entirely.
-    expect(out).not.toMatch(/should-not-parse\\.bsp/);
-    expect(out).not.toMatch(/trailing commentary/);
+    // Begintext/commentary should remain untouched.
+    expect(out).toMatch(/should-not-parse\.bsp/);
+    expect(out).toMatch(/trailing commentary/);
 
     // Pool assignments should remain.
     expect(out).toMatch(/PATH_VALUES/);
     expect(out).toMatch(/PATH_SYMBOLS/);
 
-    // KERNELS_TO_LOAD should be removed.
-    expect(out).not.toContain("KERNELS_TO_LOAD");
-    expect(out).not.toContain("$PACK/a.bsp");
+    // KERNELS_TO_LOAD in the data section should be removed.
+    expect(out).not.toMatch(/\$PACK\/a\.bsp/);
   });
 
   it("only sanitizes within begindata when present", () => {

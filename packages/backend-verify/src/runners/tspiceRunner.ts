@@ -6,6 +6,7 @@ import { createBackend, type SpiceBackend } from "@rybosome/tspice";
 
 import {
   resolveMetaKernelKernelsToLoad,
+  sanitizeMetaKernelTextForNativeNoKernels,
   sanitizeMetaKernelTextForWasm,
 } from "../kernels/metaKernel.js";
 
@@ -162,14 +163,6 @@ function normalizeKernelEntry(entry: KernelEntry): { path: string; restrictToDir
   return typeof entry === "string" ? { path: entry } : entry;
 }
 
-function isWithinOrEqualDir(resolved: string, baseDir: string): boolean {
-  const rel = path.relative(baseDir, resolved);
-  // rel === '' means `resolved === baseDir` which is acceptable.
-  if (rel === "") return true;
-
-  return !(rel === ".." || rel.startsWith(`..${path.sep}`));
-}
-
 async function furnshOsKernelForWasm(
   backend: SpiceBackend,
   osPath: string,
@@ -197,14 +190,44 @@ async function furnshOsKernelForWasm(
     backend.furnsh({ path: kernelVirtualIdFromOsPath(absPath), bytes: Buffer.from(sanitized, "utf8") });
 
     for (const k of kernelsToLoad) {
-      const nextRestrict = restrictToDir && isWithinOrEqualDir(k, restrictToDir) ? restrictToDir : undefined;
-      await furnshOsKernelForWasm(backend, k, loaded, nextRestrict);
+      await furnshOsKernelForWasm(backend, k, loaded, restrictToDir);
     }
     return;
   }
 
   const bytes = await readFile(absPath);
   backend.furnsh({ path: kernelVirtualIdFromOsPath(absPath), bytes });
+}
+
+async function furnshOsKernelForNative(
+  backend: SpiceBackend,
+  osPath: string,
+  loaded: Set<string>,
+  restrictToDir?: string,
+): Promise<void> {
+  const absPath = path.resolve(osPath);
+  if (loaded.has(absPath)) return;
+  loaded.add(absPath);
+
+  if (restrictToDir && path.extname(absPath).toLowerCase() === ".tm") {
+    // Mirror the WASM behavior:
+    // 1) Expand/validate `KERNELS_TO_LOAD` ourselves (so restrictions apply).
+    // 2) Furnish a sanitized copy of the meta-kernel (so pool assignments apply)
+    //    but without letting CSPICE load nested kernels implicitly.
+    const metaKernelText = await readFile(absPath, "utf8");
+
+    const kernelsToLoad = resolveMetaKernelKernelsToLoad(metaKernelText, absPath, { restrictToDir });
+
+    const sanitized = sanitizeMetaKernelTextForNativeNoKernels(metaKernelText);
+    backend.furnsh({ path: absPath, bytes: Buffer.from(sanitized, "utf8") });
+
+    for (const k of kernelsToLoad) {
+      await furnshOsKernelForNative(backend, k, loaded, restrictToDir);
+    }
+    return;
+  }
+
+  backend.furnsh(absPath);
 }
 
 export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}): Promise<CaseRunner> {
@@ -226,22 +249,7 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           if (backend.kind === "wasm") {
             await furnshOsKernelForWasm(backend, kernel.path, loadedKernels, kernel.restrictToDir);
           } else {
-            const restrictToDir = kernel.restrictToDir;
-            if (restrictToDir && path.extname(kernel.path).toLowerCase() === ".tm") {
-              const metaKernelText = await readFile(kernel.path, "utf8");
-              const kernelsToLoad = resolveMetaKernelKernelsToLoad(metaKernelText, kernel.path, {
-                restrictToDir,
-              });
-
-              // For fixture packs on native backends, furnishing the meta-kernel text itself
-              // can be problematic if we need to rewrite PATH_VALUES (CSPICE has a per-string
-              // element limit). Instead, resolve & furnish each kernel path directly.
-              for (const k of kernelsToLoad) {
-                backend.furnsh(k);
-              }
-            } else {
-              backend.furnsh(kernel.path);
-            }
+            await furnshOsKernelForNative(backend, kernel.path, loadedKernels, kernel.restrictToDir);
           }
         }
 

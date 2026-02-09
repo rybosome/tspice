@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 
 import type {
   CaseRunner,
-  KernelEntry,
   RunCaseInput,
   RunCaseResult,
   RunnerErrorReport,
@@ -63,42 +62,6 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
   }
 
   return { message: String(error) };
-}
-
-function kernelEntryPath(entry: KernelEntry): string {
-  return typeof entry === "string" ? entry : entry.path;
-}
-
-/** @internal (exported for tests) */
-export function fixturePackCwdFromKernels(kernels: KernelEntry[] | undefined): string | undefined {
-  if (!kernels) return undefined;
-
-  // Fixture-pack meta-kernels use PATH_VALUES=("."), which CSPICE resolves relative
-  // to the process cwd when furnishing the meta-kernel.
-  const dirs = new Set<string>();
-  for (const k of kernels) {
-    if (typeof k !== "string" && k.restrictToDir && path.extname(k.path).toLowerCase() === ".tm") {
-      dirs.add(k.restrictToDir);
-    }
-  }
-
-  if (dirs.size > 1) {
-    const list = [...dirs].sort();
-    throw new Error(
-      `Multiple fixture packs were detected for this case; unable to choose a single cwd for CSPICE. ` +
-        `Either load kernels from exactly one fixture pack, or provide explicit PATH_VALUES in a single meta-kernel. ` +
-        `packs=${JSON.stringify(list)}`,
-    );
-  }
-
-  if (dirs.size !== 1) return undefined;
-  return [...dirs][0];
-}
-
-function normalizeInputForNativeRunner(input: RunCaseInput): RunCaseInput {
-  const kernels = input.setup?.kernels;
-  if (!kernels) return input;
-  return { ...input, setup: { ...input.setup, kernels: kernels.map(kernelEntryPath) } };
 }
 
 type CRunnerOk = { ok: true; result: unknown };
@@ -436,9 +399,7 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
       }
 
       try {
-        const cwd = fixturePackCwdFromKernels(input.setup?.kernels);
-        const invokeOpts = cwd === undefined ? {} : { cwd };
-        const out = await invokeRunner(binaryPath, normalizeInputForNativeRunner(input), invokeOpts);
+        const out = await invokeRunner(binaryPath, input);
         if (out.ok) {
           return { ok: true, result: out.result };
         }
