@@ -108,4 +108,6 @@ Validate a suite YAML file:
 pnpm bench:contract validate benchmarks/contracts/v1/example.yml
 ```
 
-The command exits non-zero and prints structured errors (JSONPath-ish `path` + actionable `message`).
+The command exits non-zero and prints one error per line as `<path>: <message>`.
+
+Pass `--json` to emit a machine-readable `{ ok, errors }` JSON object.

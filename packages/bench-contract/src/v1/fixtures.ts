@@ -77,7 +77,8 @@ export function resolveFixtureRef(
 
   // Prevent path traversal outside the declared root.
   const relative = path.relative(rootDir, absolutePath);
-  if (relative.startsWith("..") || path.isAbsolute(relative)) {
+  const firstSegment = relative.split(path.sep)[0];
+  if (firstSegment === ".." || path.isAbsolute(relative)) {
     return {
       ok: false,
       message: `Fixture ref '${ref}' escapes root '${parsed.root}'.`,
