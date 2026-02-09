@@ -320,7 +320,14 @@ static Napi::Number Dlaopn(const Napi::CallbackInfo& info) {
   const std::string path = info[0].As<Napi::String>().Utf8Value();
   const std::string ftype = info[1].As<Napi::String>().Utf8Value();
   const std::string ifname = info[2].As<Napi::String>().Utf8Value();
-  const int ncomch = info[3].As<Napi::Number>().Int32Value();
+  int32_t ncomch = 0;
+  if (!ReadInt32Checked(env, info[3], "ncomch", &ncomch)) {
+    return Napi::Number::New(env, 0);
+  }
+  if (ncomch < 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected ncomch to be a non-negative 32-bit signed integer"));
+    return Napi::Number::New(env, 0);
+  }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
