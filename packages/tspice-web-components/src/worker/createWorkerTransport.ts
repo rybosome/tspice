@@ -120,11 +120,22 @@ export function createWorkerTransport(opts: {
   };
 
   const pendingById = new Map<number, Pending>();
+  // Requests with a received response that are awaiting next-macrotask
+  // settlement. Keeping these separate from `pendingById` lets us remove a
+  // request from the timeout/abort race immediately upon response receipt,
+  // while still allowing `dispose()` (and worker errors) to deterministically
+  // win before settlement.
+  const settlingById = new Map<number, Pending>();
   let nextId = 1;
 
   const rejectAllPending = (reason: unknown): void => {
     for (const [id, pending] of pendingById) {
       pendingById.delete(id);
+      pending.reject(reason); // reject already cleans up
+    }
+
+    for (const [id, pending] of settlingById) {
+      settlingById.delete(id);
       pending.reject(reason); // reject already cleans up
     }
   };
@@ -138,13 +149,26 @@ export function createWorkerTransport(opts: {
     const pending = pendingById.get(id);
     if (!pending) return;
 
+    // Remove immediately so a queued timeout handler can't win after we've
+    // already received a legitimate response.
+    pendingById.delete(id);
+
     // Clean up request-specific resources immediately (abort listeners, timers),
     // but defer settling to a macrotask so `dispose()` can deterministically win.
     pending.cleanup();
 
+    // Track the deferred settlement so `dispose()` (and worker errors) can still
+    // reject it before the next tick.
+    settlingById.set(id, pending);
+
     setTimeout(() => {
-      if (pendingById.get(id) !== pending) return;
-      pendingById.delete(id);
+      if (settlingById.get(id) !== pending) return;
+      settlingById.delete(id);
+
+      if (disposed) {
+        pending.reject(new Error("Worker transport disposed"));
+        return;
+      }
 
       if (msg.ok === true) {
         pending.resolve((msg as Extract<RpcResponse, { ok: true }>).value);
