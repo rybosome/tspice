@@ -72,6 +72,48 @@ describe("@rybosome/tspice-backend-fake", () => {
     expect(() => b.rotate(0.123, 1.9)).toThrow(/expected a finite integer/i);
   });
 
+  it("throws on invalid kernel-pool start/room args", () => {
+    const b = createFakeBackend();
+    b.pdpool("NUM", [1, 2, 3]);
+    b.pcpool("STR", ["A", "B"]);
+
+    // start must be >= 0
+    expect(() => b.gdpool("NUM", -1, 1)).toThrow(/start >= 0/i);
+    expect(() => b.gipool("NUM", -1, 1)).toThrow(/start >= 0/i);
+    expect(() => b.gcpool("STR", -1, 1)).toThrow(/start >= 0/i);
+    expect(() => b.gnpool("NO_MATCHES", -1, 1)).toThrow(/start >= 0/i);
+
+    // room must be > 0
+    expect(() => b.gdpool("NUM", 0, 0)).toThrow(/room > 0/i);
+    expect(() => b.gipool("NUM", 0, 0)).toThrow(/room > 0/i);
+    expect(() => b.gcpool("STR", 0, 0)).toThrow(/room > 0/i);
+    expect(() => b.gnpool("NO_MATCHES", 0, 0)).toThrow(/room > 0/i);
+  });
+
+  it("supports escaping wildcards in gnpool templates", () => {
+    const b = createFakeBackend();
+    b.pdpool("A*B", [1]);
+    b.pdpool("AXYB", [1]);
+    b.pdpool("A%B", [1]);
+    b.pdpool("AQB", [1]);
+    const nameBackslash = "A" + "\\" + "B";
+    b.pdpool(nameBackslash, [1]);
+
+
+    const tplEscStar = "A" + "\\" + "*B";
+    const tplEscPct = "A" + "\\" + "%B";
+    const tplEscBackslash = "A" + "\\" + "\\" + "B";
+
+    expect([...tplEscStar]).toEqual(["A", "\\", "*", "B"]);
+    expect([...tplEscPct]).toEqual(["A", "\\", "%", "B"]);
+    expect([...tplEscBackslash]).toEqual(["A", "\\", "\\", "B"]);
+
+    expect(b.gnpool(tplEscStar, 0, 10)).toEqual({ found: true, values: ["A*B"] });
+    expect(b.gnpool(tplEscPct, 0, 10)).toEqual({ found: true, values: ["A%B"] });
+    expect(b.gnpool(tplEscBackslash, 0, 10)).toEqual({ found: true, values: [nameBackslash] });
+  });
+
+
   it("handles near-pole recgeo() inputs without numerical instability", () => {
     const b = createFakeBackend();
 

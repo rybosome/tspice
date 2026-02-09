@@ -63,6 +63,11 @@ static Napi::Object Gdpool(const Napi::CallbackInfo& info) {
   const int start = info[1].As<Napi::Number>().Int32Value();
   const int room = info[2].As<Napi::Number>().Int32Value();
 
+  if (start < 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "gdpool() expects start >= 0"));
+    return Napi::Object::New(env);
+  }
+
   if (room <= 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "gdpool() expects room > 0"));
     return Napi::Object::New(env);
@@ -117,6 +122,11 @@ static Napi::Object Gipool(const Napi::CallbackInfo& info) {
   const int start = info[1].As<Napi::Number>().Int32Value();
   const int room = info[2].As<Napi::Number>().Int32Value();
 
+  if (start < 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "gipool() expects start >= 0"));
+    return Napi::Object::New(env);
+  }
+
   if (room <= 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "gipool() expects room > 0"));
     return Napi::Object::New(env);
@@ -170,6 +180,11 @@ static Napi::Object Gcpool(const Napi::CallbackInfo& info) {
   const std::string name = info[0].As<Napi::String>().Utf8Value();
   const int start = info[1].As<Napi::Number>().Int32Value();
   const int room = info[2].As<Napi::Number>().Int32Value();
+
+  if (start < 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "gcpool() expects start >= 0"));
+    return Napi::Object::New(env);
+  }
 
   if (room <= 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "gcpool() expects room > 0"));
@@ -231,6 +246,11 @@ static Napi::Object Gnpool(const Napi::CallbackInfo& info) {
   const std::string name = info[0].As<Napi::String>().Utf8Value();
   const int start = info[1].As<Napi::Number>().Int32Value();
   const int room = info[2].As<Napi::Number>().Int32Value();
+
+  if (start < 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "gnpool() expects start >= 0"));
+    return Napi::Object::New(env);
+  }
 
   if (room <= 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "gnpool() expects room > 0"));
@@ -313,10 +333,16 @@ static Napi::Object Dtpool(const Napi::CallbackInfo& info) {
     return MakeNotFound(env);
   }
 
+  const char t = typeOut[0];
+  if (t != 'C' && t != 'N') {
+    ThrowSpiceError(Napi::Error::New(env, "dtpool() returned unexpected type"));
+    return Napi::Object::New(env);
+  }
+
   Napi::Object result = Napi::Object::New(env);
   result.Set("found", Napi::Boolean::New(env, true));
   result.Set("n", Napi::Number::New(env, static_cast<double>(nOut)));
-  result.Set("type", Napi::String::New(env, std::string(1, typeOut[0])));
+  result.Set("type", Napi::String::New(env, std::string(1, t)));
   return result;
 }
 

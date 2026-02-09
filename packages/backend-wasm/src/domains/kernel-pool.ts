@@ -18,6 +18,17 @@ const UTF8_ENCODER = new TextEncoder();
 const POOL_STRING_MAX_BYTES = 2048;
 const POOL_NAME_MAX_BYTES = 64;
 
+
+function assertPoolRange(fn: string, start: number, room: number): void {
+  if (!Number.isFinite(start) || !Number.isInteger(start) || start < 0) {
+    throw new RangeError(`${fn}(): start must be an integer >= 0`);
+  }
+  if (!Number.isFinite(room) || !Number.isInteger(room) || room <= 0) {
+    throw new RangeError(`${fn}(): room must be an integer > 0`);
+  }
+}
+
+
 function writeFixedWidthUtf8CStringArray(
   module: Pick<EmscriptenModule, "HEAPU8">,
   ptr: number,
@@ -45,20 +56,27 @@ function tspiceCallGdpool(
   start: number,
   room: number,
 ): Found<{ values: number[] }> {
+  assertPoolRange("gdpool", start, room);
+
   const namePtr = writeUtf8CString(module, name);
 
   try {
+    const valuesBytes = Math.max(8, room * 8);
+
     return withAllocs(
       module,
       [
         WASM_ERR_MAX_BYTES,
         4, // outN
         4, // found
-        Math.max(8, room * 8), // values
+        valuesBytes + 7, // values (+padding for 8-byte alignment)
       ],
-      (errPtr, outNPtr, foundPtr, valuesPtr) => {
+      (errPtr, outNPtr, foundPtr, rawValuesPtr) => {
         module.HEAP32[outNPtr >> 2] = 0;
         module.HEAP32[foundPtr >> 2] = 0;
+
+        // Ensure 8-byte alignment for `HEAPF64` reads.
+        const valuesPtr = (rawValuesPtr + 7) & ~7;
 
         const result = module._tspice_gdpool(
           namePtr,
@@ -97,6 +115,8 @@ function tspiceCallGipool(
   start: number,
   room: number,
 ): Found<{ values: number[] }> {
+  assertPoolRange("gipool", start, room);
+
   const namePtr = writeUtf8CString(module, name);
 
   try {
@@ -149,6 +169,8 @@ function tspiceCallGcpool(
   start: number,
   room: number,
 ): Found<{ values: string[] }> {
+  assertPoolRange("gcpool", start, room);
+
   const namePtr = writeUtf8CString(module, name);
 
   try {
@@ -186,7 +208,12 @@ function tspiceCallGcpool(
         }
 
         const n = Math.max(0, module.HEAP32[outNPtr >> 2] ?? 0);
-        const values = readFixedWidthCStringArray(module, outPtr, n, POOL_STRING_MAX_BYTES);
+        const values = readFixedWidthCStringArray(
+          module,
+          outPtr,
+          n,
+          POOL_STRING_MAX_BYTES,
+        );
         return { found: true, values };
       },
     );
@@ -201,6 +228,8 @@ function tspiceCallGnpool(
   start: number,
   room: number,
 ): Found<{ values: string[] }> {
+  assertPoolRange("gnpool", start, room);
+
   const namePtr = writeUtf8CString(module, template);
 
   try {
@@ -238,7 +267,12 @@ function tspiceCallGnpool(
         }
 
         const n = Math.max(0, module.HEAP32[outNPtr >> 2] ?? 0);
-        const values = readFixedWidthCStringArray(module, outPtr, n, POOL_NAME_MAX_BYTES);
+        const values = readFixedWidthCStringArray(
+          module,
+          outPtr,
+          n,
+          POOL_NAME_MAX_BYTES,
+        );
         return { found: true, values };
       },
     );
@@ -255,34 +289,43 @@ function tspiceCallDtpool(
   const outTypeMaxBytes = 2;
 
   try {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, 4, 4, outTypeMaxBytes], (errPtr, foundPtr, outNPtr, outTypePtr) => {
-      module.HEAP32[foundPtr >> 2] = 0;
-      module.HEAP32[outNPtr >> 2] = 0;
-      module.HEAPU8[outTypePtr] = 0;
+    return withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, 4, 4, outTypeMaxBytes],
+      (errPtr, foundPtr, outNPtr, outTypePtr) => {
+        module.HEAP32[foundPtr >> 2] = 0;
+        module.HEAP32[outNPtr >> 2] = 0;
+        module.HEAPU8[outTypePtr] = 0;
 
-      const result = module._tspice_dtpool(
-        namePtr,
-        foundPtr,
-        outNPtr,
-        outTypePtr,
-        outTypeMaxBytes,
-        errPtr,
-        WASM_ERR_MAX_BYTES,
-      );
+        const result = module._tspice_dtpool(
+          namePtr,
+          foundPtr,
+          outNPtr,
+          outTypePtr,
+          outTypeMaxBytes,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
 
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
 
-      const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
-      if (!found) {
-        return { found: false };
-      }
+        const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+        if (!found) {
+          return { found: false };
+        }
 
-      const n = module.HEAP32[outNPtr >> 2] ?? 0;
-      const type = module.UTF8ToString(outTypePtr, outTypeMaxBytes).trim() as KernelPoolVarType;
-      return { found: true, n, type };
-    });
+        const n = module.HEAP32[outNPtr >> 2] ?? 0;
+
+        const t = module.UTF8ToString(outTypePtr, outTypeMaxBytes).trim();
+        if (t !== "C" && t !== "N") {
+          throw new Error(`dtpool(): unexpected type '${t}' for ${name}`);
+        }
+
+        return { found: true, n, type: t };
+      },
+    );
   } finally {
     module._free(namePtr);
   }

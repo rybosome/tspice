@@ -25,6 +25,10 @@ describe("Kernel pool", () => {
     backend.kclear();
     backend.furnsh(lskPath);
 
+    // Argument validation (contract parity across backends)
+    expect(() => backend.gdpool("DELTET/DELTA_T_A", -1, 8)).toThrow(/start/i);
+    expect(() => backend.gdpool("DELTET/DELTA_T_A", 0, 0)).toThrow(/room/i);
+
     const dt = backend.dtpool("DELTET/DELTA_T_A");
     expect(dt.found).toBe(true);
     if (dt.found) {
@@ -70,6 +74,10 @@ describe("Kernel pool", () => {
 
     backend.kclear();
     backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+
+    // Argument validation (contract parity across backends)
+    expect(() => backend.gdpool("DELTET/DELTA_T_A", -1, 8)).toThrow(/start/i);
+    expect(() => backend.gdpool("DELTET/DELTA_T_A", 0, 0)).toThrow(/room/i);
 
     const dt = backend.dtpool("DELTET/DELTA_T_A");
     expect(dt.found).toBe(true);

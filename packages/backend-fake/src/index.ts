@@ -736,16 +736,19 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gdpool: (name, start, room) => {
+      const start0 = Math.trunc(start);
+      const room0 = Math.trunc(room);
+      if (start0 < 0) {
+        throw new Error("Fake backend: gdpool expects start >= 0");
+      }
+      if (room0 <= 0) {
+        throw new Error("Fake backend: gdpool expects room > 0");
+      }
+
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
       if (entry.type !== "N") {
         throw new Error(`Fake backend: gdpool only supports numeric variables (got ${entry.type})`);
-      }
-
-      const start0 = Math.max(0, Math.trunc(start));
-      const room0 = Math.trunc(room);
-      if (room0 < 0) {
-        throw new Error("Fake backend: gdpool expects room >= 0");
       }
 
       return {
@@ -755,16 +758,19 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gipool: (name, start, room) => {
+      const start0 = Math.trunc(start);
+      const room0 = Math.trunc(room);
+      if (start0 < 0) {
+        throw new Error("Fake backend: gipool expects start >= 0");
+      }
+      if (room0 <= 0) {
+        throw new Error("Fake backend: gipool expects room > 0");
+      }
+
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
       if (entry.type !== "N") {
         throw new Error(`Fake backend: gipool only supports numeric variables (got ${entry.type})`);
-      }
-
-      const start0 = Math.max(0, Math.trunc(start));
-      const room0 = Math.trunc(room);
-      if (room0 < 0) {
-        throw new Error("Fake backend: gipool expects room >= 0");
       }
 
       return {
@@ -774,16 +780,19 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gcpool: (name, start, room) => {
+      const start0 = Math.trunc(start);
+      const room0 = Math.trunc(room);
+      if (start0 < 0) {
+        throw new Error("Fake backend: gcpool expects start >= 0");
+      }
+      if (room0 <= 0) {
+        throw new Error("Fake backend: gcpool expects room > 0");
+      }
+
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
       if (entry.type !== "C") {
         throw new Error(`Fake backend: gcpool only supports character variables (got ${entry.type})`);
-      }
-
-      const start0 = Math.max(0, Math.trunc(start));
-      const room0 = Math.trunc(room);
-      if (room0 < 0) {
-        throw new Error("Fake backend: gcpool expects room >= 0");
       }
 
       return {
@@ -793,19 +802,50 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gnpool: (template, start, room) => {
+      const start0 = Math.trunc(start);
+      const room0 = Math.trunc(room);
+      if (start0 < 0) {
+        throw new Error("Fake backend: gnpool expects start >= 0");
+      }
+      if (room0 <= 0) {
+        throw new Error("Fake backend: gnpool expects room > 0");
+      }
+
       const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\[\]\\]/g, "\\$&");
-      const reSrc = `^${escapeRegex(template).replace(/\\\*/g, ".*").replace(/%/g, ".")}$`;
+
+      // Support escaping wildcard characters via backslash:
+      // - `\*` matches a literal `*`
+      // - `\%` matches a literal `%`
+      let reSrc = "^";
+      for (let i = 0; i < template.length; i++) {
+        const ch = template[i]!;
+        if (ch === "\\") {
+          const next = template[i + 1];
+          if (next !== undefined) {
+            reSrc += escapeRegex(next);
+            i++;
+          } else {
+            reSrc += "\\\\";
+          }
+          continue;
+        }
+        if (ch === "*") {
+          reSrc += ".*";
+          continue;
+        }
+        if (ch === "%") {
+          reSrc += ".";
+          continue;
+        }
+        reSrc += escapeRegex(ch);
+      }
+      reSrc += "$";
+
       const re = new RegExp(reSrc);
 
       const matches = Array.from(kernelPool.keys()).filter((k) => re.test(k)).sort();
       if (matches.length === 0) {
         return { found: false };
-      }
-
-      const start0 = Math.max(0, Math.trunc(start));
-      const room0 = Math.trunc(room);
-      if (room0 < 0) {
-        throw new Error("Fake backend: gnpool expects room >= 0");
       }
 
       return {
