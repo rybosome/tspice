@@ -8,6 +8,9 @@
       "path": "./packages/core"
     },
     {
+      "path": "./packages/perf-analysis"
+    },
+    {
       "path": "./apps/orrery"
     },
     {
