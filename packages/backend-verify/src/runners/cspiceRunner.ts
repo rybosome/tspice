@@ -262,11 +262,29 @@ export async function invokeRunner(
     child.on("close", (code, signal) => {
       finish("success", () => {
         const out = stdout.trim();
+        const err = stderr.trim();
+
+        if (code !== 0 || signal) {
+          reject(
+            new Error(
+              [
+                `cspice-runner exited non-zero (code=${code}, signal=${signal}).`,
+                `stdout=${JSON.stringify(preview(out, 4_000))}${stdoutTruncated ? " (truncated)" : ""}`,
+                `stderr=${JSON.stringify(preview(err, 4_000))}${stderrTruncated ? " (truncated)" : ""}`,
+              ].join(" "),
+            ),
+          );
+          return;
+        }
 
         if (!out) {
           reject(
             new Error(
-              `cspice-runner produced no JSON output (code=${code}, signal=${signal}, stderr=${stderr.trim()})`,
+              [
+                `cspice-runner produced no JSON output (code=${code}, signal=${signal}).`,
+                `stdout=${JSON.stringify(preview(out, 4_000))}${stdoutTruncated ? " (truncated)" : ""}`,
+                `stderr=${JSON.stringify(preview(err, 4_000))}${stderrTruncated ? " (truncated)" : ""}`,
+              ].join(" "),
             ),
           );
           return;
@@ -281,7 +299,7 @@ export async function invokeRunner(
               [
                 `Failed to parse cspice-runner JSON output (code=${code}, signal=${signal}).`,
                 `stdout=${JSON.stringify(preview(out, 4_000))}${stdoutTruncated ? " (truncated)" : ""}`,
-                `stderr=${JSON.stringify(preview(stderr.trim(), 4_000))}${stderrTruncated ? " (truncated)" : ""}`,
+                `stderr=${JSON.stringify(preview(err, 4_000))}${stderrTruncated ? " (truncated)" : ""}`,
               ].join(" "),
             ),
           );

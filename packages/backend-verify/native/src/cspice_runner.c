@@ -499,7 +499,7 @@ static char *read_all_stdin(size_t *outLen) {
     len += n;
 
     if (len > maxBytes) {
-      errno = EOVERFLOW;
+      errno = E2BIG;
       free(buf);
       return NULL;
     }
@@ -519,7 +519,7 @@ static char *read_all_stdin(size_t *outLen) {
   buf[len] = '\0';
 
   if (len > maxBytes) {
-    errno = EOVERFLOW;
+    errno = E2BIG;
     free(buf);
     return NULL;
   }
@@ -548,8 +548,17 @@ int main(void) {
   size_t inputLen = 0;
   char *input = read_all_stdin(&inputLen);
   if (input == NULL) {
-    if (errno == EOVERFLOW) {
-      write_error_json("stdin too large", NULL, NULL, NULL);
+    if (errno == E2BIG) {
+      char msg[128];
+      snprintf(msg, sizeof(msg), "stdin too large (max %zu bytes)",
+               (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES);
+      write_error_json(msg, NULL, NULL, NULL);
+    } else if (errno == EOVERFLOW) {
+      write_error_json("Internal overflow while reading stdin", NULL, NULL, NULL);
+    } else if (errno != 0) {
+      char msg[256];
+      snprintf(msg, sizeof(msg), "Failed to read stdin: %s", strerror(errno));
+      write_error_json(msg, NULL, NULL, NULL);
     } else {
       write_error_json("Failed to read stdin", NULL, NULL, NULL);
     }

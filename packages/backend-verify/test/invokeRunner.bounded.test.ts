@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { invokeRunner } from "../src/runners/cspiceRunner.js";
 
+const TEST_TIMEOUT_MS = 10_000;
+
 describe("invokeRunner (bounded time)", () => {
   it("rejects quickly on timeout", async () => {
     const start = Date.now();
@@ -19,7 +21,7 @@ describe("invokeRunner (bounded time)", () => {
 
     const elapsed = Date.now() - start;
     expect(elapsed).toBeLessThan(5000);
-  });
+  }, TEST_TIMEOUT_MS);
 
   it("rejects quickly on stdout truncation", async () => {
     const start = Date.now();
@@ -45,7 +47,7 @@ describe("invokeRunner (bounded time)", () => {
 
     const elapsed = Date.now() - start;
     expect(elapsed).toBeLessThan(5000);
-  });
+  }, TEST_TIMEOUT_MS);
 
   it("rejects quickly on stderr truncation", async () => {
     const start = Date.now();
@@ -71,5 +73,5 @@ describe("invokeRunner (bounded time)", () => {
 
     const elapsed = Date.now() - start;
     expect(elapsed).toBeLessThan(5000);
-  });
+  }, TEST_TIMEOUT_MS);
 });
