@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import crypto from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { readFile, realpath } from "node:fs/promises";
 
 import { createBackend, type SpiceBackend } from "@rybosome/tspice";
 
@@ -143,11 +143,13 @@ async function createBackendForRunner(
   }
 }
 
-function kernelVirtualIdFromOsPath(osPath: string): string {
+async function kernelVirtualIdFromOsPath(osPath: string): Promise<string> {
   // WASM kernel paths must be *virtual* ids (not OS paths). We also need to
   // avoid collisions when two kernels share a basename.
-  const base = path.basename(osPath);
-  const hash = crypto.createHash("sha256").update(osPath).digest("hex").slice(0, 16);
+  const resolved = path.resolve(osPath);
+  const canonical = await realpath(resolved).catch(() => resolved);
+  const base = path.basename(canonical);
+  const hash = crypto.createHash("sha256").update(canonical).digest("hex").slice(0, 16);
   return `ospath/${hash}/${base}`;
 }
 
@@ -170,7 +172,8 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
             // string kernels as *virtual* identifiers. When running on WASM,
             // load kernel bytes from disk and provide an explicit virtual id.
             const bytes = await readFile(kernel);
-            backend.furnsh({ path: kernelVirtualIdFromOsPath(kernel), bytes });
+            const vid = await kernelVirtualIdFromOsPath(kernel);
+            backend.furnsh({ path: vid, bytes });
           } else {
             backend.furnsh(kernel);
           }

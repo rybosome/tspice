@@ -121,9 +121,9 @@ export async function invokeRunner(
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");
 
-    type CleanupMode = "success" | "bailout";
+    type TeardownMode = "graceful" | "abort";
 
-    const cleanup = (mode: CleanupMode) => {
+    const cleanup = (mode: TeardownMode) => {
       // Avoid keeping the event loop alive after we've already settled.
       try {
         child.stdout.removeAllListeners();
@@ -140,9 +140,9 @@ export async function invokeRunner(
         // ignore
       }
 
-      // On bailout paths we may have SIGKILLed the child (or otherwise stopped
+      // On abort paths we may have SIGKILLed the child (or otherwise stopped
       // caring about its output); force-close the readable streams.
-      if (mode === "bailout") {
+      if (mode === "abort") {
         try {
           child.stdout.destroy();
         } catch {
@@ -156,7 +156,7 @@ export async function invokeRunner(
       }
     };
 
-    const finish = (mode: CleanupMode, fn: () => void) => {
+    const finish = (mode: TeardownMode, fn: () => void) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
@@ -171,7 +171,7 @@ export async function invokeRunner(
       } catch {
         // ignore
       }
-      finish("bailout", () =>
+      finish("abort", () =>
         reject(
           new Error(
             [
@@ -214,7 +214,7 @@ export async function invokeRunner(
           // ignore
         }
 
-        finish("bailout", () =>
+        finish("abort", () =>
           reject(
             new Error(
               [
@@ -241,7 +241,7 @@ export async function invokeRunner(
           // ignore
         }
 
-        finish("bailout", () =>
+        finish("abort", () =>
           reject(
             new Error(
               [
@@ -256,11 +256,11 @@ export async function invokeRunner(
     });
 
     child.on("error", (err) => {
-      finish("bailout", () => reject(err));
+      finish("abort", () => reject(err));
     });
 
     child.on("close", (code, signal) => {
-      finish("success", () => {
+      finish("graceful", () => {
         const out = stdout.trim();
         const err = stderr.trim();
 
@@ -310,14 +310,14 @@ export async function invokeRunner(
     // If we can't write the request payload to the child (e.g. broken pipe),
     // treat that as a hard failure.
     child.stdin.on("error", (err) => {
-      finish("bailout", () => reject(err));
+      finish("abort", () => reject(err));
     });
 
     try {
       child.stdin.end(`${JSON.stringify(input)}\n`);
     } catch (err) {
       finish(
-        "bailout",
+        "abort",
         () =>
           reject(
             err instanceof Error

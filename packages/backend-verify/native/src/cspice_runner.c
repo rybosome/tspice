@@ -422,12 +422,15 @@ static void json_print_string_field(const char *key, const char *value,
   fputc('"', stdout);
 }
 
-static void write_error_json(const char *message, const char *spiceShort,
-                             const char *spiceLong, const char *spiceTrace) {
+static void write_error_json_ex(const char *code, const char *message,
+                                const char *detail, const char *spiceShort,
+                                const char *spiceLong, const char *spiceTrace) {
   fputs("{\"ok\":false,\"error\":{", stdout);
 
   bool first = true;
+  json_print_string_field("code", code, &first);
   json_print_string_field("message", message ? message : "error", &first);
+  json_print_string_field("detail", detail, &first);
   json_print_string_field("spiceShort", spiceShort, &first);
   json_print_string_field("spiceLong", spiceLong, &first);
   json_print_string_field("spiceTrace", spiceTrace, &first);
@@ -435,11 +438,25 @@ static void write_error_json(const char *message, const char *spiceShort,
   fputs("}}\n", stdout);
 }
 
+static void write_error_json(const char *message, const char *spiceShort,
+                             const char *spiceLong, const char *spiceTrace) {
+  write_error_json_ex(NULL, message, NULL, spiceShort, spiceLong, spiceTrace);
+}
+
 #define CSPICE_RUNNER_MAX_STDIN_BYTES (1024 * 1024)
 
-static char *read_all_stdin(size_t *outLen) {
+typedef enum {
+  READ_STDIN_OK = 0,
+  READ_STDIN_TOO_LARGE,
+  READ_STDIN_OOM,
+  READ_STDIN_IO,
+  READ_STDIN_OVERFLOW,
+} ReadStdinErr;
+
+static ReadStdinErr read_all_stdin(char **outBuf, size_t *outLen) {
+  *outBuf = NULL;
   *outLen = 0;
-  // Ensure callers don't accidentally classify failures based on a stale errno.
+  // Ensure error detail never uses stale errno.
   errno = 0;
 
   const size_t maxBytes = (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES;
@@ -448,6 +465,10 @@ static char *read_all_stdin(size_t *outLen) {
   // +1 for the trailing NUL terminator.
   const size_t maxCap = maxRead + 1;
 
+  if (maxRead <= maxBytes || maxCap <= maxRead) {
+    return READ_STDIN_OVERFLOW;
+  }
+
   size_t cap = 4096;
   if (cap > maxCap) {
     cap = maxCap;
@@ -455,8 +476,7 @@ static char *read_all_stdin(size_t *outLen) {
 
   char *buf = (char *)malloc(cap);
   if (!buf) {
-    errno = ENOMEM;
-    return NULL;
+    return READ_STDIN_OOM;
   }
 
   size_t len = 0;
@@ -467,24 +487,21 @@ static char *read_all_stdin(size_t *outLen) {
       // Grow with overflow guard, but never beyond the max.
       size_t nextCap = cap * 2;
       if (nextCap < cap) {
-        errno = EOVERFLOW;
         free(buf);
-        return NULL;
+        return READ_STDIN_OVERFLOW;
       }
       if (nextCap > maxCap) {
         nextCap = maxCap;
       }
       if (nextCap <= cap) {
-        errno = EOVERFLOW;
         free(buf);
-        return NULL;
+        return READ_STDIN_OVERFLOW;
       }
 
       char *next = (char *)realloc(buf, nextCap);
       if (!next) {
-        errno = ENOMEM;
         free(buf);
-        return NULL;
+        return READ_STDIN_OOM;
       }
       buf = next;
       cap = nextCap;
@@ -499,9 +516,8 @@ static char *read_all_stdin(size_t *outLen) {
     len += n;
 
     if (len > maxBytes) {
-      errno = E2BIG;
       free(buf);
-      return NULL;
+      return READ_STDIN_TOO_LARGE;
     }
 
     if (n < toRead) {
@@ -510,21 +526,16 @@ static char *read_all_stdin(size_t *outLen) {
           errno = EIO;
         }
         free(buf);
-        return NULL;
+        return READ_STDIN_IO;
       }
       break;
     }
   }
 
   buf[len] = '\0';
-
-  if (len > maxBytes) {
-    errno = E2BIG;
-    free(buf);
-    return NULL;
-  }
+  *outBuf = buf;
   *outLen = len;
-  return buf;
+  return READ_STDIN_OK;
 }
 
 static void capture_spice_error(char *shortMsg, size_t shortBytes,
@@ -546,21 +557,36 @@ static void capture_spice_error(char *shortMsg, size_t shortBytes,
 
 int main(void) {
   size_t inputLen = 0;
-  char *input = read_all_stdin(&inputLen);
-  if (input == NULL) {
-    if (errno == E2BIG) {
+  char *input = NULL;
+  ReadStdinErr readErr = read_all_stdin(&input, &inputLen);
+  if (readErr != READ_STDIN_OK) {
+    switch (readErr) {
+    case READ_STDIN_TOO_LARGE: {
       char msg[128];
       snprintf(msg, sizeof(msg), "stdin too large (max %zu bytes)",
                (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES);
-      write_error_json(msg, NULL, NULL, NULL);
-    } else if (errno == EOVERFLOW) {
-      write_error_json("Internal overflow while reading stdin", NULL, NULL, NULL);
-    } else if (errno != 0) {
-      char msg[256];
-      snprintf(msg, sizeof(msg), "Failed to read stdin: %s", strerror(errno));
-      write_error_json(msg, NULL, NULL, NULL);
-    } else {
-      write_error_json("Failed to read stdin", NULL, NULL, NULL);
+      write_error_json_ex("stdin_too_large", msg, NULL, NULL, NULL, NULL);
+      break;
+    }
+    case READ_STDIN_OOM:
+      write_error_json_ex("stdin_oom", "Out of memory while reading stdin", NULL,
+                          NULL, NULL, NULL);
+      break;
+    case READ_STDIN_IO: {
+      const char *detail = errno != 0 ? strerror(errno) : NULL;
+      write_error_json_ex("stdin_io", "Failed to read stdin", detail, NULL, NULL,
+                          NULL);
+      break;
+    }
+    case READ_STDIN_OVERFLOW:
+      write_error_json_ex("stdin_overflow",
+                          "Internal overflow while reading stdin", NULL, NULL,
+                          NULL, NULL);
+      break;
+    default:
+      write_error_json_ex("stdin_error", "Failed to read stdin", NULL, NULL, NULL,
+                          NULL);
+      break;
     }
     return 0;
   }

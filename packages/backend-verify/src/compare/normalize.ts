@@ -76,10 +76,10 @@ function hashSortKey(value: unknown, h: bigint = FNV1A64_OFFSET_BASIS): bigint {
     return fnv1a64Update(h, "}");
   }
 
-  return fnv1a64Update(h, sortKey(value));
+  return fnv1a64Update(h, sortKeyNormalized(value));
 }
 
-function sortKey(value: unknown): string {
+function sortKeyNormalized(value: unknown): string {
   if (value === null) return "null:";
 
   switch (typeof value) {
@@ -98,10 +98,6 @@ function sortKey(value: unknown): string {
       return `bool:${value ? 1 : 0}`;
     case "undefined":
       return "undef:";
-    case "symbol":
-      return `symbol:${String(value)}`;
-    case "function":
-      return `function:${String(value)}`;
     case "object":
       break;
   }
@@ -113,14 +109,47 @@ function sortKey(value: unknown): string {
     return `h:${h.toString(16).padStart(16, "0")}`;
   }
 
-  // Fallback: best-effort.
-  try {
-    const s = JSON.stringify(value);
-    return `obj:${s ?? String(value)}`;
-  } catch {
-    return `obj:${String(value)}`;
-  }
+  // If we ever hit this, normalization missed a case — fail fast so we fix it
+  // instead of producing "best effort" ordering.
+  throw new Error(
+    `sortKeyNormalized received un-normalized: ${Object.prototype.toString.call(value)}`,
+  );
 }
+
+function stableStringifyNormalized(value: unknown): string {
+  const s = JSON.stringify(value, (_key, v: unknown) => {
+    if (v === undefined) return { $undefined: true };
+
+    if (typeof v === "bigint") return { $bigint: v.toString() };
+
+    if (typeof v === "number") {
+      if (Object.is(v, -0)) return { $number: "-0" };
+      if (Number.isNaN(v)) return { $number: "NaN" };
+      if (v === Infinity) return { $number: "Infinity" };
+      if (v === -Infinity) return { $number: "-Infinity" };
+      return v;
+    }
+
+    if (typeof v === "function" || typeof v === "symbol") {
+      throw new Error(
+        `stableStringifyNormalized received un-normalized: ${Object.prototype.toString.call(v)}`,
+      );
+    }
+
+    if (typeof v === "object" && v !== null && !Array.isArray(v) && !isPlainObject(v)) {
+      throw new Error(
+        `stableStringifyNormalized received un-normalized: ${Object.prototype.toString.call(v)}`,
+      );
+    }
+
+    return v;
+  });
+
+  if (s === undefined) return "undefined";
+  return s;
+}
+
+const cmp = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
 export function normalizeForCompare(value: unknown): unknown {
   if (
@@ -150,18 +179,20 @@ export function normalizeForCompare(value: unknown): unknown {
       const nv = normalizeForCompare(v);
       return {
         entry: [nk, nv] as const,
-        keyKey: sortKey(nk),
-        valueKey: sortKey(nv),
+        keyKey: sortKeyNormalized(nk),
+        valueKey: sortKeyNormalized(nv),
+        keyStr: stableStringifyNormalized(nk),
+        valueStr: stableStringifyNormalized(nv),
       };
     });
 
-    outWithKeys.sort((a, b) => {
-      if (a.keyKey < b.keyKey) return -1;
-      if (a.keyKey > b.keyKey) return 1;
-      if (a.valueKey < b.valueKey) return -1;
-      if (a.valueKey > b.valueKey) return 1;
-      return 0;
-    });
+    outWithKeys.sort(
+      (a, b) =>
+        cmp(a.keyKey, b.keyKey) ||
+        cmp(a.keyStr, b.keyStr) ||
+        cmp(a.valueKey, b.valueKey) ||
+        cmp(a.valueStr, b.valueStr),
+    );
 
     return taggedObject(value, {
       entries: outWithKeys.map((x) => x.entry),
@@ -172,14 +203,14 @@ export function normalizeForCompare(value: unknown): unknown {
     // Same caching approach as Map normalization.
     const outWithKeys = Array.from(value.values()).map((v) => {
       const nv = normalizeForCompare(v);
-      return { value: nv, key: sortKey(nv) };
+      return {
+        value: nv,
+        key: sortKeyNormalized(nv),
+        str: stableStringifyNormalized(nv),
+      };
     });
 
-    outWithKeys.sort((a, b) => {
-      if (a.key < b.key) return -1;
-      if (a.key > b.key) return 1;
-      return 0;
-    });
+    outWithKeys.sort((a, b) => cmp(a.key, b.key) || cmp(a.str, b.str));
 
     return taggedObject(value, {
       values: outWithKeys.map((x) => x.value),
