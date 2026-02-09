@@ -324,8 +324,6 @@ int tspice_dlafns(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
-  if (outFound) *outFound = 0;
-  if (outNextDescr8) memset(outNextDescr8, 0, sizeof(int) * 8);
 
   if (!descr8) {
     tspice_write_error(err, errMaxBytes, "tspice_dlafns: descr8 must be non-NULL");
@@ -339,6 +337,9 @@ int tspice_dlafns(
     tspice_write_error(err, errMaxBytes, "tspice_dlafns: outFound must be non-NULL");
     return 1;
   }
+
+  *outFound = 0;
+  memset(outNextDescr8, 0, sizeof(int) * 8);
 
   SpiceDLADescr current = {0};
   SpiceDLADescr next = {0};

@@ -13,6 +13,28 @@ using tspice_napi::MakeNotFound;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
+static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char* what, int* out) {
+  const std::string label = (what != nullptr && what[0] != '\0') ? std::string(what) : std::string("value");
+
+  if (!value.IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string("Expected ") + label + " to be a number"));
+    return false;
+  }
+
+  const double d = value.As<Napi::Number>().DoubleValue();
+  const double lo = (double)std::numeric_limits<int32_t>::min();
+  const double hi = (double)std::numeric_limits<int32_t>::max();
+  if (!std::isfinite(d) || std::floor(d) != d || d < lo || d > hi) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string("Expected ") + label + " to be a 32-bit signed integer"));
+    return false;
+  }
+
+  if (out) {
+    *out = (int32_t)d;
+  }
+  return true;
+}
+
 static bool ReadDlaDescriptorField(
     Napi::Env env,
     const Napi::Object& obj,
@@ -157,12 +179,15 @@ static Napi::Number Dafopr(const Napi::CallbackInfo& info) {
 static void Dafcls(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 1 || !info[0].IsNumber()) {
+  if (info.Length() != 1) {
     ThrowSpiceError(Napi::TypeError::New(env, "dafcls(handle: number) expects exactly one numeric handle"));
     return;
   }
 
-  const int handle = info[0].As<Napi::Number>().Int32Value();
+  int handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return;
+  }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
@@ -175,12 +200,15 @@ static void Dafcls(const Napi::CallbackInfo& info) {
 static void Dafbfs(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 1 || !info[0].IsNumber()) {
+  if (info.Length() != 1) {
     ThrowSpiceError(Napi::TypeError::New(env, "dafbfs(handle: number) expects exactly one numeric handle"));
     return;
   }
 
-  const int handle = info[0].As<Napi::Number>().Int32Value();
+  int handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return;
+  }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
@@ -193,12 +221,15 @@ static void Dafbfs(const Napi::CallbackInfo& info) {
 static Napi::Boolean Daffna(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 1 || !info[0].IsNumber()) {
+  if (info.Length() != 1) {
     ThrowSpiceError(Napi::TypeError::New(env, "daffna(handle: number) expects exactly one numeric handle"));
     return Napi::Boolean::New(env, false);
   }
 
-  const int handle = info[0].As<Napi::Number>().Int32Value();
+  int handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return Napi::Boolean::New(env, false);
+  }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
@@ -237,12 +268,15 @@ static Napi::Number Dasopr(const Napi::CallbackInfo& info) {
 static void Dascls(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 1 || !info[0].IsNumber()) {
+  if (info.Length() != 1) {
     ThrowSpiceError(Napi::TypeError::New(env, "dascls(handle: number) expects exactly one numeric handle"));
     return;
   }
 
-  const int handle = info[0].As<Napi::Number>().Int32Value();
+  int handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return;
+  }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
@@ -255,12 +289,15 @@ static void Dascls(const Napi::CallbackInfo& info) {
 static void Dlacls(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 1 || !info[0].IsNumber()) {
+  if (info.Length() != 1) {
     ThrowSpiceError(Napi::TypeError::New(env, "dlacls(handle: number) expects exactly one numeric handle"));
     return;
   }
 
-  const int handle = info[0].As<Napi::Number>().Int32Value();
+  int handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return;
+  }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
@@ -307,12 +344,15 @@ static Napi::Number Dlaopn(const Napi::CallbackInfo& info) {
 static Napi::Object Dlabfs(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 1 || !info[0].IsNumber()) {
+  if (info.Length() != 1) {
     ThrowSpiceError(Napi::TypeError::New(env, "dlabfs(handle: number) expects exactly one numeric handle"));
     return Napi::Object::New(env);
   }
 
-  const int handle = info[0].As<Napi::Number>().Int32Value();
+  int handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return Napi::Object::New(env);
+  }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
@@ -337,12 +377,15 @@ static Napi::Object Dlabfs(const Napi::CallbackInfo& info) {
 static Napi::Object Dlafns(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 2 || !info[0].IsNumber()) {
+  if (info.Length() != 2) {
     ThrowSpiceError(Napi::TypeError::New(env, "dlafns(handle: number, descr: object) expects a handle and descriptor"));
     return Napi::Object::New(env);
   }
 
-  const int handle = info[0].As<Napi::Number>().Int32Value();
+  int handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return Napi::Object::New(env);
+  }
   int descr8[8] = {0};
   if (!ReadDlaDescriptor(env, info[1], descr8)) {
     return Napi::Object::New(env);

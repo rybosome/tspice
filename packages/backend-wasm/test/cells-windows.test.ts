@@ -2,26 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 
-const CELLS_WINDOWS_UNSUPPORTED_RE =
-  /Cells\/windows are not supported by this tspice WASM artifact.*missing exported functions/i;
-
-async function createBackendOrSkip() {
-  const b = await createWasmBackend();
-  try {
-    const cell = b.newIntCell(1);
-    b.freeCell(cell);
-    return b;
-  } catch (e) {
-    expect(String((e as Error)?.message ?? e)).toMatch(CELLS_WINDOWS_UNSUPPORTED_RE);
-    return null;
-  }
-}
-
 
 describe("@rybosome/tspice-backend-wasm cells/windows", () => {
   it("supports basic set cells (ordering + de-dupe + getters)", async () => {
-    const b = await createBackendOrSkip();
-    if (!b) return;
+    const b = await createWasmBackend();
 
     const icell = b.newIntCell(10);
     const dcell = b.newDoubleCell(10);
@@ -61,8 +45,7 @@ describe("@rybosome/tspice-backend-wasm cells/windows", () => {
   });
 
   it("supports basic windows (insert + merge + fetch)", async () => {
-    const b = await createBackendOrSkip();
-    if (!b) return;
+    const b = await createWasmBackend();
 
     const win = b.newWindow(4);
 
@@ -79,8 +62,7 @@ describe("@rybosome/tspice-backend-wasm cells/windows", () => {
   });
 
   it("throws on capacity overflow (CSPICE-like)", async () => {
-    const b = await createBackendOrSkip();
-    if (!b) return;
+    const b = await createWasmBackend();
 
     const icell = b.newIntCell(2);
     try {

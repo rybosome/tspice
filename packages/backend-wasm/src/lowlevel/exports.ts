@@ -580,6 +580,29 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_axisar",
   "_tspice_georec",
   "_tspice_recgeo",
+
+  // Cells + windows
+  "_tspice_new_int_cell",
+  "_tspice_new_double_cell",
+  "_tspice_new_char_cell",
+  "_tspice_new_window",
+  "_tspice_free_cell",
+  "_tspice_free_window",
+  "_tspice_ssize",
+  "_tspice_scard",
+  "_tspice_card",
+  "_tspice_size",
+  "_tspice_valid",
+  "_tspice_insrti",
+  "_tspice_insrtd",
+  "_tspice_insrtc",
+  "_tspice_cell_geti",
+  "_tspice_cell_getd",
+  "_tspice_cell_getc",
+  "_tspice_wninsd",
+  "_tspice_wncard",
+  "_tspice_wnfetd",
+  "_tspice_wnvald",
 ] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {

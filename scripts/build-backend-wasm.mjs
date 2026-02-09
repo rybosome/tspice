@@ -331,8 +331,8 @@ for (const jsPath of [outputWebJsPath, outputNodeJsPath]) {
   ensureGeneratedHeader(jsPath);
 }
 
-rewriteWasmFilename(outputWebJsPath, path.basename(webWasmPath));
-rewriteWasmFilename(outputNodeJsPath, path.basename(nodeWasmPath));
+rewriteWasmFilename(outputWebJsPath, path.basename(outputWebWasmPath));
+rewriteWasmFilename(outputNodeJsPath, path.basename(outputNodeWasmPath));
 
 ensureNodeEsmPreamble(outputNodeJsPath);
 

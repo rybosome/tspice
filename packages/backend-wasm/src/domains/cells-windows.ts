@@ -250,48 +250,49 @@ function tspiceCallWnvald(module: EmscriptenModule, size: number, n: number, win
   });
 }
 
-export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
-  const supported =
-    typeof module._tspice_new_int_cell === "function" &&
-    typeof module._tspice_new_double_cell === "function" &&
-    typeof module._tspice_new_char_cell === "function" &&
-    typeof module._tspice_new_window === "function";
+function assertCellsWindowsExports(module: EmscriptenModule): void {
+  const requiredExports = [
+    "_tspice_new_int_cell",
+    "_tspice_new_double_cell",
+    "_tspice_new_char_cell",
+    "_tspice_new_window",
+    "_tspice_free_cell",
+    "_tspice_free_window",
+    "_tspice_ssize",
+    "_tspice_scard",
+    "_tspice_card",
+    "_tspice_size",
+    "_tspice_valid",
+    "_tspice_insrti",
+    "_tspice_insrtd",
+    "_tspice_insrtc",
+    "_tspice_cell_geti",
+    "_tspice_cell_getd",
+    "_tspice_cell_getc",
+    "_tspice_wninsd",
+    "_tspice_wncard",
+    "_tspice_wnfetd",
+    "_tspice_wnvald",
+  ] as const;
 
-  if (!supported) {
-    const msg =
-      "Cells/windows are not supported by this tspice WASM artifact (missing exported functions). " +
-      "Rebuild the WASM backend (scripts/build-backend-wasm.mjs).";
-
-    const unsupported = (): never => {
-      throw new Error(msg);
-    };
-
-    // Provide a full surface area so the backend still satisfies the contract,
-    // but fail fast when invoked.
-    return {
-      newIntCell: unsupported,
-      newDoubleCell: unsupported,
-      newCharCell: unsupported,
-      newWindow: unsupported,
-      freeCell: unsupported,
-      freeWindow: unsupported,
-      ssize: unsupported,
-      scard: unsupported,
-      card: unsupported,
-      size: unsupported,
-      valid: unsupported,
-      insrti: unsupported,
-      insrtd: unsupported,
-      insrtc: unsupported,
-      cellGeti: unsupported,
-      cellGetd: unsupported,
-      cellGetc: unsupported,
-      wninsd: unsupported,
-      wncard: unsupported,
-      wnfetd: unsupported,
-      wnvald: unsupported,
-    };
+  const missing: string[] = [];
+  for (const key of requiredExports) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof (module as any)[key] !== "function") {
+      missing.push(key);
+    }
   }
+
+  if (missing.length > 0) {
+    throw new TypeError(
+      `Invalid tspice WASM module (missing required cells/windows exports): ${missing.join(", ")}. ` +
+        `Rebuild the WASM backend (scripts/build-backend-wasm.mjs).`,
+    );
+  }
+}
+
+export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
+  assertCellsWindowsExports(module);
 
   // Security + correctness: track allocated pointers per backend instance.
   //
