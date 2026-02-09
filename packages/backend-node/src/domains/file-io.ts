@@ -72,6 +72,11 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
       `Expected native backend to return a numeric handle for ${kind}`,
     );
 
+    invariant(
+      nextHandleId < Number.MAX_SAFE_INTEGER,
+      `SpiceHandle ID overflow: too many handles allocated (nextHandleId=${nextHandleId})`,
+    );
+
     const handleId = nextHandleId++;
     handles.set(handleId, { kind, nativeHandle });
     return asSpiceHandle(handleId);

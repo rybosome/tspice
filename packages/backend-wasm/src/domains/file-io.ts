@@ -29,6 +29,12 @@ function asSpiceHandle(handleId: number): SpiceHandle {
   return handleId as unknown as SpiceHandle;
 }
 
+function assertNonNegativeI32(n: number, context: string): void {
+  if (!Number.isFinite(n) || !Number.isInteger(n) || n < 0 || n > I32_MAX) {
+    throw new RangeError(`${context}: expected a non-negative 32-bit signed integer (got ${n})`);
+  }
+}
+
 const DESCR_KEYS = [
   "bwdptr",
   "fwdptr",
@@ -152,6 +158,9 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
   function register(kind: HandleKind, nativeHandle: number): SpiceHandle {
     if (!Number.isFinite(nativeHandle)) {
       throw new Error(`Expected native backend to return a numeric handle for ${kind}`);
+    }
+    if (nextHandleId >= Number.MAX_SAFE_INTEGER) {
+      throw new Error(`SpiceHandle ID overflow: too many handles allocated (nextHandleId=${nextHandleId})`);
     }
     const handleId = nextHandleId++;
     handles.set(handleId, { kind, nativeHandle });
@@ -296,6 +305,8 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
       close(handle, "DAS", (h) => callVoidHandle(module, module._tspice_dascls, h)),
 
     dlaopn: (path: string, ftype: string, ifname: string, ncomch: number) => {
+      assertNonNegativeI32(ncomch, "dlaopn(ncomch)");
+
       const resolved = resolveKernelPath(path);
 
       // `dlaopn_c` creates the output file via C stdio, so we must ensure the
@@ -316,7 +327,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
             pathPtr,
             ftypePtr,
             ifnamePtr,
-            ncomch | 0,
+            ncomch,
             outHandlePtr,
             errPtr,
             WASM_ERR_MAX_BYTES,

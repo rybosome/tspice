@@ -39,7 +39,7 @@ static bool ReadDlaDescriptorField(
     Napi::Env env,
     const Napi::Object& obj,
     const char* key,
-    int* out) {
+    int32_t* out) {
   if (!obj.Has(key)) {
     ThrowSpiceError(Napi::TypeError::New(env, std::string("Missing DLA descriptor field: ") + key));
     return false;
@@ -68,7 +68,7 @@ static bool ReadDlaDescriptorField(
   return true;
 }
 
-static bool ReadDlaDescriptor(Napi::Env env, const Napi::Value& value, int outDescr8[8]) {
+static bool ReadDlaDescriptor(Napi::Env env, const Napi::Value& value, int32_t outDescr8[8]) {
   if (!value.IsObject()) {
     ThrowSpiceError(Napi::TypeError::New(env, "Expected DLA descriptor to be an object"));
     return false;
@@ -393,9 +393,14 @@ static Napi::Object Dlafns(const Napi::CallbackInfo& info) {
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
     return Napi::Object::New(env);
   }
-  int descr8[8] = {0};
-  if (!ReadDlaDescriptor(env, info[1], descr8)) {
+  int32_t descr8_i32[8] = {0};
+  if (!ReadDlaDescriptor(env, info[1], descr8_i32)) {
     return Napi::Object::New(env);
+  }
+
+  int descr8[8] = {0};
+  for (int i = 0; i < 8; i++) {
+    descr8[i] = (int)descr8_i32[i];
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
