@@ -35,6 +35,14 @@ export type SpiceKit = {
   getState(args: GetStateArgs): StateVector;
 };
 
+export type PromisifyFn<T> = T extends (...args: infer A) => infer R
+  ? (...args: A) => Promise<Awaited<R>>
+  : T;
+
+export type PromisifyObject<T extends object> = {
+  [K in keyof T]: PromisifyFn<T[K]>;
+};
+
 /**
  * Top-level `createSpice()` return type.
  */
@@ -43,4 +51,20 @@ export type Spice = {
   raw: SpiceBackend;
   /** Higher-level helpers and typed conveniences. */
   kit: SpiceKit;
+};
+
+/**
+* Sync-ish client returned by `createSpice()`.
+*/
+export type SpiceSync = Spice;
+
+/**
+* Async client returned by `createSpiceAsync()`.
+*
+* Mirrors the `createSpice()` surface area, but wraps every function in a
+* `Promise`.
+*/
+export type SpiceAsync = {
+  raw: PromisifyObject<SpiceBackend>;
+  kit: PromisifyObject<SpiceKit>;
 };
