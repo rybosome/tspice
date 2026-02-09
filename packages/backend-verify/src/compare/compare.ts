@@ -100,17 +100,22 @@ function compareInner(
   }
 
   if (!isPlainObject(actual) || !isPlainObject(expected)) {
+    const actualTag = Object.prototype.toString.call(actual);
+    const expectedTag = Object.prototype.toString.call(expected);
+
     mismatches.push({
       path,
       actual,
       expected,
-      message: "non-plain object mismatch (post-normalization)",
+      message: `non-plain object mismatch (post-normalization): actualType=${actualTag} expectedType=${expectedTag}`,
     });
     return;
   }
 
-  const actualKeys = Object.keys(actual);
-  const expectedKeys = Object.keys(expected);
+  // Sorting here keeps mismatch ordering stable even if a caller bypasses
+  // normalization (or if future normalization changes its insertion ordering).
+  const actualKeys = Object.keys(actual).sort();
+  const expectedKeys = Object.keys(expected).sort();
 
   for (const k of expectedKeys) {
     if (!(k in actual)) {
