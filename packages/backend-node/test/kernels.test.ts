@@ -41,6 +41,38 @@ describe("@rybosome/tspice-backend-node kernels", () => {
     backend.furnsh({ path: kernelPath, bytes });
     expect(withTesting.__ktotalAll()).toBe(before + 1);
 
+    // The contract path is the virtual id; ensure `kinfo()` resolves it.
+    const info = backend.kinfo(kernelPath);
+    expect(info.found).toBe(true);
+    if (info.found) {
+      expect(info.filtyp).toBeTruthy();
+      expect(typeof info.source).toBe("string");
+      expect(typeof info.handle).toBe("number");
+    }
+
+    // `kdata()` should map the staged temp file path back to the virtual id.
+    const totalAll = backend.ktotal("ALL");
+    expect(totalAll).toBeGreaterThan(0);
+
+    let sawVirtual = false;
+    for (let i = 0; i < totalAll; i++) {
+      const kd = backend.kdata(i, "ALL");
+      expect(kd.found).toBe(true);
+      if (!kd.found) continue;
+      expect(kd.file).toBeTruthy();
+      expect(kd.filtyp).toBeTruthy();
+
+      if (kd.file === kernelPath) {
+        sawVirtual = true;
+      }
+    }
+
+    expect(sawVirtual).toBe(true);
+
+    // Array input should behave like an OR of kinds.
+    expect(backend.ktotal(["META", "TEXT"]))
+      .toBe(backend.ktotal("META") + backend.ktotal("TEXT"));
+
     backend.unload(kernelPath);
     expect(withTesting.__ktotalAll()).toBe(before);
   });

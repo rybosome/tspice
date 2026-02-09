@@ -9,6 +9,7 @@ export type {
   FoundValue,
   IluminResult,
   KernelData,
+  KernelInfo,
   KernelKind,
   KernelSource,
   Mat6RowMajor,

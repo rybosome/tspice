@@ -24,6 +24,16 @@ export type NativeAddon = {
     kind?: string,
   ): { found: boolean; file?: string; filtyp?: string; source?: string; handle?: number };
 
+
+  // --- kernel management ---
+  kinfo(path: string): { found: boolean; filtyp?: string; source?: string; handle?: number };
+  kxtrct(
+    keywd: string,
+    terms: readonly string[],
+    wordsq: string,
+  ): { found: boolean; wordsq?: string; substr?: string };
+  kplfrm(frmcls: number, idset: number): void;
+
   // --- kernel pool ---
   gdpool(name: string, start: number, room: number): { found: boolean; values?: number[] };
   gipool(name: string, start: number, room: number): { found: boolean; values?: number[] };

@@ -48,6 +48,7 @@ describe("@rybosome/tspice-backend-fake", () => {
     expect(b.ktotal("ALL")).toBe(3);
     expect(b.ktotal("SPK")).toBe(1);
     expect(b.ktotal("LSK")).toBe(1);
+    expect(b.ktotal("TEXT")).toBe(1);
 
     // Unknown extensions should not behave like the ALL wildcard.
     expect(b.ktotal("UNKNOWN")).toBe(1);
@@ -57,7 +58,7 @@ describe("@rybosome/tspice-backend-fake", () => {
     const k2 = b.kdata(2);
 
     expect(k0).toMatchObject({ found: true, file: "/kernels/a.bsp", filtyp: "SPK", handle: 1 });
-    expect(k1).toMatchObject({ found: true, file: "/kernels/b.tls", filtyp: "LSK", handle: 2 });
+    expect(k1).toMatchObject({ found: true, file: "/kernels/b.tls", filtyp: "TEXT", handle: 2 });
     expect(k2).toMatchObject({ found: true, file: "/kernels/c.wat", filtyp: "UNKNOWN", handle: 3 });
 
     const u0 = b.kdata(0, "UNKNOWN");

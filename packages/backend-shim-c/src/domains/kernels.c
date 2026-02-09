@@ -3,6 +3,13 @@
 #include "SpiceUsr.h"
 
 #include <string.h>
+#include <stdio.h>
+
+static void tspice_write_error(char *err, int errMaxBytes, const char *msg) {
+  if (!err || errMaxBytes <= 0) return;
+  snprintf(err, (size_t)errMaxBytes, "%s", msg ? msg : "");
+  err[errMaxBytes - 1] = '\0';
+}
 
 int tspice_furnsh(const char *path, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
@@ -133,6 +140,143 @@ int tspice_kdata(
   if (outHandle) {
     *outHandle = (int)handleC;
   }
+  if (outFound) {
+    *outFound = foundC == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_kinfo(
+    const char *path,
+    char *filtyp,
+    int filtypMaxBytes,
+    char *source,
+    int sourceMaxBytes,
+    int *outHandle,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0 && err) {
+    err[0] = '\0';
+  }
+  if (filtypMaxBytes > 0 && filtyp) {
+    filtyp[0] = '\0';
+  }
+  if (sourceMaxBytes > 0 && source) {
+    source[0] = '\0';
+  }
+  if (outHandle) {
+    *outHandle = 0;
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  if (!path || path[0] == '\0') {
+    tspice_write_error(err, errMaxBytes, "tspice_kinfo(): path must be a non-empty string");
+    return 1;
+  }
+
+  SpiceInt handleC = 0;
+  SpiceBoolean foundC = SPICEFALSE;
+
+  kinfo_c(
+      path,
+      (SpiceInt)filtypMaxBytes,
+      (SpiceInt)sourceMaxBytes,
+      filtyp,
+      source,
+      &handleC,
+      &foundC);
+
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outHandle) {
+    *outHandle = (int)handleC;
+  }
+  if (outFound) {
+    *outFound = foundC == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_kxtrct(
+    const char *keywd,
+    int termlen,
+    const char *terms,
+    int nterms,
+    const char *wordsqIn,
+    char *wordsqOut,
+    int wordsqOutMaxBytes,
+    char *substr,
+    int substrMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0 && err) {
+    err[0] = '\0';
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+  if (wordsqOut && wordsqOutMaxBytes > 0) {
+    wordsqOut[0] = '\0';
+  }
+  if (substr && substrMaxBytes > 0) {
+    substr[0] = '\0';
+  }
+
+  if (!keywd || keywd[0] == '\0') {
+    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): keywd must be a non-empty string");
+    return 1;
+  }
+  if (!wordsqIn) {
+    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): wordsqIn must be non-null");
+    return 1;
+  }
+  if (!wordsqOut || wordsqOutMaxBytes <= 0) {
+    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): wordsqOut must be non-null with wordsqOutMaxBytes > 0");
+    return 1;
+  }
+  if (!substr || substrMaxBytes <= 0) {
+    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): substr must be non-null with substrMaxBytes > 0");
+    return 1;
+  }
+  if ((nterms > 0 && !terms) || termlen < 0 || nterms < 0) {
+    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): invalid terms/termlen/nterms");
+    return 1;
+  }
+
+  // Copy input wordsq into the output buffer so `kxtrct_c` can mutate it in place.
+  strncpy(wordsqOut, wordsqIn, (size_t)wordsqOutMaxBytes - 1);
+  wordsqOut[wordsqOutMaxBytes - 1] = '\0';
+
+  SpiceBoolean foundC = SPICEFALSE;
+  kxtrct_c(
+      keywd,
+      (SpiceInt)termlen,
+      (const void *)terms,
+      (SpiceInt)nterms,
+      (SpiceInt)wordsqOutMaxBytes,
+      (SpiceInt)substrMaxBytes,
+      wordsqOut,
+      &foundC,
+      substr);
+
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
   if (outFound) {
     *outFound = foundC == SPICETRUE ? 1 : 0;
   }

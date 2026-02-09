@@ -1088,3 +1088,32 @@ int tspice_wnvald(int size, int n, uintptr_t windowHandle, char *err, int errMax
 
   return 0;
 }
+
+int tspice_kplfrm(int frmcls, uintptr_t idsetHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  SpiceCell *idset = tspice_validate_handle(idsetHandle, "cell", "tspice_kplfrm()", err, errMaxBytes);
+  if (!idset) {
+    return 1;
+  }
+
+  if (idset->dtype != SPICE_INT) {
+    return tspice_write_error(err, errMaxBytes, "tspice_kplfrm(): expected SPICE_INT cell");
+  }
+
+  SpiceInt cls = 0;
+  if (tspice_int_to_spice_int_checked(frmcls, &cls, "tspice_kplfrm()", err, errMaxBytes) != 0) {
+    return 1;
+  }
+
+  kplfrm_c(cls, idset);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}

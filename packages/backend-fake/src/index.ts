@@ -4,7 +4,9 @@ import type {
   Found,
   IluminResult,
   KernelData,
+  KernelInfo,
   KernelKind,
+  KernelKindInput,
   KernelSource,
   KernelPoolVarType,
   SpiceBackend,
@@ -592,11 +594,14 @@ function guessKernelKind(path: string): KernelKind {
   const lower = path.toLowerCase();
   if (lower.endsWith(".bsp")) return "SPK";
   if (lower.endsWith(".bc")) return "CK";
-  if (lower.endsWith(".tpc") || lower.endsWith(".pck")) return "PCK";
+  if (lower.endsWith(".bpc")) return "PCK";
+  if (lower.endsWith(".bds") || lower.endsWith(".dsk")) return "DSK";
+  if (lower.endsWith(".tpc") || lower.endsWith(".pck")) return "TEXT";
   if (lower.endsWith(".tls") || lower.endsWith(".lsk")) return "LSK";
   if (lower.endsWith(".tf") || lower.endsWith(".fk")) return "FK";
   if (lower.endsWith(".ti") || lower.endsWith(".ik")) return "IK";
   if (lower.endsWith(".tsc") || lower.endsWith(".sclk")) return "SCLK";
+  if (lower.endsWith(".ek")) return "EK";
   if (lower.endsWith(".tm") || lower.endsWith(".meta")) return "META";
   return "UNKNOWN";
 }
@@ -611,13 +616,17 @@ function kernelFiltyp(kind: KernelKind): string {
     case "SPK":
     case "CK":
     case "PCK":
+    case "DSK":
+    case "EK":
+    case "META":
+    case "TEXT":
+      return kind;
+
     case "LSK":
     case "FK":
     case "IK":
     case "SCLK":
-    case "EK":
-    case "META":
-      return kind;
+      return "TEXT";
     case "ALL":
       return "ALL";
     case "UNKNOWN":
@@ -699,9 +708,52 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   const spiceCellUnsupported =
     "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
 
-  const getKernelsOfKind = (kind: KernelKind): readonly KernelRecord[] => {
-    if (kind === "ALL") return kernels;
-    return kernels.filter((k) => k.kind === kind);
+  function normalizeKindInput(kind: KernelKindInput | undefined): readonly string[] {
+    if (kind == null) {
+      return ["ALL"];
+    }
+    if (Array.isArray(kind)) {
+      return kind;
+    }
+
+    // Allow CSPICE-style multi-kind strings via casting.
+    const raw = String(kind);
+    if (/\s/.test(raw)) {
+      return raw
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+    }
+
+    return [raw];
+  }
+
+  const textKinds = new Set(["TEXT", "LSK", "FK", "IK", "SCLK"]);
+
+  function matchesKernelKind(requested: ReadonlySet<string>, k: KernelRecord): boolean {
+    if (requested.size === 0) {
+      return false;
+    }
+    if (requested.has("ALL")) {
+      return true;
+    }
+
+    const kind = k.kind.toUpperCase();
+    if (requested.has(kind)) {
+      return true;
+    }
+
+    // CSPICE TEXT covers all non-meta text kernels.
+    if (requested.has("TEXT") && textKinds.has(kind)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  const getKernelsOfKind = (kind: KernelKindInput | undefined): readonly KernelRecord[] => {
+    const requested = new Set(normalizeKindInput(kind).map((k) => k.toUpperCase()));
+    return kernels.filter((k) => matchesKernelKind(requested, k));
   };
 
   return {
@@ -776,11 +828,61 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       kernelPoolWatchesByName.clear();
     },
 
-    ktotal: (kind: KernelKind = "ALL") => {
+    kinfo: (path: string) => {
+      const k = kernels.find((k) => k.file === path);
+      if (!k) {
+        return { found: false };
+      }
+
+      return {
+        found: true,
+        filtyp: k.filtyp,
+        source: k.source,
+        handle: k.handle,
+      } satisfies Found<KernelInfo>;
+    },
+
+    kxtrct: (keywd, terms, wordsq) => {
+      const termSet = new Set(terms);
+      const words = [...wordsq.matchAll(/\S+/g)].map((m) => ({
+        text: m[0],
+        start: m.index ?? 0,
+        end: (m.index ?? 0) + m[0].length - 1,
+      }));
+
+      const keyIndex = words.findIndex((w) => w.text === keywd);
+      if (keyIndex < 0) {
+        return { found: false };
+      }
+
+      let termIndex = -1;
+      for (let i = keyIndex + 1; i < words.length; i++) {
+        if (termSet.has(words[i]!.text)) {
+          termIndex = i;
+          break;
+        }
+      }
+
+      const startSub = words[keyIndex + 1]?.start;
+      const endSub = termIndex >= 0 ? words[termIndex]!.start : wordsq.length;
+      const substr = startSub == null ? "" : wordsq.slice(startSub, endSub);
+
+      const removalStart = words[keyIndex]!.start;
+      const removalEnd = termIndex >= 0 ? words[(termIndex - 1) as number]!.end + 1 : wordsq.length;
+      const newWordsq = wordsq.slice(0, removalStart) + wordsq.slice(removalEnd);
+
+      return { found: true, wordsq: newWordsq, substr };
+    },
+
+    kplfrm: (_frmcls, _idset) => {
+      throw new Error(spiceCellUnsupported);
+    },
+
+    ktotal: (kind: KernelKindInput = "ALL") => {
       return getKernelsOfKind(kind).length;
     },
 
-    kdata: (which: number, kind: KernelKind = "ALL") => {
+    kdata: (which: number, kind: KernelKindInput = "ALL") => {
       const list = getKernelsOfKind(kind);
       const k = list[which];
       if (!k) return { found: false };
