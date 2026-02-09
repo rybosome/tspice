@@ -39,6 +39,18 @@ function assertNonEmptyStringArray(
   }
 }
 
+function assertStringArrayNoEmptyStrings(
+  fn: string,
+  field: string,
+  values: readonly string[],
+): void {
+  for (const v of values) {
+    if (v.trim().length === 0) {
+      throw new RangeError(`${fn}(): ${field} must not contain empty strings`);
+    }
+  }
+}
+
 function assertAllFinite(fn: string, field: string, values: readonly number[]): void {
   for (const v of values) {
     if (!Number.isFinite(v)) {
@@ -451,7 +463,8 @@ function tspiceCallPcpool(module: EmscriptenModule, name: string, values: readon
 
 function tspiceCallSwpool(module: EmscriptenModule, agent: string, names: readonly string[]): void {
   assertNonEmptyString("swpool", "agent", agent);
-  assertNonEmptyStringArray("swpool", "names", names);
+  // NAIF's `swpool_c` allows `nnames=0` (watch nothing). We still reject blank strings.
+  assertStringArrayNoEmptyStrings("swpool", "names", names);
 
   const agentPtr = writeUtf8CString(module, agent);
 
