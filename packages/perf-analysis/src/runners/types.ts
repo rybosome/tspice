@@ -1,8 +1,9 @@
 import type { BenchmarkContract } from "../contracts/index.js";
+import type { FixtureRoots } from "../shared/fixtures/types.js";
 
 export interface RunSuiteOptions {
   /** Optional fixture roots used to resolve suite fixture references. */
-  readonly fixtureRoots?: readonly string[];
+  readonly fixtureRoots?: FixtureRoots;
 }
 
 export interface RunnerResult {

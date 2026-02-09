@@ -4,7 +4,7 @@
  * These types are intentionally minimal and may evolve as the contract is implemented.
  */
 
-import type { FixtureRef } from "../../../shared/fixtures/types.js";
+import type { FixtureRef, FixtureRoots } from "../../../shared/fixtures/types.js";
 
 export type BenchmarkContractVersion = 1;
 
@@ -39,7 +39,7 @@ export interface BenchmarkContractV1 {
    * The initial intent is to point this at existing kernel fixtures under:
    * `packages/tspice/test/fixtures/kernels/...`
    */
-  readonly fixtureRoots?: readonly string[];
+  readonly fixtureRoots?: FixtureRoots;
 
   /** Benchmark cases included in the suite. */
   readonly benchmarks: readonly BenchmarkCaseV1[];
@@ -51,5 +51,5 @@ export interface NormalizeFixtureRefsOptions {
    *
    * When omitted, the contract's own `fixtureRoots` may be used.
    */
-  readonly fixtureRoots?: readonly string[];
+  readonly fixtureRoots?: FixtureRoots;
 }
