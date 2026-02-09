@@ -322,7 +322,19 @@ export async function invokeRunner(
         }
 
         try {
-          const parsed = JSON.parse(out) as CRunnerResponse;
+          const parsed = JSON.parse(out) as unknown;
+          if (!isCRunnerResponse(parsed)) {
+            reject(
+              new Error(
+                [
+                  `cspice-runner returned JSON, but it did not match the expected protocol shape (code=${code}, signal=${signal}).`,
+                  `stdout=${JSON.stringify(preview(out, 4_000))}${stdoutTruncated ? " (truncated)" : ""}`,
+                  `stderr=${JSON.stringify(preview(err, 4_000))}${stderrTruncated ? " (truncated)" : ""}`,
+                ].join(" "),
+              ),
+            );
+            return;
+          }
           resolve(parsed);
         } catch {
           reject(

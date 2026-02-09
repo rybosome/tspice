@@ -27,7 +27,9 @@ function compareNumbers(
   const tolRel = opts.tolRel ?? 0;
 
   const diff = Math.abs(actual - expected);
-  const rel = diff / Math.max(1e-30, Math.abs(expected));
+  // Use a symmetric denominator so tolerance behaves consistently regardless
+  // of whether callers treat `actual` or `expected` as the reference.
+  const rel = diff / Math.max(1e-30, Math.max(Math.abs(actual), Math.abs(expected)));
 
   if (diff <= tolAbs) return null;
   if (rel <= tolRel) return null;
