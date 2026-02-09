@@ -13,7 +13,7 @@ using tspice_napi::MakeNotFound;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
-static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char* what, int* out) {
+static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char* what, int32_t* out) {
   const std::string label = (what != nullptr && what[0] != '\0') ? std::string(what) : std::string("value");
 
   if (!value.IsNumber()) {
@@ -184,7 +184,7 @@ static void Dafcls(const Napi::CallbackInfo& info) {
     return;
   }
 
-  int handle = 0;
+  int32_t handle = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
     return;
   }
@@ -205,7 +205,7 @@ static void Dafbfs(const Napi::CallbackInfo& info) {
     return;
   }
 
-  int handle = 0;
+  int32_t handle = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
     return;
   }
@@ -226,7 +226,7 @@ static Napi::Boolean Daffna(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(env, false);
   }
 
-  int handle = 0;
+  int32_t handle = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
     return Napi::Boolean::New(env, false);
   }
@@ -273,7 +273,7 @@ static void Dascls(const Napi::CallbackInfo& info) {
     return;
   }
 
-  int handle = 0;
+  int32_t handle = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
     return;
   }
@@ -294,7 +294,7 @@ static void Dlacls(const Napi::CallbackInfo& info) {
     return;
   }
 
-  int handle = 0;
+  int32_t handle = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
     return;
   }
@@ -349,7 +349,7 @@ static Napi::Object Dlabfs(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  int handle = 0;
+  int32_t handle = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
     return Napi::Object::New(env);
   }
@@ -382,7 +382,7 @@ static Napi::Object Dlafns(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  int handle = 0;
+  int32_t handle = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
     return Napi::Object::New(env);
   }
