@@ -230,7 +230,29 @@ export async function invokeRunner(
     child.stderr.on("data", (chunk) => {
       const r = appendCapped(stderr, chunk, maxStderrChars);
       stderr = r.next;
+      const justTruncated = !stderrTruncated && r.truncated;
       stderrTruncated ||= r.truncated;
+
+      // If stderr truncates, error messages can become enormous; bail early.
+      if (justTruncated) {
+        try {
+          child.kill("SIGKILL");
+        } catch {
+          // ignore
+        }
+
+        finish("bailout", () =>
+          reject(
+            new Error(
+              [
+                `cspice-runner output exceeded limit (stderr capped at ${maxStderrChars} chars)`,
+                `stdout=${JSON.stringify(preview(stdout, 4_000))}${stdoutTruncated ? " (truncated)" : ""}`,
+                `stderr=${JSON.stringify(preview(stderr, 4_000))} (truncated)`,
+              ].join(" "),
+            ),
+          ),
+        );
+      }
     });
 
     child.on("error", (err) => {

@@ -46,4 +46,30 @@ describe("invokeRunner (bounded time)", () => {
     const elapsed = Date.now() - start;
     expect(elapsed).toBeLessThan(5000);
   });
+
+  it("rejects quickly on stderr truncation", async () => {
+    const start = Date.now();
+
+    // Print a large amount of non-JSON output and keep the process alive so we
+    // don't depend on `close` to settle the promise.
+    const script = [
+      "process.stderr.write('b'.repeat(100_000))",
+      "setTimeout(() => {}, 1_000_000)",
+    ].join("; ");
+
+    await expect(
+      invokeRunner(
+        process.execPath,
+        { call: "noop", args: [] },
+        {
+          timeoutMs: 10_000,
+          maxStderrChars: 10_000,
+          args: ["-e", script],
+        },
+      ),
+    ).rejects.toThrow(/stderr capped/i);
+
+    const elapsed = Date.now() - start;
+    expect(elapsed).toBeLessThan(5000);
+  });
 });

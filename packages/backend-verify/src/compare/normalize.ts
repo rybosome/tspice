@@ -35,6 +35,50 @@ function taggedObject(value: object, props: Record<string, unknown>): Record<str
  * When keys collide, JS sort stability would make ordering depend on insertion
  * order (and historically, engine details). This makes tie-breaks explicit.
  */
+
+const FNV1A64_OFFSET_BASIS = 0xcbf29ce484222325n;
+const FNV1A64_PRIME = 0x100000001b3n;
+const FNV1A64_MASK = 0xffffffffffffffffn;
+const textEncoder = new TextEncoder();
+
+function fnv1a64Update(h: bigint, s: string): bigint {
+  // Encode as UTF-8 bytes for stable cross-platform hashing.
+  for (const b of textEncoder.encode(s)) {
+    h ^= BigInt(b);
+    h = (h * FNV1A64_PRIME) & FNV1A64_MASK;
+  }
+  return h;
+}
+
+function hashSortKey(value: unknown, h: bigint = FNV1A64_OFFSET_BASIS): bigint {
+  // Arrays/plain objects get structural hashing to avoid huge intermediary
+  // strings. Everything else falls back to the readable sortKey() form.
+  if (Array.isArray(value)) {
+    h = fnv1a64Update(h, "arr:[");
+    for (const v of value) {
+      h = hashSortKey(v, h);
+      h = fnv1a64Update(h, ",");
+    }
+    return fnv1a64Update(h, "]");
+  }
+
+  if (isPlainObject(value)) {
+    const obj = value as Record<string, unknown>;
+    const keys = Object.keys(obj).sort();
+
+    h = fnv1a64Update(h, "obj:{");
+    for (const k of keys) {
+      h = fnv1a64Update(h, JSON.stringify(k));
+      h = fnv1a64Update(h, ":");
+      h = hashSortKey(obj[k], h);
+      h = fnv1a64Update(h, ",");
+    }
+    return fnv1a64Update(h, "}");
+  }
+
+  return fnv1a64Update(h, sortKey(value));
+}
+
 function sortKey(value: unknown): string {
   if (value === null) return "null:";
 
@@ -62,16 +106,11 @@ function sortKey(value: unknown): string {
       break;
   }
 
-  // Objects (arrays/plain objects) are expected to be pre-normalized, but we
-  // still stringify them in a BigInt-safe way.
-  if (Array.isArray(value)) {
-    return `arr:[${value.map(sortKey).join(",")}]`;
-  }
-
-  if (isPlainObject(value)) {
-    const obj = value as Record<string, unknown>;
-    const keys = Object.keys(obj).sort();
-    return `obj:{${keys.map((k) => `${JSON.stringify(k)}:${sortKey(obj[k])}`).join(",")}}`;
+  // Arrays/plain objects are expected to be pre-normalized, but can still be
+  // enormous (and deep). Avoid deep-expanding them into huge strings.
+  if (Array.isArray(value) || isPlainObject(value)) {
+    const h = hashSortKey(value);
+    return `h:${h.toString(16).padStart(16, "0")}`;
   }
 
   // Fallback: best-effort.
@@ -125,7 +164,6 @@ export function normalizeForCompare(value: unknown): unknown {
     });
 
     return taggedObject(value, {
-      size: value.size,
       entries: outWithKeys.map((x) => x.entry),
     });
   }
@@ -144,7 +182,6 @@ export function normalizeForCompare(value: unknown): unknown {
     });
 
     return taggedObject(value, {
-      size: value.size,
       values: outWithKeys.map((x) => x.value),
     });
   }

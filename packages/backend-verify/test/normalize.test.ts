@@ -17,6 +17,7 @@ describe("normalizeForCompare (deterministic sorting)", () => {
 
     expect(out.$type).toBe("Map");
     expect(out.$tag).toBe("[object Map]");
+    expect("size" in (out.props as unknown as Record<string, unknown>)).toBe(false);
 
     const entries = out.props.entries;
 
@@ -45,8 +46,8 @@ describe("normalizeForCompare (deterministic sorting)", () => {
     };
 
     expect(out.props.entries).toEqual([
-      [{ a: 1n }, "x"],
       [{ a: 2n }, "x"],
+      [{ a: 1n }, "x"],
     ]);
   });
 
@@ -61,6 +62,7 @@ describe("normalizeForCompare (deterministic sorting)", () => {
 
     expect(out.$type).toBe("Set");
     expect(out.$tag).toBe("[object Set]");
+    expect("size" in (out.props as unknown as Record<string, unknown>)).toBe(false);
 
     const values = out.props.values;
 
