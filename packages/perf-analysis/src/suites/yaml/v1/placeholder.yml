@@ -1,0 +1,9 @@
+# Placeholder v1 benchmark suite YAML file.
+#
+# This file exists to ensure the suites directory structure is present in the repo.
+# Real suites will be added in follow-on issues.
+
+version: 1
+name: placeholder
+runner: tspice
+benchmarks: []
