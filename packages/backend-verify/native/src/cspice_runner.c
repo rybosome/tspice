@@ -250,6 +250,21 @@ static bool jsmn_token_streq(const char *json, const jsmntok_t *tok,
   return strlen(s) == len && strncmp(json + tok->start, s, len) == 0;
 }
 
+// NOTE: This embedded jsmn variant increments `tok->size` once per *child token*.
+//
+// For arrays, `tok->size` is the element count.
+// For objects, `tok->size` is the number of child tokens (key + value tokens),
+// i.e. `2 * pairCount`.
+static int jsmn_object_pair_count(const jsmntok_t *t) {
+  if (t->type != JSMN_OBJECT) {
+    return -1;
+  }
+  if (t->size < 0 || (t->size % 2) != 0) {
+    return -1;
+  }
+  return t->size / 2;
+}
+
 // Return index of the value token for `key` within object token at objIndex.
 // Returns -1 if not found or invalid.
 static int jsmn_skip_subtree(const jsmntok_t *tokens, const int index,
@@ -262,7 +277,10 @@ static int jsmn_skip_subtree(const jsmntok_t *tokens, const int index,
 
   int i = index + 1;
   if (t->type == JSMN_OBJECT) {
-    const int pairs = t->size / 2;
+    const int pairs = jsmn_object_pair_count(t);
+    if (pairs < 0) {
+      return tokenCount;
+    }
     for (int p = 0; p < pairs; p++) {
       // key
       i = jsmn_skip_subtree(tokens, i, tokenCount);
@@ -296,7 +314,10 @@ static int jsmn_find_object_key(const char *json, const jsmntok_t *tokens,
   }
 
   int i = objIndex + 1;
-  const int pairs = obj->size / 2;
+  const int pairs = jsmn_object_pair_count(obj);
+  if (pairs < 0) {
+    return -1;
+  }
   for (int p = 0; p < pairs; p++) {
     if (i >= tokenCount) {
       return -1;

@@ -78,6 +78,22 @@ type CRunnerError = {
 
 type CRunnerResponse = CRunnerOk | CRunnerError;
 
+function isCRunnerResponse(value: unknown): value is CRunnerResponse {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Record<string, unknown>;
+  if (typeof v.ok !== "boolean") return false;
+
+  if (v.ok === true) {
+    return "result" in v;
+  }
+
+  if (!("error" in v)) return false;
+  const err = v.error;
+  if (typeof err !== "object" || err === null) return false;
+  const e = err as Record<string, unknown>;
+  return typeof e.message === "string";
+}
+
 export type InvokeRunnerOptions = {
   /**
    * Hard timeout for the child process (ms).
@@ -265,6 +281,21 @@ export async function invokeRunner(
         const err = stderr.trim();
 
         if (code !== 0 || signal) {
+          // The runner may still emit a structured JSON response (especially
+          // { ok:false, error:{...} }). Prefer returning that response when
+          // possible so callers get rich error details.
+          if (out) {
+            try {
+              const parsed = JSON.parse(out) as unknown;
+              if (isCRunnerResponse(parsed)) {
+                resolve(parsed);
+                return;
+              }
+            } catch {
+              // fall through to generic error
+            }
+          }
+
           reject(
             new Error(
               [

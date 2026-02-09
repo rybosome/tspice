@@ -98,6 +98,16 @@ function sortKeyNormalized(value: unknown): string {
       return `bool:${value ? 1 : 0}`;
     case "undefined":
       return "undef:";
+    case "function": {
+      const fn = value as Function;
+      const name = typeof fn.name === "string" && fn.name.length > 0 ? fn.name : "(anonymous)";
+      return `fn:${JSON.stringify(name)}`;
+    }
+    case "symbol": {
+      const sym = value as symbol;
+      // `Symbol().description` is stable and doesn't include the `Symbol(...)` wrapper.
+      return `sym:${JSON.stringify(sym.description ?? null)}`;
+    }
     case "object":
       break;
   }
@@ -109,11 +119,17 @@ function sortKeyNormalized(value: unknown): string {
     return `h:${h.toString(16).padStart(16, "0")}`;
   }
 
-  // If we ever hit this, normalization missed a case — fail fast so we fix it
-  // instead of producing "best effort" ordering.
-  throw new Error(
-    `sortKeyNormalized received un-normalized: ${Object.prototype.toString.call(value)}`,
-  );
+  // Non-plain objects should generally have been normalized to a tagged plain
+  // object shape by `normalizeForCompare()`. However, make sort keys total so
+  // callers don't depend on a throw for correctness.
+  if (typeof value === "object" && value !== null) {
+    const ctor = (value as { constructor?: { name?: unknown } }).constructor;
+    const name = typeof ctor?.name === "string" && ctor.name.length > 0 ? ctor.name : "Object";
+    return `obj:${JSON.stringify(Object.prototype.toString.call(value))}:${JSON.stringify(name)}`;
+  }
+
+  // Should be unreachable, but keep ordering deterministic.
+  return `unknown:${JSON.stringify(String(value))}`;
 }
 
 function stableStringifyNormalized(value: unknown): string {
@@ -281,6 +297,24 @@ export function normalizeForCompare(value: unknown): unknown {
     return taggedObject(value, props);
   }
 
-  // Fallback (e.g. symbols/functions): best-effort stable representation.
-  return String(value);
+  if (typeof value === "function") {
+    const fn = value as Function;
+    return {
+      $tag: "unsupported",
+      $type: "function",
+      name: typeof fn.name === "string" && fn.name.length > 0 ? fn.name : "(anonymous)",
+    };
+  }
+
+  if (typeof value === "symbol") {
+    const sym = value as symbol;
+    return {
+      $tag: "unsupported",
+      $type: "symbol",
+      description: sym.description ?? null,
+    };
+  }
+
+  // Should be unreachable (all JS types covered above); keep deterministic.
+  return { $tag: "unsupported", $type: typeof value, value: String(value) };
 }
