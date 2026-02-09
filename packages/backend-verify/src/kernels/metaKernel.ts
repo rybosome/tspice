@@ -178,8 +178,14 @@ function rewriteMetaKernelStringList(
  * To avoid `process.chdir()` (global state), we rewrite any relative paths to be
  * absolute (using the intended cwd), which makes the meta-kernel independent of
  * the process working directory.
+ *
+ * Note: we strip `\begintext` commentary blocks before rewriting so we don't
+ * accidentally rewrite commented-out assignments.
  */
-export function sanitizeMetaKernelTextForNative(metaKernelText: string, intendedCwd: string): string {
+export function sanitizeMetaKernelTextForNativeNoBegintextBlocks(
+  metaKernelText: string,
+  intendedCwd: string,
+): string {
   const clean = stripMetaKernelBegintextBlocks(metaKernelText);
   const baseDir = path.resolve(intendedCwd);
 

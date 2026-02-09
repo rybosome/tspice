@@ -187,7 +187,8 @@ async function furnshOsKernelForWasm(
     // Load a sanitized copy of the meta-kernel itself so any pool assignments apply,
     // but without allowing it to try to load OS-path kernels in WASM.
     const sanitized = sanitizeMetaKernelTextForWasm(metaKernelText);
-    backend.furnsh({ path: kernelVirtualIdFromOsPath(absPath), bytes: Buffer.from(sanitized, "utf8") });
+    const vid = await kernelVirtualIdFromOsPath(absPath);
+    backend.furnsh({ path: vid, bytes: Buffer.from(sanitized, "utf8") });
 
     for (const k of kernelsToLoad) {
       await furnshOsKernelForWasm(backend, k, loaded, restrictToDir);
@@ -196,7 +197,8 @@ async function furnshOsKernelForWasm(
   }
 
   const bytes = await readFile(absPath);
-  backend.furnsh({ path: kernelVirtualIdFromOsPath(absPath), bytes });
+  const vid = await kernelVirtualIdFromOsPath(absPath);
+  backend.furnsh({ path: vid, bytes });
 }
 
 async function furnshOsKernelForNative(

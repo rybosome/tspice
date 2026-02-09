@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   resolveMetaKernelKernelsToLoad,
-  sanitizeMetaKernelTextForNative,
+  sanitizeMetaKernelTextForNativeNoBegintextBlocks,
   sanitizeMetaKernelTextForWasm,
 } from "../src/kernels/metaKernel.js";
 
@@ -62,7 +62,7 @@ describe("sanitizeMetaKernelTextForWasm", () => {
   });
 });
 
-describe("sanitizeMetaKernelTextForNative", () => {
+describe("sanitizeMetaKernelTextForNativeNoBegintextBlocks", () => {
   it("rewrites relative PATH_VALUES and KERNELS_TO_LOAD entries to be cwd-independent", () => {
     const input = [
       "KPL/MK",
@@ -75,7 +75,7 @@ describe("sanitizeMetaKernelTextForNative", () => {
       "",
     ].join("\n");
 
-    const out = sanitizeMetaKernelTextForNative(input, "/pack/dir");
+    const out = sanitizeMetaKernelTextForNativeNoBegintextBlocks(input, "/pack/dir");
 
     // begintext blocks should be stripped.
     expect(out).not.toContain("should-not-parse");

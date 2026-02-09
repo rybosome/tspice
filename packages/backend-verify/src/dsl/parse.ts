@@ -109,7 +109,20 @@ function expandFixturePackDir(dirPath: string, originalEntry: string): KernelEnt
   }
 
   const metaKernelText = fs.readFileSync(metaKernel, "utf8");
-  const kernels = resolveMetaKernelKernelsToLoad(metaKernelText, metaKernel, { restrictToDir: dirPath });
+
+  let kernels: string[];
+  try {
+    kernels = resolveMetaKernelKernelsToLoad(metaKernelText, metaKernel, { restrictToDir: dirPath });
+  } catch (error) {
+    const cause = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Failed to expand fixture-pack meta-kernel ${JSON.stringify(metaKernel)} ` +
+        `(packDir=${JSON.stringify(dirPath)} from entry ${JSON.stringify(originalEntry)}). ` +
+        `Remediation: ensure PATH_VALUES/KERNELS_TO_LOAD entries are quoted strings and resolve within the pack directory. ` +
+        `If you need to load a kernel outside the pack, reference that file explicitly instead of the pack directory alias. ` +
+        `Caused by: ${cause}`,
+    );
+  }
 
   if (kernels.length === 0) {
     throw new Error(
