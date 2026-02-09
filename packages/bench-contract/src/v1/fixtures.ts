@@ -43,6 +43,17 @@ export type ResolveFixtureRefResult =
     }
   | { readonly ok: false; readonly message: string };
 
+function isPathInside(baseDir: string, candidatePath: string): boolean {
+  const rel = path.relative(baseDir, candidatePath);
+  if (rel === "" || rel === ".") return true;
+
+  return (
+    rel !== ".." &&
+    !rel.startsWith(`..${path.sep}`) &&
+    !path.isAbsolute(rel)
+  );
+}
+
 export function resolveFixtureRef(
   ref: string,
   options: ResolveFixtureRefOptions,
@@ -76,9 +87,7 @@ export function resolveFixtureRef(
   const absolutePath = path.resolve(rootDir, ...relFsPath);
 
   // Prevent path traversal outside the declared root.
-  const relative = path.relative(rootDir, absolutePath);
-  const firstSegment = relative.split(path.sep)[0];
-  if (firstSegment === ".." || path.isAbsolute(relative)) {
+  if (!isPathInside(rootDir, absolutePath)) {
     return {
       ok: false,
       message: `Fixture ref '${ref}' escapes root '${parsed.root}'.`,
@@ -92,6 +101,16 @@ export function resolveFixtureRef(
         return {
           ok: false,
           message: `Fixture ref '${ref}' resolved to a non-file path: ${absolutePath}`,
+        };
+      }
+
+      // Prevent symlink escapes.
+      const rootReal = fs.realpathSync(rootDir);
+      const fileReal = fs.realpathSync(absolutePath);
+      if (!isPathInside(rootReal, fileReal)) {
+        return {
+          ok: false,
+          message: `Fixture ref '${ref}' escapes root '${parsed.root}' via symlink: ${absolutePath}`,
         };
       }
     } catch {

@@ -9,11 +9,12 @@ function usage() {
   console.error(
     [
       "Usage:",
-      "  pnpm bench:contract validate [--json] <file>",
+      "  pnpm bench:contract validate [--json] [--no-check-fixtures] <file>",
       "",
       "Examples:",
       "  pnpm bench:contract validate benchmarks/contracts/v1/example.yml",
       "  pnpm bench:contract validate --json benchmarks/contracts/v1/example.yml",
+      "  pnpm bench:contract validate --no-check-fixtures benchmarks/contracts/v1/example.yml",
     ].join("\n"),
   );
 }
@@ -22,11 +23,17 @@ const args = process.argv.slice(2);
 const command = args[0];
 
 let json = false;
+let checkFixtures = true;
 let fileArg = null;
 
 for (const arg of args.slice(1)) {
   if (arg === "--json") {
     json = true;
+    continue;
+  }
+
+  if (arg === "--no-check-fixtures") {
+    checkFixtures = false;
     continue;
   }
 
@@ -67,7 +74,7 @@ if (!parsed.ok) {
 
 const validated = validateBenchmarkSuiteV1(parsed.value, {
   repoRoot,
-  checkFixtureExistence: true,
+  checkFixtureExistence: checkFixtures,
 });
 
 if (!validated.ok) {
