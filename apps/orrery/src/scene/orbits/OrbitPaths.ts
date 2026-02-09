@@ -358,7 +358,7 @@ export class OrbitPaths {
 
       const et = startEt + stepSec * i
       try {
-        const state = this.spiceClient.getBodyState({
+        const state = await this.spiceClient.getBodyState({
           target: input.target,
           observer: input.primary,
           frame: J2000_FRAME,

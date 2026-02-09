@@ -11,7 +11,7 @@ export const VIEWER_SCRUB_UTC_HARD_MIN = '1950-01-01T00:00:00Z'
 // that as the viewer's maximum allowed UTC.
 export const VIEWER_SCRUB_UTC_HARD_MAX = '2050-01-02T00:00:00Z'
 
-type UtcToEt = (utc: string) => number
+type UtcToEt = (utc: string) => Promise<number>
 
 export type ViewerScrubRange = {
   minEtSec: number
@@ -34,13 +34,13 @@ export type ViewerScrubRange = {
  * This intentionally does *not* attempt to discover kernel coverage. We run a
  * known demo kernel pack and just want a stable viewer scrub window.
  */
-export function computeViewerScrubRangeEt(input: { utcToEt: UtcToEt }): ViewerScrubRange | null {
+export async function computeViewerScrubRangeEt(input: { utcToEt: UtcToEt }): Promise<ViewerScrubRange | null> {
   const hardMinUtc = VIEWER_SCRUB_UTC_HARD_MIN
   const hardMaxUtc = VIEWER_SCRUB_UTC_HARD_MAX
 
   try {
-    const hardMinEtSec = input.utcToEt(hardMinUtc)
-    const hardMaxEtSec = input.utcToEt(hardMaxUtc)
+    const hardMinEtSec = await input.utcToEt(hardMinUtc)
+    const hardMaxEtSec = await input.utcToEt(hardMaxUtc)
 
     if (!Number.isFinite(hardMinEtSec) || !Number.isFinite(hardMaxEtSec)) return null
     if (!(hardMinEtSec < hardMaxEtSec)) return null

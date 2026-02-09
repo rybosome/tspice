@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { timeStore, useTimeStore } from '../time/timeStore.js'
 import type { SpiceClient } from '../spice/SpiceClient.js'
 
@@ -52,11 +52,22 @@ const PAUSE_ICON = '⏸\uFE0E'
 export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }: PlaybackControlsProps) {
   const state = useTimeStore()
 
-  const utcString = useMemo(() => {
-    try {
-      return spiceClient.etToUtc(state.etSec)
-    } catch {
-      return 'N/A'
+  const [utcString, setUtcString] = useState<string>('…')
+
+  useEffect(() => {
+    let cancelled = false
+
+    void spiceClient
+      .etToUtc(state.etSec)
+      .then((s) => {
+        if (!cancelled) setUtcString(s)
+      })
+      .catch(() => {
+        if (!cancelled) setUtcString('N/A')
+      })
+
+    return () => {
+      cancelled = true
     }
   }, [spiceClient, state.etSec])
 

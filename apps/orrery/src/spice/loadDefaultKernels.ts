@@ -1,4 +1,4 @@
-import type { Spice } from '@rybosome/tspice'
+import type { SpiceAsync } from '@rybosome/tspice'
 
 import { naifGenericKernelPack } from './kernelPacks/naifGeneric.js'
 import { loadKernelPack } from './loadKernelPack.js'
@@ -11,6 +11,6 @@ import { loadKernelPack } from './loadKernelPack.js'
  * - PCK (planetary constants)
  * - SPK (ephemeris)
  */
-export async function loadDefaultKernels(spice: Spice): Promise<void> {
+export async function loadDefaultKernels(spice: SpiceAsync): Promise<void> {
   await loadKernelPack(spice, naifGenericKernelPack)
 }

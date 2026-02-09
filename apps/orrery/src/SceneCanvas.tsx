@@ -696,7 +696,7 @@ export function SceneCanvas() {
     getDefaultResumeRateSecPerSec,
     enabled: !isE2e,
   })
-  const refocusSun = () => {
+  const refocusSun = async () => {
     const controller = controllerRef.current
     const camera = cameraRef.current
     if (!controller || !camera || !spiceClient) return
@@ -708,102 +708,106 @@ export function SceneCanvas() {
     // If the current focus IS the sun, this button shouldn't do anything.
     if (String(focusBody) === 'SUN') return
 
-    const etSec = timeStore.getState().etSec
-    const focusState = spiceClient.getBodyState({
-      target: focusBody,
-      observer: 'SUN',
-      frame: J2000_FRAME,
-      et: etSec,
-    })
-
-    const focusPosKm = focusState.positionKm
-    const sunPosWorld = new THREE.Vector3(
-      -focusPosKm[0] * kmToWorld,
-      -focusPosKm[1] * kmToWorld,
-      -focusPosKm[2] * kmToWorld,
-    )
-
-    if (sunPosWorld.lengthSq() < 1e-12) return
-
-    const sunDir = sunPosWorld.clone().normalize()
-
-    // Compute current forward direction (camera -> target) derived from yaw/pitch.
-    const cosPitch = Math.cos(controller.pitch)
-    const currentOffsetDir = new THREE.Vector3(
-      cosPitch * Math.cos(controller.yaw),
-      cosPitch * Math.sin(controller.yaw),
-      Math.sin(controller.pitch),
-    )
-    const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
-
-    // No additional Sun margin: just ensure the Sun isn't hidden directly
-    // behind the focused body.
-    const marginRad = sunOcclusionMarginRad
-
-    // Ensure the Sun's center is offset from screen center by more than the
-    // focused body's angular radius, so it can't be fully occluded.
-    const focusMeta = focusOptions.find((b) => String(b.body) === String(focusBody))
-    const radiusWorld = (() => {
-      if (!focusMeta) return undefined
-
-      const base = computeBodyRadiusWorld({
-        radiusKm: focusMeta.style.radiusKm,
-        kmToWorld,
-        mode: 'true',
+    try {
+      const etSec = timeStore.getState().etSec
+      const focusState = await spiceClient.getBodyState({
+        target: focusBody,
+        observer: 'SUN',
+        frame: J2000_FRAME,
+        et: etSec,
       })
 
-      // Keep occlusion math consistent with the rendered body size.
-      return String(focusBody) === 'SUN' ? base * sunScaleMultiplier : base * planetScaleMultiplier
-    })()
+      const focusPosKm = focusState.positionKm
+      const sunPosWorld = new THREE.Vector3(
+        -focusPosKm[0] * kmToWorld,
+        -focusPosKm[1] * kmToWorld,
+        -focusPosKm[2] * kmToWorld,
+      )
 
-    const bodyAngRad =
-      radiusWorld && controller.radius > 1e-12
-        ? Math.asin(THREE.MathUtils.clamp(radiusWorld / controller.radius, 0, 1))
-        : 0
-    const minSeparationRad = bodyAngRad + marginRad
+      if (sunPosWorld.lengthSq() < 1e-12) return
 
-    // If we're zoomed in too far, it may be geometrically impossible to place
-    // the Sun outside the body's projected disk while still staying in-frame.
-    // In that case, zoom out just enough to make it possible.
-    const halfV = THREE.MathUtils.degToRad(cameraFovDeg) / 2
-    const halfH = Math.atan(Math.tan(halfV) * (camera.aspect || 1))
-    const half = Math.min(halfV, halfH)
-    const maxOffAxis = Math.max(0, half - marginRad)
-    const maxDesiredOffAxis = maxOffAxis * 0.8
+      const sunDir = sunPosWorld.clone().normalize()
 
-    if (radiusWorld != null && minSeparationRad > maxDesiredOffAxis && maxDesiredOffAxis > marginRad + 1e-6) {
-      const maxBodyAng = maxDesiredOffAxis - marginRad
-      const minRadiusForBodyAng = radiusWorld / Math.sin(maxBodyAng)
-      controller.radius = Math.max(controller.radius, minRadiusForBodyAng)
-    }
+      // Compute current forward direction (camera -> target) derived from yaw/pitch.
+      const cosPitch = Math.cos(controller.pitch)
+      const currentOffsetDir = new THREE.Vector3(
+        cosPitch * Math.cos(controller.yaw),
+        cosPitch * Math.sin(controller.yaw),
+        Math.sin(controller.pitch),
+      )
+      const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
 
-    const sunAngle = currentForwardDir.angleTo(sunDir)
-    const sunInFov = isDirectionWithinFov({
-      cameraForwardDir: currentForwardDir,
-      dirToPoint: sunDir,
-      cameraFovDeg,
-      cameraAspect: camera.aspect,
-      marginRad,
-    })
-    const sunNotOccluded = sunAngle >= minSeparationRad
+      // No additional Sun margin: just ensure the Sun isn't hidden directly
+      // behind the focused body.
+      const marginRad = sunOcclusionMarginRad
 
-    if (!sunInFov || !sunNotOccluded) {
-      const angles = computeOrbitAnglesToKeepPointInView({
-        pointWorld: sunPosWorld,
+      // Ensure the Sun's center is offset from screen center by more than the
+      // focused body's angular radius, so it can't be fully occluded.
+      const focusMeta = focusOptions.find((b) => String(b.body) === String(focusBody))
+      const radiusWorld = (() => {
+        if (!focusMeta) return undefined
+
+        const base = computeBodyRadiusWorld({
+          radiusKm: focusMeta.style.radiusKm,
+          kmToWorld,
+          mode: 'true',
+        })
+
+        // Keep occlusion math consistent with the rendered body size.
+        return String(focusBody) === 'SUN' ? base * sunScaleMultiplier : base * planetScaleMultiplier
+      })()
+
+      const bodyAngRad =
+        radiusWorld && controller.radius > 1e-12
+          ? Math.asin(THREE.MathUtils.clamp(radiusWorld / controller.radius, 0, 1))
+          : 0
+      const minSeparationRad = bodyAngRad + marginRad
+
+      // If we're zoomed in too far, it may be geometrically impossible to place
+      // the Sun outside the body's projected disk while still staying in-frame.
+      // In that case, zoom out just enough to make it possible.
+      const halfV = THREE.MathUtils.degToRad(cameraFovDeg) / 2
+      const halfH = Math.atan(Math.tan(halfV) * (camera.aspect || 1))
+      const half = Math.min(halfV, halfH)
+      const maxOffAxis = Math.max(0, half - marginRad)
+      const maxDesiredOffAxis = maxOffAxis * 0.8
+
+      if (radiusWorld != null && minSeparationRad > maxDesiredOffAxis && maxDesiredOffAxis > marginRad + 1e-6) {
+        const maxBodyAng = maxDesiredOffAxis - marginRad
+        const minRadiusForBodyAng = radiusWorld / Math.sin(maxBodyAng)
+        controller.radius = Math.max(controller.radius, minRadiusForBodyAng)
+      }
+
+      const sunAngle = currentForwardDir.angleTo(sunDir)
+      const sunInFov = isDirectionWithinFov({
+        cameraForwardDir: currentForwardDir,
+        dirToPoint: sunDir,
         cameraFovDeg,
         cameraAspect: camera.aspect,
-        desiredOffAxisRad: minSeparationRad,
         marginRad,
       })
+      const sunNotOccluded = sunAngle >= minSeparationRad
 
-      if (angles) {
-        controller.yaw = angles.yaw
-        controller.pitch = angles.pitch
+      if (!sunInFov || !sunNotOccluded) {
+        const angles = computeOrbitAnglesToKeepPointInView({
+          pointWorld: sunPosWorld,
+          cameraFovDeg,
+          cameraAspect: camera.aspect,
+          desiredOffAxisRad: minSeparationRad,
+          marginRad,
+        })
+
+        if (angles) {
+          controller.yaw = angles.yaw
+          controller.pitch = angles.pitch
+        }
       }
-    }
 
-    controller.applyToCamera(camera)
-    invalidateRef.current?.()
+      controller.applyToCamera(camera)
+      invalidateRef.current?.()
+    } catch (err) {
+      console.warn('refocusSun failed', err)
+    }
   }
 
   // Start the playback ticker (handles time advancement)
@@ -836,7 +840,7 @@ export function SceneCanvas() {
         earthNightLightsIntensity: number
         earthAtmosphereIntensity: number
         earthCloudsNightMultiplier: number
-      }) => void)
+      }) => void | Promise<void>)
     | null
   >(null)
 
@@ -1133,7 +1137,7 @@ export function SceneCanvas() {
 
         // Initial render with current time store state
         const initialEtSec = timeStore.getState().etSec
-        runtime.updateScene({ etSec: initialEtSec, ...latestUiRef.current })
+        await runtime.updateScene({ etSec: initialEtSec, ...latestUiRef.current })
 
         three.resize()
         three.controller.applyToCamera(three.camera)

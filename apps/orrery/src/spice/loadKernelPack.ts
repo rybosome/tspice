@@ -1,4 +1,4 @@
-import type { Spice } from '@rybosome/tspice'
+import type { SpiceAsync } from '@rybosome/tspice'
 
 // Baseline packs are loaded up-front. Optional packs may be fetched later.
 export type KernelPackId = 'naifGeneric' | 'moon-default'
@@ -26,7 +26,7 @@ async function fetchKernelBytes(url: URL): Promise<Uint8Array> {
  *
  * Fetching is done in parallel, but kernels are *loaded* in pack order.
  */
-export async function loadKernelPack(spice: Spice, pack: KernelPack): Promise<void> {
+export async function loadKernelPack(spice: SpiceAsync, pack: KernelPack): Promise<void> {
   // In Vite, BASE_URL accounts for non-root deployments (e.g. GitHub pages).
   const base = new URL(import.meta.env.BASE_URL, window.location.href)
 
@@ -35,6 +35,6 @@ export async function loadKernelPack(spice: Spice, pack: KernelPack): Promise<vo
 
   for (let i = 0; i < pack.kernels.length; i++) {
     const kernel = pack.kernels[i]
-    spice.kit.loadKernel({ path: kernel.fsPath, bytes: bytes[i] })
+    await spice.kit.loadKernel({ path: kernel.fsPath, bytes: bytes[i] })
   }
 }
