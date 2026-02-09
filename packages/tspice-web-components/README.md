@@ -11,7 +11,9 @@ This package is currently intended for **internal workspace use**.
 - `createWorkerTransport()` — request/response RPC over `Worker.postMessage()` (timeout + dispose support).
   - Types: `WorkerTransport`, `WorkerTransportRequestOptions`
 - `withCaching()` — memoized transport wrapper (in-flight dedupe + LRU + optional TTL).
-  - Type: `CachingTransport`
+  - When caching is disabled (e.g. `ttlMs <= 0` or `maxEntries <= 0`), returns the input transport unchanged.
+  - Use `isCachingTransport()` to narrow before calling `clear()`/`dispose()`.
+  - Types: `CachingTransport`, `WithCachingResult`
 
 ### `createWorkerTransport()`: `terminateOnDispose`
 

@@ -45,9 +45,13 @@ export type WithCachingResult = SpiceTransport | CachingTransport;
 /**
  * Type guard for narrowing a transport returned by `withCaching()`.
  */
-export function isCachingTransport(t: SpiceTransport): t is CachingTransport {
-  const maybe = t as Partial<CachingTransport>;
-  return typeof maybe.clear === "function" && typeof maybe.dispose === "function";
+export function isCachingTransport(t: unknown): t is CachingTransport {
+  return (
+    !!t &&
+    typeof t === "object" &&
+    typeof (t as any).clear === "function" &&
+    typeof (t as any).dispose === "function"
+  );
 }
 
 type CacheEntry = {

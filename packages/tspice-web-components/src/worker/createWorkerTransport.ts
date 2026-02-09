@@ -124,11 +124,8 @@ export function createWorkerTransport(opts: {
 
   const rejectAllPending = (reason: unknown): void => {
     for (const [id, pending] of pendingById) {
-      // cleanup() is idempotent; call it explicitly so it's clear that every
-      // request is cleaned up even though `pending.reject()` also cleans up.
-      pending.cleanup();
       pendingById.delete(id);
-      pending.reject(reason);
+      pending.reject(reason); // reject already cleans up
     }
   };
 
