@@ -46,6 +46,9 @@ suite("backend-verify (tspice vs raw CSPICE parity)", () => {
   let tspice: CaseRunner;
   let cspice: CaseRunner;
 
+  // We reuse a single runner instance across scenarios for speed.
+  // This is safe because `tspice.runCase()` isolates each case via kernel
+  // cleanup/reset (kclear/reset) before executing.
   beforeAll(async () => {
     if (!CSPICE_AVAILABLE) {
       throw new Error(
@@ -85,7 +88,7 @@ suite("backend-verify (tspice vs raw CSPICE parity)", () => {
         const tolAbs = compare.tolAbs ?? DEFAULT_TOL_ABS;
         const tolRel = compare.tolRel ?? DEFAULT_TOL_REL;
         const angleWrapPi = compare.angleWrapPi;
-        const errorShort = compare.errorShort ?? true;
+        const errorShort = compare.errorShort ?? false;
 
         const label = `${scenario.name ?? path.basename(scenarioPath)} case=${t.case.id} call=${t.case.call}`;
 
