@@ -18,6 +18,20 @@ using tspice_napi::ReadStringArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
+static std::string TrimAsciiWhitespace(const std::string& s) {
+  size_t start = 0;
+  while (start < s.size() && tspice_napi::IsAsciiWhitespace(static_cast<unsigned char>(s[start]))) {
+    start++;
+  }
+
+  size_t end = s.size();
+  while (end > start && tspice_napi::IsAsciiWhitespace(static_cast<unsigned char>(s[end - 1]))) {
+    end--;
+  }
+
+  return s.substr(start, end - start);
+}
+
 static Napi::String SpiceVersion(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -260,7 +274,13 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  const std::string keywd = info[0].As<Napi::String>().Utf8Value();
+  const std::string keywdRaw = info[0].As<Napi::String>().Utf8Value();
+  const std::string keywd = TrimAsciiWhitespace(keywdRaw);
+  if (keywd.empty()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "kxtrct keywd must be a non-empty string"));
+    return Napi::Object::New(env);
+  }
+
   const std::string wordsq = info[2].As<Napi::String>().Utf8Value();
 
   tspice_napi::JsStringArrayArg termsArg;
@@ -268,10 +288,19 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  const size_t nterms = termsArg.values.size();
+  std::vector<std::string> terms;
+  terms.reserve(termsArg.values.size());
+  for (const std::string& raw : termsArg.values) {
+    std::string t = TrimAsciiWhitespace(raw);
+    if (!t.empty()) {
+      terms.push_back(std::move(t));
+    }
+  }
+
+  const size_t nterms = terms.size();
 
   size_t termlen = 2;
-  for (const std::string& s : termsArg.values) {
+  for (const std::string& s : terms) {
     termlen = std::max(termlen, s.size() + 1);
   }
 
@@ -289,7 +318,7 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
     termsBuf.resize(nterms * termlen);
     std::fill(termsBuf.begin(), termsBuf.end(), '\0');
     for (size_t i = 0; i < nterms; i++) {
-      const std::string& s = termsArg.values[i];
+      const std::string& s = terms[i];
       char* dst = termsBuf.data() + i * termlen;
       strncpy(dst, s.c_str(), termlen - 1);
       dst[termlen - 1] = '\0';

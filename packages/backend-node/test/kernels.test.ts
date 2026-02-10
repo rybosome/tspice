@@ -12,6 +12,21 @@ const testDir = path.dirname(fileURLToPath(import.meta.url));
 describe("@rybosome/tspice-backend-node kernels", () => {
   const itNative = it.runIf(nodeAddonAvailable());
 
+  itNative("kxtrct() trims keywd/terms and rejects empty keywd", () => {
+    const backend = createNodeBackend();
+
+    const wordsq = "KEY 1 TERM";
+
+    const baseline = backend.kxtrct("KEY", ["TERM"], wordsq);
+    const trimmedInputs = backend.kxtrct(" KEY ", [" TERM "], wordsq);
+    expect(trimmedInputs).toEqual(baseline);
+
+    const emptyTerms = backend.kxtrct("KEY", [" ", "TERM", ""], wordsq);
+    expect(emptyTerms).toEqual(baseline);
+
+    expect(() => backend.kxtrct("   ", ["TERM"], wordsq)).toThrow(/kxtrct keywd must be a non-empty string/i);
+  });
+
   itNative("can furnsh/unload path-backed kernels", () => {
     const backend = createNodeBackend();
 

@@ -256,6 +256,14 @@ int tspice_kxtrct(
     return 1;
   }
 
+  // `kxtrct_c` mutates the wordsq buffer in-place. We copy the input into the
+  // output buffer, but must fail fast if doing so would truncate the input.
+  const size_t wordsqInLen = strlen(wordsqIn);
+  if (wordsqInLen >= (size_t)wordsqOutMaxBytes) {
+    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): wordsqIn would truncate wordsqOut");
+    return 1;
+  }
+
   // Copy input wordsq into the output buffer so `kxtrct_c` can mutate it in place.
   strncpy(wordsqOut, wordsqIn, (size_t)wordsqOutMaxBytes - 1);
   wordsqOut[wordsqOutMaxBytes - 1] = '\0';

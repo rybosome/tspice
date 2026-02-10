@@ -113,9 +113,28 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
  * subtype matching may fall back to "TEXT".
  */
 export function matchesKernelKind(
-  requested: ReadonlySet<string>,
+  requestedRaw: ReadonlySet<string>,
   kernel: Pick<KernelData, "file" | "filtyp">,
 ): boolean {
+  // Normalize the requested set internally so callers can't accidentally pass
+  // untrimmed / non-canonical tokens (e.g. "spk", " ALL ").
+  //
+  // Most call-sites already pass canonical kinds (e.g. via normalizeKindInput),
+  // so we avoid allocating a new set unless normalization is needed.
+  let requested: ReadonlySet<string> = requestedRaw;
+  for (const k of requestedRaw) {
+    const trimmed = k.trim();
+    if (trimmed !== k || trimmed.toUpperCase() !== trimmed) {
+      const normalized = new Set<string>();
+      for (const raw of requestedRaw) {
+        const token = raw.trim();
+        if (token) normalized.add(token.toUpperCase());
+      }
+      requested = normalized;
+      break;
+    }
+  }
+
   if (requested.size === 0) {
     return false;
   }
