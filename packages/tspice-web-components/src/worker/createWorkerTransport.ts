@@ -114,10 +114,12 @@ export function createWorkerTransport(opts: {
 
   type Pending = {
     op: string;
-    // These always run per-request cleanup before settling.
     resolve: (value: unknown) => void;
     reject: (reason: unknown) => void;
+    // Idempotent request cleanup (abort listeners, timeout timers, etc).
     cleanup: () => void;
+    // Helper for paths that must reject *and* run cleanup.
+    rejectAndCleanup: (reason: unknown) => void;
   };
 
   const pendingById = new Map<number, Pending>();
@@ -140,12 +142,13 @@ export function createWorkerTransport(opts: {
 
     for (const [id, pending] of pendingById) {
       pendingById.delete(id);
-      pending.reject(getReason(pending, id)); // reject already cleans up
+      pending.rejectAndCleanup(getReason(pending, id));
     }
 
+    // Settling requests already ran `cleanup()` when their response was received.
     for (const [id, pending] of settlingById) {
       settlingById.delete(id);
-      pending.reject(getReason(pending, id)); // reject already cleans up
+      pending.reject(getReason(pending, id));
     }
   };
 
@@ -312,11 +315,6 @@ export function createWorkerTransport(opts: {
         if (signal && onAbort) signal.removeEventListener("abort", onAbort);
       };
 
-      const resolveAndCleanup = (value: unknown): void => {
-        cleanup();
-        resolve(value);
-      };
-
       const rejectAndCleanup = (reason: unknown): void => {
         cleanup();
         reject(reason);
@@ -324,22 +322,23 @@ export function createWorkerTransport(opts: {
 
       const pending: Pending = {
         op,
-        resolve: resolveAndCleanup,
-        reject: rejectAndCleanup,
+        resolve,
+        reject,
         cleanup,
+        rejectAndCleanup,
       };
       pendingById.set(id, pending);
 
       onAbort = (): void => {
         if (pendingById.get(id) !== pending) return;
         pendingById.delete(id);
-        pending.reject(createAbortError());
+        pending.rejectAndCleanup(createAbortError());
       };
 
       if (signal) {
         if (signal.aborted) {
           pendingById.delete(id);
-          pending.reject(createAbortError());
+          pending.rejectAndCleanup(createAbortError());
           return;
         }
 
@@ -350,7 +349,7 @@ export function createWorkerTransport(opts: {
         timeout = setTimeout(() => {
           if (pendingById.get(id) !== pending) return;
           pendingById.delete(id);
-          pending.reject(
+          pending.rejectAndCleanup(
             new Error(`Worker request timed out after ${timeoutMs}ms ${formatRequestContext(op, id)}`),
           );
         }, timeoutMs);
@@ -364,7 +363,7 @@ export function createWorkerTransport(opts: {
 
         const out = new Error(`Worker postMessage failed ${formatRequestContext(op, id)}`);
         (out as Error & { cause?: unknown }).cause = err;
-        pending.reject(out);
+        pending.rejectAndCleanup(out);
       }
     });
   };

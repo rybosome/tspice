@@ -25,6 +25,8 @@ const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Record<string, true> = Object.freeze({
   "raw.kclear": true,
 });
 
+const warnedBroadNoStorePrefixSets = new Set<string>();
+
 const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): boolean => {
   if (!prefixes || prefixes.length === 0) return false;
   for (const prefix of prefixes) {
@@ -100,6 +102,11 @@ export type WithCachingOptions = {
    * - `"cache"` => normal caching behavior
    * - `"no-store"` => bypass cache entirely (no key computation, no read/write)
    *
+   * Precedence:
+   * - Built-in unsafe default ops are always treated as `"no-store"` unless
+   *   `allowUnsafePolicyOverrides: true`.
+   * - Otherwise, `policy[op]` (when present) overrides `noStorePrefixes`.
+   *
    * By default, kernel-mutating ops (e.g. `kit.loadKernel`, `raw.furnsh`) are
    * treated as `"no-store"`.
    */
@@ -114,6 +121,9 @@ export type WithCachingOptions = {
    *
    * This is useful for future-proofing (e.g. if new kernel mutation ops are
    * introduced upstream).
+   *
+   * Note: `policy` takes precedence over `noStorePrefixes` (except for built-in
+   * unsafe default ops, which still require `allowUnsafePolicyOverrides`).
    */
   noStorePrefixes?: string[];
 
@@ -231,18 +241,35 @@ function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean 
 
   // Only traverse JSON-like containers: arrays and plain objects with enumerable
   // data properties. Everything else fails closed (disable caching).
-  let descs: Record<string, PropertyDescriptor>;
-
   if (Array.isArray(value)) {
+    let len: number;
     try {
-      descs = Object.getOwnPropertyDescriptors(value);
+      len = value.length;
     } catch {
       return true;
     }
 
-    for (const desc of Object.values(descs)) {
-      if (!desc.enumerable) continue;
+    // Avoid O(n) descriptor allocation for large arrays. Treat them as
+    // non-cacheable (fail closed) instead.
+    if (len > MAX_KEY_SCAN) return true;
+
+    for (let i = 0; i < len; i++) {
+      // Detect holes (sparse arrays). JSON.stringify normalizes these to `null`,
+      // which can lead to key collisions. Fail closed.
+      if (!Object.prototype.hasOwnProperty.call(value, i)) return true;
+
+      let desc: PropertyDescriptor | undefined;
+      try {
+        desc = Object.getOwnPropertyDescriptor(value, i);
+      } catch {
+        return true;
+      }
+
+      // Should be impossible after hasOwnProperty, but fail closed just in case
+      // (e.g. Proxies).
+      if (!desc) return true;
       if (desc.get || desc.set) return true;
+
       if (containsBinaryLikeData(desc.value, seen)) return true;
     }
 
@@ -251,6 +278,7 @@ function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean 
 
   if (!isPlainObject(value)) return true;
 
+  let descs: Record<string, PropertyDescriptor>;
   try {
     descs = Object.getOwnPropertyDescriptors(value);
   } catch {
@@ -322,14 +350,25 @@ export function withCaching(
   if (!allowBroadNoStorePrefixes && noStorePrefixes && noStorePrefixes.length > 0) {
     const broad = noStorePrefixes.filter((p) => p.length < 3 || !p.includes("."));
     if (broad.length > 0) {
-      const listed = broad.map((p) => JSON.stringify(p)).join(", ");
-      onWarning(
-        `withCaching(): broad noStorePrefixes ${listed}. ` +
-          `Prefixes are matched via op.startsWith(prefix) and may disable caching broadly. ` +
-          `Prefer e.g. "kit." / "raw."-style prefixes, or set allowBroadNoStorePrefixes: true to silence this warning.`,
-      );
+      const normalized = Array.from(new Set(broad)).sort();
+      const warnKey = normalized.join("\u0000");
+      if (!warnedBroadNoStorePrefixSets.has(warnKey)) {
+        warnedBroadNoStorePrefixSets.add(warnKey);
+
+        const listed = normalized.map((p) => JSON.stringify(p)).join(", ");
+        onWarning(
+          `withCaching(): broad noStorePrefixes ${listed}. ` +
+            `Prefixes are matched via op.startsWith(prefix) and may disable caching broadly. ` +
+            `Prefer e.g. "kit." / "raw."-style prefixes, or set allowBroadNoStorePrefixes: true to silence this warning.`,
+        );
+      }
     }
   }
+
+  // Cache policy precedence (Option A):
+  // - Built-in unsafe default ops are always "no-store" unless allowUnsafePolicyOverrides.
+  // - Otherwise, an explicit policy[op] overrides noStorePrefixes.
+  // - noStorePrefixes provide default "no-store" behavior for matched ops.
 
   const getPolicy = (op: string): CachePolicy => {
     const explicit = policyByOp?.[op];

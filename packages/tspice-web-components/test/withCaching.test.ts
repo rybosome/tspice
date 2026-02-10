@@ -159,6 +159,32 @@ describe("withCaching()", () => {
     }
   });
 
+  it("defaultSpiceCacheKey returns null for sparse arrays, accessor arrays, and large arrays", async () => {
+    const { MAX_KEY_SCAN, defaultSpiceCacheKey } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components",
+    );
+
+    const sparse: any[] = [];
+    sparse[1] = 1;
+    expect(defaultSpiceCacheKey("op", [sparse])).toBeNull();
+
+    let getterCalls = 0;
+    const accessor: any[] = [];
+    Object.defineProperty(accessor, 0, {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return 123;
+      },
+    });
+
+    expect(defaultSpiceCacheKey("op", [accessor])).toBeNull();
+    expect(getterCalls).toBe(0);
+
+    const big = new Array(MAX_KEY_SCAN + 1).fill(0);
+    expect(defaultSpiceCacheKey("op", [big])).toBeNull();
+  });
+
   it("bypasses cache when args contain binary-like data", async () => {
     const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
@@ -289,29 +315,73 @@ describe("withCaching()", () => {
     if (isCachingTransport(cached)) cached.dispose();
   });
 
-  it("warns for overly broad noStorePrefixes by default", async () => {
+  it("policy overrides noStorePrefixes, but cannot override unsafe defaults without allowUnsafePolicyOverrides", async () => {
     const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const key = vi.fn(() => "k");
+    let calls = 0;
+    const base = {
+      request: vi.fn(async () => ++calls),
+    };
+
+    const cached = withCaching(base, {
+      key,
+      noStorePrefixes: ["kit."],
+      policy: {
+        // Should override noStorePrefixes match.
+        "kit.utcToEt": "cache",
+        // Should NOT override built-in unsafe default without allowUnsafePolicyOverrides.
+        "raw.kclear": "cache",
+      },
+    });
+
+    expect(await cached.request("kit.utcToEt", [])).toBe(1);
+    expect(await cached.request("kit.utcToEt", [])).toBe(1);
+
+    expect(await cached.request("raw.kclear", [])).toBe(2);
+    expect(await cached.request("raw.kclear", [])).toBe(3);
+
+    expect(base.request).toHaveBeenCalledTimes(3);
+    expect(key).toHaveBeenCalledTimes(2);
+
+    if (isCachingTransport(cached)) cached.dispose();
+  });
+
+  it("warns for overly broad noStorePrefixes by default (deduped)", async () => {
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const onWarning1 = vi.fn();
 
     const base = {
       request: vi.fn(async () => 123),
     };
 
-    const cached = withCaching(base, {
+    const cached1 = withCaching(base, {
       noStorePrefixes: ["k"],
+      onWarning: onWarning1,
     });
 
-    expect(warn).toHaveBeenCalled();
-    expect(warn.mock.calls[0]?.[0]).toMatch(/allowBroadNoStorePrefixes/i);
+    expect(onWarning1).toHaveBeenCalledTimes(1);
+    expect(onWarning1.mock.calls[0]?.[0]).toMatch(/allowBroadNoStorePrefixes/i);
 
-    if (isCachingTransport(cached)) cached.dispose();
+    if (isCachingTransport(cached1)) cached1.dispose();
+
+    const onWarning2 = vi.fn();
+    const cached2 = withCaching(base, {
+      // Same normalized broad-prefix set => warn-once.
+      noStorePrefixes: [" k ", "k"],
+      onWarning: onWarning2,
+    });
+
+    expect(onWarning2).not.toHaveBeenCalled();
+
+    if (isCachingTransport(cached2)) cached2.dispose();
   });
 
   it("allows broad noStorePrefixes when explicitly opted-in", async () => {
     const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onWarning = vi.fn();
 
     const key = vi.fn(() => "k");
     const base = {
@@ -322,9 +392,10 @@ describe("withCaching()", () => {
       key,
       noStorePrefixes: ["kit"],
       allowBroadNoStorePrefixes: true,
+      onWarning,
     });
 
-    expect(warn).not.toHaveBeenCalled();
+    expect(onWarning).not.toHaveBeenCalled();
 
     await cached.request("kit.utcToEt", []);
     await cached.request("kit.utcToEt", []);
