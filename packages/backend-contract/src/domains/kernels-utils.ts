@@ -101,7 +101,15 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
     throw new RangeError("Kernel kind must not be empty");
   }
 
-  return rawTokens.map(normalizeKindTokenOrThrow);
+  const normalized = rawTokens.map(normalizeKindTokenOrThrow);
+
+  // Canonicalize ALL as an override: if ALL is present alongside other tokens,
+  // downstream callers should treat it as requesting all kinds.
+  if (normalized.length > 1 && normalized.includes("ALL")) {
+    return ["ALL"];
+  }
+
+  return normalized;
 }
 
 function normalizeRequestedKindSetIfNeeded(requestedRaw: ReadonlySet<string>): ReadonlySet<string> {

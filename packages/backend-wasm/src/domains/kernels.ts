@@ -16,6 +16,62 @@ import { writeUtf8CString } from "../codec/strings.js";
 import type { WasmFsApi } from "../runtime/fs.js";
 import { resolveKernelPath, writeKernelSource } from "../runtime/fs.js";
 
+const CSPICE_KIND_SET = new Set<string>([
+  "ALL",
+  "SPK",
+  "CK",
+  "PCK",
+  "DSK",
+  "TEXT",
+  "EK",
+  "META",
+]);
+
+const TEXT_SUBTYPE_SET = new Set<string>(["LSK", "FK", "IK", "SCLK"]);
+
+function cspiceKindQueryOrNull(kindsUpper: readonly string[]): string | null {
+  if (kindsUpper.length === 0) {
+    return null;
+  }
+
+  // Deduplicate while preserving input order.
+  const requested = new Set<string>(kindsUpper);
+  if (requested.has("ALL")) {
+    return "ALL";
+  }
+
+  const hasText = requested.has("TEXT");
+
+  let hasTextSubtype = false;
+  let hasUnknown = false;
+  for (const k of requested) {
+    if (TEXT_SUBTYPE_SET.has(k)) {
+      hasTextSubtype = true;
+    }
+    if (!CSPICE_KIND_SET.has(k) && !TEXT_SUBTYPE_SET.has(k)) {
+      hasUnknown = true;
+    }
+  }
+
+  // Only forward when the request is representable as a CSPICE kind string.
+  if (hasUnknown) {
+    return null;
+  }
+  if (hasTextSubtype && !hasText) {
+    return null;
+  }
+
+  const nativeKinds: string[] = [];
+  for (const k of requested) {
+    if (CSPICE_KIND_SET.has(k) && k !== "ALL") {
+      nativeKinds.push(k);
+    }
+  }
+
+  return nativeKinds.length === 0 ? null : nativeKinds.join(" ");
+}
+
+
 function tspiceCallKtotal(module: EmscriptenModule, kind: string): number {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
@@ -202,6 +258,15 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
     },
     ktotal: (kind: KernelKindInput = "ALL") => {
       const kinds = normalizeKindInput(kind).map((k) => k.toUpperCase());
+      if (kinds.length === 0) {
+        return 0;
+      }
+
+      const nativeQuery = cspiceKindQueryOrNull(kinds);
+      if (nativeQuery != null) {
+        return tspiceCallKtotal(module, nativeQuery);
+      }
+
       const requested = new Set(kinds);
 
       const totalAll = tspiceCallKtotal(module, "ALL");
@@ -221,6 +286,15 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
       }
 
       const kinds = normalizeKindInput(kind).map((k) => k.toUpperCase());
+      if (kinds.length === 0) {
+        return { found: false };
+      }
+
+      const nativeQuery = cspiceKindQueryOrNull(kinds);
+      if (nativeQuery != null) {
+        return tspiceCallKdata(module, which, nativeQuery);
+      }
+
       const requested = new Set(kinds);
 
       const totalAll = tspiceCallKtotal(module, "ALL");

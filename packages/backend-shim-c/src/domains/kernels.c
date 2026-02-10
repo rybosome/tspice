@@ -180,6 +180,15 @@ int tspice_kinfo(
     return 1;
   }
 
+  if (!filtyp || filtypMaxBytes <= 0) {
+    tspice_write_error(err, errMaxBytes, "tspice_kinfo(): filtyp must be non-null with filtypMaxBytes > 0");
+    return 1;
+  }
+  if (!source || sourceMaxBytes <= 0) {
+    tspice_write_error(err, errMaxBytes, "tspice_kinfo(): source must be non-null with sourceMaxBytes > 0");
+    return 1;
+  }
+
   SpiceInt handleC = 0;
   SpiceBoolean foundC = SPICEFALSE;
 
