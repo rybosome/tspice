@@ -14,21 +14,30 @@ export interface KernelPoolApi {
   /**
    * Get numeric (double) kernel pool values.
    *
-   * `start` is 0-based.
+   * Validation semantics:
+   * - `name` must not be empty or whitespace-only.
+   * - `start` must be a finite integer >= 0 (0-based).
+   * - `room` must be a finite integer > 0.
    */
   gdpool(name: string, start: number, room: number): Found<{ values: number[] }>;
 
   /**
    * Get numeric (integer) kernel pool values.
    *
-   * `start` is 0-based.
+   * Validation semantics:
+   * - `name` must not be empty or whitespace-only.
+   * - `start` must be a finite integer >= 0 (0-based).
+   * - `room` must be a finite integer > 0.
    */
   gipool(name: string, start: number, room: number): Found<{ values: number[] }>;
 
   /**
    * Get character kernel pool values.
    *
-   * `start` is 0-based.
+   * Validation semantics:
+   * - `name` must not be empty or whitespace-only.
+   * - `start` must be a finite integer >= 0 (0-based).
+   * - `room` must be a finite integer > 0.
    */
   gcpool(name: string, start: number, room: number): Found<{ values: string[] }>;
 
@@ -39,24 +48,50 @@ export interface KernelPoolApi {
    * - `*` matches any substring
    * - `%` matches any single character
    *
-   * `start` is 0-based.
+   * Validation semantics:
+   * - `start` must be a finite integer >= 0 (0-based).
+   * - `room` must be a finite integer > 0.
    */
   gnpool(template: string, start: number, room: number): Found<{ values: string[] }>;
 
   /**
    * Get kernel pool variable type (`C` or `N`) and size.
+   *
+   * Validation semantics:
+   * - `name` must not be empty or whitespace-only.
    */
   dtpool(name: string): Found<{ n: number; type: KernelPoolVarType }>;
 
   // --- Write --------------------------------------------------------------
 
-  /** Put numeric (double) values into the kernel pool. */
+  /**
+   * Put numeric (double) values into the kernel pool.
+   *
+   * Validation semantics:
+   * - `name` must not be empty or whitespace-only.
+   * - `values` may be empty (sets an empty value list).
+   * - Each value must be finite (no `NaN` / `±Infinity`).
+   */
   pdpool(name: string, values: readonly number[]): void;
 
-  /** Put numeric (integer) values into the kernel pool. */
+  /**
+   * Put numeric (integer) values into the kernel pool.
+   *
+   * Validation semantics:
+   * - `name` must not be empty or whitespace-only.
+   * - `values` may be empty (sets an empty value list).
+   * - Each value must be a safe integer in the signed 32-bit range
+   *   [-2147483648, 2147483647].
+   */
   pipool(name: string, values: readonly number[]): void;
 
-  /** Put character values into the kernel pool. */
+  /**
+   * Put character values into the kernel pool.
+   *
+   * Validation semantics:
+   * - `name` must not be empty or whitespace-only.
+   * - `values` may be empty (sets an empty value list).
+   */
   pcpool(name: string, values: readonly string[]): void;
 
   // --- Control ------------------------------------------------------------
@@ -65,11 +100,18 @@ export interface KernelPoolApi {
    * Set up a kernel pool "watch" for `agent`.
    *
    * After calling `swpool`, the next `cvpool(agent)` call will return `true`.
+   *
+   * Validation semantics:
+   * - `agent` must not be empty or whitespace-only.
+   * - `names` may be empty (watch nothing).
    */
   swpool(agent: string, names: readonly string[]): void;
 
   /**
    * Check whether watched variables for `agent` have been updated since the last call.
+   *
+   * Validation semantics:
+   * - `agent` must not be empty or whitespace-only.
    */
   cvpool(agent: string): boolean;
 
@@ -78,6 +120,9 @@ export interface KernelPoolApi {
    *
    * NOTE: This does not detect character-valued variables; use `dtpool` if you need a
    * general existence/type check.
+   *
+   * Validation semantics:
+   * - `name` must not be empty or whitespace-only.
    */
   expool(name: string): boolean;
 }

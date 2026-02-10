@@ -98,6 +98,14 @@ describe("@rybosome/tspice-backend-fake", () => {
     expect(() => b.gdpool("NUM", 0, 1.5)).toThrow(/room/i);
   });
 
+  it("rejects non-finite pdpool() values", () => {
+    const b = createFakeBackend();
+
+    expect(() => b.pdpool("NUM", [Number.NaN])).toThrow(RangeError);
+    expect(() => b.pdpool("NUM", [Infinity])).toThrow(RangeError);
+    expect(() => b.pdpool("NUM", [-Infinity])).toThrow(RangeError);
+  });
+
   it("validates pipool/gipool integer ranges (no JS bitwise wrapping)", () => {
     const b = createFakeBackend();
 
