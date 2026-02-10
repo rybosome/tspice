@@ -2,19 +2,50 @@
 
 #include "SpiceUsr.h"
 
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define TSPICE_TIMDEF_VALUE_MAX 1024
 
+static int tspice_time_invalid_arg(char *err, int errMaxBytes, const char *msg) {
+  // This module provides a stable C ABI surface.
+  //
+  // If callers pass invalid pointers/lengths, we must not invoke CSPICE with
+  // arguments that could cause undefined behavior.
+  //
+  // Also, clear any previous structured SPICE error fields so higher-level
+  // callers (e.g. the Node addon) don't accidentally attach stale `spiceShort`
+  // / `spiceLong` / `spiceTrace` fields to these non-CSPICE validation errors.
+  tspice_reset(NULL, 0);
+
+  if (err && errMaxBytes > 0) {
+    if (msg) {
+      strncpy(err, msg, (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    } else {
+      err[0] = '\0';
+    }
+  }
+
+  return 1;
+}
+
 int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (outMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (out && outMaxBytes > 0) {
     out[0] = '\0';
   }
-  if (errMaxBytes > 0) {
-    err[0] = '\0';
+
+  if (outMaxBytes > 0 && !out) {
+    return tspice_time_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_tkvrsn_toolkit(): out must not be NULL when outMaxBytes > 0");
   }
 
   const char *version = tkvrsn_c("TOOLKIT");
@@ -41,8 +72,12 @@ int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes
 int tspice_str2et(const char *time, double *outEt, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
+  }
+
+  if (!time) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_str2et(): time must not be NULL");
   }
 
   SpiceDouble et = 0.0;
@@ -69,19 +104,24 @@ int tspice_et2utc(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (outMaxBytes > 0) {
+  if (out && outMaxBytes > 0) {
     out[0] = '\0';
   }
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
 
   if (outMaxBytes <= 0) {
-    if (errMaxBytes > 0) {
-      strncpy(err, "tspice_et2utc(): outMaxBytes must be > 0", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-    return 1;
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_et2utc(): outMaxBytes must be > 0");
+  }
+  if (!out) {
+    return tspice_time_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_et2utc(): out must not be NULL when outMaxBytes > 0");
+  }
+  if (!format) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_et2utc(): format must not be NULL");
   }
 
   et2utc_c((SpiceDouble)et, format, (SpiceInt)prec, (SpiceInt)outMaxBytes, out);
@@ -102,19 +142,24 @@ int tspice_timout(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (outMaxBytes > 0) {
+  if (out && outMaxBytes > 0) {
     out[0] = '\0';
   }
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
 
   if (outMaxBytes <= 0) {
-    if (errMaxBytes > 0) {
-      strncpy(err, "tspice_timout(): outMaxBytes must be > 0", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-    return 1;
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timout(): outMaxBytes must be > 0");
+  }
+  if (!out) {
+    return tspice_time_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_timout(): out must not be NULL when outMaxBytes > 0");
+  }
+  if (!picture) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timout(): picture must not be NULL");
   }
 
   timout_c((SpiceDouble)et, picture, (SpiceInt)outMaxBytes, out);
@@ -129,11 +174,15 @@ int tspice_timout(
 int tspice_deltet(double epoch, const char *eptype, double *outDelta, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
   if (outDelta) {
     *outDelta = 0.0;
+  }
+
+  if (!eptype) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_deltet(): eptype must not be NULL");
   }
 
   SpiceDouble delta = 0.0;
@@ -159,11 +208,18 @@ int tspice_unitim(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
   if (outEpoch) {
     *outEpoch = 0.0;
+  }
+
+  if (!insys) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_unitim(): insys must not be NULL");
+  }
+  if (!outsys) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_unitim(): outsys must not be NULL");
   }
 
   const SpiceDouble out = unitim_c((SpiceDouble)epoch, insys, outsys);
@@ -182,11 +238,15 @@ int tspice_unitim(
 int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
   if (outEt) {
     *outEt = 0.0;
+  }
+
+  if (!timstr) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_tparse(): timstr must not be NULL");
   }
 
   SpiceDouble et = 0.0;
@@ -202,7 +262,7 @@ int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes)
   // `tparse_c` reports parse failures via `errmsg` (without signaling a SPICE error).
   // Treat these as hard errors so JS can throw.
   if (errmsg[0] != '\0') {
-    if (errMaxBytes > 0) {
+    if (err && errMaxBytes > 0) {
       strncpy(err, errmsg, (size_t)errMaxBytes - 1);
       err[errMaxBytes - 1] = '\0';
     }
@@ -232,16 +292,21 @@ int tspice_tpictr(
   if (outPictur && outMaxBytes > 0) {
     outPictur[0] = '\0';
   }
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
 
-  if (!outPictur || outMaxBytes <= 0) {
-    if (errMaxBytes > 0) {
-      strncpy(err, "tspice_tpictr(): outMaxBytes must be > 0", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-    return 1;
+  if (outMaxBytes <= 0) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_tpictr(): outMaxBytes must be > 0");
+  }
+  if (!outPictur) {
+    return tspice_time_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_tpictr(): outPictur must not be NULL when outMaxBytes > 0");
+  }
+  if (!sample) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_tpictr(): sample must not be NULL");
   }
 
   SpiceInt pictln = (SpiceInt)outMaxBytes;
@@ -267,7 +332,7 @@ int tspice_tpictr(
 
   // `tpictr_c` reports problems via `ok`/`errmsg` (without signaling a SPICE error).
   if (ok != SPICETRUE) {
-    if (errMaxBytes > 0) {
+    if (err && errMaxBytes > 0) {
       strncpy(err, errmsg, (size_t)errMaxBytes - 1);
       err[errMaxBytes - 1] = '\0';
     }
@@ -289,27 +354,29 @@ int tspice_timdef_get(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (outMaxBytes > 0) {
+  if (out && outMaxBytes > 0) {
     out[0] = '\0';
   }
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
 
-  if (!item || item[0] == '\0') {
-    if (errMaxBytes > 0) {
-      strncpy(err, "tspice_timdef_get(): item must be a non-empty string", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-    return 1;
+  if (outMaxBytes <= 0) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timdef_get(): outMaxBytes must be > 0");
+  }
+  if (!out) {
+    return tspice_time_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_timdef_get(): out must not be NULL when outMaxBytes > 0");
   }
 
-  if (outMaxBytes <= 0) {
-    if (errMaxBytes > 0) {
-      strncpy(err, "tspice_timdef_get(): outMaxBytes must be > 0", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-    return 1;
+  if (!item) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timdef_get(): item must not be NULL");
+  }
+
+  if (item[0] == '\0') {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timdef_get(): item must be non-empty");
   }
 
   timdef_c("GET", item, (SpiceInt)outMaxBytes, out);
@@ -325,33 +392,27 @@ int tspice_timdef_get(
 int tspice_timdef_set(const char *item, const char *value, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
 
-  if (!item || item[0] == '\0') {
-    if (errMaxBytes > 0) {
-      strncpy(err, "tspice_timdef_set(): item must be a non-empty string", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-    return 1;
+  if (!item) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timdef_set(): item must not be NULL");
+  }
+  if (item[0] == '\0') {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timdef_set(): item must be non-empty");
   }
 
-  if (!value || value[0] == '\0') {
-    if (errMaxBytes > 0) {
-      strncpy(err, "tspice_timdef_set(): value must be a non-empty string", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-    return 1;
+  if (!value) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timdef_set(): value must not be NULL");
+  }
+  if (value[0] == '\0') {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timdef_set(): value must be non-empty");
   }
 
   const size_t valueLen = strlen(value);
   if (valueLen >= (size_t)TSPICE_TIMDEF_VALUE_MAX) {
-    if (errMaxBytes > 0) {
-      strncpy(err, "tspice_timdef_set(): value too long", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-    return 1;
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_timdef_set(): value too long");
   }
 
   SpiceChar buf[TSPICE_TIMDEF_VALUE_MAX];
@@ -375,11 +436,15 @@ int tspice_scs2e(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
   if (outEt) {
     *outEt = 0.0;
+  }
+
+  if (!sclkch) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_scs2e(): sclkch must not be NULL");
   }
 
   SpiceDouble et = 0.0;
@@ -405,11 +470,21 @@ int tspice_sce2s(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
   if (out && outMaxBytes > 0) {
     out[0] = '\0';
+  }
+
+  if (outMaxBytes <= 0) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_sce2s(): outMaxBytes must be > 0");
+  }
+  if (!out) {
+    return tspice_time_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_sce2s(): out must not be NULL when outMaxBytes > 0");
   }
 
   sce2s_c((SpiceInt)sc, (SpiceDouble)et, (SpiceInt)outMaxBytes, out);
@@ -429,11 +504,15 @@ int tspice_scencd(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
   if (outSclkdp) {
     *outSclkdp = 0.0;
+  }
+
+  if (!sclkch) {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_scencd(): sclkch must not be NULL");
   }
 
   SpiceDouble sclkdp = 0.0;
@@ -459,7 +538,7 @@ int tspice_scdecd(
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
   if (out && outMaxBytes > 0) {
@@ -467,11 +546,13 @@ int tspice_scdecd(
   }
 
   if (outMaxBytes <= 0) {
-    if (errMaxBytes > 0) {
-      strncpy(err, "tspice_scdecd(): outMaxBytes must be > 0", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-    return 1;
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_scdecd(): outMaxBytes must be > 0");
+  }
+  if (!out) {
+    return tspice_time_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_scdecd(): out must not be NULL when outMaxBytes > 0");
   }
 
   scdecd_c((SpiceInt)sc, (SpiceDouble)sclkdp, (SpiceInt)outMaxBytes, out);
@@ -486,7 +567,7 @@ int tspice_scdecd(
 int tspice_sct2e(int sc, double sclkdp, double *outEt, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
   if (outEt) {
@@ -510,7 +591,7 @@ int tspice_sct2e(int sc, double sclkdp, double *outEt, char *err, int errMaxByte
 int tspice_sce2c(int sc, double et, double *outSclkdp, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
-  if (errMaxBytes > 0) {
+  if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
   if (outSclkdp) {
