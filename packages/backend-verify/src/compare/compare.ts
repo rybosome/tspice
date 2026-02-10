@@ -28,6 +28,19 @@ function wrapToPi(x: number): number {
   return y;
 }
 
+
+function wrapDeltaToPi(raw: number): number {
+  if (!Number.isFinite(raw)) return raw;
+
+  // Normalize into [-pi, pi).
+  const y = ((((raw + Math.PI) % TAU) + TAU) % TAU) - Math.PI;
+
+  // At exactly -pi (the branch cut), preserve the sign of the *raw* delta.
+  if (Object.is(y, -Math.PI) && raw > 0) return Math.PI;
+
+  return y;
+}
+
 function compareNumbers(
   actual: number,
   expected: number,
@@ -41,13 +54,15 @@ function compareNumbers(
   const actualNorm = angleWrapPi ? wrapToPi(actual) : actual;
   const expectedNorm = angleWrapPi ? wrapToPi(expected) : expected;
 
-  if (Object.is(actualNorm, expectedNorm)) return null;
-
   const tolAbs = opts.tolAbs ?? 0;
   const tolRel = opts.tolRel ?? 0;
 
-  const delta = angleWrapPi ? wrapToPi(actual - expected) : actual - expected;
+  const delta = angleWrapPi ? wrapDeltaToPi(actual - expected) : actual - expected;
   const diff = Math.abs(delta);
+
+  // Fast path: exact equality.
+  // `diff === 0` handles +/-0 and angle wrapping; Object.is handles infinities.
+  if (diff === 0 || Object.is(actualNorm, expectedNorm)) return null;
   // Use a symmetric denominator so tolerance behaves consistently regardless
   // of whether callers treat `actual` or `expected` as the reference.
   const rel = diff / Math.max(1e-30, Math.max(Math.abs(actualNorm), Math.abs(expectedNorm)));

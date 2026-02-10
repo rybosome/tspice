@@ -32,4 +32,5 @@ export type RunCaseResult =
 export interface CaseRunner {
   readonly kind: string;
   runCase(input: RunCaseInput): Promise<RunCaseResult>;
+  dispose?(): Promise<void> | void;
 }

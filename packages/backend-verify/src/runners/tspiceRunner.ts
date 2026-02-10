@@ -170,41 +170,33 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
     const report: RunnerErrorReport = { message: error.message };
     if (error.name) report.name = error.name;
     if (error.stack) report.stack = error.stack;
-
-    // Some backends (notably WASM) attach best-effort SPICE fields directly to
-    // the Error instance, rather than exposing them via `failed()/getmsg()`.
-    // Preserve them so parity comparisons can operate consistently.
-    const anyErr = error as unknown as {
-      spiceShort?: unknown;
-      spiceLong?: unknown;
-      spiceTrace?: unknown;
-    };
-
-    if (
-      typeof anyErr.spiceShort === "string" ||
-      typeof anyErr.spiceLong === "string" ||
-      typeof anyErr.spiceTrace === "string"
-    ) {
-      const spice: SpiceErrorState = { failed: true };
-      if (typeof anyErr.spiceShort === "string") spice.short = anyErr.spiceShort;
-      if (typeof anyErr.spiceLong === "string") spice.long = anyErr.spiceLong;
-      // `SpiceErrorState` doesn't currently carry a `trace` field.
-      report.spice = spice;
-    }
-
-    // Fallback: parse `SPICE(FOO)` out of the message when present.
-    // This is intentionally permissive to keep mismatch reports useful.
-    if (!report.spice?.short) {
-      const m = /SPICE\(([A-Z0-9_]+)\)/.exec(error.message);
-      if (m) {
-        report.spice = { ...(report.spice ?? { failed: true }), short: `SPICE(${m[1]})` };
-      }
-    }
-
     return report;
   }
 
   return { message: String(error) };
+}
+
+function inferSpiceFromError(error: unknown): Partial<SpiceErrorState> | null {
+  if (!(error instanceof Error)) return null;
+
+  // Some backends (notably WASM) attach best-effort SPICE fields directly to
+  // the Error instance, rather than exposing them via `failed()/getmsg()`.
+  const anyErr = error as unknown as {
+    spiceShort?: unknown;
+    spiceLong?: unknown;
+    spiceTrace?: unknown;
+  };
+
+  const short =
+    typeof anyErr.spiceShort === "string"
+      ? anyErr.spiceShort
+      : /SPICE\([A-Z0-9_]+\)/.exec(error.message)?.[0];
+  const long = typeof anyErr.spiceLong === "string" ? anyErr.spiceLong : undefined;
+  const trace = typeof anyErr.spiceTrace === "string" ? anyErr.spiceTrace : undefined;
+
+  if (!short && !long && !trace) return null;
+
+  return { failed: true, short, long, trace };
 }
 
 function tryConfigureErrorPolicy(backend: SpiceBackend): void {
@@ -435,30 +427,23 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
       } catch (error) {
         const report = safeErrorReport(error);
 
-        // Try to capture SPICE internal error messages for debugging.
-        report.spice = captureSpiceErrorState(backend);
+        const captured = captureSpiceErrorState(backend);
+        const inferred = inferSpiceFromError(error);
+        const inferredState: SpiceErrorState | null = inferred ? { failed: true, ...inferred } : null;
 
-        // Some backends can throw before `failed()/getmsg()` reflect the error
-        // state (or they may not surface it at all). Fall back to best-effort
-        // extraction from the thrown Error instance / message.
-        if (!report.spice.failed) {
-          const anyErr = error as unknown as {
-            spiceShort?: unknown;
-            spiceLong?: unknown;
-          };
-
-          const short =
-            typeof anyErr.spiceShort === "string"
-              ? anyErr.spiceShort
-              : /SPICE\(([A-Z0-9_]+)\)/.exec(report.message)?.[0];
-          const long = typeof anyErr.spiceLong === "string" ? anyErr.spiceLong : undefined;
-
-          if (short || long) {
-            const spice: SpiceErrorState = { failed: true };
-            if (short) spice.short = short;
-            if (long) spice.long = long;
-            report.spice = spice;
-          }
+        // Prefer the backend-reported SPICE state, but fall back to inference
+        // when the backend doesn't surface anything useful.
+        if (captured.failed) {
+          report.spice = inferredState
+            ? {
+                ...captured,
+                short: captured.short ?? inferredState.short,
+                long: captured.long ?? inferredState.long,
+                trace: captured.trace ?? inferredState.trace,
+              }
+            : captured;
+        } else {
+          report.spice = inferredState ?? captured;
         }
 
         // Ensure subsequent cases start clean.

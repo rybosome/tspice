@@ -441,7 +441,7 @@ static bool jsmn_parse_int(const char *json, const jsmntok_t *tok,
 
   errno = 0;
   char *endptr = NULL;
-  const long v = strtol(buf, &endptr, 10);
+  const long long v = strtoll(buf, &endptr, 10);
   if (errno != 0) {
     return false;
   }
@@ -451,16 +451,23 @@ static bool jsmn_parse_int(const char *json, const jsmntok_t *tok,
 
   // Defensive: ensure the parsed value fits into SpiceInt.
   // `SpiceInt` is typically a typedef of `int`, but can vary by platform.
+  long long min = 0;
+  long long max = 0;
   if (sizeof(SpiceInt) == sizeof(int)) {
-    if (v < (long)INT_MIN || v > (long)INT_MAX) return false;
+    min = (long long)INT_MIN;
+    max = (long long)INT_MAX;
   } else if (sizeof(SpiceInt) == sizeof(long)) {
-    // `v` is already a long.
-    // no-op (range already constrained by strtol)
+    min = (long long)LONG_MIN;
+    max = (long long)LONG_MAX;
   } else if (sizeof(SpiceInt) == sizeof(long long)) {
-    // `v` (long) always fits into long long.
-    // no-op
+    min = (long long)LLONG_MIN;
+    max = (long long)LLONG_MAX;
   } else {
     // Unknown SpiceInt width.
+    return false;
+  }
+
+  if (v < min || v > max) {
     return false;
   }
 

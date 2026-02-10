@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 
 import { fileURLToPath } from "node:url";
 
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import type { CaseRunner } from "../src/runners/types.js";
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
@@ -27,38 +27,69 @@ function isRequired(): boolean {
 }
 
 function getCspiceUnavailableHint(): string {
-  const statePath = getCspiceRunnerBuildStatePath();
   const state = readCspiceRunnerBuildState();
 
-  return (
-    state?.reason ||
-    state?.error ||
-    (fs.existsSync(statePath)
-      ? `cspice-runner unavailable (see ${statePath})`
-      : `cspice-runner unavailable (missing ${statePath})`)
+  if (typeof state?.reason === "string") return state.reason;
+  if (typeof state?.error === "string") return state.error;
+  return "";
+}
+
+type CspiceRunnerCheck = {
+  ready: boolean;
+  hint: string;
+  statePath: string;
+};
+
+function checkCspiceRunner(): CspiceRunnerCheck {
+  const ready = isCspiceRunnerAvailable();
+
+  return {
+    ready,
+    hint: ready ? "" : getCspiceUnavailableHint(),
+    statePath: getCspiceRunnerBuildStatePath(),
+  };
+}
+
+const REQUIRED = isRequired();
+const CSPICE = checkCspiceRunner();
+
+if (!CSPICE.ready && !REQUIRED) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    `[backend-verify] cspice-runner unavailable; backend-verify parity suite may be skipped (TSPICE_BACKEND_VERIFY_REQUIRED=false)${
+      CSPICE.hint ? `: ${CSPICE.hint}` : ""
+    }`,
   );
 }
 
-const CSPICE_AVAILABLE = isCspiceRunnerAvailable();
-const suite = CSPICE_AVAILABLE || isRequired() ? describe.sequential : describe.skip;
+const suite = CSPICE.ready || REQUIRED ? describe.sequential : describe.skip;
 
 suite("backend-verify (tspice vs raw CSPICE parity)", () => {
-  let tspice: CaseRunner;
-  let cspice: CaseRunner;
+  let tspice: CaseRunner | undefined;
+  let cspice: CaseRunner | undefined;
+
+  if (!CSPICE.ready) {
+    it("requires cspice-runner", () => {
+      throw new Error(
+        `[backend-verify] cspice-runner required but unavailable${CSPICE.hint ? `: ${CSPICE.hint}` : ""}. ` +
+          `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
+          `State: ${CSPICE.statePath}`,
+      );
+    });
+    return;
+  }
 
   // We reuse a single runner instance across scenarios for speed.
   // This is safe because `tspice.runCase()` isolates each case via kernel
   // cleanup/reset (kclear/reset) before executing.
   beforeAll(async () => {
-    if (!CSPICE_AVAILABLE) {
-      throw new Error(
-        `cspice-runner is required but unavailable: ${getCspiceUnavailableHint()}. ` +
-          `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify).`,
-      );
-    }
-
     tspice = await createTspiceRunner();
     cspice = await createCspiceRunner();
+  });
+
+  afterAll(async () => {
+    await tspice?.dispose?.();
+    await cspice?.dispose?.();
   });
 
   const scenariosDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../scenarios");
@@ -74,8 +105,8 @@ suite("backend-verify (tspice vs raw CSPICE parity)", () => {
       const yamlFile = await loadScenarioYamlFile(scenarioPath);
       const scenario = parseScenario(yamlFile);
 
-      const tspiceOut = await executeScenario(scenario, tspice);
-      const cspiceOut = await executeScenario(scenario, cspice);
+      const tspiceOut = await executeScenario(scenario, tspice!);
+      const cspiceOut = await executeScenario(scenario, cspice!);
 
       expect(tspiceOut.cases.length).toBe(cspiceOut.cases.length);
 
