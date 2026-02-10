@@ -56,6 +56,57 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  // --- file i/o primitives ---
+
+  _tspice_exists(pathPtr: number, outExistsPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_getfat(
+    pathPtr: number,
+    outArchPtr: number,
+    outArchMaxBytes: number,
+    outTypePtr: number,
+    outTypeMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dafopr(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dafcls(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dafbfs(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_daffna(handle: number, outFoundPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_dasopr(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dascls(handle: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_dlaopn(
+    pathPtr: number,
+    ftypePtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlabfs(
+    handle: number,
+    outDescr8Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlafns(
+    handle: number,
+    descr8Ptr: number,
+    outNextDescr8Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlacls(handle: number, errPtr: number, errMaxBytes: number): number;
+
   _tspice_str2et(utcPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_et2utc(
     et: number,
@@ -475,6 +526,18 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_kclear",
   "_tspice_ktotal",
   "_tspice_kdata",
+  "_tspice_exists",
+  "_tspice_getfat",
+  "_tspice_dafopr",
+  "_tspice_dafcls",
+  "_tspice_dafbfs",
+  "_tspice_daffna",
+  "_tspice_dasopr",
+  "_tspice_dascls",
+  "_tspice_dlaopn",
+  "_tspice_dlabfs",
+  "_tspice_dlafns",
+  "_tspice_dlacls",
   "_tspice_str2et",
   "_tspice_et2utc",
   "_tspice_timout",
@@ -517,6 +580,8 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_axisar",
   "_tspice_georec",
   "_tspice_recgeo",
+
+  // Cells + windows
   "_tspice_new_int_cell",
   "_tspice_new_double_cell",
   "_tspice_new_char_cell",
@@ -560,13 +625,22 @@ export function assertEmscriptenModule(m: unknown): asserts m is EmscriptenModul
   if (!(m.HEAPU8 instanceof Uint8Array)) invalid.push("HEAPU8");
   if (!(m.HEAP32 instanceof Int32Array)) invalid.push("HEAP32");
   if (!(m.HEAPF64 instanceof Float64Array)) invalid.push("HEAPF64");
-  if (typeof m.FS !== "object" || m.FS === null) invalid.push("FS");
+
+  if (typeof m.FS !== "object" || m.FS === null) {
+    invalid.push("FS");
+  } else {
+    // We rely on this for file I/O (see createWasmFs + file-io domain).
+    if (typeof (m.FS as any).mkdirTree !== "function") {
+      invalid.push("FS.mkdirTree");
+    }
+  }
 
   if (invalid.length > 0) {
     throw new TypeError(
       `Invalid tspice WASM module (missing/invalid exports): ${invalid.join(", ")}. ` +
-        `You can disable this validation via CreateWasmBackendOptions.validateEmscriptenModule=false ` +
-        `(Node also supports TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT=1).`,
+        `tspice requires the full export surface (core wrappers + cells/windows helpers + Emscripten FS incl FS.mkdirTree). ` +
+        `You can skip this check for debugging via CreateWasmBackendOptions.validateEmscriptenModule=false ` +
+        `(Node: TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT=1), but missing exports will still crash later.`,
     );
   }
 }
