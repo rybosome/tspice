@@ -725,11 +725,22 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   function timdef(action: "GET", item: string): string;
   function timdef(action: "SET", item: string, value: string): void;
   function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+    assertNonEmptyString("timdef", "item", item);
+
     if (action === "GET") {
       return timeDefaults.get(item) ?? "";
     }
 
-    timeDefaults.set(item, value ?? "");
+    if (typeof value !== "string") {
+      throw new TypeError("timdef(SET) requires a string value");
+    }
+    // Match CSPICE `timdef_c`: empty (length 0) strings are invalid, but
+    // whitespace-only strings are allowed (e.g. ZONE can be "blank").
+    if (value.length === 0) {
+      throw new RangeError("timdef(SET): value must be a non-empty string");
+    }
+
+    timeDefaults.set(item, value);
   }
 
   return {
