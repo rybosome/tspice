@@ -4,7 +4,13 @@ export type WorkerLike = {
   postMessage(message: unknown): void;
   addEventListener(type: string, listener: (ev: unknown) => void): void;
   removeEventListener(type: string, listener: (ev: unknown) => void): void;
-  terminate(): void;
+  /**
+   * Optional when `terminateOnDispose` is `false`.
+   *
+   * When `terminateOnDispose` is `true`, the transport will call this during
+   * `dispose()` on a best-effort basis.
+   */
+  terminate?: () => void;
 };
 
 type RpcRequest = {
@@ -57,7 +63,8 @@ export type WorkerTransport = Omit<SpiceTransport, "request"> & {
   /**
    * Remove listeners and reject all pending requests.
    *
-   * If `terminateOnDispose` is enabled, also calls `worker.terminate()`.
+   * If `terminateOnDispose` is enabled, also attempts to call
+   * `worker.terminate()`.
    */
   dispose(): void;
 };
@@ -105,7 +112,7 @@ export function createWorkerTransport(opts: {
   /** Default request timeout (ms). Use <= 0 or `undefined` to disable. */
   timeoutMs?: number;
   /**
-   * Whether `dispose()` should call `worker.terminate()`.
+   * Whether `dispose()` should call `worker.terminate()` (when present).
    *
    * Defaults to `true` when `worker` is a factory function (since the transport
    * likely owns the worker), and `false` when an existing worker instance is
@@ -145,7 +152,8 @@ export function createWorkerTransport(opts: {
   // win before settlement.
   const queuedSettlementById = new Map<number, QueuedSettlement>();
   // Single macrotask timer for batched response settlement.
-  // Invariant: if `responseSettlementMacrotask` is set, `queuedSettlementById.size > 0`.
+  // Note: this is only scheduled when we queue at least one settlement, but we
+  // don't rely on that as a strict invariant (e.g. dispose() can clear it early).
   let responseSettlementMacrotask: ReturnType<typeof setTimeout> | undefined;
   let nextId = 1;
 
@@ -155,7 +163,7 @@ export function createWorkerTransport(opts: {
   const flushQueuedSettlements = (): void => {
     responseSettlementMacrotask = undefined;
 
-    for (const [id, settlement] of Array.from(queuedSettlementById)) {
+    for (const [id, settlement] of queuedSettlementById) {
       queuedSettlementById.delete(id);
 
       const pending = settlement.pending;
@@ -203,7 +211,7 @@ export function createWorkerTransport(opts: {
     }
 
     // Queued settlements already ran `cleanup()` when their response was received.
-    for (const [id, settlement] of Array.from(queuedSettlementById)) {
+    for (const [id, settlement] of queuedSettlementById) {
       queuedSettlementById.delete(id);
 
       const pending = settlement.pending;
@@ -328,7 +336,7 @@ export function createWorkerTransport(opts: {
 
     if (terminateOnDispose) {
       try {
-        worker.terminate();
+        if (typeof worker.terminate === "function") worker.terminate();
       } catch {
         // ignore
       }
