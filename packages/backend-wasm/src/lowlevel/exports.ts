@@ -744,7 +744,10 @@ export function assertEmscriptenModule(m: unknown): asserts m is EmscriptenModul
   if (!(m.HEAPU8 instanceof Uint8Array)) invalid.push("HEAPU8");
   if (!(m.HEAP32 instanceof Int32Array)) invalid.push("HEAP32");
   if (!(m.HEAPF64 instanceof Float64Array)) invalid.push("HEAPF64");
-  if (typeof m.FS !== "object" || m.FS === null) invalid.push("FS");
+  const fs = (m as Record<string, unknown>).FS as unknown;
+  if (typeof fs !== "object" || fs === null) invalid.push("FS");
+  if (typeof (fs as Record<string, unknown>)?.mkdirTree !== "function") invalid.push("FS.mkdirTree");
+  if (typeof (fs as Record<string, unknown>)?.writeFile !== "function") invalid.push("FS.writeFile");
 
   if (invalid.length > 0) {
     throw new TypeError(

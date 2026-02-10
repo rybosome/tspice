@@ -103,7 +103,7 @@ For generic solar system work, these NAIF standards are commonly used:
 | `time.timout(et, picture)` | `timout_c` | `(et: number, picture: string): string` | `string` | exact string match (picture-dependent) | requires LSK (`*.tls`) for many pictures |
 | `time.deltet(epoch, eptype)` | `deltet_c` | `(epoch: number, eptype: "ET" | "UTC"): number` | `number` | floating compare (seconds) | requires LSK (`*.tls`) |
 | `time.unitim(epoch, insys, outsys)` | `unitim_c` | `(epoch: number, insys: string, outsys: string): number` | `number` | floating compare (seconds) | requires LSK (`*.tls`) |
-| `time.tparse(timstr)` | `tparse_c` | `(timstr: string): number` | `number` | floating compare (seconds past J2000) | no kernels; parses ephemeris-time strings (time system not allowed in string) |
+| `time.tparse(timstr)` | `tparse_c` | `(timstr: string): number` | `number` | floating compare (seconds past J2000) | **stateful**: uses TIMDEF defaults (SYSTEM/CALENDAR/ZONE); no kernels |
 | `time.tpictr(sample, pictur)` | `tpictr_c` | `(sample: string, pictur: string): string` | `string` | exact string match | **stateful**: interprets sample using TIMDEF defaults; no kernels |
 | `time.timdef(action, item, value?)` | `timdef_c` | overload: `("GET", item)` / `("SET", item, value)` | `string` / `void` | exact string match for `GET` | stateful (mutates time conversion defaults); no kernels |
 | `time.scs2e(sc, sclkch)` | `scs2e_c` | `(sc: number, sclkch: string): number` | `number` | floating compare (ET seconds) | requires SCLK kernel (`*.tsc`) for `sc`; typically also needs LSK |

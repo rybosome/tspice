@@ -12,7 +12,10 @@ describe("assertEmscriptenModule", () => {
       HEAPU8: new Uint8Array(1),
       HEAP32: new Int32Array(1),
       HEAPF64: new Float64Array(1),
-      FS: {},
+      FS: {
+        mkdirTree: () => {},
+        writeFile: () => {},
+      },
     };
 
     const m = new Proxy(base, {

@@ -707,11 +707,20 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   // The fake backend treats time systems deterministically and does not model
   // leap seconds, so these defaults are mostly for parity with the contract
   // and to support callers that expect timdef() to exist.
-  const timeDefaults = new Map<string, string>([
+  const DEFAULT_TIME_DEFAULTS = [
     ["SYSTEM", "UTC"],
     ["CALENDAR", "GREGORIAN"],
     ["ZONE", "UTC"],
-  ]);
+  ] as const;
+
+  const timeDefaults = new Map<string, string>(DEFAULT_TIME_DEFAULTS);
+
+  function resetTimeDefaults(): void {
+    timeDefaults.clear();
+    for (const [k, v] of DEFAULT_TIME_DEFAULTS) {
+      timeDefaults.set(k, v);
+    }
+  }
 
   function timdef(action: "GET", item: string): string;
   function timdef(action: "SET", item: string, value: string): void;
@@ -734,6 +743,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       spiceShort = "";
       spiceLong = "";
       traceStack.length = 0;
+      resetTimeDefaults();
     },
     getmsg: (which) => {
       assertGetmsgWhich(which);
