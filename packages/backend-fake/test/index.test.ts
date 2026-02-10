@@ -77,6 +77,17 @@ describe("@rybosome/tspice-backend-fake", () => {
     expect(b.ktotal("UNKNOWN")).toBe(0);
   });
 
+  it("throws on unsupported kernel extensions by default", () => {
+    const b = createFakeBackend();
+    expect(() => b.furnsh("/kernels/unknown.foo")).toThrow(RangeError);
+  });
+
+  it("can assume TEXT for unknown extensions when configured", () => {
+    const b = createFakeBackend({ unknownExtension: "assume-text" });
+    b.furnsh("/kernels/unknown.foo");
+    expect(b.ktotal("TEXT")).toBe(1);
+  });
+
   it("returns identity pxform for same-frame transforms", () => {
     const b = createFakeBackend();
     expect(b.pxform("J2000", "J2000", 0)).toEqual([1, 0, 0, 0, 1, 0, 0, 0, 1]);

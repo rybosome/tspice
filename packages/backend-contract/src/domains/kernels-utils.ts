@@ -18,6 +18,18 @@ const SUPPORTED_KERNEL_KINDS = [
 
 const SUPPORTED_KERNEL_KIND_SET = new Set<string>(SUPPORTED_KERNEL_KINDS);
 
+const NATIVE_KIND_SET = new Set<KernelKind>([
+  "SPK",
+  "CK",
+  "PCK",
+  "DSK",
+  "TEXT",
+  "EK",
+  "META",
+]);
+
+const TEXT_SUBTYPE_SET = new Set<KernelKind>(["LSK", "FK", "IK", "SCLK"]);
+
 function normalizeKindTokenOrThrow(raw: string): KernelKind {
   const trimmed = raw.trim();
   if (trimmed.length === 0) {
@@ -112,6 +124,35 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
   return normalized;
 }
 
+/**
+* Returns a representable native kind-query string (e.g. `"SPK CK"`) or null.
+*
+* This is used by backends to decide whether they can forward a kind filter to
+* their underlying CSPICE implementation, or whether they must fall back to
+* querying `ALL` and filtering in JS.
+*/
+export function nativeKindQueryOrNull(kinds: readonly KernelKind[]): string | null {
+  if (kinds.length === 0) return null;
+  if (kinds.includes("ALL")) return "ALL";
+
+  const hasText = kinds.includes("TEXT");
+  const hasTextSubtype = kinds.some((k) => TEXT_SUBTYPE_SET.has(k));
+  if (hasTextSubtype && !hasText) return null;
+
+  // Deduplicate while preserving first-occurrence order.
+  const seen = new Set<KernelKind>();
+  const nativeKinds: KernelKind[] = [];
+  for (const k of kinds) {
+    if (k === "ALL") continue;
+    if (!NATIVE_KIND_SET.has(k)) continue; // subtypes intentionally omitted
+    if (seen.has(k)) continue;
+    seen.add(k);
+    nativeKinds.push(k);
+  }
+
+  return nativeKinds.length === 0 ? null : nativeKinds.join(" ");
+}
+
 function normalizeRequestedKindSetIfNeeded(requestedRaw: ReadonlySet<string>): ReadonlySet<string> {
   for (const raw of requestedRaw) {
     const trimmed = raw.trim();
@@ -157,7 +198,7 @@ export function matchesKernelKind(
     return true;
   }
 
-  const filtyp = kernel.filtyp.toUpperCase();
+  const filtyp = kernel.filtyp.trim().toUpperCase();
   if (filtyp === "TEXT") {
     if (requested.has("TEXT")) {
       return true;

@@ -6,46 +6,15 @@ import type {
   KernelSource,
   KernelsApi,
 } from "@rybosome/tspice-backend-contract";
-import { matchesKernelKind, normalizeKindInput } from "@rybosome/tspice-backend-contract";
+import {
+  matchesKernelKind,
+  nativeKindQueryOrNull,
+  normalizeKindInput,
+} from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
-
-const NATIVE_KIND_SET = new Set<string>([
-  "ALL",
-  "SPK",
-  "CK",
-  "PCK",
-  "DSK",
-  "TEXT",
-  "EK",
-  "META",
-]);
-
-const TEXT_SUBTYPE_SET = new Set<string>(["LSK", "FK", "IK", "SCLK"]);
-
-function nativeKindQueryOrNull(kinds: readonly string[]): string | null {
-  if (kinds.length === 0) return null;
-  if (kinds.includes("ALL")) return "ALL";
-
-  const hasText = kinds.includes("TEXT");
-  const hasTextSubtype = kinds.some((k) => TEXT_SUBTYPE_SET.has(k));
-  if (hasTextSubtype && !hasText) return null;
-
-  // Deduplicate while preserving first-occurrence order.
-  const seen = new Set<string>();
-  const nativeKinds: string[] = [];
-  for (const k of kinds) {
-    if (k === "ALL") continue;
-    if (!NATIVE_KIND_SET.has(k)) continue; // subtypes intentionally omitted
-    if (seen.has(k)) continue;
-    seen.add(k);
-    nativeKinds.push(k);
-  }
-
-  return nativeKinds.length === 0 ? null : nativeKinds.join(" ");
-}
 
 export function createKernelsApi(native: NativeAddon, stager: KernelStager): KernelsApi {
   const kernelDataFromNative = (result: {
@@ -61,7 +30,7 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
 
     return {
       file: stager.virtualizePathFromSpice(result.file),
-      filtyp: result.filtyp,
+      filtyp: result.filtyp.trim(),
       source: stager.virtualizePathFromSpice(result.source),
       handle: result.handle,
     };

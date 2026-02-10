@@ -48,6 +48,17 @@ const TWO_PI = Math.PI * 2;
 
 export const FAKE_SPICE_VERSION = "tspice-fake-backend@0.0.0";
 
+export type FakeBackendOptions = {
+  /**
+   * How to handle `furnsh()` calls with unrecognized kernel filename extensions.
+   *
+   * - `"unknown"` (default): classify as kind `"UNKNOWN"`
+   * - `"throw"`: throw a RangeError
+   * - `"assume-text"`: treat unknown extensions as a TEXT kernel
+   */
+  unknownExtension?: "unknown" | "throw" | "assume-text";
+};
+
 const J2000_UTC_MS = Date.parse("2000-01-01T12:00:00.000Z");
 
 const BODY_IDS = {
@@ -593,7 +604,7 @@ type KernelRecord = {
   kind: KernelKind;
 };
 
-function guessKernelKind(path: string): KernelKind {
+function guessKernelKind(path: string, unknownExtension: "unknown" | "throw" | "assume-text"): KernelKind {
   const lower = path.toLowerCase();
   if (lower.endsWith(".bsp")) return "SPK";
   if (lower.endsWith(".bc")) return "CK";
@@ -606,7 +617,15 @@ function guessKernelKind(path: string): KernelKind {
   if (lower.endsWith(".tsc") || lower.endsWith(".sclk")) return "SCLK";
   if (lower.endsWith(".ek")) return "EK";
   if (lower.endsWith(".tm") || lower.endsWith(".meta")) return "META";
-  return "UNKNOWN";
+  // "ALL" is a query token, not a per-kernel kind.
+  if (unknownExtension === "assume-text") {
+    return "TEXT";
+  }
+  if (unknownExtension === "unknown") {
+    return "UNKNOWN";
+  }
+
+  throw new RangeError(`Unsupported kernel extension (fake backend): ${path}`);
 }
 
 function assertNever(x: never, msg: string): never {
@@ -656,13 +675,15 @@ function assertNonEmptyString(fn: string, field: string, value: string): void {
   }
 }
 
-export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
+export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
   let spiceShort = "";
   let spiceLong = "";
   const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
+
+  const unknownExtension = options.unknownExtension ?? "unknown";
 
   type KernelPoolEntry =
     | { type: "N"; values: number[] }
@@ -762,7 +783,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       const file = typeof kernel === "string" ? kernel : kernel.path;
       const source = typeof kernel === "string" ? file : "bytes";
 
-      const kind = guessKernelKind(file);
+      const kind = guessKernelKind(file, unknownExtension);
       const handle = nextHandle++;
 
       kernels.push({

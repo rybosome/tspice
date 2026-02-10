@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { matchesKernelKind } from "@rybosome/tspice-backend-contract";
+import {
+  matchesKernelKind,
+  nativeKindQueryOrNull,
+  normalizeKindInput,
+} from "@rybosome/tspice-backend-contract";
 
 describe("matchesKernelKind", () => {
   it("treats requested tokens as trim + case-insensitive", () => {
@@ -33,5 +37,28 @@ describe("matchesKernelKind", () => {
   it("ignores empty-string requested tokens", () => {
     const requested = new Set([""]);
     expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(false);
+  });
+});
+
+describe("nativeKindQueryOrNull", () => {
+  it("treats ALL as an override", () => {
+    expect(nativeKindQueryOrNull(["ALL", "SPK"])).toBe("ALL");
+  });
+
+  it("deduplicates while preserving first-occurrence order", () => {
+    expect(nativeKindQueryOrNull(["CK", "SPK", "CK", "SPK"])).toBe("CK SPK");
+  });
+
+  it("returns null for TEXT subtypes unless TEXT is also requested", () => {
+    expect(nativeKindQueryOrNull(["LSK"])).toBeNull();
+    expect(nativeKindQueryOrNull(["SPK", "LSK"])).toBeNull();
+
+    expect(nativeKindQueryOrNull(["TEXT", "LSK"])).toBe("TEXT");
+    expect(nativeKindQueryOrNull(["LSK", "TEXT"])).toBe("TEXT");
+  });
+
+  it("supports whitespace-separated kind strings via normalizeKindInput", () => {
+    const kinds = normalizeKindInput("  spk   ck ");
+    expect(nativeKindQueryOrNull(kinds)).toBe("SPK CK");
   });
 });
