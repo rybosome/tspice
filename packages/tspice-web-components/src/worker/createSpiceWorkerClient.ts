@@ -59,6 +59,9 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
   terminateOnDispose?: boolean;
   /** Optional transport wrapper (e.g. `withCaching`). */
   wrapTransport?: (t: WorkerTransport) => TTransport;
+
+  /** Called if `disposeAsync()` rejects when invoked via fire-and-forget `dispose()`. */
+  onDisposeError?: (err: unknown) => void;
 }): SpiceWorkerClient<TTransport> {
   const workerInput = opts?.worker ?? (() => createSpiceWorker());
   const worker = typeof workerInput === "function" ? workerInput() : workerInput;
@@ -105,8 +108,12 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
   const dispose = (): void => {
     // Fire-and-forget. Ensure we don't surface unhandled rejections if wrapper
     // cleanup fails.
-    void disposeAsync().catch(() => {
-      // ignore
+    void disposeAsync().catch((err) => {
+      try {
+        opts?.onDisposeError?.(err);
+      } catch {
+        // ignore
+      }
     });
   };
 

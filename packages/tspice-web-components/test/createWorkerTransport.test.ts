@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 type WorkerLike = import("@rybosome/tspice-web-components").WorkerLike;
+import { nextMacrotask } from "../src/worker/taskScheduling.js";
 
 type Listener = (ev: unknown) => void;
 
@@ -43,29 +44,6 @@ class FakeWorker implements WorkerLike {
     this.emit("messageerror", { data: null });
   }
 }
-
-function nextMacrotask(): Promise<void> {
-  return new Promise((resolve) => {
-    // Prefer MessageChannel because it creates a true macrotask boundary without
-    // relying on timers (friendlier to fake-timer environments).
-    if (typeof MessageChannel !== "undefined") {
-      const { port1, port2 } = new MessageChannel();
-
-      port1.onmessage = () => {
-        port1.onmessage = null;
-        port1.close();
-        port2.close();
-        resolve();
-      };
-
-      port2.postMessage(undefined);
-      return;
-    }
-
-    setTimeout(resolve, 0);
-  });
-}
-
 
 describe("createWorkerTransport()", () => {
   afterEach(() => {

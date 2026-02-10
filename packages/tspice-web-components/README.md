@@ -54,6 +54,8 @@ import { createSpiceWorkerClient, withCaching } from "@rybosome/tspice-web-compo
 
 const { spice, dispose } = createSpiceWorkerClient({
   wrapTransport: (t) => withCaching(t, { maxEntries: 1000, ttlMs: 5_000 }),
+  // Optional: observe wrapper/transport cleanup errors when using fire-and-forget `dispose()`.
+  onDisposeError: (err) => console.error("tspice worker dispose failed", err),
 });
 
 const et = await spice.kit.utcToEt("2026-01-01T00:00:00Z");
@@ -61,5 +63,7 @@ console.log(et);
 
 dispose();
 ```
+
+`dispose()` is fire-and-forget; call `disposeAsync()` if you want to await cleanup and handle errors directly.
 
 The built-in worker entry initializes tspice with `createSpiceAsync({ backend: "wasm" })`.

@@ -9,6 +9,10 @@ const PUBLIC_KERNELS: Record<PublicKernelId, { fileName: string; order: number }
   de432s_bsp: { fileName: "de432s.bsp", order: 2 },
 };
 
+const PUBLIC_KERNEL_IDS_SORTED = (Object.keys(PUBLIC_KERNELS) as PublicKernelId[]).sort(
+  (a, b) => PUBLIC_KERNELS[a].order - PUBLIC_KERNELS[b].order,
+);
+
 function ensureTrailingSlash(base: string): string {
   if (base === "") return "";
   return base.endsWith("/") ? base : `${base}/`;
@@ -55,8 +59,7 @@ function createBuilder(state: {
     pck00011_tpc: () => add("pck00011_tpc"),
     de432s_bsp: () => add("de432s_bsp"),
     pack: () => ({
-      kernels: (Object.keys(PUBLIC_KERNELS) as PublicKernelId[])
-        .sort((a, b) => PUBLIC_KERNELS[a].order - PUBLIC_KERNELS[b].order)
+      kernels: PUBLIC_KERNEL_IDS_SORTED
         .filter((id) => state.selected.has(id))
         .map((id) => buildKernel(id, state.opts)),
     }),

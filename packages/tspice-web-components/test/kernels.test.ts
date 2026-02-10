@@ -301,7 +301,7 @@ describe("loadKernelPack()", () => {
     expect(fetch.mock.calls.map(([url]) => url)).toEqual([
       "//cdn.example.com/myapp/kernels/a.tls",
       "//cdn.example.com/kernels/b.bsp?x=1#hash",
-      "//cdn.example.com/kernels/c.tls",
+      "/kernels/c.tls",
     ]);
   });
 });

@@ -8,6 +8,7 @@ import {
   tspiceRpcResponseType,
 } from "./rpcProtocol.js";
 import { decodeRpcValue, encodeRpcValue } from "./rpcValueCodec.js";
+import { queueMacrotask } from "./taskScheduling.js";
 
 export type WorkerLike = {
   postMessage(message: unknown): void;
@@ -54,55 +55,6 @@ function createAbortError(): Error {
     err.name = "AbortError";
     return err;
   }
-}
-
-function queueMacrotask(fn: () => void): void {
-  // Prefer MessageChannel when available. This schedules a real task boundary
-  // without relying on timers, which makes it friendlier to fake-timer test
-  // environments.
-  try {
-    if (typeof MessageChannel !== "undefined") {
-      const { port1, port2 } = new MessageChannel();
-
-      port1.onmessage = () => {
-        port1.onmessage = null;
-        // Close ports so this doesn't keep the event loop alive in Node.
-        // Be defensive: some polyfills/test environments may not implement
-        // `close()`.
-        try {
-          port1.close?.();
-        } catch {
-          // ignore
-        }
-        try {
-          port2.close?.();
-        } catch {
-          // ignore
-        }
-        fn();
-      };
-
-      port2.postMessage(undefined);
-      return;
-    }
-  } catch {
-    // Ignore and fall back to setTimeout.
-  }
-
-  // Next preference: a real macrotask via setTimeout.
-  if (typeof setTimeout === "function") {
-    setTimeout(fn, 0);
-    return;
-  }
-
-  // Fallbacks (microtasks) for runtimes without timers.
-  // Note: this is not a true macrotask boundary, but it's better than failing.
-  if (typeof queueMicrotask === "function") {
-    queueMicrotask(fn);
-    return;
-  }
-
-  Promise.resolve().then(fn);
 }
 
 /**
@@ -337,6 +289,8 @@ export function createWorkerTransport(opts: {
 
     const w = worker;
 
+    worker = undefined;
+
     // Best-effort: tell the worker it should dispose any server-side resources.
     //
     // - When we don't own the worker (`terminateOnDispose: false`), this is the
@@ -377,7 +331,6 @@ export function createWorkerTransport(opts: {
       });
     }
 
-    worker = undefined;
   };
 
   const request = async (

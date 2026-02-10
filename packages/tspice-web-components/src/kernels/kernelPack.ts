@@ -74,6 +74,9 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
   // If the kernel URL is already absolute, don't apply `baseUrl`.
   if (isAbsoluteUrl(url)) return url;
 
+  // Root-relative kernel URLs bypass `baseUrl`.
+  if (url.startsWith("/")) return url;
+
   const isProtocolRelativeBaseUrl = baseUrl.startsWith("//");
 
   // If `baseUrl` is absolute-ish (scheme-based or protocol-relative), lean on
