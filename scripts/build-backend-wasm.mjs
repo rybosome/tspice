@@ -106,7 +106,6 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ephemeris.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "cells_windows.c"),
 ];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
@@ -218,7 +217,6 @@ const includeDirs = [
 
 fs.mkdirSync(outputDir, { recursive: true });
 
-
 const exportedRuntimeMethods = [
   "UTF8ToString",
   "stringToUTF8",
@@ -234,7 +232,7 @@ const exportedRuntimeMethods = [
   "HEAPF64",
 ];
 
-const EXPORTED_FUNCTIONS = [
+const exportedFunctions = [
   // --- error/status utilities ---
   "_tspice_get_last_error_short",
   "_tspice_get_last_error_long",
@@ -257,26 +255,6 @@ const EXPORTED_FUNCTIONS = [
   // NOTE: not required by the TS bindings, but handy for debugging.
   "_tspice_ktotal_all",
 
-  // --- file i/o primitives ---
-  "_tspice_exists",
-  "_tspice_getfat",
-
-  // --- DAF ---
-  "_tspice_dafopr",
-  "_tspice_dafcls",
-  "_tspice_dafbfs",
-  "_tspice_daffna",
-
-  // --- DAS ---
-  "_tspice_dasopr",
-  "_tspice_dascls",
-
-  // --- DLA (DAS-backed) ---
-  "_tspice_dlaopn",
-  "_tspice_dlabfs",
-  "_tspice_dlafns",
-  "_tspice_dlacls",
-
   // --- kernel pool ---
   "_tspice_gdpool",
   "_tspice_gipool",
@@ -294,6 +272,16 @@ const EXPORTED_FUNCTIONS = [
   "_tspice_str2et",
   "_tspice_et2utc",
   "_tspice_timout",
+  "_tspice_deltet",
+  "_tspice_unitim",
+  "_tspice_tparse",
+  "_tspice_tpictr",
+  "_tspice_timdef_get",
+  "_tspice_timdef_set",
+  "_tspice_scencd",
+  "_tspice_scdecd",
+  "_tspice_sct2e",
+  "_tspice_sce2c",
 
   // --- ids/names ---
   "_tspice_bodn2c",
@@ -393,7 +381,7 @@ const commonEmccArgs = [
   "-s",
   `EXPORTED_RUNTIME_METHODS=['${exportedRuntimeMethods.join("','")}']`,
   "-s",
-  `EXPORTED_FUNCTIONS=${JSON.stringify(EXPORTED_FUNCTIONS)}`,
+  `EXPORTED_FUNCTIONS=['${exportedFunctions.join("','")}']`,
 ];
 
 function runEmcc({ environment, outputJsPath }) {

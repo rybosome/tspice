@@ -31,6 +31,67 @@ describe("primitives parity (node vs wasm)", () => {
     const etWasm = wasm.str2et(time);
     expectClose(etNode, etWasm);
 
+    const etNodeParsed = node.tparse(time);
+    const etWasmParsed = wasm.tparse(time);
+    expectClose(etNodeParsed, etWasmParsed);
+    // Sanity: `tparse` should agree with `str2et` on straightforward inputs.
+    expectClose(etNodeParsed, etNode);
+
+    const deltaNode = node.deltet(etNode, "ET");
+    const deltaWasm = wasm.deltet(etWasm, "ET");
+    expectClose(deltaNode, deltaWasm);
+
+    const taiNode = node.unitim(etNode, "ET", "TAI");
+    const taiWasm = wasm.unitim(etWasm, "ET", "TAI");
+    expectClose(taiNode, taiWasm);
+
+    const etNodeRound = node.unitim(taiNode, "TAI", "ET");
+    const etWasmRound = wasm.unitim(taiWasm, "TAI", "ET");
+    expectClose(etNodeRound, etWasmRound);
+    expectClose(etNodeRound, etNode);
+
+    // Samples from NAIF `tpictr_c` docs.
+    const tpictrSampleA = "Thu Oct 01 11:11:11 PDT 1111";
+    const expectedPicturA = "Wkd Mon DD HR:MN:SC PDT YYYY ::UTC-7";
+
+    const tpictrSampleB = "24 Mar 2018  16:23:00 UTC";
+    const expectedPicturB = "DD Mon YYYY  HR:MN:SC UTC ::UTC";
+
+    const longTemplate = " ".repeat(80);
+    const shortTemplate = "X";
+
+    const pictNodeALong = node.tpictr(tpictrSampleA, longTemplate);
+    const pictWasmALong = wasm.tpictr(tpictrSampleA, longTemplate);
+    expect(pictNodeALong).toBe(pictWasmALong);
+    expect(pictNodeALong).toBe(expectedPicturA);
+
+    const pictNodeAShort = node.tpictr(tpictrSampleA, shortTemplate);
+    const pictWasmAShort = wasm.tpictr(tpictrSampleA, shortTemplate);
+    expect(pictNodeAShort).toBe(pictWasmAShort);
+    expect(pictNodeAShort).toBe(expectedPicturA);
+    expect(pictNodeAShort).toBe(pictNodeALong);
+
+    const pictNodeBShort = node.tpictr(tpictrSampleB, shortTemplate);
+    const pictWasmBShort = wasm.tpictr(tpictrSampleB, shortTemplate);
+    expect(pictNodeBShort).toBe(pictWasmBShort);
+    expect(pictNodeBShort).toBe(expectedPicturB);
+
+    const pictNodeBLong = node.tpictr(tpictrSampleB, longTemplate);
+    const pictWasmBLong = wasm.tpictr(tpictrSampleB, longTemplate);
+    expect(pictNodeBLong).toBe(pictWasmBLong);
+    expect(pictNodeBLong).toBe(expectedPicturB);
+
+    expect(pictNodeBLong).not.toBe(pictNodeALong);
+
+    const calNode = node.timdef("GET", "CALENDAR");
+    const calWasm = wasm.timdef("GET", "CALENDAR");
+    expect(calNode).toBe(calWasm);
+
+    node.timdef("SET", "CALENDAR", calNode);
+    wasm.timdef("SET", "CALENDAR", calWasm);
+    expect(node.timdef("GET", "CALENDAR")).toBe(calNode);
+    expect(wasm.timdef("GET", "CALENDAR")).toBe(calWasm);
+
     const utcNode = node.et2utc(etNode, "C", 3);
     const utcWasm = wasm.et2utc(etWasm, "C", 3);
     expect(utcNode).toBe(utcWasm);

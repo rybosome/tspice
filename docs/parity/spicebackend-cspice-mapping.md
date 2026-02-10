@@ -101,8 +101,17 @@ For generic solar system work, these NAIF standards are commonly used:
 | `time.str2et(time)` | `str2et_c` | `(time: string): number` | `number` | floating compare (ET seconds) | requires LSK (`*.tls`); may depend on loaded time constants in kernel pool |
 | `time.et2utc(et, format, prec)` | `et2utc_c` | `(et: number, format: string, prec: number): string` | `string` | exact string match (format-dependent) | requires LSK (`*.tls`) |
 | `time.timout(et, picture)` | `timout_c` | `(et: number, picture: string): string` | `string` | exact string match (picture-dependent) | requires LSK (`*.tls`) for many pictures |
+| `time.deltet(epoch, eptype)` | `deltet_c` | `(epoch: number, eptype: "ET" | "UTC"): number` | `number` | floating compare (seconds) | requires LSK (`*.tls`) |
+| `time.unitim(epoch, insys, outsys)` | `unitim_c` | `(epoch: number, insys: string, outsys: string): number` | `number` | floating compare (seconds) | requires LSK (`*.tls`) |
+| `time.tparse(timstr)` | `tparse_c` | `(timstr: string): number` | `number` | floating compare (ET seconds) | none |
+| `time.tpictr(sample, pictur)` | `tpictr_c` | `(sample: string, pictur: string): string` | `string` | exact string match | none |
+| `time.timdef(action, item, value?)` | `timdef_c` | overload: `("GET", item)` / `("SET", item, value)` | `string` / `void` | exact string match for `GET` | stateful (mutates time conversion defaults); no kernels |
 | `time.scs2e(sc, sclkch)` | `scs2e_c` | `(sc: number, sclkch: string): number` | `number` | floating compare (ET seconds) | requires SCLK kernel (`*.tsc`) for `sc`; typically also needs LSK |
 | `time.sce2s(sc, et)` | `sce2s_c` | `(sc: number, et: number): string` | `string` | exact string match | requires SCLK kernel (`*.tsc`) for `sc`; typically also needs LSK |
+| `time.scencd(sc, sclkch)` | `scencd_c` | `(sc: number, sclkch: string): number` | `number` | floating compare (ticks) | requires SCLK kernel (`*.tsc`) for `sc` |
+| `time.scdecd(sc, sclkdp)` | `scdecd_c` | `(sc: number, sclkdp: number): string` | `string` | exact string match | requires SCLK kernel (`*.tsc`) for `sc` |
+| `time.sct2e(sc, sclkdp)` | `sct2e_c` | `(sc: number, sclkdp: number): number` | `number` | floating compare (ET seconds) | requires SCLK kernel (`*.tsc`) for `sc`; often also needs LSK |
+| `time.sce2c(sc, et)` | `sce2c_c` | `(sc: number, et: number): number` | `number` | floating compare (ticks) | requires SCLK kernel (`*.tsc`) for `sc`; often also needs LSK |
 
 Notes:
 

@@ -62,62 +62,6 @@ int tspice_kdata(
 // Returns the number of loaded kernels, or -1 on error (with message in `err`).
 int tspice_ktotal_all(char *err, int errMaxBytes);
 
-
-// --- file i/o primitives ---------------------------------------------------
-
-int tspice_exists(const char *path, int *outExists, char *err, int errMaxBytes);
-
-int tspice_getfat(
-    const char *path,
-    char *outArch,
-    int outArchMaxBytes,
-    char *outType,
-    int outTypeMaxBytes,
-    char *err,
-    int errMaxBytes);
-
-// --- DAF -------------------------------------------------------------------
-
-int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes);
-int tspice_dafcls(int handle, char *err, int errMaxBytes);
-int tspice_dafbfs(int handle, char *err, int errMaxBytes);
-
-// Selects the current DAF via `dafcs_c(handle)` and then calls `daffna_c`.
-//
-// `outFound` is required (non-NULL) to keep ABI usage explicit and consistent
-// with the DLA APIs.
-int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes);
-
-// --- DAS -------------------------------------------------------------------
-
-int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes);
-int tspice_dascls(int handle, char *err, int errMaxBytes);
-
-// --- DLA (DAS-backed) ------------------------------------------------------
-
-int tspice_dlaopn(
-    const char *path,
-    const char *ftype,
-    const char *ifname,
-    int ncomch,
-    int *outHandle,
-    char *err,
-    int errMaxBytes);
-
-// Writes a DLA descriptor as 8 int32s in this order:
-// [bwdptr, fwdptr, ibase, isize, dbase, dsize, cbase, csize]
-int tspice_dlabfs(int handle, int32_t *outDescr8, int32_t *outFound, char *err, int errMaxBytes);
-int tspice_dlafns(
-    int handle,
-    const int32_t *descr8,
-    int32_t *outNextDescr8,
-    int32_t *outFound,
-    char *err,
-    int errMaxBytes);
-
-// Close a DLA handle (DLA is DAS-backed).
-int tspice_dlacls(int handle, char *err, int errMaxBytes);
-
 // --- Kernel pool -----------------------------------------------------------
 
 int tspice_gdpool(
@@ -234,6 +178,49 @@ int tspice_timout(
     const char *picture,
     char *out,
     int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// deltet_c: return difference ET - UTC (Delta ET).
+int tspice_deltet(
+    double epoch,
+    const char *eptype,
+    double *outDelta,
+    char *err,
+    int errMaxBytes);
+
+// unitim_c: convert time epoch from one system to another.
+int tspice_unitim(
+    double epoch,
+    const char *insys,
+    const char *outsys,
+    double *outEpoch,
+    char *err,
+    int errMaxBytes);
+
+// tparse_c: parse a time string -> ET seconds past J2000.
+int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes);
+
+// tpictr_c: create a time picture from a sample time string.
+int tspice_tpictr(
+    const char *sample,
+    const char *picturIn,
+    char *outPictur,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// timdef_c: set/get time conversion defaults.
+int tspice_timdef_get(
+    const char *item,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_timdef_set(
+    const char *item,
+    const char *value,
     char *err,
     int errMaxBytes);
 
@@ -557,6 +544,39 @@ int tspice_sce2s(
     double et,
     char *out,
     int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// scencd_c: convert an encoded SCLK string -> ticks.
+int tspice_scencd(
+    int sc,
+    const char *sclkch,
+    double *outSclkdp,
+    char *err,
+    int errMaxBytes);
+
+// scdecd_c: convert ticks -> an encoded SCLK string.
+int tspice_scdecd(
+    int sc,
+    double sclkdp,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// sct2e_c: convert ticks -> ET seconds past J2000.
+int tspice_sct2e(
+    int sc,
+    double sclkdp,
+    double *outEt,
+    char *err,
+    int errMaxBytes);
+
+// sce2c_c: convert ET seconds past J2000 -> ticks.
+int tspice_sce2c(
+    int sc,
+    double et,
+    double *outSclkdp,
     char *err,
     int errMaxBytes);
 

@@ -65,14 +65,6 @@ export type AbCorr =
 
 export type SpiceVector3 = [number, number, number];
 
-// -- Branded handles -------------------------------------------------------
-
-// Type-only brand (no runtime Symbol export).
-declare const __spiceHandleBrand: unique symbol;
-
-/** Opaque numeric handle returned by low-level SPICE file APIs (DAF/DAS/DLA). */
-export type SpiceHandle = number & { readonly [__spiceHandleBrand]: true };
-
 // -- Branded vector/matrix helpers -----------------------------------------
 
 // Type-only brands (no runtime Symbol export).

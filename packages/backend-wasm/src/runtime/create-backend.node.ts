@@ -11,7 +11,6 @@ import { createIdsNamesApi } from "../domains/ids-names.js";
 import { createKernelsApi } from "../domains/kernels.js";
 import { createKernelPoolApi } from "../domains/kernel-pool.js";
 import { createTimeApi, getToolkitVersion } from "../domains/time.js";
-import { createFileIoApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
 
 import { createWasmFs } from "./fs.js";
@@ -95,7 +94,7 @@ export async function createWasmBackend(
 
   const fsApi = createWasmFs(module);
 
-  const backendBase = {
+  const backend = {
     kind: "wasm",
     ...createTimeApi(module, toolkitVersion),
     ...createKernelsApi(module, fsApi),
@@ -105,10 +104,10 @@ export async function createWasmBackend(
     ...createEphemerisApi(module),
     ...createGeometryApi(module),
     ...createCoordsVectorsApi(module),
-    ...createFileIoApi(module),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
+
   } satisfies SpiceBackend;
 
-  return backendBase;
+  return backend;
 }

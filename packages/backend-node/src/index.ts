@@ -14,7 +14,6 @@ import { createIdsNamesApi } from "./domains/ids-names.js";
 import { createKernelsApi } from "./domains/kernels.js";
 import { createKernelPoolApi } from "./domains/kernel-pool.js";
 import { createTimeApi } from "./domains/time.js";
-import { createFileIoApi } from "./domains/file-io.js";
 import { createErrorApi } from "./domains/error.js";
 import { createCellsWindowsApi } from "./domains/cells-windows.js";
 
@@ -38,7 +37,6 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     ...createEphemerisApi(native),
     ...createGeometryApi(native),
     ...createCoordsVectorsApi(native),
-    ...createFileIoApi(native),
     ...createErrorApi(native),
     ...createCellsWindowsApi(native),
   };

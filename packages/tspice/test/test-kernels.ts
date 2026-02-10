@@ -47,19 +47,16 @@ async function readCached(url: string): Promise<Uint8Array> {
 export const TEST_KERNEL_URLS = {
   LSK: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
   SPK: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/a_old_versions/de405s.bsp",
-  DSK: "https://naif.jpl.nasa.gov/pub/naif/BEPICOLOMBO/kernels/dsk/bc_mpo_sc_mga_v00.bds",
 } as const;
 
 export async function loadTestKernels(): Promise<{
   lsk: Uint8Array;
   spk: Uint8Array;
-  dsk: Uint8Array;
 }> {
-  const [lsk, spk, dsk] = await Promise.all([
+  const [lsk, spk] = await Promise.all([
     readCached(TEST_KERNEL_URLS.LSK),
     readCached(TEST_KERNEL_URLS.SPK),
-    readCached(TEST_KERNEL_URLS.DSK),
   ]);
 
-  return { lsk, spk, dsk };
+  return { lsk, spk };
 }

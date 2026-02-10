@@ -6,7 +6,6 @@ import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 
 import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
 
-
 function runScenario(b: SpiceBackend) {
   const icell = b.newIntCell(10);
   const dcell = b.newDoubleCell(10);

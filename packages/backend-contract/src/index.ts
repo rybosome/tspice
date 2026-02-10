@@ -14,7 +14,6 @@ export type {
   Mat6RowMajor,
   Mat3ColMajor,
   Mat3RowMajor,
-  SpiceHandle,
   SpiceMatrix6x6,
   SpiceStateVector,
   SpiceVector3,
@@ -71,7 +70,6 @@ export * from "./domains/frames.js";
 export * from "./domains/ephemeris.js";
 export * from "./domains/geometry.js";
 export * from "./domains/coords-vectors.js";
-export * from "./domains/file-io.js";
 export * from "./domains/error.js";
 export * from "./domains/cells-windows.js";
 
@@ -83,7 +81,6 @@ import type { FramesApi } from "./domains/frames.js";
 import type { EphemerisApi } from "./domains/ephemeris.js";
 import type { GeometryApi } from "./domains/geometry.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
-import type { FileIoApi } from "./domains/file-io.js";
 import type { ErrorApi } from "./domains/error.js";
 import type { CellsWindowsApi } from "./domains/cells-windows.js";
 
@@ -98,7 +95,6 @@ export interface SpiceBackend
     EphemerisApi,
     GeometryApi,
     CoordsVectorsApi,
-    FileIoApi,
     ErrorApi,
     CellsWindowsApi {
   /** Which backend implementation is in use. */

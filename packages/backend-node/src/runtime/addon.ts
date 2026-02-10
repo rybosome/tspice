@@ -42,24 +42,12 @@ export type NativeAddon = {
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;
 
-  // --- file i/o primitives ---
-
-  exists(path: string): boolean;
-  getfat(path: string): { arch: string; type: string };
-
-  dafopr(path: string): number;
-  dafcls(handle: number): void;
-  dafbfs(handle: number): void;
-  daffna(handle: number): boolean;
-
-  dasopr(path: string): number;
-  dascls(handle: number): void;
-
-  dlaopn(path: string, ftype: string, ifname: string, ncomch: number): number;
-  dlabfs(handle: number): { found: boolean; descr?: Record<string, unknown> };
-  dlafns(handle: number, descr: Record<string, unknown>): { found: boolean; descr?: Record<string, unknown> };
-  dlacls(handle: number): void;
-
+  deltet(epoch: number, eptype: string): number;
+  unitim(epoch: number, insys: string, outsys: string): number;
+  tparse(timstr: string): number;
+  tpictr(sample: string, pictur: string): string;
+  timdefGet(item: string): string;
+  timdefSet(item: string, value: string): void;
 
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
@@ -70,6 +58,10 @@ export type NativeAddon = {
 
   scs2e(sc: number, sclkch: string): number;
   sce2s(sc: number, et: number): string;
+  scencd(sc: number, sclkch: string): number;
+  scdecd(sc: number, sclkdp: number): string;
+  sct2e(sc: number, sclkdp: number): number;
+  sce2c(sc: number, et: number): number;
   ckgp(
     inst: number,
     sclkdp: number,

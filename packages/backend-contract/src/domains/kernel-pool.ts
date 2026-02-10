@@ -59,7 +59,6 @@ export interface KernelPoolApi {
    * - `%` matches any single character
    *
    * Validation semantics:
-   * - `template` must not be empty or whitespace-only.
    * - `start` must be a finite integer >= 0 (0-based).
    * - `room` must be a finite integer > 0.
    */
