@@ -183,6 +183,11 @@ static Napi::Boolean Bodfnd(const Napi::CallbackInfo& info) {
 static Napi::Array Bodvar(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
+  // Keep this consistent with the WASM wrapper cap (BODY_CONST_MAX_VALUES).
+  // This protects against unexpectedly large native allocations if callers load
+  // arbitrary kernels containing enormous BODY<id>_<item> arrays.
+  constexpr int kMaxBodyConstValues = 1024;
+
   if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsString()) {
     ThrowSpiceError(Napi::TypeError::New(env, "bodvar(body: number, item: string) expects (number, string)"));
     return Napi::Array::New(env);
@@ -214,6 +219,14 @@ static Napi::Array Bodvar(const Napi::CallbackInfo& info) {
   }
   if (n <= 0) {
     return Napi::Array::New(env, 0);
+  }
+
+  if (n > kMaxBodyConstValues) {
+    ThrowSpiceError(Napi::RangeError::New(
+        env,
+        std::string("bodvar(): kernel pool variable ") + poolVar +
+            " has too many values (" + std::to_string(n) + "); max is " + std::to_string(kMaxBodyConstValues)));
+    return Napi::Array::New(env);
   }
 
   std::vector<double> values((size_t)n, 0.0);
