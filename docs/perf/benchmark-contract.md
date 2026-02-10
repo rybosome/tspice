@@ -126,6 +126,6 @@ Pass `--json` to emit a machine-readable JSON object.
 The JSON output schema is intentionally stable and always includes the same top-level keys (for both success and failure):
 
 - `ok`: boolean
-- `kind`: one of `\"success\" | \"usage\" | \"parse\" | \"validate\"`
+- `kind`: one of `"success" | "usage" | "parse" | "validate"`
 - `errors`: an array of `{ path, message }` (empty on success)
 - `usage`: a usage string (always included for help/automation)
