@@ -117,7 +117,7 @@ describe("loadKernelPack()", () => {
       },
     };
 
-    const p = loadKernelPack(spice, pack, { baseUrl: "/base", fetch });
+    const p = loadKernelPack(spice, pack, { baseUrl: "/base/", fetch });
 
     // Only the first fetch should start.
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -189,7 +189,7 @@ describe("loadKernelPack()", () => {
       },
     };
 
-    const p = loadKernelPack(spice, pack, { baseUrl: "/base", fetch, fetchStrategy: "parallel" });
+    const p = loadKernelPack(spice, pack, { baseUrl: "/base/", fetch, fetchStrategy: "parallel" });
 
     // Both fetches should start before any loads.
     expect(fetch).toHaveBeenCalledTimes(2);
@@ -251,6 +251,32 @@ describe("loadKernelPack()", () => {
       path: "a.tls",
       bytes: new Uint8Array([1]),
     });
+  });
+
+  it("requires directory-style path-absolute baseUrl (trailing slash)", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [{ url: "kernels/a.tls", path: "a.tls" }],
+    };
+
+    const fetch = vi.fn(async () => okResponse(new Uint8Array([1])));
+
+    const loadKernel = vi.fn().mockResolvedValue(undefined);
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    for (const baseUrl of ["/myapp", "/app/index.html"]) {
+      await expect(loadKernelPack(spice, pack, { baseUrl, fetch })).rejects.toThrow(
+        /directory-style/i,
+      );
+    }
+
+    expect(fetch).toHaveBeenCalledTimes(0);
+    expect(loadKernel).toHaveBeenCalledTimes(0);
   });
 
   it("requires directory-style absolute baseUrl (scheme or protocol-relative)", async () => {

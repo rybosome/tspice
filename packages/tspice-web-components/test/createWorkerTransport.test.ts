@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-
-type WorkerLike = import("@rybosome/tspice-web-components").WorkerLike;
+import type { WorkerLike } from "@rybosome/tspice-web-components";
 import { nextMacrotask } from "../src/worker/taskScheduling.js";
 
 type Listener = (ev: unknown) => void;

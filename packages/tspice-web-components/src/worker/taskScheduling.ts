@@ -1,4 +1,17 @@
-export function queueMacrotask(fn: () => void): boolean {
+export type QueueMacrotaskOptions = {
+  /**
+   * When no macrotask scheduler exists (no `MessageChannel` and no `setTimeout`),
+   * there is no way to create a real task boundary.
+   *
+   * - `true` (default): invoke `fn()` synchronously as a best-effort fallback.
+   * - `false`: do not call `fn()` and return `false`.
+   */
+  allowSyncFallback?: boolean;
+};
+
+export function queueMacrotask(fn: () => void, opts?: QueueMacrotaskOptions): boolean {
+  const allowSyncFallback = opts?.allowSyncFallback ?? true;
+
   // Prefer MessageChannel when available. This schedules a real task boundary
   // without relying on timers, which makes it friendlier to fake-timer test
   // environments.
@@ -39,12 +52,19 @@ export function queueMacrotask(fn: () => void): boolean {
   }
 
   // No macrotask scheduler available in this runtime.
-  fn();
+  if (allowSyncFallback) fn();
   return false;
 }
 
 export function nextMacrotask(): Promise<void> {
-  return new Promise((resolve) => {
-    queueMacrotask(resolve);
+  return new Promise((resolve, reject) => {
+    const ok = queueMacrotask(resolve, { allowSyncFallback: false });
+    if (!ok) {
+      reject(
+        new Error(
+          "nextMacrotask(): no macrotask scheduler available (MessageChannel/setTimeout missing)",
+        ),
+      );
+    }
   });
 }

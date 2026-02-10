@@ -22,10 +22,17 @@ export type LoadKernelPackOptions = {
    * - Root-relative `kernel.url` values (starting with `/`) are left as-is.
    *
    * Base URL semantics:
-   * - For scheme-based or protocol-relative base URLs (`https://...`, `//...`), `baseUrl` must be
-   *   directory-style (its pathname must end with `/`). Otherwise this throws.
-   * - For path-like base URLs (`/myapp` or `myapp`), `baseUrl` is treated as a directory prefix even
-   *   when it does not end with `/`.
+   * - `baseUrl` must be **directory-style** (end with `/`), regardless of whether it is:
+   *   - scheme-based (`https://...`)
+   *   - protocol-relative (`//...`)
+   *   - path-absolute (`/myapp/`)
+   *   - path-relative (`myapp/`)
+   *
+   * This avoids the surprising file-vs-directory behavior of `new URL(url, baseUrl)`.
+   * For example:
+   * - `baseUrl: "/myapp/"` + `url: "kernels/a.tls"` → `"/myapp/kernels/a.tls"`
+   * - `baseUrl: "/myapp"` would be ambiguous (file vs directory) and therefore throws.
+   * - If you have a page path like `"/app/index.html"`, pass its directory (`"/app/"`).
    *
    * This is intentionally passed in (rather than relying on `import.meta.env.BASE_URL`)
    * so this helper can be used outside Vite and can be tested deterministically.
@@ -104,12 +111,12 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
   // `baseUrl` is path-absolute (commonly a Vite BASE_URL like `/myapp/`).
   // Use the URL constructor with a dummy origin so dot-segments normalize.
   if (baseUrl.startsWith("/")) {
-    // If `url` is already an absolute *path*, leave it alone.
-    if (url.startsWith("/")) return url;
-
     const base = new URL(baseUrl, "https://tspice.invalid");
-    // Treat `baseUrl` as a directory prefix even when it doesn't end with `/`.
-    if (!base.pathname.endsWith("/")) base.pathname = `${base.pathname}/`;
+    if (!base.pathname.endsWith("/")) {
+      throw new Error(
+        `loadKernelPack(): path-absolute baseUrl must be directory-style (end with \"/\"): ${baseUrl}`,
+      );
+    }
 
     const resolved = new URL(url, base);
     return `${resolved.pathname}${resolved.search}${resolved.hash}`;
@@ -119,8 +126,12 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
   // If `url` is already an absolute *path*, leave it alone.
   if (url.startsWith("/")) return url;
 
-  const base = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  return `${base}${url}`;
+  if (!baseUrl.endsWith("/")) {
+    throw new Error(
+      `loadKernelPack(): relative baseUrl must be directory-style (end with \"/\"): ${baseUrl}`,
+    );
+  }
+  return `${baseUrl}${url}`;
 }
 
 async function fetchKernelBytes(fetchFn: FetchLike, url: string): Promise<Uint8Array> {
