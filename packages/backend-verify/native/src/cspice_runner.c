@@ -5,8 +5,13 @@
 //   stdout: { ok:true, result:any } OR { ok:false, error:{ message, spiceShort?, spiceLong?, spiceTrace? } }
 //
 // Implements:
-//   - call: "time.str2et" (args: [string])
-//   - alias: "str2et"
+//   - time.str2et (alias: str2et) args: [string] -> number
+//   - time.et2utc (alias: et2utc) args: [number, string, number] -> string
+//   - ids-names.bodn2c (alias: bodn2c) args: [string] -> {found, code?}
+//   - ids-names.bodc2n (alias: bodc2n) args: [number] -> {found, name?}
+//   - frames.namfrm (alias: namfrm) args: [string] -> {found, code?}
+//   - frames.frmnam (alias: frmnam) args: [number] -> {found, name?}
+//   - frames.pxform (alias: pxform) args: [string, string, number] -> number[9] (row-major)
 
 #include "SpiceUsr.h"
 
@@ -386,6 +391,65 @@ static char *jsmn_strdup(const char *json, const jsmntok_t *tok) {
   memcpy(s, json + tok->start, (size_t)n);
   s[n] = '\0';
   return s;
+}
+
+
+static bool jsmn_parse_double(const char *json, const jsmntok_t *tok,
+                              SpiceDouble *out) {
+  if (tok->type != JSMN_PRIMITIVE) {
+    return false;
+  }
+
+  const int n = tok->end - tok->start;
+  if (n <= 0 || n >= 128) {
+    return false;
+  }
+
+  char buf[128];
+  memcpy(buf, json + tok->start, (size_t)n);
+  buf[n] = '\0';
+
+  errno = 0;
+  char *endptr = NULL;
+  const double v = strtod(buf, &endptr);
+  if (errno != 0) {
+    return false;
+  }
+  if (endptr == buf || *endptr != '\0') {
+    return false;
+  }
+
+  *out = (SpiceDouble)v;
+  return true;
+}
+
+static bool jsmn_parse_int(const char *json, const jsmntok_t *tok,
+                           SpiceInt *out) {
+  if (tok->type != JSMN_PRIMITIVE) {
+    return false;
+  }
+
+  const int n = tok->end - tok->start;
+  if (n <= 0 || n >= 128) {
+    return false;
+  }
+
+  char buf[128];
+  memcpy(buf, json + tok->start, (size_t)n);
+  buf[n] = '\0';
+
+  errno = 0;
+  char *endptr = NULL;
+  const long v = strtol(buf, &endptr, 10);
+  if (errno != 0) {
+    return false;
+  }
+  if (endptr == buf || *endptr != '\0') {
+    return false;
+  }
+
+  *out = (SpiceInt)v;
+  return true;
 }
 
 // --- JSON output helpers ----------------------------------------------------
@@ -811,45 +875,341 @@ int main(void) {
   }
 
   const bool isStr2et = strcmp(call, "time.str2et") == 0 || strcmp(call, "str2et") == 0;
+  const bool isEt2utc = strcmp(call, "time.et2utc") == 0 || strcmp(call, "et2utc") == 0;
+  const bool isBodn2c = strcmp(call, "ids-names.bodn2c") == 0 || strcmp(call, "bodn2c") == 0;
+  const bool isBodc2n = strcmp(call, "ids-names.bodc2n") == 0 || strcmp(call, "bodc2n") == 0;
+  const bool isNamfrm = strcmp(call, "frames.namfrm") == 0 || strcmp(call, "namfrm") == 0;
+  const bool isFrmnam = strcmp(call, "frames.frmnam") == 0 || strcmp(call, "frmnam") == 0;
+  const bool isPxform = strcmp(call, "frames.pxform") == 0 || strcmp(call, "pxform") == 0;
 
-  if (!isStr2et) {
+  if (!isStr2et && !isEt2utc && !isBodn2c && !isBodc2n && !isNamfrm && !isFrmnam && !isPxform) {
     write_error_json("Unsupported call", NULL, NULL, NULL);
     goto done;
   }
 
-  if (tokens[argsTok].size < 1) {
-    write_error_json("time.str2et expects args[0] to be a string", NULL, NULL, NULL);
+  if (isStr2et) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json("time.str2et expects args[0] to be a string", NULL, NULL, NULL);
+      goto done;
+    }
+
+    int arg0Tok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (arg0Tok < 0 || arg0Tok >= tokenCount || tokens[arg0Tok].type != JSMN_STRING) {
+      write_error_json("time.str2et expects args[0] to be a string", NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *timeStr = jsmn_strdup(input, &tokens[arg0Tok]);
+    if (timeStr == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    str2et_c(timeStr, &et);
+    free(timeStr);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in str2et", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    // Success.
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)et);
     goto done;
   }
 
-  int arg0Tok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
-  if (arg0Tok < 0 || arg0Tok >= tokenCount || tokens[arg0Tok].type != JSMN_STRING) {
-    write_error_json("time.str2et expects args[0] to be a string", NULL, NULL, NULL);
+  if (isEt2utc) {
+    if (tokens[argsTok].size < 3) {
+      write_error_json("time.et2utc expects args[0]=number args[1]=string args[2]=number", NULL,
+                       NULL, NULL);
+      goto done;
+    }
+
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int fmtTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int precTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceDouble et = 0.0;
+    SpiceInt prec = 0;
+
+    if (etTok < 0 || etTok >= tokenCount || !jsmn_parse_double(input, &tokens[etTok], &et)) {
+      write_error_json("time.et2utc expects args[0] to be a number", NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (fmtTok < 0 || fmtTok >= tokenCount || tokens[fmtTok].type != JSMN_STRING) {
+      write_error_json("time.et2utc expects args[1] to be a string", NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (precTok < 0 || precTok >= tokenCount || !jsmn_parse_int(input, &tokens[precTok], &prec)) {
+      write_error_json("time.et2utc expects args[2] to be a number", NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *format = jsmn_strdup(input, &tokens[fmtTok]);
+    if (format == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceChar utc[128];
+    utc[0] = '\0';
+    et2utc_c(et, format, prec, (SpiceInt)sizeof(utc), utc);
+    free(format);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in et2utc", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(utc);
+    fputs("\"}\n", stdout);
     goto done;
   }
 
-  char *timeStr = jsmn_strdup(input, &tokens[arg0Tok]);
-  if (timeStr == NULL) {
-    write_error_json("Out of memory", NULL, NULL, NULL);
+  if (isBodn2c) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json("ids-names.bodn2c expects args[0] to be a string", NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json("ids-names.bodn2c expects args[0] to be a string", NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = jsmn_strdup(input, &tokens[nameTok]);
+    if (name == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt code = 0;
+    SpiceBoolean found = SPICEFALSE;
+    bodn2c_c(name, &code, &found);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in bodn2c", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"found\":true,\"code\":%ld}}\n",
+            (long)code);
     goto done;
   }
 
-  SpiceDouble et = 0.0;
-  str2et_c(timeStr, &et);
-  free(timeStr);
+  if (isBodc2n) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json("ids-names.bodc2n expects args[0] to be a number", NULL, NULL, NULL);
+      goto done;
+    }
 
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
-                        sizeof(traceMsg));
-    write_error_json("SPICE error in str2et", shortMsg, longMsg, traceMsg);
+    int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceInt code = 0;
+    if (codeTok < 0 || codeTok >= tokenCount || !jsmn_parse_int(input, &tokens[codeTok], &code)) {
+      write_error_json("ids-names.bodc2n expects args[0] to be a number", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceChar name[64];
+    name[0] = '\0';
+    SpiceBoolean found = SPICEFALSE;
+    bodc2n_c(code, (SpiceInt)sizeof(name), name, &found);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in bodc2n", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"name\":\"", stdout);
+    json_print_escaped(name);
+    fputs("\"}}\n", stdout);
     goto done;
   }
 
-  // Success.
-  fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)et);
+  if (isNamfrm) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json("frames.namfrm expects args[0] to be a string", NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json("frames.namfrm expects args[0] to be a string", NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = jsmn_strdup(input, &tokens[nameTok]);
+    if (name == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt frcode = 0;
+    namfrm_c(name, &frcode);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in namfrm", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (frcode == 0) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"found\":true,\"code\":%ld}}\n",
+            (long)frcode);
+    goto done;
+  }
+
+  if (isFrmnam) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json("frames.frmnam expects args[0] to be a number", NULL, NULL, NULL);
+      goto done;
+    }
+
+    int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceInt frcode = 0;
+    if (codeTok < 0 || codeTok >= tokenCount || !jsmn_parse_int(input, &tokens[codeTok], &frcode)) {
+      write_error_json("frames.frmnam expects args[0] to be a number", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceChar frname[64];
+    frname[0] = '\0';
+    frmnam_c(frcode, (SpiceInt)sizeof(frname), frname);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in frmnam", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (frname[0] == '\0') {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"name\":\"", stdout);
+    json_print_escaped(frname);
+    fputs("\"}}\n", stdout);
+    goto done;
+  }
+
+  if (isPxform) {
+    if (tokens[argsTok].size < 3) {
+      write_error_json("frames.pxform expects args[0]=string args[1]=string args[2]=number", NULL,
+                       NULL, NULL);
+      goto done;
+    }
+
+    int fromTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int toTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (fromTok < 0 || fromTok >= tokenCount || tokens[fromTok].type != JSMN_STRING) {
+      write_error_json("frames.pxform expects args[0] to be a string", NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (toTok < 0 || toTok >= tokenCount || tokens[toTok].type != JSMN_STRING) {
+      write_error_json("frames.pxform expects args[1] to be a string", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || !jsmn_parse_double(input, &tokens[etTok], &et)) {
+      write_error_json("frames.pxform expects args[2] to be a number", NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *from = jsmn_strdup(input, &tokens[fromTok]);
+    char *to = jsmn_strdup(input, &tokens[toTok]);
+    if (from == NULL || to == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      free(from);
+      free(to);
+      goto done;
+    }
+
+    SpiceDouble m[3][3];
+    pxform_c(from, to, et, m);
+    free(from);
+    free(to);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in pxform", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    // Success: row-major matrix.
+    fputs("{\"ok\":true,\"result\":[", stdout);
+    for (int r = 0; r < 3; r++) {
+      for (int c = 0; c < 3; c++) {
+        const int i = r * 3 + c;
+        if (i != 0) {
+          fputc(',', stdout);
+        }
+        fprintf(stdout, "%.17g", (double)m[r][c]);
+      }
+    }
+    fputs("]}\n", stdout);
+    goto done;
+  }
+
 
 done:
   // Clear state even though this is a single-shot process.

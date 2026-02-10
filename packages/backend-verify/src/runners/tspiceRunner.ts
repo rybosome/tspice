@@ -15,10 +15,12 @@ import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorR
 type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown;
 
 const DISPATCH: Record<string, DispatchFn> = {
-  // Phase A minimum surface.
+  // time
   "time.str2et": (backend, args) => {
     if (typeof args[0] !== "string") {
-      throw new TypeError(`time.str2et expects args[0] to be a string (got ${JSON.stringify(args[0])})`);
+      throw new TypeError(
+        `time.str2et expects args[0] to be a string (got ${JSON.stringify(args[0])})`,
+      );
     }
     return backend.str2et(args[0]);
   },
@@ -29,6 +31,137 @@ const DISPATCH: Record<string, DispatchFn> = {
       throw new TypeError(`str2et expects args[0] to be a string (got ${JSON.stringify(args[0])})`);
     }
     return backend.str2et(args[0]);
+  },
+
+  "time.et2utc": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      throw new TypeError(
+        `time.et2utc expects args[0] to be a number (got ${JSON.stringify(args[0])})`,
+      );
+    }
+    if (typeof args[1] !== "string") {
+      throw new TypeError(
+        `time.et2utc expects args[1] to be a string (got ${JSON.stringify(args[1])})`,
+      );
+    }
+    if (typeof args[2] !== "number") {
+      throw new TypeError(
+        `time.et2utc expects args[2] to be a number (got ${JSON.stringify(args[2])})`,
+      );
+    }
+    return backend.et2utc(args[0], args[1], args[2]);
+  },
+
+  // Convenience alias.
+  et2utc: (backend, args) => {
+    if (typeof args[0] !== "number") {
+      throw new TypeError(`et2utc expects args[0] to be a number (got ${JSON.stringify(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      throw new TypeError(`et2utc expects args[1] to be a string (got ${JSON.stringify(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      throw new TypeError(`et2utc expects args[2] to be a number (got ${JSON.stringify(args[2])})`);
+    }
+    return backend.et2utc(args[0], args[1], args[2]);
+  },
+
+  // ids-names
+  "ids-names.bodn2c": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      throw new TypeError(
+        `ids-names.bodn2c expects args[0] to be a string (got ${JSON.stringify(args[0])})`,
+      );
+    }
+    return backend.bodn2c(args[0]);
+  },
+
+  bodn2c: (backend, args) => {
+    if (typeof args[0] !== "string") {
+      throw new TypeError(`bodn2c expects args[0] to be a string (got ${JSON.stringify(args[0])})`);
+    }
+    return backend.bodn2c(args[0]);
+  },
+
+  "ids-names.bodc2n": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      throw new TypeError(
+        `ids-names.bodc2n expects args[0] to be a number (got ${JSON.stringify(args[0])})`,
+      );
+    }
+    return backend.bodc2n(args[0]);
+  },
+
+  bodc2n: (backend, args) => {
+    if (typeof args[0] !== "number") {
+      throw new TypeError(`bodc2n expects args[0] to be a number (got ${JSON.stringify(args[0])})`);
+    }
+    return backend.bodc2n(args[0]);
+  },
+
+  // frames
+  "frames.namfrm": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      throw new TypeError(
+        `frames.namfrm expects args[0] to be a string (got ${JSON.stringify(args[0])})`,
+      );
+    }
+    return backend.namfrm(args[0]);
+  },
+
+  namfrm: (backend, args) => {
+    if (typeof args[0] !== "string") {
+      throw new TypeError(`namfrm expects args[0] to be a string (got ${JSON.stringify(args[0])})`);
+    }
+    return backend.namfrm(args[0]);
+  },
+
+  "frames.frmnam": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      throw new TypeError(
+        `frames.frmnam expects args[0] to be a number (got ${JSON.stringify(args[0])})`,
+      );
+    }
+    return backend.frmnam(args[0]);
+  },
+
+  frmnam: (backend, args) => {
+    if (typeof args[0] !== "number") {
+      throw new TypeError(`frmnam expects args[0] to be a number (got ${JSON.stringify(args[0])})`);
+    }
+    return backend.frmnam(args[0]);
+  },
+
+  "frames.pxform": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      throw new TypeError(
+        `frames.pxform expects args[0] to be a string (got ${JSON.stringify(args[0])})`,
+      );
+    }
+    if (typeof args[1] !== "string") {
+      throw new TypeError(
+        `frames.pxform expects args[1] to be a string (got ${JSON.stringify(args[1])})`,
+      );
+    }
+    if (typeof args[2] !== "number") {
+      throw new TypeError(
+        `frames.pxform expects args[2] to be a number (got ${JSON.stringify(args[2])})`,
+      );
+    }
+    return backend.pxform(args[0], args[1], args[2]);
+  },
+
+  pxform: (backend, args) => {
+    if (typeof args[0] !== "string") {
+      throw new TypeError(`pxform expects args[0] to be a string (got ${JSON.stringify(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      throw new TypeError(`pxform expects args[1] to be a string (got ${JSON.stringify(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      throw new TypeError(`pxform expects args[2] to be a number (got ${JSON.stringify(args[2])})`);
+    }
+    return backend.pxform(args[0], args[1], args[2]);
   },
 };
 

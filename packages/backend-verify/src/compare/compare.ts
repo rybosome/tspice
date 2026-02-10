@@ -14,6 +14,20 @@ function joinPath(base: string, key: string | number): string {
   return base === "$" ? `$.${key}` : `${base}.${key}`;
 }
 
+const TAU = 2 * Math.PI;
+
+function wrapToPi(x: number): number {
+  if (!Number.isFinite(x)) return x;
+
+  // Normalize into [-pi, pi).
+  const y = ((((x + Math.PI) % TAU) + TAU) % TAU) - Math.PI;
+
+  // Prefer +pi over -pi to keep comparisons deterministic.
+  if (Object.is(y, -Math.PI)) return Math.PI;
+
+  return y;
+}
+
 function compareNumbers(
   actual: number,
   expected: number,
@@ -21,24 +35,28 @@ function compareNumbers(
   opts: CompareOptions,
 ): Mismatch | null {
   if (Number.isNaN(actual) && Number.isNaN(expected)) return null;
-  if (Object.is(actual, expected)) return null;
+
+  const actualNorm = opts.angleWrapPi ? wrapToPi(actual) : actual;
+  const expectedNorm = opts.angleWrapPi ? wrapToPi(expected) : expected;
+
+  if (Object.is(actualNorm, expectedNorm)) return null;
 
   const tolAbs = opts.tolAbs ?? 0;
   const tolRel = opts.tolRel ?? 0;
 
-  const diff = Math.abs(actual - expected);
+  const diff = Math.abs(actualNorm - expectedNorm);
   // Use a symmetric denominator so tolerance behaves consistently regardless
   // of whether callers treat `actual` or `expected` as the reference.
-  const rel = diff / Math.max(1e-30, Math.max(Math.abs(actual), Math.abs(expected)));
+  const rel = diff / Math.max(1e-30, Math.max(Math.abs(actualNorm), Math.abs(expectedNorm)));
 
   if (diff <= tolAbs) return null;
   if (rel <= tolRel) return null;
 
   return {
     path,
-    actual,
-    expected,
-    message: `number mismatch: actual=${actual} expected=${expected} (diff=${diff}, rel=${rel})`,
+    actual: actualNorm,
+    expected: expectedNorm,
+    message: `number mismatch: actual=${actualNorm} expected=${expectedNorm} (diff=${diff}, rel=${rel})`,
   };
 }
 

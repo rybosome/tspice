@@ -1,6 +1,7 @@
 export type CompareOptions = {
   tolAbs?: number;
   tolRel?: number;
+  angleWrapPi?: boolean;
 };
 
 export type Mismatch = {

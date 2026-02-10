@@ -1,7 +1,7 @@
 import * as path from "node:path";
 import * as fs from "node:fs";
 
-import type { ScenarioAst, ScenarioCaseAst, ScenarioSetupAst, ScenarioYamlFile } from "./types.js";
+import type { ScenarioAst, ScenarioCaseAst, ScenarioCompareAst, ScenarioSetupAst, ScenarioYamlFile } from "./types.js";
 import type { KernelEntry } from "../runners/types.js";
 import { resolveMetaKernelKernelsToLoad } from "../kernels/metaKernel.js";
 
@@ -12,6 +12,44 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function assertString(value: unknown, label: string): string {
   if (typeof value === "string") return value;
   throw new TypeError(`${label} must be a string (got ${JSON.stringify(value)})`);
+}
+
+function assertNumber(value: unknown, label: string): number {
+  if (typeof value === "number") return value;
+  throw new TypeError(`${label} must be a number (got ${JSON.stringify(value)})`);
+}
+
+function assertBoolean(value: unknown, label: string): boolean {
+  if (typeof value === "boolean") return value;
+  throw new TypeError(`${label} must be a boolean (got ${JSON.stringify(value)})`);
+}
+
+function parseCompare(raw: unknown, label: string): ScenarioCompareAst {
+  if (raw === undefined) return {};
+
+  if (!isRecord(raw)) {
+    throw new TypeError(`${label} must be a mapping/object (got ${JSON.stringify(raw)})`);
+  }
+
+  const out: ScenarioCompareAst = {};
+
+  const allowed = new Set(["tolAbs", "tolRel", "angleWrapPi", "errorShort"]);
+  for (const k of Object.keys(raw)) {
+    if (!allowed.has(k)) {
+      throw new TypeError(`${label} has unknown key: ${JSON.stringify(k)}`);
+    }
+  }
+
+  if (raw.tolAbs !== undefined) out.tolAbs = assertNumber(raw.tolAbs, `${label}.tolAbs`);
+  if (raw.tolRel !== undefined) out.tolRel = assertNumber(raw.tolRel, `${label}.tolRel`);
+  if (raw.angleWrapPi !== undefined) {
+    out.angleWrapPi = assertBoolean(raw.angleWrapPi, `${label}.angleWrapPi`);
+  }
+  if (raw.errorShort !== undefined) {
+    out.errorShort = assertBoolean(raw.errorShort, `${label}.errorShort`);
+  }
+
+  return out;
 }
 
 function asStringArray(value: unknown, label: string): string[] {
@@ -205,13 +243,20 @@ function parseCase(raw: unknown, index: number, sourceDir: string): ScenarioCase
     throw new TypeError(`cases[${index}].args must be an array (got ${JSON.stringify(args)})`);
   }
 
-  return {
+  const setup = parseSetup(raw.setup, sourceDir);
+  const compare = parseCompare(raw.compare, `cases[${index}].compare`);
+
+  const out: ScenarioCaseAst = {
     id,
     call,
     args,
-    setup: parseSetup(raw.setup, sourceDir),
     expect: raw.expect,
   };
+
+  if (setup.kernels !== undefined) out.setup = setup;
+  if (Object.keys(compare).length > 0) out.compare = compare;
+
+  return out;
 }
 
 export function parseScenario(file: ScenarioYamlFile): ScenarioAst {
@@ -226,6 +271,7 @@ export function parseScenario(file: ScenarioYamlFile): ScenarioAst {
 
   const name = data.name === undefined ? undefined : assertString(data.name, "name");
   const setup = parseSetup(data.setup, sourceDir);
+  const compare = parseCompare(data.compare, "compare");
 
   if (!Array.isArray(data.cases)) {
     throw new TypeError(`cases must be an array (got ${JSON.stringify(data.cases)})`);
@@ -243,6 +289,7 @@ export function parseScenario(file: ScenarioYamlFile): ScenarioAst {
 
   if (name !== undefined) scenario.name = name;
   if (setup.kernels !== undefined) scenario.setup = setup;
+  if (Object.keys(compare).length > 0) scenario.compare = compare;
 
   return scenario;
 }
