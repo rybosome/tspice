@@ -314,13 +314,18 @@ export function createWorkerTransport(opts: {
     w.removeEventListener("messageerror", onMessageError);
 
     if (terminateOnDispose) {
-      setTimeout(() => {
+      // We intentionally defer termination so the caller can synchronously
+      // observe a disposed transport before the worker is torn down.
+      //
+      // Prefer a microtask here (over `setTimeout(..., 0)`) so `dispose()` does
+      // not leave behind pending timers in fake-timer test environments.
+      queueMicrotask(() => {
         try {
           w.terminate();
         } catch {
           // ignore
         }
-      }, 0);
+      });
     }
 
     worker = undefined;
