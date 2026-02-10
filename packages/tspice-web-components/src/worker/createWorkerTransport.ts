@@ -67,8 +67,18 @@ function queueMacrotask(fn: () => void): void {
       port1.onmessage = () => {
         port1.onmessage = null;
         // Close ports so this doesn't keep the event loop alive in Node.
-        port1.close();
-        port2.close();
+        // Be defensive: some polyfills/test environments may not implement
+        // `close()`.
+        try {
+          port1.close?.();
+        } catch {
+          // ignore
+        }
+        try {
+          port2.close?.();
+        } catch {
+          // ignore
+        }
         fn();
       };
 
@@ -79,7 +89,20 @@ function queueMacrotask(fn: () => void): void {
     // Ignore and fall back to setTimeout.
   }
 
-  setTimeout(fn, 0);
+  // Next preference: a real macrotask via setTimeout.
+  if (typeof setTimeout === "function") {
+    setTimeout(fn, 0);
+    return;
+  }
+
+  // Fallbacks (microtasks) for runtimes without timers.
+  // Note: this is not a true macrotask boundary, but it's better than failing.
+  if (typeof queueMicrotask === "function") {
+    queueMicrotask(fn);
+    return;
+  }
+
+  Promise.resolve().then(fn);
 }
 
 /**
