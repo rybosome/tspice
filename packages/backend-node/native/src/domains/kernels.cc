@@ -283,6 +283,14 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
 
   const std::string wordsq = info[2].As<Napi::String>().Utf8Value();
 
+  // Conservative guard against huge native allocations (wordsqOut + substr are
+  // each allocated at ~wordsq.size() bytes).
+  constexpr size_t kMaxKxtrctWordsqBytes = size_t{1} << 20;  // 1 MiB
+  if (wordsq.size() >= kMaxKxtrctWordsqBytes) {
+    ThrowSpiceError(Napi::RangeError::New(env, "kxtrct(): wordsq is too large"));
+    return Napi::Object::New(env);
+  }
+
   tspice_napi::JsStringArrayArg termsArg;
   if (!ReadStringArray(env, info[1], &termsArg, "terms")) {
     return Napi::Object::New(env);
