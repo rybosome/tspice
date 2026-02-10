@@ -629,6 +629,12 @@ function assertPoolRange(fn: string, start: number, room: number): void {
   }
 }
 
+function assertNonEmptyString(fn: string, field: string, value: string): void {
+  if (value.trim().length === 0) {
+    throw new RangeError(`${fn}(): ${field} must be a non-empty string`);
+  }
+}
+
 export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
@@ -779,6 +785,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gdpool: (name, start, room) => {
+      assertNonEmptyString("gdpool", "name", name);
       assertPoolRange("gdpool", start, room);
       const start0 = start;
       const room0 = room;
@@ -796,6 +803,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gipool: (name, start, room) => {
+      assertNonEmptyString("gipool", "name", name);
       assertPoolRange("gipool", start, room);
       const start0 = start;
       const room0 = room;
@@ -816,6 +824,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gcpool: (name, start, room) => {
+      assertNonEmptyString("gcpool", "name", name);
       assertPoolRange("gcpool", start, room);
       const start0 = start;
       const room0 = room;
@@ -833,6 +842,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gnpool: (template, start, room) => {
+      assertNonEmptyString("gnpool", "template", template);
       assertPoolRange("gnpool", start, room);
       const start0 = start;
       const room0 = room;
@@ -881,6 +891,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     dtpool: (name) => {
+      assertNonEmptyString("dtpool", "name", name);
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
       return {
@@ -891,6 +902,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     pdpool: (name, values) => {
+      assertNonEmptyString("pdpool", "name", name);
       for (let i = 0; i < values.length; i++) {
         const v = values[i]!;
         if (!Number.isFinite(v)) {
@@ -902,6 +914,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     pipool: (name, values) => {
+      assertNonEmptyString("pipool", "name", name);
       for (let i = 0; i < values.length; i++) {
         assertSpiceInt32(values[i]!, `pipool(): values[${i}]`);
       }
@@ -910,11 +923,13 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     pcpool: (name, values) => {
+      assertNonEmptyString("pcpool", "name", name);
       kernelPool.set(name, { type: "C", values: [...values] });
       markKernelPoolUpdated(name);
     },
 
     swpool: (agent, names) => {
+      assertNonEmptyString("swpool", "agent", agent);
       // CSPICE guarantees the next cvpool(agent) returns true.
       const prev = kernelPoolWatches.get(agent);
       if (prev) {
@@ -926,6 +941,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     cvpool: (agent) => {
+      assertNonEmptyString("cvpool", "agent", agent);
       const watch = kernelPoolWatches.get(agent);
       if (!watch) return false;
       const dirty = watch.dirty;
@@ -934,6 +950,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     expool: (name) => {
+      assertNonEmptyString("expool", "name", name);
       const entry = kernelPool.get(name);
       return entry?.type === "N";
     },

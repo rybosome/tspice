@@ -43,6 +43,33 @@ inline void CopyToFixedWidth(std::array<char, N>& out, std::string_view value) {
   out[copyLen] = '\0';
 }
 
+inline bool IsEmptyOrAsciiWhitespaceOnly(std::string_view value) {
+  if (value.empty()) return true;
+  for (unsigned char c : value) {
+    if (!tspice_napi::IsAsciiWhitespace(c)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+inline bool ValidateNonEmptyString(
+    Napi::Env env,
+    const char* fn,
+    const char* field,
+    std::string_view value) {
+  if (!IsEmptyOrAsciiWhitespaceOnly(value)) {
+    return true;
+  }
+
+  const char* safeFn = (fn != nullptr) ? fn : "<unknown>";
+  const char* safeField = (field != nullptr) ? field : "<unknown>";
+  ThrowSpiceError(Napi::RangeError::New(
+      env,
+      std::string(safeFn) + "(): " + safeField + " must be a non-empty string"));
+  return false;
+}
+
 }  // namespace
 
 static Napi::Object Gdpool(const Napi::CallbackInfo& info) {
@@ -58,6 +85,10 @@ static Napi::Object Gdpool(const Napi::CallbackInfo& info) {
   const std::string name = info[0].As<Napi::String>().Utf8Value();
   const int start = info[1].As<Napi::Number>().Int32Value();
   const int room = info[2].As<Napi::Number>().Int32Value();
+
+  if (!ValidateNonEmptyString(env, "gdpool", "name", name)) {
+    return Napi::Object::New(env);
+  }
 
   if (start < 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "gdpool() expects start >= 0"));
@@ -118,6 +149,10 @@ static Napi::Object Gipool(const Napi::CallbackInfo& info) {
   const int start = info[1].As<Napi::Number>().Int32Value();
   const int room = info[2].As<Napi::Number>().Int32Value();
 
+  if (!ValidateNonEmptyString(env, "gipool", "name", name)) {
+    return Napi::Object::New(env);
+  }
+
   if (start < 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "gipool() expects start >= 0"));
     return Napi::Object::New(env);
@@ -176,6 +211,10 @@ static Napi::Object Gcpool(const Napi::CallbackInfo& info) {
   const std::string name = info[0].As<Napi::String>().Utf8Value();
   const int start = info[1].As<Napi::Number>().Int32Value();
   const int room = info[2].As<Napi::Number>().Int32Value();
+
+  if (!ValidateNonEmptyString(env, "gcpool", "name", name)) {
+    return Napi::Object::New(env);
+  }
 
   if (start < 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "gcpool() expects start >= 0"));
@@ -239,9 +278,13 @@ static Napi::Object Gnpool(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  const std::string name = info[0].As<Napi::String>().Utf8Value();
+  const std::string templ = info[0].As<Napi::String>().Utf8Value();
   const int start = info[1].As<Napi::Number>().Int32Value();
   const int room = info[2].As<Napi::Number>().Int32Value();
+
+  if (!ValidateNonEmptyString(env, "gnpool", "template", templ)) {
+    return Napi::Object::New(env);
+  }
 
   if (start < 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "gnpool() expects start >= 0"));
@@ -262,7 +305,7 @@ static Napi::Object Gnpool(const Napi::CallbackInfo& info) {
   int found = 0;
 
   const int code = tspice_gnpool(
-      name.c_str(),
+      templ.c_str(),
       start,
       room,
       (int)kPoolNameMaxBytes,
@@ -273,7 +316,7 @@ static Napi::Object Gnpool(const Napi::CallbackInfo& info) {
       (int)sizeof(err));
 
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling gnpool(\"") + name + "\")", err);
+    ThrowSpiceError(env, std::string("CSPICE failed while calling gnpool(\"") + templ + "\")", err);
     return Napi::Object::New(env);
   }
 
@@ -304,6 +347,10 @@ static Napi::Object Dtpool(const Napi::CallbackInfo& info) {
   }
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
+
+  if (!ValidateNonEmptyString(env, "dtpool", "name", name)) {
+    return Napi::Object::New(env);
+  }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
@@ -351,6 +398,10 @@ static void Pdpool(const Napi::CallbackInfo& info) {
   }
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
+
+  if (!ValidateNonEmptyString(env, "pdpool", "name", name)) {
+    return;
+  }
   Napi::Array arr = info[1].As<Napi::Array>();
 
   const uint32_t n = arr.Length();
@@ -388,6 +439,10 @@ static void Pipool(const Napi::CallbackInfo& info) {
   }
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
+
+  if (!ValidateNonEmptyString(env, "pipool", "name", name)) {
+    return;
+  }
   Napi::Array arr = info[1].As<Napi::Array>();
 
   const uint32_t n = arr.Length();
@@ -433,12 +488,16 @@ static void Pipool(const Napi::CallbackInfo& info) {
 static void Pcpool(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 2 || !info[0].IsString()) {
+  if (info.Length() != 2 || !info[0].IsString() || !info[1].IsArray()) {
     ThrowSpiceError(Napi::TypeError::New(env, "pcpool(name: string, values: string[]) expects (string, string[])"));
     return;
   }
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
+
+  if (!ValidateNonEmptyString(env, "pcpool", "name", name)) {
+    return;
+  }
 
   tspice_napi::JsStringArrayArg values;
   if (!ReadStringArray(env, info[1], &values, "values")) {
@@ -475,6 +534,10 @@ static void Swpool(const Napi::CallbackInfo& info) {
 
   const std::string agent = info[0].As<Napi::String>().Utf8Value();
 
+  if (!ValidateNonEmptyString(env, "swpool", "agent", agent)) {
+    return;
+  }
+
   tspice_napi::JsStringArrayArg names;
   if (!ReadStringArray(env, info[1], &names, "names")) {
     return;
@@ -510,6 +573,10 @@ static Napi::Boolean Cvpool(const Napi::CallbackInfo& info) {
 
   const std::string agent = info[0].As<Napi::String>().Utf8Value();
 
+  if (!ValidateNonEmptyString(env, "cvpool", "agent", agent)) {
+    return Napi::Boolean::New(env, false);
+  }
+
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int update = 0;
@@ -531,6 +598,10 @@ static Napi::Boolean Expool(const Napi::CallbackInfo& info) {
   }
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
+
+  if (!ValidateNonEmptyString(env, "expool", "name", name)) {
+    return Napi::Boolean::New(env, false);
+  }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];

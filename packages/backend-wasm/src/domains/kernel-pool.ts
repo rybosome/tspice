@@ -268,6 +268,7 @@ function tspiceCallGnpool(
   start: number,
   room: number,
 ): Found<{ values: string[] }> {
+  assertNonEmptyString("gnpool", "template", template);
   assertPoolRange("gnpool", start, room);
 
   const namePtr = writeUtf8CString(module, template);
