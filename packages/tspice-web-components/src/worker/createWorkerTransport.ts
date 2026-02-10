@@ -273,8 +273,8 @@ export function createWorkerTransport(opts: {
     args: unknown[],
     requestOpts?: WorkerTransportRequestOptions,
   ): Promise<unknown> => {
+    if (disposed) throw new Error(`Worker transport disposed (op=${op})`);
     const id = nextId++;
-    if (disposed) throw new Error(`Worker transport disposed ${formatRequestContext(op, id)}`);
 
     const w = ensureWorker();
 
@@ -349,7 +349,7 @@ export function createWorkerTransport(opts: {
         if (pendingById.get(id) === pending) pendingById.delete(id);
 
         const out = new Error(`Worker postMessage failed ${formatRequestContext(op, id)}`);
-        (out as any).cause = err;
+        (out as Error & { cause?: unknown }).cause = err;
         pending.reject(out);
       }
     });

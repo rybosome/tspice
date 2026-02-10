@@ -92,7 +92,7 @@ export type WithCachingOptions = {
   /**
    * If `true`, allows broad `noStorePrefixes` (e.g. `"k"` or `"kit"`).
    *
-   * By default, `withCaching()` throws if a prefix looks too broad (length < 3
+   * By default, `withCaching()` warns if a prefix looks too broad (length < 3
    * or missing a `.`) to avoid accidentally disabling caching widely.
    */
   allowBroadNoStorePrefixes?: boolean;
@@ -146,18 +146,35 @@ function tryUnrefTimer(timer: unknown): void {
   }
 }
 
+type AnyCtor = abstract new (...args: never[]) => object;
+
+type GlobalWithExtras = typeof globalThis & {
+  Buffer?: {
+    isBuffer?: (v: unknown) => boolean;
+  };
+  SharedArrayBuffer?: AnyCtor;
+};
+
+function isPlainObject(x: unknown): x is Record<string, unknown> {
+  if (x === null || typeof x !== "object") return false;
+
+  let proto: unknown;
+  try {
+    proto = Object.getPrototypeOf(x);
+  } catch {
+    return false;
+  }
+
+  return proto === Object.prototype || proto === null;
+}
+
 function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean {
   if (value == null) return false;
 
+  const g = globalThis as GlobalWithExtras;
+
   // Node: Buffer
-  const BufferCtor = (globalThis as any).Buffer as
-    | undefined
-    | {
-        isBuffer?: (v: unknown) => boolean;
-      };
-  if (BufferCtor && typeof BufferCtor.isBuffer === "function" && BufferCtor.isBuffer(value)) {
-    return true;
-  }
+  if (g.Buffer?.isBuffer?.(value)) return true;
 
   // ArrayBuffer / TypedArrays / DataView
   if (typeof ArrayBuffer !== "undefined") {
@@ -166,46 +183,52 @@ function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean 
   }
 
   // SharedArrayBuffer (when available)
-  const SharedArrayBufferCtor = (globalThis as any).SharedArrayBuffer as
-    | undefined
-    | (new (...args: any[]) => any);
-  if (SharedArrayBufferCtor && value instanceof SharedArrayBufferCtor) return true;
+  if (g.SharedArrayBuffer && value instanceof g.SharedArrayBuffer) return true;
 
   // Blob / File (when available)
   if (typeof Blob !== "undefined" && value instanceof Blob) return true;
   if (typeof File !== "undefined" && value instanceof File) return true;
 
   const t = typeof value;
-  if (t !== "object" && t !== "function") return false;
+  if (t === "function") return true;
+  if (t !== "object") return false;
 
   const obj = value as object;
   if (seen.has(obj)) return false;
   seen.add(obj);
 
+  // Only traverse JSON-like containers: arrays and plain objects with enumerable
+  // data properties. Everything else fails closed (disable caching).
+  let descs: Record<string, PropertyDescriptor>;
+
   if (Array.isArray(value)) {
-    for (const v of value) {
-      if (containsBinaryLikeData(v, seen)) return true;
+    try {
+      descs = Object.getOwnPropertyDescriptors(value);
+    } catch {
+      return true;
     }
+
+    for (const desc of Object.values(descs)) {
+      if (!desc.enumerable) continue;
+      if (desc.get || desc.set) return true;
+      if (containsBinaryLikeData(desc.value, seen)) return true;
+    }
+
     return false;
   }
 
-  if (value instanceof Map) {
-    for (const [k, v] of value) {
-      if (containsBinaryLikeData(k, seen)) return true;
-      if (containsBinaryLikeData(v, seen)) return true;
-    }
-    return false;
+  if (!isPlainObject(value)) return true;
+
+  try {
+    descs = Object.getOwnPropertyDescriptors(value);
+  } catch {
+    return true;
   }
 
-  if (value instanceof Set) {
-    for (const v of value) {
-      if (containsBinaryLikeData(v, seen)) return true;
-    }
-    return false;
-  }
-
-  for (const v of Object.values(value as Record<string, unknown>)) {
-    if (containsBinaryLikeData(v, seen)) return true;
+  for (const desc of Object.values(descs)) {
+    if (!desc.enumerable) continue;
+    if (desc.get || desc.set) return true;
+    if (containsBinaryLikeData(desc.value, seen)) return true;
   }
 
   return false;
@@ -259,11 +282,13 @@ export function withCaching(
     const broad = noStorePrefixes.filter((p) => p.length < 3 || !p.includes("."));
     if (broad.length > 0) {
       const listed = broad.map((p) => JSON.stringify(p)).join(", ");
-      throw new Error(
-        `withCaching(): Refusing broad noStorePrefixes ${listed}. ` +
-          `Prefixes are matched via op.startsWith(prefix) and may disable caching broadly. ` +
-          `Prefer e.g. "kit." / "raw."-style prefixes, or set allowBroadNoStorePrefixes: true.`,
-      );
+      if (typeof console !== "undefined" && typeof console.warn === "function") {
+        console.warn(
+          `withCaching(): broad noStorePrefixes ${listed}. ` +
+            `Prefixes are matched via op.startsWith(prefix) and may disable caching broadly. ` +
+            `Prefer e.g. "kit." / "raw."-style prefixes, or set allowBroadNoStorePrefixes: true to silence this warning.`,
+        );
+      }
     }
   }
 

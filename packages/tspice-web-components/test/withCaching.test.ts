@@ -289,24 +289,29 @@ describe("withCaching()", () => {
     if (isCachingTransport(cached)) cached.dispose();
   });
 
+  it("warns for overly broad noStorePrefixes by default", async () => {
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
-
-  it("throws for overly broad noStorePrefixes by default", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const base = {
       request: vi.fn(async () => 123),
     };
 
-    expect(() =>
-      withCaching(base, {
-        noStorePrefixes: ["k"],
-      }),
-    ).toThrow(/allowBroadNoStorePrefixes/i);
+    const cached = withCaching(base, {
+      noStorePrefixes: ["k"],
+    });
+
+    expect(warn).toHaveBeenCalled();
+    expect(warn.mock.calls[0]?.[0]).toMatch(/allowBroadNoStorePrefixes/i);
+
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
   it("allows broad noStorePrefixes when explicitly opted-in", async () => {
     const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const key = vi.fn(() => "k");
     const base = {
@@ -318,6 +323,8 @@ describe("withCaching()", () => {
       noStorePrefixes: ["kit"],
       allowBroadNoStorePrefixes: true,
     });
+
+    expect(warn).not.toHaveBeenCalled();
 
     await cached.request("kit.utcToEt", []);
     await cached.request("kit.utcToEt", []);
