@@ -207,6 +207,11 @@ describe("createWorkerTransport()", () => {
       const w = new FakeWorker();
       const transport = createWorkerTransport({ worker: () => w });
 
+      // Ensure the worker is constructed before disposing (the transport is lazy).
+      const p = transport.request("op", []);
+      // Attach handler before dispose to avoid unhandled rejections.
+      const expectation = expect(p).rejects.toThrow(/disposed/i);
+
       transport.dispose();
 
       // Owned worker (factory): signalDispose defaults to true.
@@ -214,6 +219,7 @@ describe("createWorkerTransport()", () => {
       expect(w.terminated).toBe(false);
 
       await vi.runAllTimersAsync();
+      await expectation;
       expect(w.terminated).toBe(true);
     } finally {
       // @ts-expect-error - restore
