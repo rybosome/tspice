@@ -1,6 +1,8 @@
+import type { KernelEntry } from "../runners/types.js";
+
 export type ScenarioSetupAst = {
-  /** Kernel paths (resolved to absolute paths by the parser). */
-  kernels?: string[];
+  /** Kernel entries (resolved to absolute paths by the parser). */
+  kernels?: KernelEntry[];
 };
 
 export type ScenarioCaseAst = {

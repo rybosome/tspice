@@ -104,6 +104,7 @@ export type InvokeRunnerOptions = {
   maxStdoutChars?: number;
   maxStderrChars?: number;
   args?: string[];
+  cwd?: string;
 };
 
 /** @internal (exported for bounded-time tests) */
@@ -127,6 +128,7 @@ export async function invokeRunner(
 
     const child = spawn(binaryPath, args, {
       stdio: ["pipe", "pipe", "pipe"],
+      cwd: opts.cwd,
     });
 
     let stdout = "";
@@ -357,7 +359,19 @@ export async function invokeRunner(
     });
 
     try {
-      child.stdin.end(`${JSON.stringify(input)}\n`);
+      const payload = `${JSON.stringify(input)}\n`;
+      const bytes = Buffer.byteLength(payload, "utf8");
+      const maxBytes = 1024 * 1024;
+
+      if (bytes > maxBytes) {
+        throw new Error(
+          `cspice-runner request payload is too large (${bytes} bytes > ${maxBytes} bytes). ` +
+            `Reduce the size of the verification input (e.g. fewer/shorter kernels or arguments) ` +
+            `or split the work into smaller cases.`,
+        );
+      }
+
+      child.stdin.end(payload);
     } catch (err) {
       finish(
         "abort",
