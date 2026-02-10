@@ -33,7 +33,11 @@ describe("rpcValueCodec", () => {
     };
 
     const encoded = encodeRpcValue(value);
-    const decoded = decodeRpcValue(encoded) as any;
+    const decoded = decodeRpcValue(encoded) as {
+      a: number;
+      m: Mat3;
+      nested: [string, Mat3];
+    };
 
     expect(decoded.a).toBe(1);
     expect(decoded.m).toBeInstanceOf(Mat3);
