@@ -103,6 +103,24 @@ describe("@rybosome/tspice-backend-node file-io", () => {
     }
   });
 
+  itNative("dlacls can close a handle opened by dasopr on a DLA file", () => {
+    const backend = createNodeBackend();
+
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
+
+    try {
+      const dlaPath = path.join(tmpDir, "dlacls-dasopr-close.dla");
+
+      const dlaHandle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      backend.dlacls(dlaHandle);
+
+      const dasHandle = backend.dasopr(dlaPath);
+      backend.dlacls(dasHandle);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
   itNative("dlabfs accepts a DAS handle opened by dasopr on a DLA file", () => {
     const backend = createNodeBackend();
 

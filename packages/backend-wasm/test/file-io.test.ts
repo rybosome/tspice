@@ -48,6 +48,19 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
     expect(backend.exists(path)).toBe(true);
   });
 
+  it("dlacls can close a handle opened by dasopr on a DLA file", async () => {
+    const backend = await createWasmBackend();
+
+    const path = "file-io/dlacls-dasopr-close.dla";
+    const dlaHandle = backend.dlaopn(path, "DLA", "TSPICE", 0);
+    backend.dlacls(dlaHandle);
+
+    const dasHandle = backend.dasopr(path);
+    backend.dlacls(dasHandle);
+
+    expect(backend.exists(path)).toBe(true);
+  });
+
   it("dlabfs accepts a DAS handle opened by dasopr on a DLA file", async () => {
     const backend = await createWasmBackend();
 

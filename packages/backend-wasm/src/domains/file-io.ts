@@ -207,11 +207,8 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
 
   function closeDasBacked(handle: SpiceHandle): void {
     close(handle, ["DAS", "DLA"], (entry) => {
-      // DLA is DAS-backed, but DLA write handles should be closed via dlacls.
-      if (entry.kind === "DLA") {
-        callVoidHandle(module, module._tspice_dlacls, entry.nativeHandle);
-        return;
-      }
+      // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
+      // is just an alias.
       callVoidHandle(module, module._tspice_dascls, entry.nativeHandle);
     });
   }

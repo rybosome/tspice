@@ -73,8 +73,10 @@ export interface FileIoApi {
   /**
    * Close a DAS-backed file handle.
    *
-   * DLA is DAS-backed, so `dascls` can close handles returned from either
-   * `dasopr()` (read) or `dlaopn()` (write).
+   * In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c` is an
+   * alias. We mirror that behavior: `dascls` and `dlacls` are interchangeable
+   * and accept handles returned from either `dasopr()` (read) or `dlaopn()`
+   * (write).
    */
   dascls(handle: SpiceHandle): void;
 
@@ -100,10 +102,10 @@ export interface FileIoApi {
   dlafns(handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor;
 
   /**
-   * Convenience close for DAS-backed DLA handles.
+   * Close a DAS-backed DLA handle.
    *
-   * DLA is DAS-backed, so `dlacls` can accept handles returned from either
-   * `dlaopn()` or `dasopr()` (on a DLA file).
+   * Provided for parity with CSPICE `dlacls_c`, but implemented as an alias of
+   * `dascls` (same handle compatibility).
    */
   dlacls(handle: SpiceHandle): void;
 }

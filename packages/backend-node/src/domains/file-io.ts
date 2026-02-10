@@ -126,11 +126,8 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
 
   function closeDasBacked(handle: SpiceHandle): void {
     close(handle, ["DAS", "DLA"], (entry) => {
-      // DLA is DAS-backed, but DLA write handles should be closed via dlacls.
-      if (entry.kind === "DLA") {
-        native.dlacls(entry.nativeHandle);
-        return;
-      }
+      // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
+      // is just an alias.
       native.dascls(entry.nativeHandle);
     });
   }
