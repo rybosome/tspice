@@ -431,15 +431,27 @@ static bool jsmn_parse_double(const char *json, const jsmntok_t *tok,
   return true;
 }
 
-static bool jsmn_parse_int(const char *json, const jsmntok_t *tok,
-                           SpiceInt *out) {
+typedef enum {
+  PARSE_INT_OK = 0,
+  PARSE_INT_INVALID,
+  PARSE_INT_UNSUPPORTED,
+} parse_int_result;
+
+static parse_int_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
+                                       SpiceInt *out) {
+  // We only expect the common NAIF SpiceInt widths (32/64-bit). Treat anything
+  // else as an unsupported ABI so we can surface a precise, actionable error.
+  if (!(sizeof(SpiceInt) == 4 || sizeof(SpiceInt) == 8)) {
+    return PARSE_INT_UNSUPPORTED;
+  }
+
   if (tok->type != JSMN_PRIMITIVE) {
-    return false;
+    return PARSE_INT_INVALID;
   }
 
   const int n = tok->end - tok->start;
   if (n <= 0 || n >= 128) {
-    return false;
+    return PARSE_INT_INVALID;
   }
 
   char buf[128];
@@ -450,20 +462,20 @@ static bool jsmn_parse_int(const char *json, const jsmntok_t *tok,
   char *endptr = NULL;
   const long long v = strtoll(buf, &endptr, 10);
   if (errno != 0) {
-    return false;
+    return PARSE_INT_INVALID;
   }
   if (endptr == buf || *endptr != '\0') {
-    return false;
+    return PARSE_INT_INVALID;
   }
 
   // Defensive: ensure the parsed value round-trips into SpiceInt.
   SpiceInt tmp = (SpiceInt)v;
   if ((long long)tmp != v) {
-    return false;
+    return PARSE_INT_INVALID;
   }
 
   *out = tmp;
-  return true;
+  return PARSE_INT_OK;
 }
 
 // --- JSON output helpers ----------------------------------------------------
@@ -541,6 +553,18 @@ static void write_error_json_ex(const char *code, const char *message,
 static void write_error_json(const char *message, const char *spiceShort,
                              const char *spiceLong, const char *spiceTrace) {
   write_error_json_ex(NULL, message, NULL, spiceShort, spiceLong, spiceTrace);
+}
+
+static void write_unsupported_spiceint_width_error(void) {
+  char detail[128];
+  snprintf(detail, sizeof(detail), "sizeof(SpiceInt)=%zu (expected 4 or 8)", sizeof(SpiceInt));
+  write_error_json_ex(
+      "unsupported_spiceint_width",
+      "Unsupported platform ABI: unsupported SpiceInt width",
+      detail,
+      NULL,
+      NULL,
+      NULL);
 }
 
 #define CSPICE_RUNNER_MAX_STDIN_BYTES (1024 * 1024)
@@ -962,8 +986,17 @@ int main(void) {
       goto done;
     }
 
-    if (precTok < 0 || precTok >= tokenCount || !jsmn_parse_int(input, &tokens[precTok], &prec)) {
-      write_error_json("time.et2utc expects args[2] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+    parse_int_result precParse = PARSE_INT_INVALID;
+    if (precTok >= 0 && precTok < tokenCount) {
+      precParse = jsmn_parse_int(input, &tokens[precTok], &prec);
+    }
+
+    if (precTok < 0 || precTok >= tokenCount || precParse != PARSE_INT_OK) {
+      if (precParse == PARSE_INT_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json("time.et2utc expects args[2] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+      }
       goto done;
     }
 
@@ -1046,8 +1079,17 @@ int main(void) {
 
     int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
     SpiceInt code = 0;
-    if (codeTok < 0 || codeTok >= tokenCount || !jsmn_parse_int(input, &tokens[codeTok], &code)) {
-      write_error_json("ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+    parse_int_result codeParse = PARSE_INT_INVALID;
+    if (codeTok >= 0 && codeTok < tokenCount) {
+      codeParse = jsmn_parse_int(input, &tokens[codeTok], &code);
+    }
+
+    if (codeTok < 0 || codeTok >= tokenCount || codeParse != PARSE_INT_OK) {
+      if (codeParse == PARSE_INT_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json("ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+      }
       goto done;
     }
 
@@ -1128,8 +1170,17 @@ int main(void) {
 
     int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
     SpiceInt frcode = 0;
-    if (codeTok < 0 || codeTok >= tokenCount || !jsmn_parse_int(input, &tokens[codeTok], &frcode)) {
-      write_error_json("frames.frmnam expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+    parse_int_result frcodeParse = PARSE_INT_INVALID;
+    if (codeTok >= 0 && codeTok < tokenCount) {
+      frcodeParse = jsmn_parse_int(input, &tokens[codeTok], &frcode);
+    }
+
+    if (codeTok < 0 || codeTok >= tokenCount || frcodeParse != PARSE_INT_OK) {
+      if (frcodeParse == PARSE_INT_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json("frames.frmnam expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+      }
       goto done;
     }
 

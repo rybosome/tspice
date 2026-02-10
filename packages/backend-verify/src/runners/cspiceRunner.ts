@@ -50,7 +50,15 @@ export function readCspiceRunnerBuildState(): CspiceRunnerBuildState | null {
 }
 
 export function isCspiceRunnerAvailable(): boolean {
-  return fs.existsSync(getCspiceRunnerBinaryPath());
+  const binaryPath = getCspiceRunnerBinaryPath();
+  if (!fs.existsSync(binaryPath)) return false;
+
+  // Prefer the pretest state file when present so we don't accidentally run with
+  // a stale/broken binary.
+  const state = readCspiceRunnerBuildState();
+  if (state && state.available === false) return false;
+
+  return true;
 }
 
 function safeErrorReport(error: unknown): RunnerErrorReport {

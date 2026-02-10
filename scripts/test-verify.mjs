@@ -28,17 +28,23 @@ if (required === "false") {
     "cspice-runner.state.json",
   );
 
-  if (!fs.existsSync(runnerPath)) {
-    let hint = "";
-    try {
-      if (fs.existsSync(statePath)) {
-        const state = JSON.parse(fs.readFileSync(statePath, "utf8"));
-        hint = typeof state?.reason === "string" ? state.reason : typeof state?.error === "string" ? state.error : "";
-      }
-    } catch {
-      // ignore
-    }
+  let hint = "";
+  let stateAvailable;
 
+  try {
+    if (fs.existsSync(statePath)) {
+      const state = JSON.parse(fs.readFileSync(statePath, "utf8"));
+      hint = typeof state?.reason === "string" ? state.reason : typeof state?.error === "string" ? state.error : "";
+      if (typeof state?.available === "boolean") stateAvailable = state.available;
+    }
+  } catch {
+    // ignore
+  }
+
+  const runnerOk =
+    stateAvailable === undefined ? fs.existsSync(runnerPath) : stateAvailable && fs.existsSync(runnerPath);
+
+  if (!runnerOk) {
     // eslint-disable-next-line no-console
     console.warn(
       `[test-verify] cspice-runner unavailable; backend-verify parity suite may be skipped (TSPICE_BACKEND_VERIFY_REQUIRED=false)${
