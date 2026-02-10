@@ -596,15 +596,17 @@ function formatUtcFromMs(ms: number, prec: number): string {
   return `${head}.${padded}Z`;
 }
 
+type KernelKindNoAll = Exclude<KernelKind, "ALL">;
+
 type KernelRecord = {
   file: string;
   source: string;
   filtyp: string;
   handle: number;
-  kind: KernelKind;
+  kind: KernelKindNoAll;
 };
 
-function guessKernelKind(path: string, unknownExtension: "unknown" | "throw" | "assume-text"): KernelKind {
+function guessKernelKind(path: string, unknownExtension: "unknown" | "throw" | "assume-text"): KernelKindNoAll {
   const lower = path.toLowerCase();
   if (lower.endsWith(".bsp")) return "SPK";
   if (lower.endsWith(".bc")) return "CK";
@@ -632,7 +634,7 @@ function assertNever(x: never, msg: string): never {
   throw new Error(msg);
 }
 
-function kernelFiltyp(kind: KernelKind): string {
+function kernelFiltyp(kind: KernelKindNoAll): string {
   // Keep this close to NAIF-style strings, but it doesn't need to be exact.
   switch (kind) {
     case "SPK":
@@ -649,8 +651,6 @@ function kernelFiltyp(kind: KernelKind): string {
     case "IK":
     case "SCLK":
       return "TEXT";
-    case "ALL":
-      return "ALL";
     case "UNKNOWN":
       return "UNKNOWN";
   }

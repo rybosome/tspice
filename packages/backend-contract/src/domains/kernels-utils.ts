@@ -113,12 +113,26 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
     throw new RangeError("Kernel kind must not be empty");
   }
 
-  const normalized = rawTokens.map(normalizeKindTokenOrThrow);
+  // Normalize + deduplicate while preserving first-seen order.
+  const seen = new Set<KernelKind>();
+  let normalized: KernelKind[] = [];
+  for (const raw of rawTokens) {
+    const k = normalizeKindTokenOrThrow(raw);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    normalized.push(k);
+  }
 
   // Canonicalize ALL as an override: if ALL is present alongside other tokens,
   // downstream callers should treat it as requesting all kinds.
   if (normalized.length > 1 && normalized.includes("ALL")) {
     return ["ALL"];
+  }
+
+  // Canonicalize away TEXT subtypes when TEXT is present. Subtype tokens only
+  // matter when TEXT is absent (and we must infer subtypes from `kernel.file`).
+  if (normalized.includes("TEXT")) {
+    normalized = normalized.filter((k) => !TEXT_SUBTYPE_SET.has(k));
   }
 
   return normalized;
@@ -204,7 +218,8 @@ export function matchesKernelKind(
       return true;
     }
 
-    const subtype = guessTextKernelSubtype(kernel.file);
+    const file = kernel.file.trim();
+    const subtype = guessTextKernelSubtype(file);
     return requested.has(subtype);
   }
 

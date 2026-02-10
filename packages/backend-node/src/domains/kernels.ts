@@ -30,7 +30,7 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
 
     return {
       file: stager.virtualizePathFromSpice(result.file),
-      filtyp: result.filtyp.trim(),
+      filtyp: result.filtyp,
       source: stager.virtualizePathFromSpice(result.source),
       handle: result.handle,
     };

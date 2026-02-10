@@ -17,6 +17,7 @@ using tspice_napi::MakeNumberArray;
 using tspice_napi::ReadStringArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+using tspice_napi::FixedWidthToJsString;
 
 static std::string TrimAsciiWhitespace(const std::string& s) {
   size_t start = 0;
@@ -212,9 +213,9 @@ static Napi::Object Kdata(const Napi::CallbackInfo& info) {
 
   Napi::Object result = Napi::Object::New(env);
   result.Set("found", Napi::Boolean::New(env, true));
-  result.Set("file", Napi::String::New(env, file));
-  result.Set("filtyp", Napi::String::New(env, filtyp));
-  result.Set("source", Napi::String::New(env, source));
+  result.Set("file", FixedWidthToJsString(env, file, sizeof(file)));
+  result.Set("filtyp", FixedWidthToJsString(env, filtyp, sizeof(filtyp)));
+  result.Set("source", FixedWidthToJsString(env, source, sizeof(source)));
   result.Set("handle", Napi::Number::New(env, static_cast<double>(handle)));
   return result;
 }
@@ -259,8 +260,8 @@ static Napi::Object Kinfo(const Napi::CallbackInfo& info) {
 
   Napi::Object result = Napi::Object::New(env);
   result.Set("found", Napi::Boolean::New(env, true));
-  result.Set("filtyp", Napi::String::New(env, filtyp));
-  result.Set("source", Napi::String::New(env, source));
+  result.Set("filtyp", FixedWidthToJsString(env, filtyp, sizeof(filtyp)));
+  result.Set("source", FixedWidthToJsString(env, source, sizeof(source)));
   result.Set("handle", Napi::Number::New(env, static_cast<double>(handle)));
   return result;
 }

@@ -147,8 +147,8 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
       }
 
       map.set(key, {
-        filtyp: kd.filtyp,
-        source: kd.source,
+        filtyp: kd.filtyp.trim(),
+        source: kd.source.trim(),
         handle: kd.handle,
       });
     }
