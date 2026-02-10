@@ -593,7 +593,7 @@ function guessKernelKind(path: string): KernelKind {
   if (lower.endsWith(".ti") || lower.endsWith(".ik")) return "IK";
   if (lower.endsWith(".tsc") || lower.endsWith(".sclk")) return "SCLK";
   if (lower.endsWith(".tm") || lower.endsWith(".meta")) return "META";
-  return "ALL";
+  return "UNKNOWN";
 }
 
 function kernelFiltyp(kind: KernelKind): string {
@@ -610,8 +610,10 @@ function kernelFiltyp(kind: KernelKind): string {
     case "META":
       return kind;
     case "ALL":
-    default:
       return "ALL";
+    case "UNKNOWN":
+    default:
+      return "UNKNOWN";
   }
 }
 

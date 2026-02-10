@@ -8,6 +8,7 @@ export type KernelSource =
 /** Kernel types used by summary/introspection APIs. */
 export type KernelKind =
   | "ALL"
+  | "UNKNOWN"
   | "SPK"
   | "CK"
   | "PCK"

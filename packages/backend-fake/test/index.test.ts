@@ -42,24 +42,38 @@ describe("@rybosome/tspice-backend-fake", () => {
 
     b.furnsh("/kernels/a.bsp");
     b.furnsh({ path: "/kernels/b.tls", bytes: new Uint8Array([1, 2, 3]) });
+    b.furnsh("/kernels/c.wat");
 
-    expect(b.ktotal()).toBe(2);
+    expect(b.ktotal()).toBe(3);
+    expect(b.ktotal("ALL")).toBe(3);
     expect(b.ktotal("SPK")).toBe(1);
     expect(b.ktotal("LSK")).toBe(1);
 
+    // Unknown extensions should not behave like the ALL wildcard.
+    expect(b.ktotal("UNKNOWN")).toBe(1);
+
     const k0 = b.kdata(0);
     const k1 = b.kdata(1);
+    const k2 = b.kdata(2);
 
     expect(k0).toMatchObject({ found: true, file: "/kernels/a.bsp", filtyp: "SPK", handle: 1 });
     expect(k1).toMatchObject({ found: true, file: "/kernels/b.tls", filtyp: "LSK", handle: 2 });
+    expect(k2).toMatchObject({ found: true, file: "/kernels/c.wat", filtyp: "UNKNOWN", handle: 3 });
 
-    expect(b.kdata(2)).toEqual({ found: false });
+    const u0 = b.kdata(0, "UNKNOWN");
+    expect(u0).toMatchObject({ found: true, file: "/kernels/c.wat", filtyp: "UNKNOWN", handle: 3 });
+    expect(b.kdata(1, "UNKNOWN")).toEqual({ found: false });
+
+    expect(b.kdata(3)).toEqual({ found: false });
 
     b.unload("/kernels/a.bsp");
-    expect(b.ktotal()).toBe(1);
+    expect(b.ktotal()).toBe(2);
+    expect(b.ktotal("SPK")).toBe(0);
+    expect(b.ktotal("UNKNOWN")).toBe(1);
 
     b.kclear();
     expect(b.ktotal()).toBe(0);
+    expect(b.ktotal("UNKNOWN")).toBe(0);
   });
 
   it("returns identity pxform for same-frame transforms", () => {
