@@ -386,7 +386,7 @@ describe("withCaching()", () => {
     if (isCachingTransport(cached)) cached.dispose();
   });
 
-  it("warns for overly broad noStorePrefixes by default (deduped)", async () => {
+  it("warns for overly broad noStorePrefixes by default (deduped per wrapper)", async () => {
     const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const onWarning1 = vi.fn();
@@ -407,12 +407,13 @@ describe("withCaching()", () => {
 
     const onWarning2 = vi.fn();
     const cached2 = withCaching(base, {
-      // Same normalized broad-prefix set => warn-once.
+      // Same normalized broad-prefix set => each wrapper still warns once.
       noStorePrefixes: [" k ", "k"],
       onWarning: onWarning2,
     });
 
-    expect(onWarning2).not.toHaveBeenCalled();
+    expect(onWarning2).toHaveBeenCalledTimes(1);
+    expect(onWarning2.mock.calls[0]?.[0]).toMatch(/allowBroadNoStorePrefixes/i);
 
     if (isCachingTransport(cached2)) cached2.dispose();
   });

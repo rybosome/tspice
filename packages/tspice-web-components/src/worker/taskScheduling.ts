@@ -9,6 +9,35 @@ export type QueueMacrotaskOptions = {
   allowSyncFallback?: boolean;
 };
 
+/**
+* Probe whether a true macrotask scheduler is available in the current runtime
+* (without actually scheduling a task).
+*/
+export function canQueueMacrotask(): boolean {
+  // Prefer MessageChannel when available.
+  try {
+    if (typeof MessageChannel !== "undefined") {
+      const { port1, port2 } = new MessageChannel();
+      // Be defensive: some polyfills/test environments may not implement `close()`.
+      try {
+        port1.close?.();
+      } catch {
+        // ignore
+      }
+      try {
+        port2.close?.();
+      } catch {
+        // ignore
+      }
+      return true;
+    }
+  } catch {
+    // Ignore and fall back to setTimeout.
+  }
+
+  return typeof setTimeout === "function";
+}
+
 export function queueMacrotask(fn: () => void, opts?: QueueMacrotaskOptions): boolean {
   const allowSyncFallback = opts?.allowSyncFallback ?? true;
 

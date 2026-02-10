@@ -8,7 +8,7 @@ import {
   tspiceRpcResponseType,
 } from "./rpcProtocol.js";
 import { decodeRpcValue, encodeRpcValue } from "./rpcValueCodec.js";
-import { queueMacrotask } from "./taskScheduling.js";
+import { canQueueMacrotask, queueMacrotask } from "./taskScheduling.js";
 
 export type WorkerLike = {
   postMessage(message: unknown): void;
@@ -150,6 +150,18 @@ export function createWorkerTransport(opts: {
   const formatRequestContext = (op: string, id?: number): string =>
     id === undefined ? `(op=${op})` : `(op=${op}, id=${id})`;
 
+  const ensureCanScheduleMacrotask = (): void => {
+    if (canScheduleMacrotask === undefined) {
+      // Fail fast before posting any messages if the runtime lacks a macrotask
+      // scheduler.
+      canScheduleMacrotask = canQueueMacrotask();
+    }
+
+    if (canScheduleMacrotask === false) {
+      throw createNoMacrotaskSchedulerError();
+    }
+  };
+
   const rejectAllPending = (getReason: (pending: Pending, id: number) => unknown): void => {
     for (const [id, pending] of pendingById) {
       pendingById.delete(id);
@@ -165,6 +177,36 @@ export function createWorkerTransport(opts: {
       // Explicitly drop response payload references to help GC.
       settlement.value = undefined;
       settlement.error = undefined;
+    }
+  };
+
+  let didHardFailNoMacrotaskScheduler = false;
+
+  const hardFailNoMacrotaskScheduler = (err: Error): void => {
+    // Permanently fail closed.
+    canScheduleMacrotask = false;
+    settlementQueued = false;
+
+    // Reject all pending once.
+    if (!didHardFailNoMacrotaskScheduler) {
+      didHardFailNoMacrotaskScheduler = true;
+      rejectAllPending(() => err);
+    }
+
+    const w = worker;
+    worker = undefined;
+    if (!w) return;
+
+    w.removeEventListener("message", onMessage);
+    w.removeEventListener("error", onError);
+    w.removeEventListener("messageerror", onMessageError);
+
+    if (terminateOnDispose) {
+      try {
+        w.terminate();
+      } catch {
+        // ignore
+      }
     }
   };
 
@@ -210,13 +252,9 @@ export function createWorkerTransport(opts: {
       return;
     }
 
-    // No macrotask scheduler available. Fail closed rather than settling
-    // synchronously and violating ordering guarantees.
-    canScheduleMacrotask = false;
-    settlementQueued = false;
-
-    const err = createNoMacrotaskSchedulerError();
-    rejectAllPending(() => err);
+    // No macrotask scheduler available. Hard-fail and tear down rather than
+    // settling synchronously and violating ordering guarantees.
+    hardFailNoMacrotaskScheduler(createNoMacrotaskSchedulerError());
   };
 
   const onMessage = (ev: unknown): void => {
@@ -304,6 +342,8 @@ export function createWorkerTransport(opts: {
   };
 
   const ensureWorker = (): WorkerLike => {
+    ensureCanScheduleMacrotask();
+
     if (!worker) {
       // Lazily construct/attach so transports can be created in environments
       // that don't immediately support `Worker`.
@@ -357,13 +397,26 @@ export function createWorkerTransport(opts: {
       // Defer by 1 macrotask so callers can synchronously observe a disposed
       // transport before the worker is torn down, and to give the optional
       // `tspice:dispose` postMessage (if enabled) a chance to be processed.
-      queueMacrotask(() => {
+      const ok = queueMacrotask(
+        () => {
+          try {
+            w.terminate();
+          } catch {
+            // ignore
+          }
+        },
+        { allowSyncFallback: false },
+      );
+
+      // No scheduler: explicitly fall back to a synchronous terminate so we
+      // don't leave an owned worker running.
+      if (!ok) {
         try {
           w.terminate();
         } catch {
           // ignore
         }
-      });
+      }
     }
   };
 

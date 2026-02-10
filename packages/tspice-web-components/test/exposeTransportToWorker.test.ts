@@ -110,6 +110,61 @@ describe("exposeTransportToWorker()", () => {
     expect(self.closed).toBe(true);
   });
 
+  it("applies maxConcurrentRequests backpressure (FIFO)", async () => {
+    const { exposeTransportToWorker } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const self = new FakeWorkerSelf();
+
+    let resolve1: ((value: number) => void) | undefined;
+    let resolve2: ((value: number) => void) | undefined;
+
+    const transport = {
+      request: vi
+        .fn()
+        .mockImplementationOnce(
+          async () =>
+            await new Promise<number>((resolve) => {
+              resolve1 = resolve;
+            }),
+        )
+        .mockImplementationOnce(
+          async () =>
+            await new Promise<number>((resolve) => {
+              resolve2 = resolve;
+            }),
+        ),
+    };
+
+    exposeTransportToWorker({
+      transport,
+      self,
+      closeOnDispose: false,
+      maxConcurrentRequests: 1,
+    });
+
+    self.emitMessage({ type: tspiceRpcRequestType, id: 1, op: "op1", args: [] });
+    self.emitMessage({ type: tspiceRpcRequestType, id: 2, op: "op2", args: [] });
+
+    // Second request should be queued until the first settles.
+    expect(transport.request).toHaveBeenCalledTimes(1);
+
+    resolve1?.(111);
+    await flush();
+
+    // Once the first settles, the queued request should begin.
+    expect(transport.request).toHaveBeenCalledTimes(2);
+
+    resolve2?.(222);
+    await flush();
+
+    expect(self.posted).toMatchObject([
+      { type: tspiceRpcResponseType, id: 1, ok: true, value: 111 },
+      { type: tspiceRpcResponseType, id: 2, ok: true, value: 222 },
+    ]);
+  });
+
   it("does not post responses after dispose", async () => {
     const { exposeTransportToWorker } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components"

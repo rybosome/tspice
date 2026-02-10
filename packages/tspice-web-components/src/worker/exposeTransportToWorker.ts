@@ -28,10 +28,88 @@ export function exposeTransportToWorker(opts: {
   onDispose?: () => void | Promise<void>;
   /** Whether to call `self.close()` after disposing. Defaults to `true`. */
   closeOnDispose?: boolean;
+
+  /**
+   * Maximum number of in-flight `transport.request()` calls allowed at once.
+   * Additional requests are queued (FIFO) until prior requests settle.
+   *
+   * Defaults to `Infinity`.
+   */
+  maxConcurrentRequests?: number;
 }): { dispose: () => void } {
   const self = opts.self ?? (globalThis as unknown as WorkerGlobalScopeLike);
 
   let disposed = false;
+
+  const maxConcurrentRequests = opts.maxConcurrentRequests ?? Infinity;
+  let inFlight = 0;
+
+  type QueuedRequest = {
+    id: number;
+    op: string;
+    args: unknown[];
+  };
+
+  // FIFO queue with a moving head index to avoid O(n) `shift()`.
+  const queued: QueuedRequest[] = [];
+  let queuedHead = 0;
+
+  const clearQueue = (): void => {
+    queued.length = 0;
+    queuedHead = 0;
+  };
+
+  const maybeCompactQueue = (): void => {
+    // Periodically compact to avoid unbounded memory growth from a large queue.
+    if (queuedHead === 0) return;
+    if (queuedHead < 100) return;
+    queued.splice(0, queuedHead);
+    queuedHead = 0;
+  };
+
+  const drain = (): void => {
+    if (disposed) return;
+
+    while (inFlight < maxConcurrentRequests && queuedHead < queued.length) {
+      const req = queued[queuedHead]!;
+      queuedHead += 1;
+      runRequest(req);
+    }
+
+    maybeCompactQueue();
+  };
+
+  const runRequest = (req: QueuedRequest): void => {
+    inFlight += 1;
+
+    void (async () => {
+      try {
+        const value = await opts.transport.request(req.op, req.args.map(decodeRpcValue));
+        if (disposed) return;
+
+        const res: RpcResponse = {
+          type: tspiceRpcResponseType,
+          id: req.id,
+          ok: true,
+          value: encodeRpcValue(value),
+        };
+        self.postMessage(res);
+      } catch (err) {
+        if (disposed) return;
+
+        const res: RpcResponse = {
+          type: tspiceRpcResponseType,
+          id: req.id,
+          ok: false,
+          error: serializeError(err),
+        };
+        self.postMessage(res);
+      } finally {
+        inFlight -= 1;
+        drain();
+      }
+    })();
+  };
 
   const onMessage = (ev: MessageEvent<unknown>): void => {
     const msg = ev.data as Partial<RpcMessageFromMain> | null | undefined;
@@ -41,6 +119,7 @@ export function exposeTransportToWorker(opts: {
       // Dispose is a one-way signal; ignore any further traffic.
       if (disposed) return;
       disposed = true;
+      clearQueue();
 
       void (async () => {
         try {
@@ -77,30 +156,12 @@ export function exposeTransportToWorker(opts: {
         return;
       }
 
-      void (async () => {
-        try {
-          const value = await opts.transport.request(op, args.map(decodeRpcValue));
-          if (disposed) return;
-
-          const res: RpcResponse = {
-            type: tspiceRpcResponseType,
-            id,
-            ok: true,
-            value: encodeRpcValue(value),
-          };
-          self.postMessage(res);
-        } catch (err) {
-          if (disposed) return;
-
-          const res: RpcResponse = {
-            type: tspiceRpcResponseType,
-            id,
-            ok: false,
-            error: serializeError(err),
-          };
-          self.postMessage(res);
-        }
-      })();
+      const queuedReq: QueuedRequest = { id, op, args };
+      if (inFlight < maxConcurrentRequests) {
+        runRequest(queuedReq);
+      } else {
+        queued.push(queuedReq);
+      }
 
       return;
     }
@@ -111,6 +172,7 @@ export function exposeTransportToWorker(opts: {
   const dispose = (): void => {
     if (disposed) return;
     disposed = true;
+    clearQueue();
 
     // Note: this does not cancel any in-flight `transport.request()` calls; it
     // just prevents any further responses from being posted.

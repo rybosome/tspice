@@ -317,4 +317,85 @@ describe("createWorkerTransport()", () => {
 
     transport.dispose();
   });
+
+  it("fails fast when no macrotask scheduler exists (before posting messages)", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const originalMessageChannel = globalThis.MessageChannel;
+    const originalSetTimeout = globalThis.setTimeout;
+    // @ts-expect-error - test override
+    globalThis.MessageChannel = undefined;
+    // @ts-expect-error - test override
+    globalThis.setTimeout = undefined;
+
+    try {
+      const w = new FakeWorker();
+      const workerFactory = vi.fn(() => w);
+      const transport = createWorkerTransport({ worker: workerFactory, terminateOnDispose: false });
+
+      await expect(transport.request("op", [])).rejects.toThrow(/cannot schedule macrotask/i);
+
+      // No worker should be constructed and no message posted.
+      expect(workerFactory).toHaveBeenCalledTimes(0);
+      expect(w.posted).toHaveLength(0);
+
+      transport.dispose();
+    } finally {
+      // @ts-expect-error - restore
+      globalThis.MessageChannel = originalMessageChannel;
+      // @ts-expect-error - restore
+      globalThis.setTimeout = originalSetTimeout;
+    }
+  });
+
+  it("hard-fails and tears down if settlement macrotask scheduling fails", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const originalMessageChannel = globalThis.MessageChannel;
+    const originalSetTimeout = globalThis.setTimeout;
+
+    // A MessageChannel that can be constructed (so probing passes) but cannot
+    // actually schedule (postMessage throws), and no setTimeout fallback.
+    class BrokenMessageChannel {
+      port1 = {
+        onmessage: null as null | ((ev: unknown) => void),
+        close: () => {},
+      };
+      port2 = {
+        close: () => {},
+        postMessage: () => {
+          throw new Error("boom");
+        },
+      };
+    }
+
+    // @ts-expect-error - test override
+    globalThis.MessageChannel = BrokenMessageChannel;
+    // @ts-expect-error - test override
+    globalThis.setTimeout = undefined;
+
+    try {
+      const w = new FakeWorker();
+      const transport = createWorkerTransport({ worker: () => w });
+
+      const p = transport.request("op", []);
+      const posted = w.posted[0] as { id: number };
+
+      const expectation = expect(p).rejects.toThrow(/cannot schedule macrotask/i);
+
+      w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
+
+      await expectation;
+      expect(w.terminated).toBe(true);
+    } finally {
+      // @ts-expect-error - restore
+      globalThis.MessageChannel = originalMessageChannel;
+      // @ts-expect-error - restore
+      globalThis.setTimeout = originalSetTimeout;
+    }
+  });
 });

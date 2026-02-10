@@ -23,24 +23,6 @@ const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> = Objec
   }, {}),
 );
 
-// Module-global warning de-dupe (bounded to avoid unbounded memory growth if callers
-// supply many unique `noStorePrefixes` combinations across transports).
-const MAX_WARNED_BROAD_NO_STORE_PREFIX_SETS = 100;
-const warnedBroadNoStorePrefixSets = new Set<string>();
-
-function shouldWarnBroadNoStorePrefixes(warnKey: string): boolean {
-  if (warnedBroadNoStorePrefixSets.has(warnKey)) return false;
-  warnedBroadNoStorePrefixSets.add(warnKey);
-
-  // Evict oldest entries to keep this bounded.
-  while (warnedBroadNoStorePrefixSets.size > MAX_WARNED_BROAD_NO_STORE_PREFIX_SETS) {
-    const oldest = warnedBroadNoStorePrefixSets.values().next().value as string | undefined;
-    if (oldest === undefined) break;
-    warnedBroadNoStorePrefixSets.delete(oldest);
-  }
-  return true;
-}
-
 const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): boolean => {
   if (!prefixes || prefixes.length === 0) return false;
   for (const prefix of prefixes) {
@@ -375,6 +357,14 @@ export function withCaching(
   // ~0 overhead.
   const now = opts?.now ?? Date.now;
   const onWarning = opts?.onWarning ?? defaultOnWarning;
+
+  // Warning de-dupe (per wrapper instance).
+  const warnedBroadNoStorePrefixSets = new Set<string>();
+  const shouldWarnBroadNoStorePrefixes = (warnKey: string): boolean => {
+    if (warnedBroadNoStorePrefixSets.has(warnKey)) return false;
+    warnedBroadNoStorePrefixSets.add(warnKey);
+    return true;
+  };
 
   const keyFn = opts?.key ?? defaultSpiceCacheKey;
   const policyByOp = opts?.policy;

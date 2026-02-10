@@ -76,7 +76,7 @@ function isAbsoluteUrl(url: string): boolean {
 
 
 function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
-  if (!baseUrl) return url;
+  if (baseUrl === undefined) return url;
 
   // If the kernel URL is already absolute, don't apply `baseUrl`.
   if (isAbsoluteUrl(url)) return url;
@@ -123,14 +123,14 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
   }
 
   // `baseUrl` is relative.
-  // If `url` is already an absolute *path*, leave it alone.
-  if (url.startsWith("/")) return url;
+  // Treat the base as a directory prefix.
+  if (!baseUrl.endsWith("/")) {
+    throw new Error(
+      `loadKernelPack(): baseUrl must be directory-style (end with \"/\"): ${baseUrl}`,
+    );
+  }
 
-  // Relative base URLs can be normalized safely; unlike `new URL(url, baseUrl)`,
-  // this path-join behavior is unambiguous.
-  if (baseUrl.length === 0) return url;
-  const normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  return `${normalizedBaseUrl}${url}`;
+  return `${baseUrl}${url}`;
 }
 
 async function fetchKernelBytes(fetchFn: FetchLike, url: string): Promise<Uint8Array> {

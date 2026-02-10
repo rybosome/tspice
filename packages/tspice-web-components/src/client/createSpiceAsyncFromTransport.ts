@@ -63,7 +63,13 @@ function createNamespacedProxy(
 
       if (!isSafeRpcKey(prop)) return undefined;
 
-      if (fnCache.has(prop)) return fnCache.get(prop);
+      if (fnCache.has(prop)) {
+        const cached = fnCache.get(prop);
+        // LRU: bump recency by reinserting.
+        fnCache.delete(prop);
+        fnCache.set(prop, cached);
+        return cached;
+      }
 
       const fn = (...args: unknown[]) => t.request(`${namespace}.${prop}`, args);
 
