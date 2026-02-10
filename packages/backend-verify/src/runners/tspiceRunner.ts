@@ -185,12 +185,11 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
       typeof anyErr.spiceLong === "string" ||
       typeof anyErr.spiceTrace === "string"
     ) {
-      report.spice = {
-        failed: true,
-        short: typeof anyErr.spiceShort === "string" ? anyErr.spiceShort : undefined,
-        long: typeof anyErr.spiceLong === "string" ? anyErr.spiceLong : undefined,
-        // `SpiceErrorState` doesn't currently carry a `trace` field.
-      };
+      const spice: SpiceErrorState = { failed: true };
+      if (typeof anyErr.spiceShort === "string") spice.short = anyErr.spiceShort;
+      if (typeof anyErr.spiceLong === "string") spice.long = anyErr.spiceLong;
+      // `SpiceErrorState` doesn't currently carry a `trace` field.
+      report.spice = spice;
     }
 
     // Fallback: parse `SPICE(FOO)` out of the message when present.
@@ -438,6 +437,29 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
 
         // Try to capture SPICE internal error messages for debugging.
         report.spice = captureSpiceErrorState(backend);
+
+        // Some backends can throw before `failed()/getmsg()` reflect the error
+        // state (or they may not surface it at all). Fall back to best-effort
+        // extraction from the thrown Error instance / message.
+        if (!report.spice.failed) {
+          const anyErr = error as unknown as {
+            spiceShort?: unknown;
+            spiceLong?: unknown;
+          };
+
+          const short =
+            typeof anyErr.spiceShort === "string"
+              ? anyErr.spiceShort
+              : /SPICE\(([A-Z0-9_]+)\)/.exec(report.message)?.[0];
+          const long = typeof anyErr.spiceLong === "string" ? anyErr.spiceLong : undefined;
+
+          if (short || long) {
+            const spice: SpiceErrorState = { failed: true };
+            if (short) spice.short = short;
+            if (long) spice.long = long;
+            report.spice = spice;
+          }
+        }
 
         // Ensure subsequent cases start clean.
         try {
