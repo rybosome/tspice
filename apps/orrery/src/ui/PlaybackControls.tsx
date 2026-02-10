@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { SpiceAsync, SpiceTime } from '@rybosome/tspice'
 import { timeStore, useTimeStore } from '../time/timeStore.js'
-import type { SpiceClient } from '../spice/SpiceClient.js'
 
 interface PlaybackControlsProps {
-  spiceClient: SpiceClient
+  spice: SpiceAsync
   /**
    * Provides a zoom-dependent default rate (sim seconds per wall-clock second)
    * to use when resuming from pause.
@@ -49,7 +49,7 @@ function formatRateShort(rate: number): string {
 
 const PAUSE_ICON = '⏸\uFE0E'
 
-export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }: PlaybackControlsProps) {
+export function PlaybackControls({ spice, getDefaultResumeRateSecPerSec }: PlaybackControlsProps) {
   const state = useTimeStore()
 
   const [utcString, setUtcString] = useState<string>('…')
@@ -57,8 +57,8 @@ export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }:
   useEffect(() => {
     let cancelled = false
 
-    void spiceClient
-      .etToUtc(state.etSec)
+    void spice
+      .kit.etToUtc(state.etSec as unknown as SpiceTime, 'ISOC', 0)
       .then((s) => {
         if (!cancelled) setUtcString(s)
       })
@@ -69,7 +69,7 @@ export function PlaybackControls({ spiceClient, getDefaultResumeRateSecPerSec }:
     return () => {
       cancelled = true
     }
-  }, [spiceClient, state.etSec])
+  }, [spice, state.etSec])
 
   const etString = useMemo(() => {
     return `${state.etSec.toFixed(1)}s`

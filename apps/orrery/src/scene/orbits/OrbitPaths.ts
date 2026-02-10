@@ -2,9 +2,10 @@ import * as THREE from 'three'
 import { Line2 } from 'three/examples/jsm/lines/Line2.js'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
+import type { SpiceAsync, SpiceTime } from '@rybosome/tspice'
 
 import { quantizeEt } from '../../time/quantizeEt.js'
-import { J2000_FRAME, type BodyRef, type EtSeconds, type SpiceClient, type Vec3Km } from '../../spice/SpiceClient.js'
+import { J2000_FRAME, type BodyRef, type EtSeconds, type Vec3Km } from '../../spice/types.js'
 import { rebasePositionKm } from '../precision.js'
 import { getApproxOrbitalPeriodSec, getOrbitAnchorQuantumSec } from './orbitalPeriods.js'
 
@@ -106,14 +107,14 @@ function computePointsPerOrbit(opts: {
 export class OrbitPaths {
   readonly object: THREE.Group
 
-  private readonly spiceClient: SpiceClient
+  private readonly spice: SpiceAsync
   private readonly kmToWorld: number
   private readonly orbits: OrbitPathState[]
   private readonly resolution = new THREE.Vector2(1, 1)
   private samplingToken = 0
 
-  constructor(opts: { spiceClient: SpiceClient; kmToWorld: number; bodies: readonly OrbitPathsBodySpec[] }) {
-    this.spiceClient = opts.spiceClient
+  constructor(opts: { spice: SpiceAsync; kmToWorld: number; bodies: readonly OrbitPathsBodySpec[] }) {
+    this.spice = opts.spice
     this.kmToWorld = opts.kmToWorld
     this.object = new THREE.Group()
     this.object.name = 'OrbitPaths'
@@ -358,13 +359,13 @@ export class OrbitPaths {
 
       const et = startEt + stepSec * i
       try {
-        const state = await this.spiceClient.getBodyState({
-          target: input.target,
-          observer: input.primary,
+        const state = await this.spice.kit.getState({
+          target: String(input.target),
+          observer: String(input.primary),
+          at: et as unknown as SpiceTime,
           frame: J2000_FRAME,
-          et,
         })
-        current.push(state.positionKm)
+        current.push(state.position)
       } catch {
         // Best-effort: treat individual failures (kernel coverage gaps, etc.)
         // as breaks in the polyline.

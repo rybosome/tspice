@@ -1,4 +1,4 @@
-import type { SpiceClient } from '../spice/SpiceClient.js'
+import type { Mat3ColMajor } from '@rybosome/tspice'
 
 declare global {
   interface Window {
@@ -7,7 +7,7 @@ declare global {
         from: string
         to: string
         et: number
-      }) => ReturnType<SpiceClient['getFrameTransform']>
+      }) => Promise<Mat3ColMajor>
 
       /**
        * Apply a deterministic camera preset intended for visual regression tests.

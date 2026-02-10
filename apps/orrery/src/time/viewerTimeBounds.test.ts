@@ -10,7 +10,7 @@ describe('viewerTimeBounds', () => {
       throw new Error(`unexpected utc: ${utc}`)
     }
 
-    const range = await computeViewerScrubRangeEt({ utcToEt })
+    const range = await computeViewerScrubRangeEt({ spice: { kit: { utcToEt } } })
     expect(range).not.toBeNull()
     expect(range?.minEtSec).toBe(0)
     expect(range?.maxEtSec).toBe(100)
@@ -21,7 +21,7 @@ describe('viewerTimeBounds', () => {
       throw new Error('boom')
     }
 
-    expect(await computeViewerScrubRangeEt({ utcToEt })).toBeNull()
+    expect(await computeViewerScrubRangeEt({ spice: { kit: { utcToEt } } })).toBeNull()
   })
 
   it('returns null if utcToEt produces an invalid range', async () => {
@@ -31,6 +31,6 @@ describe('viewerTimeBounds', () => {
       throw new Error(`unexpected utc: ${utc}`)
     }
 
-    expect(await computeViewerScrubRangeEt({ utcToEt })).toBeNull()
+    expect(await computeViewerScrubRangeEt({ spice: { kit: { utcToEt } } })).toBeNull()
   })
 })

@@ -1,17 +1,15 @@
 import * as THREE from 'three'
+import type { SpiceAsync, SpiceTime, StateVector } from '@rybosome/tspice'
 
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from '../../controls/sunFocus.js'
 import { createSpiceClient } from '../../spice/createSpiceClient.js'
 import {
   J2000_FRAME,
   type BodyRef,
-  type BodyState,
   type EtSeconds,
-  type FrameId,
   type Mat3,
-  type SpiceClient,
   type Vec3Km,
-} from '../../spice/SpiceClient.js'
+} from '../../spice/types.js'
 import { createBodyMesh } from '../BodyMesh.js'
 import { SUN_BLOOM_LAYER } from '../../renderLayers.js'
 import {
@@ -68,7 +66,7 @@ export type SceneUiState = {
 }
 
 export type SpiceSceneRuntime = {
-  spiceClient: SpiceClient
+  spice: SpiceAsync
   updateScene: (next: SceneUiState) => Promise<void>
   afterRender: () => void
   onDrawingBufferResize: (bufferSize: { width: number; height: number }) => void
@@ -90,8 +88,8 @@ export async function initSpiceSceneRuntime(args: {
   /** Populated with body meshes for picking (shared with interaction + labels). */
   pickables: THREE.Mesh[]
 
-  /** Called as soon as the (cached) SpiceClient is ready. */
-  onSpiceClientLoaded?: (client: SpiceClient) => void
+  /** Called as soon as the (cached) SpiceAsync client is ready. */
+  onSpiceClientLoaded?: (spice: SpiceAsync) => void
 
   kmToWorld: number
   sunOcclusionMarginRad: number
@@ -160,44 +158,35 @@ export async function initSpiceSceneRuntime(args: {
   scene.add(dir)
   sceneObjects.push(dir)
 
-  const {
-    client: loadedSpiceClient,
-    rawClient: rawSpiceClient,
-    dispose: disposeSpice,
-    utcToEt,
-    dispose: disposeSpice,
-  } = await createSpiceClient({
+  const { cachedSpice, uncachedSpice, dispose: disposeSpice } = await createSpiceClient({
     searchParams,
   })
 
   disposers.push(disposeSpice)
 
-  onSpiceClientLoaded?.(loadedSpiceClient)
+  onSpiceClientLoaded?.(cachedSpice)
 
   if (isDisposed()) {
     // Best-effort cleanup of any scene-owned objects created so far.
     for (const obj of sceneObjects) scene.remove(obj)
     for (const dispose of disposers) dispose()
-    void disposeSpice()
     clearTextureCache({ force: true })
     throw new Error('SceneCanvas disposed during SPICE init')
   }
 
-  // Best-effort resource cleanup (can't await in renderer disposal paths).
-  disposers.push(() => void disposeSpice())
 
   // IMPORTANT: set the viewer's scrub range only after kernels load so
-  // `utcToEt` (SPICE `str2et`) is correct.
+  // `spice.kit.utcToEt` (SPICE `str2et`) is correct.
   //
   // Also: do this *before* applying URL `?utc=`/`?et=` overrides, because
   // `timeStore.setEtSec` clamps to the current scrub range.
-  const scrubRange = await computeViewerScrubRangeEt({ utcToEt })
+  const scrubRange = await computeViewerScrubRangeEt({ spice: cachedSpice })
   if (scrubRange) timeStore.setScrubRange(scrubRange.minEtSec, scrubRange.maxEtSec)
 
   // Allow the URL to specify UTC for quick testing, but keep the slider
   // driven by numeric ET.
   if (initialUtc) {
-    const nextEt = await utcToEt(initialUtc)
+    const nextEt = await cachedSpice.kit.utcToEt(initialUtc)
     if (!isDisposed()) timeStore.setEtSec(nextEt)
   }
 
@@ -207,7 +196,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   if (!isDisposed()) {
-    const disposeE2e = installTspiceViewerE2eApi({ isE2e, spiceClient: loadedSpiceClient })
+    const disposeE2e = installTspiceViewerE2eApi({ isE2e, spice: cachedSpice })
     disposers.push(disposeE2e)
   }
 
@@ -273,7 +262,7 @@ export async function initSpiceSceneRuntime(args: {
       ready,
 
       // Populated on-demand by the async SPICE update pipeline.
-      lastState: undefined as BodyState | undefined,
+      lastState: undefined as StateVector | undefined,
       lastBodyFixedRotation: undefined as Mat3 | undefined,
     }
   })
@@ -297,7 +286,7 @@ export async function initSpiceSceneRuntime(args: {
 
   // Orbit paths (one full orbital period per body).
   const orbitPaths = new OrbitPaths({
-    spiceClient: rawSpiceClient,
+    spice: uncachedSpice,
     kmToWorld,
     bodies: sceneModel.bodies.map((b) => ({ body: b.body, color: b.style.appearance.surface.color })),
   })
@@ -377,21 +366,19 @@ export async function initSpiceSceneRuntime(args: {
     const token = ++spiceSampleToken
 
     const statePromises = bodies.map((b) =>
-      loadedSpiceClient.getBodyState({
-        target: b.body,
-        observer: sceneModel.observer,
+      cachedSpice.kit.getState({
+        target: String(b.body),
+        observer: String(sceneModel.observer),
+        at: etSec as unknown as SpiceTime,
         frame: sceneModel.frame,
-        et: etSec,
       }),
     )
 
     const rotationPromises = bodies.map((b) =>
       b.bodyFixedFrame
-        ? loadedSpiceClient.getFrameTransform({
-            from: b.bodyFixedFrame as FrameId,
-            to: sceneModel.frame,
-            et: etSec,
-          })
+        ? cachedSpice.kit
+            .frameTransform(b.bodyFixedFrame, sceneModel.frame, etSec as unknown as SpiceTime)
+            .then((m) => m.toColMajor())
         : Promise.resolve(undefined),
     )
 
@@ -404,7 +391,7 @@ export async function initSpiceSceneRuntime(args: {
 
     for (let i = 0; i < bodies.length; i++) {
       bodies[i]!.lastState = states[i]
-      bodies[i]!.lastBodyFixedRotation = rotations[i] as Mat3 | undefined
+      bodies[i]!.lastBodyFixedRotation = rotations[i]
     }
   }
 
@@ -499,23 +486,23 @@ export async function initSpiceSceneRuntime(args: {
         focusPosKm = [0, 0, 0] as Vec3Km
       } else {
         const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
-        const cached = focusBodyMeta?.lastState?.positionKm
+        const cached = focusBodyMeta?.lastState?.position
         if (cached) focusPosKm = cached
       }
 
       // If the focus body isn't in the rendered set, fetch just its state.
       if (!focusPosKm) {
-        const focusState = await loadedSpiceClient.getBodyState({
-          target: next.focusBody,
-          observer: sceneModel.observer,
+        const focusState = await cachedSpice.kit.getState({
+          target: String(next.focusBody),
+          observer: String(sceneModel.observer),
+          at: next.etSec as unknown as SpiceTime,
           frame: sceneModel.frame,
-          et: next.etSec,
         })
 
         if (isDisposed()) return
         if (token !== sceneUpdateToken) return
 
-        focusPosKm = focusState.positionKm
+        focusPosKm = focusState.position
       }
 
       if (shouldAutoZoomThisTick) {
@@ -630,10 +617,10 @@ export async function initSpiceSceneRuntime(args: {
         const state = b.lastState
         if (!state) continue
 
-        bodyPosKmByKey.set(String(b.body), state.positionKm)
+        bodyPosKmByKey.set(String(b.body), state.position)
         bodyVisibleByKey.set(String(b.body), b.mesh.visible)
 
-        const rebasedKm = rebasePositionKm(state.positionKm, focusPosKm)
+        const rebasedKm = rebasePositionKm(state.position, focusPosKm)
         b.mesh.position.set(rebasedKm[0] * kmToWorld, rebasedKm[1] * kmToWorld, rebasedKm[2] * kmToWorld)
 
         // Update mesh scale (true scaling)
@@ -752,7 +739,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   return {
-    spiceClient: loadedSpiceClient,
+    spice: cachedSpice,
     pickables,
     updateScene,
     afterRender,

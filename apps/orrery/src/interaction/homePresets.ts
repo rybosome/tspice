@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { CameraController, type CameraControllerState } from '../controls/CameraController.js'
-import type { BodyRef } from '../spice/SpiceClient.js'
+import type { BodyRef } from '../spice/types.js'
 
 // -----------------------------------------------------------------------------
 // Home camera presets (world units, target at origin)

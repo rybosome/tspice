@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import type { BodyRef, SpiceClient, FrameId } from '../spice/SpiceClient.js'
+import type { SpiceAsync, SpiceTime } from '@rybosome/tspice'
+import type { BodyRef, FrameId } from '../spice/types.js'
 import { resolveBodyRegistryEntry, type BodyRegistryEntry } from '../scene/BodyRegistry.js'
 import { getApproxOrbitalPeriodSec } from '../scene/orbits/orbitalPeriods.js'
 import { getNaifExtras, type NaifExtras } from '../data/naifExtras.js'
@@ -8,7 +9,7 @@ import { useTimeStoreSelector } from '../time/timeStore.js'
 interface SelectionInspectorProps {
   selectedBody: BodyRef
   focusBody: BodyRef
-  spiceClient: SpiceClient
+  spice: SpiceAsync
   observer: BodyRef
   frame: FrameId
 }
@@ -197,7 +198,7 @@ function resolveBodyRefForSpice(bodyRef: BodyRef, registryEntry: BodyRegistryEnt
   }
 
   // If we're carrying around numeric IDs as strings (e.g. from <select />),
-  // normalize them back to numbers for `SpiceClient.getBodyState`.
+  // normalize them to safe numeric refs.
   const numeric = tryNormalizeNumericBodyRef(trimmed)
   if (numeric != null) return numeric
 
@@ -214,7 +215,7 @@ function formatBodyKind(kind: string): string {
   return kind.charAt(0).toUpperCase() + kind.slice(1)
 }
 
-export function SelectionInspector({ selectedBody, focusBody, spiceClient, observer, frame }: SelectionInspectorProps) {
+export function SelectionInspector({ selectedBody, focusBody, spice, observer, frame }: SelectionInspectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   type BodyInfo = {
@@ -288,17 +289,17 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
     void (async () => {
       try {
         // Get selected body's state relative to scene observer
-        const selectedState = await spiceClient.getBodyState({
-          target: selectedBodyForSpice,
-          observer: observerForSpice,
+        const selectedState = await spice.kit.getState({
+          target: String(selectedBodyForSpice),
+          observer: String(observerForSpice),
+          at: etSec as unknown as SpiceTime,
           frame,
-          et: etSec,
         })
 
         // Position relative to scene origin (usually Sun)
-        const positionKm = selectedState.positionKm
+        const positionKm = selectedState.position
         const positionMagnitude = magnitude(positionKm)
-        const velocityKmPerSec = selectedState.velocityKmPerSec
+        const velocityKmPerSec = selectedState.velocity
         const velocityMagnitude = magnitude(velocityKmPerSec)
 
         // If focus != selected, compute distance from focus to selected
@@ -307,15 +308,15 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
         let velocityRelToFocusVector: readonly [number, number, number] | null = null
 
         if (String(selectedBodyForSpice) !== String(focusBodyForSpice)) {
-          const relState = await spiceClient.getBodyState({
-            target: selectedBodyForSpice,
-            observer: focusBodyForSpice,
+          const relState = await spice.kit.getState({
+            target: String(selectedBodyForSpice),
+            observer: String(focusBodyForSpice),
+            at: etSec as unknown as SpiceTime,
             frame,
-            et: etSec,
           })
-          distanceToFocusKm = magnitude(relState.positionKm)
-          velocityRelToFocusKmPerSec = magnitude(relState.velocityKmPerSec)
-          velocityRelToFocusVector = relState.velocityKmPerSec
+          distanceToFocusKm = magnitude(relState.position)
+          velocityRelToFocusKmPerSec = magnitude(relState.velocity)
+          velocityRelToFocusVector = relState.velocity
         }
 
         const nextInfo: BodyInfo = {
@@ -339,7 +340,7 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
     return () => {
       cancelled = true
     }
-  }, [selectedBodyForSpice, focusBodyForSpice, spiceClient, etSec, observerForSpice, frame, orbitalPeriodSec])
+  }, [selectedBodyForSpice, focusBodyForSpice, spice, etSec, observerForSpice, frame, orbitalPeriodSec])
 
   const bodyLabel =
     registryEntry?.style.label ??

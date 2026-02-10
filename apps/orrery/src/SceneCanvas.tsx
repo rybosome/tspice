@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import * as THREE from 'three'
+import type { SpiceAsync, SpiceTime } from '@rybosome/tspice'
 import type { CameraController, CameraControllerState } from './controls/CameraController.js'
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
-import { J2000_FRAME, type BodyRef, type EtSeconds, type SpiceClient } from './spice/SpiceClient.js'
+import { J2000_FRAME, type BodyRef, type EtSeconds } from './spice/types.js'
 import { getBodyRegistryEntry, listDefaultVisibleBodies, type BodyId } from './scene/BodyRegistry.js'
 import { computeBodyRadiusWorld } from './scene/bodyScaling.js'
 import { timeStore, useTimeStoreSelector } from './time/timeStore.js'
@@ -289,7 +290,7 @@ export function SceneCanvas() {
   const [showBodyFixedAxes, setShowBodyFixedAxes] = useState(false)
   // Selected body (promoted from local closure variable for inspector panel)
   const [selectedBody, setSelectedBody] = useState<BodyRef | null>(null)
-  const [spiceClient, setSpiceClient] = useState<SpiceClient | null>(null)
+  const [spiceClient, setSpiceClient] = useState<SpiceAsync | null>(null)
 
   // Sun postprocess tuning (ephemeral; adjustable live via the RENDERING pane).
   const [sunPostprocessExposure, setSunPostprocessExposure] = useState(sunExposure)
@@ -710,14 +711,14 @@ export function SceneCanvas() {
 
     try {
       const etSec = timeStore.getState().etSec
-      const focusState = await spiceClient.getBodyState({
-        target: focusBody,
+      const focusState = await spiceClient.kit.getState({
+        target: String(focusBody),
         observer: 'SUN',
+        at: etSec as unknown as SpiceTime,
         frame: J2000_FRAME,
-        et: etSec,
       })
 
-      const focusPosKm = focusState.positionKm
+      const focusPosKm = focusState.position
       const sunPosWorld = new THREE.Vector3(
         -focusPosKm[0] * kmToWorld,
         -focusPosKm[1] * kmToWorld,
@@ -1597,7 +1598,7 @@ export function SceneCanvas() {
                   >
                     {/* Playback controls: UTC/ET display, scrubber, buttons, rate */}
                     <PlaybackControls
-                      spiceClient={spiceClient}
+                      spice={spiceClient}
                       getDefaultResumeRateSecPerSec={getDefaultResumeRateSecPerSec}
                     />
 
@@ -1951,7 +1952,7 @@ export function SceneCanvas() {
         <SelectionInspector
           selectedBody={selectedBody}
           focusBody={focusBody}
-          spiceClient={spiceClient}
+          spice={spiceClient}
           observer="SUN"
           frame={J2000_FRAME}
         />

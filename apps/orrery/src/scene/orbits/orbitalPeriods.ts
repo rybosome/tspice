@@ -1,4 +1,4 @@
-import type { BodyRef } from '../../spice/SpiceClient.js'
+import type { BodyRef } from '../../spice/types.js'
 
 const DAY_SEC = 86_400
 
