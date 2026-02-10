@@ -1,8 +1,7 @@
 name: time.str2et.basic
 setup:
   kernels:
-    # Resolve relative to THIS scenario file.
-    - ../../tspice/test/fixtures/kernels/naif0012.tls
+    - $FIXTURES/basic-time
 cases:
   - id: j2000
     call: time.str2et

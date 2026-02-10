@@ -1,5 +1,7 @@
+export type KernelEntry = string | { path: string; restrictToDir?: string };
+
 export type CaseSetup = {
-  kernels?: string[];
+  kernels?: KernelEntry[];
 };
 
 export type RunCaseInput = {
