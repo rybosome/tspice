@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define TSPICE_TIMDEF_VALUE_MAX 1024
+
 int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
@@ -294,6 +296,14 @@ int tspice_timdef_get(
     err[0] = '\0';
   }
 
+  if (!item || item[0] == '\0') {
+    if (errMaxBytes > 0) {
+      strncpy(err, "tspice_timdef_get(): item must be a non-empty string", (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+    return 1;
+  }
+
   if (outMaxBytes <= 0) {
     if (errMaxBytes > 0) {
       strncpy(err, "tspice_timdef_get(): outMaxBytes must be > 0", (size_t)errMaxBytes - 1);
@@ -311,6 +321,7 @@ int tspice_timdef_get(
   return 0;
 }
 
+
 int tspice_timdef_set(const char *item, const char *value, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
@@ -318,26 +329,36 @@ int tspice_timdef_set(const char *item, const char *value, char *err, int errMax
     err[0] = '\0';
   }
 
-  if (!value) {
-    value = "";
-  }
-
-  const size_t valueLen = strlen(value);
-  char *buf = (char *)malloc(valueLen + 1);
-  if (!buf) {
+  if (!item || item[0] == '\0') {
     if (errMaxBytes > 0) {
-      strncpy(err, "tspice_timdef_set(): malloc failed", (size_t)errMaxBytes - 1);
+      strncpy(err, "tspice_timdef_set(): item must be a non-empty string", (size_t)errMaxBytes - 1);
       err[errMaxBytes - 1] = '\0';
     }
     return 1;
   }
 
+  if (!value || value[0] == '\0') {
+    if (errMaxBytes > 0) {
+      strncpy(err, "tspice_timdef_set(): value must be a non-empty string", (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+    return 1;
+  }
+
+  const size_t valueLen = strlen(value);
+  if (valueLen >= (size_t)TSPICE_TIMDEF_VALUE_MAX) {
+    if (errMaxBytes > 0) {
+      strncpy(err, "tspice_timdef_set(): value too long", (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+    return 1;
+  }
+
+  SpiceChar buf[TSPICE_TIMDEF_VALUE_MAX];
   memcpy(buf, value, valueLen);
   buf[valueLen] = '\0';
 
   timdef_c("SET", item, (SpiceInt)(valueLen + 1), buf);
-  free(buf);
-
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
