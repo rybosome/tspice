@@ -92,6 +92,7 @@ function tspiceCallGdpool(
   start: number,
   room: number,
 ): Found<{ values: number[] }> {
+  assertNonEmptyString("gdpool", "name", name);
   assertPoolRange("gdpool", start, room);
 
   const namePtr = writeUtf8CString(module, name);
@@ -151,6 +152,7 @@ function tspiceCallGipool(
   start: number,
   room: number,
 ): Found<{ values: number[] }> {
+  assertNonEmptyString("gipool", "name", name);
   assertPoolRange("gipool", start, room);
 
   const namePtr = writeUtf8CString(module, name);
@@ -209,6 +211,7 @@ function tspiceCallGcpool(
   start: number,
   room: number,
 ): Found<{ values: string[] }> {
+  assertNonEmptyString("gcpool", "name", name);
   assertPoolRange("gcpool", start, room);
 
   const namePtr = writeUtf8CString(module, name);
@@ -326,6 +329,8 @@ function tspiceCallDtpool(
   module: EmscriptenModule,
   name: string,
 ): Found<{ n: number; type: KernelPoolVarType }> {
+  assertNonEmptyString("dtpool", "name", name);
+
   const namePtr = writeUtf8CString(module, name);
   const outTypeMaxBytes = 2;
 
