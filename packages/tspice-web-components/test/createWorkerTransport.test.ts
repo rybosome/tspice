@@ -98,6 +98,37 @@ describe("createWorkerTransport()", () => {
     expect(w.terminated).toBe(true);
   });
 
+  it("batches response settlements into a single macrotask", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    vi.useFakeTimers();
+
+    const w = new FakeWorker();
+    const transport = createWorkerTransport({ worker: () => w });
+
+    const p1 = transport.request("op1", []);
+    const posted1 = w.posted[0] as { id: number };
+
+    const p2 = transport.request("op2", []);
+    const posted2 = w.posted[1] as { id: number };
+
+    w.emitMessage({ type: "tspice:response", id: posted1.id, ok: true, value: 1 });
+    expect(vi.getTimerCount()).toBe(1);
+
+    w.emitMessage({ type: "tspice:response", id: posted2.id, ok: true, value: 2 });
+    // Still just one settlement macrotask scheduled for this tick.
+    expect(vi.getTimerCount()).toBe(1);
+
+    await vi.runAllTimersAsync();
+
+    await expect(p1).resolves.toBe(1);
+    await expect(p2).resolves.toBe(2);
+
+    transport.dispose();
+  });
+
   it("rejects and cleans up on timeout", async () => {
     const { createWorkerTransport } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components"

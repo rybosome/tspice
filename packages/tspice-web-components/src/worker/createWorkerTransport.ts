@@ -130,33 +130,87 @@ export function createWorkerTransport(opts: {
   };
 
   const pendingById = new Map<number, Pending>();
+
+  type QueuedSettlement = {
+    pending: Pending;
+    kind: "resolve" | "reject";
+    value: unknown;
+    error: unknown;
+  };
+
   // Requests with a received response that are awaiting next-macrotask
   // settlement. Keeping these separate from `pendingById` lets us remove a
   // request from the timeout/abort race immediately upon response receipt,
   // while still allowing `dispose()` (and worker errors) to deterministically
   // win before settlement.
-  const settlingById = new Map<number, Pending>();
-  const settleTimeoutById = new Map<number, ReturnType<typeof setTimeout>>();
+  const queuedSettlementById = new Map<number, QueuedSettlement>();
+  // Single macrotask timer for batched response settlement.
+  // Invariant: if `responseSettlementMacrotask` is set, `queuedSettlementById.size > 0`.
+  let responseSettlementMacrotask: ReturnType<typeof setTimeout> | undefined;
   let nextId = 1;
 
   const formatRequestContext = (op: string, id?: number): string =>
     id === undefined ? `(op=${op})` : `(op=${op}, id=${id})`;
 
+  const flushQueuedSettlements = (): void => {
+    responseSettlementMacrotask = undefined;
+
+    for (const [id, settlement] of Array.from(queuedSettlementById)) {
+      queuedSettlementById.delete(id);
+
+      const pending = settlement.pending;
+      const op = pending.op;
+      const kind = settlement.kind;
+
+      // Drop references to response payloads as soon as possible.
+      let value: unknown = settlement.value;
+      let error: unknown = settlement.error;
+      settlement.value = undefined;
+      settlement.error = undefined;
+
+      if (disposed) {
+        pending.reject(new Error(`Worker transport disposed ${formatRequestContext(op, id)}`));
+        continue;
+      }
+
+      if (kind === "resolve") {
+        pending.resolve(value);
+        value = undefined;
+        continue;
+      }
+
+      pending.reject(error);
+      error = undefined;
+    }
+  };
+
+  const scheduleSettlementMacrotask = (): void => {
+    if (responseSettlementMacrotask !== undefined) return;
+    responseSettlementMacrotask = setTimeout(flushQueuedSettlements, 0);
+  };
+
   const rejectAllPending = (getReason: (pending: Pending, id: number) => unknown): void => {
-    // Cancel deferred settlement timers so they don't keep work queued after
+    // Cancel deferred settlement macrotask so it doesn't keep work queued after
     // we've already rejected the associated requests.
-    for (const t of settleTimeoutById.values()) clearTimeout(t);
-    settleTimeoutById.clear();
+    if (responseSettlementMacrotask !== undefined) {
+      clearTimeout(responseSettlementMacrotask);
+      responseSettlementMacrotask = undefined;
+    }
 
     for (const [id, pending] of pendingById) {
       pendingById.delete(id);
       pending.rejectAndCleanup(getReason(pending, id));
     }
 
-    // Settling requests already ran `cleanup()` when their response was received.
-    for (const [id, pending] of settlingById) {
-      settlingById.delete(id);
+    // Queued settlements already ran `cleanup()` when their response was received.
+    for (const [id, settlement] of Array.from(queuedSettlementById)) {
+      queuedSettlementById.delete(id);
+
+      const pending = settlement.pending;
       pending.reject(getReason(pending, id));
+      // Explicitly drop response payload references to help GC.
+      settlement.value = undefined;
+      settlement.error = undefined;
     }
   };
 
@@ -179,10 +233,6 @@ export function createWorkerTransport(opts: {
     // Clean up request-specific resources immediately (abort listeners, timers),
     // but defer settling to a macrotask so `dispose()` can deterministically win.
     pending.cleanup();
-
-    // Track the deferred settlement so `dispose()` (and worker errors) can still
-    // reject it before the next tick.
-    settlingById.set(id, pending);
 
     const op = pending.op;
 
@@ -217,25 +267,8 @@ export function createWorkerTransport(opts: {
       error = new Error(`Malformed worker response: missing ok flag ${formatRequestContext(op, id)}`);
     }
 
-    const timeout = setTimeout(() => {
-      settleTimeoutById.delete(id);
-      if (settlingById.get(id) !== pending) return;
-      settlingById.delete(id);
-
-      if (disposed) {
-        pending.reject(new Error(`Worker transport disposed ${formatRequestContext(op, id)}`));
-        return;
-      }
-
-      if (kind === "resolve") {
-        pending.resolve(value);
-        return;
-      }
-
-      pending.reject(error);
-    }, 0);
-
-    settleTimeoutById.set(id, timeout);
+    queuedSettlementById.set(id, { pending, kind, value, error });
+    scheduleSettlementMacrotask();
   };
 
   const onError = (ev: unknown): void => {
@@ -317,7 +350,7 @@ export function createWorkerTransport(opts: {
     const signal = requestOpts?.signal;
 
     return await new Promise<unknown>((resolve, reject) => {
-      let timeout: ReturnType<typeof setTimeout> | undefined;
+      let requestTimeout: ReturnType<typeof setTimeout> | undefined;
       // Cleanup is intentionally idempotent. It may be called from multiple
       // paths (timeout, abort, response receipt, or dispose()) depending on
       // ordering.
@@ -328,9 +361,9 @@ export function createWorkerTransport(opts: {
         if (didCleanup) return;
         didCleanup = true;
 
-        if (timeout !== undefined) {
-          clearTimeout(timeout);
-          timeout = undefined;
+        if (requestTimeout !== undefined) {
+          clearTimeout(requestTimeout);
+          requestTimeout = undefined;
         }
 
         if (signal && onAbort) signal.removeEventListener("abort", onAbort);
@@ -367,7 +400,7 @@ export function createWorkerTransport(opts: {
       }
 
       if (timeoutMs !== undefined && timeoutMs > 0) {
-        timeout = setTimeout(() => {
+        requestTimeout = setTimeout(() => {
           if (pendingById.get(id) !== pending) return;
           pendingById.delete(id);
           pending.rejectAndCleanup(

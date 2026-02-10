@@ -7,7 +7,6 @@ export type {
   WithCachingResult,
 } from "./cache/withCaching.js";
 export {
-  CACHING_TRANSPORT_BRAND,
   MAX_KEY_SCAN,
   defaultSpiceCacheKey,
   isCachingTransport,

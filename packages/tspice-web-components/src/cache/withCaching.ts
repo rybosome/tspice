@@ -16,14 +16,12 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.kclear",
 ]) satisfies readonly string[];
 
-const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Record<string, true> = Object.freeze({
-  "kit.loadKernel": true,
-  "kit.unloadKernel": true,
-  "kit.kclear": true,
-  "raw.furnsh": true,
-  "raw.unload": true,
-  "raw.kclear": true,
-});
+const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> = Object.freeze(
+  DEFAULT_UNSAFE_NO_STORE_OPS.reduce<Record<string, true>>((acc, op) => {
+    acc[op] = true;
+    return acc;
+  }, {}),
+);
 
 const warnedBroadNoStorePrefixSets = new Set<string>();
 
@@ -35,12 +33,15 @@ const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): 
   return false;
 };
 
-export const CACHING_TRANSPORT_BRAND: unique symbol = Symbol.for(
-  "@rybosome/tspice-web-components:CACHING_TRANSPORT_BRAND",
-);
+const cachingTransportBrand = new WeakSet<object>();
+
+const defaultOnWarning = (message: string): void => {
+  if (typeof console !== "undefined" && typeof console.warn === "function") {
+    console.warn(message);
+  }
+};
 
 export type CachingTransport = SpiceTransport & {
-  readonly [CACHING_TRANSPORT_BRAND]: true;
   /**
    * Clear all cached entries.
    *
@@ -153,9 +154,11 @@ export type WithCachingResult = SpiceTransport | CachingTransport;
 export function isCachingTransport(t: unknown): t is CachingTransport {
   if (typeof t !== "object" || t === null) return false;
 
-  const v = t as Record<string | symbol, unknown>;
+  if (!cachingTransportBrand.has(t)) return false;
+
+  const v = t as Record<string, unknown>;
   return (
-    v[CACHING_TRANSPORT_BRAND] === true &&
+    typeof v.request === "function" &&
     typeof v.clear === "function" &&
     typeof v.dispose === "function"
   );
@@ -289,8 +292,7 @@ function containsBinaryLikeData(
 
   // Avoid Object.getOwnPropertyDescriptors(value) (bulk descriptor allocation).
   // Scan incrementally and bail early if we hit the global scan budget.
-  for (const key in value) {
-    if (!Object.prototype.hasOwnProperty.call(value, key)) continue;
+  for (const key of Object.keys(value)) {
     if (budget.remaining-- <= 0) return true;
 
     let desc: PropertyDescriptor | undefined;
@@ -330,15 +332,6 @@ export function withCaching(
   base: SpiceTransport,
   opts?: WithCachingOptions,
 ): WithCachingResult {
-  const now = opts?.now ?? Date.now;
-  const onWarning =
-    opts?.onWarning ??
-    ((message: string) => {
-      if (typeof console !== "undefined" && typeof console.warn === "function") {
-        console.warn(message);
-      }
-    });
-
   const rawMaxEntries = opts?.maxEntries;
   const maxEntries = rawMaxEntries ?? 1000;
   const maxEntriesLimit =
@@ -354,6 +347,11 @@ export function withCaching(
   // True no-op mode: preserve the input object identity and avoid allocating
   // any wrapper state when caching is disabled.
   if (!cachingEnabled) return base;
+
+  // Only pick defaults after the no-op early return so disabled caching pays
+  // ~0 overhead.
+  const now = opts?.now ?? Date.now;
+  const onWarning = opts?.onWarning ?? defaultOnWarning;
 
   const keyFn = opts?.key ?? defaultSpiceCacheKey;
   const policyByOp = opts?.policy;
@@ -507,11 +505,6 @@ export function withCaching(
   };
 
   const transport = { request, clear, dispose };
-  Object.defineProperty(transport, CACHING_TRANSPORT_BRAND, {
-    value: true,
-    enumerable: false,
-    writable: false,
-    configurable: false,
-  });
+  cachingTransportBrand.add(transport);
   return transport;
 }

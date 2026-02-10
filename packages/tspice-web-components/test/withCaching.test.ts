@@ -26,8 +26,8 @@ describe("withCaching()", () => {
     if (isCachingTransport(cached)) cached.dispose();
   });
 
-  it("brands the caching transport as non-enumerable + read-only", async () => {
-    const { CACHING_TRANSPORT_BRAND, isCachingTransport, withCaching } = await import(
+  it("brands the caching transport via a private WeakSet (non-forgeable)", async () => {
+    const { isCachingTransport, withCaching } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components",
     );
 
@@ -39,15 +39,15 @@ describe("withCaching()", () => {
     expect(isCachingTransport(cached)).toBe(true);
     if (!isCachingTransport(cached)) throw new Error("expected caching transport");
 
-    const desc = Object.getOwnPropertyDescriptor(cached, CACHING_TRANSPORT_BRAND);
-    expect(desc).toMatchObject({
-      value: true,
-      enumerable: false,
-      writable: false,
-      configurable: false,
-    });
+    // Objects that merely match the method shape should not be treated as
+    // caching transports.
+    const forged = {
+      request: vi.fn(async () => 123),
+      clear: vi.fn(),
+      dispose: vi.fn(),
+    };
 
-    expect(Object.prototype.propertyIsEnumerable.call(cached, CACHING_TRANSPORT_BRAND)).toBe(false);
+    expect(isCachingTransport(forged)).toBe(false);
 
     cached.dispose();
   });
