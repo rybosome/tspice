@@ -14,6 +14,8 @@ const DEFAULT_UNSAFE_NO_STORE_OPS: readonly string[] = [
   "raw.kclear",
 ];
 
+const DEFAULT_UNSAFE_NO_STORE_OPS_SET = new Set(DEFAULT_UNSAFE_NO_STORE_OPS);
+
 const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): boolean => {
   if (!prefixes || prefixes.length === 0) return false;
   for (const prefix of prefixes) {
@@ -26,8 +28,11 @@ export type CachingTransport = SpiceTransport & {
   /**
    * Clear all cached entries.
    *
-   * Note: this does not cancel in-flight requests; it just drops references so
-   * results won't be reused.
+   * Notes:
+   * - This does not cancel in-flight requests; it just drops references so
+   *   results won't be reused.
+   * - This does not stop the optional TTL sweep timer. Use `dispose()` to stop
+   *   timers and clear cache.
    */
   clear(): void;
   /** Stop any sweep timers and clear all cached entries. */
@@ -75,10 +80,22 @@ export type WithCachingOptions = {
   /**
    * Optional list of op-name prefixes that should default to `"no-store"`.
    *
+   * Prefix matching uses `op.startsWith(prefix)`, so short / broad prefixes can
+   * unintentionally disable caching for many ops. Prefer namespace-style
+   * prefixes like `"kit."` / `"raw."` instead of `"k"` / `"kit"`.
+   *
    * This is useful for future-proofing (e.g. if new kernel mutation ops are
    * introduced upstream).
    */
   noStorePrefixes?: string[];
+
+  /**
+   * If `true`, allows broad `noStorePrefixes` (e.g. `"k"` or `"kit"`).
+   *
+   * By default, `withCaching()` throws if a prefix looks too broad (length < 3
+   * or missing a `.`) to avoid accidentally disabling caching widely.
+   */
+  allowBroadNoStorePrefixes?: boolean;
 
   /**
    * If `true`, allows `policy` to override built-in unsafe default `"no-store"`
@@ -236,10 +253,23 @@ export function withCaching(
     ?.map((p) => p.trim())
     .filter((p) => p.length > 0);
   const allowUnsafePolicyOverrides = opts?.allowUnsafePolicyOverrides === true;
+  const allowBroadNoStorePrefixes = opts?.allowBroadNoStorePrefixes === true;
+
+  if (!allowBroadNoStorePrefixes && noStorePrefixes && noStorePrefixes.length > 0) {
+    const broad = noStorePrefixes.filter((p) => p.length < 3 || !p.includes("."));
+    if (broad.length > 0) {
+      const listed = broad.map((p) => JSON.stringify(p)).join(", ");
+      throw new Error(
+        `withCaching(): Refusing broad noStorePrefixes ${listed}. ` +
+          `Prefixes are matched via op.startsWith(prefix) and may disable caching broadly. ` +
+          `Prefer e.g. "kit." / "raw."-style prefixes, or set allowBroadNoStorePrefixes: true.`,
+      );
+    }
+  }
 
   const getPolicy = (op: string): CachePolicy => {
     const explicit = policyByOp?.[op];
-    const isUnsafeDefault = DEFAULT_UNSAFE_NO_STORE_OPS.includes(op);
+    const isUnsafeDefault = DEFAULT_UNSAFE_NO_STORE_OPS_SET.has(op);
 
     if (explicit === "cache") {
       if (isUnsafeDefault && !allowUnsafePolicyOverrides) return "no-store";

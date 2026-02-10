@@ -113,6 +113,7 @@ export function createWorkerTransport(opts: {
     opts.terminateOnDispose ?? (typeof opts.worker === "function" ? true : false);
 
   type Pending = {
+    op: string;
     // These always run per-request cleanup before settling.
     resolve: (value: unknown) => void;
     reject: (reason: unknown) => void;
@@ -129,7 +130,9 @@ export function createWorkerTransport(opts: {
   const settleTimeoutById = new Map<number, ReturnType<typeof setTimeout>>();
   let nextId = 1;
 
-  const rejectAllPending = (reason: unknown): void => {
+  const formatRequestContext = (op: string, id: number): string => `(op=${op}, id=${id})`;
+
+  const rejectAllPending = (getReason: (pending: Pending, id: number) => unknown): void => {
     // Cancel deferred settlement timers so they don't keep work queued after
     // we've already rejected the associated requests.
     for (const t of settleTimeoutById.values()) clearTimeout(t);
@@ -137,12 +140,12 @@ export function createWorkerTransport(opts: {
 
     for (const [id, pending] of pendingById) {
       pendingById.delete(id);
-      pending.reject(reason); // reject already cleans up
+      pending.reject(getReason(pending, id)); // reject already cleans up
     }
 
     for (const [id, pending] of settlingById) {
       settlingById.delete(id);
-      pending.reject(reason); // reject already cleans up
+      pending.reject(getReason(pending, id)); // reject already cleans up
     }
   };
 
@@ -167,11 +170,38 @@ export function createWorkerTransport(opts: {
     // reject it before the next tick.
     settlingById.set(id, pending);
 
+    const op = pending.op;
+
     // Extract response fields up-front so the deferred macrotask doesn't close
     // over the full `msg` payload.
-    const ok = msg.ok === true;
-    const value = ok ? (msg as Extract<RpcResponse, { ok: true }>).value : undefined;
-    const error = ok ? undefined : (msg as Extract<RpcResponse, { ok: false }>).error;
+    let kind: "resolve" | "reject";
+    let value: unknown = undefined;
+    let error: unknown = undefined;
+
+    if (msg.ok === true) {
+      if (!("value" in msg)) {
+        kind = "reject";
+        error = new Error(
+          `Malformed worker response: ok=true but missing value ${formatRequestContext(op, id)}`,
+        );
+      } else {
+        kind = "resolve";
+        value = (msg as Extract<RpcResponse, { ok: true }>).value;
+      }
+    } else if (msg.ok === false) {
+      if (!("error" in msg)) {
+        kind = "reject";
+        error = new Error(
+          `Malformed worker response: ok=false but missing error ${formatRequestContext(op, id)}`,
+        );
+      } else {
+        kind = "reject";
+        error = deserializeError((msg as Extract<RpcResponse, { ok: false }>).error);
+      }
+    } else {
+      kind = "reject";
+      error = new Error(`Malformed worker response: missing ok flag ${formatRequestContext(op, id)}`);
+    }
 
     const timeout = setTimeout(() => {
       settleTimeoutById.delete(id);
@@ -179,30 +209,33 @@ export function createWorkerTransport(opts: {
       settlingById.delete(id);
 
       if (disposed) {
-        pending.reject(new Error("Worker transport disposed"));
+        pending.reject(new Error(`Worker transport disposed ${formatRequestContext(op, id)}`));
         return;
       }
 
-      if (ok) {
+      if (kind === "resolve") {
         pending.resolve(value);
         return;
       }
 
-      const err = deserializeError(error);
-      pending.reject(err);
+      pending.reject(error);
     }, 0);
 
     settleTimeoutById.set(id, timeout);
   };
 
   const onError = (ev: ErrorEvent): void => {
-    const err = new Error(ev.message || "Worker error");
-    rejectAllPending(err);
+    const message = ev.message || "Worker error";
+    rejectAllPending(
+      (pending, id) => new Error(`${message} ${formatRequestContext(pending.op, id)}`),
+    );
   };
 
   const onMessageError = (_ev: MessageEvent<unknown>): void => {
-    const err = new Error("Worker message deserialization failed");
-    rejectAllPending(err);
+    rejectAllPending(
+      (pending, id) =>
+        new Error(`Worker message deserialization failed ${formatRequestContext(pending.op, id)}`),
+    );
   };
 
   const ensureWorker = (): Worker => {
@@ -221,7 +254,9 @@ export function createWorkerTransport(opts: {
     if (disposed) return;
     disposed = true;
 
-    rejectAllPending(new Error("Worker transport disposed"));
+    rejectAllPending((pending, id) =>
+      new Error(`Worker transport disposed ${formatRequestContext(pending.op, id)}`),
+    );
 
     if (!worker) return;
 
@@ -238,9 +273,9 @@ export function createWorkerTransport(opts: {
     args: unknown[],
     requestOpts?: WorkerTransportRequestOptions,
   ): Promise<unknown> => {
-    if (disposed) throw new Error("Worker transport disposed");
-
     const id = nextId++;
+    if (disposed) throw new Error(`Worker transport disposed ${formatRequestContext(op, id)}`);
+
     const w = ensureWorker();
 
     const timeoutMs = requestOpts?.timeoutMs ?? opts.timeoutMs;
@@ -273,7 +308,12 @@ export function createWorkerTransport(opts: {
         reject(reason);
       };
 
-      const pending: Pending = { resolve: resolveAndCleanup, reject: rejectAndCleanup, cleanup };
+      const pending: Pending = {
+        op,
+        resolve: resolveAndCleanup,
+        reject: rejectAndCleanup,
+        cleanup,
+      };
       pendingById.set(id, pending);
 
       onAbort = (): void => {
@@ -296,7 +336,9 @@ export function createWorkerTransport(opts: {
         timeout = setTimeout(() => {
           if (pendingById.get(id) !== pending) return;
           pendingById.delete(id);
-          pending.reject(new Error(`Worker request timed out after ${timeoutMs}ms`));
+          pending.reject(
+            new Error(`Worker request timed out after ${timeoutMs}ms ${formatRequestContext(op, id)}`),
+          );
         }, timeoutMs);
       }
 
@@ -305,7 +347,10 @@ export function createWorkerTransport(opts: {
         w.postMessage(msg);
       } catch (err) {
         if (pendingById.get(id) === pending) pendingById.delete(id);
-        pending.reject(err);
+
+        const out = new Error(`Worker postMessage failed ${formatRequestContext(op, id)}`);
+        (out as any).cause = err;
+        pending.reject(out);
       }
     });
   };

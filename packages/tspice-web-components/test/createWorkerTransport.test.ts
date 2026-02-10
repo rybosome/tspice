@@ -26,7 +26,7 @@ class FakeWorker {
   }
 
   emit(type: string, ev: any): void {
-    for (const listener of this.listeners.get(type) ?? []) listener(ev);
+    for (const listener of Array.from(this.listeners.get(type) ?? [])) listener(ev);
   }
 
   emitMessage(data: any): void {
@@ -110,7 +110,7 @@ describe("createWorkerTransport()", () => {
 
     vi.advanceTimersByTime(11);
 
-    await expect(p).rejects.toThrow(/timed out/i);
+    await expect(p).rejects.toThrow(/timed out.*op=op.*id=\d+/i);
 
     transport.dispose();
   });
@@ -147,4 +147,31 @@ describe("createWorkerTransport()", () => {
     await expect(p).rejects.toThrow(/disposed/i);
     expect(w.terminated).toBe(true);
   });
+
+  it("rejects malformed response messages (ok=true missing value)", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    vi.useFakeTimers();
+
+    const w = new FakeWorker();
+    const transport = createWorkerTransport({ worker: () => w as any });
+
+    const p = transport.request("op", []);
+    const posted = w.posted[0];
+
+    // Missing `value` should reject immediately (next macrotask) with a helpful error.
+    w.emitMessage({ type: "tspice:response", id: posted.id, ok: true });
+
+    const expectation = expect(p).rejects.toThrow(
+      new RegExp(`malformed.*\\(op=op, id=${posted.id}\\)`, "i"),
+    );
+
+    await vi.runAllTimersAsync();
+    await expectation;
+
+    transport.dispose();
+  });
+
 });

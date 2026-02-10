@@ -7,7 +7,7 @@ describe("withCaching()", () => {
   });
 
   it("caches forever when ttlMs is undefined (LRU-bounded)", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     let calls = 0;
     const base = {
@@ -21,11 +21,11 @@ describe("withCaching()", () => {
 
     expect(base.request).toHaveBeenCalledTimes(1);
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
   it("dedupes in-flight requests", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     let resolve!: (value: number) => void;
     const pending = new Promise<number>((res) => {
@@ -49,11 +49,11 @@ describe("withCaching()", () => {
     expect(await p1).toBe(123);
     expect(await p2).toBe(123);
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
   it("does not cache rejections", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const base = {
       request: vi
@@ -69,11 +69,11 @@ describe("withCaching()", () => {
 
     expect(base.request).toHaveBeenCalledTimes(2);
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
   it("disables caching when ttlMs <= 0", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const base = {
       request: vi.fn(async () => 123),
@@ -91,7 +91,7 @@ describe("withCaching()", () => {
   });
 
   it("skips caching when the default key cannot be generated", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const base = {
       request: vi.fn(async () => 123),
@@ -107,7 +107,7 @@ describe("withCaching()", () => {
 
     expect(base.request).toHaveBeenCalledTimes(2);
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
   it("defaultSpiceCacheKey returns null for binary-like args", async () => {
@@ -160,7 +160,7 @@ describe("withCaching()", () => {
   });
 
   it("bypasses cache when args contain binary-like data", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     let calls = 0;
     const base = {
@@ -180,11 +180,11 @@ describe("withCaching()", () => {
 
     expect(base.request).toHaveBeenCalledTimes(2);
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
   it("can sweep expired entries periodically (opt-in)", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     vi.useFakeTimers();
     vi.setSystemTime(0);
@@ -207,11 +207,11 @@ describe("withCaching()", () => {
     // After the sweep runs, the entry should be removed and a new request should hit base.
     expect(await cached.request("op", [])).toBe(2);
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
   it("defaults to no-store for kernel-mutating ops", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const key = vi.fn(() => "k");
     const base = {
@@ -240,12 +240,12 @@ describe("withCaching()", () => {
     expect(base.request).toHaveBeenCalledTimes(noStoreOps.length * 2);
     expect(key).not.toHaveBeenCalled();
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
 
   it("treats built-in unsafe defaults as exact-match (not prefix)", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const key = vi.fn(() => "k");
     let calls = 0;
@@ -264,11 +264,11 @@ describe("withCaching()", () => {
     expect(base.request).toHaveBeenCalledTimes(1);
     expect(key).toHaveBeenCalledTimes(2);
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
   it("treats user-provided noStorePrefixes as prefixes", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const key = vi.fn(() => "k");
     const base = {
@@ -286,11 +286,49 @@ describe("withCaching()", () => {
     expect(base.request).toHaveBeenCalledTimes(2);
     expect(key).not.toHaveBeenCalled();
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
-  it("supports per-op cache policy overrides", async () => {
+
+
+  it("throws for overly broad noStorePrefixes by default", async () => {
     const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const base = {
+      request: vi.fn(async () => 123),
+    };
+
+    expect(() =>
+      withCaching(base, {
+        noStorePrefixes: ["k"],
+      }),
+    ).toThrow(/allowBroadNoStorePrefixes/i);
+  });
+
+  it("allows broad noStorePrefixes when explicitly opted-in", async () => {
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const key = vi.fn(() => "k");
+    const base = {
+      request: vi.fn(async () => 123),
+    };
+
+    const cached = withCaching(base, {
+      key,
+      noStorePrefixes: ["kit"],
+      allowBroadNoStorePrefixes: true,
+    });
+
+    await cached.request("kit.utcToEt", []);
+    await cached.request("kit.utcToEt", []);
+
+    expect(base.request).toHaveBeenCalledTimes(2);
+    expect(key).not.toHaveBeenCalled();
+
+    if (isCachingTransport(cached)) cached.dispose();
+  });
+  it("supports per-op cache policy overrides", async () => {
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     // Guardrail: forcing cache for built-in unsafe default no-store ops requires
     // an explicit opt-in.
@@ -311,7 +349,7 @@ describe("withCaching()", () => {
     expect(await cached1.request("raw.kclear", [])).toBe(2);
     expect(base1.request).toHaveBeenCalledTimes(2);
     expect(key1).not.toHaveBeenCalled();
-    if ("dispose" in cached1) cached1.dispose();
+    if (isCachingTransport(cached1)) cached1.dispose();
 
     const key2 = vi.fn(() => "k");
     let calls2 = 0;
@@ -331,7 +369,7 @@ describe("withCaching()", () => {
     expect(await cached2.request("raw.kclear", [])).toBe(1);
     expect(base2.request).toHaveBeenCalledTimes(1);
     expect(key2).toHaveBeenCalledTimes(2);
-    if ("dispose" in cached2) cached2.dispose();
+    if (isCachingTransport(cached2)) cached2.dispose();
 
     // Can force bypass (and skip key computation) for arbitrary ops.
     const key3 = vi.fn(() => "k");
@@ -350,11 +388,11 @@ describe("withCaching()", () => {
     await cached3.request("op", [1]);
     expect(base3.request).toHaveBeenCalledTimes(2);
     expect(key3).not.toHaveBeenCalled();
-    if ("dispose" in cached3) cached3.dispose();
+    if (isCachingTransport(cached3)) cached3.dispose();
   });
 
   it("supports noStorePrefixes", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const key = vi.fn(() => "k");
     const base = {
@@ -371,11 +409,11 @@ describe("withCaching()", () => {
     expect(base.request).toHaveBeenCalledTimes(2);
     expect(key).not.toHaveBeenCalled();
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 
   it("does not treat empty noStorePrefixes as a wildcard", async () => {
-    const { withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const key = vi.fn(() => "k");
     let calls = 0;
@@ -395,6 +433,6 @@ describe("withCaching()", () => {
     expect(base.request).toHaveBeenCalledTimes(1);
     expect(key).toHaveBeenCalledTimes(2);
 
-    if ("dispose" in cached) cached.dispose();
+    if (isCachingTransport(cached)) cached.dispose();
   });
 });
