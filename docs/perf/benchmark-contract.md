@@ -123,8 +123,9 @@ The command exits non-zero and prints one error per line as `<path>: <message>`.
 
 Pass `--json` to emit a machine-readable JSON object.
 
-On failures, the JSON output is intentionally stable and includes:
+The JSON output schema is intentionally stable and always includes the same top-level keys (for both success and failure):
 
-- `kind`: one of `"usage" | "parse" | "validate"`
-- `errors`: an array of `{ path, message }`
-- `usage`: a usage string (for help/automation)
+- `ok`: boolean
+- `kind`: one of `\"success\" | \"usage\" | \"parse\" | \"validate\"`
+- `errors`: an array of `{ path, message }` (empty on success)
+- `usage`: a usage string (always included for help/automation)

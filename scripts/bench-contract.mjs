@@ -23,13 +23,16 @@ function emitJson(obj) {
   console.log(JSON.stringify(obj, null, 2));
 }
 
+function emitJsonResult({ ok, kind, errors }) {
+  emitJson({ ok, kind, errors, usage: USAGE_TEXT });
+}
+
 function failUsage(message) {
   if (json) {
-    emitJson({
+    emitJsonResult({
       ok: false,
       kind: "usage",
       errors: [{ path: "$", message }],
-      usage: USAGE_TEXT,
     });
   } else {
     // eslint-disable-next-line no-console
@@ -43,7 +46,7 @@ function failUsage(message) {
 
 function failParse(errors) {
   if (json) {
-    emitJson({ ok: false, kind: "parse", errors, usage: USAGE_TEXT });
+    emitJsonResult({ ok: false, kind: "parse", errors });
   } else {
     for (const err of errors) {
       // eslint-disable-next-line no-console
@@ -55,7 +58,7 @@ function failParse(errors) {
 
 function failValidate(errors) {
   if (json) {
-    emitJson({ ok: false, kind: "validate", errors, usage: USAGE_TEXT });
+    emitJsonResult({ ok: false, kind: "validate", errors });
   } else {
     for (const err of errors) {
       // eslint-disable-next-line no-console
@@ -115,7 +118,7 @@ if (!validated.ok) {
 }
 
 if (json) {
-  emitJson({ ok: true, kind: "success", errors: [] });
+  emitJsonResult({ ok: true, kind: "success", errors: [] });
 } else {
   // eslint-disable-next-line no-console
   console.log("OK");
