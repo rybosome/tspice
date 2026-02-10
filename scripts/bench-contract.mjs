@@ -115,7 +115,7 @@ if (!validated.ok) {
 }
 
 if (json) {
-  emitJson({ ok: true });
+  emitJson({ ok: true, kind: "success", errors: [] });
 } else {
   // eslint-disable-next-line no-console
   console.log("OK");
