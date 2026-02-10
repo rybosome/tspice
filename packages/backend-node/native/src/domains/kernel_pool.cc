@@ -527,7 +527,7 @@ static void Pcpool(const Napi::CallbackInfo& info) {
 static void Swpool(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 2 || !info[0].IsString()) {
+  if (info.Length() != 2 || !info[0].IsString() || !info[1].IsArray()) {
     ThrowSpiceError(Napi::TypeError::New(env, "swpool(agent: string, names: string[]) expects (string, string[])"));
     return;
   }
@@ -541,6 +541,15 @@ static void Swpool(const Napi::CallbackInfo& info) {
   tspice_napi::JsStringArrayArg names;
   if (!ReadStringArray(env, info[1], &names, "names")) {
     return;
+  }
+
+  for (size_t i = 0; i < names.values.size(); i++) {
+    if (IsEmptyOrAsciiWhitespaceOnly(names.values[i])) {
+      ThrowSpiceError(Napi::RangeError::New(
+          env,
+          std::string("swpool(): names[") + std::to_string(i) + "] must be a non-empty string"));
+      return;
+    }
   }
 
   // Fixed-width 2D buffer: nnames x kPoolNameMaxBytes.

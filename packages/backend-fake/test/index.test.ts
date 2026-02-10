@@ -122,6 +122,11 @@ describe("@rybosome/tspice-backend-fake", () => {
       expect(() => b.swpool(agent, [])).toThrow(RangeError);
       expect(() => b.cvpool(agent)).toThrow(RangeError);
     }
+
+    // swpool(): names entries must be non-empty strings (but [] is allowed)
+    for (const blank of ["", "   "]) {
+      expect(() => b.swpool("AGENT", [blank])).toThrow(RangeError);
+    }
   });
 
   it("rejects non-finite pdpool() values", () => {

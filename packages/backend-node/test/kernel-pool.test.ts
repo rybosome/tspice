@@ -41,4 +41,20 @@ describe("@rybosome/tspice-backend-node kernel pool", () => {
     expect(() => (b as any).pcpool("A", "NOT_ARRAY")).toThrow(TypeError);
     expect(() => (b as any).pcpool("A", "NOT_ARRAY")).toThrow(/expects \(string, string\[\]\)/i);
   });
+
+  itNative("swpool validates its (string, string[]) signature", () => {
+    const b = createNodeBackend();
+
+    // Regression test: signature guard should reject non-array `names`.
+    expect(() => (b as any).swpool("AGENT", "NOT_ARRAY")).toThrow(TypeError);
+    expect(() => (b as any).swpool("AGENT", "NOT_ARRAY")).toThrow(/expects \(string, string\[\]\)/i);
+  });
+
+  itNative("swpool rejects empty/blank names entries", () => {
+    const b = createNodeBackend();
+
+    for (const blank of ["", "   " as const]) {
+      expect(() => b.swpool("AGENT", [blank])).toThrow(RangeError);
+    }
+  });
 });

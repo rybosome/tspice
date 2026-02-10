@@ -28,4 +28,13 @@ describe("@rybosome/tspice-backend-wasm kernel pool", () => {
       expect(() => b.cvpool(agent)).toThrow(RangeError);
     }
   });
+
+
+  it("swpool rejects empty/blank names entries", async () => {
+    const b = await createWasmBackend();
+
+    for (const blank of ["", "   "]) {
+      expect(() => b.swpool("AGENT", [blank])).toThrow(RangeError);
+    }
+  });
 });

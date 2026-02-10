@@ -930,6 +930,10 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     swpool: (agent, names) => {
       assertNonEmptyString("swpool", "agent", agent);
+
+      for (let i = 0; i < names.length; i++) {
+        assertNonEmptyString("swpool", `names[${i}]`, names[i]!);
+      }
       // CSPICE guarantees the next cvpool(agent) returns true.
       const prev = kernelPoolWatches.get(agent);
       if (prev) {

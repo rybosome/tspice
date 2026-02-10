@@ -28,6 +28,23 @@ static int tspice_kernel_pool_invalid_arg(char *err, int errMaxBytes, const char
   return 1;
 }
 
+static int tspice_is_empty_or_ascii_whitespace_only(const char *s) {
+  if (!s || s[0] == '\0') {
+    return 1;
+  }
+
+  // ASCII whitespace: space, tab, newline, carriage return, formfeed, vertical tab.
+  for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
+    const unsigned char c = *p;
+    const int isWs = (c == ' ') || (c == '\t') || (c == '\n') || (c == '\r') || (c == '\f') || (c == '\v');
+    if (!isWs) {
+      return 0;
+    }
+  }
+
+  return 1;
+}
+
 int tspice_gdpool(
     const char *name,
     int start,
@@ -232,6 +249,10 @@ int tspice_gnpool(
 
   if (!name) {
     return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gnpool(): name must not be NULL");
+  }
+
+  if (tspice_is_empty_or_ascii_whitespace_only(name)) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gnpool(): name must be a non-empty string");
   }
   if (start < 0) {
     return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gnpool(): start must be >= 0");
