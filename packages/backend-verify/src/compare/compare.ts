@@ -16,11 +16,15 @@ function joinPath(base: string, key: string | number): string {
 
 const TAU = 2 * Math.PI;
 
+function normalizeToMinusPiPi(x: number): number {
+  // Normalize into [-pi, pi).
+  return ((((x + Math.PI) % TAU) + TAU) % TAU) - Math.PI;
+}
+
 function wrapToPi(x: number): number {
   if (!Number.isFinite(x)) return x;
 
-  // Normalize into [-pi, pi).
-  const y = ((((x + Math.PI) % TAU) + TAU) % TAU) - Math.PI;
+  const y = normalizeToMinusPiPi(x);
 
   // Prefer +pi over -pi to keep comparisons deterministic.
   if (Object.is(y, -Math.PI)) return Math.PI;
@@ -32,8 +36,7 @@ function wrapToPi(x: number): number {
 function wrapDeltaToPi(raw: number): number {
   if (!Number.isFinite(raw)) return raw;
 
-  // Normalize into [-pi, pi).
-  const y = ((((raw + Math.PI) % TAU) + TAU) % TAU) - Math.PI;
+  const y = normalizeToMinusPiPi(raw);
 
   // At exactly -pi (the branch cut), preserve the sign of the *raw* delta.
   if (Object.is(y, -Math.PI) && raw > 0) return Math.PI;

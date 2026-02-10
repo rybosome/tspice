@@ -15,7 +15,10 @@
 
 #include "SpiceUsr.h"
 
+#include <math.h>
+
 #include <errno.h>
+#include <inttypes.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -417,6 +420,10 @@ static bool jsmn_parse_double(const char *json, const jsmntok_t *tok,
     return false;
   }
   if (endptr == buf || *endptr != '\0') {
+    return false;
+  }
+
+  if (!isfinite(v)) {
     return false;
   }
 
@@ -1042,8 +1049,8 @@ int main(void) {
     }
 
     fprintf(stdout,
-            "{\"ok\":true,\"result\":{\"found\":true,\"code\":%ld}}\n",
-            (long)code);
+            "{\"ok\":true,\"result\":{\"found\":true,\"code\":%" PRIdMAX "}}\n",
+            (intmax_t)code);
     goto done;
   }
 
@@ -1124,8 +1131,8 @@ int main(void) {
     }
 
     fprintf(stdout,
-            "{\"ok\":true,\"result\":{\"found\":true,\"code\":%ld}}\n",
-            (long)frcode);
+            "{\"ok\":true,\"result\":{\"found\":true,\"code\":%" PRIdMAX "}}\n",
+            (intmax_t)frcode);
     goto done;
   }
 
