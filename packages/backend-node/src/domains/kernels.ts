@@ -25,47 +25,23 @@ const NATIVE_KIND_SET = new Set<string>([
 
 const TEXT_SUBTYPE_SET = new Set<string>(["LSK", "FK", "IK", "SCLK"]);
 
-function nativeKindQueryOrNull(kindsUpper: readonly string[]): string | null {
-  if (kindsUpper.length === 0) {
-    return null;
-  }
+function nativeKindQueryOrNull(kinds: readonly string[]): string | null {
+  if (kinds.length === 0) return null;
+  if (kinds.includes("ALL")) return "ALL";
 
-  // Deduplicate while preserving input order.
-  const requested = new Set<string>(kindsUpper);
-  if (requested.has("ALL")) {
-    return "ALL";
-  }
+  const hasText = kinds.includes("TEXT");
+  const hasTextSubtype = kinds.some((k) => TEXT_SUBTYPE_SET.has(k));
+  if (hasTextSubtype && !hasText) return null;
 
-  const hasText = requested.has("TEXT");
-
-  let hasTextSubtype = false;
-  let hasUnknown = false;
-  for (const k of requested) {
-    if (TEXT_SUBTYPE_SET.has(k)) {
-      hasTextSubtype = true;
-    }
-    if (!NATIVE_KIND_SET.has(k) && !TEXT_SUBTYPE_SET.has(k)) {
-      hasUnknown = true;
-    }
-  }
-
-  // Only forward when the request is representable as a CSPICE kind string.
-  //
-  // Unknown kind tokens may appear as we add support for more kernel kinds. In those
-  // cases we fall back to the JS filtering path rather than passing an invalid query
-  // to CSPICE.
-  if (hasUnknown) {
-    return null;
-  }
-  if (hasTextSubtype && !hasText) {
-    return null;
-  }
-
+  // Deduplicate while preserving first-occurrence order.
+  const seen = new Set<string>();
   const nativeKinds: string[] = [];
-  for (const k of requested) {
-    if (NATIVE_KIND_SET.has(k) && k !== "ALL") {
-      nativeKinds.push(k);
-    }
+  for (const k of kinds) {
+    if (k === "ALL") continue;
+    if (!NATIVE_KIND_SET.has(k)) continue; // subtypes intentionally omitted
+    if (seen.has(k)) continue;
+    seen.add(k);
+    nativeKinds.push(k);
   }
 
   return nativeKinds.length === 0 ? null : nativeKinds.join(" ");
