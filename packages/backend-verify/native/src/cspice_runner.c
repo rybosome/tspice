@@ -16,6 +16,7 @@
 #include "SpiceUsr.h"
 
 #include <errno.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -445,6 +446,21 @@ static bool jsmn_parse_int(const char *json, const jsmntok_t *tok,
     return false;
   }
   if (endptr == buf || *endptr != '\0') {
+    return false;
+  }
+
+  // Defensive: ensure the parsed value fits into SpiceInt.
+  // `SpiceInt` is typically a typedef of `int`, but can vary by platform.
+  if (sizeof(SpiceInt) == sizeof(int)) {
+    if (v < (long)INT_MIN || v > (long)INT_MAX) return false;
+  } else if (sizeof(SpiceInt) == sizeof(long)) {
+    // `v` is already a long.
+    // no-op (range already constrained by strtol)
+  } else if (sizeof(SpiceInt) == sizeof(long long)) {
+    // `v` (long) always fits into long long.
+    // no-op
+  } else {
+    // Unknown SpiceInt width.
     return false;
   }
 

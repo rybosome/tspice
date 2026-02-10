@@ -170,6 +170,38 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
     const report: RunnerErrorReport = { message: error.message };
     if (error.name) report.name = error.name;
     if (error.stack) report.stack = error.stack;
+
+    // Some backends (notably WASM) attach best-effort SPICE fields directly to
+    // the Error instance, rather than exposing them via `failed()/getmsg()`.
+    // Preserve them so parity comparisons can operate consistently.
+    const anyErr = error as unknown as {
+      spiceShort?: unknown;
+      spiceLong?: unknown;
+      spiceTrace?: unknown;
+    };
+
+    if (
+      typeof anyErr.spiceShort === "string" ||
+      typeof anyErr.spiceLong === "string" ||
+      typeof anyErr.spiceTrace === "string"
+    ) {
+      report.spice = {
+        failed: true,
+        short: typeof anyErr.spiceShort === "string" ? anyErr.spiceShort : undefined,
+        long: typeof anyErr.spiceLong === "string" ? anyErr.spiceLong : undefined,
+        // `SpiceErrorState` doesn't currently carry a `trace` field.
+      };
+    }
+
+    // Fallback: parse `SPICE(FOO)` out of the message when present.
+    // This is intentionally permissive to keep mismatch reports useful.
+    if (!report.spice?.short) {
+      const m = /SPICE\(([A-Z0-9_]+)\)/.exec(error.message);
+      if (m) {
+        report.spice = { ...(report.spice ?? { failed: true }), short: `SPICE(${m[1]})` };
+      }
+    }
+
     return report;
   }
 
