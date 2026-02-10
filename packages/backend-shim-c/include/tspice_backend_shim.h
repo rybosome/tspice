@@ -285,9 +285,14 @@ int tspice_bodfnd(
     char *err,
     int errMaxBytes);
 
-// bodvar_c (deprecated): return values of a body constant from the kernel pool.
+// bodvar_c: return values of a body constant from the kernel pool.
 //
-// This shim uses bodvcd_c under the hood to allow the caller to bound output size.
+// NOTE: CSPICE's `bodvar_c` is deprecated; this shim uses `bodvcd_c`
+// under the hood to allow the caller to bound output size.
+//
+// Missing-item semantics:
+// - If the requested item is not found for the body, this returns success with
+//   `*outDim = 0`. Call `tspice_bodfnd` if you need a strict presence check.
 int tspice_bodvar(
     int body,
     const char *item,

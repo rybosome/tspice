@@ -205,12 +205,12 @@ static Napi::Array Bodvar(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
   if (!found) {
-    ThrowSpiceError(env, std::string("Kernel pool variable not found: ") + poolVar);
-    return Napi::Array::New(env);
+    // Missing body constants are a normal miss; callers that need strict checks can use bodfnd().
+    return Napi::Array::New(env, 0);
   }
   if (typeOut[0] != 'N') {
-    ThrowSpiceError(env, std::string("Expected numeric kernel pool variable for bodvar: ") + poolVar);
-    return Napi::Array::New(env);
+    // Missing / non-numeric pool vars are treated as a normal miss; use bodfnd() for strict presence.
+    return Napi::Array::New(env, 0);
   }
   if (n <= 0) {
     return Napi::Array::New(env, 0);

@@ -204,6 +204,17 @@ int tspice_bodvar(
     *outDim = 0;
   }
 
+  // Missing body constants are a normal miss (return dim=0) rather than a SPICE error.
+  // Callers that need a strict presence check can use bodfnd_c via `tspice_bodfnd`.
+  SpiceBoolean foundC = bodfnd_c((SpiceInt)body, item);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  if (foundC != SPICETRUE) {
+    return 0;
+  }
+
   SpiceInt dimC = 0;
   bodvcd_c((SpiceInt)body, item, (SpiceInt)maxn, &dimC, outValues);
   if (failed_c()) {

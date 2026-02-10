@@ -22,6 +22,12 @@ export interface IdsNamesApi {
   /** Return true if a body constant exists in the kernel pool. */
   bodfnd(body: number, item: string): boolean;
 
-  /** Return values of a body constant from the kernel pool. */
+  /**
+   * Return values of a body constant from the kernel pool.
+   *
+   * Missing-item semantics:
+   * - If `item` is not found for `body` (or is non-numeric), returns `[]`.
+   * - Call `bodfnd(body, item)` if you need a strict presence check.
+   */
   bodvar(body: number, item: string): number[];
 }

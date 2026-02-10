@@ -11,7 +11,7 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 import { tspiceCallFoundInt, tspiceCallFoundString } from "../codec/found.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
-import { writeUtf8CString } from "../codec/strings.js";
+import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 
 function tspiceCallCidfrm(
   module: EmscriptenModule,
@@ -55,7 +55,7 @@ function tspiceCallCidfrm(
     return {
       found: true,
       frcode: module.HEAP32[outCodePtr >> 2] ?? 0,
-      frname: module.UTF8ToString(outNamePtr, outNameMaxBytes).trim(),
+      frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
     };
   } finally {
     module._free(foundPtr);
@@ -108,7 +108,7 @@ function tspiceCallCnmfrm(
     return {
       found: true,
       frcode: module.HEAP32[outCodePtr >> 2] ?? 0,
-      frname: module.UTF8ToString(outNamePtr, outNameMaxBytes).trim(),
+      frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
     };
   } finally {
     module._free(foundPtr);
@@ -225,7 +225,7 @@ function tspiceCallCcifrm(
     return {
       found: true,
       frcode: module.HEAP32[outFrcodePtr >> 2] ?? 0,
-      frname: module.UTF8ToString(outNamePtr, outNameMaxBytes).trim(),
+      frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
       center: module.HEAP32[outCenterPtr >> 2] ?? 0,
     };
   } finally {
