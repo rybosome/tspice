@@ -4,7 +4,7 @@ import type { NativeAddon } from "../src/runtime/addon.js";
 import { createIdsNamesApi } from "../src/domains/ids-names.js";
 
 describe("node backend ids/names item normalization", () => {
-  it("normalizes bodfnd/bodvar items with trim + uppercase", () => {
+  it("normalizes bodfnd/bodvar items with trim + ASCII-only uppercase", () => {
     const bodfnd = vi.fn().mockReturnValue(true);
     const bodvar = vi.fn().mockReturnValue([1, 2, 3]);
 
@@ -12,9 +12,17 @@ describe("node backend ids/names item normalization", () => {
     const api = createIdsNamesApi(native);
 
     expect(api.bodfnd(399, "  radii  ")).toBe(true);
-    expect(bodfnd).toHaveBeenCalledWith(399, "RADII");
+    expect(bodfnd).toHaveBeenNthCalledWith(1, 399, "RADII");
 
     expect(api.bodvar(399, "  radii  ")).toEqual([1, 2, 3]);
-    expect(bodvar).toHaveBeenCalledWith(399, "RADII");
+    expect(bodvar).toHaveBeenNthCalledWith(1, 399, "RADII");
+
+    // Unicode case mappings can change the lookup key (e.g. "ß" -> "SS");
+    // item normalization is intentionally ASCII-only.
+    expect(api.bodfnd(399, "  ß  ")).toBe(true);
+    expect(bodfnd).toHaveBeenNthCalledWith(2, 399, "ß");
+
+    expect(api.bodvar(399, "  ß  ")).toEqual([1, 2, 3]);
+    expect(bodvar).toHaveBeenNthCalledWith(2, 399, "ß");
   });
 });

@@ -1,13 +1,7 @@
-import type { IdsNamesApi } from "@rybosome/tspice-backend-contract";
+import { normalizeBodItem, type IdsNamesApi } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
-
-function normalizeBodItem(item: string): string {
-  // Align with wasm + fake backends: bodvar/bodfnd treat body-constant items as
-  // case-insensitive and ignore surrounding whitespace.
-  return item.trim().toUpperCase();
-}
 
 export function createIdsNamesApi(native: NativeAddon): IdsNamesApi {
   return {

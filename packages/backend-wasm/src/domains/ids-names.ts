@@ -1,4 +1,4 @@
-import type { IdsNamesApi } from "@rybosome/tspice-backend-contract";
+import { normalizeBodItem, type IdsNamesApi } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -9,12 +9,6 @@ import { tspiceCallFoundInt, tspiceCallFoundString } from "../codec/found.js";
 
 const BODY_NAME_MAX_BYTES = 256;
 const BODY_CONST_MAX_VALUES = 1024;
-
-function normalizeBodItem(item: string): string {
-  // Align with node + fake backends: bodvar/bodfnd treat body-constant items as
-  // case-insensitive and ignore surrounding whitespace.
-  return item.trim().toUpperCase();
-}
 
 function tspiceCallBodc2s(module: EmscriptenModule, code: number): string {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, BODY_NAME_MAX_BYTES], (errPtr, outPtr) => {

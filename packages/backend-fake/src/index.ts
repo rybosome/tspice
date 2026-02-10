@@ -21,6 +21,7 @@ import {
   assertGetmsgWhich,
   assertSpiceInt32,
   brandMat3RowMajor,
+  normalizeBodItem,
 } from "@rybosome/tspice-backend-contract";
 
 /**
@@ -1062,13 +1063,13 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     bodfnd: (body, item) => {
-      const key = `BODY${body}_${normalizeName(item).toUpperCase()}`;
+      const key = `BODY${body}_${normalizeBodItem(item)}`;
       const entry = kernelPool.get(key);
       return entry?.type === "N";
     },
 
     bodvar: (body, item) => {
-      const key = `BODY${body}_${normalizeName(item).toUpperCase()}`;
+      const key = `BODY${body}_${normalizeBodItem(item)}`;
       const entry = kernelPool.get(key);
       if (!entry || entry.type !== "N") {
         // Align with the backend contract: missing / non-numeric pool vars are a normal miss.

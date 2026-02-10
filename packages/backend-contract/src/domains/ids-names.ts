@@ -19,15 +19,42 @@ export interface IdsNamesApi {
   /** Define a body name/code mapping (side effect). */
   boddef(name: string, code: number): void;
 
-  /** Return true if a body constant exists in the kernel pool. */
+  /**
+   * Return true if a body constant exists in the kernel pool.
+   *
+   * Normalization:
+   * - `item` is normalized as `normalizeBodItem(item)` (trim + ASCII-only uppercase)
+   *   before lookup.
+   */
   bodfnd(body: number, item: string): boolean;
 
   /**
    * Return values of a body constant from the kernel pool.
+   *
+   * Normalization:
+   * - `item` is normalized as `normalizeBodItem(item)` (trim + ASCII-only uppercase)
+   *   before lookup.
    *
    * Missing-item semantics:
    * - If `item` is not found for `body` (or is non-numeric), returns `[]`.
    * - Call `bodfnd(body, item)` if you need a strict presence check.
    */
   bodvar(body: number, item: string): number[];
+}
+
+/**
+* Normalize a body-constant item name for `bodfnd` / `bodvar` lookups.
+*
+* Body-constant item names are treated as case-insensitive by CSPICE, but CSPICE's
+* casing behavior is ASCII-based. We intentionally avoid `String.prototype.toUpperCase()`
+* here because it applies Unicode case mappings (e.g. `"ß" -> "SS"`), which can
+* change lookup keys in surprising ways.
+*/
+export function normalizeBodItem(item: string): string {
+  return toAsciiUppercase(item.trim());
+}
+
+function toAsciiUppercase(s: string): string {
+  // Only transform ASCII a-z. Leave all other code points unchanged.
+  return s.replace(/[a-z]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 32));
 }

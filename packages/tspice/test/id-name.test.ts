@@ -104,7 +104,7 @@ describe("IDs / names", () => {
     const radii = backend.bodvar(399, "RADII");
     expect(radii).toHaveLength(3);
 
-    // Item normalization: trim + uppercase.
+    // Item normalization: trim + ASCII-only uppercase.
     expect(backend.bodfnd(399, "  radii  ")).toBe(true);
     const radii2 = backend.bodvar(399, "  radii  ");
     expect(radii2).toHaveLength(3);
@@ -208,7 +208,7 @@ describe("IDs / names", () => {
     const radii = backend.bodvar(399, "RADII");
     expect(radii).toHaveLength(3);
 
-    // Item normalization: trim + uppercase.
+    // Item normalization: trim + ASCII-only uppercase.
     expect(backend.bodfnd(399, "  radii  ")).toBe(true);
     const radii2 = backend.bodvar(399, "  radii  ");
     expect(radii2).toHaveLength(3);
