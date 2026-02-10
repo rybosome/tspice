@@ -1,0 +1,33 @@
+{
+  "name": "@rybosome/tspice-web-components",
+  "version": "0.0.7",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@rybosome/tspice": "workspace:*"
+  },
+  "devDependencies": {
+    "@rybosome/tspice-backend-fake": "workspace:*",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.8"
+  }
+}
