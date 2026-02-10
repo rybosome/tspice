@@ -99,7 +99,21 @@ export interface ValidateBenchmarkSuiteV1Options {
    */
   readonly repoRoot: string;
 
-  /** Whether to check that referenced fixture files actually exist. */
+  /**
+   * Whether to perform fixture filesystem checks during validation.
+   *
+   * When enabled (default), validation performs **synchronous filesystem IO**
+   * (e.g. `fs.statSync`, `fs.realpathSync`) to:
+   *
+   * - ensure declared `fixtureRoots` exist (and are directories)
+   * - ensure referenced fixture files exist (and are files)
+   * - enforce realpath-based containment so refs cannot escape their root via
+   *   symlinks
+   *
+   * When disabled (`false`), validation still enforces pure path-traversal
+   * containment (`..`), but **skips** root/file existence checks and symlink
+   * containment guarantees.
+   */
   readonly checkFixtureExistence?: boolean;
 
   /**

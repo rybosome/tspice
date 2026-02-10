@@ -54,9 +54,20 @@ defaults:
 
 Validation checks:
 
+When fixture checks are enabled (default):
+
 - the referenced root exists (when provided in `fixtureRoots`)
 - the referenced file exists
 - the ref does not escape its root via path traversal (`..`)
+- the ref does not escape its root via symlinks (realpath containment)
+
+When fixture checks are disabled (`--no-check-fixtures` / `checkFixtureExistence: false`):
+
+- only the path-traversal containment check is performed
+- root/file existence + symlink containment checks are skipped
+
+Note: enabling fixture checks performs **synchronous filesystem IO** and may be expensive in
+long-running processes.
 
 ### Benchmarks
 
@@ -110,4 +121,10 @@ pnpm bench:contract validate benchmarks/contracts/v1/example.yml
 
 The command exits non-zero and prints one error per line as `<path>: <message>`.
 
-Pass `--json` to emit a machine-readable `{ ok, errors }` JSON object.
+Pass `--json` to emit a machine-readable JSON object.
+
+On failures, the JSON output is intentionally stable and includes:
+
+- `kind`: one of `"usage" | "parse" | "validate"`
+- `errors`: an array of `{ path, message }`
+- `usage`: a usage string (for help/automation)

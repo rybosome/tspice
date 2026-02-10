@@ -14,20 +14,23 @@ const USAGE_TEXT = [
   "  pnpm bench:contract validate --no-check-fixtures benchmarks/contracts/v1/example.yml",
 ].join("\n");
 
+const args = process.argv.slice(2);
+const json = args.includes("--json");
+const command = args[0];
+
+function emitJson(obj) {
+  // eslint-disable-next-line no-console
+  console.log(JSON.stringify(obj, null, 2));
+}
+
 function failUsage(message) {
   if (json) {
-    // eslint-disable-next-line no-console
-    console.log(
-      JSON.stringify(
-        {
-          ok: false,
-          errors: [{ path: "$", message }],
-          usage: USAGE_TEXT,
-        },
-        null,
-        2,
-      ),
-    );
+    emitJson({
+      ok: false,
+      kind: "usage",
+      errors: [{ path: "$", message }],
+      usage: USAGE_TEXT,
+    });
   } else {
     // eslint-disable-next-line no-console
     console.error(message);
@@ -38,9 +41,29 @@ function failUsage(message) {
   process.exit(1);
 }
 
-const args = process.argv.slice(2);
-const json = args.includes("--json");
-const command = args[0];
+function failParse(errors) {
+  if (json) {
+    emitJson({ ok: false, kind: "parse", errors, usage: USAGE_TEXT });
+  } else {
+    for (const err of errors) {
+      // eslint-disable-next-line no-console
+      console.error(`${err.path}: ${err.message}`);
+    }
+  }
+  process.exit(1);
+}
+
+function failValidate(errors) {
+  if (json) {
+    emitJson({ ok: false, kind: "validate", errors, usage: USAGE_TEXT });
+  } else {
+    for (const err of errors) {
+      // eslint-disable-next-line no-console
+      console.error(`${err.path}: ${err.message}`);
+    }
+  }
+  process.exit(1);
+}
 
 let checkFixtures = true;
 let fileArg = null;
@@ -79,16 +102,7 @@ const filePath = path.resolve(process.cwd(), fileArg);
 
 const parsed = parseYamlFile(filePath);
 if (!parsed.ok) {
-  if (json) {
-    // eslint-disable-next-line no-console
-    console.log(JSON.stringify({ ok: false, errors: parsed.errors }, null, 2));
-  } else {
-    for (const err of parsed.errors) {
-      // eslint-disable-next-line no-console
-      console.error(`${err.path}: ${err.message}`);
-    }
-  }
-  process.exit(1);
+  failParse(parsed.errors);
 }
 
 const validated = validateBenchmarkSuiteV1(parsed.value, {
@@ -97,17 +111,12 @@ const validated = validateBenchmarkSuiteV1(parsed.value, {
 });
 
 if (!validated.ok) {
-  if (json) {
-    // eslint-disable-next-line no-console
-    console.log(JSON.stringify({ ok: false, errors: validated.errors }, null, 2));
-  } else {
-    for (const err of validated.errors) {
-      // eslint-disable-next-line no-console
-      console.error(`${err.path}: ${err.message}`);
-    }
-  }
-  process.exit(1);
+  failValidate(validated.errors);
 }
 
-// eslint-disable-next-line no-console
-console.log(json ? JSON.stringify({ ok: true }, null, 2) : "OK");
+if (json) {
+  emitJson({ ok: true });
+} else {
+  // eslint-disable-next-line no-console
+  console.log("OK");
+}

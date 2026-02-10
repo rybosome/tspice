@@ -135,6 +135,7 @@ function validateKernels(
   pathSegments: readonly PathSegment[],
   options: ValidateBenchmarkSuiteV1Options,
   fixtureRoots: FixtureRootsV1 | undefined,
+  fixtureRefCache: Map<string, ReturnType<typeof resolveFixtureRef>>,
 ): void {
   if (kernels === undefined) return;
 
@@ -142,6 +143,8 @@ function validateKernels(
     pushError(errors, pathSegments, "Expected an array of fixture refs.");
     return;
   }
+
+  const checkExistence = shouldCheckFixtureExistence(options);
 
   for (let i = 0; i < kernels.length; i += 1) {
     const kernelRef = kernels[i];
@@ -152,14 +155,23 @@ function validateKernels(
       continue;
     }
 
-    const resolved = resolveFixtureRef(kernelRef, {
-      repoRoot: options.repoRoot,
-      ...(fixtureRoots ? { fixtureRoots } : {}),
-      ...(options.defaultFixtureRoots
-        ? { defaultFixtureRoots: options.defaultFixtureRoots }
-        : {}),
-      checkExistence: shouldCheckFixtureExistence(options),
-    });
+    const cacheKey = `${checkExistence ? 1 : 0}:${kernelRef}`;
+    const cached = fixtureRefCache.get(cacheKey);
+
+    const resolved =
+      cached ??
+      (() => {
+        const res = resolveFixtureRef(kernelRef, {
+          repoRoot: options.repoRoot,
+          ...(fixtureRoots ? { fixtureRoots } : {}),
+          ...(options.defaultFixtureRoots
+            ? { defaultFixtureRoots: options.defaultFixtureRoots }
+            : {}),
+          checkExistence,
+        });
+        fixtureRefCache.set(cacheKey, res);
+        return res;
+      })();
 
     if (!resolved.ok) {
       pushError(errors, itemPath, resolved.message);
@@ -173,6 +185,7 @@ function validateSetup(
   pathSegments: readonly PathSegment[],
   options: ValidateBenchmarkSuiteV1Options,
   fixtureRoots: FixtureRootsV1 | undefined,
+  fixtureRefCache: Map<string, ReturnType<typeof resolveFixtureRef>>,
 ): void {
   if (setup === undefined) return;
 
@@ -186,6 +199,7 @@ function validateSetup(
       [...pathSegments, "kernels"],
       options,
       fixtureRoots,
+      fixtureRefCache,
     );
   }
 }
@@ -401,6 +415,7 @@ function validateBenchmark(
   pathSegments: readonly PathSegment[],
   options: ValidateBenchmarkSuiteV1Options,
   fixtureRoots: FixtureRootsV1 | undefined,
+  fixtureRefCache: Map<string, ReturnType<typeof resolveFixtureRef>>,
 ): BenchmarkV1 | null {
   const record = asRecord(value, errors, pathSegments);
   if (record === null) return null;
@@ -435,6 +450,7 @@ function validateBenchmark(
       [...pathSegments, "setup"],
       options,
       fixtureRoots,
+      fixtureRefCache,
     );
   }
 
@@ -452,6 +468,7 @@ export function validateBenchmarkSuiteV1(
   options: ValidateBenchmarkSuiteV1Options,
 ): ValidationResult<BenchmarkSuiteV1> {
   const errors: ValidationError[] = [];
+  const fixtureRefCache = new Map<string, ReturnType<typeof resolveFixtureRef>>();
 
   const record = asRecord(value, errors, []);
   if (record === null) return { ok: false, errors };
@@ -487,6 +504,7 @@ export function validateBenchmarkSuiteV1(
         ["defaults", "setup"],
         options,
         fixtureRoots,
+        fixtureRefCache,
       );
     }
   }
@@ -514,6 +532,7 @@ export function validateBenchmarkSuiteV1(
         benchmarkPath,
         options,
         fixtureRoots,
+        fixtureRefCache,
       );
 
       // Keep duplicate-id detection at the suite level, even when a benchmark is
