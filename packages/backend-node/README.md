@@ -63,6 +63,8 @@ Building the native addon requires a working `node-gyp` toolchain.
 - macOS: Xcode Command Line Tools
 - Linux: Python 3 + `make` + a C/C++ toolchain (e.g. `build-essential`)
 
+This backend currently requires a CSPICE build where `sizeof(SpiceInt) == 4` (32-bit `SpiceInt`).
+
 ## Development
 
 ### Building the native addon

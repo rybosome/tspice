@@ -106,6 +106,7 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ephemeris.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "cells_windows.c"),
 ];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
@@ -217,6 +218,7 @@ const includeDirs = [
 
 fs.mkdirSync(outputDir, { recursive: true });
 
+
 const exportedRuntimeMethods = [
   "UTF8ToString",
   "stringToUTF8",
@@ -232,7 +234,7 @@ const exportedRuntimeMethods = [
   "HEAPF64",
 ];
 
-const exportedFunctions = [
+const EXPORTED_FUNCTIONS = [
   // --- error/status utilities ---
   "_tspice_get_last_error_short",
   "_tspice_get_last_error_long",
@@ -254,6 +256,26 @@ const exportedFunctions = [
   "_tspice_kdata",
   // NOTE: not required by the TS bindings, but handy for debugging.
   "_tspice_ktotal_all",
+
+  // --- file i/o primitives ---
+  "_tspice_exists",
+  "_tspice_getfat",
+
+  // --- DAF ---
+  "_tspice_dafopr",
+  "_tspice_dafcls",
+  "_tspice_dafbfs",
+  "_tspice_daffna",
+
+  // --- DAS ---
+  "_tspice_dasopr",
+  "_tspice_dascls",
+
+  // --- DLA (DAS-backed) ---
+  "_tspice_dlaopn",
+  "_tspice_dlabfs",
+  "_tspice_dlafns",
+  "_tspice_dlacls",
 
   // --- kernel pool ---
   "_tspice_gdpool",
@@ -371,7 +393,7 @@ const commonEmccArgs = [
   "-s",
   `EXPORTED_RUNTIME_METHODS=['${exportedRuntimeMethods.join("','")}']`,
   "-s",
-  `EXPORTED_FUNCTIONS=['${exportedFunctions.join("','")}']`,
+  `EXPORTED_FUNCTIONS=${JSON.stringify(EXPORTED_FUNCTIONS)}`,
 ];
 
 function runEmcc({ environment, outputJsPath }) {
