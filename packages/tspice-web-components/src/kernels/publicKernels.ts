@@ -40,15 +40,17 @@ function createBuilder(state: {
   selected: ReadonlySet<PublicKernelId>;
   opts: Required<CreatePublicKernelsOptions>;
 }): PublicKernelsBuilder {
+  let builder!: PublicKernelsBuilder;
+
   const add = (id: PublicKernelId): PublicKernelsBuilder => {
-    if (state.selected.has(id)) return createBuilder(state);
+    if (state.selected.has(id)) return builder;
 
     const next = new Set(state.selected);
     next.add(id);
     return createBuilder({ ...state, selected: next });
   };
 
-  return {
+  builder = {
     naif0012_tls: () => add("naif0012_tls"),
     pck00011_tpc: () => add("pck00011_tpc"),
     de432s_bsp: () => add("de432s_bsp"),
@@ -59,6 +61,8 @@ function createBuilder(state: {
         .map((id) => buildKernel(id, state.opts)),
     }),
   };
+
+  return builder;
 }
 
 export function createPublicKernels(opts?: CreatePublicKernelsOptions): PublicKernelsBuilder {

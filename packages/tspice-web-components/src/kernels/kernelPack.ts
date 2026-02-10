@@ -17,12 +17,15 @@ export type LoadKernelPackOptions = {
   /**
    * Base URL/path *directory* to resolve each `kernel.url` against when it is relative.
    *
-   * Unlike `new URL(url, baseUrl)`, this treats `baseUrl` as a directory prefix even
-   * when it does not end with `/`.
-   *
    * Notes:
    * - Absolute `kernel.url` values (e.g. `https://...`, `data:...`, `blob:...`) are left as-is.
    * - Root-relative `kernel.url` values (starting with `/`) are left as-is.
+   *
+   * Base URL semantics:
+   * - For scheme-based or protocol-relative base URLs (`https://...`, `//...`), `baseUrl` must be
+   *   directory-style (its pathname must end with `/`). Otherwise this throws.
+   * - For path-like base URLs (`/myapp` or `myapp`), `baseUrl` is treated as a directory prefix even
+   *   when it does not end with `/`.
    *
    * This is intentionally passed in (rather than relying on `import.meta.env.BASE_URL`)
    * so this helper can be used outside Vite and can be tested deterministically.
@@ -79,9 +82,13 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
     const base = hasUrlScheme(baseUrl)
       ? new URL(baseUrl)
       : new URL(baseUrl, "https://tspice.invalid");
-
-    // Treat `baseUrl` as a directory prefix even when it doesn't end with `/`.
-    if (!base.pathname.endsWith("/")) base.pathname = `${base.pathname}/`;
+    // Enforce directory-style absolute base URLs to avoid the surprising
+    // file-vs-directory behavior of `new URL(url, baseUrl)`.
+    if (!base.pathname.endsWith("/")) {
+      throw new Error(
+        `loadKernelPack(): absolute baseUrl must be directory-style (end with \"/\"): ${baseUrl}`,
+      );
+    }
 
     const resolved = new URL(url, base);
     if (isProtocolRelativeBaseUrl) {

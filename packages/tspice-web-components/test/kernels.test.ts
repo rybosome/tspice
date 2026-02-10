@@ -253,6 +253,28 @@ describe("loadKernelPack()", () => {
     });
   });
 
+  it("requires directory-style absolute baseUrl (scheme or protocol-relative)", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [{ url: "kernels/a.tls", path: "a.tls" }],
+    };
+
+    const loadKernel = vi.fn().mockResolvedValue(undefined);
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    for (const baseUrl of ["//cdn.example.com/myapp", "https://cdn.example.com/myapp"]) {
+      const fetch = vi.fn(async () => okResponse(new Uint8Array([1])));
+
+      await expect(loadKernelPack(spice, pack, { baseUrl, fetch })).rejects.toThrow(/directory-style/i);
+      expect(fetch).toHaveBeenCalledTimes(0);
+      expect(loadKernel).toHaveBeenCalledTimes(0);
+    }
+  });
 
   it("normalizes protocol-relative baseUrl (URL semantics + dot segments)", async () => {
     const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
@@ -274,7 +296,7 @@ describe("loadKernelPack()", () => {
       },
     };
 
-    await loadKernelPack(spice, pack, { baseUrl: "//cdn.example.com/myapp", fetch });
+    await loadKernelPack(spice, pack, { baseUrl: "//cdn.example.com/myapp/", fetch });
 
     expect(fetch.mock.calls.map(([url]) => url)).toEqual([
       "//cdn.example.com/myapp/kernels/a.tls",

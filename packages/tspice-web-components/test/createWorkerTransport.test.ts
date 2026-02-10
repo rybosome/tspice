@@ -44,6 +44,29 @@ class FakeWorker implements WorkerLike {
   }
 }
 
+function nextMacrotask(): Promise<void> {
+  return new Promise((resolve) => {
+    // Prefer MessageChannel because it creates a true macrotask boundary without
+    // relying on timers (friendlier to fake-timer environments).
+    if (typeof MessageChannel !== "undefined") {
+      const { port1, port2 } = new MessageChannel();
+
+      port1.onmessage = () => {
+        port1.onmessage = null;
+        port1.close();
+        port2.close();
+        resolve();
+      };
+
+      port2.postMessage(undefined);
+      return;
+    }
+
+    setTimeout(resolve, 0);
+  });
+}
+
+
 describe("createWorkerTransport()", () => {
   afterEach(() => {
     vi.useRealTimers();
@@ -68,9 +91,12 @@ describe("createWorkerTransport()", () => {
     await expect(p).resolves.toBe(123);
 
     transport.dispose();
+    expect(w.terminated).toBe(false);
+    expect(w.posted[w.posted.length - 1]).toEqual({ type: "tspice:dispose" });
+
     // Termination is deferred by 1 macrotask to give the dispose postMessage a
     // chance to be processed.
-    await new Promise((r) => setTimeout(r, 0));
+    await nextMacrotask();
     expect(w.terminated).toBe(true);
   });
 
@@ -91,6 +117,7 @@ describe("createWorkerTransport()", () => {
     w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
     expect(vi.getTimerCount()).toBe(1);
     transport.dispose();
+    expect(w.terminated).toBe(false);
     expect(vi.getTimerCount()).toBe(0);
 
     // Attach a handler immediately to avoid an unhandled rejection warning.
@@ -98,6 +125,8 @@ describe("createWorkerTransport()", () => {
 
     await vi.runAllTimersAsync();
     await expectation;
+
+    await nextMacrotask();
     expect(w.terminated).toBe(true);
   });
 
@@ -179,11 +208,15 @@ describe("createWorkerTransport()", () => {
 
     const p = transport.request("op", []);
     transport.dispose();
+    expect(w.terminated).toBe(false);
+    expect(w.posted[w.posted.length - 1]).toEqual({ type: "tspice:dispose" });
 
-    await expect(p).rejects.toThrow(/disposed/i);
+    const expectation = expect(p).rejects.toThrow(/disposed/i);
+    await expectation;
+
     // Termination is deferred by 1 macrotask to give the dispose postMessage a
     // chance to be processed.
-    await new Promise((r) => setTimeout(r, 0));
+    await nextMacrotask();
     expect(w.terminated).toBe(true);
   });
 

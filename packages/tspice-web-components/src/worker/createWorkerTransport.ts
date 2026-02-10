@@ -56,6 +56,32 @@ function createAbortError(): Error {
   }
 }
 
+function queueMacrotask(fn: () => void): void {
+  // Prefer MessageChannel when available. This schedules a real task boundary
+  // without relying on timers, which makes it friendlier to fake-timer test
+  // environments.
+  try {
+    if (typeof MessageChannel !== "undefined") {
+      const { port1, port2 } = new MessageChannel();
+
+      port1.onmessage = () => {
+        port1.onmessage = null;
+        // Close ports so this doesn't keep the event loop alive in Node.
+        port1.close();
+        port2.close();
+        fn();
+      };
+
+      port2.postMessage(undefined);
+      return;
+    }
+  } catch {
+    // Ignore and fall back to setTimeout.
+  }
+
+  setTimeout(fn, 0);
+}
+
 /**
  * Create a `SpiceTransport` backed by a `Worker`.
  *
@@ -317,9 +343,9 @@ export function createWorkerTransport(opts: {
       // We intentionally defer termination so the caller can synchronously
       // observe a disposed transport before the worker is torn down.
       //
-      // Prefer a microtask here (over `setTimeout(..., 0)`) so `dispose()` does
-      // not leave behind pending timers in fake-timer test environments.
-      queueMicrotask(() => {
+      // Defer by 1 macrotask to give the `tspice:dispose` postMessage a chance
+      // to be processed.
+      queueMacrotask(() => {
         try {
           w.terminate();
         } catch {
