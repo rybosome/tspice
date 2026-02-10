@@ -1,9 +1,11 @@
 #include "kernel_pool.h"
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstring>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "../addon_common.h"
@@ -30,18 +32,11 @@ Napi::Array MakeIntArray(Napi::Env env, const int* values, size_t count) {
   return arr;
 }
 
-inline void CopyToFixedWidth(std::array<char, kPoolStringMaxBytes>& out, const std::string& value) {
+template <size_t N>
+inline void CopyToFixedWidth(std::array<char, N>& out, std::string_view value) {
+  static_assert(N > 0);
   out.fill('\0');
-  const size_t copyLen = value.size() < (kPoolStringMaxBytes - 1) ? value.size() : (kPoolStringMaxBytes - 1);
-  if (copyLen > 0) {
-    memcpy(out.data(), value.data(), copyLen);
-  }
-  out[copyLen] = '\0';
-}
-
-inline void CopyToFixedWidthName(std::array<char, kPoolNameMaxBytes>& out, const std::string& value) {
-  out.fill('\0');
-  const size_t copyLen = value.size() < (kPoolNameMaxBytes - 1) ? value.size() : (kPoolNameMaxBytes - 1);
+  const size_t copyLen = std::min(value.size(), N - 1);
   if (copyLen > 0) {
     memcpy(out.data(), value.data(), copyLen);
   }
@@ -488,7 +483,7 @@ static void Swpool(const Napi::CallbackInfo& info) {
   // Fixed-width 2D buffer: nnames x kPoolNameMaxBytes.
   std::vector<std::array<char, kPoolNameMaxBytes>> namesBuf(names.values.size());
   for (size_t i = 0; i < names.values.size(); i++) {
-    CopyToFixedWidthName(namesBuf[i], names.values[i]);
+    CopyToFixedWidth(namesBuf[i], names.values[i]);
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);

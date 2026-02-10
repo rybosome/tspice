@@ -59,19 +59,19 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
     },
 
     pdpool: (name, values) => {
-      native.pdpool(name, [...values]);
+      native.pdpool(name, values);
     },
 
     pipool: (name, values) => {
-      native.pipool(name, [...values]);
+      native.pipool(name, values);
     },
 
     pcpool: (name, values) => {
-      native.pcpool(name, [...values]);
+      native.pcpool(name, values);
     },
 
     swpool: (agent, names) => {
-      native.swpool(agent, [...names]);
+      native.swpool(agent, names);
     },
 
     cvpool: (agent) => {

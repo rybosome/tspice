@@ -31,11 +31,11 @@ export type NativeAddon = {
   gnpool(template: string, start: number, room: number): { found: boolean; values?: string[] };
   dtpool(name: string): { found: boolean; n?: number; type?: string };
 
-  pdpool(name: string, values: number[]): void;
-  pipool(name: string, values: number[]): void;
-  pcpool(name: string, values: string[]): void;
+  pdpool(name: string, values: readonly number[]): void;
+  pipool(name: string, values: readonly number[]): void;
+  pcpool(name: string, values: readonly string[]): void;
 
-  swpool(agent: string, names: string[]): void;
+  swpool(agent: string, names: readonly string[]): void;
   cvpool(agent: string): boolean;
   expool(name: string): boolean;
   str2et(utc: string): number;

@@ -11,6 +11,43 @@ import {
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
+const WASM_MEMORY_PAGE_BYTES = 64 * 1024;
+const DEFAULT_WASM_INITIAL_MEMORY_BYTES = 128 * 1024 * 1024;
+
+function readWasmInitialMemoryBytes() {
+  const raw = process.env.TSPICE_WASM_INITIAL_MEMORY;
+  if (raw == null || raw.trim() === "") {
+    console.log(
+      `Using default wasm INITIAL_MEMORY=${DEFAULT_WASM_INITIAL_MEMORY_BYTES} bytes (set TSPICE_WASM_INITIAL_MEMORY to override)`,
+    );
+    return DEFAULT_WASM_INITIAL_MEMORY_BYTES;
+  }
+
+  if (!/^[0-9]+$/.test(raw.trim())) {
+    throw new Error(
+      `TSPICE_WASM_INITIAL_MEMORY must be a positive integer (bytes). Got: ${JSON.stringify(raw)}`,
+    );
+  }
+
+  const bytes = Number.parseInt(raw, 10);
+  if (!Number.isSafeInteger(bytes) || bytes <= 0) {
+    throw new Error(
+      `TSPICE_WASM_INITIAL_MEMORY must be a positive integer (bytes). Got: ${JSON.stringify(raw)}`,
+    );
+  }
+
+  if (bytes % WASM_MEMORY_PAGE_BYTES !== 0) {
+    throw new Error(
+      `TSPICE_WASM_INITIAL_MEMORY must be ${WASM_MEMORY_PAGE_BYTES}-byte (64KiB) aligned. Got: ${bytes}`,
+    );
+  }
+
+  console.log(`Using wasm INITIAL_MEMORY=${bytes} bytes from TSPICE_WASM_INITIAL_MEMORY`);
+  return bytes;
+}
+
+const wasmInitialMemoryBytes = readWasmInitialMemoryBytes();
+
 const cspiceManifestPath = path.join(repoRoot, "scripts", "cspice.manifest.json");
 const { toolkitVersion } = JSON.parse(fs.readFileSync(cspiceManifestPath, "utf8"));
 
@@ -327,7 +364,8 @@ const commonEmccArgs = [
   "-s",
   // Some Emscripten toolchains require initial memory to cover static data.
   // (ALLOW_MEMORY_GROWTH does not help at link time.)
-  "INITIAL_MEMORY=134217728",
+  // Default: 128MiB. Override with TSPICE_WASM_INITIAL_MEMORY (bytes, 64KiB-aligned).
+  `INITIAL_MEMORY=${wasmInitialMemoryBytes}`,
   "-s",
   "FORCE_FILESYSTEM=1",
   "-s",
