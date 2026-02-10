@@ -90,7 +90,7 @@ export function resolveFixtureRef(
   if (!isPathInside(rootDir, absolutePath)) {
     return {
       ok: false,
-      message: `Fixture ref '${ref}' escapes root '${parsed.root}'.`,
+      message: `Fixture ref '${ref}' escapes root '${parsed.root}': ${absolutePath} is outside ${rootDir}`,
     };
   }
 
@@ -128,18 +128,13 @@ export function resolveFixtureRef(
         message: `Failed to access fixture file for ref '${ref}': ${absolutePath}: ${message}`,
       };
     }
-  }
 
-  // Prevent symlink escapes regardless of whether existence checking is enabled.
-  // (If the file doesn't exist and checkExistence=false, we still want to ensure
-  // we aren't routing through symlinked directories that escape the root.)
-  let rootReal: string | null = null;
-  try {
-    rootReal = fs.realpathSync(rootDir);
-  } catch (err) {
-    // If we're not checking existence, allow missing roots without blocking.
-    // Callers that need strict existence checks should enable `checkExistence`.
-    if (checkExistence) {
+    // When checking existence, also enforce realpath containment to prevent
+    // symlink escapes.
+    let rootReal: string;
+    try {
+      rootReal = fs.realpathSync(rootDir);
+    } catch (err) {
       const message =
         err instanceof Error
           ? err.message
@@ -149,77 +144,26 @@ export function resolveFixtureRef(
         message: `Failed to resolve fixture root real path for '${parsed.root}': ${rootDir}: ${message}`,
       };
     }
-  }
 
-  if (rootReal !== null) {
+    let fileReal: string;
     try {
-      const fileReal = fs.realpathSync(absolutePath);
-
-      if (!isPathInside(rootReal, fileReal)) {
-        return {
-          ok: false,
-          message: `Fixture ref '${ref}' escapes root '${parsed.root}' via symlink: ${absolutePath} -> ${fileReal}`,
-        };
-      }
+      fileReal = fs.realpathSync(absolutePath);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Failed to resolve fixture real path.";
-      const code =
-        typeof err === "object" &&
-        err !== null &&
-        "code" in err &&
-        typeof (err as { readonly code?: unknown }).code === "string"
-          ? (err as { readonly code: string }).code
-          : null;
+        err instanceof Error
+          ? err.message
+          : "Failed to resolve fixture file real path.";
+      return {
+        ok: false,
+        message: `Failed to resolve fixture file real path for ref '${ref}': ${absolutePath}: ${message}`,
+      };
+    }
 
-      if (code === "ENOENT") {
-        if (checkExistence) {
-          return {
-            ok: false,
-            message: `Fixture file not found for ref '${ref}': ${absolutePath}`,
-          };
-        }
-
-        // If the file doesn't exist, resolve the deepest existing directory and
-        // ensure it doesn't escape via symlink.
-        try {
-          const dirReal = fs.realpathSync(path.dirname(absolutePath));
-          if (!isPathInside(rootReal, dirReal)) {
-            return {
-              ok: false,
-              message: `Fixture ref '${ref}' escapes root '${parsed.root}' via symlinked directory: ${path.dirname(absolutePath)} -> ${dirReal}`,
-            };
-          }
-        } catch (dirErr) {
-          const dirCode =
-            typeof dirErr === "object" &&
-            dirErr !== null &&
-            "code" in dirErr &&
-            typeof (dirErr as { readonly code?: unknown }).code === "string"
-              ? (dirErr as { readonly code: string }).code
-              : null;
-
-          // If we can't resolve any part of the path, fall back to the
-          // non-symlink traversal check already performed above.
-          if (dirCode !== "ENOENT") {
-            const dirMessage =
-              dirErr instanceof Error
-                ? dirErr.message
-                : "Failed to resolve fixture directory real path.";
-            return {
-              ok: false,
-              message: `Failed to resolve fixture directory real path for ref '${ref}': ${path.dirname(absolutePath)}: ${dirMessage}`,
-            };
-          }
-        }
-
-        // Non-existent file with checkExistence=false is OK.
-      } else {
-        return {
-          ok: false,
-          message: `Failed to resolve fixture real path for ref '${ref}': ${absolutePath}: ${message}`,
-        };
-      }
+    if (!isPathInside(rootReal, fileReal)) {
+      return {
+        ok: false,
+        message: `Fixture ref '${ref}' escapes root '${parsed.root}' via symlink: ${absolutePath} -> ${fileReal} (outside ${rootReal})`,
+      };
     }
   }
 
