@@ -4,31 +4,49 @@ import { fileURLToPath } from "node:url";
 
 import { parseYamlFile, validateBenchmarkSuiteV1 } from "@rybosome/tspice-bench-contract/v1";
 
-function usage() {
-  // eslint-disable-next-line no-console
-  console.error(
-    [
-      "Usage:",
-      "  pnpm bench:contract validate [--json] [--no-check-fixtures] <file>",
-      "",
-      "Examples:",
-      "  pnpm bench:contract validate benchmarks/contracts/v1/example.yml",
-      "  pnpm bench:contract validate --json benchmarks/contracts/v1/example.yml",
-      "  pnpm bench:contract validate --no-check-fixtures benchmarks/contracts/v1/example.yml",
-    ].join("\n"),
-  );
+const USAGE_TEXT = [
+  "Usage:",
+  "  pnpm bench:contract validate [--json] [--no-check-fixtures] <file>",
+  "",
+  "Examples:",
+  "  pnpm bench:contract validate benchmarks/contracts/v1/example.yml",
+  "  pnpm bench:contract validate --json benchmarks/contracts/v1/example.yml",
+  "  pnpm bench:contract validate --no-check-fixtures benchmarks/contracts/v1/example.yml",
+].join("\n");
+
+function failUsage(message) {
+  if (json) {
+    // eslint-disable-next-line no-console
+    console.log(
+      JSON.stringify(
+        {
+          ok: false,
+          errors: [{ path: "$", message }],
+          usage: USAGE_TEXT,
+        },
+        null,
+        2,
+      ),
+    );
+  } else {
+    // eslint-disable-next-line no-console
+    console.error(message);
+    // eslint-disable-next-line no-console
+    console.error(USAGE_TEXT);
+  }
+
+  process.exit(1);
 }
 
 const args = process.argv.slice(2);
+const json = args.includes("--json");
 const command = args[0];
 
-let json = false;
 let checkFixtures = true;
 let fileArg = null;
 
 for (const arg of args.slice(1)) {
   if (arg === "--json") {
-    json = true;
     continue;
   }
 
@@ -38,21 +56,22 @@ for (const arg of args.slice(1)) {
   }
 
   if (arg.startsWith("-")) {
-    usage();
-    process.exit(1);
+    failUsage(`Unknown argument: ${arg}`);
   }
 
   if (fileArg !== null) {
-    usage();
-    process.exit(1);
+    failUsage("Expected a single <file> argument.");
   }
 
   fileArg = arg;
 }
 
 if (command !== "validate" || !fileArg) {
-  usage();
-  process.exit(1);
+  failUsage(
+    command !== "validate"
+      ? `Unknown command: ${command ?? "<missing>"}`
+      : "Missing required <file> argument.",
+  );
 }
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
