@@ -141,7 +141,7 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
     },
 
     ktotal: (kind: KernelKindInput = "ALL") => {
-      const kinds = normalizeKindInput(kind).map((k) => k.toUpperCase());
+      const kinds = normalizeKindInput(kind);
       if (kinds.length === 0) {
         return 0;
       }
@@ -178,7 +178,7 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
         return { found: false };
       }
 
-      const kinds = normalizeKindInput(kind).map((k) => k.toUpperCase());
+      const kinds = normalizeKindInput(kind);
       if (kinds.length === 0) {
         return { found: false };
       }
