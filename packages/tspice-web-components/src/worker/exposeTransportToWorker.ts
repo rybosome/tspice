@@ -42,6 +42,16 @@ export function exposeTransportToWorker(opts: {
   let disposed = false;
 
   const maxConcurrentRequests = opts.maxConcurrentRequests ?? Infinity;
+  if (maxConcurrentRequests !== Infinity) {
+    // Guard against deadlocking the queue when `maxConcurrentRequests` is 0/NaN/etc.
+    if (!Number.isFinite(maxConcurrentRequests) || maxConcurrentRequests < 1) {
+      throw new Error("exposeTransportToWorker(): maxConcurrentRequests must be >= 1");
+    }
+    // Prefer integers for deterministic queue semantics.
+    if (!Number.isInteger(maxConcurrentRequests)) {
+      throw new Error("exposeTransportToWorker(): maxConcurrentRequests must be an integer");
+    }
+  }
   let inFlight = 0;
 
   type QueuedRequest = {

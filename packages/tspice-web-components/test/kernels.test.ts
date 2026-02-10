@@ -308,6 +308,31 @@ describe("loadKernelPack()", () => {
     expect(loadKernel).toHaveBeenCalledTimes(1);
   });
 
+  it("treats empty-string baseUrl like undefined", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [{ url: "kernels/a.tls", path: "a.tls" }],
+    };
+
+    const fetch = vi.fn(async (url: string) => {
+      if (url !== "kernels/a.tls") throw new Error(`Unexpected fetch url: ${url}`);
+      return okResponse(new Uint8Array([1]));
+    });
+
+    const loadKernel = vi.fn().mockResolvedValue(undefined);
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    await loadKernelPack(spice, pack, { baseUrl: "", fetch });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith("kernels/a.tls");
+  });
+
   it("requires directory-style absolute baseUrl (scheme or protocol-relative)", async () => {
     const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 

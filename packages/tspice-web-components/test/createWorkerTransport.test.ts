@@ -9,23 +9,28 @@ type Listener = (ev: unknown) => void;
 class FakeWorker implements WorkerLike {
   terminated = false;
   posted: unknown[] = [];
+  calls: string[] = [];
 
   private listeners = new Map<string, Set<Listener>>();
 
   addEventListener(type: string, listener: Listener): void {
+    this.calls.push(`addEventListener:${type}`);
     if (!this.listeners.has(type)) this.listeners.set(type, new Set());
     this.listeners.get(type)!.add(listener);
   }
 
   removeEventListener(type: string, listener: Listener): void {
+    this.calls.push(`removeEventListener:${type}`);
     this.listeners.get(type)?.delete(listener);
   }
 
   postMessage(msg: unknown): void {
+    this.calls.push("postMessage");
     this.posted.push(msg);
   }
 
   terminate(): void {
+    this.calls.push("terminate");
     this.terminated = true;
   }
 
@@ -350,7 +355,7 @@ describe("createWorkerTransport()", () => {
     }
   });
 
-  it("hard-fails and tears down if settlement macrotask scheduling fails", async () => {
+  it("fails fast when MessageChannel exists but postMessage is broken", async () => {
     const { createWorkerTransport } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components"
     );
@@ -358,8 +363,7 @@ describe("createWorkerTransport()", () => {
     const originalMessageChannel = globalThis.MessageChannel;
     const originalSetTimeout = globalThis.setTimeout;
 
-    // A MessageChannel that can be constructed (so probing passes) but cannot
-    // actually schedule (postMessage throws), and no setTimeout fallback.
+    // A MessageChannel that can be constructed but throws on `postMessage`.
     class BrokenMessageChannel {
       port1 = {
         onmessage: null as null | ((ev: unknown) => void),
@@ -380,17 +384,61 @@ describe("createWorkerTransport()", () => {
 
     try {
       const w = new FakeWorker();
+      const workerFactory = vi.fn(() => w);
+      const transport = createWorkerTransport({ worker: workerFactory, terminateOnDispose: false });
+
+      await expect(transport.request("op", [])).rejects.toThrow(/cannot schedule macrotask/i);
+
+      // No worker should be constructed and no message posted.
+      expect(workerFactory).toHaveBeenCalledTimes(0);
+      expect(w.posted).toHaveLength(0);
+    } finally {
+      // @ts-expect-error - restore
+      globalThis.MessageChannel = originalMessageChannel;
+      // @ts-expect-error - restore
+      globalThis.setTimeout = originalSetTimeout;
+    }
+  });
+
+  it("best-effort signals dispose before hard-fail teardown", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const originalMessageChannel = globalThis.MessageChannel;
+    const originalSetTimeout = globalThis.setTimeout;
+
+    // Force macrotask capability probing to succeed via setTimeout.
+    // @ts-expect-error - test override
+    globalThis.MessageChannel = undefined;
+
+    try {
+      const w = new FakeWorker();
       const transport = createWorkerTransport({ worker: () => w });
 
+      // Construct the worker + send a request while we still have a scheduler.
       const p = transport.request("op", []);
       const posted = w.posted[0] as { id: number };
+      expect(posted).toMatchObject({ type: "tspice:request", op: "op" });
+
+      // Now simulate a runtime where the scheduler disappears before settlement.
+      // @ts-expect-error - test override
+      globalThis.setTimeout = undefined;
 
       const expectation = expect(p).rejects.toThrow(/cannot schedule macrotask/i);
-
       w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
 
       await expectation;
-      expect(w.terminated).toBe(true);
+
+      // Hard-fail path should have attempted a best-effort dispose signal.
+      expect(w.posted[w.posted.length - 1]).toEqual({ type: "tspice:dispose" });
+
+      // And it should occur before listener teardown/terminate.
+      const postIdx = w.calls.lastIndexOf("postMessage");
+      const rmIdx = w.calls.findIndex((c) => c.startsWith("removeEventListener:"));
+      expect(postIdx).toBeGreaterThanOrEqual(0);
+      expect(rmIdx).toBeGreaterThanOrEqual(0);
+      expect(postIdx).toBeLessThan(rmIdx);
     } finally {
       // @ts-expect-error - restore
       globalThis.MessageChannel = originalMessageChannel;

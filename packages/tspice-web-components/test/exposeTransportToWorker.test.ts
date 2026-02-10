@@ -45,6 +45,27 @@ const flush = async (): Promise<void> => {
 };
 
 describe("exposeTransportToWorker()", () => {
+  it("throws for invalid maxConcurrentRequests values", async () => {
+    const { exposeTransportToWorker } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const self = new FakeWorkerSelf();
+    const transport = { request: vi.fn(async () => 123) };
+
+    for (const maxConcurrentRequests of [0, -1, Number.NaN, 1.5]) {
+      expect(() =>
+        exposeTransportToWorker({
+          transport,
+          self,
+          closeOnDispose: false,
+          // @ts-expect-error - intentional invalid values
+          maxConcurrentRequests,
+        }),
+      ).toThrow(/maxConcurrentRequests/i);
+    }
+  });
+
   it("serves requests over the tspice worker RPC protocol", async () => {
     const { exposeTransportToWorker } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components"

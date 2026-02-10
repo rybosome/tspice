@@ -197,6 +197,17 @@ export function createWorkerTransport(opts: {
     worker = undefined;
     if (!w) return;
 
+    // Best-effort: if configured, attempt to notify the worker to dispose any
+    // server-side resources *before* we remove listeners/terminate.
+    if (signalDispose) {
+      try {
+        const msg: RpcDispose = { type: tspiceRpcDisposeType };
+        w.postMessage(msg);
+      } catch {
+        // ignore
+      }
+    }
+
     w.removeEventListener("message", onMessage);
     w.removeEventListener("error", onError);
     w.removeEventListener("messageerror", onMessageError);

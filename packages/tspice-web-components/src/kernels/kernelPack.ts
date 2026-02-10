@@ -76,7 +76,9 @@ function isAbsoluteUrl(url: string): boolean {
 
 
 function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
-  if (baseUrl === undefined) return url;
+  // Treat empty-string the same as `undefined` to avoid surprising behavior when
+  // `baseUrl` is sourced from config/env where "" is a common default.
+  if (baseUrl === undefined || baseUrl === "") return url;
 
   // If the kernel URL is already absolute, don't apply `baseUrl`.
   if (isAbsoluteUrl(url)) return url;

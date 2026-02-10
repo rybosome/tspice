@@ -18,16 +18,26 @@ export function canQueueMacrotask(): boolean {
   try {
     if (typeof MessageChannel !== "undefined") {
       const { port1, port2 } = new MessageChannel();
-      // Be defensive: some polyfills/test environments may not implement `close()`.
+
+      // Probe that `postMessage` works (some polyfills allow construction but
+      // throw on `postMessage`, which would otherwise deadlock queueing).
       try {
-        port1.close?.();
+        port2.postMessage(undefined);
       } catch {
-        // ignore
-      }
-      try {
-        port2.close?.();
-      } catch {
-        // ignore
+        return false;
+      } finally {
+        // Always close ports so they don't keep the event loop alive in Node.
+        // Be defensive: some polyfills/test environments may not implement `close()`.
+        try {
+          port1.close?.();
+        } catch {
+          // ignore
+        }
+        try {
+          port2.close?.();
+        } catch {
+          // ignore
+        }
       }
       return true;
     }

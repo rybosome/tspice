@@ -116,6 +116,13 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
         opts?.onDisposeError?.(err);
       } catch (callbackErr) {
         if (typeof console !== "undefined" && typeof console.error === "function") {
+          // Log both: the original disposal failure and the error thrown by the
+          // error callback.
+          try {
+            console.error("createSpiceWorkerClient.dispose(): disposeAsync() failed", err);
+          } catch {
+            // ignore
+          }
           try {
             console.error("createSpiceWorkerClient.dispose(): onDisposeError threw", callbackErr);
           } catch {
