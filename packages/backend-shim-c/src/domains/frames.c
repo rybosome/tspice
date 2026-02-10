@@ -254,14 +254,29 @@ int tspice_ccifrm(
   SpiceInt center = 0;
   SpiceBoolean found = SPICEFALSE;
 
+  // Defensive handling: `ccifrm_c` expects a writable output buffer for the
+  // frame name. Allow callers to pass a null/empty buffer when they don't
+  // care about the name.
+  SpiceChar tmpFrname[32] = {0};
+  SpiceChar *frnameBuf = outFrname;
+  SpiceInt frnameLen = (SpiceInt)outFrnameMaxBytes;
+  if (outFrname == NULL || outFrnameMaxBytes <= 0) {
+    frnameBuf = tmpFrname;
+    frnameLen = (SpiceInt)sizeof(tmpFrname);
+  }
+
   ccifrm_c(
       (SpiceInt)frameClass,
       (SpiceInt)classId,
-      (SpiceInt)outFrnameMaxBytes,
+      frnameLen,
       &frcode,
-      outFrname,
+      frnameBuf,
       &center,
       &found);
+
+  if (outFrname && outFrnameMaxBytes > 0) {
+    outFrname[outFrnameMaxBytes - 1] = '\0';
+  }
 
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);

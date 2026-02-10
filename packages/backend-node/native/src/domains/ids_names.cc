@@ -1,5 +1,6 @@
 #include "ids_names.h"
 
+#include <cctype>
 #include <string>
 #include <vector>
 
@@ -12,6 +13,27 @@ using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static std::string TrimAsciiWhitespace(const std::string& s) {
+  size_t start = 0;
+  while (start < s.size() && std::isspace(static_cast<unsigned char>(s[start]))) {
+    start++;
+  }
+
+  size_t end = s.size();
+  while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1]))) {
+    end--;
+  }
+
+  return s.substr(start, end - start);
+}
+
+static std::string ToUpperAscii(std::string s) {
+  for (char& ch : s) {
+    ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
+  }
+  return s;
+}
 
 static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -167,7 +189,8 @@ static Napi::Array Bodvar(const Napi::CallbackInfo& info) {
   }
 
   const int body = info[0].As<Napi::Number>().Int32Value();
-  const std::string item = info[1].As<Napi::String>().Utf8Value();
+  const std::string itemRaw = info[1].As<Napi::String>().Utf8Value();
+  const std::string item = ToUpperAscii(TrimAsciiWhitespace(itemRaw));
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];

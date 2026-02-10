@@ -1071,7 +1071,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       const key = `BODY${body}_${normalizeName(item).toUpperCase()}`;
       const entry = kernelPool.get(key);
       if (!entry || entry.type !== "N") {
-        throw new Error(`Fake backend: bodvar() missing kernel pool variable: ${key}`);
+        // Align with the backend contract: missing / non-numeric pool vars are a normal miss.
+        // Callers that need strict presence checks can use `bodfnd()`.
+        return [];
       }
       return [...entry.values];
     },

@@ -89,6 +89,12 @@ int tspice_bodc2s(
   }
 
   bodc2s_c((SpiceInt)code, (SpiceInt)outNameMaxBytes, outName);
+
+  // Defensive: ensure the output buffer is always null-terminated.
+  if (outName && outNameMaxBytes > 0) {
+    outName[outNameMaxBytes - 1] = '\0';
+  }
+
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
