@@ -176,7 +176,7 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
   return { message: String(error) };
 }
 
-function inferSpiceFromError(error: unknown): Partial<SpiceErrorState> | null {
+function inferSpiceFromError(error: unknown): SpiceErrorState | null {
   if (!(error instanceof Error)) return null;
 
   // Some backends (notably WASM) attach best-effort SPICE fields directly to
@@ -194,9 +194,14 @@ function inferSpiceFromError(error: unknown): Partial<SpiceErrorState> | null {
   const long = typeof anyErr.spiceLong === "string" ? anyErr.spiceLong : undefined;
   const trace = typeof anyErr.spiceTrace === "string" ? anyErr.spiceTrace : undefined;
 
-  if (!short && !long && !trace) return null;
+  if (short === undefined && long === undefined && trace === undefined) return null;
 
-  return { failed: true, short, long, trace };
+  return {
+    failed: true,
+    ...(short !== undefined ? { short } : {}),
+    ...(long !== undefined ? { long } : {}),
+    ...(trace !== undefined ? { trace } : {}),
+  };
 }
 
 function tryConfigureErrorPolicy(backend: SpiceBackend): void {
@@ -428,20 +433,12 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
         const report = safeErrorReport(error);
 
         const captured = captureSpiceErrorState(backend);
-        const inferred = inferSpiceFromError(error);
-        const inferredState: SpiceErrorState | null = inferred ? { failed: true, ...inferred } : null;
+        const inferredState = inferSpiceFromError(error);
 
         // Prefer the backend-reported SPICE state, but fall back to inference
         // when the backend doesn't surface anything useful.
         if (captured.failed) {
-          report.spice = inferredState
-            ? {
-                ...captured,
-                short: captured.short ?? inferredState.short,
-                long: captured.long ?? inferredState.long,
-                trace: captured.trace ?? inferredState.trace,
-              }
-            : captured;
+          report.spice = inferredState ? { ...inferredState, ...captured } : captured;
         } else {
           report.spice = inferredState ?? captured;
         }
