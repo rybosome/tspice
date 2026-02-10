@@ -17,7 +17,15 @@ type HandleEntry = {
   nativeHandle: number;
 };
 
-function asHandleId(handle: SpiceHandle): number {
+function assertHandleId(value: unknown, context: string): asserts value is number {
+  invariant(
+    typeof value === "number" && Number.isSafeInteger(value) && value > 0,
+    `${context}: expected a positive safe integer SpiceHandle`,
+  );
+}
+
+function asHandleId(handle: SpiceHandle, context: string): number {
+  assertHandleId(handle, context);
   return handle as unknown as number;
 }
 
@@ -68,8 +76,11 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
 
   function register(kind: HandleKind, nativeHandle: number): SpiceHandle {
     invariant(
-      typeof nativeHandle === "number" && Number.isFinite(nativeHandle),
-      `Expected native backend to return a numeric handle for ${kind}`,
+      typeof nativeHandle === "number" &&
+        Number.isInteger(nativeHandle) &&
+        nativeHandle >= I32_MIN &&
+        nativeHandle <= I32_MAX,
+      `Expected native backend to return a 32-bit signed integer handle for ${kind}`,
     );
 
     invariant(
@@ -82,35 +93,50 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
     return asSpiceHandle(handleId);
   }
 
-  function lookup(handle: SpiceHandle, expected: HandleKind): HandleEntry {
-    const handleId = asHandleId(handle);
+  function lookup(handle: SpiceHandle, expected: readonly HandleKind[]): HandleEntry {
+    const handleId = asHandleId(handle, "lookup(handle)");
     const entry = handles.get(handleId);
     if (!entry) {
       throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
     }
-    if (entry.kind !== expected) {
+    if (!expected.includes(entry.kind)) {
       throw new Error(
-        `Invalid SpiceHandle kind for ${expected} operation: ${handleId} is ${entry.kind}, expected ${expected}`,
+        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
       );
     }
     return entry;
   }
 
-  function close(handle: SpiceHandle, expected: HandleKind, closeNative: (nativeHandle: number) => void): void {
-    const handleId = asHandleId(handle);
+  function close(
+    handle: SpiceHandle,
+    expected: readonly HandleKind[],
+    closeNative: (entry: HandleEntry) => void,
+  ): void {
+    const handleId = asHandleId(handle, "close(handle)");
     const entry = handles.get(handleId);
     if (!entry) {
       throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
     }
-    if (entry.kind !== expected) {
+    if (!expected.includes(entry.kind)) {
       throw new Error(
-        `Invalid SpiceHandle kind for ${expected} close: ${handleId} is ${entry.kind}, expected ${expected}`,
+        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
       );
     }
 
     // Close-once semantics: only forget the handle after the native close succeeds.
-    closeNative(entry.nativeHandle);
+    closeNative(entry);
     handles.delete(handleId);
+  }
+
+  function closeDasBacked(handle: SpiceHandle): void {
+    close(handle, ["DAS", "DLA"], (entry) => {
+      // DLA is DAS-backed, but DLA write handles should be closed via dlacls.
+      if (entry.kind === "DLA") {
+        native.dlacls(entry.nativeHandle);
+        return;
+      }
+      native.dascls(entry.nativeHandle);
+    });
   }
 
   const api = {
@@ -130,30 +156,32 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
     },
 
     dafopr: (path: string) => register("DAF", native.dafopr(path)),
-    dafcls: (handle: SpiceHandle) => close(handle, "DAF", (h) => native.dafcls(h)),
-    dafbfs: (handle: SpiceHandle) => native.dafbfs(lookup(handle, "DAF").nativeHandle),
+    dafcls: (handle: SpiceHandle) => close(handle, ["DAF"], (e) => native.dafcls(e.nativeHandle)),
+    dafbfs: (handle: SpiceHandle) => native.dafbfs(lookup(handle, ["DAF"]).nativeHandle),
     daffna: (handle: SpiceHandle) => {
-      const found = native.daffna(lookup(handle, "DAF").nativeHandle);
+      const found = native.daffna(lookup(handle, ["DAF"]).nativeHandle);
       invariant(typeof found === "boolean", "Expected native backend daffna() to return a boolean");
       return found;
     },
 
     dasopr: (path: string) => register("DAS", native.dasopr(path)),
-    dascls: (handle: SpiceHandle) => close(handle, "DAS", (h) => native.dascls(h)),
+    dascls: closeDasBacked,
 
     dlaopn: (path: string, ftype: string, ifname: string, ncomch: number) =>
       register("DLA", native.dlaopn(path, ftype, ifname, ncomch)),
 
     dlabfs: (handle: SpiceHandle) =>
-      normalizeFoundDlaDescriptor(native.dlabfs(lookup(handle, "DLA").nativeHandle), "dlabfs()"),
+      normalizeFoundDlaDescriptor(native.dlabfs(lookup(handle, ["DAS", "DLA"]).nativeHandle), "dlabfs()"),
 
-    dlafns: (handle: SpiceHandle, descr: DlaDescriptor) =>
-      normalizeFoundDlaDescriptor(
-        native.dlafns(lookup(handle, "DLA").nativeHandle, descr),
+    dlafns: (handle: SpiceHandle, descr: DlaDescriptor) => {
+      assertDlaDescriptor(descr, "dlafns(descr)");
+      return normalizeFoundDlaDescriptor(
+        native.dlafns(lookup(handle, ["DAS", "DLA"]).nativeHandle, descr),
         "dlafns()",
-      ),
+      );
+    },
 
-    dlacls: (handle: SpiceHandle) => close(handle, "DLA", (h) => native.dlacls(h)),
+    dlacls: closeDasBacked,
   } satisfies FileIoApi;
 
   Object.defineProperty(api, "__debugOpenHandleCount", {

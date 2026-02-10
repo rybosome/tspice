@@ -22,7 +22,14 @@ type HandleEntry = {
   nativeHandle: number;
 };
 
-function asHandleId(handle: SpiceHandle): number {
+function assertHandleId(value: unknown, context: string): asserts value is number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`${context}: expected a positive safe integer SpiceHandle`);
+  }
+}
+
+function asHandleId(handle: SpiceHandle, context: string): number {
+  assertHandleId(handle, context);
   return handle as unknown as number;
 }
 
@@ -151,8 +158,13 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
   const handles = new Map<number, HandleEntry>();
 
   function register(kind: HandleKind, nativeHandle: number): SpiceHandle {
-    if (!Number.isFinite(nativeHandle)) {
-      throw new Error(`Expected native backend to return a numeric handle for ${kind}`);
+    if (
+      typeof nativeHandle !== "number" ||
+      !Number.isInteger(nativeHandle) ||
+      nativeHandle < I32_MIN ||
+      nativeHandle > I32_MAX
+    ) {
+      throw new Error(`Expected native backend to return a 32-bit signed integer handle for ${kind}`);
     }
     if (nextHandleId >= Number.MAX_SAFE_INTEGER) {
       throw new Error(`SpiceHandle ID overflow: too many handles allocated (nextHandleId=${nextHandleId})`);
@@ -162,34 +174,49 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
     return asSpiceHandle(handleId);
   }
 
-  function lookup(handle: SpiceHandle, expected: HandleKind): HandleEntry {
-    const handleId = asHandleId(handle);
+  function lookup(handle: SpiceHandle, expected: readonly HandleKind[]): HandleEntry {
+    const handleId = asHandleId(handle, "lookup(handle)");
     const entry = handles.get(handleId);
     if (!entry) {
       throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
     }
-    if (entry.kind !== expected) {
+    if (!expected.includes(entry.kind)) {
       throw new Error(
-        `Invalid SpiceHandle kind for ${expected} operation: ${handleId} is ${entry.kind}, expected ${expected}`,
+        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
       );
     }
     return entry;
   }
 
-  function close(handle: SpiceHandle, expected: HandleKind, closeNative: (nativeHandle: number) => void): void {
-    const handleId = asHandleId(handle);
+  function close(
+    handle: SpiceHandle,
+    expected: readonly HandleKind[],
+    closeNative: (entry: HandleEntry) => void,
+  ): void {
+    const handleId = asHandleId(handle, "close(handle)");
     const entry = handles.get(handleId);
     if (!entry) {
       throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
     }
-    if (entry.kind !== expected) {
+    if (!expected.includes(entry.kind)) {
       throw new Error(
-        `Invalid SpiceHandle kind for ${expected} close: ${handleId} is ${entry.kind}, expected ${expected}`,
+        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
       );
     }
 
-    closeNative(entry.nativeHandle);
+    closeNative(entry);
     handles.delete(handleId);
+  }
+
+  function closeDasBacked(handle: SpiceHandle): void {
+    close(handle, ["DAS", "DLA"], (entry) => {
+      // DLA is DAS-backed, but DLA write handles should be closed via dlacls.
+      if (entry.kind === "DLA") {
+        callVoidHandle(module, module._tspice_dlacls, entry.nativeHandle);
+        return;
+      }
+      callVoidHandle(module, module._tspice_dascls, entry.nativeHandle);
+    });
   }
 
   return {
@@ -261,13 +288,13 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
     },
 
     dafcls: (handle: SpiceHandle) =>
-      close(handle, "DAF", (h) => callVoidHandle(module, module._tspice_dafcls, h)),
+      close(handle, ["DAF"], (e) => callVoidHandle(module, module._tspice_dafcls, e.nativeHandle)),
 
     dafbfs: (handle: SpiceHandle) =>
-      callVoidHandle(module, module._tspice_dafbfs, lookup(handle, "DAF").nativeHandle),
+      callVoidHandle(module, module._tspice_dafbfs, lookup(handle, ["DAF"]).nativeHandle),
 
     daffna: (handle: SpiceHandle) => {
-      const nativeHandle = lookup(handle, "DAF").nativeHandle;
+      const nativeHandle = lookup(handle, ["DAF"]).nativeHandle;
       return withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outFoundPtr, errPtr) => {
         module.HEAP32[outFoundPtr >> 2] = 0;
         const code = module._tspice_daffna(nativeHandle, outFoundPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -296,8 +323,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
       }
     },
 
-    dascls: (handle: SpiceHandle) =>
-      close(handle, "DAS", (h) => callVoidHandle(module, module._tspice_dascls, h)),
+    dascls: closeDasBacked,
 
     dlaopn: (path: string, ftype: string, ifname: string, ncomch: number) => {
       assertSpiceInt32NonNegative(ncomch, "dlaopn(ncomch)");
@@ -342,7 +368,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
     },
 
     dlabfs: (handle: SpiceHandle): FoundDlaDescriptor => {
-      const nativeHandle = lookup(handle, "DLA").nativeHandle;
+      const nativeHandle = lookup(handle, ["DAS", "DLA"]).nativeHandle;
       return withAllocs(module, [32, 4, WASM_ERR_MAX_BYTES], (outDescr8Ptr, outFoundPtr, errPtr) => {
         module.HEAP32[outFoundPtr >> 2] = 0;
 
@@ -368,7 +394,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor => {
       assertDlaDescriptor(descr, "dlafns(descr)");
-      const nativeHandle = lookup(handle, "DLA").nativeHandle;
+      const nativeHandle = lookup(handle, ["DAS", "DLA"]).nativeHandle;
 
       return withAllocs(
         module,
@@ -399,6 +425,6 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
       );
     },
 
-    dlacls: (handle: SpiceHandle) => close(handle, "DLA", (h) => callVoidHandle(module, module._tspice_dlacls, h)),
+    dlacls: closeDasBacked,
   } satisfies FileIoApi;
 }

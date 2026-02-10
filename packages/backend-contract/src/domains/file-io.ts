@@ -70,7 +70,12 @@ export interface FileIoApi {
   /** Open a DAS file for read (see `dasopr_c`). */
   dasopr(path: string): SpiceHandle;
 
-  /** Close a DAS file previously opened by `dasopr()` (or DLA open helpers). */
+  /**
+   * Close a DAS-backed file handle.
+   *
+   * DLA is DAS-backed, so `dascls` can close handles returned from either
+   * `dasopr()` (read) or `dlaopn()` (write).
+   */
   dascls(handle: SpiceHandle): void;
 
   // --- DLA -----------------------------------------------------------------
@@ -78,12 +83,27 @@ export interface FileIoApi {
   /** Create and open a DLA file for write (see `dlaopn_c`). */
   dlaopn(path: string, ftype: string, ifname: string, ncomch: number): SpiceHandle;
 
-  /** Begin a forward search for DLA segments (see `dlabfs_c`). */
+  /**
+   * Begin a forward search for DLA segments (see `dlabfs_c`).
+   *
+   * DLA is DAS-backed: `handle` must be a DAS handle to a DLA file, opened via
+   * `dasopr()` (read) or `dlaopn()` (write).
+   */
   dlabfs(handle: SpiceHandle): FoundDlaDescriptor;
 
-  /** Find the next DLA segment after `descr` (see `dlafns_c`). */
+  /**
+   * Find the next DLA segment after `descr` (see `dlafns_c`).
+   *
+   * DLA is DAS-backed: `handle` must be a DAS handle to a DLA file, opened via
+   * `dasopr()` (read) or `dlaopn()` (write).
+   */
   dlafns(handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor;
 
-  /** Convenience close for DLA handles (DLA is DAS-backed). */
+  /**
+   * Convenience close for DAS-backed DLA handles.
+   *
+   * DLA is DAS-backed, so `dlacls` can accept handles returned from either
+   * `dlaopn()` or `dasopr()` (on a DLA file).
+   */
   dlacls(handle: SpiceHandle): void;
 }
