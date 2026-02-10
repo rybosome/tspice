@@ -508,7 +508,7 @@ export function validateBenchmarkSuiteV1(
           ? benchmarkRecord.id
           : null;
 
-      const benchmark = validateBenchmark(
+      validateBenchmark(
         benchmarkValue,
         errors,
         benchmarkPath,
