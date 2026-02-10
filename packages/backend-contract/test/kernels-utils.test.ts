@@ -29,4 +29,9 @@ describe("matchesKernelKind", () => {
     const requested = new Set(["   "]);
     expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(false);
   });
+
+  it("ignores empty-string requested tokens", () => {
+    const requested = new Set([""]);
+    expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(false);
+  });
 });

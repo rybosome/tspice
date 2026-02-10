@@ -115,7 +115,7 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
 function normalizeRequestedKindSetIfNeeded(requestedRaw: ReadonlySet<string>): ReadonlySet<string> {
   for (const raw of requestedRaw) {
     const trimmed = raw.trim();
-    if (trimmed !== raw || trimmed.toUpperCase() !== trimmed) {
+    if (!trimmed || trimmed !== raw || trimmed.toUpperCase() !== trimmed) {
       // Normalize the query (trim + uppercase) while filtering out empty tokens.
       const normalized = new Set<string>();
       for (const k of requestedRaw) {
