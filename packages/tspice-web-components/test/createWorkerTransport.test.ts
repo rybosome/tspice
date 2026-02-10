@@ -82,8 +82,6 @@ describe("createWorkerTransport()", () => {
       /* @vite-ignore */ "@rybosome/tspice-web-components"
     );
 
-    vi.useFakeTimers();
-
     const w = new FakeWorker();
     const transport = createWorkerTransport({ worker: () => w });
 
@@ -92,15 +90,11 @@ describe("createWorkerTransport()", () => {
 
     // The transport defers settling by 1 macrotask to avoid a dispose-vs-message race.
     w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
-    expect(vi.getTimerCount()).toBe(1);
     transport.dispose();
     expect(w.terminated).toBe(false);
-    expect(vi.getTimerCount()).toBe(0);
 
     // Attach a handler immediately to avoid an unhandled rejection warning.
     const expectation = expect(p).rejects.toThrow(/disposed/i);
-
-    await vi.runAllTimersAsync();
     await expectation;
 
     await nextMacrotask();
@@ -114,28 +108,40 @@ describe("createWorkerTransport()", () => {
 
     vi.useFakeTimers();
 
-    const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w });
+    const originalMessageChannel = globalThis.MessageChannel;
+    // Force `queueMacrotask()` to fall back to setTimeout so we can count the
+    // single scheduled settlement task with fake timers.
+    // @ts-expect-error - test override
+    globalThis.MessageChannel = undefined;
 
-    const p1 = transport.request("op1", []);
-    const posted1 = w.posted[0] as { id: number };
+    try {
 
-    const p2 = transport.request("op2", []);
-    const posted2 = w.posted[1] as { id: number };
+      const w = new FakeWorker();
+      const transport = createWorkerTransport({ worker: () => w });
 
-    w.emitMessage({ type: "tspice:response", id: posted1.id, ok: true, value: 1 });
-    expect(vi.getTimerCount()).toBe(1);
+      const p1 = transport.request("op1", []);
+      const posted1 = w.posted[0] as { id: number };
 
-    w.emitMessage({ type: "tspice:response", id: posted2.id, ok: true, value: 2 });
-    // Still just one settlement macrotask scheduled for this tick.
-    expect(vi.getTimerCount()).toBe(1);
+      const p2 = transport.request("op2", []);
+      const posted2 = w.posted[1] as { id: number };
 
-    await vi.runAllTimersAsync();
+      w.emitMessage({ type: "tspice:response", id: posted1.id, ok: true, value: 1 });
+      expect(vi.getTimerCount()).toBe(1);
 
-    await expect(p1).resolves.toBe(1);
-    await expect(p2).resolves.toBe(2);
+      w.emitMessage({ type: "tspice:response", id: posted2.id, ok: true, value: 2 });
+      // Still just one settlement macrotask scheduled for this tick.
+      expect(vi.getTimerCount()).toBe(1);
 
-    transport.dispose();
+      await vi.runAllTimersAsync();
+
+      await expect(p1).resolves.toBe(1);
+      await expect(p2).resolves.toBe(2);
+
+      transport.dispose();
+    } finally {
+      // @ts-expect-error - restore
+      globalThis.MessageChannel = originalMessageChannel;
+    }
   });
 
   it("rejects and cleans up on timeout", async () => {
@@ -197,12 +203,31 @@ describe("createWorkerTransport()", () => {
     expect(w.terminated).toBe(true);
   });
 
-  it("rejects malformed response messages (ok=true missing value)", async () => {
+  it("does not signal dispose by default for shared workers", async () => {
     const { createWorkerTransport } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components"
     );
 
-    vi.useFakeTimers();
+    const w = new FakeWorker();
+    const transport = createWorkerTransport({ worker: w });
+
+    const p = transport.request("op", []);
+    transport.dispose();
+
+    await expect(p).rejects.toThrow(/disposed/i);
+
+    // Request postMessage only; no `tspice:dispose` signal for shared workers.
+    expect(w.posted).toHaveLength(1);
+    expect(w.terminated).toBe(false);
+
+    await nextMacrotask();
+    expect(w.terminated).toBe(false);
+  });
+
+  it("rejects malformed response messages (ok=true missing value)", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
 
     const w = new FakeWorker();
     const transport = createWorkerTransport({ worker: () => w });
@@ -217,7 +242,7 @@ describe("createWorkerTransport()", () => {
       new RegExp(`malformed.*\\(op=op, id=${posted.id}\\)`, "i"),
     );
 
-    await vi.runAllTimersAsync();
+    await nextMacrotask();
     await expectation;
 
     transport.dispose();

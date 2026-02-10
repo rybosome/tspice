@@ -18,6 +18,8 @@ This package is currently intended for **internal workspace use**.
   - When caching is disabled (e.g. `ttlMs <= 0` or `maxEntries <= 0`), returns the input transport unchanged.
   - Use `isCachingTransport()` to narrow before calling `clear()`/`dispose()`.
   - Types: `CachingTransport`, `WithCachingResult`
+- `defaultSpiceCacheKey()` — default cache key generator used by `withCaching()`.
+  - For plain objects, cache key stability/hit rate depends on object key insertion order (because it uses `JSON.stringify`).
 
 ### `createWorkerTransport()`: `terminateOnDispose`
 
@@ -46,6 +48,14 @@ const sharedTransport = createWorkerTransport({ worker: sharedWorker });
 ownedTransport.dispose(); // rejects pending + terminates worker
 sharedTransport.dispose(); // rejects pending only (does not terminate sharedWorker)
 ```
+
+### `createWorkerTransport()`: `signalDispose`
+
+`dispose()` can optionally post `{ type: "tspice:dispose" }` to the worker.
+
+This is a **global server cleanup signal**, so it should generally not be enabled for shared workers unless cleanup is externally coordinated.
+
+Defaults to `signalDispose = terminateOnDispose`.
 
 ## Canonical Web Worker client
 

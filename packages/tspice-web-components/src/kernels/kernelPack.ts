@@ -172,11 +172,7 @@ export async function loadKernelPack(
     );
 
     for (const [i, kernel] of pack.kernels.entries()) {
-      const kernelBytes = bytes[i];
-      if (!kernelBytes) {
-        throw new Error("loadKernelPack(): internal error (bytes array length mismatch)");
-      }
-
+      const kernelBytes = bytes[i]!;
       await spice.kit.loadKernel({ path: kernel.path, bytes: kernelBytes });
     }
 

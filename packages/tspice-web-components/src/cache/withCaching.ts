@@ -313,6 +313,13 @@ function containsBinaryLikeData(
   return false;
 }
 
+/**
+ * Default cache key function used by `withCaching()`.
+ *
+ * Note: for plain objects, cache key stability (and hit rate) depends on object
+ * key insertion order, since this uses `JSON.stringify` and does not sort
+ * keys.
+ */
 export function defaultSpiceCacheKey(op: string, args: unknown[]): string | null {
   try {
     const seen = new WeakSet<object>();

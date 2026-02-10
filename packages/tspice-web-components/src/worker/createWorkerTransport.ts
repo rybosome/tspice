@@ -29,7 +29,7 @@ export type WorkerTransport = Omit<SpiceTransport, "request"> & {
    * Send an RPC request to the worker.
    *
    * Note: Worker responses are always settled on a later macrotask (via
-   * `setTimeout(..., 0)`) so calling `dispose()` in the same tick
+   * `queueMacrotask(...)`) so calling `dispose()` in the same tick
    * deterministically wins.
    */
   request(
@@ -63,7 +63,7 @@ function createAbortError(): Error {
  * ## Macrotask settlement ordering
  *
  * Worker responses are resolved/rejected on a later macrotask (via
- * `setTimeout(..., 0)`) so that calling `dispose()` in the same tick
+ * `queueMacrotask(...)`) so that calling `dispose()` in the same tick
  * deterministically wins.
  *
  * Implications:
@@ -83,12 +83,25 @@ export function createWorkerTransport(opts: {
    * passed in.
    */
   terminateOnDispose?: boolean;
+
+  /**
+   * Whether `dispose()` should post a `tspice:dispose` message to the worker.
+   *
+   * This is a global server cleanup signal.
+   *
+   * Defaults to `terminateOnDispose` so that owned workers are signaled, but
+   * shared-worker clients do not accidentally request global cleanup unless
+   * externally coordinated.
+   */
+  signalDispose?: boolean;
 }): WorkerTransport {
   let worker: WorkerLike | undefined;
   let disposed = false;
 
   const terminateOnDispose =
     opts.terminateOnDispose ?? (typeof opts.worker === "function" ? true : false);
+
+  const signalDispose = opts.signalDispose ?? terminateOnDispose;
 
   type Pending = {
     op: string;
@@ -115,16 +128,15 @@ export function createWorkerTransport(opts: {
   // while still allowing `dispose()` (and worker errors) to deterministically
   // win before settlement.
   const queuedSettlementById = new Map<number, QueuedSettlement>();
-  // Single macrotask timer for batched response settlement.
-  // Invariant: if `responseSettlementMacrotask` is set, `queuedSettlementById.size > 0`.
-  let responseSettlementMacrotask: ReturnType<typeof setTimeout> | undefined;
+  // Whether a single macrotask has been queued to settle all currently-queued responses.
+  let settlementQueued = false;
   let nextId = 1;
 
   const formatRequestContext = (op: string, id?: number): string =>
     id === undefined ? `(op=${op})` : `(op=${op}, id=${id})`;
 
   const flushQueuedSettlements = (): void => {
-    responseSettlementMacrotask = undefined;
+    settlementQueued = false;
 
     for (const [id, settlement] of Array.from(queuedSettlementById)) {
       queuedSettlementById.delete(id);
@@ -156,18 +168,20 @@ export function createWorkerTransport(opts: {
   };
 
   const scheduleSettlementMacrotask = (): void => {
-    if (responseSettlementMacrotask !== undefined) return;
-    responseSettlementMacrotask = setTimeout(flushQueuedSettlements, 0);
+    if (settlementQueued) return;
+    settlementQueued = true;
+
+    // Use the same macrotask scheduler as termination so we don't mix scheduling
+    // mechanisms (MessageChannel vs setTimeout) across the transport.
+    const ok = queueMacrotask(flushQueuedSettlements, { allowSyncFallback: false });
+    if (!ok) {
+      // No macrotask scheduler available. Fall back to synchronous flush so
+      // callers don't hang forever.
+      flushQueuedSettlements();
+    }
   };
 
   const rejectAllPending = (getReason: (pending: Pending, id: number) => unknown): void => {
-    // Cancel deferred settlement macrotask so it doesn't keep work queued after
-    // we've already rejected the associated requests.
-    if (responseSettlementMacrotask !== undefined) {
-      clearTimeout(responseSettlementMacrotask);
-      responseSettlementMacrotask = undefined;
-    }
-
     for (const [id, pending] of pendingById) {
       pendingById.delete(id);
       pending.rejectAndCleanup(getReason(pending, id));
@@ -293,11 +307,9 @@ export function createWorkerTransport(opts: {
 
     // Best-effort: tell the worker it should dispose any server-side resources.
     //
-    // - When we don't own the worker (`terminateOnDispose: false`), this is the
-    //   only way to request cleanup.
-    // - When we do own the worker and will terminate it, we yield a macrotask
-    //   before terminating to give this message a chance to be processed.
-    if (w) {
+    // This is intentionally opt-in for shared workers; `tspice:dispose` is a
+    // global cleanup signal and may affect other clients.
+    if (w && signalDispose) {
       try {
         const msg: RpcDispose = { type: tspiceRpcDisposeType };
         w.postMessage(msg);
@@ -320,8 +332,8 @@ export function createWorkerTransport(opts: {
       // We intentionally defer termination so the caller can synchronously
       // observe a disposed transport before the worker is torn down.
       //
-      // Defer by 1 macrotask to give the `tspice:dispose` postMessage a chance
-      // to be processed.
+      // Defer by 1 macrotask to give the optional `tspice:dispose` postMessage
+      // (if enabled) a chance to be processed.
       queueMacrotask(() => {
         try {
           w.terminate();
