@@ -217,7 +217,7 @@ jobs:
           body-includes: "<!-- orrery-preview-url -->"
 
       - name: Create or update orrery preview comment
-        if: always()
+        if: ${{ always() && steps.find_preview_comment.outcome == 'success' }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

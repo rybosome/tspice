@@ -166,11 +166,11 @@ export function kxtrctJs(
   }
 
   const termSet = new Set(terms.map((t) => t.trim()).filter(Boolean));
-  const words = [...wordsq.matchAll(/\S+/g)].map((m) => ({
-    text: m[0].trim(),
-    start: m.index ?? 0,
-    end: (m.index ?? 0) + m[0].length - 1,
-  }));
+  const words = [...wordsq.matchAll(/\S+/g)].map((m) => {
+    const text = m[0];
+    const start = m.index ?? 0;
+    return { text, start, end: start + text.length - 1 };
+  });
 
   const keyIndex = words.findIndex((w) => w.text === key);
   if (keyIndex < 0) {
