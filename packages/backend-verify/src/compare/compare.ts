@@ -36,15 +36,18 @@ function compareNumbers(
 ): Mismatch | null {
   if (Number.isNaN(actual) && Number.isNaN(expected)) return null;
 
-  const actualNorm = opts.angleWrapPi ? wrapToPi(actual) : actual;
-  const expectedNorm = opts.angleWrapPi ? wrapToPi(expected) : expected;
+  const angleWrapPi = opts.angleWrapPi === true;
+
+  const actualNorm = angleWrapPi ? wrapToPi(actual) : actual;
+  const expectedNorm = angleWrapPi ? wrapToPi(expected) : expected;
 
   if (Object.is(actualNorm, expectedNorm)) return null;
 
   const tolAbs = opts.tolAbs ?? 0;
   const tolRel = opts.tolRel ?? 0;
 
-  const diff = Math.abs(actualNorm - expectedNorm);
+  const delta = angleWrapPi ? wrapToPi(actual - expected) : actual - expected;
+  const diff = Math.abs(delta);
   // Use a symmetric denominator so tolerance behaves consistently regardless
   // of whether callers treat `actual` or `expected` as the reference.
   const rel = diff / Math.max(1e-30, Math.max(Math.abs(actualNorm), Math.abs(expectedNorm)));
@@ -52,12 +55,11 @@ function compareNumbers(
   if (diff <= tolAbs) return null;
   if (rel <= tolRel) return null;
 
-  return {
-    path,
-    actual: actualNorm,
-    expected: expectedNorm,
-    message: `number mismatch: actual=${actualNorm} expected=${expectedNorm} (diff=${diff}, rel=${rel})`,
-  };
+  const message = angleWrapPi
+    ? `number mismatch (angleWrapPi): actual=${actual} expected=${expected} (wrappedActual=${actualNorm}, wrappedExpected=${expectedNorm}, delta=${delta}, diff=${diff}, rel=${rel})`
+    : `number mismatch: actual=${actual} expected=${expected} (diff=${diff}, rel=${rel})`;
+
+  return { path, actual, expected, message };
 }
 
 function compareInner(
