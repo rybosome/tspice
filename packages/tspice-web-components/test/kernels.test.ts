@@ -252,4 +252,34 @@ describe("loadKernelPack()", () => {
       bytes: new Uint8Array([1]),
     });
   });
+
+
+  it("normalizes protocol-relative baseUrl (URL semantics + dot segments)", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [
+        { url: "kernels/a.tls", path: "a.tls" },
+        { url: "../kernels/b.bsp?x=1#hash", path: "b.bsp" },
+        { url: "/kernels/c.tls", path: "c.tls" },
+      ],
+    };
+
+    const fetch = vi.fn(async () => okResponse(new Uint8Array([1])));
+
+    const loadKernel = vi.fn().mockResolvedValue(undefined);
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    await loadKernelPack(spice, pack, { baseUrl: "//cdn.example.com/myapp", fetch });
+
+    expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+      "//cdn.example.com/myapp/kernels/a.tls",
+      "//cdn.example.com/kernels/b.bsp?x=1#hash",
+      "//cdn.example.com/kernels/c.tls",
+    ]);
+  });
 });

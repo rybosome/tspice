@@ -64,12 +64,6 @@ function isAbsoluteUrl(url: string): boolean {
   return false;
 }
 
-function isAbsoluteBaseUrl(baseUrl: string): boolean {
-  // NOTE: protocol-relative base URLs (`//...`) are not parseable by the URL
-  // constructor without a scheme, so we only treat scheme-based bases as
-  // "absolute" here.
-  return hasUrlScheme(baseUrl);
-}
 
 function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
   if (!baseUrl) return url;
@@ -77,20 +71,24 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
   // If the kernel URL is already absolute, don't apply `baseUrl`.
   if (isAbsoluteUrl(url)) return url;
 
-  // If `baseUrl` is absolute, lean on the URL constructor for proper resolution
-  // semantics (including `url` values like `/kernels/a`).
-  if (isAbsoluteBaseUrl(baseUrl)) {
-    const base = new URL(baseUrl);
+  const isProtocolRelativeBaseUrl = baseUrl.startsWith("//");
+
+  // If `baseUrl` is absolute-ish (scheme-based or protocol-relative), lean on
+  // the URL constructor for proper resolution semantics and normalization.
+  if (hasUrlScheme(baseUrl) || isProtocolRelativeBaseUrl) {
+    const base = hasUrlScheme(baseUrl)
+      ? new URL(baseUrl)
+      : new URL(baseUrl, "https://tspice.invalid");
+
     // Treat `baseUrl` as a directory prefix even when it doesn't end with `/`.
     if (!base.pathname.endsWith("/")) base.pathname = `${base.pathname}/`;
-    return new URL(url, base).toString();
-  }
 
-  // Support protocol-relative CDN-style bases (e.g. `//cdn.example.com/assets/`).
-  if (baseUrl.startsWith("//")) {
-    const base = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-    const rel = url.startsWith("/") ? url.slice(1) : url;
-    return `${base}${rel}`;
+    const resolved = new URL(url, base);
+    if (isProtocolRelativeBaseUrl) {
+      return `//${resolved.host}${resolved.pathname}${resolved.search}${resolved.hash}`;
+    }
+
+    return resolved.toString();
   }
 
   // `baseUrl` is path-absolute (commonly a Vite BASE_URL like `/myapp/`).

@@ -33,15 +33,6 @@ export function exposeTransportToWorker(opts: {
 
   let disposed = false;
 
-  const inFlight = new Set<Promise<void>>();
-
-  const trackInFlight = (p: Promise<void>): void => {
-    inFlight.add(p);
-    void p.finally(() => {
-      inFlight.delete(p);
-    });
-  };
-
   const onMessage = (ev: MessageEvent<unknown>): void => {
     const msg = ev.data as Partial<RpcMessageFromMain> | null | undefined;
     if (!msg || typeof msg.type !== "string") return;
@@ -86,7 +77,7 @@ export function exposeTransportToWorker(opts: {
         return;
       }
 
-      const p = (async () => {
+      void (async () => {
         try {
           const value = await opts.transport.request(op, args.map(decodeRpcValue));
           if (disposed) return;
@@ -111,7 +102,6 @@ export function exposeTransportToWorker(opts: {
         }
       })();
 
-      trackInFlight(p);
       return;
     }
   };
@@ -122,10 +112,8 @@ export function exposeTransportToWorker(opts: {
     if (disposed) return;
     disposed = true;
 
-    // Prevent any further responses from being posted (including from in-flight
-    // request handlers).
-    inFlight.clear();
-
+    // Note: this does not cancel any in-flight `transport.request()` calls; it
+    // just prevents any further responses from being posted.
     self.removeEventListener("message", onMessage);
   };
 
