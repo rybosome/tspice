@@ -10,6 +10,8 @@ import {
   sanitizeMetaKernelTextForWasm,
 } from "../kernels/metaKernel.js";
 
+import { spiceShortSymbol } from "../errors/spiceShort.js";
+
 import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
 
 type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown;
@@ -187,10 +189,13 @@ function inferSpiceFromError(error: unknown): SpiceErrorState | null {
     spiceTrace?: unknown;
   };
 
-  const short =
-    typeof anyErr.spiceShort === "string"
-      ? anyErr.spiceShort
-      : /SPICE\([A-Z0-9_]+\)/.exec(error.message)?.[0];
+  // Prefer explicitly attached fields, but fall back to best-effort inference
+  // from the thrown message.
+  const m = /SPICE\s*\(\s*([A-Z0-9_]+)\s*\)/i.exec(error.message);
+
+  const shortRaw = typeof anyErr.spiceShort === "string" ? anyErr.spiceShort : m?.[1];
+  const short = typeof shortRaw === "string" ? spiceShortSymbol(shortRaw) : undefined;
+
   const long = typeof anyErr.spiceLong === "string" ? anyErr.spiceLong : undefined;
   const trace = typeof anyErr.spiceTrace === "string" ? anyErr.spiceTrace : undefined;
 

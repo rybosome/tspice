@@ -18,7 +18,7 @@ import { parseScenario } from "../src/dsl/parse.js";
 import { executeScenario } from "../src/dsl/execute.js";
 import { compareValues } from "../src/compare/compare.js";
 import { formatMismatchReport } from "../src/compare/report.js";
-import { spiceShortCode } from "../src/errors/spiceShort.js";
+import { spiceShortSymbol } from "../src/errors/spiceShort.js";
 
 const DEFAULT_TOL_ABS = 1e-12;
 const DEFAULT_TOL_REL = 1e-12;
@@ -154,7 +154,7 @@ describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
               throw new Error(`Missing cspice spice.short while comparing errors (${label}): ${JSON.stringify(c.outcome.error)}`);
             }
 
-            expect(spiceShortCode(tShort)).toBe(spiceShortCode(cShort));
+            expect(spiceShortSymbol(tShort)).toBe(spiceShortSymbol(cShort));
             continue;
           }
 

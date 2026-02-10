@@ -15,15 +15,17 @@ function joinPath(base: string, key: string | number): string {
 }
 
 function normalizeToMinusPiPi(x: number): number {
+  // Fast-path exact multiples of TAU: trig reduction can yield tiny residuals
+  // (e.g. 2π -> ~-2.4e-16). Only snap when the input is *exactly* a multiple
+  // in floating arithmetic.
+  const TAU = 2 * Math.PI;
+  if (x % TAU === 0) return 0;
+
   // Normalize into [-pi, pi).
   const y = Math.atan2(Math.sin(x), Math.cos(x));
 
   // atan2 returns +pi at the branch cut; convert to -pi so we preserve [-pi, pi).
   if (Object.is(y, Math.PI)) return -Math.PI;
-
-  // For exact multiples of TAU, sin/cos rounding can yield tiny residuals.
-  // Snap those to 0 so comparisons stay deterministic.
-  if (Math.abs(y) < 1e-15) return 0;
 
   return y;
 }
