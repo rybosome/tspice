@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { WorkerLike } from "@rybosome/tspice-web-components";
+
 import { nextMacrotask } from "../src/worker/taskScheduling.js";
+
+type WorkerLike = import("@rybosome/tspice-web-components").WorkerLike;
 
 type Listener = (ev: unknown) => void;
 
@@ -56,7 +58,7 @@ describe("createWorkerTransport()", () => {
     );
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w });
+    const transport = createWorkerTransport({ worker: () => w, terminateOnDispose: false });
 
     const p = transport.request("kit.utcToEt", ["2026-01-01T00:00:00Z"]);
 
@@ -68,13 +70,6 @@ describe("createWorkerTransport()", () => {
     await expect(p).resolves.toBe(123);
 
     transport.dispose();
-    expect(w.terminated).toBe(false);
-    expect(w.posted[w.posted.length - 1]).toEqual({ type: "tspice:dispose" });
-
-    // Termination is deferred by 1 macrotask to give the dispose postMessage a
-    // chance to be processed.
-    await nextMacrotask();
-    expect(w.terminated).toBe(true);
   });
 
   it("lets dispose() win over an already-received response message", async () => {
@@ -83,22 +78,23 @@ describe("createWorkerTransport()", () => {
     );
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w });
+    const transport = createWorkerTransport({ worker: () => w, terminateOnDispose: false });
 
     const p = transport.request("op", []);
     const posted = w.posted[0] as { id: number };
 
     // The transport defers settling by 1 macrotask to avoid a dispose-vs-message race.
     w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
-    transport.dispose();
-    expect(w.terminated).toBe(false);
 
     // Attach a handler immediately to avoid an unhandled rejection warning.
     const expectation = expect(p).rejects.toThrow(/disposed/i);
+
+    transport.dispose();
+
     await expectation;
 
+    // Let the queued settlement macrotask run (should be a no-op after dispose).
     await nextMacrotask();
-    expect(w.terminated).toBe(true);
   });
 
   it("batches response settlements into a single macrotask", async () => {
@@ -115,9 +111,8 @@ describe("createWorkerTransport()", () => {
     globalThis.MessageChannel = undefined;
 
     try {
-
       const w = new FakeWorker();
-      const transport = createWorkerTransport({ worker: () => w });
+      const transport = createWorkerTransport({ worker: () => w, terminateOnDispose: false });
 
       const p1 = transport.request("op1", []);
       const posted1 = w.posted[0] as { id: number };
@@ -152,7 +147,7 @@ describe("createWorkerTransport()", () => {
     vi.useFakeTimers();
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w, timeoutMs: 10 });
+    const transport = createWorkerTransport({ worker: () => w, timeoutMs: 10, terminateOnDispose: false });
 
     const p = transport.request("op", []);
 
@@ -169,7 +164,7 @@ describe("createWorkerTransport()", () => {
     );
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w });
+    const transport = createWorkerTransport({ worker: () => w, terminateOnDispose: false });
 
     const ac = new AbortController();
     const p = transport.request("op", [], { signal: ac.signal });
@@ -187,20 +182,43 @@ describe("createWorkerTransport()", () => {
     );
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w });
+    const transport = createWorkerTransport({ worker: () => w, terminateOnDispose: false });
 
     const p = transport.request("op", []);
+
     transport.dispose();
-    expect(w.terminated).toBe(false);
-    expect(w.posted[w.posted.length - 1]).toEqual({ type: "tspice:dispose" });
 
-    const expectation = expect(p).rejects.toThrow(/disposed/i);
-    await expectation;
+    await expect(p).rejects.toThrow(/disposed/i);
+  });
 
-    // Termination is deferred by 1 macrotask to give the dispose postMessage a
-    // chance to be processed.
-    await nextMacrotask();
-    expect(w.terminated).toBe(true);
+  it("signals dispose by default for owned workers", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    vi.useFakeTimers();
+
+    const originalMessageChannel = globalThis.MessageChannel;
+    // Ensure `queueMacrotask()` uses timers so we can deterministically flush termination.
+    // @ts-expect-error - test override
+    globalThis.MessageChannel = undefined;
+
+    try {
+      const w = new FakeWorker();
+      const transport = createWorkerTransport({ worker: () => w });
+
+      transport.dispose();
+
+      // Owned worker (factory): signalDispose defaults to true.
+      expect(w.posted[w.posted.length - 1]).toEqual({ type: "tspice:dispose" });
+      expect(w.terminated).toBe(false);
+
+      await vi.runAllTimersAsync();
+      expect(w.terminated).toBe(true);
+    } finally {
+      // @ts-expect-error - restore
+      globalThis.MessageChannel = originalMessageChannel;
+    }
   });
 
   it("does not signal dispose by default for shared workers", async () => {
@@ -229,23 +247,68 @@ describe("createWorkerTransport()", () => {
       /* @vite-ignore */ "@rybosome/tspice-web-components"
     );
 
-    const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w });
+    vi.useFakeTimers();
 
-    const p = transport.request("op", []);
-    const posted = w.posted[0] as { id: number };
+    const originalMessageChannel = globalThis.MessageChannel;
+    // Force `queueMacrotask()` to use setTimeout so we can flush deterministically.
+    // @ts-expect-error - test override
+    globalThis.MessageChannel = undefined;
 
-    // Missing `value` should reject immediately (next macrotask) with a helpful error.
-    w.emitMessage({ type: "tspice:response", id: posted.id, ok: true });
+    try {
+      const w = new FakeWorker();
+      const transport = createWorkerTransport({ worker: () => w, terminateOnDispose: false });
 
-    const expectation = expect(p).rejects.toThrow(
-      new RegExp(`malformed.*\\(op=op, id=${posted.id}\\)`, "i"),
+      const p = transport.request("op", []);
+      const posted = w.posted[0] as { id: number };
+
+      // Missing `value` should reject on the next macrotask with a helpful error.
+      w.emitMessage({ type: "tspice:response", id: posted.id, ok: true });
+
+      const expectation = expect(p).rejects.toThrow(
+        new RegExp(`malformed.*\\(op=op, id=${posted.id}\\)`, "i"),
+      );
+
+      await vi.runAllTimersAsync();
+      await expectation;
+
+      transport.dispose();
+    } finally {
+      // @ts-expect-error - restore
+      globalThis.MessageChannel = originalMessageChannel;
+    }
+  });
+
+  it("rejects and cleans up on worker error", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
     );
 
-    await nextMacrotask();
-    await expectation;
+    const w = new FakeWorker();
+    const transport = createWorkerTransport({ worker: () => w, terminateOnDispose: false });
+
+    const p = transport.request("op", []);
+
+    w.emitError("Boom");
+
+    await expect(p).rejects.toThrow(/boom.*op=op.*id=\d+/i);
 
     transport.dispose();
   });
 
+  it("rejects and cleans up on messageerror", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const w = new FakeWorker();
+    const transport = createWorkerTransport({ worker: () => w, terminateOnDispose: false });
+
+    const p = transport.request("op", []);
+
+    w.emitMessageError();
+
+    await expect(p).rejects.toThrow(/deserialization failed.*op=op.*id=\d+/i);
+
+    transport.dispose();
+  });
 });

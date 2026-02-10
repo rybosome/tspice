@@ -23,7 +23,23 @@ const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> = Objec
   }, {}),
 );
 
+// Module-global warning de-dupe (bounded to avoid unbounded memory growth if callers
+// supply many unique `noStorePrefixes` combinations across transports).
+const MAX_WARNED_BROAD_NO_STORE_PREFIX_SETS = 100;
 const warnedBroadNoStorePrefixSets = new Set<string>();
+
+function shouldWarnBroadNoStorePrefixes(warnKey: string): boolean {
+  if (warnedBroadNoStorePrefixSets.has(warnKey)) return false;
+  warnedBroadNoStorePrefixSets.add(warnKey);
+
+  // Evict oldest entries to keep this bounded.
+  while (warnedBroadNoStorePrefixSets.size > MAX_WARNED_BROAD_NO_STORE_PREFIX_SETS) {
+    const oldest = warnedBroadNoStorePrefixSets.values().next().value as string | undefined;
+    if (oldest === undefined) break;
+    warnedBroadNoStorePrefixSets.delete(oldest);
+  }
+  return true;
+}
 
 const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): boolean => {
   if (!prefixes || prefixes.length === 0) return false;
@@ -375,9 +391,7 @@ export function withCaching(
     if (broad.length > 0) {
       const normalized = Array.from(new Set(broad)).sort();
       const warnKey = normalized.join("\u0000");
-      if (!warnedBroadNoStorePrefixSets.has(warnKey)) {
-        warnedBroadNoStorePrefixSets.add(warnKey);
-
+      if (shouldWarnBroadNoStorePrefixes(warnKey)) {
         const listed = normalized.map((p) => JSON.stringify(p)).join(", ");
         onWarning(
           `withCaching(): broad noStorePrefixes ${listed}. ` +

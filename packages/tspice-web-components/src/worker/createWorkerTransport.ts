@@ -57,6 +57,13 @@ function createAbortError(): Error {
   }
 }
 
+function createNoMacrotaskSchedulerError(): Error {
+  return new Error(
+    "Worker transport cannot schedule macrotask settlement (MessageChannel/setTimeout missing). " +
+      "Refusing to settle responses synchronously because it would break dispose ordering guarantees.",
+  );
+}
+
 /**
  * Create a `SpiceTransport` backed by a `Worker`.
  *
@@ -70,6 +77,8 @@ function createAbortError(): Error {
  * - Requests never resolve/reject on the same tick a response is received.
  * - A response received in the current tick may be ignored if `dispose()` is
  *   called before the next tick.
+ * - If no macrotask scheduler exists in the runtime (no `MessageChannel` and no `setTimeout`),
+ *   the transport fails closed by rejecting requests rather than settling synchronously.
  */
 export function createWorkerTransport(opts: {
   worker: WorkerLike | (() => WorkerLike);
@@ -97,6 +106,10 @@ export function createWorkerTransport(opts: {
 }): WorkerTransport {
   let worker: WorkerLike | undefined;
   let disposed = false;
+
+  // If we ever discover we can't schedule a macrotask, we permanently fail
+  // closed (reject) to avoid violating settlement ordering guarantees.
+  let canScheduleMacrotask: boolean | undefined;
 
   const terminateOnDispose =
     opts.terminateOnDispose ?? (typeof opts.worker === "function" ? true : false);
@@ -128,12 +141,32 @@ export function createWorkerTransport(opts: {
   // while still allowing `dispose()` (and worker errors) to deterministically
   // win before settlement.
   const queuedSettlementById = new Map<number, QueuedSettlement>();
+
   // Whether a single macrotask has been queued to settle all currently-queued responses.
   let settlementQueued = false;
+
   let nextId = 1;
 
   const formatRequestContext = (op: string, id?: number): string =>
     id === undefined ? `(op=${op})` : `(op=${op}, id=${id})`;
+
+  const rejectAllPending = (getReason: (pending: Pending, id: number) => unknown): void => {
+    for (const [id, pending] of pendingById) {
+      pendingById.delete(id);
+      pending.rejectAndCleanup(getReason(pending, id));
+    }
+
+    // Queued settlements already ran `cleanup()` when their response was received.
+    for (const [id, settlement] of Array.from(queuedSettlementById)) {
+      queuedSettlementById.delete(id);
+
+      const pending = settlement.pending;
+      pending.reject(getReason(pending, id));
+      // Explicitly drop response payload references to help GC.
+      settlement.value = undefined;
+      settlement.error = undefined;
+    }
+  };
 
   const flushQueuedSettlements = (): void => {
     settlementQueued = false;
@@ -171,32 +204,19 @@ export function createWorkerTransport(opts: {
     if (settlementQueued) return;
     settlementQueued = true;
 
-    // Use the same macrotask scheduler as termination so we don't mix scheduling
-    // mechanisms (MessageChannel vs setTimeout) across the transport.
     const ok = queueMacrotask(flushQueuedSettlements, { allowSyncFallback: false });
-    if (!ok) {
-      // No macrotask scheduler available. Fall back to synchronous flush so
-      // callers don't hang forever.
-      flushQueuedSettlements();
-    }
-  };
-
-  const rejectAllPending = (getReason: (pending: Pending, id: number) => unknown): void => {
-    for (const [id, pending] of pendingById) {
-      pendingById.delete(id);
-      pending.rejectAndCleanup(getReason(pending, id));
+    if (ok) {
+      canScheduleMacrotask = true;
+      return;
     }
 
-    // Queued settlements already ran `cleanup()` when their response was received.
-    for (const [id, settlement] of Array.from(queuedSettlementById)) {
-      queuedSettlementById.delete(id);
+    // No macrotask scheduler available. Fail closed rather than settling
+    // synchronously and violating ordering guarantees.
+    canScheduleMacrotask = false;
+    settlementQueued = false;
 
-      const pending = settlement.pending;
-      pending.reject(getReason(pending, id));
-      // Explicitly drop response payload references to help GC.
-      settlement.value = undefined;
-      settlement.error = undefined;
-    }
+    const err = createNoMacrotaskSchedulerError();
+    rejectAllPending(() => err);
   };
 
   const onMessage = (ev: unknown): void => {
@@ -218,6 +238,12 @@ export function createWorkerTransport(opts: {
     // Clean up request-specific resources immediately (abort listeners, timers),
     // but defer settling to a macrotask so `dispose()` can deterministically win.
     pending.cleanup();
+
+    // If we already know we can't schedule macrotasks, reject immediately.
+    if (canScheduleMacrotask === false) {
+      pending.reject(createNoMacrotaskSchedulerError());
+      return;
+    }
 
     const op = pending.op;
 
@@ -302,7 +328,6 @@ export function createWorkerTransport(opts: {
     disposed = true;
 
     const w = worker;
-
     worker = undefined;
 
     // Best-effort: tell the worker it should dispose any server-side resources.
@@ -329,11 +354,9 @@ export function createWorkerTransport(opts: {
     w.removeEventListener("messageerror", onMessageError);
 
     if (terminateOnDispose) {
-      // We intentionally defer termination so the caller can synchronously
-      // observe a disposed transport before the worker is torn down.
-      //
-      // Defer by 1 macrotask to give the optional `tspice:dispose` postMessage
-      // (if enabled) a chance to be processed.
+      // Defer by 1 macrotask so callers can synchronously observe a disposed
+      // transport before the worker is torn down, and to give the optional
+      // `tspice:dispose` postMessage (if enabled) a chance to be processed.
       queueMacrotask(() => {
         try {
           w.terminate();
@@ -342,7 +365,6 @@ export function createWorkerTransport(opts: {
         }
       });
     }
-
   };
 
   const request = async (
@@ -351,6 +373,8 @@ export function createWorkerTransport(opts: {
     requestOpts?: WorkerTransportRequestOptions,
   ): Promise<unknown> => {
     if (disposed) throw new Error(`Worker transport disposed ${formatRequestContext(op)}`);
+    if (canScheduleMacrotask === false) throw createNoMacrotaskSchedulerError();
+
     const id = nextId++;
 
     const w = ensureWorker();
@@ -413,7 +437,9 @@ export function createWorkerTransport(opts: {
           if (pendingById.get(id) !== pending) return;
           pendingById.delete(id);
           pending.rejectAndCleanup(
-            new Error(`Worker request timed out after ${timeoutMs}ms ${formatRequestContext(op, id)}`),
+            new Error(
+              `Worker request timed out after ${timeoutMs}ms ${formatRequestContext(op, id)}`,
+            ),
           );
         }, timeoutMs);
       }

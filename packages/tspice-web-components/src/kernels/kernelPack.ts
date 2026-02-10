@@ -126,12 +126,11 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
   // If `url` is already an absolute *path*, leave it alone.
   if (url.startsWith("/")) return url;
 
-  if (!baseUrl.endsWith("/")) {
-    throw new Error(
-      `loadKernelPack(): relative baseUrl must be directory-style (end with \"/\"): ${baseUrl}`,
-    );
-  }
-  return `${baseUrl}${url}`;
+  // Relative base URLs can be normalized safely; unlike `new URL(url, baseUrl)`,
+  // this path-join behavior is unambiguous.
+  if (baseUrl.length === 0) return url;
+  const normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+  return `${normalizedBaseUrl}${url}`;
 }
 
 async function fetchKernelBytes(fetchFn: FetchLike, url: string): Promise<Uint8Array> {

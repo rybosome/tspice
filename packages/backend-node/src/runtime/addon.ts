@@ -27,6 +27,25 @@ export type NativeAddon = {
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;
 
+  // --- file i/o primitives ---
+
+  exists(path: string): boolean;
+  getfat(path: string): { arch: string; type: string };
+
+  dafopr(path: string): number;
+  dafcls(handle: number): void;
+  dafbfs(handle: number): void;
+  daffna(handle: number): boolean;
+
+  dasopr(path: string): number;
+  dascls(handle: number): void;
+
+  dlaopn(path: string, ftype: string, ifname: string, ncomch: number): number;
+  dlabfs(handle: number): { found: boolean; descr?: Record<string, unknown> };
+  dlafns(handle: number, descr: Record<string, unknown>): { found: boolean; descr?: Record<string, unknown> };
+  dlacls(handle: number): void;
+
+
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
   namfrm(name: string): { found: boolean; code?: number };

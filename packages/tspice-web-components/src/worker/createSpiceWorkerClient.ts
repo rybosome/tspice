@@ -57,6 +57,8 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
   timeoutMs?: number;
   /** Forwarded to `createWorkerTransport`. Defaults to `true` when `worker` is a factory. */
   terminateOnDispose?: boolean;
+  /** Forwarded to `createWorkerTransport`. Defaults to `terminateOnDispose`. */
+  signalDispose?: boolean;
   /** Optional transport wrapper (e.g. `withCaching`). */
   wrapTransport?: (t: WorkerTransport) => TTransport;
 
@@ -73,6 +75,7 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
     worker,
     ...(opts?.timeoutMs === undefined ? {} : { timeoutMs: opts.timeoutMs }),
     terminateOnDispose,
+    ...(opts?.signalDispose === undefined ? {} : { signalDispose: opts.signalDispose }),
   });
 
   const transport = opts?.wrapTransport

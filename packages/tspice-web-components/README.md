@@ -20,6 +20,10 @@ This package is currently intended for **internal workspace use**.
   - Types: `CachingTransport`, `WithCachingResult`
 - `defaultSpiceCacheKey()` — default cache key generator used by `withCaching()`.
   - For plain objects, cache key stability/hit rate depends on object key insertion order (because it uses `JSON.stringify`).
+- `loadKernelPack()` — fetch a kernel pack and load kernels into tspice.
+  - Types: `KernelPack`, `KernelPackKernel`, `LoadKernelPackOptions`
+- `publicKernels` / `createPublicKernels()` — helpers for working with a curated set of public kernel IDs.
+  - Types: `CreatePublicKernelsOptions`, `PublicKernelId`, `PublicKernelsBuilder`
 
 ### `createWorkerTransport()`: `terminateOnDispose`
 

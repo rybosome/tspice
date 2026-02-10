@@ -17,3 +17,4 @@
 #include "../../backend-shim-c/src/domains/ephemeris.c"
 #include "../../backend-shim-c/src/domains/geometry.c"
 #include "../../backend-shim-c/src/domains/coords_vectors.c"
+#include "../../backend-shim-c/src/domains/file_io.c"

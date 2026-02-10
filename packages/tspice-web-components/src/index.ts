@@ -31,5 +31,9 @@ export { createSpiceAsyncFromTransport } from "./client/createSpiceAsyncFromTran
 export type { KernelPack, KernelPackKernel, LoadKernelPackOptions } from "./kernels/kernelPack.js";
 export { loadKernelPack } from "./kernels/kernelPack.js";
 
-export type { CreatePublicKernelsOptions, PublicKernelId, PublicKernelsBuilder } from "./kernels/publicKernels.js";
+export type {
+  CreatePublicKernelsOptions,
+  PublicKernelId,
+  PublicKernelsBuilder,
+} from "./kernels/publicKernels.js";
 export { createPublicKernels, publicKernels } from "./kernels/publicKernels.js";
