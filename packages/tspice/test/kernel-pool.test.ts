@@ -16,6 +16,9 @@ const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 const TEST_VAR = "TSPICE_TEST_VAR";
 const TEST_AGENT = "TSPICE_TEST_AGENT";
 
+const TEST_INT_VAR = "TSPICE_TEST_INT_VAR";
+const TEST_BAD_PDPOOL_VAR = "TSPICE_TEST_BAD_PDPOOL_VAR";
+
 describe("Kernel pool", () => {
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
@@ -28,6 +31,22 @@ describe("Kernel pool", () => {
     // Argument validation (contract parity across backends)
     expect(() => backend.gdpool("DELTET/DELTA_T_A", -1, 8)).toThrow(/start/i);
     expect(() => backend.gdpool("DELTET/DELTA_T_A", 0, 0)).toThrow(/room/i);
+
+    // More argument validation parity checks
+    expect(() => backend.pipool(TEST_INT_VAR, [1.5])).toThrow(TypeError);
+    expect(() => backend.pipool(TEST_INT_VAR, [2147483648])).toThrow(RangeError);
+    expect(() => backend.pipool(TEST_INT_VAR, [-2147483649])).toThrow(RangeError);
+
+    backend.pipool(TEST_INT_VAR, [-2147483648, 2147483647]);
+    const ints = backend.gipool(TEST_INT_VAR, 0, 10);
+    expect(ints.found).toBe(true);
+    if (ints.found) {
+      expect(ints.values).toEqual([-2147483648, 2147483647]);
+    }
+
+    expect(() => backend.pdpool(TEST_BAD_PDPOOL_VAR, [Number.NaN])).toThrow(RangeError);
+    expect(() => backend.pdpool(TEST_BAD_PDPOOL_VAR, [Infinity])).toThrow(RangeError);
+    expect(() => backend.pdpool(TEST_BAD_PDPOOL_VAR, [-Infinity])).toThrow(RangeError);
 
     const dt = backend.dtpool("DELTET/DELTA_T_A");
     expect(dt.found).toBe(true);
@@ -78,6 +97,22 @@ describe("Kernel pool", () => {
     // Argument validation (contract parity across backends)
     expect(() => backend.gdpool("DELTET/DELTA_T_A", -1, 8)).toThrow(/start/i);
     expect(() => backend.gdpool("DELTET/DELTA_T_A", 0, 0)).toThrow(/room/i);
+
+    // More argument validation parity checks
+    expect(() => backend.pipool(TEST_INT_VAR, [1.5])).toThrow(RangeError);
+    expect(() => backend.pipool(TEST_INT_VAR, [2147483648])).toThrow(RangeError);
+    expect(() => backend.pipool(TEST_INT_VAR, [-2147483649])).toThrow(RangeError);
+
+    backend.pipool(TEST_INT_VAR, [-2147483648, 2147483647]);
+    const ints = backend.gipool(TEST_INT_VAR, 0, 10);
+    expect(ints.found).toBe(true);
+    if (ints.found) {
+      expect(ints.values).toEqual([-2147483648, 2147483647]);
+    }
+
+    expect(() => backend.pdpool(TEST_BAD_PDPOOL_VAR, [Number.NaN])).toThrow(RangeError);
+    expect(() => backend.pdpool(TEST_BAD_PDPOOL_VAR, [Infinity])).toThrow(RangeError);
+    expect(() => backend.pdpool(TEST_BAD_PDPOOL_VAR, [-Infinity])).toThrow(RangeError);
 
     const dt = backend.dtpool("DELTET/DELTA_T_A");
     expect(dt.found).toBe(true);

@@ -2,7 +2,31 @@
 
 #include "SpiceUsr.h"
 
+#include <stddef.h>
 #include <string.h>
+
+static int tspice_kernel_pool_invalid_arg(char *err, int errMaxBytes, const char *msg) {
+  // This module provides a stable C ABI surface.
+  //
+  // If callers pass invalid pointers/lengths, we must not invoke CSPICE with
+  // arguments that could cause undefined behavior.
+  //
+  // Also, clear any previous structured SPICE error fields so higher-level
+  // callers (e.g. the Node addon) don't accidentally attach stale `spiceShort`
+  // / `spiceLong` / `spiceTrace` fields to these non-CSPICE validation errors.
+  tspice_reset(NULL, 0);
+
+  if (err && errMaxBytes > 0) {
+    if (msg) {
+      strncpy(err, msg, (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    } else {
+      err[0] = '\0';
+    }
+  }
+
+  return 1;
+}
 
 int tspice_gdpool(
     const char *name,
@@ -23,6 +47,22 @@ int tspice_gdpool(
   }
   if (outFound) {
     *outFound = 0;
+  }
+
+  if (!name) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gdpool(): name must not be NULL");
+  }
+  if (start < 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gdpool(): start must be >= 0");
+  }
+  if (room <= 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gdpool(): room must be > 0");
+  }
+  if (room > 0 && !outValues) {
+    return tspice_kernel_pool_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_gdpool(): outValues must not be NULL when room > 0");
   }
 
   SpiceInt nC = 0;
@@ -65,6 +105,22 @@ int tspice_gipool(
     *outFound = 0;
   }
 
+  if (!name) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gipool(): name must not be NULL");
+  }
+  if (start < 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gipool(): start must be >= 0");
+  }
+  if (room <= 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gipool(): room must be > 0");
+  }
+  if (room > 0 && !outValues) {
+    return tspice_kernel_pool_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_gipool(): outValues must not be NULL when room > 0");
+  }
+
   SpiceInt nC = 0;
   SpiceBoolean foundC = SPICEFALSE;
 
@@ -104,6 +160,25 @@ int tspice_gcpool(
   }
   if (outFound) {
     *outFound = 0;
+  }
+
+  if (!name) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gcpool(): name must not be NULL");
+  }
+  if (start < 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gcpool(): start must be >= 0");
+  }
+  if (room <= 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gcpool(): room must be > 0");
+  }
+  if (cvalen <= 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gcpool(): cvalen must be > 0");
+  }
+  if (room > 0 && !outCvals) {
+    return tspice_kernel_pool_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_gcpool(): outCvals must not be NULL when room > 0");
   }
 
   SpiceInt nC = 0;
@@ -153,6 +228,25 @@ int tspice_gnpool(
   }
   if (outFound) {
     *outFound = 0;
+  }
+
+  if (!name) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gnpool(): name must not be NULL");
+  }
+  if (start < 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gnpool(): start must be >= 0");
+  }
+  if (room <= 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gnpool(): room must be > 0");
+  }
+  if (cvalen <= 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_gnpool(): cvalen must be > 0");
+  }
+  if (room > 0 && !outCvals) {
+    return tspice_kernel_pool_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_gnpool(): outCvals must not be NULL when room > 0");
   }
 
   SpiceInt nC = 0;
@@ -208,6 +302,10 @@ int tspice_dtpool(
     }
   }
 
+  if (!name) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_dtpool(): name must not be NULL");
+  }
+
   SpiceBoolean foundC = SPICEFALSE;
   SpiceInt nC = 0;
   SpiceChar typeC[2];
@@ -250,6 +348,16 @@ int tspice_pdpool(
     err[0] = '\0';
   }
 
+  if (!name) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pdpool(): name must not be NULL");
+  }
+  if (n < 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pdpool(): n must be >= 0");
+  }
+  if (n > 0 && !values) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pdpool(): values must not be NULL when n > 0");
+  }
+
   pdpool_c(name, (SpiceInt)n, (ConstSpiceDouble *)values);
 
   if (failed_c()) {
@@ -270,6 +378,16 @@ int tspice_pipool(
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
+  }
+
+  if (!name) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pipool(): name must not be NULL");
+  }
+  if (n < 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pipool(): n must be >= 0");
+  }
+  if (n > 0 && !ivals) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pipool(): ivals must not be NULL when n > 0");
   }
 
   pipool_c(name, (SpiceInt)n, (ConstSpiceInt *)ivals);
@@ -295,6 +413,19 @@ int tspice_pcpool(
     err[0] = '\0';
   }
 
+  if (!name) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pcpool(): name must not be NULL");
+  }
+  if (n < 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pcpool(): n must be >= 0");
+  }
+  if (lenvals <= 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pcpool(): lenvals must be > 0");
+  }
+  if (n > 0 && !cvals) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_pcpool(): cvals must not be NULL when n > 0");
+  }
+
   pcpool_c(name, (SpiceInt)n, (SpiceInt)lenvals, cvals);
 
   if (failed_c()) {
@@ -316,6 +447,19 @@ int tspice_swpool(
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
+  }
+
+  if (!agent) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_swpool(): agent must not be NULL");
+  }
+  if (nnames < 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_swpool(): nnames must be >= 0");
+  }
+  if (namlen <= 0) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_swpool(): namlen must be > 0");
+  }
+  if (nnames > 0 && !names) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_swpool(): names must not be NULL when nnames > 0");
   }
 
   swpool_c(agent, (SpiceInt)nnames, (SpiceInt)namlen, names);
@@ -340,6 +484,10 @@ int tspice_cvpool(
   }
   if (outUpdate) {
     *outUpdate = 0;
+  }
+
+  if (!agent) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_cvpool(): agent must not be NULL");
   }
 
   SpiceBoolean updateC = SPICEFALSE;
@@ -369,6 +517,10 @@ int tspice_expool(
   }
   if (outFound) {
     *outFound = 0;
+  }
+
+  if (!name) {
+    return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_expool(): name must not be NULL");
   }
 
   SpiceBoolean foundC = SPICEFALSE;

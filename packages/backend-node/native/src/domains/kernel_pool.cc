@@ -1,6 +1,7 @@
 #include "kernel_pool.h"
 
 #include <array>
+#include <cmath>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -367,7 +368,12 @@ static void Pdpool(const Napi::CallbackInfo& info) {
       ThrowSpiceError(Napi::TypeError::New(env, "pdpool values must contain only numbers"));
       return;
     }
-    values.push_back(v.As<Napi::Number>().DoubleValue());
+    const double d = v.As<Napi::Number>().DoubleValue();
+    if (!std::isfinite(d)) {
+      ThrowSpiceError(Napi::RangeError::New(env, "pdpool(): values must contain only finite numbers"));
+      return;
+    }
+    values.push_back(d);
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
@@ -399,7 +405,26 @@ static void Pipool(const Napi::CallbackInfo& info) {
       ThrowSpiceError(Napi::TypeError::New(env, "pipool values must contain only numbers"));
       return;
     }
-    values.push_back(v.As<Napi::Number>().Int32Value());
+    const double d = v.As<Napi::Number>().DoubleValue();
+    const bool isInteger = std::isfinite(d) && std::trunc(d) == d;
+    // Equivalent to JS `Number.isSafeInteger` for values that matter here.
+    const bool isSafeInteger = isInteger && std::fabs(d) <= 9007199254740991.0;  // 2^53 - 1
+
+    if (!isSafeInteger) {
+      ThrowSpiceError(Napi::TypeError::New(
+          env,
+          std::string("pipool(): values[") + std::to_string(i) + "] must be a safe integer"));
+      return;
+    }
+
+    if (d < -2147483648.0 || d > 2147483647.0) {
+      ThrowSpiceError(Napi::RangeError::New(
+          env,
+          std::string("pipool(): values[") + std::to_string(i) + "] must be a 32-bit signed integer"));
+      return;
+    }
+
+    values.push_back(static_cast<int>(d));
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
