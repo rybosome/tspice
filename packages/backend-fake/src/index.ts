@@ -890,8 +890,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     pdpool: (name, values) => {
       for (let i = 0; i < values.length; i++) {
-        if (!Number.isFinite(values[i]!)) {
-          throw new RangeError("pdpool(): values must contain only finite numbers");
+        const v = values[i]!;
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`pdpool(): values[${i}] must be a finite number (got ${String(v)})`);
         }
       }
       kernelPool.set(name, { type: "N", values: [...values] });
