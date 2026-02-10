@@ -712,7 +712,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
 
   const getKernelsOfKind = (kind: KernelKindInput | undefined): readonly KernelRecord[] => {
-    const requested = new Set(normalizeKindInput(kind).map((k) => k.toUpperCase()));
+    const requested = new Set<string>(normalizeKindInput(kind));
     return kernels.filter((k) => matchesKernelKind(requested, k));
   };
 

@@ -104,8 +104,27 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
   return rawTokens.map(normalizeKindTokenOrThrow);
 }
 
+function normalizeRequestedKindSetIfNeeded(requestedRaw: ReadonlySet<string>): ReadonlySet<string> {
+  for (const raw of requestedRaw) {
+    const trimmed = raw.trim();
+    if (trimmed !== raw || trimmed.toUpperCase() !== trimmed) {
+      // Normalize the query (trim + uppercase) while filtering out empty tokens.
+      const normalized = new Set<string>();
+      for (const k of requestedRaw) {
+        const token = k.trim();
+        if (token) normalized.add(token.toUpperCase());
+      }
+      return normalized;
+    }
+  }
+
+  return requestedRaw;
+}
+
 /**
  * Return whether a kernel matches the requested kind filter.
+ *
+ * Requested kind tokens are treated as trim + case-insensitive. Empty tokens are ignored.
  *
  * TEXT-kernel subtypes (LSK/FK/IK/SCLK): SPICE reports these as `filtyp: "TEXT"`.
  * When callers request a subtype, we infer it from the `kernel.file` identifier's
@@ -121,19 +140,7 @@ export function matchesKernelKind(
   //
   // Most call-sites already pass canonical kinds (e.g. via normalizeKindInput),
   // so we avoid allocating a new set unless normalization is needed.
-  let requested: ReadonlySet<string> = requestedRaw;
-  for (const k of requestedRaw) {
-    const trimmed = k.trim();
-    if (trimmed !== k || trimmed.toUpperCase() !== trimmed) {
-      const normalized = new Set<string>();
-      for (const raw of requestedRaw) {
-        const token = raw.trim();
-        if (token) normalized.add(token.toUpperCase());
-      }
-      requested = normalized;
-      break;
-    }
-  }
+  const requested = normalizeRequestedKindSetIfNeeded(requestedRaw);
 
   if (requested.size === 0) {
     return false;
@@ -155,6 +162,14 @@ export function matchesKernelKind(
   return requested.has(filtyp);
 }
 
+/**
+ * JS implementation of CSPICE `kxtrct`.
+ *
+ * Notes on return values:
+ * - `substr` is right-trimmed (`trimEnd()`).
+ * - `wordsq` has the extracted words removed, but otherwise preserves whitespace
+ *   from the original input (so it may start with blanks).
+ */
 export function kxtrctJs(
   keywd: string,
   terms: readonly string[],
