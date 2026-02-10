@@ -15,7 +15,14 @@ export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 
 export type LoadKernelPackOptions = {
   /**
-   * Base URL/path to resolve each `kernel.url` against when it is relative.
+   * Base URL/path *directory* to resolve each `kernel.url` against when it is relative.
+   *
+   * Unlike `new URL(url, baseUrl)`, this treats `baseUrl` as a directory prefix even
+   * when it does not end with `/`.
+   *
+   * Notes:
+   * - Absolute `kernel.url` values (e.g. `https://...`, `data:...`, `blob:...`) are left as-is.
+   * - Root-relative `kernel.url` values (starting with `/`) are left as-is.
    *
    * This is intentionally passed in (rather than relying on `import.meta.env.BASE_URL`)
    * so this helper can be used outside Vite and can be tested deterministically.
@@ -24,6 +31,15 @@ export type LoadKernelPackOptions = {
 
   /** Override `fetch` implementation (useful for tests and non-browser runtimes). */
   fetch?: FetchLike;
+
+  /**
+   * Controls how kernel bytes are fetched.
+   *
+   * - `"sequential"` (default): fetch + load one kernel at a time (lower peak memory).
+   * - `"parallel"`: fetch all kernels in parallel, then load sequentially in pack order
+   *   (faster, higher peak memory).
+   */
+  fetchStrategy?: "parallel" | "sequential";
 };
 
 export type SpiceWithLoadKernel = {
@@ -111,7 +127,11 @@ async function fetchKernelBytes(fetchFn: FetchLike, url: string): Promise<Uint8A
 /**
  * Load the given kernel pack into the provided `tspice` instance.
  *
- * Fetching is done in parallel, but kernels are *loaded* sequentially in pack order.
+ * By default, kernels are fetched and loaded sequentially to avoid holding all
+ * kernel bytes in memory at once.
+ *
+ * Set `opts.fetchStrategy: "parallel"` to fetch all kernels in parallel (kernels
+ * are still loaded sequentially in pack order).
  */
 export async function loadKernelPack(
   spice: SpiceWithLoadKernel,
@@ -125,16 +145,30 @@ export async function loadKernelPack(
     throw new Error("loadKernelPack(): `fetch` is not available; pass opts.fetch");
   }
 
-  const bytes = await Promise.all(
-    pack.kernels.map((k) => fetchKernelBytes(fetchFn, resolveKernelUrl(k.url, opts?.baseUrl))),
-  );
+  const fetchStrategy = opts?.fetchStrategy ?? "sequential";
 
-  for (const [i, kernel] of pack.kernels.entries()) {
-    const kernelBytes = bytes[i];
-    if (!kernelBytes) {
-      throw new Error("loadKernelPack(): internal error (bytes array length mismatch)");
+  if (fetchStrategy === "parallel") {
+    const bytes = await Promise.all(
+      pack.kernels.map((k) => fetchKernelBytes(fetchFn, resolveKernelUrl(k.url, opts?.baseUrl))),
+    );
+
+    for (const [i, kernel] of pack.kernels.entries()) {
+      const kernelBytes = bytes[i];
+      if (!kernelBytes) {
+        throw new Error("loadKernelPack(): internal error (bytes array length mismatch)");
+      }
+
+      await spice.kit.loadKernel({ path: kernel.path, bytes: kernelBytes });
     }
 
+    return;
+  }
+
+  for (const kernel of pack.kernels) {
+    const kernelBytes = await fetchKernelBytes(
+      fetchFn,
+      resolveKernelUrl(kernel.url, opts?.baseUrl),
+    );
     await spice.kit.loadKernel({ path: kernel.path, bytes: kernelBytes });
   }
 }

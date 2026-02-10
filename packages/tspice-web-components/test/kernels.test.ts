@@ -84,7 +84,7 @@ describe("loadKernelPack()", () => {
     vi.restoreAllMocks();
   });
 
-  it("fetches in parallel and loads sequentially in pack order", async () => {
+  it("fetches + loads sequentially by default (lower peak memory)", async () => {
     const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const pack = {
@@ -118,6 +118,78 @@ describe("loadKernelPack()", () => {
     };
 
     const p = loadKernelPack(spice, pack, { baseUrl: "/base", fetch });
+
+    // Only the first fetch should start.
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(loadKernel).toHaveBeenCalledTimes(0);
+
+    // Once the first fetch resolves, the first load should start.
+    fetchA.resolve(okResponse(new Uint8Array([1])));
+    await flushPromises();
+
+    expect(loadKernel).toHaveBeenCalledTimes(1);
+    expect(loadKernel).toHaveBeenNthCalledWith(1, {
+      path: "a.tls",
+      bytes: new Uint8Array([1]),
+    });
+
+    // Second fetch should not start until the first load resolves.
+    expect(fetch).toHaveBeenCalledTimes(1);
+
+    load1.resolve(undefined);
+    await flushPromises();
+
+    // Now the second fetch starts.
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(loadKernel).toHaveBeenCalledTimes(1);
+
+    fetchB.resolve(okResponse(new Uint8Array([2])));
+    await flushPromises();
+
+    expect(loadKernel).toHaveBeenCalledTimes(2);
+    expect(loadKernel).toHaveBeenNthCalledWith(2, {
+      path: "b.bsp",
+      bytes: new Uint8Array([2]),
+    });
+
+    load2.resolve(undefined);
+    await expect(p).resolves.toBeUndefined();
+  });
+
+  it("fetches in parallel (opt-in) and loads sequentially in pack order", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [
+        { url: "kernels/a.tls", path: "a.tls" },
+        { url: "kernels/b.bsp", path: "b.bsp" },
+      ],
+    };
+
+    const fetchA = deferred<Response>();
+    const fetchB = deferred<Response>();
+
+    const fetch = vi.fn((url: string) => {
+      if (url === "/base/kernels/a.tls") return fetchA.promise;
+      if (url === "/base/kernels/b.bsp") return fetchB.promise;
+      throw new Error(`Unexpected fetch url: ${url}`);
+    });
+
+    const load1 = deferred<void>();
+    const load2 = deferred<void>();
+
+    const loadKernel = vi
+      .fn()
+      .mockImplementationOnce(() => load1.promise)
+      .mockImplementationOnce(() => load2.promise);
+
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    const p = loadKernelPack(spice, pack, { baseUrl: "/base", fetch, fetchStrategy: "parallel" });
 
     // Both fetches should start before any loads.
     expect(fetch).toHaveBeenCalledTimes(2);
