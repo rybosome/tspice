@@ -1,5 +1,12 @@
 import type { SpiceTransport } from "../types.js";
 
+export type WorkerLike = {
+  postMessage(message: unknown): void;
+  addEventListener(type: string, listener: (ev: unknown) => void): void;
+  removeEventListener(type: string, listener: (ev: unknown) => void): void;
+  terminate(): void;
+};
+
 type RpcRequest = {
   type: "tspice:request";
   id: number;
@@ -94,7 +101,7 @@ function createAbortError(): Error {
  *   called before the next tick.
  */
 export function createWorkerTransport(opts: {
-  worker: Worker | (() => Worker);
+  worker: WorkerLike | (() => WorkerLike);
   /** Default request timeout (ms). Use <= 0 or `undefined` to disable. */
   timeoutMs?: number;
   /**
@@ -106,7 +113,7 @@ export function createWorkerTransport(opts: {
    */
   terminateOnDispose?: boolean;
 }): WorkerTransport {
-  let worker: Worker | undefined;
+  let worker: WorkerLike | undefined;
   let disposed = false;
 
   const terminateOnDispose =
@@ -132,7 +139,8 @@ export function createWorkerTransport(opts: {
   const settleTimeoutById = new Map<number, ReturnType<typeof setTimeout>>();
   let nextId = 1;
 
-  const formatRequestContext = (op: string, id: number): string => `(op=${op}, id=${id})`;
+  const formatRequestContext = (op: string, id?: number): string =>
+    id === undefined ? `(op=${op})` : `(op=${op}, id=${id})`;
 
   const rejectAllPending = (getReason: (pending: Pending, id: number) => unknown): void => {
     // Cancel deferred settlement timers so they don't keep work queued after
@@ -152,8 +160,11 @@ export function createWorkerTransport(opts: {
     }
   };
 
-  const onMessage = (ev: MessageEvent<unknown>): void => {
-    const msg = ev.data as Partial<RpcResponse> | null | undefined;
+  const onMessage = (ev: unknown): void => {
+    const msg = (ev as { data?: unknown } | null | undefined)?.data as
+      | Partial<RpcResponse>
+      | null
+      | undefined;
     if (!msg || msg.type !== "tspice:response" || typeof msg.id !== "number") return;
 
     const id = msg.id;
@@ -227,21 +238,28 @@ export function createWorkerTransport(opts: {
     settleTimeoutById.set(id, timeout);
   };
 
-  const onError = (ev: ErrorEvent): void => {
-    const message = ev.message || "Worker error";
+  const onError = (ev: unknown): void => {
+    let message: string | undefined;
+    try {
+      message = (ev as { message?: unknown } | null | undefined)?.message as string | undefined;
+    } catch {
+      // ignore
+    }
+
+    const safeMessage = typeof message === "string" && message.length > 0 ? message : "Worker error";
     rejectAllPending(
-      (pending, id) => new Error(`${message} ${formatRequestContext(pending.op, id)}`),
+      (pending, id) => new Error(`${safeMessage} ${formatRequestContext(pending.op, id)}`),
     );
   };
 
-  const onMessageError = (_ev: MessageEvent<unknown>): void => {
+  const onMessageError = (_ev: unknown): void => {
     rejectAllPending(
       (pending, id) =>
         new Error(`Worker message deserialization failed ${formatRequestContext(pending.op, id)}`),
     );
   };
 
-  const ensureWorker = (): Worker => {
+  const ensureWorker = (): WorkerLike => {
     if (!worker) {
       // Lazily construct/attach so transports can be created in environments
       // that don't immediately support `Worker`.
@@ -290,7 +308,7 @@ export function createWorkerTransport(opts: {
     args: unknown[],
     requestOpts?: WorkerTransportRequestOptions,
   ): Promise<unknown> => {
-    if (disposed) throw new Error(`Worker transport disposed (op=${op})`);
+    if (disposed) throw new Error(`Worker transport disposed ${formatRequestContext(op)}`);
     const id = nextId++;
 
     const w = ensureWorker();
@@ -300,12 +318,15 @@ export function createWorkerTransport(opts: {
 
     return await new Promise<unknown>((resolve, reject) => {
       let timeout: ReturnType<typeof setTimeout> | undefined;
-      let cleanedUp = false;
+      // Cleanup is intentionally idempotent. It may be called from multiple
+      // paths (timeout, abort, response receipt, or dispose()) depending on
+      // ordering.
+      let didCleanup = false;
       let onAbort: (() => void) | undefined;
 
       const cleanup = (): void => {
-        if (cleanedUp) return;
-        cleanedUp = true;
+        if (didCleanup) return;
+        didCleanup = true;
 
         if (timeout !== undefined) {
           clearTimeout(timeout);

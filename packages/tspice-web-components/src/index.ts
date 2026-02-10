@@ -17,6 +17,7 @@ export {
 export type {
   WorkerTransport,
   WorkerTransportRequestOptions,
+  WorkerLike,
 } from "./worker/createWorkerTransport.js";
 export { createWorkerTransport } from "./worker/createWorkerTransport.js";
 

@@ -210,7 +210,15 @@ function isPlainObject(x: unknown): x is Record<string, unknown> {
   return proto === Object.prototype || proto === null;
 }
 
-function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean {
+type ScanBudget = {
+  remaining: number;
+};
+
+function containsBinaryLikeData(
+  value: unknown,
+  seen: WeakSet<object>,
+  budget: ScanBudget,
+): boolean {
   if (value == null) return false;
 
   const g = globalThis as GlobalWithExtras;
@@ -249,11 +257,12 @@ function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean 
       return true;
     }
 
-    // Avoid O(n) descriptor allocation for large arrays. Treat them as
-    // non-cacheable (fail closed) instead.
-    if (len > MAX_KEY_SCAN) return true;
+    // Scan budget is a *total* budget across args; treat large arrays as
+    // non-cacheable (fail closed) rather than doing excessive descriptor work.
+    if (len > budget.remaining) return true;
 
     for (let i = 0; i < len; i++) {
+      if (budget.remaining-- <= 0) return true;
       // Detect holes (sparse arrays). JSON.stringify normalizes these to `null`,
       // which can lead to key collisions. Fail closed.
       if (!Object.prototype.hasOwnProperty.call(value, i)) return true;
@@ -270,7 +279,7 @@ function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean 
       if (!desc) return true;
       if (desc.get || desc.set) return true;
 
-      if (containsBinaryLikeData(desc.value, seen)) return true;
+      if (containsBinaryLikeData(desc.value, seen, budget)) return true;
     }
 
     return false;
@@ -278,17 +287,25 @@ function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean 
 
   if (!isPlainObject(value)) return true;
 
-  let descs: Record<string, PropertyDescriptor>;
-  try {
-    descs = Object.getOwnPropertyDescriptors(value);
-  } catch {
-    return true;
-  }
+  // Avoid Object.getOwnPropertyDescriptors(value) (bulk descriptor allocation).
+  // Scan incrementally and bail early if we hit the global scan budget.
+  for (const key in value) {
+    if (!Object.prototype.hasOwnProperty.call(value, key)) continue;
+    if (budget.remaining-- <= 0) return true;
 
-  for (const desc of Object.values(descs)) {
+    let desc: PropertyDescriptor | undefined;
+    try {
+      desc = Object.getOwnPropertyDescriptor(value, key);
+    } catch {
+      return true;
+    }
+
+    if (!desc) return true;
+    // `for...in` only enumerates enumerable properties, but keep this as a
+    // defensive guardrail.
     if (!desc.enumerable) continue;
     if (desc.get || desc.set) return true;
-    if (containsBinaryLikeData(desc.value, seen)) return true;
+    if (containsBinaryLikeData(desc.value, seen, budget)) return true;
   }
 
   return false;
@@ -297,8 +314,9 @@ function containsBinaryLikeData(value: unknown, seen: WeakSet<object>): boolean 
 export function defaultSpiceCacheKey(op: string, args: unknown[]): string | null {
   try {
     const seen = new WeakSet<object>();
+    const budget: ScanBudget = { remaining: MAX_KEY_SCAN };
     for (const arg of args) {
-      if (containsBinaryLikeData(arg, seen)) return null;
+      if (containsBinaryLikeData(arg, seen, budget)) return null;
     }
 
     return JSON.stringify([op, args]);
@@ -488,10 +506,12 @@ export function withCaching(
     return promise;
   };
 
-  return {
-    [CACHING_TRANSPORT_BRAND]: true,
-    request,
-    clear,
-    dispose,
-  };
+  const transport = { request, clear, dispose };
+  Object.defineProperty(transport, CACHING_TRANSPORT_BRAND, {
+    value: true,
+    enumerable: false,
+    writable: false,
+    configurable: false,
+  });
+  return transport;
 }

@@ -26,6 +26,32 @@ describe("withCaching()", () => {
     if (isCachingTransport(cached)) cached.dispose();
   });
 
+  it("brands the caching transport as non-enumerable + read-only", async () => {
+    const { CACHING_TRANSPORT_BRAND, isCachingTransport, withCaching } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components",
+    );
+
+    const base = {
+      request: vi.fn(async () => 123),
+    };
+
+    const cached = withCaching(base);
+    expect(isCachingTransport(cached)).toBe(true);
+    if (!isCachingTransport(cached)) throw new Error("expected caching transport");
+
+    const desc = Object.getOwnPropertyDescriptor(cached, CACHING_TRANSPORT_BRAND);
+    expect(desc).toMatchObject({
+      value: true,
+      enumerable: false,
+      writable: false,
+      configurable: false,
+    });
+
+    expect(Object.prototype.propertyIsEnumerable.call(cached, CACHING_TRANSPORT_BRAND)).toBe(false);
+
+    cached.dispose();
+  });
+
   it("dedupes in-flight requests", async () => {
     const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
@@ -182,6 +208,19 @@ describe("withCaching()", () => {
     expect(getterCalls).toBe(0);
 
     const big = new Array(MAX_KEY_SCAN + 1).fill(0);
+    expect(defaultSpiceCacheKey("op", [big])).toBeNull();
+  });
+
+  it("defaultSpiceCacheKey returns null for large plain objects (scan budget)", async () => {
+    const { MAX_KEY_SCAN, defaultSpiceCacheKey } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components",
+    );
+
+    const big: Record<string, number> = {};
+    for (let i = 0; i < MAX_KEY_SCAN + 1; i++) {
+      big[`k${i}`] = i;
+    }
+
     expect(defaultSpiceCacheKey("op", [big])).toBeNull();
   });
 

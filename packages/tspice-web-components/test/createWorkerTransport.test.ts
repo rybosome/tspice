@@ -1,10 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-type Listener = (ev: any) => void;
+type WorkerLike = import("@rybosome/tspice-web-components").WorkerLike;
 
-class FakeWorker {
+type Listener = (ev: unknown) => void;
+
+class FakeWorker implements WorkerLike {
   terminated = false;
-  posted: any[] = [];
+  posted: unknown[] = [];
 
   private listeners = new Map<string, Set<Listener>>();
 
@@ -17,7 +19,7 @@ class FakeWorker {
     this.listeners.get(type)?.delete(listener);
   }
 
-  postMessage(msg: any): void {
+  postMessage(msg: unknown): void {
     this.posted.push(msg);
   }
 
@@ -25,11 +27,11 @@ class FakeWorker {
     this.terminated = true;
   }
 
-  emit(type: string, ev: any): void {
+  emit(type: string, ev: unknown): void {
     for (const listener of Array.from(this.listeners.get(type) ?? [])) listener(ev);
   }
 
-  emitMessage(data: any): void {
+  emitMessage(data: unknown): void {
     this.emit("message", { data });
   }
 
@@ -54,11 +56,11 @@ describe("createWorkerTransport()", () => {
     );
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w as any });
+    const transport = createWorkerTransport({ worker: () => w });
 
     const p = transport.request("kit.utcToEt", ["2026-01-01T00:00:00Z"]);
 
-    const posted = w.posted[0];
+    const posted = w.posted[0] as { id: number };
     expect(posted).toMatchObject({ type: "tspice:request", op: "kit.utcToEt" });
 
     w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
@@ -77,10 +79,10 @@ describe("createWorkerTransport()", () => {
     vi.useFakeTimers();
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w as any });
+    const transport = createWorkerTransport({ worker: () => w });
 
     const p = transport.request("op", []);
-    const posted = w.posted[0];
+    const posted = w.posted[0] as { id: number };
 
     // The transport defers settling by 1 macrotask to avoid a dispose-vs-message race.
     w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
@@ -104,7 +106,7 @@ describe("createWorkerTransport()", () => {
     vi.useFakeTimers();
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w as any, timeoutMs: 10 });
+    const transport = createWorkerTransport({ worker: () => w, timeoutMs: 10 });
 
     const p = transport.request("op", []);
 
@@ -121,7 +123,7 @@ describe("createWorkerTransport()", () => {
     );
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w as any });
+    const transport = createWorkerTransport({ worker: () => w });
 
     const ac = new AbortController();
     const p = transport.request("op", [], { signal: ac.signal });
@@ -139,7 +141,7 @@ describe("createWorkerTransport()", () => {
     );
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w as any });
+    const transport = createWorkerTransport({ worker: () => w });
 
     const p = transport.request("op", []);
     transport.dispose();
@@ -156,10 +158,10 @@ describe("createWorkerTransport()", () => {
     vi.useFakeTimers();
 
     const w = new FakeWorker();
-    const transport = createWorkerTransport({ worker: () => w as any });
+    const transport = createWorkerTransport({ worker: () => w });
 
     const p = transport.request("op", []);
-    const posted = w.posted[0];
+    const posted = w.posted[0] as { id: number };
 
     // Missing `value` should reject immediately (next macrotask) with a helpful error.
     w.emitMessage({ type: "tspice:response", id: posted.id, ok: true });
