@@ -25,7 +25,22 @@ export function parseYaml(
 export function parseYamlFile(filePath: string): ValidationResult<unknown> {
   try {
     const yamlText = fs.readFileSync(filePath, "utf8");
-    return parseYaml(yamlText, { sourceName: filePath });
+    const result = parseYaml(yamlText, { sourceName: filePath });
+
+    // Ensure file context is always present even if lower-level parsing changes.
+    if (!result.ok) {
+      return {
+        ok: false,
+        errors: result.errors.map((error) => ({
+          ...error,
+          message: error.message.includes(filePath)
+            ? error.message
+            : `${filePath}: ${error.message}`,
+        })),
+      };
+    }
+
+    return result;
   } catch (err) {
     const baseMessage =
       err instanceof Error ? err.message : "Failed to read YAML file.";
