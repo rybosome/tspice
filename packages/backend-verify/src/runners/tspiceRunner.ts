@@ -4,7 +4,13 @@ import { readFile, realpath } from "node:fs/promises";
 
 import { createBackend, type SpiceBackend } from "@rybosome/tspice";
 
-import type { CaseRunner, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
+import {
+  resolveMetaKernelKernelsToLoad,
+  sanitizeMetaKernelTextForNativeNoKernels,
+  sanitizeMetaKernelTextForWasm,
+} from "../kernels/metaKernel.js";
+
+import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
 
 type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown;
 
@@ -153,6 +159,85 @@ async function kernelVirtualIdFromOsPath(osPath: string): Promise<string> {
   return `ospath/${hash}/${base}`;
 }
 
+function normalizeKernelEntry(entry: KernelEntry): { path: string; restrictToDir?: string } {
+  return typeof entry === "string" ? { path: entry } : entry;
+}
+
+async function furnshOsKernelForWasm(
+  backend: SpiceBackend,
+  osPath: string,
+  loaded: Set<string>,
+  restrictToDir?: string,
+): Promise<void> {
+  const absPath = path.resolve(osPath);
+  const loadedKey = `bytes:${absPath}`;
+  if (loaded.has(loadedKey)) return;
+  loaded.add(loadedKey);
+
+  if (path.extname(absPath).toLowerCase() === ".tm") {
+    // The WASM backend can't directly load nested kernels referenced by a meta-kernel
+    // from the host filesystem, so we expand `KERNELS_TO_LOAD` ourselves.
+    const metaKernelText = await readFile(absPath, "utf8");
+
+    const kernelsToLoad = resolveMetaKernelKernelsToLoad(
+      metaKernelText,
+      absPath,
+      restrictToDir ? { restrictToDir } : {},
+    );
+
+    // Load a sanitized copy of the meta-kernel itself so any pool assignments apply,
+    // but without allowing it to try to load OS-path kernels in WASM.
+    const sanitized = sanitizeMetaKernelTextForWasm(metaKernelText);
+    const vid = await kernelVirtualIdFromOsPath(absPath);
+    backend.furnsh({ path: vid, bytes: Buffer.from(sanitized, "utf8") });
+
+    for (const k of kernelsToLoad) {
+      await furnshOsKernelForWasm(backend, k, loaded, restrictToDir);
+    }
+    return;
+  }
+
+  const bytes = await readFile(absPath);
+  const vid = await kernelVirtualIdFromOsPath(absPath);
+  backend.furnsh({ path: vid, bytes });
+}
+
+async function furnshOsKernelForNative(
+  backend: SpiceBackend,
+  osPath: string,
+  loaded: Set<string>,
+  restrictToDir?: string,
+): Promise<void> {
+  const absPath = path.resolve(osPath);
+
+  // Native can load via OS-path or via bytes (sanitized meta-kernel). Keep those
+  // distinct so we don't incorrectly dedupe across modes.
+  const mode = restrictToDir && path.extname(absPath).toLowerCase() === ".tm" ? "bytes" : "ospath";
+  const loadedKey = `${mode}:${absPath}`;
+  if (loaded.has(loadedKey)) return;
+  loaded.add(loadedKey);
+
+  if (restrictToDir && path.extname(absPath).toLowerCase() === ".tm") {
+    // Mirror the WASM behavior:
+    // 1) Expand/validate `KERNELS_TO_LOAD` ourselves (so restrictions apply).
+    // 2) Furnish a sanitized copy of the meta-kernel (so pool assignments apply)
+    //    but without letting CSPICE load nested kernels implicitly.
+    const metaKernelText = await readFile(absPath, "utf8");
+
+    const kernelsToLoad = resolveMetaKernelKernelsToLoad(metaKernelText, absPath, { restrictToDir });
+
+    const sanitized = sanitizeMetaKernelTextForNativeNoKernels(metaKernelText);
+    backend.furnsh({ path: absPath, bytes: Buffer.from(sanitized, "utf8") });
+
+    for (const k of kernelsToLoad) {
+      await furnshOsKernelForNative(backend, k, loaded, restrictToDir);
+    }
+    return;
+  }
+
+  backend.furnsh(absPath);
+}
+
 export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}): Promise<CaseRunner> {
   const requested =
     options.backend ?? parseBackendEnv(process.env.TSPICE_BACKEND_VERIFY_BACKEND) ?? "auto";
@@ -166,16 +251,13 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
       isolateCase(backend);
 
       try {
-        for (const kernel of input.setup?.kernels ?? []) {
+        const loadedKernels = new Set<string>();
+        for (const kernelEntry of input.setup?.kernels ?? []) {
+          const kernel = normalizeKernelEntry(kernelEntry);
           if (backend.kind === "wasm") {
-            // Scenarios provide OS filesystem paths, but the WASM backend treats
-            // string kernels as *virtual* identifiers. When running on WASM,
-            // load kernel bytes from disk and provide an explicit virtual id.
-            const bytes = await readFile(kernel);
-            const vid = await kernelVirtualIdFromOsPath(kernel);
-            backend.furnsh({ path: vid, bytes });
+            await furnshOsKernelForWasm(backend, kernel.path, loadedKernels, kernel.restrictToDir);
           } else {
-            backend.furnsh(kernel);
+            await furnshOsKernelForNative(backend, kernel.path, loadedKernels, kernel.restrictToDir);
           }
         }
 
