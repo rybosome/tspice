@@ -17,16 +17,12 @@ type HandleEntry = {
   nativeHandle: number;
 };
 
-function assertHandleId(value: unknown, context: string): asserts value is number {
-  invariant(
-    typeof value === "number" && Number.isSafeInteger(value) && value > 0,
-    `${context}: expected a positive safe integer SpiceHandle`,
-  );
-}
-
 function asHandleId(handle: SpiceHandle, context: string): number {
-  assertHandleId(handle, context);
-  return handle as unknown as number;
+  const id = handle as unknown as number;
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    throw new TypeError(`${context}: expected a positive safe integer SpiceHandle`);
+  }
+  return id;
 }
 
 function asSpiceHandle(handleId: number): SpiceHandle {
