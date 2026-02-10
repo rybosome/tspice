@@ -1,15 +1,11 @@
 #include "tspice_backend_shim.h"
+#include "tspice_error.h"
 
 #include "SpiceUsr.h"
 
 #include <string.h>
 #include <stdio.h>
 
-static void tspice_write_error(char *err, int errMaxBytes, const char *msg) {
-  if (!err || errMaxBytes <= 0) return;
-  snprintf(err, (size_t)errMaxBytes, "%s", msg ? msg : "");
-  err[errMaxBytes - 1] = '\0';
-}
 
 int tspice_furnsh(const char *path, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();

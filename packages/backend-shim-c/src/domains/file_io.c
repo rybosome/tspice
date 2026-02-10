@@ -1,4 +1,5 @@
 #include "tspice_backend_shim.h"
+#include "tspice_error.h"
 
 #include "SpiceUsr.h"
 #include "SpiceDLA.h"
@@ -19,16 +20,6 @@ typedef char tspice_spiceint_must_be_32bit[(sizeof(SpiceInt) == 4) ? 1 : -1];
 #endif
 
 
-static void tspice_write_error(char *err, int errMaxBytes, const char *msg) {
-  if (!err || errMaxBytes <= 0) return;
-
-  // Ensure stable, NUL-terminated error strings.
-  //
-  // Note: snprintf() always NUL-terminates if size > 0, but we defensively set the
-  // last byte as well so callers can rely on termination even if code changes.
-  snprintf(err, (size_t)errMaxBytes, "%s", msg ? msg : "");
-  err[errMaxBytes - 1] = '\0';
-}
 
 static void tspice_write_dla_descr8(const SpiceDLADescr *descr, int32_t *outDescr8) {
   if (!descr || !outDescr8) return;
