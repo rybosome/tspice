@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { getGlobal } from "./helpers/getGlobal.js";
+
 describe("withCaching()", () => {
   afterEach(() => {
     vi.useRealTimers();
@@ -115,17 +117,15 @@ describe("withCaching()", () => {
       /* @vite-ignore */ "@rybosome/tspice-web-components",
     );
 
-    const SharedArrayBufferCtor = (globalThis as any).SharedArrayBuffer as
+    const SharedArrayBufferCtor = getGlobal("SharedArrayBuffer") as
       | undefined
       | (new (...args: any[]) => any);
-    const BufferCtor = (globalThis as any).Buffer as
+    const BufferCtor = getGlobal("Buffer") as
       | undefined
       | {
           from?: (data: any) => unknown;
         };
-    const FileCtor = (globalThis as any).File as
-      | undefined
-      | (new (...args: any[]) => any);
+    const FileCtor = getGlobal("File") as undefined | (new (...args: any[]) => any);
 
     const cases: Array<{ name: string; value: unknown | undefined }> = [
       { name: "ArrayBuffer", value: new ArrayBuffer(1) },

@@ -2,7 +2,9 @@ import type { SpiceTransport } from "../types.js";
 
 export type CachePolicy = "cache" | "no-store";
 
-const DEFAULT_UNSAFE_NO_STORE_OPS: readonly string[] = [
+export const MAX_KEY_SCAN = 10_000;
+
+const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   // Kernel-loading / kernel pool mutation operations. These can contain large
   // binary payloads, and caching them can break correctness by skipping
   // side-effects.
@@ -12,9 +14,16 @@ const DEFAULT_UNSAFE_NO_STORE_OPS: readonly string[] = [
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",
-];
+]) satisfies readonly string[];
 
-const DEFAULT_UNSAFE_NO_STORE_OPS_SET = new Set(DEFAULT_UNSAFE_NO_STORE_OPS);
+const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Record<string, true> = Object.freeze({
+  "kit.loadKernel": true,
+  "kit.unloadKernel": true,
+  "kit.kclear": true,
+  "raw.furnsh": true,
+  "raw.unload": true,
+  "raw.kclear": true,
+});
 
 const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): boolean => {
   if (!prefixes || prefixes.length === 0) return false;
@@ -24,7 +33,12 @@ const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): 
   return false;
 };
 
+export const CACHING_TRANSPORT_BRAND: unique symbol = Symbol.for(
+  "@rybosome/tspice-web-components:CACHING_TRANSPORT_BRAND",
+);
+
 export type CachingTransport = SpiceTransport & {
+  readonly [CACHING_TRANSPORT_BRAND]: true;
   /**
    * Clear all cached entries.
    *
@@ -65,6 +79,20 @@ export type WithCachingOptions = {
    * Cache key function. Returning `null` disables caching for that call.
    */
   key?: (op: string, args: unknown[]) => string | null;
+
+  /**
+   * Warning hook for non-fatal configuration issues.
+   *
+   * When not provided, warnings fall back to `console.warn` (if available).
+   */
+  onWarning?: (message: string) => void;
+
+  /**
+   * Time source for TTL behavior.
+   *
+   * Useful for tests or custom timekeeping.
+   */
+  now?: () => number;
 
   /**
    * Optional per-op cache policy.
@@ -115,8 +143,12 @@ export type WithCachingResult = SpiceTransport | CachingTransport;
 export function isCachingTransport(t: unknown): t is CachingTransport {
   if (typeof t !== "object" || t === null) return false;
 
-  const v = t as Record<string, unknown>;
-  return typeof v.clear === "function" && typeof v.dispose === "function";
+  const v = t as Record<string | symbol, unknown>;
+  return (
+    v[CACHING_TRANSPORT_BRAND] === true &&
+    typeof v.clear === "function" &&
+    typeof v.dispose === "function"
+  );
 }
 
 type CacheEntry = {
@@ -252,6 +284,15 @@ export function withCaching(
   base: SpiceTransport,
   opts?: WithCachingOptions,
 ): WithCachingResult {
+  const now = opts?.now ?? Date.now;
+  const onWarning =
+    opts?.onWarning ??
+    ((message: string) => {
+      if (typeof console !== "undefined" && typeof console.warn === "function") {
+        console.warn(message);
+      }
+    });
+
   const rawMaxEntries = opts?.maxEntries;
   const maxEntries = rawMaxEntries ?? 1000;
   const maxEntriesLimit =
@@ -282,19 +323,17 @@ export function withCaching(
     const broad = noStorePrefixes.filter((p) => p.length < 3 || !p.includes("."));
     if (broad.length > 0) {
       const listed = broad.map((p) => JSON.stringify(p)).join(", ");
-      if (typeof console !== "undefined" && typeof console.warn === "function") {
-        console.warn(
-          `withCaching(): broad noStorePrefixes ${listed}. ` +
-            `Prefixes are matched via op.startsWith(prefix) and may disable caching broadly. ` +
-            `Prefer e.g. "kit." / "raw."-style prefixes, or set allowBroadNoStorePrefixes: true to silence this warning.`,
-        );
-      }
+      onWarning(
+        `withCaching(): broad noStorePrefixes ${listed}. ` +
+          `Prefixes are matched via op.startsWith(prefix) and may disable caching broadly. ` +
+          `Prefer e.g. "kit." / "raw."-style prefixes, or set allowBroadNoStorePrefixes: true to silence this warning.`,
+      );
     }
   }
 
   const getPolicy = (op: string): CachePolicy => {
     const explicit = policyByOp?.[op];
-    const isUnsafeDefault = DEFAULT_UNSAFE_NO_STORE_OPS_SET.has(op);
+    const isUnsafeDefault = DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP[op] === true;
 
     if (explicit === "cache") {
       if (isUnsafeDefault && !allowUnsafePolicyOverrides) return "no-store";
@@ -327,7 +366,7 @@ export function withCaching(
   if (cachingEnabled && ttlMs !== undefined && ttlMs > 0) {
     const sweepIntervalMs = opts?.sweepIntervalMs;
     if (sweepIntervalMs !== undefined && sweepIntervalMs > 0) {
-      sweepTimer = setInterval(() => cleanupExpired(Date.now()), sweepIntervalMs);
+      sweepTimer = setInterval(() => cleanupExpired(now()), sweepIntervalMs);
 
       // In Node, interval timers keep the event loop alive by default. `unref()`
       // prevents this from pinning test runners / CLIs. Browsers return a
@@ -372,11 +411,11 @@ export function withCaching(
     const k = keyFn(op, args);
     if (k == null) return base.request(op, args);
 
-    const now = Date.now();
-    cleanupExpired(now);
+    const nowMs = now();
+    cleanupExpired(nowMs);
 
     const existing = cache.get(k);
-    if (existing && !isExpired(existing, now)) {
+    if (existing && !isExpired(existing, nowMs)) {
       // LRU touch on access. TTL remains absolute (does not refresh on access).
       touch(k, existing);
       return existing.promise;
@@ -391,7 +430,7 @@ export function withCaching(
         if (ttlMs !== undefined && ttlMs > 0) {
           const current = cache.get(k);
           if (current?.promise === promise) {
-            current.expiresAt = Date.now() + ttlMs;
+            current.expiresAt = now() + ttlMs;
           }
         }
         return value;
@@ -411,6 +450,7 @@ export function withCaching(
   };
 
   return {
+    [CACHING_TRANSPORT_BRAND]: true,
     request,
     clear,
     dispose,

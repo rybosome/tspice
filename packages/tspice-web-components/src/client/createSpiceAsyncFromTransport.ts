@@ -3,9 +3,6 @@ import type { SpiceAsync } from "@rybosome/tspice";
 import type { SpiceTransport } from "../types.js";
 
 const blockedStringKeys = new Set<string>([
-  // Promise / thenable
-  "then",
-
   // Prototype / constructor escapes
   "__proto__",
   "prototype",

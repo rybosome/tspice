@@ -240,7 +240,15 @@ export function createWorkerTransport(opts: {
 
   const ensureWorker = (): Worker => {
     if (!worker) {
-      worker = typeof opts.worker === "function" ? opts.worker() : opts.worker;
+      // Lazily construct/attach so transports can be created in environments
+      // that don't immediately support `Worker`.
+      try {
+        worker = typeof opts.worker === "function" ? opts.worker() : opts.worker;
+      } catch (err) {
+        const out = new Error("Failed to create Worker");
+        (out as Error & { cause?: unknown }).cause = err;
+        throw out;
+      }
 
       worker.addEventListener("message", onMessage);
       worker.addEventListener("error", onError);
@@ -264,7 +272,13 @@ export function createWorkerTransport(opts: {
     worker.removeEventListener("error", onError);
     worker.removeEventListener("messageerror", onMessageError);
 
-    if (terminateOnDispose) worker.terminate();
+    if (terminateOnDispose) {
+      try {
+        worker.terminate();
+      } catch {
+        // ignore
+      }
+    }
     worker = undefined;
   };
 
