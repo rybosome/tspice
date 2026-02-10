@@ -618,6 +618,15 @@ function kernelFiltyp(kind: KernelKind): string {
   }
 }
 
+function assertPoolRange(fn: string, start: number, room: number): void {
+  if (!Number.isFinite(start) || !Number.isInteger(start) || start < 0) {
+    throw new RangeError(`${fn}(): start must be an integer >= 0`);
+  }
+  if (!Number.isFinite(room) || !Number.isInteger(room) || room <= 0) {
+    throw new RangeError(`${fn}(): room must be an integer > 0`);
+  }
+}
+
 export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
@@ -634,10 +643,37 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
   // swpool/cvpool "agent" state.
   const kernelPoolWatches = new Map<string, { names: string[]; dirty: boolean }>();
+  const kernelPoolWatchesByName = new Map<string, Set<string>>();
+
+  const unindexKernelPoolWatch = (agent: string, names: readonly string[]) => {
+    for (const name of names) {
+      const agents = kernelPoolWatchesByName.get(name);
+      if (!agents) continue;
+      agents.delete(agent);
+      if (agents.size === 0) {
+        kernelPoolWatchesByName.delete(name);
+      }
+    }
+  };
+
+  const indexKernelPoolWatch = (agent: string, names: readonly string[]) => {
+    for (const name of names) {
+      let agents = kernelPoolWatchesByName.get(name);
+      if (!agents) {
+        agents = new Set<string>();
+        kernelPoolWatchesByName.set(name, agents);
+      }
+      agents.add(agent);
+    }
+  };
 
   const markKernelPoolUpdated = (name: string) => {
-    for (const watch of kernelPoolWatches.values()) {
-      if (watch.names.includes(name)) {
+    // Avoid an O(watches * names) scan by maintaining a reverse index.
+    const agents = kernelPoolWatchesByName.get(name);
+    if (!agents) return;
+    for (const agent of agents) {
+      const watch = kernelPoolWatches.get(agent);
+      if (watch) {
         watch.dirty = true;
       }
     }
@@ -720,6 +756,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       kernels.length = 0;
       kernelPool.clear();
       kernelPoolWatches.clear();
+      kernelPoolWatchesByName.clear();
     },
 
     ktotal: (kind: KernelKind = "ALL") => {
@@ -740,14 +777,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gdpool: (name, start, room) => {
-      const start0 = Math.trunc(start);
-      const room0 = Math.trunc(room);
-      if (start0 < 0) {
-        throw new Error("Fake backend: gdpool expects start >= 0");
-      }
-      if (room0 <= 0) {
-        throw new Error("Fake backend: gdpool expects room > 0");
-      }
+      assertPoolRange("gdpool", start, room);
+      const start0 = start;
+      const room0 = room;
 
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
@@ -762,14 +794,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gipool: (name, start, room) => {
-      const start0 = Math.trunc(start);
-      const room0 = Math.trunc(room);
-      if (start0 < 0) {
-        throw new Error("Fake backend: gipool expects start >= 0");
-      }
-      if (room0 <= 0) {
-        throw new Error("Fake backend: gipool expects room > 0");
-      }
+      assertPoolRange("gipool", start, room);
+      const start0 = start;
+      const room0 = room;
 
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
@@ -787,14 +814,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gcpool: (name, start, room) => {
-      const start0 = Math.trunc(start);
-      const room0 = Math.trunc(room);
-      if (start0 < 0) {
-        throw new Error("Fake backend: gcpool expects start >= 0");
-      }
-      if (room0 <= 0) {
-        throw new Error("Fake backend: gcpool expects room > 0");
-      }
+      assertPoolRange("gcpool", start, room);
+      const start0 = start;
+      const room0 = room;
 
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
@@ -809,14 +831,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     gnpool: (template, start, room) => {
-      const start0 = Math.trunc(start);
-      const room0 = Math.trunc(room);
-      if (start0 < 0) {
-        throw new Error("Fake backend: gnpool expects start >= 0");
-      }
-      if (room0 <= 0) {
-        throw new Error("Fake backend: gnpool expects room > 0");
-      }
+      assertPoolRange("gnpool", start, room);
+      const start0 = start;
+      const room0 = room;
 
       const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\[\]\\]/g, "\\$&");
 
@@ -891,7 +908,13 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     swpool: (agent, names) => {
       // CSPICE guarantees the next cvpool(agent) returns true.
+      const prev = kernelPoolWatches.get(agent);
+      if (prev) {
+        unindexKernelPoolWatch(agent, prev.names);
+      }
+
       kernelPoolWatches.set(agent, { names: [...names], dirty: true });
+      indexKernelPoolWatch(agent, names);
     },
 
     cvpool: (agent) => {

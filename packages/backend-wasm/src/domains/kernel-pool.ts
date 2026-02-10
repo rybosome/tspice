@@ -24,21 +24,6 @@ function assertNonEmptyString(fn: string, field: string, value: string): void {
   }
 }
 
-function assertNonEmptyStringArray(
-  fn: string,
-  field: string,
-  values: readonly string[],
-): void {
-  if (values.length === 0) {
-    throw new RangeError(`${fn}(): ${field} must be a non-empty array`);
-  }
-  for (const v of values) {
-    if (v.trim().length === 0) {
-      throw new RangeError(`${fn}(): ${field} must not contain empty strings`);
-    }
-  }
-}
-
 function assertStringArrayNoEmptyStrings(
   fn: string,
   field: string,
@@ -392,7 +377,14 @@ function tspiceCallPdpool(module: EmscriptenModule, name: string, values: readon
     const n = values.length;
     const valuesBytes = Math.max(8, n * 8);
 
-    withAllocs(module, [WASM_ERR_MAX_BYTES, valuesBytes], (errPtr, valuesPtr) => {
+    // Ensure 8-byte alignment for `HEAPF64` writes.
+    //
+    // Emscripten's allocator *usually* returns suitably-aligned pointers, but we
+    // don't want to rely on that here (misalignment would cause `valuesPtr >> 3`
+    // to truncate and write to the wrong address).
+    withAllocs(module, [WASM_ERR_MAX_BYTES, valuesBytes + 7], (errPtr, rawValuesPtr) => {
+      const valuesPtr = (rawValuesPtr + 7) & ~7;
+
       if (n > 0) {
         module.HEAPF64.set(values, valuesPtr >> 3);
       }
@@ -439,7 +431,9 @@ function tspiceCallPipool(module: EmscriptenModule, name: string, values: readon
 
 function tspiceCallPcpool(module: EmscriptenModule, name: string, values: readonly string[]): void {
   assertNonEmptyString("pcpool", "name", name);
-  assertNonEmptyStringArray("pcpool", "values", values);
+  // NAIF's `pcpool_c` allows `n=0` (set an empty value list). We still reject
+  // blank strings.
+  assertStringArrayNoEmptyStrings("pcpool", "values", values);
 
   const namePtr = writeUtf8CString(module, name);
 

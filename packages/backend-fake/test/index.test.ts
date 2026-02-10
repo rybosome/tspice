@@ -77,17 +77,25 @@ describe("@rybosome/tspice-backend-fake", () => {
     b.pdpool("NUM", [1, 2, 3]);
     b.pcpool("STR", ["A", "B"]);
 
-    // start must be >= 0
-    expect(() => b.gdpool("NUM", -1, 1)).toThrow(/start >= 0/i);
-    expect(() => b.gipool("NUM", -1, 1)).toThrow(/start >= 0/i);
-    expect(() => b.gcpool("STR", -1, 1)).toThrow(/start >= 0/i);
-    expect(() => b.gnpool("NO_MATCHES", -1, 1)).toThrow(/start >= 0/i);
+    // start must be a finite integer >= 0
+    expect(() => b.gdpool("NUM", -1, 1)).toThrow(/start/i);
+    expect(() => b.gipool("NUM", -1, 1)).toThrow(/start/i);
+    expect(() => b.gcpool("STR", -1, 1)).toThrow(/start/i);
+    expect(() => b.gnpool("NO_MATCHES", -1, 1)).toThrow(/start/i);
 
-    // room must be > 0
-    expect(() => b.gdpool("NUM", 0, 0)).toThrow(/room > 0/i);
-    expect(() => b.gipool("NUM", 0, 0)).toThrow(/room > 0/i);
-    expect(() => b.gcpool("STR", 0, 0)).toThrow(/room > 0/i);
-    expect(() => b.gnpool("NO_MATCHES", 0, 0)).toThrow(/room > 0/i);
+    expect(() => b.gdpool("NUM", Number.NaN, 1)).toThrow(/start/i);
+    expect(() => b.gdpool("NUM", Infinity, 1)).toThrow(/start/i);
+    expect(() => b.gdpool("NUM", 0.5, 1)).toThrow(/start/i);
+
+    // room must be a finite integer > 0
+    expect(() => b.gdpool("NUM", 0, 0)).toThrow(/room/i);
+    expect(() => b.gipool("NUM", 0, 0)).toThrow(/room/i);
+    expect(() => b.gcpool("STR", 0, 0)).toThrow(/room/i);
+    expect(() => b.gnpool("NO_MATCHES", 0, 0)).toThrow(/room/i);
+
+    expect(() => b.gdpool("NUM", 0, Number.NaN)).toThrow(/room/i);
+    expect(() => b.gdpool("NUM", 0, Infinity)).toThrow(/room/i);
+    expect(() => b.gdpool("NUM", 0, 1.5)).toThrow(/room/i);
   });
 
   it("validates pipool/gipool integer ranges (no JS bitwise wrapping)", () => {
