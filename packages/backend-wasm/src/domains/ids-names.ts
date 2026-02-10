@@ -10,6 +10,12 @@ import { tspiceCallFoundInt, tspiceCallFoundString } from "../codec/found.js";
 const BODY_NAME_MAX_BYTES = 256;
 const BODY_CONST_MAX_VALUES = 1024;
 
+function normalizeBodItem(item: string): string {
+  // Align with node + fake backends: bodvar/bodfnd treat body-constant items as
+  // case-insensitive and ignore surrounding whitespace.
+  return item.trim().toUpperCase();
+}
+
 function tspiceCallBodc2s(module: EmscriptenModule, code: number): string {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, BODY_NAME_MAX_BYTES], (errPtr, outPtr) => {
     module.HEAPU8[outPtr] = 0;
@@ -127,8 +133,10 @@ export function createIdsNamesApi(module: EmscriptenModule): IdsNamesApi {
 
     boddef: (name: string, code: number) => tspiceCallBoddef(module, name, code),
 
-    bodfnd: (body: number, item: string) => tspiceCallBodfnd(module, body, item),
+    bodfnd: (body: number, item: string) =>
+      tspiceCallBodfnd(module, body, normalizeBodItem(item)),
 
-    bodvar: (body: number, item: string) => tspiceCallBodvar(module, body, item),
+    bodvar: (body: number, item: string) =>
+      tspiceCallBodvar(module, body, normalizeBodItem(item)),
   } satisfies IdsNamesApi;
 }

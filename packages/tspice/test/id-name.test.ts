@@ -104,6 +104,11 @@ describe("IDs / names", () => {
     const radii = backend.bodvar(399, "RADII");
     expect(radii).toHaveLength(3);
 
+    // Item normalization: trim + uppercase.
+    expect(backend.bodfnd(399, "  radii  ")).toBe(true);
+    const radii2 = backend.bodvar(399, "  radii  ");
+    expect(radii2).toHaveLength(3);
+
     expect(backend.bodfnd(399, "NOT_A_ITEM")).toBe(false);
     const missing = backend.bodvar(399, "NOT_A_ITEM");
     expect(missing).toEqual([]);
@@ -202,6 +207,11 @@ describe("IDs / names", () => {
     expect(backend.bodfnd(399, "RADII")).toBe(true);
     const radii = backend.bodvar(399, "RADII");
     expect(radii).toHaveLength(3);
+
+    // Item normalization: trim + uppercase.
+    expect(backend.bodfnd(399, "  radii  ")).toBe(true);
+    const radii2 = backend.bodvar(399, "  radii  ");
+    expect(radii2).toHaveLength(3);
 
     expect(backend.bodfnd(399, "NOT_A_ITEM")).toBe(false);
     const missing = backend.bodvar(399, "NOT_A_ITEM");
