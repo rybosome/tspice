@@ -68,6 +68,9 @@ describe("createWorkerTransport()", () => {
     await expect(p).resolves.toBe(123);
 
     transport.dispose();
+    // Termination is deferred by 1 macrotask to give the dispose postMessage a
+    // chance to be processed.
+    await new Promise((r) => setTimeout(r, 0));
     expect(w.terminated).toBe(true);
   });
 
@@ -178,6 +181,9 @@ describe("createWorkerTransport()", () => {
     transport.dispose();
 
     await expect(p).rejects.toThrow(/disposed/i);
+    // Termination is deferred by 1 macrotask to give the dispose postMessage a
+    // chance to be processed.
+    await new Promise((r) => setTimeout(r, 0));
     expect(w.terminated).toBe(true);
   });
 

@@ -151,4 +151,33 @@ describe("loadKernelPack()", () => {
     load2.resolve(undefined);
     await expect(p).resolves.toBeUndefined();
   });
+
+  it("normalizes dot segments for path-absolute baseUrl", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [{ url: "../kernels/a.tls?x=1#hash", path: "a.tls" }],
+    };
+
+    const fetch = vi.fn((url: string) => {
+      if (url !== "/kernels/a.tls?x=1#hash") throw new Error(`Unexpected fetch url: ${url}`);
+      return Promise.resolve(okResponse(new Uint8Array([1])));
+    });
+
+    const loadKernel = vi.fn().mockResolvedValue(undefined);
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    await loadKernelPack(spice, pack, { baseUrl: "/myapp/", fetch });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(loadKernel).toHaveBeenCalledTimes(1);
+    expect(loadKernel).toHaveBeenCalledWith({
+      path: "a.tls",
+      bytes: new Uint8Array([1]),
+    });
+  });
 });

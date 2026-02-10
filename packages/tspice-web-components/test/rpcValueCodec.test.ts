@@ -1,11 +1,12 @@
-import { Mat3 } from "@rybosome/tspice";
+import { Mat3, brandMat3RowMajor } from "@rybosome/tspice";
 import { describe, expect, it } from "vitest";
 
 import { decodeRpcValue, encodeRpcValue } from "../src/worker/rpcValueCodec.js";
 
 describe("rpcValueCodec", () => {
   it("encodes Mat3 as a tagged, structured-clone-safe object", () => {
-    const m = Mat3.fromRowMajor([1, 2, 3, 4, 5, 6, 7, 8, 9] as any);
+    const rm = brandMat3RowMajor([1, 2, 3, 4, 5, 6, 7, 8, 9] as const, { freeze: "never" });
+    const m = Mat3.fromRowMajor(rm);
 
     const encoded = encodeRpcValue(m);
     expect(encoded).toEqual({
@@ -23,7 +24,12 @@ describe("rpcValueCodec", () => {
     const value = {
       a: 1,
       m: Mat3.identity(),
-      nested: ["x", Mat3.fromRowMajor([9, 8, 7, 6, 5, 4, 3, 2, 1] as any)],
+      nested: [
+        "x",
+        Mat3.fromRowMajor(
+          brandMat3RowMajor([9, 8, 7, 6, 5, 4, 3, 2, 1] as const, { freeze: "never" }),
+        ),
+      ],
     };
 
     const encoded = encodeRpcValue(value);
@@ -36,6 +42,54 @@ describe("rpcValueCodec", () => {
     expect(decoded.nested[0]).toBe("x");
     expect(decoded.nested[1]).toBeInstanceOf(Mat3);
     expect(Array.from(decoded.nested[1].rowMajor)).toEqual([9, 8, 7, 6, 5, 4, 3, 2, 1]);
+  });
+
+  it.each([
+    [
+      "wrong data length",
+      {
+        __tspiceRpcTag: "Mat3",
+        layout: "rowMajor",
+        data: [1, 2, 3, 4, 5, 6, 7, 8],
+      },
+    ],
+    [
+      "Infinity in data",
+      {
+        __tspiceRpcTag: "Mat3",
+        layout: "rowMajor",
+        data: [1, 2, 3, 4, 5, 6, 7, 8, Number.POSITIVE_INFINITY],
+      },
+    ],
+    [
+      "NaN in data",
+      {
+        __tspiceRpcTag: "Mat3",
+        layout: "rowMajor",
+        data: [1, 2, 3, 4, 5, 6, 7, 8, Number.NaN],
+      },
+    ],
+    [
+      "wrong layout",
+      {
+        __tspiceRpcTag: "Mat3",
+        layout: "colMajor",
+        data: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      },
+    ],
+    [
+      "non-array data",
+      {
+        __tspiceRpcTag: "Mat3",
+        layout: "rowMajor",
+        data: "not-an-array",
+      },
+    ],
+  ])("does not decode malformed Mat3-tagged payloads (%s)", (_name, payload) => {
+    const decoded = decodeRpcValue(payload);
+    expect(decoded).not.toBeInstanceOf(Mat3);
+    expect(decoded).toEqual(payload);
+    expect(Object.getPrototypeOf(decoded as object)).toBe(Object.prototype);
   });
 
   it("preserves non-plain objects (e.g. TypedArrays)", () => {

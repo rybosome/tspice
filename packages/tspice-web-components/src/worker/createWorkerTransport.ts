@@ -286,36 +286,43 @@ export function createWorkerTransport(opts: {
     if (disposed) return;
     disposed = true;
 
-    rejectAllPending((pending, id) =>
-      new Error(`Worker transport disposed ${formatRequestContext(pending.op, id)}`),
-    );
-
-    if (!worker) return;
+    const w = worker;
 
     // Best-effort: tell the worker it should dispose any server-side resources.
     //
     // - When we don't own the worker (`terminateOnDispose: false`), this is the
     //   only way to request cleanup.
-    // - When we do own the worker and will terminate it, this message may not
-    //   be processed (terminate is immediate), but it's still cheap + harmless.
-    try {
-      const msg: RpcDispose = { type: tspiceRpcDisposeType };
-      worker.postMessage(msg);
-    } catch {
-      // ignore
-    }
-
-    worker.removeEventListener("message", onMessage);
-    worker.removeEventListener("error", onError);
-    worker.removeEventListener("messageerror", onMessageError);
-
-    if (terminateOnDispose) {
+    // - When we do own the worker and will terminate it, we yield a macrotask
+    //   before terminating to give this message a chance to be processed.
+    if (w) {
       try {
-        worker.terminate();
+        const msg: RpcDispose = { type: tspiceRpcDisposeType };
+        w.postMessage(msg);
       } catch {
         // ignore
       }
     }
+
+    rejectAllPending((pending, id) =>
+      new Error(`Worker transport disposed ${formatRequestContext(pending.op, id)}`),
+    );
+
+    if (!w) return;
+
+    w.removeEventListener("message", onMessage);
+    w.removeEventListener("error", onError);
+    w.removeEventListener("messageerror", onMessageError);
+
+    if (terminateOnDispose) {
+      setTimeout(() => {
+        try {
+          w.terminate();
+        } catch {
+          // ignore
+        }
+      }, 0);
+    }
+
     worker = undefined;
   };
 

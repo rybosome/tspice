@@ -57,7 +57,6 @@ function isAbsoluteBaseUrl(baseUrl: string): boolean {
 
 function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
   if (!baseUrl) return url;
-  if (baseUrl === "") return url;
 
   // If the kernel URL is already absolute, don't apply `baseUrl`.
   if (isAbsoluteUrl(url)) return url;
@@ -78,13 +77,26 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
     return `${base}${rel}`;
   }
 
-  // `baseUrl` is relative (commonly a Vite BASE_URL like `/myapp/`).
+  // `baseUrl` is path-absolute (commonly a Vite BASE_URL like `/myapp/`).
+  // Use the URL constructor with a dummy origin so dot-segments normalize.
+  if (baseUrl.startsWith("/")) {
+    // If `url` is already an absolute *path*, leave it alone.
+    if (url.startsWith("/")) return url;
+
+    const base = new URL(baseUrl, "https://tspice.invalid");
+    // Treat `baseUrl` as a directory prefix even when it doesn't end with `/`.
+    if (!base.pathname.endsWith("/")) base.pathname = `${base.pathname}/`;
+
+    const resolved = new URL(url, base);
+    return `${resolved.pathname}${resolved.search}${resolved.hash}`;
+  }
+
+  // `baseUrl` is relative.
   // If `url` is already an absolute *path*, leave it alone.
   if (url.startsWith("/")) return url;
 
   const base = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  const rel = url.startsWith("/") ? url.slice(1) : url;
-  return `${base}${rel}`;
+  return `${base}${url}`;
 }
 
 async function fetchKernelBytes(fetchFn: FetchLike, url: string): Promise<Uint8Array> {
