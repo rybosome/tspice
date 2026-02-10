@@ -49,18 +49,38 @@ export async function createWasmBackend(
 
   const wasmLocator = wasmUrl;
 
-  // Node's built-in `fetch` can't load `file://...` URLs, so in Node we feed the
-  // bytes directly to Emscripten via `wasmBinary`.
-  const wasmBinary = wasmUrl.startsWith("file://")
-    ? await (async () => {
-        const [{ readFile }, { fileURLToPath }] = await Promise.all([
-          import("node:fs/promises"),
-          import("node:url"),
-        ]);
-        const wasmPath = fileURLToPath(wasmUrl);
-        return readFile(wasmPath);
-      })()
-    : undefined;
+  // In Node, avoid Emscripten's fetch/instantiateStreaming path (which is
+  // fragile for `file://...` URLs and plain filesystem paths when `fetch`
+  // exists). Instead, read the bytes directly and provide an *exact-length*
+  // ArrayBuffer via `wasmBinary`.
+  let wasmBinary: ArrayBuffer | undefined;
+  try {
+    wasmBinary = await (async (): Promise<ArrayBuffer | undefined> => {
+      // Allow http(s) URLs to be fetched by Emscripten.
+      if (wasmUrl.startsWith("http://") || wasmUrl.startsWith("https://")) {
+        return undefined;
+      }
+
+      const [{ readFile }, { fileURLToPath }] = await Promise.all([
+        import("node:fs/promises"),
+        import("node:url"),
+      ]);
+
+      const wasmPath = wasmUrl.startsWith("file://")
+        ? fileURLToPath(wasmUrl)
+        : wasmUrl;
+
+      const bytes = await readFile(wasmPath);
+
+      // `Buffer#buffer` may be larger than the view (and may be offset), so
+      // slice the exact range to an ArrayBuffer starting at 0.
+      return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+    })();
+  } catch (error) {
+    throw new Error(
+      `Failed to read tspice WASM binary (wasmUrl=${wasmUrl}): ${String(error)}`,
+    );
+  }
 
   let module: EmscriptenModule;
   try {
