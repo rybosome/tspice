@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { resolveFixtureRef } from "./fixtures.js";
+import { DEFAULT_FIXTURE_ROOTS_V1, resolveFixtureRef } from "./fixtures.js";
 import { formatPath, type PathSegment } from "./paths.js";
 import type {
   BenchmarkSuiteV1,
@@ -19,6 +19,12 @@ function shouldCheckFixtureExistence(
   options: ValidateBenchmarkSuiteV1Options,
 ): boolean {
   return options.checkFixtureExistence !== false;
+}
+
+function fixtureRootsCacheKey(roots: FixtureRootsV1): string {
+  return JSON.stringify(
+    Object.entries(roots).sort(([a], [b]) => a.localeCompare(b)),
+  );
 }
 
 function pushError(
@@ -145,6 +151,11 @@ function validateKernels(
   }
 
   const checkExistence = shouldCheckFixtureExistence(options);
+  const effectiveFixtureRoots: FixtureRootsV1 = {
+    ...(options.defaultFixtureRoots ?? DEFAULT_FIXTURE_ROOTS_V1),
+    ...(fixtureRoots ?? {}),
+  };
+  const effectiveFixtureRootsKey = fixtureRootsCacheKey(effectiveFixtureRoots);
 
   for (let i = 0; i < kernels.length; i += 1) {
     const kernelRef = kernels[i];
@@ -155,7 +166,7 @@ function validateKernels(
       continue;
     }
 
-    const cacheKey = `${checkExistence ? 1 : 0}:${kernelRef}`;
+    const cacheKey = `${checkExistence ? 1 : 0}:${effectiveFixtureRootsKey}:${kernelRef}`;
     const cached = fixtureRefCache.get(cacheKey);
 
     const resolved =
@@ -163,10 +174,7 @@ function validateKernels(
       (() => {
         const res = resolveFixtureRef(kernelRef, {
           repoRoot: options.repoRoot,
-          ...(fixtureRoots ? { fixtureRoots } : {}),
-          ...(options.defaultFixtureRoots
-            ? { defaultFixtureRoots: options.defaultFixtureRoots }
-            : {}),
+          defaultFixtureRoots: effectiveFixtureRoots,
           checkExistence,
         });
         fixtureRefCache.set(cacheKey, res);

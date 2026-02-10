@@ -44,7 +44,27 @@ export type ResolveFixtureRefResult =
   | { readonly ok: false; readonly message: string };
 
 function isPathInside(baseDir: string, candidatePath: string): boolean {
-  const rel = path.relative(baseDir, candidatePath);
+  const normalizeForContainment = (p: string) => {
+    let out = path.normalize(p);
+
+    // Ensure consistent behavior regardless of trailing separators.
+    const root = path.parse(out).root;
+    while (out.length > root.length && out.endsWith(path.sep)) {
+      out = out.slice(0, -1);
+    }
+
+    // Windows paths are effectively case-insensitive.
+    if (process.platform === "win32") {
+      out = out.toLowerCase();
+    }
+
+    return out;
+  };
+
+  const rel = path.relative(
+    normalizeForContainment(baseDir),
+    normalizeForContainment(candidatePath),
+  );
   if (rel === "" || rel === ".") return true;
 
   return (
