@@ -13,18 +13,36 @@ type TimdefApi = {
 type TimdefDefaultsSnapshot = {
   SYSTEM: string;
   CALENDAR: string;
+  ZONE: string;
 };
 
 function snapshotTimdefDefaults(b: TimdefApi): TimdefDefaultsSnapshot {
   return {
     SYSTEM: b.timdef("GET", "SYSTEM"),
     CALENDAR: b.timdef("GET", "CALENDAR"),
+    ZONE: b.timdef("GET", "ZONE"),
   };
 }
 
 function restoreTimdefDefaults(b: TimdefApi, snapshot: TimdefDefaultsSnapshot): void {
-  b.timdef("SET", "SYSTEM", snapshot.SYSTEM);
   b.timdef("SET", "CALENDAR", snapshot.CALENDAR);
+
+  // `timdef_c` treats SYSTEM and ZONE as mutually exclusive state:
+  // - setting SYSTEM blanks ZONE
+  // - setting ZONE blanks SYSTEM
+  //
+  // Also, `timdef_c` does not allow setting an empty-string value.
+  const system = snapshot.SYSTEM.trim();
+  const zone = snapshot.ZONE.trim();
+
+  if (zone !== "") {
+    b.timdef("SET", "ZONE", snapshot.ZONE);
+    return;
+  }
+
+  if (system !== "") {
+    b.timdef("SET", "SYSTEM", snapshot.SYSTEM);
+  }
 }
 
 function expectClose(
