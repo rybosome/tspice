@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import path from "node:path";
+import path, { type PlatformPath } from "node:path";
 
 import type { FixtureRootsV1 } from "./types.js";
 
@@ -43,25 +43,42 @@ export type ResolveFixtureRefResult =
     }
   | { readonly ok: false; readonly message: string };
 
-function isPathInside(baseDir: string, candidatePath: string): boolean {
+export interface IsPathInsideOptions {
+  readonly pathImpl?: PlatformPath;
+  /**
+   * Whether comparisons should be case-sensitive.
+   *
+   * Defaults to case-insensitive for win32-style paths and case-sensitive
+   * for posix-style paths.
+   */
+  readonly caseSensitive?: boolean;
+}
+
+export function isPathInside(
+  baseDir: string,
+  candidatePath: string,
+  options: IsPathInsideOptions = {},
+): boolean {
+  const pathImpl = options.pathImpl ?? path;
+  const caseSensitive = options.caseSensitive ?? pathImpl.sep !== "\\";
+
   const normalizeForContainment = (p: string) => {
-    let out = path.normalize(p);
+    let out = pathImpl.normalize(p);
 
     // Ensure consistent behavior regardless of trailing separators.
-    const root = path.parse(out).root;
-    while (out.length > root.length && out.endsWith(path.sep)) {
+    const root = pathImpl.parse(out).root;
+    while (out.length > root.length && out.endsWith(pathImpl.sep)) {
       out = out.slice(0, -1);
     }
 
-    // Windows paths are effectively case-insensitive.
-    if (process.platform === "win32") {
+    if (!caseSensitive) {
       out = out.toLowerCase();
     }
 
     return out;
   };
 
-  const rel = path.relative(
+  const rel = pathImpl.relative(
     normalizeForContainment(baseDir),
     normalizeForContainment(candidatePath),
   );
@@ -69,8 +86,8 @@ function isPathInside(baseDir: string, candidatePath: string): boolean {
 
   return (
     rel !== ".." &&
-    !rel.startsWith(`..${path.sep}`) &&
-    !path.isAbsolute(rel)
+    !rel.startsWith(`..${pathImpl.sep}`) &&
+    !pathImpl.isAbsolute(rel)
   );
 }
 
