@@ -169,6 +169,118 @@ int tspice_cnmfrm(
   return 0;
 }
 
+int tspice_frinfo(
+    int frameId,
+    int *outCenter,
+    int *outFrameClass,
+    int *outClassId,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outCenter) {
+    *outCenter = 0;
+  }
+  if (outFrameClass) {
+    *outFrameClass = 0;
+  }
+  if (outClassId) {
+    *outClassId = 0;
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceInt center = 0;
+  SpiceInt frclss = 0;
+  SpiceInt clssid = 0;
+  SpiceBoolean found = SPICEFALSE;
+
+  frinfo_c((SpiceInt)frameId, &center, &frclss, &clssid, &found);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outCenter) {
+    *outCenter = (int)center;
+  }
+  if (outFrameClass) {
+    *outFrameClass = (int)frclss;
+  }
+  if (outClassId) {
+    *outClassId = (int)clssid;
+  }
+  if (outFound) {
+    *outFound = (found == SPICETRUE) ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_ccifrm(
+    int frameClass,
+    int classId,
+    int *outFrcode,
+    char *outFrname,
+    int outFrnameMaxBytes,
+    int *outCenter,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrcode) {
+    *outFrcode = 0;
+  }
+  if (outFrnameMaxBytes > 0 && outFrname) {
+    outFrname[0] = '\0';
+  }
+  if (outCenter) {
+    *outCenter = 0;
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceInt frcode = 0;
+  SpiceInt center = 0;
+  SpiceBoolean found = SPICEFALSE;
+
+  ccifrm_c(
+      (SpiceInt)frameClass,
+      (SpiceInt)classId,
+      (SpiceInt)outFrnameMaxBytes,
+      &frcode,
+      outFrname,
+      &center,
+      &found);
+
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFrcode) {
+    *outFrcode = (int)frcode;
+  }
+  if (outCenter) {
+    *outCenter = (int)center;
+  }
+  if (outFound) {
+    *outFound = (found == SPICETRUE) ? 1 : 0;
+  }
+
+  return 0;
+}
+
 int tspice_pxform(
     const char *from,
     const char *to,

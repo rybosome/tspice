@@ -23,7 +23,7 @@ const PCK = {
 describe("IDs / names", () => {
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
-  itNode("node backend: bodn2c/bodc2n/namfrm/frmnam/cidfrm/cnmfrm", async () => {
+  itNode("node backend: bodn2c/bodc2n/bodc2s/bods2c/boddef/bodfnd/bodvar + frame utils", async () => {
     const backend = await createBackend({ backend: "node" });
     const pck = await ensureKernelFile(PCK);
 
@@ -69,9 +69,55 @@ describe("IDs / names", () => {
     if (earthFrame2.found) {
       expect(earthFrame2.frname).toContain("IAU_EARTH");
     }
+
+    // --- new Group 6 routines ---
+
+    const earthName2 = backend.bodc2s(399);
+    expect(earthName2.toUpperCase()).toContain("EARTH");
+
+    const earthFromNumeric = backend.bods2c("399");
+    expect(earthFromNumeric.found).toBe(true);
+    if (earthFromNumeric.found) {
+      expect(earthFromNumeric.code).toBe(399);
+    }
+
+    const earthFromName = backend.bods2c("EARTH");
+    expect(earthFromName.found).toBe(true);
+    if (earthFromName.found) {
+      expect(earthFromName.code).toBe(399);
+    }
+
+    const testBodyName = "TSPICE_TEST_BODY";
+    const testBodyCode = 1_234_567_89;
+    backend.boddef(testBodyName, testBodyCode);
+
+    const testBodyResolved = backend.bods2c(testBodyName);
+    expect(testBodyResolved.found).toBe(true);
+    if (testBodyResolved.found) {
+      expect(testBodyResolved.code).toBe(testBodyCode);
+    }
+
+    const testBodyName2 = backend.bodc2s(testBodyCode);
+    expect(testBodyName2).toBe(testBodyName);
+
+    expect(backend.bodfnd(399, "RADII")).toBe(true);
+    const radii = backend.bodvar(399, "RADII");
+    expect(radii).toHaveLength(3);
+
+    const info = backend.frinfo(1);
+    expect(info.found).toBe(true);
+    if (info.found) {
+      const roundTrip = backend.ccifrm(info.frameClass, info.classId);
+      expect(roundTrip.found).toBe(true);
+      if (roundTrip.found) {
+        expect(roundTrip.frcode).toBe(1);
+        expect(roundTrip.frname).toContain("J2000");
+        expect(roundTrip.center).toBe(info.center);
+      }
+    }
   });
 
-  it("wasm backend: bodn2c/bodc2n/namfrm/frmnam/cidfrm/cnmfrm", async () => {
+  it("wasm backend: bodn2c/bodc2n/bodc2s/bods2c/boddef/bodfnd/bodvar + frame utils", async () => {
     const backend = await createBackend({ backend: "wasm" });
     const pck = await ensureKernelFile(PCK);
     const lskBytes = fs.readFileSync(lskPath);
@@ -117,6 +163,52 @@ describe("IDs / names", () => {
     expect(earthFrame2.found).toBe(true);
     if (earthFrame2.found) {
       expect(earthFrame2.frname).toContain("IAU_EARTH");
+    }
+
+    // --- new Group 6 routines ---
+
+    const earthName2 = backend.bodc2s(399);
+    expect(earthName2.toUpperCase()).toContain("EARTH");
+
+    const earthFromNumeric = backend.bods2c("399");
+    expect(earthFromNumeric.found).toBe(true);
+    if (earthFromNumeric.found) {
+      expect(earthFromNumeric.code).toBe(399);
+    }
+
+    const earthFromName = backend.bods2c("EARTH");
+    expect(earthFromName.found).toBe(true);
+    if (earthFromName.found) {
+      expect(earthFromName.code).toBe(399);
+    }
+
+    const testBodyName = "TSPICE_TEST_BODY";
+    const testBodyCode = 1_234_567_89;
+    backend.boddef(testBodyName, testBodyCode);
+
+    const testBodyResolved = backend.bods2c(testBodyName);
+    expect(testBodyResolved.found).toBe(true);
+    if (testBodyResolved.found) {
+      expect(testBodyResolved.code).toBe(testBodyCode);
+    }
+
+    const testBodyName2 = backend.bodc2s(testBodyCode);
+    expect(testBodyName2).toBe(testBodyName);
+
+    expect(backend.bodfnd(399, "RADII")).toBe(true);
+    const radii = backend.bodvar(399, "RADII");
+    expect(radii).toHaveLength(3);
+
+    const info = backend.frinfo(1);
+    expect(info.found).toBe(true);
+    if (info.found) {
+      const roundTrip = backend.ccifrm(info.frameClass, info.classId);
+      expect(roundTrip.found).toBe(true);
+      if (roundTrip.found) {
+        expect(roundTrip.frcode).toBe(1);
+        expect(roundTrip.frname).toContain("J2000");
+        expect(roundTrip.center).toBe(info.center);
+      }
     }
   });
 });

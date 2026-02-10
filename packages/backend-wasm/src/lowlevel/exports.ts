@@ -213,6 +213,29 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_bodc2s(
+    code: number,
+    outNamePtr: number,
+    outNameMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_bods2c(namePtr: number, outCodePtr: number, foundPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_boddef(namePtr: number, code: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_bodfnd(body: number, itemPtr: number, outResultPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_bodvar(
+    body: number,
+    itemPtr: number,
+    maxn: number,
+    outDimPtr: number,
+    outValuesPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_namfrm(
     frameNamePtr: number,
     outFrameIdPtr: number,
@@ -249,8 +272,37 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_frinfo(
+    frameId: number,
+    outCenterPtr: number,
+    outFrameClassPtr: number,
+    outClassIdPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ccifrm(
+    frameClass: number,
+    classId: number,
+    outFrcodePtr: number,
+    outFrnamePtr: number,
+    outFrnameMaxBytes: number,
+    outCenterPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // --- ephemeris/frames ---
-  _tspice_scs2e(sc: number, sclkchPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_scs2e(
+    sc: number,
+    sclkchPtr: number,
+    outEtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_sce2s(
     sc: number,
     et: number,
@@ -522,10 +574,17 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_timout",
   "_tspice_bodn2c",
   "_tspice_bodc2n",
+  "_tspice_bodc2s",
+  "_tspice_bods2c",
+  "_tspice_boddef",
+  "_tspice_bodfnd",
+  "_tspice_bodvar",
   "_tspice_namfrm",
   "_tspice_frmnam",
   "_tspice_cidfrm",
   "_tspice_cnmfrm",
+  "_tspice_frinfo",
+  "_tspice_ccifrm",
   "_tspice_scs2e",
   "_tspice_sce2s",
   "_tspice_ckgp",

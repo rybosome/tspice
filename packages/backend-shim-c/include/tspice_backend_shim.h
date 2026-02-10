@@ -254,6 +254,49 @@ int tspice_bodc2n(
     char *err,
     int errMaxBytes);
 
+// bodc2s_c: body code -> mapped name (or decimal string if unknown).
+int tspice_bodc2s(
+    int code,
+    char *outName,
+    int outNameMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// bods2c_c: body name (or numeric string) -> integer code.
+int tspice_bods2c(
+    const char *name,
+    int *outCode,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// boddef_c: define a body name/code mapping (side effect).
+int tspice_boddef(
+    const char *name,
+    int code,
+    char *err,
+    int errMaxBytes);
+
+// bodfnd_c: return true if body constant exists in the kernel pool.
+int tspice_bodfnd(
+    int body,
+    const char *item,
+    int *outResult,
+    char *err,
+    int errMaxBytes);
+
+// bodvar_c (deprecated): return values of a body constant from the kernel pool.
+//
+// This shim uses bodvcd_c under the hood to allow the caller to bound output size.
+int tspice_bodvar(
+    int body,
+    const char *item,
+    int maxn,
+    int *outDim,
+    double *outValues,
+    char *err,
+    int errMaxBytes);
+
 // namfrm_c: frame name -> frame id.
 int tspice_namfrm(
     const char *frameName,
@@ -287,6 +330,28 @@ int tspice_cnmfrm(
     int *outFrcode,
     char *outFrname,
     int outFrnameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// frinfo_c: frame code -> frame center/class/classId.
+int tspice_frinfo(
+    int frameId,
+    int *outCenter,
+    int *outFrameClass,
+    int *outClassId,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// ccifrm_c: frame class/classId -> frame code/name/center.
+int tspice_ccifrm(
+    int frameClass,
+    int classId,
+    int *outFrcode,
+    char *outFrname,
+    int outFrnameMaxBytes,
+    int *outCenter,
     int *outFound,
     char *err,
     int errMaxBytes);

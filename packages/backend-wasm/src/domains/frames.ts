@@ -119,6 +119,124 @@ function tspiceCallCnmfrm(
   }
 }
 
+function tspiceCallFrinfo(
+  module: EmscriptenModule,
+  frameId: number,
+): Found<{ center: number; frameClass: number; classId: number }> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const outCenterPtr = module._malloc(4);
+  const outFrameClassPtr = module._malloc(4);
+  const outClassIdPtr = module._malloc(4);
+  const foundPtr = module._malloc(4);
+
+  if (!errPtr || !outCenterPtr || !outFrameClassPtr || !outClassIdPtr || !foundPtr) {
+    for (const ptr of [foundPtr, outClassIdPtr, outFrameClassPtr, outCenterPtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAP32[outCenterPtr >> 2] = 0;
+    module.HEAP32[outFrameClassPtr >> 2] = 0;
+    module.HEAP32[outClassIdPtr >> 2] = 0;
+    module.HEAP32[foundPtr >> 2] = 0;
+
+    const result = module._tspice_frinfo(
+      frameId,
+      outCenterPtr,
+      outFrameClassPtr,
+      outClassIdPtr,
+      foundPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+
+    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+    if (!found) {
+      return { found: false };
+    }
+
+    return {
+      found: true,
+      center: module.HEAP32[outCenterPtr >> 2] ?? 0,
+      frameClass: module.HEAP32[outFrameClassPtr >> 2] ?? 0,
+      classId: module.HEAP32[outClassIdPtr >> 2] ?? 0,
+    };
+  } finally {
+    module._free(foundPtr);
+    module._free(outClassIdPtr);
+    module._free(outFrameClassPtr);
+    module._free(outCenterPtr);
+    module._free(errPtr);
+  }
+}
+
+function tspiceCallCcifrm(
+  module: EmscriptenModule,
+  frameClass: number,
+  classId: number,
+): Found<{ frcode: number; frname: string; center: number }> {
+  const errMaxBytes = 2048;
+  const errPtr = module._malloc(errMaxBytes);
+  const outNameMaxBytes = 256;
+  const outNamePtr = module._malloc(outNameMaxBytes);
+  const outFrcodePtr = module._malloc(4);
+  const outCenterPtr = module._malloc(4);
+  const foundPtr = module._malloc(4);
+
+  if (!errPtr || !outNamePtr || !outFrcodePtr || !outCenterPtr || !foundPtr) {
+    for (const ptr of [foundPtr, outCenterPtr, outFrcodePtr, outNamePtr, errPtr]) {
+      if (ptr) module._free(ptr);
+    }
+    throw new Error("WASM malloc failed");
+  }
+
+  try {
+    module.HEAPU8[outNamePtr] = 0;
+    module.HEAP32[outFrcodePtr >> 2] = 0;
+    module.HEAP32[outCenterPtr >> 2] = 0;
+    module.HEAP32[foundPtr >> 2] = 0;
+
+    const result = module._tspice_ccifrm(
+      frameClass,
+      classId,
+      outFrcodePtr,
+      outNamePtr,
+      outNameMaxBytes,
+      outCenterPtr,
+      foundPtr,
+      errPtr,
+      errMaxBytes,
+    );
+    if (result !== 0) {
+      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    }
+
+    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+    if (!found) {
+      return { found: false };
+    }
+
+    return {
+      found: true,
+      frcode: module.HEAP32[outFrcodePtr >> 2] ?? 0,
+      frname: module.UTF8ToString(outNamePtr, outNameMaxBytes).trim(),
+      center: module.HEAP32[outCenterPtr >> 2] ?? 0,
+    };
+  } finally {
+    module._free(foundPtr);
+    module._free(outCenterPtr);
+    module._free(outFrcodePtr);
+    module._free(outNamePtr);
+    module._free(errPtr);
+  }
+}
+
 function tspiceCallCkgp(
   module: EmscriptenModule,
   inst: number,
@@ -300,6 +418,9 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
 
     cidfrm: (center: number) => tspiceCallCidfrm(module, module._tspice_cidfrm, center),
     cnmfrm: (centerName: string) => tspiceCallCnmfrm(module, module._tspice_cnmfrm, centerName),
+    frinfo: (frameId: number) => tspiceCallFrinfo(module, frameId),
+    ccifrm: (frameClass: number, classId: number) => tspiceCallCcifrm(module, frameClass, classId),
+
 
     ckgp: (inst: number, sclkdp: number, tol: number, ref: string) => tspiceCallCkgp(module, inst, sclkdp, tol, ref),
     ckgpav: (inst: number, sclkdp: number, tol: number, ref: string) =>
