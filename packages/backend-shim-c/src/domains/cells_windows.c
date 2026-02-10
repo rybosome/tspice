@@ -1,4 +1,5 @@
 #include "tspice_backend_shim.h"
+#include "tspice_backend_shim_internal.h"
 
 #include "SpiceUsr.h"
 #include "SpiceZmc.h"
@@ -9,14 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-static int tspice_write_error(char *err, int errMaxBytes, const char *message) {
-  if (err && errMaxBytes > 0) {
-    strncpy(err, message, (size_t)errMaxBytes - 1);
-    err[errMaxBytes - 1] = '\0';
-  }
-  return 1;
-}
 
 // ---- Handle validation + checked casts ------------------------------------
 
