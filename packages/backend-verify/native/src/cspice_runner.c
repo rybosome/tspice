@@ -456,29 +456,13 @@ static bool jsmn_parse_int(const char *json, const jsmntok_t *tok,
     return false;
   }
 
-  // Defensive: ensure the parsed value fits into SpiceInt.
-  // `SpiceInt` is typically a typedef of `int`, but can vary by platform.
-  long long min = 0;
-  long long max = 0;
-  if (sizeof(SpiceInt) == sizeof(int)) {
-    min = (long long)INT_MIN;
-    max = (long long)INT_MAX;
-  } else if (sizeof(SpiceInt) == sizeof(long)) {
-    min = (long long)LONG_MIN;
-    max = (long long)LONG_MAX;
-  } else if (sizeof(SpiceInt) == sizeof(long long)) {
-    min = (long long)LLONG_MIN;
-    max = (long long)LLONG_MAX;
-  } else {
-    // Unknown SpiceInt width.
+  // Defensive: ensure the parsed value round-trips into SpiceInt.
+  SpiceInt tmp = (SpiceInt)v;
+  if ((long long)tmp != v) {
     return false;
   }
 
-  if (v < min || v > max) {
-    return false;
-  }
-
-  *out = (SpiceInt)v;
+  *out = tmp;
   return true;
 }
 
@@ -979,7 +963,7 @@ int main(void) {
     }
 
     if (precTok < 0 || precTok >= tokenCount || !jsmn_parse_int(input, &tokens[precTok], &prec)) {
-      write_error_json("time.et2utc expects args[2] to be a number", NULL, NULL, NULL);
+      write_error_json("time.et2utc expects args[2] to be an integer (SpiceInt range)", NULL, NULL, NULL);
       goto done;
     }
 
@@ -1056,14 +1040,14 @@ int main(void) {
 
   if (isBodc2n) {
     if (tokens[argsTok].size < 1) {
-      write_error_json("ids-names.bodc2n expects args[0] to be a number", NULL, NULL, NULL);
+      write_error_json("ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
       goto done;
     }
 
     int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
     SpiceInt code = 0;
     if (codeTok < 0 || codeTok >= tokenCount || !jsmn_parse_int(input, &tokens[codeTok], &code)) {
-      write_error_json("ids-names.bodc2n expects args[0] to be a number", NULL, NULL, NULL);
+      write_error_json("ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
       goto done;
     }
 
@@ -1138,14 +1122,14 @@ int main(void) {
 
   if (isFrmnam) {
     if (tokens[argsTok].size < 1) {
-      write_error_json("frames.frmnam expects args[0] to be a number", NULL, NULL, NULL);
+      write_error_json("frames.frmnam expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
       goto done;
     }
 
     int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
     SpiceInt frcode = 0;
     if (codeTok < 0 || codeTok >= tokenCount || !jsmn_parse_int(input, &tokens[codeTok], &frcode)) {
-      write_error_json("frames.frmnam expects args[0] to be a number", NULL, NULL, NULL);
+      write_error_json("frames.frmnam expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
       goto done;
     }
 

@@ -14,11 +14,18 @@ function joinPath(base: string, key: string | number): string {
   return base === "$" ? `$.${key}` : `${base}.${key}`;
 }
 
-const TAU = 2 * Math.PI;
-
 function normalizeToMinusPiPi(x: number): number {
   // Normalize into [-pi, pi).
-  return ((((x + Math.PI) % TAU) + TAU) % TAU) - Math.PI;
+  const y = Math.atan2(Math.sin(x), Math.cos(x));
+
+  // atan2 returns +pi at the branch cut; convert to -pi so we preserve [-pi, pi).
+  if (Object.is(y, Math.PI)) return -Math.PI;
+
+  // For exact multiples of TAU, sin/cos rounding can yield tiny residuals.
+  // Snap those to 0 so comparisons stay deterministic.
+  if (Math.abs(y) < 1e-15) return 0;
+
+  return y;
 }
 
 function wrapToPi(x: number): number {
@@ -64,8 +71,10 @@ function compareNumbers(
   const diff = Math.abs(delta);
 
   // Fast path: exact equality.
-  // `diff === 0` handles +/-0 and angle wrapping; Object.is handles infinities.
-  if (diff === 0 || Object.is(actualNorm, expectedNorm)) return null;
+  // `diff === 0` handles +/-0 and angle wrapping.
+  if (diff === 0) return null;
+  // For infinities, subtraction produces NaN; fall back to exact identity.
+  if (Number.isNaN(diff) && Object.is(actualNorm, expectedNorm)) return null;
   // Use a symmetric denominator so tolerance behaves consistently regardless
   // of whether callers treat `actual` or `expected` as the reference.
   const rel = diff / Math.max(1e-30, Math.max(Math.abs(actualNorm), Math.abs(expectedNorm)));

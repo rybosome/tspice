@@ -408,6 +408,38 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
   return {
     kind,
 
+    async dispose(): Promise<void> {
+      // Best-effort cleanup so the runner can be reused across tests or
+      // torn down without leaking state/resources.
+      try {
+        backend.kclear();
+      } catch {
+        // ignore
+      }
+      try {
+        backend.reset();
+      } catch {
+        // ignore
+      }
+
+      // Not part of the backend contract, but may exist on some implementations.
+      const b = backend as unknown as {
+        dispose?: () => void | Promise<void>;
+        close?: () => void | Promise<void>;
+      };
+
+      try {
+        await b.dispose?.();
+      } catch {
+        // ignore
+      }
+      try {
+        await b.close?.();
+      } catch {
+        // ignore
+      }
+    },
+
     async runCase(input: RunCaseInput): Promise<RunCaseResult> {
       isolateCase(backend);
 

@@ -18,6 +18,7 @@ import { parseScenario } from "../src/dsl/parse.js";
 import { executeScenario } from "../src/dsl/execute.js";
 import { compareValues } from "../src/compare/compare.js";
 import { formatMismatchReport } from "../src/compare/report.js";
+import { spiceShortCode } from "../src/errors/spiceShort.js";
 
 const DEFAULT_TOL_ABS = 1e-12;
 const DEFAULT_TOL_REL = 1e-12;
@@ -53,38 +54,45 @@ function checkCspiceRunner(): CspiceRunnerCheck {
 const REQUIRED = isRequired();
 const CSPICE = checkCspiceRunner();
 
-if (!CSPICE.ready && !REQUIRED) {
-  // eslint-disable-next-line no-console
-  console.warn(
-    `[backend-verify] cspice-runner unavailable; backend-verify parity suite may be skipped (TSPICE_BACKEND_VERIFY_REQUIRED=false)${
-      CSPICE.hint ? `: ${CSPICE.hint}` : ""
-    }`,
-  );
-}
-
-const suite = CSPICE.ready || REQUIRED ? describe.sequential : describe.skip;
-
-suite("backend-verify (tspice vs raw CSPICE parity)", () => {
+describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
   let tspice: CaseRunner | undefined;
   let cspice: CaseRunner | undefined;
 
-  if (!CSPICE.ready) {
-    it("requires cspice-runner", () => {
-      throw new Error(
-        `[backend-verify] cspice-runner required but unavailable${CSPICE.hint ? `: ${CSPICE.hint}` : ""}. ` +
-          `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
-          `State: ${CSPICE.statePath}`,
+  it("cspice-runner availability", () => {
+    if (CSPICE.ready) return;
+
+    if (!REQUIRED) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[backend-verify] cspice-runner unavailable; backend-verify parity suite may be skipped (TSPICE_BACKEND_VERIFY_REQUIRED=false)${
+          CSPICE.hint ? `: ${CSPICE.hint}` : ""
+        }`,
       );
-    });
-    return;
-  }
+      return;
+    }
+
+    throw new Error(
+      `[backend-verify] cspice-runner required but unavailable${CSPICE.hint ? `: ${CSPICE.hint}` : ""}. ` +
+        `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
+        `State: ${CSPICE.statePath}`,
+    );
+  });
+
+  const scenarioIt = CSPICE.ready ? it : it.skip;
 
   // We reuse a single runner instance across scenarios for speed.
   // This is safe because `tspice.runCase()` isolates each case via kernel
   // cleanup/reset (kclear/reset) before executing.
   beforeAll(async () => {
-    tspice = await createTspiceRunner();
-    cspice = await createCspiceRunner();
+    if (!CSPICE.ready) return;
+
+    try {
+      tspice = await createTspiceRunner();
+      cspice = await createCspiceRunner();
+    } catch (error) {
+      await Promise.allSettled([tspice?.dispose?.(), cspice?.dispose?.()]);
+      throw error;
+    }
   });
 
   afterAll(async () => {
@@ -99,7 +107,7 @@ suite("backend-verify (tspice vs raw CSPICE parity)", () => {
     .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
   for (const file of scenarioFiles) {
-    it(`matches scenario ${file}`, async () => {
+    scenarioIt(`matches scenario ${file}`, async () => {
       const scenarioPath = path.join(scenariosDir, file);
 
       const yamlFile = await loadScenarioYamlFile(scenarioPath);
@@ -146,7 +154,7 @@ suite("backend-verify (tspice vs raw CSPICE parity)", () => {
               throw new Error(`Missing cspice spice.short while comparing errors (${label}): ${JSON.stringify(c.outcome.error)}`);
             }
 
-            expect(tShort.trim()).toBe(cShort.trim());
+            expect(spiceShortCode(tShort)).toBe(spiceShortCode(cShort));
             continue;
           }
 
