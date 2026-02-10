@@ -9,6 +9,7 @@ import { invariant } from "@rybosome/tspice-core";
 import type { NativeAddon } from "../runtime/addon.js";
 
 type HandleKind = "DAF" | "DAS" | "DLA";
+const DAS_BACKED = ["DAS", "DLA"] as const;
 const I32_MIN = -2147483648;
 const I32_MAX = 2147483647;
 
@@ -49,6 +50,12 @@ function assertDlaDescriptor(value: unknown, context: string): asserts value is 
         v >= I32_MIN &&
         v <= I32_MAX,
       `${context}: expected ${key} to be a 32-bit signed integer`,
+    );
+
+    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
+    invariant(
+      v >= min,
+      `${context}: expected ${key} to be >= ${min}`,
     );
   }
 }
@@ -125,7 +132,7 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
   }
 
   function closeDasBacked(handle: SpiceHandle): void {
-    close(handle, ["DAS", "DLA"], (entry) => {
+    close(handle, DAS_BACKED, (entry) => {
       // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
       // is just an alias.
       native.dascls(entry.nativeHandle);
@@ -164,12 +171,12 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
       register("DLA", native.dlaopn(path, ftype, ifname, ncomch)),
 
     dlabfs: (handle: SpiceHandle) =>
-      normalizeFoundDlaDescriptor(native.dlabfs(lookup(handle, ["DAS", "DLA"]).nativeHandle), "dlabfs()"),
+      normalizeFoundDlaDescriptor(native.dlabfs(lookup(handle, DAS_BACKED).nativeHandle), "dlabfs()"),
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor) => {
       assertDlaDescriptor(descr, "dlafns(descr)");
       return normalizeFoundDlaDescriptor(
-        native.dlafns(lookup(handle, ["DAS", "DLA"]).nativeHandle, descr),
+        native.dlafns(lookup(handle, DAS_BACKED).nativeHandle, descr),
         "dlafns()",
       );
     },

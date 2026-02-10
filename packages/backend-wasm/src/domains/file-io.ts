@@ -14,6 +14,7 @@ import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
 
 type HandleKind = "DAF" | "DAS" | "DLA";
+const DAS_BACKED = ["DAS", "DLA"] as const;
 const I32_MIN = -2147483648;
 const I32_MAX = 2147483647;
 
@@ -134,6 +135,11 @@ function assertDlaDescriptor(value: unknown, context: string): asserts value is 
     ) {
       throw new Error(`${context}: expected ${key} to be a 32-bit signed integer`);
     }
+
+    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
+    if (v < min) {
+      throw new Error(`${context}: expected ${key} to be >= ${min}`);
+    }
   }
 }
 
@@ -206,7 +212,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
   }
 
   function closeDasBacked(handle: SpiceHandle): void {
-    close(handle, ["DAS", "DLA"], (entry) => {
+    close(handle, DAS_BACKED, (entry) => {
       // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
       // is just an alias.
       callVoidHandle(module, module._tspice_dascls, entry.nativeHandle);
@@ -362,7 +368,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
     },
 
     dlabfs: (handle: SpiceHandle): FoundDlaDescriptor => {
-      const nativeHandle = lookup(handle, ["DAS", "DLA"]).nativeHandle;
+      const nativeHandle = lookup(handle, DAS_BACKED).nativeHandle;
       return withAllocs(module, [32, 4, WASM_ERR_MAX_BYTES], (outDescr8Ptr, outFoundPtr, errPtr) => {
         module.HEAP32[outFoundPtr >> 2] = 0;
 
@@ -388,7 +394,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor => {
       assertDlaDescriptor(descr, "dlafns(descr)");
-      const nativeHandle = lookup(handle, ["DAS", "DLA"]).nativeHandle;
+      const nativeHandle = lookup(handle, DAS_BACKED).nativeHandle;
 
       return withAllocs(
         module,

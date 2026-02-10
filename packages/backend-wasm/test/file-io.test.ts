@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 import type { DlaDescriptor, SpiceHandle } from "@rybosome/tspice-backend-contract";
+import { loadTestKernels } from "../../tspice/test/test-kernels.js";
 
 describe("@rybosome/tspice-backend-wasm file-io", () => {
   it("can create and close a DLA file in the emscripten FS", async () => {
@@ -73,6 +74,35 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
     backend.dascls(dasHandle);
   });
 
+  it("can traverse DLA segments in a DSK via dlafns", async () => {
+    const backend = await createWasmBackend();
+
+    const { dsk } = await loadTestKernels();
+    const dskKernel = { path: "bc_mpo_sc_mga_v00.bds", bytes: dsk };
+
+    // Ensure the bytes exist on the emscripten FS.
+    backend.furnsh(dskKernel);
+
+    const handle = backend.dasopr(dskKernel.path);
+    try {
+      let next = backend.dlabfs(handle);
+      let count = 0;
+      while (next.found) {
+        count++;
+        if (count > 10_000) {
+          throw new Error("DLA segment traversal did not terminate");
+        }
+        next = backend.dlafns(handle, next.descr);
+      }
+
+      expect(count).toBeGreaterThanOrEqual(1);
+    } finally {
+      // Close via the DAS-backed close path (DSKs are DLA files).
+      backend.dascls(handle);
+      backend.unload(dskKernel.path);
+    }
+  });
+
   it("validates dlafns(descr)", async () => {
     const backend = await createWasmBackend();
 
@@ -92,6 +122,27 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
     };
 
     expect(() => backend.dlafns(handle, badDescr)).toThrow(/32-bit|int32/i);
+    backend.dlacls(handle);
+  });
+
+  it("rejects negative dlafns(descr) fields", async () => {
+    const backend = await createWasmBackend();
+
+    const path = "file-io/dlafns-descr-negative-validation.dla";
+    const handle = backend.dlaopn(path, "DLA", "TSPICE", 0);
+
+    const badDescr: DlaDescriptor = {
+      bwdptr: 0,
+      fwdptr: 0,
+      ibase: -1,
+      isize: 0,
+      dbase: 0,
+      dsize: 0,
+      cbase: 0,
+      csize: 0,
+    };
+
+    expect(() => backend.dlafns(handle, badDescr)).toThrow(/ibase.*>=\s*0/i);
     backend.dlacls(handle);
   });
 });

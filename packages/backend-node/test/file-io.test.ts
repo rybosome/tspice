@@ -140,6 +140,39 @@ describe("@rybosome/tspice-backend-node file-io", () => {
     }
   });
 
+  itNative("can traverse DLA segments in a DSK via dlafns", async () => {
+    const backend = createNodeBackend();
+
+    const { dsk } = await loadTestKernels();
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
+
+    try {
+      const dskPath = path.join(tmpDir, "bc_mpo_sc_mga_v00.bds");
+      fs.writeFileSync(dskPath, dsk);
+
+      const handle = backend.dasopr(dskPath);
+      try {
+        let next = backend.dlabfs(handle);
+        let count = 0;
+
+        while (next.found) {
+          count++;
+          if (count > 10_000) {
+            throw new Error("DLA segment traversal did not terminate");
+          }
+          next = backend.dlafns(handle, next.descr);
+        }
+
+        expect(count).toBeGreaterThanOrEqual(1);
+      } finally {
+        // Close via the DAS-backed close path (DSKs are DLA files).
+        backend.dascls(handle);
+      }
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
   itNative("validates dlafns(descr)", () => {
     const backend = createNodeBackend();
 
@@ -162,6 +195,33 @@ describe("@rybosome/tspice-backend-node file-io", () => {
       };
 
       expect(() => backend.dlafns(handle, badDescr)).toThrow(/32-bit|int32/i);
+      backend.dlacls(handle);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  itNative("rejects negative dlafns(descr) fields", () => {
+    const backend = createNodeBackend();
+
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
+
+    try {
+      const dlaPath = path.join(tmpDir, "dlafns-descr-negative-validation.dla");
+      const handle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+
+      const badDescr: DlaDescriptor = {
+        bwdptr: 0,
+        fwdptr: 0,
+        ibase: -1,
+        isize: 0,
+        dbase: 0,
+        dsize: 0,
+        cbase: 0,
+        csize: 0,
+      };
+
+      expect(() => backend.dlafns(handle, badDescr)).toThrow(/ibase.*>=\s*0/i);
       backend.dlacls(handle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
