@@ -439,9 +439,9 @@ typedef enum {
 
 static parse_int_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
                                        SpiceInt *out) {
-  // We only expect the common NAIF SpiceInt widths (32/64-bit). Treat anything
-  // else as an unsupported ABI so we can surface a precise, actionable error.
-  if (!(sizeof(SpiceInt) == 4 || sizeof(SpiceInt) == 8)) {
+  // Defensive: ensure SpiceInt can round-trip through long long on this ABI.
+  // If it can't, parsing via strtoll() can't be made safe/portable.
+  if (sizeof(SpiceInt) > sizeof(long long)) {
     return PARSE_INT_UNSUPPORTED;
   }
 
@@ -557,7 +557,8 @@ static void write_error_json(const char *message, const char *spiceShort,
 
 static void write_unsupported_spiceint_width_error(void) {
   char detail[128];
-  snprintf(detail, sizeof(detail), "sizeof(SpiceInt)=%zu (expected 4 or 8)", sizeof(SpiceInt));
+  snprintf(detail, sizeof(detail), "sizeof(SpiceInt)=%zu (expected <= sizeof(long long)=%zu)",
+           sizeof(SpiceInt), sizeof(long long));
   write_error_json_ex(
       "unsupported_spiceint_width",
       "Unsupported platform ABI: unsupported SpiceInt width",

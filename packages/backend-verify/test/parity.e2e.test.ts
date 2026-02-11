@@ -9,9 +9,7 @@ import type { CaseRunner } from "../src/runners/types.js";
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
 import {
   createCspiceRunner,
-  getCspiceRunnerBuildStatePath,
-  isCspiceRunnerAvailable,
-  readCspiceRunnerBuildState,
+  getCspiceRunnerStatus,
 } from "../src/runners/cspiceRunner.js";
 import { loadScenarioYamlFile } from "../src/dsl/load.js";
 import { parseScenario } from "../src/dsl/parse.js";
@@ -27,32 +25,8 @@ function isRequired(): boolean {
   return process.env.TSPICE_BACKEND_VERIFY_REQUIRED === "true";
 }
 
-function getCspiceUnavailableHint(): string {
-  const state = readCspiceRunnerBuildState();
-
-  if (typeof state?.reason === "string") return state.reason;
-  if (typeof state?.error === "string") return state.error;
-  return "";
-}
-
-type CspiceRunnerCheck = {
-  ready: boolean;
-  hint: string;
-  statePath: string;
-};
-
-function checkCspiceRunner(): CspiceRunnerCheck {
-  const ready = isCspiceRunnerAvailable();
-
-  return {
-    ready,
-    hint: ready ? "" : getCspiceUnavailableHint(),
-    statePath: getCspiceRunnerBuildStatePath(),
-  };
-}
-
 const REQUIRED = isRequired();
-const CSPICE = checkCspiceRunner();
+const CSPICE = getCspiceRunnerStatus();
 
 describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
   let tspice: CaseRunner | undefined;
@@ -64,15 +38,13 @@ describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
     if (!REQUIRED) {
       // eslint-disable-next-line no-console
       console.warn(
-        `[backend-verify] cspice-runner unavailable; backend-verify parity suite may be skipped (TSPICE_BACKEND_VERIFY_REQUIRED=false)${
-          CSPICE.hint ? `: ${CSPICE.hint}` : ""
-        }`,
+        `[backend-verify] cspice-runner unavailable; backend-verify parity suite may be skipped (TSPICE_BACKEND_VERIFY_REQUIRED=false): ${CSPICE.hint}`,
       );
       return;
     }
 
     throw new Error(
-      `[backend-verify] cspice-runner required but unavailable${CSPICE.hint ? `: ${CSPICE.hint}` : ""}. ` +
+      `[backend-verify] cspice-runner required but unavailable: ${CSPICE.hint}. ` +
         `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
         `State: ${CSPICE.statePath}`,
     );

@@ -15,6 +15,8 @@ function joinPath(base: string, key: string | number): string {
 }
 
 function normalizeToMinusPiPi(x: number): number {
+  if (!Number.isFinite(x)) return x;
+
   // Fast-path exact multiples of TAU: trig reduction can yield tiny residuals
   // (e.g. 2π -> ~-2.4e-16). Only snap when the input is *exactly* a multiple
   // in floating arithmetic.

@@ -61,6 +61,20 @@ export function isCspiceRunnerAvailable(): boolean {
   return true;
 }
 
+export function getCspiceRunnerStatus(): { ready: boolean; hint: string; statePath: string } {
+  const statePath = getCspiceRunnerBuildStatePath();
+  const ready = isCspiceRunnerAvailable();
+  const state = readCspiceRunnerBuildState();
+  const hint = ready
+    ? ""
+    : state?.reason?.trim?.()
+      ? state.reason
+      : state?.error?.trim?.()
+        ? state.error
+        : `State: ${statePath}`;
+  return { ready, hint, statePath };
+}
+
 function safeErrorReport(error: unknown): RunnerErrorReport {
   if (error instanceof Error) {
     const report: RunnerErrorReport = { message: error.message };
