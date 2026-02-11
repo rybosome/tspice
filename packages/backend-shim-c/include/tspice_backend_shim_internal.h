@@ -4,27 +4,29 @@
 // Internal helpers shared across backend-shim-c translation units.
 // Not part of the public API; may change without notice.
 
-#include <stddef.h>
 #include <stdio.h>
+#include <stddef.h>
 
-// Writes an error message to `err` (when provided) and always returns 1 (failure),
-// so call sites can intentionally `return tspice_write_error*(...)`.
-static inline int tspice_write_error(char *err, size_t errMaxBytes, const char *message) {
-  if (!err || errMaxBytes == 0) return 1;
+// Writes an error message to `err` (when provided).
+//
+// Contract: `errMaxBytes` is an int (for easier FFI bindings); values <= 0 mean
+// "no error buffer".
+static inline void tspice_write_error(char *err, int errMaxBytes, const char *message) {
+  if (!err || errMaxBytes <= 0) return;
 
   // Ensure stable, NUL-terminated error strings.
   //
   // Note: snprintf() always NUL-terminates if size > 0, but we defensively set the
   // last byte as well so callers can rely on termination even if code changes.
-  snprintf(err, errMaxBytes, "%s", message ? message : "");
+  snprintf(err, (size_t)errMaxBytes, "%s", message ? message : "Unknown error");
   err[errMaxBytes - 1] = '\0';
-
-  return 1;
 }
 
-static inline int tspice_write_error_i(char *err, int errMaxBytes, const char *message) {
-  if (errMaxBytes <= 0) return 1;
-  return tspice_write_error(err, (size_t)errMaxBytes, message);
+// Convenience helper for call sites that want to both write an error and return
+// a failure result.
+static inline int tspice_fail(char *err, int errMaxBytes, const char *message) {
+  tspice_write_error(err, errMaxBytes, message);
+  return 1;
 }
 
 #endif
