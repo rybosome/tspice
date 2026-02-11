@@ -52,11 +52,10 @@ export type FakeBackendOptions = {
   /**
    * How to handle `furnsh()` calls with unrecognized kernel filename extensions.
    *
-   * - `"unknown"` (default): classify as kind `"UNKNOWN"`
-   * - `"throw"`: throw a RangeError
+   * - `"throw"` (default): throw a RangeError
    * - `"assume-text"`: treat unknown extensions as a TEXT kernel
    */
-  unknownExtension?: "unknown" | "throw" | "assume-text";
+  unknownExtension?: "throw" | "assume-text";
 };
 
 const J2000_UTC_MS = Date.parse("2000-01-01T12:00:00.000Z");
@@ -606,7 +605,7 @@ type KernelRecord = {
   kind: KernelKindNoAll;
 };
 
-function guessKernelKind(path: string, unknownExtension: "unknown" | "throw" | "assume-text"): KernelKindNoAll {
+function guessKernelKind(path: string, unknownExtension: "throw" | "assume-text"): KernelKindNoAll {
   const lower = path.toLowerCase();
   if (lower.endsWith(".bsp")) return "SPK";
   if (lower.endsWith(".bc")) return "CK";
@@ -623,10 +622,6 @@ function guessKernelKind(path: string, unknownExtension: "unknown" | "throw" | "
   if (unknownExtension === "assume-text") {
     return "TEXT";
   }
-  if (unknownExtension === "unknown") {
-    return "UNKNOWN";
-  }
-
   throw new RangeError(`Unsupported kernel extension (fake backend): ${path}`);
 }
 
@@ -651,8 +646,6 @@ function kernelFiltyp(kind: KernelKindNoAll): string {
     case "IK":
     case "SCLK":
       return "TEXT";
-    case "UNKNOWN":
-      return "UNKNOWN";
   }
 
   // Compile-time exhaustiveness check: if a new KernelKind is added, TypeScript
@@ -683,7 +676,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
   const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
 
-  const unknownExtension = options.unknownExtension ?? "unknown";
+  const unknownExtension = options.unknownExtension ?? "throw";
 
   type KernelPoolEntry =
     | { type: "N"; values: number[] }

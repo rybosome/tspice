@@ -43,6 +43,7 @@ describe("matchesKernelKind", () => {
     const requested = new Set(["SPK"]);
 
     expect(matchesKernelKind(requested, { file: "a.unknown", filtyp: "WAT" })).toBe(false);
+    expect(matchesKernelKind(requested, { file: "a.unknown", filtyp: "UNKNOWN" })).toBe(false);
     expect(matchesKernelKind(new Set(["TEXT"]), { file: "a.tls", filtyp: "WAT" })).toBe(false);
   });
 });

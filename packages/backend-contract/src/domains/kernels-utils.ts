@@ -3,7 +3,6 @@ import type { KernelKindInput } from "./kernels.js";
 
 const SUPPORTED_KERNEL_KINDS = [
   "ALL",
-  "UNKNOWN",
   "SPK",
   "CK",
   "PCK",
