@@ -32,21 +32,23 @@ export async function createWasmBackend(
   const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
 
   const URL_SCHEME_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
-  const WINDOWS_DRIVE_RE = /^[A-Za-z]:/;
+  const WINDOWS_DRIVE_PATH_RE = /^[A-Za-z]:[\\/]/;
 
   const hasUrlScheme = (value: string): boolean =>
-    URL_SCHEME_RE.test(value) && !WINDOWS_DRIVE_RE.test(value);
+    URL_SCHEME_RE.test(value) && !WINDOWS_DRIVE_PATH_RE.test(value);
 
-  if (
-    hasUrlScheme(wasmUrl) &&
-    !wasmUrl.startsWith("http://") &&
-    !wasmUrl.startsWith("https://") &&
-    !wasmUrl.startsWith("file://")
-  ) {
+  if (hasUrlScheme(wasmUrl)) {
     const u = new URL(wasmUrl);
-    throw new Error(
-      `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
-    );
+
+    // In web builds, `blob:` URLs are a real-world possibility (some bundlers and
+    // runtime loaders produce them). `data:` is also generally fetchable.
+    const allowedProtocols = new Set<string>(["http:", "https:", "file:", "blob:", "data:"]);
+
+    if (!allowedProtocols.has(u.protocol)) {
+      throw new Error(
+        `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, blob: URL, data: URL, or a filesystem path.`,
+      );
+    }
   }
 
   let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;

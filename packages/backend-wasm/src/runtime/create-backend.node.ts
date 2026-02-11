@@ -31,22 +31,39 @@ export async function createWasmBackend(
   const defaultWasmUrl = new URL("../tspice_backend_wasm.wasm", import.meta.url);
   const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
 
-  const URL_SCHEME_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
-  const WINDOWS_DRIVE_RE = /^[A-Za-z]:/;
+  const WINDOWS_DRIVE_PATH_RE = /^[A-Za-z]:[\\/]/;
+  const URL_SCHEME_WITH_AUTHORITY_RE = /^[A-Za-z][A-Za-z\d+.-]*:\/\//;
+  const SINGLE_LETTER_SCHEME_RE = /^[A-Za-z]:/;
 
-  const hasUrlScheme = (value: string): boolean =>
-    URL_SCHEME_RE.test(value) && !WINDOWS_DRIVE_RE.test(value);
+  const isWindowsDrivePath = (value: string): boolean => WINDOWS_DRIVE_PATH_RE.test(value);
+  const isAllowedNodeUrl = (value: string): boolean =>
+    value.startsWith("http://") || value.startsWith("https://") || value.startsWith("file://");
 
-  if (
-    hasUrlScheme(wasmUrl) &&
-    !wasmUrl.startsWith("http://") &&
-    !wasmUrl.startsWith("https://") &&
-    !wasmUrl.startsWith("file://")
-  ) {
-    const u = new URL(wasmUrl);
+  const throwUnsupportedScheme = (u: URL): never => {
     throw new Error(
       `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
     );
+  };
+
+  // In Node, treat values as filesystem paths unless they are unambiguously a
+  // URL (http(s)://, file://, or any other scheme://...) or a known non-fs
+  // scheme like data: or blob:.
+  if (!isWindowsDrivePath(wasmUrl) && !isAllowedNodeUrl(wasmUrl)) {
+    if (wasmUrl.startsWith("blob:") || wasmUrl.startsWith("data:")) {
+      throwUnsupportedScheme(new URL(wasmUrl));
+    }
+
+    if (URL_SCHEME_WITH_AUTHORITY_RE.test(wasmUrl)) {
+      const u = new URL(wasmUrl);
+      if (u.protocol !== "http:" && u.protocol !== "https:" && u.protocol !== "file:") {
+        throwUnsupportedScheme(u);
+      }
+    }
+
+    // Avoid treating `c:foo` as a Windows drive path; it's ambiguous and often a typo.
+    if (SINGLE_LETTER_SCHEME_RE.test(wasmUrl)) {
+      throwUnsupportedScheme(new URL(wasmUrl));
+    }
   }
 
   let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
