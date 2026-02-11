@@ -72,7 +72,7 @@ inline std::string PreviewForError(const std::string& s, size_t maxChars = 200) 
     return s;
   }
 
-  return s.substr(0, maxChars) + "…(len=" + std::to_string(s.size()) + ")";
+  return s.substr(0, maxChars) + "...(len=" + std::to_string(s.size()) + ")";
 }
 
 inline Napi::Array MakeNumberArray(Napi::Env env, const double* values, size_t count) {

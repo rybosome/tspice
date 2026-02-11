@@ -44,6 +44,13 @@ int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes
     out[0] = '\0';
   }
 
+  if (outMaxBytes <= 0) {
+    return tspice_time_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_tkvrsn_toolkit(): outMaxBytes must be > 0");
+  }
+
   if (outMaxBytes > 0 && !out) {
     return tspice_time_invalid_arg(
         err,
@@ -55,10 +62,6 @@ int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
-  }
-
-  if (outMaxBytes <= 0) {
-    return 0;
   }
 
   size_t maxPayload = (size_t)outMaxBytes - 1;

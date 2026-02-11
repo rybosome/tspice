@@ -38,6 +38,12 @@ function restoreTimdefDefaults(b: TimdefApi, snapshot: TimdefDefaultsSnapshot): 
   const systemIsSet = snapshot.SYSTEM.length > 0;
   const zoneIsSet = snapshot.ZONE.length > 0;
 
+  if (systemIsSet && zoneIsSet) {
+    throw new Error(
+      "restoreTimdefDefaults(): invalid snapshot; SYSTEM and ZONE cannot both be set",
+    );
+  }
+
   if (zoneIsSet) {
     b.timdef("SET", "ZONE", snapshot.ZONE);
     return;
@@ -62,15 +68,17 @@ describe("restoreTimdefDefaults()", () => {
   it("preserves whitespace-only ZONE snapshots", () => {
     const calls: Array<{ action: string; item: string; value: string }> = [];
 
-    const fake: TimdefApi = {
-      timdef: ((action: "GET" | "SET", item: string, value?: string) => {
-        if (action === "SET") {
-          calls.push({ action, item, value: value ?? "" });
-          return;
-        }
-        return "";
-      }) as unknown as TimdefApi["timdef"],
-    };
+    function timdef(action: "GET", item: string): string;
+    function timdef(action: "SET", item: string, value: string): void;
+    function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+      if (action === "SET") {
+        calls.push({ action, item, value: value ?? "" });
+        return;
+      }
+      return "";
+    }
+
+    const fake: TimdefApi = { timdef };
 
     restoreTimdefDefaults(fake, {
       CALENDAR: "GREGORIAN",
