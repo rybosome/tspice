@@ -596,6 +596,10 @@ function guessKernelKind(path: string): KernelKind {
   return "UNKNOWN";
 }
 
+function assertNever(x: never, msg: string): never {
+  throw new Error(msg);
+}
+
 function kernelFiltyp(kind: KernelKind): string {
   // Keep this close to NAIF-style strings, but it doesn't need to be exact.
   switch (kind) {
@@ -612,9 +616,12 @@ function kernelFiltyp(kind: KernelKind): string {
     case "ALL":
       return "ALL";
     case "UNKNOWN":
-    default:
       return "UNKNOWN";
   }
+
+  // Compile-time exhaustiveness check: if a new KernelKind is added, TypeScript
+  // forces us to intentionally map it.
+  return assertNever(kind, `Unmapped KernelKind: ${kind}`);
 }
 
 export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
