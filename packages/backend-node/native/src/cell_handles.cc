@@ -56,10 +56,12 @@ bool ReadCellHandleArg(Napi::Env env, const Napi::Value &value, const char *labe
   }
 
   const double d = value.As<Napi::Number>().DoubleValue();
-  const double lo = 0;
+  // `0` is a reserved sentinel value (and is never emitted by AddCellHandle).
+  const double lo = 1;
   const double hi = (double)std::numeric_limits<uint32_t>::max();
   if (!std::isfinite(d) || std::floor(d) != d || d < lo || d > hi) {
-    ThrowSpiceError(Napi::TypeError::New(env, std::string("Expected ") + handleLabel + " to be a uint32"));
+    ThrowSpiceError(
+        Napi::TypeError::New(env, std::string("Expected ") + handleLabel + " to be a non-zero uint32"));
     return false;
   }
 
