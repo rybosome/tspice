@@ -84,8 +84,12 @@ describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
       const yamlFile = await loadScenarioYamlFile(scenarioPath);
       const scenario = parseScenario(yamlFile);
 
-      const tspiceOut = await executeScenario(scenario, tspice!);
-      const cspiceOut = await executeScenario(scenario, cspice!);
+      if (!tspice || !cspice) {
+        throw new Error("backend-verify runners not initialized (unexpected): tspice/cspice undefined");
+      }
+
+      const tspiceOut = await executeScenario(scenario, tspice);
+      const cspiceOut = await executeScenario(scenario, cspice);
 
       expect(tspiceOut.cases.length).toBe(cspiceOut.cases.length);
 

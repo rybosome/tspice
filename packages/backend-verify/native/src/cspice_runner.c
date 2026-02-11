@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <limits.h>
+#include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -413,9 +414,27 @@ static bool jsmn_parse_double(const char *json, const jsmntok_t *tok,
   memcpy(buf, json + tok->start, (size_t)n);
   buf[n] = '\0';
 
+  // Ensure numeric parsing is locale-stable (decimal separator is '.')
+  // regardless of the process locale.
+  const char *old_locale = setlocale(LC_NUMERIC, NULL);
+  char *old_locale_copy = NULL;
+  if (old_locale) {
+    const size_t n = strlen(old_locale);
+    old_locale_copy = (char *)malloc(n + 1);
+    if (old_locale_copy) {
+      memcpy(old_locale_copy, old_locale, n + 1);
+    }
+  }
+  setlocale(LC_NUMERIC, "C");
+
   errno = 0;
   char *endptr = NULL;
   const double v = strtod(buf, &endptr);
+
+  if (old_locale_copy) {
+    setlocale(LC_NUMERIC, old_locale_copy);
+    free(old_locale_copy);
+  }
   if (errno != 0) {
     return false;
   }

@@ -82,7 +82,11 @@ function compareNumbers(
 
   // Use a symmetric denominator so tolerance behaves consistently regardless
   // of whether callers treat `actual` or `expected` as the reference.
-  const rel = diff / Math.max(1e-30, Math.max(Math.abs(actualNorm), Math.abs(expectedNorm)));
+  //
+  // When angle wrapping is enabled, use a fixed angular scale so tiny angles
+  // near 0 still get a meaningful relative tolerance (regression).
+  const relScale = angleWrapPi ? Math.PI : Math.max(Math.abs(actualNorm), Math.abs(expectedNorm));
+  const rel = diff / Math.max(1e-30, relScale);
 
   if (diff <= tolAbs) return null;
   if (rel <= tolRel) return null;

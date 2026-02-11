@@ -16,6 +16,12 @@ import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorR
 
 type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown;
 
+function assertInteger(value: unknown, label: string): asserts value is number {
+  if (typeof value !== "number" || !Number.isInteger(value)) {
+    throw new TypeError(`${label} expects an integer (got ${JSON.stringify(value)})`);
+  }
+}
+
 const DISPATCH: Record<string, DispatchFn> = {
   // time
   "time.str2et": (backend, args) => {
@@ -51,6 +57,7 @@ const DISPATCH: Record<string, DispatchFn> = {
         `time.et2utc expects args[2] to be a number (got ${JSON.stringify(args[2])})`,
       );
     }
+    assertInteger(args[2], "time.et2utc args[2]");
     return backend.et2utc(args[0], args[1], args[2]);
   },
 
@@ -65,6 +72,7 @@ const DISPATCH: Record<string, DispatchFn> = {
     if (typeof args[2] !== "number") {
       throw new TypeError(`et2utc expects args[2] to be a number (got ${JSON.stringify(args[2])})`);
     }
+    assertInteger(args[2], "et2utc args[2]");
     return backend.et2utc(args[0], args[1], args[2]);
   },
 
@@ -91,6 +99,7 @@ const DISPATCH: Record<string, DispatchFn> = {
         `ids-names.bodc2n expects args[0] to be a number (got ${JSON.stringify(args[0])})`,
       );
     }
+    assertInteger(args[0], "ids-names.bodc2n args[0]");
     return backend.bodc2n(args[0]);
   },
 
@@ -98,6 +107,7 @@ const DISPATCH: Record<string, DispatchFn> = {
     if (typeof args[0] !== "number") {
       throw new TypeError(`bodc2n expects args[0] to be a number (got ${JSON.stringify(args[0])})`);
     }
+    assertInteger(args[0], "bodc2n args[0]");
     return backend.bodc2n(args[0]);
   },
 
@@ -124,6 +134,7 @@ const DISPATCH: Record<string, DispatchFn> = {
         `frames.frmnam expects args[0] to be a number (got ${JSON.stringify(args[0])})`,
       );
     }
+    assertInteger(args[0], "frames.frmnam args[0]");
     return backend.frmnam(args[0]);
   },
 
@@ -131,6 +142,7 @@ const DISPATCH: Record<string, DispatchFn> = {
     if (typeof args[0] !== "number") {
       throw new TypeError(`frmnam expects args[0] to be a number (got ${JSON.stringify(args[0])})`);
     }
+    assertInteger(args[0], "frmnam args[0]");
     return backend.frmnam(args[0]);
   },
 

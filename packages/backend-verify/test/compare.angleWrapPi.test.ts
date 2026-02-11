@@ -17,6 +17,15 @@ describe("compareValues angleWrapPi", () => {
     expect(res).toEqual({ ok: true });
   });
 
+
+  it("uses a fixed angular scale for tolRel near 0 (regression)", () => {
+    // Previous behavior scaled tolRel by max(|actual|, |expected|); near 0 that
+    // makes the allowed diff effectively 0.
+    const actual = 1e-6;
+    const expected = 0;
+    const res = compareValues(actual, expected, { angleWrapPi: true, tolRel: 1e-6 });
+    expect(res).toEqual({ ok: true });
+  });
   it("keeps raw values and includes wrapped diagnostics on mismatch", () => {
     const actual = Math.PI - 0.001;
     const expected = -Math.PI + 0.1;
