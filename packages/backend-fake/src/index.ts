@@ -659,7 +659,7 @@ function kernelFiltyp(kind: KernelKindNoAll): string {
 
 function normalizeVirtualKernelIdOrNull(input: string): string | null {
   // Keep lookup semantics aligned with the WASM backend's virtual-id
-  // normalization (see `@rybosome/tspice-core`'s `normalizeVirtualKernelPath`).
+  // normalization (see core's `normalizeVirtualKernelPath`).
   //
   // Unlike the core helper, this is non-throwing: invalid inputs just don't
   // match.
