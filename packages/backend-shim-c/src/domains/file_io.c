@@ -50,7 +50,7 @@ int tspice_exists(const char *path, int *outExists, char *err, int errMaxBytes) 
   if (outExists) *outExists = 0;
 
   if (!path || path[0] == '\0') {
-    return tspice_write_error(err, errMaxBytes, "tspice_exists: path must be a non-empty string");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_exists: path must be a non-empty string");
   }
 
   const SpiceBoolean exists = exists_c(path);
@@ -80,15 +80,15 @@ int tspice_getfat(
   if (outType && outTypeMaxBytes > 0) outType[0] = '\0';
 
   if (!path || path[0] == '\0') {
-    return tspice_write_error(err, errMaxBytes, "tspice_getfat: path must be a non-empty string");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_getfat: path must be a non-empty string");
   }
 
   if (!outArch || outArchMaxBytes <= 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_getfat: outArch must be non-NULL with outArchMaxBytes > 0");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_getfat: outArch must be non-NULL with outArchMaxBytes > 0");
   }
 
   if (!outType || outTypeMaxBytes <= 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_getfat: outType must be non-NULL with outTypeMaxBytes > 0");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_getfat: outType must be non-NULL with outTypeMaxBytes > 0");
   }
 
   getfat_c(path, (SpiceInt)outArchMaxBytes, (SpiceInt)outTypeMaxBytes, outArch, outType);
@@ -106,11 +106,11 @@ int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes) 
   if (outHandle) *outHandle = 0;
 
   if (!path || path[0] == '\0') {
-    return tspice_write_error(err, errMaxBytes, "tspice_dafopr: path must be a non-empty string");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dafopr: path must be a non-empty string");
   }
 
   if (!outHandle) {
-    return tspice_write_error(err, errMaxBytes, "tspice_dafopr: outHandle must be non-NULL");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dafopr: outHandle must be non-NULL");
   }
 
   SpiceInt handleC = 0;
@@ -152,7 +152,7 @@ int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (!outFound) {
-    return tspice_write_error(err, errMaxBytes, "tspice_daffna: outFound must be non-NULL");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_daffna: outFound must be non-NULL");
   }
 
   *outFound = 0;
@@ -181,11 +181,11 @@ int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes) 
   if (outHandle) *outHandle = 0;
 
   if (!path || path[0] == '\0') {
-    return tspice_write_error(err, errMaxBytes, "tspice_dasopr: path must be a non-empty string");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dasopr: path must be a non-empty string");
   }
 
   if (!outHandle) {
-    return tspice_write_error(err, errMaxBytes, "tspice_dasopr: outHandle must be non-NULL");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dasopr: outHandle must be non-NULL");
   }
 
   SpiceInt handleC = 0;
@@ -233,23 +233,23 @@ int tspice_dlaopn(
   if (outHandle) *outHandle = 0;
 
   if (!path || path[0] == '\0') {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlaopn: path must be a non-empty string");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlaopn: path must be a non-empty string");
   }
 
   if (!ftype || ftype[0] == '\0') {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlaopn: ftype must be a non-empty string");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlaopn: ftype must be a non-empty string");
   }
 
   if (!ifname || ifname[0] == '\0') {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlaopn: ifname must be a non-empty string");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlaopn: ifname must be a non-empty string");
   }
 
   if (ncomch < 0) {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlaopn: ncomch must be >= 0");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlaopn: ncomch must be >= 0");
   }
 
   if (!outHandle) {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlaopn: outHandle must be non-NULL");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlaopn: outHandle must be non-NULL");
   }
 
   SpiceInt handleC = 0;
@@ -268,10 +268,10 @@ int tspice_dlabfs(int handle, int32_t *outDescr8, int32_t *outFound, char *err, 
   if (err && errMaxBytes > 0) err[0] = '\0';
 
   if (!outDescr8) {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlabfs: outDescr8 must be non-NULL");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlabfs: outDescr8 must be non-NULL");
   }
   if (!outFound) {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlabfs: outFound must be non-NULL");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlabfs: outFound must be non-NULL");
   }
 
   *outFound = 0;
@@ -304,13 +304,13 @@ int tspice_dlafns(
   if (err && errMaxBytes > 0) err[0] = '\0';
 
   if (!descr8) {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlafns: descr8 must be non-NULL");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlafns: descr8 must be non-NULL");
   }
   if (!outNextDescr8) {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlafns: outNextDescr8 must be non-NULL");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlafns: outNextDescr8 must be non-NULL");
   }
   if (!outFound) {
-    return tspice_write_error(err, errMaxBytes, "tspice_dlafns: outFound must be non-NULL");
+    return tspice_write_error_i(err, errMaxBytes, "tspice_dlafns: outFound must be non-NULL");
   }
 
   *outFound = 0;
