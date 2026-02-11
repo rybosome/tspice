@@ -96,6 +96,11 @@ static Napi::Number Ekopn(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
+  if (ncomch < 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected ncomch to be >= 0"));
+    return Napi::Number::New(env, 0);
+  }
+
   const std::string path = info[0].As<Napi::String>().Utf8Value();
   const std::string ifname = info[1].As<Napi::String>().Utf8Value();
 

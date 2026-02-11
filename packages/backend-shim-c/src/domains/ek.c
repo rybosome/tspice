@@ -232,6 +232,9 @@ int tspice_eknseg(int handle, int *outNseg, char *err, int errMaxBytes) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
+  if (nsegC < 0) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_eknseg: expected a non-negative segment count");
+  }
 
   *outNseg = (int)nsegC;
   return 0;
