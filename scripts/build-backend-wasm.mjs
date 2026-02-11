@@ -106,6 +106,7 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ephemeris.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "cells_windows.c"),
 ];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
@@ -254,6 +255,27 @@ const exportedFunctions = [
   "_tspice_kdata",
   // NOTE: not required by the TS bindings, but handy for debugging.
   "_tspice_ktotal_all",
+
+  // --- file i/o primitives ---
+  "_tspice_exists",
+  "_tspice_getfat",
+
+  // --- DAF ---
+  "_tspice_dafopr",
+  "_tspice_dafcls",
+  "_tspice_dafbfs",
+  "_tspice_daffna",
+
+  // --- DAS ---
+  "_tspice_dasopr",
+  "_tspice_dascls",
+
+  // --- DLA (DAS-backed) ---
+  "_tspice_dlaopn",
+  "_tspice_dlabfs",
+  "_tspice_dlafns",
+  "_tspice_dlacls",
+
 
   // --- kernel pool ---
   "_tspice_gdpool",

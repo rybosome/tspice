@@ -56,6 +56,52 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+
+  // --- file i/o primitives ---
+
+  _tspice_exists(pathPtr: number, outExistsPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_getfat(
+    pathPtr: number,
+    outArchPtr: number,
+    outArchMaxBytes: number,
+    outTypePtr: number,
+    outTypeMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dafopr(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dafcls(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dafbfs(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_daffna(handle: number, outFoundPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_dasopr(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dascls(handle: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_dlaopn(
+    pathPtr: number,
+    ftypePtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlabfs(handle: number, outDescr8Ptr: number, outFoundPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_dlafns(
+    handle: number,
+    descr8Ptr: number,
+    outNextDescr8Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlacls(handle: number, errPtr: number, errMaxBytes: number): number;
+
   // --- kernel pool ---
   _tspice_gdpool(
     namePtr: number,
@@ -636,6 +682,21 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_kclear",
   "_tspice_ktotal",
   "_tspice_kdata",
+
+
+  // File I/O
+  "_tspice_exists",
+  "_tspice_getfat",
+  "_tspice_dafopr",
+  "_tspice_dafcls",
+  "_tspice_dafbfs",
+  "_tspice_daffna",
+  "_tspice_dasopr",
+  "_tspice_dascls",
+  "_tspice_dlaopn",
+  "_tspice_dlabfs",
+  "_tspice_dlafns",
+  "_tspice_dlacls",
 
   "_tspice_gdpool",
   "_tspice_gipool",
