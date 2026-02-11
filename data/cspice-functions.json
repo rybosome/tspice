@@ -630,6 +630,11 @@
     "decision": "planned"
   },
   {
+    "name": "dlacls",
+    "purpose": "Close a DAS-backed DLA handle",
+    "decision": "planned"
+  },
+  {
     "name": "dlaens_c",
     "purpose": "DLA, end new segment",
     "decision": "planned"
