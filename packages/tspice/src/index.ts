@@ -35,3 +35,11 @@ export { Mat3 } from "./kit/math/mat3.js";
 export type { Spice, SpiceAsync, SpiceKit, SpiceSync } from "./kit/types/spice-types.js";
 export type { CreateSpiceAsyncOptions, CreateSpiceOptions } from "./spice.js";
 export { createSpice, createSpiceAsync } from "./spice.js";
+
+export type {
+  CreateSpiceClientsOptions,
+  SpiceClientBuildResult,
+  SpiceClientsBuilder,
+  SpiceClientsFactory,
+} from "./web/spiceClients.js";
+export { createSpiceClients, spiceClients } from "./web/spiceClients.js";
