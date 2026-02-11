@@ -29,6 +29,17 @@ const SUPPORTED_FILTYPE_SET = new Set<string>(SUPPORTED_FILTYPE_TOKENS);
 
 const TEXT_SUBTYPE_SET = new Set<KernelKind>(["LSK", "FK", "IK", "SCLK"]);
 
+const NATIVE_KIND_QUERY_ALLOWLIST = new Set<string>([
+  "ALL",
+  "SPK",
+  "CK",
+  "PCK",
+  "DSK",
+  "TEXT",
+  "EK",
+  "META",
+]);
+
 function normalizeKindTokenOrThrow(raw: string): KernelKind {
   const trimmed = raw.trim();
   if (trimmed.length === 0) {
@@ -95,6 +106,9 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
   const rawTokens: string[] = [];
 
   if (Array.isArray(kind)) {
+    if (kind.length === 0) {
+      throw new RangeError("Kernel kind array must not be empty");
+    }
     rawTokens.push(...kind.map((k) => String(k)));
   } else {
     // Allow CSPICE-style multi-kind strings.
@@ -159,9 +173,8 @@ export function nativeKindQueryOrNull(kinds: readonly KernelKind[]): string | nu
   // treat it as non-forwardable.
   if (kinds.includes("ALL")) return null;
 
-  // CSPICE does not support TEXT subtypes as kind selectors.
   for (const k of kinds) {
-    if (TEXT_SUBTYPE_SET.has(k)) return null;
+    if (!NATIVE_KIND_QUERY_ALLOWLIST.has(k)) return null;
   }
 
   return kinds.join(" ");

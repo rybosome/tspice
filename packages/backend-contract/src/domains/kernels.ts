@@ -17,7 +17,8 @@ import type { SpiceIntCell } from "./cells-windows.js";
  * - a CSPICE-style multi-kind string (whitespace-separated, e.g. `"SPK CK"`)
  *
  * Tokens are validated case-insensitively and normalized to canonical uppercase.
- * Unknown/empty tokens throw `RangeError`.
+* Unknown/empty tokens throw `RangeError`.
+* An empty array (`[]`) is invalid and throws `RangeError`.
  */
 export type KernelKindInput = KernelKind | readonly KernelKind[] | string;
 

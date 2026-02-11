@@ -54,7 +54,19 @@ describe("matchesKernelKind", () => {
 });
 
 
+describe("normalizeKindInput", () => {
+  it("throws RangeError for empty arrays", () => {
+    expect(() => normalizeKindInput([])).toThrowError(RangeError);
+    expect(() => normalizeKindInput([])).toThrowError("Kernel kind array must not be empty");
+  });
+});
+
+
 describe("nativeKindQueryOrNull", () => {
+  it("forwards allowlisted kind queries", () => {
+    expect(nativeKindQueryOrNull(["SPK", "CK"])).toBe("SPK CK");
+  });
+
   it("treats ALL as an override", () => {
     expect(nativeKindQueryOrNull(normalizeKindInput(["ALL", "SPK"]))).toBe("ALL");
   });
@@ -66,6 +78,10 @@ describe("nativeKindQueryOrNull", () => {
   it("returns null for TEXT subtypes unless TEXT is also requested", () => {
     expect(nativeKindQueryOrNull(normalizeKindInput(["LSK"]))).toBeNull();
     expect(nativeKindQueryOrNull(normalizeKindInput(["SPK", "LSK"]))).toBeNull();
+
+    expect(nativeKindQueryOrNull(["FK"])).toBeNull();
+    expect(nativeKindQueryOrNull(["IK"])).toBeNull();
+    expect(nativeKindQueryOrNull(["SCLK"])).toBeNull();
 
     expect(nativeKindQueryOrNull(normalizeKindInput(["TEXT", "LSK"]))).toBe("TEXT");
     expect(nativeKindQueryOrNull(normalizeKindInput(["LSK", "TEXT"]))).toBe("TEXT");
