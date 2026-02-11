@@ -9,6 +9,7 @@ import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
 import { tspiceCallFoundInt, tspiceCallFoundString } from "../codec/found.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
@@ -123,57 +124,41 @@ function tspiceCallFrinfo(
   module: EmscriptenModule,
   frameId: number,
 ): Found<{ center: number; frameClass: number; classId: number }> {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const outCenterPtr = module._malloc(4);
-  const outFrameClassPtr = module._malloc(4);
-  const outClassIdPtr = module._malloc(4);
-  const foundPtr = module._malloc(4);
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, 4, 4, 4, 4],
+    (errPtr, outCenterPtr, outFrameClassPtr, outClassIdPtr, foundPtr) => {
+      module.HEAP32[outCenterPtr >> 2] = 0;
+      module.HEAP32[outFrameClassPtr >> 2] = 0;
+      module.HEAP32[outClassIdPtr >> 2] = 0;
+      module.HEAP32[foundPtr >> 2] = 0;
 
-  if (!errPtr || !outCenterPtr || !outFrameClassPtr || !outClassIdPtr || !foundPtr) {
-    for (const ptr of [foundPtr, outClassIdPtr, outFrameClassPtr, outCenterPtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
+      const result = module._tspice_frinfo(
+        frameId,
+        outCenterPtr,
+        outFrameClassPtr,
+        outClassIdPtr,
+        foundPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      }
 
-  try {
-    module.HEAP32[outCenterPtr >> 2] = 0;
-    module.HEAP32[outFrameClassPtr >> 2] = 0;
-    module.HEAP32[outClassIdPtr >> 2] = 0;
-    module.HEAP32[foundPtr >> 2] = 0;
+      const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+      if (!found) {
+        return { found: false };
+      }
 
-    const result = module._tspice_frinfo(
-      frameId,
-      outCenterPtr,
-      outFrameClassPtr,
-      outClassIdPtr,
-      foundPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-
-    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
-    if (!found) {
-      return { found: false };
-    }
-
-    return {
-      found: true,
-      center: module.HEAP32[outCenterPtr >> 2] ?? 0,
-      frameClass: module.HEAP32[outFrameClassPtr >> 2] ?? 0,
-      classId: module.HEAP32[outClassIdPtr >> 2] ?? 0,
-    };
-  } finally {
-    module._free(foundPtr);
-    module._free(outClassIdPtr);
-    module._free(outFrameClassPtr);
-    module._free(outCenterPtr);
-    module._free(errPtr);
-  }
+      return {
+        found: true,
+        center: module.HEAP32[outCenterPtr >> 2] ?? 0,
+        frameClass: module.HEAP32[outFrameClassPtr >> 2] ?? 0,
+        classId: module.HEAP32[outClassIdPtr >> 2] ?? 0,
+      };
+    },
+  );
 }
 
 function tspiceCallCcifrm(
@@ -181,60 +166,45 @@ function tspiceCallCcifrm(
   frameClass: number,
   classId: number,
 ): Found<{ frcode: number; frname: string; center: number }> {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
   const outNameMaxBytes = 256;
-  const outNamePtr = module._malloc(outNameMaxBytes);
-  const outFrcodePtr = module._malloc(4);
-  const outCenterPtr = module._malloc(4);
-  const foundPtr = module._malloc(4);
 
-  if (!errPtr || !outNamePtr || !outFrcodePtr || !outCenterPtr || !foundPtr) {
-    for (const ptr of [foundPtr, outCenterPtr, outFrcodePtr, outNamePtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, outNameMaxBytes, 4, 4, 4],
+    (errPtr, outNamePtr, outFrcodePtr, outCenterPtr, foundPtr) => {
+      module.HEAPU8[outNamePtr] = 0;
+      module.HEAP32[outFrcodePtr >> 2] = 0;
+      module.HEAP32[outCenterPtr >> 2] = 0;
+      module.HEAP32[foundPtr >> 2] = 0;
 
-  try {
-    module.HEAPU8[outNamePtr] = 0;
-    module.HEAP32[outFrcodePtr >> 2] = 0;
-    module.HEAP32[outCenterPtr >> 2] = 0;
-    module.HEAP32[foundPtr >> 2] = 0;
+      const result = module._tspice_ccifrm(
+        frameClass,
+        classId,
+        outFrcodePtr,
+        outNamePtr,
+        outNameMaxBytes,
+        outCenterPtr,
+        foundPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      }
 
-    const result = module._tspice_ccifrm(
-      frameClass,
-      classId,
-      outFrcodePtr,
-      outNamePtr,
-      outNameMaxBytes,
-      outCenterPtr,
-      foundPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
+      const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+      if (!found) {
+        return { found: false };
+      }
 
-    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
-    if (!found) {
-      return { found: false };
-    }
-
-    return {
-      found: true,
-      frcode: module.HEAP32[outFrcodePtr >> 2] ?? 0,
-      frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
-      center: module.HEAP32[outCenterPtr >> 2] ?? 0,
-    };
-  } finally {
-    module._free(foundPtr);
-    module._free(outCenterPtr);
-    module._free(outFrcodePtr);
-    module._free(outNamePtr);
-    module._free(errPtr);
-  }
+      return {
+        found: true,
+        frcode: module.HEAP32[outFrcodePtr >> 2] ?? 0,
+        frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
+        center: module.HEAP32[outCenterPtr >> 2] ?? 0,
+      };
+    },
+  );
 }
 
 function tspiceCallCkgp(
