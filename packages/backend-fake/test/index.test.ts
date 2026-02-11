@@ -60,7 +60,11 @@ describe("@rybosome/tspice-backend-fake", () => {
 
     expect(b.kdata(3)).toEqual({ found: false });
 
-    b.unload("/kernels/a.bsp");
+    // `kinfo()` should accept equivalent virtual id forms (WASM parity).
+    expect(b.kinfo("kernels/a.bsp").found).toBe(true);
+
+    // `unload()` should use the same normalization.
+    b.unload("kernels//a.bsp");
     expect(b.ktotal()).toBe(2);
     expect(b.ktotal("SPK")).toBe(0);
     expect(b.ktotal("CK")).toBe(1);

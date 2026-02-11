@@ -657,6 +657,53 @@ function kernelFiltyp(kind: KernelKindNoAll): string {
   return assertNever(kind, `Unmapped KernelKind: ${kind}`);
 }
 
+function normalizeVirtualKernelIdOrNull(input: string): string | null {
+  // Keep lookup semantics aligned with the WASM backend's virtual-id
+  // normalization (see `@rybosome/tspice-core`'s `normalizeVirtualKernelPath`).
+  //
+  // Unlike the core helper, this is non-throwing: invalid inputs just don't
+  // match.
+  const raw = input.replace(/\\/g, "/").trim();
+  if (!raw) {
+    return null;
+  }
+
+  // Strip leading slashes so `/kernels/foo.tls` behaves like `kernels/foo.tls`.
+  let rel = raw.replace(/^\/+/, "");
+
+  // Strip leading `./` segments.
+  while (rel.startsWith("./")) {
+    rel = rel.slice(2);
+  }
+
+  // Strip a leading `kernels/` directory to keep user input flexible.
+  // Treat a bare `kernels` segment as equivalent to `kernels/`.
+  if (rel === "kernels") {
+    rel = "";
+  }
+  while (rel.startsWith("kernels/")) {
+    rel = rel.replace(/^kernels\/+/, "");
+  }
+
+  const segments = rel.split("/");
+  const out: string[] = [];
+  for (const seg of segments) {
+    if (!seg || seg === ".") {
+      continue;
+    }
+    if (seg === "..") {
+      return null;
+    }
+    out.push(seg);
+  }
+
+  if (out.length === 0) {
+    return null;
+  }
+
+  return out.join("/");
+}
+
 function assertPoolRange(fn: string, start: number, room: number): void {
   if (!Number.isFinite(start) || !Number.isInteger(start) || start < 0) {
     throw new RangeError(`${fn}(): start must be an integer >= 0`);
@@ -793,7 +840,12 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     },
 
     unload: (path: string) => {
-      const idx = kernels.findIndex((k) => k.file === path);
+      const needle = normalizeVirtualKernelIdOrNull(path);
+      if (needle == null) {
+        return;
+      }
+
+      const idx = kernels.findIndex((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
       if (idx >= 0) {
         kernels.splice(idx, 1);
       }
@@ -807,7 +859,12 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     },
 
     kinfo: (path: string) => {
-      const k = kernels.find((k) => k.file === path);
+      const needle = normalizeVirtualKernelIdOrNull(path);
+      if (needle == null) {
+        return { found: false };
+      }
+
+      const k = kernels.find((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
       if (!k) {
         return { found: false };
       }
