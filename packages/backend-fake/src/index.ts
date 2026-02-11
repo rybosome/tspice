@@ -54,6 +54,10 @@ export type FakeBackendOptions = {
    *
    * - `"throw"` (default): throw a RangeError
    * - `"assume-text"`: treat unknown extensions as a TEXT kernel
+   *
+   * Note: with `"assume-text"`, TEXT subtype queries (`"LSK"`, `"FK"`, `"IK"`, `"SCLK"`) depend on
+   * the `file` identifier having a recognizable extension. If subtype queries matter for a test/demo,
+   * prefer naming virtual ids with `.tls/.tf/.ti/.tsc` (or keep the default `"throw"`).
    */
   unknownExtension?: "throw" | "assume-text";
 };

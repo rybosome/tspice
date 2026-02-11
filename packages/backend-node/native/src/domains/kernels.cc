@@ -19,19 +19,6 @@ using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 using tspice_napi::FixedWidthToJsString;
 
-static std::string TrimAsciiWhitespace(const std::string& s) {
-  size_t start = 0;
-  while (start < s.size() && tspice_napi::IsAsciiWhitespace(static_cast<unsigned char>(s[start]))) {
-    start++;
-  }
-
-  size_t end = s.size();
-  while (end > start && tspice_napi::IsAsciiWhitespace(static_cast<unsigned char>(s[end - 1]))) {
-    end--;
-  }
-
-  return s.substr(start, end - start);
-}
 
 static Napi::String SpiceVersion(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -276,7 +263,7 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
   }
 
   const std::string keywdRaw = info[0].As<Napi::String>().Utf8Value();
-  const std::string keywd = TrimAsciiWhitespace(keywdRaw);
+  const std::string keywd = tspice_napi::TrimAsciiWhitespace(keywdRaw);
   if (keywd.empty()) {
     ThrowSpiceError(Napi::RangeError::New(env, "kxtrct keywd must be a non-empty string"));
     return Napi::Object::New(env);
@@ -300,7 +287,7 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
   std::vector<std::string> terms;
   terms.reserve(termsArg.values.size());
   for (const std::string& raw : termsArg.values) {
-    std::string t = TrimAsciiWhitespace(raw);
+    std::string t = tspice_napi::TrimAsciiWhitespace(raw);
     if (!t.empty()) {
       terms.push_back(std::move(t));
     }

@@ -1,7 +1,7 @@
 import type { Found, KernelData, KernelKind } from "../shared/types.js";
 import type { KernelKindInput } from "./kernels.js";
 
-const SUPPORTED_KERNEL_KINDS = [
+const SUPPORTED_QUERY_KIND_TOKENS = [
   "ALL",
   "SPK",
   "CK",
@@ -16,7 +16,16 @@ const SUPPORTED_KERNEL_KINDS = [
   "META",
 ] as const satisfies readonly KernelKind[];
 
-const SUPPORTED_KERNEL_KIND_SET = new Set<string>(SUPPORTED_KERNEL_KINDS);
+const SUPPORTED_QUERY_KIND_SET = new Set<string>(SUPPORTED_QUERY_KIND_TOKENS);
+
+// `KernelData.filtyp` values are a subset of supported query tokens.
+// In particular, `"ALL"` is valid as an input selector but should never be treated as a
+// meaningful kernel-side `filtyp`.
+const SUPPORTED_FILTYPE_TOKENS = SUPPORTED_QUERY_KIND_TOKENS.filter(
+  (k): k is Exclude<KernelKind, "ALL"> => k !== "ALL",
+);
+
+const SUPPORTED_FILTYPE_SET = new Set<string>(SUPPORTED_FILTYPE_TOKENS);
 
 const NATIVE_KIND_SET = new Set<KernelKind>([
   "SPK",
@@ -37,9 +46,9 @@ function normalizeKindTokenOrThrow(raw: string): KernelKind {
   }
 
   const upper = trimmed.toUpperCase();
-  if (!SUPPORTED_KERNEL_KIND_SET.has(upper)) {
+  if (!SUPPORTED_QUERY_KIND_SET.has(upper)) {
     throw new RangeError(
-      `Unknown kernel kind: ${trimmed}. Expected one of: ${SUPPORTED_KERNEL_KINDS.join(", ")}`,
+      `Unknown kernel kind: ${trimmed}. Expected one of: ${SUPPORTED_QUERY_KIND_TOKENS.join(", ")}`,
     );
   }
 
@@ -214,7 +223,7 @@ export function matchesKernelKind(
   }
 
   const filtyp = kernel.filtyp.trim().toUpperCase();
-  if (filtyp.length === 0 || filtyp === "ALL") {
+  if (filtyp.length === 0) {
     return false;
   }
 
@@ -235,7 +244,7 @@ export function matchesKernelKind(
   }
 
   // Contract-level strictness: unknown `filtyp` values never match.
-  if (!SUPPORTED_KERNEL_KIND_SET.has(filtyp)) {
+  if (!SUPPORTED_FILTYPE_SET.has(filtyp)) {
     return false;
   }
 

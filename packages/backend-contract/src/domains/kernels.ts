@@ -1,6 +1,7 @@
 /**
 * Contract conventions:
-* - Inputs are assumed validated at the backend boundary; the contract itself is primarily type-level.
+* - Inputs are validated at the backend boundary. This package provides shared runtime helpers
+*   (e.g. `normalizeKindInput`) that backends can reuse and that throw `RangeError` on invalid tokens.
 * - Methods throw on invalid arguments or SPICE errors.
 * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
 */
