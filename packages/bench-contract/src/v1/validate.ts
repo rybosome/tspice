@@ -34,6 +34,7 @@ function fixtureRootsCacheKey(roots: FixtureRootsV1): string {
 interface FixtureResolutionContext {
   readonly repoRoot: string;
   readonly checkExistence: boolean;
+  readonly checkSymlinkContainment: boolean;
   readonly defaultFixtureRoots: FixtureRootsV1 | undefined;
   readonly fixtureRoots: FixtureRootsV1 | undefined;
   readonly cacheKeyPrefix: string;
@@ -177,6 +178,7 @@ function validateKernels(
       const resolveOptions: ResolveFixtureRefOptions = {
         repoRoot: fixtureCtx.repoRoot,
         checkExistence: fixtureCtx.checkExistence,
+        checkSymlinkContainment: fixtureCtx.checkSymlinkContainment,
         ...(fixtureCtx.defaultFixtureRoots !== undefined
           ? { defaultFixtureRoots: fixtureCtx.defaultFixtureRoots }
           : {}),
@@ -516,6 +518,8 @@ export function validateBenchmarkSuiteV1(
   );
 
   const checkExistence = shouldCheckFixtureExistence(options);
+  const checkSymlinkContainment =
+    options.checkFixtureSymlinkContainment ?? checkExistence;
   const defaultFixtureRoots = options.defaultFixtureRoots;
 
   const getFixtureCtx = (() => {
@@ -534,9 +538,10 @@ export function validateBenchmarkSuiteV1(
       ctx = {
         repoRoot: options.repoRoot,
         checkExistence,
+        checkSymlinkContainment,
         defaultFixtureRoots,
         fixtureRoots,
-        cacheKeyPrefix: `${checkExistence ? 1 : 0}:${effectiveFixtureRootsKey}:`,
+        cacheKeyPrefix: `${checkExistence ? 1 : 0}:${checkSymlinkContainment ? 1 : 0}:${effectiveFixtureRootsKey}:`,
         fixtureRefCache,
       };
 

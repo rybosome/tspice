@@ -117,6 +117,15 @@ export interface ValidateBenchmarkSuiteV1Options {
   readonly checkFixtureExistence?: boolean;
 
   /**
+   * Whether to enforce realpath-based containment checks (symlink containment)
+   * when validating fixture refs.
+   *
+   * Defaults to the same value as `checkFixtureExistence` for backwards
+   * compatibility.
+   */
+  readonly checkFixtureSymlinkContainment?: boolean;
+
+  /**
    * Default fixture roots that will be merged with any contract-provided
    * `fixtureRoots`.
    */

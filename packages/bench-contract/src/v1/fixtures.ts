@@ -23,6 +23,15 @@ export function parseFixtureRef(ref: string): ParsedFixtureRef | null {
 
   if (root.length === 0 || relPath.length === 0) return null;
 
+  // Treat fixture refs as a strict contract: reject roots with leading/trailing
+  // whitespace to avoid confusing UX (e.g. "$ FIXTURES/a" failing later as an
+  // unknown root).
+  if (root.trim() !== root) return null;
+
+  // Fail closed on malformed refs like "$FIXTURES//a" (relPath would start with
+  // "/"), which would otherwise be silently normalized downstream.
+  if (relPath.startsWith("/")) return null;
+
   return { root, relPath };
 }
 
@@ -94,7 +103,7 @@ function splitRelFixturePath(relPath: string):
     };
   }
 
-  if (segments.some((seg) => seg.length == 0)) {
+  if (segments.some((seg) => seg.length === 0)) {
     return {
       ok: false,
       message:
