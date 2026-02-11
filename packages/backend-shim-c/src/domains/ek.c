@@ -139,6 +139,10 @@ int tspice_ekcls(int handle, char *err, int errMaxBytes) {
     err[0] = '\0';
   }
 
+  if (handle <= 0) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekcls: handle must be > 0");
+  }
+
   ekcls_c((SpiceInt)handle);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -187,6 +191,9 @@ int tspice_ektnam(int n, char *outName, int outNameMaxBytes, char *err, int errM
   }
   if (outNameMaxBytes < 2) {
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ektnam: outNameMaxBytes must be >= 2");
+  }
+  if (n < 0) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ektnam: n must be >= 0");
   }
 
   ektnam_c((SpiceInt)n, (SpiceInt)outNameMaxBytes, outName);

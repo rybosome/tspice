@@ -77,7 +77,7 @@ export function createEkApi(native: NativeAddon, stager?: KernelStager): EkApi {
   function closeAllHandles(): void {
     const errors: unknown[] = [];
 
-    for (const [handleId, entry] of handles) {
+    for (const [handleId, entry] of Array.from(handles.entries())) {
       try {
         native.ekcls(entry.nativeHandle);
       } catch (error) {

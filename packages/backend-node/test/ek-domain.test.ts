@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { createEkApi } from "../src/domains/ek.js";
+import type { NativeAddon } from "../src/runtime/addon.js";
+import type { KernelStager } from "../src/runtime/kernel-staging.js";
 
 describe("backend-node ek domain wrapper", () => {
   it("resolves staged kernel paths for ekopr/ekopw/ekopn", () => {
@@ -23,11 +25,19 @@ describe("backend-node ek domain wrapper", () => {
       ekntab: () => 0,
       ektnam: (_n: number) => "",
       eknseg: (_handle: number) => 0,
-    } as const;
+    } as const satisfies Pick<
+      NativeAddon,
+      "ekopr" | "ekopw" | "ekopn" | "ekcls" | "ekntab" | "ektnam" | "eknseg"
+    >;
 
-    const api = createEkApi(native as any, {
+    const stager = {
       resolvePath: (p: string) => `/resolved${p}`,
-    } as any);
+    } satisfies Pick<KernelStager, "resolvePath">;
+
+    const api = createEkApi(
+      native as unknown as NativeAddon,
+      stager as unknown as KernelStager,
+    );
 
     api.ekopr("/kernels/a.ek");
     api.ekopw("kernels/b.ek");
@@ -41,27 +51,33 @@ describe("backend-node ek domain wrapper", () => {
   });
 
   it("enforces ekntab() non-negative int32 postcondition", () => {
-    const api = createEkApi({
+    const native = {
       ekntab: () => -1,
-    } as any);
+    } satisfies Pick<NativeAddon, "ekntab">;
+
+    const api = createEkApi(native as unknown as NativeAddon);
 
     expect(() => api.ekntab()).toThrow(/non-negative|32-bit|integer/i);
   });
 
   it("enforces eknseg() non-negative int32 postcondition", () => {
-    const api = createEkApi({
+    const native = {
       ekopr: (_p: string) => 123,
       eknseg: (_handle: number) => 1.5,
-    } as any);
+    } satisfies Pick<NativeAddon, "ekopr" | "eknseg">;
+
+    const api = createEkApi(native as unknown as NativeAddon);
 
     const handle = api.ekopr("/tmp/file.ek");
     expect(() => api.eknseg(handle)).toThrow(/non-negative|32-bit|integer/i);
   });
 
   it("rejects negative indices for ektnam", () => {
-    const api = createEkApi({
+    const native = {
       ektnam: (_n: number) => "",
-    } as any);
+    } satisfies Pick<NativeAddon, "ektnam">;
+
+    const api = createEkApi(native as unknown as NativeAddon);
 
     expect(() => api.ektnam(-1)).toThrow(/>=\s*0|non-negative/i);
   });
@@ -69,10 +85,20 @@ describe("backend-node ek domain wrapper", () => {
   it("can bulk-close EK handles via internal teardown hook", () => {
     const closed: number[] = [];
 
-    const api = createEkApi({
+    type EkApiDebug = {
+      __debugOpenHandleCount(): number;
+      __debugCloseAllHandles(): void;
+    };
+
+    const native = {
       ekopr: (_p: string) => 999,
       ekcls: (h: number) => closed.push(h),
-    } as any) as any;
+    } satisfies Pick<NativeAddon, "ekopr" | "ekcls">;
+
+    const api = createEkApi(native as unknown as NativeAddon) as unknown as ReturnType<
+      typeof createEkApi
+    > &
+      EkApiDebug;
 
     const handle = api.ekopr("/tmp/file.ek");
     expect(api.__debugOpenHandleCount()).toBe(1);
