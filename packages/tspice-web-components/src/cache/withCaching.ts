@@ -186,16 +186,31 @@ type CacheEntry = {
   expiresAt?: number;
 };
 
+type UnrefableTimer = {
+  unref?: unknown;
+};
+
 function tryUnrefTimer(timer: unknown): void {
   // Best-effort: in Node, timers usually expose `unref()` to avoid pinning the
   // event loop. In browsers, `setInterval` returns a number.
   //
   // Some runtimes/shims may throw on property access or call even when the
   // property is present, so keep this defensive.
+
+  if (!timer) return;
+
+  // Read `unref` once in case it's an accessor or Proxy.
+  let unref: unknown;
   try {
-    if (timer && typeof (timer as any).unref === "function") {
-      (timer as any).unref.call(timer);
-    }
+    unref = (timer as UnrefableTimer).unref;
+  } catch {
+    return;
+  }
+
+  if (typeof unref !== "function") return;
+
+  try {
+    unref.call(timer);
   } catch {
     // Ignore. Some runtimes / shims may throw for `unref` even when present.
   }

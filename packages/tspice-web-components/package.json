@@ -18,6 +18,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "pretest": "pnpm -w -r --filter @rybosome/tspice-web-components... run build",
     "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
     "test": "vitest run"
   },

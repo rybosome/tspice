@@ -2,9 +2,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { getGlobal } from "./helpers/getGlobal.js";
 
-// Keep in sync with the internal MAX_KEY_SCAN guardrail in withCaching.ts.
-const DEFAULT_MAX_KEY_SCAN = 10_000;
-
 describe("withCaching()", () => {
   afterEach(() => {
     vi.useRealTimers();
@@ -229,8 +226,16 @@ describe("withCaching()", () => {
     expect(defaultSpiceCacheKey("op", accessorArgs)).toBeNull();
     expect(argsGetterCalls).toBe(0);
 
-    const big = new Array(DEFAULT_MAX_KEY_SCAN + 1).fill(0);
-    expect(defaultSpiceCacheKey("op", [big])).toBeNull();
+    // Scan-budget behavior should be testable without depending on the exact
+    // internal MAX_KEY_SCAN constant.
+    const safetyCap = 1_000_000;
+    let size = 1024;
+    for (;;) {
+      const big = new Array(size).fill(0);
+      if (defaultSpiceCacheKey("op", [big]) === null) break;
+      size *= 2;
+      expect(size).toBeLessThanOrEqual(safetyCap);
+    }
   });
 
   it("defaultSpiceCacheKey returns null for large plain objects (scan budget)", async () => {
@@ -238,12 +243,18 @@ describe("withCaching()", () => {
       /* @vite-ignore */ "@rybosome/tspice-web-components",
     );
 
-    const big: Record<string, number> = {};
-    for (let i = 0; i < DEFAULT_MAX_KEY_SCAN + 1; i++) {
-      big[`k${i}`] = i;
-    }
+    const safetyCap = 1_000_000;
+    let size = 1024;
+    for (;;) {
+      const big: Record<string, number> = {};
+      for (let i = 0; i < size; i++) {
+        big[`k${i}`] = i;
+      }
 
-    expect(defaultSpiceCacheKey("op", [big])).toBeNull();
+      if (defaultSpiceCacheKey("op", [big]) === null) break;
+      size *= 2;
+      expect(size).toBeLessThanOrEqual(safetyCap);
+    }
   });
 
   it("bypasses cache when args contain binary-like data", async () => {
