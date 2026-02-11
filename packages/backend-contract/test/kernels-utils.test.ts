@@ -46,6 +46,11 @@ describe("matchesKernelKind", () => {
     expect(matchesKernelKind(requested, { file: "a.unknown", filtyp: "UNKNOWN" })).toBe(false);
     expect(matchesKernelKind(new Set(["TEXT"]), { file: "a.tls", filtyp: "WAT" })).toBe(false);
   });
+
+  it("treats unknown requested tokens as non-matching (lenient)", () => {
+    expect(matchesKernelKind(new Set(["wat"]), { file: "a.bsp", filtyp: "SPK" })).toBe(false);
+    expect(matchesKernelKind(new Set(["wat", "spk"]), { file: "a.bsp", filtyp: "SPK" })).toBe(true);
+  });
 });
 
 
@@ -69,5 +74,11 @@ describe("nativeKindQueryOrNull", () => {
   it("supports whitespace-separated kind strings via normalizeKindInput", () => {
     const kinds = normalizeKindInput("  spk   ck ");
     expect(nativeKindQueryOrNull(kinds)).toBe("SPK CK");
+  });
+
+  it("is defensive for non-normalized inputs (returns null instead of throwing)", () => {
+    expect(nativeKindQueryOrNull([])).toBeNull();
+    expect(nativeKindQueryOrNull(["ALL", "SPK"]))
+      .toBeNull();
   });
 });
