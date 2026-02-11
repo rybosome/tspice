@@ -54,7 +54,7 @@ export interface TimeApi {
   /**
    * Parse a time string to ET seconds past J2000.
    *
-   * Note: this is affected by TIMDEF defaults (SYSTEM/CALENDAR/ZONE).
+   * Statefulness: this is affected by TIMDEF defaults (SYSTEM/CALENDAR/ZONE).
    *
    * Kernel prerequisites:
    * - None.

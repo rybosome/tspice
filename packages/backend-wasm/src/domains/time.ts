@@ -2,13 +2,25 @@ import type { TimeApi } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
+import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 
-function tspiceCallStr2et(module: EmscriptenModule, utc: string): number {
-  const utcPtr = writeUtf8CString(module, utc);
+function withUtf8CString<T>(
+  module: Pick<EmscriptenModule, "_malloc" | "_free" | "HEAPU8">,
+  value: string,
+  fn: (ptr: number) => T,
+): T {
+  const ptr = writeUtf8CString(module, value);
   try {
+    return fn(ptr);
+  } finally {
+    module._free(ptr);
+  }
+}
+
+function tspiceCallStr2et(module: EmscriptenModule, utc: string): number {
+  return withUtf8CString(module, utc, (utcPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEtPtr) => {
       module.HEAPF64[outEtPtr >> 3] = 0;
       const result = module._tspice_str2et(utcPtr, outEtPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -17,9 +29,7 @@ function tspiceCallStr2et(module: EmscriptenModule, utc: string): number {
       }
       return module.HEAPF64[outEtPtr >> 3] ?? 0;
     });
-  } finally {
-    module._free(utcPtr);
-  }
+  });
 }
 
 function tspiceCallEt2utc(
@@ -28,10 +38,9 @@ function tspiceCallEt2utc(
   format: string,
   prec: number,
 ): string {
-  const formatPtr = writeUtf8CString(module, format);
   const outMaxBytes = WASM_ERR_MAX_BYTES;
 
-  try {
+  return withUtf8CString(module, format, (formatPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
       module.HEAPU8[outPtr] = 0;
       const result = module._tspice_et2utc(
@@ -48,16 +57,13 @@ function tspiceCallEt2utc(
       }
       return module.UTF8ToString(outPtr, outMaxBytes).trim();
     });
-  } finally {
-    module._free(formatPtr);
-  }
+  });
 }
 
 function tspiceCallTimout(module: EmscriptenModule, et: number, picture: string): string {
-  const picturePtr = writeUtf8CString(module, picture);
   const outMaxBytes = WASM_ERR_MAX_BYTES;
 
-  try {
+  return withUtf8CString(module, picture, (picturePtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
       module.HEAPU8[outPtr] = 0;
       const result = module._tspice_timout(
@@ -73,14 +79,11 @@ function tspiceCallTimout(module: EmscriptenModule, et: number, picture: string)
       }
       return module.UTF8ToString(outPtr, outMaxBytes).trim();
     });
-  } finally {
-    module._free(picturePtr);
-  }
+  });
 }
 
 function tspiceCallDeltet(module: EmscriptenModule, epoch: number, eptype: string): number {
-  const eptypePtr = writeUtf8CString(module, eptype);
-  try {
+  return withUtf8CString(module, eptype, (eptypePtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outDeltaPtr) => {
       module.HEAPF64[outDeltaPtr >> 3] = 0;
       const result = module._tspice_deltet(epoch, eptypePtr, outDeltaPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -89,9 +92,7 @@ function tspiceCallDeltet(module: EmscriptenModule, epoch: number, eptype: strin
       }
       return module.HEAPF64[outDeltaPtr >> 3] ?? 0;
     });
-  } finally {
-    module._free(eptypePtr);
-  }
+  });
 }
 
 function tspiceCallUnitim(
@@ -100,34 +101,29 @@ function tspiceCallUnitim(
   insys: string,
   outsys: string,
 ): number {
-  const insysPtr = writeUtf8CString(module, insys);
-  const outsysPtr = writeUtf8CString(module, outsys);
-
-  try {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEpochPtr) => {
-      module.HEAPF64[outEpochPtr >> 3] = 0;
-      const result = module._tspice_unitim(
-        epoch,
-        insysPtr,
-        outsysPtr,
-        outEpochPtr,
-        errPtr,
-        WASM_ERR_MAX_BYTES,
-      );
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-      return module.HEAPF64[outEpochPtr >> 3] ?? 0;
+  return withUtf8CString(module, insys, (insysPtr) => {
+    return withUtf8CString(module, outsys, (outsysPtr) => {
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEpochPtr) => {
+        module.HEAPF64[outEpochPtr >> 3] = 0;
+        const result = module._tspice_unitim(
+          epoch,
+          insysPtr,
+          outsysPtr,
+          outEpochPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+        return module.HEAPF64[outEpochPtr >> 3] ?? 0;
+      });
     });
-  } finally {
-    module._free(outsysPtr);
-    module._free(insysPtr);
-  }
+  });
 }
 
 function tspiceCallTparse(module: EmscriptenModule, timstr: string): number {
-  const timstrPtr = writeUtf8CString(module, timstr);
-  try {
+  return withUtf8CString(module, timstr, (timstrPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEtPtr) => {
       module.HEAPF64[outEtPtr >> 3] = 0;
       const result = module._tspice_tparse(timstrPtr, outEtPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -136,43 +132,37 @@ function tspiceCallTparse(module: EmscriptenModule, timstr: string): number {
       }
       return module.HEAPF64[outEtPtr >> 3] ?? 0;
     });
-  } finally {
-    module._free(timstrPtr);
-  }
+  });
 }
 
 function tspiceCallTpictr(module: EmscriptenModule, sample: string, picturIn: string): string {
-  const samplePtr = writeUtf8CString(module, sample);
-  const picturInPtr = writeUtf8CString(module, picturIn);
   const outMaxBytes = WASM_ERR_MAX_BYTES;
 
-  try {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
-      module.HEAPU8[outPtr] = 0;
-      const result = module._tspice_tpictr(
-        samplePtr,
-        picturInPtr,
-        outPtr,
-        outMaxBytes,
-        errPtr,
-        WASM_ERR_MAX_BYTES,
-      );
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-      return module.UTF8ToString(outPtr, outMaxBytes).trim();
+  return withUtf8CString(module, sample, (samplePtr) => {
+    return withUtf8CString(module, picturIn, (picturInPtr) => {
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
+        module.HEAPU8[outPtr] = 0;
+        const result = module._tspice_tpictr(
+          samplePtr,
+          picturInPtr,
+          outPtr,
+          outMaxBytes,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+        return module.UTF8ToString(outPtr, outMaxBytes).trim();
+      });
     });
-  } finally {
-    module._free(picturInPtr);
-    module._free(samplePtr);
-  }
+  });
 }
 
 function tspiceCallTimdefGet(module: EmscriptenModule, item: string): string {
-  const itemPtr = writeUtf8CString(module, item);
   const outMaxBytes = WASM_ERR_MAX_BYTES;
 
-  try {
+  return withUtf8CString(module, item, (itemPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
       module.HEAPU8[outPtr] = 0;
       const result = module._tspice_timdef_get(itemPtr, outPtr, outMaxBytes, errPtr, WASM_ERR_MAX_BYTES);
@@ -181,32 +171,24 @@ function tspiceCallTimdefGet(module: EmscriptenModule, item: string): string {
       }
       return module.UTF8ToString(outPtr, outMaxBytes).trim();
     });
-  } finally {
-    module._free(itemPtr);
-  }
+  });
 }
 
 function tspiceCallTimdefSet(module: EmscriptenModule, item: string, value: string): void {
-  const itemPtr = writeUtf8CString(module, item);
-  const valuePtr = writeUtf8CString(module, value);
-
-  try {
-    withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
-      const result = module._tspice_timdef_set(itemPtr, valuePtr, errPtr, WASM_ERR_MAX_BYTES);
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
+  withUtf8CString(module, item, (itemPtr) => {
+    withUtf8CString(module, value, (valuePtr) => {
+      withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
+        const result = module._tspice_timdef_set(itemPtr, valuePtr, errPtr, WASM_ERR_MAX_BYTES);
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+      });
     });
-  } finally {
-    module._free(valuePtr);
-    module._free(itemPtr);
-  }
+  });
 }
 
 function tspiceCallScs2e(module: EmscriptenModule, sc: number, sclkch: string): number {
-  const sclkchPtr = writeUtf8CString(module, sclkch);
-
-  try {
+  return withUtf8CString(module, sclkch, (sclkchPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEtPtr) => {
       module.HEAPF64[outEtPtr >> 3] = 0;
       const result = module._tspice_scs2e(sc, sclkchPtr, outEtPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -215,9 +197,7 @@ function tspiceCallScs2e(module: EmscriptenModule, sc: number, sclkch: string): 
       }
       return module.HEAPF64[outEtPtr >> 3] ?? 0;
     });
-  } finally {
-    module._free(sclkchPtr);
-  }
+  });
 }
 
 function tspiceCallSce2s(module: EmscriptenModule, sc: number, et: number): string {
@@ -234,9 +214,7 @@ function tspiceCallSce2s(module: EmscriptenModule, sc: number, et: number): stri
 }
 
 function tspiceCallScencd(module: EmscriptenModule, sc: number, sclkch: string): number {
-  const sclkchPtr = writeUtf8CString(module, sclkch);
-
-  try {
+  return withUtf8CString(module, sclkch, (sclkchPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outSclkdpPtr) => {
       module.HEAPF64[outSclkdpPtr >> 3] = 0;
       const result = module._tspice_scencd(sc, sclkchPtr, outSclkdpPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -245,9 +223,7 @@ function tspiceCallScencd(module: EmscriptenModule, sc: number, sclkch: string):
       }
       return module.HEAPF64[outSclkdpPtr >> 3] ?? 0;
     });
-  } finally {
-    module._free(sclkchPtr);
-  }
+  });
 }
 
 function tspiceCallScdecd(module: EmscriptenModule, sc: number, sclkdp: number): string {
