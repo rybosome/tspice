@@ -437,6 +437,43 @@ typedef enum {
   PARSE_INT_UNSUPPORTED,
 } parse_int_result;
 
+// Strict JSON integer grammar (RFC 8259):
+//   int = "0" / ( digit1-9 *digit )
+//   number = [ "-" ] int [ frac ] [ exp ]
+// For the runner we only accept the integer subset and reject leading '+',
+// whitespace, and leading zeros (except for the single literal "0").
+static bool is_strict_json_int_literal(const char *s) {
+  if (s == NULL || s[0] == '\0') {
+    return false;
+  }
+
+  const char *p = s;
+  if (*p == '-') {
+    p++;
+  }
+
+  if (*p == '\0') {
+    return false;
+  }
+
+  if (*p == '0') {
+    // "0" or "-0" only.
+    return p[1] == '\0';
+  }
+
+  if (*p < '1' || *p > '9') {
+    return false;
+  }
+
+  for (p = p + 1; *p; p++) {
+    if (*p < '0' || *p > '9') {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 static parse_int_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
                                        SpiceInt *out) {
   // Defensive: ensure SpiceInt can round-trip through long long on this ABI.
@@ -457,6 +494,10 @@ static parse_int_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
   char buf[128];
   memcpy(buf, json + tok->start, (size_t)n);
   buf[n] = '\0';
+
+  if (!is_strict_json_int_literal(buf)) {
+    return PARSE_INT_INVALID;
+  }
 
   errno = 0;
   char *endptr = NULL;

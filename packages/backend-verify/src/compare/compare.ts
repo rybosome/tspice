@@ -17,17 +17,19 @@ function joinPath(base: string, key: string | number): string {
 function normalizeToMinusPiPi(x: number): number {
   if (!Number.isFinite(x)) return x;
 
-  // Fast-path exact multiples of TAU: trig reduction can yield tiny residuals
-  // (e.g. 2π -> ~-2.4e-16). Only snap when the input is *exactly* a multiple
-  // in floating arithmetic.
-  const TAU = 2 * Math.PI;
-  if (x % TAU === 0) return 0;
-
   // Normalize into [-pi, pi).
   const y = Math.atan2(Math.sin(x), Math.cos(x));
 
   // atan2 returns +pi at the branch cut; convert to -pi so we preserve [-pi, pi).
   if (Object.is(y, Math.PI)) return -Math.PI;
+
+  // Trig reduction can yield tiny residuals for exact multiples of TAU
+  // (e.g. 2π -> ~-2.4e-16). Avoid `x % TAU` checks (unstable for huge |x|);
+  // instead snap based on the normalized result, and only when we've wrapped
+  // at least once.
+  const TAU = 2 * Math.PI;
+  const SNAP_EPS = 8 * Number.EPSILON;
+  if (Math.abs(x) >= TAU && Math.abs(y) < SNAP_EPS) return 0;
 
   return y;
 }
