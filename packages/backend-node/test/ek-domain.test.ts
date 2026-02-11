@@ -31,7 +31,10 @@ describe("backend-node ek domain wrapper", () => {
     >;
 
     const stager = {
-      resolvePath: (p: string) => `/resolved${p}`,
+      // Use a wrapper format rather than naive string concatenation so the test
+      // asserts intent (the resolved value is passed through), not incidental
+      // path-joining artifacts.
+      resolvePath: (p: string) => `RESOLVED(${p})`,
     } satisfies Pick<KernelStager, "resolvePath">;
 
     const api = createEkApi(
@@ -44,9 +47,9 @@ describe("backend-node ek domain wrapper", () => {
     api.ekopn("c.ek", "IF", 0);
 
     expect(seen).toEqual([
-      "ekopr:/resolved/kernels/a.ek",
-      "ekopw:/resolvedkernels/b.ek",
-      "ekopn:/resolvedc.ek",
+      "ekopr:RESOLVED(/kernels/a.ek)",
+      "ekopw:RESOLVED(kernels/b.ek)",
+      "ekopn:RESOLVED(c.ek)",
     ]);
   });
 

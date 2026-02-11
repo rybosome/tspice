@@ -220,6 +220,9 @@ int tspice_eknseg(int handle, int *outNseg, char *err, int errMaxBytes) {
   if (!outNseg) {
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_eknseg: outNseg must be non-NULL");
   }
+  if (handle <= 0) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_eknseg: handle must be > 0");
+  }
 
   const SpiceInt nsegC = eknseg_c((SpiceInt)handle);
   if (failed_c()) {

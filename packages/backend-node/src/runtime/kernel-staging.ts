@@ -68,7 +68,11 @@ export function createKernelStager(): KernelStager {
     if (!canonical) {
       return input;
     }
-    return tempByVirtualPath.get(canonical) ?? input;
+    // If this is a valid virtual kernel path but it's not staged, return the
+    // canonical virtual identifier. This keeps the backend behavior stable
+    // regardless of whether callers use `kernels/foo.tm`, `/kernels/foo.tm`,
+    // or other equivalent virtual spellings.
+    return tempByVirtualPath.get(canonical) ?? canonical;
   }
 
   return {

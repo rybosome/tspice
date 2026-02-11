@@ -23,10 +23,35 @@ import type { CreateWasmBackendOptions } from "./create-backend-options.js";
 export const WASM_JS_FILENAME = "tspice_backend_wasm.node.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
+// Cache wasm binaries by URL to avoid repeated (sometimes flaky) disk reads.
+//
+// This cache MUST be bounded: in long-lived processes that construct backends
+// dynamically (or accept user-provided URLs), an unbounded cache would retain
+// bytes indefinitely.
+const WASM_BINARY_CACHE_MAX_ENTRIES = 2;
 const wasmBinaryCache = new Map<string, Uint8Array>();
 
+function boundedCacheGet(key: string): Uint8Array | undefined {
+  const hit = wasmBinaryCache.get(key);
+  if (!hit) return undefined;
+  // Refresh recency (Map preserves insertion order).
+  wasmBinaryCache.delete(key);
+  wasmBinaryCache.set(key, hit);
+  return hit;
+}
+
+function boundedCacheSet(key: string, value: Uint8Array): void {
+  wasmBinaryCache.set(key, value);
+
+  while (wasmBinaryCache.size > WASM_BINARY_CACHE_MAX_ENTRIES) {
+    const lruKey = wasmBinaryCache.keys().next().value as string | undefined;
+    if (!lruKey) break;
+    wasmBinaryCache.delete(lruKey);
+  }
+}
+
 async function loadWasmBinaryFromFileUrl(wasmUrl: string): Promise<Uint8Array> {
-  const cached = wasmBinaryCache.get(wasmUrl);
+  const cached = boundedCacheGet(wasmUrl);
   if (cached) {
     return cached;
   }
@@ -61,7 +86,7 @@ async function loadWasmBinaryFromFileUrl(wasmUrl: string): Promise<Uint8Array> {
         throw new Error(`Invalid wasm binary (WebAssembly.validate=false): ${wasmPath}`);
       }
 
-      wasmBinaryCache.set(wasmUrl, bytes);
+      boundedCacheSet(wasmUrl, bytes);
       return bytes;
     } catch (error) {
       lastError = error;
