@@ -15,6 +15,9 @@ export type Vec6 = readonly [
 /** SPICE frame name (e.g. "J2000", "IAU_EARTH"). */
 export type FrameName = string;
 
+/** Canonical inertial reference frame. */
+export const J2000 = "J2000" as const satisfies FrameName;
+
 /** Aberration correction string accepted by `spkezr`. */
 export type AberrationCorrection =
   | "NONE"

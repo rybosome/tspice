@@ -30,6 +30,37 @@ describe("createSpiceAsyncFromTransport()", () => {
     expect(transport.request).toHaveBeenCalledWith("kit.utcToEt", ["2026-01-01T00:00:00Z"]);
   });
 
+  it("LRU-evicts cached method wrappers", async () => {
+    const { createSpiceAsyncFromTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const transport = {
+      request: vi.fn(async () => "ok"),
+    };
+
+    const spice = createSpiceAsyncFromTransport(transport);
+    const kit = spice.kit as any;
+
+    const hot1 = kit.utcToEt;
+
+    // Fill the bounded cache to capacity.
+    for (let i = 0; i < 1023; i++) {
+      void kit[`m${i}`];
+    }
+
+    // Touch the hot key again so it becomes most-recently-used.
+    const hot2 = kit.utcToEt;
+    expect(hot2).toBe(hot1);
+
+    // Trigger one eviction.
+    void kit.zzz;
+
+    // The hot key should still be cached (LRU, not FIFO).
+    const hot3 = kit.utcToEt;
+    expect(hot3).toBe(hot1);
+  });
+
   it("matches the proxy allowlist regex for current Spice surfaces", async () => {
     const { createSpice } = await import(/* @vite-ignore */ "@rybosome/tspice");
     const { createFakeBackend } = await import(/* @vite-ignore */ "@rybosome/tspice-backend-fake");

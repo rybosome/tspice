@@ -1,15 +1,16 @@
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import { wrapSpiceError } from "../../errors.js";
-import type {
-  AberrationCorrection,
-  FrameName,
-  GetStateArgs,
-  StateVector,
-  Vec3,
+import {
+  J2000,
+  type AberrationCorrection,
+  type FrameName,
+  type GetStateArgs,
+  type StateVector,
+  type Vec3,
 } from "../../types.js";
 
-const DEFAULT_FRAME: FrameName = "J2000";
+const DEFAULT_FRAME: FrameName = J2000;
 const DEFAULT_ABERRATION: AberrationCorrection = "NONE";
 
 function splitState(state: readonly [number, number, number, number, number, number]): {

@@ -27,6 +27,8 @@ export type {
   Vec6,
 } from "./types.js";
 
+export { J2000 } from "./types.js";
+
 export { SpiceError } from "./errors.js";
 
 export { Mat3 } from "./kit/math/mat3.js";

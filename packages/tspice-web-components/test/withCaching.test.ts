@@ -224,6 +224,33 @@ describe("withCaching()", () => {
     expect(defaultSpiceCacheKey("op", [big])).toBeNull();
   });
 
+  it("defaultSpiceCacheKey returns null for overly long strings", async () => {
+    const { MAX_KEY_STRING_LENGTH, defaultSpiceCacheKey } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components",
+    );
+
+    const long = "x".repeat(MAX_KEY_STRING_LENGTH + 1);
+    expect(defaultSpiceCacheKey("op", [long])).toBeNull();
+    expect(defaultSpiceCacheKey("op", [{ nested: long }])).toBeNull();
+
+    // Boundary: allowed (subject to overall key length).
+    const ok = "x".repeat(MAX_KEY_STRING_LENGTH);
+    expect(defaultSpiceCacheKey("op", [ok])).not.toBeNull();
+  });
+
+  it("defaultSpiceCacheKey returns null when the generated key is too large", async () => {
+    const { MAX_KEY_LENGTH, MAX_KEY_STRING_LENGTH, defaultSpiceCacheKey } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components",
+    );
+
+    const s = "x".repeat(MAX_KEY_STRING_LENGTH);
+    // Enough elements that JSON.stringify([op,args]) reliably exceeds MAX_KEY_LENGTH.
+    const n = Math.ceil(MAX_KEY_LENGTH / MAX_KEY_STRING_LENGTH) + 2;
+    const args = new Array(n).fill(s);
+
+    expect(defaultSpiceCacheKey("op", args)).toBeNull();
+  });
+
   it("bypasses cache when args contain binary-like data", async () => {
     const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
@@ -386,7 +413,7 @@ describe("withCaching()", () => {
     if (isCachingTransport(cached)) cached.dispose();
   });
 
-  it("warns for overly broad noStorePrefixes by default (deduped)", async () => {
+  it("warns for overly broad noStorePrefixes by default (deduped per wrapper)", async () => {
     const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const onWarning1 = vi.fn();
@@ -407,12 +434,13 @@ describe("withCaching()", () => {
 
     const onWarning2 = vi.fn();
     const cached2 = withCaching(base, {
-      // Same normalized broad-prefix set => warn-once.
+      // Same normalized broad-prefix set => each wrapper still warns once.
       noStorePrefixes: [" k ", "k"],
       onWarning: onWarning2,
     });
 
-    expect(onWarning2).not.toHaveBeenCalled();
+    expect(onWarning2).toHaveBeenCalledTimes(1);
+    expect(onWarning2.mock.calls[0]?.[0]).toMatch(/allowBroadNoStorePrefixes/i);
 
     if (isCachingTransport(cached2)) cached2.dispose();
   });
