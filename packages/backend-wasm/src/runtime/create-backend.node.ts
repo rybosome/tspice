@@ -25,7 +25,13 @@ export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 export function toExactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
   // Fast-path: if this view covers the whole underlying buffer, return it
   // directly (no copy).
-  if (bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength) {
+  // NOTE: `Uint8Array#buffer` is typed as `ArrayBufferLike` (can be
+  // `SharedArrayBuffer`). We only want to return an actual `ArrayBuffer`.
+  if (
+    bytes.buffer instanceof ArrayBuffer &&
+    bytes.byteOffset === 0 &&
+    bytes.byteLength === bytes.buffer.byteLength
+  ) {
     return bytes.buffer;
   }
 
