@@ -32,15 +32,18 @@ function restoreTimdefDefaults(b: TimdefApi, snapshot: TimdefDefaultsSnapshot): 
   // - setting ZONE blanks SYSTEM
   //
   // Also, `timdef_c` does not allow setting an empty-string value.
-  const system = snapshot.SYSTEM.trim();
-  const zone = snapshot.ZONE.trim();
+  //
+  // NOTE: Avoid `.trim()` for restore decisions; whitespace-only values are
+  // meaningful and should be preserved.
+  const systemIsSet = snapshot.SYSTEM.length > 0;
+  const zoneIsSet = snapshot.ZONE.length > 0;
 
-  if (zone !== "") {
+  if (zoneIsSet) {
     b.timdef("SET", "ZONE", snapshot.ZONE);
     return;
   }
 
-  if (system !== "") {
+  if (systemIsSet) {
     b.timdef("SET", "SYSTEM", snapshot.SYSTEM);
   }
 }
@@ -54,6 +57,33 @@ function expectClose(
   const scale = Math.max(Math.abs(a), Math.abs(b));
   expect(diff).toBeLessThanOrEqual(atol + rtol * scale);
 }
+
+describe("restoreTimdefDefaults()", () => {
+  it("preserves whitespace-only ZONE snapshots", () => {
+    const calls: Array<{ action: string; item: string; value: string }> = [];
+
+    const fake: TimdefApi = {
+      timdef: ((action: "GET" | "SET", item: string, value?: string) => {
+        if (action === "SET") {
+          calls.push({ action, item, value: value ?? "" });
+          return;
+        }
+        return "";
+      }) as unknown as TimdefApi["timdef"],
+    };
+
+    restoreTimdefDefaults(fake, {
+      CALENDAR: "GREGORIAN",
+      SYSTEM: "",
+      ZONE: "   ",
+    });
+
+    expect(calls).toEqual([
+      { action: "SET", item: "CALENDAR", value: "GREGORIAN" },
+      { action: "SET", item: "ZONE", value: "   " },
+    ]);
+  });
+});
 
 describe("primitives parity (node vs wasm)", () => {
   const itNative = it.runIf(nodeAddonAvailable());
