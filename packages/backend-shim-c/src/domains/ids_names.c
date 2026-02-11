@@ -17,10 +17,9 @@ static int tspice_format_body_pool_var(
     int errMaxBytes) {
   const int written = snprintf(outPoolVar, outPoolVarMaxBytes, "BODY%d_%s", body, item);
   if (written < 0 || (size_t)written >= outPoolVarMaxBytes) {
-    // This is a shim-level validation failure; clear any previously captured
-    // structured SPICE error fields so callers don't attach stale ones.
-    tspice_reset(NULL, 0);
-
+    // This is a shim-level validation failure (not a CSPICE error).
+    // Avoid calling `reset_c()` here; error translation layers should decide
+    // whether to attach structured SPICE fields.
     if (err && errMaxBytes > 0) {
       const char *label = context ? context : "bodvar";
       snprintf(err, (size_t)errMaxBytes, "%s: item too long", label);
@@ -247,6 +246,22 @@ int tspice_bodvar(
     *outDim = 0;
   }
 
+  if (maxn < 0) {
+    if (err && errMaxBytes > 0) {
+      snprintf(err, (size_t)errMaxBytes, "bodvar: maxn must be >= 0");
+      err[errMaxBytes - 1] = '\0';
+    }
+    return 1;
+  }
+
+  if (maxn > 0 && !outValues) {
+    if (err && errMaxBytes > 0) {
+      snprintf(err, (size_t)errMaxBytes, "bodvar: outValues must not be NULL when maxn > 0");
+      err[errMaxBytes - 1] = '\0';
+    }
+    return 1;
+  }
+
   // Missing / non-numeric body constants are a normal miss (dim=0) rather than
   // a SPICE error.
   //
@@ -256,6 +271,11 @@ int tspice_bodvar(
   char poolVar[TSPICE_BODY_POOLVAR_MAX_BYTES];
   if (tspice_format_body_pool_var(body, item, poolVar, sizeof(poolVar), "bodvar", err, errMaxBytes) != 0) {
     return 1;
+  }
+
+  // Caller requested zero values; don't invoke CSPICE with a zero-length output.
+  if (maxn == 0) {
+    return 0;
   }
 
   SpiceBoolean foundC = SPICEFALSE;

@@ -1,4 +1,4 @@
-import { normalizeBodItem, type IdsNamesApi } from "@rybosome/tspice-backend-contract";
+import { type IdsNamesApi } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
@@ -43,13 +43,15 @@ export function createIdsNamesApi(native: NativeAddon): IdsNamesApi {
     },
 
     bodfnd: (body, item) => {
-      const out = native.bodfnd(body, normalizeBodItem(item));
+      // `item` normalization is handled by the native addon.
+      const out = native.bodfnd(body, item);
       invariant(typeof out === "boolean", "Expected bodfnd() to return a boolean");
       return out;
     },
 
     bodvar: (body, item) => {
-      const out = native.bodvar(body, normalizeBodItem(item));
+      // `item` normalization is handled by the native addon.
+      const out = native.bodvar(body, item);
       invariant(Array.isArray(out), "Expected bodvar() to return an array");
       return out;
     },
