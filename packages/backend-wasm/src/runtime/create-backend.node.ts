@@ -53,12 +53,81 @@ export async function createWasmBackend(
   // bytes directly to Emscripten via `wasmBinary`.
   const wasmBinary = wasmUrl.startsWith("file://")
     ? await (async () => {
-        const [{ readFile }, { fileURLToPath }] = await Promise.all([
+        const [{ readFile, writeFile, rename }, { fileURLToPath }] = await Promise.all([
           import("node:fs/promises"),
           import("node:url"),
         ]);
+
+        const usingDefaultWasmUrl = options.wasmUrl == null;
         const wasmPath = fileURLToPath(wasmUrl);
-        return readFile(wasmPath);
+
+        type BufferSourceLike = ArrayBuffer | ArrayBufferView;
+        type WebAssemblyLike = {
+          validate(bytes: BufferSourceLike): boolean;
+        };
+
+        // `WebAssembly` is available in Node, but TypeScript only types it when the DOM
+        // lib is enabled. Define a minimal type so we can use `validate()` without pulling
+        // in browser-only lib typings.
+        const wasmApi = (globalThis as unknown as { WebAssembly?: WebAssemblyLike }).WebAssembly;
+
+        const isValidWasm = (bytes: Uint8Array): boolean => {
+          // Fail fast on truncated/corrupt cache restores.
+          return wasmApi?.validate(bytes) ?? false;
+        };
+
+        async function readValidatedOrNull(path: string): Promise<Uint8Array | null> {
+          try {
+            const bytes = await readFile(path);
+            return isValidWasm(bytes) ? bytes : null;
+          } catch {
+            return null;
+          }
+        }
+
+        // If turbo restores `dist/**` from cache, downstream tasks can sometimes observe
+        // partially-written outputs. Validate the wasm bytes before loading.
+        const initial = await readValidatedOrNull(wasmPath);
+        if (initial) {
+          return initial;
+        }
+
+        // Retry briefly in case another process is still writing/restoring the file.
+        for (const delayMs of [10, 25, 50, 100, 250]) {
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+          const retry = await readValidatedOrNull(wasmPath);
+          if (retry) {
+            return retry;
+          }
+        }
+
+        // If the dist wasm is still invalid, fall back to the checked-in Emscripten artifact
+        // when running from a workspace checkout.
+        if (usingDefaultWasmUrl) {
+          const fallbackPath = fileURLToPath(
+            new URL(`../../emscripten/${WASM_BINARY_FILENAME}`, import.meta.url),
+          );
+
+          const fallback = await readValidatedOrNull(fallbackPath);
+          if (fallback) {
+            // Best-effort repair so subsequent loads see a valid file.
+            try {
+              const tmpPath = `${wasmPath}.tmp.${process.pid}.${Date.now()}`;
+              await writeFile(tmpPath, fallback);
+              await rename(tmpPath, wasmPath);
+            } catch {
+              // ignore
+            }
+
+            return fallback;
+          }
+        }
+
+        throw new Error(
+          `Invalid/partial WASM binary at ${wasmPath}. ` +
+            `Try rerunning backend-wasm build (pnpm -C packages/backend-wasm build) ` +
+            `or ensure turbo cache outputs are fully restored before tests run.`,
+        );
       })()
     : undefined;
 

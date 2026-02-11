@@ -17,6 +17,15 @@ import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
 
 export function createKernelsApi(native: NativeAddon, stager: KernelStager): KernelsApi {
+  const kernelKindProbeFromNative = (result: { file?: unknown; filtyp?: unknown }) => {
+    invariant(typeof result.file === "string", "Expected kdata().file to be a string");
+    invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
+    return {
+      file: result.file,
+      filtyp: result.filtyp,
+    };
+  };
+
   const kernelDataFromNative = (result: {
     file?: unknown;
     filtyp?: unknown;
@@ -30,7 +39,7 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
 
     return {
       file: stager.virtualizePathFromSpice(result.file),
-      filtyp: result.filtyp,
+      filtyp: result.filtyp.trim(),
       source: stager.virtualizePathFromSpice(result.source),
       handle: result.handle,
     };
@@ -63,7 +72,7 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
 
       return {
         found: true,
-        filtyp: result.filtyp,
+        filtyp: result.filtyp.trim(),
         source: stager.virtualizePathFromSpice(result.source),
         handle: result.handle,
       } satisfies Found<KernelInfo>;
@@ -110,8 +119,8 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
           continue;
         }
 
-        const kernel = kernelDataFromNative(result);
-        if (matchesKernelKind(requested, kernel)) {
+        const probe = kernelKindProbeFromNative(result);
+        if (matchesKernelKind(requested, probe)) {
           count++;
         }
       }
@@ -151,13 +160,13 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
           continue;
         }
 
-        const kernel = kernelDataFromNative(result);
-
-        if (!matchesKernelKind(requested, kernel)) {
+        const probe = kernelKindProbeFromNative(result);
+        if (!matchesKernelKind(requested, probe)) {
           continue;
         }
 
         if (matchIndex === which) {
+          const kernel = kernelDataFromNative(result);
           return { found: true, ...kernel } satisfies Found<KernelData>;
         }
         matchIndex++;
