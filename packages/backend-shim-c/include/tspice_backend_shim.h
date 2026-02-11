@@ -26,6 +26,13 @@ int tspice_get_last_error_short(char *out, int outMaxBytes);
 int tspice_get_last_error_long(char *out, int outMaxBytes);
 int tspice_get_last_error_trace(char *out, int outMaxBytes);
 
+// Clears process-global structured last-error buffers (short/long/trace)
+// without modifying CSPICE error status.
+//
+// Useful for non-CSPICE validation errors, where JS backends should not attach
+// stale `spiceShort`/`spiceLong`/`spiceTrace` fields.
+void tspice_clear_last_error_buffers(void);
+
 // --- CSPICE error/status utilities ---
 int tspice_failed(int *outFailed, char *err, int errMaxBytes);
 int tspice_reset(char *err, int errMaxBytes);

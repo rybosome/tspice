@@ -17,7 +17,10 @@ static int tspice_time_invalid_arg(char *err, int errMaxBytes, const char *msg) 
   // Also, clear any previous structured SPICE error fields so higher-level
   // callers (e.g. the Node addon) don't accidentally attach stale `spiceShort`
   // / `spiceLong` / `spiceTrace` fields to these non-CSPICE validation errors.
-  tspice_reset(NULL, 0);
+  //
+  // NOTE: Avoid resetting CSPICE error status here. Invalid-arg errors are not
+  // CSPICE failures and should not wipe unrelated global SPICE error state.
+  tspice_clear_last_error_buffers();
 
   if (err && errMaxBytes > 0) {
     if (msg) {
@@ -269,7 +272,7 @@ int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes)
 
     // Parse errors are not CSPICE errors; clear our structured last-error buffers
     // so stale `spiceShort` / `spiceLong` / `spiceTrace` don't leak.
-    tspice_reset(NULL, 0);
+    tspice_clear_last_error_buffers();
     return 1;
   }
 
@@ -338,7 +341,7 @@ int tspice_tpictr(
     }
 
     // Non-CSPICE errors: clear our structured last-error buffers.
-    tspice_reset(NULL, 0);
+    tspice_clear_last_error_buffers();
     return 1;
   }
 
