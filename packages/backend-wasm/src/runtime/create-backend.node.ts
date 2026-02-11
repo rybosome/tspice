@@ -53,12 +53,59 @@ export async function createWasmBackend(
   // bytes directly to Emscripten via `wasmBinary`.
   const wasmBinary = wasmUrl.startsWith("file://")
     ? await (async () => {
-        const [{ readFile }, { fileURLToPath }] = await Promise.all([
-          import("node:fs/promises"),
+        const [{ readFileSync, statSync }, { fileURLToPath }] = await Promise.all([
+          import("node:fs"),
           import("node:url"),
         ]);
+
         const wasmPath = fileURLToPath(wasmUrl);
-        return readFile(wasmPath);
+
+        const readWithSizeCheck = (): { bytes: Uint8Array; statSize: number } => {
+          const bytes = readFileSync(wasmPath);
+          const statSize = statSync(wasmPath).size;
+          return { bytes, statSize };
+        };
+
+        // On macOS + Node 22 we've occasionally observed truncated reads leading to
+        // `WebAssembly.instantiate(): section ... extends past end of the module`.
+        // Sync reads + a size sanity-check seems to avoid the issue.
+        let { bytes, statSize } = readWithSizeCheck();
+        if (bytes.length !== statSize) {
+          const firstReadSize = bytes.length;
+          const firstStatSize = statSize;
+
+          ({ bytes, statSize } = readWithSizeCheck());
+          if (bytes.length !== statSize) {
+            throw new Error(
+              `WASM binary read size mismatch for ${wasmPath} (url=${wasmUrl}): ` +
+                `readFileSync().length=${bytes.length} (previous=${firstReadSize}) ` +
+                `statSync().size=${statSize} (previous=${firstStatSize}). ` +
+                `This may indicate a transient/inconsistent filesystem state.`,
+            );
+          }
+        }
+
+        // Validate WASM magic header: 0x00 0x61 0x73 0x6d ("\\0asm")
+        if (
+          bytes.length < 4 ||
+          bytes[0] !== 0x00 ||
+          bytes[1] !== 0x61 ||
+          bytes[2] !== 0x73 ||
+          bytes[3] !== 0x6d
+        ) {
+          const prefixBytes = bytes.slice(0, Math.min(8, bytes.length));
+          const prefix = Array.from(prefixBytes)
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join(" ");
+          throw new Error(
+            `Invalid WASM magic header for ${wasmPath} (url=${wasmUrl}). ` +
+              `Expected 00 61 73 6d ("\\\\0asm") but got ${prefix}${
+                bytes.length > 8 ? " ..." : ""
+              }.`,
+          );
+        }
+
+        return bytes;
       })()
     : undefined;
 
