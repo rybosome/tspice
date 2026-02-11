@@ -41,10 +41,15 @@ export function exposeTransportToWorker(opts: {
    * Maximum number of queued requests allowed when `maxConcurrentRequests` is
    * finite.
    *
+   * When `maxConcurrentRequests` is finite, additional requests are queued
+   * (FIFO) until prior requests settle.
+   *
    * When the queue is full, new incoming requests are immediately rejected
    * with an RPC error response.
    *
-   * Defaults to `Infinity` (unbounded) to preserve existing behavior.
+   * Defaults:
+   * - `Infinity` when `maxConcurrentRequests` is `Infinity` (preserves existing behavior)
+   * - `1000` when `maxConcurrentRequests` is finite
    */
   maxQueuedRequests?: number;
 }): { dispose: () => void } {
@@ -65,7 +70,8 @@ export function exposeTransportToWorker(opts: {
   }
   let inFlight = 0;
 
-  const maxQueuedRequests = opts.maxQueuedRequests ?? Infinity;
+  const defaultMaxQueuedRequests = maxConcurrentRequests === Infinity ? Infinity : 1000;
+  const maxQueuedRequests = opts.maxQueuedRequests ?? defaultMaxQueuedRequests;
   if (maxQueuedRequests !== Infinity) {
     if (!Number.isFinite(maxQueuedRequests) || maxQueuedRequests < 0) {
       throw new Error("exposeTransportToWorker(): maxQueuedRequests must be >= 0");
@@ -86,6 +92,20 @@ export function exposeTransportToWorker(opts: {
   let queuedHead = 0;
 
   const queuedSize = (): number => queued.length - queuedHead;
+
+  const failQueuedRequests = (err: unknown): void => {
+    const serialized = serializeError(err);
+    for (let i = queuedHead; i < queued.length; i++) {
+      const q = queued[i]!;
+      const res: RpcResponse = {
+        type: tspiceRpcResponseType,
+        id: q.id,
+        ok: false,
+        error: serialized,
+      };
+      self.postMessage(res);
+    }
+  };
 
   const clearQueue = (): void => {
     queued.length = 0;
@@ -152,6 +172,7 @@ export function exposeTransportToWorker(opts: {
       // Dispose is a one-way signal; ignore any further traffic.
       if (disposed) return;
       disposed = true;
+      failQueuedRequests(new Error("Worker disposed"));
       clearQueue();
 
       void (async () => {
@@ -219,6 +240,7 @@ export function exposeTransportToWorker(opts: {
   const dispose = (): void => {
     if (disposed) return;
     disposed = true;
+    failQueuedRequests(new Error("Worker disposed"));
     clearQueue();
 
     // Note: this does not cancel any in-flight `transport.request()` calls; it

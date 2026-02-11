@@ -256,6 +256,94 @@ describe("exposeTransportToWorker()", () => {
     ]);
   });
 
+  it("defaults maxQueuedRequests to a finite value when maxConcurrentRequests is finite", async () => {
+    const { exposeTransportToWorker } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const self = new FakeWorkerSelf();
+
+    const transport = {
+      request: vi.fn(async () => await new Promise<number>(() => {})),
+    };
+
+    exposeTransportToWorker({
+      transport,
+      self,
+      closeOnDispose: false,
+      maxConcurrentRequests: 1,
+    });
+
+    self.emitMessage({ type: tspiceRpcRequestType, id: 1, op: "op1", args: [] });
+
+    // Default should allow up to 1000 queued requests when maxConcurrentRequests is
+    // finite. (1 in-flight, 1000 queued, then overflow)
+    for (let id = 2; id <= 1002; id++) {
+      self.emitMessage({ type: tspiceRpcRequestType, id, op: `op${id}`, args: [] });
+    }
+
+    expect(transport.request).toHaveBeenCalledTimes(1);
+    expect(self.posted).toMatchObject([
+      {
+        type: tspiceRpcResponseType,
+        id: 1002,
+        ok: false,
+        error: {
+          message: "Worker backpressure queue overflow (maxQueuedRequests=1000)",
+        },
+      },
+    ]);
+  });
+
+  it("replies with errors for queued-but-not-started requests on dispose", async () => {
+    const { exposeTransportToWorker } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const self = new FakeWorkerSelf();
+
+    let resolve1: ((value: number) => void) | undefined;
+
+    const transport = {
+      request: vi
+        .fn()
+        .mockImplementationOnce(
+          async () =>
+            await new Promise<number>((resolve) => {
+              resolve1 = resolve;
+            }),
+        )
+        .mockImplementation(async () => 123),
+    };
+
+    exposeTransportToWorker({
+      transport,
+      self,
+      closeOnDispose: false,
+      maxConcurrentRequests: 1,
+    });
+
+    self.emitMessage({ type: tspiceRpcRequestType, id: 1, op: "op1", args: [] });
+    self.emitMessage({ type: tspiceRpcRequestType, id: 2, op: "op2", args: [] });
+    self.emitMessage({ type: tspiceRpcRequestType, id: 3, op: "op3", args: [] });
+
+    // Request 1 in-flight, 2/3 queued.
+    expect(transport.request).toHaveBeenCalledTimes(1);
+
+    self.emitMessage({ type: tspiceRpcDisposeType });
+    await flush();
+
+    expect(self.posted).toMatchObject([
+      { type: tspiceRpcResponseType, id: 2, ok: false, error: { message: "Worker disposed" } },
+      { type: tspiceRpcResponseType, id: 3, ok: false, error: { message: "Worker disposed" } },
+    ]);
+
+    // In-flight request still resolves, but responses are suppressed after dispose.
+    resolve1?.(111);
+    await flush();
+    expect(self.posted).toHaveLength(2);
+  });
+
   it("does not post responses after dispose", async () => {
     const { exposeTransportToWorker } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components"
