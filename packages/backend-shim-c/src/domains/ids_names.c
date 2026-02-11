@@ -294,8 +294,13 @@ int tspice_bodvar(
     return 0;
   }
 
+  SpiceInt maxnC = (SpiceInt)maxn;
+  if (maxnC > nC) {
+    maxnC = nC;
+  }
+
   SpiceInt dimC = 0;
-  bodvcd_c((SpiceInt)body, item, (SpiceInt)maxn, &dimC, outValues);
+  bodvcd_c((SpiceInt)body, item, maxnC, &dimC, outValues);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
@@ -303,6 +308,9 @@ int tspice_bodvar(
 
   if (dimC < 0) {
     dimC = 0;
+  }
+  if (dimC > nC) {
+    dimC = nC;
   }
   if (dimC > maxn) {
     dimC = (SpiceInt)maxn;
