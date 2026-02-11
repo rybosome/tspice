@@ -224,6 +224,33 @@ describe("withCaching()", () => {
     expect(defaultSpiceCacheKey("op", [big])).toBeNull();
   });
 
+  it("defaultSpiceCacheKey returns null for overly long strings", async () => {
+    const { MAX_KEY_STRING_LENGTH, defaultSpiceCacheKey } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components",
+    );
+
+    const long = "x".repeat(MAX_KEY_STRING_LENGTH + 1);
+    expect(defaultSpiceCacheKey("op", [long])).toBeNull();
+    expect(defaultSpiceCacheKey("op", [{ nested: long }])).toBeNull();
+
+    // Boundary: allowed (subject to overall key length).
+    const ok = "x".repeat(MAX_KEY_STRING_LENGTH);
+    expect(defaultSpiceCacheKey("op", [ok])).not.toBeNull();
+  });
+
+  it("defaultSpiceCacheKey returns null when the generated key is too large", async () => {
+    const { MAX_KEY_LENGTH, MAX_KEY_STRING_LENGTH, defaultSpiceCacheKey } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components",
+    );
+
+    const s = "x".repeat(MAX_KEY_STRING_LENGTH);
+    // Enough elements that JSON.stringify([op,args]) reliably exceeds MAX_KEY_LENGTH.
+    const n = Math.ceil(MAX_KEY_LENGTH / MAX_KEY_STRING_LENGTH) + 2;
+    const args = new Array(n).fill(s);
+
+    expect(defaultSpiceCacheKey("op", args)).toBeNull();
+  });
+
   it("bypasses cache when args contain binary-like data", async () => {
     const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 

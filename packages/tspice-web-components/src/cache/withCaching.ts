@@ -3,6 +3,8 @@ import type { SpiceTransport } from "../types.js";
 export type CachePolicy = "cache" | "no-store";
 
 export const MAX_KEY_SCAN = 10_000;
+export const MAX_KEY_LENGTH = 8192;
+export const MAX_KEY_STRING_LENGTH = 2048;
 
 const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   // Kernel-loading / kernel pool mutation operations. These can contain large
@@ -240,6 +242,12 @@ function containsBinaryLikeData(
   if (typeof Blob !== "undefined" && value instanceof Blob) return true;
   if (typeof File !== "undefined" && value instanceof File) return true;
 
+  if (typeof value === "string") {
+    // Treat very large strings like binary payloads: they produce huge keys and
+    // are often effectively opaque.
+    return value.length > MAX_KEY_STRING_LENGTH;
+  }
+
   const t = typeof value;
   if (t === "function") return true;
   if (t !== "object") return false;
@@ -326,7 +334,9 @@ export function defaultSpiceCacheKey(op: string, args: unknown[]): string | null
       if (containsBinaryLikeData(arg, seen, budget)) return null;
     }
 
-    return JSON.stringify([op, args]);
+    const key = JSON.stringify([op, args]);
+    if (key.length > MAX_KEY_LENGTH) return null;
+    return key;
   } catch {
     // Safer failure mode: if we can't build a stable key, don't cache.
     return null;

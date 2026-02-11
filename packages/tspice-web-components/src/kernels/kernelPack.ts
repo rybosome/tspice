@@ -13,13 +13,19 @@ export type KernelPack = {
 
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
+export type RootRelativeKernelUrlBehavior =
+  | "bypassBaseUrl"
+  | "applyBaseOrigin"
+  | "error";
+
 export type LoadKernelPackOptions = {
   /**
    * Base URL/path *directory* to resolve each `kernel.url` against when it is relative.
    *
    * Notes:
    * - Absolute `kernel.url` values (e.g. `https://...`, `//cdn...`, `data:...`, `blob:...`) are left as-is.
-   * - Root-relative `kernel.url` values (starting with `/`) are left as-is.
+   * - Root-relative `kernel.url` values (starting with `/`) default to bypassing `baseUrl`.
+   *   Use `rootRelativeKernelUrlBehavior` to change this.
    *
    * Base URL semantics:
    * - `baseUrl` must be **directory-style**: its URL `pathname` ends with `/`.
@@ -42,6 +48,16 @@ export type LoadKernelPackOptions = {
    * so this helper can be used outside Vite and can be tested deterministically.
    */
   baseUrl?: string;
+
+  /**
+   * Controls how root-relative kernel URLs (`"/..."`) interact with `baseUrl`.
+   *
+   * - `"bypassBaseUrl"` (default): root-relative URLs are left as-is.
+   * - `"applyBaseOrigin"`: when `baseUrl` is scheme-based or protocol-relative,
+   *   root-relative URLs are resolved against `baseUrl`'s origin.
+   * - `"error"`: throw if `baseUrl` is provided and a kernel URL is root-relative.
+   */
+  rootRelativeKernelUrlBehavior?: RootRelativeKernelUrlBehavior;
 
   /** Override `fetch` implementation (useful for tests and non-browser runtimes). */
   fetch?: FetchLike;
@@ -79,19 +95,52 @@ function isAbsoluteUrl(url: string): boolean {
 }
 
 
-function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
+function resolveKernelUrl(
+  url: string,
+  baseUrl: string | undefined,
+  rootRelativeKernelUrlBehavior: RootRelativeKernelUrlBehavior,
+): string {
   const normalizedBaseUrl = baseUrl?.trim();
   // Treat trimmed-empty the same as `undefined` to avoid surprising behavior when
   // `baseUrl` is sourced from config/env where "" / whitespace are common defaults.
   if (!normalizedBaseUrl) return url;
 
+  const isProtocolRelativeBaseUrl = normalizedBaseUrl.startsWith("//");
+
   // If the kernel URL is already absolute, don't apply `baseUrl`.
   if (isAbsoluteUrl(url)) return url;
 
-  // Root-relative kernel URLs bypass `baseUrl`.
-  if (url.startsWith("/")) return url;
+  // Root-relative kernel URLs need special handling since they're already
+  // absolute within an origin.
+  if (url.startsWith("/")) {
+    if (rootRelativeKernelUrlBehavior === "bypassBaseUrl") return url;
 
-  const isProtocolRelativeBaseUrl = normalizedBaseUrl.startsWith("//");
+    if (rootRelativeKernelUrlBehavior === "error") {
+      throw new Error(
+        `loadKernelPack(): root-relative kernel.url (${url}) cannot be combined with baseUrl (${normalizedBaseUrl}). ` +
+          `Either make the kernel URL relative, or set rootRelativeKernelUrlBehavior: \"bypassBaseUrl\" / \"applyBaseOrigin\".`,
+      );
+    }
+
+    // applyBaseOrigin: root-relative URLs should inherit only the origin from
+    // an absolute-ish baseUrl.
+    if (hasUrlScheme(normalizedBaseUrl) || isProtocolRelativeBaseUrl) {
+      const base = hasUrlScheme(normalizedBaseUrl)
+        ? new URL(normalizedBaseUrl)
+        : new URL(normalizedBaseUrl, "https://tspice.invalid");
+
+      const resolved = new URL(url, base);
+      if (isProtocolRelativeBaseUrl) {
+        return `//${resolved.host}${resolved.pathname}${resolved.search}${resolved.hash}`;
+      }
+
+      return resolved.toString();
+    }
+
+    // For path-absolute (`/myapp/`) and relative (`myapp/`) base URLs, applying
+    // "origin" is a no-op (the URL already targets the caller's origin).
+    return url;
+  }
 
   // If `baseUrl` is absolute-ish (scheme-based or protocol-relative), lean on
   // the URL constructor for proper resolution semantics and normalization.
@@ -171,10 +220,16 @@ export async function loadKernelPack(
   }
 
   const fetchStrategy = opts?.fetchStrategy ?? "sequential";
+  const rootRelativeKernelUrlBehavior = opts?.rootRelativeKernelUrlBehavior ?? "bypassBaseUrl";
 
   if (fetchStrategy === "parallel") {
     const bytes = await Promise.all(
-      pack.kernels.map((k) => fetchKernelBytes(fetchFn, resolveKernelUrl(k.url, opts?.baseUrl))),
+      pack.kernels.map((k) =>
+        fetchKernelBytes(
+          fetchFn,
+          resolveKernelUrl(k.url, opts?.baseUrl, rootRelativeKernelUrlBehavior),
+        ),
+      ),
     );
 
     for (const [i, kernel] of pack.kernels.entries()) {
@@ -188,7 +243,7 @@ export async function loadKernelPack(
   for (const kernel of pack.kernels) {
     const kernelBytes = await fetchKernelBytes(
       fetchFn,
-      resolveKernelUrl(kernel.url, opts?.baseUrl),
+      resolveKernelUrl(kernel.url, opts?.baseUrl, rootRelativeKernelUrlBehavior),
     );
     await spice.kit.loadKernel({ path: kernel.path, bytes: kernelBytes });
   }

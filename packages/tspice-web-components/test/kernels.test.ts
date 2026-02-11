@@ -412,4 +412,84 @@ describe("loadKernelPack()", () => {
       "/kernels/c.tls",
     ]);
   });
+
+  it("can apply baseUrl origin to root-relative kernel URLs (opt-in)", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [{ url: "/kernels/a.tls?x=1#hash", path: "a.tls" }],
+    };
+
+    const fetch = vi.fn(async () => okResponse(new Uint8Array([1])));
+
+    const loadKernel = vi.fn().mockResolvedValue(undefined);
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    await loadKernelPack(spice, pack, {
+      baseUrl: "https://cdn.example.com/myapp/",
+      rootRelativeKernelUrlBehavior: "applyBaseOrigin",
+      fetch,
+    });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith("https://cdn.example.com/kernels/a.tls?x=1#hash");
+  });
+
+  it("applyBaseOrigin preserves protocol-relative baseUrl", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [{ url: "/kernels/a.tls", path: "a.tls" }],
+    };
+
+    const fetch = vi.fn(async () => okResponse(new Uint8Array([1])));
+
+    const loadKernel = vi.fn().mockResolvedValue(undefined);
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    await loadKernelPack(spice, pack, {
+      baseUrl: "//cdn.example.com/myapp/",
+      rootRelativeKernelUrlBehavior: "applyBaseOrigin",
+      fetch,
+    });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith("//cdn.example.com/kernels/a.tls");
+  });
+
+  it("can error on root-relative kernel URLs when baseUrl is provided (opt-in)", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [{ url: "/kernels/a.tls", path: "a.tls" }],
+    };
+
+    const fetch = vi.fn(async () => okResponse(new Uint8Array([1])));
+
+    const loadKernel = vi.fn().mockResolvedValue(undefined);
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    await expect(
+      loadKernelPack(spice, pack, {
+        baseUrl: "/base/",
+        rootRelativeKernelUrlBehavior: "error",
+        fetch,
+      }),
+    ).rejects.toThrow(/root-relative/i);
+
+    expect(fetch).toHaveBeenCalledTimes(0);
+    expect(loadKernel).toHaveBeenCalledTimes(0);
+  });
 });

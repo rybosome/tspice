@@ -128,7 +128,7 @@ export function createWorkerTransport(opts: {
 
     if (!signalDispose) return;
 
-    const w = workerForDisposeSignal ?? worker;
+    const w = worker ?? workerForDisposeSignal;
     if (!w) return;
 
     try {
@@ -229,7 +229,8 @@ export function createWorkerTransport(opts: {
 
     rejectAllPending(opts?.getReason ?? (() => err));
 
-    workerForDisposeSignal = workerForDisposeSignal ?? worker;
+    // Prefer the latest live worker for any best-effort dispose signaling.
+    if (worker) workerForDisposeSignal = worker;
 
     const w = worker;
     worker = undefined;
@@ -481,6 +482,16 @@ export function createWorkerTransport(opts: {
 
     const timeoutMs = requestOpts?.timeoutMs ?? opts.timeoutMs;
     const signal = requestOpts?.signal;
+
+    if (timeoutMs !== undefined && timeoutMs > 0) {
+      const hasTimers =
+        typeof setTimeout === "function" && typeof clearTimeout === "function";
+      if (!hasTimers) {
+        throw new Error(
+          `Worker request timeoutMs=${timeoutMs} requires timers (setTimeout/clearTimeout) ${formatRequestContext(op, id)}`,
+        );
+      }
+    }
 
     return await new Promise<unknown>((resolve, reject) => {
       let requestTimeout: ReturnType<typeof setTimeout> | undefined;

@@ -8,6 +8,7 @@ import {
   tspiceRpcResponseType,
 } from "./rpcProtocol.js";
 import { decodeRpcValue, encodeRpcValue } from "./rpcValueCodec.js";
+import { queueMacrotask } from "./taskScheduling.js";
 
 type WorkerGlobalScopeLike = {
   addEventListener(type: "message", listener: (ev: MessageEvent<unknown>) => void): void;
@@ -93,17 +94,35 @@ export function exposeTransportToWorker(opts: {
 
   const queuedSize = (): number => queued.length - queuedHead;
 
-  const failQueuedRequests = (err: unknown): void => {
-    const serialized = serializeError(err);
-    for (let i = queuedHead; i < queued.length; i++) {
-      const q = queued[i]!;
-      const res: RpcResponse = {
-        type: tspiceRpcResponseType,
-        id: q.id,
-        ok: false,
-        error: serialized,
-      };
-      self.postMessage(res);
+  const FAIL_QUEUED_REQUESTS_CHUNK_SIZE = 100;
+
+  const failQueuedRequests = async (reqs: readonly QueuedRequest[], err: unknown): Promise<void> => {
+    // Best-effort (avoid throwing during disposal).
+    try {
+      for (let i = 0; i < reqs.length; i += FAIL_QUEUED_REQUESTS_CHUNK_SIZE) {
+        const end = Math.min(i + FAIL_QUEUED_REQUESTS_CHUNK_SIZE, reqs.length);
+        for (let j = i; j < end; j++) {
+          const q = reqs[j]!;
+          const res: RpcResponse = {
+            type: tspiceRpcResponseType,
+            id: q.id,
+            ok: false,
+            // Serialize per response so each postMessage gets a fresh object.
+            error: serializeError(err),
+          };
+          self.postMessage(res);
+        }
+
+        // Yield between chunks so disposing a huge queue doesn't block the
+        // worker for an unbounded amount of time.
+        if (end < reqs.length) {
+          await new Promise<void>((resolve) => {
+            queueMacrotask(resolve, { allowSyncFallback: true });
+          });
+        }
+      }
+    } catch {
+      // ignore
     }
   };
 
@@ -172,11 +191,13 @@ export function exposeTransportToWorker(opts: {
       // Dispose is a one-way signal; ignore any further traffic.
       if (disposed) return;
       disposed = true;
-      failQueuedRequests(new Error("Worker disposed"));
+
+      const queuedToFail = queued.slice(queuedHead);
       clearQueue();
 
       void (async () => {
         try {
+          await failQueuedRequests(queuedToFail, new Error("Worker disposed"));
           await opts.onDispose?.();
         } finally {
           self.removeEventListener("message", onMessage);
@@ -240,8 +261,11 @@ export function exposeTransportToWorker(opts: {
   const dispose = (): void => {
     if (disposed) return;
     disposed = true;
-    failQueuedRequests(new Error("Worker disposed"));
+
+    const queuedToFail = queued.slice(queuedHead);
     clearQueue();
+
+    void failQueuedRequests(queuedToFail, new Error("Worker disposed"));
 
     // Note: this does not cancel any in-flight `transport.request()` calls; it
     // just prevents any further responses from being posted.
