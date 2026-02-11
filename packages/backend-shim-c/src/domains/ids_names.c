@@ -3,6 +3,8 @@
 #include "SpiceUsr.h"
 
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int tspice_bodn2c(
     const char *name,
@@ -159,6 +161,7 @@ int tspice_boddef(
   return 0;
 }
 
+
 int tspice_bodfnd(
     int body,
     const char *item,
@@ -174,18 +177,42 @@ int tspice_bodfnd(
     *outResult = 0;
   }
 
-  SpiceBoolean foundC = bodfnd_c((SpiceInt)body, item);
+  // `bodfnd_c()` returns true even when the pool var exists but is character-typed.
+  // Our backend contract treats non-numeric BODY<ID>_<ITEM> vars as a normal miss,
+  // so preflight with `dtpool_c()` on the canonical pool name.
+  const size_t poolVarMaxBytes = strlen(item) + 32;
+  char *poolVar = (char *)malloc(poolVarMaxBytes);
+  if (!poolVar) {
+    tspice_reset(NULL, 0);
+
+    if (err && errMaxBytes > 0) {
+      strncpy(err, "malloc failed while formatting BODY<ID>_<ITEM>", (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+
+    return 1;
+  }
+
+  snprintf(poolVar, poolVarMaxBytes, "BODY%d_%s", body, item);
+
+  SpiceBoolean foundC = SPICEFALSE;
+  SpiceInt nC = 0;
+  SpiceChar typeC = 0;
+  dtpool_c(poolVar, &foundC, &nC, &typeC);
+  free(poolVar);
+
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
 
   if (outResult) {
-    *outResult = (foundC == SPICETRUE) ? 1 : 0;
+    *outResult = (foundC == SPICETRUE && typeC == 'N') ? 1 : 0;
   }
 
   return 0;
 }
+
 
 int tspice_bodvar(
     int body,
@@ -204,14 +231,39 @@ int tspice_bodvar(
     *outDim = 0;
   }
 
-  // Missing body constants are a normal miss (return dim=0) rather than a SPICE error.
-  // Callers that need a strict presence check can use bodfnd_c via `tspice_bodfnd`.
-  SpiceBoolean foundC = bodfnd_c((SpiceInt)body, item);
+  // Missing / non-numeric body constants are a normal miss (dim=0) rather than
+  // a SPICE error.
+  //
+  // IMPORTANT: `bodfnd_c()` returns true even when the pool var is character-typed,
+  // but `bodvcd_c()` errors on non-numeric pool vars. To avoid throwing, we
+  // preflight with `dtpool_c()` on the canonical pool name `BODY<body>_<ITEM>`.
+  const size_t poolVarMaxBytes = strlen(item) + 32;
+  char *poolVar = (char *)malloc(poolVarMaxBytes);
+  if (!poolVar) {
+    tspice_reset(NULL, 0);
+
+    if (err && errMaxBytes > 0) {
+      strncpy(err, "malloc failed while formatting BODY<ID>_<ITEM>", (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+
+    return 1;
+  }
+
+  snprintf(poolVar, poolVarMaxBytes, "BODY%d_%s", body, item);
+
+  SpiceBoolean foundC = SPICEFALSE;
+  SpiceInt nC = 0;
+  SpiceChar typeC = 0;
+  dtpool_c(poolVar, &foundC, &nC, &typeC);
+  free(poolVar);
+
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
-  if (foundC != SPICETRUE) {
+
+  if (foundC != SPICETRUE || typeC != 'N' || nC <= 0) {
     return 0;
   }
 
@@ -220,6 +272,13 @@ int tspice_bodvar(
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
+  }
+
+  if (dimC < 0) {
+    dimC = 0;
+  }
+  if (dimC > maxn) {
+    dimC = (SpiceInt)maxn;
   }
 
   if (outDim) {

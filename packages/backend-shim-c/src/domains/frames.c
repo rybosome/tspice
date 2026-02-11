@@ -95,7 +95,7 @@ int tspice_cidfrm(
   }
 
   SpiceInt frcode = 0;
-  SpiceChar frname[32] = {0};
+  SpiceChar frname[TSPICE_FRNAME_MAX_BYTES] = {0};
   SpiceBoolean found = SPICEFALSE;
 
   cidfrm_c((SpiceInt)center, (SpiceInt)sizeof(frname), &frcode, frname, &found);
@@ -144,7 +144,7 @@ int tspice_cnmfrm(
   }
 
   SpiceInt frcode = 0;
-  SpiceChar frname[32] = {0};
+  SpiceChar frname[TSPICE_FRNAME_MAX_BYTES] = {0};
   SpiceBoolean found = SPICEFALSE;
 
   cnmfrm_c(centerName, (SpiceInt)sizeof(frname), &frcode, frname, &found);
@@ -243,6 +243,23 @@ int tspice_ccifrm(
   if (outFrnameMaxBytes > 0 && outFrname) {
     outFrname[0] = '\0';
   }
+
+  if (outFrname != NULL && outFrnameMaxBytes > 0 &&
+      outFrnameMaxBytes < TSPICE_FRNAME_MAX_BYTES) {
+    // NAIF documents the maximum frame name length as 32 characters.
+    // Add 1 for the trailing NUL.
+    tspice_reset(NULL, 0);
+
+    if (err && errMaxBytes > 0) {
+      strncpy(
+          err,
+          "ccifrm: outFrnameMaxBytes must be >= TSPICE_FRNAME_MAX_BYTES (33)",
+          (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+
+    return 1;
+  }
   if (outCenter) {
     *outCenter = 0;
   }
@@ -257,7 +274,7 @@ int tspice_ccifrm(
   // Defensive handling: `ccifrm_c` expects a writable output buffer for the
   // frame name. Allow callers to pass a null/empty buffer when they don't
   // care about the name.
-  SpiceChar tmpFrname[32] = {0};
+  SpiceChar tmpFrname[TSPICE_FRNAME_MAX_BYTES] = {0};
   SpiceChar *frnameBuf = outFrname;
   SpiceInt frnameLen = (SpiceInt)outFrnameMaxBytes;
   if (outFrname == NULL || outFrnameMaxBytes <= 0) {

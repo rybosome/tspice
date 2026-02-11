@@ -166,7 +166,8 @@ static Napi::Boolean Bodfnd(const Napi::CallbackInfo& info) {
   }
 
   const int body = info[0].As<Napi::Number>().Int32Value();
-  const std::string item = info[1].As<Napi::String>().Utf8Value();
+  const std::string itemRaw = info[1].As<Napi::String>().Utf8Value();
+  const std::string item = ToUpperAscii(TrimAsciiWhitespace(itemRaw));
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];

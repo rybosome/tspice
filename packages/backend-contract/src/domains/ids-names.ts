@@ -55,6 +55,30 @@ export function normalizeBodItem(item: string): string {
 }
 
 function toAsciiUppercase(s: string): string {
-  // Only transform ASCII a-z. Leave all other code points unchanged.
-  return s.replace(/[a-z]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 32));
+  // JS toUpperCase() is locale-sensitive and handles unicode.
+  // For kernel pool item names, we only want to uppercase ASCII a-z.
+  //
+  // Performance: avoid allocating a new string if no changes are needed.
+  let out = "";
+  let changed = false;
+
+  for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i);
+    const isAsciiLower = code >= 97 /* 'a' */ && code <= 122 /* 'z' */;
+
+    if (isAsciiLower) {
+      if (!changed) {
+        out = s.slice(0, i);
+        changed = true;
+      }
+      out += String.fromCharCode(code - 32);
+      continue;
+    }
+
+    if (changed) {
+      out += s[i]!;
+    }
+  }
+
+  return changed ? out : s;
 }

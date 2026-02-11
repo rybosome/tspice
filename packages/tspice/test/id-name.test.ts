@@ -31,6 +31,9 @@ describe("IDs / names", () => {
     backend.furnsh(lskPath);
     backend.furnsh(pck.path);
 
+    const charKernelPath = path.join(__dirname, "fixtures", "kernels", "body399-char-foo.tpc");
+    backend.furnsh(charKernelPath);
+
     const earth = backend.bodn2c("EARTH");
     expect(earth.found).toBe(true);
     if (earth.found) {
@@ -112,6 +115,10 @@ describe("IDs / names", () => {
     expect(backend.bodfnd(399, "NOT_A_ITEM")).toBe(false);
     const missing = backend.bodvar(399, "NOT_A_ITEM");
     expect(missing).toEqual([]);
+
+    // Character-typed BODY<ID>_<ITEM> vars are treated as a normal miss.
+    expect(backend.bodfnd(399, "FOO")).toBe(false);
+    expect(backend.bodvar(399, "FOO")).toEqual([]);
 
     const info = backend.frinfo(1);
     expect(info.found).toBe(true);
@@ -135,6 +142,10 @@ describe("IDs / names", () => {
     backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
     backend.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
 
+    const charKernelPath = path.join(__dirname, "fixtures", "kernels", "body399-char-foo.tpc");
+    const charKernelBytes = fs.readFileSync(charKernelPath);
+    backend.furnsh({ path: "body399-char-foo.tpc", bytes: charKernelBytes });
+
     const earth = backend.bodn2c("EARTH");
     expect(earth.found).toBe(true);
     if (earth.found) {
@@ -216,6 +227,10 @@ describe("IDs / names", () => {
     expect(backend.bodfnd(399, "NOT_A_ITEM")).toBe(false);
     const missing = backend.bodvar(399, "NOT_A_ITEM");
     expect(missing).toEqual([]);
+
+    // Character-typed BODY<ID>_<ITEM> vars are treated as a normal miss.
+    expect(backend.bodfnd(399, "FOO")).toBe(false);
+    expect(backend.bodvar(399, "FOO")).toEqual([]);
 
     const info = backend.frinfo(1);
     expect(info.found).toBe(true);

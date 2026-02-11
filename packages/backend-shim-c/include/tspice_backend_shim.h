@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+
+// NAIF documents frame names as up to 32 chars + NUL.
+#define TSPICE_FRNAME_MAX_BYTES 33
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -350,6 +354,10 @@ int tspice_frinfo(
     int errMaxBytes);
 
 // ccifrm_c: frame class/classId -> frame code/name/center.
+//
+// If `outFrname` is non-NULL and `outFrnameMaxBytes > 0`, the buffer
+// must be at least `TSPICE_FRNAME_MAX_BYTES` (33, including the trailing NUL).
+// Smaller buffers are rejected with an error to avoid silent truncation.
 int tspice_ccifrm(
     int frameClass,
     int classId,
