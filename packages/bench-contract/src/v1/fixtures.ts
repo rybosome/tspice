@@ -54,6 +54,26 @@ export interface IsPathInsideOptions {
   readonly caseSensitive?: boolean;
 }
 
+function normalizeForContainment(
+  p: string,
+  pathImpl: PlatformPath,
+  caseSensitive: boolean,
+): string {
+  let out = pathImpl.normalize(p);
+
+  // Ensure consistent behavior regardless of trailing separators.
+  const root = pathImpl.parse(out).root;
+  while (out.length > root.length && out.endsWith(pathImpl.sep)) {
+    out = out.slice(0, -1);
+  }
+
+  if (!caseSensitive) {
+    out = out.toLowerCase();
+  }
+
+  return out;
+}
+
 export function isPathInside(
   baseDir: string,
   candidatePath: string,
@@ -62,25 +82,9 @@ export function isPathInside(
   const pathImpl = options.pathImpl ?? path;
   const caseSensitive = options.caseSensitive ?? pathImpl.sep !== "\\";
 
-  const normalizeForContainment = (p: string) => {
-    let out = pathImpl.normalize(p);
-
-    // Ensure consistent behavior regardless of trailing separators.
-    const root = pathImpl.parse(out).root;
-    while (out.length > root.length && out.endsWith(pathImpl.sep)) {
-      out = out.slice(0, -1);
-    }
-
-    if (!caseSensitive) {
-      out = out.toLowerCase();
-    }
-
-    return out;
-  };
-
   const rel = pathImpl.relative(
-    normalizeForContainment(baseDir),
-    normalizeForContainment(candidatePath),
+    normalizeForContainment(baseDir, pathImpl, caseSensitive),
+    normalizeForContainment(candidatePath, pathImpl, caseSensitive),
   );
   if (rel === "" || rel === ".") return true;
 

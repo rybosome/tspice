@@ -36,7 +36,7 @@ function failUsage(message) {
     });
   } else {
     // eslint-disable-next-line no-console
-    console.error(message);
+    console.error(`$: ${message}`);
     // eslint-disable-next-line no-console
     console.error(USAGE_TEXT);
   }

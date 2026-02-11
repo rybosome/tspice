@@ -121,6 +121,8 @@ pnpm bench:contract validate benchmarks/contracts/v1/example.yml
 
 The command exits non-zero and prints one error per line as `<path>: <message>`.
 
+Usage errors additionally print the full usage text block after the first `$: <message>` line.
+
 Pass `--json` to emit a machine-readable JSON object.
 
 The JSON output schema is intentionally stable and always includes the same top-level keys (for both success and failure):
