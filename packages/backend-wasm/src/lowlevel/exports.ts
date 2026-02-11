@@ -1043,6 +1043,12 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_georec",
   "_tspice_recgeo",
 
+  // DSK
+  "_tspice_dskobj",
+  "_tspice_dsksrf",
+  "_tspice_dskgd",
+  "_tspice_dskb02",
+
   // Cells + windows
   "_tspice_new_int_cell",
   "_tspice_new_double_cell",
