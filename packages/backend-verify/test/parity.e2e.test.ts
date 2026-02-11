@@ -129,7 +129,20 @@ describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
               throw new Error(`Missing cspice spice.short while comparing errors (${label}): ${JSON.stringify(c.outcome.error)}`);
             }
 
-            expect(spiceShortSymbol(tShort)).toBe(spiceShortSymbol(cShort));
+            const tSymbol = spiceShortSymbol(tShort);
+            const cSymbol = spiceShortSymbol(cShort);
+
+            if (tSymbol === null || cSymbol === null) {
+              throw new Error(
+                [
+                  `errorShort enabled but could not extract spice short symbol (${label}):`,
+                  `  tspice short=${JSON.stringify(tShort)} symbol=${JSON.stringify(tSymbol)}`,
+                  `  cspice short=${JSON.stringify(cShort)} symbol=${JSON.stringify(cSymbol)}`,
+                ].join("\n"),
+              );
+            }
+
+            expect(tSymbol).toBe(cSymbol);
             continue;
           }
 

@@ -414,27 +414,12 @@ static bool jsmn_parse_double(const char *json, const jsmntok_t *tok,
   memcpy(buf, json + tok->start, (size_t)n);
   buf[n] = '\0';
 
-  // Ensure numeric parsing is locale-stable (decimal separator is '.')
-  // regardless of the process locale.
-  const char *old_locale = setlocale(LC_NUMERIC, NULL);
-  char *old_locale_copy = NULL;
-  if (old_locale) {
-    const size_t n = strlen(old_locale);
-    old_locale_copy = (char *)malloc(n + 1);
-    if (old_locale_copy) {
-      memcpy(old_locale_copy, old_locale, n + 1);
-    }
-  }
-  setlocale(LC_NUMERIC, "C");
+  // `LC_NUMERIC` is set to "C" once at process startup (see main()) so that
+  // numeric parsing is locale-stable (decimal separator is '.').
 
   errno = 0;
   char *endptr = NULL;
   const double v = strtod(buf, &endptr);
-
-  if (old_locale_copy) {
-    setlocale(LC_NUMERIC, old_locale_copy);
-    free(old_locale_copy);
-  }
   if (errno != 0) {
     return false;
   }
@@ -741,6 +726,19 @@ static void capture_spice_error(char *shortMsg, size_t shortBytes,
 }
 
 int main(void) {
+  // Ensure numeric parsing is locale-stable (decimal separator is '.')
+  // regardless of the environment.
+  if (setlocale(LC_NUMERIC, "C") == NULL) {
+    write_error_json_ex(
+        "locale_init",
+        "Failed to set process numeric locale (LC_NUMERIC) to 'C'",
+        "setlocale(LC_NUMERIC, 'C') returned NULL",
+        NULL,
+        NULL,
+        NULL);
+    return 0;
+  }
+
   size_t inputLen = 0;
   char *input = NULL;
   ReadStdinErr readErr = read_all_stdin(&input, &inputLen);

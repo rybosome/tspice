@@ -18,6 +18,18 @@ describe("compareValues angleWrapPi", () => {
   });
 
 
+  it("tolerates trig reduction noise by default (regression)", () => {
+    // 2π is mathematically equivalent to 0, but trig reduction during
+    // normalization yields a tiny non-zero residual.
+    const res = compareValues(2 * Math.PI, 0, { angleWrapPi: true });
+    expect(res).toEqual({ ok: true });
+  });
+
+  it("does not apply implicit ANGLE_WRAP_EPS when tolerances are explicit", () => {
+    const res = compareValues(2 * Math.PI, 0, { angleWrapPi: true, tolAbs: 0, tolRel: 0 });
+    expect(res.ok).toBe(false);
+  });
+
   it("uses a fixed angular scale for tolRel near 0 (regression)", () => {
     // Previous behavior scaled tolRel by max(|actual|, |expected|); near 0 that
     // makes the allowed diff effectively 0.

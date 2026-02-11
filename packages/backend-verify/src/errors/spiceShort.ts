@@ -8,12 +8,12 @@
  *   - `... SPICE(FOO) ...`
  *   - `FOO`
  *
- * Returns a best-effort uppercased symbol. If no `SPICE(...)` token is found,
- * the trimmed raw string is returned (and uppercased only when it already looks
- * like a bare symbol).
+ * Returns a best-effort uppercased symbol, or `null` when a symbol cannot be
+ * extracted.
  */
-export function spiceShortSymbol(raw: string): string {
+export function spiceShortSymbol(raw: string): string | null {
   const trimmed = raw.trim();
+  if (trimmed === "") return null;
 
   // Extract the canonical short error *symbol* from common token forms.
   const m = /SPICE\s*\(\s*([A-Za-z0-9_]+)\s*\)/i.exec(trimmed);
@@ -22,7 +22,7 @@ export function spiceShortSymbol(raw: string): string {
   // If the raw value already looks like a bare short symbol, normalize case.
   if (/^[A-Za-z0-9_]+$/.test(trimmed)) return trimmed.toUpperCase();
 
-  return trimmed;
+  return null;
 }
 
 /** @deprecated Prefer `spiceShortSymbol()` (this helper returns a symbol). */

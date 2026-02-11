@@ -206,7 +206,7 @@ function inferSpiceFromError(error: unknown): SpiceErrorState | null {
   const m = /SPICE\s*\(\s*([A-Z0-9_]+)\s*\)/i.exec(error.message);
 
   const shortRaw = typeof anyErr.spiceShort === "string" ? anyErr.spiceShort : m?.[1];
-  const short = typeof shortRaw === "string" ? spiceShortSymbol(shortRaw) : undefined;
+  const short = typeof shortRaw === "string" ? (spiceShortSymbol(shortRaw) ?? undefined) : undefined;
 
   const long = typeof anyErr.spiceLong === "string" ? anyErr.spiceLong : undefined;
   const trace = typeof anyErr.spiceTrace === "string" ? anyErr.spiceTrace : undefined;
