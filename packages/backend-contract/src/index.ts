@@ -64,6 +64,9 @@ export {
   assertSpiceInt32NonNegative,
 } from "./shared/spice-int.js";
 
+export type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "./shared/spice-handles.js";
+export { createSpiceHandleRegistry } from "./shared/spice-handles.js";
+
 export * from "./domains/kernels.js";
 export * from "./domains/kernel-pool.js";
 export * from "./domains/kernels-utils.js";

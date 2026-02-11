@@ -120,24 +120,13 @@ function normalizeDskType2Bookkeeping(value: unknown, context: string): DskType2
 }
 
 export function createDskApi(native: NativeAddon, handles: SpiceHandleRegistry): DskApi {
-  // NOTE: `SpiceIntCell` is an opaque handle, but it can be accidentally mixed
-  // across backends (e.g. WASM cell handles forwarded into the Node backend).
-  // We guard against this by forcing a native lookup of the handle before
-  // passing it to any DSK APIs.
-  function assertNodeOwnedIntCellHandle(cell: SpiceIntCell, context: string): number {
-    const handle = cell as unknown as number;
-    // `native.card` will throw if the handle is unknown/expired.
-    native.card(handle);
-    return handle;
-  }
-
   return {
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
-      native.dskobj(dsk, assertNodeOwnedIntCellHandle(bodids, "dskobj(bodids)"));
+      native.dskobj(dsk, bodids as unknown as number);
     },
 
     dsksrf: (dsk: string, bodyid: number, srfids: SpiceIntCell) => {
-      native.dsksrf(dsk, bodyid, assertNodeOwnedIntCellHandle(srfids, "dsksrf(srfids)"));
+      native.dsksrf(dsk, bodyid, srfids as unknown as number);
     },
 
     dskgd: (handle: SpiceHandle, dladsc: DlaDescriptor) => {
