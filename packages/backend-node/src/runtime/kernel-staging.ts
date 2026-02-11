@@ -35,13 +35,14 @@ export function createKernelStager(): KernelStager {
   }
 
   function tryCanonicalVirtualKernelPath(input: string): string | undefined {
-    // Only treat well-known virtual kernel identifiers as virtual.
+    // `normalizeVirtualKernelPath()` is intentionally strict (no `..`), but it
+    // can still successfully normalize *absolute* OS paths like
+    // `/home/user/foo.tm`. Those must pass through unchanged.
     //
-    // NOTE: `normalizeVirtualKernelPath()` is intentionally strict (no `..`),
-    // but it can still successfully normalize plain OS paths like
-    // `/home/user/foo.tm`. We only want to canonicalize things that are
-    // explicitly in the virtual `/kernels/...` namespace.
-    if (!(input.startsWith("/kernels/") || input.startsWith("kernels/"))) {
+    // For relative paths (e.g. `naif0012.tls`), we keep treating them as
+    // virtual kernel identifiers so byte-backed kernels can be loaded/unloaded
+    // consistently.
+    if (input.startsWith("/") && !input.startsWith("/kernels/")) {
       return undefined;
     }
     try {
