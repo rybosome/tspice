@@ -38,7 +38,15 @@ describe("matchesKernelKind", () => {
     const requested = new Set([""]);
     expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(false);
   });
+
+  it("treats unknown kernel.filtyp values as non-matching", () => {
+    const requested = new Set(["SPK"]);
+
+    expect(matchesKernelKind(requested, { file: "a.unknown", filtyp: "WAT" })).toBe(false);
+    expect(matchesKernelKind(new Set(["TEXT"]), { file: "a.tls", filtyp: "WAT" })).toBe(false);
+  });
 });
+
 
 describe("nativeKindQueryOrNull", () => {
   it("treats ALL as an override", () => {

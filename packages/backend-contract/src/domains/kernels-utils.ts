@@ -188,6 +188,7 @@ function normalizeRequestedKindSetIfNeeded(requestedRaw: ReadonlySet<string>): R
  * Return whether a kernel matches the requested kind filter.
  *
  * Requested kind tokens are treated as trim + case-insensitive. Empty tokens are ignored.
+ * Unknown/unsupported `kernel.filtyp` values never match (unless `requested` includes `ALL`).
  *
  * TEXT-kernel subtypes (LSK/FK/IK/SCLK): SPICE reports these as `filtyp: "TEXT"`.
  * When callers request a subtype, we infer it from the `kernel.file` identifier's
@@ -213,6 +214,10 @@ export function matchesKernelKind(
   }
 
   const filtyp = kernel.filtyp.trim().toUpperCase();
+  if (filtyp.length === 0 || filtyp === "ALL") {
+    return false;
+  }
+
   if (filtyp === "TEXT") {
     if (requested.has("TEXT")) {
       return true;
@@ -221,6 +226,17 @@ export function matchesKernelKind(
     const file = kernel.file.trim();
     const subtype = guessTextKernelSubtype(file);
     return requested.has(subtype);
+  }
+
+  // Some backends may choose to surface TEXT subtypes directly.
+  // Treat those as text kernels for matching purposes.
+  if (TEXT_SUBTYPE_SET.has(filtyp as KernelKind)) {
+    return requested.has("TEXT") || requested.has(filtyp);
+  }
+
+  // Contract-level strictness: unknown `filtyp` values never match.
+  if (!SUPPORTED_KERNEL_KIND_SET.has(filtyp)) {
+    return false;
   }
 
   return requested.has(filtyp);
