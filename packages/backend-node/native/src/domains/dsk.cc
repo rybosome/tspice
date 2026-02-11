@@ -262,10 +262,10 @@ static Napi::Value Dskb02(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterDsk(Napi::Env env, Napi::Object exports) {
-  SetExportChecked(env, exports, "dskobj", Napi::Function::New(env, Dskobj));
-  SetExportChecked(env, exports, "dsksrf", Napi::Function::New(env, Dsksrf));
-  SetExportChecked(env, exports, "dskgd", Napi::Function::New(env, Dskgd));
-  SetExportChecked(env, exports, "dskb02", Napi::Function::New(env, Dskb02));
+  SetExportChecked(env, exports, "dskobj", Napi::Function::New(env, Dskobj), "RegisterDsk");
+  SetExportChecked(env, exports, "dsksrf", Napi::Function::New(env, Dsksrf), "RegisterDsk");
+  SetExportChecked(env, exports, "dskgd", Napi::Function::New(env, Dskgd), "RegisterDsk");
+  SetExportChecked(env, exports, "dskb02", Napi::Function::New(env, Dskb02), "RegisterDsk");
 }
 
 }  // namespace tspice_backend_node
