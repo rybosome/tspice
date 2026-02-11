@@ -33,7 +33,9 @@ describe("@rybosome/tspice-backend-node ek", () => {
     const tables = Array.from({ length: ntab }, (_, i) => backend.ektnam(i));
     expect(tables).toEqual(EXPECTED_TABLES);
 
-    const handle = backend.ekopr(fixturePath);
+    expect(() => backend.ektnam(-1)).toThrow(/>=\s*0|non-negative/i);
+
+    const handle = backend.ekopr(kernelPath);
     expect(backend.eknseg(handle)).toBe(EXPECTED_NSEG);
     backend.ekcls(handle);
 

@@ -165,6 +165,11 @@ static Napi::String Ektnam(const Napi::CallbackInfo& info) {
     return Napi::String::New(env, "");
   }
 
+  if (n < 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected n to be >= 0"));
+    return Napi::String::New(env, "");
+  }
+
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   char out[tspice_backend_node::kOutMaxBytes];

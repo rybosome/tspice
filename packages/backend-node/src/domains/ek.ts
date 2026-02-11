@@ -1,7 +1,12 @@
-import type { EkApi, SpiceHandle } from "@rybosome/tspice-backend-contract";
+import {
+  assertSpiceInt32NonNegative,
+  type EkApi,
+  type SpiceHandle,
+} from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+import type { KernelStager } from "../runtime/kernel-staging.js";
 
 type HandleEntry = {
   kind: "EK";
@@ -23,9 +28,11 @@ function asSpiceHandle(handleId: number): SpiceHandle {
   return handleId as unknown as SpiceHandle;
 }
 
-export function createEkApi(native: NativeAddon): EkApi {
+export function createEkApi(native: NativeAddon, stager?: KernelStager): EkApi {
   let nextHandleId = 1;
   const handles = new Map<number, HandleEntry>();
+
+  const resolvePath = (path: string) => stager?.resolvePath(path) ?? path;
 
   function register(nativeHandle: number): SpiceHandle {
     invariant(
@@ -67,19 +74,48 @@ export function createEkApi(native: NativeAddon): EkApi {
     handles.delete(handleId);
   }
 
+  function closeAllHandles(): void {
+    const errors: unknown[] = [];
+
+    for (const [handleId, entry] of handles) {
+      try {
+        native.ekcls(entry.nativeHandle);
+      } catch (error) {
+        errors.push(error);
+      } finally {
+        handles.delete(handleId);
+      }
+    }
+
+    if (errors.length > 0) {
+      throw new AggregateError(errors, "Failed to close one or more EK handles during teardown");
+    }
+  }
+
   const api = {
-    ekopr: (path: string) => register(native.ekopr(path)),
-    ekopw: (path: string) => register(native.ekopw(path)),
-    ekopn: (path: string, ifname: string, ncomch: number) => register(native.ekopn(path, ifname, ncomch)),
+    ekopr: (path: string) => register(native.ekopr(resolvePath(path))),
+    ekopw: (path: string) => register(native.ekopw(resolvePath(path))),
+    ekopn: (path: string, ifname: string, ncomch: number) => {
+      assertSpiceInt32NonNegative(ncomch, "ekopn(ncomch)");
+      return register(native.ekopn(resolvePath(path), ifname, ncomch));
+    },
     ekcls: (handle: SpiceHandle) => close(handle, (e) => native.ekcls(e.nativeHandle)),
 
     ekntab: () => {
       const n = native.ekntab();
-      invariant(typeof n === "number" && Number.isFinite(n), "Expected native backend ekntab() to return a number");
+
+      invariant(
+        typeof n === "number" &&
+          Number.isInteger(n) &&
+          n >= 0 &&
+          n <= I32_MAX,
+        "Expected native backend ekntab() to return a non-negative 32-bit signed integer",
+      );
       return n;
     },
 
     ektnam: (n: number) => {
+      assertSpiceInt32NonNegative(n, "ektnam(n)");
       const name = native.ektnam(n);
       invariant(typeof name === "string", "Expected native backend ektnam(n) to return a string");
       return name;
@@ -88,8 +124,11 @@ export function createEkApi(native: NativeAddon): EkApi {
     eknseg: (handle: SpiceHandle) => {
       const nseg = native.eknseg(lookup(handle).nativeHandle);
       invariant(
-        typeof nseg === "number" && Number.isFinite(nseg),
-        "Expected native backend eknseg(handle) to return a number",
+        typeof nseg === "number" &&
+          Number.isInteger(nseg) &&
+          nseg >= 0 &&
+          nseg <= I32_MAX,
+        "Expected native backend eknseg(handle) to return a non-negative 32-bit signed integer",
       );
       return nseg;
     },
@@ -97,6 +136,12 @@ export function createEkApi(native: NativeAddon): EkApi {
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
     value: () => handles.size,
+    enumerable: false,
+  });
+
+  // Internal teardown helper (not part of the public backend contract).
+  Object.defineProperty(api, "__debugCloseAllHandles", {
+    value: closeAllHandles,
     enumerable: false,
   });
 
