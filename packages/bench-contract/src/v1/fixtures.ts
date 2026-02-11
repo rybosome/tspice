@@ -94,6 +94,14 @@ function splitRelFixturePath(relPath: string):
     };
   }
 
+  if (segments.some((seg) => seg.length == 0)) {
+    return {
+      ok: false,
+      message:
+        "Fixture ref paths must not contain empty segments (e.g. 'a//b', leading '/', or trailing '/').",
+    };
+  }
+
   return { ok: true, segments };
 }
 
@@ -131,6 +139,10 @@ function normalizeForContainment(
   }
 
   if (!caseSensitive) {
+    // NOTE: When caseSensitive=false we approximate case-insensitive containment by
+    // lowercasing both normalized paths. This is a pragmatic heuristic and is not
+    // equivalent to filesystem case folding for all locales / Unicode edge cases.
+    // Do not treat it as a hard security boundary on every platform/filesystem.
     out = out.toLowerCase();
   }
 

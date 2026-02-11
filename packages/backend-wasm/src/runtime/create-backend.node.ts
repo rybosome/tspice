@@ -31,6 +31,24 @@ export async function createWasmBackend(
   const defaultWasmUrl = new URL("../tspice_backend_wasm.wasm", import.meta.url);
   const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
 
+  const URL_SCHEME_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
+  const WINDOWS_DRIVE_RE = /^[A-Za-z]:/;
+
+  const hasUrlScheme = (value: string): boolean =>
+    URL_SCHEME_RE.test(value) && !WINDOWS_DRIVE_RE.test(value);
+
+  if (
+    hasUrlScheme(wasmUrl) &&
+    !wasmUrl.startsWith("http://") &&
+    !wasmUrl.startsWith("https://") &&
+    !wasmUrl.startsWith("file://")
+  ) {
+    const u = new URL(wasmUrl);
+    throw new Error(
+      `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
+    );
+  }
+
   let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
   try {
     // NOTE: This must be a literal import path so bundlers like Vite don't

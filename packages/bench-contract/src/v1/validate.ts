@@ -199,7 +199,7 @@ function validateSetup(
   setup: unknown,
   errors: ValidationError[],
   pathSegments: readonly PathSegment[],
-  fixtureCtx: FixtureResolutionContext,
+  getFixtureCtx: () => FixtureResolutionContext,
 ): void {
   if (setup === undefined) return;
 
@@ -211,7 +211,7 @@ function validateSetup(
       record.kernels,
       errors,
       [...pathSegments, "kernels"],
-      fixtureCtx,
+      getFixtureCtx(),
     );
   }
 }
@@ -437,7 +437,7 @@ function validateBenchmark(
   value: unknown,
   errors: ValidationError[],
   pathSegments: readonly PathSegment[],
-  fixtureCtx: FixtureResolutionContext,
+  getFixtureCtx: () => FixtureResolutionContext,
   options: ValidateBenchmarkSuiteV1Options,
 ): BenchmarkV1 | null {
   const record = asRecord(value, errors, pathSegments);
@@ -471,7 +471,7 @@ function validateBenchmark(
       record.setup,
       errors,
       [...pathSegments, "setup"],
-      fixtureCtx,
+      getFixtureCtx,
     );
   }
 
@@ -517,20 +517,32 @@ export function validateBenchmarkSuiteV1(
 
   const checkExistence = shouldCheckFixtureExistence(options);
   const defaultFixtureRoots = options.defaultFixtureRoots;
-  const effectiveFixtureRoots: FixtureRootsV1 = {
-    ...(options.defaultFixtureRoots ?? DEFAULT_FIXTURE_ROOTS_V1),
-    ...(fixtureRoots ?? {}),
-  };
-  const effectiveFixtureRootsKey = fixtureRootsCacheKey(effectiveFixtureRoots);
 
-  const fixtureCtx: FixtureResolutionContext = {
-    repoRoot: options.repoRoot,
-    checkExistence,
-    defaultFixtureRoots,
-    fixtureRoots,
-    cacheKeyPrefix: `${checkExistence ? 1 : 0}:${effectiveFixtureRootsKey}:`,
-    fixtureRefCache,
-  };
+  const getFixtureCtx = (() => {
+    let ctx: FixtureResolutionContext | undefined;
+
+    return (): FixtureResolutionContext => {
+      if (ctx) return ctx;
+
+      const effectiveFixtureRoots: FixtureRootsV1 = {
+        ...(defaultFixtureRoots ?? DEFAULT_FIXTURE_ROOTS_V1),
+        ...(fixtureRoots ?? {}),
+      };
+
+      const effectiveFixtureRootsKey = fixtureRootsCacheKey(effectiveFixtureRoots);
+
+      ctx = {
+        repoRoot: options.repoRoot,
+        checkExistence,
+        defaultFixtureRoots,
+        fixtureRoots,
+        cacheKeyPrefix: `${checkExistence ? 1 : 0}:${effectiveFixtureRootsKey}:`,
+        fixtureRefCache,
+      };
+
+      return ctx;
+    };
+  })();
 
   if (hasOwn(record, "defaults")) {
     const defaultsRecord = asRecord(record.defaults, errors, ["defaults"]);
@@ -540,7 +552,7 @@ export function validateBenchmarkSuiteV1(
         defaultsRecord.setup,
         errors,
         ["defaults", "setup"],
-        fixtureCtx,
+        getFixtureCtx,
       );
     }
   }
@@ -566,7 +578,7 @@ export function validateBenchmarkSuiteV1(
         benchmarkValue,
         errors,
         benchmarkPath,
-        fixtureCtx,
+        getFixtureCtx,
         options,
       );
 

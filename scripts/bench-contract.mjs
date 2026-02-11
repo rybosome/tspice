@@ -23,8 +23,20 @@ function emitJson(obj) {
   console.log(JSON.stringify(obj, null, 2));
 }
 
+function normalizeErrors(errors) {
+  if (!Array.isArray(errors)) {
+    if (errors == null) return [];
+    return [{ path: "$", message: String(errors) }];
+  }
+
+  return errors.map((e) => ({
+    path: typeof e?.path === "string" ? e.path : "$",
+    message: typeof e?.message === "string" ? e.message : String(e?.message ?? e),
+  }));
+}
+
 function emitJsonResult({ ok, kind, errors }) {
-  emitJson({ ok, kind, errors, usage: USAGE_TEXT });
+  emitJson({ ok: Boolean(ok), kind, errors: normalizeErrors(errors), usage: USAGE_TEXT });
 }
 
 function failUsage(message) {
