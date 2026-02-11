@@ -41,6 +41,8 @@ function boundedCacheGet(key: string): Uint8Array | undefined {
 }
 
 function boundedCacheSet(key: string, value: Uint8Array): void {
+  // Refresh recency on overwrite (Map preserves insertion order).
+  wasmBinaryCache.delete(key);
   wasmBinaryCache.set(key, value);
 
   while (wasmBinaryCache.size > WASM_BINARY_CACHE_MAX_ENTRIES) {

@@ -171,6 +171,9 @@ int tspice_ekntab(int *outN, char *err, int errMaxBytes) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
+  if (nC < 0) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekntab: expected a non-negative table count");
+  }
 
   *outN = (int)nC;
   return 0;
