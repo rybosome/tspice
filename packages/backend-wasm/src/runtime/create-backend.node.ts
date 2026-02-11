@@ -23,6 +23,12 @@ export const WASM_JS_FILENAME = "tspice_backend_wasm.node.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
 export function toExactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  // Fast-path: if this view covers the whole underlying buffer, return it
+  // directly (no copy).
+  if (bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength) {
+    return bytes.buffer;
+  }
+
   // Node Buffers can be views into a larger ArrayBuffer (and can be offset).
   // Passing `bytes.buffer` directly can include unrelated trailing bytes, and
   // getting `ArrayBuffer#slice` bounds wrong can truncate the module.
@@ -39,10 +45,30 @@ export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffe
     return undefined;
   }
 
+  const WINDOWS_DRIVE_PATH_RE = /^[A-Za-z]:[\\/]/;
+  const GENERIC_URL_SCHEME_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
+
   const [{ readFile }, { fileURLToPath }] = await Promise.all([
     import("node:fs/promises"),
     import("node:url"),
   ]);
+
+  // Guard against unsupported URL schemes. We accept:
+  // - file:// URLs
+  // - filesystem paths
+  // but reject everything else (data:, blob:, ftp:, node:, ...)
+  //
+  // Important: don't misclassify Windows drive paths like `C:\foo` as a URL
+  // scheme (`c:`).
+  const isWindowsDrivePath = WINDOWS_DRIVE_PATH_RE.test(wasmUrl);
+  const isFileUrl = wasmUrl.startsWith("file://");
+
+  if (!isWindowsDrivePath && !isFileUrl && GENERIC_URL_SCHEME_RE.test(wasmUrl)) {
+    const u = new URL(wasmUrl);
+    throw new Error(
+      `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
+    );
+  }
 
   const wasmPath = wasmUrl.startsWith("file://") ? fileURLToPath(wasmUrl) : wasmUrl;
   const bytes = await readFile(wasmPath);

@@ -22,4 +22,14 @@ describe("wasmBinary loading (node runtime)", () => {
     },
     20_000,
   );
+
+  it("throws for unsupported URL schemes", async () => {
+    await expect(readWasmBinaryForNode("data:application/wasm;base64,AA==")).rejects.toThrow(
+      /Unsupported wasmUrl scheme/i,
+    );
+    await expect(readWasmBinaryForNode("ftp://example.com/tspice_backend_wasm.wasm")).rejects.toThrow(
+      /Unsupported wasmUrl scheme/i,
+    );
+    await expect(readWasmBinaryForNode("node:fs")).rejects.toThrow(/Unsupported wasmUrl scheme/i);
+  });
 });
