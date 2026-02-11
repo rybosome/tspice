@@ -4,7 +4,34 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
+
+#define TSPICE_BODY_POOLVAR_MAX_BYTES 1024
+
+static int tspice_format_body_pool_var(
+    int body,
+    const char *item,
+    char *outPoolVar,
+    size_t outPoolVarMaxBytes,
+    const char *context,
+    char *err,
+    int errMaxBytes) {
+  const int written = snprintf(outPoolVar, outPoolVarMaxBytes, "BODY%d_%s", body, item);
+  if (written < 0 || (size_t)written >= outPoolVarMaxBytes) {
+    // This is a shim-level validation failure; clear any previously captured
+    // structured SPICE error fields so callers don't attach stale ones.
+    tspice_reset(NULL, 0);
+
+    if (err && errMaxBytes > 0) {
+      const char *label = context ? context : "bodvar";
+      snprintf(err, (size_t)errMaxBytes, "%s: item too long", label);
+      err[errMaxBytes - 1] = '\0';
+    }
+
+    return 1;
+  }
+
+  return 0;
+}
 
 int tspice_bodn2c(
     const char *name,
@@ -180,26 +207,15 @@ int tspice_bodfnd(
   // `bodfnd_c()` returns true even when the pool var exists but is character-typed.
   // Our backend contract treats non-numeric BODY<ID>_<ITEM> vars as a normal miss,
   // so preflight with `dtpool_c()` on the canonical pool name.
-  const size_t poolVarMaxBytes = strlen(item) + 32;
-  char *poolVar = (char *)malloc(poolVarMaxBytes);
-  if (!poolVar) {
-    tspice_reset(NULL, 0);
-
-    if (err && errMaxBytes > 0) {
-      strncpy(err, "malloc failed while formatting BODY<ID>_<ITEM>", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-
+  char poolVar[TSPICE_BODY_POOLVAR_MAX_BYTES];
+  if (tspice_format_body_pool_var(body, item, poolVar, sizeof(poolVar), "bodfnd", err, errMaxBytes) != 0) {
     return 1;
   }
-
-  snprintf(poolVar, poolVarMaxBytes, "BODY%d_%s", body, item);
 
   SpiceBoolean foundC = SPICEFALSE;
   SpiceInt nC = 0;
   SpiceChar typeC = 0;
   dtpool_c(poolVar, &foundC, &nC, &typeC);
-  free(poolVar);
 
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -237,26 +253,15 @@ int tspice_bodvar(
   // IMPORTANT: `bodfnd_c()` returns true even when the pool var is character-typed,
   // but `bodvcd_c()` errors on non-numeric pool vars. To avoid throwing, we
   // preflight with `dtpool_c()` on the canonical pool name `BODY<body>_<ITEM>`.
-  const size_t poolVarMaxBytes = strlen(item) + 32;
-  char *poolVar = (char *)malloc(poolVarMaxBytes);
-  if (!poolVar) {
-    tspice_reset(NULL, 0);
-
-    if (err && errMaxBytes > 0) {
-      strncpy(err, "malloc failed while formatting BODY<ID>_<ITEM>", (size_t)errMaxBytes - 1);
-      err[errMaxBytes - 1] = '\0';
-    }
-
+  char poolVar[TSPICE_BODY_POOLVAR_MAX_BYTES];
+  if (tspice_format_body_pool_var(body, item, poolVar, sizeof(poolVar), "bodvar", err, errMaxBytes) != 0) {
     return 1;
   }
-
-  snprintf(poolVar, poolVarMaxBytes, "BODY%d_%s", body, item);
 
   SpiceBoolean foundC = SPICEFALSE;
   SpiceInt nC = 0;
   SpiceChar typeC = 0;
   dtpool_c(poolVar, &foundC, &nC, &typeC);
-  free(poolVar);
 
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
