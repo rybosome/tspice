@@ -6,6 +6,15 @@ import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 
+/**
+* Max byte size for string outputs from CSPICE time calls (`et2utc_c`, `timout_c`).
+*
+* This intentionally differs from `WASM_ERR_MAX_BYTES`:
+* - time formatting outputs can be much larger than error messages (esp. with long TIMOUT pictures)
+* - we want a stable, explicit cap for output allocations
+*/
+const WASM_TIME_OUT_MAX_BYTES = 16 * 1024; // 16 KiB
+
 function withUtf8CString<T>(
   module: Pick<EmscriptenModule, "_malloc" | "_free" | "HEAPU8">,
   value: string,
@@ -38,7 +47,7 @@ function tspiceCallEt2utc(
   format: string,
   prec: number,
 ): string {
-  const outMaxBytes = WASM_ERR_MAX_BYTES;
+  const outMaxBytes = WASM_TIME_OUT_MAX_BYTES;
 
   return withUtf8CString(module, format, (formatPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
@@ -61,7 +70,7 @@ function tspiceCallEt2utc(
 }
 
 function tspiceCallTimout(module: EmscriptenModule, et: number, picture: string): string {
-  const outMaxBytes = WASM_ERR_MAX_BYTES;
+  const outMaxBytes = WASM_TIME_OUT_MAX_BYTES;
 
   return withUtf8CString(module, picture, (picturePtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
