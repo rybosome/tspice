@@ -13,6 +13,10 @@ export interface FramesApi {
   cidfrm(center: number): Found<{ frcode: number; frname: string }>;
   cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
+  frinfo(frameId: number): Found<{ center: number; frameClass: number; classId: number }>;
+
+  ccifrm(frameClass: number, classId: number): Found<{ frcode: number; frname: string; center: number }>;
+
   /** Get pointing (attitude) for a CK instrument at a given encoded spacecraft clock time. */
   ckgp(
     inst: number,

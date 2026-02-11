@@ -10,10 +10,20 @@ This package is currently intended for **internal workspace use**.
 - `createSpiceAsyncFromTransport()` — builds a `SpiceAsync` `{ raw, kit }` client from a transport.
 - `createWorkerTransport()` — request/response RPC over `Worker.postMessage()` (timeout + dispose support).
   - Types: `WorkerTransport`, `WorkerTransportRequestOptions`
+- `exposeTransportToWorker()` — worker-side helper that serves a `SpiceTransport` over the same RPC protocol.
+- `createSpiceWorker()` — spawns the built-in tspice Web Worker entry.
+- `createSpiceWorkerClient()` — batteries-included Worker + transport + `SpiceAsync` client.
+  - Type: `SpiceWorkerClient`
 - `withCaching()` — memoized transport wrapper (in-flight dedupe + LRU + optional TTL).
   - When caching is disabled (e.g. `ttlMs <= 0` or `maxEntries <= 0`), returns the input transport unchanged.
   - Use `isCachingTransport()` to narrow before calling `clear()`/`dispose()`.
   - Types: `CachingTransport`, `WithCachingResult`
+- `defaultSpiceCacheKey()` — default cache key generator used by `withCaching()`.
+  - For plain objects, cache key stability/hit rate depends on object key insertion order (because it uses `JSON.stringify`).
+- `loadKernelPack()` — fetch a kernel pack and load kernels into tspice.
+  - Types: `KernelPack`, `KernelPackKernel`, `LoadKernelPackOptions`
+- `publicKernels` / `createPublicKernels()` — helpers for working with a curated set of public kernel IDs.
+  - Types: `CreatePublicKernelsOptions`, `PublicKernelId`, `PublicKernelsBuilder`
 
 ### `createWorkerTransport()`: `terminateOnDispose`
 
@@ -43,7 +53,31 @@ ownedTransport.dispose(); // rejects pending + terminates worker
 sharedTransport.dispose(); // rejects pending only (does not terminate sharedWorker)
 ```
 
-## Roadmap
+### `createWorkerTransport()`: `signalDispose`
 
-A canonical, batteries-included Web Worker client is coming soon:
-https://github.com/rybosome/tspice/issues/334
+`dispose()` can optionally post `{ type: "tspice:dispose" }` to the worker.
+
+This is a **global server cleanup signal**, so it should generally not be enabled for shared workers unless cleanup is externally coordinated.
+
+Defaults to `signalDispose = terminateOnDispose`.
+
+## Canonical Web Worker client
+
+```ts
+import { createSpiceWorkerClient, withCaching } from "@rybosome/tspice-web-components";
+
+const { spice, dispose } = createSpiceWorkerClient({
+  wrapTransport: (t) => withCaching(t, { maxEntries: 1000, ttlMs: 5_000 }),
+  // Optional: observe wrapper/transport cleanup errors when using fire-and-forget `dispose()`.
+  onDisposeError: (err) => console.error("tspice worker dispose failed", err),
+});
+
+const et = await spice.kit.utcToEt("2026-01-01T00:00:00Z");
+console.log(et);
+
+dispose();
+```
+
+`dispose()` is fire-and-forget; call `disposeAsync()` if you want to await cleanup and handle errors directly.
+
+The built-in worker entry initializes tspice with `createSpiceAsync({ backend: "wasm" })`.
