@@ -23,6 +23,21 @@ export type NativeAddon = {
     which: number,
     kind?: string,
   ): { found: boolean; file?: string; filtyp?: string; source?: string; handle?: number };
+
+  // --- kernel pool ---
+  gdpool(name: string, start: number, room: number): { found: boolean; values?: number[] };
+  gipool(name: string, start: number, room: number): { found: boolean; values?: number[] };
+  gcpool(name: string, start: number, room: number): { found: boolean; values?: string[] };
+  gnpool(template: string, start: number, room: number): { found: boolean; values?: string[] };
+  dtpool(name: string): { found: boolean; n?: number; type?: string };
+
+  pdpool(name: string, values: readonly number[]): void;
+  pipool(name: string, values: readonly number[]): void;
+  pcpool(name: string, values: readonly string[]): void;
+
+  swpool(agent: string, names: readonly string[]): void;
+  cvpool(agent: string): boolean;
+  expool(name: string): boolean;
   str2et(utc: string): number;
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;

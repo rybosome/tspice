@@ -6,6 +6,7 @@ import type {
   KernelData,
   KernelKind,
   KernelSource,
+  KernelPoolVarType,
   SpiceBackend,
   SpiceHandle,
   Mat3RowMajor,
@@ -16,7 +17,11 @@ import type {
   SpkezrResult,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
-import { assertGetmsgWhich, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import {
+  assertGetmsgWhich,
+  assertSpiceInt32,
+  brandMat3RowMajor,
+} from "@rybosome/tspice-backend-contract";
 
 /**
  * A deterministic, pure-TS "toy" backend.
@@ -615,6 +620,21 @@ function kernelFiltyp(kind: KernelKind): string {
   }
 }
 
+function assertPoolRange(fn: string, start: number, room: number): void {
+  if (!Number.isFinite(start) || !Number.isInteger(start) || start < 0) {
+    throw new RangeError(`${fn}(): start must be an integer >= 0`);
+  }
+  if (!Number.isFinite(room) || !Number.isInteger(room) || room <= 0) {
+    throw new RangeError(`${fn}(): room must be an integer > 0`);
+  }
+}
+
+function assertNonEmptyString(fn: string, field: string, value: string): void {
+  if (value.trim().length === 0) {
+    throw new RangeError(`${fn}(): ${field} must be a non-empty string`);
+  }
+}
+
 export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
@@ -622,6 +642,50 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   let spiceLong = "";
   const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
+
+  type KernelPoolEntry =
+    | { type: "N"; values: number[] }
+    | { type: "C"; values: string[] };
+
+  const kernelPool = new Map<string, KernelPoolEntry>();
+
+  // swpool/cvpool "agent" state.
+  const kernelPoolWatches = new Map<string, { names: string[]; dirty: boolean }>();
+  const kernelPoolWatchesByName = new Map<string, Set<string>>();
+
+  const unindexKernelPoolWatch = (agent: string, names: readonly string[]) => {
+    for (const name of names) {
+      const agents = kernelPoolWatchesByName.get(name);
+      if (!agents) continue;
+      agents.delete(agent);
+      if (agents.size === 0) {
+        kernelPoolWatchesByName.delete(name);
+      }
+    }
+  };
+
+  const indexKernelPoolWatch = (agent: string, names: readonly string[]) => {
+    for (const name of names) {
+      let agents = kernelPoolWatchesByName.get(name);
+      if (!agents) {
+        agents = new Set<string>();
+        kernelPoolWatchesByName.set(name, agents);
+      }
+      agents.add(agent);
+    }
+  };
+
+  const markKernelPoolUpdated = (name: string) => {
+    // Avoid an O(watches * names) scan by maintaining a reverse index.
+    const agents = kernelPoolWatchesByName.get(name);
+    if (!agents) return;
+    for (const agent of agents) {
+      const watch = kernelPoolWatches.get(agent);
+      if (watch) {
+        watch.dirty = true;
+      }
+    }
+  };
 
   const spiceCellUnsupported =
     "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
@@ -698,6 +762,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     kclear: () => {
       kernels.length = 0;
+      kernelPool.clear();
+      kernelPoolWatches.clear();
+      kernelPoolWatchesByName.clear();
     },
 
     ktotal: (kind: KernelKind = "ALL") => {
@@ -715,6 +782,181 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
         source: k.source,
         handle: k.handle,
       } satisfies Found<KernelData>;
+    },
+
+    gdpool: (name, start, room) => {
+      assertNonEmptyString("gdpool", "name", name);
+      assertPoolRange("gdpool", start, room);
+      const start0 = start;
+      const room0 = room;
+
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      if (entry.type !== "N") {
+        throw new Error(`Fake backend: gdpool only supports numeric variables (got ${entry.type})`);
+      }
+
+      return {
+        found: true,
+        values: entry.values.slice(start0, start0 + room0),
+      } satisfies Found<{ values: number[] }>;
+    },
+
+    gipool: (name, start, room) => {
+      assertNonEmptyString("gipool", "name", name);
+      assertPoolRange("gipool", start, room);
+      const start0 = start;
+      const room0 = room;
+
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      if (entry.type !== "N") {
+        throw new Error(`Fake backend: gipool only supports numeric variables (got ${entry.type})`);
+      }
+
+      return {
+        found: true,
+        values: entry.values.slice(start0, start0 + room0).map((v, i) => {
+          assertSpiceInt32(v, `gipool(): values[${start0 + i}]`);
+          return v;
+        }),
+      } satisfies Found<{ values: number[] }>;
+    },
+
+    gcpool: (name, start, room) => {
+      assertNonEmptyString("gcpool", "name", name);
+      assertPoolRange("gcpool", start, room);
+      const start0 = start;
+      const room0 = room;
+
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      if (entry.type !== "C") {
+        throw new Error(`Fake backend: gcpool only supports character variables (got ${entry.type})`);
+      }
+
+      return {
+        found: true,
+        values: entry.values.slice(start0, start0 + room0),
+      } satisfies Found<{ values: string[] }>;
+    },
+
+    gnpool: (template, start, room) => {
+      assertNonEmptyString("gnpool", "template", template);
+      assertPoolRange("gnpool", start, room);
+      const start0 = start;
+      const room0 = room;
+
+      const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\[\]\\]/g, "\\$&");
+
+      // Support escaping wildcard characters via backslash:
+      // - `\*` matches a literal `*`
+      // - `\%` matches a literal `%`
+      let reSrc = "^";
+      for (let i = 0; i < template.length; i++) {
+        const ch = template[i]!;
+        if (ch === "\\") {
+          const next = template[i + 1];
+          if (next !== undefined) {
+            reSrc += escapeRegex(next);
+            i++;
+          } else {
+            reSrc += "\\\\";
+          }
+          continue;
+        }
+        if (ch === "*") {
+          reSrc += ".*";
+          continue;
+        }
+        if (ch === "%") {
+          reSrc += ".";
+          continue;
+        }
+        reSrc += escapeRegex(ch);
+      }
+      reSrc += "$";
+
+      const re = new RegExp(reSrc);
+
+      const matches = Array.from(kernelPool.keys()).filter((k) => re.test(k)).sort();
+      if (matches.length === 0) {
+        return { found: false };
+      }
+
+      return {
+        found: true,
+        values: matches.slice(start0, start0 + room0),
+      } satisfies Found<{ values: string[] }>;
+    },
+
+    dtpool: (name) => {
+      assertNonEmptyString("dtpool", "name", name);
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      return {
+        found: true,
+        n: entry.values.length,
+        type: entry.type as KernelPoolVarType,
+      } satisfies Found<{ n: number; type: KernelPoolVarType }>;
+    },
+
+    pdpool: (name, values) => {
+      assertNonEmptyString("pdpool", "name", name);
+      for (let i = 0; i < values.length; i++) {
+        const v = values[i]!;
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`pdpool(): values[${i}] must be a finite number (got ${String(v)})`);
+        }
+      }
+      kernelPool.set(name, { type: "N", values: [...values] });
+      markKernelPoolUpdated(name);
+    },
+
+    pipool: (name, values) => {
+      assertNonEmptyString("pipool", "name", name);
+      for (let i = 0; i < values.length; i++) {
+        assertSpiceInt32(values[i]!, `pipool(): values[${i}]`);
+      }
+      kernelPool.set(name, { type: "N", values: [...values] });
+      markKernelPoolUpdated(name);
+    },
+
+    pcpool: (name, values) => {
+      assertNonEmptyString("pcpool", "name", name);
+      kernelPool.set(name, { type: "C", values: [...values] });
+      markKernelPoolUpdated(name);
+    },
+
+    swpool: (agent, names) => {
+      assertNonEmptyString("swpool", "agent", agent);
+
+      for (let i = 0; i < names.length; i++) {
+        assertNonEmptyString("swpool", `names[${i}]`, names[i]!);
+      }
+      // CSPICE guarantees the next cvpool(agent) returns true.
+      const prev = kernelPoolWatches.get(agent);
+      if (prev) {
+        unindexKernelPoolWatch(agent, prev.names);
+      }
+
+      kernelPoolWatches.set(agent, { names: [...names], dirty: true });
+      indexKernelPoolWatch(agent, names);
+    },
+
+    cvpool: (agent) => {
+      assertNonEmptyString("cvpool", "agent", agent);
+      const watch = kernelPoolWatches.get(agent);
+      if (!watch) return false;
+      const dirty = watch.dirty;
+      watch.dirty = false;
+      return dirty;
+    },
+
+    expool: (name) => {
+      assertNonEmptyString("expool", "name", name);
+      const entry = kernelPool.get(name);
+      return entry?.type === "N";
     },
 
     tkvrsn: (item) => {

@@ -62,6 +62,7 @@ int tspice_kdata(
 // Returns the number of loaded kernels, or -1 on error (with message in `err`).
 int tspice_ktotal_all(char *err, int errMaxBytes);
 
+
 // --- file i/o primitives ---------------------------------------------------
 
 int tspice_exists(const char *path, int *outExists, char *err, int errMaxBytes);
@@ -116,6 +117,101 @@ int tspice_dlafns(
 
 // Close a DLA handle (DLA is DAS-backed).
 int tspice_dlacls(int handle, char *err, int errMaxBytes);
+
+// --- Kernel pool -----------------------------------------------------------
+
+int tspice_gdpool(
+    const char *name,
+    int start,
+    int room,
+    int *outN,
+    double *outValues,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_gipool(
+    const char *name,
+    int start,
+    int room,
+    int *outN,
+    int *outValues,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_gcpool(
+    const char *name,
+    int start,
+    int room,
+    int cvalen,
+    int *outN,
+    void *outCvals,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_gnpool(
+    const char *name,
+    int start,
+    int room,
+    int cvalen,
+    int *outN,
+    void *outCvals,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dtpool(
+    const char *name,
+    int *outFound,
+    int *outN,
+    char *outType,
+    int outTypeMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_pdpool(
+    const char *name,
+    int n,
+    const double *values,
+    char *err,
+    int errMaxBytes);
+
+int tspice_pipool(
+    const char *name,
+    int n,
+    const int *ivals,
+    char *err,
+    int errMaxBytes);
+
+int tspice_pcpool(
+    const char *name,
+    int n,
+    int lenvals,
+    const void *cvals,
+    char *err,
+    int errMaxBytes);
+
+int tspice_swpool(
+    const char *agent,
+    int nnames,
+    int namlen,
+    const void *names,
+    char *err,
+    int errMaxBytes);
+
+int tspice_cvpool(
+    const char *agent,
+    int *outUpdate,
+    char *err,
+    int errMaxBytes);
+
+int tspice_expool(
+    const char *name,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
 
 // --- low-level primitives ---
 

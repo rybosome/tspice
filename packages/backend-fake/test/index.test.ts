@@ -72,6 +72,123 @@ describe("@rybosome/tspice-backend-fake", () => {
     expect(() => b.rotate(0.123, 1.9)).toThrow(/expected a finite integer/i);
   });
 
+  it("throws on invalid kernel-pool start/room args", () => {
+    const b = createFakeBackend();
+    b.pdpool("NUM", [1, 2, 3]);
+    b.pcpool("STR", ["A", "B"]);
+
+    // start must be a finite integer >= 0
+    expect(() => b.gdpool("NUM", -1, 1)).toThrow(/start/i);
+    expect(() => b.gipool("NUM", -1, 1)).toThrow(/start/i);
+    expect(() => b.gcpool("STR", -1, 1)).toThrow(/start/i);
+    expect(() => b.gnpool("NO_MATCHES", -1, 1)).toThrow(/start/i);
+
+    expect(() => b.gdpool("NUM", Number.NaN, 1)).toThrow(/start/i);
+    expect(() => b.gdpool("NUM", Infinity, 1)).toThrow(/start/i);
+    expect(() => b.gdpool("NUM", 0.5, 1)).toThrow(/start/i);
+
+    // room must be a finite integer > 0
+    expect(() => b.gdpool("NUM", 0, 0)).toThrow(/room/i);
+    expect(() => b.gipool("NUM", 0, 0)).toThrow(/room/i);
+    expect(() => b.gcpool("STR", 0, 0)).toThrow(/room/i);
+    expect(() => b.gnpool("NO_MATCHES", 0, 0)).toThrow(/room/i);
+
+    expect(() => b.gdpool("NUM", 0, Number.NaN)).toThrow(/room/i);
+    expect(() => b.gdpool("NUM", 0, Infinity)).toThrow(/room/i);
+    expect(() => b.gdpool("NUM", 0, 1.5)).toThrow(/room/i);
+  });
+
+  it("rejects empty/blank kernel-pool string identifiers", () => {
+    const b = createFakeBackend();
+
+    for (const name of ["", "   "]) {
+      expect(() => b.gdpool(name, 0, 1)).toThrow(RangeError);
+      expect(() => b.gipool(name, 0, 1)).toThrow(RangeError);
+      expect(() => b.gcpool(name, 0, 1)).toThrow(RangeError);
+      expect(() => b.dtpool(name)).toThrow(RangeError);
+
+      expect(() => b.pdpool(name, [1])).toThrow(RangeError);
+      expect(() => b.pipool(name, [1])).toThrow(RangeError);
+      expect(() => b.pcpool(name, ["A"])).toThrow(RangeError);
+
+      expect(() => b.expool(name)).toThrow(RangeError);
+    }
+
+    for (const template of ["", "   "]) {
+      expect(() => b.gnpool(template, 0, 1)).toThrow(RangeError);
+    }
+
+    for (const agent of ["", "   "]) {
+      expect(() => b.swpool(agent, [])).toThrow(RangeError);
+      expect(() => b.cvpool(agent)).toThrow(RangeError);
+    }
+
+    // swpool(): names entries must be non-empty strings (but [] is allowed)
+    for (const blank of ["", "   "]) {
+      expect(() => b.swpool("AGENT", [blank])).toThrow(RangeError);
+    }
+  });
+
+  it("rejects non-finite pdpool() values", () => {
+    const b = createFakeBackend();
+
+    for (const v of [Number.NaN, Infinity, -Infinity]) {
+      try {
+        b.pdpool("NUM", [v]);
+        throw new Error("expected pdpool() to throw");
+      } catch (err) {
+        expect(err).toBeInstanceOf(RangeError);
+        expect((err as Error).message).toMatch(/values\[0\].*finite/i);
+      }
+    }
+  });
+
+  it("validates pipool/gipool integer ranges (no JS bitwise wrapping)", () => {
+    const b = createFakeBackend();
+
+    // pipool(): rejects non-integers
+    expect(() => b.pipool("I", [1.5])).toThrow(TypeError);
+
+    // pipool(): rejects out-of-range int32
+    expect(() => b.pipool("I", [2147483648])).toThrow(RangeError);
+    expect(() => b.pipool("I", [-2147483649])).toThrow(RangeError);
+
+    // pipool(): accepts int32 edge values and preserves them
+    b.pipool("I", [-2147483648, 2147483647]);
+    expect(b.gipool("I", 0, 10)).toEqual({
+      found: true,
+      values: [-2147483648, 2147483647],
+    });
+
+    // gipool(): throws if the stored numeric variable isn't representable as int32
+    b.pdpool("NUM", [1.1]);
+    expect(() => b.gipool("NUM", 0, 10)).toThrow(TypeError);
+  });
+
+  it("supports escaping wildcards in gnpool templates", () => {
+    const b = createFakeBackend();
+    b.pdpool("A*B", [1]);
+    b.pdpool("AXYB", [1]);
+    b.pdpool("A%B", [1]);
+    b.pdpool("AQB", [1]);
+    const nameBackslash = "A" + "\\" + "B";
+    b.pdpool(nameBackslash, [1]);
+
+
+    const tplEscStar = "A" + "\\" + "*B";
+    const tplEscPct = "A" + "\\" + "%B";
+    const tplEscBackslash = "A" + "\\" + "\\" + "B";
+
+    expect([...tplEscStar]).toEqual(["A", "\\", "*", "B"]);
+    expect([...tplEscPct]).toEqual(["A", "\\", "%", "B"]);
+    expect([...tplEscBackslash]).toEqual(["A", "\\", "\\", "B"]);
+
+    expect(b.gnpool(tplEscStar, 0, 10)).toEqual({ found: true, values: ["A*B"] });
+    expect(b.gnpool(tplEscPct, 0, 10)).toEqual({ found: true, values: ["A%B"] });
+    expect(b.gnpool(tplEscBackslash, 0, 10)).toEqual({ found: true, values: [nameBackslash] });
+  });
+
+
   it("handles near-pole recgeo() inputs without numerical instability", () => {
     const b = createFakeBackend();
 
