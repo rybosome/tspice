@@ -107,10 +107,17 @@ describe("IDs / names", () => {
     const radii = backend.bodvar(399, "RADII");
     expect(radii).toHaveLength(3);
 
-    // Item normalization: trim + ASCII-only uppercase.
+    // Item normalization: trim ASCII whitespace + ASCII-only uppercase.
     expect(backend.bodfnd(399, "  radii  ")).toBe(true);
     const radii2 = backend.bodvar(399, "  radii  ");
     expect(radii2).toHaveLength(3);
+
+    expect(backend.bodfnd(399, "\t\n radii \r")).toBe(true);
+    expect(backend.bodvar(399, "\t\n radii \r")).toHaveLength(3);
+
+    // Non-ASCII whitespace is intentionally not trimmed.
+    expect(backend.bodfnd(399, "\u00a0radii\u00a0")).toBe(false);
+    expect(backend.bodvar(399, "\u00a0radii\u00a0")).toEqual([]);
 
     expect(backend.bodfnd(399, "NOT_A_ITEM")).toBe(false);
     const missing = backend.bodvar(399, "NOT_A_ITEM");
@@ -219,10 +226,17 @@ describe("IDs / names", () => {
     const radii = backend.bodvar(399, "RADII");
     expect(radii).toHaveLength(3);
 
-    // Item normalization: trim + ASCII-only uppercase.
+    // Item normalization: trim ASCII whitespace + ASCII-only uppercase.
     expect(backend.bodfnd(399, "  radii  ")).toBe(true);
     const radii2 = backend.bodvar(399, "  radii  ");
     expect(radii2).toHaveLength(3);
+
+    expect(backend.bodfnd(399, "\t\n radii \r")).toBe(true);
+    expect(backend.bodvar(399, "\t\n radii \r")).toHaveLength(3);
+
+    // Non-ASCII whitespace is intentionally not trimmed.
+    expect(backend.bodfnd(399, "\u00a0radii\u00a0")).toBe(false);
+    expect(backend.bodvar(399, "\u00a0radii\u00a0")).toEqual([]);
 
     expect(backend.bodfnd(399, "NOT_A_ITEM")).toBe(false);
     const missing = backend.bodvar(399, "NOT_A_ITEM");

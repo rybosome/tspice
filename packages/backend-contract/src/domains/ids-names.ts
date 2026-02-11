@@ -23,7 +23,7 @@ export interface IdsNamesApi {
    * Return true if a body constant exists in the kernel pool.
    *
    * Normalization:
-   * - `item` is normalized as `normalizeBodItem(item)` (trim + ASCII-only uppercase)
+   * - `item` is normalized as `normalizeBodItem(item)` (trim ASCII whitespace + ASCII-only uppercase)
    *   before lookup.
    */
   bodfnd(body: number, item: string): boolean;
@@ -32,7 +32,7 @@ export interface IdsNamesApi {
    * Return values of a body constant from the kernel pool.
    *
    * Normalization:
-   * - `item` is normalized as `normalizeBodItem(item)` (trim + ASCII-only uppercase)
+   * - `item` is normalized as `normalizeBodItem(item)` (trim ASCII whitespace + ASCII-only uppercase)
    *   before lookup.
    *
    * Missing-item semantics:
@@ -49,32 +49,74 @@ export interface IdsNamesApi {
 * casing behavior is ASCII-based. We intentionally avoid `String.prototype.toUpperCase()`
 * here because it applies Unicode case mappings (e.g. `"ß" -> "SS"`), which can
 * change lookup keys in surprising ways.
+*
+* We intentionally trim **ASCII whitespace only** (space/tab/newline/etc.) to match
+* CSPICE behavior and keep native + WASM backends consistent.
 */
 export function normalizeBodItem(item: string): string {
-  return toAsciiUppercase(item.trim());
+  return toAsciiUppercase(trimAsciiWhitespace(item));
+}
+
+function isAsciiWhitespace(code: number): boolean {
+  // Keep this consistent with the native backend implementation.
+  return (
+    code === 32 /* ' ' */ ||
+    code === 9 /* '	' */ ||
+    code === 10 /* '
+' */ ||
+    code === 13 /* '\r' */ ||
+    code === 12 /* '' */ ||
+    code === 11 /* '\v' */
+  );
+}
+
+function trimAsciiWhitespace(s: string): string {
+  let start = 0;
+  while (start < s.length && isAsciiWhitespace(s.charCodeAt(start))) {
+    start++;
+  }
+
+  let end = s.length;
+  while (end > start && isAsciiWhitespace(s.charCodeAt(end - 1))) {
+    end--;
+  }
+
+  if (start === 0 && end === s.length) {
+    return s;
+  }
+
+  return s.slice(start, end);
 }
 
 function toAsciiUppercase(s: string): string {
-  // JS toUpperCase() is locale-sensitive and handles unicode.
+  // JS `toUpperCase()` applies Unicode case mappings (e.g. "ß" -> "SS").
   // For kernel pool item names, we only want to uppercase ASCII a-z.
   //
   // Performance: avoid allocating a new string if no changes are needed.
+  // Safety: avoid building `String.fromCharCode(...bigArray)` arg lists.
   for (let i = 0; i < s.length; i++) {
     const code = s.charCodeAt(i);
     const isAsciiLower = code >= 97 /* 'a' */ && code <= 122 /* 'z' */;
     if (!isAsciiLower) continue;
 
-    const codes = new Array<number>(s.length);
-    for (let j = 0; j < i; j++) {
-      codes[j] = s.charCodeAt(j);
+    // We found at least one lowercase ASCII letter; build the output string.
+    // Chunked to avoid large temporary allocations and arg limits.
+    let out = s.slice(0, i);
+    const chunkSize = 4096;
+
+    for (let j = i; j < s.length; j += chunkSize) {
+      const end = Math.min(s.length, j + chunkSize);
+      const codes = new Array<number>(end - j);
+
+      for (let k = j; k < end; k++) {
+        const ck = s.charCodeAt(k);
+        codes[k - j] = ck >= 97 /* 'a' */ && ck <= 122 /* 'z' */ ? ck - 32 : ck;
+      }
+
+      out += String.fromCharCode.apply(null, codes as unknown as number[]);
     }
 
-    for (let j = i; j < s.length; j++) {
-      const cj = s.charCodeAt(j);
-      codes[j] = cj >= 97 /* 'a' */ && cj <= 122 /* 'z' */ ? cj - 32 : cj;
-    }
-
-    return String.fromCharCode(...codes);
+    return out;
   }
 
   return s;

@@ -61,6 +61,14 @@ describe("@rybosome/tspice-backend-contract", () => {
 
     expect(mod.normalizeBodItem).toBeTypeOf("function");
     expect(mod.normalizeBodItem("  radii  ")).toBe("RADII");
+    expect(mod.normalizeBodItem("\t\n radii \r")).toBe("RADII");
+
+    // Non-ASCII whitespace is intentionally *not* trimmed.
+    expect(mod.normalizeBodItem("\u00a0radii\u00a0")).toBe("\u00a0RADII\u00a0");
+
+    // Regression test: must not throw for long inputs (avoid fromCharCode arg limits).
+    const long = "a".repeat(100_000);
+    expect(mod.normalizeBodItem(long)).toBe("A".repeat(100_000));
     expect(mod.normalizeBodItem("  ß  ")).toBe("ß");
   });
 });
