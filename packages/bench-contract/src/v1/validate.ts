@@ -1,7 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { DEFAULT_FIXTURE_ROOTS_V1, resolveFixtureRef } from "./fixtures.js";
+import {
+  DEFAULT_FIXTURE_ROOTS_V1,
+  resolveFixtureRef,
+  type ResolveFixtureRefOptions,
+} from "./fixtures.js";
 import { formatPath, type PathSegment } from "./paths.js";
 import type {
   BenchmarkSuiteV1,
@@ -23,14 +27,15 @@ function shouldCheckFixtureExistence(
 
 function fixtureRootsCacheKey(roots: FixtureRootsV1): string {
   return JSON.stringify(
-    Object.entries(roots).sort(([a], [b]) => a.localeCompare(b)),
+    Object.entries(roots).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
   );
 }
 
 interface FixtureResolutionContext {
   readonly repoRoot: string;
   readonly checkExistence: boolean;
-  readonly effectiveFixtureRoots: FixtureRootsV1;
+  readonly defaultFixtureRoots: FixtureRootsV1 | undefined;
+  readonly fixtureRoots: FixtureRootsV1 | undefined;
   readonly cacheKeyPrefix: string;
   readonly fixtureRefCache: Map<string, ReturnType<typeof resolveFixtureRef>>;
 }
@@ -169,11 +174,18 @@ function validateKernels(
 
     let resolved = fixtureCtx.fixtureRefCache.get(cacheKey);
     if (resolved === undefined) {
-      resolved = resolveFixtureRef(kernelRef, {
+      const resolveOptions: ResolveFixtureRefOptions = {
         repoRoot: fixtureCtx.repoRoot,
-        defaultFixtureRoots: fixtureCtx.effectiveFixtureRoots,
         checkExistence: fixtureCtx.checkExistence,
-      });
+        ...(fixtureCtx.defaultFixtureRoots !== undefined
+          ? { defaultFixtureRoots: fixtureCtx.defaultFixtureRoots }
+          : {}),
+        ...(fixtureCtx.fixtureRoots !== undefined
+          ? { fixtureRoots: fixtureCtx.fixtureRoots }
+          : {}),
+      };
+
+      resolved = resolveFixtureRef(kernelRef, resolveOptions);
       fixtureCtx.fixtureRefCache.set(cacheKey, resolved);
     }
 
@@ -282,6 +294,7 @@ function validateMicroBenchmark(
   benchmark: Record<string, unknown>,
   errors: ValidationError[],
   pathSegments: readonly PathSegment[],
+  options: ValidateBenchmarkSuiteV1Options,
 ): void {
   if (hasOwn(benchmark, "steps")) {
     pushError(
@@ -319,6 +332,11 @@ function validateMicroBenchmark(
         [...casePath, "call"],
         "Case field 'call' must be a non-empty string.",
       );
+    } else {
+      const message = options.validateCall?.(caseRecord.call);
+      if (message !== undefined) {
+        pushError(errors, [...casePath, "call"], message);
+      }
     }
   }
 }
@@ -327,6 +345,7 @@ function validateWorkflowBenchmark(
   benchmark: Record<string, unknown>,
   errors: ValidationError[],
   pathSegments: readonly PathSegment[],
+  options: ValidateBenchmarkSuiteV1Options,
 ): void {
   if (hasOwn(benchmark, "cases")) {
     pushError(
@@ -366,6 +385,11 @@ function validateWorkflowBenchmark(
         [...stepPath, "call"],
         "Step field 'call' must be a non-empty string.",
       );
+    } else {
+      const message = options.validateCall?.(stepRecord.call);
+      if (message !== undefined) {
+        pushError(errors, [...stepPath, "call"], message);
+      }
     }
 
     if (hasOwn(stepRecord, "args")) {
@@ -414,6 +438,7 @@ function validateBenchmark(
   errors: ValidationError[],
   pathSegments: readonly PathSegment[],
   fixtureCtx: FixtureResolutionContext,
+  options: ValidateBenchmarkSuiteV1Options,
 ): BenchmarkV1 | null {
   const record = asRecord(value, errors, pathSegments);
   if (record === null) return null;
@@ -451,9 +476,9 @@ function validateBenchmark(
   }
 
   if (kind === "micro") {
-    validateMicroBenchmark(record, errors, pathSegments);
+    validateMicroBenchmark(record, errors, pathSegments, options);
   } else {
-    validateWorkflowBenchmark(record, errors, pathSegments);
+    validateWorkflowBenchmark(record, errors, pathSegments, options);
   }
 
   return record as unknown as BenchmarkV1;
@@ -491,6 +516,7 @@ export function validateBenchmarkSuiteV1(
   );
 
   const checkExistence = shouldCheckFixtureExistence(options);
+  const defaultFixtureRoots = options.defaultFixtureRoots;
   const effectiveFixtureRoots: FixtureRootsV1 = {
     ...(options.defaultFixtureRoots ?? DEFAULT_FIXTURE_ROOTS_V1),
     ...(fixtureRoots ?? {}),
@@ -500,7 +526,8 @@ export function validateBenchmarkSuiteV1(
   const fixtureCtx: FixtureResolutionContext = {
     repoRoot: options.repoRoot,
     checkExistence,
-    effectiveFixtureRoots,
+    defaultFixtureRoots,
+    fixtureRoots,
     cacheKeyPrefix: `${checkExistence ? 1 : 0}:${effectiveFixtureRootsKey}:`,
     fixtureRefCache,
   };
@@ -540,6 +567,7 @@ export function validateBenchmarkSuiteV1(
         errors,
         benchmarkPath,
         fixtureCtx,
+        options,
       );
 
       // Keep duplicate-id detection at the suite level, even when a benchmark is

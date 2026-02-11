@@ -126,4 +126,41 @@ describe("validateBenchmarkSuiteV1", () => {
 
     expect(result.errors[0]?.message).toContain("escapes root");
   });
+
+  it("allows runner-defined validation for call strings", () => {
+    const result = validateBenchmarkSuiteV1(
+      {
+        schemaVersion: 1,
+        benchmarks: [
+          { id: "m", kind: "micro", cases: [{ call: "bad" }] },
+          { id: "w", kind: "workflow", steps: [{ call: "alsoBad" }] },
+        ],
+      },
+      {
+        repoRoot: process.cwd(),
+        checkFixtureExistence: false,
+        validateCall(call) {
+          if (call === "bad") return "Bad micro call.";
+          if (call === "alsoBad") return "Bad workflow call.";
+          return undefined;
+        },
+      },
+    );
+
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+
+    expect(result.errors).toEqual(
+      expect.arrayContaining([
+        {
+          path: "$.benchmarks[0].cases[0].call",
+          message: "Bad micro call.",
+        },
+        {
+          path: "$.benchmarks[1].steps[0].call",
+          message: "Bad workflow call.",
+        },
+      ]),
+    );
+  });
 });

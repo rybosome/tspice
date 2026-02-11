@@ -170,4 +170,30 @@ describe("resolveFixtureRef", () => {
       fs.rmSync(repoRoot, { recursive: true, force: true });
     }
   });
+
+  it("fails closed on excessively deep fixture refs", () => {
+    const repoRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), "tspice-bench-contract-fixture-ref-"),
+    );
+
+    try {
+      const fixturesDir = path.join(repoRoot, "fixtures");
+      fs.mkdirSync(fixturesDir, { recursive: true });
+
+      const deepRelPath = new Array(65).fill("a").join("/");
+      const result = resolveFixtureRef(`$FIXTURES/${deepRelPath}`, {
+        repoRoot,
+        fixtureRoots: { FIXTURES: "fixtures" },
+        checkExistence: false,
+      });
+
+      expect(result.ok).toBe(false);
+      if (result.ok) return;
+
+      expect(result.message).toContain("too deep");
+      expect(result.message).toContain("max 64");
+    } finally {
+      fs.rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
 });

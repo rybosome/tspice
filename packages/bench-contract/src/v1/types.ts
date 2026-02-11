@@ -121,4 +121,14 @@ export interface ValidateBenchmarkSuiteV1Options {
    * `fixtureRoots`.
    */
   readonly defaultFixtureRoots?: FixtureRootsV1;
+
+  /**
+   * Optional hook to validate benchmark `call` strings.
+   *
+   * This is runner-defined (the contract only requires a non-empty string).
+   *
+   * Return a message to report a validation error at the `.../call` path, or
+   * `undefined` when the call is valid.
+   */
+  readonly validateCall?: (call: string) => string | undefined;
 }

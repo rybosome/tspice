@@ -78,6 +78,45 @@ export interface IsPathInsideOptions {
   readonly caseSensitive?: boolean;
 }
 
+const MAX_FIXTURE_REF_SEGMENTS = 64;
+
+function splitRelFixturePath(relPath: string):
+  | { readonly ok: true; readonly segments: string[] }
+  | { readonly ok: false; readonly message: string } {
+  // `String#split` can allocate huge arrays for deeply-nested refs. Fail closed
+  // by capping the maximum segment depth.
+  const segments = relPath.split("/", MAX_FIXTURE_REF_SEGMENTS + 1);
+
+  if (segments.length > MAX_FIXTURE_REF_SEGMENTS) {
+    return {
+      ok: false,
+      message: `Fixture ref path is too deep (max ${MAX_FIXTURE_REF_SEGMENTS} segments).`,
+    };
+  }
+
+  return { ok: true, segments };
+}
+
+function findNearestExistingAncestor(
+  absolutePath: string,
+  rootDir: string,
+  maxDirnameSteps: number,
+): string | null {
+  let existingPath = absolutePath;
+
+  for (let i = 0; i <= maxDirnameSteps; i += 1) {
+    if (existingPath === rootDir || fs.existsSync(existingPath)) {
+      return existingPath;
+    }
+
+    const parent = path.dirname(existingPath);
+    if (parent === existingPath) break;
+    existingPath = parent;
+  }
+
+  return null;
+}
+
 function normalizeForContainment(
   p: string,
   pathImpl: PlatformPath,
@@ -148,7 +187,12 @@ export function resolveFixtureRef(
   const rootDir = path.resolve(options.repoRoot, rootPath);
 
   // Support refs that use '/' even on Windows (YAML is platform-agnostic).
-  const relFsPath = parsed.relPath.split("/");
+  const relSplit = splitRelFixturePath(parsed.relPath);
+  if (!relSplit.ok) {
+    return { ok: false, message: `Invalid fixture ref '${ref}': ${relSplit.message}` };
+  }
+
+  const relFsPath = relSplit.segments;
   const absolutePath = path.resolve(rootDir, ...relFsPath);
 
   // Prevent path traversal outside the declared root.
@@ -216,9 +260,17 @@ export function resolveFixtureRef(
     // `fs.realpathSync()` requires the path to exist. If the final file doesn't
     // exist (e.g. a path that will be created later), we still want to enforce
     // that any existing path segments do not escape the root via symlinks.
-    let existingPath = absolutePath;
-    while (!fs.existsSync(existingPath) && existingPath !== rootDir) {
-      existingPath = path.dirname(existingPath);
+    const existingPath = findNearestExistingAncestor(
+      absolutePath,
+      rootDir,
+      relFsPath.length,
+    );
+
+    if (existingPath === null) {
+      return {
+        ok: false,
+        message: `Invalid fixture ref '${ref}': Fixture ref path is too deep (max ${MAX_FIXTURE_REF_SEGMENTS} segments).`,
+      };
     }
 
     let existingReal: string;
