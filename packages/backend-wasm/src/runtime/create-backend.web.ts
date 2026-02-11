@@ -13,8 +13,10 @@ import { createKernelPoolApi } from "../domains/kernel-pool.js";
 import { createTimeApi, getToolkitVersion } from "../domains/time.js";
 import { createFileIoApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
+import { createDskApi } from "../domains/dsk.js";
 
 import { createWasmFs } from "./fs.js";
+import { createSpiceHandleRegistry } from "./spice-handles.js";
 
 export type { CreateWasmBackendOptions } from "./create-backend-options.js";
 import type { CreateWasmBackendOptions } from "./create-backend-options.js";
@@ -76,6 +78,7 @@ export async function createWasmBackend(
   const toolkitVersion = getToolkitVersion(module);
 
   const fsApi = createWasmFs(module);
+  const spiceHandles = createSpiceHandleRegistry();
 
   const backendBase = {
     kind: "wasm",
@@ -87,9 +90,10 @@ export async function createWasmBackend(
     ...createEphemerisApi(module),
     ...createGeometryApi(module),
     ...createCoordsVectorsApi(module),
-    ...createFileIoApi(module),
+    ...createFileIoApi(module, spiceHandles),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
+    ...createDskApi(module, spiceHandles),
   } satisfies SpiceBackend;
 
   return backendBase;

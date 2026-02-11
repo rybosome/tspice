@@ -9,6 +9,7 @@
       "sources": [
         "src/addon.cc",
         "src/addon_common.cc",
+        "src/cell_handles.cc",
         "src/domains/kernels.cc",
         "src/domains/kernel_pool.cc",
         "src/domains/time.cc",
@@ -20,6 +21,7 @@
         "src/domains/file_io.cc",
         "src/domains/error.cc",
         "src/domains/cells_windows.cc",
+        "src/domains/dsk.cc",
         "../../backend-shim-c/src/errors.c",
         "../../backend-shim-c/src/domains/kernels.c",
         "../../backend-shim-c/src/domains/kernel_pool.c",
@@ -30,7 +32,8 @@
         "../../backend-shim-c/src/domains/geometry.c",
         "../../backend-shim-c/src/domains/coords_vectors.c",
         "../../backend-shim-c/src/domains/file_io.c",
-        "../../backend-shim-c/src/domains/cells_windows.c"
+        "../../backend-shim-c/src/domains/cells_windows.c",
+        "../../backend-shim-c/src/domains/dsk.c"
       ],
       "include_dirs": [
         "<!(node -p \"require('node-addon-api').include_dir\")",

@@ -147,7 +147,10 @@ describe("@rybosome/tspice-backend-node file-io", () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
 
     try {
-      const dskPath = path.join(tmpDir, "bc_mpo_sc_mga_v00.bds");
+      const dskPath = path.join(
+        tmpDir,
+        "apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
+      );
       fs.writeFileSync(dskPath, dsk);
 
       const handle = backend.dasopr(dskPath);

@@ -12,28 +12,11 @@ import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
+import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
 
-type HandleKind = "DAF" | "DAS" | "DLA";
-const DAS_BACKED = ["DAS", "DLA"] as const;
+const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
 const I32_MIN = -2147483648;
 const I32_MAX = 2147483647;
-
-type HandleEntry = {
-  kind: HandleKind;
-  nativeHandle: number;
-};
-
-function asHandleId(handle: SpiceHandle, context: string): number {
-  const id = handle as unknown as number;
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    throw new TypeError(`${context}: expected a positive safe integer SpiceHandle`);
-  }
-  return id;
-}
-
-function asSpiceHandle(handleId: number): SpiceHandle {
-  return handleId as unknown as SpiceHandle;
-}
 
 const DESCR_KEYS = [
   "bwdptr",
@@ -156,67 +139,18 @@ function callVoidHandle(
   });
 }
 
-export function createFileIoApi(module: EmscriptenModule): FileIoApi {
-  let nextHandleId = 1;
-  const handles = new Map<number, HandleEntry>();
-
-  function register(kind: HandleKind, nativeHandle: number): SpiceHandle {
-    if (
-      typeof nativeHandle !== "number" ||
-      !Number.isInteger(nativeHandle) ||
-      nativeHandle < I32_MIN ||
-      nativeHandle > I32_MAX
-    ) {
-      throw new Error(`Expected native backend to return a 32-bit signed integer handle for ${kind}`);
-    }
-    if (nextHandleId >= Number.MAX_SAFE_INTEGER) {
-      throw new Error(`SpiceHandle ID overflow: too many handles allocated (nextHandleId=${nextHandleId})`);
-    }
-    const handleId = nextHandleId++;
-    handles.set(handleId, { kind, nativeHandle });
-    return asSpiceHandle(handleId);
-  }
-
-  function lookup(handle: SpiceHandle, expected: readonly HandleKind[]): HandleEntry {
-    const handleId = asHandleId(handle, "lookup(handle)");
-    const entry = handles.get(handleId);
-    if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
-    }
-    if (!expected.includes(entry.kind)) {
-      throw new Error(
-        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
-      );
-    }
-    return entry;
-  }
-
-  function close(
-    handle: SpiceHandle,
-    expected: readonly HandleKind[],
-    closeNative: (entry: HandleEntry) => void,
-  ): void {
-    const handleId = asHandleId(handle, "close(handle)");
-    const entry = handles.get(handleId);
-    if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
-    }
-    if (!expected.includes(entry.kind)) {
-      throw new Error(
-        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
-      );
-    }
-
-    closeNative(entry);
-    handles.delete(handleId);
-  }
-
-  function closeDasBacked(handle: SpiceHandle): void {
-    close(handle, DAS_BACKED, (entry) => {
-      // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
-      // is just an alias.
-      callVoidHandle(module, module._tspice_dascls, entry.nativeHandle);
-    });
+export function createFileIoApi(module: EmscriptenModule, handles: SpiceHandleRegistry): FileIoApi {
+  function closeDasBacked(handle: SpiceHandle, context: string): void {
+    handles.close(
+      handle,
+      DAS_BACKED,
+      (entry) => {
+        // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
+        // is just an alias.
+        callVoidHandle(module, module._tspice_dascls, entry.nativeHandle);
+      },
+      context,
+    );
   }
 
   return {
@@ -281,20 +215,29 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
           }
           return readHeapI32(module, outHandlePtr >> 2, "dafopr(outHandlePtr)");
         });
-        return register("DAF", nativeHandle);
+        return handles.register("DAF", nativeHandle);
       } finally {
         module._free(pathPtr);
       }
     },
 
     dafcls: (handle: SpiceHandle) =>
-      close(handle, ["DAF"], (e) => callVoidHandle(module, module._tspice_dafcls, e.nativeHandle)),
+      handles.close(
+        handle,
+        ["DAF"],
+        (e) => callVoidHandle(module, module._tspice_dafcls, e.nativeHandle),
+        "dafcls",
+      ),
 
     dafbfs: (handle: SpiceHandle) =>
-      callVoidHandle(module, module._tspice_dafbfs, lookup(handle, ["DAF"]).nativeHandle),
+      callVoidHandle(
+        module,
+        module._tspice_dafbfs,
+        handles.lookup(handle, ["DAF"], "dafbfs").nativeHandle,
+      ),
 
     daffna: (handle: SpiceHandle) => {
-      const nativeHandle = lookup(handle, ["DAF"]).nativeHandle;
+      const nativeHandle = handles.lookup(handle, ["DAF"], "daffna").nativeHandle;
       return withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outFoundPtr, errPtr) => {
         module.HEAP32[outFoundPtr >> 2] = 0;
         const code = module._tspice_daffna(nativeHandle, outFoundPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -317,13 +260,13 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
           }
           return readHeapI32(module, outHandlePtr >> 2, "dasopr(outHandlePtr)");
         });
-        return register("DAS", nativeHandle);
+        return handles.register("DAS", nativeHandle);
       } finally {
         module._free(pathPtr);
       }
     },
 
-    dascls: closeDasBacked,
+    dascls: (handle: SpiceHandle) => closeDasBacked(handle, "dascls"),
 
     dlaopn: (path: string, ftype: string, ifname: string, ncomch: number) => {
       assertSpiceInt32NonNegative(ncomch, "dlaopn(ncomch)");
@@ -359,7 +302,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
           return readHeapI32(module, outHandlePtr >> 2, "dlaopn(outHandlePtr)");
         });
 
-        return register("DLA", nativeHandle);
+        return handles.register("DLA", nativeHandle);
       } finally {
         module._free(ifnamePtr);
         module._free(ftypePtr);
@@ -368,7 +311,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
     },
 
     dlabfs: (handle: SpiceHandle): FoundDlaDescriptor => {
-      const nativeHandle = lookup(handle, DAS_BACKED).nativeHandle;
+      const nativeHandle = handles.lookup(handle, DAS_BACKED, "dlabfs").nativeHandle;
       return withAllocs(module, [32, 4, WASM_ERR_MAX_BYTES], (outDescr8Ptr, outFoundPtr, errPtr) => {
         module.HEAP32[outFoundPtr >> 2] = 0;
 
@@ -394,7 +337,7 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor => {
       assertDlaDescriptor(descr, "dlafns(descr)");
-      const nativeHandle = lookup(handle, DAS_BACKED).nativeHandle;
+      const nativeHandle = handles.lookup(handle, DAS_BACKED, "dlafns").nativeHandle;
 
       return withAllocs(
         module,
@@ -425,6 +368,6 @@ export function createFileIoApi(module: EmscriptenModule): FileIoApi {
       );
     },
 
-    dlacls: closeDasBacked,
+    dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
   } satisfies FileIoApi;
 }
