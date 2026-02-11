@@ -13,6 +13,10 @@ This package is currently intended for **internal workspace use**.
 - `withCaching()` — memoized transport wrapper (in-flight dedupe + LRU + optional TTL).
   - When caching is disabled (e.g. `ttlMs <= 0` or `maxEntries <= 0`), returns the input transport unchanged.
   - Use `isCachingTransport()` to narrow before calling `clear()`/`dispose()`.
+  - Note: `isCachingTransport()` uses a module-local WeakSet brand, so it will fail across duplicate bundled copies of the package (acceptable for internal workspace use).
+  - Cache policy precedence:
+    - Built-in unsafe default ops are always treated as `"no-store"` unless `allowUnsafePolicyOverrides: true`.
+    - Otherwise, an explicit `policy[op]` wins (even if `op` matches `noStorePrefixes`).
   - Types: `CachingTransport`, `WithCachingResult`
 
 ### `createWorkerTransport()`: `terminateOnDispose`
@@ -24,6 +28,8 @@ Whether it also calls `worker.terminate()` depends on how you provide the worker
 - `worker: Worker` (shared instance) ⇒ `terminateOnDispose` defaults to `false` (caller owns the worker)
 
 Set `terminateOnDispose` explicitly to override these defaults.
+
+Type note: `WorkerLike.terminate` is optional when `terminateOnDispose` is `false`.
 
 Example:
 

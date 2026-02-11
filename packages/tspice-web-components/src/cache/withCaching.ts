@@ -2,7 +2,12 @@ import type { SpiceTransport } from "../types.js";
 
 export type CachePolicy = "cache" | "no-store";
 
-export const MAX_KEY_SCAN = 10_000;
+// Maximum number of property/element visits while scanning for stable,
+// JSON-stringify-safe cache keys.
+//
+// This is intentionally internal (not exported) to avoid turning a guardrail
+// into an accidental public API surface.
+const MAX_KEY_SCAN = 10_000;
 
 const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   // Kernel-loading / kernel pool mutation operations. These can contain large
@@ -16,12 +21,13 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.kclear",
 ]) satisfies readonly string[];
 
-const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> = Object.freeze(
-  DEFAULT_UNSAFE_NO_STORE_OPS.reduce<Record<string, true>>((acc, op) => {
-    acc[op] = true;
-    return acc;
-  }, {}),
-);
+const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> = (() => {
+  // Null-prototype lookup table so keys like `__proto__` are treated as normal
+  // data properties (not prototype-mutating magic).
+  const out: Record<string, true> = Object.create(null);
+  for (const op of DEFAULT_UNSAFE_NO_STORE_OPS) out[op] = true;
+  return Object.freeze(out);
+})();
 
 const warnedBroadNoStorePrefixSets = new Set<string>();
 
@@ -33,6 +39,12 @@ const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): 
   return false;
 };
 
+// Module-local brand used by `isCachingTransport()`.
+//
+// Tradeoff: this will return false if an app accidentally bundles multiple
+// copies of this package (each copy has its own WeakSet). That's acceptable
+// here because this is a private workspace package and transports aren't
+// expected to cross a package boundary.
 const cachingTransportBrand = new WeakSet<object>();
 
 const defaultOnWarning = (message: string): void => {
@@ -150,6 +162,10 @@ export type WithCachingResult = SpiceTransport | CachingTransport;
 
 /**
  * Type guard for narrowing a transport returned by `withCaching()`.
+*
+* Note: this relies on a module-local WeakSet brand, so the check will fail if
+* the app bundles multiple copies of this package. That's an acceptable
+* tradeoff here because this is intended for private workspace use.
  */
 export function isCachingTransport(t: unknown): t is CachingTransport {
   if (typeof t !== "object" || t === null) return false;
@@ -170,14 +186,23 @@ type CacheEntry = {
   expiresAt?: number;
 };
 
-type Unrefable = {
+type UnrefableTimer = {
   unref?: unknown;
 };
 
 function tryUnrefTimer(timer: unknown): void {
+  // Best-effort: in Node, timers usually expose `unref()` to avoid pinning the
+  // event loop. In browsers, `setInterval` returns a number.
+  //
+  // Some runtimes/shims may throw on property access or call even when the
+  // property is present, so keep this defensive.
+
+  if (!timer) return;
+
+  // Read `unref` once in case it's an accessor or Proxy.
   let unref: unknown;
   try {
-    unref = (timer as Unrefable).unref;
+    unref = (timer as UnrefableTimer).unref;
   } catch {
     return;
   }
@@ -317,9 +342,11 @@ export function defaultSpiceCacheKey(op: string, args: unknown[]): string | null
   try {
     const seen = new WeakSet<object>();
     const budget: ScanBudget = { remaining: MAX_KEY_SCAN };
-    for (const arg of args) {
-      if (containsBinaryLikeData(arg, seen, budget)) return null;
-    }
+
+    // Keep the scan in sync with what we stringify below.
+    // In particular, scanning the full `[op, args]` tuple ensures we reject
+    // sparse/accessor `args` arrays (which JSON.stringify would normalize).
+    if (containsBinaryLikeData([op, args], seen, budget)) return null;
 
     return JSON.stringify([op, args]);
   } catch {
@@ -364,14 +391,17 @@ export function withCaching(
   const allowBroadNoStorePrefixes = opts?.allowBroadNoStorePrefixes === true;
 
   if (!allowBroadNoStorePrefixes && noStorePrefixes && noStorePrefixes.length > 0) {
-    const broad = noStorePrefixes.filter((p) => p.length < 3 || !p.includes("."));
+    const normalizedAll = Array.from(new Set(noStorePrefixes)).sort();
+    const broad = normalizedAll.filter((p) => p.length < 3 || !p.includes("."));
     if (broad.length > 0) {
-      const normalized = Array.from(new Set(broad)).sort();
-      const warnKey = normalized.join("\u0000");
+      // Dedupe based on the *full* normalized prefix set so we don't
+      // accidentally suppress warnings for different configurations that share
+      // the same broad prefix subset.
+      const warnKey = normalizedAll.join("\u0000");
       if (!warnedBroadNoStorePrefixSets.has(warnKey)) {
         warnedBroadNoStorePrefixSets.add(warnKey);
 
-        const listed = normalized.map((p) => JSON.stringify(p)).join(", ");
+        const listed = broad.map((p) => JSON.stringify(p)).join(", ");
         onWarning(
           `withCaching(): broad noStorePrefixes ${listed}. ` +
             `Prefixes are matched via op.startsWith(prefix) and may disable caching broadly. ` +

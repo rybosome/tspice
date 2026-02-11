@@ -2,26 +2,36 @@ import type { SpiceAsync } from "@rybosome/tspice";
 
 import type { SpiceTransport } from "../types.js";
 
-const blockedStringKeys = new Set<string>([
-  // Prototype / constructor escapes
-  "__proto__",
-  "prototype",
-  "constructor",
+const blockedStringKeysLookup: Readonly<Record<string, true>> = (() => {
+  // Use a null-prototype dictionary for membership checks so reserved keys like
+  // `__proto__` are treated as normal data properties (not magic accessors).
+  const out: Record<string, true> = Object.create(null);
 
-  // Common stringification / inspection hooks
-  "toJSON",
-  "inspect",
+  const blocked = [
+    // Prototype / constructor escapes
+    "__proto__",
+    "prototype",
+    "constructor",
 
-  // Object.prototype keys (avoid accidental RPC calls during introspection)
-  "toLocaleString",
-  "hasOwnProperty",
-  "isPrototypeOf",
-  "propertyIsEnumerable",
-  "__defineGetter__",
-  "__defineSetter__",
-  "__lookupGetter__",
-  "__lookupSetter__",
-]);
+    // Common stringification / inspection hooks
+    "toJSON",
+    "inspect",
+
+    // Object.prototype keys (avoid accidental RPC calls during introspection)
+    "toLocaleString",
+    "hasOwnProperty",
+    "isPrototypeOf",
+    "propertyIsEnumerable",
+    "__defineGetter__",
+    "__defineSetter__",
+    "__lookupGetter__",
+    "__lookupSetter__",
+  ] as const;
+
+  for (const key of blocked) out[key] = true;
+
+  return Object.freeze(out);
+})();
 
 const isSafeRpcKey = (key: string): boolean => /^[A-Za-z_$][\w$]*$/.test(key);
 
@@ -53,7 +63,7 @@ function createNamespacedProxy(
       if (typeof prop !== "string") return undefined;
 
       // Avoid remote calls via common introspection / dangerous keys.
-      if (blockedStringKeys.has(prop)) return undefined;
+      if (blockedStringKeysLookup[prop] === true) return undefined;
       if (prop === "toString") return toString;
       if (prop === "valueOf") return valueOf;
 

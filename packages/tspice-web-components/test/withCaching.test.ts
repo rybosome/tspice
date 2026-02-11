@@ -127,7 +127,7 @@ describe("withCaching()", () => {
 
     const cached = withCaching(base);
 
-    const cyclic: any = {};
+    const cyclic: { self?: unknown } = {};
     cyclic.self = cyclic;
 
     await cached.request("op", [cyclic]);
@@ -143,15 +143,15 @@ describe("withCaching()", () => {
       /* @vite-ignore */ "@rybosome/tspice-web-components",
     );
 
-    const SharedArrayBufferCtor = getGlobal("SharedArrayBuffer") as
-      | undefined
-      | (new (...args: any[]) => any);
+    type UnknownCtor = new (...args: unknown[]) => unknown;
+
+    const SharedArrayBufferCtor = getGlobal("SharedArrayBuffer") as UnknownCtor | undefined;
     const BufferCtor = getGlobal("Buffer") as
       | undefined
       | {
-          from?: (data: any) => unknown;
+          from?: (data: unknown) => unknown;
         };
-    const FileCtor = getGlobal("File") as undefined | (new (...args: any[]) => any);
+    const FileCtor = getGlobal("File") as UnknownCtor | undefined;
 
     const cases: Array<{ name: string; value: unknown | undefined }> = [
       { name: "ArrayBuffer", value: new ArrayBuffer(1) },
@@ -186,16 +186,17 @@ describe("withCaching()", () => {
   });
 
   it("defaultSpiceCacheKey returns null for sparse arrays, accessor arrays, and large arrays", async () => {
-    const { MAX_KEY_SCAN, defaultSpiceCacheKey } = await import(
+    const { defaultSpiceCacheKey } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components",
     );
 
-    const sparse: any[] = [];
+    // Sparse/accessor arrays as *values* should be rejected.
+    const sparse: unknown[] = [];
     sparse[1] = 1;
     expect(defaultSpiceCacheKey("op", [sparse])).toBeNull();
 
     let getterCalls = 0;
-    const accessor: any[] = [];
+    const accessor: unknown[] = [];
     Object.defineProperty(accessor, 0, {
       enumerable: true,
       get() {
@@ -207,21 +208,53 @@ describe("withCaching()", () => {
     expect(defaultSpiceCacheKey("op", [accessor])).toBeNull();
     expect(getterCalls).toBe(0);
 
-    const big = new Array(MAX_KEY_SCAN + 1).fill(0);
-    expect(defaultSpiceCacheKey("op", [big])).toBeNull();
+    // Sparse/accessor `args` arrays should also be rejected since the key is
+    // based on the full `[op, args]` tuple.
+    const sparseArgs: unknown[] = [];
+    sparseArgs[1] = 1;
+    expect(defaultSpiceCacheKey("op", sparseArgs)).toBeNull();
+
+    let argsGetterCalls = 0;
+    const accessorArgs: unknown[] = [];
+    Object.defineProperty(accessorArgs, 0, {
+      enumerable: true,
+      get() {
+        argsGetterCalls += 1;
+        return 123;
+      },
+    });
+    expect(defaultSpiceCacheKey("op", accessorArgs)).toBeNull();
+    expect(argsGetterCalls).toBe(0);
+
+    // Scan-budget behavior should be testable without depending on the exact
+    // internal MAX_KEY_SCAN constant.
+    const safetyCap = 1_000_000;
+    let size = 1024;
+    for (;;) {
+      const big = new Array(size).fill(0);
+      if (defaultSpiceCacheKey("op", [big]) === null) break;
+      size *= 2;
+      expect(size).toBeLessThanOrEqual(safetyCap);
+    }
   });
 
   it("defaultSpiceCacheKey returns null for large plain objects (scan budget)", async () => {
-    const { MAX_KEY_SCAN, defaultSpiceCacheKey } = await import(
+    const { defaultSpiceCacheKey } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components",
     );
 
-    const big: Record<string, number> = {};
-    for (let i = 0; i < MAX_KEY_SCAN + 1; i++) {
-      big[`k${i}`] = i;
-    }
+    const safetyCap = 1_000_000;
+    let size = 1024;
+    for (;;) {
+      const big: Record<string, number> = {};
+      for (let i = 0; i < size; i++) {
+        big[`k${i}`] = i;
+      }
 
-    expect(defaultSpiceCacheKey("op", [big])).toBeNull();
+      if (defaultSpiceCacheKey("op", [big]) === null) break;
+      size *= 2;
+      expect(size).toBeLessThanOrEqual(safetyCap);
+    }
   });
 
   it("bypasses cache when args contain binary-like data", async () => {
@@ -407,13 +440,40 @@ describe("withCaching()", () => {
 
     const onWarning2 = vi.fn();
     const cached2 = withCaching(base, {
-      // Same normalized broad-prefix set => warn-once.
+      // Same normalized prefix set => warn-once.
       noStorePrefixes: [" k ", "k"],
       onWarning: onWarning2,
     });
 
     expect(onWarning2).not.toHaveBeenCalled();
 
+    if (isCachingTransport(cached2)) cached2.dispose();
+  });
+
+  it("dedupes warnings by full normalized prefix set (not just broad subset)", async () => {
+    const { isCachingTransport, withCaching } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const base = {
+      request: vi.fn(async () => 123),
+    };
+
+    const onWarning1 = vi.fn();
+    const cached1 = withCaching(base, {
+      noStorePrefixes: ["zz", "kit."],
+      onWarning: onWarning1,
+    });
+
+    expect(onWarning1).toHaveBeenCalledTimes(1);
+    if (isCachingTransport(cached1)) cached1.dispose();
+
+    const onWarning2 = vi.fn();
+    const cached2 = withCaching(base, {
+      // Same broad subset ("zz"), but different overall prefix config.
+      noStorePrefixes: ["zz", "raw."],
+      onWarning: onWarning2,
+    });
+
+    expect(onWarning2).toHaveBeenCalledTimes(1);
     if (isCachingTransport(cached2)) cached2.dispose();
   });
 

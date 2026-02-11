@@ -12,12 +12,12 @@ describe("createSpiceAsyncFromTransport()", () => {
 
     const spice = createSpiceAsyncFromTransport(transport);
 
-    const rawProxy = spice.raw as any;
+    const rawProxy = spice.raw as unknown as Record<string, unknown>;
 
-    expect(rawProxy.then).toBeUndefined();
-    expect(rawProxy.__proto__).toBeUndefined();
-    expect(rawProxy.constructor).toBeUndefined();
-    expect(rawProxy.toJSON).toBeUndefined();
+    expect(rawProxy["then"]).toBeUndefined();
+    expect(rawProxy["__proto__"]).toBeUndefined();
+    expect(rawProxy["constructor"]).toBeUndefined();
+    expect(rawProxy["toJSON"]).toBeUndefined();
 
     expect(String(spice.raw)).toContain("SpiceAsync.raw");
     expect(transport.request).toHaveBeenCalledTimes(0);
@@ -44,7 +44,8 @@ describe("createSpiceAsyncFromTransport()", () => {
 
     for (const [ns, obj] of Object.entries({ raw: spice.raw, kit: spice.kit })) {
       for (const key of Object.keys(obj)) {
-        if (typeof (obj as any)[key] !== "function") continue;
+        const v = obj as Record<string, unknown>;
+        if (typeof v[key] !== "function") continue;
         expect(key, `${ns}.${key}`).toMatch(allowlist);
       }
     }
