@@ -29,7 +29,8 @@ export type LoadKernelPackOptions = {
    *   - protocol-relative (`//...`)
    *   - path-absolute (`/myapp/`)
    *   - path-relative (`myapp/`)
-   * - `baseUrl: ""` is treated the same as `undefined` (no prefixing / leave relative URLs as-is).
+   * - `baseUrl` is trimmed before use; trimmed-empty (`""` or whitespace) is treated the same as
+   *   `undefined` (no prefixing / leave relative URLs as-is).
    *
    * This avoids the surprising file-vs-directory behavior of `new URL(url, baseUrl)`.
    * For example:
@@ -79,9 +80,10 @@ function isAbsoluteUrl(url: string): boolean {
 
 
 function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
-  // Treat empty-string the same as `undefined` to avoid surprising behavior when
-  // `baseUrl` is sourced from config/env where "" is a common default.
-  if (baseUrl === undefined || baseUrl === "") return url;
+  const normalizedBaseUrl = baseUrl?.trim();
+  // Treat trimmed-empty the same as `undefined` to avoid surprising behavior when
+  // `baseUrl` is sourced from config/env where "" / whitespace are common defaults.
+  if (!normalizedBaseUrl) return url;
 
   // If the kernel URL is already absolute, don't apply `baseUrl`.
   if (isAbsoluteUrl(url)) return url;
@@ -89,19 +91,19 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
   // Root-relative kernel URLs bypass `baseUrl`.
   if (url.startsWith("/")) return url;
 
-  const isProtocolRelativeBaseUrl = baseUrl.startsWith("//");
+  const isProtocolRelativeBaseUrl = normalizedBaseUrl.startsWith("//");
 
   // If `baseUrl` is absolute-ish (scheme-based or protocol-relative), lean on
   // the URL constructor for proper resolution semantics and normalization.
-  if (hasUrlScheme(baseUrl) || isProtocolRelativeBaseUrl) {
-    const base = hasUrlScheme(baseUrl)
-      ? new URL(baseUrl)
-      : new URL(baseUrl, "https://tspice.invalid");
+  if (hasUrlScheme(normalizedBaseUrl) || isProtocolRelativeBaseUrl) {
+    const base = hasUrlScheme(normalizedBaseUrl)
+      ? new URL(normalizedBaseUrl)
+      : new URL(normalizedBaseUrl, "https://tspice.invalid");
     // Enforce directory-style absolute base URLs to avoid the surprising
     // file-vs-directory behavior of `new URL(url, baseUrl)`.
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): absolute baseUrl must be directory-style (pathname must end with \"/\"): ${baseUrl}`,
+        `loadKernelPack(): absolute baseUrl must be directory-style (pathname must end with \"/\"): ${normalizedBaseUrl}`,
       );
     }
 
@@ -115,11 +117,11 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
 
   // `baseUrl` is path-absolute (commonly a Vite BASE_URL like `/myapp/`).
   // Use the URL constructor with a dummy origin so dot-segments normalize.
-  if (baseUrl.startsWith("/")) {
-    const base = new URL(baseUrl, "https://tspice.invalid");
+  if (normalizedBaseUrl.startsWith("/")) {
+    const base = new URL(normalizedBaseUrl, "https://tspice.invalid");
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): path-absolute baseUrl must be directory-style (pathname must end with \"/\"): ${baseUrl}`,
+        `loadKernelPack(): path-absolute baseUrl must be directory-style (pathname must end with \"/\"): ${normalizedBaseUrl}`,
       );
     }
 
@@ -129,13 +131,13 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
 
   // `baseUrl` is relative.
   // Treat the base as a directory prefix.
-  if (!baseUrl.endsWith("/")) {
+  if (!normalizedBaseUrl.endsWith("/")) {
     throw new Error(
-      `loadKernelPack(): baseUrl must be directory-style (end with \"/\"): ${baseUrl}`,
+      `loadKernelPack(): baseUrl must be directory-style (end with \"/\"): ${normalizedBaseUrl}`,
     );
   }
 
-  return `${baseUrl}${url}`;
+  return `${normalizedBaseUrl}${url}`;
 }
 
 async function fetchKernelBytes(fetchFn: FetchLike, url: string): Promise<Uint8Array> {

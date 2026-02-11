@@ -308,7 +308,7 @@ describe("loadKernelPack()", () => {
     expect(loadKernel).toHaveBeenCalledTimes(1);
   });
 
-  it("treats empty-string baseUrl like undefined", async () => {
+  it("treats empty/whitespace baseUrl like undefined", async () => {
     const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
 
     const pack = {
@@ -327,10 +327,38 @@ describe("loadKernelPack()", () => {
       },
     };
 
-    await loadKernelPack(spice, pack, { baseUrl: "", fetch });
+    for (const baseUrl of ["", "   "] as const) {
+      await loadKernelPack(spice, pack, { baseUrl, fetch });
+    }
+
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(fetch).toHaveBeenNthCalledWith(1, "kernels/a.tls");
+    expect(fetch).toHaveBeenNthCalledWith(2, "kernels/a.tls");
+  });
+
+  it("trims baseUrl before resolving kernels", async () => {
+    const { loadKernelPack } = await import(/* @vite-ignore */ "@rybosome/tspice-web-components");
+
+    const pack = {
+      kernels: [{ url: "kernels/a.tls", path: "a.tls" }],
+    };
+
+    const fetch = vi.fn(async (url: string) => {
+      if (url !== "/base/kernels/a.tls") throw new Error(`Unexpected fetch url: ${url}`);
+      return okResponse(new Uint8Array([1]));
+    });
+
+    const loadKernel = vi.fn().mockResolvedValue(undefined);
+    const spice = {
+      kit: {
+        loadKernel,
+      },
+    };
+
+    await loadKernelPack(spice, pack, { baseUrl: " /base/ ", fetch });
 
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith("kernels/a.tls");
+    expect(fetch).toHaveBeenCalledWith("/base/kernels/a.tls");
   });
 
   it("requires directory-style absolute baseUrl (scheme or protocol-relative)", async () => {
