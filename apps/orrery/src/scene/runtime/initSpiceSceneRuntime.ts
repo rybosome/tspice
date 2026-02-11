@@ -3,13 +3,7 @@ import type { SpiceAsync, SpiceTime, StateVector } from '@rybosome/tspice'
 
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from '../../controls/sunFocus.js'
 import { createSpiceClient } from '../../spice/createSpiceClient.js'
-import {
-  J2000_FRAME,
-  type BodyRef,
-  type EtSeconds,
-  type Mat3,
-  type Vec3Km,
-} from '../../spice/types.js'
+import { J2000_FRAME, type BodyRef, type EtSeconds, type Mat3, type Vec3Km } from '../../spice/types.js'
 import { createBodyMesh } from '../BodyMesh.js'
 import { SUN_BLOOM_LAYER } from '../../renderLayers.js'
 import {

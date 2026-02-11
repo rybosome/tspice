@@ -57,8 +57,8 @@ export function PlaybackControls({ spice, getDefaultResumeRateSecPerSec }: Playb
   useEffect(() => {
     let cancelled = false
 
-    void spice
-      .kit.etToUtc(state.etSec as unknown as SpiceTime, 'ISOC', 0)
+    void spice.kit
+      .etToUtc(state.etSec as unknown as SpiceTime, 'ISOC', 0)
       .then((s) => {
         if (!cancelled) setUtcString(s)
       })

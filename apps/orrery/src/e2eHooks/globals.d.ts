@@ -3,11 +3,7 @@ import type { Mat3ColMajor } from '@rybosome/tspice'
 declare global {
   interface Window {
     __tspice_viewer__e2e?: {
-      getFrameTransform: (args: {
-        from: string
-        to: string
-        et: number
-      }) => Promise<Mat3ColMajor>
+      getFrameTransform: (args: { from: string; to: string; et: number }) => Promise<Mat3ColMajor>
 
       /**
        * Apply a deterministic camera preset intended for visual regression tests.
