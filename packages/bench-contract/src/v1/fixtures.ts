@@ -269,7 +269,7 @@ export function resolveFixtureRef(
     if (existingPath === null) {
       return {
         ok: false,
-        message: `Invalid fixture ref '${ref}': Fixture ref path is too deep (max ${MAX_FIXTURE_REF_SEGMENTS} segments).`,
+        message: `Failed to enforce symlink containment for ref '${ref}': no existing path segments found under root '${parsed.root}' (${rootDir}). Ensure the fixture root exists or disable 'checkSymlinkContainment'.`,
       };
     }
 

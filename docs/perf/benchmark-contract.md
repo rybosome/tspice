@@ -63,8 +63,16 @@ When fixture checks are enabled (default):
 
 When fixture checks are disabled (`--no-check-fixtures` / `checkFixtureExistence: false`):
 
-- only the path-traversal containment check is performed
-- root/file existence + symlink containment checks are skipped
+- the path-traversal containment check is still performed (`..` cannot escape the root)
+- root/file existence checks are skipped
+
+Symlink containment is controlled separately via `checkSymlinkContainment` in
+`resolveFixtureRef()` (it defaults to the same value as `checkExistence`). This
+means callers can still opt into realpath-based symlink containment even when
+existence checks are disabled.
+
+Note: `checkSymlinkContainment` performs synchronous filesystem IO (e.g.
+`fs.realpathSync`) and requires the fixture root to exist.
 
 Note: enabling fixture checks performs **synchronous filesystem IO** and may be expensive in
 long-running processes.
