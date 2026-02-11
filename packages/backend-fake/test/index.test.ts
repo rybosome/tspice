@@ -77,8 +77,8 @@ describe("@rybosome/tspice-backend-fake", () => {
     expect(b.ktotal("UNKNOWN")).toBe(0);
   });
 
-  it("throws on unsupported kernel extensions by default", () => {
-    const b = createFakeBackend();
+  it("throws on unsupported kernel extensions when configured", () => {
+    const b = createFakeBackend({ unknownExtension: "throw" });
     expect(() => b.furnsh("/kernels/unknown.foo")).toThrow(RangeError);
   });
 
