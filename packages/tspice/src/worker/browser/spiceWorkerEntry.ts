@@ -108,31 +108,38 @@ function createSpiceTransportFromSpiceAsync(
   };
 }
 
-void (async () => {
-  // NOTE: This file is meant to be loaded as a Web Worker module.
-  // It intentionally has no exports and runs as a side-effect.
-  //
-  // Security/design note:
-  // - This worker entry is intended for internal workspace use.
-  // - By default, it exposes:
-  //   - `kit.*` as a small, curated allowlist (see `allowedKitMethodList`), and
-  //   - `raw.*` without an allowlist (subject to the blocked key checks above).
-  // - If you need a tighter RPC capability set (especially for `raw.*`), create
-  //   a custom worker entry and provide an explicit allowlist.
-  const spice = await createSpiceAsync({ backend: "wasm" });
+// NOTE: This file is meant to be loaded as a Web Worker module.
+// It intentionally has no exports and runs as a side-effect.
+//
+// Security/design note:
+// - This worker entry is intended for internal workspace use.
+// - By default, it exposes:
+//   - `kit.*` as a small, curated allowlist (see `allowedKitMethodList`), and
+//   - `raw.*` without an allowlist (subject to the blocked key checks above).
+// - If you need a tighter RPC capability set (especially for `raw.*`), create
+//   a custom worker entry and provide an explicit allowlist.
+//
+// IMPORTANT: `exposeTransportToWorker()` must run synchronously so the worker's
+// `message` handler is installed immediately. Otherwise, early RPC messages from
+// the main thread can be dropped while the WASM backend is still initializing.
+const spicePromise = createSpiceAsync({ backend: "wasm" });
+const transportPromise = spicePromise.then((spice) =>
+  createSpiceTransportFromSpiceAsync(spice),
+);
 
-  const transport = createSpiceTransportFromSpiceAsync(spice);
-
-  exposeTransportToWorker({
-    transport,
-    onDispose: async () => {
-      // Best-effort cleanup. Worker termination also releases resources, but
-      // this helps callers who keep the worker alive.
-      try {
-        await spice.raw.kclear();
-      } catch {
-        // ignore
-      }
-    },
-  });
-})();
+exposeTransportToWorker({
+  transport: {
+    request: async (op: string, args: unknown[]): Promise<unknown> =>
+      (await transportPromise).request(op, args),
+  },
+  onDispose: async () => {
+    // Best-effort cleanup. Worker termination also releases resources, but this
+    // helps callers who keep the worker alive.
+    try {
+      const spice = await spicePromise;
+      await spice.raw.kclear();
+    } catch {
+      // ignore
+    }
+  },
+});
