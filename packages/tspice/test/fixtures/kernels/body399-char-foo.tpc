@@ -1,0 +1,12 @@
+KPL/PCK
+
+\begindata
+
+  BODY399_FOO = 'bar'
+
+\begintext
+
+This is a tiny text kernel fixture used by tests.
+
+It defines a BODY<ID>_<ITEM> pool variable with a **character** type to ensure
+`bodvar()` treats non-numeric BODY constants as a normal miss (returns []).

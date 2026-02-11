@@ -95,7 +95,7 @@ int tspice_cidfrm(
   }
 
   SpiceInt frcode = 0;
-  SpiceChar frname[32] = {0};
+  SpiceChar frname[TSPICE_FRNAME_MAX_BYTES] = {0};
   SpiceBoolean found = SPICEFALSE;
 
   cidfrm_c((SpiceInt)center, (SpiceInt)sizeof(frname), &frcode, frname, &found);
@@ -144,7 +144,7 @@ int tspice_cnmfrm(
   }
 
   SpiceInt frcode = 0;
-  SpiceChar frname[32] = {0};
+  SpiceChar frname[TSPICE_FRNAME_MAX_BYTES] = {0};
   SpiceBoolean found = SPICEFALSE;
 
   cnmfrm_c(centerName, (SpiceInt)sizeof(frname), &frcode, frname, &found);
@@ -164,6 +164,148 @@ int tspice_cnmfrm(
 
   if (outFound) {
     *outFound = found == SPICETRUE ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_frinfo(
+    int frameId,
+    int *outCenter,
+    int *outFrameClass,
+    int *outClassId,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outCenter) {
+    *outCenter = 0;
+  }
+  if (outFrameClass) {
+    *outFrameClass = 0;
+  }
+  if (outClassId) {
+    *outClassId = 0;
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceInt center = 0;
+  SpiceInt frclss = 0;
+  SpiceInt clssid = 0;
+  SpiceBoolean found = SPICEFALSE;
+
+  frinfo_c((SpiceInt)frameId, &center, &frclss, &clssid, &found);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outCenter) {
+    *outCenter = (int)center;
+  }
+  if (outFrameClass) {
+    *outFrameClass = (int)frclss;
+  }
+  if (outClassId) {
+    *outClassId = (int)clssid;
+  }
+  if (outFound) {
+    *outFound = (found == SPICETRUE) ? 1 : 0;
+  }
+
+  return 0;
+}
+
+int tspice_ccifrm(
+    int frameClass,
+    int classId,
+    int *outFrcode,
+    char *outFrname,
+    int outFrnameMaxBytes,
+    int *outCenter,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outFrcode) {
+    *outFrcode = 0;
+  }
+  if (outFrnameMaxBytes > 0 && outFrname) {
+    outFrname[0] = '\0';
+  }
+
+  if (outFrname != NULL && outFrnameMaxBytes > 0 &&
+      outFrnameMaxBytes < TSPICE_FRNAME_MAX_BYTES) {
+    // NAIF documents the maximum frame name length as 32 characters.
+    // Add 1 for the trailing NUL.
+    if (err && errMaxBytes > 0) {
+      strncpy(
+          err,
+          "ccifrm: outFrnameMaxBytes must be >= TSPICE_FRNAME_MAX_BYTES (33)",
+          (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    }
+
+    return 1;
+  }
+  if (outCenter) {
+    *outCenter = 0;
+  }
+  if (outFound) {
+    *outFound = 0;
+  }
+
+  SpiceInt frcode = 0;
+  SpiceInt center = 0;
+  SpiceBoolean found = SPICEFALSE;
+
+  // Defensive handling: `ccifrm_c` expects a writable output buffer for the
+  // frame name. Allow callers to pass a null/empty buffer when they don't
+  // care about the name.
+  SpiceChar tmpFrname[TSPICE_FRNAME_MAX_BYTES] = {0};
+  SpiceChar *frnameBuf = outFrname;
+  SpiceInt frnameLen = (SpiceInt)outFrnameMaxBytes;
+  if (outFrname == NULL || outFrnameMaxBytes <= 0) {
+    frnameBuf = tmpFrname;
+    frnameLen = (SpiceInt)sizeof(tmpFrname);
+  }
+
+  ccifrm_c(
+      (SpiceInt)frameClass,
+      (SpiceInt)classId,
+      frnameLen,
+      &frcode,
+      frnameBuf,
+      &center,
+      &found);
+
+  if (outFrname && outFrnameMaxBytes > 0) {
+    outFrname[outFrnameMaxBytes - 1] = '\0';
+  }
+
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (outFrcode) {
+    *outFrcode = (int)frcode;
+  }
+  if (outCenter) {
+    *outCenter = (int)center;
+  }
+  if (outFound) {
+    *outFound = (found == SPICETRUE) ? 1 : 0;
   }
 
   return 0;

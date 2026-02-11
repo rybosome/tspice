@@ -298,12 +298,19 @@ const EXPORTED_FUNCTIONS = [
   // --- ids/names ---
   "_tspice_bodn2c",
   "_tspice_bodc2n",
+  "_tspice_bodc2s",
+  "_tspice_bods2c",
+  "_tspice_boddef",
+  "_tspice_bodfnd",
+  "_tspice_bodvar",
 
   // --- frames ---
   "_tspice_namfrm",
   "_tspice_frmnam",
   "_tspice_cidfrm",
   "_tspice_cnmfrm",
+  "_tspice_frinfo",
+  "_tspice_ccifrm",
   "_tspice_scs2e",
   "_tspice_sce2s",
   "_tspice_ckgp",
