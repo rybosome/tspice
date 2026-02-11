@@ -248,8 +248,6 @@ int tspice_ccifrm(
       outFrnameMaxBytes < TSPICE_FRNAME_MAX_BYTES) {
     // NAIF documents the maximum frame name length as 32 characters.
     // Add 1 for the trailing NUL.
-    tspice_reset(NULL, 0);
-
     if (err && errMaxBytes > 0) {
       strncpy(
           err,
