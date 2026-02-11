@@ -303,6 +303,21 @@ describe("createWorkerTransport()", () => {
 
     await expect(p).rejects.toThrow(/boom.*op=op.*id=\d+/i);
 
+    // Transport should become terminal: no further messages posted and all
+    // future requests fail closed.
+    const postedBefore = w.posted.length;
+
+    const err1 = await transport.request("op2", []).catch((e) => e);
+    const err2 = await transport.request("op3", []).catch((e) => e);
+    expect(err1).toBe(err2);
+    expect(err1).toMatchObject({ message: "Boom" });
+    expect(w.posted).toHaveLength(postedBefore);
+
+    // And listeners should be detached (no leaks).
+    expect(w.calls).toContain("removeEventListener:message");
+    expect(w.calls).toContain("removeEventListener:error");
+    expect(w.calls).toContain("removeEventListener:messageerror");
+
     transport.dispose();
   });
 
@@ -319,6 +334,21 @@ describe("createWorkerTransport()", () => {
     w.emitMessageError();
 
     await expect(p).rejects.toThrow(/deserialization failed.*op=op.*id=\d+/i);
+
+    // Transport should become terminal: no further messages posted and all
+    // future requests fail closed.
+    const postedBefore = w.posted.length;
+
+    const err1 = await transport.request("op2", []).catch((e) => e);
+    const err2 = await transport.request("op3", []).catch((e) => e);
+    expect(err1).toBe(err2);
+    expect(err1).toMatchObject({ message: "Worker message deserialization failed" });
+    expect(w.posted).toHaveLength(postedBefore);
+
+    // And listeners should be detached (no leaks).
+    expect(w.calls).toContain("removeEventListener:message");
+    expect(w.calls).toContain("removeEventListener:error");
+    expect(w.calls).toContain("removeEventListener:messageerror");
 
     transport.dispose();
   });

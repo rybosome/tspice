@@ -27,6 +27,7 @@ export type LoadKernelPackOptions = {
    *   - protocol-relative (`//...`)
    *   - path-absolute (`/myapp/`)
    *   - path-relative (`myapp/`)
+   * - `baseUrl: ""` is treated the same as `undefined` (no prefixing / leave relative URLs as-is).
    *
    * This avoids the surprising file-vs-directory behavior of `new URL(url, baseUrl)`.
    * For example:

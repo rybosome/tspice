@@ -36,6 +36,17 @@ export function exposeTransportToWorker(opts: {
    * Defaults to `Infinity`.
    */
   maxConcurrentRequests?: number;
+
+  /**
+   * Maximum number of queued requests allowed when `maxConcurrentRequests` is
+   * finite.
+   *
+   * When the queue is full, new incoming requests are immediately rejected
+   * with an RPC error response.
+   *
+   * Defaults to `Infinity` (unbounded) to preserve existing behavior.
+   */
+  maxQueuedRequests?: number;
 }): { dispose: () => void } {
   const self = opts.self ?? (globalThis as unknown as WorkerGlobalScopeLike);
 
@@ -54,6 +65,16 @@ export function exposeTransportToWorker(opts: {
   }
   let inFlight = 0;
 
+  const maxQueuedRequests = opts.maxQueuedRequests ?? Infinity;
+  if (maxQueuedRequests !== Infinity) {
+    if (!Number.isFinite(maxQueuedRequests) || maxQueuedRequests < 0) {
+      throw new Error("exposeTransportToWorker(): maxQueuedRequests must be >= 0");
+    }
+    if (!Number.isInteger(maxQueuedRequests)) {
+      throw new Error("exposeTransportToWorker(): maxQueuedRequests must be an integer");
+    }
+  }
+
   type QueuedRequest = {
     id: number;
     op: string;
@@ -63,6 +84,8 @@ export function exposeTransportToWorker(opts: {
   // FIFO queue with a moving head index to avoid O(n) `shift()`.
   const queued: QueuedRequest[] = [];
   let queuedHead = 0;
+
+  const queuedSize = (): number => queued.length - queuedHead;
 
   const clearQueue = (): void => {
     queued.length = 0;
@@ -170,6 +193,20 @@ export function exposeTransportToWorker(opts: {
       if (inFlight < maxConcurrentRequests) {
         runRequest(queuedReq);
       } else {
+        if (queuedSize() >= maxQueuedRequests) {
+          const res: RpcResponse = {
+            type: tspiceRpcResponseType,
+            id,
+            ok: false,
+            error: serializeError(
+              new Error(
+                `Worker backpressure queue overflow (maxQueuedRequests=${maxQueuedRequests})`,
+              ),
+            ),
+          };
+          self.postMessage(res);
+          return;
+        }
         queued.push(queuedReq);
       }
 

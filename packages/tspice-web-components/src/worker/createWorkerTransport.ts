@@ -106,6 +106,7 @@ export function createWorkerTransport(opts: {
 }): WorkerTransport {
   let worker: WorkerLike | undefined;
   let disposed = false;
+  let terminalError: Error | undefined;
 
   // If we ever discover we can't schedule a macrotask, we permanently fail
   // closed (reject) to avoid violating settlement ordering guarantees.
@@ -180,26 +181,81 @@ export function createWorkerTransport(opts: {
     }
   };
 
-  let didHardFailNoMacrotaskScheduler = false;
+  const terminalTeardown = (
+    err: Error,
+    opts?: {
+      getReason?: (pending: Pending, id: number) => unknown;
+      /**
+       * If `terminateOnDispose` is enabled, defer termination by 1 macrotask.
+       *
+       * Used by `dispose()` so callers can observe a disposed transport before
+       * the worker is torn down, and to give the optional `tspice:dispose`
+       * postMessage (if enabled) a chance to be processed.
+       */
+      deferTerminate?: boolean;
+    },
+  ): void => {
+    if (terminalError) return;
+    terminalError = err;
 
-  const hardFailNoMacrotaskScheduler = (err: Error): void => {
-    // Permanently fail closed.
-    canScheduleMacrotask = false;
+    // Prevent any future settlement work from being queued.
     settlementQueued = false;
 
-    // Reject all pending once.
-    if (!didHardFailNoMacrotaskScheduler) {
-      didHardFailNoMacrotaskScheduler = true;
-      rejectAllPending(() => err);
-    }
+    rejectAllPending(opts?.getReason ?? (() => err));
 
     const w = worker;
     worker = undefined;
     if (!w) return;
 
+    w.removeEventListener("message", onMessage);
+    w.removeEventListener("error", onError);
+    w.removeEventListener("messageerror", onMessageError);
+
+    if (!terminateOnDispose) return;
+
+    if (opts?.deferTerminate) {
+      const ok = queueMacrotask(
+        () => {
+          try {
+            w.terminate();
+          } catch {
+            // ignore
+          }
+        },
+        { allowSyncFallback: false },
+      );
+
+      // No scheduler: explicitly fall back to a synchronous terminate so we
+      // don't leave an owned worker running.
+      if (!ok) {
+        try {
+          w.terminate();
+        } catch {
+          // ignore
+        }
+      }
+
+      return;
+    }
+
+    try {
+      w.terminate();
+    } catch {
+      // ignore
+    }
+  };
+
+  const hardFailNoMacrotaskScheduler = (err: Error): void => {
+    // Permanently fail closed.
+    canScheduleMacrotask = false;
+
+    if (terminalError) return;
+
+    const w = worker;
+
     // Best-effort: if configured, attempt to notify the worker to dispose any
     // server-side resources *before* we remove listeners/terminate.
-    if (signalDispose) {
+    if (w && signalDispose) {
       try {
         const msg: RpcDispose = { type: tspiceRpcDisposeType };
         w.postMessage(msg);
@@ -208,17 +264,7 @@ export function createWorkerTransport(opts: {
       }
     }
 
-    w.removeEventListener("message", onMessage);
-    w.removeEventListener("error", onError);
-    w.removeEventListener("messageerror", onMessageError);
-
-    if (terminateOnDispose) {
-      try {
-        w.terminate();
-      } catch {
-        // ignore
-      }
-    }
+    terminalTeardown(err);
   };
 
   const flushQueuedSettlements = (): void => {
@@ -340,16 +386,17 @@ export function createWorkerTransport(opts: {
     }
 
     const safeMessage = typeof message === "string" && message.length > 0 ? message : "Worker error";
-    rejectAllPending(
-      (pending, id) => new Error(`${safeMessage} ${formatRequestContext(pending.op, id)}`),
-    );
+    terminalTeardown(new Error(safeMessage), {
+      getReason: (pending, id) => new Error(`${safeMessage} ${formatRequestContext(pending.op, id)}`),
+    });
   };
 
   const onMessageError = (_ev: unknown): void => {
-    rejectAllPending(
-      (pending, id) =>
+    const err = new Error("Worker message deserialization failed");
+    terminalTeardown(err, {
+      getReason: (pending, id) =>
         new Error(`Worker message deserialization failed ${formatRequestContext(pending.op, id)}`),
-    );
+    });
   };
 
   const ensureWorker = (): WorkerLike => {
@@ -378,8 +425,9 @@ export function createWorkerTransport(opts: {
     if (disposed) return;
     disposed = true;
 
+    if (terminalError) return;
+
     const w = worker;
-    worker = undefined;
 
     // Best-effort: tell the worker it should dispose any server-side resources.
     //
@@ -394,41 +442,11 @@ export function createWorkerTransport(opts: {
       }
     }
 
-    rejectAllPending((pending, id) =>
-      new Error(`Worker transport disposed ${formatRequestContext(pending.op, id)}`),
-    );
-
-    if (!w) return;
-
-    w.removeEventListener("message", onMessage);
-    w.removeEventListener("error", onError);
-    w.removeEventListener("messageerror", onMessageError);
-
-    if (terminateOnDispose) {
-      // Defer by 1 macrotask so callers can synchronously observe a disposed
-      // transport before the worker is torn down, and to give the optional
-      // `tspice:dispose` postMessage (if enabled) a chance to be processed.
-      const ok = queueMacrotask(
-        () => {
-          try {
-            w.terminate();
-          } catch {
-            // ignore
-          }
-        },
-        { allowSyncFallback: false },
-      );
-
-      // No scheduler: explicitly fall back to a synchronous terminate so we
-      // don't leave an owned worker running.
-      if (!ok) {
-        try {
-          w.terminate();
-        } catch {
-          // ignore
-        }
-      }
-    }
+    terminalTeardown(new Error("Worker transport disposed"), {
+      getReason: (pending, id) =>
+        new Error(`Worker transport disposed ${formatRequestContext(pending.op, id)}`),
+      deferTerminate: true,
+    });
   };
 
   const request = async (
@@ -436,6 +454,7 @@ export function createWorkerTransport(opts: {
     args: unknown[],
     requestOpts?: WorkerTransportRequestOptions,
   ): Promise<unknown> => {
+    if (terminalError) throw terminalError;
     if (disposed) throw new Error(`Worker transport disposed ${formatRequestContext(op)}`);
     if (canScheduleMacrotask === false) throw createNoMacrotaskSchedulerError();
 
