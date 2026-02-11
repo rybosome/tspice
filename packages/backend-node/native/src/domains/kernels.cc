@@ -374,7 +374,7 @@ static Napi::Value Kplfrm(const Napi::CallbackInfo& info) {
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t idsetPtr = tspice_backend_node::GetCellHandlePtrOrThrow(env, idsetHandle, "kplfrm", "cell");
+  const uintptr_t idsetPtr = tspice_backend_node::GetCellHandlePtrOrThrow(env, idsetHandle, "kplfrm(idset)", "cell");
   if (env.IsExceptionPending()) {
     return env.Undefined();
   }

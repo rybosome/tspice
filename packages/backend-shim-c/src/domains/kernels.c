@@ -172,17 +172,14 @@ int tspice_kinfo(
   }
 
   if (!path || path[0] == '\0') {
-    tspice_write_error(err, errMaxBytes, "tspice_kinfo(): path must be a non-empty string");
-    return 1;
+    return tspice_return_error(err, errMaxBytes, "tspice_kinfo(): path must be a non-empty string");
   }
 
   if (!filtyp || filtypMaxBytes <= 0) {
-    tspice_write_error(err, errMaxBytes, "tspice_kinfo(): filtyp must be non-null with filtypMaxBytes > 0");
-    return 1;
+    return tspice_return_error(err, errMaxBytes, "tspice_kinfo(): filtyp must be non-null with filtypMaxBytes > 0");
   }
   if (!source || sourceMaxBytes <= 0) {
-    tspice_write_error(err, errMaxBytes, "tspice_kinfo(): source must be non-null with sourceMaxBytes > 0");
-    return 1;
+    return tspice_return_error(err, errMaxBytes, "tspice_kinfo(): source must be non-null with sourceMaxBytes > 0");
   }
 
   SpiceInt handleC = 0;
@@ -241,24 +238,19 @@ int tspice_kxtrct(
   }
 
   if (!keywd || keywd[0] == '\0') {
-    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): keywd must be a non-empty string");
-    return 1;
+    return tspice_return_error(err, errMaxBytes, "tspice_kxtrct(): keywd must be a non-empty string");
   }
   if (!wordsqIn) {
-    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): wordsqIn must be non-null");
-    return 1;
+    return tspice_return_error(err, errMaxBytes, "tspice_kxtrct(): wordsqIn must be non-null");
   }
   if (!wordsqOut || wordsqOutMaxBytes <= 0) {
-    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): wordsqOut must be non-null with wordsqOutMaxBytes > 0");
-    return 1;
+    return tspice_return_error(err, errMaxBytes, "tspice_kxtrct(): wordsqOut must be non-null with wordsqOutMaxBytes > 0");
   }
   if (!substr || substrMaxBytes <= 0) {
-    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): substr must be non-null with substrMaxBytes > 0");
-    return 1;
+    return tspice_return_error(err, errMaxBytes, "tspice_kxtrct(): substr must be non-null with substrMaxBytes > 0");
   }
   if ((nterms > 0 && !terms) || termlen < 0 || nterms < 0) {
-    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): invalid terms/termlen/nterms");
-    return 1;
+    return tspice_return_error(err, errMaxBytes, "tspice_kxtrct(): invalid terms/termlen/nterms");
   }
 
   // `kxtrct_c` mutates the wordsq buffer in-place. We copy the input into the
@@ -266,8 +258,7 @@ int tspice_kxtrct(
   // (including the trailing NUL).
   const size_t wordsqInLen = strlen(wordsqIn);
   if (wordsqInLen + 1 > (size_t)wordsqOutMaxBytes) {
-    tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): wordsqIn would truncate wordsqOut");
-    return 1;
+    return tspice_return_error(err, errMaxBytes, "tspice_kxtrct(): wordsqIn would truncate wordsqOut");
   }
 
   // Copy input wordsq into the output buffer so `kxtrct_c` can mutate it in place.
