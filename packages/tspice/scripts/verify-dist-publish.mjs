@@ -66,9 +66,11 @@ try {
     smokePath,
     [
       `import * as tspice from "@rybosome/tspice";`,
+      `import * as tspiceWeb from "@rybosome/tspice/web";`,
       ``,
       `if (typeof tspice.createBackend !== "function") throw new Error("Missing createBackend export");`,
       `if (typeof tspice.createSpice !== "function") throw new Error("Missing createSpice export");`,
+      `if (typeof tspiceWeb !== "object") throw new Error("Missing tspice/web export");`,
       ``,
       `// Ensure we do NOT expose subpath exports from the published package.
       // (root-only public surface)
