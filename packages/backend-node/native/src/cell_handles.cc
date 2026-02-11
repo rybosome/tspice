@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <string>
 #include <unordered_map>
 
 #include "napi_helpers.h"
@@ -13,6 +14,23 @@ namespace tspice_backend_node {
 
 static uint32_t g_next_cell_handle = 1;
 static std::unordered_map<uint32_t, uintptr_t> g_cell_handles;
+
+static std::string SpiceDataTypeToString(SpiceDataType dtype) {
+  switch (dtype) {
+    case SPICE_CHR:
+      return "SPICE_CHR";
+    case SPICE_DP:
+      return "SPICE_DP";
+    case SPICE_INT:
+      return "SPICE_INT";
+#ifdef SPICE_TIME
+    case SPICE_TIME:
+      return "SPICE_TIME";
+#endif
+    default:
+      return "SpiceDataType(" + std::to_string(static_cast<int>(dtype)) + ")";
+  }
+}
 
 uint32_t AddCellHandle(Napi::Env env, uintptr_t ptr, const char *context) {
   const char *ctx = (context != nullptr && context[0] != '\0') ? context : "AddCellHandle";
@@ -109,9 +127,39 @@ uintptr_t GetCellHandlePtrOrThrow(
     const std::string ctx = (context != nullptr && context[0] != '\0') ? std::string(context) : std::string("call");
     const std::string kind = (kindLabel != nullptr && kindLabel[0] != '\0') ? std::string(kindLabel)
                                                                               : std::string("SpiceCell");
-    ThrowSpiceError(Napi::TypeError::New(env, ctx + ": unknown/expired " + kind + " handle: " + std::to_string(handle)));
+    ThrowSpiceError(
+        Napi::RangeError::New(env, ctx + ": unknown/expired " + kind + " handle: " + std::to_string(handle)));
     return 0;
   }
+  return ptr;
+}
+
+uintptr_t GetCellHandlePtrOrThrow(
+    Napi::Env env,
+    uint32_t handle,
+    SpiceDataType expectedDtype,
+    const char *context,
+    const char *kindLabel) {
+  const uintptr_t ptr = GetCellHandlePtrOrThrow(env, handle, context, kindLabel);
+  if (env.IsExceptionPending() || ptr == 0) {
+    return 0;
+  }
+
+  const SpiceDataType actualDtype = reinterpret_cast<SpiceCell *>(ptr)->dtype;
+  if (actualDtype != expectedDtype) {
+    const std::string ctx =
+        (context != nullptr && context[0] != '\0') ? std::string(context) : std::string("call");
+    const std::string kind = (kindLabel != nullptr && kindLabel[0] != '\0') ? std::string(kindLabel)
+                                                                              : std::string("SpiceCell");
+
+    ThrowSpiceError(
+        Napi::TypeError::New(
+            env,
+            ctx + ": " + kind + " handle has wrong dtype (expected " + SpiceDataTypeToString(expectedDtype) +
+                ", got " + SpiceDataTypeToString(actualDtype) + "): " + std::to_string(handle)));
+    return 0;
+  }
+
   return ptr;
 }
 

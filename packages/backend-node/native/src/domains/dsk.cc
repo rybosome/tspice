@@ -83,7 +83,7 @@ static Napi::Value Dskobj(const Napi::CallbackInfo& info) {
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   const uintptr_t cellPtr =
-      tspice_backend_node::GetCellHandlePtrOrThrow(env, cellHandle, "dskobj", "SpiceIntCell");
+      tspice_backend_node::GetCellHandlePtrOrThrow(env, cellHandle, SPICE_INT, "dskobj(bodids)", "SpiceIntCell");
   if (env.IsExceptionPending()) return env.Undefined();
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -116,7 +116,7 @@ static Napi::Value Dsksrf(const Napi::CallbackInfo& info) {
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   const uintptr_t cellPtr =
-      tspice_backend_node::GetCellHandlePtrOrThrow(env, cellHandle, "dsksrf", "SpiceIntCell");
+      tspice_backend_node::GetCellHandlePtrOrThrow(env, cellHandle, SPICE_INT, "dsksrf(srfids)", "SpiceIntCell");
   if (env.IsExceptionPending()) return env.Undefined();
 
   char err[tspice_backend_node::kErrMaxBytes];

@@ -104,4 +104,42 @@ describe("dsk parity", () => {
       }
     }
   });
+
+  itNative("dskobj throws TypeError on wrong-dtype cell handle", () => {
+    const node = createNodeBackend();
+
+    const wrong = node.newDoubleCell(100);
+    try {
+      // The JS wrapper can't know the underlying native cell dtype, so this
+      // is enforced at the native boundary.
+      expect(() => (node as any).dskobj(dskPath, wrong)).toThrow(TypeError);
+    } finally {
+      node.freeCell(wrong);
+      node.kclear();
+    }
+  });
+
+  itNative("dsksrf throws TypeError on wrong-dtype cell handle", () => {
+    const node = createNodeBackend();
+
+    const wrong = node.newCharCell(10, 16);
+    try {
+      expect(() => (node as any).dsksrf(dskPath, 0, wrong)).toThrow(TypeError);
+    } finally {
+      node.freeCell(wrong);
+      node.kclear();
+    }
+  });
+
+  itNative("dskobj throws RangeError on expired handle", () => {
+    const node = createNodeBackend();
+
+    const bodids = node.newIntCell(10);
+    node.freeCell(bodids);
+    try {
+      expect(() => (node as any).dskobj(dskPath, bodids)).toThrow(RangeError);
+    } finally {
+      node.kclear();
+    }
+  });
 });

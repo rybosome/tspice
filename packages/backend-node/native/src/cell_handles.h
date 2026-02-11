@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include <SpiceUsr.h>
+
 #include <napi.h>
 
 namespace tspice_backend_node {
@@ -22,6 +24,15 @@ bool ReadCellHandleArg(Napi::Env env, const Napi::Value &value, const char *labe
 uintptr_t GetCellHandlePtrOrThrow(
     Napi::Env env,
     uint32_t handle,
+    const char *context,
+    const char *kindLabel);
+
+// Like GetCellHandlePtrOrThrow(env, handle, context, kindLabel), but also
+// validates that the underlying SpiceCell has the expected dtype.
+uintptr_t GetCellHandlePtrOrThrow(
+    Napi::Env env,
+    uint32_t handle,
+    SpiceDataType expectedDtype,
     const char *context,
     const char *kindLabel);
 

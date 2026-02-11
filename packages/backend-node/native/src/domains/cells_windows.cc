@@ -333,7 +333,7 @@ static Napi::Value Insrti(const Napi::CallbackInfo& info) {
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "insrti", "cell");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_INT, "insrti", "cell");
   if (env.IsExceptionPending()) return env.Undefined();
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -358,7 +358,7 @@ static Napi::Value Insrtd(const Napi::CallbackInfo& info) {
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "insrtd", "cell");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_DP, "insrtd", "cell");
   if (env.IsExceptionPending()) return env.Undefined();
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -384,7 +384,7 @@ static Napi::Value Insrtc(const Napi::CallbackInfo& info) {
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "insrtc", "cell");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_CHR, "insrtc", "cell");
   if (env.IsExceptionPending()) return env.Undefined();
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -410,7 +410,7 @@ static Napi::Number CellGeti(const Napi::CallbackInfo& info) {
   const int index = info[1].As<Napi::Number>().Int32Value();
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "cellGeti", "cell");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_INT, "cellGeti", "cell");
   if (env.IsExceptionPending()) return Napi::Number::New(env, 0);
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -439,7 +439,7 @@ static Napi::Number CellGetd(const Napi::CallbackInfo& info) {
   const int index = info[1].As<Napi::Number>().Int32Value();
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "cellGetd", "cell");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_DP, "cellGetd", "cell");
   if (env.IsExceptionPending()) return Napi::Number::New(env, 0);
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -468,7 +468,7 @@ static Napi::String CellGetc(const Napi::CallbackInfo& info) {
   const int index = info[1].As<Napi::Number>().Int32Value();
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "cellGetc", "cell");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_CHR, "cellGetc", "cell");
   if (env.IsExceptionPending()) return Napi::String::New(env, "");
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -511,7 +511,7 @@ static Napi::Value Wninsd(const Napi::CallbackInfo& info) {
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "wninsd", "window");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_DP, "wninsd", "window");
   if (env.IsExceptionPending()) return env.Undefined();
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -535,7 +535,7 @@ static Napi::Number Wncard(const Napi::CallbackInfo& info) {
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "wncard", "window");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_DP, "wncard", "window");
   if (env.IsExceptionPending()) return Napi::Number::New(env, 0);
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -563,7 +563,7 @@ static Napi::Array Wnfetd(const Napi::CallbackInfo& info) {
   const int index = info[1].As<Napi::Number>().Int32Value();
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "wnfetd", "window");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_DP, "wnfetd", "window");
   if (env.IsExceptionPending()) return Napi::Array::New(env);
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -597,7 +597,7 @@ static Napi::Value Wnvald(const Napi::CallbackInfo& info) {
   }
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, "wnvald", "window");
+  const uintptr_t ptr = tspice_backend_node::GetCellHandlePtrOrThrow(env, handle, SPICE_DP, "wnvald", "window");
   if (env.IsExceptionPending()) return env.Undefined();
 
   char err[tspice_backend_node::kErrMaxBytes];
