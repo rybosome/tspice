@@ -22,6 +22,34 @@ import type { CreateWasmBackendOptions } from "./create-backend-options.js";
 export const WASM_JS_FILENAME = "tspice_backend_wasm.node.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
+export function toExactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  // Node Buffers can be views into a larger ArrayBuffer (and can be offset).
+  // Passing `bytes.buffer` directly can include unrelated trailing bytes, and
+  // getting `ArrayBuffer#slice` bounds wrong can truncate the module.
+  //
+  // Copy into a fresh, exact-length ArrayBuffer starting at 0.
+  const uint8 = new Uint8Array(bytes.byteLength);
+  uint8.set(bytes);
+  return uint8.buffer;
+}
+
+export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffer | undefined> {
+  // Allow http(s) URLs to be fetched by Emscripten.
+  if (wasmUrl.startsWith("http://") || wasmUrl.startsWith("https://")) {
+    return undefined;
+  }
+
+  const [{ readFile }, { fileURLToPath }] = await Promise.all([
+    import("node:fs/promises"),
+    import("node:url"),
+  ]);
+
+  const wasmPath = wasmUrl.startsWith("file://") ? fileURLToPath(wasmUrl) : wasmUrl;
+  const bytes = await readFile(wasmPath);
+
+  return toExactArrayBuffer(bytes);
+}
+
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackend & { kind: "wasm" }> {
@@ -90,27 +118,7 @@ export async function createWasmBackend(
   // ArrayBuffer via `wasmBinary`.
   let wasmBinary: ArrayBuffer | undefined;
   try {
-    wasmBinary = await (async (): Promise<ArrayBuffer | undefined> => {
-      // Allow http(s) URLs to be fetched by Emscripten.
-      if (wasmUrl.startsWith("http://") || wasmUrl.startsWith("https://")) {
-        return undefined;
-      }
-
-      const [{ readFile }, { fileURLToPath }] = await Promise.all([
-        import("node:fs/promises"),
-        import("node:url"),
-      ]);
-
-      const wasmPath = wasmUrl.startsWith("file://")
-        ? fileURLToPath(wasmUrl)
-        : wasmUrl;
-
-      const bytes = await readFile(wasmPath);
-
-      // `Buffer#buffer` may be larger than the view (and may be offset), so
-      // slice the exact range to an ArrayBuffer starting at 0.
-      return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
-    })();
+    wasmBinary = await readWasmBinaryForNode(wasmUrl);
   } catch (error) {
     throw new Error(
       `Failed to read tspice WASM binary (wasmUrl=${wasmUrl}): ${String(error)}`,
