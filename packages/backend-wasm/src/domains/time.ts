@@ -145,7 +145,7 @@ function tspiceCallTparse(module: EmscriptenModule, timstr: string): number {
 }
 
 function tspiceCallTpictr(module: EmscriptenModule, sample: string, picturIn: string): string {
-  const outMaxBytes = WASM_ERR_MAX_BYTES;
+  const outMaxBytes = WASM_TIME_OUT_MAX_BYTES;
 
   return withUtf8CString(module, sample, (samplePtr) => {
     return withUtf8CString(module, picturIn, (picturInPtr) => {

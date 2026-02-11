@@ -158,17 +158,22 @@ function tspiceCallGipool(
   const namePtr = writeUtf8CString(module, name);
 
   try {
+    const valuesBytes = Math.max(4, room * 4);
+
     return withAllocs(
       module,
       [
         WASM_ERR_MAX_BYTES,
         4, // outN
         4, // found
-        Math.max(4, room * 4), // values
+        valuesBytes + 3, // values (+padding for 4-byte alignment)
       ],
-      (errPtr, outNPtr, foundPtr, valuesPtr) => {
+      (errPtr, outNPtr, foundPtr, rawValuesPtr) => {
         module.HEAP32[outNPtr >> 2] = 0;
         module.HEAP32[foundPtr >> 2] = 0;
+
+        // Ensure 4-byte alignment for `HEAP32` reads.
+        const valuesPtr = (rawValuesPtr + 3) & ~3;
 
         const result = module._tspice_gipool(
           namePtr,
