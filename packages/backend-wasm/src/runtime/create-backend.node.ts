@@ -23,6 +23,59 @@ import type { CreateWasmBackendOptions } from "./create-backend-options.js";
 export const WASM_JS_FILENAME = "tspice_backend_wasm.node.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
+const wasmBinaryCache = new Map<string, Uint8Array>();
+
+async function loadWasmBinaryFromFileUrl(wasmUrl: string): Promise<Uint8Array> {
+  const cached = wasmBinaryCache.get(wasmUrl);
+  if (cached) {
+    return cached;
+  }
+
+  const [{ readFileSync, statSync }, { fileURLToPath }] = await Promise.all([
+    import("node:fs"),
+    import("node:url"),
+  ]);
+
+  const wasmPath = fileURLToPath(wasmUrl);
+  const expectedSize = statSync(wasmPath).size;
+
+  // Guard against occasional short reads seen in some CI environments.
+  const attempts = 3;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const bytes = readFileSync(wasmPath);
+
+      if (bytes.byteLength !== expectedSize) {
+        throw new Error(
+          `Read truncated wasm binary (${bytes.byteLength} bytes, expected ${expectedSize}): ${wasmPath}`,
+        );
+      }
+
+      const wasmValidate = (globalThis as any).WebAssembly?.validate as
+        | ((bytes: Uint8Array) => boolean)
+        | undefined;
+
+      if (typeof wasmValidate === "function" && !wasmValidate(bytes)) {
+        throw new Error(`Invalid wasm binary (WebAssembly.validate=false): ${wasmPath}`);
+      }
+
+      wasmBinaryCache.set(wasmUrl, bytes);
+      return bytes;
+    } catch (error) {
+      lastError = error;
+
+      // Small backoff to reduce likelihood of repeated short reads.
+      if (attempt < attempts) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+    }
+  }
+
+  throw new Error(`Failed to load wasm binary from ${wasmUrl}: ${String(lastError)}`);
+}
+
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackend & { kind: "wasm" }> {
@@ -53,14 +106,7 @@ export async function createWasmBackend(
   // Node's built-in `fetch` can't load `file://...` URLs, so in Node we feed the
   // bytes directly to Emscripten via `wasmBinary`.
   const wasmBinary = wasmUrl.startsWith("file://")
-    ? await (async () => {
-        const [{ readFile }, { fileURLToPath }] = await Promise.all([
-          import("node:fs/promises"),
-          import("node:url"),
-        ]);
-        const wasmPath = fileURLToPath(wasmUrl);
-        return readFile(wasmPath);
-      })()
+    ? await loadWasmBinaryFromFileUrl(wasmUrl)
     : undefined;
 
   let module: EmscriptenModule;
