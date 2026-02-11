@@ -59,26 +59,23 @@ function toAsciiUppercase(s: string): string {
   // For kernel pool item names, we only want to uppercase ASCII a-z.
   //
   // Performance: avoid allocating a new string if no changes are needed.
-  let out = "";
-  let changed = false;
-
   for (let i = 0; i < s.length; i++) {
     const code = s.charCodeAt(i);
     const isAsciiLower = code >= 97 /* 'a' */ && code <= 122 /* 'z' */;
+    if (!isAsciiLower) continue;
 
-    if (isAsciiLower) {
-      if (!changed) {
-        out = s.slice(0, i);
-        changed = true;
-      }
-      out += String.fromCharCode(code - 32);
-      continue;
+    const codes = new Array<number>(s.length);
+    for (let j = 0; j < i; j++) {
+      codes[j] = s.charCodeAt(j);
     }
 
-    if (changed) {
-      out += s[i]!;
+    for (let j = i; j < s.length; j++) {
+      const cj = s.charCodeAt(j);
+      codes[j] = cj >= 97 /* 'a' */ && cj <= 122 /* 'z' */ ? cj - 32 : cj;
     }
+
+    return String.fromCharCode(...codes);
   }
 
-  return changed ? out : s;
+  return s;
 }
