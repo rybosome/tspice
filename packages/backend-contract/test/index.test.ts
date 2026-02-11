@@ -66,9 +66,9 @@ describe("@rybosome/tspice-backend-contract", () => {
     // Non-ASCII whitespace is intentionally *not* trimmed.
     expect(mod.normalizeBodItem("\u00a0radii\u00a0")).toBe("\u00a0RADII\u00a0");
 
-    // Regression test: must not throw for long inputs (avoid fromCharCode arg limits).
+    // Defensive guardrail: reject pathological inputs to avoid huge allocations / CPU.
     const long = "a".repeat(100_000);
-    expect(mod.normalizeBodItem(long)).toBe("A".repeat(100_000));
+    expect(() => mod.normalizeBodItem(long)).toThrow(/too long/i);
     expect(mod.normalizeBodItem("  ß  ")).toBe("ß");
   });
 });

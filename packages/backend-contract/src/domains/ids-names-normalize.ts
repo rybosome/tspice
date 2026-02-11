@@ -9,7 +9,20 @@
 * We intentionally trim **ASCII whitespace only** (space/tab/newline/etc.) to match
 * CSPICE behavior and keep native + WASM backends consistent.
 */
+const MAX_BOD_ITEM_CHARS = 1024;
+
 export function normalizeBodItem(item: string): string {
+  // Defensive guardrail: kernel pool item names are expected to be short.
+  // If a pathological string makes it here (e.g. a multi-megabyte user input),
+  // uppercasing it can cause large allocations and unnecessary CPU work.
+  //
+  // This limit is intentionally *far* above any realistic item name.
+  if (item.length > MAX_BOD_ITEM_CHARS) {
+    throw new RangeError(
+      `Kernel pool item name is too long: ${item.length} characters (max ${MAX_BOD_ITEM_CHARS})`,
+    );
+  }
+
   return toAsciiUppercase(trimAsciiWhitespace(item));
 }
 
@@ -48,29 +61,23 @@ function toAsciiUppercase(s: string): string {
   // For kernel pool item names, we only want to uppercase ASCII a-z.
   //
   // Performance: avoid allocating a new string if no changes are needed.
-  // Safety: avoid building `String.fromCharCode(...bigArray)` arg lists.
   for (let i = 0; i < s.length; i++) {
     const code = s.charCodeAt(i);
     const isAsciiLower = code >= 97 /* 'a' */ && code <= 122 /* 'z' */;
     if (!isAsciiLower) continue;
 
     // We found at least one lowercase ASCII letter; build the output string.
-    // Chunked to avoid large temporary allocations and arg limits.
-    let out = s.slice(0, i);
-    const chunkSize = 4096;
-
-    for (let j = i; j < s.length; j += chunkSize) {
-      const end = Math.min(s.length, j + chunkSize);
-      const codes = new Array<number>(end - j);
-
-      for (let k = j; k < end; k++) {
-        const ck = s.charCodeAt(k);
-        codes[k - j] = ck >= 97 /* 'a' */ && ck <= 122 /* 'z' */ ? ck - 32 : ck;
-      }
-
-      out += String.fromCharCode.apply(null, codes as unknown as number[]);
+    //
+    // Note: `normalizeBodItem()` enforces a max input length, so a simple
+    // per-code-unit loop is both safe and low-allocation (no large temp arrays
+    // or `fromCharCode(...big)` argument lists).
+    let out = s.slice(0, i) + String.fromCharCode(code - 32);
+    for (let j = i + 1; j < s.length; j++) {
+      const cj = s.charCodeAt(j);
+      out += String.fromCharCode(
+        cj >= 97 /* 'a' */ && cj <= 122 /* 'z' */ ? cj - 32 : cj,
+      );
     }
-
     return out;
   }
 
