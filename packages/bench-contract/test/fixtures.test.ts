@@ -1,8 +1,10 @@
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { isPathInside } from "../src/v1/fixtures.js";
+import { isPathInside, resolveFixtureRef } from "../src/v1/fixtures.js";
 
 describe("isPathInside", () => {
   it("handles posix-style containment", () => {
@@ -66,5 +68,106 @@ describe("isPathInside", () => {
         pathImpl: p,
       }),
     ).toBe(true);
+  });
+});
+
+describe("resolveFixtureRef", () => {
+  it("defaults checkSymlinkContainment to checkExistence (backwards compatible)", () => {
+    const repoRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), "tspice-bench-contract-fixture-ref-"),
+    );
+
+    try {
+      const fixturesDir = path.join(repoRoot, "fixtures");
+      fs.mkdirSync(fixturesDir, { recursive: true });
+
+      const outsideDir = path.join(repoRoot, "outside");
+      fs.mkdirSync(outsideDir, { recursive: true });
+
+      const outsideFile = path.join(outsideDir, "secret.txt");
+      fs.writeFileSync(outsideFile, "secret", "utf8");
+
+      const linkPath = path.join(fixturesDir, "escape.txt");
+      fs.symlinkSync(outsideFile, linkPath);
+
+      // Previously, `checkExistence: true` implied symlink containment.
+      const result = resolveFixtureRef("$FIXTURES/escape.txt", {
+        repoRoot,
+        fixtureRoots: { FIXTURES: "fixtures" },
+        checkExistence: true,
+      });
+
+      expect(result.ok).toBe(false);
+      if (result.ok) return;
+
+      expect(result.message).toContain("via symlink");
+    } finally {
+      fs.rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("enforces symlink containment even when checkExistence is false", () => {
+    const repoRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), "tspice-bench-contract-fixture-ref-"),
+    );
+
+    try {
+      const fixturesDir = path.join(repoRoot, "fixtures");
+      fs.mkdirSync(fixturesDir, { recursive: true });
+
+      const outsideDir = path.join(repoRoot, "outside");
+      fs.mkdirSync(outsideDir, { recursive: true });
+
+      const outsideFile = path.join(outsideDir, "secret.txt");
+      fs.writeFileSync(outsideFile, "secret", "utf8");
+
+      const linkPath = path.join(fixturesDir, "escape.txt");
+      fs.symlinkSync(outsideFile, linkPath);
+
+      const result = resolveFixtureRef("$FIXTURES/escape.txt", {
+        repoRoot,
+        fixtureRoots: { FIXTURES: "fixtures" },
+        checkExistence: false,
+        checkSymlinkContainment: true,
+      });
+
+      expect(result.ok).toBe(false);
+      if (result.ok) return;
+
+      expect(result.message).toContain("via symlink");
+    } finally {
+      fs.rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("can explicitly disable symlink containment even when existence checks are on", () => {
+    const repoRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), "tspice-bench-contract-fixture-ref-"),
+    );
+
+    try {
+      const fixturesDir = path.join(repoRoot, "fixtures");
+      fs.mkdirSync(fixturesDir, { recursive: true });
+
+      const outsideDir = path.join(repoRoot, "outside");
+      fs.mkdirSync(outsideDir, { recursive: true });
+
+      const outsideFile = path.join(outsideDir, "secret.txt");
+      fs.writeFileSync(outsideFile, "secret", "utf8");
+
+      const linkPath = path.join(fixturesDir, "escape.txt");
+      fs.symlinkSync(outsideFile, linkPath);
+
+      const result = resolveFixtureRef("$FIXTURES/escape.txt", {
+        repoRoot,
+        fixtureRoots: { FIXTURES: "fixtures" },
+        checkExistence: true,
+        checkSymlinkContainment: false,
+      });
+
+      expect(result.ok).toBe(true);
+    } finally {
+      fs.rmSync(repoRoot, { recursive: true, force: true });
+    }
   });
 });

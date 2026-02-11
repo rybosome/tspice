@@ -30,7 +30,31 @@ export interface ResolveFixtureRefOptions {
   readonly repoRoot: string;
   readonly fixtureRoots?: FixtureRootsV1;
   readonly defaultFixtureRoots?: FixtureRootsV1;
+
+  /**
+   * Whether to verify that the resolved fixture path exists and is a file.
+   *
+   * When enabled, this performs synchronous filesystem IO (e.g. `fs.statSync`).
+   *
+   * Note: for backwards compatibility, `checkSymlinkContainment` defaults to the
+   * same value as `checkExistence`.
+   */
   readonly checkExistence?: boolean;
+
+  /**
+   * Whether to enforce realpath-based containment checks.
+   *
+   * This prevents refs from escaping their declared root via symlinks (e.g. a
+   * file inside the root that is itself a symlink to a path outside the root, or
+   * any symlinked directory segment along the path).
+   *
+   * Defaults to `checkExistence` for backwards compatibility.
+   *
+   * Security: disabling this check can allow a fixture ref that is lexically
+   * inside the root (no `..` traversal) to resolve to a real path outside the
+   * root.
+   */
+  readonly checkSymlinkContainment?: boolean;
 }
 
 export type ResolveFixtureRefResult =
@@ -136,6 +160,8 @@ export function resolveFixtureRef(
   }
 
   const checkExistence = options.checkExistence === true;
+  const checkSymlinkContainment =
+    options.checkSymlinkContainment ?? checkExistence;
 
   if (checkExistence) {
     try {
@@ -169,9 +195,10 @@ export function resolveFixtureRef(
         message: `Failed to access fixture file for ref '${ref}': ${absolutePath}: ${message}`,
       };
     }
+  }
 
-    // When checking existence, also enforce realpath containment to prevent
-    // symlink escapes.
+  if (checkSymlinkContainment) {
+    // Enforce realpath containment to prevent symlink escapes.
     let rootReal: string;
     try {
       rootReal = fs.realpathSync(rootDir);
@@ -186,24 +213,32 @@ export function resolveFixtureRef(
       };
     }
 
-    let fileReal: string;
+    // `fs.realpathSync()` requires the path to exist. If the final file doesn't
+    // exist (e.g. a path that will be created later), we still want to enforce
+    // that any existing path segments do not escape the root via symlinks.
+    let existingPath = absolutePath;
+    while (!fs.existsSync(existingPath) && existingPath !== rootDir) {
+      existingPath = path.dirname(existingPath);
+    }
+
+    let existingReal: string;
     try {
-      fileReal = fs.realpathSync(absolutePath);
+      existingReal = fs.realpathSync(existingPath);
     } catch (err) {
       const message =
         err instanceof Error
           ? err.message
-          : "Failed to resolve fixture file real path.";
+          : "Failed to resolve fixture path real path.";
       return {
         ok: false,
-        message: `Failed to resolve fixture file real path for ref '${ref}': ${absolutePath}: ${message}`,
+        message: `Failed to resolve fixture path real path for ref '${ref}': ${existingPath}: ${message}`,
       };
     }
 
-    if (!isPathInside(rootReal, fileReal)) {
+    if (!isPathInside(rootReal, existingReal)) {
       return {
         ok: false,
-        message: `Fixture ref '${ref}' escapes root '${parsed.root}' via symlink: ${absolutePath} -> ${fileReal} (outside ${rootReal})`,
+        message: `Fixture ref '${ref}' escapes root '${parsed.root}' via symlink: ${existingPath} -> ${existingReal} (outside ${rootReal})`,
       };
     }
   }
