@@ -598,7 +598,11 @@ function guessKernelKind(path: string): KernelKind {
   if (lower.endsWith(".ti") || lower.endsWith(".ik")) return "IK";
   if (lower.endsWith(".tsc") || lower.endsWith(".sclk")) return "SCLK";
   if (lower.endsWith(".tm") || lower.endsWith(".meta")) return "META";
-  return "ALL";
+  return "UNKNOWN";
+}
+
+function assertNever(x: never, msg: string): never {
+  throw new Error(msg);
 }
 
 function kernelFiltyp(kind: KernelKind): string {
@@ -615,9 +619,14 @@ function kernelFiltyp(kind: KernelKind): string {
     case "META":
       return kind;
     case "ALL":
-    default:
       return "ALL";
+    case "UNKNOWN":
+      return "UNKNOWN";
   }
+
+  // Compile-time exhaustiveness check: if a new KernelKind is added, TypeScript
+  // forces us to intentionally map it.
+  return assertNever(kind, `Unmapped KernelKind: ${kind}`);
 }
 
 function assertPoolRange(fn: string, start: number, room: number): void {
