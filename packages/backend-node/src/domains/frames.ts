@@ -48,6 +48,28 @@ export function createFramesApi(native: NativeAddon): FramesApi {
       return { found: true, frcode: out.frcode, frname: out.frname };
     },
 
+    frinfo: (frameId) => {
+      const out = native.frinfo(frameId);
+      if (!out.found) {
+        return { found: false };
+      }
+      invariant(typeof out.center === "number", "Expected frinfo().center to be a number");
+      invariant(typeof out.frameClass === "number", "Expected frinfo().frameClass to be a number");
+      invariant(typeof out.classId === "number", "Expected frinfo().classId to be a number");
+      return { found: true, center: out.center, frameClass: out.frameClass, classId: out.classId };
+    },
+
+    ccifrm: (frameClass, classId) => {
+      const out = native.ccifrm(frameClass, classId);
+      if (!out.found) {
+        return { found: false };
+      }
+      invariant(typeof out.frcode === "number", "Expected ccifrm().frcode to be a number");
+      invariant(typeof out.frname === "string", "Expected ccifrm().frname to be a string");
+      invariant(typeof out.center === "number", "Expected ccifrm().center to be a number");
+      return { found: true, frcode: out.frcode, frname: out.frname, center: out.center };
+    },
+
     ckgp: (inst, sclkdp, tol, ref) => {
       const out = native.ckgp(inst, sclkdp, tol, ref);
       if (!out.found) {

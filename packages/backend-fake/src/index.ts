@@ -25,6 +25,7 @@ import {
   brandMat3RowMajor,
   kxtrctJs,
   matchesKernelKind,
+  normalizeBodItem,
   normalizeKindInput,
 } from "@rybosome/tspice-backend-contract";
 
@@ -735,6 +736,11 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
   const kernelPool = new Map<string, KernelPoolEntry>();
 
+  // boddef() mappings (CSPICE uses process-global state; keep it per-backend here).
+  const customNameToBodyCode = new Map<string, number>();
+  const customBodyCodeToName = new Map<number, string>();
+
+
   // swpool/cvpool "agent" state.
   const kernelPoolWatches = new Map<string, { names: string[]; dirty: boolean }>();
   const kernelPoolWatchesByName = new Map<string, Set<string>>();
@@ -1109,15 +1115,76 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     bodn2c: (name) => {
       const trimmed = normalizeName(name);
+
+      const custom =
+        customNameToBodyCode.get(trimmed) ??
+        customNameToBodyCode.get(trimmed.toLowerCase());
+      if (custom !== undefined) return { found: true, code: custom };
+
       const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
       if (id === undefined) return { found: false };
       return { found: true, code: id };
     },
 
     bodc2n: (code) => {
+      const custom = customBodyCodeToName.get(code);
+      if (custom !== undefined) return { found: true, name: custom };
+
       const meta = ID_TO_BODY.get(code);
       if (!meta) return { found: false };
       return { found: true, name: meta.name };
+    },
+
+    bodc2s: (code) => {
+      const custom = customBodyCodeToName.get(code);
+      if (custom !== undefined) return custom;
+
+      const meta = ID_TO_BODY.get(code);
+      if (meta) return meta.name;
+
+      return String(code);
+    },
+
+    bods2c: (name) => {
+      const trimmed = normalizeName(name);
+
+      // Accept numeric IDs as strings.
+      if (/^-?\d+$/.test(trimmed)) {
+        return { found: true, code: Number(trimmed) };
+      }
+
+      const custom =
+        customNameToBodyCode.get(trimmed) ??
+        customNameToBodyCode.get(trimmed.toLowerCase());
+      if (custom !== undefined) return { found: true, code: custom };
+
+      const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
+      if (id === undefined) return { found: false };
+      return { found: true, code: id };
+    },
+
+    boddef: (name, code) => {
+      const trimmed = normalizeName(name);
+      customNameToBodyCode.set(trimmed, code);
+      customNameToBodyCode.set(trimmed.toLowerCase(), code);
+      customBodyCodeToName.set(code, trimmed);
+    },
+
+    bodfnd: (body, item) => {
+      const key = `BODY${body}_${normalizeBodItem(item)}`;
+      const entry = kernelPool.get(key);
+      return entry?.type === "N";
+    },
+
+    bodvar: (body, item) => {
+      const key = `BODY${body}_${normalizeBodItem(item)}`;
+      const entry = kernelPool.get(key);
+      if (!entry || entry.type !== "N") {
+        // Align with the backend contract: missing / non-numeric pool vars are a normal miss.
+        // Callers that need strict presence checks can use `bodfnd()`.
+        return [];
+      }
+      return [...entry.values];
     },
 
     namfrm: (name) => {
@@ -1151,6 +1218,22 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
         : id === BODY_IDS.MOON
           ? { found: true, frcode: FRAME_CODES.IAU_MOON, frname: "IAU_MOON" }
           : { found: false }) satisfies Found<{ frcode: number; frname: string }>;
+    },
+
+    frinfo: (frameId) => {
+      if (frameId === FRAME_CODES.J2000) {
+        return { found: true, center: 0, frameClass: 1, classId: frameId };
+      }
+      return { found: false };
+    },
+
+    ccifrm: (frameClass, classId) => {
+      if (frameClass === 1) {
+        const frname = FRAME_CODE_TO_NAME.get(classId);
+        if (!frname) return { found: false };
+        return { found: true, frcode: classId, frname, center: 0 };
+      }
+      return { found: false };
     },
 
     scs2e: (_sc, sclkch) => {
