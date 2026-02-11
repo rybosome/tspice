@@ -32,7 +32,8 @@ static std::string SpiceDataTypeToString(SpiceDataType dtype) {
   }
 }
 
-uint32_t AddCellHandle(Napi::Env env, uintptr_t ptr, const char *context) {
+uint32_t AddCellHandle(const CspiceLock& lock, Napi::Env env, uintptr_t ptr, const char *context) {
+  (void)lock;
   const char *ctx = (context != nullptr && context[0] != '\0') ? context : "AddCellHandle";
 
   // `0` is reserved as a sentinel/invalid handle.
@@ -71,7 +72,8 @@ uint32_t AddCellHandle(Napi::Env env, uintptr_t ptr, const char *context) {
   return 0;
 }
 
-bool TryGetCellPtr(uint32_t handle, uintptr_t *outPtr) {
+bool TryGetCellPtr(const CspiceLock& lock, uint32_t handle, uintptr_t *outPtr) {
+  (void)lock;
   auto it = g_cell_handles.find(handle);
   if (it == g_cell_handles.end()) {
     return false;
@@ -82,7 +84,8 @@ bool TryGetCellPtr(uint32_t handle, uintptr_t *outPtr) {
   return true;
 }
 
-bool RemoveCellPtr(uint32_t handle, uintptr_t *outPtr) {
+bool RemoveCellPtr(const CspiceLock& lock, uint32_t handle, uintptr_t *outPtr) {
+  (void)lock;
   auto it = g_cell_handles.find(handle);
   if (it == g_cell_handles.end()) {
     return false;
@@ -118,12 +121,14 @@ bool ReadCellHandleArg(Napi::Env env, const Napi::Value &value, const char *labe
 }
 
 uintptr_t GetCellHandlePtrOrThrow(
+    const CspiceLock& lock,
     Napi::Env env,
     uint32_t handle,
     const char *context,
     const char *kindLabel) {
+  (void)lock;
   uintptr_t ptr = 0;
-  if (!TryGetCellPtr(handle, &ptr)) {
+  if (!TryGetCellPtr(lock, handle, &ptr)) {
     const std::string ctx = (context != nullptr && context[0] != '\0') ? std::string(context) : std::string("call");
     const std::string kind = (kindLabel != nullptr && kindLabel[0] != '\0') ? std::string(kindLabel)
                                                                               : std::string("SpiceCell");
@@ -135,12 +140,13 @@ uintptr_t GetCellHandlePtrOrThrow(
 }
 
 uintptr_t GetCellHandlePtrOrThrow(
+    const CspiceLock& lock,
     Napi::Env env,
     uint32_t handle,
     SpiceDataType expectedDtype,
     const char *context,
     const char *kindLabel) {
-  const uintptr_t ptr = GetCellHandlePtrOrThrow(env, handle, context, kindLabel);
+  const uintptr_t ptr = GetCellHandlePtrOrThrow(lock, env, handle, context, kindLabel);
   if (env.IsExceptionPending() || ptr == 0) {
     return 0;
   }

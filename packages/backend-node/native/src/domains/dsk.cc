@@ -81,9 +81,9 @@ static Napi::Value Dskobj(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  tspice_backend_node::CspiceLock lock;
   const uintptr_t cellPtr =
-      tspice_backend_node::GetCellHandlePtrOrThrow(env, cellHandle, SPICE_INT, "dskobj(bodids)", "SpiceIntCell");
+      tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, cellHandle, SPICE_INT, "dskobj(bodids)", "SpiceIntCell");
   if (env.IsExceptionPending()) return env.Undefined();
 
   char err[tspice_backend_node::kErrMaxBytes];
@@ -114,9 +114,9 @@ static Napi::Value Dsksrf(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  tspice_backend_node::CspiceLock lock;
   const uintptr_t cellPtr =
-      tspice_backend_node::GetCellHandlePtrOrThrow(env, cellHandle, SPICE_INT, "dsksrf(srfids)", "SpiceIntCell");
+      tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, cellHandle, SPICE_INT, "dsksrf(srfids)", "SpiceIntCell");
   if (env.IsExceptionPending()) return env.Undefined();
 
   char err[tspice_backend_node::kErrMaxBytes];
