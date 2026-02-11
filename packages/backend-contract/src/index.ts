@@ -64,6 +64,7 @@ export {
 } from "./shared/spice-int.js";
 
 export * from "./domains/kernels.js";
+export * from "./domains/kernel-pool.js";
 export * from "./domains/time.js";
 export * from "./domains/ids-names.js";
 export * from "./domains/frames.js";
@@ -75,6 +76,7 @@ export * from "./domains/error.js";
 export * from "./domains/cells-windows.js";
 
 import type { KernelsApi } from "./domains/kernels.js";
+import type { KernelPoolApi } from "./domains/kernel-pool.js";
 import type { TimeApi } from "./domains/time.js";
 import type { IdsNamesApi } from "./domains/ids-names.js";
 import type { FramesApi } from "./domains/frames.js";
@@ -90,6 +92,7 @@ export type SpiceBackendKind = "node" | "wasm" | "fake";
 export interface SpiceBackend
   extends TimeApi,
     KernelsApi,
+    KernelPoolApi,
     IdsNamesApi,
     FramesApi,
     EphemerisApi,

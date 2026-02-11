@@ -11,6 +11,7 @@ export type EmscriptenModule = {
   HEAPU32: Uint32Array;
   HEAP32: Int32Array;
   HEAPF64: Float64Array;
+
   // --- error/status utilities ---
   _tspice_get_last_error_short(outPtr: number, outMaxBytes: number): number;
   _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;
@@ -37,6 +38,7 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  // --- kernels ---
   _tspice_furnsh(pathPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_unload(pathPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_kclear(errPtr: number, errMaxBytes: number): number;
@@ -88,13 +90,7 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
-  _tspice_dlabfs(
-    handle: number,
-    outDescr8Ptr: number,
-    outFoundPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
+  _tspice_dlabfs(handle: number, outDescr8Ptr: number, outFoundPtr: number, errPtr: number, errMaxBytes: number): number;
 
   _tspice_dlafns(
     handle: number,
@@ -107,6 +103,87 @@ export type EmscriptenModule = {
 
   _tspice_dlacls(handle: number, errPtr: number, errMaxBytes: number): number;
 
+  // --- kernel pool ---
+  _tspice_gdpool(
+    namePtr: number,
+    start: number,
+    room: number,
+    outNPtr: number,
+    outValuesPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_gipool(
+    namePtr: number,
+    start: number,
+    room: number,
+    outNPtr: number,
+    outValuesPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_gcpool(
+    namePtr: number,
+    start: number,
+    room: number,
+    cvalen: number,
+    outNPtr: number,
+    outCvalsPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_gnpool(
+    namePtr: number,
+    start: number,
+    room: number,
+    cvalen: number,
+    outNPtr: number,
+    outCvalsPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dtpool(
+    namePtr: number,
+    foundPtr: number,
+    outNPtr: number,
+    outTypePtr: number,
+    outTypeMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_pdpool(namePtr: number, n: number, valuesPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_pipool(namePtr: number, n: number, valuesPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_pcpool(
+    namePtr: number,
+    n: number,
+    lenvals: number,
+    cvalsPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_swpool(
+    agentPtr: number,
+    nnames: number,
+    namlen: number,
+    namesPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_cvpool(agentPtr: number, outUpdatePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_expool(namePtr: number, outFoundPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  // --- time ---
   _tspice_str2et(utcPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_et2utc(
     et: number,
@@ -126,6 +203,7 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  // --- ids/names/frames ---
   _tspice_bodn2c(namePtr: number, outCodePtr: number, foundPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_bodc2n(
     code: number,
@@ -171,14 +249,8 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
-  _tspice_scs2e(
-    sc: number,
-    sclkchPtr: number,
-    outEtPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-
+  // --- ephemeris/frames ---
+  _tspice_scs2e(sc: number, sclkchPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_sce2s(
     sc: number,
     et: number,
@@ -213,22 +285,9 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
-  _tspice_pxform(
-    fromPtr: number,
-    toPtr: number,
-    et: number,
-    outPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_sxform(
-    fromPtr: number,
-    toPtr: number,
-    et: number,
-    outPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
+  // --- derived geometry ---
+  _tspice_pxform(fromPtr: number, toPtr: number, et: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_sxform(fromPtr: number, toPtr: number, et: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_spkezr(
     targetPtr: number,
     et: number,
@@ -252,7 +311,6 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
-  // Derived geometry primitives
   _tspice_subpnt(
     methodPtr: number,
     targetPtr: number,
@@ -326,78 +384,20 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
-  // Coordinate conversions + small vector/matrix helpers
-  _tspice_reclat(
-    rect3Ptr: number,
-    outRadiusPtr: number,
-    outLonPtr: number,
-    outLatPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_latrec(
-    radius: number,
-    lon: number,
-    lat: number,
-    outRect3Ptr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_recsph(
-    rect3Ptr: number,
-    outRadiusPtr: number,
-    outColatPtr: number,
-    outLonPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_sphrec(
-    radius: number,
-    colat: number,
-    lon: number,
-    outRect3Ptr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
+  // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_reclat(rect3Ptr: number, outRadiusPtr: number, outLonPtr: number, outLatPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_latrec(radius: number, lon: number, lat: number, outRect3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_recsph(rect3Ptr: number, outRadiusPtr: number, outColatPtr: number, outLonPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_sphrec(radius: number, colat: number, lon: number, outRect3Ptr: number, errPtr: number, errMaxBytes: number): number;
 
   _tspice_vnorm(v3Ptr: number, outNormPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_vhat(v3Ptr: number, outVhat3Ptr: number, errPtr: number, errMaxBytes: number): number;
-  _tspice_vdot(
-    a3Ptr: number,
-    b3Ptr: number,
-    outDotPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_vcrss(
-    a3Ptr: number,
-    b3Ptr: number,
-    outCross3Ptr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_mxv(
-    m3x3Ptr: number,
-    v3Ptr: number,
-    outV3Ptr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_mtxv(
-    m3x3Ptr: number,
-    v3Ptr: number,
-    outV3Ptr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
+  _tspice_vdot(a3Ptr: number, b3Ptr: number, outDotPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vcrss(a3Ptr: number, b3Ptr: number, outCross3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_mxv(m3x3Ptr: number, v3Ptr: number, outV3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_mtxv(m3x3Ptr: number, v3Ptr: number, outV3Ptr: number, errPtr: number, errMaxBytes: number): number;
 
-  _tspice_mxm(
-    a3x3Ptr: number,
-    b3x3Ptr: number,
-    outM3x3Ptr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
+  _tspice_mxm(a3x3Ptr: number, b3x3Ptr: number, outM3x3Ptr: number, errPtr: number, errMaxBytes: number): number;
 
   _tspice_vadd(a3Ptr: number, b3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_vsub(a3Ptr: number, b3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
@@ -405,14 +405,7 @@ export type EmscriptenModule = {
   _tspice_vscl(s: number, v3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
 
   _tspice_rotate(angle: number, axis: number, outM3x3Ptr: number, errPtr: number, errMaxBytes: number): number;
-  _tspice_rotmat(
-    m3x3Ptr: number,
-    angle: number,
-    axis: number,
-    outM3x3Ptr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
+  _tspice_rotmat(m3x3Ptr: number, angle: number, axis: number, outM3x3Ptr: number, errPtr: number, errMaxBytes: number): number;
 
   _tspice_axisar(axis3Ptr: number, angle: number, outM3x3Ptr: number, errPtr: number, errMaxBytes: number): number;
 
@@ -441,19 +434,8 @@ export type EmscriptenModule = {
   // Cells + windows
   _tspice_new_int_cell(size: number, outCellPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_new_double_cell(size: number, outCellPtr: number, errPtr: number, errMaxBytes: number): number;
-  _tspice_new_char_cell(
-    size: number,
-    length: number,
-    outCellPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_new_window(
-    maxIntervals: number,
-    outWindowPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
+  _tspice_new_char_cell(size: number, length: number, outCellPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_new_window(maxIntervals: number, outWindowPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_free_cell(cell: number, errPtr: number, errMaxBytes: number): number;
   _tspice_free_window(window: number, errPtr: number, errMaxBytes: number): number;
 
@@ -467,28 +449,9 @@ export type EmscriptenModule = {
   _tspice_insrtd(item: number, cell: number, errPtr: number, errMaxBytes: number): number;
   _tspice_insrtc(itemPtr: number, cell: number, errPtr: number, errMaxBytes: number): number;
 
-  _tspice_cell_geti(
-    cell: number,
-    index: number,
-    outItemPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_cell_getd(
-    cell: number,
-    index: number,
-    outItemPtr: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
-  _tspice_cell_getc(
-    cell: number,
-    index: number,
-    outPtr: number,
-    outMaxBytes: number,
-    errPtr: number,
-    errMaxBytes: number,
-  ): number;
+  _tspice_cell_geti(cell: number, index: number, outItemPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_cell_getd(cell: number, index: number, outItemPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_cell_getc(cell: number, index: number, outPtr: number, outMaxBytes: number, errPtr: number, errMaxBytes: number): number;
 
   _tspice_wninsd(left: number, right: number, window: number, errPtr: number, errMaxBytes: number): number;
   _tspice_wncard(window: number, outCardPtr: number, errPtr: number, errMaxBytes: number): number;
@@ -526,6 +489,8 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_kclear",
   "_tspice_ktotal",
   "_tspice_kdata",
+
+  // File I/O
   "_tspice_exists",
   "_tspice_getfat",
   "_tspice_dafopr",
@@ -538,6 +503,20 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dlabfs",
   "_tspice_dlafns",
   "_tspice_dlacls",
+
+  // Kernel pool
+  "_tspice_gdpool",
+  "_tspice_gipool",
+  "_tspice_gcpool",
+  "_tspice_gnpool",
+  "_tspice_dtpool",
+  "_tspice_pdpool",
+  "_tspice_pipool",
+  "_tspice_pcpool",
+  "_tspice_swpool",
+  "_tspice_cvpool",
+  "_tspice_expool",
+
   "_tspice_str2et",
   "_tspice_et2utc",
   "_tspice_timout",

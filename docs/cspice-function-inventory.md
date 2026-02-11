@@ -7,13 +7,13 @@ Sources:
 - CSPICE routine list + brief descriptions: https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html (NAIF official index)
 - tspice implemented routines: backend contract surface via `SpiceBackend` in `packages/backend-contract/src/index.ts`
 
-SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `CoordsVectorsApi`, `ErrorApi`, `CellsWindowsApi`.
+SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`.
 
 ## Summary
 
-- Total routines (NAIF index): 651
-- Implemented now (SpiceBackend): 67
-- Planned (not yet implemented): 581
+- Total routines (NAIF index): 652
+- Implemented now (SpiceBackend): 79
+- Planned (not yet implemented): 570
 - Excluded: 3
 
 ## Implemented now
@@ -30,11 +30,23 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `ckgp_c` | C-kernel, get pointing |
 | `ckgpav_c` | C-kernel, get pointing and angular velocity |
 | `cnmfrm_c` | Center name to associated frame |
+| `dafbfs_c` | DAF, begin forward search |
+| `dafcls_c` | DAF, close |
+| `daffna_c` | DAF, find next array |
+| `dafopr_c` | DAF, open for read |
+| `dascls_c` | DAS, close file |
+| `dasopr_c` | DAS, open for read |
+| `dlabfs_c` | DLA, begin forward search |
+| `dlacls` | Close a DAS-backed DLA handle |
+| `dlafns_c` | DLA, find next segment |
+| `dlaopn_c` | DLA, open new file |
 | `et2utc_c` | Ephemeris Time to UTC |
+| `exists_c` | Does the file exist? |
 | `failed_c` | Error Status Indicator |
 | `frmnam_c` | Frame to Name |
 | `furnsh_c` | Furnish a program with SPICE kernels |
 | `georec_c` | Geodetic to rectangular coordinates |
+| `getfat_c` | Get file architecture and type |
 | `getmsg_c` | Get Error Message |
 | `ilumin_c` | Illumination angles |
 | `insrtc_c` | Insert an item into a character set |
@@ -155,12 +167,9 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `cylsph_c` | Cylindrical to spherical |
 | `dafac_c` | DAF add comments |
 | `dafbbs_c` | DAF, begin backward search |
-| `dafbfs_c` | DAF, begin forward search |
-| `dafcls_c` | DAF, close |
 | `dafcs_c` | DAF, continue search |
 | `dafdc_c` | DAF delete comments |
 | `dafec_c` | DAF extract comments |
-| `daffna_c` | DAF, find next array |
 | `daffpa_c` | DAF, find previous array |
 | `dafgda_c` | DAF, read data from address |
 | `dafgh_c` | DAF, get handle |
@@ -168,7 +177,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `dafgs_c` | DAF, get summary |
 | `dafgsr_c` | DAF, get summary/descriptor record |
 | `dafhsf_c` | DAF, handle to summary format |
-| `dafopr_c` | DAF, open for read |
 | `dafopw_c` | DAF, open for write |
 | `dafps_c` | DAF, pack summary |
 | `dafrda_c` | DAF, read data from address |
@@ -179,7 +187,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `dasadc_c` | DAS, add data, character |
 | `dasadd_c` | DAS, add data, double precision |
 | `dasadi_c` | DAS, add data, integer |
-| `dascls_c` | DAS, close file |
 | `dasdc_c` | DAS, delete comments |
 | `dasec_c` | DAS extract comments |
 | `dashfn_c` | DAS, handle to file name |
@@ -187,7 +194,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `daslla_c` | DAS, last logical addresses |
 | `dasllc_c` | DAS, low-level close |
 | `dasonw_c` | DAS, open new file |
-| `dasopr_c` | DAS, open for read |
 | `dasops_c` | DAS, open scratch |
 | `dasopw_c` | DAS, open for write |
 | `dasrdc_c` | DAS, read data, character |
@@ -206,12 +212,9 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `diags2_c` | Diagonalize symmetric 2x2 matrix |
 | `diff_c` | Difference of two sets |
 | `dlabbs_c` | DLA, begin backward search |
-| `dlabfs_c` | DLA, begin forward search |
 | `dlabns_c` | DLA, begin new segment |
 | `dlaens_c` | DLA, end new segment |
-| `dlafns_c` | DLA, find next segment |
 | `dlafps_c` | DLA, find previous segment |
-| `dlaopn_c` | DLA, open new file |
 | `dlatdr_c` | Derivative of latitudinal w.r.t. rectangular |
 | `dnearp_c` | Derivative of near point |
 | `dp2hx_c` | D.p. number to hexadecimal string |
@@ -313,7 +316,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `eul2m_c` | Euler angles to matrix |
 | `eul2xf_c` | Euler angles and derivative to transformation |
 | `evsgp4_c` | Evaluate "two-line" element data |
-| `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
 | `filld_c` | Fill a double precision array |
 | `filli_c` | Fill an integer array |
@@ -324,7 +326,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `gcpool_c` | Get character data from the kernel pool |
 | `gdpool_c` | Get d.p. values from the kernel pool |
 | `getelm_c` | Get the components from two-line elements |
-| `getfat_c` | Get file architecture and type |
 | `getfov_c` | Get instrument FOV parameters |
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
 | `gfbail_c` | GF, interrupt signal indicator |
