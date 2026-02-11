@@ -73,7 +73,14 @@ export async function createWasmBackend(
 
         const isValidWasm = (bytes: Uint8Array): boolean => {
           // Fail fast on truncated/corrupt cache restores.
-          return wasmApi?.validate(bytes) ?? false;
+          //
+          // If `validate()` is unavailable (or stubbed), assume valid and let
+          // instantiation fail with a real error.
+          if (!wasmApi?.validate) {
+            return true;
+          }
+
+          return wasmApi.validate(bytes);
         };
 
         async function readValidatedOrNull(path: string): Promise<Uint8Array | null> {
@@ -110,13 +117,15 @@ export async function createWasmBackend(
 
           const fallback = await readValidatedOrNull(fallbackPath);
           if (fallback) {
-            // Best-effort repair so subsequent loads see a valid file.
-            try {
-              const tmpPath = `${wasmPath}.tmp.${process.pid}.${Date.now()}`;
-              await writeFile(tmpPath, fallback);
-              await rename(tmpPath, wasmPath);
-            } catch {
-              // ignore
+            if (options.repairInvalidDistWasm === true) {
+              // Best-effort repair so subsequent loads see a valid file.
+              try {
+                const tmpPath = `${wasmPath}.tmp.${process.pid}.${Date.now()}`;
+                await writeFile(tmpPath, fallback);
+                await rename(tmpPath, wasmPath);
+              } catch {
+                // ignore
+              }
             }
 
             return fallback;
