@@ -122,24 +122,36 @@ function createSpiceTransportFromSpiceAsync(
 // IMPORTANT: `exposeTransportToWorker()` must run synchronously so the worker's
 // `message` handler is installed immediately. Otherwise, early RPC messages from
 // the main thread can be dropped while the WASM backend is still initializing.
-const spicePromise = createSpiceAsync({ backend: "wasm" });
-const transportPromise = spicePromise.then((spice) =>
-  createSpiceTransportFromSpiceAsync(spice),
-);
+let spicePromise: Promise<SpiceAsync> | undefined;
+let transportPromise: Promise<SpiceTransport> | undefined;
+
+const getSpicePromise = (): Promise<SpiceAsync> =>
+  (spicePromise ??= createSpiceAsync({ backend: "wasm" }));
+
+const getTransportPromise = (): Promise<SpiceTransport> =>
+  (transportPromise ??= getSpicePromise().then((spice) =>
+    createSpiceTransportFromSpiceAsync(spice),
+  ));
 
 exposeTransportToWorker({
   transport: {
     request: async (op: string, args: unknown[]): Promise<unknown> =>
-      (await transportPromise).request(op, args),
+      (await getTransportPromise()).request(op, args),
   },
   onDispose: async () => {
     // Best-effort cleanup. Worker termination also releases resources, but this
     // helps callers who keep the worker alive.
+    if (!spicePromise) {
+      return;
+    }
     try {
-      const spice = await spicePromise;
+      const spice = await getSpicePromise();
       await spice.raw.kclear();
     } catch {
       // ignore
     }
   },
 });
+
+// Kick off init after the `message` handler has been installed.
+void getTransportPromise();
