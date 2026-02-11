@@ -23,14 +23,6 @@ function normalizeToMinusPiPi(x: number): number {
   // atan2 returns +pi at the branch cut; convert to -pi so we preserve [-pi, pi).
   if (Object.is(y, Math.PI)) return -Math.PI;
 
-  // Trig reduction can yield tiny residuals for exact multiples of TAU
-  // (e.g. 2π -> ~-2.4e-16). Avoid `x % TAU` checks (unstable for huge |x|);
-  // instead snap based on the normalized result, and only when we've wrapped
-  // at least once.
-  const TAU = 2 * Math.PI;
-  const SNAP_EPS = 8 * Number.EPSILON;
-  if (Math.abs(x) >= TAU && Math.abs(y) < SNAP_EPS) return 0;
-
   return y;
 }
 
@@ -81,6 +73,13 @@ function compareNumbers(
   if (diff === 0) return null;
   // For infinities, subtraction produces NaN; fall back to exact identity.
   if (Number.isNaN(diff) && Object.is(actualNorm, expectedNorm)) return null;
+
+  // Trig reduction can yield tiny residuals for exact multiples of TAU
+  // (e.g. 2π -> ~-2.4e-16). Keep normalization pure; ignore only the
+  // reduction noise here, and only when angle wrapping is enabled.
+  const ANGLE_WRAP_EPS = 8 * Number.EPSILON;
+  if (angleWrapPi && diff < ANGLE_WRAP_EPS) return null;
+
   // Use a symmetric denominator so tolerance behaves consistently regardless
   // of whether callers treat `actual` or `expected` as the reference.
   const rel = diff / Math.max(1e-30, Math.max(Math.abs(actualNorm), Math.abs(expectedNorm)));
@@ -89,8 +88,8 @@ function compareNumbers(
   if (rel <= tolRel) return null;
 
   const message = angleWrapPi
-    ? `number mismatch (angleWrapPi): actual=${actual} expected=${expected} (wrappedActual=${actualNorm}, wrappedExpected=${expectedNorm}, delta=${delta}, diff=${diff}, rel=${rel})`
-    : `number mismatch: actual=${actual} expected=${expected} (diff=${diff}, rel=${rel})`;
+    ? `number mismatch (angleWrapPi): diff=${diff} rel=${rel} tolAbs=${tolAbs} tolRel=${tolRel} (wrappedActual=${actualNorm}, wrappedExpected=${expectedNorm}, delta=${delta})`
+    : `number mismatch: diff=${diff} rel=${rel} tolAbs=${tolAbs} tolRel=${tolRel}`;
 
   return { path, actual, expected, message };
 }

@@ -25,38 +25,35 @@ function isRequired(): boolean {
   return process.env.TSPICE_BACKEND_VERIFY_REQUIRED === "true";
 }
 
-const REQUIRED = isRequired();
-const CSPICE = getCspiceRunnerStatus();
-
 describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
   let tspice: CaseRunner | undefined;
   let cspice: CaseRunner | undefined;
 
   it("cspice-runner availability", () => {
-    if (CSPICE.ready) return;
+    const status = getCspiceRunnerStatus();
+    if (status.ready) return;
 
-    if (!REQUIRED) {
+    if (!isRequired()) {
       // eslint-disable-next-line no-console
       console.warn(
-        `[backend-verify] cspice-runner unavailable; backend-verify parity suite may be skipped (TSPICE_BACKEND_VERIFY_REQUIRED=false): ${CSPICE.hint}`,
+        `[backend-verify] cspice-runner unavailable; backend-verify parity suite may be skipped (TSPICE_BACKEND_VERIFY_REQUIRED=false): ${status.hint}`,
       );
       return;
     }
 
     throw new Error(
-      `[backend-verify] cspice-runner required but unavailable: ${CSPICE.hint}. ` +
+      `[backend-verify] cspice-runner required but unavailable: ${status.hint}. ` +
         `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
-        `State: ${CSPICE.statePath}`,
+        `State: ${status.statePath}`,
     );
   });
-
-  const scenarioIt = CSPICE.ready ? it : it.skip;
 
   // We reuse a single runner instance across scenarios for speed.
   // This is safe because `tspice.runCase()` isolates each case via kernel
   // cleanup/reset (kclear/reset) before executing.
   beforeAll(async () => {
-    if (!CSPICE.ready) return;
+    const status = getCspiceRunnerStatus();
+    if (!status.ready) return;
 
     try {
       tspice = await createTspiceRunner();
@@ -79,7 +76,9 @@ describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
     .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
   for (const file of scenarioFiles) {
-    scenarioIt(`matches scenario ${file}`, async () => {
+    it(`matches scenario ${file}`, async (ctx) => {
+      const cspiceStatus = getCspiceRunnerStatus();
+      if (!cspiceStatus.ready) ctx.skip();
       const scenarioPath = path.join(scenariosDir, file);
 
       const yamlFile = await loadScenarioYamlFile(scenarioPath);

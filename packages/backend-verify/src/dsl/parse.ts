@@ -24,6 +24,13 @@ function assertBoolean(value: unknown, label: string): boolean {
   throw new TypeError(`${label} must be a boolean (got ${JSON.stringify(value)})`);
 }
 
+const COMPARE_KEYS = {
+  tolAbs: true,
+  tolRel: true,
+  angleWrapPi: true,
+  errorShort: true,
+} as const satisfies Record<keyof ScenarioCompareAst, true>;
+
 function parseCompare(raw: unknown, label: string): ScenarioCompareAst {
   if (raw === undefined) return {};
 
@@ -33,9 +40,8 @@ function parseCompare(raw: unknown, label: string): ScenarioCompareAst {
 
   const out: ScenarioCompareAst = {};
 
-  const allowed = new Set(["tolAbs", "tolRel", "angleWrapPi", "errorShort"]);
   for (const k of Object.keys(raw)) {
-    if (!allowed.has(k)) {
+    if (!Object.hasOwn(COMPARE_KEYS, k)) {
       throw new TypeError(`${label} has unknown key: ${JSON.stringify(k)}`);
     }
   }
