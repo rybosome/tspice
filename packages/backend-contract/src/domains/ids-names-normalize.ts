@@ -61,25 +61,29 @@ function toAsciiUppercase(s: string): string {
   // For kernel pool item names, we only want to uppercase ASCII a-z.
   //
   // Performance: avoid allocating a new string if no changes are needed.
+  //
+  // Implementation note: we do a single pass over the string and only start
+  // constructing an output string after seeing the first lowercase ASCII letter.
+  let out: string | undefined;
+
   for (let i = 0; i < s.length; i++) {
     const code = s.charCodeAt(i);
     const isAsciiLower = code >= 97 /* 'a' */ && code <= 122 /* 'z' */;
-    if (!isAsciiLower) continue;
 
-    // We found at least one lowercase ASCII letter; build the output string.
-    //
-    // Note: `normalizeBodItem()` enforces a max input length, so a simple
-    // per-code-unit loop is both safe and low-allocation (no large temp arrays
-    // or `fromCharCode(...big)` argument lists).
-    let out = s.slice(0, i) + String.fromCharCode(code - 32);
-    for (let j = i + 1; j < s.length; j++) {
-      const cj = s.charCodeAt(j);
-      out += String.fromCharCode(
-        cj >= 97 /* 'a' */ && cj <= 122 /* 'z' */ ? cj - 32 : cj,
-      );
+    if (out === undefined) {
+      if (!isAsciiLower) continue;
+
+      // We found at least one lowercase ASCII letter; build the output string.
+      //
+      // Note: `normalizeBodItem()` enforces a max input length, so a simple
+      // per-code-unit loop is safe and keeps allocation behavior predictable.
+      out = s.slice(0, i) + String.fromCharCode(code - 32);
+      continue;
     }
-    return out;
+
+    out += String.fromCharCode(isAsciiLower ? code - 32 : code);
   }
 
-  return s;
+  return out ?? s;
 }
+
