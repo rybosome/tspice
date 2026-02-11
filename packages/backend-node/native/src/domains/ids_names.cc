@@ -1,6 +1,5 @@
 #include "ids_names.h"
 
-#include <cctype>
 #include <string>
 #include <vector>
 
@@ -14,14 +13,18 @@ using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
+static bool IsAsciiWhitespace(unsigned char c) {
+  return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v';
+}
+
 static std::string TrimAsciiWhitespace(const std::string& s) {
   size_t start = 0;
-  while (start < s.size() && std::isspace(static_cast<unsigned char>(s[start]))) {
+  while (start < s.size() && IsAsciiWhitespace(static_cast<unsigned char>(s[start]))) {
     start++;
   }
 
   size_t end = s.size();
-  while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1]))) {
+  while (end > start && IsAsciiWhitespace(static_cast<unsigned char>(s[end - 1]))) {
     end--;
   }
 
@@ -30,9 +33,16 @@ static std::string TrimAsciiWhitespace(const std::string& s) {
 
 static std::string ToUpperAscii(std::string s) {
   for (char& ch : s) {
-    ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
+    unsigned char c = static_cast<unsigned char>(ch);
+    if (c >= 'a' && c <= 'z') {
+      ch = static_cast<char>(c - 32);
+    }
   }
   return s;
+}
+
+static std::string NormalizeBodItem(const std::string& itemRaw) {
+  return ToUpperAscii(TrimAsciiWhitespace(itemRaw));
 }
 
 static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
@@ -167,7 +177,7 @@ static Napi::Boolean Bodfnd(const Napi::CallbackInfo& info) {
 
   const int body = info[0].As<Napi::Number>().Int32Value();
   const std::string itemRaw = info[1].As<Napi::String>().Utf8Value();
-  const std::string item = ToUpperAscii(TrimAsciiWhitespace(itemRaw));
+  const std::string item = NormalizeBodItem(itemRaw);
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
@@ -196,7 +206,7 @@ static Napi::Array Bodvar(const Napi::CallbackInfo& info) {
 
   const int body = info[0].As<Napi::Number>().Int32Value();
   const std::string itemRaw = info[1].As<Napi::String>().Utf8Value();
-  const std::string item = ToUpperAscii(TrimAsciiWhitespace(itemRaw));
+  const std::string item = NormalizeBodItem(itemRaw);
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
