@@ -32,6 +32,10 @@ function createNamespacedProxy(
   // Use a null-prototype target to reduce surprising Object.prototype behavior.
   const target = Object.create(null) as Record<string, unknown>;
 
+  // Cache a bounded number of generated method wrappers so repeated property
+  // access returns a stable function identity without allowing unbounded
+  // growth from arbitrary/dynamic property names.
+  const MAX_FN_CACHE_ENTRIES = 1024;
   const fnCache = new Map<string, unknown>();
 
   const toString = (): string => `[SpiceAsync.${namespace}]`;
@@ -59,9 +63,22 @@ function createNamespacedProxy(
 
       if (!isSafeRpcKey(prop)) return undefined;
 
-      if (fnCache.has(prop)) return fnCache.get(prop);
+      const cached = fnCache.get(prop);
+      // `fnCache` only stores functions, so `undefined` is a safe miss sentinel.
+      if (cached !== undefined) {
+        // LRU: bump recency by reinserting.
+        fnCache.delete(prop);
+        fnCache.set(prop, cached);
+        return cached;
+      }
 
       const fn = (...args: unknown[]) => t.request(`${namespace}.${prop}`, args);
+
+      if (fnCache.size >= MAX_FN_CACHE_ENTRIES) {
+        const oldest = fnCache.keys().next().value as string | undefined;
+        if (oldest !== undefined) fnCache.delete(oldest);
+      }
+
       fnCache.set(prop, fn);
       return fn;
     },
