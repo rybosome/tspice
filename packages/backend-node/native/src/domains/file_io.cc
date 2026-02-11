@@ -10,6 +10,7 @@
 #include "tspice_backend_shim.h"
 
 using tspice_napi::MakeNotFound;
+using tspice_napi::PreviewForError;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
@@ -95,7 +96,10 @@ static Napi::Boolean Exists(const Napi::CallbackInfo& info) {
   int exists = 0;
   const int code = tspice_exists(path.c_str(), &exists, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling exists(\"") + path + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling exists(\"") + PreviewForError(path) + "\")",
+        err);
     return Napi::Boolean::New(env, false);
   }
 
@@ -126,7 +130,10 @@ static Napi::Object Getfat(const Napi::CallbackInfo& info) {
       err,
       (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling getfat(\"") + path + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling getfat(\"") + PreviewForError(path) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 
@@ -151,7 +158,10 @@ static Napi::Number Dafopr(const Napi::CallbackInfo& info) {
   int handle = 0;
   const int code = tspice_dafopr(path.c_str(), &handle, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling dafopr(\"") + path + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling dafopr(\"") + PreviewForError(path) + "\")",
+        err);
     return Napi::Number::New(env, 0);
   }
 
@@ -240,7 +250,10 @@ static Napi::Number Dasopr(const Napi::CallbackInfo& info) {
   int handle = 0;
   const int code = tspice_dasopr(path.c_str(), &handle, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling dasopr(\"") + path + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling dasopr(\"") + PreviewForError(path) + "\")",
+        err);
     return Napi::Number::New(env, 0);
   }
 
@@ -323,7 +336,10 @@ static Napi::Number Dlaopn(const Napi::CallbackInfo& info) {
       err,
       (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling dlaopn(\"") + path + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling dlaopn(\"") + PreviewForError(path) + "\")",
+        err);
     return Napi::Number::New(env, 0);
   }
 

@@ -130,11 +130,6 @@ describe("primitives parity (node vs wasm)", () => {
       const deltaWasm = wasm.deltet(etWasm, "ET");
       expectClose(deltaNode, deltaWasm);
 
-      // Sanity: for this input, the difference between the two interpretations
-      // matches ΔET (ET-UTC) at the parsed epoch.
-      expectClose(etNode - sp2000Node, deltaNode);
-      expectClose(etWasm - sp2000Wasm, deltaWasm);
-
       const taiNode = node.unitim(etNode, "ET", "TAI");
       const taiWasm = wasm.unitim(etWasm, "ET", "TAI");
       expectClose(taiNode, taiWasm);

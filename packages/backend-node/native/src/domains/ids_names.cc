@@ -8,6 +8,7 @@
 
 using tspice_napi::MakeFound;
 using tspice_napi::MakeNotFound;
+using tspice_napi::PreviewForError;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
@@ -27,7 +28,10 @@ static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   int found = 0;
   const int code = tspice_bodn2c(name.c_str(), &codeOut, &found, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling bodn2c(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling bodn2c(\"") + PreviewForError(name) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 

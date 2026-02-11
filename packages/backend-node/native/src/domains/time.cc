@@ -7,6 +7,7 @@
 #include "tspice_backend_shim.h"
 
 using tspice_napi::SetExportChecked;
+using tspice_napi::PreviewForError;
 using tspice_napi::ThrowSpiceError;
 
 static Napi::Number Str2et(const Napi::CallbackInfo& info) {
@@ -24,7 +25,10 @@ static Napi::Number Str2et(const Napi::CallbackInfo& info) {
   double et = 0.0;
   const int code = tspice_str2et(time.c_str(), &et, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling str2et(\"") + time + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling str2et(\"") + PreviewForError(time) + "\")",
+        err);
     return Napi::Number::New(env, 0);
   }
 
@@ -149,7 +153,10 @@ static Napi::Number Tparse(const Napi::CallbackInfo& info) {
   double et = 0.0;
   const int code = tspice_tparse(timstr.c_str(), &et, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling tparse(\"") + timstr + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling tparse(\"") + PreviewForError(timstr) + "\")",
+        err);
     return Napi::Number::New(env, 0);
   }
 

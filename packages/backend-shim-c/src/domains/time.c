@@ -83,6 +83,10 @@ int tspice_str2et(const char *time, double *outEt, char *err, int errMaxBytes) {
     return tspice_time_invalid_arg(err, errMaxBytes, "tspice_str2et(): time must not be NULL");
   }
 
+  if (time[0] == '\0') {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_str2et(): time must be non-empty");
+  }
+
   SpiceDouble et = 0.0;
   str2et_c(time, &et);
   if (failed_c()) {

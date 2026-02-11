@@ -61,6 +61,20 @@ inline void ThrowSpiceError(Napi::Env env, const std::string& context, const cha
   ThrowSpiceError(jsErr);
 }
 
+/**
+* Produces a bounded preview of potentially untrusted user input for inclusion in error messages.
+*
+* This avoids creating extremely large JS exceptions and reduces the risk of leaking large or
+* sensitive strings into logs.
+*/
+inline std::string PreviewForError(const std::string& s, size_t maxChars = 200) {
+  if (s.size() <= maxChars) {
+    return s;
+  }
+
+  return s.substr(0, maxChars) + "…(len=" + std::to_string(s.size()) + ")";
+}
+
 inline Napi::Array MakeNumberArray(Napi::Env env, const double* values, size_t count) {
   Napi::Array arr = Napi::Array::New(env, count);
   for (size_t i = 0; i < count; i++) {

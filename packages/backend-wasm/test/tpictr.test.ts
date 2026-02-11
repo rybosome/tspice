@@ -46,4 +46,23 @@ describe("tpictr", () => {
     expect(out).toBe(expected);
     expect(out.length).toBeGreaterThan(300);
   });
+
+  it("handles samples near CSPICE's internal length cap", async () => {
+    const wasm = await createWasmBackend();
+
+    // NOTE: `tpictr_c` has an internal cap (currently 320 chars) on the input
+    // sample string. That means derived pictures can't approach our wrapper
+    // output cap (`WASM_TIME_OUT_MAX_BYTES`), but we *can* exercise the
+    // whitespace-preservation behavior near the toolkit's own boundary.
+    const sampleCap = 320;
+    const sampleOverhead = "24 Mar 2018".length + "16:23:00 UTC".length;
+    const pad = " ".repeat(sampleCap - sampleOverhead);
+
+    const sample = `24 Mar 2018${pad}16:23:00 UTC`;
+    const template = "X";
+
+    const out = wasm.tpictr(sample, template);
+    expect(out).toBe(`DD Mon YYYY${pad}HR:MN:SC UTC ::UTC`);
+    expect(out.length).toBeGreaterThan(300);
+  });
 });

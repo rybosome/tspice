@@ -15,8 +15,10 @@ import { writeUtf8CString } from "../codec/strings.js";
 */
 const WASM_TIME_OUT_MAX_BYTES = 16 * 1024; // 16 KiB
 
+const WASM_TIME_SMALL_OUT_MAX_BYTES = 2048;
+
 function withUtf8CString<T>(
-  module: Pick<EmscriptenModule, "_malloc" | "_free" | "HEAPU8">,
+  module: EmscriptenModule,
   value: string,
   fn: (ptr: number) => T,
 ): T {
@@ -169,7 +171,7 @@ function tspiceCallTpictr(module: EmscriptenModule, sample: string, picturIn: st
 }
 
 function tspiceCallTimdefGet(module: EmscriptenModule, item: string): string {
-  const outMaxBytes = WASM_ERR_MAX_BYTES;
+  const outMaxBytes = WASM_TIME_SMALL_OUT_MAX_BYTES;
 
   return withUtf8CString(module, item, (itemPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
