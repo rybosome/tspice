@@ -43,6 +43,23 @@ static int tspice_validate_dsk_path(const char *dsk, char *err, int errMaxBytes)
   return 0;
 }
 
+static const char *tspice_dtype_to_string(SpiceDataType dtype) {
+  switch (dtype) {
+    case SPICE_CHR:
+      return "SPICE_CHR";
+    case SPICE_DP:
+      return "SPICE_DP";
+    case SPICE_INT:
+      return "SPICE_INT";
+#ifdef SPICE_TIME
+    case SPICE_TIME:
+      return "SPICE_TIME";
+#endif
+    default:
+      return "UNKNOWN";
+  }
+}
+
 static int tspice_validate_int_cell(
     uintptr_t cellHandle,
     SpiceCell **outCell,
@@ -56,7 +73,14 @@ static int tspice_validate_int_cell(
 
   if (cell->dtype != SPICE_INT) {
     char buf[200];
-    snprintf(buf, sizeof(buf), "%s: expected SpiceIntCell handle", ctx);
+    snprintf(
+        buf,
+        sizeof(buf),
+        "%s: SpiceCell handle has wrong dtype (expected %s, got %s (%d))",
+        ctx,
+        tspice_dtype_to_string(SPICE_INT),
+        tspice_dtype_to_string(cell->dtype),
+        (int)cell->dtype);
     return tspice_write_error(err, errMaxBytes, buf);
   }
   if (outCell != NULL) {

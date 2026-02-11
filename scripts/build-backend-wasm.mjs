@@ -98,6 +98,7 @@ fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 
 const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "errors.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "handle_validation.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernels.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernel_pool.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "time.c"),

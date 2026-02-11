@@ -22,6 +22,11 @@ SpiceCell *tspice_validate_handle(
     char *err,
     int errMaxBytes);
 
+// Internal registry helpers used by the cells/windows domain to register and
+// retire handles.
+int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxBytes);
+int tspice_registry_remove(SpiceCell *cell);
+
 #ifdef __cplusplus
 }
 #endif

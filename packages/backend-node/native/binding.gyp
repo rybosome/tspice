@@ -23,6 +23,7 @@
         "src/domains/cells_windows.cc",
         "src/domains/dsk.cc",
         "../../backend-shim-c/src/errors.c",
+        "../../backend-shim-c/src/handle_validation.c",
         "../../backend-shim-c/src/domains/kernels.c",
         "../../backend-shim-c/src/domains/kernel_pool.c",
         "../../backend-shim-c/src/domains/time.c",
