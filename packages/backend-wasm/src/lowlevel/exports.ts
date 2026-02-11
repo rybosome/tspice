@@ -527,9 +527,6 @@ export type EmscriptenModule = {
   ): number;
   _tspice_wnvald(size: number, n: number, window: number, errPtr: number, errMaxBytes: number): number;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  FS: any;
-
 // --- kernel pool ---
   _tspice_gdpool(
     namePtr: number,
