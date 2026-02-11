@@ -13,6 +13,7 @@ import { createKernelPoolApi } from "../domains/kernel-pool.js";
 import { createTimeApi, getToolkitVersion } from "../domains/time.js";
 import { createFileIoApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
+import { createEkApi } from "../domains/ek.js";
 
 import { createWasmFs } from "./fs.js";
 
@@ -108,6 +109,7 @@ export async function createWasmBackend(
     ...createFileIoApi(module),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
+    ...createEkApi(module),
   } satisfies SpiceBackend;
 
   return backendBase;

@@ -60,6 +60,16 @@ export type NativeAddon = {
   dlafns(handle: number, descr: Record<string, unknown>): { found: boolean; descr?: Record<string, unknown> };
   dlacls(handle: number): void;
 
+  // --- EK ---
+  ekopr(path: string): number;
+  ekopw(path: string): number;
+  ekopn(path: string, ifname: string, ncomch: number): number;
+  ekcls(handle: number): void;
+
+  ekntab(): number;
+  ektnam(n: number): string;
+  eknseg(handle: number): number;
+
 
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };

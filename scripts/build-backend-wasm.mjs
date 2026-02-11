@@ -107,6 +107,7 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ek.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "cells_windows.c"),
 ];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
@@ -276,6 +277,15 @@ const EXPORTED_FUNCTIONS = [
   "_tspice_dlabfs",
   "_tspice_dlafns",
   "_tspice_dlacls",
+
+  // --- EK ---
+  "_tspice_ekopr",
+  "_tspice_ekopw",
+  "_tspice_ekopn",
+  "_tspice_ekcls",
+  "_tspice_ekntab",
+  "_tspice_ektnam",
+  "_tspice_eknseg",
 
   // --- kernel pool ---
   "_tspice_gdpool",

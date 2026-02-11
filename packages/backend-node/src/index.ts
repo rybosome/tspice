@@ -17,6 +17,7 @@ import { createTimeApi } from "./domains/time.js";
 import { createFileIoApi } from "./domains/file-io.js";
 import { createErrorApi } from "./domains/error.js";
 import { createCellsWindowsApi } from "./domains/cells-windows.js";
+import { createEkApi } from "./domains/ek.js";
 
 export function spiceVersion(): string {
   const version = getNativeAddon().spiceVersion();
@@ -41,6 +42,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     ...createFileIoApi(native),
     ...createErrorApi(native),
     ...createCellsWindowsApi(native),
+    ...createEkApi(native),
   };
 
   // Internal testing hook (not part of the public backend contract).

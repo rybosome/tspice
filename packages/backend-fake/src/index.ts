@@ -1333,6 +1333,29 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       throw new Error("Fake backend: dlacls() is not implemented");
     },
 
+    // --- EK (not implemented in fake backend) ---
+    ekopr: (_path: string) => {
+      throw new Error("Fake backend: ekopr() is not implemented");
+    },
+    ekopw: (_path: string) => {
+      throw new Error("Fake backend: ekopw() is not implemented");
+    },
+    ekopn: (_path: string, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: ekopn() is not implemented");
+    },
+    ekcls: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: ekcls() is not implemented");
+    },
+    ekntab: () => {
+      throw new Error("Fake backend: ekntab() is not implemented");
+    },
+    ektnam: (_n: number) => {
+      throw new Error("Fake backend: ektnam() is not implemented");
+    },
+    eknseg: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: eknseg() is not implemented");
+    },
+
     // -- Cells + windows -----------------------------------------------------
     //
     // The fake backend is intentionally minimal and does not attempt to

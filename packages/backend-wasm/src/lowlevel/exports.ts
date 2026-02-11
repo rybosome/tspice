@@ -103,6 +103,34 @@ export type EmscriptenModule = {
 
   _tspice_dlacls(handle: number, errPtr: number, errMaxBytes: number): number;
 
+  // --- EK ---
+
+  _tspice_ekopr(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_ekopw(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ekopn(
+    pathPtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekcls(handle: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ekntab(outNPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ektnam(
+    n: number,
+    outNamePtr: number,
+    outNameMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_eknseg(handle: number, outNsegPtr: number, errPtr: number, errMaxBytes: number): number;
+
   // --- kernel pool ---
   _tspice_gdpool(
     namePtr: number,
@@ -555,6 +583,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dlabfs",
   "_tspice_dlafns",
   "_tspice_dlacls",
+
+  // EK
+  "_tspice_ekopr",
+  "_tspice_ekopw",
+  "_tspice_ekopn",
+  "_tspice_ekcls",
+  "_tspice_ekntab",
+  "_tspice_ektnam",
+  "_tspice_eknseg",
 
   // Kernel pool
   "_tspice_gdpool",

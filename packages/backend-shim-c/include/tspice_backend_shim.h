@@ -122,6 +122,32 @@ int tspice_dlafns(
 // Close a DLA handle (DLA is DAS-backed).
 int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
+// --- EK --------------------------------------------------------------------
+
+int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes);
+int tspice_ekopw(const char *path, int *outHandle, char *err, int errMaxBytes);
+
+int tspice_ekopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekcls(int handle, char *err, int errMaxBytes);
+
+int tspice_ekntab(int *outN, char *err, int errMaxBytes);
+
+int tspice_ektnam(
+    int n,
+    char *outName,
+    int outNameMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_eknseg(int handle, int *outNseg, char *err, int errMaxBytes);
+
 // --- Kernel pool -----------------------------------------------------------
 
 int tspice_gdpool(
