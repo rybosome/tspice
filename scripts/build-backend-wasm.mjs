@@ -278,6 +278,12 @@ const EXPORTED_FUNCTIONS = [
   "_tspice_dlafns",
   "_tspice_dlacls",
 
+  // --- DSK ---
+  "_tspice_dskobj",
+  "_tspice_dsksrf",
+  "_tspice_dskgd",
+  "_tspice_dskb02",
+
   // --- kernel pool ---
   "_tspice_gdpool",
   "_tspice_gipool",
