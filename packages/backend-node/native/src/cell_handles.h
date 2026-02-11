@@ -8,7 +8,10 @@ namespace tspice_backend_node {
 
 // NOTE: all functions in this file assume `g_cspice_mutex` is held by the caller.
 
-uint32_t AddCellHandle(uintptr_t ptr);
+// Allocates a new unique handle for `ptr`.
+//
+// Returns 0 and throws a JS exception on internal failure (e.g. handle space exhaustion).
+uint32_t AddCellHandle(Napi::Env env, uintptr_t ptr, const char *context);
 
 bool TryGetCellPtr(uint32_t handle, uintptr_t *outPtr);
 

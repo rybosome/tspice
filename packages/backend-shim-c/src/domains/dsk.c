@@ -4,7 +4,10 @@
 #include "SpiceDLA.h"
 #include "SpiceDSK.h"
 
+#include "../handle_validation.h"
+
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 // ABI guard.
@@ -40,18 +43,21 @@ static int tspice_validate_dsk_path(const char *dsk, char *err, int errMaxBytes)
   return 0;
 }
 
-static int tspice_validate_int_cell(uintptr_t cellHandle, SpiceCell **outCell, char *err,
-                                    int errMaxBytes) {
-  // Use an existing shim entrypoint to validate the cell handle against the
-  // cells/windows registry.
-  int rc = tspice_card(cellHandle, NULL, err, errMaxBytes);
-  if (rc != 0) {
-    return rc;
+static int tspice_validate_int_cell(
+    uintptr_t cellHandle,
+    SpiceCell **outCell,
+    const char *ctx,
+    char *err,
+    int errMaxBytes) {
+  SpiceCell *cell = tspice_validate_handle(cellHandle, "cell", ctx, err, errMaxBytes);
+  if (cell == NULL) {
+    return 1;
   }
 
-  SpiceCell *cell = (SpiceCell *)cellHandle;
   if (cell->dtype != SPICE_INT) {
-    return tspice_write_error(err, errMaxBytes, "expected SpiceIntCell handle");
+    char buf[200];
+    snprintf(buf, sizeof(buf), "%s: expected SpiceIntCell handle", ctx);
+    return tspice_write_error(err, errMaxBytes, buf);
   }
   if (outCell != NULL) {
     *outCell = cell;
@@ -68,7 +74,7 @@ int tspice_dskobj(const char *dsk, uintptr_t bodidsCellHandle, char *err, int er
   }
 
   SpiceCell *bodids = NULL;
-  if (tspice_validate_int_cell(bodidsCellHandle, &bodids, err, errMaxBytes) != 0) {
+  if (tspice_validate_int_cell(bodidsCellHandle, &bodids, "tspice_dskobj()", err, errMaxBytes) != 0) {
     return 1;
   }
 
@@ -91,7 +97,7 @@ int tspice_dsksrf(const char *dsk, int bodyid, uintptr_t srfidsCellHandle, char 
   }
 
   SpiceCell *srfids = NULL;
-  if (tspice_validate_int_cell(srfidsCellHandle, &srfids, err, errMaxBytes) != 0) {
+  if (tspice_validate_int_cell(srfidsCellHandle, &srfids, "tspice_dsksrf()", err, errMaxBytes) != 0) {
     return 1;
   }
 

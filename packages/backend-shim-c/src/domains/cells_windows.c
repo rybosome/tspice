@@ -4,6 +4,8 @@
 #include "SpiceUsr.h"
 #include "SpiceZmc.h"
 
+#include "../handle_validation.h"
+
 #include <inttypes.h>
 #include <limits.h>
 #include <stddef.h>
@@ -100,7 +102,7 @@ static int tspice_registry_remove(SpiceCell *cell) {
   return 0;
 }
 
-static SpiceCell *tspice_validate_handle(
+SpiceCell *tspice_validate_handle(
     uintptr_t handle,
     const char *kind,
     const char *ctx,

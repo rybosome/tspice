@@ -14,13 +14,43 @@ namespace tspice_backend_node {
 static uint32_t g_next_cell_handle = 1;
 static std::unordered_map<uint32_t, uintptr_t> g_cell_handles;
 
-uint32_t AddCellHandle(uintptr_t ptr) {
-  uint32_t handle = g_next_cell_handle++;
-  if (handle == 0) {
-    handle = g_next_cell_handle++;
+uint32_t AddCellHandle(Napi::Env env, uintptr_t ptr, const char *context) {
+  const char *ctx = (context != nullptr && context[0] != '\0') ? context : "AddCellHandle";
+
+  // `0` is reserved as a sentinel/invalid handle.
+  //
+  // Note: a `uint32_t` has 2^32 possible values, so the space of non-zero
+  // handles is `UINT32_MAX`.
+  const size_t kMaxNonZeroHandles = (size_t)std::numeric_limits<uint32_t>::max();
+  if (g_cell_handles.size() >= kMaxNonZeroHandles) {
+    ThrowSpiceError(env, std::string(ctx) + ": exhausted SpiceCell handle space (uint32)");
+    return 0;
   }
-  g_cell_handles[handle] = ptr;
-  return handle;
+
+  // `g_next_cell_handle` is a `uint32_t` and will wrap around. When that
+  // happens, we must ensure we don't reuse a handle that's still live.
+  for (size_t attempts = 0; attempts < kMaxNonZeroHandles; attempts++) {
+    uint32_t handle = g_next_cell_handle++;
+    if (handle == 0) {
+      handle = g_next_cell_handle++;
+    }
+
+    if (handle == 0) {
+      // Defensive: if we ever generate 0 again due to wraparound quirks, skip.
+      continue;
+    }
+
+    if (g_cell_handles.find(handle) != g_cell_handles.end()) {
+      continue;
+    }
+
+    g_cell_handles.emplace(handle, ptr);
+    return handle;
+  }
+
+  // Should be unreachable due to the size check above.
+  ThrowSpiceError(env, std::string(ctx) + ": failed to allocate a unique SpiceCell handle");
+  return 0;
 }
 
 bool TryGetCellPtr(uint32_t handle, uintptr_t *outPtr) {

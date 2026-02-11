@@ -32,7 +32,12 @@ static Napi::Number NewIntCell(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  const uint32_t handle = tspice_backend_node::AddCellHandle(ptr);
+  const uint32_t handle = tspice_backend_node::AddCellHandle(env, ptr, "newIntCell");
+  if (handle == 0) {
+    // Best-effort: avoid leaking the newly allocated cell.
+    (void)tspice_free_cell(ptr, err, (int)sizeof(err));
+    return Napi::Number::New(env, 0);
+  }
   return Napi::Number::New(env, (double)handle);
 }
 
@@ -56,7 +61,12 @@ static Napi::Number NewDoubleCell(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  const uint32_t handle = tspice_backend_node::AddCellHandle(ptr);
+  const uint32_t handle = tspice_backend_node::AddCellHandle(env, ptr, "newDoubleCell");
+  if (handle == 0) {
+    // Best-effort: avoid leaking the newly allocated cell.
+    (void)tspice_free_cell(ptr, err, (int)sizeof(err));
+    return Napi::Number::New(env, 0);
+  }
   return Napi::Number::New(env, (double)handle);
 }
 
@@ -82,7 +92,12 @@ static Napi::Number NewCharCell(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  const uint32_t handle = tspice_backend_node::AddCellHandle(ptr);
+  const uint32_t handle = tspice_backend_node::AddCellHandle(env, ptr, "newCharCell");
+  if (handle == 0) {
+    // Best-effort: avoid leaking the newly allocated cell.
+    (void)tspice_free_cell(ptr, err, (int)sizeof(err));
+    return Napi::Number::New(env, 0);
+  }
   return Napi::Number::New(env, (double)handle);
 }
 
@@ -106,7 +121,12 @@ static Napi::Number NewWindow(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  const uint32_t handle = tspice_backend_node::AddCellHandle(ptr);
+  const uint32_t handle = tspice_backend_node::AddCellHandle(env, ptr, "newWindow");
+  if (handle == 0) {
+    // Best-effort: avoid leaking the newly allocated window.
+    (void)tspice_free_window(ptr, err, (int)sizeof(err));
+    return Napi::Number::New(env, 0);
+  }
   return Napi::Number::New(env, (double)handle);
 }
 

@@ -51,43 +51,57 @@ describe("dsk parity", () => {
     const node = createNodeBackend();
     const wasm = await createWasmBackend();
 
-    // WASM backend needs the bytes staged into its virtual FS.
-    wasm.furnsh({ path: DSK_FILENAME, bytes: DSK_FIXTURE_BYTES });
-
-    const nodeBodids = node.newIntCell(100);
-    const wasmBodids = wasm.newIntCell(100);
+    let didFurnsh = false;
 
     try {
-      node.dskobj(dskPath, nodeBodids);
-      wasm.dskobj(DSK_FILENAME, wasmBodids);
+      // WASM backend needs the bytes staged into its virtual FS.
+      wasm.furnsh({ path: DSK_FILENAME, bytes: DSK_FIXTURE_BYTES });
+      didFurnsh = true;
+      const nodeBodids = node.newIntCell(100);
+      const wasmBodids = wasm.newIntCell(100);
 
-      const nodeBodies = readIntCell(node, nodeBodids);
-      const wasmBodies = readIntCell(wasm, wasmBodids);
-
-      expect(nodeBodies.length).toBeGreaterThanOrEqual(1);
-      expect(nodeBodies).toEqual(wasmBodies);
-
-      const bodyid = nodeBodies[0];
-      expect(typeof bodyid).toBe("number");
-
-      const nodeSrfids = node.newIntCell(100);
-      const wasmSrfids = wasm.newIntCell(100);
       try {
-        node.dsksrf(dskPath, bodyid, nodeSrfids);
-        wasm.dsksrf(DSK_FILENAME, bodyid, wasmSrfids);
+        node.dskobj(dskPath, nodeBodids);
+        wasm.dskobj(DSK_FILENAME, wasmBodids);
 
-        const nodeSurfaces = readIntCell(node, nodeSrfids);
-        const wasmSurfaces = readIntCell(wasm, wasmSrfids);
+        const nodeBodies = readIntCell(node, nodeBodids);
+        const wasmBodies = readIntCell(wasm, wasmBodids);
 
-        expect(nodeSurfaces.length).toBeGreaterThanOrEqual(1);
-        expect(nodeSurfaces).toEqual(wasmSurfaces);
+        expect(nodeBodies.length).toBeGreaterThanOrEqual(1);
+        expect(nodeBodies).toEqual(wasmBodies);
+
+        const bodyid = nodeBodies[0];
+        expect(typeof bodyid).toBe("number");
+
+        const nodeSrfids = node.newIntCell(100);
+        const wasmSrfids = wasm.newIntCell(100);
+        try {
+          node.dsksrf(dskPath, bodyid, nodeSrfids);
+          wasm.dsksrf(DSK_FILENAME, bodyid, wasmSrfids);
+
+          const nodeSurfaces = readIntCell(node, nodeSrfids);
+          const wasmSurfaces = readIntCell(wasm, wasmSrfids);
+
+          expect(nodeSurfaces.length).toBeGreaterThanOrEqual(1);
+          expect(nodeSurfaces).toEqual(wasmSurfaces);
+        } finally {
+          node.freeCell(nodeSrfids);
+          wasm.freeCell(wasmSrfids);
+        }
       } finally {
-        node.freeCell(nodeSrfids);
-        wasm.freeCell(wasmSrfids);
+        node.freeCell(nodeBodids);
+        wasm.freeCell(wasmBodids);
       }
     } finally {
-      node.freeCell(nodeBodids);
-      wasm.freeCell(wasmBodids);
+      try {
+        if (didFurnsh) {
+          wasm.unload(DSK_FILENAME);
+        }
+      } finally {
+        // Ensure kernel pool cleanup even if unload fails.
+        wasm.kclear();
+        node.kclear();
+      }
     }
   });
 });
