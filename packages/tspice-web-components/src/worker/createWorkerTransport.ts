@@ -105,6 +105,9 @@ export function createWorkerTransport(opts: {
   signalDispose?: boolean;
 }): WorkerTransport {
   let worker: WorkerLike | undefined;
+  // Retain a reference for best-effort dispose signaling even after terminal
+  // teardown clears `worker`.
+  let workerForDisposeSignal: WorkerLike | undefined;
   let disposed = false;
   let terminalError: Error | undefined;
 
@@ -116,6 +119,25 @@ export function createWorkerTransport(opts: {
     opts.terminateOnDispose ?? (typeof opts.worker === "function" ? true : false);
 
   const signalDispose = opts.signalDispose ?? terminateOnDispose;
+
+  let didSignalDispose = false;
+
+  const signalDisposeOnce = (): void => {
+    if (didSignalDispose) return;
+    didSignalDispose = true;
+
+    if (!signalDispose) return;
+
+    const w = workerForDisposeSignal ?? worker;
+    if (!w) return;
+
+    try {
+      const msg: RpcDispose = { type: tspiceRpcDisposeType };
+      w.postMessage(msg);
+    } catch {
+      // ignore
+    }
+  };
 
   type Pending = {
     op: string;
@@ -198,10 +220,16 @@ export function createWorkerTransport(opts: {
     if (terminalError) return;
     terminalError = err;
 
+    // Terminal teardown transitions the transport into a disposed state even if
+    // the caller never explicitly invoked `dispose()`.
+    disposed = true;
+
     // Prevent any future settlement work from being queued.
     settlementQueued = false;
 
     rejectAllPending(opts?.getReason ?? (() => err));
+
+    workerForDisposeSignal = workerForDisposeSignal ?? worker;
 
     const w = worker;
     worker = undefined;
@@ -251,18 +279,9 @@ export function createWorkerTransport(opts: {
 
     if (terminalError) return;
 
-    const w = worker;
-
     // Best-effort: if configured, attempt to notify the worker to dispose any
     // server-side resources *before* we remove listeners/terminate.
-    if (w && signalDispose) {
-      try {
-        const msg: RpcDispose = { type: tspiceRpcDisposeType };
-        w.postMessage(msg);
-      } catch {
-        // ignore
-      }
-    }
+    signalDisposeOnce();
 
     terminalTeardown(err);
   };
@@ -413,6 +432,8 @@ export function createWorkerTransport(opts: {
         throw out;
       }
 
+      workerForDisposeSignal = worker;
+
       worker.addEventListener("message", onMessage);
       worker.addEventListener("error", onError);
       worker.addEventListener("messageerror", onMessageError);
@@ -422,25 +443,21 @@ export function createWorkerTransport(opts: {
   };
 
   const dispose = (): void => {
-    if (disposed) return;
+    // Idempotent. Even if we're already in a terminal state, callers should be
+    // able to invoke `dispose()` and still get a best-effort dispose signal.
+    if (disposed) {
+      signalDisposeOnce();
+      return;
+    }
     disposed = true;
-
-    if (terminalError) return;
-
-    const w = worker;
 
     // Best-effort: tell the worker it should dispose any server-side resources.
     //
     // This is intentionally opt-in for shared workers; `tspice:dispose` is a
     // global cleanup signal and may affect other clients.
-    if (w && signalDispose) {
-      try {
-        const msg: RpcDispose = { type: tspiceRpcDisposeType };
-        w.postMessage(msg);
-      } catch {
-        // ignore
-      }
-    }
+    signalDisposeOnce();
+
+    if (terminalError) return;
 
     terminalTeardown(new Error("Worker transport disposed"), {
       getReason: (pending, id) =>

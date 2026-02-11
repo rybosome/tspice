@@ -321,6 +321,35 @@ describe("createWorkerTransport()", () => {
     transport.dispose();
   });
 
+  it("still best-effort signals dispose after a terminal worker error", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const w = new FakeWorker();
+    const transport = createWorkerTransport({
+      worker: () => w,
+      terminateOnDispose: false,
+      signalDispose: true,
+    });
+
+    const p = transport.request("op", []);
+    expect(w.posted).toHaveLength(1);
+
+    w.emitError("Boom");
+    await expect(p).rejects.toThrow(/boom/i);
+
+    const postedBeforeDispose = w.posted.length;
+    transport.dispose();
+
+    expect(w.posted).toHaveLength(postedBeforeDispose + 1);
+    expect(w.posted[w.posted.length - 1]).toEqual({ type: "tspice:dispose" });
+
+    // Idempotent: do not signal twice.
+    transport.dispose();
+    expect(w.posted).toHaveLength(postedBeforeDispose + 1);
+  });
+
   it("rejects and cleans up on messageerror", async () => {
     const { createWorkerTransport } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components"
@@ -353,6 +382,35 @@ describe("createWorkerTransport()", () => {
     transport.dispose();
   });
 
+  it("still best-effort signals dispose after a terminal messageerror", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    const w = new FakeWorker();
+    const transport = createWorkerTransport({
+      worker: () => w,
+      terminateOnDispose: false,
+      signalDispose: true,
+    });
+
+    const p = transport.request("op", []);
+    expect(w.posted).toHaveLength(1);
+
+    w.emitMessageError();
+    await expect(p).rejects.toThrow(/deserialization failed/i);
+
+    const postedBeforeDispose = w.posted.length;
+    transport.dispose();
+
+    expect(w.posted).toHaveLength(postedBeforeDispose + 1);
+    expect(w.posted[w.posted.length - 1]).toEqual({ type: "tspice:dispose" });
+
+    // Idempotent: do not signal twice.
+    transport.dispose();
+    expect(w.posted).toHaveLength(postedBeforeDispose + 1);
+  });
+
   it("fails fast when no macrotask scheduler exists (before posting messages)", async () => {
     const { createWorkerTransport } = await import(
       /* @vite-ignore */ "@rybosome/tspice-web-components"
@@ -382,6 +440,53 @@ describe("createWorkerTransport()", () => {
       globalThis.MessageChannel = originalMessageChannel;
       // @ts-expect-error - restore
       globalThis.setTimeout = originalSetTimeout;
+    }
+  });
+
+  it("falls back to setTimeout when MessageChannel exists but postMessage is broken", async () => {
+    const { createWorkerTransport } = await import(
+      /* @vite-ignore */ "@rybosome/tspice-web-components"
+    );
+
+    vi.useFakeTimers();
+
+    const originalMessageChannel = globalThis.MessageChannel;
+
+    // A MessageChannel that can be constructed but throws on `postMessage`.
+    class BrokenMessageChannel {
+      port1 = {
+        onmessage: null as null | ((ev: unknown) => void),
+        close: () => {},
+      };
+      port2 = {
+        close: () => {},
+        postMessage: () => {
+          throw new Error("boom");
+        },
+      };
+    }
+
+    // @ts-expect-error - test override
+    globalThis.MessageChannel = BrokenMessageChannel;
+
+    try {
+      const w = new FakeWorker();
+      const transport = createWorkerTransport({ worker: () => w, terminateOnDispose: false });
+
+      const p = transport.request("op", []);
+      const posted = w.posted[0] as { id: number };
+
+      w.emitMessage({ type: "tspice:response", id: posted.id, ok: true, value: 123 });
+
+      // With broken MessageChannel, the transport should still settle on a timer.
+      expect(vi.getTimerCount()).toBe(1);
+      await vi.runAllTimersAsync();
+
+      await expect(p).resolves.toBe(123);
+      transport.dispose();
+    } finally {
+      // @ts-expect-error - restore
+      globalThis.MessageChannel = originalMessageChannel;
     }
   });
 

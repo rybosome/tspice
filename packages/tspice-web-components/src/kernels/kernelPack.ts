@@ -18,11 +18,13 @@ export type LoadKernelPackOptions = {
    * Base URL/path *directory* to resolve each `kernel.url` against when it is relative.
    *
    * Notes:
-   * - Absolute `kernel.url` values (e.g. `https://...`, `data:...`, `blob:...`) are left as-is.
+   * - Absolute `kernel.url` values (e.g. `https://...`, `//cdn...`, `data:...`, `blob:...`) are left as-is.
    * - Root-relative `kernel.url` values (starting with `/`) are left as-is.
    *
    * Base URL semantics:
-   * - `baseUrl` must be **directory-style** (end with `/`), regardless of whether it is:
+   * - `baseUrl` must be **directory-style**: its URL `pathname` ends with `/`.
+   *   (For plain path strings, this effectively means the string ends with `/`.)
+   *   This holds regardless of whether it is:
    *   - scheme-based (`https://...`)
    *   - protocol-relative (`//...`)
    *   - path-absolute (`/myapp/`)
@@ -99,7 +101,7 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
     // file-vs-directory behavior of `new URL(url, baseUrl)`.
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): absolute baseUrl must be directory-style (end with \"/\"): ${baseUrl}`,
+        `loadKernelPack(): absolute baseUrl must be directory-style (pathname must end with \"/\"): ${baseUrl}`,
       );
     }
 
@@ -117,7 +119,7 @@ function resolveKernelUrl(url: string, baseUrl: string | undefined): string {
     const base = new URL(baseUrl, "https://tspice.invalid");
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): path-absolute baseUrl must be directory-style (end with \"/\"): ${baseUrl}`,
+        `loadKernelPack(): path-absolute baseUrl must be directory-style (pathname must end with \"/\"): ${baseUrl}`,
       );
     }
 

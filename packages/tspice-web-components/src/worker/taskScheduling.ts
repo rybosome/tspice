@@ -15,16 +15,18 @@ export type QueueMacrotaskOptions = {
 */
 export function canQueueMacrotask(): boolean {
   // Prefer MessageChannel when available.
-  try {
-    if (typeof MessageChannel !== "undefined") {
+  //
+  // Important: if MessageChannel exists but is broken (e.g. constructible but
+  // `postMessage` throws), we fall through to `setTimeout` rather than failing
+  // closed. This matches `queueMacrotask()` behavior.
+  if (typeof MessageChannel !== "undefined") {
+    try {
       const { port1, port2 } = new MessageChannel();
-
-      // Probe that `postMessage` works (some polyfills allow construction but
-      // throw on `postMessage`, which would otherwise deadlock queueing).
       try {
+        // Probe that `postMessage` works (some polyfills allow construction but
+        // throw on `postMessage`, which would otherwise deadlock queueing).
         port2.postMessage(undefined);
-      } catch {
-        return false;
+        return true;
       } finally {
         // Always close ports so they don't keep the event loop alive in Node.
         // Be defensive: some polyfills/test environments may not implement `close()`.
@@ -39,10 +41,9 @@ export function canQueueMacrotask(): boolean {
           // ignore
         }
       }
-      return true;
+    } catch {
+      // Ignore and fall back to setTimeout.
     }
-  } catch {
-    // Ignore and fall back to setTimeout.
   }
 
   return typeof setTimeout === "function";

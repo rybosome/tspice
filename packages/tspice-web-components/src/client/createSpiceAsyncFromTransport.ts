@@ -63,8 +63,9 @@ function createNamespacedProxy(
 
       if (!isSafeRpcKey(prop)) return undefined;
 
-      if (fnCache.has(prop)) {
-        const cached = fnCache.get(prop);
+      const cached = fnCache.get(prop);
+      // `fnCache` only stores functions, so `undefined` is a safe miss sentinel.
+      if (cached !== undefined) {
         // LRU: bump recency by reinserting.
         fnCache.delete(prop);
         fnCache.set(prop, cached);
