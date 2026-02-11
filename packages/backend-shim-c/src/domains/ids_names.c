@@ -273,10 +273,6 @@ int tspice_bodvar(
     return 1;
   }
 
-  // Caller requested zero values; don't invoke CSPICE with a zero-length output.
-  if (maxn == 0) {
-    return 0;
-  }
 
   SpiceBoolean foundC = SPICEFALSE;
   SpiceInt nC = 0;
@@ -289,6 +285,12 @@ int tspice_bodvar(
   }
 
   if (foundC != SPICETRUE || typeC != 'N' || nC <= 0) {
+    return 0;
+  }
+
+  // Caller requested zero values; don't invoke CSPICE with a zero-length output.
+  // NOTE: We still run the `dtpool_c()` preflight above for validation.
+  if (maxn == 0) {
     return 0;
   }
 
