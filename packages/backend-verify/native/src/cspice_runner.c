@@ -17,6 +17,7 @@
 
 #include <math.h>
 
+#include <ctype.h>
 #include <errno.h>
 #include <inttypes.h>
 #include <limits.h>
@@ -398,6 +399,88 @@ static char *jsmn_strdup(const char *json, const jsmntok_t *tok) {
   return s;
 }
 
+// Strict JSON number grammar (RFC 8259):
+//   number = [ "-" ] int [ frac ] [ exp ]
+//   int = "0" / ( digit1-9 *digit )
+//   frac = "." 1*digit
+//   exp = ("e" / "E") ["+" / "-"] 1*digit
+//
+// This intentionally rejects:
+//   - leading '+'
+//   - any whitespace
+//   - leading zeros in the integer part (except "0")
+//   - missing digits after '.' or exponent marker
+static bool is_strict_json_number_literal(const char *s) {
+  if (s == NULL || s[0] == '\0') {
+    return false;
+  }
+
+  // Reject any whitespace anywhere. (`strtod` accepts it.)
+  for (const char *q = s; *q; q++) {
+    if (isspace((unsigned char)*q)) {
+      return false;
+    }
+  }
+
+  const char *p = s;
+
+  // No leading '+' in JSON.
+  if (*p == '+') {
+    return false;
+  }
+
+  if (*p == '-') {
+    p++;
+  }
+
+  // int
+  if (*p == '\0') {
+    return false;
+  }
+
+  if (*p == '0') {
+    p++;
+    // No leading zeros like "01".
+    if (*p >= '0' && *p <= '9') {
+      return false;
+    }
+  } else {
+    if (*p < '1' || *p > '9') {
+      return false;
+    }
+    for (p = p + 1; *p >= '0' && *p <= '9'; p++) {
+      // consume digits
+    }
+  }
+
+  // frac
+  if (*p == '.') {
+    p++;
+    if (*p < '0' || *p > '9') {
+      return false;
+    }
+    for (p = p + 1; *p >= '0' && *p <= '9'; p++) {
+      // consume digits
+    }
+  }
+
+  // exp
+  if (*p == 'e' || *p == 'E') {
+    p++;
+    if (*p == '+' || *p == '-') {
+      p++;
+    }
+    if (*p < '0' || *p > '9') {
+      return false;
+    }
+    for (p = p + 1; *p >= '0' && *p <= '9'; p++) {
+      // consume digits
+    }
+  }
+
+  return *p == '\0';
+}
+
 
 static bool jsmn_parse_double(const char *json, const jsmntok_t *tok,
                               SpiceDouble *out) {
@@ -416,6 +499,12 @@ static bool jsmn_parse_double(const char *json, const jsmntok_t *tok,
 
   // `LC_NUMERIC` is set to "C" once at process startup (see main()) so that
   // numeric parsing is locale-stable (decimal separator is '.').
+
+  // Make JSON-number parsing deterministic and strict. `strtod` accepts leading
+  // whitespace and a leading '+', which are not valid JSON.
+  if (!is_strict_json_number_literal(buf)) {
+    return false;
+  }
 
   errno = 0;
   char *endptr = NULL;
@@ -726,6 +815,8 @@ static void capture_spice_error(char *shortMsg, size_t shortBytes,
 }
 
 int main(void) {
+  int exitCode = 0;
+
   // Ensure numeric parsing is locale-stable (decimal separator is '.')
   // regardless of the environment.
   if (setlocale(LC_NUMERIC, "C") == NULL) {
@@ -736,7 +827,7 @@ int main(void) {
         NULL,
         NULL,
         NULL);
-    return 0;
+    return 1;
   }
 
   size_t inputLen = 0;
@@ -754,24 +845,28 @@ int main(void) {
     case READ_STDIN_OOM:
       write_error_json_ex("stdin_oom", "Out of memory while reading stdin", NULL,
                           NULL, NULL, NULL);
+      exitCode = 1;
       break;
     case READ_STDIN_IO: {
       const char *detail = errno != 0 ? strerror(errno) : NULL;
       write_error_json_ex("stdin_io", "Failed to read stdin", detail, NULL, NULL,
                           NULL);
+      exitCode = 1;
       break;
     }
     case READ_STDIN_OVERFLOW:
       write_error_json_ex("stdin_overflow",
                           "Internal overflow while reading stdin", NULL, NULL,
                           NULL, NULL);
+      exitCode = 1;
       break;
     default:
       write_error_json_ex("stdin_error", "Failed to read stdin", NULL, NULL, NULL,
                           NULL);
+      exitCode = 1;
       break;
     }
-    return 0;
+    return exitCode;
   }
 
   // Parse JSON.
@@ -784,7 +879,7 @@ int main(void) {
     if (tokens == NULL) {
       free(input);
       write_error_json("Out of memory", NULL, NULL, NULL);
-      return 0;
+      return 1;
     }
 
     jsmn_parser p;
@@ -908,6 +1003,7 @@ int main(void) {
           prevCwd = getcwd(NULL, 0);
           if (prevCwd == NULL) {
             write_error_json("Failed to getcwd before kernel load", NULL, NULL, NULL);
+            exitCode = 1;
             free(kernelPath);
             free(restrictToDir);
             goto done;
@@ -919,6 +1015,7 @@ int main(void) {
                      "Failed to chdir to restrictToDir: %s (dir=%s)",
                      strerror(errno), restrictToDir);
             write_error_json(msg, NULL, NULL, NULL);
+            exitCode = 1;
             free(prevCwd);
             free(kernelPath);
             free(restrictToDir);
@@ -935,6 +1032,7 @@ int main(void) {
                      "Failed to restore cwd after kernel load: %s (cwd=%s)",
                      strerror(errno), prevCwd);
             write_error_json(msg, NULL, NULL, NULL);
+            exitCode = 1;
             free(prevCwd);
             free(kernelPath);
             free(restrictToDir);
@@ -1343,5 +1441,5 @@ done:
   free(call);
   free(tokens);
   free(input);
-  return 0;
+  return exitCode;
 }

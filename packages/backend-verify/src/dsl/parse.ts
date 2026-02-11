@@ -42,7 +42,12 @@ function parseCompare(raw: unknown, label: string): ScenarioCompareAst {
 
   for (const k of Object.keys(raw)) {
     if (!Object.hasOwn(COMPARE_KEYS, k)) {
-      throw new TypeError(`${label} has unknown key: ${JSON.stringify(k)}`);
+      const allowed = Object.keys(COMPARE_KEYS)
+        .map((x) => JSON.stringify(x))
+        .join(", ");
+      throw new TypeError(
+        `${label} has unknown key: ${JSON.stringify(k)} (allowed keys: ${allowed})`,
+      );
     }
   }
 
