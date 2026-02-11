@@ -35,6 +35,15 @@ export function createKernelStager(): KernelStager {
   }
 
   function tryCanonicalVirtualKernelPath(input: string): string | undefined {
+    // Only treat well-known virtual kernel identifiers as virtual.
+    //
+    // NOTE: `normalizeVirtualKernelPath()` is intentionally strict (no `..`),
+    // but it can still successfully normalize plain OS paths like
+    // `/home/user/foo.tm`. We only want to canonicalize things that are
+    // explicitly in the virtual `/kernels/...` namespace.
+    if (!(input.startsWith("/kernels/") || input.startsWith("kernels/"))) {
+      return undefined;
+    }
     try {
       return canonicalVirtualKernelPath(input);
     } catch {
