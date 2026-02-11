@@ -27,16 +27,6 @@ const SUPPORTED_FILTYPE_TOKENS = SUPPORTED_QUERY_KIND_TOKENS.filter(
 
 const SUPPORTED_FILTYPE_SET = new Set<string>(SUPPORTED_FILTYPE_TOKENS);
 
-const NATIVE_KIND_SET = new Set<KernelKind>([
-  "SPK",
-  "CK",
-  "PCK",
-  "DSK",
-  "TEXT",
-  "EK",
-  "META",
-]);
-
 const TEXT_SUBTYPE_SET = new Set<KernelKind>(["LSK", "FK", "IK", "SCLK"]);
 
 function normalizeKindTokenOrThrow(raw: string): KernelKind {
@@ -153,27 +143,29 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
 * This is used by backends to decide whether they can forward a kind filter to
 * their underlying CSPICE implementation, or whether they must fall back to
 * querying `ALL` and filtering in JS.
+*
+* NOTE: `kinds` is expected to be normalized (via {@link normalizeKindInput}).
 */
 export function nativeKindQueryOrNull(kinds: readonly KernelKind[]): string | null {
-  if (kinds.length === 0) return null;
-  if (kinds.includes("ALL")) return "ALL";
-
-  const hasText = kinds.includes("TEXT");
-  const hasTextSubtype = kinds.some((k) => TEXT_SUBTYPE_SET.has(k));
-  if (hasTextSubtype && !hasText) return null;
-
-  // Deduplicate while preserving first-occurrence order.
-  const seen = new Set<KernelKind>();
-  const nativeKinds: KernelKind[] = [];
-  for (const k of kinds) {
-    if (k === "ALL") continue;
-    if (!NATIVE_KIND_SET.has(k)) continue; // subtypes intentionally omitted
-    if (seen.has(k)) continue;
-    seen.add(k);
-    nativeKinds.push(k);
+  if (kinds.length === 0) {
+    throw new RangeError("Expected normalized kernel kinds (did you forget normalizeKindInput?)");
   }
 
-  return nativeKinds.length === 0 ? null : nativeKinds.join(" ");
+  if (kinds.length === 1 && kinds[0] === "ALL") {
+    return "ALL";
+  }
+
+  for (const k of kinds) {
+    if (k === "ALL") {
+      throw new RangeError("Expected normalized kernel kinds (ALL must be the only token)");
+    }
+    if (TEXT_SUBTYPE_SET.has(k)) {
+      return null;
+    }
+  }
+
+  // At this point, normalized input can only contain native kinds.
+  return kinds.join(" ");
 }
 
 function normalizeRequestedKindSetIfNeeded(requestedRaw: ReadonlySet<string>): ReadonlySet<string> {

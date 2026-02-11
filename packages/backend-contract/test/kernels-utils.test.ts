@@ -51,19 +51,19 @@ describe("matchesKernelKind", () => {
 
 describe("nativeKindQueryOrNull", () => {
   it("treats ALL as an override", () => {
-    expect(nativeKindQueryOrNull(["ALL", "SPK"])).toBe("ALL");
+    expect(nativeKindQueryOrNull(normalizeKindInput(["ALL", "SPK"]))).toBe("ALL");
   });
 
   it("deduplicates while preserving first-occurrence order", () => {
-    expect(nativeKindQueryOrNull(["CK", "SPK", "CK", "SPK"])).toBe("CK SPK");
+    expect(nativeKindQueryOrNull(normalizeKindInput(["CK", "SPK", "CK", "SPK"]))).toBe("CK SPK");
   });
 
   it("returns null for TEXT subtypes unless TEXT is also requested", () => {
-    expect(nativeKindQueryOrNull(["LSK"])).toBeNull();
-    expect(nativeKindQueryOrNull(["SPK", "LSK"])).toBeNull();
+    expect(nativeKindQueryOrNull(normalizeKindInput(["LSK"]))).toBeNull();
+    expect(nativeKindQueryOrNull(normalizeKindInput(["SPK", "LSK"]))).toBeNull();
 
-    expect(nativeKindQueryOrNull(["TEXT", "LSK"])).toBe("TEXT");
-    expect(nativeKindQueryOrNull(["LSK", "TEXT"])).toBe("TEXT");
+    expect(nativeKindQueryOrNull(normalizeKindInput(["TEXT", "LSK"]))).toBe("TEXT");
+    expect(nativeKindQueryOrNull(normalizeKindInput(["LSK", "TEXT"]))).toBe("TEXT");
   });
 
   it("supports whitespace-separated kind strings via normalizeKindInput", () => {

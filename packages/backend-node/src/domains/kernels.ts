@@ -21,7 +21,7 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
     invariant(typeof result.file === "string", "Expected kdata().file to be a string");
     invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
     return {
-      file: result.file,
+      file: stager.virtualizePathFromSpice(result.file),
       filtyp: result.filtyp,
     };
   };
@@ -96,9 +96,6 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
 
     ktotal: (kind: KernelKindInput = "ALL") => {
       const kinds = normalizeKindInput(kind);
-      if (kinds.length === 0) {
-        return 0;
-      }
 
       const nativeQuery = nativeKindQueryOrNull(kinds);
       if (nativeQuery != null) {
@@ -133,9 +130,6 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
       }
 
       const kinds = normalizeKindInput(kind);
-      if (kinds.length === 0) {
-        return { found: false };
-      }
 
       const nativeQuery = nativeKindQueryOrNull(kinds);
       if (nativeQuery != null) {

@@ -207,9 +207,6 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
     },
     ktotal: (kind: KernelKindInput = "ALL") => {
       const kinds = normalizeKindInput(kind);
-      if (kinds.length === 0) {
-        return 0;
-      }
 
       const nativeQuery = nativeKindQueryOrNull(kinds);
       if (nativeQuery != null) {
@@ -235,9 +232,6 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
       }
 
       const kinds = normalizeKindInput(kind);
-      if (kinds.length === 0) {
-        return { found: false };
-      }
 
       const nativeQuery = nativeKindQueryOrNull(kinds);
       if (nativeQuery != null) {

@@ -262,9 +262,10 @@ int tspice_kxtrct(
   }
 
   // `kxtrct_c` mutates the wordsq buffer in-place. We copy the input into the
-  // output buffer, but must fail fast if doing so would truncate the input.
+  // output buffer, but must fail fast if doing so would truncate the input
+  // (including the trailing NUL).
   const size_t wordsqInLen = strlen(wordsqIn);
-  if (wordsqInLen >= (size_t)wordsqOutMaxBytes) {
+  if (wordsqInLen + 1 > (size_t)wordsqOutMaxBytes) {
     tspice_write_error(err, errMaxBytes, "tspice_kxtrct(): wordsqIn would truncate wordsqOut");
     return 1;
   }
