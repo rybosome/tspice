@@ -16,6 +16,8 @@ import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
 import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
 
+import { assertWasmOwnedCellHandle } from "./cells-windows.js";
+
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
 
 const I32_MIN = -2147483648;
@@ -243,10 +245,12 @@ function tspiceCallDskb02(
 export function createDskApi(module: EmscriptenModule, handles: SpiceHandleRegistry): DskApi {
   return {
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
+      assertWasmOwnedCellHandle(module, bodids as unknown as number, "dskobj(bodids)");
       tspiceCallDskobj(module, dsk, bodids);
     },
 
     dsksrf: (dsk: string, bodyid: number, srfids: SpiceIntCell) => {
+      assertWasmOwnedCellHandle(module, srfids as unknown as number, "dsksrf(srfids)");
       tspiceCallDsksrf(module, dsk, bodyid, srfids);
     },
 
