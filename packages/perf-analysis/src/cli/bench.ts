@@ -1,5 +1,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { runNodeNativeBench } from "../runners/node-native/index.js";
 
@@ -83,15 +84,24 @@ function resolveSuitePath(suiteArg: string): { suiteId: string; suitePath: strin
     return { suiteId, suitePath };
   }
 
-  const suitesDir = path.resolve(
-    process.cwd(),
-    "packages",
-    "perf-analysis",
-    "src",
-    "suites",
-    "yaml",
-    "v1",
-  );
+  // Resolve built-in suites relative to this CLI module location so calling
+  // `pnpm bench` from arbitrary working directories still works.
+  const cliDir = path.dirname(fileURLToPath(import.meta.url));
+
+  // When running from source (`src/cli`), suites live at `../suites/...`.
+  // When running the built CLI (`dist/cli`) in-repo, suites live under `../../src/suites/...`.
+  const suitesDirCandidates = [
+    path.resolve(cliDir, "..", "suites", "yaml", "v1"),
+    path.resolve(cliDir, "..", "..", "src", "suites", "yaml", "v1"),
+  ];
+
+  const suitesDir = suitesDirCandidates.find((d) => fs.existsSync(d));
+  if (!suitesDir) {
+    throw new Error(
+      `Unable to locate built-in benchmark suites directory. Tried:\n` +
+        suitesDirCandidates.map((p) => `- ${p}`).join("\n"),
+    );
+  }
 
   const yml = path.join(suitesDir, `${suiteArg}.yml`);
   const yaml = path.join(suitesDir, `${suiteArg}.yaml`);
