@@ -11,7 +11,7 @@
     "lint": "eslint \"src/**/*.{ts,tsx}\" \"e2e/**/*.ts\" vite.config.ts playwright.config.ts --max-warnings 0",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" \"e2e/**/*.ts\" vite.config.ts playwright.config.ts --fix",
     "preview": "vite preview",
-    "pree2e": "pnpm -r --filter @rybosome/tspice... --filter @rybosome/tspice-web-components... --filter @rybosome/tspice-backend-wasm... build",
+    "pree2e": "pnpm -r --filter @rybosome/tspice... --filter @rybosome/tspice-backend-wasm... build",
     "e2e": "playwright test",
     "test:e2e": "pnpm run e2e",
     "e2e:ui": "playwright test --ui",
@@ -20,7 +20,6 @@
   },
   "dependencies": {
     "@rybosome/tspice": "workspace:*",
-    "@rybosome/tspice-web-components": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "three": "0.160.1"
