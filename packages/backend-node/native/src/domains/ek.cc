@@ -23,6 +23,28 @@ namespace {
 
 constexpr uint32_t kMaxEkArrayLen = 1'000'000;
 
+static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char* what, int32_t* out) {
+  const std::string label = (what != nullptr && what[0] != '\0') ? std::string(what) : std::string("value");
+
+  if (!value.IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string("Expected ") + label + " to be a number"));
+    return false;
+  }
+
+  const double d = value.As<Napi::Number>().DoubleValue();
+  const double lo = (double)std::numeric_limits<int32_t>::min();
+  const double hi = (double)std::numeric_limits<int32_t>::max();
+  if (!std::isfinite(d) || std::floor(d) != d || d < lo || d > hi) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string("Expected ") + label + " to be a 32-bit signed integer"));
+    return false;
+  }
+
+  if (out) {
+    *out = (int32_t)d;
+  }
+  return true;
+}
+
 Napi::Array MakeIntArray(Napi::Env env, const int* values, size_t count) {
   Napi::Array arr = Napi::Array::New(env, count);
   for (size_t i = 0; i < count; i++) {
@@ -174,28 +196,6 @@ static int SumEntszs(const std::vector<int>& entszs) {
 }
 
 }  // namespace
-
-static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char* what, int32_t* out) {
-  const std::string label = (what != nullptr && what[0] != '\0') ? std::string(what) : std::string("value");
-
-  if (!value.IsNumber()) {
-    ThrowSpiceError(Napi::TypeError::New(env, std::string("Expected ") + label + " to be a number"));
-    return false;
-  }
-
-  const double d = value.As<Napi::Number>().DoubleValue();
-  const double lo = (double)std::numeric_limits<int32_t>::min();
-  const double hi = (double)std::numeric_limits<int32_t>::max();
-  if (!std::isfinite(d) || std::floor(d) != d || d < lo || d > hi) {
-    ThrowSpiceError(Napi::TypeError::New(env, std::string("Expected ") + label + " to be a 32-bit signed integer"));
-    return false;
-  }
-
-  if (out) {
-    *out = (int32_t)d;
-  }
-  return true;
-}
 
 namespace tspice_backend_node {
 
