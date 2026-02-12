@@ -144,7 +144,7 @@ static Napi::Value Dskgd(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  tspice_backend_node::CspiceLock lock;
   char err[tspice_backend_node::kErrMaxBytes];
 
   int32_t outInts6[6];
@@ -198,7 +198,7 @@ static Napi::Value Dskb02(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  tspice_backend_node::CspiceLock lock;
   char err[tspice_backend_node::kErrMaxBytes];
 
   int32_t outInts10[10];
