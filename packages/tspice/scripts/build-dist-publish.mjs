@@ -141,14 +141,6 @@ function buildExports() {
       types: "./dist/index.d.ts",
       default: "./dist/index.js",
     },
-    "./web": {
-      types: "./dist/web/index.d.ts",
-      default: "./dist/web/index.js",
-    },
-    "./worker": {
-      types: "./dist/worker/index.d.ts",
-      default: "./dist/worker/index.js",
-    },
   };
 }
 
