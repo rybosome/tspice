@@ -95,6 +95,15 @@ export function validate(value: unknown): BenchmarkContractV1 {
     );
   }
 
+  const allowedKeys = new Set(["version", "name", "runner", "fixtureRoots", "benchmarks"]);
+  const unknownKeys = Object.keys(value).filter((k) => !allowedKeys.has(k));
+  if (unknownKeys.length > 0) {
+    throw new TypeError(
+      `Benchmark suite YAML contains unknown top-level keys: ${unknownKeys.map((k) => JSON.stringify(k)).join(", ")}. ` +
+        `Allowed keys: ${[...allowedKeys].map((k) => JSON.stringify(k)).join(", ")}.`,
+    );
+  }
+
   const version = assertVersion(value.version);
   const name = value.name === undefined ? undefined : assertString(value.name, "name");
   const runner = value.runner === undefined ? undefined : assertString(value.runner, "runner");

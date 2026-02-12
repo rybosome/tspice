@@ -59,6 +59,48 @@ export interface BenchmarkContractV1 {
   readonly benchmarks: readonly BenchmarkCaseV1[];
 }
 
+/**
+* Normalized v1 benchmark case.
+*
+* `normalizeFixtureRefs()` converts YAML-friendly `FixtureRefV1` unions into
+* canonical `FixtureRef` objects.
+*/
+export interface NormalizedBenchmarkCaseV1 {
+  /** Stable id for the benchmark case within the suite. */
+  readonly id: string;
+
+  /** Optional human-friendly label. */
+  readonly name?: string;
+
+  /** Optional kernel fixture reference for this case (canonicalized). */
+  readonly kernel?: FixtureRef;
+
+  /** Runner-specific configuration payload. */
+  readonly config?: Record<string, unknown>;
+}
+
+/**
+* Normalized v1 benchmark contract.
+*
+* NOTE: this is the shape runners should use.
+*/
+export interface NormalizedBenchmarkContractV1 {
+  /** Schema version. */
+  readonly version: 1;
+
+  /** Optional suite name. */
+  readonly name?: string;
+
+  /** Optional runner identifier (e.g. "node-native"). */
+  readonly runner?: string;
+
+  /** Fixture root directories used to resolve fixture references. */
+  readonly fixtureRoots?: FixtureRoots;
+
+  /** Benchmark cases included in the suite. */
+  readonly benchmarks: readonly NormalizedBenchmarkCaseV1[];
+}
+
 export interface NormalizeFixtureRefsOptions {
   /**
    * Optional set of fixture roots used to canonicalize fixture references.
