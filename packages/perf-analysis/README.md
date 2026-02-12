@@ -7,6 +7,11 @@ Today this package includes a **node-native** benchmark runner that emits:
 - `raw.json` (full samples + debug metadata)
 - `bmf.json` (Bencher Metric Format)
 
+Metric units (BMF does not have a unit field, so these are implied):
+
+- `latency_p50` / `latency_p95`: `ns/op`
+- `throughput`: `ops/sec`
+
 See below for how to run it from the monorepo root.
 
 ## Running benchmarks (node-native)
@@ -25,7 +30,7 @@ pnpm bench --backend node-native --suite micro
 Outputs are written to:
 
 ```
-./artifacts/bench/node-native/micro/
+./benchmarks/results/<YYYYMMDD-HHmmss>/
   raw.json
   bmf.json
 ```
@@ -33,7 +38,7 @@ Outputs are written to:
 Override the output directory:
 
 ```bash
-pnpm bench --backend node-native --suite micro --outDir ./artifacts/custom
+pnpm bench --backend node-native --suite micro --outDir ./benchmarks/results/custom
 ```
 
 Native addon build (best-effort):

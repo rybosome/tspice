@@ -12,12 +12,24 @@ function usage(): string {
     "Options:",
     "  --backend   Currently only supports: node-native",
     "  --suite     Built-in suite id (e.g. micro) or a path to a .yml/.yaml file",
-    "  --outDir    Output directory (default: ./artifacts/bench/<backend>/<suite>/)",
+    "  --outDir    Output directory (default: ./benchmarks/results/<YYYYMMDD-HHmmss>/)",
     "",
     "Outputs:",
     "  raw.json  - full samples + metadata for debugging",
     "  bmf.json  - Bencher Metric Format (BMF)",
+    "",
+    "Metric units (BMF does not include units; these are implied):",
+    "  latency_p50 / latency_p95  - ns/op",
+    "  throughput                 - ops/sec",
   ].join("\n");
+}
+
+function formatTimestampForPath(d: Date): string {
+  const pad2 = (n: number): string => String(n).padStart(2, "0");
+  return (
+    `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}-` +
+    `${pad2(d.getHours())}${pad2(d.getMinutes())}${pad2(d.getSeconds())}`
+  );
 }
 
 type Args = {
@@ -137,7 +149,7 @@ async function main(): Promise<void> {
 
   const { suiteId, suitePath } = resolveSuitePath(suite);
   const outDir = path.resolve(
-    args.outDir ?? path.join("artifacts", "bench", backend, suiteId),
+    args.outDir ?? path.join("benchmarks", "results", formatTimestampForPath(new Date())),
   );
 
   const result = await runNodeNativeBench({

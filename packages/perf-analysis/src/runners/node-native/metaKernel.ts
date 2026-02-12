@@ -79,7 +79,9 @@ function ensureWithinDirOrThrow(resolved: string, baseDir: string, message: stri
   // rel === '' means `resolved === baseDir` which is acceptable.
   if (rel === "") return;
 
-  if (rel === ".." || rel.startsWith(`..${path.sep}`)) {
+  // On Windows, `path.relative()` can return an absolute path when the two inputs
+  // are on different drive letters (e.g. C: vs D:). Treat that as an escape.
+  if (path.isAbsolute(rel) || rel === ".." || rel.startsWith(`..${path.sep}`)) {
     throw new Error(message);
   }
 }
