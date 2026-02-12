@@ -1,5 +1,7 @@
 #include "cells_windows.h"
 
+#include "cell_handles.h"
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 
@@ -95,6 +97,19 @@ uintptr_t GetHandlePtrOrThrow(
 
 
 }  // namespace
+
+namespace tspice_backend_node {
+
+uintptr_t GetCellHandlePtrOrThrow(
+    Napi::Env env,
+    uint32_t handle,
+    const char* context,
+    const char* kindLabel) {
+  return GetHandlePtrOrThrow(env, handle, context, kindLabel);
+}
+
+
+}  // namespace tspice_backend_node
 
 static Napi::Number NewIntCell(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();

@@ -25,8 +25,52 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
     backend.furnsh({ path: kernelPath, bytes });
     expect(ktotalAll()).toBe(before + 1);
 
+    const info = backend.kinfo("kernels/minimal.tm");
+    expect(info.found).toBe(true);
+    if (info.found) {
+      expect(info.filtyp).toBeTruthy();
+      expect(typeof info.handle).toBe("number");
+    }
+
+    const totalAll = ktotalAll();
+    let sawKernel = false;
+    for (let i = 0; i < totalAll; i++) {
+      const kd = backend.kdata(i, "ALL" as any);
+      expect(kd.found).toBe(true);
+      if (!kd.found) continue;
+      expect(kd.file).toBeTruthy();
+      expect(kd.filtyp).toBeTruthy();
+
+      if (kd.file === kernelPath) {
+        sawKernel = true;
+      }
+    }
+    expect(sawKernel).toBe(true);
+
+    expect(backend.ktotal(["META", "TEXT"]))
+      .toBe(backend.ktotal("META") + backend.ktotal("TEXT"));
+
     backend.unload(kernelPath);
     expect(ktotalAll()).toBe(before);
+  });
+
+  it("throws for kplfrm until the WASM export is implemented", async () => {
+    const backend = await createWasmBackend();
+
+    const idset = backend.newIntCell(4);
+
+    try {
+      backend.insrti(1, idset);
+      backend.insrti(2, idset);
+      expect(backend.card(idset)).toBe(2);
+
+      expect(() => backend.kplfrm(1, idset)).toThrow(/kplfrm.*not supported/i);
+
+      // Ensure we don't silently clear/modify the output set.
+      expect(backend.card(idset)).toBe(2);
+    } finally {
+      backend.freeCell(idset);
+    }
   });
 
   it("rejects OS/URL-looking string paths (virtual ids only)", async () => {

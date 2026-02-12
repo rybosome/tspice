@@ -5,6 +5,7 @@
 #include "tspice_backend_shim.h"
 
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <vector>
 
@@ -216,6 +217,20 @@ inline bool IsAsciiWhitespace(unsigned char c) {
     default:
       return false;
   }
+}
+
+inline std::string TrimAsciiWhitespace(std::string_view s) {
+  size_t start = 0;
+  while (start < s.size() && IsAsciiWhitespace(static_cast<unsigned char>(s[start]))) {
+    start++;
+  }
+
+  size_t end = s.size();
+  while (end > start && IsAsciiWhitespace(static_cast<unsigned char>(s[end - 1]))) {
+    end--;
+  }
+
+  return std::string(s.substr(start, end - start));
 }
 
 /**

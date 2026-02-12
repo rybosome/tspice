@@ -156,10 +156,13 @@ Notes:
 | `kernels.furnsh(kernel)` | `furnsh_c` | `(kernel: KernelSource): void` | `void` | n/a | **stateful**: mutates kernel pool + loaded-kernel set; `KernelSource` may be a path or `{ path, bytes }` where backend writes bytes then furnshes the path |
 | `kernels.unload(path)` | `unload_c` | `(path: string): void` | `void` | n/a | **stateful**: unloads a previously loaded kernel |
 | `kernels.kclear()` | `kclear_c` | `(): void` | `void` | n/a | **stateful**: clears all loaded kernels and the kernel pool |
-| `kernels.ktotal(kind?)` | `ktotal_c` | `(kind?: KernelKind): number` | `number` | exact integer match | **stateful**: returns count of currently loaded kernels (optionally filtered) |
-| `kernels.kdata(which, kind?)` | `kdata_c` | `(which: number, kind?: KernelKind): Found<KernelData>` | `Found<KernelData>` | `filtyp` exact; path-like fields may require normalization (see Notes) | **stateful**: queries loaded-kernel table; returns `{ found: false }` when `which` is out of range for the selected kind |
+| `kernels.ktotal(kind?)` | `ktotal_c` | `(kind?: KernelKindInput): number` | `number` | exact integer match | **stateful**: returns count of currently loaded kernels (optionally filtered) |
+| `kernels.kdata(which, kind?)` | `kdata_c` | `(which: number, kind?: KernelKindInput): Found<KernelData>` | `Found<KernelData>` | `filtyp` exact; path-like fields may require normalization (see Notes) | **stateful**: queries loaded-kernel table; returns `{ found: false }` when `which` is out of range for the selected kind |
 
 Notes:
+
+- **Kind token normalization (`KernelKindInput`):** `kind` may be a single token, an array of tokens, or a whitespace-separated string (CSPICE-style). Tokens are trimmed + case-insensitive; duplicates are ignored (first-seen order preserved). If `ALL` is present alongside other tokens, it normalizes to `["ALL"]`. Invalid/empty tokens (including `[]`) throw `RangeError`.
+- **TEXT subtype inference:** SPICE often reports text kernels with `filtyp: "TEXT"` even when they are logically `LSK`/`FK`/`IK`/`SCLK`. When subtypes are requested, backends infer the subtype best-effort from the `kernel.file` extension (e.g. `.tls`/`.lsk` → `LSK`). If `TEXT` is requested, subtype tokens are redundant (and may be ignored/canonicalized away).
 
 - **Global state + determinism:** `furnsh` mutates process-global CSPICE state (kernel pool + loaded-kernel table). Load order can affect results. For deterministic tests, prefer an explicit load order and call `kernels.kclear()` between tests/suites to avoid cross-test leakage.
 - **`KernelSource` bytes safety:** when `KernelSource` is `{ path, bytes }`, backends should treat `path` as **untrusted** input. Write bytes only into a backend-controlled directory / virtual FS namespace, reject absolute paths and `..` segments, and (ideally) clean up temp artifacts on `unload()` / `kclear()` or process exit.

@@ -13,6 +13,7 @@ using tspice_napi::MakeNotFound;
 using tspice_napi::PreviewForError;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+using tspice_napi::FixedWidthToJsString;
 
 static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char* what, int32_t* out) {
   const std::string label = (what != nullptr && what[0] != '\0') ? std::string(what) : std::string("value");
@@ -138,8 +139,8 @@ static Napi::Object Getfat(const Napi::CallbackInfo& info) {
   }
 
   Napi::Object result = Napi::Object::New(env);
-  result.Set("arch", Napi::String::New(env, arch));
-  result.Set("type", Napi::String::New(env, type));
+  result.Set("arch", FixedWidthToJsString(env, arch, sizeof(arch)));
+  result.Set("type", FixedWidthToJsString(env, type, sizeof(type)));
   return result;
 }
 

@@ -70,6 +70,33 @@ int tspice_kdata(
     char *err,
     int errMaxBytes);
 
+int tspice_kinfo(
+    const char *path,
+    char *filtyp,
+    int filtypMaxBytes,
+    char *source,
+    int sourceMaxBytes,
+    int *outHandle,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_kxtrct(
+    const char *keywd,
+    int termlen,
+    const char *terms,
+    int nterms,
+    const char *wordsqIn,
+    char *wordsqOut,
+    int wordsqOutMaxBytes,
+    char *substr,
+    int substrMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_kplfrm(int frmcls, uintptr_t idset, char *err, int errMaxBytes);
+
 // Returns the number of loaded kernels, or -1 on error (with message in `err`).
 int tspice_ktotal_all(char *err, int errMaxBytes);
 
