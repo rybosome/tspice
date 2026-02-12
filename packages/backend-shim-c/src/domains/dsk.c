@@ -56,8 +56,17 @@ static const char *tspice_dtype_to_string(SpiceDataType dtype) {
       return "SPICE_TIME";
 #endif
     default:
-      return "UNKNOWN";
+      return NULL;
   }
+}
+
+static const char *tspice_dtype_to_string_buf(SpiceDataType dtype, char *buf, int bufMaxBytes) {
+  const char *known = tspice_dtype_to_string(dtype);
+  if (known != NULL) {
+    return known;
+  }
+  snprintf(buf, (size_t)bufMaxBytes, "SpiceDataType(%d)", (int)dtype);
+  return buf;
 }
 
 static int tspice_validate_int_cell(
@@ -73,14 +82,15 @@ static int tspice_validate_int_cell(
 
   if (cell->dtype != SPICE_INT) {
     char buf[200];
+    char bufExpected[64];
+    char bufGot[64];
     snprintf(
         buf,
         sizeof(buf),
-        "%s: SpiceCell handle has wrong dtype (expected %s, got %s (%d))",
+        "%s: SpiceCell handle has wrong dtype (expected %s, got %s)",
         ctx,
-        tspice_dtype_to_string(SPICE_INT),
-        tspice_dtype_to_string(cell->dtype),
-        (int)cell->dtype);
+        tspice_dtype_to_string_buf(SPICE_INT, bufExpected, (int)sizeof(bufExpected)),
+        tspice_dtype_to_string_buf(cell->dtype, bufGot, (int)sizeof(bufGot)));
     return tspice_write_error(err, errMaxBytes, buf);
   }
   if (outCell != NULL) {

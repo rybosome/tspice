@@ -66,6 +66,7 @@ export {
 
 export type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "./shared/spice-handles.js";
 export { createSpiceHandleRegistry } from "./shared/spice-handles.js";
+export { SpiceBackendContractError } from "./shared/errors.js";
 
 export * from "./domains/kernels.js";
 export * from "./domains/kernel-pool.js";

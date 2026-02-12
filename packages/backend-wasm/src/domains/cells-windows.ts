@@ -280,14 +280,37 @@ export function assertWasmOwnedCellHandle(
   handle: number,
   context: string,
 ): void {
-  if (!Number.isFinite(handle) || !Number.isInteger(handle) || handle <= 0) {
-    throw new TypeError(`${context}: expected a positive integer handle (got ${handle})`);
+  if (typeof handle !== "number" || !Number.isFinite(handle) || !Number.isInteger(handle)) {
+    throw new TypeError(`${context}: expected handle to be an integer number (got ${handle})`);
+  }
+  if (handle <= 0) {
+    throw new RangeError(`${context}: expected handle to be > 0 (got ${handle})`);
   }
 
   const { allocatedCells } = getOrInitWasmHandleOwnership(module);
   if (!allocatedCells.has(handle)) {
-    throw new Error(
-      `${context}: unknown/expired WASM cell handle ${handle} (handles are backend-instance-specific; did you mix Node/WASM backends?)`,
+    throw new RangeError(
+      `${context}: unknown/expired WASM cell handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+    );
+  }
+}
+
+export function assertWasmOwnedWindowHandle(
+  module: EmscriptenModule,
+  handle: number,
+  context: string,
+): void {
+  if (typeof handle !== "number" || !Number.isFinite(handle) || !Number.isInteger(handle)) {
+    throw new TypeError(`${context}: expected handle to be an integer number (got ${handle})`);
+  }
+  if (handle <= 0) {
+    throw new RangeError(`${context}: expected handle to be > 0 (got ${handle})`);
+  }
+
+  const { allocatedWindows } = getOrInitWasmHandleOwnership(module);
+  if (!allocatedWindows.has(handle)) {
+    throw new RangeError(
+      `${context}: unknown/expired WASM window handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
     );
   }
 }
@@ -306,19 +329,19 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
 
   function assertKnownCell(handle: number, context: string): void {
     if (!allocatedCells.has(handle)) {
-      throw new Error(`${context}: unknown/expired cell handle`);
+      throw new RangeError(`${context}: unknown/expired cell handle ${handle} (handles are per-module)`);
     }
   }
 
   function assertKnownWindow(handle: number, context: string): void {
     if (!allocatedWindows.has(handle)) {
-      throw new Error(`${context}: unknown/expired window handle`);
+      throw new RangeError(`${context}: unknown/expired window handle ${handle} (handles are per-module)`);
     }
   }
 
   function assertKnownCellOrWindow(handle: number, context: string): void {
     if (!allocatedCells.has(handle) && !allocatedWindows.has(handle)) {
-      throw new Error(`${context}: unknown/expired handle`);
+      throw new RangeError(`${context}: unknown/expired handle ${handle} (handles are per-module)`);
     }
   }
 
@@ -419,7 +442,7 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
       const handle = cell as unknown as number;
       const outMaxBytes = charCellLengths.get(handle);
       if (outMaxBytes === undefined) {
-        throw new Error(`cellGetc(): unknown char cell handle ${handle}`);
+        throw new RangeError(`cellGetc(): unknown/expired char cell handle ${handle} (handles are per-module)`);
       }
       return tspiceCallCellGetc(module, cell, index, outMaxBytes);
     },

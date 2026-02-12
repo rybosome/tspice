@@ -1,5 +1,6 @@
 import type { SpiceHandle } from "./types.js";
 import { SPICE_INT32_MAX, SPICE_INT32_MIN } from "./spice-int.js";
+import { SpiceBackendContractError } from "./errors.js";
 
 export type SpiceHandleKind = "DAF" | "DAS" | "DLA";
 
@@ -18,12 +19,22 @@ export type SpiceHandleRegistry = {
     context: string,
   ) => void;
   size: () => number;
+
+  // Internal hook used by some backends for best-effort cleanup.
+  // Not part of the stable public API, but safe to ignore.
+  __entries?: () => ReadonlyArray<readonly [SpiceHandle, SpiceHandleEntry]>;
 };
 
 function asHandleId(handle: SpiceHandle, context: string): number {
   const id = handle as unknown as number;
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    throw new TypeError(`${context}: expected a positive safe integer SpiceHandle`);
+  if (typeof id !== "number" || !Number.isFinite(id) || !Number.isInteger(id)) {
+    throw new TypeError(`${context}: expected a SpiceHandle to be an integer number`);
+  }
+  if (id <= 0) {
+    throw new RangeError(`${context}: expected a SpiceHandle to be > 0 (got ${id})`);
+  }
+  if (!Number.isSafeInteger(id)) {
+    throw new RangeError(`${context}: expected a SpiceHandle to be a safe integer (got ${id})`);
   }
   return id;
 }
@@ -43,16 +54,17 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
       nativeHandle < SPICE_INT32_MIN ||
       nativeHandle > SPICE_INT32_MAX
     ) {
-      throw new Error(`Expected backend to return a 32-bit signed integer handle for ${kind}`);
+      throw new SpiceBackendContractError(`backend contract violation: expected backend to return a 32-bit signed integer handle for ${kind} (got ${nativeHandle})`);
     }
 
     if (nextHandleId >= Number.MAX_SAFE_INTEGER) {
-      throw new Error(
-        `SpiceHandle ID overflow: too many handles allocated (nextHandleId=${nextHandleId})`,
-      );
+      throw new SpiceBackendContractError(`backend contract violation: SpiceHandle ID overflow (nextHandleId=${nextHandleId})`);
     }
 
     const handleId = nextHandleId++;
+    if (handles.has(handleId)) {
+      throw new SpiceBackendContractError(`backend contract violation: SpiceHandle ID collision (handleId=${handleId})`);
+    }
     handles.set(handleId, { kind, nativeHandle });
     return asSpiceHandle(handleId);
   }
@@ -61,12 +73,10 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
     const handleId = asHandleId(handle, `${context}: lookup(handle)`);
     const entry = handles.get(handleId);
     if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
+      throw new RangeError(`${context}: invalid or closed SpiceHandle ${handleId}`);
     }
     if (!expected.includes(entry.kind)) {
-      throw new Error(
-        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
-      );
+      throw new TypeError(`${context}: SpiceHandle ${handleId} has kind ${entry.kind}, expected ${expected.join(" or ")}`);
     }
     return entry;
   }
@@ -80,12 +90,10 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
     const handleId = asHandleId(handle, `${context}: close(handle)`);
     const entry = handles.get(handleId);
     if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
+      throw new RangeError(`${context}: invalid or closed SpiceHandle ${handleId}`);
     }
     if (!expected.includes(entry.kind)) {
-      throw new Error(
-        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
-      );
+      throw new TypeError(`${context}: SpiceHandle ${handleId} has kind ${entry.kind}, expected ${expected.join(" or ")}`);
     }
 
     // Close-once semantics: only forget the handle after the native close succeeds.
@@ -98,5 +106,9 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
     lookup,
     close,
     size: () => handles.size,
+
+    // Internal hook used by the Node backend to best-effort dispose all open handles.
+    // Not part of the public backend contract.
+    __entries: () => Array.from(handles.entries()).map(([handleId, entry]) => [asSpiceHandle(handleId), entry] as const),
   };
 }

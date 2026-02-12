@@ -143,8 +143,9 @@ static void FreeHandleCommon(
   uintptr_t ptr = 0;
   if (!tspice_backend_node::RemoveCellPtr(lock, handle, &ptr) || ptr == 0) {
     ThrowSpiceError(
-        env,
-        std::string(context) + ": unknown/expired " + kindLabel + " handle: " + std::to_string(handle));
+        Napi::RangeError::New(
+            env,
+            std::string(context) + ": unknown/expired " + kindLabel + " handle: " + std::to_string(handle)));
     return;
   }
 
