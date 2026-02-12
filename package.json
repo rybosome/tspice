@@ -24,7 +24,8 @@
     "typecheck": "turbo run build --filter=@rybosome/tspice-backend-contract && turbo run typecheck",
     "verify": "pnpm -w verify:js",
     "verify:js": "pnpm -w check:js",
-    "verify:native": "pnpm -w check:native"
+    "verify:native": "pnpm -w check:native",
+    "test:verify": "node scripts/test-verify.mjs"
   },
   "devDependencies": {
     "@rybosome/tspice-bench-contract": "workspace:*",
