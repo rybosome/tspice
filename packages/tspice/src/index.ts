@@ -51,7 +51,7 @@ export type {
 export { createPublicKernels, publicKernels } from "./kernels/publicKernels.js";
 
 // Former `@rybosome/tspice/web` exports (now available at the root).
-export type { SpiceTransport } from "./transport/types.js";
+export type { SpiceTransport, SpiceTransportSync } from "./transport/types.js";
 
 export type {
   CachePolicy,
@@ -69,6 +69,15 @@ export {
 } from "./transport/caching/withCaching.js";
 
 export type {
+  CachingTransportSync,
+  WithCachingSyncResult,
+} from "./transport/caching/withCachingSync.js";
+export {
+  isCachingTransportSync,
+  withCachingSync,
+} from "./transport/caching/withCachingSync.js";
+
+export type {
   WorkerLike,
   WorkerTransport,
   WorkerTransportRequestOptions,
@@ -84,6 +93,7 @@ export type { SpiceWorkerClient } from "./worker/browser/createSpiceWorkerClient
 export { createSpiceWorkerClient } from "./worker/browser/createSpiceWorkerClient.js";
 
 export { createSpiceAsyncFromTransport } from "./clients/createSpiceAsyncFromTransport.js";
+export { createSpiceSyncFromTransport } from "./clients/createSpiceSyncFromTransport.js";
 
 export type { KernelPack, KernelPackKernel, LoadKernelPackOptions } from "./kernels/kernelPack.js";
 export { loadKernelPack } from "./kernels/kernelPack.js";

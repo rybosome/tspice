@@ -104,6 +104,18 @@ main().catch(console.error);
     - `StateVector`
     - `SpiceError`
 
+### Client builder + caching
+
+`spiceClients` provides a small builder for creating sync/async/worker clients, with optional in-memory caching.
+
+When using `.synchronous().caching(...)`, caching is applied at the transport layer:
+
+- Only **successful** calls are cached (throws are not cached).
+- Kernel-mutating ops (e.g. `kit.loadKernel`, `raw.furnsh`) default to `"no-store"`.
+- The cache is **not** automatically invalidated when the kernel pool changes, so cached results can become stale if you load/unload kernels mid-session.
+
+Recommendation: call the build result’s `dispose()` when you’re done (it clears caches + stops any TTL sweep timers), and consider rebuilding/clearing the cache after kernel mutations.
+
 ### Selecting a backend
 
 ```ts

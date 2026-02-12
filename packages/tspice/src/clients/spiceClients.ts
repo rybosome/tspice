@@ -1,14 +1,19 @@
 import { createSpice, createSpiceAsync, type CreateSpiceAsyncOptions, type CreateSpiceOptions } from "../spice.js";
 import type { Spice, SpiceAsync } from "../kit/types/spice-types.js";
 
-import type { SpiceTransport } from "../transport/types.js";
+import type { SpiceTransport, SpiceTransportSync } from "../transport/types.js";
 
 import {
   isCachingTransport,
   withCaching,
   type WithCachingOptions,
 } from "../transport/caching/withCaching.js";
+import {
+  isCachingTransportSync,
+  withCachingSync,
+} from "../transport/caching/withCachingSync.js";
 import { createSpiceAsyncFromTransport } from "./createSpiceAsyncFromTransport.js";
+import { createSpiceSyncFromTransport } from "./createSpiceSyncFromTransport.js";
 import type { KernelPack, LoadKernelPackOptions } from "../kernels/kernelPack.js";
 import { loadKernelPack } from "../kernels/kernelPack.js";
 import { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
@@ -148,6 +153,41 @@ function createSpiceTransportFromSpiceLike(spice: SpiceLike): SpiceTransport {
   };
 }
 
+function createSpiceTransportSyncFromSpiceLike(
+  spice: Pick<Spice, "raw" | "kit">,
+): SpiceTransportSync {
+  return {
+    request: (op: string, args: unknown[]): unknown => {
+      const dot = op.indexOf(".");
+      if (dot <= 0 || dot === op.length - 1) {
+        throw new Error(`Invalid op: ${op}`);
+      }
+
+      const namespace = op.slice(0, dot);
+      const method = op.slice(dot + 1);
+
+      if (namespace !== "raw" && namespace !== "kit") {
+        throw new Error(`Unknown namespace: ${namespace}`);
+      }
+
+      if (!isSafeRpcKey(method) || blockedStringKeys.has(method)) {
+        throw new Error(`Invalid method name: ${method}`);
+      }
+
+      const ns = namespace satisfies RpcNamespace;
+
+      const target = spice[ns] as unknown as Record<string, unknown>;
+      const fn = target[method];
+      if (typeof fn !== "function") {
+        throw new Error(`Unknown op: ${op}`);
+      }
+
+      // Use Reflect.apply to be defensive about `this`.
+      return Reflect.apply(fn as (...a: unknown[]) => unknown, target, args);
+    },
+  };
+}
+
 function createBuilder(state: BuilderState & { kind: "synchronous" }): SpiceClientsBuilder<Spice>;
 function createBuilder(
   state: BuilderState & { kind: Exclude<ClientKind, "synchronous"> },
@@ -167,14 +207,18 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAs
 
     build: async (): Promise<SpiceClientBuildResult<Spice | SpiceAsync>> => {
       if (state.kind === "synchronous") {
-        // NOTE: Unlike the async modes, the synchronous client is returned
-        // directly (no transport-based proxying), so it exposes the sync API.
-        //
-        // This means `caching()` currently does not affect the returned client.
-        const spice = await createSpice(state.inProcessOptions as CreateSpiceOptions);
+        const baseSpice = await createSpice(state.inProcessOptions as CreateSpiceOptions);
+        const baseTransport = createSpiceTransportSyncFromSpiceLike(baseSpice);
+
+        const cachedTransport = state.cachingOptions
+          ? withCachingSync(baseTransport, state.cachingOptions)
+          : undefined;
+
+        const raw = createSpiceSyncFromTransport(baseTransport);
+        const spice = createSpiceSyncFromTransport(cachedTransport ?? baseTransport);
 
         if (state.kernels) {
-          await loadKernelPack(spice, state.kernels.pack, state.kernels.loadOptions);
+          await loadKernelPack(raw, state.kernels.pack, state.kernels.loadOptions);
         }
 
         let disposePromise: Promise<void> | undefined;
@@ -183,9 +227,19 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAs
           if (disposePromise) return disposePromise;
 
           disposePromise = (async () => {
+            // Always clear caches first so we don't retain references to any large
+            // results/kernels after teardown.
+            if (cachedTransport && isCachingTransportSync(cachedTransport)) {
+              try {
+                cachedTransport.dispose();
+              } catch {
+                // ignore
+              }
+            }
+
             // In-process: best-effort kernel cleanup.
             try {
-              spice.kit.kclear();
+              raw.kit.kclear();
             } catch {
               // ignore
             }
