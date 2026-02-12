@@ -74,15 +74,21 @@ export function createKernelStager(): KernelStager {
       return undefined;
     }
 
-    // `normalizeVirtualKernelPath()` is intentionally strict (no `..`), but it
-    // can still successfully normalize *absolute* OS paths like `/home/user/foo.tm`.
-    // Those must pass through unchanged.
-    if (!isVirtualKernelId(input)) {
-      return undefined;
-    }
-
     try {
-      return canonicalVirtualKernelPath(input);
+      // Explicit virtual identifiers always participate.
+      if (isVirtualKernelId(input)) {
+        return canonicalVirtualKernelPath(input);
+      }
+
+      // For non-explicit relative paths, only treat as virtual if we already
+      // staged bytes for that id. This preserves `unload("naif0012.tls")` for
+      // byte-backed kernels without hijacking arbitrary on-disk relative paths.
+      if (!path.isAbsolute(input)) {
+        const canonical = canonicalVirtualKernelPath(input);
+        return tempByVirtualPath.has(canonical) ? canonical : undefined;
+      }
+
+      return undefined;
     } catch {
       // Only treat as virtual if it normalizes successfully.
       return undefined;
