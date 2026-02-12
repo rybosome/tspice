@@ -108,4 +108,49 @@ export interface FileIoApi {
    * `dascls` (same handle compatibility).
    */
   dlacls(handle: SpiceHandle): void;
+
+  // --- DSK (DAS-backed) ---------------------------------------------------
+
+  /** Create and open a DSK file for write (see `dskopn_c`). */
+  dskopn(path: string, ifname: string, ncomch: number): SpiceHandle;
+
+  /** Build the spatial index for a type 2 DSK segment (see `dskmi2_c`). */
+  dskmi2(
+    nv: number,
+    vrtces: readonly number[],
+    np: number,
+    plates: readonly number[],
+    finscl: number,
+    corscl: number,
+    worksz: number,
+    voxpsz: number,
+    voxlsz: number,
+    makvtl: boolean,
+    spxisz: number,
+  ): { spaixd: number[]; spaixi: number[] };
+
+  /** Write a type 2 segment to a DSK file opened by `dskopn` (see `dskw02_c`). */
+  dskw02(
+    handle: SpiceHandle,
+    center: number,
+    surfid: number,
+    dclass: number,
+    frame: string,
+    corsys: number,
+    corpar: readonly number[],
+    mncor1: number,
+    mxcor1: number,
+    mncor2: number,
+    mxcor2: number,
+    mncor3: number,
+    mxcor3: number,
+    first: number,
+    last: number,
+    nv: number,
+    vrtces: readonly number[],
+    np: number,
+    plates: readonly number[],
+    spaixd: readonly number[],
+    spaixi: readonly number[],
+  ): void;
 }

@@ -88,6 +88,45 @@ export type NativeAddon = {
   ektnam(n: number): string;
   eknseg(handle: number): number;
 
+  // --- DSK writer ---
+  dskopn(path: string, ifname: string, ncomch: number): number;
+  dskmi2(
+    nv: number,
+    vrtces: readonly number[],
+    np: number,
+    plates: readonly number[],
+    finscl: number,
+    corscl: number,
+    worksz: number,
+    voxpsz: number,
+    voxlsz: number,
+    makvtl: boolean,
+    spxisz: number,
+  ): { spaixd: number[]; spaixi: number[] };
+  dskw02(
+    handle: number,
+    center: number,
+    surfid: number,
+    dclass: number,
+    frame: string,
+    corsys: number,
+    corpar: readonly number[],
+    mncor1: number,
+    mxcor1: number,
+    mncor2: number,
+    mxcor2: number,
+    mncor3: number,
+    mxcor3: number,
+    first: number,
+    last: number,
+    nv: number,
+    vrtces: readonly number[],
+    np: number,
+    plates: readonly number[],
+    spaixd: readonly number[],
+    spaixi: readonly number[],
+  ): void;
+
   // --- DSK ---
 
   dskobj(dsk: string, bodidsCellHandle: number): void;

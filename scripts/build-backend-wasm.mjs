@@ -289,6 +289,9 @@ const exportedFunctions = [
   "_tspice_eknseg",
 
   // --- DSK ---
+  "_tspice_dskopn",
+  "_tspice_dskmi2",
+  "_tspice_dskw02",
   "_tspice_dskobj",
   "_tspice_dsksrf",
   "_tspice_dskgd",
