@@ -9,6 +9,7 @@
 #include "domains/frames.h"
 #include "domains/geometry.h"
 #include "domains/ids_names.h"
+#include "domains/dsk.h"
 #include "domains/kernels.h"
 #include "domains/kernel_pool.h"
 #include "domains/time.h"
@@ -40,6 +41,7 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   if (!registerDomain(tspice_backend_node::RegisterError)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterCellsWindows)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterEk)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterDsk)) return exports;
 
   return exports;
 }

@@ -1,4 +1,10 @@
+import type { CompareOptions } from "../compare/types.js";
 import type { KernelEntry } from "../runners/types.js";
+
+export type ScenarioCompareAst = CompareOptions & {
+  /** If true, compare only `spice.short` when both sides throw. */
+  errorShort?: boolean;
+};
 
 export type ScenarioSetupAst = {
   /** Kernel entries (resolved to absolute paths by the parser). */
@@ -8,6 +14,7 @@ export type ScenarioSetupAst = {
 export type ScenarioCaseAst = {
   id: string;
   setup?: ScenarioSetupAst;
+  compare?: ScenarioCompareAst;
   call: string;
   args?: unknown[];
 
@@ -24,6 +31,7 @@ export type ScenarioAst = {
   name?: string;
 
   setup?: ScenarioSetupAst;
+  compare?: ScenarioCompareAst;
   cases: ScenarioCaseAst[];
 
   meta: {

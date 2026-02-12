@@ -1,7 +1,7 @@
 import * as path from "node:path";
 import * as fs from "node:fs";
 
-import type { ScenarioAst, ScenarioCaseAst, ScenarioSetupAst, ScenarioYamlFile } from "./types.js";
+import type { ScenarioAst, ScenarioCaseAst, ScenarioCompareAst, ScenarioSetupAst, ScenarioYamlFile } from "./types.js";
 import type { KernelEntry } from "../runners/types.js";
 import { resolveMetaKernelKernelsToLoad } from "../kernels/metaKernel.js";
 
@@ -9,9 +9,82 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function formatValue(value: unknown): string {
+  if (typeof value === "number") {
+    if (Number.isNaN(value)) return "NaN";
+    if (value === Infinity) return "Infinity";
+    if (value === -Infinity) return "-Infinity";
+    return String(value);
+  }
+
+  try {
+    const s = JSON.stringify(value);
+    return s === undefined ? String(value) : s;
+  } catch {
+    return String(value);
+  }
+}
+
 function assertString(value: unknown, label: string): string {
   if (typeof value === "string") return value;
   throw new TypeError(`${label} must be a string (got ${JSON.stringify(value)})`);
+}
+
+function assertNumber(value: unknown, label: string): number {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  throw new TypeError(`${label} must be a finite number (got ${formatValue(value)})`);
+}
+
+function assertTolerance(value: unknown, label: string): number {
+  const n = assertNumber(value, label);
+  if (n < 0) {
+    throw new TypeError(`${label} must be >= 0 (got ${n})`);
+  }
+  return n;
+}
+
+function assertBoolean(value: unknown, label: string): boolean {
+  if (typeof value === "boolean") return value;
+  throw new TypeError(`${label} must be a boolean (got ${JSON.stringify(value)})`);
+}
+
+const COMPARE_KEYS = {
+  tolAbs: true,
+  tolRel: true,
+  angleWrapPi: true,
+  errorShort: true,
+} as const satisfies Record<keyof ScenarioCompareAst, true>;
+
+function parseCompare(raw: unknown, label: string): ScenarioCompareAst {
+  if (raw === undefined) return {};
+
+  if (!isRecord(raw)) {
+    throw new TypeError(`${label} must be a mapping/object (got ${JSON.stringify(raw)})`);
+  }
+
+  const out: ScenarioCompareAst = {};
+
+  for (const k of Object.keys(raw)) {
+    if (!Object.hasOwn(COMPARE_KEYS, k)) {
+      const allowed = Object.keys(COMPARE_KEYS)
+        .map((x) => JSON.stringify(x))
+        .join(", ");
+      throw new TypeError(
+        `${label} has unknown key: ${JSON.stringify(k)} (allowed keys: ${allowed})`,
+      );
+    }
+  }
+
+  if (raw.tolAbs !== undefined) out.tolAbs = assertTolerance(raw.tolAbs, `${label}.tolAbs`);
+  if (raw.tolRel !== undefined) out.tolRel = assertTolerance(raw.tolRel, `${label}.tolRel`);
+  if (raw.angleWrapPi !== undefined) {
+    out.angleWrapPi = assertBoolean(raw.angleWrapPi, `${label}.angleWrapPi`);
+  }
+  if (raw.errorShort !== undefined) {
+    out.errorShort = assertBoolean(raw.errorShort, `${label}.errorShort`);
+  }
+
+  return out;
 }
 
 function asStringArray(value: unknown, label: string): string[] {
@@ -205,13 +278,20 @@ function parseCase(raw: unknown, index: number, sourceDir: string): ScenarioCase
     throw new TypeError(`cases[${index}].args must be an array (got ${JSON.stringify(args)})`);
   }
 
-  return {
+  const setup = parseSetup(raw.setup, sourceDir);
+  const compare = parseCompare(raw.compare, `cases[${index}].compare`);
+
+  const out: ScenarioCaseAst = {
     id,
     call,
     args,
-    setup: parseSetup(raw.setup, sourceDir),
     expect: raw.expect,
   };
+
+  if (setup.kernels !== undefined) out.setup = setup;
+  if (Object.keys(compare).length > 0) out.compare = compare;
+
+  return out;
 }
 
 export function parseScenario(file: ScenarioYamlFile): ScenarioAst {
@@ -226,6 +306,7 @@ export function parseScenario(file: ScenarioYamlFile): ScenarioAst {
 
   const name = data.name === undefined ? undefined : assertString(data.name, "name");
   const setup = parseSetup(data.setup, sourceDir);
+  const compare = parseCompare(data.compare, "compare");
 
   if (!Array.isArray(data.cases)) {
     throw new TypeError(`cases must be an array (got ${JSON.stringify(data.cases)})`);
@@ -243,6 +324,7 @@ export function parseScenario(file: ScenarioYamlFile): ScenarioAst {
 
   if (name !== undefined) scenario.name = name;
   if (setup.kernels !== undefined) scenario.setup = setup;
+  if (Object.keys(compare).length > 0) scenario.compare = compare;
 
   return scenario;
 }

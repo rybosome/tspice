@@ -98,6 +98,7 @@ fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 
 const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "errors.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "handle_validation.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernels.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernel_pool.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "time.c"),
@@ -109,6 +110,7 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ek.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "cells_windows.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "dsk.c"),
 ];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
@@ -286,6 +288,12 @@ const EXPORTED_FUNCTIONS = [
   "_tspice_ekntab",
   "_tspice_ektnam",
   "_tspice_eknseg",
+
+  // --- DSK ---
+  "_tspice_dskobj",
+  "_tspice_dsksrf",
+  "_tspice_dskgd",
+  "_tspice_dskb02",
 
   // --- kernel pool ---
   "_tspice_gdpool",

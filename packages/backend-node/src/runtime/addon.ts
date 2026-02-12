@@ -80,6 +80,13 @@ export type NativeAddon = {
   ektnam(n: number): string;
   eknseg(handle: number): number;
 
+  // --- DSK ---
+
+  dskobj(dsk: string, bodidsCellHandle: number): void;
+  dsksrf(dsk: string, bodyid: number, srfidsCellHandle: number): void;
+  dskgd(handle: number, dladsc: Record<string, unknown>): Record<string, unknown>;
+  dskb02(handle: number, dladsc: Record<string, unknown>): Record<string, unknown>;
+
 
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
