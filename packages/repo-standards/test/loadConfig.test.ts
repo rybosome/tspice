@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { Writable } from "node:stream";
 
 import { describe, expect, it } from "vitest";
 
@@ -47,10 +48,21 @@ describe("loadConfig", () => {
       "utf8"
     );
 
-    const loaded = await loadConfig({ repoRoot: dir, configPath: "repo-standards.yml" });
+    let stderrOut = "";
+    const stderr = new Writable({
+      write(chunk, _enc, cb) {
+        stderrOut += String(chunk);
+        cb();
+      }
+    });
+
+    const loaded = await loadConfig({ repoRoot: dir, configPath: "repo-standards.yml", stderr });
 
     // Unknown rule is ignored, but known rules are still present for stable reporting.
     expect(loaded.config.rules["some-future-rule"]).toBeUndefined();
     expect(loaded.config.rules["require-jsdoc-on-exported-callables"].packages).toEqual([]);
+
+    expect(stderrOut).toMatch(/unknown rule ID/);
+    expect(stderrOut).toMatch(/some-future-rule/);
   });
 });

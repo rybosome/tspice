@@ -6,6 +6,7 @@ import { loadConfig } from "./config/loadConfig.js";
 import { runStandards } from "./engine/run.js";
 import { formatJsonReport } from "./reporting/formatJson.js";
 import { formatPrettyReport } from "./reporting/formatPretty.js";
+import { isKnownRuleId, knownRuleIds } from "./rules/registry.js";
 import { ConfigError, UsageError } from "./util/errors.js";
 import { normalizeRepoRelativePath } from "./util/paths.js";
 
@@ -103,6 +104,11 @@ export function parseCliArgs(rawArgv: string[]): ParseResult {
       if (!next || next.startsWith("-")) {
         throw new UsageError("--rule requires a <ruleId>");
       }
+
+      if (!isKnownRuleId(next)) {
+        throw new UsageError(`unknown ruleId: ${next} (known: ${knownRuleIds.join(", ")})`);
+      }
+
       ruleId = next;
       i++;
       continue;
@@ -162,10 +168,15 @@ export async function main(rawArgv: string[], io: MainIo): Promise<number> {
 
     const repoRoot = io.cwd;
 
-    const loaded = await loadConfig({ repoRoot, configPath: parsed.options.configPath });
+    const loaded = await loadConfig({
+      repoRoot,
+      configPath: parsed.options.configPath,
+      stderr: io.stderr
+    });
 
     const runOptions = {
       repoRoot,
+      configPath: loaded.configPath,
       config: loaded.config,
       ...(parsed.options.ruleId ? { onlyRuleId: parsed.options.ruleId } : {}),
       ...(parsed.options.packageRoot ? { onlyPackageRoot: parsed.options.packageRoot } : {})

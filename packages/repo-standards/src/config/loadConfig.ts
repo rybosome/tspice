@@ -1,11 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import process from "node:process";
 
 import YAML from "yaml";
 
+import { isKnownRuleId, knownRuleIds } from "../rules/registry.js";
 import { ConfigError } from "../util/errors.js";
 import { normalizeRepoRelativePath } from "../util/paths.js";
-import { KNOWN_RULE_IDS, type RepoStandardsConfig, type RuleConfig } from "./types.js";
+import type { RepoStandardsConfig, RuleConfig } from "./types.js";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -36,18 +38,31 @@ function assertRuleConfig(ruleId: string, value: unknown): RuleConfig {
 export interface LoadConfigOptions {
   repoRoot: string;
   configPath: string;
+  stderr?: NodeJS.WritableStream;
 }
 
 export async function loadConfig(
   opts: LoadConfigOptions
 ): Promise<{ configPath: string; config: RepoStandardsConfig }> {
   const absPath = path.resolve(opts.repoRoot, opts.configPath);
+  const stderr = opts.stderr ?? process.stderr;
 
   let raw: string;
   try {
     raw = await fs.readFile(absPath, "utf8");
-  } catch {
-    throw new ConfigError(`config not found: ${opts.configPath}`);
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+
+    if (code === "ENOENT") {
+      throw new ConfigError(`config not found: ${opts.configPath}`);
+    }
+
+    if (code === "EACCES" || code === "EPERM") {
+      throw new ConfigError(`cannot read config (permission denied): ${opts.configPath}`);
+    }
+
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new ConfigError(`failed to read config ${opts.configPath}: ${msg}`);
   }
 
   let parsed: unknown;
@@ -74,17 +89,25 @@ export async function loadConfig(
 
   // Accept unknown rules for forward-compat, but validate known ones if present.
   const rules: Record<string, RuleConfig> = {};
+  const unknownRuleIds: string[] = [];
 
   for (const [ruleId, ruleCfg] of Object.entries(rulesRaw)) {
-    if (!KNOWN_RULE_IDS.includes(ruleId as (typeof KNOWN_RULE_IDS)[number])) {
+    if (!isKnownRuleId(ruleId)) {
+      unknownRuleIds.push(ruleId);
       continue;
     }
 
     rules[ruleId] = assertRuleConfig(ruleId, ruleCfg);
   }
 
+  if (unknownRuleIds.length > 0) {
+    stderr.write(
+      `warning: unknown rule ID(s) in ${opts.configPath}: ${unknownRuleIds.sort().join(", ")} (ignoring)\n`
+    );
+  }
+
   // Ensure known rules exist, even if empty, so reporting is stable.
-  for (const id of KNOWN_RULE_IDS) {
+  for (const id of knownRuleIds) {
     if (!rules[id]) {
       rules[id] = { packages: [] };
     }

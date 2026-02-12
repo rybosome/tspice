@@ -17,6 +17,7 @@ export async function runStandards(opts: RunStandardsOptions): Promise<RepoStand
 
   return {
     repoRoot: opts.repoRoot,
+    configPath: opts.configPath,
     violations
   };
 }

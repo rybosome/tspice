@@ -48,4 +48,12 @@ describe("parseCliArgs", () => {
       }
     });
   });
+
+  it("rejects unknown --rule ids", () => {
+    expect(() => parseCliArgs(["--rule", "some-unknown-rule"]))
+      .toThrowError(/unknown ruleId: some-unknown-rule/);
+
+    expect(() => parseCliArgs(["--rule", "some-unknown-rule"]))
+      .toThrowError(/known: .*require-jsdoc-on-exported-callables/);
+  });
 });

@@ -6,6 +6,7 @@ export function formatJsonReport(report: RepoStandardsReport): string {
   return JSON.stringify(
     {
       repoRoot: report.repoRoot,
+      configPath: report.configPath,
       violationCount: sorted.length,
       violations: sorted
     },

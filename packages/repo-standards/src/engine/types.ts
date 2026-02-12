@@ -16,11 +16,13 @@ export interface Violation {
 
 export interface RepoStandardsReport {
   repoRoot: string;
+  configPath: string;
   violations: Violation[];
 }
 
 export interface RunStandardsOptions {
   repoRoot: string;
+  configPath: string;
   config: RepoStandardsConfig;
   onlyRuleId?: string;
   onlyPackageRoot?: string;

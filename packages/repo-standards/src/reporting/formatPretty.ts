@@ -18,11 +18,17 @@ export function formatPrettyReport(report: RepoStandardsReport): string {
   const sorted = sortViolations(report.violations);
 
   if (sorted.length === 0) {
-    return "Repo standards: no violations";
+    return [
+      "Repo standards: no violations",
+      `repoRoot: ${report.repoRoot}`,
+      `configPath: ${report.configPath}`
+    ].join("\n");
   }
 
   const lines: string[] = [];
   lines.push(`Repo standards: ${sorted.length} violation(s)`);
+  lines.push(`repoRoot: ${report.repoRoot}`);
+  lines.push(`configPath: ${report.configPath}`);
 
   let currentRule: string | undefined;
   let currentPkg: string | undefined;
