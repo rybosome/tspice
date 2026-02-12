@@ -20,11 +20,11 @@
     "NOTICE"
   ],
   "scripts": {
-    "build": "tsc -b tsconfig.json && pnpm run stage:assets",
+    "build": "tsc -p tsconfig.json && pnpm run stage:assets",
     "stage:assets": "node ../../scripts/copy-backend-wasm-assets.mjs",
     "pretest": "pnpm run stage:assets",
     "test": "vitest run",
-    "typecheck": "tsc -b tsconfig.json --emitDeclarationOnly"
+    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly"
   },
   "dependencies": {
     "@rybosome/tspice-backend-contract": "workspace:*",
