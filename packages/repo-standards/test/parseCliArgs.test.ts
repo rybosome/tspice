@@ -23,12 +23,28 @@ describe("parseCliArgs", () => {
     });
   });
 
-  it("ignores standalone --", () => {
-    expect(parseCliArgs(["--", "--format", "json"])).toEqual({
+  it("allows a trailing -- (end of options)", () => {
+    expect(parseCliArgs(["--"])).toEqual({
       kind: "run",
       options: {
         configPath: "repo-standards.yml",
-        format: "json"
+        format: "pretty"
+      }
+    });
+  });
+
+  it("treats args after -- as positional (and errors)", () => {
+    expect(() => parseCliArgs(["--", "--format", "json"]))
+      .toThrowError(/unexpected positional arguments: --format json/);
+  });
+
+  it("normalizes --package the same as config paths", () => {
+    expect(parseCliArgs(["--package", "./packages/backend-contract"])).toEqual({
+      kind: "run",
+      options: {
+        configPath: "repo-standards.yml",
+        format: "pretty",
+        packageRoot: "packages/backend-contract"
       }
     });
   });

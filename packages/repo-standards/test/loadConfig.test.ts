@@ -33,4 +33,24 @@ describe("loadConfig", () => {
       "packages/backend-contract"
     ]);
   });
+
+  it("accepts unknown rules without validating their shape (forward-compat)", async () => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "repo-standards-"));
+
+    await fs.writeFile(
+      path.join(dir, "repo-standards.yml"),
+      [
+        "schemaVersion: 1",
+        "rules:",
+        "  some-future-rule: hello"
+      ].join("\n"),
+      "utf8"
+    );
+
+    const loaded = await loadConfig({ repoRoot: dir, configPath: "repo-standards.yml" });
+
+    // Unknown rule is ignored, but known rules are still present for stable reporting.
+    expect(loaded.config.rules["some-future-rule"]).toBeUndefined();
+    expect(loaded.config.rules["require-jsdoc-on-exported-callables"].packages).toEqual([]);
+  });
 });

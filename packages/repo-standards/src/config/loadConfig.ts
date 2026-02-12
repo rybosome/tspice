@@ -21,7 +21,16 @@ function assertRuleConfig(ruleId: string, value: unknown): RuleConfig {
     throw new ConfigError(`rules.${ruleId}.packages must be a string[]`);
   }
 
-  return { packages: pkgs.map(normalizeRepoRelativePath) };
+  const packages = pkgs.map((p) => {
+    try {
+      return normalizeRepoRelativePath(p);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      throw new ConfigError(`rules.${ruleId}.packages contains invalid path: ${message}`);
+    }
+  });
+
+  return { packages };
 }
 
 export interface LoadConfigOptions {
@@ -67,6 +76,10 @@ export async function loadConfig(
   const rules: Record<string, RuleConfig> = {};
 
   for (const [ruleId, ruleCfg] of Object.entries(rulesRaw)) {
+    if (!KNOWN_RULE_IDS.includes(ruleId as (typeof KNOWN_RULE_IDS)[number])) {
+      continue;
+    }
+
     rules[ruleId] = assertRuleConfig(ruleId, ruleCfg);
   }
 

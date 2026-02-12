@@ -7,6 +7,7 @@ import { runStandards } from "./engine/run.js";
 import { formatJsonReport } from "./reporting/formatJson.js";
 import { formatPrettyReport } from "./reporting/formatPretty.js";
 import { ConfigError, UsageError } from "./util/errors.js";
+import { normalizeRepoRelativePath } from "./util/paths.js";
 
 type OutputFormat = "pretty" | "json";
 
@@ -47,7 +48,22 @@ export function usage(): string {
 }
 
 export function parseCliArgs(rawArgv: string[]): ParseResult {
-  const argv = rawArgv.filter((a) => a !== "--");
+  const argv: string[] = [];
+  const positionals: string[] = [];
+  let parsingFlags = true;
+
+  for (const arg of rawArgv) {
+    if (parsingFlags && arg === "--") {
+      parsingFlags = false;
+      continue;
+    }
+
+    if (parsingFlags) {
+      argv.push(arg);
+    } else {
+      positionals.push(arg);
+    }
+  }
 
   let configPath = "repo-standards.yml";
   let format: OutputFormat = "pretty";
@@ -97,7 +113,12 @@ export function parseCliArgs(rawArgv: string[]): ParseResult {
       if (!next || next.startsWith("-")) {
         throw new UsageError("--package requires a <dir>");
       }
-      packageRoot = next;
+      try {
+        packageRoot = normalizeRepoRelativePath(next);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        throw new UsageError(`--package contains invalid path: ${message}`);
+      }
       i++;
       continue;
     }
@@ -107,6 +128,10 @@ export function parseCliArgs(rawArgv: string[]): ParseResult {
     }
 
     throw new UsageError(`unexpected positional argument: ${arg}`);
+  }
+
+  if (positionals.length > 0) {
+    throw new UsageError(`unexpected positional arguments: ${positionals.join(" ")}`);
   }
 
   return {

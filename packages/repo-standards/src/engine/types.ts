@@ -1,3 +1,5 @@
+import type { RepoStandardsConfig } from "../config/types.js";
+
 export interface ViolationLocation {
   filePath?: string;
   line?: number;
@@ -19,10 +21,7 @@ export interface RepoStandardsReport {
 
 export interface RunStandardsOptions {
   repoRoot: string;
-  config: {
-    schemaVersion: number;
-    rules: Record<string, { packages: string[] }>;
-  };
+  config: RepoStandardsConfig;
   onlyRuleId?: string;
   onlyPackageRoot?: string;
 }
