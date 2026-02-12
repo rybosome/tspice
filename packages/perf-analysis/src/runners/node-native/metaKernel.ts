@@ -110,10 +110,22 @@ export function resolveMetaKernelKernelsToLoad(
     );
   }
 
+  if (symbols.length !== valuesRaw.length) {
+    const hasSymbols = symbols.length > 0 || hasMetaKernelListAssignment(metaKernelText, "PATH_SYMBOLS");
+    const hasValues = valuesRaw.length > 0 || hasMetaKernelListAssignment(metaKernelText, "PATH_VALUES");
+    if (hasSymbols || hasValues) {
+      throw new Error(
+        `Meta-kernel PATH_SYMBOLS/PATH_VALUES length mismatch. ` +
+          `PATH_SYMBOLS=${symbols.length} PATH_VALUES=${valuesRaw.length}. ` +
+          `Expected the lists to have the same number of entries. metaKernel=${JSON.stringify(metaKernelPath)}`,
+      );
+    }
+  }
+
   const values = valuesRaw.map((v) => (path.isAbsolute(v) ? path.resolve(v) : path.resolve(metaKernelDir, v)));
 
   const symbolMap = new Map<string, string>();
-  for (let i = 0; i < Math.min(symbols.length, values.length); i++) {
+  for (let i = 0; i < symbols.length; i++) {
     symbolMap.set(symbols[i]!, values[i]!);
   }
 
