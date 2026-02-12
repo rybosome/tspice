@@ -18,6 +18,69 @@ if (!fs.existsSync(path.join(distPublishRoot, "package.json"))) {
   );
 }
 
+const distPublishPkg = JSON.parse(
+  fs.readFileSync(path.join(distPublishRoot, "package.json"), "utf8"),
+);
+
+function normalizeExportKey(key) {
+  if (key === ".") return "";
+  if (key.startsWith("./")) return key.slice(2);
+  return key;
+}
+
+function listDirectorySubpaths(rootDir) {
+  const out = [];
+
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      if (entry.name.startsWith(".")) continue;
+
+      const abs = path.join(dir, entry.name);
+      const rel = path
+        .relative(rootDir, abs)
+        .split(path.sep)
+        .join("/");
+
+      out.push(rel);
+      walk(abs);
+    }
+  };
+
+  walk(rootDir);
+  return out;
+}
+
+function deriveAllowedSubpaths(exportsField) {
+  // Node treats `"exports": "./dist/index.js"` and conditional objects (without
+  // `"."` / `"./..."` keys) as applying to the package root.
+  if (exportsField == null) return [""];
+  if (typeof exportsField === "string") return [""];
+  if (Array.isArray(exportsField)) return [""];
+
+  if (typeof exportsField === "object") {
+    const keys = Object.keys(exportsField);
+    const hasSubpathKeys = keys.some((k) => k === "." || k.startsWith("./"));
+    if (!hasSubpathKeys) return [""];
+
+    // Ignore non-subpath keys (e.g. "import" / "default").
+    return keys.filter((k) => k === "." || k.startsWith("./")).map(normalizeExportKey);
+  }
+
+  return [""];
+}
+
+const allowedSubpaths = Array.from(
+  new Set(deriveAllowedSubpaths(distPublishPkg.exports)),
+).sort();
+const candidateSubpaths = Array.from(
+  new Set([
+    ...allowedSubpaths,
+    ...listDirectorySubpaths(distPublishRoot),
+    "definitely-not-real",
+  ]),
+).sort();
+
 // 0) Hard assertion: published tarball must not contain internal workspace
 //    specifiers that will not exist on npm.
 assertNoInternalWorkspaceSpecifiers({ rootDir: distPublishRoot });
@@ -73,13 +136,31 @@ try {
       `if (typeof tspice.createSpiceWorkerClient !== "function") throw new Error("Missing createSpiceWorkerClient export");`,
       ``,
       `// Ensure we do NOT expose unexpected subpath exports from the published package.
-      // (allowlist is defined by package.exports: ".")
+      // Allowlist is derived from package.json#exports.
       `,
-      `for (const subpath of ["worker", "core", "backend-contract", "backend-wasm", "backend-node", "web", "web/worker", "web/client", "web/kernels"]) {`,
+      `const allowedSubpaths = ${JSON.stringify(allowedSubpaths)};`,
+      `const candidateSubpaths = ${JSON.stringify(candidateSubpaths)};`,
+      `const allowed = new Set(allowedSubpaths);`,
+      ``,
+      `for (const subpath of candidateSubpaths) {`,
+      `  const specifier = subpath === "" ? "@rybosome/tspice" : ` +
+        '`@rybosome/tspice/${subpath}`;',
+      `  const shouldImport = allowed.has(subpath);`,
+      ``,
       `  try {`,
-      '    await import(`@rybosome/tspice/${subpath}`);',
-      '    throw new Error(`Expected @rybosome/tspice/${subpath} to be blocked by package.exports`);',
+      `    await import(specifier);`,
+      `    if (!shouldImport) {`,
+      `      throw new Error(` +
+        '`Unexpected export: ${specifier} is importable but is not listed in package.json#exports`' +
+        `);`,
+      `    }`,
       `  } catch (err) {`,
+      `    if (shouldImport) {`,
+      `      throw new Error(` +
+        '`Expected ${specifier} to be importable (listed in package.json#exports), but import failed: ${String(err)}`' +
+        `);`,
+      `    }`,
+      ``,
       `    // Node typically throws ERR_PACKAGE_PATH_NOT_EXPORTED; don't overfit
       // the exact error string.
       `,

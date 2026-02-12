@@ -36,7 +36,8 @@ function createNamespacedProxy(
   // access returns a stable function identity without allowing unbounded
   // growth from arbitrary/dynamic property names.
   const MAX_FN_CACHE_ENTRIES = 1024;
-  const fnCache = new Map<string, unknown>();
+  type RpcFn = (...args: unknown[]) => unknown;
+  const fnCache = new Map<string, RpcFn>();
 
   const toString = (): string => `[SpiceSync.${namespace}]`;
   const valueOf = function (this: unknown): unknown {
@@ -63,9 +64,8 @@ function createNamespacedProxy(
 
       if (!isSafeRpcKey(prop)) return undefined;
 
-      const cached = fnCache.get(prop);
-      // `fnCache` only stores functions, so `undefined` is a safe miss sentinel.
-      if (cached !== undefined) {
+      if (fnCache.has(prop)) {
+        const cached = fnCache.get(prop)!;
         // LRU: bump recency by reinserting.
         fnCache.delete(prop);
         fnCache.set(prop, cached);

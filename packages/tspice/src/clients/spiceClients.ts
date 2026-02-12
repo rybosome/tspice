@@ -274,17 +274,17 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAs
         ? withCaching(baseTransport, state.cachingOptions)
         : undefined;
 
-      const raw = createSpiceAsyncFromTransport(baseTransport);
-      const spice = createSpiceAsyncFromTransport(cachedTransport ?? baseTransport);
+      const transport = cachedTransport ?? baseTransport;
+      const spice = createSpiceAsyncFromTransport(transport);
 
       if (state.kind === "webWorker") {
         // Eagerly create/validate the worker transport so `.build()` throws
         // (instead of deferring errors to the first spice call).
-        await raw.kit.toolkitVersion();
+        await spice.kit.toolkitVersion();
       }
 
       if (state.kernels) {
-        await loadKernelPack(raw, state.kernels.pack, state.kernels.loadOptions);
+        await loadKernelPack(spice, state.kernels.pack, state.kernels.loadOptions);
       }
 
       let disposePromise: Promise<void> | undefined;
@@ -314,7 +314,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAs
 
           // In-process: best-effort kernel cleanup.
           try {
-            await raw.kit.kclear();
+            await spice.kit.kclear();
           } catch {
             // ignore
           }

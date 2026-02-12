@@ -108,11 +108,13 @@ main().catch(console.error);
 
 `spiceClients` provides a small builder for creating sync/async/worker clients, with optional in-memory caching.
 
-When using `.synchronous().caching(...)`, caching is applied at the transport layer:
+When using `.synchronous().caching(...)`, caching is applied at the transport (RPC) layer.
+It memoizes returned values per `(op, args)`:
 
 - Only **successful** calls are cached (throws are not cached).
+- Cached values are returned by reference (they may be objects/arrays). Treat cached results as immutable — do not mutate them.
 - Kernel-mutating ops (e.g. `kit.loadKernel`, `raw.furnsh`) default to `"no-store"`.
-- The cache is **not** automatically invalidated when the kernel pool changes, so cached results can become stale if you load/unload kernels mid-session.
+- Kernel mutations do **not** automatically invalidate the cache, so cached results can become stale if you load/unload kernels mid-session.
 
 Recommendation: call the build result’s `dispose()` when you’re done (it clears caches + stops any TTL sweep timers), and consider rebuilding/clearing the cache after kernel mutations.
 
