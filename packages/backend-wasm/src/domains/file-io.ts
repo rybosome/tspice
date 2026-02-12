@@ -4,7 +4,7 @@ import type {
   FoundDlaDescriptor,
   SpiceHandle,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32NonNegative } from "@rybosome/tspice-backend-contract";
+import { assertSpiceInt32, assertSpiceInt32NonNegative } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -22,6 +22,10 @@ const I32_MAX = 2147483647;
 //
 // CSPICE: `SPICE_DSK02_IXDFIX` (and `SPICE_DSK02_SPADSZ`).
 const DSK02_IXDFIX = 10;
+
+// Hard cap for DSK spatial index scratch sizes (worksz/spxisz).
+// Matches native-addon validation.
+const DSKMI2_MAX_SIZE = 5_000_000;
 
 const DESCR_KEYS = [
   "bwdptr",
@@ -430,6 +434,7 @@ export function createFileIoApi(module: EmscriptenModule, handles: SpiceHandleRe
     ) => {
       assertSpiceInt32NonNegative(nv, "dskmi2(nv)");
       assertSpiceInt32NonNegative(np, "dskmi2(np)");
+      assertSpiceInt32(corscl, "dskmi2(corscl)");
       assertSpiceInt32NonNegative(worksz, "dskmi2(worksz)");
       assertSpiceInt32NonNegative(voxpsz, "dskmi2(voxpsz)");
       assertSpiceInt32NonNegative(voxlsz, "dskmi2(voxlsz)");
@@ -451,8 +456,29 @@ export function createFileIoApi(module: EmscriptenModule, handles: SpiceHandleRe
         throw new RangeError(`dskmi2(plates): expected length ${expectedPlatesLen}, got ${plates.length}`);
       }
 
+      for (let i = 0; i < plates.length; i++) {
+        const v = plates[i];
+        if (v === undefined) {
+          throw new RangeError(`dskmi2(plates[${i}]): expected a value, got undefined`);
+        }
+        assertSpiceInt32(v, `dskmi2(plates[${i}])`);
+        if (v < 1 || v > nv) {
+          throw new RangeError(`dskmi2(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`);
+        }
+      }
+
+      if (worksz <= 0) {
+        throw new RangeError("dskmi2(worksz): expected worksz > 0");
+      }
+      if (worksz > DSKMI2_MAX_SIZE) {
+        throw new RangeError(`dskmi2(worksz): expected worksz <= ${DSKMI2_MAX_SIZE}, got ${worksz}`);
+      }
+
       if (spxisz <= 0) {
         throw new RangeError("dskmi2(spxisz): expected spxisz > 0");
+      }
+      if (spxisz > DSKMI2_MAX_SIZE) {
+        throw new RangeError(`dskmi2(spxisz): expected spxisz <= ${DSKMI2_MAX_SIZE}, got ${spxisz}`);
       }
 
       const vrtcesBytes = expectedVrtcesLen * 8;
@@ -483,7 +509,9 @@ export function createFileIoApi(module: EmscriptenModule, handles: SpiceHandleRe
             makvtl ? 1 : 0,
             spxisz,
             outSpaixdPtr,
+            DSK02_IXDFIX,
             outSpaixiPtr,
+            spxisz,
             errPtr,
             WASM_ERR_MAX_BYTES,
           );
@@ -526,6 +554,10 @@ export function createFileIoApi(module: EmscriptenModule, handles: SpiceHandleRe
       spaixd: readonly number[],
       spaixi: readonly number[],
     ): void => {
+      assertSpiceInt32(center, "dskw02(center)");
+      assertSpiceInt32(surfid, "dskw02(surfid)");
+      assertSpiceInt32(dclass, "dskw02(dclass)");
+      assertSpiceInt32(corsys, "dskw02(corsys)");
       assertSpiceInt32NonNegative(nv, "dskw02(nv)");
       assertSpiceInt32NonNegative(np, "dskw02(np)");
 
@@ -545,6 +577,17 @@ export function createFileIoApi(module: EmscriptenModule, handles: SpiceHandleRe
         throw new RangeError(`dskw02(plates): expected length ${expectedPlatesLen}, got ${plates.length}`);
       }
 
+      for (let i = 0; i < plates.length; i++) {
+        const v = plates[i];
+        if (v === undefined) {
+          throw new RangeError(`dskw02(plates[${i}]): expected a value, got undefined`);
+        }
+        assertSpiceInt32(v, `dskw02(plates[${i}])`);
+        if (v < 1 || v > nv) {
+          throw new RangeError(`dskw02(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`);
+        }
+      }
+
       if (corpar.length !== 10) {
         throw new RangeError(`dskw02(corpar): expected length 10, got ${corpar.length}`);
       }
@@ -553,8 +596,17 @@ export function createFileIoApi(module: EmscriptenModule, handles: SpiceHandleRe
       }
 
       const spaixiLen = spaixi.length;
+      assertSpiceInt32NonNegative(spaixiLen, "dskw02(spaixi.length)");
       if (spaixiLen <= 0) {
         throw new RangeError("dskw02(spaixi): expected a non-empty array");
+      }
+
+      for (let i = 0; i < spaixiLen; i++) {
+        const v = spaixi[i];
+        if (v === undefined) {
+          throw new RangeError(`dskw02(spaixi[${i}]): expected a value, got undefined`);
+        }
+        assertSpiceInt32(v, `dskw02(spaixi[${i}])`);
       }
 
       const nativeHandle = handles.lookup(handle, ["DAS"], "dskw02").nativeHandle;
@@ -598,7 +650,9 @@ export function createFileIoApi(module: EmscriptenModule, handles: SpiceHandleRe
               np,
               platesPtr,
               spaixdPtr,
+              DSK02_IXDFIX,
               spaixiPtr,
+              spaixiLen,
               errPtr,
               WASM_ERR_MAX_BYTES,
             );

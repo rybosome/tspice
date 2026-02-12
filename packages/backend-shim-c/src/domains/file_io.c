@@ -385,14 +385,16 @@ int tspice_dskmi2(
     int np,
     const int32_t *plates,
     double finscl,
-    double corscl,
+    int corscl,
     int worksz,
     int voxpsz,
     int voxlsz,
     int makvtl,
     int spxisz,
     double *outSpaixd,
+    int outSpaixdLen,
     int32_t *outSpaixi,
+    int outSpaixiLen,
     char *err,
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
@@ -434,6 +436,19 @@ int tspice_dskmi2(
     return tspice_return_error(err, errMaxBytes, "tspice_dskmi2: outSpaixi must be non-NULL");
   }
 
+  if (outSpaixdLen < 0) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskmi2: outSpaixdLen must be >= 0");
+  }
+  if (outSpaixdLen < SPICE_DSK02_IXDFIX) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskmi2: outSpaixdLen must be >= SPICE_DSK02_IXDFIX");
+  }
+  if (outSpaixiLen < 0) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskmi2: outSpaixiLen must be >= 0");
+  }
+  if (outSpaixiLen < spxisz) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskmi2: outSpaixiLen must be >= spxisz");
+  }
+
   // Fixed-size portion of the double component (SPICE_DSK02_IXDFIX).
   for (int i = 0; i < SPICE_DSK02_IXDFIX; i++) {
     outSpaixd[i] = 0.0;
@@ -441,6 +456,10 @@ int tspice_dskmi2(
 
   if (spxisz > 0) {
     memset(outSpaixi, 0, sizeof(int32_t) * (size_t)spxisz);
+  }
+
+  if ((size_t)worksz > SIZE_MAX / sizeof(SpiceInt[2])) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskmi2: worksz overflow while allocating workspace");
   }
 
   SpiceInt(*work)[2] = (SpiceInt(*)[2])malloc(sizeof(SpiceInt[2]) * (size_t)worksz);
@@ -495,7 +514,9 @@ int tspice_dskw02(
     int np,
     const int32_t *plates,
     const double *spaixd,
+    int spaixdLen,
     const int32_t *spaixi,
+    int spaixiLen,
     char *err,
     int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
@@ -527,6 +548,19 @@ int tspice_dskw02(
   }
   if (!spaixi) {
     return tspice_return_error(err, errMaxBytes, "tspice_dskw02: spaixi must be non-NULL");
+  }
+
+  if (spaixdLen < 0) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskw02: spaixdLen must be >= 0");
+  }
+  if (spaixdLen < SPICE_DSK02_IXDFIX) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskw02: spaixdLen must be >= SPICE_DSK02_IXDFIX");
+  }
+  if (spaixiLen < 0) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskw02: spaixiLen must be >= 0");
+  }
+  if (spaixiLen < SPICE_DSK02_IXIFIX) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskw02: spaixiLen must be >= SPICE_DSK02_IXIFIX");
   }
 
   dskw02_c(

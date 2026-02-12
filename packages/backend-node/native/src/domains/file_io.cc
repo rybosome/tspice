@@ -399,8 +399,20 @@ static Napi::Object Dskmi2(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  const uint32_t expectedVrtcesLen = (uint32_t)nv * 3u;
-  const uint32_t expectedPlatesLen = (uint32_t)np * 3u;
+  const uint64_t expectedVrtcesLen64 = (uint64_t)(uint32_t)nv * 3u;
+  const uint64_t expectedPlatesLen64 = (uint64_t)(uint32_t)np * 3u;
+
+  if (expectedVrtcesLen64 > std::numeric_limits<uint32_t>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "nv is too large (nv*3 exceeds uint32)"));
+    return Napi::Object::New(env);
+  }
+  if (expectedPlatesLen64 > std::numeric_limits<uint32_t>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "np is too large (np*3 exceeds uint32)"));
+    return Napi::Object::New(env);
+  }
+
+  const uint32_t expectedVrtcesLen = (uint32_t)expectedVrtcesLen64;
+  const uint32_t expectedPlatesLen = (uint32_t)expectedPlatesLen64;
 
   std::vector<double> vrtces;
   vrtces.resize(expectedVrtcesLen);
@@ -437,19 +449,35 @@ static Napi::Object Dskmi2(const Napi::CallbackInfo& info) {
       if (!ReadInt32Checked(env, arr.Get(i), "plates[]", &v)) {
         return Napi::Object::New(env);
       }
+      if (v < 1 || v > nv) {
+        ThrowSpiceError(Napi::RangeError::New(
+            env,
+            std::string("plates[") + std::to_string(i) + "] must be in [1, nv]"));
+        return Napi::Object::New(env);
+      }
       plates[i] = v;
     }
   }
 
   const double finscl = info[4].As<Napi::Number>().DoubleValue();
-  const double corscl = info[5].As<Napi::Number>().DoubleValue();
+
+  int32_t corscl = 0;
+  if (!ReadInt32Checked(env, info[5], "corscl", &corscl)) {
+    return Napi::Object::New(env);
+  }
+
+  static constexpr int32_t kMaxDskmi2Size = 5000000;
 
   int32_t worksz = 0;
   if (!ReadInt32Checked(env, info[6], "worksz", &worksz)) {
     return Napi::Object::New(env);
   }
-  if (worksz < 0) {
-    ThrowSpiceError(Napi::TypeError::New(env, "Expected worksz to be a non-negative 32-bit signed integer"));
+  if (worksz <= 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected worksz to be a positive 32-bit signed integer"));
+    return Napi::Object::New(env);
+  }
+  if (worksz > kMaxDskmi2Size) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected worksz to be <= 5000000"));
     return Napi::Object::New(env);
   }
 
@@ -477,8 +505,12 @@ static Napi::Object Dskmi2(const Napi::CallbackInfo& info) {
   if (!ReadInt32Checked(env, info[10], "spxisz", &spxisz)) {
     return Napi::Object::New(env);
   }
-  if (spxisz < 0) {
-    ThrowSpiceError(Napi::TypeError::New(env, "Expected spxisz to be a non-negative 32-bit signed integer"));
+  if (spxisz <= 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected spxisz to be a positive 32-bit signed integer"));
+    return Napi::Object::New(env);
+  }
+  if (spxisz > kMaxDskmi2Size) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected spxisz to be <= 5000000"));
     return Napi::Object::New(env);
   }
 
@@ -504,7 +536,9 @@ static Napi::Object Dskmi2(const Napi::CallbackInfo& info) {
       makvtl ? 1 : 0,
       spxisz,
       spaixd.data(),
+      kSpaixdSize,
       spaixi.data(),
+      spxisz,
       err,
       (int)sizeof(err));
   if (code != 0) {
@@ -597,8 +631,20 @@ static void Dskw02(const Napi::CallbackInfo& info) {
     return;
   }
 
-  const uint32_t expectedVrtcesLen = (uint32_t)nv * 3u;
-  const uint32_t expectedPlatesLen = (uint32_t)np * 3u;
+  const uint64_t expectedVrtcesLen64 = (uint64_t)(uint32_t)nv * 3u;
+  const uint64_t expectedPlatesLen64 = (uint64_t)(uint32_t)np * 3u;
+
+  if (expectedVrtcesLen64 > std::numeric_limits<uint32_t>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "nv is too large (nv*3 exceeds uint32)"));
+    return;
+  }
+  if (expectedPlatesLen64 > std::numeric_limits<uint32_t>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "np is too large (np*3 exceeds uint32)"));
+    return;
+  }
+
+  const uint32_t expectedVrtcesLen = (uint32_t)expectedVrtcesLen64;
+  const uint32_t expectedPlatesLen = (uint32_t)expectedPlatesLen64;
 
   std::vector<double> vrtces;
   vrtces.resize(expectedVrtcesLen);
@@ -643,6 +689,12 @@ static void Dskw02(const Napi::CallbackInfo& info) {
       if (!ReadInt32Checked(env, arr.Get(i), "plates[]", &v)) {
         return;
       }
+      if (v < 1 || v > nv) {
+        ThrowSpiceError(Napi::RangeError::New(
+            env,
+            std::string("plates[") + std::to_string(i) + "] must be in [1, nv]"));
+        return;
+      }
       plates[i] = v;
     }
   }
@@ -673,6 +725,7 @@ static void Dskw02(const Napi::CallbackInfo& info) {
   }
 
   std::vector<int32_t> spaixi;
+  int32_t spaixiLen = 0;
   {
     if (!info[20].IsArray()) {
       ThrowSpiceError(Napi::TypeError::New(env, "spaixi must be an array"));
@@ -680,6 +733,11 @@ static void Dskw02(const Napi::CallbackInfo& info) {
     }
     Napi::Array arr = info[20].As<Napi::Array>();
     const uint32_t len = arr.Length();
+    if (len > (uint32_t)std::numeric_limits<int32_t>::max()) {
+      ThrowSpiceError(Napi::RangeError::New(env, "spaixi is too large"));
+      return;
+    }
+    spaixiLen = (int32_t)len;
     spaixi.resize(len);
     for (uint32_t i = 0; i < len; i++) {
       int32_t v = 0;
@@ -714,7 +772,9 @@ static void Dskw02(const Napi::CallbackInfo& info) {
       np,
       plates.data(),
       spaixd.data(),
+      (int)kSpaixdSize,
       spaixi.data(),
+      spaixiLen,
       err,
       (int)sizeof(err));
   if (code != 0) {

@@ -127,7 +127,9 @@ export type EmscriptenModule = {
     makvtl: number,
     spxisz: number,
     outSpaixdPtr: number,
+    outSpaixdLen: number,
     outSpaixiPtr: number,
+    outSpaixiLen: number,
     errPtr: number,
     errMaxBytes: number,
   ): number;
@@ -153,7 +155,9 @@ export type EmscriptenModule = {
     np: number,
     platesPtr: number,
     spaixdPtr: number,
+    spaixdLen: number,
     spaixiPtr: number,
+    spaixiLen: number,
     errPtr: number,
     errMaxBytes: number,
   ): number;

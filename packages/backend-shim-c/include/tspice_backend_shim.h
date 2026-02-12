@@ -165,14 +165,16 @@ int tspice_dskmi2(
     int np,
     const int32_t *plates,
     double finscl,
-    double corscl,
+    int corscl,
     int worksz,
     int voxpsz,
     int voxlsz,
     int makvtl,
     int spxisz,
     double *outSpaixd,
+    int outSpaixdLen,
     int32_t *outSpaixi,
+    int outSpaixiLen,
     char *err,
     int errMaxBytes);
 
@@ -197,7 +199,9 @@ int tspice_dskw02(
     int np,
     const int32_t *plates,
     const double *spaixd,
+    int spaixdLen,
     const int32_t *spaixi,
+    int spaixiLen,
     char *err,
     int errMaxBytes);
 
