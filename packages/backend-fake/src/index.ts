@@ -788,6 +788,47 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     return kernels.filter((k) => matchesKernelKind(requested, k));
   };
 
+  // Minimal state for timdef() GET/SET.
+  //
+  // The fake backend treats time systems deterministically and does not model
+  // leap seconds, so these defaults are mostly for parity with the contract
+  // and to support callers that expect timdef() to exist.
+  const DEFAULT_TIME_DEFAULTS = [
+    ["SYSTEM", "UTC"],
+    ["CALENDAR", "GREGORIAN"],
+    ["ZONE", "UTC"],
+  ] as const;
+
+  const timeDefaults = new Map<string, string>(DEFAULT_TIME_DEFAULTS);
+
+  function resetTimeDefaults(): void {
+    timeDefaults.clear();
+    for (const [k, v] of DEFAULT_TIME_DEFAULTS) {
+      timeDefaults.set(k, v);
+    }
+  }
+
+  function timdef(action: "GET", item: string): string;
+  function timdef(action: "SET", item: string, value: string): void;
+  function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+    assertNonEmptyString("timdef", "item", item);
+
+    if (action === "GET") {
+      return timeDefaults.get(item) ?? "";
+    }
+
+    if (typeof value !== "string") {
+      throw new TypeError("timdef(SET) requires a string value");
+    }
+    // Match CSPICE `timdef_c`: empty (length 0) strings are invalid, but
+    // whitespace-only strings are allowed (e.g. ZONE can be "blank").
+    if (value.length === 0) {
+      throw new RangeError("timdef(SET): value must be a non-empty string");
+    }
+
+    timeDefaults.set(item, value);
+  }
+
   return {
     kind: "fake",
 
@@ -799,6 +840,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       spiceShort = "";
       spiceLong = "";
       traceStack.length = 0;
+      resetTimeDefaults();
     },
     getmsg: (which) => {
       assertGetmsgWhich(which);
@@ -1114,6 +1156,44 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return formatUtcFromMs(ms, 3);
     },
 
+    deltet: (_epoch, _eptype) => {
+      // Deterministic stub: the fake backend ignores leap seconds, so ET and
+      // UTC are treated as identical.
+      return 0;
+    },
+
+    unitim: (epoch, _insys, _outsys) => {
+      // Deterministic stub: treat all input/output systems as identical.
+      return epoch;
+    },
+
+    tparse: (timstr) => {
+      // Deterministic stub: match `str2et` semantics in the fake backend.
+      if (!isIso8601OrRfc3339Utcish(timstr)) {
+        throw new Error(
+          `Fake backend: tparse() only supports ISO-8601/RFC3339 timestamps (got ${JSON.stringify(timstr)})`,
+        );
+      }
+      const ms = Date.parse(timstr);
+      if (!Number.isFinite(ms)) {
+        throw new Error(`Fake backend: failed to parse time: ${JSON.stringify(timstr)}`);
+      }
+      return (ms - J2000_UTC_MS) / 1000;
+    },
+
+    tpictr: (sample, pictur) => {
+      if (sample.length === 0) {
+        throw new RangeError("tpictr(): sample must be a non-empty string");
+      }
+      if (pictur.length === 0) {
+        throw new RangeError("tpictr(): pictur must be a non-empty string");
+      }
+      // Picture transformation is out of scope for the fake backend.
+      return pictur;
+    },
+
+    timdef,
+
     bodn2c: (name) => {
       const trimmed = normalizeName(name);
 
@@ -1246,6 +1326,27 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     sce2s: (_sc, et) => {
       // Minimal deterministic stub.
       return String(et);
+    },
+
+    scencd: (_sc, sclkch) => {
+      // Minimal deterministic stub: treat the string as a number of ticks.
+      const n = Number(sclkch);
+      return Number.isFinite(n) ? n : 0;
+    },
+
+    scdecd: (_sc, sclkdp) => {
+      // Minimal deterministic stub.
+      return String(sclkdp);
+    },
+
+    sct2e: (_sc, sclkdp) => {
+      // Minimal deterministic stub.
+      return sclkdp;
+    },
+
+    sce2c: (_sc, et) => {
+      // Minimal deterministic stub.
+      return et;
     },
 
     ckgp: (_inst, _sclkdp, _tol, _ref) => {
@@ -1402,6 +1503,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       // Deterministic stub: 0 => "no occultation".
       return 0;
     },
+
 
     // --- file i/o primitives (not implemented in fake backend) ---
 

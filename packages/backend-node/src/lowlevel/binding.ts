@@ -26,7 +26,12 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.str2et === "function", "Expected native addon to export str2et(time)");
   invariant(typeof native.et2utc === "function", "Expected native addon to export et2utc(et, format, prec)");
   invariant(typeof native.timout === "function", "Expected native addon to export timout(et, picture)");
-
+  invariant(typeof native.deltet === "function", "Expected native addon to export deltet(epoch, eptype)");
+  invariant(typeof native.unitim === "function", "Expected native addon to export unitim(epoch, insys, outsys)");
+  invariant(typeof native.tparse === "function", "Expected native addon to export tparse(timstr)");
+  invariant(typeof native.tpictr === "function", "Expected native addon to export tpictr(sample, pictur)");
+  invariant(typeof native.timdefGet === "function", "Expected native addon to export timdefGet(item)");
+  invariant(typeof native.timdefSet === "function", "Expected native addon to export timdefSet(item, value)");
   invariant(typeof native.failed === "function", "Expected native addon to export failed()");
   invariant(typeof native.reset === "function", "Expected native addon to export reset()");
   invariant(typeof native.getmsg === "function", "Expected native addon to export getmsg(which)");
@@ -71,6 +76,10 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.cnmfrm === "function", "Expected native addon to export cnmfrm(centerName)");
   invariant(typeof native.scs2e === "function", "Expected native addon to export scs2e(sc, sclkch)");
   invariant(typeof native.sce2s === "function", "Expected native addon to export sce2s(sc, et)");
+  invariant(typeof native.scencd === "function", "Expected native addon to export scencd(sc, sclkch)");
+  invariant(typeof native.scdecd === "function", "Expected native addon to export scdecd(sc, sclkdp)");
+  invariant(typeof native.sct2e === "function", "Expected native addon to export sct2e(sc, sclkdp)");
+  invariant(typeof native.sce2c === "function", "Expected native addon to export sce2c(sc, et)");
   invariant(typeof native.ckgp === "function", "Expected native addon to export ckgp(inst, sclkdp, tol, ref)");
   invariant(typeof native.ckgpav === "function", "Expected native addon to export ckgpav(inst, sclkdp, tol, ref)");
   invariant(typeof native.pxform === "function", "Expected native addon to export pxform(from, to, et)");

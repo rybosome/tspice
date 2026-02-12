@@ -159,6 +159,7 @@ function tspiceCallGipool(
 
   try {
     const valuesBytes = Math.max(4, room * 4);
+
     return withAllocs(
       module,
       [
