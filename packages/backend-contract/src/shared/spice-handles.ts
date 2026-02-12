@@ -61,10 +61,17 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
       throw new SpiceBackendContractError(`backend contract violation: SpiceHandle ID overflow (nextHandleId=${nextHandleId})`);
     }
 
-    const handleId = nextHandleId++;
-    if (handles.has(handleId)) {
-      throw new SpiceBackendContractError(`backend contract violation: SpiceHandle ID collision (handleId=${handleId})`);
+    // Defensive: never reuse/collide IDs even if `nextHandleId` gets out of sync.
+    while (handles.has(nextHandleId)) {
+      nextHandleId++;
+      if (nextHandleId >= Number.MAX_SAFE_INTEGER) {
+        throw new SpiceBackendContractError(
+          `backend contract violation: SpiceHandle ID overflow (nextHandleId=${nextHandleId})`,
+        );
+      }
     }
+
+    const handleId = nextHandleId++;
     handles.set(handleId, { kind, nativeHandle });
     return asSpiceHandle(handleId);
   }

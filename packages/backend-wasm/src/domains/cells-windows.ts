@@ -329,19 +329,25 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
 
   function assertKnownCell(handle: number, context: string): void {
     if (!allocatedCells.has(handle)) {
-      throw new RangeError(`${context}: unknown/expired cell handle ${handle} (handles are per-module)`);
+      throw new RangeError(
+        `${context}: unknown/expired WASM cell handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+      );
     }
   }
 
   function assertKnownWindow(handle: number, context: string): void {
     if (!allocatedWindows.has(handle)) {
-      throw new RangeError(`${context}: unknown/expired window handle ${handle} (handles are per-module)`);
+      throw new RangeError(
+        `${context}: unknown/expired WASM window handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+      );
     }
   }
 
   function assertKnownCellOrWindow(handle: number, context: string): void {
     if (!allocatedCells.has(handle) && !allocatedWindows.has(handle)) {
-      throw new RangeError(`${context}: unknown/expired handle ${handle} (handles are per-module)`);
+      throw new RangeError(
+        `${context}: unknown/expired WASM handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+      );
     }
   }
 
