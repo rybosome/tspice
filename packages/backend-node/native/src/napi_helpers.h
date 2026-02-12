@@ -96,7 +96,7 @@ inline std::string PreviewForError(const std::string& s, size_t maxChars = 200) 
       case '\t':
         out += "\\t";
         break;
-      case '\':
+      case '\\':
         out += "\\\\";
         break;
       case '"':
