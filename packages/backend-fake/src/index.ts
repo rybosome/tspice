@@ -1357,6 +1357,22 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return { found: false };
     },
 
+    cklpf: (_ck) => {
+      throw new Error("Fake backend: cklpf() is not implemented");
+    },
+
+    ckupf: (_handle) => {
+      throw new Error("Fake backend: ckupf() is not implemented");
+    },
+
+    ckobj: (_ck, _ids) => {
+      throw new Error("Fake backend: ckobj() is not implemented");
+    },
+
+    ckcov: (_ck, _idcode, _needav, _level, _tol, _timsys, _cover) => {
+      throw new Error("Fake backend: ckcov() is not implemented");
+    },
+
     pxform: (from, to, et) => {
       const f = parseFrameName(from);
       const t = parseFrameName(to);

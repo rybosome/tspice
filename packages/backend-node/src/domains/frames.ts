@@ -96,6 +96,32 @@ export function createFramesApi(native: NativeAddon): FramesApi {
       };
     },
 
+    cklpf: (ck) => {
+      const handle = native.cklpf(ck);
+      invariant(typeof handle === "number" && Number.isInteger(handle), "Expected cklpf() to return an integer handle");
+      return handle;
+    },
+
+    ckupf: (handle) => {
+      native.ckupf(handle);
+    },
+
+    ckobj: (ck, ids) => {
+      native.ckobj(ck, ids as unknown as number);
+    },
+
+    ckcov: (ck, idcode, needav, level, tol, timsys, cover) => {
+      native.ckcov(
+        ck,
+        idcode,
+        needav,
+        level,
+        tol,
+        timsys,
+        cover as unknown as number,
+      );
+    },
+
     pxform: (from, to, et) => {
       const m = native.pxform(from, to, et);
       return brandMat3RowMajor(m, { label: "pxform()" });

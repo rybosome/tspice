@@ -119,6 +119,19 @@ export type NativeAddon = {
     ref: string,
   ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
 
+  cklpf(ck: string): number;
+  ckupf(handle: number): void;
+  ckobj(ck: string, idsCellHandle: number): void;
+  ckcov(
+    ck: string,
+    idcode: number,
+    needav: boolean,
+    level: string,
+    tol: number,
+    timsys: string,
+    coverWindowHandle: number,
+  ): void;
+
   spkezr(
     target: string,
     et: number,
