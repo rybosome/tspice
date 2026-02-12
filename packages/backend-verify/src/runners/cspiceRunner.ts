@@ -150,7 +150,7 @@ export async function invokeRunner(
 
   const preview = (s: string, maxChars: number): string => {
     if (s.length <= maxChars) return s;
-    return `${s.slice(0, maxChars)}… (+${s.length - maxChars} chars)`;
+    return `${s.slice(0, maxChars)}... (+${s.length - maxChars} chars)`;
   };
 
   return await new Promise((resolve, reject) => {

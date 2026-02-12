@@ -100,7 +100,7 @@ export async function createWasmBackend(
   const fsApi = createWasmFs(module);
   const spiceHandles = createSpiceHandleRegistry();
 
-  const backendBase = {
+  const backend = {
     kind: "wasm",
     ...createTimeApi(module, toolkitVersion),
     ...createKernelsApi(module, fsApi),
@@ -116,5 +116,5 @@ export async function createWasmBackend(
     ...createDskApi(module, spiceHandles),
   } satisfies SpiceBackend;
 
-  return backendBase;
+  return backend;
 }

@@ -627,6 +627,38 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_deltet(epoch: number, eptypePtr: number, outDeltaPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_unitim(
+    epoch: number,
+    insysPtr: number,
+    outsysPtr: number,
+    outEpochPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_tparse(timstrPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_tpictr(
+    samplePtr: number,
+    picturInPtr: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_timdef_get(itemPtr: number, outPtr: number, outMaxBytes: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_timdef_set(itemPtr: number, valuePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_scencd(sc: number, sclkchPtr: number, outSclkdpPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_scdecd(
+    sc: number,
+    sclkdp: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sct2e(sc: number, sclkdp: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_sce2c(sc: number, et: number, outSclkdpPtr: number, errPtr: number, errMaxBytes: number): number;
+
   // --- ids/names/frames ---
   _tspice_bodn2c(namePtr: number, outCodePtr: number, foundPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_bodc2n(
@@ -996,6 +1028,16 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_str2et",
   "_tspice_et2utc",
   "_tspice_timout",
+  "_tspice_deltet",
+  "_tspice_unitim",
+  "_tspice_tparse",
+  "_tspice_tpictr",
+  "_tspice_timdef_get",
+  "_tspice_timdef_set",
+  "_tspice_scencd",
+  "_tspice_scdecd",
+  "_tspice_sct2e",
+  "_tspice_sce2c",
   "_tspice_bodn2c",
   "_tspice_bodc2n",
   "_tspice_bodc2s",

@@ -9,6 +9,7 @@
 
 using tspice_napi::MakeFound;
 using tspice_napi::MakeNotFound;
+using tspice_napi::PreviewForError;
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
@@ -61,7 +62,10 @@ static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   int found = 0;
   const int code = tspice_bodn2c(name.c_str(), &codeOut, &found, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling bodn2c(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling bodn2c(\"") + PreviewForError(name) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 
@@ -137,7 +141,7 @@ static Napi::Object Bods2c(const Napi::CallbackInfo& info) {
   int found = 0;
   const int code = tspice_bods2c(name.c_str(), &codeOut, &found, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling bods2c(\"") + name + "\")", err);
+    ThrowSpiceError(env, std::string("CSPICE failed while calling bods2c(\"") + PreviewForError(name) + "\")", err);
     return Napi::Object::New(env);
   }
 
@@ -163,7 +167,7 @@ static void Boddef(const Napi::CallbackInfo& info) {
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_boddef(name.c_str(), codeIn, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling boddef(\"") + name + "\", " + std::to_string(codeIn) + ")", err);
+    ThrowSpiceError(env, std::string("CSPICE failed while calling boddef(\"") + PreviewForError(name) + "\", " + std::to_string(codeIn) + ")", err);
   }
 }
 
@@ -217,7 +221,7 @@ static Napi::Array Bodvar(const Napi::CallbackInfo& info) {
   char typeOut[2] = {0};
   int dtCode = tspice_dtpool(poolVar.c_str(), &found, &n, typeOut, (int)sizeof(typeOut), err, (int)sizeof(err));
   if (dtCode != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling dtpool(\"") + poolVar + "\")", err);
+    ThrowSpiceError(env, std::string("CSPICE failed while calling dtpool(\"") + PreviewForError(poolVar) + "\")", err);
     return Napi::Array::New(env);
   }
   if (!found) {
@@ -235,7 +239,7 @@ static Napi::Array Bodvar(const Napi::CallbackInfo& info) {
   if (n > kMaxBodyConstValues) {
     ThrowSpiceError(Napi::RangeError::New(
         env,
-        std::string("bodvar(): kernel pool variable ") + poolVar +
+        std::string("bodvar(): kernel pool variable ") + PreviewForError(poolVar) +
             " has too many values (" + std::to_string(n) + "); max is " + std::to_string(kMaxBodyConstValues)));
     return Napi::Array::New(env);
   }

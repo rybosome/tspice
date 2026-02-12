@@ -10,7 +10,8 @@ import {
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-backend-contract";
 
-import { assertEmscriptenModule, type EmscriptenModule } from "../lowlevel/exports.js";
+import type { EmscriptenModule } from "../lowlevel/exports.js";
+import { assertEmscriptenModule } from "../lowlevel/exports.js";
 
 import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
@@ -316,8 +317,6 @@ export function assertWasmOwnedWindowHandle(
 }
 
 export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
-  // Single source of truth for required exports.
-  // (Cells/windows are runtime-required; see REQUIRED_FUNCTION_EXPORTS.)
   assertEmscriptenModule(module);
 
   // Security + correctness: track allocated pointers per backend instance.

@@ -15,6 +15,7 @@
 using tspice_napi::FixedWidthToJsString;
 using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
+using tspice_napi::PreviewForError;
 using tspice_napi::ReadStringArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
@@ -118,7 +119,10 @@ static Napi::Object Gdpool(const Napi::CallbackInfo& info) {
       (int)sizeof(err));
 
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling gdpool(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling gdpool(\"") + PreviewForError(name) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 
@@ -181,7 +185,10 @@ static Napi::Object Gipool(const Napi::CallbackInfo& info) {
       (int)sizeof(err));
 
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling gipool(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling gipool(\"") + PreviewForError(name) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 
@@ -246,7 +253,10 @@ static Napi::Object Gcpool(const Napi::CallbackInfo& info) {
       (int)sizeof(err));
 
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling gcpool(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling gcpool(\"") + PreviewForError(name) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 
@@ -316,7 +326,10 @@ static Napi::Object Gnpool(const Napi::CallbackInfo& info) {
       (int)sizeof(err));
 
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling gnpool(\"") + templ + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling gnpool(\"") + PreviewForError(templ) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 
@@ -368,7 +381,10 @@ static Napi::Object Dtpool(const Napi::CallbackInfo& info) {
       (int)sizeof(err));
 
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling dtpool(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling dtpool(\"") + PreviewForError(name) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 
@@ -426,7 +442,10 @@ static void Pdpool(const Napi::CallbackInfo& info) {
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_pdpool(name.c_str(), (int)values.size(), values.data(), err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling pdpool(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling pdpool(\"") + PreviewForError(name) + "\")",
+        err);
   }
 }
 
@@ -481,7 +500,10 @@ static void Pipool(const Napi::CallbackInfo& info) {
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_pipool(name.c_str(), (int)values.size(), values.data(), err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling pipool(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling pipool(\"") + PreviewForError(name) + "\")",
+        err);
   }
 }
 
@@ -520,7 +542,10 @@ static void Pcpool(const Napi::CallbackInfo& info) {
       err,
       (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling pcpool(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling pcpool(\"") + PreviewForError(name) + "\")",
+        err);
   }
 }
 
@@ -568,7 +593,10 @@ static void Swpool(const Napi::CallbackInfo& info) {
       err,
       (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling swpool(\"") + agent + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling swpool(\"") + PreviewForError(agent) + "\")",
+        err);
   }
 }
 
@@ -591,7 +619,10 @@ static Napi::Boolean Cvpool(const Napi::CallbackInfo& info) {
   int update = 0;
   const int code = tspice_cvpool(agent.c_str(), &update, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling cvpool(\"") + agent + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling cvpool(\"") + PreviewForError(agent) + "\")",
+        err);
     return Napi::Boolean::New(env, false);
   }
 
@@ -617,7 +648,10 @@ static Napi::Boolean Expool(const Napi::CallbackInfo& info) {
   int found = 0;
   const int code = tspice_expool(name.c_str(), &found, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling expool(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling expool(\"") + PreviewForError(name) + "\")",
+        err);
     return Napi::Boolean::New(env, false);
   }
 

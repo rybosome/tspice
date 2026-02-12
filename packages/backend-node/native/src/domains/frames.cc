@@ -9,6 +9,7 @@
 using tspice_napi::MakeFound;
 using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
+using tspice_napi::PreviewForError;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
@@ -28,7 +29,10 @@ static Napi::Object Namfrm(const Napi::CallbackInfo& info) {
   int found = 0;
   const int code = tspice_namfrm(name.c_str(), &codeOut, &found, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling namfrm(\"") + name + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling namfrm(\"") + PreviewForError(name) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 
@@ -122,7 +126,10 @@ static Napi::Object Cnmfrm(const Napi::CallbackInfo& info) {
       err,
       (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling cnmfrm(\"") + centerName + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling cnmfrm(\"") + PreviewForError(centerName) + "\")",
+        err);
     return Napi::Object::New(env);
   }
 

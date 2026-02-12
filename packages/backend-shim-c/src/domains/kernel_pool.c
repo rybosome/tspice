@@ -14,7 +14,10 @@ static int tspice_kernel_pool_invalid_arg(char *err, int errMaxBytes, const char
   // Also, clear any previous structured SPICE error fields so higher-level
   // callers (e.g. the Node addon) don't accidentally attach stale `spiceShort`
   // / `spiceLong` / `spiceTrace` fields to these non-CSPICE validation errors.
-  tspice_reset(NULL, 0);
+  //
+  // NOTE: Avoid resetting CSPICE error status here. Invalid-arg errors are not
+  // CSPICE failures and should not wipe unrelated global SPICE error state.
+  tspice_clear_last_error_buffers();
 
   if (err && errMaxBytes > 0) {
     if (msg) {

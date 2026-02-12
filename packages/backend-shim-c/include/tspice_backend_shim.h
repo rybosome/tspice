@@ -30,6 +30,13 @@ int tspice_get_last_error_short(char *out, int outMaxBytes);
 int tspice_get_last_error_long(char *out, int outMaxBytes);
 int tspice_get_last_error_trace(char *out, int outMaxBytes);
 
+// Clears process-global structured last-error buffers (short/long/trace)
+// without modifying CSPICE error status.
+//
+// Useful for non-CSPICE validation errors, where JS backends should not attach
+// stale `spiceShort`/`spiceLong`/`spiceTrace` fields.
+void tspice_clear_last_error_buffers(void);
+
 // --- CSPICE error/status utilities ---
 int tspice_failed(int *outFailed, char *err, int errMaxBytes);
 int tspice_reset(char *err, int errMaxBytes);
@@ -302,6 +309,49 @@ int tspice_timout(
     const char *picture,
     char *out,
     int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// deltet_c: return difference ET - UTC (Delta ET).
+int tspice_deltet(
+    double epoch,
+    const char *eptype,
+    double *outDelta,
+    char *err,
+    int errMaxBytes);
+
+// unitim_c: convert time epoch from one system to another.
+int tspice_unitim(
+    double epoch,
+    const char *insys,
+    const char *outsys,
+    double *outEpoch,
+    char *err,
+    int errMaxBytes);
+
+// tparse_c: parse a UTC time string -> UTC seconds past J2000 (formal calendar; no leap seconds).
+int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes);
+
+// tpictr_c: create a time picture from a sample time string.
+int tspice_tpictr(
+    const char *sample,
+    const char *picturIn,
+    char *outPictur,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// timdef_c: set/get time conversion defaults.
+int tspice_timdef_get(
+    const char *item,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_timdef_set(
+    const char *item,
+    const char *value,
     char *err,
     int errMaxBytes);
 
@@ -699,6 +749,39 @@ int tspice_sce2s(
     double et,
     char *out,
     int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// scencd_c: convert an encoded SCLK string -> ticks.
+int tspice_scencd(
+    int sc,
+    const char *sclkch,
+    double *outSclkdp,
+    char *err,
+    int errMaxBytes);
+
+// scdecd_c: convert ticks -> an encoded SCLK string.
+int tspice_scdecd(
+    int sc,
+    double sclkdp,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// sct2e_c: convert ticks -> ET seconds past J2000.
+int tspice_sct2e(
+    int sc,
+    double sclkdp,
+    double *outEt,
+    char *err,
+    int errMaxBytes);
+
+// sce2c_c: convert ET seconds past J2000 -> ticks.
+int tspice_sce2c(
+    int sc,
+    double et,
+    double *outSclkdp,
     char *err,
     int errMaxBytes);
 
