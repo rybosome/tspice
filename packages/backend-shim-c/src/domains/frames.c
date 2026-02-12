@@ -31,7 +31,7 @@ static int tspice_frames_invalid_arg(char *err, int errMaxBytes, const char *msg
     }
   }
 
-  return 1;
+  return 2;
 }
 
 int tspice_namfrm(
@@ -583,6 +583,9 @@ static const char *tspice_frames_dtype_to_string_buf(SpiceDataType dtype, char *
   if (known != NULL) {
     return known;
   }
+  if (buf == NULL || bufMaxBytes <= 0) {
+    return "SpiceDataType(?)";
+  }
   snprintf(buf, (size_t)bufMaxBytes, "SpiceDataType(%d)", (int)dtype);
   return buf;
 }
@@ -601,7 +604,7 @@ static int tspice_frames_validate_cell_handle(
     // failure. Clear structured last-error buffers to avoid leaking stale SPICE
     // details.
     tspice_clear_last_error_buffers();
-    return 1;
+    return 2;
   }
 
   if (cell->dtype != expectedDtype) {
@@ -681,15 +684,16 @@ int tspice_ckobj(const char *ck, uintptr_t idsCellHandle, char *err, int errMaxB
   }
 
   SpiceCell *ids = NULL;
-  if (tspice_frames_validate_cell_handle(
-          idsCellHandle,
-          SPICE_INT,
-          "cell",
-          "tspice_ckobj()",
-          &ids,
-          err,
-          errMaxBytes) != 0) {
-    return 1;
+  const int idsCode = tspice_frames_validate_cell_handle(
+      idsCellHandle,
+      SPICE_INT,
+      "cell",
+      "tspice_ckobj()",
+      &ids,
+      err,
+      errMaxBytes);
+  if (idsCode != 0) {
+    return idsCode;
   }
 
   ckobj_c(ck, ids);
@@ -728,15 +732,16 @@ int tspice_ckcov(
   }
 
   SpiceCell *cover = NULL;
-  if (tspice_frames_validate_cell_handle(
-          coverWindowHandle,
-          SPICE_DP,
-          "window",
-          "tspice_ckcov()",
-          &cover,
-          err,
-          errMaxBytes) != 0) {
-    return 1;
+  const int coverCode = tspice_frames_validate_cell_handle(
+      coverWindowHandle,
+      SPICE_DP,
+      "window",
+      "tspice_ckcov()",
+      &cover,
+      err,
+      errMaxBytes);
+  if (coverCode != 0) {
+    return coverCode;
   }
 
   ckcov_c(

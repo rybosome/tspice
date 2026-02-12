@@ -1,5 +1,8 @@
 #include "frames.h"
 
+#include <cmath>
+#include <cstdint>
+#include <limits>
 #include <string>
 
 #include "../addon_common.h"
@@ -287,7 +290,7 @@ static Napi::Number Cklpf(const Napi::CallbackInfo& info) {
   }
 
   const std::string ck = info[0].As<Napi::String>().Utf8Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  tspice_backend_node::CspiceLock lock;
 
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
@@ -311,8 +314,20 @@ static void Ckupf(const Napi::CallbackInfo& info) {
     return;
   }
 
-  const int handle = info[0].As<Napi::Number>().Int32Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  const double d = info[0].As<Napi::Number>().DoubleValue();
+  const double hi = (double)std::numeric_limits<int32_t>::max();
+  // Validate the numeric value before converting to int32/int to avoid
+  // truncation/wrap.
+  if (!std::isfinite(d) || std::trunc(d) != d || d < 0.0 || d > hi) {
+    ThrowSpiceError(
+        Napi::RangeError::New(
+            env,
+            "ckupf(handle) expects handle to be a finite non-negative 32-bit integer"));
+    return;
+  }
+
+  const int handle = (int)d;
+  tspice_backend_node::CspiceLock lock;
 
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ckupf(handle, err, (int)sizeof(err));
