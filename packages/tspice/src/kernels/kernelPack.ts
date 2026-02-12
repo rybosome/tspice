@@ -11,7 +11,15 @@ export type KernelPack = {
   kernels: readonly KernelPackKernel[];
 };
 
-export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
+export type ResponseLike = {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+};
+
+// Structural fetch typing so we don't leak DOM lib types into emitted .d.ts.
+export type FetchLike = (input: string, init?: unknown) => Promise<ResponseLike>;
 
 export type RootRelativeKernelUrlBehavior =
   | "bypassBaseUrl"

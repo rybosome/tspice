@@ -79,6 +79,19 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.10.9)(yaml@2.8.2)
 
+  fixtures/consumer-nodom:
+    dependencies:
+      '@rybosome/tspice':
+        specifier: workspace:*
+        version: link:../../packages/tspice
+    devDependencies:
+      '@types/node':
+        specifier: 16.x
+        version: 16.18.126
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/backend-contract:
     devDependencies:
       '@types/node':
@@ -239,7 +252,6 @@ importers:
   packages/tspice-native-darwin-x64: {}
 
   packages/tspice-native-linux-x64-gnu: {}
-
 
 packages:
 
@@ -866,6 +878,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/node@16.18.126':
+    resolution: {integrity: sha512-OTcgaiwfGFBKacvfwuHzzn1KLxH/er8mluiy8/uM3sGXHaRe73RrSIj01jow9t4kJEW633Ov+cOexXeiApTyAw==}
 
   '@types/node@22.19.6':
     resolution: {integrity: sha512-qm+G8HuG6hOHQigsi7VGuLjUVu6TtBo/F05zvX04Mw2uCg9Dv0Qxy3Qw7j41SidlTcl5D/5yg0SEZqOB+EqZnQ==}
@@ -2939,6 +2954,8 @@ snapshots:
   '@types/estree@1.0.8': {}
 
   '@types/json-schema@7.0.15': {}
+
+  '@types/node@16.18.126': {}
 
   '@types/node@22.19.6':
     dependencies:
