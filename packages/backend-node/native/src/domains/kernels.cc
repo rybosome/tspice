@@ -8,6 +8,7 @@
 
 using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
+using tspice_napi::PreviewForError;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
@@ -50,7 +51,7 @@ static void Furnsh(const Napi::CallbackInfo& info) {
   if (code != 0) {
     ThrowSpiceError(
         env,
-        std::string("CSPICE failed while calling furnsh(\"") + path + "\")",
+        std::string("CSPICE failed while calling furnsh(\"") + PreviewForError(path) + "\")",
         err);
   }
 }
@@ -72,7 +73,7 @@ static void Unload(const Napi::CallbackInfo& info) {
   if (code != 0) {
     ThrowSpiceError(
         env,
-        std::string("CSPICE failed while calling unload(\"") + path + "\")",
+        std::string("CSPICE failed while calling unload(\"") + PreviewForError(path) + "\")",
         err);
   }
 }
@@ -117,7 +118,7 @@ static Napi::Number Ktotal(const Napi::CallbackInfo& info) {
   if (code != 0) {
     ThrowSpiceError(
         env,
-        std::string("CSPICE failed while calling ktotal(\"") + kind + "\")",
+        std::string("CSPICE failed while calling ktotal(\"") + PreviewForError(kind) + "\")",
         err);
     return Napi::Number::New(env, 0);
   }
