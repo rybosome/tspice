@@ -240,24 +240,6 @@ importers:
 
   packages/tspice-native-linux-x64-gnu: {}
 
-  packages/tspice-web-components:
-    dependencies:
-      '@rybosome/tspice':
-        specifier: workspace:*
-        version: link:../tspice
-    devDependencies:
-      '@rybosome/tspice-backend-fake':
-        specifier: workspace:*
-        version: link:../backend-fake
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.6
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.6)
 
 packages:
 
