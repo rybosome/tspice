@@ -9,6 +9,7 @@ export type {
   FoundValue,
   IluminResult,
   KernelData,
+  KernelInfo,
   KernelKind,
   KernelSource,
   Mat6RowMajor,
@@ -65,6 +66,7 @@ export {
 
 export * from "./domains/kernels.js";
 export * from "./domains/kernel-pool.js";
+export * from "./domains/kernels-utils.js";
 export * from "./domains/time.js";
 export * from "./domains/ids-names.js";
 export * from "./domains/ids-names-normalize.js";
