@@ -103,7 +103,11 @@ describe("wasm lowlevel bindings", () => {
     };
 
     const wasmUrl = new URL("../emscripten/tspice_backend_wasm.wasm", import.meta.url);
-    const wasmBinary = await readFile(fileURLToPath(wasmUrl));
+    const wasmBytes = await readFile(fileURLToPath(wasmUrl));
+    const wasmBinary = wasmBytes.buffer.slice(
+      wasmBytes.byteOffset,
+      wasmBytes.byteOffset + wasmBytes.byteLength,
+    );
 
     module = (await createEmscriptenModule({
       locateFile(path: string, prefix: string) {
