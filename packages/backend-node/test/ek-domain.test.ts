@@ -37,10 +37,7 @@ describe("backend-node ek domain wrapper", () => {
       resolvePath: (p: string) => `RESOLVED(${p})`,
     } satisfies Pick<KernelStager, "resolvePath">;
 
-    const api = createEkApi(
-      native as unknown as NativeAddon,
-      stager as unknown as KernelStager,
-    );
+    const api = createEkApi(native, stager);
 
     api.ekopr("/kernels/a.ek");
     api.ekopw("kernels/b.ek");
@@ -58,7 +55,7 @@ describe("backend-node ek domain wrapper", () => {
       ekntab: () => -1,
     } satisfies Pick<NativeAddon, "ekntab">;
 
-    const api = createEkApi(native as unknown as NativeAddon);
+    const api = createEkApi(native);
 
     expect(() => api.ekntab()).toThrow(/non-negative|32-bit|integer/i);
   });
@@ -69,7 +66,7 @@ describe("backend-node ek domain wrapper", () => {
       eknseg: (_handle: number) => 1.5,
     } satisfies Pick<NativeAddon, "ekopr" | "eknseg">;
 
-    const api = createEkApi(native as unknown as NativeAddon);
+    const api = createEkApi(native);
 
     const handle = api.ekopr("/tmp/file.ek");
     expect(() => api.eknseg(handle)).toThrow(/non-negative|32-bit|integer/i);
@@ -80,7 +77,7 @@ describe("backend-node ek domain wrapper", () => {
       ektnam: (_n: number) => "",
     } satisfies Pick<NativeAddon, "ektnam">;
 
-    const api = createEkApi(native as unknown as NativeAddon);
+    const api = createEkApi(native);
 
     expect(() => api.ektnam(-1)).toThrow(/>=\s*0|non-negative/i);
   });
@@ -98,7 +95,7 @@ describe("backend-node ek domain wrapper", () => {
       ekcls: (h: number) => closed.push(h),
     } satisfies Pick<NativeAddon, "ekopr" | "ekcls">;
 
-    const api = createEkApi(native as unknown as NativeAddon) as unknown as ReturnType<
+    const api = createEkApi(native) as unknown as ReturnType<
       typeof createEkApi
     > &
       EkApiDebug;

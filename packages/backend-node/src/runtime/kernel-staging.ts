@@ -52,7 +52,7 @@ export function createKernelStager(): KernelStager {
     // `normalizeVirtualKernelPath()` is intentionally strict (no `..`), but it
     // can still successfully normalize *absolute* OS paths like `/home/user/foo.tm`.
     // Those must pass through unchanged.
-    if (input.startsWith("/") && !input.startsWith("/kernels/")) {
+    if (path.isAbsolute(input) && !input.startsWith("/kernels/")) {
       return undefined;
     }
     try {

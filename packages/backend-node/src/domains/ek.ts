@@ -28,17 +28,29 @@ function asSpiceHandle(handleId: number): SpiceHandle {
   return handleId as unknown as SpiceHandle;
 }
 
-export function createEkApi(native: NativeAddon, stager?: KernelStager): EkApi {
+type NativeEkDeps = Pick<NativeAddon, "ekopr" | "ekopw" | "ekopn" | "ekcls" | "ekntab" | "ektnam" | "eknseg">;
+
+type KernelStagerEkDeps = Pick<KernelStager, "resolvePath">;
+
+export function createEkApi<
+  N extends NativeEkDeps,
+  S extends KernelStagerEkDeps | undefined,
+>(native: N, stager?: S): EkApi {
   let nextHandleId = 1;
   const handles = new Map<number, HandleEntry>();
 
   const resolvePath = (path: string) => {
     if (!stager) return path;
+
     try {
       return stager.resolvePath(path);
-    } catch {
-      // Best-effort path resolution: if staging logic throws, fall back to the
-      // original path so EK open calls can still proceed.
+    } catch (error) {
+      // Best-effort path resolution for *virtual-ish* kernel IDs only. If this
+      // was an OS path (or some unexpected staging invariant), surface the error.
+      const isVirtualish = path.startsWith("kernels/") || path.startsWith("/kernels/");
+      if (!isVirtualish) {
+        throw error;
+      }
       return path;
     }
   };
