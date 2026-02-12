@@ -61,8 +61,12 @@ describe("tpictr", () => {
     const sample = `24 Mar 2018${pad}16:23:00 UTC`;
     const template = "X";
 
+    expect(sample.length).toBe(sampleCap);
+
     const out = wasm.tpictr(sample, template);
-    expect(out).toBe(`DD Mon YYYY${pad}HR:MN:SC UTC ::UTC`);
+    const expected = `DD Mon YYYY${pad}HR:MN:SC UTC ::UTC`;
+    expect(out).toBe(expected);
+    expect(out.length).toBe(expected.length);
     expect(out.length).toBeGreaterThan(300);
   });
 });
