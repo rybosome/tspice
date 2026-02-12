@@ -28,6 +28,13 @@ function invokeRaw(json: string): RunnerResponse {
     throw res.error;
   }
 
+  if (res.status !== 0) {
+    throw new Error(
+      `cspice-runner exited non-zero (status=${res.status ?? "null"} signal=${res.signal ?? "null"}) ` +
+        `stdout=${JSON.stringify(res.stdout)} stderr=${JSON.stringify(res.stderr)}`,
+    );
+  }
+
   const out = (res.stdout ?? "").trim();
   if (!out) {
     throw new Error(

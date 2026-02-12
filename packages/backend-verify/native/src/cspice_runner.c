@@ -497,15 +497,26 @@ static bool is_strict_json_number_literal(const char *s) {
 }
 
 
-static bool jsmn_parse_double(const char *json, const jsmntok_t *tok,
-                              SpiceDouble *out) {
+typedef enum {
+  PARSE_OK = 0,
+  PARSE_INVALID,
+  PARSE_TOO_LONG,
+  PARSE_UNSUPPORTED,
+} parse_result;
+
+
+static parse_result jsmn_parse_double(const char *json, const jsmntok_t *tok,
+                                      SpiceDouble *out) {
   if (tok->type != JSMN_PRIMITIVE) {
-    return false;
+    return PARSE_INVALID;
   }
 
   const int n = tok->end - tok->start;
-  if (n <= 0 || n >= 128) {
-    return false;
+  if (n <= 0) {
+    return PARSE_INVALID;
+  }
+  if (n >= 128) {
+    return PARSE_TOO_LONG;
   }
 
   char buf[128];
@@ -518,32 +529,26 @@ static bool jsmn_parse_double(const char *json, const jsmntok_t *tok,
   // Make JSON-number parsing deterministic and strict. `strtod` accepts leading
   // whitespace and a leading '+', which are not valid JSON.
   if (!is_strict_json_number_literal(buf)) {
-    return false;
+    return PARSE_INVALID;
   }
 
   errno = 0;
   char *endptr = NULL;
   const double v = strtod(buf, &endptr);
   if (errno != 0) {
-    return false;
+    return PARSE_INVALID;
   }
   if (endptr == buf || *endptr != '\0') {
-    return false;
+    return PARSE_INVALID;
   }
 
   if (!isfinite(v)) {
-    return false;
+    return PARSE_INVALID;
   }
 
   *out = (SpiceDouble)v;
-  return true;
+  return PARSE_OK;
 }
-
-typedef enum {
-  PARSE_INT_OK = 0,
-  PARSE_INT_INVALID,
-  PARSE_INT_UNSUPPORTED,
-} parse_int_result;
 
 // Strict JSON integer grammar (RFC 8259):
 //   int = "0" / ( digit1-9 *digit )
@@ -555,21 +560,24 @@ static bool is_strict_json_int_literal(const char *s) {
   return p != NULL && *p == '\0';
 }
 
-static parse_int_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
-                                       SpiceInt *out) {
+static parse_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
+                                   SpiceInt *out) {
   // Defensive: ensure SpiceInt can round-trip through long long on this ABI.
   // If it can't, parsing via strtoll() can't be made safe/portable.
   if (sizeof(SpiceInt) > sizeof(long long)) {
-    return PARSE_INT_UNSUPPORTED;
+    return PARSE_UNSUPPORTED;
   }
 
   if (tok->type != JSMN_PRIMITIVE) {
-    return PARSE_INT_INVALID;
+    return PARSE_INVALID;
   }
 
   const int n = tok->end - tok->start;
-  if (n <= 0 || n >= 128) {
-    return PARSE_INT_INVALID;
+  if (n <= 0) {
+    return PARSE_INVALID;
+  }
+  if (n >= 128) {
+    return PARSE_TOO_LONG;
   }
 
   char buf[128];
@@ -577,27 +585,27 @@ static parse_int_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
   buf[n] = '\0';
 
   if (!is_strict_json_int_literal(buf)) {
-    return PARSE_INT_INVALID;
+    return PARSE_INVALID;
   }
 
   errno = 0;
   char *endptr = NULL;
   const long long v = strtoll(buf, &endptr, 10);
   if (errno != 0) {
-    return PARSE_INT_INVALID;
+    return PARSE_INVALID;
   }
   if (endptr == buf || *endptr != '\0') {
-    return PARSE_INT_INVALID;
+    return PARSE_INVALID;
   }
 
   // Defensive: ensure the parsed value round-trips into SpiceInt.
   SpiceInt tmp = (SpiceInt)v;
   if ((long long)tmp != v) {
-    return PARSE_INT_INVALID;
+    return PARSE_INVALID;
   }
 
   *out = tmp;
-  return PARSE_INT_OK;
+  return PARSE_OK;
 }
 
 // --- JSON output helpers ----------------------------------------------------
@@ -1166,11 +1174,16 @@ int main(void) {
     SpiceDouble et = 0.0;
     SpiceInt prec = 0;
 
-    if (etTok < 0 || etTok >= tokenCount || !jsmn_parse_double(input, &tokens[etTok], &et)) {
+    parse_result etParse = PARSE_INVALID;
+    if (etTok >= 0 && etTok < tokenCount) {
+      etParse = jsmn_parse_double(input, &tokens[etTok], &et);
+    }
+
+    if (etTok < 0 || etTok >= tokenCount || etParse != PARSE_OK) {
       write_error_json_ex(
           "invalid_args",
           "time.et2utc expects args[0] to be a number",
-          NULL,
+          etParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
           NULL,
           NULL,
           NULL);
@@ -1188,19 +1201,19 @@ int main(void) {
       goto done;
     }
 
-    parse_int_result precParse = PARSE_INT_INVALID;
+    parse_result precParse = PARSE_INVALID;
     if (precTok >= 0 && precTok < tokenCount) {
       precParse = jsmn_parse_int(input, &tokens[precTok], &prec);
     }
 
-    if (precTok < 0 || precTok >= tokenCount || precParse != PARSE_INT_OK) {
-      if (precParse == PARSE_INT_UNSUPPORTED) {
+    if (precTok < 0 || precTok >= tokenCount || precParse != PARSE_OK) {
+      if (precParse == PARSE_UNSUPPORTED) {
         write_unsupported_spiceint_width_error();
       } else {
         write_error_json_ex(
             "invalid_args",
             "time.et2utc expects args[2] to be an integer (SpiceInt range)",
-            NULL,
+            precParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
             NULL,
             NULL,
             NULL);
@@ -1305,19 +1318,19 @@ int main(void) {
 
     int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
     SpiceInt code = 0;
-    parse_int_result codeParse = PARSE_INT_INVALID;
+    parse_result codeParse = PARSE_INVALID;
     if (codeTok >= 0 && codeTok < tokenCount) {
       codeParse = jsmn_parse_int(input, &tokens[codeTok], &code);
     }
 
-    if (codeTok < 0 || codeTok >= tokenCount || codeParse != PARSE_INT_OK) {
-      if (codeParse == PARSE_INT_UNSUPPORTED) {
+    if (codeTok < 0 || codeTok >= tokenCount || codeParse != PARSE_OK) {
+      if (codeParse == PARSE_UNSUPPORTED) {
         write_unsupported_spiceint_width_error();
       } else {
         write_error_json_ex(
             "invalid_args",
             "ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)",
-            NULL,
+            codeParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
             NULL,
             NULL,
             NULL);
@@ -1420,19 +1433,19 @@ int main(void) {
 
     int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
     SpiceInt frcode = 0;
-    parse_int_result frcodeParse = PARSE_INT_INVALID;
+    parse_result frcodeParse = PARSE_INVALID;
     if (codeTok >= 0 && codeTok < tokenCount) {
       frcodeParse = jsmn_parse_int(input, &tokens[codeTok], &frcode);
     }
 
-    if (codeTok < 0 || codeTok >= tokenCount || frcodeParse != PARSE_INT_OK) {
-      if (frcodeParse == PARSE_INT_UNSUPPORTED) {
+    if (codeTok < 0 || codeTok >= tokenCount || frcodeParse != PARSE_OK) {
+      if (frcodeParse == PARSE_UNSUPPORTED) {
         write_unsupported_spiceint_width_error();
       } else {
         write_error_json_ex(
             "invalid_args",
             "frames.frmnam expects args[0] to be an integer (SpiceInt range)",
-            NULL,
+            frcodeParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
             NULL,
             NULL,
             NULL);
@@ -1504,11 +1517,16 @@ int main(void) {
     }
 
     SpiceDouble et = 0.0;
-    if (etTok < 0 || etTok >= tokenCount || !jsmn_parse_double(input, &tokens[etTok], &et)) {
+    parse_result etParse = PARSE_INVALID;
+    if (etTok >= 0 && etTok < tokenCount) {
+      etParse = jsmn_parse_double(input, &tokens[etTok], &et);
+    }
+
+    if (etTok < 0 || etTok >= tokenCount || etParse != PARSE_OK) {
       write_error_json_ex(
           "invalid_args",
           "frames.pxform expects args[2] to be a number",
-          NULL,
+          etParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
           NULL,
           NULL,
           NULL);

@@ -53,11 +53,16 @@ export function isCspiceRunnerAvailable(): boolean {
   const binaryPath = getCspiceRunnerBinaryPath();
   if (!fs.existsSync(binaryPath)) return false;
 
-  // Prefer the pretest state file when present so we don't accidentally run with
-  // a stale/broken binary.
+  // Prefer the pretest state file so we don't accidentally run with a stale/broken
+  // binary (e.g. when restoring only the binary from cache).
   const state = readCspiceRunnerBuildState();
-  if (state && state.available === false) return false;
+  if (state) return state.available === true;
 
+  // No state file: in CI treat as unavailable to avoid stale binaries.
+  const ci = process.env.CI;
+  if (ci === "true" || ci === "1") return false;
+
+  // Local dev: be permissive as long as the binary exists.
   return true;
 }
 
@@ -71,7 +76,9 @@ export function getCspiceRunnerStatus(): { ready: boolean; hint: string; statePa
       ? state.reason
       : state?.error?.trim?.()
         ? state.error
-        : `State: ${statePath}`;
+        : state
+          ? `State: ${statePath}`
+          : `Missing or unreadable runner build state: ${statePath}`;
   return { ready, hint, statePath };
 }
 

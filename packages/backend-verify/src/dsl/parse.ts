@@ -15,8 +15,16 @@ function assertString(value: unknown, label: string): string {
 }
 
 function assertNumber(value: unknown, label: string): number {
-  if (typeof value === "number") return value;
-  throw new TypeError(`${label} must be a number (got ${JSON.stringify(value)})`);
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  throw new TypeError(`${label} must be a finite number (got ${JSON.stringify(value)})`);
+}
+
+function assertTolerance(value: unknown, label: string): number {
+  const n = assertNumber(value, label);
+  if (n < 0) {
+    throw new TypeError(`${label} must be >= 0 (got ${n})`);
+  }
+  return n;
 }
 
 function assertBoolean(value: unknown, label: string): boolean {
@@ -51,8 +59,8 @@ function parseCompare(raw: unknown, label: string): ScenarioCompareAst {
     }
   }
 
-  if (raw.tolAbs !== undefined) out.tolAbs = assertNumber(raw.tolAbs, `${label}.tolAbs`);
-  if (raw.tolRel !== undefined) out.tolRel = assertNumber(raw.tolRel, `${label}.tolRel`);
+  if (raw.tolAbs !== undefined) out.tolAbs = assertTolerance(raw.tolAbs, `${label}.tolAbs`);
+  if (raw.tolRel !== undefined) out.tolRel = assertTolerance(raw.tolRel, `${label}.tolRel`);
   if (raw.angleWrapPi !== undefined) {
     out.angleWrapPi = assertBoolean(raw.angleWrapPi, `${label}.angleWrapPi`);
   }
