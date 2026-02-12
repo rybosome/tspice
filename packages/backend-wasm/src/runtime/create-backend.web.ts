@@ -13,8 +13,10 @@ import { createKernelPoolApi } from "../domains/kernel-pool.js";
 import { createTimeApi, getToolkitVersion } from "../domains/time.js";
 import { createFileIoApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
+import { createDskApi } from "../domains/dsk.js";
 
 import { createWasmFs } from "./fs.js";
+import { createSpiceHandleRegistry } from "./spice-handles.js";
 
 export type { CreateWasmBackendOptions } from "./create-backend-options.js";
 import type { CreateWasmBackendOptions } from "./create-backend-options.js";
@@ -30,6 +32,26 @@ export async function createWasmBackend(
   // which can lead to JSON being imported as an ESM module.
   const defaultWasmUrl = new URL("../tspice_backend_wasm.wasm", import.meta.url);
   const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
+
+  const URL_SCHEME_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
+  const WINDOWS_DRIVE_PATH_RE = /^[A-Za-z]:[\\/]/;
+
+  const hasUrlScheme = (value: string): boolean =>
+    URL_SCHEME_RE.test(value) && !WINDOWS_DRIVE_PATH_RE.test(value);
+
+  if (hasUrlScheme(wasmUrl)) {
+    const u = new URL(wasmUrl);
+
+    // In web builds, `blob:` URLs are a real-world possibility (some bundlers and
+    // runtime loaders produce them). `data:` is also generally fetchable.
+    const allowedProtocols = new Set<string>(["http:", "https:", "file:", "blob:", "data:"]);
+
+    if (!allowedProtocols.has(u.protocol)) {
+      throw new Error(
+        `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, blob: URL, data: URL, or a filesystem path.`,
+      );
+    }
+  }
 
   let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
   try {
@@ -76,6 +98,7 @@ export async function createWasmBackend(
   const toolkitVersion = getToolkitVersion(module);
 
   const fsApi = createWasmFs(module);
+  const spiceHandles = createSpiceHandleRegistry();
 
   const backend = {
     kind: "wasm",
@@ -87,10 +110,10 @@ export async function createWasmBackend(
     ...createEphemerisApi(module),
     ...createGeometryApi(module),
     ...createCoordsVectorsApi(module),
-    ...createFileIoApi(module),
+    ...createFileIoApi(module, spiceHandles),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
-
+    ...createDskApi(module, spiceHandles),
   } satisfies SpiceBackend;
 
   return backend;

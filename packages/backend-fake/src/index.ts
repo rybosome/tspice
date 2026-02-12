@@ -11,6 +11,7 @@ import type {
   KernelPoolVarType,
   SpiceBackend,
   SpiceHandle,
+  SpiceIntCell,
   Mat3RowMajor,
   SpiceMatrix6x6,
   SpiceStateVector,
@@ -1535,6 +1536,21 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     },
     dlacls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dlacls() is not implemented");
+    },
+
+    // -- DSK ----------------------------------------------------------------
+
+    dskobj: (_dsk: string, _bodids: SpiceIntCell) => {
+      throw new Error("Fake backend: dskobj() is not implemented");
+    },
+    dsksrf: (_dsk: string, _bodyid: number, _srfids: SpiceIntCell) => {
+      throw new Error("Fake backend: dsksrf() is not implemented");
+    },
+    dskgd: (_handle: SpiceHandle, _dladsc: DlaDescriptor) => {
+      throw new Error("Fake backend: dskgd() is not implemented");
+    },
+    dskb02: (_handle: SpiceHandle, _dladsc: DlaDescriptor) => {
+      throw new Error("Fake backend: dskb02() is not implemented");
     },
 
     // -- Cells + windows -----------------------------------------------------

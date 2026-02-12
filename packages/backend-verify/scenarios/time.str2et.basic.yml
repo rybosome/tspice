@@ -2,8 +2,23 @@ name: time.str2et.basic
 setup:
   kernels:
     - $FIXTURES/basic-time
+compare:
+  tolAbs: 1e-12
+  tolRel: 1e-12
 cases:
-  - id: j2000
+  - id: j2000-tdb
     call: time.str2et
     args:
       - 2000 JAN 01 12:00:00 TDB
+
+  - id: iso-utc
+    call: time.str2et
+    args:
+      - 2010-01-02T03:04:05
+
+  - id: invalid
+    call: time.str2et
+    args:
+      - "not a time"
+    compare:
+      errorShort: true

@@ -7,13 +7,13 @@ Sources:
 - CSPICE routine list + brief descriptions: https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html (NAIF official index)
 - tspice implemented routines: backend contract surface via `SpiceBackend` in `packages/backend-contract/src/index.ts`
 
-SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`.
+SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`, `DskApi`.
 
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceBackend): 79
-- Planned (not yet implemented): 570
+- Implemented now (SpiceBackend): 104
+- Planned (not yet implemented): 545
 - Excluded: 3
 
 ## Implemented now
@@ -22,14 +22,21 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | --- | --- |
 | `axisar_c` | Axis and angle to rotation |
 | `bodc2n_c` | Body ID code to name translation |
+| `bodc2s_c` | Body ID code to string translation |
+| `boddef_c` | Body name/ID code definition |
+| `bodfnd_c` | Find values from the kernel pool |
 | `bodn2c_c` | Body name to ID code translation |
+| `bods2c_c` | Body string to ID code translation |
+| `bodvar_c` | Return values from the kernel pool |
 | `card_c` | Cardinality of a cell |
+| `ccifrm_c` | Class and class ID to associated frame |
 | `chkin_c` | module Check In |
 | `chkout_c` | Module Check Out |
 | `cidfrm_c` | center SPK ID frame |
 | `ckgp_c` | C-kernel, get pointing |
 | `ckgpav_c` | C-kernel, get pointing and angular velocity |
 | `cnmfrm_c` | Center name to associated frame |
+| `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
 | `dafcls_c` | DAF, close |
 | `daffna_c` | DAF, find next array |
@@ -40,27 +47,44 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
 | `dlaopn_c` | DLA, open new file |
+| `dskb02_c` | DSK, fetch type 2 bookkeeping data |
+| `dskgd_c` | DSK, return DSK segment descriptor |
+| `dskobj_c` | DSK, get object IDs |
+| `dsksrf_c` | DSK, get surface IDs for body |
+| `dtpool_c` | Data for a kernel pool variable |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
+| `expool_c` | Confirm the existence of a pooled kernel variable |
 | `failed_c` | Error Status Indicator |
+| `frinfo_c` | Frame Information |
 | `frmnam_c` | Frame to Name |
 | `furnsh_c` | Furnish a program with SPICE kernels |
+| `gcpool_c` | Get character data from the kernel pool |
+| `gdpool_c` | Get d.p. values from the kernel pool |
 | `georec_c` | Geodetic to rectangular coordinates |
 | `getfat_c` | Get file architecture and type |
 | `getmsg_c` | Get Error Message |
+| `gipool_c` | Get integers from the kernel pool |
+| `gnpool_c` | Get names of kernel pool variables |
 | `ilumin_c` | Illumination angles |
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
+| `kinfo_c` | Kernel Information |
+| `kplfrm_c` | Kernel pool frame IDs |
 | `ktotal_c` | Kernel Totals |
+| `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
 | `namfrm_c` | Name to frame |
 | `occult_c` | find occultation type at time |
+| `pcpool_c` | Put character strings into the kernel pool |
+| `pdpool_c` | Put d.p.'s into the kernel pool |
+| `pipool_c` | Put integers into the kernel pool |
 | `pxform_c` | Position Transformation Matrix |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
@@ -82,6 +106,7 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
+| `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
 | `timout_c` | Time Output |
 | `tkvrsn_c` | Toolkit version strings |
@@ -113,11 +138,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `b1950_c` | Besselian Date 1950.0 |
 | `badkpv_c` | Bad Kernel Pool Variable |
 | `bltfrm_c` | Built-in frame IDs |
-| `bodc2s_c` | Body ID code to string translation |
-| `boddef_c` | Body name/ID code definition |
-| `bodfnd_c` | Find values from the kernel pool |
-| `bods2c_c` | Body string to ID code translation |
-| `bodvar_c` | Return values from the kernel pool |
 | `bodvcd_c` | Return d.p. values from the kernel pool |
 | `bodvrd_c` | Return d.p. values from the kernel pool |
 | `brcktd_c` | Bracket a d.p. value within an interval |
@@ -127,7 +147,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `bsrchc_c` | Binary search for a character string |
 | `bsrchd_c` | Binary search for a double precision value |
 | `bsrchi_c` | Binary search for an integer value |
-| `ccifrm_c` | Class and class ID to associated frame |
 | `cgv2el_c` | Center and generating vectors to ellipse |
 | `chbder_c` | Derivatives of a Chebyshev expansion |
 | `chbigr_c` | Chebyshev expansion integral |
@@ -161,7 +180,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `copy_c` | Copy a SPICE cell |
 | `cpos_c` | Character position |
 | `cposr_c` | Character position, reverse |
-| `cvpool_c` | Check variable in the pool for update |
 | `cyllat_c` | Cylindrical to latitudinal |
 | `cylrec_c` | Cylindrical to rectangular |
 | `cylsph_c` | Cylindrical to spherical |
@@ -228,19 +246,15 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `drdlat_c` | Derivative of rectangular w.r.t. latitudinal |
 | `drdpgr_c` | Derivative of rectangular w.r.t. planetographic |
 | `drdsph_c` | Derivative of rectangular w.r.t. spherical |
-| `dskb02_c` | DSK, fetch type 2 bookkeeping data |
 | `dskcls_c` | DSK, close file |
 | `dskd02_c` | DSK, fetch d.p. type 2 data |
-| `dskgd_c` | DSK, return DSK segment descriptor |
 | `dskgtl_c` | DSK, get tolerance |
 | `dski02_c` | DSK, fetch integer type 2 data |
 | `dskmi2_c` | DSK, make spatial index for type 2 segment |
 | `dskn02_c` | DSK, type 2, compute normal vector for plate |
-| `dskobj_c` | DSK, get object IDs |
 | `dskopn_c` | DSK, open new file |
 | `dskp02_c` | DSK, fetch type 2 plate data |
 | `dskrb2_c` | DSK, determine range bounds for plate set |
-| `dsksrf_c` | DSK, get surface IDs for body |
 | `dskstl_c` | DSK, set tolerance |
 | `dskv02_c` | DSK, fetch type 2 vertex data |
 | `dskw02_c` | DSK, write type 2 segment |
@@ -249,7 +263,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `dskxv_c` | DSK, ray-surface intercept, vectorized |
 | `dskz02_c` | DSK, fetch type 2 model size parameters |
 | `dsphdr_c` | Derivative of spherical w.r.t. rectangular |
-| `dtpool_c` | Data for a kernel pool variable |
 | `ducrss_c` | Unit Normalized Cross Product and Derivative |
 | `dvcrss_c` | Derivative of Vector cross product |
 | `dvdot_c` | Derivative of Vector Dot Product, 3-D |
@@ -316,15 +329,11 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `eul2m_c` | Euler angles to matrix |
 | `eul2xf_c` | Euler angles and derivative to transformation |
 | `evsgp4_c` | Evaluate "two-line" element data |
-| `expool_c` | Confirm the existence of a pooled kernel variable |
 | `filld_c` | Fill a double precision array |
 | `filli_c` | Fill an integer array |
 | `fovray_c` | Is ray in FOV at time? |
 | `fovtrg_c` | Is target in FOV at time? |
 | `frame_c` | Build a right handed coordinate frame |
-| `frinfo_c` | Frame Information |
-| `gcpool_c` | Get character data from the kernel pool |
-| `gdpool_c` | Get d.p. values from the kernel pool |
 | `getelm_c` | Get the components from two-line elements |
 | `getfov_c` | Get instrument FOV parameters |
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
@@ -354,8 +363,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `gftfov_c` | GF, is target in FOV? |
 | `gfudb_c` | GF, user defined boolean |
 | `gfuds_c` | GF, user defined scalar |
-| `gipool_c` | Get integers from the kernel pool |
-| `gnpool_c` | Get names of kernel pool variables |
 | `halfpi_c` | Half the value of pi |
 | `hrmesp_c` | Hermite polynomial interpolation, equal spacing |
 | `hrmint_c` | Hermite polynomial interpolation |
@@ -386,9 +393,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `j2000_c` | Julian Date of 2000 JAN 1.5 |
 | `j2100_c` | Julian Date of 2100 JAN 1.5 |
 | `jyear_c` | Seconds per julian year |
-| `kinfo_c` | Kernel Information |
-| `kplfrm_c` | Kernel pool frame IDs |
-| `kxtrct_c` | Extract a substring starting with a keyword |
 | `lastnb_c` | Last non-blank character |
 | `latcyl_c` | Latitudinal to cylindrical coordinates |
 | `latsph_c` | Latitudinal to spherical coordinates |
@@ -461,12 +465,9 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `pckopn_c` | PCK, open new file |
 | `pckuof_c` | PCK, unload binary file |
 | `pckw02_c` | PCK, write type 2 segment |
-| `pcpool_c` | Put character strings into the kernel pool |
-| `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pgrrec_c` | Planetographic to rectangular |
 | `phaseq_c` | Phase angle quantity between bodies centers |
 | `pi_c` | Value of pi |
-| `pipool_c` | Put integers into the kernel pool |
 | `pjelpl_c` | Project ellipse onto plane |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pl2nvp_c` | Plane to normal vector and point |
@@ -593,7 +594,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `IdsNamesApi`, `FramesAp
 | `surfnm_c` | Surface normal vector on an ellipsoid |
 | `surfpt_c` | Surface point on an ellipsoid |
 | `surfpv_c` | Surface point and velocity |
-| `swpool_c` | Set watch on a pool variable |
 | `szpool_c` | Get size limitations of the kernel pool |
 | `tangpt_c` | Ray-ellipsoid tangent point |
 | `term_pl02` | Terminator using DSK type 2 plate model |
