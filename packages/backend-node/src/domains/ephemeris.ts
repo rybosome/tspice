@@ -12,6 +12,7 @@ import type {
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+import type { KernelStager } from "../runtime/kernel-staging.js";
 
 function assertSpkPackedDescriptor(out: unknown, label: string): asserts out is SpkPackedDescriptor {
   invariant(Array.isArray(out) && out.length === 5, `Expected ${label} to be a length-5 array`);
@@ -21,7 +22,7 @@ function assertSpkPackedDescriptor(out: unknown, label: string): asserts out is 
   }
 }
 
-export function createEphemerisApi(native: NativeAddon): EphemerisApi {
+export function createEphemerisApi(native: NativeAddon, stager: KernelStager): EphemerisApi {
   return {
     spkezr: (target, et, ref, abcorr, observer) => {
       const out = native.spkezr(target, et, ref, abcorr, observer);
@@ -90,11 +91,13 @@ export function createEphemerisApi(native: NativeAddon): EphemerisApi {
     },
 
     spkcov: (spk: string, idcode: number, cover: SpiceWindow) => {
-      native.spkcov(spk, idcode, cover);
+      const resolved = stager.resolvePathForSpice(spk);
+      native.spkcov(resolved, idcode, cover);
     },
 
     spkobj: (spk: string, ids: SpiceIntCell) => {
-      native.spkobj(spk, ids);
+      const resolved = stager.resolvePathForSpice(spk);
+      native.spkobj(resolved, ids);
     },
 
     spksfs: (body: number, et: number) => {

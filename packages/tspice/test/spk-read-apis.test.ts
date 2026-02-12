@@ -44,7 +44,7 @@ describe("SPK read APIs + coverage/object queries", () => {
     backend.kclear();
     backend.furnsh(lskPath);
     backend.furnsh(pck.path);
-    backend.furnsh(spk.path);
+    backend.furnsh({ path: SPK.name, bytes: spk.bytes });
 
     const { state: stateStr, lt: ltStr } = backend.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
     const { state: stateNum, lt: ltNum } = backend.spkez(399, 0, "J2000", "NONE", 10);
@@ -110,7 +110,7 @@ describe("SPK read APIs + coverage/object queries", () => {
     expect(unpacked.eaddr).toBe(0);
 
     const ids = backend.newIntCell(1000);
-    backend.spkobj(spk.path, ids);
+    backend.spkobj(SPK.name, ids);
     const idCount = backend.card(ids);
     expect(idCount).toBeGreaterThan(0);
 
@@ -121,7 +121,7 @@ describe("SPK read APIs + coverage/object queries", () => {
     expect(idList).toContain(399);
 
     const cover = backend.newWindow(16);
-    backend.spkcov(spk.path, 399, cover);
+    backend.spkcov(SPK.name, 399, cover);
     const nIntervals = backend.wncard(cover);
     expect(nIntervals).toBeGreaterThan(0);
 
