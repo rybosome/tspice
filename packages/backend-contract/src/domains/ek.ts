@@ -24,7 +24,13 @@ export interface EkApi {
   /** Close an EK file opened via `ekopr` / `ekopw` / `ekopn` (see `ekcls_c`). */
   ekcls(handle: SpiceHandle): void;
 
-  /** Number of EK tables currently loaded (see `ekntab_c`). */
+  /**
+   * Number of EK tables currently loaded (see `ekntab_c`).
+   *
+   * Postconditions:
+   * - Returns an integer count `n` with `0 <= n <= 2_147_483_647`.
+   * - Backends should validate this postcondition and throw if violated.
+   */
   ekntab(): number;
 
   /**
@@ -34,6 +40,12 @@ export interface EkApi {
    */
   ektnam(n: number): string;
 
-  /** Number of segments in an EK file opened via handle (see `eknseg_c`). */
+  /**
+   * Number of segments in an EK file opened via handle (see `eknseg_c`).
+   *
+   * Postconditions:
+   * - Returns an integer count `n` with `0 <= n <= 2_147_483_647`.
+   * - Backends should validate this postcondition and throw if violated.
+   */
   eknseg(handle: SpiceHandle): number;
 }

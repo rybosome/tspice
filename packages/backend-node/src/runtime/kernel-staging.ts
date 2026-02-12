@@ -38,6 +38,8 @@ export function createKernelStager(): KernelStager {
   const virtualByTempPath = new Map<string, string>();
   let tempKernelRootDir: string | undefined;
 
+  const VIRTUAL_KERNEL_ROOT = "/kernels/";
+
   /**
    * Canonicalize a virtual kernel identifier to the shared `/kernels/...` form.
    *
@@ -48,13 +50,30 @@ export function createKernelStager(): KernelStager {
     return `/kernels/${normalizeVirtualKernelPath(input)}`;
   }
 
+  function isVirtualKernelId(input: string): boolean {
+    // Virtual kernel identifiers are POSIX-style and either already use the
+    // shared `/kernels/...` namespace, or are relative identifiers that can be
+    // normalized into that namespace.
+    return input.startsWith(VIRTUAL_KERNEL_ROOT) || !path.isAbsolute(input);
+  }
+
   function tryCanonicalVirtualKernelPath(input: string): string | undefined {
+    // If this is a real on-disk absolute path, treat it as an OS path.
+    //
+    // This matters on POSIX because `/kernels/...` is a valid absolute path and
+    // could exist on disk; we only want to treat it as a virtual identifier
+    // when it doesn't resolve to a real file.
+    if (path.isAbsolute(input) && fs.existsSync(input)) {
+      return undefined;
+    }
+
     // `normalizeVirtualKernelPath()` is intentionally strict (no `..`), but it
     // can still successfully normalize *absolute* OS paths like `/home/user/foo.tm`.
     // Those must pass through unchanged.
-    if (path.isAbsolute(input) && !input.startsWith("/kernels/")) {
+    if (!isVirtualKernelId(input)) {
       return undefined;
     }
+
     try {
       return canonicalVirtualKernelPath(input);
     } catch {

@@ -32,6 +32,21 @@ type NativeEkDeps = Pick<NativeAddon, "ekopr" | "ekopw" | "ekopn" | "ekcls" | "e
 
 type KernelStagerEkDeps = Pick<KernelStager, "resolvePath">;
 
+// Backend-node-only internal debug hooks (not part of the public backend contract).
+export interface EkApiDebug {
+  __debugOpenHandleCount(): number;
+  __debugCloseAllHandles(): void;
+}
+
+/**
+* @internal Test-only helper: access non-enumerable debug hooks without `unknown` casts.
+*/
+export function asEkApiDebug(
+  api: ReturnType<typeof createEkApi>,
+): ReturnType<typeof createEkApi> & EkApiDebug {
+  return api as ReturnType<typeof createEkApi> & EkApiDebug;
+}
+
 export function createEkApi<
   N extends NativeEkDeps,
   S extends KernelStagerEkDeps | undefined,

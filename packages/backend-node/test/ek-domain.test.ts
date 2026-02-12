@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createEkApi } from "../src/domains/ek.js";
+import { asEkApiDebug, createEkApi } from "../src/domains/ek.js";
 import type { NativeAddon } from "../src/runtime/addon.js";
 import type { KernelStager } from "../src/runtime/kernel-staging.js";
 
@@ -85,20 +85,12 @@ describe("backend-node ek domain wrapper", () => {
   it("can bulk-close EK handles via internal teardown hook", () => {
     const closed: number[] = [];
 
-    type EkApiDebug = {
-      __debugOpenHandleCount(): number;
-      __debugCloseAllHandles(): void;
-    };
-
     const native = {
       ekopr: (_p: string) => 999,
       ekcls: (h: number) => closed.push(h),
     } satisfies Pick<NativeAddon, "ekopr" | "ekcls">;
 
-    const api = createEkApi(native) as unknown as ReturnType<
-      typeof createEkApi
-    > &
-      EkApiDebug;
+    const api = asEkApiDebug(createEkApi(native));
 
     const handle = api.ekopr("/tmp/file.ek");
     expect(api.__debugOpenHandleCount()).toBe(1);
