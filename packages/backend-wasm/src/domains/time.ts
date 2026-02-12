@@ -1,4 +1,5 @@
 import type { TimeApi } from "@rybosome/tspice-backend-contract";
+import { assertNever } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -307,22 +308,25 @@ export function createTimeApi(module: EmscriptenModule, toolkitVersion: string):
           throw new RangeError("timdef(): item must be a non-empty string");
         }
 
-        if (action === "GET") {
-          return tspiceCallTimdefGet(module, item);
-        }
-
-        if (action === "SET") {
-          if (typeof value !== "string") {
-            throw new TypeError("timdef(SET) requires a string value");
+        switch (action) {
+          case "GET": {
+            return tspiceCallTimdefGet(module, item);
           }
-          if (value.length === 0) {
-            throw new RangeError("timdef(SET)(): value must be a non-empty string");
-          }
-          tspiceCallTimdefSet(module, item, value);
-          return;
-        }
 
-        throw new Error(`Unsupported timdef action: ${action}`);
+          case "SET": {
+            if (typeof value !== "string") {
+              throw new TypeError("timdef(SET) requires a string value");
+            }
+            if (value.length === 0) {
+              throw new RangeError("timdef(SET)(): value must be a non-empty string");
+            }
+            tspiceCallTimdefSet(module, item, value);
+            return;
+          }
+
+          default:
+            return assertNever(action, "Unsupported timdef action");
+        }
       }
 
       return timdef;

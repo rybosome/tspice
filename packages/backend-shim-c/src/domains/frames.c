@@ -2,7 +2,34 @@
 
 #include "SpiceUsr.h"
 
+#include <stddef.h>
 #include <string.h>
+
+static int tspice_frames_invalid_arg(char *err, int errMaxBytes, const char *msg) {
+  // This module provides a stable C ABI surface.
+  //
+  // If callers pass invalid pointers/lengths, we must not invoke CSPICE with
+  // arguments that could cause undefined behavior.
+  //
+  // Also, clear any previous structured SPICE error fields so higher-level
+  // callers (e.g. the Node addon) don't accidentally attach stale `spiceShort`
+  // / `spiceLong` / `spiceTrace` fields to these non-CSPICE validation errors.
+  //
+  // NOTE: Avoid resetting CSPICE error status here. Invalid-arg errors are not
+  // CSPICE failures and should not wipe unrelated global SPICE error state.
+  tspice_clear_last_error_buffers();
+
+  if (err && errMaxBytes > 0) {
+    if (msg) {
+      strncpy(err, msg, (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    } else {
+      err[0] = '\0';
+    }
+  }
+
+  return 1;
+}
 
 int tspice_namfrm(
     const char *frameName,
@@ -56,6 +83,13 @@ int tspice_frmnam(
   }
   if (outFound) {
     *outFound = 0;
+  }
+
+  if (outFrameNameMaxBytes > 0 && !outFrameName) {
+    return tspice_frames_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_frmnam(): outFrameName must not be NULL when outFrameNameMaxBytes > 0");
   }
 
   frmnam_c((SpiceInt)frameId, (SpiceInt)outFrameNameMaxBytes, outFrameName);

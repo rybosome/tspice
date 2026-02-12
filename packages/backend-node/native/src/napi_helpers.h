@@ -104,7 +104,7 @@ inline std::string PreviewForError(const std::string& s, size_t maxChars = 200) 
         out += "\\\"";
         break;
       default:
-        if (c < 0x20 || c == 0x7F) {
+        if (c < 0x20 || c >= 0x7F) {
           out += "\\u00";
           out.push_back(kHex[(c >> 4) & 0xF]);
           out.push_back(kHex[c & 0xF]);
