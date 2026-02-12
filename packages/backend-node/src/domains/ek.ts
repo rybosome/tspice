@@ -32,7 +32,16 @@ export function createEkApi(native: NativeAddon, stager?: KernelStager): EkApi {
   let nextHandleId = 1;
   const handles = new Map<number, HandleEntry>();
 
-  const resolvePath = (path: string) => stager?.resolvePath(path) ?? path;
+  const resolvePath = (path: string) => {
+    if (!stager) return path;
+    try {
+      return stager.resolvePath(path);
+    } catch {
+      // Best-effort path resolution: if staging logic throws, fall back to the
+      // original path so EK open calls can still proceed.
+      return path;
+    }
+  };
 
   function register(nativeHandle: number): SpiceHandle {
     invariant(
