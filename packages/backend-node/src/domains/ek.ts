@@ -42,8 +42,8 @@ export function createEkApi<
 >(native: N, handles: SpiceHandleRegistry, stager?: S): EkApi {
   const registerEkHandle = (nativeHandle: number, context: string): SpiceHandle => {
     invariant(
-      typeof nativeHandle === "number" && Number.isInteger(nativeHandle) && nativeHandle > 0,
-      `Expected native backend ${context} to return a positive integer handle`,
+      typeof nativeHandle === "number" && Number.isInteger(nativeHandle) && nativeHandle >= 0,
+      `Expected native backend ${context} to return a non-negative integer handle`,
     );
     return handles.register("EK", nativeHandle);
   };
