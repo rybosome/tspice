@@ -401,6 +401,7 @@ const commonEmccArgs = [
   // We need C11 for shared shim sources (e.g. <stdatomic.h>).
   // `gnu11` keeps GNU extensions enabled for the upstream CSPICE sources.
   "-std=gnu11",
+  "-Wno-implicit-int",
   "-O2",
   "-s",
   "MODULARIZE=1",
@@ -540,6 +541,10 @@ function ensureNodeEsmPreamble(jsPath) {
     throw new Error(`Expected ${jsPath} to start with generated header`);
   }
   if (jsContents.includes(nodeEsmPreambleSentinel)) {
+    return;
+  }
+  // Some Emscripten builds already include a createRequire() preamble; avoid duplicating it.
+  if (jsContents.includes("createRequire(import.meta.url)")) {
     return;
   }
   fs.writeFileSync(jsPath, `${generatedHeader}${nodeEsmPreamble}${jsContents.slice(generatedHeader.length)}`);
