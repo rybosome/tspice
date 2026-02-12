@@ -5,7 +5,7 @@ name: micro
 runner: node-native
 
 fixtureRoots:
-  - packages/tspice/test/fixtures/kernels
+  - ../../../../../tspice/test/fixtures/kernels
 
 benchmarks:
   - id: str2et_j2000

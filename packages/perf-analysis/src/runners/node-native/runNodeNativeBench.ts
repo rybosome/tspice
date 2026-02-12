@@ -7,15 +7,14 @@ import {
   normalizeFixtureRefs,
   parseYaml,
   validate,
-  type BenchmarkContractV1,
+  type NormalizedBenchmarkContractV1,
 } from "../../contracts/benchmark-contract/v1/index.js";
 import {
   resolveFixtureRef,
-  type FixtureRef,
   type ResolvedFixtureRef,
 } from "../../shared/fixtures/index.js";
 
-import { dispatchCall } from "./dispatch.js";
+import { assertNodeNativeBenchCall, dispatchCall, type NodeNativeBenchCall } from "./dispatch.js";
 import {
   resolveMetaKernelKernelsToLoad,
   sanitizeMetaKernelTextForNativeNoKernels,
@@ -42,7 +41,7 @@ export type NodeNativeBenchRawOutput = {
   startedAt: string;
   outDir: string;
   spiceVersion: string;
-  contract: BenchmarkContractV1;
+  contract: NormalizedBenchmarkContractV1;
   defaults: {
     warmupIterations: number;
     iterations: number;
@@ -82,7 +81,7 @@ export type RunNodeNativeBenchOptions = {
 };
 
 type CaseConfig = {
-  call: string;
+  call: NodeNativeBenchCall;
   args: unknown[];
   warmupIterations?: number;
   iterations?: number;
@@ -169,9 +168,10 @@ function parseCaseConfig(config: Record<string, unknown> | undefined, label: str
   }
 
   const call = config.call;
-  if (typeof call !== "string" || call.trim() === "") {
-    throw new TypeError(`${label}.config.call must be a non-empty string (got ${JSON.stringify(call)})`);
+  if (typeof call !== "string") {
+    throw new TypeError(`${label}.config.call must be a string (got ${JSON.stringify(call)})`);
   }
+  const callParsed = assertNodeNativeBenchCall(call, `${label}.config.call`);
 
   const argsRaw = config.args;
   const args = argsRaw === undefined ? [] : argsRaw;
@@ -199,7 +199,7 @@ function parseCaseConfig(config: Record<string, unknown> | undefined, label: str
       : parseInteger(config.opsPerIteration, `${label}.config.opsPerIteration`, { min: 1 });
 
   return {
-    call: call.trim(),
+    call: callParsed,
     args,
     ...(warmupIterations === undefined ? {} : { warmupIterations }),
     ...(iterations === undefined ? {} : { iterations }),
@@ -283,6 +283,7 @@ function furnshAll(backend: SpiceBackend, kernels: readonly KernelSource[]): voi
 export async function runNodeNativeBench(options: RunNodeNativeBenchOptions): Promise<NodeNativeBenchResult> {
   const suiteId = options.suiteId;
   const suitePath = path.resolve(options.suitePath);
+  const suiteDir = path.dirname(suitePath);
   const outDir = path.resolve(options.outDir);
 
   const defaultWarmupIterations = options.warmupIterations ?? 10;
@@ -292,6 +293,13 @@ export async function runNodeNativeBench(options: RunNodeNativeBenchOptions): Pr
   const parsed = parseYaml(suiteYamlText);
   const validated = validate(parsed);
   const contract = normalizeFixtureRefs(validated);
+
+  if (contract.runner !== undefined && contract.runner !== "node-native") {
+    throw new Error(
+      `Suite runner ${JSON.stringify(contract.runner)} does not match selected backend "node-native". ` +
+        `Either update the suite YAML runner field, or run with the matching --backend.`,
+    );
+  }
 
   const fixtureRoots = contract.fixtureRoots ?? [];
 
@@ -324,12 +332,10 @@ export async function runNodeNativeBench(options: RunNodeNativeBenchOptions): Pr
       throw new Error(`${label}: opsPerIteration must be >= 1 (got ${opsPerIteration})`);
     }
 
-    // `normalizeFixtureRefs()` canonicalizes `FixtureRefV1` unions to `FixtureRef`,
-    // but the contract type intentionally stays YAML-friendly.
     const resolvedKernel =
       benchCase.kernel === undefined
         ? undefined
-        : resolveFixtureRef(benchCase.kernel as FixtureRef, fixtureRoots);
+        : resolveFixtureRef(benchCase.kernel, fixtureRoots, { baseDir: suiteDir });
 
     const kernelPlan = resolvedKernel === undefined ? [] : await buildKernelPlan(resolvedKernel);
 
@@ -361,7 +367,21 @@ export async function runNodeNativeBench(options: RunNodeNativeBenchOptions): Pr
       }
       const end = process.hrtime.bigint();
 
-      const durationNs = Number(end - start);
+      const durationNsBigInt = end - start;
+      if (durationNsBigInt < 0n) {
+        throw new Error(`${label}: measured duration was negative (start=${start} end=${end})`);
+      }
+
+      // Convert to number only when it's safe to represent precisely.
+      // (Benchmarks should be short; if this trips, something is very wrong.)
+      if (durationNsBigInt > BigInt(Number.MAX_SAFE_INTEGER)) {
+        throw new Error(
+          `${label}: measured duration exceeded Number.MAX_SAFE_INTEGER nanoseconds (${durationNsBigInt}). ` +
+            `Refusing to convert BigInt -> number due to potential precision loss.`,
+        );
+      }
+
+      const durationNs = Number(durationNsBigInt);
       samplesNsPerOp.push(durationNs / opsPerIteration);
     }
 

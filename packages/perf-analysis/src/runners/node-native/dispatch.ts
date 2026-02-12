@@ -2,7 +2,7 @@ import type { SpiceBackend } from "@rybosome/tspice";
 
 type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown;
 
-const DISPATCH: Record<string, DispatchFn> = {
+const DISPATCH = {
   // Start minimal and grow this surface as suites expand.
   "time.str2et": (backend, args) => {
     if (typeof args[0] !== "string") {
@@ -22,17 +22,27 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
     return backend.str2et(args[0]);
   },
-};
+} satisfies Record<string, DispatchFn>;
 
-export function dispatchCall(backend: SpiceBackend, call: string, args: unknown[]): unknown {
-  const fn = DISPATCH[call];
-  if (!fn) {
+export type NodeNativeBenchCall = keyof typeof DISPATCH;
+
+export function assertNodeNativeBenchCall(value: string, label: string): NodeNativeBenchCall {
+  const call = value.trim();
+  if (call === "") {
+    throw new TypeError(`${label} must be a non-empty string (got ${JSON.stringify(value)})`);
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(DISPATCH, call)) {
     const known = Object.keys(DISPATCH).sort();
     throw new Error(
-      `Unsupported benchmark call ${JSON.stringify(call)}. ` +
+      `${label} must be a supported benchmark call (got ${JSON.stringify(call)}). ` +
         `Known calls: ${known.map((s) => JSON.stringify(s)).join(", ")}`,
     );
   }
 
-  return fn(backend, args);
+  return call as NodeNativeBenchCall;
+}
+
+export function dispatchCall(backend: SpiceBackend, call: NodeNativeBenchCall, args: unknown[]): unknown {
+  return DISPATCH[call](backend, args);
 }

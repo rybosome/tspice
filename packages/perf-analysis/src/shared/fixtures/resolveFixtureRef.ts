@@ -3,6 +3,16 @@ import * as path from "node:path";
 
 import type { FixtureRef, FixtureRoots, ResolvedFixtureRef } from "./types.js";
 
+export type ResolveFixtureRefOptions = {
+  /**
+   * Base directory used to resolve relative fixture paths and relative
+   * `fixtureRoots` entries.
+   *
+   * Defaults to `process.cwd()` for backwards compatibility.
+   */
+  readonly baseDir?: string;
+};
+
 function isExistingDir(p: string): boolean {
   try {
     return fs.statSync(p).isDirectory();
@@ -95,11 +105,14 @@ function resolveUnderFixtureRoots(
 export function resolveFixtureRef(
   ref: FixtureRef,
   fixtureRoots: FixtureRoots,
+  options: ResolveFixtureRefOptions = {},
 ): ResolvedFixtureRef {
+  const baseDir = options.baseDir ?? process.cwd();
+
   if (ref.kind === "id") {
     const attempted: string[] = [];
     for (const rootRaw of fixtureRoots) {
-      const root = path.resolve(rootRaw);
+      const root = path.resolve(baseDir, rootRaw);
 
       const resolved = path.resolve(root, ref.id);
       ensureWithinDirOrThrow(
@@ -131,7 +144,7 @@ export function resolveFixtureRef(
   // Expand `$FIXTURES/...` against fixture roots.
   if (p === "$FIXTURES" || p.startsWith("$FIXTURES/") || p.startsWith("$FIXTURES\\")) {
     const suffix = p.slice("$FIXTURES".length).replace(/^[/\\]/, "");
-    return resolveUnderFixtureRoots(suffix, fixtureRoots, p);
+    return resolveUnderFixtureRoots(suffix, fixtureRoots.map((r) => path.resolve(baseDir, r)), p);
   }
 
   if (p.startsWith("$FIXTURES")) {
@@ -140,7 +153,6 @@ export function resolveFixtureRef(
     );
   }
 
-  // Otherwise, resolve relative paths against cwd (runner/CLI is responsible for
-  // choosing an appropriate cwd).
-  return maybeExpandDirAlias(path.resolve(process.cwd(), p), p);
+  // Otherwise, resolve relative paths against the provided baseDir.
+  return maybeExpandDirAlias(path.resolve(baseDir, p), p);
 }
