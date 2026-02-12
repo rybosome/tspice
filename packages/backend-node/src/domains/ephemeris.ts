@@ -13,6 +13,14 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+function assertSpkPackedDescriptor(out: unknown, label: string): asserts out is SpkPackedDescriptor {
+  invariant(Array.isArray(out) && out.length === 5, `Expected ${label} to be a length-5 array`);
+  for (let i = 0; i < 5; i++) {
+    const v = out[i];
+    invariant(typeof v === "number" && Number.isFinite(v), `Expected ${label}[${i}] to be a finite number`);
+  }
+}
+
 export function createEphemerisApi(native: NativeAddon): EphemerisApi {
   return {
     spkezr: (target, et, ref, abcorr, observer) => {
@@ -98,21 +106,22 @@ export function createEphemerisApi(native: NativeAddon): EphemerisApi {
       }
 
       invariant(typeof out.handle === "number", "Expected spksfs().handle to be a number when found");
-      invariant(Array.isArray(out.descr) && out.descr.length === 5, "Expected spksfs().descr to be a length-5 array when found");
+      const descr = out.descr;
+      assertSpkPackedDescriptor(descr, "spksfs().descr");
       invariant(typeof out.ident === "string", "Expected spksfs().ident to be a string when found");
 
       return {
         found: true,
         handle: out.handle,
-        descr: out.descr as unknown as SpkPackedDescriptor,
+        descr,
         ident: out.ident,
       };
     },
 
     spkpds: (body: number, center: number, frame: string, type: number, first: number, last: number) => {
       const out = native.spkpds(body, center, frame, type, first, last);
-      invariant(Array.isArray(out) && out.length === 5, "Expected spkpds() to return a length-5 array");
-      return out as unknown as SpkPackedDescriptor;
+      assertSpkPackedDescriptor(out, "spkpds() output");
+      return out;
     },
 
     spkuds: (descr: SpkPackedDescriptor) => {
