@@ -179,7 +179,7 @@ export type NativeAddon = {
   spksfs(body: number, et: number): { found: boolean; handle?: number; descr?: number[]; ident?: string };
 
   spkpds(body: number, center: number, frame: string, type: number, first: number, last: number): number[];
-  spkuds(descr: number[]): { body: number; center: number; frame: number; type: number; first: number; last: number; baddr: number; eaddr: number };
+  spkuds(descr: ReadonlyArray<number>): { body: number; center: number; frame: number; type: number; first: number; last: number; baddr: number; eaddr: number };
 
   subpnt(
     method: string,

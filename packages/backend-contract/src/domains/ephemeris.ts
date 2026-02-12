@@ -98,6 +98,15 @@ export interface EphemerisApi {
    * - WASM backend: `spk` is an Emscripten FS (virtual) path/id (typically the
    *   `path` you used in `furnsh({ path, bytes })`).
    *
+   * **Output window requirements:** `cover` must be a valid, initialized window
+   * handle created by the backend (e.g. `newWindow(maxIntervals)`) and must have
+   * sufficient capacity for the merged output.
+   *
+   * **Error safety note:** Like CSPICE `spkcov_c`, if this routine throws while
+   * updating `cover` (including due to insufficient capacity), the contents of
+   * `cover` may be left in a corrupted/undefined state. If an error is thrown,
+   * do **not** keep using `cover`; free it and create a fresh window.
+   *
    * **Window semantics:** `cover` is updated in place. Like CSPICE `spkcov_c`,
    * coverage is **merged** with any intervals already present in `cover`.
    * Clear the window first (e.g. `scard(0, cover)`) if you want to avoid
@@ -112,6 +121,15 @@ export interface EphemerisApi {
    * - Node backend: `spk` is a host filesystem path.
    * - WASM backend: `spk` is an Emscripten FS (virtual) path/id (typically the
    *   `path` you used in `furnsh({ path, bytes })`).
+   *
+   * **Output cell requirements:** `ids` must be a valid, initialized set cell
+   * handle created by the backend (e.g. `newIntCell(size)`) and must have
+   * sufficient capacity for the unioned output.
+   *
+   * **Error safety note:** Like CSPICE `spkobj_c`, if this routine throws while
+   * updating `ids` (including due to insufficient capacity), the contents of
+   * `ids` may be left in a corrupted/undefined state. If an error is thrown, do
+   * **not** keep using `ids`; free it and create a fresh cell.
    *
    * **Cell semantics:** `ids` is updated in place. Like CSPICE `spkobj_c`, the
    * output is the **union** of the IDs already present in `ids` and the IDs

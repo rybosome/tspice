@@ -125,7 +125,7 @@ export function createEphemerisApi(native: NativeAddon): EphemerisApi {
     },
 
     spkuds: (descr: SpkPackedDescriptor) => {
-      const out = native.spkuds(descr as unknown as number[]);
+      const out = native.spkuds(descr);
       invariant(out && typeof out === "object", "Expected spkuds() to return an object");
       const obj = out as Record<string, unknown>;
 
