@@ -25,6 +25,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -382,21 +383,262 @@ static int jsmn_get_array_elem(const jsmntok_t *tokens, const int arrayIndex,
   return -1;
 }
 
-static char *jsmn_strdup(const char *json, const jsmntok_t *tok) {
-  if (tok->type != JSMN_STRING) {
-    return NULL;
+typedef enum {
+  JSMN_STRDUP_OK = 0,
+  JSMN_STRDUP_OOM,
+  JSMN_STRDUP_INVALID,
+} jsmn_strdup_err_t;
+
+static int json_hex_nibble(const unsigned char c) {
+  if (c >= '0' && c <= '9') {
+    return (int)(c - '0');
   }
+  if (c >= 'a' && c <= 'f') {
+    return (int)(c - 'a') + 10;
+  }
+  if (c >= 'A' && c <= 'F') {
+    return (int)(c - 'A') + 10;
+  }
+  return -1;
+}
+
+static bool json_parse_hex4(const char *s, uint16_t *out) {
+  uint16_t v = 0;
+  for (int i = 0; i < 4; i++) {
+    const int n = json_hex_nibble((unsigned char)s[i]);
+    if (n < 0) {
+      return false;
+    }
+    v = (uint16_t)((v << 4) | (uint16_t)n);
+  }
+  *out = v;
+  return true;
+}
+
+static bool json_write_utf8(char *dst, const size_t dstCap, size_t *dstLen,
+                            const uint32_t codepoint) {
+  if (codepoint == 0) {
+    // The runner uses NUL-terminated C strings, so embedded NUL can't be
+    // represented safely.
+    return false;
+  }
+
+  if (codepoint <= 0x7F) {
+    if (*dstLen + 1 > dstCap) {
+      return false;
+    }
+    dst[(*dstLen)++] = (char)codepoint;
+    return true;
+  }
+
+  if (codepoint <= 0x7FF) {
+    if (*dstLen + 2 > dstCap) {
+      return false;
+    }
+    dst[(*dstLen)++] = (char)(0xC0 | (codepoint >> 6));
+    dst[(*dstLen)++] = (char)(0x80 | (codepoint & 0x3F));
+    return true;
+  }
+
+  if (codepoint <= 0xFFFF) {
+    if (codepoint >= 0xD800 && codepoint <= 0xDFFF) {
+      // Surrogate halves are not valid Unicode scalar values.
+      return false;
+    }
+    if (*dstLen + 3 > dstCap) {
+      return false;
+    }
+    dst[(*dstLen)++] = (char)(0xE0 | (codepoint >> 12));
+    dst[(*dstLen)++] = (char)(0x80 | ((codepoint >> 6) & 0x3F));
+    dst[(*dstLen)++] = (char)(0x80 | (codepoint & 0x3F));
+    return true;
+  }
+
+  if (codepoint <= 0x10FFFF) {
+    if (*dstLen + 4 > dstCap) {
+      return false;
+    }
+    dst[(*dstLen)++] = (char)(0xF0 | (codepoint >> 18));
+    dst[(*dstLen)++] = (char)(0x80 | ((codepoint >> 12) & 0x3F));
+    dst[(*dstLen)++] = (char)(0x80 | ((codepoint >> 6) & 0x3F));
+    dst[(*dstLen)++] = (char)(0x80 | (codepoint & 0x3F));
+    return true;
+  }
+
+  return false;
+}
+
+static jsmn_strdup_err_t jsmn_strdup(const char *json, const jsmntok_t *tok,
+                                     char **out,
+                                     char *errDetail,
+                                     const size_t errDetailBytes) {
+  *out = NULL;
+  if (tok->type != JSMN_STRING) {
+    return JSMN_STRDUP_INVALID;
+  }
+
   const int n = tok->end - tok->start;
   if (n < 0) {
-    return NULL;
+    return JSMN_STRDUP_INVALID;
   }
+
+  // Unescaping always shrinks or keeps the same size, so `n + 1` is safe.
   char *s = (char *)malloc((size_t)n + 1);
   if (s == NULL) {
-    return NULL;
+    return JSMN_STRDUP_OOM;
   }
-  memcpy(s, json + tok->start, (size_t)n);
-  s[n] = '\0';
-  return s;
+
+  const char *p = json + tok->start;
+  const char *end = json + tok->start + n;
+  size_t outLen = 0;
+
+  while (p < end) {
+    const unsigned char c = (unsigned char)*p++;
+
+    if (c == '\\') {
+      if (p >= end) {
+        if (errDetail && errDetailBytes > 0) {
+          snprintf(errDetail, errDetailBytes,
+                   "Invalid JSON string: trailing backslash");
+        }
+        free(s);
+        return JSMN_STRDUP_INVALID;
+      }
+
+      const unsigned char esc = (unsigned char)*p++;
+      switch (esc) {
+      case '"':
+        s[outLen++] = '"';
+        break;
+      case '\\':
+        s[outLen++] = '\\';
+        break;
+      case '/':
+        s[outLen++] = '/';
+        break;
+      case 'b':
+        s[outLen++] = '\b';
+        break;
+      case 'f':
+        s[outLen++] = '\f';
+        break;
+      case 'n':
+        s[outLen++] = '\n';
+        break;
+      case 'r':
+        s[outLen++] = '\r';
+        break;
+      case 't':
+        s[outLen++] = '\t';
+        break;
+      case 'u': {
+        if (end - p < 4) {
+          if (errDetail && errDetailBytes > 0) {
+            snprintf(errDetail, errDetailBytes,
+                     "Invalid JSON string escape: \\u must be followed by 4 hex digits");
+          }
+          free(s);
+          return JSMN_STRDUP_INVALID;
+        }
+
+        uint16_t unit = 0;
+        if (!json_parse_hex4(p, &unit)) {
+          if (errDetail && errDetailBytes > 0) {
+            snprintf(errDetail, errDetailBytes,
+                     "Invalid JSON string escape: \\u must be followed by 4 hex digits");
+          }
+          free(s);
+          return JSMN_STRDUP_INVALID;
+        }
+        p += 4;
+
+        uint32_t codepoint = (uint32_t)unit;
+        if (unit >= 0xD800 && unit <= 0xDBFF) {
+          // High surrogate: must be followed by a low surrogate.
+          if (end - p < 6 || p[0] != '\\' || p[1] != 'u') {
+            if (errDetail && errDetailBytes > 0) {
+              snprintf(errDetail, errDetailBytes,
+                       "Invalid JSON string escape: high surrogate must be followed by a \\uXXXX low surrogate");
+            }
+            free(s);
+            return JSMN_STRDUP_INVALID;
+          }
+
+          uint16_t unit2 = 0;
+          if (!json_parse_hex4(p + 2, &unit2)) {
+            if (errDetail && errDetailBytes > 0) {
+              snprintf(errDetail, errDetailBytes,
+                       "Invalid JSON string escape: high surrogate must be followed by valid low surrogate");
+            }
+            free(s);
+            return JSMN_STRDUP_INVALID;
+          }
+          if (unit2 < 0xDC00 || unit2 > 0xDFFF) {
+            if (errDetail && errDetailBytes > 0) {
+              snprintf(errDetail, errDetailBytes,
+                       "Invalid JSON string escape: high surrogate must be followed by low surrogate (got 0x%04x)",
+                       (unsigned int)unit2);
+            }
+            free(s);
+            return JSMN_STRDUP_INVALID;
+          }
+
+          p += 6;
+
+          codepoint = 0x10000u + (((uint32_t)unit - 0xD800u) << 10) +
+                      ((uint32_t)unit2 - 0xDC00u);
+        } else if (unit >= 0xDC00 && unit <= 0xDFFF) {
+          // Low surrogate without a preceding high surrogate.
+          if (errDetail && errDetailBytes > 0) {
+            snprintf(errDetail, errDetailBytes,
+                     "Invalid JSON string escape: unexpected low surrogate (0x%04x)",
+                     (unsigned int)unit);
+          }
+          free(s);
+          return JSMN_STRDUP_INVALID;
+        }
+
+        if (!json_write_utf8(s, (size_t)n, &outLen, codepoint)) {
+          if (errDetail && errDetailBytes > 0) {
+            snprintf(errDetail, errDetailBytes,
+                     "Invalid JSON string escape: invalid Unicode code point");
+          }
+          free(s);
+          return JSMN_STRDUP_INVALID;
+        }
+
+        break;
+      }
+
+      default:
+        if (errDetail && errDetailBytes > 0) {
+          snprintf(errDetail, errDetailBytes,
+                   "Invalid JSON string escape: \\%c is not allowed",
+                   (int)esc);
+        }
+        free(s);
+        return JSMN_STRDUP_INVALID;
+      }
+
+      continue;
+    }
+
+    if (c < 0x20) {
+      if (errDetail && errDetailBytes > 0) {
+        snprintf(errDetail, errDetailBytes,
+                 "Invalid JSON string: unescaped control character (0x%02x)",
+                 (unsigned int)c);
+      }
+      free(s);
+      return JSMN_STRDUP_INVALID;
+    }
+
+    s[outLen++] = (char)c;
+  }
+
+  s[outLen] = '\0';
+  *out = s;
+  return JSMN_STRDUP_OK;
 }
 
 // Strict JSON number grammar (RFC 8259):
@@ -930,12 +1172,28 @@ int main(void) {
     return 0;
   }
 
-  char *call = jsmn_strdup(input, &tokens[callTok]);
-  if (call == NULL) {
+  if (tokens[callTok].type != JSMN_STRING) {
     free(tokens);
     free(input);
     write_error_json_ex("invalid_request", "call must be a string", NULL, NULL,
                         NULL, NULL);
+    return 0;
+  }
+
+  char *call = NULL;
+  char strDetail[256];
+  strDetail[0] = '\0';
+  jsmn_strdup_err_t callErr =
+      jsmn_strdup(input, &tokens[callTok], &call, strDetail, sizeof(strDetail));
+  if (callErr != JSMN_STRDUP_OK) {
+    free(tokens);
+    free(input);
+    if (callErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
     return 0;
   }
 
@@ -968,9 +1226,16 @@ int main(void) {
         char *restrictToDir = NULL;
 
         if (tokens[idx].type == JSMN_STRING) {
-          kernelPath = jsmn_strdup(input, &tokens[idx]);
-          if (kernelPath == NULL) {
-            write_error_json("Out of memory", NULL, NULL, NULL);
+          strDetail[0] = '\0';
+          jsmn_strdup_err_t kErr =
+              jsmn_strdup(input, &tokens[idx], &kernelPath, strDetail, sizeof(strDetail));
+          if (kErr != JSMN_STRDUP_OK) {
+            if (kErr == JSMN_STRDUP_INVALID) {
+              write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                                  strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+            } else {
+              write_error_json("Out of memory", NULL, NULL, NULL);
+            }
             goto done;
           }
         } else if (tokens[idx].type == JSMN_OBJECT) {
@@ -986,9 +1251,16 @@ int main(void) {
             goto done;
           }
 
-          kernelPath = jsmn_strdup(input, &tokens[pathTok]);
-          if (kernelPath == NULL) {
-            write_error_json("Out of memory", NULL, NULL, NULL);
+          strDetail[0] = '\0';
+          jsmn_strdup_err_t pathErr =
+              jsmn_strdup(input, &tokens[pathTok], &kernelPath, strDetail, sizeof(strDetail));
+          if (pathErr != JSMN_STRDUP_OK) {
+            if (pathErr == JSMN_STRDUP_INVALID) {
+              write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                                  strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+            } else {
+              write_error_json("Out of memory", NULL, NULL, NULL);
+            }
             goto done;
           }
 
@@ -1006,9 +1278,18 @@ int main(void) {
               goto done;
             }
 
-            restrictToDir = jsmn_strdup(input, &tokens[restrictTok]);
-            if (restrictToDir == NULL) {
-              write_error_json("Out of memory", NULL, NULL, NULL);
+            strDetail[0] = '\0';
+            jsmn_strdup_err_t restrictErr = jsmn_strdup(input, &tokens[restrictTok],
+                                                       &restrictToDir, strDetail,
+                                                       sizeof(strDetail));
+            if (restrictErr != JSMN_STRDUP_OK) {
+              if (restrictErr == JSMN_STRDUP_INVALID) {
+                write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                                    strDetail[0] ? strDetail : NULL, NULL, NULL,
+                                    NULL);
+              } else {
+                write_error_json("Out of memory", NULL, NULL, NULL);
+              }
               free(kernelPath);
               goto done;
             }
@@ -1135,9 +1416,17 @@ int main(void) {
       goto done;
     }
 
-    char *timeStr = jsmn_strdup(input, &tokens[arg0Tok]);
-    if (timeStr == NULL) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
+    char *timeStr = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t timeErr =
+        jsmn_strdup(input, &tokens[arg0Tok], &timeStr, strDetail, sizeof(strDetail));
+    if (timeErr != JSMN_STRDUP_OK) {
+      if (timeErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
       goto done;
     }
 
@@ -1228,9 +1517,17 @@ int main(void) {
       goto done;
     }
 
-    char *format = jsmn_strdup(input, &tokens[fmtTok]);
-    if (format == NULL) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
+    char *format = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fmtErr =
+        jsmn_strdup(input, &tokens[fmtTok], &format, strDetail, sizeof(strDetail));
+    if (fmtErr != JSMN_STRDUP_OK) {
+      if (fmtErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
       goto done;
     }
 
@@ -1279,9 +1576,17 @@ int main(void) {
       goto done;
     }
 
-    char *name = jsmn_strdup(input, &tokens[nameTok]);
-    if (name == NULL) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
+    char *name = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
       goto done;
     }
 
@@ -1308,6 +1613,8 @@ int main(void) {
     fprintf(stdout,
             "{\"ok\":true,\"result\":{\"found\":true,\"code\":%" PRIdMAX "}}\n",
             (intmax_t)code);
+    goto done;
+  }
     goto done;
   }
 
@@ -1395,9 +1702,17 @@ int main(void) {
       goto done;
     }
 
-    char *name = jsmn_strdup(input, &tokens[nameTok]);
-    if (name == NULL) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
+    char *name = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
       goto done;
     }
 
@@ -1542,12 +1857,33 @@ int main(void) {
       goto done;
     }
 
-    char *from = jsmn_strdup(input, &tokens[fromTok]);
-    char *to = jsmn_strdup(input, &tokens[toTok]);
-    if (from == NULL || to == NULL) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
+    char *from = NULL;
+    char *to = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fromErr =
+        jsmn_strdup(input, &tokens[fromTok], &from, strDetail, sizeof(strDetail));
+    if (fromErr != JSMN_STRDUP_OK) {
+      if (fromErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t toErr =
+        jsmn_strdup(input, &tokens[toTok], &to, strDetail, sizeof(strDetail));
+    if (toErr != JSMN_STRDUP_OK) {
       free(from);
-      free(to);
+      if (toErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
       goto done;
     }
 
