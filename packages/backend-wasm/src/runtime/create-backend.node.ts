@@ -437,7 +437,7 @@ export async function createWasmBackend(
     ...createFileIoApi(module, spiceHandles, virtualOutputs),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
-    ...createEkApi(module, spiceHandles),
+    ...createEkApi(module),
     ...createDskApi(module, spiceHandles),
   } satisfies SpiceBackend;
 
