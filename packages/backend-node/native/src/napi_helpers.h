@@ -4,6 +4,7 @@
 
 #include "tspice_backend_shim.h"
 
+#include <functional>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -23,7 +24,12 @@ inline void ThrowSpiceError(Napi::Env env, const char* message) {
   ThrowSpiceError(env, std::string(message ? message : ""));
 }
 
-inline void ThrowSpiceError(Napi::Env env, const std::string& context, const char* err) {
+inline void ThrowSpiceError(
+    Napi::Env env,
+    const std::string& context,
+    const char* err,
+    const char* spiceOp = nullptr,
+    std::function<void(Napi::Object&)> attachContext = {}) {
   // This overload is used for CSPICE-signaled failures, where the C shim has
   // already captured/cleared SPICE error status and produced an error message.
   std::string message = (err && err[0] != '\0') ? std::string(err) : "Unknown CSPICE error";
@@ -33,6 +39,15 @@ inline void ThrowSpiceError(Napi::Env env, const std::string& context, const cha
 
   Napi::Error jsErr = Napi::Error::New(env, message);
   Napi::Object obj = jsErr.Value().As<Napi::Object>();
+
+  // Attach structured context about the CSPICE operation, without changing the
+  // existing error message format.
+  if (spiceOp != nullptr && spiceOp[0] != '\0') {
+    obj.Set("spiceOp", Napi::String::New(env, spiceOp));
+  }
+  if (attachContext) {
+    attachContext(obj);
+  }
 
   // Attach structured SPICE error details when they appear to correspond to
   // this error.

@@ -52,7 +52,12 @@ static Napi::Number Ekopr(const Napi::CallbackInfo& info) {
   int handle = 0;
   const int code = tspice_ekopr(path.c_str(), &handle, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling ekopr(\"") + path + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling ekopr(\"") + path + "\")",
+        err,
+        "ekopr",
+        [&](Napi::Object& obj) { obj.Set("path", Napi::String::New(env, path)); });
     return Napi::Number::New(env, 0);
   }
 
@@ -74,7 +79,12 @@ static Napi::Number Ekopw(const Napi::CallbackInfo& info) {
   int handle = 0;
   const int code = tspice_ekopw(path.c_str(), &handle, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling ekopw(\"") + path + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling ekopw(\"") + path + "\")",
+        err,
+        "ekopw",
+        [&](Napi::Object& obj) { obj.Set("path", Napi::String::New(env, path)); });
     return Napi::Number::New(env, 0);
   }
 
@@ -109,7 +119,16 @@ static Napi::Number Ekopn(const Napi::CallbackInfo& info) {
   int handle = 0;
   const int code = tspice_ekopn(path.c_str(), ifname.c_str(), ncomch, &handle, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling ekopn(\"") + path + "\")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling ekopn(\"") + path + "\")",
+        err,
+        "ekopn",
+        [&](Napi::Object& obj) {
+          obj.Set("path", Napi::String::New(env, path));
+          obj.Set("ifname", Napi::String::New(env, ifname));
+          obj.Set("ncomch", Napi::Number::New(env, (double)ncomch));
+        });
     return Napi::Number::New(env, 0);
   }
 
@@ -133,7 +152,12 @@ static void Ekcls(const Napi::CallbackInfo& info) {
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ekcls(handle, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling ekcls(handle=") + std::to_string(handle) + ")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling ekcls(handle=") + std::to_string(handle) + ")",
+        err,
+        "ekcls",
+        [&](Napi::Object& obj) { obj.Set("handle", Napi::Number::New(env, (double)handle)); });
   }
 }
 
@@ -150,7 +174,7 @@ static Napi::Number Ekntab(const Napi::CallbackInfo& info) {
   int n = 0;
   const int code = tspice_ekntab(&n, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, "CSPICE failed while calling ekntab()", err);
+    ThrowSpiceError(env, "CSPICE failed while calling ekntab()", err, "ekntab");
     return Napi::Number::New(env, 0);
   }
 
@@ -181,7 +205,12 @@ static Napi::String Ektnam(const Napi::CallbackInfo& info) {
 
   const int code = tspice_ektnam(n, out, (int)sizeof(out), err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling ektnam(n=") + std::to_string(n) + ")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling ektnam(n=") + std::to_string(n) + ")",
+        err,
+        "ektnam",
+        [&](Napi::Object& obj) { obj.Set("n", Napi::Number::New(env, (double)n)); });
     return Napi::String::New(env, "");
   }
 
@@ -206,7 +235,12 @@ static Napi::Number Eknseg(const Napi::CallbackInfo& info) {
   int nseg = 0;
   const int code = tspice_eknseg(handle, &nseg, err, (int)sizeof(err));
   if (code != 0) {
-    ThrowSpiceError(env, std::string("CSPICE failed while calling eknseg(handle=") + std::to_string(handle) + ")", err);
+    ThrowSpiceError(
+        env,
+        std::string("CSPICE failed while calling eknseg(handle=") + std::to_string(handle) + ")",
+        err,
+        "eknseg",
+        [&](Napi::Object& obj) { obj.Set("handle", Napi::Number::New(env, (double)handle)); });
     return Napi::Number::New(env, 0);
   }
 
