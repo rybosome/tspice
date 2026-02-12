@@ -181,7 +181,9 @@ export function createEkApi(module: EmscriptenModule): EkApi {
         if (code !== 0) {
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
         }
-        return readHeapI32(module, outNPtr >> 2, "ekntab(outNPtr)");
+        const n = readHeapI32(module, outNPtr >> 2, "ekntab(outNPtr)");
+        assertSpiceInt32NonNegative(n, "ekntab()");
+        return n;
       }),
 
     ektnam: (n: number) => {
@@ -211,7 +213,9 @@ export function createEkApi(module: EmscriptenModule): EkApi {
         if (code !== 0) {
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
         }
-        return readHeapI32(module, outNsegPtr >> 2, "eknseg(outNsegPtr)");
+        const nseg = readHeapI32(module, outNsegPtr >> 2, "eknseg(outNsegPtr)");
+        assertSpiceInt32NonNegative(nseg, "eknseg(handle)");
+        return nseg;
       });
     },
   } satisfies EkApi;
