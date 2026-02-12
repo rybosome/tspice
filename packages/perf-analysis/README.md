@@ -1,8 +1,48 @@
 # @rybosome/tspice-perf-analysis
 
-Scaffolding for a future perf/benchmark analysis layer around tspice.
+Perf/benchmark analysis tooling around `@rybosome/tspice`.
 
-This package is intentionally **layout-only** right now: it provides the directory structure and stable module surfaces that follow-on issues can build on.
+Today this package includes a **node-native** benchmark runner that emits:
+
+- `raw.json` (full samples + debug metadata)
+- `bmf.json` (Bencher Metric Format)
+
+See below for how to run it from the monorepo root.
+
+## Running benchmarks (node-native)
+
+Prerequisites:
+
+- The node-native backend must be built (native addon available).
+- On **linux-arm64**, automatic CSPICE fetching is not supported; you must provide a CSPICE install via `TSPICE_CSPICE_DIR`.
+
+From the repo root:
+
+```bash
+pnpm bench --backend node-native --suite micro
+```
+
+Outputs are written to:
+
+```
+./artifacts/bench/node-native/micro/
+  raw.json
+  bmf.json
+```
+
+Override the output directory:
+
+```bash
+pnpm bench --backend node-native --suite micro --outDir ./artifacts/custom
+```
+
+Native addon build (best-effort):
+
+```bash
+pnpm -w fetch:cspice
+pnpm -C packages/backend-node run build:native
+pnpm -w stage:native-platform
+```
 
 ## Directory layout
 
@@ -26,5 +66,4 @@ This package is intentionally **layout-only** right now: it provides the directo
 
 ## Non-goals (for now)
 
-- No real parsing/validation/execution logic yet.
 - No new fixture directories (we intend to **reuse** existing kernel fixtures first).

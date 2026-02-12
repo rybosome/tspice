@@ -1,0 +1,17 @@
+# v1 micro benchmark suite.
+
+version: 1
+name: micro
+runner: node-native
+
+fixtureRoots:
+  - packages/tspice/test/fixtures/kernels
+
+benchmarks:
+  - id: str2et_j2000
+    name: time.str2et("2000 JAN 01 12:00:00 TDB")
+    kernel: $FIXTURES/basic-time
+    config:
+      call: time.str2et
+      args:
+        - 2000 JAN 01 12:00:00 TDB
