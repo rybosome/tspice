@@ -7,23 +7,9 @@ import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
+import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
 
-type HandleEntry = {
-  kind: "EK";
-  nativeHandle: number;
-};
-
-function asHandleId(handle: SpiceHandle, context: string): number {
-  const id = handle as unknown as number;
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    throw new TypeError(`${context}: expected a positive safe integer SpiceHandle`);
-  }
-  return id;
-}
-
-function asSpiceHandle(handleId: number): SpiceHandle {
-  return handleId as unknown as SpiceHandle;
-}
+const EK_ONLY = ["EK"] as const satisfies readonly SpiceHandleKind[];
 
 function readHeapI32(module: EmscriptenModule, idx: number, context: string): number {
   const heap = module.HEAP32;
@@ -49,51 +35,30 @@ function callVoidHandle(
   });
 }
 
-export function createEkApi(module: EmscriptenModule): EkApi {
-  let nextHandleId = 1;
-  const handles = new Map<number, HandleEntry>();
+function debugEntries(
+  handles: SpiceHandleRegistry,
+): ReadonlyArray<readonly [SpiceHandle, { kind: SpiceHandleKind; nativeHandle: number }]> {
+  return (
+    (handles as unknown as {
+      __entries?: () => ReadonlyArray<
+        readonly [SpiceHandle, { kind: SpiceHandleKind; nativeHandle: number }]
+      >;
+    }).__entries?.() ?? []
+  );
+}
 
-  function register(nativeHandle: number): SpiceHandle {
-    if (
-      typeof nativeHandle !== "number" ||
-      !Number.isInteger(nativeHandle) ||
-      nativeHandle < -2147483648 ||
-      nativeHandle > 2147483647
-    ) {
-      throw new Error("Expected native backend to return a 32-bit signed integer EK handle");
-    }
-
-    if (nextHandleId >= Number.MAX_SAFE_INTEGER) {
-      throw new Error(`SpiceHandle ID overflow: too many handles allocated (nextHandleId=${nextHandleId})`);
-    }
-
-    const handleId = nextHandleId++;
-    handles.set(handleId, { kind: "EK", nativeHandle });
-    return asSpiceHandle(handleId);
-  }
-
-  function lookup(handle: SpiceHandle): HandleEntry {
-    const handleId = asHandleId(handle, "lookup(handle)");
-    const entry = handles.get(handleId);
-    if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
-    }
-    return entry;
-  }
-
-  function close(handle: SpiceHandle, closeNative: (entry: HandleEntry) => void): void {
-    const handleId = asHandleId(handle, "close(handle)");
-    const entry = handles.get(handleId);
-    if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
-    }
-
-    // Close-once semantics: only forget the handle after the native close succeeds.
-    closeNative(entry);
-    handles.delete(handleId);
-  }
-
+export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegistry): EkApi {
   const TABLE_NAME_MAX_BYTES = 256;
+
+  function debugOpenHandleCount(): number {
+    let count = 0;
+    for (const [, entry] of debugEntries(handles)) {
+      if (entry.kind === "EK") {
+        count++;
+      }
+    }
+    return count;
+  }
 
   const api = {
     ekopr: (path: string) => {
@@ -108,7 +73,7 @@ export function createEkApi(module: EmscriptenModule): EkApi {
           }
           return readHeapI32(module, outHandlePtr >> 2, "ekopr(outHandlePtr)");
         });
-        return register(nativeHandle);
+        return handles.register("EK", nativeHandle);
       } finally {
         module._free(pathPtr);
       }
@@ -126,7 +91,7 @@ export function createEkApi(module: EmscriptenModule): EkApi {
           }
           return readHeapI32(module, outHandlePtr >> 2, "ekopw(outHandlePtr)");
         });
-        return register(nativeHandle);
+        return handles.register("EK", nativeHandle);
       } finally {
         module._free(pathPtr);
       }
@@ -164,7 +129,7 @@ export function createEkApi(module: EmscriptenModule): EkApi {
           return readHeapI32(module, outHandlePtr >> 2, "ekopn(outHandlePtr)");
         });
 
-        return register(nativeHandle);
+        return handles.register("EK", nativeHandle);
       } finally {
         module._free(ifnamePtr);
         module._free(pathPtr);
@@ -172,7 +137,12 @@ export function createEkApi(module: EmscriptenModule): EkApi {
     },
 
     ekcls: (handle: SpiceHandle) =>
-      close(handle, (entry) => callVoidHandle(module, module._tspice_ekcls, entry.nativeHandle)),
+      handles.close(
+        handle,
+        EK_ONLY,
+        (entry) => callVoidHandle(module, module._tspice_ekcls, entry.nativeHandle),
+        "ekcls",
+      ),
 
     ekntab: () =>
       withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outNPtr, errPtr) => {
@@ -206,7 +176,7 @@ export function createEkApi(module: EmscriptenModule): EkApi {
     },
 
     eknseg: (handle: SpiceHandle) => {
-      const nativeHandle = lookup(handle).nativeHandle;
+      const nativeHandle = handles.lookup(handle, EK_ONLY, "eknseg").nativeHandle;
       return withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outNsegPtr, errPtr) => {
         module.HEAP32[outNsegPtr >> 2] = 0;
         const code = module._tspice_eknseg(nativeHandle, outNsegPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -221,7 +191,7 @@ export function createEkApi(module: EmscriptenModule): EkApi {
   } satisfies EkApi;
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
-    value: () => handles.size,
+    value: debugOpenHandleCount,
     enumerable: false,
   });
 

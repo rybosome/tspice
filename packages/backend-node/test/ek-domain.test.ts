@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { asEkApiDebug, createEkApi } from "../src/domains/ek.js";
 import type { NativeAddon } from "../src/runtime/addon.js";
 import type { KernelStager } from "../src/runtime/kernel-staging.js";
+import { createSpiceHandleRegistry } from "../src/runtime/spice-handles.js";
 
 describe("backend-node ek domain wrapper", () => {
   it("resolves staged kernel paths for ekopr/ekopw/ekopn", () => {
@@ -37,7 +38,7 @@ describe("backend-node ek domain wrapper", () => {
       resolvePath: (p: string) => `RESOLVED(${p})`,
     } satisfies Pick<KernelStager, "resolvePath">;
 
-    const api = createEkApi(native, stager);
+    const api = createEkApi(native, createSpiceHandleRegistry(), stager);
 
     api.ekopr("/kernels/a.ek");
     api.ekopw("kernels/b.ek");
@@ -55,7 +56,7 @@ describe("backend-node ek domain wrapper", () => {
       ekntab: () => -1,
     } satisfies Pick<NativeAddon, "ekntab">;
 
-    const api = createEkApi(native);
+    const api = createEkApi(native, createSpiceHandleRegistry());
 
     expect(() => api.ekntab()).toThrow(/non-negative|32-bit|integer/i);
   });
@@ -66,7 +67,7 @@ describe("backend-node ek domain wrapper", () => {
       eknseg: (_handle: number) => 1.5,
     } satisfies Pick<NativeAddon, "ekopr" | "eknseg">;
 
-    const api = createEkApi(native);
+    const api = createEkApi(native, createSpiceHandleRegistry());
 
     const handle = api.ekopr("/tmp/file.ek");
     expect(() => api.eknseg(handle)).toThrow(/non-negative|32-bit|integer/i);
@@ -77,7 +78,7 @@ describe("backend-node ek domain wrapper", () => {
       ektnam: (_n: number) => "",
     } satisfies Pick<NativeAddon, "ektnam">;
 
-    const api = createEkApi(native);
+    const api = createEkApi(native, createSpiceHandleRegistry());
 
     expect(() => api.ektnam(-1)).toThrow(/>=\s*0|non-negative/i);
   });
@@ -90,7 +91,7 @@ describe("backend-node ek domain wrapper", () => {
       ekcls: (h: number) => closed.push(h),
     } satisfies Pick<NativeAddon, "ekopr" | "ekcls">;
 
-    const api = asEkApiDebug(createEkApi(native));
+    const api = asEkApiDebug(createEkApi(native, createSpiceHandleRegistry()));
 
     const handle = api.ekopr("/tmp/file.ek");
     expect(api.__debugOpenHandleCount()).toBe(1);

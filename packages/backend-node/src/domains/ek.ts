@@ -7,26 +7,11 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
+import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
 
-type HandleEntry = {
-  kind: "EK";
-  nativeHandle: number;
-};
-
-const I32_MIN = -2147483648;
 const I32_MAX = 2147483647;
 
-function asHandleId(handle: SpiceHandle, context: string): number {
-  const id = handle as unknown as number;
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    throw new TypeError(`${context}: expected a positive safe integer SpiceHandle`);
-  }
-  return id;
-}
-
-function asSpiceHandle(handleId: number): SpiceHandle {
-  return handleId as unknown as SpiceHandle;
-}
+const EK_ONLY = ["EK"] as const satisfies readonly SpiceHandleKind[];
 
 type NativeEkDeps = Pick<NativeAddon, "ekopr" | "ekopw" | "ekopn" | "ekcls" | "ekntab" | "ektnam" | "eknseg">;
 
@@ -47,13 +32,22 @@ export function asEkApiDebug(
   return api as ReturnType<typeof createEkApi> & EkApiDebug;
 }
 
+function debugEntries(
+  handles: SpiceHandleRegistry,
+): ReadonlyArray<readonly [SpiceHandle, { kind: SpiceHandleKind; nativeHandle: number }]> {
+  return (
+    (handles as unknown as {
+      __entries?: () => ReadonlyArray<
+        readonly [SpiceHandle, { kind: SpiceHandleKind; nativeHandle: number }]
+      >;
+    }).__entries?.() ?? []
+  );
+}
+
 export function createEkApi<
   N extends NativeEkDeps,
   S extends KernelStagerEkDeps | undefined,
->(native: N, stager?: S): EkApi {
-  let nextHandleId = 1;
-  const handles = new Map<number, HandleEntry>();
-
+>(native: N, handles: SpiceHandleRegistry, stager?: S): EkApi {
   const resolvePath = (path: string) => {
     if (!stager) return path;
 
@@ -70,56 +64,43 @@ export function createEkApi<
     }
   };
 
-  function register(nativeHandle: number): SpiceHandle {
-    invariant(
-      typeof nativeHandle === "number" &&
-        Number.isInteger(nativeHandle) &&
-        nativeHandle >= I32_MIN &&
-        nativeHandle <= I32_MAX,
-      "Expected native backend to return a 32-bit signed integer EK handle",
-    );
-
-    invariant(
-      nextHandleId < Number.MAX_SAFE_INTEGER,
-      `SpiceHandle ID overflow: too many handles allocated (nextHandleId=${nextHandleId})`,
-    );
-
-    const handleId = nextHandleId++;
-    handles.set(handleId, { kind: "EK", nativeHandle });
-    return asSpiceHandle(handleId);
-  }
-
-  function lookup(handle: SpiceHandle): HandleEntry {
-    const handleId = asHandleId(handle, "lookup(handle)");
-    const entry = handles.get(handleId);
-    if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
+  function debugOpenHandleCount(): number {
+    let count = 0;
+    for (const [, entry] of debugEntries(handles)) {
+      if (entry.kind === "EK") {
+        count++;
+      }
     }
-    return entry;
-  }
-
-  function close(handle: SpiceHandle, closeNative: (entry: HandleEntry) => void): void {
-    const handleId = asHandleId(handle, "close(handle)");
-    const entry = handles.get(handleId);
-    if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
-    }
-
-    // Close-once semantics: only forget the handle after the native close succeeds.
-    closeNative(entry);
-    handles.delete(handleId);
+    return count;
   }
 
   function closeAllHandles(): void {
     const errors: unknown[] = [];
 
-    for (const [handleId, entry] of Array.from(handles.entries())) {
+    for (const [handle, entry] of debugEntries(handles)) {
+      if (entry.kind !== "EK") {
+        continue;
+      }
+
       try {
-        native.ekcls(entry.nativeHandle);
+        // In teardown contexts, we want to best-effort close everything and
+        // always clear the JS-side handle registry (even if the native close
+        // fails). So we swallow native close errors here and throw an
+        // AggregateError at the end.
+        handles.close(
+          handle,
+          EK_ONLY,
+          (e) => {
+            try {
+              native.ekcls(e.nativeHandle);
+            } catch (error) {
+              errors.push(error);
+            }
+          },
+          "__debugCloseAllHandles:ekcls",
+        );
       } catch (error) {
         errors.push(error);
-      } finally {
-        handles.delete(handleId);
       }
     }
 
@@ -129,13 +110,14 @@ export function createEkApi<
   }
 
   const api = {
-    ekopr: (path: string) => register(native.ekopr(resolvePath(path))),
-    ekopw: (path: string) => register(native.ekopw(resolvePath(path))),
+    ekopr: (path: string) => handles.register("EK", native.ekopr(resolvePath(path))),
+    ekopw: (path: string) => handles.register("EK", native.ekopw(resolvePath(path))),
     ekopn: (path: string, ifname: string, ncomch: number) => {
       assertSpiceInt32NonNegative(ncomch, "ekopn(ncomch)");
-      return register(native.ekopn(resolvePath(path), ifname, ncomch));
+      return handles.register("EK", native.ekopn(resolvePath(path), ifname, ncomch));
     },
-    ekcls: (handle: SpiceHandle) => close(handle, (e) => native.ekcls(e.nativeHandle)),
+    ekcls: (handle: SpiceHandle) =>
+      handles.close(handle, EK_ONLY, (e) => native.ekcls(e.nativeHandle), "ekcls"),
 
     ekntab: () => {
       const n = native.ekntab();
@@ -158,7 +140,7 @@ export function createEkApi<
     },
 
     eknseg: (handle: SpiceHandle) => {
-      const nseg = native.eknseg(lookup(handle).nativeHandle);
+      const nseg = native.eknseg(handles.lookup(handle, EK_ONLY, "eknseg").nativeHandle);
       invariant(
         typeof nseg === "number" &&
           Number.isInteger(nseg) &&
@@ -171,7 +153,7 @@ export function createEkApi<
   } satisfies EkApi;
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
-    value: () => handles.size,
+    value: debugOpenHandleCount,
     enumerable: false,
   });
 

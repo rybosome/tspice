@@ -21,7 +21,14 @@ export interface EkApi {
    */
   ekopn(path: string, ifname: string, ncomch: number): SpiceHandle;
 
-  /** Close an EK file opened via `ekopr` / `ekopw` / `ekopn` (see `ekcls_c`). */
+  /**
+   * Close an EK file opened via `ekopr` / `ekopw` / `ekopn` (see `ekcls_c`).
+   *
+   * Notes:
+   * - EK handles are explicit resources and are not automatically closed by `unload()` / `kclear()`.
+   * - If `path` was backed by byte-staged temp bytes, close EK handles before calling
+   *   `unload()` / `kclear()` to allow best-effort temp file deletion (especially on Windows).
+   */
   ekcls(handle: SpiceHandle): void;
 
   /**
