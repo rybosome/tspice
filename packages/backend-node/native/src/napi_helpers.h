@@ -87,14 +87,13 @@ inline std::string PreviewForError(const std::string& s, size_t maxChars = 200) 
   for (size_t i = 0; i < previewLen; i++) {
     const unsigned char c = static_cast<unsigned char>(s[i]);
     switch (c) {
-      case '
-':
+      case '\n':
         out += "\\n";
         break;
-      case '':
+      case '\r':
         out += "\\r";
         break;
-      case '	':
+      case '\t':
         out += "\\t";
         break;
       case '\':
