@@ -90,10 +90,35 @@ export interface EphemerisApi {
   /** Compute state (6-vector) of `target` relative to the solar system barycenter via `spkssb`. */
   spkssb(target: number, et: number, ref: string): SpiceStateVector;
 
-  /** Compute the coverage window for an object in an SPK via `spkcov`. */
+  /**
+   * Compute the coverage window for an object in an SPK via `spkcov`.
+   *
+   * **Path semantics (backend-dependent):**
+   * - Node backend: `spk` is a host filesystem path.
+   * - WASM backend: `spk` is an Emscripten FS (virtual) path/id (typically the
+   *   `path` you used in `furnsh({ path, bytes })`).
+   *
+   * **Window semantics:** `cover` is updated in place. Like CSPICE `spkcov_c`,
+   * coverage is **merged** with any intervals already present in `cover`.
+   * Clear the window first (e.g. `scard(0, cover)`) if you want to avoid
+   * accumulation.
+   */
   spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
 
-  /** Find the set of objects present in an SPK via `spkobj`. */
+  /**
+   * Find the set of objects present in an SPK via `spkobj`.
+   *
+   * **Path semantics (backend-dependent):**
+   * - Node backend: `spk` is a host filesystem path.
+   * - WASM backend: `spk` is an Emscripten FS (virtual) path/id (typically the
+   *   `path` you used in `furnsh({ path, bytes })`).
+   *
+   * **Cell semantics:** `ids` is updated in place. Like CSPICE `spkobj_c`, the
+   * output is the **union** of the IDs already present in `ids` and the IDs
+   * found in `spk`.
+   * Clear the cell first (e.g. `scard(0, ids)`) if you want to
+   * avoid accumulation.
+   */
   spkobj(spk: string, ids: SpiceIntCell): void;
 
   /**
