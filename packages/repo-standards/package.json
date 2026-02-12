@@ -16,7 +16,7 @@
     "dist"
   ],
   "bin": {
-    "tspice-repo-standards": "./dist/cli.js"
+    "tspice-repo-standards": "./bin/tspice-repo-standards.cjs"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
