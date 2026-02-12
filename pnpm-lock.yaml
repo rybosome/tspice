@@ -207,6 +207,10 @@ importers:
         version: 2.1.9(@types/node@22.19.6)
 
   packages/perf-analysis:
+    dependencies:
+      yaml:
+        specifier: ^2.8.1
+        version: 2.8.2
     devDependencies:
       '@types/node':
         specifier: ^22.10.2

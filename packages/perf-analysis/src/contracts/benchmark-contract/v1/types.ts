@@ -8,7 +8,21 @@ import type { FixtureRef, FixtureRoots } from "../../../shared/fixtures/types.js
 
 export type BenchmarkContractVersion = 1;
 
-export type FixtureRefV1 = FixtureRef;
+/**
+* YAML-friendly fixture reference input.
+*
+* Runners should call `normalizeFixtureRefs()` to convert these into canonical
+* `FixtureRef` objects.
+*/
+export type FixtureRefV1 =
+  | FixtureRef
+  | string
+  | {
+      readonly id: string;
+    }
+  | {
+      readonly path: string;
+    };
 export interface BenchmarkCaseV1 {
   /** Stable id for the benchmark case within the suite. */
   readonly id: string;

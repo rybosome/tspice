@@ -21,4 +21,12 @@ export interface ResolvedFixtureRef {
 
   /** Canonical path string (absolute/normalized as appropriate for the runner). */
   readonly path: string;
+
+  /**
+   * When set, any nested references (e.g. meta-kernel expansions) must resolve
+   * within this directory.
+   *
+   * This is primarily used for fixture-pack directory aliases.
+   */
+  readonly restrictToDir?: string;
 }
