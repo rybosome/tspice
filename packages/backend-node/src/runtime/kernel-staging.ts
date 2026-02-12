@@ -14,14 +14,28 @@ export type KernelStager = {
   kclear(native: NativeAddon): void;
 
   /**
-   * If `path` matches a previously byte-staged kernel, returns the resolved OS
-   * temp-file path. Otherwise returns `path` unchanged.
+   * If `path` matches a byte-staged kernel, returns the resolved OS temp-file
+   * path. Otherwise returns a canonicalized virtual kernel identifier (or the
+   * original OS path).
    */
   resolvePath(path: string): string;
+
+  /**
+   * Map an input path to the path string CSPICE expects.
+   *
+   * - OS paths pass through unchanged.
+   * - virtual kernel ids canonicalize to `/kernels/...` and, if byte-staged,
+   *   resolve to a temp path.
+   */
+  resolvePathForSpice(path: string): string;
+
+  /** Map a staged temp path back to its virtual id (or passthrough). */
+  virtualizePathFromSpice(path: string): string;
 };
 
 export function createKernelStager(): KernelStager {
   const tempByVirtualPath = new Map<string, string>();
+  const virtualByTempPath = new Map<string, string>();
   let tempKernelRootDir: string | undefined;
 
   /**
@@ -36,20 +50,15 @@ export function createKernelStager(): KernelStager {
 
   function tryCanonicalVirtualKernelPath(input: string): string | undefined {
     // `normalizeVirtualKernelPath()` is intentionally strict (no `..`), but it
-    // can still successfully normalize *absolute* OS paths like
-    // `/home/user/foo.tm`. Those must pass through unchanged.
-    //
-    // For relative paths (e.g. `naif0012.tls`), we keep treating them as
-    // virtual kernel identifiers so byte-backed kernels can be loaded/unloaded
-    // consistently.
+    // can still successfully normalize *absolute* OS paths like `/home/user/foo.tm`.
+    // Those must pass through unchanged.
     if (input.startsWith("/") && !input.startsWith("/kernels/")) {
       return undefined;
     }
     try {
       return canonicalVirtualKernelPath(input);
     } catch {
-      // This may be a normal OS path (which can include `..`). Only treat it as
-      // virtual if it normalizes successfully.
+      // Only treat as virtual if it normalizes successfully.
       return undefined;
     }
   }
@@ -73,11 +82,12 @@ export function createKernelStager(): KernelStager {
     }
   }
 
-  function resolvePath(input: string): string {
+  function resolvePathForSpice(input: string): string {
     const canonical = tryCanonicalVirtualKernelPath(input);
     if (!canonical) {
       return input;
     }
+
     // If this is a valid virtual kernel path but it's not staged, return the
     // canonical virtual identifier. This keeps the backend behavior stable
     // regardless of whether callers use `kernels/foo.tm`, `/kernels/foo.tm`,
@@ -89,7 +99,7 @@ export function createKernelStager(): KernelStager {
     furnsh: (_kernel, native) => {
       const kernel = _kernel;
       if (typeof kernel === "string") {
-        native.furnsh(resolvePath(kernel));
+        native.furnsh(resolvePathForSpice(kernel));
         return;
       }
 
@@ -102,6 +112,7 @@ export function createKernelStager(): KernelStager {
       if (existingTemp) {
         native.unload(existingTemp);
         tempByVirtualPath.delete(virtualPath);
+        virtualByTempPath.delete(existingTemp);
         safeUnlink(existingTemp);
       }
 
@@ -118,6 +129,7 @@ export function createKernelStager(): KernelStager {
       }
 
       tempByVirtualPath.set(virtualPath, tempPath);
+      virtualByTempPath.set(tempPath, virtualPath);
     },
 
     unload: (_path, native) => {
@@ -126,6 +138,7 @@ export function createKernelStager(): KernelStager {
       if (resolved) {
         native.unload(resolved);
         tempByVirtualPath.delete(canonical!);
+        virtualByTempPath.delete(resolved);
         safeUnlink(resolved);
         return;
       }
@@ -141,8 +154,12 @@ export function createKernelStager(): KernelStager {
         safeUnlink(tempPath);
       }
       tempByVirtualPath.clear();
+      virtualByTempPath.clear();
     },
 
-    resolvePath,
+    resolvePath: resolvePathForSpice,
+    resolvePathForSpice,
+
+    virtualizePathFromSpice: (p) => virtualByTempPath.get(p) ?? p,
   };
 }
