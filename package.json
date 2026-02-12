@@ -22,7 +22,8 @@
     "test": "turbo run test",
     "verify": "pnpm -w verify:js",
     "verify:js": "pnpm -w check:js",
-    "verify:native": "pnpm -w check:native"
+    "verify:native": "pnpm -w check:native",
+    "test:verify": "node scripts/test-verify.mjs"
   },
   "devDependencies": {
     "turbo": "^2.5.5"

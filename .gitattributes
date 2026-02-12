@@ -1,0 +1,4 @@
+# Ensure WebAssembly (and Emscripten) artifacts are never treated as text.
+# This avoids any line-ending conversion or other text filters corrupting binaries.
+*.wasm binary -text
+*.data binary -text

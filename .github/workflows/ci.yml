@@ -44,6 +44,25 @@ jobs:
         pnpm -C packages/tspice run build:dist-publish
         pnpm -C packages/tspice run verify:dist-publish
 
+  test-verify:
+    name: Parity verifier (ubuntu + node 22)
+    uses: ./.github/workflows/reusable-node-pnpm.yml
+    with:
+      runs_on: ubuntu-latest
+      node_version: '22'
+      pre_install: |
+        set -euo pipefail
+
+        ./scripts/ci/ensure-uncompress.sh
+      enable_cspice_cache: true
+      command: |
+        set -euo pipefail
+
+        pnpm run fetch:cspice
+
+        export TSPICE_BACKEND_VERIFY_BACKEND=wasm
+        pnpm test:verify
+
   check-native:
     # Runs in parallel with `check` to surface native-only failures quickly.
     # Assumes GitHub-hosted runners (Ubuntu with apt-get, macOS with Homebrew).

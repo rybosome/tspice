@@ -42,7 +42,7 @@ describe("compareValues / formatMismatchReport (determinism)", () => {
         "$.d: unexpected key in actual",
         "  expected: undefined",
         "  actual:   4",
-        "$.b: number mismatch: actual=999 expected=2 (diff=997, rel=0.997997997997998)",
+        "$.b: number mismatch: diff=997 rel=0.997997997997998 tolAbs=0 tolRel=0",
         "  expected: 2",
         "  actual:   999",
       ].join("\n"),

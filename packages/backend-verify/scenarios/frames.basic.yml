@@ -1,0 +1,57 @@
+name: frames.basic
+compare:
+  tolAbs: 1e-12
+  tolRel: 1e-12
+cases:
+  - id: namfrm-j2000
+    call: frames.namfrm
+    args:
+      - "J2000"
+
+  - id: namfrm-b1950
+    call: frames.namfrm
+    args:
+      - "B1950"
+
+  - id: namfrm-unknown
+    call: frames.namfrm
+    args:
+      - "NO_SUCH_FRAME"
+
+  - id: frmnam-1
+    call: frames.frmnam
+    args:
+      - 1
+
+  - id: frmnam-2
+    call: frames.frmnam
+    args:
+      - 2
+
+  - id: frmnam-unknown
+    call: frames.frmnam
+    args:
+      - 123456
+
+  - id: pxform-j2000-b1950
+    call: frames.pxform
+    args:
+      - "J2000"
+      - "B1950"
+      - 0
+
+  - id: pxform-identity
+    call: frames.pxform
+    args:
+      - "J2000"
+      - "J2000"
+      - 1234.5
+
+  - id: pxform-unknown
+    call: frames.pxform
+    args:
+      - "J2000"
+      - "NO_SUCH_FRAME"
+      - 0
+    compare:
+      errorShort: true

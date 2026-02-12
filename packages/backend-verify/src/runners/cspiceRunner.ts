@@ -50,7 +50,36 @@ export function readCspiceRunnerBuildState(): CspiceRunnerBuildState | null {
 }
 
 export function isCspiceRunnerAvailable(): boolean {
-  return fs.existsSync(getCspiceRunnerBinaryPath());
+  const binaryPath = getCspiceRunnerBinaryPath();
+  if (!fs.existsSync(binaryPath)) return false;
+
+  // Prefer the pretest state file so we don't accidentally run with a stale/broken
+  // binary (e.g. when restoring only the binary from cache).
+  const state = readCspiceRunnerBuildState();
+  if (state) return state.available === true;
+
+  // No state file: in CI treat as unavailable to avoid stale binaries.
+  const ci = process.env.CI;
+  if (ci === "true" || ci === "1") return false;
+
+  // Local dev: be permissive as long as the binary exists.
+  return true;
+}
+
+export function getCspiceRunnerStatus(): { ready: boolean; hint: string; statePath: string } {
+  const statePath = getCspiceRunnerBuildStatePath();
+  const ready = isCspiceRunnerAvailable();
+  const state = readCspiceRunnerBuildState();
+  const hint = ready
+    ? ""
+    : state?.reason?.trim?.()
+      ? state.reason
+      : state?.error?.trim?.()
+        ? state.error
+        : state
+          ? `State: ${statePath}`
+          : `Missing or unreadable runner build state: ${statePath}`;
+  return { ready, hint, statePath };
 }
 
 function safeErrorReport(error: unknown): RunnerErrorReport {
@@ -69,6 +98,7 @@ type CRunnerOk = { ok: true; result: unknown };
 type CRunnerError = {
   ok: false;
   error: {
+    code?: string;
     message: string;
     spiceShort?: string;
     spiceLong?: string;
@@ -417,6 +447,7 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
         }
 
         const report: RunnerErrorReport = {
+          ...(out.error.code ? { code: out.error.code } : {}),
           message: out.error.message,
           spice: asSpiceErrorState(out.error),
         };
