@@ -75,19 +75,6 @@ export type SpiceClientsFactory = {
   asynchronous(opts?: CreateSpiceAsyncOptions): SpiceClientsBuilder<SpiceAsync>;
 };
 
-type CreateSpiceClientsOptions = {
-  /**
-   * Default options used when calling `.synchronous()` / `.asynchronous()` with
-   * no arguments.
-   *
-   * Defaults to `{ backend: "wasm" }`.
-   */
-  defaultInProcessOptions?: CreateSpiceOptions;
-
-  /** Default options used when calling `.webWorker()` with no arguments. */
-  defaultWebWorkerOptions?: SpiceClientsWebWorkerOptions;
-};
-
 const blockedStringKeys = new Set<string>([
   // Promise / thenable
   "then",
@@ -354,35 +341,26 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAs
   return builder;
 }
 
-function createSpiceClients(opts?: CreateSpiceClientsOptions): SpiceClientsFactory {
-  const defaultInProcessOptions: CreateSpiceOptions = opts?.defaultInProcessOptions ?? {
-    backend: "wasm",
-  };
+const defaultInProcessOptions: CreateSpiceOptions = {
+  backend: "wasm",
+};
 
-  const defaultWebWorkerOptions = opts?.defaultWebWorkerOptions;
+export const spiceClients: SpiceClientsFactory = {
+  webWorker: (webWorkerOpts) =>
+    createBuilder({
+      kind: "webWorker",
+      webWorkerOptions: { ...(webWorkerOpts ?? {}) },
+    }),
 
-  return {
-    webWorker: (webWorkerOpts) =>
-      createBuilder({
-        kind: "webWorker",
-        webWorkerOptions: {
-          ...(defaultWebWorkerOptions ?? {}),
-          ...(webWorkerOpts ?? {}),
-        },
-      }),
+  synchronous: (inProcessOpts) =>
+    createBuilder({
+      kind: "synchronous",
+      inProcessOptions: inProcessOpts ?? defaultInProcessOptions,
+    }),
 
-    synchronous: (inProcessOpts) =>
-      createBuilder({
-        kind: "synchronous",
-        inProcessOptions: inProcessOpts ?? defaultInProcessOptions,
-      }),
-
-    asynchronous: (inProcessOpts) =>
-      createBuilder({
-        kind: "asynchronous",
-        inProcessOptions: inProcessOpts ?? defaultInProcessOptions,
-      }),
-  };
-}
-
-export const spiceClients: SpiceClientsFactory = createSpiceClients();
+  asynchronous: (inProcessOpts) =>
+    createBuilder({
+      kind: "asynchronous",
+      inProcessOptions: inProcessOpts ?? defaultInProcessOptions,
+    }),
+};
