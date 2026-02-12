@@ -24,8 +24,23 @@ function snapshotTimdefDefaults(b: TimdefApi): TimdefDefaultsSnapshot {
   };
 }
 
-function restoreTimdefDefaults(b: TimdefApi, snapshot: TimdefDefaultsSnapshot): void {
-  b.timdef("SET", "CALENDAR", snapshot.CALENDAR);
+function restoreTimdefDefaults(
+  b: TimdefApi,
+  snapshot: TimdefDefaultsSnapshot,
+  label: string,
+): void {
+  function timdefSet(item: string, value: string): void {
+    try {
+      b.timdef("SET", item, value);
+    } catch (err) {
+      throw new Error(
+        `restoreTimdefDefaults(${label}): timdef("SET", ${JSON.stringify(item)}, ${JSON.stringify(value)}) failed`,
+        { cause: err },
+      );
+    }
+  }
+
+  timdefSet("CALENDAR", snapshot.CALENDAR);
 
   // `timdef_c` treats SYSTEM and ZONE as mutually exclusive state:
   // - setting SYSTEM blanks ZONE
@@ -40,17 +55,17 @@ function restoreTimdefDefaults(b: TimdefApi, snapshot: TimdefDefaultsSnapshot): 
 
   if (systemIsSet && zoneIsSet) {
     throw new Error(
-      "restoreTimdefDefaults(): invalid snapshot; SYSTEM and ZONE cannot both be set",
+      `restoreTimdefDefaults(${label}): invalid snapshot; SYSTEM and ZONE cannot both be set`,
     );
   }
 
   if (zoneIsSet) {
-    b.timdef("SET", "ZONE", snapshot.ZONE);
+    timdefSet("ZONE", snapshot.ZONE);
     return;
   }
 
   if (systemIsSet) {
-    b.timdef("SET", "SYSTEM", snapshot.SYSTEM);
+    timdefSet("SYSTEM", snapshot.SYSTEM);
   }
 }
 
@@ -84,7 +99,7 @@ describe("restoreTimdefDefaults()", () => {
       CALENDAR: "GREGORIAN",
       SYSTEM: "",
       ZONE: "   ",
-    });
+    }, "fake");
 
     expect(calls).toEqual([
       { action: "SET", item: "CALENDAR", value: "GREGORIAN" },
@@ -107,6 +122,10 @@ describe("primitives parity (node vs wasm)", () => {
     // so this test is order-independent.
     const nodeTimdef0 = snapshotTimdefDefaults(node);
     const wasmTimdef0 = snapshotTimdefDefaults(wasm);
+
+    let primaryErr: unknown = undefined;
+    let hasPrimaryErr = false;
+    const cleanupErrors: unknown[] = [];
 
     try {
       // Ensure deterministic parsing defaults for `str2et`.
@@ -220,23 +239,51 @@ describe("primitives parity (node vs wasm)", () => {
       for (let i = 0; i < 6; i++) {
         expectClose(spkNode.state[i]!, spkWasm.state[i]!);
       }
-    } finally {
-      // Best-effort cleanup.
-      try {
-        wasm.unload("/kernels/de405s.bsp");
-        wasm.unload("/kernels/naif0012.tls");
-      } catch {
-        // ignore
-      }
-      try {
-        node.unload("/kernels/de405s.bsp");
-        node.unload("/kernels/naif0012.tls");
-      } catch {
-        // ignore
-      }
+    } catch (err) {
+      primaryErr = err;
+      hasPrimaryErr = true;
+    }
 
-      restoreTimdefDefaults(node, nodeTimdef0);
-      restoreTimdefDefaults(wasm, wasmTimdef0);
+    // Best-effort cleanup.
+    try {
+      wasm.unload("/kernels/de405s.bsp");
+      wasm.unload("/kernels/naif0012.tls");
+    } catch {
+      // ignore
+    }
+    try {
+      node.unload("/kernels/de405s.bsp");
+      node.unload("/kernels/naif0012.tls");
+    } catch {
+      // ignore
+    }
+
+    try {
+      restoreTimdefDefaults(node, nodeTimdef0, "node");
+    } catch (err) {
+      cleanupErrors.push(err);
+    }
+    try {
+      restoreTimdefDefaults(wasm, wasmTimdef0, "wasm");
+    } catch (err) {
+      cleanupErrors.push(err);
+    }
+
+    if (hasPrimaryErr) {
+      if (cleanupErrors.length > 0) {
+        throw new AggregateError(
+          [primaryErr, ...cleanupErrors],
+          "Test failed and cleanup also failed",
+        );
+      }
+      throw primaryErr;
+    }
+
+    if (cleanupErrors.length === 1) {
+      throw cleanupErrors[0];
+    }
+    if (cleanupErrors.length > 1) {
+      throw new AggregateError(cleanupErrors, "Cleanup failed");
     }
   }, 20_000);
 });

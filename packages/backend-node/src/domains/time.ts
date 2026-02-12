@@ -1,5 +1,5 @@
 import type { TimeApi } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { assertNever, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
@@ -7,19 +7,29 @@ export function createTimeApi(native: NativeAddon): TimeApi {
   function timdef(action: "GET", item: string): string;
   function timdef(action: "SET", item: string, value: string): void;
   function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
-    if (action === "GET") {
-      const out = native.timdefGet(item);
-      invariant(typeof out === "string", "Expected timdef(GET) to return a string");
-      return out;
+    if (item.length === 0) {
+      throw new RangeError("timdef(): item must be a non-empty string");
     }
 
-    if (action === "SET") {
-      invariant(typeof value === "string", "timdef(SET) requires a string value");
-      native.timdefSet(item, value);
-      return;
-    }
+    switch (action) {
+      case "GET": {
+        const out = native.timdefGet(item);
+        invariant(typeof out === "string", "Expected timdef(GET) to return a string");
+        return out;
+      }
 
-    invariant(false, `Unsupported timdef action: ${action}`);
+      case "SET": {
+        invariant(typeof value === "string", "timdef(SET) requires a string value");
+        if (value.length === 0) {
+          throw new RangeError("timdef(SET)(): value must be a non-empty string");
+        }
+        native.timdefSet(item, value);
+        return;
+      }
+
+      default:
+        return assertNever(action, "Unsupported timdef action");
+    }
   }
 
   return {
@@ -60,6 +70,9 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     },
 
     tparse: (timstr) => {
+      if (timstr.length === 0) {
+        throw new RangeError("tparse(): timstr must be a non-empty string");
+      }
       const et = native.tparse(timstr);
       invariant(typeof et === "number", "Expected tparse() to return a number");
       return et;

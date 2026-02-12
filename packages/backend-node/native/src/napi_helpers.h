@@ -75,11 +75,51 @@ inline void ThrowSpiceError(Napi::Env env, const std::string& context, const cha
 * sensitive strings into logs.
 */
 inline std::string PreviewForError(const std::string& s, size_t maxChars = 200) {
-  if (s.size() <= maxChars) {
-    return s;
+  const size_t origLen = s.size();
+  const size_t previewLen = (origLen <= maxChars) ? origLen : maxChars;
+
+  std::string out;
+  // Worst case is `\u00XX` (6 chars) per byte, plus suffix.
+  out.reserve(previewLen * 6 + 32);
+
+  static const char kHex[] = "0123456789ABCDEF";
+
+  for (size_t i = 0; i < previewLen; i++) {
+    const unsigned char c = static_cast<unsigned char>(s[i]);
+    switch (c) {
+      case '
+':
+        out += "\\n";
+        break;
+      case '':
+        out += "\\r";
+        break;
+      case '	':
+        out += "\\t";
+        break;
+      case '\':
+        out += "\\\\";
+        break;
+      case '"':
+        out += "\\\"";
+        break;
+      default:
+        if (c < 0x20 || c == 0x7F) {
+          out += "\\u00";
+          out.push_back(kHex[(c >> 4) & 0xF]);
+          out.push_back(kHex[c & 0xF]);
+        } else {
+          out.push_back(static_cast<char>(c));
+        }
+        break;
+    }
   }
 
-  return s.substr(0, maxChars) + "...(len=" + std::to_string(s.size()) + ")";
+  if (origLen > maxChars) {
+    out += "...(len=" + std::to_string(origLen) + ")";
+  }
+
+  return out;
 }
 
 inline Napi::Array MakeNumberArray(Napi::Env env, const double* values, size_t count) {

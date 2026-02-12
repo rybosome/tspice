@@ -17,6 +17,9 @@ const WASM_TIME_OUT_MAX_BYTES = 16 * 1024; // 16 KiB
 
 const WASM_TIME_SMALL_OUT_MAX_BYTES = 2048;
 
+/** Max byte size for SCLK string outputs (sce2s/scdecd). */
+const WASM_SCLK_OUT_MAX_BYTES = 2048;
+
 function withUtf8CString<T>(
   module: EmscriptenModule,
   value: string,
@@ -212,7 +215,7 @@ function tspiceCallScs2e(module: EmscriptenModule, sc: number, sclkch: string): 
 }
 
 function tspiceCallSce2s(module: EmscriptenModule, sc: number, et: number): string {
-  const outMaxBytes = WASM_ERR_MAX_BYTES;
+  const outMaxBytes = WASM_SCLK_OUT_MAX_BYTES;
 
   return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
     module.HEAPU8[outPtr] = 0;
@@ -238,7 +241,7 @@ function tspiceCallScencd(module: EmscriptenModule, sc: number, sclkch: string):
 }
 
 function tspiceCallScdecd(module: EmscriptenModule, sc: number, sclkdp: number): string {
-  const outMaxBytes = WASM_ERR_MAX_BYTES;
+  const outMaxBytes = WASM_SCLK_OUT_MAX_BYTES;
 
   return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
     module.HEAPU8[outPtr] = 0;
@@ -300,6 +303,10 @@ export function createTimeApi(module: EmscriptenModule, toolkitVersion: string):
       function timdef(action: "GET", item: string): string;
       function timdef(action: "SET", item: string, value: string): void;
       function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+        if (item.length === 0) {
+          throw new RangeError("timdef(): item must be a non-empty string");
+        }
+
         if (action === "GET") {
           return tspiceCallTimdefGet(module, item);
         }
@@ -307,6 +314,9 @@ export function createTimeApi(module: EmscriptenModule, toolkitVersion: string):
         if (action === "SET") {
           if (typeof value !== "string") {
             throw new TypeError("timdef(SET) requires a string value");
+          }
+          if (value.length === 0) {
+            throw new RangeError("timdef(SET)(): value must be a non-empty string");
           }
           tspiceCallTimdefSet(module, item, value);
           return;
@@ -325,7 +335,12 @@ export function createTimeApi(module: EmscriptenModule, toolkitVersion: string):
     deltet: (epoch, eptype) => tspiceCallDeltet(module, epoch, eptype),
     unitim: (epoch, insys, outsys) => tspiceCallUnitim(module, epoch, insys, outsys),
 
-    tparse: (timstr) => tspiceCallTparse(module, timstr),
+    tparse: (timstr) => {
+      if (timstr.length === 0) {
+        throw new RangeError("tparse(): timstr must be a non-empty string");
+      }
+      return tspiceCallTparse(module, timstr);
+    },
     tpictr: (sample, pictur) => tspiceCallTpictr(module, sample, pictur),
 
     scs2e: (sc, sclkch) => tspiceCallScs2e(module, sc, sclkch),

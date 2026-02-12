@@ -259,6 +259,10 @@ int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes)
     return tspice_time_invalid_arg(err, errMaxBytes, "tspice_tparse(): timstr must not be NULL");
   }
 
+  if (timstr[0] == '\0') {
+    return tspice_time_invalid_arg(err, errMaxBytes, "tspice_tparse(): timstr must be non-empty");
+  }
+
   SpiceDouble et = 0.0;
   SpiceChar errmsg[2048];
   errmsg[0] = '\0';

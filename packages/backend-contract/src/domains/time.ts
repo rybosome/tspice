@@ -66,6 +66,9 @@ export interface TimeApi {
   /**
    * Transform a NAIF time picture to match a sample time string.
    *
+   * Statefulness: this is affected by TIMDEF defaults (SYSTEM/CALENDAR/ZONE),
+   * since `sample` is interpreted under the current TIMDEF state.
+   *
    * Kernel prerequisites:
    * - None.
    *
