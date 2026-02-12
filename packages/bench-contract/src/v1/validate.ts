@@ -35,6 +35,7 @@ interface FixtureResolutionContext {
   readonly repoRoot: string;
   readonly checkExistence: boolean;
   readonly checkSymlinkContainment: boolean;
+  readonly resolveKernelFixtureRefs: boolean;
   readonly defaultFixtureRoots: FixtureRootsV1 | undefined;
   readonly fixtureRoots: FixtureRootsV1 | undefined;
   readonly cacheKeyPrefix: string;
@@ -170,6 +171,11 @@ function validateKernels(
       pushError(errors, itemPath, "Kernel fixture ref must be a non-empty string.");
       continue;
     }
+
+    // If fixtureRoots were invalid, resolving kernel fixture refs tends to emit
+    // noisy secondary errors (e.g. missing/unknown roots). Still keep the basic
+    // type/shape validation above.
+    if (!fixtureCtx.resolveKernelFixtureRefs) continue;
 
     const cacheKey = `${fixtureCtx.cacheKeyPrefix}${kernelRef}`;
 
@@ -510,12 +516,14 @@ export function validateBenchmarkSuiteV1(
     }
   }
 
+  const fixtureRootsErrorCountBefore = errors.length;
   const fixtureRoots = validateFixtureRoots(
     record.fixtureRoots,
     errors,
     ["fixtureRoots"],
     options,
   );
+  const fixtureRootsValid = errors.length === fixtureRootsErrorCountBefore;
 
   const checkExistence = shouldCheckFixtureExistence(options);
   const checkSymlinkContainment =
@@ -539,6 +547,7 @@ export function validateBenchmarkSuiteV1(
         repoRoot: options.repoRoot,
         checkExistence,
         checkSymlinkContainment,
+        resolveKernelFixtureRefs: fixtureRootsValid,
         defaultFixtureRoots,
         fixtureRoots,
         cacheKeyPrefix: `${checkExistence ? 1 : 0}:${checkSymlinkContainment ? 1 : 0}:${effectiveFixtureRootsKey}:`,
