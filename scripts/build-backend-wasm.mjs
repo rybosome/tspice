@@ -339,6 +339,16 @@ const exportedFunctions = [
   // --- ephemeris ---
   "_tspice_spkezr",
   "_tspice_spkpos",
+  "_tspice_spkez",
+  "_tspice_spkezp",
+  "_tspice_spkgeo",
+  "_tspice_spkgps",
+  "_tspice_spkssb",
+  "_tspice_spkcov",
+  "_tspice_spkobj",
+  "_tspice_spksfs",
+  "_tspice_spkpds",
+  "_tspice_spkuds",
 
   // --- derived geometry ---
   "_tspice_subpnt",

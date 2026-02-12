@@ -135,6 +135,50 @@ export type NativeAddon = {
     obs: string
   ): { pos: number[]; lt: number };
 
+  spkez(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    obs: number
+  ): { state: number[]; lt: number };
+
+  spkezp(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    obs: number
+  ): { pos: number[]; lt: number };
+
+  spkgeo(
+    target: number,
+    et: number,
+    ref: string,
+    obs: number
+  ): { state: number[]; lt: number };
+
+  spkgps(
+    target: number,
+    et: number,
+    ref: string,
+    obs: number
+  ): { pos: number[]; lt: number };
+
+  spkssb(
+    target: number,
+    et: number,
+    ref: string,
+  ): number[];
+
+  spkcov(spk: string, idcode: number, cover: number): void;
+  spkobj(spk: string, ids: number): void;
+
+  spksfs(body: number, et: number): { found: boolean; handle?: number; descr?: number[]; ident?: string };
+
+  spkpds(body: number, center: number, frame: string, type: number, first: number, last: number): number[];
+  spkuds(descr: number[]): { body: number; center: number; frame: number; type: number; first: number; last: number; baddr: number; eaddr: number };
+
   subpnt(
     method: string,
     target: string,
