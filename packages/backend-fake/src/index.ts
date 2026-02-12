@@ -1479,7 +1479,6 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     dskb02: (_handle: SpiceHandle, _dladsc: DlaDescriptor) => {
       throw new Error("Fake backend: dskb02() is not implemented");
     },
-    },
 
     // -- Cells + windows -----------------------------------------------------
     //
