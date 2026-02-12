@@ -58,13 +58,13 @@ async function loadWasmBinaryFromFileUrl(wasmUrl: string): Promise<Uint8Array> {
     return cached;
   }
 
-  const [{ readFileSync, statSync }, { fileURLToPath }] = await Promise.all([
-    import("node:fs"),
+  const [{ readFile, stat }, { fileURLToPath }] = await Promise.all([
+    import("node:fs/promises"),
     import("node:url"),
   ]);
 
   const wasmPath = fileURLToPath(wasmUrl);
-  const expectedSize = statSync(wasmPath).size;
+  const expectedSize = (await stat(wasmPath)).size;
 
   // Guard against occasional short reads seen in some CI environments.
   const attempts = 3;
@@ -72,7 +72,7 @@ async function loadWasmBinaryFromFileUrl(wasmUrl: string): Promise<Uint8Array> {
 
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
-      const bytes = readFileSync(wasmPath);
+      const bytes = await readFile(wasmPath);
 
       if (bytes.byteLength !== expectedSize) {
         throw new Error(
