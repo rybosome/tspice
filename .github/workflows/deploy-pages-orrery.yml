@@ -208,6 +208,7 @@ jobs:
 
       - name: Find existing orrery preview comment
         id: find_preview_comment
+        continue-on-error: true
         uses: peter-evans/find-comment@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -216,6 +217,7 @@ jobs:
           body-includes: "<!-- orrery-preview-url -->"
 
       - name: Create or update orrery preview comment
+        if: ${{ always() && steps.find_preview_comment.outcome == 'success' }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
