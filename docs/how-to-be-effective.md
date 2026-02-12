@@ -5,7 +5,7 @@ This doc is a quick “mental map” for contributors. It’s intentionally shor
 ## Main entry points (what to touch first)
 
 - **Public API (published package):** `packages/tspice` (`@rybosome/tspice`)
-  - Start here for user-facing API changes: `createSpice()`, backend selection, exported surface.
+  - Start here for user-facing API changes: `spiceClients`, backend selection, exported surface.
   - Docs: [`../packages/tspice/README.md`](../packages/tspice/README.md)
 
 - **Backend boundaries:**

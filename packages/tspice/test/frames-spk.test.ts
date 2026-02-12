@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
 
 import { ensureKernelFile } from "./helpers/kernels.js";
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
@@ -44,9 +44,11 @@ describe("frames + SPK ephemerides", () => {
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: pxform/sxform/spkezr/spkpos", async () => {
-    const backend = await createBackend({ backend: "node" });
-    const pck = await ensureKernelFile(PCK);
-    const spk = await ensureKernelFile(SPK);
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
+      const pck = await ensureKernelFile(PCK);
+      const spk = await ensureKernelFile(SPK);
 
     backend.kclear();
     backend.furnsh(lskPath);
@@ -70,16 +72,21 @@ describe("frames + SPK ephemerides", () => {
     expect(state).toHaveLength(6);
     expect(lt).toBeGreaterThan(0);
 
-    const { pos, lt: lt2 } = backend.spkpos("EARTH", 0, "J2000", "NONE", "SUN");
-    expect(pos).toHaveLength(3);
-    expect(lt2).toBeGreaterThan(0);
+      const { pos, lt: lt2 } = backend.spkpos("EARTH", 0, "J2000", "NONE", "SUN");
+      expect(pos).toHaveLength(3);
+      expect(lt2).toBeGreaterThan(0);
+    } finally {
+      await dispose();
+    }
   }, 60_000);
 
   it("wasm backend: pxform/sxform/spkezr/spkpos", async () => {
-    const backend = await createBackend({ backend: "wasm" });
-    const lskBytes = fs.readFileSync(lskPath);
-    const pck = await ensureKernelFile(PCK);
-    const spk = await ensureKernelFile(SPK);
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
+      const lskBytes = fs.readFileSync(lskPath);
+      const pck = await ensureKernelFile(PCK);
+      const spk = await ensureKernelFile(SPK);
 
     backend.kclear();
     backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
@@ -103,8 +110,11 @@ describe("frames + SPK ephemerides", () => {
     expect(state).toHaveLength(6);
     expect(lt).toBeGreaterThan(0);
 
-    const { pos, lt: lt2 } = backend.spkpos("EARTH", 0, "J2000", "NONE", "SUN");
-    expect(pos).toHaveLength(3);
-    expect(lt2).toBeGreaterThan(0);
+      const { pos, lt: lt2 } = backend.spkpos("EARTH", 0, "J2000", "NONE", "SUN");
+      expect(pos).toHaveLength(3);
+      expect(lt2).toBeGreaterThan(0);
+    } finally {
+      await dispose();
+    }
   }, 60_000);
 });

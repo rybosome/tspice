@@ -2,7 +2,15 @@
 
 ## Overview
 
-`@rybosome/tspice` is the public facade for this repo: it gives you a single `createBackend()` entrypoint and lets you select an underlying backend implementation (Node/native or WASM).
+`@rybosome/tspice` is the public facade for this repo.
+
+The **canonical** way to construct SPICE clients is the `spiceClients` builder:
+
+- configure caching + kernel preload
+- pick an execution mode via a terminal method:
+  - `toSync()` (in-process, sync-ish calls)
+  - `toAsync()` (in-process, async calls)
+  - `toWebWorker()` (async calls in a Web Worker)
 
 ## CSPICE / NAIF disclosure
 
@@ -10,28 +18,7 @@ See [`docs/cspice-naif-disclosure.md`](../../docs/cspice-naif-disclosure.md) for
 
 Depending on `@rybosome/tspice` will typically pull in backend packages that ship CSPICE-derived components; see each backend package `NOTICE` for details.
 
-## Purpose / Why this exists
-
-The long-term goal is to expose a stable, ergonomic JavaScript/TypeScript API for SPICE functionality while keeping the “how” of execution (native addon, WASM, remote, etc.) behind an interface.
-
-This package is the package most callers should depend on.
-
-## How it fits into `tspice`
-
-At runtime, `createBackend()` creates the backend you request and returns a `Promise<SpiceBackend>`.
-
-```
-@rybosome/tspice
-  ├─ selects one of:
-  │   ├─ @rybosome/tspice-backend-node (native addon)
-  │   └─ @rybosome/tspice-backend-wasm (wasm)
-  ├─ uses shared types from @rybosome/tspice-backend-contract
-  └─ uses shared utilities from @rybosome/tspice-core
-```
-
 ## Installation
-
-In this repo, packages are typically used via the pnpm workspace and are marked `private: true`.
 
 ### ESM-only (published package)
 
@@ -40,101 +27,87 @@ The published `@rybosome/tspice` package is **ESM-only** (`type: "module"`). It 
 If you're in a CommonJS project, use a dynamic import:
 
 ```js
-const { createBackend } = await import("@rybosome/tspice");
+const { spiceClients, publicKernels } = await import("@rybosome/tspice");
 ```
 
 ## Usage (Quickstart)
 
+### Browser / WASM (async)
+
 ```ts
-import { createBackend } from "@rybosome/tspice";
+import { publicKernels, spiceClients } from "@rybosome/tspice";
 
-async function main() {
-  const backend = await createBackend({ backend: "wasm" });
+const kernelPack = publicKernels
+  .naif0012_tls()
+  .pck00011_tpc()
+  .de432s_bsp()
+  .pack();
 
-  // Useful for diagnostics, but not a way to distinguish backends:
-  // the CSPICE toolkit version is typically identical across backends.
-  console.log(backend.tkvrsn("TOOLKIT"));
+const { spice, dispose } = await spiceClients
+  // Optional: memoize responses at the transport/RPC layer.
+  .caching({ maxEntries: 2_000 })
+  // Optional: preload kernels over fetch().
+  .withKernels(kernelPack)
+  .toAsync({ backend: "wasm" });
+
+try {
+  const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
+  const state = await spice.kit.getState({ target: "EARTH", observer: "SUN", at: et });
+  console.log(state.position, state.velocity);
+} finally {
+  await dispose();
 }
-
-main().catch(console.error);
 ```
 
-## Usage (Mid-level API)
-
-The mid-level API provides a thin, typed wrapper layer over the low-level SPICE primitives:
+### Node / native addon (sync-ish)
 
 ```ts
-import { createSpice } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
 
-async function main() {
-  const spice = await createSpice({ backend: "wasm" });
-
-  // Load kernels from disk (or provide { path, bytes } for in-memory kernels).
-  spice.kit.loadKernel("/path/to/naif0012.tls");
-  spice.kit.loadKernel("/path/to/de405s.bsp");
-
-  const et = spice.kit.utcToEt("2000 JAN 01 12:00:00");
-
-  const state = spice.kit.getState({
-    target: "EARTH",
-    observer: "SUN",
-    at: et,
-    frame: "J2000",
-    aberration: "NONE",
-  });
-
-  console.log(state.position, state.velocity, state.lightTime);
-
-  // Low-level backend primitives are available under `spice.raw`.
+const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+try {
   console.log(spice.raw.tkvrsn("TOOLKIT"));
+} finally {
+  await dispose();
 }
-
-main().catch(console.error);
 ```
 
-## API surface
+## Kernel loading
 
-- `createBackend(options: { backend: 'node' | 'wasm'; wasmUrl?: string | URL }): Promise<SpiceBackend>`
-- `createSpice(options: { backend: 'node' | 'wasm'; wasmUrl?: string | URL }): Promise<Spice>`
-- Types:
-  - `SpiceBackend`
-  - `SpiceKit`, `Spice`
-  - Mid-level:
-    - `Vec3`, `Vec6`, `Mat3` (wrapper), `Mat3RowMajor`, `Mat3ColMajor`, `FrameName`, `AberrationCorrection`, `SpiceTime`
-    - `StateVector`
-    - `SpiceError`
+### Public kernel packs
 
-### Client builder + caching
-
-`spiceClients` provides a small builder for creating sync/async/worker clients, with optional in-memory caching.
-
-When using `.synchronous().caching(...)`, caching is applied at the transport (RPC) layer.
-It memoizes returned values per `(op, args)`:
-
-- Only **successful** calls are cached (throws are not cached).
-- Cached values are returned by reference (they may be objects/arrays). Treat cached results as immutable — do not mutate them.
-- Kernel-mutating ops (e.g. `kit.loadKernel`, `raw.furnsh`) default to `"no-store"`.
-- Kernel mutations do **not** automatically invalidate the cache, so cached results can become stale if you load/unload kernels mid-session.
-
-Recommendation: call the build result’s `dispose()` when you’re done (it clears caches + stops any TTL sweep timers), and consider rebuilding/clearing the cache after kernel mutations.
-
-### Selecting a backend
+`publicKernels` is a small builder for common NAIF kernels. Call `.pack()` to get a `KernelPack`.
 
 ```ts
-import { createBackend } from "@rybosome/tspice";
+import { publicKernels } from "@rybosome/tspice";
 
-async function main() {
-  const nodeBackend = await createBackend({ backend: "node" });
-  const wasmBackend = await createBackend({ backend: "wasm" });
-  // `tkvrsn("TOOLKIT")` reports the underlying CSPICE toolkit version.
-  // It is useful for debugging, but usually not different between backends.
-  console.log(nodeBackend.tkvrsn("TOOLKIT"), wasmBackend.tkvrsn("TOOLKIT"));
-}
-
-main().catch(console.error);
+const pack = publicKernels.naif0012_tls().pck00011_tpc().pack();
 ```
 
-### Backend notes
+### Custom kernels
+
+Use `.withKernel({ url, path? })` to load an arbitrary kernel from a URL.
+
+- If `path` is omitted, it defaults to `/kernels/<basename(url)>` (query/hash stripped).
+- Each `.withKernel(...)` call appends its own 1-kernel batch.
+
+```ts
+import { spiceClients } from "@rybosome/tspice";
+
+const { spice } = await spiceClients
+  .withKernel({ url: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls" })
+  .toAsync({ backend: "wasm" });
+```
+
+### Batching semantics
+
+Kernel load order matches call order:
+
+- `withKernels(pack)` appends 1 batch
+- `withKernels(packs)` appends multiple batches
+- `withKernel(...)` appends its own 1-kernel batch
+
+## Backend notes
 
 - Node backend (`backend: "node"`): implemented by a native addon. Requires a compatible native binding to be present.
 - WASM backend (`backend: "wasm"`): implemented with a prebuilt `.wasm`. See [`@rybosome/tspice-backend-wasm`](../backend-wasm/README.md).

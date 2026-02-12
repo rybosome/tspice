@@ -19,8 +19,12 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@rybosome/tspice": "workspace:*",
+    "@rybosome/tspice-backend-contract": "workspace:*",
+    "@rybosome/tspice-backend-wasm": "workspace:*",
     "yaml": "^2.8.1"
+  },
+  "optionalDependencies": {
+    "@rybosome/tspice-backend-node": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
@@ -23,7 +23,9 @@ describe("SCLK conversions + CK attitude", () => {
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
   itNode("node backend: scs2e/sce2s", async () => {
-    const backend = await createBackend({ backend: "node" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
 
     backend.kclear();
     backend.furnsh(lskPath);
@@ -34,10 +36,15 @@ describe("SCLK conversions + CK attitude", () => {
 
     const roundTrip = backend.sce2s(sc, et);
     expect(roundTrip.length).toBeGreaterThan(0);
+    } finally {
+      await dispose();
+    }
   });
 
   itNode("node backend: ckgp/ckgpav throw when no CK is loaded", async () => {
-    const backend = await createBackend({ backend: "node" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
 
     backend.kclear();
 
@@ -48,10 +55,15 @@ describe("SCLK conversions + CK attitude", () => {
 
     expect(() => backend.ckgp(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
     expect(() => backend.ckgpav(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
+    } finally {
+      await dispose();
+    }
   });
 
   itNode("node backend: loading transfer-format CK throws", async () => {
-    const backend = await createBackend({ backend: "node" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
 
     backend.kclear();
     backend.furnsh(lskPath);
@@ -59,10 +71,15 @@ describe("SCLK conversions + CK attitude", () => {
 
     // Transfer-format CKs (like cook_01.tc) are not loadable by CSPICE.
     expect(() => backend.furnsh(tcPath)).toThrow(/TRANSFERFILE/i);
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: scs2e/sce2s", async () => {
-    const backend = await createBackend({ backend: "wasm" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
 
     const lskBytes = fs.readFileSync(lskPath);
     const tscBytes = fs.readFileSync(tscPath);
@@ -76,10 +93,15 @@ describe("SCLK conversions + CK attitude", () => {
 
     const roundTrip = backend.sce2s(sc, et);
     expect(roundTrip.length).toBeGreaterThan(0);
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: ckgp/ckgpav throw when no CK is loaded", async () => {
-    const backend = await createBackend({ backend: "wasm" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
 
     backend.kclear();
 
@@ -90,10 +112,15 @@ describe("SCLK conversions + CK attitude", () => {
 
     expect(() => backend.ckgp(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
     expect(() => backend.ckgpav(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: loading transfer-format CK throws", async () => {
-    const backend = await createBackend({ backend: "wasm" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
 
     const lskBytes = fs.readFileSync(lskPath);
     const tscBytes = fs.readFileSync(tscPath);
@@ -105,6 +132,9 @@ describe("SCLK conversions + CK attitude", () => {
 
     // Transfer-format CKs (like cook_01.tc) are not loadable by CSPICE.
     expect(() => backend.furnsh({ path: "cook_01.tc", bytes: tcBytes })).toThrow(/TRANSFERFILE/i);
+    } finally {
+      await dispose();
+    }
   });
 
   // TODO: Add a binary CK (e.g. .bc) fixture so we can test ckgp/ckgpav

@@ -19,7 +19,7 @@ export function createTimeKit(cspice: SpiceBackend): {
 
     utcToEt: (utc) => {
       try {
-        return cspice.str2et(utc) as SpiceTime;
+        return cspice.str2et(utc);
       } catch (error) {
         throw wrapSpiceError("utcToEt", error);
       }

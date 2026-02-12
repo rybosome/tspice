@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  isCachingTransportSync,
-  type SpiceTransportSync,
-  withCachingSync,
-} from "@rybosome/tspice";
+import { isCachingTransportSync, withCachingSync } from "../src/transport/caching/withCachingSync.js";
+import type { SpiceTransportSync } from "../src/transport/types.js";
 
 describe("withCachingSync()", () => {
   it("expires entries via ttlMs (absolute, non-sliding)", () => {

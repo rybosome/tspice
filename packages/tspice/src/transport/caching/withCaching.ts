@@ -303,13 +303,35 @@ function containsBinaryLikeData(
  */
 export function defaultSpiceCacheKey(op: string, args: unknown[]): string | null {
   try {
+    // Normalize certain ops for better cache hit rates.
+    //
+    // - `kit.getState({ target, observer, ... })` accepts `string | number` body
+    //   refs, but downstream SPICE expects strings. Normalize to strings for
+    //   cache keys so `1` and "1" don't diverge.
+    const normalizedArgs =
+      op === "kit.getState" &&
+      args.length === 1 &&
+      isPlainObject(args[0]) &&
+      (typeof (args[0] as Record<string, unknown>).target === "string" ||
+        typeof (args[0] as Record<string, unknown>).target === "number") &&
+      (typeof (args[0] as Record<string, unknown>).observer === "string" ||
+        typeof (args[0] as Record<string, unknown>).observer === "number")
+        ? [
+            {
+              ...(args[0] as Record<string, unknown>),
+              target: String((args[0] as Record<string, unknown>).target),
+              observer: String((args[0] as Record<string, unknown>).observer),
+            },
+          ]
+        : args;
+
     const seen = new WeakSet<object>();
     const budget: ScanBudget = { remaining: MAX_KEY_SCAN };
-    for (const arg of args) {
+    for (const arg of normalizedArgs) {
       if (containsBinaryLikeData(arg, seen, budget)) return null;
     }
 
-    const key = JSON.stringify([op, args]);
+    const key = JSON.stringify([op, normalizedArgs]);
     if (key.length > MAX_KEY_LENGTH) return null;
     return key;
   } catch {

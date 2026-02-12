@@ -61,6 +61,17 @@ function createNamespacedProxy(
       if (prop === "toString") return toString;
       if (prop === "valueOf") return valueOf;
 
+      // Static, non-function backend properties (e.g. `raw.kind`).
+      //
+      // `createSpiceAsyncFromTransport()` is used by higher-level builders that
+      // know these values up-front (in-process / worker modes), and can define
+      // them via `Object.defineProperty(spice.raw, "kind", { value: ... })`.
+      if (namespace === "raw" && prop === "kind") {
+        if (Object.prototype.hasOwnProperty.call(_target, prop)) {
+          return (_target as Record<string, unknown>)[prop];
+        }
+      }
+
       if (!isSafeRpcKey(prop)) return undefined;
 
       const cached = fnCache.get(prop);

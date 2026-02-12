@@ -19,22 +19,14 @@ import { loadKernelPack } from "../kernels/kernelPack.js";
 import { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
 import { createWorkerTransport, type WorkerLike, type WorkerTransport } from "../worker/transport/createWorkerTransport.js";
 
-type ClientKind = "webWorker" | "synchronous" | "asynchronous";
+type KernelBatch = {
+  pack: KernelPack;
+  loadOptions?: LoadKernelPackOptions;
+};
 
 type BuilderState = {
-  kind: ClientKind;
-
-  // In-process modes
-  inProcessOptions?: CreateSpiceOptions | CreateSpiceAsyncOptions;
-
-  // Web worker mode
-  webWorkerOptions?: SpiceClientsWebWorkerOptions;
-
   cachingOptions?: WithCachingOptions;
-  kernels?: {
-    pack: KernelPack;
-    loadOptions?: LoadKernelPackOptions;
-  };
+  kernelBatches: readonly KernelBatch[];
 };
 
 export type SpiceClientBuildResult<TSpice extends Spice | SpiceAsync = SpiceAsync> = {
@@ -63,16 +55,39 @@ export type SpiceClientsWebWorkerOptions = {
   signalDispose?: boolean;
 };
 
-export type SpiceClientsBuilder<TSpice extends Spice | SpiceAsync = SpiceAsync> = {
-  caching(opts: WithCachingOptions): SpiceClientsBuilder<TSpice>;
-  withKernels(pack: KernelPack, opts?: LoadKernelPackOptions): SpiceClientsBuilder<TSpice>;
-  build(): Promise<SpiceClientBuildResult<TSpice>>;
-};
+export type SpiceClientsBuilder = {
+  caching(opts: WithCachingOptions): SpiceClientsBuilder;
 
-export type SpiceClientsFactory = {
-  webWorker(opts?: SpiceClientsWebWorkerOptions): SpiceClientsBuilder<SpiceAsync>;
-  synchronous(opts?: CreateSpiceOptions): SpiceClientsBuilder<Spice>;
-  asynchronous(opts?: CreateSpiceAsyncOptions): SpiceClientsBuilder<SpiceAsync>;
+  /**
+   * Append one or more kernel packs.
+   *
+   * Batching semantics:
+   * - `withKernels(pack)` appends a single batch
+   * - `withKernels(packs)` appends multiple batches
+   *
+   * Kernel load order matches call order (batch order preserved; within each
+   * pack, kernel order preserved).
+   */
+  withKernels(pack: KernelPack, opts?: LoadKernelPackOptions): SpiceClientsBuilder;
+  withKernels(packs: readonly KernelPack[], opts?: LoadKernelPackOptions): SpiceClientsBuilder;
+
+  /**
+   * Append a single-kernel batch.
+   *
+   * When `path` is omitted, it defaults to `/kernels/<basename(url)>`.
+   * Basename is computed from the URL/path after stripping query/hash.
+   */
+  withKernel(
+    kernel: { url: string; path?: string },
+    opts?: LoadKernelPackOptions,
+  ): SpiceClientsBuilder;
+
+  /** Build a sync-ish in-process client. */
+  toSync(opts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>>;
+  /** Build an async in-process client. */
+  toAsync(opts?: CreateSpiceAsyncOptions): Promise<SpiceClientBuildResult<SpiceAsync>>;
+  /** Build a web-worker client (async). */
+  toWebWorker(opts?: SpiceClientsWebWorkerOptions): Promise<SpiceClientBuildResult<SpiceAsync>>;
 };
 
 const blockedStringKeys = new Set<string>([
@@ -175,100 +190,118 @@ function createSpiceTransportSyncFromSpiceLike(
   };
 }
 
-function createBuilder(state: BuilderState & { kind: "synchronous" }): SpiceClientsBuilder<Spice>;
-function createBuilder(
-  state: BuilderState & { kind: Exclude<ClientKind, "synchronous"> },
-): SpiceClientsBuilder<SpiceAsync>;
-function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAsync>;
-function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAsync> {
-  let builder!: SpiceClientsBuilder<Spice | SpiceAsync>;
+function createBuilder(state: BuilderState): SpiceClientsBuilder {
+  let builder!: SpiceClientsBuilder;
+
+  const loadKernelBatches = async (spice: Spice | SpiceAsync): Promise<void> => {
+    for (const batch of state.kernelBatches) {
+      await loadKernelPack(spice, batch.pack, batch.loadOptions);
+    }
+  };
+
+  const addKernelBatches = (
+    packs: readonly KernelPack[],
+    opts: LoadKernelPackOptions | undefined,
+  ): SpiceClientsBuilder =>
+    createBuilder({
+      ...state,
+      kernelBatches: state.kernelBatches.concat(
+        packs.map((pack) => (opts === undefined ? { pack } : { pack, loadOptions: opts })),
+      ),
+    });
+
+  const defaultKernelPathFromUrl = (url: string): string => {
+    const withoutQueryHash = url.replace(/[?#].*$/, "");
+    const base = withoutQueryHash.split("/").filter(Boolean).pop() ?? "";
+    // Fall back to a stable sentinel instead of generating `/kernels/`.
+    const safeBase = base || "kernel";
+    return `/kernels/${safeBase}`;
+  };
 
   builder = {
     caching: (opts) => createBuilder({ ...state, cachingOptions: opts }),
 
-    withKernels: (pack, opts) =>
-      createBuilder({
-        ...state,
-        kernels: opts === undefined ? { pack } : { pack, loadOptions: opts },
-      }),
+    withKernels: (packsOrPack: KernelPack | readonly KernelPack[], opts?: LoadKernelPackOptions) => {
+      const packs = Array.isArray(packsOrPack) ? packsOrPack : [packsOrPack];
+      return addKernelBatches(packs, opts);
+    },
 
-    build: async (): Promise<SpiceClientBuildResult<Spice | SpiceAsync>> => {
-      if (state.kind === "synchronous") {
-        const baseSpice = await createSpice(state.inProcessOptions as CreateSpiceOptions);
-        const baseTransport = createSpiceTransportSyncFromSpiceLike(baseSpice);
+    withKernel: (kernel, opts) => {
+      const pack: KernelPack = {
+        kernels: [
+          {
+            url: kernel.url,
+            path: kernel.path ?? defaultKernelPathFromUrl(kernel.url),
+          },
+        ],
+      };
+      return addKernelBatches([pack], opts);
+    },
 
-        const cachedTransport = state.cachingOptions
-          ? withCachingSync(baseTransport, state.cachingOptions)
-          : undefined;
+    toSync: async (inProcessOpts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>> => {
+      const baseSpice = await createSpice(inProcessOpts ?? defaultInProcessOptions);
+      const baseTransport = createSpiceTransportSyncFromSpiceLike(baseSpice);
 
-        const raw = createSpiceSyncFromTransport(baseTransport);
-        const spice = createSpiceSyncFromTransport(cachedTransport ?? baseTransport);
+      const cachedTransport = state.cachingOptions
+        ? withCachingSync(baseTransport, state.cachingOptions)
+        : undefined;
 
-        if (state.kernels) {
-          await loadKernelPack(raw, state.kernels.pack, state.kernels.loadOptions);
-        }
+      // Use an uncached spice instance for kernel loading/cleanup.
+      const raw = createSpiceSyncFromTransport(baseTransport);
+      const spice = createSpiceSyncFromTransport(cachedTransport ?? baseTransport);
 
-        let disposePromise: Promise<void> | undefined;
+      // Preserve non-function backend metadata.
+      Object.defineProperty(raw.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
+      Object.defineProperty(spice.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
 
-        const disposeAsync = (): Promise<void> => {
-          if (disposePromise) return disposePromise;
+      await loadKernelBatches(raw);
 
-          disposePromise = (async () => {
-            // Always clear caches first so we don't retain references to any large
-            // results/kernels after teardown.
-            if (cachedTransport && isCachingTransportSync(cachedTransport)) {
-              try {
-                cachedTransport.dispose();
-              } catch {
-                // ignore
-              }
-            }
+      let disposePromise: Promise<void> | undefined;
 
-            // In-process: best-effort kernel cleanup.
+      const disposeAsync = (): Promise<void> => {
+        if (disposePromise) return disposePromise;
+
+        disposePromise = (async () => {
+          // Always clear caches first so we don't retain references to any large
+          // results/kernels after teardown.
+          if (cachedTransport && isCachingTransportSync(cachedTransport)) {
             try {
-              raw.kit.kclear();
+              cachedTransport.dispose();
             } catch {
               // ignore
             }
-          })().catch(() => {
+          }
+
+          // In-process: best-effort kernel cleanup.
+          try {
+            raw.kit.kclear();
+          } catch {
             // ignore
-          });
-
-          return disposePromise;
-        };
-
-        const dispose = (): Promise<void> => disposeAsync();
-
-        const client: SpiceClientBuildResult<Spice> = { spice, dispose };
-
-        // Runtime alias for Explicit Resource Management. Do not polyfill.
-        if (typeof (Symbol as any).asyncDispose === "symbol") {
-          (client as any)[(Symbol as any).asyncDispose] = dispose;
-        }
-
-        return client;
-      }
-
-      let baseTransport: SpiceTransport;
-      let workerTransport: WorkerTransport | undefined;
-
-      if (state.kind === "webWorker") {
-        const ww = state.webWorkerOptions;
-
-        workerTransport = createWorkerTransport({
-          worker: ww?.worker ?? (() => createSpiceWorker()),
-          ...(ww?.timeoutMs === undefined ? {} : { timeoutMs: ww.timeoutMs }),
-          ...(ww?.terminateOnDispose === undefined
-            ? {}
-            : { terminateOnDispose: ww.terminateOnDispose }),
-          ...(ww?.signalDispose === undefined ? {} : { signalDispose: ww.signalDispose }),
+          }
+        })().catch(() => {
+          // ignore
         });
 
-        baseTransport = workerTransport;
-      } else {
-        const spice = await createSpiceAsync(state.inProcessOptions as CreateSpiceAsyncOptions);
-        baseTransport = createSpiceTransportFromSpiceLike(spice);
+        return disposePromise;
+      };
+
+      const dispose = (): Promise<void> => disposeAsync();
+
+      const client: SpiceClientBuildResult<Spice> = { spice, dispose };
+
+      // Runtime alias for Explicit Resource Management. Do not polyfill.
+      if (typeof (Symbol as any).asyncDispose === "symbol") {
+        (client as any)[(Symbol as any).asyncDispose] = dispose;
       }
+
+      return client;
+    },
+
+    toAsync: async (
+      inProcessOpts?: CreateSpiceAsyncOptions,
+    ): Promise<SpiceClientBuildResult<SpiceAsync>> => {
+      const baseSpice = await createSpiceAsync(inProcessOpts ?? defaultInProcessOptions);
+      const baseTransport = createSpiceTransportFromSpiceLike(baseSpice);
 
       const cachedTransport = state.cachingOptions
         ? withCaching(baseTransport, state.cachingOptions)
@@ -277,15 +310,10 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAs
       const transport = cachedTransport ?? baseTransport;
       const spice = createSpiceAsyncFromTransport(transport);
 
-      if (state.kind === "webWorker") {
-        // Eagerly create/validate the worker transport so `.build()` throws
-        // (instead of deferring errors to the first spice call).
-        await spice.kit.toolkitVersion();
-      }
+      // Preserve non-function backend metadata.
+      Object.defineProperty(spice.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
 
-      if (state.kernels) {
-        await loadKernelPack(spice, state.kernels.pack, state.kernels.loadOptions);
-      }
+      await loadKernelBatches(spice);
 
       let disposePromise: Promise<void> | undefined;
 
@@ -303,18 +331,81 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAs
             }
           }
 
-          if (state.kind === "webWorker") {
-            try {
-              workerTransport?.dispose();
-            } catch {
-              // ignore
-            }
-            return;
-          }
-
           // In-process: best-effort kernel cleanup.
           try {
             await spice.kit.kclear();
+          } catch {
+            // ignore
+          }
+        })().catch(() => {
+          // ignore
+        });
+
+        return disposePromise;
+      };
+
+      const dispose = (): Promise<void> => disposeAsync();
+
+      const client: SpiceClientBuildResult<SpiceAsync> = { spice, dispose };
+
+      // Runtime alias for Explicit Resource Management. Do not polyfill.
+      if (typeof (Symbol as any).asyncDispose === "symbol") {
+        (client as any)[(Symbol as any).asyncDispose] = dispose;
+      }
+
+      return client;
+    },
+
+    toWebWorker: async (
+      webWorkerOpts?: SpiceClientsWebWorkerOptions,
+    ): Promise<SpiceClientBuildResult<SpiceAsync>> => {
+      const ww = webWorkerOpts;
+
+      const workerTransport = createWorkerTransport({
+        worker: ww?.worker ?? (() => createSpiceWorker()),
+        ...(ww?.timeoutMs === undefined ? {} : { timeoutMs: ww.timeoutMs }),
+        ...(ww?.terminateOnDispose === undefined
+          ? {}
+          : { terminateOnDispose: ww.terminateOnDispose }),
+        ...(ww?.signalDispose === undefined ? {} : { signalDispose: ww.signalDispose }),
+      });
+
+      const baseTransport: SpiceTransport = workerTransport;
+
+      const cachedTransport = state.cachingOptions
+        ? withCaching(baseTransport, state.cachingOptions)
+        : undefined;
+
+      const transport = cachedTransport ?? baseTransport;
+      const spice = createSpiceAsyncFromTransport(transport);
+
+      // Web-worker clients currently always use the WASM backend.
+      Object.defineProperty(spice.raw, "kind", { value: "wasm", enumerable: true });
+
+      // Eagerly create/validate the worker transport so `.toWebWorker()` throws
+      // (instead of deferring errors to the first spice call).
+      await spice.kit.toolkitVersion();
+
+      await loadKernelBatches(spice);
+
+      let disposePromise: Promise<void> | undefined;
+
+      const disposeAsync = (): Promise<void> => {
+        if (disposePromise) return disposePromise;
+
+        disposePromise = (async () => {
+          // Always clear caches first so we don't retain references to any large
+          // results/kernels after teardown.
+          if (cachedTransport && isCachingTransport(cachedTransport)) {
+            try {
+              cachedTransport.dispose();
+            } catch {
+              // ignore
+            }
+          }
+
+          try {
+            workerTransport.dispose();
           } catch {
             // ignore
           }
@@ -345,22 +436,6 @@ const defaultInProcessOptions: CreateSpiceOptions = {
   backend: "wasm",
 };
 
-export const spiceClients: SpiceClientsFactory = {
-  webWorker: (webWorkerOpts) =>
-    createBuilder({
-      kind: "webWorker",
-      webWorkerOptions: { ...(webWorkerOpts ?? {}) },
-    }),
-
-  synchronous: (inProcessOpts) =>
-    createBuilder({
-      kind: "synchronous",
-      inProcessOptions: inProcessOpts ?? defaultInProcessOptions,
-    }),
-
-  asynchronous: (inProcessOpts) =>
-    createBuilder({
-      kind: "asynchronous",
-      inProcessOptions: inProcessOpts ?? defaultInProcessOptions,
-    }),
-};
+export const spiceClients: SpiceClientsBuilder = createBuilder({
+  kernelBatches: [],
+});

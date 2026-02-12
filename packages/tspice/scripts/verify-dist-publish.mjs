@@ -130,10 +130,17 @@ try {
     [
       `import * as tspice from "@rybosome/tspice";`,
       ``,
-      `if (typeof tspice.createBackend !== "function") throw new Error("Missing createBackend export");`,
-      `if (typeof tspice.createSpice !== "function") throw new Error("Missing createSpice export");`,
-      `if (typeof tspice.withCaching !== "function") throw new Error("Missing withCaching export");`,
-      `if (typeof tspice.createSpiceWorkerClient !== "function") throw new Error("Missing createSpiceWorkerClient export");`,
+      `if (typeof tspice.spiceClients !== "object") throw new Error("Missing spiceClients export");`,
+      `if (typeof tspice.publicKernels !== "object") throw new Error("Missing publicKernels export");`,
+      `if (typeof tspice.createPublicKernels !== "function") throw new Error("Missing createPublicKernels export");`,
+      ``,
+      `if ("createBackend" in tspice) throw new Error("Unexpected createBackend export");`,
+      `if ("createSpice" in tspice) throw new Error("Unexpected createSpice export");`,
+      `if ("createSpiceAsync" in tspice) throw new Error("Unexpected createSpiceAsync export");`,
+      `if ("withCaching" in tspice) throw new Error("Unexpected withCaching export");`,
+      `if ("withCachingSync" in tspice) throw new Error("Unexpected withCachingSync export");`,
+      `if ("createSpiceWorkerClient" in tspice) throw new Error("Unexpected createSpiceWorkerClient export");`,
+      `if ("createWorkerTransport" in tspice) throw new Error("Unexpected createWorkerTransport export");`,
       ``,
       `// Ensure we do NOT expose unexpected subpath exports from the published package.
       // Allowlist is derived from package.json#exports.

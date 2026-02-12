@@ -44,8 +44,8 @@ export type PromisifyObject<T extends object> = {
 };
 
 /**
- * Top-level `createSpice()` return type.
- */
+* Top-level sync-ish client type (returned by `spiceClients.toSync()`).
+*/
 export type Spice = {
   /** Raw backend primitives (verbatim). */
   raw: SpiceBackend;
@@ -54,15 +54,14 @@ export type Spice = {
 };
 
 /**
-* Sync-ish client returned by `createSpice()`.
+* Sync-ish client returned by `spiceClients.toSync()`.
 */
 export type SpiceSync = Spice;
 
 /**
-* Async client returned by `createSpiceAsync()`.
+* Async client returned by `spiceClients.toAsync()` / `spiceClients.toWebWorker()`.
 *
-* Mirrors the `createSpice()` surface area, but wraps every function in a
-* `Promise`.
+* Mirrors the sync surface area, but wraps every function in a `Promise`.
 */
 export type SpiceAsync = {
   raw: PromisifyObject<SpiceBackend>;

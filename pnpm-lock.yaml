@@ -152,9 +152,12 @@ importers:
 
   packages/backend-verify:
     dependencies:
-      '@rybosome/tspice':
+      '@rybosome/tspice-backend-contract':
         specifier: workspace:*
-        version: link:../tspice
+        version: link:../backend-contract
+      '@rybosome/tspice-backend-wasm':
+        specifier: workspace:*
+        version: link:../backend-wasm
       yaml:
         specifier: ^2.8.1
         version: 2.8.2
@@ -168,6 +171,10 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.6)
+    optionalDependencies:
+      '@rybosome/tspice-backend-node':
+        specifier: workspace:*
+        version: link:../backend-node
 
   packages/backend-wasm:
     dependencies:

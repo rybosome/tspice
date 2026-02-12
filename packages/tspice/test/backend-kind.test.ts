@@ -22,7 +22,7 @@ vi.mock("@rybosome/tspice-backend-wasm", () => {
   };
 });
 
-import { createBackend } from "@rybosome/tspice";
+import { createBackend } from "../src/backend.js";
 
 describe("createBackend()", () => {
   it("adds kind=\"node\"", async () => {

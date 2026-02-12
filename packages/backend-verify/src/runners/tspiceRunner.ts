@@ -2,7 +2,7 @@ import * as path from "node:path";
 import crypto from "node:crypto";
 import { readFile, realpath } from "node:fs/promises";
 
-import { createBackend, type SpiceBackend } from "@rybosome/tspice";
+import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import {
   resolveMetaKernelKernelsToLoad,
@@ -131,19 +131,50 @@ function isMissingNativeAddon(error: unknown): boolean {
 async function createBackendForRunner(
   backend: TspiceRunnerBackend,
 ): Promise<{ backend: SpiceBackend; kind: string }> {
+  const createNodeBackend = async (): Promise<SpiceBackend> => {
+    try {
+      // Keep this import non-static so JS-only CI can run without building the
+      // native backend package.
+      const nodeBackendSpecifier = "@rybosome/tspice-backend-" + "node";
+      const { createNodeBackend } = (await import(nodeBackendSpecifier)) as {
+        createNodeBackend: () => SpiceBackend;
+      };
+
+      return createNodeBackend();
+    } catch (error) {
+      throw new Error(
+        `Failed to load native backend (required for backend="node"): ${String(error)}`,
+      );
+    }
+  };
+
+  const createWasmBackend = async (): Promise<SpiceBackend> => {
+    try {
+      const { createWasmBackend } = (await import("@rybosome/tspice-backend-wasm")) as {
+        createWasmBackend: () => Promise<SpiceBackend>;
+      };
+
+      return await createWasmBackend();
+    } catch (error) {
+      throw new Error(
+        `Failed to load WASM backend (required for backend="wasm"): ${String(error)}`,
+      );
+    }
+  };
+
   if (backend === "node") {
-    return { backend: await createBackend({ backend: "node" }), kind: "tspice(node)" };
+    return { backend: await createNodeBackend(), kind: "tspice(node)" };
   }
   if (backend === "wasm") {
-    return { backend: await createBackend({ backend: "wasm" }), kind: "tspice(wasm)" };
+    return { backend: await createWasmBackend(), kind: "tspice(wasm)" };
   }
 
   // auto: prefer node, but fall back to wasm when the native addon isn't staged.
   try {
-    return { backend: await createBackend({ backend: "node" }), kind: "tspice(node)" };
+    return { backend: await createNodeBackend(), kind: "tspice(node)" };
   } catch (error) {
     if (isMissingNativeAddon(error)) {
-      return { backend: await createBackend({ backend: "wasm" }), kind: "tspice(wasm)" };
+      return { backend: await createWasmBackend(), kind: "tspice(wasm)" };
     }
     throw error;
   }
