@@ -52,28 +52,45 @@ export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffe
   }
 
   const WINDOWS_DRIVE_PATH_RE = /^[A-Za-z]:[\\/]/;
-  const GENERIC_URL_SCHEME_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
+  const URL_SCHEME_WITH_AUTHORITY_RE = /^[A-Za-z][A-Za-z\d+.-]*:\/\//;
+  const SINGLE_LETTER_SCHEME_RE = /^[A-Za-z]:/;
 
   const [{ readFile }, { fileURLToPath }] = await Promise.all([
     import("node:fs/promises"),
     import("node:url"),
   ]);
 
-  // Guard against unsupported URL schemes. We accept:
-  // - file:// URLs
-  // - filesystem paths
-  // but reject everything else (data:, blob:, ftp:, node:, ...)
-  //
-  // Important: don't misclassify Windows drive paths like `C:\foo` as a URL
-  // scheme (`c:`).
+  // In Node, treat values as filesystem paths unless they are unambiguously a
+  // URL (file://, or any other scheme://...) or a known non-fs scheme like
+  // data: or blob:.
   const isWindowsDrivePath = WINDOWS_DRIVE_PATH_RE.test(wasmUrl);
   const isFileUrl = wasmUrl.startsWith("file://");
 
-  if (!isWindowsDrivePath && !isFileUrl && GENERIC_URL_SCHEME_RE.test(wasmUrl)) {
-    const u = new URL(wasmUrl);
-    throw new Error(
-      `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
-    );
+  if (!isWindowsDrivePath && !isFileUrl) {
+    if (wasmUrl.startsWith("blob:") || wasmUrl.startsWith("data:")) {
+      const u = new URL(wasmUrl);
+      throw new Error(
+        `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
+      );
+    }
+
+    if (URL_SCHEME_WITH_AUTHORITY_RE.test(wasmUrl)) {
+      const u = new URL(wasmUrl);
+      if (u.protocol !== "http:" && u.protocol !== "https:" && u.protocol !== "file:") {
+        throw new Error(
+          `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
+        );
+      }
+    }
+
+    // Avoid treating `c:foo` as a Windows drive path; it's ambiguous and often a typo.
+    // But allow longer values like `foo:bar/...` to be treated as filesystem paths.
+    if (SINGLE_LETTER_SCHEME_RE.test(wasmUrl)) {
+      const u = new URL(wasmUrl);
+      throw new Error(
+        `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
+      );
+    }
   }
 
   const wasmPath = wasmUrl.startsWith("file://") ? fileURLToPath(wasmUrl) : wasmUrl;
