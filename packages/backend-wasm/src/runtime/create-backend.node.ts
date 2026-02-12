@@ -67,6 +67,13 @@ export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffe
   const isFileUrl = wasmUrl.startsWith("file://");
 
   if (!isWindowsDrivePath && !isFileUrl) {
+    if (wasmUrl.startsWith("node:")) {
+      const u = new URL(wasmUrl);
+      throw new Error(
+        `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
+      );
+    }
+
     if (wasmUrl.startsWith("blob:") || wasmUrl.startsWith("data:")) {
       const u = new URL(wasmUrl);
       throw new Error(
