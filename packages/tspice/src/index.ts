@@ -37,12 +37,11 @@ export type { CreateSpiceAsyncOptions, CreateSpiceOptions } from "./spice.js";
 export { createSpice, createSpiceAsync } from "./spice.js";
 
 export type {
-  CreateSpiceClientsOptions,
   SpiceClientBuildResult,
   SpiceClientsBuilder,
   SpiceClientsFactory,
 } from "./clients/spiceClients.js";
-export { createSpiceClients, spiceClients } from "./clients/spiceClients.js";
+export { spiceClients } from "./clients/spiceClients.js";
 
 export type {
   CreatePublicKernelsOptions,

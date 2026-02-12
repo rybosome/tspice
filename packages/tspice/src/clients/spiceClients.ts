@@ -70,7 +70,7 @@ export type SpiceClientsFactory = {
   asynchronous(opts?: CreateSpiceAsyncOptions): SpiceClientsBuilder<SpiceAsync>;
 };
 
-export type CreateSpiceClientsOptions = {
+type CreateSpiceClientsOptions = {
   /**
    * Default options used when calling `.synchronous()` / `.asynchronous()` with
    * no arguments.
@@ -300,7 +300,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAs
   return builder;
 }
 
-export function createSpiceClients(opts?: CreateSpiceClientsOptions): SpiceClientsFactory {
+function createSpiceClients(opts?: CreateSpiceClientsOptions): SpiceClientsFactory {
   const defaultInProcessOptions: CreateSpiceOptions = opts?.defaultInProcessOptions ?? {
     backend: "wasm",
   };
