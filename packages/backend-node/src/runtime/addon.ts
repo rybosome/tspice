@@ -92,11 +92,23 @@ export type NativeAddon = {
   ektnam(n: number): string;
   eknseg(handle: number): number;
 
-  ekfind(query: string): EkFindResult;
-  ekgc(selidx: number, row: number, elment: number): EkGetResult<string>;
-  ekgd(selidx: number, row: number, elment: number): EkGetResult<number>;
-  ekgi(selidx: number, row: number, elment: number): EkGetResult<number>;
-
+  // --- EK query + fast write ---
+  ekfind(query: string): { ok: true; nmrows: number } | { ok: false; errmsg: string };
+  ekgc(
+    selidx: number,
+    row: number,
+    elment: number,
+  ): { found: false } | { found: true; isNull: true } | { found: true; isNull: false; value: string };
+  ekgd(
+    selidx: number,
+    row: number,
+    elment: number,
+  ): { found: false } | { found: true; isNull: true } | { found: true; isNull: false; value: number };
+  ekgi(
+    selidx: number,
+    row: number,
+    elment: number,
+  ): { found: false } | { found: true; isNull: true } | { found: true; isNull: false; value: number };
   ekifld(
     handle: number,
     tabnam: string,
@@ -104,7 +116,6 @@ export type NativeAddon = {
     cnames: readonly string[],
     decls: readonly string[],
   ): { segno: number; rcptrs: number[] };
-
   ekacli(
     handle: number,
     segno: number,
@@ -114,7 +125,6 @@ export type NativeAddon = {
     nlflgs: readonly boolean[],
     rcptrs: readonly number[],
   ): void;
-
   ekacld(
     handle: number,
     segno: number,
@@ -124,7 +134,6 @@ export type NativeAddon = {
     nlflgs: readonly boolean[],
     rcptrs: readonly number[],
   ): void;
-
   ekaclc(
     handle: number,
     segno: number,
@@ -134,7 +143,6 @@ export type NativeAddon = {
     nlflgs: readonly boolean[],
     rcptrs: readonly number[],
   ): void;
-
   ekffld(handle: number, segno: number, rcptrs: readonly number[]): void;
 
   // --- DSK writer ---
