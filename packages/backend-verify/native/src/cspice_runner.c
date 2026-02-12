@@ -1615,8 +1615,6 @@ int main(void) {
             (intmax_t)code);
     goto done;
   }
-    goto done;
-  }
 
   if (isBodc2n) {
     if (tokens[argsTok].size < 1) {
