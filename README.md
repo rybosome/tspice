@@ -263,8 +263,6 @@ For README conventions and templates, see `docs/readme-conventions.md`.
 
 Native builds require Python 3 and a working `node-gyp` toolchain.
 
-`tspice` currently requires a CSPICE build where `sizeof(SpiceInt) == 4` (32-bit `SpiceInt`). This is an explicit limitation of the current ABI: file handles and DLA descriptor fields are transported as int32 across the JS/native/wasm boundary.
-
 ---
 
 ## CSPICE disclosure & policy

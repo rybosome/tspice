@@ -73,6 +73,7 @@ export type AbCorr =
 
 export type SpiceVector3 = [number, number, number];
 
+
 // -- Branded handles -------------------------------------------------------
 
 // Type-only brand (no runtime Symbol export).

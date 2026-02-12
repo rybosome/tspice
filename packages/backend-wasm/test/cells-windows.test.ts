@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 
-
 describe("@rybosome/tspice-backend-wasm cells/windows", () => {
   it("supports basic set cells (ordering + de-dupe + getters)", async () => {
     const b = await createWasmBackend();
@@ -46,7 +45,6 @@ describe("@rybosome/tspice-backend-wasm cells/windows", () => {
 
   it("supports basic windows (insert + merge + fetch)", async () => {
     const b = await createWasmBackend();
-
     const win = b.newWindow(4);
 
     try {

@@ -2,10 +2,37 @@
 
 #include "SpiceUsr.h"
 
+#include <stddef.h>
 #include <string.h>
 #include <stdio.h>
 
 #define TSPICE_BODY_POOLVAR_MAX_BYTES 1024
+
+static int tspice_ids_names_invalid_arg(char *err, int errMaxBytes, const char *msg) {
+  // This module provides a stable C ABI surface.
+  //
+  // If callers pass invalid pointers/lengths, we must not invoke CSPICE with
+  // arguments that could cause undefined behavior.
+  //
+  // Also, clear any previous structured SPICE error fields so higher-level
+  // callers (e.g. the Node addon) don't accidentally attach stale `spiceShort`
+  // / `spiceLong` / `spiceTrace` fields to these non-CSPICE validation errors.
+  //
+  // NOTE: Avoid resetting CSPICE error status here. Invalid-arg errors are not
+  // CSPICE failures and should not wipe unrelated global SPICE error state.
+  tspice_clear_last_error_buffers();
+
+  if (err && errMaxBytes > 0) {
+    if (msg) {
+      strncpy(err, msg, (size_t)errMaxBytes - 1);
+      err[errMaxBytes - 1] = '\0';
+    } else {
+      err[0] = '\0';
+    }
+  }
+
+  return 1;
+}
 
 static int tspice_format_body_pool_var(
     int body,
@@ -87,6 +114,13 @@ int tspice_bodc2n(
     *outFound = 0;
   }
 
+  if (outNameMaxBytes > 0 && !outName) {
+    return tspice_ids_names_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_bodc2n(): outName must not be NULL when outNameMaxBytes > 0");
+  }
+
   SpiceBoolean foundC = SPICEFALSE;
   bodc2n_c((SpiceInt)code, (SpiceInt)outNameMaxBytes, outName, &foundC);
   if (failed_c()) {
@@ -114,6 +148,13 @@ int tspice_bodc2s(
   }
   if (outNameMaxBytes > 0 && outName) {
     outName[0] = '\0';
+  }
+
+  if (outNameMaxBytes > 0 && !outName) {
+    return tspice_ids_names_invalid_arg(
+        err,
+        errMaxBytes,
+        "tspice_bodc2s(): outName must not be NULL when outNameMaxBytes > 0");
   }
 
   bodc2s_c((SpiceInt)code, (SpiceInt)outNameMaxBytes, outName);
