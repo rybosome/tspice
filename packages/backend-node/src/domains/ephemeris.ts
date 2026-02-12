@@ -13,6 +13,8 @@ import type { NativeAddon } from "../runtime/addon.js";
 import type { SpiceHandleRegistry } from "../runtime/spice-handles.js";
 import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
 
+const I32_MAX = 2147483647;
+
 function isVirtualOutput(value: unknown): value is VirtualOutput {
   return (
     typeof value === "object" &&
@@ -37,6 +39,8 @@ export function createEphemerisApi(
   handles: SpiceHandleRegistry,
   outputs: VirtualOutputStager,
 ): EphemerisApi {
+  const virtualOutputByHandle = new Map<SpiceHandle, VirtualOutput>();
+
   return {
     spkezr: (target, et, ref, abcorr, observer) => {
       const out = native.spkezr(target, et, ref, abcorr, observer);
@@ -61,17 +65,42 @@ export function createEphemerisApi(
     spkopn: (file: string | VirtualOutput, ifname: string, ncomch: number) => {
       const path = resolveSpkPath(outputs, file, "spkopn(file)");
       const nativeHandle = native.spkopn(path, ifname, ncomch);
-      return handles.register("SPK", nativeHandle);
+
+      const handle = handles.register("SPK", nativeHandle);
+      if (typeof file !== "string") {
+        // `resolveSpkPath` already validated, but be defensive: callers can cast.
+        invariant(isVirtualOutput(file), "spkopn(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        const out: VirtualOutput = { kind: "virtual-output", path: file.path };
+        outputs.markOpen(out);
+        virtualOutputByHandle.set(handle, out);
+      }
+
+      return handle;
     },
 
     spkopa: (file: string | VirtualOutput) => {
       const path = resolveSpkPath(outputs, file, "spkopa(file)");
       const nativeHandle = native.spkopa(path);
-      return handles.register("SPK", nativeHandle);
+
+      const handle = handles.register("SPK", nativeHandle);
+      if (typeof file !== "string") {
+        invariant(isVirtualOutput(file), "spkopa(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        const out: VirtualOutput = { kind: "virtual-output", path: file.path };
+        outputs.markOpen(out);
+        virtualOutputByHandle.set(handle, out);
+      }
+
+      return handle;
     },
 
-    spkcls: (handle: SpiceHandle) =>
-      handles.close(handle, ["SPK"], (e) => native.spkcls(e.nativeHandle), "spkcls"),
+    spkcls: (handle: SpiceHandle) => {
+      const out = virtualOutputByHandle.get(handle);
+      handles.close(handle, ["SPK"], (e) => native.spkcls(e.nativeHandle), "spkcls");
+      if (out) {
+        outputs.markClosed(out);
+        virtualOutputByHandle.delete(handle);
+      }
+    },
 
     spkw08: (
       handle: SpiceHandle,
@@ -89,6 +118,12 @@ export function createEphemerisApi(
       invariant(Array.isArray(states), "spkw08(states): expected an array");
       invariant(states.length % 6 === 0, "spkw08(): expected states.length to be a multiple of 6");
       invariant(states.length > 0, "spkw08(): expected at least one state record");
+
+      const n = states.length / 6;
+      invariant(
+        Number.isSafeInteger(n) && n > 0 && n <= I32_MAX,
+        `spkw08(): expected states.length/6 to be a 32-bit signed integer (got n=${n})`,
+      );
 
       const nativeHandle = handles.lookup(handle, ["SPK"], "spkw08").nativeHandle;
       native.spkw08(nativeHandle, body, center, frame, first, last, segid, degree, states, epoch1, step);

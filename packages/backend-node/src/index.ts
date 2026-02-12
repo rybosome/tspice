@@ -72,6 +72,14 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
           errors.push(err);
         }
       }
+
+      // Best-effort cleanup for any staged virtual outputs.
+      try {
+        outputs.dispose();
+      } catch (err) {
+        errors.push(err);
+      }
+
       if (errors.length > 0) {
         throw new AggregateError(errors, `disposeAll(): failed to close ${errors.length} handle(s)`);
       }

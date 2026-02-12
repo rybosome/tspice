@@ -43,6 +43,9 @@ export interface EphemerisApi {
    *
    * When `file` is a `VirtualOutput`, backends should allow reading bytes back
    * via `readVirtualOutput()` after closing the file handle.
+   *
+   * Callers should retain the `VirtualOutput` they passed to `spkopn`/`spkopa`.
+   * It is the identifier used to read bytes back later.
    */
   spkopn(file: string | VirtualOutput, ifname: string, ncomch: number): SpiceHandle;
 

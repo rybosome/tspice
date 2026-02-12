@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
+import { createNodeBackend } from "@rybosome/tspice-backend-node";
+
+import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
 
 describe("SPK writers (type 8)", () => {
-  it("writes a minimal type 8 segment and reads it back", async () => {
-    const backend = await createWasmBackend();
+  const itNative = it.runIf(nodeAddonAvailable());
+
+  itNative("writes a minimal type 8 segment and reads it back", () => {
+    const backend = createNodeBackend();
 
     const output = { kind: "virtual-output", path: "spk-writer-test.bsp" } as const;
 
@@ -38,8 +42,14 @@ describe("SPK writers (type 8)", () => {
 
     backend.spkcls(handle);
 
-    // Load by virtual path and validate interpolation at t=30.
-    backend.furnsh(output.path);
+    const bytes = backend.readVirtualOutput(output);
+    expect(bytes.byteLength).toBeGreaterThan(0);
+
+    // Contract: return a plain Uint8Array (not a Node Buffer).
+    expect(Buffer.isBuffer(bytes)).toBe(false);
+
+    // Validate the SPK by loading it from bytes.
+    backend.furnsh({ path: output.path, bytes });
 
     const { state } = backend.spkezr("1000", 30, "J2000", "NONE", "0");
     expect(state[0]).toBeCloseTo(30, 10);
@@ -49,15 +59,22 @@ describe("SPK writers (type 8)", () => {
     expect(state[4]).toBeCloseTo(0, 10);
     expect(state[5]).toBeCloseTo(0, 10);
 
-    const bytes = backend.readVirtualOutput(output);
-    expect(bytes.byteLength).toBeGreaterThan(0);
+    backend.kclear();
   });
 
-  it("does not allow readVirtualOutput() as a generic FS read", async () => {
-    const backend = await createWasmBackend();
+  itNative("rejects path traversal in VirtualOutput.path", () => {
+    const backend = createNodeBackend();
 
     expect(() =>
-      backend.readVirtualOutput({ kind: "virtual-output", path: "naif0012.tls" }),
-    ).toThrow(/known virtual output|writer/i);
+      backend.spkopn({ kind: "virtual-output", path: "../evil.bsp" }, "TSPICE", 0),
+    ).toThrow(/\.\.|invalid/i);
+  });
+
+  itNative("provides a clearer error for missing virtual output files", () => {
+    const backend = createNodeBackend();
+
+    expect(() =>
+      backend.readVirtualOutput({ kind: "virtual-output", path: "missing-output.bsp" }),
+    ).toThrow(/no staged file found|virtual output/i);
   });
 });

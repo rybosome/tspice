@@ -8,10 +8,17 @@ export type KernelSource =
 /**
  * Virtual output reference used by writer APIs.
  *
- * - In the WASM backend, `path` is treated as a *virtual* identifier under
- *   the backend's virtual filesystem (currently rooted at `/kernels`).
- * - In the Node backend, implementations may stage virtual outputs to a temp
- *   file and allow reading bytes back via `readVirtualOutput()`.
+* Lifecycle:
+* - A `VirtualOutput` is only guaranteed to be readable via `readVirtualOutput()`
+*   **after** the writer handle has been closed (e.g. `spkcls(handle)` for SPKs).
+* - Backends may reject reads for outputs they did not create via a writer API.
+*   `readVirtualOutput()` is not intended to be a generic filesystem read.
+*
+* Backend notes:
+* - WASM: `path` is treated as a *virtual* identifier under the backend's
+*   virtual filesystem (currently rooted at `/kernels`).
+* - Node: implementations may stage virtual outputs to a temp file and allow
+*   reading bytes back via `readVirtualOutput()`.
  */
 export type VirtualOutput = {
   kind: "virtual-output";

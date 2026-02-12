@@ -16,6 +16,9 @@ import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
 import type { SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
+
+const I32_MAX = 2147483647;
 
 function isVirtualOutput(value: unknown): value is VirtualOutput {
   return (
@@ -227,8 +230,15 @@ function tspiceCallSpkw08(
   const segidPtr = writeUtf8CString(module, segid);
 
   try {
-    const n = Math.floor(states.length / 6);
-    const statesBytes = Math.max(8, n * 6 * 8);
+    const n = states.length / 6;
+    if (!Number.isSafeInteger(n) || n <= 0 || n * 6 !== states.length) {
+      throw new Error("tspiceCallSpkw08(states): expected states.length to be a non-zero multiple of 6");
+    }
+    if (n > I32_MAX) {
+      throw new Error(`tspiceCallSpkw08(states): expected n to be a 32-bit signed integer (got n=${n})`);
+    }
+
+    const statesBytes = n * 6 * 8;
 
     withAllocs(module, [WASM_ERR_MAX_BYTES, statesBytes + 7], (errPtr, rawStatesPtr) => {
       const statesPtr = (rawStatesPtr + 7) & ~7;
@@ -263,7 +273,13 @@ function tspiceCallSpkw08(
   }
 }
 
-export function createEphemerisApi(module: EmscriptenModule, handles: SpiceHandleRegistry): EphemerisApi {
+export function createEphemerisApi(
+  module: EmscriptenModule,
+  handles: SpiceHandleRegistry,
+  virtualOutputs: VirtualOutputRegistry,
+): EphemerisApi {
+  const virtualOutputPathByHandle = new Map<SpiceHandle, string>();
+
   return {
     spkezr: (target: string, et: number, ref: string, abcorr: AbCorr | string, observer: string) =>
       tspiceCallSpkezr(module, target, et, ref, abcorr, observer),
@@ -275,18 +291,50 @@ export function createEphemerisApi(module: EmscriptenModule, handles: SpiceHandl
       const resolved = resolveSpkPath(file, "spkopn(file)");
       ensureParentDir(module, resolved);
       const nativeHandle = tspiceCallSpkopn(module, resolved, ifname, ncomch);
-      return handles.register("SPK", nativeHandle);
+
+      const handle = handles.register("SPK", nativeHandle);
+      if (typeof file !== "string") {
+        // `resolveSpkPath` already validated, but be defensive: callers can cast.
+        if (!isVirtualOutput(file)) {
+          throw new Error("spkopn(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        }
+        virtualOutputs.markOpen(resolved);
+        virtualOutputPathByHandle.set(handle, resolved);
+      }
+
+      return handle;
     },
 
     spkopa: (file: string | VirtualOutput) => {
       const resolved = resolveSpkPath(file, "spkopa(file)");
       ensureParentDir(module, resolved);
       const nativeHandle = tspiceCallSpkopa(module, resolved);
-      return handles.register("SPK", nativeHandle);
+
+      const handle = handles.register("SPK", nativeHandle);
+      if (typeof file !== "string") {
+        if (!isVirtualOutput(file)) {
+          throw new Error("spkopa(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        }
+        virtualOutputs.markOpen(resolved);
+        virtualOutputPathByHandle.set(handle, resolved);
+      }
+
+      return handle;
     },
 
-    spkcls: (handle: SpiceHandle) =>
-      handles.close(handle, ["SPK"], (e) => callVoidHandle(module, module._tspice_spkcls, e.nativeHandle), "spkcls"),
+    spkcls: (handle: SpiceHandle) => {
+      const resolved = virtualOutputPathByHandle.get(handle);
+      handles.close(
+        handle,
+        ["SPK"],
+        (e) => callVoidHandle(module, module._tspice_spkcls, e.nativeHandle),
+        "spkcls",
+      );
+      if (resolved) {
+        virtualOutputs.markClosed(resolved);
+        virtualOutputPathByHandle.delete(handle);
+      }
+    },
     spkw08: (
       handle: SpiceHandle,
       body: number,
@@ -305,6 +353,11 @@ export function createEphemerisApi(module: EmscriptenModule, handles: SpiceHandl
       }
       if (states.length === 0 || states.length % 6 !== 0) {
         throw new Error("spkw08(): expected states.length to be a non-zero multiple of 6");
+      }
+
+      const n = states.length / 6;
+      if (!Number.isSafeInteger(n) || n <= 0 || n > I32_MAX) {
+        throw new Error(`spkw08(): expected states.length/6 to be a 32-bit signed integer (got n=${n})`);
       }
 
       const nativeHandle = handles.lookup(handle, ["SPK"], "spkw08").nativeHandle;
