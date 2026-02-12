@@ -280,6 +280,9 @@ const EXPORTED_FUNCTIONS = [
   "_tspice_dlacls",
 
   // --- DSK ---
+  "_tspice_dskopn",
+  "_tspice_dskmi2",
+  "_tspice_dskw02",
   "_tspice_dskobj",
   "_tspice_dsksrf",
   "_tspice_dskgd",

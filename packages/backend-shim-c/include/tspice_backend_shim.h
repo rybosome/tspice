@@ -151,6 +151,56 @@ int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
 // --- DSK -------------------------------------------------------------------
 
+int tspice_dskopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dskmi2(
+    int nv,
+    const double *vrtces,
+    int np,
+    const int32_t *plates,
+    double finscl,
+    double corscl,
+    int worksz,
+    int voxpsz,
+    int voxlsz,
+    int makvtl,
+    int spxisz,
+    double *outSpaixd,
+    int32_t *outSpaixi,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dskw02(
+    int handle,
+    int center,
+    int surfid,
+    int dclass,
+    const char *frame,
+    int corsys,
+    const double *corpar,
+    double mncor1,
+    double mxcor1,
+    double mncor2,
+    double mxcor2,
+    double mncor3,
+    double mxcor3,
+    double first,
+    double last,
+    int nv,
+    const double *vrtces,
+    int np,
+    const int32_t *plates,
+    const double *spaixd,
+    const int32_t *spaixi,
+    char *err,
+    int errMaxBytes);
+
 int tspice_dskobj(const char *dsk, uintptr_t bodidsCellHandle, char *err, int errMaxBytes);
 
 int tspice_dsksrf(
