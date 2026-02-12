@@ -4,7 +4,9 @@ import type {
   Found,
   IluminResult,
   KernelData,
+  KernelInfo,
   KernelKind,
+  KernelKindInput,
   KernelSource,
   KernelPoolVarType,
   SpiceBackend,
@@ -21,6 +23,10 @@ import {
   assertGetmsgWhich,
   assertSpiceInt32,
   brandMat3RowMajor,
+  kxtrctJs,
+  matchesKernelKind,
+  normalizeBodItem,
+  normalizeKindInput,
 } from "@rybosome/tspice-backend-contract";
 
 /**
@@ -42,6 +48,20 @@ import {
 const TWO_PI = Math.PI * 2;
 
 export const FAKE_SPICE_VERSION = "tspice-fake-backend@0.0.0";
+
+export type FakeBackendOptions = {
+  /**
+   * How to handle `furnsh()` calls with unrecognized kernel filename extensions.
+   *
+   * - `"throw"` (default): throw a RangeError
+   * - `"assume-text"`: treat unknown extensions as a TEXT kernel
+   *
+   * Note: with `"assume-text"`, TEXT subtype queries (`"LSK"`, `"FK"`, `"IK"`, `"SCLK"`) depend on
+   * the `file` identifier having a recognizable extension. If subtype queries matter for a test/demo,
+   * prefer naming virtual ids with `.tls/.tf/.ti/.tsc` (or keep the default `"throw"`).
+   */
+  unknownExtension?: "throw" | "assume-text";
+};
 
 const J2000_UTC_MS = Date.parse("2000-01-01T12:00:00.000Z");
 
@@ -580,53 +600,109 @@ function formatUtcFromMs(ms: number, prec: number): string {
   return `${head}.${padded}Z`;
 }
 
+type KernelKindNoAll = Exclude<KernelKind, "ALL">;
+
 type KernelRecord = {
   file: string;
   source: string;
   filtyp: string;
   handle: number;
-  kind: KernelKind;
+  kind: KernelKindNoAll;
 };
 
-function guessKernelKind(path: string): KernelKind {
+function guessKernelKind(path: string, unknownExtension: "throw" | "assume-text"): KernelKindNoAll {
   const lower = path.toLowerCase();
   if (lower.endsWith(".bsp")) return "SPK";
   if (lower.endsWith(".bc")) return "CK";
-  if (lower.endsWith(".tpc") || lower.endsWith(".pck")) return "PCK";
+  if (lower.endsWith(".bpc")) return "PCK";
+  if (lower.endsWith(".bds") || lower.endsWith(".dsk")) return "DSK";
+  if (lower.endsWith(".tpc") || lower.endsWith(".pck")) return "TEXT";
   if (lower.endsWith(".tls") || lower.endsWith(".lsk")) return "LSK";
   if (lower.endsWith(".tf") || lower.endsWith(".fk")) return "FK";
   if (lower.endsWith(".ti") || lower.endsWith(".ik")) return "IK";
   if (lower.endsWith(".tsc") || lower.endsWith(".sclk")) return "SCLK";
+  if (lower.endsWith(".ek")) return "EK";
   if (lower.endsWith(".tm") || lower.endsWith(".meta")) return "META";
-  return "UNKNOWN";
+  // "ALL" is a query token, not a per-kernel kind.
+  if (unknownExtension === "assume-text") {
+    return "TEXT";
+  }
+  throw new RangeError(`Unsupported kernel extension (fake backend): ${path}`);
 }
 
 function assertNever(x: never, msg: string): never {
   throw new Error(msg);
 }
 
-function kernelFiltyp(kind: KernelKind): string {
+function kernelFiltyp(kind: KernelKindNoAll): string {
   // Keep this close to NAIF-style strings, but it doesn't need to be exact.
   switch (kind) {
     case "SPK":
     case "CK":
     case "PCK":
+    case "DSK":
+    case "EK":
+    case "META":
+    case "TEXT":
+      return kind;
+
     case "LSK":
     case "FK":
     case "IK":
     case "SCLK":
-    case "EK":
-    case "META":
-      return kind;
-    case "ALL":
-      return "ALL";
-    case "UNKNOWN":
-      return "UNKNOWN";
+      return "TEXT";
   }
 
   // Compile-time exhaustiveness check: if a new KernelKind is added, TypeScript
   // forces us to intentionally map it.
   return assertNever(kind, `Unmapped KernelKind: ${kind}`);
+}
+
+function normalizeVirtualKernelIdOrNull(input: string): string | null {
+  // Keep lookup semantics aligned with the WASM backend's virtual-id
+  // normalization (see core's `normalizeVirtualKernelPath`).
+  //
+  // Unlike the core helper, this is non-throwing: invalid inputs just don't
+  // match.
+  const raw = input.replace(/\\/g, "/").trim();
+  if (!raw) {
+    return null;
+  }
+
+  // Strip leading slashes so `/kernels/foo.tls` behaves like `kernels/foo.tls`.
+  let rel = raw.replace(/^\/+/, "");
+
+  // Strip leading `./` segments.
+  while (rel.startsWith("./")) {
+    rel = rel.slice(2);
+  }
+
+  // Strip a leading `kernels/` directory to keep user input flexible.
+  // Treat a bare `kernels` segment as equivalent to `kernels/`.
+  if (rel === "kernels") {
+    rel = "";
+  }
+  while (rel.startsWith("kernels/")) {
+    rel = rel.replace(/^kernels\/+/, "");
+  }
+
+  const segments = rel.split("/");
+  const out: string[] = [];
+  for (const seg of segments) {
+    if (!seg || seg === ".") {
+      continue;
+    }
+    if (seg === "..") {
+      return null;
+    }
+    out.push(seg);
+  }
+
+  if (out.length === 0) {
+    return null;
+  }
+
+  return out.join("/");
 }
 
 function assertPoolRange(fn: string, start: number, room: number): void {
@@ -644,7 +720,7 @@ function assertNonEmptyString(fn: string, field: string, value: string): void {
   }
 }
 
-export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
+export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
   let spiceShort = "";
@@ -652,11 +728,18 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
 
+  const unknownExtension = options.unknownExtension ?? "throw";
+
   type KernelPoolEntry =
     | { type: "N"; values: number[] }
     | { type: "C"; values: string[] };
 
   const kernelPool = new Map<string, KernelPoolEntry>();
+
+  // boddef() mappings (CSPICE uses process-global state; keep it per-backend here).
+  const customNameToBodyCode = new Map<string, number>();
+  const customBodyCodeToName = new Map<number, string>();
+
 
   // swpool/cvpool "agent" state.
   const kernelPoolWatches = new Map<string, { names: string[]; dirty: boolean }>();
@@ -699,9 +782,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   const spiceCellUnsupported =
     "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
 
-  const getKernelsOfKind = (kind: KernelKind): readonly KernelRecord[] => {
-    if (kind === "ALL") return kernels;
-    return kernels.filter((k) => k.kind === kind);
+  const getKernelsOfKind = (kind: KernelKindInput | undefined): readonly KernelRecord[] => {
+    const requested = new Set<string>(normalizeKindInput(kind));
+    return kernels.filter((k) => matchesKernelKind(requested, k));
   };
 
   return {
@@ -750,7 +833,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       const file = typeof kernel === "string" ? kernel : kernel.path;
       const source = typeof kernel === "string" ? file : "bytes";
 
-      const kind = guessKernelKind(file);
+      const kind = guessKernelKind(file, unknownExtension);
       const handle = nextHandle++;
 
       kernels.push({
@@ -763,7 +846,12 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     unload: (path: string) => {
-      const idx = kernels.findIndex((k) => k.file === path);
+      const needle = normalizeVirtualKernelIdOrNull(path);
+      if (needle == null) {
+        return;
+      }
+
+      const idx = kernels.findIndex((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
       if (idx >= 0) {
         kernels.splice(idx, 1);
       }
@@ -776,11 +864,37 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       kernelPoolWatchesByName.clear();
     },
 
-    ktotal: (kind: KernelKind = "ALL") => {
+    kinfo: (path: string) => {
+      const needle = normalizeVirtualKernelIdOrNull(path);
+      if (needle == null) {
+        return { found: false };
+      }
+
+      const k = kernels.find((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
+      if (!k) {
+        return { found: false };
+      }
+
+      return {
+        found: true,
+        filtyp: k.filtyp,
+        source: k.source,
+        handle: k.handle,
+      } satisfies Found<KernelInfo>;
+    },
+
+    kxtrct: (keywd, terms, wordsq) => {
+      return kxtrctJs(keywd, terms, wordsq);
+    },
+    kplfrm: (_frmcls, _idset) => {
+      throw new Error(spiceCellUnsupported);
+    },
+
+    ktotal: (kind: KernelKindInput = "ALL") => {
       return getKernelsOfKind(kind).length;
     },
 
-    kdata: (which: number, kind: KernelKind = "ALL") => {
+    kdata: (which: number, kind: KernelKindInput = "ALL") => {
       const list = getKernelsOfKind(kind);
       const k = list[which];
       if (!k) return { found: false };
@@ -1001,15 +1115,76 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     bodn2c: (name) => {
       const trimmed = normalizeName(name);
+
+      const custom =
+        customNameToBodyCode.get(trimmed) ??
+        customNameToBodyCode.get(trimmed.toLowerCase());
+      if (custom !== undefined) return { found: true, code: custom };
+
       const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
       if (id === undefined) return { found: false };
       return { found: true, code: id };
     },
 
     bodc2n: (code) => {
+      const custom = customBodyCodeToName.get(code);
+      if (custom !== undefined) return { found: true, name: custom };
+
       const meta = ID_TO_BODY.get(code);
       if (!meta) return { found: false };
       return { found: true, name: meta.name };
+    },
+
+    bodc2s: (code) => {
+      const custom = customBodyCodeToName.get(code);
+      if (custom !== undefined) return custom;
+
+      const meta = ID_TO_BODY.get(code);
+      if (meta) return meta.name;
+
+      return String(code);
+    },
+
+    bods2c: (name) => {
+      const trimmed = normalizeName(name);
+
+      // Accept numeric IDs as strings.
+      if (/^-?\d+$/.test(trimmed)) {
+        return { found: true, code: Number(trimmed) };
+      }
+
+      const custom =
+        customNameToBodyCode.get(trimmed) ??
+        customNameToBodyCode.get(trimmed.toLowerCase());
+      if (custom !== undefined) return { found: true, code: custom };
+
+      const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
+      if (id === undefined) return { found: false };
+      return { found: true, code: id };
+    },
+
+    boddef: (name, code) => {
+      const trimmed = normalizeName(name);
+      customNameToBodyCode.set(trimmed, code);
+      customNameToBodyCode.set(trimmed.toLowerCase(), code);
+      customBodyCodeToName.set(code, trimmed);
+    },
+
+    bodfnd: (body, item) => {
+      const key = `BODY${body}_${normalizeBodItem(item)}`;
+      const entry = kernelPool.get(key);
+      return entry?.type === "N";
+    },
+
+    bodvar: (body, item) => {
+      const key = `BODY${body}_${normalizeBodItem(item)}`;
+      const entry = kernelPool.get(key);
+      if (!entry || entry.type !== "N") {
+        // Align with the backend contract: missing / non-numeric pool vars are a normal miss.
+        // Callers that need strict presence checks can use `bodfnd()`.
+        return [];
+      }
+      return [...entry.values];
     },
 
     namfrm: (name) => {
@@ -1043,6 +1218,22 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
         : id === BODY_IDS.MOON
           ? { found: true, frcode: FRAME_CODES.IAU_MOON, frname: "IAU_MOON" }
           : { found: false }) satisfies Found<{ frcode: number; frname: string }>;
+    },
+
+    frinfo: (frameId) => {
+      if (frameId === FRAME_CODES.J2000) {
+        return { found: true, center: 0, frameClass: 1, classId: frameId };
+      }
+      return { found: false };
+    },
+
+    ccifrm: (frameClass, classId) => {
+      if (frameClass === 1) {
+        const frname = FRAME_CODE_TO_NAME.get(classId);
+        if (!frname) return { found: false };
+        return { found: true, frcode: classId, frname, center: 0 };
+      }
+      return { found: false };
     },
 
     scs2e: (_sc, sclkch) => {

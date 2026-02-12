@@ -137,6 +137,85 @@ static Napi::Object Cnmfrm(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static Napi::Object Frinfo(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1 || !info[0].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "frinfo(frameId: number) expects exactly one number argument"));
+    return Napi::Object::New(env);
+  }
+
+  const int frameId = info[0].As<Napi::Number>().Int32Value();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+
+  char err[tspice_backend_node::kErrMaxBytes];
+  int center = 0;
+  int frameClass = 0;
+  int classId = 0;
+  int found = 0;
+  const int code = tspice_frinfo(frameId, &center, &frameClass, &classId, &found, err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, std::string("CSPICE failed while calling frinfo(") + std::to_string(frameId) + ")", err);
+    return Napi::Object::New(env);
+  }
+
+  if (!found) {
+    return MakeNotFound(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("center", Napi::Number::New(env, static_cast<double>(center)));
+  result.Set("frameClass", Napi::Number::New(env, static_cast<double>(frameClass)));
+  result.Set("classId", Napi::Number::New(env, static_cast<double>(classId)));
+  return result;
+}
+
+static Napi::Object Ccifrm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ccifrm(frameClass: number, classId: number) expects (number, number)"));
+    return Napi::Object::New(env);
+  }
+
+  const int frameClass = info[0].As<Napi::Number>().Int32Value();
+  const int classId = info[1].As<Napi::Number>().Int32Value();
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+
+  char err[tspice_backend_node::kErrMaxBytes];
+  char frname[tspice_backend_node::kOutMaxBytes];
+  int frcode = 0;
+  int center = 0;
+  int found = 0;
+  const int code = tspice_ccifrm(
+      frameClass,
+      classId,
+      &frcode,
+      frname,
+      (int)sizeof(frname),
+      &center,
+      &found,
+      err,
+      (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling ccifrm", err);
+    return Napi::Object::New(env);
+  }
+
+  if (!found) {
+    return MakeNotFound(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("frcode", Napi::Number::New(env, static_cast<double>(frcode)));
+  result.Set("frname", Napi::String::New(env, frname));
+  result.Set("center", Napi::Number::New(env, static_cast<double>(center)));
+  return result;
+}
+
 static Napi::Array Pxform(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -196,6 +275,8 @@ void RegisterFrames(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "frmnam", Napi::Function::New(env, Frmnam), __func__)) return;
   if (!SetExportChecked(env, exports, "cidfrm", Napi::Function::New(env, Cidfrm), __func__)) return;
   if (!SetExportChecked(env, exports, "cnmfrm", Napi::Function::New(env, Cnmfrm), __func__)) return;
+  if (!SetExportChecked(env, exports, "frinfo", Napi::Function::New(env, Frinfo), __func__)) return;
+  if (!SetExportChecked(env, exports, "ccifrm", Napi::Function::New(env, Ccifrm), __func__)) return;
   if (!SetExportChecked(env, exports, "pxform", Napi::Function::New(env, Pxform), __func__)) return;
   if (!SetExportChecked(env, exports, "sxform", Napi::Function::New(env, Sxform), __func__)) return;
 }

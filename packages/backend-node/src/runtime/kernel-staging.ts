@@ -11,10 +11,17 @@ export type KernelStager = {
   furnsh(kernel: KernelSource, native: NativeAddon): void;
   unload(path: string, native: NativeAddon): void;
   kclear(native: NativeAddon): void;
+
+  /** Map a virtual byte-backed kernel id to its staged temp path (or passthrough). */
+  resolvePathForSpice(path: string): string;
+
+  /** Map a staged temp path back to its virtual id (or passthrough). */
+  virtualizePathFromSpice(path: string): string;
 };
 
 export function createKernelStager(): KernelStager {
   const tempByVirtualPath = new Map<string, string>();
+  const virtualByTempPath = new Map<string, string>();
   let tempKernelRootDir: string | undefined;
 
   function ensureTempKernelRootDir(): string {
@@ -51,6 +58,7 @@ export function createKernelStager(): KernelStager {
       if (existingTemp) {
         native.unload(existingTemp);
         tempByVirtualPath.delete(kernel.path);
+        virtualByTempPath.delete(existingTemp);
         safeUnlink(existingTemp);
       }
 
@@ -67,6 +75,7 @@ export function createKernelStager(): KernelStager {
       }
 
       tempByVirtualPath.set(kernel.path, tempPath);
+      virtualByTempPath.set(tempPath, kernel.path);
     },
 
     unload: (_path, native) => {
@@ -74,6 +83,7 @@ export function createKernelStager(): KernelStager {
       if (resolved) {
         native.unload(resolved);
         tempByVirtualPath.delete(_path);
+        virtualByTempPath.delete(resolved);
         safeUnlink(resolved);
         return;
       }
@@ -89,6 +99,11 @@ export function createKernelStager(): KernelStager {
         safeUnlink(tempPath);
       }
       tempByVirtualPath.clear();
+      virtualByTempPath.clear();
     },
+
+    resolvePathForSpice: (p) => tempByVirtualPath.get(p) ?? p,
+
+    virtualizePathFromSpice: (p) => virtualByTempPath.get(p) ?? p,
   };
 }

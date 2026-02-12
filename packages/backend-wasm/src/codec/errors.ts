@@ -35,14 +35,19 @@ export function throwWasmSpiceError(
   const message = decodeWasmSpiceError(module, errPtr, errMaxBytes, code);
 
   // Best-effort structured fields.
+  //
+  // The C shim stores SPICE fields out-of-band, so for non-CSPICE validation
+  // errors we must avoid accidentally attaching stale fields from a previous
+  // CSPICE failure.
   const spiceShort = readLastErrorField(module, "short");
-  const spiceLong = readLastErrorField(module, "long");
-  const spiceTrace = readLastErrorField(module, "trace");
+  const shouldAttachSpiceFields = !!spiceShort && message.includes(spiceShort);
+  const spiceLong = shouldAttachSpiceFields ? readLastErrorField(module, "long") : undefined;
+  const spiceTrace = shouldAttachSpiceFields ? readLastErrorField(module, "trace") : undefined;
 
   const err = new Error(message) as Error & SpiceErrorFields;
-  if (spiceShort) err.spiceShort = spiceShort;
-  if (spiceLong) err.spiceLong = spiceLong;
-  if (spiceTrace) err.spiceTrace = spiceTrace;
+  if (shouldAttachSpiceFields && spiceShort) err.spiceShort = spiceShort;
+  if (shouldAttachSpiceFields && spiceLong) err.spiceLong = spiceLong;
+  if (shouldAttachSpiceFields && spiceTrace) err.spiceTrace = spiceTrace;
 
   throw err;
 }

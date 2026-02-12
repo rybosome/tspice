@@ -5,6 +5,7 @@
 #include "tspice_backend_shim.h"
 
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <vector>
 
@@ -33,10 +34,12 @@ inline void ThrowSpiceError(Napi::Env env, const std::string& context, const cha
   Napi::Error jsErr = Napi::Error::New(env, message);
   Napi::Object obj = jsErr.Value().As<Napi::Object>();
 
-  // Attach structured SPICE error details when available.
+  // Attach structured SPICE error details when they appear to correspond to
+  // this error.
   //
-  // These are best-effort: they may be empty if no SPICE error was captured or
-  // if the error originated outside of CSPICE.
+  // The C shim stores SPICE fields out-of-band, so for non-CSPICE validation
+  // errors we must avoid accidentally attaching stale fields from a previous
+  // CSPICE failure.
   char shortMsg[1841];
   char longMsg[1841];
   char traceMsg[1841];
@@ -48,14 +51,19 @@ inline void ThrowSpiceError(Napi::Env env, const std::string& context, const cha
   tspice_get_last_error_long(longMsg, (int)sizeof(longMsg));
   tspice_get_last_error_trace(traceMsg, (int)sizeof(traceMsg));
 
-  if (shortMsg[0] != '\0') {
-    obj.Set("spiceShort", Napi::String::New(env, shortMsg));
-  }
-  if (longMsg[0] != '\0') {
-    obj.Set("spiceLong", Napi::String::New(env, longMsg));
-  }
-  if (traceMsg[0] != '\0') {
-    obj.Set("spiceTrace", Napi::String::New(env, traceMsg));
+  const bool shouldAttachSpiceFields =
+      (shortMsg[0] != '\0') && (message.find(shortMsg) != std::string::npos);
+
+  if (shouldAttachSpiceFields) {
+    if (shortMsg[0] != '\0') {
+      obj.Set("spiceShort", Napi::String::New(env, shortMsg));
+    }
+    if (longMsg[0] != '\0') {
+      obj.Set("spiceLong", Napi::String::New(env, longMsg));
+    }
+    if (traceMsg[0] != '\0') {
+      obj.Set("spiceTrace", Napi::String::New(env, traceMsg));
+    }
   }
 
   ThrowSpiceError(jsErr);
@@ -156,6 +164,20 @@ inline bool IsAsciiWhitespace(unsigned char c) {
     default:
       return false;
   }
+}
+
+inline std::string TrimAsciiWhitespace(std::string_view s) {
+  size_t start = 0;
+  while (start < s.size() && IsAsciiWhitespace(static_cast<unsigned char>(s[start]))) {
+    start++;
+  }
+
+  size_t end = s.size();
+  while (end > start && IsAsciiWhitespace(static_cast<unsigned char>(s[end - 1]))) {
+    end--;
+  }
+
+  return std::string(s.substr(start, end - start));
 }
 
 /**

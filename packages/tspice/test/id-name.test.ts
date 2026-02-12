@@ -23,13 +23,16 @@ const PCK = {
 describe("IDs / names", () => {
   const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
 
-  itNode("node backend: bodn2c/bodc2n/namfrm/frmnam/cidfrm/cnmfrm", async () => {
+  itNode("node backend: bodn2c/bodc2n/bodc2s/bods2c/boddef/bodfnd/bodvar + frame utils", async () => {
     const backend = await createBackend({ backend: "node" });
     const pck = await ensureKernelFile(PCK);
 
     backend.kclear();
     backend.furnsh(lskPath);
     backend.furnsh(pck.path);
+
+    const charKernelPath = path.join(__dirname, "fixtures", "kernels", "body399-char-foo.tpc");
+    backend.furnsh(charKernelPath);
 
     const earth = backend.bodn2c("EARTH");
     expect(earth.found).toBe(true);
@@ -69,9 +72,75 @@ describe("IDs / names", () => {
     if (earthFrame2.found) {
       expect(earthFrame2.frname).toContain("IAU_EARTH");
     }
+
+    // --- new Group 6 routines ---
+
+    const earthName2 = backend.bodc2s(399);
+    expect(earthName2.toUpperCase()).toContain("EARTH");
+
+    const earthFromNumeric = backend.bods2c("399");
+    expect(earthFromNumeric.found).toBe(true);
+    if (earthFromNumeric.found) {
+      expect(earthFromNumeric.code).toBe(399);
+    }
+
+    const earthFromName = backend.bods2c("EARTH");
+    expect(earthFromName.found).toBe(true);
+    if (earthFromName.found) {
+      expect(earthFromName.code).toBe(399);
+    }
+
+    const testBodyName = "TSPICE_TEST_BODY";
+    const testBodyCode = 1_234_567_89;
+    backend.boddef(testBodyName, testBodyCode);
+
+    const testBodyResolved = backend.bods2c(testBodyName);
+    expect(testBodyResolved.found).toBe(true);
+    if (testBodyResolved.found) {
+      expect(testBodyResolved.code).toBe(testBodyCode);
+    }
+
+    const testBodyName2 = backend.bodc2s(testBodyCode);
+    expect(testBodyName2).toBe(testBodyName);
+
+    expect(backend.bodfnd(399, "RADII")).toBe(true);
+    const radii = backend.bodvar(399, "RADII");
+    expect(radii).toHaveLength(3);
+
+    // Item normalization: trim ASCII whitespace + ASCII-only uppercase.
+    expect(backend.bodfnd(399, "  radii  ")).toBe(true);
+    const radii2 = backend.bodvar(399, "  radii  ");
+    expect(radii2).toHaveLength(3);
+
+    expect(backend.bodfnd(399, "\t\n radii \r")).toBe(true);
+    expect(backend.bodvar(399, "\t\n radii \r")).toHaveLength(3);
+
+    // Non-ASCII whitespace is intentionally not trimmed.
+    expect(backend.bodfnd(399, "\u00a0radii\u00a0")).toBe(false);
+    expect(backend.bodvar(399, "\u00a0radii\u00a0")).toEqual([]);
+
+    expect(backend.bodfnd(399, "NOT_A_ITEM")).toBe(false);
+    const missing = backend.bodvar(399, "NOT_A_ITEM");
+    expect(missing).toEqual([]);
+
+    // Character-typed BODY<ID>_<ITEM> vars are treated as a normal miss.
+    expect(backend.bodfnd(399, "FOO")).toBe(false);
+    expect(backend.bodvar(399, "FOO")).toEqual([]);
+
+    const info = backend.frinfo(1);
+    expect(info.found).toBe(true);
+    if (info.found) {
+      const roundTrip = backend.ccifrm(info.frameClass, info.classId);
+      expect(roundTrip.found).toBe(true);
+      if (roundTrip.found) {
+        expect(roundTrip.frcode).toBe(1);
+        expect(roundTrip.frname).toContain("J2000");
+        expect(roundTrip.center).toBe(info.center);
+      }
+    }
   });
 
-  it("wasm backend: bodn2c/bodc2n/namfrm/frmnam/cidfrm/cnmfrm", async () => {
+  it("wasm backend: bodn2c/bodc2n/bodc2s/bods2c/boddef/bodfnd/bodvar + frame utils", async () => {
     const backend = await createBackend({ backend: "wasm" });
     const pck = await ensureKernelFile(PCK);
     const lskBytes = fs.readFileSync(lskPath);
@@ -80,6 +149,10 @@ describe("IDs / names", () => {
     backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
     backend.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
 
+    const charKernelPath = path.join(__dirname, "fixtures", "kernels", "body399-char-foo.tpc");
+    const charKernelBytes = fs.readFileSync(charKernelPath);
+    backend.furnsh({ path: "body399-char-foo.tpc", bytes: charKernelBytes });
+
     const earth = backend.bodn2c("EARTH");
     expect(earth.found).toBe(true);
     if (earth.found) {
@@ -117,6 +190,72 @@ describe("IDs / names", () => {
     expect(earthFrame2.found).toBe(true);
     if (earthFrame2.found) {
       expect(earthFrame2.frname).toContain("IAU_EARTH");
+    }
+
+    // --- new Group 6 routines ---
+
+    const earthName2 = backend.bodc2s(399);
+    expect(earthName2.toUpperCase()).toContain("EARTH");
+
+    const earthFromNumeric = backend.bods2c("399");
+    expect(earthFromNumeric.found).toBe(true);
+    if (earthFromNumeric.found) {
+      expect(earthFromNumeric.code).toBe(399);
+    }
+
+    const earthFromName = backend.bods2c("EARTH");
+    expect(earthFromName.found).toBe(true);
+    if (earthFromName.found) {
+      expect(earthFromName.code).toBe(399);
+    }
+
+    const testBodyName = "TSPICE_TEST_BODY";
+    const testBodyCode = 1_234_567_89;
+    backend.boddef(testBodyName, testBodyCode);
+
+    const testBodyResolved = backend.bods2c(testBodyName);
+    expect(testBodyResolved.found).toBe(true);
+    if (testBodyResolved.found) {
+      expect(testBodyResolved.code).toBe(testBodyCode);
+    }
+
+    const testBodyName2 = backend.bodc2s(testBodyCode);
+    expect(testBodyName2).toBe(testBodyName);
+
+    expect(backend.bodfnd(399, "RADII")).toBe(true);
+    const radii = backend.bodvar(399, "RADII");
+    expect(radii).toHaveLength(3);
+
+    // Item normalization: trim ASCII whitespace + ASCII-only uppercase.
+    expect(backend.bodfnd(399, "  radii  ")).toBe(true);
+    const radii2 = backend.bodvar(399, "  radii  ");
+    expect(radii2).toHaveLength(3);
+
+    expect(backend.bodfnd(399, "\t\n radii \r")).toBe(true);
+    expect(backend.bodvar(399, "\t\n radii \r")).toHaveLength(3);
+
+    // Non-ASCII whitespace is intentionally not trimmed.
+    expect(backend.bodfnd(399, "\u00a0radii\u00a0")).toBe(false);
+    expect(backend.bodvar(399, "\u00a0radii\u00a0")).toEqual([]);
+
+    expect(backend.bodfnd(399, "NOT_A_ITEM")).toBe(false);
+    const missing = backend.bodvar(399, "NOT_A_ITEM");
+    expect(missing).toEqual([]);
+
+    // Character-typed BODY<ID>_<ITEM> vars are treated as a normal miss.
+    expect(backend.bodfnd(399, "FOO")).toBe(false);
+    expect(backend.bodvar(399, "FOO")).toEqual([]);
+
+    const info = backend.frinfo(1);
+    expect(info.found).toBe(true);
+    if (info.found) {
+      const roundTrip = backend.ccifrm(info.frameClass, info.classId);
+      expect(roundTrip.found).toBe(true);
+      if (roundTrip.found) {
+        expect(roundTrip.frcode).toBe(1);
+        expect(roundTrip.frname).toContain("J2000");
+        expect(roundTrip.center).toBe(info.center);
+      }
     }
   });
 });

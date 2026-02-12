@@ -54,4 +54,21 @@ describe("@rybosome/tspice-backend-contract", () => {
     expect(() => mod.brandMat6RowMajor(Array.from({ length: 35 }, () => 0) as unknown)).toThrow(/length-36/i);
     expect(() => mod.brandMat6RowMajor([...m36.slice(0, 35), Infinity] as unknown)).toThrow(/finite/i);
   });
+
+  it("exports ids/names normalization helpers at runtime", async () => {
+    const specifier = "@rybosome/tspice-backend-contract";
+    const mod = await import(/* @vite-ignore */ specifier);
+
+    expect(mod.normalizeBodItem).toBeTypeOf("function");
+    expect(mod.normalizeBodItem("  radii  ")).toBe("RADII");
+    expect(mod.normalizeBodItem("\t\n radii \r")).toBe("RADII");
+
+    // Non-ASCII whitespace is intentionally *not* trimmed.
+    expect(mod.normalizeBodItem("\u00a0radii\u00a0")).toBe("\u00a0RADII\u00a0");
+
+    // Defensive guardrail: reject pathological inputs to avoid huge allocations / CPU.
+    const long = "a".repeat(100_000);
+    expect(() => mod.normalizeBodItem(long)).toThrow(/too long/i);
+    expect(mod.normalizeBodItem("  ß  ")).toBe("ß");
+  });
 });

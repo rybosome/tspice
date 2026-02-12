@@ -44,7 +44,7 @@ describe("SPICE errors (wasm backend)", () => {
   });
 });
 
-describe("reset clears process-global last-error buffers (wasm lowlevel)", () => {
+describe("wasm lowlevel bindings", () => {
   type Module = {
     _malloc(size: number): number;
     _free(ptr: number): void;
@@ -60,6 +60,18 @@ describe("reset clears process-global last-error buffers (wasm lowlevel)", () =>
     _tspice_get_last_error_short(outPtr: number, outMaxBytes: number): number;
     _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;
     _tspice_get_last_error_trace(outPtr: number, outMaxBytes: number): number;
+
+    _tspice_ccifrm(
+      frameClass: number,
+      classId: number,
+      outFrcodePtr: number,
+      outFrnamePtr: number,
+      outFrnameMaxBytes: number,
+      outCenterPtr: number,
+      outFoundPtr: number,
+      errPtr: number,
+      errMaxBytes: number,
+    ): number;
   };
 
   let module: Module;
@@ -141,4 +153,41 @@ describe("reset clears process-global last-error buffers (wasm lowlevel)", () =>
       module._free(errPtr);
     }
   });
+
+  it("ccifrm rejects undersized outFrname buffers", () => {
+    const errPtr = module._malloc(ERR_MAX_BYTES);
+    const outNameMaxBytes = 32;
+    const outNamePtr = module._malloc(outNameMaxBytes);
+
+    try {
+      // Clear state so a previous SPICE failure doesn't affect this test.
+      module.HEAPU8[errPtr] = 0;
+      expect(module._tspice_reset(errPtr, ERR_MAX_BYTES)).toBe(0);
+
+      // Fill with a non-NUL value to verify the preflight write is safe.
+      module.HEAPU8[outNamePtr] = 65;
+
+      const result = module._tspice_ccifrm(
+        1,
+        1,
+        0,
+        outNamePtr,
+        outNameMaxBytes,
+        0,
+        0,
+        errPtr,
+        ERR_MAX_BYTES,
+      );
+
+      expect(result).toBe(1);
+      expect(module.HEAPU8[outNamePtr]).toBe(0);
+
+      const msg = module.UTF8ToString(errPtr, ERR_MAX_BYTES);
+      expect(msg).toContain("outFrnameMaxBytes must be >= TSPICE_FRNAME_MAX_BYTES (33)");
+    } finally {
+      module._free(outNamePtr);
+      module._free(errPtr);
+    }
+  });
+
 });

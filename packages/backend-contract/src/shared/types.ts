@@ -8,10 +8,11 @@ export type KernelSource =
 /** Kernel types used by summary/introspection APIs. */
 export type KernelKind =
   | "ALL"
-  | "UNKNOWN"
   | "SPK"
   | "CK"
   | "PCK"
+  | "DSK"
+  | "TEXT"
   | "LSK"
   | "FK"
   | "IK"
@@ -46,6 +47,13 @@ export type FoundPayload<T> = T extends Found<infer P> ? P : never;
 
 export type KernelData = {
   file: string;
+  filtyp: string;
+  source: string;
+  handle: number;
+};
+
+/** Result payload for `kinfo()`. */
+export type KernelInfo = {
   filtyp: string;
   source: string;
   handle: number;

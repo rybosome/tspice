@@ -9,9 +9,10 @@ import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
 import { tspiceCallFoundInt, tspiceCallFoundString } from "../codec/found.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
-import { writeUtf8CString } from "../codec/strings.js";
+import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 
 function tspiceCallCidfrm(
   module: EmscriptenModule,
@@ -55,7 +56,7 @@ function tspiceCallCidfrm(
     return {
       found: true,
       frcode: module.HEAP32[outCodePtr >> 2] ?? 0,
-      frname: module.UTF8ToString(outNamePtr, outNameMaxBytes).trim(),
+      frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
     };
   } finally {
     module._free(foundPtr);
@@ -108,7 +109,7 @@ function tspiceCallCnmfrm(
     return {
       found: true,
       frcode: module.HEAP32[outCodePtr >> 2] ?? 0,
-      frname: module.UTF8ToString(outNamePtr, outNameMaxBytes).trim(),
+      frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
     };
   } finally {
     module._free(foundPtr);
@@ -117,6 +118,93 @@ function tspiceCallCnmfrm(
     module._free(centerNamePtr);
     module._free(errPtr);
   }
+}
+
+function tspiceCallFrinfo(
+  module: EmscriptenModule,
+  frameId: number,
+): Found<{ center: number; frameClass: number; classId: number }> {
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, 4, 4, 4, 4],
+    (errPtr, outCenterPtr, outFrameClassPtr, outClassIdPtr, foundPtr) => {
+      module.HEAP32[outCenterPtr >> 2] = 0;
+      module.HEAP32[outFrameClassPtr >> 2] = 0;
+      module.HEAP32[outClassIdPtr >> 2] = 0;
+      module.HEAP32[foundPtr >> 2] = 0;
+
+      const result = module._tspice_frinfo(
+        frameId,
+        outCenterPtr,
+        outFrameClassPtr,
+        outClassIdPtr,
+        foundPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      }
+
+      const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+      if (!found) {
+        return { found: false };
+      }
+
+      return {
+        found: true,
+        center: module.HEAP32[outCenterPtr >> 2] ?? 0,
+        frameClass: module.HEAP32[outFrameClassPtr >> 2] ?? 0,
+        classId: module.HEAP32[outClassIdPtr >> 2] ?? 0,
+      };
+    },
+  );
+}
+
+function tspiceCallCcifrm(
+  module: EmscriptenModule,
+  frameClass: number,
+  classId: number,
+): Found<{ frcode: number; frname: string; center: number }> {
+  const outNameMaxBytes = 256;
+
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, outNameMaxBytes, 4, 4, 4],
+    (errPtr, outNamePtr, outFrcodePtr, outCenterPtr, foundPtr) => {
+      module.HEAPU8[outNamePtr] = 0;
+      module.HEAP32[outFrcodePtr >> 2] = 0;
+      module.HEAP32[outCenterPtr >> 2] = 0;
+      module.HEAP32[foundPtr >> 2] = 0;
+
+      const result = module._tspice_ccifrm(
+        frameClass,
+        classId,
+        outFrcodePtr,
+        outNamePtr,
+        outNameMaxBytes,
+        outCenterPtr,
+        foundPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      }
+
+      const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+      if (!found) {
+        return { found: false };
+      }
+
+      return {
+        found: true,
+        frcode: module.HEAP32[outFrcodePtr >> 2] ?? 0,
+        frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
+        center: module.HEAP32[outCenterPtr >> 2] ?? 0,
+      };
+    },
+  );
 }
 
 function tspiceCallCkgp(
@@ -300,6 +388,9 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
 
     cidfrm: (center: number) => tspiceCallCidfrm(module, module._tspice_cidfrm, center),
     cnmfrm: (centerName: string) => tspiceCallCnmfrm(module, module._tspice_cnmfrm, centerName),
+    frinfo: (frameId: number) => tspiceCallFrinfo(module, frameId),
+    ccifrm: (frameClass: number, classId: number) => tspiceCallCcifrm(module, frameClass, classId),
+
 
     ckgp: (inst: number, sclkdp: number, tol: number, ref: string) => tspiceCallCkgp(module, inst, sclkdp, tol, ref),
     ckgpav: (inst: number, sclkdp: number, tol: number, ref: string) =>
