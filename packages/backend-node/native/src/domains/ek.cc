@@ -351,11 +351,6 @@ static void Ekcls(const Napi::CallbackInfo& info) {
     return;
   }
 
-  if (handle < 0) {
-    ThrowSpiceError(Napi::RangeError::New(env, "Expected handle to be >= 0"));
-    return;
-  }
-
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ekcls(handle, err, (int)sizeof(err));
@@ -435,11 +430,6 @@ static Napi::Number Eknseg(const Napi::CallbackInfo& info) {
 
   int32_t handle = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
-    return Napi::Number::New(env, 0);
-  }
-
-  if (handle < 0) {
-    ThrowSpiceError(Napi::RangeError::New(env, "Expected handle to be >= 0"));
     return Napi::Number::New(env, 0);
   }
 
@@ -712,10 +702,6 @@ static Napi::Object Ekifld(const Napi::CallbackInfo& info) {
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) return Napi::Object::New(env);
   if (!ReadInt32Checked(env, info[2], "nrows", &nrows)) return Napi::Object::New(env);
 
-  if (handle < 0) {
-    ThrowSpiceError(Napi::RangeError::New(env, "ekifld() expects handle >= 0"));
-    return Napi::Object::New(env);
-  }
   if (nrows <= 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekifld() expects nrows > 0"));
     return Napi::Object::New(env);
@@ -820,10 +806,6 @@ static void Ekacli(const Napi::CallbackInfo& info) {
   int32_t segno = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) return;
   if (!ReadInt32Checked(env, info[1], "segno", &segno)) return;
-  if (handle < 0) {
-    ThrowSpiceError(Napi::RangeError::New(env, "ekacli() expects handle >= 0"));
-    return;
-  }
   if (segno < 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekacli() expects segno >= 0"));
     return;
@@ -894,10 +876,6 @@ static void Ekacld(const Napi::CallbackInfo& info) {
   int32_t segno = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) return;
   if (!ReadInt32Checked(env, info[1], "segno", &segno)) return;
-  if (handle < 0) {
-    ThrowSpiceError(Napi::RangeError::New(env, "ekacld() expects handle >= 0"));
-    return;
-  }
   if (segno < 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekacld() expects segno >= 0"));
     return;
@@ -968,10 +946,6 @@ static void Ekaclc(const Napi::CallbackInfo& info) {
   int32_t segno = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) return;
   if (!ReadInt32Checked(env, info[1], "segno", &segno)) return;
-  if (handle < 0) {
-    ThrowSpiceError(Napi::RangeError::New(env, "ekaclc() expects handle >= 0"));
-    return;
-  }
   if (segno < 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekaclc() expects segno >= 0"));
     return;
@@ -1071,10 +1045,6 @@ static void Ekffld(const Napi::CallbackInfo& info) {
   int32_t segno = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) return;
   if (!ReadInt32Checked(env, info[1], "segno", &segno)) return;
-  if (handle < 0) {
-    ThrowSpiceError(Napi::RangeError::New(env, "ekffld() expects handle >= 0"));
-    return;
-  }
   if (segno < 0) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekffld() expects segno >= 0"));
     return;
