@@ -32,8 +32,8 @@ type BuilderState = {
   };
 };
 
-export type SpiceClientBuildResult = {
-  spice: SpiceAsync;
+export type SpiceClientBuildResult<TSpice extends Spice | SpiceAsync = SpiceAsync> = {
+  spice: TSpice;
   /**
    * Dispose the client and clean up any worker/caches.
    *
@@ -58,16 +58,16 @@ export type SpiceClientsWebWorkerOptions = {
   signalDispose?: boolean;
 };
 
-export type SpiceClientsBuilder = {
-  caching(opts: WithCachingOptions): SpiceClientsBuilder;
-  withKernels(pack: KernelPack, opts?: LoadKernelPackOptions): SpiceClientsBuilder;
-  build(): Promise<SpiceClientBuildResult>;
+export type SpiceClientsBuilder<TSpice extends Spice | SpiceAsync = SpiceAsync> = {
+  caching(opts: WithCachingOptions): SpiceClientsBuilder<TSpice>;
+  withKernels(pack: KernelPack, opts?: LoadKernelPackOptions): SpiceClientsBuilder<TSpice>;
+  build(): Promise<SpiceClientBuildResult<TSpice>>;
 };
 
 export type SpiceClientsFactory = {
-  webWorker(opts?: SpiceClientsWebWorkerOptions): SpiceClientsBuilder;
-  synchronous(opts?: CreateSpiceOptions): SpiceClientsBuilder;
-  asynchronous(opts?: CreateSpiceAsyncOptions): SpiceClientsBuilder;
+  webWorker(opts?: SpiceClientsWebWorkerOptions): SpiceClientsBuilder<SpiceAsync>;
+  synchronous(opts?: CreateSpiceOptions): SpiceClientsBuilder<Spice>;
+  asynchronous(opts?: CreateSpiceAsyncOptions): SpiceClientsBuilder<SpiceAsync>;
 };
 
 export type CreateSpiceClientsOptions = {
@@ -148,8 +148,13 @@ function createSpiceTransportFromSpiceLike(spice: SpiceLike): SpiceTransport {
   };
 }
 
-function createBuilder(state: BuilderState): SpiceClientsBuilder {
-  let builder!: SpiceClientsBuilder;
+function createBuilder(state: BuilderState & { kind: "synchronous" }): SpiceClientsBuilder<Spice>;
+function createBuilder(
+  state: BuilderState & { kind: Exclude<ClientKind, "synchronous"> },
+): SpiceClientsBuilder<SpiceAsync>;
+function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAsync>;
+function createBuilder(state: BuilderState): SpiceClientsBuilder<Spice | SpiceAsync> {
+  let builder!: SpiceClientsBuilder<Spice | SpiceAsync>;
 
   builder = {
     caching: (opts) => createBuilder({ ...state, cachingOptions: opts }),
@@ -160,7 +165,49 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         kernels: opts === undefined ? { pack } : { pack, loadOptions: opts },
       }),
 
-    build: async (): Promise<SpiceClientBuildResult> => {
+    build: async (): Promise<SpiceClientBuildResult<Spice | SpiceAsync>> => {
+      if (state.kind === "synchronous") {
+        // NOTE: Unlike the async modes, the synchronous client is returned
+        // directly (no transport-based proxying), so it exposes the sync API.
+        //
+        // This means `caching()` currently does not affect the returned client.
+        const spice = await createSpice(state.inProcessOptions as CreateSpiceOptions);
+
+        if (state.kernels) {
+          await loadKernelPack(spice, state.kernels.pack, state.kernels.loadOptions);
+        }
+
+        let disposePromise: Promise<void> | undefined;
+
+        const disposeAsync = (): Promise<void> => {
+          if (disposePromise) return disposePromise;
+
+          disposePromise = (async () => {
+            // In-process: best-effort kernel cleanup.
+            try {
+              spice.kit.kclear();
+            } catch {
+              // ignore
+            }
+          })().catch(() => {
+            // ignore
+          });
+
+          return disposePromise;
+        };
+
+        const dispose = (): Promise<void> => disposeAsync();
+
+        const client: SpiceClientBuildResult<Spice> = { spice, dispose };
+
+        // Runtime alias for Explicit Resource Management. Do not polyfill.
+        if (typeof (Symbol as any).asyncDispose === "symbol") {
+          (client as any)[(Symbol as any).asyncDispose] = dispose;
+        }
+
+        return client;
+      }
+
       let baseTransport: SpiceTransport;
       let workerTransport: WorkerTransport | undefined;
 
@@ -177,9 +224,6 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         });
 
         baseTransport = workerTransport;
-      } else if (state.kind === "synchronous") {
-        const spice = await createSpice(state.inProcessOptions as CreateSpiceOptions);
-        baseTransport = createSpiceTransportFromSpiceLike(spice);
       } else {
         const spice = await createSpiceAsync(state.inProcessOptions as CreateSpiceAsyncOptions);
         baseTransport = createSpiceTransportFromSpiceLike(spice);
@@ -242,7 +286,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
       const dispose = (): Promise<void> => disposeAsync();
 
-      const client: SpiceClientBuildResult = { spice, dispose };
+      const client: SpiceClientBuildResult<SpiceAsync> = { spice, dispose };
 
       // Runtime alias for Explicit Resource Management. Do not polyfill.
       if (typeof (Symbol as any).asyncDispose === "symbol") {
