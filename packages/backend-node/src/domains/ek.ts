@@ -129,7 +129,7 @@ export function createEkApi<
       decls: readonly string[],
     ) => {
       assertSpiceInt32(nrows, "ekifld(nrows)", { min: 1 });
-      return native.ekifld(lookup(handle).nativeHandle, tabnam, nrows, cnames, decls);
+      return native.ekifld(handles.lookup(handle, EK_ONLY, "ekifld").nativeHandle, tabnam, nrows, cnames, decls);
     },
 
     ekacli: (
@@ -142,7 +142,15 @@ export function createEkApi<
       rcptrs: readonly number[],
     ) => {
       assertSpiceInt32NonNegative(segno, "ekacli(segno)");
-      native.ekacli(lookup(handle).nativeHandle, segno, column, ivals, entszs, nlflgs, rcptrs);
+      native.ekacli(
+        handles.lookup(handle, EK_ONLY, "ekacli").nativeHandle,
+        segno,
+        column,
+        ivals,
+        entszs,
+        nlflgs,
+        rcptrs,
+      );
     },
 
     ekacld: (
@@ -155,7 +163,15 @@ export function createEkApi<
       rcptrs: readonly number[],
     ) => {
       assertSpiceInt32NonNegative(segno, "ekacld(segno)");
-      native.ekacld(lookup(handle).nativeHandle, segno, column, dvals, entszs, nlflgs, rcptrs);
+      native.ekacld(
+        handles.lookup(handle, EK_ONLY, "ekacld").nativeHandle,
+        segno,
+        column,
+        dvals,
+        entszs,
+        nlflgs,
+        rcptrs,
+      );
     },
 
     ekaclc: (
@@ -168,12 +184,20 @@ export function createEkApi<
       rcptrs: readonly number[],
     ) => {
       assertSpiceInt32NonNegative(segno, "ekaclc(segno)");
-      native.ekaclc(lookup(handle).nativeHandle, segno, column, cvals, entszs, nlflgs, rcptrs);
+      native.ekaclc(
+        handles.lookup(handle, EK_ONLY, "ekaclc").nativeHandle,
+        segno,
+        column,
+        cvals,
+        entszs,
+        nlflgs,
+        rcptrs,
+      );
     },
 
     ekffld: (handle: SpiceHandle, segno: number, rcptrs: readonly number[]) => {
       assertSpiceInt32NonNegative(segno, "ekffld(segno)");
-      native.ekffld(lookup(handle).nativeHandle, segno, rcptrs);
+      native.ekffld(handles.lookup(handle, EK_ONLY, "ekffld").nativeHandle, segno, rcptrs);
     },
   } satisfies EkApi;
 
