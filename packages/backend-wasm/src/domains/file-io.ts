@@ -5,7 +5,7 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32NonNegative } from "@rybosome/tspice-backend-contract";
+import { assertSpiceInt32, assertSpiceInt32NonNegative } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -19,6 +19,15 @@ import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
 const I32_MIN = -2147483648;
 const I32_MAX = 2147483647;
+
+// Fixed-size portion of the DSK type 2 spatial index double component.
+//
+// CSPICE: `SPICE_DSK02_IXDFIX` (and `SPICE_DSK02_SPADSZ`).
+const DSK02_IXDFIX = 10;
+
+// Hard cap for DSK spatial index scratch sizes (worksz/spxisz).
+// Matches native-addon validation.
+const DSKMI2_MAX_SIZE = 5_000_000;
 
 const DESCR_KEYS = [
   "bwdptr",
@@ -407,5 +416,292 @@ export function createFileIoApi(
     },
 
     dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
+
+    dskopn: (path: string, ifname: string, ncomch: number) => {
+      assertSpiceInt32NonNegative(ncomch, "dskopn(ncomch)");
+
+      const resolved = resolveKernelPath(path);
+
+      // `dskopn_c` creates the output file via C stdio, so we must ensure the
+      // directory exists in the Emscripten FS.
+      const dir = resolved.split("/").slice(0, -1).join("/") || "/";
+      if (dir && dir !== "/") {
+        module.FS.mkdirTree(dir);
+      }
+
+      const pathPtr = writeUtf8CString(module, resolved);
+      const ifnamePtr = writeUtf8CString(module, ifname);
+
+      try {
+        const nativeHandle = withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
+          module.HEAP32[outHandlePtr >> 2] = 0;
+          const code = module._tspice_dskopn(
+            pathPtr,
+            ifnamePtr,
+            ncomch,
+            outHandlePtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
+          return readHeapI32(module, outHandlePtr >> 2, "dskopn(outHandlePtr)");
+        });
+
+        // DSKs are DAS-backed; register as DAS so `dascls` can close it.
+        return handles.register("DAS", nativeHandle);
+      } finally {
+        module._free(ifnamePtr);
+        module._free(pathPtr);
+      }
+    },
+
+    dskmi2: (
+      nv: number,
+      vrtces: readonly number[],
+      np: number,
+      plates: readonly number[],
+      finscl: number,
+      corscl: number,
+      worksz: number,
+      voxpsz: number,
+      voxlsz: number,
+      makvtl: boolean,
+      spxisz: number,
+    ) => {
+      assertSpiceInt32NonNegative(nv, "dskmi2(nv)");
+      assertSpiceInt32NonNegative(np, "dskmi2(np)");
+      assertSpiceInt32(corscl, "dskmi2(corscl)");
+      assertSpiceInt32NonNegative(worksz, "dskmi2(worksz)");
+      assertSpiceInt32NonNegative(voxpsz, "dskmi2(voxpsz)");
+      assertSpiceInt32NonNegative(voxlsz, "dskmi2(voxlsz)");
+      assertSpiceInt32NonNegative(spxisz, "dskmi2(spxisz)");
+
+      const expectedVrtcesLen = nv * 3;
+      if (expectedVrtcesLen <= 0) {
+        throw new RangeError("dskmi2(nv): expected nv > 0");
+      }
+      if (vrtces.length !== expectedVrtcesLen) {
+        throw new RangeError(`dskmi2(vrtces): expected length ${expectedVrtcesLen}, got ${vrtces.length}`);
+      }
+
+      const expectedPlatesLen = np * 3;
+      if (expectedPlatesLen <= 0) {
+        throw new RangeError("dskmi2(np): expected np > 0");
+      }
+      if (plates.length !== expectedPlatesLen) {
+        throw new RangeError(`dskmi2(plates): expected length ${expectedPlatesLen}, got ${plates.length}`);
+      }
+
+      for (let i = 0; i < plates.length; i++) {
+        const v = plates[i];
+        if (v === undefined) {
+          throw new RangeError(`dskmi2(plates[${i}]): expected a value, got undefined`);
+        }
+        assertSpiceInt32(v, `dskmi2(plates[${i}])`);
+        if (v < 1 || v > nv) {
+          throw new RangeError(`dskmi2(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`);
+        }
+      }
+
+      if (worksz <= 0) {
+        throw new RangeError("dskmi2(worksz): expected worksz > 0");
+      }
+      if (worksz > DSKMI2_MAX_SIZE) {
+        throw new RangeError(`dskmi2(worksz): expected worksz <= ${DSKMI2_MAX_SIZE}, got ${worksz}`);
+      }
+
+      if (spxisz <= 0) {
+        throw new RangeError("dskmi2(spxisz): expected spxisz > 0");
+      }
+      if (spxisz > DSKMI2_MAX_SIZE) {
+        throw new RangeError(`dskmi2(spxisz): expected spxisz <= ${DSKMI2_MAX_SIZE}, got ${spxisz}`);
+      }
+
+      const vrtcesBytes = expectedVrtcesLen * 8;
+      const platesBytes = expectedPlatesLen * 4;
+      const spaixdBytes = DSK02_IXDFIX * 8;
+      const spaixiBytes = spxisz * 4;
+
+      return withAllocs(
+        module,
+        [vrtcesBytes, platesBytes, spaixdBytes, spaixiBytes, WASM_ERR_MAX_BYTES],
+        (vrtcesPtr, platesPtr, outSpaixdPtr, outSpaixiPtr, errPtr) => {
+          module.HEAPF64.set(vrtces, vrtcesPtr >> 3);
+          module.HEAP32.set(plates, platesPtr >> 2);
+
+          module.HEAPF64.fill(0, outSpaixdPtr >> 3, (outSpaixdPtr >> 3) + DSK02_IXDFIX);
+          module.HEAP32.fill(0, outSpaixiPtr >> 2, (outSpaixiPtr >> 2) + spxisz);
+
+          const code = module._tspice_dskmi2(
+            nv,
+            vrtcesPtr,
+            np,
+            platesPtr,
+            finscl,
+            corscl,
+            worksz,
+            voxpsz,
+            voxlsz,
+            makvtl ? 1 : 0,
+            spxisz,
+            outSpaixdPtr,
+            DSK02_IXDFIX,
+            outSpaixiPtr,
+            spxisz,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
+
+          const spaixd = Array.from(
+            module.HEAPF64.subarray(outSpaixdPtr >> 3, (outSpaixdPtr >> 3) + DSK02_IXDFIX),
+          );
+          const spaixi = Array.from(
+            module.HEAP32.subarray(outSpaixiPtr >> 2, (outSpaixiPtr >> 2) + spxisz),
+          );
+
+          return { spaixd, spaixi };
+        },
+      );
+    },
+
+    dskw02: (
+      handle: SpiceHandle,
+      center: number,
+      surfid: number,
+      dclass: number,
+      frame: string,
+      corsys: number,
+      corpar: readonly number[],
+      mncor1: number,
+      mxcor1: number,
+      mncor2: number,
+      mxcor2: number,
+      mncor3: number,
+      mxcor3: number,
+      first: number,
+      last: number,
+      nv: number,
+      vrtces: readonly number[],
+      np: number,
+      plates: readonly number[],
+      spaixd: readonly number[],
+      spaixi: readonly number[],
+    ): void => {
+      assertSpiceInt32(center, "dskw02(center)");
+      assertSpiceInt32(surfid, "dskw02(surfid)");
+      assertSpiceInt32(dclass, "dskw02(dclass)");
+      assertSpiceInt32(corsys, "dskw02(corsys)");
+      assertSpiceInt32NonNegative(nv, "dskw02(nv)");
+      assertSpiceInt32NonNegative(np, "dskw02(np)");
+
+      const expectedVrtcesLen = nv * 3;
+      if (expectedVrtcesLen <= 0) {
+        throw new RangeError("dskw02(nv): expected nv > 0");
+      }
+      if (vrtces.length !== expectedVrtcesLen) {
+        throw new RangeError(`dskw02(vrtces): expected length ${expectedVrtcesLen}, got ${vrtces.length}`);
+      }
+
+      const expectedPlatesLen = np * 3;
+      if (expectedPlatesLen <= 0) {
+        throw new RangeError("dskw02(np): expected np > 0");
+      }
+      if (plates.length !== expectedPlatesLen) {
+        throw new RangeError(`dskw02(plates): expected length ${expectedPlatesLen}, got ${plates.length}`);
+      }
+
+      for (let i = 0; i < plates.length; i++) {
+        const v = plates[i];
+        if (v === undefined) {
+          throw new RangeError(`dskw02(plates[${i}]): expected a value, got undefined`);
+        }
+        assertSpiceInt32(v, `dskw02(plates[${i}])`);
+        if (v < 1 || v > nv) {
+          throw new RangeError(`dskw02(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`);
+        }
+      }
+
+      if (corpar.length !== 10) {
+        throw new RangeError(`dskw02(corpar): expected length 10, got ${corpar.length}`);
+      }
+      if (spaixd.length !== DSK02_IXDFIX) {
+        throw new RangeError(`dskw02(spaixd): expected length ${DSK02_IXDFIX}, got ${spaixd.length}`);
+      }
+
+      const spaixiLen = spaixi.length;
+      assertSpiceInt32NonNegative(spaixiLen, "dskw02(spaixi.length)");
+      if (spaixiLen <= 0) {
+        throw new RangeError("dskw02(spaixi): expected a non-empty array");
+      }
+
+      for (let i = 0; i < spaixiLen; i++) {
+        const v = spaixi[i];
+        if (v === undefined) {
+          throw new RangeError(`dskw02(spaixi[${i}]): expected a value, got undefined`);
+        }
+        assertSpiceInt32(v, `dskw02(spaixi[${i}])`);
+      }
+
+      const nativeHandle = handles.lookup(handle, ["DAS"], "dskw02").nativeHandle;
+
+      const framePtr = writeUtf8CString(module, frame);
+      try {
+        const corparBytes = 10 * 8;
+        const vrtcesBytes = expectedVrtcesLen * 8;
+        const platesBytes = expectedPlatesLen * 4;
+        const spaixdBytes = DSK02_IXDFIX * 8;
+        const spaixiBytes = spaixiLen * 4;
+
+        withAllocs(
+          module,
+          [corparBytes, vrtcesBytes, platesBytes, spaixdBytes, spaixiBytes, WASM_ERR_MAX_BYTES],
+          (corparPtr, vrtcesPtr, platesPtr, spaixdPtr, spaixiPtr, errPtr) => {
+            module.HEAPF64.set(corpar, corparPtr >> 3);
+            module.HEAPF64.set(vrtces, vrtcesPtr >> 3);
+            module.HEAP32.set(plates, platesPtr >> 2);
+            module.HEAPF64.set(spaixd, spaixdPtr >> 3);
+            module.HEAP32.set(spaixi, spaixiPtr >> 2);
+
+            const code = module._tspice_dskw02(
+              nativeHandle,
+              center,
+              surfid,
+              dclass,
+              framePtr,
+              corsys,
+              corparPtr,
+              mncor1,
+              mxcor1,
+              mncor2,
+              mxcor2,
+              mncor3,
+              mxcor3,
+              first,
+              last,
+              nv,
+              vrtcesPtr,
+              np,
+              platesPtr,
+              spaixdPtr,
+              DSK02_IXDFIX,
+              spaixiPtr,
+              spaixiLen,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
+          },
+        );
+      } finally {
+        module._free(framePtr);
+      }
+    },
   } satisfies FileIoApi;
 }

@@ -128,6 +128,95 @@ export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistr
     },
 
     dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
+
+    dskopn: (path: string, ifname: string, ncomch: number) =>
+      // DSKs are DAS-backed; register as DAS so `dascls` can close it.
+      handles.register("DAS", native.dskopn(path, ifname, ncomch)),
+
+    dskmi2: (
+      nv: number,
+      vrtces: readonly number[],
+      np: number,
+      plates: readonly number[],
+      finscl: number,
+      corscl: number,
+      worksz: number,
+      voxpsz: number,
+      voxlsz: number,
+      makvtl: boolean,
+      spxisz: number,
+    ) => {
+      const result = native.dskmi2(
+        nv,
+        vrtces,
+        np,
+        plates,
+        finscl,
+        corscl,
+        worksz,
+        voxpsz,
+        voxlsz,
+        makvtl,
+        spxisz,
+      );
+      invariant(
+        typeof result === "object" && result !== null,
+        "Expected native backend dskmi2() to return an object",
+      );
+      const obj = result as { spaixd?: unknown; spaixi?: unknown };
+      invariant(Array.isArray(obj.spaixd), "Expected dskmi2().spaixd to be an array");
+      invariant(Array.isArray(obj.spaixi), "Expected dskmi2().spaixi to be an array");
+      invariant(obj.spaixd.every((v) => typeof v === "number"), "Expected dskmi2().spaixd to be a number[]");
+      invariant(obj.spaixi.every((v) => typeof v === "number"), "Expected dskmi2().spaixi to be a number[]");
+      return { spaixd: obj.spaixd as number[], spaixi: obj.spaixi as number[] };
+    },
+
+    dskw02: (
+      handle: SpiceHandle,
+      center: number,
+      surfid: number,
+      dclass: number,
+      frame: string,
+      corsys: number,
+      corpar: readonly number[],
+      mncor1: number,
+      mxcor1: number,
+      mncor2: number,
+      mxcor2: number,
+      mncor3: number,
+      mxcor3: number,
+      first: number,
+      last: number,
+      nv: number,
+      vrtces: readonly number[],
+      np: number,
+      plates: readonly number[],
+      spaixd: readonly number[],
+      spaixi: readonly number[],
+    ) =>
+      native.dskw02(
+        handles.lookup(handle, ["DAS"], "dskw02").nativeHandle,
+        center,
+        surfid,
+        dclass,
+        frame,
+        corsys,
+        corpar,
+        mncor1,
+        mxcor1,
+        mncor2,
+        mxcor2,
+        mncor3,
+        mxcor3,
+        first,
+        last,
+        nv,
+        vrtces,
+        np,
+        plates,
+        spaixd,
+        spaixi,
+      ),
   } satisfies FileIoApi;
 
   Object.defineProperty(api, "__debugOpenHandleCount", {

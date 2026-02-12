@@ -105,6 +105,63 @@ export type EmscriptenModule = {
 
   // --- DSK ---
 
+  _tspice_dskopn(
+    pathPtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dskmi2(
+    nv: number,
+    vrtcesPtr: number,
+    np: number,
+    platesPtr: number,
+    finscl: number,
+    corscl: number,
+    worksz: number,
+    voxpsz: number,
+    voxlsz: number,
+    makvtl: number,
+    spxisz: number,
+    outSpaixdPtr: number,
+    outSpaixdLen: number,
+    outSpaixiPtr: number,
+    outSpaixiLen: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dskw02(
+    handle: number,
+    center: number,
+    surfid: number,
+    dclass: number,
+    framePtr: number,
+    corsys: number,
+    corparPtr: number,
+    mncor1: number,
+    mxcor1: number,
+    mncor2: number,
+    mxcor2: number,
+    mncor3: number,
+    mxcor3: number,
+    first: number,
+    last: number,
+    nv: number,
+    vrtcesPtr: number,
+    np: number,
+    platesPtr: number,
+    spaixdPtr: number,
+    spaixdLen: number,
+    spaixiPtr: number,
+    spaixiLen: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_dskobj(dskPathPtr: number, bodidsCellHandle: number, errPtr: number, errMaxBytes: number): number;
   _tspice_dsksrf(
     dskPathPtr: number,
@@ -1124,6 +1181,9 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_recgeo",
 
   // DSK
+  "_tspice_dskopn",
+  "_tspice_dskmi2",
+  "_tspice_dskw02",
   "_tspice_dskobj",
   "_tspice_dsksrf",
   "_tspice_dskgd",

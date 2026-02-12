@@ -1575,6 +1575,50 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       throw new Error("Fake backend: dlacls() is not implemented");
     },
 
+    dskopn: (_path: string, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: dskopn() is not implemented");
+    },
+    dskmi2: (
+      _nv: number,
+      _vrtces: readonly number[],
+      _np: number,
+      _plates: readonly number[],
+      _finscl: number,
+      _corscl: number,
+      _worksz: number,
+      _voxpsz: number,
+      _voxlsz: number,
+      _makvtl: boolean,
+      _spxisz: number,
+    ) => {
+      throw new Error("Fake backend: dskmi2() is not implemented");
+    },
+    dskw02: (
+      _handle: SpiceHandle,
+      _center: number,
+      _surfid: number,
+      _dclass: number,
+      _frame: string,
+      _corsys: number,
+      _corpar: readonly number[],
+      _mncor1: number,
+      _mxcor1: number,
+      _mncor2: number,
+      _mxcor2: number,
+      _mncor3: number,
+      _mxcor3: number,
+      _first: number,
+      _last: number,
+      _nv: number,
+      _vrtces: readonly number[],
+      _np: number,
+      _plates: readonly number[],
+      _spaixd: readonly number[],
+      _spaixi: readonly number[],
+    ) => {
+      throw new Error("Fake backend: dskw02() is not implemented");
+    },
+
     // -- DSK ----------------------------------------------------------------
 
     dskobj: (_dsk: string, _bodids: SpiceIntCell) => {
