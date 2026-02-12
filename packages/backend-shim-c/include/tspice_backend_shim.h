@@ -182,6 +182,106 @@ int tspice_ektnam(
 
 int tspice_eknseg(int handle, int *outNseg, char *err, int errMaxBytes);
 
+// --- EK query/data ops -----------------------------------------------------
+
+int tspice_ekfind(
+    const char *query,
+    int outErrmsgMaxBytes,
+    int *outNmrows,
+    int *outError,
+    char *outErrmsg,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekgc(
+    int selidx,
+    int row,
+    int elment,
+    char *outCdata,
+    int outCdataMaxBytes,
+    int *outNull,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekgd(
+    int selidx,
+    int row,
+    int elment,
+    double *outDdata,
+    int *outNull,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekgi(
+    int selidx,
+    int row,
+    int elment,
+    int *outIdata,
+    int *outNull,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// --- EK fast write ---------------------------------------------------------
+
+int tspice_ekifld(
+    int handle,
+    const char *tabnam,
+    int ncols,
+    int nrows,
+    int cnamln,
+    const char *cnames,
+    int declen,
+    const char *decls,
+    int *outSegno,
+    int *outRcptrs,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekacli(
+    int handle,
+    int segno,
+    const char *column,
+    int nrows,
+    const int *ivals,
+    int nvals,
+    const int *entszs,
+    const int *nlflgs,
+    int *rcptrs,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekacld(
+    int handle,
+    int segno,
+    const char *column,
+    int nrows,
+    const double *dvals,
+    int nvals,
+    const int *entszs,
+    const int *nlflgs,
+    int *rcptrs,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekaclc(
+    int handle,
+    int segno,
+    const char *column,
+    int nrows,
+    int nvals,
+    int vallen,
+    const char *cvals,
+    const int *entszs,
+    const int *nlflgs,
+    int *rcptrs,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekffld(int handle, int segno, int *rcptrs, char *err, int errMaxBytes);
+
 // --- DSK -------------------------------------------------------------------
 
 int tspice_dskopn(

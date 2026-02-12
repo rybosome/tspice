@@ -131,6 +131,110 @@ export type EmscriptenModule = {
 
   _tspice_eknseg(handle: number, outNsegPtr: number, errPtr: number, errMaxBytes: number): number;
 
+  _tspice_ekfind(
+    queryPtr: number,
+    outErrmsgMaxBytes: number,
+    outNmrowsPtr: number,
+    outErrorPtr: number,
+    outErrmsgPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekgc(
+    selidx: number,
+    row: number,
+    elment: number,
+    outCdataPtr: number,
+    outCdataMaxBytes: number,
+    outNullPtr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekgd(
+    selidx: number,
+    row: number,
+    elment: number,
+    outDdataPtr: number,
+    outNullPtr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekgi(
+    selidx: number,
+    row: number,
+    elment: number,
+    outIdataPtr: number,
+    outNullPtr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekifld(
+    handle: number,
+    tabnamPtr: number,
+    ncols: number,
+    nrows: number,
+    cnamln: number,
+    cnamesPtr: number,
+    declen: number,
+    declsPtr: number,
+    outSegnoPtr: number,
+    outRcptrsPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekacli(
+    handle: number,
+    segno: number,
+    columnPtr: number,
+    nrows: number,
+    ivalsPtr: number,
+    nvals: number,
+    entszsPtr: number,
+    nlflgsPtr: number,
+    rcptrsPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekacld(
+    handle: number,
+    segno: number,
+    columnPtr: number,
+    nrows: number,
+    dvalsPtr: number,
+    nvals: number,
+    entszsPtr: number,
+    nlflgsPtr: number,
+    rcptrsPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekaclc(
+    handle: number,
+    segno: number,
+    columnPtr: number,
+    nrows: number,
+    nvals: number,
+    vallen: number,
+    cvalsPtr: number,
+    entszsPtr: number,
+    nlflgsPtr: number,
+    rcptrsPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekffld(handle: number, segno: number, rcptrsPtr: number, errPtr: number, errMaxBytes: number): number;
+
   // --- DSK ---
 
   _tspice_dskopn(
@@ -1602,6 +1706,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_ekntab",
   "_tspice_ektnam",
   "_tspice_eknseg",
+  "_tspice_ekfind",
+  "_tspice_ekgc",
+  "_tspice_ekgd",
+  "_tspice_ekgi",
+  "_tspice_ekifld",
+  "_tspice_ekacli",
+  "_tspice_ekacld",
+  "_tspice_ekaclc",
+  "_tspice_ekffld",
 
   // DSK
   "_tspice_dskopn",

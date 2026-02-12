@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
+
+import type { EkFindResult, EkGetResult } from "@rybosome/tspice-backend-contract";
 import { fileURLToPath } from "node:url";
 
 import type { SpiceIntCell, SpiceWindow } from "@rybosome/tspice-backend-contract";
@@ -89,6 +91,51 @@ export type NativeAddon = {
   ekntab(): number;
   ektnam(n: number): string;
   eknseg(handle: number): number;
+
+  ekfind(query: string): EkFindResult;
+  ekgc(selidx: number, row: number, elment: number): EkGetResult<string>;
+  ekgd(selidx: number, row: number, elment: number): EkGetResult<number>;
+  ekgi(selidx: number, row: number, elment: number): EkGetResult<number>;
+
+  ekifld(
+    handle: number,
+    tabnam: string,
+    nrows: number,
+    cnames: readonly string[],
+    decls: readonly string[],
+  ): { segno: number; rcptrs: number[] };
+
+  ekacli(
+    handle: number,
+    segno: number,
+    column: string,
+    ivals: readonly number[],
+    entszs: readonly number[],
+    nlflgs: readonly boolean[],
+    rcptrs: readonly number[],
+  ): void;
+
+  ekacld(
+    handle: number,
+    segno: number,
+    column: string,
+    dvals: readonly number[],
+    entszs: readonly number[],
+    nlflgs: readonly boolean[],
+    rcptrs: readonly number[],
+  ): void;
+
+  ekaclc(
+    handle: number,
+    segno: number,
+    column: string,
+    cvals: readonly string[],
+    entszs: readonly number[],
+    nlflgs: readonly boolean[],
+    rcptrs: readonly number[],
+  ): void;
+
+  ekffld(handle: number, segno: number, rcptrs: readonly number[]): void;
 
   // --- DSK writer ---
   dskopn(path: string, ifname: string, ncomch: number): number;

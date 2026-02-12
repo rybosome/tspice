@@ -287,6 +287,15 @@ const exportedFunctions = [
   "_tspice_ekntab",
   "_tspice_ektnam",
   "_tspice_eknseg",
+  "_tspice_ekfind",
+  "_tspice_ekgc",
+  "_tspice_ekgd",
+  "_tspice_ekgi",
+  "_tspice_ekifld",
+  "_tspice_ekacli",
+  "_tspice_ekacld",
+  "_tspice_ekaclc",
+  "_tspice_ekffld",
 
   // --- DSK ---
   "_tspice_dskopn",
