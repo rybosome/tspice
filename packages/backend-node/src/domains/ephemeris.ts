@@ -82,11 +82,11 @@ export function createEphemerisApi(native: NativeAddon): EphemerisApi {
     },
 
     spkcov: (spk: string, idcode: number, cover: SpiceWindow) => {
-      native.spkcov(spk, idcode, cover as unknown as number);
+      native.spkcov(spk, idcode, cover);
     },
 
     spkobj: (spk: string, ids: SpiceIntCell) => {
-      native.spkobj(spk, ids as unknown as number);
+      native.spkobj(spk, ids);
     },
 
     spksfs: (body: number, et: number) => {

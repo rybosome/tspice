@@ -3,6 +3,8 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
+import type { SpiceIntCell, SpiceWindow } from "@rybosome/tspice-backend-contract";
+
 export type NativeAddon = {
   spiceVersion(): string;
 
@@ -171,8 +173,8 @@ export type NativeAddon = {
     ref: string,
   ): number[];
 
-  spkcov(spk: string, idcode: number, cover: number): void;
-  spkobj(spk: string, ids: number): void;
+  spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
+  spkobj(spk: string, ids: SpiceIntCell): void;
 
   spksfs(body: number, et: number): { found: boolean; handle?: number; descr?: number[]; ident?: string };
 
