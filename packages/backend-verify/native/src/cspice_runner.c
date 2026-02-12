@@ -410,6 +410,47 @@ static char *jsmn_strdup(const char *json, const jsmntok_t *tok) {
 //   - any whitespace
 //   - leading zeros in the integer part (except "0")
 //   - missing digits after '.' or exponent marker
+
+static const char *scan_strict_json_int_part(const char *s) {
+  if (s == NULL || s[0] == '\0') {
+    return NULL;
+  }
+
+  const char *p = s;
+
+  // No leading '+' in JSON.
+  if (*p == '+') {
+    return NULL;
+  }
+
+  if (*p == '-') {
+    p++;
+  }
+
+  if (*p == '\0') {
+    return NULL;
+  }
+
+  if (*p == '0') {
+    p++;
+    // No leading zeros like "01".
+    if (*p >= '0' && *p <= '9') {
+      return NULL;
+    }
+    return p;
+  }
+
+  if (*p < '1' || *p > '9') {
+    return NULL;
+  }
+
+  for (p = p + 1; *p >= '0' && *p <= '9'; p++) {
+    // consume digits
+  }
+
+  return p;
+}
+
 static bool is_strict_json_number_literal(const char *s) {
   if (s == NULL || s[0] == '\0') {
     return false;
@@ -422,35 +463,9 @@ static bool is_strict_json_number_literal(const char *s) {
     }
   }
 
-  const char *p = s;
-
-  // No leading '+' in JSON.
-  if (*p == '+') {
+  const char *p = scan_strict_json_int_part(s);
+  if (p == NULL) {
     return false;
-  }
-
-  if (*p == '-') {
-    p++;
-  }
-
-  // int
-  if (*p == '\0') {
-    return false;
-  }
-
-  if (*p == '0') {
-    p++;
-    // No leading zeros like "01".
-    if (*p >= '0' && *p <= '9') {
-      return false;
-    }
-  } else {
-    if (*p < '1' || *p > '9') {
-      return false;
-    }
-    for (p = p + 1; *p >= '0' && *p <= '9'; p++) {
-      // consume digits
-    }
   }
 
   // frac
@@ -536,35 +551,8 @@ typedef enum {
 // For the runner we only accept the integer subset and reject leading '+',
 // whitespace, and leading zeros (except for the single literal "0").
 static bool is_strict_json_int_literal(const char *s) {
-  if (s == NULL || s[0] == '\0') {
-    return false;
-  }
-
-  const char *p = s;
-  if (*p == '-') {
-    p++;
-  }
-
-  if (*p == '\0') {
-    return false;
-  }
-
-  if (*p == '0') {
-    // "0" or "-0" only.
-    return p[1] == '\0';
-  }
-
-  if (*p < '1' || *p > '9') {
-    return false;
-  }
-
-  for (p = p + 1; *p; p++) {
-    if (*p < '0' || *p > '9') {
-      return false;
-    }
-  }
-
-  return true;
+  const char *p = scan_strict_json_int_part(s);
+  return p != NULL && *p == '\0';
 }
 
 static parse_int_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
@@ -896,21 +884,24 @@ int main(void) {
       tokenCap *= 2;
       if (tokenCap > 8192) {
         free(input);
-        write_error_json("JSON too large/complex", NULL, NULL, NULL);
+        write_error_json_ex("invalid_request", "JSON too large/complex", NULL,
+                            NULL, NULL, NULL);
         return 0;
       }
       continue;
     }
 
     free(input);
-    write_error_json("Invalid JSON", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "Invalid JSON", NULL, NULL, NULL,
+                        NULL);
     return 0;
   }
 
   if (tokenCount < 1 || tokens[0].type != JSMN_OBJECT) {
     free(tokens);
     free(input);
-    write_error_json("Input JSON must be an object", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "Input JSON must be an object", NULL,
+                        NULL, NULL, NULL);
     return 0;
   }
 
@@ -921,7 +912,8 @@ int main(void) {
   if (callTok < 0) {
     free(tokens);
     free(input);
-    write_error_json("Missing required field: call", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "Missing required field: call", NULL,
+                        NULL, NULL, NULL);
     return 0;
   }
 
@@ -929,7 +921,8 @@ int main(void) {
   if (call == NULL) {
     free(tokens);
     free(input);
-    write_error_json("call must be a string", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "call must be a string", NULL, NULL,
+                        NULL, NULL);
     return 0;
   }
 
@@ -944,7 +937,8 @@ int main(void) {
     int kernelsTok = jsmn_find_object_key(input, tokens, setupTok, "kernels", tokenCount);
     if (kernelsTok >= 0) {
       if (tokens[kernelsTok].type != JSMN_ARRAY) {
-        write_error_json("setup.kernels must be an array", NULL, NULL, NULL);
+        write_error_json_ex("invalid_request", "setup.kernels must be an array",
+                            NULL, NULL, NULL, NULL);
         goto done;
       }
 
@@ -952,7 +946,8 @@ int main(void) {
       int idx = kernelsTok + 1;
       for (int i = 0; i < nKernels; i++) {
         if (idx >= tokenCount) {
-          write_error_json("setup.kernels parse error", NULL, NULL, NULL);
+          write_error_json_ex("invalid_request", "setup.kernels parse error",
+                              NULL, NULL, NULL, NULL);
           goto done;
         }
 
@@ -968,7 +963,13 @@ int main(void) {
         } else if (tokens[idx].type == JSMN_OBJECT) {
           int pathTok = jsmn_find_object_key(input, tokens, idx, "path", tokenCount);
           if (pathTok < 0 || tokens[pathTok].type != JSMN_STRING) {
-            write_error_json("setup.kernels entries must have a string 'path' field", NULL, NULL, NULL);
+            write_error_json_ex(
+                "invalid_request",
+                "setup.kernels entries must have a string 'path' field",
+                NULL,
+                NULL,
+                NULL,
+                NULL);
             goto done;
           }
 
@@ -981,7 +982,13 @@ int main(void) {
           int restrictTok = jsmn_find_object_key(input, tokens, idx, "restrictToDir", tokenCount);
           if (restrictTok >= 0) {
             if (tokens[restrictTok].type != JSMN_STRING) {
-              write_error_json("setup.kernels[].restrictToDir must be a string", NULL, NULL, NULL);
+              write_error_json_ex(
+                  "invalid_request",
+                  "setup.kernels[].restrictToDir must be a string",
+                  NULL,
+                  NULL,
+                  NULL,
+                  NULL);
               free(kernelPath);
               goto done;
             }
@@ -994,7 +1001,13 @@ int main(void) {
             }
           }
         } else {
-          write_error_json("setup.kernels entries must be strings or objects", NULL, NULL, NULL);
+          write_error_json_ex(
+              "invalid_request",
+              "setup.kernels entries must be strings or objects",
+              NULL,
+              NULL,
+              NULL,
+              NULL);
           goto done;
         }
 
@@ -1060,12 +1073,14 @@ int main(void) {
   }
 
   if (argsTok < 0) {
-    write_error_json("Missing required field: args", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "Missing required field: args", NULL,
+                        NULL, NULL, NULL);
     goto done;
   }
 
   if (tokens[argsTok].type != JSMN_ARRAY) {
-    write_error_json("args must be an array", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "args must be an array", NULL, NULL,
+                        NULL, NULL);
     goto done;
   }
 
@@ -1078,19 +1093,32 @@ int main(void) {
   const bool isPxform = strcmp(call, "frames.pxform") == 0 || strcmp(call, "pxform") == 0;
 
   if (!isStr2et && !isEt2utc && !isBodn2c && !isBodc2n && !isNamfrm && !isFrmnam && !isPxform) {
-    write_error_json("Unsupported call", NULL, NULL, NULL);
+    write_error_json_ex("unsupported_call", "Unsupported call", NULL, NULL,
+                        NULL, NULL);
     goto done;
   }
 
   if (isStr2et) {
     if (tokens[argsTok].size < 1) {
-      write_error_json("time.str2et expects args[0] to be a string", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "time.str2et expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
     int arg0Tok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
     if (arg0Tok < 0 || arg0Tok >= tokenCount || tokens[arg0Tok].type != JSMN_STRING) {
-      write_error_json("time.str2et expects args[0] to be a string", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "time.str2et expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
@@ -1121,8 +1149,13 @@ int main(void) {
 
   if (isEt2utc) {
     if (tokens[argsTok].size < 3) {
-      write_error_json("time.et2utc expects args[0]=number args[1]=string args[2]=number", NULL,
-                       NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "time.et2utc expects args[0]=number args[1]=string args[2]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
@@ -1134,12 +1167,24 @@ int main(void) {
     SpiceInt prec = 0;
 
     if (etTok < 0 || etTok >= tokenCount || !jsmn_parse_double(input, &tokens[etTok], &et)) {
-      write_error_json("time.et2utc expects args[0] to be a number", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "time.et2utc expects args[0] to be a number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
     if (fmtTok < 0 || fmtTok >= tokenCount || tokens[fmtTok].type != JSMN_STRING) {
-      write_error_json("time.et2utc expects args[1] to be a string", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "time.et2utc expects args[1] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
@@ -1152,7 +1197,13 @@ int main(void) {
       if (precParse == PARSE_INT_UNSUPPORTED) {
         write_unsupported_spiceint_width_error();
       } else {
-        write_error_json("time.et2utc expects args[2] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+        write_error_json_ex(
+            "invalid_args",
+            "time.et2utc expects args[2] to be an integer (SpiceInt range)",
+            NULL,
+            NULL,
+            NULL,
+            NULL);
       }
       goto done;
     }
@@ -1186,13 +1237,25 @@ int main(void) {
 
   if (isBodn2c) {
     if (tokens[argsTok].size < 1) {
-      write_error_json("ids-names.bodn2c expects args[0] to be a string", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodn2c expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
     int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
     if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
-      write_error_json("ids-names.bodn2c expects args[0] to be a string", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodn2c expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
@@ -1230,7 +1293,13 @@ int main(void) {
 
   if (isBodc2n) {
     if (tokens[argsTok].size < 1) {
-      write_error_json("ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
@@ -1245,7 +1314,13 @@ int main(void) {
       if (codeParse == PARSE_INT_UNSUPPORTED) {
         write_unsupported_spiceint_width_error();
       } else {
-        write_error_json("ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)",
+            NULL,
+            NULL,
+            NULL,
+            NULL);
       }
       goto done;
     }
@@ -1278,13 +1353,25 @@ int main(void) {
 
   if (isNamfrm) {
     if (tokens[argsTok].size < 1) {
-      write_error_json("frames.namfrm expects args[0] to be a string", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.namfrm expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
     int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
     if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
-      write_error_json("frames.namfrm expects args[0] to be a string", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.namfrm expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
@@ -1321,7 +1408,13 @@ int main(void) {
 
   if (isFrmnam) {
     if (tokens[argsTok].size < 1) {
-      write_error_json("frames.frmnam expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.frmnam expects args[0] to be an integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
@@ -1336,7 +1429,13 @@ int main(void) {
       if (frcodeParse == PARSE_INT_UNSUPPORTED) {
         write_unsupported_spiceint_width_error();
       } else {
-        write_error_json("frames.frmnam expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL);
+        write_error_json_ex(
+            "invalid_args",
+            "frames.frmnam expects args[0] to be an integer (SpiceInt range)",
+            NULL,
+            NULL,
+            NULL,
+            NULL);
       }
       goto done;
     }
@@ -1368,8 +1467,13 @@ int main(void) {
 
   if (isPxform) {
     if (tokens[argsTok].size < 3) {
-      write_error_json("frames.pxform expects args[0]=string args[1]=string args[2]=number", NULL,
-                       NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.pxform expects args[0]=string args[1]=string args[2]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
@@ -1378,18 +1482,36 @@ int main(void) {
     int etTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
 
     if (fromTok < 0 || fromTok >= tokenCount || tokens[fromTok].type != JSMN_STRING) {
-      write_error_json("frames.pxform expects args[0] to be a string", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.pxform expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
     if (toTok < 0 || toTok >= tokenCount || tokens[toTok].type != JSMN_STRING) {
-      write_error_json("frames.pxform expects args[1] to be a string", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.pxform expects args[1] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 
     SpiceDouble et = 0.0;
     if (etTok < 0 || etTok >= tokenCount || !jsmn_parse_double(input, &tokens[etTok], &et)) {
-      write_error_json("frames.pxform expects args[2] to be a number", NULL, NULL, NULL);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.pxform expects args[2] to be a number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
       goto done;
     }
 

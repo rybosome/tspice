@@ -16,9 +16,55 @@ import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorR
 
 type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown;
 
+type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
+
+function isRunnerValidationCode(value: unknown): value is RunnerValidationCode {
+  return value === "invalid_request" || value === "invalid_args" || value === "unsupported_call";
+}
+
+function formatValue(value: unknown): string {
+  if (typeof value === "number") {
+    if (Number.isNaN(value)) return "NaN";
+    if (value === Infinity) return "Infinity";
+    if (value === -Infinity) return "-Infinity";
+    return String(value);
+  }
+
+  try {
+    const s = JSON.stringify(value);
+    return s === undefined ? String(value) : s;
+  } catch {
+    return String(value);
+  }
+}
+
+function invalidRequest(message: string): never {
+  const err = new TypeError(message) as TypeError & { code?: RunnerValidationCode };
+  err.code = "invalid_request";
+  throw err;
+}
+
+function invalidArgs(message: string): never {
+  const err = new TypeError(message) as TypeError & { code?: RunnerValidationCode };
+  err.code = "invalid_args";
+  throw err;
+}
+
+function unsupportedCall(message: string): never {
+  const err = new Error(message) as Error & { code?: RunnerValidationCode };
+  err.code = "unsupported_call";
+  throw err;
+}
+
 function assertInteger(value: unknown, label: string): asserts value is number {
-  if (typeof value !== "number" || !Number.isInteger(value)) {
-    throw new TypeError(`${label} expects an integer (got ${JSON.stringify(value)})`);
+  if (typeof value !== "number") {
+    invalidArgs(`${label} expects a number (got ${formatValue(value)})`);
+  }
+  if (!Number.isFinite(value)) {
+    invalidArgs(`${label} expects a finite integer (got ${formatValue(value)})`);
+  }
+  if (!Number.isInteger(value)) {
+    invalidArgs(`${label} expects an integer (got ${formatValue(value)})`);
   }
 }
 
@@ -26,9 +72,7 @@ const DISPATCH: Record<string, DispatchFn> = {
   // time
   "time.str2et": (backend, args) => {
     if (typeof args[0] !== "string") {
-      throw new TypeError(
-        `time.str2et expects args[0] to be a string (got ${JSON.stringify(args[0])})`,
-      );
+      invalidArgs(`time.str2et expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     return backend.str2et(args[0]);
   },
@@ -36,26 +80,20 @@ const DISPATCH: Record<string, DispatchFn> = {
   // Convenience alias.
   str2et: (backend, args) => {
     if (typeof args[0] !== "string") {
-      throw new TypeError(`str2et expects args[0] to be a string (got ${JSON.stringify(args[0])})`);
+      invalidArgs(`str2et expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     return backend.str2et(args[0]);
   },
 
   "time.et2utc": (backend, args) => {
     if (typeof args[0] !== "number") {
-      throw new TypeError(
-        `time.et2utc expects args[0] to be a number (got ${JSON.stringify(args[0])})`,
-      );
+      invalidArgs(`time.et2utc expects args[0] to be a number (got ${formatValue(args[0])})`);
     }
     if (typeof args[1] !== "string") {
-      throw new TypeError(
-        `time.et2utc expects args[1] to be a string (got ${JSON.stringify(args[1])})`,
-      );
+      invalidArgs(`time.et2utc expects args[1] to be a string (got ${formatValue(args[1])})`);
     }
     if (typeof args[2] !== "number") {
-      throw new TypeError(
-        `time.et2utc expects args[2] to be a number (got ${JSON.stringify(args[2])})`,
-      );
+      invalidArgs(`time.et2utc expects args[2] to be a number (got ${formatValue(args[2])})`);
     }
     assertInteger(args[2], "time.et2utc args[2]");
     return backend.et2utc(args[0], args[1], args[2]);
@@ -64,13 +102,13 @@ const DISPATCH: Record<string, DispatchFn> = {
   // Convenience alias.
   et2utc: (backend, args) => {
     if (typeof args[0] !== "number") {
-      throw new TypeError(`et2utc expects args[0] to be a number (got ${JSON.stringify(args[0])})`);
+      invalidArgs(`et2utc expects args[0] to be a number (got ${formatValue(args[0])})`);
     }
     if (typeof args[1] !== "string") {
-      throw new TypeError(`et2utc expects args[1] to be a string (got ${JSON.stringify(args[1])})`);
+      invalidArgs(`et2utc expects args[1] to be a string (got ${formatValue(args[1])})`);
     }
     if (typeof args[2] !== "number") {
-      throw new TypeError(`et2utc expects args[2] to be a number (got ${JSON.stringify(args[2])})`);
+      invalidArgs(`et2utc expects args[2] to be a number (got ${formatValue(args[2])})`);
     }
     assertInteger(args[2], "et2utc args[2]");
     return backend.et2utc(args[0], args[1], args[2]);
@@ -79,25 +117,21 @@ const DISPATCH: Record<string, DispatchFn> = {
   // ids-names
   "ids-names.bodn2c": (backend, args) => {
     if (typeof args[0] !== "string") {
-      throw new TypeError(
-        `ids-names.bodn2c expects args[0] to be a string (got ${JSON.stringify(args[0])})`,
-      );
+      invalidArgs(`ids-names.bodn2c expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     return backend.bodn2c(args[0]);
   },
 
   bodn2c: (backend, args) => {
     if (typeof args[0] !== "string") {
-      throw new TypeError(`bodn2c expects args[0] to be a string (got ${JSON.stringify(args[0])})`);
+      invalidArgs(`bodn2c expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     return backend.bodn2c(args[0]);
   },
 
   "ids-names.bodc2n": (backend, args) => {
     if (typeof args[0] !== "number") {
-      throw new TypeError(
-        `ids-names.bodc2n expects args[0] to be a number (got ${JSON.stringify(args[0])})`,
-      );
+      invalidArgs(`ids-names.bodc2n expects args[0] to be a number (got ${formatValue(args[0])})`);
     }
     assertInteger(args[0], "ids-names.bodc2n args[0]");
     return backend.bodc2n(args[0]);
@@ -105,7 +139,7 @@ const DISPATCH: Record<string, DispatchFn> = {
 
   bodc2n: (backend, args) => {
     if (typeof args[0] !== "number") {
-      throw new TypeError(`bodc2n expects args[0] to be a number (got ${JSON.stringify(args[0])})`);
+      invalidArgs(`bodc2n expects args[0] to be a number (got ${formatValue(args[0])})`);
     }
     assertInteger(args[0], "bodc2n args[0]");
     return backend.bodc2n(args[0]);
@@ -114,25 +148,21 @@ const DISPATCH: Record<string, DispatchFn> = {
   // frames
   "frames.namfrm": (backend, args) => {
     if (typeof args[0] !== "string") {
-      throw new TypeError(
-        `frames.namfrm expects args[0] to be a string (got ${JSON.stringify(args[0])})`,
-      );
+      invalidArgs(`frames.namfrm expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     return backend.namfrm(args[0]);
   },
 
   namfrm: (backend, args) => {
     if (typeof args[0] !== "string") {
-      throw new TypeError(`namfrm expects args[0] to be a string (got ${JSON.stringify(args[0])})`);
+      invalidArgs(`namfrm expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     return backend.namfrm(args[0]);
   },
 
   "frames.frmnam": (backend, args) => {
     if (typeof args[0] !== "number") {
-      throw new TypeError(
-        `frames.frmnam expects args[0] to be a number (got ${JSON.stringify(args[0])})`,
-      );
+      invalidArgs(`frames.frmnam expects args[0] to be a number (got ${formatValue(args[0])})`);
     }
     assertInteger(args[0], "frames.frmnam args[0]");
     return backend.frmnam(args[0]);
@@ -140,7 +170,7 @@ const DISPATCH: Record<string, DispatchFn> = {
 
   frmnam: (backend, args) => {
     if (typeof args[0] !== "number") {
-      throw new TypeError(`frmnam expects args[0] to be a number (got ${JSON.stringify(args[0])})`);
+      invalidArgs(`frmnam expects args[0] to be a number (got ${formatValue(args[0])})`);
     }
     assertInteger(args[0], "frmnam args[0]");
     return backend.frmnam(args[0]);
@@ -148,32 +178,26 @@ const DISPATCH: Record<string, DispatchFn> = {
 
   "frames.pxform": (backend, args) => {
     if (typeof args[0] !== "string") {
-      throw new TypeError(
-        `frames.pxform expects args[0] to be a string (got ${JSON.stringify(args[0])})`,
-      );
+      invalidArgs(`frames.pxform expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     if (typeof args[1] !== "string") {
-      throw new TypeError(
-        `frames.pxform expects args[1] to be a string (got ${JSON.stringify(args[1])})`,
-      );
+      invalidArgs(`frames.pxform expects args[1] to be a string (got ${formatValue(args[1])})`);
     }
     if (typeof args[2] !== "number") {
-      throw new TypeError(
-        `frames.pxform expects args[2] to be a number (got ${JSON.stringify(args[2])})`,
-      );
+      invalidArgs(`frames.pxform expects args[2] to be a number (got ${formatValue(args[2])})`);
     }
     return backend.pxform(args[0], args[1], args[2]);
   },
 
   pxform: (backend, args) => {
     if (typeof args[0] !== "string") {
-      throw new TypeError(`pxform expects args[0] to be a string (got ${JSON.stringify(args[0])})`);
+      invalidArgs(`pxform expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     if (typeof args[1] !== "string") {
-      throw new TypeError(`pxform expects args[1] to be a string (got ${JSON.stringify(args[1])})`);
+      invalidArgs(`pxform expects args[1] to be a string (got ${formatValue(args[1])})`);
     }
     if (typeof args[2] !== "number") {
-      throw new TypeError(`pxform expects args[2] to be a number (got ${JSON.stringify(args[2])})`);
+      invalidArgs(`pxform expects args[2] to be a number (got ${formatValue(args[2])})`);
     }
     return backend.pxform(args[0], args[1], args[2]);
   },
@@ -184,6 +208,10 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
     const report: RunnerErrorReport = { message: error.message };
     if (error.name) report.name = error.name;
     if (error.stack) report.stack = error.stack;
+
+    const anyErr = error as unknown as { code?: unknown };
+    if (isRunnerValidationCode(anyErr.code)) report.code = anyErr.code;
+
     return report;
   }
 
@@ -473,7 +501,7 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
 
         const fn = DISPATCH[input.call];
         if (!fn) {
-          throw new Error(`Unsupported call: ${JSON.stringify(input.call)}`);
+          unsupportedCall(`Unsupported call: ${formatValue(input.call)}`);
         }
 
         const result = fn(backend, input.args);

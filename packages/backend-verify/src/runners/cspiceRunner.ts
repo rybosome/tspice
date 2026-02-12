@@ -91,6 +91,7 @@ type CRunnerOk = { ok: true; result: unknown };
 type CRunnerError = {
   ok: false;
   error: {
+    code?: string;
     message: string;
     spiceShort?: string;
     spiceLong?: string;
@@ -439,6 +440,7 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
         }
 
         const report: RunnerErrorReport = {
+          ...(out.error.code ? { code: out.error.code } : {}),
           message: out.error.message,
           spice: asSpiceErrorState(out.error),
         };

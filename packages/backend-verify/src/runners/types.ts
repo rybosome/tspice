@@ -19,6 +19,7 @@ export type SpiceErrorState = {
 };
 
 export type RunnerErrorReport = {
+  code?: string;
   name?: string;
   message: string;
   stack?: string;
