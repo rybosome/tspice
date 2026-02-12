@@ -62,20 +62,18 @@ function compareNumbers(
   const actualNorm = angleWrapPi ? wrapToPi(actual) : actual;
   const expectedNorm = angleWrapPi ? wrapToPi(expected) : expected;
 
-  const callerProvidedTolAbs = opts.tolAbs !== undefined;
-  const callerProvidedTolRel = opts.tolRel !== undefined;
-
   // Trig reduction can yield tiny residuals for exact multiples of TAU
   // (e.g. 2π -> ~-2.4e-16). Keep normalization pure; treat this as the
   // default absolute tolerance only when the caller didn't provide any
   // tolerances, and only when angle wrapping is enabled.
   const ANGLE_WRAP_EPS = 8 * Number.EPSILON;
 
-  const tolAbs =
-    angleWrapPi && !callerProvidedTolAbs && !callerProvidedTolRel
-      ? ANGLE_WRAP_EPS
-      : (opts.tolAbs ?? 0);
   const tolRel = opts.tolRel ?? 0;
+  const tolAbsDefault =
+    angleWrapPi && opts.tolAbs === undefined && opts.tolRel === undefined
+      ? ANGLE_WRAP_EPS
+      : 0;
+  const tolAbs = opts.tolAbs ?? tolAbsDefault;
 
   const delta = angleWrapPi ? wrapDeltaToPi(actual - expected) : actual - expected;
   const diff = Math.abs(delta);

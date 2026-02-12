@@ -26,35 +26,37 @@ function isRequired(): boolean {
 }
 
 describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
-  let tspice: CaseRunner | undefined;
-  let cspice: CaseRunner | undefined;
+  const status = getCspiceRunnerStatus();
 
-  it("cspice-runner availability", () => {
-    const status = getCspiceRunnerStatus();
-    if (status.ready) return;
-
+  if (!status.ready) {
     if (!isRequired()) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `[backend-verify] cspice-runner unavailable; backend-verify parity suite may be skipped (TSPICE_BACKEND_VERIFY_REQUIRED=false): ${status.hint}`,
-      );
+      it("cspice-runner unavailable (skipping parity scenarios)", () => {
+        // eslint-disable-next-line no-console
+        console.warn(
+          `[backend-verify] cspice-runner unavailable; skipping parity scenarios (TSPICE_BACKEND_VERIFY_REQUIRED=false): ${status.hint}`,
+        );
+      });
       return;
     }
 
-    throw new Error(
-      `[backend-verify] cspice-runner required but unavailable: ${status.hint}. ` +
-        `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
-        `State: ${status.statePath}`,
-    );
-  });
+    it("cspice-runner required but unavailable", () => {
+      throw new Error(
+        `[backend-verify] cspice-runner required but unavailable: ${status.hint}. ` +
+          `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
+          `State: ${status.statePath}`,
+      );
+    });
+
+    return;
+  }
+
+  let tspice: CaseRunner | undefined;
+  let cspice: CaseRunner | undefined;
 
   // We reuse a single runner instance across scenarios for speed.
   // This is safe because `tspice.runCase()` isolates each case via kernel
   // cleanup/reset (kclear/reset) before executing.
   beforeAll(async () => {
-    const status = getCspiceRunnerStatus();
-    if (!status.ready) return;
-
     try {
       tspice = await createTspiceRunner();
       cspice = await createCspiceRunner();
@@ -76,9 +78,7 @@ describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
     .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
   for (const file of scenarioFiles) {
-    it(`matches scenario ${file}`, async (ctx) => {
-      const cspiceStatus = getCspiceRunnerStatus();
-      if (!cspiceStatus.ready) ctx.skip();
+    it(`matches scenario ${file}`, async () => {
       const scenarioPath = path.join(scenariosDir, file);
 
       const yamlFile = await loadScenarioYamlFile(scenarioPath);
