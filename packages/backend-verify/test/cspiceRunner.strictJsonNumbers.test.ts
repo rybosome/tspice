@@ -13,7 +13,7 @@ function isRequired(): boolean {
 
 type RunnerResponse =
   | { ok: true; result: unknown }
-  | { ok: false; error: { code?: string; message: string } };
+  | { ok: false; error: { code?: string; message: string; detail?: string } };
 
 function invokeRaw(json: string): RunnerResponse {
   const binaryPath = getCspiceRunnerBinaryPath();
@@ -114,6 +114,10 @@ describe("cspice-runner strict JSON number/int literal grammar", () => {
         if (!out.ok) {
           expect(out.error.code).toBe("invalid_args");
           expect(out.error.message).toBe("frames.pxform expects args[2] to be a number");
+
+          if (c.literal === "1e309") {
+            expect(out.error.detail).toBe("numeric literal out of range");
+          }
         }
       }
     });

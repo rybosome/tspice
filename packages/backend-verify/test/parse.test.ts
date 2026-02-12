@@ -37,4 +37,24 @@ describe("parseScenario", () => {
       restrictToDir: packDir,
     });
   });
+
+  it.each([
+    { value: NaN, expected: "NaN" },
+    { value: Infinity, expected: "Infinity" },
+    { value: -Infinity, expected: "-Infinity" },
+  ])("formats non-finite numbers in error messages ($expected)", ({ value, expected }) => {
+    expect(() =>
+      parseScenario({
+        sourcePath: path.join(os.tmpdir(), "scenario.yml"),
+        data: {
+          cases: [
+            {
+              call: "noop",
+              compare: { tolAbs: value },
+            },
+          ],
+        },
+      }),
+    ).toThrowError(`got ${expected}`);
+  });
 });

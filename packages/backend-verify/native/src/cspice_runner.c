@@ -501,6 +501,7 @@ typedef enum {
   PARSE_OK = 0,
   PARSE_INVALID,
   PARSE_TOO_LONG,
+  PARSE_OUT_OF_RANGE,
   PARSE_UNSUPPORTED,
 } parse_result;
 
@@ -535,15 +536,19 @@ static parse_result jsmn_parse_double(const char *json, const jsmntok_t *tok,
   errno = 0;
   char *endptr = NULL;
   const double v = strtod(buf, &endptr);
-  if (errno != 0) {
-    return PARSE_INVALID;
-  }
   if (endptr == buf || *endptr != '\0') {
     return PARSE_INVALID;
   }
 
-  if (!isfinite(v)) {
+  if (errno == ERANGE) {
+    return PARSE_OUT_OF_RANGE;
+  }
+  if (errno != 0) {
     return PARSE_INVALID;
+  }
+
+  if (!isfinite(v)) {
+    return PARSE_OUT_OF_RANGE;
   }
 
   *out = (SpiceDouble)v;
@@ -1183,7 +1188,9 @@ int main(void) {
       write_error_json_ex(
           "invalid_args",
           "time.et2utc expects args[0] to be a number",
-          etParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+          etParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (etParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
           NULL,
           NULL,
           NULL);
@@ -1526,7 +1533,9 @@ int main(void) {
       write_error_json_ex(
           "invalid_args",
           "frames.pxform expects args[2] to be a number",
-          etParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+          etParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (etParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
           NULL,
           NULL,
           NULL);

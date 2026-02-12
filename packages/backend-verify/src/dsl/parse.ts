@@ -9,6 +9,22 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function formatValue(value: unknown): string {
+  if (typeof value === "number") {
+    if (Number.isNaN(value)) return "NaN";
+    if (value === Infinity) return "Infinity";
+    if (value === -Infinity) return "-Infinity";
+    return String(value);
+  }
+
+  try {
+    const s = JSON.stringify(value);
+    return s === undefined ? String(value) : s;
+  } catch {
+    return String(value);
+  }
+}
+
 function assertString(value: unknown, label: string): string {
   if (typeof value === "string") return value;
   throw new TypeError(`${label} must be a string (got ${JSON.stringify(value)})`);
@@ -16,7 +32,7 @@ function assertString(value: unknown, label: string): string {
 
 function assertNumber(value: unknown, label: string): number {
   if (typeof value === "number" && Number.isFinite(value)) return value;
-  throw new TypeError(`${label} must be a finite number (got ${JSON.stringify(value)})`);
+  throw new TypeError(`${label} must be a finite number (got ${formatValue(value)})`);
 }
 
 function assertTolerance(value: unknown, label: string): number {
