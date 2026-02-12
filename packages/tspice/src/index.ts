@@ -41,25 +41,25 @@ export type {
   SpiceClientBuildResult,
   SpiceClientsBuilder,
   SpiceClientsFactory,
-} from "./web/spiceClients.js";
-export { createSpiceClients, spiceClients } from "./web/spiceClients.js";
+} from "./clients/spiceClients.js";
+export { createSpiceClients, spiceClients } from "./clients/spiceClients.js";
 
 export type {
   CreatePublicKernelsOptions,
   PublicKernelId,
   PublicKernelsBuilder,
-} from "./web/kernels/publicKernels.js";
-export { createPublicKernels, publicKernels } from "./web/kernels/publicKernels.js";
+} from "./kernels/publicKernels.js";
+export { createPublicKernels, publicKernels } from "./kernels/publicKernels.js";
 
 // Former `@rybosome/tspice/web` exports (now available at the root).
-export type { SpiceTransport } from "./web/types.js";
+export type { SpiceTransport } from "./transport/types.js";
 
 export type {
   CachePolicy,
   CachingTransport,
   WithCachingOptions,
   WithCachingResult,
-} from "./web/cache/withCaching.js";
+} from "./transport/caching/withCaching.js";
 export {
   MAX_KEY_LENGTH,
   MAX_KEY_SCAN,
@@ -67,25 +67,25 @@ export {
   defaultSpiceCacheKey,
   isCachingTransport,
   withCaching,
-} from "./web/cache/withCaching.js";
+} from "./transport/caching/withCaching.js";
 
 export type {
   WorkerLike,
   WorkerTransport,
   WorkerTransportRequestOptions,
-} from "./web/worker/createWorkerTransport.js";
-export { createWorkerTransport } from "./web/worker/createWorkerTransport.js";
+} from "./worker/transport/createWorkerTransport.js";
+export { createWorkerTransport } from "./worker/transport/createWorkerTransport.js";
 
-export { exposeTransportToWorker } from "./web/worker/exposeTransportToWorker.js";
+export { exposeTransportToWorker } from "./worker/transport/exposeTransportToWorker.js";
 
-export type { CreateSpiceWorkerOptions } from "./web/worker/createSpiceWorker.js";
-export { createSpiceWorker } from "./web/worker/createSpiceWorker.js";
+export type { CreateSpiceWorkerOptions } from "./worker/browser/createSpiceWorker.js";
+export { createSpiceWorker } from "./worker/browser/createSpiceWorker.js";
 
-export type { SpiceWorkerClient } from "./web/worker/createSpiceWorkerClient.js";
-export { createSpiceWorkerClient } from "./web/worker/createSpiceWorkerClient.js";
+export type { SpiceWorkerClient } from "./worker/browser/createSpiceWorkerClient.js";
+export { createSpiceWorkerClient } from "./worker/browser/createSpiceWorkerClient.js";
 
-export { createSpiceAsyncFromTransport } from "./web/client/createSpiceAsyncFromTransport.js";
+export { createSpiceAsyncFromTransport } from "./clients/createSpiceAsyncFromTransport.js";
 
-export type { KernelPack, KernelPackKernel, LoadKernelPackOptions } from "./web/kernels/kernelPack.js";
-export { loadKernelPack } from "./web/kernels/kernelPack.js";
+export type { KernelPack, KernelPackKernel, LoadKernelPackOptions } from "./kernels/kernelPack.js";
+export { loadKernelPack } from "./kernels/kernelPack.js";
 

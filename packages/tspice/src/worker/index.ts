@@ -1,20 +1,20 @@
-// Re-export worker + transport utilities from the web implementation.
+// Re-export worker + transport utilities.
 
-export type { SpiceTransport } from "../web/types.js";
+export type { SpiceTransport } from "../transport/types.js";
 
 export type {
   WorkerLike,
   WorkerTransport,
   WorkerTransportRequestOptions,
-} from "../web/worker/createWorkerTransport.js";
-export { createWorkerTransport } from "../web/worker/createWorkerTransport.js";
+} from "./transport/createWorkerTransport.js";
+export { createWorkerTransport } from "./transport/createWorkerTransport.js";
 
-export { exposeTransportToWorker } from "../web/worker/exposeTransportToWorker.js";
+export { exposeTransportToWorker } from "./transport/exposeTransportToWorker.js";
 
-export type { CreateSpiceWorkerOptions } from "../web/worker/createSpiceWorker.js";
-export { createSpiceWorker } from "../web/worker/createSpiceWorker.js";
+export type { CreateSpiceWorkerOptions } from "./browser/createSpiceWorker.js";
+export { createSpiceWorker } from "./browser/createSpiceWorker.js";
 
-export type { SpiceWorkerClient } from "../web/worker/createSpiceWorkerClient.js";
-export { createSpiceWorkerClient } from "../web/worker/createSpiceWorkerClient.js";
+export type { SpiceWorkerClient } from "./browser/createSpiceWorkerClient.js";
+export { createSpiceWorkerClient } from "./browser/createSpiceWorkerClient.js";
 
-export { createSpiceAsyncFromTransport } from "../web/client/createSpiceAsyncFromTransport.js";
+export { createSpiceAsyncFromTransport } from "../clients/createSpiceAsyncFromTransport.js";

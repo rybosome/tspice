@@ -1,8 +1,8 @@
 import { createSpiceAsync } from "../../spice.js";
 import type { SpiceAsync } from "../../kit/types/spice-types.js";
 
-import type { SpiceTransport } from "../types.js";
-import { exposeTransportToWorker } from "./exposeTransportToWorker.js";
+import type { SpiceTransport } from "../../transport/types.js";
+import { exposeTransportToWorker } from "../transport/exposeTransportToWorker.js";
 
 const blockedStringKeys = new Set<string>([
   // Promise / thenable

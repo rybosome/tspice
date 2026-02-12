@@ -1,4 +1,4 @@
-import type { WorkerLike } from "./createWorkerTransport.js";
+import type { WorkerLike } from "../transport/createWorkerTransport.js";
 
 export type CreateSpiceWorkerOptions = {
   /** Override the worker entrypoint (advanced). */

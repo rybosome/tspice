@@ -1,6 +1,6 @@
-import type { SpiceAsync } from "@rybosome/tspice";
+import type { SpiceAsync } from "../kit/types/spice-types.js";
 
-import type { SpiceTransport } from "../types.js";
+import type { SpiceTransport } from "../transport/types.js";
 
 const blockedStringKeys = new Set<string>([
   // Prototype / constructor escapes

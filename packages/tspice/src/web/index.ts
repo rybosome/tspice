@@ -1,11 +1,11 @@
-export type { SpiceTransport } from "./types.js";
+export type { SpiceTransport } from "../transport/types.js";
 
 export type {
   CachePolicy,
   CachingTransport,
   WithCachingOptions,
   WithCachingResult,
-} from "./cache/withCaching.js";
+} from "../transport/caching/withCaching.js";
 export {
   MAX_KEY_LENGTH,
   MAX_KEY_SCAN,
@@ -13,34 +13,34 @@ export {
   defaultSpiceCacheKey,
   isCachingTransport,
   withCaching,
-} from "./cache/withCaching.js";
+} from "../transport/caching/withCaching.js";
 
 export type {
   WorkerLike,
   WorkerTransport,
   WorkerTransportRequestOptions,
-} from "./worker/createWorkerTransport.js";
-export { createWorkerTransport } from "./worker/createWorkerTransport.js";
+} from "../worker/transport/createWorkerTransport.js";
+export { createWorkerTransport } from "../worker/transport/createWorkerTransport.js";
 
-export { exposeTransportToWorker } from "./worker/exposeTransportToWorker.js";
+export { exposeTransportToWorker } from "../worker/transport/exposeTransportToWorker.js";
 
-export type { CreateSpiceWorkerOptions } from "./worker/createSpiceWorker.js";
-export { createSpiceWorker } from "./worker/createSpiceWorker.js";
+export type { CreateSpiceWorkerOptions } from "../worker/browser/createSpiceWorker.js";
+export { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
 
-export type { SpiceWorkerClient } from "./worker/createSpiceWorkerClient.js";
-export { createSpiceWorkerClient } from "./worker/createSpiceWorkerClient.js";
+export type { SpiceWorkerClient } from "../worker/browser/createSpiceWorkerClient.js";
+export { createSpiceWorkerClient } from "../worker/browser/createSpiceWorkerClient.js";
 
-export { createSpiceAsyncFromTransport } from "./client/createSpiceAsyncFromTransport.js";
+export { createSpiceAsyncFromTransport } from "../clients/createSpiceAsyncFromTransport.js";
 
-export type { KernelPack, KernelPackKernel, LoadKernelPackOptions } from "./kernels/kernelPack.js";
-export { loadKernelPack } from "./kernels/kernelPack.js";
+export type { KernelPack, KernelPackKernel, LoadKernelPackOptions } from "../kernels/kernelPack.js";
+export { loadKernelPack } from "../kernels/kernelPack.js";
 
 export type {
   CreatePublicKernelsOptions,
   PublicKernelId,
   PublicKernelsBuilder,
-} from "./kernels/publicKernels.js";
-export { createPublicKernels, publicKernels } from "./kernels/publicKernels.js";
+} from "../kernels/publicKernels.js";
+export { createPublicKernels, publicKernels } from "../kernels/publicKernels.js";
 
-export type { CreateSpiceClientsOptions, SpiceClientsBuilder, SpiceClientsFactory } from "./spiceClients.js";
-export { createSpiceClients, spiceClients } from "./spiceClients.js";
+export type { CreateSpiceClientsOptions, SpiceClientsBuilder, SpiceClientsFactory } from "../clients/spiceClients.js";
+export { createSpiceClients, spiceClients } from "../clients/spiceClients.js";

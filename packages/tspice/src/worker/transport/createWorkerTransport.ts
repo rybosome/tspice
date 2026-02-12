@@ -1,14 +1,14 @@
-import type { SpiceTransport } from "../types.js";
+import type { SpiceTransport } from "../../transport/types.js";
 
-import type { RpcDispose, RpcRequest, RpcResponse } from "./rpcProtocol.js";
+import type { RpcDispose, RpcRequest, RpcResponse } from "../../transport/rpc/protocol.js";
 import {
   deserializeError,
   tspiceRpcDisposeType,
   tspiceRpcRequestType,
   tspiceRpcResponseType,
-} from "./rpcProtocol.js";
-import { decodeRpcValue, encodeRpcValue } from "./rpcValueCodec.js";
-import { canQueueMacrotask, queueMacrotask } from "./taskScheduling.js";
+} from "../../transport/rpc/protocol.js";
+import { decodeRpcValue, encodeRpcValue } from "../../transport/rpc/valueCodec.js";
+import { canQueueMacrotask, queueMacrotask } from "../../transport/rpc/taskScheduling.js";
 
 export type WorkerLike = {
   postMessage(message: unknown): void;

@@ -1,18 +1,18 @@
 import { createSpice, createSpiceAsync, type CreateSpiceAsyncOptions, type CreateSpiceOptions } from "../spice.js";
 import type { Spice, SpiceAsync } from "../kit/types/spice-types.js";
 
-import type { SpiceTransport } from "./types.js";
+import type { SpiceTransport } from "../transport/types.js";
 
 import {
   isCachingTransport,
   withCaching,
   type WithCachingOptions,
-} from "./cache/withCaching.js";
-import { createSpiceAsyncFromTransport } from "./client/createSpiceAsyncFromTransport.js";
-import type { KernelPack, LoadKernelPackOptions } from "./kernels/kernelPack.js";
-import { loadKernelPack } from "./kernels/kernelPack.js";
-import { createSpiceWorker } from "./worker/createSpiceWorker.js";
-import { createWorkerTransport, type WorkerLike, type WorkerTransport } from "./worker/createWorkerTransport.js";
+} from "../transport/caching/withCaching.js";
+import { createSpiceAsyncFromTransport } from "./createSpiceAsyncFromTransport.js";
+import type { KernelPack, LoadKernelPackOptions } from "../kernels/kernelPack.js";
+import { loadKernelPack } from "../kernels/kernelPack.js";
+import { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
+import { createWorkerTransport, type WorkerLike, type WorkerTransport } from "../worker/transport/createWorkerTransport.js";
 
 type ClientKind = "webWorker" | "synchronous" | "asynchronous";
 

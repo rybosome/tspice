@@ -1,9 +1,13 @@
-import type { SpiceAsync } from "@rybosome/tspice";
+import type { SpiceAsync } from "../../kit/types/spice-types.js";
 
-import type { SpiceTransport } from "../types.js";
-import { createSpiceAsyncFromTransport } from "../client/createSpiceAsyncFromTransport.js";
+import type { SpiceTransport } from "../../transport/types.js";
+import { createSpiceAsyncFromTransport } from "../../clients/createSpiceAsyncFromTransport.js";
 
-import { createWorkerTransport, type WorkerTransport } from "./createWorkerTransport.js";
+import {
+  createWorkerTransport,
+  type WorkerLike,
+  type WorkerTransport,
+} from "../transport/createWorkerTransport.js";
 import { createSpiceWorker } from "./createSpiceWorker.js";
 
 type DisposeFn = () => void | Promise<void>;
@@ -30,7 +34,7 @@ function isPromiseLike<T = unknown>(value: unknown): value is PromiseLike<T> {
 }
 
 export type SpiceWorkerClient<TTransport extends SpiceTransport = WorkerTransport> = {
-  worker: Worker;
+  worker: WorkerLike;
   /** The underlying request/response RPC transport (always a WorkerTransport). */
   baseTransport: WorkerTransport;
   /** The transport after applying `wrapTransport` (e.g. `withCaching`). */
@@ -52,7 +56,7 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
    *
    * Defaults to `() => createSpiceWorker()`.
    */
-  worker?: Worker | (() => Worker);
+  worker?: WorkerLike | (() => WorkerLike);
   /** Default request timeout forwarded to `createWorkerTransport`. */
   timeoutMs?: number;
   /** Forwarded to `createWorkerTransport`. Defaults to `true` when `worker` is a factory. */

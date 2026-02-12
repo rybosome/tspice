@@ -1,18 +1,18 @@
-import type { SpiceTransport } from "../types.js";
+import type { SpiceTransport } from "../../transport/types.js";
 
-import type { RpcMessageFromMain, RpcRequest, RpcResponse } from "./rpcProtocol.js";
+import type { RpcMessageFromMain, RpcRequest, RpcResponse } from "../../transport/rpc/protocol.js";
 import {
   serializeError,
   tspiceRpcDisposeType,
   tspiceRpcRequestType,
   tspiceRpcResponseType,
-} from "./rpcProtocol.js";
-import { decodeRpcValue, encodeRpcValue } from "./rpcValueCodec.js";
-import { queueMacrotask } from "./taskScheduling.js";
+} from "../../transport/rpc/protocol.js";
+import { decodeRpcValue, encodeRpcValue } from "../../transport/rpc/valueCodec.js";
+import { queueMacrotask } from "../../transport/rpc/taskScheduling.js";
 
 type WorkerGlobalScopeLike = {
-  addEventListener(type: "message", listener: (ev: MessageEvent<unknown>) => void): void;
-  removeEventListener(type: "message", listener: (ev: MessageEvent<unknown>) => void): void;
+  addEventListener(type: "message", listener: (ev: { data: unknown }) => void): void;
+  removeEventListener(type: "message", listener: (ev: { data: unknown }) => void): void;
   postMessage(msg: unknown): void;
   close?: () => void;
 };
@@ -183,7 +183,7 @@ export function exposeTransportToWorker(opts: {
     })();
   };
 
-  const onMessage = (ev: MessageEvent<unknown>): void => {
+  const onMessage = (ev: { data: unknown }): void => {
     const msg = ev.data as Partial<RpcMessageFromMain> | null | undefined;
     if (!msg || typeof msg.type !== "string") return;
 

@@ -18,7 +18,7 @@ const distPublishRoot = path.join(tspiceRoot, "dist-publish");
 * `dist-publish/` and rewriting their import specifiers to use *internal*
 * package.json `imports` aliases ("#...").
 *
-* This keeps the public surface area as **root-only** (`@rybosome/tspice`),
+* This keeps the public surface area limited to `@rybosome/tspice` and `@rybosome/tspice/web`,
 * while still letting vendored internal modules reference each other.
 */
 const SPECIFIER_REWRITES = new Map([
@@ -140,6 +140,10 @@ function buildExports() {
     ".": {
       types: "./dist/index.d.ts",
       default: "./dist/index.js",
+    },
+    "./web": {
+      types: "./dist/web/index.d.ts",
+      default: "./dist/web/index.js",
     },
   };
 }

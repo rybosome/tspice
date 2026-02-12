@@ -41,7 +41,7 @@ function isMat3RowMajorData(value: unknown): value is readonly number[] {
 /** Encode an arbitrary value into a structured-clone-safe shape. */
 export function encodeRpcValue(value: unknown): unknown {
   if (value instanceof Mat3) {
-    const data = Array.from(value.rowMajor);
+    const data = Array.from(value.rowMajor as readonly number[]);
     return {
       [tspiceRpcTagKey]: "Mat3",
       layout: "rowMajor",

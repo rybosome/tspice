@@ -66,16 +66,21 @@ try {
     smokePath,
     [
       `import * as tspice from "@rybosome/tspice";`,
+      `import * as tspiceWeb from "@rybosome/tspice/web";`,
       ``,
       `if (typeof tspice.createBackend !== "function") throw new Error("Missing createBackend export");`,
       `if (typeof tspice.createSpice !== "function") throw new Error("Missing createSpice export");`,
       `if (typeof tspice.withCaching !== "function") throw new Error("Missing withCaching export");`,
       `if (typeof tspice.createSpiceWorkerClient !== "function") throw new Error("Missing createSpiceWorkerClient export");`,
       ``,
-      `// Ensure we do NOT expose any subpath exports from the published package.
-      // (allowlist is defined by package.exports: ".")
+      `if (typeof tspiceWeb.withCaching !== "function") throw new Error("Missing tspice/web withCaching export");`,
+      `if (typeof tspiceWeb.createSpiceClients !== "function") throw new Error("Missing tspice/web createSpiceClients export");`,
+      `if (typeof tspiceWeb.createSpiceWorkerClient !== "function") throw new Error("Missing tspice/web createSpiceWorkerClient export");`,
+      ``,
+      `// Ensure we do NOT expose unexpected subpath exports from the published package.
+      // (allowlist is defined by package.exports: "." and "./web")
       `,
-      `for (const subpath of ["web", "worker", "core", "backend-contract", "backend-wasm", "backend-node"]) {`,
+      `for (const subpath of ["worker", "core", "backend-contract", "backend-wasm", "backend-node", "web/worker", "web/client", "web/kernels"]) {`,
       `  try {`,
       '    await import(`@rybosome/tspice/${subpath}`);',
       '    throw new Error(`Expected @rybosome/tspice/${subpath} to be blocked by package.exports`);',
