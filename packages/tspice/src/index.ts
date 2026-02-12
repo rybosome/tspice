@@ -43,3 +43,10 @@ export type {
   SpiceClientsFactory,
 } from "./web/spiceClients.js";
 export { createSpiceClients, spiceClients } from "./web/spiceClients.js";
+
+export type {
+  CreatePublicKernelsOptions,
+  PublicKernelId,
+  PublicKernelsBuilder,
+} from "./web/kernels/publicKernels.js";
+export { createPublicKernels, publicKernels } from "./web/kernels/publicKernels.js";

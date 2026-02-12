@@ -67,13 +67,15 @@ try {
     [
       `import * as tspice from "@rybosome/tspice";`,
       `import * as tspiceWeb from "@rybosome/tspice/web";`,
+      `import * as tspiceWorker from "@rybosome/tspice/worker";`,
       ``,
       `if (typeof tspice.createBackend !== "function") throw new Error("Missing createBackend export");`,
       `if (typeof tspice.createSpice !== "function") throw new Error("Missing createSpice export");`,
       `if (typeof tspiceWeb !== "object") throw new Error("Missing tspice/web export");`,
+      `if (typeof tspiceWorker.createWorkerTransport !== "function") throw new Error("Missing tspice/worker export");`,
       ``,
-      `// Ensure we do NOT expose subpath exports from the published package.
-      // (root-only public surface)
+      `// Ensure we do NOT expose internal subpath exports from the published package.
+      // (allowlist is defined by package.exports: ".", "./web", "./worker")
       `,
       `for (const subpath of ["core", "backend-contract", "backend-wasm", "backend-node"]) {`,
       `  try {`,

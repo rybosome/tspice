@@ -40,7 +40,7 @@ export type SpiceClientBuildResult = {
    * - Idempotent
    * - Safe (does not throw)
    */
-  dispose: () => void;
+  dispose: () => Promise<void>;
 };
 
 export type SpiceClientsWebWorkerOptions = {
@@ -204,7 +204,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
       let disposePromise: Promise<void> | undefined;
 
-      const disposeAsync = async (): Promise<void> => {
+      const disposeAsync = (): Promise<void> => {
         if (disposePromise) return disposePromise;
 
         disposePromise = (async () => {
@@ -233,19 +233,23 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
           } catch {
             // ignore
           }
-        })();
+        })().catch(() => {
+          // ignore
+        });
 
         return disposePromise;
       };
 
-      const dispose = (): void => {
-        // Fire-and-forget; never throw.
-        void disposeAsync().catch(() => {
-          // ignore
-        });
-      };
+      const dispose = (): Promise<void> => disposeAsync();
 
-      return { spice, dispose };
+      const client: SpiceClientBuildResult = { spice, dispose };
+
+      // Runtime alias for Explicit Resource Management. Do not polyfill.
+      if (typeof (Symbol as any).asyncDispose === "symbol") {
+        (client as any)[(Symbol as any).asyncDispose] = dispose;
+      }
+
+      return client;
     },
   };
 
