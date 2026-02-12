@@ -41,7 +41,16 @@ function atomicWriteFileSync(destPath, bytes) {
   let fd;
   try {
     fd = fs.openSync(tmpPath, "w");
-    fs.writeFileSync(fd, bytes);
+    // Prefer an explicit write loop instead of `writeFileSync(fd, bytes)`.
+    // Some Node/platform combos can surface short writes when using a raw fd.
+    let offset = 0;
+    while (offset < bytes.length) {
+      const written = fs.writeSync(fd, bytes, offset, bytes.length - offset, offset);
+      if (written <= 0) {
+        throw new Error(`Short write while copying ${destPath} (wrote ${written} bytes).`);
+      }
+      offset += written;
+    }
     fs.fsyncSync(fd);
   } finally {
     try {
@@ -65,10 +74,15 @@ function validateWasmSync(wasmPath, expectedSize) {
   }
 
   // Fail fast on corrupted/partial writes.
-  // WebAssembly.validate expects a typed array or ArrayBuffer.
-  const ok = WebAssembly.validate(new Uint8Array(bytes));
-  if (!ok) {
-    throw new Error(`WASM validation failed after copy: ${wasmPath}`);
+  // `WebAssembly.validate()` is a quick check, but compiling gives us a stronger
+  // signal (and better errors) when something has truncated/altered the bytes.
+  try {
+    // Buffer is a Uint8Array, and WebAssembly.Module accepts BufferSource.
+    const module = new WebAssembly.Module(bytes);
+    void module;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    throw new Error(`WASM compilation failed after copy: ${wasmPath}: ${message}`);
   }
 }
 

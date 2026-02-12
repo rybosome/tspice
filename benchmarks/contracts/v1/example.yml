@@ -1,0 +1,8 @@
+schemaVersion: 1
+suite: example
+
+benchmarks:
+  - id: noop
+    kind: micro
+    cases:
+      - call: "noop"

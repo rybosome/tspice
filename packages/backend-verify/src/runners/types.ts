@@ -19,6 +19,7 @@ export type SpiceErrorState = {
 };
 
 export type RunnerErrorReport = {
+  code?: string;
   name?: string;
   message: string;
   stack?: string;
@@ -32,4 +33,5 @@ export type RunCaseResult =
 export interface CaseRunner {
   readonly kind: string;
   runCase(input: RunCaseInput): Promise<RunCaseResult>;
+  dispose?(): Promise<void> | void;
 }
