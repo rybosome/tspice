@@ -392,7 +392,7 @@ export async function createWasmBackend(
     ...createKernelPoolApi(module),
     ...createIdsNamesApi(module),
     ...createFramesApi(module),
-    ...createEphemerisApi(module),
+    ...createEphemerisApi(module, spiceHandles),
     ...createGeometryApi(module),
     ...createCoordsVectorsApi(module),
     ...createFileIoApi(module, spiceHandles),

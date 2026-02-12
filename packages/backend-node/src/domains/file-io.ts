@@ -3,10 +3,12 @@ import type {
   FileIoApi,
   FoundDlaDescriptor,
   SpiceHandle,
+  VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
 import type { SpiceHandleRegistry, SpiceHandleKind } from "../runtime/spice-handles.js";
 const I32_MIN = -2147483648;
 const I32_MAX = 2147483647;
@@ -56,7 +58,7 @@ function normalizeFoundDlaDescriptor(value: unknown, context: string): FoundDlaD
   return { found: true, descr: obj.descr };
 }
 
-export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistry): FileIoApi {
+export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistry, outputs: VirtualOutputStager): FileIoApi {
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(
       handle,
@@ -84,6 +86,14 @@ export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistr
       invariant(typeof obj.arch === "string", "Expected getfat().arch to be a string");
       invariant(typeof obj.type === "string", "Expected getfat().type to be a string");
       return { arch: obj.arch, type: obj.type };
+    },
+
+    readVirtualOutput: (output: VirtualOutput) => {
+      invariant(output && typeof output === "object", "readVirtualOutput(output): expected an object");
+      const obj = output as { kind?: unknown; path?: unknown };
+      invariant(obj.kind === "virtual-output", "readVirtualOutput(output): expected kind='virtual-output'");
+      invariant(typeof obj.path === "string", "readVirtualOutput(output): expected path to be a string");
+      return outputs.readVirtualOutput({ kind: "virtual-output", path: obj.path });
     },
 
     dafopr: (path: string) => handles.register("DAF", native.dafopr(path)),

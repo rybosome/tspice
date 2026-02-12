@@ -135,6 +135,25 @@ export type NativeAddon = {
     obs: string
   ): { pos: number[]; lt: number };
 
+  // --- SPK writers ---
+
+  spkopn(path: string, ifname: string, ncomch: number): number;
+  spkopa(path: string): number;
+  spkcls(handle: number): void;
+  spkw08(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[],
+    epoch1: number,
+    step: number,
+  ): void;
+
   subpnt(
     method: string,
     target: string,

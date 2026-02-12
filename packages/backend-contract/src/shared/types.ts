@@ -5,6 +5,19 @@ export type KernelSource =
       bytes: Uint8Array;
     };
 
+/**
+ * Virtual output reference used by writer APIs.
+ *
+ * - In the WASM backend, `path` is treated as a *virtual* identifier under
+ *   the backend's virtual filesystem (currently rooted at `/kernels`).
+ * - In the Node backend, implementations may stage virtual outputs to a temp
+ *   file and allow reading bytes back via `readVirtualOutput()`.
+ */
+export type VirtualOutput = {
+  kind: "virtual-output";
+  path: string;
+};
+
 /** Kernel types used by summary/introspection APIs. */
 export type KernelKind =
   | "ALL"

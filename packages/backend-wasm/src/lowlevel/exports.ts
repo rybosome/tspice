@@ -277,6 +277,40 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+
+  // --- SPK writers ---
+  _tspice_spkopn(
+    pathPtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkopa(
+    pathPtr: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkcls(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_spkw08(
+    handle: number,
+    body: number,
+    center: number,
+    framePtr: number,
+    first: number,
+    last: number,
+    segidPtr: number,
+    degree: number,
+    n: number,
+    states6nPtr: number,
+    epoch1: number,
+    step: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // Derived geometry primitives
   _tspice_subpnt(
     methodPtr: number,
@@ -1059,6 +1093,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_sxform",
   "_tspice_spkezr",
   "_tspice_spkpos",
+  "_tspice_spkopn",
+  "_tspice_spkopa",
+  "_tspice_spkw08",
+  "_tspice_spkcls",
   "_tspice_subpnt",
   "_tspice_subslr",
   "_tspice_sincpt",

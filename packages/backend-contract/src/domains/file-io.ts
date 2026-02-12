@@ -5,7 +5,7 @@
 * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
 */
 
-import type { SpiceHandle } from "../shared/types.js";
+import type { SpiceHandle, VirtualOutput } from "../shared/types.js";
 
 /**
 * Plain-object representation of CSPICE `SpiceDLADescr`.
@@ -45,6 +45,9 @@ export interface FileIoApi {
 
   /** Determine SPICE file architecture + type (see `getfat_c`). */
   getfat(path: string): { arch: string; type: string };
+
+  /** Read back bytes for a previously-created virtual output file. */
+  readVirtualOutput(output: VirtualOutput): Uint8Array;
 
   // --- DAF -----------------------------------------------------------------
 

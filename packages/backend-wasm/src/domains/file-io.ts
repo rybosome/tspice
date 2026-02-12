@@ -3,6 +3,7 @@ import type {
   FileIoApi,
   FoundDlaDescriptor,
   SpiceHandle,
+  VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import { assertSpiceInt32NonNegative } from "@rybosome/tspice-backend-contract";
 
@@ -201,6 +202,23 @@ export function createFileIoApi(module: EmscriptenModule, handles: SpiceHandleRe
       } finally {
         module._free(pathPtr);
       }
+    },
+
+    readVirtualOutput: (output: VirtualOutput) => {
+      if (typeof output !== "object" || output === null) {
+        throw new Error("readVirtualOutput(output): expected an object");
+      }
+      const obj = output as { kind?: unknown; path?: unknown };
+      if (obj.kind !== "virtual-output") {
+        throw new Error("readVirtualOutput(output): expected kind='virtual-output'");
+      }
+      if (typeof obj.path !== "string") {
+        throw new Error("readVirtualOutput(output): expected path to be a string");
+      }
+
+      const resolved = resolveKernelPath(obj.path);
+      // Emscripten returns a Uint8Array for binary reads.
+      return module.FS.readFile(resolved, { encoding: "binary" });
     },
 
     dafopr: (path: string) => {
