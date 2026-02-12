@@ -2,7 +2,7 @@ import * as path from "node:path";
 import crypto from "node:crypto";
 import { readFile, realpath } from "node:fs/promises";
 
-import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+import { spiceClients, type SpiceBackend } from "@rybosome/tspice";
 
 import {
   resolveMetaKernelKernelsToLoad,
@@ -132,34 +132,13 @@ async function createBackendForRunner(
   backend: TspiceRunnerBackend,
 ): Promise<{ backend: SpiceBackend; kind: string }> {
   const createNodeBackend = async (): Promise<SpiceBackend> => {
-    try {
-      // Keep this import non-static so JS-only CI can run without building the
-      // native backend package.
-      const nodeBackendSpecifier = "@rybosome/tspice-backend-" + "node";
-      const { createNodeBackend } = (await import(nodeBackendSpecifier)) as {
-        createNodeBackend: () => SpiceBackend;
-      };
-
-      return createNodeBackend();
-    } catch (error) {
-      throw new Error(
-        `Failed to load native backend (required for backend="node"): ${String(error)}`,
-      );
-    }
+    const { spice } = await spiceClients.toSync({ backend: "node" });
+    return spice.raw;
   };
 
   const createWasmBackend = async (): Promise<SpiceBackend> => {
-    try {
-      const { createWasmBackend } = (await import("@rybosome/tspice-backend-wasm")) as {
-        createWasmBackend: () => Promise<SpiceBackend>;
-      };
-
-      return await createWasmBackend();
-    } catch (error) {
-      throw new Error(
-        `Failed to load WASM backend (required for backend="wasm"): ${String(error)}`,
-      );
-    }
+    const { spice } = await spiceClients.toSync({ backend: "wasm" });
+    return spice.raw;
   };
 
   if (backend === "node") {
