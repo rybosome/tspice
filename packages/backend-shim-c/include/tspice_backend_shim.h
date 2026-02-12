@@ -149,6 +149,43 @@ int tspice_dlafns(
 // Close a DLA handle (DLA is DAS-backed).
 int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
+// --- DSK -------------------------------------------------------------------
+
+int tspice_dskobj(const char *dsk, uintptr_t bodidsCellHandle, char *err, int errMaxBytes);
+
+int tspice_dsksrf(
+    const char *dsk,
+    int bodyid,
+    uintptr_t srfidsCellHandle,
+    char *err,
+    int errMaxBytes);
+
+// `outInts6` layout:
+// [surfce, center, dclass, dtype, frmcde, corsys]
+//
+// `outDoubles18` layout:
+// [corpar(10), co1min, co1max, co2min, co2max, co3min, co3max, start, stop]
+int tspice_dskgd(
+    int handle,
+    const int32_t *dladscInts8,
+    int32_t *outInts6,
+    double *outDoubles18,
+    char *err,
+    int errMaxBytes);
+
+// `outInts10` layout:
+// [nv, np, nvxtot, vgrext(3), cgscal, vtxnpl, voxnpt, voxnpl]
+//
+// `outDoubles10` layout:
+// [vtxbds(6), voxsiz, voxori(3)]
+int tspice_dskb02(
+    int handle,
+    const int32_t *dladscInts8,
+    int32_t *outInts10,
+    double *outDoubles10,
+    char *err,
+    int errMaxBytes);
+
 // --- Kernel pool -----------------------------------------------------------
 
 int tspice_gdpool(

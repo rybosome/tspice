@@ -78,7 +78,10 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
     const backend = await createWasmBackend();
 
     const { dsk } = await loadTestKernels();
-    const dskKernel = { path: "bc_mpo_sc_mga_v00.bds", bytes: dsk };
+    const dskKernel = {
+      path: "apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
+      bytes: dsk,
+    };
 
     // Ensure the bytes exist on the emscripten FS.
     backend.furnsh(dskKernel);

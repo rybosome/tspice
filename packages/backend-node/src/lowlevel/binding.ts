@@ -50,6 +50,11 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.dlabfs === "function", "Expected native addon to export dlabfs(handle)");
   invariant(typeof native.dlafns === "function", "Expected native addon to export dlafns(handle, descr)");
 
+  invariant(typeof native.dskobj === "function", "Expected native addon to export dskobj(dsk, bodids)");
+  invariant(typeof native.dsksrf === "function", "Expected native addon to export dsksrf(dsk, bodyid, srfids)");
+  invariant(typeof native.dskgd === "function", "Expected native addon to export dskgd(handle, dladsc)");
+  invariant(typeof native.dskb02 === "function", "Expected native addon to export dskb02(handle, dladsc)");
+
   invariant(typeof native.bodn2c === "function", "Expected native addon to export bodn2c(name)");
   invariant(typeof native.bodc2n === "function", "Expected native addon to export bodc2n(code)");
   invariant(typeof native.namfrm === "function", "Expected native addon to export namfrm(name)");
