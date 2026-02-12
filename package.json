@@ -6,6 +6,7 @@
   "packageManager": "pnpm@10.13.1",
   "scripts": {
     "check": "pnpm run check:js",
+    "check:standards": "pnpm -C packages/repo-standards run build && node packages/repo-standards/dist/cli.js",
     "check:compliance": "node scripts/check-compliance-files.mjs",
     "check:versions": "node scripts/verify-native-package-versions.mjs",
     "format:check": "pnpm -C apps/orrery run format:check",
