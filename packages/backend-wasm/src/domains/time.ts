@@ -345,7 +345,15 @@ export function createTimeApi(module: EmscriptenModule, toolkitVersion: string):
       }
       return tspiceCallTparse(module, timstr);
     },
-    tpictr: (sample, pictur) => tspiceCallTpictr(module, sample, pictur),
+    tpictr: (sample, pictur) => {
+      if (sample.length === 0) {
+        throw new RangeError("tpictr(): sample must be a non-empty string");
+      }
+      if (pictur.length === 0) {
+        throw new RangeError("tpictr(): pictur must be a non-empty string");
+      }
+      return tspiceCallTpictr(module, sample, pictur);
+    },
 
     scs2e: (sc, sclkch) => tspiceCallScs2e(module, sc, sclkch),
     sce2s: (sc, et) => tspiceCallSce2s(module, sc, et),

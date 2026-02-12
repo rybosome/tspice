@@ -79,6 +79,12 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     },
 
     tpictr: (sample, pictur) => {
+      if (sample.length === 0) {
+        throw new RangeError("tpictr(): sample must be a non-empty string");
+      }
+      if (pictur.length === 0) {
+        throw new RangeError("tpictr(): pictur must be a non-empty string");
+      }
       const out = native.tpictr(sample, pictur);
       invariant(typeof out === "string", "Expected tpictr() to return a string");
       return out;

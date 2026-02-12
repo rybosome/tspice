@@ -194,6 +194,11 @@ describe("primitives parity (node vs wasm)", () => {
       const longTemplate = " ".repeat(80);
       const shortTemplate = "X";
 
+      expect(() => node.tpictr("", shortTemplate)).toThrow(RangeError);
+      expect(() => wasm.tpictr("", shortTemplate)).toThrow(RangeError);
+      expect(() => node.tpictr(tpictrSampleA, "")).toThrow(RangeError);
+      expect(() => wasm.tpictr(tpictrSampleA, "")).toThrow(RangeError);
+
       const pictNodeALong = node.tpictr(tpictrSampleA, longTemplate);
       const pictWasmALong = wasm.tpictr(tpictrSampleA, longTemplate);
       expect(pictNodeALong).toBe(pictWasmALong);

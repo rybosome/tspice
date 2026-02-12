@@ -1181,7 +1181,13 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return (ms - J2000_UTC_MS) / 1000;
     },
 
-    tpictr: (_sample, pictur) => {
+    tpictr: (sample, pictur) => {
+      if (sample.length === 0) {
+        throw new RangeError("tpictr(): sample must be a non-empty string");
+      }
+      if (pictur.length === 0) {
+        throw new RangeError("tpictr(): pictur must be a non-empty string");
+      }
       // Picture transformation is out of scope for the fake backend.
       return pictur;
     },
