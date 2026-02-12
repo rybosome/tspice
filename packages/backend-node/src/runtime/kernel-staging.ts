@@ -51,13 +51,20 @@ export function createKernelStager(): KernelStager {
   }
 
   function isVirtualKernelId(input: string): boolean {
-    // Virtual kernel identifiers are POSIX-style and either already use the
-    // shared `/kernels/...` namespace, or are relative identifiers that can be
-    // normalized into that namespace.
-    return input.startsWith(VIRTUAL_KERNEL_ROOT) || !path.isAbsolute(input);
+    // Virtual kernel identifiers are explicit and POSIX-style.
+    //
+    // We *do not* treat arbitrary relative OS paths as virtual identifiers,
+    // since that would be surprising for Node consumers (e.g. `./naif0012.tls`).
+    return input.startsWith(VIRTUAL_KERNEL_ROOT) || input.startsWith("kernels/");
   }
 
   function tryCanonicalVirtualKernelPath(input: string): string | undefined {
+    // Treat absolute OS paths as OS paths unless the caller explicitly opted
+    // into the virtual namespace.
+    if (path.isAbsolute(input) && !input.startsWith(VIRTUAL_KERNEL_ROOT)) {
+      return undefined;
+    }
+
     // If this is a real on-disk absolute path, treat it as an OS path.
     //
     // This matters on POSIX because `/kernels/...` is a valid absolute path and

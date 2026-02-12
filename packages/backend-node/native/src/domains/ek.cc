@@ -148,6 +148,11 @@ static void Ekcls(const Napi::CallbackInfo& info) {
     return;
   }
 
+  if (handle <= 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected handle to be > 0"));
+    return;
+  }
+
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ekcls(handle, err, (int)sizeof(err));
@@ -227,6 +232,11 @@ static Napi::Number Eknseg(const Napi::CallbackInfo& info) {
 
   int32_t handle = 0;
   if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return Napi::Number::New(env, 0);
+  }
+
+  if (handle <= 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected handle to be > 0"));
     return Napi::Number::New(env, 0);
   }
 
