@@ -510,12 +510,18 @@ static int tspice_ek_sum_entszs(
     if (isNull != 0 && isNull != 1) {
       return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ek_sum_entszs: nlflgs must contain only 0/1");
     }
-    if (sz < 1) {
-      return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ek_sum_entszs: entszs must contain only values >= 1");
-    }
-    if (isNull == 1 && sz != 1) {
-      // NULL entries are expected to have size 1 in CSPICE EK semantics.
-      return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ek_sum_entszs: NULL entries must have entszs[i]==1");
+    // CSPICE semantics:
+    // - nlflgs[i] indicates whether the row entry is NULL.
+    // - For NULL entries, entszs[i] may be 0 (and is allowed to be any value >= 0).
+    // - For non-NULL entries, entszs[i] must be >= 1.
+    if (isNull == 1) {
+      if (sz < 0) {
+        return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ek_sum_entszs: NULL entries must have entszs[i] >= 0");
+      }
+    } else {
+      if (sz < 1) {
+        return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ek_sum_entszs: non-NULL entries must have entszs[i] >= 1");
+      }
     }
 
     sum += (long long)sz;
@@ -768,6 +774,7 @@ int tspice_ekaclc(
     int nrows,
     int nvals,
     int vallen,
+    int cvalsMaxBytes,
     const char *cvals,
     const int *entszs,
     const int *nlflgs,
@@ -807,6 +814,9 @@ int tspice_ekaclc(
   if (vallen < 1) {
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekaclc: vallen must be > 0");
   }
+  if (cvalsMaxBytes < 0) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekaclc: cvalsMaxBytes must be >= 0");
+  }
 
   int required = 0;
   const int sumCode = tspice_ek_sum_entszs(nrows, entszs, nlflgs, &required, err, errMaxBytes);
@@ -815,6 +825,16 @@ int tspice_ekaclc(
   }
   if (nvals != required) {
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekaclc: nvals must match sum(entszs)");
+  }
+
+  // Ensure the caller-provided `cvals` buffer is large enough to safely read
+  // `nvals` fixed-width strings (each of width `vallen`).
+  const long long requiredBytes = (long long)nvals * (long long)vallen;
+  if (requiredBytes < 0 || requiredBytes > 2147483647LL) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekaclc: cvals byte size overflow");
+  }
+  if ((long long)cvalsMaxBytes < requiredBytes) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekaclc: cvalsMaxBytes must be >= nvals*vallen");
   }
 
   SpiceInt *wkindx = (SpiceInt *)malloc((size_t)nrows * sizeof(SpiceInt));

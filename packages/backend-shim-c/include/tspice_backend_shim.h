@@ -273,6 +273,7 @@ int tspice_ekaclc(
     int nrows,
     int nvals,
     int vallen,
+    int cvalsMaxBytes,
     const char *cvals,
     const int *entszs,
     const int *nlflgs,

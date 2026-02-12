@@ -3,13 +3,19 @@ import { assertSpiceInt32, assertSpiceInt32NonNegative } from "@rybosome/tspice-
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
+import { WASM_ERR_MAX_BYTES, WASM_MAX_ALLOC_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
 import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
 
 const UTF8_ENCODER = new TextEncoder();
+
+const INT32_MAX = 2_147_483_647;
+// Keep parity with the Node backend's `kMaxEkArrayLen`.
+const kMaxEkArrayLen = 1_000_000;
+// Prevent pathological `vallen` from forcing enormous allocations.
+const kMaxEkVallenBytes = 1_000_000;
 
 function writeFixedWidthStringArray(
   module: Pick<EmscriptenModule, "HEAPU8">,
@@ -32,10 +38,30 @@ function writeFixedWidthStringArray(
   }
 }
 
-function sumEntszs(entszs: readonly number[]): number {
+function sumEntszsChecked(entszs: readonly number[], nlflgs: readonly unknown[], context: string): number {
+  if (entszs.length !== nlflgs.length) {
+    throw new RangeError(`${context}: expected entszs.length === nlflgs.length`);
+  }
+
   let sum = 0;
-  for (const v of entszs) {
-    sum += v;
+  for (let i = 0; i < entszs.length; i++) {
+    const isNull = nlflgs[i];
+    if (typeof isNull !== "boolean") {
+      throw new TypeError(`${context}: expected nlflgs[${i}] to be a boolean`);
+    }
+
+    // CSPICE semantics (keep parity with the C shim + Node addon):
+    // - NULL entries may have entszs[i] == 0 (and are allowed to be any value >= 0)
+    // - non-NULL entries must have entszs[i] >= 1
+    assertSpiceInt32(entszs[i]!, `${context}(entszs[${i}])`, { min: isNull ? 0 : 1 });
+
+    sum += entszs[i]!;
+    if (sum > INT32_MAX) {
+      throw new RangeError(`${context}: sum(entszs) overflow (max ${INT32_MAX})`);
+    }
+    if (sum > kMaxEkArrayLen) {
+      throw new RangeError(`${context}: sum(entszs) must be <= ${kMaxEkArrayLen}`);
+    }
   }
   return sum;
 }
@@ -472,11 +498,11 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
         throw new RangeError("ekacli(): expected rcptrs.length > 0");
       }
 
-      for (let i = 0; i < entszs.length; i++) {
-        assertSpiceInt32(entszs[i]!, `ekacli(entszs[${i}])`, { min: 1 });
+      if (nrows > kMaxEkArrayLen) {
+        throw new RangeError(`ekacli(): expected nrows <= ${kMaxEkArrayLen}`);
       }
 
-      const required = sumEntszs(entszs);
+      const required = sumEntszsChecked(entszs, nlflgs, "ekacli()");
       if (ivals.length !== required) {
         throw new RangeError("ekacli(): expected ivals.length === sum(entszs)");
       }
@@ -535,11 +561,11 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
         throw new RangeError("ekacld(): expected rcptrs.length > 0");
       }
 
-      for (let i = 0; i < entszs.length; i++) {
-        assertSpiceInt32(entszs[i]!, `ekacld(entszs[${i}])`, { min: 1 });
+      if (nrows > kMaxEkArrayLen) {
+        throw new RangeError(`ekacld(): expected nrows <= ${kMaxEkArrayLen}`);
       }
 
-      const required = sumEntszs(entszs);
+      const required = sumEntszsChecked(entszs, nlflgs, "ekacld()");
       if (dvals.length !== required) {
         throw new RangeError("ekacld(): expected dvals.length === sum(entszs)");
       }
@@ -598,11 +624,11 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
         throw new RangeError("ekaclc(): expected rcptrs.length > 0");
       }
 
-      for (let i = 0; i < entszs.length; i++) {
-        assertSpiceInt32(entszs[i]!, `ekaclc(entszs[${i}])`, { min: 1 });
+      if (nrows > kMaxEkArrayLen) {
+        throw new RangeError(`ekaclc(): expected nrows <= ${kMaxEkArrayLen}`);
       }
 
-      const required = sumEntszs(entszs);
+      const required = sumEntszsChecked(entszs, nlflgs, "ekaclc()");
       if (cvals.length !== required) {
         throw new RangeError("ekaclc(): expected cvals.length === sum(entszs)");
       }
@@ -611,7 +637,22 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
 
       let vallen = 1;
       for (const s of cvals) {
-        vallen = Math.max(vallen, UTF8_ENCODER.encode(s).length + 1);
+        const bytes = UTF8_ENCODER.encode(s).length + 1;
+        if (bytes > kMaxEkVallenBytes) {
+          throw new RangeError(`ekaclc(): value byte length exceeds cap (${kMaxEkVallenBytes})`);
+        }
+        vallen = Math.max(vallen, bytes);
+      }
+
+      if (nvals > kMaxEkArrayLen) {
+        throw new RangeError(`ekaclc(): expected nvals <= ${kMaxEkArrayLen}`);
+      }
+      if (!Number.isSafeInteger(nvals * vallen)) {
+        throw new RangeError("ekaclc(): cvals buffer size overflow");
+      }
+      const cvalsMaxBytes = nvals * vallen;
+      if (cvalsMaxBytes > WASM_MAX_ALLOC_BYTES) {
+        throw new RangeError(`ekaclc(): cvals buffer too large (${cvalsMaxBytes} bytes)`);
       }
 
       const nativeHandle = lookup(handle).nativeHandle;
@@ -634,6 +675,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
               nrows,
               nvals,
               vallen,
+              cvalsMaxBytes,
               cvalsPtr,
               entszsPtr,
               nlflgsPtr,

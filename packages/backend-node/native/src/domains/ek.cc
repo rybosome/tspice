@@ -184,15 +184,56 @@ static bool ReadBoolArrayChecked(
   return true;
 }
 
-static int SumEntszs(const std::vector<int>& entszs) {
+static bool SumEntszsChecked(
+    const std::vector<int>& entszs,
+    const std::vector<int>& nlflgs,
+    int* outSum,
+    std::string* outErr) {
+  if (!outSum) return false;
+  *outSum = 0;
+
+  if (entszs.size() != nlflgs.size()) {
+    if (outErr) *outErr = "expected entszs.length === nlflgs.length";
+    return false;
+  }
+
   long long sum = 0;
-  for (int v : entszs) {
-    sum += (long long)v;
+  for (size_t i = 0; i < entszs.size(); i++) {
+    const int sz = entszs[i];
+    const int isNull = nlflgs[i];
+    if (isNull != 0 && isNull != 1) {
+      if (outErr) *outErr = "expected nlflgs to contain only booleans";
+      return false;
+    }
+
+    // Keep parity with the backend shim (CSPICE semantics):
+    // - NULL entries may have entszs[i] == 0 (and are allowed to be any value >= 0)
+    // - non-NULL entries must have entszs[i] >= 1
+    if (isNull == 1) {
+      if (sz < 0) {
+        if (outErr) *outErr = std::string("expected entszs[") + std::to_string(i) + "] >= 0 when nlflgs[i] is true";
+        return false;
+      }
+    } else {
+      if (sz < 1) {
+        if (outErr) *outErr = std::string("expected entszs[") + std::to_string(i) + "] >= 1 when nlflgs[i] is false";
+        return false;
+      }
+    }
+
+    sum += (long long)sz;
+    if (sum > (long long)std::numeric_limits<int>::max()) {
+      if (outErr) *outErr = "sum(entszs) overflow";
+      return false;
+    }
+    if (sum > (long long)kMaxEkArrayLen) {
+      if (outErr) *outErr = std::string("sum(entszs) must be <= ") + std::to_string(kMaxEkArrayLen);
+      return false;
+    }
   }
-  if (sum < 0 || sum > (long long)std::numeric_limits<int>::max()) {
-    return -1;
-  }
-  return (int)sum;
+
+  *outSum = (int)sum;
+  return true;
 }
 
 }  // namespace
@@ -679,6 +720,12 @@ static Napi::Object Ekifld(const Napi::CallbackInfo& info) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekifld() expects nrows > 0"));
     return Napi::Object::New(env);
   }
+  if ((uint32_t)nrows > kMaxEkArrayLen) {
+    ThrowSpiceError(Napi::RangeError::New(
+        env,
+        std::string("ekifld() expects nrows <= ") + std::to_string(kMaxEkArrayLen)));
+    return Napi::Object::New(env);
+  }
 
   const std::string tabnam = info[1].As<Napi::String>().Utf8Value();
   if (!ValidateNonEmptyString(env, "ekifld", "tabnam", tabnam)) {
@@ -802,8 +849,13 @@ static void Ekacli(const Napi::CallbackInfo& info) {
     return;
   }
 
-  const int required = SumEntszs(entszs);
-  if (required < 0 || (int)ivals.size() != required) {
+  int required = 0;
+  std::string sumErr;
+  if (!SumEntszsChecked(entszs, nlflgs, &required, &sumErr)) {
+    ThrowSpiceError(Napi::RangeError::New(env, std::string("ekacli() invalid entszs/nlflgs: ") + sumErr));
+    return;
+  }
+  if ((int)ivals.size() != required) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekacli() expects ivals.length === sum(entszs)"));
     return;
   }
@@ -871,8 +923,13 @@ static void Ekacld(const Napi::CallbackInfo& info) {
     return;
   }
 
-  const int required = SumEntszs(entszs);
-  if (required < 0 || (int)dvals.size() != required) {
+  int required = 0;
+  std::string sumErr;
+  if (!SumEntszsChecked(entszs, nlflgs, &required, &sumErr)) {
+    ThrowSpiceError(Napi::RangeError::New(env, std::string("ekacld() invalid entszs/nlflgs: ") + sumErr));
+    return;
+  }
+  if ((int)dvals.size() != required) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekacld() expects dvals.length === sum(entszs)"));
     return;
   }
@@ -940,8 +997,13 @@ static void Ekaclc(const Napi::CallbackInfo& info) {
     return;
   }
 
-  const int required = SumEntszs(entszs);
-  if (required < 0 || (int)cvals.values.size() != required) {
+  int required = 0;
+  std::string sumErr;
+  if (!SumEntszsChecked(entszs, nlflgs, &required, &sumErr)) {
+    ThrowSpiceError(Napi::RangeError::New(env, std::string("ekaclc() invalid entszs/nlflgs: ") + sumErr));
+    return;
+  }
+  if ((int)cvals.values.size() != required) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekaclc() expects cvals.length === sum(entszs)"));
     return;
   }
@@ -952,6 +1014,19 @@ static void Ekaclc(const Napi::CallbackInfo& info) {
   }
 
   const size_t nvals = cvals.values.size();
+  if (nvals > 0 && nvals > (size_t)std::numeric_limits<int>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "ekaclc() expects nvals to fit in int32"));
+    return;
+  }
+  if (nvals > 0 && vallen > (size_t)std::numeric_limits<int>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "ekaclc() expects vallen to fit in int32"));
+    return;
+  }
+  if (nvals > 0 && vallen > 0 && nvals > ((size_t)std::numeric_limits<int>::max() / vallen)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "ekaclc() cvals buffer size overflow"));
+    return;
+  }
+
   std::vector<char> cvalsBuf(nvals * vallen);
   std::fill(cvalsBuf.begin(), cvalsBuf.end(), '\0');
   for (size_t i = 0; i < nvals; i++) {
@@ -969,6 +1044,7 @@ static void Ekaclc(const Napi::CallbackInfo& info) {
       (int)rcptrs.size(),
       (int)nvals,
       (int)vallen,
+      (int)cvalsBuf.size(),
       cvalsBuf.data(),
       entszs.data(),
       nlflgs.data(),

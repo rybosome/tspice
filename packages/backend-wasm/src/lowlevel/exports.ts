@@ -225,6 +225,7 @@ export type EmscriptenModule = {
     nrows: number,
     nvals: number,
     vallen: number,
+    cvalsMaxBytes: number,
     cvalsPtr: number,
     entszsPtr: number,
     nlflgsPtr: number,
