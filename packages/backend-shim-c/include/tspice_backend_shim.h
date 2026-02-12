@@ -293,7 +293,7 @@ int tspice_unitim(
     char *err,
     int errMaxBytes);
 
-// tparse_c: parse a time string -> ET seconds past J2000.
+// tparse_c: parse a UTC time string -> UTC seconds past J2000 (formal calendar; no leap seconds).
 int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes);
 
 // tpictr_c: create a time picture from a sample time string.

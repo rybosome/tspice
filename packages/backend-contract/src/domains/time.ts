@@ -52,9 +52,14 @@ export interface TimeApi {
   // --- parsing + formatting ------------------------------------------------
 
   /**
-   * Parse a time string to ET seconds past J2000.
+   * Parse a UTC time string to **UTC seconds past J2000**.
    *
-   * Statefulness: this is affected by TIMDEF defaults (SYSTEM/CALENDAR/ZONE).
+   * This uses SPICE's "formal calendar" (fixed 86400-second days) and does **not**
+   * account for leap seconds.
+   *
+   * Limitations:
+   * - UTC-only: `timstr` must not include time system labels (e.g. `TDB`) or
+   *   time zone designators/offsets (e.g. `PDT`, `UTC+05:00`).
    *
    * Kernel prerequisites:
    * - None.

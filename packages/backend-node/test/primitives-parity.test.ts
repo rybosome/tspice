@@ -146,12 +146,30 @@ describe("primitives parity (node vs wasm)", () => {
       const etWasm = wasm.str2et(time);
       expectClose(etNode, etWasm);
 
-      // `tparse` parses an ephemeris-time string and returns seconds past J2000.
-      // For an ambiguous input like this, `tparse` will not generally agree with
-      // `str2et` unless TIMDEF SYSTEM is set accordingly.
+      // Leading whitespace in time pictures is meaningful; preserve it (no `.trim()`).
+      const timoutLeadingPicture = "::UTC  YYYY-MON-DD HR:MN:SC.###";
+      const timoutLeadingNode = node.timout(etNode, timoutLeadingPicture);
+      const timoutLeadingWasm = wasm.timout(etWasm, timoutLeadingPicture);
+      expect(timoutLeadingNode).toBe(timoutLeadingWasm);
+      expect(timoutLeadingNode.startsWith("  ")).toBe(true);
+      expect(timoutLeadingWasm.startsWith("  ")).toBe(true);
+
+      // `tparse` parses a UTC time string and returns UTC seconds past J2000 on a
+      // formal calendar (fixed 86400-second days; no leap seconds). It is
+      // UTC-only and does not consult TIMDEF SYSTEM/ZONE.
       const sp2000Node = node.tparse(time);
       const sp2000Wasm = wasm.tparse(time);
       expectClose(sp2000Node, sp2000Wasm);
+
+      // `tparse_c` is UTC-only and rejects time systems/zones in the input string.
+      for (const bad of [
+        "2000-01-01T12:00:00 TDB",
+        "2000-01-01T12:00:00 PDT",
+        "2000-01-01T12:00:00+05:00",
+      ]) {
+        expect(() => node.tparse(bad)).toThrow();
+        expect(() => wasm.tparse(bad)).toThrow();
+      }
 
       const deltaNode = node.deltet(etNode, "ET");
       const deltaWasm = wasm.deltet(etWasm, "ET");

@@ -5,7 +5,7 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
-import { writeUtf8CString } from "../codec/strings.js";
+import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 
 /**
 * Max byte size for string outputs from CSPICE time calls (`et2utc_c`, `timout_c`).
@@ -70,7 +70,7 @@ function tspiceCallEt2utc(
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
-      return module.UTF8ToString(outPtr, outMaxBytes).trim();
+      return readFixedWidthCString(module, outPtr, outMaxBytes);
     });
   });
 }
@@ -92,7 +92,7 @@ function tspiceCallTimout(module: EmscriptenModule, et: number, picture: string)
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
-      return module.UTF8ToString(outPtr, outMaxBytes).trim();
+      return readFixedWidthCString(module, outPtr, outMaxBytes);
     });
   });
 }
@@ -168,7 +168,7 @@ function tspiceCallTpictr(module: EmscriptenModule, sample: string, picturIn: st
         if (result !== 0) {
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
-        return module.UTF8ToString(outPtr, outMaxBytes).trim();
+        return readFixedWidthCString(module, outPtr, outMaxBytes);
       });
     });
   });
@@ -184,7 +184,7 @@ function tspiceCallTimdefGet(module: EmscriptenModule, item: string): string {
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
-      return module.UTF8ToString(outPtr, outMaxBytes).trim();
+      return readFixedWidthCString(module, outPtr, outMaxBytes);
     });
   });
 }
@@ -224,7 +224,7 @@ function tspiceCallSce2s(module: EmscriptenModule, sc: number, et: number): stri
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
-    return module.UTF8ToString(outPtr, outMaxBytes).trim();
+    return readFixedWidthCString(module, outPtr, outMaxBytes);
   });
 }
 
@@ -250,7 +250,7 @@ function tspiceCallScdecd(module: EmscriptenModule, sc: number, sclkdp: number):
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
-    return module.UTF8ToString(outPtr, outMaxBytes).trim();
+    return readFixedWidthCString(module, outPtr, outMaxBytes);
   });
 }
 
