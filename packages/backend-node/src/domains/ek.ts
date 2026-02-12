@@ -40,6 +40,14 @@ export function createEkApi<
   N extends NativeEkDeps,
   S extends KernelStagerEkDeps | undefined,
 >(native: N, handles: SpiceHandleRegistry, stager?: S): EkApi {
+  const registerEkHandle = (nativeHandle: number, context: string): SpiceHandle => {
+    invariant(
+      typeof nativeHandle === "number" && Number.isInteger(nativeHandle) && nativeHandle > 0,
+      `Expected native backend ${context} to return a positive integer handle`,
+    );
+    return handles.register("EK", nativeHandle);
+  };
+
   const resolvePath = (path: string) => {
     if (!stager) return path;
 
@@ -57,11 +65,11 @@ export function createEkApi<
   };
 
   const api = {
-    ekopr: (path: string) => handles.register("EK", native.ekopr(resolvePath(path))),
-    ekopw: (path: string) => handles.register("EK", native.ekopw(resolvePath(path))),
+    ekopr: (path: string) => registerEkHandle(native.ekopr(resolvePath(path)), "ekopr(path)"),
+    ekopw: (path: string) => registerEkHandle(native.ekopw(resolvePath(path)), "ekopw(path)"),
     ekopn: (path: string, ifname: string, ncomch: number) => {
       assertSpiceInt32NonNegative(ncomch, "ekopn(ncomch)");
-      return handles.register("EK", native.ekopn(resolvePath(path), ifname, ncomch));
+      return registerEkHandle(native.ekopn(resolvePath(path), ifname, ncomch), "ekopn(path,ifname,ncomch)");
     },
     ekcls: (handle: SpiceHandle) =>
       handles.close(handle, EK_ONLY, (e) => native.ekcls(e.nativeHandle), "ekcls"),
