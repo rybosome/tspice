@@ -2,6 +2,8 @@ import type {
   AbCorr,
   DlaDescriptor,
   Found,
+  IllumfResult,
+  IllumgResult,
   IluminResult,
   KernelData,
   KernelInfo,
@@ -10,11 +12,13 @@ import type {
   KernelSource,
   VirtualOutput,
   KernelPoolVarType,
+  Pl2nvcResult,
   SpiceBackend,
   SpiceHandle,
   SpiceIntCell,
   Mat3RowMajor,
   SpiceMatrix6x6,
+  SpicePlane,
   SpiceStateVector,
   SpiceVector3,
   SpkposResult,
@@ -209,6 +213,23 @@ function angleBetween(a: SpiceVector3, b: SpiceVector3): number {
   if (na === 0 || nb === 0) return 0;
   const c = clamp(vdot(a, b) / (na * nb), -1, 1);
   return Math.acos(c);
+}
+
+function ellipsoidSurfaceNormal(spoint: SpiceVector3, radii: SpiceVector3): SpiceVector3 {
+  const [x, y, z] = spoint;
+  const [a, b, c] = radii;
+
+  // Gradient of x^2/a^2 + y^2/b^2 + z^2/c^2 = 1 is [x/a^2, y/b^2, z/c^2]
+  if (!Number.isFinite(a) || !Number.isFinite(b) || !Number.isFinite(c) || a === 0 || b === 0 || c === 0) {
+    // If we don't have radii, fall back to the sphere assumption.
+    return vhat(spoint);
+  }
+
+  return vhat([
+    x / (a * a),
+    y / (b * b),
+    z / (c * c),
+  ]);
 }
 
 function canonicalizeZero(n: number): number {
@@ -829,6 +850,30 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     timeDefaults.set(item, value);
   }
+
+  const getBodyRadiiKm = (bodyId: number): SpiceVector3 => {
+    const key = `BODY${bodyId}_RADII`;
+    const entry = kernelPool.get(key);
+    if (entry?.type === "N" && entry.values.length >= 3) {
+      const a = entry.values[0];
+      const b = entry.values[1];
+      const c = entry.values[2];
+      if (
+        typeof a === "number" &&
+        typeof b === "number" &&
+        typeof c === "number" &&
+        Number.isFinite(a) &&
+        Number.isFinite(b) &&
+        Number.isFinite(c)
+      ) {
+        return [a, b, c];
+      }
+    }
+
+    // Fall back to a spherical body when RADII isn't available.
+    const r = getBodyRadiusKm(bodyId);
+    return [r, r, r];
+  };
 
   return {
     kind: "fake",
@@ -1505,6 +1550,91 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     spkobj: (_spk, _ids) => {
       throw new Error(spiceCellUnsupported);
     },
+    illumg: (_method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const frame = parseFrameName(fixref);
+      const inv = rotZRowMajor(FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et);
+
+      const spointJ = frame === "J2000" ? spoint : mxv(inv, spoint);
+
+      const srcState = getRelativeStateInJ2000(ilusrc, target, et);
+      const srcPosJ = [srcState[0], srcState[1], srcState[2]] as SpiceVector3;
+
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      // Vectors from surface point.
+      const srfToSrcJ = vsub(srcPosJ, spointJ);
+      const srfToObsJ = vsub(obsPosJ, spointJ);
+
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
+
+      const phase = angleBetween(srfToSrcJ, srfToObsJ);
+      const incdnc = angleBetween(normalJ, srfToSrcJ);
+      const emissn = angleBetween(normalJ, srfToObsJ);
+
+      const srfvecJ = vsub(spointJ, obsPosJ);
+      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+
+      return {
+        trgepc: et,
+        srfvec,
+        phase,
+        incdnc,
+        emissn,
+      } satisfies IllumgResult;
+    },
+
+    illumf: (_method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const frame = parseFrameName(fixref);
+      const inv = rotZRowMajor(FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et);
+
+      const spointJ = frame === "J2000" ? spoint : mxv(inv, spoint);
+
+      const srcState = getRelativeStateInJ2000(ilusrc, target, et);
+      const srcPosJ = [srcState[0], srcState[1], srcState[2]] as SpiceVector3;
+
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      // Vectors from surface point.
+      const srfToSrcJ = vsub(srcPosJ, spointJ);
+      const srfToObsJ = vsub(obsPosJ, spointJ);
+
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
+
+      const phase = angleBetween(srfToSrcJ, srfToObsJ);
+      const incdnc = angleBetween(normalJ, srfToSrcJ);
+      const emissn = angleBetween(normalJ, srfToObsJ);
+
+      const srfvecJ = vsub(spointJ, obsPosJ);
+
+      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+
+      const out = {
+        trgepc: et,
+        srfvec,
+        phase,
+        incdnc,
+        emissn,
+      } satisfies IllumgResult;
+
+      // NOTE: This fake backend defines:
+      // - visibl: point is visible if emission angle is <= 90deg
+      // - lit: point is lit if incidence angle is <= 90deg
+      const visibl = out.emissn <= Math.PI / 2;
+      const lit = out.incdnc <= Math.PI / 2;
+
+      return { ...out, visibl, lit } satisfies IllumfResult;
+    },
+
 
     spksfs: (body, et) => {
       assertSpiceInt32(body, "spksfs(body)");
@@ -1520,7 +1650,54 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       throw new Error("Fake backend: spkuds() is not implemented");
     },
 
-// --- SPK writers (not implemented in fake backend) ---
+    nvc2pl: (normal, konst) => {
+      if (!Array.isArray(normal) || normal.length !== 3) {
+        throw new TypeError("nvc2pl(normal, konst): normal must be a length-3 number[]");
+      }
+      for (let i = 0; i < 3; i++) {
+        const v = normal[i];
+        if (typeof v !== "number") {
+          throw new TypeError(`nvc2pl(normal, konst): normal[${i}] must be a number`);
+        }
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`nvc2pl(normal, konst): normal[${i}] must be a finite number`);
+        }
+      }
+      if (typeof konst !== "number") {
+        throw new TypeError("nvc2pl(normal, konst): konst must be a number");
+      }
+      if (!Number.isFinite(konst)) {
+        throw new RangeError("nvc2pl(normal, konst): konst must be a finite number");
+      }
+      return [normal[0], normal[1], normal[2], konst] satisfies SpicePlane;
+    },
+
+    pl2nvc: (plane) => {
+      if (!Array.isArray(plane) || plane.length !== 4) {
+        throw new TypeError("pl2nvc(plane): plane must be a length-4 number[]");
+      }
+      for (let i = 0; i < 4; i++) {
+        const v = plane[i];
+        if (typeof v !== "number") {
+          throw new TypeError(`pl2nvc(plane): plane[${i}] must be a number`);
+        }
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`pl2nvc(plane): plane[${i}] must be a finite number`);
+        }
+      }
+
+      const n = [plane[0], plane[1], plane[2]] as SpiceVector3;
+      const mag = vnorm(n);
+      if (mag === 0) {
+        throw new RangeError("pl2nvc(plane): plane is degenerate (normal must be non-zero)");
+      }
+      return {
+        normal: vscale(1 / mag, n),
+        konst: plane[3] / mag,
+      } satisfies Pl2nvcResult;
+    },
+
+    // --- SPK writers (not implemented in fake backend) ---
 
     spkopn: (_file: string | VirtualOutput, _ifname: string, _ncomch: number) => {
       throw new Error("Fake backend: spkopn() is not implemented");
@@ -1608,7 +1785,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const srfToSunJ = vsub(sunPosJ, spointJ);
       const srfToObsJ = vsub(obsPosJ, spointJ);
 
-      const normalJ = vhat(spointJ);
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
 
       const phase = angleBetween(srfToSunJ, srfToObsJ);
       const incdnc = angleBetween(normalJ, srfToSunJ);

@@ -162,6 +162,17 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export subslr(method, target, et, fixref, abcorr, observer)",
   );
   invariant(
+    typeof native.illumg === "function",
+    "Expected native addon to export illumg(method, target, ilusrc, et, fixref, abcorr, observer, spoint)",
+  );
+  invariant(
+    typeof native.illumf === "function",
+    "Expected native addon to export illumf(method, target, ilusrc, et, fixref, abcorr, observer, spoint)",
+  );
+  invariant(typeof native.nvc2pl === "function", "Expected native addon to export nvc2pl(normal, konst)");
+  invariant(typeof native.pl2nvc === "function", "Expected native addon to export pl2nvc(plane)");
+
+  invariant(
     typeof native.sincpt === "function",
     "Expected native addon to export sincpt(method, target, et, fixref, abcorr, observer, dref, dvec)",
   );

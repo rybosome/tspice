@@ -403,6 +403,61 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+
+  // Geometry classic
+  _tspice_illumg(
+    methodPtr: number,
+    targetPtr: number,
+    ilusrcPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    spoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outPhasePtr: number,
+    outIncdncPtr: number,
+    outEmissnPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_illumf(
+    methodPtr: number,
+    targetPtr: number,
+    ilusrcPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    spoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outPhasePtr: number,
+    outIncdncPtr: number,
+    outEmissnPtr: number,
+    outVisiblPtr: number,
+    outLitPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  // Plane helpers
+  _tspice_nvc2pl(
+    normal3Ptr: number,
+    konst: number,
+    outPlane4Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pl2nvc(
+    plane4Ptr: number,
+    outNormal3Ptr: number,
+    outKonstPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_spkssb(
     target: number,
     et: number,
@@ -1132,6 +1187,61 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+
+  // Geometry classic
+  _tspice_illumg(
+    methodPtr: number,
+    targetPtr: number,
+    ilusrcPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    spoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outPhasePtr: number,
+    outIncdncPtr: number,
+    outEmissnPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_illumf(
+    methodPtr: number,
+    targetPtr: number,
+    ilusrcPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    spoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outPhasePtr: number,
+    outIncdncPtr: number,
+    outEmissnPtr: number,
+    outVisiblPtr: number,
+    outLitPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  // Plane helpers
+  _tspice_nvc2pl(
+    normal3Ptr: number,
+    konst: number,
+    outPlane4Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pl2nvc(
+    plane4Ptr: number,
+    outNormal3Ptr: number,
+    outKonstPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_spkssb(
     target: number,
     et: number,
@@ -1443,6 +1553,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_spkezp",
   "_tspice_spkgeo",
   "_tspice_spkgps",
+  "_tspice_illumg",
+  "_tspice_illumf",
+  "_tspice_nvc2pl",
+  "_tspice_pl2nvc",
   "_tspice_spkssb",
   "_tspice_spkcov",
   "_tspice_spkobj",

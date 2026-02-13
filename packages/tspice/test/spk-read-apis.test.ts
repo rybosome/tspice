@@ -34,7 +34,7 @@ function expectStatesClose(a: number[], b: number[], tol = 1e-9) {
 }
 
 describe("SPK read APIs + coverage/object queries", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: spkez + spkcov/spkobj", async () => {
     const backend = await createBackend({ backend: "node" });

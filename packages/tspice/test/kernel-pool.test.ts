@@ -20,7 +20,7 @@ const TEST_INT_VAR = "TSPICE_TEST_INT_VAR";
 const TEST_BAD_PDPOOL_VAR = "TSPICE_TEST_BAD_PDPOOL_VAR";
 
 describe("Kernel pool", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: read + write + watch", async () => {
     const backend = await createBackend({ backend: "node" });
