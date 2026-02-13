@@ -112,6 +112,15 @@ Kernel load order matches call order:
 - Node backend (`backend: "node"`): implemented by a native addon. Requires a compatible native binding to be present.
 - WASM backend (`backend: "wasm"`): implemented with a prebuilt `.wasm`. See [`@rybosome/tspice-backend-wasm`](../backend-wasm/README.md).
 
+### Web Worker notes
+
+`spiceClients.toWebWorker()` uses an **inline blob worker** by default (the worker
+source is generated at build time and embedded into the JS bundle). This means
+consumers do not need to separately bundle/host a worker entry JS file.
+
+The worker still uses the WASM backend and must be able to fetch the `.wasm`
+binary. Most bundlers handle this automatically.
+
 ## Development
 
 ```bash

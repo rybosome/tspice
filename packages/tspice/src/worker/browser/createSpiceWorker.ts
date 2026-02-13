@@ -1,8 +1,19 @@
 import type { WorkerLike } from "../transport/createWorkerTransport.js";
 
+import { SPICE_WORKER_INLINE_SOURCE } from "./spiceWorkerInlineSource.js";
+
 export type CreateSpiceWorkerOptions = {
   /** Override the worker entrypoint (advanced). */
   url?: string | URL;
+
+  /**
+   * Override the WASM binary URL used by the default inline worker.
+   *
+   * When omitted, `createSpiceWorker()` will resolve the WASM binary URL
+   * relative to the published package layout.
+   */
+  wasmUrl?: string | URL;
+
   /**
    * Options passed through to the `Worker` constructor.
    *
@@ -29,7 +40,7 @@ export function createSpiceWorker(
   }
 
   // Default to module workers since this package is ESM and relies on
-  // `import.meta.url`-relative assets.
+  // ESM-only dependencies.
   const workerOptions: Record<string, unknown> = {
     type: "module",
     ...(opts.workerOptions ?? {}),
@@ -39,11 +50,33 @@ export function createSpiceWorker(
     return new (WorkerCtor as WorkerCtorLike)(opts.url, workerOptions);
   }
 
-  // NOTE: Keep this inline (no intermediate `url` variable) so bundlers like
-  // Vite/Rollup can statically detect the worker entry and bundle its module
-  // graph.
-  return new (WorkerCtor as WorkerCtorLike)(
-    new URL("./spiceWorkerEntry.js", import.meta.url),
-    workerOptions,
-  );
+  // Inline (blob) worker by default.
+  //
+  // This avoids requiring consumers to separately bundle/host a worker JS asset
+  // URL. It also means the worker entry cannot use `import.meta.url` to locate
+  // assets, since the entrypoint URL will be `blob:`.
+  if (workerOptions.type !== "module") {
+    throw new Error(
+      'createSpiceWorker() inline worker requires a module worker (workerOptions.type="module")',
+    );
+  }
+
+  const wasmUrl =
+    opts.wasmUrl?.toString() ??
+    // Published package layout (and what `build:dist-publish` produces):
+    //   dist/worker/browser/createSpiceWorker.js
+    //   backend-wasm/dist/tspice_backend_wasm.wasm
+    new URL(
+      "../../../backend-wasm/dist/tspice_backend_wasm.wasm",
+      import.meta.url,
+    ).href;
+
+  const workerSource =
+    `globalThis.__TSPICE_WORKER_CONFIG__ = ${JSON.stringify({ wasmUrl })};\n` +
+    SPICE_WORKER_INLINE_SOURCE;
+
+  const blob = new Blob([workerSource], { type: "text/javascript" });
+  const blobUrl = URL.createObjectURL(blob);
+
+  return new (WorkerCtor as WorkerCtorLike)(blobUrl, workerOptions);
 }

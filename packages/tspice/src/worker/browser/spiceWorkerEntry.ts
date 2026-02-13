@@ -4,6 +4,18 @@ import type { SpiceAsync } from "../../kit/types/spice-types.js";
 import type { SpiceTransport } from "../../transport/types.js";
 import { exposeTransportToWorker } from "../transport/exposeTransportToWorker.js";
 
+type TspiceWorkerConfig = {
+  wasmUrl?: string;
+};
+
+const getWorkerConfig = (): TspiceWorkerConfig | undefined => {
+  const cfg = (globalThis as unknown as { __TSPICE_WORKER_CONFIG__?: unknown })
+    .__TSPICE_WORKER_CONFIG__;
+  if (!cfg || typeof cfg !== "object") return undefined;
+  return cfg as TspiceWorkerConfig;
+};
+
+
 const blockedStringKeys = new Set<string>([
   // Promise / thenable
   "then",
@@ -125,8 +137,19 @@ function createSpiceTransportFromSpiceAsync(
 let spicePromise: Promise<SpiceAsync> | undefined;
 let transportPromise: Promise<SpiceTransport> | undefined;
 
-const getSpicePromise = (): Promise<SpiceAsync> =>
-  (spicePromise ??= createSpiceAsync({ backend: "wasm" }));
+const getSpicePromise = (): Promise<SpiceAsync> => {
+  if (spicePromise) return spicePromise;
+
+  const config = getWorkerConfig();
+  const wasmUrl = config?.wasmUrl;
+
+  spicePromise = createSpiceAsync({
+    backend: "wasm",
+    ...(wasmUrl === undefined ? {} : { wasmUrl }),
+  });
+
+  return spicePromise;
+};
 
 const getTransportPromise = (): Promise<SpiceTransport> =>
   (transportPromise ??= getSpicePromise().then((spice) =>
