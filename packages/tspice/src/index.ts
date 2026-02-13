@@ -14,6 +14,9 @@ export {
   isBrandedMat3RowMajor,
 } from "@rybosome/tspice-backend-contract";
 
+export type { CreateBackendOptions } from "./backend.js";
+export { createBackend } from "./backend.js";
+
 export type {
   AberrationCorrection,
   BodyRef,
@@ -31,6 +34,8 @@ export { SpiceError } from "./errors.js";
 
 export { Mat3 } from "./kit/math/mat3.js";
 export type { Spice, SpiceAsync, SpiceKit, SpiceSync } from "./kit/types/spice-types.js";
+export type { CreateSpiceAsyncOptions, CreateSpiceOptions } from "./spice.js";
+export { createSpice, createSpiceAsync } from "./spice.js";
 
 export type {
   SpiceClientBuildResult,
