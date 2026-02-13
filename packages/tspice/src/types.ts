@@ -30,7 +30,11 @@ export type AberrationCorrection =
   | "XCN"
   | "XCN+S";
 
-export type SpiceTime = number & { readonly __tspiceBrand: "SpiceTime" };
+/** Seconds past J2000 (ET). */
+export type SpiceTime = number;
+
+/** Body identifier accepted by kit APIs (name or NAIF id). */
+export type BodyRef = string | number;
 
 export type StateVector = {
   /** Seconds past J2000 (ET). */
@@ -51,8 +55,8 @@ export type StateVector = {
 };
 
 export type GetStateArgs = {
-  target: string;
-  observer: string;
+  target: BodyRef;
+  observer: BodyRef;
   at: SpiceTime;
   frame?: FrameName;
   aberration?: AberrationCorrection;

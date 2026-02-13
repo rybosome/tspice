@@ -63,6 +63,27 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.ekntab === "function", "Expected native addon to export ekntab()");
   invariant(typeof native.ektnam === "function", "Expected native addon to export ektnam(n)");
   invariant(typeof native.eknseg === "function", "Expected native addon to export eknseg(handle)");
+  invariant(typeof native.ekfind === "function", "Expected native addon to export ekfind(query)");
+  invariant(typeof native.ekgc === "function", "Expected native addon to export ekgc(selidx, row, elment)");
+  invariant(typeof native.ekgd === "function", "Expected native addon to export ekgd(selidx, row, elment)");
+  invariant(typeof native.ekgi === "function", "Expected native addon to export ekgi(selidx, row, elment)");
+  invariant(
+    typeof native.ekifld === "function",
+    "Expected native addon to export ekifld(handle, tabnam, nrows, cnames, decls)",
+  );
+  invariant(
+    typeof native.ekacli === "function",
+    "Expected native addon to export ekacli(handle, segno, column, ivals, entszs, nlflgs, rcptrs)",
+  );
+  invariant(
+    typeof native.ekacld === "function",
+    "Expected native addon to export ekacld(handle, segno, column, dvals, entszs, nlflgs, rcptrs)",
+  );
+  invariant(
+    typeof native.ekaclc === "function",
+    "Expected native addon to export ekaclc(handle, segno, column, cvals, entszs, nlflgs, rcptrs)",
+  );
+  invariant(typeof native.ekffld === "function", "Expected native addon to export ekffld(handle, segno, rcptrs)");
 
   // --- DSK writer ---
   invariant(typeof native.dskopn === "function", "Expected native addon to export dskopn(path, ifname, ncomch)");

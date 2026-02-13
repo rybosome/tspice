@@ -288,6 +288,15 @@ const exportedFunctions = [
   "_tspice_ekntab",
   "_tspice_ektnam",
   "_tspice_eknseg",
+  "_tspice_ekfind",
+  "_tspice_ekgc",
+  "_tspice_ekgd",
+  "_tspice_ekgi",
+  "_tspice_ekifld",
+  "_tspice_ekacli",
+  "_tspice_ekacld",
+  "_tspice_ekaclc",
+  "_tspice_ekffld",
 
   // --- DSK ---
   "_tspice_dskopn",
@@ -595,6 +604,34 @@ function ensureNodeEsmPreamble(jsPath) {
   fs.writeFileSync(jsPath, `${generatedHeader}${nodeEsmPreamble}${jsContents.slice(generatedHeader.length)}`);
 }
 
+function guardNodeProcessListeners(jsPath) {
+  const jsContents = fs.readFileSync(jsPath, "utf8");
+
+  // Emscripten's Node glue installs global `process.on(...)` handlers inside the
+  // module factory. If the factory is called repeatedly (common in test suites),
+  // listeners accumulate and Node emits MaxListenersExceededWarning.
+  //
+  // Patch the generated output to install the handlers only once per process.
+  const oldSnippet =
+    'process["on"]("uncaughtException",function(ex){if(!(ex instanceof ExitStatus)){throw ex}});' +
+    'process["on"]("unhandledRejection",function(reason){throw reason});';
+
+  if (!jsContents.includes(oldSnippet)) {
+    return;
+  }
+
+  const newSnippet =
+    'if(!globalThis.__tspice_backend_wasm_node_listeners_installed){' +
+    'globalThis.__tspice_backend_wasm_node_listeners_installed=true;' +
+    'process["on"]("uncaughtException",function(ex){' +
+    'if(!(ex&&typeof ex==="object"&&ex.name==="ExitStatus"&&typeof ex.status==="number")){throw ex}' +
+    '});' +
+    'process["on"]("unhandledRejection",function(reason){throw reason});' +
+    '}';
+
+  fs.writeFileSync(jsPath, jsContents.replace(oldSnippet, newSnippet));
+}
+
 for (const jsPath of [outputWebJsPath, outputNodeJsPath]) {
   ensureGeneratedHeader(jsPath);
 }
@@ -603,6 +640,9 @@ rewriteWasmFilename(outputWebJsPath, path.basename(outputWebWasmPath));
 rewriteWasmFilename(outputNodeJsPath, path.basename(outputNodeWasmPath));
 
 ensureNodeEsmPreamble(outputNodeJsPath);
+
+// Avoid accumulating global process listeners across repeated module instantiation.
+guardNodeProcessListeners(outputNodeJsPath);
 
 console.log(`Wrote ${outputWebJsPath}`);
 console.log(`Wrote ${outputNodeJsPath}`);

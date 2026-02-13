@@ -29,6 +29,9 @@ private:
 
 inline constexpr int kErrMaxBytes = 2048;
 inline constexpr int kOutMaxBytes = 2048;
+// CSPICE EK string outputs (e.g. `ekgc_c`) are truncated at ~1024 characters.
+// Keep this buffer >= 1025 bytes (1024 chars + NUL) so we don't truncate earlier.
+static_assert(kOutMaxBytes >= 1025, "kOutMaxBytes must be >= 1025 bytes (1024 chars + NUL)");
 
 bool ReadNumberArrayFixed(
     Napi::Env env,

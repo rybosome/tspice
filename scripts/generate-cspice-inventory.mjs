@@ -334,6 +334,14 @@ function escapeTableCell(text) {
   return text.replace(/\|/g, "\\|");
 }
 
+function formatBacktickedList(names) {
+  return names.map((n) => "`" + n + "`").join(", ");
+}
+
+function renderSpiceBackendCompositionLine(extendsNames) {
+  return `SpiceBackend is composed from: ${formatBacktickedList(extendsNames)}.`;
+}
+
 function renderTable({ rows, includeDecision, includeJustification }) {
   const lines = [];
 
@@ -374,9 +382,7 @@ function renderMarkdown({ functions, implementedNormalized, extendsNames }) {
     "- tspice implemented routines: backend contract surface via `SpiceBackend` in `packages/backend-contract/src/index.ts`",
   );
   lines.push("");
-  lines.push(
-    `SpiceBackend is composed from: ${extendsNames.map((n) => `\`${n}\``).join(", ")}.`,
-  );
+  lines.push(renderSpiceBackendCompositionLine(extendsNames));
   lines.push("");
 
   const implementedNow = [];

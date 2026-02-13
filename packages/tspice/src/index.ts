@@ -19,6 +19,7 @@ export { createBackend } from "./backend.js";
 
 export type {
   AberrationCorrection,
+  BodyRef,
   FrameName,
   GetStateArgs,
   SpiceTime,
@@ -35,3 +36,23 @@ export { Mat3 } from "./kit/math/mat3.js";
 export type { Spice, SpiceAsync, SpiceKit, SpiceSync } from "./kit/types/spice-types.js";
 export type { CreateSpiceAsyncOptions, CreateSpiceOptions } from "./spice.js";
 export { createSpice, createSpiceAsync } from "./spice.js";
+
+export type {
+  SpiceClientBuildResult,
+  SpiceClientsBuilder,
+  SpiceClientsWebWorkerOptions,
+} from "./clients/spiceClients.js";
+export { spiceClients } from "./clients/spiceClients.js";
+
+export type {
+  CreatePublicKernelsOptions,
+  PublicKernelId,
+  PublicKernelsBuilder,
+} from "./kernels/publicKernels.js";
+export { createPublicKernels, publicKernels } from "./kernels/publicKernels.js";
+
+export type {
+  KernelPack,
+  KernelPackKernel,
+  LoadKernelPackOptions,
+} from "./kernels/kernelPack.js";

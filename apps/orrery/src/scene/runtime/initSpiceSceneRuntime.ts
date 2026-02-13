@@ -1,15 +1,9 @@
 import * as THREE from 'three'
+import type { SpiceAsync, StateVector } from '@rybosome/tspice'
 
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from '../../controls/sunFocus.js'
 import { createSpiceClient } from '../../spice/createSpiceClient.js'
-import {
-  J2000_FRAME,
-  type BodyRef,
-  type EtSeconds,
-  type FrameId,
-  type SpiceClient,
-  type Vec3Km,
-} from '../../spice/SpiceClient.js'
+import { J2000_FRAME, type BodyRef, type EtSeconds, type Mat3, type Vec3Km } from '../../spice/types.js'
 import { createBodyMesh } from '../BodyMesh.js'
 import { SUN_BLOOM_LAYER } from '../../renderLayers.js'
 import {
@@ -66,8 +60,8 @@ export type SceneUiState = {
 }
 
 export type SpiceSceneRuntime = {
-  spiceClient: SpiceClient
-  updateScene: (next: SceneUiState) => void
+  spice: SpiceAsync
+  updateScene: (next: SceneUiState) => Promise<void>
   afterRender: () => void
   onDrawingBufferResize: (bufferSize: { width: number; height: number }) => void
   dispose: () => void
@@ -88,8 +82,8 @@ export async function initSpiceSceneRuntime(args: {
   /** Populated with body meshes for picking (shared with interaction + labels). */
   pickables: THREE.Mesh[]
 
-  /** Called as soon as the (cached) SpiceClient is ready. */
-  onSpiceClientLoaded?: (client: SpiceClient) => void
+  /** Called as soon as the (cached) SpiceAsync client is ready. */
+  onSpiceClientLoaded?: (spice: SpiceAsync) => void
 
   kmToWorld: number
   sunOcclusionMarginRad: number
@@ -158,15 +152,13 @@ export async function initSpiceSceneRuntime(args: {
   scene.add(dir)
   sceneObjects.push(dir)
 
-  const {
-    client: loadedSpiceClient,
-    rawClient: rawSpiceClient,
-    utcToEt,
-  } = await createSpiceClient({
+  const { spice: cachedSpice, dispose: disposeSpice } = await createSpiceClient({
     searchParams,
   })
 
-  onSpiceClientLoaded?.(loadedSpiceClient)
+  disposers.push(disposeSpice)
+
+  onSpiceClientLoaded?.(cachedSpice)
 
   if (isDisposed()) {
     // Best-effort cleanup of any scene-owned objects created so far.
@@ -177,17 +169,17 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   // IMPORTANT: set the viewer's scrub range only after kernels load so
-  // `utcToEt` (SPICE `str2et`) is correct.
+  // `spice.kit.utcToEt` (SPICE `str2et`) is correct.
   //
   // Also: do this *before* applying URL `?utc=`/`?et=` overrides, because
   // `timeStore.setEtSec` clamps to the current scrub range.
-  const scrubRange = computeViewerScrubRangeEt({ utcToEt })
+  const scrubRange = await computeViewerScrubRangeEt({ spice: cachedSpice })
   if (scrubRange) timeStore.setScrubRange(scrubRange.minEtSec, scrubRange.maxEtSec)
 
   // Allow the URL to specify UTC for quick testing, but keep the slider
   // driven by numeric ET.
   if (initialUtc) {
-    const nextEt = utcToEt(initialUtc)
+    const nextEt = await cachedSpice.kit.utcToEt(initialUtc)
     if (!isDisposed()) timeStore.setEtSec(nextEt)
   }
 
@@ -197,7 +189,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   if (!isDisposed()) {
-    const disposeE2e = installTspiceViewerE2eApi({ isE2e, spiceClient: loadedSpiceClient })
+    const disposeE2e = installTspiceViewerE2eApi({ isE2e, spice: cachedSpice })
     disposers.push(disposeE2e)
   }
 
@@ -261,6 +253,10 @@ export async function initSpiceSceneRuntime(args: {
       axes,
       update,
       ready,
+
+      // Populated on-demand by the async SPICE update pipeline.
+      lastState: undefined as StateVector | undefined,
+      lastBodyFixedRotation: undefined as Mat3 | undefined,
     }
   })
 
@@ -283,7 +279,7 @@ export async function initSpiceSceneRuntime(args: {
 
   // Orbit paths (one full orbital period per body).
   const orbitPaths = new OrbitPaths({
-    spiceClient: rawSpiceClient,
+    spice: cachedSpice,
     kmToWorld,
     bodies: sceneModel.bodies.map((b) => ({ body: b.body, color: b.style.appearance.surface.color })),
   })
@@ -347,316 +343,378 @@ export async function initSpiceSceneRuntime(args: {
 
   let lastAutoZoomFocusBody: BodyRef | undefined
 
+  // ---------------------------------------------------------------------------
+  // SPICE cache
+  // ---------------------------------------------------------------------------
+  // Cache the most recent "absolute" body states for the current ET, so:
+  // - focus changes can be applied synchronously (important for e2e camera presets)
+  // - we don't refetch the entire scene's state for UI-only updates
+  let cachedEtSec: EtSeconds | undefined
+  let spiceSampleToken = 0
+  let sceneUpdateToken = 0
+
+  const ensureSpiceSample = async (etSec: EtSeconds): Promise<void> => {
+    if (cachedEtSec === etSec && bodies.every((b) => b.lastState)) return
+
+    const token = ++spiceSampleToken
+
+    const statePromises = bodies.map((b) =>
+      cachedSpice.kit.getState({
+        target: String(b.body),
+        observer: String(sceneModel.observer),
+        at: etSec,
+        frame: sceneModel.frame,
+      }),
+    )
+
+    const rotationPromises = bodies.map((b) =>
+      b.bodyFixedFrame
+        ? cachedSpice.kit.frameTransform(b.bodyFixedFrame, sceneModel.frame, etSec).then((m) => m.toColMajor())
+        : Promise.resolve(undefined),
+    )
+
+    const [states, rotations] = await Promise.all([Promise.all(statePromises), Promise.all(rotationPromises)])
+
+    if (isDisposed()) return
+    if (token !== spiceSampleToken) return
+
+    cachedEtSec = etSec
+
+    for (let i = 0; i < bodies.length; i++) {
+      bodies[i]!.lastState = states[i]
+      bodies[i]!.lastBodyFixedRotation = rotations[i]
+    }
+  }
+
   const bodyPosKmByKey = new Map<string, Vec3Km>()
   const bodyVisibleByKey = new Map<string, boolean>()
 
   const ORBIT_MIN_POINTS_PER_ORBIT = 32
 
-  const updateScene = (next: SceneUiState) => {
-    // Lighting knobs
-    ambient.intensity = next.ambientLightIntensity
-    dir.intensity = next.sunLightIntensity
+  const updateScene = async (next: SceneUiState): Promise<void> => {
+    const token = ++sceneUpdateToken
 
-    // Sun glow tuning.
-    if (sunMaterial && sunMaterial instanceof THREE.MeshStandardMaterial) {
-      const intensity = THREE.MathUtils.clamp(next.sunEmissiveIntensity, 0, 50)
-      sunMaterial.emissive.set(next.sunEmissiveColor)
-      sunMaterial.emissiveIntensity = intensity
-    }
+    try {
+      if (isDisposed()) return
 
-    const earthTuning = {
-      nightAlbedo: next.earthNightAlbedo,
-      twilight: next.earthTwilight,
-      nightLightsIntensity: next.earthNightLightsIntensity,
-      atmosphereIntensity: next.earthAtmosphereIntensity,
-      cloudsNightMultiplier: next.earthCloudsNightMultiplier,
-    }
+      // Lighting knobs
+      ambient.intensity = next.ambientLightIntensity
+      dir.intensity = next.sunLightIntensity
 
-    const skipAutoZoomForFocusBody = skipAutoZoomForNextFocusBodyRef?.current ?? null
-
-    const shouldSkipAutoZoomForFocusBody =
-      skipAutoZoomForFocusBody != null &&
-      String(skipAutoZoomForFocusBody) === String(next.focusBody) &&
-      String(next.focusBody) !== String(lastAutoZoomFocusBody)
-
-    // `shouldSkipAutoZoomForFocusBody` is meant to be a one-shot override.
-    // Keep it mutually exclusive with any later auto-zoom + home-preset logic
-    // so we don't accidentally override the caller-preserved radius.
-    const shouldAutoZoomThisTick =
-      !shouldSkipAutoZoomForFocusBody &&
-      shouldAutoZoomOnFocusChange({
-        isE2e,
-        nextFocusBody: next.focusBody,
-        lastAutoZoomFocusBody,
-        skipAutoZoomForFocusBody,
-      })
-
-    const homePreset = shouldAutoZoomThisTick ? getHomePresetState(next.focusBody) : null
-
-    if (shouldSkipAutoZoomForFocusBody) {
-      cancelFocusTween?.()
-      resetLookOffset?.()
-
-      // Keep the caller-selected zoom, but force the camera to look at the
-      // rebased origin for the new focus body.
-      focusOn?.(new THREE.Vector3(0, 0, 0), {
-        radius: controller.radius,
-        immediate: true,
-      })
-
-      if (!initialControllerStateRef.current) {
-        initialControllerStateRef.current = controller.snapshot()
+      // Sun glow tuning.
+      if (sunMaterial && sunMaterial instanceof THREE.MeshStandardMaterial) {
+        const intensity = THREE.MathUtils.clamp(next.sunEmissiveIntensity, 0, 50)
+        sunMaterial.emissive.set(next.sunEmissiveColor)
+        sunMaterial.emissiveIntensity = intensity
       }
 
-      lastAutoZoomFocusBody = next.focusBody
-      if (skipAutoZoomForNextFocusBodyRef) skipAutoZoomForNextFocusBodyRef.current = null
-    } else if (shouldAutoZoomThisTick) {
-      cancelFocusTween?.()
+      const earthTuning = {
+        nightAlbedo: next.earthNightAlbedo,
+        twilight: next.earthTwilight,
+        nightLightsIntensity: next.earthNightLightsIntensity,
+        atmosphereIntensity: next.earthAtmosphereIntensity,
+        cloudsNightMultiplier: next.earthCloudsNightMultiplier,
+      }
 
-      // Clear look offset when auto-focusing a new body.
-      // Home presets supply their own look offset, so don't wipe it.
-      if (!homePreset) {
+      // Only refetch SPICE if ET changes.
+      if (cachedEtSec !== next.etSec || bodies.some((b) => !b.lastState)) {
+        await ensureSpiceSample(next.etSec)
+        if (isDisposed()) return
+        if (token !== sceneUpdateToken) return
+      }
+
+      const skipAutoZoomForFocusBody = skipAutoZoomForNextFocusBodyRef?.current ?? null
+
+      const shouldSkipAutoZoomForFocusBody =
+        skipAutoZoomForFocusBody != null &&
+        String(skipAutoZoomForFocusBody) === String(next.focusBody) &&
+        String(next.focusBody) !== String(lastAutoZoomFocusBody)
+
+      // `shouldSkipAutoZoomForFocusBody` is meant to be a one-shot override.
+      // Keep it mutually exclusive with any later auto-zoom + home-preset logic
+      // so we don't accidentally override the caller-preserved radius.
+      const shouldAutoZoomThisTick =
+        !shouldSkipAutoZoomForFocusBody &&
+        shouldAutoZoomOnFocusChange({
+          isE2e,
+          nextFocusBody: next.focusBody,
+          lastAutoZoomFocusBody,
+          skipAutoZoomForFocusBody,
+        })
+
+      const homePreset = shouldAutoZoomThisTick ? getHomePresetState(next.focusBody) : null
+
+      if (shouldSkipAutoZoomForFocusBody) {
+        cancelFocusTween?.()
         resetLookOffset?.()
-      }
-    }
 
-    const focusState = loadedSpiceClient.getBodyState({
-      target: next.focusBody,
-      observer: sceneModel.observer,
-      frame: sceneModel.frame,
-      et: next.etSec,
-    })
-    const focusPosKm = focusState.positionKm
+        // Keep the caller-selected zoom, but force the camera to look at the
+        // rebased origin for the new focus body.
+        focusOn?.(new THREE.Vector3(0, 0, 0), {
+          radius: controller.radius,
+          immediate: true,
+        })
 
-    if (shouldAutoZoomThisTick) {
-      // Home preset beats the normal auto-zoom + sun-in-view heuristics.
-      if (homePreset) {
-        controller.restore(homePreset)
-        controller.applyToCamera(camera)
-
-        // Capture the initial camera view (after first focus logic runs)
-        // so keyboard Reset (R) can return exactly to the page-load view.
         if (!initialControllerStateRef.current) {
           initialControllerStateRef.current = controller.snapshot()
         }
 
         lastAutoZoomFocusBody = next.focusBody
+        if (skipAutoZoomForNextFocusBodyRef) skipAutoZoomForNextFocusBodyRef.current = null
+      } else if (shouldAutoZoomThisTick) {
+        cancelFocusTween?.()
+
+        // Clear look offset when auto-focusing a new body.
+        // Home presets supply their own look offset, so don't wipe it.
+        if (!homePreset) {
+          resetLookOffset?.()
+        }
+      }
+
+      // Focus position (absolute, relative to scene observer).
+      let focusPosKm: Vec3Km | null = null
+      if (String(next.focusBody) === SUN_BODY_ID) {
+        focusPosKm = [0, 0, 0] as Vec3Km
       } else {
         const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
-        if (focusBodyMeta) {
-          let radiusWorld = computeBodyRadiusWorld({
-            radiusKm: focusBodyMeta.radiusKm,
-            kmToWorld,
-            mode: 'true',
-          })
+        const cached = focusBodyMeta?.lastState?.position
+        if (cached) focusPosKm = cached
+      }
 
-          // Match the rendered size when auto-zooming.
-          radiusWorld *= String(next.focusBody) === SUN_BODY_ID ? next.sunScaleMultiplier : next.planetScaleMultiplier
+      // If the focus body isn't in the rendered set, fetch just its state.
+      if (!focusPosKm) {
+        const focusState = await cachedSpice.kit.getState({
+          target: String(next.focusBody),
+          observer: String(sceneModel.observer),
+          at: next.etSec,
+          frame: sceneModel.frame,
+        })
 
-          const nextRadius = computeFocusRadius(radiusWorld)
+        if (isDisposed()) return
+        if (token !== sceneUpdateToken) return
 
-          // When focusing a non-Sun body, bias the camera orientation so the
-          // Sun remains visible (it provides important spatial context).
-          if (String(next.focusBody) !== SUN_BODY_ID) {
-            const sunPosWorld = new THREE.Vector3(
-              -focusPosKm[0] * kmToWorld,
-              -focusPosKm[1] * kmToWorld,
-              -focusPosKm[2] * kmToWorld,
-            )
+        focusPosKm = focusState.position
+      }
 
-            if (sunPosWorld.lengthSq() > 1e-12) {
-              const sunDir = sunPosWorld.clone().normalize()
-
-              // Current forward direction (camera -> target) derived from the
-              // controller's yaw/pitch (target/radius don't affect direction).
-              const cosPitch = Math.cos(controller.pitch)
-              const currentOffsetDir = new THREE.Vector3(
-                cosPitch * Math.cos(controller.yaw),
-                cosPitch * Math.sin(controller.yaw),
-                Math.sin(controller.pitch),
-              )
-              const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
-
-              // Use the same angular margin for both frustum checks and for
-              // ensuring the Sun isn't hidden behind the focused body.
-              const marginRad = sunOcclusionMarginRad
-
-              // If the Sun is too close to the view center, it can be
-              // completely occluded by the focused body (which is centered
-              // at the camera target). So we require the Sun to be separated
-              // from center by more than the body's angular radius.
-              const bodyAngRad = Math.asin(THREE.MathUtils.clamp(radiusWorld / nextRadius, 0, 1))
-              const minSeparationRad = bodyAngRad + marginRad
-
-              const sunAngle = currentForwardDir.angleTo(sunDir)
-              const sunInFov = isDirectionWithinFov({
-                cameraForwardDir: currentForwardDir,
-                dirToPoint: sunDir,
-                cameraFovDeg: next.cameraFovDeg,
-                cameraAspect: camera.aspect,
-                marginRad,
-              })
-              const sunNotOccluded = sunAngle >= minSeparationRad
-
-              if (!sunInFov || !sunNotOccluded) {
-                const angles = computeOrbitAnglesToKeepPointInView({
-                  pointWorld: sunPosWorld,
-                  cameraFovDeg: next.cameraFovDeg,
-                  cameraAspect: camera.aspect,
-                  desiredOffAxisRad: minSeparationRad,
-                  marginRad,
-                })
-
-                if (angles) {
-                  controller.yaw = angles.yaw
-                  controller.pitch = angles.pitch
-                }
-              }
-            }
-          }
-
-          // For focus-body selection (dropdown), force the camera to look at
-          // the rebased origin and update radius immediately.
-          focusOn?.(new THREE.Vector3(0, 0, 0), {
-            radius: nextRadius,
-            immediate: true,
-          })
+      if (shouldAutoZoomThisTick) {
+        // Home preset beats the normal auto-zoom + sun-in-view heuristics.
+        if (homePreset) {
+          controller.restore(homePreset)
+          controller.applyToCamera(camera)
 
           // Capture the initial camera view (after first focus logic runs)
           // so keyboard Reset (R) can return exactly to the page-load view.
           if (!initialControllerStateRef.current) {
             initialControllerStateRef.current = controller.snapshot()
           }
+
+          lastAutoZoomFocusBody = next.focusBody
+        } else {
+          const focusBodyMeta = bodies.find((b) => String(b.body) === String(next.focusBody))
+          if (focusBodyMeta) {
+            let radiusWorld = computeBodyRadiusWorld({
+              radiusKm: focusBodyMeta.radiusKm,
+              kmToWorld,
+              mode: 'true',
+            })
+
+            // Match the rendered size when auto-zooming.
+            radiusWorld *= String(next.focusBody) === SUN_BODY_ID ? next.sunScaleMultiplier : next.planetScaleMultiplier
+
+            const nextRadius = computeFocusRadius(radiusWorld)
+
+            // When focusing a non-Sun body, bias the camera orientation so the
+            // Sun remains visible (it provides important spatial context).
+            if (String(next.focusBody) !== SUN_BODY_ID) {
+              const sunPosWorld = new THREE.Vector3(
+                -focusPosKm[0] * kmToWorld,
+                -focusPosKm[1] * kmToWorld,
+                -focusPosKm[2] * kmToWorld,
+              )
+
+              if (sunPosWorld.lengthSq() > 1e-12) {
+                const sunDir = sunPosWorld.clone().normalize()
+
+                // Current forward direction (camera -> target) derived from the
+                // controller's yaw/pitch (target/radius don't affect direction).
+                const cosPitch = Math.cos(controller.pitch)
+                const currentOffsetDir = new THREE.Vector3(
+                  cosPitch * Math.cos(controller.yaw),
+                  cosPitch * Math.sin(controller.yaw),
+                  Math.sin(controller.pitch),
+                )
+                const currentForwardDir = currentOffsetDir.multiplyScalar(-1).normalize()
+
+                // Use the same angular margin for both frustum checks and for
+                // ensuring the Sun isn't hidden behind the focused body.
+                const marginRad = sunOcclusionMarginRad
+
+                // If the Sun is too close to the view center, it can be
+                // completely occluded by the focused body (which is centered
+                // at the camera target). So we require the Sun to be separated
+                // from center by more than the body's angular radius.
+                const bodyAngRad = Math.asin(THREE.MathUtils.clamp(radiusWorld / nextRadius, 0, 1))
+                const minSeparationRad = bodyAngRad + marginRad
+
+                const sunAngle = currentForwardDir.angleTo(sunDir)
+                const sunInFov = isDirectionWithinFov({
+                  cameraForwardDir: currentForwardDir,
+                  dirToPoint: sunDir,
+                  cameraFovDeg: next.cameraFovDeg,
+                  cameraAspect: camera.aspect,
+                  marginRad,
+                })
+                const sunNotOccluded = sunAngle >= minSeparationRad
+
+                if (!sunInFov || !sunNotOccluded) {
+                  const angles = computeOrbitAnglesToKeepPointInView({
+                    pointWorld: sunPosWorld,
+                    cameraFovDeg: next.cameraFovDeg,
+                    cameraAspect: camera.aspect,
+                    desiredOffAxisRad: minSeparationRad,
+                    marginRad,
+                  })
+
+                  if (angles) {
+                    controller.yaw = angles.yaw
+                    controller.pitch = angles.pitch
+                  }
+                }
+              }
+            }
+
+            // For focus-body selection (dropdown), force the camera to look at
+            // the rebased origin and update radius immediately.
+            focusOn?.(new THREE.Vector3(0, 0, 0), {
+              radius: nextRadius,
+              immediate: true,
+            })
+
+            // Capture the initial camera view (after first focus logic runs)
+            // so keyboard Reset (R) can return exactly to the page-load view.
+            if (!initialControllerStateRef.current) {
+              initialControllerStateRef.current = controller.snapshot()
+            }
+          }
+
+          lastAutoZoomFocusBody = next.focusBody
         }
-
-        lastAutoZoomFocusBody = next.focusBody
-      }
-    }
-
-    bodyPosKmByKey.clear()
-    bodyVisibleByKey.clear()
-
-    for (const b of bodies) {
-      const state = loadedSpiceClient.getBodyState({
-        target: b.body,
-        observer: sceneModel.observer,
-        frame: sceneModel.frame,
-        et: next.etSec,
-      })
-
-      bodyPosKmByKey.set(String(b.body), state.positionKm)
-      bodyVisibleByKey.set(String(b.body), b.mesh.visible)
-
-      const rebasedKm = rebasePositionKm(state.positionKm, focusPosKm)
-      b.mesh.position.set(rebasedKm[0] * kmToWorld, rebasedKm[1] * kmToWorld, rebasedKm[2] * kmToWorld)
-
-      // Update mesh scale (true scaling)
-      let radiusWorld = computeBodyRadiusWorld({
-        radiusKm: b.radiusKm,
-        kmToWorld,
-        mode: 'true',
-      })
-
-      // Apply Sun scale multiplier (Sun only)
-      if (b.bodyId === SUN_BODY_ID) {
-        radiusWorld *= next.sunScaleMultiplier
-      } else {
-        radiusWorld *= next.planetScaleMultiplier
       }
 
-      b.mesh.scale.setScalar(radiusWorld)
+      bodyPosKmByKey.clear()
+      bodyVisibleByKey.clear()
 
-      const bodyFixedRotation = b.bodyFixedFrame
-        ? loadedSpiceClient.getFrameTransform({
-            from: b.bodyFixedFrame as FrameId,
-            to: sceneModel.frame,
-            et: next.etSec,
-          })
-        : undefined
+      for (const b of bodies) {
+        const state = b.lastState
+        if (!state) continue
 
-      // Apply the body-fixed frame orientation to the mesh so textures
-      // rotate with the body.
-      if (bodyFixedRotation) {
-        b.mesh.setRotationFromMatrix(mat3ToMatrix4(bodyFixedRotation))
-      }
+        bodyPosKmByKey.set(String(b.body), state.position)
+        bodyVisibleByKey.set(String(b.body), b.mesh.visible)
 
-      if (b.axes) {
-        const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
-        b.axes.object.visible = visible
+        const rebasedKm = rebasePositionKm(state.position, focusPosKm)
+        b.mesh.position.set(rebasedKm[0] * kmToWorld, rebasedKm[1] * kmToWorld, rebasedKm[2] * kmToWorld)
 
-        if (visible && b.bodyFixedFrame) {
-          b.axes.setPose({ position: b.mesh.position, rotationJ2000: bodyFixedRotation })
-        }
-      }
-    }
-
-    // Update orbit paths after primary/body positions are known.
-    if (orbitPaths) {
-      orbitPaths.object.visible = next.orbitPathsEnabled
-      if (next.orbitPathsEnabled) {
-        orbitPaths.update({
-          etSec: next.etSec,
-          focusPosKm,
-          bodyPosKmByKey,
-          bodyVisibleByKey,
-          settings: {
-            lineWidthPx: next.orbitLineWidthPx,
-            samplesPerOrbit: next.orbitSamplesPerOrbit,
-            maxTotalPoints: next.orbitMaxTotalPoints,
-            minPointsPerOrbit: ORBIT_MIN_POINTS_PER_ORBIT,
-            antialias: true,
-          },
+        // Update mesh scale (true scaling)
+        let radiusWorld = computeBodyRadiusWorld({
+          radiusKm: b.radiusKm,
+          kmToWorld,
+          mode: 'true',
         })
+
+        // Apply Sun scale multiplier (Sun only)
+        if (b.bodyId === SUN_BODY_ID) {
+          radiusWorld *= next.sunScaleMultiplier
+        } else {
+          radiusWorld *= next.planetScaleMultiplier
+        }
+
+        b.mesh.scale.setScalar(radiusWorld)
+
+        const bodyFixedRotation = b.bodyFixedFrame ? b.lastBodyFixedRotation : undefined
+
+        // Apply the body-fixed frame orientation to the mesh so textures
+        // rotate with the body.
+        if (bodyFixedRotation) {
+          b.mesh.setRotationFromMatrix(mat3ToMatrix4(bodyFixedRotation))
+        }
+
+        if (b.axes) {
+          const visible = next.showBodyFixedAxes && Boolean(b.bodyFixedFrame)
+          b.axes.object.visible = visible
+
+          if (visible && b.bodyFixedFrame) {
+            b.axes.setPose({ position: b.mesh.position, rotationJ2000: bodyFixedRotation })
+          }
+        }
       }
-    }
 
-    if (j2000Axes) {
-      j2000Axes.object.visible = next.showJ2000Axes
-      if (next.showJ2000Axes) {
-        j2000Axes.setPose({ position: new THREE.Vector3(0, 0, 0) })
+      // Update orbit paths after primary/body positions are known.
+      if (orbitPaths) {
+        orbitPaths.object.visible = next.orbitPathsEnabled
+        if (next.orbitPathsEnabled) {
+          orbitPaths.update({
+            etSec: next.etSec,
+            focusPosKm,
+            bodyPosKmByKey,
+            bodyVisibleByKey,
+            settings: {
+              lineWidthPx: next.orbitLineWidthPx,
+              samplesPerOrbit: next.orbitSamplesPerOrbit,
+              maxTotalPoints: next.orbitMaxTotalPoints,
+              minPointsPerOrbit: ORBIT_MIN_POINTS_PER_ORBIT,
+              antialias: true,
+            },
+          })
+        }
       }
+
+      if (j2000Axes) {
+        j2000Axes.object.visible = next.showJ2000Axes
+        if (next.showJ2000Axes) {
+          j2000Axes.setPose({ position: new THREE.Vector3(0, 0, 0) })
+        }
+      }
+
+      // SPICE-derived sun lighting direction.
+      //
+      // If observer is the Sun, then Sun position relative to the focused body
+      // is just `-focusPosKm`.
+      const sunDirKm =
+        String(next.focusBody) === SUN_BODY_ID
+          ? ([0, 0, 0] as Vec3Km)
+          : ([-focusPosKm[0], -focusPosKm[1], -focusPosKm[2]] as Vec3Km)
+
+      const sunDirVec = new THREE.Vector3(sunDirKm[0], sunDirKm[1], sunDirKm[2])
+      const sunDirLen2 = sunDirVec.lengthSq()
+      // Normalize and use as directional light position (fallback to +X+Y+Z if degenerate).
+      const dirPos = sunDirLen2 > 1e-12 ? sunDirVec.normalize() : new THREE.Vector3(1, 1, 1).normalize()
+      // TODO: Eclipse/shadow occlusion could be added here by checking if another body
+      // lies along the sun direction, but this adds complexity for marginal visual benefit.
+      dir.position.copy(dirPos.multiplyScalar(10))
+
+      // Update any body-specific shader uniforms using the same sun direction.
+      const sunDirWorld = dir.position.clone().normalize()
+      for (const b of bodies) {
+        b.update?.({ sunDirWorld, etSec: next.etSec, earthTuning })
+      }
+
+      // Record label overlay inputs so we can update it on camera movement.
+      latestLabelOverlayOptions = {
+        bodies: labelBodies,
+        focusBodyId: resolveBodyRegistryEntry(String(next.focusBody))?.id,
+        selectedBodyId: selectedBodyIdRef.current,
+        labelsEnabled: next.labelsEnabled,
+        occlusionEnabled: next.labelOcclusionEnabled,
+        pickables,
+        sunScaleMultiplier: next.sunScaleMultiplier,
+        planetScaleMultiplier: next.planetScaleMultiplier,
+      }
+
+      invalidate()
+    } catch (err) {
+      // Prevent unhandled rejections when callers don't await (timeStore subscriptions).
+      console.warn('Scene update failed', err)
     }
-
-    // SPICE-derived sun lighting direction.
-    // We compute the Sun's position relative to the focused body directly from SPICE,
-    // making the lighting independent of whether the Sun mesh is visible/filtered.
-    // This is computed in the J2000 (scene/world) frame, which keeps lighting consistent
-    // across all bodies - a single global sun direction is physically correct and avoids
-    // per-body lighting complexity that would add cost without visual benefit.
-    const sunStateForLighting = loadedSpiceClient.getBodyState({
-      target: 'SUN',
-      observer: next.focusBody,
-      frame: sceneModel.frame,
-      et: next.etSec,
-    })
-    const sunDirKm = sunStateForLighting.positionKm
-    const sunDirVec = new THREE.Vector3(sunDirKm[0], sunDirKm[1], sunDirKm[2])
-    const sunDirLen2 = sunDirVec.lengthSq()
-    // Normalize and use as directional light position (fallback to +X+Y+Z if degenerate).
-    const dirPos = sunDirLen2 > 1e-12 ? sunDirVec.normalize() : new THREE.Vector3(1, 1, 1).normalize()
-    // TODO: Eclipse/shadow occlusion could be added here by checking if another body
-    // lies along the sun direction, but this adds complexity for marginal visual benefit.
-    dir.position.copy(dirPos.multiplyScalar(10))
-
-    // Update any body-specific shader uniforms using the same sun direction.
-    const sunDirWorld = dir.position.clone().normalize()
-    for (const b of bodies) {
-      b.update?.({ sunDirWorld, etSec: next.etSec, earthTuning })
-    }
-
-    // Record label overlay inputs so we can update it on camera movement.
-    latestLabelOverlayOptions = {
-      bodies: labelBodies,
-      focusBodyId: resolveBodyRegistryEntry(String(next.focusBody))?.id,
-      selectedBodyId: selectedBodyIdRef.current,
-      labelsEnabled: next.labelsEnabled,
-      occlusionEnabled: next.labelOcclusionEnabled,
-      pickables,
-      sunScaleMultiplier: next.sunScaleMultiplier,
-      planetScaleMultiplier: next.planetScaleMultiplier,
-    }
-
-    invalidate()
   }
 
   const onDrawingBufferResize = ({ width, height }: { width: number; height: number }) => {
@@ -672,7 +730,7 @@ export async function initSpiceSceneRuntime(args: {
   }
 
   return {
-    spiceClient: loadedSpiceClient,
+    spice: cachedSpice,
     pickables,
     updateScene,
     afterRender,

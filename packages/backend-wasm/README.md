@@ -16,7 +16,7 @@ This package exists to reserve a “WASM backend” slot in the architecture so 
 
 ## How it fits into `tspice`
 
-- `@rybosome/tspice` calls `createWasmBackend()` from this package when `createBackend({ backend: "wasm" })` is selected.
+- `@rybosome/tspice` calls `createWasmBackend()` from this package when `spiceClients.to*({ backend: "wasm" })` is selected.
 - This package implements the shared `SpiceBackend` interface from `@rybosome/tspice-backend-contract`.
 
 ## Installation
@@ -26,11 +26,15 @@ You typically don’t install or import this directly. Most callers should use `
 ## Usage (Quickstart)
 
 ```ts
-import { createBackend } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
 
 async function main() {
-  const backend = await createBackend({ backend: "wasm" });
-  console.log(backend.tkvrsn("TOOLKIT"));
+  const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    console.log(spice.raw.tkvrsn("TOOLKIT"));
+  } finally {
+    await dispose();
+  }
 }
 
 main().catch(console.error);

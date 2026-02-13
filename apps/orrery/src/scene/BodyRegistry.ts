@@ -1,5 +1,4 @@
-import type { BodyRef, FrameId } from '../spice/SpiceClient.js'
-import type { KernelPackId } from '../spice/loadKernelPack.js'
+import type { BodyRef, FrameId, KernelPackId } from '../spice/types.js'
 
 import type { SceneBody, SceneBodyStyle } from './SceneModel.js'
 

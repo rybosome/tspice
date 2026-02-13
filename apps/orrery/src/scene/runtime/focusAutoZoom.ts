@@ -1,4 +1,4 @@
-import type { BodyRef } from '../../spice/SpiceClient.js'
+import type { BodyRef } from '../../spice/types.js'
 
 /**
  * Determines whether `updateScene` should run its focus-change auto-zoom logic.

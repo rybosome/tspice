@@ -2,7 +2,7 @@ import * as path from "node:path";
 import crypto from "node:crypto";
 import { readFile, realpath } from "node:fs/promises";
 
-import { createBackend, type SpiceBackend } from "@rybosome/tspice";
+import { spiceClients, type SpiceBackend } from "@rybosome/tspice";
 
 import {
   resolveMetaKernelKernelsToLoad,
@@ -337,19 +337,29 @@ function isMissingNativeAddon(error: unknown): boolean {
 async function createBackendForRunner(
   backend: TspiceRunnerBackend,
 ): Promise<{ backend: SpiceBackend; kind: string }> {
+  const createNodeBackend = async (): Promise<SpiceBackend> => {
+    const { spice } = await spiceClients.toSync({ backend: "node" });
+    return spice.raw;
+  };
+
+  const createWasmBackend = async (): Promise<SpiceBackend> => {
+    const { spice } = await spiceClients.toSync({ backend: "wasm" });
+    return spice.raw;
+  };
+
   if (backend === "node") {
-    return { backend: await createBackend({ backend: "node" }), kind: "tspice(node)" };
+    return { backend: await createNodeBackend(), kind: "tspice(node)" };
   }
   if (backend === "wasm") {
-    return { backend: await createBackend({ backend: "wasm" }), kind: "tspice(wasm)" };
+    return { backend: await createWasmBackend(), kind: "tspice(wasm)" };
   }
 
   // auto: prefer node, but fall back to wasm when the native addon isn't staged.
   try {
-    return { backend: await createBackend({ backend: "node" }), kind: "tspice(node)" };
+    return { backend: await createNodeBackend(), kind: "tspice(node)" };
   } catch (error) {
     if (isMissingNativeAddon(error)) {
-      return { backend: await createBackend({ backend: "wasm" }), kind: "tspice(wasm)" };
+      return { backend: await createWasmBackend(), kind: "tspice(wasm)" };
     }
     throw error;
   }

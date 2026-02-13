@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 
 import { describe, expect, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
 
 const NATIVE_PLATFORM_PACKAGES = {
   darwin: {
@@ -58,11 +58,15 @@ const nativeAvailable = (() => {
   return true;
 })();
 
-describe("createBackend({ backend: \"node\" })", () => {
+describe("spiceClients.toSync({ backend: \"node\" })", () => {
   const itNative = it.runIf(nativeAvailable);
 
   itNative("prefers native backend when the platform package is present", async () => {
-    const backend = await createBackend({ backend: "node" });
-    expect(backend.tkvrsn("TOOLKIT")).not.toBe("");
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    try {
+      expect(spice.raw.tkvrsn("TOOLKIT")).not.toBe("");
+    } finally {
+      await dispose();
+    }
   });
 });

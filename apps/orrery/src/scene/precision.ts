@@ -1,4 +1,4 @@
-import type { Vec3Km } from '../spice/SpiceClient.js'
+import type { Vec3Km } from '../spice/types.js'
 
 /**
  * Precision strategy (Issue #68): **A — focus-origin rebasing ("floating origin")**.

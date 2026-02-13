@@ -7,13 +7,13 @@ Sources:
 - CSPICE routine list + brief descriptions: https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html (NAIF official index)
 - tspice implemented routines: backend contract surface via `SpiceBackend` in `packages/backend-contract/src/index.ts`
 
-SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`, `DskApi`.
+SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`, `DskApi`.
 
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceBackend): 104
-- Planned (not yet implemented): 545
+- Implemented now (SpiceBackend): 154
+- Planned (not yet implemented): 495
 - Excluded: 3
 
 ## Implemented now
@@ -33,8 +33,12 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `chkin_c` | module Check In |
 | `chkout_c` | Module Check Out |
 | `cidfrm_c` | center SPK ID frame |
+| `ckcov_c` | CK coverage |
 | `ckgp_c` | C-kernel, get pointing |
 | `ckgpav_c` | C-kernel, get pointing and angular velocity |
+| `cklpf_c` | CK, load pointing file |
+| `ckobj_c` | CK objects |
+| `ckupf_c` | CK, Unload pointing file |
 | `cnmfrm_c` | Center name to associated frame |
 | `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
@@ -43,15 +47,35 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `dafopr_c` | DAF, open for read |
 | `dascls_c` | DAS, close file |
 | `dasopr_c` | DAS, open for read |
+| `deltet_c` | Delta ET, ET - UTC |
 | `dlabfs_c` | DLA, begin forward search |
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
 | `dlaopn_c` | DLA, open new file |
 | `dskb02_c` | DSK, fetch type 2 bookkeeping data |
 | `dskgd_c` | DSK, return DSK segment descriptor |
+| `dskmi2_c` | DSK, make spatial index for type 2 segment |
 | `dskobj_c` | DSK, get object IDs |
+| `dskopn_c` | DSK, open new file |
 | `dsksrf_c` | DSK, get surface IDs for body |
+| `dskw02_c` | DSK, write type 2 segment |
 | `dtpool_c` | Data for a kernel pool variable |
+| `ekaclc_c` | EK, add character column to segment |
+| `ekacld_c` | EK, add double precision column to segment |
+| `ekacli_c` | EK, add integer column to segment |
+| `ekcls_c` | EK, close file |
+| `ekffld_c` | EK, finish fast write |
+| `ekfind_c` | EK, find data |
+| `ekgc_c` | EK, get event data, character |
+| `ekgd_c` | EK, get event data, double precision |
+| `ekgi_c` | EK, get event data, integer |
+| `ekifld_c` | EK, initialize segment for fast write |
+| `eknseg_c` | EK, number of segments in file |
+| `ekntab_c` | EK, return number of loaded tables |
+| `ekopn_c` | EK, open new file |
+| `ekopr_c` | EK, open file for reading |
+| `ekopw_c` | EK, open file for writing |
+| `ektnam_c` | EK, return name of loaded table |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -66,6 +90,8 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `getmsg_c` | Get Error Message |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
+| `illumf_c` | Illumination angles, general source, return flags |
+| `illumg_c` | Illumination angles, general source |
 | `ilumin_c` | Illumination angles |
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
@@ -81,10 +107,12 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
 | `namfrm_c` | Name to frame |
+| `nvc2pl_c` | Normal vector and constant to plane |
 | `occult_c` | find occultation type at time |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
+| `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
@@ -93,23 +121,45 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
 | `scard_c` | Set the cardinality of a cell |
+| `scdecd_c` | Decode spacecraft clock |
+| `sce2c_c` | ET to continuous SCLK ticks |
 | `sce2s_c` | ET to SCLK string |
+| `scencd_c` | Encode spacecraft clock |
 | `scs2e_c` | SCLK string to ET |
+| `sct2e_c` | SCLK ticks to ET |
 | `setmsg_c` | Set Long Error Message |
 | `sigerr_c` | Signal Error Condition |
 | `sincpt_c` | Surface intercept |
 | `size_c` | Size of a cell |
 | `sphrec_c` | Spherical to rectangular coordinates |
+| `spkcls_c` | SPK, Close file |
+| `spkcov_c` | SPK coverage |
+| `spkez_c` | S/P Kernel, easy reader |
+| `spkezp_c` | S/P Kernel, easy position |
 | `spkezr_c` | S/P Kernel, easier reader |
+| `spkgeo_c` | S/P Kernel, geometric state |
+| `spkgps_c` | S/P Kernel, geometric position |
+| `spkobj_c` | SPK objects |
+| `spkopa_c` | SPK open for addition |
+| `spkopn_c` | SPK, open new file. |
+| `spkpds_c` | SPK pack descriptor |
 | `spkpos_c` | S/P Kernel, position |
+| `spksfs_c` | S/P Kernel, Select file and segment |
+| `spkssb_c` | S/P Kernel, solar system barycenter |
+| `spkuds_c` | SPK - unpack segment descriptor |
+| `spkw08_c` | Write SPK segment, type 8 |
 | `ssize_c` | Set the size of a cell |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
 | `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
+| `timdef_c` | Time Software Defaults |
 | `timout_c` | Time Output |
 | `tkvrsn_c` | Toolkit version strings |
+| `tparse_c` | Parse a UTC time string |
+| `tpictr_c` | Create a Time Format Picture |
+| `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
 | `valid_c` | Validate a set |
@@ -153,18 +203,14 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `chbint_c` | Interpolate a Chebyshev expansion |
 | `chbval_c` | Value of a Chebyshev polynomial expansion |
 | `ckcls_c` | CK, Close file |
-| `ckcov_c` | CK coverage |
 | `ckfrot_c` | CK frame, find position rotation |
 | `ckfxfm_c` | CK frame, find state transformation |
 | `ckgr02_c` | C-kernel, get record, type 02 |
 | `ckgr03_c` | C-kernel, get record, type 03 |
-| `cklpf_c` | CK, load pointing file |
 | `ckmeta_c` | CK ID to associated SCLK |
 | `cknr02_c` | C-kernel, number of records, type 02 |
 | `cknr03_c` | C-kernel, number of records, type 03 |
-| `ckobj_c` | CK objects |
 | `ckopn_c` | CK, open new file. |
-| `ckupf_c` | CK, Unload pointing file |
 | `ckw01_c` | C-Kernel, write segment to C-kernel, data type 1 |
 | `ckw02_c` | C-Kernel, write segment to C-kernel, data type 2 |
 | `ckw03_c` | C-Kernel, write segment to C-kernel, data type 3 |
@@ -224,7 +270,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `daswbr_c` | DAS, write buffered records |
 | `dazldr_c` | Derivative of AZ/EL w.r.t. rectangular |
 | `dcyldr_c` | Derivative of cylindrical w.r.t. rectangular |
-| `deltet_c` | Delta ET, ET - UTC |
 | `det_c` | Determinant of a double precision 3x3 matrix |
 | `dgeodr_c` | Derivative of geodetic w.r.t. rectangular |
 | `diags2_c` | Diagonalize symmetric 2x2 matrix |
@@ -250,14 +295,11 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `dskd02_c` | DSK, fetch d.p. type 2 data |
 | `dskgtl_c` | DSK, get tolerance |
 | `dski02_c` | DSK, fetch integer type 2 data |
-| `dskmi2_c` | DSK, make spatial index for type 2 segment |
 | `dskn02_c` | DSK, type 2, compute normal vector for plate |
-| `dskopn_c` | DSK, open new file |
 | `dskp02_c` | DSK, fetch type 2 plate data |
 | `dskrb2_c` | DSK, determine range bounds for plate set |
 | `dskstl_c` | DSK, set tolerance |
 | `dskv02_c` | DSK, fetch type 2 vertex data |
-| `dskw02_c` | DSK, write type 2 segment |
 | `dskx02_c` | DSK, ray-surface intercept, type 2 |
 | `dskxsi_c` | DSK, ray-surface intercept with source information |
 | `dskxv_c` | DSK, ray-surface intercept, vectorized |
@@ -277,36 +319,20 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `ekacec_c` | EK, add character data to column |
 | `ekaced_c` | EK, add d.p. data to column |
 | `ekacei_c` | EK, add integer data to column |
-| `ekaclc_c` | EK, add character column to segment |
-| `ekacld_c` | EK, add double precision column to segment |
-| `ekacli_c` | EK, add integer column to segment |
 | `ekappr_c` | EK, append record onto segment |
 | `ekbseg_c` | EK, start new segment |
 | `ekccnt_c` | EK, column count |
 | `ekcii_c` | EK, column info by index |
-| `ekcls_c` | EK, close file |
 | `ekdelr_c` | EK, delete record from segment |
-| `ekffld_c` | EK, finish fast write |
-| `ekfind_c` | EK, find data |
-| `ekgc_c` | EK, get event data, character |
-| `ekgd_c` | EK, get event data, double precision |
-| `ekgi_c` | EK, get event data, integer |
-| `ekifld_c` | EK, initialize segment for fast write |
 | `ekinsr_c` | EK, insert record into segment |
 | `eklef_c` | EK, load event file |
 | `eknelt_c` | EK, get number of elements in column entry |
-| `eknseg_c` | EK, number of segments in file |
-| `ekntab_c` | EK, return number of loaded tables |
-| `ekopn_c` | EK, open new file |
-| `ekopr_c` | EK, open file for reading |
 | `ekops_c` | EK, open scratch file |
-| `ekopw_c` | EK, open file for writing |
 | `ekpsel_c` | EK, parse SELECT clause |
 | `ekrcec_c` | EK, read column entry element, character |
 | `ekrced_c` | EK, read column entry element, d.p. |
 | `ekrcei_c` | EK, read column entry element, integer |
 | `ekssum_c` | EK, return segment summary |
-| `ektnam_c` | EK, return name of loaded table |
 | `ekucec_c` | EK, update character column entry |
 | `ekuced_c` | EK, update d.p. column entry |
 | `ekucei_c` | EK, update integer column entry |
@@ -371,8 +397,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `illum_c` | Illumination angles |
 | `illum_pl02` | illumination angles using DSK type 2 plate model |
 | `illum_plid_pl02` | illumination angles using type 2 DSK |
-| `illumf_c` | Illumination angles, general source, return flags |
-| `illumg_c` | Illumination angles, general source |
 | `inedpl_c` | Intersection of ellipsoid and plane |
 | `inelpl_c` | Intersection of ellipse and plane |
 | `inrypl_c` | Intersection of ray and plane |
@@ -448,7 +472,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `npelpt_c` | Nearest point on ellipse to point |
 | `nplnpt_c` | Nearest point on line to point |
 | `nthwd_c` | n'th word in a character string |
-| `nvc2pl_c` | Normal vector and constant to plane |
 | `nvp2pl_c` | Normal vector and point to plane |
 | `ordc_c` | The ordinal position of an element in a set |
 | `ordd_c` | The ordinal position of an element in a set |
@@ -469,7 +492,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `phaseq_c` | Phase angle quantity between bodies centers |
 | `pi_c` | Value of pi |
 | `pjelpl_c` | Project ellipse onto plane |
-| `pl2nvc_c` | Plane to normal vector and constant |
 | `pl2nvp_c` | Plane to normal vector and point |
 | `pl2psv_c` | Plane to point and spanning vectors |
 | `pltar_c` | Compute area of plate set |
@@ -518,13 +540,9 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `rpd_c` | Radians per degree |
 | `rquad_c` | Roots of a quadratic equation |
 | `saelgv_c` | Semi-axes of ellipse from generating vectors |
-| `scdecd_c` | Decode spacecraft clock |
-| `sce2c_c` | ET to continuous SCLK ticks |
 | `sce2t_c` | ET to SCLK ticks |
-| `scencd_c` | Encode spacecraft clock |
 | `scfmt_c` | Convert SCLK "ticks" to character clock format |
 | `scpart_c` | Spacecraft Clock Partition Information |
-| `sct2e_c` | SCLK ticks to ET |
 | `sctiks_c` | Convert spacecraft clock string to ticks. |
 | `sdiff_c` | Symmetric difference of two sets |
 | `set_c` | Compare sets |
@@ -541,32 +559,18 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `spkapo_c` | S/P Kernel, apparent position only |
 | `spkapp_c` | S/P Kernel, apparent state |
 | `spkaps_c` | SPK, apparent state |
-| `spkcls_c` | SPK, Close file |
-| `spkcov_c` | SPK coverage |
 | `spkcpo_c` | SPK, constant position observer state |
 | `spkcpt_c` | SPK, constant position target state |
 | `spkcvo_c` | SPK, constant velocity observer state |
 | `spkcvt_c` | SPK, constant velocity target state |
-| `spkez_c` | S/P Kernel, easy reader |
-| `spkezp_c` | S/P Kernel, easy position |
-| `spkgeo_c` | S/P Kernel, geometric state |
-| `spkgps_c` | S/P Kernel, geometric position |
 | `spklef_c` | S/P Kernel, Load ephemeris file |
 | `spkltc_c` | S/P Kernel, light time corrected state |
-| `spkobj_c` | SPK objects |
-| `spkopa_c` | SPK open for addition |
-| `spkopn_c` | SPK, open new file. |
-| `spkpds_c` | SPK pack descriptor |
 | `spkpvn_c` | S/P Kernel, position and velocity in native frame |
-| `spksfs_c` | S/P Kernel, Select file and segment |
-| `spkssb_c` | S/P Kernel, solar system barycenter |
 | `spksub_c` | S/P Kernel, subset |
-| `spkuds_c` | SPK - unpack segment descriptor |
 | `spkuef_c` | SPK Kernel, Unload ephemeris file |
 | `spkw02_c` | Write SPK segment, type 2 |
 | `spkw03_c` | Write SPK segment, type 3 |
 | `spkw05_c` | Write SPK segment, type 5 |
-| `spkw08_c` | Write SPK segment, type 8 |
 | `spkw09_c` | Write SPK segment, type 9 |
 | `spkw10_c` | SPK - write a type 10 segment |
 | `spkw12_c` | Write SPK segment, type 12 |
@@ -598,13 +602,10 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `tangpt_c` | Ray-ellipsoid tangent point |
 | `term_pl02` | Terminator using DSK type 2 plate model |
 | `termpt_c` | Terminator points on an extended object |
-| `timdef_c` | Time Software Defaults |
 | `tipbod_c` | Transformation, inertial position to bodyfixed |
 | `tisbod_c` | Transformation, inertial state to bodyfixed |
 | `tkfram_c` | TK frame, find position rotation |
 | `tparch_c` | Parse check---check format of strings |
-| `tparse_c` | Parse a UTC time string |
-| `tpictr_c` | Create a Time Format Picture |
 | `trace_c` | Trace of a 3x3 matrix |
 | `trcdep_c` | Traceback depth |
 | `trcnam_c` | Get module name from traceback |
@@ -621,7 +622,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `IdsNam
 | `uddf_c` | First derivative of a function, df(x)/dx |
 | `udf_c` | GF, dummy function |
 | `union_c` | Union of two sets |
-| `unitim_c` | Uniform time scale transformation |
 | `unorm_c` | Unit vector and norm, 3 dimensional |
 | `unormg_c` | Unit vector and norm, general dimension |
 | `utc2et_c` | UTC to Ephemeris Time |

@@ -22,6 +22,9 @@
     "@rybosome/tspice": "workspace:*",
     "yaml": "^2.8.1"
   },
+  "optionalDependencies": {
+    "@rybosome/tspice-backend-node": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "typescript": "^5.9.3",
