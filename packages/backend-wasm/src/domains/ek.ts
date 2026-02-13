@@ -552,6 +552,14 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
         throw new RangeError("ekacli(): expected ivals.length === sum(entszs)");
       }
 
+      for (let i = 0; i < ivals.length; i++) {
+        assertSpiceInt32(ivals[i]!, `ekacli(ivals[${i}])`);
+      }
+
+      for (let i = 0; i < rcptrs.length; i++) {
+        assertSpiceInt32(rcptrs[i]!, `ekacli(rcptrs[${i}])`);
+      }
+
       const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekacli").nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
@@ -613,6 +621,16 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       const required = sumEntszsChecked(entszs, nlflgs, "ekacld()");
       if (dvals.length !== required) {
         throw new RangeError("ekacld(): expected dvals.length === sum(entszs)");
+      }
+
+      for (let i = 0; i < dvals.length; i++) {
+        if (!Number.isFinite(dvals[i])) {
+          throw new TypeError(`ekacld(dvals[${i}]) must be a finite number`);
+        }
+      }
+
+      for (let i = 0; i < rcptrs.length; i++) {
+        assertSpiceInt32(rcptrs[i]!, `ekacld(rcptrs[${i}])`);
       }
 
       const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekacld").nativeHandle;
@@ -740,8 +758,16 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
 
     ekffld: (handle: SpiceHandle, segno: number, rcptrs: readonly number[]) => {
       assertSpiceInt32NonNegative(segno, "ekffld(segno)");
-      if (rcptrs.length === 0) {
+      const nrows = rcptrs.length;
+      if (nrows === 0) {
         throw new RangeError("ekffld(rcptrs): expected rcptrs.length > 0");
+      }
+      if (nrows > kMaxEkArrayLen) {
+        throw new RangeError(`ekffld(): expected rcptrs.length <= ${kMaxEkArrayLen}`);
+      }
+
+      for (let i = 0; i < nrows; i++) {
+        assertSpiceInt32(rcptrs[i]!, `ekffld(rcptrs[${i}])`);
       }
 
       const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekffld").nativeHandle;
