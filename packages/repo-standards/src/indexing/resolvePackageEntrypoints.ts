@@ -141,6 +141,19 @@ function normalizePackageRelativePath(input: string): string {
   const posix = toPosixPath(trimmed);
   let normalized = path.posix.normalize(posix);
 
+  // We treat any explicit parent traversal as invalid, even if it would resolve
+  // back within the package root (e.g. `dist/../dist/index.js`). This avoids
+  // accepting non-canonical paths from `package.json` fields.
+  const containsParentSegment = posix.split("/").some((seg) => seg === "..");
+  if (containsParentSegment) {
+    // Keep a more specific error for the classic escape case.
+    if (normalized === ".." || normalized.startsWith("../")) {
+      throw new Error(`path must not traverse outside package root: ${input}`);
+    }
+
+    throw new Error(`path must not contain parent (..) segments: ${input}`);
+  }
+
   // Remove a trailing slash for stable equality checks.
   if (normalized.endsWith("/") && normalized !== "/") {
     normalized = normalized.slice(0, -1);
