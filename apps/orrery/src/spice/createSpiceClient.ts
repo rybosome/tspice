@@ -34,9 +34,7 @@ export async function createSpiceClient(
     .toWebWorker()
 
   const dispose = (): void => {
-    void disposeAsync().catch((err) =>
-      console.warn('Spice worker dispose failed', err),
-    )
+    void disposeAsync().catch((err) => console.warn('Spice worker dispose failed', err))
   }
 
   return { spice, dispose }
