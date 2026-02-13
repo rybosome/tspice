@@ -12,6 +12,7 @@ import { createCoordsVectorsApi } from "./domains/coords-vectors.js";
 import { createEphemerisApi } from "./domains/ephemeris.js";
 import { createFramesApi } from "./domains/frames.js";
 import { createGeometryApi } from "./domains/geometry.js";
+import { createGeometryGfApi } from "./domains/geometry-gf.js";
 import { createIdsNamesApi } from "./domains/ids-names.js";
 import { createKernelsApi } from "./domains/kernels.js";
 import { createKernelPoolApi } from "./domains/kernel-pool.js";
@@ -43,6 +44,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     ...createFramesApi(native),
     ...createEphemerisApi(native, spiceHandles, stager, outputs),
     ...createGeometryApi(native),
+    ...createGeometryGfApi(native),
     ...createCoordsVectorsApi(native),
     ...createFileIoApi(native, spiceHandles, outputs),
     ...createErrorApi(native),

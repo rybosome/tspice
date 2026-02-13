@@ -346,6 +346,46 @@ export type NativeAddon = {
     observer: string,
     et: number,
   ): number;
+
+  // --- GF (Geometry Finder) ---
+
+  gfsstp(step: number): void;
+  gfstep(time: number): number;
+  gfstol(value: number): void;
+  gfrefn(t1: number, t2: number, s1: boolean, s2: boolean): number;
+  gfrepi(window: SpiceWindow, begmss: string, endmss: string): void;
+  gfrepf(): void;
+
+  gfsep(
+    targ1: string,
+    shape1: string,
+    frame1: string,
+    targ2: string,
+    shape2: string,
+    frame2: string,
+    abcorr: string,
+    obsrvr: string,
+    relate: string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
+  gfdist(
+    target: string,
+    abcorr: string,
+    obsrvr: string,
+    relate: string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 

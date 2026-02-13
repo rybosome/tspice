@@ -16,6 +16,7 @@ import type {
   SpiceBackend,
   SpiceHandle,
   SpiceIntCell,
+  SpiceWindow,
   Mat3RowMajor,
   SpiceMatrix6x6,
   SpicePlane,
@@ -1820,6 +1821,60 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       void (abcorr satisfies AbCorr | string);
       // Deterministic stub: 0 => "no occultation".
       return 0;
+    },
+
+    // --- GF (Geometry Finder) (not implemented in fake backend) ---
+
+    gfsstp: (_step: number) => {
+      throw new Error("Fake backend: gfsstp() is not implemented");
+    },
+    gfstep: (_time: number) => {
+      throw new Error("Fake backend: gfstep() is not implemented");
+    },
+    gfstol: (_value: number) => {
+      throw new Error("Fake backend: gfstol() is not implemented");
+    },
+    gfrefn: (_t1: number, _t2: number, _s1: boolean, _s2: boolean) => {
+      throw new Error("Fake backend: gfrefn() is not implemented");
+    },
+    gfrepi: (_window: SpiceWindow, _begmss: string, _endmss: string) => {
+      throw new Error("Fake backend: gfrepi() is not implemented");
+    },
+    gfrepf: () => {
+      throw new Error("Fake backend: gfrepf() is not implemented");
+    },
+    gfsep: (
+      _targ1: string,
+      _shape1: string,
+      _frame1: string,
+      _targ2: string,
+      _shape2: string,
+      _frame2: string,
+      _abcorr: AbCorr | string,
+      _obsrvr: string,
+      _relate: string,
+      _refval: number,
+      _adjust: number,
+      _step: number,
+      _nintvls: number,
+      _cnfine: SpiceWindow,
+      _result: SpiceWindow,
+    ) => {
+      throw new Error("Fake backend: gfsep() is not implemented");
+    },
+    gfdist: (
+      _target: string,
+      _abcorr: AbCorr | string,
+      _obsrvr: string,
+      _relate: string,
+      _refval: number,
+      _adjust: number,
+      _step: number,
+      _nintvls: number,
+      _cnfine: SpiceWindow,
+      _result: SpiceWindow,
+    ) => {
+      throw new Error("Fake backend: gfdist() is not implemented");
     },
 
 

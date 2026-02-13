@@ -83,6 +83,7 @@ export * from "./domains/ids-names-normalize.js";
 export * from "./domains/frames.js";
 export * from "./domains/ephemeris.js";
 export * from "./domains/geometry.js";
+export * from "./domains/geometry-gf.js";
 export * from "./domains/coords-vectors.js";
 export * from "./domains/file-io.js";
 export * from "./domains/error.js";
@@ -97,6 +98,7 @@ import type { IdsNamesApi } from "./domains/ids-names.js";
 import type { FramesApi } from "./domains/frames.js";
 import type { EphemerisApi } from "./domains/ephemeris.js";
 import type { GeometryApi } from "./domains/geometry.js";
+import type { GeometryGfApi } from "./domains/geometry-gf.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
 import type { FileIoApi } from "./domains/file-io.js";
 import type { ErrorApi } from "./domains/error.js";
@@ -114,6 +116,7 @@ export interface SpiceBackend
     FramesApi,
     EphemerisApi,
     GeometryApi,
+    GeometryGfApi,
     CoordsVectorsApi,
     FileIoApi,
     ErrorApi,

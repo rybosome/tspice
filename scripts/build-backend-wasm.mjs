@@ -106,6 +106,7 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "frames.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ephemeris.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry_gf.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ek.c"),
@@ -382,6 +383,14 @@ const exportedFunctions = [
   "_tspice_sincpt",
   "_tspice_ilumin",
   "_tspice_occult",
+  "_tspice_gfsstp",
+  "_tspice_gfstep",
+  "_tspice_gfstol",
+  "_tspice_gfrefn",
+  "_tspice_gfrepi",
+  "_tspice_gfrepf",
+  "_tspice_gfsep",
+  "_tspice_gfdist",
 
   // --- coords/vectors ---
   "_tspice_reclat",
