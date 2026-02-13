@@ -30,6 +30,13 @@ int tspice_get_last_error_short(char *out, int outMaxBytes);
 int tspice_get_last_error_long(char *out, int outMaxBytes);
 int tspice_get_last_error_trace(char *out, int outMaxBytes);
 
+// Clears process-global structured last-error buffers (short/long/trace)
+// without modifying CSPICE error status.
+//
+// Useful for non-CSPICE validation errors, where JS backends should not attach
+// stale `spiceShort`/`spiceLong`/`spiceTrace` fields.
+void tspice_clear_last_error_buffers(void);
+
 // --- CSPICE error/status utilities ---
 int tspice_failed(int *outFailed, char *err, int errMaxBytes);
 int tspice_reset(char *err, int errMaxBytes);
@@ -62,6 +69,33 @@ int tspice_kdata(
     int *outFound,
     char *err,
     int errMaxBytes);
+
+int tspice_kinfo(
+    const char *path,
+    char *filtyp,
+    int filtypMaxBytes,
+    char *source,
+    int sourceMaxBytes,
+    int *outHandle,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_kxtrct(
+    const char *keywd,
+    int termlen,
+    const char *terms,
+    int nterms,
+    const char *wordsqIn,
+    char *wordsqOut,
+    int wordsqOutMaxBytes,
+    char *substr,
+    int substrMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_kplfrm(int frmcls, uintptr_t idset, char *err, int errMaxBytes);
 
 // Returns the number of loaded kernels, or -1 on error (with message in `err`).
 int tspice_ktotal_all(char *err, int errMaxBytes);
@@ -121,6 +155,97 @@ int tspice_dlafns(
 
 // Close a DLA handle (DLA is DAS-backed).
 int tspice_dlacls(int handle, char *err, int errMaxBytes);
+
+// --- DSK -------------------------------------------------------------------
+
+int tspice_dskopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dskmi2(
+    int nv,
+    const double *vrtces,
+    int np,
+    const int32_t *plates,
+    double finscl,
+    int corscl,
+    int worksz,
+    int voxpsz,
+    int voxlsz,
+    int makvtl,
+    int spxisz,
+    double *outSpaixd,
+    int outSpaixdLen,
+    int32_t *outSpaixi,
+    int outSpaixiLen,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dskw02(
+    int handle,
+    int center,
+    int surfid,
+    int dclass,
+    const char *frame,
+    int corsys,
+    const double *corpar,
+    double mncor1,
+    double mxcor1,
+    double mncor2,
+    double mxcor2,
+    double mncor3,
+    double mxcor3,
+    double first,
+    double last,
+    int nv,
+    const double *vrtces,
+    int np,
+    const int32_t *plates,
+    const double *spaixd,
+    int spaixdLen,
+    const int32_t *spaixi,
+    int spaixiLen,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dskobj(const char *dsk, uintptr_t bodidsCellHandle, char *err, int errMaxBytes);
+
+int tspice_dsksrf(
+    const char *dsk,
+    int bodyid,
+    uintptr_t srfidsCellHandle,
+    char *err,
+    int errMaxBytes);
+
+// `outInts6` layout:
+// [surfce, center, dclass, dtype, frmcde, corsys]
+//
+// `outDoubles18` layout:
+// [corpar(10), co1min, co1max, co2min, co2max, co3min, co3max, start, stop]
+int tspice_dskgd(
+    int handle,
+    const int32_t *dladscInts8,
+    int32_t *outInts6,
+    double *outDoubles18,
+    char *err,
+    int errMaxBytes);
+
+// `outInts10` layout:
+// [nv, np, nvxtot, vgrext(3), cgscal, vtxnpl, voxnpt, voxnpl]
+//
+// `outDoubles10` layout:
+// [vtxbds(6), voxsiz, voxori(3)]
+int tspice_dskb02(
+    int handle,
+    const int32_t *dladscInts8,
+    int32_t *outInts10,
+    double *outDoubles10,
+    char *err,
+    int errMaxBytes);
 
 // --- Kernel pool -----------------------------------------------------------
 
@@ -238,6 +363,49 @@ int tspice_timout(
     const char *picture,
     char *out,
     int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// deltet_c: return difference ET - UTC (Delta ET).
+int tspice_deltet(
+    double epoch,
+    const char *eptype,
+    double *outDelta,
+    char *err,
+    int errMaxBytes);
+
+// unitim_c: convert time epoch from one system to another.
+int tspice_unitim(
+    double epoch,
+    const char *insys,
+    const char *outsys,
+    double *outEpoch,
+    char *err,
+    int errMaxBytes);
+
+// tparse_c: parse a UTC time string -> UTC seconds past J2000 (formal calendar; no leap seconds).
+int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes);
+
+// tpictr_c: create a time picture from a sample time string.
+int tspice_tpictr(
+    const char *sample,
+    const char *picturIn,
+    char *outPictur,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// timdef_c: set/get time conversion defaults.
+int tspice_timdef_get(
+    const char *item,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_timdef_set(
+    const char *item,
+    const char *value,
     char *err,
     int errMaxBytes);
 
@@ -635,6 +803,39 @@ int tspice_sce2s(
     double et,
     char *out,
     int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// scencd_c: convert an encoded SCLK string -> ticks.
+int tspice_scencd(
+    int sc,
+    const char *sclkch,
+    double *outSclkdp,
+    char *err,
+    int errMaxBytes);
+
+// scdecd_c: convert ticks -> an encoded SCLK string.
+int tspice_scdecd(
+    int sc,
+    double sclkdp,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// sct2e_c: convert ticks -> ET seconds past J2000.
+int tspice_sct2e(
+    int sc,
+    double sclkdp,
+    double *outEt,
+    char *err,
+    int errMaxBytes);
+
+// sce2c_c: convert ET seconds past J2000 -> ticks.
+int tspice_sce2c(
+    int sc,
+    double et,
+    double *outSclkdp,
     char *err,
     int errMaxBytes);
 

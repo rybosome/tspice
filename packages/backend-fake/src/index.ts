@@ -4,11 +4,14 @@ import type {
   Found,
   IluminResult,
   KernelData,
+  KernelInfo,
   KernelKind,
+  KernelKindInput,
   KernelSource,
   KernelPoolVarType,
   SpiceBackend,
   SpiceHandle,
+  SpiceIntCell,
   Mat3RowMajor,
   SpiceMatrix6x6,
   SpiceStateVector,
@@ -21,7 +24,10 @@ import {
   assertGetmsgWhich,
   assertSpiceInt32,
   brandMat3RowMajor,
+  kxtrctJs,
+  matchesKernelKind,
   normalizeBodItem,
+  normalizeKindInput,
 } from "@rybosome/tspice-backend-contract";
 
 /**
@@ -43,6 +49,20 @@ import {
 const TWO_PI = Math.PI * 2;
 
 export const FAKE_SPICE_VERSION = "tspice-fake-backend@0.0.0";
+
+export type FakeBackendOptions = {
+  /**
+   * How to handle `furnsh()` calls with unrecognized kernel filename extensions.
+   *
+   * - `"throw"` (default): throw a RangeError
+   * - `"assume-text"`: treat unknown extensions as a TEXT kernel
+   *
+   * Note: with `"assume-text"`, TEXT subtype queries (`"LSK"`, `"FK"`, `"IK"`, `"SCLK"`) depend on
+   * the `file` identifier having a recognizable extension. If subtype queries matter for a test/demo,
+   * prefer naming virtual ids with `.tls/.tf/.ti/.tsc` (or keep the default `"throw"`).
+   */
+  unknownExtension?: "throw" | "assume-text";
+};
 
 const J2000_UTC_MS = Date.parse("2000-01-01T12:00:00.000Z");
 
@@ -581,53 +601,109 @@ function formatUtcFromMs(ms: number, prec: number): string {
   return `${head}.${padded}Z`;
 }
 
+type KernelKindNoAll = Exclude<KernelKind, "ALL">;
+
 type KernelRecord = {
   file: string;
   source: string;
   filtyp: string;
   handle: number;
-  kind: KernelKind;
+  kind: KernelKindNoAll;
 };
 
-function guessKernelKind(path: string): KernelKind {
+function guessKernelKind(path: string, unknownExtension: "throw" | "assume-text"): KernelKindNoAll {
   const lower = path.toLowerCase();
   if (lower.endsWith(".bsp")) return "SPK";
   if (lower.endsWith(".bc")) return "CK";
-  if (lower.endsWith(".tpc") || lower.endsWith(".pck")) return "PCK";
+  if (lower.endsWith(".bpc")) return "PCK";
+  if (lower.endsWith(".bds") || lower.endsWith(".dsk")) return "DSK";
+  if (lower.endsWith(".tpc") || lower.endsWith(".pck")) return "TEXT";
   if (lower.endsWith(".tls") || lower.endsWith(".lsk")) return "LSK";
   if (lower.endsWith(".tf") || lower.endsWith(".fk")) return "FK";
   if (lower.endsWith(".ti") || lower.endsWith(".ik")) return "IK";
   if (lower.endsWith(".tsc") || lower.endsWith(".sclk")) return "SCLK";
+  if (lower.endsWith(".ek")) return "EK";
   if (lower.endsWith(".tm") || lower.endsWith(".meta")) return "META";
-  return "UNKNOWN";
+  // "ALL" is a query token, not a per-kernel kind.
+  if (unknownExtension === "assume-text") {
+    return "TEXT";
+  }
+  throw new RangeError(`Unsupported kernel extension (fake backend): ${path}`);
 }
 
 function assertNever(x: never, msg: string): never {
   throw new Error(msg);
 }
 
-function kernelFiltyp(kind: KernelKind): string {
+function kernelFiltyp(kind: KernelKindNoAll): string {
   // Keep this close to NAIF-style strings, but it doesn't need to be exact.
   switch (kind) {
     case "SPK":
     case "CK":
     case "PCK":
+    case "DSK":
+    case "EK":
+    case "META":
+    case "TEXT":
+      return kind;
+
     case "LSK":
     case "FK":
     case "IK":
     case "SCLK":
-    case "EK":
-    case "META":
-      return kind;
-    case "ALL":
-      return "ALL";
-    case "UNKNOWN":
-      return "UNKNOWN";
+      return "TEXT";
   }
 
   // Compile-time exhaustiveness check: if a new KernelKind is added, TypeScript
   // forces us to intentionally map it.
   return assertNever(kind, `Unmapped KernelKind: ${kind}`);
+}
+
+function normalizeVirtualKernelIdOrNull(input: string): string | null {
+  // Keep lookup semantics aligned with the WASM backend's virtual-id
+  // normalization (see core's `normalizeVirtualKernelPath`).
+  //
+  // Unlike the core helper, this is non-throwing: invalid inputs just don't
+  // match.
+  const raw = input.replace(/\\/g, "/").trim();
+  if (!raw) {
+    return null;
+  }
+
+  // Strip leading slashes so `/kernels/foo.tls` behaves like `kernels/foo.tls`.
+  let rel = raw.replace(/^\/+/, "");
+
+  // Strip leading `./` segments.
+  while (rel.startsWith("./")) {
+    rel = rel.slice(2);
+  }
+
+  // Strip a leading `kernels/` directory to keep user input flexible.
+  // Treat a bare `kernels` segment as equivalent to `kernels/`.
+  if (rel === "kernels") {
+    rel = "";
+  }
+  while (rel.startsWith("kernels/")) {
+    rel = rel.replace(/^kernels\/+/, "");
+  }
+
+  const segments = rel.split("/");
+  const out: string[] = [];
+  for (const seg of segments) {
+    if (!seg || seg === ".") {
+      continue;
+    }
+    if (seg === "..") {
+      return null;
+    }
+    out.push(seg);
+  }
+
+  if (out.length === 0) {
+    return null;
+  }
+
+  return out.join("/");
 }
 
 function assertPoolRange(fn: string, start: number, room: number): void {
@@ -645,13 +721,15 @@ function assertNonEmptyString(fn: string, field: string, value: string): void {
   }
 }
 
-export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
+export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
   let spiceShort = "";
   let spiceLong = "";
   const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
+
+  const unknownExtension = options.unknownExtension ?? "throw";
 
   type KernelPoolEntry =
     | { type: "N"; values: number[] }
@@ -705,10 +783,51 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   const spiceCellUnsupported =
     "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
 
-  const getKernelsOfKind = (kind: KernelKind): readonly KernelRecord[] => {
-    if (kind === "ALL") return kernels;
-    return kernels.filter((k) => k.kind === kind);
+  const getKernelsOfKind = (kind: KernelKindInput | undefined): readonly KernelRecord[] => {
+    const requested = new Set<string>(normalizeKindInput(kind));
+    return kernels.filter((k) => matchesKernelKind(requested, k));
   };
+
+  // Minimal state for timdef() GET/SET.
+  //
+  // The fake backend treats time systems deterministically and does not model
+  // leap seconds, so these defaults are mostly for parity with the contract
+  // and to support callers that expect timdef() to exist.
+  const DEFAULT_TIME_DEFAULTS = [
+    ["SYSTEM", "UTC"],
+    ["CALENDAR", "GREGORIAN"],
+    ["ZONE", "UTC"],
+  ] as const;
+
+  const timeDefaults = new Map<string, string>(DEFAULT_TIME_DEFAULTS);
+
+  function resetTimeDefaults(): void {
+    timeDefaults.clear();
+    for (const [k, v] of DEFAULT_TIME_DEFAULTS) {
+      timeDefaults.set(k, v);
+    }
+  }
+
+  function timdef(action: "GET", item: string): string;
+  function timdef(action: "SET", item: string, value: string): void;
+  function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+    assertNonEmptyString("timdef", "item", item);
+
+    if (action === "GET") {
+      return timeDefaults.get(item) ?? "";
+    }
+
+    if (typeof value !== "string") {
+      throw new TypeError("timdef(SET) requires a string value");
+    }
+    // Match CSPICE `timdef_c`: empty (length 0) strings are invalid, but
+    // whitespace-only strings are allowed (e.g. ZONE can be "blank").
+    if (value.length === 0) {
+      throw new RangeError("timdef(SET): value must be a non-empty string");
+    }
+
+    timeDefaults.set(item, value);
+  }
 
   return {
     kind: "fake",
@@ -721,6 +840,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       spiceShort = "";
       spiceLong = "";
       traceStack.length = 0;
+      resetTimeDefaults();
     },
     getmsg: (which) => {
       assertGetmsgWhich(which);
@@ -756,7 +876,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       const file = typeof kernel === "string" ? kernel : kernel.path;
       const source = typeof kernel === "string" ? file : "bytes";
 
-      const kind = guessKernelKind(file);
+      const kind = guessKernelKind(file, unknownExtension);
       const handle = nextHandle++;
 
       kernels.push({
@@ -769,7 +889,12 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     unload: (path: string) => {
-      const idx = kernels.findIndex((k) => k.file === path);
+      const needle = normalizeVirtualKernelIdOrNull(path);
+      if (needle == null) {
+        return;
+      }
+
+      const idx = kernels.findIndex((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
       if (idx >= 0) {
         kernels.splice(idx, 1);
       }
@@ -782,11 +907,37 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       kernelPoolWatchesByName.clear();
     },
 
-    ktotal: (kind: KernelKind = "ALL") => {
+    kinfo: (path: string) => {
+      const needle = normalizeVirtualKernelIdOrNull(path);
+      if (needle == null) {
+        return { found: false };
+      }
+
+      const k = kernels.find((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
+      if (!k) {
+        return { found: false };
+      }
+
+      return {
+        found: true,
+        filtyp: k.filtyp,
+        source: k.source,
+        handle: k.handle,
+      } satisfies Found<KernelInfo>;
+    },
+
+    kxtrct: (keywd, terms, wordsq) => {
+      return kxtrctJs(keywd, terms, wordsq);
+    },
+    kplfrm: (_frmcls, _idset) => {
+      throw new Error(spiceCellUnsupported);
+    },
+
+    ktotal: (kind: KernelKindInput = "ALL") => {
       return getKernelsOfKind(kind).length;
     },
 
-    kdata: (which: number, kind: KernelKind = "ALL") => {
+    kdata: (which: number, kind: KernelKindInput = "ALL") => {
       const list = getKernelsOfKind(kind);
       const k = list[which];
       if (!k) return { found: false };
@@ -1005,6 +1156,44 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       return formatUtcFromMs(ms, 3);
     },
 
+    deltet: (_epoch, _eptype) => {
+      // Deterministic stub: the fake backend ignores leap seconds, so ET and
+      // UTC are treated as identical.
+      return 0;
+    },
+
+    unitim: (epoch, _insys, _outsys) => {
+      // Deterministic stub: treat all input/output systems as identical.
+      return epoch;
+    },
+
+    tparse: (timstr) => {
+      // Deterministic stub: match `str2et` semantics in the fake backend.
+      if (!isIso8601OrRfc3339Utcish(timstr)) {
+        throw new Error(
+          `Fake backend: tparse() only supports ISO-8601/RFC3339 timestamps (got ${JSON.stringify(timstr)})`,
+        );
+      }
+      const ms = Date.parse(timstr);
+      if (!Number.isFinite(ms)) {
+        throw new Error(`Fake backend: failed to parse time: ${JSON.stringify(timstr)}`);
+      }
+      return (ms - J2000_UTC_MS) / 1000;
+    },
+
+    tpictr: (sample, pictur) => {
+      if (sample.length === 0) {
+        throw new RangeError("tpictr(): sample must be a non-empty string");
+      }
+      if (pictur.length === 0) {
+        throw new RangeError("tpictr(): pictur must be a non-empty string");
+      }
+      // Picture transformation is out of scope for the fake backend.
+      return pictur;
+    },
+
+    timdef,
+
     bodn2c: (name) => {
       const trimmed = normalizeName(name);
 
@@ -1137,6 +1326,27 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     sce2s: (_sc, et) => {
       // Minimal deterministic stub.
       return String(et);
+    },
+
+    scencd: (_sc, sclkch) => {
+      // Minimal deterministic stub: treat the string as a number of ticks.
+      const n = Number(sclkch);
+      return Number.isFinite(n) ? n : 0;
+    },
+
+    scdecd: (_sc, sclkdp) => {
+      // Minimal deterministic stub.
+      return String(sclkdp);
+    },
+
+    sct2e: (_sc, sclkdp) => {
+      // Minimal deterministic stub.
+      return sclkdp;
+    },
+
+    sce2c: (_sc, et) => {
+      // Minimal deterministic stub.
+      return et;
     },
 
     ckgp: (_inst, _sclkdp, _tol, _ref) => {
@@ -1294,6 +1504,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       return 0;
     },
 
+
     // --- file i/o primitives (not implemented in fake backend) ---
 
     exists: (_path: string) => {
@@ -1331,6 +1542,65 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
     dlacls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dlacls() is not implemented");
+    },
+
+    dskopn: (_path: string, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: dskopn() is not implemented");
+    },
+    dskmi2: (
+      _nv: number,
+      _vrtces: readonly number[],
+      _np: number,
+      _plates: readonly number[],
+      _finscl: number,
+      _corscl: number,
+      _worksz: number,
+      _voxpsz: number,
+      _voxlsz: number,
+      _makvtl: boolean,
+      _spxisz: number,
+    ) => {
+      throw new Error("Fake backend: dskmi2() is not implemented");
+    },
+    dskw02: (
+      _handle: SpiceHandle,
+      _center: number,
+      _surfid: number,
+      _dclass: number,
+      _frame: string,
+      _corsys: number,
+      _corpar: readonly number[],
+      _mncor1: number,
+      _mxcor1: number,
+      _mncor2: number,
+      _mxcor2: number,
+      _mncor3: number,
+      _mxcor3: number,
+      _first: number,
+      _last: number,
+      _nv: number,
+      _vrtces: readonly number[],
+      _np: number,
+      _plates: readonly number[],
+      _spaixd: readonly number[],
+      _spaixi: readonly number[],
+    ) => {
+      throw new Error("Fake backend: dskw02() is not implemented");
+    },
+
+    // -- DSK ----------------------------------------------------------------
+
+    dskobj: (_dsk: string, _bodids: SpiceIntCell) => {
+      throw new Error("Fake backend: dskobj() is not implemented");
+    },
+    dsksrf: (_dsk: string, _bodyid: number, _srfids: SpiceIntCell) => {
+      throw new Error("Fake backend: dsksrf() is not implemented");
+    },
+    dskgd: (_handle: SpiceHandle, _dladsc: DlaDescriptor) => {
+      throw new Error("Fake backend: dskgd() is not implemented");
+    },
+    dskb02: (_handle: SpiceHandle, _dladsc: DlaDescriptor) => {
+      throw new Error("Fake backend: dskb02() is not implemented");
     },
 
     // -- Cells + windows -----------------------------------------------------

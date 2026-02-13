@@ -24,6 +24,16 @@ export type NativeAddon = {
     kind?: string,
   ): { found: boolean; file?: string; filtyp?: string; source?: string; handle?: number };
 
+
+  // --- kernel management ---
+  kinfo(path: string): { found: boolean; filtyp?: string; source?: string; handle?: number };
+  kxtrct(
+    keywd: string,
+    terms: readonly string[],
+    wordsq: string,
+  ): { found: boolean; wordsq?: string; substr?: string };
+  kplfrm(frmcls: number, idset: number): void;
+
   // --- kernel pool ---
   gdpool(name: string, start: number, room: number): { found: boolean; values?: number[] };
   gipool(name: string, start: number, room: number): { found: boolean; values?: number[] };
@@ -41,6 +51,14 @@ export type NativeAddon = {
   str2et(utc: string): number;
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;
+
+  deltet(epoch: number, eptype: string): number;
+  unitim(epoch: number, insys: string, outsys: string): number;
+  tparse(timstr: string): number;
+  tpictr(sample: string, pictur: string): string;
+  timdefGet(item: string): string;
+  timdefSet(item: string, value: string): void;
+
 
   // --- file i/o primitives ---
 
@@ -60,6 +78,51 @@ export type NativeAddon = {
   dlafns(handle: number, descr: Record<string, unknown>): { found: boolean; descr?: Record<string, unknown> };
   dlacls(handle: number): void;
 
+  dskopn(path: string, ifname: string, ncomch: number): number;
+  dskmi2(
+    nv: number,
+    vrtces: readonly number[],
+    np: number,
+    plates: readonly number[],
+    finscl: number,
+    corscl: number,
+    worksz: number,
+    voxpsz: number,
+    voxlsz: number,
+    makvtl: boolean,
+    spxisz: number,
+  ): { spaixd: number[]; spaixi: number[] };
+  dskw02(
+    handle: number,
+    center: number,
+    surfid: number,
+    dclass: number,
+    frame: string,
+    corsys: number,
+    corpar: readonly number[],
+    mncor1: number,
+    mxcor1: number,
+    mncor2: number,
+    mxcor2: number,
+    mncor3: number,
+    mxcor3: number,
+    first: number,
+    last: number,
+    nv: number,
+    vrtces: readonly number[],
+    np: number,
+    plates: readonly number[],
+    spaixd: readonly number[],
+    spaixi: readonly number[],
+  ): void;
+
+  // --- DSK ---
+
+  dskobj(dsk: string, bodidsCellHandle: number): void;
+  dsksrf(dsk: string, bodyid: number, srfidsCellHandle: number): void;
+  dskgd(handle: number, dladsc: Record<string, unknown>): Record<string, unknown>;
+  dskb02(handle: number, dladsc: Record<string, unknown>): Record<string, unknown>;
+
 
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
@@ -77,6 +140,10 @@ export type NativeAddon = {
 
   scs2e(sc: number, sclkch: string): number;
   sce2s(sc: number, et: number): string;
+  scencd(sc: number, sclkch: string): number;
+  scdecd(sc: number, sclkdp: number): string;
+  sct2e(sc: number, sclkdp: number): number;
+  sce2c(sc: number, et: number): number;
   ckgp(
     inst: number,
     sclkdp: number,

@@ -112,8 +112,6 @@ Kernel load order matches call order:
 - Node backend (`backend: "node"`): implemented by a native addon. Requires a compatible native binding to be present.
 - WASM backend (`backend: "wasm"`): implemented with a prebuilt `.wasm`. See [`@rybosome/tspice-backend-wasm`](../backend-wasm/README.md).
 
-Both backends currently require a CSPICE build where `sizeof(SpiceInt) == 4` (32-bit `SpiceInt`).
-
 ## Development
 
 ```bash

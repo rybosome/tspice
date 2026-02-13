@@ -1,0 +1,27 @@
+name: time.et2utc.basic
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+cases:
+  - id: j2000-c-3
+    call: time.et2utc
+    args:
+      - 0
+      - "C"
+      - 3
+
+  - id: j2000-isoc-3
+    call: time.et2utc
+    args:
+      - 0
+      - "ISOC"
+      - 3
+
+  - id: bad-format
+    call: time.et2utc
+    args:
+      - 0
+      - "NOPE"
+      - 3
+    compare:
+      errorShort: true

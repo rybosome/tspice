@@ -98,15 +98,26 @@ For generic solar system work, these NAIF standards are commonly used:
 | --- | --- | --- | --- | --- | --- |
 | `time.spiceVersion()` | `tkvrsn_c("TOOLKIT")` | `(): string` | `string` | exact string match | none |
 | `time.tkvrsn(item)` | `tkvrsn_c` | `(item: "TOOLKIT"): string` | `string` | exact string match | none |
-| `time.str2et(time)` | `str2et_c` | `(time: string): number` | `number` | floating compare (ET seconds) | requires LSK (`*.tls`); may depend on loaded time constants in kernel pool |
+| `time.str2et(time)` | `str2et_c` | `(time: string): number` | `number` | floating compare (ET seconds) | **stateful**: uses TIMDEF defaults (SYSTEM/CALENDAR/ZONE); requires LSK (`*.tls`); may depend on loaded time constants in kernel pool |
 | `time.et2utc(et, format, prec)` | `et2utc_c` | `(et: number, format: string, prec: number): string` | `string` | exact string match (format-dependent) | requires LSK (`*.tls`) |
 | `time.timout(et, picture)` | `timout_c` | `(et: number, picture: string): string` | `string` | exact string match (picture-dependent) | requires LSK (`*.tls`) for many pictures |
+| `time.deltet(epoch, eptype)` | `deltet_c` | `(epoch: number, eptype: "ET" | "UTC"): number` | `number` | floating compare (seconds) | requires LSK (`*.tls`) |
+| `time.unitim(epoch, insys, outsys)` | `unitim_c` | `(epoch: number, insys: string, outsys: string): number` | `number` | floating compare (seconds) | requires LSK (`*.tls`) |
+| `time.tparse(timstr)` | `tparse_c` | `(timstr: string): number` | `number` | floating compare (UTC seconds past J2000; formal calendar / no leap seconds) | stateless; UTC-only (rejects time system/zone labels); no kernels |
+| `time.tpictr(sample, pictur)` | `tpictr_c` | `(sample: string, pictur: string): string` | `string` | exact string match | **stateful**: interprets sample using TIMDEF defaults; no kernels |
+| `time.timdef(action, item, value?)` | `timdef_c` | overload: `("GET", item)` / `("SET", item, value)` | `string` / `void` | exact string match for `GET` | stateful (mutates time conversion defaults); no kernels |
 | `time.scs2e(sc, sclkch)` | `scs2e_c` | `(sc: number, sclkch: string): number` | `number` | floating compare (ET seconds) | requires SCLK kernel (`*.tsc`) for `sc`; typically also needs LSK |
 | `time.sce2s(sc, et)` | `sce2s_c` | `(sc: number, et: number): string` | `string` | exact string match | requires SCLK kernel (`*.tsc`) for `sc`; typically also needs LSK |
+| `time.scencd(sc, sclkch)` | `scencd_c` | `(sc: number, sclkch: string): number` | `number` | floating compare (ticks) | requires SCLK kernel (`*.tsc`) for `sc` |
+| `time.scdecd(sc, sclkdp)` | `scdecd_c` | `(sc: number, sclkdp: number): string` | `string` | exact string match | requires SCLK kernel (`*.tsc`) for `sc` |
+| `time.sct2e(sc, sclkdp)` | `sct2e_c` | `(sc: number, sclkdp: number): number` | `number` | floating compare (ET seconds) | requires SCLK kernel (`*.tsc`) for `sc`; often also needs LSK |
+| `time.sce2c(sc, et)` | `sce2c_c` | `(sc: number, et: number): number` | `number` | floating compare (ticks) | requires SCLK kernel (`*.tsc`) for `sc`; often also needs LSK |
 
 Notes:
 
 - `spiceVersion()` is a convenience alias; the contract also exposes `tkvrsn("TOOLKIT")` explicitly.
+
+- Many time routines (notably `str2et`, `timout`, and `tpictr`) depend on TIMDEF defaults (SYSTEM/CALENDAR/ZONE). These defaults are global mutable state in CSPICE; tests should snapshot/restore if they change them to avoid order dependence.
 
 ---
 
@@ -145,10 +156,13 @@ Notes:
 | `kernels.furnsh(kernel)` | `furnsh_c` | `(kernel: KernelSource): void` | `void` | n/a | **stateful**: mutates kernel pool + loaded-kernel set; `KernelSource` may be a path or `{ path, bytes }` where backend writes bytes then furnshes the path |
 | `kernels.unload(path)` | `unload_c` | `(path: string): void` | `void` | n/a | **stateful**: unloads a previously loaded kernel |
 | `kernels.kclear()` | `kclear_c` | `(): void` | `void` | n/a | **stateful**: clears all loaded kernels and the kernel pool |
-| `kernels.ktotal(kind?)` | `ktotal_c` | `(kind?: KernelKind): number` | `number` | exact integer match | **stateful**: returns count of currently loaded kernels (optionally filtered) |
-| `kernels.kdata(which, kind?)` | `kdata_c` | `(which: number, kind?: KernelKind): Found<KernelData>` | `Found<KernelData>` | `filtyp` exact; path-like fields may require normalization (see Notes) | **stateful**: queries loaded-kernel table; returns `{ found: false }` when `which` is out of range for the selected kind |
+| `kernels.ktotal(kind?)` | `ktotal_c` | `(kind?: KernelKindInput): number` | `number` | exact integer match | **stateful**: returns count of currently loaded kernels (optionally filtered) |
+| `kernels.kdata(which, kind?)` | `kdata_c` | `(which: number, kind?: KernelKindInput): Found<KernelData>` | `Found<KernelData>` | `filtyp` exact; path-like fields may require normalization (see Notes) | **stateful**: queries loaded-kernel table; returns `{ found: false }` when `which` is out of range for the selected kind |
 
 Notes:
+
+- **Kind token normalization (`KernelKindInput`):** `kind` may be a single token, an array of tokens, or a whitespace-separated string (CSPICE-style). Tokens are trimmed + case-insensitive; duplicates are ignored (first-seen order preserved). If `ALL` is present alongside other tokens, it normalizes to `["ALL"]`. Invalid/empty tokens (including `[]`) throw `RangeError`.
+- **TEXT subtype inference:** SPICE often reports text kernels with `filtyp: "TEXT"` even when they are logically `LSK`/`FK`/`IK`/`SCLK`. When subtypes are requested, backends infer the subtype best-effort from the `kernel.file` extension (e.g. `.tls`/`.lsk` → `LSK`). If `TEXT` is requested, subtype tokens are redundant (and may be ignored/canonicalized away).
 
 - **Global state + determinism:** `furnsh` mutates process-global CSPICE state (kernel pool + loaded-kernel table). Load order can affect results. For deterministic tests, prefer an explicit load order and call `kernels.kclear()` between tests/suites to avoid cross-test leakage.
 - **`KernelSource` bytes safety:** when `KernelSource` is `{ path, bytes }`, backends should treat `path` as **untrusted** input. Write bytes only into a backend-controlled directory / virtual FS namespace, reject absolute paths and `..` segments, and (ideally) clean up temp artifacts on `unload()` / `kclear()` or process exit.

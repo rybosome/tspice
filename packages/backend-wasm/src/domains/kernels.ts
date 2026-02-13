@@ -1,9 +1,16 @@
 import type {
   Found,
   KernelData,
-  KernelKind,
+  KernelInfo,
+  KernelKindInput,
   KernelSource,
   KernelsApi,
+} from "@rybosome/tspice-backend-contract";
+import {
+  kxtrctJs,
+  matchesKernelKind,
+  nativeKindQueryOrNull,
+  normalizeKindInput,
 } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
@@ -14,7 +21,7 @@ import { writeUtf8CString } from "../codec/strings.js";
 import type { WasmFsApi } from "../runtime/fs.js";
 import { resolveKernelPath, writeKernelSource } from "../runtime/fs.js";
 
-function tspiceCallKtotal(module: EmscriptenModule, kind: KernelKind): number {
+function tspiceCallKtotal(module: EmscriptenModule, kind: string): number {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const kindPtr = writeUtf8CString(module, kind);
@@ -43,7 +50,7 @@ function tspiceCallKtotal(module: EmscriptenModule, kind: KernelKind): number {
 function tspiceCallKdata(
   module: EmscriptenModule,
   which: number,
-  kind: KernelKind,
+  kind: string,
 ): Found<KernelData> {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
@@ -112,8 +119,48 @@ function tspiceCallKdata(
 }
 
 export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): KernelsApi {
+  let kinfoCache: Map<string, KernelInfo> | null = null;
+
+  const clearKinfoCache = (): void => {
+    kinfoCache = null;
+  };
+
+  const getKinfoCache = (): Map<string, KernelInfo> => {
+    if (kinfoCache != null) {
+      return kinfoCache;
+    }
+
+    const totalAll = tspiceCallKtotal(module, "ALL");
+    const map = new Map<string, KernelInfo>();
+    for (let i = 0; i < totalAll; i++) {
+      const kd = tspiceCallKdata(module, i, "ALL");
+      if (!kd.found) {
+        continue;
+      }
+
+      // `kd.file` is already normalized for this backend (see `furnsh` below), but
+      // normalize again to safely accept equivalent inputs like `kernels/foo.tls`,
+      // `/kernels//foo.tls`, etc.
+      const key = resolveKernelPath(kd.file);
+      if (map.has(key)) {
+        continue;
+      }
+
+      map.set(key, {
+        filtyp: kd.filtyp.trim(),
+        source: kd.source.trim(),
+        handle: kd.handle,
+      });
+    }
+
+    kinfoCache = map;
+    return map;
+  };
+
   return {
     furnsh: (kernel: KernelSource) => {
+      clearKinfoCache();
+
       if (typeof kernel === "string") {
         // String kernels are treated as *WASM-FS paths*.
         //
@@ -134,12 +181,78 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
       tspiceCall1Path(module, module._tspice_furnsh, path);
     },
     unload: (path: string) => {
+      clearKinfoCache();
       tspiceCall1Path(module, module._tspice_unload, resolveKernelPath(path));
     },
     kclear: () => {
+      clearKinfoCache();
       tspiceCall0(module, module._tspice_kclear);
     },
-    ktotal: (kind: KernelKind = "ALL") => tspiceCallKtotal(module, kind),
-    kdata: (which: number, kind: KernelKind = "ALL") => tspiceCallKdata(module, which, kind),
+
+    kinfo: (path: string) => {
+      const resolved = resolveKernelPath(path);
+      const info = getKinfoCache().get(resolved);
+      if (info == null) {
+        return { found: false };
+      }
+
+      return { found: true, ...info } satisfies Found<KernelInfo>;
+    },
+
+    kxtrct: (keywd, terms, wordsq) => {
+      return kxtrctJs(keywd, terms, wordsq);
+    },
+    kplfrm: (_frmcls, _idset) => {
+      throw new Error("kplfrm not supported in current WASM bundle");
+    },
+    ktotal: (kind: KernelKindInput = "ALL") => {
+      const kinds = normalizeKindInput(kind);
+
+      const nativeQuery = nativeKindQueryOrNull(kinds);
+      if (nativeQuery != null) {
+        return tspiceCallKtotal(module, nativeQuery);
+      }
+
+      const requested = new Set(kinds);
+
+      const totalAll = tspiceCallKtotal(module, "ALL");
+      let count = 0;
+      for (let i = 0; i < totalAll; i++) {
+        const kd = tspiceCallKdata(module, i, "ALL");
+        if (kd.found && matchesKernelKind(requested, kd)) {
+          count++;
+        }
+      }
+      return count;
+    },
+
+    kdata: (which: number, kind: KernelKindInput = "ALL") => {
+      if (which < 0) {
+        return { found: false };
+      }
+
+      const kinds = normalizeKindInput(kind);
+
+      const nativeQuery = nativeKindQueryOrNull(kinds);
+      if (nativeQuery != null) {
+        return tspiceCallKdata(module, which, nativeQuery);
+      }
+
+      const requested = new Set(kinds);
+
+      const totalAll = tspiceCallKtotal(module, "ALL");
+      let matchIndex = 0;
+      for (let i = 0; i < totalAll; i++) {
+        const kd = tspiceCallKdata(module, i, "ALL");
+        if (!kd.found || !matchesKernelKind(requested, kd)) {
+          continue;
+        }
+        if (matchIndex === which) {
+          return kd;
+        }
+        matchIndex++;
+      }
+      return { found: false };
+    },
   };
 }

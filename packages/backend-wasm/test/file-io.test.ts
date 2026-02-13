@@ -78,7 +78,10 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
     const backend = await createWasmBackend();
 
     const { dsk } = await loadTestKernels();
-    const dskKernel = { path: "bc_mpo_sc_mga_v00.bds", bytes: dsk };
+    const dskKernel = {
+      path: "apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
+      bytes: dsk,
+    };
 
     // Ensure the bytes exist on the emscripten FS.
     backend.furnsh(dskKernel);
@@ -144,5 +147,78 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
 
     expect(() => backend.dlafns(handle, badDescr)).toThrow(/ibase.*>=\s*0/i);
     backend.dlacls(handle);
+  });
+
+  it("can write and roundtrip a minimal type 2 DSK in the emscripten FS", async () => {
+    const backend = await createWasmBackend();
+
+    const path = "file-io/roundtrip.bds";
+
+    const nv = 3;
+    const vrtces = [
+      0, 0, 0,
+      1, 0, 0,
+      0, 1, 0,
+    ];
+    const np = 1;
+    const plates = [1, 2, 3];
+
+    const handle = backend.dskopn(path, "TSPICE", 0);
+    try {
+      const { spaixd, spaixi } = backend.dskmi2(
+        nv,
+        vrtces,
+        np,
+        plates,
+        0.2, // finscl
+        5.0, // corscl
+        100_000, // worksz
+        5_000, // voxpsz
+        5_000, // voxlsz
+        true, // makvtl
+        200_000, // spxisz (must exceed SPICE_DSK02_IXIFIX + overhead)
+      );
+
+      backend.dskw02(
+        handle,
+        399, // center (Earth)
+        1, // surfid
+        2, // dclass = SPICE_DSK_GENCLS
+        "J2000",
+        3, // corsys = SPICE_DSK_RECSYS
+        new Array(10).fill(0),
+        0,
+        1,
+        0,
+        1,
+        -0.1,
+        0.1,
+        0,
+        1,
+        nv,
+        vrtces,
+        np,
+        plates,
+        spaixd,
+        spaixi,
+      );
+    } finally {
+      backend.dascls(handle);
+    }
+
+    expect(backend.exists(path)).toBe(true);
+    expect(backend.getfat(path).type).toBe("DSK");
+
+    const readHandle = backend.dasopr(path);
+    try {
+      const first = backend.dlabfs(readHandle);
+      expect(first.found).toBe(true);
+      if (!first.found) {
+        throw new Error("Expected to find a DLA segment in the written DSK");
+      }
+      expect(backend.dlafns(readHandle, first.descr)).toEqual({ found: false });
+    } finally {
+      backend.dascls(readHandle);
+    }
   });
 });

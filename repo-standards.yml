@@ -1,0 +1,11 @@
+schemaVersion: 1
+
+rules:
+  require-jsdoc-on-exported-callables:
+    packages: []
+
+  require-parity-scenario-for-backend-method:
+    packages: []
+
+  require-perf-benchmark-for-backend-method:
+    packages: []

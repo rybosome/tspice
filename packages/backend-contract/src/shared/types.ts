@@ -8,10 +8,11 @@ export type KernelSource =
 /** Kernel types used by summary/introspection APIs. */
 export type KernelKind =
   | "ALL"
-  | "UNKNOWN"
   | "SPK"
   | "CK"
   | "PCK"
+  | "DSK"
+  | "TEXT"
   | "LSK"
   | "FK"
   | "IK"
@@ -51,6 +52,13 @@ export type KernelData = {
   handle: number;
 };
 
+/** Result payload for `kinfo()`. */
+export type KernelInfo = {
+  filtyp: string;
+  source: string;
+  handle: number;
+};
+
 /** SPICE aberration correction string accepted by `spkezr`/`spkpos`. */
 export type AbCorr =
   | "NONE"
@@ -64,6 +72,7 @@ export type AbCorr =
   | "XCN+S";
 
 export type SpiceVector3 = [number, number, number];
+
 
 // -- Branded handles -------------------------------------------------------
 

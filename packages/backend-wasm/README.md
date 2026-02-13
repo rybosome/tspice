@@ -42,20 +42,6 @@ main().catch(console.error);
 
 The JS glue (`tspice_backend_wasm.web.js` in browsers, `tspice_backend_wasm.node.js` in Node) and WebAssembly binary (`tspice_backend_wasm.wasm`) are expected to be colocated. If your bundler or deployment setup relocates the `.wasm` asset, pass an explicit `wasmUrl`.
 
-## Emscripten module requirements
-
-This backend expects to run against an Emscripten “Module” object produced by the `tspice_backend_wasm.{web,node}.js` glue + `tspice_backend_wasm.wasm` binary.
-
-At runtime, the loaded module must provide:
-
-- All function exports listed in `REQUIRED_FUNCTION_EXPORTS` (see `src/lowlevel/exports.ts`). This includes the cells/windows helper exports in addition to the core CSPICE wrappers.
-- Typed array views: `HEAPU8`, `HEAP32`, `HEAPF64`.
-- Emscripten FS support enabled, including `FS.mkdirTree`.
-
-If you build your own Emscripten module/glue, it must satisfy these requirements. Otherwise, use the prebuilt artifacts checked into this repo (`tspice_backend_wasm.{web,node}.js` + `tspice_backend_wasm.wasm`). If the `.wasm` asset is relocated, pass `wasmUrl` to `createWasmBackend()`.
-
-By default, `createWasmBackend()` validates the module’s export surface at startup. You can disable validation via `validateEmscriptenModule: false` (Node also supports `TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT=1`). Skipping validation is intended for debugging only; missing exports will still cause failures later.
-
 ## API surface
 
 - `createWasmBackend(options?: { wasmUrl?: string | URL }): Promise<SpiceBackend>`

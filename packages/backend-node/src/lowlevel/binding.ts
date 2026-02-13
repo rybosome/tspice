@@ -26,7 +26,12 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.str2et === "function", "Expected native addon to export str2et(time)");
   invariant(typeof native.et2utc === "function", "Expected native addon to export et2utc(et, format, prec)");
   invariant(typeof native.timout === "function", "Expected native addon to export timout(et, picture)");
-
+  invariant(typeof native.deltet === "function", "Expected native addon to export deltet(epoch, eptype)");
+  invariant(typeof native.unitim === "function", "Expected native addon to export unitim(epoch, insys, outsys)");
+  invariant(typeof native.tparse === "function", "Expected native addon to export tparse(timstr)");
+  invariant(typeof native.tpictr === "function", "Expected native addon to export tpictr(sample, pictur)");
+  invariant(typeof native.timdefGet === "function", "Expected native addon to export timdefGet(item)");
+  invariant(typeof native.timdefSet === "function", "Expected native addon to export timdefSet(item, value)");
   invariant(typeof native.failed === "function", "Expected native addon to export failed()");
   invariant(typeof native.reset === "function", "Expected native addon to export reset()");
   invariant(typeof native.getmsg === "function", "Expected native addon to export getmsg(which)");
@@ -50,6 +55,15 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.dlabfs === "function", "Expected native addon to export dlabfs(handle)");
   invariant(typeof native.dlafns === "function", "Expected native addon to export dlafns(handle, descr)");
 
+  invariant(typeof native.dskopn === "function", "Expected native addon to export dskopn(path, ifname, ncomch)");
+  invariant(typeof native.dskmi2 === "function", "Expected native addon to export dskmi2(nv, vrtces, np, plates, finscl, corscl, worksz, voxpsz, voxlsz, makvtl, spxisz)");
+  invariant(typeof native.dskw02 === "function", "Expected native addon to export dskw02(handle, center, surfid, dclass, frame, corsys, corpar, mncor1, mxcor1, mncor2, mxcor2, mncor3, mxcor3, first, last, nv, vrtces, np, plates, spaixd, spaixi)");
+
+  invariant(typeof native.dskobj === "function", "Expected native addon to export dskobj(dsk, bodids)");
+  invariant(typeof native.dsksrf === "function", "Expected native addon to export dsksrf(dsk, bodyid, srfids)");
+  invariant(typeof native.dskgd === "function", "Expected native addon to export dskgd(handle, dladsc)");
+  invariant(typeof native.dskb02 === "function", "Expected native addon to export dskb02(handle, dladsc)");
+
   invariant(typeof native.bodn2c === "function", "Expected native addon to export bodn2c(name)");
   invariant(typeof native.bodc2n === "function", "Expected native addon to export bodc2n(code)");
   invariant(typeof native.namfrm === "function", "Expected native addon to export namfrm(name)");
@@ -58,6 +72,10 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.cnmfrm === "function", "Expected native addon to export cnmfrm(centerName)");
   invariant(typeof native.scs2e === "function", "Expected native addon to export scs2e(sc, sclkch)");
   invariant(typeof native.sce2s === "function", "Expected native addon to export sce2s(sc, et)");
+  invariant(typeof native.scencd === "function", "Expected native addon to export scencd(sc, sclkch)");
+  invariant(typeof native.scdecd === "function", "Expected native addon to export scdecd(sc, sclkdp)");
+  invariant(typeof native.sct2e === "function", "Expected native addon to export sct2e(sc, sclkdp)");
+  invariant(typeof native.sce2c === "function", "Expected native addon to export sce2c(sc, et)");
   invariant(typeof native.ckgp === "function", "Expected native addon to export ckgp(inst, sclkdp, tol, ref)");
   invariant(typeof native.ckgpav === "function", "Expected native addon to export ckgpav(inst, sclkdp, tol, ref)");
   invariant(typeof native.pxform === "function", "Expected native addon to export pxform(from, to, et)");

@@ -5,6 +5,7 @@
 #include "tspice_backend_shim.h"
 
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <vector>
 
@@ -66,6 +67,59 @@ inline void ThrowSpiceError(Napi::Env env, const std::string& context, const cha
   }
 
   ThrowSpiceError(jsErr);
+}
+
+/**
+* Produces a bounded preview of potentially untrusted user input for inclusion in error messages.
+*
+* This avoids creating extremely large JS exceptions and reduces the risk of leaking large or
+* sensitive strings into logs.
+*/
+inline std::string PreviewForError(const std::string& s, size_t maxChars = 200) {
+  const size_t origLen = s.size();
+  const size_t previewLen = (origLen <= maxChars) ? origLen : maxChars;
+
+  std::string out;
+  // Worst case is `\u00XX` (6 chars) per byte, plus suffix.
+  out.reserve(previewLen * 6 + 32);
+
+  static const char kHex[] = "0123456789ABCDEF";
+
+  for (size_t i = 0; i < previewLen; i++) {
+    const unsigned char c = static_cast<unsigned char>(s[i]);
+    switch (c) {
+      case '\n':
+        out += "\\n";
+        break;
+      case '\r':
+        out += "\\r";
+        break;
+      case '\t':
+        out += "\\t";
+        break;
+      case '\\':
+        out += "\\\\";
+        break;
+      case '"':
+        out += "\\\"";
+        break;
+      default:
+        if (c < 0x20 || c >= 0x7F) {
+          out += "\\u00";
+          out.push_back(kHex[(c >> 4) & 0xF]);
+          out.push_back(kHex[c & 0xF]);
+        } else {
+          out.push_back(static_cast<char>(c));
+        }
+        break;
+    }
+  }
+
+  if (origLen > maxChars) {
+    out += "...(len=" + std::to_string(origLen) + ")";
+  }
+
+  return out;
 }
 
 inline Napi::Array MakeNumberArray(Napi::Env env, const double* values, size_t count) {
@@ -163,6 +217,20 @@ inline bool IsAsciiWhitespace(unsigned char c) {
     default:
       return false;
   }
+}
+
+inline std::string TrimAsciiWhitespace(std::string_view s) {
+  size_t start = 0;
+  while (start < s.size() && IsAsciiWhitespace(static_cast<unsigned char>(s[start]))) {
+    start++;
+  }
+
+  size_t end = s.size();
+  while (end > start && IsAsciiWhitespace(static_cast<unsigned char>(s[end - 1]))) {
+    end--;
+  }
+
+  return std::string(s.substr(start, end - start));
 }
 
 /**

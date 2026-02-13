@@ -1,0 +1,31 @@
+name: ids-names.basic
+cases:
+  - id: bodn2c-earth
+    call: ids-names.bodn2c
+    args:
+      - "EARTH"
+
+  - id: bodn2c-earth-lower
+    call: ids-names.bodn2c
+    args:
+      - "earth"
+
+  - id: bodn2c-unknown
+    call: ids-names.bodn2c
+    args:
+      - "NOT_A_BODY"
+
+  - id: bodc2n-earth
+    call: ids-names.bodc2n
+    args:
+      - 399
+
+  - id: bodc2n-moon
+    call: ids-names.bodc2n
+    args:
+      - 301
+
+  - id: bodc2n-unknown
+    call: ids-names.bodc2n
+    args:
+      - 123456789

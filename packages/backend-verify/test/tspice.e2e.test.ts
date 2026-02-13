@@ -21,15 +21,30 @@ describe("backend-verify (tspice runner)", () => {
     const runner = await createTspiceRunner();
     const out = await executeScenario(scenario, runner);
 
-    expect(out.cases.length).toBe(1);
+    expect(out.cases.length).toBe(3);
 
-    const case0 = out.cases[0];
-    expect(case0?.outcome.ok).toBe(true);
+    const j2000 = out.cases.find((c) => c.case.id === "j2000-tdb");
+    expect(j2000?.outcome.ok).toBe(true);
 
-    if (case0?.outcome.ok) {
-      expect(typeof case0.outcome.result).toBe("number");
+    if (j2000?.outcome.ok) {
+      expect(typeof j2000.outcome.result).toBe("number");
       // J2000 epoch should be very close to ET=0 when expressed in TDB.
-      expect(Math.abs(case0.outcome.result as number)).toBeLessThan(1e-6);
+      expect(Math.abs(j2000.outcome.result as number)).toBeLessThan(1e-6);
+    }
+
+    const isoUtc = out.cases.find((c) => c.case.id === "iso-utc");
+    expect(isoUtc?.outcome.ok).toBe(true);
+
+    const invalid = out.cases.find((c) => c.case.id === "invalid");
+    expect(invalid?.outcome.ok).toBe(false);
+
+    if (invalid && !invalid.outcome.ok) {
+      expect(typeof invalid.outcome.error.message).toBe("string");
+      // Best-effort: when this is a SPICE error, short should be present.
+      if (invalid.outcome.error.spice?.short !== undefined) {
+        expect(typeof invalid.outcome.error.spice.short).toBe("string");
+        expect(invalid.outcome.error.spice.short.length).toBeGreaterThan(0);
+      }
     }
   });
 });

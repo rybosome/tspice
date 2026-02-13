@@ -103,7 +103,488 @@ export type EmscriptenModule = {
 
   _tspice_dlacls(handle: number, errPtr: number, errMaxBytes: number): number;
 
-  // --- kernel pool ---
+  // --- DSK ---
+
+  _tspice_dskopn(
+    pathPtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dskmi2(
+    nv: number,
+    vrtcesPtr: number,
+    np: number,
+    platesPtr: number,
+    finscl: number,
+    corscl: number,
+    worksz: number,
+    voxpsz: number,
+    voxlsz: number,
+    makvtl: number,
+    spxisz: number,
+    outSpaixdPtr: number,
+    outSpaixdLen: number,
+    outSpaixiPtr: number,
+    outSpaixiLen: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dskw02(
+    handle: number,
+    center: number,
+    surfid: number,
+    dclass: number,
+    framePtr: number,
+    corsys: number,
+    corparPtr: number,
+    mncor1: number,
+    mxcor1: number,
+    mncor2: number,
+    mxcor2: number,
+    mncor3: number,
+    mxcor3: number,
+    first: number,
+    last: number,
+    nv: number,
+    vrtcesPtr: number,
+    np: number,
+    platesPtr: number,
+    spaixdPtr: number,
+    spaixdLen: number,
+    spaixiPtr: number,
+    spaixiLen: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dskobj(dskPathPtr: number, bodidsCellHandle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dsksrf(
+    dskPathPtr: number,
+    bodyid: number,
+    srfidsCellHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dskgd(
+    handle: number,
+    dladscInts8Ptr: number,
+    outInts6Ptr: number,
+    outDoubles18Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dskb02(
+    handle: number,
+    dladscInts8Ptr: number,
+    outInts10Ptr: number,
+    outDoubles10Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_str2et(utcPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_et2utc(
+    et: number,
+    formatPtr: number,
+    prec: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_timout(
+    et: number,
+    picturePtr: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_bodn2c(namePtr: number, outCodePtr: number, foundPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_bodc2n(
+    code: number,
+    outNamePtr: number,
+    outNameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_namfrm(
+    frameNamePtr: number,
+    outFrameIdPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_frmnam(
+    frameId: number,
+    outFrameNamePtr: number,
+    outFrameNameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_cidfrm(
+    center: number,
+    outFrcodePtr: number,
+    outFrnamePtr: number,
+    outFrnameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_cnmfrm(
+    centerNamePtr: number,
+    outFrcodePtr: number,
+    outFrnamePtr: number,
+    outFrnameMaxBytes: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_scs2e(
+    sc: number,
+    sclkchPtr: number,
+    outEtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_sce2s(
+    sc: number,
+    et: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ckgp(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    refPtr: number,
+    outCmatPtr: number,
+    outClkoutPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ckgpav(
+    inst: number,
+    sclkdp: number,
+    tol: number,
+    refPtr: number,
+    outCmatPtr: number,
+    outAvPtr: number,
+    outClkoutPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_pxform(
+    fromPtr: number,
+    toPtr: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sxform(
+    fromPtr: number,
+    toPtr: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkezr(
+    targetPtr: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    obsPtr: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkpos(
+    targetPtr: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    obsPtr: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  // Derived geometry primitives
+  _tspice_subpnt(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    outSpoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_subslr(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    outSpoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sincpt(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    drefPtr: number,
+    dvec3Ptr: number,
+    outSpoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ilumin(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    spoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outPhasePtr: number,
+    outIncdncPtr: number,
+    outEmissnPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_occult(
+    targ1Ptr: number,
+    shape1Ptr: number,
+    frame1Ptr: number,
+    targ2Ptr: number,
+    shape2Ptr: number,
+    frame2Ptr: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    et: number,
+    outOcltidPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  // Coordinate conversions + small vector/matrix helpers
+  _tspice_reclat(
+    rect3Ptr: number,
+    outRadiusPtr: number,
+    outLonPtr: number,
+    outLatPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_latrec(
+    radius: number,
+    lon: number,
+    lat: number,
+    outRect3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recsph(
+    rect3Ptr: number,
+    outRadiusPtr: number,
+    outColatPtr: number,
+    outLonPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sphrec(
+    radius: number,
+    colat: number,
+    lon: number,
+    outRect3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_vnorm(v3Ptr: number, outNormPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vhat(v3Ptr: number, outVhat3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vdot(
+    a3Ptr: number,
+    b3Ptr: number,
+    outDotPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vcrss(
+    a3Ptr: number,
+    b3Ptr: number,
+    outCross3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxv(
+    m3x3Ptr: number,
+    v3Ptr: number,
+    outV3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mtxv(
+    m3x3Ptr: number,
+    v3Ptr: number,
+    outV3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_mxm(
+    a3x3Ptr: number,
+    b3x3Ptr: number,
+    outM3x3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_vadd(a3Ptr: number, b3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vsub(a3Ptr: number, b3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vminus(v3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_vscl(s: number, v3Ptr: number, out3Ptr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_rotate(angle: number, axis: number, outM3x3Ptr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_rotmat(
+    m3x3Ptr: number,
+    angle: number,
+    axis: number,
+    outM3x3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_axisar(axis3Ptr: number, angle: number, outM3x3Ptr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_georec(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outRect3Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_recgeo(
+    rect3Ptr: number,
+    re: number,
+    f: number,
+    outLonPtr: number,
+    outLatPtr: number,
+    outAltPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  // Cells + windows
+  _tspice_new_int_cell(size: number, outCellPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_new_double_cell(size: number, outCellPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_new_char_cell(
+    size: number,
+    length: number,
+    outCellPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_new_window(
+    maxIntervals: number,
+    outWindowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_free_cell(cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_free_window(window: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ssize(size: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_scard(card: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_card(cell: number, outCardPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_size(cell: number, outSizePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_valid(size: number, n: number, cell: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_insrti(item: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_insrtd(item: number, cell: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_insrtc(itemPtr: number, cell: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_cell_geti(
+    cell: number,
+    index: number,
+    outItemPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cell_getd(
+    cell: number,
+    index: number,
+    outItemPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cell_getc(
+    cell: number,
+    index: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_wninsd(left: number, right: number, window: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_wncard(window: number, outCardPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_wnfetd(
+    window: number,
+    index: number,
+    outLeftPtr: number,
+    outRightPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnvald(size: number, n: number, window: number, errPtr: number, errMaxBytes: number): number;
+
+// --- kernel pool ---
   _tspice_gdpool(
     namePtr: number,
     start: number,
@@ -202,6 +683,38 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+
+  _tspice_deltet(epoch: number, eptypePtr: number, outDeltaPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_unitim(
+    epoch: number,
+    insysPtr: number,
+    outsysPtr: number,
+    outEpochPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_tparse(timstrPtr: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_tpictr(
+    samplePtr: number,
+    picturInPtr: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_timdef_get(itemPtr: number, outPtr: number, outMaxBytes: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_timdef_set(itemPtr: number, valuePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_scencd(sc: number, sclkchPtr: number, outSclkdpPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_scdecd(
+    sc: number,
+    sclkdp: number,
+    outPtr: number,
+    outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sct2e(sc: number, sclkdp: number, outEtPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_sce2c(sc: number, et: number, outSclkdpPtr: number, errPtr: number, errMaxBytes: number): number;
 
   // --- ids/names/frames ---
   _tspice_bodn2c(namePtr: number, outCodePtr: number, foundPtr: number, errPtr: number, errMaxBytes: number): number;
@@ -572,6 +1085,16 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_str2et",
   "_tspice_et2utc",
   "_tspice_timout",
+  "_tspice_deltet",
+  "_tspice_unitim",
+  "_tspice_tparse",
+  "_tspice_tpictr",
+  "_tspice_timdef_get",
+  "_tspice_timdef_set",
+  "_tspice_scencd",
+  "_tspice_scdecd",
+  "_tspice_sct2e",
+  "_tspice_sce2c",
   "_tspice_bodn2c",
   "_tspice_bodc2n",
   "_tspice_bodc2s",
@@ -618,6 +1141,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_axisar",
   "_tspice_georec",
   "_tspice_recgeo",
+
+  // DSK
+  "_tspice_dskopn",
+  "_tspice_dskmi2",
+  "_tspice_dskw02",
+  "_tspice_dskobj",
+  "_tspice_dsksrf",
+  "_tspice_dskgd",
+  "_tspice_dskb02",
 
   // Cells + windows
   "_tspice_new_int_cell",

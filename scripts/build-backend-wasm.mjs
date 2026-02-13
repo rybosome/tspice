@@ -98,6 +98,7 @@ fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 
 const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "errors.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "handle_validation.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernels.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernel_pool.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "time.c"),
@@ -108,6 +109,7 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "cells_windows.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "dsk.c"),
 ];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
@@ -218,7 +220,6 @@ const includeDirs = [
 
 fs.mkdirSync(outputDir, { recursive: true });
 
-
 const exportedRuntimeMethods = [
   "UTF8ToString",
   "stringToUTF8",
@@ -234,7 +235,7 @@ const exportedRuntimeMethods = [
   "HEAPF64",
 ];
 
-const EXPORTED_FUNCTIONS = [
+const exportedFunctions = [
   // --- error/status utilities ---
   "_tspice_get_last_error_short",
   "_tspice_get_last_error_long",
@@ -277,6 +278,16 @@ const EXPORTED_FUNCTIONS = [
   "_tspice_dlafns",
   "_tspice_dlacls",
 
+  // --- DSK ---
+  "_tspice_dskopn",
+  "_tspice_dskmi2",
+  "_tspice_dskw02",
+  "_tspice_dskobj",
+  "_tspice_dsksrf",
+  "_tspice_dskgd",
+  "_tspice_dskb02",
+
+
   // --- kernel pool ---
   "_tspice_gdpool",
   "_tspice_gipool",
@@ -294,6 +305,16 @@ const EXPORTED_FUNCTIONS = [
   "_tspice_str2et",
   "_tspice_et2utc",
   "_tspice_timout",
+  "_tspice_deltet",
+  "_tspice_unitim",
+  "_tspice_tparse",
+  "_tspice_tpictr",
+  "_tspice_timdef_get",
+  "_tspice_timdef_set",
+  "_tspice_scencd",
+  "_tspice_scdecd",
+  "_tspice_sct2e",
+  "_tspice_sce2c",
 
   // --- ids/names ---
   "_tspice_bodn2c",
@@ -383,6 +404,7 @@ const commonEmccArgs = [
   // We need C11 for shared shim sources (e.g. <stdatomic.h>).
   // `gnu11` keeps GNU extensions enabled for the upstream CSPICE sources.
   "-std=gnu11",
+  "-Wno-implicit-int",
   "-O2",
   "-s",
   "MODULARIZE=1",
@@ -400,7 +422,7 @@ const commonEmccArgs = [
   "-s",
   `EXPORTED_RUNTIME_METHODS=['${exportedRuntimeMethods.join("','")}']`,
   "-s",
-  `EXPORTED_FUNCTIONS=${JSON.stringify(EXPORTED_FUNCTIONS)}`,
+  `EXPORTED_FUNCTIONS=['${exportedFunctions.join("','")}']`,
 ];
 
 function runEmcc({ environment, outputJsPath }) {
@@ -522,6 +544,10 @@ function ensureNodeEsmPreamble(jsPath) {
     throw new Error(`Expected ${jsPath} to start with generated header`);
   }
   if (jsContents.includes(nodeEsmPreambleSentinel)) {
+    return;
+  }
+  // Some Emscripten builds already include a createRequire() preamble; avoid duplicating it.
+  if (jsContents.includes("createRequire(import.meta.url)")) {
     return;
   }
   fs.writeFileSync(jsPath, `${generatedHeader}${nodeEsmPreamble}${jsContents.slice(generatedHeader.length)}`);

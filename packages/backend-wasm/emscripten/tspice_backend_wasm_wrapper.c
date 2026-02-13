@@ -10,7 +10,10 @@
 
 #include "../../backend-shim-c/src/errors.c"
 
+#include "../../backend-shim-c/src/handle_validation.c"
+
 #include "../../backend-shim-c/src/domains/kernels.c"
+#include "../../backend-shim-c/src/domains/kernel_pool.c"
 #include "../../backend-shim-c/src/domains/time.c"
 #include "../../backend-shim-c/src/domains/ids_names.c"
 #include "../../backend-shim-c/src/domains/frames.c"
@@ -18,3 +21,5 @@
 #include "../../backend-shim-c/src/domains/geometry.c"
 #include "../../backend-shim-c/src/domains/coords_vectors.c"
 #include "../../backend-shim-c/src/domains/file_io.c"
+#include "../../backend-shim-c/src/domains/cells_windows.c"
+#include "../../backend-shim-c/src/domains/dsk.c"
