@@ -20,12 +20,12 @@ import { spiceClients } from '@rybosome/tspice'
 
 const kernelsDir = path.resolve('kernels')
 
-const { spice, dispose } = await spiceClients.toSync({ backend: 'node' })
+const { spice, dispose } = await spiceClients.toAsync({ backend: 'node' })
 
 try {
-  spice.kit.loadKernel(path.join(kernelsDir, 'naif0012.tls'))
-  spice.kit.loadKernel(path.join(kernelsDir, 'pck00011.tpc'))
-  spice.kit.loadKernel(path.join(kernelsDir, 'de432s.bsp'))
+  await spice.kit.loadKernel(path.join(kernelsDir, 'naif0012.tls'))
+  await spice.kit.loadKernel(path.join(kernelsDir, 'pck00011.tpc'))
+  await spice.kit.loadKernel(path.join(kernelsDir, 'de432s.bsp'))
 
   // …geometry query…
 } finally {
@@ -38,7 +38,7 @@ try {
 ```ts
 const toDegrees = (rad: number): number => (rad * 180) / Math.PI
 
-const et = spice.kit.utcToEt('2024-01-01T00:00:00Z')
+const et = await spice.kit.utcToEt('2024-01-01T00:00:00Z')
 
 const method = 'ELLIPSOID'
 const target = 'MOON'
@@ -50,9 +50,9 @@ const observer = 'EARTH'
 const dref = 'J2000'
 
 // Aim the ray at the Moon by using the Earth→Moon position vector.
-const { pos: earthToMoon } = spice.raw.spkpos(target, et, dref, abcorr, observer)
+const { pos: earthToMoon } = await spice.raw.spkpos(target, et, dref, abcorr, observer)
 
-const out = spice.raw.sincpt(
+const out = await spice.raw.sincpt(
   method,
   target,
   et,
@@ -71,7 +71,7 @@ if (!out.found) {
 const { spoint, trgepc, srfvec } = out
 
 // Convert rectangular coordinates -> planetocentric lon/lat (radians).
-const { radius, lon, lat } = spice.raw.reclat(spoint)
+const { radius, lon, lat } = await spice.raw.reclat(spoint)
 
 console.log({
   trgepc,
