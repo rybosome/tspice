@@ -25,7 +25,24 @@ import {
 } from './interaction/homePresets.js'
 import { RenderHud, type RenderHudStats } from './renderer/RenderHud.js'
 import { createThreeRuntime, type ThreeRuntime } from './renderer/createThreeRuntime.js'
-import { parseSceneCanvasRuntimeConfigFromLocationSearch } from './runtimeConfig/sceneCanvasRuntimeConfig.js'
+import {
+  parseSceneCanvasRuntimeConfigFromLocationSearch,
+  SUN_BLOOM_RADIUS_RANGE,
+  SUN_BLOOM_RESOLUTION_SCALE_RANGE,
+  SUN_BLOOM_STRENGTH_RANGE,
+  SUN_BLOOM_THRESHOLD_RANGE,
+  SUN_DIFF_ROTATION_STRENGTH_RANGE,
+  SUN_EXPOSURE_RANGE,
+  SUN_FILAMENT_INTENSITY_RANGE,
+  SUN_FILAMENT_LATITUDE_BIAS_RANGE,
+  SUN_FILAMENT_SCALE_RANGE,
+  SUN_FILAMENT_SPEED_RANGE,
+  SUN_FILAMENT_THRESHOLD_RANGE,
+  SUN_GRANULATION_INTENSITY_RANGE,
+  SUN_GRANULATION_SCALE_RANGE,
+  SUN_GRANULATION_SPEED_RANGE,
+  SUN_LIMB_STRENGTH_RANGE,
+} from './runtimeConfig/sceneCanvasRuntimeConfig.js'
 import { initSpiceSceneRuntime, type SpiceSceneRuntime } from './scene/runtime/initSpiceSceneRuntime.js'
 import { isEarthAppearanceLayer } from './scene/SceneModel.js'
 
@@ -282,6 +299,18 @@ export function SceneCanvas() {
     sunBloomStrength,
     sunBloomRadius,
     sunBloomResolutionScale,
+
+    sunSeed: sunSeedDefault,
+    sunGranulationScale: sunGranulationScaleDefault,
+    sunGranulationSpeed: sunGranulationSpeedDefault,
+    sunGranulationIntensity: sunGranulationIntensityDefault,
+    sunFilamentScale: sunFilamentScaleDefault,
+    sunFilamentSpeed: sunFilamentSpeedDefault,
+    sunFilamentIntensity: sunFilamentIntensityDefault,
+    sunFilamentThreshold: sunFilamentThresholdDefault,
+    sunFilamentLatitudeBias: sunFilamentLatitudeBiasDefault,
+    sunLimbStrength: sunLimbStrengthDefault,
+    sunDifferentialRotationStrength: sunDifferentialRotationStrengthDefault,
   } = runtimeConfig
 
   const [focusBody, setFocusBody] = useState<BodyRef>('EARTH')
@@ -336,6 +365,23 @@ export function SceneCanvas() {
   const [sunLightIntensity, setSunLightIntensity] = useState(SUN_LIGHT_INTENSITY_DEFAULT)
   const [sunEmissiveIntensity, setSunEmissiveIntensity] = useState(SUN_EMISSIVE_INTENSITY_DEFAULT)
   const [sunEmissiveColor, setSunEmissiveColor] = useState(SUN_EMISSIVE_COLOR_DEFAULT)
+
+  // Sun surface tuning sliders (granulation + filaments).
+  // Defaults are intentionally NOT query-param driven (see sceneCanvasRuntimeConfig.ts).
+  const [sunGranulationScale, setSunGranulationScale] = useState(sunGranulationScaleDefault)
+  const [sunGranulationSpeed, setSunGranulationSpeed] = useState(sunGranulationSpeedDefault)
+  const [sunGranulationIntensity, setSunGranulationIntensity] = useState(sunGranulationIntensityDefault)
+
+  const [sunFilamentScale, setSunFilamentScale] = useState(sunFilamentScaleDefault)
+  const [sunFilamentSpeed, setSunFilamentSpeed] = useState(sunFilamentSpeedDefault)
+  const [sunFilamentIntensity, setSunFilamentIntensity] = useState(sunFilamentIntensityDefault)
+  const [sunFilamentThreshold, setSunFilamentThreshold] = useState(sunFilamentThresholdDefault)
+  const [sunFilamentLatitudeBias, setSunFilamentLatitudeBias] = useState(sunFilamentLatitudeBiasDefault)
+
+  const [sunLimbStrength, setSunLimbStrength] = useState(sunLimbStrengthDefault)
+  const [sunDifferentialRotationStrength, setSunDifferentialRotationStrength] = useState(
+    sunDifferentialRotationStrengthDefault,
+  )
   const earthNightAlbedo = 0.004
   const earthTwilight = earthAppearanceDefaults?.nightLightsTwilight ?? 0.12
   const earthNightLightsIntensity = earthAppearanceDefaults?.nightLightsIntensity ?? 1.25
@@ -435,6 +481,17 @@ export function SceneCanvas() {
     sunBloomStrength,
     sunBloomRadius,
     sunBloomResolutionScale,
+
+    sunGranulationScale: sunGranulationScaleDefault,
+    sunGranulationSpeed: sunGranulationSpeedDefault,
+    sunGranulationIntensity: sunGranulationIntensityDefault,
+    sunFilamentScale: sunFilamentScaleDefault,
+    sunFilamentSpeed: sunFilamentSpeedDefault,
+    sunFilamentIntensity: sunFilamentIntensityDefault,
+    sunFilamentThreshold: sunFilamentThresholdDefault,
+    sunFilamentLatitudeBias: sunFilamentLatitudeBiasDefault,
+    sunLimbStrength: sunLimbStrengthDefault,
+    sunDifferentialRotationStrength: sunDifferentialRotationStrengthDefault,
     kmToWorld,
     animatedSky,
     twinkleEnabled,
@@ -831,6 +888,18 @@ export function SceneCanvas() {
         sunEmissiveIntensity: number
         sunEmissiveColor: string
 
+        sunSeed: number
+        sunGranulationScale: number
+        sunGranulationSpeed: number
+        sunGranulationIntensity: number
+        sunFilamentScale: number
+        sunFilamentSpeed: number
+        sunFilamentIntensity: number
+        sunFilamentThreshold: number
+        sunFilamentLatitudeBias: number
+        sunLimbStrength: number
+        sunDifferentialRotationStrength: number
+
         earthNightAlbedo: number
         earthTwilight: number
         earthNightLightsIntensity: number
@@ -862,6 +931,18 @@ export function SceneCanvas() {
     sunLightIntensity,
     sunEmissiveIntensity,
     sunEmissiveColor,
+
+    sunSeed: sunSeedDefault,
+    sunGranulationScale,
+    sunGranulationSpeed,
+    sunGranulationIntensity,
+    sunFilamentScale,
+    sunFilamentSpeed,
+    sunFilamentIntensity,
+    sunFilamentThreshold,
+    sunFilamentLatitudeBias,
+    sunLimbStrength,
+    sunDifferentialRotationStrength,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -888,6 +969,18 @@ export function SceneCanvas() {
     sunLightIntensity,
     sunEmissiveIntensity,
     sunEmissiveColor,
+
+    sunSeed: sunSeedDefault,
+    sunGranulationScale,
+    sunGranulationSpeed,
+    sunGranulationIntensity,
+    sunFilamentScale,
+    sunFilamentSpeed,
+    sunFilamentIntensity,
+    sunFilamentThreshold,
+    sunFilamentLatitudeBias,
+    sunLimbStrength,
+    sunDifferentialRotationStrength,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -927,6 +1020,18 @@ export function SceneCanvas() {
       sunLightIntensity,
       sunEmissiveIntensity,
       sunEmissiveColor,
+
+      sunSeed: sunSeedDefault,
+      sunGranulationScale,
+      sunGranulationSpeed,
+      sunGranulationIntensity,
+      sunFilamentScale,
+      sunFilamentSpeed,
+      sunFilamentIntensity,
+      sunFilamentThreshold,
+      sunFilamentLatitudeBias,
+      sunLimbStrength,
+      sunDifferentialRotationStrength,
       earthNightAlbedo,
       earthTwilight,
       earthNightLightsIntensity,
@@ -951,6 +1056,18 @@ export function SceneCanvas() {
     sunLightIntensity,
     sunEmissiveIntensity,
     sunEmissiveColor,
+    sunSeedDefault,
+
+    sunGranulationScale,
+    sunGranulationSpeed,
+    sunGranulationIntensity,
+    sunFilamentScale,
+    sunFilamentSpeed,
+    sunFilamentIntensity,
+    sunFilamentThreshold,
+    sunFilamentLatitudeBias,
+    sunLimbStrength,
+    sunDifferentialRotationStrength,
     earthNightAlbedo,
     earthTwilight,
     earthNightLightsIntensity,
@@ -1785,6 +1902,16 @@ export function SceneCanvas() {
                           setSunLightIntensity(SUN_LIGHT_INTENSITY_DEFAULT)
                           setSunEmissiveIntensity(SUN_EMISSIVE_INTENSITY_DEFAULT)
                           setSunEmissiveColor(SUN_EMISSIVE_COLOR_DEFAULT)
+                          setSunGranulationScale(sunGranulationScaleDefault)
+                          setSunGranulationSpeed(sunGranulationSpeedDefault)
+                          setSunGranulationIntensity(sunGranulationIntensityDefault)
+                          setSunFilamentScale(sunFilamentScaleDefault)
+                          setSunFilamentSpeed(sunFilamentSpeedDefault)
+                          setSunFilamentIntensity(sunFilamentIntensityDefault)
+                          setSunFilamentThreshold(sunFilamentThresholdDefault)
+                          setSunFilamentLatitudeBias(sunFilamentLatitudeBiasDefault)
+                          setSunLimbStrength(sunLimbStrengthDefault)
+                          setSunDifferentialRotationStrength(sunDifferentialRotationStrengthDefault)
                         }}
                         title="Reset rendering settings"
                       >
@@ -1800,9 +1927,9 @@ export function SceneCanvas() {
                       <span className="advancedSliderLabel">Exposure</span>
                       <input
                         type="range"
-                        min={0}
-                        max={10}
-                        step={0.01}
+                        min={SUN_EXPOSURE_RANGE.min}
+                        max={SUN_EXPOSURE_RANGE.max}
+                        step={SUN_EXPOSURE_RANGE.step}
                         value={sunPostprocessExposure}
                         onChange={(e) => setSunPostprocessExposure(Number(e.target.value))}
                       />
@@ -1827,9 +1954,9 @@ export function SceneCanvas() {
                       <span className="advancedSliderLabel">Bloom threshold</span>
                       <input
                         type="range"
-                        min={0}
-                        max={5}
-                        step={0.01}
+                        min={SUN_BLOOM_THRESHOLD_RANGE.min}
+                        max={SUN_BLOOM_THRESHOLD_RANGE.max}
+                        step={SUN_BLOOM_THRESHOLD_RANGE.step}
                         value={sunPostprocessBloomThreshold}
                         onChange={(e) => setSunPostprocessBloomThreshold(Number(e.target.value))}
                       />
@@ -1840,9 +1967,9 @@ export function SceneCanvas() {
                       <span className="advancedSliderLabel">Bloom strength</span>
                       <input
                         type="range"
-                        min={0}
-                        max={2}
-                        step={0.01}
+                        min={SUN_BLOOM_STRENGTH_RANGE.min}
+                        max={SUN_BLOOM_STRENGTH_RANGE.max}
+                        step={SUN_BLOOM_STRENGTH_RANGE.step}
                         value={sunPostprocessBloomStrength}
                         onChange={(e) => setSunPostprocessBloomStrength(Number(e.target.value))}
                       />
@@ -1853,9 +1980,9 @@ export function SceneCanvas() {
                       <span className="advancedSliderLabel">Bloom radius</span>
                       <input
                         type="range"
-                        min={0}
-                        max={1}
-                        step={0.01}
+                        min={SUN_BLOOM_RADIUS_RANGE.min}
+                        max={SUN_BLOOM_RADIUS_RANGE.max}
+                        step={SUN_BLOOM_RADIUS_RANGE.step}
                         value={sunPostprocessBloomRadius}
                         onChange={(e) => setSunPostprocessBloomRadius(Number(e.target.value))}
                       />
@@ -1866,9 +1993,9 @@ export function SceneCanvas() {
                       <span className="advancedSliderLabel">Bloom res scale</span>
                       <input
                         type="range"
-                        min={0.1}
-                        max={1}
-                        step={0.05}
+                        min={SUN_BLOOM_RESOLUTION_SCALE_RANGE.min}
+                        max={SUN_BLOOM_RESOLUTION_SCALE_RANGE.max}
+                        step={SUN_BLOOM_RESOLUTION_SCALE_RANGE.step}
                         value={sunPostprocessBloomResolutionScale}
                         onChange={(e) => setSunPostprocessBloomResolutionScale(Number(e.target.value))}
                       />
@@ -1933,6 +2060,140 @@ export function SceneCanvas() {
                         />
                       </div>
                       <span className="advancedSliderValue" />
+                    </div>
+
+                    <div className="advancedDivider" />
+
+                    <div style={{ fontSize: 12, opacity: 0.9, marginBottom: 6 }}>Sun surface</div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Gran scale</span>
+                      <input
+                        type="range"
+                        min={SUN_GRANULATION_SCALE_RANGE.min}
+                        max={SUN_GRANULATION_SCALE_RANGE.max}
+                        step={SUN_GRANULATION_SCALE_RANGE.step}
+                        value={sunGranulationScale}
+                        onChange={(e) => setSunGranulationScale(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunGranulationScale.toFixed(0)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Gran speed</span>
+                      <input
+                        type="range"
+                        min={SUN_GRANULATION_SPEED_RANGE.min}
+                        max={SUN_GRANULATION_SPEED_RANGE.max}
+                        step={SUN_GRANULATION_SPEED_RANGE.step}
+                        value={sunGranulationSpeed}
+                        onChange={(e) => setSunGranulationSpeed(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunGranulationSpeed.toFixed(3)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Gran intensity</span>
+                      <input
+                        type="range"
+                        min={SUN_GRANULATION_INTENSITY_RANGE.min}
+                        max={SUN_GRANULATION_INTENSITY_RANGE.max}
+                        step={SUN_GRANULATION_INTENSITY_RANGE.step}
+                        value={sunGranulationIntensity}
+                        onChange={(e) => setSunGranulationIntensity(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunGranulationIntensity.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Fil scale</span>
+                      <input
+                        type="range"
+                        min={SUN_FILAMENT_SCALE_RANGE.min}
+                        max={SUN_FILAMENT_SCALE_RANGE.max}
+                        step={SUN_FILAMENT_SCALE_RANGE.step}
+                        value={sunFilamentScale}
+                        onChange={(e) => setSunFilamentScale(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunFilamentScale.toFixed(1)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Fil speed</span>
+                      <input
+                        type="range"
+                        min={SUN_FILAMENT_SPEED_RANGE.min}
+                        max={SUN_FILAMENT_SPEED_RANGE.max}
+                        step={SUN_FILAMENT_SPEED_RANGE.step}
+                        value={sunFilamentSpeed}
+                        onChange={(e) => setSunFilamentSpeed(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunFilamentSpeed.toFixed(3)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Fil intensity</span>
+                      <input
+                        type="range"
+                        min={SUN_FILAMENT_INTENSITY_RANGE.min}
+                        max={SUN_FILAMENT_INTENSITY_RANGE.max}
+                        step={SUN_FILAMENT_INTENSITY_RANGE.step}
+                        value={sunFilamentIntensity}
+                        onChange={(e) => setSunFilamentIntensity(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunFilamentIntensity.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Fil threshold</span>
+                      <input
+                        type="range"
+                        min={SUN_FILAMENT_THRESHOLD_RANGE.min}
+                        max={SUN_FILAMENT_THRESHOLD_RANGE.max}
+                        step={SUN_FILAMENT_THRESHOLD_RANGE.step}
+                        value={sunFilamentThreshold}
+                        onChange={(e) => setSunFilamentThreshold(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunFilamentThreshold.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Latitude bias</span>
+                      <input
+                        type="range"
+                        min={SUN_FILAMENT_LATITUDE_BIAS_RANGE.min}
+                        max={SUN_FILAMENT_LATITUDE_BIAS_RANGE.max}
+                        step={SUN_FILAMENT_LATITUDE_BIAS_RANGE.step}
+                        value={sunFilamentLatitudeBias}
+                        onChange={(e) => setSunFilamentLatitudeBias(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunFilamentLatitudeBias.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Limb strength</span>
+                      <input
+                        type="range"
+                        min={SUN_LIMB_STRENGTH_RANGE.min}
+                        max={SUN_LIMB_STRENGTH_RANGE.max}
+                        step={SUN_LIMB_STRENGTH_RANGE.step}
+                        value={sunLimbStrength}
+                        onChange={(e) => setSunLimbStrength(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunLimbStrength.toFixed(2)}</span>
+                    </div>
+
+                    <div className="advancedSlider">
+                      <span className="advancedSliderLabel">Diff rotation</span>
+                      <input
+                        type="range"
+                        min={SUN_DIFF_ROTATION_STRENGTH_RANGE.min}
+                        max={SUN_DIFF_ROTATION_STRENGTH_RANGE.max}
+                        step={SUN_DIFF_ROTATION_STRENGTH_RANGE.step}
+                        value={sunDifferentialRotationStrength}
+                        onChange={(e) => setSunDifferentialRotationStrength(Number(e.target.value))}
+                      />
+                      <span className="advancedSliderValue">{sunDifferentialRotationStrength.toFixed(2)}</span>
                     </div>
                   </div>
                 ) : null}

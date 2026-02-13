@@ -10,7 +10,7 @@ import {
   type SpiceClient,
   type Vec3Km,
 } from '../../spice/SpiceClient.js'
-import { createBodyMesh } from '../BodyMesh.js'
+import { createBodyMesh, type SunAppearanceTuning } from '../BodyMesh.js'
 import { SUN_BLOOM_LAYER } from '../../renderLayers.js'
 import {
   getBodyRegistryEntry,
@@ -57,6 +57,19 @@ export type SceneUiState = {
   // Debug-only: helps the Sun read as a glowing object at distance.
   sunEmissiveIntensity: number
   sunEmissiveColor: string
+
+  // Sun surface tuning (granulation + filaments).
+  sunSeed: number
+  sunGranulationScale: number
+  sunGranulationSpeed: number
+  sunGranulationIntensity: number
+  sunFilamentScale: number
+  sunFilamentSpeed: number
+  sunFilamentIntensity: number
+  sunFilamentThreshold: number
+  sunFilamentLatitudeBias: number
+  sunLimbStrength: number
+  sunDifferentialRotationStrength: number
 
   earthNightAlbedo: number
   earthTwilight: number
@@ -640,8 +653,23 @@ export async function initSpiceSceneRuntime(args: {
 
     // Update any body-specific shader uniforms using the same sun direction.
     const sunDirWorld = dir.position.clone().normalize()
+
+    const sunTuning: SunAppearanceTuning = {
+      seed: next.sunSeed,
+      granulationScale: next.sunGranulationScale,
+      granulationSpeed: next.sunGranulationSpeed,
+      granulationIntensity: next.sunGranulationIntensity,
+      filamentScale: next.sunFilamentScale,
+      filamentSpeed: next.sunFilamentSpeed,
+      filamentIntensity: next.sunFilamentIntensity,
+      filamentThreshold: next.sunFilamentThreshold,
+      filamentLatitudeBias: next.sunFilamentLatitudeBias,
+      limbStrength: next.sunLimbStrength,
+      differentialRotationStrength: next.sunDifferentialRotationStrength,
+    }
+
     for (const b of bodies) {
-      b.update?.({ sunDirWorld, etSec: next.etSec, earthTuning })
+      b.update?.({ sunDirWorld, etSec: next.etSec, earthTuning, sunTuning })
     }
 
     // Record label overlay inputs so we can update it on camera movement.
