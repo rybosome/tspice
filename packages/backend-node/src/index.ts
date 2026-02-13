@@ -20,6 +20,7 @@ import { createFileIoApi } from "./domains/file-io.js";
 import { createErrorApi } from "./domains/error.js";
 import { createCellsWindowsApi } from "./domains/cells-windows.js";
 import { createDskApi } from "./domains/dsk.js";
+import { createEkApi } from "./domains/ek.js";
 
 export function spiceVersion(): string {
   const version = getNativeAddon().spiceVersion();
@@ -40,12 +41,13 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     ...createKernelPoolApi(native),
     ...createIdsNamesApi(native),
     ...createFramesApi(native),
-    ...createEphemerisApi(native, spiceHandles, outputs),
+    ...createEphemerisApi(native, spiceHandles, stager, outputs),
     ...createGeometryApi(native),
     ...createCoordsVectorsApi(native),
     ...createFileIoApi(native, spiceHandles, outputs),
     ...createErrorApi(native),
     ...createCellsWindowsApi(native),
+    ...createEkApi(native, spiceHandles, stager),
     ...createDskApi(native, spiceHandles),
   };
 
@@ -53,11 +55,17 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   (backend as SpiceBackend & { __ktotalAll(): number }).__ktotalAll = () => native.__ktotalAll();
 
   // Internal best-effort cleanup hook (not part of the public backend contract).
-  // Closes all currently-registered DAF/DAS/DLA handles and throws an AggregateError if any closes fail.
+  // Closes all currently-registered DAF/DAS/DLA/EK/SPK handles and throws an AggregateError if any closes fail.
   Object.defineProperty(backend, "disposeAll", {
     value: () => {
       const errors: unknown[] = [];
-      const entries = (spiceHandles as unknown as { __entries?: () => ReadonlyArray<readonly [unknown, { kind: "DAF" | "DAS" | "DLA" | "SPK"; nativeHandle: number }]> }).__entries?.() ?? [];
+      const entries =
+        (spiceHandles as unknown as {
+          __entries?: () => ReadonlyArray<
+            readonly [unknown, { kind: "DAF" | "DAS" | "DLA" | "EK" | "SPK"; nativeHandle: number }]
+          >;
+        }).__entries?.() ?? [];
+
       for (const [handle, entry] of entries) {
         try {
           if (entry.kind === "SPK") {
@@ -68,6 +76,8 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
 
           if (entry.kind === "DAF") {
             spiceHandles.close(handle as any, ["DAF"], (e) => native.dafcls(e.nativeHandle), "disposeAll:dafcls");
+          } else if (entry.kind === "EK") {
+            spiceHandles.close(handle as any, ["EK"], (e) => native.ekcls(e.nativeHandle), "disposeAll:ekcls");
           } else {
             // In CSPICE, dascls_c closes both DAS and DLA handles (dlacls_c is an alias).
             spiceHandles.close(handle as any, ["DAS", "DLA"], (e) => native.dascls(e.nativeHandle), "disposeAll:dascls");

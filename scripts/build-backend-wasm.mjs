@@ -108,6 +108,7 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ek.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "cells_windows.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "dsk.c"),
 ];
@@ -278,6 +279,15 @@ const exportedFunctions = [
   "_tspice_dlafns",
   "_tspice_dlacls",
 
+  // --- EK ---
+  "_tspice_ekopr",
+  "_tspice_ekopw",
+  "_tspice_ekopn",
+  "_tspice_ekcls",
+  "_tspice_ekntab",
+  "_tspice_ektnam",
+  "_tspice_eknseg",
+
   // --- DSK ---
   "_tspice_dskopn",
   "_tspice_dskmi2",
@@ -342,6 +352,16 @@ const exportedFunctions = [
   // --- ephemeris ---
   "_tspice_spkezr",
   "_tspice_spkpos",
+  "_tspice_spkez",
+  "_tspice_spkezp",
+  "_tspice_spkgeo",
+  "_tspice_spkgps",
+  "_tspice_spkssb",
+  "_tspice_spkcov",
+  "_tspice_spkobj",
+  "_tspice_spksfs",
+  "_tspice_spkpds",
+  "_tspice_spkuds",
   "_tspice_spkopn",
   "_tspice_spkopa",
   "_tspice_spkw08",

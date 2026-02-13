@@ -14,6 +14,7 @@ import { createTimeApi, getToolkitVersion } from "../domains/time.js";
 import { createFileIoApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
 import { createDskApi } from "../domains/dsk.js";
+import { createEkApi } from "../domains/ek.js";
 
 import { createWasmFs } from "./fs.js";
 import { createSpiceHandleRegistry } from "./spice-handles.js";
@@ -115,6 +116,7 @@ export async function createWasmBackend(
     ...createFileIoApi(module, spiceHandles, virtualOutputs),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
+    ...createEkApi(module, spiceHandles),
     ...createDskApi(module, spiceHandles),
   } satisfies SpiceBackend;
 

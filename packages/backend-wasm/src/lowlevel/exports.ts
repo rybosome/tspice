@@ -103,6 +103,34 @@ export type EmscriptenModule = {
 
   _tspice_dlacls(handle: number, errPtr: number, errMaxBytes: number): number;
 
+  // --- EK ---
+
+  _tspice_ekopr(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_ekopw(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ekopn(
+    pathPtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekcls(handle: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ekntab(outNPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ektnam(
+    n: number,
+    outNamePtr: number,
+    outNameMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_eknseg(handle: number, outNsegPtr: number, errPtr: number, errMaxBytes: number): number;
+
   // --- DSK ---
 
   _tspice_dskopn(
@@ -330,6 +358,109 @@ export type EmscriptenModule = {
     obsPtr: number,
     outPosPtr: number,
     outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkez(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkezp(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkgeo(
+    target: number,
+    et: number,
+    refPtr: number,
+    observer: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkgps(
+    target: number,
+    et: number,
+    refPtr: number,
+    observer: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkssb(
+    target: number,
+    et: number,
+    refPtr: number,
+    outStatePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkcov(
+    spkPathPtr: number,
+    idcode: number,
+    coverWindowHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkobj(
+    spkPathPtr: number,
+    idsCellHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spksfs(
+    body: number,
+    et: number,
+    outHandlePtr: number,
+    outDescr5Ptr: number,
+    outIdentPtr: number,
+    outIdentMaxBytes: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkpds(
+    body: number,
+    center: number,
+    framePtr: number,
+    type: number,
+    first: number,
+    last: number,
+    outDescr5Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkuds(
+    descr5Ptr: number,
+    outBodyPtr: number,
+    outCenterPtr: number,
+    outFramePtr: number,
+    outTypePtr: number,
+    outFirstPtr: number,
+    outLastPtr: number,
+    outBaddrPtr: number,
+    outEaddrPtr: number,
     errPtr: number,
     errMaxBytes: number,
   ): number;
@@ -927,6 +1058,110 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_spkez(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkezp(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkgeo(
+    target: number,
+    et: number,
+    refPtr: number,
+    observer: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkgps(
+    target: number,
+    et: number,
+    refPtr: number,
+    observer: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkssb(
+    target: number,
+    et: number,
+    refPtr: number,
+    outStatePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkcov(
+    spkPathPtr: number,
+    idcode: number,
+    coverWindowHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkobj(
+    spkPathPtr: number,
+    idsCellHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spksfs(
+    body: number,
+    et: number,
+    outHandlePtr: number,
+    outDescr5Ptr: number,
+    outIdentPtr: number,
+    outIdentMaxBytes: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkpds(
+    body: number,
+    center: number,
+    framePtr: number,
+    type: number,
+    first: number,
+    last: number,
+    outDescr5Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkuds(
+    descr5Ptr: number,
+    outBodyPtr: number,
+    outCenterPtr: number,
+    outFramePtr: number,
+    outTypePtr: number,
+    outFirstPtr: number,
+    outLastPtr: number,
+    outBaddrPtr: number,
+    outEaddrPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
 
   _tspice_subpnt(
     methodPtr: number,
@@ -1168,6 +1403,16 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_sxform",
   "_tspice_spkezr",
   "_tspice_spkpos",
+  "_tspice_spkez",
+  "_tspice_spkezp",
+  "_tspice_spkgeo",
+  "_tspice_spkgps",
+  "_tspice_spkssb",
+  "_tspice_spkcov",
+  "_tspice_spkobj",
+  "_tspice_spksfs",
+  "_tspice_spkpds",
+  "_tspice_spkuds",
   "_tspice_spkopn",
   "_tspice_spkopa",
   "_tspice_spkw08",
@@ -1198,6 +1443,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_axisar",
   "_tspice_georec",
   "_tspice_recgeo",
+
+  // EK
+  "_tspice_ekopr",
+  "_tspice_ekopw",
+  "_tspice_ekopn",
+  "_tspice_ekcls",
+  "_tspice_ekntab",
+  "_tspice_ektnam",
+  "_tspice_eknseg",
 
   // DSK
   "_tspice_dskopn",

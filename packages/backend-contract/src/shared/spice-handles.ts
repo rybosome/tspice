@@ -2,7 +2,7 @@ import type { SpiceHandle } from "./types.js";
 import { SPICE_INT32_MAX, SPICE_INT32_MIN } from "./spice-int.js";
 import { SpiceBackendContractError } from "./errors.js";
 
-export type SpiceHandleKind = "DAF" | "DAS" | "DLA" | "SPK";
+export type SpiceHandleKind = "DAF" | "DAS" | "DLA" | "SPK" | "EK";
 
 export type SpiceHandleEntry = {
   kind: SpiceHandleKind;
@@ -54,7 +54,9 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
       nativeHandle < SPICE_INT32_MIN ||
       nativeHandle > SPICE_INT32_MAX
     ) {
-      throw new SpiceBackendContractError(`backend contract violation: expected backend to return a 32-bit signed integer handle for ${kind} (got ${nativeHandle})`);
+      throw new SpiceBackendContractError(
+        `backend contract violation: expected backend to return a 32-bit signed integer handle for ${kind} (got ${nativeHandle})`,
+      );
     }
 
     if (nextHandleId >= Number.MAX_SAFE_INTEGER) {
