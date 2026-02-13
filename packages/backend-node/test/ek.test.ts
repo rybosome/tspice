@@ -139,4 +139,41 @@ describe("@rybosome/tspice-backend-node ek", () => {
       expect(badQuery.errmsg.length).toBeGreaterThan(0);
     }
   });
+
+  it.runIf(nodeAddonAvailable())("ekaclc() hard-caps packed string allocations", async () => {
+    const backend = await createNodeBackend();
+    backend.kclear();
+
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-ek-"));
+    const ekPath = path.join(tmpDir, "caps.bes");
+
+    const handle = backend.ekopn(ekPath, "caps", 0);
+
+    const { segno, rcptrs } = backend.ekifld(
+      handle,
+      "CAPS",
+      1,
+      ["NAME"],
+      ["DATATYPE = CHARACTER*(*)"],
+    );
+
+    // Per-string byte length cap (aligns with backend-wasm `kMaxEkVallenBytes`).
+    const tooLong = "a".repeat(1_000_000);
+    expect(() => backend.ekaclc(handle, segno, "NAME", [tooLong], [1], [false], rcptrs)).toThrow(
+      /value byte length exceeds cap/i,
+    );
+
+    // Total packed buffer cap (aligns with backend-wasm `WASM_MAX_ALLOC_BYTES`).
+    const big = "a".repeat(900_000);
+    const cvals = [big, ...Array.from({ length: 299 }, () => "")];
+    expect(() => backend.ekaclc(handle, segno, "NAME", cvals, [300], [false], rcptrs)).toThrow(
+      /cvals buffer too large/i,
+    );
+
+    // Ensure we can still flush/close the fast-write segment after those input
+    // validation failures.
+    backend.ekaclc(handle, segno, "NAME", ["ok"], [1], [false], rcptrs);
+    backend.ekffld(handle, segno, rcptrs);
+    backend.ekcls(handle);
+  });
 });

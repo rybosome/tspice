@@ -22,6 +22,9 @@ using tspice_napi::TrimAsciiWhitespace;
 namespace {
 
 constexpr uint32_t kMaxEkArrayLen = 1'000'000;
+// Keep parity with backend-wasm `kMaxEkVallenBytes` / `WASM_MAX_ALLOC_BYTES`.
+constexpr size_t kMaxEkVallenBytes = 1'000'000;
+constexpr size_t kMaxEkCvalsBytes = 256ull * 1024ull * 1024ull; // 256 MiB
 
 static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char* what, int32_t* out) {
   const std::string label = (what != nullptr && what[0] != '\0') ? std::string(what) : std::string("value");
@@ -982,16 +985,36 @@ static void Ekaclc(const Napi::CallbackInfo& info) {
     return;
   }
 
+  const size_t nvals = cvals.values.size();
+
   size_t vallen = 1;
   for (const std::string& s : cvals.values) {
-    vallen = std::max(vallen, s.size() + 1);
+    const size_t bytes = s.size() + 1;
+    if (bytes > kMaxEkVallenBytes) {
+      ThrowSpiceError(Napi::RangeError::New(
+          env,
+          std::string("ekaclc() value byte length exceeds cap (") +
+              std::to_string(kMaxEkVallenBytes) + ")"));
+      return;
+    }
+    vallen = std::max(vallen, bytes);
   }
 
-  const size_t nvals = cvals.values.size();
   if (nvals > 0 && nvals > (size_t)std::numeric_limits<int>::max()) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekaclc() expects nvals to fit in int32"));
     return;
   }
+
+  // Guardrail against pathological allocations while packing `string[]` into
+  // the fixed-width buffer expected by CSPICE.
+  if (nvals > 0 && vallen > 0 && nvals > (kMaxEkCvalsBytes / vallen)) {
+    const uint64_t bytes = (uint64_t)nvals * (uint64_t)vallen;
+    ThrowSpiceError(Napi::RangeError::New(
+        env,
+        std::string("ekaclc() cvals buffer too large (") + std::to_string(bytes) + " bytes)"));
+    return;
+  }
+
   if (nvals > 0 && vallen > (size_t)std::numeric_limits<int>::max()) {
     ThrowSpiceError(Napi::RangeError::New(env, "ekaclc() expects vallen to fit in int32"));
     return;
