@@ -1,0 +1,128 @@
+:root,
+.dark {
+  /* --- Orrery design tokens (apps/orrery/src/index.css is the authority) --- */
+  --orrery-bg: #0b0f14;
+  --orrery-text: rgba(255, 255, 255, 0.9);
+
+  --orrery-phosphor-fg: #8f8;
+  --orrery-phosphor-dim: #3a7;
+  --orrery-phosphor-bright: #afa;
+
+  --orrery-panel-bg: rgba(10, 14, 20, 0.85);
+  --orrery-panel-border: rgba(255, 255, 255, 0.1);
+
+  --orrery-hover-bg: rgba(136, 255, 136, 0.08);
+  --orrery-active-bg: rgba(136, 255, 136, 0.12);
+  --orrery-active-border: rgba(136, 255, 136, 0.4);
+
+  /* --- Typography --- */
+  --vp-font-family-base: system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+    Arial, sans-serif;
+  --vp-font-family-mono: ui-monospace, 'SF Mono', monospace;
+
+  /* --- Base colors --- */
+  --vp-c-bg: var(--orrery-bg);
+  --vp-c-bg-alt: var(--orrery-panel-bg);
+  --vp-c-bg-elv: var(--orrery-panel-bg);
+  --vp-c-bg-soft: rgba(10, 14, 20, 0.6);
+
+  --vp-c-border: var(--orrery-panel-border);
+  --vp-c-divider: var(--orrery-panel-border);
+  --vp-c-gutter: var(--orrery-panel-border);
+
+  --vp-c-text-1: var(--orrery-text);
+  --vp-c-text-2: rgba(255, 255, 255, 0.72);
+  --vp-c-text-3: rgba(255, 255, 255, 0.55);
+  --vp-c-text-code: var(--orrery-phosphor-fg);
+
+  /* --- Brand / links --- */
+  --vp-c-brand-1: var(--orrery-phosphor-fg);
+  --vp-c-brand-2: var(--orrery-phosphor-bright);
+  --vp-c-brand-3: var(--orrery-phosphor-dim);
+  --vp-c-brand-soft: var(--orrery-active-bg);
+
+  /* --- Buttons --- */
+  --vp-button-brand-bg: var(--orrery-active-bg);
+  --vp-button-brand-border: var(--orrery-active-border);
+  --vp-button-brand-text: var(--orrery-phosphor-fg);
+
+  --vp-button-brand-hover-bg: var(--orrery-hover-bg);
+  --vp-button-brand-hover-border: var(--orrery-active-border);
+  --vp-button-brand-hover-text: var(--orrery-phosphor-bright);
+
+  --vp-button-brand-active-bg: var(--orrery-active-bg);
+  --vp-button-brand-active-border: var(--orrery-active-border);
+  --vp-button-brand-active-text: var(--orrery-phosphor-bright);
+
+  /* --- Code blocks --- */
+  --vp-code-block-bg: var(--orrery-panel-bg);
+  --vp-code-block-divider-color: var(--orrery-panel-border);
+  --vp-code-line-highlight-color: var(--orrery-hover-bg);
+  --vp-code-line-number-color: rgba(255, 255, 255, 0.35);
+
+  --vp-code-copy-code-bg: var(--orrery-panel-bg);
+  --vp-code-copy-code-hover-bg: var(--orrery-hover-bg);
+  --vp-code-copy-code-active-text: var(--orrery-phosphor-fg);
+  --vp-code-copy-code-active-bg: var(--orrery-active-bg);
+
+  /* --- Callouts / custom blocks --- */
+  --vp-custom-block-info-bg: var(--orrery-panel-bg);
+  --vp-custom-block-info-border: var(--orrery-panel-border);
+
+  --vp-custom-block-tip-bg: rgba(136, 255, 136, 0.06);
+  --vp-custom-block-tip-border: rgba(136, 255, 136, 0.25);
+
+  /* --- Homepage accents --- */
+  --vp-home-hero-name-color: var(--orrery-phosphor-fg);
+}
+
+/* Links */
+.vp-doc a {
+  text-decoration-color: rgba(136, 255, 136, 0.35);
+}
+
+.vp-doc a:hover {
+  text-decoration-color: rgba(136, 255, 136, 0.6);
+}
+
+/* Inline code */
+.vp-doc :not(pre) > code {
+  color: var(--orrery-phosphor-fg);
+  background: var(--orrery-hover-bg);
+  border: 1px solid rgba(136, 255, 136, 0.25);
+  border-radius: 4px;
+}
+
+/* Code blocks */
+div[class*='language-'] {
+  border: 1px solid var(--orrery-panel-border);
+  border-radius: 6px;
+}
+
+/* Tables */
+.vp-doc table {
+  display: block;
+  overflow-x: auto;
+  background: var(--orrery-panel-bg);
+  border: 1px solid var(--orrery-panel-border);
+  border-radius: 6px;
+}
+
+.vp-doc th,
+.vp-doc td {
+  border-color: var(--orrery-panel-border);
+}
+
+/* Mermaid diagram containers */
+.mermaid {
+  background: var(--orrery-panel-bg);
+  border: 1px solid var(--orrery-panel-border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  overflow-x: auto;
+}
+
+.mermaid svg {
+  display: block;
+  margin: 0 auto;
+}
