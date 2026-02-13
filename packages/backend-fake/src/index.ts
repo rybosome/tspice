@@ -1992,7 +1992,6 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     ) => {
       throw new Error("Fake backend: dskw02() is not implemented");
     },
-    },
 
     // -- DSK ----------------------------------------------------------------
 
