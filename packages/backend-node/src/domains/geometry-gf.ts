@@ -83,6 +83,9 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
       result,
     ) => {
       assertSpiceInt32(nintvls, "gfsep(nintvls)", { min: 1 });
+      assertFiniteNumber(refval, "gfsep(refval)");
+      assertFiniteNumber(adjust, "gfsep(adjust)");
+      assertFiniteNumber(step, "gfsep(step)");
       assertOpaqueHandle(cnfine as unknown as number, "gfsep(cnfine)");
       assertOpaqueHandle(result as unknown as number, "gfsep(result)");
 
@@ -107,6 +110,9 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
 
     gfdist: (target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result) => {
       assertSpiceInt32(nintvls, "gfdist(nintvls)", { min: 1 });
+      assertFiniteNumber(refval, "gfdist(refval)");
+      assertFiniteNumber(adjust, "gfdist(adjust)");
+      assertFiniteNumber(step, "gfdist(step)");
       assertOpaqueHandle(cnfine as unknown as number, "gfdist(cnfine)");
       assertOpaqueHandle(result as unknown as number, "gfdist(result)");
 

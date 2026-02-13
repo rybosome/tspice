@@ -10,6 +10,12 @@ import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 
+function assertFiniteNumber(value: unknown, context: string): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new RangeError(`${context}: expected a finite number (got ${value})`);
+  }
+}
+
 function tspiceCallGfsstp(module: EmscriptenModule, step: number): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const result = module._tspice_gfsstp(step, errPtr, WASM_ERR_MAX_BYTES);
@@ -26,7 +32,10 @@ function tspiceCallGfstep(module: EmscriptenModule, time: number): number {
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
-    return module.HEAPF64[outStepPtr >> 3] ?? 0;
+
+    const out = module.HEAPF64[outStepPtr >> 3];
+    assertFiniteNumber(out, "gfstep(): return value");
+    return out;
   });
 }
 
@@ -46,7 +55,10 @@ function tspiceCallGfrefn(module: EmscriptenModule, t1: number, t2: number, s1: 
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
-    return module.HEAPF64[outTPtr >> 3] ?? 0;
+
+    const out = module.HEAPF64[outTPtr >> 3];
+    assertFiniteNumber(out, "gfrefn(): return value");
+    return out;
   });
 }
 
@@ -234,6 +246,9 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       result,
     ) => {
       assertSpiceInt32(nintvls, "gfsep(nintvls)", { min: 1 });
+      assertFiniteNumber(refval, "gfsep(refval)");
+      assertFiniteNumber(adjust, "gfsep(adjust)");
+      assertFiniteNumber(step, "gfsep(step)");
       tspiceCallGfsep(
         module,
         targ1,
@@ -256,6 +271,9 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
 
     gfdist: (target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result) => {
       assertSpiceInt32(nintvls, "gfdist(nintvls)", { min: 1 });
+      assertFiniteNumber(refval, "gfdist(refval)");
+      assertFiniteNumber(adjust, "gfdist(adjust)");
+      assertFiniteNumber(step, "gfdist(step)");
       tspiceCallGfdist(
         module,
         target,
