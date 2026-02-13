@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@rybosome/tspice-bench-contract": "workspace:*",
+    "@types/node": "^22.10.2",
     "@rybosome/tspice-repo-standards": "workspace:*",
     "turbo": "^2.5.5"
   }
