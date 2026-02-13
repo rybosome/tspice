@@ -5,7 +5,7 @@ import { knownRuleIds, ruleRegistry } from "../rules/registry.js";
 export async function runStandards(opts: RunStandardsOptions): Promise<RepoStandardsReport> {
   const violations: Violation[] = [];
 
-  const selectedPackageRoots = new Set<string>();
+  const packageRootsByRuleId = new Map<string, string[]>();
 
   for (const ruleId of knownRuleIds) {
     if (opts.onlyRuleId && ruleId !== opts.onlyRuleId) continue;
@@ -13,13 +13,18 @@ export async function runStandards(opts: RunStandardsOptions): Promise<RepoStand
     const ruleCfg = opts.config.rules[ruleId];
     if (!ruleCfg) continue;
 
-    for (const pkg of ruleCfg.packages) {
-      if (opts.onlyPackageRoot && pkg !== opts.onlyPackageRoot) continue;
-      selectedPackageRoots.add(pkg);
-    }
+    const selectedPackages = ruleCfg.packages.filter(
+      (pkgRoot) => !opts.onlyPackageRoot || pkgRoot === opts.onlyPackageRoot
+    );
+
+    if (selectedPackages.length === 0) continue;
+
+    packageRootsByRuleId.set(ruleId, selectedPackages);
   }
 
-  const packageRoots = [...selectedPackageRoots].sort();
+  const packageRoots = Array.from(
+    new Set(Array.from(packageRootsByRuleId.values()).flat())
+  ).sort();
 
   if (packageRoots.length > 0) {
     const ctx = await buildRepoContext({
@@ -27,22 +32,17 @@ export async function runStandards(opts: RunStandardsOptions): Promise<RepoStand
       packageRoots
     });
 
-    const enabledPackagesByRuleId = new Map<string, Set<string>>(
-      knownRuleIds.map((ruleId) => [ruleId, new Set(opts.config.rules[ruleId]?.packages ?? [])])
-    );
+    for (const ruleId of knownRuleIds) {
+      const selectedPackages = packageRootsByRuleId.get(ruleId);
+      if (!selectedPackages) continue;
 
-    for (const pkg of ctx.index.packages) {
-      if (opts.onlyPackageRoot && pkg.packageRoot !== opts.onlyPackageRoot) continue;
+      const rule = ruleRegistry[ruleId];
 
-      for (const ruleId of knownRuleIds) {
-        if (opts.onlyRuleId && ruleId !== opts.onlyRuleId) continue;
-        if (!(enabledPackagesByRuleId.get(ruleId)?.has(pkg.packageRoot) ?? false)) continue;
-
-        const rule = ruleRegistry[ruleId];
+      for (const packageRoot of selectedPackages) {
         violations.push(
           ...(await rule.run({
             ctx,
-            packageRoot: pkg.packageRoot
+            packageRoot
           }))
         );
       }
