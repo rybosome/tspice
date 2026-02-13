@@ -243,6 +243,25 @@ export type NativeAddon = {
   spkpds(body: number, center: number, frame: string, type: number, first: number, last: number): number[];
   spkuds(descr: ReadonlyArray<number>): { body: number; center: number; frame: number; type: number; first: number; last: number; baddr: number; eaddr: number };
 
+// --- SPK writers ---
+
+  spkopn(path: string, ifname: string, ncomch: number): number;
+  spkopa(path: string): number;
+  spkcls(handle: number): void;
+  spkw08(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epoch1: number,
+    step: number,
+  ): void;
+
   subpnt(
     method: string,
     target: string,

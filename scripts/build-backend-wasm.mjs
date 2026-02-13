@@ -366,6 +366,11 @@ const exportedFunctions = [
   "_tspice_spksfs",
   "_tspice_spkpds",
   "_tspice_spkuds",
+  "_tspice_spkopn",
+  "_tspice_spkopa",
+  "_tspice_spkw08",
+  "_tspice_spkw08_v2",
+  "_tspice_spkcls",
 
   // --- derived geometry ---
   "_tspice_subpnt",

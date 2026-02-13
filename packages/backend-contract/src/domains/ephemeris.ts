@@ -7,9 +7,11 @@
 import type {
   AbCorr,
   Found,
+  SpiceHandle,
   SpiceStateVector,
   SpkezrResult,
   SpkposResult,
+  VirtualOutput,
 } from "../shared/types.js";
 import type { SpiceIntCell, SpiceWindow } from "./cells-windows.js";
 
@@ -35,7 +37,12 @@ export type SpkUnpackedDescriptor = {
 };
 
 export interface EphemerisApi {
-  /** Compute state (6-vector) and light time via `spkezr`. */
+  /**
+   * Compute state relative to observer using loaded kernels (see `spkezr_c`).
+   *
+   * Note: `abcorr` is a known set of SPICE aberration correction strings, but we allow arbitrary
+   * strings for forward-compatibility.
+   */
   spkezr(
     target: string,
     et: number,
@@ -44,7 +51,9 @@ export interface EphemerisApi {
     observer: string,
   ): SpkezrResult;
 
-  /** Compute position (3-vector) and light time via `spkpos`. */
+  /**
+   * Compute position relative to observer using loaded kernels (see `spkpos_c`).
+   */
   spkpos(
     target: string,
     et: number,
@@ -158,4 +167,57 @@ export interface EphemerisApi {
 
   /** Unpack a packed SPK segment descriptor via `spkuds`. */
   spkuds(descr: SpkPackedDescriptor): SpkUnpackedDescriptor;
+
+  // --- SPK writers ---------------------------------------------------------
+
+  /**
+   * Open a new SPK file for write (see `spkopn_c`).
+   *
+   * `file` interpretation is backend-dependent:
+   * - Node: OS filesystem path
+   * - WASM: virtual id under the backend's virtual filesystem (currently
+   *   normalized into `/kernels/...`).
+   *
+   *   In other words, for the WASM backend, `file: string` is **not** a raw
+   *   Emscripten absolute path. It is treated like other "kernel-ish" paths and
+   *   is normalized into `/kernels`.
+   *
+   *   Examples (WASM backend):
+   *   - `spkopn("out.bsp", ...)` writes to `/kernels/out.bsp`
+   *   - `spkopn("/kernels/out.bsp", ...)` refers to the same file
+   *   - `spkopn("/tmp/out.bsp", ...)` throws (OS paths/URLs are rejected)
+   *
+   * When `file` is a `VirtualOutput`, backends should allow reading bytes back
+   * via `readVirtualOutput()` after closing the file handle.
+   *
+   * Callers should retain the `VirtualOutput` they passed to `spkopn`/`spkopa`.
+   * It is the identifier used to read bytes back later.
+   */
+  spkopn(file: string | VirtualOutput, ifname: string, ncomch: number): SpiceHandle;
+
+  /** Open an existing SPK for append (see `spkopa_c`). Same `file` semantics as `spkopn`. */
+  spkopa(file: string | VirtualOutput): SpiceHandle;
+
+  /** Close an SPK file previously opened by `spkopn`/`spkopa` (see `spkcls_c`). */
+  spkcls(handle: SpiceHandle): void;
+
+  /**
+   * Write a type 8 SPK segment (see `spkw08_c`).
+   *
+   * `states` is a flat array with layout `[x,y,z, dx,dy,dz]` for each record.
+   * The number of records `n` is derived as `states.length / 6`.
+   */
+  spkw08(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epoch1: number,
+    step: number,
+  ): void;
 }
