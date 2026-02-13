@@ -80,6 +80,17 @@ export type NativeAddon = {
   dlafns(handle: number, descr: Record<string, unknown>): { found: boolean; descr?: Record<string, unknown> };
   dlacls(handle: number): void;
 
+  // --- EK ---
+  ekopr(path: string): number;
+  ekopw(path: string): number;
+  ekopn(path: string, ifname: string, ncomch: number): number;
+  ekcls(handle: number): void;
+
+  ekntab(): number;
+  ektnam(n: number): string;
+  eknseg(handle: number): number;
+
+  // --- DSK writer ---
   dskopn(path: string, ifname: string, ncomch: number): number;
   dskmi2(
     nv: number,
