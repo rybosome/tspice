@@ -1,333 +1,264 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rybosome.github.io/tspice/tspice.schema.json",
-  "title": "tspice (tool/integration schema)",
-  "description": "A small JSON schema intended for LLM/tool integrations. It models a portable request format for common @rybosome/tspice kit operations.",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "backend",
-    "calls"
+  "format": "tspice.schema.json",
+  "intent": "Structured JSON metadata summary for LLMs and tool/integration builders.",
+  "hostedUrls": {
+    "llmsTxt": "https://rybosome.github.io/tspice/llms.txt",
+    "llmsFullTxt": "https://rybosome.github.io/tspice/llms-full.txt",
+    "tspiceSchemaJson": "https://rybosome.github.io/tspice/tspice.schema.json"
+  },
+  "environments": [
+    {
+      "id": "wasm",
+      "name": "browser/WebWorker (WASM)",
+      "constraints": [
+        "Portable default; works in browsers and other WASM-capable runtimes.",
+        "No direct OS filesystem access; prefer loading kernels via bytes (KernelSource { path, bytes }).",
+        "Large kernels can be memory-heavy; consider fetchStrategy='sequential' when loading packs."
+      ]
+    },
+    {
+      "id": "node",
+      "name": "Node.js (native addon)",
+      "constraints": [
+        "Requires an optional, platform-specific native addon package.",
+        "Can load kernels by OS filesystem path (KernelSource string) or via bytes."
+      ]
+    }
   ],
-  "properties": {
-    "backend": {
-      "type": "string",
-      "enum": [
-        "wasm",
-        "node"
+  "kernelSource": {
+    "sourceFile": "packages/backend-contract/src/shared/types.ts",
+    "typeScriptDefinition": "export type KernelSource =\n  | string\n  | {\n      path: string;\n      bytes: Uint8Array;\n    };",
+    "notesByEnvironment": {
+      "wasm": [
+        "Prefer the object form: { path, bytes }.",
+        "String paths are backend-defined and generally refer to the WASM virtual filesystem, not the OS filesystem."
       ],
-      "description": "Select the tspice backend implementation."
-    },
-    "calls": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/SpiceKitCall"
+      "node": [
+        "String form is typically treated as an OS filesystem path passed to the native backend's furnsh().",
+        "The object form { path, bytes } is supported and is the most portable across environments."
+      ]
+    }
+  },
+  "exports": {
+    "sourceFile": "packages/tspice/src/index.ts",
+    "valueExports": [
+      {
+        "name": "assertMat3ArrayLike9",
+        "description": "Runtime assertion that a value is a length-9 array-like suitable for a 3×3 matrix."
+      },
+      {
+        "name": "brandMat3ColMajor",
+        "description": "Type-brand a length-9 number array as Mat3ColMajor (column-major) without copying."
+      },
+      {
+        "name": "brandMat3RowMajor",
+        "description": "Type-brand a length-9 number array as Mat3RowMajor (row-major) without copying."
+      },
+      {
+        "name": "createBackend",
+        "description": "Create a low-level SPICE backend implementation (wasm or node) conforming to the backend contract."
+      },
+      {
+        "name": "createPublicKernels",
+        "description": "Create a builder for assembling a small set of commonly-used public NAIF kernels (URLs + load paths)."
+      },
+      {
+        "name": "createSpice",
+        "description": "Create a sync-ish tspice client (raw backend + higher-level kit helpers)."
+      },
+      {
+        "name": "createSpiceAsync",
+        "description": "Create an async tspice client mirroring the sync surface area (all methods return Promises)."
+      },
+      {
+        "name": "isBrandedMat3ColMajor",
+        "description": "Runtime predicate that checks whether a value is branded as Mat3ColMajor."
+      },
+      {
+        "name": "isBrandedMat3RowMajor",
+        "description": "Runtime predicate that checks whether a value is branded as Mat3RowMajor."
+      },
+      {
+        "name": "isMat3ArrayLike9",
+        "description": "Type guard that checks whether a value is a length-9 array-like suitable for a 3×3 matrix."
+      },
+      {
+        "name": "J2000",
+        "description": "Constant frame name for the canonical inertial reference frame (J2000)."
+      },
+      {
+        "name": "Mat3",
+        "description": "3×3 matrix helper for frame transforms and vector math."
+      },
+      {
+        "name": "publicKernels",
+        "description": "Preconfigured PublicKernelsBuilder with default options."
+      },
+      {
+        "name": "spiceClients",
+        "description": "Higher-level client builder that can produce in-process, async, or WebWorker clients and a dispose() lifecycle."
+      },
+      {
+        "name": "SpiceError",
+        "description": "Error thrown when underlying SPICE/CSPICE operations fail."
       }
-    }
+    ],
+    "typeExports": [
+      {
+        "name": "AberrationCorrection",
+        "description": "Allowed aberration correction strings for state/position queries (e.g. 'NONE', 'LT', ...)."
+      },
+      {
+        "name": "BodyRef",
+        "description": "Body identifier accepted by kit APIs (NAIF name string or numeric id)."
+      },
+      {
+        "name": "CreateBackendOptions",
+        "description": "Options accepted by createBackend() (explicit backend selection + optional wasmUrl override)."
+      },
+      {
+        "name": "CreatePublicKernelsOptions",
+        "description": "Options accepted by createPublicKernels() (urlBase + pathBase)."
+      },
+      {
+        "name": "CreateSpiceAsyncOptions",
+        "description": "Alias of CreateSpiceOptions."
+      },
+      {
+        "name": "CreateSpiceOptions",
+        "description": "Options accepted by createSpice(): backend selection + optional backendInstance override."
+      },
+      {
+        "name": "FrameName",
+        "description": "SPICE frame name string (e.g. 'J2000', 'IAU_EARTH')."
+      },
+      {
+        "name": "GetStateArgs",
+        "description": "Argument object for kit.getState() (target, observer, time, frame, aberration)."
+      },
+      {
+        "name": "KernelPack",
+        "description": "A small ordered set of kernels (URLs + load paths) intended to be fetched and loaded as a group."
+      },
+      {
+        "name": "KernelPackKernel",
+        "description": "A single kernel entry in a KernelPack: { url, path }."
+      },
+      {
+        "name": "KernelSource",
+        "description": "Kernel identifier accepted by kit.loadKernel(): either a string path or an object with { path, bytes }."
+      },
+      {
+        "name": "LoadKernelPackOptions",
+        "description": "Options for kernelPack.loadKernelPack() (baseUrl behavior, fetch override, and fetch strategy)."
+      },
+      {
+        "name": "Mat3ColMajor",
+        "description": "Branded type for a 3×3 matrix encoded in column-major order."
+      },
+      {
+        "name": "Mat3RowMajor",
+        "description": "Branded type for a 3×3 matrix encoded in row-major order."
+      },
+      {
+        "name": "PublicKernelId",
+        "description": "Union of built-in public kernel ids (e.g. naif0012_tls, pck00011_tpc, de432s_bsp)."
+      },
+      {
+        "name": "PublicKernelsBuilder",
+        "description": "Builder for selecting public kernels and producing a KernelPack."
+      },
+      {
+        "name": "Spice",
+        "description": "Sync-ish client type: { raw, kit }."
+      },
+      {
+        "name": "SpiceAsync",
+        "description": "Async client type mirroring Spice; all methods return Promises."
+      },
+      {
+        "name": "SpiceBackend",
+        "description": "Low-level backend interface implemented by the WASM and Node.js backends."
+      },
+      {
+        "name": "SpiceClientBuildResult",
+        "description": "Return type of spiceClients builders: { spice, dispose }. Dispose is idempotent + safe."
+      },
+      {
+        "name": "SpiceClientsBuilder",
+        "description": "Fluent builder for constructing spice clients (in-process sync/async or WebWorker), optionally with caching + kernels."
+      },
+      {
+        "name": "SpiceClientsWebWorkerOptions",
+        "description": "Options for spiceClients.toWebWorker() (custom Worker, wasmUrl override, timeouts, termination behavior)."
+      },
+      {
+        "name": "SpiceKit",
+        "description": "High-level convenience API built on top of the raw backend."
+      },
+      {
+        "name": "SpiceSync",
+        "description": "Alias of Spice (sync-ish client)."
+      },
+      {
+        "name": "SpiceTime",
+        "description": "Seconds past J2000 (ET)."
+      },
+      {
+        "name": "StateVector",
+        "description": "Structured result returned by kit.getState() (position, velocity, light time, and query metadata)."
+      },
+      {
+        "name": "Vec3",
+        "description": "Readonly 3-vector tuple type."
+      },
+      {
+        "name": "Vec6",
+        "description": "Readonly 6-vector tuple type."
+      }
+    ]
   },
-  "$defs": {
-    "KernelSource": {
-      "oneOf": [
-        {
-          "type": "string",
-          "description": "Kernel path. On Node, this may be an OS filesystem path. On WASM, prefer the object form with bytes."
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "path",
-            "bytes"
-          ],
-          "properties": {
-            "path": {
-              "type": "string",
-              "description": "Virtual kernel identifier. Keep it stable so you can unload later (kit.unloadKernel)."
-            },
-            "bytes": {
-              "type": "string",
-              "contentEncoding": "base64",
-              "contentMediaType": "application/octet-stream",
-              "description": "Base64-encoded kernel bytes (convert to Uint8Array in JS)."
-            }
-          }
-        }
-      ]
+  "goldenExamples": [
+    {
+      "repoPath": "packages/tspice/test/llm-examples/backend-env-selection.example.ts",
+      "description": "Backend selection (Node vs WASM) + spiceClients lifecycle/dispose."
     },
-    "AberrationCorrection": {
-      "type": "string",
-      "enum": [
-        "NONE",
-        "LT",
-        "LT+S",
-        "CN",
-        "CN+S",
-        "XLT",
-        "XLT+S",
-        "XCN",
-        "XCN+S"
-      ]
+    {
+      "repoPath": "packages/tspice/test/llm-examples/kernel-loading.example.ts",
+      "description": "Kernel loading patterns via KernelSource (filesystem path vs bytes)."
     },
-    "BodyRef": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "integer"
-        }
-      ]
+    {
+      "repoPath": "packages/tspice/test/llm-examples/state-and-frame-transform.example.ts",
+      "description": "Ephemeris state query (getState) + frame transform (frameTransform) + Mat3 usage."
     },
-    "SpiceKitCall": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "op",
-            "args"
-          ],
-          "properties": {
-            "op": {
-              "const": "loadKernel"
-            },
-            "args": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "kernel"
-              ],
-              "properties": {
-                "kernel": {
-                  "$ref": "#/$defs/KernelSource"
-                }
-              }
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "op",
-            "args"
-          ],
-          "properties": {
-            "op": {
-              "const": "unloadKernel"
-            },
-            "args": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "path"
-              ],
-              "properties": {
-                "path": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "op"
-          ],
-          "properties": {
-            "op": {
-              "const": "kclear"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "op",
-            "args"
-          ],
-          "properties": {
-            "op": {
-              "const": "utcToEt"
-            },
-            "args": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "utc"
-              ],
-              "properties": {
-                "utc": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "op",
-            "args"
-          ],
-          "properties": {
-            "op": {
-              "const": "etToUtc"
-            },
-            "args": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "et"
-              ],
-              "properties": {
-                "et": {
-                  "type": "number"
-                },
-                "format": {
-                  "type": "string"
-                },
-                "prec": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "op",
-            "args"
-          ],
-          "properties": {
-            "op": {
-              "const": "frameTransform"
-            },
-            "args": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "from",
-                "to",
-                "et"
-              ],
-              "properties": {
-                "from": {
-                  "type": "string"
-                },
-                "to": {
-                  "type": "string"
-                },
-                "et": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "op",
-            "args"
-          ],
-          "properties": {
-            "op": {
-              "const": "getState"
-            },
-            "args": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "target",
-                "observer",
-                "at"
-              ],
-              "properties": {
-                "target": {
-                  "$ref": "#/$defs/BodyRef"
-                },
-                "observer": {
-                  "$ref": "#/$defs/BodyRef"
-                },
-                "at": {
-                  "type": "number"
-                },
-                "frame": {
-                  "type": "string"
-                },
-                "aberration": {
-                  "$ref": "#/$defs/AberrationCorrection"
-                }
-              }
-            }
-          }
-        }
-      ]
+    {
+      "repoPath": "packages/tspice/test/llm-examples/time-conversion.example.ts",
+      "description": "UTC ↔ ET time conversions."
     }
-  },
-  "xTspice": {
-    "sourceFiles": {
-      "publicIndex": "packages/tspice/src/index.ts",
-      "kernelSourceType": "packages/backend-contract/src/shared/types.ts"
+  ],
+  "policiesAndDisclosures": [
+    {
+      "repoPath": "docs/cspice-policy.md",
+      "description": "Project policy for CSPICE usage and redistribution constraints."
     },
-    "exportedSymbols": {
-      "typeExports": [
-        "AberrationCorrection",
-        "BodyRef",
-        "CreateBackendOptions",
-        "CreatePublicKernelsOptions",
-        "CreateSpiceAsyncOptions",
-        "CreateSpiceOptions",
-        "FrameName",
-        "GetStateArgs",
-        "KernelPack",
-        "KernelPackKernel",
-        "KernelSource",
-        "LoadKernelPackOptions",
-        "Mat3ColMajor",
-        "Mat3RowMajor",
-        "PublicKernelId",
-        "PublicKernelsBuilder",
-        "Spice",
-        "SpiceAsync",
-        "SpiceBackend",
-        "SpiceClientBuildResult",
-        "SpiceClientsBuilder",
-        "SpiceClientsWebWorkerOptions",
-        "SpiceKit",
-        "SpiceSync",
-        "SpiceTime",
-        "StateVector",
-        "Vec3",
-        "Vec6"
-      ],
-      "valueExports": [
-        "assertMat3ArrayLike9",
-        "brandMat3ColMajor",
-        "brandMat3RowMajor",
-        "createBackend",
-        "createPublicKernels",
-        "createSpice",
-        "createSpiceAsync",
-        "isBrandedMat3ColMajor",
-        "isBrandedMat3RowMajor",
-        "isMat3ArrayLike9",
-        "J2000",
-        "Mat3",
-        "publicKernels",
-        "spiceClients",
-        "SpiceError"
-      ]
+    {
+      "repoPath": "docs/cspice-naif-disclosure.md",
+      "description": "NAIF/CSPICE disclosure guidance."
     },
-    "kernelSourceTypeScript": "export type KernelSource =\n  | string\n  | {\n      path: string;\n      bytes: Uint8Array;\n    };",
-    "generatedBy": "tools/llm/generate.mjs"
+    {
+      "repoPath": "THIRD_PARTY_NOTICES.md",
+      "description": "Third-party notices and attributions."
+    }
+  ],
+  "nonGoals": [
+    "tspice does not bundle NAIF kernels; callers must provide and load kernels explicitly.",
+    "Do not assume backend='node' works in all environments; it requires a Node.js native addon.",
+    "Do not assume network access is available; design kernel loading accordingly.",
+    "This file is metadata, not a complete spec for SPICE behavior; consult NAIF docs for SPICE semantics."
+  ],
+  "generatedBy": {
+    "script": "tools/llm/generate.mjs",
+    "command": "pnpm generate:llm",
+    "outputFile": "apps/docs/public/tspice.schema.json"
   }
 }
