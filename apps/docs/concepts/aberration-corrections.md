@@ -36,8 +36,8 @@ If you’re doing:
 ## Kernels required
 
 - **SPK**: required (you need ephemerides for the target/observer)
-- **LSK**: not required by `spkezr` itself (it takes ET), but commonly required if you start from UTC strings
-- **Frames kernels (FK/PCK/CK/SCLK)**: required if you request states in non-trivial frames
+- **LSK**: required if you’re converting from UTC strings (e.g. via `kit.utcToEt` / `raw.str2et`); not required if you already have ET
+- **FK/PCK/CK/SCLK**: required if you request states in non-inertial or kernel-defined frames
 
 ## How it maps to tspice
 
@@ -49,6 +49,9 @@ If you’re doing:
 - The returned `StateVector` includes `lightTime` (one-way seconds).
 
 ```ts
+// Requires:
+// - LSK (leapseconds) if converting UTC -> ET (e.g. naif0012.tls)
+// - SPK(s) that cover the target/observer ephemerides (e.g. de440.bsp)
 const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
 
 // Geometric state (default aberration: "NONE")

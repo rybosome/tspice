@@ -55,6 +55,15 @@ const rowMajor = R.rowMajor;
 
 // Convenience for column-major consumers (WebGL, many math libs)
 const colMajor = R.colMajor;
+
+const vFrom = [1, 2, 3] as const;
+
+// Apply row-major 3×3 to a column vector (vTo = R * vFrom)
+const vTo = [
+  rowMajor[0] * vFrom[0] + rowMajor[1] * vFrom[1] + rowMajor[2] * vFrom[2],
+  rowMajor[3] * vFrom[0] + rowMajor[4] * vFrom[1] + rowMajor[5] * vFrom[2],
+  rowMajor[6] * vFrom[0] + rowMajor[7] * vFrom[1] + rowMajor[8] * vFrom[2],
+] as const;
 ```
 
 ### `raw.pxform(...)` / `raw.sxform(...)` (parity)

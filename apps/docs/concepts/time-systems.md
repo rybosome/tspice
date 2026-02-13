@@ -42,7 +42,14 @@ Also: **UTC↔ET is not purely arithmetic** — it depends on leap seconds and t
 ```ts
 // Async client example; in sync clients, omit `await`.
 
-// Requires an LSK to already be loaded (e.g. naif0012.tls).
+// UTC ↔ ET requires an LSK (leapseconds) to be loaded.
+//
+// Node: load from an OS filesystem path
+await spice.kit.loadKernel("/path/to/naif0012.tls");
+
+// WASM: load bytes into a virtual path/id (commonly under `/kernels/...`)
+// await spice.kit.loadKernel({ path: "/kernels/naif0012.tls", bytes });
+
 const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
 
 // Defaults: format = "C", prec = 3
