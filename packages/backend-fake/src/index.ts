@@ -1888,6 +1888,66 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       throw new Error("Fake backend: eknseg() is not implemented");
     },
 
+    // --- EK query/data ops (not implemented in fake backend) ---
+    ekfind: (_query: string) => {
+      throw new Error("Fake backend: ekfind() is not implemented");
+    },
+    ekgc: (_selidx: number, _row: number, _elment: number) => {
+      throw new Error("Fake backend: ekgc() is not implemented");
+    },
+    ekgd: (_selidx: number, _row: number, _elment: number) => {
+      throw new Error("Fake backend: ekgd() is not implemented");
+    },
+    ekgi: (_selidx: number, _row: number, _elment: number) => {
+      throw new Error("Fake backend: ekgi() is not implemented");
+    },
+
+    ekifld: (
+      _handle: SpiceHandle,
+      _tabnam: string,
+      _nrows: number,
+      _cnames: readonly string[],
+      _decls: readonly string[],
+    ) => {
+      throw new Error("Fake backend: ekifld() is not implemented");
+    },
+    ekacli: (
+      _handle: SpiceHandle,
+      _segno: number,
+      _column: string,
+      _ivals: readonly number[],
+      _entszs: readonly number[],
+      _nlflgs: readonly boolean[],
+      _rcptrs: readonly number[],
+    ) => {
+      throw new Error("Fake backend: ekacli() is not implemented");
+    },
+    ekacld: (
+      _handle: SpiceHandle,
+      _segno: number,
+      _column: string,
+      _dvals: readonly number[],
+      _entszs: readonly number[],
+      _nlflgs: readonly boolean[],
+      _rcptrs: readonly number[],
+    ) => {
+      throw new Error("Fake backend: ekacld() is not implemented");
+    },
+    ekaclc: (
+      _handle: SpiceHandle,
+      _segno: number,
+      _column: string,
+      _cvals: readonly string[],
+      _entszs: readonly number[],
+      _nlflgs: readonly boolean[],
+      _rcptrs: readonly number[],
+    ) => {
+      throw new Error("Fake backend: ekaclc() is not implemented");
+    },
+    ekffld: (_handle: SpiceHandle, _segno: number, _rcptrs: readonly number[]) => {
+      throw new Error("Fake backend: ekffld() is not implemented");
+    },
+
     // --- DSK writer (not implemented in fake backend) ---
     dskopn: (_path: string, _ifname: string, _ncomch: number) => {
       throw new Error("Fake backend: dskopn() is not implemented");
