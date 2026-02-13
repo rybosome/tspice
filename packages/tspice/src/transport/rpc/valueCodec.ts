@@ -54,6 +54,20 @@ export function encodeRpcValue(value: unknown): unknown {
     return value.map(encodeRpcValue);
   }
 
+  // Fast-path: ArrayBuffer + views (TypedArrays/DataView) are structured-clone-
+  // safe and should pass through unchanged. This is important for transferring
+  // kernel bytes (e.g. Uint8Array) into a worker.
+  if (value instanceof ArrayBuffer) return value;
+  if (ArrayBuffer.isView(value)) return value;
+  // SharedArrayBuffer exists in some environments (Node, some browsers) but is
+  // gated by cross-origin isolation in browsers. Allow it when present.
+  if (
+    typeof SharedArrayBuffer !== "undefined" &&
+    value instanceof SharedArrayBuffer
+  ) {
+    return value;
+  }
+
   if (isRecord(value)) {
     // Preserve Date/Map/Set/etc as-is? No: those are not guaranteed to be
     // structured-clone-safe across all targets. For now, we only support plain
