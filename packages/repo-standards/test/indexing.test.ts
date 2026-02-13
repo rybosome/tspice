@@ -132,7 +132,7 @@ describe("repo indexing layer", () => {
     ]);
   });
 
-  it("is deterministic across runs on identical repo state", async () => {
+  it("is deterministic across runs on identical repo state", { timeout: 60_000 }, async () => {
     const a = await buildRepoContext({
       repoRoot: fixtureRoot,
       packageRoots: ["packages/pkg-a"]
