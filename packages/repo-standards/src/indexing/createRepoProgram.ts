@@ -1,4 +1,5 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import * as ts from "typescript";
 
@@ -9,6 +10,24 @@ export interface RepoProgram {
   /** Must match the Program's module resolution assumptions. */
   moduleResolutionHost: ts.ModuleResolutionHost;
   moduleResolutionCache: ts.ModuleResolutionCache;
+}
+
+function canonicalizePath(p: string): string {
+  return ts.sys.useCaseSensitiveFileNames ? p : p.toLowerCase();
+}
+
+function mergeTypeRoots(base: readonly string[], additions: readonly string[]): string[] {
+  const merged = [...base];
+  const seen = new Set(merged.map(canonicalizePath));
+
+  for (const abs of additions) {
+    const key = canonicalizePath(abs);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(abs);
+  }
+
+  return merged;
 }
 
 function formatDiagnostics(diags: readonly ts.Diagnostic[]): string {
@@ -35,26 +54,82 @@ function resolveProjectReferenceDir(opts: {
   return abs.endsWith(".json") ? path.dirname(abs) : abs;
 }
 
+type TsconfigParseCacheEntry = {
+  parsed: ts.ParsedCommandLine | undefined;
+  unrecoverableDiagnostics: readonly ts.Diagnostic[];
+};
+
+function getParsedTsconfig(opts: {
+  configPath: string;
+  cache: Map<string, TsconfigParseCacheEntry>;
+}): TsconfigParseCacheEntry {
+  const key = canonicalizePath(opts.configPath);
+  const cached = opts.cache.get(key);
+  if (cached) return cached;
+
+  const unrecoverable: ts.Diagnostic[] = [];
+  const parsed = ts.getParsedCommandLineOfConfigFile(opts.configPath, {}, {
+    ...ts.sys,
+    onUnRecoverableConfigFileDiagnostic: (d) => unrecoverable.push(d)
+  });
+
+  const entry: TsconfigParseCacheEntry = {
+    parsed,
+    unrecoverableDiagnostics: unrecoverable
+  };
+  opts.cache.set(key, entry);
+  return entry;
+}
+
 function getCompositeProjectReferences(opts: {
   repoRoot: string;
   refs: readonly ts.ProjectReference[];
+  tsconfigParseCache: Map<string, TsconfigParseCacheEntry>;
 }): ts.ProjectReference[] {
-  return opts.refs.filter((ref) => {
+  const unrecoverable: ts.Diagnostic[] = [];
+
+  const compositeRefs = opts.refs.filter((ref) => {
     const configPath = resolveProjectReferenceConfigPath({
       repoRoot: opts.repoRoot,
       refPath: ref.path
     });
 
-    const parsed = ts.getParsedCommandLineOfConfigFile(configPath, {}, {
-      ...ts.sys,
-      onUnRecoverableConfigFileDiagnostic: () => {}
+    const { parsed, unrecoverableDiagnostics } = getParsedTsconfig({
+      configPath,
+      cache: opts.tsconfigParseCache
     });
+
+    if (unrecoverableDiagnostics.length > 0) {
+      unrecoverable.push(...unrecoverableDiagnostics);
+      return false;
+    }
 
     // If we can't parse it (or it isn't composite), treat it as non-referenceable.
     // This lets the standards tool analyze repos that include non-composite configs
     // (e.g. Vite apps) in a solution-style root `tsconfig.json`.
     return Boolean(parsed?.options.composite);
   });
+
+  if (unrecoverable.length > 0) {
+    throw new Error(`unrecoverable tsconfig diagnostics:
+${formatDiagnostics(unrecoverable)}`);
+  }
+
+  return compositeRefs;
+}
+
+function computeDefaultTypeRoots(currentDirectory: string): string[] {
+  const roots: string[] = [];
+  let dir = path.resolve(currentDirectory);
+
+  while (true) {
+    roots.push(path.join(dir, "node_modules/@types"));
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+
+  return roots;
 }
 
 function computeTypeRoots(opts: {
@@ -66,6 +141,26 @@ function computeTypeRoots(opts: {
   const addIfExists = (abs: string): void => {
     if (ts.sys.directoryExists?.(abs)) roots.add(abs);
   };
+
+  // Find this package's root directory without hard-coding `packages/repo-standards`.
+  // When this package is installed as a dependency, this ensures we use its actual
+  // on-disk location.
+  const startDir = path.dirname(fileURLToPath(import.meta.url));
+  let pkgDir: string | undefined;
+  {
+    let dir = startDir;
+    while (true) {
+      const pkgJson = path.join(dir, "package.json");
+      if (ts.sys.fileExists(pkgJson)) {
+        pkgDir = dir;
+        break;
+      }
+
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+  }
 
   // With pnpm's non-hoisted node_modules, @types packages often do *not* exist at
   // `${repoRoot}/node_modules/@types`. Add workspace-level typeRoots so `types: ["node"]`
@@ -81,7 +176,9 @@ function computeTypeRoots(opts: {
   }
 
   // Ensure this package's own type roots are available even if it isn't referenced.
-  addIfExists(path.join(opts.repoRoot, "packages/repo-standards/node_modules/@types"));
+  if (pkgDir) {
+    addIfExists(path.join(pkgDir, "node_modules/@types"));
+  }
 
   const arr = Array.from(roots);
   return arr.length > 0 ? arr : undefined;
@@ -116,6 +213,8 @@ export function createRepoProgram(opts: { repoRoot: string }): RepoProgram {
 
   const resolved = solutionProgram.getResolvedProjectReferences?.() ?? [];
 
+  const tsconfigParseCache = new Map<string, TsconfigParseCacheEntry>();
+
   const rootNames: string[] = [];
   let baseOptions: ts.CompilerOptions | undefined;
 
@@ -123,6 +222,13 @@ export function createRepoProgram(opts: { repoRoot: string }): RepoProgram {
     if (ref === undefined) continue;
     const cmd = ref.commandLine;
     if (!cmd) continue;
+
+    // `getResolvedProjectReferences()` already parsed the referenced tsconfigs.
+    // Cache those results so we don't re-parse them when filtering composite refs.
+    tsconfigParseCache.set(canonicalizePath(ref.sourceFile.fileName), {
+      parsed: cmd,
+      unrecoverableDiagnostics: []
+    });
 
     if (!baseOptions && cmd.fileNames.length > 0) {
       baseOptions = cmd.options;
@@ -184,17 +290,30 @@ export function createRepoProgram(opts: { repoRoot: string }): RepoProgram {
 
   const projectReferences = getCompositeProjectReferences({
     repoRoot: opts.repoRoot,
-    refs: parsedSolution.projectReferences ?? []
+    refs: parsedSolution.projectReferences ?? [],
+    tsconfigParseCache
   });
 
-  if (compilerOptions.typeRoots === undefined) {
-    const typeRoots = computeTypeRoots({
-      repoRoot: opts.repoRoot,
-      refs: projectReferences
-    });
+  const additionalTypeRoots = computeTypeRoots({
+    repoRoot: opts.repoRoot,
+    refs: projectReferences
+  });
 
-    if (typeRoots) {
-      compilerOptions.typeRoots = typeRoots;
+  if (additionalTypeRoots && additionalTypeRoots.length > 0) {
+    if (compilerOptions.typeRoots) {
+      // Respect explicit `typeRoots` in the referenced config, but append any
+      // additional roots we discovered.
+      compilerOptions.typeRoots = mergeTypeRoots(compilerOptions.typeRoots, additionalTypeRoots);
+    } else {
+      // Avoid restricting default TS behavior by including the default typeRoots
+      // (derived from repoRoot) and then appending additional roots.
+      const defaultTypeRoots = computeDefaultTypeRoots(opts.repoRoot);
+      const defaultSet = new Set(defaultTypeRoots.map(canonicalizePath));
+      const beyondDefault = additionalTypeRoots.filter((abs) => !defaultSet.has(canonicalizePath(abs)));
+
+      if (beyondDefault.length > 0) {
+        compilerOptions.typeRoots = mergeTypeRoots(defaultTypeRoots, beyondDefault);
+      }
     }
   }
 
