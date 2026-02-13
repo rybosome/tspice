@@ -187,7 +187,7 @@ export type NativeAddon = {
     last: number,
     segid: string,
     degree: number,
-    states: readonly number[],
+    states: readonly number[] | Float64Array,
     epoch1: number,
     step: number,
   ): void;

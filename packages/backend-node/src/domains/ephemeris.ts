@@ -111,11 +111,14 @@ export function createEphemerisApi(
       last: number,
       segid: string,
       degree: number,
-      states: readonly number[],
+      states: readonly number[] | Float64Array,
       epoch1: number,
       step: number,
     ) => {
-      invariant(Array.isArray(states), "spkw08(states): expected an array");
+      invariant(
+        Array.isArray(states) || states instanceof Float64Array,
+        "spkw08(states): expected number[] or Float64Array",
+      );
       invariant(states.length % 6 === 0, "spkw08(): expected states.length to be a multiple of 6");
       invariant(states.length > 0, "spkw08(): expected at least one state record");
 

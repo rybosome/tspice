@@ -211,3 +211,67 @@ int tspice_spkw08(
 
   return 0;
 }
+
+int tspice_spkw08_v2(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    int states6nLen,
+    double epoch1,
+    double step,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (err && errMaxBytes > 0) err[0] = '\0';
+
+  if (!frame || frame[0] == '\0') {
+    return tspice_return_error(err, errMaxBytes, "tspice_spkw08_v2: frame must be a non-empty string");
+  }
+  if (!segid || segid[0] == '\0') {
+    return tspice_return_error(err, errMaxBytes, "tspice_spkw08_v2: segid must be a non-empty string");
+  }
+  if (n <= 0) {
+    return tspice_return_error(err, errMaxBytes, "tspice_spkw08_v2: n must be > 0");
+  }
+  if (!states6n) {
+    return tspice_return_error(err, errMaxBytes, "tspice_spkw08_v2: states6n must be non-NULL");
+  }
+
+  // Validate the flat input length before casting to `SpiceDouble[n][6]`.
+  const int64_t expectedStates6nLen = (int64_t)n * 6;
+  if ((int64_t)states6nLen != expectedStates6nLen) {
+    return tspice_return_error(err, errMaxBytes, "tspice_spkw08_v2: states6nLen must equal 6*n");
+  }
+
+  // Interpret `states6n` as an array of `n` 6-vectors.
+  const SpiceDouble(*states)[6] = (const SpiceDouble(*)[6])states6n;
+
+  spkw08_c(
+      (SpiceInt)handle,
+      (SpiceInt)body,
+      (SpiceInt)center,
+      frame,
+      (SpiceDouble)first,
+      (SpiceDouble)last,
+      segid,
+      (SpiceInt)degree,
+      (SpiceInt)n,
+      states,
+      (SpiceDouble)epoch1,
+      (SpiceDouble)step);
+
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}

@@ -294,10 +294,11 @@ static void Spkcls(const Napi::CallbackInfo& info) {
 static void Spkw08(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
-  if (info.Length() != 11 || !info[3].IsString() || !info[6].IsString() || !info[8].IsArray()) {
+  if (info.Length() != 11 || !info[3].IsString() || !info[6].IsString() ||
+      (!info[8].IsArray() && !info[8].IsTypedArray())) {
     ThrowSpiceError(Napi::TypeError::New(
         env,
-        "spkw08(handle: number, body: number, center: number, frame: string, first: number, last: number, segid: string, degree: number, states: number[], epoch1: number, step: number) expects (number, number, number, string, number, number, string, number, number[], number, number)"));
+        "spkw08(handle: number, body: number, center: number, frame: string, first: number, last: number, segid: string, degree: number, states: number[] | Float64Array, epoch1: number, step: number) expects (number, number, number, string, number, number, string, number, number[] | Float64Array, number, number)"));
     return;
   }
 
@@ -322,7 +323,38 @@ static void Spkw08(const Napi::CallbackInfo& info) {
   int32_t degree = 0;
   if (!ReadInt32Checked(env, info[7], "degree", &degree)) return;
 
-  Napi::Array statesArr = info[8].As<Napi::Array>();
+  const double* statesPtr = nullptr;
+  uint32_t statesLen = 0;
+  std::vector<double> statesVec;
+  if (info[8].IsTypedArray()) {
+    Napi::TypedArray typed = info[8].As<Napi::TypedArray>();
+    if (typed.TypedArrayType() != napi_float64_array) {
+      ThrowSpiceError(Napi::TypeError::New(env, "spkw08(): states must be number[] or Float64Array"));
+      return;
+    }
+    Napi::Float64Array statesArr = typed.As<Napi::Float64Array>();
+    statesPtr = statesArr.Data();
+    statesLen = statesArr.ElementLength();
+  } else {
+    Napi::Array statesArr = info[8].As<Napi::Array>();
+    statesLen = statesArr.Length();
+
+    statesVec.reserve(statesLen);
+    for (uint32_t i = 0; i < statesLen; i++) {
+      const Napi::Value v = statesArr.Get(i);
+      if (!v.IsNumber()) {
+        ThrowSpiceError(Napi::TypeError::New(env, "spkw08(): states must contain only numbers"));
+        return;
+      }
+      const double d = v.As<Napi::Number>().DoubleValue();
+      if (!std::isfinite(d)) {
+        ThrowSpiceError(Napi::RangeError::New(env, "spkw08(): states must contain only finite numbers"));
+        return;
+      }
+      statesVec.push_back(d);
+    }
+    statesPtr = statesVec.data();
+  }
   if (!info[9].IsNumber()) {
     ThrowSpiceError(Napi::TypeError::New(env, "spkw08(): epoch1 must be a number"));
     return;
@@ -335,33 +367,27 @@ static void Spkw08(const Napi::CallbackInfo& info) {
   }
   const double step = info[10].As<Napi::Number>().DoubleValue();
 
-  const uint32_t statesLen = statesArr.Length();
   if (statesLen == 0 || statesLen % 6 != 0) {
     ThrowSpiceError(Napi::TypeError::New(env, "spkw08(): states.length must be a non-zero multiple of 6"));
     return;
   }
   const uint32_t n = statesLen / 6;
 
-  std::vector<double> states;
-  states.reserve(statesLen);
-  for (uint32_t i = 0; i < statesLen; i++) {
-    const Napi::Value v = statesArr.Get(i);
-    if (!v.IsNumber()) {
-      ThrowSpiceError(Napi::TypeError::New(env, "spkw08(): states must contain only numbers"));
-      return;
+  // Preserve existing validation behavior for JS arrays.
+  if (info[8].IsTypedArray()) {
+    for (uint32_t i = 0; i < statesLen; i++) {
+      const double d = statesPtr[i];
+      if (!std::isfinite(d)) {
+        ThrowSpiceError(Napi::RangeError::New(env, "spkw08(): states must contain only finite numbers"));
+        return;
+      }
     }
-    const double d = v.As<Napi::Number>().DoubleValue();
-    if (!std::isfinite(d)) {
-      ThrowSpiceError(Napi::RangeError::New(env, "spkw08(): states must contain only finite numbers"));
-      return;
-    }
-    states.push_back(d);
   }
 
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
-  const int code = tspice_spkw08(
+  const int code = tspice_spkw08_v2(
       handle,
       body,
       center,
@@ -371,7 +397,8 @@ static void Spkw08(const Napi::CallbackInfo& info) {
       segid.c_str(),
       degree,
       (int)n,
-      states.data(),
+      statesPtr,
+      (int)statesLen,
       epoch1,
       step,
       err,

@@ -1428,7 +1428,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       _last: number,
       _segid: string,
       _degree: number,
-      _states: readonly number[],
+      _states: readonly number[] | Float64Array,
       _epoch1: number,
       _step: number,
     ) => {

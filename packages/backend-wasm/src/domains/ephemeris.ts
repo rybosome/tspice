@@ -222,7 +222,7 @@ function tspiceCallSpkw08(
   last: number,
   segid: string,
   degree: number,
-  states: readonly number[],
+  states: readonly number[] | Float64Array,
   epoch1: number,
   step: number,
 ): void {
@@ -237,6 +237,11 @@ function tspiceCallSpkw08(
     if (n > I32_MAX) {
       throw new Error(`tspiceCallSpkw08(states): expected n to be a 32-bit signed integer (got n=${n})`);
     }
+    if (states.length > I32_MAX) {
+      throw new Error(
+        `tspiceCallSpkw08(states): expected states.length to be a 32-bit signed integer (got states.length=${states.length})`,
+      );
+    }
 
     const statesBytes = n * 6 * 8;
 
@@ -247,7 +252,7 @@ function tspiceCallSpkw08(
         module.HEAPF64.set(states, statesPtr >> 3);
       }
 
-      const code = module._tspice_spkw08(
+      const code = module._tspice_spkw08_v2(
         nativeHandle,
         body,
         center,
@@ -258,6 +263,7 @@ function tspiceCallSpkw08(
         degree,
         n,
         statesPtr,
+        states.length,
         epoch1,
         step,
         errPtr,
@@ -344,12 +350,12 @@ export function createEphemerisApi(
       last: number,
       segid: string,
       degree: number,
-      states: readonly number[],
+      states: readonly number[] | Float64Array,
       epoch1: number,
       step: number,
     ) => {
-      if (!Array.isArray(states)) {
-        throw new Error("spkw08(states): expected an array");
+      if (!Array.isArray(states) && !(states instanceof Float64Array)) {
+        throw new Error("spkw08(states): expected number[] or Float64Array");
       }
       if (states.length === 0 || states.length % 6 !== 0) {
         throw new Error("spkw08(): expected states.length to be a non-zero multiple of 6");
@@ -358,6 +364,11 @@ export function createEphemerisApi(
       const n = states.length / 6;
       if (!Number.isSafeInteger(n) || n <= 0 || n > I32_MAX) {
         throw new Error(`spkw08(): expected states.length/6 to be a 32-bit signed integer (got n=${n})`);
+      }
+      if (states.length > I32_MAX) {
+        throw new Error(
+          `spkw08(): expected states.length to be a 32-bit signed integer (got states.length=${states.length})`,
+        );
       }
 
       const nativeHandle = handles.lookup(handle, ["SPK"], "spkw08").nativeHandle;

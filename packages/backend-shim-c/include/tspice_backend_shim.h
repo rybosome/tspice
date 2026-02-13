@@ -621,6 +621,25 @@ int tspice_spkw08(
     char *err,
     int errMaxBytes);
 
+// spkw08_c (v2): like tspice_spkw08, but validates `states6nLen == 6*n` before
+// casting.
+int tspice_spkw08_v2(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    int states6nLen,
+    double epoch1,
+    double step,
+    char *err,
+    int errMaxBytes);
+
 // --- Derived geometry primitives ---
 
 // subpnt_c: compute the sub-observer point on a target body's surface.
