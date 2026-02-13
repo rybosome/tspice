@@ -44,9 +44,16 @@ export type SpiceClientsWebWorkerOptions = {
   /**
    * Pass an existing Worker-like or a factory to create one.
    *
-   * Defaults to `() => createSpiceWorker()`.
+   * Defaults to an inline blob worker (created internally).
    */
   worker?: WorkerLike | (() => WorkerLike);
+
+  /**
+   * Override the WASM binary URL used by the default inline blob worker.
+   *
+   * This is only used when `worker` is omitted.
+   */
+  wasmUrl?: string | URL;
   /** Default request timeout forwarded to `createWorkerTransport`. */
   timeoutMs?: number;
   /** Forwarded to `createWorkerTransport`. Defaults to `true` when `worker` is a factory. */
@@ -375,7 +382,12 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
     ): Promise<SpiceClientBuildResult<SpiceAsync>> => {
       const ww = webWorkerOpts;
 
-      const workerInput = ww?.worker ?? (() => createSpiceWorker());
+      const workerInput =
+        ww?.worker ??
+        (() =>
+          createSpiceWorker(
+            ww?.wasmUrl === undefined ? undefined : { wasmUrl: ww.wasmUrl },
+          ));
       const terminateOnDispose =
         ww?.terminateOnDispose ?? (typeof workerInput === "function" ? true : false);
       const signalDispose = ww?.signalDispose ?? terminateOnDispose;

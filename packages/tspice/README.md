@@ -121,6 +121,23 @@ consumers do not need to separately bundle/host a worker entry JS file.
 The worker still uses the WASM backend and must be able to fetch the `.wasm`
 binary. Most bundlers handle this automatically.
 
+If your bundler or deployment setup relocates the `.wasm` asset, pass an explicit
+`wasmUrl` to `toWebWorker()`:
+
+```ts
+import { spiceClients } from "@rybosome/tspice";
+
+const { spice, dispose } = await spiceClients.toWebWorker({
+  wasmUrl: "/assets/tspice_backend_wasm.wasm",
+});
+
+try {
+  console.log(await spice.kit.toolkitVersion());
+} finally {
+  await dispose();
+}
+```
+
 ## Development
 
 ```bash
