@@ -352,7 +352,11 @@ const exportedFunctions = [
   "_tspice_ckcov",
   "_tspice_pxform",
   "_tspice_sxform",
+  "_tspice_illumg",
+  "_tspice_illumf",
 
+  "_tspice_nvc2pl",
+  "_tspice_pl2nvc",
   // --- ephemeris ---
   "_tspice_spkezr",
   "_tspice_spkpos",

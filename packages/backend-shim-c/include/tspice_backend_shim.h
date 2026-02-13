@@ -656,12 +656,75 @@ int tspice_spkgps(
     char *err,
     int errMaxBytes);
 
+// illumg_c: compute illumination angles at a surface point, using a caller-specified
+// illumination source body.
+int tspice_illumg(
+    const char *method,
+    const char *target,
+    const char *ilusrc,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *obsrvr,
+    const double *spoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    double *outPhase,
+    double *outIncdnc,
+    double *outEmissn,
+    char *err,
+    int errMaxBytes);
+
+// illumf_c: compute illumination angles + visibility/lighting flags at a surface point.
+//
+// `outVisibl` and `outLit` are written as integer 0/1 values.
+int tspice_illumf(
+    const char *method,
+    const char *target,
+    const char *ilusrc,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *obsrvr,
+    const double *spoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    double *outPhase,
+    double *outIncdnc,
+    double *outEmissn,
+    int *outVisibl,
+    int *outLit,
+    char *err,
+    int errMaxBytes);
+
 // spkssb_c: compute state (6 doubles) of target body relative to SSB.
 int tspice_spkssb(
     int target,
     double et,
     const char *ref,
     double *outState6,
+    char *err,
+    int errMaxBytes);
+
+// --- plane helpers ---
+
+// nvc2pl_c: normal vector + constant -> plane.
+//
+// Output plane is written as 4 doubles: [normalX, normalY, normalZ, constant]
+int tspice_nvc2pl(
+    const double *normal3,
+    double konst,
+    double *outPlane4,
+    char *err,
+    int errMaxBytes);
+
+// pl2nvc_c: plane -> unit normal vector + constant.
+//
+// Input plane must be a length-4 array: [normalX, normalY, normalZ, constant]
+int tspice_pl2nvc(
+    const double *plane4,
+    double *outNormal3,
+    double *outKonst,
     char *err,
     int errMaxBytes);
 

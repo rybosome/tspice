@@ -2,6 +2,8 @@ import type {
   AbCorr,
   DlaDescriptor,
   Found,
+  IllumfResult,
+  IllumgResult,
   IluminResult,
   KernelData,
   KernelInfo,
@@ -9,11 +11,13 @@ import type {
   KernelKindInput,
   KernelSource,
   KernelPoolVarType,
+  Pl2nvcResult,
   SpiceBackend,
   SpiceHandle,
   SpiceIntCell,
   Mat3RowMajor,
   SpiceMatrix6x6,
+  SpicePlane,
   SpiceStateVector,
   SpiceVector3,
   SpkposResult,
@@ -1504,6 +1508,87 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     spkobj: (_spk, _ids) => {
       throw new Error(spiceCellUnsupported);
     },
+    illumg: (_method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const frame = parseFrameName(fixref);
+      const inv = rotZRowMajor(FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et);
+
+      const spointJ = frame === "J2000" ? spoint : mxv(inv, spoint);
+
+      const srcState = getRelativeStateInJ2000(ilusrc, target, et);
+      const srcPosJ = [srcState[0], srcState[1], srcState[2]] as SpiceVector3;
+
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      // Vectors from surface point.
+      const srfToSrcJ = vsub(srcPosJ, spointJ);
+      const srfToObsJ = vsub(obsPosJ, spointJ);
+
+      const normalJ = vhat(spointJ);
+
+      const phase = angleBetween(srfToSrcJ, srfToObsJ);
+      const incdnc = angleBetween(normalJ, srfToSrcJ);
+      const emissn = angleBetween(normalJ, srfToObsJ);
+
+      const srfvecJ = vsub(spointJ, obsPosJ);
+      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+
+      return {
+        trgepc: et,
+        srfvec,
+        phase,
+        incdnc,
+        emissn,
+      } satisfies IllumgResult;
+    },
+
+    illumf: (_method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const frame = parseFrameName(fixref);
+      const inv = rotZRowMajor(FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et);
+
+      const spointJ = frame === "J2000" ? spoint : mxv(inv, spoint);
+
+      const srcState = getRelativeStateInJ2000(ilusrc, target, et);
+      const srcPosJ = [srcState[0], srcState[1], srcState[2]] as SpiceVector3;
+
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      // Vectors from surface point.
+      const srfToSrcJ = vsub(srcPosJ, spointJ);
+      const srfToObsJ = vsub(obsPosJ, spointJ);
+
+      const normalJ = vhat(spointJ);
+
+      const phase = angleBetween(srfToSrcJ, srfToObsJ);
+      const incdnc = angleBetween(normalJ, srfToSrcJ);
+      const emissn = angleBetween(normalJ, srfToObsJ);
+
+      const srfvecJ = vsub(spointJ, obsPosJ);
+
+      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+
+      const out = {
+        trgepc: et,
+        srfvec,
+        phase,
+        incdnc,
+        emissn,
+      } satisfies IllumgResult;
+
+      // NOTE: This fake backend defines:
+      // - visibl: point is visible if emission angle is <= 90deg
+      // - lit: point is lit if incidence angle is <= 90deg
+      const visibl = out.emissn <= Math.PI / 2;
+      const lit = out.incdnc <= Math.PI / 2;
+
+      return { ...out, visibl, lit } satisfies IllumfResult;
+    },
+
 
     spksfs: (body, et) => {
       assertSpiceInt32(body, "spksfs(body)");
@@ -1519,6 +1604,22 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       throw new Error("Fake backend: spkuds() is not implemented");
     },
 
+
+    nvc2pl: (normal, konst) => {
+      return [normal[0], normal[1], normal[2], konst] satisfies SpicePlane;
+    },
+
+    pl2nvc: (plane) => {
+      const n = [plane[0], plane[1], plane[2]] as SpiceVector3;
+      const mag = vnorm(n);
+      if (mag === 0) {
+        return { normal: [0, 0, 0], konst: plane[3] } satisfies Pl2nvcResult;
+      }
+      return {
+        normal: vscale(1 / mag, n),
+        konst: plane[3] / mag,
+      } satisfies Pl2nvcResult;
+    },
 
     subpnt: (_method, target, et, fixref, abcorr, observer) => {
       void (abcorr satisfies AbCorr | string);

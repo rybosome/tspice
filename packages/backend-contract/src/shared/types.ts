@@ -73,6 +73,13 @@ export type AbCorr =
 
 export type SpiceVector3 = [number, number, number];
 
+/**
+* A plane encoded as `[normalX, normalY, normalZ, constant]`.
+*
+* This matches CSPICE's `SpicePlane` ABI layout (`normal[3]` + `constant`).
+*/
+export type SpicePlane = [number, number, number, number];
+
 
 // -- Branded handles -------------------------------------------------------
 
@@ -246,4 +253,21 @@ export type IluminResult = {
   incdnc: number;
   /** Emission angle at `spoint`, radians. */
   emissn: number;
+};
+
+/** Result payload for `illumg()`. */
+export type IllumgResult = IluminResult;
+
+/** Result payload for `illumf()`. */
+export type IllumfResult = IluminResult & {
+  /** True if `spoint` is visible to `obsrvr`. */
+  visibl: boolean;
+  /** True if `spoint` is lit by `ilusrc`. */
+  lit: boolean;
+};
+
+/** Result payload for `pl2nvc()`. */
+export type Pl2nvcResult = {
+  normal: SpiceVector3;
+  konst: number;
 };

@@ -229,6 +229,37 @@ export type NativeAddon = {
     obs: number
   ): { pos: number[]; lt: number };
 
+  // Geometry classic
+  illumg(
+    method: string,
+    target: string,
+    ilusrc: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+    spoint: number[],
+  ): { trgepc: number; srfvec: number[]; phase: number; incdnc: number; emissn: number };
+
+  illumf(
+    method: string,
+    target: string,
+    ilusrc: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+    spoint: number[],
+  ): {
+    trgepc: number;
+    srfvec: number[];
+    phase: number;
+    incdnc: number;
+    emissn: number;
+    visibl: boolean;
+    lit: boolean;
+  };
+
   spkssb(
     target: number,
     et: number,
@@ -236,6 +267,9 @@ export type NativeAddon = {
   ): number[];
 
   spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
+
+  nvc2pl(normal: number[], konst: number): number[];
+  pl2nvc(plane: number[]): { normal: number[]; konst: number };
   spkobj(spk: string, ids: SpiceIntCell): void;
 
   spksfs(body: number, et: number): { found: boolean; handle?: number; descr?: number[]; ident?: string };
