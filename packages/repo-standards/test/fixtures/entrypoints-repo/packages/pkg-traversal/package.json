@@ -1,0 +1,9 @@
+{
+  "name": "@fixture/pkg-traversal",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./dist/../../evil.js"
+    }
+  }
+}
