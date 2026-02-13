@@ -1,4 +1,4 @@
-import { createSpice, type Spice } from '@rybosome/tspice'
+import { spiceClients, type Spice } from '@rybosome/tspice'
 
 import type { EtSeconds, SpiceClient } from './SpiceClient.js'
 import { createCachedSpiceClient } from './createCachedSpiceClient.js'
@@ -8,6 +8,7 @@ import { loadKernelPack } from './loadKernelPack.js'
 
 export type ViewerSpiceClientBundle = {
   spice: Spice
+  dispose: () => Promise<void>
   /** Cached client for per-frame rendering. */
   client: SpiceClient
 
@@ -28,7 +29,7 @@ export async function createSpiceClient(
   // Currently `searchParams` isn't used here, but we keep the option for API stability.
   void options
 
-  const spice = await createSpice({ backend: 'wasm' })
+  const { spice, dispose } = await spiceClients.toSync({ backend: 'wasm' })
   await loadKernelPack(spice, naifGenericKernelPack)
 
   const rawClient = new TspiceSpiceClient(spice)
@@ -36,6 +37,7 @@ export async function createSpiceClient(
 
   return {
     spice,
+    dispose,
     client,
     rawClient,
     utcToEt: (utc) => spice.kit.utcToEt(utc) as unknown as EtSeconds,

@@ -91,6 +91,19 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.10.9)(yaml@2.8.2)
 
+  fixtures/consumer-nodom:
+    dependencies:
+      '@rybosome/tspice':
+        specifier: workspace:*
+        version: link:../../packages/tspice
+    devDependencies:
+      '@types/node':
+        specifier: 16.x
+        version: 16.18.126
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/backend-contract:
     devDependencies:
       '@types/node':
@@ -167,6 +180,10 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.6)
+    optionalDependencies:
+      '@rybosome/tspice-backend-node':
+        specifier: workspace:*
+        version: link:../backend-node
 
   packages/backend-wasm:
     dependencies:
@@ -261,6 +278,9 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.6
+      esbuild:
+        specifier: ^0.27.2
+        version: 0.27.2
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -283,25 +303,6 @@ importers:
   packages/tspice-native-darwin-x64: {}
 
   packages/tspice-native-linux-x64-gnu: {}
-
-  packages/tspice-web-components:
-    dependencies:
-      '@rybosome/tspice':
-        specifier: workspace:*
-        version: link:../tspice
-    devDependencies:
-      '@rybosome/tspice-backend-fake':
-        specifier: workspace:*
-        version: link:../backend-fake
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.6
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.6)
 
 packages:
 
@@ -1081,6 +1082,9 @@ packages:
 
   '@types/mdurl@2.0.0':
     resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
+
+  '@types/node@16.18.126':
+    resolution: {integrity: sha512-OTcgaiwfGFBKacvfwuHzzn1KLxH/er8mluiy8/uM3sGXHaRe73RrSIj01jow9t4kJEW633Ov+cOexXeiApTyAw==}
 
   '@types/node@22.19.6':
     resolution: {integrity: sha512-qm+G8HuG6hOHQigsi7VGuLjUVu6TtBo/F05zvX04Mw2uCg9Dv0Qxy3Qw7j41SidlTcl5D/5yg0SEZqOB+EqZnQ==}
@@ -3646,6 +3650,8 @@ snapshots:
       '@types/unist': 3.0.3
 
   '@types/mdurl@2.0.0': {}
+
+  '@types/node@16.18.126': {}
 
   '@types/node@22.19.6':
     dependencies:

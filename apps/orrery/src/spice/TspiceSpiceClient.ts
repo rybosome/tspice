@@ -1,7 +1,6 @@
-import type { Spice, SpiceTime } from '@rybosome/tspice'
+import type { Spice } from '@rybosome/tspice'
 
 import type {
-  BodyRef,
   BodyState,
   EtSeconds,
   FrameId,
@@ -10,10 +9,6 @@ import type {
   Mat3,
   SpiceClient,
 } from './SpiceClient.js'
-
-function bodyRefToSpiceString(body: BodyRef): string {
-  return typeof body === 'number' ? String(body) : body
-}
 
 function transposeMat3RowMajorToColumnMajor(
   m: readonly [number, number, number, number, number, number, number, number, number],
@@ -43,9 +38,9 @@ export class TspiceSpiceClient implements SpiceClient {
 
   getBodyState(input: GetBodyStateInput): BodyState {
     const state = this.spice.kit.getState({
-      target: bodyRefToSpiceString(input.target),
-      observer: bodyRefToSpiceString(input.observer),
-      at: input.et as unknown as SpiceTime,
+      target: input.target,
+      observer: input.observer,
+      at: input.et,
       frame: input.frame,
       aberration: input.abcorr,
     })
@@ -57,16 +52,12 @@ export class TspiceSpiceClient implements SpiceClient {
   }
 
   getFrameTransform(input: GetFrameTransformInput): Mat3 {
-    const m = this.spice.kit.frameTransform(
-      input.from as FrameId,
-      input.to as FrameId,
-      input.et as unknown as SpiceTime,
-    )
+    const m = this.spice.kit.frameTransform(input.from as FrameId, input.to as FrameId, input.et)
 
     return transposeMat3RowMajorToColumnMajor(m.rowMajor)
   }
 
   etToUtc(et: EtSeconds): string {
-    return this.spice.kit.etToUtc(et as unknown as SpiceTime, 'ISOC', 0)
+    return this.spice.kit.etToUtc(et, 'ISOC', 0)
   }
 }

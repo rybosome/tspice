@@ -71,7 +71,9 @@ function isPathInside(baseDir, candidatePath) {
   if (rel === "") return true;
 
   // Only treat `..` and `../...` (or Windows equivalents) as outside.
-  return rel !== ".." && !rel.startsWith(`..${path.sep}`) && !path.isAbsolute(rel);
+  return (
+    rel !== ".." && !rel.startsWith(`..${path.sep}`) && !path.isAbsolute(rel)
+  );
 }
 
 function isTempProjectResolution(resolvedUrl) {
@@ -88,7 +90,10 @@ function isTempProjectResolution(resolvedUrl) {
     // on whether Node preserves symlinks, the resolved path may differ from its
     // realpath.
     const projectNodeModulesDir = path.resolve(projectRoot, "node_modules");
-    const isUnderNodeModules = isPathInside(projectNodeModulesDir, resolvedFsPath);
+    const isUnderNodeModules = isPathInside(
+      projectNodeModulesDir,
+      resolvedFsPath,
+    );
 
     let isRealpathUnderNodeModules = false;
     try {
@@ -113,7 +118,9 @@ function isTempProjectResolution(resolvedUrl) {
 try {
   const candidate = resolveViaRequire();
   if (!isTempProjectResolution(candidate)) {
-    throw new Error("createRequire(...).resolve() resolved outside temp project");
+    throw new Error(
+      "createRequire(...).resolve() resolved outside temp project",
+    );
   }
   tspiceResolved = candidate;
   resolutionMethod = "createRequire(...).resolve";
@@ -151,10 +158,11 @@ console.log(
 
 const mod = await import(tspiceResolved);
 console.log("[smoke] @rybosome/tspice export keys:", Object.keys(mod));
-console.log("[smoke] createBackend typeof:", typeof mod.createBackend);
+console.log("[smoke] spiceClients typeof:", typeof mod.spiceClients);
 
-const { createBackend } = mod;
-const backend = await createBackend({ backend: "node" });
+const { spiceClients } = mod;
+const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+const backend = spice.raw;
 
 console.log("[smoke] backend typeof:", typeof backend);
 console.log(
@@ -179,3 +187,5 @@ if (typeof version !== "string" || version.length === 0) {
 console.log(
   `[smoke] Native backend loaded OK. CSPICE toolkit version: ${version}`,
 );
+
+await dispose();

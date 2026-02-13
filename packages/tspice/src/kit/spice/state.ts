@@ -28,13 +28,16 @@ export function createStateKit(cspice: SpiceBackend): {
   return {
     getState: ({ target, observer, at, frame = DEFAULT_FRAME, aberration = DEFAULT_ABERRATION }) => {
       try {
-        const { state, lt } = cspice.spkezr(target, at, frame, aberration, observer);
+        const targetStr = String(target);
+        const observerStr = String(observer);
+
+        const { state, lt } = cspice.spkezr(targetStr, at, frame, aberration, observerStr);
         const { position, velocity } = splitState(state);
         return {
           et: at,
           frame,
-          target,
-          observer,
+          target: targetStr,
+          observer: observerStr,
           aberration,
           position,
           velocity,

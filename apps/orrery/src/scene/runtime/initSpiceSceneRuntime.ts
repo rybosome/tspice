@@ -161,6 +161,7 @@ export async function initSpiceSceneRuntime(args: {
   const {
     client: loadedSpiceClient,
     rawClient: rawSpiceClient,
+    dispose: disposeSpice,
     utcToEt,
   } = await createSpiceClient({
     searchParams,
@@ -172,9 +173,13 @@ export async function initSpiceSceneRuntime(args: {
     // Best-effort cleanup of any scene-owned objects created so far.
     for (const obj of sceneObjects) scene.remove(obj)
     for (const dispose of disposers) dispose()
+    void disposeSpice()
     clearTextureCache({ force: true })
     throw new Error('SceneCanvas disposed during SPICE init')
   }
+
+  // Best-effort resource cleanup (can't await in renderer disposal paths).
+  disposers.push(() => void disposeSpice())
 
   // IMPORTANT: set the viewer's scrub range only after kernels load so
   // `utcToEt` (SPICE `str2et`) is correct.

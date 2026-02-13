@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
 
 import { ensureKernelFile } from "./helpers/kernels.js";
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
@@ -24,8 +24,10 @@ describe("IDs / names", () => {
   const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: bodn2c/bodc2n/bodc2s/bods2c/boddef/bodfnd/bodvar + frame utils", async () => {
-    const backend = await createBackend({ backend: "node" });
-    const pck = await ensureKernelFile(PCK);
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
+      const pck = await ensureKernelFile(PCK);
 
     backend.kclear();
     backend.furnsh(lskPath);
@@ -138,10 +140,15 @@ describe("IDs / names", () => {
         expect(roundTrip.center).toBe(info.center);
       }
     }
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: bodn2c/bodc2n/bodc2s/bods2c/boddef/bodfnd/bodvar + frame utils", async () => {
-    const backend = await createBackend({ backend: "wasm" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
     const pck = await ensureKernelFile(PCK);
     const lskBytes = fs.readFileSync(lskPath);
 
@@ -256,6 +263,9 @@ describe("IDs / names", () => {
         expect(roundTrip.frname).toContain("J2000");
         expect(roundTrip.center).toBe(info.center);
       }
+    }
+    } finally {
+      await dispose();
     }
   });
 });

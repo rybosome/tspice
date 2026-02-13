@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
@@ -23,7 +23,9 @@ describe("Kernel pool", () => {
   const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: read + write + watch", async () => {
-    const backend = await createBackend({ backend: "node" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
 
     backend.kclear();
     backend.furnsh(lskPath);
@@ -82,14 +84,19 @@ describe("Kernel pool", () => {
     expect(backend.cvpool(TEST_AGENT)).toBe(true);
     expect(backend.cvpool(TEST_AGENT)).toBe(false);
 
-    backend.pdpool(TEST_VAR, [4]);
-    expect(backend.cvpool(TEST_AGENT)).toBe(true);
-    expect(backend.cvpool(TEST_AGENT)).toBe(false);
+      backend.pdpool(TEST_VAR, [4]);
+      expect(backend.cvpool(TEST_AGENT)).toBe(true);
+      expect(backend.cvpool(TEST_AGENT)).toBe(false);
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: read + write + watch", async () => {
-    const backend = await createBackend({ backend: "wasm" });
-    const lskBytes = fs.readFileSync(lskPath);
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
+      const lskBytes = fs.readFileSync(lskPath);
 
     backend.kclear();
     backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
@@ -148,8 +155,11 @@ describe("Kernel pool", () => {
     expect(backend.cvpool(TEST_AGENT)).toBe(true);
     expect(backend.cvpool(TEST_AGENT)).toBe(false);
 
-    backend.pdpool(TEST_VAR, [4]);
-    expect(backend.cvpool(TEST_AGENT)).toBe(true);
-    expect(backend.cvpool(TEST_AGENT)).toBe(false);
+      backend.pdpool(TEST_VAR, [4]);
+      expect(backend.cvpool(TEST_AGENT)).toBe(true);
+      expect(backend.cvpool(TEST_AGENT)).toBe(false);
+    } finally {
+      await dispose();
+    }
   });
 });
