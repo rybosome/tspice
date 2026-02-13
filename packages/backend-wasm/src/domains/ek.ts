@@ -563,10 +563,14 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekacli").nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
+      // `withAllocs()` rejects 0-byte allocations; when all rows are NULL,
+      // `sum(entszs) === 0` and the values buffer can be empty.
+      const ivalsBytes = Math.max(1, ivals.length) * 4;
+
       try {
         return withAllocs(
           module,
-          [ivals.length * 4, nrows * 4, nrows * 4, nrows * 4, WASM_ERR_MAX_BYTES],
+          [ivalsBytes, nrows * 4, nrows * 4, nrows * 4, WASM_ERR_MAX_BYTES],
           (ivalsPtr, entszsPtr, nlflgsPtr, rcptrsPtr, errPtr) => {
             module.HEAP32.set(Int32Array.from(ivals), ivalsPtr >> 2);
             module.HEAP32.set(Int32Array.from(entszs), entszsPtr >> 2);
@@ -636,10 +640,14 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekacld").nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
+      // `withAllocs()` rejects 0-byte allocations; when all rows are NULL,
+      // `sum(entszs) === 0` and the values buffer can be empty.
+      const dvalsBytes = Math.max(1, dvals.length) * 8;
+
       try {
         return withAllocs(
           module,
-          [dvals.length * 8, nrows * 4, nrows * 4, nrows * 4, WASM_ERR_MAX_BYTES],
+          [dvalsBytes, nrows * 4, nrows * 4, nrows * 4, WASM_ERR_MAX_BYTES],
           (dvalsPtr, entszsPtr, nlflgsPtr, rcptrsPtr, errPtr) => {
             module.HEAPF64.set(Float64Array.from(dvals), dvalsPtr >> 3);
             module.HEAP32.set(Int32Array.from(entszs), entszsPtr >> 2);
@@ -721,10 +729,14 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekaclc").nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
+      // `withAllocs()` rejects 0-byte allocations; when all rows are NULL,
+      // `sum(entszs) === 0` and the values buffer can be empty.
+      const cvalsAllocBytes = Math.max(1, cvalsMaxBytes);
+
       try {
         return withAllocs(
           module,
-          [nvals * vallen, nrows * 4, nrows * 4, nrows * 4, WASM_ERR_MAX_BYTES],
+          [cvalsAllocBytes, nrows * 4, nrows * 4, nrows * 4, WASM_ERR_MAX_BYTES],
           (cvalsPtr, entszsPtr, nlflgsPtr, rcptrsPtr, errPtr) => {
             writeFixedWidthStringArray(module, cvalsPtr, vallen, cvals);
             module.HEAP32.set(Int32Array.from(entszs), entszsPtr >> 2);
