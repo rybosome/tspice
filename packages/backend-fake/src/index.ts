@@ -2,18 +2,23 @@ import type {
   AbCorr,
   DlaDescriptor,
   Found,
+  IllumfResult,
+  IllumgResult,
   IluminResult,
   KernelData,
   KernelInfo,
   KernelKind,
   KernelKindInput,
   KernelSource,
+  VirtualOutput,
   KernelPoolVarType,
+  Pl2nvcResult,
   SpiceBackend,
   SpiceHandle,
   SpiceIntCell,
   Mat3RowMajor,
   SpiceMatrix6x6,
+  SpicePlane,
   SpiceStateVector,
   SpiceVector3,
   SpkposResult,
@@ -208,6 +213,23 @@ function angleBetween(a: SpiceVector3, b: SpiceVector3): number {
   if (na === 0 || nb === 0) return 0;
   const c = clamp(vdot(a, b) / (na * nb), -1, 1);
   return Math.acos(c);
+}
+
+function ellipsoidSurfaceNormal(spoint: SpiceVector3, radii: SpiceVector3): SpiceVector3 {
+  const [x, y, z] = spoint;
+  const [a, b, c] = radii;
+
+  // Gradient of x^2/a^2 + y^2/b^2 + z^2/c^2 = 1 is [x/a^2, y/b^2, z/c^2]
+  if (!Number.isFinite(a) || !Number.isFinite(b) || !Number.isFinite(c) || a === 0 || b === 0 || c === 0) {
+    // If we don't have radii, fall back to the sphere assumption.
+    return vhat(spoint);
+  }
+
+  return vhat([
+    x / (a * a),
+    y / (b * b),
+    z / (c * c),
+  ]);
 }
 
 function canonicalizeZero(n: number): number {
@@ -829,6 +851,30 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     timeDefaults.set(item, value);
   }
 
+  const getBodyRadiiKm = (bodyId: number): SpiceVector3 => {
+    const key = `BODY${bodyId}_RADII`;
+    const entry = kernelPool.get(key);
+    if (entry?.type === "N" && entry.values.length >= 3) {
+      const a = entry.values[0];
+      const b = entry.values[1];
+      const c = entry.values[2];
+      if (
+        typeof a === "number" &&
+        typeof b === "number" &&
+        typeof c === "number" &&
+        Number.isFinite(a) &&
+        Number.isFinite(b) &&
+        Number.isFinite(c)
+      ) {
+        return [a, b, c];
+      }
+    }
+
+    // Fall back to a spherical body when RADII isn't available.
+    const r = getBodyRadiusKm(bodyId);
+    return [r, r, r];
+  };
+
   return {
     kind: "fake",
 
@@ -1357,6 +1403,22 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return { found: false };
     },
 
+    cklpf: (_ck) => {
+      throw new Error("Fake backend: cklpf() is not implemented");
+    },
+
+    ckupf: (_handle) => {
+      throw new Error("Fake backend: ckupf() is not implemented");
+    },
+
+    ckobj: (_ck, _ids) => {
+      throw new Error("Fake backend: ckobj() is not implemented");
+    },
+
+    ckcov: (_ck, _idcode, _needav, _level, _tol, _timsys, _cover) => {
+      throw new Error("Fake backend: ckcov() is not implemented");
+    },
+
     pxform: (from, to, et) => {
       const f = parseFrameName(from);
       const t = parseFrameName(to);
@@ -1407,6 +1469,260 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       } satisfies SpkposResult;
     },
 
+    spkez: (target, et, ref, abcorr, observer) => {
+      void (abcorr satisfies AbCorr | string);
+      assertSpiceInt32(target, "spkez(target)");
+      assertSpiceInt32(observer, "spkez(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return { state, lt: 0 };
+    },
+
+    spkezp: (target, et, ref, abcorr, observer) => {
+      void (abcorr satisfies AbCorr | string);
+      assertSpiceInt32(target, "spkezp(target)");
+      assertSpiceInt32(observer, "spkezp(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return {
+        pos: [state[0], state[1], state[2]],
+        lt: 0,
+      } satisfies SpkposResult;
+    },
+
+    spkgeo: (target, et, ref, observer) => {
+      assertSpiceInt32(target, "spkgeo(target)");
+      assertSpiceInt32(observer, "spkgeo(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return { state, lt: 0 };
+    },
+
+    spkgps: (target, et, ref, observer) => {
+      assertSpiceInt32(target, "spkgps(target)");
+      assertSpiceInt32(observer, "spkgps(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return {
+        pos: [state[0], state[1], state[2]],
+        lt: 0,
+      } satisfies SpkposResult;
+    },
+
+    spkssb: (target, et, ref) => {
+      assertSpiceInt32(target, "spkssb(target)");
+
+      const abs = getAbsoluteStateInJ2000(target, et);
+      const stateJ2000: SpiceStateVector = [
+        abs.posKm[0],
+        abs.posKm[1],
+        abs.posKm[2],
+        abs.velKmPerSec[0],
+        abs.velKmPerSec[1],
+        abs.velKmPerSec[2],
+      ];
+
+      const outFrame = parseFrameName(ref);
+      return outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+    },
+
+    spkcov: (_spk, idcode, _cover) => {
+      assertSpiceInt32(idcode, "spkcov(idcode)");
+      throw new Error(spiceCellUnsupported);
+    },
+
+    spkobj: (_spk, _ids) => {
+      throw new Error(spiceCellUnsupported);
+    },
+    illumg: (_method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const frame = parseFrameName(fixref);
+      const inv = rotZRowMajor(FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et);
+
+      const spointJ = frame === "J2000" ? spoint : mxv(inv, spoint);
+
+      const srcState = getRelativeStateInJ2000(ilusrc, target, et);
+      const srcPosJ = [srcState[0], srcState[1], srcState[2]] as SpiceVector3;
+
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      // Vectors from surface point.
+      const srfToSrcJ = vsub(srcPosJ, spointJ);
+      const srfToObsJ = vsub(obsPosJ, spointJ);
+
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
+
+      const phase = angleBetween(srfToSrcJ, srfToObsJ);
+      const incdnc = angleBetween(normalJ, srfToSrcJ);
+      const emissn = angleBetween(normalJ, srfToObsJ);
+
+      const srfvecJ = vsub(spointJ, obsPosJ);
+      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+
+      return {
+        trgepc: et,
+        srfvec,
+        phase,
+        incdnc,
+        emissn,
+      } satisfies IllumgResult;
+    },
+
+    illumf: (_method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const frame = parseFrameName(fixref);
+      const inv = rotZRowMajor(FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et);
+
+      const spointJ = frame === "J2000" ? spoint : mxv(inv, spoint);
+
+      const srcState = getRelativeStateInJ2000(ilusrc, target, et);
+      const srcPosJ = [srcState[0], srcState[1], srcState[2]] as SpiceVector3;
+
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      // Vectors from surface point.
+      const srfToSrcJ = vsub(srcPosJ, spointJ);
+      const srfToObsJ = vsub(obsPosJ, spointJ);
+
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
+
+      const phase = angleBetween(srfToSrcJ, srfToObsJ);
+      const incdnc = angleBetween(normalJ, srfToSrcJ);
+      const emissn = angleBetween(normalJ, srfToObsJ);
+
+      const srfvecJ = vsub(spointJ, obsPosJ);
+
+      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+
+      const out = {
+        trgepc: et,
+        srfvec,
+        phase,
+        incdnc,
+        emissn,
+      } satisfies IllumgResult;
+
+      // NOTE: This fake backend defines:
+      // - visibl: point is visible if emission angle is <= 90deg
+      // - lit: point is lit if incidence angle is <= 90deg
+      const visibl = out.emissn <= Math.PI / 2;
+      const lit = out.incdnc <= Math.PI / 2;
+
+      return { ...out, visibl, lit } satisfies IllumfResult;
+    },
+
+
+    spksfs: (body, et) => {
+      assertSpiceInt32(body, "spksfs(body)");
+      void et;
+      return { found: false };
+    },
+
+    spkpds: (_body, _center, _frame, _type, _first, _last) => {
+      throw new Error("Fake backend: spkpds() is not implemented");
+    },
+
+    spkuds: (_descr) => {
+      throw new Error("Fake backend: spkuds() is not implemented");
+    },
+
+    nvc2pl: (normal, konst) => {
+      if (!Array.isArray(normal) || normal.length !== 3) {
+        throw new TypeError("nvc2pl(normal, konst): normal must be a length-3 number[]");
+      }
+      for (let i = 0; i < 3; i++) {
+        const v = normal[i];
+        if (typeof v !== "number") {
+          throw new TypeError(`nvc2pl(normal, konst): normal[${i}] must be a number`);
+        }
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`nvc2pl(normal, konst): normal[${i}] must be a finite number`);
+        }
+      }
+      if (typeof konst !== "number") {
+        throw new TypeError("nvc2pl(normal, konst): konst must be a number");
+      }
+      if (!Number.isFinite(konst)) {
+        throw new RangeError("nvc2pl(normal, konst): konst must be a finite number");
+      }
+      return [normal[0], normal[1], normal[2], konst] satisfies SpicePlane;
+    },
+
+    pl2nvc: (plane) => {
+      if (!Array.isArray(plane) || plane.length !== 4) {
+        throw new TypeError("pl2nvc(plane): plane must be a length-4 number[]");
+      }
+      for (let i = 0; i < 4; i++) {
+        const v = plane[i];
+        if (typeof v !== "number") {
+          throw new TypeError(`pl2nvc(plane): plane[${i}] must be a number`);
+        }
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`pl2nvc(plane): plane[${i}] must be a finite number`);
+        }
+      }
+
+      const n = [plane[0], plane[1], plane[2]] as SpiceVector3;
+      const mag = vnorm(n);
+      if (mag === 0) {
+        throw new RangeError("pl2nvc(plane): plane is degenerate (normal must be non-zero)");
+      }
+      return {
+        normal: vscale(1 / mag, n),
+        konst: plane[3] / mag,
+      } satisfies Pl2nvcResult;
+    },
+
+    // --- SPK writers (not implemented in fake backend) ---
+
+    spkopn: (_file: string | VirtualOutput, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: spkopn() is not implemented");
+    },
+    spkopa: (_file: string | VirtualOutput) => {
+      throw new Error("Fake backend: spkopa() is not implemented");
+    },
+    spkcls: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: spkcls() is not implemented");
+    },
+    spkw08: (
+      _handle: SpiceHandle,
+      _body: number,
+      _center: number,
+      _frame: string,
+      _first: number,
+      _last: number,
+      _segid: string,
+      _degree: number,
+      _states: readonly number[] | Float64Array,
+      _epoch1: number,
+      _step: number,
+    ) => {
+      throw new Error("Fake backend: spkw08() is not implemented");
+    },
     subpnt: (_method, target, et, fixref, abcorr, observer) => {
       void (abcorr satisfies AbCorr | string);
 
@@ -1469,7 +1785,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const srfToSunJ = vsub(sunPosJ, spointJ);
       const srfToObsJ = vsub(obsPosJ, spointJ);
 
-      const normalJ = vhat(spointJ);
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
 
       const phase = angleBetween(srfToSunJ, srfToObsJ);
       const incdnc = angleBetween(normalJ, srfToSunJ);
@@ -1513,6 +1831,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     getfat: (_path: string) => {
       throw new Error("Fake backend: getfat() is not implemented");
     },
+    readVirtualOutput: (_output: VirtualOutput) => {
+      throw new Error("Fake backend: readVirtualOutput() is not implemented");
+    },
     dafopr: (_path: string) => {
       throw new Error("Fake backend: dafopr() is not implemented");
     },
@@ -1544,6 +1865,30 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       throw new Error("Fake backend: dlacls() is not implemented");
     },
 
+    // --- EK (not implemented in fake backend) ---
+    ekopr: (_path: string) => {
+      throw new Error("Fake backend: ekopr() is not implemented");
+    },
+    ekopw: (_path: string) => {
+      throw new Error("Fake backend: ekopw() is not implemented");
+    },
+    ekopn: (_path: string, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: ekopn() is not implemented");
+    },
+    ekcls: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: ekcls() is not implemented");
+    },
+    ekntab: () => {
+      throw new Error("Fake backend: ekntab() is not implemented");
+    },
+    ektnam: (_n: number) => {
+      throw new Error("Fake backend: ektnam() is not implemented");
+    },
+    eknseg: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: eknseg() is not implemented");
+    },
+
+    // --- DSK writer (not implemented in fake backend) ---
     dskopn: (_path: string, _ifname: string, _ncomch: number) => {
       throw new Error("Fake backend: dskopn() is not implemented");
     },

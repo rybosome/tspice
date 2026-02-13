@@ -55,6 +55,16 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.dlabfs === "function", "Expected native addon to export dlabfs(handle)");
   invariant(typeof native.dlafns === "function", "Expected native addon to export dlafns(handle, descr)");
 
+  // --- EK ---
+  invariant(typeof native.ekopr === "function", "Expected native addon to export ekopr(path)");
+  invariant(typeof native.ekopw === "function", "Expected native addon to export ekopw(path)");
+  invariant(typeof native.ekopn === "function", "Expected native addon to export ekopn(path, ifname, ncomch)");
+  invariant(typeof native.ekcls === "function", "Expected native addon to export ekcls(handle)");
+  invariant(typeof native.ekntab === "function", "Expected native addon to export ekntab()");
+  invariant(typeof native.ektnam === "function", "Expected native addon to export ektnam(n)");
+  invariant(typeof native.eknseg === "function", "Expected native addon to export eknseg(handle)");
+
+  // --- DSK writer ---
   invariant(typeof native.dskopn === "function", "Expected native addon to export dskopn(path, ifname, ncomch)");
   invariant(typeof native.dskmi2 === "function", "Expected native addon to export dskmi2(nv, vrtces, np, plates, finscl, corscl, worksz, voxpsz, voxlsz, makvtl, spxisz)");
   invariant(typeof native.dskw02 === "function", "Expected native addon to export dskw02(handle, center, surfid, dclass, frame, corsys, corpar, mncor1, mxcor1, mncor2, mxcor2, mncor3, mxcor3, first, last, nv, vrtces, np, plates, spaixd, spaixi)");
@@ -139,6 +149,10 @@ export function getNodeBinding(): NativeAddon {
     typeof native.spkpos === "function",
     "Expected native addon to export spkpos(target, et, ref, abcorr, observer)",
   );
+  invariant(typeof native.spkopn === "function", "Expected native addon to export spkopn(path, ifname, ncomch)");
+  invariant(typeof native.spkopa === "function", "Expected native addon to export spkopa(path)");
+  invariant(typeof native.spkw08 === "function", "Expected native addon to export spkw08(handle, body, center, frame, first, last, segid, degree, states, epoch1, step)");
+  invariant(typeof native.spkcls === "function", "Expected native addon to export spkcls(handle)");
   invariant(
     typeof native.subpnt === "function",
     "Expected native addon to export subpnt(method, target, et, fixref, abcorr, observer)",
@@ -147,6 +161,17 @@ export function getNodeBinding(): NativeAddon {
     typeof native.subslr === "function",
     "Expected native addon to export subslr(method, target, et, fixref, abcorr, observer)",
   );
+  invariant(
+    typeof native.illumg === "function",
+    "Expected native addon to export illumg(method, target, ilusrc, et, fixref, abcorr, observer, spoint)",
+  );
+  invariant(
+    typeof native.illumf === "function",
+    "Expected native addon to export illumf(method, target, ilusrc, et, fixref, abcorr, observer, spoint)",
+  );
+  invariant(typeof native.nvc2pl === "function", "Expected native addon to export nvc2pl(normal, konst)");
+  invariant(typeof native.pl2nvc === "function", "Expected native addon to export pl2nvc(plane)");
+
   invariant(
     typeof native.sincpt === "function",
     "Expected native addon to export sincpt(method, target, et, fixref, abcorr, observer, dref, dvec)",

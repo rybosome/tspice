@@ -103,6 +103,34 @@ export type EmscriptenModule = {
 
   _tspice_dlacls(handle: number, errPtr: number, errMaxBytes: number): number;
 
+  // --- EK ---
+
+  _tspice_ekopr(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_ekopw(pathPtr: number, outHandlePtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ekopn(
+    pathPtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ekcls(handle: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ekntab(outNPtr: number, errPtr: number, errMaxBytes: number): number;
+
+  _tspice_ektnam(
+    n: number,
+    outNamePtr: number,
+    outNameMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_eknseg(handle: number, outNsegPtr: number, errPtr: number, errMaxBytes: number): number;
+
   // --- DSK ---
 
   _tspice_dskopn(
@@ -330,6 +358,216 @@ export type EmscriptenModule = {
     obsPtr: number,
     outPosPtr: number,
     outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkez(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkezp(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkgeo(
+    target: number,
+    et: number,
+    refPtr: number,
+    observer: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkgps(
+    target: number,
+    et: number,
+    refPtr: number,
+    observer: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  // Geometry classic
+  _tspice_illumg(
+    methodPtr: number,
+    targetPtr: number,
+    ilusrcPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    spoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outPhasePtr: number,
+    outIncdncPtr: number,
+    outEmissnPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_illumf(
+    methodPtr: number,
+    targetPtr: number,
+    ilusrcPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    spoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outPhasePtr: number,
+    outIncdncPtr: number,
+    outEmissnPtr: number,
+    outVisiblPtr: number,
+    outLitPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  // Plane helpers
+  _tspice_nvc2pl(
+    normal3Ptr: number,
+    konst: number,
+    outPlane4Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pl2nvc(
+    plane4Ptr: number,
+    outNormal3Ptr: number,
+    outKonstPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkssb(
+    target: number,
+    et: number,
+    refPtr: number,
+    outStatePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkcov(
+    spkPathPtr: number,
+    idcode: number,
+    coverWindowHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkobj(
+    spkPathPtr: number,
+    idsCellHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spksfs(
+    body: number,
+    et: number,
+    outHandlePtr: number,
+    outDescr5Ptr: number,
+    outIdentPtr: number,
+    outIdentMaxBytes: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkpds(
+    body: number,
+    center: number,
+    framePtr: number,
+    type: number,
+    first: number,
+    last: number,
+    outDescr5Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkuds(
+    descr5Ptr: number,
+    outBodyPtr: number,
+    outCenterPtr: number,
+    outFramePtr: number,
+    outTypePtr: number,
+    outFirstPtr: number,
+    outLastPtr: number,
+    outBaddrPtr: number,
+    outEaddrPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+
+  // --- SPK writers ---
+  _tspice_spkopn(
+    pathPtr: number,
+    ifnamePtr: number,
+    ncomch: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkopa(
+    pathPtr: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkcls(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_spkw08(
+    handle: number,
+    body: number,
+    center: number,
+    framePtr: number,
+    first: number,
+    last: number,
+    segidPtr: number,
+    degree: number,
+    n: number,
+    states6nPtr: number,
+    epoch1: number,
+    step: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkw08_v2(
+    handle: number,
+    body: number,
+    center: number,
+    framePtr: number,
+    first: number,
+    last: number,
+    segidPtr: number,
+    degree: number,
+    n: number,
+    states6nPtr: number,
+    states6nLen: number,
+    epoch1: number,
+    step: number,
     errPtr: number,
     errMaxBytes: number,
   ): number;
@@ -850,6 +1088,38 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_cklpf(
+    ckPathPtr: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ckupf(
+    handle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ckobj(
+    ckPathPtr: number,
+    idsCellHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ckcov(
+    ckPathPtr: number,
+    idcode: number,
+    needav: number,
+    levelPtr: number,
+    tol: number,
+    timsysPtr: number,
+    coverWindowHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // --- derived geometry ---
   _tspice_pxform(fromPtr: number, toPtr: number, et: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_sxform(fromPtr: number, toPtr: number, et: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
@@ -875,6 +1145,165 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_spkez(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkezp(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkgeo(
+    target: number,
+    et: number,
+    refPtr: number,
+    observer: number,
+    outStatePtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkgps(
+    target: number,
+    et: number,
+    refPtr: number,
+    observer: number,
+    outPosPtr: number,
+    outLtPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  // Geometry classic
+  _tspice_illumg(
+    methodPtr: number,
+    targetPtr: number,
+    ilusrcPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    spoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outPhasePtr: number,
+    outIncdncPtr: number,
+    outEmissnPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_illumf(
+    methodPtr: number,
+    targetPtr: number,
+    ilusrcPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    spoint3Ptr: number,
+    outTrgepcPtr: number,
+    outSrfvec3Ptr: number,
+    outPhasePtr: number,
+    outIncdncPtr: number,
+    outEmissnPtr: number,
+    outVisiblPtr: number,
+    outLitPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  // Plane helpers
+  _tspice_nvc2pl(
+    normal3Ptr: number,
+    konst: number,
+    outPlane4Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pl2nvc(
+    plane4Ptr: number,
+    outNormal3Ptr: number,
+    outKonstPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkssb(
+    target: number,
+    et: number,
+    refPtr: number,
+    outStatePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkcov(
+    spkPathPtr: number,
+    idcode: number,
+    coverWindowHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkobj(
+    spkPathPtr: number,
+    idsCellHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spksfs(
+    body: number,
+    et: number,
+    outHandlePtr: number,
+    outDescr5Ptr: number,
+    outIdentPtr: number,
+    outIdentMaxBytes: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkpds(
+    body: number,
+    center: number,
+    framePtr: number,
+    type: number,
+    first: number,
+    last: number,
+    outDescr5Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_spkuds(
+    descr5Ptr: number,
+    outBodyPtr: number,
+    outCenterPtr: number,
+    outFramePtr: number,
+    outTypePtr: number,
+    outFirstPtr: number,
+    outLastPtr: number,
+    outBaddrPtr: number,
+    outEaddrPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
 
   _tspice_subpnt(
     methodPtr: number,
@@ -1112,10 +1541,33 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_sce2s",
   "_tspice_ckgp",
   "_tspice_ckgpav",
+  "_tspice_cklpf",
+  "_tspice_ckupf",
+  "_tspice_ckobj",
+  "_tspice_ckcov",
   "_tspice_pxform",
   "_tspice_sxform",
   "_tspice_spkezr",
   "_tspice_spkpos",
+  "_tspice_spkez",
+  "_tspice_spkezp",
+  "_tspice_spkgeo",
+  "_tspice_spkgps",
+  "_tspice_illumg",
+  "_tspice_illumf",
+  "_tspice_nvc2pl",
+  "_tspice_pl2nvc",
+  "_tspice_spkssb",
+  "_tspice_spkcov",
+  "_tspice_spkobj",
+  "_tspice_spksfs",
+  "_tspice_spkpds",
+  "_tspice_spkuds",
+  "_tspice_spkopn",
+  "_tspice_spkopa",
+  "_tspice_spkw08",
+  "_tspice_spkw08_v2",
+  "_tspice_spkcls",
   "_tspice_subpnt",
   "_tspice_subslr",
   "_tspice_sincpt",
@@ -1141,6 +1593,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_axisar",
   "_tspice_georec",
   "_tspice_recgeo",
+
+  // EK
+  "_tspice_ekopr",
+  "_tspice_ekopw",
+  "_tspice_ekopn",
+  "_tspice_ekcls",
+  "_tspice_ekntab",
+  "_tspice_ektnam",
+  "_tspice_eknseg",
 
   // DSK
   "_tspice_dskopn",

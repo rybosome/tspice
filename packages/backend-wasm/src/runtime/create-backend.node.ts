@@ -14,15 +14,46 @@ import { createTimeApi, getToolkitVersion } from "../domains/time.js";
 import { createFileIoApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
 import { createDskApi } from "../domains/dsk.js";
+import { createEkApi } from "../domains/ek.js";
 
 import { createWasmFs } from "./fs.js";
 import { createSpiceHandleRegistry } from "./spice-handles.js";
+import { createVirtualOutputRegistry } from "./virtual-outputs.js";
 
 export type { CreateWasmBackendOptions } from "./create-backend-options.js";
 import type { CreateWasmBackendOptions } from "./create-backend-options.js";
 
 export const WASM_JS_FILENAME = "tspice_backend_wasm.node.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
+
+// Cache wasm binaries by URL to avoid repeated (sometimes flaky) disk reads.
+//
+// This cache MUST be bounded: in long-lived processes that construct backends
+// dynamically (or accept user-provided URLs), an unbounded cache would retain
+// bytes indefinitely.
+const WASM_BINARY_CACHE_MAX_ENTRIES = 2;
+const wasmBinaryCache = new Map<string, ArrayBuffer>();
+
+function boundedCacheGet(key: string): ArrayBuffer | undefined {
+  const hit = wasmBinaryCache.get(key);
+  if (!hit) return undefined;
+  // Refresh recency (Map preserves insertion order).
+  wasmBinaryCache.delete(key);
+  wasmBinaryCache.set(key, hit);
+  return hit;
+}
+
+function boundedCacheSet(key: string, value: ArrayBuffer): void {
+  // Refresh recency on overwrite (Map preserves insertion order).
+  wasmBinaryCache.delete(key);
+  wasmBinaryCache.set(key, value);
+
+  while (wasmBinaryCache.size > WASM_BINARY_CACHE_MAX_ENTRIES) {
+    const lruKey = wasmBinaryCache.keys().next().value as string | undefined;
+    if (!lruKey) break;
+    wasmBinaryCache.delete(lruKey);
+  }
+}
 
 export function toExactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
   // Fast-path: if this view covers the whole underlying buffer, return it
@@ -103,9 +134,16 @@ export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffe
   }
 
   const wasmPath = wasmUrl.startsWith("file://") ? fileURLToPath(wasmUrl) : wasmUrl;
-  const bytes = await readFile(wasmPath);
 
-  return toExactArrayBuffer(bytes);
+  const cached = boundedCacheGet(wasmPath);
+  if (cached) {
+    return cached;
+  }
+
+  const bytes = await readFile(wasmPath);
+  const buffer = toExactArrayBuffer(bytes);
+  boundedCacheSet(wasmPath, buffer);
+  return buffer;
 }
 
 export async function createWasmBackend(
@@ -383,6 +421,7 @@ export async function createWasmBackend(
 
   const fsApi = createWasmFs(module);
   const spiceHandles = createSpiceHandleRegistry();
+  const virtualOutputs = createVirtualOutputRegistry();
 
   const backend = {
     kind: "wasm",
@@ -391,13 +430,13 @@ export async function createWasmBackend(
     ...createKernelPoolApi(module),
     ...createIdsNamesApi(module),
     ...createFramesApi(module),
-    ...createEphemerisApi(module),
+    ...createEphemerisApi(module, spiceHandles, virtualOutputs),
     ...createGeometryApi(module),
     ...createCoordsVectorsApi(module),
-    ...createFileIoApi(module, spiceHandles),
+    ...createFileIoApi(module, spiceHandles, virtualOutputs),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
-
+    ...createEkApi(module, spiceHandles),
     ...createDskApi(module, spiceHandles),
   } satisfies SpiceBackend;
 

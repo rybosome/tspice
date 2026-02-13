@@ -3,6 +3,8 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
+import type { SpiceIntCell, SpiceWindow } from "@rybosome/tspice-backend-contract";
+
 export type NativeAddon = {
   spiceVersion(): string;
 
@@ -78,6 +80,17 @@ export type NativeAddon = {
   dlafns(handle: number, descr: Record<string, unknown>): { found: boolean; descr?: Record<string, unknown> };
   dlacls(handle: number): void;
 
+  // --- EK ---
+  ekopr(path: string): number;
+  ekopw(path: string): number;
+  ekopn(path: string, ifname: string, ncomch: number): number;
+  ekcls(handle: number): void;
+
+  ekntab(): number;
+  ektnam(n: number): string;
+  eknseg(handle: number): number;
+
+  // --- DSK writer ---
   dskopn(path: string, ifname: string, ncomch: number): number;
   dskmi2(
     nv: number,
@@ -157,6 +170,19 @@ export type NativeAddon = {
     ref: string,
   ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
 
+  cklpf(ck: string): number;
+  ckupf(handle: number): void;
+  ckobj(ck: string, idsCellHandle: number): void;
+  ckcov(
+    ck: string,
+    idcode: number,
+    needav: boolean,
+    level: string,
+    tol: number,
+    timsys: string,
+    coverWindowHandle: number,
+  ): void;
+
   spkezr(
     target: string,
     et: number,
@@ -172,6 +198,103 @@ export type NativeAddon = {
     abcorr: string,
     obs: string
   ): { pos: number[]; lt: number };
+
+  spkez(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    obs: number
+  ): { state: number[]; lt: number };
+
+  spkezp(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    obs: number
+  ): { pos: number[]; lt: number };
+
+  spkgeo(
+    target: number,
+    et: number,
+    ref: string,
+    obs: number
+  ): { state: number[]; lt: number };
+
+  spkgps(
+    target: number,
+    et: number,
+    ref: string,
+    obs: number
+  ): { pos: number[]; lt: number };
+
+  // Geometry classic
+  illumg(
+    method: string,
+    target: string,
+    ilusrc: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+    spoint: number[],
+  ): { trgepc: number; srfvec: number[]; phase: number; incdnc: number; emissn: number };
+
+  illumf(
+    method: string,
+    target: string,
+    ilusrc: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+    spoint: number[],
+  ): {
+    trgepc: number;
+    srfvec: number[];
+    phase: number;
+    incdnc: number;
+    emissn: number;
+    visibl: boolean;
+    lit: boolean;
+  };
+
+  spkssb(
+    target: number,
+    et: number,
+    ref: string,
+  ): number[];
+
+  spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
+
+  nvc2pl(normal: number[], konst: number): number[];
+  pl2nvc(plane: number[]): { normal: number[]; konst: number };
+  spkobj(spk: string, ids: SpiceIntCell): void;
+
+  spksfs(body: number, et: number): { found: boolean; handle?: number; descr?: number[]; ident?: string };
+
+  spkpds(body: number, center: number, frame: string, type: number, first: number, last: number): number[];
+  spkuds(descr: ReadonlyArray<number>): { body: number; center: number; frame: number; type: number; first: number; last: number; baddr: number; eaddr: number };
+
+// --- SPK writers ---
+
+  spkopn(path: string, ifname: string, ncomch: number): number;
+  spkopa(path: string): number;
+  spkcls(handle: number): void;
+  spkw08(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epoch1: number,
+    step: number,
+  ): void;
 
   subpnt(
     method: string,

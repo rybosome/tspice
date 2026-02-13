@@ -156,6 +156,32 @@ int tspice_dlafns(
 // Close a DLA handle (DLA is DAS-backed).
 int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
+// --- EK --------------------------------------------------------------------
+
+int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes);
+int tspice_ekopw(const char *path, int *outHandle, char *err, int errMaxBytes);
+
+int tspice_ekopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekcls(int handle, char *err, int errMaxBytes);
+
+int tspice_ekntab(int *outN, char *err, int errMaxBytes);
+
+int tspice_ektnam(
+    int n,
+    char *outName,
+    int outNameMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_eknseg(int handle, int *outNseg, char *err, int errMaxBytes);
+
 // --- DSK -------------------------------------------------------------------
 
 int tspice_dskopn(
@@ -584,6 +610,236 @@ int tspice_spkpos(
     char *err,
     int errMaxBytes);
 
+// spkez_c: compute state (6 doubles) and light time (numeric IDs).
+int tspice_spkez(
+    int target,
+    double et,
+    const char *ref,
+    const char *abcorr,
+    int observer,
+    double *outState6,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkezp_c: compute position (3 doubles) and light time (numeric IDs).
+int tspice_spkezp(
+    int target,
+    double et,
+    const char *ref,
+    const char *abcorr,
+    int observer,
+    double *outPos3,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkgeo_c: compute geometric state (6 doubles) and light time (numeric IDs).
+int tspice_spkgeo(
+    int target,
+    double et,
+    const char *ref,
+    int observer,
+    double *outState6,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkgps_c: compute geometric position (3 doubles) and light time (numeric IDs).
+int tspice_spkgps(
+    int target,
+    double et,
+    const char *ref,
+    int observer,
+    double *outPos3,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// illumg_c: compute illumination angles at a surface point, using a caller-specified
+// illumination source body.
+int tspice_illumg(
+    const char *method,
+    const char *target,
+    const char *ilusrc,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *obsrvr,
+    const double *spoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    double *outPhase,
+    double *outIncdnc,
+    double *outEmissn,
+    char *err,
+    int errMaxBytes);
+
+// illumf_c: compute illumination angles + visibility/lighting flags at a surface point.
+//
+// `outVisibl` and `outLit` are written as integer 0/1 values.
+int tspice_illumf(
+    const char *method,
+    const char *target,
+    const char *ilusrc,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *obsrvr,
+    const double *spoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    double *outPhase,
+    double *outIncdnc,
+    double *outEmissn,
+    int *outVisibl,
+    int *outLit,
+    char *err,
+    int errMaxBytes);
+
+// spkssb_c: compute state (6 doubles) of target body relative to SSB.
+int tspice_spkssb(
+    int target,
+    double et,
+    const char *ref,
+    double *outState6,
+    char *err,
+    int errMaxBytes);
+
+// --- plane helpers ---
+
+// nvc2pl_c: normal vector + constant -> plane.
+//
+// Output plane is written as 4 doubles: [normalX, normalY, normalZ, constant]
+int tspice_nvc2pl(
+    const double *normal3,
+    double konst,
+    double *outPlane4,
+    char *err,
+    int errMaxBytes);
+
+// pl2nvc_c: plane -> unit normal vector + constant.
+//
+// Input plane must be a length-4 array: [normalX, normalY, normalZ, constant]
+int tspice_pl2nvc(
+    const double *plane4,
+    double *outNormal3,
+    double *outKonst,
+    char *err,
+    int errMaxBytes);
+
+// spkcov_c: compute the coverage window for an object in an SPK file.
+int tspice_spkcov(
+    const char *spk,
+    int idcode,
+    uintptr_t coverWindowHandle,
+    char *err,
+    int errMaxBytes);
+
+// spkobj_c: find the set of objects present in an SPK file.
+int tspice_spkobj(
+    const char *spk,
+    uintptr_t idsCellHandle,
+    char *err,
+    int errMaxBytes);
+
+// spksfs_c: select the highest-priority segment for a body+time from loaded SPKs.
+//
+// Segment identifiers may be up to 40 characters; `outIdentMaxBytes` must be
+// at least 41 (including trailing NUL).
+int tspice_spksfs(
+    int body,
+    double et,
+    int *outHandle,
+    double *outDescr5,
+    char *outIdent,
+    int outIdentMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// spkpds_c: pack an SPK segment descriptor.
+int tspice_spkpds(
+    int body,
+    int center,
+    const char *frame,
+    int type,
+    double first,
+    double last,
+    double *outDescr5,
+    char *err,
+    int errMaxBytes);
+
+// spkuds_c: unpack a packed SPK segment descriptor.
+int tspice_spkuds(
+    const double *descr5,
+    int *outBody,
+    int *outCenter,
+    int *outFrame,
+    int *outType,
+    double *outFirst,
+    double *outLast,
+    int *outBaddr,
+    int *outEaddr,
+    char *err,
+    int errMaxBytes);
+
+// --- SPK writers --------------------------------------------------------
+
+// spkopn_c: open a new SPK file for write.
+int tspice_spkopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+// spkopa_c: open an existing SPK file for append.
+int tspice_spkopa(const char *path, int *outHandle, char *err, int errMaxBytes);
+
+// spkcls_c: close an SPK file handle.
+int tspice_spkcls(int handle, char *err, int errMaxBytes);
+
+// spkw08_c: write a type 8 segment (equal time steps, Lagrange interpolation).
+//
+// `states6n` is a flat array of length `n*6` doubles.
+// `epoch1` is the epoch of the first state record; successive epochs are `epoch1 + i*step`.
+int tspice_spkw08(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    double epoch1,
+    double step,
+    char *err,
+    int errMaxBytes);
+
+// spkw08_c (v2): like tspice_spkw08, but validates `states6nLen == 6*n` before
+// casting.
+int tspice_spkw08_v2(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    int states6nLen,
+    double epoch1,
+    double step,
+    char *err,
+    int errMaxBytes);
+
 // --- Derived geometry primitives ---
 
 // subpnt_c: compute the sub-observer point on a target body's surface.
@@ -866,6 +1122,29 @@ int tspice_ckgpav(
     double *outAv3,
     double *outClkout,
     int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// --- CK file query / management (read-only) --------------------------------
+
+// cklpf_c: load a CK file for access by pointing routines.
+int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes);
+
+// ckupf_c: unload a CK file previously loaded by cklpf.
+int tspice_ckupf(int handle, char *err, int errMaxBytes);
+
+// ckobj_c: return the set of instrument/object IDs present in a CK file.
+int tspice_ckobj(const char *ck, uintptr_t idsCellHandle, char *err, int errMaxBytes);
+
+// ckcov_c: return coverage for an instrument/object in a CK file.
+int tspice_ckcov(
+    const char *ck,
+    int idcode,
+    int needav,
+    const char *level,
+    double tol,
+    const char *timsys,
+    uintptr_t coverWindowHandle,
     char *err,
     int errMaxBytes);
 

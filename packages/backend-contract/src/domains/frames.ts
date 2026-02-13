@@ -6,6 +6,14 @@
 */
 import type { Found, Mat3RowMajor, SpiceMatrix6x6, SpiceVector3 } from "../shared/types.js";
 
+import type { SpiceIntCell, SpiceWindow } from "./cells-windows.js";
+
+/** Coverage detail level returned by {@link FramesApi.ckcov}. */
+export type CkCoverageLevel = "SEGMENT" | "INTERVAL";
+
+/** Time system used for coverage windows returned by {@link FramesApi.ckcov}. */
+export type CkCoverageTimeSystem = "SCLK" | "TDB";
+
 export interface FramesApi {
   namfrm(name: string): Found<{ code: number }>;
   frmnam(code: number): Found<{ name: string }>;
@@ -32,6 +40,32 @@ export interface FramesApi {
     tol: number,
     ref: string,
   ): Found<{ cmat: Mat3RowMajor; av: SpiceVector3; clkout: number }>;
+
+  // --- CK file query / management (read-only) ------------------------------
+
+  /**
+   * Load a CK file for access by pointing routines (`cklpf_c`).
+   *
+   * Returns a CK file handle suitable for {@link FramesApi.ckupf}.
+   */
+  cklpf(ck: string): number;
+
+  /** Unload a CK file previously loaded by {@link FramesApi.cklpf} (`ckupf_c`). */
+  ckupf(handle: number): void;
+
+  /** Return the set of instrument/object IDs for which the specified CK has segments (`ckobj_c`). */
+  ckobj(ck: string, ids: SpiceIntCell): void;
+
+  /** Return coverage for an instrument/object in a CK file (`ckcov_c`). */
+  ckcov(
+    ck: string,
+    idcode: number,
+    needav: boolean,
+    level: CkCoverageLevel,
+    tol: number,
+    timsys: CkCoverageTimeSystem,
+    cover: SpiceWindow,
+  ): void;
 
   /** Compute a 3x3 frame transformation matrix (row-major). */
   pxform(from: string, to: string, et: number): Mat3RowMajor;

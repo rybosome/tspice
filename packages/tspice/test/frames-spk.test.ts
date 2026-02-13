@@ -41,7 +41,7 @@ function mat3TimesMat3T(m: number[]): number[] {
 }
 
 describe("frames + SPK ephemerides", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: pxform/sxform/spkezr/spkpos", async () => {
     const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
