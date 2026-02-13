@@ -1,0 +1,279 @@
+# tspice — LLM/tool artifacts (full)
+
+This document is intended for LLMs and tool builders. It describes the public surface area of `@rybosome/tspice`, key types, and includes typechecked examples.
+
+## Public API surface (generated)
+
+Source: `packages/tspice/src/index.ts`
+
+### Value exports
+
+- `assertMat3ArrayLike9`
+- `brandMat3ColMajor`
+- `brandMat3RowMajor`
+- `createBackend`
+- `createPublicKernels`
+- `createSpice`
+- `createSpiceAsync`
+- `isBrandedMat3ColMajor`
+- `isBrandedMat3RowMajor`
+- `isMat3ArrayLike9`
+- `J2000`
+- `Mat3`
+- `publicKernels`
+- `spiceClients`
+- `SpiceError`
+
+### Type exports
+
+- `AberrationCorrection`
+- `BodyRef`
+- `CreateBackendOptions`
+- `CreatePublicKernelsOptions`
+- `CreateSpiceAsyncOptions`
+- `CreateSpiceOptions`
+- `FrameName`
+- `GetStateArgs`
+- `KernelPack`
+- `KernelPackKernel`
+- `KernelSource`
+- `LoadKernelPackOptions`
+- `Mat3ColMajor`
+- `Mat3RowMajor`
+- `PublicKernelId`
+- `PublicKernelsBuilder`
+- `Spice`
+- `SpiceAsync`
+- `SpiceBackend`
+- `SpiceClientBuildResult`
+- `SpiceClientsBuilder`
+- `SpiceClientsWebWorkerOptions`
+- `SpiceKit`
+- `SpiceSync`
+- `SpiceTime`
+- `StateVector`
+- `Vec3`
+- `Vec6`
+
+
+## KernelSource (generated)
+
+Source: `packages/backend-contract/src/shared/types.ts`
+
+```ts
+export type KernelSource =
+  | string
+  | {
+      path: string;
+      bytes: Uint8Array;
+    };
+```
+
+Notes:
+
+- `KernelSource` is accepted by `spice.kit.loadKernel()` and lower-level backend APIs like `raw.furnsh()`.
+- Passing an object form (`{ path, bytes }`) is the most portable approach across WASM + Node backends.
+
+
+## Golden examples (typechecked in CI)
+
+These example files are committed and typechecked as part of the monorepo TypeScript build.
+
+### `packages/tspice/test/llm-examples/backend-env-selection.example.ts`
+
+```ts
+import { createSpice, spiceClients } from "@rybosome/tspice";
+
+function parseBackend(input: string | undefined): "wasm" | "node" {
+  // Default to WASM for portability.
+  return input === "node" ? "node" : "wasm";
+}
+
+/**
+ * Example: explicit backend selection via an env var.
+ *
+ * Notes:
+ * - `backend: "node"` requires the platform-native optional dependency.
+ * - `backend: "wasm"` is the most portable choice.
+ */
+export async function createSpiceFromEnv() {
+  const backend = parseBackend(process.env.TSPICE_BACKEND);
+  return await createSpice({ backend });
+}
+
+/**
+ * Example: using the higher-level `spiceClients` helper.
+ *
+ * This is handy when you want a `dispose()` function (e.g. to tear down a
+ * WebWorker backend or free native resources).
+ */
+export async function getToolkitVersion(backend: "wasm" | "node") {
+  const { spice, dispose } = await spiceClients.toSync({ backend });
+  try {
+    return spice.kit.toolkitVersion();
+  } finally {
+    await dispose();
+  }
+}
+```
+
+### `packages/tspice/test/llm-examples/kernel-loading.example.ts`
+
+```ts
+import type { KernelSource } from "@rybosome/tspice";
+import { createSpice } from "@rybosome/tspice";
+
+import { readFile } from "node:fs/promises";
+
+/**
+ * Example: load kernels from the OS filesystem (Node backend only).
+ */
+export async function loadKernelFromFsPath(absPathToKernel: string) {
+  const spice = await createSpice({ backend: "node" });
+
+  // When `KernelSource` is a string, it is passed directly to the backend's
+  // `furnsh()` implementation.
+  spice.kit.loadKernel(absPathToKernel);
+
+  return spice;
+}
+
+/**
+ * Example: load kernels from bytes (portable across WASM + Node backends).
+ */
+export async function loadKernelFromBytes(kernelId: string, absPathToKernel: string) {
+  const spice = await createSpice({ backend: "wasm" });
+
+  const bytes = await readFile(absPathToKernel);
+
+  const kernel: KernelSource = {
+    // This is a *virtual* identifier (not necessarily an OS path).
+    // Keep it stable so you can unload the kernel later.
+    path: kernelId,
+    bytes,
+  };
+
+  spice.kit.loadKernel(kernel);
+
+  // Later, unload using the same identifier (or a normalized variant like
+  // `/kernels/<id>` — tspice normalizes virtual paths internally).
+  spice.kit.unloadKernel(kernelId);
+
+  return spice;
+}
+```
+
+### `packages/tspice/test/llm-examples/state-and-frame-transform.example.ts`
+
+```ts
+import type { Vec3 } from "@rybosome/tspice";
+import { createSpice, J2000, Mat3 } from "@rybosome/tspice";
+
+type KernelBytes = {
+  lsk: Uint8Array;
+  spk: Uint8Array;
+  // Optional: additional kernels depending on your frame needs.
+  fk?: Uint8Array;
+  pck?: Uint8Array;
+};
+
+function applyMat3(m: Mat3, v: Vec3): Vec3 {
+  const r = m.rowMajor;
+  return [
+    r[0] * v[0] + r[1] * v[1] + r[2] * v[2],
+    r[3] * v[0] + r[4] * v[1] + r[5] * v[2],
+    r[6] * v[0] + r[7] * v[1] + r[8] * v[2],
+  ] as const;
+}
+
+/**
+ * Example: ephemeris state + frame transform.
+ *
+ * Requires kernels appropriate to the calls you make:
+ * - LSK for time conversion
+ * - SPK for ephemeris state
+ * - Additional frame kernels (FK/PCK/etc) for some transforms
+ */
+export async function earthStateAndEarthFixedPosition(kernels: KernelBytes) {
+  const spice = await createSpice({ backend: "wasm" });
+
+  spice.kit.loadKernel({ path: "naif0012.tls", bytes: kernels.lsk });
+  spice.kit.loadKernel({ path: "de405s.bsp", bytes: kernels.spk });
+  if (kernels.fk) spice.kit.loadKernel({ path: "frames.tf", bytes: kernels.fk });
+  if (kernels.pck) spice.kit.loadKernel({ path: "pck.tpc", bytes: kernels.pck });
+
+  const et = spice.kit.utcToEt("2000 JAN 01 12:00:00");
+
+  const stateJ2000 = spice.kit.getState({
+    target: "EARTH",
+    observer: "SUN",
+    at: et,
+    frame: J2000,
+    aberration: "NONE",
+  });
+
+  const j2000ToEarthFixed = spice.kit.frameTransform(J2000, "IAU_EARTH", et);
+  const positionEarthFixed = applyMat3(j2000ToEarthFixed, stateJ2000.position);
+
+  return { stateJ2000, positionEarthFixed };
+}
+```
+
+### `packages/tspice/test/llm-examples/time-conversion.example.ts`
+
+```ts
+import { createSpice } from "@rybosome/tspice";
+
+/**
+ * Example: UTC <-> ET conversions.
+ *
+ * Requires a leap-seconds kernel (LSK) to be loaded first.
+ */
+export async function utcEtRoundTrip(lskBytes: Uint8Array) {
+  const spice = await createSpice({ backend: "wasm" });
+
+  spice.kit.loadKernel({ path: "naif0012.tls", bytes: lskBytes });
+
+  const utc = "2000 JAN 01 12:00:00";
+  const et = spice.kit.utcToEt(utc);
+
+  // Common formats include: "C", "ISOC", ... (see SPICE docs for details)
+  const utcAgain = spice.kit.etToUtc(et, "ISOC", 3);
+
+  return { utc, et, utcAgain };
+}
+```
+
+
+## Policies / disclosures
+
+These are the canonical repo files:
+
+- `docs/cspice-policy.md`
+- `docs/cspice-naif-disclosure.md`
+- `THIRD_PARTY_NOTICES.md`
+
+
+## Non-goals / do not assume
+
+- **No kernels included.** tspice does not bundle NAIF kernels; you must provide and load kernels explicitly.
+- **No implicit backend selection.** Choose `backend: "wasm"` or `backend: "node"`.
+- **No guarantee of native availability.** The Node backend requires a platform-specific native addon; WASM is the most portable default.
+- **No internet assumptions.** Some environments disallow network access; design your kernel-loading strategy accordingly.
+- **Not an orbital mechanics library.** tspice is a SPICE wrapper; higher-level mission logic is out of scope.
+
+
+## Regenerating these artifacts
+
+From the repo root:
+
+```sh
+pnpm generate:llm
+```
+
+Generated outputs:
+
+- `llms.txt`
+- `apps/docs/public/llms.txt`
+- `apps/docs/public/llms-full.txt`
+- `apps/docs/public/tspice.schema.json`
