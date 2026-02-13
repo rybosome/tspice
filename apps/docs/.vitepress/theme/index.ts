@@ -74,16 +74,14 @@ async function renderMermaidDiagrams(): Promise<void> {
   const mermaid = await ensureMermaidInitialized()
   if (!mermaid) return
 
-  // Mermaid avoids re-processing diagrams via a `data-processed` marker.
-  // Clear it so theme toggles (and SPA route changes) can re-render.
-  document
-    .querySelectorAll<HTMLElement>('.mermaid[data-processed]')
-    .forEach((el) => el.removeAttribute('data-processed'))
+  // Mermaid marks processed diagrams via `data-processed`.
+  // Avoid forcing a re-parse of already-rendered SVG.
+  const selector = '.mermaid:not([data-processed])'
 
   if (typeof mermaid.run === 'function') {
-    await mermaid.run({ querySelector: '.mermaid' })
+    await mermaid.run({ querySelector: selector })
   } else if (typeof mermaid.init === 'function') {
-    mermaid.init(undefined, document.querySelectorAll('.mermaid'))
+    mermaid.init(undefined, document.querySelectorAll(selector))
   }
 }
 
