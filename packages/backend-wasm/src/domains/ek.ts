@@ -17,6 +17,56 @@ const kMaxEkArrayLen = 1_000_000;
 // Prevent pathological `vallen` from forcing enormous allocations.
 const kMaxEkVallenBytes = 1_000_000;
 
+function utf8TruncateLen(encoded: Uint8Array, maxBytes: number): number {
+  if (maxBytes <= 0) {
+    return 0;
+  }
+
+  if (encoded.length <= maxBytes) {
+    return encoded.length;
+  }
+
+  // Truncate to a UTF-8 boundary so we don't split a multi-byte codepoint.
+  //
+  // We only need to inspect the last few bytes because UTF-8 sequences are
+  // at most 4 bytes long.
+  let len = maxBytes;
+  let start = len - 1;
+
+  // Walk backwards over continuation bytes (10xxxxxx).
+  while (start >= 0 && (encoded[start]! & 0b1100_0000) === 0b1000_0000) {
+    start--;
+  }
+
+  if (start < 0) {
+    // The slice starts mid-codepoint (e.g. maxBytes < first codepoint length).
+    return 0;
+  }
+
+  const lead = encoded[start]!;
+
+  let seqLen: number;
+  if ((lead & 0b1000_0000) === 0) {
+    seqLen = 1;
+  } else if ((lead & 0b1110_0000) === 0b1100_0000) {
+    seqLen = 2;
+  } else if ((lead & 0b1111_0000) === 0b1110_0000) {
+    seqLen = 3;
+  } else if ((lead & 0b1111_1000) === 0b1111_0000) {
+    seqLen = 4;
+  } else {
+    // Shouldn't happen for TextEncoder output; treat as a single byte.
+    seqLen = 1;
+  }
+
+  // If the last codepoint would extend past our slice, drop it.
+  if (start + seqLen > len) {
+    len = start;
+  }
+
+  return len;
+}
+
 function writeFixedWidthStringArray(
   module: Pick<EmscriptenModule, "HEAPU8">,
   ptr: number,
@@ -26,10 +76,12 @@ function writeFixedWidthStringArray(
   const totalBytes = stride * values.length;
   module.HEAPU8.fill(0, ptr, ptr + totalBytes);
 
+  const maxBytes = Math.max(0, stride - 1);
+
   let offset = ptr;
   for (const value of values) {
     const encoded = UTF8_ENCODER.encode(value);
-    const copyLen = Math.min(encoded.length, Math.max(0, stride - 1));
+    const copyLen = utf8TruncateLen(encoded, maxBytes);
     if (copyLen > 0) {
       module.HEAPU8.set(encoded.subarray(0, copyLen), offset);
     }
@@ -283,7 +335,9 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
       assertSpiceInt32NonNegative(row, "ekgc(row)");
       assertSpiceInt32NonNegative(elment, "ekgc(elment)");
 
-      const outMaxBytes = WASM_ERR_MAX_BYTES;
+      // Keep parity with backend-node's `kOutMaxBytes`: large enough to avoid truncating
+    // before CSPICE's own ~1024-char EK string limit (1024 + NUL).
+    const outMaxBytes = WASM_ERR_MAX_BYTES;
       return withAllocs(
         module,
         [outMaxBytes, 4, 4, WASM_ERR_MAX_BYTES],

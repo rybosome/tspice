@@ -611,6 +611,49 @@ int tspice_ekifld(
   return 0;
 }
 
+
+// ekac* routines require a `wkindx` workspace array of length `nrows`,
+// initialized to all zeros for each call.
+//
+// Allocating/freeing this buffer on every call is measurable overhead when
+// streaming large EK writes. Since CSPICE EK operations are inherently
+// non-thread-safe (global state), cache and reuse a single process-global
+// buffer, growing it as needed.
+static SpiceInt *tspice_ek_wkindx_cache = NULL;
+static size_t tspice_ek_wkindx_cache_cap = 0;
+
+static int tspice_ek_get_wkindx_workspace(
+    int nrows,
+    SpiceInt **outWkindx,
+    char *err,
+    int errMaxBytes,
+    const char *ctx) {
+  if (!outWkindx) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ek_get_wkindx_workspace: outWkindx must be non-NULL");
+  }
+  *outWkindx = NULL;
+
+  if (nrows <= 0) {
+    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ek_get_wkindx_workspace: nrows must be > 0");
+  }
+
+  const size_t needed = (size_t)nrows;
+
+  if (needed > tspice_ek_wkindx_cache_cap) {
+    const size_t bytes = needed * sizeof(SpiceInt);
+    SpiceInt *next = (SpiceInt *)realloc(tspice_ek_wkindx_cache, bytes);
+    if (!next) {
+      return tspice_ek_invalid_arg(err, errMaxBytes, ctx);
+    }
+    tspice_ek_wkindx_cache = next;
+    tspice_ek_wkindx_cache_cap = needed;
+  }
+
+  memset(tspice_ek_wkindx_cache, 0, needed * sizeof(SpiceInt));
+  *outWkindx = tspice_ek_wkindx_cache;
+  return 0;
+}
+
 int tspice_ekacli(
     int handle,
     int segno,
@@ -663,11 +706,15 @@ int tspice_ekacli(
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekacli: nvals must match sum(entszs)");
   }
 
-  SpiceInt *wkindx = (SpiceInt *)malloc((size_t)nrows * sizeof(SpiceInt));
-  if (!wkindx) {
-    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekacli: failed to allocate wkindx workspace");
+  SpiceInt *wkindx = NULL;
+  if (tspice_ek_get_wkindx_workspace(
+          nrows,
+          &wkindx,
+          err,
+          errMaxBytes,
+          "tspice_ekacli: failed to allocate wkindx workspace") != 0) {
+    return 1;
   }
-  memset(wkindx, 0, (size_t)nrows * sizeof(SpiceInt));
 
   ekacli_c(
       (SpiceInt)handle,
@@ -678,8 +725,6 @@ int tspice_ekacli(
       (const SpiceBoolean *)nlflgs,
       (const SpiceInt *)rcptrs,
       wkindx);
-
-  free(wkindx);
 
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -741,11 +786,15 @@ int tspice_ekacld(
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekacld: nvals must match sum(entszs)");
   }
 
-  SpiceInt *wkindx = (SpiceInt *)malloc((size_t)nrows * sizeof(SpiceInt));
-  if (!wkindx) {
-    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekacld: failed to allocate wkindx workspace");
+  SpiceInt *wkindx = NULL;
+  if (tspice_ek_get_wkindx_workspace(
+          nrows,
+          &wkindx,
+          err,
+          errMaxBytes,
+          "tspice_ekacld: failed to allocate wkindx workspace") != 0) {
+    return 1;
   }
-  memset(wkindx, 0, (size_t)nrows * sizeof(SpiceInt));
 
   ekacld_c(
       (SpiceInt)handle,
@@ -756,8 +805,6 @@ int tspice_ekacld(
       (const SpiceBoolean *)nlflgs,
       (const SpiceInt *)rcptrs,
       wkindx);
-
-  free(wkindx);
 
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -837,11 +884,15 @@ int tspice_ekaclc(
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekaclc: cvalsMaxBytes must be >= nvals*vallen");
   }
 
-  SpiceInt *wkindx = (SpiceInt *)malloc((size_t)nrows * sizeof(SpiceInt));
-  if (!wkindx) {
-    return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekaclc: failed to allocate wkindx workspace");
+  SpiceInt *wkindx = NULL;
+  if (tspice_ek_get_wkindx_workspace(
+          nrows,
+          &wkindx,
+          err,
+          errMaxBytes,
+          "tspice_ekaclc: failed to allocate wkindx workspace") != 0) {
+    return 1;
   }
-  memset(wkindx, 0, (size_t)nrows * sizeof(SpiceInt));
 
   ekaclc_c(
       (SpiceInt)handle,
@@ -853,8 +904,6 @@ int tspice_ekaclc(
       (const SpiceBoolean *)nlflgs,
       (const SpiceInt *)rcptrs,
       wkindx);
-
-  free(wkindx);
 
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);

@@ -95,16 +95,45 @@ export interface EkApi {
 
   // --- Query/data ops ------------------------------------------------------
 
-  /** Execute an EK query (see `ekfind_c`). */
+  /**
+   * Execute an EK query (see `ekfind_c`).
+   *
+   * Notes:
+   * - EK query results live in CSPICE global state.
+   * - Beginning fast-write via `ekifld` can invalidate the active selection/result set.
+   *   Avoid interleaving `ekfind`/`ekg*` reads with fast-write; rerun `ekfind` after fast-write
+   *   if you need to read again.
+   */
   ekfind(query: string): EkFindResult;
 
-  /** Fetch a character-valued element from a query result set (see `ekgc_c`). */
+  /**
+   * Fetch a character-valued element from the active query result set (see `ekgc_c`).
+   *
+   * Indices are 0-based per NAIF:
+   * - `selidx`: 0-based index of the selected item in the query's `SELECT` clause.
+   * - `row`: 0-based row index in the result set (`0..nmrows-1` from the last successful `ekfind`).
+   * - `elment`: 0-based element index within the cell entry (`0` for scalar entries).
+   */
   ekgc(selidx: number, row: number, elment: number): EkGetResult<string>;
 
-  /** Fetch a double-valued element from a query result set (see `ekgd_c`). */
+  /**
+   * Fetch a double-valued element from the active query result set (see `ekgd_c`).
+   *
+   * Indices are 0-based per NAIF:
+   * - `selidx`: 0-based index of the selected item in the query's `SELECT` clause.
+   * - `row`: 0-based row index in the result set (`0..nmrows-1` from the last successful `ekfind`).
+   * - `elment`: 0-based element index within the cell entry (`0` for scalar entries).
+   */
   ekgd(selidx: number, row: number, elment: number): EkGetResult<number>;
 
-  /** Fetch an integer-valued element from a query result set (see `ekgi_c`). */
+  /**
+   * Fetch an integer-valued element from the active query result set (see `ekgi_c`).
+   *
+   * Indices are 0-based per NAIF:
+   * - `selidx`: 0-based index of the selected item in the query's `SELECT` clause.
+   * - `row`: 0-based row index in the result set (`0..nmrows-1` from the last successful `ekfind`).
+   * - `elment`: 0-based element index within the cell entry (`0` for scalar entries).
+   */
   ekgi(selidx: number, row: number, elment: number): EkGetResult<number>;
 
   // --- Fast write ----------------------------------------------------------
@@ -114,6 +143,10 @@ export interface EkApi {
    *
    * Returns `segno` (new segment number) and the `rcptrs` workspace array.
    * `rcptrs` must be passed to the subsequent column-add calls and to `ekffld`.
+   *
+   * Notes:
+   * - Calling `ekifld` may invalidate the active EK query selection (from `ekfind`). If you need
+   *   to read query results after starting fast-write, rerun `ekfind`.
    */
   ekifld(
     handle: SpiceHandle,
@@ -123,7 +156,19 @@ export interface EkApi {
     decls: readonly string[],
   ): { segno: number; rcptrs: number[] };
 
-  /** Add an integer column's data to a fast-write segment (see `ekacli_c`). */
+  /**
+   * Add an integer column's data to a fast-write segment (see `ekacli_c`).
+   *
+   * Packing:
+   * - `entszs`, `nlflgs`, and `rcptrs` are per-row arrays and must have the same length
+   *   `nrows` (the `nrows` passed to `ekifld`, i.e. `rcptrs.length`).
+   * - `ivals` is a packed array containing exactly `sum(entszs)` values.
+   *
+   * NULL rows (`nlflgs[i] === true`):
+   * - Variable-size columns: set `entszs[i] = 0` and do not include any values for that row.
+   * - Fixed-size columns (`SIZE = N`): include/pad `N` placeholder values for that row and set
+   *   `entszs[i] = N` so `ivals.length === sum(entszs)` remains true.
+   */
   ekacli(
     handle: SpiceHandle,
     segno: number,
@@ -134,7 +179,19 @@ export interface EkApi {
     rcptrs: readonly number[],
   ): void;
 
-  /** Add a double-precision column's data to a fast-write segment (see `ekacld_c`). */
+  /**
+   * Add a double-precision column's data to a fast-write segment (see `ekacld_c`).
+   *
+   * Packing:
+   * - `entszs`, `nlflgs`, and `rcptrs` are per-row arrays and must have the same length
+   *   `nrows` (the `nrows` passed to `ekifld`, i.e. `rcptrs.length`).
+   * - `dvals` is a packed array containing exactly `sum(entszs)` values.
+   *
+   * NULL rows (`nlflgs[i] === true`):
+   * - Variable-size columns: set `entszs[i] = 0` and do not include any values for that row.
+   * - Fixed-size columns (`SIZE = N`): include/pad `N` placeholder values for that row and set
+   *   `entszs[i] = N` so `dvals.length === sum(entszs)` remains true.
+   */
   ekacld(
     handle: SpiceHandle,
     segno: number,
@@ -145,7 +202,19 @@ export interface EkApi {
     rcptrs: readonly number[],
   ): void;
 
-  /** Add a character column's data to a fast-write segment (see `ekaclc_c`). */
+  /**
+   * Add a character column's data to a fast-write segment (see `ekaclc_c`).
+   *
+   * Packing:
+   * - `entszs`, `nlflgs`, and `rcptrs` are per-row arrays and must have the same length
+   *   `nrows` (the `nrows` passed to `ekifld`, i.e. `rcptrs.length`).
+   * - `cvals` is a packed array containing exactly `sum(entszs)` values.
+   *
+   * NULL rows (`nlflgs[i] === true`):
+   * - Variable-size columns: set `entszs[i] = 0` and do not include any values for that row.
+   * - Fixed-size columns (`SIZE = N`): include/pad `N` placeholder values for that row and set
+   *   `entszs[i] = N` so `cvals.length === sum(entszs)` remains true.
+   */
   ekaclc(
     handle: SpiceHandle,
     segno: number,
