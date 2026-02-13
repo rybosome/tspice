@@ -36,6 +36,17 @@ function isVirtualOutput(value: unknown): value is VirtualOutput {
   );
 }
 
+// SPK writer file semantics in the WASM backend:
+//
+// - `string` inputs are treated as *virtual kernel ids*, not raw Emscripten FS
+//   absolute paths. We route them through `resolveKernelPath()` to normalize
+//   into the `/kernels/...` namespace and to fail fast on accidental OS
+//   paths/URLs.
+// - `VirtualOutput.path` is also a virtual id (not a raw absolute FS path) and
+//   is resolved the same way.
+//
+// This keeps the writer APIs consistent with `furnsh(string)` and
+// `readVirtualOutput()`.
 function resolveSpkPath(file: string | VirtualOutput, context: string): string {
   if (typeof file === "string") {
     return resolveKernelPath(file);

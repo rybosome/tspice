@@ -175,7 +175,17 @@ export interface EphemerisApi {
    *
    * `file` interpretation is backend-dependent:
    * - Node: OS filesystem path
-   * - WASM: virtual FS path/id (currently under `/kernels/...`)
+   * - WASM: virtual id under the backend's virtual filesystem (currently
+   *   normalized into `/kernels/...`).
+   *
+   *   In other words, for the WASM backend, `file: string` is **not** a raw
+   *   Emscripten absolute path. It is treated like other "kernel-ish" paths and
+   *   is normalized into `/kernels`.
+   *
+   *   Examples (WASM backend):
+   *   - `spkopn("out.bsp", ...)` writes to `/kernels/out.bsp`
+   *   - `spkopn("/kernels/out.bsp", ...)` refers to the same file
+   *   - `spkopn("/tmp/out.bsp", ...)` throws (OS paths/URLs are rejected)
    *
    * When `file` is a `VirtualOutput`, backends should allow reading bytes back
    * via `readVirtualOutput()` after closing the file handle.
@@ -185,7 +195,7 @@ export interface EphemerisApi {
    */
   spkopn(file: string | VirtualOutput, ifname: string, ncomch: number): SpiceHandle;
 
-  /** Open an existing SPK for append (see `spkopa_c`). */
+  /** Open an existing SPK for append (see `spkopa_c`). Same `file` semantics as `spkopn`. */
   spkopa(file: string | VirtualOutput): SpiceHandle;
 
   /** Close an SPK file previously opened by `spkopn`/`spkopa` (see `spkcls_c`). */
