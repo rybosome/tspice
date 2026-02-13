@@ -5,6 +5,34 @@ import path from "node:path";
 import type { VirtualOutput } from "@rybosome/tspice-backend-contract";
 import { invariant, normalizeVirtualKernelPath } from "@rybosome/tspice-core";
 
+type ExitCleanupFn = () => void;
+
+// Avoid accumulating one `process.once('exit')` listener per backend/stager.
+// Instead, register stager cleanup fns into a process-global registry.
+const exitCleanupFns = new Set<ExitCleanupFn>();
+let exitHookInstalled = false;
+
+function registerExitCleanup(fn: ExitCleanupFn): () => void {
+  exitCleanupFns.add(fn);
+  if (!exitHookInstalled) {
+    exitHookInstalled = true;
+    process.once("exit", () => {
+      for (const cleanup of exitCleanupFns) {
+        try {
+          cleanup();
+        } catch {
+          // Avoid throwing during process exit.
+        }
+      }
+      exitCleanupFns.clear();
+    });
+  }
+
+  return () => {
+    exitCleanupFns.delete(fn);
+  };
+}
+
 export type VirtualOutputStager = {
   /** Resolve an output target (path or VirtualOutput) to an OS path for CSPICE. */
   resolvePathForSpice(target: string | VirtualOutput): string;
@@ -24,7 +52,7 @@ export type VirtualOutputStager = {
 
 export function createVirtualOutputStager(): VirtualOutputStager {
   let tempRootDir: string | undefined;
-  let exitHookInstalled = false;
+  let unregisterExitCleanupFn: (() => void) | undefined;
   let disposed = false;
 
   const openOutputRefCount = new Map<string, number>();
@@ -56,9 +84,8 @@ export function createVirtualOutputStager(): VirtualOutputStager {
 
     // Ensure we don't leak temp dirs in long-running processes where
     // the backend is created but not explicitly disposed.
-    if (!exitHookInstalled) {
-      exitHookInstalled = true;
-      process.once("exit", () => {
+    if (!unregisterExitCleanupFn) {
+      unregisterExitCleanupFn = registerExitCleanup(() => {
         try {
           cleanupTempRoot();
         } catch {
@@ -155,6 +182,8 @@ export function createVirtualOutputStager(): VirtualOutputStager {
         return;
       }
       disposed = true;
+      unregisterExitCleanupFn?.();
+      unregisterExitCleanupFn = undefined;
       openOutputRefCount.clear();
       cleanupTempRoot();
     },

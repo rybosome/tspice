@@ -60,10 +60,14 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       const entries = (spiceHandles as unknown as { __entries?: () => ReadonlyArray<readonly [unknown, { kind: "DAF" | "DAS" | "DLA" | "SPK"; nativeHandle: number }]> }).__entries?.() ?? [];
       for (const [handle, entry] of entries) {
         try {
+          if (entry.kind === "SPK") {
+            // Ensure VirtualOutputStager bookkeeping stays consistent.
+            backend.spkcls(handle as any);
+            continue;
+          }
+
           if (entry.kind === "DAF") {
             spiceHandles.close(handle as any, ["DAF"], (e) => native.dafcls(e.nativeHandle), "disposeAll:dafcls");
-          } else if (entry.kind === "SPK") {
-            spiceHandles.close(handle as any, ["SPK"], (e) => native.spkcls(e.nativeHandle), "disposeAll:spkcls");
           } else {
             // In CSPICE, dascls_c closes both DAS and DLA handles (dlacls_c is an alias).
             spiceHandles.close(handle as any, ["DAS", "DLA"], (e) => native.dascls(e.nativeHandle), "disposeAll:dascls");
