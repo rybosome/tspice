@@ -17,6 +17,8 @@ const kMaxEkArrayLen = 1_000_000;
 // Prevent pathological `vallen` from forcing enormous allocations.
 const kMaxEkVallenBytes = 1_000_000;
 
+const EK_ONLY = ["EK"] as const satisfies readonly SpiceHandleKind[];
+
 function utf8TruncateLen(encoded: Uint8Array, maxBytes: number): number {
   if (maxBytes <= 0) {
     return 0;
@@ -118,23 +120,6 @@ function sumEntszsChecked(entszs: readonly number[], nlflgs: readonly unknown[],
   return sum;
 }
 
-type HandleEntry = {
-  kind: "EK";
-  nativeHandle: number;
-};
-
-function asHandleId(handle: SpiceHandle, context: string): number {
-  const id = handle as unknown as number;
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    throw new TypeError(`${context}: expected a positive safe integer SpiceHandle`);
-  }
-  return id;
-}
-
-function asSpiceHandle(handleId: number): SpiceHandle {
-  return handleId as unknown as SpiceHandle;
-}
-
 function readHeapI32(module: EmscriptenModule, idx: number, context: string): number {
   const heap = module.HEAP32;
   const v = heap[idx];
@@ -159,7 +144,7 @@ function callVoidHandle(
   });
 }
 
-export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegistry): EkApi {
+export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleRegistry): EkApi {
   const TABLE_NAME_MAX_BYTES = 256;
 
   const api = {
@@ -175,7 +160,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
           }
           return readHeapI32(module, outHandlePtr >> 2, "ekopr(outHandlePtr)");
         });
-        return handles.register("EK", nativeHandle);
+        return spiceHandles.register("EK", nativeHandle);
       } finally {
         module._free(pathPtr);
       }
@@ -193,7 +178,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
           }
           return readHeapI32(module, outHandlePtr >> 2, "ekopw(outHandlePtr)");
         });
-        return handles.register("EK", nativeHandle);
+        return spiceHandles.register("EK", nativeHandle);
       } finally {
         module._free(pathPtr);
       }
@@ -231,7 +216,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
           return readHeapI32(module, outHandlePtr >> 2, "ekopn(outHandlePtr)");
         });
 
-        return handles.register("EK", nativeHandle);
+        return spiceHandles.register("EK", nativeHandle);
       } finally {
         module._free(ifnamePtr);
         module._free(pathPtr);
@@ -239,7 +224,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
     },
 
     ekcls: (handle: SpiceHandle) =>
-      handles.close(
+      spiceHandles.close(
         handle,
         EK_ONLY,
         (entry) => callVoidHandle(module, module._tspice_ekcls, entry.nativeHandle),
@@ -278,7 +263,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
     },
 
     eknseg: (handle: SpiceHandle) => {
-      const nativeHandle = handles.lookup(handle, EK_ONLY, "eknseg").nativeHandle;
+      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "eknseg").nativeHandle;
       return withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outNsegPtr, errPtr) => {
         module.HEAP32[outNsegPtr >> 2] = 0;
         const code = module._tspice_eknseg(nativeHandle, outNsegPtr, errPtr, WASM_ERR_MAX_BYTES);
@@ -493,7 +478,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
         declen = Math.max(declen, UTF8_ENCODER.encode(s).length + 1);
       }
 
-      const nativeHandle = lookup(handle).nativeHandle;
+      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekifld").nativeHandle;
       const tabnamPtr = writeUtf8CString(module, tabnam);
 
       try {
@@ -561,7 +546,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
         throw new RangeError("ekacli(): expected ivals.length === sum(entszs)");
       }
 
-      const nativeHandle = lookup(handle).nativeHandle;
+      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekacli").nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
       try {
@@ -624,7 +609,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
         throw new RangeError("ekacld(): expected dvals.length === sum(entszs)");
       }
 
-      const nativeHandle = lookup(handle).nativeHandle;
+      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekacld").nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
       try {
@@ -709,7 +694,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
         throw new RangeError(`ekaclc(): cvals buffer too large (${cvalsMaxBytes} bytes)`);
       }
 
-      const nativeHandle = lookup(handle).nativeHandle;
+      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekaclc").nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
       try {
@@ -753,7 +738,7 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
         throw new RangeError("ekffld(rcptrs): expected rcptrs.length > 0");
       }
 
-      const nativeHandle = lookup(handle).nativeHandle;
+      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekffld").nativeHandle;
 
       return withAllocs(
         module,
@@ -768,6 +753,24 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
       );
     },
   } satisfies EkApi;
+
+  Object.defineProperty(api, "__debugOpenHandleCount", {
+    value: () => {
+      const entries = spiceHandles.__entries?.();
+      if (!entries) {
+        return spiceHandles.size();
+      }
+
+      let count = 0;
+      for (const [, entry] of entries) {
+        if (entry.kind === "EK") {
+          count++;
+        }
+      }
+      return count;
+    },
+    enumerable: false,
+  });
 
   return api;
 }
