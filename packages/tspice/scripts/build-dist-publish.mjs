@@ -106,6 +106,25 @@ function rewriteSpecifiersInFile(destPath) {
       .replaceAll(`'${from}/`, `'${to}/`);
   }
 
+  // Some build outputs embed source code as JSON-stringified blobs (for example
+  // the inline worker source string). Those blobs contain escaped quotes like
+  // `\\\"...\\\"`, which the simple string-literal rewrites above may miss.
+  //
+  // Run an additional pass that explicitly targets escaped double quotes and
+  // also includes a raw fallback to ensure the published tarball doesn't
+  // mention workspace-only package specifiers.
+  for (const [from, to] of SPECIFIER_REWRITES.entries()) {
+    const escapedDqFrom = "\\\"" + from + "\\\"";
+    const escapedDqTo = "\\\"" + to + "\\\"";
+    const escapedDqSubFrom = "\\\"" + from + "/";
+    const escapedDqSubTo = "\\\"" + to + "/";
+
+    next = next
+      .replaceAll(escapedDqFrom, escapedDqTo)
+      .replaceAll(escapedDqSubFrom, escapedDqSubTo)
+      .replaceAll(from, to);
+  }
+
   if (next !== original) {
     fs.writeFileSync(destPath, next);
   }
