@@ -5,12 +5,22 @@ export class InvariantError extends Error {
   }
 }
 
+/**
+* Assert that a condition is truthy.
+*
+* Throws {@link InvariantError} when the assertion fails.
+*/
 export function invariant(condition: unknown, message = "Invariant violation"): asserts condition {
   if (!condition) {
     throw new InvariantError(message);
   }
 }
 
+/**
+* Exhaustiveness helper for `switch` statements.
+*
+* Throws an error if called.
+*/
 export function assertNever(value: never, message = "Unexpected value"): never {
   throw new Error(`${message}: ${String(value)}`);
 }

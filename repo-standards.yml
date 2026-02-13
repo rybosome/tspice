@@ -2,7 +2,8 @@ schemaVersion: 1
 
 rules:
   require-jsdoc-on-exported-callables:
-    packages: []
+    packages:
+      - packages/core
 
   require-parity-scenario-for-backend-method:
     packages: []
