@@ -346,6 +346,10 @@ const exportedFunctions = [
   "_tspice_sce2s",
   "_tspice_ckgp",
   "_tspice_ckgpav",
+  "_tspice_cklpf",
+  "_tspice_ckupf",
+  "_tspice_ckobj",
+  "_tspice_ckcov",
   "_tspice_pxform",
   "_tspice_sxform",
 

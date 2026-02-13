@@ -8,6 +8,23 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+const UINT32_MAX = 0xffff_ffff;
+
+// Opaque cell/window handles are represented as branded numbers in the backend
+// contract, but we still validate them at runtime to keep error behavior
+// consistent across backends (mirrors the WASM handle assertions).
+function assertOpaqueHandle(handle: unknown, context: string): asserts handle is number {
+  if (typeof handle !== "number" || !Number.isFinite(handle) || !Number.isInteger(handle)) {
+    throw new TypeError(`${context}: expected handle to be an integer number (got ${handle})`);
+  }
+  if (handle <= 0) {
+    throw new RangeError(`${context}: expected handle to be > 0 (got ${handle})`);
+  }
+  if (!Number.isSafeInteger(handle) || handle > UINT32_MAX) {
+    throw new RangeError(`${context}: expected handle to be a non-zero uint32 (got ${handle})`);
+  }
+}
+
 export function createFramesApi(native: NativeAddon): FramesApi {
   return {
     namfrm: (name) => {
@@ -94,6 +111,34 @@ export function createFramesApi(native: NativeAddon): FramesApi {
         av: out.av as SpiceVector3,
         clkout: out.clkout,
       };
+    },
+
+    cklpf: (ck) => {
+      const handle = native.cklpf(ck);
+      invariant(typeof handle === "number" && Number.isInteger(handle), "Expected cklpf() to return an integer handle");
+      return handle;
+    },
+
+    ckupf: (handle) => {
+      native.ckupf(handle);
+    },
+
+    ckobj: (ck, ids) => {
+      assertOpaqueHandle(ids, "ckobj(ids)");
+      native.ckobj(ck, ids);
+    },
+
+    ckcov: (ck, idcode, needav, level, tol, timsys, cover) => {
+      assertOpaqueHandle(cover, "ckcov(cover)");
+      native.ckcov(
+        ck,
+        idcode,
+        needav,
+        level,
+        tol,
+        timsys,
+        cover,
+      );
     },
 
     pxform: (from, to, et) => {

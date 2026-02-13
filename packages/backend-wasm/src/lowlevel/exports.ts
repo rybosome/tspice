@@ -1033,6 +1033,38 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_cklpf(
+    ckPathPtr: number,
+    outHandlePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ckupf(
+    handle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ckobj(
+    ckPathPtr: number,
+    idsCellHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ckcov(
+    ckPathPtr: number,
+    idcode: number,
+    needav: number,
+    levelPtr: number,
+    tol: number,
+    timsysPtr: number,
+    coverWindowHandle: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // --- derived geometry ---
   _tspice_pxform(fromPtr: number, toPtr: number, et: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_sxform(fromPtr: number, toPtr: number, et: number, outPtr: number, errPtr: number, errMaxBytes: number): number;
@@ -1399,6 +1431,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_sce2s",
   "_tspice_ckgp",
   "_tspice_ckgpav",
+  "_tspice_cklpf",
+  "_tspice_ckupf",
+  "_tspice_ckobj",
+  "_tspice_ckcov",
   "_tspice_pxform",
   "_tspice_sxform",
   "_tspice_spkezr",

@@ -1062,6 +1062,29 @@ int tspice_ckgpav(
     char *err,
     int errMaxBytes);
 
+// --- CK file query / management (read-only) --------------------------------
+
+// cklpf_c: load a CK file for access by pointing routines.
+int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes);
+
+// ckupf_c: unload a CK file previously loaded by cklpf.
+int tspice_ckupf(int handle, char *err, int errMaxBytes);
+
+// ckobj_c: return the set of instrument/object IDs present in a CK file.
+int tspice_ckobj(const char *ck, uintptr_t idsCellHandle, char *err, int errMaxBytes);
+
+// ckcov_c: return coverage for an instrument/object in a CK file.
+int tspice_ckcov(
+    const char *ck,
+    int idcode,
+    int needav,
+    const char *level,
+    double tol,
+    const char *timsys,
+    uintptr_t coverWindowHandle,
+    char *err,
+    int errMaxBytes);
+
 // --- Cells + windows --------------------------------------------------------
 
 // Creation functions allocate on the heap and return an opaque handle.
