@@ -5,11 +5,59 @@ import type { NativeAddon } from "../src/runtime/addon.js";
 import type { KernelStager } from "../src/runtime/kernel-staging.js";
 import { createSpiceHandleRegistry } from "../src/runtime/spice-handles.js";
 
+type EkNativeDeps = Pick<
+  NativeAddon,
+  | "ekopr"
+  | "ekopw"
+  | "ekopn"
+  | "ekcls"
+  | "ekntab"
+  | "ektnam"
+  | "eknseg"
+  | "ekfind"
+  | "ekgc"
+  | "ekgd"
+  | "ekgi"
+  | "ekifld"
+  | "ekacli"
+  | "ekacld"
+  | "ekaclc"
+  | "ekffld"
+>;
+
+function makeNativeDeps(overrides: Partial<EkNativeDeps>): EkNativeDeps {
+  const notImplemented = (name: string) => {
+    return () => {
+      throw new Error(`Unexpected call to native.${name}() in test`);
+    };
+  };
+
+  return {
+    ekopr: notImplemented("ekopr"),
+    ekopw: notImplemented("ekopw"),
+    ekopn: notImplemented("ekopn"),
+    ekcls: notImplemented("ekcls"),
+    ekntab: notImplemented("ekntab"),
+    ektnam: notImplemented("ektnam"),
+    eknseg: notImplemented("eknseg"),
+    ekfind: notImplemented("ekfind"),
+    ekgc: notImplemented("ekgc"),
+    ekgd: notImplemented("ekgd"),
+    ekgi: notImplemented("ekgi"),
+    ekifld: notImplemented("ekifld"),
+    ekacli: notImplemented("ekacli"),
+    ekacld: notImplemented("ekacld"),
+    ekaclc: notImplemented("ekaclc"),
+    ekffld: notImplemented("ekffld"),
+    ...overrides,
+  };
+}
+
 describe("backend-node ek domain wrapper", () => {
   it("resolves staged kernel paths for ekopr/ekopw/ekopn", () => {
     const seen: string[] = [];
 
-    const native = {
+    const native = makeNativeDeps({
       ekopr: (p: string) => {
         seen.push(`ekopr:${p}`);
         return 1;
@@ -26,10 +74,7 @@ describe("backend-node ek domain wrapper", () => {
       ekntab: () => 0,
       ektnam: (_n: number) => "",
       eknseg: (_handle: number) => 0,
-    } as const satisfies Pick<
-      NativeAddon,
-      "ekopr" | "ekopw" | "ekopn" | "ekcls" | "ekntab" | "ektnam" | "eknseg"
-    >;
+    });
 
     const stager = {
       // Use a wrapper format rather than naive string concatenation so the test
@@ -52,9 +97,9 @@ describe("backend-node ek domain wrapper", () => {
   });
 
   it("enforces ekntab() non-negative int32 postcondition", () => {
-    const native = {
+    const native = makeNativeDeps({
       ekntab: () => -1,
-    } satisfies Pick<NativeAddon, "ekntab">;
+    });
 
     const api = createEkApi(native, createSpiceHandleRegistry());
 
@@ -62,10 +107,10 @@ describe("backend-node ek domain wrapper", () => {
   });
 
   it("enforces eknseg() non-negative int32 postcondition", () => {
-    const native = {
+    const native = makeNativeDeps({
       ekopr: (_p: string) => 123,
       eknseg: (_handle: number) => 1.5,
-    } satisfies Pick<NativeAddon, "ekopr" | "eknseg">;
+    });
 
     const api = createEkApi(native, createSpiceHandleRegistry());
 
@@ -74,9 +119,9 @@ describe("backend-node ek domain wrapper", () => {
   });
 
   it("rejects negative indices for ektnam", () => {
-    const native = {
+    const native = makeNativeDeps({
       ektnam: (_n: number) => "",
-    } satisfies Pick<NativeAddon, "ektnam">;
+    });
 
     const api = createEkApi(native, createSpiceHandleRegistry());
 
@@ -86,10 +131,10 @@ describe("backend-node ek domain wrapper", () => {
   it("closes EK handles and rejects closed handles", () => {
     const closed: number[] = [];
 
-    const native = {
+    const native = makeNativeDeps({
       ekopr: (_p: string) => 999,
       ekcls: (h: number) => closed.push(h),
-    } satisfies Pick<NativeAddon, "ekopr" | "ekcls">;
+    });
 
     const handles = createSpiceHandleRegistry();
     const api = createEkApi(native, handles);
