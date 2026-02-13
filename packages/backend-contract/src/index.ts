@@ -12,6 +12,7 @@ export type {
   KernelInfo,
   KernelKind,
   KernelSource,
+  VirtualOutput,
   Mat6RowMajor,
   Mat3ColMajor,
   Mat3RowMajor,
