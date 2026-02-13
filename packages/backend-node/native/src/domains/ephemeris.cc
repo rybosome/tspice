@@ -13,6 +13,7 @@
 using tspice_napi::FixedWidthToJsString;
 using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
+using tspice_napi::PreviewForError;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
@@ -641,7 +642,7 @@ static Napi::Number Spkopn(const Napi::CallbackInfo& info) {
   if (code != 0) {
     ThrowSpiceError(
         env,
-        std::string("CSPICE failed while calling spkopn(\"") + PreviewForError(path) + "\")"),
+        std::string("CSPICE failed while calling spkopn(\"") + PreviewForError(path) + "\")",
         err);
     return Napi::Number::New(env, 0);
   }
@@ -666,7 +667,7 @@ static Napi::Number Spkopa(const Napi::CallbackInfo& info) {
   if (code != 0) {
     ThrowSpiceError(
         env,
-        std::string("CSPICE failed while calling spkopa(\"") + PreviewForError(path) + "\")"),
+        std::string("CSPICE failed while calling spkopa(\"") + PreviewForError(path) + "\")",
         err);
     return Napi::Number::New(env, 0);
   }
