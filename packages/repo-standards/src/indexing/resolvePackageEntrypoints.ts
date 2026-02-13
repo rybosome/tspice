@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { toPosixPath } from "../util/paths.js";
+import { normalizeRepoRelativePath, toPosixPath } from "../util/paths.js";
 import type { RepoRelativePath } from "./types.js";
 import type { ValidatedPackageRoot } from "./validatePackageRoots.js";
 
@@ -135,6 +135,84 @@ function mapDistToSrc(relPath: string): string | null {
   return null;
 }
 
+function normalizePackageRelativePath(input: string): string {
+  // `package.json` entrypoint paths should be package-root relative.
+  const trimmed = input.replace(/^\.\//, "");
+  const posix = toPosixPath(trimmed);
+  let normalized = path.posix.normalize(posix);
+
+  // Remove a trailing slash for stable equality checks.
+  if (normalized.endsWith("/") && normalized !== "/") {
+    normalized = normalized.slice(0, -1);
+  }
+
+  // `path.posix.isAbsolute()` won't treat Windows drive paths as absolute, so we
+  // explicitly guard those too.
+  if (path.posix.isAbsolute(normalized) || /^[A-Za-z]:/.test(normalized)) {
+    throw new Error(`path must be package-relative (got absolute): ${input}`);
+  }
+
+  // After normalization, any `..` that remain at the beginning would escape the package.
+  if (normalized === ".." || normalized.startsWith("../")) {
+    throw new Error(`path must not traverse outside package root: ${input}`);
+  }
+
+  return normalized;
+}
+
+function assertResolvedWithinDir(opts: {
+  dirAbsPath: string;
+  targetAbsPath: string;
+  errorMessage: string;
+}): void {
+  const rel = path.relative(opts.dirAbsPath, opts.targetAbsPath);
+  if (path.isAbsolute(rel) || rel === ".." || rel.startsWith(`..${path.sep}`)) {
+    throw new Error(opts.errorMessage);
+  }
+}
+
+function normalizeAndResolvePackagePath(opts: {
+  repoRoot: string;
+  pkg: ValidatedPackageRoot;
+  /** package.json string (may include leading ./) */
+  inputPath: string;
+  source: string;
+}): { pkgRelativePath: string; absPath: string; repoRelativePath: RepoRelativePath } {
+  const baseErr = `invalid ${opts.source} path for ${opts.pkg.packageRoot}: ${opts.inputPath}`;
+
+  let pkgRelativePath: string;
+  try {
+    pkgRelativePath = normalizePackageRelativePath(opts.inputPath);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`${baseErr} (${msg})`);
+  }
+
+  const absPath = path.resolve(opts.pkg.absPath, pkgRelativePath);
+
+  // Defense in depth: even after normalization, ensure resolution cannot escape the
+  // package root or repo root.
+  assertResolvedWithinDir({
+    dirAbsPath: opts.pkg.absPath,
+    targetAbsPath: absPath,
+    errorMessage: `${baseErr} (resolves outside package root)`
+  });
+
+  assertResolvedWithinDir({
+    dirAbsPath: opts.repoRoot,
+    targetAbsPath: absPath,
+    errorMessage: `${baseErr} (resolves outside repo root)`
+  });
+
+  const repoRelativePath = normalizeRepoRelativePath(path.relative(opts.repoRoot, absPath));
+
+  return {
+    pkgRelativePath,
+    absPath,
+    repoRelativePath
+  };
+}
+
 async function exists(filePath: string): Promise<boolean> {
   try {
     await fs.stat(filePath);
@@ -157,6 +235,7 @@ export async function resolvePackageEntrypoints(opts: {
 
   const exportCandidates = extractCandidateEntrypointsFromExports(pkgJson);
   const candidates = exportCandidates.length > 0 ? exportCandidates : extractCandidateEntrypointsFromMainTypes(pkgJson);
+  const candidateSource = exportCandidates.length > 0 ? "package.json#exports" : "package.json#main/types";
 
   const mapped: RepoRelativePath[] = [];
   const failures: string[] = [];
@@ -165,7 +244,14 @@ export async function resolvePackageEntrypoints(opts: {
   const mappedSrcToCandidates = new Map<string, string[]>();
 
   for (const candidate of candidates) {
-    const mappedSrc = mapDistToSrc(candidate);
+    const { pkgRelativePath: canonicalCandidate } = normalizeAndResolvePackagePath({
+      repoRoot: opts.repoRoot,
+      pkg: opts.pkg,
+      inputPath: candidate,
+      source: candidateSource
+    });
+
+    const mappedSrc = mapDistToSrc(canonicalCandidate);
     if (!mappedSrc) {
       failures.push(candidate);
       continue;
@@ -177,17 +263,22 @@ export async function resolvePackageEntrypoints(opts: {
   }
 
   for (const mappedSrc of [...mappedSrcToCandidates.keys()].sort()) {
-    const absSrc = path.join(opts.pkg.absPath, mappedSrc);
+    const { absPath: absSrc, repoRelativePath: repoRel } = normalizeAndResolvePackagePath({
+      repoRoot: opts.repoRoot,
+      pkg: opts.pkg,
+      inputPath: mappedSrc,
+      source: "derived entrypoint"
+    });
     if (!(await exists(absSrc))) {
       failures.push(...(mappedSrcToCandidates.get(mappedSrc) ?? []));
       continue;
     }
 
-    mapped.push(path.posix.join(opts.pkg.packageRoot, toPosixPath(mappedSrc)));
+    mapped.push(repoRel);
   }
 
-  const srcIndexAbs = path.join(opts.pkg.absPath, "src", "index.ts");
-  const srcIndexRel = path.posix.join(opts.pkg.packageRoot, "src/index.ts");
+  const srcIndexAbs = path.resolve(opts.pkg.absPath, "src", "index.ts");
+  const srcIndexRel = normalizeRepoRelativePath(path.relative(opts.repoRoot, srcIndexAbs));
 
   const out = new Set<RepoRelativePath>();
 

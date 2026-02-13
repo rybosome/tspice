@@ -1,0 +1,9 @@
+{
+  "name": "@fixture/pkg-normalize",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./dist/../dist/index.js"
+    }
+  }
+}
