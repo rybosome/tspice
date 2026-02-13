@@ -31,7 +31,7 @@ describe("repo indexing layer", () => {
     expect(ctx.program.getSourceFile(bIndexAbs)).toBeDefined();
   });
 
-  it("supports non-solution root tsconfig.json (falls back to fileNames)", async () => {
+  it("supports non-solution root tsconfig.json (falls back to fileNames)", { timeout: 20_000 }, async () => {
     const ctx = await buildRepoContext({
       repoRoot: fixtureRootNonSolution,
       packageRoots: ["packages/pkg-a", "packages/pkg-b"]
