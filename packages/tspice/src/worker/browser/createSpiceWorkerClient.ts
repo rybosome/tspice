@@ -33,7 +33,9 @@ function isPromiseLike<T = unknown>(value: unknown): value is PromiseLike<T> {
   return typeof (value as { then?: unknown }).then === "function";
 }
 
-export type SpiceWorkerClient<TTransport extends SpiceTransport = WorkerTransport> = {
+export type SpiceWorkerClient<
+  TTransport extends SpiceTransport = WorkerTransport,
+> = {
   worker: WorkerLike;
   /** The underlying request/response RPC transport (always a WorkerTransport). */
   baseTransport: WorkerTransport;
@@ -50,7 +52,9 @@ export type SpiceWorkerClient<TTransport extends SpiceTransport = WorkerTranspor
   disposeAsync: () => Promise<void>;
 };
 
-export function createSpiceWorkerClient<TTransport extends SpiceTransport = WorkerTransport>(opts?: {
+export type CreateSpiceWorkerClientOptions<
+  TTransport extends SpiceTransport = WorkerTransport,
+> = {
   /**
    * Pass an existing Worker or a factory to create one.
    *
@@ -68,18 +72,28 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
 
   /** Called if `disposeAsync()` rejects when invoked via fire-and-forget `dispose()`. */
   onDisposeError?: (err: unknown) => void;
-}): SpiceWorkerClient<TTransport> {
+};
+
+export function createSpiceWorkerClient<
+  TTransport extends SpiceTransport = WorkerTransport,
+>(
+  opts?: CreateSpiceWorkerClientOptions<TTransport>,
+): SpiceWorkerClient<TTransport> {
   const workerInput = opts?.worker ?? (() => createSpiceWorker());
-  const worker = typeof workerInput === "function" ? workerInput() : workerInput;
+  const worker =
+    typeof workerInput === "function" ? workerInput() : workerInput;
 
   const terminateOnDispose =
-    opts?.terminateOnDispose ?? (typeof workerInput === "function" ? true : false);
+    opts?.terminateOnDispose ??
+    (typeof workerInput === "function" ? true : false);
 
   const baseTransport = createWorkerTransport({
     worker,
     ...(opts?.timeoutMs === undefined ? {} : { timeoutMs: opts.timeoutMs }),
     terminateOnDispose,
-    ...(opts?.signalDispose === undefined ? {} : { signalDispose: opts.signalDispose }),
+    ...(opts?.signalDispose === undefined
+      ? {}
+      : { signalDispose: opts.signalDispose }),
   });
 
   const transport = opts?.wrapTransport
@@ -119,16 +133,25 @@ export function createSpiceWorkerClient<TTransport extends SpiceTransport = Work
       try {
         opts?.onDisposeError?.(err);
       } catch (callbackErr) {
-        if (typeof console !== "undefined" && typeof console.error === "function") {
+        if (
+          typeof console !== "undefined" &&
+          typeof console.error === "function"
+        ) {
           // Log both: the original disposal failure and the error thrown by the
           // error callback.
           try {
-            console.error("createSpiceWorkerClient.dispose(): disposeAsync() failed", err);
+            console.error(
+              "createSpiceWorkerClient.dispose(): disposeAsync() failed",
+              err,
+            );
           } catch {
             // ignore
           }
           try {
-            console.error("createSpiceWorkerClient.dispose(): onDisposeError threw", callbackErr);
+            console.error(
+              "createSpiceWorkerClient.dispose(): onDisposeError threw",
+              callbackErr,
+            );
           } catch {
             // ignore
           }

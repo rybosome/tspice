@@ -301,7 +301,10 @@ function containsBinaryLikeData(
  * key insertion order, since this uses `JSON.stringify` and does not sort
  * keys.
  */
-export function defaultSpiceCacheKey(op: string, args: unknown[]): string | null {
+export function defaultSpiceCacheKey(
+  op: string,
+  args: unknown[],
+): string | null {
   try {
     // Normalize certain ops for better cache hit rates.
     //
@@ -340,6 +343,13 @@ export function defaultSpiceCacheKey(op: string, args: unknown[]): string | null
   }
 }
 
+/**
+ * Add a cache layer to a transport.
+ *
+ * Note: cached values are returned by reference. If a caller mutates the
+ * returned object/array, subsequent cache hits will observe that mutation.
+ * Treat results as immutable (or clone them yourself) when caching is enabled.
+ */
 export function withCaching(
   base: SpiceTransport,
   opts?: WithCachingOptions,
@@ -347,7 +357,11 @@ export function withCaching(
   const rawMaxEntries = opts?.maxEntries;
   const maxEntries = rawMaxEntries ?? 1000;
   const maxEntriesLimit =
-    maxEntries === Infinity ? undefined : Number.isFinite(maxEntries) ? maxEntries : 0;
+    maxEntries === Infinity
+      ? undefined
+      : Number.isFinite(maxEntries)
+        ? maxEntries
+        : 0;
 
   const rawTtlMs = opts?.ttlMs;
   const ttlMs = rawTtlMs == null ? undefined : rawTtlMs;
@@ -482,6 +496,14 @@ export function withCaching(
   };
 
   const transport = { request, clear, dispose };
-  cachingTransportBrand.add(transport);
-  return transport;
+
+  // Preserve any extra properties on the base transport (e.g. testing hooks)
+  // while still allowing us to override the core methods.
+  //
+  // This also keeps `instanceof`/prototype checks (if any) behaving as users
+  // might expect.
+  const transportWithProto = Object.assign(Object.create(base), transport);
+
+  cachingTransportBrand.add(transportWithProto);
+  return transportWithProto;
 }

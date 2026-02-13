@@ -26,78 +26,99 @@ describe("SCLK conversions + CK attitude", () => {
     const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
     const backend = spice.raw;
     try {
+      backend.kclear();
+      backend.furnsh(lskPath);
+      backend.furnsh(tscPath);
 
-    backend.kclear();
-    backend.furnsh(lskPath);
-    backend.furnsh(tscPath);
+      const et = backend.scs2e(sc, sclkch);
+      expect(Number.isFinite(et)).toBe(true);
 
-    const et = backend.scs2e(sc, sclkch);
-    expect(Number.isFinite(et)).toBe(true);
-
-    const roundTrip = backend.sce2s(sc, et);
-    expect(roundTrip.length).toBeGreaterThan(0);
+      const roundTrip = backend.sce2s(sc, et);
+      expect(roundTrip.length).toBeGreaterThan(0);
     } finally {
       await dispose();
     }
   });
 
   itNode("node backend: scencd/scdecd + sce2c/sct2e + unitim", async () => {
-    const backend = await createBackend({ backend: "node" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
+      backend.kclear();
+      backend.furnsh(lskPath);
+      backend.furnsh(tscPath);
 
-    backend.kclear();
-    backend.furnsh(lskPath);
-    backend.furnsh(tscPath);
+      const sclkdp = backend.scencd(sc, sclkch);
+      expect(Number.isFinite(sclkdp)).toBe(true);
 
-    const sclkdp = backend.scencd(sc, sclkch);
-    expect(Number.isFinite(sclkdp)).toBe(true);
+      const decoded = backend.scdecd(sc, sclkdp);
+      expect(decoded.length).toBeGreaterThan(0);
 
-    const decoded = backend.scdecd(sc, sclkdp);
-    expect(decoded.length).toBeGreaterThan(0);
+      // Roundtrip-ish: ticks <-> ET.
+      const et = backend.scs2e(sc, sclkch);
+      const ticks = backend.sce2c(sc, et);
+      const et2 = backend.sct2e(sc, ticks);
+      expect(Math.abs(et2 - et)).toBeLessThan(1e-6);
 
-    // Roundtrip-ish: ticks <-> ET.
-    const et = backend.scs2e(sc, sclkch);
-    const ticks = backend.sce2c(sc, et);
-    const et2 = backend.sct2e(sc, ticks);
-    expect(Math.abs(et2 - et)).toBeLessThan(1e-6);
-
-    // Roundtrip-ish: ET <-> TAI.
-    const tai = backend.unitim(et, "ET", "TAI");
-    const et3 = backend.unitim(tai, "TAI", "ET");
-    expect(Math.abs(et3 - et)).toBeLessThan(1e-6);
+      // Roundtrip-ish: ET <-> TAI.
+      const tai = backend.unitim(et, "ET", "TAI");
+      const et3 = backend.unitim(tai, "TAI", "ET");
+      expect(Math.abs(et3 - et)).toBeLessThan(1e-6);
+    } finally {
+      await dispose();
+    }
   });
 
-  itNode("node backend: deltet/unitim throw when no LSK is loaded", async () => {
-    const backend = await createBackend({ backend: "node" });
+  itNode(
+    "node backend: deltet/unitim throw when no LSK is loaded",
+    async () => {
+      const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+      const backend = spice.raw;
+      try {
+        backend.kclear();
 
-    backend.kclear();
-
-    expect(() => backend.deltet(0, "ET")).toThrow(/NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i);
-    expect(() => backend.unitim(0, "ET", "TAI")).toThrow(/NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i);
-  });
+        expect(() => backend.deltet(0, "ET")).toThrow(
+          /NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i,
+        );
+        expect(() => backend.unitim(0, "ET", "TAI")).toThrow(
+          /NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i,
+        );
+      } finally {
+        await dispose();
+      }
+    },
+  );
 
   itNode("node backend: scencd throws when no SCLK is loaded", async () => {
-    const backend = await createBackend({ backend: "node" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
+      backend.kclear();
+      backend.furnsh(lskPath);
 
-    backend.kclear();
-    backend.furnsh(lskPath);
-
-    expect(() => backend.scencd(sc, sclkch)).toThrow(/SCLK/i);
+      expect(() => backend.scencd(sc, sclkch)).toThrow(/SCLK/i);
+    } finally {
+      await dispose();
+    }
   });
 
   itNode("node backend: ckgp/ckgpav throw when no CK is loaded", async () => {
     const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
     const backend = spice.raw;
     try {
+      backend.kclear();
 
-    backend.kclear();
+      const inst = -77001;
+      const sclkdp = 4319435080.0;
+      const tol = 0.0;
+      const ref = "J2000";
 
-    const inst = -77001;
-    const sclkdp = 4319435080.0;
-    const tol = 0.0;
-    const ref = "J2000";
-
-    expect(() => backend.ckgp(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
-    expect(() => backend.ckgpav(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
+      expect(() => backend.ckgp(inst, sclkdp, tol, ref)).toThrow(
+        /NOLOADEDFILES|CKLPF/i,
+      );
+      expect(() => backend.ckgpav(inst, sclkdp, tol, ref)).toThrow(
+        /NOLOADEDFILES|CKLPF/i,
+      );
     } finally {
       await dispose();
     }
@@ -107,13 +128,12 @@ describe("SCLK conversions + CK attitude", () => {
     const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
     const backend = spice.raw;
     try {
+      backend.kclear();
+      backend.furnsh(lskPath);
+      backend.furnsh(tscPath);
 
-    backend.kclear();
-    backend.furnsh(lskPath);
-    backend.furnsh(tscPath);
-
-    // Transfer-format CKs (like cook_01.tc) are not loadable by CSPICE.
-    expect(() => backend.furnsh(tcPath)).toThrow(/TRANSFERFILE/i);
+      // Transfer-format CKs (like cook_01.tc) are not loadable by CSPICE.
+      expect(() => backend.furnsh(tcPath)).toThrow(/TRANSFERFILE/i);
     } finally {
       await dispose();
     }
@@ -123,84 +143,102 @@ describe("SCLK conversions + CK attitude", () => {
     const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
     const backend = spice.raw;
     try {
+      const lskBytes = fs.readFileSync(lskPath);
+      const tscBytes = fs.readFileSync(tscPath);
 
-    const lskBytes = fs.readFileSync(lskPath);
-    const tscBytes = fs.readFileSync(tscPath);
+      backend.kclear();
+      backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+      backend.furnsh({ path: "cook_01.tsc", bytes: tscBytes });
 
-    backend.kclear();
-    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
-    backend.furnsh({ path: "cook_01.tsc", bytes: tscBytes });
+      const et = backend.scs2e(sc, sclkch);
+      expect(Number.isFinite(et)).toBe(true);
 
-    const et = backend.scs2e(sc, sclkch);
-    expect(Number.isFinite(et)).toBe(true);
-
-    const roundTrip = backend.sce2s(sc, et);
-    expect(roundTrip.length).toBeGreaterThan(0);
+      const roundTrip = backend.sce2s(sc, et);
+      expect(roundTrip.length).toBeGreaterThan(0);
     } finally {
       await dispose();
     }
   });
 
   it("wasm backend: scencd/scdecd + sce2c/sct2e + unitim", async () => {
-    const backend = await createBackend({ backend: "wasm" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
+      const lskBytes = fs.readFileSync(lskPath);
+      const tscBytes = fs.readFileSync(tscPath);
 
-    const lskBytes = fs.readFileSync(lskPath);
-    const tscBytes = fs.readFileSync(tscPath);
+      backend.kclear();
+      backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+      backend.furnsh({ path: "cook_01.tsc", bytes: tscBytes });
 
-    backend.kclear();
-    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
-    backend.furnsh({ path: "cook_01.tsc", bytes: tscBytes });
+      const sclkdp = backend.scencd(sc, sclkch);
+      expect(Number.isFinite(sclkdp)).toBe(true);
 
-    const sclkdp = backend.scencd(sc, sclkch);
-    expect(Number.isFinite(sclkdp)).toBe(true);
+      const decoded = backend.scdecd(sc, sclkdp);
+      expect(decoded.length).toBeGreaterThan(0);
 
-    const decoded = backend.scdecd(sc, sclkdp);
-    expect(decoded.length).toBeGreaterThan(0);
+      const et = backend.scs2e(sc, sclkch);
+      const ticks = backend.sce2c(sc, et);
+      const et2 = backend.sct2e(sc, ticks);
+      expect(Math.abs(et2 - et)).toBeLessThan(1e-6);
 
-    const et = backend.scs2e(sc, sclkch);
-    const ticks = backend.sce2c(sc, et);
-    const et2 = backend.sct2e(sc, ticks);
-    expect(Math.abs(et2 - et)).toBeLessThan(1e-6);
-
-    const tai = backend.unitim(et, "ET", "TAI");
-    const et3 = backend.unitim(tai, "TAI", "ET");
-    expect(Math.abs(et3 - et)).toBeLessThan(1e-6);
+      const tai = backend.unitim(et, "ET", "TAI");
+      const et3 = backend.unitim(tai, "TAI", "ET");
+      expect(Math.abs(et3 - et)).toBeLessThan(1e-6);
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: deltet/unitim throw when no LSK is loaded", async () => {
-    const backend = await createBackend({ backend: "wasm" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
+      backend.kclear();
 
-    backend.kclear();
-
-    expect(() => backend.deltet(0, "ET")).toThrow(/NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i);
-    expect(() => backend.unitim(0, "ET", "TAI")).toThrow(/NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i);
+      expect(() => backend.deltet(0, "ET")).toThrow(
+        /NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i,
+      );
+      expect(() => backend.unitim(0, "ET", "TAI")).toThrow(
+        /NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i,
+      );
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: scencd throws when no SCLK is loaded", async () => {
-    const backend = await createBackend({ backend: "wasm" });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
+      const lskBytes = fs.readFileSync(lskPath);
 
-    const lskBytes = fs.readFileSync(lskPath);
+      backend.kclear();
+      backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
 
-    backend.kclear();
-    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
-
-    expect(() => backend.scencd(sc, sclkch)).toThrow(/SCLK/i);
+      expect(() => backend.scencd(sc, sclkch)).toThrow(/SCLK/i);
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: ckgp/ckgpav throw when no CK is loaded", async () => {
     const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
     const backend = spice.raw;
     try {
+      backend.kclear();
 
-    backend.kclear();
+      const inst = -77001;
+      const sclkdp = 4319435080.0;
+      const tol = 0.0;
+      const ref = "J2000";
 
-    const inst = -77001;
-    const sclkdp = 4319435080.0;
-    const tol = 0.0;
-    const ref = "J2000";
-
-    expect(() => backend.ckgp(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
-    expect(() => backend.ckgpav(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
+      expect(() => backend.ckgp(inst, sclkdp, tol, ref)).toThrow(
+        /NOLOADEDFILES|CKLPF/i,
+      );
+      expect(() => backend.ckgpav(inst, sclkdp, tol, ref)).toThrow(
+        /NOLOADEDFILES|CKLPF/i,
+      );
     } finally {
       await dispose();
     }
@@ -210,17 +248,18 @@ describe("SCLK conversions + CK attitude", () => {
     const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
     const backend = spice.raw;
     try {
+      const lskBytes = fs.readFileSync(lskPath);
+      const tscBytes = fs.readFileSync(tscPath);
+      const tcBytes = fs.readFileSync(tcPath);
 
-    const lskBytes = fs.readFileSync(lskPath);
-    const tscBytes = fs.readFileSync(tscPath);
-    const tcBytes = fs.readFileSync(tcPath);
+      backend.kclear();
+      backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+      backend.furnsh({ path: "cook_01.tsc", bytes: tscBytes });
 
-    backend.kclear();
-    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
-    backend.furnsh({ path: "cook_01.tsc", bytes: tscBytes });
-
-    // Transfer-format CKs (like cook_01.tc) are not loadable by CSPICE.
-    expect(() => backend.furnsh({ path: "cook_01.tc", bytes: tcBytes })).toThrow(/TRANSFERFILE/i);
+      // Transfer-format CKs (like cook_01.tc) are not loadable by CSPICE.
+      expect(() =>
+        backend.furnsh({ path: "cook_01.tc", bytes: tcBytes }),
+      ).toThrow(/TRANSFERFILE/i);
     } finally {
       await dispose();
     }

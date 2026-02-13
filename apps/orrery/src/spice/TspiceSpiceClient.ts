@@ -1,7 +1,6 @@
 import type { Spice } from '@rybosome/tspice'
 
 import type {
-  BodyRef,
   BodyState,
   EtSeconds,
   FrameId,
@@ -53,11 +52,7 @@ export class TspiceSpiceClient implements SpiceClient {
   }
 
   getFrameTransform(input: GetFrameTransformInput): Mat3 {
-    const m = this.spice.kit.frameTransform(
-      input.from as FrameId,
-      input.to as FrameId,
-      input.et,
-    )
+    const m = this.spice.kit.frameTransform(input.from as FrameId, input.to as FrameId, input.et)
 
     return transposeMat3RowMajorToColumnMajor(m.rowMajor)
   }

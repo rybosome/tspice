@@ -99,7 +99,11 @@ function createSpiceTransportFromSpiceAsync(
 
       // `spice.raw` and `spice.kit` are proxies that return bound/wrapped
       // functions, but use Reflect.apply to be defensive about `this`.
-      return await Reflect.apply(fn as (...a: unknown[]) => unknown, target, args);
+      return await Reflect.apply(
+        fn as (...a: unknown[]) => unknown,
+        target,
+        args,
+      );
     },
   };
 }
@@ -110,8 +114,9 @@ void (async () => {
   //
   // Security/design note:
   // - This worker entry is intended for internal workspace use.
-  // - It intentionally exposes the full tspice `SpiceAsync` RPC surface area
-  //   (subject to the blocked key checks above).
+  // - By default, it exposes:
+  //   - `kit.*` as a small, curated allowlist (see `allowedKitMethodList`), and
+  //   - `raw.*` without an allowlist (subject to the blocked key checks above).
   // - If you need a tighter RPC capability set (especially for `raw.*`), create
   //   a custom worker entry and provide an explicit allowlist.
   const spice = await createSpiceAsync({ backend: "wasm" });

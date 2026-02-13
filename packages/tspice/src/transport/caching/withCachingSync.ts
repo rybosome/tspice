@@ -2,7 +2,10 @@ import type { SpiceTransportSync } from "../types.js";
 
 import { createCachePolicy } from "./policy.js";
 
-import { defaultSpiceCacheKey, type WithCachingOptions } from "./withCaching.js";
+import {
+  defaultSpiceCacheKey,
+  type WithCachingOptions,
+} from "./withCaching.js";
 
 const cachingTransportBrand = new WeakSet<object>();
 
@@ -30,8 +33,8 @@ export type CachingTransportSync = SpiceTransportSync & {
 export type WithCachingSyncResult = SpiceTransportSync | CachingTransportSync;
 
 /**
-* Type guard for narrowing a transport returned by `withCachingSync()`.
-*/
+ * Type guard for narrowing a transport returned by `withCachingSync()`.
+ */
 export function isCachingTransportSync(t: unknown): t is CachingTransportSync {
   if (typeof t !== "object" || t === null) return false;
 
@@ -76,10 +79,17 @@ export function withCachingSync(
   base: SpiceTransportSync,
   opts?: WithCachingOptions,
 ): WithCachingSyncResult {
+  // Note: cached values are returned by reference. If a caller mutates the
+  // returned object/array, subsequent cache hits will observe that mutation.
+  // Treat results as immutable (or clone them yourself) when caching is enabled.
   const rawMaxEntries = opts?.maxEntries;
   const maxEntries = rawMaxEntries ?? 1000;
   const maxEntriesLimit =
-    maxEntries === Infinity ? undefined : Number.isFinite(maxEntries) ? maxEntries : 0;
+    maxEntries === Infinity
+      ? undefined
+      : Number.isFinite(maxEntries)
+        ? maxEntries
+        : 0;
 
   const rawTtlMs = opts?.ttlMs;
   const ttlMs = rawTtlMs == null ? undefined : rawTtlMs;

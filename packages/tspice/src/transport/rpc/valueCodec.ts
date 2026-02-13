@@ -17,7 +17,6 @@ type TaggedMat3RowMajor = {
   data: readonly number[];
 };
 
-
 type TaggedRecord = Record<string, unknown> & {
   [tspiceRpcTagKey]?: unknown;
 };
@@ -35,7 +34,9 @@ function isFiniteNumber(value: unknown): value is number {
 }
 
 function isMat3RowMajorData(value: unknown): value is readonly number[] {
-  return Array.isArray(value) && value.length === 9 && value.every(isFiniteNumber);
+  return (
+    Array.isArray(value) && value.length === 9 && value.every(isFiniteNumber)
+  );
 }
 
 /** Encode an arbitrary value into a structured-clone-safe shape. */
@@ -58,7 +59,17 @@ export function encodeRpcValue(value: unknown): unknown {
     // structured-clone-safe across all targets. For now, we only support plain
     // object literals.
     const proto = Object.getPrototypeOf(value);
-    if (proto !== Object.prototype && proto !== null) return value;
+    if (proto !== Object.prototype && proto !== null) {
+      const ctorName =
+        (value as { constructor?: { name?: unknown } }).constructor?.name ??
+        (proto as { constructor?: { name?: unknown } }).constructor?.name;
+
+      throw new Error(
+        "encodeRpcValue(): unsupported non-plain object for worker RPC " +
+          `(constructor=${String(ctorName)}). ` +
+          "Pass plain objects/arrays/primitives or extend the codec.",
+      );
+    }
 
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(value)) {
