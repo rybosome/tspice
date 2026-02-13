@@ -459,6 +459,12 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       decls: readonly string[],
     ) => {
       assertSpiceInt32(nrows, "ekifld(nrows)", { min: 1 });
+
+      // Hard cap to defend against pathological `nrows` values that would otherwise trigger
+      // massive native allocations (e.g. rcptrs).
+      if (nrows > kMaxEkArrayLen) {
+        throw new RangeError(`ekifld(): expected nrows <= ${kMaxEkArrayLen}`);
+      }
       if (cnames.length === 0) {
         throw new RangeError("ekifld(cnames): expected cnames.length > 0");
       }
