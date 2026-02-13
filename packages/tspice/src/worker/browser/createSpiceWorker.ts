@@ -78,5 +78,9 @@ export function createSpiceWorker(
   const blob = new Blob([workerSource], { type: "text/javascript" });
   const blobUrl = URL.createObjectURL(blob);
 
-  return new (WorkerCtor as WorkerCtorLike)(blobUrl, workerOptions);
+  try {
+    return new (WorkerCtor as WorkerCtorLike)(blobUrl, workerOptions);
+  } finally {
+    URL.revokeObjectURL(blobUrl);
+  }
 }

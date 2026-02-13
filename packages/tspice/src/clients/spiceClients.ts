@@ -254,8 +254,6 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       Object.defineProperty(raw.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
       Object.defineProperty(spice.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
 
-      await loadKernelBatches(raw);
-
       let disposePromise: Promise<void> | undefined;
 
       const disposeAsync = (): Promise<void> => {
@@ -294,6 +292,15 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         (client as any)[(Symbol as any).asyncDispose] = dispose;
       }
 
+      try {
+        await loadKernelBatches(raw);
+      } catch (error) {
+        // `toSync()` does eager kernel loading; ensure we don't leak resources
+        // if kernel preload throws before the caller receives `dispose()`.
+        await disposeAsync();
+        throw error;
+      }
+
       return client;
     },
 
@@ -312,8 +319,6 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
       // Preserve non-function backend metadata.
       Object.defineProperty(spice.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
-
-      await loadKernelBatches(spice);
 
       let disposePromise: Promise<void> | undefined;
 
@@ -353,6 +358,15 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         (client as any)[(Symbol as any).asyncDispose] = dispose;
       }
 
+      try {
+        await loadKernelBatches(spice);
+      } catch (error) {
+        // `toAsync()` does eager kernel loading; ensure we don't leak resources
+        // if kernel preload throws before the caller receives `dispose()`.
+        await disposeAsync();
+        throw error;
+      }
+
       return client;
     },
 
@@ -361,13 +375,16 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
     ): Promise<SpiceClientBuildResult<SpiceAsync>> => {
       const ww = webWorkerOpts;
 
+      const workerInput = ww?.worker ?? (() => createSpiceWorker());
+      const terminateOnDispose =
+        ww?.terminateOnDispose ?? (typeof workerInput === "function" ? true : false);
+      const signalDispose = ww?.signalDispose ?? terminateOnDispose;
+
       const workerTransport = createWorkerTransport({
-        worker: ww?.worker ?? (() => createSpiceWorker()),
+        worker: workerInput,
         ...(ww?.timeoutMs === undefined ? {} : { timeoutMs: ww.timeoutMs }),
-        ...(ww?.terminateOnDispose === undefined
-          ? {}
-          : { terminateOnDispose: ww.terminateOnDispose }),
-        ...(ww?.signalDispose === undefined ? {} : { signalDispose: ww.signalDispose }),
+        terminateOnDispose,
+        signalDispose,
       });
 
       const baseTransport: SpiceTransport = workerTransport;
@@ -381,12 +398,6 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
       // Web-worker clients currently always use the WASM backend.
       Object.defineProperty(spice.raw, "kind", { value: "wasm", enumerable: true });
-
-      // Eagerly create/validate the worker transport so `.toWebWorker()` throws
-      // (instead of deferring errors to the first spice call).
-      await spice.kit.toolkitVersion();
-
-      await loadKernelBatches(spice);
 
       let disposePromise: Promise<void> | undefined;
 
@@ -423,6 +434,24 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       // Runtime alias for Explicit Resource Management. Do not polyfill.
       if (typeof (Symbol as any).asyncDispose === "symbol") {
         (client as any)[(Symbol as any).asyncDispose] = dispose;
+      }
+
+      try {
+        // Eagerly create/validate the worker transport so `.toWebWorker()` throws
+        // (instead of deferring errors to the first spice call).
+        await spice.kit.toolkitVersion();
+
+        await loadKernelBatches(spice);
+      } catch (error) {
+        // `toWebWorker()` does eager validation + kernel preload. Ensure we
+        // don't leak a worker/transport/caches if any eager step throws before
+        // the caller receives `dispose()`.
+        //
+        // Note: for owned workers, `workerTransport.dispose()` signals a global
+        // dispose message (`tspice:dispose`) by default, which triggers worker-
+        // side best-effort `kclear()` before termination.
+        await disposeAsync();
+        throw error;
       }
 
       return client;
