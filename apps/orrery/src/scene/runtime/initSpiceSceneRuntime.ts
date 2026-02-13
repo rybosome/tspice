@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import type { SpiceAsync, SpiceTime, StateVector } from '@rybosome/tspice'
+import type { SpiceAsync, StateVector } from '@rybosome/tspice'
 
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from '../../controls/sunFocus.js'
 import { createSpiceClient } from '../../spice/createSpiceClient.js'
@@ -152,7 +152,7 @@ export async function initSpiceSceneRuntime(args: {
   scene.add(dir)
   sceneObjects.push(dir)
 
-  const { cachedSpice, uncachedSpice, dispose: disposeSpice } = await createSpiceClient({
+  const { spice: cachedSpice, dispose: disposeSpice } = await createSpiceClient({
     searchParams,
   })
 
@@ -280,7 +280,7 @@ export async function initSpiceSceneRuntime(args: {
 
   // Orbit paths (one full orbital period per body).
   const orbitPaths = new OrbitPaths({
-    spice: uncachedSpice,
+    spice: cachedSpice,
     kmToWorld,
     bodies: sceneModel.bodies.map((b) => ({ body: b.body, color: b.style.appearance.surface.color })),
   })
@@ -363,7 +363,7 @@ export async function initSpiceSceneRuntime(args: {
       cachedSpice.kit.getState({
         target: String(b.body),
         observer: String(sceneModel.observer),
-        at: etSec as unknown as SpiceTime,
+        at: etSec,
         frame: sceneModel.frame,
       }),
     )
@@ -371,7 +371,7 @@ export async function initSpiceSceneRuntime(args: {
     const rotationPromises = bodies.map((b) =>
       b.bodyFixedFrame
         ? cachedSpice.kit
-            .frameTransform(b.bodyFixedFrame, sceneModel.frame, etSec as unknown as SpiceTime)
+            .frameTransform(b.bodyFixedFrame, sceneModel.frame, etSec)
             .then((m) => m.toColMajor())
         : Promise.resolve(undefined),
     )
@@ -489,7 +489,7 @@ export async function initSpiceSceneRuntime(args: {
         const focusState = await cachedSpice.kit.getState({
           target: String(next.focusBody),
           observer: String(sceneModel.observer),
-          at: next.etSec as unknown as SpiceTime,
+          at: next.etSec,
           frame: sceneModel.frame,
         })
 

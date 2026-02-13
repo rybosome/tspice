@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { SpiceAsync, SpiceTime } from '@rybosome/tspice'
+import type { SpiceAsync } from '@rybosome/tspice'
 import { timeStore, useTimeStore } from '../time/timeStore.js'
 
 interface PlaybackControlsProps {
@@ -58,7 +58,7 @@ export function PlaybackControls({ spice, getDefaultResumeRateSecPerSec }: Playb
     let cancelled = false
 
     void spice.kit
-      .etToUtc(state.etSec as unknown as SpiceTime, 'ISOC', 0)
+      .etToUtc(state.etSec, 'ISOC', 0)
       .then((s) => {
         if (!cancelled) setUtcString(s)
       })

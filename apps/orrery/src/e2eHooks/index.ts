@@ -1,4 +1,4 @@
-import type { SpiceAsync, SpiceTime } from '@rybosome/tspice'
+import type { SpiceAsync } from '@rybosome/tspice'
 
 export function installTspiceViewerE2eApi(args: { isE2e: boolean; spice: SpiceAsync }): () => void {
   if (!args.isE2e) return () => {}
@@ -8,7 +8,7 @@ export function installTspiceViewerE2eApi(args: { isE2e: boolean; spice: SpiceAs
 
   window.__tspice_viewer__e2e = {
     getFrameTransform: ({ from, to, et }) =>
-      args.spice.kit.frameTransform(from, to, et as unknown as SpiceTime).then((m) => m.toColMajor()),
+      args.spice.kit.frameTransform(from, to, et).then((m) => m.toColMajor()),
   }
 
   return () => {

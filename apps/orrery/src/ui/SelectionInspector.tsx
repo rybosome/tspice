@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import type { SpiceAsync, SpiceTime } from '@rybosome/tspice'
+import type { SpiceAsync } from '@rybosome/tspice'
 import type { BodyRef, FrameId } from '../spice/types.js'
 import { resolveBodyRegistryEntry, type BodyRegistryEntry } from '../scene/BodyRegistry.js'
 import { getApproxOrbitalPeriodSec } from '../scene/orbits/orbitalPeriods.js'
@@ -292,7 +292,7 @@ export function SelectionInspector({ selectedBody, focusBody, spice, observer, f
         const selectedState = await spice.kit.getState({
           target: String(selectedBodyForSpice),
           observer: String(observerForSpice),
-          at: etSec as unknown as SpiceTime,
+          at: etSec,
           frame,
         })
 
@@ -311,7 +311,7 @@ export function SelectionInspector({ selectedBody, focusBody, spice, observer, f
           const relState = await spice.kit.getState({
             target: String(selectedBodyForSpice),
             observer: String(focusBodyForSpice),
-            at: etSec as unknown as SpiceTime,
+            at: etSec,
             frame,
           })
           distanceToFocusKm = magnitude(relState.position)

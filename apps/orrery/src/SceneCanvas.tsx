@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import * as THREE from 'three'
-import type { SpiceAsync, SpiceTime } from '@rybosome/tspice'
+import type { SpiceAsync } from '@rybosome/tspice'
 import type { CameraController, CameraControllerState } from './controls/CameraController.js'
 import { useKeyboardControls } from './controls/useKeyboardControls.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds } from './spice/types.js'
@@ -714,7 +714,7 @@ export function SceneCanvas() {
       const focusState = await spiceClient.kit.getState({
         target: String(focusBody),
         observer: 'SUN',
-        at: etSec as unknown as SpiceTime,
+        at: etSec,
         frame: J2000_FRAME,
       })
 

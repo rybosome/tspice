@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { Line2 } from 'three/examples/jsm/lines/Line2.js'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
-import type { SpiceAsync, SpiceTime } from '@rybosome/tspice'
+import type { SpiceAsync } from '@rybosome/tspice'
 
 import { quantizeEt } from '../../time/quantizeEt.js'
 import { J2000_FRAME, type BodyRef, type EtSeconds, type Vec3Km } from '../../spice/types.js'
@@ -362,7 +362,7 @@ export class OrbitPaths {
         const state = await this.spice.kit.getState({
           target: String(input.target),
           observer: String(input.primary),
-          at: et as unknown as SpiceTime,
+          at: et,
           frame: J2000_FRAME,
         })
         current.push(state.position)

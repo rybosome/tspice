@@ -2,16 +2,7 @@ import type { SpiceAsync } from '@rybosome/tspice'
 import { publicKernels, spiceClients } from '@rybosome/tspice'
 
 export type ViewerSpiceClientBundle = {
-  /** Cached client for per-frame rendering. */
-  cachedSpice: SpiceAsync
-
-  /**
-   * Client for bulk sampling (orbit paths, etc).
-   *
-   * Note: the new `spiceClients` API no longer exposes a separate uncached
-   * transport on the same worker, so for now this aliases `cachedSpice`.
-   */
-  uncachedSpice: SpiceAsync
+  spice: SpiceAsync
 
   /** Terminate the underlying worker + cleanup transports. */
   dispose: () => void
@@ -29,7 +20,7 @@ export async function createSpiceClient(
 
   const pack = publicKernels.naif0012_tls().pck00011_tpc().de432s_bsp().pack()
 
-  const { spice: cachedSpice, dispose: disposeAsync } = await spiceClients
+  const { spice, dispose: disposeAsync } = await spiceClients
     .caching({
       maxEntries: 10_000,
 
@@ -46,9 +37,5 @@ export async function createSpiceClient(
     void disposeAsync()
   }
 
-  return {
-    cachedSpice,
-    uncachedSpice: cachedSpice,
-    dispose,
-  }
+  return { spice, dispose }
 }
