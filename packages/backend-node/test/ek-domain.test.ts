@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { asEkApiDebug, createEkApi } from "../src/domains/ek.js";
+import { createEkApi } from "../src/domains/ek.js";
 import type { NativeAddon } from "../src/runtime/addon.js";
 import type { KernelStager } from "../src/runtime/kernel-staging.js";
 import { createSpiceHandleRegistry } from "../src/runtime/spice-handles.js";
@@ -83,7 +83,7 @@ describe("backend-node ek domain wrapper", () => {
     expect(() => api.ektnam(-1)).toThrow(/>=\s*0|non-negative/i);
   });
 
-  it("can bulk-close EK handles via internal teardown hook", () => {
+  it("closes EK handles and rejects closed handles", () => {
     const closed: number[] = [];
 
     const native = {
@@ -91,14 +91,15 @@ describe("backend-node ek domain wrapper", () => {
       ekcls: (h: number) => closed.push(h),
     } satisfies Pick<NativeAddon, "ekopr" | "ekcls">;
 
-    const api = asEkApiDebug(createEkApi(native, createSpiceHandleRegistry()));
+    const handles = createSpiceHandleRegistry();
+    const api = createEkApi(native, handles);
 
     const handle = api.ekopr("/tmp/file.ek");
-    expect(api.__debugOpenHandleCount()).toBe(1);
+    expect(handles.size()).toBe(1);
 
-    api.__debugCloseAllHandles();
+    api.ekcls(handle);
     expect(closed).toEqual([999]);
-    expect(api.__debugOpenHandleCount()).toBe(0);
+    expect(handles.size()).toBe(0);
 
     // Still rejects unknown/closed handles.
     expect(() => api.ekcls(handle)).toThrow(/invalid|closed/i);

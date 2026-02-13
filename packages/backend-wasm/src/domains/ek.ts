@@ -35,30 +35,8 @@ function callVoidHandle(
   });
 }
 
-function debugEntries(
-  handles: SpiceHandleRegistry,
-): ReadonlyArray<readonly [SpiceHandle, { kind: SpiceHandleKind; nativeHandle: number }]> {
-  return (
-    (handles as unknown as {
-      __entries?: () => ReadonlyArray<
-        readonly [SpiceHandle, { kind: SpiceHandleKind; nativeHandle: number }]
-      >;
-    }).__entries?.() ?? []
-  );
-}
-
 export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegistry): EkApi {
   const TABLE_NAME_MAX_BYTES = 256;
-
-  function debugOpenHandleCount(): number {
-    let count = 0;
-    for (const [, entry] of debugEntries(handles)) {
-      if (entry.kind === "EK") {
-        count++;
-      }
-    }
-    return count;
-  }
 
   const api = {
     ekopr: (path: string) => {
@@ -189,11 +167,6 @@ export function createEkApi(module: EmscriptenModule, handles: SpiceHandleRegist
       });
     },
   } satisfies EkApi;
-
-  Object.defineProperty(api, "__debugOpenHandleCount", {
-    value: debugOpenHandleCount,
-    enumerable: false,
-  });
 
   return api;
 }

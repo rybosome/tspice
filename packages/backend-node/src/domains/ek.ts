@@ -17,33 +17,6 @@ type NativeEkDeps = Pick<NativeAddon, "ekopr" | "ekopw" | "ekopn" | "ekcls" | "e
 
 type KernelStagerEkDeps = Pick<KernelStager, "resolvePath">;
 
-// Backend-node-only internal debug hooks (not part of the public backend contract).
-export interface EkApiDebug {
-  __debugOpenHandleCount(): number;
-  __debugCloseAllHandles(): void;
-}
-
-/**
-* @internal Test-only helper: access non-enumerable debug hooks without `unknown` casts.
-*/
-export function asEkApiDebug(
-  api: ReturnType<typeof createEkApi>,
-): ReturnType<typeof createEkApi> & EkApiDebug {
-  return api as ReturnType<typeof createEkApi> & EkApiDebug;
-}
-
-function debugEntries(
-  handles: SpiceHandleRegistry,
-): ReadonlyArray<readonly [SpiceHandle, { kind: SpiceHandleKind; nativeHandle: number }]> {
-  return (
-    (handles as unknown as {
-      __entries?: () => ReadonlyArray<
-        readonly [SpiceHandle, { kind: SpiceHandleKind; nativeHandle: number }]
-      >;
-    }).__entries?.() ?? []
-  );
-}
-
 export function createEkApi<
   N extends NativeEkDeps,
   S extends KernelStagerEkDeps | undefined,
@@ -63,51 +36,6 @@ export function createEkApi<
       return path;
     }
   };
-
-  function debugOpenHandleCount(): number {
-    let count = 0;
-    for (const [, entry] of debugEntries(handles)) {
-      if (entry.kind === "EK") {
-        count++;
-      }
-    }
-    return count;
-  }
-
-  function closeAllHandles(): void {
-    const errors: unknown[] = [];
-
-    for (const [handle, entry] of debugEntries(handles)) {
-      if (entry.kind !== "EK") {
-        continue;
-      }
-
-      try {
-        // In teardown contexts, we want to best-effort close everything and
-        // always clear the JS-side handle registry (even if the native close
-        // fails). So we swallow native close errors here and throw an
-        // AggregateError at the end.
-        handles.close(
-          handle,
-          EK_ONLY,
-          (e) => {
-            try {
-              native.ekcls(e.nativeHandle);
-            } catch (error) {
-              errors.push(error);
-            }
-          },
-          "__debugCloseAllHandles:ekcls",
-        );
-      } catch (error) {
-        errors.push(error);
-      }
-    }
-
-    if (errors.length > 0) {
-      throw new AggregateError(errors, "Failed to close one or more EK handles during teardown");
-    }
-  }
 
   const api = {
     ekopr: (path: string) => handles.register("EK", native.ekopr(resolvePath(path))),
@@ -151,17 +79,6 @@ export function createEkApi<
       return nseg;
     },
   } satisfies EkApi;
-
-  Object.defineProperty(api, "__debugOpenHandleCount", {
-    value: debugOpenHandleCount,
-    enumerable: false,
-  });
-
-  // Internal teardown helper (not part of the public backend contract).
-  Object.defineProperty(api, "__debugCloseAllHandles", {
-    value: closeAllHandles,
-    enumerable: false,
-  });
 
   return api;
 }
