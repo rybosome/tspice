@@ -7,8 +7,7 @@ export function installTspiceViewerE2eApi(args: { isE2e: boolean; spice: SpiceAs
   window.__tspice_viewer__rendered_scene = false
 
   window.__tspice_viewer__e2e = {
-    getFrameTransform: ({ from, to, et }) =>
-      args.spice.kit.frameTransform(from, to, et).then((m) => m.toColMajor()),
+    getFrameTransform: ({ from, to, et }) => args.spice.kit.frameTransform(from, to, et).then((m) => m.toColMajor()),
   }
 
   return () => {

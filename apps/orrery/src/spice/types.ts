@@ -1,10 +1,4 @@
-import type {
-  BodyRef as SpiceBodyRef,
-  FrameName,
-  Mat3ColMajor,
-  SpiceTime,
-  Vec3,
-} from '@rybosome/tspice'
+import type { BodyRef as SpiceBodyRef, FrameName, Mat3ColMajor, SpiceTime, Vec3 } from '@rybosome/tspice'
 import { J2000 } from '@rybosome/tspice'
 
 /** Seconds past the J2000 epoch (SPICE ET). */

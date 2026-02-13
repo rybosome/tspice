@@ -168,7 +168,6 @@ export async function initSpiceSceneRuntime(args: {
     throw new Error('SceneCanvas disposed during SPICE init')
   }
 
-
   // IMPORTANT: set the viewer's scrub range only after kernels load so
   // `spice.kit.utcToEt` (SPICE `str2et`) is correct.
   //
@@ -370,9 +369,7 @@ export async function initSpiceSceneRuntime(args: {
 
     const rotationPromises = bodies.map((b) =>
       b.bodyFixedFrame
-        ? cachedSpice.kit
-            .frameTransform(b.bodyFixedFrame, sceneModel.frame, etSec)
-            .then((m) => m.toColMajor())
+        ? cachedSpice.kit.frameTransform(b.bodyFixedFrame, sceneModel.frame, etSec).then((m) => m.toColMajor())
         : Promise.resolve(undefined),
     )
 
