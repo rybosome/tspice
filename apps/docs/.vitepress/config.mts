@@ -1,9 +1,32 @@
 import { defineConfig } from 'vitepress'
 
+function normalizeBase(input: string): string {
+  let base = input.trim()
+
+  if (!base.startsWith('/')) base = `/${base}`
+  if (!base.endsWith('/')) base = `${base}/`
+
+  return base
+}
+
+const base = (() => {
+  if (process.env.VITEPRESS_BASE) {
+    return normalizeBase(process.env.VITEPRESS_BASE)
+  }
+
+  // GitHub Pages project sites are typically served from `/<repoName>/`.
+  if (process.env.GITHUB_ACTIONS && process.env.GITHUB_REPOSITORY) {
+    const repoName = process.env.GITHUB_REPOSITORY.split('/')[1]
+    if (repoName) return normalizeBase(`/${repoName}/`)
+  }
+
+  return '/'
+})()
+
 export default defineConfig({
   title: 'tspice',
   description: 'TypeScript SPICE toolkit',
-  base: '/tspice/',
+  base,
 
   // Ensure Turbo can cache the build output via `dist/**`.
   outDir: 'dist',

@@ -1,5 +1,5 @@
 ---
-# VitePress will treat this as the home page for `/tspice/`.
+# VitePress will treat this as the home page for the configured `base`.
 ---
 
 # tspice

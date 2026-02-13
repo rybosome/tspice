@@ -30,7 +30,7 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies (docs only)
-        run: pnpm install --frozen-lockfile --filter @rybosome/docs...
+        run: pnpm install --frozen-lockfile --filter @rybosome/docs
 
       - name: Build docs
         run: pnpm --filter @rybosome/docs build
