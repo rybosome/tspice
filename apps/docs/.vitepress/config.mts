@@ -28,8 +28,30 @@ export default defineConfig({
   description: 'TypeScript SPICE toolkit',
   base,
 
+  // Orrery is the visual authority for this repo; keep docs dark.
+  appearance: 'force-dark',
+
   // Ensure Turbo can cache the build output via `dist/**`.
   outDir: 'dist',
+
+  markdown: {
+    config(md) {
+      const defaultFence = md.renderer.rules.fence
+
+      md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+        const token = tokens[idx]
+        const info = token.info.trim().split(/\s+/g)[0]
+
+        if (info === 'mermaid') {
+          const code = token.content.trim()
+          return `<div class="mermaid">${md.utils.escapeHtml(code)}</div>`
+        }
+
+        if (defaultFence) return defaultFence(tokens, idx, options, env, self)
+        return self.renderToken(tokens, idx, options)
+      }
+    }
+  },
 
   themeConfig: {
     nav: [
