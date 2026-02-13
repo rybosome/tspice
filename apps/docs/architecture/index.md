@@ -24,12 +24,10 @@ flowchart TD
 
 ## One CSPICE state space (and why we serialize)
 
-CSPICE is **process-global**: loaded kernels, the kernel pool, error status, and many internal registries live in a single global state space.
+CSPICE keeps a lot of state in C globals (loaded kernels, the kernel pool, error status, and many internal registries). How *global* that state is depends on the backend runtime:
 
-Implications:
-
-- Creating multiple `SpiceBackend` objects does **not** create multiple independent CSPICE instances.
-- Backend calls must be **serialized** to avoid re-entrancy issues and to keep handle/error registries consistent.
+- **Node backend:** CSPICE is **process-global**. Creating multiple `SpiceBackend` objects does **not** create multiple independent CSPICE instances, so backend calls must be **serialized** to avoid re-entrancy issues and to keep handle/error registries consistent.
+- **WASM backend:** CSPICE globals live *inside the Emscripten module instance*. Each module instance has its own isolated CSPICE state; calls are serialized per instance (and you can run multiple instances in workers for parallelism).
 
 Serialization model today:
 
@@ -38,8 +36,8 @@ Serialization model today:
 
 ## Next pages
 
-- [Facade + contract seam](/architecture/facade-contract)
-- [Shared C shim + error/handle model](/architecture/backend-shim-c)
-- [Kernel staging + virtual paths](/architecture/kernel-staging)
-- [Backend: Node (native addon)](/architecture/backend-node)
-- [Backend: WASM](/architecture/backend-wasm)
+- [Facade + contract seam](/architecture/facade-contract/)
+- [Shared C shim + error/handle model](/architecture/backend-shim-c/)
+- [Kernel staging + virtual paths](/architecture/kernel-staging/)
+- [Backend: Node (native addon)](/architecture/backend-node/)
+- [Backend: WASM](/architecture/backend-wasm/)

@@ -86,11 +86,11 @@ export default defineConfig({
           text: 'Architecture',
           items: [
             { text: 'Overview', link: '/architecture/' },
-            { text: 'Facade + contract seam', link: '/architecture/facade-contract' },
-            { text: 'Shared C shim', link: '/architecture/backend-shim-c' },
-            { text: 'Kernel staging + virtual paths', link: '/architecture/kernel-staging' },
-            { text: 'Backend: Node (native addon)', link: '/architecture/backend-node' },
-            { text: 'Backend: WASM', link: '/architecture/backend-wasm' }
+            { text: 'Facade + contract seam', link: '/architecture/facade-contract/' },
+            { text: 'Shared C shim', link: '/architecture/backend-shim-c/' },
+            { text: 'Kernel staging + virtual paths', link: '/architecture/kernel-staging/' },
+            { text: 'Backend: Node (native addon)', link: '/architecture/backend-node/' },
+            { text: 'Backend: WASM', link: '/architecture/backend-wasm/' }
           ]
         }
       ],
