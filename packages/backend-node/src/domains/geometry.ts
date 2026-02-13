@@ -13,6 +13,14 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+function assertFiniteNumberArrayFixed(value: unknown, expectedLength: number, label: string): asserts value is number[] {
+  invariant(Array.isArray(value) && value.length === expectedLength, `Expected ${label} to be a length-${expectedLength} array`);
+  for (let i = 0; i < expectedLength; i++) {
+    const v = value[i];
+    invariant(typeof v === "number" && Number.isFinite(v), `Expected ${label}[${i}] to be a finite number`);
+  }
+}
+
 export function createGeometryApi(native: NativeAddon): GeometryApi {
   return {
     subpnt: (method, target, et, fixref, abcorr, observer) => {
@@ -150,19 +158,21 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
     },
 
     nvc2pl: (normal, konst) => {
+      assertFiniteNumberArrayFixed(normal, 3, "nvc2pl(): normal");
+      invariant(typeof konst === "number" && Number.isFinite(konst), "Expected nvc2pl(): konst to be a finite number");
+
       const out = native.nvc2pl(normal, konst);
-      invariant(Array.isArray(out) && out.length === 4, "Expected nvc2pl() to return a length-4 array");
+      assertFiniteNumberArrayFixed(out, 4, "nvc2pl(): result");
       return out as unknown as SpicePlane;
     },
 
     pl2nvc: (plane) => {
+      assertFiniteNumberArrayFixed(plane, 4, "pl2nvc(): plane");
+
       const out = native.pl2nvc(plane);
       invariant(out && typeof out === "object", "Expected pl2nvc() to return an object");
-      invariant(
-        Array.isArray(out.normal) && out.normal.length === 3,
-        "Expected pl2nvc().normal to be a length-3 array",
-      );
-      invariant(typeof out.konst === "number", "Expected pl2nvc().konst to be a number");
+      assertFiniteNumberArrayFixed(out.normal, 3, "pl2nvc(): normal");
+      invariant(typeof out.konst === "number" && Number.isFinite(out.konst), "Expected pl2nvc().konst to be a finite number");
       return {
         normal: out.normal as SpiceVector3,
         konst: out.konst,

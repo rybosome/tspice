@@ -90,7 +90,7 @@ async function furnishNaifKernels(backend: Awaited<ReturnType<typeof createBacke
 }
 
 describe("geometry classic", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   async function runIllumScenario(backendKind: "node" | "wasm") {
     const backend = await createBackend({ backend: backendKind });
@@ -200,7 +200,7 @@ describe("geometry classic", () => {
     const outWasm = wasm.pl2nvc(planeWasm);
 
     expect(outNode.normal).toHaveLength(3);
-    expect(outWasm.normal).toToHaveLength(3);
+    expect(outWasm.normal).toHaveLength(3);
     for (let i = 0; i < 3; i++) {
       expect(outNode.normal[i]!).toBeCloseTo(outWasm.normal[i]!, 12);
     }

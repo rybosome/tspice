@@ -621,6 +621,21 @@ function tspiceCallOccult(
   }
 }
 
+function assertFiniteNumberArrayFixed(value: unknown, expectedLength: number, label: string): asserts value is number[] {
+  if (!Array.isArray(value) || value.length !== expectedLength) {
+    throw new TypeError(`${label}: expected a length-${expectedLength} array`);
+  }
+  for (let i = 0; i < expectedLength; i++) {
+    const v = value[i];
+    if (typeof v !== "number") {
+      throw new TypeError(`${label}[${i}]: expected a number`);
+    }
+    if (!Number.isFinite(v)) {
+      throw new RangeError(`${label}[${i}]: expected a finite number`);
+    }
+  }
+}
+
 export function createGeometryApi(module: EmscriptenModule): GeometryApi {
   return {
     subpnt: (method: string, target: string, et: number, fixref: string, abcorr: AbCorr | string, observer: string) =>
@@ -637,7 +652,24 @@ export function createGeometryApi(module: EmscriptenModule): GeometryApi {
       tspiceCallIllumf(module, method, target, ilusrc, et, fixref, abcorr, observer, spoint),
     occult: (targ1: string, shape1: string, frame1: string, targ2: string, shape2: string, frame2: string, abcorr: AbCorr | string, observer: string, et: number) =>
       tspiceCallOccult(module, targ1, shape1, frame1, targ2, shape2, frame2, abcorr, observer, et),
-    nvc2pl: (normal: SpiceVector3, konst: number) => tspiceCallNvc2pl(module, normal, konst),
-    pl2nvc: (plane: SpicePlane) => tspiceCallPl2nvc(module, plane),
+    nvc2pl: (normal: SpiceVector3, konst: number) => {
+      assertFiniteNumberArrayFixed(normal, 3, "nvc2pl(): normal");
+      if (!Number.isFinite(konst)) {
+        throw new RangeError("nvc2pl(): konst must be a finite number");
+      }
+      const out = tspiceCallNvc2pl(module, normal, konst);
+      assertFiniteNumberArrayFixed(out, 4, "nvc2pl(): result");
+      return out;
+    },
+
+    pl2nvc: (plane: SpicePlane) => {
+      assertFiniteNumberArrayFixed(plane, 4, "pl2nvc(): plane");
+      const out = tspiceCallPl2nvc(module, plane);
+      assertFiniteNumberArrayFixed(out.normal, 3, "pl2nvc(): normal");
+      if (!Number.isFinite(out.konst)) {
+        throw new RangeError("pl2nvc(): konst must be a finite number");
+      }
+      return out;
+    },
   };
 }

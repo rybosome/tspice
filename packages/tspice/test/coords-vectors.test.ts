@@ -11,7 +11,7 @@ function expectVec3Close(actual: [number, number, number], expected: [number, nu
 }
 
 describe("coordinate conversions + vector/matrix helpers", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   function runSharedTests(backend: Awaited<ReturnType<typeof createBackend>>) {
     const rect: [number, number, number] = [1, 2, 3];

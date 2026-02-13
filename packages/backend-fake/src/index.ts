@@ -214,6 +214,23 @@ function angleBetween(a: SpiceVector3, b: SpiceVector3): number {
   return Math.acos(c);
 }
 
+function ellipsoidSurfaceNormal(spoint: SpiceVector3, radii: SpiceVector3): SpiceVector3 {
+  const [x, y, z] = spoint;
+  const [a, b, c] = radii;
+
+  // Gradient of x^2/a^2 + y^2/b^2 + z^2/c^2 = 1 is [x/a^2, y/b^2, z/c^2]
+  if (!Number.isFinite(a) || !Number.isFinite(b) || !Number.isFinite(c) || a === 0 || b === 0 || c === 0) {
+    // If we don't have radii, fall back to the sphere assumption.
+    return vhat(spoint);
+  }
+
+  return vhat([
+    x / (a * a),
+    y / (b * b),
+    z / (c * c),
+  ]);
+}
+
 function canonicalizeZero(n: number): number {
   return Object.is(n, -0) ? 0 : n;
 }
@@ -832,6 +849,30 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     timeDefaults.set(item, value);
   }
+
+  const getBodyRadiiKm = (bodyId: number): SpiceVector3 => {
+    const key = `BODY${bodyId}_RADII`;
+    const entry = kernelPool.get(key);
+    if (entry?.type === "N" && entry.values.length >= 3) {
+      const a = entry.values[0];
+      const b = entry.values[1];
+      const c = entry.values[2];
+      if (
+        typeof a === "number" &&
+        typeof b === "number" &&
+        typeof c === "number" &&
+        Number.isFinite(a) &&
+        Number.isFinite(b) &&
+        Number.isFinite(c)
+      ) {
+        return [a, b, c];
+      }
+    }
+
+    // Fall back to a spherical body when RADII isn't available.
+    const r = getBodyRadiusKm(bodyId);
+    return [r, r, r];
+  };
 
   return {
     kind: "fake",
@@ -1526,7 +1567,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const srfToSrcJ = vsub(srcPosJ, spointJ);
       const srfToObsJ = vsub(obsPosJ, spointJ);
 
-      const normalJ = vhat(spointJ);
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
 
       const phase = angleBetween(srfToSrcJ, srfToObsJ);
       const incdnc = angleBetween(normalJ, srfToSrcJ);
@@ -1562,7 +1605,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const srfToSrcJ = vsub(srcPosJ, spointJ);
       const srfToObsJ = vsub(obsPosJ, spointJ);
 
-      const normalJ = vhat(spointJ);
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
 
       const phase = angleBetween(srfToSrcJ, srfToObsJ);
       const incdnc = angleBetween(normalJ, srfToSrcJ);
@@ -1606,14 +1651,45 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
 
     nvc2pl: (normal, konst) => {
+      if (!Array.isArray(normal) || normal.length !== 3) {
+        throw new TypeError("nvc2pl(normal, konst): normal must be a length-3 number[]");
+      }
+      for (let i = 0; i < 3; i++) {
+        const v = normal[i];
+        if (typeof v !== "number") {
+          throw new TypeError(`nvc2pl(normal, konst): normal[${i}] must be a number`);
+        }
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`nvc2pl(normal, konst): normal[${i}] must be a finite number`);
+        }
+      }
+      if (typeof konst !== "number") {
+        throw new TypeError("nvc2pl(normal, konst): konst must be a number");
+      }
+      if (!Number.isFinite(konst)) {
+        throw new RangeError("nvc2pl(normal, konst): konst must be a finite number");
+      }
       return [normal[0], normal[1], normal[2], konst] satisfies SpicePlane;
     },
 
     pl2nvc: (plane) => {
+      if (!Array.isArray(plane) || plane.length !== 4) {
+        throw new TypeError("pl2nvc(plane): plane must be a length-4 number[]");
+      }
+      for (let i = 0; i < 4; i++) {
+        const v = plane[i];
+        if (typeof v !== "number") {
+          throw new TypeError(`pl2nvc(plane): plane[${i}] must be a number`);
+        }
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`pl2nvc(plane): plane[${i}] must be a finite number`);
+        }
+      }
+
       const n = [plane[0], plane[1], plane[2]] as SpiceVector3;
       const mag = vnorm(n);
       if (mag === 0) {
-        return { normal: [0, 0, 0], konst: plane[3] } satisfies Pl2nvcResult;
+        throw new RangeError("pl2nvc(plane): plane is degenerate (normal must be non-zero)");
       }
       return {
         normal: vscale(1 / mag, n),
@@ -1683,7 +1759,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const srfToSunJ = vsub(sunPosJ, spointJ);
       const srfToObsJ = vsub(obsPosJ, spointJ);
 
-      const normalJ = vhat(spointJ);
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
 
       const phase = angleBetween(srfToSunJ, srfToObsJ);
       const incdnc = angleBetween(normalJ, srfToSunJ);

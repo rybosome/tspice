@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 
 describe("kernel management", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: furnsh/kclear/ktotal/kdata/unload", async () => {
     const backend = await createBackend({ backend: "node" });
@@ -78,7 +78,7 @@ describe("kernel management", () => {
 });
 
 describe("time", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: str2et/et2utc/timout", async () => {
     const backend = await createBackend({ backend: "node" });

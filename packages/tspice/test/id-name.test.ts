@@ -21,7 +21,7 @@ const PCK = {
 } as const;
 
 describe("IDs / names", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: bodn2c/bodc2n/bodc2s/bods2c/boddef/bodfnd/bodvar + frame utils", async () => {
     const backend = await createBackend({ backend: "node" });
