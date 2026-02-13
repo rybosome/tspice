@@ -9,7 +9,7 @@ import type {
   SpiceVector3,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
-import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import { assertSpiceInt32NonNegative, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -345,6 +345,7 @@ function tspiceCallCklpf(module: EmscriptenModule, ck: string): number {
 }
 
 function tspiceCallCkupf(module: EmscriptenModule, handle: number): void {
+  assertSpiceInt32NonNegative(handle, "ckupf(handle)");
   return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
     const code = module._tspice_ckupf(handle, errPtr, WASM_ERR_MAX_BYTES);
     if (code !== 0) {
