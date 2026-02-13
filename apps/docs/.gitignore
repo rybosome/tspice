@@ -1,0 +1,5 @@
+# VitePress dev cache
+.vitepress/cache/
+
+# Synced from /docs/images via scripts/sync-images.mjs
+public/images/

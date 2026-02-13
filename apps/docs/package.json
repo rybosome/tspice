@@ -1,0 +1,16 @@
+{
+  "name": "@rybosome/docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync-images": "node ./scripts/sync-images.mjs",
+    "predev": "pnpm run sync-images",
+    "dev": "vitepress dev",
+    "prebuild": "pnpm run sync-images",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}
