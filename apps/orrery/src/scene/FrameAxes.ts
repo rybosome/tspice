@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import type { Mat3 } from '../spice/SpiceClient.js'
+import type { Mat3 } from '../spice/types.js'
 
 export type CreateFrameAxesOptions = {
   sizeWorld: number

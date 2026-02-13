@@ -1,26 +1,15 @@
-import { spiceClients, type Spice } from '@rybosome/tspice'
-
-import type { EtSeconds, SpiceClient } from './SpiceClient.js'
-import { createCachedSpiceClient } from './createCachedSpiceClient.js'
-import { TspiceSpiceClient } from './TspiceSpiceClient.js'
-import { naifGenericKernelPack } from './kernelPacks/naifGeneric.js'
-import { loadKernelPack } from './loadKernelPack.js'
+import type { SpiceAsync } from '@rybosome/tspice'
+import { publicKernels, spiceClients } from '@rybosome/tspice'
 
 export type ViewerSpiceClientBundle = {
-  spice: Spice
-  dispose: () => Promise<void>
-  /** Cached client for per-frame rendering. */
-  client: SpiceClient
+  spice: SpiceAsync
 
-  /** Uncached client for bulk sampling (orbit paths, etc). */
-  rawClient: SpiceClient
-  utcToEt(utc: string): EtSeconds
+  /** Terminate the underlying worker + cleanup transports. */
+  dispose: () => void
 }
 
 /**
- * Viewer entrypoint for initializing a tspice-backed `SpiceClient`.
- *
- * This app always uses the real WASM backend.
+ * Viewer entrypoint for initializing a worker-backed `SpiceAsync` client.
  */
 export async function createSpiceClient(
   options: { searchParams?: URLSearchParams } = {},
@@ -29,17 +18,24 @@ export async function createSpiceClient(
   // Currently `searchParams` isn't used here, but we keep the option for API stability.
   void options
 
-  const { spice, dispose } = await spiceClients.toSync({ backend: 'wasm' })
-  await loadKernelPack(spice, naifGenericKernelPack)
+  const pack = publicKernels.naif0012_tls().pck00011_tpc().de432s_bsp().pack()
 
-  const rawClient = new TspiceSpiceClient(spice)
-  const client = createCachedSpiceClient(rawClient)
+  const { spice, dispose: disposeAsync } = await spiceClients
+    .caching({
+      maxEntries: 10_000,
 
-  return {
-    spice,
-    dispose,
-    client,
-    rawClient,
-    utcToEt: (utc) => spice.kit.utcToEt(utc) as unknown as EtSeconds,
+      // SPICE queries are deterministic for a given op+args, so LRU-only is
+      // sufficient. (TimeStore quantization also keeps the key space sane.)
+      ttlMs: null,
+    })
+    .withKernels(pack, {
+      baseUrl: import.meta.env.BASE_URL,
+    })
+    .toWebWorker()
+
+  const dispose = (): void => {
+    void disposeAsync().catch((err) => console.warn('Spice worker dispose failed', err))
   }
+
+  return { spice, dispose }
 }

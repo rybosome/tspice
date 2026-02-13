@@ -1,5 +1,6 @@
-import { Fragment, useMemo, useState } from 'react'
-import type { BodyRef, SpiceClient, FrameId } from '../spice/SpiceClient.js'
+import { Fragment, useEffect, useMemo, useState } from 'react'
+import type { SpiceAsync } from '@rybosome/tspice'
+import type { BodyRef, FrameId } from '../spice/types.js'
 import { resolveBodyRegistryEntry, type BodyRegistryEntry } from '../scene/BodyRegistry.js'
 import { getApproxOrbitalPeriodSec } from '../scene/orbits/orbitalPeriods.js'
 import { getNaifExtras, type NaifExtras } from '../data/naifExtras.js'
@@ -8,7 +9,7 @@ import { useTimeStoreSelector } from '../time/timeStore.js'
 interface SelectionInspectorProps {
   selectedBody: BodyRef
   focusBody: BodyRef
-  spiceClient: SpiceClient
+  spice: SpiceAsync
   observer: BodyRef
   frame: FrameId
 }
@@ -197,7 +198,7 @@ function resolveBodyRefForSpice(bodyRef: BodyRef, registryEntry: BodyRegistryEnt
   }
 
   // If we're carrying around numeric IDs as strings (e.g. from <select />),
-  // normalize them back to numbers for `SpiceClient.getBodyState`.
+  // normalize them to safe numeric refs.
   const numeric = tryNormalizeNumericBodyRef(trimmed)
   if (numeric != null) return numeric
 
@@ -214,8 +215,21 @@ function formatBodyKind(kind: string): string {
   return kind.charAt(0).toUpperCase() + kind.slice(1)
 }
 
-export function SelectionInspector({ selectedBody, focusBody, spiceClient, observer, frame }: SelectionInspectorProps) {
+export function SelectionInspector({ selectedBody, focusBody, spice, observer, frame }: SelectionInspectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
+
+  type BodyInfo = {
+    positionKm: readonly [number, number, number]
+    positionMagnitude: number
+    velocityKmPerSec: readonly [number, number, number]
+    velocityMagnitude: number
+    distanceToFocusKm: number | null
+    velocityRelToFocusKmPerSec: number | null
+    velocityRelToFocusVector: readonly [number, number, number] | null
+    orbitalPeriodSec: number | null
+  }
+
+  const [bodyInfo, setBodyInfo] = useState<BodyInfo | null>(null)
 
   // IMPORTANT:
   // This component is the only place that needs live ET updates for the inspector.
@@ -264,56 +278,69 @@ export function SelectionInspector({ selectedBody, focusBody, spiceClient, obser
     [selectedBodyForSpice],
   )
 
-  const bodyInfo = useMemo(() => {
-    if (selectedBodyForSpice == null || observerForSpice == null || focusBodyForSpice == null) return null
+  useEffect(() => {
+    let cancelled = false
 
-    try {
-      // Get selected body's state relative to scene observer
-      const selectedState = spiceClient.getBodyState({
-        target: selectedBodyForSpice,
-        observer: observerForSpice,
-        frame,
-        et: etSec,
-      })
-
-      // Position relative to scene origin (usually Sun)
-      const positionKm = selectedState.positionKm
-      const positionMagnitude = magnitude(positionKm)
-      const velocityKmPerSec = selectedState.velocityKmPerSec
-      const velocityMagnitude = magnitude(velocityKmPerSec)
-
-      // If focus != selected, compute distance from focus to selected
-      let distanceToFocusKm: number | null = null
-      let velocityRelToFocusKmPerSec: number | null = null
-      let velocityRelToFocusVector: readonly [number, number, number] | null = null
-
-      if (String(selectedBodyForSpice) !== String(focusBodyForSpice)) {
-        const relState = spiceClient.getBodyState({
-          target: selectedBodyForSpice,
-          observer: focusBodyForSpice,
-          frame,
-          et: etSec,
-        })
-        distanceToFocusKm = magnitude(relState.positionKm)
-        velocityRelToFocusKmPerSec = magnitude(relState.velocityKmPerSec)
-        velocityRelToFocusVector = relState.velocityKmPerSec
-      }
-
-      return {
-        positionKm,
-        positionMagnitude,
-        velocityKmPerSec,
-        velocityMagnitude,
-        distanceToFocusKm,
-        velocityRelToFocusKmPerSec,
-        velocityRelToFocusVector,
-        orbitalPeriodSec,
-      }
-    } catch (err) {
-      console.warn('SelectionInspector: error computing body state', err)
-      return null
+    if (selectedBodyForSpice == null || observerForSpice == null || focusBodyForSpice == null) {
+      setBodyInfo(null)
+      return
     }
-  }, [selectedBodyForSpice, focusBodyForSpice, spiceClient, etSec, observerForSpice, frame, orbitalPeriodSec])
+
+    void (async () => {
+      try {
+        // Get selected body's state relative to scene observer
+        const selectedState = await spice.kit.getState({
+          target: String(selectedBodyForSpice),
+          observer: String(observerForSpice),
+          at: etSec,
+          frame,
+        })
+
+        // Position relative to scene origin (usually Sun)
+        const positionKm = selectedState.position
+        const positionMagnitude = magnitude(positionKm)
+        const velocityKmPerSec = selectedState.velocity
+        const velocityMagnitude = magnitude(velocityKmPerSec)
+
+        // If focus != selected, compute distance from focus to selected
+        let distanceToFocusKm: number | null = null
+        let velocityRelToFocusKmPerSec: number | null = null
+        let velocityRelToFocusVector: readonly [number, number, number] | null = null
+
+        if (String(selectedBodyForSpice) !== String(focusBodyForSpice)) {
+          const relState = await spice.kit.getState({
+            target: String(selectedBodyForSpice),
+            observer: String(focusBodyForSpice),
+            at: etSec,
+            frame,
+          })
+          distanceToFocusKm = magnitude(relState.position)
+          velocityRelToFocusKmPerSec = magnitude(relState.velocity)
+          velocityRelToFocusVector = relState.velocity
+        }
+
+        const nextInfo: BodyInfo = {
+          positionKm,
+          positionMagnitude,
+          velocityKmPerSec,
+          velocityMagnitude,
+          distanceToFocusKm,
+          velocityRelToFocusKmPerSec,
+          velocityRelToFocusVector,
+          orbitalPeriodSec: orbitalPeriodSec ?? null,
+        }
+
+        if (!cancelled) setBodyInfo(nextInfo)
+      } catch (err) {
+        console.warn('SelectionInspector: error computing body state', err)
+        if (!cancelled) setBodyInfo(null)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [selectedBodyForSpice, focusBodyForSpice, spice, etSec, observerForSpice, frame, orbitalPeriodSec])
 
   const bodyLabel =
     registryEntry?.style.label ??

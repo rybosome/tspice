@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import type { CameraController } from '../controls/CameraController.js'
 import { pickFirstIntersection } from './pick.js'
 import { resolveBodyRegistryEntry, type BodyId } from '../scene/BodyRegistry.js'
-import type { BodyRef } from '../spice/SpiceClient.js'
+import type { BodyRef } from '../spice/types.js'
 
 export type SelectionOverlayTarget = {
   setSelectedTarget: (mesh: THREE.Object3D | undefined) => void
