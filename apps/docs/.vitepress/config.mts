@@ -91,7 +91,12 @@ export default defineConfig({
       '/examples/': [
         {
           text: 'Examples',
-          items: [{ text: 'Overview', link: '/examples/' }]
+          items: [
+            { text: 'Overview', link: '/examples/' },
+            { text: 'Browser ephemeris', link: '/examples/browser-ephemeris' },
+            { text: 'Lighting', link: '/examples/lighting' },
+            { text: 'Geometry', link: '/examples/geometry' }
+          ]
         }
       ],
 
