@@ -602,3 +602,212 @@ int tspice_spkuds(
 
   return 0;
 }
+
+// --- SPK writers ------------------------------------------------------------
+
+int tspice_spkopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outHandle) {
+    *outHandle = 0;
+  }
+
+  if (!path || path[0] == '\0') {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopn(): path must be a non-empty string");
+  }
+  if (!ifname || ifname[0] == '\0') {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopn(): ifname must be a non-empty string");
+  }
+  if (ncomch < 0) {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopn(): ncomch must be >= 0");
+  }
+  if (!outHandle) {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopn(): outHandle must not be NULL");
+  }
+
+  SpiceInt ncomchC = 0;
+  if (tspice_int_to_spice_int_checked(ncomch, &ncomchC, "tspice_spkopn(ncomch)", err, errMaxBytes) != 0) return 1;
+
+  SpiceInt handleC = 0;
+  spkopn_c(path, ifname, ncomchC, &handleC);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (tspice_spice_int_to_int_checked(handleC, outHandle, "tspice_spkopn(outHandle)", err, errMaxBytes) != 0) return 1;
+  return 0;
+}
+
+int tspice_spkopa(const char *path, int *outHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+  if (outHandle) {
+    *outHandle = 0;
+  }
+
+  if (!path || path[0] == '\0') {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopa(): path must be a non-empty string");
+  }
+  if (!outHandle) {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopa(): outHandle must not be NULL");
+  }
+
+  SpiceInt handleC = 0;
+  spkopa_c(path, &handleC);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  if (tspice_spice_int_to_int_checked(handleC, outHandle, "tspice_spkopa(outHandle)", err, errMaxBytes) != 0) return 1;
+  return 0;
+}
+
+int tspice_spkcls(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  SpiceInt handleC = 0;
+  if (tspice_int_to_spice_int_checked(handle, &handleC, "tspice_spkcls(handle)", err, errMaxBytes) != 0) return 1;
+
+  spkcls_c(handleC);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}
+
+int tspice_spkw08(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    double epoch1,
+    double step,
+    char *err,
+    int errMaxBytes) {
+  // v1 entrypoint: best-effort dispatch through v2 with an inferred flat length.
+  const int64_t expectedStates6nLen = (int64_t)n * 6;
+  if (expectedStates6nLen > 2147483647LL) {
+    // Keep the ABI stable: validate before casting down to int.
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08(): inferred states6nLen would overflow int");
+  }
+  return tspice_spkw08_v2(
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      n,
+      states6n,
+      (int)expectedStates6nLen,
+      epoch1,
+      step,
+      err,
+      errMaxBytes);
+}
+
+int tspice_spkw08_v2(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    int states6nLen,
+    double epoch1,
+    double step,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+
+  if (errMaxBytes > 0) {
+    err[0] = '\0';
+  }
+
+  if (!frame || frame[0] == '\0') {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): frame must be a non-empty string");
+  }
+  if (!segid || segid[0] == '\0') {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): segid must be a non-empty string");
+  }
+  if (n <= 0) {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): n must be > 0");
+  }
+  if (!states6n) {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): states6n must not be NULL");
+  }
+
+  // Validate the flat input length before casting to `SpiceDouble[n][6]`.
+  const int64_t expectedStates6nLen = (int64_t)n * 6;
+  if ((int64_t)states6nLen != expectedStates6nLen) {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): states6nLen must equal 6*n");
+  }
+
+  SpiceInt handleC = 0;
+  SpiceInt bodyC = 0;
+  SpiceInt centerC = 0;
+  SpiceInt degreeC = 0;
+  SpiceInt nC = 0;
+
+  if (tspice_int_to_spice_int_checked(handle, &handleC, "tspice_spkw08_v2(handle)", err, errMaxBytes) != 0) return 1;
+  if (tspice_int_to_spice_int_checked(body, &bodyC, "tspice_spkw08_v2(body)", err, errMaxBytes) != 0) return 1;
+  if (tspice_int_to_spice_int_checked(center, &centerC, "tspice_spkw08_v2(center)", err, errMaxBytes) != 0) return 1;
+  if (tspice_int_to_spice_int_checked(degree, &degreeC, "tspice_spkw08_v2(degree)", err, errMaxBytes) != 0) return 1;
+  if (tspice_int_to_spice_int_checked(n, &nC, "tspice_spkw08_v2(n)", err, errMaxBytes) != 0) return 1;
+
+  // Interpret `states6n` as an array of `n` 6-vectors.
+  const SpiceDouble(*states)[6] = (const SpiceDouble(*)[6])states6n;
+
+  spkw08_c(
+      handleC,
+      bodyC,
+      centerC,
+      frame,
+      (SpiceDouble)first,
+      (SpiceDouble)last,
+      segid,
+      degreeC,
+      nC,
+      states,
+      (SpiceDouble)epoch1,
+      (SpiceDouble)step);
+
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+
+  return 0;
+}

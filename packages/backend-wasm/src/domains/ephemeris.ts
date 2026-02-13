@@ -2,6 +2,7 @@ import type {
   AbCorr,
   EphemerisApi,
   Found,
+  SpiceHandle,
   SpiceIntCell,
   SpiceStateVector,
   SpiceVector3,
@@ -10,6 +11,7 @@ import type {
   SpkUnpackedDescriptor,
   SpkezrResult,
   SpkposResult,
+  VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import { assertSpiceInt32 } from "@rybosome/tspice-backend-contract";
 
@@ -19,6 +21,170 @@ import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
+import type { SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
+
+
+const I32_MAX = 2147483647;
+
+function isVirtualOutput(value: unknown): value is VirtualOutput {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as { kind?: unknown }).kind === "virtual-output" &&
+    typeof (value as { path?: unknown }).path === "string"
+  );
+}
+
+// SPK writer file semantics in the WASM backend:
+//
+// - `string` inputs are treated as *virtual kernel ids*, not raw Emscripten FS
+//   absolute paths. We route them through `resolveKernelPath()` to normalize
+//   into the `/kernels/...` namespace and to fail fast on accidental OS
+//   paths/URLs.
+// - `VirtualOutput.path` is also a virtual id (not a raw absolute FS path) and
+//   is resolved the same way.
+//
+// This keeps the writer APIs consistent with `furnsh(string)` and
+// `readVirtualOutput()`.
+function resolveSpkPath(file: string | VirtualOutput, context: string): string {
+  if (typeof file === "string") {
+    return resolveKernelPath(file);
+  }
+  if (!isVirtualOutput(file)) {
+    throw new Error(`${context}: expected VirtualOutput {kind:'virtual-output', path:string}`);
+  }
+  return resolveKernelPath(file.path);
+}
+
+function ensureParentDir(module: Pick<EmscriptenModule, "FS">, filePath: string): void {
+  const dir = filePath.split("/").slice(0, -1).join("/") || "/";
+  if (dir && dir !== "/") {
+    module.FS.mkdirTree(dir);
+  }
+}
+
+function callVoidHandle(
+  module: EmscriptenModule,
+  fn: (handle: number, errPtr: number, errMaxBytes: number) => number,
+  handle: number,
+): void {
+  withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+    const code = fn(handle, errPtr, WASM_ERR_MAX_BYTES);
+    if (code !== 0) {
+      throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+    }
+  });
+}
+
+function tspiceCallSpkopn(
+  module: EmscriptenModule,
+  path: string,
+  ifname: string,
+  ncomch: number,
+): number {
+  const pathPtr = writeUtf8CString(module, path);
+  const ifnamePtr = writeUtf8CString(module, ifname);
+
+  try {
+    return withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
+      module.HEAP32[outHandlePtr >> 2] = 0;
+      const code = module._tspice_spkopn(pathPtr, ifnamePtr, ncomch, outHandlePtr, errPtr, WASM_ERR_MAX_BYTES);
+      if (code !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+      }
+      return module.HEAP32[outHandlePtr >> 2] ?? 0;
+    });
+  } finally {
+    module._free(ifnamePtr);
+    module._free(pathPtr);
+  }
+}
+
+function tspiceCallSpkopa(module: EmscriptenModule, path: string): number {
+  const pathPtr = writeUtf8CString(module, path);
+
+  try {
+    return withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
+      module.HEAP32[outHandlePtr >> 2] = 0;
+      const code = module._tspice_spkopa(pathPtr, outHandlePtr, errPtr, WASM_ERR_MAX_BYTES);
+      if (code !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+      }
+      return module.HEAP32[outHandlePtr >> 2] ?? 0;
+    });
+  } finally {
+    module._free(pathPtr);
+  }
+}
+
+function tspiceCallSpkw08(
+  module: EmscriptenModule,
+  nativeHandle: number,
+  body: number,
+  center: number,
+  frame: string,
+  first: number,
+  last: number,
+  segid: string,
+  degree: number,
+  states: readonly number[] | Float64Array,
+  epoch1: number,
+  step: number,
+): void {
+  const framePtr = writeUtf8CString(module, frame);
+  const segidPtr = writeUtf8CString(module, segid);
+
+  try {
+    const n = states.length / 6;
+    if (!Number.isSafeInteger(n) || n <= 0 || n * 6 !== states.length) {
+      throw new Error("tspiceCallSpkw08(states): expected states.length to be a non-zero multiple of 6");
+    }
+    if (n > I32_MAX) {
+      throw new Error(`tspiceCallSpkw08(states): expected n to be a 32-bit signed integer (got n=${n})`);
+    }
+    if (states.length > I32_MAX) {
+      throw new Error(
+        `tspiceCallSpkw08(states): expected states.length to be a 32-bit signed integer (got states.length=${states.length})`,
+      );
+    }
+
+    const statesBytes = n * 6 * 8;
+
+    // Allocate states bytes with padding to ensure 8-byte alignment.
+    withAllocs(module, [WASM_ERR_MAX_BYTES, statesBytes + 7], (errPtr, rawStatesPtr) => {
+      const statesPtr = (rawStatesPtr + 7) & ~7;
+
+      if (states.length > 0) {
+        module.HEAPF64.set(states, statesPtr >> 3);
+      }
+
+      const code = module._tspice_spkw08_v2(
+        nativeHandle,
+        body,
+        center,
+        framePtr,
+        first,
+        last,
+        segidPtr,
+        degree,
+        n,
+        statesPtr,
+        states.length,
+        epoch1,
+        step,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (code !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+      }
+    });
+  } finally {
+    module._free(segidPtr);
+    module._free(framePtr);
+  }
+}
 
 function tspiceCallSpkezr(
   module: EmscriptenModule,
@@ -570,7 +736,13 @@ function tspiceCallSpkuds(
   );
 }
 
-export function createEphemerisApi(module: EmscriptenModule): EphemerisApi {
+export function createEphemerisApi(
+  module: EmscriptenModule,
+  handles: SpiceHandleRegistry,
+  virtualOutputs: VirtualOutputRegistry,
+): EphemerisApi {
+  const virtualOutputPathByHandle = new Map<SpiceHandle, string>();
+
   return {
     spkezr: (target: string, et: number, ref: string, abcorr: AbCorr | string, observer: string) =>
       tspiceCallSpkezr(module, target, et, ref, abcorr, observer),
@@ -602,5 +774,90 @@ export function createEphemerisApi(module: EmscriptenModule): EphemerisApi {
       tspiceCallSpkpds(module, body, center, frame, type, first, last),
 
     spkuds: (descr: SpkPackedDescriptor) => tspiceCallSpkuds(module, descr),
+
+    // --- SPK writers -------------------------------------------------------
+
+    spkopn: (file: string | VirtualOutput, ifname: string, ncomch: number) => {
+      const resolved = resolveSpkPath(file, "spkopn(file)");
+      ensureParentDir(module, resolved);
+      const nativeHandle = tspiceCallSpkopn(module, resolved, ifname, ncomch);
+
+      const handle = handles.register("SPK", nativeHandle);
+      if (typeof file !== "string") {
+        // `resolveSpkPath` already validated, but be defensive: callers can cast.
+        if (!isVirtualOutput(file)) {
+          throw new Error("spkopn(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        }
+        virtualOutputs.markOpen(resolved);
+        virtualOutputPathByHandle.set(handle, resolved);
+      }
+
+      return handle;
+    },
+
+    spkopa: (file: string | VirtualOutput) => {
+      const resolved = resolveSpkPath(file, "spkopa(file)");
+      ensureParentDir(module, resolved);
+      const nativeHandle = tspiceCallSpkopa(module, resolved);
+
+      const handle = handles.register("SPK", nativeHandle);
+      if (typeof file !== "string") {
+        if (!isVirtualOutput(file)) {
+          throw new Error("spkopa(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        }
+        virtualOutputs.markOpen(resolved);
+        virtualOutputPathByHandle.set(handle, resolved);
+      }
+
+      return handle;
+    },
+
+    spkcls: (handle: SpiceHandle) => {
+      const resolved = virtualOutputPathByHandle.get(handle);
+      handles.close(
+        handle,
+        ["SPK"],
+        (e) => callVoidHandle(module, module._tspice_spkcls, e.nativeHandle),
+        "spkcls",
+      );
+      if (resolved) {
+        virtualOutputs.markClosed(resolved);
+        virtualOutputPathByHandle.delete(handle);
+      }
+    },
+
+    spkw08: (
+      handle: SpiceHandle,
+      body: number,
+      center: number,
+      frame: string,
+      first: number,
+      last: number,
+      segid: string,
+      degree: number,
+      states: readonly number[] | Float64Array,
+      epoch1: number,
+      step: number,
+    ) => {
+      if (!Array.isArray(states) && !(states instanceof Float64Array)) {
+        throw new Error("spkw08(states): expected number[] or Float64Array");
+      }
+      if (states.length === 0 || states.length % 6 !== 0) {
+        throw new Error("spkw08(): expected states.length to be a non-zero multiple of 6");
+      }
+
+      const n = states.length / 6;
+      if (!Number.isSafeInteger(n) || n <= 0 || n > I32_MAX) {
+        throw new Error(`spkw08(): expected states.length/6 to be a 32-bit signed integer (got n=${n})`);
+      }
+      if (states.length > I32_MAX) {
+        throw new Error(
+          `spkw08(): expected states.length to be a 32-bit signed integer (got states.length=${states.length})`,
+        );
+      }
+
+      const nativeHandle = handles.lookup(handle, ["SPK"], "spkw08").nativeHandle;
+      tspiceCallSpkw08(module, nativeHandle, body, center, frame, first, last, segid, degree, states, epoch1, step);
+    },
   };
 }

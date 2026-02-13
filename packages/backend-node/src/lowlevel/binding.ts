@@ -149,6 +149,10 @@ export function getNodeBinding(): NativeAddon {
     typeof native.spkpos === "function",
     "Expected native addon to export spkpos(target, et, ref, abcorr, observer)",
   );
+  invariant(typeof native.spkopn === "function", "Expected native addon to export spkopn(path, ifname, ncomch)");
+  invariant(typeof native.spkopa === "function", "Expected native addon to export spkopa(path)");
+  invariant(typeof native.spkw08 === "function", "Expected native addon to export spkw08(handle, body, center, frame, first, last, segid, degree, states, epoch1, step)");
+  invariant(typeof native.spkcls === "function", "Expected native addon to export spkcls(handle)");
   invariant(
     typeof native.subpnt === "function",
     "Expected native addon to export subpnt(method, target, et, fixref, abcorr, observer)",

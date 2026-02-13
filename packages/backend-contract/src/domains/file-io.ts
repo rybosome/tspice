@@ -5,7 +5,7 @@
 * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
 */
 
-import type { SpiceHandle } from "../shared/types.js";
+import type { SpiceHandle, VirtualOutput } from "../shared/types.js";
 
 /**
 * Plain-object representation of CSPICE `SpiceDLADescr`.
@@ -45,6 +45,17 @@ export interface FileIoApi {
 
   /** Determine SPICE file architecture + type (see `getfat_c`). */
   getfat(path: string): { arch: string; type: string };
+
+  /**
+   * Read back bytes for a previously-created virtual output file.
+   *
+   * Notes:
+   * - Virtual outputs are only guaranteed to be readable after their associated
+   *   writer handle has been closed (e.g. `spkcls(handle)` for SPK outputs).
+   * - Backends may reject reads for outputs they did not create via a writer
+   *   API. This is intentionally **not** a general filesystem read.
+   */
+  readVirtualOutput(output: VirtualOutput): Uint8Array;
 
   // --- DAF -----------------------------------------------------------------
 

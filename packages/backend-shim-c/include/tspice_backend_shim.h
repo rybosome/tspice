@@ -784,6 +784,61 @@ int tspice_spkuds(
     char *err,
     int errMaxBytes);
 
+// --- SPK writers --------------------------------------------------------
+
+// spkopn_c: open a new SPK file for write.
+int tspice_spkopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+// spkopa_c: open an existing SPK file for append.
+int tspice_spkopa(const char *path, int *outHandle, char *err, int errMaxBytes);
+
+// spkcls_c: close an SPK file handle.
+int tspice_spkcls(int handle, char *err, int errMaxBytes);
+
+// spkw08_c: write a type 8 segment (equal time steps, Lagrange interpolation).
+//
+// `states6n` is a flat array of length `n*6` doubles.
+// `epoch1` is the epoch of the first state record; successive epochs are `epoch1 + i*step`.
+int tspice_spkw08(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    double epoch1,
+    double step,
+    char *err,
+    int errMaxBytes);
+
+// spkw08_c (v2): like tspice_spkw08, but validates `states6nLen == 6*n` before
+// casting.
+int tspice_spkw08_v2(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    int states6nLen,
+    double epoch1,
+    double step,
+    char *err,
+    int errMaxBytes);
 
 // --- Derived geometry primitives ---
 

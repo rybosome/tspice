@@ -18,6 +18,7 @@ import { createEkApi } from "../domains/ek.js";
 
 import { createWasmFs } from "./fs.js";
 import { createSpiceHandleRegistry } from "./spice-handles.js";
+import { createVirtualOutputRegistry } from "./virtual-outputs.js";
 
 export type { CreateWasmBackendOptions } from "./create-backend-options.js";
 import type { CreateWasmBackendOptions } from "./create-backend-options.js";
@@ -421,6 +422,7 @@ export async function createWasmBackend(
 
   const fsApi = createWasmFs(module);
   const spiceHandles = createSpiceHandleRegistry();
+  const virtualOutputs = createVirtualOutputRegistry();
 
   const backend = {
     kind: "wasm",
@@ -429,10 +431,10 @@ export async function createWasmBackend(
     ...createKernelPoolApi(module),
     ...createIdsNamesApi(module),
     ...createFramesApi(module),
-    ...createEphemerisApi(module),
+    ...createEphemerisApi(module, spiceHandles, virtualOutputs),
     ...createGeometryApi(module),
     ...createCoordsVectorsApi(module),
-    ...createFileIoApi(module, spiceHandles),
+    ...createFileIoApi(module, spiceHandles, virtualOutputs),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
     ...createEkApi(module, spiceHandles),

@@ -10,6 +10,7 @@ import type {
   KernelKind,
   KernelKindInput,
   KernelSource,
+  VirtualOutput,
   KernelPoolVarType,
   Pl2nvcResult,
   SpiceBackend,
@@ -1649,7 +1650,6 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       throw new Error("Fake backend: spkuds() is not implemented");
     },
 
-
     nvc2pl: (normal, konst) => {
       if (!Array.isArray(normal) || normal.length !== 3) {
         throw new TypeError("nvc2pl(normal, konst): normal must be a length-3 number[]");
@@ -1697,6 +1697,32 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       } satisfies Pl2nvcResult;
     },
 
+    // --- SPK writers (not implemented in fake backend) ---
+
+    spkopn: (_file: string | VirtualOutput, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: spkopn() is not implemented");
+    },
+    spkopa: (_file: string | VirtualOutput) => {
+      throw new Error("Fake backend: spkopa() is not implemented");
+    },
+    spkcls: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: spkcls() is not implemented");
+    },
+    spkw08: (
+      _handle: SpiceHandle,
+      _body: number,
+      _center: number,
+      _frame: string,
+      _first: number,
+      _last: number,
+      _segid: string,
+      _degree: number,
+      _states: readonly number[] | Float64Array,
+      _epoch1: number,
+      _step: number,
+    ) => {
+      throw new Error("Fake backend: spkw08() is not implemented");
+    },
     subpnt: (_method, target, et, fixref, abcorr, observer) => {
       void (abcorr satisfies AbCorr | string);
 
@@ -1804,6 +1830,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     },
     getfat: (_path: string) => {
       throw new Error("Fake backend: getfat() is not implemented");
+    },
+    readVirtualOutput: (_output: VirtualOutput) => {
+      throw new Error("Fake backend: readVirtualOutput() is not implemented");
     },
     dafopr: (_path: string) => {
       throw new Error("Fake backend: dafopr() is not implemented");

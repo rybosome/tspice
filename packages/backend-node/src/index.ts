@@ -5,6 +5,7 @@ import { getNativeAddon } from "./native.js";
 
 import { getNodeBinding } from "./lowlevel/binding.js";
 import { createKernelStager } from "./runtime/kernel-staging.js";
+import { createVirtualOutputStager } from "./runtime/virtual-output-staging.js";
 import { createSpiceHandleRegistry } from "./runtime/spice-handles.js";
 
 import { createCoordsVectorsApi } from "./domains/coords-vectors.js";
@@ -31,6 +32,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const native = getNodeBinding();
   const stager = createKernelStager();
   const spiceHandles = createSpiceHandleRegistry();
+  const outputs = createVirtualOutputStager();
 
   const backend: SpiceBackend & { kind: "node" } = {
     kind: "node",
@@ -39,10 +41,10 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     ...createKernelPoolApi(native),
     ...createIdsNamesApi(native),
     ...createFramesApi(native),
-    ...createEphemerisApi(native, stager),
+    ...createEphemerisApi(native, spiceHandles, stager, outputs),
     ...createGeometryApi(native),
     ...createCoordsVectorsApi(native),
-    ...createFileIoApi(native, spiceHandles),
+    ...createFileIoApi(native, spiceHandles, outputs),
     ...createErrorApi(native),
     ...createCellsWindowsApi(native),
     ...createEkApi(native, spiceHandles, stager),
@@ -53,18 +55,25 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   (backend as SpiceBackend & { __ktotalAll(): number }).__ktotalAll = () => native.__ktotalAll();
 
   // Internal best-effort cleanup hook (not part of the public backend contract).
-  // Closes all currently-registered DAF/DAS/DLA/EK handles and throws an AggregateError if any closes fail.
+  // Closes all currently-registered DAF/DAS/DLA/EK/SPK handles and throws an AggregateError if any closes fail.
   Object.defineProperty(backend, "disposeAll", {
     value: () => {
       const errors: unknown[] = [];
       const entries =
         (spiceHandles as unknown as {
           __entries?: () => ReadonlyArray<
-            readonly [unknown, { kind: "DAF" | "DAS" | "DLA" | "EK"; nativeHandle: number }]
+            readonly [unknown, { kind: "DAF" | "DAS" | "DLA" | "EK" | "SPK"; nativeHandle: number }]
           >;
         }).__entries?.() ?? [];
+
       for (const [handle, entry] of entries) {
         try {
+          if (entry.kind === "SPK") {
+            // Ensure VirtualOutputStager bookkeeping stays consistent.
+            backend.spkcls(handle as any);
+            continue;
+          }
+
           if (entry.kind === "DAF") {
             spiceHandles.close(handle as any, ["DAF"], (e) => native.dafcls(e.nativeHandle), "disposeAll:dafcls");
           } else if (entry.kind === "EK") {
@@ -77,6 +86,14 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
           errors.push(err);
         }
       }
+
+      // Best-effort cleanup for any staged virtual outputs.
+      try {
+        outputs.dispose();
+      } catch (err) {
+        errors.push(err);
+      }
+
       if (errors.length > 0) {
         throw new AggregateError(errors, `disposeAll(): failed to close ${errors.length} handle(s)`);
       }
