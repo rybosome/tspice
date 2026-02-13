@@ -239,6 +239,13 @@ importers:
         version: 2.1.9(@types/node@22.19.6)
 
   packages/perf-analysis:
+    dependencies:
+      '@rybosome/tspice':
+        specifier: workspace:*
+        version: link:../tspice
+      yaml:
+        specifier: ^2.8.1
+        version: 2.8.2
     devDependencies:
       '@types/node':
         specifier: ^22.10.2
@@ -246,6 +253,9 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.19.6)
 
   packages/repo-standards:
     dependencies:

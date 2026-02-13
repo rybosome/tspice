@@ -1,8 +1,110 @@
 # @rybosome/tspice-perf-analysis
 
-Scaffolding for a future perf/benchmark analysis layer around tspice.
+Perf/benchmark analysis tooling around `@rybosome/tspice`.
 
-This package is intentionally **layout-only** right now: it provides the directory structure and stable module surfaces that follow-on issues can build on.
+Today this package includes a **node-native** benchmark runner that emits:
+
+- `raw.json` (full samples + debug metadata)
+- `bmf.json` (Bencher Metric Format)
+
+Metric units (BMF does not have a unit field, so these are implied):
+
+- `latency_p50` / `latency_p95`: `ns/op`
+- `throughput`: `ops/sec`
+
+See below for how to run it from the monorepo root.
+
+## Running benchmarks (node-native)
+
+Prerequisites:
+
+- The node-native backend must be built (native addon available).
+- On **linux-arm64**, automatic CSPICE fetching is not supported; you must provide a CSPICE install via `TSPICE_CSPICE_DIR`.
+
+From the repo root:
+
+```bash
+pnpm bench --backend node-native --suite micro
+```
+
+### Output directory + overwrite semantics
+
+By default, outputs are written to a **timestamped subdirectory** under `./benchmarks/results/`:
+
+```
+./benchmarks/results/<YYYYMMDD-HHmmss>/
+  raw.json
+  bmf.json
+```
+
+If you pass an explicit `--outDir`, outputs are written directly into that directory:
+
+```bash
+pnpm bench --backend node-native --suite micro --outDir ./benchmarks/results/custom
+```
+
+If `<outDir>/raw.json` or `<outDir>/bmf.json` already exist, they are **replaced**.
+Writes are done via an atomic swap (write a temp file in the same directory, then rename) to avoid leaving truncated JSON on crash.
+
+### BMF semantics + units
+
+`bmf.json` is a minimal Bencher Metric Format (BMF) mapping of:
+
+`benchmarkKey -> metricName -> { value: number }`
+
+Where `benchmarkKey` is currently:
+
+`node-native/<suiteId>/<benchmarkCaseId>`
+
+Since BMF does not include a unit field, consumers must treat these units as **implied**:
+
+- `latency_p50` / `latency_p95`
+  - **Unit:** `ns/op`
+  - **Meaning:** p50/p95 quantiles of the measured `ns/op` samples.
+  - Quantiles are computed from the sorted samples using linear interpolation between ranks.
+
+- `throughput`
+  - **Unit:** `ops/sec`
+  - **Meaning:** throughput derived from the mean latency across samples.
+  - Computation: `throughput = 1e9 / mean(ns/op)`.
+
+Why quantiles for latency but mean for throughput?
+
+- Latency quantiles (p50/p95) are stable, interpretable “typical” and “tail” measures and are a good fit for regression thresholds.
+- Throughput is fundamentally an “average rate” measure, and the mean latency is the simplest way to derive an expected steady-state ops/sec.
+
+We emit `latency_p50` and `latency_p95` as distinct measures (rather than overloading BMF `upper_value`) so they remain first-class metrics for alerting/thresholding.
+
+### Timing + warmup semantics
+
+Each benchmark case runs:
+
+1) **Preflight** kernel loading once (outside timing) to fail fast on missing/bad kernels.
+2) **Warmup phase**: `warmupIterations` iterations.
+3) **Measured phase**: `iterations` iterations producing one latency sample each.
+
+Within each warmup/measured iteration the runner:
+
+- calls `isolate()` (`kclear()` + `reset()`) to start from a clean SPICE kernel pool/state
+- loads the configured kernel(s) (if any)
+- runs the benchmark call loop `opsPerIteration` times
+
+The **measured timer** (`process.hrtime.bigint()`) starts *after* isolation + kernel loading and stops immediately after the call loop.
+This means the reported latency/throughput:
+
+- **includes:** just the benchmark call(s)
+- **excludes:** kernel loading (`furnsh`) and per-iteration isolation/reset overhead
+
+Isolation is performed **per iteration** (not per op). Each sample is the average latency of `opsPerIteration` calls executed under the same isolated+kernel-loaded state.
+This both reduces timer overhead for very fast calls and keeps each sample comparable by resetting SPICE state between samples.
+
+Native addon build (best-effort):
+
+```bash
+pnpm -w fetch:cspice
+pnpm -C packages/backend-node run build:native
+pnpm -w stage:native-platform
+```
 
 ## Directory layout
 
@@ -26,5 +128,4 @@ This package is intentionally **layout-only** right now: it provides the directo
 
 ## Non-goals (for now)
 
-- No real parsing/validation/execution logic yet.
 - No new fixture directories (we intend to **reuse** existing kernel fixtures first).

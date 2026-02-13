@@ -16,9 +16,9 @@ function escapeRegExp(value: string): string {
 }
 
 /**
- * Remove `\\begintext ...` blocks so we don't accidentally parse commented-out
- * assignments.
- */
+* Remove `\\begintext ...` blocks so we don't accidentally parse commented-out
+* assignments.
+*/
 export function stripMetaKernelBegintextBlocks(text: string): string {
   return text.replace(/\\{1,2}begintext[\s\S]*?(?=\\{1,2}begindata|$)/gi, "");
 }
@@ -53,12 +53,6 @@ function canonicalizeForRestriction(p: string): string {
   // `realpath` resolves symlinks (preventing link-based escapes), but it throws
   // for non-existent files. When that happens, fall back to a normalized absolute
   // path so we can still enforce `..`-based escapes.
-  //
-  // Note: some platforms (e.g. macOS) have symlinked temp dirs like `/tmp -> /private/tmp`.
-  // In that case, a non-existent *file* under an existing symlinked directory will cause
-  // `realpath` to throw, which can make the child path appear to escape when compared to
-  // a realpathed base dir. We try to realpath the deepest existing parent directory and
-  // then re-append the remaining path segments.
   try {
     return fs.realpathSync.native(p);
   } catch {
@@ -66,7 +60,6 @@ function canonicalizeForRestriction(p: string): string {
     const suffix: string[] = [];
 
     // Walk up until we find an existing path we can realpath.
-    // (This is intentionally sync; it's used during parsing / verification.)
     while (cur !== path.dirname(cur) && !fs.existsSync(cur)) {
       suffix.unshift(path.basename(cur));
       cur = path.dirname(cur);
@@ -88,11 +81,7 @@ function ensureWithinDirOrThrow(resolved: string, baseDir: string, message: stri
 
   // On Windows, `path.relative()` can return an absolute path when the two inputs
   // are on different drive letters (e.g. C: vs D:). Treat that as an escape.
-  if (path.isAbsolute(rel)) {
-    throw new Error(message);
-  }
-
-  if (rel === ".." || rel.startsWith(`..${path.sep}`)) {
+  if (path.isAbsolute(rel) || rel === ".." || rel.startsWith(`..${path.sep}`)) {
     throw new Error(message);
   }
 }
@@ -123,10 +112,22 @@ export function resolveMetaKernelKernelsToLoad(
     );
   }
 
+  if (symbols.length !== valuesRaw.length) {
+    const hasSymbols = symbols.length > 0 || hasMetaKernelListAssignment(metaKernelText, "PATH_SYMBOLS");
+    const hasValues = valuesRaw.length > 0 || hasMetaKernelListAssignment(metaKernelText, "PATH_VALUES");
+    if (hasSymbols || hasValues) {
+      throw new Error(
+        `Meta-kernel PATH_SYMBOLS/PATH_VALUES length mismatch. ` +
+          `PATH_SYMBOLS=${symbols.length} PATH_VALUES=${valuesRaw.length}. ` +
+          `Expected the lists to have the same number of entries. metaKernel=${JSON.stringify(metaKernelPath)}`,
+      );
+    }
+  }
+
   const values = valuesRaw.map((v) => (path.isAbsolute(v) ? path.resolve(v) : path.resolve(metaKernelDir, v)));
 
   const symbolMap = new Map<string, string>();
-  for (let i = 0; i < Math.min(symbols.length, values.length); i++) {
+  for (let i = 0; i < symbols.length; i++) {
     symbolMap.set(symbols[i]!, values[i]!);
   }
 
@@ -169,66 +170,13 @@ export function resolveMetaKernelKernelsToLoad(
   });
 }
 
-function rewriteMetaKernelStringList(
-  text: string,
-  name: string,
-  rewrite: (value: string) => string,
-): string {
-  const re = new RegExp(
-    String.raw`(\b${escapeRegExp(name)}\b\s*(\+?=)\s*\()([\s\S]*?)(\))`,
-    "gi",
-  );
-
-  return text.replace(re, (_match, prefix: string, _op: string, body: string, suffix: string) => {
-    const nextBody = body.replace(/'([^']+)'|"([^"]+)"/g, (m, s1, s2) => {
-      const v = s1 ?? s2;
-      if (v === undefined) return m;
-      const quote = s1 !== undefined ? "'" : '"';
-      return `${quote}${rewrite(v)}${quote}`;
-    });
-
-    return `${prefix}${nextBody}${suffix}`;
-  });
-}
-
 /**
- * For fixture packs: CSPICE resolves *relative* `PATH_VALUES` entries against
- * `process.cwd()` when furnishing a meta-kernel.
- *
- * To avoid `process.chdir()` (global state), we rewrite any relative paths to be
- * absolute (using the intended cwd), which makes the meta-kernel independent of
- * the process working directory.
- *
- * Note: we strip `\begintext` commentary blocks before rewriting so we don't
- * accidentally rewrite commented-out assignments.
- */
-export function sanitizeMetaKernelTextForNativeNoBegintextBlocks(
-  metaKernelText: string,
-  intendedCwd: string,
-): string {
-  const clean = stripMetaKernelBegintextBlocks(metaKernelText);
-  const baseDir = path.resolve(intendedCwd);
-
-  let out = rewriteMetaKernelStringList(clean, "PATH_VALUES", (v) =>
-    path.isAbsolute(v) ? path.resolve(v) : path.resolve(baseDir, v),
-  );
-
-  // Fully qualify any relative kernel entries so CSPICE does not depend on cwd.
-  out = rewriteMetaKernelStringList(out, "KERNELS_TO_LOAD", (k) => {
-    if (k.startsWith("$")) return k;
-    return path.isAbsolute(k) ? path.resolve(k) : path.resolve(baseDir, k);
-  });
-
-  return out;
-}
-
-/**
- * For WASM: we may want to furnish the meta-kernel text itself (so any pool
- * assignments apply), but we *must not* let CSPICE try to load OS-path kernels.
- *
- * We achieve this by removing `KERNELS_TO_LOAD` assignments.
- */
-export function sanitizeMetaKernelTextForWasm(metaKernelText: string): string {
+* For native: when we expand meta-kernels ourselves, we still want to furnish
+* the meta-kernel so pool assignments apply, but we must remove
+* `KERNELS_TO_LOAD` assignments to avoid double-loading and/or bypassing
+* restrictions.
+*/
+export function sanitizeMetaKernelTextForNativeNoKernels(metaKernelText: string): string {
   // Remove both `KERNELS_TO_LOAD = ( ... )` and `KERNELS_TO_LOAD += ( ... )`.
   // Note: `KERNELS_TO_LOAD = ( )` is not valid CSPICE syntax (BADVARASSIGN).
   const re = /^\s*KERNELS_TO_LOAD\s*\+?=\s*\([\s\S]*?\)\s*/gim;
@@ -255,16 +203,4 @@ export function sanitizeMetaKernelTextForWasm(metaKernelText: string): string {
   const tail = rest.slice(textMarker.index);
 
   return head + data.replace(re, "") + tail;
-}
-
-/**
- * For native: when we expand meta-kernels ourselves (e.g. for `restrictToDir`),
- * we still want to furnish the meta-kernel so pool assignments apply, but we
- * must remove `KERNELS_TO_LOAD` assignments to avoid double-loading and/or
- * bypassing restrictions.
- */
-export function sanitizeMetaKernelTextForNativeNoKernels(metaKernelText: string): string {
-  // Currently identical to the WASM sanitizer; kept separate for clarity and to
-  // allow future divergence (e.g. native-specific rewriting).
-  return sanitizeMetaKernelTextForWasm(metaKernelText);
 }

@@ -3,6 +3,8 @@ export type {
   BenchmarkContractV1,
   BenchmarkContractVersion,
   FixtureRefV1,
+  NormalizedBenchmarkCaseV1,
+  NormalizedBenchmarkContractV1,
   NormalizeFixtureRefsOptions,
 } from "./types.js";
 

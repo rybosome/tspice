@@ -19,6 +19,7 @@
     "format:check": "pnpm -C apps/orrery run format:check",
     "lint": "pnpm -r --if-present lint",
     "stage:native-platform": "node scripts/stage-native-platform.mjs",
+    "bench": "turbo run build --filter=@rybosome/tspice-perf-analysis && node packages/perf-analysis/dist/cli/bench.js",
     "test": "turbo run test",
     "test:js": "turbo run test --filter=!@rybosome/tspice-backend-node",
     "test:native": "pnpm run fetch:cspice && pnpm -C packages/backend-node run build:native && pnpm run stage:native-platform && pnpm run test",
