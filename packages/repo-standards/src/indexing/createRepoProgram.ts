@@ -19,6 +19,74 @@ function formatDiagnostics(diags: readonly ts.Diagnostic[]): string {
   });
 }
 
+function resolveProjectReferenceConfigPath(opts: {
+  repoRoot: string;
+  refPath: string;
+}): string {
+  const abs = path.resolve(opts.repoRoot, opts.refPath);
+  return abs.endsWith(".json") ? abs : path.join(abs, "tsconfig.json");
+}
+
+function resolveProjectReferenceDir(opts: {
+  repoRoot: string;
+  refPath: string;
+}): string {
+  const abs = path.resolve(opts.repoRoot, opts.refPath);
+  return abs.endsWith(".json") ? path.dirname(abs) : abs;
+}
+
+function getCompositeProjectReferences(opts: {
+  repoRoot: string;
+  refs: readonly ts.ProjectReference[];
+}): ts.ProjectReference[] {
+  return opts.refs.filter((ref) => {
+    const configPath = resolveProjectReferenceConfigPath({
+      repoRoot: opts.repoRoot,
+      refPath: ref.path
+    });
+
+    const parsed = ts.getParsedCommandLineOfConfigFile(configPath, {}, {
+      ...ts.sys,
+      onUnRecoverableConfigFileDiagnostic: () => {}
+    });
+
+    // If we can't parse it (or it isn't composite), treat it as non-referenceable.
+    // This lets the standards tool analyze repos that include non-composite configs
+    // (e.g. Vite apps) in a solution-style root `tsconfig.json`.
+    return Boolean(parsed?.options.composite);
+  });
+}
+
+function computeTypeRoots(opts: {
+  repoRoot: string;
+  refs: readonly ts.ProjectReference[];
+}): string[] | undefined {
+  const roots = new Set<string>();
+
+  const addIfExists = (abs: string): void => {
+    if (ts.sys.directoryExists?.(abs)) roots.add(abs);
+  };
+
+  // With pnpm's non-hoisted node_modules, @types packages often do *not* exist at
+  // `${repoRoot}/node_modules/@types`. Add workspace-level typeRoots so `types: ["node"]`
+  // (from shared tsconfig) can still resolve.
+  addIfExists(path.join(opts.repoRoot, "node_modules/@types"));
+
+  for (const ref of opts.refs) {
+    const absDir = resolveProjectReferenceDir({
+      repoRoot: opts.repoRoot,
+      refPath: ref.path
+    });
+    addIfExists(path.join(absDir, "node_modules/@types"));
+  }
+
+  // Ensure this package's own type roots are available even if it isn't referenced.
+  addIfExists(path.join(opts.repoRoot, "packages/repo-standards/node_modules/@types"));
+
+  const arr = Array.from(roots);
+  return arr.length > 0 ? arr : undefined;
+}
+
 export function createRepoProgram(opts: { repoRoot: string }): RepoProgram {
   const configPath = path.join(opts.repoRoot, "tsconfig.json");
 
@@ -114,7 +182,21 @@ export function createRepoProgram(opts: { repoRoot: string }): RepoProgram {
     compilerOptions
   );
 
-  const projectReferences = parsedSolution.projectReferences ?? [];
+  const projectReferences = getCompositeProjectReferences({
+    repoRoot: opts.repoRoot,
+    refs: parsedSolution.projectReferences ?? []
+  });
+
+  if (compilerOptions.typeRoots === undefined) {
+    const typeRoots = computeTypeRoots({
+      repoRoot: opts.repoRoot,
+      refs: projectReferences
+    });
+
+    if (typeRoots) {
+      compilerOptions.typeRoots = typeRoots;
+    }
+  }
 
   let rootNamesForProgram = uniqueRootNames;
 
