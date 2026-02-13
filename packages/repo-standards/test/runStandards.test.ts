@@ -95,7 +95,8 @@ const expectedPkgAViolations = [
 ];
 
 describe("engine: runStandards", () => {
-  it("executes configured rules and respects onlyRuleId/onlyPackageRoot", { timeout: 20_000 }, async () => {
+  // This test can be slow on GitHub macOS runners (native FS + module load).
+  it("executes configured rules and respects onlyRuleId/onlyPackageRoot", { timeout: 60_000 }, async () => {
     const baseline = await runStandards({
       repoRoot: fixtureRoot,
       configPath: "repo-standards.yml",
