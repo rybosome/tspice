@@ -220,6 +220,9 @@ importers:
 
   packages/repo-standards:
     dependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
       yaml:
         specifier: ^2.8.1
         version: 2.8.2
@@ -227,9 +230,6 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.6
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.6)
