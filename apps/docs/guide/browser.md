@@ -2,10 +2,12 @@
 
 In the browser, you’ll typically use the WASM backend.
 
+For real UIs, prefer `spiceClients.toWebWorker()`; `spiceClients.toAsync({ backend: "wasm" })` is OK for demos or small, infrequent calls.
+
 You have two main options:
 
-- `spiceClients.toAsync({ backend: "wasm" })`: simplest, runs on the main thread
 - `spiceClients.toWebWorker()`: runs SPICE calls in a Web Worker (recommended)
+- `spiceClients.toAsync({ backend: "wasm" })`: simplest, runs on the main thread
 
 ## Recommended: `toWebWorker()`
 
