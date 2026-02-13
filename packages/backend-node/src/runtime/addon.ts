@@ -3,6 +3,8 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
+import type { SpiceIntCell, SpiceWindow } from "@rybosome/tspice-backend-contract";
+
 export type NativeAddon = {
   spiceVersion(): string;
 
@@ -183,6 +185,50 @@ export type NativeAddon = {
     abcorr: string,
     obs: string
   ): { pos: number[]; lt: number };
+
+  spkez(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    obs: number
+  ): { state: number[]; lt: number };
+
+  spkezp(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    obs: number
+  ): { pos: number[]; lt: number };
+
+  spkgeo(
+    target: number,
+    et: number,
+    ref: string,
+    obs: number
+  ): { state: number[]; lt: number };
+
+  spkgps(
+    target: number,
+    et: number,
+    ref: string,
+    obs: number
+  ): { pos: number[]; lt: number };
+
+  spkssb(
+    target: number,
+    et: number,
+    ref: string,
+  ): number[];
+
+  spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
+  spkobj(spk: string, ids: SpiceIntCell): void;
+
+  spksfs(body: number, et: number): { found: boolean; handle?: number; descr?: number[]; ident?: string };
+
+  spkpds(body: number, center: number, frame: string, type: number, first: number, last: number): number[];
+  spkuds(descr: ReadonlyArray<number>): { body: number; center: number; frame: number; type: number; first: number; last: number; baddr: number; eaddr: number };
 
   subpnt(
     method: string,
