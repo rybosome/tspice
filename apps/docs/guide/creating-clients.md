@@ -89,7 +89,15 @@ Kernels (what they are, where they come from, and hosting strategies) are covere
 
 ## Caching (optional)
 
-`.caching(...)` memoizes identical transport/RPC calls.
+`.caching(...)` adds an **in-memory** memoization layer to the client transport (works with `toSync()`, `toAsync()`, and `toWebWorker()`).
+
+Notes:
+
+- Cache is per-client and cleared on `dispose()`.
+- “Identical” is determined by op name + a `JSON.stringify`-based cache key for the arguments (object key insertion order matters).
+- Calls with non-JSON-friendly / binary-like arguments are treated as non-cacheable.
+- Kernel mutation ops (load/unload/clear) bypass the cache; caching works best when kernels are loaded once up-front.
+- Cache hits return values by reference; treat returned objects/arrays as immutable when caching is enabled.
 
 It’s great when you do repeated queries with the same inputs (for example, UI refresh loops).
 

@@ -67,7 +67,7 @@ Common approaches:
 - **Browser apps**: copy kernels into your static assets (for example `public/kernels/naif/...`) so they’re available at `/kernels/naif/...` (relative to your app base).
 - **Custom hosting**: use your own bucket/CDN and provide absolute URLs.
 
-If you host your app under a base path (for example GitHub Pages), you’ll usually want to set `baseUrl` so relative kernel URLs resolve correctly:
+If you host your app under a base path (for example GitHub Pages), you’ll usually want to set `baseUrl` so **relative** kernel URLs resolve correctly:
 
 ```ts
 const { spice } = await spiceClients
@@ -75,7 +75,18 @@ const { spice } = await spiceClients
   .toAsync();
 ```
 
-(If you’re not using Vite, pass your app’s base path directly, like `"/myapp/"`.)
+`baseUrl` is a URL/path *prefix* (a directory, not a page):
+
+- It can be an absolute URL (`"https://cdn.example.com/myapp/"`) or a path prefix (`"/myapp/"`, `"myapp/"`).
+- It must end with a trailing `/` (directory-style), so URL joining is copy/paste safe.
+- It is only applied to **relative** `kernel.url` values (like `"kernels/naif/naif0012.tls"`).
+  Absolute URLs are left as-is.
+
+Example resolution:
+
+- `baseUrl: "/myapp/"` + `kernel.url: "kernels/naif/naif0012.tls"` → `"/myapp/kernels/naif/naif0012.tls"`
+
+(If you’re not using Vite, pass your app’s base path directly, like `"/myapp/"` — including the trailing slash.)
 
 ## Custom kernels
 

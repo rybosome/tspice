@@ -27,7 +27,6 @@ import { publicKernels, spiceClients } from "@rybosome/tspice";
 const kernelPack = publicKernels
   .naif0012_tls()
   .pck00011_tpc()
-  .de432s_bsp()
   .pack();
 
 const { spice, dispose } = await spiceClients
@@ -36,13 +35,9 @@ const { spice, dispose } = await spiceClients
 
 try {
   const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
-  const state = await spice.kit.getState({
-    target: "EARTH",
-    observer: "SUN",
-    at: et,
-  });
+  const j2000ToEarthFixed = await spice.kit.frameTransform("J2000", "IAU_EARTH", et);
 
-  console.log(state.position, state.velocity);
+  console.log(et, j2000ToEarthFixed.toRowMajor());
 } finally {
   await dispose();
 }
