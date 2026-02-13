@@ -1,11 +1,15 @@
 import type {
+  CkCoverageLevel,
+  CkCoverageTimeSystem,
   Found,
   FramesApi,
   Mat3RowMajor,
+  SpiceIntCell,
   SpiceMatrix6x6,
   SpiceVector3,
+  SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
-import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import { assertSpiceInt32NonNegative, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -13,6 +17,9 @@ import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
 import { tspiceCallFoundInt, tspiceCallFoundString } from "../codec/found.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
+import { resolveKernelPath } from "../runtime/fs.js";
+
+import { assertWasmOwnedCellHandle, assertWasmOwnedWindowHandle } from "./cells-windows.js";
 
 function tspiceCallCidfrm(
   module: EmscriptenModule,
@@ -315,6 +322,100 @@ function tspiceCallCkgpav(
   }
 }
 
+// --- CK file query / management (read-only) --------------------------------
+
+function tspiceCallCklpf(module: EmscriptenModule, ck: string): number {
+  return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outHandlePtr) => {
+    const ckPathPtr = writeUtf8CString(module, resolveKernelPath(ck));
+    if (!ckPathPtr) {
+      throw new Error("WASM malloc failed");
+    }
+
+    try {
+      module.HEAP32[outHandlePtr >> 2] = 0;
+      const code = module._tspice_cklpf(ckPathPtr, outHandlePtr, errPtr, WASM_ERR_MAX_BYTES);
+      if (code !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+      }
+      return module.HEAP32[outHandlePtr >> 2] ?? 0;
+    } finally {
+      module._free(ckPathPtr);
+    }
+  });
+}
+
+function tspiceCallCkupf(module: EmscriptenModule, handle: number): void {
+  assertSpiceInt32NonNegative(handle, "ckupf(handle)");
+  return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+    const code = module._tspice_ckupf(handle, errPtr, WASM_ERR_MAX_BYTES);
+    if (code !== 0) {
+      throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+    }
+  });
+}
+
+function tspiceCallCkobj(module: EmscriptenModule, ck: string, ids: SpiceIntCell): void {
+  return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+    const ckPathPtr = writeUtf8CString(module, resolveKernelPath(ck));
+    if (!ckPathPtr) {
+      throw new Error("WASM malloc failed");
+    }
+
+    try {
+      const code = module._tspice_ckobj(ckPathPtr, ids as unknown as number, errPtr, WASM_ERR_MAX_BYTES);
+      if (code !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+      }
+    } finally {
+      module._free(ckPathPtr);
+    }
+  });
+}
+
+function tspiceCallCkcov(
+  module: EmscriptenModule,
+  ck: string,
+  idcode: number,
+  needav: boolean,
+  level: CkCoverageLevel,
+  tol: number,
+  timsys: CkCoverageTimeSystem,
+  cover: SpiceWindow,
+): void {
+  return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+    const ckPathPtr = writeUtf8CString(module, resolveKernelPath(ck));
+    const levelPtr = writeUtf8CString(module, level);
+    const timsysPtr = writeUtf8CString(module, timsys);
+    if (!ckPathPtr || !levelPtr || !timsysPtr) {
+      for (const ptr of [timsysPtr, levelPtr, ckPathPtr]) {
+        if (ptr) module._free(ptr);
+      }
+      throw new Error("WASM malloc failed");
+    }
+
+    try {
+      const code = module._tspice_ckcov(
+        ckPathPtr,
+        idcode,
+        needav ? 1 : 0,
+        levelPtr,
+        tol,
+        timsysPtr,
+        cover as unknown as number,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (code !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+      }
+    } finally {
+      module._free(timsysPtr);
+      module._free(levelPtr);
+      module._free(ckPathPtr);
+    }
+  });
+}
+
 function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et: number): Mat3RowMajor {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
@@ -395,6 +496,25 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
     ckgp: (inst: number, sclkdp: number, tol: number, ref: string) => tspiceCallCkgp(module, inst, sclkdp, tol, ref),
     ckgpav: (inst: number, sclkdp: number, tol: number, ref: string) =>
       tspiceCallCkgpav(module, inst, sclkdp, tol, ref),
+
+    cklpf: (ck: string) => tspiceCallCklpf(module, ck),
+    ckupf: (handle: number) => tspiceCallCkupf(module, handle),
+    ckobj: (ck: string, ids: SpiceIntCell) => {
+      assertWasmOwnedCellHandle(module, ids as unknown as number, "ckobj(ids)");
+      tspiceCallCkobj(module, ck, ids);
+    },
+    ckcov: (
+      ck: string,
+      idcode: number,
+      needav: boolean,
+      level: CkCoverageLevel,
+      tol: number,
+      timsys: CkCoverageTimeSystem,
+      cover: SpiceWindow,
+    ) => {
+      assertWasmOwnedWindowHandle(module, cover as unknown as number, "ckcov(cover)");
+      tspiceCallCkcov(module, ck, idcode, needav, level, tol, timsys, cover);
+    },
 
     pxform: (from: string, to: string, et: number) => tspiceCallPxform(module, from, to, et),
     sxform: (from: string, to: string, et: number) => tspiceCallSxform(module, from, to, et),

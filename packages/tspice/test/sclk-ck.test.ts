@@ -15,6 +15,21 @@ const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 const tscPath = path.join(__dirname, "fixtures", "kernels", "cook_01.tsc");
 const tcPath = path.join(__dirname, "fixtures", "kernels", "cook_01.tc");
 
+const mgsSclkPath = path.join(
+  __dirname,
+  "fixtures",
+  "kernels",
+  "mgs-minimal",
+  "mgs_sclkscet_00061.tsc",
+);
+const mgsCkPath = path.join(
+  __dirname,
+  "fixtures",
+  "kernels",
+  "mgs-minimal",
+  "mgs_hga_hinge_v2.bc",
+);
+
 // Constants derived from cook_01.tsc / cook_01.tc (CSPICE "cookbook" data).
 const sc = -77;
 const sclkch = "593328:90:5:0";
@@ -196,6 +211,97 @@ describe("SCLK conversions + CK attitude", () => {
     expect(() => backend.furnsh({ path: "cook_01.tc", bytes: tcBytes })).toThrow(/TRANSFERFILE/i);
   });
 
-  // TODO: Add a binary CK (e.g. .bc) fixture so we can test ckgp/ckgpav
-  // happy-path behavior across backends.
+  itNode("node backend: CK read-only happy path (cklpf/ckobj/ckcov/ckupf)", async () => {
+    const backend = await createBackend({ backend: "node" });
+
+    backend.kclear();
+    backend.furnsh(lskPath);
+    backend.furnsh(mgsSclkPath);
+
+    // Load CK via cklpf/ckupf so we can validate the handle-based unload path.
+    const ckHandle = backend.cklpf(mgsCkPath);
+
+    const ids = backend.newIntCell(32);
+    const cover = backend.newWindow(128);
+
+    let inst = 0;
+    let sclkdp = 0;
+
+    try {
+      backend.ckobj(mgsCkPath, ids);
+      const nIds = backend.card(ids);
+      expect(nIds).toBeGreaterThan(0);
+
+      inst = backend.cellGeti(ids, 0);
+
+      backend.ckcov(mgsCkPath, inst, false, "SEGMENT", 0.0, "SCLK", cover);
+      const nIntervals = backend.wncard(cover);
+      expect(nIntervals).toBeGreaterThan(0);
+
+      const [left, right] = backend.wnfetd(cover, 0);
+      sclkdp = (left + right) / 2;
+      const tol = Math.max(1, (right - left) / 2);
+
+      const out = backend.ckgp(inst, sclkdp, tol, "MGS_SPACECRAFT");
+      expect(out.found).toBe(true);
+    } finally {
+      backend.freeCell(ids);
+      backend.freeWindow(cover);
+      backend.ckupf(ckHandle);
+    }
+
+    // Exact short codes vary across CSPICE versions/backends.
+    expect(() => backend.ckgp(inst, sclkdp, 0.0, "MGS_SPACECRAFT")).toThrow();
+  });
+
+  it("wasm backend: CK read-only happy path (cklpf/ckobj/ckcov/ckupf)", async () => {
+    const backend = await createBackend({ backend: "wasm" });
+
+    const lskBytes = fs.readFileSync(lskPath);
+    const sclkBytes = fs.readFileSync(mgsSclkPath);
+    const ckBytes = fs.readFileSync(mgsCkPath);
+
+    backend.kclear();
+    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+    backend.furnsh({ path: "mgs_sclkscet_00061.tsc", bytes: sclkBytes });
+
+    // Stage CK bytes into the WASM FS via furnsh, then unload so cklpf controls
+    // the loaded-state for this test.
+    backend.furnsh({ path: "mgs_hga_hinge_v2.bc", bytes: ckBytes });
+    backend.unload("mgs_hga_hinge_v2.bc");
+
+    const ckHandle = backend.cklpf("mgs_hga_hinge_v2.bc");
+
+    const ids = backend.newIntCell(32);
+    const cover = backend.newWindow(128);
+
+    let inst = 0;
+    let sclkdp = 0;
+
+    try {
+      backend.ckobj("mgs_hga_hinge_v2.bc", ids);
+      const nIds = backend.card(ids);
+      expect(nIds).toBeGreaterThan(0);
+
+      inst = backend.cellGeti(ids, 0);
+
+      backend.ckcov("mgs_hga_hinge_v2.bc", inst, false, "SEGMENT", 0.0, "SCLK", cover);
+      const nIntervals = backend.wncard(cover);
+      expect(nIntervals).toBeGreaterThan(0);
+
+      const [left, right] = backend.wnfetd(cover, 0);
+      sclkdp = (left + right) / 2;
+      const tol = Math.max(1, (right - left) / 2);
+
+      const out = backend.ckgp(inst, sclkdp, tol, "MGS_SPACECRAFT");
+      expect(out.found).toBe(true);
+    } finally {
+      backend.freeCell(ids);
+      backend.freeWindow(cover);
+      backend.ckupf(ckHandle);
+    }
+
+    // Exact short codes vary across CSPICE versions/backends.
+    expect(() => backend.ckgp(inst, sclkdp, 0.0, "MGS_SPACECRAFT")).toThrow();
+  });
 });
