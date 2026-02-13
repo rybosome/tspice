@@ -1,18 +1,12 @@
 #include "handle_validation.h"
 
+#include "tspice_error.h"
+
 #include <inttypes.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-static int tspice_write_error(char *err, int errMaxBytes, const char *message) {
-  if (err && errMaxBytes > 0) {
-    strncpy(err, message, (size_t)errMaxBytes - 1);
-    err[errMaxBytes - 1] = '\0';
-  }
-  return 1;
-}
 
 typedef struct {
   uintptr_t *items;
@@ -61,7 +55,7 @@ static int tspice_registry_contains(uintptr_t handle) {
 
 int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxBytes) {
   if (!cell) {
-    return tspice_write_error(err, errMaxBytes, "tspice_registry_add(): cell must be non-null");
+    return tspice_return_error(err, errMaxBytes, "tspice_registry_add(): cell must be non-null");
   }
 
   const uintptr_t handle = (uintptr_t)cell;
@@ -77,7 +71,7 @@ int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxB
     if (!next) {
       char buf[160];
       snprintf(buf, sizeof(buf), "%s: failed to grow cell registry", ctx);
-      return tspice_write_error(err, errMaxBytes, buf);
+      return tspice_return_error(err, errMaxBytes, buf);
     }
     tspice_cells_registry.items = next;
     tspice_cells_registry.cap = nextCap;

@@ -6,6 +6,8 @@
 
 #include "../handle_validation.h"
 
+#include "tspice_error.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -19,15 +21,6 @@ _Static_assert(sizeof(SpiceInt) == 4, "expected SpiceInt to be 32-bit");
 _Static_assert(SPICE_DSK_NSYPAR == 10, "expected SPICE_DSK_NSYPAR == 10");
 #endif
 
-static int tspice_write_error(char *err, int errMaxBytes, const char *msg) {
-  if (err == NULL || errMaxBytes <= 0) {
-    return 1;
-  }
-  strncpy(err, msg, errMaxBytes - 1);
-  err[errMaxBytes - 1] = '\0';
-  return 1;
-}
-
 static int tspice_clear_error(char *err, int errMaxBytes) {
   if (err == NULL || errMaxBytes <= 0) {
     return 0;
@@ -38,7 +31,7 @@ static int tspice_clear_error(char *err, int errMaxBytes) {
 
 static int tspice_validate_dsk_path(const char *dsk, char *err, int errMaxBytes) {
   if (dsk == NULL || dsk[0] == '\0') {
-    return tspice_write_error(err, errMaxBytes, "dsk path must be a non-empty string");
+    return tspice_return_error(err, errMaxBytes, "dsk path must be a non-empty string");
   }
   return 0;
 }
@@ -91,7 +84,7 @@ static int tspice_validate_int_cell(
         ctx,
         tspice_dtype_to_string_buf(SPICE_INT, bufExpected, (int)sizeof(bufExpected)),
         tspice_dtype_to_string_buf(cell->dtype, bufGot, (int)sizeof(bufGot)));
-    return tspice_write_error(err, errMaxBytes, buf);
+    return tspice_return_error(err, errMaxBytes, buf);
   }
   if (outCell != NULL) {
     *outCell = cell;
@@ -161,13 +154,13 @@ int tspice_dskgd(int handle, const int32_t *dladscInts8, int32_t *outInts6, doub
   tspice_clear_error(err, errMaxBytes);
 
   if (dladscInts8 == NULL) {
-    return tspice_write_error(err, errMaxBytes, "dladscInts8 must be non-null");
+    return tspice_return_error(err, errMaxBytes, "dladscInts8 must be non-null");
   }
   if (outInts6 == NULL) {
-    return tspice_write_error(err, errMaxBytes, "outInts6 must be non-null");
+    return tspice_return_error(err, errMaxBytes, "outInts6 must be non-null");
   }
   if (outDoubles18 == NULL) {
-    return tspice_write_error(err, errMaxBytes, "outDoubles18 must be non-null");
+    return tspice_return_error(err, errMaxBytes, "outDoubles18 must be non-null");
   }
 
   for (int i = 0; i < 6; i++) {
@@ -218,13 +211,13 @@ int tspice_dskb02(int handle, const int32_t *dladscInts8, int32_t *outInts10, do
   tspice_clear_error(err, errMaxBytes);
 
   if (dladscInts8 == NULL) {
-    return tspice_write_error(err, errMaxBytes, "dladscInts8 must be non-null");
+    return tspice_return_error(err, errMaxBytes, "dladscInts8 must be non-null");
   }
   if (outInts10 == NULL) {
-    return tspice_write_error(err, errMaxBytes, "outInts10 must be non-null");
+    return tspice_return_error(err, errMaxBytes, "outInts10 must be non-null");
   }
   if (outDoubles10 == NULL) {
-    return tspice_write_error(err, errMaxBytes, "outDoubles10 must be non-null");
+    return tspice_return_error(err, errMaxBytes, "outDoubles10 must be non-null");
   }
 
   for (int i = 0; i < 10; i++) {
