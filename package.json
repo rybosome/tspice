@@ -8,6 +8,7 @@
     "bench:contract": "node scripts/bench-contract.mjs",
     "build": "turbo run build && pnpm -C packages/tspice run build:dist-publish",
     "build:js": "turbo run build --filter=!@rybosome/tspice-backend-node",
+    "generate:llm": "node tools/llm/generate.mjs",
     "check": "pnpm run check:js",
     "check:bench-contract": "pnpm bench:contract validate benchmarks/contracts/v1/example.yml",
     "check:standards": "pnpm -C packages/repo-standards run build && node packages/repo-standards/dist/cli.js --config repo-standards.yml",

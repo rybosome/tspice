@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies (docs only)
         run: pnpm install --frozen-lockfile --filter @rybosome/docs
 
+      - name: Generate LLM artifacts
+        run: pnpm generate:llm
+
       - name: Build docs
         run: pnpm --filter @rybosome/docs build
 

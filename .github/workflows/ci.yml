@@ -20,6 +20,28 @@ jobs:
       node_version: ${{ matrix.node }}
       command: pnpm run check
 
+  check-llm-artifacts:
+    name: check:llm-artifacts (ubuntu + node 22)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm + Node
+        uses: ./.github/actions/setup-pnpm-node
+        with:
+          node-version: '22'
+
+      - name: Install dependencies (docs only)
+        run: pnpm install --frozen-lockfile --filter @rybosome/docs
+
+      - name: Generate LLM artifacts
+        run: pnpm generate:llm
+
+      - name: Ensure artifacts are up to date
+        run: git diff --exit-code
+
   orrery-e2e:
     name: Orrery Playwright e2e (ubuntu + node 22)
     uses: ./.github/workflows/reusable-node-pnpm.yml

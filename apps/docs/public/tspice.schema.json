@@ -1,0 +1,333 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rybosome.github.io/tspice/tspice.schema.json",
+  "title": "tspice (tool/integration schema)",
+  "description": "A small JSON schema intended for LLM/tool integrations. It models a portable request format for common @rybosome/tspice kit operations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "backend",
+    "calls"
+  ],
+  "properties": {
+    "backend": {
+      "type": "string",
+      "enum": [
+        "wasm",
+        "node"
+      ],
+      "description": "Select the tspice backend implementation."
+    },
+    "calls": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SpiceKitCall"
+      }
+    }
+  },
+  "$defs": {
+    "KernelSource": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Kernel path. On Node, this may be an OS filesystem path. On WASM, prefer the object form with bytes."
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "bytes"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Virtual kernel identifier. Keep it stable so you can unload later (kit.unloadKernel)."
+            },
+            "bytes": {
+              "type": "string",
+              "contentEncoding": "base64",
+              "contentMediaType": "application/octet-stream",
+              "description": "Base64-encoded kernel bytes (convert to Uint8Array in JS)."
+            }
+          }
+        }
+      ]
+    },
+    "AberrationCorrection": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "LT",
+        "LT+S",
+        "CN",
+        "CN+S",
+        "XLT",
+        "XLT+S",
+        "XCN",
+        "XCN+S"
+      ]
+    },
+    "BodyRef": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    },
+    "SpiceKitCall": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "args"
+          ],
+          "properties": {
+            "op": {
+              "const": "loadKernel"
+            },
+            "args": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kernel"
+              ],
+              "properties": {
+                "kernel": {
+                  "$ref": "#/$defs/KernelSource"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "args"
+          ],
+          "properties": {
+            "op": {
+              "const": "unloadKernel"
+            },
+            "args": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op"
+          ],
+          "properties": {
+            "op": {
+              "const": "kclear"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "args"
+          ],
+          "properties": {
+            "op": {
+              "const": "utcToEt"
+            },
+            "args": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "utc"
+              ],
+              "properties": {
+                "utc": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "args"
+          ],
+          "properties": {
+            "op": {
+              "const": "etToUtc"
+            },
+            "args": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "et"
+              ],
+              "properties": {
+                "et": {
+                  "type": "number"
+                },
+                "format": {
+                  "type": "string"
+                },
+                "prec": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "args"
+          ],
+          "properties": {
+            "op": {
+              "const": "frameTransform"
+            },
+            "args": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "from",
+                "to",
+                "et"
+              ],
+              "properties": {
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "et": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "args"
+          ],
+          "properties": {
+            "op": {
+              "const": "getState"
+            },
+            "args": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "target",
+                "observer",
+                "at"
+              ],
+              "properties": {
+                "target": {
+                  "$ref": "#/$defs/BodyRef"
+                },
+                "observer": {
+                  "$ref": "#/$defs/BodyRef"
+                },
+                "at": {
+                  "type": "number"
+                },
+                "frame": {
+                  "type": "string"
+                },
+                "aberration": {
+                  "$ref": "#/$defs/AberrationCorrection"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "xTspice": {
+    "sourceFiles": {
+      "publicIndex": "packages/tspice/src/index.ts",
+      "kernelSourceType": "packages/backend-contract/src/shared/types.ts"
+    },
+    "exportedSymbols": {
+      "typeExports": [
+        "AberrationCorrection",
+        "BodyRef",
+        "CreateBackendOptions",
+        "CreatePublicKernelsOptions",
+        "CreateSpiceAsyncOptions",
+        "CreateSpiceOptions",
+        "FrameName",
+        "GetStateArgs",
+        "KernelPack",
+        "KernelPackKernel",
+        "KernelSource",
+        "LoadKernelPackOptions",
+        "Mat3ColMajor",
+        "Mat3RowMajor",
+        "PublicKernelId",
+        "PublicKernelsBuilder",
+        "Spice",
+        "SpiceAsync",
+        "SpiceBackend",
+        "SpiceClientBuildResult",
+        "SpiceClientsBuilder",
+        "SpiceClientsWebWorkerOptions",
+        "SpiceKit",
+        "SpiceSync",
+        "SpiceTime",
+        "StateVector",
+        "Vec3",
+        "Vec6"
+      ],
+      "valueExports": [
+        "assertMat3ArrayLike9",
+        "brandMat3ColMajor",
+        "brandMat3RowMajor",
+        "createBackend",
+        "createPublicKernels",
+        "createSpice",
+        "createSpiceAsync",
+        "isBrandedMat3ColMajor",
+        "isBrandedMat3RowMajor",
+        "isMat3ArrayLike9",
+        "J2000",
+        "Mat3",
+        "publicKernels",
+        "spiceClients",
+        "SpiceError"
+      ]
+    },
+    "kernelSourceTypeScript": "export type KernelSource =\n  | string\n  | {\n      path: string;\n      bytes: Uint8Array;\n    };",
+    "generatedBy": "tools/llm/generate.mjs"
+  }
+}
