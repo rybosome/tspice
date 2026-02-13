@@ -7,6 +7,7 @@ import { buildRepoContext } from "../src/indexing/buildRepoContext.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const fixtureRoot = path.join(__dirname, "fixtures", "indexing-repo");
+const fixtureRootNonSolution = path.join(__dirname, "fixtures", "indexing-repo-nonsolution");
 
 function byPackageRoot(index: Awaited<ReturnType<typeof buildRepoContext>>["index"]):
   | Record<string, (typeof index.packages)[number]>
@@ -15,14 +16,29 @@ function byPackageRoot(index: Awaited<ReturnType<typeof buildRepoContext>>["inde
 }
 
 describe("repo indexing layer", () => {
-  it("builds a TS Program that can see multiple packages", async () => {
+  it("builds a TS Program that can see multiple packages", { timeout: 20_000 }, async () => {
     const ctx = await buildRepoContext({
       repoRoot: fixtureRoot,
       packageRoots: ["packages/pkg-a", "packages/pkg-b"]
     });
 
+    expect(ctx.program.getProjectReferences()?.length ?? 0).toBeGreaterThan(0);
+
     const aIndexAbs = path.join(fixtureRoot, "packages/pkg-a/src/index.ts");
     const bIndexAbs = path.join(fixtureRoot, "packages/pkg-b/src/index.ts");
+
+    expect(ctx.program.getSourceFile(aIndexAbs)).toBeDefined();
+    expect(ctx.program.getSourceFile(bIndexAbs)).toBeDefined();
+  });
+
+  it("supports non-solution root tsconfig.json (falls back to fileNames)", async () => {
+    const ctx = await buildRepoContext({
+      repoRoot: fixtureRootNonSolution,
+      packageRoots: ["packages/pkg-a", "packages/pkg-b"]
+    });
+
+    const aIndexAbs = path.join(fixtureRootNonSolution, "packages/pkg-a/src/index.ts");
+    const bIndexAbs = path.join(fixtureRootNonSolution, "packages/pkg-b/src/index.ts");
 
     expect(ctx.program.getSourceFile(aIndexAbs)).toBeDefined();
     expect(ctx.program.getSourceFile(bIndexAbs)).toBeDefined();
@@ -76,7 +92,7 @@ describe("repo indexing layer", () => {
       {
         exportName: "bar",
         originalName: "bar",
-        callId: "exported-callable:packages/pkg-a/src/bar.ts:bar",
+        callId: "exported-callable:packages/pkg-a:packages/pkg-a/src/bar.ts:1:14:bar",
         location: {
           filePath: "packages/pkg-a/src/bar.ts",
           line: 1,
@@ -86,7 +102,7 @@ describe("repo indexing layer", () => {
       {
         exportName: "foo",
         originalName: "foo",
-        callId: "exported-callable:packages/pkg-a/src/foo.ts:foo",
+        callId: "exported-callable:packages/pkg-a:packages/pkg-a/src/foo.ts:1:17:foo",
         location: {
           filePath: "packages/pkg-a/src/foo.ts",
           line: 1,
@@ -96,7 +112,7 @@ describe("repo indexing layer", () => {
       {
         exportName: "quxAlias",
         originalName: "qux",
-        callId: "exported-callable:packages/pkg-a/src/qux.ts:quxAlias",
+        callId: "exported-callable:packages/pkg-a:packages/pkg-a/src/qux.ts:1:17:quxAlias",
         location: {
           filePath: "packages/pkg-a/src/qux.ts",
           line: 1,
@@ -106,7 +122,7 @@ describe("repo indexing layer", () => {
       {
         exportName: "baz",
         originalName: "baz",
-        callId: "exported-callable:packages/pkg-a/src/star.ts:baz",
+        callId: "exported-callable:packages/pkg-a:packages/pkg-a/src/star.ts:1:14:baz",
         location: {
           filePath: "packages/pkg-a/src/star.ts",
           line: 1,

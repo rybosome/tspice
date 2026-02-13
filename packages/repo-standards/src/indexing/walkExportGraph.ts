@@ -7,6 +7,8 @@ import type { RepoRelativePath } from "./types.js";
 
 function resolveModuleToFile(opts: {
   program: ts.Program;
+  moduleResolutionHost: ts.ModuleResolutionHost;
+  moduleResolutionCache: ts.ModuleResolutionCache;
   containingFile: string;
   moduleName: string;
 }): string | undefined {
@@ -14,7 +16,8 @@ function resolveModuleToFile(opts: {
     opts.moduleName,
     opts.containingFile,
     opts.program.getCompilerOptions(),
-    ts.sys
+    opts.moduleResolutionHost,
+    opts.moduleResolutionCache
   );
 
   const resolvedFile = resolved.resolvedModule?.resolvedFileName;
@@ -90,6 +93,8 @@ export function walkExportGraph(opts: {
   repoRoot: string;
   program: ts.Program;
   checker: ts.TypeChecker;
+  moduleResolutionHost: ts.ModuleResolutionHost;
+  moduleResolutionCache: ts.ModuleResolutionCache;
   entrypointAbsPaths: string[];
 }): RepoRelativePath[] {
   const visited = new Set<string>();
@@ -115,6 +120,8 @@ export function walkExportGraph(opts: {
       if (stmt.moduleSpecifier && ts.isStringLiteralLike(stmt.moduleSpecifier)) {
         const resolved = resolveModuleToFile({
           program: opts.program,
+          moduleResolutionHost: opts.moduleResolutionHost,
+          moduleResolutionCache: opts.moduleResolutionCache,
           containingFile: absFileName,
           moduleName: stmt.moduleSpecifier.text
         });
@@ -137,6 +144,8 @@ export function walkExportGraph(opts: {
 
           const resolved = resolveModuleToFile({
             program: opts.program,
+            moduleResolutionHost: opts.moduleResolutionHost,
+            moduleResolutionCache: opts.moduleResolutionCache,
             containingFile: absFileName,
             moduleName: modName
           });

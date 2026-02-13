@@ -13,9 +13,32 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function collectExportPaths(value: unknown, out: string[]): void {
+function isSupportedExportTarget(value: string): boolean {
+  // Exports values should be relative, and we only support mapping dist->src for TS analysis.
+  if (!value.startsWith("./")) return false;
+  if (value.includes("*")) return false;
+
+  const posix = toPosixPath(value).replace(/^\.\//, "");
+
+  if (posix.startsWith("dist/")) {
+    return (
+      posix.endsWith(".d.ts") ||
+      posix.endsWith(".js") ||
+      posix.endsWith(".mjs") ||
+      posix.endsWith(".cjs")
+    );
+  }
+
+  if (posix.startsWith("src/")) {
+    return posix.endsWith(".ts");
+  }
+
+  return false;
+}
+
+function collectExportPaths(value: unknown, out: Set<string>): void {
   if (typeof value === "string") {
-    out.push(value);
+    if (isSupportedExportTarget(value)) out.add(value);
     return;
   }
 
@@ -35,9 +58,39 @@ function extractCandidateEntrypointsFromExports(pkgJson: Record<string, unknown>
   const exportsField = pkgJson.exports;
   if (exportsField == null) return [];
 
-  const out: string[] = [];
-  collectExportPaths(exportsField, out);
-  return out;
+  const out = new Set<string>();
+
+  if (typeof exportsField === "string" || Array.isArray(exportsField)) {
+    collectExportPaths(exportsField, out);
+    return [...out].sort();
+  }
+
+  if (isRecord(exportsField)) {
+    const entries = Object.entries(exportsField);
+    const keys = entries.map(([k]) => k);
+
+    // Conditional exports for the root entrypoint: { "import": "./dist/index.mjs", ... }
+    const hasSubpathKeys = keys.some((k) => k === "." || k.startsWith("./"));
+    if (!hasSubpathKeys) {
+      collectExportPaths(exportsField, out);
+      return [...out].sort();
+    }
+
+    // Subpath export map: only index "." + explicit subpaths (ignore globs like "./internal/*").
+    if ("." in exportsField) {
+      collectExportPaths(exportsField["."], out);
+    }
+
+    for (const [key, value] of entries) {
+      if (!key.startsWith("./")) continue;
+      if (key.includes("*")) continue;
+      collectExportPaths(value, out);
+    }
+
+    return [...out].sort();
+  }
+
+  return [];
 }
 
 function extractCandidateEntrypointsFromMainTypes(pkgJson: Record<string, unknown>): string[] {
@@ -108,6 +161,9 @@ export async function resolvePackageEntrypoints(opts: {
   const mapped: RepoRelativePath[] = [];
   const failures: string[] = [];
 
+  // Avoid repeated `stat()` calls when `exports` includes both `.js` + `.d.ts` for the same entry.
+  const mappedSrcToCandidates = new Map<string, string[]>();
+
   for (const candidate of candidates) {
     const mappedSrc = mapDistToSrc(candidate);
     if (!mappedSrc) {
@@ -115,13 +171,18 @@ export async function resolvePackageEntrypoints(opts: {
       continue;
     }
 
+    const list = mappedSrcToCandidates.get(mappedSrc);
+    if (list) list.push(candidate);
+    else mappedSrcToCandidates.set(mappedSrc, [candidate]);
+  }
+
+  for (const mappedSrc of [...mappedSrcToCandidates.keys()].sort()) {
     const absSrc = path.join(opts.pkg.absPath, mappedSrc);
     if (!(await exists(absSrc))) {
-      failures.push(candidate);
+      failures.push(...(mappedSrcToCandidates.get(mappedSrc) ?? []));
       continue;
     }
 
-    // Repo-relative path for the source entrypoint.
     mapped.push(path.posix.join(opts.pkg.packageRoot, toPosixPath(mappedSrc)));
   }
 

@@ -28,7 +28,9 @@ export async function buildRepoContext(input: BuildRepoContextInput): Promise<Re
     packageRoots: input.packageRoots
   });
 
-  const { program, checker } = createRepoProgram({ repoRoot: input.repoRoot });
+  const { program, checker, moduleResolutionHost, moduleResolutionCache } = createRepoProgram({
+    repoRoot: input.repoRoot
+  });
 
   const packages: RepoIndex["packages"] = [];
 
@@ -44,6 +46,8 @@ export async function buildRepoContext(input: BuildRepoContextInput): Promise<Re
       repoRoot: input.repoRoot,
       program,
       checker,
+      moduleResolutionHost,
+      moduleResolutionCache,
       entrypointAbsPaths
     });
 
@@ -59,6 +63,7 @@ export async function buildRepoContext(input: BuildRepoContextInput): Promise<Re
 
     const { exportedSymbols, exportedCallables } = extractExportSurface({
       repoRoot: input.repoRoot,
+      packageRoot: pkg.packageRoot,
       checker,
       entrypointSourceFiles
     });

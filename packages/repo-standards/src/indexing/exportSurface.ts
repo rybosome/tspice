@@ -65,6 +65,7 @@ function isCallableDeclaration(decl: ts.Declaration): boolean {
 
 export function extractExportSurface(opts: {
   repoRoot: string;
+  packageRoot: string;
   checker: ts.TypeChecker;
   entrypointSourceFiles: ts.SourceFile[];
 }): {
@@ -144,7 +145,7 @@ export function extractExportSurface(opts: {
     callables.push({
       exportName: info.exportName,
       originalName: info.originalName,
-      callId: `exported-callable:${location.filePath}:${info.exportName}`,
+      callId: `exported-callable:${opts.packageRoot}:${location.filePath}:${location.line}:${location.col}:${info.exportName}`,
       location
     });
   }
