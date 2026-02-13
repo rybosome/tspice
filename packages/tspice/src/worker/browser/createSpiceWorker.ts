@@ -28,8 +28,6 @@ export function createSpiceWorker(
     );
   }
 
-  const url = opts.url ?? new URL("./spiceWorkerEntry.js", import.meta.url);
-
   // Default to module workers since this package is ESM and relies on
   // `import.meta.url`-relative assets.
   const workerOptions: Record<string, unknown> = {
@@ -37,5 +35,15 @@ export function createSpiceWorker(
     ...(opts.workerOptions ?? {}),
   };
 
-  return new (WorkerCtor as WorkerCtorLike)(url, workerOptions);
+  if (opts.url != null) {
+    return new (WorkerCtor as WorkerCtorLike)(opts.url, workerOptions);
+  }
+
+  // NOTE: Keep this inline (no intermediate `url` variable) so bundlers like
+  // Vite/Rollup can statically detect the worker entry and bundle its module
+  // graph.
+  return new (WorkerCtor as WorkerCtorLike)(
+    new URL("./spiceWorkerEntry.js", import.meta.url),
+    workerOptions,
+  );
 }
