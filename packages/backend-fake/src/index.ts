@@ -2,21 +2,38 @@ import type {
   AbCorr,
   DlaDescriptor,
   Found,
+  IllumfResult,
+  IllumgResult,
   IluminResult,
   KernelData,
+  KernelInfo,
   KernelKind,
+  KernelKindInput,
   KernelSource,
+  VirtualOutput,
+  KernelPoolVarType,
+  Pl2nvcResult,
   SpiceBackend,
   SpiceHandle,
+  SpiceIntCell,
   Mat3RowMajor,
   SpiceMatrix6x6,
+  SpicePlane,
   SpiceStateVector,
   SpiceVector3,
   SpkposResult,
   SpkezrResult,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
-import { assertGetmsgWhich, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import {
+  assertGetmsgWhich,
+  assertSpiceInt32,
+  brandMat3RowMajor,
+  kxtrctJs,
+  matchesKernelKind,
+  normalizeBodItem,
+  normalizeKindInput,
+} from "@rybosome/tspice-backend-contract";
 
 /**
  * A deterministic, pure-TS "toy" backend.
@@ -37,6 +54,20 @@ import { assertGetmsgWhich, brandMat3RowMajor } from "@rybosome/tspice-backend-c
 const TWO_PI = Math.PI * 2;
 
 export const FAKE_SPICE_VERSION = "tspice-fake-backend@0.0.0";
+
+export type FakeBackendOptions = {
+  /**
+   * How to handle `furnsh()` calls with unrecognized kernel filename extensions.
+   *
+   * - `"throw"` (default): throw a RangeError
+   * - `"assume-text"`: treat unknown extensions as a TEXT kernel
+   *
+   * Note: with `"assume-text"`, TEXT subtype queries (`"LSK"`, `"FK"`, `"IK"`, `"SCLK"`) depend on
+   * the `file` identifier having a recognizable extension. If subtype queries matter for a test/demo,
+   * prefer naming virtual ids with `.tls/.tf/.ti/.tsc` (or keep the default `"throw"`).
+   */
+  unknownExtension?: "throw" | "assume-text";
+};
 
 const J2000_UTC_MS = Date.parse("2000-01-01T12:00:00.000Z");
 
@@ -182,6 +213,23 @@ function angleBetween(a: SpiceVector3, b: SpiceVector3): number {
   if (na === 0 || nb === 0) return 0;
   const c = clamp(vdot(a, b) / (na * nb), -1, 1);
   return Math.acos(c);
+}
+
+function ellipsoidSurfaceNormal(spoint: SpiceVector3, radii: SpiceVector3): SpiceVector3 {
+  const [x, y, z] = spoint;
+  const [a, b, c] = radii;
+
+  // Gradient of x^2/a^2 + y^2/b^2 + z^2/c^2 = 1 is [x/a^2, y/b^2, z/c^2]
+  if (!Number.isFinite(a) || !Number.isFinite(b) || !Number.isFinite(c) || a === 0 || b === 0 || c === 0) {
+    // If we don't have radii, fall back to the sphere assumption.
+    return vhat(spoint);
+  }
+
+  return vhat([
+    x / (a * a),
+    y / (b * b),
+    z / (c * c),
+  ]);
 }
 
 function canonicalizeZero(n: number): number {
@@ -575,47 +623,127 @@ function formatUtcFromMs(ms: number, prec: number): string {
   return `${head}.${padded}Z`;
 }
 
+type KernelKindNoAll = Exclude<KernelKind, "ALL">;
+
 type KernelRecord = {
   file: string;
   source: string;
   filtyp: string;
   handle: number;
-  kind: KernelKind;
+  kind: KernelKindNoAll;
 };
 
-function guessKernelKind(path: string): KernelKind {
+function guessKernelKind(path: string, unknownExtension: "throw" | "assume-text"): KernelKindNoAll {
   const lower = path.toLowerCase();
   if (lower.endsWith(".bsp")) return "SPK";
   if (lower.endsWith(".bc")) return "CK";
-  if (lower.endsWith(".tpc") || lower.endsWith(".pck")) return "PCK";
+  if (lower.endsWith(".bpc")) return "PCK";
+  if (lower.endsWith(".bds") || lower.endsWith(".dsk")) return "DSK";
+  if (lower.endsWith(".tpc") || lower.endsWith(".pck")) return "TEXT";
   if (lower.endsWith(".tls") || lower.endsWith(".lsk")) return "LSK";
   if (lower.endsWith(".tf") || lower.endsWith(".fk")) return "FK";
   if (lower.endsWith(".ti") || lower.endsWith(".ik")) return "IK";
   if (lower.endsWith(".tsc") || lower.endsWith(".sclk")) return "SCLK";
+  if (lower.endsWith(".ek")) return "EK";
   if (lower.endsWith(".tm") || lower.endsWith(".meta")) return "META";
-  return "ALL";
+  // "ALL" is a query token, not a per-kernel kind.
+  if (unknownExtension === "assume-text") {
+    return "TEXT";
+  }
+  throw new RangeError(`Unsupported kernel extension (fake backend): ${path}`);
 }
 
-function kernelFiltyp(kind: KernelKind): string {
+function assertNever(x: never, msg: string): never {
+  throw new Error(msg);
+}
+
+function kernelFiltyp(kind: KernelKindNoAll): string {
   // Keep this close to NAIF-style strings, but it doesn't need to be exact.
   switch (kind) {
     case "SPK":
     case "CK":
     case "PCK":
+    case "DSK":
+    case "EK":
+    case "META":
+    case "TEXT":
+      return kind;
+
     case "LSK":
     case "FK":
     case "IK":
     case "SCLK":
-    case "EK":
-    case "META":
-      return kind;
-    case "ALL":
-    default:
-      return "ALL";
+      return "TEXT";
+  }
+
+  // Compile-time exhaustiveness check: if a new KernelKind is added, TypeScript
+  // forces us to intentionally map it.
+  return assertNever(kind, `Unmapped KernelKind: ${kind}`);
+}
+
+function normalizeVirtualKernelIdOrNull(input: string): string | null {
+  // Keep lookup semantics aligned with the WASM backend's virtual-id
+  // normalization (see core's `normalizeVirtualKernelPath`).
+  //
+  // Unlike the core helper, this is non-throwing: invalid inputs just don't
+  // match.
+  const raw = input.replace(/\\/g, "/").trim();
+  if (!raw) {
+    return null;
+  }
+
+  // Strip leading slashes so `/kernels/foo.tls` behaves like `kernels/foo.tls`.
+  let rel = raw.replace(/^\/+/, "");
+
+  // Strip leading `./` segments.
+  while (rel.startsWith("./")) {
+    rel = rel.slice(2);
+  }
+
+  // Strip a leading `kernels/` directory to keep user input flexible.
+  // Treat a bare `kernels` segment as equivalent to `kernels/`.
+  if (rel === "kernels") {
+    rel = "";
+  }
+  while (rel.startsWith("kernels/")) {
+    rel = rel.replace(/^kernels\/+/, "");
+  }
+
+  const segments = rel.split("/");
+  const out: string[] = [];
+  for (const seg of segments) {
+    if (!seg || seg === ".") {
+      continue;
+    }
+    if (seg === "..") {
+      return null;
+    }
+    out.push(seg);
+  }
+
+  if (out.length === 0) {
+    return null;
+  }
+
+  return out.join("/");
+}
+
+function assertPoolRange(fn: string, start: number, room: number): void {
+  if (!Number.isFinite(start) || !Number.isInteger(start) || start < 0) {
+    throw new RangeError(`${fn}(): start must be an integer >= 0`);
+  }
+  if (!Number.isFinite(room) || !Number.isInteger(room) || room <= 0) {
+    throw new RangeError(`${fn}(): room must be an integer > 0`);
   }
 }
 
-export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
+function assertNonEmptyString(fn: string, field: string, value: string): void {
+  if (value.trim().length === 0) {
+    throw new RangeError(`${fn}(): ${field} must be a non-empty string`);
+  }
+}
+
+export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
   let spiceShort = "";
@@ -623,12 +751,128 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
   const traceStack: string[] = [];
   const kernels: KernelRecord[] = [];
 
+  const unknownExtension = options.unknownExtension ?? "throw";
+
+  type KernelPoolEntry =
+    | { type: "N"; values: number[] }
+    | { type: "C"; values: string[] };
+
+  const kernelPool = new Map<string, KernelPoolEntry>();
+
+  // boddef() mappings (CSPICE uses process-global state; keep it per-backend here).
+  const customNameToBodyCode = new Map<string, number>();
+  const customBodyCodeToName = new Map<number, string>();
+
+
+  // swpool/cvpool "agent" state.
+  const kernelPoolWatches = new Map<string, { names: string[]; dirty: boolean }>();
+  const kernelPoolWatchesByName = new Map<string, Set<string>>();
+
+  const unindexKernelPoolWatch = (agent: string, names: readonly string[]) => {
+    for (const name of names) {
+      const agents = kernelPoolWatchesByName.get(name);
+      if (!agents) continue;
+      agents.delete(agent);
+      if (agents.size === 0) {
+        kernelPoolWatchesByName.delete(name);
+      }
+    }
+  };
+
+  const indexKernelPoolWatch = (agent: string, names: readonly string[]) => {
+    for (const name of names) {
+      let agents = kernelPoolWatchesByName.get(name);
+      if (!agents) {
+        agents = new Set<string>();
+        kernelPoolWatchesByName.set(name, agents);
+      }
+      agents.add(agent);
+    }
+  };
+
+  const markKernelPoolUpdated = (name: string) => {
+    // Avoid an O(watches * names) scan by maintaining a reverse index.
+    const agents = kernelPoolWatchesByName.get(name);
+    if (!agents) return;
+    for (const agent of agents) {
+      const watch = kernelPoolWatches.get(agent);
+      if (watch) {
+        watch.dirty = true;
+      }
+    }
+  };
+
   const spiceCellUnsupported =
     "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
 
-  const getKernelsOfKind = (kind: KernelKind): readonly KernelRecord[] => {
-    if (kind === "ALL") return kernels;
-    return kernels.filter((k) => k.kind === kind);
+  const getKernelsOfKind = (kind: KernelKindInput | undefined): readonly KernelRecord[] => {
+    const requested = new Set<string>(normalizeKindInput(kind));
+    return kernels.filter((k) => matchesKernelKind(requested, k));
+  };
+
+  // Minimal state for timdef() GET/SET.
+  //
+  // The fake backend treats time systems deterministically and does not model
+  // leap seconds, so these defaults are mostly for parity with the contract
+  // and to support callers that expect timdef() to exist.
+  const DEFAULT_TIME_DEFAULTS = [
+    ["SYSTEM", "UTC"],
+    ["CALENDAR", "GREGORIAN"],
+    ["ZONE", "UTC"],
+  ] as const;
+
+  const timeDefaults = new Map<string, string>(DEFAULT_TIME_DEFAULTS);
+
+  function resetTimeDefaults(): void {
+    timeDefaults.clear();
+    for (const [k, v] of DEFAULT_TIME_DEFAULTS) {
+      timeDefaults.set(k, v);
+    }
+  }
+
+  function timdef(action: "GET", item: string): string;
+  function timdef(action: "SET", item: string, value: string): void;
+  function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+    assertNonEmptyString("timdef", "item", item);
+
+    if (action === "GET") {
+      return timeDefaults.get(item) ?? "";
+    }
+
+    if (typeof value !== "string") {
+      throw new TypeError("timdef(SET) requires a string value");
+    }
+    // Match CSPICE `timdef_c`: empty (length 0) strings are invalid, but
+    // whitespace-only strings are allowed (e.g. ZONE can be "blank").
+    if (value.length === 0) {
+      throw new RangeError("timdef(SET): value must be a non-empty string");
+    }
+
+    timeDefaults.set(item, value);
+  }
+
+  const getBodyRadiiKm = (bodyId: number): SpiceVector3 => {
+    const key = `BODY${bodyId}_RADII`;
+    const entry = kernelPool.get(key);
+    if (entry?.type === "N" && entry.values.length >= 3) {
+      const a = entry.values[0];
+      const b = entry.values[1];
+      const c = entry.values[2];
+      if (
+        typeof a === "number" &&
+        typeof b === "number" &&
+        typeof c === "number" &&
+        Number.isFinite(a) &&
+        Number.isFinite(b) &&
+        Number.isFinite(c)
+      ) {
+        return [a, b, c];
+      }
+    }
+
+    // Fall back to a spherical body when RADII isn't available.
+    const r = getBodyRadiusKm(bodyId);
+    return [r, r, r];
   };
 
   return {
@@ -642,6 +886,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       spiceShort = "";
       spiceLong = "";
       traceStack.length = 0;
+      resetTimeDefaults();
     },
     getmsg: (which) => {
       assertGetmsgWhich(which);
@@ -677,7 +922,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       const file = typeof kernel === "string" ? kernel : kernel.path;
       const source = typeof kernel === "string" ? file : "bytes";
 
-      const kind = guessKernelKind(file);
+      const kind = guessKernelKind(file, unknownExtension);
       const handle = nextHandle++;
 
       kernels.push({
@@ -690,7 +935,12 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
 
     unload: (path: string) => {
-      const idx = kernels.findIndex((k) => k.file === path);
+      const needle = normalizeVirtualKernelIdOrNull(path);
+      if (needle == null) {
+        return;
+      }
+
+      const idx = kernels.findIndex((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
       if (idx >= 0) {
         kernels.splice(idx, 1);
       }
@@ -698,13 +948,42 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
 
     kclear: () => {
       kernels.length = 0;
+      kernelPool.clear();
+      kernelPoolWatches.clear();
+      kernelPoolWatchesByName.clear();
     },
 
-    ktotal: (kind: KernelKind = "ALL") => {
+    kinfo: (path: string) => {
+      const needle = normalizeVirtualKernelIdOrNull(path);
+      if (needle == null) {
+        return { found: false };
+      }
+
+      const k = kernels.find((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
+      if (!k) {
+        return { found: false };
+      }
+
+      return {
+        found: true,
+        filtyp: k.filtyp,
+        source: k.source,
+        handle: k.handle,
+      } satisfies Found<KernelInfo>;
+    },
+
+    kxtrct: (keywd, terms, wordsq) => {
+      return kxtrctJs(keywd, terms, wordsq);
+    },
+    kplfrm: (_frmcls, _idset) => {
+      throw new Error(spiceCellUnsupported);
+    },
+
+    ktotal: (kind: KernelKindInput = "ALL") => {
       return getKernelsOfKind(kind).length;
     },
 
-    kdata: (which: number, kind: KernelKind = "ALL") => {
+    kdata: (which: number, kind: KernelKindInput = "ALL") => {
       const list = getKernelsOfKind(kind);
       const k = list[which];
       if (!k) return { found: false };
@@ -715,6 +994,181 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
         source: k.source,
         handle: k.handle,
       } satisfies Found<KernelData>;
+    },
+
+    gdpool: (name, start, room) => {
+      assertNonEmptyString("gdpool", "name", name);
+      assertPoolRange("gdpool", start, room);
+      const start0 = start;
+      const room0 = room;
+
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      if (entry.type !== "N") {
+        throw new Error(`Fake backend: gdpool only supports numeric variables (got ${entry.type})`);
+      }
+
+      return {
+        found: true,
+        values: entry.values.slice(start0, start0 + room0),
+      } satisfies Found<{ values: number[] }>;
+    },
+
+    gipool: (name, start, room) => {
+      assertNonEmptyString("gipool", "name", name);
+      assertPoolRange("gipool", start, room);
+      const start0 = start;
+      const room0 = room;
+
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      if (entry.type !== "N") {
+        throw new Error(`Fake backend: gipool only supports numeric variables (got ${entry.type})`);
+      }
+
+      return {
+        found: true,
+        values: entry.values.slice(start0, start0 + room0).map((v, i) => {
+          assertSpiceInt32(v, `gipool(): values[${start0 + i}]`);
+          return v;
+        }),
+      } satisfies Found<{ values: number[] }>;
+    },
+
+    gcpool: (name, start, room) => {
+      assertNonEmptyString("gcpool", "name", name);
+      assertPoolRange("gcpool", start, room);
+      const start0 = start;
+      const room0 = room;
+
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      if (entry.type !== "C") {
+        throw new Error(`Fake backend: gcpool only supports character variables (got ${entry.type})`);
+      }
+
+      return {
+        found: true,
+        values: entry.values.slice(start0, start0 + room0),
+      } satisfies Found<{ values: string[] }>;
+    },
+
+    gnpool: (template, start, room) => {
+      assertNonEmptyString("gnpool", "template", template);
+      assertPoolRange("gnpool", start, room);
+      const start0 = start;
+      const room0 = room;
+
+      const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\[\]\\]/g, "\\$&");
+
+      // Support escaping wildcard characters via backslash:
+      // - `\*` matches a literal `*`
+      // - `\%` matches a literal `%`
+      let reSrc = "^";
+      for (let i = 0; i < template.length; i++) {
+        const ch = template[i]!;
+        if (ch === "\\") {
+          const next = template[i + 1];
+          if (next !== undefined) {
+            reSrc += escapeRegex(next);
+            i++;
+          } else {
+            reSrc += "\\\\";
+          }
+          continue;
+        }
+        if (ch === "*") {
+          reSrc += ".*";
+          continue;
+        }
+        if (ch === "%") {
+          reSrc += ".";
+          continue;
+        }
+        reSrc += escapeRegex(ch);
+      }
+      reSrc += "$";
+
+      const re = new RegExp(reSrc);
+
+      const matches = Array.from(kernelPool.keys()).filter((k) => re.test(k)).sort();
+      if (matches.length === 0) {
+        return { found: false };
+      }
+
+      return {
+        found: true,
+        values: matches.slice(start0, start0 + room0),
+      } satisfies Found<{ values: string[] }>;
+    },
+
+    dtpool: (name) => {
+      assertNonEmptyString("dtpool", "name", name);
+      const entry = kernelPool.get(name);
+      if (!entry) return { found: false };
+      return {
+        found: true,
+        n: entry.values.length,
+        type: entry.type as KernelPoolVarType,
+      } satisfies Found<{ n: number; type: KernelPoolVarType }>;
+    },
+
+    pdpool: (name, values) => {
+      assertNonEmptyString("pdpool", "name", name);
+      for (let i = 0; i < values.length; i++) {
+        const v = values[i]!;
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`pdpool(): values[${i}] must be a finite number (got ${String(v)})`);
+        }
+      }
+      kernelPool.set(name, { type: "N", values: [...values] });
+      markKernelPoolUpdated(name);
+    },
+
+    pipool: (name, values) => {
+      assertNonEmptyString("pipool", "name", name);
+      for (let i = 0; i < values.length; i++) {
+        assertSpiceInt32(values[i]!, `pipool(): values[${i}]`);
+      }
+      kernelPool.set(name, { type: "N", values: [...values] });
+      markKernelPoolUpdated(name);
+    },
+
+    pcpool: (name, values) => {
+      assertNonEmptyString("pcpool", "name", name);
+      kernelPool.set(name, { type: "C", values: [...values] });
+      markKernelPoolUpdated(name);
+    },
+
+    swpool: (agent, names) => {
+      assertNonEmptyString("swpool", "agent", agent);
+
+      for (let i = 0; i < names.length; i++) {
+        assertNonEmptyString("swpool", `names[${i}]`, names[i]!);
+      }
+      // CSPICE guarantees the next cvpool(agent) returns true.
+      const prev = kernelPoolWatches.get(agent);
+      if (prev) {
+        unindexKernelPoolWatch(agent, prev.names);
+      }
+
+      kernelPoolWatches.set(agent, { names: [...names], dirty: true });
+      indexKernelPoolWatch(agent, names);
+    },
+
+    cvpool: (agent) => {
+      assertNonEmptyString("cvpool", "agent", agent);
+      const watch = kernelPoolWatches.get(agent);
+      if (!watch) return false;
+      const dirty = watch.dirty;
+      watch.dirty = false;
+      return dirty;
+    },
+
+    expool: (name) => {
+      assertNonEmptyString("expool", "name", name);
+      const entry = kernelPool.get(name);
+      return entry?.type === "N";
     },
 
     tkvrsn: (item) => {
@@ -748,17 +1202,116 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       return formatUtcFromMs(ms, 3);
     },
 
+    deltet: (_epoch, _eptype) => {
+      // Deterministic stub: the fake backend ignores leap seconds, so ET and
+      // UTC are treated as identical.
+      return 0;
+    },
+
+    unitim: (epoch, _insys, _outsys) => {
+      // Deterministic stub: treat all input/output systems as identical.
+      return epoch;
+    },
+
+    tparse: (timstr) => {
+      // Deterministic stub: match `str2et` semantics in the fake backend.
+      if (!isIso8601OrRfc3339Utcish(timstr)) {
+        throw new Error(
+          `Fake backend: tparse() only supports ISO-8601/RFC3339 timestamps (got ${JSON.stringify(timstr)})`,
+        );
+      }
+      const ms = Date.parse(timstr);
+      if (!Number.isFinite(ms)) {
+        throw new Error(`Fake backend: failed to parse time: ${JSON.stringify(timstr)}`);
+      }
+      return (ms - J2000_UTC_MS) / 1000;
+    },
+
+    tpictr: (sample, pictur) => {
+      if (sample.length === 0) {
+        throw new RangeError("tpictr(): sample must be a non-empty string");
+      }
+      if (pictur.length === 0) {
+        throw new RangeError("tpictr(): pictur must be a non-empty string");
+      }
+      // Picture transformation is out of scope for the fake backend.
+      return pictur;
+    },
+
+    timdef,
+
     bodn2c: (name) => {
       const trimmed = normalizeName(name);
+
+      const custom =
+        customNameToBodyCode.get(trimmed) ??
+        customNameToBodyCode.get(trimmed.toLowerCase());
+      if (custom !== undefined) return { found: true, code: custom };
+
       const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
       if (id === undefined) return { found: false };
       return { found: true, code: id };
     },
 
     bodc2n: (code) => {
+      const custom = customBodyCodeToName.get(code);
+      if (custom !== undefined) return { found: true, name: custom };
+
       const meta = ID_TO_BODY.get(code);
       if (!meta) return { found: false };
       return { found: true, name: meta.name };
+    },
+
+    bodc2s: (code) => {
+      const custom = customBodyCodeToName.get(code);
+      if (custom !== undefined) return custom;
+
+      const meta = ID_TO_BODY.get(code);
+      if (meta) return meta.name;
+
+      return String(code);
+    },
+
+    bods2c: (name) => {
+      const trimmed = normalizeName(name);
+
+      // Accept numeric IDs as strings.
+      if (/^-?\d+$/.test(trimmed)) {
+        return { found: true, code: Number(trimmed) };
+      }
+
+      const custom =
+        customNameToBodyCode.get(trimmed) ??
+        customNameToBodyCode.get(trimmed.toLowerCase());
+      if (custom !== undefined) return { found: true, code: custom };
+
+      const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
+      if (id === undefined) return { found: false };
+      return { found: true, code: id };
+    },
+
+    boddef: (name, code) => {
+      const trimmed = normalizeName(name);
+      customNameToBodyCode.set(trimmed, code);
+      customNameToBodyCode.set(trimmed.toLowerCase(), code);
+      customBodyCodeToName.set(code, trimmed);
+    },
+
+    bodfnd: (body, item) => {
+      const key = `BODY${body}_${normalizeBodItem(item)}`;
+      const entry = kernelPool.get(key);
+      return entry?.type === "N";
+    },
+
+    bodvar: (body, item) => {
+      const key = `BODY${body}_${normalizeBodItem(item)}`;
+      const entry = kernelPool.get(key);
+      if (!entry || entry.type !== "N") {
+        // Align with the backend contract: missing / non-numeric pool vars are a normal miss.
+        // Callers that need strict presence checks can use `bodfnd()`.
+        return [];
+      }
+      return [...entry.values];
     },
 
     namfrm: (name) => {
@@ -794,6 +1347,22 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
           : { found: false }) satisfies Found<{ frcode: number; frname: string }>;
     },
 
+    frinfo: (frameId) => {
+      if (frameId === FRAME_CODES.J2000) {
+        return { found: true, center: 0, frameClass: 1, classId: frameId };
+      }
+      return { found: false };
+    },
+
+    ccifrm: (frameClass, classId) => {
+      if (frameClass === 1) {
+        const frname = FRAME_CODE_TO_NAME.get(classId);
+        if (!frname) return { found: false };
+        return { found: true, frcode: classId, frname, center: 0 };
+      }
+      return { found: false };
+    },
+
     scs2e: (_sc, sclkch) => {
       // Minimal deterministic stub: treat the string as a number of seconds.
       const n = Number(sclkch);
@@ -805,12 +1374,49 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       return String(et);
     },
 
+    scencd: (_sc, sclkch) => {
+      // Minimal deterministic stub: treat the string as a number of ticks.
+      const n = Number(sclkch);
+      return Number.isFinite(n) ? n : 0;
+    },
+
+    scdecd: (_sc, sclkdp) => {
+      // Minimal deterministic stub.
+      return String(sclkdp);
+    },
+
+    sct2e: (_sc, sclkdp) => {
+      // Minimal deterministic stub.
+      return sclkdp;
+    },
+
+    sce2c: (_sc, et) => {
+      // Minimal deterministic stub.
+      return et;
+    },
+
     ckgp: (_inst, _sclkdp, _tol, _ref) => {
       return { found: false };
     },
 
     ckgpav: (_inst, _sclkdp, _tol, _ref) => {
       return { found: false };
+    },
+
+    cklpf: (_ck) => {
+      throw new Error("Fake backend: cklpf() is not implemented");
+    },
+
+    ckupf: (_handle) => {
+      throw new Error("Fake backend: ckupf() is not implemented");
+    },
+
+    ckobj: (_ck, _ids) => {
+      throw new Error("Fake backend: ckobj() is not implemented");
+    },
+
+    ckcov: (_ck, _idcode, _needav, _level, _tol, _timsys, _cover) => {
+      throw new Error("Fake backend: ckcov() is not implemented");
     },
 
     pxform: (from, to, et) => {
@@ -863,6 +1469,260 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       } satisfies SpkposResult;
     },
 
+    spkez: (target, et, ref, abcorr, observer) => {
+      void (abcorr satisfies AbCorr | string);
+      assertSpiceInt32(target, "spkez(target)");
+      assertSpiceInt32(observer, "spkez(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return { state, lt: 0 };
+    },
+
+    spkezp: (target, et, ref, abcorr, observer) => {
+      void (abcorr satisfies AbCorr | string);
+      assertSpiceInt32(target, "spkezp(target)");
+      assertSpiceInt32(observer, "spkezp(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return {
+        pos: [state[0], state[1], state[2]],
+        lt: 0,
+      } satisfies SpkposResult;
+    },
+
+    spkgeo: (target, et, ref, observer) => {
+      assertSpiceInt32(target, "spkgeo(target)");
+      assertSpiceInt32(observer, "spkgeo(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return { state, lt: 0 };
+    },
+
+    spkgps: (target, et, ref, observer) => {
+      assertSpiceInt32(target, "spkgps(target)");
+      assertSpiceInt32(observer, "spkgps(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return {
+        pos: [state[0], state[1], state[2]],
+        lt: 0,
+      } satisfies SpkposResult;
+    },
+
+    spkssb: (target, et, ref) => {
+      assertSpiceInt32(target, "spkssb(target)");
+
+      const abs = getAbsoluteStateInJ2000(target, et);
+      const stateJ2000: SpiceStateVector = [
+        abs.posKm[0],
+        abs.posKm[1],
+        abs.posKm[2],
+        abs.velKmPerSec[0],
+        abs.velKmPerSec[1],
+        abs.velKmPerSec[2],
+      ];
+
+      const outFrame = parseFrameName(ref);
+      return outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+    },
+
+    spkcov: (_spk, idcode, _cover) => {
+      assertSpiceInt32(idcode, "spkcov(idcode)");
+      throw new Error(spiceCellUnsupported);
+    },
+
+    spkobj: (_spk, _ids) => {
+      throw new Error(spiceCellUnsupported);
+    },
+    illumg: (_method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const frame = parseFrameName(fixref);
+      const inv = rotZRowMajor(FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et);
+
+      const spointJ = frame === "J2000" ? spoint : mxv(inv, spoint);
+
+      const srcState = getRelativeStateInJ2000(ilusrc, target, et);
+      const srcPosJ = [srcState[0], srcState[1], srcState[2]] as SpiceVector3;
+
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      // Vectors from surface point.
+      const srfToSrcJ = vsub(srcPosJ, spointJ);
+      const srfToObsJ = vsub(obsPosJ, spointJ);
+
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
+
+      const phase = angleBetween(srfToSrcJ, srfToObsJ);
+      const incdnc = angleBetween(normalJ, srfToSrcJ);
+      const emissn = angleBetween(normalJ, srfToObsJ);
+
+      const srfvecJ = vsub(spointJ, obsPosJ);
+      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+
+      return {
+        trgepc: et,
+        srfvec,
+        phase,
+        incdnc,
+        emissn,
+      } satisfies IllumgResult;
+    },
+
+    illumf: (_method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      void (abcorr satisfies AbCorr | string);
+
+      const frame = parseFrameName(fixref);
+      const inv = rotZRowMajor(FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et);
+
+      const spointJ = frame === "J2000" ? spoint : mxv(inv, spoint);
+
+      const srcState = getRelativeStateInJ2000(ilusrc, target, et);
+      const srcPosJ = [srcState[0], srcState[1], srcState[2]] as SpiceVector3;
+
+      const obsState = getRelativeStateInJ2000(observer, target, et);
+      const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
+
+      // Vectors from surface point.
+      const srfToSrcJ = vsub(srcPosJ, spointJ);
+      const srfToObsJ = vsub(obsPosJ, spointJ);
+
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
+
+      const phase = angleBetween(srfToSrcJ, srfToObsJ);
+      const incdnc = angleBetween(normalJ, srfToSrcJ);
+      const emissn = angleBetween(normalJ, srfToObsJ);
+
+      const srfvecJ = vsub(spointJ, obsPosJ);
+
+      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+
+      const out = {
+        trgepc: et,
+        srfvec,
+        phase,
+        incdnc,
+        emissn,
+      } satisfies IllumgResult;
+
+      // NOTE: This fake backend defines:
+      // - visibl: point is visible if emission angle is <= 90deg
+      // - lit: point is lit if incidence angle is <= 90deg
+      const visibl = out.emissn <= Math.PI / 2;
+      const lit = out.incdnc <= Math.PI / 2;
+
+      return { ...out, visibl, lit } satisfies IllumfResult;
+    },
+
+
+    spksfs: (body, et) => {
+      assertSpiceInt32(body, "spksfs(body)");
+      void et;
+      return { found: false };
+    },
+
+    spkpds: (_body, _center, _frame, _type, _first, _last) => {
+      throw new Error("Fake backend: spkpds() is not implemented");
+    },
+
+    spkuds: (_descr) => {
+      throw new Error("Fake backend: spkuds() is not implemented");
+    },
+
+    nvc2pl: (normal, konst) => {
+      if (!Array.isArray(normal) || normal.length !== 3) {
+        throw new TypeError("nvc2pl(normal, konst): normal must be a length-3 number[]");
+      }
+      for (let i = 0; i < 3; i++) {
+        const v = normal[i];
+        if (typeof v !== "number") {
+          throw new TypeError(`nvc2pl(normal, konst): normal[${i}] must be a number`);
+        }
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`nvc2pl(normal, konst): normal[${i}] must be a finite number`);
+        }
+      }
+      if (typeof konst !== "number") {
+        throw new TypeError("nvc2pl(normal, konst): konst must be a number");
+      }
+      if (!Number.isFinite(konst)) {
+        throw new RangeError("nvc2pl(normal, konst): konst must be a finite number");
+      }
+      return [normal[0], normal[1], normal[2], konst] satisfies SpicePlane;
+    },
+
+    pl2nvc: (plane) => {
+      if (!Array.isArray(plane) || plane.length !== 4) {
+        throw new TypeError("pl2nvc(plane): plane must be a length-4 number[]");
+      }
+      for (let i = 0; i < 4; i++) {
+        const v = plane[i];
+        if (typeof v !== "number") {
+          throw new TypeError(`pl2nvc(plane): plane[${i}] must be a number`);
+        }
+        if (!Number.isFinite(v)) {
+          throw new RangeError(`pl2nvc(plane): plane[${i}] must be a finite number`);
+        }
+      }
+
+      const n = [plane[0], plane[1], plane[2]] as SpiceVector3;
+      const mag = vnorm(n);
+      if (mag === 0) {
+        throw new RangeError("pl2nvc(plane): plane is degenerate (normal must be non-zero)");
+      }
+      return {
+        normal: vscale(1 / mag, n),
+        konst: plane[3] / mag,
+      } satisfies Pl2nvcResult;
+    },
+
+    // --- SPK writers (not implemented in fake backend) ---
+
+    spkopn: (_file: string | VirtualOutput, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: spkopn() is not implemented");
+    },
+    spkopa: (_file: string | VirtualOutput) => {
+      throw new Error("Fake backend: spkopa() is not implemented");
+    },
+    spkcls: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: spkcls() is not implemented");
+    },
+    spkw08: (
+      _handle: SpiceHandle,
+      _body: number,
+      _center: number,
+      _frame: string,
+      _first: number,
+      _last: number,
+      _segid: string,
+      _degree: number,
+      _states: readonly number[] | Float64Array,
+      _epoch1: number,
+      _step: number,
+    ) => {
+      throw new Error("Fake backend: spkw08() is not implemented");
+    },
     subpnt: (_method, target, et, fixref, abcorr, observer) => {
       void (abcorr satisfies AbCorr | string);
 
@@ -925,7 +1785,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       const srfToSunJ = vsub(sunPosJ, spointJ);
       const srfToObsJ = vsub(obsPosJ, spointJ);
 
-      const normalJ = vhat(spointJ);
+      const targetId = parseBodyRef(target);
+      const normalF = ellipsoidSurfaceNormal(spoint, getBodyRadiiKm(targetId));
+      const normalJ = frame === "J2000" ? normalF : mxv(inv, normalF);
 
       const phase = angleBetween(srfToSunJ, srfToObsJ);
       const incdnc = angleBetween(normalJ, srfToSunJ);
@@ -960,6 +1822,7 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
       return 0;
     },
 
+
     // --- file i/o primitives (not implemented in fake backend) ---
 
     exists: (_path: string) => {
@@ -967,6 +1830,9 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
     getfat: (_path: string) => {
       throw new Error("Fake backend: getfat() is not implemented");
+    },
+    readVirtualOutput: (_output: VirtualOutput) => {
+      throw new Error("Fake backend: readVirtualOutput() is not implemented");
     },
     dafopr: (_path: string) => {
       throw new Error("Fake backend: dafopr() is not implemented");
@@ -997,6 +1863,149 @@ export function createFakeBackend(): SpiceBackend & { kind: "fake" } {
     },
     dlacls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dlacls() is not implemented");
+    },
+
+    // --- EK (not implemented in fake backend) ---
+    ekopr: (_path: string) => {
+      throw new Error("Fake backend: ekopr() is not implemented");
+    },
+    ekopw: (_path: string) => {
+      throw new Error("Fake backend: ekopw() is not implemented");
+    },
+    ekopn: (_path: string, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: ekopn() is not implemented");
+    },
+    ekcls: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: ekcls() is not implemented");
+    },
+    ekntab: () => {
+      throw new Error("Fake backend: ekntab() is not implemented");
+    },
+    ektnam: (_n: number) => {
+      throw new Error("Fake backend: ektnam() is not implemented");
+    },
+    eknseg: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: eknseg() is not implemented");
+    },
+
+    // --- EK query/data ops (not implemented in fake backend) ---
+    ekfind: (_query: string) => {
+      throw new Error("Fake backend: ekfind() is not implemented");
+    },
+    ekgc: (_selidx: number, _row: number, _elment: number) => {
+      throw new Error("Fake backend: ekgc() is not implemented");
+    },
+    ekgd: (_selidx: number, _row: number, _elment: number) => {
+      throw new Error("Fake backend: ekgd() is not implemented");
+    },
+    ekgi: (_selidx: number, _row: number, _elment: number) => {
+      throw new Error("Fake backend: ekgi() is not implemented");
+    },
+
+    ekifld: (
+      _handle: SpiceHandle,
+      _tabnam: string,
+      _nrows: number,
+      _cnames: readonly string[],
+      _decls: readonly string[],
+    ) => {
+      throw new Error("Fake backend: ekifld() is not implemented");
+    },
+    ekacli: (
+      _handle: SpiceHandle,
+      _segno: number,
+      _column: string,
+      _ivals: readonly number[],
+      _entszs: readonly number[],
+      _nlflgs: readonly boolean[],
+      _rcptrs: readonly number[],
+    ) => {
+      throw new Error("Fake backend: ekacli() is not implemented");
+    },
+    ekacld: (
+      _handle: SpiceHandle,
+      _segno: number,
+      _column: string,
+      _dvals: readonly number[],
+      _entszs: readonly number[],
+      _nlflgs: readonly boolean[],
+      _rcptrs: readonly number[],
+    ) => {
+      throw new Error("Fake backend: ekacld() is not implemented");
+    },
+    ekaclc: (
+      _handle: SpiceHandle,
+      _segno: number,
+      _column: string,
+      _cvals: readonly string[],
+      _entszs: readonly number[],
+      _nlflgs: readonly boolean[],
+      _rcptrs: readonly number[],
+    ) => {
+      throw new Error("Fake backend: ekaclc() is not implemented");
+    },
+    ekffld: (_handle: SpiceHandle, _segno: number, _rcptrs: readonly number[]) => {
+      throw new Error("Fake backend: ekffld() is not implemented");
+    },
+
+    // --- DSK writer (not implemented in fake backend) ---
+    dskopn: (_path: string, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: dskopn() is not implemented");
+    },
+    dskmi2: (
+      _nv: number,
+      _vrtces: readonly number[],
+      _np: number,
+      _plates: readonly number[],
+      _finscl: number,
+      _corscl: number,
+      _worksz: number,
+      _voxpsz: number,
+      _voxlsz: number,
+      _makvtl: boolean,
+      _spxisz: number,
+    ) => {
+      throw new Error("Fake backend: dskmi2() is not implemented");
+    },
+    dskw02: (
+      _handle: SpiceHandle,
+      _center: number,
+      _surfid: number,
+      _dclass: number,
+      _frame: string,
+      _corsys: number,
+      _corpar: readonly number[],
+      _mncor1: number,
+      _mxcor1: number,
+      _mncor2: number,
+      _mxcor2: number,
+      _mncor3: number,
+      _mxcor3: number,
+      _first: number,
+      _last: number,
+      _nv: number,
+      _vrtces: readonly number[],
+      _np: number,
+      _plates: readonly number[],
+      _spaixd: readonly number[],
+      _spaixi: readonly number[],
+    ) => {
+      throw new Error("Fake backend: dskw02() is not implemented");
+    },
+
+    // -- DSK ----------------------------------------------------------------
+
+    dskobj: (_dsk: string, _bodids: SpiceIntCell) => {
+      throw new Error("Fake backend: dskobj() is not implemented");
+    },
+    dsksrf: (_dsk: string, _bodyid: number, _srfids: SpiceIntCell) => {
+      throw new Error("Fake backend: dsksrf() is not implemented");
+    },
+    dskgd: (_handle: SpiceHandle, _dladsc: DlaDescriptor) => {
+      throw new Error("Fake backend: dskgd() is not implemented");
+    },
+    dskb02: (_handle: SpiceHandle, _dladsc: DlaDescriptor) => {
+      throw new Error("Fake backend: dskb02() is not implemented");
     },
 
     // -- Cells + windows -----------------------------------------------------

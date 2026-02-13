@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
@@ -14,12 +14,14 @@ const __dirname = path.dirname(__filename);
 const lskPath = path.join(__dirname, "fixtures", "kernels", "naif0012.tls");
 
 describe("kernel management", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: furnsh/kclear/ktotal/kdata/unload", async () => {
-    const backend = await createBackend({ backend: "node" });
-    backend.kclear();
-    expect(backend.ktotal("ALL")).toBe(0);
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
+      backend.kclear();
+      expect(backend.ktotal("ALL")).toBe(0);
 
     backend.furnsh(lskPath);
     expect(backend.ktotal("ALL")).toBeGreaterThan(0);
@@ -35,13 +37,18 @@ describe("kernel management", () => {
 
     backend.unload(lskPath);
     // Some kernels may remain loaded implicitly; allow either unload -> 0 or kclear -> 0.
-    backend.kclear();
-    expect(backend.ktotal("ALL")).toBe(0);
+      backend.kclear();
+      expect(backend.ktotal("ALL")).toBe(0);
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: furnsh({ path, bytes }) + kernel APIs", async () => {
-    const backend = await createBackend({ backend: "wasm" });
-    const lskBytes = fs.readFileSync(lskPath);
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
+      const lskBytes = fs.readFileSync(lskPath);
 
     backend.kclear();
     expect(backend.ktotal("ALL")).toBe(0);
@@ -72,18 +79,23 @@ describe("kernel management", () => {
     backend.furnsh("kernels/naif0012.tls");
     expect(backend.ktotal("ALL")).toBeGreaterThan(0);
 
-    backend.kclear();
-    expect(backend.ktotal("ALL")).toBe(0);
+      backend.kclear();
+      expect(backend.ktotal("ALL")).toBe(0);
+    } finally {
+      await dispose();
+    }
   });
 });
 
 describe("time", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: str2et/et2utc/timout", async () => {
-    const backend = await createBackend({ backend: "node" });
-    backend.kclear();
-    backend.furnsh(lskPath);
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    const backend = spice.raw;
+    try {
+      backend.kclear();
+      backend.furnsh(lskPath);
 
     const et = backend.str2et("2000 JAN 01 12:00:00 TDB");
     expect(Math.abs(et)).toBeLessThan(1); // J2000 epoch
@@ -91,15 +103,20 @@ describe("time", () => {
     const utc = backend.et2utc(0, "ISOC", 3);
     expect(utc).toContain("2000-01-01");
 
-    const pic = backend.timout(0, "YYYY-MON-DD HR:MN:SC.### ::TDB");
-    expect(pic).toMatch(/^2000-JAN-01 12:00:00\.000/);
+      const pic = backend.timout(0, "YYYY-MON-DD HR:MN:SC.### ::TDB");
+      expect(pic).toMatch(/^2000-JAN-01 12:00:00\.000/);
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend: str2et/et2utc/timout", async () => {
-    const backend = await createBackend({ backend: "wasm" });
-    const lskBytes = fs.readFileSync(lskPath);
-    backend.kclear();
-    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    const backend = spice.raw;
+    try {
+      const lskBytes = fs.readFileSync(lskPath);
+      backend.kclear();
+      backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
 
     const et = backend.str2et("2000 JAN 01 12:00:00 TDB");
     expect(Math.abs(et)).toBeLessThan(1);
@@ -107,7 +124,10 @@ describe("time", () => {
     const utc = backend.et2utc(0, "ISOC", 3);
     expect(utc).toContain("2000-01-01");
 
-    const pic = backend.timout(0, "YYYY-MON-DD HR:MN:SC.### ::TDB");
-    expect(pic).toMatch(/^2000-JAN-01 12:00:00\.000/);
+      const pic = backend.timout(0, "YYYY-MON-DD HR:MN:SC.### ::TDB");
+      expect(pic).toMatch(/^2000-JAN-01 12:00:00\.000/);
+    } finally {
+      await dispose();
+    }
   });
 });

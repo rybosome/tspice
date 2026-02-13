@@ -9,11 +9,16 @@ import { createFramesApi } from "../domains/frames.js";
 import { createGeometryApi } from "../domains/geometry.js";
 import { createIdsNamesApi } from "../domains/ids-names.js";
 import { createKernelsApi } from "../domains/kernels.js";
+import { createKernelPoolApi } from "../domains/kernel-pool.js";
 import { createTimeApi, getToolkitVersion } from "../domains/time.js";
 import { createFileIoApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
+import { createDskApi } from "../domains/dsk.js";
+import { createEkApi } from "../domains/ek.js";
 
 import { createWasmFs } from "./fs.js";
+import { createSpiceHandleRegistry } from "./spice-handles.js";
+import { createVirtualOutputRegistry } from "./virtual-outputs.js";
 
 export type { CreateWasmBackendOptions } from "./create-backend-options.js";
 import type { CreateWasmBackendOptions } from "./create-backend-options.js";
@@ -27,8 +32,31 @@ export async function createWasmBackend(
   // NOTE: Keep this as a literal string so bundlers (Vite) don't generate a
   // runtime glob map for *every* file in this directory (including *.d.ts.map),
   // which can lead to JSON being imported as an ESM module.
-  const defaultWasmUrl = new URL("../tspice_backend_wasm.wasm", import.meta.url);
-  const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
+  const wasmUrl =
+    options.wasmUrl?.toString() ??
+    // NOTE: Inline blob workers set `options.wasmUrl` explicitly, since
+    // `import.meta.url` will be `blob:` for the worker entry module.
+    new URL("../tspice_backend_wasm.wasm", import.meta.url).href;
+
+  const URL_SCHEME_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
+  const WINDOWS_DRIVE_PATH_RE = /^[A-Za-z]:[\\/]/;
+
+  const hasUrlScheme = (value: string): boolean =>
+    URL_SCHEME_RE.test(value) && !WINDOWS_DRIVE_PATH_RE.test(value);
+
+  if (hasUrlScheme(wasmUrl)) {
+    const u = new URL(wasmUrl);
+
+    // In web builds, `blob:` URLs are a real-world possibility (some bundlers and
+    // runtime loaders produce them). `data:` is also generally fetchable.
+    const allowedProtocols = new Set<string>(["http:", "https:", "file:", "blob:", "data:"]);
+
+    if (!allowedProtocols.has(u.protocol)) {
+      throw new Error(
+        `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, blob: URL, data: URL, or a filesystem path.`,
+      );
+    }
+  }
 
   let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
   try {
@@ -75,20 +103,25 @@ export async function createWasmBackend(
   const toolkitVersion = getToolkitVersion(module);
 
   const fsApi = createWasmFs(module);
+  const spiceHandles = createSpiceHandleRegistry();
+  const virtualOutputs = createVirtualOutputRegistry();
 
-  const backendBase = {
+  const backend = {
     kind: "wasm",
     ...createTimeApi(module, toolkitVersion),
     ...createKernelsApi(module, fsApi),
+    ...createKernelPoolApi(module),
     ...createIdsNamesApi(module),
     ...createFramesApi(module),
-    ...createEphemerisApi(module),
+    ...createEphemerisApi(module, spiceHandles, virtualOutputs),
     ...createGeometryApi(module),
     ...createCoordsVectorsApi(module),
-    ...createFileIoApi(module),
+    ...createFileIoApi(module, spiceHandles, virtualOutputs),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
+    ...createEkApi(module, spiceHandles),
+    ...createDskApi(module, spiceHandles),
   } satisfies SpiceBackend;
 
-  return backendBase;
+  return backend;
 }

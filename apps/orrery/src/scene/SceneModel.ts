@@ -1,4 +1,4 @@
-import type { BodyRef, FrameId } from '../spice/SpiceClient.js'
+import type { BodyRef, FrameId } from '../spice/types.js'
 
 export type BodyTextureKind = 'earth' | 'moon' | 'sun'
 

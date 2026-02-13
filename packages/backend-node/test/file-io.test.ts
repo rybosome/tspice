@@ -147,7 +147,10 @@ describe("@rybosome/tspice-backend-node file-io", () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
 
     try {
-      const dskPath = path.join(tmpDir, "bc_mpo_sc_mga_v00.bds");
+      const dskPath = path.join(
+        tmpDir,
+        "apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
+      );
       fs.writeFileSync(dskPath, dsk);
 
       const handle = backend.dasopr(dskPath);
@@ -223,6 +226,86 @@ describe("@rybosome/tspice-backend-node file-io", () => {
 
       expect(() => backend.dlafns(handle, badDescr)).toThrow(/ibase.*>=\s*0/i);
       backend.dlacls(handle);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  itNative("can write and roundtrip a minimal type 2 DSK", () => {
+    const backend = createNodeBackend();
+
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
+
+    try {
+      const outPath = path.join(tmpDir, "roundtrip.bds");
+
+      const nv = 3;
+      const vrtces = [
+        0, 0, 0,
+        1, 0, 0,
+        0, 1, 0,
+      ];
+      const np = 1;
+      const plates = [1, 2, 3];
+
+      const handle = backend.dskopn(outPath, "TSPICE", 0);
+      try {
+        const { spaixd, spaixi } = backend.dskmi2(
+          nv,
+          vrtces,
+          np,
+          plates,
+          0.2, // finscl
+          5.0, // corscl
+          100_000, // worksz
+          5_000, // voxpsz
+          5_000, // voxlsz
+          true, // makvtl
+          200_000, // spxisz (must exceed SPICE_DSK02_IXIFIX + overhead)
+        );
+
+        backend.dskw02(
+          handle,
+          399, // center (Earth)
+          1, // surfid
+          2, // dclass = SPICE_DSK_GENCLS
+          "J2000",
+          3, // corsys = SPICE_DSK_RECSYS
+          new Array(10).fill(0),
+          0,
+          1,
+          0,
+          1,
+          -0.1,
+          0.1,
+          0,
+          1,
+          nv,
+          vrtces,
+          np,
+          plates,
+          spaixd,
+          spaixi,
+        );
+      } finally {
+        backend.dascls(handle);
+      }
+
+      expect(fs.existsSync(outPath)).toBe(true);
+      expect(backend.getfat(outPath).type).toBe("DSK");
+
+      const readHandle = backend.dasopr(outPath);
+      try {
+        const first = backend.dlabfs(readHandle);
+        expect(first.found).toBe(true);
+        if (!first.found) {
+          throw new Error("Expected to find a DLA segment in the written DSK");
+        }
+
+        expect(backend.dlafns(readHandle, first.descr)).toEqual({ found: false });
+      } finally {
+        backend.dascls(readHandle);
+      }
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }

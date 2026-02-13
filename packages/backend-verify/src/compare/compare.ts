@@ -14,6 +14,41 @@ function joinPath(base: string, key: string | number): string {
   return base === "$" ? `$.${key}` : `${base}.${key}`;
 }
 
+function normalizeToMinusPiPi(x: number): number {
+  if (!Number.isFinite(x)) return x;
+
+  // Normalize into [-pi, pi).
+  const y = Math.atan2(Math.sin(x), Math.cos(x));
+
+  // atan2 returns +pi at the branch cut; convert to -pi so we preserve [-pi, pi).
+  if (Object.is(y, Math.PI)) return -Math.PI;
+
+  return y;
+}
+
+function wrapToPi(x: number): number {
+  if (!Number.isFinite(x)) return x;
+
+  const y = normalizeToMinusPiPi(x);
+
+  // Prefer +pi over -pi to keep comparisons deterministic.
+  if (Object.is(y, -Math.PI)) return Math.PI;
+
+  return y;
+}
+
+
+function wrapDeltaToPi(raw: number): number {
+  if (!Number.isFinite(raw)) return raw;
+
+  const y = normalizeToMinusPiPi(raw);
+
+  // At exactly -pi (the branch cut), preserve the sign of the *raw* delta.
+  if (Object.is(y, -Math.PI) && raw > 0) return Math.PI;
+
+  return y;
+}
+
 function compareNumbers(
   actual: number,
   expected: number,
@@ -21,25 +56,50 @@ function compareNumbers(
   opts: CompareOptions,
 ): Mismatch | null {
   if (Number.isNaN(actual) && Number.isNaN(expected)) return null;
-  if (Object.is(actual, expected)) return null;
 
-  const tolAbs = opts.tolAbs ?? 0;
+  const angleWrapPi = opts.angleWrapPi === true;
+
+  const actualNorm = angleWrapPi ? wrapToPi(actual) : actual;
+  const expectedNorm = angleWrapPi ? wrapToPi(expected) : expected;
+
+  // Trig reduction can yield tiny residuals for exact multiples of TAU
+  // (e.g. 2π -> ~-2.4e-16). Keep normalization pure; treat this as the
+  // default absolute tolerance only when the caller didn't provide any
+  // tolerances, and only when angle wrapping is enabled.
+  const ANGLE_WRAP_EPS = 8 * Number.EPSILON;
+
   const tolRel = opts.tolRel ?? 0;
+  const tolAbsDefault =
+    angleWrapPi && opts.tolAbs === undefined && opts.tolRel === undefined
+      ? ANGLE_WRAP_EPS
+      : 0;
+  const tolAbs = opts.tolAbs ?? tolAbsDefault;
 
-  const diff = Math.abs(actual - expected);
+  const delta = angleWrapPi ? wrapDeltaToPi(actual - expected) : actual - expected;
+  const diff = Math.abs(delta);
+
+  // Fast path: exact equality.
+  // `diff === 0` handles +/-0 and angle wrapping.
+  if (diff === 0) return null;
+  // For infinities, subtraction produces NaN; fall back to exact identity.
+  if (Number.isNaN(diff) && Object.is(actualNorm, expectedNorm)) return null;
+
   // Use a symmetric denominator so tolerance behaves consistently regardless
   // of whether callers treat `actual` or `expected` as the reference.
-  const rel = diff / Math.max(1e-30, Math.max(Math.abs(actual), Math.abs(expected)));
+  //
+  // When angle wrapping is enabled, use a fixed angular scale so tiny angles
+  // near 0 still get a meaningful relative tolerance (regression).
+  const relScale = angleWrapPi ? Math.PI : Math.max(Math.abs(actualNorm), Math.abs(expectedNorm));
+  const rel = diff / Math.max(1e-30, relScale);
 
   if (diff <= tolAbs) return null;
   if (rel <= tolRel) return null;
 
-  return {
-    path,
-    actual,
-    expected,
-    message: `number mismatch: actual=${actual} expected=${expected} (diff=${diff}, rel=${rel})`,
-  };
+  const message = angleWrapPi
+    ? `number mismatch (angleWrapPi): diff=${diff} rel=${rel} tolAbs=${tolAbs} tolRel=${tolRel} (wrappedActual=${actualNorm}, wrappedExpected=${expectedNorm}, delta=${delta})`
+    : `number mismatch: diff=${diff} rel=${rel} tolAbs=${tolAbs} tolRel=${tolRel}`;
+
+  return { path, actual, expected, message };
 }
 
 function compareInner(

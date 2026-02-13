@@ -1,7 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
+
+import type { EkFindResult, EkGetResult } from "@rybosome/tspice-backend-contract";
 import { fileURLToPath } from "node:url";
+
+import type { SpiceIntCell, SpiceWindow } from "@rybosome/tspice-backend-contract";
 
 export type NativeAddon = {
   spiceVersion(): string;
@@ -23,9 +27,42 @@ export type NativeAddon = {
     which: number,
     kind?: string,
   ): { found: boolean; file?: string; filtyp?: string; source?: string; handle?: number };
+
+
+  // --- kernel management ---
+  kinfo(path: string): { found: boolean; filtyp?: string; source?: string; handle?: number };
+  kxtrct(
+    keywd: string,
+    terms: readonly string[],
+    wordsq: string,
+  ): { found: boolean; wordsq?: string; substr?: string };
+  kplfrm(frmcls: number, idset: number): void;
+
+  // --- kernel pool ---
+  gdpool(name: string, start: number, room: number): { found: boolean; values?: number[] };
+  gipool(name: string, start: number, room: number): { found: boolean; values?: number[] };
+  gcpool(name: string, start: number, room: number): { found: boolean; values?: string[] };
+  gnpool(template: string, start: number, room: number): { found: boolean; values?: string[] };
+  dtpool(name: string): { found: boolean; n?: number; type?: string };
+
+  pdpool(name: string, values: readonly number[]): void;
+  pipool(name: string, values: readonly number[]): void;
+  pcpool(name: string, values: readonly string[]): void;
+
+  swpool(agent: string, names: readonly string[]): void;
+  cvpool(agent: string): boolean;
+  expool(name: string): boolean;
   str2et(utc: string): number;
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;
+
+  deltet(epoch: number, eptype: string): number;
+  unitim(epoch: number, insys: string, outsys: string): number;
+  tparse(timstr: string): number;
+  tpictr(sample: string, pictur: string): string;
+  timdefGet(item: string): string;
+  timdefSet(item: string, value: string): void;
+
 
   // --- file i/o primitives ---
 
@@ -45,16 +82,136 @@ export type NativeAddon = {
   dlafns(handle: number, descr: Record<string, unknown>): { found: boolean; descr?: Record<string, unknown> };
   dlacls(handle: number): void;
 
+  // --- EK ---
+  ekopr(path: string): number;
+  ekopw(path: string): number;
+  ekopn(path: string, ifname: string, ncomch: number): number;
+  ekcls(handle: number): void;
+
+  ekntab(): number;
+  ektnam(n: number): string;
+  eknseg(handle: number): number;
+
+  // --- EK query + fast write ---
+  ekfind(query: string): { ok: true; nmrows: number } | { ok: false; errmsg: string };
+  ekgc(
+    selidx: number,
+    row: number,
+    elment: number,
+  ): { found: false } | { found: true; isNull: true } | { found: true; isNull: false; value: string };
+  ekgd(
+    selidx: number,
+    row: number,
+    elment: number,
+  ): { found: false } | { found: true; isNull: true } | { found: true; isNull: false; value: number };
+  ekgi(
+    selidx: number,
+    row: number,
+    elment: number,
+  ): { found: false } | { found: true; isNull: true } | { found: true; isNull: false; value: number };
+  ekifld(
+    handle: number,
+    tabnam: string,
+    nrows: number,
+    cnames: readonly string[],
+    decls: readonly string[],
+  ): { segno: number; rcptrs: number[] };
+  ekacli(
+    handle: number,
+    segno: number,
+    column: string,
+    ivals: readonly number[],
+    entszs: readonly number[],
+    nlflgs: readonly boolean[],
+    rcptrs: readonly number[],
+  ): void;
+  ekacld(
+    handle: number,
+    segno: number,
+    column: string,
+    dvals: readonly number[],
+    entszs: readonly number[],
+    nlflgs: readonly boolean[],
+    rcptrs: readonly number[],
+  ): void;
+  ekaclc(
+    handle: number,
+    segno: number,
+    column: string,
+    cvals: readonly string[],
+    entszs: readonly number[],
+    nlflgs: readonly boolean[],
+    rcptrs: readonly number[],
+  ): void;
+  ekffld(handle: number, segno: number, rcptrs: readonly number[]): void;
+
+  // --- DSK writer ---
+  dskopn(path: string, ifname: string, ncomch: number): number;
+  dskmi2(
+    nv: number,
+    vrtces: readonly number[],
+    np: number,
+    plates: readonly number[],
+    finscl: number,
+    corscl: number,
+    worksz: number,
+    voxpsz: number,
+    voxlsz: number,
+    makvtl: boolean,
+    spxisz: number,
+  ): { spaixd: number[]; spaixi: number[] };
+  dskw02(
+    handle: number,
+    center: number,
+    surfid: number,
+    dclass: number,
+    frame: string,
+    corsys: number,
+    corpar: readonly number[],
+    mncor1: number,
+    mxcor1: number,
+    mncor2: number,
+    mxcor2: number,
+    mncor3: number,
+    mxcor3: number,
+    first: number,
+    last: number,
+    nv: number,
+    vrtces: readonly number[],
+    np: number,
+    plates: readonly number[],
+    spaixd: readonly number[],
+    spaixi: readonly number[],
+  ): void;
+
+  // --- DSK ---
+
+  dskobj(dsk: string, bodidsCellHandle: number): void;
+  dsksrf(dsk: string, bodyid: number, srfidsCellHandle: number): void;
+  dskgd(handle: number, dladsc: Record<string, unknown>): Record<string, unknown>;
+  dskb02(handle: number, dladsc: Record<string, unknown>): Record<string, unknown>;
+
 
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
+  bodc2s(code: number): string;
+  bods2c(name: string): { found: boolean; code?: number };
+  boddef(name: string, code: number): void;
+  bodfnd(body: number, item: string): boolean;
+  bodvar(body: number, item: string): number[];
   namfrm(name: string): { found: boolean; code?: number };
   frmnam(code: number): { found: boolean; name?: string };
   cidfrm(center: number): { found: boolean; frcode?: number; frname?: string };
   cnmfrm(centerName: string): { found: boolean; frcode?: number; frname?: string };
+  frinfo(frameId: number): { found: boolean; center?: number; frameClass?: number; classId?: number };
+  ccifrm(frameClass: number, classId: number): { found: boolean; frcode?: number; frname?: string; center?: number };
 
   scs2e(sc: number, sclkch: string): number;
   sce2s(sc: number, et: number): string;
+  scencd(sc: number, sclkch: string): number;
+  scdecd(sc: number, sclkdp: number): string;
+  sct2e(sc: number, sclkdp: number): number;
+  sce2c(sc: number, et: number): number;
   ckgp(
     inst: number,
     sclkdp: number,
@@ -67,6 +224,19 @@ export type NativeAddon = {
     tol: number,
     ref: string,
   ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
+
+  cklpf(ck: string): number;
+  ckupf(handle: number): void;
+  ckobj(ck: string, idsCellHandle: number): void;
+  ckcov(
+    ck: string,
+    idcode: number,
+    needav: boolean,
+    level: string,
+    tol: number,
+    timsys: string,
+    coverWindowHandle: number,
+  ): void;
 
   spkezr(
     target: string,
@@ -83,6 +253,103 @@ export type NativeAddon = {
     abcorr: string,
     obs: string
   ): { pos: number[]; lt: number };
+
+  spkez(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    obs: number
+  ): { state: number[]; lt: number };
+
+  spkezp(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    obs: number
+  ): { pos: number[]; lt: number };
+
+  spkgeo(
+    target: number,
+    et: number,
+    ref: string,
+    obs: number
+  ): { state: number[]; lt: number };
+
+  spkgps(
+    target: number,
+    et: number,
+    ref: string,
+    obs: number
+  ): { pos: number[]; lt: number };
+
+  // Geometry classic
+  illumg(
+    method: string,
+    target: string,
+    ilusrc: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+    spoint: number[],
+  ): { trgepc: number; srfvec: number[]; phase: number; incdnc: number; emissn: number };
+
+  illumf(
+    method: string,
+    target: string,
+    ilusrc: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+    spoint: number[],
+  ): {
+    trgepc: number;
+    srfvec: number[];
+    phase: number;
+    incdnc: number;
+    emissn: number;
+    visibl: boolean;
+    lit: boolean;
+  };
+
+  spkssb(
+    target: number,
+    et: number,
+    ref: string,
+  ): number[];
+
+  spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
+
+  nvc2pl(normal: number[], konst: number): number[];
+  pl2nvc(plane: number[]): { normal: number[]; konst: number };
+  spkobj(spk: string, ids: SpiceIntCell): void;
+
+  spksfs(body: number, et: number): { found: boolean; handle?: number; descr?: number[]; ident?: string };
+
+  spkpds(body: number, center: number, frame: string, type: number, first: number, last: number): number[];
+  spkuds(descr: ReadonlyArray<number>): { body: number; center: number; frame: number; type: number; first: number; last: number; baddr: number; eaddr: number };
+
+// --- SPK writers ---
+
+  spkopn(path: string, ifname: string, ncomch: number): number;
+  spkopa(path: string): number;
+  spkcls(handle: number): void;
+  spkw08(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epoch1: number,
+    step: number,
+  ): void;
 
   subpnt(
     method: string,

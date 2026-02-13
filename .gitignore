@@ -6,6 +6,7 @@ dist
 .cache/wasm-build
 packages/*/dist-publish
 packages/backend-node/native/generated
+packages/tspice/backend-wasm
 
 *.tsbuildinfo
 

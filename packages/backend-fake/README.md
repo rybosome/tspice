@@ -40,7 +40,7 @@ console.log(moonFromEarth.pos);
 
 ## API surface
 
-- `createFakeBackend(): SpiceBackend`
+- `createFakeBackend(options?: FakeBackendOptions): SpiceBackend`
 - `FAKE_SPICE_VERSION: string`
 
 ## Notes / limitations

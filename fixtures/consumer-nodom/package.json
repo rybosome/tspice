@@ -1,0 +1,15 @@
+{
+  "name": "@tspice-fixtures/consumer-nodom",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@rybosome/tspice": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "16.x"
+  }
+}

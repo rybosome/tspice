@@ -19,4 +19,16 @@ describe("@rybosome/tspice-backend-wasm", () => {
     expect(version).not.toBe("");
     expect(version).toContain(toolkitVersion);
   });
+
+  it("swpool allows an empty names list", async () => {
+    const backend = await createWasmBackend();
+
+    // Before any watch is set up, most agents will report no update.
+    // (Exact initial state is not critical; we mainly care that swpool([]) doesn't throw
+    // and that cvpool toggles as documented.)
+    backend.swpool("AGENT", []);
+
+    expect(backend.cvpool("AGENT")).toBe(true);
+    expect(backend.cvpool("AGENT")).toBe(false);
+  });
 });

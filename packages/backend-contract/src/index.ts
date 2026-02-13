@@ -7,15 +7,21 @@ export type {
   FoundPayload,
   FoundString,
   FoundValue,
+  IllumfResult,
+  IllumgResult,
   IluminResult,
   KernelData,
+  KernelInfo,
   KernelKind,
   KernelSource,
+  VirtualOutput,
   Mat6RowMajor,
   Mat3ColMajor,
   Mat3RowMajor,
+  Pl2nvcResult,
   SpiceHandle,
   SpiceMatrix6x6,
+  SpicePlane,
   SpiceStateVector,
   SpiceVector3,
   SpkezrResult,
@@ -63,9 +69,17 @@ export {
   assertSpiceInt32NonNegative,
 } from "./shared/spice-int.js";
 
+export type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "./shared/spice-handles.js";
+export { createSpiceHandleRegistry } from "./shared/spice-handles.js";
+export { SpiceBackendContractError } from "./shared/errors.js";
+
 export * from "./domains/kernels.js";
+export * from "./domains/kernel-pool.js";
+export * from "./domains/ek.js";
+export * from "./domains/kernels-utils.js";
 export * from "./domains/time.js";
 export * from "./domains/ids-names.js";
+export * from "./domains/ids-names-normalize.js";
 export * from "./domains/frames.js";
 export * from "./domains/ephemeris.js";
 export * from "./domains/geometry.js";
@@ -73,8 +87,11 @@ export * from "./domains/coords-vectors.js";
 export * from "./domains/file-io.js";
 export * from "./domains/error.js";
 export * from "./domains/cells-windows.js";
+export * from "./domains/dsk.js";
 
 import type { KernelsApi } from "./domains/kernels.js";
+import type { KernelPoolApi } from "./domains/kernel-pool.js";
+import type { EkApi } from "./domains/ek.js";
 import type { TimeApi } from "./domains/time.js";
 import type { IdsNamesApi } from "./domains/ids-names.js";
 import type { FramesApi } from "./domains/frames.js";
@@ -84,12 +101,15 @@ import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
 import type { FileIoApi } from "./domains/file-io.js";
 import type { ErrorApi } from "./domains/error.js";
 import type { CellsWindowsApi } from "./domains/cells-windows.js";
+import type { DskApi } from "./domains/dsk.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
 
 export interface SpiceBackend
   extends TimeApi,
     KernelsApi,
+    KernelPoolApi,
+    EkApi,
     IdsNamesApi,
     FramesApi,
     EphemerisApi,
@@ -97,7 +117,8 @@ export interface SpiceBackend
     CoordsVectorsApi,
     FileIoApi,
     ErrorApi,
-    CellsWindowsApi {
+    CellsWindowsApi,
+    DskApi {
   /** Which backend implementation is in use. */
   readonly kind: SpiceBackendKind;
 }

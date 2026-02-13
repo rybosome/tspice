@@ -18,7 +18,7 @@ static char g_last_short[1841];
 static char g_last_long[1841];
 static char g_last_trace[1841];
 
-static void tspice_clear_last_error_buffers(void) {
+void tspice_clear_last_error_buffers(void) {
   g_last_short[0] = '\0';
   g_last_long[0] = '\0';
   g_last_trace[0] = '\0';

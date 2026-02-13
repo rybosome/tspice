@@ -8,6 +8,9 @@
       "path": "./packages/core"
     },
     {
+      "path": "./packages/bench-contract"
+    },
+    {
       "path": "./packages/perf-analysis"
     },
     {
@@ -27,6 +30,9 @@
     },
     {
       "path": "./packages/backend-verify"
+    },
+    {
+      "path": "./packages/repo-standards"
     }
   ]
 }

@@ -3,32 +3,17 @@ import type {
   FileIoApi,
   FoundDlaDescriptor,
   SpiceHandle,
+  VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
-
-type HandleKind = "DAF" | "DAS" | "DLA";
-const DAS_BACKED = ["DAS", "DLA"] as const;
+import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
+import type { SpiceHandleRegistry, SpiceHandleKind } from "../runtime/spice-handles.js";
 const I32_MIN = -2147483648;
 const I32_MAX = 2147483647;
 
-type HandleEntry = {
-  kind: HandleKind;
-  nativeHandle: number;
-};
-
-function asHandleId(handle: SpiceHandle, context: string): number {
-  const id = handle as unknown as number;
-  if (!Number.isSafeInteger(id) || id <= 0) {
-    throw new TypeError(`${context}: expected a positive safe integer SpiceHandle`);
-  }
-  return id;
-}
-
-function asSpiceHandle(handleId: number): SpiceHandle {
-  return handleId as unknown as SpiceHandle;
-}
+const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
 
 function assertDlaDescriptor(value: unknown, context: string): asserts value is DlaDescriptor {
   invariant(typeof value === "object" && value !== null, `${context}: expected an object`);
@@ -73,70 +58,18 @@ function normalizeFoundDlaDescriptor(value: unknown, context: string): FoundDlaD
   return { found: true, descr: obj.descr };
 }
 
-export function createFileIoApi(native: NativeAddon): FileIoApi {
-  let nextHandleId = 1;
-  const handles = new Map<number, HandleEntry>();
-
-  function register(kind: HandleKind, nativeHandle: number): SpiceHandle {
-    invariant(
-      typeof nativeHandle === "number" &&
-        Number.isInteger(nativeHandle) &&
-        nativeHandle >= I32_MIN &&
-        nativeHandle <= I32_MAX,
-      `Expected native backend to return a 32-bit signed integer handle for ${kind}`,
+export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistry, outputs: VirtualOutputStager): FileIoApi {
+  function closeDasBacked(handle: SpiceHandle, context: string): void {
+    handles.close(
+      handle,
+      DAS_BACKED,
+      (entry) => {
+        // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
+        // is just an alias.
+        native.dascls(entry.nativeHandle);
+      },
+      context,
     );
-
-    invariant(
-      nextHandleId < Number.MAX_SAFE_INTEGER,
-      `SpiceHandle ID overflow: too many handles allocated (nextHandleId=${nextHandleId})`,
-    );
-
-    const handleId = nextHandleId++;
-    handles.set(handleId, { kind, nativeHandle });
-    return asSpiceHandle(handleId);
-  }
-
-  function lookup(handle: SpiceHandle, expected: readonly HandleKind[]): HandleEntry {
-    const handleId = asHandleId(handle, "lookup(handle)");
-    const entry = handles.get(handleId);
-    if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
-    }
-    if (!expected.includes(entry.kind)) {
-      throw new Error(
-        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
-      );
-    }
-    return entry;
-  }
-
-  function close(
-    handle: SpiceHandle,
-    expected: readonly HandleKind[],
-    closeNative: (entry: HandleEntry) => void,
-  ): void {
-    const handleId = asHandleId(handle, "close(handle)");
-    const entry = handles.get(handleId);
-    if (!entry) {
-      throw new Error(`Invalid or closed SpiceHandle: ${handleId}`);
-    }
-    if (!expected.includes(entry.kind)) {
-      throw new Error(
-        `Invalid SpiceHandle kind: ${handleId} is ${entry.kind}, expected ${expected.join(" or ")}`,
-      );
-    }
-
-    // Close-once semantics: only forget the handle after the native close succeeds.
-    closeNative(entry);
-    handles.delete(handleId);
-  }
-
-  function closeDasBacked(handle: SpiceHandle): void {
-    close(handle, DAS_BACKED, (entry) => {
-      // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
-      // is just an alias.
-      native.dascls(entry.nativeHandle);
-    });
   }
 
   const api = {
@@ -155,37 +88,139 @@ export function createFileIoApi(native: NativeAddon): FileIoApi {
       return { arch: obj.arch, type: obj.type };
     },
 
-    dafopr: (path: string) => register("DAF", native.dafopr(path)),
-    dafcls: (handle: SpiceHandle) => close(handle, ["DAF"], (e) => native.dafcls(e.nativeHandle)),
-    dafbfs: (handle: SpiceHandle) => native.dafbfs(lookup(handle, ["DAF"]).nativeHandle),
+    readVirtualOutput: (output: VirtualOutput) => {
+      invariant(output && typeof output === "object", "readVirtualOutput(output): expected an object");
+      const obj = output as { kind?: unknown; path?: unknown };
+      invariant(obj.kind === "virtual-output", "readVirtualOutput(output): expected kind='virtual-output'");
+      invariant(typeof obj.path === "string", "readVirtualOutput(output): expected path to be a string");
+      return outputs.readVirtualOutput({ kind: "virtual-output", path: obj.path });
+    },
+
+    dafopr: (path: string) => handles.register("DAF", native.dafopr(path)),
+    dafcls: (handle: SpiceHandle) =>
+      handles.close(handle, ["DAF"], (e) => native.dafcls(e.nativeHandle), "dafcls"),
+    dafbfs: (handle: SpiceHandle) =>
+      native.dafbfs(handles.lookup(handle, ["DAF"], "dafbfs").nativeHandle),
     daffna: (handle: SpiceHandle) => {
-      const found = native.daffna(lookup(handle, ["DAF"]).nativeHandle);
+      const found = native.daffna(handles.lookup(handle, ["DAF"], "daffna").nativeHandle);
       invariant(typeof found === "boolean", "Expected native backend daffna() to return a boolean");
       return found;
     },
 
-    dasopr: (path: string) => register("DAS", native.dasopr(path)),
-    dascls: closeDasBacked,
+    dasopr: (path: string) => handles.register("DAS", native.dasopr(path)),
+    dascls: (handle: SpiceHandle) => closeDasBacked(handle, "dascls"),
 
     dlaopn: (path: string, ftype: string, ifname: string, ncomch: number) =>
-      register("DLA", native.dlaopn(path, ftype, ifname, ncomch)),
+      handles.register("DLA", native.dlaopn(path, ftype, ifname, ncomch)),
 
     dlabfs: (handle: SpiceHandle) =>
-      normalizeFoundDlaDescriptor(native.dlabfs(lookup(handle, DAS_BACKED).nativeHandle), "dlabfs()"),
+      normalizeFoundDlaDescriptor(
+        native.dlabfs(handles.lookup(handle, DAS_BACKED, "dlabfs").nativeHandle),
+        "dlabfs()",
+      ),
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor) => {
       assertDlaDescriptor(descr, "dlafns(descr)");
       return normalizeFoundDlaDescriptor(
-        native.dlafns(lookup(handle, DAS_BACKED).nativeHandle, descr),
+        native.dlafns(handles.lookup(handle, DAS_BACKED, "dlafns").nativeHandle, descr),
         "dlafns()",
       );
     },
 
-    dlacls: closeDasBacked,
+    dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
+
+    dskopn: (path: string, ifname: string, ncomch: number) =>
+      // DSKs are DAS-backed; register as DAS so `dascls` can close it.
+      handles.register("DAS", native.dskopn(path, ifname, ncomch)),
+
+    dskmi2: (
+      nv: number,
+      vrtces: readonly number[],
+      np: number,
+      plates: readonly number[],
+      finscl: number,
+      corscl: number,
+      worksz: number,
+      voxpsz: number,
+      voxlsz: number,
+      makvtl: boolean,
+      spxisz: number,
+    ) => {
+      const result = native.dskmi2(
+        nv,
+        vrtces,
+        np,
+        plates,
+        finscl,
+        corscl,
+        worksz,
+        voxpsz,
+        voxlsz,
+        makvtl,
+        spxisz,
+      );
+      invariant(
+        typeof result === "object" && result !== null,
+        "Expected native backend dskmi2() to return an object",
+      );
+      const obj = result as { spaixd?: unknown; spaixi?: unknown };
+      invariant(Array.isArray(obj.spaixd), "Expected dskmi2().spaixd to be an array");
+      invariant(Array.isArray(obj.spaixi), "Expected dskmi2().spaixi to be an array");
+      invariant(obj.spaixd.every((v) => typeof v === "number"), "Expected dskmi2().spaixd to be a number[]");
+      invariant(obj.spaixi.every((v) => typeof v === "number"), "Expected dskmi2().spaixi to be a number[]");
+      return { spaixd: obj.spaixd as number[], spaixi: obj.spaixi as number[] };
+    },
+
+    dskw02: (
+      handle: SpiceHandle,
+      center: number,
+      surfid: number,
+      dclass: number,
+      frame: string,
+      corsys: number,
+      corpar: readonly number[],
+      mncor1: number,
+      mxcor1: number,
+      mncor2: number,
+      mxcor2: number,
+      mncor3: number,
+      mxcor3: number,
+      first: number,
+      last: number,
+      nv: number,
+      vrtces: readonly number[],
+      np: number,
+      plates: readonly number[],
+      spaixd: readonly number[],
+      spaixi: readonly number[],
+    ) =>
+      native.dskw02(
+        handles.lookup(handle, ["DAS"], "dskw02").nativeHandle,
+        center,
+        surfid,
+        dclass,
+        frame,
+        corsys,
+        corpar,
+        mncor1,
+        mxcor1,
+        mncor2,
+        mxcor2,
+        mncor3,
+        mxcor3,
+        first,
+        last,
+        nv,
+        vrtces,
+        np,
+        plates,
+        spaixd,
+        spaixi,
+      ),
   } satisfies FileIoApi;
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
-    value: () => handles.size,
+    value: () => handles.size(),
     enumerable: false,
   });
 

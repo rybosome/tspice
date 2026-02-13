@@ -10,7 +10,8 @@ import {
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-backend-contract";
 
-import { assertEmscriptenModule, type EmscriptenModule } from "../lowlevel/exports.js";
+import type { EmscriptenModule } from "../lowlevel/exports.js";
+import { assertEmscriptenModule } from "../lowlevel/exports.js";
 
 import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
@@ -250,9 +251,72 @@ function tspiceCallWnvald(module: EmscriptenModule, size: number, n: number, win
   });
 }
 
+type WasmHandleOwnership = {
+  allocatedCells: Set<number>;
+  allocatedWindows: Set<number>;
+  charCellLengths: Map<number, number>;
+};
+
+// Per-Emscripten-module handle ownership registry.
+//
+// This gives other WASM domains an O(1) way to reject foreign cell/window
+// handles (e.g. Node backend numeric handle ids) before calling into the shim.
+const WASM_HANDLE_OWNERSHIP = new WeakMap<EmscriptenModule, WasmHandleOwnership>();
+
+function getOrInitWasmHandleOwnership(module: EmscriptenModule): WasmHandleOwnership {
+  let ownership = WASM_HANDLE_OWNERSHIP.get(module);
+  if (!ownership) {
+    ownership = {
+      allocatedCells: new Set<number>(),
+      allocatedWindows: new Set<number>(),
+      charCellLengths: new Map<number, number>(),
+    };
+    WASM_HANDLE_OWNERSHIP.set(module, ownership);
+  }
+  return ownership;
+}
+
+export function assertWasmOwnedCellHandle(
+  module: EmscriptenModule,
+  handle: number,
+  context: string,
+): void {
+  if (typeof handle !== "number" || !Number.isFinite(handle) || !Number.isInteger(handle)) {
+    throw new TypeError(`${context}: expected handle to be an integer number (got ${handle})`);
+  }
+  if (handle <= 0) {
+    throw new RangeError(`${context}: expected handle to be > 0 (got ${handle})`);
+  }
+
+  const { allocatedCells } = getOrInitWasmHandleOwnership(module);
+  if (!allocatedCells.has(handle)) {
+    throw new RangeError(
+      `${context}: unknown/expired WASM cell handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+    );
+  }
+}
+
+export function assertWasmOwnedWindowHandle(
+  module: EmscriptenModule,
+  handle: number,
+  context: string,
+): void {
+  if (typeof handle !== "number" || !Number.isFinite(handle) || !Number.isInteger(handle)) {
+    throw new TypeError(`${context}: expected handle to be an integer number (got ${handle})`);
+  }
+  if (handle <= 0) {
+    throw new RangeError(`${context}: expected handle to be > 0 (got ${handle})`);
+  }
+
+  const { allocatedWindows } = getOrInitWasmHandleOwnership(module);
+  if (!allocatedWindows.has(handle)) {
+    throw new RangeError(
+      `${context}: unknown/expired WASM window handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+    );
+  }
+}
+
 export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
-  // Single source of truth for required exports.
-  // (Cells/windows are runtime-required; see REQUIRED_FUNCTION_EXPORTS.)
   assertEmscriptenModule(module);
 
   // Security + correctness: track allocated pointers per backend instance.
@@ -260,25 +324,29 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
   // In the WASM backend, cell/window handles are raw pointers. Without this
   // tracking, callers could attempt to free arbitrary pointers or double-free
   // previously-freed handles.
-  const allocatedCells = new Set<number>();
-  const allocatedWindows = new Set<number>();
-  const charCellLengths = new Map<number, number>();
+  const { allocatedCells, allocatedWindows, charCellLengths } = getOrInitWasmHandleOwnership(module);
 
   function assertKnownCell(handle: number, context: string): void {
     if (!allocatedCells.has(handle)) {
-      throw new Error(`${context}: unknown/expired cell handle`);
+      throw new RangeError(
+        `${context}: unknown/expired WASM cell handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+      );
     }
   }
 
   function assertKnownWindow(handle: number, context: string): void {
     if (!allocatedWindows.has(handle)) {
-      throw new Error(`${context}: unknown/expired window handle`);
+      throw new RangeError(
+        `${context}: unknown/expired WASM window handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+      );
     }
   }
 
   function assertKnownCellOrWindow(handle: number, context: string): void {
     if (!allocatedCells.has(handle) && !allocatedWindows.has(handle)) {
-      throw new Error(`${context}: unknown/expired handle`);
+      throw new RangeError(
+        `${context}: unknown/expired WASM handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+      );
     }
   }
 
@@ -379,7 +447,7 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
       const handle = cell as unknown as number;
       const outMaxBytes = charCellLengths.get(handle);
       if (outMaxBytes === undefined) {
-        throw new Error(`cellGetc(): unknown char cell handle ${handle}`);
+        throw new RangeError(`cellGetc(): unknown/expired char cell handle ${handle} (handles are per-module)`);
       }
       return tspiceCallCellGetc(module, cell, index, outMaxBytes);
     },

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { brandMat3RowMajor, createBackend } from "@rybosome/tspice";
+import { brandMat3RowMajor, spiceClients } from "@rybosome/tspice";
+import type { SpiceBackend } from "@rybosome/tspice";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
@@ -11,9 +12,9 @@ function expectVec3Close(actual: [number, number, number], expected: [number, nu
 }
 
 describe("coordinate conversions + vector/matrix helpers", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
-  function runSharedTests(backend: Awaited<ReturnType<typeof createBackend>>) {
+  function runSharedTests(backend: SpiceBackend) {
     const rect: [number, number, number] = [1, 2, 3];
 
     // reclat/latrec round-trip
@@ -53,12 +54,20 @@ describe("coordinate conversions + vector/matrix helpers", () => {
   }
 
   itNode("node backend", async () => {
-    const backend = await createBackend({ backend: "node" });
-    runSharedTests(backend);
+    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+    try {
+      runSharedTests(spice.raw);
+    } finally {
+      await dispose();
+    }
   });
 
   it("wasm backend", async () => {
-    const backend = await createBackend({ backend: "wasm" });
-    runSharedTests(backend);
+    const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+    try {
+      runSharedTests(spice.raw);
+    } finally {
+      await dispose();
+    }
   });
 });

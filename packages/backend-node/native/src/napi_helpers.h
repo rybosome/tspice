@@ -4,7 +4,9 @@
 
 #include "tspice_backend_shim.h"
 
+#include <functional>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <vector>
 
@@ -22,7 +24,12 @@ inline void ThrowSpiceError(Napi::Env env, const char* message) {
   ThrowSpiceError(env, std::string(message ? message : ""));
 }
 
-inline void ThrowSpiceError(Napi::Env env, const std::string& context, const char* err) {
+inline void ThrowSpiceError(
+    Napi::Env env,
+    const std::string& context,
+    const char* err,
+    const char* spiceOp = nullptr,
+    std::function<void(Napi::Object&)> attachContext = {}) {
   // This overload is used for CSPICE-signaled failures, where the C shim has
   // already captured/cleared SPICE error status and produced an error message.
   std::string message = (err && err[0] != '\0') ? std::string(err) : "Unknown CSPICE error";
@@ -33,10 +40,21 @@ inline void ThrowSpiceError(Napi::Env env, const std::string& context, const cha
   Napi::Error jsErr = Napi::Error::New(env, message);
   Napi::Object obj = jsErr.Value().As<Napi::Object>();
 
-  // Attach structured SPICE error details when available.
+  // Attach structured context about the CSPICE operation, without changing the
+  // existing error message format.
+  if (spiceOp != nullptr && spiceOp[0] != '\0') {
+    obj.Set("spiceOp", Napi::String::New(env, spiceOp));
+  }
+  if (attachContext) {
+    attachContext(obj);
+  }
+
+  // Attach structured SPICE error details when they appear to correspond to
+  // this error.
   //
-  // These are best-effort: they may be empty if no SPICE error was captured or
-  // if the error originated outside of CSPICE.
+  // The C shim stores SPICE fields out-of-band, so for non-CSPICE validation
+  // errors we must avoid accidentally attaching stale fields from a previous
+  // CSPICE failure.
   char shortMsg[1841];
   char longMsg[1841];
   char traceMsg[1841];
@@ -48,17 +66,75 @@ inline void ThrowSpiceError(Napi::Env env, const std::string& context, const cha
   tspice_get_last_error_long(longMsg, (int)sizeof(longMsg));
   tspice_get_last_error_trace(traceMsg, (int)sizeof(traceMsg));
 
-  if (shortMsg[0] != '\0') {
-    obj.Set("spiceShort", Napi::String::New(env, shortMsg));
-  }
-  if (longMsg[0] != '\0') {
-    obj.Set("spiceLong", Napi::String::New(env, longMsg));
-  }
-  if (traceMsg[0] != '\0') {
-    obj.Set("spiceTrace", Napi::String::New(env, traceMsg));
+  const bool shouldAttachSpiceFields =
+      (shortMsg[0] != '\0') && (message.find(shortMsg) != std::string::npos);
+
+  if (shouldAttachSpiceFields) {
+    if (shortMsg[0] != '\0') {
+      obj.Set("spiceShort", Napi::String::New(env, shortMsg));
+    }
+    if (longMsg[0] != '\0') {
+      obj.Set("spiceLong", Napi::String::New(env, longMsg));
+    }
+    if (traceMsg[0] != '\0') {
+      obj.Set("spiceTrace", Napi::String::New(env, traceMsg));
+    }
   }
 
   ThrowSpiceError(jsErr);
+}
+
+/**
+* Produces a bounded preview of potentially untrusted user input for inclusion in error messages.
+*
+* This avoids creating extremely large JS exceptions and reduces the risk of leaking large or
+* sensitive strings into logs.
+*/
+inline std::string PreviewForError(const std::string& s, size_t maxChars = 200) {
+  const size_t origLen = s.size();
+  const size_t previewLen = (origLen <= maxChars) ? origLen : maxChars;
+
+  std::string out;
+  // Worst case is `\u00XX` (6 chars) per byte, plus suffix.
+  out.reserve(previewLen * 6 + 32);
+
+  static const char kHex[] = "0123456789ABCDEF";
+
+  for (size_t i = 0; i < previewLen; i++) {
+    const unsigned char c = static_cast<unsigned char>(s[i]);
+    switch (c) {
+      case '\n':
+        out += "\\n";
+        break;
+      case '\r':
+        out += "\\r";
+        break;
+      case '\t':
+        out += "\\t";
+        break;
+      case '\\':
+        out += "\\\\";
+        break;
+      case '"':
+        out += "\\\"";
+        break;
+      default:
+        if (c < 0x20 || c >= 0x7F) {
+          out += "\\u00";
+          out.push_back(kHex[(c >> 4) & 0xF]);
+          out.push_back(kHex[c & 0xF]);
+        } else {
+          out.push_back(static_cast<char>(c));
+        }
+        break;
+    }
+  }
+
+  if (origLen > maxChars) {
+    out += "...(len=" + std::to_string(origLen) + ")";
+  }
+
+  return out;
 }
 
 inline Napi::Array MakeNumberArray(Napi::Env env, const double* values, size_t count) {
@@ -156,6 +232,20 @@ inline bool IsAsciiWhitespace(unsigned char c) {
     default:
       return false;
   }
+}
+
+inline std::string TrimAsciiWhitespace(std::string_view s) {
+  size_t start = 0;
+  while (start < s.size() && IsAsciiWhitespace(static_cast<unsigned char>(s[start]))) {
+    start++;
+  }
+
+  size_t end = s.size();
+  while (end > start && IsAsciiWhitespace(static_cast<unsigned char>(s[end - 1]))) {
+    end--;
+  }
+
+  return std::string(s.substr(start, end - start));
 }
 
 /**

@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+
+// NAIF documents frame names as up to 32 chars + NUL.
+#define TSPICE_FRNAME_MAX_BYTES 33
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,6 +29,13 @@ int tspice_get_spice_error_message_and_reset(char *err, int errMaxBytes);
 int tspice_get_last_error_short(char *out, int outMaxBytes);
 int tspice_get_last_error_long(char *out, int outMaxBytes);
 int tspice_get_last_error_trace(char *out, int outMaxBytes);
+
+// Clears process-global structured last-error buffers (short/long/trace)
+// without modifying CSPICE error status.
+//
+// Useful for non-CSPICE validation errors, where JS backends should not attach
+// stale `spiceShort`/`spiceLong`/`spiceTrace` fields.
+void tspice_clear_last_error_buffers(void);
 
 // --- CSPICE error/status utilities ---
 int tspice_failed(int *outFailed, char *err, int errMaxBytes);
@@ -59,8 +70,36 @@ int tspice_kdata(
     char *err,
     int errMaxBytes);
 
+int tspice_kinfo(
+    const char *path,
+    char *filtyp,
+    int filtypMaxBytes,
+    char *source,
+    int sourceMaxBytes,
+    int *outHandle,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_kxtrct(
+    const char *keywd,
+    int termlen,
+    const char *terms,
+    int nterms,
+    const char *wordsqIn,
+    char *wordsqOut,
+    int wordsqOutMaxBytes,
+    char *substr,
+    int substrMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_kplfrm(int frmcls, uintptr_t idset, char *err, int errMaxBytes);
+
 // Returns the number of loaded kernels, or -1 on error (with message in `err`).
 int tspice_ktotal_all(char *err, int errMaxBytes);
+
 
 // --- file i/o primitives ---------------------------------------------------
 
@@ -117,6 +156,319 @@ int tspice_dlafns(
 // Close a DLA handle (DLA is DAS-backed).
 int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
+// --- EK --------------------------------------------------------------------
+
+int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes);
+int tspice_ekopw(const char *path, int *outHandle, char *err, int errMaxBytes);
+
+int tspice_ekopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekcls(int handle, char *err, int errMaxBytes);
+
+int tspice_ekntab(int *outN, char *err, int errMaxBytes);
+
+int tspice_ektnam(
+    int n,
+    char *outName,
+    int outNameMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_eknseg(int handle, int *outNseg, char *err, int errMaxBytes);
+
+// --- EK query/data ops -----------------------------------------------------
+
+int tspice_ekfind(
+    const char *query,
+    int outErrmsgMaxBytes,
+    int *outNmrows,
+    int *outError,
+    char *outErrmsg,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekgc(
+    int selidx,
+    int row,
+    int elment,
+    char *outCdata,
+    int outCdataMaxBytes,
+    int *outNull,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekgd(
+    int selidx,
+    int row,
+    int elment,
+    double *outDdata,
+    int *outNull,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekgi(
+    int selidx,
+    int row,
+    int elment,
+    int *outIdata,
+    int *outNull,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// --- EK fast write ---------------------------------------------------------
+
+int tspice_ekifld(
+    int handle,
+    const char *tabnam,
+    int ncols,
+    int nrows,
+    int cnamln,
+    const char *cnames,
+    int declen,
+    const char *decls,
+    int *outSegno,
+    int *outRcptrs,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekacli(
+    int handle,
+    int segno,
+    const char *column,
+    int nrows,
+    const int *ivals,
+    int nvals,
+    const int *entszs,
+    const int *nlflgs,
+    int *rcptrs,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekacld(
+    int handle,
+    int segno,
+    const char *column,
+    int nrows,
+    const double *dvals,
+    int nvals,
+    const int *entszs,
+    const int *nlflgs,
+    int *rcptrs,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekaclc(
+    int handle,
+    int segno,
+    const char *column,
+    int nrows,
+    int nvals,
+    int vallen,
+    int cvalsMaxBytes,
+    const char *cvals,
+    const int *entszs,
+    const int *nlflgs,
+    int *rcptrs,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekffld(int handle, int segno, int *rcptrs, char *err, int errMaxBytes);
+
+// --- DSK -------------------------------------------------------------------
+
+int tspice_dskopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dskmi2(
+    int nv,
+    const double *vrtces,
+    int np,
+    const int32_t *plates,
+    double finscl,
+    int corscl,
+    int worksz,
+    int voxpsz,
+    int voxlsz,
+    int makvtl,
+    int spxisz,
+    double *outSpaixd,
+    int outSpaixdLen,
+    int32_t *outSpaixi,
+    int outSpaixiLen,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dskw02(
+    int handle,
+    int center,
+    int surfid,
+    int dclass,
+    const char *frame,
+    int corsys,
+    const double *corpar,
+    double mncor1,
+    double mxcor1,
+    double mncor2,
+    double mxcor2,
+    double mncor3,
+    double mxcor3,
+    double first,
+    double last,
+    int nv,
+    const double *vrtces,
+    int np,
+    const int32_t *plates,
+    const double *spaixd,
+    int spaixdLen,
+    const int32_t *spaixi,
+    int spaixiLen,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dskobj(const char *dsk, uintptr_t bodidsCellHandle, char *err, int errMaxBytes);
+
+int tspice_dsksrf(
+    const char *dsk,
+    int bodyid,
+    uintptr_t srfidsCellHandle,
+    char *err,
+    int errMaxBytes);
+
+// `outInts6` layout:
+// [surfce, center, dclass, dtype, frmcde, corsys]
+//
+// `outDoubles18` layout:
+// [corpar(10), co1min, co1max, co2min, co2max, co3min, co3max, start, stop]
+int tspice_dskgd(
+    int handle,
+    const int32_t *dladscInts8,
+    int32_t *outInts6,
+    double *outDoubles18,
+    char *err,
+    int errMaxBytes);
+
+// `outInts10` layout:
+// [nv, np, nvxtot, vgrext(3), cgscal, vtxnpl, voxnpt, voxnpl]
+//
+// `outDoubles10` layout:
+// [vtxbds(6), voxsiz, voxori(3)]
+int tspice_dskb02(
+    int handle,
+    const int32_t *dladscInts8,
+    int32_t *outInts10,
+    double *outDoubles10,
+    char *err,
+    int errMaxBytes);
+
+// --- Kernel pool -----------------------------------------------------------
+
+int tspice_gdpool(
+    const char *name,
+    int start,
+    int room,
+    int *outN,
+    double *outValues,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_gipool(
+    const char *name,
+    int start,
+    int room,
+    int *outN,
+    int *outValues,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_gcpool(
+    const char *name,
+    int start,
+    int room,
+    int cvalen,
+    int *outN,
+    void *outCvals,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_gnpool(
+    const char *name,
+    int start,
+    int room,
+    int cvalen,
+    int *outN,
+    void *outCvals,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+int tspice_dtpool(
+    const char *name,
+    int *outFound,
+    int *outN,
+    char *outType,
+    int outTypeMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_pdpool(
+    const char *name,
+    int n,
+    const double *values,
+    char *err,
+    int errMaxBytes);
+
+int tspice_pipool(
+    const char *name,
+    int n,
+    const int *ivals,
+    char *err,
+    int errMaxBytes);
+
+int tspice_pcpool(
+    const char *name,
+    int n,
+    int lenvals,
+    const void *cvals,
+    char *err,
+    int errMaxBytes);
+
+int tspice_swpool(
+    const char *agent,
+    int nnames,
+    int namlen,
+    const void *names,
+    char *err,
+    int errMaxBytes);
+
+int tspice_cvpool(
+    const char *agent,
+    int *outUpdate,
+    char *err,
+    int errMaxBytes);
+
+int tspice_expool(
+    const char *name,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
 // --- low-level primitives ---
 
 // str2et_c: convert time string -> ET seconds past J2000.
@@ -141,6 +493,49 @@ int tspice_timout(
     char *err,
     int errMaxBytes);
 
+// deltet_c: return difference ET - UTC (Delta ET).
+int tspice_deltet(
+    double epoch,
+    const char *eptype,
+    double *outDelta,
+    char *err,
+    int errMaxBytes);
+
+// unitim_c: convert time epoch from one system to another.
+int tspice_unitim(
+    double epoch,
+    const char *insys,
+    const char *outsys,
+    double *outEpoch,
+    char *err,
+    int errMaxBytes);
+
+// tparse_c: parse a UTC time string -> UTC seconds past J2000 (formal calendar; no leap seconds).
+int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes);
+
+// tpictr_c: create a time picture from a sample time string.
+int tspice_tpictr(
+    const char *sample,
+    const char *picturIn,
+    char *outPictur,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// timdef_c: set/get time conversion defaults.
+int tspice_timdef_get(
+    const char *item,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_timdef_set(
+    const char *item,
+    const char *value,
+    char *err,
+    int errMaxBytes);
+
 // bodn2c_c: body name -> integer code.
 int tspice_bodn2c(
     const char *name,
@@ -155,6 +550,54 @@ int tspice_bodc2n(
     char *outName,
     int outNameMaxBytes,
     int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// bodc2s_c: body code -> mapped name (or decimal string if unknown).
+int tspice_bodc2s(
+    int code,
+    char *outName,
+    int outNameMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// bods2c_c: body name (or numeric string) -> integer code.
+int tspice_bods2c(
+    const char *name,
+    int *outCode,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// boddef_c: define a body name/code mapping (side effect).
+int tspice_boddef(
+    const char *name,
+    int code,
+    char *err,
+    int errMaxBytes);
+
+// bodfnd_c: return true if body constant exists in the kernel pool.
+int tspice_bodfnd(
+    int body,
+    const char *item,
+    int *outResult,
+    char *err,
+    int errMaxBytes);
+
+// bodvar_c: return values of a body constant from the kernel pool.
+//
+// NOTE: CSPICE's `bodvar_c` is deprecated; this shim uses `bodvcd_c`
+// under the hood to allow the caller to bound output size.
+//
+// Missing-item semantics:
+// - If the requested item is not found for the body, this returns success with
+//   `*outDim = 0`. Call `tspice_bodfnd` if you need a strict presence check.
+int tspice_bodvar(
+    int body,
+    const char *item,
+    int maxn,
+    int *outDim,
+    double *outValues,
     char *err,
     int errMaxBytes);
 
@@ -191,6 +634,32 @@ int tspice_cnmfrm(
     int *outFrcode,
     char *outFrname,
     int outFrnameMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// frinfo_c: frame code -> frame center/class/classId.
+int tspice_frinfo(
+    int frameId,
+    int *outCenter,
+    int *outFrameClass,
+    int *outClassId,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// ccifrm_c: frame class/classId -> frame code/name/center.
+//
+// If `outFrname` is non-NULL and `outFrnameMaxBytes > 0`, the buffer
+// must be at least `TSPICE_FRNAME_MAX_BYTES` (33, including the trailing NUL).
+// Smaller buffers are rejected with an error to avoid silent truncation.
+int tspice_ccifrm(
+    int frameClass,
+    int classId,
+    int *outFrcode,
+    char *outFrname,
+    int outFrnameMaxBytes,
+    int *outCenter,
     int *outFound,
     char *err,
     int errMaxBytes);
@@ -239,6 +708,236 @@ int tspice_spkpos(
     const char *observer,
     double *outPos3,
     double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkez_c: compute state (6 doubles) and light time (numeric IDs).
+int tspice_spkez(
+    int target,
+    double et,
+    const char *ref,
+    const char *abcorr,
+    int observer,
+    double *outState6,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkezp_c: compute position (3 doubles) and light time (numeric IDs).
+int tspice_spkezp(
+    int target,
+    double et,
+    const char *ref,
+    const char *abcorr,
+    int observer,
+    double *outPos3,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkgeo_c: compute geometric state (6 doubles) and light time (numeric IDs).
+int tspice_spkgeo(
+    int target,
+    double et,
+    const char *ref,
+    int observer,
+    double *outState6,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkgps_c: compute geometric position (3 doubles) and light time (numeric IDs).
+int tspice_spkgps(
+    int target,
+    double et,
+    const char *ref,
+    int observer,
+    double *outPos3,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// illumg_c: compute illumination angles at a surface point, using a caller-specified
+// illumination source body.
+int tspice_illumg(
+    const char *method,
+    const char *target,
+    const char *ilusrc,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *obsrvr,
+    const double *spoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    double *outPhase,
+    double *outIncdnc,
+    double *outEmissn,
+    char *err,
+    int errMaxBytes);
+
+// illumf_c: compute illumination angles + visibility/lighting flags at a surface point.
+//
+// `outVisibl` and `outLit` are written as integer 0/1 values.
+int tspice_illumf(
+    const char *method,
+    const char *target,
+    const char *ilusrc,
+    double et,
+    const char *fixref,
+    const char *abcorr,
+    const char *obsrvr,
+    const double *spoint3,
+    double *outTrgepc,
+    double *outSrfvec3,
+    double *outPhase,
+    double *outIncdnc,
+    double *outEmissn,
+    int *outVisibl,
+    int *outLit,
+    char *err,
+    int errMaxBytes);
+
+// spkssb_c: compute state (6 doubles) of target body relative to SSB.
+int tspice_spkssb(
+    int target,
+    double et,
+    const char *ref,
+    double *outState6,
+    char *err,
+    int errMaxBytes);
+
+// --- plane helpers ---
+
+// nvc2pl_c: normal vector + constant -> plane.
+//
+// Output plane is written as 4 doubles: [normalX, normalY, normalZ, constant]
+int tspice_nvc2pl(
+    const double *normal3,
+    double konst,
+    double *outPlane4,
+    char *err,
+    int errMaxBytes);
+
+// pl2nvc_c: plane -> unit normal vector + constant.
+//
+// Input plane must be a length-4 array: [normalX, normalY, normalZ, constant]
+int tspice_pl2nvc(
+    const double *plane4,
+    double *outNormal3,
+    double *outKonst,
+    char *err,
+    int errMaxBytes);
+
+// spkcov_c: compute the coverage window for an object in an SPK file.
+int tspice_spkcov(
+    const char *spk,
+    int idcode,
+    uintptr_t coverWindowHandle,
+    char *err,
+    int errMaxBytes);
+
+// spkobj_c: find the set of objects present in an SPK file.
+int tspice_spkobj(
+    const char *spk,
+    uintptr_t idsCellHandle,
+    char *err,
+    int errMaxBytes);
+
+// spksfs_c: select the highest-priority segment for a body+time from loaded SPKs.
+//
+// Segment identifiers may be up to 40 characters; `outIdentMaxBytes` must be
+// at least 41 (including trailing NUL).
+int tspice_spksfs(
+    int body,
+    double et,
+    int *outHandle,
+    double *outDescr5,
+    char *outIdent,
+    int outIdentMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// spkpds_c: pack an SPK segment descriptor.
+int tspice_spkpds(
+    int body,
+    int center,
+    const char *frame,
+    int type,
+    double first,
+    double last,
+    double *outDescr5,
+    char *err,
+    int errMaxBytes);
+
+// spkuds_c: unpack a packed SPK segment descriptor.
+int tspice_spkuds(
+    const double *descr5,
+    int *outBody,
+    int *outCenter,
+    int *outFrame,
+    int *outType,
+    double *outFirst,
+    double *outLast,
+    int *outBaddr,
+    int *outEaddr,
+    char *err,
+    int errMaxBytes);
+
+// --- SPK writers --------------------------------------------------------
+
+// spkopn_c: open a new SPK file for write.
+int tspice_spkopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+// spkopa_c: open an existing SPK file for append.
+int tspice_spkopa(const char *path, int *outHandle, char *err, int errMaxBytes);
+
+// spkcls_c: close an SPK file handle.
+int tspice_spkcls(int handle, char *err, int errMaxBytes);
+
+// spkw08_c: write a type 8 segment (equal time steps, Lagrange interpolation).
+//
+// `states6n` is a flat array of length `n*6` doubles.
+// `epoch1` is the epoch of the first state record; successive epochs are `epoch1 + i*step`.
+int tspice_spkw08(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    double epoch1,
+    double step,
+    char *err,
+    int errMaxBytes);
+
+// spkw08_c (v2): like tspice_spkw08, but validates `states6nLen == 6*n` before
+// casting.
+int tspice_spkw08_v2(
+    int handle,
+    int body,
+    int center,
+    const char *frame,
+    double first,
+    double last,
+    const char *segid,
+    int degree,
+    int n,
+    const double *states6n,
+    int states6nLen,
+    double epoch1,
+    double step,
     char *err,
     int errMaxBytes);
 
@@ -464,6 +1163,39 @@ int tspice_sce2s(
     char *err,
     int errMaxBytes);
 
+// scencd_c: convert an encoded SCLK string -> ticks.
+int tspice_scencd(
+    int sc,
+    const char *sclkch,
+    double *outSclkdp,
+    char *err,
+    int errMaxBytes);
+
+// scdecd_c: convert ticks -> an encoded SCLK string.
+int tspice_scdecd(
+    int sc,
+    double sclkdp,
+    char *out,
+    int outMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+// sct2e_c: convert ticks -> ET seconds past J2000.
+int tspice_sct2e(
+    int sc,
+    double sclkdp,
+    double *outEt,
+    char *err,
+    int errMaxBytes);
+
+// sce2c_c: convert ET seconds past J2000 -> ticks.
+int tspice_sce2c(
+    int sc,
+    double et,
+    double *outSclkdp,
+    char *err,
+    int errMaxBytes);
+
 // ckgp_c: get pointing (attitude) for a CK instrument at an encoded spacecraft clock time.
 //
 // Output matrix is written as 9 doubles in row-major order.
@@ -491,6 +1223,29 @@ int tspice_ckgpav(
     double *outAv3,
     double *outClkout,
     int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// --- CK file query / management (read-only) --------------------------------
+
+// cklpf_c: load a CK file for access by pointing routines.
+int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes);
+
+// ckupf_c: unload a CK file previously loaded by cklpf.
+int tspice_ckupf(int handle, char *err, int errMaxBytes);
+
+// ckobj_c: return the set of instrument/object IDs present in a CK file.
+int tspice_ckobj(const char *ck, uintptr_t idsCellHandle, char *err, int errMaxBytes);
+
+// ckcov_c: return coverage for an instrument/object in a CK file.
+int tspice_ckcov(
+    const char *ck,
+    int idcode,
+    int needav,
+    const char *level,
+    double tol,
+    const char *timsys,
+    uintptr_t coverWindowHandle,
     char *err,
     int errMaxBytes);
 

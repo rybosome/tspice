@@ -13,7 +13,7 @@
   },
   "files": ["dist"],
   "scripts": {
-    "build": "tsc -b tsconfig.json",
+    "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && node ./scripts/pretest-cspice-runner.mjs",
     "test": "vitest run"
@@ -21,6 +21,9 @@
   "dependencies": {
     "@rybosome/tspice": "workspace:*",
     "yaml": "^2.8.1"
+  },
+  "optionalDependencies": {
+    "@rybosome/tspice-backend-node": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

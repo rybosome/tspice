@@ -10,7 +10,7 @@ import { CameraController, type CameraControllerState } from '../controls/Camera
 import { createSelectionOverlay, type SelectionOverlay } from '../scene/SelectionOverlay.js'
 import { createSkydome, type CreateSkydomeOptions } from '../scene/Skydome.js'
 import { createStarfield, type StarfieldHandle } from '../scene/Starfield.js'
-import type { BodyRef } from '../spice/SpiceClient.js'
+import type { BodyRef } from '../spice/types.js'
 import type { RenderHudStats } from './RenderHud.js'
 
 export type ThreeRuntime = {

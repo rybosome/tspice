@@ -1,4 +1,4 @@
-import type { KernelPackId } from '../spice/loadKernelPack.js'
+import type { KernelPackId } from '../spice/types.js'
 import type { BodyRegistryEntry } from './BodyRegistry.js'
 
 /**

@@ -11,6 +11,43 @@ import {
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
+const WASM_MEMORY_PAGE_BYTES = 64 * 1024;
+const DEFAULT_WASM_INITIAL_MEMORY_BYTES = 128 * 1024 * 1024;
+
+function readWasmInitialMemoryBytes() {
+  const raw = process.env.TSPICE_WASM_INITIAL_MEMORY;
+  if (raw == null || raw.trim() === "") {
+    console.log(
+      `Using default wasm INITIAL_MEMORY=${DEFAULT_WASM_INITIAL_MEMORY_BYTES} bytes (set TSPICE_WASM_INITIAL_MEMORY to override)`,
+    );
+    return DEFAULT_WASM_INITIAL_MEMORY_BYTES;
+  }
+
+  if (!/^[0-9]+$/.test(raw.trim())) {
+    throw new Error(
+      `TSPICE_WASM_INITIAL_MEMORY must be a positive integer (bytes). Got: ${JSON.stringify(raw)}`,
+    );
+  }
+
+  const bytes = Number.parseInt(raw, 10);
+  if (!Number.isSafeInteger(bytes) || bytes <= 0) {
+    throw new Error(
+      `TSPICE_WASM_INITIAL_MEMORY must be a positive integer (bytes). Got: ${JSON.stringify(raw)}`,
+    );
+  }
+
+  if (bytes % WASM_MEMORY_PAGE_BYTES !== 0) {
+    throw new Error(
+      `TSPICE_WASM_INITIAL_MEMORY must be ${WASM_MEMORY_PAGE_BYTES}-byte (64KiB) aligned. Got: ${bytes}`,
+    );
+  }
+
+  console.log(`Using wasm INITIAL_MEMORY=${bytes} bytes from TSPICE_WASM_INITIAL_MEMORY`);
+  return bytes;
+}
+
+const wasmInitialMemoryBytes = readWasmInitialMemoryBytes();
+
 const cspiceManifestPath = path.join(repoRoot, "scripts", "cspice.manifest.json");
 const { toolkitVersion } = JSON.parse(fs.readFileSync(cspiceManifestPath, "utf8"));
 
@@ -61,7 +98,9 @@ fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 
 const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "errors.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "handle_validation.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernels.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernel_pool.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "time.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ids_names.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "frames.c"),
@@ -69,7 +108,9 @@ const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ek.c"),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "cells_windows.c"),
+  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "dsk.c"),
 ];
 const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
@@ -180,48 +221,178 @@ const includeDirs = [
 
 fs.mkdirSync(outputDir, { recursive: true });
 
-const EXPORTED_FUNCTIONS = [
+const exportedRuntimeMethods = [
+  "UTF8ToString",
+  "stringToUTF8",
+  "lengthBytesUTF8",
+  "FS",
+  "HEAP8",
+  "HEAPU8",
+  "HEAP16",
+  "HEAPU16",
+  "HEAP32",
+  "HEAPU32",
+  "HEAPF32",
+  "HEAPF64",
+];
+
+const exportedFunctions = [
+  // --- error/status utilities ---
+  "_tspice_get_last_error_short",
+  "_tspice_get_last_error_long",
+  "_tspice_get_last_error_trace",
+  "_tspice_failed",
+  "_tspice_reset",
+  "_tspice_getmsg",
+  "_tspice_setmsg",
+  "_tspice_sigerr",
+  "_tspice_chkin",
+  "_tspice_chkout",
+
+  // --- kernels ---
   "_tspice_tkvrsn_toolkit",
   "_tspice_furnsh",
   "_tspice_unload",
   "_tspice_kclear",
   "_tspice_ktotal",
   "_tspice_kdata",
+  // NOTE: not required by the TS bindings, but handy for debugging.
   "_tspice_ktotal_all",
+
+  // --- file i/o primitives ---
   "_tspice_exists",
   "_tspice_getfat",
+
+  // --- DAF ---
   "_tspice_dafopr",
   "_tspice_dafcls",
   "_tspice_dafbfs",
   "_tspice_daffna",
+
+  // --- DAS ---
   "_tspice_dasopr",
   "_tspice_dascls",
+
+  // --- DLA (DAS-backed) ---
   "_tspice_dlaopn",
   "_tspice_dlabfs",
   "_tspice_dlafns",
   "_tspice_dlacls",
+
+  // --- EK ---
+  "_tspice_ekopr",
+  "_tspice_ekopw",
+  "_tspice_ekopn",
+  "_tspice_ekcls",
+  "_tspice_ekntab",
+  "_tspice_ektnam",
+  "_tspice_eknseg",
+  "_tspice_ekfind",
+  "_tspice_ekgc",
+  "_tspice_ekgd",
+  "_tspice_ekgi",
+  "_tspice_ekifld",
+  "_tspice_ekacli",
+  "_tspice_ekacld",
+  "_tspice_ekaclc",
+  "_tspice_ekffld",
+
+  // --- DSK ---
+  "_tspice_dskopn",
+  "_tspice_dskmi2",
+  "_tspice_dskw02",
+  "_tspice_dskobj",
+  "_tspice_dsksrf",
+  "_tspice_dskgd",
+  "_tspice_dskb02",
+
+
+  // --- kernel pool ---
+  "_tspice_gdpool",
+  "_tspice_gipool",
+  "_tspice_gcpool",
+  "_tspice_gnpool",
+  "_tspice_dtpool",
+  "_tspice_pdpool",
+  "_tspice_pipool",
+  "_tspice_pcpool",
+  "_tspice_swpool",
+  "_tspice_cvpool",
+  "_tspice_expool",
+
+  // --- time ---
   "_tspice_str2et",
   "_tspice_et2utc",
   "_tspice_timout",
+  "_tspice_deltet",
+  "_tspice_unitim",
+  "_tspice_tparse",
+  "_tspice_tpictr",
+  "_tspice_timdef_get",
+  "_tspice_timdef_set",
+  "_tspice_scencd",
+  "_tspice_scdecd",
+  "_tspice_sct2e",
+  "_tspice_sce2c",
+
+  // --- ids/names ---
   "_tspice_bodn2c",
   "_tspice_bodc2n",
+  "_tspice_bodc2s",
+  "_tspice_bods2c",
+  "_tspice_boddef",
+  "_tspice_bodfnd",
+  "_tspice_bodvar",
+
+  // --- frames ---
   "_tspice_namfrm",
   "_tspice_frmnam",
   "_tspice_cidfrm",
   "_tspice_cnmfrm",
+  "_tspice_frinfo",
+  "_tspice_ccifrm",
   "_tspice_scs2e",
   "_tspice_sce2s",
   "_tspice_ckgp",
   "_tspice_ckgpav",
+  "_tspice_cklpf",
+  "_tspice_ckupf",
+  "_tspice_ckobj",
+  "_tspice_ckcov",
   "_tspice_pxform",
   "_tspice_sxform",
+  "_tspice_illumg",
+  "_tspice_illumf",
+
+  "_tspice_nvc2pl",
+  "_tspice_pl2nvc",
+  // --- ephemeris ---
   "_tspice_spkezr",
   "_tspice_spkpos",
+  "_tspice_spkez",
+  "_tspice_spkezp",
+  "_tspice_spkgeo",
+  "_tspice_spkgps",
+  "_tspice_spkssb",
+  "_tspice_spkcov",
+  "_tspice_spkobj",
+  "_tspice_spksfs",
+  "_tspice_spkpds",
+  "_tspice_spkuds",
+  "_tspice_spkopn",
+  "_tspice_spkopa",
+  "_tspice_spkw08",
+  "_tspice_spkw08_v2",
+  "_tspice_spkcls",
+
+  // --- derived geometry ---
   "_tspice_subpnt",
   "_tspice_subslr",
   "_tspice_sincpt",
   "_tspice_ilumin",
   "_tspice_occult",
+
+  // --- coords/vectors ---
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",
@@ -242,6 +413,8 @@ const EXPORTED_FUNCTIONS = [
   "_tspice_axisar",
   "_tspice_georec",
   "_tspice_recgeo",
+
+  // --- cells/windows ---
   "_tspice_new_int_cell",
   "_tspice_new_double_cell",
   "_tspice_new_char_cell",
@@ -263,16 +436,8 @@ const EXPORTED_FUNCTIONS = [
   "_tspice_wncard",
   "_tspice_wnfetd",
   "_tspice_wnvald",
-  "_tspice_get_last_error_short",
-  "_tspice_get_last_error_long",
-  "_tspice_get_last_error_trace",
-  "_tspice_failed",
-  "_tspice_reset",
-  "_tspice_getmsg",
-  "_tspice_setmsg",
-  "_tspice_sigerr",
-  "_tspice_chkin",
-  "_tspice_chkout",
+
+  // --- memory ---
   "_malloc",
   "_free",
 ];
@@ -281,6 +446,7 @@ const commonEmccArgs = [
   // We need C11 for shared shim sources (e.g. <stdatomic.h>).
   // `gnu11` keeps GNU extensions enabled for the upstream CSPICE sources.
   "-std=gnu11",
+  "-Wno-implicit-int",
   "-O2",
   "-s",
   "MODULARIZE=1",
@@ -291,13 +457,14 @@ const commonEmccArgs = [
   "-s",
   // Some Emscripten toolchains require initial memory to cover static data.
   // (ALLOW_MEMORY_GROWTH does not help at link time.)
-  "INITIAL_MEMORY=134217728",
+  // Default: 128MiB. Override with TSPICE_WASM_INITIAL_MEMORY (bytes, 64KiB-aligned).
+  `INITIAL_MEMORY=${wasmInitialMemoryBytes}`,
   "-s",
   "FORCE_FILESYSTEM=1",
   "-s",
-  "EXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8','lengthBytesUTF8','FS','HEAP8','HEAPU8','HEAP16','HEAPU16','HEAP32','HEAPU32','HEAPF32','HEAPF64']",
+  `EXPORTED_RUNTIME_METHODS=['${exportedRuntimeMethods.join("','")}']`,
   "-s",
-  `EXPORTED_FUNCTIONS=${JSON.stringify(EXPORTED_FUNCTIONS)}`,
+  `EXPORTED_FUNCTIONS=['${exportedFunctions.join("','")}']`,
 ];
 
 function runEmcc({ environment, outputJsPath }) {
@@ -421,7 +588,39 @@ function ensureNodeEsmPreamble(jsPath) {
   if (jsContents.includes(nodeEsmPreambleSentinel)) {
     return;
   }
+  // Some Emscripten builds already include a createRequire() preamble; avoid duplicating it.
+  if (jsContents.includes("createRequire(import.meta.url)")) {
+    return;
+  }
   fs.writeFileSync(jsPath, `${generatedHeader}${nodeEsmPreamble}${jsContents.slice(generatedHeader.length)}`);
+}
+
+function guardNodeProcessListeners(jsPath) {
+  const jsContents = fs.readFileSync(jsPath, "utf8");
+
+  // Emscripten's Node glue installs global `process.on(...)` handlers inside the
+  // module factory. If the factory is called repeatedly (common in test suites),
+  // listeners accumulate and Node emits MaxListenersExceededWarning.
+  //
+  // Patch the generated output to install the handlers only once per process.
+  const oldSnippet =
+    'process["on"]("uncaughtException",function(ex){if(!(ex instanceof ExitStatus)){throw ex}});' +
+    'process["on"]("unhandledRejection",function(reason){throw reason});';
+
+  if (!jsContents.includes(oldSnippet)) {
+    return;
+  }
+
+  const newSnippet =
+    'if(!globalThis.__tspice_backend_wasm_node_listeners_installed){' +
+    'globalThis.__tspice_backend_wasm_node_listeners_installed=true;' +
+    'process["on"]("uncaughtException",function(ex){' +
+    'if(!(ex&&typeof ex==="object"&&ex.name==="ExitStatus"&&typeof ex.status==="number")){throw ex}' +
+    '});' +
+    'process["on"]("unhandledRejection",function(reason){throw reason});' +
+    '}';
+
+  fs.writeFileSync(jsPath, jsContents.replace(oldSnippet, newSnippet));
 }
 
 for (const jsPath of [outputWebJsPath, outputNodeJsPath]) {
@@ -432,6 +631,9 @@ rewriteWasmFilename(outputWebJsPath, path.basename(outputWebWasmPath));
 rewriteWasmFilename(outputNodeJsPath, path.basename(outputNodeWasmPath));
 
 ensureNodeEsmPreamble(outputNodeJsPath);
+
+// Avoid accumulating global process listeners across repeated module instantiation.
+guardNodeProcessListeners(outputNodeJsPath);
 
 console.log(`Wrote ${outputWebJsPath}`);
 console.log(`Wrote ${outputNodeJsPath}`);

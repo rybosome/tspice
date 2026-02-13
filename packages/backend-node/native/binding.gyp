@@ -9,7 +9,10 @@
       "sources": [
         "src/addon.cc",
         "src/addon_common.cc",
+        "src/cell_handles.cc",
         "src/domains/kernels.cc",
+        "src/domains/kernel_pool.cc",
+        "src/domains/ek.cc",
         "src/domains/time.cc",
         "src/domains/ids_names.cc",
         "src/domains/frames.cc",
@@ -19,8 +22,12 @@
         "src/domains/file_io.cc",
         "src/domains/error.cc",
         "src/domains/cells_windows.cc",
+        "src/domains/dsk.cc",
         "../../backend-shim-c/src/errors.c",
+        "../../backend-shim-c/src/handle_validation.c",
         "../../backend-shim-c/src/domains/kernels.c",
+        "../../backend-shim-c/src/domains/kernel_pool.c",
+        "../../backend-shim-c/src/domains/ek.c",
         "../../backend-shim-c/src/domains/time.c",
         "../../backend-shim-c/src/domains/ids_names.c",
         "../../backend-shim-c/src/domains/frames.c",
@@ -28,7 +35,8 @@
         "../../backend-shim-c/src/domains/geometry.c",
         "../../backend-shim-c/src/domains/coords_vectors.c",
         "../../backend-shim-c/src/domains/file_io.c",
-        "../../backend-shim-c/src/domains/cells_windows.c"
+        "../../backend-shim-c/src/domains/cells_windows.c",
+        "../../backend-shim-c/src/domains/dsk.c"
       ],
       "include_dirs": [
         "<!(node -p \"require('node-addon-api').include_dir\")",

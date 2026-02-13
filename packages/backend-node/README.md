@@ -12,13 +12,13 @@ This backend uses CSPICE-derived components via the native addon built under `na
 
 ## Purpose / Why this exists
 
-This package is the “native” backend implementation that `@rybosome/tspice` uses when you select `createBackend({ backend: "node" })`. It’s where we expect the real SPICE bindings to live.
+This package is the “native” backend implementation that `@rybosome/tspice` uses when you select `spiceClients.toSync({ backend: "node" })` (or `toAsync`). It’s where we expect the real SPICE bindings to live.
 
 Right now the addon is a stub that only implements `spiceVersion()`.
 
 ## How it fits into `tspice`
 
-- `@rybosome/tspice` calls `createNodeBackend()` from this package when `createBackend({ backend: "node" })` is selected.
+- `@rybosome/tspice` calls `createNodeBackend()` from this package when `spiceClients.to*({ backend: "node" })` is selected.
 - This package implements the shared `SpiceBackend` interface from `@rybosome/tspice-backend-contract`.
 
 ## Installation
@@ -32,11 +32,15 @@ If you’re working in this repo, it’s a pnpm workspace package.
 ### Typical usage (indirect)
 
 ```ts
-import { createBackend } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
 
 async function main() {
-  const backend = await createBackend({ backend: "node" });
-  console.log(backend.spiceVersion());
+  const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+  try {
+    console.log(spice.raw.spiceVersion());
+  } finally {
+    await dispose();
+  }
 }
 
 main().catch(console.error);
@@ -62,8 +66,6 @@ Building the native addon requires a working `node-gyp` toolchain.
 
 - macOS: Xcode Command Line Tools
 - Linux: Python 3 + `make` + a C/C++ toolchain (e.g. `build-essential`)
-
-This backend currently requires a CSPICE build where `sizeof(SpiceInt) == 4` (32-bit `SpiceInt`).
 
 ## Development
 

@@ -5,15 +5,27 @@
 //   stdout: { ok:true, result:any } OR { ok:false, error:{ message, spiceShort?, spiceLong?, spiceTrace? } }
 //
 // Implements:
-//   - call: "time.str2et" (args: [string])
-//   - alias: "str2et"
+//   - time.str2et (alias: str2et) args: [string] -> number
+//   - time.et2utc (alias: et2utc) args: [number, string, number] -> string
+//   - ids-names.bodn2c (alias: bodn2c) args: [string] -> {found, code?}
+//   - ids-names.bodc2n (alias: bodc2n) args: [number] -> {found, name?}
+//   - frames.namfrm (alias: namfrm) args: [string] -> {found, code?}
+//   - frames.frmnam (alias: frmnam) args: [number] -> {found, name?}
+//   - frames.pxform (alias: pxform) args: [string, string, number] -> number[9] (row-major)
 
 #include "SpiceUsr.h"
 
+#include <math.h>
+
+#include <ctype.h>
 #include <errno.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -371,21 +383,476 @@ static int jsmn_get_array_elem(const jsmntok_t *tokens, const int arrayIndex,
   return -1;
 }
 
-static char *jsmn_strdup(const char *json, const jsmntok_t *tok) {
-  if (tok->type != JSMN_STRING) {
-    return NULL;
+typedef enum {
+  JSMN_STRDUP_OK = 0,
+  JSMN_STRDUP_OOM,
+  JSMN_STRDUP_INVALID,
+} jsmn_strdup_err_t;
+
+static int json_hex_nibble(const unsigned char c) {
+  if (c >= '0' && c <= '9') {
+    return (int)(c - '0');
   }
+  if (c >= 'a' && c <= 'f') {
+    return (int)(c - 'a') + 10;
+  }
+  if (c >= 'A' && c <= 'F') {
+    return (int)(c - 'A') + 10;
+  }
+  return -1;
+}
+
+static bool json_parse_hex4(const char *s, uint16_t *out) {
+  uint16_t v = 0;
+  for (int i = 0; i < 4; i++) {
+    const int n = json_hex_nibble((unsigned char)s[i]);
+    if (n < 0) {
+      return false;
+    }
+    v = (uint16_t)((v << 4) | (uint16_t)n);
+  }
+  *out = v;
+  return true;
+}
+
+static bool json_write_utf8(char *dst, const size_t dstCap, size_t *dstLen,
+                            const uint32_t codepoint) {
+  if (codepoint == 0) {
+    // The runner uses NUL-terminated C strings, so embedded NUL can't be
+    // represented safely.
+    return false;
+  }
+
+  if (codepoint <= 0x7F) {
+    if (*dstLen + 1 > dstCap) {
+      return false;
+    }
+    dst[(*dstLen)++] = (char)codepoint;
+    return true;
+  }
+
+  if (codepoint <= 0x7FF) {
+    if (*dstLen + 2 > dstCap) {
+      return false;
+    }
+    dst[(*dstLen)++] = (char)(0xC0 | (codepoint >> 6));
+    dst[(*dstLen)++] = (char)(0x80 | (codepoint & 0x3F));
+    return true;
+  }
+
+  if (codepoint <= 0xFFFF) {
+    if (codepoint >= 0xD800 && codepoint <= 0xDFFF) {
+      // Surrogate halves are not valid Unicode scalar values.
+      return false;
+    }
+    if (*dstLen + 3 > dstCap) {
+      return false;
+    }
+    dst[(*dstLen)++] = (char)(0xE0 | (codepoint >> 12));
+    dst[(*dstLen)++] = (char)(0x80 | ((codepoint >> 6) & 0x3F));
+    dst[(*dstLen)++] = (char)(0x80 | (codepoint & 0x3F));
+    return true;
+  }
+
+  if (codepoint <= 0x10FFFF) {
+    if (*dstLen + 4 > dstCap) {
+      return false;
+    }
+    dst[(*dstLen)++] = (char)(0xF0 | (codepoint >> 18));
+    dst[(*dstLen)++] = (char)(0x80 | ((codepoint >> 12) & 0x3F));
+    dst[(*dstLen)++] = (char)(0x80 | ((codepoint >> 6) & 0x3F));
+    dst[(*dstLen)++] = (char)(0x80 | (codepoint & 0x3F));
+    return true;
+  }
+
+  return false;
+}
+
+static jsmn_strdup_err_t jsmn_strdup(const char *json, const jsmntok_t *tok,
+                                     char **out,
+                                     char *errDetail,
+                                     const size_t errDetailBytes) {
+  *out = NULL;
+  if (tok->type != JSMN_STRING) {
+    return JSMN_STRDUP_INVALID;
+  }
+
   const int n = tok->end - tok->start;
   if (n < 0) {
-    return NULL;
+    return JSMN_STRDUP_INVALID;
   }
+
+  // Unescaping always shrinks or keeps the same size, so `n + 1` is safe.
   char *s = (char *)malloc((size_t)n + 1);
   if (s == NULL) {
+    return JSMN_STRDUP_OOM;
+  }
+
+  const char *p = json + tok->start;
+  const char *end = json + tok->start + n;
+  size_t outLen = 0;
+
+  while (p < end) {
+    const unsigned char c = (unsigned char)*p++;
+
+    if (c == '\\') {
+      if (p >= end) {
+        if (errDetail && errDetailBytes > 0) {
+          snprintf(errDetail, errDetailBytes,
+                   "Invalid JSON string: trailing backslash");
+        }
+        free(s);
+        return JSMN_STRDUP_INVALID;
+      }
+
+      const unsigned char esc = (unsigned char)*p++;
+      switch (esc) {
+      case '"':
+        s[outLen++] = '"';
+        break;
+      case '\\':
+        s[outLen++] = '\\';
+        break;
+      case '/':
+        s[outLen++] = '/';
+        break;
+      case 'b':
+        s[outLen++] = '\b';
+        break;
+      case 'f':
+        s[outLen++] = '\f';
+        break;
+      case 'n':
+        s[outLen++] = '\n';
+        break;
+      case 'r':
+        s[outLen++] = '\r';
+        break;
+      case 't':
+        s[outLen++] = '\t';
+        break;
+      case 'u': {
+        if (end - p < 4) {
+          if (errDetail && errDetailBytes > 0) {
+            snprintf(errDetail, errDetailBytes,
+                     "Invalid JSON string escape: \\u must be followed by 4 hex digits");
+          }
+          free(s);
+          return JSMN_STRDUP_INVALID;
+        }
+
+        uint16_t unit = 0;
+        if (!json_parse_hex4(p, &unit)) {
+          if (errDetail && errDetailBytes > 0) {
+            snprintf(errDetail, errDetailBytes,
+                     "Invalid JSON string escape: \\u must be followed by 4 hex digits");
+          }
+          free(s);
+          return JSMN_STRDUP_INVALID;
+        }
+        p += 4;
+
+        uint32_t codepoint = (uint32_t)unit;
+        if (unit >= 0xD800 && unit <= 0xDBFF) {
+          // High surrogate: must be followed by a low surrogate.
+          if (end - p < 6 || p[0] != '\\' || p[1] != 'u') {
+            if (errDetail && errDetailBytes > 0) {
+              snprintf(errDetail, errDetailBytes,
+                       "Invalid JSON string escape: high surrogate must be followed by a \\uXXXX low surrogate");
+            }
+            free(s);
+            return JSMN_STRDUP_INVALID;
+          }
+
+          uint16_t unit2 = 0;
+          if (!json_parse_hex4(p + 2, &unit2)) {
+            if (errDetail && errDetailBytes > 0) {
+              snprintf(errDetail, errDetailBytes,
+                       "Invalid JSON string escape: high surrogate must be followed by valid low surrogate");
+            }
+            free(s);
+            return JSMN_STRDUP_INVALID;
+          }
+          if (unit2 < 0xDC00 || unit2 > 0xDFFF) {
+            if (errDetail && errDetailBytes > 0) {
+              snprintf(errDetail, errDetailBytes,
+                       "Invalid JSON string escape: high surrogate must be followed by low surrogate (got 0x%04x)",
+                       (unsigned int)unit2);
+            }
+            free(s);
+            return JSMN_STRDUP_INVALID;
+          }
+
+          p += 6;
+
+          codepoint = 0x10000u + (((uint32_t)unit - 0xD800u) << 10) +
+                      ((uint32_t)unit2 - 0xDC00u);
+        } else if (unit >= 0xDC00 && unit <= 0xDFFF) {
+          // Low surrogate without a preceding high surrogate.
+          if (errDetail && errDetailBytes > 0) {
+            snprintf(errDetail, errDetailBytes,
+                     "Invalid JSON string escape: unexpected low surrogate (0x%04x)",
+                     (unsigned int)unit);
+          }
+          free(s);
+          return JSMN_STRDUP_INVALID;
+        }
+
+        if (!json_write_utf8(s, (size_t)n, &outLen, codepoint)) {
+          if (errDetail && errDetailBytes > 0) {
+            snprintf(errDetail, errDetailBytes,
+                     "Invalid JSON string escape: invalid Unicode code point");
+          }
+          free(s);
+          return JSMN_STRDUP_INVALID;
+        }
+
+        break;
+      }
+
+      default:
+        if (errDetail && errDetailBytes > 0) {
+          snprintf(errDetail, errDetailBytes,
+                   "Invalid JSON string escape: \\%c is not allowed",
+                   (int)esc);
+        }
+        free(s);
+        return JSMN_STRDUP_INVALID;
+      }
+
+      continue;
+    }
+
+    if (c < 0x20) {
+      if (errDetail && errDetailBytes > 0) {
+        snprintf(errDetail, errDetailBytes,
+                 "Invalid JSON string: unescaped control character (0x%02x)",
+                 (unsigned int)c);
+      }
+      free(s);
+      return JSMN_STRDUP_INVALID;
+    }
+
+    s[outLen++] = (char)c;
+  }
+
+  s[outLen] = '\0';
+  *out = s;
+  return JSMN_STRDUP_OK;
+}
+
+// Strict JSON number grammar (RFC 8259):
+//   number = [ "-" ] int [ frac ] [ exp ]
+//   int = "0" / ( digit1-9 *digit )
+//   frac = "." 1*digit
+//   exp = ("e" / "E") ["+" / "-"] 1*digit
+//
+// This intentionally rejects:
+//   - leading '+'
+//   - any whitespace
+//   - leading zeros in the integer part (except "0")
+//   - missing digits after '.' or exponent marker
+
+static const char *scan_strict_json_int_part(const char *s) {
+  if (s == NULL || s[0] == '\0') {
     return NULL;
   }
-  memcpy(s, json + tok->start, (size_t)n);
-  s[n] = '\0';
-  return s;
+
+  const char *p = s;
+
+  // No leading '+' in JSON.
+  if (*p == '+') {
+    return NULL;
+  }
+
+  if (*p == '-') {
+    p++;
+  }
+
+  if (*p == '\0') {
+    return NULL;
+  }
+
+  if (*p == '0') {
+    p++;
+    // No leading zeros like "01".
+    if (*p >= '0' && *p <= '9') {
+      return NULL;
+    }
+    return p;
+  }
+
+  if (*p < '1' || *p > '9') {
+    return NULL;
+  }
+
+  for (p = p + 1; *p >= '0' && *p <= '9'; p++) {
+    // consume digits
+  }
+
+  return p;
+}
+
+static bool is_strict_json_number_literal(const char *s) {
+  if (s == NULL || s[0] == '\0') {
+    return false;
+  }
+
+  // Reject any whitespace anywhere. (`strtod` accepts it.)
+  for (const char *q = s; *q; q++) {
+    if (isspace((unsigned char)*q)) {
+      return false;
+    }
+  }
+
+  const char *p = scan_strict_json_int_part(s);
+  if (p == NULL) {
+    return false;
+  }
+
+  // frac
+  if (*p == '.') {
+    p++;
+    if (*p < '0' || *p > '9') {
+      return false;
+    }
+    for (p = p + 1; *p >= '0' && *p <= '9'; p++) {
+      // consume digits
+    }
+  }
+
+  // exp
+  if (*p == 'e' || *p == 'E') {
+    p++;
+    if (*p == '+' || *p == '-') {
+      p++;
+    }
+    if (*p < '0' || *p > '9') {
+      return false;
+    }
+    for (p = p + 1; *p >= '0' && *p <= '9'; p++) {
+      // consume digits
+    }
+  }
+
+  return *p == '\0';
+}
+
+
+typedef enum {
+  PARSE_OK = 0,
+  PARSE_INVALID,
+  PARSE_TOO_LONG,
+  PARSE_OUT_OF_RANGE,
+  PARSE_UNSUPPORTED,
+} parse_result;
+
+
+static parse_result jsmn_parse_double(const char *json, const jsmntok_t *tok,
+                                      SpiceDouble *out) {
+  if (tok->type != JSMN_PRIMITIVE) {
+    return PARSE_INVALID;
+  }
+
+  const int n = tok->end - tok->start;
+  if (n <= 0) {
+    return PARSE_INVALID;
+  }
+  if (n >= 128) {
+    return PARSE_TOO_LONG;
+  }
+
+  char buf[128];
+  memcpy(buf, json + tok->start, (size_t)n);
+  buf[n] = '\0';
+
+  // `LC_NUMERIC` is set to "C" once at process startup (see main()) so that
+  // numeric parsing is locale-stable (decimal separator is '.').
+
+  // Make JSON-number parsing deterministic and strict. `strtod` accepts leading
+  // whitespace and a leading '+', which are not valid JSON.
+  if (!is_strict_json_number_literal(buf)) {
+    return PARSE_INVALID;
+  }
+
+  errno = 0;
+  char *endptr = NULL;
+  const double v = strtod(buf, &endptr);
+  if (endptr == buf || *endptr != '\0') {
+    return PARSE_INVALID;
+  }
+
+  if (errno == ERANGE) {
+    return PARSE_OUT_OF_RANGE;
+  }
+  if (errno != 0) {
+    return PARSE_INVALID;
+  }
+
+  if (!isfinite(v)) {
+    return PARSE_OUT_OF_RANGE;
+  }
+
+  *out = (SpiceDouble)v;
+  return PARSE_OK;
+}
+
+// Strict JSON integer grammar (RFC 8259):
+//   int = "0" / ( digit1-9 *digit )
+//   number = [ "-" ] int [ frac ] [ exp ]
+// For the runner we only accept the integer subset and reject leading '+',
+// whitespace, and leading zeros (except for the single literal "0").
+static bool is_strict_json_int_literal(const char *s) {
+  const char *p = scan_strict_json_int_part(s);
+  return p != NULL && *p == '\0';
+}
+
+static parse_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
+                                   SpiceInt *out) {
+  // Defensive: ensure SpiceInt can round-trip through long long on this ABI.
+  // If it can't, parsing via strtoll() can't be made safe/portable.
+  if (sizeof(SpiceInt) > sizeof(long long)) {
+    return PARSE_UNSUPPORTED;
+  }
+
+  if (tok->type != JSMN_PRIMITIVE) {
+    return PARSE_INVALID;
+  }
+
+  const int n = tok->end - tok->start;
+  if (n <= 0) {
+    return PARSE_INVALID;
+  }
+  if (n >= 128) {
+    return PARSE_TOO_LONG;
+  }
+
+  char buf[128];
+  memcpy(buf, json + tok->start, (size_t)n);
+  buf[n] = '\0';
+
+  if (!is_strict_json_int_literal(buf)) {
+    return PARSE_INVALID;
+  }
+
+  errno = 0;
+  char *endptr = NULL;
+  const long long v = strtoll(buf, &endptr, 10);
+  if (errno != 0) {
+    return PARSE_INVALID;
+  }
+  if (endptr == buf || *endptr != '\0') {
+    return PARSE_INVALID;
+  }
+
+  // Defensive: ensure the parsed value round-trips into SpiceInt.
+  SpiceInt tmp = (SpiceInt)v;
+  if ((long long)tmp != v) {
+    return PARSE_INVALID;
+  }
+
+  *out = tmp;
+  return PARSE_OK;
 }
 
 // --- JSON output helpers ----------------------------------------------------
@@ -463,6 +930,19 @@ static void write_error_json_ex(const char *code, const char *message,
 static void write_error_json(const char *message, const char *spiceShort,
                              const char *spiceLong, const char *spiceTrace) {
   write_error_json_ex(NULL, message, NULL, spiceShort, spiceLong, spiceTrace);
+}
+
+static void write_unsupported_spiceint_width_error(void) {
+  char detail[128];
+  snprintf(detail, sizeof(detail), "sizeof(SpiceInt)=%zu (expected <= sizeof(long long)=%zu)",
+           sizeof(SpiceInt), sizeof(long long));
+  write_error_json_ex(
+      "unsupported_spiceint_width",
+      "Unsupported platform ABI: unsupported SpiceInt width",
+      detail,
+      NULL,
+      NULL,
+      NULL);
 }
 
 #define CSPICE_RUNNER_MAX_STDIN_BYTES (1024 * 1024)
@@ -578,6 +1058,21 @@ static void capture_spice_error(char *shortMsg, size_t shortBytes,
 }
 
 int main(void) {
+  int exitCode = 0;
+
+  // Ensure numeric parsing is locale-stable (decimal separator is '.')
+  // regardless of the environment.
+  if (setlocale(LC_NUMERIC, "C") == NULL) {
+    write_error_json_ex(
+        "locale_init",
+        "Failed to set process numeric locale (LC_NUMERIC) to 'C'",
+        "setlocale(LC_NUMERIC, 'C') returned NULL",
+        NULL,
+        NULL,
+        NULL);
+    return 1;
+  }
+
   size_t inputLen = 0;
   char *input = NULL;
   ReadStdinErr readErr = read_all_stdin(&input, &inputLen);
@@ -593,24 +1088,28 @@ int main(void) {
     case READ_STDIN_OOM:
       write_error_json_ex("stdin_oom", "Out of memory while reading stdin", NULL,
                           NULL, NULL, NULL);
+      exitCode = 1;
       break;
     case READ_STDIN_IO: {
       const char *detail = errno != 0 ? strerror(errno) : NULL;
       write_error_json_ex("stdin_io", "Failed to read stdin", detail, NULL, NULL,
                           NULL);
+      exitCode = 1;
       break;
     }
     case READ_STDIN_OVERFLOW:
       write_error_json_ex("stdin_overflow",
                           "Internal overflow while reading stdin", NULL, NULL,
                           NULL, NULL);
+      exitCode = 1;
       break;
     default:
       write_error_json_ex("stdin_error", "Failed to read stdin", NULL, NULL, NULL,
                           NULL);
+      exitCode = 1;
       break;
     }
-    return 0;
+    return exitCode;
   }
 
   // Parse JSON.
@@ -623,7 +1122,7 @@ int main(void) {
     if (tokens == NULL) {
       free(input);
       write_error_json("Out of memory", NULL, NULL, NULL);
-      return 0;
+      return 1;
     }
 
     jsmn_parser p;
@@ -640,21 +1139,24 @@ int main(void) {
       tokenCap *= 2;
       if (tokenCap > 8192) {
         free(input);
-        write_error_json("JSON too large/complex", NULL, NULL, NULL);
+        write_error_json_ex("invalid_request", "JSON too large/complex", NULL,
+                            NULL, NULL, NULL);
         return 0;
       }
       continue;
     }
 
     free(input);
-    write_error_json("Invalid JSON", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "Invalid JSON", NULL, NULL, NULL,
+                        NULL);
     return 0;
   }
 
   if (tokenCount < 1 || tokens[0].type != JSMN_OBJECT) {
     free(tokens);
     free(input);
-    write_error_json("Input JSON must be an object", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "Input JSON must be an object", NULL,
+                        NULL, NULL, NULL);
     return 0;
   }
 
@@ -665,15 +1167,33 @@ int main(void) {
   if (callTok < 0) {
     free(tokens);
     free(input);
-    write_error_json("Missing required field: call", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "Missing required field: call", NULL,
+                        NULL, NULL, NULL);
     return 0;
   }
 
-  char *call = jsmn_strdup(input, &tokens[callTok]);
-  if (call == NULL) {
+  if (tokens[callTok].type != JSMN_STRING) {
     free(tokens);
     free(input);
-    write_error_json("call must be a string", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "call must be a string", NULL, NULL,
+                        NULL, NULL);
+    return 0;
+  }
+
+  char *call = NULL;
+  char strDetail[256];
+  strDetail[0] = '\0';
+  jsmn_strdup_err_t callErr =
+      jsmn_strdup(input, &tokens[callTok], &call, strDetail, sizeof(strDetail));
+  if (callErr != JSMN_STRDUP_OK) {
+    free(tokens);
+    free(input);
+    if (callErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
     return 0;
   }
 
@@ -688,7 +1208,8 @@ int main(void) {
     int kernelsTok = jsmn_find_object_key(input, tokens, setupTok, "kernels", tokenCount);
     if (kernelsTok >= 0) {
       if (tokens[kernelsTok].type != JSMN_ARRAY) {
-        write_error_json("setup.kernels must be an array", NULL, NULL, NULL);
+        write_error_json_ex("invalid_request", "setup.kernels must be an array",
+                            NULL, NULL, NULL, NULL);
         goto done;
       }
 
@@ -696,7 +1217,8 @@ int main(void) {
       int idx = kernelsTok + 1;
       for (int i = 0; i < nKernels; i++) {
         if (idx >= tokenCount) {
-          write_error_json("setup.kernels parse error", NULL, NULL, NULL);
+          write_error_json_ex("invalid_request", "setup.kernels parse error",
+                              NULL, NULL, NULL, NULL);
           goto done;
         }
 
@@ -704,41 +1226,82 @@ int main(void) {
         char *restrictToDir = NULL;
 
         if (tokens[idx].type == JSMN_STRING) {
-          kernelPath = jsmn_strdup(input, &tokens[idx]);
-          if (kernelPath == NULL) {
-            write_error_json("Out of memory", NULL, NULL, NULL);
+          strDetail[0] = '\0';
+          jsmn_strdup_err_t kErr =
+              jsmn_strdup(input, &tokens[idx], &kernelPath, strDetail, sizeof(strDetail));
+          if (kErr != JSMN_STRDUP_OK) {
+            if (kErr == JSMN_STRDUP_INVALID) {
+              write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                                  strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+            } else {
+              write_error_json("Out of memory", NULL, NULL, NULL);
+            }
             goto done;
           }
         } else if (tokens[idx].type == JSMN_OBJECT) {
           int pathTok = jsmn_find_object_key(input, tokens, idx, "path", tokenCount);
           if (pathTok < 0 || tokens[pathTok].type != JSMN_STRING) {
-            write_error_json("setup.kernels entries must have a string 'path' field", NULL, NULL, NULL);
+            write_error_json_ex(
+                "invalid_request",
+                "setup.kernels entries must have a string 'path' field",
+                NULL,
+                NULL,
+                NULL,
+                NULL);
             goto done;
           }
 
-          kernelPath = jsmn_strdup(input, &tokens[pathTok]);
-          if (kernelPath == NULL) {
-            write_error_json("Out of memory", NULL, NULL, NULL);
+          strDetail[0] = '\0';
+          jsmn_strdup_err_t pathErr =
+              jsmn_strdup(input, &tokens[pathTok], &kernelPath, strDetail, sizeof(strDetail));
+          if (pathErr != JSMN_STRDUP_OK) {
+            if (pathErr == JSMN_STRDUP_INVALID) {
+              write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                                  strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+            } else {
+              write_error_json("Out of memory", NULL, NULL, NULL);
+            }
             goto done;
           }
 
           int restrictTok = jsmn_find_object_key(input, tokens, idx, "restrictToDir", tokenCount);
           if (restrictTok >= 0) {
             if (tokens[restrictTok].type != JSMN_STRING) {
-              write_error_json("setup.kernels[].restrictToDir must be a string", NULL, NULL, NULL);
+              write_error_json_ex(
+                  "invalid_request",
+                  "setup.kernels[].restrictToDir must be a string",
+                  NULL,
+                  NULL,
+                  NULL,
+                  NULL);
               free(kernelPath);
               goto done;
             }
 
-            restrictToDir = jsmn_strdup(input, &tokens[restrictTok]);
-            if (restrictToDir == NULL) {
-              write_error_json("Out of memory", NULL, NULL, NULL);
+            strDetail[0] = '\0';
+            jsmn_strdup_err_t restrictErr = jsmn_strdup(input, &tokens[restrictTok],
+                                                       &restrictToDir, strDetail,
+                                                       sizeof(strDetail));
+            if (restrictErr != JSMN_STRDUP_OK) {
+              if (restrictErr == JSMN_STRDUP_INVALID) {
+                write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                                    strDetail[0] ? strDetail : NULL, NULL, NULL,
+                                    NULL);
+              } else {
+                write_error_json("Out of memory", NULL, NULL, NULL);
+              }
               free(kernelPath);
               goto done;
             }
           }
         } else {
-          write_error_json("setup.kernels entries must be strings or objects", NULL, NULL, NULL);
+          write_error_json_ex(
+              "invalid_request",
+              "setup.kernels entries must be strings or objects",
+              NULL,
+              NULL,
+              NULL,
+              NULL);
           goto done;
         }
 
@@ -747,6 +1310,7 @@ int main(void) {
           prevCwd = getcwd(NULL, 0);
           if (prevCwd == NULL) {
             write_error_json("Failed to getcwd before kernel load", NULL, NULL, NULL);
+            exitCode = 1;
             free(kernelPath);
             free(restrictToDir);
             goto done;
@@ -758,6 +1322,7 @@ int main(void) {
                      "Failed to chdir to restrictToDir: %s (dir=%s)",
                      strerror(errno), restrictToDir);
             write_error_json(msg, NULL, NULL, NULL);
+            exitCode = 1;
             free(prevCwd);
             free(kernelPath);
             free(restrictToDir);
@@ -774,6 +1339,7 @@ int main(void) {
                      "Failed to restore cwd after kernel load: %s (cwd=%s)",
                      strerror(errno), prevCwd);
             write_error_json(msg, NULL, NULL, NULL);
+            exitCode = 1;
             free(prevCwd);
             free(kernelPath);
             free(restrictToDir);
@@ -801,55 +1367,554 @@ int main(void) {
   }
 
   if (argsTok < 0) {
-    write_error_json("Missing required field: args", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "Missing required field: args", NULL,
+                        NULL, NULL, NULL);
     goto done;
   }
 
   if (tokens[argsTok].type != JSMN_ARRAY) {
-    write_error_json("args must be an array", NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "args must be an array", NULL, NULL,
+                        NULL, NULL);
     goto done;
   }
 
   const bool isStr2et = strcmp(call, "time.str2et") == 0 || strcmp(call, "str2et") == 0;
+  const bool isEt2utc = strcmp(call, "time.et2utc") == 0 || strcmp(call, "et2utc") == 0;
+  const bool isBodn2c = strcmp(call, "ids-names.bodn2c") == 0 || strcmp(call, "bodn2c") == 0;
+  const bool isBodc2n = strcmp(call, "ids-names.bodc2n") == 0 || strcmp(call, "bodc2n") == 0;
+  const bool isNamfrm = strcmp(call, "frames.namfrm") == 0 || strcmp(call, "namfrm") == 0;
+  const bool isFrmnam = strcmp(call, "frames.frmnam") == 0 || strcmp(call, "frmnam") == 0;
+  const bool isPxform = strcmp(call, "frames.pxform") == 0 || strcmp(call, "pxform") == 0;
 
-  if (!isStr2et) {
-    write_error_json("Unsupported call", NULL, NULL, NULL);
+  if (!isStr2et && !isEt2utc && !isBodn2c && !isBodc2n && !isNamfrm && !isFrmnam && !isPxform) {
+    write_error_json_ex("unsupported_call", "Unsupported call", NULL, NULL,
+                        NULL, NULL);
     goto done;
   }
 
-  if (tokens[argsTok].size < 1) {
-    write_error_json("time.str2et expects args[0] to be a string", NULL, NULL, NULL);
+  if (isStr2et) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.str2et expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int arg0Tok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (arg0Tok < 0 || arg0Tok >= tokenCount || tokens[arg0Tok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.str2et expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *timeStr = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t timeErr =
+        jsmn_strdup(input, &tokens[arg0Tok], &timeStr, strDetail, sizeof(strDetail));
+    if (timeErr != JSMN_STRDUP_OK) {
+      if (timeErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    str2et_c(timeStr, &et);
+    free(timeStr);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in str2et", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    // Success.
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)et);
     goto done;
   }
 
-  int arg0Tok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
-  if (arg0Tok < 0 || arg0Tok >= tokenCount || tokens[arg0Tok].type != JSMN_STRING) {
-    write_error_json("time.str2et expects args[0] to be a string", NULL, NULL, NULL);
+  if (isEt2utc) {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.et2utc expects args[0]=number args[1]=string args[2]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int fmtTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int precTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceDouble et = 0.0;
+    SpiceInt prec = 0;
+
+    parse_result etParse = PARSE_INVALID;
+    if (etTok >= 0 && etTok < tokenCount) {
+      etParse = jsmn_parse_double(input, &tokens[etTok], &et);
+    }
+
+    if (etTok < 0 || etTok >= tokenCount || etParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.et2utc expects args[0] to be a number",
+          etParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (etParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    if (fmtTok < 0 || fmtTok >= tokenCount || tokens[fmtTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.et2utc expects args[1] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    parse_result precParse = PARSE_INVALID;
+    if (precTok >= 0 && precTok < tokenCount) {
+      precParse = jsmn_parse_int(input, &tokens[precTok], &prec);
+    }
+
+    if (precTok < 0 || precTok >= tokenCount || precParse != PARSE_OK) {
+      if (precParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "time.et2utc expects args[2] to be an integer (SpiceInt range)",
+            precParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    char *format = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fmtErr =
+        jsmn_strdup(input, &tokens[fmtTok], &format, strDetail, sizeof(strDetail));
+    if (fmtErr != JSMN_STRDUP_OK) {
+      if (fmtErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceChar utc[128];
+    utc[0] = '\0';
+    et2utc_c(et, format, prec, (SpiceInt)sizeof(utc), utc);
+    free(format);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in et2utc", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(utc);
+    fputs("\"}\n", stdout);
     goto done;
   }
 
-  char *timeStr = jsmn_strdup(input, &tokens[arg0Tok]);
-  if (timeStr == NULL) {
-    write_error_json("Out of memory", NULL, NULL, NULL);
+  if (isBodn2c) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodn2c expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodn2c expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt code = 0;
+    SpiceBoolean found = SPICEFALSE;
+    bodn2c_c(name, &code, &found);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in bodn2c", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"found\":true,\"code\":%" PRIdMAX "}}\n",
+            (intmax_t)code);
     goto done;
   }
 
-  SpiceDouble et = 0.0;
-  str2et_c(timeStr, &et);
-  free(timeStr);
+  if (isBodc2n) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
 
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
-                        sizeof(traceMsg));
-    write_error_json("SPICE error in str2et", shortMsg, longMsg, traceMsg);
+    int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceInt code = 0;
+    parse_result codeParse = PARSE_INVALID;
+    if (codeTok >= 0 && codeTok < tokenCount) {
+      codeParse = jsmn_parse_int(input, &tokens[codeTok], &code);
+    }
+
+    if (codeTok < 0 || codeTok >= tokenCount || codeParse != PARSE_OK) {
+      if (codeParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.bodc2n expects args[0] to be an integer (SpiceInt range)",
+            codeParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceChar name[64];
+    name[0] = '\0';
+    SpiceBoolean found = SPICEFALSE;
+    bodc2n_c(code, (SpiceInt)sizeof(name), name, &found);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in bodc2n", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"name\":\"", stdout);
+    json_print_escaped(name);
+    fputs("\"}}\n", stdout);
     goto done;
   }
 
-  // Success.
-  fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)et);
+  if (isNamfrm) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.namfrm expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.namfrm expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt frcode = 0;
+    namfrm_c(name, &frcode);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in namfrm", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (frcode == 0) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"found\":true,\"code\":%" PRIdMAX "}}\n",
+            (intmax_t)frcode);
+    goto done;
+  }
+
+  if (isFrmnam) {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.frmnam expects args[0] to be an integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceInt frcode = 0;
+    parse_result frcodeParse = PARSE_INVALID;
+    if (codeTok >= 0 && codeTok < tokenCount) {
+      frcodeParse = jsmn_parse_int(input, &tokens[codeTok], &frcode);
+    }
+
+    if (codeTok < 0 || codeTok >= tokenCount || frcodeParse != PARSE_OK) {
+      if (frcodeParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "frames.frmnam expects args[0] to be an integer (SpiceInt range)",
+            frcodeParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceChar frname[64];
+    frname[0] = '\0';
+    frmnam_c(frcode, (SpiceInt)sizeof(frname), frname);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in frmnam", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (frname[0] == '\0') {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"name\":\"", stdout);
+    json_print_escaped(frname);
+    fputs("\"}}\n", stdout);
+    goto done;
+  }
+
+  if (isPxform) {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.pxform expects args[0]=string args[1]=string args[2]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int fromTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int toTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (fromTok < 0 || fromTok >= tokenCount || tokens[fromTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.pxform expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    if (toTok < 0 || toTok >= tokenCount || tokens[toTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.pxform expects args[1] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    parse_result etParse = PARSE_INVALID;
+    if (etTok >= 0 && etTok < tokenCount) {
+      etParse = jsmn_parse_double(input, &tokens[etTok], &et);
+    }
+
+    if (etTok < 0 || etTok >= tokenCount || etParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.pxform expects args[2] to be a number",
+          etParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (etParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *from = NULL;
+    char *to = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fromErr =
+        jsmn_strdup(input, &tokens[fromTok], &from, strDetail, sizeof(strDetail));
+    if (fromErr != JSMN_STRDUP_OK) {
+      if (fromErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t toErr =
+        jsmn_strdup(input, &tokens[toTok], &to, strDetail, sizeof(strDetail));
+    if (toErr != JSMN_STRDUP_OK) {
+      free(from);
+      if (toErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble m[3][3];
+    pxform_c(from, to, et, m);
+    free(from);
+    free(to);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in pxform", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    // Success: row-major matrix.
+    fputs("{\"ok\":true,\"result\":[", stdout);
+    for (int r = 0; r < 3; r++) {
+      for (int c = 0; c < 3; c++) {
+        const int i = r * 3 + c;
+        if (i != 0) {
+          fputc(',', stdout);
+        }
+        fprintf(stdout, "%.17g", (double)m[r][c]);
+      }
+    }
+    fputs("]}\n", stdout);
+    goto done;
+  }
+
 
 done:
   // Clear state even though this is a single-shot process.
@@ -859,5 +1924,5 @@ done:
   free(call);
   free(tokens);
   free(input);
-  return 0;
+  return exitCode;
 }
