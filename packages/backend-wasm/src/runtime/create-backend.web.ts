@@ -30,8 +30,11 @@ export async function createWasmBackend(
   // NOTE: Keep this as a literal string so bundlers (Vite) don't generate a
   // runtime glob map for *every* file in this directory (including *.d.ts.map),
   // which can lead to JSON being imported as an ESM module.
-  const defaultWasmUrl = new URL("../tspice_backend_wasm.wasm", import.meta.url);
-  const wasmUrl = options.wasmUrl?.toString() ?? defaultWasmUrl.href;
+  const wasmUrl =
+    options.wasmUrl?.toString() ??
+    // NOTE: Inline blob workers set `options.wasmUrl` explicitly, since
+    // `import.meta.url` will be `blob:` for the worker entry module.
+    new URL("../tspice_backend_wasm.wasm", import.meta.url).href;
 
   const URL_SCHEME_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
   const WINDOWS_DRIVE_PATH_RE = /^[A-Za-z]:[\\/]/;
