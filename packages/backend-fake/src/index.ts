@@ -1423,6 +1423,103 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       } satisfies SpkposResult;
     },
 
+    spkez: (target, et, ref, abcorr, observer) => {
+      void (abcorr satisfies AbCorr | string);
+      assertSpiceInt32(target, "spkez(target)");
+      assertSpiceInt32(observer, "spkez(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return { state, lt: 0 };
+    },
+
+    spkezp: (target, et, ref, abcorr, observer) => {
+      void (abcorr satisfies AbCorr | string);
+      assertSpiceInt32(target, "spkezp(target)");
+      assertSpiceInt32(observer, "spkezp(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return {
+        pos: [state[0], state[1], state[2]],
+        lt: 0,
+      } satisfies SpkposResult;
+    },
+
+    spkgeo: (target, et, ref, observer) => {
+      assertSpiceInt32(target, "spkgeo(target)");
+      assertSpiceInt32(observer, "spkgeo(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return { state, lt: 0 };
+    },
+
+    spkgps: (target, et, ref, observer) => {
+      assertSpiceInt32(target, "spkgps(target)");
+      assertSpiceInt32(observer, "spkgps(observer)");
+
+      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+
+      const outFrame = parseFrameName(ref);
+      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+
+      return {
+        pos: [state[0], state[1], state[2]],
+        lt: 0,
+      } satisfies SpkposResult;
+    },
+
+    spkssb: (target, et, ref) => {
+      assertSpiceInt32(target, "spkssb(target)");
+
+      const abs = getAbsoluteStateInJ2000(target, et);
+      const stateJ2000: SpiceStateVector = [
+        abs.posKm[0],
+        abs.posKm[1],
+        abs.posKm[2],
+        abs.velKmPerSec[0],
+        abs.velKmPerSec[1],
+        abs.velKmPerSec[2],
+      ];
+
+      const outFrame = parseFrameName(ref);
+      return outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+    },
+
+    spkcov: (_spk, idcode, _cover) => {
+      assertSpiceInt32(idcode, "spkcov(idcode)");
+      throw new Error(spiceCellUnsupported);
+    },
+
+    spkobj: (_spk, _ids) => {
+      throw new Error(spiceCellUnsupported);
+    },
+
+    spksfs: (body, et) => {
+      assertSpiceInt32(body, "spksfs(body)");
+      void et;
+      return { found: false };
+    },
+
+    spkpds: (_body, _center, _frame, _type, _first, _last) => {
+      throw new Error("Fake backend: spkpds() is not implemented");
+    },
+
+    spkuds: (_descr) => {
+      throw new Error("Fake backend: spkuds() is not implemented");
+    },
+
+
     subpnt: (_method, target, et, fixref, abcorr, observer) => {
       void (abcorr satisfies AbCorr | string);
 
@@ -1560,6 +1657,30 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       throw new Error("Fake backend: dlacls() is not implemented");
     },
 
+    // --- EK (not implemented in fake backend) ---
+    ekopr: (_path: string) => {
+      throw new Error("Fake backend: ekopr() is not implemented");
+    },
+    ekopw: (_path: string) => {
+      throw new Error("Fake backend: ekopw() is not implemented");
+    },
+    ekopn: (_path: string, _ifname: string, _ncomch: number) => {
+      throw new Error("Fake backend: ekopn() is not implemented");
+    },
+    ekcls: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: ekcls() is not implemented");
+    },
+    ekntab: () => {
+      throw new Error("Fake backend: ekntab() is not implemented");
+    },
+    ektnam: (_n: number) => {
+      throw new Error("Fake backend: ektnam() is not implemented");
+    },
+    eknseg: (_handle: SpiceHandle) => {
+      throw new Error("Fake backend: eknseg() is not implemented");
+    },
+
+    // --- DSK writer (not implemented in fake backend) ---
     dskopn: (_path: string, _ifname: string, _ncomch: number) => {
       throw new Error("Fake backend: dskopn() is not implemented");
     },

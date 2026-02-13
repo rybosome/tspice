@@ -3,6 +3,7 @@
 #include "domains/coords_vectors.h"
 #include "domains/error.h"
 #include "domains/cells_windows.h"
+#include "domains/ek.h"
 #include "domains/ephemeris.h"
 #include "domains/file_io.h"
 #include "domains/frames.h"
@@ -39,6 +40,7 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   if (!registerDomain(tspice_backend_node::RegisterFileIo)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterError)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterCellsWindows)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterEk)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterDsk)) return exports;
 
   return exports;

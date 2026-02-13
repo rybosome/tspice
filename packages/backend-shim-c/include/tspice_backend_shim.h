@@ -156,6 +156,32 @@ int tspice_dlafns(
 // Close a DLA handle (DLA is DAS-backed).
 int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
+// --- EK --------------------------------------------------------------------
+
+int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes);
+int tspice_ekopw(const char *path, int *outHandle, char *err, int errMaxBytes);
+
+int tspice_ekopn(
+    const char *path,
+    const char *ifname,
+    int ncomch,
+    int *outHandle,
+    char *err,
+    int errMaxBytes);
+
+int tspice_ekcls(int handle, char *err, int errMaxBytes);
+
+int tspice_ekntab(int *outN, char *err, int errMaxBytes);
+
+int tspice_ektnam(
+    int n,
+    char *outName,
+    int outNameMaxBytes,
+    char *err,
+    int errMaxBytes);
+
+int tspice_eknseg(int handle, int *outNseg, char *err, int errMaxBytes);
+
 // --- DSK -------------------------------------------------------------------
 
 int tspice_dskopn(
@@ -583,6 +609,118 @@ int tspice_spkpos(
     double *outLt,
     char *err,
     int errMaxBytes);
+
+// spkez_c: compute state (6 doubles) and light time (numeric IDs).
+int tspice_spkez(
+    int target,
+    double et,
+    const char *ref,
+    const char *abcorr,
+    int observer,
+    double *outState6,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkezp_c: compute position (3 doubles) and light time (numeric IDs).
+int tspice_spkezp(
+    int target,
+    double et,
+    const char *ref,
+    const char *abcorr,
+    int observer,
+    double *outPos3,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkgeo_c: compute geometric state (6 doubles) and light time (numeric IDs).
+int tspice_spkgeo(
+    int target,
+    double et,
+    const char *ref,
+    int observer,
+    double *outState6,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkgps_c: compute geometric position (3 doubles) and light time (numeric IDs).
+int tspice_spkgps(
+    int target,
+    double et,
+    const char *ref,
+    int observer,
+    double *outPos3,
+    double *outLt,
+    char *err,
+    int errMaxBytes);
+
+// spkssb_c: compute state (6 doubles) of target body relative to SSB.
+int tspice_spkssb(
+    int target,
+    double et,
+    const char *ref,
+    double *outState6,
+    char *err,
+    int errMaxBytes);
+
+// spkcov_c: compute the coverage window for an object in an SPK file.
+int tspice_spkcov(
+    const char *spk,
+    int idcode,
+    uintptr_t coverWindowHandle,
+    char *err,
+    int errMaxBytes);
+
+// spkobj_c: find the set of objects present in an SPK file.
+int tspice_spkobj(
+    const char *spk,
+    uintptr_t idsCellHandle,
+    char *err,
+    int errMaxBytes);
+
+// spksfs_c: select the highest-priority segment for a body+time from loaded SPKs.
+//
+// Segment identifiers may be up to 40 characters; `outIdentMaxBytes` must be
+// at least 41 (including trailing NUL).
+int tspice_spksfs(
+    int body,
+    double et,
+    int *outHandle,
+    double *outDescr5,
+    char *outIdent,
+    int outIdentMaxBytes,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+
+// spkpds_c: pack an SPK segment descriptor.
+int tspice_spkpds(
+    int body,
+    int center,
+    const char *frame,
+    int type,
+    double first,
+    double last,
+    double *outDescr5,
+    char *err,
+    int errMaxBytes);
+
+// spkuds_c: unpack a packed SPK segment descriptor.
+int tspice_spkuds(
+    const double *descr5,
+    int *outBody,
+    int *outCenter,
+    int *outFrame,
+    int *outType,
+    double *outFirst,
+    double *outLast,
+    int *outBaddr,
+    int *outEaddr,
+    char *err,
+    int errMaxBytes);
+
 
 // --- Derived geometry primitives ---
 

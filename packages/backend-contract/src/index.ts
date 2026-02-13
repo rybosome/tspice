@@ -70,6 +70,7 @@ export { SpiceBackendContractError } from "./shared/errors.js";
 
 export * from "./domains/kernels.js";
 export * from "./domains/kernel-pool.js";
+export * from "./domains/ek.js";
 export * from "./domains/kernels-utils.js";
 export * from "./domains/time.js";
 export * from "./domains/ids-names.js";
@@ -85,6 +86,7 @@ export * from "./domains/dsk.js";
 
 import type { KernelsApi } from "./domains/kernels.js";
 import type { KernelPoolApi } from "./domains/kernel-pool.js";
+import type { EkApi } from "./domains/ek.js";
 import type { TimeApi } from "./domains/time.js";
 import type { IdsNamesApi } from "./domains/ids-names.js";
 import type { FramesApi } from "./domains/frames.js";
@@ -102,6 +104,7 @@ export interface SpiceBackend
   extends TimeApi,
     KernelsApi,
     KernelPoolApi,
+    EkApi,
     IdsNamesApi,
     FramesApi,
     EphemerisApi,
