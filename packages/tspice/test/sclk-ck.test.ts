@@ -35,7 +35,7 @@ const sc = -77;
 const sclkch = "593328:90:5:0";
 
 describe("SCLK conversions + CK attitude", () => {
-  const itNode = it.runIf(nodeBackendAvailable && process.arch !== "arm64");
+  const itNode = it.runIf(nodeBackendAvailable);
 
   itNode("node backend: scs2e/sce2s", async () => {
     const backend = await createBackend({ backend: "node" });

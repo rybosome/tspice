@@ -227,6 +227,191 @@ static Napi::Object Ilumin(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static Napi::Object Illumg(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 8 || !info[0].IsString() || !info[1].IsString() || !info[2].IsString() ||
+      !info[3].IsNumber() || !info[4].IsString() || !info[5].IsString() || !info[6].IsString() ||
+      !info[7].IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(
+        env,
+        "illumg(method: string, target: string, ilusrc: string, et: number, fixref: string, abcorr: string, observer: string, spoint: number[3]) expects (string, string, string, number, string, string, string, number[])"));
+    return Napi::Object::New(env);
+  }
+
+  const std::string method = info[0].As<Napi::String>().Utf8Value();
+  const std::string target = info[1].As<Napi::String>().Utf8Value();
+  const std::string ilusrc = info[2].As<Napi::String>().Utf8Value();
+  const double et = info[3].As<Napi::Number>().DoubleValue();
+  const std::string fixref = info[4].As<Napi::String>().Utf8Value();
+  const std::string abcorr = info[5].As<Napi::String>().Utf8Value();
+  const std::string observer = info[6].As<Napi::String>().Utf8Value();
+
+  double spoint[3] = {0};
+  if (!tspice_backend_node::ReadVec3(env, info[7], spoint, "spoint")) {
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double trgepc = 0.0;
+  double srfvec[3] = {0};
+  double phase = 0.0;
+  double incdnc = 0.0;
+  double emissn = 0.0;
+  const int code = tspice_illumg(
+      method.c_str(),
+      target.c_str(),
+      ilusrc.c_str(),
+      et,
+      fixref.c_str(),
+      abcorr.c_str(),
+      observer.c_str(),
+      spoint,
+      &trgepc,
+      srfvec,
+      &phase,
+      &incdnc,
+      &emissn,
+      err,
+      (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling illumg", err);
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("trgepc", Napi::Number::New(env, trgepc));
+  result.Set("srfvec", MakeNumberArray(env, srfvec, 3));
+  result.Set("phase", Napi::Number::New(env, phase));
+  result.Set("incdnc", Napi::Number::New(env, incdnc));
+  result.Set("emissn", Napi::Number::New(env, emissn));
+  return result;
+}
+
+static Napi::Object Illumf(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 8 || !info[0].IsString() || !info[1].IsString() || !info[2].IsString() ||
+      !info[3].IsNumber() || !info[4].IsString() || !info[5].IsString() || !info[6].IsString() ||
+      !info[7].IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(
+        env,
+        "illumf(method: string, target: string, ilusrc: string, et: number, fixref: string, abcorr: string, observer: string, spoint: number[3]) expects (string, string, string, number, string, string, string, number[])"));
+    return Napi::Object::New(env);
+  }
+
+  const std::string method = info[0].As<Napi::String>().Utf8Value();
+  const std::string target = info[1].As<Napi::String>().Utf8Value();
+  const std::string ilusrc = info[2].As<Napi::String>().Utf8Value();
+  const double et = info[3].As<Napi::Number>().DoubleValue();
+  const std::string fixref = info[4].As<Napi::String>().Utf8Value();
+  const std::string abcorr = info[5].As<Napi::String>().Utf8Value();
+  const std::string observer = info[6].As<Napi::String>().Utf8Value();
+
+  double spoint[3] = {0};
+  if (!tspice_backend_node::ReadVec3(env, info[7], spoint, "spoint")) {
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double trgepc = 0.0;
+  double srfvec[3] = {0};
+  double phase = 0.0;
+  double incdnc = 0.0;
+  double emissn = 0.0;
+  int visibl = 0;
+  int lit = 0;
+  const int code = tspice_illumf(
+      method.c_str(),
+      target.c_str(),
+      ilusrc.c_str(),
+      et,
+      fixref.c_str(),
+      abcorr.c_str(),
+      observer.c_str(),
+      spoint,
+      &trgepc,
+      srfvec,
+      &phase,
+      &incdnc,
+      &emissn,
+      &visibl,
+      &lit,
+      err,
+      (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling illumf", err);
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("trgepc", Napi::Number::New(env, trgepc));
+  result.Set("srfvec", MakeNumberArray(env, srfvec, 3));
+  result.Set("phase", Napi::Number::New(env, phase));
+  result.Set("incdnc", Napi::Number::New(env, incdnc));
+  result.Set("emissn", Napi::Number::New(env, emissn));
+  result.Set("visibl", Napi::Boolean::New(env, visibl != 0));
+  result.Set("lit", Napi::Boolean::New(env, lit != 0));
+  return result;
+}
+
+static Napi::Array Nvc2pl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2 || !info[0].IsArray() || !info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "nvc2pl(normal: number[3], konst: number) expects (number[], number)"));
+    return Napi::Array::New(env);
+  }
+
+  double normal[3] = {0};
+  if (!tspice_backend_node::ReadVec3(env, info[0], normal, "normal")) {
+    return Napi::Array::New(env);
+  }
+  const double konst = info[1].As<Napi::Number>().DoubleValue();
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double plane[4] = {0};
+  const int code = tspice_nvc2pl(normal, konst, plane, err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling nvc2pl", err);
+    return Napi::Array::New(env);
+  }
+
+  return MakeNumberArray(env, plane, 4);
+}
+
+static Napi::Object Pl2nvc(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1 || !info[0].IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pl2nvc(plane: number[4]) expects 1 argument"));
+    return Napi::Object::New(env);
+  }
+
+  double plane[4] = {0};
+  if (!tspice_backend_node::ReadNumberArrayFixed(env, info[0], 4, plane, "plane")) {
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double normal[3] = {0};
+  double konst = 0.0;
+  const int code = tspice_pl2nvc(plane, normal, &konst, err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling pl2nvc", err);
+    return Napi::Object::New(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("normal", MakeNumberArray(env, normal, 3));
+  result.Set("konst", Napi::Number::New(env, konst));
+  return result;
+}
+
 static Napi::Number Occult(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -280,7 +465,11 @@ void RegisterGeometry(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "subslr", Napi::Function::New(env, Subslr), __func__)) return;
   if (!SetExportChecked(env, exports, "sincpt", Napi::Function::New(env, Sincpt), __func__)) return;
   if (!SetExportChecked(env, exports, "ilumin", Napi::Function::New(env, Ilumin), __func__)) return;
+  if (!SetExportChecked(env, exports, "illumg", Napi::Function::New(env, Illumg), __func__)) return;
+  if (!SetExportChecked(env, exports, "illumf", Napi::Function::New(env, Illumf), __func__)) return;
   if (!SetExportChecked(env, exports, "occult", Napi::Function::New(env, Occult), __func__)) return;
+  if (!SetExportChecked(env, exports, "nvc2pl", Napi::Function::New(env, Nvc2pl), __func__)) return;
+  if (!SetExportChecked(env, exports, "pl2nvc", Napi::Function::New(env, Pl2nvc), __func__)) return;
 }
 
 }  // namespace tspice_backend_node
