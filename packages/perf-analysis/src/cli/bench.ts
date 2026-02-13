@@ -13,14 +13,19 @@ function usage(): string {
     "  --backend   Currently only supports: node-native",
     "  --suite     Built-in suite id (e.g. micro) or a path to a .yml/.yaml file",
     "  --outDir    Output directory (default: ./benchmarks/results/<YYYYMMDD-HHmmss>/)",
+    "             Note: if <dir>/raw.json or <dir>/bmf.json already exist, they are replaced.",
     "",
     "Outputs:",
     "  raw.json  - full samples + metadata for debugging",
     "  bmf.json  - Bencher Metric Format (BMF)",
     "",
-    "Metric units (BMF does not include units; these are implied):",
-    "  latency_p50 / latency_p95  - ns/op",
-    "  throughput                 - ops/sec",
+    "BMF semantics (BMF does not encode units; these are implied):",
+    "  latency_p50 / latency_p95  - per-op latency, p50/p95 quantiles (ns/op)",
+    "  throughput                 - ops/sec derived from mean(ns/op)",
+    "",
+    "Timing semantics:",
+    "  warmup iterations run outside the measured timer",
+    "  measured timer covers only the benchmark call(s), excluding kernel loading",
   ].join("\n");
 }
 

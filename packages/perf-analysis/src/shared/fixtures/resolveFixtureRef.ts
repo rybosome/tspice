@@ -1,4 +1,5 @@
 import * as fs from "node:fs";
+import type { PlatformPath } from "node:path";
 import * as path from "node:path";
 
 import type { FixtureRef, FixtureRoots, ResolvedFixtureRef } from "./types.js";
@@ -13,6 +14,50 @@ export type ResolveFixtureRefOptions = {
   readonly baseDir?: string;
 };
 
+export interface IsPathInsideOptions {
+  readonly pathImpl?: PlatformPath;
+  /**
+   * Whether comparisons should be case-sensitive.
+   *
+   * Defaults to case-insensitive for win32-style paths and case-sensitive
+   * for posix-style paths.
+   */
+  readonly caseSensitive?: boolean;
+}
+
+function normalizeForContainment(p: string, pathImpl: PlatformPath, caseSensitive: boolean): string {
+  let out = pathImpl.normalize(p);
+
+  // Ensure consistent behavior regardless of trailing separators.
+  const root = pathImpl.parse(out).root;
+  while (out.length > root.length && out.endsWith(pathImpl.sep)) {
+    out = out.slice(0, -1);
+  }
+
+  if (!caseSensitive) {
+    // NOTE: When caseSensitive=false we approximate case-insensitive containment by
+    // lowercasing both normalized paths. This is a pragmatic heuristic and is not
+    // equivalent to filesystem case folding for all locales / Unicode edge cases.
+    // Do not treat it as a hard security boundary on every platform/filesystem.
+    out = out.toLowerCase();
+  }
+
+  return out;
+}
+
+export function isPathInside(baseDir: string, candidatePath: string, options: IsPathInsideOptions = {}): boolean {
+  const pathImpl = options.pathImpl ?? path;
+  const caseSensitive = options.caseSensitive ?? pathImpl.sep !== "\\";
+
+  const rel = pathImpl.relative(
+    normalizeForContainment(baseDir, pathImpl, caseSensitive),
+    normalizeForContainment(candidatePath, pathImpl, caseSensitive),
+  );
+  if (rel === "" || rel === ".") return true;
+
+  return rel !== ".." && !rel.startsWith(`..${pathImpl.sep}`) && !pathImpl.isAbsolute(rel);
+}
+
 function isExistingDir(p: string): boolean {
   try {
     return fs.statSync(p).isDirectory();
@@ -26,13 +71,7 @@ function fileExists(p: string): boolean {
 }
 
 function ensureWithinDirOrThrow(resolved: string, baseDir: string, message: string): void {
-  const rel = path.relative(baseDir, resolved);
-  // rel === '' means `resolved === baseDir` which is acceptable.
-  if (rel === "") return;
-
-  if (rel === ".." || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)) {
-    throw new Error(message);
-  }
+  if (!isPathInside(baseDir, resolved)) throw new Error(message);
 }
 
 function resolveFixturePackDir(dirPath: string, originalEntry: string): ResolvedFixtureRef {

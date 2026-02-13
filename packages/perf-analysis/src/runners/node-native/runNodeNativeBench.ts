@@ -1,5 +1,6 @@
+import crypto from "node:crypto";
 import * as path from "node:path";
-import { readFile, mkdir, stat, writeFile } from "node:fs/promises";
+import { open, readFile, mkdir, rename, rm, stat } from "node:fs/promises";
 
 import { createBackend, type KernelSource, type SpiceBackend } from "@rybosome/tspice";
 
@@ -19,6 +20,7 @@ import {
   resolveMetaKernelKernelsToLoad,
   sanitizeMetaKernelTextForNativeNoKernels,
 } from "./metaKernel.js";
+import { toNodeNativeBmfMeasures } from "./bmf.js";
 import { quantileSorted } from "./stats.js";
 
 export type NodeNativeBenchBackend = "node-native";
@@ -79,6 +81,48 @@ export type RunNodeNativeBenchOptions = {
   warmupIterations?: number;
   iterations?: number;
 };
+
+async function writeFileTextAtomic(outPath: string, text: string): Promise<void> {
+  // Write to a tmp file in the same directory, then rename.
+  // This avoids leaving partially-written JSON behind on crash.
+  const dir = path.dirname(outPath);
+  await mkdir(dir, { recursive: true });
+
+  const tmpPath = path.join(
+    dir,
+    `.${path.basename(outPath)}.${process.pid}.${crypto.randomUUID()}.tmp`,
+  );
+
+  let fh: Awaited<ReturnType<typeof open>> | undefined;
+  try {
+    fh = await open(tmpPath, "wx");
+    await fh.writeFile(text, { encoding: "utf8" });
+    await fh.sync();
+    await fh.close();
+    fh = undefined;
+
+    try {
+      // Atomic on POSIX when staying on the same filesystem.
+      await rename(tmpPath, outPath);
+      return;
+    } catch (err: any) {
+      // On Windows, rename() can't replace an existing file.
+      if (err?.code === "EEXIST" || err?.code === "EPERM") {
+        await rm(outPath, { force: true });
+        await rename(tmpPath, outPath);
+        return;
+      }
+      throw err;
+    }
+  } finally {
+    try {
+      await fh?.close();
+    } catch {
+      // ignore
+    }
+    await rm(tmpPath, { force: true });
+  }
+}
 
 type CaseConfig = {
   call: NodeNativeBenchCall;
@@ -347,6 +391,12 @@ export async function runNodeNativeBench(options: RunNodeNativeBenchOptions): Pr
     }
 
     // Warmup.
+    //
+    // Semantics:
+    // - Warmup runs outside the measured timer.
+    // - Isolation is per-iteration (not per-op): each iteration starts from a
+    //   clean SPICE pool and freshly-loaded kernels.
+    // - Warmup exists to reduce cold-start variance (JIT, OS caches, etc.).
     for (let w = 0; w < warmupIterations; w++) {
       isolate(backend);
       furnshAll(backend, kernelPlan);
@@ -356,6 +406,16 @@ export async function runNodeNativeBench(options: RunNodeNativeBenchOptions): Pr
     }
 
     // Measured.
+    //
+    // Timing boundaries:
+    // - We start the timer after isolation + kernel loading.
+    // - We stop the timer immediately after the benchmark call loop.
+    //
+    // This means the reported latency/throughput values exclude:
+    // - kernel loading (furnsh)
+    // - per-iteration isolation/reset overhead
+    //
+    // If opsPerIteration > 1, each sample is the average ns/op over the loop.
     const samplesNsPerOp: number[] = [];
     for (let m = 0; m < iterations; m++) {
       isolate(backend);
@@ -411,13 +471,18 @@ export async function runNodeNativeBench(options: RunNodeNativeBenchOptions): Pr
     });
 
     // Bencher Metric Format (BMF) does not have a unit field.
-    // Emit p50/p95 as separate measures (instead of overloading upper_value)
+    //
+    // Semantics/units (implied):
+    // - latency_p50 / latency_p95: ns/op (quantiles of the per-iteration ns/op samples)
+    // - throughput: ops/sec (derived from mean(ns/op))
+    //
+    // We emit p50/p95 as separate measures (instead of overloading upper_value)
     // so they're first-class metrics for thresholding.
-    bmf[benchmarkKey] = {
-      latency_p50: { value: latency_p50 },
-      latency_p95: { value: latency_p95 },
-      throughput: { value: throughput },
-    };
+    bmf[benchmarkKey] = toNodeNativeBmfMeasures({
+      latency_p50,
+      latency_p95,
+      throughput,
+    });
   }
 
   const raw: NodeNativeBenchRawOutput = {
@@ -438,8 +503,8 @@ export async function runNodeNativeBench(options: RunNodeNativeBenchOptions): Pr
   const bmfPath = path.join(outDir, "bmf.json");
 
   await mkdir(outDir, { recursive: true });
-  await writeFile(rawPath, JSON.stringify(raw, null, 2) + "\n", "utf8");
-  await writeFile(bmfPath, JSON.stringify(bmf, null, 2) + "\n", "utf8");
+  await writeFileTextAtomic(rawPath, JSON.stringify(raw, null, 2) + "\n");
+  await writeFileTextAtomic(bmfPath, JSON.stringify(bmf, null, 2) + "\n");
 
   return { outDir, rawPath, bmfPath, raw, bmf };
 }
