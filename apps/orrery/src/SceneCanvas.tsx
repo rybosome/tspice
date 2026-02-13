@@ -332,10 +332,29 @@ export function SceneCanvas() {
   const SUN_EMISSIVE_INTENSITY_DEFAULT = 10
   const SUN_EMISSIVE_COLOR_DEFAULT = '#ffcc55'
 
+  const normalizeHexColor = (input: string): string | null => {
+    const m = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.exec(input.trim())
+    if (!m) return null
+
+    let hex = m[1].toLowerCase()
+    if (hex.length === 3) {
+      hex = hex
+        .split('')
+        .map((c) => c + c)
+        .join('')
+    }
+
+    return `#${hex}`
+  }
+
   const [ambientLightIntensity, setAmbientLightIntensity] = useState(AMBIENT_LIGHT_INTENSITY_DEFAULT)
   const [sunLightIntensity, setSunLightIntensity] = useState(SUN_LIGHT_INTENSITY_DEFAULT)
   const [sunEmissiveIntensity, setSunEmissiveIntensity] = useState(SUN_EMISSIVE_INTENSITY_DEFAULT)
+
+  // Keep a raw input string for the text box, but only propagate a validated,
+  // normalized `#rrggbb` into runtime config.
   const [sunEmissiveColor, setSunEmissiveColor] = useState(SUN_EMISSIVE_COLOR_DEFAULT)
+  const [sunEmissiveColorInput, setSunEmissiveColorInput] = useState(SUN_EMISSIVE_COLOR_DEFAULT)
   const earthNightAlbedo = 0.004
   const earthTwilight = earthAppearanceDefaults?.nightLightsTwilight ?? 0.12
   const earthNightLightsIntensity = earthAppearanceDefaults?.nightLightsIntensity ?? 1.25
@@ -1922,14 +1941,38 @@ export function SceneCanvas() {
                         <input
                           type="color"
                           value={sunEmissiveColor}
-                          onChange={(e) => setSunEmissiveColor(e.target.value)}
+                          onChange={(e) => {
+                            // Browser guarantees this is valid `#rrggbb`, but
+                            // normalize defensively and keep inputs in sync.
+                            const normalized = normalizeHexColor(e.target.value)
+                            const next = normalized ?? SUN_EMISSIVE_COLOR_DEFAULT
+                            setSunEmissiveColor(next)
+                            setSunEmissiveColorInput(next)
+                          }}
                           aria-label="Sun emissive color"
                         />
                         <input
                           className="advancedTextInput"
                           type="text"
-                          value={sunEmissiveColor}
-                          onChange={(e) => setSunEmissiveColor(e.target.value)}
+                          value={sunEmissiveColorInput}
+                          onChange={(e) => {
+                            const raw = e.target.value
+                            setSunEmissiveColorInput(raw)
+
+                            const normalized = normalizeHexColor(raw)
+                            // Invalid strings should never reach the runtime.
+                            if (normalized) {
+                              setSunEmissiveColor(normalized)
+                              setSunEmissiveColorInput(normalized)
+                            }
+                          }}
+                          onBlur={() => {
+                            // If the user leaves the field in an invalid state,
+                            // snap the UI back to the last-known-good value.
+                            if (!normalizeHexColor(sunEmissiveColorInput)) {
+                              setSunEmissiveColorInput(sunEmissiveColor)
+                            }
+                          }}
                         />
                       </div>
                       <span className="advancedSliderValue" />
