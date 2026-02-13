@@ -69,6 +69,14 @@ export function encodeRpcValue(value: unknown): unknown {
   }
 
   if (isRecord(value)) {
+    // Allow byte buffers/typed arrays to cross the worker boundary.
+    // These are structured-clone-safe and commonly used for kernel outputs.
+    if (value instanceof ArrayBuffer) return value;
+    if (ArrayBuffer.isView(value)) return value;
+    if (typeof SharedArrayBuffer !== "undefined" && value instanceof SharedArrayBuffer) {
+      return value;
+    }
+
     // Preserve Date/Map/Set/etc as-is? No: those are not guaranteed to be
     // structured-clone-safe across all targets. For now, we only support plain
     // object literals.
