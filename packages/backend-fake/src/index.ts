@@ -876,7 +876,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     return [r, r, r];
   };
 
-  return {
+  const backend = {
     kind: "fake",
 
     spiceVersion: () => FAKE_SPICE_VERSION,
@@ -1291,20 +1291,20 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return { found: true, code: id };
     },
 
-    boddef: (name, code) => {
+    boddef: (name: string, code: number) => {
       const trimmed = normalizeName(name);
       customNameToBodyCode.set(trimmed, code);
       customNameToBodyCode.set(trimmed.toLowerCase(), code);
       customBodyCodeToName.set(code, trimmed);
     },
 
-    bodfnd: (body, item) => {
+    bodfnd: (body: number, item: string) => {
       const key = `BODY${body}_${normalizeBodItem(item)}`;
       const entry = kernelPool.get(key);
       return entry?.type === "N";
     },
 
-    bodvar: (body, item) => {
+    bodvar: (body: number, item: string) => {
       const key = `BODY${body}_${normalizeBodItem(item)}`;
       const entry = kernelPool.get(key);
       if (!entry || entry.type !== "N") {
@@ -1315,20 +1315,20 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return [...entry.values];
     },
 
-    namfrm: (name) => {
+    namfrm: (name: string) => {
       const trimmed = normalizeName(name);
       const code = FRAME_NAME_TO_CODE.get(trimmed) ?? FRAME_NAME_TO_CODE.get(trimmed.toLowerCase());
       if (code === undefined) return { found: false };
       return { found: true, code };
     },
 
-    frmnam: (code) => {
+    frmnam: (code: number) => {
       const name = FRAME_CODE_TO_NAME.get(code);
       if (!name) return { found: false };
       return { found: true, name };
     },
 
-    cidfrm: (center) => {
+    cidfrm: (center: number) => {
       if (center === BODY_IDS.EARTH) {
         return { found: true, frcode: FRAME_CODES.IAU_EARTH, frname: "IAU_EARTH" };
       }
@@ -1338,7 +1338,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return { found: false };
     },
 
-    cnmfrm: (centerName) => {
+    cnmfrm: (centerName: string) => {
       const id = NAME_TO_ID.get(centerName) ?? NAME_TO_ID.get(centerName.toLowerCase());
       if (id === undefined) return { found: false };
       return (id === BODY_IDS.EARTH
@@ -1348,14 +1348,14 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
           : { found: false }) satisfies Found<{ frcode: number; frname: string }>;
     },
 
-    frinfo: (frameId) => {
+    frinfo: (frameId: number) => {
       if (frameId === FRAME_CODES.J2000) {
         return { found: true, center: 0, frameClass: 1, classId: frameId };
       }
       return { found: false };
     },
 
-    ccifrm: (frameClass, classId) => {
+    ccifrm: (frameClass: number, classId: number) => {
       if (frameClass === 1) {
         const frname = FRAME_CODE_TO_NAME.get(classId);
         if (!frname) return { found: false };
@@ -1364,63 +1364,71 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return { found: false };
     },
 
-    scs2e: (_sc, sclkch) => {
+    scs2e: (_sc: number, sclkch: string) => {
       // Minimal deterministic stub: treat the string as a number of seconds.
       const n = Number(sclkch);
       return Number.isFinite(n) ? n : 0;
     },
 
-    sce2s: (_sc, et) => {
+    sce2s: (_sc: number, et: number) => {
       // Minimal deterministic stub.
       return String(et);
     },
 
-    scencd: (_sc, sclkch) => {
+    scencd: (_sc: number, sclkch: string) => {
       // Minimal deterministic stub: treat the string as a number of ticks.
       const n = Number(sclkch);
       return Number.isFinite(n) ? n : 0;
     },
 
-    scdecd: (_sc, sclkdp) => {
+    scdecd: (_sc: number, sclkdp: number) => {
       // Minimal deterministic stub.
       return String(sclkdp);
     },
 
-    sct2e: (_sc, sclkdp) => {
+    sct2e: (_sc: number, sclkdp: number) => {
       // Minimal deterministic stub.
       return sclkdp;
     },
 
-    sce2c: (_sc, et) => {
+    sce2c: (_sc: number, et: number) => {
       // Minimal deterministic stub.
       return et;
     },
 
-    ckgp: (_inst, _sclkdp, _tol, _ref) => {
+    ckgp: (_inst: number, _sclkdp: number, _tol: number, _ref: string) => {
       return { found: false };
     },
 
-    ckgpav: (_inst, _sclkdp, _tol, _ref) => {
+    ckgpav: (_inst: number, _sclkdp: number, _tol: number, _ref: string) => {
       return { found: false };
     },
 
-    cklpf: (_ck) => {
+    cklpf: (_ck: string) => {
       throw new Error("Fake backend: cklpf() is not implemented");
     },
 
-    ckupf: (_handle) => {
+    ckupf: (_handle: number) => {
       throw new Error("Fake backend: ckupf() is not implemented");
     },
 
-    ckobj: (_ck, _ids) => {
+    ckobj: (_ck: string, _ids: SpiceIntCell) => {
       throw new Error("Fake backend: ckobj() is not implemented");
     },
 
-    ckcov: (_ck, _idcode, _needav, _level, _tol, _timsys, _cover) => {
+    ckcov: (
+      _ck: string,
+      _idcode: number,
+      _needav: boolean,
+      _level: "SEGMENT" | "INTERVAL",
+      _tol: number,
+      _timsys: "SCLK" | "TDB",
+      _cover: SpiceWindow,
+    ) => {
       throw new Error("Fake backend: ckcov() is not implemented");
     },
 
-    pxform: (from, to, et) => {
+    pxform: (from: string, to: string, et: number) => {
       const f = parseFrameName(from);
       const t = parseFrameName(to);
 
@@ -1431,13 +1439,13 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return rotZRowMajor(theta);
     },
 
-    sxform: (from, to, et) => {
+    sxform: (from: string, to: string, et: number) => {
       const f = parseFrameName(from);
       const t = parseFrameName(to);
       return sxformRowMajor(f, t, et);
     },
 
-    spkezr: (target, et, ref, abcorr, observer) => {
+    spkezr: (target: string, et: number, ref: string, abcorr: AbCorr | string, observer: string) => {
       // Keep these in the signature for API compatibility.
       void (abcorr satisfies AbCorr | string);
 
@@ -2195,5 +2203,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     georec: (lon, lat, alt, re, f) => georec(lon, lat, alt, re, f),
     recgeo: (rect, re, f) => recgeo(rect, re, f),
-  };
+  } satisfies SpiceBackend & { kind: "fake" };
+
+  return backend;
 }

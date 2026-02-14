@@ -1,0 +1,25 @@
+{
+  "$schema": "https://typedoc-plugin-markdown.org/schema.json",
+  "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+
+  "entryPoints": ["../../../packages/tspice/src/index.ts"],
+  "tsconfig": "../../../packages/tspice/tsconfig.json",
+
+  "out": "../api/reference/tspice",
+
+  "entryFileName": "index.md",
+  "router": "module",
+  "readme": "none",
+  "cleanOutputDir": true,
+
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+
+  "docsRoot": "..",
+  "sidebar": {
+    "autoConfiguration": true,
+    "format": "vitepress",
+    "pretty": true
+  }
+}
