@@ -41,6 +41,9 @@ export interface LoadConfigOptions {
   stderr?: NodeJS.WritableStream;
 }
 
+/**
+* Loads and validates the repo standards YAML config file.
+*/
 export async function loadConfig(
   opts: LoadConfigOptions
 ): Promise<{ configPath: string; config: RepoStandardsConfig }> {
