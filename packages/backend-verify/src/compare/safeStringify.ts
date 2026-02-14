@@ -1,3 +1,4 @@
+/** JSON stringify that is resilient to BigInt and cyclic/throwing values (best-effort). */
 export function safeStringify(value: unknown): string {
   if (typeof value === "bigint") return `${value.toString()}n`;
   try {

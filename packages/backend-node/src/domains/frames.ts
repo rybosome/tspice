@@ -25,6 +25,7 @@ function assertOpaqueHandle(handle: unknown, context: string): asserts handle is
   }
 }
 
+/** Create a {@link FramesApi} implementation backed by the native Node addon. */
 export function createFramesApi(native: NativeAddon): FramesApi {
   return {
     namfrm: (name) => {

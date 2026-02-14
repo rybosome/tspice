@@ -29,8 +29,8 @@
     "verify:native": "pnpm -w check:native",
     "docs:api": "node scripts/docs-api.mjs",
     "docs:build": "pnpm docs:api && pnpm --filter @rybosome/docs build",
-    "lint:jsdoc": "eslint --config eslint.jsdoc.config.mjs \"{apps,packages,benchmarks,fixtures,scripts}/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}\" --max-warnings 0",
-    "lint:jsdoc:fix": "eslint --config eslint.jsdoc.config.mjs \"{apps,packages,benchmarks,fixtures,scripts}/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}\" --fix"
+    "lint:jsdoc": "node scripts/lint-jsdoc.mjs",
+    "lint:jsdoc:fix": "node scripts/lint-jsdoc.mjs --fix"
   },
   "devDependencies": {
     "@rybosome/tspice-bench-contract": "workspace:*",
@@ -39,8 +39,9 @@
     "turbo": "^2.5.5",
     "eslint": "^9.39.1",
     "eslint-plugin-jsdoc": "^62.5.4",
-    "@typescript-eslint/parser": "^8.24.1",
     "typescript": "^5.9.3",
-    "@typescript-eslint/eslint-plugin": "^8.24.1"
+    "@eslint/js": "^9.39.1",
+    "typescript-eslint": "^8.24.1",
+    "eslint-config-prettier": "^10.1.1"
   }
 }

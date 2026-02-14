@@ -144,6 +144,7 @@ function callVoidHandle(
   });
 }
 
+/** Create an {@link EkApi} implementation backed by a WASM Emscripten module. */
 export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleRegistry): EkApi {
   const TABLE_NAME_MAX_BYTES = 256;
 

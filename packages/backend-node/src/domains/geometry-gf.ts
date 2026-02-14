@@ -29,6 +29,7 @@ function assertFiniteNumber(value: unknown, context: string): asserts value is n
   }
 }
 
+/** Create a {@link GeometryGfApi} implementation backed by the native Node addon. */
 export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
   return {
     gfsstp: (step) => {

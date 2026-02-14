@@ -63,6 +63,7 @@ function isCallableDeclaration(decl: ts.Declaration): boolean {
   return false;
 }
 
+/** Extract the public export surface (symbols + exported callables) for one or more entrypoints. */
 export function extractExportSurface(opts: {
   repoRoot: string;
   packageRoot: string;

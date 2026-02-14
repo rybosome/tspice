@@ -7,6 +7,7 @@
 /** Repo-root relative POSIX path (no leading "./"). */
 export type RepoRelativePath = string;
 
+/** Source location within the repo (repo-relative path + 1-based line/col). */
 export interface SourceLocation {
   filePath: RepoRelativePath;
   /** 1-based */
@@ -15,6 +16,7 @@ export interface SourceLocation {
   col: number;
 }
 
+/** Indexed information about a symbol exported from a package's public entrypoints. */
 export interface ExportedSymbolInfo {
   /** Name as exported from the package entrypoint(s). */
   exportName: string;
@@ -26,6 +28,7 @@ export interface ExportedSymbolInfo {
   isTypeOnly: boolean;
 }
 
+/** Indexed exported callable target (function/class/method) that should have JSDoc. */
 export interface ExportedCallableTarget {
   /** Name as exported from the package entrypoint(s). */
   exportName: string;
@@ -43,6 +46,7 @@ export interface ExportedCallableTarget {
   originalName: string;
 }
 
+/** Public API/export-surface index for a single workspace package. */
 export interface PackageIndex {
   packageRoot: RepoRelativePath;
 
@@ -59,6 +63,7 @@ export interface PackageIndex {
   exportedCallables: ExportedCallableTarget[];
 }
 
+/** Export-surface index for the whole repo (all workspace packages). */
 export interface RepoIndex {
   packages: PackageIndex[];
 }

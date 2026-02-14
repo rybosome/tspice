@@ -9,6 +9,7 @@ export type WasmFsApi = {
   loadKernel(path: string, data: Uint8Array): void;
 };
 
+/** Normalize and validate a virtual kernel path for the WASM FS (under `/kernels`). */
 export function resolveKernelPath(path: string): string {
   const raw = path.trim();
   if (!raw) {
@@ -33,6 +34,7 @@ export function resolveKernelPath(path: string): string {
   return `/kernels/${normalizeVirtualKernelPath(raw)}`;
 }
 
+/** Create a minimal WASM-FS facade for writing files and loading kernels via `furnsh`. */
 export function createWasmFs(module: EmscriptenModule): WasmFsApi {
   function writeFile(path: string, data: Uint8Array): void {
     const dir = path.split("/").slice(0, -1).join("/") || "/";
@@ -59,6 +61,9 @@ export function createWasmFs(module: EmscriptenModule): WasmFsApi {
   } satisfies WasmFsApi;
 }
 
+/**
+ * Write a {@link KernelSource} into the WASM FS (if needed) and return the path to load.
+ */
 export function writeKernelSource(module: EmscriptenModule, fs: WasmFsApi, kernel: KernelSource): string {
   if (typeof kernel === "string") {
     return kernel;

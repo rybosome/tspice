@@ -18,6 +18,7 @@ const UTF8_DECODER = new TextDecoder();
 // Re-use a shared encoder to avoid allocating one per call.
 const UTF8_ENCODER = new TextEncoder();
 
+/** Allocate and write a null-terminated UTF-8 C string into the WASM heap; returns the pointer. */
 export function writeUtf8CString(module: Utf8CStringWriteModule, value: string): number {
   const encoded = UTF8_ENCODER.encode(value);
   const ptr = mallocOrThrow(module, encoded.length + 1);
@@ -78,6 +79,7 @@ export function writeUtf8CStringArray(module: Utf8CStringArrayWriteModule, value
   }
 }
 
+/** Free memory allocated by {@link writeUtf8CStringArray} (idempotent). */
 export function freeUtf8CStringArray(module: Utf8CStringArrayFreeModule, arr: Utf8CStringArray): void {
   for (const itemPtr of arr.itemPtrs) {
     if (itemPtr) {
@@ -118,6 +120,7 @@ export function readFixedWidthCString(
   return UTF8_DECODER.decode(bytes.subarray(0, end)).trimEnd();
 }
 
+/** Read an array of fixed-width C strings from the WASM heap (see {@link readFixedWidthCString}). */
 export function readFixedWidthCStringArray(
   module: Pick<EmscriptenModule, "HEAPU8">,
   ptr: number,

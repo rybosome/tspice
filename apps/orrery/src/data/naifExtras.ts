@@ -21,6 +21,9 @@
  *   more explicit provenance per-field.
  */
 
+/**
+ * Optional metadata keyed by NAIF body ID (used for display-only enhancements).
+ */
 export interface NaifExtras {
   /** High-level classification for display (e.g. "planet", "moon", "star"). */
   classification?: string
@@ -111,6 +114,7 @@ const NAIF_EXTRAS_BY_ID: Readonly<Record<string, NaifExtras>> = {
   },
 }
 
+/** Get optional NAIF extras metadata for a body ID (or undefined if not present). */
 export function getNaifExtras(naifId: number | undefined): NaifExtras | undefined {
   if (naifId === undefined) return undefined
   return NAIF_EXTRAS_BY_ID[String(naifId)]

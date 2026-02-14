@@ -98,6 +98,7 @@ function guessTextKernelSubtype(path: string): KernelKind {
   }
 }
 
+/** Normalize a `ktotal/kdata` kind input into a canonical, non-empty kernel kind list. */
 export function normalizeKindInput(kind: KernelKindInput | undefined): readonly KernelKind[] {
   if (kind == null) {
     return ["ALL"];

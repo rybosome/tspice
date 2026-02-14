@@ -31,14 +31,17 @@ function exeExt(): string {
   return process.platform === "win32" ? ".exe" : "";
 }
 
+/** Get the expected on-disk path to the CSPICE runner binary (if built). */
 export function getCspiceRunnerBinaryPath(): string {
   return path.join(packageRoot(), "native", "build", `cspice-runner${exeExt()}`);
 }
 
+/** Get the expected on-disk path to the CSPICE runner build state JSON. */
 export function getCspiceRunnerBuildStatePath(): string {
   return path.join(packageRoot(), "native", "build", "cspice-runner.state.json");
 }
 
+/** Read the CSPICE runner build state (if present), otherwise return null. */
 export function readCspiceRunnerBuildState(): CspiceRunnerBuildState | null {
   const p = getCspiceRunnerBuildStatePath();
   try {
@@ -49,6 +52,7 @@ export function readCspiceRunnerBuildState(): CspiceRunnerBuildState | null {
   }
 }
 
+/** Return true if the CSPICE runner binary is present and marked available. */
 export function isCspiceRunnerAvailable(): boolean {
   const binaryPath = getCspiceRunnerBinaryPath();
   if (!fs.existsSync(binaryPath)) return false;
@@ -66,6 +70,7 @@ export function isCspiceRunnerAvailable(): boolean {
   return true;
 }
 
+/** Get runner readiness + a human-friendly hint when unavailable. */
 export function getCspiceRunnerStatus(): { ready: boolean; hint: string; statePath: string } {
   const statePath = getCspiceRunnerBuildStatePath();
   const ready = isCspiceRunnerAvailable();
@@ -138,6 +143,7 @@ export type InvokeRunnerOptions = {
 };
 
 /** @internal (exported for bounded-time tests) */
+/** Invoke the CSPICE runner binary for a single call and normalize its response. */
 export async function invokeRunner(
   binaryPath: string,
   input: RunCaseInput,
@@ -424,6 +430,7 @@ function asSpiceErrorState(err: CRunnerError["error"]): SpiceErrorState {
   return spice;
 }
 
+/** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
 export async function createCspiceRunner(): Promise<CaseRunner> {
   const binaryPath = getCspiceRunnerBinaryPath();
 

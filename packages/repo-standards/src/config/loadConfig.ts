@@ -35,6 +35,7 @@ function assertRuleConfig(ruleId: string, value: unknown): RuleConfig {
   return { packages };
 }
 
+/** Options for {@link loadConfig}. */
 export interface LoadConfigOptions {
   repoRoot: string;
   configPath: string;

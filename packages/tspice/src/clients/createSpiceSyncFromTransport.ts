@@ -95,6 +95,7 @@ function createNamespacedProxy(
   });
 }
 
+/** Create a sync {@link Spice} client that forwards calls over a {@link SpiceTransportSync}. */
 export function createSpiceSyncFromTransport(t: SpiceTransportSync): Spice {
   return {
     raw: createNamespacedProxy(t, "raw") as unknown as Spice["raw"],

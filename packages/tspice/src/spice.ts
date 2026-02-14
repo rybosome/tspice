@@ -17,6 +17,9 @@ export type CreateSpiceOptions = CreateBackendOptions & {
 
 export type CreateSpiceAsyncOptions = CreateSpiceOptions;
 
+/**
+ * Create a sync {@link Spice} client backed by the requested backend/transport.
+ */
 export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   const backend = options.backendInstance ?? (await createBackend(options));
 

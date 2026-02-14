@@ -10,8 +10,10 @@ export type CreatePublicKernelsOptions = {
    * This is a compatibility wrapper over `kernels.naif()`; new code should use `kernels` directly.
    */
   kernelUrlPrefix?: string;
+
   /** Base virtual path used when loading kernels into tspice (defaults to `naif/`). */
   pathBase?: string;
+
   /**
    * Optional directory-style base used at *load time* to resolve relative kernel URLs.
    *
@@ -27,6 +29,9 @@ export type PublicKernelsBuilder = {
   pack(): KernelPack;
 };
 
+/**
+ * Create a builder for selecting and packaging a minimal set of public NAIF kernels.
+ */
 export function createPublicKernels(opts?: CreatePublicKernelsOptions): PublicKernelsBuilder {
   // Legacy shim: the new recommended API is `kernels.naif/custom`.
 
@@ -47,4 +52,5 @@ export function createPublicKernels(opts?: CreatePublicKernelsOptions): PublicKe
   });
 }
 
+/** Default builder for the standard public NAIF kernels. */
 export const publicKernels: PublicKernelsBuilder = createPublicKernels();

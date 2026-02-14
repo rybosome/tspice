@@ -3,6 +3,7 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+/** Create an {@link ErrorApi} implementation backed by the native Node addon. */
 export function createErrorApi(native: NativeAddon): ErrorApi {
   return {
     failed: () => {

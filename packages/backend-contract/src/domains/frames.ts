@@ -14,15 +14,22 @@ export type CkCoverageLevel = "SEGMENT" | "INTERVAL";
 /** Time system used for coverage windows returned by {@link FramesApi.ckcov}. */
 export type CkCoverageTimeSystem = "SCLK" | "TDB";
 
+/** Backend contract for frame/name lookups, CK access, and frame transformations. */
 export interface FramesApi {
+  /** SPICE `namfrm_c`: look up a frame code by frame name. */
   namfrm(name: string): Found<{ code: number }>;
+  /** SPICE `frmnam_c`: look up a frame name by frame code. */
   frmnam(code: number): Found<{ name: string }>;
 
+  /** SPICE `cidfrm_c`: look up frame information for a center body ID. */
   cidfrm(center: number): Found<{ frcode: number; frname: string }>;
+  /** SPICE `cnmfrm_c`: look up frame information for a center body name. */
   cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
+  /** SPICE `frinfo_c`: get center + frame class info for a frame ID. */
   frinfo(frameId: number): Found<{ center: number; frameClass: number; classId: number }>;
 
+  /** SPICE `ccifrm_c`: map frame class + class ID to a frame code/name/center triple. */
   ccifrm(frameClass: number, classId: number): Found<{ frcode: number; frname: string; center: number }>;
 
   /** Get pointing (attitude) for a CK instrument at a given encoded spacecraft clock time. */

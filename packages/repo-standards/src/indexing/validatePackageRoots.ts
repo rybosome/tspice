@@ -4,6 +4,7 @@ import path from "node:path";
 import { normalizeRepoRelativePath } from "../util/paths.js";
 import type { RepoRelativePath } from "./types.js";
 
+/** Validated workspace package root (including parsed package.json). */
 export interface ValidatedPackageRoot {
   /** Repo-relative POSIX path (no leading "./"). */
   packageRoot: RepoRelativePath;
@@ -21,6 +22,7 @@ async function readJsonFile(filePath: string): Promise<unknown> {
   return JSON.parse(raw) as unknown;
 }
 
+/** Validate and normalize package root paths (ensures each exists and has a readable package.json). */
 export async function validatePackageRoots(opts: {
   repoRoot: string;
   packageRoots: string[];

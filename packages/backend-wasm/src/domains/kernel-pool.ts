@@ -529,6 +529,7 @@ function tspiceCallExpool(module: EmscriptenModule, name: string): boolean {
   }
 }
 
+/** Create a {@link KernelPoolApi} implementation backed by a WASM Emscripten module. */
 export function createKernelPoolApi(module: EmscriptenModule): KernelPoolApi {
   return {
     gdpool: (name, start, room) => tspiceCallGdpool(module, name, start, room),

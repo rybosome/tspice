@@ -36,6 +36,7 @@ type NativeEkDeps = Pick<
 
 type KernelStagerEkDeps = Pick<KernelStager, "resolvePath">;
 
+/** Create an {@link EkApi} implementation backed by the native Node addon. */
 export function createEkApi<
   N extends NativeEkDeps,
   S extends KernelStagerEkDeps | undefined,

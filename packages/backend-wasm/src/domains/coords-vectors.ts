@@ -572,6 +572,7 @@ function tspiceCallRecgeo(
   }
 }
 
+/** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(module: EmscriptenModule): CoordsVectorsApi {
   return {
     reclat: (rect) => tspiceCallReclat(module, rect),

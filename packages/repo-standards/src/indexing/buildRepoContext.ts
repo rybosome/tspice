@@ -9,11 +9,13 @@ import type { RepoIndex, RepoRelativePath } from "./types.js";
 import { validatePackageRoots } from "./validatePackageRoots.js";
 import { walkExportGraph } from "./walkExportGraph.js";
 
+/** Input options for {@link buildRepoContext}. */
 export interface BuildRepoContextInput {
   repoRoot: string;
   packageRoots: string[];
 }
 
+/** Indexed repo context (TypeScript Program + export surface index). */
 export interface RepoContext {
   repoRoot: string;
   packageRoots: RepoRelativePath[];

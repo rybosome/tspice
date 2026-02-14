@@ -4,6 +4,7 @@ import { WASM_ERR_MAX_BYTES, withMalloc } from "./alloc.js";
 import { throwWasmSpiceError } from "./errors.js";
 import { writeUtf8CString } from "./strings.js";
 
+/** Invoke a WASM-exported function that only returns an error code (no input args). */
 export function tspiceCall0(
   module: EmscriptenModule,
   fn: (errPtr: number, errMaxBytes: number) => number,
@@ -17,6 +18,7 @@ export function tspiceCall0(
   });
 }
 
+/** Invoke a WASM-exported function that takes a single path string and returns an error code. */
 export function tspiceCall1Path(
   module: EmscriptenModule,
   fn: (pathPtr: number, errPtr: number, errMaxBytes: number) => number,

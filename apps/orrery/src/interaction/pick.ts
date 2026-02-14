@@ -9,6 +9,7 @@ type PickArgs = {
   raycaster: THREE.Raycaster
 }
 
+/** Raycast the pickable scene objects and return the closest intersection (if any). */
 export function pickFirstIntersection({
   clientX,
   clientY,

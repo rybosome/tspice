@@ -14,6 +14,7 @@ export type VirtualOutputRegistry = {
   assertReadable(resolvedPath: string, virtualPath: string): void;
 };
 
+/** Create an in-memory registry tracking open/closed virtual outputs for the WASM backend. */
 export function createVirtualOutputRegistry(): VirtualOutputRegistry {
   const known = new Set<string>();
   const openRefCount = new Map<string, number>();

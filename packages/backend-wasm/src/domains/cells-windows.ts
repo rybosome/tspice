@@ -276,6 +276,7 @@ function getOrInitWasmHandleOwnership(module: EmscriptenModule): WasmHandleOwner
   return ownership;
 }
 
+/** Assert that a cell handle was allocated by (and is still owned by) this WASM backend instance. */
 export function assertWasmOwnedCellHandle(
   module: EmscriptenModule,
   handle: number,
@@ -296,6 +297,7 @@ export function assertWasmOwnedCellHandle(
   }
 }
 
+/** Assert that a window handle was allocated by (and is still owned by) this WASM backend instance. */
 export function assertWasmOwnedWindowHandle(
   module: EmscriptenModule,
   handle: number,
@@ -316,6 +318,7 @@ export function assertWasmOwnedWindowHandle(
   }
 }
 
+/** Create a {@link CellsWindowsApi} implementation backed by a WASM Emscripten module. */
 export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
   assertEmscriptenModule(module);
 

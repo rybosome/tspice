@@ -221,6 +221,7 @@ function tspiceCallGfdist(
   });
 }
 
+/** Create a {@link GeometryGfApi} implementation backed by a WASM Emscripten module. */
 export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
   return {
     gfsstp: (step) => tspiceCallGfsstp(module, step),

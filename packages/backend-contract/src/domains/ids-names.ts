@@ -6,8 +6,11 @@
  */
 import type { Found } from "../shared/types.js";
 
+/** Backend contract for NAIF ID/name and body-constant lookups. */
 export interface IdsNamesApi {
+  /** SPICE `bodn2c_c`: look up a NAIF body ID code by name. */
   bodn2c(name: string): Found<{ code: number }>;
+  /** SPICE `bodc2n_c`: look up a body name by NAIF ID code. */
   bodc2n(code: number): Found<{ name: string }>;
 
   /** Map a NAIF body ID code to a name (or decimal string if unknown). */

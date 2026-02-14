@@ -44,6 +44,7 @@ export type DskType2Bookkeeping = {
   voxnpl: number;
 };
 
+/** Backend contract for DSK (Digital Shape Kernel) segment queries. */
 export interface DskApi {
   /** Return the set of body IDs for which the specified DSK has segments. */
   dskobj(dsk: string, bodids: SpiceIntCell): void;

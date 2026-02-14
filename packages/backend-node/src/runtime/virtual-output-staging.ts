@@ -50,6 +50,7 @@ export type VirtualOutputStager = {
   dispose(): void;
 };
 
+/** Create a staging helper for VirtualOutput targets (written/read via OS temp files). */
 export function createVirtualOutputStager(): VirtualOutputStager {
   let tempRootDir: string | undefined;
   let unregisterExitCleanupFn: (() => void) | undefined;

@@ -64,6 +64,7 @@ const parseEnum = <T extends string>(searchParams: URLSearchParams, key: string,
   return (allowed as readonly string[]).includes(normalized) ? (normalized as T) : null
 }
 
+/** Parse runtime config flags from `window.location.search` (or a provided querystring). */
 export function parseSceneCanvasRuntimeConfigFromLocationSearch(locationSearch: string): SceneCanvasRuntimeConfig {
   const searchParams = new URLSearchParams(locationSearch)
 

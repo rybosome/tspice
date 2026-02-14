@@ -89,6 +89,7 @@ function tryGetImportModuleSpecifierForSymbol(checker: ts.TypeChecker, sym: ts.S
   return undefined;
 }
 
+/** Walk `export ... from` re-export edges starting from entrypoints, returning all visited source files. */
 export function walkExportGraph(opts: {
   repoRoot: string;
   program: ts.Program;

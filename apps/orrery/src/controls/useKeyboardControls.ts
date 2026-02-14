@@ -14,6 +14,9 @@ const ZOOM_FACTOR = 1.15
 /** Roll speed (radians/sec) for continuous Q/E movement */
 const ROLL_SPEED_RAD_PER_SEC = (Math.PI / 36) * 20 // ~100 deg/sec
 
+/**
+ * Options for {@link useKeyboardControls}.
+ */
 export interface KeyboardControlsOptions {
   /** CameraController ref */
   controllerRef: React.RefObject<CameraController | null>
@@ -70,6 +73,9 @@ export function isEditableElement(target: unknown): boolean {
   return false
 }
 
+/**
+ * Returns true if the key combo should toggle the help overlay ("?" / Shift+/).
+ */
 export function isHelpToggleShortcut(key: string, shiftKey: boolean): boolean {
   return key === '?' || (key === '/' && shiftKey)
 }

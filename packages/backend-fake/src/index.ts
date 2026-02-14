@@ -744,6 +744,11 @@ function assertNonEmptyString(fn: string, field: string, value: string): void {
   }
 }
 
+/**
+ * Create an in-memory fake backend implementing the {@link SpiceBackend} contract.
+ *
+ * Intended for tests and UI development without native/WASM backends.
+ */
 export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
