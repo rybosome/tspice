@@ -40,7 +40,18 @@ jobs:
         run: pnpm generate:llm
 
       - name: Ensure artifacts are up to date
-        run: git diff --exit-code
+        run: |
+          set -euo pipefail
+
+          STATUS="$(git status --porcelain)"
+          if [ -n "$STATUS" ]; then
+            echo "Uncommitted changes after generating LLM artifacts:"
+            echo "$STATUS"
+            echo
+            # Tracked-file diff (untracked files will still appear in status above).
+            git diff --patch
+            exit 1
+          fi
 
   orrery-e2e:
     name: Orrery Playwright e2e (ubuntu + node 22)

@@ -52,8 +52,13 @@ function writeJsonFile(absPath, value) {
   writeTextFile(absPath, json);
 }
 
+function compareStringsDeterministic(a, b) {
+  // Locale-independent comparator for deterministic generator output in CI.
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
 function sortUnique(values) {
-  return [...new Set(values)].sort((a, b) => a.localeCompare(b));
+  return [...new Set(values)].sort(compareStringsDeterministic);
 }
 
 function createTypeScriptSourceFile({ fileName, sourceText }) {
@@ -194,6 +199,33 @@ function extractKernelSourceTypeDefinition(sharedTypesTsSource) {
   return node.getText(sourceFile);
 }
 
+function extractWorkerLikeTypeDefinition(createWorkerTransportTsSource) {
+  const sourceFile = createTypeScriptSourceFile({
+    fileName: "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    sourceText: createWorkerTransportTsSource,
+  });
+
+  /**
+   * @type {Array<import('typescript').TypeAliasDeclaration | import('typescript').InterfaceDeclaration>}
+   */
+  const matches = [];
+  for (const stmt of sourceFile.statements) {
+    if ((ts.isTypeAliasDeclaration(stmt) || ts.isInterfaceDeclaration(stmt)) && stmt.name.text === "WorkerLike") {
+      matches.push(stmt);
+    }
+  }
+
+  invariant(matches.length === 1, `Expected exactly one WorkerLike declaration, found ${matches.length}`);
+
+  const node = matches[0];
+  invariant(
+    hasModifier(node, ts.SyntaxKind.ExportKeyword),
+    "WorkerLike must be exported from packages/tspice/src/worker/transport/createWorkerTransport.ts",
+  );
+
+  return node.getText(sourceFile);
+}
+
 function extractSpiceClientsWebWorkerOptionsTypeDefinition(spiceClientsTsSource) {
   const sourceFile = createTypeScriptSourceFile({
     fileName: "packages/tspice/src/clients/spiceClients.ts",
@@ -232,11 +264,11 @@ function readExamples(exampleDirAbs, repoRootAbs) {
 
   const entries = fs.readdirSync(exampleDirAbs, { withFileTypes: true });
   const files = entries
-    .filter((e) => e.isFile() && e.name.endsWith(".ts"))
+    .filter((e) => e.isFile() && e.name.endsWith(".example.ts"))
     .map((e) => e.name)
-    .sort((a, b) => a.localeCompare(b));
+    .sort(compareStringsDeterministic);
 
-  invariant(files.length > 0, `No .ts examples found in: ${path.relative(repoRootAbs, exampleDirAbs)}`);
+  invariant(files.length > 0, `No .example.ts examples found in: ${path.relative(repoRootAbs, exampleDirAbs)}`);
 
   return files.map((name) => {
     const absPath = path.join(exampleDirAbs, name);
@@ -284,10 +316,10 @@ Repo paths:
 - Do not assume network access; kernel bytes may come from local files, fetch, or other sources.
 `;
 }
-function buildLlmsFullTxt({ exports, kernelSourceType, spiceClientsWebWorkerOptionsType, examples }) {
+function buildLlmsFullTxt({ exports, kernelSourceType, workerLikeType, spiceClientsWebWorkerOptionsType, examples }) {
   const exportSection = `## Public API surface (generated)\n\nSource: \`packages/tspice/src/index.ts\`\n\n### Value exports\n\n${exports.valueExports.map((n) => `- \`${n}\``).join("\n")}\n\n### Type exports\n\n${exports.typeExports.map((n) => `- \`${n}\``).join("\n")}\n`;
 
-  const webWorkerSection = `## WebWorker (browser)\n\nUse \`spiceClients.toWebWorker()\` to run the WASM backend inside a WebWorker and get an async \`spice\` client.\n\nGuidance:\n\n- Use \`await spiceClients.toWebWorker(opts?)\`. It returns \`{ spice, dispose }\`.\n- You usually do **not** create \`new Worker()\` manually; when \`opts.worker\` is omitted, tspice creates an internal inline blob-module worker.\n- Do **not** invent worker entrypoints, message protocols, or APIs like \`backend.expose(...)\`. tspice owns the worker transport.\n- WebWorker clients are async: all \`spice.kit.*\` / \`spice.raw.*\` calls return Promises.\n\nSee: \`packages/tspice/test/llm-examples/webworker-client.example.ts\`\n\n### SpiceClientsWebWorkerOptions (generated)\n\nSource: \`packages/tspice/src/clients/spiceClients.ts\`\n\n\`\`\`ts\n${spiceClientsWebWorkerOptionsType}\n\`\`\`\n\n### Public kernel builder (\`publicKernels\` / \`createPublicKernels\`)\n\n\`publicKernels\` and \`createPublicKernels()\` are convenience builders that produce a \`KernelPack\` (URLs + virtual load paths).\nPass the pack to \`spiceClients.withKernels(pack)\` before calling \`.toWebWorker()\` to preload kernels in the worker.\n`;
+  const webWorkerSection = `## WebWorker (browser)\n\nUse \`spiceClients.toWebWorker()\` to run the WASM backend inside a WebWorker and get an async \`spice\` client.\n\nGuidance:\n\n- Use \`await spiceClients.toWebWorker(opts?)\`. It returns \`{ spice, dispose }\`.\n- You usually do **not** create \`new Worker()\` manually; when \`opts.worker\` is omitted, tspice creates an internal inline blob-module worker.\n- Do **not** invent worker entrypoints, message protocols, or APIs like \`backend.expose(...)\`. tspice owns the worker transport.\n- WebWorker clients are async: all \`spice.kit.*\` / \`spice.raw.*\` calls return Promises.\n\nSee: \`packages/tspice/test/llm-examples/webworker-client.example.ts\`\n\n### SpiceClientsWebWorkerOptions (generated)\n\nSources:\n\n- \`packages/tspice/src/clients/spiceClients.ts\` (\`SpiceClientsWebWorkerOptions\`)\n- \`packages/tspice/src/worker/transport/createWorkerTransport.ts\` (\`WorkerLike\`)\n\n\`\`\`ts\n${workerLikeType}\n\n${spiceClientsWebWorkerOptionsType}\n\`\`\`\n\n### Public kernel builder (\`publicKernels\` / \`createPublicKernels\`)\n\n\`publicKernels\` and \`createPublicKernels()\` are convenience builders that produce a \`KernelPack\` (URLs + virtual load paths).\nPass the pack to \`spiceClients.withKernels(pack)\` before calling \`.toWebWorker()\` to preload kernels in the worker.\n`;
 
   const kernelSourceSection = `## KernelSource (generated)\n\nSource: \`packages/backend-contract/src/shared/types.ts\`\n\n\`\`\`ts\n${kernelSourceType}\n\`\`\`\n\nNotes:\n\n- \`KernelSource\` is accepted by \`spice.kit.loadKernel()\` and lower-level backend APIs like \`raw.furnsh()\`.\n- Passing an object form (\`{ path, bytes }\`) is the most portable approach across WASM + Node backends.\n`;
 
@@ -515,9 +547,14 @@ function main() {
     repoRoot,
     "packages/tspice/src/clients/spiceClients.ts",
   );
+  const createWorkerTransportAbs = path.join(
+    repoRoot,
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+  );
 
   const exports = extractNamedExports(readTextFile(tspiceIndexAbs));
   const kernelSourceType = extractKernelSourceTypeDefinition(readTextFile(backendContractTypesAbs));
+  const workerLikeType = extractWorkerLikeTypeDefinition(readTextFile(createWorkerTransportAbs));
   const spiceClientsWebWorkerOptionsType =
     extractSpiceClientsWebWorkerOptionsTypeDefinition(readTextFile(spiceClientsAbs));
 
@@ -528,6 +565,7 @@ function main() {
   const llmsFull = buildLlmsFullTxt({
     exports,
     kernelSourceType,
+    workerLikeType,
     spiceClientsWebWorkerOptionsType,
     examples,
   });

@@ -38,6 +38,7 @@ export async function withKernelFromBytes<T>(
 
   let loaded = false;
   try {
+    // In browsers, use `fetch()` (or another source) to obtain kernel bytes.
     const bytes = await readFile(absPathToKernel);
 
     const kernel: KernelSource = {
