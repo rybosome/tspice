@@ -7,6 +7,7 @@ import { createCellsWindowsApi } from "../domains/cells-windows.js";
 import { createEphemerisApi } from "../domains/ephemeris.js";
 import { createFramesApi } from "../domains/frames.js";
 import { createGeometryApi } from "../domains/geometry.js";
+import { createGeometryGfApi } from "../domains/geometry-gf.js";
 import { createIdsNamesApi } from "../domains/ids-names.js";
 import { createKernelsApi } from "../domains/kernels.js";
 import { createKernelPoolApi } from "../domains/kernel-pool.js";
@@ -432,6 +433,7 @@ export async function createWasmBackend(
     ...createFramesApi(module),
     ...createEphemerisApi(module, spiceHandles, virtualOutputs),
     ...createGeometryApi(module),
+    ...createGeometryGfApi(module),
     ...createCoordsVectorsApi(module),
     ...createFileIoApi(module, spiceHandles, virtualOutputs),
     ...createErrorApi(module),
