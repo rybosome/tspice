@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import globals from 'globals'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
+import jsdoc from 'eslint-plugin-jsdoc'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import tseslint from 'typescript-eslint'
 
@@ -87,4 +88,32 @@ export default [
 
   // Disable any stylistic rules that might conflict with Prettier.
   eslintConfigPrettier,
+
+  // Enforce JSDoc on exported/public surface only.
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: {
+      jsdoc,
+    },
+    rules: {
+      'jsdoc/check-alignment': 'error',
+      'jsdoc/require-jsdoc': [
+        'error',
+        {
+          publicOnly: {
+            ancestorsOnly: true,
+          },
+          require: {
+            ArrowFunctionExpression: true,
+            FunctionDeclaration: true,
+            FunctionExpression: true,
+            MethodDefinition: true,
+            ClassDeclaration: true,
+            ClassExpression: true,
+          },
+          contexts: ['TSInterfaceDeclaration', 'TSMethodSignature'],
+        },
+      ],
+    },
+  },
 ]
