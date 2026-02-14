@@ -29,8 +29,8 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install dependencies (docs only)
-        run: pnpm install --frozen-lockfile --filter @rybosome/docs
+      - name: Install dependencies (docs + generator deps)
+        run: pnpm install --frozen-lockfile --filter @rybosome/docs... --filter @rybosome/tspice...
 
       - name: Generate LLM artifacts
         run: pnpm generate:llm
