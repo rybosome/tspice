@@ -28,6 +28,8 @@
     "verify": "pnpm -w verify:js",
     "verify:js": "pnpm -w check:js",
     "verify:native": "pnpm -w check:native",
+    "docs:api": "node scripts/docs-api.mjs",
+    "docs:build": "pnpm docs:api && pnpm --filter @rybosome/docs build",
     "lint:jsdoc": "eslint --config eslint.jsdoc.config.mjs \"{apps,packages,benchmarks,fixtures,scripts}/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}\" --max-warnings 0",
     "lint:jsdoc:fix": "eslint --config eslint.jsdoc.config.mjs \"{apps,packages,benchmarks,fixtures,scripts}/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}\" --fix"
   },

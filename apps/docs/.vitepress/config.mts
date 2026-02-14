@@ -1,4 +1,84 @@
-import { defineConfig } from 'vitepress'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { defineConfig, type DefaultTheme } from 'vitepress'
+
+const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+
+const docsApiStrict =
+  process.env.DOCS_API_STRICT === '1' ||
+  process.env.CI === '1' ||
+  process.env.CI === 'true' ||
+  process.env.GITHUB_ACTIONS === 'true'
+
+function readTypedocSidebar(jsonPathFromDocsRoot: string): DefaultTheme.SidebarItem[] {
+  const jsonPath = path.resolve(docsRoot, jsonPathFromDocsRoot)
+
+  if (!fs.existsSync(jsonPath)) {
+    const message =
+      `[docs] Missing TypeDoc sidebar JSON: ${jsonPathFromDocsRoot}. ` +
+      `Did you run \`pnpm docs:api\`?`
+
+    if (docsApiStrict) throw new Error(message)
+    console.warn(message)
+    return []
+  }
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(jsonPath, 'utf8'))
+    if (!Array.isArray(parsed)) {
+      const message = `[docs] Invalid TypeDoc sidebar JSON (expected array): ${jsonPathFromDocsRoot}`
+
+      if (docsApiStrict) throw new Error(message)
+      console.warn(message)
+      return []
+    }
+    return parsed as DefaultTheme.SidebarItem[]
+  } catch (err) {
+    const message =
+      `[docs] Failed to parse TypeDoc sidebar JSON: ${jsonPathFromDocsRoot}. ` +
+      `(${err instanceof Error ? err.message : String(err)})`
+
+    if (docsApiStrict) throw new Error(message)
+    console.warn(message)
+    return []
+  }
+}
+
+const tspiceReferenceSidebar = readTypedocSidebar('api/reference/tspice/typedoc-sidebar.json')
+const backendContractReferenceSidebar = readTypedocSidebar(
+  'api/reference/backend-contract/typedoc-sidebar.json'
+)
+
+const apiSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'API',
+    items: [
+      { text: 'Overview', link: '/api/' },
+      { text: '@rybosome/tspice', link: '/api/reference/tspice/' },
+      { text: '@rybosome/tspice-backend-contract', link: '/api/reference/backend-contract/' }
+    ]
+  },
+  ...(tspiceReferenceSidebar.length
+    ? [
+        {
+          text: '@rybosome/tspice',
+          collapsed: true,
+          items: tspiceReferenceSidebar
+        }
+      ]
+    : []),
+  ...(backendContractReferenceSidebar.length
+    ? [
+        {
+          text: '@rybosome/tspice-backend-contract',
+          collapsed: true,
+          items: backendContractReferenceSidebar
+        }
+      ]
+    : [])
+]
 
 function normalizeBase(input: string): string {
   let base = input.trim()
@@ -114,12 +194,7 @@ export default defineConfig({
         }
       ],
 
-      '/api/': [
-        {
-          text: 'API',
-          items: [{ text: 'Overview', link: '/api/' }]
-        }
-      ]
+      '/api/': apiSidebar
     },
 
     socialLinks: [{ icon: 'github', link: 'https://github.com/rybosome/tspice' }]

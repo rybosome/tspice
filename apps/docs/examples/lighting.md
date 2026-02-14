@@ -20,12 +20,20 @@ It works the same way in **browser (WASM)** and **Node (native addon)**. The onl
 ### Browser (WASM + worker)
 
 ```ts
-import { publicKernels, spiceClients } from '@rybosome/tspice'
+import { kernels, spiceClients } from '@rybosome/tspice'
 
-const pack = publicKernels.naif0012_tls().pck00011_tpc().de432s_bsp().pack()
+const pack = kernels
+  .naif({
+    kernelUrlPrefix: 'kernels/naif/',
+    baseUrl: import.meta.env.BASE_URL,
+  })
+  .naif0012_tls()
+  .pck00011_tpc()
+  .de432s_bsp()
+  .pack()
 
 const { spice, dispose } = await spiceClients
-  .withKernels(pack, { baseUrl: import.meta.env.BASE_URL })
+  .withKernels(pack)
   .toWebWorker()
 ```
 
