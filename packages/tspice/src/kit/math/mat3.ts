@@ -37,7 +37,7 @@ function colMajorToRowMajor(m: Readonly<Mat3ColMajor>): Mat3RowMajor {
  * Implementation notes:
  * - We store a single canonical (row-major) layout.
  * - The column-major layout is derived lazily and cached.
-* - Returned layout arrays are frozen in dev builds to help catch invariant-breaking mutation.
+ * - Returned layout arrays are frozen in dev builds to help catch invariant-breaking mutation.
  */
 export class Mat3 {
   readonly #rowMajor: Readonly<Mat3RowMajor>;

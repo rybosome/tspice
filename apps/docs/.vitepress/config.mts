@@ -77,21 +77,40 @@ export default defineConfig({
       '/concepts/': [
         {
           text: 'Concepts',
-          items: [{ text: 'Overview', link: '/concepts/' }]
+          items: [
+            { text: 'Overview', link: '/concepts/' },
+            { text: 'tspice mental model', link: '/concepts/tspice-mental-model' },
+            { text: 'Time systems', link: '/concepts/time-systems' },
+            { text: 'Frames', link: '/concepts/frames' },
+            { text: 'Aberration corrections', link: '/concepts/aberration-corrections' },
+            { text: 'Kernel taxonomy', link: '/concepts/kernel-taxonomy' }
+          ]
         }
       ],
 
       '/architecture/': [
         {
           text: 'Architecture',
-          items: [{ text: 'Overview', link: '/architecture/' }]
+          items: [
+            { text: 'Overview', link: '/architecture/' },
+            { text: 'Facade + contract seam', link: '/architecture/facade-contract/' },
+            { text: 'Shared C shim', link: '/architecture/backend-shim-c/' },
+            { text: 'Kernel staging + virtual paths', link: '/architecture/kernel-staging/' },
+            { text: 'Backend: Node (native addon)', link: '/architecture/backend-node/' },
+            { text: 'Backend: WASM', link: '/architecture/backend-wasm/' }
+          ]
         }
       ],
 
       '/examples/': [
         {
           text: 'Examples',
-          items: [{ text: 'Overview', link: '/examples/' }]
+          items: [
+            { text: 'Overview', link: '/examples/' },
+            { text: 'Browser ephemeris', link: '/examples/browser-ephemeris' },
+            { text: 'Lighting', link: '/examples/lighting' },
+            { text: 'Geometry', link: '/examples/geometry' }
+          ]
         }
       ],
 

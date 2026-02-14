@@ -5,11 +5,11 @@ import { fileURLToPath } from "node:url";
 const ADDON_FILE = "tspice_backend_node.node";
 
 /**
-* Returns true if the native addon exists on disk.
-*
-* Note: we intentionally don't attempt to `require()` the addon here, since
-* that would surface opaque dlopen errors and make skipping logic flaky.
-*/
+ * Returns true if the native addon exists on disk.
+ *
+ * Note: we intentionally don't attempt to `require()` the addon here, since
+ * that would surface opaque dlopen errors and make skipping logic flaky.
+ */
 export function nodeAddonAvailable(): boolean {
   const testDir = path.dirname(fileURLToPath(import.meta.url));
   const packageRoot = path.resolve(testDir, "..", "..");

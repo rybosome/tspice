@@ -206,5 +206,21 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export occult(targ1, shape1, frame1, targ2, shape2, frame2, abcorr, observer, et)",
   );
 
+  // --- GF (Geometry Finder) ---
+  invariant(typeof native.gfsstp === "function", "Expected native addon to export gfsstp(step)");
+  invariant(typeof native.gfstep === "function", "Expected native addon to export gfstep(time)");
+  invariant(typeof native.gfstol === "function", "Expected native addon to export gfstol(value)");
+  invariant(typeof native.gfrefn === "function", "Expected native addon to export gfrefn(t1, t2, s1, s2)");
+  invariant(typeof native.gfrepi === "function", "Expected native addon to export gfrepi(window, begmss, endmss)");
+  invariant(typeof native.gfrepf === "function", "Expected native addon to export gfrepf()");
+  invariant(
+    typeof native.gfsep === "function",
+    "Expected native addon to export gfsep(targ1, shape1, frame1, targ2, shape2, frame2, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result)",
+  );
+  invariant(
+    typeof native.gfdist === "function",
+    "Expected native addon to export gfdist(target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result)",
+  );
+
   return native;
 }

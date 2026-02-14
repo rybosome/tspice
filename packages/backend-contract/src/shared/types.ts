@@ -8,17 +8,17 @@ export type KernelSource =
 /**
  * Virtual output reference used by writer APIs.
  *
-* Lifecycle:
-* - A `VirtualOutput` is only guaranteed to be readable via `readVirtualOutput()`
-*   **after** the writer handle has been closed (e.g. `spkcls(handle)` for SPKs).
-* - Backends may reject reads for outputs they did not create via a writer API.
-*   `readVirtualOutput()` is not intended to be a generic filesystem read.
-*
-* Backend notes:
-* - WASM: `path` is treated as a *virtual* identifier under the backend's
-*   virtual filesystem (currently rooted at `/kernels`).
-* - Node: implementations may stage virtual outputs to a temp file and allow
-*   reading bytes back via `readVirtualOutput()`.
+ * Lifecycle:
+ * - A `VirtualOutput` is only guaranteed to be readable via `readVirtualOutput()`
+ *   **after** the writer handle has been closed (e.g. `spkcls(handle)` for SPKs).
+ * - Backends may reject reads for outputs they did not create via a writer API.
+ *   `readVirtualOutput()` is not intended to be a generic filesystem read.
+ *
+ * Backend notes:
+ * - WASM: `path` is treated as a *virtual* identifier under the backend's
+ *   virtual filesystem (currently rooted at `/kernels`).
+ * - Node: implementations may stage virtual outputs to a temp file and allow
+ *   reading bytes back via `readVirtualOutput()`.
  */
 export type VirtualOutput = {
   kind: "virtual-output";
@@ -41,14 +41,14 @@ export type KernelKind =
   | "META";
 
 /**
-* Optional-return convention for lookups where "not found" is a normal outcome.
-*
-* Conventions:
-* - Return `{ found: false }` when the underlying value simply doesn't exist
-*   (e.g. name-to-code lookups for names that aren't present in loaded kernels).
-* - Throw for invalid arguments, SPICE errors, and other exceptional failures.
-* - When `found: true`, extra fields are present on the returned object.
-*/
+ * Optional-return convention for lookups where "not found" is a normal outcome.
+ *
+ * Conventions:
+ * - Return `{ found: false }` when the underlying value simply doesn't exist
+ *   (e.g. name-to-code lookups for names that aren't present in loaded kernels).
+ * - Throw for invalid arguments, SPICE errors, and other exceptional failures.
+ * - When `found: true`, extra fields are present on the returned object.
+ */
 export type Found<T> =
   | {
       found: false;
@@ -94,10 +94,10 @@ export type AbCorr =
 export type SpiceVector3 = [number, number, number];
 
 /**
-* A plane encoded as `[normalX, normalY, normalZ, constant]`.
-*
-* This matches CSPICE's `SpicePlane` ABI layout (`normal[3]` + `constant`).
-*/
+ * A plane encoded as `[normalX, normalY, normalZ, constant]`.
+ *
+ * This matches CSPICE's `SpicePlane` ABI layout (`normal[3]` + `constant`).
+ */
 export type SpicePlane = [number, number, number, number];
 
 
@@ -226,10 +226,10 @@ export type SpiceMatrix6x6 = [
 ];
 
 /**
-* 6x6 matrix encoded as a length-36 array in **row-major** order.
-*
-* Row-major layout: `[m00,m01,...,m05, m10,m11,...,m15, ..., m50,...,m55]`.
-*/
+ * 6x6 matrix encoded as a length-36 array in **row-major** order.
+ *
+ * Row-major layout: `[m00,m01,...,m05, m10,m11,...,m15, ..., m50,...,m55]`.
+ */
 // Type-only brand (no runtime Symbol export).
 declare const __mat6RowMajorBrand: unique symbol;
 export type Mat6RowMajor = Readonly<SpiceMatrix6x6> & { readonly [__mat6RowMajorBrand]: true };

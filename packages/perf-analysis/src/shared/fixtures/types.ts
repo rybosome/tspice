@@ -1,8 +1,8 @@
 /**
-* Root directories searched for fixtures.
-*
-* These will likely default to existing tspice test fixtures during early development.
-*/
+ * Root directories searched for fixtures.
+ *
+ * These will likely default to existing tspice test fixtures during early development.
+ */
 export type FixtureRoots = readonly string[];
 
 export type FixtureRef =

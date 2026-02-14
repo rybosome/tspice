@@ -1,11 +1,11 @@
 /**
-* Low-level SPICE "cells" and DP windows.
-*
-* Contract notes:
-* - Cells/windows are **opaque handles** created by the backend and mutated in-place.
-* - Capacity is fixed at creation time; overflow should throw (CSPICE-like).
-* - Inspection is done via the raw operations here (no `.data` exposure).
-*/
+ * Low-level SPICE "cells" and DP windows.
+ *
+ * Contract notes:
+ * - Cells/windows are **opaque handles** created by the backend and mutated in-place.
+ * - Capacity is fixed at creation time; overflow should throw (CSPICE-like).
+ * - Inspection is done via the raw operations here (no `.data` exposure).
+ */
 
 // Type-only brands (no runtime Symbol export).
 declare const __spiceIntCellBrand: unique symbol;

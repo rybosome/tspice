@@ -1,9 +1,9 @@
 /**
-* Contract conventions:
-* - Inputs are assumed validated at the backend boundary; the contract itself is primarily type-level.
-* - Methods throw on invalid arguments or SPICE errors.
-* - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
-*/
+ * Contract conventions:
+ * - Inputs are assumed validated at the backend boundary; the contract itself is primarily type-level.
+ * - Methods throw on invalid arguments or SPICE errors.
+ * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
+ */
 import type { Found, Mat3RowMajor, SpiceMatrix6x6, SpiceVector3 } from "../shared/types.js";
 
 import type { SpiceIntCell, SpiceWindow } from "./cells-windows.js";

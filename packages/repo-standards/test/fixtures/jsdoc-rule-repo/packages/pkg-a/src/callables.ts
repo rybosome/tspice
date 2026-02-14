@@ -4,8 +4,8 @@ export function withDoc() {}
 export function missingDoc() {}
 
 /**
-*
-*/
+ *
+ */
 export function emptyDoc() {}
 
 /** blankLineOk has doc */

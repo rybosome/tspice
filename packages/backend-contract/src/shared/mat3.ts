@@ -87,11 +87,11 @@ function isLength9ArrayLike(x: unknown): x is ArrayLike<unknown> {
 }
 
 /**
-* Runtime validation that an input is a length-9 array-like of finite numbers.
-*
-* This is intentionally layout-agnostic; it is used by both row-major and
-* column-major branded types.
-*/
+ * Runtime validation that an input is a length-9 array-like of finite numbers.
+ *
+ * This is intentionally layout-agnostic; it is used by both row-major and
+ * column-major branded types.
+ */
 export function assertMat3ArrayLike9(value: unknown, options?: { readonly label?: string }): asserts value is ArrayLike<number> {
   const label = options?.label ?? "Mat3";
 
@@ -112,10 +112,10 @@ export function assertMat3ArrayLike9(value: unknown, options?: { readonly label?
 }
 
 /**
-* Structural check: accepts number[] and numeric TypedArrays (excludes DataView).
-*
-* This does **not** assert/require that the value is branded as a row/col-major Mat3.
-*/
+ * Structural check: accepts number[] and numeric TypedArrays (excludes DataView).
+ *
+ * This does **not** assert/require that the value is branded as a row/col-major Mat3.
+ */
 export function isMat3ArrayLike9(value: unknown): value is ArrayLike<number> {
   if (value instanceof DataView) return false;
   if (!isLength9ArrayLike(value)) return false;
@@ -149,11 +149,11 @@ function maybeFreeze<T extends object>(value: T, mode: FreezeMode): T {
 }
 
 /**
-* Validate + brand a value as a row-major Mat3.
-*
-* Used at backend boundaries (node/wasm/fake) to avoid ad-hoc `as Mat3RowMajor`
-* casts.
-*/
+ * Validate + brand a value as a row-major Mat3.
+ *
+ * Used at backend boundaries (node/wasm/fake) to avoid ad-hoc `as Mat3RowMajor`
+ * casts.
+ */
 export function brandMat3RowMajor(value: unknown, options?: BrandMat3Options): Mat3RowMajor {
   const label = options?.label ?? "Mat3RowMajor";
   const freeze = options?.freeze ?? DEFAULT_FREEZE_MODE;
@@ -167,8 +167,8 @@ export function brandMat3RowMajor(value: unknown, options?: BrandMat3Options): M
 }
 
 /**
-* Validate + brand a value as a column-major Mat3.
-*/
+ * Validate + brand a value as a column-major Mat3.
+ */
 export function brandMat3ColMajor(value: unknown, options?: BrandMat3Options): Mat3ColMajor {
   const label = options?.label ?? "Mat3ColMajor";
   const freeze = options?.freeze ?? DEFAULT_FREEZE_MODE;
@@ -182,16 +182,16 @@ export function brandMat3ColMajor(value: unknown, options?: BrandMat3Options): M
 }
 
 /**
-* Brand-only check: verifies that a value was produced by `brandMat3RowMajor()`.
-*/
+ * Brand-only check: verifies that a value was produced by `brandMat3RowMajor()`.
+ */
 export function isBrandedMat3RowMajor(value: unknown): value is Mat3RowMajor {
   if (!isLength9ArrayLike(value)) return false;
   return Boolean((value as unknown as Record<symbol, unknown>)[MAT3_ROW_MAJOR_BRAND]);
 }
 
 /**
-* Brand-only check: verifies that a value was produced by `brandMat3ColMajor()`.
-*/
+ * Brand-only check: verifies that a value was produced by `brandMat3ColMajor()`.
+ */
 export function isBrandedMat3ColMajor(value: unknown): value is Mat3ColMajor {
   if (!isLength9ArrayLike(value)) return false;
   return Boolean((value as unknown as Record<symbol, unknown>)[MAT3_COL_MAJOR_BRAND]);

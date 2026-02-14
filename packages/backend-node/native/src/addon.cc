@@ -8,6 +8,7 @@
 #include "domains/file_io.h"
 #include "domains/frames.h"
 #include "domains/geometry.h"
+#include "domains/geometry_gf.h"
 #include "domains/ids_names.h"
 #include "domains/dsk.h"
 #include "domains/kernels.h"
@@ -36,6 +37,7 @@ static Napi::Object Init(Napi::Env env, Napi::Object exports) {
   if (!registerDomain(tspice_backend_node::RegisterFrames)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterEphemeris)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterGeometry)) return exports;
+  if (!registerDomain(tspice_backend_node::RegisterGeometryGf)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterCoordsVectors)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterFileIo)) return exports;
   if (!registerDomain(tspice_backend_node::RegisterError)) return exports;

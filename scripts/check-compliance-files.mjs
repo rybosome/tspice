@@ -66,12 +66,12 @@ try {
 }
 
 /**
-* These files are linked from compliance-oriented documentation. If any move,
-* we should fail CI so the "see notices" chain doesn't silently break.
-*
-* All entries must be repo-relative and must resolve inside the repo root after
-* following symlinks.
-*/
+ * These files are linked from compliance-oriented documentation. If any move,
+ * we should fail CI so the "see notices" chain doesn't silently break.
+ *
+ * All entries must be repo-relative and must resolve inside the repo root after
+ * following symlinks.
+ */
 const complianceDocs = [
   path.join("docs", "cspice-policy.md"),
   path.join("docs", "cspice-naif-disclosure.md"),

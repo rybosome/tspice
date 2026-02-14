@@ -10,9 +10,9 @@ export type QueueMacrotaskOptions = {
 };
 
 /**
-* Probe whether a true macrotask scheduler is available in the current runtime
-* (without actually scheduling a task).
-*/
+ * Probe whether a true macrotask scheduler is available in the current runtime
+ * (without actually scheduling a task).
+ */
 export function canQueueMacrotask(): boolean {
   // Prefer MessageChannel when available.
   //

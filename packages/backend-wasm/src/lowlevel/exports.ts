@@ -751,6 +751,48 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  // --- GF (Geometry Finder) ---
+
+  _tspice_gfsstp(step: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_gfstep(time: number, outStepPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_gfstol(value: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_gfrefn(t1: number, t2: number, s1: number, s2: number, outTPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_gfrepi(window: number, begmssPtr: number, endmssPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_gfrepf(errPtr: number, errMaxBytes: number): number;
+  _tspice_gfsep(
+    targ1Ptr: number,
+    shape1Ptr: number,
+    frame1Ptr: number,
+    targ2Ptr: number,
+    shape2Ptr: number,
+    frame2Ptr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    relatePtr: number,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_gfdist(
+    targetPtr: number,
+    abcorrPtr: number,
+    obsrvrPtr: number,
+    relatePtr: number,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // Coordinate conversions + small vector/matrix helpers
   _tspice_reclat(
     rect3Ptr: number,
@@ -1678,6 +1720,14 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_sincpt",
   "_tspice_ilumin",
   "_tspice_occult",
+  "_tspice_gfsstp",
+  "_tspice_gfstep",
+  "_tspice_gfstol",
+  "_tspice_gfrefn",
+  "_tspice_gfrepi",
+  "_tspice_gfrepf",
+  "_tspice_gfsep",
+  "_tspice_gfdist",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",
