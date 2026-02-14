@@ -38,7 +38,10 @@ export async function createWebWorkerClientWithPublicKernels() {
     .de432s_bsp()
     .pack();
 
-  const { spice, dispose } = await spiceClients.withKernels(pack).toWebWorker();
+  const { spice, dispose } = await spiceClients
+    .caching({ maxEntries: 10_000, ttlMs: null })
+    .withKernels(pack, { baseUrl: import.meta.env.BASE_URL })
+    .toWebWorker();
 
   try {
     // After loading an LSK, many time conversion APIs become usable.
