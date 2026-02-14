@@ -27,17 +27,29 @@ The published `@rybosome/tspice` package is **ESM-only** (`type: "module"`). It 
 If you're in a CommonJS project, use a dynamic import:
 
 ```js
-const { spiceClients, publicKernels } = await import("@rybosome/tspice");
+const { kernels, spiceClients } = await import("@rybosome/tspice");
 ```
 
 ## Usage (Quickstart)
 
 ### Browser / WASM (async)
 
-```ts
-import { publicKernels, spiceClients } from "@rybosome/tspice";
+> Note: NAIF-hosted kernel URLs are blocked by browser CORS.
+> For browsers, self-host a mirror (or proxy) and use a relative `kernelUrlPrefix` (builds relative `kernel.url` entries) + a `baseUrl` (roots them at load time).
 
-const kernelPack = publicKernels
+```ts
+import { kernels, spiceClients } from "@rybosome/tspice";
+
+// Mirror the NAIF files into your app's public assets, preserving subdirectories:
+// - public/kernels/naif/lsk/naif0012.tls
+// - public/kernels/naif/pck/pck00011.tpc
+// - public/kernels/naif/spk/planets/de432s.bsp
+const kernelPack = kernels
+  .naif({
+    kernelUrlPrefix: "kernels/naif/",
+    // Important for apps deployed under a subpath (GitHub Pages, etc).
+    baseUrl: import.meta.env.BASE_URL,
+  })
   .naif0012_tls()
   .pck00011_tpc()
   .de432s_bsp()
@@ -74,28 +86,43 @@ try {
 
 ## Kernel loading
 
+> Note: `KernelPack` now carries an optional `baseUrl`; `spiceClients.withKernels(pack)` no longer accepts
+> `{ baseUrl }`.
+
 ### Public kernel packs
 
-`publicKernels` is a small builder for common NAIF kernels. Call `.pack()` to get a `KernelPack`.
+Use `kernels.naif(opts?)` for a typed NAIF `generic_kernels` catalog. Call `.pack()` to get a `KernelPack`.
+
+`kernelUrlPrefix` is a build-time prefix used to construct each `kernel.url`; `baseUrl` becomes `pack.baseUrl` and is used at load time to resolve relative kernel URLs.
+
+> Note: root-relative `kernelUrlPrefix` values (starting with `/`) intentionally bypass `pack.baseUrl` by default.
+> For subpath hosting (`/myapp/`), prefer a relative `kernelUrlPrefix` (no leading `/`) so `pack.baseUrl` can be applied.
 
 ```ts
-import { publicKernels } from "@rybosome/tspice";
+import { kernels } from "@rybosome/tspice";
 
-const pack = publicKernels.naif0012_tls().pck00011_tpc().pack();
+const pack = kernels.naif().naif0012_tls().pck00011_tpc().pack();
 ```
+
+`publicKernels` / `createPublicKernels` are still exported for compatibility, but new code should prefer
+`kernels.naif()` / `kernels.custom()`.
 
 ### Custom kernels
 
-Use `.withKernel({ url, path? })` to load an arbitrary kernel from a URL.
+Use `kernels.custom(opts?)` to build a `KernelPack` for arbitrary kernels.
 
-- If `path` is omitted, it defaults to `/kernels/<basename(url)>` (query/hash stripped).
-- Each `.withKernel(...)` call appends its own 1-kernel batch.
+If `path` is omitted, it defaults to a stable hashed path like `/kernels/<hash>-<basename(url)>` (basename query/hash stripped).
 
 ```ts
-import { spiceClients } from "@rybosome/tspice";
+import { kernels, spiceClients } from "@rybosome/tspice";
+
+const pack = kernels
+  .custom({ baseUrl: import.meta.env.BASE_URL })
+  .add({ url: "kernels/custom/my-kernel.bsp" }) // path auto-defaults
+  .pack();
 
 const { spice } = await spiceClients
-  .withKernel({ url: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls" })
+  .withKernels(pack)
   .toAsync({ backend: "wasm" });
 ```
 

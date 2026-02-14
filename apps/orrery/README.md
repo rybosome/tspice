@@ -15,9 +15,9 @@ From repo root:
 
 This viewer ships a small set of **NAIF Generic Kernels** as static assets under `public/kernels/naif/`:
 
-- `naif0012.tls` (LSK)
-- `pck00011.tpc` (PCK)
-- `de432s.bsp` (SPK)
+- `lsk/naif0012.tls` (LSK)
+- `pck/pck00011.tpc` (PCK)
+- `spk/planets/de432s.bsp` (SPK)
 
 These kernel files are redistributed **unmodified**, consistent with NAIF's rules:
 https://naif.jpl.nasa.gov/naif/rules.html
