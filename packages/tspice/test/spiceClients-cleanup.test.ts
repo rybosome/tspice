@@ -31,7 +31,7 @@ describe("spiceClients cleanup", () => {
     try {
       await expect(
         spiceClients
-          .withKernel(
+          .withKernels(
             kernels.custom().add({ url: "https://example.com/missing-kernel.tls" }).pack(),
           )
           .toWebWorker({ worker: () => worker }),

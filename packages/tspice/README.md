@@ -86,8 +86,7 @@ try {
 
 ## Kernel loading
 
-> Note: `KernelPack` now carries an optional `baseUrl`; `spiceClients.withKernels(pack)` no longer accepts
-> `{ baseUrl }`.
+> Note: `KernelPack` now carries an optional `baseUrl`; set `pack.baseUrl` (instead of passing a `{ baseUrl }` options object to `spiceClients.withKernels(...)`).
 
 ### Public kernel packs
 
@@ -129,7 +128,6 @@ Kernel load order matches call order:
 
 - `withKernels(pack)` appends 1 batch
 - `withKernels(packs)` appends multiple batches
-- `withKernel(pack)` appends 1 batch (alias for `withKernels(pack)`)
 
 ## Backend notes
 
