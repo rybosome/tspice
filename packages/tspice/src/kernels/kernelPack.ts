@@ -219,6 +219,13 @@ export async function loadKernelPack(
   pack: KernelPack,
   opts?: LoadKernelPackOptions,
 ): Promise<void> {
+  // Migration guard: `baseUrl` moved from load options to `pack.baseUrl`.
+  if (opts && Object.prototype.hasOwnProperty.call(opts as unknown as object, "baseUrl")) {
+    throw new Error(
+      "loadKernelPack(): opts.baseUrl has been removed; set pack.baseUrl instead (and pass the pack to spiceClients.withKernels(pack))",
+    );
+  }
+
   const fetchFn =
     opts?.fetch ?? ((globalThis as unknown as { fetch?: FetchLike }).fetch ?? undefined);
 
