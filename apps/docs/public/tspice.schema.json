@@ -72,7 +72,7 @@
       },
       {
         "name": "createPublicKernels",
-        "description": "Create a builder for assembling a small set of commonly-used public NAIF kernels (URLs + load paths)."
+        "description": "Legacy compatibility wrapper over kernels.naif() for building a small set of commonly-used NAIF kernels (URLs + load paths)."
       },
       {
         "name": "createSpice",
@@ -95,8 +95,16 @@
         "description": "Type guard that checks whether a value is a length-9 array-like suitable for a 3×3 matrix."
       },
       {
+        "name": "kernels",
+        "description": "Kernel pack builders for NAIF and custom kernels (produces KernelPack objects for withKernels())."
+      },
+      {
         "name": "publicKernels",
-        "description": "Preconfigured PublicKernelsBuilder with default options."
+        "description": "Legacy preconfigured PublicKernelsBuilder; prefer kernels.naif()."
+      },
+      {
+        "name": "resolveKernelUrl",
+        "description": "Resolve a kernel URL against KernelPack.baseUrl with root-relative URL behavior (matches loadKernelPack semantics)."
       },
       {
         "name": "spiceClients",
@@ -118,7 +126,7 @@
       },
       {
         "name": "CreatePublicKernelsOptions",
-        "description": "Options accepted by createPublicKernels() (urlBase + pathBase)."
+        "description": "Options accepted by createPublicKernels() (kernelUrlPrefix + pathBase + baseUrl)."
       },
       {
         "name": "CreateSpiceAsyncOptions",
@@ -127,6 +135,10 @@
       {
         "name": "CreateSpiceOptions",
         "description": "Options accepted by createSpice(): backend selection + optional backendInstance override."
+      },
+      {
+        "name": "CustomKernelsBuilder",
+        "description": "Builder returned by kernels.custom() for building an ad-hoc KernelPack from arbitrary kernel URLs."
       },
       {
         "name": "FrameName",
@@ -138,7 +150,7 @@
       },
       {
         "name": "KernelPack",
-        "description": "A small ordered set of kernels (URLs + load paths) intended to be fetched and loaded as a group."
+        "description": "A small ordered set of kernels (URLs + load paths), plus an optional baseUrl for rooting relative kernel URLs at load time."
       },
       {
         "name": "KernelPackKernel",
@@ -149,8 +161,16 @@
         "description": "Kernel identifier accepted by kit.loadKernel(): either a string path or an object with { path, bytes }."
       },
       {
+        "name": "KernelsCustomOptions",
+        "description": "Options for kernels.custom() (baseUrl for rooting relative kernel URLs at load time)."
+      },
+      {
+        "name": "KernelsNaifOptions",
+        "description": "Options for kernels.naif() (kernelUrlPrefix + optional baseUrl + virtual pathBase)."
+      },
+      {
         "name": "LoadKernelPackOptions",
-        "description": "Options for kernelPack.loadKernelPack() (baseUrl behavior, fetch override, and fetch strategy)."
+        "description": "Options for kernelPack.loadKernelPack() (root-relative URL behavior, fetch override, and fetch strategy)."
       },
       {
         "name": "Mat3ColMajor",
@@ -159,6 +179,18 @@
       {
         "name": "Mat3RowMajor",
         "description": "Branded type for a 3×3 matrix encoded in row-major order."
+      },
+      {
+        "name": "NaifKernelId",
+        "description": "Union of supported NAIF kernel ids in kernels.naif()."
+      },
+      {
+        "name": "NaifKernelLeafPath",
+        "description": "Union of supported NAIF leaf paths (e.g. 'lsk/naif0012.tls') accepted by kernels.naif().file()."
+      },
+      {
+        "name": "NaifKernelsBuilder",
+        "description": "Builder returned by kernels.naif() for selecting NAIF kernels and producing a KernelPack."
       },
       {
         "name": "PublicKernelId",
@@ -237,7 +269,7 @@
     },
     {
       "repoPath": "packages/tspice/test/llm-examples/webworker-client.example.ts",
-      "description": "WebWorker client creation via spiceClients.toWebWorker() + publicKernels KernelPack builder."
+      "description": "WebWorker client creation via spiceClients.toWebWorker() + kernels.naif() KernelPack builder."
     }
   ],
   "policiesAndDisclosures": [
