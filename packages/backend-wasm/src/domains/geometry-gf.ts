@@ -10,6 +10,8 @@ import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 
+import { assertWasmOwnedWindowHandle } from "./cells-windows.js";
+
 function assertFiniteNumber(value: unknown, context: string): asserts value is number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new RangeError(`${context}: expected a finite number (got ${value})`);
@@ -225,7 +227,11 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
     gfstep: (time) => tspiceCallGfstep(module, time),
     gfstol: (value) => tspiceCallGfstol(module, value),
     gfrefn: (t1, t2, s1, s2) => tspiceCallGfrefn(module, t1, t2, s1, s2),
-    gfrepi: (window, begmss, endmss) => tspiceCallGfrepi(module, window, begmss, endmss),
+
+    gfrepi: (window, begmss, endmss) => {
+      assertWasmOwnedWindowHandle(module, window as unknown as number, "gfrepi(window)");
+      tspiceCallGfrepi(module, window, begmss, endmss);
+    },
     gfrepf: () => tspiceCallGfrepf(module),
 
     gfsep: (
@@ -249,6 +255,8 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       assertFiniteNumber(refval, "gfsep(refval)");
       assertFiniteNumber(adjust, "gfsep(adjust)");
       assertFiniteNumber(step, "gfsep(step)");
+      assertWasmOwnedWindowHandle(module, cnfine as unknown as number, "gfsep(cnfine)");
+      assertWasmOwnedWindowHandle(module, result as unknown as number, "gfsep(result)");
       tspiceCallGfsep(
         module,
         targ1,
@@ -274,6 +282,8 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       assertFiniteNumber(refval, "gfdist(refval)");
       assertFiniteNumber(adjust, "gfdist(adjust)");
       assertFiniteNumber(step, "gfdist(step)");
+      assertWasmOwnedWindowHandle(module, cnfine as unknown as number, "gfdist(cnfine)");
+      assertWasmOwnedWindowHandle(module, result as unknown as number, "gfdist(result)");
       tspiceCallGfdist(
         module,
         target,
