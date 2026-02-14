@@ -21,6 +21,7 @@ function assertFiniteNumberArrayFixed(value: unknown, expectedLength: number, la
   }
 }
 
+/** Create a {@link GeometryApi} implementation backed by the native Node addon. */
 export function createGeometryApi(native: NativeAddon): GeometryApi {
   return {
     subpnt: (method, target, et, fixref, abcorr, observer) => {

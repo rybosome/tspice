@@ -167,6 +167,7 @@ function stableStringifyNormalized(value: unknown): string {
 
 const cmp = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
+/** Normalize arbitrary values into a deterministic, JSON-safe structure for comparison. */
 export function normalizeForCompare(value: unknown): unknown {
   if (
     value === null ||

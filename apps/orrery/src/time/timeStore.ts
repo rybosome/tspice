@@ -43,6 +43,7 @@ export const RATE_LADDER = [
   86400 * 365, // 1 year/s
 ] as const
 
+/** External-store snapshot describing the current playback/scrub time state. */
 export interface TimeState {
   /** Current ephemeris time in seconds past J2000 (quantized). */
   etSec: number

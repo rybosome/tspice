@@ -48,18 +48,27 @@ export type CachedTextureHandle = {
   release: () => void
 }
 
+/**
+ * Error used to signal that an in-flight texture load became invalid because the cache was cleared.
+ */
 export class TextureCacheClearedError extends Error {
+  /** Create a new cache-cleared error instance. */
   constructor() {
     super('Texture cache was cleared')
     this.name = 'TextureCacheClearedError'
   }
 }
 
+/** Type guard for {@link TextureCacheClearedError}. */
 export function isTextureCacheClearedError(err: unknown): err is TextureCacheClearedError {
   return err instanceof TextureCacheClearedError
 }
 
+/**
+ * Error used to signal that a cache entry was replaced while a previous load was still in-flight.
+ */
 export class TextureCacheStaleError extends TextureCacheClearedError {
+  /** Create a new cache-stale error instance. */
   constructor() {
     super()
     this.message = 'Texture cache entry was replaced'

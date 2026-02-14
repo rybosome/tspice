@@ -6,6 +6,7 @@ import { WASM_ERR_MAX_BYTES, withMalloc, withAllocs } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 
+/** Create an {@link ErrorApi} implementation backed by a WASM Emscripten module. */
 export function createErrorApi(module: EmscriptenModule): ErrorApi {
   return {
     failed: () => {

@@ -3,6 +3,7 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+/** Create an {@link IdsNamesApi} implementation backed by the native Node addon. */
 export function createIdsNamesApi(native: NativeAddon): IdsNamesApi {
   return {
     bodn2c: (name) => {

@@ -104,6 +104,9 @@ function computePointsPerOrbit(opts: {
   )
 }
 
+/**
+ * Orbit path line renderer that samples SPICE positions and updates line geometry over time.
+ */
 export class OrbitPaths {
   readonly object: THREE.Group
 
@@ -113,6 +116,7 @@ export class OrbitPaths {
   private readonly resolution = new THREE.Vector2(1, 1)
   private samplingToken = 0
 
+  /** Create orbit paths for the provided bodies (sampling happens on-demand in {@link update}). */
   constructor(opts: { spice: SpiceAsync; kmToWorld: number; bodies: readonly OrbitPathsBodySpec[] }) {
     this.spice = opts.spice
     this.kmToWorld = opts.kmToWorld
@@ -160,6 +164,7 @@ export class OrbitPaths {
     this.orbits = orbits
   }
 
+  /** Update material resolution (required by `LineMaterial` for correct line widths). */
   setResolution(widthPx: number, heightPx: number) {
     this.resolution.set(Math.max(1, widthPx), Math.max(1, heightPx))
     for (const o of this.orbits) {
@@ -167,6 +172,7 @@ export class OrbitPaths {
     }
   }
 
+  /** Dispose all geometries/materials and abort any in-flight sampling. */
   dispose() {
     for (const o of this.orbits) {
       o.inFlight?.abort.abort()
@@ -179,6 +185,9 @@ export class OrbitPaths {
     }
   }
 
+  /**
+   * Update visibility/placement and (re)sample orbit geometries as needed for the current time.
+   */
   update(input: {
     etSec: EtSeconds
     focusPosKm: Vec3Km

@@ -1,3 +1,4 @@
+/** Error thrown when an internal invariant is violated (should never happen in correct usage). */
 export class InvariantError extends Error {
   constructor(message: string) {
     super(message);

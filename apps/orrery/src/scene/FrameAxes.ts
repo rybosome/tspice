@@ -12,6 +12,7 @@ const scratchM4 = new THREE.Matrix4()
 
 // NOTE: This uses shared scratch matrices. Callers should treat the returned
 // matrix as ephemeral and not hold on to it.
+/** Convert a SPICE/contract 3x3 rotation matrix into a Three.js Matrix4 (scratch-backed). */
 export function mat3ToMatrix4(m: Mat3): THREE.Matrix4 {
   // `Mat3` is column-major, matching Three's internal layout.
   scratchM3.fromArray(m as unknown as number[])
@@ -19,6 +20,7 @@ export function mat3ToMatrix4(m: Mat3): THREE.Matrix4 {
   return scratchM4
 }
 
+/** Create a simple XYZ axes helper object for visualizing a body-fixed frame. */
 export function createFrameAxes(options: CreateFrameAxesOptions): {
   object: THREE.Object3D
   setPose: (pose: { position: THREE.Vector3; rotationJ2000?: Mat3 }) => void

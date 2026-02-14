@@ -12,6 +12,7 @@ import { normalizeRepoRelativePath } from "./util/paths.js";
 
 type OutputFormat = "pretty" | "json";
 
+/** Options parsed from CLI flags (after validation). */
 export interface CliOptions {
   configPath: string;
   format: OutputFormat;
@@ -157,6 +158,7 @@ export function parseCliArgs(rawArgv: string[]): ParseResult {
   };
 }
 
+/** IO dependencies for {@link main} (abstracted for testing). */
 export interface MainIo {
   cwd: string;
   stdout: NodeJS.WritableStream;

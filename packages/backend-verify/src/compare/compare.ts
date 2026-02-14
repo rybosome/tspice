@@ -208,6 +208,7 @@ function compareInner(
   }
 }
 
+/** Compare two values after normalization, returning a structured mismatch list if they differ. */
 export function compareValues(actual: unknown, expected: unknown, opts: CompareOptions = {}): CompareResult {
   const mismatches: Mismatch[] = [];
   const actualNorm = normalizeForCompare(actual);

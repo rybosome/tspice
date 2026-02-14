@@ -17,6 +17,7 @@ import type { SpiceWindow } from "./cells-windows.js";
 /** Relation operators accepted by many high-level GF searches. */
 export type GfRelate = ">" | "<" | "=" | "ABSMAX" | "ABSMIN" | "LOCMAX" | "LOCMIN";
 
+/** Backend contract for Geometry Finder (GF) event-finding routines. */
 export interface GeometryGfApi {
   /** Set the constant step size used by {@link GeometryGfApi.gfstep} (`gfsstp_c`). */
   gfsstp(step: number): void;

@@ -14,6 +14,7 @@ function formatLocation(v: Violation): string {
   return "";
 }
 
+/** Format a repo-standards report as a human-friendly plain-text summary. */
 export function formatPrettyReport(report: RepoStandardsReport): string {
   const sorted = sortViolations(report.violations);
 

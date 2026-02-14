@@ -16,6 +16,9 @@ export type SceneInteractions = {
   dispose: () => void
 }
 
+/**
+ * Install pointer/mouse interactions (orbit/pan/look/roll + selection + focus tweening) on the scene canvas.
+ */
 export function installSceneInteractions(args: {
   canvas: HTMLCanvasElement
   camera: THREE.PerspectiveCamera

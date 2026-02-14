@@ -22,6 +22,7 @@ export type SpiceCharCell = number & { readonly [__spiceCharCellBrand]: true };
 /** Opaque handle to a CSPICE DP window (a `SPICE_DP` cell interpreted as intervals). */
 export type SpiceWindow = number & { readonly [__spiceWindowBrand]: true };
 
+/** Backend contract for low-level SPICE cell/window operations. */
 export interface CellsWindowsApi {
   // -- Creation / destruction -------------------------------------------------
 

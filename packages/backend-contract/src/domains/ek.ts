@@ -44,6 +44,7 @@ export type EkGetResult<T> =
   | { found: true; isNull: true }
   | { found: true; isNull: false; value: T };
 
+/** Backend contract for EK (Events Kernel) file/query operations. */
 export interface EkApi {
   /** Open an existing EK file for read (see `ekopr_c`). */
   ekopr(path: string): SpiceHandle;

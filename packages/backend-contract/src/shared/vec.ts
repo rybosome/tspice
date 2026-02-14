@@ -130,14 +130,17 @@ function assertVecArrayLikeFinite(
   }
 }
 
+/** Assert that a value is an array-like Vec3 (length 3) of finite numbers. */
 export function assertVec3ArrayLike3(value: unknown, options?: { readonly label?: string }): asserts value is ArrayLike<number> {
   assertVecArrayLikeFinite(value, { label: options?.label ?? "Vec3", length: 3 });
 }
 
+/** Assert that a value is an array-like Vec6 (length 6) of finite numbers. */
 export function assertVec6ArrayLike6(value: unknown, options?: { readonly label?: string }): asserts value is ArrayLike<number> {
   assertVecArrayLikeFinite(value, { label: options?.label ?? "Vec6", length: 6 });
 }
 
+/** Validate and brand a value as a {@link Vec3}. */
 export function brandVec3(value: unknown, options?: BrandVecOptions): Vec3 {
   const label = options?.label ?? "Vec3";
   const freeze = options?.freeze ?? DEFAULT_FREEZE_MODE;
@@ -149,6 +152,7 @@ export function brandVec3(value: unknown, options?: BrandVecOptions): Vec3 {
   return maybeFreeze(arr, freeze) as unknown as Vec3;
 }
 
+/** Validate and brand a value as a {@link Vec6}. */
 export function brandVec6(value: unknown, options?: BrandVecOptions): Vec6 {
   const label = options?.label ?? "Vec6";
   const freeze = options?.freeze ?? DEFAULT_FREEZE_MODE;

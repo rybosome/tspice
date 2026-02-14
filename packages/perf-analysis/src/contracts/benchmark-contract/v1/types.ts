@@ -9,6 +9,7 @@ import type { FixtureRef, FixtureRoots } from "../../../shared/fixtures/types.js
 export type BenchmarkContractVersion = 1;
 
 export type FixtureRefV1 = FixtureRef;
+/** Single benchmark case entry in a v1 suite. */
 export interface BenchmarkCaseV1 {
   /** Stable id for the benchmark case within the suite. */
   readonly id: string;
@@ -23,6 +24,7 @@ export interface BenchmarkCaseV1 {
   readonly config?: Record<string, unknown>;
 }
 
+/** Top-level v1 benchmark suite contract shape. */
 export interface BenchmarkContractV1 {
   /** Schema version. */
   readonly version: 1;
@@ -45,6 +47,7 @@ export interface BenchmarkContractV1 {
   readonly benchmarks: readonly BenchmarkCaseV1[];
 }
 
+/** Options for normalizing fixture references within a v1 contract. */
 export interface NormalizeFixtureRefsOptions {
   /**
    * Optional set of fixture roots used to canonicalize fixture references.

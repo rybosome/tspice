@@ -15,6 +15,7 @@ export type FixtureRef =
       readonly path: string;
     };
 
+/** Resolved fixture reference (canonical path + optional stable id). */
 export interface ResolvedFixtureRef {
   /** Canonical fixture id (when available). */
   readonly id?: string;

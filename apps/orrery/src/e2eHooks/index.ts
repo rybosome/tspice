@@ -1,5 +1,10 @@
 import type { SpiceAsync } from '@rybosome/tspice'
 
+/**
+ * Install a small E2E-only API on `window` for Playwright tests.
+ *
+ * Returns an uninstall callback.
+ */
 export function installTspiceViewerE2eApi(args: { isE2e: boolean; spice: SpiceAsync }): () => void {
   if (!args.isE2e) return () => {}
 
@@ -16,6 +21,7 @@ export function installTspiceViewerE2eApi(args: { isE2e: boolean; spice: SpiceAs
   }
 }
 
+/** Mark (via `window`) that the first render completed (E2E only). */
 export function markTspiceViewerRenderedScene(args: { isE2e: boolean }) {
   if (!args.isE2e) return
   window.__tspice_viewer__rendered_scene = true

@@ -36,6 +36,7 @@ export type RpcResponse =
 export type RpcMessageFromMain = RpcRequest | RpcDispose;
 export type RpcMessageFromWorker = RpcResponse;
 
+/** Serialize an unknown error into a structured, transferable shape for RPC. */
 export function serializeError(err: unknown): SerializedError {
   const defaultMessage = "Worker request failed";
 
@@ -82,6 +83,7 @@ export function serializeError(err: unknown): SerializedError {
   return { message: defaultMessage };
 }
 
+/** Deserialize an RPC-transferred error shape back into an {@link Error}. */
 export function deserializeError(err: unknown): Error {
   if (err && typeof err === "object") {
     const e = err as Partial<SerializedError>;

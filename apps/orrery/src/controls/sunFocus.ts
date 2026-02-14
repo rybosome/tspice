@@ -1,5 +1,8 @@
 import * as THREE from 'three'
 
+/**
+ * Check whether a direction falls within the camera field-of-view (with an optional margin).
+ */
 export function isDirectionWithinFov(opts: {
   /** Normalized direction the camera is looking (camera -> target). */
   cameraForwardDir: THREE.Vector3
@@ -20,6 +23,9 @@ export function isDirectionWithinFov(opts: {
   return angle <= half - marginRad
 }
 
+/**
+ * Compute orbit yaw/pitch angles that keep a point visible while staying slightly off-axis.
+ */
 export function computeOrbitAnglesToKeepPointInView(opts: {
   /** Point position relative to the orbit target (in world units). */
   pointWorld: THREE.Vector3

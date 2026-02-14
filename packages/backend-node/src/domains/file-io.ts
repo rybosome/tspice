@@ -58,6 +58,7 @@ function normalizeFoundDlaDescriptor(value: unknown, context: string): FoundDlaD
   return { found: true, descr: obj.descr };
 }
 
+/** Create a {@link FileIoApi} implementation backed by the native Node addon. */
 export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistry, outputs: VirtualOutputStager): FileIoApi {
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(

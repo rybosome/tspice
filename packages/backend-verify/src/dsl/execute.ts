@@ -16,6 +16,7 @@ function mergeSetup(a: ScenarioSetupAst | undefined, b: ScenarioSetupAst | undef
   return kernels.length === 0 ? {} : { kernels };
 }
 
+/** Execute all cases in a scenario AST using the provided runner. */
 export async function executeScenario(scenario: ScenarioAst, runner: CaseRunner): Promise<ExecuteScenarioResult> {
   const executed: ExecutedCase[] = [];
 

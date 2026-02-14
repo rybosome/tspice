@@ -113,6 +113,7 @@ const HOME_PRESETS: Record<HomePresetKey, HomePreset> = {
   },
 } as const
 
+/** List the available home preset keys (in UI order). */
 export function listHomePresetKeys(): readonly HomePresetKey[] {
   return HOME_PRESET_KEYS
 }
@@ -145,15 +146,18 @@ function getHomePresetKey(focusBody: BodyRef): HomePresetKey | null {
   return HOME_PRESET_KEY_BY_ALIAS.get(alias) ?? null
 }
 
+/** Get the camera controller state for a specific home preset. */
 export function getHomePresetStateForKey(key: HomePresetKey): CameraControllerState {
   return HOME_PRESETS[key].state
 }
 
+/** Get the best-matching home preset state for a focused body (if any). */
 export function getHomePresetState(focusBody: BodyRef): CameraControllerState | null {
   const key = getHomePresetKey(focusBody)
   return key ? HOME_PRESETS[key].state : null
 }
 
+/** List accepted aliases (names/NAIF IDs) for a home preset key. */
 export function listHomePresetAliasesForKey(key: HomePresetKey): readonly string[] {
   return getHomePresetAliases(key)
 }

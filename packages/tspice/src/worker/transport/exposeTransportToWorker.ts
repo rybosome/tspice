@@ -17,6 +17,7 @@ type WorkerGlobalScopeLike = {
   close?: () => void;
 };
 
+/** Expose a {@link SpiceTransport} inside a Worker, handling RPC request/response messaging. */
 export function exposeTransportToWorker(opts: {
   transport: SpiceTransport;
   /**

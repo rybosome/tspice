@@ -74,6 +74,7 @@ export type CreateSpiceWorkerClientOptions<
   onDisposeError?: (err: unknown) => void;
 };
 
+/** Create a {@link SpiceWorkerClient} that communicates with a tspice Web Worker via RPC. */
 export function createSpiceWorkerClient<
   TTransport extends SpiceTransport = WorkerTransport,
 >(
