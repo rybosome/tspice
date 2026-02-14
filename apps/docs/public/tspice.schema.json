@@ -234,6 +234,10 @@
     {
       "repoPath": "packages/tspice/test/llm-examples/time-conversion.example.ts",
       "description": "UTC ↔ ET time conversions."
+    },
+    {
+      "repoPath": "packages/tspice/test/llm-examples/webworker-client.example.ts",
+      "description": "WebWorker client creation via spiceClients.toWebWorker() + publicKernels KernelPack builder."
     }
   ],
   "policiesAndDisclosures": [

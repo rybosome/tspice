@@ -194,6 +194,39 @@ function extractKernelSourceTypeDefinition(sharedTypesTsSource) {
   return node.getText(sourceFile);
 }
 
+function extractSpiceClientsWebWorkerOptionsTypeDefinition(spiceClientsTsSource) {
+  const sourceFile = createTypeScriptSourceFile({
+    fileName: "packages/tspice/src/clients/spiceClients.ts",
+    sourceText: spiceClientsTsSource,
+  });
+
+  /**
+   * @type {Array<import('typescript').TypeAliasDeclaration | import('typescript').InterfaceDeclaration>}
+   */
+  const matches = [];
+  for (const stmt of sourceFile.statements) {
+    if (
+      (ts.isTypeAliasDeclaration(stmt) || ts.isInterfaceDeclaration(stmt)) &&
+      stmt.name.text === "SpiceClientsWebWorkerOptions"
+    ) {
+      matches.push(stmt);
+    }
+  }
+
+  invariant(
+    matches.length === 1,
+    `Expected exactly one SpiceClientsWebWorkerOptions declaration, found ${matches.length}`,
+  );
+
+  const node = matches[0];
+  invariant(
+    hasModifier(node, ts.SyntaxKind.ExportKeyword),
+    "SpiceClientsWebWorkerOptions must be exported from packages/tspice/src/clients/spiceClients.ts",
+  );
+
+  return node.getText(sourceFile);
+}
+
 function readExamples(exampleDirAbs, repoRootAbs) {
   invariant(fs.existsSync(exampleDirAbs), `Missing examples directory: ${path.relative(repoRootAbs, exampleDirAbs)}`);
 
@@ -251,8 +284,10 @@ Repo paths:
 - Do not assume network access; kernel bytes may come from local files, fetch, or other sources.
 `;
 }
-function buildLlmsFullTxt({ exports, kernelSourceType, examples }) {
+function buildLlmsFullTxt({ exports, kernelSourceType, spiceClientsWebWorkerOptionsType, examples }) {
   const exportSection = `## Public API surface (generated)\n\nSource: \`packages/tspice/src/index.ts\`\n\n### Value exports\n\n${exports.valueExports.map((n) => `- \`${n}\``).join("\n")}\n\n### Type exports\n\n${exports.typeExports.map((n) => `- \`${n}\``).join("\n")}\n`;
+
+  const webWorkerSection = `## WebWorker (browser)\n\nUse \`spiceClients.toWebWorker()\` to run the WASM backend inside a WebWorker and get an async \`spice\` client.\n\nGuidance:\n\n- Use \`await spiceClients.toWebWorker(opts?)\`. It returns \`{ spice, dispose }\`.\n- You usually do **not** create \`new Worker()\` manually; when \`opts.worker\` is omitted, tspice creates an internal inline blob-module worker.\n- Do **not** invent worker entrypoints, message protocols, or APIs like \`backend.expose(...)\`. tspice owns the worker transport.\n- WebWorker clients are async: all \`spice.kit.*\` / \`spice.raw.*\` calls return Promises.\n\nSee: \`packages/tspice/test/llm-examples/webworker-client.example.ts\`\n\n### SpiceClientsWebWorkerOptions (generated)\n\nSource: \`packages/tspice/src/clients/spiceClients.ts\`\n\n\`\`\`ts\n${spiceClientsWebWorkerOptionsType}\n\`\`\`\n\n### Public kernel builder (\`publicKernels\` / \`createPublicKernels\`)\n\n\`publicKernels\` and \`createPublicKernels()\` are convenience builders that produce a \`KernelPack\` (URLs + virtual load paths).\nPass the pack to \`spiceClients.withKernels(pack)\` before calling \`.toWebWorker()\` to preload kernels in the worker.\n`;
 
   const kernelSourceSection = `## KernelSource (generated)\n\nSource: \`packages/backend-contract/src/shared/types.ts\`\n\n\`\`\`ts\n${kernelSourceType}\n\`\`\`\n\nNotes:\n\n- \`KernelSource\` is accepted by \`spice.kit.loadKernel()\` and lower-level backend APIs like \`raw.furnsh()\`.\n- Passing an object form (\`{ path, bytes }\`) is the most portable approach across WASM + Node backends.\n`;
 
@@ -269,7 +304,7 @@ function buildLlmsFullTxt({ exports, kernelSourceType, examples }) {
 
   const generatorSection = `## Regenerating these artifacts\n\nFrom the repo root:\n\n\`\`\`sh\npnpm generate:llm\n\`\`\`\n\nGenerated outputs:\n\n- \`llms.txt\`\n- \`apps/docs/public/llms.txt\`\n- \`apps/docs/public/llms-full.txt\`\n- \`apps/docs/public/tspice.schema.json\`\n`;
 
-  return `# tspice — LLM/tool artifacts (full)\n\nThis document is intended for LLMs and tool builders. It describes the public surface area of \`@rybosome/tspice\`, key types, and includes typechecked examples.\n\n${exportSection}\n\n${kernelSourceSection}\n\n${examplesSection}\n\n${policiesSection}\n\n${nonGoalsSection}\n\n${generatorSection}`;
+  return `# tspice — LLM/tool artifacts (full)\n\nThis document is intended for LLMs and tool builders. It describes the public surface area of \`@rybosome/tspice\`, key types, and includes typechecked examples.\n\n${exportSection}\n\n${webWorkerSection}\n\n${kernelSourceSection}\n\n${examplesSection}\n\n${policiesSection}\n\n${nonGoalsSection}\n\n${generatorSection}`;
 }
 
 function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
@@ -368,6 +403,8 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
     "packages/tspice/test/llm-examples/state-and-frame-transform.example.ts":
       "Ephemeris state query (getState) + frame transform (frameTransform) + Mat3 usage.",
     "packages/tspice/test/llm-examples/time-conversion.example.ts": "UTC ↔ ET time conversions.",
+    "packages/tspice/test/llm-examples/webworker-client.example.ts":
+      "WebWorker client creation via spiceClients.toWebWorker() + publicKernels KernelPack builder.",
   };
 
   const toExportEntries = (names, descriptions) =>
@@ -474,15 +511,26 @@ function main() {
     repoRoot,
     "packages/backend-contract/src/shared/types.ts",
   );
+  const spiceClientsAbs = path.join(
+    repoRoot,
+    "packages/tspice/src/clients/spiceClients.ts",
+  );
 
   const exports = extractNamedExports(readTextFile(tspiceIndexAbs));
   const kernelSourceType = extractKernelSourceTypeDefinition(readTextFile(backendContractTypesAbs));
+  const spiceClientsWebWorkerOptionsType =
+    extractSpiceClientsWebWorkerOptionsTypeDefinition(readTextFile(spiceClientsAbs));
 
   const examplesDirAbs = path.join(repoRoot, "packages/tspice/test/llm-examples");
   const examples = readExamples(examplesDirAbs, repoRoot);
 
   const llmsTxt = buildLlmsTxt();
-  const llmsFull = buildLlmsFullTxt({ exports, kernelSourceType, examples });
+  const llmsFull = buildLlmsFullTxt({
+    exports,
+    kernelSourceType,
+    spiceClientsWebWorkerOptionsType,
+    examples,
+  });
   const schema = buildTspiceSchemaSummary({ exports, kernelSourceType, examples });
 
   writeTextFile(path.join(repoRoot, "llms.txt"), llmsTxt);
