@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev",
+    "prebuild": "pnpm -w docs:api",
     "build": "vitepress build",
     "preview": "vitepress preview"
   },
