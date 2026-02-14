@@ -21,7 +21,7 @@ A pack is just:
 
 ```ts
 type KernelPack = {
-  kernels: Array<{ url: string; path: string }>;
+  kernels: readonly { url: string; path: string }[];
 };
 ```
 
@@ -39,16 +39,23 @@ const pack = publicKernels
   .pack();
 ```
 
+Note: `publicKernels.de432s_bsp()` is relatively large and can noticeably impact download time; consider omitting it when you only need time/constants.
+
 ## Preloading kernels with `spiceClients`
 
-Use `.withKernels(pack)` to preload kernels before you start calling SPICE routines:
+Use `.withKernels(pack, { baseUrl })` to preload kernels before you start calling SPICE routines (see `baseUrl` below):
 
 ```ts
 import { publicKernels, spiceClients } from "@rybosome/tspice";
 
 const pack = publicKernels.naif0012_tls().pck00011_tpc().pack();
 
-const { spice, dispose } = await spiceClients.withKernels(pack).toAsync();
+// Vite/VitePress (browser): resolves relative kernel URLs against your app base.
+const baseUrl = import.meta.env.BASE_URL;
+
+const { spice, dispose } = await spiceClients
+  .withKernels(pack, { baseUrl })
+  .toAsync();
 
 try {
   const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
@@ -70,9 +77,15 @@ Common approaches:
 If you host your app under a base path (for example GitHub Pages), you’ll usually want to set `baseUrl` so **relative** kernel URLs resolve correctly:
 
 ```ts
-const { spice } = await spiceClients
+const { spice, dispose } = await spiceClients
   .withKernels(pack, { baseUrl: import.meta.env.BASE_URL })
   .toAsync();
+
+try {
+  // ...
+} finally {
+  await dispose();
+}
 ```
 
 `baseUrl` is a URL/path *prefix* (a directory, not a page):
@@ -80,7 +93,8 @@ const { spice } = await spiceClients
 - It can be an absolute URL (`"https://cdn.example.com/myapp/"`) or a path prefix (`"/myapp/"`, `"myapp/"`).
 - It must end with a trailing `/` (directory-style), so URL joining is copy/paste safe.
 - It is only applied to **relative** `kernel.url` values (like `"kernels/naif/naif0012.tls"`).
-  Absolute URLs are left as-is.
+- Absolute URLs are left as-is.
+- In Node, `fetch()` requires absolute URLs, so you’ll typically use an absolute `baseUrl` (like `"https://…/"`) unless you pass a custom `fetch`.
 
 Example resolution:
 
