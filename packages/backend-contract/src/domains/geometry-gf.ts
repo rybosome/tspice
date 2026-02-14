@@ -1,15 +1,15 @@
 /**
-* GF (Geometry Finder) event finding.
-*
-* Tranche 1 scope:
-* - "Plumbing" utilities (`gfsstp/gfstep`, `gfstol`, `gfrefn`, `gfrepi/gfrepf`).
-* - A couple high-level, callback-free searches: `gfsep` and `gfdist`.
-*
-* Notes:
-* - The CSPICE GF subsystem has some **global mutable state** (e.g. `gfsstp`,
-*   `gfstol`). Callers should treat these as process-global knobs.
-* - Confinement/result windows use Group 2 `SpiceWindow` opaque handles.
-*/
+ * GF (Geometry Finder) event finding.
+ *
+ * Tranche 1 scope:
+ * - "Plumbing" utilities (`gfsstp/gfstep`, `gfstol`, `gfrefn`, `gfrepi/gfrepf`).
+ * - A couple high-level, callback-free searches: `gfsep` and `gfdist`.
+ *
+ * Notes:
+ * - The CSPICE GF subsystem has some **global mutable state** (e.g. `gfsstp`,
+ *   `gfstol`). Callers should treat these as process-global knobs.
+ * - Confinement/result windows use Group 2 `SpiceWindow` opaque handles.
+ */
 
 import type { AbCorr } from "../shared/types.js";
 import type { SpiceWindow } from "./cells-windows.js";
