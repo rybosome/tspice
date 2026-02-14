@@ -30,12 +30,12 @@ describe("publicKernels", () => {
 
     expect(pack.kernels).toEqual([
       {
-        url: "https://cdn.example.com/kernels/naif0012.tls",
-        path: "/naif/naif0012.tls",
+        url: "https://cdn.example.com/kernels/lsk/naif0012.tls",
+        path: "/naif/lsk/naif0012.tls",
       },
       {
-        url: "https://cdn.example.com/kernels/de432s.bsp",
-        path: "/naif/de432s.bsp",
+        url: "https://cdn.example.com/kernels/spk/planets/de432s.bsp",
+        path: "/naif/spk/planets/de432s.bsp",
       },
     ]);
   });
@@ -49,13 +49,11 @@ describe("loadKernelPack()", () => {
     const spice = { kit: { loadKernel } };
 
     const pack: KernelPack = {
+      baseUrl: "https://example.com/myapp/",
       kernels: [{ url: "kernels/a.tls", path: "/kernels/a.tls" }],
     };
 
-    await loadKernelPack(spice, pack, {
-      fetch,
-      baseUrl: "https://example.com/myapp/",
-    });
+    await loadKernelPack(spice, pack, { fetch });
 
     expect(fetch).toHaveBeenCalledWith("https://example.com/myapp/kernels/a.tls");
     expect(loadKernel).toHaveBeenCalledWith({
@@ -70,10 +68,12 @@ describe("loadKernelPack()", () => {
 
     await loadKernelPack(
       spice,
-      { kernels: [{ url: "/kernels/a.tls", path: "/kernels/a.tls" }] },
+      {
+        baseUrl: "https://example.com/myapp/",
+        kernels: [{ url: "/kernels/a.tls", path: "/kernels/a.tls" }],
+      },
       {
         fetch,
-        baseUrl: "https://example.com/myapp/",
         rootRelativeKernelUrlBehavior: "applyBaseOrigin",
       },
     );

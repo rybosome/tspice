@@ -45,6 +45,16 @@ export type {
 export { spiceClients } from "./clients/spiceClients.js";
 
 export type {
+  CustomKernelsBuilder,
+  KernelsCustomOptions,
+  KernelsNaifOptions,
+  NaifKernelId,
+  NaifKernelLeafPath,
+  NaifKernelsBuilder,
+} from "./kernels/kernels.js";
+export { kernels } from "./kernels/kernels.js";
+
+export type {
   CreatePublicKernelsOptions,
   PublicKernelId,
   PublicKernelsBuilder,

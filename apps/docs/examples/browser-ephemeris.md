@@ -19,32 +19,38 @@ For basic planet-to-planet state vectors you typically need:
 - **PCK** (`pck00011.tpc`): body radii + orientation models; required once you start working in
   body-fixed frames (and used by many geometry/lighting routines).
 
-The `publicKernels` helper builds a small “starter pack” with exactly these three kernels.
+The `kernels.naif()` helper builds a small “starter pack” with exactly these three kernels.
 
 ## Create a worker-backed client (recommended)
 
 Put the kernel files at:
 
-- `public/kernels/naif/naif0012.tls`
-- `public/kernels/naif/pck00011.tpc`
-- `public/kernels/naif/de432s.bsp`
+- `public/kernels/naif/lsk/naif0012.tls`
+- `public/kernels/naif/pck/pck00011.tpc`
+- `public/kernels/naif/spk/planets/de432s.bsp`
 
-Then you can load them with `publicKernels` + `spiceClients.withKernels()`:
+Then you can load them with `kernels.naif` + `spiceClients.withKernels()`:
 
 ```ts
-import { publicKernels, spiceClients } from '@rybosome/tspice'
+import { kernels, spiceClients } from '@rybosome/tspice'
 
-const pack = publicKernels.naif0012_tls().pck00011_tpc().de432s_bsp().pack()
+const pack = kernels
+  .naif({
+    urlBase: 'kernels/naif/',
+    // Important for apps deployed under a subpath (GitHub Pages, etc).
+    baseUrl: import.meta.env.BASE_URL,
+  })
+  .naif0012_tls()
+  .pck00011_tpc()
+  .de432s_bsp()
+  .pack()
 
 const { spice, dispose } = await spiceClients
   .caching({
     maxEntries: 10_000,
     ttlMs: null,
   })
-  .withKernels(pack, {
-    // Important for apps deployed under a subpath (GitHub Pages, etc).
-    baseUrl: import.meta.env.BASE_URL,
-  })
+  .withKernels(pack)
   .toWebWorker()
 
 try {
@@ -76,12 +82,21 @@ await spice.kit.loadKernel({ path, bytes })
 Here’s the explicit fetch + load flow (equivalent to what `withKernels()` does internally):
 
 ```ts
-import { publicKernels } from '@rybosome/tspice'
+import { kernels } from '@rybosome/tspice'
 
-const pack = publicKernels.naif0012_tls().pck00011_tpc().de432s_bsp().pack()
+const pack = kernels
+  .naif({
+    urlBase: 'kernels/naif/',
+    baseUrl: import.meta.env.BASE_URL,
+  })
+  .naif0012_tls()
+  .pck00011_tpc()
+  .de432s_bsp()
+  .pack()
 
 for (const kernel of pack.kernels) {
-  const res = await fetch(`${import.meta.env.BASE_URL}${kernel.url}`)
+  // Note: for absolute kernel URLs, `pack.baseUrl` is ignored.
+  const res = await fetch(`${pack.baseUrl ?? ''}${kernel.url}`)
   if (!res.ok) {
     throw new Error(`Failed to fetch kernel: ${kernel.url} (${res.status} ${res.statusText})`)
   }

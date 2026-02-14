@@ -8,25 +8,6 @@ export type KernelPackKernel = {
 };
 
 export type KernelPack = {
-  kernels: readonly KernelPackKernel[];
-};
-
-export type ResponseLike = {
-  ok: boolean;
-  status: number;
-  statusText: string;
-  arrayBuffer: () => Promise<ArrayBuffer>;
-};
-
-// Structural fetch typing so we don't leak DOM lib types into emitted .d.ts.
-export type FetchLike = (input: string, init?: unknown) => Promise<ResponseLike>;
-
-export type RootRelativeKernelUrlBehavior =
-  | "bypassBaseUrl"
-  | "applyBaseOrigin"
-  | "error";
-
-export type LoadKernelPackOptions = {
   /**
    * Base URL/path *directory* to resolve each `kernel.url` against when it is relative.
    *
@@ -52,13 +33,31 @@ export type LoadKernelPackOptions = {
    * - `baseUrl: "/myapp"` would be ambiguous (file vs directory) and therefore throws.
    * - If you have a page path like `"/app/index.html"`, pass its directory (`"/app/"`).
    *
-   * This is intentionally passed in (rather than relying on `import.meta.env.BASE_URL`)
-   * so this helper can be used outside Vite and can be tested deterministically.
+   * This is intentionally stored on the pack (rather than passed at load time)
+   * so the URL-rooting decision lives next to the catalog that produced the pack.
    */
   baseUrl?: string;
+  kernels: readonly KernelPackKernel[];
+};
 
+export type ResponseLike = {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+};
+
+// Structural fetch typing so we don't leak DOM lib types into emitted .d.ts.
+export type FetchLike = (input: string, init?: unknown) => Promise<ResponseLike>;
+
+export type RootRelativeKernelUrlBehavior =
+  | "bypassBaseUrl"
+  | "applyBaseOrigin"
+  | "error";
+
+export type LoadKernelPackOptions = {
   /**
-   * Controls how root-relative kernel URLs (`"/..."`) interact with `baseUrl`.
+   * Controls how root-relative kernel URLs (`"/..."`) interact with `pack.baseUrl`.
    *
    * - `"bypassBaseUrl"` (default): root-relative URLs are left as-is.
    * - `"applyBaseOrigin"`: when `baseUrl` is scheme-based or protocol-relative,
@@ -235,7 +234,7 @@ export async function loadKernelPack(
       pack.kernels.map((k) =>
         fetchKernelBytes(
           fetchFn,
-          resolveKernelUrl(k.url, opts?.baseUrl, rootRelativeKernelUrlBehavior),
+          resolveKernelUrl(k.url, pack.baseUrl, rootRelativeKernelUrlBehavior),
         ),
       ),
     );
@@ -251,7 +250,7 @@ export async function loadKernelPack(
   for (const kernel of pack.kernels) {
     const kernelBytes = await fetchKernelBytes(
       fetchFn,
-      resolveKernelUrl(kernel.url, opts?.baseUrl, rootRelativeKernelUrlBehavior),
+      resolveKernelUrl(kernel.url, pack.baseUrl, rootRelativeKernelUrlBehavior),
     );
     await spice.kit.loadKernel({ path: kernel.path, bytes: kernelBytes });
   }

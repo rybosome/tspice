@@ -1,5 +1,5 @@
 import type { SpiceAsync } from '@rybosome/tspice'
-import { publicKernels, spiceClients } from '@rybosome/tspice'
+import { kernels, spiceClients } from '@rybosome/tspice'
 
 export type ViewerSpiceClientBundle = {
   spice: SpiceAsync
@@ -18,7 +18,17 @@ export async function createSpiceClient(
   // Currently `searchParams` isn't used here, but we keep the option for API stability.
   void options
 
-  const pack = publicKernels.naif0012_tls().pck00011_tpc().de432s_bsp().pack()
+  const pack = kernels
+    .naif({
+      urlBase: 'kernels/naif/',
+      // Important for apps deployed under a subpath (GitHub Pages, etc).
+      // Vite's BASE_URL is typically already directory-style (ends with '/').
+      baseUrl: import.meta.env.BASE_URL,
+    })
+    .naif0012_tls()
+    .pck00011_tpc()
+    .de432s_bsp()
+    .pack()
 
   const { spice, dispose: disposeAsync } = await spiceClients
     .caching({
@@ -28,9 +38,7 @@ export async function createSpiceClient(
       // sufficient. (TimeStore quantization also keeps the key space sane.)
       ttlMs: null,
     })
-    .withKernels(pack, {
-      baseUrl: import.meta.env.BASE_URL,
-    })
+    .withKernels(pack)
     .toWebWorker()
 
   const dispose = (): void => {
