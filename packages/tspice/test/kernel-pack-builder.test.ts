@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { KernelSource } from "@rybosome/tspice-backend-contract";
 
 import { createPublicKernels } from "../src/kernels/publicKernels.js";
+import { kernels } from "../src/kernels/kernels.js";
 import type { FetchLike, KernelPack, ResponseLike } from "../src/kernels/kernelPack.js";
 import { loadKernelPack } from "../src/kernels/kernelPack.js";
 
@@ -40,6 +41,84 @@ describe("publicKernels", () => {
     ]);
   });
 });
+
+describe("kernels.naif()", () => {
+  it("treats whitespace urlBase/pathBase as omitted (falls back to defaults)", () => {
+    const pack = kernels
+      .naif({
+        urlBase: "   ",
+        pathBase: "   ",
+      })
+      .naif0012_tls()
+      .pack();
+
+    expect(pack.kernels).toEqual([
+      {
+        url: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
+        path: "naif/lsk/naif0012.tls",
+      },
+    ]);
+  });
+
+  it("omits pack.baseUrl when urlBase is absolute", () => {
+    const pack = kernels
+      .naif({
+        urlBase: "https://cdn.example.com/kernels/",
+        baseUrl: "https://example.com/myapp/",
+      })
+      .naif0012_tls()
+      .pack();
+
+    expect(pack.baseUrl).toBeUndefined();
+    expect(Object.prototype.hasOwnProperty.call(pack, "baseUrl")).toBe(false);
+  });
+});
+
+describe("createPublicKernels()", () => {
+  it("treats whitespace urlBase/pathBase as omitted (uses wrapper defaults)", () => {
+    const pack = createPublicKernels({
+      urlBase: "  ",
+      pathBase: "	",
+      baseUrl: "/myapp/",
+    })
+      .naif0012_tls()
+      .pack();
+
+    expect(pack.baseUrl).toBe("/myapp/");
+    expect(pack.kernels).toEqual([
+      {
+        url: "kernels/naif/lsk/naif0012.tls",
+        path: "naif/lsk/naif0012.tls",
+      },
+    ]);
+  });
+});
+
+describe("kernels.custom()", () => {
+  it("defaults kernel paths to stable hashed values to avoid collisions", () => {
+    const pack = kernels
+      .custom()
+      .add({ url: "https://example.com/a/de432s.bsp" })
+      .add({ url: "https://example.com/b/de432s.bsp" })
+      .pack();
+
+    const [a, b] = pack.kernels;
+    expect(a?.path).toMatch(/^\/kernels\/[0-9a-f]{8}-de432s\.bsp$/);
+    expect(b?.path).toMatch(/^\/kernels\/[0-9a-f]{8}-de432s\.bsp$/);
+    expect(a?.path).not.toBe(b?.path);
+  });
+
+  it("includes querystring in the hash so versioned URLs do not collide", () => {
+    const pack = kernels
+      .custom()
+      .add({ url: "https://example.com/de432s.bsp?v=1" })
+      .add({ url: "https://example.com/de432s.bsp?v=2" })
+      .pack();
+
+    expect(pack.kernels[0]?.path).not.toBe(pack.kernels[1]?.path);
+  });
+});
+
 
 describe("loadKernelPack()", () => {
   it("resolves relative kernel URLs against baseUrl (directory-style)", async () => {

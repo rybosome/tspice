@@ -16,6 +16,7 @@ import { createSpiceAsyncFromTransport } from "./createSpiceAsyncFromTransport.j
 import { createSpiceSyncFromTransport } from "./createSpiceSyncFromTransport.js";
 import type { KernelPack, LoadKernelPackOptions } from "../kernels/kernelPack.js";
 import { loadKernelPack } from "../kernels/kernelPack.js";
+import { defaultKernelPathFromUrl } from "../kernels/defaultKernelPathFromUrl.js";
 import { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
 import { createWorkerTransport, type WorkerLike, type WorkerTransport } from "../worker/transport/createWorkerTransport.js";
 
@@ -81,7 +82,7 @@ export type SpiceClientsBuilder = {
   /**
    * Append a single-kernel batch.
    *
-   * When `path` is omitted, it defaults to `/kernels/<basename(url)>`.
+   * When `path` is omitted, it defaults to a stable hashed path like `/kernels/<hash>-<basename(url)>`.
    * Basename is computed from the URL/path after stripping query/hash.
    */
   withKernel(
@@ -217,13 +218,6 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       ),
     });
 
-  const defaultKernelPathFromUrl = (url: string): string => {
-    const withoutQueryHash = url.replace(/[?#].*$/, "");
-    const base = withoutQueryHash.split("/").filter(Boolean).pop() ?? "";
-    // Fall back to a stable sentinel instead of generating `/kernels/`.
-    const safeBase = base || "kernel";
-    return `/kernels/${safeBase}`;
-  };
 
   builder = {
     caching: (opts) => createBuilder({ ...state, cachingOptions: opts }),

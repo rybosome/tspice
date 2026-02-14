@@ -21,11 +21,21 @@ export type PublicKernelsBuilder = {
 
 export function createPublicKernels(opts?: CreatePublicKernelsOptions): PublicKernelsBuilder {
   // Legacy shim: the new recommended API is `kernels.naif/custom`.
-  const baseUrl = opts?.baseUrl;
+
+  // Treat trimmed-empty as omitted so this wrapper's defaults still apply when
+  // these values are sourced from env/config.
+  const rawUrlBase = opts?.urlBase;
+  const urlBase = rawUrlBase?.trim() ? rawUrlBase.trim() : "kernels/naif/";
+
+  const rawPathBase = opts?.pathBase;
+  const pathBase = rawPathBase?.trim() ? rawPathBase.trim() : "naif/";
+
+  const baseUrl = opts?.baseUrl?.trim();
+
   return kernels.naif({
-    urlBase: opts?.urlBase ?? "kernels/naif/",
-    pathBase: opts?.pathBase ?? "naif/",
-    ...(baseUrl === undefined ? {} : { baseUrl }),
+    urlBase,
+    pathBase,
+    ...(baseUrl ? { baseUrl } : {}),
   });
 }
 

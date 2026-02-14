@@ -106,7 +106,7 @@ const pack = kernels.naif().naif0012_tls().pck00011_tpc().pack();
 
 Use `kernels.custom(opts?)` to build a `KernelPack` for arbitrary kernels.
 
-If `path` is omitted, it defaults to `/kernels/<basename(url)>` (query/hash stripped).
+If `path` is omitted, it defaults to a stable hashed path like `/kernels/<hash>-<basename(url)>` (basename query/hash stripped).
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";

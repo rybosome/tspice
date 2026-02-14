@@ -1,8 +1,16 @@
 import type { KernelPack, KernelPackKernel } from "./kernelPack.js";
+import { defaultKernelPathFromUrl } from "./defaultKernelPathFromUrl.js";
+
 
 function ensureTrailingSlash(base: string): string {
   if (base === "") return "";
   return base.endsWith("/") ? base : `${base}/`;
+}
+
+const ABSOLUTE_URL_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
+
+function isAbsoluteUrlBase(urlBase: string): boolean {
+  return ABSOLUTE_URL_RE.test(urlBase) || urlBase.startsWith("//");
 }
 
 // --- NAIF generic_kernels catalog ---
@@ -107,13 +115,6 @@ export type CustomKernelsBuilder = {
   pack(): KernelPack;
 };
 
-function defaultKernelPathFromUrl(url: string): string {
-  const withoutQueryHash = url.replace(/[?#].*$/, "");
-  const base = withoutQueryHash.split("/").filter(Boolean).pop() ?? "";
-  // Fall back to a stable sentinel instead of generating `/kernels/`.
-  const safeBase = base || "kernel";
-  return `/kernels/${safeBase}`;
-}
 
 function createCustomBuilder(state: {
   kernels: readonly KernelPackKernel[];
@@ -141,22 +142,35 @@ function createCustomBuilder(state: {
 
 export const kernels = {
   naif: (opts?: KernelsNaifOptions): NaifKernelsBuilder => {
-    const urlBase = ensureTrailingSlash((opts?.urlBase ?? DEFAULT_NAIF_URL_BASE).trim());
-    const pathBase = ensureTrailingSlash((opts?.pathBase ?? DEFAULT_NAIF_PATH_BASE).trim());
+    const rawUrlBase = opts?.urlBase;
+    const urlBase = ensureTrailingSlash(
+      rawUrlBase?.trim() ? rawUrlBase.trim() : DEFAULT_NAIF_URL_BASE,
+    );
+
+    const rawPathBase = opts?.pathBase;
+    const pathBase = ensureTrailingSlash(
+      rawPathBase?.trim() ? rawPathBase.trim() : DEFAULT_NAIF_PATH_BASE,
+    );
+
+    const rawBaseUrl = opts?.baseUrl;
+    const baseUrl =
+      isAbsoluteUrlBase(urlBase) || !rawBaseUrl?.trim() ? undefined : rawBaseUrl.trim();
 
     return createNaifBuilder({
       selected: new Set(),
       opts: {
         urlBase,
         pathBase,
-        ...(opts?.baseUrl === undefined ? {} : { baseUrl: opts.baseUrl }),
+        ...(baseUrl === undefined ? {} : { baseUrl }),
       },
     });
   },
 
-  custom: (opts?: KernelsCustomOptions): CustomKernelsBuilder =>
-    createCustomBuilder({
+  custom: (opts?: KernelsCustomOptions): CustomKernelsBuilder => {
+    const baseUrl = opts?.baseUrl?.trim();
+    return createCustomBuilder({
       kernels: [],
-      ...(opts?.baseUrl === undefined ? {} : { baseUrl: opts.baseUrl }),
-    }),
+      ...(baseUrl ? { baseUrl } : {}),
+    });
+  },
 } as const;
