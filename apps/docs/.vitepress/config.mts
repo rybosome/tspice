@@ -77,7 +77,14 @@ export default defineConfig({
       '/concepts/': [
         {
           text: 'Concepts',
-          items: [{ text: 'Overview', link: '/concepts/' }]
+          items: [
+            { text: 'Overview', link: '/concepts/' },
+            { text: 'tspice mental model', link: '/concepts/tspice-mental-model' },
+            { text: 'Time systems', link: '/concepts/time-systems' },
+            { text: 'Frames', link: '/concepts/frames' },
+            { text: 'Aberration corrections', link: '/concepts/aberration-corrections' },
+            { text: 'Kernel taxonomy', link: '/concepts/kernel-taxonomy' }
+          ]
         }
       ],
 
