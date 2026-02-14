@@ -20,7 +20,7 @@ export async function createSpiceClient(
 
   const pack = kernels
     .naif({
-      urlBase: 'kernels/naif/',
+      kernelUrlPrefix: 'kernels/naif/',
       // Important for apps deployed under a subpath (GitHub Pages, etc).
       // Vite's BASE_URL is typically already directory-style (ends with '/').
       baseUrl: import.meta.env.BASE_URL,

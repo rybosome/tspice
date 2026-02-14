@@ -22,7 +22,7 @@ function okResponse(bytes: Uint8Array): ResponseLike {
 describe("publicKernels", () => {
   it("builds a stable ordered pack and normalizes base paths", () => {
     const pack = createPublicKernels({
-      urlBase: "https://cdn.example.com/kernels",
+      kernelUrlPrefix: "https://cdn.example.com/kernels",
       pathBase: "/naif",
     })
       .de432s_bsp()
@@ -43,10 +43,10 @@ describe("publicKernels", () => {
 });
 
 describe("kernels.naif()", () => {
-  it("treats whitespace urlBase/pathBase as omitted (falls back to defaults)", () => {
+  it("treats whitespace kernelUrlPrefix/pathBase as omitted (falls back to defaults)", () => {
     const pack = kernels
       .naif({
-        urlBase: "   ",
+        kernelUrlPrefix: "   ",
         pathBase: "   ",
       })
       .naif0012_tls()
@@ -60,10 +60,10 @@ describe("kernels.naif()", () => {
     ]);
   });
 
-  it("omits pack.baseUrl when urlBase is absolute", () => {
+  it("omits pack.baseUrl when kernelUrlPrefix is absolute", () => {
     const pack = kernels
       .naif({
-        urlBase: "https://cdn.example.com/kernels/",
+        kernelUrlPrefix: "https://cdn.example.com/kernels/",
         baseUrl: "https://example.com/myapp/",
       })
       .naif0012_tls()
@@ -75,9 +75,9 @@ describe("kernels.naif()", () => {
 });
 
 describe("createPublicKernels()", () => {
-  it("treats whitespace urlBase/pathBase as omitted (uses wrapper defaults)", () => {
+  it("treats whitespace kernelUrlPrefix/pathBase as omitted (uses wrapper defaults)", () => {
     const pack = createPublicKernels({
-      urlBase: "  ",
+      kernelUrlPrefix: "  ",
       pathBase: "	",
       baseUrl: "/myapp/",
     })

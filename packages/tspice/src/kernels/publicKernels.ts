@@ -4,11 +4,19 @@ import { kernels } from "./kernels.js";
 export type PublicKernelId = "naif0012_tls" | "pck00011_tpc" | "de432s_bsp";
 
 export type CreatePublicKernelsOptions = {
-  /** Base URL/path where the kernel files are hosted (defaults to `kernels/naif/`). */
-  urlBase?: string;
+  /**
+   * Prefix used to build each `kernel.url` entry (defaults to `kernels/naif/`).
+   *
+   * This is a compatibility wrapper over `kernels.naif()`; new code should use `kernels` directly.
+   */
+  kernelUrlPrefix?: string;
   /** Base virtual path used when loading kernels into tspice (defaults to `naif/`). */
   pathBase?: string;
-  /** Optional directory-style base used to resolve relative kernel URLs at load time. */
+  /**
+   * Optional directory-style base used at *load time* to resolve relative kernel URLs.
+   *
+   * This becomes `KernelPack.baseUrl`.
+   */
   baseUrl?: string;
 };
 
@@ -24,8 +32,8 @@ export function createPublicKernels(opts?: CreatePublicKernelsOptions): PublicKe
 
   // Treat trimmed-empty as omitted so this wrapper's defaults still apply when
   // these values are sourced from env/config.
-  const rawUrlBase = opts?.urlBase;
-  const urlBase = rawUrlBase?.trim() ? rawUrlBase.trim() : "kernels/naif/";
+  const rawKernelUrlPrefix = opts?.kernelUrlPrefix;
+  const kernelUrlPrefix = rawKernelUrlPrefix?.trim() ? rawKernelUrlPrefix.trim() : "kernels/naif/";
 
   const rawPathBase = opts?.pathBase;
   const pathBase = rawPathBase?.trim() ? rawPathBase.trim() : "naif/";
@@ -33,7 +41,7 @@ export function createPublicKernels(opts?: CreatePublicKernelsOptions): PublicKe
   const baseUrl = opts?.baseUrl?.trim();
 
   return kernels.naif({
-    urlBase,
+    kernelUrlPrefix,
     pathBase,
     ...(baseUrl ? { baseUrl } : {}),
   });

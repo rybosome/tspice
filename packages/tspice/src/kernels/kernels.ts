@@ -9,13 +9,13 @@ function ensureTrailingSlash(base: string): string {
 
 const ABSOLUTE_URL_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
 
-function isAbsoluteUrlBase(urlBase: string): boolean {
-  return ABSOLUTE_URL_RE.test(urlBase) || urlBase.startsWith("//");
+function isAbsoluteKernelUrlPrefix(kernelUrlPrefix: string): boolean {
+  return ABSOLUTE_URL_RE.test(kernelUrlPrefix) || kernelUrlPrefix.startsWith("//");
 }
 
 // --- NAIF generic_kernels catalog ---
 
-const DEFAULT_NAIF_URL_BASE = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
+const DEFAULT_NAIF_KERNEL_URL_PREFIX = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
 const DEFAULT_NAIF_PATH_BASE = "naif/";
 
 const NAIF_KERNELS = {
@@ -39,11 +39,24 @@ const NAIF_ID_BY_LEAF_PATH: Record<NaifKernelLeafPath, NaifKernelId> = {
 };
 
 export type KernelsNaifOptions = {
-  /** Base URL/path directory where `generic_kernels` is hosted. */
-  urlBase?: string;
+  /**
+   * Prefix used to build each `kernel.url` entry (defaults to NAIF's `generic_kernels` host).
+   *
+   * This is a *build-time* prefix that's concatenated with each kernel leaf path.
+   *
+   * If you want kernel URLs to be relative (so they can be rooted at load time via `baseUrl`),
+   * use a relative prefix like `kernels/naif/`.
+   */
+  kernelUrlPrefix?: string;
+
   /** Base virtual path used when loading kernels into tspice. */
   pathBase?: string;
-  /** Optional directory-style base used to resolve relative kernel URLs at load time. */
+
+  /**
+   * Optional directory-style base used at *load time* to resolve relative kernel URLs.
+   *
+   * This becomes `KernelPack.baseUrl`.
+   */
   baseUrl?: string;
 };
 
@@ -62,18 +75,18 @@ export type NaifKernelsBuilder = {
 
 function buildNaifKernel(
   id: NaifKernelId,
-  opts: { urlBase: string; pathBase: string },
+  opts: { kernelUrlPrefix: string; pathBase: string },
 ): KernelPackKernel {
   const leafPath = NAIF_KERNELS[id].leafPath;
   return {
-    url: `${opts.urlBase}${leafPath}`,
+    url: `${opts.kernelUrlPrefix}${leafPath}`,
     path: `${opts.pathBase}${leafPath}`,
   };
 }
 
 function createNaifBuilder(state: {
   selected: ReadonlySet<NaifKernelId>;
-  opts: { urlBase: string; pathBase: string; baseUrl?: string };
+  opts: { kernelUrlPrefix: string; pathBase: string; baseUrl?: string };
 }): NaifKernelsBuilder {
   let builder!: NaifKernelsBuilder;
 
@@ -142,9 +155,9 @@ function createCustomBuilder(state: {
 
 export const kernels = {
   naif: (opts?: KernelsNaifOptions): NaifKernelsBuilder => {
-    const rawUrlBase = opts?.urlBase;
-    const urlBase = ensureTrailingSlash(
-      rawUrlBase?.trim() ? rawUrlBase.trim() : DEFAULT_NAIF_URL_BASE,
+    const rawKernelUrlPrefix = opts?.kernelUrlPrefix;
+    const kernelUrlPrefix = ensureTrailingSlash(
+      rawKernelUrlPrefix?.trim() ? rawKernelUrlPrefix.trim() : DEFAULT_NAIF_KERNEL_URL_PREFIX,
     );
 
     const rawPathBase = opts?.pathBase;
@@ -154,12 +167,12 @@ export const kernels = {
 
     const rawBaseUrl = opts?.baseUrl;
     const baseUrl =
-      isAbsoluteUrlBase(urlBase) || !rawBaseUrl?.trim() ? undefined : rawBaseUrl.trim();
+      isAbsoluteKernelUrlPrefix(kernelUrlPrefix) || !rawBaseUrl?.trim() ? undefined : rawBaseUrl.trim();
 
     return createNaifBuilder({
       selected: new Set(),
       opts: {
-        urlBase,
+        kernelUrlPrefix,
         pathBase,
         ...(baseUrl === undefined ? {} : { baseUrl }),
       },

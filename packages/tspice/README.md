@@ -35,7 +35,7 @@ const { kernels, spiceClients } = await import("@rybosome/tspice");
 ### Browser / WASM (async)
 
 > Note: NAIF-hosted kernel URLs are blocked by browser CORS.
-> For browsers, self-host a mirror (or proxy) and use relative `urlBase` + a `baseUrl`.
+> For browsers, self-host a mirror (or proxy) and use a relative `kernelUrlPrefix` (builds relative `kernel.url` entries) + a `baseUrl` (roots them at load time).
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
@@ -46,7 +46,7 @@ import { kernels, spiceClients } from "@rybosome/tspice";
 // - public/kernels/naif/spk/planets/de432s.bsp
 const kernelPack = kernels
   .naif({
-    urlBase: "kernels/naif/",
+    kernelUrlPrefix: "kernels/naif/",
     // Important for apps deployed under a subpath (GitHub Pages, etc).
     baseUrl: import.meta.env.BASE_URL,
   })
@@ -93,8 +93,10 @@ try {
 
 Use `kernels.naif(opts?)` for a typed NAIF `generic_kernels` catalog. Call `.pack()` to get a `KernelPack`.
 
-> Note: root-relative `urlBase` values (starting with `/`) intentionally bypass `pack.baseUrl` by default.
-> For subpath hosting (`/myapp/`), prefer a relative `urlBase` (no leading `/`) so `pack.baseUrl` can be applied.
+`kernelUrlPrefix` is a build-time prefix used to construct each `kernel.url`; `baseUrl` becomes `pack.baseUrl` and is used at load time to resolve relative kernel URLs.
+
+> Note: root-relative `kernelUrlPrefix` values (starting with `/`) intentionally bypass `pack.baseUrl` by default.
+> For subpath hosting (`/myapp/`), prefer a relative `kernelUrlPrefix` (no leading `/`) so `pack.baseUrl` can be applied.
 
 ```ts
 import { kernels } from "@rybosome/tspice";

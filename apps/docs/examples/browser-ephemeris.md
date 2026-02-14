@@ -36,7 +36,7 @@ import { kernels, spiceClients } from '@rybosome/tspice'
 
 const pack = kernels
   .naif({
-    urlBase: 'kernels/naif/',
+    kernelUrlPrefix: 'kernels/naif/',
     // Important for apps deployed under a subpath (GitHub Pages, etc).
     baseUrl: import.meta.env.BASE_URL,
   })
@@ -92,7 +92,7 @@ import { kernels, resolveKernelUrl } from '@rybosome/tspice'
 
 const pack = kernels
   .naif({
-    urlBase: 'kernels/naif/',
+    kernelUrlPrefix: 'kernels/naif/',
     baseUrl: import.meta.env.BASE_URL,
   })
   .naif0012_tls()
