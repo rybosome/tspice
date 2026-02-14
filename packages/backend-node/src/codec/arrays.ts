@@ -39,18 +39,22 @@ function assertArrayLikeFiniteLength(
   }
 }
 
+/** Assert that a value is an array-like of length 3 containing finite numbers. */
 export function assertLength3(value: unknown, label = "Vec3"): asserts value is ArrayLike<number> {
   assertArrayLikeFiniteLength(value, 3, label);
 }
 
+/** Assert that a value is an array-like of length 6 containing finite numbers. */
 export function assertLength6(value: unknown, label = "Vec6"): asserts value is ArrayLike<number> {
   assertArrayLikeFiniteLength(value, 6, label);
 }
 
+/** Assert that a value is an array-like of length 9 containing finite numbers. */
 export function assertLength9(value: unknown, label = "Mat3"): asserts value is ArrayLike<number> {
   assertArrayLikeFiniteLength(value, 9, label);
 }
 
+/** Assert that a value is an array-like of length 36 containing finite numbers. */
 export function assertLength36(value: unknown, label = "Mat6"): asserts value is ArrayLike<number> {
   assertArrayLikeFiniteLength(value, 36, label);
 }

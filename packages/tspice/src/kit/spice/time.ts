@@ -3,6 +3,7 @@ import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 import { wrapSpiceError } from "../../errors.js";
 import type { SpiceTime } from "../../types.js";
 
+/** Create time conversion helpers (`str2et`/`et2utc` wrappers) for a given backend. */
 export function createTimeKit(cspice: SpiceBackend): {
   toolkitVersion(): string;
   utcToEt(utc: string): SpiceTime;

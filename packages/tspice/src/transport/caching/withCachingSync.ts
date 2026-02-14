@@ -75,6 +75,7 @@ function tryUnrefTimer(timer: unknown): void {
   }
 }
 
+/** Wrap a sync transport with an in-memory response cache (LRU-ish + optional TTL). */
 export function withCachingSync(
   base: SpiceTransportSync,
   opts?: WithCachingOptions,

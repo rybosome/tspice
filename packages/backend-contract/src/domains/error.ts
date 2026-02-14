@@ -15,6 +15,7 @@ export const GETMSG_WHICH_VALUES = ["SHORT", "LONG", "EXPLAIN"] as const;
 
 export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
 
+/** Type guard for {@link GetmsgWhich}. */
 export function isGetmsgWhich(which: unknown): which is GetmsgWhich {
   return (
     which === "SHORT" ||
@@ -36,6 +37,7 @@ export function assertGetmsgWhich(which: unknown): asserts which is GetmsgWhich 
   throw new TypeError(`getmsg(which) expected one of ${allowed} (got ${JSON.stringify(which)})`);
 }
 
+/** Backend contract for SPICE error/status utilities (failed/reset/getmsg/etc). */
 export interface ErrorApi {
   /** Return `true` if the CSPICE error status is currently set. */
   failed(): boolean;

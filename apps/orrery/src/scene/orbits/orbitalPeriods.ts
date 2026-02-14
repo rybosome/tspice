@@ -22,12 +22,14 @@ const SIDEREAL_PERIOD_DAYS_BY_BODY_KEY: Readonly<Record<string, number>> = {
   MOON: 27.321_661, // Moon
 }
 
+/** Get an approximate sidereal orbital period (seconds) for a body, if known. */
 export function getApproxOrbitalPeriodSec(body: BodyRef): number | undefined {
   const days = SIDEREAL_PERIOD_DAYS_BY_BODY_KEY[String(body)]
   if (!days) return undefined
   return days * DAY_SEC
 }
 
+/** Choose a quantization interval (seconds) for orbit re-sampling for a given body. */
 export function getOrbitAnchorQuantumSec(body: BodyRef): number {
   // Orbit paths are time-anchored, but recomputing every tick is too expensive.
   // MVP heuristic: planets update ~daily; moon updates ~hourly.

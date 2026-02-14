@@ -55,6 +55,9 @@ export type SunPostprocessUpdate = {
   bloom?: Partial<SunPostprocessConfig['bloom']>
 }
 
+/**
+ * Create the Three.js runtime (renderer + scenes + camera controller + postprocessing).
+ */
 export function createThreeRuntime(args: {
   canvas: HTMLCanvasElement
   container: HTMLDivElement

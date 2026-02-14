@@ -49,6 +49,7 @@ function formatRateShort(rate: number): string {
 
 const PAUSE_ICON = '⏸\uFE0E'
 
+/** Time playback and scrub controls (UTC/ET display + rate controls). */
 export function PlaybackControls({ spice, getDefaultResumeRateSecPerSec }: PlaybackControlsProps) {
   const state = useTimeStore()
 

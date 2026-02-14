@@ -22,6 +22,7 @@ import type { SpiceIntCell } from "./cells-windows.js";
  */
 export type KernelKindInput = KernelKind | readonly KernelKind[] | string;
 
+/** Backend contract for kernel management and kernel metadata queries. */
 export interface KernelsApi {
   /**
    * Load a SPICE kernel.

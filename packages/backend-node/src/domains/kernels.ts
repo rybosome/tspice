@@ -16,6 +16,7 @@ import { invariant } from "@rybosome/tspice-core";
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
 
+/** Create a {@link KernelsApi} implementation backed by the native Node addon + kernel staging. */
 export function createKernelsApi(native: NativeAddon, stager: KernelStager): KernelsApi {
   const kernelKindProbeFromNative = (result: { file?: unknown; filtyp?: unknown }) => {
     invariant(typeof result.file === "string", "Expected kdata().file to be a string");

@@ -736,6 +736,7 @@ function tspiceCallSpkuds(
   );
 }
 
+/** Create an {@link EphemerisApi} implementation backed by a WASM Emscripten module. */
 export function createEphemerisApi(
   module: EmscriptenModule,
   handles: SpiceHandleRegistry,

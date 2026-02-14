@@ -16,6 +16,7 @@ export type CreateKitOptions = {
   byteBackedKernelPaths?: Set<string>;
 };
 
+/** Create a high-level {@link SpiceKit} wrapper around a low-level {@link SpiceBackend}. */
 export function createKit(cspice: SpiceBackend, options: CreateKitOptions = {}): SpiceKit {
   return {
     ...createKernelKit(

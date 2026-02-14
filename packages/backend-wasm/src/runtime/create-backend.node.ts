@@ -56,6 +56,9 @@ function boundedCacheSet(key: string, value: ArrayBuffer): void {
   }
 }
 
+/**
+ * Convert a Uint8Array view into an exact-length ArrayBuffer (copying only when needed).
+ */
 export function toExactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
   // Fast-path: if this view covers the whole underlying buffer, return it
   // directly (no copy).
@@ -79,6 +82,7 @@ export function toExactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
   return uint8.buffer;
 }
 
+/** Read the tspice backend WASM binary from disk (Node-only). */
 export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffer | undefined> {
   // Allow http(s) URLs to be fetched by Emscripten.
   if (wasmUrl.startsWith("http://") || wasmUrl.startsWith("https://")) {
@@ -147,6 +151,7 @@ export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffe
   return buffer;
 }
 
+/** Create a {@link SpiceBackend} implementation backed by WASM (Node runtime). */
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackend & { kind: "wasm" }> {

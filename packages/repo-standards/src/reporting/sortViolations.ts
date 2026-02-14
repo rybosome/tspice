@@ -14,6 +14,7 @@ function cmpNum(a: number | undefined, b: number | undefined): number {
   return aa - bb;
 }
 
+/** Sort violations deterministically for stable output (rule/package/file/line/message). */
 export function sortViolations(violations: Violation[]): Violation[] {
   return [...violations].sort((a, b) => {
     const locA = a.location ?? {};

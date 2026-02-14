@@ -11,6 +11,7 @@
  */
 const MAX_BOD_ITEM_CHARS = 1024;
 
+/** Normalize a body-constant item name for `bodfnd` / `bodvar` lookups. */
 export function normalizeBodItem(item: string): string {
   // Defensive guardrail: kernel pool item names are expected to be short.
   // If a pathological string makes it here (e.g. a multi-megabyte user input),

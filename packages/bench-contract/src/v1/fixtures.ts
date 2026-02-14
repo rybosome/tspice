@@ -7,11 +7,13 @@ export const DEFAULT_FIXTURE_ROOTS_V1: FixtureRootsV1 = {
   FIXTURES: "packages/tspice/test/fixtures",
 };
 
+/** Parsed `fixture:` reference (`fixture:<group>/<path>`). */
 export interface ParsedFixtureRef {
   readonly root: string;
   readonly relPath: string;
 }
 
+/** Parse a `fixture:` reference string; returns null if invalid. */
 export function parseFixtureRef(ref: string): ParsedFixtureRef | null {
   if (!ref.startsWith("$")) return null;
 
@@ -35,6 +37,7 @@ export function parseFixtureRef(ref: string): ParsedFixtureRef | null {
   return { root, relPath };
 }
 
+/** Options for {@link resolveFixtureRef}. */
 export interface ResolveFixtureRefOptions {
   readonly repoRoot: string;
   readonly fixtureRoots?: FixtureRootsV1;
@@ -76,6 +79,7 @@ export type ResolveFixtureRefResult =
     }
   | { readonly ok: false; readonly message: string };
 
+/** Options for {@link isPathInside}. */
 export interface IsPathInsideOptions {
   readonly pathImpl?: PlatformPath;
   /**
@@ -158,6 +162,9 @@ function normalizeForContainment(
   return out;
 }
 
+/**
+ * Check whether `childPath` is inside `parentPath` (after resolving/normalizing both).
+ */
 export function isPathInside(
   baseDir: string,
   candidatePath: string,
@@ -179,6 +186,7 @@ export function isPathInside(
   );
 }
 
+/** Resolve a `fixture:` reference into a concrete OS path under an allowed fixture root. */
 export function resolveFixtureRef(
   ref: string,
   options: ResolveFixtureRefOptions,

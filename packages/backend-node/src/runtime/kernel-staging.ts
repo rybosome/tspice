@@ -33,6 +33,7 @@ export type KernelStager = {
   virtualizePathFromSpice(path: string): string;
 };
 
+/** Create a staging helper that maps virtual kernel IDs to OS temp files for the native backend. */
 export function createKernelStager(): KernelStager {
   const tempByVirtualPath = new Map<string, string>();
   const virtualByTempPath = new Map<string, string>();

@@ -68,6 +68,7 @@ function createBuilder(state: {
   return builder;
 }
 
+/** Create a builder for selecting and packaging a minimal set of public NAIF kernels. */
 export function createPublicKernels(opts?: CreatePublicKernelsOptions): PublicKernelsBuilder {
   const normalized: Required<CreatePublicKernelsOptions> = {
     urlBase: ensureTrailingSlash(opts?.urlBase ?? "kernels/naif/"),

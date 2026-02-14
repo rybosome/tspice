@@ -236,6 +236,7 @@ async function exists(filePath: string): Promise<boolean> {
   }
 }
 
+/** Resolve a package's public entrypoints (from `exports` or `main/types`) to repo-relative source paths. */
 export async function resolvePackageEntrypoints(opts: {
   repoRoot: string;
   pkg: ValidatedPackageRoot;

@@ -8,6 +8,7 @@ export type CreateSkydomeOptions = {
   radiusWorld?: number
 }
 
+/** Create a lightweight procedural skydome mesh (Milky Way-like background). */
 export function createSkydome(options: CreateSkydomeOptions): {
   object: THREE.Mesh
   syncToCamera: (camera: THREE.Camera) => void

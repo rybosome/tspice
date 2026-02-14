@@ -2,6 +2,7 @@ export type PathSegment = string | number;
 
 const IDENTIFIER_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
+/** Format a JSONPath-like pointer (e.g. `$.foo[0].bar`) for validation error messages. */
 export function formatPath(path: readonly PathSegment[]): string {
   let out = "$";
 

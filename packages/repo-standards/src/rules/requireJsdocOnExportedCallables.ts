@@ -139,6 +139,7 @@ function violationForCallable(opts: {
   };
 }
 
+/** Run the JSDoc enforcement rule for a single package. */
 export function run(input: RuleRunInput): RuleRunResult {
   const pkg = input.ctx.index.packages.find((p) => p.packageRoot === input.packageRoot);
   if (!pkg) return [];

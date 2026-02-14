@@ -15,6 +15,9 @@ import type { BodyId, BodyKind } from '../scene/BodyRegistry.js'
 
 // ---------- Types ----------
 
+/**
+ * Body metadata needed to render a label + leader line.
+ */
 export interface LabelBody {
   id: BodyId
   label: string
@@ -23,12 +26,14 @@ export interface LabelBody {
   radiusKm: number
 }
 
+/** Construction options for {@link LabelOverlay}. */
 export interface LabelOverlayOptions {
   container: HTMLElement
   camera: THREE.PerspectiveCamera
   kmToWorld: number
 }
 
+/** Per-frame update options for {@link LabelOverlay.update}. */
 export interface LabelOverlayUpdateOptions {
   bodies: LabelBody[]
   focusBodyId: BodyId | undefined
@@ -323,6 +328,9 @@ function placeLabelsGreedy(labels: LabelState[], containerWidth: number, contain
 
 // ---------- LabelOverlay Class ----------
 
+/**
+ * Pure DOM overlay for body labels + leader lines (updated from the render loop).
+ */
 export class LabelOverlay {
   private container: HTMLElement
   private camera: THREE.PerspectiveCamera
@@ -334,6 +342,7 @@ export class LabelOverlay {
 
   private raycaster = new THREE.Raycaster()
 
+  /** Create a new label overlay attached to a container element. */
   constructor(options: LabelOverlayOptions) {
     this.container = options.container
     this.camera = options.camera
@@ -504,6 +513,7 @@ export class LabelOverlay {
     }
   }
 
+  /** Remove overlay DOM and release internal state. */
   dispose(): void {
     this.overlayDiv.remove()
     this.labelStates.clear()

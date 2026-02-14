@@ -150,6 +150,7 @@ function callVoidHandle(
   });
 }
 
+/** Create a {@link FileIoApi} implementation backed by a WASM Emscripten module. */
 export function createFileIoApi(
   module: EmscriptenModule,
   handles: SpiceHandleRegistry,

@@ -27,6 +27,7 @@ import type { CreateWasmBackendOptions } from "./create-backend-options.js";
 export const WASM_JS_FILENAME = "tspice_backend_wasm.web.js" as const;
 export const WASM_BINARY_FILENAME = "tspice_backend_wasm.wasm" as const;
 
+/** Create a {@link SpiceBackend} implementation backed by WASM (web/runtime loader). */
 export async function createWasmBackend(
   options: CreateWasmBackendOptions = {},
 ): Promise<SpiceBackend & { kind: "wasm" }> {

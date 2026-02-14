@@ -49,6 +49,7 @@ export function canQueueMacrotask(): boolean {
   return typeof setTimeout === "function";
 }
 
+/** Queue `fn` on the next macrotask (MessageChannel preferred; setTimeout fallback). */
 export function queueMacrotask(fn: () => void, opts?: QueueMacrotaskOptions): boolean {
   const allowSyncFallback = opts?.allowSyncFallback ?? true;
 
@@ -100,6 +101,7 @@ export function queueMacrotask(fn: () => void, opts?: QueueMacrotaskOptions): bo
   return false;
 }
 
+/** Return a promise that resolves on the next macrotask boundary (rejects if unavailable). */
 export function nextMacrotask(): Promise<void> {
   return new Promise((resolve, reject) => {
     const ok = queueMacrotask(resolve, { allowSyncFallback: false });

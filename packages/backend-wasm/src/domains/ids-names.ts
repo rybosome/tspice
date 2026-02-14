@@ -103,6 +103,7 @@ function tspiceCallBodvar(module: EmscriptenModule, body: number, item: string):
   }
 }
 
+/** Create an {@link IdsNamesApi} implementation backed by a WASM Emscripten module. */
 export function createIdsNamesApi(module: EmscriptenModule): IdsNamesApi {
   return {
     bodn2c: (name: string) => {

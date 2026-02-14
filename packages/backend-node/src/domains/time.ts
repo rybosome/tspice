@@ -3,6 +3,7 @@ import { assertNever, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+/** Create a {@link TimeApi} implementation backed by the native Node addon. */
 export function createTimeApi(native: NativeAddon): TimeApi {
   function timdef(action: "GET", item: string): string;
   function timdef(action: "SET", item: string, value: string): void;

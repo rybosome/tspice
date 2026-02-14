@@ -23,6 +23,7 @@ export type KnownRuleId = keyof typeof ruleRegistry;
 
 export const knownRuleIds = Object.keys(ruleRegistry).sort() as KnownRuleId[];
 
+/** Type guard for known repo-standards rule IDs. */
 export function isKnownRuleId(value: string): value is KnownRuleId {
   return Object.prototype.hasOwnProperty.call(ruleRegistry, value);
 }

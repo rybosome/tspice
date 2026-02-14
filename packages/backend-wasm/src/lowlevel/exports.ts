@@ -1804,6 +1804,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
+/** Assert that an object looks like the expected tspice Emscripten module export surface. */
 export function assertEmscriptenModule(m: unknown): asserts m is EmscriptenModule {
   if (!isRecord(m)) {
     throw new TypeError("Expected Emscripten module to be an object");

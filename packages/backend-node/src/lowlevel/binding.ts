@@ -3,6 +3,9 @@ import { invariant } from "@rybosome/tspice-core";
 import { getNativeAddon } from "../runtime/addon.js";
 import type { NativeAddon } from "../runtime/addon.js";
 
+/**
+ * Get the loaded native addon binding and assert it provides the expected entrypoints.
+ */
 export function getNodeBinding(): NativeAddon {
   const native = getNativeAddon();
 

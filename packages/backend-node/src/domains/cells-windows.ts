@@ -13,6 +13,7 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+/** Create a {@link CellsWindowsApi} implementation backed by the native Node addon. */
 export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
   return {
     newIntCell: (size) => {

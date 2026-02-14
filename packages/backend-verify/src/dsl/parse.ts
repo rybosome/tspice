@@ -294,6 +294,7 @@ function parseCase(raw: unknown, index: number, sourceDir: string): ScenarioCase
   return out;
 }
 
+/** Parse a loaded scenario YAML file into a normalized, validated AST. */
 export function parseScenario(file: ScenarioYamlFile): ScenarioAst {
   const { sourcePath, data } = file;
   const sourceDir = path.dirname(sourcePath);

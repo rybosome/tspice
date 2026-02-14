@@ -2,6 +2,7 @@ import { notImplemented } from "../../shared/notImplemented.js";
 
 import type { Runner } from "../types.js";
 
+/** Options for {@link createTspiceRunner}. */
 export interface CreateTspiceRunnerOptions {
   readonly tspiceCommand?: string;
 }
