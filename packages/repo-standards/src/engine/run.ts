@@ -3,8 +3,8 @@ import { buildRepoContext } from "../indexing/buildRepoContext.js";
 import { knownRuleIds, ruleRegistry } from "../rules/registry.js";
 
 /**
-* Runs all enabled standards and returns a consolidated report.
-*/
+ * Runs all enabled standards and returns a consolidated report.
+ */
 export async function runStandards(opts: RunStandardsOptions): Promise<RepoStandardsReport> {
   const violations: Violation[] = [];
 

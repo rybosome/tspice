@@ -1,14 +1,14 @@
 /**
-* Normalize a body-constant item name for `bodfnd` / `bodvar` lookups.
-*
-* Body-constant item names are treated as case-insensitive by CSPICE, but CSPICE's
-* casing behavior is ASCII-based. We intentionally avoid `String.prototype.toUpperCase()`
-* here because it applies Unicode case mappings (e.g. `"ß" -> "SS"`), which can
-* change lookup keys in surprising ways.
-*
-* We intentionally trim **ASCII whitespace only** (space/tab/newline/etc.) to match
-* CSPICE behavior and keep native + WASM backends consistent.
-*/
+ * Normalize a body-constant item name for `bodfnd` / `bodvar` lookups.
+ *
+ * Body-constant item names are treated as case-insensitive by CSPICE, but CSPICE's
+ * casing behavior is ASCII-based. We intentionally avoid `String.prototype.toUpperCase()`
+ * here because it applies Unicode case mappings (e.g. `"ß" -> "SS"`), which can
+ * change lookup keys in surprising ways.
+ *
+ * We intentionally trim **ASCII whitespace only** (space/tab/newline/etc.) to match
+ * CSPICE behavior and keep native + WASM backends consistent.
+ */
 const MAX_BOD_ITEM_CHARS = 1024;
 
 export function normalizeBodItem(item: string): string {

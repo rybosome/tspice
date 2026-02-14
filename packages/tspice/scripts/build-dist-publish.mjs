@@ -11,16 +11,16 @@ const tspiceRoot = path.join(repoRoot, "packages", "tspice");
 const distPublishRoot = path.join(tspiceRoot, "dist-publish");
 
 /**
-* NOTE: The published `@rybosome/tspice` package must not depend on other
-* `@rybosome/*` packages existing on npm.
-*
-* We achieve this by copying our internal workspace package builds into
-* `dist-publish/` and rewriting their import specifiers to use *internal*
-* package.json `imports` aliases ("#...").
-*
-* This keeps the public surface area limited to `@rybosome/tspice`,
-* while still letting vendored internal modules reference each other.
-*/
+ * NOTE: The published `@rybosome/tspice` package must not depend on other
+ * `@rybosome/*` packages existing on npm.
+ *
+ * We achieve this by copying our internal workspace package builds into
+ * `dist-publish/` and rewriting their import specifiers to use *internal*
+ * package.json `imports` aliases ("#...").
+ *
+ * This keeps the public surface area limited to `@rybosome/tspice`,
+ * while still letting vendored internal modules reference each other.
+ */
 const SPECIFIER_REWRITES = new Map([
   ["@rybosome/tspice-core", "#core"],
   ["@rybosome/tspice-backend-contract", "#backend-contract"],

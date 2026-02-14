@@ -17,7 +17,7 @@
     "check:versions": "node scripts/verify-native-package-versions.mjs",
     "fetch:cspice": "node scripts/fetch-cspice.mjs",
     "format:check": "pnpm -C apps/orrery run format:check",
-    "lint": "pnpm -r --if-present lint",
+    "lint": "pnpm run lint:jsdoc && pnpm -r --if-present lint",
     "stage:native-platform": "node scripts/stage-native-platform.mjs",
     "test": "turbo run test",
     "test:js": "turbo run test --filter=!@rybosome/tspice-backend-node",
@@ -26,12 +26,19 @@
     "typecheck": "turbo run build --filter=@rybosome/tspice-backend-contract && turbo run typecheck",
     "verify": "pnpm -w verify:js",
     "verify:js": "pnpm -w check:js",
-    "verify:native": "pnpm -w check:native"
+    "verify:native": "pnpm -w check:native",
+    "lint:jsdoc": "eslint --config eslint.jsdoc.config.mjs \"{apps,packages,benchmarks,fixtures,scripts}/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}\" --max-warnings 0",
+    "lint:jsdoc:fix": "eslint --config eslint.jsdoc.config.mjs \"{apps,packages,benchmarks,fixtures,scripts}/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}\" --fix"
   },
   "devDependencies": {
     "@rybosome/tspice-bench-contract": "workspace:*",
     "@types/node": "^22.10.2",
     "@rybosome/tspice-repo-standards": "workspace:*",
-    "turbo": "^2.5.5"
+    "turbo": "^2.5.5",
+    "eslint": "^9.39.1",
+    "eslint-plugin-jsdoc": "^62.5.4",
+    "@typescript-eslint/parser": "^8.24.1",
+    "typescript": "^5.9.3",
+    "@typescript-eslint/eslint-plugin": "^8.24.1"
   }
 }

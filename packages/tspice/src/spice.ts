@@ -108,9 +108,9 @@ function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
 }
 
 /**
-* Create an async client with the same surface area as `createSpice()`, but
-* with all methods returning `Promise`s.
-*/
+ * Create an async client with the same surface area as `createSpice()`, but
+ * with all methods returning `Promise`s.
+ */
 export async function createSpiceAsync(
   options: CreateSpiceAsyncOptions,
 ): Promise<SpiceAsync> {

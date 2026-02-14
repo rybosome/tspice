@@ -4,11 +4,11 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 export const WASM_ERR_MAX_BYTES = 2048;
 
 /**
-* Maximum allocation size (bytes) we'll attempt in codec helpers.
-*
-* This is a guardrail against pathological values (NaN/Infinity/huge numbers)
-* accidentally flowing into `_malloc()`.
-*/
+ * Maximum allocation size (bytes) we'll attempt in codec helpers.
+ *
+ * This is a guardrail against pathological values (NaN/Infinity/huge numbers)
+ * accidentally flowing into `_malloc()`.
+ */
 export const WASM_MAX_ALLOC_BYTES = 256 * 1024 * 1024; // 256 MiB
 
 function assertValidMallocSize(size: number): void {
