@@ -12,3 +12,6 @@ packages/tspice/backend-wasm
 
 packages/*/native/build
 packages/*/native/.node-gyp
+
+# Generated TypeDoc output (VitePress API reference)
+apps/docs/api/reference/**

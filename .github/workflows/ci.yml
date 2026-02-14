@@ -20,6 +20,14 @@ jobs:
       node_version: ${{ matrix.node }}
       command: pnpm run check
 
+  docs-build:
+    name: Docs build (ubuntu + node 22)
+    uses: ./.github/workflows/reusable-node-pnpm.yml
+    with:
+      runs_on: ubuntu-latest
+      node_version: '22'
+      command: pnpm docs:build
+
   orrery-e2e:
     name: Orrery Playwright e2e (ubuntu + node 22)
     uses: ./.github/workflows/reusable-node-pnpm.yml
