@@ -1,3 +1,5 @@
+const MAX_BOD_ITEM_CHARS = 1024;
+
 /**
  * Normalize a body-constant item name for `bodfnd` / `bodvar` lookups.
  *
@@ -9,8 +11,6 @@
  * We intentionally trim **ASCII whitespace only** (space/tab/newline/etc.) to match
  * CSPICE behavior and keep native + WASM backends consistent.
  */
-const MAX_BOD_ITEM_CHARS = 1024;
-
 export function normalizeBodItem(item: string): string {
   // Defensive guardrail: kernel pool item names are expected to be short.
   // If a pathological string makes it here (e.g. a multi-megabyte user input),

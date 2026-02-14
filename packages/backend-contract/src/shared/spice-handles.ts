@@ -43,6 +43,14 @@ function asSpiceHandle(handleId: number): SpiceHandle {
   return handleId as unknown as SpiceHandle;
 }
 
+/**
+* Create an in-memory registry that maps stable JS {@link SpiceHandle} values
+* to backend-native integer handles.
+*
+* Backends use this to:
+* - enforce handle kind expectations at runtime
+* - implement close-once semantics (rejecting invalid/closed handles)
+*/
 export function createSpiceHandleRegistry(): SpiceHandleRegistry {
   let nextHandleId = 1;
   const handles = new Map<number, SpiceHandleEntry>();

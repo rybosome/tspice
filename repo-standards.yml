@@ -3,6 +3,7 @@ schemaVersion: 1
 rules:
   require-jsdoc-on-exported-callables:
     packages:
+      - packages/backend-contract
       - packages/core
       - packages/repo-standards
 

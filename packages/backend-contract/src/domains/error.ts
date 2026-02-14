@@ -15,6 +15,12 @@ export const GETMSG_WHICH_VALUES = ["SHORT", "LONG", "EXPLAIN"] as const;
 
 export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
 
+/**
+* Type guard for {@link GetmsgWhich}.
+*
+* Accepts unknown runtime values and returns `true` only for valid CSPICE
+* `getmsg()` selectors.
+*/
 export function isGetmsgWhich(which: unknown): which is GetmsgWhich {
   return (
     which === "SHORT" ||
