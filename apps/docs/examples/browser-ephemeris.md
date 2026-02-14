@@ -81,8 +81,14 @@ await spice.kit.loadKernel({ path, bytes })
 
 Here’s the explicit fetch + load flow (equivalent to what `withKernels()` does internally):
 
+> Note on root-relative URLs (`"/..."`): by default, `rootRelativeKernelUrlBehavior: "bypassBaseUrl"`
+> means `/...` kernel URLs **ignore** `pack.baseUrl` (so `/kernels/a.tls` stays `/kernels/a.tls`).
+> This can surprise subpath deployments (`/myapp/`), where you likely want **relative** kernel URLs
+> (`kernels/...`) so `pack.baseUrl` can be applied, or set `rootRelativeKernelUrlBehavior: "error"`
+> to catch accidental `/...` URLs.
+
 ```ts
-import { kernels } from '@rybosome/tspice'
+import { kernels, resolveKernelUrl } from '@rybosome/tspice'
 
 const pack = kernels
   .naif({
@@ -94,11 +100,13 @@ const pack = kernels
   .de432s_bsp()
   .pack()
 
+const rootRelativeKernelUrlBehavior = 'bypassBaseUrl' as const
+
 for (const kernel of pack.kernels) {
-  // Note: for absolute kernel URLs, `pack.baseUrl` is ignored.
-  const res = await fetch(`${pack.baseUrl ?? ''}${kernel.url}`)
+  const url = resolveKernelUrl(kernel.url, pack.baseUrl, rootRelativeKernelUrlBehavior)
+  const res = await fetch(url)
   if (!res.ok) {
-    throw new Error(`Failed to fetch kernel: ${kernel.url} (${res.status} ${res.statusText})`)
+    throw new Error(`Failed to fetch kernel: ${url} (${res.status} ${res.statusText})`)
   }
 
   const bytes = new Uint8Array(await res.arrayBuffer())

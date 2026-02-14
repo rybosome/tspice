@@ -93,6 +93,9 @@ try {
 
 Use `kernels.naif(opts?)` for a typed NAIF `generic_kernels` catalog. Call `.pack()` to get a `KernelPack`.
 
+> Note: root-relative `urlBase` values (starting with `/`) intentionally bypass `pack.baseUrl` by default.
+> For subpath hosting (`/myapp/`), prefer a relative `urlBase` (no leading `/`) so `pack.baseUrl` can be applied.
+
 ```ts
 import { kernels } from "@rybosome/tspice";
 

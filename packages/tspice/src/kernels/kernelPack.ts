@@ -102,7 +102,7 @@ function isAbsoluteUrl(url: string): boolean {
 }
 
 
-function resolveKernelUrl(
+export function resolveKernelUrl(
   url: string,
   baseUrl: string | undefined,
   rootRelativeKernelUrlBehavior: RootRelativeKernelUrlBehavior,

@@ -66,3 +66,5 @@ export type {
   KernelPackKernel,
   LoadKernelPackOptions,
 } from "./kernels/kernelPack.js";
+
+export { resolveKernelUrl } from "./kernels/kernelPack.js";
