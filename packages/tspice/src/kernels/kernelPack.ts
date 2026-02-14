@@ -102,6 +102,10 @@ function isAbsoluteUrl(url: string): boolean {
 }
 
 
+/**
+ * Resolve a kernel URL against an optional `baseUrl`, respecting the configured
+ * behavior for root-relative URLs.
+ */
 export function resolveKernelUrl(
   url: string,
   baseUrl: string | undefined,
