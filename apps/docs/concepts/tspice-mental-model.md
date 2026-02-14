@@ -87,7 +87,7 @@ Kernel loading is where environment differences matter most:
 
 - **Node/native backend:** `raw.furnsh("/abs/or/relative/path")` reads from the OS filesystem.
 - **Browser/WASM backend:** you typically load **bytes** into a virtual filesystem path (often under `/kernels/...`).
-  - Use `spiceClients.withKernel({ url })` / `withKernels(pack)` for the common case.
+  - Use `spiceClients.withKernel(pack)` / `withKernels(pack)` for the common case (build `pack` via `kernels.custom()` / `kernels.naif()`).
   - Or call `kit.loadKernel({ path, bytes })` if you already have the bytes.
 
 ### Conventions you should assume everywhere

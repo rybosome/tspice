@@ -104,9 +104,6 @@ import { kernels } from "@rybosome/tspice";
 const pack = kernels.naif().naif0012_tls().pck00011_tpc().pack();
 ```
 
-`publicKernels` / `createPublicKernels` are still exported for compatibility, but new code should prefer
-`kernels.naif()` / `kernels.custom()`.
-
 ### Custom kernels
 
 Use `kernels.custom(opts?)` to build a `KernelPack` for arbitrary kernels.
@@ -132,7 +129,7 @@ Kernel load order matches call order:
 
 - `withKernels(pack)` appends 1 batch
 - `withKernels(packs)` appends multiple batches
-- `withKernel(...)` appends its own 1-kernel batch
+- `withKernel(pack)` appends 1 batch (alias for `withKernels(pack)`)
 
 ## Backend notes
 

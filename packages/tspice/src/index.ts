@@ -55,13 +55,6 @@ export type {
 export { kernels } from "./kernels/kernels.js";
 
 export type {
-  CreatePublicKernelsOptions,
-  PublicKernelId,
-  PublicKernelsBuilder,
-} from "./kernels/publicKernels.js";
-export { createPublicKernels, publicKernels } from "./kernels/publicKernels.js";
-
-export type {
   KernelPack,
   KernelPackKernel,
   LoadKernelPackOptions,

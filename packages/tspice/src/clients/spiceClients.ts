@@ -16,7 +16,6 @@ import { createSpiceAsyncFromTransport } from "./createSpiceAsyncFromTransport.j
 import { createSpiceSyncFromTransport } from "./createSpiceSyncFromTransport.js";
 import type { KernelPack, LoadKernelPackOptions } from "../kernels/kernelPack.js";
 import { loadKernelPack } from "../kernels/kernelPack.js";
-import { defaultKernelPathFromUrl } from "../kernels/defaultKernelPathFromUrl.js";
 import { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
 import { createWorkerTransport, type WorkerLike, type WorkerTransport } from "../worker/transport/createWorkerTransport.js";
 
@@ -80,15 +79,11 @@ export type SpiceClientsBuilder = {
   withKernels(packs: readonly KernelPack[], opts?: LoadKernelPackOptions): SpiceClientsBuilder;
 
   /**
-   * Append a single-kernel batch.
+   * Append a single kernel pack as its own batch.
    *
-   * When `path` is omitted, it defaults to a stable hashed path like `/kernels/<hash>-<basename(url)>`.
-   * Basename is computed from the URL/path after stripping query/hash.
+   * Equivalent to `withKernels(pack)`.
    */
-  withKernel(
-    kernel: { url: string; path?: string },
-    opts?: LoadKernelPackOptions,
-  ): SpiceClientsBuilder;
+  withKernel(pack: KernelPack): SpiceClientsBuilder;
 
   /** Build a sync-ish in-process client. */
   toSync(opts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>>;
@@ -227,17 +222,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       return addKernelBatches(packs, opts);
     },
 
-    withKernel: (kernel, opts) => {
-      const pack: KernelPack = {
-        kernels: [
-          {
-            url: kernel.url,
-            path: kernel.path ?? defaultKernelPathFromUrl(kernel.url),
-          },
-        ],
-      };
-      return addKernelBatches([pack], opts);
-    },
+    withKernel: (pack) => addKernelBatches([pack], undefined),
 
     toSync: async (inProcessOpts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>> => {
       const baseSpice = await createSpice(inProcessOpts ?? defaultInProcessOptions);
