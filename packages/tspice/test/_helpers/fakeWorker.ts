@@ -3,11 +3,11 @@ import type { WorkerLike } from "../../src/worker/transport/createWorkerTranspor
 type Listener = (ev: { data?: unknown; message?: unknown }) => void;
 
 /**
-* Minimal `WorkerLike` implementation for unit tests.
-*
-* This is intentionally synchronous: `postMessage()` immediately delivers a
-* "message" event to the connected worker-global-scope (and vice versa).
-*/
+ * Minimal `WorkerLike` implementation for unit tests.
+ *
+ * This is intentionally synchronous: `postMessage()` immediately delivers a
+ * "message" event to the connected worker-global-scope (and vice versa).
+ */
 export class FakeWorker implements WorkerLike {
   terminated = false;
 

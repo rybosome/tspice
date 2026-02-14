@@ -29,8 +29,8 @@ export type ParseResult =
     };
 
 /**
-* Returns a help/usage string for the `tspice-repo-standards` CLI.
-*/
+ * Returns a help/usage string for the `tspice-repo-standards` CLI.
+ */
 export function usage(): string {
   return [
     "Repo Standards Engine (skeleton)",
@@ -52,8 +52,8 @@ export function usage(): string {
 }
 
 /**
-* Parses raw CLI argv into a strongly-typed run or help request.
-*/
+ * Parses raw CLI argv into a strongly-typed run or help request.
+ */
 export function parseCliArgs(rawArgv: string[]): ParseResult {
   const argv: string[] = [];
   const positionals: string[] = [];
@@ -164,8 +164,8 @@ export interface MainIo {
 }
 
 /**
-* CLI entrypoint: loads config, executes standards, and writes a formatted report.
-*/
+ * CLI entrypoint: loads config, executes standards, and writes a formatted report.
+ */
 export async function main(rawArgv: string[], io: MainIo): Promise<number> {
   try {
     const parsed = parseCliArgs(rawArgv);

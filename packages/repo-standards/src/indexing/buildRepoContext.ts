@@ -23,8 +23,8 @@ export interface RepoContext {
 }
 
 /**
-* Builds an indexable TypeScript Program for the repo and extracts per-package export surfaces.
-*/
+ * Builds an indexable TypeScript Program for the repo and extracts per-package export surfaces.
+ */
 export async function buildRepoContext(input: BuildRepoContextInput): Promise<RepoContext> {
   const validated = await validatePackageRoots({
     repoRoot: input.repoRoot,

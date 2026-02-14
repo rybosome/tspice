@@ -8,12 +8,12 @@ import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 
 /**
-* Max byte size for string outputs from CSPICE time calls (`et2utc_c`, `timout_c`).
-*
-* This intentionally differs from `WASM_ERR_MAX_BYTES`:
-* - time formatting outputs can be much larger than error messages (esp. with long TIMOUT pictures)
-* - we want a stable, explicit cap for output allocations
-*/
+ * Max byte size for string outputs from CSPICE time calls (`et2utc_c`, `timout_c`).
+ *
+ * This intentionally differs from `WASM_ERR_MAX_BYTES`:
+ * - time formatting outputs can be much larger than error messages (esp. with long TIMOUT pictures)
+ * - we want a stable, explicit cap for output allocations
+ */
 const WASM_TIME_OUT_MAX_BYTES = 16 * 1024; // 16 KiB
 
 const WASM_TIME_SMALL_OUT_MAX_BYTES = 2048;

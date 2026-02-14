@@ -107,10 +107,10 @@ export function assertMat6ArrayLike36(
 }
 
 /**
-* Structural check: accepts number[] and numeric TypedArrays (excludes DataView).
-*
-* This does **not** assert/require that the value is branded as a row-major Mat6.
-*/
+ * Structural check: accepts number[] and numeric TypedArrays (excludes DataView).
+ *
+ * This does **not** assert/require that the value is branded as a row-major Mat6.
+ */
 export function isMat6ArrayLike36(value: unknown): value is ArrayLike<number> {
   if (value instanceof DataView) return false;
   if (!isLength36ArrayLike(value)) return false;
@@ -156,8 +156,8 @@ export function brandMat6RowMajor(value: unknown, options?: BrandMat6Options): M
 }
 
 /**
-* Brand-only check: verifies that a value was produced by `brandMat6RowMajor()`.
-*/
+ * Brand-only check: verifies that a value was produced by `brandMat6RowMajor()`.
+ */
 export function isBrandedMat6RowMajor(value: unknown): value is Mat6RowMajor {
   if (!isLength36ArrayLike(value)) return false;
   return Boolean((value as unknown as Record<symbol, unknown>)[MAT6_ROW_MAJOR_BRAND]);

@@ -1,23 +1,23 @@
 /**
-* Contract conventions:
-* - Inputs are assumed validated at the backend boundary; the contract itself is primarily type-level.
-* - Methods throw on invalid arguments or SPICE errors.
-* - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
-*/
+ * Contract conventions:
+ * - Inputs are assumed validated at the backend boundary; the contract itself is primarily type-level.
+ * - Methods throw on invalid arguments or SPICE errors.
+ * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
+ */
 
 import type { SpiceHandle } from "../shared/types.js";
 
 /**
-* Result of running an EK query via `ekfind`.
-*
-* Notes:
-* - `ekfind` has a *non-standard* error reporting mechanism: query parse/semantic
-*   failures are returned via an `error/errmsg` output pair rather than SPICE's
-*   global error state.
-* - Backend implementations should surface that query-specific failure via this
-*   return type (no throw).
-* - SPICE-signaled failures (e.g. no loaded EKs) should still throw.
-*/
+ * Result of running an EK query via `ekfind`.
+ *
+ * Notes:
+ * - `ekfind` has a *non-standard* error reporting mechanism: query parse/semantic
+ *   failures are returned via an `error/errmsg` output pair rather than SPICE's
+ *   global error state.
+ * - Backend implementations should surface that query-specific failure via this
+ *   return type (no throw).
+ * - SPICE-signaled failures (e.g. no loaded EKs) should still throw.
+ */
 export type EkFindResult =
   | {
       ok: true;
@@ -31,14 +31,14 @@ export type EkFindResult =
     };
 
 /**
-* Result of fetching an element from an EK query result set.
-*
-* This is a tri-state:
-* - `{ found: false }`: the requested element doesn't exist (commonly `elment`
-*   is out of range for the entry).
-* - `{ found: true, isNull: true }`: the entry exists but is SQL NULL.
-* - `{ found: true, isNull: false, value: T }`: a concrete value.
-*/
+ * Result of fetching an element from an EK query result set.
+ *
+ * This is a tri-state:
+ * - `{ found: false }`: the requested element doesn't exist (commonly `elment`
+ *   is out of range for the entry).
+ * - `{ found: true, isNull: true }`: the entry exists but is SQL NULL.
+ * - `{ found: true, isNull: false, value: T }`: a concrete value.
+ */
 export type EkGetResult<T> =
   | { found: false }
   | { found: true; isNull: true }

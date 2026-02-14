@@ -1,10 +1,10 @@
 /**
-* Contract conventions:
-* - Inputs are validated at the backend boundary. This package provides shared runtime helpers
-*   (e.g. `normalizeKindInput`) that backends can reuse and that throw `RangeError` on invalid tokens.
-* - Methods throw on invalid arguments or SPICE errors.
-* - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
-*/
+ * Contract conventions:
+ * - Inputs are validated at the backend boundary. This package provides shared runtime helpers
+ *   (e.g. `normalizeKindInput`) that backends can reuse and that throw `RangeError` on invalid tokens.
+ * - Methods throw on invalid arguments or SPICE errors.
+ * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
+ */
 import type { Found, KernelData, KernelInfo, KernelKind, KernelSource } from "../shared/types.js";
 import type { SpiceIntCell } from "./cells-windows.js";
 
@@ -17,8 +17,8 @@ import type { SpiceIntCell } from "./cells-windows.js";
  * - a CSPICE-style multi-kind string (whitespace-separated, e.g. `"SPK CK"`)
  *
  * Tokens are validated case-insensitively and normalized to canonical uppercase.
-* Unknown/empty tokens throw `RangeError`.
-* An empty array (`[]`) is invalid and throws `RangeError`.
+ * Unknown/empty tokens throw `RangeError`.
+ * An empty array (`[]`) is invalid and throws `RangeError`.
  */
 export type KernelKindInput = KernelKind | readonly KernelKind[] | string;
 
