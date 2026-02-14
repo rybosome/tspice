@@ -43,6 +43,18 @@
     "sourceFile": "packages/tspice/src/index.ts",
     "valueExports": [
       {
+        "name": "J2000",
+        "description": "Constant frame name for the canonical inertial reference frame (J2000)."
+      },
+      {
+        "name": "Mat3",
+        "description": "3×3 matrix helper for frame transforms and vector math."
+      },
+      {
+        "name": "SpiceError",
+        "description": "Error thrown when underlying SPICE/CSPICE operations fail."
+      },
+      {
         "name": "assertMat3ArrayLike9",
         "description": "Runtime assertion that a value is a length-9 array-like suitable for a 3×3 matrix."
       },
@@ -83,24 +95,12 @@
         "description": "Type guard that checks whether a value is a length-9 array-like suitable for a 3×3 matrix."
       },
       {
-        "name": "J2000",
-        "description": "Constant frame name for the canonical inertial reference frame (J2000)."
-      },
-      {
-        "name": "Mat3",
-        "description": "3×3 matrix helper for frame transforms and vector math."
-      },
-      {
         "name": "publicKernels",
         "description": "Preconfigured PublicKernelsBuilder with default options."
       },
       {
         "name": "spiceClients",
         "description": "Higher-level client builder that can produce in-process, async, or WebWorker clients and a dispose() lifecycle."
-      },
-      {
-        "name": "SpiceError",
-        "description": "Error thrown when underlying SPICE/CSPICE operations fail."
       }
     ],
     "typeExports": [
