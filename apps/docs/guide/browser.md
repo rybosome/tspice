@@ -14,12 +14,19 @@ You have two main options:
 `toWebWorker()` returns the async client type (`SpiceAsync`) but moves the backend into a worker so heavy SPICE calls don’t block rendering.
 
 ```ts
-import { publicKernels, spiceClients } from "@rybosome/tspice";
+import { kernels, spiceClients } from "@rybosome/tspice";
 
-const pack = publicKernels.naif0012_tls().pck00011_tpc().pack();
+// Vite/VitePress (browser): resolves relative kernel URLs against your app base.
+const baseUrl = import.meta.env.BASE_URL;
+
+const pack = kernels
+  .naif({ baseUrl, kernelUrlPrefix: "kernels/naif/" })
+  .naif0012_tls()
+  .pck00011_tpc()
+  .pack();
 
 const { spice, dispose } = await spiceClients
-  .withKernels(pack, { baseUrl: import.meta.env.BASE_URL })
+  .withKernel(pack)
   .toWebWorker();
 
 try {

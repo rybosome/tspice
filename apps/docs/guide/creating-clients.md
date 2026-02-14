@@ -69,18 +69,22 @@ See [/guide/browser](/guide/browser).
 
 ## Kernel preload
 
-Use `.withKernels(pack, { baseUrl })` to eagerly fetch and load kernels before you start calling SPICE routines:
+Use `.withKernel(pack)` to eagerly fetch and load kernels before you start calling SPICE routines:
 
 ```ts
-import { publicKernels, spiceClients } from "@rybosome/tspice";
-
-const pack = publicKernels.naif0012_tls().pck00011_tpc().pack();
+import { kernels, spiceClients } from "@rybosome/tspice";
 
 // Vite/VitePress (browser): resolves relative kernel URLs against your app base.
 const baseUrl = import.meta.env.BASE_URL;
 
+const pack = kernels
+  .naif({ baseUrl, kernelUrlPrefix: "kernels/naif/" })
+  .naif0012_tls()
+  .pck00011_tpc()
+  .pack();
+
 const { spice, dispose } = await spiceClients
-  .withKernels(pack, { baseUrl })
+  .withKernel(pack)
   .toAsync();
 
 try {
@@ -90,7 +94,7 @@ try {
 }
 ```
 
-Note: in Node, `fetch()` requires an **absolute** `baseUrl` like `https://…/`.
+Note: in Node, `fetch()` requires absolute URLs. Either build packs with absolute `kernel.url` values (the default for `kernels.naif()`), or set an absolute `baseUrl` on the pack.
 
 Kernels (what they are, where they come from, and hosting strategies) are covered in [/guide/kernels](/guide/kernels).
 

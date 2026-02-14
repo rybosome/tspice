@@ -41,7 +41,7 @@ try {
 }
 ```
 
-`.withKernels(...)` preloading fetches bytes via `fetch`, so it’s best when kernels are hosted at URLs.
+Kernel preloading via `.withKernel(pack)` fetches bytes via `fetch`, so it’s best when kernels are hosted at URLs.
 
 ## WASM backend
 
@@ -62,4 +62,4 @@ try {
 ## Notes
 
 - `@rybosome/tspice` is **ESM-only**. In CommonJS, use `await import("@rybosome/tspice")`.
-- Kernel preload via `.withKernels(...)` fetches bytes via `fetch` (best for URL-hosted kernels). Node 18+ has `fetch` built in; otherwise pass `opts.fetch`. In Node, `fetch()` requires absolute URLs (so `baseUrl` should be like `https://…/`).
+- Kernel preload via `.withKernel(pack)` fetches bytes via `fetch` (best for URL-hosted kernels). Node 18+ has `fetch` built in. In Node, `fetch()` requires absolute URLs (either use absolute `kernel.url` values, or set `pack.baseUrl` to an absolute URL like `https://…/`).

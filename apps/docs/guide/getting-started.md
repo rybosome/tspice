@@ -23,17 +23,18 @@ This snippet:
 - always disposes the client in a `finally`
 
 ```ts
-import { publicKernels, spiceClients } from "@rybosome/tspice";
+import { kernels, spiceClients } from "@rybosome/tspice";
 
-const kernelPack = publicKernels
+const baseUrl = "https://orrery.ryboso.me/";
+
+const kernelPack = kernels
+  .naif({ baseUrl, kernelUrlPrefix: "kernels/naif/" })
   .naif0012_tls()
   .pck00011_tpc()
   .pack();
 
-const baseUrl = "https://orrery.ryboso.me/";
-
 const { spice, dispose } = await spiceClients
-  .withKernels(kernelPack, { baseUrl })
+  .withKernel(kernelPack)
   .toAsync({ backend: "wasm" });
 
 try {
@@ -48,7 +49,7 @@ try {
 
 ### Kernel hosting note
 
-`publicKernels` defaults to URLs like `kernels/naif/naif0012.tls` (relative URLs).
+`kernels.naif({ baseUrl, kernelUrlPrefix })` can build packs with **relative** URLs like `kernels/naif/lsk/naif0012.tls`.
 
 That means:
 
@@ -56,7 +57,7 @@ That means:
 - in Node, `fetch()` requires absolute URLs, so you must pass an **absolute** `baseUrl` (or use absolute `kernel.url` values)
 - kernel URLs are just URLs; you can host them wherever you want
 
-This quickstart uses `https://orrery.ryboso.me/` as a convenient public host for the `publicKernels` files.
+This quickstart uses `https://orrery.ryboso.me/` as a convenient public host for the NAIF kernels.
 
 See [/guide/kernels](/guide/kernels) for details (including `baseUrl` and custom hosting).
 
