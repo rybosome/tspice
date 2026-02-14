@@ -99,17 +99,17 @@ function guessTextKernelSubtype(path: string): KernelKind {
 }
 
 /**
-* Normalize a kernel kind selector into a canonical list of kind tokens.
-*
-* Accepts:
-* - `undefined` (defaults to `["ALL"]`)
-* - a single token
-* - a whitespace-delimited token string (CSPICE-style)
-* - an array of tokens
-*
-* Returned tokens are trimmed, uppercased, de-duplicated (stable order), and
-* canonicalized (e.g. `ALL` overrides other tokens).
-*/
+ * Normalize a kernel kind selector into a canonical list of kind tokens.
+ *
+ * Accepts:
+ * - `undefined` (defaults to `["ALL"]`)
+ * - a single token
+ * - a whitespace-delimited token string (CSPICE-style)
+ * - an array of tokens
+ *
+ * Returned tokens are trimmed, uppercased, de-duplicated (stable order), and
+ * canonicalized (e.g. `ALL` overrides other tokens).
+ */
 export function normalizeKindInput(kind: KernelKindInput | undefined): readonly KernelKind[] {
   if (kind == null) {
     return ["ALL"];

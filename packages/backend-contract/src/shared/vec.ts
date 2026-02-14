@@ -131,31 +131,31 @@ function assertVecArrayLikeFinite(
 }
 
 /**
-* Assert that a value is a length-3 array-like of finite numbers.
-*
-* Accepts `number[]` and numeric TypedArrays (excludes `DataView`). This does
-* **not** brand the value as a {@link Vec3}; see {@link brandVec3}.
-*/
+ * Assert that a value is a length-3 array-like of finite numbers.
+ *
+ * Accepts `number[]` and numeric TypedArrays (excludes `DataView`). This does
+ * **not** brand the value as a {@link Vec3}; see {@link brandVec3}.
+ */
 export function assertVec3ArrayLike3(value: unknown, options?: { readonly label?: string }): asserts value is ArrayLike<number> {
   assertVecArrayLikeFinite(value, { label: options?.label ?? "Vec3", length: 3 });
 }
 
 /**
-* Assert that a value is a length-6 array-like of finite numbers.
-*
-* Accepts `number[]` and numeric TypedArrays (excludes `DataView`). This does
-* **not** brand the value as a {@link Vec6}; see {@link brandVec6}.
-*/
+ * Assert that a value is a length-6 array-like of finite numbers.
+ *
+ * Accepts `number[]` and numeric TypedArrays (excludes `DataView`). This does
+ * **not** brand the value as a {@link Vec6}; see {@link brandVec6}.
+ */
 export function assertVec6ArrayLike6(value: unknown, options?: { readonly label?: string }): asserts value is ArrayLike<number> {
   assertVecArrayLikeFinite(value, { label: options?.label ?? "Vec6", length: 6 });
 }
 
 /**
-* Convert a vector-like input into a branded {@link Vec3}.
-*
-* This performs a runtime shape/value check, copies into a fresh `number[]`,
-* applies a runtime-only brand, and optionally freezes the result.
-*/
+ * Convert a vector-like input into a branded {@link Vec3}.
+ *
+ * This performs a runtime shape/value check, copies into a fresh `number[]`,
+ * applies a runtime-only brand, and optionally freezes the result.
+ */
 export function brandVec3(value: unknown, options?: BrandVecOptions): Vec3 {
   const label = options?.label ?? "Vec3";
   const freeze = options?.freeze ?? DEFAULT_FREEZE_MODE;
@@ -168,11 +168,11 @@ export function brandVec3(value: unknown, options?: BrandVecOptions): Vec3 {
 }
 
 /**
-* Convert a vector-like input into a branded {@link Vec6}.
-*
-* This performs a runtime shape/value check, copies into a fresh `number[]`,
-* applies a runtime-only brand, and optionally freezes the result.
-*/
+ * Convert a vector-like input into a branded {@link Vec6}.
+ *
+ * This performs a runtime shape/value check, copies into a fresh `number[]`,
+ * applies a runtime-only brand, and optionally freezes the result.
+ */
 export function brandVec6(value: unknown, options?: BrandVecOptions): Vec6 {
   const label = options?.label ?? "Vec6";
   const freeze = options?.freeze ?? DEFAULT_FREEZE_MODE;

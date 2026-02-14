@@ -48,8 +48,8 @@ export function assertSpiceInt32(
 }
 
 /**
-* Assert that a value is a 32-bit signed `SpiceInt` and also non-negative.
-*/
+ * Assert that a value is a 32-bit signed `SpiceInt` and also non-negative.
+ */
 export function assertSpiceInt32NonNegative(value: number, label: string): asserts value is number {
   assertSpiceInt32(value, label, { min: 0 });
 }
