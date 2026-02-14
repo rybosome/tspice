@@ -1,5 +1,5 @@
 import type { Vec3 } from "@rybosome/tspice";
-import { createSpice, J2000, Mat3 } from "@rybosome/tspice";
+import { J2000, Mat3, spiceClients } from "@rybosome/tspice";
 
 type KernelBytes = {
   lsk: Uint8Array;
@@ -27,25 +27,29 @@ function applyMat3(m: Mat3, v: Vec3): Vec3 {
  * - Additional frame kernels (FK/PCK/etc) for some transforms
  */
 export async function earthStateAndEarthFixedPosition(kernels: KernelBytes) {
-  const spice = await createSpice({ backend: "wasm" });
+  const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
 
-  spice.kit.loadKernel({ path: "naif0012.tls", bytes: kernels.lsk });
-  spice.kit.loadKernel({ path: "de405s.bsp", bytes: kernels.spk });
-  if (kernels.fk) spice.kit.loadKernel({ path: "frames.tf", bytes: kernels.fk });
-  if (kernels.pck) spice.kit.loadKernel({ path: "pck.tpc", bytes: kernels.pck });
+  try {
+    spice.kit.loadKernel({ path: "naif0012.tls", bytes: kernels.lsk });
+    spice.kit.loadKernel({ path: "de405s.bsp", bytes: kernels.spk });
+    if (kernels.fk) spice.kit.loadKernel({ path: "frames.tf", bytes: kernels.fk });
+    if (kernels.pck) spice.kit.loadKernel({ path: "pck.tpc", bytes: kernels.pck });
 
-  const et = spice.kit.utcToEt("2000 JAN 01 12:00:00");
+    const et = spice.kit.utcToEt("2000 JAN 01 12:00:00");
 
-  const stateJ2000 = spice.kit.getState({
-    target: "EARTH",
-    observer: "SUN",
-    at: et,
-    frame: J2000,
-    aberration: "NONE",
-  });
+    const stateJ2000 = spice.kit.getState({
+      target: "EARTH",
+      observer: "SUN",
+      at: et,
+      frame: J2000,
+      aberration: "NONE",
+    });
 
-  const j2000ToEarthFixed = spice.kit.frameTransform(J2000, "IAU_EARTH", et);
-  const positionEarthFixed = applyMat3(j2000ToEarthFixed, stateJ2000.position);
+    const j2000ToEarthFixed = spice.kit.frameTransform(J2000, "IAU_EARTH", et);
+    const positionEarthFixed = applyMat3(j2000ToEarthFixed, stateJ2000.position);
 
-  return { stateJ2000, positionEarthFixed };
+    return { stateJ2000, positionEarthFixed };
+  } finally {
+    await dispose();
+  }
 }
