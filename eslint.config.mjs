@@ -1,7 +1,7 @@
 import jsdoc from 'eslint-plugin-jsdoc'
 import tseslint from 'typescript-eslint'
 
-const SOURCE_FILES = ['{packages/*/src,fixtures/*/src,apps/docs}/**/*.{ts,tsx,mts,cts}']
+import { JSDOC_SOURCE_FILES, REQUIRE_JSDOC_RULE } from './eslint/jsdoc.shared.mjs'
 
 export default [
   {
@@ -19,7 +19,7 @@ export default [
   },
 
   {
-    files: SOURCE_FILES,
+    files: JSDOC_SOURCE_FILES,
 
     // This repo has inline disables for other eslint configs (e.g. app-specific linting).
     // Our goal here is JSDoc enforcement/formatting only; don't flag disables as "unused".
@@ -46,31 +46,7 @@ export default [
 
     rules: {
       'jsdoc/check-alignment': 'error',
-      'jsdoc/require-jsdoc': [
-        'error',
-        {
-          publicOnly: {
-            ancestorsOnly: true,
-          },
-
-          // Catch common exported callables (including `export const fn = () => {}`).
-          require: {
-            ArrowFunctionExpression: true,
-            FunctionDeclaration: true,
-            FunctionExpression: true,
-            MethodDefinition: true,
-            ClassDeclaration: true,
-            ClassExpression: true,
-          },
-
-          // Require docs for interface APIs (e.g. backend-contract) without
-          // accidentally flagging function-like properties inside type literals.
-          contexts: ['TSInterfaceDeclaration', 'TSInterfaceDeclaration > TSInterfaceBody > TSMethodSignature'],
-
-          // Requiring constructor docs tends to add noise; prefer class-level docs.
-          checkConstructors: false,
-        },
-      ],
+      'jsdoc/require-jsdoc': REQUIRE_JSDOC_RULE,
     },
   },
 ]

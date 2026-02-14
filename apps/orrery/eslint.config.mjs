@@ -6,9 +6,14 @@ import jsdoc from 'eslint-plugin-jsdoc'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import tseslint from 'typescript-eslint'
 
+import { REQUIRE_JSDOC_RULE } from '../../eslint/jsdoc.shared.mjs'
+
 export default [
   {
     ignores: ['dist/', 'node_modules/', 'coverage/', 'playwright-report/'],
+    linterOptions: {
+      reportUnusedDisableDirectives: 'error',
+    },
   },
 
   js.configs.recommended,
@@ -97,23 +102,7 @@ export default [
     },
     rules: {
       'jsdoc/check-alignment': 'error',
-      'jsdoc/require-jsdoc': [
-        'error',
-        {
-          publicOnly: {
-            ancestorsOnly: true,
-          },
-          require: {
-            ArrowFunctionExpression: true,
-            FunctionDeclaration: true,
-            FunctionExpression: true,
-            MethodDefinition: true,
-            ClassDeclaration: true,
-            ClassExpression: true,
-          },
-          contexts: ['TSInterfaceDeclaration', 'TSMethodSignature'],
-        },
-      ],
+      'jsdoc/require-jsdoc': REQUIRE_JSDOC_RULE,
     },
   },
 ]

@@ -17,7 +17,7 @@
     "check:versions": "node scripts/verify-native-package-versions.mjs",
     "fetch:cspice": "node scripts/fetch-cspice.mjs",
     "format:check": "pnpm -C apps/orrery run format:check",
-    "lint": "pnpm -r --if-present lint && pnpm run lint:jsdoc",
+    "lint": "pnpm run lint:jsdoc && pnpm -r --if-present lint",
     "stage:native-platform": "node scripts/stage-native-platform.mjs",
     "test": "turbo run test",
     "test:js": "turbo run test --filter=!@rybosome/tspice-backend-node",
@@ -29,8 +29,8 @@
     "verify:native": "pnpm -w check:native",
     "docs:api": "node scripts/docs-api.mjs",
     "docs:build": "pnpm docs:api && pnpm --filter @rybosome/docs build",
-    "lint:jsdoc": "eslint \"{packages/*/src,fixtures/*/src,apps/docs}/**/*.{ts,tsx,mts,cts}\" --max-warnings 0",
-    "lint:jsdoc:fix": "eslint \"{packages/*/src,fixtures/*/src,apps/docs}/**/*.{ts,tsx,mts,cts}\" --fix"
+    "lint:jsdoc": "node scripts/lint-jsdoc.mjs",
+    "lint:jsdoc:fix": "node scripts/lint-jsdoc.mjs --fix"
   },
   "devDependencies": {
     "@rybosome/tspice-bench-contract": "workspace:*",
