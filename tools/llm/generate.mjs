@@ -2,6 +2,32 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { createRequire } from "node:module";
+
+const ts = (() => {
+  const tryRequire = (fromUrl) => {
+    try {
+      return createRequire(fromUrl)("typescript");
+    } catch (err) {
+      const code = err && typeof err === "object" ? err.code : undefined;
+      if (code === "MODULE_NOT_FOUND" || code === "ERR_MODULE_NOT_FOUND") {
+        return null;
+      }
+      throw err;
+    }
+  };
+
+  return (
+    tryRequire(import.meta.url) ??
+    tryRequire(new URL("../../packages/tspice/package.json", import.meta.url)) ??
+    (() => {
+      throw new Error(
+        "[generate:llm] Missing dependency: typescript. Install generator deps (e.g. `pnpm install --filter @rybosome/tspice...`).",
+      );
+    })()
+  );
+})();
+
 function invariant(condition, message) {
   if (!condition) {
     throw new Error(message);
@@ -30,77 +56,142 @@ function sortUnique(values) {
   return [...new Set(values)].sort((a, b) => a.localeCompare(b));
 }
 
+function createTypeScriptSourceFile({ fileName, sourceText }) {
+  return ts.createSourceFile(
+    fileName,
+    sourceText,
+    ts.ScriptTarget.Latest,
+    /*setParentNodes*/ true,
+    ts.ScriptKind.TS,
+  );
+}
+
+function hasModifier(node, modifierKind) {
+  return Boolean(node.modifiers?.some((m) => m.kind === modifierKind));
+}
+
 function extractNamedExports(indexTsSource) {
-  /** @type {string[]} */
-  const typeExports = [];
-  /** @type {string[]} */
-  const valueExports = [];
+  const sourceFile = createTypeScriptSourceFile({
+    fileName: "packages/tspice/src/index.ts",
+    sourceText: indexTsSource,
+  });
 
-  // Matches `export { a, b as c } from "...";` and `export type { ... } from "...";`
-  const re = /export\s+(type\s+)?\{([\s\S]*?)\}\s*from\s*["'][^"']+["']\s*;?/g;
-  for (const match of indexTsSource.matchAll(re)) {
-    const isTypeOnly = Boolean(match[1]);
-    const raw = match[2] ?? "";
+  /** @type {Set<string>} */
+  const typeExports = new Set();
+  /** @type {Set<string>} */
+  const valueExports = new Set();
 
-    const names = raw
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .map((s) => {
-        // Drop inline comments.
-        const noComment = s.replace(/\/\/.*$/, "").trim();
-        // `Foo as Bar` -> `Bar`
-        const asMatch = noComment.match(/^(.*?)\s+as\s+(.*?)$/);
-        return (asMatch ? asMatch[2] : noComment).trim();
-      })
-      .filter(Boolean);
+  const add = (name, isTypeOnly) => {
+    if (!name) return;
+    (isTypeOnly ? typeExports : valueExports).add(name);
+  };
 
-    if (isTypeOnly) {
-      typeExports.push(...names);
-    } else {
-      valueExports.push(...names);
+  for (const stmt of sourceFile.statements) {
+    if (ts.isExportDeclaration(stmt)) {
+      const clause = stmt.exportClause;
+
+      // `export * from "..."` or `export * as ns from "..."`.
+      if (!clause) {
+        throw new Error(
+          `[generate:llm] Unsupported star export in packages/tspice/src/index.ts: ${stmt.getText(sourceFile)}. ` +
+            `Use explicit named exports or extend tools/llm/generate.mjs to expand star exports so the public surface can't go incomplete silently.`,
+        );
+      }
+
+      if (ts.isNamedExports(clause)) {
+        for (const el of clause.elements) {
+          add(el.name.text, Boolean(stmt.isTypeOnly || el.isTypeOnly));
+        }
+        continue;
+      }
+
+      if (ts.isNamespaceExport(clause)) {
+        // `export * as ns from "...";`
+        add(clause.name.text, Boolean(stmt.isTypeOnly));
+        continue;
+      }
+
+      throw new Error(
+        `[generate:llm] Unsupported exportClause kind in packages/tspice/src/index.ts: ${ts.SyntaxKind[clause.kind]}`,
+      );
     }
-  }
 
-  // Matches `export type Foo = ...` / `export interface Foo ...` / `export class Foo ...` etc.
-  // Not currently used by packages/tspice/src/index.ts, but included for completeness.
-  const directRe = /^export\s+(type|interface|class|const|function|enum)\s+([A-Za-z0-9_$]+)/gm;
-  for (const match of indexTsSource.matchAll(directRe)) {
-    // Ignore `export type { ... }` (handled above)
-    if (match[0].includes("{")) continue;
-    const kind = match[1];
-    const name = match[2];
-    if (!name) continue;
-    if (kind === "type" || kind === "interface") {
-      typeExports.push(name);
-    } else {
-      valueExports.push(name);
+    if (ts.isExportAssignment(stmt)) {
+      throw new Error(
+        `[generate:llm] Unsupported export assignment in packages/tspice/src/index.ts: ${stmt.getText(sourceFile)}. ` +
+          `This generator currently supports only named exports.`,
+      );
     }
+
+    // Direct exported declarations (not currently used, but supported).
+    if (!hasModifier(stmt, ts.SyntaxKind.ExportKeyword)) {
+      continue;
+    }
+
+    if (hasModifier(stmt, ts.SyntaxKind.DefaultKeyword)) {
+      throw new Error(
+        `[generate:llm] Unsupported default export in packages/tspice/src/index.ts: ${stmt.getText(sourceFile)}. ` +
+          `This generator currently supports only named exports.`,
+      );
+    }
+
+    if (ts.isTypeAliasDeclaration(stmt) || ts.isInterfaceDeclaration(stmt)) {
+      add(stmt.name.text, true);
+      continue;
+    }
+
+    if (ts.isEnumDeclaration(stmt) || ts.isClassDeclaration(stmt) || ts.isFunctionDeclaration(stmt)) {
+      invariant(stmt.name, `[generate:llm] Missing name for exported declaration: ${stmt.getText(sourceFile)}`);
+      add(stmt.name.text, false);
+      continue;
+    }
+
+    if (ts.isVariableStatement(stmt)) {
+      for (const decl of stmt.declarationList.declarations) {
+        if (!ts.isIdentifier(decl.name)) {
+          throw new Error(
+            `[generate:llm] Unsupported exported variable pattern in packages/tspice/src/index.ts: ${decl.getText(sourceFile)}`,
+          );
+        }
+        add(decl.name.text, false);
+      }
+      continue;
+    }
+
+    throw new Error(
+      `[generate:llm] Unsupported exported statement kind in packages/tspice/src/index.ts: ${ts.SyntaxKind[stmt.kind]} (${stmt.getText(sourceFile)})`,
+    );
   }
 
   return {
-    typeExports: sortUnique(typeExports),
-    valueExports: sortUnique(valueExports),
+    typeExports: sortUnique([...typeExports]),
+    valueExports: sortUnique([...valueExports]),
   };
 }
 
 function extractKernelSourceTypeDefinition(sharedTypesTsSource) {
-  const lines = sharedTypesTsSource.split(/\r?\n/);
-  const startIdx = lines.findIndex((l) => l.startsWith("export type KernelSource"));
-  invariant(startIdx !== -1, "Could not find `export type KernelSource` in shared types file");
+  const sourceFile = createTypeScriptSourceFile({
+    fileName: "packages/backend-contract/src/shared/types.ts",
+    sourceText: sharedTypesTsSource,
+  });
 
-  const out = [];
-  for (let i = startIdx; i < lines.length; i++) {
-    out.push(lines[i]);
-    if (lines[i].trim() === "};") {
-      break;
+  /** @type {import('typescript').TypeAliasDeclaration[]} */
+  const matches = [];
+  for (const stmt of sourceFile.statements) {
+    if (ts.isTypeAliasDeclaration(stmt) && stmt.name.text === "KernelSource") {
+      matches.push(stmt);
     }
   }
 
-  // Basic sanity check: ensure we stopped at the end of the union.
-  invariant(out.at(-1)?.trim() === "};", "Failed to extract full KernelSource type (missing closing `};`)");
+  invariant(matches.length === 1, `Expected exactly one KernelSource type alias, found ${matches.length}`);
 
-  return out.join("\n");
+  const node = matches[0];
+  invariant(
+    hasModifier(node, ts.SyntaxKind.ExportKeyword),
+    "KernelSource type alias must be exported from packages/backend-contract/src/shared/types.ts",
+  );
+
+  return node.getText(sourceFile);
 }
 
 function readExamples(exampleDirAbs, repoRootAbs) {
