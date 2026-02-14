@@ -6,15 +6,42 @@ import { defineConfig, type DefaultTheme } from 'vitepress'
 
 const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
+const docsApiStrict =
+  process.env.DOCS_API_STRICT === '1' ||
+  process.env.CI === '1' ||
+  process.env.CI === 'true' ||
+  process.env.GITHUB_ACTIONS === 'true'
+
 function readTypedocSidebar(jsonPathFromDocsRoot: string): DefaultTheme.SidebarItem[] {
   const jsonPath = path.resolve(docsRoot, jsonPathFromDocsRoot)
-  if (!fs.existsSync(jsonPath)) return []
+
+  if (!fs.existsSync(jsonPath)) {
+    const message =
+      `[docs] Missing TypeDoc sidebar JSON: ${jsonPathFromDocsRoot}. ` +
+      `Did you run \`pnpm docs:api\`?`
+
+    if (docsApiStrict) throw new Error(message)
+    console.warn(message)
+    return []
+  }
 
   try {
     const parsed = JSON.parse(fs.readFileSync(jsonPath, 'utf8'))
-    if (!Array.isArray(parsed)) return []
+    if (!Array.isArray(parsed)) {
+      const message = `[docs] Invalid TypeDoc sidebar JSON (expected array): ${jsonPathFromDocsRoot}`
+
+      if (docsApiStrict) throw new Error(message)
+      console.warn(message)
+      return []
+    }
     return parsed as DefaultTheme.SidebarItem[]
-  } catch {
+  } catch (err) {
+    const message =
+      `[docs] Failed to parse TypeDoc sidebar JSON: ${jsonPathFromDocsRoot}. ` +
+      `(${err instanceof Error ? err.message : String(err)})`
+
+    if (docsApiStrict) throw new Error(message)
+    console.warn(message)
     return []
   }
 }

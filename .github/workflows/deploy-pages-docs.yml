@@ -29,8 +29,8 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install dependencies (docs + API)
-        run: pnpm install --frozen-lockfile --filter @rybosome/docs --filter @rybosome/tspice... --filter @rybosome/tspice-backend-contract...
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Generate API docs
         run: pnpm docs:api

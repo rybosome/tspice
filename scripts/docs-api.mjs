@@ -1,14 +1,10 @@
-import fs from 'node:fs'
 import path from 'node:path'
 import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
-function binPath(name) {
-  const ext = process.platform === 'win32' ? '.cmd' : ''
-  return path.join(repoRoot, 'apps', 'docs', 'node_modules', '.bin', `${name}${ext}`)
-}
+const pnpmBin = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
 
 function run(command, args, { cwd = repoRoot } = {}) {
   return new Promise((resolve, reject) => {
@@ -29,22 +25,16 @@ function run(command, args, { cwd = repoRoot } = {}) {
 }
 
 async function main() {
-  const typedocBin = binPath('typedoc')
-  if (!fs.existsSync(typedocBin)) {
-    throw new Error(
-      `[docs:api] Missing ${typedocBin}. Did you run \`pnpm install\` (including @rybosome/docs)?`
-    )
-  }
-
   // TypeDoc builds a TypeScript program for the entrypoint package.
   // This repo's packages import each other via package exports that point at
   // `dist/**`, so we need declarations emitted for internal deps first.
-  await run('pnpm', ['-C', 'packages/backend-contract', 'exec', 'tsc', '-p', 'tsconfig.json', '--emitDeclarationOnly'])
-  await run('pnpm', ['-C', 'packages/core', 'exec', 'tsc', '-p', 'tsconfig.json', '--emitDeclarationOnly'])
-  await run('pnpm', ['-C', 'packages/backend-wasm', 'exec', 'tsc', '-p', 'tsconfig.json', '--emitDeclarationOnly'])
+  await run(pnpmBin, ['-C', 'packages/backend-contract', 'exec', 'tsc', '-p', 'tsconfig.json', '--emitDeclarationOnly'])
+  await run(pnpmBin, ['-C', 'packages/core', 'exec', 'tsc', '-p', 'tsconfig.json', '--emitDeclarationOnly'])
+  await run(pnpmBin, ['-C', 'packages/backend-wasm', 'exec', 'tsc', '-p', 'tsconfig.json', '--emitDeclarationOnly'])
+  await run(pnpmBin, ['-C', 'packages/tspice', 'exec', 'tsc', '-p', 'tsconfig.json', '--emitDeclarationOnly'])
 
-  await run(typedocBin, ['--options', 'apps/docs/typedoc/tspice.json'])
-  await run(typedocBin, ['--options', 'apps/docs/typedoc/backend-contract.json'])
+  await run(pnpmBin, ['-C', 'apps/docs', 'exec', 'typedoc', '--options', 'typedoc/tspice.json'])
+  await run(pnpmBin, ['-C', 'apps/docs', 'exec', 'typedoc', '--options', 'typedoc/backend-contract.json'])
 }
 
 main().catch((err) => {
