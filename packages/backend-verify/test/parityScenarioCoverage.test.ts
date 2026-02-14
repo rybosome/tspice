@@ -4,119 +4,15 @@ import { fileURLToPath } from "node:url";
 
 import { describe, it } from "vitest";
 
-import * as ts from "typescript";
-
 import { loadScenarioYamlFile } from "../src/dsl/load.js";
 import { parseScenario } from "../src/dsl/parse.js";
 import { PARITY_SCENARIO_DENYLIST } from "../src/parity/parityScenarioDenylist.js";
-
-function stableCompare(a: string, b: string): number {
-  return a < b ? -1 : a > b ? 1 : 0;
-}
-
-function readSourceFile(filePath: string): ts.SourceFile {
-  const text = fs.readFileSync(filePath, "utf8");
-  return ts.createSourceFile(filePath, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-}
-
-function getExportedInterface(sourceFile: ts.SourceFile, interfaceName: string): ts.InterfaceDeclaration | null {
-  for (const stmt of sourceFile.statements) {
-    if (!ts.isInterfaceDeclaration(stmt)) continue;
-    if (stmt.name.text !== interfaceName) continue;
-
-    const isExported = (ts.getCombinedModifierFlags(stmt) & ts.ModifierFlags.Export) !== 0;
-    if (!isExported) continue;
-
-    return stmt;
-  }
-
-  return null;
-}
-
-function extractSpiceBackendApis(indexSourceFile: ts.SourceFile): string[] {
-  for (const stmt of indexSourceFile.statements) {
-    if (!ts.isInterfaceDeclaration(stmt)) continue;
-    if (stmt.name.text !== "SpiceBackend") continue;
-
-    const extendsClause = stmt.heritageClauses?.find((c) => c.token === ts.SyntaxKind.ExtendsKeyword);
-    if (!extendsClause) {
-      throw new Error("SpiceBackend has no extends clause (unexpected)");
-    }
-
-    const apiNames = extendsClause.types
-      .map((t) => t.expression)
-      .map((expr) => (ts.isIdentifier(expr) ? expr.text : expr.getText(indexSourceFile)))
-      .filter((n) => n.endsWith("Api"));
-
-    return apiNames;
-  }
-
-  throw new Error("Could not find interface SpiceBackend in backend-contract/src/index.ts");
-}
-
-function computeContractKeys({ indexPath, domainsDir }: { indexPath: string; domainsDir: string }): string[] {
-  const indexSf = readSourceFile(indexPath);
-  const apiNames = extractSpiceBackendApis(indexSf);
-
-  const domainFiles = fs
-    .readdirSync(domainsDir)
-    .filter((f) => f.endsWith(".ts"))
-    .sort(stableCompare);
-
-  const keys: string[] = [];
-
-  for (const apiName of apiNames) {
-    let apiFilePath: string | null = null;
-
-    for (const file of domainFiles) {
-      const p = path.join(domainsDir, file);
-      const sf = readSourceFile(p);
-      const iface = getExportedInterface(sf, apiName);
-      if (iface) {
-        apiFilePath = p;
-        break;
-      }
-    }
-
-    if (!apiFilePath) {
-      throw new Error(`Could not locate exported interface ${apiName} in backend-contract/src/domains/*.ts`);
-    }
-
-    const domain = path.basename(apiFilePath, ".ts");
-    const sf = readSourceFile(apiFilePath);
-    const iface = getExportedInterface(sf, apiName);
-    if (!iface) {
-      throw new Error(`Found file for ${apiName} but could not re-locate exported interface (unexpected): ${apiFilePath}`);
-    }
-
-    const methodNames = new Set<string>();
-    for (const member of iface.members) {
-      if (!ts.isMethodSignature(member)) continue;
-
-      // Ignore overloads by de-duping on name.
-      const name = member.name;
-      if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) {
-        methodNames.add(name.text);
-      } else {
-        throw new Error(
-          `Unsupported method name kind while parsing ${apiName} in ${apiFilePath}: ${ts.SyntaxKind[name.kind]}`,
-        );
-      }
-    }
-
-    for (const methodName of Array.from(methodNames).sort(stableCompare)) {
-      keys.push(`${domain}.${methodName}`);
-    }
-  }
-
-  // Determinism + guard against accidental duplication.
-  return Array.from(new Set(keys)).sort(stableCompare);
-}
+import { computeContractKeys, stableCompare } from "../scripts/parity-contract-keys.mjs";
 
 async function computeScenarioCalls(scenariosDir: string): Promise<Set<string>> {
   const scenarioFiles = fs
     .readdirSync(scenariosDir)
-    .filter((f) => f.endsWith(".yml"))
+    .filter((f) => f.endsWith(".yml") || f.endsWith(".yaml"))
     .sort(stableCompare);
 
   const calls = new Set<string>();
