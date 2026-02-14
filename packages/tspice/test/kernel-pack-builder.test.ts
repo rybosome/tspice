@@ -103,8 +103,8 @@ describe("kernels.custom()", () => {
       .pack();
 
     const [a, b] = pack.kernels;
-    expect(a?.path).toMatch(/^\/kernels\/[0-9a-f]{8}-de432s\.bsp$/);
-    expect(b?.path).toMatch(/^\/kernels\/[0-9a-f]{8}-de432s\.bsp$/);
+    expect(a?.path).toMatch(/^\/kernels\/[0-9a-f]{12}-de432s\.bsp$/);
+    expect(b?.path).toMatch(/^\/kernels\/[0-9a-f]{12}-de432s\.bsp$/);
     expect(a?.path).not.toBe(b?.path);
   });
 
@@ -121,6 +121,38 @@ describe("kernels.custom()", () => {
 
 
 describe("loadKernelPack()", () => {
+  it("rejects legacy opts.baseUrl (moved to pack.baseUrl)", async () => {
+    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
+
+    const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
+    const pack: KernelPack = {
+      kernels: [{ url: "a", path: "/a" }],
+    };
+
+    await expect(
+      loadKernelPack(spice, pack, {
+        fetch,
+        // Old API: `baseUrl` used to live here.
+        // This should throw a helpful migration error.
+        baseUrl: "https://example.com/myapp/",
+      } as unknown as never),
+    ).rejects.toThrow(/opts\.baseUrl has been removed/);
+  });
+
+  it("throws when pack.baseUrl is not directory-style (missing trailing slash)", async () => {
+    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
+    const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
+
+    const pack: KernelPack = {
+      baseUrl: "https://example.com/myapp",
+      kernels: [{ url: "kernels/a.tls", path: "/kernels/a.tls" }],
+    };
+
+    await expect(loadKernelPack(spice, pack, { fetch })).rejects.toThrow(
+      /absolute baseUrl must be directory-style/,
+    );
+  });
+
   it("resolves relative kernel URLs against baseUrl (directory-style)", async () => {
     const fetch = vi.fn(async (url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
 
@@ -139,6 +171,19 @@ describe("loadKernelPack()", () => {
       path: "/kernels/a.tls",
       bytes: new Uint8Array([1]),
     });
+  });
+
+  it("supports protocol-relative baseUrl", async () => {
+    const fetch = vi.fn(async (url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
+    const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
+
+    const pack: KernelPack = {
+      baseUrl: "//example.com/myapp/",
+      kernels: [{ url: "kernels/a.tls", path: "/kernels/a.tls" }],
+    };
+
+    await loadKernelPack(spice, pack, { fetch });
+    expect(fetch).toHaveBeenCalledWith("//example.com/myapp/kernels/a.tls");
   });
 
   it("supports root-relative URLs with applyBaseOrigin", async () => {

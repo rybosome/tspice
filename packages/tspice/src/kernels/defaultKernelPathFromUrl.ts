@@ -1,12 +1,18 @@
-function fnv1a32Hex(input: string): string {
-  // FNV-1a 32-bit
+const FNV_64_OFFSET_BASIS = 0xcbf29ce484222325n;
+const FNV_64_PRIME = 0x100000001b3n;
+const UINT64_MASK = 0xffffffffffffffffn;
+
+const DEFAULT_URL_HASH_HEX_PREFIX_LEN = 12;
+
+function fnv1a64Hex(input: string): string {
+  // FNV-1a 64-bit
   // https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
-  let hash = 0x811c9dc5;
+  let hash = FNV_64_OFFSET_BASIS;
   for (let i = 0; i < input.length; i++) {
-    hash ^= input.charCodeAt(i);
-    hash = Math.imul(hash, 0x01000193) >>> 0;
+    hash ^= BigInt(input.charCodeAt(i));
+    hash = (hash * FNV_64_PRIME) & UINT64_MASK;
   }
-  return hash.toString(16).padStart(8, "0");
+  return hash.toString(16).padStart(16, "0");
 }
 
 /**
@@ -26,6 +32,6 @@ export function defaultKernelPathFromUrl(url: string): string {
   // Fall back to a stable sentinel instead of generating `/kernels/<hash>-`.
   const safeBase = (base || "kernel").replace(/[\\/]/g, "_");
 
-  const hash = fnv1a32Hex(withoutFragment);
+  const hash = fnv1a64Hex(withoutFragment).slice(0, DEFAULT_URL_HASH_HEX_PREFIX_LEN);
   return `/kernels/${hash}-${safeBase}`;
 }
