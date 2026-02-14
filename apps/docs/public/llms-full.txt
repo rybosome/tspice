@@ -21,7 +21,9 @@ Source: `packages/tspice/src/index.ts`
 - `isBrandedMat3ColMajor`
 - `isBrandedMat3RowMajor`
 - `isMat3ArrayLike9`
+- `kernels`
 - `publicKernels`
+- `resolveKernelUrl`
 - `spiceClients`
 
 ### Type exports
@@ -32,14 +34,20 @@ Source: `packages/tspice/src/index.ts`
 - `CreatePublicKernelsOptions`
 - `CreateSpiceAsyncOptions`
 - `CreateSpiceOptions`
+- `CustomKernelsBuilder`
 - `FrameName`
 - `GetStateArgs`
 - `KernelPack`
 - `KernelPackKernel`
 - `KernelSource`
+- `KernelsCustomOptions`
+- `KernelsNaifOptions`
 - `LoadKernelPackOptions`
 - `Mat3ColMajor`
 - `Mat3RowMajor`
+- `NaifKernelId`
+- `NaifKernelLeafPath`
+- `NaifKernelsBuilder`
 - `PublicKernelId`
 - `PublicKernelsBuilder`
 - `Spice`
@@ -107,10 +115,13 @@ export type SpiceClientsWebWorkerOptions = {
 };
 ```
 
-### Public kernel builder (`publicKernels` / `createPublicKernels`)
+### Kernel packs (`kernels.naif` / `kernels.custom`)
 
-`publicKernels` and `createPublicKernels()` are convenience builders that produce a `KernelPack` (URLs + virtual load paths).
+`kernels.naif()` and `kernels.custom()` are builders that produce a `KernelPack` (ordered kernel URLs + virtual load paths).
+`KernelPack.baseUrl` optionally roots relative kernel URLs at load time.
 Pass the pack to `spiceClients.withKernels(pack)` before calling `.toWebWorker()` to preload kernels in the worker.
+
+Legacy: `publicKernels` / `createPublicKernels()` are compatibility wrappers over `kernels.naif()`.
 
 
 ## KernelSource (generated)
@@ -344,7 +355,7 @@ export async function utcEtRoundTrip(lskBytes: Uint8Array) {
 ### `packages/tspice/test/llm-examples/webworker-client.example.ts`
 
 ```ts
-import { publicKernels, spiceClients } from "@rybosome/tspice";
+import { kernels, spiceClients } from "@rybosome/tspice";
 
 type SpiceWebWorker = Awaited<ReturnType<typeof spiceClients.toWebWorker>>["spice"];
 
@@ -372,13 +383,18 @@ export async function withWebWorkerClient<T>(
 }
 
 /**
- * Example: use the public kernel builder to preload kernels before creating the worker client.
+ * Example: preload kernels before creating the worker client.
  *
- * `publicKernels`/`createPublicKernels()` produces a `KernelPack`, which you pass to
+ * `kernels.naif()` builds a `KernelPack` (URLs + virtual load paths). Pass the pack to
  * `spiceClients.withKernels(pack)` before calling `.toWebWorker()`.
  */
-export async function createWebWorkerClientWithPublicKernels() {
-  const pack = publicKernels
+export async function createWebWorkerClientWithNaifKernels() {
+  const pack = kernels
+    .naif({
+      kernelUrlPrefix: "kernels/naif/",
+      // Important for apps deployed under a subpath (GitHub Pages, etc).
+      baseUrl: import.meta.env.BASE_URL,
+    })
     .naif0012_tls()
     .pck00011_tpc()
     .de432s_bsp()
@@ -386,7 +402,7 @@ export async function createWebWorkerClientWithPublicKernels() {
 
   const { spice, dispose } = await spiceClients
     .caching({ maxEntries: 10_000, ttlMs: null })
-    .withKernels(pack, { baseUrl: import.meta.env.BASE_URL })
+    .withKernels(pack)
     .toWebWorker();
 
   try {
