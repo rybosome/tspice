@@ -1,4 +1,4 @@
-import { publicKernels, spiceClients } from "@rybosome/tspice";
+import { kernels, spiceClients } from "@rybosome/tspice";
 
 type SpiceWebWorker = Awaited<ReturnType<typeof spiceClients.toWebWorker>>["spice"];
 
@@ -26,13 +26,18 @@ export async function withWebWorkerClient<T>(
 }
 
 /**
- * Example: use the public kernel builder to preload kernels before creating the worker client.
+ * Example: preload kernels before creating the worker client.
  *
- * `publicKernels`/`createPublicKernels()` produces a `KernelPack`, which you pass to
+ * `kernels.naif()` builds a `KernelPack` (URLs + virtual load paths). Pass the pack to
  * `spiceClients.withKernels(pack)` before calling `.toWebWorker()`.
  */
-export async function createWebWorkerClientWithPublicKernels() {
-  const pack = publicKernels
+export async function createWebWorkerClientWithNaifKernels() {
+  const pack = kernels
+    .naif({
+      kernelUrlPrefix: "kernels/naif/",
+      // Important for apps deployed under a subpath (GitHub Pages, etc).
+      baseUrl: import.meta.env.BASE_URL,
+    })
     .naif0012_tls()
     .pck00011_tpc()
     .de432s_bsp()
@@ -40,7 +45,7 @@ export async function createWebWorkerClientWithPublicKernels() {
 
   const { spice, dispose } = await spiceClients
     .caching({ maxEntries: 10_000, ttlMs: null })
-    .withKernels(pack, { baseUrl: import.meta.env.BASE_URL })
+    .withKernels(pack)
     .toWebWorker();
 
   try {
