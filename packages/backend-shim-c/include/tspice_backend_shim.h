@@ -1020,6 +1020,61 @@ int tspice_occult(
     char *err,
     int errMaxBytes);
 
+// --- GF (Geometry Finder) event finding ---
+
+// gfsstp_c: set the constant step size used by gfstep_c.
+int tspice_gfsstp(double step, char *err, int errMaxBytes);
+
+// gfstep_c: return the constant step size set by gfsstp_c.
+int tspice_gfstep(double time, double *outStep, char *err, int errMaxBytes);
+
+// gfstol_c: set GF convergence tolerance.
+int tspice_gfstol(double value, char *err, int errMaxBytes);
+
+// gfrefn_c: default refinement estimator.
+int tspice_gfrefn(double t1, double t2, int s1, int s2, double *outT, char *err, int errMaxBytes);
+
+// gfrepi_c: progress report init.
+int tspice_gfrepi(uintptr_t windowHandle, const char *begmss, const char *endmss, char *err, int errMaxBytes);
+
+// gfrepf_c: progress report finalize.
+int tspice_gfrepf(char *err, int errMaxBytes);
+
+// gfsep_c: angular separation search.
+int tspice_gfsep(
+    const char *targ1,
+    const char *shape1,
+    const char *frame1,
+    const char *targ2,
+    const char *shape2,
+    const char *frame2,
+    const char *abcorr,
+    const char *obsrvr,
+    const char *relate,
+    double refval,
+    double adjust,
+    double step,
+    int nintvls,
+    uintptr_t cnfineWindowHandle,
+    uintptr_t resultWindowHandle,
+    char *err,
+    int errMaxBytes);
+
+// gfdist_c: observer-target distance search.
+int tspice_gfdist(
+    const char *target,
+    const char *abcorr,
+    const char *obsrvr,
+    const char *relate,
+    double refval,
+    double adjust,
+    double step,
+    int nintvls,
+    uintptr_t cnfineWindowHandle,
+    uintptr_t resultWindowHandle,
+    char *err,
+    int errMaxBytes);
+
 // --- coordinate conversions + small vector/matrix helpers ---
 
 // reclat_c: rectangular -> latitudinal coordinates.

@@ -152,16 +152,16 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
 }
 
 /**
-* Returns a representable native kind-query string (e.g. `"SPK CK"`) or null.
-*
-* This is used by backends to decide whether they can forward a kind filter to
-* their underlying CSPICE implementation, or whether they must fall back to
-* querying `ALL` and filtering in JS.
-*
-* NOTE: `kinds` is expected to be normalized (via {@link normalizeKindInput}).
-* If non-normalized input slips through (e.g. empty arrays or `ALL` mixed with
-* other tokens), this function is defensive and returns null.
-*/
+ * Returns a representable native kind-query string (e.g. `"SPK CK"`) or null.
+ *
+ * This is used by backends to decide whether they can forward a kind filter to
+ * their underlying CSPICE implementation, or whether they must fall back to
+ * querying `ALL` and filtering in JS.
+ *
+ * NOTE: `kinds` is expected to be normalized (via {@link normalizeKindInput}).
+ * If non-normalized input slips through (e.g. empty arrays or `ALL` mixed with
+ * other tokens), this function is defensive and returns null.
+ */
 export function nativeKindQueryOrNull(kinds: readonly KernelKind[]): string | null {
   // Defensive: callers are expected to pass normalized kinds, but this is an
   // exported helper and should not throw on incidental misuse.
@@ -201,9 +201,9 @@ function normalizeRequestedKindSetIfNeeded(requestedRaw: ReadonlySet<string>): R
  * Return whether a kernel matches the requested kind filter.
  *
  * Requested kind tokens are treated as trim + case-insensitive. Empty tokens are ignored.
-*
-* NOTE: Unlike {@link normalizeKindInput}, this helper is intentionally lenient:
-* unknown requested tokens are treated as non-matching (and do not throw).
+ *
+ * NOTE: Unlike {@link normalizeKindInput}, this helper is intentionally lenient:
+ * unknown requested tokens are treated as non-matching (and do not throw).
  * Unknown/unsupported `kernel.filtyp` values never match (unless `requested` includes `ALL`).
  *
  * TEXT-kernel subtypes (LSK/FK/IK/SCLK): SPICE reports these as `filtyp: "TEXT"`.

@@ -1,26 +1,26 @@
 /**
-* Contract conventions:
-* - Inputs are assumed validated at the backend boundary; the contract itself is primarily type-level.
-* - Methods throw on invalid arguments or SPICE errors.
-* - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
-*/
+ * Contract conventions:
+ * - Inputs are assumed validated at the backend boundary; the contract itself is primarily type-level.
+ * - Methods throw on invalid arguments or SPICE errors.
+ * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
+ */
 
 import type { SpiceHandle, VirtualOutput } from "../shared/types.js";
 
 /**
-* Plain-object representation of CSPICE `SpiceDLADescr`.
-*
-* These are the 8 integer components of a DLA descriptor.
-*
-* ## Portability
-*
-* Each field is an **int32** (32-bit signed integer). Backend implementations
-* must reject (throw) non-integers and values outside the int32 range to
-* prevent silent truncation across native/WASM boundaries.
-*
-* This matches tspice's project-wide assumption that `SpiceInt` is 32-bit
-* (`sizeof(SpiceInt) == 4`) in all supported builds.
-*/
+ * Plain-object representation of CSPICE `SpiceDLADescr`.
+ *
+ * These are the 8 integer components of a DLA descriptor.
+ *
+ * ## Portability
+ *
+ * Each field is an **int32** (32-bit signed integer). Backend implementations
+ * must reject (throw) non-integers and values outside the int32 range to
+ * prevent silent truncation across native/WASM boundaries.
+ *
+ * This matches tspice's project-wide assumption that `SpiceInt` is 32-bit
+ * (`sizeof(SpiceInt) == 4`) in all supported builds.
+ */
 export type DlaDescriptor = {
   bwdptr: number;
   fwdptr: number;

@@ -5,25 +5,35 @@ export class InvariantError extends Error {
   }
 }
 
+/**
+ * Assert that a condition is truthy.
+ *
+ * Throws {@link InvariantError} when the assertion fails.
+ */
 export function invariant(condition: unknown, message = "Invariant violation"): asserts condition {
   if (!condition) {
     throw new InvariantError(message);
   }
 }
 
+/**
+ * Exhaustiveness helper for `switch` statements.
+ *
+ * Throws an error if called.
+ */
 export function assertNever(value: never, message = "Unexpected value"): never {
   throw new Error(`${message}: ${String(value)}`);
 }
 
 /**
-* Normalize a *virtual* kernel identifier so the same `path` works across backends
-* (Node temp-file staging vs WASM `/kernels/...` FS).
-*
-* This is intentionally stricter than general filesystem normalization:
-* - `..` is rejected
-* - leading slashes and `kernels/` prefixes are stripped
-* - repeated slashes and `.` segments are collapsed
-*/
+ * Normalize a *virtual* kernel identifier so the same `path` works across backends
+ * (Node temp-file staging vs WASM `/kernels/...` FS).
+ *
+ * This is intentionally stricter than general filesystem normalization:
+ * - `..` is rejected
+ * - leading slashes and `kernels/` prefixes are stripped
+ * - repeated slashes and `.` segments are collapsed
+ */
 export function normalizeVirtualKernelPath(input: string): string {
   // NOTE: Avoid `String.prototype.replaceAll` for compatibility with older
   // JS runtimes / conservative build targets.

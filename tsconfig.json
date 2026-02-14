@@ -14,9 +14,6 @@
       "path": "./packages/perf-analysis"
     },
     {
-      "path": "./apps/orrery"
-    },
-    {
       "path": "./packages/backend-node"
     },
     {

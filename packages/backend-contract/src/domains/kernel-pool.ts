@@ -1,19 +1,19 @@
 /**
-* Kernel pool API contract.
-*
-* Contract conventions:
-* - Backends MUST validate inputs as described below and throw on invalid arguments or SPICE errors.
-* - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
-*
-* Terminology used in validation semantics:
-* - "not empty or whitespace-only" means `value.trim().length > 0`.
-* - "finite integer" means `Number.isFinite(value) && Number.isInteger(value)`.
-*
-* Empty arrays:
-* - `pdpool`/`pipool`/`pcpool` accept `values: []` and set the variable to an empty list (size 0).
-* - `swpool` accepts `names: []` and watches nothing (but still arms the agent so the next
-*   `cvpool(agent)` returns `true`).
-*/
+ * Kernel pool API contract.
+ *
+ * Contract conventions:
+ * - Backends MUST validate inputs as described below and throw on invalid arguments or SPICE errors.
+ * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
+ *
+ * Terminology used in validation semantics:
+ * - "not empty or whitespace-only" means `value.trim().length > 0`.
+ * - "finite integer" means `Number.isFinite(value) && Number.isInteger(value)`.
+ *
+ * Empty arrays:
+ * - `pdpool`/`pipool`/`pcpool` accept `values: []` and set the variable to an empty list (size 0).
+ * - `swpool` accepts `names: []` and watches nothing (but still arms the agent so the next
+ *   `cvpool(agent)` returns `true`).
+ */
 import type { Found } from "../shared/types.js";
 
 export type KernelPoolVarType = "C" | "N";
