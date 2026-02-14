@@ -74,8 +74,7 @@ export type SpiceClientsBuilder = {
    * Kernel load order matches call order (batch order preserved; within each
    * pack, kernel order preserved).
    */
-  withKernels(pack: KernelPack): SpiceClientsBuilder;
-  withKernels(packs: readonly KernelPack[]): SpiceClientsBuilder;
+  withKernels(packOrPacks: KernelPack | KernelPack[]): SpiceClientsBuilder;
 
   /** Build a sync-ish in-process client. */
   toSync(opts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>>;
@@ -206,8 +205,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
   builder = {
     caching: (opts) => createBuilder({ ...state, cachingOptions: opts }),
 
-    withKernels: (packsOrPack: KernelPack | readonly KernelPack[]) => {
-      const packs = Array.isArray(packsOrPack) ? packsOrPack : [packsOrPack];
+    withKernels: (packOrPacks: KernelPack | KernelPack[]) => {
+      const packs = Array.isArray(packOrPacks) ? packOrPacks : [packOrPacks];
       return addKernelBatches(packs);
     },
 

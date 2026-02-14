@@ -29,7 +29,7 @@ Put the kernel files at:
 - `public/kernels/naif/pck/pck00011.tpc`
 - `public/kernels/naif/spk/planets/de432s.bsp`
 
-Then you can load them with `kernels.naif` + `spiceClients.withKernels()`:
+Then you can load them with `kernels.naif` + `spiceClients.withKernels(packOrPacks)`:
 
 ```ts
 import { kernels, spiceClients } from '@rybosome/tspice'
@@ -79,7 +79,7 @@ loading primitive is:
 await spice.kit.loadKernel({ path, bytes })
 ```
 
-Here’s the explicit fetch + load flow (equivalent to what `withKernels()` does internally):
+Here’s the explicit fetch + load flow (equivalent to what `withKernels(packOrPacks)` does internally):
 
 > Note on root-relative URLs (`"/..."`): by default, `rootRelativeKernelUrlBehavior: "bypassBaseUrl"`
 > means `/...` kernel URLs **ignore** `pack.baseUrl` (so `/kernels/a.tls` stays `/kernels/a.tls`).

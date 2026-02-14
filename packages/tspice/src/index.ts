@@ -57,7 +57,6 @@ export { kernels } from "./kernels/kernels.js";
 export type {
   KernelPack,
   KernelPackKernel,
-  LoadKernelPackOptions,
 } from "./kernels/kernelPack.js";
 
 export { resolveKernelUrl } from "./kernels/kernelPack.js";
