@@ -107,3 +107,10 @@ Kernel loading is where environment differences matter most:
 - **Async vs sync clients:** `toAsync()` / `toWebWorker()` promisify every method; `toSync()` does not.
 - **Some low-level outputs are “poisoned” on error:** APIs that mutate caller-provided handles (cells/windows) may leave them in an undefined state if an exception is thrown — recreate them.
 - **Row-major vs column-major:** most 3D/math libraries expect column-major matrices; use `Mat3.colMajor` when integrating.
+
+## Next
+
+- [Time systems](/concepts/time-systems)
+- [Frames](/concepts/frames)
+- [Aberration corrections](/concepts/aberration-corrections)
+- [Kernel taxonomy](/concepts/kernel-taxonomy)

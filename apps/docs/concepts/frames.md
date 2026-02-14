@@ -46,6 +46,8 @@ If a frame isn’t defined by built-ins or loaded kernels, SPICE will throw.
 `kit.frameTransform(from, to, et)` is a wrapper around `raw.pxform(...)` that returns a `Mat3` helper.
 
 ```ts
+// Requires: LSK (for utcToEt).
+// Many common frame transforms (including IAU_EARTH) also require a PCK.
 const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
 
 const R = await spice.kit.frameTransform("J2000", "IAU_EARTH", et);
