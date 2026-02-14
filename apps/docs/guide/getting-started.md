@@ -19,6 +19,7 @@ This snippet:
 
 - uses the WASM backend (works in browsers and Node)
 - preloads a small NAIF kernel pack
+- uses an absolute kernel `baseUrl` (required for Node's `fetch()`)
 - always disposes the client in a `finally`
 
 ```ts
@@ -29,8 +30,10 @@ const kernelPack = publicKernels
   .pck00011_tpc()
   .pack();
 
+const baseUrl = "https://orrery.ryboso.me/";
+
 const { spice, dispose } = await spiceClients
-  .withKernels(kernelPack)
+  .withKernels(kernelPack, { baseUrl })
   .toAsync({ backend: "wasm" });
 
 try {
@@ -45,12 +48,15 @@ try {
 
 ### Kernel hosting note
 
-`publicKernels` defaults to URLs like `kernels/naif/naif0012.tls`.
+`publicKernels` defaults to URLs like `kernels/naif/naif0012.tls` (relative URLs).
 
 That means:
 
-- your app needs to serve the kernel files (often from `/kernels/naif/...` relative to your app base)
+- in browsers, you typically serve the kernel files as static assets (often from `/kernels/naif/...` relative to your app base)
+- in Node, `fetch()` requires absolute URLs, so you must pass an **absolute** `baseUrl` (or use absolute `kernel.url` values)
 - kernel URLs are just URLs; you can host them wherever you want
+
+This quickstart uses `https://orrery.ryboso.me/` as a convenient public host for the `publicKernels` files.
 
 See [/guide/kernels](/guide/kernels) for details (including `baseUrl` and custom hosting).
 
