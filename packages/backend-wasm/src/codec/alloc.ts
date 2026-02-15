@@ -26,6 +26,7 @@ function assertValidMallocSize(size: number): void {
   }
 }
 
+/** Allocate WASM memory via `_malloc` with validation and a hard max size guard. */
 export function mallocOrThrow(module: Pick<EmscriptenModule, "_malloc">, size: number): number {
   assertValidMallocSize(size);
   const ptr = module._malloc(size);
@@ -35,6 +36,7 @@ export function mallocOrThrow(module: Pick<EmscriptenModule, "_malloc">, size: n
   return ptr;
 }
 
+/** Allocate a pointer, run `fn`, and always `_free` the pointer. */
 export function withMalloc<T>(
   module: Pick<EmscriptenModule, "_malloc" | "_free">,
   size: number,
@@ -48,6 +50,7 @@ export function withMalloc<T>(
   }
 }
 
+/** Allocate multiple pointers, run `fn`, and always `_free` all pointers (reverse order). */
 export function withAllocs<T>(
   module: Pick<EmscriptenModule, "_malloc" | "_free">,
   sizes: readonly number[],
@@ -67,6 +70,7 @@ export function withAllocs<T>(
   }
 }
 
+/** Decode a CSPICE error message written into a UTF-8 buffer (fallbacks to code). */
 export function decodeWasmSpiceError(
   module: Pick<EmscriptenModule, "UTF8ToString">,
   errPtr: number,

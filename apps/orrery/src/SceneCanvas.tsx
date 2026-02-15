@@ -250,6 +250,9 @@ const CAMERA_RADIUS_LIMITS = {
   maxRadius: HOME_PRESET_RADIUS_MAX * 20_000,
 } as const
 
+/**
+ * Main Three.js scene canvas + runtime initializer for the orrery app.
+ */
 export function SceneCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)

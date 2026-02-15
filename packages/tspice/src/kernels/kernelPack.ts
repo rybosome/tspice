@@ -102,6 +102,10 @@ function isAbsoluteUrl(url: string): boolean {
 }
 
 
+/**
+ * Resolve a kernel URL against an optional `baseUrl`, respecting the configured
+ * behavior for root-relative URLs.
+ */
 export function resolveKernelUrl(
   url: string,
   baseUrl: string | undefined,
@@ -230,7 +234,9 @@ export async function loadKernelPack(
     opts?.fetch ?? ((globalThis as unknown as { fetch?: FetchLike }).fetch ?? undefined);
 
   if (!fetchFn) {
-    throw new Error("loadKernelPack(): `fetch` is not available; pass opts.fetch");
+    throw new Error(
+      "loadKernelPack(): `fetch` is not available. Provide a fetch implementation via opts.fetch (or via spiceClients.withFetch(fetch)), or set globalThis.fetch.",
+    );
   }
 
   const fetchStrategy = opts?.fetchStrategy ?? "sequential";

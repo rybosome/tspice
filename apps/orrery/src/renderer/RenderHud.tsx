@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react'
 import * as THREE from 'three'
 
+/**
+ * Snapshot of per-frame renderer stats for the debug HUD.
+ */
 export interface RenderHudStats {
   fps: number
   drawCalls: number
@@ -19,6 +22,7 @@ export interface RenderHudStats {
   focusBody: string
 }
 
+/** Debug UI showing per-frame renderer stats (when enabled). */
 export function RenderHud({ stats }: { stats: RenderHudStats | null }): ReactNode {
   if (!stats) return null
 

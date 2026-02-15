@@ -5,6 +5,7 @@
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
 export interface TimeApi {
+  /** Return the underlying SPICE toolkit version string. */
   spiceVersion(): string;
 
   /**
@@ -90,6 +91,7 @@ export interface TimeApi {
    * Wrapper around CSPICE `timdef_c`.
    */
   timdef(action: "GET", item: string): string;
+  /** Set a time conversion default (see `timdef_c`). */
   timdef(action: "SET", item: string, value: string): void;
 
   // --- SCLK conversions + CK attitude -------------------------------------

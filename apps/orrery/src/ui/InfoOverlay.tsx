@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useRef, type ReactNode } from 'react'
 
+/** Props for {@link InfoOverlay}. */
 export interface InfoOverlayProps {
   isOpen: boolean
   title: string

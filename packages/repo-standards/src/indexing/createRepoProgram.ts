@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import * as ts from "typescript";
 
+/** Wrapper around a TypeScript Program plus its host/compiler options. */
 export interface RepoProgram {
   program: ts.Program;
   checker: ts.TypeChecker;
@@ -184,6 +185,7 @@ function computeTypeRoots(opts: {
   return arr.length > 0 ? arr : undefined;
 }
 
+/** Create a TypeScript Program for a repo (used for static analysis/export indexing). */
 export function createRepoProgram(opts: { repoRoot: string }): RepoProgram {
   const configPath = path.join(opts.repoRoot, "tsconfig.json");
 

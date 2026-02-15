@@ -107,6 +107,9 @@ import type { DskApi } from "./domains/dsk.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
 
+/**
+ * Unified backend contract (composition of all domain APIs).
+ */
 export interface SpiceBackend
   extends TimeApi,
     KernelsApi,

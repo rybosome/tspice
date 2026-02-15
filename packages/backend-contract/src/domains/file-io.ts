@@ -39,6 +39,7 @@ export type FoundDlaDescriptor =
       descr: DlaDescriptor;
     };
 
+/** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA + virtual outputs). */
 export interface FileIoApi {
   /** Returns whether a file exists at `path`. */
   exists(path: string): boolean;

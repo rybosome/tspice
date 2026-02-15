@@ -33,6 +33,7 @@ export const DEFAULT_ENHANCED_CONFIG: EnhancedScaleConfig = {
   minWorldRadius: 0.0005,
 }
 
+/** Options for {@link computeBodyRadiusWorld}. */
 export interface ComputeBodyRadiusWorldOptions {
   /** Physical radius in km. */
   radiusKm: number

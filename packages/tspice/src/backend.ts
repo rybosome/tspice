@@ -17,6 +17,11 @@ export type CreateBackendOptions = {
   wasmUrl?: string | URL;
 };
 
+/**
+ * Create a SPICE backend implementation (Node-native or WASM).
+ *
+ * This uses dynamic imports so environments that cannot load a backend can still typecheck/build.
+ */
 export function createBackend(options: {
   backend: "wasm";
   wasmUrl?: string | URL;

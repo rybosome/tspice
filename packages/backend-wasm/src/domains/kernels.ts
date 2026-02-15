@@ -118,6 +118,7 @@ function tspiceCallKdata(
   }
 }
 
+/** Create a {@link KernelsApi} implementation backed by a WASM Emscripten module + WASM FS. */
 export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): KernelsApi {
   let kinfoCache: Map<string, KernelInfo> | null = null;
 

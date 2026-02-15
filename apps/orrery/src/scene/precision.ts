@@ -17,6 +17,7 @@ import type { Vec3Km } from '../spice/types.js'
  * - Convert to renderer units with `kmToWorld` and assign to Three.js object positions.
  */
 
+/** Rebase a world-space position by subtracting the current focus/origin position. */
 export function rebasePositionKm(bodyPosKm: Vec3Km, focusPosKm: Vec3Km): Vec3Km {
   return [bodyPosKm[0] - focusPosKm[0], bodyPosKm[1] - focusPosKm[1], bodyPosKm[2] - focusPosKm[2]]
 }

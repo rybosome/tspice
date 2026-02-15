@@ -636,6 +636,7 @@ function assertFiniteNumberArrayFixed(value: unknown, expectedLength: number, la
   }
 }
 
+/** Create a {@link GeometryApi} implementation backed by a WASM Emscripten module. */
 export function createGeometryApi(module: EmscriptenModule): GeometryApi {
   return {
     subpnt: (method: string, target: string, et: number, fixref: string, abcorr: AbCorr | string, observer: string) =>

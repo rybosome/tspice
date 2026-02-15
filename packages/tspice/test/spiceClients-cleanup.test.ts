@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { SpiceTransport } from "../src/transport/types.js";
 import { nextMacrotask } from "../src/transport/rpc/taskScheduling.js";
 import { spiceClients } from "../src/clients/spiceClients.js";
+import { kernels } from "../src/kernels/kernels.js";
 import { exposeTransportToWorker } from "../src/worker/transport/exposeTransportToWorker.js";
 
 import { createConnectedWorkerPair } from "./_helpers/fakeWorker.js";
@@ -30,7 +31,9 @@ describe("spiceClients cleanup", () => {
     try {
       await expect(
         spiceClients
-          .withKernel({ url: "https://example.com/missing-kernel.tls" })
+          .withKernels(
+            kernels.custom().add({ url: "https://example.com/missing-kernel.tls" }).pack(),
+          )
           .toWebWorker({ worker: () => worker }),
       ).rejects.toThrow(/Failed to fetch kernel/i);
     } finally {

@@ -492,6 +492,7 @@ function validateBenchmark(
   return record as unknown as BenchmarkV1;
 }
 
+/** Validate an unknown input value against the v1 benchmark suite schema. */
 export function validateBenchmarkSuiteV1(
   value: unknown,
   options: ValidateBenchmarkSuiteV1Options,

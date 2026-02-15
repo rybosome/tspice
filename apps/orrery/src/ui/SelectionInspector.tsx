@@ -215,6 +215,7 @@ function formatBodyKind(kind: string): string {
   return kind.charAt(0).toUpperCase() + kind.slice(1)
 }
 
+/** UI panel showing details and live SPICE state for the currently selected body. */
 export function SelectionInspector({ selectedBody, focusBody, spice, observer, frame }: SelectionInspectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
 

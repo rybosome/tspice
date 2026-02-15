@@ -20,6 +20,9 @@ export type CameraPose = {
   target?: THREE.Vector3
 }
 
+/**
+ * Orbital camera controller (target + spherical angles) with optional free-look offset.
+ */
 export class CameraController {
   target: THREE.Vector3
   radius: number
@@ -40,6 +43,9 @@ export class CameraController {
   private readonly minLookPitch: number = -Math.PI / 2 + 0.01
   private readonly maxLookPitch: number = Math.PI / 2 - 0.01
 
+  /**
+   * Create a controller from an initial snapshot and optional clamp limits.
+   */
   constructor(
     state: CameraControllerState,
     opts?: {
@@ -71,6 +77,9 @@ export class CameraController {
     this.clampState()
   }
 
+  /**
+   * Create a controller by inferring orbit parameters from a world-space camera pose.
+   */
   static fromCamera(camera: THREE.Camera, target = new THREE.Vector3(0, 0, 0)) {
     const offset = camera.position.clone().sub(target)
     const radius = offset.length() || 1
@@ -131,18 +140,23 @@ export class CameraController {
     }
   }
 
+  /** Clamp radius/pitch (and free-look pitch) to configured limits. */
   clampState() {
     this.radius = THREE.MathUtils.clamp(this.radius, this.minRadius, this.maxRadius)
     this.pitch = THREE.MathUtils.clamp(this.pitch, this.minPitch, this.maxPitch)
     this.lookPitch = THREE.MathUtils.clamp(this.lookPitch, this.minLookPitch, this.maxLookPitch)
   }
 
+  /** Update zoom limits and clamp the current radius to the new range. */
   setRadiusLimits(limits: { minRadius?: number; maxRadius?: number }) {
     if (limits.minRadius != null) this.minRadius = limits.minRadius
     if (limits.maxRadius != null) this.maxRadius = limits.maxRadius
     this.clampState()
   }
 
+  /**
+   * Apply the controller state to a Three.js camera (position + lookAt + free-look offset).
+   */
   applyToCamera(camera: THREE.Camera) {
     this.clampState()
 
@@ -171,6 +185,7 @@ export class CameraController {
     }
   }
 
+  /** Take an immutable snapshot of the controller state (safe to store as a preset). */
   snapshot(): CameraControllerState {
     return {
       target: this.target.clone(),
@@ -183,6 +198,7 @@ export class CameraController {
     }
   }
 
+  /** Restore controller state from a previously captured snapshot. */
   restore(state: CameraControllerState) {
     this.target.copy(state.target)
     this.radius = state.radius

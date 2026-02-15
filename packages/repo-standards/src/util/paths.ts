@@ -1,11 +1,13 @@
 import path from "node:path";
 
+/** Convert a path to a stable POSIX-style path (`/` separators). */
 export function toPosixPath(p: string): string {
   // Convert both platform-specific separators and any Windows-style separators.
   // (On posix, `path.sep` is already `/`, but configs/CLI args may still contain `\\`.)
   return p.split(path.sep).join("/").replaceAll("\\", "/");
 }
 
+/** Normalize a repo-relative path and reject absolute paths / `..` traversal. */
 export function normalizeRepoRelativePath(input: string): string {
   // We treat config paths as repo-root relative (no leading ./) and we reject
   // anything that could traverse outside the repo.

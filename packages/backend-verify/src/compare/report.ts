@@ -2,6 +2,7 @@ import type { Mismatch } from "./types.js";
 import { normalizeForCompare } from "./normalize.js";
 import { safeStringify } from "./safeStringify.js";
 
+/** Format a human-readable mismatch report for backend parity comparisons. */
 export function formatMismatchReport(mismatches: Mismatch[]): string {
   if (mismatches.length === 0) return "(no mismatches)";
 

@@ -36,6 +36,7 @@ export type SpkUnpackedDescriptor = {
   eaddr: number;
 };
 
+/** Backend contract for SPK/ephemeris computations (positions, states, segment inspection). */
 export interface EphemerisApi {
   /**
    * Compute state relative to observer using loaded kernels (see `spkezr_c`).

@@ -23,6 +23,7 @@ export function stripMetaKernelBegintextBlocks(text: string): string {
   return text.replace(/\\{1,2}begintext[\s\S]*?(?=\\{1,2}begindata|$)/gi, "");
 }
 
+/** Extract a list of quoted strings from a meta-kernel assignment (supports `NAME = (...)` and `NAME += (...)`). */
 export function extractMetaKernelStringList(text: string, name: string): string[] {
   const clean = stripMetaKernelBegintextBlocks(text);
 
@@ -91,6 +92,7 @@ function ensureWithinDirOrThrow(resolved: string, baseDir: string, message: stri
   }
 }
 
+/** Resolve the `KERNELS_TO_LOAD` list in a meta-kernel into normalized OS paths. */
 export function resolveMetaKernelKernelsToLoad(
   metaKernelText: string,
   metaKernelPath: string,
@@ -196,6 +198,7 @@ function rewriteMetaKernelStringList(
  * Note: we strip `\begintext` commentary blocks before rewriting so we don't
  * accidentally rewrite commented-out assignments.
  */
+/** Remove `begintext` blocks so native CSPICE parsing can safely ignore commented assignments. */
 export function sanitizeMetaKernelTextForNativeNoBegintextBlocks(
   metaKernelText: string,
   intendedCwd: string,
@@ -222,6 +225,7 @@ export function sanitizeMetaKernelTextForNativeNoBegintextBlocks(
  *
  * We achieve this by removing `KERNELS_TO_LOAD` assignments.
  */
+/** Sanitize meta-kernel text so the WASM backend can load it deterministically/safely. */
 export function sanitizeMetaKernelTextForWasm(metaKernelText: string): string {
   // Remove both `KERNELS_TO_LOAD = ( ... )` and `KERNELS_TO_LOAD += ( ... )`.
   // Note: `KERNELS_TO_LOAD = ( )` is not valid CSPICE syntax (BADVARASSIGN).
@@ -257,6 +261,7 @@ export function sanitizeMetaKernelTextForWasm(metaKernelText: string): string {
  * must remove `KERNELS_TO_LOAD` assignments to avoid double-loading and/or
  * bypassing restrictions.
  */
+/** Strip `KERNELS_TO_LOAD` assignments for native runs where kernels are staged/loaded separately. */
 export function sanitizeMetaKernelTextForNativeNoKernels(metaKernelText: string): string {
   // Currently identical to the WASM sanitizer; kept separate for clarity and to
   // allow future divergence (e.g. native-specific rewriting).

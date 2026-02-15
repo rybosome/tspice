@@ -4,6 +4,7 @@ import { wrapSpiceError } from "../../errors.js";
 import type { FrameName, SpiceTime } from "../../types.js";
 import { Mat3 } from "../math/mat3.js";
 
+/** Create frame helpers (pxform wrappers) for a given backend. */
 export function createFramesKit(cspice: SpiceBackend): {
   frameTransform(from: FrameName, to: FrameName, et: SpiceTime): Mat3;
 } {

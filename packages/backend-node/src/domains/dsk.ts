@@ -119,6 +119,7 @@ function normalizeDskType2Bookkeeping(value: unknown, context: string): DskType2
   return obj as unknown as DskType2Bookkeeping;
 }
 
+/** Create a {@link DskApi} implementation backed by the native Node addon. */
 export function createDskApi(native: NativeAddon, handles: SpiceHandleRegistry): DskApi {
   return {
     dskobj: (dsk: string, bodids: SpiceIntCell) => {

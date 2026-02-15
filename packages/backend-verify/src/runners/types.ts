@@ -30,8 +30,13 @@ export type RunCaseResult =
   | { ok: true; result: unknown }
   | { ok: false; error: RunnerErrorReport };
 
+/**
+ * Minimal runner interface used by the backend verification DSL.
+ */
 export interface CaseRunner {
   readonly kind: string;
+  /** Execute a single case (including any setup) and return its outcome. */
   runCase(input: RunCaseInput): Promise<RunCaseResult>;
+  /** Optional cleanup hook for releasing any runner resources. */
   dispose?(): Promise<void> | void;
 }

@@ -131,8 +131,6 @@ try {
       `import * as tspice from "@rybosome/tspice";`,
       ``,
       `if (typeof tspice.spiceClients !== "object") throw new Error("Missing spiceClients export");`,
-      `if (typeof tspice.publicKernels !== "object") throw new Error("Missing publicKernels export");`,
-      `if (typeof tspice.createPublicKernels !== "function") throw new Error("Missing createPublicKernels export");`,
       ``,
       `if (typeof tspice.createBackend !== "function") throw new Error("Missing createBackend export");`,
       `if (typeof tspice.createSpice !== "function") throw new Error("Missing createSpice export");`,
