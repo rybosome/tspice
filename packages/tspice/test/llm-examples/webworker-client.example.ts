@@ -28,8 +28,8 @@ export async function withWebWorkerClient<T>(
 /**
  * Example: preload kernels before creating the worker client.
  *
- * `kernels.naif()` builds a `KernelPack` (URLs + virtual load paths). Pass the pack to
- * `spiceClients.withKernels(pack)` before calling `.toWebWorker()`.
+ * `kernels.naif()` builds a `KernelPack` (URLs + virtual load paths). Pass a pack (or packs) to
+ * `spiceClients.withKernels(packOrPacks)` before calling `.toWebWorker()`.
  */
 export async function createWebWorkerClientWithNaifKernels() {
   const pack = kernels
