@@ -11,9 +11,6 @@ importers:
       '@rybosome/tspice-bench-contract':
         specifier: workspace:*
         version: link:packages/bench-contract
-      '@rybosome/tspice-repo-standards':
-        specifier: workspace:*
-        version: link:packages/repo-standards
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.6
@@ -270,22 +267,6 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
-
-  packages/repo-standards:
-    dependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      yaml:
-        specifier: ^2.8.1
-        version: 2.8.2
-    devDependencies:
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.6
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.6)
 
   packages/tspice:
     dependencies:
