@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 
 import type { KernelSource } from "@rybosome/tspice-backend-contract";
 
-import { createPublicKernels } from "../src/kernels/publicKernels.js";
 import { kernels } from "../src/kernels/kernels.js";
 import type { FetchLike, KernelPack, ResponseLike } from "../src/kernels/kernelPack.js";
 import { loadKernelPack } from "../src/kernels/kernelPack.js";
@@ -19,12 +18,13 @@ function okResponse(bytes: Uint8Array): ResponseLike {
   };
 }
 
-describe("publicKernels", () => {
+describe("kernels.naif()", () => {
   it("builds a stable ordered pack and normalizes base paths", () => {
-    const pack = createPublicKernels({
-      kernelUrlPrefix: "https://cdn.example.com/kernels",
-      pathBase: "/naif",
-    })
+    const pack = kernels
+      .naif({
+        kernelUrlPrefix: "https://cdn.example.com/kernels",
+        pathBase: "/naif",
+      })
       .de432s_bsp()
       .naif0012_tls()
       .pack();
@@ -40,9 +40,7 @@ describe("publicKernels", () => {
       },
     ]);
   });
-});
 
-describe("kernels.naif()", () => {
   it("treats whitespace kernelUrlPrefix/pathBase as omitted (falls back to defaults)", () => {
     const pack = kernels
       .naif({
@@ -60,6 +58,24 @@ describe("kernels.naif()", () => {
     ]);
   });
 
+  it("includes pack.baseUrl when kernelUrlPrefix is relative", () => {
+    const pack = kernels
+      .naif({
+        kernelUrlPrefix: "kernels/naif/",
+        baseUrl: "/myapp/",
+      })
+      .naif0012_tls()
+      .pack();
+
+    expect(pack.baseUrl).toBe("/myapp/");
+    expect(pack.kernels).toEqual([
+      {
+        url: "kernels/naif/lsk/naif0012.tls",
+        path: "naif/lsk/naif0012.tls",
+      },
+    ]);
+  });
+
   it("omits pack.baseUrl when kernelUrlPrefix is absolute", () => {
     const pack = kernels
       .naif({
@@ -71,26 +87,6 @@ describe("kernels.naif()", () => {
 
     expect(pack.baseUrl).toBeUndefined();
     expect(Object.prototype.hasOwnProperty.call(pack, "baseUrl")).toBe(false);
-  });
-});
-
-describe("createPublicKernels()", () => {
-  it("treats whitespace kernelUrlPrefix/pathBase as omitted (uses wrapper defaults)", () => {
-    const pack = createPublicKernels({
-      kernelUrlPrefix: "  ",
-      pathBase: "	",
-      baseUrl: "/myapp/",
-    })
-      .naif0012_tls()
-      .pack();
-
-    expect(pack.baseUrl).toBe("/myapp/");
-    expect(pack.kernels).toEqual([
-      {
-        url: "kernels/naif/lsk/naif0012.tls",
-        path: "naif/lsk/naif0012.tls",
-      },
-    ]);
   });
 });
 

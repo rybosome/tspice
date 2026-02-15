@@ -86,8 +86,7 @@ try {
 
 ## Kernel loading
 
-> Note: `KernelPack` now carries an optional `baseUrl`; `spiceClients.withKernels(pack)` no longer accepts
-> `{ baseUrl }`.
+> Note: `KernelPack` now carries an optional `baseUrl`; set `pack.baseUrl` (instead of passing a `{ baseUrl }` options object to `spiceClients.withKernels(...)`).
 
 ### Public kernel packs
 
@@ -103,9 +102,6 @@ import { kernels } from "@rybosome/tspice";
 
 const pack = kernels.naif().naif0012_tls().pck00011_tpc().pack();
 ```
-
-`publicKernels` / `createPublicKernels` are still exported for compatibility, but new code should prefer
-`kernels.naif()` / `kernels.custom()`.
 
 ### Custom kernels
 
@@ -132,7 +128,6 @@ Kernel load order matches call order:
 
 - `withKernels(pack)` appends 1 batch
 - `withKernels(packs)` appends multiple batches
-- `withKernel(...)` appends its own 1-kernel batch
 
 ## Backend notes
 

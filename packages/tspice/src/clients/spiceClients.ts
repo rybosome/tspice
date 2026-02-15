@@ -14,20 +14,19 @@ import {
 } from "../transport/caching/withCachingSync.js";
 import { createSpiceAsyncFromTransport } from "./createSpiceAsyncFromTransport.js";
 import { createSpiceSyncFromTransport } from "./createSpiceSyncFromTransport.js";
-import type { KernelPack, LoadKernelPackOptions } from "../kernels/kernelPack.js";
+import type { FetchLike, KernelPack } from "../kernels/kernelPack.js";
 import { loadKernelPack } from "../kernels/kernelPack.js";
-import { defaultKernelPathFromUrl } from "../kernels/defaultKernelPathFromUrl.js";
 import { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
 import { createWorkerTransport, type WorkerLike, type WorkerTransport } from "../worker/transport/createWorkerTransport.js";
 
 type KernelBatch = {
   pack: KernelPack;
-  loadOptions?: LoadKernelPackOptions;
 };
 
 type BuilderState = {
   cachingOptions?: WithCachingOptions;
   kernelBatches: readonly KernelBatch[];
+  kernelFetch?: FetchLike;
 };
 
 export type SpiceClientBuildResult<TSpice extends Spice | SpiceAsync = SpiceAsync> = {
@@ -66,6 +65,9 @@ export type SpiceClientsWebWorkerOptions = {
 export type SpiceClientsBuilder = {
   caching(opts: WithCachingOptions): SpiceClientsBuilder;
 
+  /** Override `fetch` used for kernel pack loading (defaults to `globalThis.fetch`). */
+  withFetch(fetchFn: FetchLike): SpiceClientsBuilder;
+
   /**
    * Append one or more kernel packs.
    *
@@ -76,19 +78,7 @@ export type SpiceClientsBuilder = {
    * Kernel load order matches call order (batch order preserved; within each
    * pack, kernel order preserved).
    */
-  withKernels(pack: KernelPack, opts?: LoadKernelPackOptions): SpiceClientsBuilder;
-  withKernels(packs: readonly KernelPack[], opts?: LoadKernelPackOptions): SpiceClientsBuilder;
-
-  /**
-   * Append a single-kernel batch.
-   *
-   * When `path` is omitted, it defaults to a stable hashed path like `/kernels/<hash>-<basename(url)>`.
-   * Basename is computed from the URL/path after stripping query/hash.
-   */
-  withKernel(
-    kernel: { url: string; path?: string },
-    opts?: LoadKernelPackOptions,
-  ): SpiceClientsBuilder;
+  withKernels(packOrPacks: KernelPack | KernelPack[]): SpiceClientsBuilder;
 
   /** Build a sync-ish in-process client. */
   toSync(opts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>>;
@@ -203,18 +193,19 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
   const loadKernelBatches = async (spice: Spice | SpiceAsync): Promise<void> => {
     for (const batch of state.kernelBatches) {
-      await loadKernelPack(spice, batch.pack, batch.loadOptions);
+      await loadKernelPack(
+        spice,
+        batch.pack,
+        state.kernelFetch === undefined ? undefined : { fetch: state.kernelFetch },
+      );
     }
   };
 
-  const addKernelBatches = (
-    packs: readonly KernelPack[],
-    opts: LoadKernelPackOptions | undefined,
-  ): SpiceClientsBuilder =>
+  const addKernelBatches = (packs: readonly KernelPack[]): SpiceClientsBuilder =>
     createBuilder({
       ...state,
       kernelBatches: state.kernelBatches.concat(
-        packs.map((pack) => (opts === undefined ? { pack } : { pack, loadOptions: opts })),
+        packs.map((pack) => ({ pack })),
       ),
     });
 
@@ -222,21 +213,11 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
   builder = {
     caching: (opts) => createBuilder({ ...state, cachingOptions: opts }),
 
-    withKernels: (packsOrPack: KernelPack | readonly KernelPack[], opts?: LoadKernelPackOptions) => {
-      const packs = Array.isArray(packsOrPack) ? packsOrPack : [packsOrPack];
-      return addKernelBatches(packs, opts);
-    },
+    withFetch: (fetchFn) => createBuilder({ ...state, kernelFetch: fetchFn }),
 
-    withKernel: (kernel, opts) => {
-      const pack: KernelPack = {
-        kernels: [
-          {
-            url: kernel.url,
-            path: kernel.path ?? defaultKernelPathFromUrl(kernel.url),
-          },
-        ],
-      };
-      return addKernelBatches([pack], opts);
+    withKernels: (packOrPacks: KernelPack | KernelPack[]) => {
+      const packs = Array.isArray(packOrPacks) ? packOrPacks : [packOrPacks];
+      return addKernelBatches(packs);
     },
 
     toSync: async (inProcessOpts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>> => {
