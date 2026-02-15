@@ -1,6 +1,9 @@
 # Guide
 
-This section is an onboarding path for using tspice.
+This section is the onboarding path for using `@rybosome/tspice`.
 
-- Start here: [Getting started](/guide/getting-started)
-- Next: [Installation](/guide/installation)
+1. [Getting started](/guide/getting-started)
+2. [Creating clients](/guide/creating-clients)
+3. [Kernels](/guide/kernels)
+4. [Browser (WASM + Web Worker)](/guide/browser)
+5. [Node (native backend)](/guide/node)
