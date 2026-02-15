@@ -26,7 +26,7 @@ const pack = kernels
   .pack();
 
 const { spice, dispose } = await spiceClients
-  .withKernel(pack)
+  .withKernels(pack)
   .toWebWorker();
 
 try {

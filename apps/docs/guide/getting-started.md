@@ -34,7 +34,7 @@ const kernelPack = kernels
   .pack();
 
 const { spice, dispose } = await spiceClients
-  .withKernel(kernelPack)
+  .withKernels(kernelPack)
   .toAsync({ backend: "wasm" });
 
 try {
