@@ -71,10 +71,6 @@
         "description": "Create a low-level SPICE backend implementation (wasm or node) conforming to the backend contract."
       },
       {
-        "name": "createPublicKernels",
-        "description": "Legacy compatibility wrapper over kernels.naif() for building a small set of commonly-used NAIF kernels (URLs + load paths)."
-      },
-      {
         "name": "createSpice",
         "description": "Create a sync-ish tspice client (raw backend + higher-level kit helpers)."
       },
@@ -99,10 +95,6 @@
         "description": "Kernel pack builders for NAIF and custom kernels (produces KernelPack objects for withKernels())."
       },
       {
-        "name": "publicKernels",
-        "description": "Legacy preconfigured PublicKernelsBuilder; prefer kernels.naif()."
-      },
-      {
         "name": "resolveKernelUrl",
         "description": "Resolve a kernel URL against KernelPack.baseUrl with root-relative URL behavior (matches loadKernelPack semantics)."
       },
@@ -123,10 +115,6 @@
       {
         "name": "CreateBackendOptions",
         "description": "Options accepted by createBackend() (explicit backend selection + optional wasmUrl override)."
-      },
-      {
-        "name": "CreatePublicKernelsOptions",
-        "description": "Options accepted by createPublicKernels() (kernelUrlPrefix + pathBase + baseUrl)."
       },
       {
         "name": "CreateSpiceAsyncOptions",
@@ -169,10 +157,6 @@
         "description": "Options for kernels.naif() (kernelUrlPrefix + optional baseUrl + virtual pathBase)."
       },
       {
-        "name": "LoadKernelPackOptions",
-        "description": "Options for kernelPack.loadKernelPack() (root-relative URL behavior, fetch override, and fetch strategy)."
-      },
-      {
         "name": "Mat3ColMajor",
         "description": "Branded type for a 3×3 matrix encoded in column-major order."
       },
@@ -193,14 +177,6 @@
         "description": "Builder returned by kernels.naif() for selecting NAIF kernels and producing a KernelPack."
       },
       {
-        "name": "PublicKernelId",
-        "description": "Union of built-in public kernel ids (e.g. naif0012_tls, pck00011_tpc, de432s_bsp)."
-      },
-      {
-        "name": "PublicKernelsBuilder",
-        "description": "Builder for selecting public kernels and producing a KernelPack."
-      },
-      {
         "name": "Spice",
         "description": "Sync-ish client type: { raw, kit }."
       },
@@ -218,7 +194,7 @@
       },
       {
         "name": "SpiceClientsBuilder",
-        "description": "Fluent builder for constructing spice clients (in-process sync/async or WebWorker), optionally with caching + kernels."
+        "description": "Fluent builder for constructing spice clients (in-process sync/async or WebWorker), optionally with caching, kernel packs, and fetch override for kernel loading."
       },
       {
         "name": "SpiceClientsWebWorkerOptions",
