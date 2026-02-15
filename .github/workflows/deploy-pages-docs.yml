@@ -35,6 +35,9 @@ jobs:
       - name: Generate API docs
         run: pnpm docs:api
 
+      - name: Generate LLM artifacts
+        run: pnpm generate:llm
+
       - name: Build docs
         run: pnpm --filter @rybosome/docs build
 
