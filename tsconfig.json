@@ -27,9 +27,6 @@
     },
     {
       "path": "./packages/backend-verify"
-    },
-    {
-      "path": "./packages/repo-standards"
     }
   ]
 }
