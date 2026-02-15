@@ -3360,6 +3360,16 @@ int main(void) {
     SpiceDouble out[3];
     vadd_c(a, b, out);
 
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vadd", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_double_array(out, 3);
     fputs("}\n", stdout);
@@ -3387,6 +3397,16 @@ int main(void) {
     SpiceDouble out[3];
     vcrss_c(a, b, out);
 
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vcrss", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_double_array(out, 3);
     fputs("}\n", stdout);
@@ -3413,6 +3433,16 @@ int main(void) {
 
     const SpiceDouble out = vdot_c(a, b);
 
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vdot", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
     fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)out);
     goto done;
   }
@@ -3432,6 +3462,16 @@ int main(void) {
 
     SpiceDouble out[3];
     vhat_c(v, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vhat", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
 
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_double_array(out, 3);
@@ -3455,6 +3495,16 @@ int main(void) {
     SpiceDouble out[3];
     vminus_c(v, out);
 
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vminus", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_double_array(out, 3);
     fputs("}\n", stdout);
@@ -3475,6 +3525,16 @@ int main(void) {
     }
 
     const SpiceDouble out = vnorm_c(v);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vnorm", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
 
     fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)out);
     goto done;
@@ -3504,6 +3564,16 @@ int main(void) {
     SpiceDouble out[3];
     vscl_c(s, v, out);
 
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vscl", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_double_array(out, 3);
     fputs("}\n", stdout);
@@ -3530,6 +3600,16 @@ int main(void) {
 
     SpiceDouble out[3];
     vsub_c(a, b, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vsub", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
 
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_double_array(out, 3);
