@@ -14,7 +14,7 @@ import {
 } from "../transport/caching/withCachingSync.js";
 import { createSpiceAsyncFromTransport } from "./createSpiceAsyncFromTransport.js";
 import { createSpiceSyncFromTransport } from "./createSpiceSyncFromTransport.js";
-import type { KernelPack } from "../kernels/kernelPack.js";
+import type { FetchLike, KernelPack } from "../kernels/kernelPack.js";
 import { loadKernelPack } from "../kernels/kernelPack.js";
 import { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
 import { createWorkerTransport, type WorkerLike, type WorkerTransport } from "../worker/transport/createWorkerTransport.js";
@@ -26,6 +26,7 @@ type KernelBatch = {
 type BuilderState = {
   cachingOptions?: WithCachingOptions;
   kernelBatches: readonly KernelBatch[];
+  kernelFetch?: FetchLike;
 };
 
 export type SpiceClientBuildResult<TSpice extends Spice | SpiceAsync = SpiceAsync> = {
@@ -63,6 +64,9 @@ export type SpiceClientsWebWorkerOptions = {
 
 export type SpiceClientsBuilder = {
   caching(opts: WithCachingOptions): SpiceClientsBuilder;
+
+  /** Override `fetch` used for kernel pack loading (defaults to `globalThis.fetch`). */
+  withFetch(fetchFn: FetchLike): SpiceClientsBuilder;
 
   /**
    * Append one or more kernel packs.
@@ -189,7 +193,11 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
   const loadKernelBatches = async (spice: Spice | SpiceAsync): Promise<void> => {
     for (const batch of state.kernelBatches) {
-      await loadKernelPack(spice, batch.pack);
+      await loadKernelPack(
+        spice,
+        batch.pack,
+        state.kernelFetch === undefined ? undefined : { fetch: state.kernelFetch },
+      );
     }
   };
 
@@ -204,6 +212,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
   builder = {
     caching: (opts) => createBuilder({ ...state, cachingOptions: opts }),
+
+    withFetch: (fetchFn) => createBuilder({ ...state, kernelFetch: fetchFn }),
 
     withKernels: (packOrPacks: KernelPack | KernelPack[]) => {
       const packs = Array.isArray(packOrPacks) ? packOrPacks : [packOrPacks];
