@@ -27,9 +27,19 @@ type KernelPack = {
 };
 ```
 
+## `kernels.tspice()` (hosted mirror)
+
+`kernels.tspice()` is the same typed NAIF `generic_kernels` catalog as `kernels.naif()`, but configured to fetch from a hosted mirror (`https://tspice-viewer.ryboso.me/`) by default (CORS-friendly).
+
+```ts
+import { kernels } from "@rybosome/tspice";
+
+const pack = kernels.tspice().naif0012_tls().pck00011_tpc().pack();
+```
+
 ## `kernels.naif()` (common NAIF kernels)
 
-`kernels.naif()` is a small builder for the NAIF `generic_kernels` catalog, with a safe default load order.
+`kernels.naif()` is a small builder for the NAIF `generic_kernels` catalog (canonical NAIF host by default), with a safe default load order.
 
 ```ts
 import { kernels } from "@rybosome/tspice";
@@ -79,6 +89,8 @@ try {
 By default, `kernels.naif()` uses the NAIF `generic_kernels` host (URLs like `https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls`).
 
 Note: NAIF's host does not currently send CORS headers (`Access-Control-Allow-Origin`), so direct browser fetches may fail; for browsers, self-host (static assets) or use a CORS-enabled mirror.
+
+If you just want a ready-to-use mirror, `kernels.tspice()` defaults to one.
 
 Common approaches:
 
