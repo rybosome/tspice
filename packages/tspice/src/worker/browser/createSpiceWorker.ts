@@ -28,6 +28,7 @@ type WorkerCtorLike = new (
   options?: Record<string, unknown>,
 ) => WorkerLike;
 
+/** Create a Web Worker instance for the tspice worker entrypoint (inline by default). */
 export function createSpiceWorker(
   opts: CreateSpiceWorkerOptions = {},
 ): WorkerLike {

@@ -43,21 +43,25 @@ export class Mat3 {
   readonly #rowMajor: Readonly<Mat3RowMajor>;
   #colMajor: Readonly<Mat3ColMajor> | undefined;
 
+  /** Create a Mat3 from cached row/col-major representations. Prefer the static constructors. */
   private constructor(rowMajor: Readonly<Mat3RowMajor>, colMajor?: Readonly<Mat3ColMajor>) {
     this.#rowMajor = rowMajor;
     this.#colMajor = colMajor;
   }
 
+  /** Create a {@link Mat3} from a row-major 3x3 array (input is cloned). */
   static fromRowMajor(m: Readonly<Mat3RowMajor>): Mat3 {
     return new Mat3(cloneRowMajor(m));
   }
 
+  /** Create a {@link Mat3} from a column-major 3x3 array (input is cloned). */
   static fromColMajor(m: Readonly<Mat3ColMajor>): Mat3 {
     const colMajor = cloneColMajor(m);
     const rowMajor = colMajorToRowMajor(colMajor);
     return new Mat3(rowMajor, colMajor);
   }
 
+  /** Create an identity 3x3 matrix. */
   static identity(): Mat3 {
     return Mat3.fromRowMajor(
       brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1] as const, {
@@ -66,10 +70,12 @@ export class Mat3 {
     );
   }
 
+  /** Row-major representation (as a cached branded tuple). */
   get rowMajor(): Readonly<Mat3RowMajor> {
     return this.#rowMajor;
   }
 
+  /** Column-major representation (computed lazily and cached). */
   get colMajor(): Readonly<Mat3ColMajor> {
     let colMajor = this.#colMajor;
     if (!colMajor) {
@@ -79,10 +85,12 @@ export class Mat3 {
     return colMajor;
   }
 
+  /** Alias for {@link rowMajor}. */
   toRowMajor(): Readonly<Mat3RowMajor> {
     return this.rowMajor;
   }
 
+  /** Alias for {@link colMajor}. */
   toColMajor(): Readonly<Mat3ColMajor> {
     return this.colMajor;
   }

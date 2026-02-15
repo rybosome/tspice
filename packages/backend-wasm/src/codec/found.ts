@@ -6,6 +6,7 @@ import { WASM_ERR_MAX_BYTES, withAllocs } from "./alloc.js";
 import { throwWasmSpiceError } from "./errors.js";
 import { writeUtf8CString } from "./strings.js";
 
+/** Invoke a WASM function that follows the SPICE `found`-flag convention (int output + found flag). */
 export function tspiceCallFoundInt(
   module: EmscriptenModule,
   fn: (argPtr: number, outIntPtr: number, foundPtr: number, errPtr: number, errMaxBytes: number) => number,
@@ -32,6 +33,7 @@ export function tspiceCallFoundInt(
   }
 }
 
+/** Invoke a WASM function that follows the SPICE `found`-flag convention (string output + found flag). */
 export function tspiceCallFoundString(
   module: EmscriptenModule,
   fn: (

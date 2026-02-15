@@ -11,6 +11,7 @@ export type CreateKernelKitOptions = {
   byteBackedKernelPaths?: Set<string>;
 };
 
+/** Create kernel load/unload helpers for a given backend (with virtual-path normalization). */
 export function createKernelKit(
   cspice: SpiceBackend,
   options: CreateKernelKitOptions = {},

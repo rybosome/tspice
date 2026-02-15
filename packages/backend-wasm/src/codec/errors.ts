@@ -26,6 +26,7 @@ function readLastErrorField(
   });
 }
 
+/** Throw a JS Error for the last CSPICE error recorded in the WASM module. */
 export function throwWasmSpiceError(
   module: EmscriptenModule,
   errPtr: number,

@@ -1,3 +1,6 @@
+/**
+ * Error wrapper used by tspice clients to add operation context (and optional cause chaining).
+ */
 export class SpiceError extends Error {
   readonly operation: string;
 
@@ -8,6 +11,7 @@ export class SpiceError extends Error {
   }
 }
 
+/** Wrap an unknown error into a {@link SpiceError}, preserving the original as `cause` when possible. */
 export function wrapSpiceError(operation: string, error: unknown): SpiceError {
   if (error instanceof SpiceError) {
     return error;

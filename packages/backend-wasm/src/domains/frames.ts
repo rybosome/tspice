@@ -474,6 +474,7 @@ function tspiceCallSxform(module: EmscriptenModule, from: string, to: string, et
   }
 }
 
+/** Create a {@link FramesApi} implementation backed by a WASM Emscripten module. */
 export function createFramesApi(module: EmscriptenModule): FramesApi {
   return {
     namfrm: (name: string) => {

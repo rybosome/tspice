@@ -4,6 +4,7 @@ import { parse } from "yaml";
 
 import type { ValidationResult } from "./types.js";
 
+/** Parse a YAML string into a JS value, returning a structured validation result on failure. */
 export function parseYaml(
   yamlText: string,
   options?: { sourceName?: string },
@@ -22,6 +23,7 @@ export function parseYaml(
   }
 }
 
+/** Read and parse a YAML file from disk into a JS value. */
 export function parseYamlFile(filePath: string): ValidationResult<unknown> {
   try {
     const yamlText = fs.readFileSync(filePath, "utf8");

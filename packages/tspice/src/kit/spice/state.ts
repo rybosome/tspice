@@ -22,6 +22,7 @@ function splitState(state: readonly [number, number, number, number, number, num
   return { position, velocity };
 }
 
+/** Create state-vector helpers (`spkezr` wrapper) for a given backend. */
 export function createStateKit(cspice: SpiceBackend): {
   getState(args: GetStateArgs): StateVector;
 } {

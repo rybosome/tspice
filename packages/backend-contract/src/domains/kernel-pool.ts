@@ -18,6 +18,7 @@ import type { Found } from "../shared/types.js";
 
 export type KernelPoolVarType = "C" | "N";
 
+/** Backend contract for reading/writing kernel pool variables. */
 export interface KernelPoolApi {
   // --- Read ---------------------------------------------------------------
 

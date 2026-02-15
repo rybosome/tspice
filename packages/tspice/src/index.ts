@@ -45,14 +45,18 @@ export type {
 export { spiceClients } from "./clients/spiceClients.js";
 
 export type {
-  CreatePublicKernelsOptions,
-  PublicKernelId,
-  PublicKernelsBuilder,
-} from "./kernels/publicKernels.js";
-export { createPublicKernels, publicKernels } from "./kernels/publicKernels.js";
+  CustomKernelsBuilder,
+  KernelsCustomOptions,
+  KernelsNaifOptions,
+  NaifKernelId,
+  NaifKernelLeafPath,
+  NaifKernelsBuilder,
+} from "./kernels/kernels.js";
+export { kernels } from "./kernels/kernels.js";
 
 export type {
   KernelPack,
   KernelPackKernel,
-  LoadKernelPackOptions,
 } from "./kernels/kernelPack.js";
+
+export { resolveKernelUrl } from "./kernels/kernelPack.js";

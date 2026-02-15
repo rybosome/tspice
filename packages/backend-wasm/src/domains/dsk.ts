@@ -242,6 +242,7 @@ function tspiceCallDskb02(
   );
 }
 
+/** Create a {@link DskApi} implementation backed by a WASM Emscripten module. */
 export function createDskApi(module: EmscriptenModule, handles: SpiceHandleRegistry): DskApi {
   return {
     dskobj: (dsk: string, bodids: SpiceIntCell) => {

@@ -580,6 +580,9 @@ function tryGetPlatformBindingPath(require: NodeRequire): string | undefined {
   }
 }
 
+/**
+ * Lazily load (and cache) the native Node addon implementing the SPICE backend.
+ */
 export function getNativeAddon(): NativeAddon {
   if (cachedAddon) {
     return cachedAddon;

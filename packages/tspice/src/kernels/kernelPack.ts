@@ -8,25 +8,6 @@ export type KernelPackKernel = {
 };
 
 export type KernelPack = {
-  kernels: readonly KernelPackKernel[];
-};
-
-export type ResponseLike = {
-  ok: boolean;
-  status: number;
-  statusText: string;
-  arrayBuffer: () => Promise<ArrayBuffer>;
-};
-
-// Structural fetch typing so we don't leak DOM lib types into emitted .d.ts.
-export type FetchLike = (input: string, init?: unknown) => Promise<ResponseLike>;
-
-export type RootRelativeKernelUrlBehavior =
-  | "bypassBaseUrl"
-  | "applyBaseOrigin"
-  | "error";
-
-export type LoadKernelPackOptions = {
   /**
    * Base URL/path *directory* to resolve each `kernel.url` against when it is relative.
    *
@@ -52,13 +33,31 @@ export type LoadKernelPackOptions = {
    * - `baseUrl: "/myapp"` would be ambiguous (file vs directory) and therefore throws.
    * - If you have a page path like `"/app/index.html"`, pass its directory (`"/app/"`).
    *
-   * This is intentionally passed in (rather than relying on `import.meta.env.BASE_URL`)
-   * so this helper can be used outside Vite and can be tested deterministically.
+   * This is intentionally stored on the pack (rather than passed at load time)
+   * so the URL-rooting decision lives next to the catalog that produced the pack.
    */
   baseUrl?: string;
+  kernels: readonly KernelPackKernel[];
+};
 
+export type ResponseLike = {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+};
+
+// Structural fetch typing so we don't leak DOM lib types into emitted .d.ts.
+export type FetchLike = (input: string, init?: unknown) => Promise<ResponseLike>;
+
+export type RootRelativeKernelUrlBehavior =
+  | "bypassBaseUrl"
+  | "applyBaseOrigin"
+  | "error";
+
+export type LoadKernelPackOptions = {
   /**
-   * Controls how root-relative kernel URLs (`"/..."`) interact with `baseUrl`.
+   * Controls how root-relative kernel URLs (`"/..."`) interact with `pack.baseUrl`.
    *
    * - `"bypassBaseUrl"` (default): root-relative URLs are left as-is.
    * - `"applyBaseOrigin"`: when `baseUrl` is scheme-based or protocol-relative,
@@ -103,7 +102,11 @@ function isAbsoluteUrl(url: string): boolean {
 }
 
 
-function resolveKernelUrl(
+/**
+ * Resolve a kernel URL against an optional `baseUrl`, respecting the configured
+ * behavior for root-relative URLs.
+ */
+export function resolveKernelUrl(
   url: string,
   baseUrl: string | undefined,
   rootRelativeKernelUrlBehavior: RootRelativeKernelUrlBehavior,
@@ -220,11 +223,20 @@ export async function loadKernelPack(
   pack: KernelPack,
   opts?: LoadKernelPackOptions,
 ): Promise<void> {
+  // Migration guard: `baseUrl` moved from load options to `pack.baseUrl`.
+  if (opts && Object.prototype.hasOwnProperty.call(opts as unknown as object, "baseUrl")) {
+    throw new Error(
+      "loadKernelPack(): opts.baseUrl has been removed; set pack.baseUrl instead (and pass the pack to spiceClients.withKernels(pack))",
+    );
+  }
+
   const fetchFn =
     opts?.fetch ?? ((globalThis as unknown as { fetch?: FetchLike }).fetch ?? undefined);
 
   if (!fetchFn) {
-    throw new Error("loadKernelPack(): `fetch` is not available; pass opts.fetch");
+    throw new Error(
+      "loadKernelPack(): `fetch` is not available. Provide a fetch implementation via opts.fetch (or via spiceClients.withFetch(fetch)), or set globalThis.fetch.",
+    );
   }
 
   const fetchStrategy = opts?.fetchStrategy ?? "sequential";
@@ -235,7 +247,7 @@ export async function loadKernelPack(
       pack.kernels.map((k) =>
         fetchKernelBytes(
           fetchFn,
-          resolveKernelUrl(k.url, opts?.baseUrl, rootRelativeKernelUrlBehavior),
+          resolveKernelUrl(k.url, pack.baseUrl, rootRelativeKernelUrlBehavior),
         ),
       ),
     );
@@ -251,7 +263,7 @@ export async function loadKernelPack(
   for (const kernel of pack.kernels) {
     const kernelBytes = await fetchKernelBytes(
       fetchFn,
-      resolveKernelUrl(kernel.url, opts?.baseUrl, rootRelativeKernelUrlBehavior),
+      resolveKernelUrl(kernel.url, pack.baseUrl, rootRelativeKernelUrlBehavior),
     );
     await spice.kit.loadKernel({ path: kernel.path, bytes: kernelBytes });
   }

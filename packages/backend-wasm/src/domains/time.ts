@@ -276,6 +276,7 @@ function tspiceCallSce2c(module: EmscriptenModule, sc: number, et: number): numb
   });
 }
 
+/** Read the embedded CSPICE toolkit version string from the WASM module. */
 export function getToolkitVersion(module: EmscriptenModule): string {
   const outMaxBytes = 256;
   return withAllocs(module, [outMaxBytes, WASM_ERR_MAX_BYTES], (outPtr, errPtr) => {
@@ -290,6 +291,7 @@ export function getToolkitVersion(module: EmscriptenModule): string {
   });
 }
 
+/** Create a {@link TimeApi} implementation backed by a WASM Emscripten module. */
 export function createTimeApi(module: EmscriptenModule, toolkitVersion: string): TimeApi {
   return {
     spiceVersion: () => toolkitVersion,

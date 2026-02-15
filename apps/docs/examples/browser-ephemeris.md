@@ -19,32 +19,38 @@ For basic planet-to-planet state vectors you typically need:
 - **PCK** (`pck00011.tpc`): body radii + orientation models; required once you start working in
   body-fixed frames (and used by many geometry/lighting routines).
 
-The `publicKernels` helper builds a small “starter pack” with exactly these three kernels.
+The `kernels.naif()` helper builds a small “starter pack” with exactly these three kernels.
 
 ## Create a worker-backed client (recommended)
 
 Put the kernel files at:
 
-- `public/kernels/naif/naif0012.tls`
-- `public/kernels/naif/pck00011.tpc`
-- `public/kernels/naif/de432s.bsp`
+- `public/kernels/naif/lsk/naif0012.tls`
+- `public/kernels/naif/pck/pck00011.tpc`
+- `public/kernels/naif/spk/planets/de432s.bsp`
 
-Then you can load them with `publicKernels` + `spiceClients.withKernels()`:
+Then you can load them with `kernels.naif` + `spiceClients.withKernels(packOrPacks)`:
 
 ```ts
-import { publicKernels, spiceClients } from '@rybosome/tspice'
+import { kernels, spiceClients } from '@rybosome/tspice'
 
-const pack = publicKernels.naif0012_tls().pck00011_tpc().de432s_bsp().pack()
+const pack = kernels
+  .naif({
+    kernelUrlPrefix: 'kernels/naif/',
+    // Important for apps deployed under a subpath (GitHub Pages, etc).
+    baseUrl: import.meta.env.BASE_URL,
+  })
+  .naif0012_tls()
+  .pck00011_tpc()
+  .de432s_bsp()
+  .pack()
 
 const { spice, dispose } = await spiceClients
   .caching({
     maxEntries: 10_000,
     ttlMs: null,
   })
-  .withKernels(pack, {
-    // Important for apps deployed under a subpath (GitHub Pages, etc).
-    baseUrl: import.meta.env.BASE_URL,
-  })
+  .withKernels(pack)
   .toWebWorker()
 
 try {
@@ -73,17 +79,34 @@ loading primitive is:
 await spice.kit.loadKernel({ path, bytes })
 ```
 
-Here’s the explicit fetch + load flow (equivalent to what `withKernels()` does internally):
+Here’s the explicit fetch + load flow (equivalent to what `withKernels(packOrPacks)` does internally):
+
+> Note on root-relative URLs (`"/..."`): by default, `rootRelativeKernelUrlBehavior: "bypassBaseUrl"`
+> means `/...` kernel URLs **ignore** `pack.baseUrl` (so `/kernels/a.tls` stays `/kernels/a.tls`).
+> This can surprise subpath deployments (`/myapp/`), where you likely want **relative** kernel URLs
+> (`kernels/...`) so `pack.baseUrl` can be applied, or set `rootRelativeKernelUrlBehavior: "error"`
+> to catch accidental `/...` URLs.
 
 ```ts
-import { publicKernels } from '@rybosome/tspice'
+import { kernels, resolveKernelUrl } from '@rybosome/tspice'
 
-const pack = publicKernels.naif0012_tls().pck00011_tpc().de432s_bsp().pack()
+const pack = kernels
+  .naif({
+    kernelUrlPrefix: 'kernels/naif/',
+    baseUrl: import.meta.env.BASE_URL,
+  })
+  .naif0012_tls()
+  .pck00011_tpc()
+  .de432s_bsp()
+  .pack()
+
+const rootRelativeKernelUrlBehavior = 'bypassBaseUrl' as const
 
 for (const kernel of pack.kernels) {
-  const res = await fetch(`${import.meta.env.BASE_URL}${kernel.url}`)
+  const url = resolveKernelUrl(kernel.url, pack.baseUrl, rootRelativeKernelUrlBehavior)
+  const res = await fetch(url)
   if (!res.ok) {
-    throw new Error(`Failed to fetch kernel: ${kernel.url} (${res.status} ${res.statusText})`)
+    throw new Error(`Failed to fetch kernel: ${url} (${res.status} ${res.statusText})`)
   }
 
   const bytes = new Uint8Array(await res.arrayBuffer())

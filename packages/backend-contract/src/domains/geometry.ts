@@ -16,6 +16,7 @@ import type {
   SpiceVector3,
 } from "../shared/types.js";
 
+/** Backend contract for common SPICE geometry computations (subpoints, intercepts, illumination, etc). */
 export interface GeometryApi {
   /** Compute the sub-observer point on a target body's surface. */
   subpnt(

@@ -225,6 +225,7 @@ function maxComponent(v: THREE.Vector3) {
   return Math.max(v.x, v.y, v.z)
 }
 
+/** Create a selection overlay (axes + ring) used to highlight the hovered/selected body. */
 export function createSelectionOverlay(opts?: CreateSelectionOverlayOptions): SelectionOverlay {
   const tuning = SELECTION_OVERLAY_TUNING
 

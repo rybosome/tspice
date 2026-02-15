@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react'
 
+/** Props for {@link HelpOverlay}. */
 export interface HelpOverlayProps {
   isOpen: boolean
   onClose: () => void
 }
 
+/** Modal help dialog describing the viewer and its controls. */
 export function HelpOverlay({ isOpen, onClose }: HelpOverlayProps) {
   const dialogRef = useRef<HTMLDivElement | null>(null)
 

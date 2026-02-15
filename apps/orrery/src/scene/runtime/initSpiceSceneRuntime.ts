@@ -68,6 +68,9 @@ export type SpiceSceneRuntime = {
   pickables: THREE.Mesh[]
 }
 
+/**
+ * Initialize the SPICE-backed scene runtime (kernel loading, body meshes, orbit paths, labels, etc).
+ */
 export async function initSpiceSceneRuntime(args: {
   isE2e: boolean
   searchParams: URLSearchParams

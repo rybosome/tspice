@@ -47,6 +47,7 @@ function resolveSpkPath(outputs: VirtualOutputStager, file: string | VirtualOutp
   return outputs.resolvePathForSpice(file);
 }
 
+/** Create an {@link EphemerisApi} implementation backed by the native Node addon. */
 export function createEphemerisApi(
   native: NativeAddon,
   handles: SpiceHandleRegistry,

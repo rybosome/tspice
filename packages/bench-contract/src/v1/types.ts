@@ -10,17 +10,20 @@ export type FixtureRootsV1 = Readonly<Record<string, string>>;
  */
 export type FixtureRefV1 = string;
 
+/** Benchmark setup section (e.g. kernels to load). */
 export interface SetupV1 {
   /** List of kernel fixture references to load during setup. */
   readonly kernels?: readonly FixtureRefV1[];
 }
 
+/** Suite-wide default settings merged into individual benchmarks. */
 export interface DefaultsV1 {
   readonly setup?: SetupV1;
 }
 
 export type BenchmarkKindV1 = "micro" | "workflow";
 
+/** Common benchmark fields shared by all benchmark kinds. */
 export interface BenchmarkBaseV1 {
   readonly id: string;
   readonly kind: BenchmarkKindV1;
@@ -32,16 +35,19 @@ export interface BenchmarkBaseV1 {
   readonly setup?: SetupV1;
 }
 
+/** Single call case within a micro benchmark. */
 export interface MicroCaseV1 {
   readonly call: string;
   readonly args?: unknown;
 }
 
+/** Benchmark consisting of one or more independent call cases. */
 export interface MicroBenchmarkV1 extends BenchmarkBaseV1 {
   readonly kind: "micro";
   readonly cases: readonly MicroCaseV1[];
 }
 
+/** Single step in a workflow benchmark (can optionally save output). */
 export interface WorkflowStepV1 {
   readonly call: string;
   readonly args?: unknown;
@@ -53,6 +59,7 @@ export interface WorkflowStepV1 {
   readonly sink?: string | boolean;
 }
 
+/** Multi-step workflow benchmark where steps can depend on prior outputs. */
 export interface WorkflowBenchmarkV1 extends BenchmarkBaseV1 {
   readonly kind: "workflow";
   readonly steps: readonly WorkflowStepV1[];
@@ -60,6 +67,7 @@ export interface WorkflowBenchmarkV1 extends BenchmarkBaseV1 {
 
 export type BenchmarkV1 = MicroBenchmarkV1 | WorkflowBenchmarkV1;
 
+/** Top-level v1 benchmark suite schema. */
 export interface BenchmarkSuiteV1 {
   readonly schemaVersion: 1;
   readonly suite?: string;
@@ -82,6 +90,7 @@ export interface BenchmarkSuiteV1 {
   readonly benchmarks: readonly BenchmarkV1[];
 }
 
+/** Structured validation error (JSONPath-like `path` + human message). */
 export interface ValidationError {
   readonly path: string;
   readonly message: string;
@@ -91,6 +100,7 @@ export type ValidationResult<T> =
   | { readonly ok: true; readonly value: T }
   | { readonly ok: false; readonly errors: readonly ValidationError[] };
 
+/** Options for {@link validateBenchmarkSuiteV1}. */
 export interface ValidateBenchmarkSuiteV1Options {
   /**
    * Repository root used to resolve fixture roots/paths.

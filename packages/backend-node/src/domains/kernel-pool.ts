@@ -6,6 +6,7 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+/** Create a {@link KernelPoolApi} implementation backed by the native Node addon. */
 export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
   return {
     gdpool: (name, start, room) => {

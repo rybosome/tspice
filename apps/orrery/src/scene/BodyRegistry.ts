@@ -23,6 +23,9 @@ export type NaifIds = {
   barycenter?: number
 }
 
+/**
+ * Registry entry describing a renderable body and its SPICE/visual metadata.
+ */
 export interface BodyRegistryEntry {
   /** Stable viewer identifier (currently matches SPICE body name). */
   id: BodyId
@@ -430,6 +433,7 @@ for (const entry of BODY_REGISTRY) {
   }
 }
 
+/** Look up a registry entry by stable viewer body ID (throws if missing). */
 export function getBodyRegistryEntry(id: BodyId): BodyRegistryEntry {
   const found = BODY_REGISTRY_BY_ID.get(id)
   if (!found) {
@@ -438,6 +442,7 @@ export function getBodyRegistryEntry(id: BodyId): BodyRegistryEntry {
   return found
 }
 
+/** Look up a registry entry by its SPICE body ref (e.g. NAIF ID string/number). */
 export function getBodyRegistryEntryByBodyRef(body: BodyRef): BodyRegistryEntry | undefined {
   return BODY_REGISTRY_BY_BODY_REF_KEY.get(String(body))
 }
@@ -453,10 +458,12 @@ export function resolveBodyRegistryEntry(raw: string): BodyRegistryEntry | undef
   return BODY_REGISTRY_BY_RESOLVE_KEY.get(key)
 }
 
+/** List registry entries included in the default scene. */
 export function listDefaultVisibleBodies(): readonly BodyRegistryEntry[] {
   return BODY_REGISTRY.filter((b) => b.defaultVisible)
 }
 
+/** List the default visible bodies in the format expected by {@link SceneModel}. */
 export function listDefaultVisibleSceneBodies(): readonly SceneBody[] {
   return listDefaultVisibleBodies().map((b) => ({
     body: b.body,

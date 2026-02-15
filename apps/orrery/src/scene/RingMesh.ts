@@ -31,6 +31,7 @@ export type CreateRingMeshOptions = {
   baseOpacity?: number
 }
 
+/** Create a textured ring mesh (with optional async texture loading + disposal helpers). */
 export function createRingMesh(options: CreateRingMeshOptions): {
   mesh: THREE.Mesh
   dispose: () => void

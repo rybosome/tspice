@@ -56,6 +56,7 @@ function unsupportedCall(message: string): never {
   throw err;
 }
 
+/** Assert that a value is a finite integer (used for runner argument validation). */
 function assertInteger(value: unknown, label: string): asserts value is number {
   if (typeof value !== "number") {
     invalidArgs(`${label} expects a number (got ${formatValue(value)})`);
@@ -146,6 +147,7 @@ const DISPATCH: Record<string, DispatchFn> = {
   },
 
   // frames
+  /** Dispatch wrapper for `frames.namfrm`. */
   "frames.namfrm": (backend, args) => {
     if (typeof args[0] !== "string") {
       invalidArgs(`frames.namfrm expects args[0] to be a string (got ${formatValue(args[0])})`);
@@ -454,6 +456,7 @@ async function furnshOsKernelForNative(
   backend.furnsh(absPath);
 }
 
+/** Create a CaseRunner that executes calls using an in-process tspice backend (node/wasm/auto). */
 export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}): Promise<CaseRunner> {
   const requested =
     options.backend ?? parseBackendEnv(process.env.TSPICE_BACKEND_VERIFY_BACKEND) ?? "auto";

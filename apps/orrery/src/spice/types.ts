@@ -28,6 +28,6 @@ export type Mat3 = Mat3ColMajor
 /**
  * Placeholder for viewer-specific optional kernel packs (moons, spacecraft, etc).
  *
- * (Kernel loading is currently handled via shared `publicKernels` helpers.)
+ * (Kernel loading is currently handled via shared `kernels.naif` helpers.)
  */
 export type KernelPackId = string

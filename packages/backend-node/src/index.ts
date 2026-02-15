@@ -23,12 +23,14 @@ import { createCellsWindowsApi } from "./domains/cells-windows.js";
 import { createDskApi } from "./domains/dsk.js";
 import { createEkApi } from "./domains/ek.js";
 
+/** Return the SPICE toolkit version exposed by the native Node addon. */
 export function spiceVersion(): string {
   const version = getNativeAddon().spiceVersion();
   invariant(typeof version === "string", "Expected native backend spiceVersion() to return a string");
   return version;
 }
 
+/** Create a {@link SpiceBackend} implementation backed by the native Node addon. */
 export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const native = getNodeBinding();
   const stager = createKernelStager();
