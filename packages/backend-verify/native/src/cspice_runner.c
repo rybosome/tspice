@@ -1136,6 +1136,123 @@ static void capture_spice_error(char *shortMsg, size_t shortBytes,
   }
 }
 
+typedef enum {
+  CALL_NONE = 0,
+
+  // time
+  CALL_TIME_STR2ET,
+  CALL_TIME_ET2UTC,
+
+  // time (misc)
+  CALL_TIME_SPICE_VERSION,
+  CALL_TIME_TKVRSN,
+  CALL_TIME_TIMOUT,
+  CALL_TIME_DELTET,
+  CALL_TIME_UNITIM,
+  CALL_TIME_TPARSE,
+  CALL_TIME_TPICTR,
+  CALL_TIME_TIMDEF,
+
+  // ids-names
+  CALL_BODN2C,
+  CALL_BODC2N,
+
+  // frames
+  CALL_NAMFRM,
+  CALL_FRMNAM,
+  CALL_PXFORM,
+
+  // coords-vectors
+  CALL_AXISAR,
+  CALL_GEOREC,
+  CALL_LATREC,
+  CALL_MTXV,
+  CALL_MXM,
+  CALL_MXV,
+  CALL_RECGEO,
+  CALL_RECLAT,
+  CALL_RECSPH,
+  CALL_ROTATE,
+  CALL_ROTMAT,
+  CALL_SPHREC,
+  CALL_VADD,
+  CALL_VCRSS,
+  CALL_VDOT,
+  CALL_VHAT,
+  CALL_VMINUS,
+  CALL_VNORM,
+  CALL_VSCL,
+  CALL_VSUB,
+} CallId;
+
+typedef struct {
+  const char *name;
+  CallId id;
+} CallDispatchEntry;
+
+static CallId parse_call_id(const char *call) {
+  static const CallDispatchEntry table[] = {
+      {"time.str2et", CALL_TIME_STR2ET},
+      {"str2et", CALL_TIME_STR2ET},
+      {"time.et2utc", CALL_TIME_ET2UTC},
+      {"et2utc", CALL_TIME_ET2UTC},
+
+      // time (misc)
+      {"time.spiceVersion", CALL_TIME_SPICE_VERSION},
+      {"time.tkvrsn", CALL_TIME_TKVRSN},
+      {"time.timout", CALL_TIME_TIMOUT},
+      {"time.deltet", CALL_TIME_DELTET},
+      {"time.unitim", CALL_TIME_UNITIM},
+      {"time.tparse", CALL_TIME_TPARSE},
+      {"time.tpictr", CALL_TIME_TPICTR},
+      {"time.timdef", CALL_TIME_TIMDEF},
+
+      // ids-names
+      {"ids-names.bodn2c", CALL_BODN2C},
+      {"bodn2c", CALL_BODN2C},
+      {"ids-names.bodc2n", CALL_BODC2N},
+      {"bodc2n", CALL_BODC2N},
+
+      // frames
+      {"frames.namfrm", CALL_NAMFRM},
+      {"namfrm", CALL_NAMFRM},
+      {"frames.frmnam", CALL_FRMNAM},
+      {"frmnam", CALL_FRMNAM},
+      {"frames.pxform", CALL_PXFORM},
+      {"pxform", CALL_PXFORM},
+
+      // coords-vectors
+      {"coords-vectors.axisar", CALL_AXISAR},
+      {"coords-vectors.georec", CALL_GEOREC},
+      {"coords-vectors.latrec", CALL_LATREC},
+      {"coords-vectors.mtxv", CALL_MTXV},
+      {"coords-vectors.mxm", CALL_MXM},
+      {"coords-vectors.mxv", CALL_MXV},
+      {"coords-vectors.recgeo", CALL_RECGEO},
+      {"coords-vectors.reclat", CALL_RECLAT},
+      {"coords-vectors.recsph", CALL_RECSPH},
+      {"coords-vectors.rotate", CALL_ROTATE},
+      {"coords-vectors.rotmat", CALL_ROTMAT},
+      {"coords-vectors.sphrec", CALL_SPHREC},
+      {"coords-vectors.vadd", CALL_VADD},
+      {"coords-vectors.vcrss", CALL_VCRSS},
+      {"coords-vectors.vdot", CALL_VDOT},
+      {"coords-vectors.vhat", CALL_VHAT},
+      {"coords-vectors.vminus", CALL_VMINUS},
+      {"coords-vectors.vnorm", CALL_VNORM},
+      {"coords-vectors.vscl", CALL_VSCL},
+      {"coords-vectors.vsub", CALL_VSUB},
+  };
+
+  for (size_t i = 0; i < sizeof(table) / sizeof(table[0]); i++) {
+    if (strcmp(call, table[i].name) == 0) {
+      return table[i].id;
+    }
+  }
+
+  return CALL_NONE;
+}
+
 int main(void) {
   int exitCode = 0;
 
@@ -1457,92 +1574,15 @@ int main(void) {
     goto done;
   }
 
-  const bool isStr2et = strcmp(call, "time.str2et") == 0 || strcmp(call, "str2et") == 0;
-  const bool isEt2utc = strcmp(call, "time.et2utc") == 0 || strcmp(call, "et2utc") == 0;
-
-  // time (misc)
-  const bool isSpiceVersion = strcmp(call, "time.spiceVersion") == 0;
-  const bool isTkvrsn = strcmp(call, "time.tkvrsn") == 0;
-  const bool isTimout = strcmp(call, "time.timout") == 0;
-  const bool isDeltet = strcmp(call, "time.deltet") == 0;
-  const bool isUnitim = strcmp(call, "time.unitim") == 0;
-  const bool isTparse = strcmp(call, "time.tparse") == 0;
-  const bool isTpictr = strcmp(call, "time.tpictr") == 0;
-  const bool isTimdef = strcmp(call, "time.timdef") == 0;
-
-  // ids-names
-  const bool isBodn2c = strcmp(call, "ids-names.bodn2c") == 0 || strcmp(call, "bodn2c") == 0;
-  const bool isBodc2n = strcmp(call, "ids-names.bodc2n") == 0 || strcmp(call, "bodc2n") == 0;
-
-  // frames
-  const bool isNamfrm = strcmp(call, "frames.namfrm") == 0 || strcmp(call, "namfrm") == 0;
-  const bool isFrmnam = strcmp(call, "frames.frmnam") == 0 || strcmp(call, "frmnam") == 0;
-  const bool isPxform = strcmp(call, "frames.pxform") == 0 || strcmp(call, "pxform") == 0;
-
-  // coords-vectors
-  const bool isAxisar = strcmp(call, "coords-vectors.axisar") == 0;
-  const bool isGeorec = strcmp(call, "coords-vectors.georec") == 0;
-  const bool isLatrec = strcmp(call, "coords-vectors.latrec") == 0;
-  const bool isMtxv = strcmp(call, "coords-vectors.mtxv") == 0;
-  const bool isMxm = strcmp(call, "coords-vectors.mxm") == 0;
-  const bool isMxv = strcmp(call, "coords-vectors.mxv") == 0;
-  const bool isRecgeo = strcmp(call, "coords-vectors.recgeo") == 0;
-  const bool isReclat = strcmp(call, "coords-vectors.reclat") == 0;
-  const bool isRecsph = strcmp(call, "coords-vectors.recsph") == 0;
-  const bool isRotate = strcmp(call, "coords-vectors.rotate") == 0;
-  const bool isRotmat = strcmp(call, "coords-vectors.rotmat") == 0;
-  const bool isSphrec = strcmp(call, "coords-vectors.sphrec") == 0;
-  const bool isVadd = strcmp(call, "coords-vectors.vadd") == 0;
-  const bool isVcrss = strcmp(call, "coords-vectors.vcrss") == 0;
-  const bool isVdot = strcmp(call, "coords-vectors.vdot") == 0;
-  const bool isVhat = strcmp(call, "coords-vectors.vhat") == 0;
-  const bool isVminus = strcmp(call, "coords-vectors.vminus") == 0;
-  const bool isVnorm = strcmp(call, "coords-vectors.vnorm") == 0;
-  const bool isVscl = strcmp(call, "coords-vectors.vscl") == 0;
-  const bool isVsub = strcmp(call, "coords-vectors.vsub") == 0;
-
-  if (!isStr2et &&
-      !isEt2utc &&
-      !isSpiceVersion &&
-      !isTkvrsn &&
-      !isTimout &&
-      !isDeltet &&
-      !isUnitim &&
-      !isTparse &&
-      !isTpictr &&
-      !isTimdef &&
-      !isBodn2c &&
-      !isBodc2n &&
-      !isNamfrm &&
-      !isFrmnam &&
-      !isPxform &&
-      !isAxisar &&
-      !isGeorec &&
-      !isLatrec &&
-      !isMtxv &&
-      !isMxm &&
-      !isMxv &&
-      !isRecgeo &&
-      !isReclat &&
-      !isRecsph &&
-      !isRotate &&
-      !isRotmat &&
-      !isSphrec &&
-      !isVadd &&
-      !isVcrss &&
-      !isVdot &&
-      !isVhat &&
-      !isVminus &&
-      !isVnorm &&
-      !isVscl &&
-      !isVsub) {
+  const CallId callId = parse_call_id(call);
+  if (callId == CALL_NONE) {
     write_error_json_ex("unsupported_call", "Unsupported call", NULL, NULL,
                         NULL, NULL);
     goto done;
   }
 
-
-  if (isStr2et) {
+  switch (callId) {
+  case CALL_TIME_STR2ET: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -1599,7 +1639,7 @@ int main(void) {
     goto done;
   }
 
-  if (isEt2utc) {
+  case CALL_TIME_ET2UTC: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
           "invalid_args",
@@ -1702,7 +1742,7 @@ int main(void) {
     goto done;
   }
 
-  if (isSpiceVersion) {
+  case CALL_TIME_SPICE_VERSION: {
     const char *v = tkvrsn_c("TOOLKIT");
 
     if (failed_c() == SPICETRUE) {
@@ -1721,7 +1761,7 @@ int main(void) {
     goto done;
   }
 
-  if (isTkvrsn) {
+  case CALL_TIME_TKVRSN: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex("invalid_args", "time.tkvrsn expects args[0] to be a string",
                           NULL, NULL, NULL, NULL);
@@ -1775,7 +1815,7 @@ int main(void) {
     goto done;
   }
 
-  if (isTimout) {
+  case CALL_TIME_TIMOUT: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex("invalid_args",
                           "time.timout expects args[0]=number args[1]=string",
@@ -1841,7 +1881,7 @@ int main(void) {
     goto done;
   }
 
-  if (isDeltet) {
+  case CALL_TIME_DELTET: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex("invalid_args",
                           "time.deltet expects args[0]=number args[1]=string",
@@ -1912,7 +1952,7 @@ int main(void) {
     goto done;
   }
 
-  if (isUnitim) {
+  case CALL_TIME_UNITIM: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex("invalid_args",
                           "time.unitim expects args[0]=number args[1]=string args[2]=string",
@@ -2010,7 +2050,7 @@ int main(void) {
     goto done;
   }
 
-  if (isTparse) {
+  case CALL_TIME_TPARSE: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex("invalid_args", "time.tparse expects args[0] to be a string",
                           NULL, NULL, NULL, NULL);
@@ -2055,7 +2095,7 @@ int main(void) {
     }
 
     if (errmsg[0] != '\0') {
-      write_error_json(errmsg, NULL, NULL, NULL);
+      write_error_json_ex("invalid_args", errmsg, NULL, NULL, NULL, NULL);
       goto done;
     }
 
@@ -2063,7 +2103,7 @@ int main(void) {
     goto done;
   }
 
-  if (isTpictr) {
+  case CALL_TIME_TPICTR: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex("invalid_args", "time.tpictr expects args[0]=string args[1]=string",
                           NULL, NULL, NULL, NULL);
@@ -2148,7 +2188,7 @@ int main(void) {
     goto done;
   }
 
-  if (isTimdef) {
+  case CALL_TIME_TIMDEF: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex(
           "invalid_args",
@@ -2288,7 +2328,7 @@ int main(void) {
   }
 
 
-  if (isBodn2c) {
+  case CALL_BODN2C: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -2352,7 +2392,7 @@ int main(void) {
     goto done;
   }
 
-  if (isBodc2n) {
+  case CALL_BODC2N: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -2412,7 +2452,7 @@ int main(void) {
     goto done;
   }
 
-  if (isNamfrm) {
+  case CALL_NAMFRM: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -2475,7 +2515,7 @@ int main(void) {
     goto done;
   }
 
-  if (isFrmnam) {
+  case CALL_FRMNAM: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -2534,7 +2574,7 @@ int main(void) {
     goto done;
   }
 
-  if (isPxform) {
+  case CALL_PXFORM: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
           "invalid_args",
@@ -2653,7 +2693,7 @@ int main(void) {
 
 
   // coords-vectors
-  if (isAxisar) {
+  case CALL_AXISAR: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex(
           "invalid_args",
@@ -2717,7 +2757,7 @@ int main(void) {
     goto done;
   }
 
-  if (isGeorec) {
+  case CALL_GEOREC: {
     if (tokens[argsTok].size < 5) {
       write_error_json_ex(
           "invalid_args",
@@ -2781,7 +2821,7 @@ int main(void) {
     goto done;
   }
 
-  if (isLatrec) {
+  case CALL_LATREC: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
           "invalid_args",
@@ -2833,7 +2873,7 @@ int main(void) {
     goto done;
   }
 
-  if (isMtxv) {
+  case CALL_MTXV: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex(
           "invalid_args",
@@ -2891,7 +2931,7 @@ int main(void) {
     goto done;
   }
 
-  if (isMxm) {
+  case CALL_MXM: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex(
           "invalid_args",
@@ -2938,7 +2978,7 @@ int main(void) {
     goto done;
   }
 
-  if (isMxv) {
+  case CALL_MXV: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex(
           "invalid_args",
@@ -2984,7 +3024,7 @@ int main(void) {
     goto done;
   }
 
-  if (isRecgeo) {
+  case CALL_RECGEO: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
           "invalid_args",
@@ -3038,7 +3078,7 @@ int main(void) {
     goto done;
   }
 
-  if (isReclat) {
+  case CALL_RECLAT: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -3078,7 +3118,7 @@ int main(void) {
     goto done;
   }
 
-  if (isRecsph) {
+  case CALL_RECSPH: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -3118,7 +3158,7 @@ int main(void) {
     goto done;
   }
 
-  if (isRotate) {
+  case CALL_ROTATE: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex(
           "invalid_args",
@@ -3179,7 +3219,7 @@ int main(void) {
     goto done;
   }
 
-  if (isRotmat) {
+  case CALL_ROTMAT: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
           "invalid_args",
@@ -3247,7 +3287,7 @@ int main(void) {
     goto done;
   }
 
-  if (isSphrec) {
+  case CALL_SPHREC: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
           "invalid_args",
@@ -3299,7 +3339,7 @@ int main(void) {
     goto done;
   }
 
-  if (isVadd) {
+  case CALL_VADD: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex("invalid_args", "coords-vectors.vadd expects args[0]=vec3 args[1]=vec3", NULL, NULL, NULL, NULL);
       goto done;
@@ -3326,7 +3366,7 @@ int main(void) {
     goto done;
   }
 
-  if (isVcrss) {
+  case CALL_VCRSS: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex("invalid_args", "coords-vectors.vcrss expects args[0]=vec3 args[1]=vec3", NULL, NULL, NULL, NULL);
       goto done;
@@ -3353,7 +3393,7 @@ int main(void) {
     goto done;
   }
 
-  if (isVdot) {
+  case CALL_VDOT: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex("invalid_args", "coords-vectors.vdot expects args[0]=vec3 args[1]=vec3", NULL, NULL, NULL, NULL);
       goto done;
@@ -3377,7 +3417,7 @@ int main(void) {
     goto done;
   }
 
-  if (isVhat) {
+  case CALL_VHAT: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex("invalid_args", "coords-vectors.vhat expects args[0]=vec3", NULL, NULL, NULL, NULL);
       goto done;
@@ -3399,7 +3439,7 @@ int main(void) {
     goto done;
   }
 
-  if (isVminus) {
+  case CALL_VMINUS: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex("invalid_args", "coords-vectors.vminus expects args[0]=vec3", NULL, NULL, NULL, NULL);
       goto done;
@@ -3421,7 +3461,7 @@ int main(void) {
     goto done;
   }
 
-  if (isVnorm) {
+  case CALL_VNORM: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex("invalid_args", "coords-vectors.vnorm expects args[0]=vec3", NULL, NULL, NULL, NULL);
       goto done;
@@ -3440,7 +3480,7 @@ int main(void) {
     goto done;
   }
 
-  if (isVscl) {
+  case CALL_VSCL: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex("invalid_args", "coords-vectors.vscl expects args[0]=number args[1]=vec3", NULL, NULL, NULL, NULL);
       goto done;
@@ -3470,7 +3510,7 @@ int main(void) {
     goto done;
   }
 
-  if (isVsub) {
+  case CALL_VSUB: {
     if (tokens[argsTok].size < 2) {
       write_error_json_ex("invalid_args", "coords-vectors.vsub expects args[0]=vec3 args[1]=vec3", NULL, NULL, NULL, NULL);
       goto done;
@@ -3494,6 +3534,12 @@ int main(void) {
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_double_array(out, 3);
     fputs("}\n", stdout);
+    goto done;
+  }
+
+  default:
+    write_error_json_ex("unsupported_call", "Unsupported call", NULL, NULL,
+                        NULL, NULL);
     goto done;
   }
 
