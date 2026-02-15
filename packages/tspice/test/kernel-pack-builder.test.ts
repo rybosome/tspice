@@ -90,6 +90,24 @@ describe("kernels.naif()", () => {
   });
 });
 
+describe("kernels.tspice()", () => {
+  it("defaults to the tspice-viewer hosted NAIF mirror", () => {
+    const pack = kernels.tspice().pck00011_tpc().naif0012_tls().pack();
+
+    expect(pack.baseUrl).toBe("https://tspice-viewer.ryboso.me/");
+    expect(pack.kernels).toEqual([
+      {
+        url: "kernels/naif/lsk/naif0012.tls",
+        path: "naif/lsk/naif0012.tls",
+      },
+      {
+        url: "kernels/naif/pck/pck00011.tpc",
+        path: "naif/pck/pck00011.tpc",
+      },
+    ]);
+  });
+});
+
 describe("kernels.custom()", () => {
   it("defaults kernel paths to stable hashed values to avoid collisions", () => {
     const pack = kernels

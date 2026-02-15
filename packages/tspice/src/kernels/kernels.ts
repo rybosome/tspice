@@ -18,6 +18,11 @@ function isAbsoluteKernelUrlPrefix(kernelUrlPrefix: string): boolean {
 const DEFAULT_NAIF_KERNEL_URL_PREFIX = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
 const DEFAULT_NAIF_PATH_BASE = "naif/";
 
+// --- tspice-viewer hosted NAIF mirror ---
+
+const DEFAULT_TSPICE_KERNEL_URL_PREFIX = "kernels/naif/";
+const DEFAULT_TSPICE_BASE_URL = "https://tspice-viewer.ryboso.me/";
+
 const NAIF_KERNELS = {
   // Load order matters (LSK -> PCK -> SPK).
   naif0012_tls: { leafPath: "lsk/naif0012.tls", order: 0 },
@@ -60,6 +65,25 @@ export type KernelsNaifOptions = {
   baseUrl?: string;
 };
 
+export type KernelsTspiceOptions = {
+  /**
+   * Prefix used to build each `kernel.url` entry.
+   *
+   * Defaults to `"kernels/naif/"` (relative), which is intended to be resolved via `baseUrl`.
+   */
+  kernelUrlPrefix?: string;
+
+  /** Base virtual path used when loading kernels into tspice. */
+  pathBase?: string;
+
+  /**
+   * Optional directory-style base used at *load time* to resolve relative kernel URLs.
+   *
+   * Defaults to `"https://tspice-viewer.ryboso.me/"` when `kernelUrlPrefix` is relative.
+   */
+  baseUrl?: string;
+};
+
 export type NaifKernelsBuilder = {
   naif0012_tls(): NaifKernelsBuilder;
   pck00011_tpc(): NaifKernelsBuilder;
@@ -72,6 +96,8 @@ export type NaifKernelsBuilder = {
 
   pack(): KernelPack;
 };
+
+export type TspiceKernelsBuilder = NaifKernelsBuilder;
 
 function buildNaifKernel(
   id: NaifKernelId,
@@ -168,6 +194,34 @@ export const kernels = {
     const rawBaseUrl = opts?.baseUrl;
     const baseUrl =
       isAbsoluteKernelUrlPrefix(kernelUrlPrefix) || !rawBaseUrl?.trim() ? undefined : rawBaseUrl.trim();
+
+    return createNaifBuilder({
+      selected: new Set(),
+      opts: {
+        kernelUrlPrefix,
+        pathBase,
+        ...(baseUrl === undefined ? {} : { baseUrl }),
+      },
+    });
+  },
+
+  tspice: (opts?: KernelsTspiceOptions): TspiceKernelsBuilder => {
+    const rawKernelUrlPrefix = opts?.kernelUrlPrefix;
+    const kernelUrlPrefix = ensureTrailingSlash(
+      rawKernelUrlPrefix?.trim() ? rawKernelUrlPrefix.trim() : DEFAULT_TSPICE_KERNEL_URL_PREFIX,
+    );
+
+    const rawPathBase = opts?.pathBase;
+    const pathBase = ensureTrailingSlash(
+      rawPathBase?.trim() ? rawPathBase.trim() : DEFAULT_NAIF_PATH_BASE,
+    );
+
+    const rawBaseUrl = opts?.baseUrl;
+    const baseUrl = isAbsoluteKernelUrlPrefix(kernelUrlPrefix)
+      ? undefined
+      : rawBaseUrl?.trim()
+        ? rawBaseUrl.trim()
+        : DEFAULT_TSPICE_BASE_URL;
 
     return createNaifBuilder({
       selected: new Set(),

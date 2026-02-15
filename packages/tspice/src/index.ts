@@ -48,9 +48,11 @@ export type {
   CustomKernelsBuilder,
   KernelsCustomOptions,
   KernelsNaifOptions,
+  KernelsTspiceOptions,
   NaifKernelId,
   NaifKernelLeafPath,
   NaifKernelsBuilder,
+  TspiceKernelsBuilder,
 } from "./kernels/kernels.js";
 export { kernels } from "./kernels/kernels.js";
 
