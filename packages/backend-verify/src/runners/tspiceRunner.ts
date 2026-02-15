@@ -69,6 +69,42 @@ function assertInteger(value: unknown, label: string): asserts value is number {
   }
 }
 
+
+type Vec3 = [number, number, number];
+type Mat3RowMajor = Parameters<SpiceBackend["mxm"]>[0];
+
+function assertVec3(value: unknown, label: string): asserts value is Vec3 {
+  if (!Array.isArray(value)) {
+    invalidArgs(`${label} expects a length-3 array of numbers (got ${formatValue(value)})`);
+  }
+  if (value.length !== 3) {
+    invalidArgs(`${label} expects a length-3 array of numbers (got length ${value.length})`);
+  }
+  for (let i = 0; i < 3; i++) {
+    if (typeof value[i] !== "number") {
+      invalidArgs(
+        `${label} expects element ${i} to be a number (got ${formatValue(value[i])})`,
+      );
+    }
+  }
+}
+
+function assertMat3RowMajor(value: unknown, label: string): asserts value is Mat3RowMajor {
+  if (!Array.isArray(value)) {
+    invalidArgs(`${label} expects a length-9 array of numbers (got ${formatValue(value)})`);
+  }
+  if (value.length !== 9) {
+    invalidArgs(`${label} expects a length-9 array of numbers (got length ${value.length})`);
+  }
+  for (let i = 0; i < 9; i++) {
+    if (typeof value[i] !== "number") {
+      invalidArgs(
+        `${label} expects element ${i} to be a number (got ${formatValue(value[i])})`,
+      );
+    }
+  }
+}
+
 const DISPATCH: Record<string, DispatchFn> = {
   // time
   "time.str2et": (backend, args) => {
@@ -203,6 +239,270 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
     return backend.pxform(args[0], args[1], args[2]);
   },
+
+  // time (misc)
+  "time.spiceVersion": (backend) => {
+    return backend.spiceVersion();
+  },
+
+  "time.tkvrsn": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`time.tkvrsn expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (args[0] !== "TOOLKIT") {
+      invalidArgs(`time.tkvrsn expects args[0] to be "TOOLKIT" (got ${formatValue(args[0])})`);
+    }
+    return backend.tkvrsn("TOOLKIT");
+  },
+
+  "time.timout": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`time.timout expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`time.timout expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    return backend.timout(args[0], args[1]);
+  },
+
+  "time.deltet": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`time.deltet expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`time.deltet expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    if (args[1] !== "ET" && args[1] !== "UTC") {
+      invalidArgs(`time.deltet expects args[1] to be "ET" or "UTC" (got ${formatValue(args[1])})`);
+    }
+    return backend.deltet(args[0], args[1]);
+  },
+
+  "time.unitim": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`time.unitim expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`time.unitim expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "string") {
+      invalidArgs(`time.unitim expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+
+    if (args[1] !== "TAI" && args[1] !== "UTC" && args[1] !== "TDB" && args[1] !== "TDT" && args[1] !== "ET") {
+      invalidArgs(`time.unitim expects args[1] to be a valid time system (got ${formatValue(args[1])})`);
+    }
+    if (args[2] !== "TAI" && args[2] !== "UTC" && args[2] !== "TDB" && args[2] !== "TDT" && args[2] !== "ET") {
+      invalidArgs(`time.unitim expects args[2] to be a valid time system (got ${formatValue(args[2])})`);
+    }
+
+    return backend.unitim(args[0], args[1], args[2]);
+  },
+
+  "time.tparse": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`time.tparse expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    return backend.tparse(args[0]);
+  },
+
+  "time.tpictr": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`time.tpictr expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`time.tpictr expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    return backend.tpictr(args[0], args[1]);
+  },
+
+  "time.timdef": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`time.timdef expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`time.timdef expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+
+    if (args[0] === "GET") {
+      return backend.timdef("GET", args[1]);
+    }
+
+    if (args[0] === "SET") {
+      if (typeof args[2] !== "string") {
+        invalidArgs(`time.timdef expects args[2] to be a string for SET (got ${formatValue(args[2])})`);
+      }
+      backend.timdef("SET", args[1], args[2]);
+      // `timdef(SET)` returns void; represent it as JSON-friendly null.
+      return null;
+    }
+
+    invalidArgs(`time.timdef expects args[0] to be "GET" or "SET" (got ${formatValue(args[0])})`);
+  },
+
+  // coords-vectors
+  "coords-vectors.axisar": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.axisar args[0]");
+    if (typeof args[1] !== "number") {
+      invalidArgs(`coords-vectors.axisar expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    return backend.axisar(args[0], args[1]);
+  },
+
+  "coords-vectors.georec": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`coords-vectors.georec expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`coords-vectors.georec expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`coords-vectors.georec expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    if (typeof args[3] !== "number") {
+      invalidArgs(`coords-vectors.georec expects args[3] to be a number (got ${formatValue(args[3])})`);
+    }
+    if (typeof args[4] !== "number") {
+      invalidArgs(`coords-vectors.georec expects args[4] to be a number (got ${formatValue(args[4])})`);
+    }
+    return backend.georec(args[0], args[1], args[2], args[3], args[4]);
+  },
+
+  "coords-vectors.latrec": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`coords-vectors.latrec expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`coords-vectors.latrec expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`coords-vectors.latrec expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    return backend.latrec(args[0], args[1], args[2]);
+  },
+
+  "coords-vectors.mtxv": (backend, args) => {
+    assertMat3RowMajor(args[0], "coords-vectors.mtxv args[0]");
+    assertVec3(args[1], "coords-vectors.mtxv args[1]");
+    return backend.mtxv(args[0], args[1]);
+  },
+
+  "coords-vectors.mxm": (backend, args) => {
+    assertMat3RowMajor(args[0], "coords-vectors.mxm args[0]");
+    assertMat3RowMajor(args[1], "coords-vectors.mxm args[1]");
+    return backend.mxm(args[0], args[1]);
+  },
+
+  "coords-vectors.mxv": (backend, args) => {
+    assertMat3RowMajor(args[0], "coords-vectors.mxv args[0]");
+    assertVec3(args[1], "coords-vectors.mxv args[1]");
+    return backend.mxv(args[0], args[1]);
+  },
+
+  "coords-vectors.recgeo": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.recgeo args[0]");
+    if (typeof args[1] !== "number") {
+      invalidArgs(`coords-vectors.recgeo expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`coords-vectors.recgeo expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    return backend.recgeo(args[0], args[1], args[2]);
+  },
+
+  "coords-vectors.reclat": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.reclat args[0]");
+    return backend.reclat(args[0]);
+  },
+
+  "coords-vectors.recsph": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.recsph args[0]");
+    return backend.recsph(args[0]);
+  },
+
+  "coords-vectors.rotate": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`coords-vectors.rotate expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`coords-vectors.rotate expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[1], "coords-vectors.rotate args[1]");
+    return backend.rotate(args[0], args[1]);
+  },
+
+  "coords-vectors.rotmat": (backend, args) => {
+    assertMat3RowMajor(args[0], "coords-vectors.rotmat args[0]");
+    if (typeof args[1] !== "number") {
+      invalidArgs(`coords-vectors.rotmat expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`coords-vectors.rotmat expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    assertInteger(args[2], "coords-vectors.rotmat args[2]");
+    return backend.rotmat(args[0], args[1], args[2]);
+  },
+
+  "coords-vectors.sphrec": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`coords-vectors.sphrec expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`coords-vectors.sphrec expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`coords-vectors.sphrec expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    return backend.sphrec(args[0], args[1], args[2]);
+  },
+
+  "coords-vectors.vadd": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.vadd args[0]");
+    assertVec3(args[1], "coords-vectors.vadd args[1]");
+    return backend.vadd(args[0], args[1]);
+  },
+
+  "coords-vectors.vcrss": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.vcrss args[0]");
+    assertVec3(args[1], "coords-vectors.vcrss args[1]");
+    return backend.vcrss(args[0], args[1]);
+  },
+
+  "coords-vectors.vdot": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.vdot args[0]");
+    assertVec3(args[1], "coords-vectors.vdot args[1]");
+    return backend.vdot(args[0], args[1]);
+  },
+
+  "coords-vectors.vhat": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.vhat args[0]");
+    return backend.vhat(args[0]);
+  },
+
+  "coords-vectors.vminus": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.vminus args[0]");
+    return backend.vminus(args[0]);
+  },
+
+  "coords-vectors.vnorm": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.vnorm args[0]");
+    return backend.vnorm(args[0]);
+  },
+
+  "coords-vectors.vscl": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`coords-vectors.vscl expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    assertVec3(args[1], "coords-vectors.vscl args[1]");
+    return backend.vscl(args[0], args[1]);
+  },
+
+  "coords-vectors.vsub": (backend, args) => {
+    assertVec3(args[0], "coords-vectors.vsub args[0]");
+    assertVec3(args[1], "coords-vectors.vsub args[1]");
+    return backend.vsub(args[0], args[1]);
+  },
+
 };
 
 function safeErrorReport(error: unknown): RunnerErrorReport {
