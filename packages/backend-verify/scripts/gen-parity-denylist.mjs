@@ -4,6 +4,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { parse as parseYaml } from "yaml";
+
 import { computeContractKeys, stableCompare } from "./parity-contract-keys.mjs";
 
 function printUsage() {
@@ -29,7 +31,7 @@ const contractDomainsDir = path.resolve(scriptDir, "../../backend-contract/src/d
 const contractKeys = computeContractKeys({
   indexPath: contractIndexPath,
   domainsDir: contractDomainsDir,
-}).toSorted(stableCompare);
+}).slice().sort(stableCompare);
 
 function listScenarioPaths() {
   const scenariosDir = path.resolve(scriptDir, "../scenarios");
@@ -44,32 +46,35 @@ function listScenarioPaths() {
     .sort(stableCompare);
 }
 
-function extractCallValuesFromYamlText(yamlText) {
+function extractCallValuesFromYamlText(yamlText, sourcePath) {
   const calls = new Set();
-  for (const line of yamlText.split(/\r?\n/)) {
-    const m = line.match(/^\s*call:\s*(.+?)\s*$/);
-    if (!m) continue;
 
-    let value = m[1].trim();
+  let data;
+  try {
+    data = parseYaml(yamlText);
+  } catch (err) {
+    const suffix = sourcePath ? ` (sourcePath=${sourcePath})` : "";
+    throw new Error(`Failed to parse scenario YAML${suffix}: ${String(err)}`);
+  }
 
-    // Strip inline comments (best-effort; safe for our current scenario style).
-    const hashIdx = value.indexOf("#");
-    if (hashIdx !== -1) {
-      value = value.slice(0, hashIdx).trim();
+  function visit(value) {
+    if (Array.isArray(value)) {
+      for (const v of value) visit(v);
+      return;
+    }
+    if (!value || typeof value !== "object") {
+      return;
     }
 
-    // Strip surrounding quotes.
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
-    }
-
-    if (value) {
-      calls.add(value);
+    for (const [k, v] of Object.entries(value)) {
+      if (k === "call" && typeof v === "string" && v) {
+        calls.add(v);
+      }
+      visit(v);
     }
   }
+
+  visit(data);
   return calls;
 }
 
@@ -77,7 +82,7 @@ function getScenarioCalls() {
   const calls = new Set();
   for (const scenarioPath of listScenarioPaths()) {
     const yamlText = fs.readFileSync(scenarioPath, "utf8");
-    for (const call of extractCallValuesFromYamlText(yamlText)) {
+    for (const call of extractCallValuesFromYamlText(yamlText, scenarioPath)) {
       calls.add(call);
     }
   }
@@ -88,7 +93,7 @@ const scenarioCalls = argv.missing ? getScenarioCalls() : null;
 const denylist = (argv.missing
   ? contractKeys.filter((k) => !scenarioCalls.has(k))
   : contractKeys
-).toSorted(stableCompare);
+).slice().sort(stableCompare);
 
 if (argv.ts) {
   const invocation = [
