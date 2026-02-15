@@ -91,7 +91,8 @@ describe("kernels.naif()", () => {
 });
 
 describe("kernels.tspice()", () => {
-  it("defaults to the tspice-viewer hosted NAIF mirror", () => {
+  it("defaults to the tspice-viewer hosted mirror and returns stable load ordering", () => {
+    // Call order intentionally reversed; pack order should still be LSK -> PCK.
     const pack = kernels.tspice().pck00011_tpc().naif0012_tls().pack();
 
     expect(pack.baseUrl).toBe("https://tspice-viewer.ryboso.me/");
@@ -103,6 +104,24 @@ describe("kernels.tspice()", () => {
       {
         url: "kernels/naif/pck/pck00011.tpc",
         path: "naif/pck/pck00011.tpc",
+      },
+    ]);
+  });
+
+  it("does not default pack.baseUrl when kernelUrlPrefix is root-relative", () => {
+    const pack = kernels
+      .tspice({
+        kernelUrlPrefix: "/kernels/naif/",
+      })
+      .naif0012_tls()
+      .pack();
+
+    expect(pack.baseUrl).toBeUndefined();
+    expect(Object.prototype.hasOwnProperty.call(pack, "baseUrl")).toBe(false);
+    expect(pack.kernels).toEqual([
+      {
+        url: "/kernels/naif/lsk/naif0012.tls",
+        path: "naif/lsk/naif0012.tls",
       },
     ]);
   });

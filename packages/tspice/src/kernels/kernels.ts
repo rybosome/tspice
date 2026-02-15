@@ -1,7 +1,6 @@
 import type { KernelPack, KernelPackKernel } from "./kernelPack.js";
 import { defaultKernelPathFromUrl } from "./defaultKernelPathFromUrl.js";
 
-
 function ensureTrailingSlash(base: string): string {
   if (base === "") return "";
   return base.endsWith("/") ? base : `${base}/`;
@@ -22,6 +21,7 @@ const DEFAULT_NAIF_PATH_BASE = "naif/";
 
 const DEFAULT_TSPICE_KERNEL_URL_PREFIX = "kernels/naif/";
 const DEFAULT_TSPICE_BASE_URL = "https://tspice-viewer.ryboso.me/";
+const DEFAULT_TSPICE_PATH_BASE = "naif/";
 
 const NAIF_KERNELS = {
   // Load order matters (LSK -> PCK -> SPK).
@@ -79,7 +79,8 @@ export type KernelsTspiceOptions = {
   /**
    * Optional directory-style base used at *load time* to resolve relative kernel URLs.
    *
-   * Defaults to `"https://tspice-viewer.ryboso.me/"` when `kernelUrlPrefix` is relative.
+   * Defaults to `"https://tspice-viewer.ryboso.me/"` when `kernelUrlPrefix` is relative
+   * (no scheme and no leading `/`).
    */
   baseUrl?: string;
 };
@@ -154,7 +155,6 @@ export type CustomKernelsBuilder = {
   pack(): KernelPack;
 };
 
-
 function createCustomBuilder(state: {
   kernels: readonly KernelPackKernel[];
   baseUrl?: string;
@@ -213,15 +213,17 @@ export const kernels = {
 
     const rawPathBase = opts?.pathBase;
     const pathBase = ensureTrailingSlash(
-      rawPathBase?.trim() ? rawPathBase.trim() : DEFAULT_NAIF_PATH_BASE,
+      rawPathBase?.trim() ? rawPathBase.trim() : DEFAULT_TSPICE_PATH_BASE,
     );
 
     const rawBaseUrl = opts?.baseUrl;
+    const trimmedBaseUrl = rawBaseUrl?.trim();
+
     const baseUrl = isAbsoluteKernelUrlPrefix(kernelUrlPrefix)
       ? undefined
-      : rawBaseUrl?.trim()
-        ? rawBaseUrl.trim()
-        : DEFAULT_TSPICE_BASE_URL;
+      : kernelUrlPrefix.startsWith("/")
+        ? trimmedBaseUrl || undefined
+        : trimmedBaseUrl || DEFAULT_TSPICE_BASE_URL;
 
     return createNaifBuilder({
       selected: new Set(),
