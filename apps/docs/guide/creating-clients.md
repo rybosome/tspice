@@ -69,7 +69,7 @@ See [/guide/browser](/guide/browser).
 
 ## Kernel preload
 
-Use `.withKernel(pack)` to eagerly fetch and load kernels before you start calling SPICE routines:
+Use `.withKernels(pack)` to eagerly fetch and load kernels before you start calling SPICE routines:
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
@@ -84,7 +84,7 @@ const pack = kernels
   .pack();
 
 const { spice, dispose } = await spiceClients
-  .withKernel(pack)
+  .withKernels(pack)
   .toAsync();
 
 try {

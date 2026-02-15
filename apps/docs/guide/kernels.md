@@ -48,7 +48,7 @@ Note: `de432s_bsp()` is relatively large and can noticeably impact download time
 
 ## Preloading kernels with `spiceClients`
 
-Use `.withKernel(pack)` to preload kernels before you start calling SPICE routines:
+Use `.withKernels(pack)` to preload kernels before you start calling SPICE routines:
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
@@ -63,7 +63,7 @@ const pack = kernels
   .pack();
 
 const { spice, dispose } = await spiceClients
-  .withKernel(pack)
+  .withKernels(pack)
   .toAsync();
 
 try {
@@ -97,7 +97,7 @@ const pack = kernels
   .pack();
 
 const { spice, dispose } = await spiceClients
-  .withKernel(pack)
+  .withKernels(pack)
   .toAsync();
 
 try {
@@ -123,7 +123,7 @@ Example resolution:
 
 ## Custom kernels
 
-To load an arbitrary kernel URL, build a pack via `kernels.custom()` and pass it to `.withKernel(pack)`.
+To load an arbitrary kernel URL, build a pack via `kernels.custom()` and pass it to `.withKernels(pack)`.
 
 - If `path` is omitted, tspice derives a stable virtual path from the URL (includes a short hash).
 
@@ -138,7 +138,7 @@ const pack = kernels
   .pack();
 
 const { spice, dispose } = await spiceClients
-  .withKernel(pack)
+  .withKernels(pack)
   .toAsync({ backend: "wasm" });
 
 try {
