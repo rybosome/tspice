@@ -44,20 +44,43 @@ function tspiceCallBoddef(module: EmscriptenModule, name: string, code: number):
 }
 
 function tspiceCallBodfnd(module: EmscriptenModule, body: number, item: string): boolean {
-  const itemPtr = writeUtf8CString(module, item);
+  // `bodfnd_c()` is an existence check: it returns true even when the pool var
+  // exists but is character-typed ('C') vs numeric ('N').
+  //
+  // IMPORTANT: NAIF `expool_c()` only reports numeric ('N') variables, so use
+  // `dtpool_c()` to check for existence regardless of type.
+  const bodyI = body | 0;
+  const poolVar = `BODY${bodyI}_${item}`;
+  const poolVarPtr = writeUtf8CString(module, poolVar);
+  const outTypeMaxBytes = 2;
+
   try {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
-      module.HEAP32[outPtr >> 2] = 0;
+    return withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, 4, 4, outTypeMaxBytes],
+      (errPtr, foundPtr, outNPtr, outTypePtr) => {
+        module.HEAP32[foundPtr >> 2] = 0;
+        module.HEAP32[outNPtr >> 2] = 0;
+        module.HEAPU8[outTypePtr] = 0;
 
-      const result = module._tspice_bodfnd(body, itemPtr, outPtr, errPtr, WASM_ERR_MAX_BYTES);
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
+        const result = module._tspice_dtpool(
+          poolVarPtr,
+          foundPtr,
+          outNPtr,
+          outTypePtr,
+          outTypeMaxBytes,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
 
-      return (module.HEAP32[outPtr >> 2] ?? 0) !== 0;
-    });
+        return (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+      },
+    );
   } finally {
-    module._free(itemPtr);
+    module._free(poolVarPtr);
   }
 }
 
