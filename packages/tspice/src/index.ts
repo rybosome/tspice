@@ -51,6 +51,7 @@ export type {
   NaifKernelId,
   NaifKernelLeafPath,
   NaifKernelsBuilder,
+  TspiceKernelsBuilder,
 } from "./kernels/kernels.js";
 export { kernels } from "./kernels/kernels.js";
 

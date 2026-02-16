@@ -1,7 +1,6 @@
 import type { KernelPack, KernelPackKernel } from "./kernelPack.js";
 import { defaultKernelPathFromUrl } from "./defaultKernelPathFromUrl.js";
 
-
 function ensureTrailingSlash(base: string): string {
   if (base === "") return "";
   return base.endsWith("/") ? base : `${base}/`;
@@ -17,6 +16,11 @@ function isAbsoluteKernelUrlPrefix(kernelUrlPrefix: string): boolean {
 
 const DEFAULT_NAIF_KERNEL_URL_PREFIX = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
 const DEFAULT_NAIF_PATH_BASE = "naif/";
+
+// --- tspice-viewer hosted NAIF mirror ---
+
+const DEFAULT_TSPICE_KERNEL_URL_PREFIX = "https://tspice-viewer.ryboso.me/kernels/naif/";
+const DEFAULT_TSPICE_PATH_BASE = "naif/";
 
 const NAIF_KERNELS = {
   // Load order matters (LSK -> PCK -> SPK).
@@ -73,6 +77,8 @@ export type NaifKernelsBuilder = {
   pack(): KernelPack;
 };
 
+export type TspiceKernelsBuilder = NaifKernelsBuilder;
+
 function buildNaifKernel(
   id: NaifKernelId,
   opts: { kernelUrlPrefix: string; pathBase: string },
@@ -128,7 +134,6 @@ export type CustomKernelsBuilder = {
   pack(): KernelPack;
 };
 
-
 function createCustomBuilder(state: {
   kernels: readonly KernelPackKernel[];
   baseUrl?: string;
@@ -175,6 +180,26 @@ export const kernels = {
         kernelUrlPrefix,
         pathBase,
         ...(baseUrl === undefined ? {} : { baseUrl }),
+      },
+    });
+  },
+
+  /**
+   * Typed NAIF `generic_kernels` catalog rooted at tspice's hosted mirror.
+   *
+   * This is a take-it-or-leave-it quickstart intended for testing/verification.
+   * For production, you should self-host your kernels (or proxy) and use `kernels.naif()`
+   * or `kernels.custom()`.
+   */
+  tspice: (): TspiceKernelsBuilder => {
+    const kernelUrlPrefix = ensureTrailingSlash(DEFAULT_TSPICE_KERNEL_URL_PREFIX);
+    const pathBase = ensureTrailingSlash(DEFAULT_TSPICE_PATH_BASE);
+
+    return createNaifBuilder({
+      selected: new Set(),
+      opts: {
+        kernelUrlPrefix,
+        pathBase,
       },
     });
   },
