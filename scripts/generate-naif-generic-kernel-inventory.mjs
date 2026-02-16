@@ -15,7 +15,7 @@ const DESCRIPTIONS_PATH = path.join(REPO_ROOT, 'scripts/naif-generic-kernel-desc
  * `generic_kernels/` directory. We still include the historical star
  * catalog transfer formats (`*.xdb.Z`) since they're hosted here.
  */
-const KERNEL_SUFFIXES = ['.bsp', '.bpc', '.tpc', '.tls', '.tf', '.bds', '.dsk', '.bdb', '.bdb', '.xdb', '.xdb.z']
+const KERNEL_SUFFIXES = ['.bsp', '.bpc', '.tpc', '.tls', '.tf', '.bds', '.dsk', '.bdb', '.xdb', '.xdb.z']
 
 function usage() {
   return [
