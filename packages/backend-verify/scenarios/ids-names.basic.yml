@@ -72,6 +72,8 @@ cases:
       - 399
       - "  radii  "
 
+  # `bodfnd` is an existence check: it should return true even when the BODY constant
+  # is present in the kernel pool as a character-typed variable (not just numeric).
   - id: bodfnd-char-typed-item
     call: ids-names.bodfnd
     args:

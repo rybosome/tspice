@@ -2864,7 +2864,9 @@ int main(void) {
       goto done;
     }
 
-    const bool out = (foundC == SPICETRUE && typeC == 'N');
+    // NAIF `bodfnd_c` is an existence check; it does not care whether the pool
+    // var is numeric ('N') vs character ('C') typed.
+    const bool out = (foundC == SPICETRUE);
     fprintf(stdout, "{\"ok\":true,\"result\":%s}\n", out ? "true" : "false");
     goto done;
   }
