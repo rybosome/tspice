@@ -24,13 +24,15 @@ import { kernels, spiceClients } from '@rybosome/tspice'
 
 const pack = kernels
   .naif({
-    kernelUrlPrefix: 'kernels/naif/',
+    origin: 'kernels/naif/',
     baseUrl: import.meta.env.BASE_URL,
+    pathBase: 'naif/',
   })
-  .naif0012_tls()
-  .pck00011_tpc()
-  .de432s_bsp()
-  .pack()
+  .pick(
+    'lsk/naif0012.tls',
+    'pck/pck00011.tpc',
+    'spk/planets/de432s.bsp',
+  )
 
 const { spice, dispose } = await spiceClients
   .withKernels(pack)

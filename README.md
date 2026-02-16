@@ -193,6 +193,35 @@ spice.kit.loadKernel({
 
 ---
 
+### Recommended: kernel packs (`kernels.*`) + `spiceClients`
+
+For most apps, use the `spiceClients` builder and preload a `KernelPack`.
+
+In the browser, `kernels.tspice()` provides a small CORS-enabled community mirror intended for quickstarts/demos.
+It is **not recommended for production**.
+It is self-funded and may be rate-limited, disabled, or trimmed if hosting costs become an issue.
+
+```ts
+import { kernels, spiceClients } from "@rybosome/tspice";
+
+const pack = kernels.tspice().pick(
+  "lsk/naif0012.tls",
+  "pck/pck00011.tpc",
+);
+
+const { spice, dispose } = await spiceClients
+  .withKernels(pack)
+  .toAsync({ backend: "wasm" });
+
+try {
+  console.log(await spice.kit.toolkitVersion());
+} finally {
+  await dispose();
+}
+```
+
+---
+
 ## Examples
 
 ### Ephemeris state
