@@ -151,6 +151,7 @@ export default defineConfig({
             { text: 'Getting started', link: '/guide/getting-started' },
             { text: 'Creating clients', link: '/guide/creating-clients' },
             { text: 'Kernels', link: '/guide/kernels' },
+            { text: 'Kernel inventory', link: '/guide/kernel-inventory' },
             { text: 'Browser', link: '/guide/browser' },
             { text: 'Node', link: '/guide/node' }
           ]
