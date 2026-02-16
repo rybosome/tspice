@@ -1157,15 +1157,23 @@ static bool is_ascii_whitespace(unsigned char c) {
          c == 13 /* \r */ || c == 12 /* \f */ || c == 11 /* \v */;
 }
 
-static char *normalize_bod_item(const char *item) {
+typedef enum {
+  NORMALIZE_BOD_ITEM_OK = 0,
+  NORMALIZE_BOD_ITEM_INVALID,
+  NORMALIZE_BOD_ITEM_TOO_LONG,
+  NORMALIZE_BOD_ITEM_OOM,
+} normalize_bod_item_err_t;
+
+static normalize_bod_item_err_t normalize_bod_item(const char *item, char **out) {
+  *out = NULL;
   if (item == NULL) {
-    return NULL;
+    return NORMALIZE_BOD_ITEM_INVALID;
   }
 
   const size_t len = strlen(item);
   // Contract guardrail: item names are expected to be short.
   if (len > (size_t)MAX_BOD_ITEM_BYTES) {
-    return NULL;
+    return NORMALIZE_BOD_ITEM_TOO_LONG;
   }
 
   size_t start = 0;
@@ -1179,22 +1187,24 @@ static char *normalize_bod_item(const char *item) {
   }
 
   const size_t outLen = end - start;
-  char *out = (char *)malloc(outLen + 1);
-  if (out == NULL) {
-    return NULL;
+  char *normalized = (char *)malloc(outLen + 1);
+  if (normalized == NULL) {
+    return NORMALIZE_BOD_ITEM_OOM;
   }
 
   for (size_t i = 0; i < outLen; i++) {
     const unsigned char c = (unsigned char)item[start + i];
     if (c >= 97 /* a */ && c <= 122 /* z */) {
-      out[i] = (char)(c - 32);
+      normalized[i] = (char)(c - 32);
     } else {
-      out[i] = (char)c;
+      normalized[i] = (char)c;
     }
   }
-  out[outLen] = '\0';
-  return out;
+  normalized[outLen] = '\0';
+  *out = normalized;
+  return NORMALIZE_BOD_ITEM_OK;
 }
+
 
 
 typedef enum {
@@ -2800,10 +2810,33 @@ int main(void) {
       goto done;
     }
 
-    char *item = normalize_bod_item(itemRaw);
+    char *item = NULL;
+    const size_t itemRawLen = strlen(itemRaw);
+    normalize_bod_item_err_t itemNorm = normalize_bod_item(itemRaw, &item);
     free(itemRaw);
-    if (item == NULL) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
+    if (itemNorm != NORMALIZE_BOD_ITEM_OK) {
+      if (itemNorm == NORMALIZE_BOD_ITEM_OOM) {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      } else if (itemNorm == NORMALIZE_BOD_ITEM_TOO_LONG) {
+        char detail[128];
+        snprintf(detail, sizeof(detail), "bod item too long (len=%zu, max=%zu bytes)", itemRawLen,
+                 (size_t)MAX_BOD_ITEM_BYTES);
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.bodfnd expects args[1] to be a short string",
+            detail,
+            NULL,
+            NULL,
+            NULL);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.bodfnd expects args[1] to be a string",
+            NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
       goto done;
     }
 
@@ -2897,10 +2930,33 @@ int main(void) {
       goto done;
     }
 
-    char *item = normalize_bod_item(itemRaw);
+    char *item = NULL;
+    const size_t itemRawLen = strlen(itemRaw);
+    normalize_bod_item_err_t itemNorm = normalize_bod_item(itemRaw, &item);
     free(itemRaw);
-    if (item == NULL) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
+    if (itemNorm != NORMALIZE_BOD_ITEM_OK) {
+      if (itemNorm == NORMALIZE_BOD_ITEM_OOM) {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      } else if (itemNorm == NORMALIZE_BOD_ITEM_TOO_LONG) {
+        char detail[128];
+        snprintf(detail, sizeof(detail), "bod item too long (len=%zu, max=%zu bytes)", itemRawLen,
+                 (size_t)MAX_BOD_ITEM_BYTES);
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.bodvar expects args[1] to be a short string",
+            detail,
+            NULL,
+            NULL,
+            NULL);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.bodvar expects args[1] to be a string",
+            NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
       goto done;
     }
 
