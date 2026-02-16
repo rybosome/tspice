@@ -1,4 +1,4 @@
-import type { SpiceAsync } from '@rybosome/tspice'
+import type { NaifKernelId, SpiceAsync } from '@rybosome/tspice'
 import { kernels, spiceClients } from '@rybosome/tspice'
 
 export type ViewerSpiceClientBundle = {
@@ -18,17 +18,21 @@ export async function createSpiceClient(
   // Currently `searchParams` isn't used here, but we keep the option for API stability.
   void options
 
+  const NAIF_KERNEL_IDS: NaifKernelId[] = [
+    'lsk/naif0012.tls',
+    'pck/pck00011.tpc',
+    'spk/planets/de432s.bsp',
+  ]
+
   const pack = kernels
     .naif({
-      kernelUrlPrefix: 'kernels/naif/',
+      origin: 'kernels/naif/',
       // Important for apps deployed under a subpath (GitHub Pages, etc).
       // Vite's BASE_URL is typically already directory-style (ends with '/').
       baseUrl: import.meta.env.BASE_URL,
+      pathBase: 'naif/',
     })
-    .naif0012_tls()
-    .pck00011_tpc()
-    .de432s_bsp()
-    .pack()
+    .pick(NAIF_KERNEL_IDS)
 
   const { spice, dispose: disposeAsync } = await spiceClients
     .caching({

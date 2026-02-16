@@ -1,5 +1,6 @@
 import type { KernelPack, KernelPackKernel } from "./kernelPack.js";
 import { defaultKernelPathFromUrl } from "./defaultKernelPathFromUrl.js";
+import type { NaifKernelId } from "./naifKernelId.js";
 
 function ensureTrailingSlash(base: string): string {
   if (base === "") return "";
@@ -12,203 +13,244 @@ function isAbsoluteKernelUrlPrefix(kernelUrlPrefix: string): boolean {
   return ABSOLUTE_URL_RE.test(kernelUrlPrefix) || kernelUrlPrefix.startsWith("//");
 }
 
-// --- NAIF generic_kernels catalog ---
+function normalizeOrigin(origin: string): string {
+  // Allow empty string (caller may want to provide fully-qualified IDs), but
+  // reject whitespace-only values which are almost always mistakes.
+  if (origin === "") return "";
+  const trimmed = origin.trim();
+  if (!trimmed) {
+    throw new Error("kernels.*(): origin cannot be blank/whitespace");
+  }
+  return ensureTrailingSlash(trimmed);
+}
 
-const DEFAULT_NAIF_KERNEL_URL_PREFIX = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
-const DEFAULT_NAIF_PATH_BASE = "naif/";
+function normalizePathBase(pathBase: string): string {
+  // Allow empty string (no virtual path prefix), but reject whitespace-only.
+  if (pathBase === "") return "";
+  const trimmed = pathBase.trim();
+  if (!trimmed) {
+    throw new Error("kernels.*(): pathBase cannot be blank/whitespace");
+  }
+  return ensureTrailingSlash(trimmed);
+}
 
-// --- tspice-viewer hosted NAIF mirror ---
+function normalizeOptionalBaseUrl(baseUrl: string | undefined): string | undefined {
+  const trimmed = baseUrl?.trim();
+  return trimmed ? trimmed : undefined;
+}
 
-const DEFAULT_TSPICE_KERNEL_URL_PREFIX = "https://tspice-viewer.ryboso.me/kernels/naif/";
-const DEFAULT_TSPICE_PATH_BASE = "naif/";
+function normalizePickArgs<T>(
+  first: T | readonly T[],
+  rest: readonly T[],
+): readonly T[] {
+  if (Array.isArray(first)) {
+    if (rest.length) {
+      throw new Error("pick(): when passing an array, do not pass additional arguments");
+    }
+    return first;
+  }
 
-const NAIF_KERNELS = {
-  // Load order matters (LSK -> PCK -> SPK).
-  naif0012_tls: { leafPath: "lsk/naif0012.tls", order: 0 },
-  pck00011_tpc: { leafPath: "pck/pck00011.tpc", order: 1 },
-  de432s_bsp: { leafPath: "spk/planets/de432s.bsp", order: 2 },
-} as const;
+  // TS can't fully narrow `first` to `T` here because `T` itself could be an
+  // array type. In practice our `pick` ids/entries are never arrays.
+  return [first as T, ...rest];
+}
 
-export type NaifKernelId = keyof typeof NAIF_KERNELS;
-export type NaifKernelLeafPath = (typeof NAIF_KERNELS)[NaifKernelId]["leafPath"];
-
-const NAIF_KERNEL_IDS_SORTED = (Object.keys(NAIF_KERNELS) as NaifKernelId[]).sort(
-  (a, b) => NAIF_KERNELS[a].order - NAIF_KERNELS[b].order,
-);
-
-const NAIF_ID_BY_LEAF_PATH: Record<NaifKernelLeafPath, NaifKernelId> = {
-  "lsk/naif0012.tls": "naif0012_tls",
-  "pck/pck00011.tpc": "pck00011_tpc",
-  "spk/planets/de432s.bsp": "de432s_bsp",
-};
+// --- NAIF ---
 
 export type KernelsNaifOptions = {
   /**
-   * Prefix used to build each `kernel.url` entry (defaults to NAIF's `generic_kernels` host).
+   * Kernel URL prefix. This is a *build-time* prefix that is concatenated with
+   * each leaf-path kernel id.
    *
-   * This is a *build-time* prefix that's concatenated with each kernel leaf path.
-   *
-   * If you want kernel URLs to be relative (so they can be rooted at load time via `baseUrl`),
-   * use a relative prefix like `kernels/naif/`.
+   * Examples:
+   * - `https://naif.jpl.nasa.gov/pub/naif/generic_kernels/`
+   * - `kernels/naif/` (relative; resolved at load time using `baseUrl`)
    */
-  kernelUrlPrefix?: string;
-
-  /** Base virtual path used when loading kernels into tspice. */
-  pathBase?: string;
+  origin: string;
 
   /**
-   * Optional directory-style base used at *load time* to resolve relative kernel URLs.
+   * Optional directory-style base used at *load time* to resolve relative
+   * kernel URLs.
    *
    * This becomes `KernelPack.baseUrl`.
    */
   baseUrl?: string;
+
+  /** Base virtual path used when loading kernels into tspice. */
+  pathBase: string;
 };
 
-export type NaifKernelsBuilder = {
-  naif0012_tls(): NaifKernelsBuilder;
-  pck00011_tpc(): NaifKernelsBuilder;
-  de432s_bsp(): NaifKernelsBuilder;
-
-  /** Add by typed kernel id. */
-  add(id: NaifKernelId): NaifKernelsBuilder;
-  /** Add by typed NAIF leaf path (e.g. `"lsk/naif0012.tls"`). */
-  file(path: NaifKernelLeafPath): NaifKernelsBuilder;
-
-  pack(): KernelPack;
+export type NaifKernelCatalog = {
+  pick(id: NaifKernelId): KernelPack;
+  pick(ids: readonly NaifKernelId[]): KernelPack;
+  pick(...ids: readonly NaifKernelId[]): KernelPack;
 };
 
-export type TspiceKernelsBuilder = NaifKernelsBuilder;
+// --- tspice (curated) ---
 
-function buildNaifKernel(
-  id: NaifKernelId,
-  opts: { kernelUrlPrefix: string; pathBase: string },
-): KernelPackKernel {
-  const leafPath = NAIF_KERNELS[id].leafPath;
-  return {
-    url: `${opts.kernelUrlPrefix}${leafPath}`,
-    path: `${opts.pathBase}${leafPath}`,
-  };
-}
+const DEFAULT_TSPICE_ORIGIN = "https://tspice-viewer.ryboso.me/kernels/naif/";
+const DEFAULT_TSPICE_PATH_BASE = "naif/";
 
-function createNaifBuilder(state: {
-  selected: ReadonlySet<NaifKernelId>;
-  opts: { kernelUrlPrefix: string; pathBase: string; baseUrl?: string };
-}): NaifKernelsBuilder {
-  let builder!: NaifKernelsBuilder;
+export const TSPICE_KERNEL_IDS = [
+  // Load order matters (LSK -> PCK -> SPK), but we do **not** reorder; callers
+  // can intentionally change ordering if they need to.
+  "lsk/naif0012.tls",
+  "pck/pck00011.tpc",
+  "spk/planets/de432s.bsp",
+] as const;
 
-  const add = (id: NaifKernelId): NaifKernelsBuilder => {
-    if (state.selected.has(id)) return builder;
-    const next = new Set(state.selected);
-    next.add(id);
-    return createNaifBuilder({ ...state, selected: next });
-  };
+export type TspiceKernelId = (typeof TSPICE_KERNEL_IDS)[number];
 
-  builder = {
-    naif0012_tls: () => add("naif0012_tls"),
-    pck00011_tpc: () => add("pck00011_tpc"),
-    de432s_bsp: () => add("de432s_bsp"),
+export type TspiceKernelCatalog = {
+  pick(id: TspiceKernelId): KernelPack;
+  pick(ids: readonly TspiceKernelId[]): KernelPack;
+  pick(...ids: readonly TspiceKernelId[]): KernelPack;
+};
 
-    add: (id) => add(id),
-    file: (path) => add(NAIF_ID_BY_LEAF_PATH[path]),
-
-    pack: () => ({
-      ...(state.opts.baseUrl === undefined ? {} : { baseUrl: state.opts.baseUrl }),
-      kernels: NAIF_KERNEL_IDS_SORTED.filter((id) => state.selected.has(id)).map((id) =>
-        buildNaifKernel(id, state.opts),
-      ),
-    }),
-  };
-
-  return builder;
-}
-
-// --- Custom kernels ---
+// --- Custom ---
 
 export type KernelsCustomOptions = {
-  /** Optional directory-style base used to resolve relative kernel URLs at load time. */
+  /** Kernel URL prefix used for string ids (see `pick(...)`). */
+  origin: string;
+  /** Optional base URL used when resolving relative kernel URLs. */
   baseUrl?: string;
+  /** Virtual path prefix used when mapping string ids to `kernel.path`. */
+  pathBase: string;
 };
 
-export type CustomKernelsBuilder = {
-  add(kernel: { url: string; path?: string }): CustomKernelsBuilder;
-  pack(): KernelPack;
+export type CustomKernelEntry = {
+  /** Explicit URL (or URL path) for a kernel. */
+  url: string;
+  /** Explicit virtual path for the kernel (defaults to a stable hashed path). */
+  path?: string;
 };
 
-function createCustomBuilder(state: {
-  kernels: readonly KernelPackKernel[];
-  baseUrl?: string;
-}): CustomKernelsBuilder {
-  let builder!: CustomKernelsBuilder;
+export type CustomKernelPick = string | CustomKernelEntry;
 
-  builder = {
-    add: (kernel) =>
-      createCustomBuilder({
-        ...state,
-        kernels: state.kernels.concat({
-          url: kernel.url,
-          path: kernel.path ?? defaultKernelPathFromUrl(kernel.url),
-        }),
-      }),
-    pack: () => ({
-      ...(state.baseUrl === undefined ? {} : { baseUrl: state.baseUrl }),
-      kernels: state.kernels,
-    }),
+export type CustomKernelCatalog = {
+  pick(id: string): KernelPack;
+  pick(ids: readonly string[]): KernelPack;
+  pick(entries: readonly CustomKernelPick[]): KernelPack;
+  pick(...entries: readonly CustomKernelPick[]): KernelPack;
+};
+
+function buildLeafPathKernel(
+  id: string,
+  opts: { origin: string; pathBase: string },
+): KernelPackKernel {
+  return {
+    url: `${opts.origin}${id}`,
+    path: `${opts.pathBase}${id}`,
   };
-
-  return builder;
 }
 
 export const kernels = {
-  naif: (opts?: KernelsNaifOptions): NaifKernelsBuilder => {
-    const rawKernelUrlPrefix = opts?.kernelUrlPrefix;
-    const kernelUrlPrefix = ensureTrailingSlash(
-      rawKernelUrlPrefix?.trim() ? rawKernelUrlPrefix.trim() : DEFAULT_NAIF_KERNEL_URL_PREFIX,
-    );
+  /**
+   * Typed NAIF `generic_kernels` catalog.
+   *
+   * Notes:
+   * - IDs are NAIF leaf paths like `"lsk/naif0012.tls"`.
+   * - `pick(...)` preserves caller-provided ordering.
+   */
+  naif: (opts: KernelsNaifOptions): NaifKernelCatalog => {
+    const origin = normalizeOrigin(opts.origin);
+    const pathBase = normalizePathBase(opts.pathBase);
 
-    const rawPathBase = opts?.pathBase;
-    const pathBase = ensureTrailingSlash(
-      rawPathBase?.trim() ? rawPathBase.trim() : DEFAULT_NAIF_PATH_BASE,
-    );
+    const rawBaseUrl = normalizeOptionalBaseUrl(opts.baseUrl);
+    const baseUrl = isAbsoluteKernelUrlPrefix(origin) ? undefined : rawBaseUrl;
 
-    const rawBaseUrl = opts?.baseUrl;
-    const baseUrl =
-      isAbsoluteKernelUrlPrefix(kernelUrlPrefix) || !rawBaseUrl?.trim() ? undefined : rawBaseUrl.trim();
-
-    return createNaifBuilder({
-      selected: new Set(),
-      opts: {
-        kernelUrlPrefix,
-        pathBase,
+    const pickImpl = (first: NaifKernelId | readonly NaifKernelId[], rest: readonly NaifKernelId[]) => {
+      const ids = normalizePickArgs(first, rest);
+      return {
         ...(baseUrl === undefined ? {} : { baseUrl }),
-      },
-    });
+        kernels: ids.map((id) => buildLeafPathKernel(id, { origin, pathBase })),
+      };
+    };
+
+    return {
+      pick: ((first: NaifKernelId | readonly NaifKernelId[], ...rest: readonly NaifKernelId[]) =>
+        pickImpl(first, rest)) as NaifKernelCatalog["pick"],
+    };
   },
 
   /**
-   * Typed NAIF `generic_kernels` catalog rooted at tspice's hosted mirror.
+   * Zero-config, browser-friendly curated kernel catalog.
    *
-   * This is a take-it-or-leave-it quickstart intended for testing/verification.
-   * For production, you should self-host your kernels (or proxy) and use `kernels.naif()`
-   * or `kernels.custom()`.
+   * This is intended for quickstarts/demos and is **not recommended for
+   * production**. For production, self-host kernels (or proxy) and use
+   * `kernels.naif({ origin, pathBase, baseUrl? })` or `kernels.custom(...)`.
    */
-  tspice: (): TspiceKernelsBuilder => {
-    const kernelUrlPrefix = ensureTrailingSlash(DEFAULT_TSPICE_KERNEL_URL_PREFIX);
+  tspice: (): TspiceKernelCatalog => {
+    const origin = ensureTrailingSlash(DEFAULT_TSPICE_ORIGIN);
     const pathBase = ensureTrailingSlash(DEFAULT_TSPICE_PATH_BASE);
 
-    return createNaifBuilder({
-      selected: new Set(),
-      opts: {
-        kernelUrlPrefix,
-        pathBase,
-      },
-    });
+    const allowed = new Set<string>(TSPICE_KERNEL_IDS);
+
+    const pickImpl = (
+      first: TspiceKernelId | readonly TspiceKernelId[],
+      rest: readonly TspiceKernelId[],
+    ): KernelPack => {
+      const ids = normalizePickArgs(first, rest);
+      for (const id of ids) {
+        if (!allowed.has(id)) {
+          throw new Error(
+            `kernels.tspice().pick(): unknown id ${JSON.stringify(id)}. ` +
+              `This catalog is intentionally small; see kernels.naif() for the full NAIF inventory.`,
+          );
+        }
+      }
+
+      return {
+        kernels: ids.map((id) => buildLeafPathKernel(id, { origin, pathBase })),
+      };
+    };
+
+    return {
+      pick: ((first: TspiceKernelId | readonly TspiceKernelId[], ...rest: readonly TspiceKernelId[]) =>
+        pickImpl(first, rest)) as TspiceKernelCatalog["pick"],
+    };
   },
 
-  custom: (opts?: KernelsCustomOptions): CustomKernelsBuilder => {
-    const baseUrl = opts?.baseUrl?.trim();
-    return createCustomBuilder({
-      kernels: [],
-      ...(baseUrl ? { baseUrl } : {}),
-    });
+  /**
+   * Configurable catalog for application/mission-specific kernels.
+   *
+   * - String ids are mapped as `{ url: origin + id, path: pathBase + id }`.
+   * - Explicit `{ url, path? }` entries are passed through; when `path` is
+   *   omitted it defaults to a stable hashed path.
+   */
+  custom: (opts: KernelsCustomOptions): CustomKernelCatalog => {
+    const origin = normalizeOrigin(opts.origin);
+    const pathBase = normalizePathBase(opts.pathBase);
+
+    const rawBaseUrl = normalizeOptionalBaseUrl(opts.baseUrl);
+    const baseUrl = isAbsoluteKernelUrlPrefix(origin) ? undefined : rawBaseUrl;
+
+    const pickImpl = (
+      first: CustomKernelPick | readonly CustomKernelPick[],
+      rest: readonly CustomKernelPick[],
+    ): KernelPack => {
+      const entries = normalizePickArgs(first, rest);
+
+      const kernelsOut = entries.map((entry): KernelPackKernel => {
+        if (typeof entry === "string") {
+          return buildLeafPathKernel(entry, { origin, pathBase });
+        }
+
+        return {
+          url: entry.url,
+          path: entry.path ?? defaultKernelPathFromUrl(entry.url),
+        };
+      });
+
+      return {
+        ...(baseUrl === undefined ? {} : { baseUrl }),
+        kernels: kernelsOut,
+      };
+    };
+
+    return {
+      pick: ((first: CustomKernelPick | readonly CustomKernelPick[], ...rest: readonly CustomKernelPick[]) =>
+        pickImpl(first, rest)) as CustomKernelCatalog["pick"],
+    };
   },
 } as const;

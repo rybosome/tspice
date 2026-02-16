@@ -45,9 +45,16 @@ async function readCached(url: string): Promise<Uint8Array> {
   return fs.readFileSync(cachePath);
 }
 
+const NAIF_GENERIC_KERNELS_ORIGIN = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
+
+const TEST_KERNEL_IDS = {
+  LSK: "lsk/naif0012.tls",
+  SPK: "spk/planets/a_old_versions/de405s.bsp",
+} as const;
+
 export const TEST_KERNEL_URLS = {
-  LSK: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
-  SPK: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/a_old_versions/de405s.bsp",
+  LSK: `${NAIF_GENERIC_KERNELS_ORIGIN}${TEST_KERNEL_IDS.LSK}`,
+  SPK: `${NAIF_GENERIC_KERNELS_ORIGIN}${TEST_KERNEL_IDS.SPK}`,
 } as const;
 
 const DSK_FIXTURE_PATH = fileURLToPath(

@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { KernelSource } from "@rybosome/tspice-backend-contract";
 
 import { kernels } from "../src/kernels/kernels.js";
+import type { NaifKernelId } from "../src/kernels/naifKernelId.js";
 import type { FetchLike, KernelPack, ResponseLike } from "../src/kernels/kernelPack.js";
 import { loadKernelPack } from "../src/kernels/kernelPack.js";
 
@@ -19,41 +20,24 @@ function okResponse(bytes: Uint8Array): ResponseLike {
 }
 
 describe("kernels.naif()", () => {
-  it("builds a stable ordered pack and normalizes base paths", () => {
+  it("builds a pack, normalizes origin/pathBase, and preserves ordering", () => {
+    const ids: NaifKernelId[] = ["spk/planets/de432s.bsp", "lsk/naif0012.tls"];
+
     const pack = kernels
       .naif({
-        kernelUrlPrefix: "https://cdn.example.com/kernels",
+        origin: "https://cdn.example.com/kernels",
         pathBase: "/naif",
       })
-      .de432s_bsp()
-      .naif0012_tls()
-      .pack();
+      .pick(ids);
 
     expect(pack.kernels).toEqual([
-      {
-        url: "https://cdn.example.com/kernels/lsk/naif0012.tls",
-        path: "/naif/lsk/naif0012.tls",
-      },
       {
         url: "https://cdn.example.com/kernels/spk/planets/de432s.bsp",
         path: "/naif/spk/planets/de432s.bsp",
       },
-    ]);
-  });
-
-  it("treats whitespace kernelUrlPrefix/pathBase as omitted (falls back to defaults)", () => {
-    const pack = kernels
-      .naif({
-        kernelUrlPrefix: "   ",
-        pathBase: "   ",
-      })
-      .naif0012_tls()
-      .pack();
-
-    expect(pack.kernels).toEqual([
       {
-        url: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
-        path: "naif/lsk/naif0012.tls",
+        url: "https://cdn.example.com/kernels/lsk/naif0012.tls",
+        path: "/naif/lsk/naif0012.tls",
       },
     ]);
   });
@@ -61,11 +45,11 @@ describe("kernels.naif()", () => {
   it("includes pack.baseUrl when kernelUrlPrefix is relative", () => {
     const pack = kernels
       .naif({
-        kernelUrlPrefix: "kernels/naif/",
+        origin: "kernels/naif/",
         baseUrl: "/myapp/",
+        pathBase: "naif/",
       })
-      .naif0012_tls()
-      .pack();
+      .pick("lsk/naif0012.tls");
 
     expect(pack.baseUrl).toBe("/myapp/");
     expect(pack.kernels).toEqual([
@@ -79,11 +63,11 @@ describe("kernels.naif()", () => {
   it("omits pack.baseUrl when kernelUrlPrefix is absolute", () => {
     const pack = kernels
       .naif({
-        kernelUrlPrefix: "https://cdn.example.com/kernels/",
+        origin: "https://cdn.example.com/kernels/",
         baseUrl: "https://example.com/myapp/",
+        pathBase: "naif/",
       })
-      .naif0012_tls()
-      .pack();
+      .pick("lsk/naif0012.tls");
 
     expect(pack.baseUrl).toBeUndefined();
     expect(Object.prototype.hasOwnProperty.call(pack, "baseUrl")).toBe(false);
@@ -91,32 +75,45 @@ describe("kernels.naif()", () => {
 });
 
 describe("kernels.tspice()", () => {
-  it("defaults to the tspice-viewer hosted mirror and returns stable load ordering", () => {
-    // Call order intentionally reversed; pack order should still be LSK -> PCK.
-    const pack = kernels.tspice().pck00011_tpc().naif0012_tls().pack();
+  it("defaults to the tspice-viewer hosted mirror and preserves ordering", () => {
+    const pack = kernels.tspice().pick("pck/pck00011.tpc", "lsk/naif0012.tls");
 
     expect(pack.baseUrl).toBeUndefined();
     expect(Object.prototype.hasOwnProperty.call(pack, "baseUrl")).toBe(false);
     expect(pack.kernels).toEqual([
       {
-        url: "https://tspice-viewer.ryboso.me/kernels/naif/lsk/naif0012.tls",
-        path: "naif/lsk/naif0012.tls",
-      },
-      {
         url: "https://tspice-viewer.ryboso.me/kernels/naif/pck/pck00011.tpc",
         path: "naif/pck/pck00011.tpc",
+      },
+      {
+        url: "https://tspice-viewer.ryboso.me/kernels/naif/lsk/naif0012.tls",
+        path: "naif/lsk/naif0012.tls",
       },
     ]);
   });
 });
 
 describe("kernels.custom()", () => {
+  it("maps string ids via origin + pathBase", () => {
+    const pack = kernels
+      .custom({
+        origin: "https://example.com/kernels/",
+        pathBase: "custom/",
+      })
+      .pick("mission.bsp");
+
+    expect(pack.kernels).toEqual([
+      {
+        url: "https://example.com/kernels/mission.bsp",
+        path: "custom/mission.bsp",
+      },
+    ]);
+  });
+
   it("defaults kernel paths to stable hashed values to avoid collisions", () => {
     const pack = kernels
-      .custom()
-      .add({ url: "https://example.com/a/de432s.bsp" })
-      .add({ url: "https://example.com/b/de432s.bsp" })
-      .pack();
+      .custom({ origin: "https://example.com/", pathBase: "custom/" })
+      .pick({ url: "https://example.com/a/de432s.bsp" }, { url: "https://example.com/b/de432s.bsp" });
 
     const [a, b] = pack.kernels;
     expect(a?.path).toMatch(/^\/kernels\/[0-9a-f]{12}-de432s\.bsp$/);
@@ -126,10 +123,8 @@ describe("kernels.custom()", () => {
 
   it("includes querystring in the hash so versioned URLs do not collide", () => {
     const pack = kernels
-      .custom()
-      .add({ url: "https://example.com/de432s.bsp?v=1" })
-      .add({ url: "https://example.com/de432s.bsp?v=2" })
-      .pack();
+      .custom({ origin: "https://example.com/", pathBase: "custom/" })
+      .pick({ url: "https://example.com/de432s.bsp?v=1" }, { url: "https://example.com/de432s.bsp?v=2" });
 
     expect(pack.kernels[0]?.path).not.toBe(pack.kernels[1]?.path);
   });
