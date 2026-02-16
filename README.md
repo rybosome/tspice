@@ -1,314 +1,138 @@
-# `tspice`
+# tspice
 
-**An idiomatic TypeScript wrapper around NAIF SPICE — for Node *and* the browser.**
+TypeScript-first access to NAIF SPICE geometry — in **Node.js** and the **browser** (via WebAssembly).
 
-`tspice` makes the SPICE toolkit usable from modern TypeScript environments, including WebAssembly-backed browser apps, without forcing you into C, Fortran, or Python bindings.
+- **Docs:** https://rybosome.github.io/tspice
+- **Live demo (WebGL + WASM):** https://orrery.ryboso.me/
 
-Until now, using SPICE from JavaScript meant shelling out, re-implementing math, or abandoning browser-based workflows entirely.
+`tspice` is a set of TypeScript packages that let you load SPICE kernels and run common SPICE workflows (time conversions, ephemerides, frames, geometry) from modern JS runtimes.
 
-`tspice` provides a **typed, ergonomic API** on top of an existing SPICE core, while preserving access to lower-level primitives when you need them.
+**What it is not:** a mirror of CSPICE. `tspice` embeds CSPICE-derived components behind a TypeScript API; if you need CSPICE itself as a general-purpose toolkit, download it directly from NAIF.
 
-- Exposes a **clean, typed API** for common SPICE workflows
-- Runs in **Node.js** and **WebAssembly** environments
-- Supports **multiple interchangeable backends**
-- Keeps CSPICE as an **implementation detail**, not a user-facing dependency
+## Why `tspice` (vs CSPICE / SpiceyPy / …)
 
-> NOTE: This project is currently pre-0.1.0. APIs may change as the design settles, though breaking changes will be intentional and documented.
+- **CSPICE** is the official, battle-tested toolkit from NAIF. It’s the right choice if you’re happy living in C/C++/Fortran or writing/maintaining your own bindings.
+- **SpiceyPy** is an excellent Python wrapper around CSPICE. It’s great for Python-first analysis workflows.
+- **`tspice`** targets a different niche: **TypeScript-first**, **browser-capable**, and designed for app-style workloads (interactive visualization, UI tooling, Web Workers).
 
----
+If your target runtime is a browser, or your application is already TypeScript/Node and you want a first-class TS API, `tspice` is aimed at that gap.
 
-## Who is this for?
+## Quickstart (WASM in the browser)
 
-`tspice` is designed for:
-
-- 🌍 **Browser-based space visualization** (WebGL, Three.js, custom viewers)
-- 🛰️ **SPICE users** who want a modern, typed API
-- 🧪 **Researchers and educators** building interactive tools
-- 🛠️ **TypeScript / Node developers** who don’t want to bind C or Fortran
-
-It may *not* be a good fit if you are looking for:
-
-- A kernel-free abstraction (SPICE remains kernel-driven)
-- A pure TypeScript reimplementation of SPICE (for now…)
-- A minimal “just give me positions” black box
-
----
-
-## What can I do with it?
-
-With `tspice`, you can:
-
-- Convert between **UTC and ephemeris time (ET)**
-- Query **positions, velocities, and light-time**
-- Perform **geometry and illumination calculations**
-- Use the **same API** in Node and the browser
-- Drop down to **low-level CSPICE calls** when needed
-
-This unlocks SPICE-accurate ephemerides, lighting, and geometry **directly inside interactive browser visualizations**, without server round-trips or precomputed data.
-
-Below are screenshots from a [real, browser-based solar system visualization](https://orrery.ryboso.me/) built using `tspice`.
-
-All positions, orientations, lighting angles, and time evolution are computed using SPICE (via WebAssembly). Rendering is handled using WebGL.
-
-*Earth lighting & day/night terminator*
-
-<img src="https://rybosome.github.io/tspice/images/tspice-earth-lighting.png" alt="Earth with day/night terminator" />
-
-<table>
-  <tr>
-    <td align="center">
-      <img src="https://rybosome.github.io/tspice/images/tspice-jupiter-sun.png"
-           alt="Jupiter–Sun geometry with labels"
-           style="max-width: 100%; height: auto;" />
-      <br />
-      <em>Labeled Jupiter–Sun geometry</em>
-    </td>
-    <td align="center">
-      <img src="https://rybosome.github.io/tspice/images/tspice-solar-system.png"
-           alt="Solar system overview"
-           style="max-width: 100%; height: auto;" />
-      <br />
-      <em>Solar system ephemerides</em>
-    </td>
-  </tr>
-</table>
-
----
-
-## Quickstart
-
-Install:
+> The published `@rybosome/tspice` package is **ESM-only**.
 
 ```bash
 pnpm add @rybosome/tspice
+# or: npm i @rybosome/tspice
 ```
-
-Minimal usage:
-
-```ts
-import { createSpice } from "@rybosome/tspice";
-
-async function main() {
-  const spice = await createSpice({ backend: "wasm" });
-
-  // Useful for diagnostics, but not a way to distinguish backends:
-  // the CSPICE toolkit version is typically identical across backends.
-  console.log(spice.kit.toolkitVersion());
-}
-
-main().catch(console.error);
-```
-
----
-
-## Usage
-
-### Backend selection
-
-`tspice` runs SPICE through interchangeable **backends**, allowing the same API to work across environments.
-
-Backends allow `tspice` to preserve a single API surface while adapting to very different runtime constraints.
-
-- **`wasm`** — Portable WebAssembly backend (browser-realistic), also runnable outside the browser
-- **`node`** — Native Node.js addon
-
-```ts
-import { createSpice } from "@rybosome/tspice";
-
-const wasm = await createSpice({ backend: "wasm" });
-const node = await createSpice({ backend: "node" });
-
-// `toolkitVersion()` reports the underlying CSPICE toolkit version.
-// It is useful for debugging, but usually not different between backends.
-console.log(wasm.kit.toolkitVersion());
-console.log(node.kit.toolkitVersion());
-```
-
----
-
-## Kernel loading
-
-SPICE is **kernel-driven**. Before performing meaningful computations, you must load the appropriate kernels (LSK, SPK, etc.).
-
-Which kernels you load — and how — depends on your use case and environment.
-
-- **Node** can load kernels directly from disk paths.
-- **Browsers / WASM** load kernel *bytes* into an in-memory filesystem.
-- `tspice` supports both with the same API.
-
----
-
-### Which kernels do I need?
-
-At a minimum, most applications will load:
-
-- **LSK** — Leap seconds  
-  Required for UTC ↔ ET conversion  
-  Example: `naif0012.tls`
-
-- **SPK** — Ephemeris data  
-  Required for positions and velocities  
-  Example: `de440.bsp`
-
-Often, you will also load:
-
-- **PCK** — Body constants / orientation  
-  Example: `pck00010.tpc`
-- **FK / CK / SCLK / IK** — Frames, spacecraft attitude, clocks, instrument geometry
-
-You can obtain official kernels from the NAIF archive:  
-https://naif.jpl.nasa.gov/naif/data.html
-
----
-
-### Node kernel loading (filesystem paths)
-
-```ts
-import { createSpice } from "@rybosome/tspice";
-
-const spice = await createSpice({ backend: "node" });
-spice.kit.loadKernel("/path/to/naif0012.tls");
-```
-
----
-
-### WASM kernel loading (browser-realistic)
-
-```ts
-import { createSpice } from "@rybosome/tspice";
-
-async function fetchKernel(url: string): Promise<Uint8Array> {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch ${url}`);
-  return new Uint8Array(await res.arrayBuffer());
-}
-
-const spice = await createSpice({ backend: "wasm" });
-
-spice.kit.loadKernel({
-  path: "/kernels/naif0012.tls",
-  bytes: await fetchKernel("/kernels/naif0012.tls"),
-});
-```
-
----
-
-### Recommended: kernel packs (`kernels.*`) + `spiceClients`
-
-For most apps, use the `spiceClients` builder and preload a `KernelPack`.
-
-In the browser, `kernels.tspice()` provides a small CORS-enabled community mirror intended for quickstarts/demos.
-It is **not recommended for production**.
-It is self-funded and may be rate-limited, disabled, or trimmed if hosting costs become an issue.
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
-const pack = kernels.tspice().pick(
+// A small, CORS-enabled catalog hosted for quickstart/testing.
+// Not recommended for production (see notes below).
+const kernelPack = kernels.tspice().pick(
   "lsk/naif0012.tls",
   "pck/pck00011.tpc",
+  "spk/planets/de432s.bsp",
 );
 
 const { spice, dispose } = await spiceClients
-  .withKernels(pack)
+  .withKernels(kernelPack) // fetches + stages bytes before loading
   .toAsync({ backend: "wasm" });
 
 try {
-  console.log(await spice.kit.toolkitVersion());
+  const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
+  const state = await spice.kit.getState({ target: "EARTH", observer: "SUN", at: et });
+  console.log(state.position, state.velocity);
 } finally {
   await dispose();
 }
 ```
 
----
+**Kernel hosting note:** browsers can’t fetch kernels directly from NAIF due to CORS. `kernels.tspice()` points at a small community mirror for quickstart/testing and is **not recommended for production**. For production, self-host kernels (or proxy) and use `kernels.naif(...)` / `kernels.custom(...)`.
 
-## Examples
+## Three audiences (and how to read the docs)
 
-### Ephemeris state
+| You are… | What you’re trying to do | How to read `tspice` |
+| --- | --- | --- |
+| **App builder** (browser or Node) | Put SPICE into an app (visualization, tooling, services) | Start at the docs site (Guide/Examples): https://rybosome.github.io/tspice → then skim [`packages/tspice/README.md`](packages/tspice/README.md) for the canonical client API (`spiceClients`, `kernels`). |
+| **SPICE power user** | Map existing SPICE mental models into TS and understand what’s “kit” vs “raw” | Use `spice.kit` for typed helpers, and `spice.raw` when you want backend/contract-level primitives. For method-level CSPICE mappings + parity notes, read [`docs/parity/spicebackend-cspice-mapping.md`](docs/parity/spicebackend-cspice-mapping.md). |
+| **Contributor / backend hacker** | Work on backends, kernel loading, parity, packaging | Read Architecture on the docs site → then [`packages/backend-contract`](packages/backend-contract) and backend READMEs ([`packages/backend-wasm/README.md`](packages/backend-wasm/README.md), [`packages/backend-node/README.md`](packages/backend-node/README.md)). For CSPICE constraints, read [`docs/cspice-policy.md`](docs/cspice-policy.md). |
 
-```ts
-const et = spice.kit.utcToEt("2025-01-01T00:00:00Z");
+## Architecture (at a glance)
 
-const state = spice.kit.getState({
-  target: "MARS",
-  observer: "EARTH",
-  at: et,
-  frame: "J2000",
-  aberration: "LT+S",
-});
+```mermaid
+flowchart LR
+  App[Your TS app] -->|spiceClients.to*()| Client[Spice client<br/>{ spice, dispose }]
+
+  Client --> Kit[spice.kit<br/>Typed helpers]
+  Client --> Raw[spice.raw<br/>Backend contract]
+
+  subgraph KernelLoading[Kernel loading]
+    Catalog[kernels.* catalogs] --> Pack[KernelPack<br/>URLs + virtual paths]
+    Pack -->|withKernels(pack)| Client
+  end
+
+  Raw --> Wasm[@rybosome/tspice-backend-wasm<br/>CSPICE-derived .wasm]
+  Raw --> Node[@rybosome/tspice-backend-node<br/>CSPICE-derived native addon]
 ```
 
----
+A few important ideas:
 
-### Geometry and illumination
+- `spiceClients` gives you one consistent `spice` surface area (sync/async/WebWorker), while backends handle environment-specific details.
+- The **WASM backend** enables real browser usage (and also runs in Node).
+- The **Node backend** is a native addon backend for Node-specific workflows.
 
-```ts
-const { spoint } = spice.raw.subslr(
-  "Near Point: Ellipsoid",
-  "MARS",
-  et,
-  "IAU_MARS",
-  "LT+S",
-  "SUN",
-);
-```
+## Backend comparison (Node native vs WASM)
 
----
+| | Node native (`backend: "node"`) | WASM (`backend: "wasm"`) |
+| --- | --- | --- |
+| Runs in | Node.js only | Browsers + Node.js |
+| Artifact | Native addon (`.node`) | Prebuilt WebAssembly (`.wasm`) + JS glue |
+| Best for | Node services, local kernel archives, potential performance wins | Browsers, Web Workers, portability and simpler installs |
+| Kernel I/O shape | OS filesystem paths (plus optional byte staging) | Byte-backed loads into a virtual filesystem |
+| Operational tradeoffs | Requires a compatible binding / toolchain | Needs the `.wasm` asset to be served/bundled correctly (may require an explicit `wasmUrl`) |
+| Status | Actively evolving; parity/coverage may lag behind WASM in places | Actively evolving; heavily exercised by browser use cases |
 
-## Repository layout
+## Kernel loading matrix (filesystem paths vs bytes/virtual paths)
 
-| Path | Purpose |
-| --- | --- |
-| `packages/tspice` | Public facade |
-| `packages/backend-wasm` | WASM backend |
-| `packages/backend-node` | Node native addon |
-| `packages/backend-fake` | Deterministic stub |
-| `packages/backend-contract` | Shared backend interface |
-| `packages/core` | Shared utilities |
-| `apps/orrery` | Internal example / visualization app |
+`spice.kit.loadKernel()` accepts either:
 
----
+- a **string path** (backend-native path semantics), or
+- an object `{ path, bytes }` (portable, byte-backed load)
 
-## Development & verification
+| Environment | Kernel source shape | Example | Notes |
+| --- | --- | --- | --- |
+| Node + native backend | filesystem path (`string`) | `spice.kit.loadKernel("/data/kernels/naif0012.tls")` | The string is an OS path. If you need to unload by OS path, prefer `spice.raw.unload(...)` (kit unloading is designed for virtual identifiers). |
+| Browser + WASM backend | bytes + virtual path (`{ path, bytes }`) | `spice.kit.loadKernel({ path: "naif/naif0012.tls", bytes })` | `path` is a *virtual identifier* inside the WASM filesystem (normalized, no `..`). |
+| Any runtime | `KernelPack` + `withKernels(...)` | `spiceClients.withKernels(kernelPack)` | Recommended for apps: preserves load order, stages bytes, and can resolve relative URLs via `pack.baseUrl`. |
 
-```bash
-pnpm check
-pnpm check:native
-```
+## Design principles
 
-### Repo commands
+- **TypeScript-first API:** typed inputs/outputs for common workflows via `spice.kit`, with escape hatches via `spice.raw`.
+- **Backend-agnostic surface area:** one client API, multiple backend implementations.
+- **Explicit kernels:** SPICE is kernel-driven and stateful; kernel load order matters and `tspice` keeps that reality visible.
+- **Browser-realistic execution:** WebAssembly + Web Worker support for UI-friendly workloads.
+- **Honest CSPICE posture:** CSPICE is an implementation dependency, not the product.
 
-When running package-level scripts from the repo root, prefer pnpm filters:
+## Validation & trust (what you can rely on)
 
-```bash
-pnpm --filter @rybosome/tspice run build
-pnpm --filter @rybosome/tspice-backend-node run build:native
-pnpm --filter @rybosome/orrery run dev
-```
+- **CSPICE usage constraints are explicit:** see [`docs/cspice-policy.md`](docs/cspice-policy.md) and [`docs/cspice-naif-disclosure.md`](docs/cspice-naif-disclosure.md).
+- **Backend parity is a first-class concern:** the backend contract is documented method-by-method against CSPICE in [`docs/parity/spicebackend-cspice-mapping.md`](docs/parity/spicebackend-cspice-mapping.md), and this repo includes a YAML-driven verification harness (`packages/backend-verify`).
+- **Kernels and licensing are treated carefully:** CSPICE source/toolkit archives are not committed; backend packages include authoritative `NOTICE` files describing what they ship and why.
 
-For repo navigation and contributor orientation, see `docs/how-to-be-effective.md` and `docs/README.md`.
+## Roadmap (high-level)
 
-For README conventions and templates, see `docs/readme-conventions.md`.
+- Expand backend parity coverage (Node ↔ WASM) with more fixtures and scenarios.
+- Improve kernel catalogs (selection ergonomics, caching, and production guidance).
+- Tighten docs + examples around real app workflows (Web Workers, bundlers, deployment).
+- Move toward a stable 1.0 API once the surface area and backend contract settle.
 
-Native builds require Python 3 and a working `node-gyp` toolchain.
+## Stability & deprecation (pre-1.0)
 
----
+`tspice` is currently **pre-1.0**.
 
-## CSPICE disclosure & policy
-
-`tspice` embeds CSPICE-derived components only as an internal implementation detail and follows NAIF redistribution guidance.
-
-- See `docs/cspice-naif-disclosure.md`
-- See `docs/cspice-policy.md`
-
-End users typically do **not** need to interact with this directly.
-
----
-
-## Contact
-
-If this project is relevant to your work and you’d like to reach out, you can email me at:
-
-**tspice@ryboso.me**
-
-I can’t promise rapid responses, but I do read everything.
+- Expect API churn while the contract, kernel-loading ergonomics, and backend parity solidify.
+- Breaking changes should be intentional and documented (and ideally preceded by `@deprecated` annotations where practical).
+- If you’re shipping production code, pin versions and add your own validation tests for the specific kernels + workflows you rely on.
