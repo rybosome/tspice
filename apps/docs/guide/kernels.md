@@ -29,7 +29,10 @@ type KernelPack = {
 
 ## `kernels.tspice()` (hosted mirror)
 
-`kernels.tspice()` is the same typed NAIF `generic_kernels` catalog as `kernels.naif()`, but configured to fetch from a hosted mirror (`https://tspice-viewer.ryboso.me/`) by default (CORS-friendly).
+`kernels.tspice()` is the same typed NAIF `generic_kernels` catalog as `kernels.naif()`, but configured to fetch from a fixed hosted mirror (`https://tspice-viewer.ryboso.me/`) (CORS-friendly).
+
+This hosted mirror is intended as a take-it-or-leave-it quickstart for **testing/verification**.
+It is **not recommended for production** — for production, self-host your kernels (or proxy) and use `kernels.naif({ kernelUrlPrefix, baseUrl })` or `kernels.custom()`.
 
 ```ts
 import { kernels } from "@rybosome/tspice";
@@ -90,7 +93,7 @@ By default, `kernels.naif()` uses the NAIF `generic_kernels` host (URLs like `ht
 
 Note: NAIF's host does not currently send CORS headers (`Access-Control-Allow-Origin`), so direct browser fetches may fail; for browsers, self-host (static assets) or use a CORS-enabled mirror.
 
-If you just want a ready-to-use mirror, `kernels.tspice()` defaults to one.
+If you just want a ready-to-use mirror for quickstart/testing, `kernels.tspice()` points at one.
 
 Common approaches:
 

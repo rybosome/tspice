@@ -35,24 +35,14 @@ const { kernels, spiceClients } = await import("@rybosome/tspice");
 ### Browser / WASM (async)
 
 > Note: NAIF-hosted kernel URLs are blocked by browser CORS.
-> For browsers, use `kernels.tspice()` (defaults to a CORS-enabled hosted mirror) or self-host a mirror (or proxy) and use a relative `kernelUrlPrefix` + `baseUrl`.
+> For browsers, `kernels.tspice()` provides a CORS-enabled hosted mirror for quickstart/testing.
+> It is **not recommended for production**; for production you should self-host your kernels (or proxy)
+> and use `kernels.naif({ kernelUrlPrefix, baseUrl })`.
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
-// Mirror the NAIF files into your app's public assets, preserving subdirectories:
-// - public/kernels/naif/lsk/naif0012.tls
-// - public/kernels/naif/pck/pck00011.tpc
-// - public/kernels/naif/spk/planets/de432s.bsp
-const kernelPack = kernels
-  .tspice({
-    // Important for apps deployed under a subpath (GitHub Pages, etc).
-    baseUrl: import.meta.env.BASE_URL,
-  })
-  .naif0012_tls()
-  .pck00011_tpc()
-  .de432s_bsp()
-  .pack();
+const kernelPack = kernels.tspice().naif0012_tls().pck00011_tpc().de432s_bsp().pack();
 
 const { spice, dispose } = await spiceClients
   // Optional: memoize responses at the transport/RPC layer.
@@ -89,8 +79,11 @@ try {
 
 ### Public kernel packs
 
-Use `kernels.tspice(opts?)` for a typed NAIF `generic_kernels` catalog rooted at the hosted mirror (`https://tspice-viewer.ryboso.me/`) by default.
-Use `kernels.naif(opts?)` to target the canonical NAIF host.
+Use `kernels.tspice()` for a typed NAIF `generic_kernels` catalog rooted at tspice's hosted mirror (`https://tspice-viewer.ryboso.me/`).
+This is intended for quickstart/testing and is not recommended for production.
+It returns **fixed absolute URLs** and does not accept configuration.
+
+Use `kernels.naif(opts?)` to target the canonical NAIF host (and to configure your own mirror via `kernelUrlPrefix` + `baseUrl`).
 
 `kernelUrlPrefix` is a build-time prefix used to construct each `kernel.url`; `baseUrl` becomes `pack.baseUrl` and is used at load time to resolve relative kernel URLs.
 

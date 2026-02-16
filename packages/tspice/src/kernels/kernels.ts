@@ -19,8 +19,7 @@ const DEFAULT_NAIF_PATH_BASE = "naif/";
 
 // --- tspice-viewer hosted NAIF mirror ---
 
-const DEFAULT_TSPICE_KERNEL_URL_PREFIX = "kernels/naif/";
-const DEFAULT_TSPICE_BASE_URL = "https://tspice-viewer.ryboso.me/";
+const DEFAULT_TSPICE_KERNEL_URL_PREFIX = "https://tspice-viewer.ryboso.me/kernels/naif/";
 const DEFAULT_TSPICE_PATH_BASE = "naif/";
 
 const NAIF_KERNELS = {
@@ -61,26 +60,6 @@ export type KernelsNaifOptions = {
    * Optional directory-style base used at *load time* to resolve relative kernel URLs.
    *
    * This becomes `KernelPack.baseUrl`.
-   */
-  baseUrl?: string;
-};
-
-export type KernelsTspiceOptions = {
-  /**
-   * Prefix used to build each `kernel.url` entry.
-   *
-   * Defaults to `"kernels/naif/"` (relative), which is intended to be resolved via `baseUrl`.
-   */
-  kernelUrlPrefix?: string;
-
-  /** Base virtual path used when loading kernels into tspice. */
-  pathBase?: string;
-
-  /**
-   * Optional directory-style base used at *load time* to resolve relative kernel URLs.
-   *
-   * Defaults to `"https://tspice-viewer.ryboso.me/"` when `kernelUrlPrefix` is relative
-   * (no scheme and no leading `/`).
    */
   baseUrl?: string;
 };
@@ -205,32 +184,22 @@ export const kernels = {
     });
   },
 
-  tspice: (opts?: KernelsTspiceOptions): TspiceKernelsBuilder => {
-    const rawKernelUrlPrefix = opts?.kernelUrlPrefix;
-    const kernelUrlPrefix = ensureTrailingSlash(
-      rawKernelUrlPrefix?.trim() ? rawKernelUrlPrefix.trim() : DEFAULT_TSPICE_KERNEL_URL_PREFIX,
-    );
-
-    const rawPathBase = opts?.pathBase;
-    const pathBase = ensureTrailingSlash(
-      rawPathBase?.trim() ? rawPathBase.trim() : DEFAULT_TSPICE_PATH_BASE,
-    );
-
-    const rawBaseUrl = opts?.baseUrl;
-    const trimmedBaseUrl = rawBaseUrl?.trim();
-
-    const baseUrl = isAbsoluteKernelUrlPrefix(kernelUrlPrefix)
-      ? undefined
-      : kernelUrlPrefix.startsWith("/")
-        ? trimmedBaseUrl || undefined
-        : trimmedBaseUrl || DEFAULT_TSPICE_BASE_URL;
+  /**
+   * Typed NAIF `generic_kernels` catalog rooted at tspice's hosted mirror.
+   *
+   * This is a take-it-or-leave-it quickstart intended for testing/verification.
+   * For production, you should self-host your kernels (or proxy) and use `kernels.naif()`
+   * or `kernels.custom()`.
+   */
+  tspice: (): TspiceKernelsBuilder => {
+    const kernelUrlPrefix = ensureTrailingSlash(DEFAULT_TSPICE_KERNEL_URL_PREFIX);
+    const pathBase = ensureTrailingSlash(DEFAULT_TSPICE_PATH_BASE);
 
     return createNaifBuilder({
       selected: new Set(),
       opts: {
         kernelUrlPrefix,
         pathBase,
-        ...(baseUrl === undefined ? {} : { baseUrl }),
       },
     });
   },

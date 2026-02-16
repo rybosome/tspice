@@ -48,7 +48,6 @@ export type {
   CustomKernelsBuilder,
   KernelsCustomOptions,
   KernelsNaifOptions,
-  KernelsTspiceOptions,
   NaifKernelId,
   NaifKernelLeafPath,
   NaifKernelsBuilder,
