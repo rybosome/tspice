@@ -39,6 +39,35 @@ function normalizeOptionalBaseUrl(baseUrl: string | undefined): string | undefin
   return trimmed ? trimmed : undefined;
 }
 
+function assertDirectoryStyleBaseUrl(baseUrl: string): void {
+  const isProtocolRelative = baseUrl.startsWith("//");
+  const hasScheme = ABSOLUTE_URL_RE.test(baseUrl);
+
+  if (hasScheme || isProtocolRelative) {
+    const base = hasScheme ? new URL(baseUrl) : new URL(baseUrl, "https://tspice.invalid");
+    if (!base.pathname.endsWith("/")) {
+      throw new Error(
+        `kernels.*(): absolute baseUrl must be directory-style (pathname must end with "/"): ${baseUrl}`,
+      );
+    }
+    return;
+  }
+
+  if (baseUrl.startsWith("/")) {
+    const base = new URL(baseUrl, "https://tspice.invalid");
+    if (!base.pathname.endsWith("/")) {
+      throw new Error(
+        `kernels.*(): path-absolute baseUrl must be directory-style (pathname must end with "/"): ${baseUrl}`,
+      );
+    }
+    return;
+  }
+
+  if (!baseUrl.endsWith("/")) {
+    throw new Error(`kernels.*(): baseUrl must be directory-style (end with "/"): ${baseUrl}`);
+  }
+}
+
 function normalizePickArgs<T>(
   first: T | readonly T[],
   rest: readonly T[],
@@ -47,7 +76,9 @@ function normalizePickArgs<T>(
     if (rest.length) {
       throw new Error("pick(): when passing an array, do not pass additional arguments");
     }
-    return first;
+    // Defensive copy to avoid time-of-check/time-of-use surprises if the caller
+    // mutates their input array while `pick()` is processing.
+    return [...first];
   }
 
   // TS can't fully narrow `first` to `T` here because `T` itself could be an
@@ -158,6 +189,9 @@ export const kernels = {
 
     const rawBaseUrl = normalizeOptionalBaseUrl(opts.baseUrl);
     const baseUrl = isAbsoluteKernelUrlPrefix(origin) ? undefined : rawBaseUrl;
+    if (baseUrl !== undefined) {
+      assertDirectoryStyleBaseUrl(baseUrl);
+    }
 
     const pickImpl = (first: NaifKernelId | readonly NaifKernelId[], rest: readonly NaifKernelId[]) => {
       const ids = normalizePickArgs(first, rest);
@@ -195,7 +229,7 @@ export const kernels = {
         if (!allowed.has(id)) {
           throw new Error(
             `kernels.tspice().pick(): unknown id ${JSON.stringify(id)}. ` +
-              `This catalog is intentionally small; see kernels.naif() for the full NAIF inventory.`,
+              `This catalog is intentionally small. For the full NAIF inventory, use kernels.naif({ origin, pathBase, baseUrl? }).pick(...).`,
           );
         }
       }
@@ -223,7 +257,6 @@ export const kernels = {
     const pathBase = normalizePathBase(opts.pathBase);
 
     const rawBaseUrl = normalizeOptionalBaseUrl(opts.baseUrl);
-    const baseUrl = isAbsoluteKernelUrlPrefix(origin) ? undefined : rawBaseUrl;
 
     const pickImpl = (
       first: CustomKernelPick | readonly CustomKernelPick[],
@@ -241,6 +274,16 @@ export const kernels = {
           path: entry.path ?? defaultKernelPathFromUrl(entry.url),
         };
       });
+
+      // If the pack contains any relative-ish kernel URLs (including root-relative
+      // `/...`), include the configured baseUrl so load-time resolution works.
+      const baseUrl =
+        rawBaseUrl !== undefined && kernelsOut.some((k) => !isAbsoluteKernelUrlPrefix(k.url))
+          ? rawBaseUrl
+          : undefined;
+      if (baseUrl !== undefined) {
+        assertDirectoryStyleBaseUrl(baseUrl);
+      }
 
       return {
         ...(baseUrl === undefined ? {} : { baseUrl }),
