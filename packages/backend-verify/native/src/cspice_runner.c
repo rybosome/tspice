@@ -855,6 +855,60 @@ static parse_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
   return PARSE_OK;
 }
 
+
+static bool jsmn_parse_double_array_fixed(const char *json, jsmntok_t *tokens,
+                                         int arrayTok, int tokenCount,
+                                         int expectedLen, SpiceDouble *out) {
+  if (arrayTok < 0 || arrayTok >= tokenCount) {
+    return false;
+  }
+  if (tokens[arrayTok].type != JSMN_ARRAY) {
+    return false;
+  }
+  if (tokens[arrayTok].size != expectedLen) {
+    return false;
+  }
+
+  for (int i = 0; i < expectedLen; i++) {
+    const int elemTok = jsmn_get_array_elem(tokens, arrayTok, i, tokenCount);
+    if (elemTok < 0 || elemTok >= tokenCount) {
+      return false;
+    }
+
+    SpiceDouble v = 0.0;
+    if (jsmn_parse_double(json, &tokens[elemTok], &v) != PARSE_OK) {
+      return false;
+    }
+    out[i] = v;
+  }
+
+  return true;
+}
+
+static bool jsmn_parse_vec3(const char *json, jsmntok_t *tokens,
+                            int vecTok, int tokenCount,
+                            SpiceDouble out[3]) {
+  return jsmn_parse_double_array_fixed(json, tokens, vecTok, tokenCount, 3, out);
+}
+
+static bool jsmn_parse_mat3_rowmajor(const char *json, jsmntok_t *tokens,
+                                    int matTok, int tokenCount,
+                                    SpiceDouble out[3][3]) {
+  SpiceDouble tmp[9];
+  if (!jsmn_parse_double_array_fixed(json, tokens, matTok, tokenCount, 9, tmp)) {
+    return false;
+  }
+
+  int k = 0;
+  for (int r = 0; r < 3; r++) {
+    for (int c = 0; c < 3; c++) {
+      out[r][c] = tmp[k++];
+    }
+  }
+
+  return true;
+}
+
 // --- JSON output helpers ----------------------------------------------------
 
 static void json_print_escaped(const char *s) {
@@ -892,6 +946,31 @@ static void json_print_escaped(const char *s) {
       }
     }
   }
+}
+
+
+static void json_print_double_array(const SpiceDouble *arr, int n) {
+  fputc('[', stdout);
+  for (int i = 0; i < n; i++) {
+    if (i != 0) {
+      fputc(',', stdout);
+    }
+    fprintf(stdout, "%.17g", (double)arr[i]);
+  }
+  fputc(']', stdout);
+}
+
+static void json_print_mat3_rowmajor(const SpiceDouble m[3][3]) {
+  fputc('[', stdout);
+  for (int r = 0; r < 3; r++) {
+    for (int c = 0; c < 3; c++) {
+      if (!(r == 0 && c == 0)) {
+        fputc(',', stdout);
+      }
+      fprintf(stdout, "%.17g", (double)m[r][c]);
+    }
+  }
+  fputc(']', stdout);
 }
 
 static void json_print_string_field(const char *key, const char *value,
@@ -1055,6 +1134,123 @@ static void capture_spice_error(char *shortMsg, size_t shortBytes,
     traceMsg[0] = '\0';
     qcktrc_c((SpiceInt)traceBytes, traceMsg);
   }
+}
+
+typedef enum {
+  CALL_NONE = 0,
+
+  // time
+  CALL_TIME_STR2ET,
+  CALL_TIME_ET2UTC,
+
+  // time (misc)
+  CALL_TIME_SPICE_VERSION,
+  CALL_TIME_TKVRSN,
+  CALL_TIME_TIMOUT,
+  CALL_TIME_DELTET,
+  CALL_TIME_UNITIM,
+  CALL_TIME_TPARSE,
+  CALL_TIME_TPICTR,
+  CALL_TIME_TIMDEF,
+
+  // ids-names
+  CALL_BODN2C,
+  CALL_BODC2N,
+
+  // frames
+  CALL_NAMFRM,
+  CALL_FRMNAM,
+  CALL_PXFORM,
+
+  // coords-vectors
+  CALL_AXISAR,
+  CALL_GEOREC,
+  CALL_LATREC,
+  CALL_MTXV,
+  CALL_MXM,
+  CALL_MXV,
+  CALL_RECGEO,
+  CALL_RECLAT,
+  CALL_RECSPH,
+  CALL_ROTATE,
+  CALL_ROTMAT,
+  CALL_SPHREC,
+  CALL_VADD,
+  CALL_VCRSS,
+  CALL_VDOT,
+  CALL_VHAT,
+  CALL_VMINUS,
+  CALL_VNORM,
+  CALL_VSCL,
+  CALL_VSUB,
+} CallId;
+
+typedef struct {
+  const char *name;
+  CallId id;
+} CallDispatchEntry;
+
+static CallId parse_call_id(const char *call) {
+  static const CallDispatchEntry table[] = {
+      {"time.str2et", CALL_TIME_STR2ET},
+      {"str2et", CALL_TIME_STR2ET},
+      {"time.et2utc", CALL_TIME_ET2UTC},
+      {"et2utc", CALL_TIME_ET2UTC},
+
+      // time (misc)
+      {"time.spiceVersion", CALL_TIME_SPICE_VERSION},
+      {"time.tkvrsn", CALL_TIME_TKVRSN},
+      {"time.timout", CALL_TIME_TIMOUT},
+      {"time.deltet", CALL_TIME_DELTET},
+      {"time.unitim", CALL_TIME_UNITIM},
+      {"time.tparse", CALL_TIME_TPARSE},
+      {"time.tpictr", CALL_TIME_TPICTR},
+      {"time.timdef", CALL_TIME_TIMDEF},
+
+      // ids-names
+      {"ids-names.bodn2c", CALL_BODN2C},
+      {"bodn2c", CALL_BODN2C},
+      {"ids-names.bodc2n", CALL_BODC2N},
+      {"bodc2n", CALL_BODC2N},
+
+      // frames
+      {"frames.namfrm", CALL_NAMFRM},
+      {"namfrm", CALL_NAMFRM},
+      {"frames.frmnam", CALL_FRMNAM},
+      {"frmnam", CALL_FRMNAM},
+      {"frames.pxform", CALL_PXFORM},
+      {"pxform", CALL_PXFORM},
+
+      // coords-vectors
+      {"coords-vectors.axisar", CALL_AXISAR},
+      {"coords-vectors.georec", CALL_GEOREC},
+      {"coords-vectors.latrec", CALL_LATREC},
+      {"coords-vectors.mtxv", CALL_MTXV},
+      {"coords-vectors.mxm", CALL_MXM},
+      {"coords-vectors.mxv", CALL_MXV},
+      {"coords-vectors.recgeo", CALL_RECGEO},
+      {"coords-vectors.reclat", CALL_RECLAT},
+      {"coords-vectors.recsph", CALL_RECSPH},
+      {"coords-vectors.rotate", CALL_ROTATE},
+      {"coords-vectors.rotmat", CALL_ROTMAT},
+      {"coords-vectors.sphrec", CALL_SPHREC},
+      {"coords-vectors.vadd", CALL_VADD},
+      {"coords-vectors.vcrss", CALL_VCRSS},
+      {"coords-vectors.vdot", CALL_VDOT},
+      {"coords-vectors.vhat", CALL_VHAT},
+      {"coords-vectors.vminus", CALL_VMINUS},
+      {"coords-vectors.vnorm", CALL_VNORM},
+      {"coords-vectors.vscl", CALL_VSCL},
+      {"coords-vectors.vsub", CALL_VSUB},
+  };
+
+  for (size_t i = 0; i < sizeof(table) / sizeof(table[0]); i++) {
+    if (strcmp(call, table[i].name) == 0) {
+      return table[i].id;
+    }
+  }
+
+  return CALL_NONE;
 }
 
 int main(void) {
@@ -1378,21 +1574,15 @@ int main(void) {
     goto done;
   }
 
-  const bool isStr2et = strcmp(call, "time.str2et") == 0 || strcmp(call, "str2et") == 0;
-  const bool isEt2utc = strcmp(call, "time.et2utc") == 0 || strcmp(call, "et2utc") == 0;
-  const bool isBodn2c = strcmp(call, "ids-names.bodn2c") == 0 || strcmp(call, "bodn2c") == 0;
-  const bool isBodc2n = strcmp(call, "ids-names.bodc2n") == 0 || strcmp(call, "bodc2n") == 0;
-  const bool isNamfrm = strcmp(call, "frames.namfrm") == 0 || strcmp(call, "namfrm") == 0;
-  const bool isFrmnam = strcmp(call, "frames.frmnam") == 0 || strcmp(call, "frmnam") == 0;
-  const bool isPxform = strcmp(call, "frames.pxform") == 0 || strcmp(call, "pxform") == 0;
-
-  if (!isStr2et && !isEt2utc && !isBodn2c && !isBodc2n && !isNamfrm && !isFrmnam && !isPxform) {
+  const CallId callId = parse_call_id(call);
+  if (callId == CALL_NONE) {
     write_error_json_ex("unsupported_call", "Unsupported call", NULL, NULL,
                         NULL, NULL);
     goto done;
   }
 
-  if (isStr2et) {
+  switch (callId) {
+  case CALL_TIME_STR2ET: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -1449,7 +1639,7 @@ int main(void) {
     goto done;
   }
 
-  if (isEt2utc) {
+  case CALL_TIME_ET2UTC: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
           "invalid_args",
@@ -1552,7 +1742,593 @@ int main(void) {
     goto done;
   }
 
-  if (isBodn2c) {
+  case CALL_TIME_SPICE_VERSION: {
+    const char *v = tkvrsn_c("TOOLKIT");
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spiceVersion", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(v);
+    fputs("\"}\n", stdout);
+    goto done;
+  }
+
+  case CALL_TIME_TKVRSN: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "time.tkvrsn expects args[0] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int itemTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (itemTok < 0 || itemTok >= tokenCount || tokens[itemTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.tkvrsn expects args[0] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *item = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t itemErr =
+        jsmn_strdup(input, &tokens[itemTok], &item, strDetail, sizeof(strDetail));
+    if (itemErr != JSMN_STRDUP_OK) {
+      if (itemErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (strcmp(item, "TOOLKIT") != 0) {
+      write_error_json_ex("invalid_args", "time.tkvrsn expects args[0] to be \"TOOLKIT\"",
+                          NULL, NULL, NULL, NULL);
+      free(item);
+      goto done;
+    }
+
+    const char *v = tkvrsn_c(item);
+    free(item);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in tkvrsn", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(v);
+    fputs("\"}\n", stdout);
+    goto done;
+  }
+
+  case CALL_TIME_TIMOUT: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args",
+                          "time.timout expects args[0]=number args[1]=string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int pictTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble et = 0.0;
+    parse_result etParse = PARSE_INVALID;
+    if (etTok >= 0 && etTok < tokenCount) {
+      etParse = jsmn_parse_double(input, &tokens[etTok], &et);
+    }
+    if (etTok < 0 || etTok >= tokenCount || etParse != PARSE_OK) {
+      write_error_json_ex("invalid_args", "time.timout expects args[0] to be a number",
+                          etParse == PARSE_TOO_LONG
+                              ? "numeric literal too long"
+                              : (etParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (pictTok < 0 || pictTok >= tokenCount || tokens[pictTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.timout expects args[1] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *picture = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pictErr =
+        jsmn_strdup(input, &tokens[pictTok], &picture, strDetail, sizeof(strDetail));
+    if (pictErr != JSMN_STRDUP_OK) {
+      if (pictErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceChar out[4096];
+    out[0] = '\0';
+    timout_c(et, picture, (SpiceInt)sizeof(out), out);
+    free(picture);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in timout", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(out);
+    fputs("\"}\n", stdout);
+    goto done;
+  }
+
+  case CALL_TIME_DELTET: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args",
+                          "time.deltet expects args[0]=number args[1]=string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int epochTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int typeTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble epoch = 0.0;
+    parse_result epochParse = PARSE_INVALID;
+    if (epochTok >= 0 && epochTok < tokenCount) {
+      epochParse = jsmn_parse_double(input, &tokens[epochTok], &epoch);
+    }
+    if (epochTok < 0 || epochTok >= tokenCount || epochParse != PARSE_OK) {
+      write_error_json_ex("invalid_args", "time.deltet expects args[0] to be a number",
+                          epochParse == PARSE_TOO_LONG
+                              ? "numeric literal too long"
+                              : (epochParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (typeTok < 0 || typeTok >= tokenCount || tokens[typeTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.deltet expects args[1] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *eptype = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t typeErr =
+        jsmn_strdup(input, &tokens[typeTok], &eptype, strDetail, sizeof(strDetail));
+    if (typeErr != JSMN_STRDUP_OK) {
+      if (typeErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (strcmp(eptype, "ET") != 0 && strcmp(eptype, "UTC") != 0) {
+      write_error_json_ex("invalid_args",
+                          "time.deltet expects args[1] to be \"ET\" or \"UTC\"",
+                          NULL, NULL, NULL, NULL);
+      free(eptype);
+      goto done;
+    }
+
+    SpiceDouble delta = 0.0;
+    deltet_c(epoch, eptype, &delta);
+    free(eptype);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in deltet", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)delta);
+    goto done;
+  }
+
+  case CALL_TIME_UNITIM: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex("invalid_args",
+                          "time.unitim expects args[0]=number args[1]=string args[2]=string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int epochTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int inTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int outTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceDouble epoch = 0.0;
+    parse_result epochParse = PARSE_INVALID;
+    if (epochTok >= 0 && epochTok < tokenCount) {
+      epochParse = jsmn_parse_double(input, &tokens[epochTok], &epoch);
+    }
+    if (epochTok < 0 || epochTok >= tokenCount || epochParse != PARSE_OK) {
+      write_error_json_ex("invalid_args", "time.unitim expects args[0] to be a number",
+                          epochParse == PARSE_TOO_LONG
+                              ? "numeric literal too long"
+                              : (epochParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (inTok < 0 || inTok >= tokenCount || tokens[inTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.unitim expects args[1] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (outTok < 0 || outTok >= tokenCount || tokens[outTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.unitim expects args[2] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *insys = NULL;
+    char *outsys = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t inErr =
+        jsmn_strdup(input, &tokens[inTok], &insys, strDetail, sizeof(strDetail));
+    if (inErr != JSMN_STRDUP_OK) {
+      if (inErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t outErr =
+        jsmn_strdup(input, &tokens[outTok], &outsys, strDetail, sizeof(strDetail));
+    if (outErr != JSMN_STRDUP_OK) {
+      if (outErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      free(insys);
+      goto done;
+    }
+
+    if ((strcmp(insys, "TAI") != 0 && strcmp(insys, "UTC") != 0 && strcmp(insys, "TDB") != 0 &&
+         strcmp(insys, "TDT") != 0 && strcmp(insys, "ET") != 0) ||
+        (strcmp(outsys, "TAI") != 0 && strcmp(outsys, "UTC") != 0 && strcmp(outsys, "TDB") != 0 &&
+         strcmp(outsys, "TDT") != 0 && strcmp(outsys, "ET") != 0)) {
+      write_error_json_ex("invalid_args",
+                          "time.unitim expects args[1]/args[2] to be valid time systems",
+                          NULL, NULL, NULL, NULL);
+      free(insys);
+      free(outsys);
+      goto done;
+    }
+
+    const SpiceDouble outEpoch = unitim_c(epoch, insys, outsys);
+    free(insys);
+    free(outsys);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in unitim", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)outEpoch);
+    goto done;
+  }
+
+  case CALL_TIME_TPARSE: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "time.tparse expects args[0] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int strTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (strTok < 0 || strTok >= tokenCount || tokens[strTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.tparse expects args[0] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *timstr = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t strErr =
+        jsmn_strdup(input, &tokens[strTok], &timstr, strDetail, sizeof(strDetail));
+    if (strErr != JSMN_STRDUP_OK) {
+      if (strErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble sp2000 = 0.0;
+    SpiceChar errmsg[1024];
+    errmsg[0] = '\0';
+    tparse_c(timstr, (SpiceInt)sizeof(errmsg), &sp2000, errmsg);
+    free(timstr);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in tparse", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (errmsg[0] != '\0') {
+      write_error_json_ex("invalid_args", errmsg, NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)sp2000);
+    goto done;
+  }
+
+  case CALL_TIME_TPICTR: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "time.tpictr expects args[0]=string args[1]=string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int sampleTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int templTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    if (sampleTok < 0 || sampleTok >= tokenCount || tokens[sampleTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.tpictr expects args[0] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (templTok < 0 || templTok >= tokenCount || tokens[templTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.tpictr expects args[1] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *sample = NULL;
+    char *templ = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t sampleErr =
+        jsmn_strdup(input, &tokens[sampleTok], &sample, strDetail, sizeof(strDetail));
+    if (sampleErr != JSMN_STRDUP_OK) {
+      if (sampleErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t templErr =
+        jsmn_strdup(input, &tokens[templTok], &templ, strDetail, sizeof(strDetail));
+    if (templErr != JSMN_STRDUP_OK) {
+      if (templErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      free(sample);
+      goto done;
+    }
+
+    SpiceChar pictur[4096];
+    pictur[0] = '\0';
+    snprintf(pictur, sizeof(pictur), "%s", templ);
+
+    SpiceBoolean ok = SPICEFALSE;
+    SpiceChar errmsg[4096];
+    errmsg[0] = '\0';
+    tpictr_c(sample, (SpiceInt)sizeof(pictur), (SpiceInt)sizeof(errmsg), pictur, &ok, errmsg);
+
+    free(sample);
+    free(templ);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in tpictr", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (ok != SPICETRUE) {
+      write_error_json(errmsg[0] ? errmsg : "tpictr failed", NULL, NULL, NULL);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(pictur);
+    fputs("\"}\n", stdout);
+    goto done;
+  }
+
+  case CALL_TIME_TIMDEF: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.timdef expects args[0]=string args[1]=string (and optional args[2]=string for SET)",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int actionTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int itemTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    if (actionTok < 0 || actionTok >= tokenCount || tokens[actionTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.timdef expects args[0] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (itemTok < 0 || itemTok >= tokenCount || tokens[itemTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "time.timdef expects args[1] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *action = NULL;
+    char *item = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t actionErr =
+        jsmn_strdup(input, &tokens[actionTok], &action, strDetail, sizeof(strDetail));
+    if (actionErr != JSMN_STRDUP_OK) {
+      if (actionErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t itemErr =
+        jsmn_strdup(input, &tokens[itemTok], &item, strDetail, sizeof(strDetail));
+    if (itemErr != JSMN_STRDUP_OK) {
+      if (itemErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      free(action);
+      goto done;
+    }
+
+    if (strcmp(action, "GET") == 0) {
+      SpiceChar value[256];
+      value[0] = '\0';
+      timdef_c("GET", item, (SpiceInt)sizeof(value), value);
+
+      free(action);
+      free(item);
+
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                            sizeof(traceMsg));
+        write_error_json("SPICE error in timdef(GET)", shortMsg, longMsg, traceMsg);
+        goto done;
+      }
+
+      fputs("{\"ok\":true,\"result\":\"", stdout);
+      json_print_escaped(value);
+      fputs("\"}\n", stdout);
+      goto done;
+    }
+
+    if (strcmp(action, "SET") == 0) {
+      if (tokens[argsTok].size < 3) {
+        write_error_json_ex("invalid_args", "time.timdef SET expects args[2] to be a string",
+                            NULL, NULL, NULL, NULL);
+        free(action);
+        free(item);
+        goto done;
+      }
+
+      int valueTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+      if (valueTok < 0 || valueTok >= tokenCount || tokens[valueTok].type != JSMN_STRING) {
+        write_error_json_ex("invalid_args", "time.timdef SET expects args[2] to be a string",
+                            NULL, NULL, NULL, NULL);
+        free(action);
+        free(item);
+        goto done;
+      }
+
+      char *value = NULL;
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t valErr =
+          jsmn_strdup(input, &tokens[valueTok], &value, strDetail, sizeof(strDetail));
+      if (valErr != JSMN_STRDUP_OK) {
+        if (valErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        free(action);
+        free(item);
+        goto done;
+      }
+
+      timdef_c("SET", item, (SpiceInt)(strlen(value) + 1), value);
+
+      free(action);
+      free(item);
+      free(value);
+
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                            sizeof(traceMsg));
+        write_error_json("SPICE error in timdef(SET)", shortMsg, longMsg, traceMsg);
+        goto done;
+      }
+
+      fputs("{\"ok\":true,\"result\":null}\n", stdout);
+      goto done;
+    }
+
+    write_error_json_ex("invalid_args", "time.timdef expects args[0] to be \"GET\" or \"SET\"",
+                        NULL, NULL, NULL, NULL);
+    free(action);
+    free(item);
+    goto done;
+  }
+
+
+  case CALL_BODN2C: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -1616,7 +2392,7 @@ int main(void) {
     goto done;
   }
 
-  if (isBodc2n) {
+  case CALL_BODC2N: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -1676,7 +2452,7 @@ int main(void) {
     goto done;
   }
 
-  if (isNamfrm) {
+  case CALL_NAMFRM: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -1739,7 +2515,7 @@ int main(void) {
     goto done;
   }
 
-  if (isFrmnam) {
+  case CALL_FRMNAM: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
           "invalid_args",
@@ -1798,7 +2574,7 @@ int main(void) {
     goto done;
   }
 
-  if (isPxform) {
+  case CALL_PXFORM: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
           "invalid_args",
@@ -1912,6 +2688,938 @@ int main(void) {
       }
     }
     fputs("]}\n", stdout);
+    goto done;
+  }
+
+
+  // coords-vectors
+  case CALL_AXISAR: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.axisar expects args[0]=vec3 args[1]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int axisTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int angleTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble axis[3];
+    if (!jsmn_parse_vec3(input, tokens, axisTok, tokenCount, axis)) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.axisar expects args[0] to be a length-3 array of numbers",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble angle = 0.0;
+    parse_result angleParse = PARSE_INVALID;
+    if (angleTok >= 0 && angleTok < tokenCount) {
+      angleParse = jsmn_parse_double(input, &tokens[angleTok], &angle);
+    }
+    if (angleTok < 0 || angleTok >= tokenCount || angleParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.axisar expects args[1] to be a number",
+          angleParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (angleParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble m[3][3];
+    axisar_c(axis, angle, m);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in axisar", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_mat3_rowmajor(m);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOREC: {
+    if (tokens[argsTok].size < 5) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.georec expects args[0]=lon args[1]=lat args[2]=alt args[3]=re args[4]=f",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int lonTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int latTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int altTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int reTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int fTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+
+    SpiceDouble lon = 0.0;
+    SpiceDouble lat = 0.0;
+    SpiceDouble alt = 0.0;
+    SpiceDouble re = 0.0;
+    SpiceDouble f = 0.0;
+
+    if (lonTok < 0 || lonTok >= tokenCount || jsmn_parse_double(input, &tokens[lonTok], &lon) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.georec expects args[0] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (latTok < 0 || latTok >= tokenCount || jsmn_parse_double(input, &tokens[latTok], &lat) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.georec expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (altTok < 0 || altTok >= tokenCount || jsmn_parse_double(input, &tokens[altTok], &alt) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.georec expects args[2] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (reTok < 0 || reTok >= tokenCount || jsmn_parse_double(input, &tokens[reTok], &re) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.georec expects args[3] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (fTok < 0 || fTok >= tokenCount || jsmn_parse_double(input, &tokens[fTok], &f) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.georec expects args[4] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble rect[3];
+    georec_c(lon, lat, alt, re, f, rect);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in georec", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(rect, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_LATREC: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.latrec expects args[0]=radius args[1]=lon args[2]=lat",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int rTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int lonTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int latTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceDouble radius = 0.0;
+    SpiceDouble lon = 0.0;
+    SpiceDouble lat = 0.0;
+
+    if (rTok < 0 || rTok >= tokenCount || jsmn_parse_double(input, &tokens[rTok], &radius) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.latrec expects args[0] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (lonTok < 0 || lonTok >= tokenCount || jsmn_parse_double(input, &tokens[lonTok], &lon) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.latrec expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (latTok < 0 || latTok >= tokenCount || jsmn_parse_double(input, &tokens[latTok], &lat) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.latrec expects args[2] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble rect[3];
+    latrec_c(radius, lon, lat, rect);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in latrec", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(rect, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_MTXV: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.mtxv expects args[0]=mat3 args[1]=vec3",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int mTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int vTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble m[3][3];
+    if (!jsmn_parse_mat3_rowmajor(input, tokens, mTok, tokenCount, m)) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.mtxv expects args[0] to be a length-9 array of numbers",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble v[3];
+    if (!jsmn_parse_vec3(input, tokens, vTok, tokenCount, v)) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.mtxv expects args[1] to be a length-3 array of numbers",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble out[3];
+    mtxv_c(m, v, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in mtxv", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(out, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_MXM: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.mxm expects args[0]=mat3 args[1]=mat3",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int aTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int bTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble a[3][3];
+    SpiceDouble b[3][3];
+
+    if (!jsmn_parse_mat3_rowmajor(input, tokens, aTok, tokenCount, a)) {
+      write_error_json_ex("invalid_args", "coords-vectors.mxm expects args[0] to be a length-9 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (!jsmn_parse_mat3_rowmajor(input, tokens, bTok, tokenCount, b)) {
+      write_error_json_ex("invalid_args", "coords-vectors.mxm expects args[1] to be a length-9 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble out[3][3];
+    mxm_c(a, b, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in mxm", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_mat3_rowmajor(out);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_MXV: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.mxv expects args[0]=mat3 args[1]=vec3",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int mTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int vTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble m[3][3];
+    if (!jsmn_parse_mat3_rowmajor(input, tokens, mTok, tokenCount, m)) {
+      write_error_json_ex("invalid_args", "coords-vectors.mxv expects args[0] to be a length-9 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble v[3];
+    if (!jsmn_parse_vec3(input, tokens, vTok, tokenCount, v)) {
+      write_error_json_ex("invalid_args", "coords-vectors.mxv expects args[1] to be a length-3 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble out[3];
+    mxv_c(m, v, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in mxv", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(out, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_RECGEO: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.recgeo expects args[0]=vec3 args[1]=re args[2]=f",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int rectTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int reTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int fTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceDouble rect[3];
+    if (!jsmn_parse_vec3(input, tokens, rectTok, tokenCount, rect)) {
+      write_error_json_ex("invalid_args", "coords-vectors.recgeo expects args[0] to be a length-3 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble re = 0.0;
+    SpiceDouble f = 0.0;
+    if (reTok < 0 || reTok >= tokenCount || jsmn_parse_double(input, &tokens[reTok], &re) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.recgeo expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (fTok < 0 || fTok >= tokenCount || jsmn_parse_double(input, &tokens[fTok], &f) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.recgeo expects args[2] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble lon = 0.0;
+    SpiceDouble lat = 0.0;
+    SpiceDouble alt = 0.0;
+    recgeo_c(rect, re, f, &lon, &lat, &alt);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in recgeo", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"lon\":%.17g,\"lat\":%.17g,\"alt\":%.17g}}\n",
+            (double)lon, (double)lat, (double)alt);
+    goto done;
+  }
+
+  case CALL_RECLAT: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.reclat expects args[0]=vec3",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int rectTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble rect[3];
+    if (!jsmn_parse_vec3(input, tokens, rectTok, tokenCount, rect)) {
+      write_error_json_ex("invalid_args", "coords-vectors.reclat expects args[0] to be a length-3 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble radius = 0.0;
+    SpiceDouble lon = 0.0;
+    SpiceDouble lat = 0.0;
+    reclat_c(rect, &radius, &lon, &lat);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in reclat", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"radius\":%.17g,\"lon\":%.17g,\"lat\":%.17g}}\n",
+            (double)radius, (double)lon, (double)lat);
+    goto done;
+  }
+
+  case CALL_RECSPH: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.recsph expects args[0]=vec3",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int rectTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble rect[3];
+    if (!jsmn_parse_vec3(input, tokens, rectTok, tokenCount, rect)) {
+      write_error_json_ex("invalid_args", "coords-vectors.recsph expects args[0] to be a length-3 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble radius = 0.0;
+    SpiceDouble colat = 0.0;
+    SpiceDouble lon = 0.0;
+    recsph_c(rect, &radius, &colat, &lon);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in recsph", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"radius\":%.17g,\"colat\":%.17g,\"lon\":%.17g}}\n",
+            (double)radius, (double)colat, (double)lon);
+    goto done;
+  }
+
+  case CALL_ROTATE: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.rotate expects args[0]=angle args[1]=axis",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int angTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int axisTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble angle = 0.0;
+    if (angTok < 0 || angTok >= tokenCount || jsmn_parse_double(input, &tokens[angTok], &angle) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.rotate expects args[0] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt axis = 0;
+    parse_result axisParse = PARSE_INVALID;
+    if (axisTok >= 0 && axisTok < tokenCount) {
+      axisParse = jsmn_parse_int(input, &tokens[axisTok], &axis);
+    }
+
+    if (axisTok < 0 || axisTok >= tokenCount || axisParse != PARSE_OK) {
+      if (axisParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "coords-vectors.rotate expects args[1] to be an integer (SpiceInt range)",
+            axisParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble m[3][3];
+    rotate_c(angle, axis, m);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in rotate", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_mat3_rowmajor(m);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_ROTMAT: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.rotmat expects args[0]=mat3 args[1]=angle args[2]=axis",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int mTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int angTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int axisTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceDouble m[3][3];
+    if (!jsmn_parse_mat3_rowmajor(input, tokens, mTok, tokenCount, m)) {
+      write_error_json_ex("invalid_args", "coords-vectors.rotmat expects args[0] to be a length-9 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble angle = 0.0;
+    if (angTok < 0 || angTok >= tokenCount || jsmn_parse_double(input, &tokens[angTok], &angle) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.rotmat expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt axis = 0;
+    parse_result axisParse = PARSE_INVALID;
+    if (axisTok >= 0 && axisTok < tokenCount) {
+      axisParse = jsmn_parse_int(input, &tokens[axisTok], &axis);
+    }
+
+    if (axisTok < 0 || axisTok >= tokenCount || axisParse != PARSE_OK) {
+      if (axisParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "coords-vectors.rotmat expects args[2] to be an integer (SpiceInt range)",
+            axisParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble out[3][3];
+    rotmat_c(m, angle, axis, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in rotmat", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_mat3_rowmajor(out);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPHREC: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "coords-vectors.sphrec expects args[0]=radius args[1]=colat args[2]=lon",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int rTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int cTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int lTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceDouble radius = 0.0;
+    SpiceDouble colat = 0.0;
+    SpiceDouble lon = 0.0;
+
+    if (rTok < 0 || rTok >= tokenCount || jsmn_parse_double(input, &tokens[rTok], &radius) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.sphrec expects args[0] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (cTok < 0 || cTok >= tokenCount || jsmn_parse_double(input, &tokens[cTok], &colat) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.sphrec expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (lTok < 0 || lTok >= tokenCount || jsmn_parse_double(input, &tokens[lTok], &lon) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.sphrec expects args[2] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble rect[3];
+    sphrec_c(radius, colat, lon, rect);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in sphrec", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(rect, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_VADD: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "coords-vectors.vadd expects args[0]=vec3 args[1]=vec3", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int aTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int bTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble a[3];
+    SpiceDouble b[3];
+
+    if (!jsmn_parse_vec3(input, tokens, aTok, tokenCount, a) ||
+        !jsmn_parse_vec3(input, tokens, bTok, tokenCount, b)) {
+      write_error_json_ex("invalid_args", "coords-vectors.vadd expects vec3 args", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble out[3];
+    vadd_c(a, b, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vadd", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(out, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_VCRSS: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "coords-vectors.vcrss expects args[0]=vec3 args[1]=vec3", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int aTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int bTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble a[3];
+    SpiceDouble b[3];
+
+    if (!jsmn_parse_vec3(input, tokens, aTok, tokenCount, a) ||
+        !jsmn_parse_vec3(input, tokens, bTok, tokenCount, b)) {
+      write_error_json_ex("invalid_args", "coords-vectors.vcrss expects vec3 args", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble out[3];
+    vcrss_c(a, b, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vcrss", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(out, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_VDOT: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "coords-vectors.vdot expects args[0]=vec3 args[1]=vec3", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int aTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int bTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble a[3];
+    SpiceDouble b[3];
+
+    if (!jsmn_parse_vec3(input, tokens, aTok, tokenCount, a) ||
+        !jsmn_parse_vec3(input, tokens, bTok, tokenCount, b)) {
+      write_error_json_ex("invalid_args", "coords-vectors.vdot expects vec3 args", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const SpiceDouble out = vdot_c(a, b);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vdot", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)out);
+    goto done;
+  }
+
+  case CALL_VHAT: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "coords-vectors.vhat expects args[0]=vec3", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int vTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble v[3];
+    if (!jsmn_parse_vec3(input, tokens, vTok, tokenCount, v)) {
+      write_error_json_ex("invalid_args", "coords-vectors.vhat expects args[0] to be a length-3 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble out[3];
+    vhat_c(v, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vhat", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(out, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_VMINUS: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "coords-vectors.vminus expects args[0]=vec3", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int vTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble v[3];
+    if (!jsmn_parse_vec3(input, tokens, vTok, tokenCount, v)) {
+      write_error_json_ex("invalid_args", "coords-vectors.vminus expects args[0] to be a length-3 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble out[3];
+    vminus_c(v, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vminus", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(out, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_VNORM: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "coords-vectors.vnorm expects args[0]=vec3", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int vTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble v[3];
+    if (!jsmn_parse_vec3(input, tokens, vTok, tokenCount, v)) {
+      write_error_json_ex("invalid_args", "coords-vectors.vnorm expects args[0] to be a length-3 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const SpiceDouble out = vnorm_c(v);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vnorm", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)out);
+    goto done;
+  }
+
+  case CALL_VSCL: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "coords-vectors.vscl expects args[0]=number args[1]=vec3", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int sTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int vTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble s = 0.0;
+    if (sTok < 0 || sTok >= tokenCount || jsmn_parse_double(input, &tokens[sTok], &s) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "coords-vectors.vscl expects args[0] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble v[3];
+    if (!jsmn_parse_vec3(input, tokens, vTok, tokenCount, v)) {
+      write_error_json_ex("invalid_args", "coords-vectors.vscl expects args[1] to be a length-3 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble out[3];
+    vscl_c(s, v, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vscl", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(out, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_VSUB: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "coords-vectors.vsub expects args[0]=vec3 args[1]=vec3", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int aTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int bTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble a[3];
+    SpiceDouble b[3];
+
+    if (!jsmn_parse_vec3(input, tokens, aTok, tokenCount, a) ||
+        !jsmn_parse_vec3(input, tokens, bTok, tokenCount, b)) {
+      write_error_json_ex("invalid_args", "coords-vectors.vsub expects vec3 args", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble out[3];
+    vsub_c(a, b, out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in vsub", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(out, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  default:
+    write_error_json_ex("unsupported_call", "Unsupported call", NULL, NULL,
+                        NULL, NULL);
     goto done;
   }
 
