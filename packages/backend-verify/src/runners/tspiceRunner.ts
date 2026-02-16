@@ -182,6 +182,106 @@ const DISPATCH: Record<string, DispatchFn> = {
     return backend.bodc2n(args[0]);
   },
 
+  "ids-names.bodc2s": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`ids-names.bodc2s expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    assertInteger(args[0], "ids-names.bodc2s args[0]");
+    return backend.bodc2s(args[0]);
+  },
+
+  bodc2s: (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`bodc2s expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    assertInteger(args[0], "bodc2s args[0]");
+    return backend.bodc2s(args[0]);
+  },
+
+  "ids-names.bods2c": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`ids-names.bods2c expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    return backend.bods2c(args[0]);
+  },
+
+  bods2c: (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`bods2c expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    return backend.bods2c(args[0]);
+  },
+
+  "ids-names.boddef": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`ids-names.boddef expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ids-names.boddef expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[1], "ids-names.boddef args[1]");
+    backend.boddef(args[0], args[1]);
+    // `boddef()` returns void; represent it as JSON-friendly null.
+    return null;
+  },
+
+  boddef: (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`boddef expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`boddef expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[1], "boddef args[1]");
+    backend.boddef(args[0], args[1]);
+    // `boddef()` returns void; represent it as JSON-friendly null.
+    return null;
+  },
+
+  "ids-names.bodfnd": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`ids-names.bodfnd expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`ids-names.bodfnd expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "ids-names.bodfnd args[0]");
+    return backend.bodfnd(args[0], args[1]);
+  },
+
+  bodfnd: (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`bodfnd expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`bodfnd expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "bodfnd args[0]");
+    return backend.bodfnd(args[0], args[1]);
+  },
+
+  "ids-names.bodvar": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`ids-names.bodvar expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`ids-names.bodvar expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "ids-names.bodvar args[0]");
+    return backend.bodvar(args[0], args[1]);
+  },
+
+  bodvar: (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`bodvar expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`bodvar expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "bodvar args[0]");
+    return backend.bodvar(args[0], args[1]);
+  },
+
   // frames
   /** Dispatch wrapper for `frames.namfrm`. */
   "frames.namfrm": (backend, args) => {
@@ -212,6 +312,102 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
     assertInteger(args[0], "frmnam args[0]");
     return backend.frmnam(args[0]);
+  },
+
+  "frames.cidfrm": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`frames.cidfrm expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    assertInteger(args[0], "frames.cidfrm args[0]");
+    return backend.cidfrm(args[0]);
+  },
+
+  cidfrm: (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`cidfrm expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    assertInteger(args[0], "cidfrm args[0]");
+    return backend.cidfrm(args[0]);
+  },
+
+  "frames.cnmfrm": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`frames.cnmfrm expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    return backend.cnmfrm(args[0]);
+  },
+
+  cnmfrm: (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`cnmfrm expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    return backend.cnmfrm(args[0]);
+  },
+
+  "frames.frinfo": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`frames.frinfo expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    assertInteger(args[0], "frames.frinfo args[0]");
+    return backend.frinfo(args[0]);
+  },
+
+  frinfo: (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`frinfo expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    assertInteger(args[0], "frinfo args[0]");
+    return backend.frinfo(args[0]);
+  },
+
+  "frames.ccifrm": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`frames.ccifrm expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`frames.ccifrm expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "frames.ccifrm args[0]");
+    assertInteger(args[1], "frames.ccifrm args[1]");
+    return backend.ccifrm(args[0], args[1]);
+  },
+
+  ccifrm: (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`ccifrm expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ccifrm expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "ccifrm args[0]");
+    assertInteger(args[1], "ccifrm args[1]");
+    return backend.ccifrm(args[0], args[1]);
+  },
+
+  "frames.sxform": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`frames.sxform expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`frames.sxform expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`frames.sxform expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    return backend.sxform(args[0], args[1], args[2]);
+  },
+
+  sxform: (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`sxform expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`sxform expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`sxform expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    return backend.sxform(args[0], args[1], args[2]);
   },
 
   "frames.pxform": (backend, args) => {

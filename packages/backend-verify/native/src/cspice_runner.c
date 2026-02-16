@@ -7,11 +7,24 @@
 // Implements:
 //   - time.str2et (alias: str2et) args: [string] -> number
 //   - time.et2utc (alias: et2utc) args: [number, string, number] -> string
+//
 //   - ids-names.bodn2c (alias: bodn2c) args: [string] -> {found, code?}
 //   - ids-names.bodc2n (alias: bodc2n) args: [number] -> {found, name?}
+//   - ids-names.bodc2s (alias: bodc2s) args: [number] -> string
+//   - ids-names.bods2c (alias: bods2c) args: [string] -> {found, code?}
+//   - ids-names.boddef (alias: boddef) args: [string, number] -> null
+//   - ids-names.bodfnd (alias: bodfnd) args: [number, string] -> boolean
+//   - ids-names.bodvar (alias: bodvar) args: [number, string] -> number[]
+//
 //   - frames.namfrm (alias: namfrm) args: [string] -> {found, code?}
 //   - frames.frmnam (alias: frmnam) args: [number] -> {found, name?}
+//   - frames.cidfrm (alias: cidfrm) args: [number] -> {found, frcode?, frname?}
+//   - frames.cnmfrm (alias: cnmfrm) args: [string] -> {found, frcode?, frname?}
+//   - frames.frinfo (alias: frinfo) args: [number] -> {found, center?, frameClass?, classId?}
+//   - frames.ccifrm (alias: ccifrm) args: [number, number] -> {found, frcode?, frname?, center?}
 //   - frames.pxform (alias: pxform) args: [string, string, number] -> number[9] (row-major)
+//   - frames.sxform (alias: sxform) args: [string, string, number] -> number[36] (row-major)
+
 
 #include "SpiceUsr.h"
 
@@ -1136,6 +1149,54 @@ static void capture_spice_error(char *shortMsg, size_t shortBytes,
   }
 }
 
+#define MAX_BOD_ITEM_BYTES 1024
+#define BODY_CONST_MAX_VALUES 1024
+
+static bool is_ascii_whitespace(unsigned char c) {
+  return c == 32 /* space */ || c == 9 /* \t */ || c == 10 /* \n */ ||
+         c == 13 /* \r */ || c == 12 /* \f */ || c == 11 /* \v */;
+}
+
+static char *normalize_bod_item(const char *item) {
+  if (item == NULL) {
+    return NULL;
+  }
+
+  const size_t len = strlen(item);
+  // Contract guardrail: item names are expected to be short.
+  if (len > (size_t)MAX_BOD_ITEM_BYTES) {
+    return NULL;
+  }
+
+  size_t start = 0;
+  while (start < len && is_ascii_whitespace((unsigned char)item[start])) {
+    start++;
+  }
+
+  size_t end = len;
+  while (end > start && is_ascii_whitespace((unsigned char)item[end - 1])) {
+    end--;
+  }
+
+  const size_t outLen = end - start;
+  char *out = (char *)malloc(outLen + 1);
+  if (out == NULL) {
+    return NULL;
+  }
+
+  for (size_t i = 0; i < outLen; i++) {
+    const unsigned char c = (unsigned char)item[start + i];
+    if (c >= 97 /* a */ && c <= 122 /* z */) {
+      out[i] = (char)(c - 32);
+    } else {
+      out[i] = (char)c;
+    }
+  }
+  out[outLen] = '\0';
+  return out;
+}
+
+
 typedef enum {
   CALL_NONE = 0,
 
@@ -1156,11 +1217,21 @@ typedef enum {
   // ids-names
   CALL_BODN2C,
   CALL_BODC2N,
+  CALL_BODC2S,
+  CALL_BODS2C,
+  CALL_BODDEF,
+  CALL_BODFND,
+  CALL_BODVAR,
 
   // frames
   CALL_NAMFRM,
   CALL_FRMNAM,
+  CALL_CIDFRM,
+  CALL_CNMFRM,
+  CALL_FRINFO,
+  CALL_CCIFRM,
   CALL_PXFORM,
+  CALL_SXFORM,
 
   // coords-vectors
   CALL_AXISAR,
@@ -1212,14 +1283,34 @@ static CallId parse_call_id(const char *call) {
       {"bodn2c", CALL_BODN2C},
       {"ids-names.bodc2n", CALL_BODC2N},
       {"bodc2n", CALL_BODC2N},
+      {"ids-names.bodc2s", CALL_BODC2S},
+      {"bodc2s", CALL_BODC2S},
+      {"ids-names.bods2c", CALL_BODS2C},
+      {"bods2c", CALL_BODS2C},
+      {"ids-names.boddef", CALL_BODDEF},
+      {"boddef", CALL_BODDEF},
+      {"ids-names.bodfnd", CALL_BODFND},
+      {"bodfnd", CALL_BODFND},
+      {"ids-names.bodvar", CALL_BODVAR},
+      {"bodvar", CALL_BODVAR},
 
       // frames
       {"frames.namfrm", CALL_NAMFRM},
       {"namfrm", CALL_NAMFRM},
       {"frames.frmnam", CALL_FRMNAM},
       {"frmnam", CALL_FRMNAM},
+      {"frames.cidfrm", CALL_CIDFRM},
+      {"cidfrm", CALL_CIDFRM},
+      {"frames.cnmfrm", CALL_CNMFRM},
+      {"cnmfrm", CALL_CNMFRM},
+      {"frames.frinfo", CALL_FRINFO},
+      {"frinfo", CALL_FRINFO},
+      {"frames.ccifrm", CALL_CCIFRM},
+      {"ccifrm", CALL_CCIFRM},
       {"frames.pxform", CALL_PXFORM},
       {"pxform", CALL_PXFORM},
+      {"frames.sxform", CALL_SXFORM},
+      {"sxform", CALL_SXFORM},
 
       // coords-vectors
       {"coords-vectors.axisar", CALL_AXISAR},
@@ -2452,6 +2543,452 @@ int main(void) {
     goto done;
   }
 
+  case CALL_BODC2S: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodc2s expects args[0] to be an integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int codeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceInt code = 0;
+    parse_result codeParse = PARSE_INVALID;
+    if (codeTok >= 0 && codeTok < tokenCount) {
+      codeParse = jsmn_parse_int(input, &tokens[codeTok], &code);
+    }
+
+    if (codeTok < 0 || codeTok >= tokenCount || codeParse != PARSE_OK) {
+      if (codeParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.bodc2s expects args[0] to be an integer (SpiceInt range)",
+            codeParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceChar name[64];
+    name[0] = '\0';
+    bodc2s_c(code, (SpiceInt)sizeof(name), name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in bodc2s", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(name);
+    fputs("\"}\n", stdout);
+    goto done;
+  }
+
+  case CALL_BODS2C: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bods2c expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bods2c expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt code = 0;
+    SpiceBoolean found = SPICEFALSE;
+    bods2c_c(name, &code, &found);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in bods2c", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"found\":true,\"code\":%" PRIdMAX "}}\n",
+            (intmax_t)code);
+    goto done;
+  }
+
+  case CALL_BODDEF: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.boddef expects args[0]=string args[1]=integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int codeTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.boddef expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceInt code = 0;
+    parse_result codeParse = PARSE_INVALID;
+    if (codeTok >= 0 && codeTok < tokenCount) {
+      codeParse = jsmn_parse_int(input, &tokens[codeTok], &code);
+    }
+
+    if (codeTok < 0 || codeTok >= tokenCount || codeParse != PARSE_OK) {
+      if (codeParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.boddef expects args[1] to be an integer (SpiceInt range)",
+            codeParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    char *name = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    boddef_c(name, code);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in boddef", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_BODFND: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodfnd expects args[0]=integer (SpiceInt range) args[1]=string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int bodyTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int itemTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt body = 0;
+    parse_result bodyParse = PARSE_INVALID;
+    if (bodyTok >= 0 && bodyTok < tokenCount) {
+      bodyParse = jsmn_parse_int(input, &tokens[bodyTok], &body);
+    }
+
+    if (bodyTok < 0 || bodyTok >= tokenCount || bodyParse != PARSE_OK) {
+      if (bodyParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.bodfnd expects args[0] to be an integer (SpiceInt range)",
+            bodyParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    if (itemTok < 0 || itemTok >= tokenCount || tokens[itemTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodfnd expects args[1] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *itemRaw = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t itemErr =
+        jsmn_strdup(input, &tokens[itemTok], &itemRaw, strDetail, sizeof(strDetail));
+    if (itemErr != JSMN_STRDUP_OK) {
+      if (itemErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *item = normalize_bod_item(itemRaw);
+    free(itemRaw);
+    if (item == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    char poolVar[2048];
+    int poolLen = snprintf(poolVar, sizeof(poolVar), "BODY%" PRIdMAX "_%s", (intmax_t)body, item);
+    if (poolLen < 0 || (size_t)poolLen >= sizeof(poolVar)) {
+      free(item);
+      write_error_json_ex("invalid_args", "bodfnd: pool var name too long", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceBoolean foundC = SPICEFALSE;
+    SpiceInt nC = 0;
+    SpiceChar typeC = 0;
+    dtpool_c(poolVar, &foundC, &nC, &typeC);
+    free(item);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in bodfnd", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    const bool out = (foundC == SPICETRUE && typeC == 'N');
+    fprintf(stdout, "{\"ok\":true,\"result\":%s}\n", out ? "true" : "false");
+    goto done;
+  }
+
+  case CALL_BODVAR: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodvar expects args[0]=integer (SpiceInt range) args[1]=string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int bodyTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int itemTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt body = 0;
+    parse_result bodyParse = PARSE_INVALID;
+    if (bodyTok >= 0 && bodyTok < tokenCount) {
+      bodyParse = jsmn_parse_int(input, &tokens[bodyTok], &body);
+    }
+
+    if (bodyTok < 0 || bodyTok >= tokenCount || bodyParse != PARSE_OK) {
+      if (bodyParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ids-names.bodvar expects args[0] to be an integer (SpiceInt range)",
+            bodyParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    if (itemTok < 0 || itemTok >= tokenCount || tokens[itemTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "ids-names.bodvar expects args[1] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *itemRaw = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t itemErr =
+        jsmn_strdup(input, &tokens[itemTok], &itemRaw, strDetail, sizeof(strDetail));
+    if (itemErr != JSMN_STRDUP_OK) {
+      if (itemErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *item = normalize_bod_item(itemRaw);
+    free(itemRaw);
+    if (item == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    char poolVar[2048];
+    int poolLen = snprintf(poolVar, sizeof(poolVar), "BODY%" PRIdMAX "_%s", (intmax_t)body, item);
+    if (poolLen < 0 || (size_t)poolLen >= sizeof(poolVar)) {
+      free(item);
+      write_error_json_ex("invalid_args", "bodvar: pool var name too long", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceBoolean foundC = SPICEFALSE;
+    SpiceInt nC = 0;
+    SpiceChar typeC = 0;
+    dtpool_c(poolVar, &foundC, &nC, &typeC);
+
+    if (failed_c() == SPICETRUE) {
+      free(item);
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in bodvar (dtpool)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (foundC != SPICETRUE || typeC != 'N' || nC <= 0) {
+      free(item);
+      fputs("{\"ok\":true,\"result\":[]}\n", stdout);
+      goto done;
+    }
+
+    if (nC > (SpiceInt)BODY_CONST_MAX_VALUES) {
+      free(item);
+      write_error_json_ex(
+          "invalid_args",
+          "bodvar(): BODY constant has too many values",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const SpiceInt maxn = nC;
+    SpiceDouble *values = (SpiceDouble *)malloc(sizeof(SpiceDouble) * (size_t)maxn);
+    if (values == NULL) {
+      free(item);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt dim = 0;
+    bodvcd_c(body, item, maxn, &dim, values);
+    free(item);
+
+    if (failed_c() == SPICETRUE) {
+      free(values);
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in bodvar", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (dim < 0) {
+      dim = 0;
+    }
+    if (dim > maxn) {
+      dim = maxn;
+    }
+
+    fputs("{\"ok\":true,\"result\":[", stdout);
+    for (SpiceInt i = 0; i < dim; i++) {
+      if (i != 0) {
+        fputc(',', stdout);
+      }
+      fprintf(stdout, "%.17g", (double)values[i]);
+    }
+    fputs("]}\n", stdout);
+    free(values);
+    goto done;
+  }
+
+
   case CALL_NAMFRM: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
@@ -2574,6 +3111,289 @@ int main(void) {
     goto done;
   }
 
+  case CALL_CIDFRM: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.cidfrm expects args[0] to be an integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int centerTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceInt center = 0;
+    parse_result centerParse = PARSE_INVALID;
+    if (centerTok >= 0 && centerTok < tokenCount) {
+      centerParse = jsmn_parse_int(input, &tokens[centerTok], &center);
+    }
+
+    if (centerTok < 0 || centerTok >= tokenCount || centerParse != PARSE_OK) {
+      if (centerParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "frames.cidfrm expects args[0] to be an integer (SpiceInt range)",
+            centerParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt frcode = 0;
+    SpiceChar frname[64];
+    frname[0] = '\0';
+    SpiceBoolean found = SPICEFALSE;
+    cidfrm_c(center, (SpiceInt)sizeof(frname), &frcode, frname, &found);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in cidfrm", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"frcode\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)frcode);
+    fputs(",\"frname\":\"", stdout);
+    json_print_escaped(frname);
+    fputs("\"}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_CNMFRM: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.cnmfrm expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.cnmfrm expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt frcode = 0;
+    SpiceChar frname[64];
+    frname[0] = '\0';
+    SpiceBoolean found = SPICEFALSE;
+    cnmfrm_c(name, (SpiceInt)sizeof(frname), &frcode, frname, &found);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in cnmfrm", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"frcode\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)frcode);
+    fputs(",\"frname\":\"", stdout);
+    json_print_escaped(frname);
+    fputs("\"}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_FRINFO: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.frinfo expects args[0] to be an integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int idTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceInt frameId = 0;
+    parse_result idParse = PARSE_INVALID;
+    if (idTok >= 0 && idTok < tokenCount) {
+      idParse = jsmn_parse_int(input, &tokens[idTok], &frameId);
+    }
+
+    if (idTok < 0 || idTok >= tokenCount || idParse != PARSE_OK) {
+      if (idParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "frames.frinfo expects args[0] to be an integer (SpiceInt range)",
+            idParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt center = 0;
+    SpiceInt frameClass = 0;
+    SpiceInt classId = 0;
+    SpiceBoolean found = SPICEFALSE;
+    frinfo_c(frameId, &center, &frameClass, &classId, &found);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in frinfo", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"found\":true,\"center\":%" PRIdMAX ",\"frameClass\":%" PRIdMAX ",\"classId\":%" PRIdMAX "}}\n",
+            (intmax_t)center, (intmax_t)frameClass, (intmax_t)classId);
+    goto done;
+  }
+
+  case CALL_CCIFRM: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.ccifrm expects args[0]=integer (SpiceInt range) args[1]=integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int frClassTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int classIdTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt frClass = 0;
+    parse_result frClassParse = PARSE_INVALID;
+    if (frClassTok >= 0 && frClassTok < tokenCount) {
+      frClassParse = jsmn_parse_int(input, &tokens[frClassTok], &frClass);
+    }
+
+    if (frClassTok < 0 || frClassTok >= tokenCount || frClassParse != PARSE_OK) {
+      if (frClassParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "frames.ccifrm expects args[0] to be an integer (SpiceInt range)",
+            frClassParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt clssid = 0;
+    parse_result clssidParse = PARSE_INVALID;
+    if (classIdTok >= 0 && classIdTok < tokenCount) {
+      clssidParse = jsmn_parse_int(input, &tokens[classIdTok], &clssid);
+    }
+
+    if (classIdTok < 0 || classIdTok >= tokenCount || clssidParse != PARSE_OK) {
+      if (clssidParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "frames.ccifrm expects args[1] to be an integer (SpiceInt range)",
+            clssidParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt frcode = 0;
+    SpiceChar frname[64];
+    frname[0] = '\0';
+    SpiceInt center = 0;
+    SpiceBoolean found = SPICEFALSE;
+
+    ccifrm_c(frClass, clssid, (SpiceInt)sizeof(frname), &frcode, frname, &center, &found);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ccifrm", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"frcode\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)frcode);
+    fputs(",\"frname\":\"", stdout);
+    json_print_escaped(frname);
+    fputs("\",\"center\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)center);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+
   case CALL_PXFORM: {
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
@@ -2690,6 +3510,124 @@ int main(void) {
     fputs("]}\n", stdout);
     goto done;
   }
+
+  case CALL_SXFORM: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.sxform expects args[0]=string args[1]=string args[2]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int fromTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int toTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (fromTok < 0 || fromTok >= tokenCount || tokens[fromTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.sxform expects args[0] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    if (toTok < 0 || toTok >= tokenCount || tokens[toTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.sxform expects args[1] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    parse_result etParse = PARSE_INVALID;
+    if (etTok >= 0 && etTok < tokenCount) {
+      etParse = jsmn_parse_double(input, &tokens[etTok], &et);
+    }
+
+    if (etTok < 0 || etTok >= tokenCount || etParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.sxform expects args[2] to be a number",
+          etParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (etParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *from = NULL;
+    char *to = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fromErr =
+        jsmn_strdup(input, &tokens[fromTok], &from, strDetail, sizeof(strDetail));
+    if (fromErr != JSMN_STRDUP_OK) {
+      if (fromErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t toErr =
+        jsmn_strdup(input, &tokens[toTok], &to, strDetail, sizeof(strDetail));
+    if (toErr != JSMN_STRDUP_OK) {
+      free(from);
+      if (toErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble x[6][6];
+    sxform_c(from, to, et, x);
+    free(from);
+    free(to);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in sxform", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    // Success: row-major matrix.
+    fputs("{\"ok\":true,\"result\":[", stdout);
+    for (int r = 0; r < 6; r++) {
+      for (int c = 0; c < 6; c++) {
+        const int i = r * 6 + c;
+        if (i != 0) {
+          fputc(',', stdout);
+        }
+        fprintf(stdout, "%.17g", (double)x[r][c]);
+      }
+    }
+    fputs("]}\n", stdout);
+    goto done;
+  }
+
 
 
   // coords-vectors
