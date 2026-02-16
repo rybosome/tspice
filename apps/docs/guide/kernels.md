@@ -44,6 +44,8 @@ const pack = kernels.tspice().naif0012_tls().pck00011_tpc().pack();
 
 `kernels.naif()` is a small builder for the NAIF `generic_kernels` catalog (canonical NAIF host by default), with a safe default load order.
 
+For a full (generated) inventory of NAIF `generic_kernels`, see: [/guide/kernel-inventory](/guide/kernel-inventory).
+
 ```ts
 import { kernels } from "@rybosome/tspice";
 
