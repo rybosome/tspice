@@ -70,29 +70,25 @@ In addition to typical unit testing, `tspice` runs **parity tests** to ensure th
 - **CSPICE usage constraints are explicit:** see [`docs/cspice-policy.md`](docs/cspice-policy.md) and [`docs/cspice-naif-disclosure.md`](docs/cspice-naif-disclosure.md).
 - **Kernels and licensing are treated carefully:** CSPICE source/toolkit archives are not committed; backend packages include authoritative `NOTICE` files describing what they ship and why.
 
-## Architecture (at a glance)
+## Architecture
+
+1. **`@rybosome/tspice` (facade)** — the user-facing entrypoint (`packages/tspice/`).
+2. **`SpiceBackend` (contract)** — the shared TypeScript interface all backends implement (`packages/backend-contract/`).
+3. **Backend implementations** — concrete runtimes that satisfy the contract:
+   - Node native addon: `packages/backend-node/`
+   - WASM (Emscripten): `packages/backend-wasm/`
+4. **`backend-shim-c` (shared C shim)** — a shared C integration layer reused by both backends (`packages/backend-shim-c/`).
+5. **CSPICE** — the NAIF toolkit, linked into the native addon or compiled into the `.wasm`.
 
 ```mermaid
-flowchart LR
-  App["Your TS app"] -->|spiceClients.to*()| Client["Spice client"]
-
-  Client --> Kit["spice.kit (typed helpers)"]
-  Client --> Raw["spice.raw (backend contract)"]
-
-  subgraph KernelLoading["Kernel loading"]
-    Catalog["kernels.* catalogs"] --> Pack["KernelPack (URLs + virtual paths)"]
-    Pack -->|withKernels(pack)| Client
-  end
-
-  Raw --> Wasm["@rybosome/tspice-backend-wasm (CSPICE-derived .wasm)"]
-  Raw --> Node["@rybosome/tspice-backend-node (CSPICE-derived native addon)"]
+flowchart TD
+  Facade["@rybosome/tspice (facade)"] --> Contract["SpiceBackend (contract)"]
+  Contract --> Node["backend-node (native addon)"]
+  Contract --> Wasm["backend-wasm (Emscripten)"]
+  Node --> Shim["backend-shim-c (shared C shim)"]
+  Wasm --> Shim
+  Shim --> CSPICE["CSPICE (NAIF toolkit)"]
 ```
-
-A few important ideas:
-
-- `spiceClients` gives you one consistent `spice` surface area (sync/async/WebWorker), while backends handle environment-specific details.
-- The **WASM backend** enables real browser usage (and also runs in Node).
-- The **Node backend** is a native addon backend for Node-specific workflows.
 
 ## Backend comparison (Node native vs WASM)
 
@@ -107,14 +103,6 @@ A few important ideas:
 ## Roadmap (high-level)
 
 - Expand parity test coverage (Node ↔ WASM) with more fixtures and scenarios.
-- Improve kernel catalogs (selection ergonomics, caching, and production guidance).
-- Tighten docs + examples around real app workflows (Web Workers, bundlers, deployment).
-- Move toward a stable 1.0 API once the surface area and backend contract settle.
-
-## Stability & deprecation (pre-1.0)
-
-`tspice` is currently **pre-1.0**.
-
-- Expect API churn while the contract, kernel-loading ergonomics, and backend parity solidify.
-- Breaking changes should be intentional and documented (and ideally preceded by `@deprecated` annotations where practical).
-- If you’re shipping production code, pin versions and add your own validation tests for the specific kernels + workflows you rely on.
+- Expand CSPICE implementation coverage (link to https://github.com/rybosome/tspice/blob/main/docs/cspice-function-inventory.md)
+- Performance measurement and improvement
+- Additional `kit` functions and client functionality - e.g. batching
