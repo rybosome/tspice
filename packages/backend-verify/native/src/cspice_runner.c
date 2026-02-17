@@ -46,6 +46,10 @@
 #define KPOOL_STRING_MAX_BYTES 2048
 #define KPOOL_NAME_MAX_BYTES 64
 
+// Guardrail: cap kernel-pool scratch allocations derived from untrusted `room`.
+// This keeps the runner deterministic (invalid_args) instead of OOM/overflow.
+#define CSPICE_RUNNER_MAX_KPOOL_ALLOC_BYTES (64 * 1024 * 1024)
+
 // --- Minimal JSON parsing via jsmn (public domain) --------------------------
 // https://github.com/zserge/jsmn
 
@@ -4739,6 +4743,15 @@ int main(void) {
       goto done;
     }
 
+    const size_t maxRoom = (size_t)(CSPICE_RUNNER_MAX_KPOOL_ALLOC_BYTES / sizeof(SpiceDouble));
+    if ((size_t)room > maxRoom) {
+      char msg[256];
+      snprintf(msg, sizeof(msg),
+               "kernel-pool.gdpool args[2]=room too large (max %zu)", maxRoom);
+      write_error_json_ex("invalid_args", msg, NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
     char *name = NULL;
     char strDetail[256];
     strDetail[0] = '\0';
@@ -4845,6 +4858,15 @@ int main(void) {
       goto done;
     }
 
+    const size_t maxRoom = (size_t)(CSPICE_RUNNER_MAX_KPOOL_ALLOC_BYTES / sizeof(SpiceInt));
+    if ((size_t)room > maxRoom) {
+      char msg[256];
+      snprintf(msg, sizeof(msg),
+               "kernel-pool.gipool args[2]=room too large (max %zu)", maxRoom);
+      write_error_json_ex("invalid_args", msg, NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
     char *name = NULL;
     char strDetail[256];
     strDetail[0] = '\0';
@@ -4948,6 +4970,15 @@ int main(void) {
     }
     if (room <= 0) {
       write_error_json_ex("invalid_args", "kernel-pool.gcpool expects args[2] to be > 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const size_t maxRoom = (size_t)(CSPICE_RUNNER_MAX_KPOOL_ALLOC_BYTES / (size_t)KPOOL_STRING_MAX_BYTES);
+    if ((size_t)room > maxRoom) {
+      char msg[256];
+      snprintf(msg, sizeof(msg),
+               "kernel-pool.gcpool args[2]=room too large (max %zu)", maxRoom);
+      write_error_json_ex("invalid_args", msg, NULL, NULL, NULL, NULL);
       goto done;
     }
 
@@ -5063,6 +5094,15 @@ int main(void) {
     }
     if (room <= 0) {
       write_error_json_ex("invalid_args", "kernel-pool.gnpool expects args[2] to be > 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const size_t maxRoom = (size_t)(CSPICE_RUNNER_MAX_KPOOL_ALLOC_BYTES / (size_t)KPOOL_NAME_MAX_BYTES);
+    if ((size_t)room > maxRoom) {
+      char msg[256];
+      snprintf(msg, sizeof(msg),
+               "kernel-pool.gnpool args[2]=room too large (max %zu)", maxRoom);
+      write_error_json_ex("invalid_args", msg, NULL, NULL, NULL, NULL);
       goto done;
     }
 
@@ -5417,10 +5457,21 @@ int main(void) {
         goto done;
       }
 
+      const size_t sLen = strlen(s);
+      if (sLen >= (size_t)KPOOL_STRING_MAX_BYTES) {
+        char msg[256];
+        snprintf(msg, sizeof(msg),
+                 "kernel-pool.pcpool expects args[1][%d] to be <= %d bytes",
+                 i, (int)KPOOL_STRING_MAX_BYTES - 1);
+        free(s);
+        free(name);
+        free(cvals);
+        write_error_json_ex("invalid_args", msg, NULL, NULL, NULL, NULL);
+        goto done;
+      }
+
       char *slot = cvals + (size_t)i * (size_t)KPOOL_STRING_MAX_BYTES;
-      // Copy + truncate.
-      strncpy(slot, s, (size_t)KPOOL_STRING_MAX_BYTES - 1);
-      slot[KPOOL_STRING_MAX_BYTES - 1] = '\0';
+      memcpy(slot, s, sLen + 1);
       free(s);
     }
 
@@ -5509,9 +5560,21 @@ int main(void) {
         goto done;
       }
 
+      const size_t sLen = strlen(s);
+      if (sLen >= (size_t)KPOOL_NAME_MAX_BYTES) {
+        char msg[256];
+        snprintf(msg, sizeof(msg),
+                 "kernel-pool.swpool expects args[1][%d] to be <= %d bytes",
+                 i, (int)KPOOL_NAME_MAX_BYTES - 1);
+        free(s);
+        free(agent);
+        free(names);
+        write_error_json_ex("invalid_args", msg, NULL, NULL, NULL, NULL);
+        goto done;
+      }
+
       char *slot = names + (size_t)i * (size_t)KPOOL_NAME_MAX_BYTES;
-      strncpy(slot, s, (size_t)KPOOL_NAME_MAX_BYTES - 1);
-      slot[KPOOL_NAME_MAX_BYTES - 1] = '\0';
+      memcpy(slot, s, sLen + 1);
       free(s);
     }
 
@@ -5561,7 +5624,10 @@ int main(void) {
     }
 
     // Prime the agent with an empty watch list (see tspiceRunner).
-    swpool_c(agent, 0, (SpiceInt)KPOOL_NAME_MAX_BYTES, NULL);
+    // CSPICE requires a non-null `names` pointer even when nnames==0.
+    char dummyNames[KPOOL_NAME_MAX_BYTES];
+    memset(dummyNames, 0, sizeof(dummyNames));
+    swpool_c(agent, 0, (SpiceInt)KPOOL_NAME_MAX_BYTES, dummyNames);
     if (failed_c() == SPICETRUE) {
       char shortMsg[1841];
       char longMsg[1841];
