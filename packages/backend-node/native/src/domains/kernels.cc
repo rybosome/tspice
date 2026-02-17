@@ -1,6 +1,6 @@
 #include "kernels.h"
 
-#include "cell_handles.h"
+#include "../cell_handles.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -374,8 +374,14 @@ static Napi::Value Kplfrm(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
-  const uintptr_t idsetPtr = tspice_backend_node::GetCellHandlePtrOrThrow(env, idsetHandle, "kplfrm(idset)", "cell");
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t idsetPtr = tspice_backend_node::GetCellHandlePtrOrThrow(
+      lock,
+      env,
+      idsetHandle,
+      SPICE_INT,
+      "kplfrm(idset)",
+      "SpiceIntCell");
   if (env.IsExceptionPending()) {
     return env.Undefined();
   }
