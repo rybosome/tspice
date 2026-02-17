@@ -244,9 +244,8 @@ int tspice_bodfnd(
     *outResult = 0;
   }
 
-  // `bodfnd_c()` returns true even when the pool var exists but is character-typed.
-  // Our backend contract treats non-numeric BODY<ID>_<ITEM> vars as a normal miss,
-  // so preflight with `dtpool_c()` on the canonical pool name.
+  // `bodfnd_c()` is an existence check: it returns true even when the pool var
+  // exists but is character-typed ('C') vs numeric ('N').
   char poolVar[TSPICE_BODY_POOLVAR_MAX_BYTES];
   if (tspice_format_body_pool_var(body, item, poolVar, sizeof(poolVar), "bodfnd", err, errMaxBytes) != 0) {
     return 1;
@@ -263,7 +262,7 @@ int tspice_bodfnd(
   }
 
   if (outResult) {
-    *outResult = (foundC == SPICETRUE && typeC == 'N') ? 1 : 0;
+    *outResult = (foundC == SPICETRUE) ? 1 : 0;
   }
 
   return 0;

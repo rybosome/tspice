@@ -1,4 +1,7 @@
 name: frames.basic
+setup:
+  kernels:
+    - $FIXTURES/frames-minimal
 compare:
   tolAbs: 1e-12
   tolRel: 1e-12
@@ -33,6 +36,27 @@ cases:
     args:
       - 123456
 
+  - id: cidfrm-earth
+    call: frames.cidfrm
+    args:
+      - 399
+
+  - id: cnmfrm-earth
+    call: frames.cnmfrm
+    args:
+      - "EARTH"
+
+  - id: frinfo-j2000
+    call: frames.frinfo
+    args:
+      - 1
+
+  - id: ccifrm-j2000
+    call: frames.ccifrm
+    args:
+      - 1
+      - 1
+
   - id: pxform-j2000-b1950
     call: frames.pxform
     args:
@@ -55,3 +79,10 @@ cases:
       - 0
     compare:
       errorShort: true
+
+  - id: sxform-identity
+    call: frames.sxform
+    args:
+      - "J2000"
+      - "J2000"
+      - 0

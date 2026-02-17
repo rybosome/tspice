@@ -5,6 +5,7 @@ import type {
   KernelKindInput,
   KernelSource,
   KernelsApi,
+  SpiceIntCell,
 } from "@rybosome/tspice-backend-contract";
 import {
   kxtrctJs,
@@ -200,10 +201,10 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
       return { found: true, ...info } satisfies Found<KernelInfo>;
     },
 
-    kxtrct: (keywd, terms, wordsq) => {
+    kxtrct: (keywd: string, terms: readonly string[], wordsq: string) => {
       return kxtrctJs(keywd, terms, wordsq);
     },
-    kplfrm: (_frmcls, _idset) => {
+    kplfrm: (_frmcls: number, _idset: SpiceIntCell) => {
       throw new Error("kplfrm not supported in current WASM bundle");
     },
     ktotal: (kind: KernelKindInput = "ALL") => {

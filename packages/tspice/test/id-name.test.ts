@@ -125,8 +125,8 @@ describe("IDs / names", () => {
     const missing = backend.bodvar(399, "NOT_A_ITEM");
     expect(missing).toEqual([]);
 
-    // Character-typed BODY<ID>_<ITEM> vars are treated as a normal miss.
-    expect(backend.bodfnd(399, "FOO")).toBe(false);
+    // Character-typed BODY<ID>_<ITEM> vars exist (bodfnd=true), but bodvar is a normal miss.
+    expect(backend.bodfnd(399, "FOO")).toBe(true);
     expect(backend.bodvar(399, "FOO")).toEqual([]);
 
     const info = backend.frinfo(1);
@@ -249,8 +249,8 @@ describe("IDs / names", () => {
     const missing = backend.bodvar(399, "NOT_A_ITEM");
     expect(missing).toEqual([]);
 
-    // Character-typed BODY<ID>_<ITEM> vars are treated as a normal miss.
-    expect(backend.bodfnd(399, "FOO")).toBe(false);
+    // Character-typed BODY<ID>_<ITEM> vars exist (bodfnd=true), but bodvar is a normal miss.
+    expect(backend.bodfnd(399, "FOO")).toBe(true);
     expect(backend.bodvar(399, "FOO")).toEqual([]);
 
     const info = backend.frinfo(1);
