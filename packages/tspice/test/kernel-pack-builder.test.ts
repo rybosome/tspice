@@ -1,10 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { KernelSource } from "@rybosome/tspice-backend-contract";
+import type { FetchLike, KernelPack, KernelSource, NaifKernelId } from "@rybosome/tspice";
 
 import { kernels } from "../src/kernels/kernels.js";
-import type { NaifKernelId } from "../src/kernels/naifKernelId.js";
-import type { FetchLike, KernelPack, ResponseLike } from "../src/kernels/kernelPack.js";
+import type { ResponseLike } from "../src/kernels/kernelPack.js";
 import { loadKernelPack } from "../src/kernels/kernelPack.js";
 
 function okResponse(bytes: Uint8Array): ResponseLike {

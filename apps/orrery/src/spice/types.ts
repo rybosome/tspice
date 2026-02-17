@@ -1,4 +1,4 @@
-import type { Mat3ColMajor } from '@rybosome/tspice-backend-contract'
+import type { Mat3ColMajor } from '@rybosome/tspice'
 
 /** Seconds past the J2000 epoch (SPICE ET). */
 export type EtSeconds = number

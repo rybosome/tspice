@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { Mat3 } from "../src/kit/math/mat3.js";
-import { decodeRpcValue, encodeRpcValue } from "../src/transport/rpc/valueCodec.js";
+import { Mat3 } from "@rybosome/tspice";
+import { decodeRpcValue, encodeRpcValue } from "../dist/transport/rpc/valueCodec.js";
 
 describe("rpc valueCodec", () => {
   it("round-trips Mat3 via tagged encoding", () => {

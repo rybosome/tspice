@@ -1,4 +1,4 @@
-import type { Mat3ColMajor } from '@rybosome/tspice-backend-contract'
+import type { Mat3ColMajor } from '@rybosome/tspice'
 
 declare global {
   interface Window {

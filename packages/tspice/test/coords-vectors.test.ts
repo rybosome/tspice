@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { spiceClients } from "@rybosome/tspice";
-import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
-import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+import { brandMat3RowMajor, spiceClients } from "@rybosome/tspice";
+import type { SpiceBackend } from "@rybosome/tspice";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
