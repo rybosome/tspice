@@ -68,9 +68,15 @@ try {
 If you don’t want a worker, you can run WASM in-process:
 
 ```ts
-import { createSpiceAsync } from '@rybosome/tspice'
+import { spiceClients } from '@rybosome/tspice'
 
-const spice = await createSpiceAsync({ backend: 'wasm' })
+const { spice, dispose } = await spiceClients.toAsync({ backend: 'wasm' })
+
+try {
+  // …use `spice`…
+} finally {
+  await dispose()
+}
 ```
 
 ## Explicit kernel loading as bytes (`{ path, bytes }`)
@@ -84,19 +90,19 @@ await spice.kit.loadKernel({ path, bytes })
 
 Here’s the explicit fetch + load flow (equivalent to what `withKernels(packOrPacks)` does internally):
 
-> Note on root-relative URLs (`"/..."`): by default, `rootRelativeKernelUrlBehavior: "bypassBaseUrl"`
-> means `/...` kernel URLs **ignore** `pack.baseUrl` (so `/kernels/a.tls` stays `/kernels/a.tls`).
+> Note on root-relative URLs (`"/..."`): `/...` kernel URLs **ignore** `pack.baseUrl`
+> (so `/kernels/a.tls` stays `/kernels/a.tls`).
 > This can surprise subpath deployments (`/myapp/`), where you likely want **relative** kernel URLs
-> (`kernels/...`) so `pack.baseUrl` can be applied, or set `rootRelativeKernelUrlBehavior: "error"`
-> to catch accidental `/...` URLs.
+> (`kernels/...`) so `pack.baseUrl` can be applied.
 
 ```ts
-import { kernels, resolveKernelUrl } from '@rybosome/tspice'
+import { kernels } from '@rybosome/tspice'
 
 const pack = kernels
   .naif({
-    origin: 'kernels/naif/',
-    baseUrl: import.meta.env.BASE_URL,
+    // Root kernel URLs at your app base to make them fetchable without
+    // additional resolution logic.
+    origin: `${import.meta.env.BASE_URL}kernels/naif/`,
     pathBase: 'naif/',
   })
   .pick(
@@ -105,13 +111,10 @@ const pack = kernels
     'spk/planets/de432s.bsp',
   )
 
-const rootRelativeKernelUrlBehavior = 'bypassBaseUrl' as const
-
 for (const kernel of pack.kernels) {
-  const url = resolveKernelUrl(kernel.url, pack.baseUrl, rootRelativeKernelUrlBehavior)
-  const res = await fetch(url)
+  const res = await fetch(kernel.url)
   if (!res.ok) {
-    throw new Error(`Failed to fetch kernel: ${url} (${res.status} ${res.statusText})`)
+    throw new Error(`Failed to fetch kernel: ${kernel.url} (${res.status} ${res.statusText})`)
   }
 
   const bytes = new Uint8Array(await res.arrayBuffer())
