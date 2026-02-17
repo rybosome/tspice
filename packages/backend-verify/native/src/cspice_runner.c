@@ -42,6 +42,10 @@
 #include <string.h>
 #include <unistd.h>
 
+// Kernel pool fixed-width string sizes (match tspice backends).
+#define KPOOL_STRING_MAX_BYTES 2048
+#define KPOOL_NAME_MAX_BYTES 64
+
 // --- Minimal JSON parsing via jsmn (public domain) --------------------------
 // https://github.com/zserge/jsmn
 
@@ -961,6 +965,36 @@ static void json_print_escaped(const char *s) {
   }
 }
 
+static void trim_fixed_width_c_string_end(char *s, size_t maxBytes) {
+  if (s == NULL || maxBytes == 0) {
+    return;
+  }
+
+  // Find the first NUL byte (or stop at maxBytes).
+  size_t n = 0;
+  while (n < maxBytes && s[n] != '\0') {
+    n++;
+  }
+
+  // Trim right ASCII whitespace.
+  while (n > 0) {
+    const unsigned char c = (unsigned char)s[n - 1];
+    const bool isWs = (c == ' ') || (c == '\t') || (c == '\n') || (c == '\r') || (c == '\f') || (c == '\v');
+    if (!isWs) {
+      break;
+    }
+    n--;
+  }
+
+  if (n < maxBytes) {
+    s[n] = '\0';
+  } else {
+    // Defensive: ensure the string is terminated.
+    s[maxBytes - 1] = '\0';
+  }
+}
+
+
 
 static void json_print_double_array(const SpiceDouble *arr, int n) {
   fputc('[', stdout);
@@ -969,6 +1003,17 @@ static void json_print_double_array(const SpiceDouble *arr, int n) {
       fputc(',', stdout);
     }
     fprintf(stdout, "%.17g", (double)arr[i]);
+  }
+  fputc(']', stdout);
+}
+
+static void json_print_spiceint_array(const SpiceInt *arr, int n) {
+  fputc('[', stdout);
+  for (int i = 0; i < n; i++) {
+    if (i != 0) {
+      fputc(',', stdout);
+    }
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)arr[i]);
   }
   fputc(']', stdout);
 }
@@ -1264,6 +1309,19 @@ typedef enum {
   CALL_VNORM,
   CALL_VSCL,
   CALL_VSUB,
+
+  // kernel-pool
+  CALL_GDPOOL,
+  CALL_GIPOOL,
+  CALL_GCPOOL,
+  CALL_GNPOOL,
+  CALL_DTPOOL,
+  CALL_PDPOOL,
+  CALL_PIPOOL,
+  CALL_PCPOOL,
+  CALL_SWPOOL,
+  CALL_CVPOOL,
+  CALL_EXPOOL,
 } CallId;
 
 typedef struct {
@@ -1343,6 +1401,19 @@ static CallId parse_call_id(const char *call) {
       {"coords-vectors.vnorm", CALL_VNORM},
       {"coords-vectors.vscl", CALL_VSCL},
       {"coords-vectors.vsub", CALL_VSUB},
+
+      // kernel-pool
+      {"kernel-pool.gdpool", CALL_GDPOOL},
+      {"kernel-pool.gipool", CALL_GIPOOL},
+      {"kernel-pool.gcpool", CALL_GCPOOL},
+      {"kernel-pool.gnpool", CALL_GNPOOL},
+      {"kernel-pool.dtpool", CALL_DTPOOL},
+      {"kernel-pool.pdpool", CALL_PDPOOL},
+      {"kernel-pool.pipool", CALL_PIPOOL},
+      {"kernel-pool.pcpool", CALL_PCPOOL},
+      {"kernel-pool.swpool", CALL_SWPOOL},
+      {"kernel-pool.cvpool", CALL_CVPOOL},
+      {"kernel-pool.expool", CALL_EXPOOL},
   };
 
   for (size_t i = 0; i < sizeof(table) / sizeof(table[0]); i++) {
@@ -4609,6 +4680,962 @@ int main(void) {
 
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_double_array(out, 3);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+
+  // --- kernel-pool ------------------------------------------------------
+
+  case CALL_GDPOOL: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex("invalid_args", "kernel-pool.gdpool expects args[0]=string args[1]=integer args[2]=integer", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int startTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int roomTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.gdpool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt start = 0;
+    parse_result startParse = PARSE_INVALID;
+    if (startTok >= 0 && startTok < tokenCount) {
+      startParse = jsmn_parse_int(input, &tokens[startTok], &start);
+    }
+    if (startTok < 0 || startTok >= tokenCount || startParse != PARSE_OK) {
+      if (startParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "kernel-pool.gdpool expects args[1] to be an integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt room = 0;
+    parse_result roomParse = PARSE_INVALID;
+    if (roomTok >= 0 && roomTok < tokenCount) {
+      roomParse = jsmn_parse_int(input, &tokens[roomTok], &room);
+    }
+    if (roomTok < 0 || roomTok >= tokenCount || roomParse != PARSE_OK) {
+      if (roomParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "kernel-pool.gdpool expects args[2] to be an integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (start < 0) {
+      write_error_json_ex("invalid_args", "kernel-pool.gdpool expects args[1] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (room <= 0) {
+      write_error_json_ex("invalid_args", "kernel-pool.gdpool expects args[2] to be > 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble *values = (SpiceDouble *)malloc(sizeof(SpiceDouble) * (size_t)room);
+    if (values == NULL) {
+      free(name);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt nOut = 0;
+    SpiceBoolean found = SPICEFALSE;
+    gdpool_c(name, start, room, &nOut, values, &found);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gdpool", shortMsg, longMsg, traceMsg);
+      free(values);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      free(values);
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    if (nOut < 0) nOut = 0;
+    if (nOut > room) nOut = room;
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"values\":", stdout);
+    json_print_double_array(values, (int)nOut);
+    fputs("}}\n", stdout);
+    free(values);
+    goto done;
+  }
+
+  case CALL_GIPOOL: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex("invalid_args", "kernel-pool.gipool expects args[0]=string args[1]=integer args[2]=integer", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int startTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int roomTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.gipool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt start = 0;
+    parse_result startParse = PARSE_INVALID;
+    if (startTok >= 0 && startTok < tokenCount) {
+      startParse = jsmn_parse_int(input, &tokens[startTok], &start);
+    }
+    if (startTok < 0 || startTok >= tokenCount || startParse != PARSE_OK) {
+      if (startParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "kernel-pool.gipool expects args[1] to be an integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt room = 0;
+    parse_result roomParse = PARSE_INVALID;
+    if (roomTok >= 0 && roomTok < tokenCount) {
+      roomParse = jsmn_parse_int(input, &tokens[roomTok], &room);
+    }
+    if (roomTok < 0 || roomTok >= tokenCount || roomParse != PARSE_OK) {
+      if (roomParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "kernel-pool.gipool expects args[2] to be an integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (start < 0) {
+      write_error_json_ex("invalid_args", "kernel-pool.gipool expects args[1] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (room <= 0) {
+      write_error_json_ex("invalid_args", "kernel-pool.gipool expects args[2] to be > 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt *values = (SpiceInt *)malloc(sizeof(SpiceInt) * (size_t)room);
+    if (values == NULL) {
+      free(name);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt nOut = 0;
+    SpiceBoolean found = SPICEFALSE;
+    gipool_c(name, start, room, &nOut, values, &found);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gipool", shortMsg, longMsg, traceMsg);
+      free(values);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      free(values);
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    if (nOut < 0) nOut = 0;
+    if (nOut > room) nOut = room;
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"values\":", stdout);
+    json_print_spiceint_array(values, (int)nOut);
+    fputs("}}\n", stdout);
+    free(values);
+    goto done;
+  }
+
+  case CALL_GCPOOL: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex("invalid_args", "kernel-pool.gcpool expects args[0]=string args[1]=integer args[2]=integer", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int startTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int roomTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.gcpool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt start = 0;
+    parse_result startParse = PARSE_INVALID;
+    if (startTok >= 0 && startTok < tokenCount) {
+      startParse = jsmn_parse_int(input, &tokens[startTok], &start);
+    }
+    if (startTok < 0 || startTok >= tokenCount || startParse != PARSE_OK) {
+      if (startParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "kernel-pool.gcpool expects args[1] to be an integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt room = 0;
+    parse_result roomParse = PARSE_INVALID;
+    if (roomTok >= 0 && roomTok < tokenCount) {
+      roomParse = jsmn_parse_int(input, &tokens[roomTok], &room);
+    }
+    if (roomTok < 0 || roomTok >= tokenCount || roomParse != PARSE_OK) {
+      if (roomParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "kernel-pool.gcpool expects args[2] to be an integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (start < 0) {
+      write_error_json_ex("invalid_args", "kernel-pool.gcpool expects args[1] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (room <= 0) {
+      write_error_json_ex("invalid_args", "kernel-pool.gcpool expects args[2] to be > 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *cvals = (char *)calloc((size_t)room, (size_t)KPOOL_STRING_MAX_BYTES);
+    if (cvals == NULL) {
+      free(name);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt nOut = 0;
+    SpiceBoolean found = SPICEFALSE;
+    gcpool_c(name, start, room, (SpiceInt)KPOOL_STRING_MAX_BYTES, &nOut, cvals, &found);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gcpool", shortMsg, longMsg, traceMsg);
+      free(cvals);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      free(cvals);
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    if (nOut < 0) nOut = 0;
+    if (nOut > room) nOut = room;
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"values\":[", stdout);
+    for (SpiceInt i = 0; i < nOut; i++) {
+      if (i != 0) {
+        fputc(',', stdout);
+      }
+      char *s = cvals + (size_t)i * (size_t)KPOOL_STRING_MAX_BYTES;
+      trim_fixed_width_c_string_end(s, (size_t)KPOOL_STRING_MAX_BYTES);
+      fputc('"', stdout);
+      json_print_escaped(s);
+      fputc('"', stdout);
+    }
+    fputs("]}}\n", stdout);
+    free(cvals);
+    goto done;
+  }
+
+  case CALL_GNPOOL: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex("invalid_args", "kernel-pool.gnpool expects args[0]=string args[1]=integer args[2]=integer", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int templTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int startTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int roomTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (templTok < 0 || templTok >= tokenCount || tokens[templTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.gnpool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt start = 0;
+    parse_result startParse = PARSE_INVALID;
+    if (startTok >= 0 && startTok < tokenCount) {
+      startParse = jsmn_parse_int(input, &tokens[startTok], &start);
+    }
+    if (startTok < 0 || startTok >= tokenCount || startParse != PARSE_OK) {
+      if (startParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "kernel-pool.gnpool expects args[1] to be an integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt room = 0;
+    parse_result roomParse = PARSE_INVALID;
+    if (roomTok >= 0 && roomTok < tokenCount) {
+      roomParse = jsmn_parse_int(input, &tokens[roomTok], &room);
+    }
+    if (roomTok < 0 || roomTok >= tokenCount || roomParse != PARSE_OK) {
+      if (roomParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "kernel-pool.gnpool expects args[2] to be an integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (start < 0) {
+      write_error_json_ex("invalid_args", "kernel-pool.gnpool expects args[1] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (room <= 0) {
+      write_error_json_ex("invalid_args", "kernel-pool.gnpool expects args[2] to be > 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *templ = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t templErr =
+        jsmn_strdup(input, &tokens[templTok], &templ, strDetail, sizeof(strDetail));
+    if (templErr != JSMN_STRDUP_OK) {
+      if (templErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *cvals = (char *)calloc((size_t)room, (size_t)KPOOL_NAME_MAX_BYTES);
+    if (cvals == NULL) {
+      free(templ);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt nOut = 0;
+    SpiceBoolean found = SPICEFALSE;
+    gnpool_c(templ, start, room, (SpiceInt)KPOOL_NAME_MAX_BYTES, &nOut, cvals, &found);
+    free(templ);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gnpool", shortMsg, longMsg, traceMsg);
+      free(cvals);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      free(cvals);
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    if (nOut < 0) nOut = 0;
+    if (nOut > room) nOut = room;
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"values\":[", stdout);
+    for (SpiceInt i = 0; i < nOut; i++) {
+      if (i != 0) {
+        fputc(',', stdout);
+      }
+      char *s = cvals + (size_t)i * (size_t)KPOOL_NAME_MAX_BYTES;
+      trim_fixed_width_c_string_end(s, (size_t)KPOOL_NAME_MAX_BYTES);
+      fputc('"', stdout);
+      json_print_escaped(s);
+      fputc('"', stdout);
+    }
+    fputs("]}}\n", stdout);
+    free(cvals);
+    goto done;
+  }
+
+  case CALL_DTPOOL: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "kernel-pool.dtpool expects args[0]=string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.dtpool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceBoolean found = SPICEFALSE;
+    SpiceInt nOut = 0;
+    SpiceChar typeOut[2];
+    typeOut[0] = 'X';
+    typeOut[1] = '\0';
+
+    dtpool_c(name, &found, &nOut, typeOut);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dtpool", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"found\":true,\"n\":%" PRIdMAX ",\"type\":\"%c\"}}\n",
+            (intmax_t)nOut,
+            (char)typeOut[0]);
+    goto done;
+  }
+
+  case CALL_PDPOOL: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "kernel-pool.pdpool expects args[0]=string args[1]=number[]", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int valuesTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.pdpool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (valuesTok < 0 || valuesTok >= tokenCount || tokens[valuesTok].type != JSMN_ARRAY) {
+      write_error_json_ex("invalid_args", "kernel-pool.pdpool expects args[1] to be an array", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    const int nVals = tokens[valuesTok].size;
+    SpiceDouble *values = NULL;
+    if (nVals > 0) {
+      values = (SpiceDouble *)malloc(sizeof(SpiceDouble) * (size_t)nVals);
+      if (values == NULL) {
+        free(name);
+        write_error_json("Out of memory", NULL, NULL, NULL);
+        goto done;
+      }
+
+      for (int i = 0; i < nVals; i++) {
+        int vTok = jsmn_get_array_elem(tokens, valuesTok, i, tokenCount);
+        SpiceDouble v = 0.0;
+        if (vTok < 0 || vTok >= tokenCount || jsmn_parse_double(input, &tokens[vTok], &v) != PARSE_OK) {
+          free(name);
+          free(values);
+          write_error_json_ex("invalid_args", "kernel-pool.pdpool expects args[1] to contain only numbers", NULL, NULL, NULL, NULL);
+          goto done;
+        }
+        values[i] = v;
+      }
+    }
+
+    pdpool_c(name, (SpiceInt)nVals, (ConstSpiceDouble *)values);
+    free(name);
+    free(values);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in pdpool", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_PIPOOL: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "kernel-pool.pipool expects args[0]=string args[1]=integer[]", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int valuesTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.pipool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (valuesTok < 0 || valuesTok >= tokenCount || tokens[valuesTok].type != JSMN_ARRAY) {
+      write_error_json_ex("invalid_args", "kernel-pool.pipool expects args[1] to be an array", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    const int nVals = tokens[valuesTok].size;
+    SpiceInt *values = NULL;
+    if (nVals > 0) {
+      values = (SpiceInt *)malloc(sizeof(SpiceInt) * (size_t)nVals);
+      if (values == NULL) {
+        free(name);
+        write_error_json("Out of memory", NULL, NULL, NULL);
+        goto done;
+      }
+
+      for (int i = 0; i < nVals; i++) {
+        int vTok = jsmn_get_array_elem(tokens, valuesTok, i, tokenCount);
+        SpiceInt v = 0;
+        parse_result vParse = PARSE_INVALID;
+        if (vTok >= 0 && vTok < tokenCount) {
+          vParse = jsmn_parse_int(input, &tokens[vTok], &v);
+        }
+        if (vTok < 0 || vTok >= tokenCount || vParse != PARSE_OK) {
+          free(name);
+          free(values);
+          if (vParse == PARSE_UNSUPPORTED) {
+            write_unsupported_spiceint_width_error();
+          } else {
+            write_error_json_ex("invalid_args", "kernel-pool.pipool expects args[1] to contain only integers", NULL, NULL, NULL, NULL);
+          }
+          goto done;
+        }
+        if (v < -2147483648 || v > 2147483647) {
+          free(name);
+          free(values);
+          write_error_json_ex("invalid_args", "kernel-pool.pipool expects args[1] to contain only 32-bit integers", NULL, NULL, NULL, NULL);
+          goto done;
+        }
+        values[i] = v;
+      }
+    }
+
+    pipool_c(name, (SpiceInt)nVals, (ConstSpiceInt *)values);
+    free(name);
+    free(values);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in pipool", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_PCPOOL: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "kernel-pool.pcpool expects args[0]=string args[1]=string[]", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int valuesTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.pcpool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (valuesTok < 0 || valuesTok >= tokenCount || tokens[valuesTok].type != JSMN_ARRAY) {
+      write_error_json_ex("invalid_args", "kernel-pool.pcpool expects args[1] to be an array", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    const int nVals = tokens[valuesTok].size;
+    // Allocate at least one element so we never pass NULL to CSPICE.
+    const int allocN = nVals > 0 ? nVals : 1;
+    char *cvals = (char *)calloc((size_t)allocN, (size_t)KPOOL_STRING_MAX_BYTES);
+    if (cvals == NULL) {
+      free(name);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    for (int i = 0; i < nVals; i++) {
+      int sTok = jsmn_get_array_elem(tokens, valuesTok, i, tokenCount);
+      if (sTok < 0 || sTok >= tokenCount || tokens[sTok].type != JSMN_STRING) {
+        free(name);
+        free(cvals);
+        write_error_json_ex("invalid_args", "kernel-pool.pcpool expects args[1] to contain only strings", NULL, NULL, NULL, NULL);
+        goto done;
+      }
+
+      char *s = NULL;
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t sErr =
+          jsmn_strdup(input, &tokens[sTok], &s, strDetail, sizeof(strDetail));
+      if (sErr != JSMN_STRDUP_OK) {
+        free(name);
+        free(cvals);
+        if (sErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        goto done;
+      }
+
+      char *slot = cvals + (size_t)i * (size_t)KPOOL_STRING_MAX_BYTES;
+      // Copy + truncate.
+      strncpy(slot, s, (size_t)KPOOL_STRING_MAX_BYTES - 1);
+      slot[KPOOL_STRING_MAX_BYTES - 1] = '\0';
+      free(s);
+    }
+
+    pcpool_c(name, (SpiceInt)nVals, (SpiceInt)KPOOL_STRING_MAX_BYTES, cvals);
+    free(name);
+    free(cvals);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in pcpool", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SWPOOL: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "kernel-pool.swpool expects args[0]=string args[1]=string[]", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int agentTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int namesTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    if (agentTok < 0 || agentTok >= tokenCount || tokens[agentTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.swpool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (namesTok < 0 || namesTok >= tokenCount || tokens[namesTok].type != JSMN_ARRAY) {
+      write_error_json_ex("invalid_args", "kernel-pool.swpool expects args[1] to be an array", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *agent = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t agentErr =
+        jsmn_strdup(input, &tokens[agentTok], &agent, strDetail, sizeof(strDetail));
+    if (agentErr != JSMN_STRDUP_OK) {
+      if (agentErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    const int nNames = tokens[namesTok].size;
+    const int allocN = nNames > 0 ? nNames : 1;
+    char *names = (char *)calloc((size_t)allocN, (size_t)KPOOL_NAME_MAX_BYTES);
+    if (names == NULL) {
+      free(agent);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    for (int i = 0; i < nNames; i++) {
+      int sTok = jsmn_get_array_elem(tokens, namesTok, i, tokenCount);
+      if (sTok < 0 || sTok >= tokenCount || tokens[sTok].type != JSMN_STRING) {
+        free(agent);
+        free(names);
+        write_error_json_ex("invalid_args", "kernel-pool.swpool expects args[1] to contain only strings", NULL, NULL, NULL, NULL);
+        goto done;
+      }
+
+      char *s = NULL;
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t sErr =
+          jsmn_strdup(input, &tokens[sTok], &s, strDetail, sizeof(strDetail));
+      if (sErr != JSMN_STRDUP_OK) {
+        free(agent);
+        free(names);
+        if (sErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        goto done;
+      }
+
+      char *slot = names + (size_t)i * (size_t)KPOOL_NAME_MAX_BYTES;
+      strncpy(slot, s, (size_t)KPOOL_NAME_MAX_BYTES - 1);
+      slot[KPOOL_NAME_MAX_BYTES - 1] = '\0';
+      free(s);
+    }
+
+    swpool_c(agent, (SpiceInt)nNames, (SpiceInt)KPOOL_NAME_MAX_BYTES, names);
+    free(agent);
+    free(names);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in swpool", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_CVPOOL: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "kernel-pool.cvpool expects args[0]=string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int agentTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (agentTok < 0 || agentTok >= tokenCount || tokens[agentTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.cvpool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *agent = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t agentErr =
+        jsmn_strdup(input, &tokens[agentTok], &agent, strDetail, sizeof(strDetail));
+    if (agentErr != JSMN_STRDUP_OK) {
+      if (agentErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    // Prime the agent with an empty watch list (see tspiceRunner).
+    swpool_c(agent, 0, (SpiceInt)KPOOL_NAME_MAX_BYTES, NULL);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in swpool (cvpool prime)", shortMsg, longMsg, traceMsg);
+      free(agent);
+      goto done;
+    }
+
+    SpiceBoolean update = SPICEFALSE;
+    cvpool_c(agent, &update);
+    free(agent);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in cvpool", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    fputs(update == SPICETRUE ? "true" : "false", stdout);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EXPOOL: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "kernel-pool.expool expects args[0]=string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernel-pool.expool expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    char strDetail[256];
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceBoolean found = SPICEFALSE;
+    expool_c(name, &found);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in expool", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    fputs(found == SPICETRUE ? "true" : "false", stdout);
     fputs("}\n", stdout);
     goto done;
   }

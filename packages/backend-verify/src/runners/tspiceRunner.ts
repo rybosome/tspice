@@ -536,6 +536,193 @@ const DISPATCH: Record<string, DispatchFn> = {
     invalidArgs(`time.timdef expects args[0] to be "GET" or "SET" (got ${formatValue(args[0])})`);
   },
 
+  // kernel-pool
+  "kernel-pool.gdpool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.gdpool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`kernel-pool.gdpool expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`kernel-pool.gdpool expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    assertInteger(args[1], "kernel-pool.gdpool args[1]");
+    assertInteger(args[2], "kernel-pool.gdpool args[2]");
+    if (args[1] < 0) {
+      invalidArgs(`kernel-pool.gdpool expects args[1] to be >= 0 (got ${formatValue(args[1])})`);
+    }
+    if (args[2] <= 0) {
+      invalidArgs(`kernel-pool.gdpool expects args[2] to be > 0 (got ${formatValue(args[2])})`);
+    }
+    return backend.gdpool(args[0], args[1], args[2]);
+  },
+
+  "kernel-pool.gipool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.gipool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`kernel-pool.gipool expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`kernel-pool.gipool expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    assertInteger(args[1], "kernel-pool.gipool args[1]");
+    assertInteger(args[2], "kernel-pool.gipool args[2]");
+    if (args[1] < 0) {
+      invalidArgs(`kernel-pool.gipool expects args[1] to be >= 0 (got ${formatValue(args[1])})`);
+    }
+    if (args[2] <= 0) {
+      invalidArgs(`kernel-pool.gipool expects args[2] to be > 0 (got ${formatValue(args[2])})`);
+    }
+    return backend.gipool(args[0], args[1], args[2]);
+  },
+
+  "kernel-pool.gcpool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.gcpool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`kernel-pool.gcpool expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`kernel-pool.gcpool expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    assertInteger(args[1], "kernel-pool.gcpool args[1]");
+    assertInteger(args[2], "kernel-pool.gcpool args[2]");
+    if (args[1] < 0) {
+      invalidArgs(`kernel-pool.gcpool expects args[1] to be >= 0 (got ${formatValue(args[1])})`);
+    }
+    if (args[2] <= 0) {
+      invalidArgs(`kernel-pool.gcpool expects args[2] to be > 0 (got ${formatValue(args[2])})`);
+    }
+    return backend.gcpool(args[0], args[1], args[2]);
+  },
+
+  "kernel-pool.gnpool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.gnpool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`kernel-pool.gnpool expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "number") {
+      invalidArgs(`kernel-pool.gnpool expects args[2] to be a number (got ${formatValue(args[2])})`);
+    }
+    assertInteger(args[1], "kernel-pool.gnpool args[1]");
+    assertInteger(args[2], "kernel-pool.gnpool args[2]");
+    if (args[1] < 0) {
+      invalidArgs(`kernel-pool.gnpool expects args[1] to be >= 0 (got ${formatValue(args[1])})`);
+    }
+    if (args[2] <= 0) {
+      invalidArgs(`kernel-pool.gnpool expects args[2] to be > 0 (got ${formatValue(args[2])})`);
+    }
+    return backend.gnpool(args[0], args[1], args[2]);
+  },
+
+  "kernel-pool.dtpool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.dtpool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    return backend.dtpool(args[0]);
+  },
+
+  "kernel-pool.pdpool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.pdpool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (!Array.isArray(args[1])) {
+      invalidArgs(`kernel-pool.pdpool expects args[1] to be an array (got ${formatValue(args[1])})`);
+    }
+    for (let i = 0; i < args[1].length; i++) {
+      if (typeof args[1][i] !== "number" || !Number.isFinite(args[1][i])) {
+        invalidArgs(`kernel-pool.pdpool expects args[1][${i}] to be a finite number (got ${formatValue(args[1][i])})`);
+      }
+    }
+
+    backend.pdpool(args[0], args[1]);
+    return null;
+  },
+
+  "kernel-pool.pipool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.pipool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (!Array.isArray(args[1])) {
+      invalidArgs(`kernel-pool.pipool expects args[1] to be an array (got ${formatValue(args[1])})`);
+    }
+    for (let i = 0; i < args[1].length; i++) {
+      const v = args[1][i];
+      if (typeof v !== "number" || !Number.isFinite(v)) {
+        invalidArgs(`kernel-pool.pipool expects args[1][${i}] to be a finite number (got ${formatValue(v)})`);
+      }
+      if (!Number.isInteger(v)) {
+        invalidArgs(`kernel-pool.pipool expects args[1][${i}] to be an integer (got ${formatValue(v)})`);
+      }
+      if (v < -2147483648 || v > 2147483647) {
+        invalidArgs(`kernel-pool.pipool expects args[1][${i}] to be a 32-bit signed integer (got ${formatValue(v)})`);
+      }
+    }
+
+    backend.pipool(args[0], args[1]);
+    return null;
+  },
+
+  "kernel-pool.pcpool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.pcpool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (!Array.isArray(args[1])) {
+      invalidArgs(`kernel-pool.pcpool expects args[1] to be an array (got ${formatValue(args[1])})`);
+    }
+    for (let i = 0; i < args[1].length; i++) {
+      if (typeof args[1][i] !== "string") {
+        invalidArgs(`kernel-pool.pcpool expects args[1][${i}] to be a string (got ${formatValue(args[1][i])})`);
+      }
+    }
+
+    backend.pcpool(args[0], args[1]);
+    return null;
+  },
+
+  "kernel-pool.swpool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.swpool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (!Array.isArray(args[1])) {
+      invalidArgs(`kernel-pool.swpool expects args[1] to be an array (got ${formatValue(args[1])})`);
+    }
+    for (let i = 0; i < args[1].length; i++) {
+      if (typeof args[1][i] !== "string") {
+        invalidArgs(`kernel-pool.swpool expects args[1][${i}] to be a string (got ${formatValue(args[1][i])})`);
+      }
+    }
+
+    backend.swpool(args[0], args[1]);
+    return null;
+  },
+
+  "kernel-pool.cvpool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.cvpool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+
+    // NOTE: cvpool() is typically used after swpool(). Since the parity runner
+    // isolates each case, prime the agent with an empty watch list so the call
+    // exercises the documented behavior (next cvpool(agent) returns true).
+    backend.swpool(args[0], []);
+
+    return backend.cvpool(args[0]);
+  },
+
+  "kernel-pool.expool": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernel-pool.expool expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    return backend.expool(args[0]);
+  },
+
   // coords-vectors
   "coords-vectors.axisar": (backend, args) => {
     assertVec3(args[0], "coords-vectors.axisar args[0]");
