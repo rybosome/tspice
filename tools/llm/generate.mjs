@@ -319,7 +319,7 @@ Repo paths:
 function buildLlmsFullTxt({ exports, kernelSourceType, workerLikeType, spiceClientsWebWorkerOptionsType, examples }) {
   const exportSection = `## Public API surface (generated)\n\nSource: \`packages/tspice/src/index.ts\`\n\n### Value exports\n\n${exports.valueExports.map((n) => `- \`${n}\``).join("\n")}\n\n### Type exports\n\n${exports.typeExports.map((n) => `- \`${n}\``).join("\n")}\n`;
 
-  const webWorkerSection = `## WebWorker (browser)\n\nUse \`spiceClients.toWebWorker()\` to run the WASM backend inside a WebWorker and get an async \`spice\` client.\n\nGuidance:\n\n- Use \`await spiceClients.toWebWorker(opts?)\`. It returns \`{ spice, dispose }\`.\n- You usually do **not** create \`new Worker()\` manually; when \`opts.worker\` is omitted, tspice creates an internal inline blob-module worker.\n- Do **not** invent worker entrypoints, message protocols, or APIs like \`backend.expose(...)\`. tspice owns the worker transport.\n- WebWorker clients are async: all \`spice.kit.*\` / \`spice.raw.*\` calls return Promises.\n\nSee: \`packages/tspice/test/llm-examples/webworker-client.example.ts\`\n\n### SpiceClientsWebWorkerOptions (generated)\n\nSources:\n\n- \`packages/tspice/src/clients/spiceClients.ts\` (\`SpiceClientsWebWorkerOptions\`)\n- \`packages/tspice/src/worker/transport/createWorkerTransport.ts\` (\`WorkerLike\`)\n\n\`\`\`ts\n${workerLikeType}\n\n${spiceClientsWebWorkerOptionsType}\n\`\`\`\n\n### Kernel packs (\`kernels.naif\` / \`kernels.custom\`)\n\n\`kernels.naif()\` and \`kernels.custom()\` are builders that produce a \`KernelPack\` (ordered kernel URLs + virtual load paths).\n\`KernelPack.baseUrl\` optionally roots relative kernel URLs at load time.\nPass a pack (or packs) to \`spiceClients.withKernels(packOrPacks)\` before calling \`.toWebWorker()\` to preload kernels in the worker.\nUse \`spiceClients.withFetch(fetchFn)\` to override the \`fetch\` implementation used for kernel pack loading.\n`;
+  const webWorkerSection = `## WebWorker (browser)\n\nUse \`spiceClients.toWebWorker()\` to run the WASM backend inside a WebWorker and get an async \`spice\` client.\n\nGuidance:\n\n- Use \`await spiceClients.toWebWorker(opts?)\`. It returns \`{ spice, dispose }\`.\n- You usually do **not** create \`new Worker()\` manually; when \`opts.worker\` is omitted, tspice creates an internal inline blob-module worker.\n- Do **not** invent worker entrypoints, message protocols, or APIs like \`backend.expose(...)\`. tspice owns the worker transport.\n- WebWorker clients are async: all \`spice.kit.*\` / \`spice.raw.*\` calls return Promises.\n\nSee: \`packages/tspice/test/llm-examples/webworker-client.example.ts\`\n\n### SpiceClientsWebWorkerOptions (generated)\n\nSources:\n\n- \`packages/tspice/src/clients/spiceClients.ts\` (\`SpiceClientsWebWorkerOptions\`)\n- \`packages/tspice/src/worker/transport/createWorkerTransport.ts\` (\`WorkerLike\`)\n\n\`\`\`ts\n${workerLikeType}\n\n${spiceClientsWebWorkerOptionsType}\n\`\`\`\n\n### Kernel packs (catalogs: \`kernels.naif(...)\` / \`kernels.custom(...)\` / \`kernels.tspice()\`)\n\nUse a catalog + \`.pick(...)\` to build a \`KernelPack\` (ordered kernel URLs + virtual load paths).\n\`KernelPack.baseUrl\` optionally roots relative kernel URLs at load time.\nPass a pack (or packs) to \`spiceClients.withKernels(packOrPacks)\` before calling \`.toWebWorker()\` to preload kernels in the worker.\nUse \`spiceClients.withFetch(fetchFn)\` to override the \`fetch\` implementation used for kernel pack loading.\n`;
 
   const kernelSourceSection = `## KernelSource (generated)\n\nSource: \`packages/backend-contract/src/shared/types.ts\`\n\n\`\`\`ts\n${kernelSourceType}\n\`\`\`\n\nNotes:\n\n- \`KernelSource\` is accepted by \`spice.kit.loadKernel()\` and lower-level backend APIs like \`raw.furnsh()\`.\n- Passing an object form (\`{ path, bytes }\`) is the most portable approach across WASM + Node backends.\n`;
 
@@ -356,7 +356,7 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
       "Higher-level client builder that can produce in-process, async, or WebWorker clients and a dispose() lifecycle.",
 
     kernels:
-      "Kernel pack builders for NAIF and custom kernels (produces KernelPack objects for withKernels()).",
+      "Kernel catalogs for building KernelPack objects via .pick(...) (NAIF, curated tspice, and custom).",
     resolveKernelUrl:
       "Resolve a kernel URL against KernelPack.baseUrl with root-relative URL behavior (matches loadKernelPack semantics).",
 
@@ -414,17 +414,23 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
       "Options for spiceClients.toWebWorker() (custom Worker, wasmUrl override, timeouts, termination behavior).",
 
     KernelsNaifOptions:
-      "Options for kernels.naif() (kernelUrlPrefix + optional baseUrl + virtual pathBase).",
-    NaifKernelId: "Union of supported NAIF kernel ids in kernels.naif().",
-    NaifKernelLeafPath:
-      "Union of supported NAIF leaf paths (e.g. 'lsk/naif0012.tls') accepted by kernels.naif().file().",
-    NaifKernelsBuilder:
-      "Builder returned by kernels.naif() for selecting NAIF kernels and producing a KernelPack.",
+      "Options for kernels.naif({ origin, pathBase, baseUrl? }) (typed NAIF kernel catalog).",
+    NaifKernelId: "Union of supported NAIF kernel ids (leaf paths) accepted by kernels.naif(...).pick(...).",
+    NaifKernelCatalog:
+      "Catalog object returned by kernels.naif(opts); call pick(...) to create a KernelPack.",
+
+    TspiceKernelId: "Union of curated kernel ids accepted by kernels.tspice().pick(...).",
+    TspiceKernelCatalog:
+      "Catalog returned by kernels.tspice(); call pick(...) to create a KernelPack.",
 
     KernelsCustomOptions:
-      "Options for kernels.custom() (baseUrl for rooting relative kernel URLs at load time).",
-    CustomKernelsBuilder:
-      "Builder returned by kernels.custom() for building an ad-hoc KernelPack from arbitrary kernel URLs.",
+      "Options for kernels.custom({ origin, pathBase, baseUrl? }) (custom kernel catalog).",
+    CustomKernelEntry:
+      "Explicit { url, path? } entry accepted by kernels.custom().pick(...).",
+    CustomKernelPick:
+      "Union type accepted by kernels.custom(opts).pick(...): string id or { url, path? }.",
+    CustomKernelCatalog:
+      "Catalog returned by kernels.custom(opts); call pick(...) to create a KernelPack.",
 
     KernelPack:
       "A small ordered set of kernels (URLs + load paths), plus an optional baseUrl for rooting relative kernel URLs at load time.",
@@ -441,7 +447,7 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
       "Ephemeris state query (getState) + frame transform (frameTransform) + Mat3 usage.",
     "packages/tspice/test/llm-examples/time-conversion.example.ts": "UTC ↔ ET time conversions.",
     "packages/tspice/test/llm-examples/webworker-client.example.ts":
-      "WebWorker client creation via spiceClients.toWebWorker() + kernels.naif() KernelPack builder.",
+      "WebWorker client creation via spiceClients.toWebWorker() + kernels.*().pick(...) kernel packs.",
   };
 
   const toExportEntries = (names, descriptions) =>
