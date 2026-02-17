@@ -4,7 +4,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
+import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 import { ensureKernelFile } from "./helpers/kernels.js";
@@ -70,7 +71,7 @@ function ellipsoidSurfaceNormal(opts: {
   ]);
 }
 
-async function furnishNaifKernels(backend: Awaited<ReturnType<typeof createBackend>>, backendKind: "node" | "wasm") {
+async function furnishNaifKernels(backend: SpiceBackend, backendKind: "node" | "wasm") {
   const pck = await ensureKernelFile(PCK);
   const spk = await ensureKernelFile(SPK);
 
@@ -93,56 +94,61 @@ describe("geometry classic", () => {
   const itNode = it.runIf(nodeBackendAvailable);
 
   async function runIllumScenario(backendKind: "node" | "wasm") {
-    const backend = await createBackend({ backend: backendKind });
-    await furnishNaifKernels(backend, backendKind);
+    const { spice, dispose } = await spiceClients.toSync({ backend: backendKind });
+    try {
+      const backend = spice.raw;
+      await furnishNaifKernels(backend, backendKind);
 
-    const et = 0;
-    const subpntMethod = "Near point: Ellipsoid";
-    const illumMethod = "ELLIPSOID";
-    const target = "MOON";
-    const fixref = "IAU_MOON";
-    const abcorr = "NONE";
-    const observer = "EARTH";
-    const ilusrc = "SUN";
+      const et = 0;
+      const subpntMethod = "Near point: Ellipsoid";
+      const illumMethod = "ELLIPSOID";
+      const target = "MOON";
+      const fixref = "IAU_MOON";
+      const abcorr = "NONE";
+      const observer = "EARTH";
+      const ilusrc = "SUN";
 
-    const { spoint } = backend.subpnt(subpntMethod, target, et, fixref, abcorr, observer);
+      const { spoint } = backend.subpnt(subpntMethod, target, et, fixref, abcorr, observer);
 
-    const g = backend.illumg(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
-    const f = backend.illumf(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
+      const g = backend.illumg(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
+      const f = backend.illumf(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
 
-    // Compute expected illumination angles from definitions (no aberration corrections).
-    const radii = backend.bodvar(301, "RADII");
-    expect(radii).toHaveLength(3);
-    const radii3 = [radii[0]!, radii[1]!, radii[2]!] as const;
+      // Compute expected illumination angles from definitions (no aberration corrections).
+      const radii = backend.bodvar(301, "RADII");
+      expect(radii).toHaveLength(3);
+      const radii3 = [radii[0]!, radii[1]!, radii[2]!] as const;
 
-    const normal = ellipsoidSurfaceNormal({ spoint, radii: radii3 });
-    const obspos = backend.spkpos(observer, et, fixref, abcorr, target).pos as [number, number, number];
-    const srcpos = backend.spkpos(ilusrc, et, fixref, abcorr, target).pos as [number, number, number];
+      const normal = ellipsoidSurfaceNormal({ spoint, radii: radii3 });
+      const obspos = backend.spkpos(observer, et, fixref, abcorr, target).pos as [number, number, number];
+      const srcpos = backend.spkpos(ilusrc, et, fixref, abcorr, target).pos as [number, number, number];
 
-    const srfToObs = vsub(obspos, spoint);
-    const srfToSrc = vsub(srcpos, spoint);
+      const srfToObs = vsub(obspos, spoint);
+      const srfToSrc = vsub(srcpos, spoint);
 
-    const expectedPhase = angleBetween(srfToSrc, srfToObs);
-    const expectedIncdnc = angleBetween(normal, srfToSrc);
-    const expectedEmissn = angleBetween(normal, srfToObs);
+      const expectedPhase = angleBetween(srfToSrc, srfToObs);
+      const expectedIncdnc = angleBetween(normal, srfToSrc);
+      const expectedEmissn = angleBetween(normal, srfToObs);
 
-    // --- illumg ---
-    expect(g.trgepc).toBeCloseTo(et, 12);
-    expect(g.srfvec).toHaveLength(3);
-    expect(g.phase).toBeCloseTo(expectedPhase, 11);
-    expect(g.incdnc).toBeCloseTo(expectedIncdnc, 11);
-    expect(g.emissn).toBeCloseTo(expectedEmissn, 11);
+      // --- illumg ---
+      expect(g.trgepc).toBeCloseTo(et, 12);
+      expect(g.srfvec).toHaveLength(3);
+      expect(g.phase).toBeCloseTo(expectedPhase, 11);
+      expect(g.incdnc).toBeCloseTo(expectedIncdnc, 11);
+      expect(g.emissn).toBeCloseTo(expectedEmissn, 11);
 
-    // At the sub-observer point, emission should be (very nearly) 0.
-    expect(g.emissn).toBeLessThan(1e-10);
+      // At the sub-observer point, emission should be (very nearly) 0.
+      expect(g.emissn).toBeLessThan(1e-10);
 
-    // --- illumf ---
-    expect(f.trgepc).toBeCloseTo(et, 12);
-    expect(f.phase).toBeCloseTo(g.phase, 12);
-    expect(f.incdnc).toBeCloseTo(g.incdnc, 12);
-    expect(f.emissn).toBeCloseTo(g.emissn, 12);
-    expect(f.visibl).toBe(true);
-    expect(f.lit).toBe(expectedIncdnc <= Math.PI / 2);
+      // --- illumf ---
+      expect(f.trgepc).toBeCloseTo(et, 12);
+      expect(f.phase).toBeCloseTo(g.phase, 12);
+      expect(f.incdnc).toBeCloseTo(g.incdnc, 12);
+      expect(f.emissn).toBeCloseTo(g.emissn, 12);
+      expect(f.visibl).toBe(true);
+      expect(f.lit).toBe(expectedIncdnc <= Math.PI / 2);
+    } finally {
+      await dispose();
+    }
   }
 
   it("wasm backend: illumg/illumf matches geometric expectations", async () => {
@@ -154,22 +160,27 @@ describe("geometry classic", () => {
   }, 60_000);
 
   async function runSincptMissScenario(backendKind: "node" | "wasm") {
-    const backend = await createBackend({ backend: backendKind });
-    await furnishNaifKernels(backend, backendKind);
+    const { spice, dispose } = await spiceClients.toSync({ backend: backendKind });
+    try {
+      const backend = spice.raw;
+      await furnishNaifKernels(backend, backendKind);
 
-    const et = 0;
-    const method = "ELLIPSOID";
-    const target = "MOON";
-    const fixref = "IAU_MOON";
-    const abcorr = "NONE";
-    const observer = "EARTH";
-    const dref = "J2000";
+      const et = 0;
+      const method = "ELLIPSOID";
+      const target = "MOON";
+      const fixref = "IAU_MOON";
+      const abcorr = "NONE";
+      const observer = "EARTH";
+      const dref = "J2000";
 
-    const { pos: obsToTarg } = backend.spkpos(target, et, dref, abcorr, observer);
-    const dvec: [number, number, number] = [-obsToTarg[0]!, -obsToTarg[1]!, -obsToTarg[2]!];
+      const { pos: obsToTarg } = backend.spkpos(target, et, dref, abcorr, observer);
+      const dvec: [number, number, number] = [-obsToTarg[0]!, -obsToTarg[1]!, -obsToTarg[2]!];
 
-    const out = backend.sincpt(method, target, et, fixref, abcorr, observer, dref, dvec);
-    expect(out).toEqual({ found: false });
+      const out = backend.sincpt(method, target, et, fixref, abcorr, observer, dref, dvec);
+      expect(out).toEqual({ found: false });
+    } finally {
+      await dispose();
+    }
   }
 
   it("wasm backend: sincpt miss returns {found:false}", async () => {
@@ -181,29 +192,37 @@ describe("geometry classic", () => {
   }, 60_000);
 
   itNode("node↔wasm parity: nvc2pl/pl2nvc", async () => {
-    const node = await createBackend({ backend: "node" });
-    const wasm = await createBackend({ backend: "wasm" });
+    const { spice: nodeSpice, dispose: disposeNode } = await spiceClients.toSync({ backend: "node" });
+    const { spice: wasmSpice, dispose: disposeWasm } = await spiceClients.toSync({ backend: "wasm" });
 
-    const normal: [number, number, number] = [1, 2, 3];
-    const konst = 4;
+    try {
+      const node = nodeSpice.raw;
+      const wasm = wasmSpice.raw;
 
-    const planeNode = node.nvc2pl(normal, konst);
-    const planeWasm = wasm.nvc2pl(normal, konst);
+      const normal: [number, number, number] = [1, 2, 3];
+      const konst = 4;
 
-    expect(planeNode).toHaveLength(4);
-    expect(planeWasm).toHaveLength(4);
-    for (let i = 0; i < 4; i++) {
-      expect(planeNode[i]!).toBeCloseTo(planeWasm[i]!, 12);
+      const planeNode = node.nvc2pl(normal, konst);
+      const planeWasm = wasm.nvc2pl(normal, konst);
+
+      expect(planeNode).toHaveLength(4);
+      expect(planeWasm).toHaveLength(4);
+      for (let i = 0; i < 4; i++) {
+        expect(planeNode[i]!).toBeCloseTo(planeWasm[i]!, 12);
+      }
+
+      const outNode = node.pl2nvc(planeNode);
+      const outWasm = wasm.pl2nvc(planeWasm);
+
+      expect(outNode.normal).toHaveLength(3);
+      expect(outWasm.normal).toHaveLength(3);
+      for (let i = 0; i < 3; i++) {
+        expect(outNode.normal[i]!).toBeCloseTo(outWasm.normal[i]!, 12);
+      }
+      expect(outNode.konst).toBeCloseTo(outWasm.konst, 12);
+    } finally {
+      await disposeNode();
+      await disposeWasm();
     }
-
-    const outNode = node.pl2nvc(planeNode);
-    const outWasm = wasm.pl2nvc(planeWasm);
-
-    expect(outNode.normal).toHaveLength(3);
-    expect(outWasm.normal).toHaveLength(3);
-    for (let i = 0; i < 3; i++) {
-      expect(outNode.normal[i]!).toBeCloseTo(outWasm.normal[i]!, 12);
-    }
-    expect(outNode.konst).toBeCloseTo(outWasm.konst, 12);
   }, 60_000);
 });

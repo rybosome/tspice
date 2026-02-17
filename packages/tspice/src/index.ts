@@ -1,67 +1,18 @@
-export type {
-  KernelSource,
-  Mat3ColMajor,
-  Mat3RowMajor,
-  SpiceBackend,
-} from "@rybosome/tspice-backend-contract";
+// NOTE: This file is the *only* public entrypoint for the published
+// `@rybosome/tspice` package.
+//
+// Keep this surface area intentionally small (see issue #444).
 
-export {
-  assertMat3ArrayLike9,
-  isMat3ArrayLike9,
-  brandMat3ColMajor,
-  brandMat3RowMajor,
-  isBrandedMat3ColMajor,
-  isBrandedMat3RowMajor,
-} from "@rybosome/tspice-backend-contract";
-
-export type { CreateBackendOptions } from "./backend.js";
-export { createBackend } from "./backend.js";
-
-export type {
-  AberrationCorrection,
-  BodyRef,
-  FrameName,
-  GetStateArgs,
-  SpiceTime,
-  StateVector,
-  Vec3,
-  Vec6,
-} from "./types.js";
-
-export { J2000 } from "./types.js";
-
-export { SpiceError } from "./errors.js";
-
-export { Mat3 } from "./kit/math/mat3.js";
-export type { Spice, SpiceAsync, SpiceKit, SpiceSync } from "./kit/types/spice-types.js";
-export type { CreateSpiceAsyncOptions, CreateSpiceOptions } from "./spice.js";
-export { createSpice, createSpiceAsync } from "./spice.js";
-
+export { spiceClients } from "./clients/spiceClients.js";
 export type {
   SpiceClientBuildResult,
   SpiceClientsBuilder,
   SpiceClientsWebWorkerOptions,
 } from "./clients/spiceClients.js";
-export { spiceClients } from "./clients/spiceClients.js";
 
-export type {
-  KernelsNaifOptions,
-  NaifKernelCatalog,
-  KernelsCustomOptions,
-  CustomKernelCatalog,
-  CustomKernelEntry,
-  CustomKernelPick,
-  TspiceKernelCatalog,
-  TspiceKernelId,
-} from "./kernels/kernels.js";
-
-export type { NaifKernelId } from "./kernels/naifKernelId.js";
-
-export { kernels, TSPICE_KERNEL_IDS } from "./kernels/kernels.js";
-
-export type {
-  KernelPack,
-  KernelPackKernel,
-} from "./kernels/kernelPack.js";
-
-export { resolveKernelUrl } from "./kernels/kernelPack.js";
+// Types required to configure the `spiceClients` builder and use its outputs.
+export type { CreateSpiceAsyncOptions, CreateSpiceOptions } from "./spice.js";
+export type { Spice, SpiceAsync } from "./kit/types/spice-types.js";
+export type { WithCachingOptions } from "./transport/caching/withCaching.js";
+export { kernels } from "./kernels/kernels.js";
+export type { FetchLike, KernelPack, KernelPackKernel } from "./kernels/kernelPack.js";

@@ -68,9 +68,15 @@ try {
 If you don’t want a worker, you can run WASM in-process:
 
 ```ts
-import { createSpiceAsync } from '@rybosome/tspice'
+import { spiceClients } from '@rybosome/tspice'
 
-const spice = await createSpiceAsync({ backend: 'wasm' })
+const { spice, dispose } = await spiceClients.toAsync({ backend: 'wasm' })
+
+try {
+  // …use `spice`…
+} finally {
+  await dispose()
+}
 ```
 
 ## Explicit kernel loading as bytes (`{ path, bytes }`)
@@ -82,16 +88,11 @@ loading primitive is:
 await spice.kit.loadKernel({ path, bytes })
 ```
 
-Here’s the explicit fetch + load flow (equivalent to what `withKernels(packOrPacks)` does internally):
-
-> Note on root-relative URLs (`"/..."`): by default, `rootRelativeKernelUrlBehavior: "bypassBaseUrl"`
-> means `/...` kernel URLs **ignore** `pack.baseUrl` (so `/kernels/a.tls` stays `/kernels/a.tls`).
-> This can surprise subpath deployments (`/myapp/`), where you likely want **relative** kernel URLs
-> (`kernels/...`) so `pack.baseUrl` can be applied, or set `rootRelativeKernelUrlBehavior: "error"`
-> to catch accidental `/...` URLs.
+Here’s the explicit fetch + load flow. Note that `spiceClients.withKernels(packOrPacks)` already
+does this for you (including URL resolution for `pack.baseUrl` + `kernel.url`).
 
 ```ts
-import { kernels, resolveKernelUrl } from '@rybosome/tspice'
+import { kernels } from '@rybosome/tspice'
 
 const pack = kernels
   .naif({
@@ -105,10 +106,11 @@ const pack = kernels
     'spk/planets/de432s.bsp',
   )
 
-const rootRelativeKernelUrlBehavior = 'bypassBaseUrl' as const
-
 for (const kernel of pack.kernels) {
-  const url = resolveKernelUrl(kernel.url, pack.baseUrl, rootRelativeKernelUrlBehavior)
+  // Simplified resolution: assumes `pack.baseUrl` (when present) is directory-style.
+  const url = pack.baseUrl
+    ? new URL(kernel.url, new URL(pack.baseUrl, window.location.href)).toString()
+    : kernel.url
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error(`Failed to fetch kernel: ${url} (${res.status} ${res.statusText})`)

@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { createBackend } from "@rybosome/tspice";
+import { createBackend } from "../src/backend.js";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 

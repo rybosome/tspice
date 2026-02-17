@@ -22,7 +22,7 @@ Backends may have internal helpers, but they are not part of the public `SpiceBa
 ## How it fits into `tspice`
 
 - Backend implementations (`@rybosome/tspice-backend-node`, `@rybosome/tspice-backend-wasm`, ...) implement `SpiceBackend`.
-- The public facade (`@rybosome/tspice`) consumes this type and re-exports `SpiceBackend`.
+- The public facade (`@rybosome/tspice`) consumes this type internally (the built client exposes it as `spice.raw`).
 
 ## Usage
 

@@ -4,7 +4,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { SpiceError, spiceClients } from "@rybosome/tspice";
+import { spiceClients } from "@rybosome/tspice";
+import { SpiceError } from "../dist/errors.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

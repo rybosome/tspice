@@ -1,5 +1,7 @@
 import * as THREE from 'three'
-import type { SpiceAsync, StateVector } from '@rybosome/tspice'
+import type { SpiceAsync } from '@rybosome/tspice'
+
+type StateVector = Awaited<ReturnType<SpiceAsync['kit']['getState']>>
 
 import { computeOrbitAnglesToKeepPointInView, isDirectionWithinFov } from '../../controls/sunFocus.js'
 import { createSpiceClient } from '../../spice/createSpiceClient.js'

@@ -2,7 +2,9 @@ import * as path from "node:path";
 import crypto from "node:crypto";
 import { readFile, realpath } from "node:fs/promises";
 
-import { spiceClients, type SpiceBackend } from "@rybosome/tspice";
+import { spiceClients, type Spice } from "@rybosome/tspice";
+
+type SpiceBackend = Spice["raw"];
 
 import {
   resolveMetaKernelKernelsToLoad,

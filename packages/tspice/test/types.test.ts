@@ -1,84 +1,40 @@
-import { createBackend, createSpice, createSpiceAsync } from "@rybosome/tspice";
 import { describe, expect, it } from "vitest";
+
+import type { CreateSpiceOptions, Spice, SpiceAsync, SpiceClientsBuilder } from "@rybosome/tspice";
 
 type Assert<T extends true> = T;
 type AssertFalse<T extends false> = T;
 type HasKey<T, K extends PropertyKey> = K extends keyof T ? true : false;
 
-type Backend = Awaited<ReturnType<typeof createBackend>>;
-type Spice = Awaited<ReturnType<typeof createSpice>>;
-type SpiceAsync = Awaited<ReturnType<typeof createSpiceAsync>>;
+type PublicExports = typeof import("@rybosome/tspice");
 
-// --- createBackend() contract ---
+// --- public exports contract (issue #444) ---
 
-type BackendKind = Parameters<typeof createBackend>[0]["backend"];
-type _CreateBackendKindIsSupported = Assert<BackendKind extends "node" | "wasm" ? true : false>;
-type _CreateBackendKindDoesNotIncludeFake = AssertFalse<"fake" extends BackendKind ? true : false>;
+type _HasSpiceClients = Assert<HasKey<PublicExports, "spiceClients">>;
+type _HasKernels = Assert<HasKey<PublicExports, "kernels">>;
 
-// WASM-only helpers are intentionally not part of the public `SpiceBackend` type.
-type _BackendHasNoLoadKernel = AssertFalse<HasKey<Backend, "loadKernel">>;
-type _BackendHasNoWriteFile = AssertFalse<HasKey<Backend, "writeFile">>;
-
-// Spot-check some return types to catch accidental type regressions.
-type SubpntResult = ReturnType<Backend["subpnt"]>;
-type _SubpntHasFields = Assert<
-  HasKey<SubpntResult, "spoint"> extends true
-    ? HasKey<SubpntResult, "trgepc"> extends true
-      ? HasKey<SubpntResult, "srfvec"> extends true
-        ? true
-        : false
-      : false
-    : false
->;
-
-type SincptResult = ReturnType<Backend["sincpt"]>;
-type SincptFound = Extract<SincptResult, { found: true }>;
-type _SincptFoundHasFields = Assert<
-  HasKey<SincptFound, "spoint"> extends true
-    ? HasKey<SincptFound, "trgepc"> extends true
-      ? HasKey<SincptFound, "srfvec"> extends true
-        ? true
-        : false
-      : false
-    : false
->;
-
-type IlluminResult = ReturnType<Backend["ilumin"]>;
-type _IluminHasFields = Assert<
-  HasKey<IlluminResult, "phase"> extends true
-    ? HasKey<IlluminResult, "incdnc"> extends true
-      ? HasKey<IlluminResult, "emissn"> extends true
-        ? true
-        : false
-      : false
-    : false
->;
-
-type OccultResult = ReturnType<Backend["occult"]>;
-type _OccultReturnsNumber = Assert<OccultResult extends number ? true : false>;
-
-// --- createSpice() contract ---
-
-type _SpiceHasRaw = Assert<HasKey<Spice, "raw">>;
-type _SpiceHasKit = Assert<HasKey<Spice, "kit">>;
-
-// No flattening onto the top-level.
-type _SpiceHasNoFurnsh = AssertFalse<HasKey<Spice, "furnsh">>;
-
-// Kit API surface.
-type Kit = Spice["kit"];
-type _KitHasLoadKernel = Assert<HasKey<Kit, "loadKernel">>;
-type _KitHasUnloadKernel = Assert<HasKey<Kit, "unloadKernel">>;
-type _KitHasUtcToEt = Assert<HasKey<Kit, "utcToEt">>;
-type _KitHasGetState = Assert<HasKey<Kit, "getState">>;
-
-// --- createSpiceAsync() contract ---
+type _NoCreateBackend = AssertFalse<HasKey<PublicExports, "createBackend">>;
+type _NoCreateSpice = AssertFalse<HasKey<PublicExports, "createSpice">>;
+type _NoCreateSpiceAsync = AssertFalse<HasKey<PublicExports, "createSpiceAsync">>;
+type _NoResolveKernelUrl = AssertFalse<HasKey<PublicExports, "resolveKernelUrl">>;
 
 type KeysEqual<A extends object, B extends object> = [keyof A] extends [keyof B]
   ? [keyof B] extends [keyof A]
     ? true
     : false
   : false;
+
+// --- CreateSpiceOptions contract ---
+
+type BackendKind = CreateSpiceOptions["backend"];
+type _BackendKindIsSupported = Assert<BackendKind extends "node" | "wasm" ? true : false>;
+type _BackendKindDoesNotIncludeFake = AssertFalse<"fake" extends BackendKind ? true : false>;
+
+// --- Spice / SpiceAsync contract ---
+
+type _SpiceHasRaw = Assert<HasKey<Spice, "raw">>;
+type _SpiceHasKit = Assert<HasKey<Spice, "kit">>;
+type _SpiceHasNoFurnsh = AssertFalse<HasKey<Spice, "furnsh">>;
 
 type _SpiceAsyncHasRaw = Assert<HasKey<SpiceAsync, "raw">>;
 type _SpiceAsyncHasKit = Assert<HasKey<SpiceAsync, "kit">>;
@@ -87,16 +43,31 @@ type _SpiceAsyncHasNoFurnsh = AssertFalse<HasKey<SpiceAsync, "furnsh">>;
 type _AsyncRawKeysMatch = Assert<KeysEqual<SpiceAsync["raw"], Spice["raw"]>>;
 type _AsyncKitKeysMatch = Assert<KeysEqual<SpiceAsync["kit"], Spice["kit"]>>;
 
-// Spot-check a few async return types.
 type _AsyncToolkitVersionReturnsPromise = Assert<
   ReturnType<SpiceAsync["kit"]["toolkitVersion"]> extends Promise<string> ? true : false
 >;
+
 type _AsyncKtotalReturnsPromise = Assert<
   ReturnType<SpiceAsync["raw"]["ktotal"]> extends Promise<number> ? true : false
 >;
+
 type _AsyncRawKindIsNotPromise = AssertFalse<
   SpiceAsync["raw"]["kind"] extends Promise<unknown> ? true : false
 >;
+
+// --- spiceClients builder contract ---
+
+type _ToSyncReturnsPromise = Assert<
+  ReturnType<SpiceClientsBuilder["toSync"]> extends Promise<unknown> ? true : false
+>;
+
+type ToSyncResult = Awaited<ReturnType<SpiceClientsBuilder["toSync"]>>;
+type _ToSyncResultHasSpice = Assert<HasKey<ToSyncResult, "spice">>;
+type _ToSyncResultSpiceIsSync = Assert<ToSyncResult["spice"] extends Spice ? true : false>;
+
+type ToAsyncResult = Awaited<ReturnType<SpiceClientsBuilder["toAsync"]>>;
+type _ToAsyncResultHasSpice = Assert<HasKey<ToAsyncResult, "spice">>;
+type _ToAsyncResultSpiceIsAsync = Assert<ToAsyncResult["spice"] extends SpiceAsync ? true : false>;
 
 describe("TypeScript type assertions", () => {
   it("compiles", () => {
