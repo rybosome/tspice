@@ -26,10 +26,16 @@ If your target runtime is a browser, or your application is already TypeScript/N
 
 ## Installation & requirements
 
-- **Node.js:** 20+ (CI runs on **Node 20** and **Node 22**).
+- **Node.js:** 20+ (tested on **Node 20** and **Node 22**).
 - **Module format:** `@rybosome/tspice` is **ESM-only**.
 - **Browsers (WASM backend):** a modern browser with WebAssembly, plus a bundler/dev server that can serve `.wasm` assets (you may need to provide an explicit `wasmUrl` depending on your tooling).
 - **Kernel hosting / CORS:** browsers can only fetch kernels from a CORS-enabled origin; NAIF’s kernel servers typically don’t set CORS headers, so for production you’ll need to self-host kernels (or proxy them).
+
+## Mental model
+
+SPICE is stateful: loading kernels mutates a process-wide global kernel pool inside SPICE, and many routines read from (and sometimes affect) that shared state.
+
+Isolation (separating kernel-sets and workloads) can be achieved by creating multiple process or WebWorker instances, depending on runtime.
 
 ## Quickstart (WASM in the browser)
 
@@ -64,19 +70,20 @@ try {
 
 **Kernel hosting note:** browsers can’t fetch kernels directly from NAIF due to CORS. `kernels.tspice()` points at a small community mirror for quickstart/testing and is **not recommended for production**. For production, self-host kernels (or proxy) and use `kernels.naif(...)` / `kernels.custom(...)`.
 
-## Mental model
-
-SPICE is stateful: loading kernels mutates a process-wide global kernel pool inside SPICE, and many routines read from (and sometimes affect) that shared state.
-
-Isolation (separating kernel-sets and workloads) can be achieved by creating multiple process or WebWorker instances, depending on runtime.
-
 ## Coverage
 
-It is the goal of `tspice` to cover almost all of CSPICE (649 of 652 functions).
-
-154 functions are currently implemented.
+CSPICE exposes 652 public routines; 154 are currently implemented in `tspice`.
 
 - **Detailed function inventory:** [`docs/cspice-function-inventory.md`](docs/cspice-function-inventory.md)
+
+## API Stability
+
+`tspice` exposes a stable backend contract that models the CSPICE routine surface. That contract is designed to evolve conservatively as additional CSPICE functions are implemented.
+
+`tspice` follows SemVer. As a pre-1.0.0 project, **minor versions may introduce breaking changes**. Within a given minor line (e.g. `0.1.x`), patch releases are guaranteed not to break the public API.
+
+Because CSPICE itself is a mature and stable toolkit, long-term API churn in `tspice` is expected to be low.
+
 
 ## Validation
 
@@ -114,7 +121,7 @@ flowchart TD
 | Artifact | Native addon (`.node`) | Prebuilt WebAssembly (`.wasm`) + JS glue |
 | Best for | Node services, local kernel archives, potential performance wins | Browsers, Web Workers, portability |
 | Kernel I/O shape | OS filesystem paths (plus optional byte staging) | Byte-backed loads into a virtual filesystem |
-| Operational constraints | **none** | Needs the `.wasm` asset to be served/bundled correctly (may require an explicit `wasmUrl`) |
+| Operational constraints | **none** | Needs the `.wasm` asset to be served/bundled correctly (often via bundler asset handling or explicit `wasmUrl`) |
 
 ## Roadmap (high-level)
 
