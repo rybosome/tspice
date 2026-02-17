@@ -1,0 +1,156 @@
+name: kernel-pool.basic
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+cases:
+  # --- Read ---------------------------------------------------------------
+  - id: gdpool-double-var
+    call: kernel-pool.gdpool
+    args:
+      - TSPICE_PARITY_DOUBLE_VAR
+      - 0
+      - 8
+
+  - id: gdpool-missing
+    call: kernel-pool.gdpool
+    args:
+      - TSPICE_PARITY_MISSING_VAR
+      - 0
+      - 8
+
+  - id: gdpool-type-mismatch
+    call: kernel-pool.gdpool
+    args:
+      - TSPICE_PARITY_CHAR_VAR
+      - 0
+      - 8
+    compare:
+      errorShort: true
+
+
+  - id: gipool-int-var
+    call: kernel-pool.gipool
+    args:
+      - TSPICE_PARITY_INT_VAR
+      - 0
+      - 8
+
+  - id: gipool-missing
+    call: kernel-pool.gipool
+    args:
+      - TSPICE_PARITY_MISSING_VAR
+      - 0
+      - 8
+
+  - id: gipool-non-integer
+    call: kernel-pool.gipool
+    args:
+      - TSPICE_PARITY_DOUBLE_VAR
+      - 0
+      - 8
+    compare:
+      errorShort: true
+
+
+  - id: gcpool-char-var
+    call: kernel-pool.gcpool
+    args:
+      - TSPICE_PARITY_CHAR_VAR
+      - 0
+      - 8
+
+  - id: gcpool-missing
+    call: kernel-pool.gcpool
+    args:
+      - TSPICE_PARITY_MISSING_VAR
+      - 0
+      - 8
+
+  - id: gcpool-type-mismatch
+    call: kernel-pool.gcpool
+    args:
+      - TSPICE_PARITY_DOUBLE_VAR
+      - 0
+      - 8
+    compare:
+      errorShort: true
+
+
+  - id: gnpool-wildcard
+    call: kernel-pool.gnpool
+    args:
+      - TSPICE_PARITY_*
+      - 0
+      - 16
+
+  - id: gnpool-missing
+    call: kernel-pool.gnpool
+    args:
+      - NO_MATCH_*
+      - 0
+      - 16
+
+
+  - id: dtpool-double-var
+    call: kernel-pool.dtpool
+    args:
+      - TSPICE_PARITY_DOUBLE_VAR
+
+  - id: dtpool-char-var
+    call: kernel-pool.dtpool
+    args:
+      - TSPICE_PARITY_CHAR_VAR
+
+  - id: dtpool-missing
+    call: kernel-pool.dtpool
+    args:
+      - TSPICE_PARITY_MISSING_VAR
+
+
+  # --- Write --------------------------------------------------------------
+  - id: pdpool-write
+    call: kernel-pool.pdpool
+    args:
+      - TSPICE_PARITY_PDPOOL_WRITTEN
+      - [1, 2, 3]
+
+  - id: pipool-write
+    call: kernel-pool.pipool
+    args:
+      - TSPICE_PARITY_PIPOOL_WRITTEN
+      - [-2147483648, 2147483647]
+
+  - id: pcpool-write
+    call: kernel-pool.pcpool
+    args:
+      - TSPICE_PARITY_PCPOOL_WRITTEN
+      - [x, y]
+
+
+  # --- Control ------------------------------------------------------------
+  - id: swpool-watch
+    call: kernel-pool.swpool
+    args:
+      - TSPICE_PARITY_AGENT
+      - [TSPICE_PARITY_DOUBLE_VAR]
+
+  - id: cvpool-check
+    call: kernel-pool.cvpool
+    args:
+      - TSPICE_PARITY_AGENT
+
+
+  - id: expool-found
+    call: kernel-pool.expool
+    args:
+      - TSPICE_PARITY_DOUBLE_VAR
+
+  - id: expool-char-miss
+    call: kernel-pool.expool
+    args:
+      - TSPICE_PARITY_CHAR_VAR
+
+  - id: expool-missing
+    call: kernel-pool.expool
+    args:
+      - TSPICE_PARITY_MISSING_VAR
