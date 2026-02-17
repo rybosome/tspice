@@ -78,10 +78,12 @@ import { kernels, spiceClients } from "@rybosome/tspice";
 const baseUrl = import.meta.env.BASE_URL;
 
 const pack = kernels
-  .naif({ baseUrl, kernelUrlPrefix: "kernels/naif/" })
-  .naif0012_tls()
-  .pck00011_tpc()
-  .pack();
+  .naif({
+    origin: "kernels/naif/",
+    baseUrl,
+    pathBase: "naif/",
+  })
+  .pick("lsk/naif0012.tls", "pck/pck00011.tpc");
 
 const { spice, dispose } = await spiceClients
   .withKernels(pack)
@@ -94,7 +96,7 @@ try {
 }
 ```
 
-Note: in Node, `fetch()` requires absolute URLs. Either build packs with absolute `kernel.url` values (the default for `kernels.naif()`), or set an absolute `baseUrl` on the pack.
+Note: in Node, `fetch()` requires absolute URLs. Either build packs with absolute `kernel.url` values (use an absolute `origin`), or set an absolute `baseUrl` when using relative URLs.
 
 Kernels (what they are, where they come from, and hosting strategies) are covered in [/guide/kernels](/guide/kernels).
 

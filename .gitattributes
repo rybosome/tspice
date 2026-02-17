@@ -2,3 +2,6 @@
 # This avoids any line-ending conversion or other text filters corrupting binaries.
 *.wasm binary -text
 *.data binary -text
+
+# Treat generated NAIF kernel id union as generated (GitHub Linguist).
+packages/tspice/src/kernels/naifKernelId.ts linguist-generated

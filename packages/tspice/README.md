@@ -35,14 +35,19 @@ const { kernels, spiceClients } = await import("@rybosome/tspice");
 ### Browser / WASM (async)
 
 > Note: NAIF-hosted kernel URLs are blocked by browser CORS.
-> For browsers, `kernels.tspice()` provides a CORS-enabled hosted mirror for quickstart/testing.
-> It is **not recommended for production**; for production you should self-host your kernels (or proxy)
-> and use `kernels.naif({ kernelUrlPrefix, baseUrl })`.
+> For browsers, `kernels.tspice()` provides a small CORS-enabled community mirror for quickstart/testing.
+> It is **not recommended for production**.
+> It is self-funded and may be rate-limited, disabled, or trimmed if hosting costs become an issue.
+> For production, self-host kernels (or proxy) and use `kernels.naif(...)` / `kernels.custom(...)`.
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
-const kernelPack = kernels.tspice().naif0012_tls().pck00011_tpc().de432s_bsp().pack();
+const kernelPack = kernels.tspice().pick(
+  "lsk/naif0012.tls",
+  "pck/pck00011.tpc",
+  "spk/planets/de432s.bsp",
+);
 
 const { spice, dispose } = await spiceClients
   // Optional: memoize responses at the transport/RPC layer.
@@ -79,36 +84,61 @@ try {
 
 ### Public kernel packs
 
-Use `kernels.tspice()` for a typed NAIF `generic_kernels` catalog rooted at tspice's hosted mirror (`https://tspice-viewer.ryboso.me/`).
-This is intended for quickstart/testing and is not recommended for production.
-It returns **fixed absolute URLs** and does not accept configuration.
+Use `kernels.tspice()` for a small, typed, zero-config kernel catalog rooted at tspice's hosted mirror (`https://tspice-viewer.ryboso.me/`).
 
-Use `kernels.naif(opts?)` to target the canonical NAIF host (and to configure your own mirror via `kernelUrlPrefix` + `baseUrl`).
+- Intended for quickstart/testing.
+- Not recommended for production.
+- Returns **fixed absolute URLs** and does not accept configuration.
 
-`kernelUrlPrefix` is a build-time prefix used to construct each `kernel.url`; `baseUrl` becomes `pack.baseUrl` and is used at load time to resolve relative kernel URLs.
+Use `kernels.naif({ origin, pathBase, baseUrl? })` to target the full NAIF `generic_kernels` inventory.
 
-> Note: root-relative `kernelUrlPrefix` values (starting with `/`) intentionally bypass `pack.baseUrl` by default.
-> For subpath hosting (`/myapp/`), prefer a relative `kernelUrlPrefix` (no leading `/`) so `pack.baseUrl` can be applied.
+- IDs are leaf paths like `"lsk/naif0012.tls"`.
+- `origin` is a build-time prefix used to construct each `kernel.url`.
+- `pathBase` prefixes each `kernel.path` (virtual SPICE filesystem path).
+- `baseUrl` becomes `pack.baseUrl` and is used at load time to resolve **relative** kernel URLs.
+
+> Note: `pick(...)` preserves caller-provided ordering (no sorting / “safe load order” magic).
 
 ```ts
-import { kernels } from "@rybosome/tspice";
+import { kernels, type NaifKernelId } from "@rybosome/tspice";
 
-const pack = kernels.tspice().naif0012_tls().pck00011_tpc().pack();
+const NAIF_KERNEL_IDS: NaifKernelId[] = [
+  "lsk/naif0012.tls",
+  "pck/pck00011.tpc",
+  "spk/planets/de432s.bsp",
+];
+
+const pack = kernels
+  .naif({
+    origin: "kernels/naif/",
+    baseUrl: import.meta.env.BASE_URL,
+    pathBase: "naif/",
+  })
+  .pick(NAIF_KERNEL_IDS);
 ```
 
 ### Custom kernels
 
-Use `kernels.custom(opts?)` to build a `KernelPack` for arbitrary kernels.
+Use `kernels.custom({ origin, pathBase, baseUrl? })` to build a `KernelPack` for arbitrary kernels.
 
-If `path` is omitted, it defaults to a stable hashed path like `/kernels/<hash>-<basename(url)>` (basename query/hash stripped).
+- Passing string ids maps to `{ url: origin + id, path: pathBase + id }`.
+- You can also pass explicit `{ url, path? }` entries as an escape hatch.
+  If `path` is omitted, it defaults to a stable hashed path like `/kernels/<hash>-<basename(url)>`.
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
 const pack = kernels
-  .custom({ baseUrl: import.meta.env.BASE_URL })
-  .add({ url: "kernels/custom/my-kernel.bsp" }) // path auto-defaults
-  .pack();
+  .custom({
+    origin: "kernels/custom/",
+    baseUrl: import.meta.env.BASE_URL,
+    pathBase: "custom/",
+  })
+  .pick(
+    "my-kernel.bsp",
+    // Escape hatch:
+    { url: "https://example.com/weird/location/attitude.ck" },
+  );
 
 const { spice } = await spiceClients
   .withKernels(pack)

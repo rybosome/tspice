@@ -19,7 +19,8 @@ For basic planet-to-planet state vectors you typically need:
 - **PCK** (`pck00011.tpc`): body radii + orientation models; required once you start working in
   body-fixed frames (and used by many geometry/lighting routines).
 
-The `kernels.naif()` helper builds a small “starter pack” with exactly these three kernels.
+These three kernels are a common “starter set”. For quickstarts, `kernels.tspice()` is a zero-config way to load them.
+For production, self-host kernels and use `kernels.naif(...)` / `kernels.custom(...)`.
 
 ## Create a worker-backed client (recommended)
 
@@ -36,14 +37,16 @@ import { kernels, spiceClients } from '@rybosome/tspice'
 
 const pack = kernels
   .naif({
-    kernelUrlPrefix: 'kernels/naif/',
+    origin: 'kernels/naif/',
     // Important for apps deployed under a subpath (GitHub Pages, etc).
     baseUrl: import.meta.env.BASE_URL,
+    pathBase: 'naif/',
   })
-  .naif0012_tls()
-  .pck00011_tpc()
-  .de432s_bsp()
-  .pack()
+  .pick(
+    'lsk/naif0012.tls',
+    'pck/pck00011.tpc',
+    'spk/planets/de432s.bsp',
+  )
 
 const { spice, dispose } = await spiceClients
   .caching({
@@ -92,13 +95,15 @@ import { kernels, resolveKernelUrl } from '@rybosome/tspice'
 
 const pack = kernels
   .naif({
-    kernelUrlPrefix: 'kernels/naif/',
+    origin: 'kernels/naif/',
     baseUrl: import.meta.env.BASE_URL,
+    pathBase: 'naif/',
   })
-  .naif0012_tls()
-  .pck00011_tpc()
-  .de432s_bsp()
-  .pack()
+  .pick(
+    'lsk/naif0012.tls',
+    'pck/pck00011.tpc',
+    'spk/planets/de432s.bsp',
+  )
 
 const rootRelativeKernelUrlBehavior = 'bypassBaseUrl' as const
 

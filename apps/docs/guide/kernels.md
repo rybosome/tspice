@@ -8,7 +8,7 @@ Examples:
 - **PCK** (planetary constants): body radii, frame definitions, etc.
 - **SPK** (ephemerides): position/velocity for bodies over time
 
-In `tspice`, you typically fetch kernel bytes and load them during client construction.
+In `tspice`, you typically **fetch kernels** and **load them** during client construction.
 
 ## Kernel packs
 
@@ -27,39 +27,98 @@ type KernelPack = {
 };
 ```
 
-## `kernels.tspice()` (hosted mirror)
+## Kernel catalogs (`kernels.*`)
 
-`kernels.tspice()` is the same typed NAIF `generic_kernels` catalog as `kernels.naif()`, but configured to fetch from a fixed hosted mirror (`https://tspice-viewer.ryboso.me/`) (CORS-friendly).
+All built-in catalogs (`kernels.tspice()`, `kernels.naif(...)`, `kernels.custom(...)`) expose **one method**:
 
-This hosted mirror is intended as a take-it-or-leave-it quickstart for **testing/verification**.
-It is **not recommended for production** — for production, self-host your kernels (or proxy) and use `kernels.naif({ kernelUrlPrefix, baseUrl })` or `kernels.custom()`.
+- `pick(...)` returns a `KernelPack` immediately.
+- **No ordering magic:** `pick(...)` preserves caller-provided order.
+
+This means *you* control (and are responsible for) kernel load order.
+
+## `kernels.tspice()` (curated community mirror)
+
+`kernels.tspice()` is a **zero-config** curated catalog intended to “just work” in **browsers + Node**.
+
+It points at a CORS-enabled hosted mirror (`https://tspice-viewer.ryboso.me/`).
+
+- Intended for quickstarts/demos.
+- Not recommended for production.
+- Best-effort / community-hosted.
+- Self-funded; it may be rate-limited, disabled, or trimmed if hosting costs become an issue.
 
 ```ts
 import { kernels } from "@rybosome/tspice";
 
-const pack = kernels.tspice().naif0012_tls().pck00011_tpc().pack();
+const pack = kernels.tspice().pick(
+  "lsk/naif0012.tls",
+  "pck/pck00011.tpc",
+  // add: "spk/planets/de432s.bsp" if you need ephemerides
+);
 ```
 
-## `kernels.naif()` (common NAIF kernels)
+## `kernels.naif({ origin, pathBase, baseUrl? })` (full typed NAIF inventory)
 
-`kernels.naif()` is a small builder for the NAIF `generic_kernels` catalog (canonical NAIF host by default), with a safe default load order.
+`kernels.naif(...)` targets the NAIF `generic_kernels` inventory.
 
-For a full (generated) inventory of NAIF `generic_kernels`, see: [/guide/kernel-inventory](/guide/kernel-inventory).
+- IDs are **leaf paths** like `"lsk/naif0012.tls"`, `"pck/pck00011.tpc"`, `"spk/planets/de432s.bsp"`, etc.
+- IDs are fully typed as `NaifKernelId` (a ~450 item literal union).
+- `origin` is a build-time prefix used to construct each `kernel.url` (`origin + id`).
+- `pathBase` is a virtual prefix for each `kernel.path` (`pathBase + id`).
+- `baseUrl` becomes `pack.baseUrl` (used to resolve **relative** URLs at load time).
+
+### Using `pick` overloads (avoid `satisfies ...` everywhere)
+
+`pick` is overloaded so you can call it with:
+
+- a single id: `pick("...")`
+- multiple ids: `pick("...", "...")`
+- a typed array: `pick(KERNEL_IDS)`
+
+The “typed array” approach is usually the lightest for real apps:
+
+```ts
+import { kernels, type NaifKernelId } from "@rybosome/tspice";
+
+const KERNEL_IDS: NaifKernelId[] = [
+  "lsk/naif0012.tls",
+  "pck/pck00011.tpc",
+  "spk/planets/de432s.bsp",
+];
+
+const pack = kernels
+  .naif({
+    origin: "kernels/naif/",
+    baseUrl: import.meta.env.BASE_URL,
+    pathBase: "naif/",
+  })
+  .pick(KERNEL_IDS);
+```
+
+### Node vs browser note
+
+- NAIF’s canonical host does not send CORS headers, so direct browser fetches may fail.
+- In Node, `fetch()` requires **absolute** URLs.
+
+So typically:
+
+- **Browser:** use a **relative** `origin` (served as static assets) + `baseUrl`.
+- **Node:** use an **absolute** `origin` (or an absolute `baseUrl`).
+
+Example (Node / canonical NAIF host):
 
 ```ts
 import { kernels } from "@rybosome/tspice";
 
 const pack = kernels
-  .naif()
-  .naif0012_tls()
-  .pck00011_tpc()
-  .de432s_bsp()
-  .pack();
+  .naif({
+    origin: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/",
+    pathBase: "naif/",
+  })
+  .pick("lsk/naif0012.tls");
 ```
 
-You can override URL/path behavior via `kernels.naif({ kernelUrlPrefix, baseUrl, pathBase })`.
-
-Note: `de432s_bsp()` is relatively large and can noticeably impact download time; consider omitting it when you only need time/constants.
+For a full inventory of NAIF `generic_kernels`, see: [/guide/kernel-inventory](/guide/kernel-inventory).
 
 ## Preloading kernels with `spiceClients`
 
@@ -68,14 +127,15 @@ Use `.withKernels(pack)` to preload kernels before you start calling SPICE routi
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
-// Vite/VitePress (browser): resolves relative kernel URLs against your app base.
 const baseUrl = import.meta.env.BASE_URL;
 
 const pack = kernels
-  .naif({ baseUrl, kernelUrlPrefix: "kernels/naif/" })
-  .naif0012_tls()
-  .pck00011_tpc()
-  .pack();
+  .naif({
+    origin: "kernels/naif/",
+    baseUrl,
+    pathBase: "naif/",
+  })
+  .pick("lsk/naif0012.tls", "pck/pck00011.tpc");
 
 const { spice, dispose } = await spiceClients
   .withKernels(pack)
@@ -89,70 +149,49 @@ try {
 }
 ```
 
-## Hosting kernel files
-
-By default, `kernels.naif()` uses the NAIF `generic_kernels` host (URLs like `https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls`).
-
-Note: NAIF's host does not currently send CORS headers (`Access-Control-Allow-Origin`), so direct browser fetches may fail; for browsers, self-host (static assets) or use a CORS-enabled mirror.
-
-If you just want a ready-to-use mirror for quickstart/testing, `kernels.tspice()` points at one.
+## Hosting kernel files (`origin` + `baseUrl`)
 
 Common approaches:
 
-- **Browser apps**: copy kernels into your static assets (for example `public/kernels/naif/...`) so they’re available at `/kernels/naif/...` (relative to your app base).
-- **Custom hosting**: use your own bucket/CDN and provide absolute URLs.
+- **Browser apps:** copy kernels into your static assets (for example `public/kernels/naif/...`) so they’re available at `kernels/naif/...` relative to your app base.
+- **Custom hosting:** use your own bucket/CDN and set an absolute `origin` like `"https://cdn.example.com/kernels/"`.
 
-If you host your app under a base path (for example GitHub Pages), you’ll usually want to set `baseUrl` so **relative** kernel URLs resolve correctly:
+If you host your app under a base path (for example GitHub Pages), you’ll usually want to set `baseUrl` so **relative** kernel URLs resolve correctly.
 
-```ts
-import { kernels, spiceClients } from "@rybosome/tspice";
-
-const pack = kernels
-  .naif({ kernelUrlPrefix: "kernels/naif/", baseUrl: import.meta.env.BASE_URL })
-  .naif0012_tls()
-  .pck00011_tpc()
-  .pack();
-
-const { spice, dispose } = await spiceClients
-  .withKernels(pack)
-  .toAsync();
-
-try {
-  // ...
-} finally {
-  await dispose();
-}
-```
-
-`baseUrl` is a URL/path *prefix* (a directory, not a page):
+`baseUrl` is a URL/path *directory* prefix:
 
 - It can be an absolute URL (`"https://cdn.example.com/myapp/"`) or a path prefix (`"/myapp/"`, `"myapp/"`).
-- It must end with a trailing `/` (directory-style), so URL joining is copy/paste safe.
-- It is only applied to **relative** `kernel.url` values (like `"kernels/naif/lsk/naif0012.tls"`).
-- Absolute URLs are left as-is.
-- In Node, `fetch()` requires absolute URLs, so you’ll typically use an absolute `baseUrl` (like `"https://…/"`) unless you pass a custom `fetch`.
+- It must end with a trailing `/`.
+- It is only applied to **relative** `kernel.url` values.
 
-Example resolution:
+> Note: if you use a root-relative `origin` like `"/kernels/naif/"`, the resulting kernel URLs start with `/` and will bypass `baseUrl` by default.
+> For subpath hosting, prefer a relative `origin` (no leading `/`) so `baseUrl` can be applied.
 
-- `baseUrl: "/myapp/"` + `kernel.url: "kernels/naif/lsk/naif0012.tls"` → `"/myapp/kernels/naif/lsk/naif0012.tls"`
+## `kernels.custom({ origin, pathBase, baseUrl? })`
 
-(If you’re not using Vite, pass your app’s base path directly, like `"/myapp/"` — including the trailing slash.)
+`kernels.custom(...)` is for mission/application-specific kernels.
 
-## Custom kernels
-
-To load an arbitrary kernel URL, build a pack via `kernels.custom()` and pass it to `.withKernels(pack)`.
-
-- If `path` is omitted, tspice derives a stable virtual path from the URL (includes a short hash).
+- String ids map to `{ url: origin + id, path: pathBase + id }`.
+- Escape hatch: you can pass explicit `{ url, path? }` entries.
+  If `path` is omitted, tspice derives a stable hashed virtual path.
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
+const baseUrl = import.meta.env.BASE_URL;
+
 const pack = kernels
-  .custom()
-  .add({
-    url: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
+  .custom({
+    origin: "kernels/custom/",
+    baseUrl,
+    pathBase: "custom/",
   })
-  .pack();
+  .pick(
+    "mission.bsp",
+    "attitude.ck",
+    // escape hatch:
+    { url: "https://example.com/weird/location/kernel.bsp" },
+  );
 
 const { spice, dispose } = await spiceClients
   .withKernels(pack)
