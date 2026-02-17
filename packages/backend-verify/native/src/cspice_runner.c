@@ -1314,6 +1314,17 @@ typedef enum {
   CALL_VSCL,
   CALL_VSUB,
 
+
+
+  // kernels
+  CALL_KERNELS_FURNSH,
+  CALL_KERNELS_UNLOAD,
+  CALL_KERNELS_KCLEAR,
+  CALL_KERNELS_KTOTAL,
+  CALL_KERNELS_KDATA,
+  CALL_KERNELS_KINFO,
+  CALL_KERNELS_KXTRCT,
+  CALL_KERNELS_KPLFRM,
   // kernel-pool
   CALL_GDPOOL,
   CALL_GIPOOL,
@@ -1406,6 +1417,17 @@ static CallId parse_call_id(const char *call) {
       {"coords-vectors.vscl", CALL_VSCL},
       {"coords-vectors.vsub", CALL_VSUB},
 
+
+
+      // kernels
+      {"kernels.furnsh", CALL_KERNELS_FURNSH},
+      {"kernels.unload", CALL_KERNELS_UNLOAD},
+      {"kernels.kclear", CALL_KERNELS_KCLEAR},
+      {"kernels.ktotal", CALL_KERNELS_KTOTAL},
+      {"kernels.kdata", CALL_KERNELS_KDATA},
+      {"kernels.kinfo", CALL_KERNELS_KINFO},
+      {"kernels.kxtrct", CALL_KERNELS_KXTRCT},
+      {"kernels.kplfrm", CALL_KERNELS_KPLFRM},
       // kernel-pool
       {"kernel-pool.gdpool", CALL_GDPOOL},
       {"kernel-pool.gipool", CALL_GIPOOL},
@@ -4689,6 +4711,665 @@ int main(void) {
   }
 
 
+
+
+  // --- kernels ----------------------------------------------------------
+
+  case CALL_KERNELS_FURNSH: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "kernels.furnsh expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernels.furnsh expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    furnsh_c(path);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in furnsh", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_KERNELS_UNLOAD: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "kernels.unload expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernels.unload expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    unload_c(path);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in unload", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_KERNELS_KCLEAR: {
+    if (tokens[argsTok].size > 0) {
+      write_error_json_ex("invalid_args", "kernels.kclear expects no arguments", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    kclear_c();
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in kclear", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_KERNELS_KTOTAL: {
+    const char *kind = "ALL";
+    char *kindAlloc = NULL;
+
+    if (tokens[argsTok].size >= 1) {
+      int kindTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+      if (kindTok < 0 || kindTok >= tokenCount || tokens[kindTok].type != JSMN_STRING) {
+        write_error_json_ex("invalid_args", "kernels.ktotal expects args[0] to be a string", NULL, NULL, NULL, NULL);
+        goto done;
+      }
+
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t kindErr =
+          jsmn_strdup(input, &tokens[kindTok], &kindAlloc, strDetail, sizeof(strDetail));
+      if (kindErr != JSMN_STRDUP_OK) {
+        if (kindErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        goto done;
+      }
+      kind = kindAlloc;
+    }
+
+    SpiceInt count = 0;
+    ktotal_c(kind, &count);
+    free(kindAlloc);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ktotal", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%" PRIdMAX "}\n", (intmax_t)count);
+    goto done;
+  }
+
+  case CALL_KERNELS_KDATA: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "kernels.kdata expects args[0]=integer (SpiceInt range) args[1]=string?",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int whichTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+
+    SpiceInt which = 0;
+    parse_result whichParse = PARSE_INVALID;
+    if (whichTok >= 0 && whichTok < tokenCount) {
+      whichParse = jsmn_parse_int(input, &tokens[whichTok], &which);
+    }
+
+    if (whichTok < 0 || whichTok >= tokenCount || whichParse != PARSE_OK) {
+      if (whichParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "kernels.kdata expects args[0] to be an integer (SpiceInt range)",
+            whichParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    const char *kind = "ALL";
+    char *kindAlloc = NULL;
+    if (tokens[argsTok].size >= 2) {
+      int kindTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+      if (kindTok < 0 || kindTok >= tokenCount || tokens[kindTok].type != JSMN_STRING) {
+        write_error_json_ex(
+            "invalid_args",
+            "kernels.kdata expects args[1] to be a string",
+            NULL,
+            NULL,
+            NULL,
+            NULL);
+        goto done;
+      }
+
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t kindErr =
+          jsmn_strdup(input, &tokens[kindTok], &kindAlloc, strDetail, sizeof(strDetail));
+      if (kindErr != JSMN_STRDUP_OK) {
+        if (kindErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        goto done;
+      }
+      kind = kindAlloc;
+    }
+
+    char file[2048];
+    char filtyp[2048];
+    char source[2048];
+    file[0] = '\0';
+    filtyp[0] = '\0';
+    source[0] = '\0';
+
+    SpiceInt handle = 0;
+    SpiceBoolean found = SPICEFALSE;
+
+    kdata_c(
+        which,
+        kind,
+        (SpiceInt)sizeof(file),
+        (SpiceInt)sizeof(filtyp),
+        (SpiceInt)sizeof(source),
+        file,
+        filtyp,
+        source,
+        &handle,
+        &found);
+
+    free(kindAlloc);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in kdata", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(file, sizeof(file));
+    trim_fixed_width_c_string_end(filtyp, sizeof(filtyp));
+    trim_fixed_width_c_string_end(source, sizeof(source));
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"file\":\"", stdout);
+    json_print_escaped(file);
+    fputs("\",\"filtyp\":\"", stdout);
+    json_print_escaped(filtyp);
+    fputs("\",\"source\":\"", stdout);
+    json_print_escaped(source);
+    fprintf(stdout, "\",\"handle\":%" PRIdMAX "}}\n", (intmax_t)handle);
+    goto done;
+  }
+
+  case CALL_KERNELS_KINFO: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "kernels.kinfo expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernels.kinfo expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char filtyp[2048];
+    char source[2048];
+    filtyp[0] = '\0';
+    source[0] = '\0';
+
+    SpiceInt handle = 0;
+    SpiceBoolean found = SPICEFALSE;
+
+    kinfo_c(
+        path,
+        (SpiceInt)sizeof(filtyp),
+        (SpiceInt)sizeof(source),
+        filtyp,
+        source,
+        &handle,
+        &found);
+
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in kinfo", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(filtyp, sizeof(filtyp));
+    trim_fixed_width_c_string_end(source, sizeof(source));
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"filtyp\":\"", stdout);
+    json_print_escaped(filtyp);
+    fputs("\",\"source\":\"", stdout);
+    json_print_escaped(source);
+    fprintf(stdout, "\",\"handle\":%" PRIdMAX "}}\n", (intmax_t)handle);
+    goto done;
+  }
+
+  case CALL_KERNELS_KXTRCT: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "kernels.kxtrct expects args[0]=string args[1]=string[] args[2]=string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int keywdTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int termsTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int wordsqTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (keywdTok < 0 || keywdTok >= tokenCount || tokens[keywdTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernels.kxtrct expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (termsTok < 0 || termsTok >= tokenCount || tokens[termsTok].type != JSMN_ARRAY) {
+      write_error_json_ex("invalid_args", "kernels.kxtrct expects args[1] to be an array", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (wordsqTok < 0 || wordsqTok >= tokenCount || tokens[wordsqTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "kernels.kxtrct expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *keywdRaw = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t keywdErr =
+        jsmn_strdup(input, &tokens[keywdTok], &keywdRaw, strDetail, sizeof(strDetail));
+    if (keywdErr != JSMN_STRDUP_OK) {
+      if (keywdErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *wordsqRaw = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t wordsqErr =
+        jsmn_strdup(input, &tokens[wordsqTok], &wordsqRaw, strDetail, sizeof(strDetail));
+    if (wordsqErr != JSMN_STRDUP_OK) {
+      free(keywdRaw);
+      if (wordsqErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    // Trim keywd.
+    size_t keyStart = 0;
+    size_t keyLen = strlen(keywdRaw);
+    while (keyStart < keyLen && is_ascii_whitespace((unsigned char)keywdRaw[keyStart])) {
+      keyStart++;
+    }
+    size_t keyEnd = keyLen;
+    while (keyEnd > keyStart && is_ascii_whitespace((unsigned char)keywdRaw[keyEnd - 1])) {
+      keyEnd--;
+    }
+
+    const size_t keyOutLen = keyEnd - keyStart;
+    char *keywd = (char *)malloc(keyOutLen + 1);
+    if (keywd == NULL) {
+      free(keywdRaw);
+      free(wordsqRaw);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+    memcpy(keywd, keywdRaw + keyStart, keyOutLen);
+    keywd[keyOutLen] = '\0';
+    free(keywdRaw);
+
+    if (keyOutLen == 0) {
+      free(keywd);
+      free(wordsqRaw);
+      write_error_json_ex("invalid_args", "kernels.kxtrct expects args[0] to be a non-empty string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int nTermsRaw = tokens[termsTok].size;
+    char **terms = NULL;
+    if (nTermsRaw > 0) {
+      terms = (char **)malloc(sizeof(char *) * (size_t)nTermsRaw);
+      if (terms == NULL) {
+        free(keywd);
+        free(wordsqRaw);
+        write_error_json("Out of memory", NULL, NULL, NULL);
+        goto done;
+      }
+    }
+
+    int nTerms = 0;
+    int termlen = 2;
+
+    for (int i = 0; i < nTermsRaw; i++) {
+      int tTok = jsmn_get_array_elem(tokens, termsTok, i, tokenCount);
+      if (tTok < 0 || tTok >= tokenCount || tokens[tTok].type != JSMN_STRING) {
+        // Clean up.
+        for (int j = 0; j < nTerms; j++) {
+          free(terms[j]);
+        }
+        free(terms);
+        free(keywd);
+        free(wordsqRaw);
+        write_error_json_ex("invalid_args", "kernels.kxtrct expects args[1] to contain only strings", NULL, NULL, NULL, NULL);
+        goto done;
+      }
+
+      char *tRaw = NULL;
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t tErr =
+          jsmn_strdup(input, &tokens[tTok], &tRaw, strDetail, sizeof(strDetail));
+      if (tErr != JSMN_STRDUP_OK) {
+        for (int j = 0; j < nTerms; j++) {
+          free(terms[j]);
+        }
+        free(terms);
+        free(keywd);
+        free(wordsqRaw);
+        if (tErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        goto done;
+      }
+
+      // Trim term.
+      size_t tLen = strlen(tRaw);
+      size_t tStart = 0;
+      while (tStart < tLen && is_ascii_whitespace((unsigned char)tRaw[tStart])) {
+        tStart++;
+      }
+      size_t tEnd = tLen;
+      while (tEnd > tStart && is_ascii_whitespace((unsigned char)tRaw[tEnd - 1])) {
+        tEnd--;
+      }
+
+      const size_t tOutLen = tEnd - tStart;
+      if (tOutLen == 0) {
+        free(tRaw);
+        continue;
+      }
+
+      char *t = (char *)malloc(tOutLen + 1);
+      if (t == NULL) {
+        free(tRaw);
+        for (int j = 0; j < nTerms; j++) {
+          free(terms[j]);
+        }
+        free(terms);
+        free(keywd);
+        free(wordsqRaw);
+        write_error_json("Out of memory", NULL, NULL, NULL);
+        goto done;
+      }
+      memcpy(t, tRaw + tStart, tOutLen);
+      t[tOutLen] = '\0';
+      free(tRaw);
+
+      terms[nTerms++] = t;
+
+      if (tOutLen + 1 > (size_t)termlen) {
+        termlen = (int)(tOutLen + 1);
+      }
+    }
+
+    char *termsBuf = NULL;
+    if (nTerms > 0) {
+      termsBuf = (char *)calloc((size_t)nTerms * (size_t)termlen, 1);
+      if (termsBuf == NULL) {
+        for (int j = 0; j < nTerms; j++) {
+          free(terms[j]);
+        }
+        free(terms);
+        free(keywd);
+        free(wordsqRaw);
+        write_error_json("Out of memory", NULL, NULL, NULL);
+        goto done;
+      }
+
+      for (int i = 0; i < nTerms; i++) {
+        strncpy(termsBuf + (size_t)i * (size_t)termlen, terms[i], (size_t)termlen - 1);
+      }
+    }
+
+    for (int j = 0; j < nTerms; j++) {
+      free(terms[j]);
+    }
+    free(terms);
+
+    const int wordsqLen = (int)strlen(wordsqRaw);
+    const int wordsqOutMaxBytes = wordsqLen + 1 < 2 ? 2 : wordsqLen + 1;
+    const int substrMaxBytes = wordsqLen + 1 < 2 ? 2 : wordsqLen + 1;
+
+    char *wordsqOut = (char *)calloc((size_t)wordsqOutMaxBytes, 1);
+    char *substr = (char *)calloc((size_t)substrMaxBytes, 1);
+    if (wordsqOut == NULL || substr == NULL) {
+      free(keywd);
+      free(wordsqRaw);
+      free(termsBuf);
+      free(wordsqOut);
+      free(substr);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto done;
+    }
+
+    strncpy(wordsqOut, wordsqRaw, (size_t)wordsqOutMaxBytes - 1);
+
+    SpiceBoolean found = SPICEFALSE;
+    kxtrct_c(
+        keywd,
+        (SpiceInt)termlen,
+        (ConstSpiceChar *)termsBuf,
+        (SpiceInt)nTerms,
+        (SpiceInt)wordsqOutMaxBytes,
+        (SpiceInt)substrMaxBytes,
+        wordsqOut,
+        &found,
+        substr);
+
+    free(keywd);
+    free(wordsqRaw);
+    free(termsBuf);
+
+    if (failed_c() == SPICETRUE) {
+      free(wordsqOut);
+      free(substr);
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in kxtrct", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      free(wordsqOut);
+      free(substr);
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"wordsq\":\"", stdout);
+    json_print_escaped(wordsqOut);
+    fputs("\",\"substr\":\"", stdout);
+    json_print_escaped(substr);
+    fputs("\"}}\n", stdout);
+
+    free(wordsqOut);
+    free(substr);
+    goto done;
+  }
+
+  case CALL_KERNELS_KPLFRM: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "kernels.kplfrm expects args[0]=integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int frmclsTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+
+    SpiceInt frmcls = 0;
+    parse_result frmclsParse = PARSE_INVALID;
+    if (frmclsTok >= 0 && frmclsTok < tokenCount) {
+      frmclsParse = jsmn_parse_int(input, &tokens[frmclsTok], &frmcls);
+    }
+
+    if (frmclsTok < 0 || frmclsTok >= tokenCount || frmclsParse != PARSE_OK) {
+      if (frmclsParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "kernels.kplfrm expects args[0] to be an integer (SpiceInt range)",
+            frmclsParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    // Use a fixed-capacity set cell for parity comparisons.
+    SPICEINT_CELL(idset, 1024);
+    kplfrm_c(frmcls, &idset);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in kplfrm", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    const SpiceInt n = card_c(&idset);
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_spiceint_array((const SpiceInt *)idset.data, (int)n);
+    fputs("}\n", stdout);
+    goto done;
+  }
   // --- kernel-pool ------------------------------------------------------
 
   case CALL_GDPOOL: {

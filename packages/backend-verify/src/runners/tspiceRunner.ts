@@ -536,6 +536,99 @@ const DISPATCH: Record<string, DispatchFn> = {
     invalidArgs(`time.timdef expects args[0] to be "GET" or "SET" (got ${formatValue(args[0])})`);
   },
 
+
+  // kernels
+  "kernels.furnsh": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernels.furnsh expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    backend.furnsh(args[0]);
+    return null;
+  },
+
+  "kernels.unload": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernels.unload expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    backend.unload(args[0]);
+    return null;
+  },
+
+  "kernels.kclear": (backend) => {
+    backend.kclear();
+    return null;
+  },
+
+  "kernels.ktotal": (backend, args) => {
+    // `ktotal` kind is optional.
+    if (args.length === 0 || args[0] === undefined) {
+      return backend.ktotal();
+    }
+    if (typeof args[0] !== "string" && !Array.isArray(args[0])) {
+      invalidArgs(
+        `kernels.ktotal expects args[0] to be a string or string[] (got ${formatValue(args[0])})`,
+      );
+    }
+    return backend.ktotal(args[0] as any);
+  },
+
+  "kernels.kdata": (backend, args) => {
+    assertInteger(args[0], "kernels.kdata args[0]");
+
+    // `kdata` kind is optional.
+    if (args.length < 2 || args[1] === undefined) {
+      return backend.kdata(args[0]);
+    }
+
+    if (typeof args[1] !== "string" && !Array.isArray(args[1])) {
+      invalidArgs(
+        `kernels.kdata expects args[1] to be a string or string[] (got ${formatValue(args[1])})`,
+      );
+    }
+
+    return backend.kdata(args[0], args[1] as any);
+  },
+
+  "kernels.kinfo": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernels.kinfo expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    return backend.kinfo(args[0]);
+  },
+
+  "kernels.kxtrct": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`kernels.kxtrct expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (!Array.isArray(args[1]) || args[1].some((x) => typeof x !== "string")) {
+      invalidArgs(`kernels.kxtrct expects args[1] to be a string[] (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "string") {
+      invalidArgs(`kernels.kxtrct expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+    return backend.kxtrct(args[0], args[1] as string[], args[2]);
+  },
+
+  "kernels.kplfrm": (backend, args) => {
+    // Contract signature mutates a SpiceIntCell; for parity scenarios we return
+    // the resulting ID set as an integer array so it can be compared.
+    assertInteger(args[0], "kernels.kplfrm args[0]");
+
+    const cell = backend.newIntCell(1024);
+    try {
+      backend.kplfrm(args[0], cell);
+
+      const n = backend.card(cell);
+      const out: number[] = [];
+      for (let i = 0; i < n; i++) {
+        out.push(backend.cellGeti(cell, i));
+      }
+      return out;
+    } finally {
+      backend.freeCell(cell);
+    }
+  },
+
   // kernel-pool
   "kernel-pool.gdpool": (backend, args) => {
     if (typeof args[0] !== "string") {
