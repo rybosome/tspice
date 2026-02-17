@@ -4,18 +4,16 @@
 
 TypeScript-first access to NAIF SPICE geometry — in **Node.js** and the **browser** (via WebAssembly).
 
-![tspice solar system (orrery) screenshot](docs/images/tspice-solar-system.png)
-
 - **Docs:** https://rybosome.github.io/tspice
 - **Live demo (WebGL + WASM):** https://orrery.ryboso.me/
 
+![tspice solar system (orrery) screenshot](docs/images/tspice-solar-system.png)
+
 `tspice` is a set of TypeScript packages that let you load SPICE kernels and run common SPICE workflows (time conversions, ephemerides, frames, geometry) from modern JS runtimes.
 
-`tspice` embeds CSPICE-derived components behind a TypeScript API; if you need CSPICE itself as a general-purpose toolkit, download it [directly from NAIF](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
-
-## What is SPICE?
-
 SPICE is NAIF’s toolkit (and data formats) for space-mission geometry: it computes positions, orientations, frames, and time conversions using mission-provided “kernels” (ephemerides, constants, pointing, etc.). It’s widely used across NASA and the planetary science community to make geometry calculations reproducible and shareable.
+
+`tspice` embeds CSPICE-derived components behind a TypeScript API; if you need CSPICE itself as a general-purpose toolkit, download it [directly from NAIF](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
 
 ## Why tspice
 
@@ -66,25 +64,19 @@ try {
 
 **Kernel hosting note:** browsers can’t fetch kernels directly from NAIF due to CORS. `kernels.tspice()` points at a small community mirror for quickstart/testing and is **not recommended for production**. For production, self-host kernels (or proxy) and use `kernels.naif(...)` / `kernels.custom(...)`.
 
-## Stability / status
-
-`tspice` follows SemVer.
-
-- For the upcoming `0.1.0` release, the goal is **no breaking changes in patch releases** (e.g. `0.1.0` → `0.1.1`).
-- The `raw` API is expected to be highly stable because it’s a thin layer over CSPICE.
-- The `kit` API is a TypeScript-first façade that follows SemVer and is intended to be stable too.
-
 ## Mental model
 
-SPICE is stateful: loading kernels mutates a global “kernel pool” inside CSPICE, and many routines read from (and sometimes affect) that shared state. CSPICE is effectively a singleton and is not thread-safe; if you need isolation (e.g. separate kernel sets or concurrent independent workloads), run SPICE in a separate process or a dedicated Worker.
+SPICE is stateful: loading kernels mutates a process-wide global kernel pool inside SPICE, and many routines read from (and sometimes affect) that shared state.
+
+Isolation (separating kernel-sets and workloads) can be achieved by creating multiple process or WebWorker instances, depending on runtime.
 
 ## Coverage
 
-Coverage is actively evolving.
+It is the goal of `tspice` to cover almost all of CSPICE (649 of 652 functions).
 
-- **What’s implemented today:** [`docs/cspice-function-inventory.md`](docs/cspice-function-inventory.md)
-- **What we intend to add next:** [`docs/cspice-planned-functions-by-domain.md`](docs/cspice-planned-functions-by-domain.md)
-- (Optional) Backend contract parity notes: [`docs/parity/spicebackend-cspice-mapping.md`](docs/parity/spicebackend-cspice-mapping.md)
+154 functions are currently implemented.
+
+- **Detailed function inventory:** [`docs/cspice-function-inventory.md`](docs/cspice-function-inventory.md)
 
 ## Validation
 
