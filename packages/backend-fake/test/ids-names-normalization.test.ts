@@ -22,8 +22,9 @@ describe("fake backend ids/names item normalization", () => {
     expect(b.bodfnd(399, "\u00a0radii\u00a0")).toBe(false);
     expect(b.bodvar(399, "\u00a0radii\u00a0")).toEqual([]);
 
-    // Character-typed BODY<ID>_<ITEM> vars are treated as a normal miss.
-    expect(b.bodfnd(399, "FOO")).toBe(false);
+    // `bodfnd()` is a strict presence check: it returns true even for
+    // character-typed BODY<ID>_<ITEM> vars (while `bodvar()` remains numeric-only).
+    expect(b.bodfnd(399, "FOO")).toBe(true);
     expect(b.bodvar(399, "FOO")).toEqual([]);
   });
 });

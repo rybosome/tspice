@@ -1,0 +1,55 @@
+name: "time misc basic"
+
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+
+compare:
+  tolAbs: 1e-12
+  tolRel: 1e-12
+
+cases:
+  - id: "time.spiceVersion"
+    call: time.spiceVersion
+    args: []
+
+  - id: "time.tkvrsn"
+    call: time.tkvrsn
+    args:
+      - "TOOLKIT"
+
+  - id: "time.timout"
+    call: time.timout
+    args:
+      - 0
+      - "YYYY-MON-DD HR:MN:SC.### ::TDB"
+
+  - id: "time.deltet"
+    call: time.deltet
+    args:
+      - 0
+      - "ET"
+
+  - id: "time.unitim"
+    call: time.unitim
+    args:
+      - 0
+      - "ET"
+      - "TAI"
+
+  - id: "time.tparse"
+    call: time.tparse
+    args:
+      - "2000 JAN 01 12:00:00"
+
+  - id: "time.tpictr"
+    call: time.tpictr
+    args:
+      - "Thu Oct 01 11:11:11 PDT 1111"
+      - "X"
+
+  - id: "time.timdef.get.system"
+    call: time.timdef
+    args:
+      - "GET"
+      - "SYSTEM"

@@ -45,14 +45,19 @@ export type {
 export { spiceClients } from "./clients/spiceClients.js";
 
 export type {
-  CustomKernelsBuilder,
-  KernelsCustomOptions,
   KernelsNaifOptions,
-  NaifKernelId,
-  NaifKernelLeafPath,
-  NaifKernelsBuilder,
+  NaifKernelCatalog,
+  KernelsCustomOptions,
+  CustomKernelCatalog,
+  CustomKernelEntry,
+  CustomKernelPick,
+  TspiceKernelCatalog,
+  TspiceKernelId,
 } from "./kernels/kernels.js";
-export { kernels } from "./kernels/kernels.js";
+
+export type { NaifKernelId } from "./kernels/naifKernelId.js";
+
+export { kernels, TSPICE_KERNEL_IDS } from "./kernels/kernels.js";
 
 export type {
   KernelPack,

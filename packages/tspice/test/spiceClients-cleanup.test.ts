@@ -32,7 +32,9 @@ describe("spiceClients cleanup", () => {
       await expect(
         spiceClients
           .withKernels(
-            kernels.custom().add({ url: "https://example.com/missing-kernel.tls" }).pack(),
+            kernels
+              .custom({ origin: "https://example.com/", pathBase: "custom/" })
+              .pick({ url: "https://example.com/missing-kernel.tls" }),
           )
           .toWebWorker({ worker: () => worker }),
       ).rejects.toThrow(/Failed to fetch kernel/i);

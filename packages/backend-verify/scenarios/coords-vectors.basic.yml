@@ -1,0 +1,134 @@
+name: "coords-vectors basic"
+
+compare:
+  tolAbs: 1e-12
+  tolRel: 1e-12
+
+cases:
+  - id: "coords-vectors.reclat"
+    call: coords-vectors.reclat
+    args:
+      - [0.8, 1.2, 0.5]
+    compare:
+      angleWrapPi: true
+
+  - id: "coords-vectors.latrec"
+    call: coords-vectors.latrec
+    args:
+      - 2.0
+      - 0.7
+      - 0.3
+
+  - id: "coords-vectors.recsph"
+    call: coords-vectors.recsph
+    args:
+      - [1.1, 0.7, 0.4]
+    compare:
+      angleWrapPi: true
+
+  - id: "coords-vectors.sphrec"
+    call: coords-vectors.sphrec
+    args:
+      - 2.2
+      - 1.1
+      - 0.6
+
+  - id: "coords-vectors.vnorm"
+    call: coords-vectors.vnorm
+    args:
+      - [3, 4, 0]
+
+  - id: "coords-vectors.vhat"
+    call: coords-vectors.vhat
+    args:
+      - [3, 4, 0]
+
+  - id: "coords-vectors.vdot"
+    call: coords-vectors.vdot
+    args:
+      - [1, 2, 3]
+      - [4, 5, 6]
+
+  - id: "coords-vectors.vcrss"
+    call: coords-vectors.vcrss
+    args:
+      - [1, 2, 3]
+      - [4, 5, 6]
+
+  - id: "coords-vectors.vadd"
+    call: coords-vectors.vadd
+    args:
+      - [1, 2, 3]
+      - [4, 5, 6]
+
+  - id: "coords-vectors.vsub"
+    call: coords-vectors.vsub
+    args:
+      - [1, 2, 3]
+      - [4, 5, 6]
+
+  - id: "coords-vectors.vminus"
+    call: coords-vectors.vminus
+    args:
+      - [1, 2, 3]
+
+  - id: "coords-vectors.vscl"
+    call: coords-vectors.vscl
+    args:
+      - 2
+      - [1, 2, 3]
+
+  - id: "coords-vectors.mxm"
+    call: coords-vectors.mxm
+    args:
+      - [1, 2, 3, 0, 1, 4, 5, 6, 0]
+      - [-2, 1, 0, 3, 0, 0, 4, 5, 1]
+
+  - id: "coords-vectors.mxv"
+    call: coords-vectors.mxv
+    args:
+      - [1, 2, 3, 0, 1, 4, 5, 6, 0]
+      - [1, -1, 2]
+
+  - id: "coords-vectors.mtxv"
+    call: coords-vectors.mtxv
+    args:
+      - [1, 2, 3, 0, 1, 4, 5, 6, 0]
+      - [1, -1, 2]
+
+  - id: "coords-vectors.rotate"
+    call: coords-vectors.rotate
+    args:
+      - 0.7
+      - 3
+
+  - id: "coords-vectors.rotmat"
+    call: coords-vectors.rotmat
+    args:
+      - [1, 0, 0, 0, 1, 0, 0, 0, 1]
+      - 0.7
+      - 2
+
+  - id: "coords-vectors.axisar"
+    call: coords-vectors.axisar
+    args:
+      - [0.1, 0.2, 0.3]
+      - 1.2
+
+  - id: "coords-vectors.georec"
+    call: coords-vectors.georec
+    args:
+      - 0.9
+      - 0.4
+      - 0.3
+      - 2.0
+      - 0.05
+
+  - id: "coords-vectors.recgeo"
+    call: coords-vectors.recgeo
+    args:
+      - [1.5, 0.6, 0.2]
+      - 2.0
+      - 0.05
+    compare:
+      angleWrapPi: true

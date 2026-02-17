@@ -73,6 +73,10 @@ export type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "./s
 export { createSpiceHandleRegistry } from "./shared/spice-handles.js";
 export { SpiceBackendContractError } from "./shared/errors.js";
 
+// Explicit re-exports to ensure these types are always available from the package root.
+// (Some TS build modes can be sensitive to type-only exports being pulled via `export *`.)
+export type { KernelKindInput, KernelsApi } from "./domains/kernels.js";
+
 export * from "./domains/kernels.js";
 export * from "./domains/kernel-pool.js";
 export * from "./domains/ek.js";

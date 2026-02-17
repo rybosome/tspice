@@ -1306,7 +1306,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     bodfnd: (body: number, item: string) => {
       const key = `BODY${body}_${normalizeBodItem(item)}`;
       const entry = kernelPool.get(key);
-      return entry?.type === "N";
+      return entry !== undefined;
     },
 
     bodvar: (body: number, item: string) => {

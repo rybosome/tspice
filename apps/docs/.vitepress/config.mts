@@ -149,7 +149,11 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/guide/' },
             { text: 'Getting started', link: '/guide/getting-started' },
-            { text: 'Installation', link: '/guide/installation' }
+            { text: 'Creating clients', link: '/guide/creating-clients' },
+            { text: 'Kernels', link: '/guide/kernels' },
+            { text: 'Kernel inventory', link: '/guide/kernel-inventory' },
+            { text: 'Browser', link: '/guide/browser' },
+            { text: 'Node', link: '/guide/node' }
           ]
         }
       ],

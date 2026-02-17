@@ -1,5 +1,5 @@
 # Installation
 
-Docs coming soon.
+Installation is now covered in **[Getting started](/guide/getting-started)**.
 
-This is a placeholder page.
+- Next: **[Creating clients](/guide/creating-clients)**

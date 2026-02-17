@@ -1,9 +1,0 @@
-{
-  "name": "@fixture/pkg-dotdot",
-  "type": "module",
-  "exports": {
-    ".": {
-      "default": "./dist/../dist/index.js"
-    }
-  }
-}
