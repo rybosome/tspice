@@ -486,7 +486,17 @@ int tspice_swpool(
     return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "tspice_swpool(): names must not be NULL when nnames > 0");
   }
 
-  swpool_c(agent, (SpiceInt)nnames, (SpiceInt)namlen, names);
+  // CSPICE rejects a NULL `names` pointer even when nnames==0.
+  // Preserve the existing ABI semantics (empty list allowed) by
+  // substituting a dummy non-null pointer in that case.
+  const void *namesArg = names;
+  char dummyNames[1];
+  if (nnames == 0 && names == NULL) {
+    dummyNames[0] = '\0';
+    namesArg = dummyNames;
+  }
+
+  swpool_c(agent, (SpiceInt)nnames, (SpiceInt)namlen, namesArg);
 
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
