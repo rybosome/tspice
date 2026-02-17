@@ -28,20 +28,20 @@ export async function withWebWorkerClient<T>(
 /**
  * Example: preload kernels before creating the worker client.
  *
- * `kernels.naif()` builds a `KernelPack` (URLs + virtual load paths). Pass a pack (or packs) to
- * `spiceClients.withKernels(packOrPacks)` before calling `.toWebWorker()`.
+ * Use `kernels.*(...).pick(...)` to build a `KernelPack` (URLs + virtual load paths).
+ * Pass a pack (or packs) to `spiceClients.withKernels(packOrPacks)` before calling `.toWebWorker()`.
  */
 export async function createWebWorkerClientWithNaifKernels() {
   const pack = kernels
     .naif({
-      kernelUrlPrefix: "kernels/naif/",
+      // Build-time URL prefix for kernel ids like "lsk/naif0012.tls".
+      origin: "kernels/naif/",
       // Important for apps deployed under a subpath (GitHub Pages, etc).
       baseUrl: import.meta.env.BASE_URL,
+      // Virtual path prefix used when mapping ids to load paths.
+      pathBase: "naif/",
     })
-    .naif0012_tls()
-    .pck00011_tpc()
-    .de432s_bsp()
-    .pack();
+    .pick("lsk/naif0012.tls", "pck/pck00011.tpc", "spk/planets/de432s.bsp");
 
   const { spice, dispose } = await spiceClients
     .caching({ maxEntries: 10_000, ttlMs: null })
