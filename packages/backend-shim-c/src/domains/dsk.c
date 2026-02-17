@@ -21,14 +21,6 @@ _Static_assert(sizeof(SpiceInt) == 4, "expected SpiceInt to be 32-bit");
 _Static_assert(SPICE_DSK_NSYPAR == 10, "expected SPICE_DSK_NSYPAR == 10");
 #endif
 
-static int tspice_clear_error(char *err, int errMaxBytes) {
-  if (err == NULL || errMaxBytes <= 0) {
-    return 0;
-  }
-  err[0] = '\0';
-  return 0;
-}
-
 static int tspice_validate_dsk_path(const char *dsk, char *err, int errMaxBytes) {
   if (dsk == NULL || dsk[0] == '\0') {
     return tspice_return_error(err, errMaxBytes, "dsk path must be a non-empty string");
