@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import crypto from "node:crypto";
-import { readFile, realpath } from "node:fs/promises";
+import { readFile, realpath, stat } from "node:fs/promises";
 
 import { spiceClients, type SpiceBackend } from "@rybosome/tspice";
 
@@ -14,7 +14,7 @@ import { spiceShortSymbol } from "../errors/spiceShort.js";
 
 import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
 
-type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown;
+type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown | Promise<unknown>;
 
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
 
@@ -103,6 +103,68 @@ function assertMat3RowMajor(value: unknown, label: string): asserts value is Mat
       );
     }
   }
+}
+
+// When using the WASM backend, we furnish OS kernels as byte-backed virtual ids.
+// To preserve parity with the CSPICE runner (which uses OS paths), we keep a
+// best-effort mapping from virtual ids back to their originating OS paths and
+// rewrite `kdata().file` accordingly.
+const WASM_KERNEL_VID_TO_OS_PATH = new Map<string, string>();
+
+function isFsNotFoundError(error: unknown): boolean {
+  const anyErr = error as unknown as { code?: unknown };
+  return anyErr.code === "ENOENT" || anyErr.code === "ENOTDIR";
+}
+
+async function wasmVirtualKernelIdFromMaybeOsPath(pathOrVid: string): Promise<string> {
+  const abs = path.resolve(pathOrVid);
+  try {
+    await stat(abs);
+  } catch (error) {
+    if (isFsNotFoundError(error)) {
+      // Treat as already-virtual.
+      return pathOrVid;
+    }
+    throw error;
+  }
+
+  return await kernelVirtualIdFromOsPath(abs);
+}
+
+function kernelKindQueryFromArg(value: unknown, label: string): string {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      invalidArgs(`${label} expects a non-empty string[] (got [])`);
+    }
+    if (!value.every((v): v is string => typeof v === "string")) {
+      invalidArgs(`${label} expects a string or string[] (got ${formatValue(value)})`);
+    }
+    return value.join(" ");
+  }
+
+  invalidArgs(`${label} expects a string or string[] (got ${formatValue(value)})`);
+}
+
+function rewriteKdataOsPathIfNeeded(backend: SpiceBackend, result: unknown): unknown {
+  if (backend.kind !== "wasm") return result;
+  if (typeof result !== "object" || result === null) return result;
+
+  const r = result as Record<string, unknown>;
+  if (r.found !== true) return result;
+  if (typeof r.file !== "string") return result;
+
+  const prefix = "/kernels/";
+  if (!r.file.startsWith(prefix)) return result;
+
+  const vid = r.file.slice(prefix.length);
+  const osPath = WASM_KERNEL_VID_TO_OS_PATH.get(vid);
+  if (!osPath) return result;
+
+  return { ...r, file: osPath };
 }
 
 const DISPATCH: Record<string, DispatchFn> = {
@@ -538,18 +600,42 @@ const DISPATCH: Record<string, DispatchFn> = {
 
 
   // kernels
-  "kernels.furnsh": (backend, args) => {
+  "kernels.furnsh": async (backend, args) => {
     if (typeof args[0] !== "string") {
       invalidArgs(`kernels.furnsh expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
+
+    if (backend.kind === "wasm") {
+      // WASM kernel paths must be virtual ids; when scenarios pass an OS path,
+      // furnish it as bytes under a deterministic virtual id.
+      try {
+        await furnshOsKernelForWasm(backend, args[0], new Set<string>());
+      } catch (error) {
+        // If the input doesn't exist on the host filesystem, treat it as an
+        // already-virtual kernel id.
+        if (isFsNotFoundError(error)) {
+          backend.furnsh(args[0]);
+        } else {
+          throw error;
+        }
+      }
+      return null;
+    }
+
     backend.furnsh(args[0]);
     return null;
   },
 
-  "kernels.unload": (backend, args) => {
+  "kernels.unload": async (backend, args) => {
     if (typeof args[0] !== "string") {
       invalidArgs(`kernels.unload expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
+
+    if (backend.kind === "wasm") {
+      backend.unload(await wasmVirtualKernelIdFromMaybeOsPath(args[0]));
+      return null;
+    }
+
     backend.unload(args[0]);
     return null;
   },
@@ -564,12 +650,9 @@ const DISPATCH: Record<string, DispatchFn> = {
     if (args.length === 0 || args[0] === undefined) {
       return backend.ktotal();
     }
-    if (typeof args[0] !== "string" && !Array.isArray(args[0])) {
-      invalidArgs(
-        `kernels.ktotal expects args[0] to be a string or string[] (got ${formatValue(args[0])})`,
-      );
-    }
-    return backend.ktotal(args[0] as any);
+
+    const kindQuery = kernelKindQueryFromArg(args[0], "kernels.ktotal args[0]");
+    return backend.ktotal(kindQuery);
   },
 
   "kernels.kdata": (backend, args) => {
@@ -577,22 +660,22 @@ const DISPATCH: Record<string, DispatchFn> = {
 
     // `kdata` kind is optional.
     if (args.length < 2 || args[1] === undefined) {
-      return backend.kdata(args[0]);
+      return rewriteKdataOsPathIfNeeded(backend, backend.kdata(args[0]));
     }
 
-    if (typeof args[1] !== "string" && !Array.isArray(args[1])) {
-      invalidArgs(
-        `kernels.kdata expects args[1] to be a string or string[] (got ${formatValue(args[1])})`,
-      );
-    }
-
-    return backend.kdata(args[0], args[1] as any);
+    const kindQuery = kernelKindQueryFromArg(args[1], "kernels.kdata args[1]");
+    return rewriteKdataOsPathIfNeeded(backend, backend.kdata(args[0], kindQuery));
   },
 
-  "kernels.kinfo": (backend, args) => {
+  "kernels.kinfo": async (backend, args) => {
     if (typeof args[0] !== "string") {
       invalidArgs(`kernels.kinfo expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
+
+    if (backend.kind === "wasm") {
+      return backend.kinfo(await wasmVirtualKernelIdFromMaybeOsPath(args[0]));
+    }
+
     return backend.kinfo(args[0]);
   },
 
@@ -614,19 +697,69 @@ const DISPATCH: Record<string, DispatchFn> = {
     // the resulting ID set as an integer array so it can be compared.
     assertInteger(args[0], "kernels.kplfrm args[0]");
 
-    const cell = backend.newIntCell(1024);
-    try {
-      backend.kplfrm(args[0], cell);
+    const frmcls = args[0];
 
-      const n = backend.card(cell);
-      const out: number[] = [];
-      for (let i = 0; i < n; i++) {
-        out.push(backend.cellGeti(cell, i));
+    if (backend.kind === "wasm") {
+      // The WASM backend doesn't currently export `kplfrm`; emulate it by
+      // scanning the kernel pool for `FRAME_<id>_CLASS` assignments.
+      const ids = new Set<number>();
+      const template = "FRAME_*_CLASS";
+      const room = 512;
+
+      for (let start = 0; ; ) {
+        const res = backend.gnpool(template, start, room);
+        if (!res.found) break;
+        if (res.values.length === 0) break;
+
+        for (const name of res.values) {
+          const m = /^FRAME_(\d+)_CLASS$/.exec(name.trim());
+          if (!m) continue;
+
+          const id = Number(m[1]);
+          if (!Number.isSafeInteger(id)) continue;
+
+          const cls = backend.gipool(name, 0, 1);
+          if (!cls.found || cls.values.length < 1) continue;
+          if (cls.values[0] !== frmcls) continue;
+
+          ids.add(id);
+        }
+
+        if (res.values.length < room) break;
+        start += res.values.length;
       }
-      return out;
-    } finally {
-      backend.freeCell(cell);
+
+      return Array.from(ids).sort((a, b) => a - b);
     }
+
+    // Native: call through to the backend, retrying with a larger cell on
+    // `CELLTOOSMALL`.
+    let size = 1024;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const cell = backend.newIntCell(size);
+      try {
+        backend.kplfrm(frmcls, cell);
+
+        const n = backend.card(cell);
+        const out: number[] = [];
+        for (let i = 0; i < n; i++) {
+          out.push(backend.cellGeti(cell, i));
+        }
+        return out;
+      } catch (error) {
+        const spice = inferSpiceFromError(error);
+        if (spice?.short === "CELLTOOSMALL" && attempt < 4) {
+          size = Math.min(size * 8, 1_048_576);
+          continue;
+        }
+        throw error;
+      } finally {
+        backend.freeCell(cell);
+      }
+    }
+
+    // Should be unreachable: the loop either returns or throws.
+    return [];
   },
 
   // kernel-pool
@@ -1183,6 +1316,7 @@ async function furnshOsKernelForWasm(
     // but without allowing it to try to load OS-path kernels in WASM.
     const sanitized = sanitizeMetaKernelTextForWasm(metaKernelText);
     const vid = await kernelVirtualIdFromOsPath(absPath);
+    WASM_KERNEL_VID_TO_OS_PATH.set(vid, absPath);
     backend.furnsh({ path: vid, bytes: Buffer.from(sanitized, "utf8") });
 
     for (const k of kernelsToLoad) {
@@ -1193,6 +1327,7 @@ async function furnshOsKernelForWasm(
 
   const bytes = await readFile(absPath);
   const vid = await kernelVirtualIdFromOsPath(absPath);
+  WASM_KERNEL_VID_TO_OS_PATH.set(vid, absPath);
   backend.furnsh({ path: vid, bytes });
 }
 
@@ -1293,7 +1428,7 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           unsupportedCall(`Unsupported call: ${formatValue(input.call)}`);
         }
 
-        const result = fn(backend, input.args);
+        const result = await fn(backend, input.args);
         return { ok: true, result };
       } catch (error) {
         const report = safeErrorReport(error);

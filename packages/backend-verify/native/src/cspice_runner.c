@@ -5057,6 +5057,18 @@ int main(void) {
   }
 
   case CALL_KERNELS_KXTRCT: {
+    // Single cleanup path to avoid leaks across early exits.
+    char *keywdRaw = NULL;
+    char *wordsqRaw = NULL;
+    char *keywd = NULL;
+    char **terms = NULL;
+    int nTermsRaw = 0;
+    int nTerms = 0;
+    int termlen = 2;
+    char *termsBuf = NULL;
+    char *wordsqOut = NULL;
+    char *substr = NULL;
+
     if (tokens[argsTok].size < 3) {
       write_error_json_ex(
           "invalid_args",
@@ -5065,7 +5077,7 @@ int main(void) {
           NULL,
           NULL,
           NULL);
-      goto done;
+      goto kxtrct_cleanup;
     }
 
     int keywdTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
@@ -5074,18 +5086,17 @@ int main(void) {
 
     if (keywdTok < 0 || keywdTok >= tokenCount || tokens[keywdTok].type != JSMN_STRING) {
       write_error_json_ex("invalid_args", "kernels.kxtrct expects args[0] to be a string", NULL, NULL, NULL, NULL);
-      goto done;
+      goto kxtrct_cleanup;
     }
     if (termsTok < 0 || termsTok >= tokenCount || tokens[termsTok].type != JSMN_ARRAY) {
       write_error_json_ex("invalid_args", "kernels.kxtrct expects args[1] to be an array", NULL, NULL, NULL, NULL);
-      goto done;
+      goto kxtrct_cleanup;
     }
     if (wordsqTok < 0 || wordsqTok >= tokenCount || tokens[wordsqTok].type != JSMN_STRING) {
       write_error_json_ex("invalid_args", "kernels.kxtrct expects args[2] to be a string", NULL, NULL, NULL, NULL);
-      goto done;
+      goto kxtrct_cleanup;
     }
 
-    char *keywdRaw = NULL;
     strDetail[0] = '\0';
     jsmn_strdup_err_t keywdErr =
         jsmn_strdup(input, &tokens[keywdTok], &keywdRaw, strDetail, sizeof(strDetail));
@@ -5096,22 +5107,20 @@ int main(void) {
       } else {
         write_error_json("Out of memory", NULL, NULL, NULL);
       }
-      goto done;
+      goto kxtrct_cleanup;
     }
 
-    char *wordsqRaw = NULL;
     strDetail[0] = '\0';
     jsmn_strdup_err_t wordsqErr =
         jsmn_strdup(input, &tokens[wordsqTok], &wordsqRaw, strDetail, sizeof(strDetail));
     if (wordsqErr != JSMN_STRDUP_OK) {
-      free(keywdRaw);
       if (wordsqErr == JSMN_STRDUP_INVALID) {
         write_error_json_ex("invalid_request", "Invalid JSON string escape",
                             strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
       } else {
         write_error_json("Out of memory", NULL, NULL, NULL);
       }
-      goto done;
+      goto kxtrct_cleanup;
     }
 
     // Trim keywd.
@@ -5126,51 +5135,34 @@ int main(void) {
     }
 
     const size_t keyOutLen = keyEnd - keyStart;
-    char *keywd = (char *)malloc(keyOutLen + 1);
+    if (keyOutLen == 0) {
+      write_error_json_ex("invalid_args", "kernels.kxtrct expects args[0] to be a non-empty string", NULL, NULL, NULL, NULL);
+      goto kxtrct_cleanup;
+    }
+
+    keywd = (char *)malloc(keyOutLen + 1);
     if (keywd == NULL) {
-      free(keywdRaw);
-      free(wordsqRaw);
       write_error_json("Out of memory", NULL, NULL, NULL);
-      goto done;
+      goto kxtrct_cleanup;
     }
     memcpy(keywd, keywdRaw + keyStart, keyOutLen);
     keywd[keyOutLen] = '\0';
-    free(keywdRaw);
 
-    if (keyOutLen == 0) {
-      free(keywd);
-      free(wordsqRaw);
-      write_error_json_ex("invalid_args", "kernels.kxtrct expects args[0] to be a non-empty string", NULL, NULL, NULL, NULL);
-      goto done;
-    }
-
-    const int nTermsRaw = tokens[termsTok].size;
-    char **terms = NULL;
+    // Terms are an array of strings; trim each entry and ignore whitespace-only terms.
+    nTermsRaw = tokens[termsTok].size;
     if (nTermsRaw > 0) {
-      terms = (char **)malloc(sizeof(char *) * (size_t)nTermsRaw);
+      terms = (char **)calloc((size_t)nTermsRaw, sizeof(char *));
       if (terms == NULL) {
-        free(keywd);
-        free(wordsqRaw);
         write_error_json("Out of memory", NULL, NULL, NULL);
-        goto done;
+        goto kxtrct_cleanup;
       }
     }
-
-    int nTerms = 0;
-    int termlen = 2;
 
     for (int i = 0; i < nTermsRaw; i++) {
       int tTok = jsmn_get_array_elem(tokens, termsTok, i, tokenCount);
       if (tTok < 0 || tTok >= tokenCount || tokens[tTok].type != JSMN_STRING) {
-        // Clean up.
-        for (int j = 0; j < nTerms; j++) {
-          free(terms[j]);
-        }
-        free(terms);
-        free(keywd);
-        free(wordsqRaw);
         write_error_json_ex("invalid_args", "kernels.kxtrct expects args[1] to contain only strings", NULL, NULL, NULL, NULL);
-        goto done;
+        goto kxtrct_cleanup;
       }
 
       char *tRaw = NULL;
@@ -5178,19 +5170,13 @@ int main(void) {
       jsmn_strdup_err_t tErr =
           jsmn_strdup(input, &tokens[tTok], &tRaw, strDetail, sizeof(strDetail));
       if (tErr != JSMN_STRDUP_OK) {
-        for (int j = 0; j < nTerms; j++) {
-          free(terms[j]);
-        }
-        free(terms);
-        free(keywd);
-        free(wordsqRaw);
         if (tErr == JSMN_STRDUP_INVALID) {
           write_error_json_ex("invalid_request", "Invalid JSON string escape",
                               strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
         } else {
           write_error_json("Out of memory", NULL, NULL, NULL);
         }
-        goto done;
+        goto kxtrct_cleanup;
       }
 
       // Trim term.
@@ -5213,64 +5199,40 @@ int main(void) {
       char *t = (char *)malloc(tOutLen + 1);
       if (t == NULL) {
         free(tRaw);
-        for (int j = 0; j < nTerms; j++) {
-          free(terms[j]);
-        }
-        free(terms);
-        free(keywd);
-        free(wordsqRaw);
         write_error_json("Out of memory", NULL, NULL, NULL);
-        goto done;
+        goto kxtrct_cleanup;
       }
       memcpy(t, tRaw + tStart, tOutLen);
       t[tOutLen] = '\0';
       free(tRaw);
 
       terms[nTerms++] = t;
-
       if (tOutLen + 1 > (size_t)termlen) {
         termlen = (int)(tOutLen + 1);
       }
     }
 
-    char *termsBuf = NULL;
     if (nTerms > 0) {
       termsBuf = (char *)calloc((size_t)nTerms * (size_t)termlen, 1);
       if (termsBuf == NULL) {
-        for (int j = 0; j < nTerms; j++) {
-          free(terms[j]);
-        }
-        free(terms);
-        free(keywd);
-        free(wordsqRaw);
         write_error_json("Out of memory", NULL, NULL, NULL);
-        goto done;
+        goto kxtrct_cleanup;
       }
-
       for (int i = 0; i < nTerms; i++) {
+        // Each term occupies a fixed-width slice of length `termlen` (NUL padded).
         strncpy(termsBuf + (size_t)i * (size_t)termlen, terms[i], (size_t)termlen - 1);
       }
     }
-
-    for (int j = 0; j < nTerms; j++) {
-      free(terms[j]);
-    }
-    free(terms);
 
     const int wordsqLen = (int)strlen(wordsqRaw);
     const int wordsqOutMaxBytes = wordsqLen + 1 < 2 ? 2 : wordsqLen + 1;
     const int substrMaxBytes = wordsqLen + 1 < 2 ? 2 : wordsqLen + 1;
 
-    char *wordsqOut = (char *)calloc((size_t)wordsqOutMaxBytes, 1);
-    char *substr = (char *)calloc((size_t)substrMaxBytes, 1);
+    wordsqOut = (char *)calloc((size_t)wordsqOutMaxBytes, 1);
+    substr = (char *)calloc((size_t)substrMaxBytes, 1);
     if (wordsqOut == NULL || substr == NULL) {
-      free(keywd);
-      free(wordsqRaw);
-      free(termsBuf);
-      free(wordsqOut);
-      free(substr);
       write_error_json("Out of memory", NULL, NULL, NULL);
-      goto done;
+      goto kxtrct_cleanup;
     }
 
     strncpy(wordsqOut, wordsqRaw, (size_t)wordsqOutMaxBytes - 1);
@@ -5287,27 +5249,19 @@ int main(void) {
         &found,
         substr);
 
-    free(keywd);
-    free(wordsqRaw);
-    free(termsBuf);
-
     if (failed_c() == SPICETRUE) {
-      free(wordsqOut);
-      free(substr);
       char shortMsg[1841];
       char longMsg[1841];
       char traceMsg[1841];
       capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
                           sizeof(traceMsg));
       write_error_json("SPICE error in kxtrct", shortMsg, longMsg, traceMsg);
-      goto done;
+      goto kxtrct_cleanup;
     }
 
     if (found != SPICETRUE) {
-      free(wordsqOut);
-      free(substr);
       fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
-      goto done;
+      goto kxtrct_cleanup;
     }
 
     fputs("{\"ok\":true,\"result\":{\"found\":true,\"wordsq\":\"", stdout);
@@ -5315,7 +5269,19 @@ int main(void) {
     fputs("\",\"substr\":\"", stdout);
     json_print_escaped(substr);
     fputs("\"}}\n", stdout);
+    goto kxtrct_cleanup;
 
+  kxtrct_cleanup:
+    if (terms != NULL) {
+      for (int j = 0; j < nTerms; j++) {
+        free(terms[j]);
+      }
+      free(terms);
+    }
+    free(keywdRaw);
+    free(wordsqRaw);
+    free(keywd);
+    free(termsBuf);
     free(wordsqOut);
     free(substr);
     goto done;
