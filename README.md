@@ -47,25 +47,29 @@ pnpm add @rybosome/tspice
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
-// A small, CORS-enabled catalog hosted for quickstart/testing.
-// Not recommended for production (see notes below).
-const kernelPack = kernels.tspice().pick(
-  "lsk/naif0012.tls",
-  "pck/pck00011.tpc",
-  "spk/planets/de432s.bsp",
-);
+async function main() {
+  // A small, CORS-enabled catalog hosted for quickstart/testing.
+  // Not recommended for production (see notes below).
+  const kernelPack = kernels.tspice().pick(
+    "lsk/naif0012.tls",
+    "pck/pck00011.tpc",
+    "spk/planets/de432s.bsp",
+  );
 
-const { spice, dispose } = await spiceClients
-  .withKernels(kernelPack) // fetches + stages bytes before loading
-  .toAsync({ backend: "wasm" });
+  const { spice, dispose } = await spiceClients
+    .withKernels(kernelPack) // fetches + stages bytes before loading
+    .toAsync({ backend: "wasm" });
 
-try {
-  const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
-  const state = await spice.kit.getState({ target: "EARTH", observer: "SUN", at: et });
-  console.log(state.position, state.velocity);
-} finally {
-  await dispose();
+  try {
+    const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
+    const state = await spice.kit.getState({ target: "EARTH", observer: "SUN", at: et });
+    console.log(state.position, state.velocity);
+  } finally {
+    await dispose();
+  }
 }
+
+main().catch(console.error);
 ```
 
 **Kernel hosting note:** browsers can’t fetch kernels directly from NAIF due to CORS. `kernels.tspice()` points at a small community mirror for quickstart/testing and is **not recommended for production**. For production, self-host kernels (or proxy) and use `kernels.naif(...)` / `kernels.custom(...)`.
