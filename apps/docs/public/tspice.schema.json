@@ -55,6 +55,10 @@
         "description": "Error thrown when underlying SPICE/CSPICE operations fail."
       },
       {
+        "name": "TSPICE_KERNEL_IDS",
+        "description": "Public export from @rybosome/tspice."
+      },
+      {
         "name": "assertMat3ArrayLike9",
         "description": "Runtime assertion that a value is a length-9 array-like suitable for a 3×3 matrix."
       },
@@ -92,7 +96,7 @@
       },
       {
         "name": "kernels",
-        "description": "Kernel pack builders for NAIF and custom kernels (produces KernelPack objects for withKernels())."
+        "description": "Kernel catalogs for building KernelPack objects via .pick(...) (NAIF, curated tspice, and custom)."
       },
       {
         "name": "resolveKernelUrl",
@@ -125,8 +129,16 @@
         "description": "Options accepted by createSpice(): backend selection + optional backendInstance override."
       },
       {
-        "name": "CustomKernelsBuilder",
-        "description": "Builder returned by kernels.custom() for building an ad-hoc KernelPack from arbitrary kernel URLs."
+        "name": "CustomKernelCatalog",
+        "description": "Catalog returned by kernels.custom(opts); call pick(...) to create a KernelPack."
+      },
+      {
+        "name": "CustomKernelEntry",
+        "description": "Explicit { url, path? } entry accepted by kernels.custom().pick(...)."
+      },
+      {
+        "name": "CustomKernelPick",
+        "description": "Union type accepted by kernels.custom(opts).pick(...): string id or { url, path? }."
       },
       {
         "name": "FrameName",
@@ -150,11 +162,11 @@
       },
       {
         "name": "KernelsCustomOptions",
-        "description": "Options for kernels.custom() (baseUrl for rooting relative kernel URLs at load time)."
+        "description": "Options for kernels.custom({ origin, pathBase, baseUrl? }) (custom kernel catalog)."
       },
       {
         "name": "KernelsNaifOptions",
-        "description": "Options for kernels.naif() (kernelUrlPrefix + optional baseUrl + virtual pathBase)."
+        "description": "Options for kernels.naif({ origin, pathBase, baseUrl? }) (typed NAIF kernel catalog)."
       },
       {
         "name": "Mat3ColMajor",
@@ -165,16 +177,12 @@
         "description": "Branded type for a 3×3 matrix encoded in row-major order."
       },
       {
+        "name": "NaifKernelCatalog",
+        "description": "Catalog object returned by kernels.naif(opts); call pick(...) to create a KernelPack."
+      },
+      {
         "name": "NaifKernelId",
-        "description": "Union of supported NAIF kernel ids in kernels.naif()."
-      },
-      {
-        "name": "NaifKernelLeafPath",
-        "description": "Union of supported NAIF leaf paths (e.g. 'lsk/naif0012.tls') accepted by kernels.naif().file()."
-      },
-      {
-        "name": "NaifKernelsBuilder",
-        "description": "Builder returned by kernels.naif() for selecting NAIF kernels and producing a KernelPack."
+        "description": "Union of supported NAIF kernel ids (leaf paths) accepted by kernels.naif(...).pick(...)."
       },
       {
         "name": "Spice",
@@ -217,6 +225,14 @@
         "description": "Structured result returned by kit.getState() (position, velocity, light time, and query metadata)."
       },
       {
+        "name": "TspiceKernelCatalog",
+        "description": "Catalog returned by kernels.tspice(); call pick(...) to create a KernelPack."
+      },
+      {
+        "name": "TspiceKernelId",
+        "description": "Union of curated kernel ids accepted by kernels.tspice().pick(...)."
+      },
+      {
         "name": "Vec3",
         "description": "Readonly 3-vector tuple type."
       },
@@ -245,7 +261,7 @@
     },
     {
       "repoPath": "packages/tspice/test/llm-examples/webworker-client.example.ts",
-      "description": "WebWorker client creation via spiceClients.toWebWorker() + kernels.naif() KernelPack builder."
+      "description": "WebWorker client creation via spiceClients.toWebWorker() + kernels.*().pick(...) kernel packs."
     }
   ],
   "policiesAndDisclosures": [
