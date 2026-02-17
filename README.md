@@ -13,8 +13,6 @@ TypeScript-first access to NAIF SPICE geometry — in **Node.js** and the **brow
 
 SPICE is NAIF’s toolkit (and data formats) for space-mission geometry: it computes positions, orientations, frames, and time conversions using mission-provided “kernels” (ephemerides, constants, pointing, etc.). It’s widely used across NASA and the planetary science community to make geometry calculations reproducible and shareable.
 
-`tspice` embeds CSPICE-derived components behind a TypeScript API; if you need CSPICE itself as a general-purpose toolkit, download it [directly from NAIF](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
-
 ## Why tspice
 
 - **CSPICE** is the official, battle-tested toolkit from NAIF. It’s the right choice if you’re happy living in C/C++/Fortran or writing/maintaining your own bindings.
@@ -23,6 +21,8 @@ SPICE is NAIF’s toolkit (and data formats) for space-mission geometry: it comp
 - **tspice** targets a different niche: **TypeScript-first**, **browser-capable**, and designed for app-style workloads (interactive visualization, UI tooling, Web Workers).
 
 If your target runtime is a browser, or your application is already TypeScript/Node and you want a first-class TS API, `tspice` is aimed at that gap.
+
+`tspice` embeds CSPICE-derived components behind a TypeScript API; if you need CSPICE directly, download it [directly from NAIF](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
 
 ## Installation & requirements
 
