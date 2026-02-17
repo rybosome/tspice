@@ -18,7 +18,11 @@ export async function createSpiceClient(
   // Currently `searchParams` isn't used here, but we keep the option for API stability.
   void options
 
-  const NAIF_KERNEL_IDS: NaifKernelId[] = ['lsk/naif0012.tls', 'pck/pck00011.tpc', 'spk/planets/de432s.bsp']
+  const NAIF_KERNEL_IDS = [
+    'lsk/naif0012.tls',
+    'pck/pck00011.tpc',
+    'spk/planets/de432s.bsp',
+  ] as const satisfies readonly [NaifKernelId, ...NaifKernelId[]]
 
   const pack = kernels
     .naif({

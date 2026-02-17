@@ -12,7 +12,7 @@ export type KernelPack = {
    * Base URL/path *directory* to resolve each `kernel.url` against when it is relative.
    *
    * Notes:
-   * - Absolute `kernel.url` values (e.g. `https://...`, `//cdn...`, `data:...`, `blob:...`) are left as-is.
+   * - Absolute `kernel.url` values (e.g. `https://...`, `data:...`, `blob:...`) are left as-is.
    * - Root-relative `kernel.url` values (starting with `/`) default to bypassing `baseUrl`.
    *   Use `rootRelativeKernelUrlBehavior` to change this.
    *
@@ -21,7 +21,6 @@ export type KernelPack = {
    *   (For plain path strings, this effectively means the string ends with `/`.)
    *   This holds regardless of whether it is:
    *   - scheme-based (`https://...`)
-   *   - protocol-relative (`//...`)
    *   - path-absolute (`/myapp/`)
    *   - path-relative (`myapp/`)
    * - `baseUrl` is trimmed before use; trimmed-empty (`""` or whitespace) is treated the same as
@@ -60,7 +59,7 @@ export type LoadKernelPackOptions = {
    * Controls how root-relative kernel URLs (`"/..."`) interact with `pack.baseUrl`.
    *
    * - `"bypassBaseUrl"` (default): root-relative URLs are left as-is.
-   * - `"applyBaseOrigin"`: when `baseUrl` is scheme-based or protocol-relative,
+   * - `"applyBaseOrigin"`: when `baseUrl` is scheme-based,
    *   root-relative URLs are resolved against `baseUrl`'s origin.
    * - `"error"`: throw if `baseUrl` is provided and a kernel URL is root-relative.
    */
@@ -95,10 +94,14 @@ function isAbsoluteUrl(url: string): boolean {
   // `https://...`, `data:...`, `blob:...`, etc.
   if (hasUrlScheme(url)) return true;
 
-  // Protocol-relative (`//cdn.example.com/...`).
-  if (url.startsWith("//")) return true;
-
   return false;
+}
+
+function throwProtocolRelativeUrlError(opts: { label: string; url: string }): never {
+  throw new Error(
+    `${opts.label}: protocol-relative URLs (\"//...\") are not supported in Node. ` +
+      `Node requires scheme-based URLs like \"https://...\". Got: ${opts.url}`,
+  );
 }
 
 
@@ -111,12 +114,18 @@ export function resolveKernelUrl(
   baseUrl: string | undefined,
   rootRelativeKernelUrlBehavior: RootRelativeKernelUrlBehavior,
 ): string {
+  if (url.startsWith("//")) {
+    throwProtocolRelativeUrlError({ label: "loadKernelPack(): kernel.url", url });
+  }
+
   const normalizedBaseUrl = baseUrl?.trim();
   // Treat trimmed-empty the same as `undefined` to avoid surprising behavior when
   // `baseUrl` is sourced from config/env where "" / whitespace are common defaults.
   if (!normalizedBaseUrl) return url;
 
-  const isProtocolRelativeBaseUrl = normalizedBaseUrl.startsWith("//");
+  if (normalizedBaseUrl.startsWith("//")) {
+    throwProtocolRelativeUrlError({ label: "loadKernelPack(): pack.baseUrl", url: normalizedBaseUrl });
+  }
 
   // If the kernel URL is already absolute, don't apply `baseUrl`.
   if (isAbsoluteUrl(url)) return url;
@@ -135,17 +144,9 @@ export function resolveKernelUrl(
 
     // applyBaseOrigin: root-relative URLs should inherit only the origin from
     // an absolute-ish baseUrl.
-    if (hasUrlScheme(normalizedBaseUrl) || isProtocolRelativeBaseUrl) {
-      const base = hasUrlScheme(normalizedBaseUrl)
-        ? new URL(normalizedBaseUrl)
-        : new URL(normalizedBaseUrl, "https://tspice.invalid");
-
-      const resolved = new URL(url, base);
-      if (isProtocolRelativeBaseUrl) {
-        return `//${resolved.host}${resolved.pathname}${resolved.search}${resolved.hash}`;
-      }
-
-      return resolved.toString();
+    if (hasUrlScheme(normalizedBaseUrl)) {
+      const base = new URL(normalizedBaseUrl);
+      return new URL(url, base).toString();
     }
 
     // For path-absolute (`/myapp/`) and relative (`myapp/`) base URLs, applying
@@ -153,12 +154,10 @@ export function resolveKernelUrl(
     return url;
   }
 
-  // If `baseUrl` is absolute-ish (scheme-based or protocol-relative), lean on
+  // If `baseUrl` is scheme-based, lean on
   // the URL constructor for proper resolution semantics and normalization.
-  if (hasUrlScheme(normalizedBaseUrl) || isProtocolRelativeBaseUrl) {
-    const base = hasUrlScheme(normalizedBaseUrl)
-      ? new URL(normalizedBaseUrl)
-      : new URL(normalizedBaseUrl, "https://tspice.invalid");
+  if (hasUrlScheme(normalizedBaseUrl)) {
+    const base = new URL(normalizedBaseUrl);
     // Enforce directory-style absolute base URLs to avoid the surprising
     // file-vs-directory behavior of `new URL(url, baseUrl)`.
     if (!base.pathname.endsWith("/")) {
@@ -168,10 +167,6 @@ export function resolveKernelUrl(
     }
 
     const resolved = new URL(url, base);
-    if (isProtocolRelativeBaseUrl) {
-      return `//${resolved.host}${resolved.pathname}${resolved.search}${resolved.hash}`;
-    }
-
     return resolved.toString();
   }
 

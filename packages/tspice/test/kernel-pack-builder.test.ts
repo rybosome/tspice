@@ -21,7 +21,10 @@ function okResponse(bytes: Uint8Array): ResponseLike {
 
 describe("kernels.naif()", () => {
   it("builds a pack, normalizes origin/pathBase, and preserves ordering", () => {
-    const ids: NaifKernelId[] = ["spk/planets/de432s.bsp", "lsk/naif0012.tls"];
+    const ids = ["spk/planets/de432s.bsp", "lsk/naif0012.tls"] as const satisfies readonly [
+      NaifKernelId,
+      ...NaifKernelId[],
+    ];
 
     const pack = kernels
       .naif({
@@ -72,6 +75,32 @@ describe("kernels.naif()", () => {
     expect(pack.baseUrl).toBeUndefined();
     expect(Object.prototype.hasOwnProperty.call(pack, "baseUrl")).toBe(false);
   });
+
+  it("throws on pick() and pick([])", () => {
+    const catalog = kernels.naif({
+      origin: "https://cdn.example.com/kernels/",
+      pathBase: "naif/",
+    });
+
+    expect(() => (catalog.pick as unknown as () => unknown)()).toThrow(/expected at least one id\/entry/);
+    expect(() => (catalog.pick as unknown as (arg: unknown) => unknown)([])).toThrow(
+      /expected at least one id\/entry/,
+    );
+  });
+
+  it("dedupes duplicates (preserves first-occurrence order)", () => {
+    const pack = kernels
+      .naif({
+        origin: "https://cdn.example.com/kernels/",
+        pathBase: "naif/",
+      })
+      .pick("lsk/naif0012.tls", "lsk/naif0012.tls", "spk/planets/de432s.bsp", "lsk/naif0012.tls");
+
+    expect(pack.kernels.map((k) => k.path)).toEqual([
+      "naif/lsk/naif0012.tls",
+      "naif/spk/planets/de432s.bsp",
+    ]);
+  });
 });
 
 describe("kernels.tspice()", () => {
@@ -91,6 +120,14 @@ describe("kernels.tspice()", () => {
       },
     ]);
   });
+
+  it("dedupes duplicates (preserves first-occurrence order)", () => {
+    const pack = kernels
+      .tspice()
+      .pick("pck/pck00011.tpc", "lsk/naif0012.tls", "pck/pck00011.tpc", "lsk/naif0012.tls");
+
+    expect(pack.kernels.map((k) => k.path)).toEqual(["naif/pck/pck00011.tpc", "naif/lsk/naif0012.tls"]);
+  });
 });
 
 describe("kernels.custom()", () => {
@@ -108,6 +145,31 @@ describe("kernels.custom()", () => {
         path: "custom/mission.bsp",
       },
     ]);
+  });
+
+  it("supports url-only mode when opts are omitted", () => {
+    const pack = kernels.custom().pick({ url: "https://example.com/a/de432s.bsp" });
+    expect(pack.kernels).toHaveLength(1);
+    expect(pack.kernels[0]?.url).toBe("https://example.com/a/de432s.bsp");
+    expect(pack.kernels[0]?.path).toMatch(/^\/kernels\/[0-9a-f]{12}-de432s\.bsp$/);
+  });
+
+  it("throws when string ids are used without mapping opts", () => {
+    const catalog = kernels.custom();
+    expect(() => (catalog.pick as unknown as (id: unknown) => unknown)("mission.bsp")).toThrow(
+      /string ids require kernels\.custom\(\{ origin, pathBase, baseUrl\? \}\)/,
+    );
+  });
+
+  it("dedupes duplicates (preserves first-occurrence order)", () => {
+    const pack = kernels
+      .custom({
+        origin: "https://example.com/kernels/",
+        pathBase: "custom/",
+      })
+      .pick("a.tls", "b.tls", "a.tls");
+
+    expect(pack.kernels.map((k) => k.path)).toEqual(["custom/a.tls", "custom/b.tls"]);
   });
 
   it("defaults kernel paths to stable hashed values to avoid collisions", () => {
@@ -184,7 +246,7 @@ describe("loadKernelPack()", () => {
     });
   });
 
-  it("supports protocol-relative baseUrl", async () => {
+  it("throws on protocol-relative baseUrl (Node fetch requires scheme-based URLs)", async () => {
     const fetch = vi.fn(async (url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
     const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
 
@@ -193,8 +255,7 @@ describe("loadKernelPack()", () => {
       kernels: [{ url: "kernels/a.tls", path: "/kernels/a.tls" }],
     };
 
-    await loadKernelPack(spice, pack, { fetch });
-    expect(fetch).toHaveBeenCalledWith("//example.com/myapp/kernels/a.tls");
+    await expect(loadKernelPack(spice, pack, { fetch })).rejects.toThrow(/scheme-based URLs like \"https:\/\//);
   });
 
   it("supports root-relative URLs with applyBaseOrigin", async () => {
