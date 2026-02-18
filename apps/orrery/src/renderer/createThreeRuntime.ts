@@ -55,6 +55,41 @@ export type SunPostprocessUpdate = {
   bloom?: Partial<SunPostprocessConfig['bloom']>
 }
 
+type DrawingBufferSize = { width: number; height: number }
+
+type OnDrawingBufferResize = ((bufferSize: DrawingBufferSize) => void) | null
+
+/**
+ * Maintain the latest drawing buffer size and replay it to late subscribers.
+ *
+ * This prevents `LineMaterial` users (e.g. orbit paths) from rendering with the
+ * default `(1,1)` resolution when they subscribe after an initial resize.
+ */
+function createDrawingBufferResizeSubscription() {
+  let lastWidth: number | null = null
+  let lastHeight: number | null = null
+  let fn: OnDrawingBufferResize = null
+
+  return {
+    emit: (width: number, height: number) => {
+      lastWidth = width
+      lastHeight = height
+      fn?.({ width, height })
+    },
+
+    set: (next: OnDrawingBufferResize) => {
+      fn = next
+      if (fn && lastWidth != null && lastHeight != null) {
+        fn({ width: lastWidth, height: lastHeight })
+      }
+    },
+  }
+}
+
+export const __testing = {
+  createDrawingBufferResizeSubscription,
+}
+
 /**
  * Create the Three.js runtime (renderer + scenes + camera controller + postprocessing).
  */
@@ -181,7 +216,7 @@ export function createThreeRuntime(args: {
   }
 
   let afterRender: ((args: { nowMs: number }) => void) | null = null
-  let onDrawingBufferResize: ((bufferSize: { width: number; height: number }) => void) | null = null
+  const drawingBufferResize = createDrawingBufferResizeSubscription()
 
   // Sky / background elements (owned by this runtime)
   let starfield: StarfieldHandle | null = null
@@ -805,7 +840,7 @@ export function createThreeRuntime(args: {
       postprocessRuntime.bloomPass.setSize(scaledW, scaledH)
     }
 
-    onDrawingBufferResize?.({ width: buffer.x, height: buffer.y })
+    drawingBufferResize.emit(buffer.x, buffer.y)
   }
 
   const updateSunPostprocess = (next: SunPostprocessUpdate) => {
@@ -928,7 +963,7 @@ export function createThreeRuntime(args: {
     }
 
     afterRender = null
-    onDrawingBufferResize = null
+    drawingBufferResize.set(null)
 
     if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
       postprocessRuntime.bloomComposer.dispose()
@@ -956,7 +991,7 @@ export function createThreeRuntime(args: {
     },
 
     setOnDrawingBufferResize: (fn) => {
-      onDrawingBufferResize = fn
+      drawingBufferResize.set(fn)
     },
 
     updateSky: (opts) => {
