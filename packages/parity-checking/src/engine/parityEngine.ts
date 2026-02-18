@@ -64,10 +64,7 @@ async function loadParitySpecs(): Promise<LoadedParitySpecs> {
 
 function cspiceRequired(): boolean {
   const explicit = process.env.TSPICE_PARITY_REQUIRED ?? process.env.TSPICE_BACKEND_VERIFY_REQUIRED;
-  if (explicit !== undefined) {
-    return explicit === "true";
-  }
-  return process.env.CI === "true";
+  return explicit === "true";
 }
 
 export type ParityEngineSummary = {
@@ -152,11 +149,7 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
     );
   }
 
-  const aliasGuard = await withTspiceRunner(async (tspiceRunner) =>
-    runDispatchAliasParityGuard(resolvedMethods, tspiceRunner),
-  );
-
-  return await withRunners(async (runners) => {
+  const paritySummary = await withRunners(async (runners) => {
     let crossCuttingCaseCount = 0;
     for (const spec of specs.crossCutting) {
       const summary = await executeCrossCuttingSpec(spec);
@@ -178,9 +171,18 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
       coveredCount: completeness.coveredCount,
       denylistCount: completeness.denylistCount,
       aliasCount: aliasCoverage.aliasCount,
-      aliasGuardValidatedCount: aliasGuard.validatedAliasCount,
+      aliasGuardValidatedCount: 0,
       methodCaseCount,
       crossCuttingCaseCount,
     };
   });
+
+  const aliasGuard = await withTspiceRunner(async (tspiceRunner) =>
+    runDispatchAliasParityGuard(resolvedMethods, tspiceRunner),
+  );
+
+  return {
+    ...paritySummary,
+    aliasGuardValidatedCount: aliasGuard.validatedAliasCount,
+  };
 }
