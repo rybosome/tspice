@@ -38,7 +38,7 @@ const { kernels, spiceClients } = await import("@rybosome/tspice");
 > For browsers, `kernels.tspice()` provides a small CORS-enabled community mirror for quickstart/testing.
 > It is **not recommended for production**.
 > It is self-funded and may be rate-limited, disabled, or trimmed if hosting costs become an issue.
-> For production, self-host kernels (or proxy) and use `kernels.naif(...)` / `kernels.custom(...)`.
+> For production, self-host kernels (or proxy) and use `kernels.naif({ ... })` / `kernels.custom(...)`.
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
@@ -90,12 +90,13 @@ Use `kernels.tspice()` for a small, typed, zero-config kernel catalog rooted at 
 - Not recommended for production.
 - Returns **fixed absolute URLs** and does not accept configuration.
 
-Use `kernels.naif({ origin, pathBase, baseUrl? })` to target the full NAIF `generic_kernels` inventory.
+Use `kernels.naif()` to target the full NAIF `generic_kernels` inventory.
 
 - IDs are leaf paths like `"lsk/naif0012.tls"`.
-- `origin` is a build-time prefix used to construct each `kernel.url`.
-- `pathBase` prefixes each `kernel.path` (virtual SPICE filesystem path).
-- `baseUrl` becomes `pack.baseUrl` and is used at load time to resolve **relative** kernel URLs.
+- By default, `origin` is `https://naif.jpl.nasa.gov/pub/naif/generic_kernels/`.
+- By default, `pathBase` is empty (`""`), so `kernel.path` matches the picked leaf id.
+- Optional overrides are available via `kernels.naif({ origin?, pathBase?, baseUrl? })`.
+- `baseUrl` (when set) becomes `pack.baseUrl` and is used at load time to resolve **relative** kernel URLs.
 
 > Note: `pick(...)` preserves caller-provided ordering (no sorting / “safe load order” magic).
 
@@ -108,7 +109,10 @@ const NAIF_KERNEL_IDS: NaifKernelId[] = [
   "spk/planets/de432s.bsp",
 ];
 
-const pack = kernels
+const pack = kernels.naif().pick(NAIF_KERNEL_IDS);
+
+// Self-hosting / subpath deployment example:
+const selfHostedPack = kernels
   .naif({
     origin: "kernels/naif/",
     baseUrl: import.meta.env.BASE_URL,

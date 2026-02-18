@@ -125,8 +125,10 @@ export type KernelsNaifOptions = {
    * Examples:
    * - `https://naif.jpl.nasa.gov/pub/naif/generic_kernels/`
    * - `kernels/naif/` (relative; resolved at load time using `baseUrl`)
+   *
+   * Defaults to NAIF's canonical `generic_kernels` host.
    */
-  origin: string;
+  origin?: string;
 
   /**
    * Optional directory-style base used at *load time* to resolve relative
@@ -136,9 +138,17 @@ export type KernelsNaifOptions = {
    */
   baseUrl?: string;
 
-  /** Base virtual path used when loading kernels into tspice. */
-  pathBase: string;
+  /**
+   * Base virtual path used when loading kernels into tspice.
+   *
+   * Defaults to `""` so leaf ids map directly to paths like
+   * `"lsk/naif0012.tls"`.
+   */
+  pathBase?: string;
 };
+
+const DEFAULT_NAIF_ORIGIN = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
+const DEFAULT_NAIF_PATH_BASE = "";
 
 export type NaifKernelCatalog = {
   pick(id: NaifKernelId): KernelPack;
@@ -218,11 +228,11 @@ export const kernels = {
    * - IDs are NAIF leaf paths like `"lsk/naif0012.tls"`.
    * - `pick(...)` preserves caller-provided ordering.
    */
-  naif: (opts: KernelsNaifOptions): NaifKernelCatalog => {
-    const origin = normalizeOrigin(opts.origin);
-    const pathBase = normalizePathBase(opts.pathBase);
+  naif: (opts?: KernelsNaifOptions): NaifKernelCatalog => {
+    const origin = normalizeOrigin(opts?.origin ?? DEFAULT_NAIF_ORIGIN);
+    const pathBase = normalizePathBase(opts?.pathBase ?? DEFAULT_NAIF_PATH_BASE);
 
-    const rawBaseUrl = normalizeOptionalBaseUrl(opts.baseUrl);
+    const rawBaseUrl = normalizeOptionalBaseUrl(opts?.baseUrl);
     const baseUrl = isAbsoluteKernelUrlPrefix(origin) ? undefined : rawBaseUrl;
     if (baseUrl !== undefined) {
       assertDirectoryStyleBaseUrl(baseUrl);
@@ -247,7 +257,8 @@ export const kernels = {
    *
    * This is intended for quickstarts/demos and is **not recommended for
    * production**. For production, self-host kernels (or proxy) and use
-   * `kernels.naif({ origin, pathBase, baseUrl? })` or `kernels.custom(...)`.
+   * `kernels.naif()`/`kernels.naif({ origin?, pathBase?, baseUrl? })` or
+   * `kernels.custom(...)`.
    */
   tspice: (): TspiceKernelCatalog => {
     const origin = ensureTrailingSlash(DEFAULT_TSPICE_ORIGIN);
@@ -264,7 +275,7 @@ export const kernels = {
         if (!allowed.has(id)) {
           throw new Error(
             `kernels.tspice().pick(): unknown id ${JSON.stringify(id)}. ` +
-              `This catalog is intentionally small. For the full NAIF inventory, use kernels.naif({ origin, pathBase, baseUrl? }).pick(...).`,
+              `This catalog is intentionally small. For the full NAIF inventory, use kernels.naif().pick(...).`,
           );
         }
       }
