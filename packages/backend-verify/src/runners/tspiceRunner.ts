@@ -72,6 +72,7 @@ function assertInteger(value: unknown, label: string): asserts value is number {
 
 type Vec3 = [number, number, number];
 type Mat3RowMajor = Parameters<SpiceBackend["mxm"]>[0];
+type SpkPackedDescriptor = Parameters<SpiceBackend["spkuds"]>[0];
 
 function assertVec3(value: unknown, label: string): asserts value is Vec3 {
   if (!Array.isArray(value)) {
@@ -101,6 +102,21 @@ function assertMat3RowMajor(value: unknown, label: string): asserts value is Mat
       invalidArgs(
         `${label} expects element ${i} to be a number (got ${formatValue(value[i])})`,
       );
+    }
+  }
+}
+
+
+function assertSpkPackedDescriptor(value: unknown, label: string): asserts value is SpkPackedDescriptor {
+  if (!Array.isArray(value)) {
+    invalidArgs(`${label} expects a length-5 array of numbers (got ${formatValue(value)})`);
+  }
+  if (value.length !== 5) {
+    invalidArgs(`${label} expects a length-5 array of numbers (got length ${value.length})`);
+  }
+  for (let i = 0; i < 5; i++) {
+    if (typeof value[i] !== "number") {
+      invalidArgs(`${label} expects element ${i} to be a number (got ${formatValue(value[i])})`);
     }
   }
 }
@@ -948,6 +964,141 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
     return backend.expool(args[0]);
   },
+
+  // ephemeris
+  "ephemeris.spkezr": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`ephemeris.spkezr expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ephemeris.spkezr expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "string") {
+      invalidArgs(`ephemeris.spkezr expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+    if (typeof args[3] !== "string") {
+      invalidArgs(`ephemeris.spkezr expects args[3] to be a string (got ${formatValue(args[3])})`);
+    }
+    if (typeof args[4] !== "string") {
+      invalidArgs(`ephemeris.spkezr expects args[4] to be a string (got ${formatValue(args[4])})`);
+    }
+    return backend.spkezr(args[0], args[1], args[2], args[3], args[4]);
+  },
+
+  "ephemeris.spkpos": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`ephemeris.spkpos expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ephemeris.spkpos expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "string") {
+      invalidArgs(`ephemeris.spkpos expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+    if (typeof args[3] !== "string") {
+      invalidArgs(`ephemeris.spkpos expects args[3] to be a string (got ${formatValue(args[3])})`);
+    }
+    if (typeof args[4] !== "string") {
+      invalidArgs(`ephemeris.spkpos expects args[4] to be a string (got ${formatValue(args[4])})`);
+    }
+    return backend.spkpos(args[0], args[1], args[2], args[3], args[4]);
+  },
+
+  "ephemeris.spkez": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkez args[0]");
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ephemeris.spkez expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "string") {
+      invalidArgs(`ephemeris.spkez expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+    if (typeof args[3] !== "string") {
+      invalidArgs(`ephemeris.spkez expects args[3] to be a string (got ${formatValue(args[3])})`);
+    }
+    assertInteger(args[4], "ephemeris.spkez args[4]");
+    return backend.spkez(args[0], args[1], args[2], args[3], args[4]);
+  },
+
+  "ephemeris.spkezp": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkezp args[0]");
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ephemeris.spkezp expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "string") {
+      invalidArgs(`ephemeris.spkezp expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+    if (typeof args[3] !== "string") {
+      invalidArgs(`ephemeris.spkezp expects args[3] to be a string (got ${formatValue(args[3])})`);
+    }
+    assertInteger(args[4], "ephemeris.spkezp args[4]");
+    return backend.spkezp(args[0], args[1], args[2], args[3], args[4]);
+  },
+
+  "ephemeris.spkgeo": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkgeo args[0]");
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ephemeris.spkgeo expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "string") {
+      invalidArgs(`ephemeris.spkgeo expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+    assertInteger(args[3], "ephemeris.spkgeo args[3]");
+    return backend.spkgeo(args[0], args[1], args[2], args[3]);
+  },
+
+  "ephemeris.spkgps": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkgps args[0]");
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ephemeris.spkgps expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "string") {
+      invalidArgs(`ephemeris.spkgps expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+    assertInteger(args[3], "ephemeris.spkgps args[3]");
+    return backend.spkgps(args[0], args[1], args[2], args[3]);
+  },
+
+  "ephemeris.spkssb": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkssb args[0]");
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ephemeris.spkssb expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    if (typeof args[2] !== "string") {
+      invalidArgs(`ephemeris.spkssb expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+    return backend.spkssb(args[0], args[1], args[2]);
+  },
+
+  "ephemeris.spksfs": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spksfs args[0]");
+    if (typeof args[1] !== "number") {
+      invalidArgs(`ephemeris.spksfs expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    return backend.spksfs(args[0], args[1]);
+  },
+
+  "ephemeris.spkpds": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkpds args[0]");
+    assertInteger(args[1], "ephemeris.spkpds args[1]");
+    if (typeof args[2] !== "string") {
+      invalidArgs(`ephemeris.spkpds expects args[2] to be a string (got ${formatValue(args[2])})`);
+    }
+    assertInteger(args[3], "ephemeris.spkpds args[3]");
+    if (typeof args[4] !== "number") {
+      invalidArgs(`ephemeris.spkpds expects args[4] to be a number (got ${formatValue(args[4])})`);
+    }
+    if (typeof args[5] !== "number") {
+      invalidArgs(`ephemeris.spkpds expects args[5] to be a number (got ${formatValue(args[5])})`);
+    }
+
+    return backend.spkpds(args[0], args[1], args[2], args[3], args[4], args[5]);
+  },
+
+  "ephemeris.spkuds": (backend, args) => {
+    assertSpkPackedDescriptor(args[0], "ephemeris.spkuds args[0]");
+    return backend.spkuds(args[0]);
+  },
+
 
   // coords-vectors
   "coords-vectors.axisar": (backend, args) => {

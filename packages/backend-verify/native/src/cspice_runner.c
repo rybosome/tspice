@@ -1314,6 +1314,18 @@ typedef enum {
   CALL_VSCL,
   CALL_VSUB,
 
+  // ephemeris
+  CALL_SPKEZR,
+  CALL_SPKPOS,
+  CALL_SPKEZ,
+  CALL_SPKEZP,
+  CALL_SPKGEO,
+  CALL_SPKGPS,
+  CALL_SPKSSB,
+  CALL_SPKPDS,
+  CALL_SPKUDS,
+  CALL_SPKSFS,
+
 
 
   // kernels
@@ -1416,6 +1428,18 @@ static CallId parse_call_id(const char *call) {
       {"coords-vectors.vnorm", CALL_VNORM},
       {"coords-vectors.vscl", CALL_VSCL},
       {"coords-vectors.vsub", CALL_VSUB},
+
+      // ephemeris
+      {"ephemeris.spkezr", CALL_SPKEZR},
+      {"ephemeris.spkpos", CALL_SPKPOS},
+      {"ephemeris.spkez", CALL_SPKEZ},
+      {"ephemeris.spkezp", CALL_SPKEZP},
+      {"ephemeris.spkgeo", CALL_SPKGEO},
+      {"ephemeris.spkgps", CALL_SPKGPS},
+      {"ephemeris.spkssb", CALL_SPKSSB},
+      {"ephemeris.spkpds", CALL_SPKPDS},
+      {"ephemeris.spkuds", CALL_SPKUDS},
+      {"ephemeris.spksfs", CALL_SPKSFS},
 
 
 
@@ -4711,6 +4735,1039 @@ int main(void) {
   }
 
 
+
+
+  // --- ephemeris --------------------------------------------------------
+
+  case CALL_SPKEZR: {
+    if (tokens[argsTok].size < 5) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezr expects args[0]=string args[1]=number args[2]=string args[3]=string args[4]=string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int targetTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int refTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int observerTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+
+    if (targetTok < 0 || targetTok >= tokenCount || tokens[targetTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezr expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (refTok < 0 || refTok >= tokenCount || tokens[refTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezr expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezr expects args[3] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (observerTok < 0 || observerTok >= tokenCount || tokens[observerTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezr expects args[4] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezr expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *target = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targetErr =
+        jsmn_strdup(input, &tokens[targetTok], &target, strDetail, sizeof(strDetail));
+    if (targetErr != JSMN_STRDUP_OK) {
+      if (targetErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *ref = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t refErr =
+        jsmn_strdup(input, &tokens[refTok], &ref, strDetail, sizeof(strDetail));
+    if (refErr != JSMN_STRDUP_OK) {
+      free(target);
+      if (refErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *abcorr = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcErr != JSMN_STRDUP_OK) {
+      free(target);
+      free(ref);
+      if (abcErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *observer = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t obsErr =
+        jsmn_strdup(input, &tokens[observerTok], &observer, strDetail, sizeof(strDetail));
+    if (obsErr != JSMN_STRDUP_OK) {
+      free(target);
+      free(ref);
+      free(abcorr);
+      if (obsErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble state[6] = {0};
+    SpiceDouble lt = 0.0;
+    spkezr_c(target, et, ref, abcorr, observer, state, &lt);
+
+    free(target);
+    free(ref);
+    free(abcorr);
+    free(observer);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkezr", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"state\":", stdout);
+    json_print_double_array(state, 6);
+    fputs(",\"lt\":", stdout);
+    fprintf(stdout, "%.17g", (double)lt);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKPOS: {
+    if (tokens[argsTok].size < 5) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpos expects args[0]=string args[1]=number args[2]=string args[3]=string args[4]=string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int targetTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int refTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int observerTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+
+    if (targetTok < 0 || targetTok >= tokenCount || tokens[targetTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpos expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (refTok < 0 || refTok >= tokenCount || tokens[refTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpos expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpos expects args[3] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (observerTok < 0 || observerTok >= tokenCount || tokens[observerTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpos expects args[4] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpos expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *target = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targetErr =
+        jsmn_strdup(input, &tokens[targetTok], &target, strDetail, sizeof(strDetail));
+    if (targetErr != JSMN_STRDUP_OK) {
+      if (targetErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *ref = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t refErr =
+        jsmn_strdup(input, &tokens[refTok], &ref, strDetail, sizeof(strDetail));
+    if (refErr != JSMN_STRDUP_OK) {
+      free(target);
+      if (refErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *abcorr = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcErr != JSMN_STRDUP_OK) {
+      free(target);
+      free(ref);
+      if (abcErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *observer = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t obsErr =
+        jsmn_strdup(input, &tokens[observerTok], &observer, strDetail, sizeof(strDetail));
+    if (obsErr != JSMN_STRDUP_OK) {
+      free(target);
+      free(ref);
+      free(abcorr);
+      if (obsErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble pos[3] = {0};
+    SpiceDouble lt = 0.0;
+    spkpos_c(target, et, ref, abcorr, observer, pos, &lt);
+
+    free(target);
+    free(ref);
+    free(abcorr);
+    free(observer);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkpos", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"pos\":", stdout);
+    json_print_double_array(pos, 3);
+    fputs(",\"lt\":", stdout);
+    fprintf(stdout, "%.17g", (double)lt);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKEZ: {
+    if (tokens[argsTok].size < 5) {
+      write_error_json_ex("invalid_args", "ephemeris.spkez expects args[0]=int args[1]=number args[2]=string args[3]=string args[4]=int", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int targTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int refTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int obsTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+
+    SpiceInt targ = 0;
+    parse_result targParse = PARSE_INVALID;
+    if (targTok >= 0 && targTok < tokenCount) {
+      targParse = jsmn_parse_int(input, &tokens[targTok], &targ);
+    }
+
+    if (targTok < 0 || targTok >= tokenCount || targParse != PARSE_OK) {
+      if (targParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkez expects args[0] to be an integer (SpiceInt range)",
+            targParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spkez expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (refTok < 0 || refTok >= tokenCount || tokens[refTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkez expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkez expects args[3] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt obs = 0;
+    parse_result obsParse = PARSE_INVALID;
+    if (obsTok >= 0 && obsTok < tokenCount) {
+      obsParse = jsmn_parse_int(input, &tokens[obsTok], &obs);
+    }
+
+    if (obsTok < 0 || obsTok >= tokenCount || obsParse != PARSE_OK) {
+      if (obsParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkez expects args[4] to be an integer (SpiceInt range)",
+            obsParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    char *ref = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t refErr =
+        jsmn_strdup(input, &tokens[refTok], &ref, strDetail, sizeof(strDetail));
+    if (refErr != JSMN_STRDUP_OK) {
+      if (refErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *abcorr = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcErr != JSMN_STRDUP_OK) {
+      free(ref);
+      if (abcErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble state[6] = {0};
+    SpiceDouble lt = 0.0;
+    spkez_c(targ, et, ref, abcorr, obs, state, &lt);
+
+    free(ref);
+    free(abcorr);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkez", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"state\":", stdout);
+    json_print_double_array(state, 6);
+    fputs(",\"lt\":", stdout);
+    fprintf(stdout, "%.17g", (double)lt);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKEZP: {
+    if (tokens[argsTok].size < 5) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezp expects args[0]=int args[1]=number args[2]=string args[3]=string args[4]=int", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int targTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int refTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int obsTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+
+    SpiceInt targ = 0;
+    parse_result targParse = PARSE_INVALID;
+    if (targTok >= 0 && targTok < tokenCount) {
+      targParse = jsmn_parse_int(input, &tokens[targTok], &targ);
+    }
+
+    if (targTok < 0 || targTok >= tokenCount || targParse != PARSE_OK) {
+      if (targParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkezp expects args[0] to be an integer (SpiceInt range)",
+            targParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezp expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (refTok < 0 || refTok >= tokenCount || tokens[refTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezp expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkezp expects args[3] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt obs = 0;
+    parse_result obsParse = PARSE_INVALID;
+    if (obsTok >= 0 && obsTok < tokenCount) {
+      obsParse = jsmn_parse_int(input, &tokens[obsTok], &obs);
+    }
+
+    if (obsTok < 0 || obsTok >= tokenCount || obsParse != PARSE_OK) {
+      if (obsParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkezp expects args[4] to be an integer (SpiceInt range)",
+            obsParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    char *ref = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t refErr =
+        jsmn_strdup(input, &tokens[refTok], &ref, strDetail, sizeof(strDetail));
+    if (refErr != JSMN_STRDUP_OK) {
+      if (refErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char *abcorr = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcErr != JSMN_STRDUP_OK) {
+      free(ref);
+      if (abcErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble pos[3] = {0};
+    SpiceDouble lt = 0.0;
+    spkezp_c(targ, et, ref, abcorr, obs, pos, &lt);
+
+    free(ref);
+    free(abcorr);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkezp", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"pos\":", stdout);
+    json_print_double_array(pos, 3);
+    fputs(",\"lt\":", stdout);
+    fprintf(stdout, "%.17g", (double)lt);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKGEO: {
+    if (tokens[argsTok].size < 4) {
+      write_error_json_ex("invalid_args", "ephemeris.spkgeo expects args[0]=int args[1]=number args[2]=string args[3]=int", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int targTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int refTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int obsTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+
+    SpiceInt targ = 0;
+    parse_result targParse = PARSE_INVALID;
+    if (targTok >= 0 && targTok < tokenCount) {
+      targParse = jsmn_parse_int(input, &tokens[targTok], &targ);
+    }
+
+    if (targTok < 0 || targTok >= tokenCount || targParse != PARSE_OK) {
+      if (targParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkgeo expects args[0] to be an integer (SpiceInt range)",
+            targParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spkgeo expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (refTok < 0 || refTok >= tokenCount || tokens[refTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkgeo expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt obs = 0;
+    parse_result obsParse = PARSE_INVALID;
+    if (obsTok >= 0 && obsTok < tokenCount) {
+      obsParse = jsmn_parse_int(input, &tokens[obsTok], &obs);
+    }
+
+    if (obsTok < 0 || obsTok >= tokenCount || obsParse != PARSE_OK) {
+      if (obsParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkgeo expects args[3] to be an integer (SpiceInt range)",
+            obsParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    char *ref = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t refErr =
+        jsmn_strdup(input, &tokens[refTok], &ref, strDetail, sizeof(strDetail));
+    if (refErr != JSMN_STRDUP_OK) {
+      if (refErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble state[6] = {0};
+    SpiceDouble lt = 0.0;
+    spkgeo_c(targ, et, ref, obs, state, &lt);
+
+    free(ref);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkgeo", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"state\":", stdout);
+    json_print_double_array(state, 6);
+    fputs(",\"lt\":", stdout);
+    fprintf(stdout, "%.17g", (double)lt);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKGPS: {
+    if (tokens[argsTok].size < 4) {
+      write_error_json_ex("invalid_args", "ephemeris.spkgps expects args[0]=int args[1]=number args[2]=string args[3]=int", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int targTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int refTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int obsTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+
+    SpiceInt targ = 0;
+    parse_result targParse = PARSE_INVALID;
+    if (targTok >= 0 && targTok < tokenCount) {
+      targParse = jsmn_parse_int(input, &tokens[targTok], &targ);
+    }
+
+    if (targTok < 0 || targTok >= tokenCount || targParse != PARSE_OK) {
+      if (targParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkgps expects args[0] to be an integer (SpiceInt range)",
+            targParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spkgps expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (refTok < 0 || refTok >= tokenCount || tokens[refTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkgps expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt obs = 0;
+    parse_result obsParse = PARSE_INVALID;
+    if (obsTok >= 0 && obsTok < tokenCount) {
+      obsParse = jsmn_parse_int(input, &tokens[obsTok], &obs);
+    }
+
+    if (obsTok < 0 || obsTok >= tokenCount || obsParse != PARSE_OK) {
+      if (obsParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkgps expects args[3] to be an integer (SpiceInt range)",
+            obsParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    char *ref = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t refErr =
+        jsmn_strdup(input, &tokens[refTok], &ref, strDetail, sizeof(strDetail));
+    if (refErr != JSMN_STRDUP_OK) {
+      if (refErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble pos[3] = {0};
+    SpiceDouble lt = 0.0;
+    spkgps_c(targ, et, ref, obs, pos, &lt);
+
+    free(ref);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkgps", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"pos\":", stdout);
+    json_print_double_array(pos, 3);
+    fputs(",\"lt\":", stdout);
+    fprintf(stdout, "%.17g", (double)lt);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKSSB: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex("invalid_args", "ephemeris.spkssb expects args[0]=int args[1]=number args[2]=string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int targTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int refTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceInt targ = 0;
+    parse_result targParse = PARSE_INVALID;
+    if (targTok >= 0 && targTok < tokenCount) {
+      targParse = jsmn_parse_int(input, &tokens[targTok], &targ);
+    }
+
+    if (targTok < 0 || targTok >= tokenCount || targParse != PARSE_OK) {
+      if (targParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkssb expects args[0] to be an integer (SpiceInt range)",
+            targParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spkssb expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (refTok < 0 || refTok >= tokenCount || tokens[refTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkssb expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *ref = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t refErr =
+        jsmn_strdup(input, &tokens[refTok], &ref, strDetail, sizeof(strDetail));
+    if (refErr != JSMN_STRDUP_OK) {
+      if (refErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble state[6] = {0};
+    spkssb_c(targ, et, ref, state);
+
+    free(ref);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkssb", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(state, 6);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKPDS: {
+    if (tokens[argsTok].size < 6) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpds expects args[0]=int args[1]=int args[2]=string args[3]=int args[4]=number args[5]=number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int bodyTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int centerTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int frameTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int typeTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int firstTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+    int lastTok = jsmn_get_array_elem(tokens, argsTok, 5, tokenCount);
+
+    SpiceInt body = 0;
+    parse_result bodyParse = PARSE_INVALID;
+    if (bodyTok >= 0 && bodyTok < tokenCount) {
+      bodyParse = jsmn_parse_int(input, &tokens[bodyTok], &body);
+    }
+
+    if (bodyTok < 0 || bodyTok >= tokenCount || bodyParse != PARSE_OK) {
+      if (bodyParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkpds expects args[0] to be an integer (SpiceInt range)",
+            bodyParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt center = 0;
+    parse_result centerParse = PARSE_INVALID;
+    if (centerTok >= 0 && centerTok < tokenCount) {
+      centerParse = jsmn_parse_int(input, &tokens[centerTok], &center);
+    }
+
+    if (centerTok < 0 || centerTok >= tokenCount || centerParse != PARSE_OK) {
+      if (centerParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkpds expects args[1] to be an integer (SpiceInt range)",
+            centerParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    if (frameTok < 0 || frameTok >= tokenCount || tokens[frameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpds expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt type = 0;
+    parse_result typeParse = PARSE_INVALID;
+    if (typeTok >= 0 && typeTok < tokenCount) {
+      typeParse = jsmn_parse_int(input, &tokens[typeTok], &type);
+    }
+
+    if (typeTok < 0 || typeTok >= tokenCount || typeParse != PARSE_OK) {
+      if (typeParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spkpds expects args[3] to be an integer (SpiceInt range)",
+            typeParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble first = 0.0;
+    if (firstTok < 0 || firstTok >= tokenCount || jsmn_parse_double(input, &tokens[firstTok], &first) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpds expects args[4] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble last = 0.0;
+    if (lastTok < 0 || lastTok >= tokenCount || jsmn_parse_double(input, &tokens[lastTok], &last) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spkpds expects args[5] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *frame = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t frameErr =
+        jsmn_strdup(input, &tokens[frameTok], &frame, strDetail, sizeof(strDetail));
+    if (frameErr != JSMN_STRDUP_OK) {
+      if (frameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble descr[5] = {0};
+    spkpds_c(body, center, frame, type, first, last, descr);
+
+    free(frame);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkpds", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(descr, 5);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKUDS: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "ephemeris.spkuds expects args[0]=descr5", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int descrTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble descr[5] = {0};
+    if (!jsmn_parse_double_array_fixed(input, tokens, descrTok, tokenCount, 5, descr)) {
+      write_error_json_ex("invalid_args", "ephemeris.spkuds expects args[0] to be a length-5 array of numbers", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt body = 0;
+    SpiceInt center = 0;
+    SpiceInt frame = 0;
+    SpiceInt type = 0;
+    SpiceDouble first = 0.0;
+    SpiceDouble last = 0.0;
+    SpiceInt baddr = 0;
+    SpiceInt eaddr = 0;
+
+    spkuds_c(descr, &body, &center, &frame, &type, &first, &last, &baddr, &eaddr);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkuds", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"body\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)body);
+    fputs(",\"center\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)center);
+    fputs(",\"frame\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)frame);
+    fputs(",\"type\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)type);
+    fputs(",\"first\":", stdout);
+    fprintf(stdout, "%.17g", (double)first);
+    fputs(",\"last\":", stdout);
+    fprintf(stdout, "%.17g", (double)last);
+    fputs(",\"baddr\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)baddr);
+    fputs(",\"eaddr\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)eaddr);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKSFS: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "ephemeris.spksfs expects args[0]=int args[1]=number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int bodyTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt body = 0;
+    parse_result bodyParse = PARSE_INVALID;
+    if (bodyTok >= 0 && bodyTok < tokenCount) {
+      bodyParse = jsmn_parse_int(input, &tokens[bodyTok], &body);
+    }
+
+    if (bodyTok < 0 || bodyTok >= tokenCount || bodyParse != PARSE_OK) {
+      if (bodyParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ephemeris.spksfs expects args[0] to be an integer (SpiceInt range)",
+            bodyParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "ephemeris.spksfs expects args[1] to be a number", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    SpiceDouble descr[5] = {0};
+    SpiceChar ident[41];
+    ident[0] = '\0';
+    SpiceBoolean found = SPICEFALSE;
+
+    spksfs_c(body, et, (SpiceInt)sizeof(ident), &handle, descr, ident, &found);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spksfs", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(ident, sizeof(ident));
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"handle\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)handle);
+    fputs(",\"descr\":", stdout);
+    json_print_double_array(descr, 5);
+    fputs(",\"ident\":\"", stdout);
+    json_print_escaped(ident);
+    fputs("\"}}\n", stdout);
+    goto done;
+  }
 
 
   // --- kernels ----------------------------------------------------------
