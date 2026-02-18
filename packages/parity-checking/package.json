@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@rybosome/tspice": "workspace:*",
+    "typescript": "^5.9.3",
     "yaml": "^2.8.1"
   },
   "optionalDependencies": {
@@ -33,7 +34,6 @@
   "devDependencies": {
     "@types/node": "^22.10.2",
     "tsx": "^4.20.5",
-    "typescript": "^5.9.3",
     "vitest": "^2.1.8"
   }
 }
