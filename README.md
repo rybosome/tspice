@@ -2,27 +2,27 @@
 
 [![CI](https://github.com/rybosome/tspice/actions/workflows/ci.yml/badge.svg)](https://github.com/rybosome/tspice/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/rybosome/tspice)](LICENSE)
 
-TypeScript-first access to NAIF SPICE geometry — in **Node.js** and the **browser** (via WebAssembly).
+TypeScript-first access to NASA’s SPICE geometry toolkit — in **Node.js** and the **browser** (via WebAssembly).
 
 - **Docs:** https://rybosome.github.io/tspice
 - **Live demo (WebGL + WASM):** https://orrery.ryboso.me/
 
 ![tspice solar system (orrery) screenshot](docs/images/orrery-earth-lighting.png)
 
-`tspice` is a set of TypeScript packages that let you load SPICE kernels and run common SPICE workflows (time conversions, ephemerides, frames, geometry) from modern JS runtimes.
+SPICE is a toolkit (and data format ecosystem) developed by **NAIF (NASA’s Navigation and Ancillary Information Facility)** for space-mission geometry. It computes positions, orientations, frames, and time conversions using mission-provided “kernels” (ephemerides, constants, pointing, etc.). It’s widely used across NASA and the planetary science community to make geometry calculations reproducible and shareable.
 
-SPICE is NAIF’s toolkit (and data formats) for space-mission geometry: it computes positions, orientations, frames, and time conversions using mission-provided “kernels” (ephemerides, constants, pointing, etc.). It’s widely used across NASA and the planetary science community to make geometry calculations reproducible and shareable.
+`tspice` is a set of TypeScript packages that let you load SPICE kernels and execute common SPICE workflows (time conversion, ephemerides, frames, geometry) from modern JS runtimes.
 
 ## Why tspice
 
-- **CSPICE** is the official, battle-tested toolkit from NAIF. It’s the right choice if you’re happy living in C/C++/Fortran or writing/maintaining your own bindings.
-- **SpiceyPy** is an excellent Python wrapper around CSPICE. It’s great for Python-first analysis workflows.
-- **ANISE** is a Rust project focused on performance and a modern API for SPICE workflows.
+- **CSPICE** is the official NAIF toolkit, battle-tested and widely used in mission operations and research. It’s the reference implementation and the right choice if you’re working directly in C/C++/Fortran or maintaining your own bindings.
+- **SpiceyPy** is a mature, well-maintained Python wrapper around CSPICE. It’s widely adopted in the planetary science community and excellent for Python-first analysis workflows.
+- **ANISE** is a modern Rust-based reimplementation of key SPICE capabilities, focused on performance, concurrency, and a strongly typed API. It offers an alternative design philosophy and is well suited for high-performance or cloud-scale workloads.
 - **tspice** targets a different niche: **TypeScript-first**, **browser-capable**, and designed for app-style workloads (interactive visualization, UI tooling, Web Workers).
 
-If your target runtime is a browser, or your application is already TypeScript/Node and you want a first-class TS API, `tspice` is aimed at that gap.
+If your target runtime is a browser, or your application is already TypeScript/Node and you want a first-class, typed API over CSPICE, `tspice` is designed to fill that gap.
 
-`tspice` embeds CSPICE-derived components behind a TypeScript API; if you need CSPICE directly, download it [directly from NAIF](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
+`tspice` links against CSPICE (or a CSPICE-derived build) behind a TypeScript API. If you need CSPICE directly, download it from [NAIF](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
 
 ## Installation & requirements
 
@@ -37,27 +37,32 @@ SPICE is stateful: loading kernels mutates a process-wide global kernel pool ins
 
 Isolation (separating kernel-sets and workloads) can be achieved by creating multiple process or WebWorker instances, depending on runtime.
 
-## Quickstart (WASM in the browser)
+## Quickstart 
+
+### Installation
 
 ```bash
 pnpm add @rybosome/tspice
 # or: npm i @rybosome/tspice
 ```
 
+### Browser (WASM backend)
+
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
 async function main() {
   // A small, CORS-enabled catalog hosted for quickstart/testing.
-  // Not recommended for production (see notes below).
+  // Not suitable for production.
   const kernelPack = kernels.tspice().pick(
     "lsk/naif0012.tls",
     "pck/pck00011.tpc",
     "spk/planets/de432s.bsp",
   );
 
+  // Build the client and load the given kernels
   const { spice, dispose } = await spiceClients
-    .withKernels(kernelPack) // fetches + stages bytes before loading
+    .withKernels(kernelPack)
     .toAsync({ backend: "wasm" });
 
   try {
@@ -72,7 +77,54 @@ async function main() {
 main().catch(console.error);
 ```
 
-**Kernel hosting note:** browsers can’t fetch kernels directly from NAIF due to CORS. `kernels.tspice()` points at a small community mirror for quickstart/testing and is **not recommended for production**. For production, self-host kernels (or proxy) and use `kernels.naif(...)` / `kernels.custom(...)`.
+In a production application, it is recommended to host kernels yourself or enable a proxy.
+
+The `kernels.naif()` catalog can be configured to point at your hosted entries, or you can load bespoke kernels.
+
+```ts
+import { kernels, spiceClients } from "@rybosome/tspice";
+
+// Hosting a mirror of NAIF's catalog at https://${our_app_url}/kernels/naif
+const naifKernels = kernels
+  .naif({ origin: 'kernels/naif/', baseUrl: import.meta.env.BASE_URL })
+  .pick(
+    "lsk/naif0012.tls",
+    "pck/pck00011.tpc",
+    "spk/planets/de432s.bsp",
+  );
+
+// Hosting a custom catalog at https://${our_app_url}/kernels/custom
+const customKernels = kernels
+  .custom({ origin: 'kernels/custom/', baseUrl: import.meta.env.BASE_URL })
+  .pick("planets/my_custom_kernel.bsp");
+```
+
+### Node
+
+```ts
+import { kernels, spiceClients } from "@rybosome/tspice";
+
+// We can download kernels directly from NAIF servers in Node.
+const kernelPack = kernels.naif().pick(
+  "lsk/naif0012.tls",
+  "pck/pck00011.tpc",
+  "spk/planets/de432s.bsp",
+);
+
+// Use the builder to create a synchronous, caching client.
+const { spice, dispose } = await spiceClients
+  .caching({ maxEntries: 10_000, ttlMs: null })
+  .withKernels(kernelPack)
+  .toSync({ backend: "node" });
+
+try {
+  const et = spice.kit.utcToEt("2000 JAN 01 12:00:00");
+  const state = spice.kit.getState({ target: "EARTH", observer: "SUN", at: et });
+  console.log(state.position, state.velocity);
+} finally {
+  await dispose();
+}
+```
 
 ## Coverage
 
