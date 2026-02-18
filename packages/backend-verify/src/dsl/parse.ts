@@ -248,6 +248,49 @@ function resolveKernelPaths(p: string, sourceDir: string): KernelEntry[] {
   return resolveMaybePack(path.resolve(sourceDir, p));
 }
 
+
+function expandFixturesMacroString(p: string, sourceDir: string): string {
+  // Only expand $FIXTURES macros; leave all other strings untouched.
+  if (p === "$FIXTURES" || p.startsWith("$FIXTURES/") || p.startsWith("$FIXTURES\\")) {
+    const suffix = p.slice("$FIXTURES".length).replace(/^[/\\]/, "");
+    const fixturesRoot = getFixturesRoot(sourceDir);
+
+    const resolved = path.resolve(fixturesRoot, suffix);
+    const rel = path.relative(fixturesRoot, resolved);
+    if (rel === ".." || rel.startsWith(`..${path.sep}`)) {
+      throw new Error(`$FIXTURES path must not escape fixtures root: ${JSON.stringify(p)}`);
+    }
+
+    return resolved;
+  }
+
+  if (p.startsWith("$FIXTURES")) {
+    throw new Error(`Invalid $FIXTURES usage: ${JSON.stringify(p)} (expected $FIXTURES/<path>)`);
+  }
+
+  return p;
+}
+
+function expandFixturesMacrosInValue(value: unknown, sourceDir: string): unknown {
+  if (typeof value === "string") {
+    return expandFixturesMacroString(value, sourceDir);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((v) => expandFixturesMacrosInValue(v, sourceDir));
+  }
+
+  if (isRecord(value)) {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value)) {
+      out[k] = expandFixturesMacrosInValue(v, sourceDir);
+    }
+    return out;
+  }
+
+  return value;
+}
+
 function parseSetup(raw: unknown, sourceDir: string): ScenarioSetupAst {
   if (raw === undefined) return {};
   if (!isRecord(raw)) {
@@ -272,11 +315,13 @@ function parseCase(raw: unknown, index: number, sourceDir: string): ScenarioCase
 
   const id = raw.id === undefined ? `case-${index}` : assertString(raw.id, `cases[${index}].id`);
   const call = assertString(raw.call, `cases[${index}].call`);
-  const args = raw.args === undefined ? [] : raw.args;
+  const argsRaw = raw.args === undefined ? [] : raw.args;
 
-  if (!Array.isArray(args)) {
-    throw new TypeError(`cases[${index}].args must be an array (got ${JSON.stringify(args)})`);
+  if (!Array.isArray(argsRaw)) {
+    throw new TypeError(`cases[${index}].args must be an array (got ${JSON.stringify(argsRaw)})`);
   }
+
+  const args = argsRaw.map((v) => expandFixturesMacrosInValue(v, sourceDir));
 
   const setup = parseSetup(raw.setup, sourceDir);
   const compare = parseCompare(raw.compare, `cases[${index}].compare`);
