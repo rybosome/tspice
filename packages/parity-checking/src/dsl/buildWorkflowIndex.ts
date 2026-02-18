@@ -1,5 +1,6 @@
 import type { WorkflowSpec } from "./types.js";
 
+/** Build a workflow lookup map and reject duplicate workflow IDs. */
 export function buildWorkflowIndex(workflows: WorkflowSpec[]): Map<string, WorkflowSpec> {
   const byId = new Map<string, WorkflowSpec>();
 

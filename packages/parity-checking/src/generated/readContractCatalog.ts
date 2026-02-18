@@ -9,6 +9,7 @@ function packageRoot(): string {
   return path.resolve(here, "..", "..");
 }
 
+/** Read and validate the canonical contract method catalog. */
 export function readContractCatalog(): string[] {
   const filePath = path.join(packageRoot(), CONTRACT_CATALOG_PATH);
   const raw = fs.readFileSync(filePath, "utf8");

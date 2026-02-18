@@ -5,6 +5,7 @@ function stableSort(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 
+/** Recursively discover YAML files beneath a root directory. */
 export function discoverYamlFiles(rootDir: string): string[] {
   const out: string[] = [];
 
@@ -32,6 +33,7 @@ export function discoverYamlFiles(rootDir: string): string[] {
   return out;
 }
 
+/** Discover cross-cutting spec YAML files in deterministic order. */
 export function discoverCrossCuttingSpecs(rootDir: string): string[] {
   return discoverYamlFiles(rootDir);
 }

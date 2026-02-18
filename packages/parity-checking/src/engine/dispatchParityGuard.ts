@@ -42,6 +42,7 @@ function buildCompareOptions(tolAbs: number, tolRel: number, angleWrapPi: boolea
   return out;
 }
 
+/** Validate that each dispatch alias matches its canonical method behavior. */
 export async function runDispatchAliasParityGuard(
   resolvedMethods: ResolvedMethodSpec[],
   tspiceRunner: CaseRunner,

@@ -101,6 +101,18 @@ async function withRunners<T>(
   }
 }
 
+async function withTspiceRunner<T>(fn: (runner: CaseRunner) => Promise<T>): Promise<T> {
+  let tspice: CaseRunner | undefined;
+
+  try {
+    tspice = await createTspiceRunner();
+    return await fn(tspice);
+  } finally {
+    await tspice?.dispose?.();
+  }
+}
+
+/** Run parity validation across dispatch aliases, cross-cutting specs, and method specs. */
 export async function runParityEngine(): Promise<ParityEngineSummary> {
   const specs = await loadParitySpecs();
 
@@ -140,9 +152,11 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
     );
   }
 
-  return await withRunners(async (runners) => {
-    const aliasGuard = await runDispatchAliasParityGuard(resolvedMethods, runners.tspice);
+  const aliasGuard = await withTspiceRunner(async (tspiceRunner) =>
+    runDispatchAliasParityGuard(resolvedMethods, tspiceRunner),
+  );
 
+  return await withRunners(async (runners) => {
     let crossCuttingCaseCount = 0;
     for (const spec of specs.crossCutting) {
       const summary = await executeCrossCuttingSpec(spec);

@@ -16,6 +16,7 @@ export type CompletenessValidationSummary = {
   denylistCount: number;
 };
 
+/** Enforce parity catalog coverage invariants for migration safety. */
 export function validateCompleteness(methodSpecs: MethodSpec[]): CompletenessValidationSummary {
   const contractMethods = readContractCatalog();
   const denylist = readParityDenylist();
