@@ -1534,6 +1534,7 @@ int main(void) {
   int tokenCap = 256;
   jsmntok_t *tokens = NULL;
   int tokenCount = 0;
+  jsmn_parser parser;
 
   while (1) {
     tokens = (jsmntok_t *)malloc(sizeof(jsmntok_t) * (size_t)tokenCap);
@@ -1543,9 +1544,8 @@ int main(void) {
       return 1;
     }
 
-    jsmn_parser p;
-    jsmn_init(&p);
-    tokenCount = jsmn_parse(&p, input, inputLen, tokens, (unsigned int)tokenCap);
+    jsmn_init(&parser);
+    tokenCount = jsmn_parse(&parser, input, inputLen, tokens, (unsigned int)tokenCap);
     if (tokenCount >= 0) {
       break;
     }
@@ -1564,6 +1564,33 @@ int main(void) {
       continue;
     }
 
+    free(input);
+    write_error_json_ex("invalid_request", "Invalid JSON", NULL, NULL, NULL,
+                        NULL);
+    return 0;
+  }
+
+  size_t firstNonWs = 0;
+  while (firstNonWs < inputLen &&
+         isspace((unsigned char)input[firstNonWs])) {
+    firstNonWs++;
+  }
+
+  size_t endNonWs = inputLen;
+  while (endNonWs > firstNonWs &&
+         isspace((unsigned char)input[endNonWs - 1])) {
+    endNonWs--;
+  }
+
+  // Enforce strict top-level parsing: exactly one JSON object spanning the
+  // full non-whitespace payload. This rejects trailing bytes like
+  // '{"call":"time.str2et"}garbage'.
+  if (tokenCount >= 1 &&
+      (tokens[0].start < 0 || tokens[0].end < 0 ||
+       (size_t)tokens[0].start != firstNonWs ||
+       (size_t)tokens[0].end != endNonWs ||
+       parser.toksuper != -1)) {
+    free(tokens);
     free(input);
     write_error_json_ex("invalid_request", "Invalid JSON", NULL, NULL, NULL,
                         NULL);
