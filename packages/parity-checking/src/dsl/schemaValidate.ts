@@ -178,6 +178,7 @@ function parseMethodCase(value: unknown, label: string): MethodCaseSpec {
   return out;
 }
 
+/** Parse and validate a workflow YAML document. */
 export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
 
@@ -218,6 +219,7 @@ export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
   return out;
 }
 
+/** Parse and validate a method YAML document. */
 export function parseMethodSpec(file: ScenarioYamlFile): MethodSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
 
@@ -295,6 +297,7 @@ function parseCrossCuttingCase(value: unknown, label: string): CrossCuttingCaseS
   };
 }
 
+/** Parse and validate a cross-cutting YAML document. */
 export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
 

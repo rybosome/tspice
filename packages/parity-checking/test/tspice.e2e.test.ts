@@ -6,7 +6,7 @@ import { parse as parseYaml } from "yaml";
 import { describe, expect, it } from "vitest";
 
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
-import { parseMethodSpec } from "../src/dsl/schemaValidate.js";
+import { parseMethodSpec, parseWorkflowSpec } from "../src/dsl/schemaValidate.js";
 import { mergeResolvedMethodSpec } from "../src/dsl/mergeResolvedSpec.js";
 import { executeMethodSpecParity } from "../src/engine/executeMethodSpec.js";
 import { createCspiceRunner, getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
@@ -30,7 +30,17 @@ describe("parity-checking method execution", () => {
       data: parseYaml(fs.readFileSync(methodPath, "utf8")),
     });
 
-    const resolved = mergeResolvedMethodSpec(method, []);
+    const workflowPath = path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      "../workflows/legacy/time.str2et.basic@v1.yml",
+    );
+
+    const workflow = parseWorkflowSpec({
+      sourcePath: workflowPath,
+      data: parseYaml(fs.readFileSync(workflowPath, "utf8")),
+    });
+
+    const resolved = mergeResolvedMethodSpec(method, [workflow]);
 
     const tspice = await createTspiceRunner();
     const cspice = await createCspiceRunner();
