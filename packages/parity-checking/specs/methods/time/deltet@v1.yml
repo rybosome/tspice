@@ -1,0 +1,13 @@
+id: methods/time/deltet@v1
+kind: method
+contractMethod: time.deltet
+canonicalMethod: time.deltet
+uses:
+  - workflows/legacy/time.misc.basic@v1
+cases:
+  - id: time.deltet
+    args:
+      - 0
+      - ET
+    expect:
+      ok: true

@@ -68,6 +68,7 @@ jobs:
 
         pnpm run fetch:cspice
 
+        export TSPICE_PARITY_BACKEND=wasm
         export TSPICE_BACKEND_VERIFY_BACKEND=wasm
         pnpm test:verify
 

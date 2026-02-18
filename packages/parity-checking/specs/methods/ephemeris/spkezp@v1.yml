@@ -1,0 +1,16 @@
+id: methods/ephemeris/spkezp@v1
+kind: method
+contractMethod: ephemeris.spkezp
+canonicalMethod: ephemeris.spkezp
+uses:
+  - workflows/legacy/ephemeris.spk-read.basic@v1
+cases:
+  - id: ephemeris.spkezp.earth-sun
+    args:
+      - 399
+      - 0
+      - J2000
+      - NONE
+      - 10
+    expect:
+      ok: true

@@ -1,0 +1,23 @@
+id: methods/coords-vectors/mxv@v1
+kind: method
+contractMethod: coords-vectors.mxv
+canonicalMethod: coords-vectors.mxv
+uses:
+  - workflows/legacy/coords-vectors.basic@v1
+cases:
+  - id: coords-vectors.mxv
+    args:
+      - - 1
+        - 2
+        - 3
+        - 0
+        - 1
+        - 4
+        - 5
+        - 6
+        - 0
+      - - 1
+        - -1
+        - 2
+    expect:
+      ok: true

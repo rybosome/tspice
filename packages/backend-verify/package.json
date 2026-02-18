@@ -11,12 +11,13 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && node ./scripts/pretest-cspice-runner.mjs",
-    "test": "vitest run"
+    "test": "node ./scripts/deprecated-parity-path.mjs"
   },
   "dependencies": {
     "@rybosome/tspice": "workspace:*",

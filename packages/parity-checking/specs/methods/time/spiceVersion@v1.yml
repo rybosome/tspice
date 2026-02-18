@@ -1,0 +1,11 @@
+id: methods/time/spiceVersion@v1
+kind: method
+contractMethod: time.spiceVersion
+canonicalMethod: time.spiceVersion
+uses:
+  - workflows/legacy/time.misc.basic@v1
+cases:
+  - id: time.spiceVersion
+    args: []
+    expect:
+      ok: true

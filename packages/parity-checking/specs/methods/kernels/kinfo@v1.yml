@@ -1,0 +1,15 @@
+id: methods/kernels/kinfo@v1
+kind: method
+contractMethod: kernels.kinfo
+canonicalMethod: kernels.kinfo
+uses:
+  - workflows/legacy/kernels.basic@v1
+cases:
+  - id: kernels.kinfo
+    args:
+      - $FIXTURES/kernel-pool-parity.tpc
+    expect:
+      ok: true
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc

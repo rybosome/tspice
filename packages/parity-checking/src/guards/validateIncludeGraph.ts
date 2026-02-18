@@ -1,0 +1,12 @@
+import { buildWorkflowIndex } from "../dsl/buildWorkflowIndex.js";
+import { resolveMethodIncludes } from "../dsl/resolveIncludes.js";
+
+import type { LoadedParitySpecs } from "../dsl/types.js";
+
+export function validateIncludeGraph(specs: LoadedParitySpecs): void {
+  const workflowIndex = buildWorkflowIndex(specs.workflows);
+
+  for (const method of specs.methods) {
+    resolveMethodIncludes(method, workflowIndex);
+  }
+}

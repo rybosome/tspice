@@ -1,0 +1,17 @@
+id: methods/ephemeris/spkpds@v1
+kind: method
+contractMethod: ephemeris.spkpds
+canonicalMethod: ephemeris.spkpds
+uses:
+  - workflows/legacy/ephemeris.spk-read.basic@v1
+cases:
+  - id: ephemeris.spkpds.simple
+    args:
+      - 399
+      - 10
+      - J2000
+      - 2
+      - -1
+      - 1
+    expect:
+      ok: true

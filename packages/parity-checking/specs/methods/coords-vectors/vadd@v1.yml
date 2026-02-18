@@ -1,0 +1,17 @@
+id: methods/coords-vectors/vadd@v1
+kind: method
+contractMethod: coords-vectors.vadd
+canonicalMethod: coords-vectors.vadd
+uses:
+  - workflows/legacy/coords-vectors.basic@v1
+cases:
+  - id: coords-vectors.vadd
+    args:
+      - - 1
+        - 2
+        - 3
+      - - 4
+        - 5
+        - 6
+    expect:
+      ok: true

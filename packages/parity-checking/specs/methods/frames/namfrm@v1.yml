@@ -1,0 +1,22 @@
+id: methods/frames/namfrm@v1
+kind: method
+contractMethod: frames.namfrm
+canonicalMethod: frames.namfrm
+uses:
+  - workflows/legacy/frames.basic@v1
+cases:
+  - id: namfrm-b1950
+    args:
+      - B1950
+    expect:
+      ok: true
+  - id: namfrm-j2000
+    args:
+      - J2000
+    expect:
+      ok: true
+  - id: namfrm-unknown
+    args:
+      - NO_SUCH_FRAME
+    expect:
+      ok: true

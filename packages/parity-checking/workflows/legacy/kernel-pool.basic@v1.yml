@@ -1,0 +1,8 @@
+id: workflows/legacy/kernel-pool.basic@v1
+kind: workflow
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+notes:
+  - Migrated from legacy scenario kernel-pool.basic.yml.
+  - Generated during parity-checking migration from backend-verify.

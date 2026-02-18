@@ -1,0 +1,14 @@
+id: methods/kernel-pool/pipool@v1
+kind: method
+contractMethod: kernel-pool.pipool
+canonicalMethod: kernel-pool.pipool
+uses:
+  - workflows/legacy/kernel-pool.basic@v1
+cases:
+  - id: pipool-write
+    args:
+      - TSPICE_PARITY_PIPOOL_WRITTEN
+      - - -2147483648
+        - 2147483647
+    expect:
+      ok: true

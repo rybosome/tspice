@@ -1,0 +1,12 @@
+id: methods/frames/frinfo@v1
+kind: method
+contractMethod: frames.frinfo
+canonicalMethod: frames.frinfo
+uses:
+  - workflows/legacy/frames.basic@v1
+cases:
+  - id: frinfo-j2000
+    args:
+      - 1
+    expect:
+      ok: true

@@ -1,0 +1,12 @@
+id: methods/time/tkvrsn@v1
+kind: method
+contractMethod: time.tkvrsn
+canonicalMethod: time.tkvrsn
+uses:
+  - workflows/legacy/time.misc.basic@v1
+cases:
+  - id: time.tkvrsn
+    args:
+      - TOOLKIT
+    expect:
+      ok: true

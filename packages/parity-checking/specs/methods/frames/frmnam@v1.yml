@@ -1,0 +1,22 @@
+id: methods/frames/frmnam@v1
+kind: method
+contractMethod: frames.frmnam
+canonicalMethod: frames.frmnam
+uses:
+  - workflows/legacy/frames.basic@v1
+cases:
+  - id: frmnam-1
+    args:
+      - 1
+    expect:
+      ok: true
+  - id: frmnam-2
+    args:
+      - 2
+    expect:
+      ok: true
+  - id: frmnam-unknown
+    args:
+      - 123456
+    expect:
+      ok: true
