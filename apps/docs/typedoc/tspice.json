@@ -16,7 +16,7 @@
   "excludeProtected": true,
   "excludeInternal": true,
 
-  "docsRoot": "..",
+  "docsRoot": ".",
   "sidebar": {
     "autoConfiguration": true,
     "format": "vitepress",

@@ -1,6 +1,8 @@
 #include "tspice_backend_shim.h"
 #include "tspice_error.h"
 
+#include "../handle_validation.h"
+
 #include "SpiceUsr.h"
 
 #include <string.h>
@@ -304,4 +306,25 @@ int tspice_ktotal_all(char *err, int errMaxBytes) {
   }
 
   return (int)count;
+}
+
+int tspice_kplfrm(int frmcls, uintptr_t idsetHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+
+  SpiceCell *idset = tspice_validate_handle(idsetHandle, "cell", "tspice_kplfrm()", err, errMaxBytes);
+  if (idset == NULL) {
+    return 1;
+  }
+  if (idset->dtype != SPICE_INT) {
+    return tspice_return_error(err, errMaxBytes, "tspice_kplfrm(): expected SPICE_INT cell");
+  }
+
+  kplfrm_c((SpiceInt)frmcls, idset);
+
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
 }

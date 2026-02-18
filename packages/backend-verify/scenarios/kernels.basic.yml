@@ -1,0 +1,62 @@
+name: kernels.basic
+cases:
+  - id: kernels.furnsh.text-kernel
+    call: kernels.furnsh
+    args:
+      - $FIXTURES/kernel-pool-parity.tpc
+
+  - id: kernels.unload.text-kernel
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    call: kernels.unload
+    args:
+      - $FIXTURES/kernel-pool-parity.tpc
+
+  - id: kernels.kclear
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    call: kernels.kclear
+    args: []
+
+  - id: kernels.ktotal
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    call: kernels.ktotal
+    args:
+      - ALL
+
+  - id: kernels.kdata
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    call: kernels.kdata
+    args:
+      - 0
+      - ALL
+
+  - id: kernels.kinfo
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    call: kernels.kinfo
+    args:
+      - $FIXTURES/kernel-pool-parity.tpc
+
+  - id: kernels.kxtrct
+    call: kernels.kxtrct
+    args:
+      - A
+      -
+        - '='
+      - A B C = D
+
+  - id: kernels.kplfrm
+    setup:
+      kernels:
+        - $FIXTURES/frames-minimal/earth_topo_201023.tf
+    call: kernels.kplfrm
+    args:
+      - 4

@@ -15,6 +15,10 @@ static inline void tspice_write_error(char *err, int errMaxBytes, const char *ms
   err[errMaxBytes - 1] = '\0';
 }
 
+static inline void tspice_clear_error(char *err, int errMaxBytes) {
+  if (err && errMaxBytes > 0) err[0] = '\0';
+}
+
 static inline int tspice_return_error(char *err, int errMaxBytes, const char *msg) {
   tspice_write_error(err, errMaxBytes, msg);
   return 1;
