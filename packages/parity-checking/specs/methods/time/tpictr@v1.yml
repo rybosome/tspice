@@ -1,0 +1,13 @@
+id: methods/time/tpictr@v1
+kind: method
+contractMethod: time.tpictr
+canonicalMethod: time.tpictr
+uses:
+  - workflows/legacy/time.misc.basic@v1
+cases:
+  - id: time.tpictr
+    args:
+      - Thu Oct 01 11:11:11 PDT 1111
+      - X
+    expect:
+      ok: true

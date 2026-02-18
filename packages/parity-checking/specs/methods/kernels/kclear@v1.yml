@@ -1,0 +1,14 @@
+id: methods/kernels/kclear@v1
+kind: method
+contractMethod: kernels.kclear
+canonicalMethod: kernels.kclear
+uses:
+  - workflows/legacy/kernels.basic@v1
+cases:
+  - id: kernels.kclear
+    args: []
+    expect:
+      ok: true
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc

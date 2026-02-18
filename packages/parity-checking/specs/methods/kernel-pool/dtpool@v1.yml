@@ -1,0 +1,22 @@
+id: methods/kernel-pool/dtpool@v1
+kind: method
+contractMethod: kernel-pool.dtpool
+canonicalMethod: kernel-pool.dtpool
+uses:
+  - workflows/legacy/kernel-pool.basic@v1
+cases:
+  - id: dtpool-char-var
+    args:
+      - TSPICE_PARITY_CHAR_VAR
+    expect:
+      ok: true
+  - id: dtpool-double-var
+    args:
+      - TSPICE_PARITY_DOUBLE_VAR
+    expect:
+      ok: true
+  - id: dtpool-missing
+    args:
+      - TSPICE_PARITY_MISSING_VAR
+    expect:
+      ok: true

@@ -1,0 +1,12 @@
+id: methods/frames/cnmfrm@v1
+kind: method
+contractMethod: frames.cnmfrm
+canonicalMethod: frames.cnmfrm
+uses:
+  - workflows/legacy/frames.basic@v1
+cases:
+  - id: cnmfrm-earth
+    args:
+      - EARTH
+    expect:
+      ok: true

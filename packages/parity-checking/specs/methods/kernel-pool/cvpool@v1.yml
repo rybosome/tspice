@@ -1,0 +1,12 @@
+id: methods/kernel-pool/cvpool@v1
+kind: method
+contractMethod: kernel-pool.cvpool
+canonicalMethod: kernel-pool.cvpool
+uses:
+  - workflows/legacy/kernel-pool.basic@v1
+cases:
+  - id: cvpool-check
+    args:
+      - TSPICE_PARITY_AGENT
+    expect:
+      ok: true

@@ -1,0 +1,16 @@
+id: methods/coords-vectors/recsph@v1
+kind: method
+contractMethod: coords-vectors.recsph
+canonicalMethod: coords-vectors.recsph
+uses:
+  - workflows/legacy/coords-vectors.basic@v1
+cases:
+  - id: coords-vectors.recsph
+    args:
+      - - 1.1
+        - 0.7
+        - 0.4
+    compare:
+      angleWrapPi: true
+    expect:
+      ok: true

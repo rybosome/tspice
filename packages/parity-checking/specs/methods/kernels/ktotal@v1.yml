@@ -1,0 +1,15 @@
+id: methods/kernels/ktotal@v1
+kind: method
+contractMethod: kernels.ktotal
+canonicalMethod: kernels.ktotal
+uses:
+  - workflows/legacy/kernels.basic@v1
+cases:
+  - id: kernels.ktotal
+    args:
+      - ALL
+    expect:
+      ok: true
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc

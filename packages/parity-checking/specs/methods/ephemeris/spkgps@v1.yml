@@ -1,0 +1,15 @@
+id: methods/ephemeris/spkgps@v1
+kind: method
+contractMethod: ephemeris.spkgps
+canonicalMethod: ephemeris.spkgps
+uses:
+  - workflows/legacy/ephemeris.spk-read.basic@v1
+cases:
+  - id: ephemeris.spkgps.earth-sun
+    args:
+      - 399
+      - 0
+      - J2000
+      - 10
+    expect:
+      ok: true

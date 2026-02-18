@@ -1,0 +1,39 @@
+{
+  "name": "@rybosome/tspice-parity-checking",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "generate:contract-catalog": "tsx ./scripts/generate-contract-catalog.ts",
+    "generate:alias-map": "tsx ./scripts/generate-alias-map.ts",
+    "generate:denylist": "tsx ./scripts/generate-parity-denylist.ts",
+    "generate:catalogs": "pnpm run generate:contract-catalog && pnpm run generate:alias-map && pnpm run generate:denylist",
+    "check:generated": "node ./scripts/check-generated.mjs",
+    "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && pnpm run check:generated && node ./scripts/pretest-cspice-runner.mjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@rybosome/tspice": "workspace:*",
+    "yaml": "^2.8.1"
+  },
+  "optionalDependencies": {
+    "@rybosome/tspice-backend-node": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.8"
+  }
+}
