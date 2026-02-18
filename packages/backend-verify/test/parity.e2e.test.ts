@@ -21,9 +21,52 @@ import { spiceShortSymbol } from "../src/errors/spiceShort.js";
 const DEFAULT_TOL_ABS = 1e-12;
 const DEFAULT_TOL_REL = 1e-12;
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function normalizeVolatileResultFields(call: string, result: unknown): unknown {
+  // `spksfs().handle` is a backend-local native DAF handle. Its numeric value
+  // is not semantically stable across runtimes/processes, so parity should
+  // compare the meaningful fields (`found`, `descr`, `ident`) instead.
+  if (call !== "ephemeris.spksfs" || !isRecord(result) || result.found !== true) {
+    return result;
+  }
+
+  if (!("handle" in result)) {
+    return result;
+  }
+
+  const rest = { ...result };
+  delete rest.handle;
+  return rest;
+}
+
 function isRequired(): boolean {
   return process.env.TSPICE_BACKEND_VERIFY_REQUIRED === "true";
 }
+
+describe("normalizeVolatileResultFields", () => {
+  it("drops found spksfs handle before parity compare", () => {
+    const input = {
+      found: true,
+      handle: 9,
+      descr: [1, 2, 3],
+      ident: "DE440",
+    };
+
+    expect(normalizeVolatileResultFields("ephemeris.spksfs", input)).toEqual({
+      found: true,
+      descr: [1, 2, 3],
+      ident: "DE440",
+    });
+  });
+
+  it("keeps non-spksfs results unchanged", () => {
+    const input = { found: true, handle: 9 };
+    expect(normalizeVolatileResultFields("ephemeris.spkssb", input)).toEqual(input);
+  });
+});
 
 describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
   const status = getCspiceRunnerStatus();
@@ -156,7 +199,9 @@ describe.sequential("backend-verify (tspice vs raw CSPICE parity)", () => {
 
         // Both succeeded.
         // cspice is the reference.
-        const cmp = compareValues(t.outcome.result, c.outcome.result, { tolAbs, tolRel, angleWrapPi });
+        const actualResult = normalizeVolatileResultFields(t.case.call, t.outcome.result);
+        const expectedResult = normalizeVolatileResultFields(c.case.call, c.outcome.result);
+        const cmp = compareValues(actualResult, expectedResult, { tolAbs, tolRel, angleWrapPi });
         if (!cmp.ok) {
           const report = formatMismatchReport(cmp.mismatches);
           throw new Error(`Result mismatch (${label}):\n${report}`);
