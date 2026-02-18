@@ -7,7 +7,7 @@ TypeScript-first access to NAIF SPICE geometry — in **Node.js** and the **brow
 - **Docs:** https://rybosome.github.io/tspice
 - **Live demo (WebGL + WASM):** https://orrery.ryboso.me/
 
-![tspice solar system (orrery) screenshot](docs/images/tspice-solar-system.png)
+![tspice solar system (orrery) screenshot](docs/images/orrery-earth-lighting.png)
 
 `tspice` is a set of TypeScript packages that let you load SPICE kernels and run common SPICE workflows (time conversions, ephemerides, frames, geometry) from modern JS runtimes.
 

@@ -5,9 +5,9 @@ const scriptsDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptsDir, "..");
 
 try {
-  let createBackend;
+  let spiceClients;
   try {
-    ({ createBackend } = await import("@rybosome/tspice"));
+    ({ spiceClients } = await import("@rybosome/tspice"));
   } catch (error) {
     const shouldFallback =
       error &&
@@ -21,11 +21,15 @@ try {
     const tspiceEntry = pathToFileURL(
       path.join(repoRoot, "packages", "tspice", "dist", "index.js")
     );
-    ({ createBackend } = await import(tspiceEntry.href));
+    ({ spiceClients } = await import(tspiceEntry.href));
   }
 
-  const backend = await createBackend({ backend: "node" });
-  console.log(backend.spiceVersion());
+  const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+  try {
+    console.log(spice.raw.spiceVersion());
+  } finally {
+    await dispose();
+  }
 } catch (error) {
   console.error(
     "Failed to load @rybosome/tspice (from node_modules or local dist). Ensure it is built and its native bindings are available."
