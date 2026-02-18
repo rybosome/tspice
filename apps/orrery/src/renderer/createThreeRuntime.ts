@@ -11,6 +11,7 @@ import { createSelectionOverlay, type SelectionOverlay } from '../scene/Selectio
 import { createSkydome, type CreateSkydomeOptions } from '../scene/Skydome.js'
 import { createStarfield, type StarfieldHandle } from '../scene/Starfield.js'
 import type { BodyRef } from '../spice/types.js'
+import { createDrawingBufferResizeSubscription } from './drawingBufferResizeSubscription.js'
 import type { RenderHudStats } from './RenderHud.js'
 
 export type ThreeRuntime = {
@@ -181,7 +182,7 @@ export function createThreeRuntime(args: {
   }
 
   let afterRender: ((args: { nowMs: number }) => void) | null = null
-  let onDrawingBufferResize: ((bufferSize: { width: number; height: number }) => void) | null = null
+  const drawingBufferResize = createDrawingBufferResizeSubscription()
 
   // Sky / background elements (owned by this runtime)
   let starfield: StarfieldHandle | null = null
@@ -805,7 +806,7 @@ export function createThreeRuntime(args: {
       postprocessRuntime.bloomPass.setSize(scaledW, scaledH)
     }
 
-    onDrawingBufferResize?.({ width: buffer.x, height: buffer.y })
+    drawingBufferResize.emit(buffer.x, buffer.y)
   }
 
   const updateSunPostprocess = (next: SunPostprocessUpdate) => {
@@ -928,7 +929,7 @@ export function createThreeRuntime(args: {
     }
 
     afterRender = null
-    onDrawingBufferResize = null
+    drawingBufferResize.set(null)
 
     if (postprocessRuntime.mode === 'wholeFrame' || postprocessRuntime.mode === 'sunIsolated') {
       postprocessRuntime.bloomComposer.dispose()
@@ -956,7 +957,7 @@ export function createThreeRuntime(args: {
     },
 
     setOnDrawingBufferResize: (fn) => {
-      onDrawingBufferResize = fn
+      drawingBufferResize.set(fn)
     },
 
     updateSky: (opts) => {
