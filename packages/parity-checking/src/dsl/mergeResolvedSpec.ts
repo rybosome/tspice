@@ -6,6 +6,7 @@ function kernelEntryKey(entry: KernelEntry): string {
   return typeof entry === "string" ? `str:${entry}` : `obj:${JSON.stringify(entry)}`;
 }
 
+/** Merge setup kernel entries while preserving first-seen order. */
 export function mergeSetupChain(setups: Array<ScenarioSetupAst | undefined>): ScenarioSetupAst | undefined {
   const seen = new Set<string>();
   const merged: KernelEntry[] = [];
@@ -23,6 +24,7 @@ export function mergeSetupChain(setups: Array<ScenarioSetupAst | undefined>): Sc
   return merged.length === 0 ? undefined : { kernels: merged };
 }
 
+/** Merge compare settings where later entries override earlier ones. */
 export function mergeCompareChain(compareChain: Array<ScenarioCompareAst | undefined>): ScenarioCompareAst | undefined {
   const out: ScenarioCompareAst = {};
 
@@ -37,6 +39,7 @@ export function mergeCompareChain(compareChain: Array<ScenarioCompareAst | undef
   return Object.keys(out).length === 0 ? undefined : out;
 }
 
+/** Build a method spec with includes merged into setup and compare defaults. */
 export function mergeResolvedMethodSpec(method: MethodSpec, includeOrder: WorkflowSpec[]): ResolvedMethodSpec {
   const mergedSetup = mergeSetupChain([...includeOrder.map((workflow) => workflow.setup), method.setup]);
 

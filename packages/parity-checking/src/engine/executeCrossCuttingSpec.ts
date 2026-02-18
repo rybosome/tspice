@@ -104,6 +104,7 @@ export type CrossCuttingExecutionSummary = {
   caseCount: number;
 };
 
+/** Execute one cross-cutting spec against the native CSPICE runner. */
 export async function executeCrossCuttingSpec(spec: CrossCuttingSpec): Promise<CrossCuttingExecutionSummary> {
   const status = getCspiceRunnerStatus();
   if (!status.ready) {

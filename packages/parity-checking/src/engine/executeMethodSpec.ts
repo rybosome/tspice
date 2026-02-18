@@ -93,6 +93,7 @@ export type MethodExecutionSummary = {
   caseCount: number;
 };
 
+/** Execute and compare one method spec across tspice and cspice runners. */
 export async function executeMethodSpecParity(
   resolvedMethod: ResolvedMethodSpec,
   runners: {

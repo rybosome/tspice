@@ -10,6 +10,7 @@ function assertUnique(values: string[], label: string): void {
   }
 }
 
+/** Validate high-level uniqueness constraints across loaded parity specs. */
 export function validateSchema(specs: LoadedParitySpecs): void {
   assertUnique(
     specs.workflows.map((workflow) => workflow.id),

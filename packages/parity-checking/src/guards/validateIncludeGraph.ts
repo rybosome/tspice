@@ -3,6 +3,7 @@ import { resolveMethodIncludes } from "../dsl/resolveIncludes.js";
 
 import type { LoadedParitySpecs } from "../dsl/types.js";
 
+/** Validate include references and cycles across method specs. */
 export function validateIncludeGraph(specs: LoadedParitySpecs): void {
   const workflowIndex = buildWorkflowIndex(specs.workflows);
 

@@ -9,6 +9,7 @@ function packageRoot(): string {
   return path.resolve(here, "..", "..");
 }
 
+/** Read and validate the alias-to-canonical method mapping catalog. */
 export function readAliasMap(): Record<string, string> {
   const filePath = path.join(packageRoot(), ALIAS_MAP_CATALOG_PATH);
   const raw = fs.readFileSync(filePath, "utf8");

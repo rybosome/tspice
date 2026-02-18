@@ -5,6 +5,7 @@ export type DispatchAliasCoverageSummary = {
   aliasCount: number;
 };
 
+/** Validate alias-map integrity against the canonical contract catalog. */
 export function validateDispatchAliasCoverage(): DispatchAliasCoverageSummary {
   const aliasMap = readAliasMap();
   const contractCatalog = new Set(readContractCatalog());

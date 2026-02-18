@@ -7,6 +7,7 @@ function packageRoot(): string {
   return path.resolve(here, "..", "..");
 }
 
+/** Read and validate the parity denylist catalog. */
 export function readParityDenylist(): string[] {
   const filePath = path.join(packageRoot(), "catalogs", "parity-denylist.json");
   const raw = fs.readFileSync(filePath, "utf8");
