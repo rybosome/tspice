@@ -69,9 +69,22 @@ function assertInteger(value: unknown, label: string): asserts value is number {
   }
 }
 
+function assertStringArg(value: unknown, call: string, index: number): asserts value is string {
+  if (typeof value !== "string") {
+    invalidArgs(`${call} expects args[${index}] to be a string (got ${formatValue(value)})`);
+  }
+}
+
+function assertNumberArg(value: unknown, call: string, index: number): asserts value is number {
+  if (typeof value !== "number") {
+    invalidArgs(`${call} expects args[${index}] to be a number (got ${formatValue(value)})`);
+  }
+}
+
 
 type Vec3 = [number, number, number];
 type Mat3RowMajor = Parameters<SpiceBackend["mxm"]>[0];
+type SpkPackedDescriptor = Parameters<SpiceBackend["spkuds"]>[0];
 
 function assertVec3(value: unknown, label: string): asserts value is Vec3 {
   if (!Array.isArray(value)) {
@@ -101,6 +114,21 @@ function assertMat3RowMajor(value: unknown, label: string): asserts value is Mat
       invalidArgs(
         `${label} expects element ${i} to be a number (got ${formatValue(value[i])})`,
       );
+    }
+  }
+}
+
+
+function assertSpkPackedDescriptor(value: unknown, label: string): asserts value is SpkPackedDescriptor {
+  if (!Array.isArray(value)) {
+    invalidArgs(`${label} expects a length-5 array of numbers (got ${formatValue(value)})`);
+  }
+  if (value.length !== 5) {
+    invalidArgs(`${label} expects a length-5 array of numbers (got length ${value.length})`);
+  }
+  for (let i = 0; i < 5; i++) {
+    if (typeof value[i] !== "number" || !Number.isFinite(value[i])) {
+      invalidArgs(`${label} expects element ${i} to be a finite number (got ${formatValue(value[i])})`);
     }
   }
 }
@@ -948,6 +976,89 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
     return backend.expool(args[0]);
   },
+
+  // ephemeris
+  "ephemeris.spkezr": (backend, args) => {
+    assertStringArg(args[0], "ephemeris.spkezr", 0);
+    assertNumberArg(args[1], "ephemeris.spkezr", 1);
+    assertStringArg(args[2], "ephemeris.spkezr", 2);
+    assertStringArg(args[3], "ephemeris.spkezr", 3);
+    assertStringArg(args[4], "ephemeris.spkezr", 4);
+    return backend.spkezr(args[0], args[1], args[2], args[3], args[4]);
+  },
+
+  "ephemeris.spkpos": (backend, args) => {
+    assertStringArg(args[0], "ephemeris.spkpos", 0);
+    assertNumberArg(args[1], "ephemeris.spkpos", 1);
+    assertStringArg(args[2], "ephemeris.spkpos", 2);
+    assertStringArg(args[3], "ephemeris.spkpos", 3);
+    assertStringArg(args[4], "ephemeris.spkpos", 4);
+    return backend.spkpos(args[0], args[1], args[2], args[3], args[4]);
+  },
+
+  "ephemeris.spkez": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkez args[0]");
+    assertNumberArg(args[1], "ephemeris.spkez", 1);
+    assertStringArg(args[2], "ephemeris.spkez", 2);
+    assertStringArg(args[3], "ephemeris.spkez", 3);
+    assertInteger(args[4], "ephemeris.spkez args[4]");
+    return backend.spkez(args[0], args[1], args[2], args[3], args[4]);
+  },
+
+  "ephemeris.spkezp": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkezp args[0]");
+    assertNumberArg(args[1], "ephemeris.spkezp", 1);
+    assertStringArg(args[2], "ephemeris.spkezp", 2);
+    assertStringArg(args[3], "ephemeris.spkezp", 3);
+    assertInteger(args[4], "ephemeris.spkezp args[4]");
+    return backend.spkezp(args[0], args[1], args[2], args[3], args[4]);
+  },
+
+  "ephemeris.spkgeo": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkgeo args[0]");
+    assertNumberArg(args[1], "ephemeris.spkgeo", 1);
+    assertStringArg(args[2], "ephemeris.spkgeo", 2);
+    assertInteger(args[3], "ephemeris.spkgeo args[3]");
+    return backend.spkgeo(args[0], args[1], args[2], args[3]);
+  },
+
+  "ephemeris.spkgps": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkgps args[0]");
+    assertNumberArg(args[1], "ephemeris.spkgps", 1);
+    assertStringArg(args[2], "ephemeris.spkgps", 2);
+    assertInteger(args[3], "ephemeris.spkgps args[3]");
+    return backend.spkgps(args[0], args[1], args[2], args[3]);
+  },
+
+  "ephemeris.spkssb": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkssb args[0]");
+    assertNumberArg(args[1], "ephemeris.spkssb", 1);
+    assertStringArg(args[2], "ephemeris.spkssb", 2);
+    return backend.spkssb(args[0], args[1], args[2]);
+  },
+
+  "ephemeris.spksfs": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spksfs args[0]");
+    assertNumberArg(args[1], "ephemeris.spksfs", 1);
+    return backend.spksfs(args[0], args[1]);
+  },
+
+  "ephemeris.spkpds": (backend, args) => {
+    assertInteger(args[0], "ephemeris.spkpds args[0]");
+    assertInteger(args[1], "ephemeris.spkpds args[1]");
+    assertStringArg(args[2], "ephemeris.spkpds", 2);
+    assertInteger(args[3], "ephemeris.spkpds args[3]");
+    assertNumberArg(args[4], "ephemeris.spkpds", 4);
+    assertNumberArg(args[5], "ephemeris.spkpds", 5);
+
+    return backend.spkpds(args[0], args[1], args[2], args[3], args[4], args[5]);
+  },
+
+  "ephemeris.spkuds": (backend, args) => {
+    assertSpkPackedDescriptor(args[0], "ephemeris.spkuds args[0]");
+    return backend.spkuds(args[0]);
+  },
+
 
   // coords-vectors
   "coords-vectors.axisar": (backend, args) => {
