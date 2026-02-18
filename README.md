@@ -112,11 +112,7 @@ import { kernels, spiceClients } from "@rybosome/tspice";
 
 async function main() {
   // We can download kernels directly from NAIF servers in Node.
-  const kernelPack = kernels
-    .naif({
-      origin: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/",
-      pathBase: "naif/",
-    })
+  const kernelPack = kernels.naif()
     .pick(
       "lsk/naif0012.tls",
       "pck/pck00011.tpc",
