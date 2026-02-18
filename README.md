@@ -82,20 +82,26 @@ In a production application, it is recommended to host kernels yourself or enabl
 The `kernels.naif()` catalog can be configured to point at your hosted entries, or you can load bespoke kernels.
 
 ```ts
-import { kernels, spiceClients } from "@rybosome/tspice";
+import { kernels } from "@rybosome/tspice";
 
-// Hosting a mirror of NAIF's catalog at https://${our_app_url}/kernels/naif
+// Hosting a mirror of NAIF's catalog at https://your-app.example/kernels/naif
 const naifKernels = kernels
-  .naif({ origin: 'kernels/naif/', baseUrl: import.meta.env.BASE_URL })
+  .naif({
+    origin: "https://your-app.example/kernels/naif/",
+    pathBase: "naif/",
+  })
   .pick(
     "lsk/naif0012.tls",
     "pck/pck00011.tpc",
     "spk/planets/de432s.bsp",
   );
 
-// Hosting a custom catalog at https://${our_app_url}/kernels/custom
+// Hosting a custom catalog at https://your-app.example/kernels/custom
 const customKernels = kernels
-  .custom({ origin: 'kernels/custom/', baseUrl: import.meta.env.BASE_URL })
+  .custom({
+    origin: "https://your-app.example/kernels/custom/",
+    pathBase: "custom/",
+  })
   .pick("planets/my_custom_kernel.bsp");
 ```
 
@@ -104,26 +110,36 @@ const customKernels = kernels
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
-// We can download kernels directly from NAIF servers in Node.
-const kernelPack = kernels.naif().pick(
-  "lsk/naif0012.tls",
-  "pck/pck00011.tpc",
-  "spk/planets/de432s.bsp",
-);
+async function main() {
+  // We can download kernels directly from NAIF servers in Node.
+  const kernelPack = kernels
+    .naif({
+      origin: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/",
+      pathBase: "naif/",
+    })
+    .pick(
+      "lsk/naif0012.tls",
+      "pck/pck00011.tpc",
+      "spk/planets/de432s.bsp",
+    );
 
-// Use the builder to create a synchronous, caching client.
-const { spice, dispose } = await spiceClients
-  .caching({ maxEntries: 10_000, ttlMs: null })
-  .withKernels(kernelPack)
-  .toSync({ backend: "node" });
+  // Use the builder to create a synchronous, caching client.
+  // `dispose()` is still async and should be awaited.
+  const { spice, dispose } = await spiceClients
+    .caching({ maxEntries: 10_000, ttlMs: null })
+    .withKernels(kernelPack)
+    .toSync({ backend: "node" });
 
-try {
-  const et = spice.kit.utcToEt("2000 JAN 01 12:00:00");
-  const state = spice.kit.getState({ target: "EARTH", observer: "SUN", at: et });
-  console.log(state.position, state.velocity);
-} finally {
-  await dispose();
+  try {
+    const et = spice.kit.utcToEt("2000 JAN 01 12:00:00");
+    const state = spice.kit.getState({ target: "EARTH", observer: "SUN", at: et });
+    console.log(state.position, state.velocity);
+  } finally {
+    await dispose();
+  }
 }
+
+main().catch(console.error);
 ```
 
 ## Coverage
