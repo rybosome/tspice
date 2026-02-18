@@ -128,9 +128,24 @@ export async function executeMethodSpecParity(
     );
   }
 
+  const caseExpectById = new Map<string, (typeof method.cases)[number]["expect"]>();
+  for (const methodCase of method.cases) {
+    if (caseExpectById.has(methodCase.id)) {
+      throw new Error(`Duplicate case id in method spec ${method.id}: ${methodCase.id}`);
+    }
+
+    caseExpectById.set(methodCase.id, methodCase.expect);
+  }
+
   for (let index = 0; index < tspiceOut.cases.length; index++) {
     const tspiceCase = tspiceOut.cases[index]!;
     const cspiceCase = cspiceOut.cases[index]!;
+
+    if (tspiceCase.case.id !== cspiceCase.case.id) {
+      throw new Error(
+        `Runner case mismatch for ${method.id} at index ${index}: tspice case=${tspiceCase.case.id}, cspice case=${cspiceCase.case.id}`,
+      );
+    }
 
     const compare = mergeCompareChain([
       scenario.compare,
@@ -144,7 +159,13 @@ export async function executeMethodSpecParity(
 
     const label = `${method.id} case=${tspiceCase.case.id} call=${tspiceCase.case.call}`;
 
-    const caseExpect = method.cases[index]?.expect;
+    if (!caseExpectById.has(tspiceCase.case.id)) {
+      throw new Error(
+        `Runner output case not found in method spec ${method.id}: ${tspiceCase.case.id}`,
+      );
+    }
+
+    const caseExpect = caseExpectById.get(tspiceCase.case.id);
     assertExpectedOutcome(
       method.id,
       tspiceCase.case.id,
