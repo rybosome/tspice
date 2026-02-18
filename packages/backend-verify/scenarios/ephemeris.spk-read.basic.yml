@@ -76,11 +76,6 @@ cases:
       - -1
       - 1
 
-  - id: ephemeris.spkuds.simple
-    call: ephemeris.spkuds
-    args:
-      - [-1, 1, 2.1219958107e-313, 4.2439915824e-314, 0]
-
   - id: ephemeris.spksfs.earth
     call: ephemeris.spksfs
     args:

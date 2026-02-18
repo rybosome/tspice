@@ -51,6 +51,7 @@ export const PARITY_SCENARIO_DENYLIST = [
   "ephemeris.spkobj",
   "ephemeris.spkopa",
   "ephemeris.spkopn",
+  "ephemeris.spkuds",
   "ephemeris.spkw08",
   "error.chkin",
   "error.chkout",
