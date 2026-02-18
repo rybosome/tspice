@@ -20,7 +20,7 @@ For basic planet-to-planet state vectors you typically need:
   body-fixed frames (and used by many geometry/lighting routines).
 
 These three kernels are a common “starter set”. For quickstarts, `kernels.tspice()` is a zero-config way to load them.
-For production, self-host kernels and use `kernels.naif(...)` / `kernels.custom(...)`.
+For production, self-host kernels and use `kernels.naif({ ... })` / `kernels.custom(...)`.
 
 ## Create a worker-backed client (recommended)
 

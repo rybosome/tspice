@@ -20,6 +20,43 @@ function okResponse(bytes: Uint8Array): ResponseLike {
 }
 
 describe("kernels.naif()", () => {
+  it("defaults to NAIF generic_kernels when called with no args", () => {
+    const pack = kernels.naif().pick("lsk/naif0012.tls");
+
+    expect(pack.baseUrl).toBeUndefined();
+    expect(Object.prototype.hasOwnProperty.call(pack, "baseUrl")).toBe(false);
+    expect(pack.kernels).toEqual([
+      {
+        url: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
+        path: "lsk/naif0012.tls",
+      },
+    ]);
+  });
+
+  it("supports partial options for origin-only and pathBase-only overrides", () => {
+    const withOriginOnly = kernels
+      .naif({ origin: "https://cdn.example.com/kernels" })
+      .pick("lsk/naif0012.tls");
+
+    expect(withOriginOnly.kernels).toEqual([
+      {
+        url: "https://cdn.example.com/kernels/lsk/naif0012.tls",
+        path: "lsk/naif0012.tls",
+      },
+    ]);
+
+    const withPathBaseOnly = kernels
+      .naif({ pathBase: "naif" })
+      .pick("lsk/naif0012.tls");
+
+    expect(withPathBaseOnly.kernels).toEqual([
+      {
+        url: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
+        path: "naif/lsk/naif0012.tls",
+      },
+    ]);
+  });
+
   it("builds a pack, normalizes origin/pathBase, and preserves ordering", () => {
     const ids = ["spk/planets/de432s.bsp", "lsk/naif0012.tls"] as const satisfies readonly [
       NaifKernelId,

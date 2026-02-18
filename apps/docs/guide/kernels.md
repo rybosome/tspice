@@ -29,7 +29,7 @@ type KernelPack = {
 
 ## Kernel catalogs (`kernels.*`)
 
-All built-in catalogs (`kernels.tspice()`, `kernels.naif(...)`, `kernels.custom(...)`) expose **one method**:
+All built-in catalogs (`kernels.tspice()`, `kernels.naif()`, `kernels.custom(...)`) expose **one method**:
 
 - `pick(...)` returns a `KernelPack` immediately.
 - **No ordering magic:** `pick(...)` preserves caller-provided order.
@@ -57,12 +57,14 @@ const pack = kernels.tspice().pick(
 );
 ```
 
-## `kernels.naif({ origin, pathBase, baseUrl? })` (full typed NAIF inventory)
+## `kernels.naif()` + optional overrides (full typed NAIF inventory)
 
-`kernels.naif(...)` targets the NAIF `generic_kernels` inventory.
+`kernels.naif()` targets the NAIF `generic_kernels` inventory by default.
 
 - IDs are **leaf paths** like `"lsk/naif0012.tls"`, `"pck/pck00011.tpc"`, `"spk/planets/de432s.bsp"`, etc.
 - IDs are fully typed as `NaifKernelId` (a ~450 item literal union).
+- Defaults: `origin = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/"`, `pathBase = ""`.
+- Optional overrides: `kernels.naif({ origin?, pathBase?, baseUrl? })`.
 - `origin` is a build-time prefix used to construct each `kernel.url` (`origin + id`).
 - `pathBase` is a virtual prefix for each `kernel.path` (`pathBase + id`).
 - `baseUrl` becomes `pack.baseUrl` (used to resolve **relative** URLs at load time).
@@ -86,7 +88,10 @@ const KERNEL_IDS: NaifKernelId[] = [
   "spk/planets/de432s.bsp",
 ];
 
-const pack = kernels
+const pack = kernels.naif().pick(KERNEL_IDS);
+
+// Self-hosting / subpath deployment override:
+const selfHostedPack = kernels
   .naif({
     origin: "kernels/naif/",
     baseUrl: import.meta.env.BASE_URL,
@@ -111,10 +116,7 @@ Example (Node / canonical NAIF host):
 import { kernels } from "@rybosome/tspice";
 
 const pack = kernels
-  .naif({
-    origin: "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/",
-    pathBase: "naif/",
-  })
+  .naif()
   .pick("lsk/naif0012.tls");
 ```
 

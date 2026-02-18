@@ -45,7 +45,7 @@ try {
 
 ### Kernel hosting note
 
-`kernels.naif({ origin, baseUrl, pathBase })` can build packs with **relative** URLs like `kernels/naif/lsk/naif0012.tls`.
+`kernels.naif()` defaults to NAIF-hosted `generic_kernels`, and `kernels.naif({ origin?, baseUrl?, pathBase? })` can build packs with **relative** URLs like `kernels/naif/lsk/naif0012.tls`.
 
 That means:
 
