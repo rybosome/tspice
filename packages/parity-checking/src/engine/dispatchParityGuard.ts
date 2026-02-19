@@ -29,7 +29,6 @@ function normalizeResult(call: string, result: unknown): unknown {
   return clone;
 }
 
-
 function buildCompareOptions(tolAbs: number, tolRel: number, angleWrapPi: boolean | undefined): {
   tolAbs: number;
   tolRel: number;
@@ -64,100 +63,103 @@ export async function runDispatchAliasParityGuard(
       );
     }
 
-    const caseSpec = resolvedMethod.method.cases[0];
-    if (!caseSpec) {
+    if (resolvedMethod.method.cases.length === 0) {
       throw new Error(
         `Dispatch alias guard failed: method ${resolvedMethod.method.id} has no cases for alias ${alias}`,
       );
     }
 
-    const setup = mergeSetupChain([resolvedMethod.mergedSetup, caseSpec.setup]);
-    const compare = mergeCompareChain([
-      resolvedMethod.mergedCompareDefaults,
-      resolvedMethod.method.defaults?.compare,
-      caseSpec.compare,
-    ]);
+    for (const caseSpec of resolvedMethod.method.cases) {
+      const caseLabel = caseSpec.id;
+      const setup = mergeSetupChain([resolvedMethod.mergedSetup, caseSpec.setup]);
+      const compare = mergeCompareChain([
+        resolvedMethod.mergedCompareDefaults,
+        resolvedMethod.method.defaults?.compare,
+        caseSpec.compare,
+      ]);
 
-    const scenario = parseScenario({
-      sourcePath: resolvedMethod.method.meta.sourcePath,
-      data: {
-        name: `dispatch-alias-guard:${alias}`,
-        setup,
-        compare,
-        cases: [
-          {
-            id: "canonical",
-            call: canonical,
-            args: caseSpec.args ?? [],
-          },
-          {
-            id: "alias",
-            call: alias,
-            args: caseSpec.args ?? [],
-          },
-        ],
-      },
-    });
+      const scenario = parseScenario({
+        sourcePath: resolvedMethod.method.meta.sourcePath,
+        data: {
+          name: `dispatch-alias-guard:${alias}:${caseLabel}`,
+          setup,
+          compare,
+          cases: [
+            {
+              id: "canonical",
+              call: canonical,
+              args: caseSpec.args ?? [],
+            },
+            {
+              id: "alias",
+              call: alias,
+              args: caseSpec.args ?? [],
+            },
+          ],
+        },
+      });
 
-    const out = await executeScenario(scenario, tspiceRunner);
-    const canonicalOut = out.cases.find((scenarioCase) => scenarioCase.case.id === "canonical");
-    const aliasOut = out.cases.find((scenarioCase) => scenarioCase.case.id === "alias");
+      const out = await executeScenario(scenario, tspiceRunner);
+      const canonicalOut = out.cases.find((scenarioCase) => scenarioCase.case.id === "canonical");
+      const aliasOut = out.cases.find((scenarioCase) => scenarioCase.case.id === "alias");
 
-    if (!canonicalOut || !aliasOut) {
-      throw new Error(`Dispatch alias guard internal error: missing canonical/alias outputs for ${alias}`);
-    }
-
-    if (canonicalOut.outcome.ok !== aliasOut.outcome.ok) {
-      throw new Error(
-        `Dispatch alias guard mismatch for alias ${alias} -> ${canonical}: canonical.ok=${canonicalOut.outcome.ok}, alias.ok=${aliasOut.outcome.ok}`,
-      );
-    }
-
-    const tolAbs = compare?.tolAbs ?? DEFAULT_TOL_ABS;
-    const tolRel = compare?.tolRel ?? DEFAULT_TOL_REL;
-    const angleWrapPi = compare?.angleWrapPi;
-    const errorShort = compare?.errorShort ?? false;
-
-    if (!canonicalOut.outcome.ok || !aliasOut.outcome.ok) {
-      if (errorShort) {
-        const canonicalShort = canonicalOut.outcome.ok ? undefined : canonicalOut.outcome.error.spice?.short;
-        const aliasShort = aliasOut.outcome.ok ? undefined : aliasOut.outcome.error.spice?.short;
-        const canonicalSymbol = canonicalShort ? spiceShortSymbol(canonicalShort) : null;
-        const aliasSymbol = aliasShort ? spiceShortSymbol(aliasShort) : null;
-
-        if (!canonicalSymbol || !aliasSymbol || canonicalSymbol !== aliasSymbol) {
-          throw new Error(
-            `Dispatch alias guard error-short mismatch for alias ${alias} -> ${canonical}: canonical=${canonicalSymbol}, alias=${aliasSymbol}`,
-          );
-        }
-      } else {
-        const cmp = compareValues(
-          canonicalOut.outcome.ok ? undefined : canonicalOut.outcome.error,
-          aliasOut.outcome.ok ? undefined : aliasOut.outcome.error,
-          buildCompareOptions(tolAbs, tolRel, angleWrapPi),
+      if (!canonicalOut || !aliasOut) {
+        throw new Error(
+          `Dispatch alias guard internal error: missing canonical/alias outputs for ${alias} case ${caseLabel}`,
         );
-
-        if (!cmp.ok) {
-          throw new Error(
-            `Dispatch alias guard error mismatch for alias ${alias} -> ${canonical}:\n${formatMismatchReport(cmp.mismatches)}`,
-          );
-        }
       }
 
-      validatedAliasCount += 1;
-      continue;
-    }
+      if (canonicalOut.outcome.ok !== aliasOut.outcome.ok) {
+        throw new Error(
+          `Dispatch alias guard mismatch for alias ${alias} -> ${canonical} case ${caseLabel}: canonical.ok=${canonicalOut.outcome.ok}, alias.ok=${aliasOut.outcome.ok}`,
+        );
+      }
 
-    const cmp = compareValues(
-      normalizeResult(canonical, canonicalOut.outcome.result),
-      normalizeResult(alias, aliasOut.outcome.result),
-      buildCompareOptions(tolAbs, tolRel, angleWrapPi),
-    );
+      const tolAbs = compare?.tolAbs ?? DEFAULT_TOL_ABS;
+      const tolRel = compare?.tolRel ?? DEFAULT_TOL_REL;
+      const angleWrapPi = compare?.angleWrapPi;
+      const errorShort = compare?.errorShort ?? false;
 
-    if (!cmp.ok) {
-      throw new Error(
-        `Dispatch alias guard result mismatch for alias ${alias} -> ${canonical}:\n${formatMismatchReport(cmp.mismatches)}`,
+      if (!canonicalOut.outcome.ok || !aliasOut.outcome.ok) {
+        if (errorShort) {
+          const canonicalShort = canonicalOut.outcome.ok ? undefined : canonicalOut.outcome.error.spice?.short;
+          const aliasShort = aliasOut.outcome.ok ? undefined : aliasOut.outcome.error.spice?.short;
+          const canonicalSymbol = canonicalShort ? spiceShortSymbol(canonicalShort) : null;
+          const aliasSymbol = aliasShort ? spiceShortSymbol(aliasShort) : null;
+
+          if (!canonicalSymbol || !aliasSymbol || canonicalSymbol !== aliasSymbol) {
+            throw new Error(
+              `Dispatch alias guard error-short mismatch for alias ${alias} -> ${canonical} case ${caseLabel}: canonical=${canonicalSymbol}, alias=${aliasSymbol}`,
+            );
+          }
+        } else {
+          const cmp = compareValues(
+            canonicalOut.outcome.ok ? undefined : canonicalOut.outcome.error,
+            aliasOut.outcome.ok ? undefined : aliasOut.outcome.error,
+            buildCompareOptions(tolAbs, tolRel, angleWrapPi),
+          );
+
+          if (!cmp.ok) {
+            throw new Error(
+              `Dispatch alias guard error mismatch for alias ${alias} -> ${canonical} case ${caseLabel}:\n${formatMismatchReport(cmp.mismatches)}`,
+            );
+          }
+        }
+
+        continue;
+      }
+
+      const cmp = compareValues(
+        normalizeResult(canonical, canonicalOut.outcome.result),
+        normalizeResult(alias, aliasOut.outcome.result),
+        buildCompareOptions(tolAbs, tolRel, angleWrapPi),
       );
+
+      if (!cmp.ok) {
+        throw new Error(
+          `Dispatch alias guard result mismatch for alias ${alias} -> ${canonical} case ${caseLabel}:\n${formatMismatchReport(cmp.mismatches)}`,
+        );
+      }
     }
 
     validatedAliasCount += 1;

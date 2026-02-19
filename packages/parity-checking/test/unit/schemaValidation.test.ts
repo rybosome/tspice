@@ -100,6 +100,31 @@ describe("schema validation", () => {
     );
   });
 
+  it("rejects unknown method.cases[].setup.kernels[] object keys", () => {
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "/tmp/method.yml",
+        data: {
+          id: "methods/time/str2et@v1",
+          kind: "method",
+          contractMethod: "time.str2et",
+          canonicalMethod: "time.str2et",
+          cases: [
+            {
+              id: "basic",
+              args: ["x"],
+              setup: {
+                kernels: [{ path: "/tmp/kernels/example.tm", restrictToDIR: "/tmp/kernels" }],
+              },
+            },
+          ],
+        },
+      }),
+    ).toThrow(
+      /method\.cases\[0\]\.setup\.kernels\[0\] has unknown key: "restrictToDIR" \(allowed keys: "path", "restrictToDir"\)/,
+    );
+  });
+
   it("rejects unknown workflow top-level keys", () => {
     expect(() =>
       parseWorkflowSpec({
