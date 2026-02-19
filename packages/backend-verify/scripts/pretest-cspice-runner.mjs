@@ -149,37 +149,11 @@ function main() {
 
   const validation = validateCspiceDir(cspiceDir);
   if (!validation.ok) {
-    if (process.platform === "linux" && process.arch === "arm64") {
-      if (isCI()) {
-        writeState(pkgRoot, {
-          available: false,
-          reason:
-            "Automatic CSPICE fetch is not supported on linux-arm64 (set TSPICE_CSPICE_DIR to a prebuilt CSPICE install)",
-          binaryPath,
-          cspiceDir,
-          details: validation.reason,
-        });
-        return;
-      }
-
-      // Local dev: don't throw (and print a scary stack trace). Parity tests will
-      // just skip when the runner is unavailable.
-      writeState(pkgRoot, {
-        available: false,
-        reason:
-          "Automatic CSPICE fetch is not supported on linux-arm64 (set TSPICE_CSPICE_DIR to a prebuilt CSPICE install)",
-        binaryPath,
-        cspiceDir,
-        details: validation.reason,
-      });
-      return;
-    }
-
     if (isCI()) {
       writeState(pkgRoot, {
         available: false,
         reason:
-          "CSPICE not available in CI (set TSPICE_CSPICE_DIR or prefetch .cache/cspice)",
+          "CSPICE not available in CI (set TSPICE_CSPICE_DIR or prefetch .cache/cspice; linux-arm64 source builds require Docker)",
         binaryPath,
         cspiceDir,
         details: validation.reason,
@@ -191,7 +165,7 @@ function main() {
     const fetch = run("pnpm", ["-w", "fetch:cspice"], { cwd: repoRoot, stdio: "inherit" });
     if (fetch.status !== 0) {
       throw new Error(
-        `pnpm -w fetch:cspice failed (exit ${fetch.status}). Install 'uncompress' + 'tar' or set TSPICE_CSPICE_DIR to a CSPICE install.`,
+        `pnpm -w fetch:cspice failed (exit ${fetch.status}). Install 'uncompress' + 'tar' (linux-arm64 uses Docker for source builds) or set TSPICE_CSPICE_DIR to a CSPICE install.`,
       );
     }
 

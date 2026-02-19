@@ -79,11 +79,18 @@ jobs:
           brew update
           brew install ncompress
 
+      - name: Compute CSPICE cache identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/print-cspice-cache-identity.mjs --github-env >> "$GITHUB_ENV"
+
       - name: Cache CSPICE
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .cache/cspice
-          key: cspice-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/cspice.manifest.json') }}
+          key: cspice-v2-${{ env.CSPICE_CACHE_TARGET }}-${{ env.CSPICE_CACHE_SOURCE_SHA256 }}-${{ env.CSPICE_CACHE_TOOLCHAIN_DIGEST }}-${{ env.CSPICE_CACHE_BUILD_SCRIPT_VERSION }}
+          retention-days: 14
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -92,6 +99,12 @@ jobs:
         env:
           TSPICE_EXPECT_NATIVE: "true"
         run: pnpm run check:native
+
+      - name: "Guardrail: disallow raw/unmodified NAIF artifacts"
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/check-no-raw-naif-artifacts.mjs --check-cspice-cache
 
       - name: Pre-publish smoke test (@rybosome/tspice + native optionalDependency)
         shell: bash
@@ -107,6 +120,10 @@ jobs:
           cd "${GITHUB_WORKSPACE}/packages/${{ matrix.pkg }}"
           NATIVE_TARBALL=$(npm pack --silent)
           NATIVE_TARBALL_PATH="${PWD}/${NATIVE_TARBALL}"
+
+          node "${GITHUB_WORKSPACE}/scripts/check-no-raw-naif-artifacts.mjs" \
+            --check-npm-tarball "${TSPICE_TARBALL_PATH}" \
+            --check-npm-tarball "${NATIVE_TARBALL_PATH}"
 
           TMP_DIR=$(mktemp -d)
           echo "Using temp project: ${TMP_DIR}"
@@ -189,6 +206,7 @@ jobs:
       - name: Build dist-publish + verify pack
         run: |
           pnpm -w build
+          node scripts/check-no-raw-naif-artifacts.mjs --check-npm-pack-dir packages/tspice/dist-publish
           pnpm -C packages/tspice run verify:dist-publish
 
       - name: Configure npm auth
@@ -326,6 +344,14 @@ jobs:
           TARBALL=$(npm pack --silent)
           echo "tarball=${TARBALL}" >> "$GITHUB_OUTPUT"
           echo "tarball_path=${PWD}/${TARBALL}" >> "$GITHUB_OUTPUT"
+
+      - name: "Guardrail: dist-publish tarball must not contain raw NAIF content"
+        shell: bash
+        env:
+          TARBALL_PATH: ${{ steps.pack.outputs.tarball_path }}
+        run: |
+          set -euo pipefail
+          node scripts/check-no-raw-naif-artifacts.mjs --check-npm-tarball "$TARBALL_PATH"
 
       - name: Install packed tarball into a fresh project (with optional deps)
         shell: bash

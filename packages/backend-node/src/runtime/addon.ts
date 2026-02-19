@@ -518,6 +518,7 @@ const NATIVE_PLATFORM_PACKAGES = {
 
 const BUILD_HINT =
   "Try rebuilding it: pnpm run fetch:cspice && pnpm -C packages/backend-node build:native. " +
+  "(On linux-arm64, fetch:cspice builds from pinned source in Docker.) " +
   "Or set TSPICE_CSPICE_DIR=/abs/path/to/cspice (containing include/ and lib/). " +
   "Or set TSPICE_BACKEND_NODE_BINDING_PATH to an explicit .node path.";
 

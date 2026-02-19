@@ -54,7 +54,7 @@ const { toolkitVersion } = JSON.parse(fs.readFileSync(cspiceManifestPath, "utf8"
 const cspiceSourceRoot = path.join(
   repoRoot,
   ".cache",
-  "cspice",
+  "cspice-source",
   toolkitVersion,
   "source",
   "cspice",

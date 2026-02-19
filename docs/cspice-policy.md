@@ -52,6 +52,11 @@ To maintain alignment with the NAIF rules above, contributors must not:
 - Add raw or unmodified CSPICE toolkit archives/sources as published artifacts of this repo
 - Add API surfaces or documentation intended to expose CSPICE as a general-purpose toolkit outside the `tspice` TypeScript interface
 
+CI/release enforcement is a hard-fail guardrail:
+
+- Workflow checks reject reusable cache artifacts or npm tarballs that contain raw/unmodified NAIF source/archive content.
+- There is no bypass environment flag for this guardrail.
+
 ## Intended downstream usage
 
 This project is intended to be used as a dependency in applications and services that need SPICE functionality via the `tspice` TypeScript API.

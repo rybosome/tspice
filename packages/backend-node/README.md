@@ -73,6 +73,12 @@ Building the native addon requires a working `node-gyp` toolchain.
 
 This will fetch pinned CSPICE into the repo-local cache automatically (unless `TSPICE_CSPICE_DIR` is set).
 
+- On `linux-arm64`, `fetch:cspice` performs a pinned-source build inside Docker (pinned image digest from `scripts/cspice.manifest.json`).
+- Reusable CSPICE cache output is derived-only:
+  - `include/`
+  - `lib/cspice.a`
+  - `lib/csupport.a`
+
 ```bash
 pnpm --filter @rybosome/tspice-backend-node run build:native
 ```
@@ -98,10 +104,23 @@ By default, builds use CSPICE from the repo cache:
 
 - `.cache/cspice/<toolkitVersion>/<platform>-<arch>/cspice`
 
-If you set `TSPICE_CSPICE_DIR`, native builds will use CSPICE from that path instead. It must contain:
+If you set `TSPICE_CSPICE_DIR`, native builds will use CSPICE from that path instead. This override is intentionally retained as a principled BYO-CSPICE mechanism (for offline/provisioned builds, constrained environments, or explicit local toolchain control), not as a linux-arm64 workaround.
+
+The override path must contain:
 
 - `include/` (e.g. `SpiceUsr.h`)
 - `lib/` (e.g. `cspice.a` and `csupport.a`)
+
+### CSPICE cache identity inputs (CI/release)
+
+Workflow cache keys for `.cache/cspice` include explicit identity inputs:
+
+- source SHA256
+- pinned toolchain image digest
+- target (`platform-arch`)
+- source-build script version
+
+These values are emitted by `scripts/print-cspice-cache-identity.mjs`.
 
 ### `TSPICE_BACKEND_NODE_BINDING_PATH`
 

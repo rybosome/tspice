@@ -50,6 +50,7 @@ jobs:
         ./packages/tspice/scripts/ci-build-dist-publish-deps.sh
 
         pnpm -C packages/tspice run build:dist-publish
+        node scripts/check-no-raw-naif-artifacts.mjs --check-npm-pack-dir packages/tspice/dist-publish
         pnpm -C packages/tspice run verify:dist-publish
 
   test-verify:
@@ -123,6 +124,7 @@ jobs:
         # required at runtime (catches packaging + install/runtime issues, not
         # just missing files).
         TARBALL_PATH="$GITHUB_WORKSPACE/$PKG_DIR/$TARBALL"
+        node "$GITHUB_WORKSPACE/scripts/check-no-raw-naif-artifacts.mjs" --check-npm-tarball "$TARBALL_PATH"
         TMP_DIR=$(mktemp -d)
         cleanup() {
           rm -rf "$TMP_DIR"
@@ -206,6 +208,10 @@ jobs:
         cd "${GITHUB_WORKSPACE}/$PKG_DIR"
         NATIVE_TARBALL=$(npm pack --silent)
         NATIVE_TARBALL_PATH="${PWD}/${NATIVE_TARBALL}"
+
+        node "${GITHUB_WORKSPACE}/scripts/check-no-raw-naif-artifacts.mjs" \
+          --check-npm-tarball "${TSPICE_TARBALL_PATH}" \
+          --check-npm-tarball "${NATIVE_TARBALL_PATH}"
 
         TMP_DIR=$(mktemp -d)
         cleanup() {

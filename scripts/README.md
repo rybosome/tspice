@@ -23,8 +23,10 @@ See the full script list in [`../package.json`](../package.json).
 | --- | --- |
 | `check-compliance-files.mjs` | Validates required compliance/disclosure files and links are present (CI guard). |
 | `verify-native-package-versions.mjs` | Ensures `tspice-native-*` package versions match `@rybosome/tspice`. |
-| `fetch-cspice.mjs` | Fetches the pinned CSPICE sources/archives used by native + wasm builds. |
-| `cspice.manifest.json` | Manifest (pins + URLs) consumed by `fetch-cspice.mjs`. |
+| `fetch-cspice.mjs` | Fetches/builds pinned CSPICE for native + wasm flows. Reusable native cache output is derived-only (`include/`, `lib/cspice.a`, `lib/csupport.a`). |
+| `cspice.manifest.json` | CSPICE pins + source-build cache identity inputs (source SHA, toolchain image digest, build-script version). |
+| `print-cspice-cache-identity.mjs` | Prints explicit CSPICE cache key identity inputs for CI/release workflows. |
+| `check-no-raw-naif-artifacts.mjs` | Hard guardrail checks for raw/unmodified NAIF source/archive content in caches or npm tarballs. |
 | `build-backend-wasm.mjs` | Regenerates the checked-in wasm artifacts under `packages/backend-wasm/emscripten/` (requires Emscripten). |
 | `backend-wasm-assets.mjs` | Shared constants for wasm asset filenames used by build/copy scripts. |
 | `copy-backend-wasm-assets.mjs` | Copies wasm assets from `packages/backend-wasm/emscripten/` into `packages/backend-wasm/dist/`. |
