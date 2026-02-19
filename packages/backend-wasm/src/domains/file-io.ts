@@ -13,7 +13,7 @@ import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
-import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
 import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
@@ -160,7 +160,7 @@ export function createFileIoApi(
     handles.close(
       handle,
       DAS_BACKED,
-      (entry) => {
+      (entry: SpiceHandleEntry) => {
         // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
         // is just an alias.
         callVoidHandle(module, module._tspice_dascls, entry.nativeHandle);
@@ -273,7 +273,7 @@ export function createFileIoApi(
       handles.close(
         handle,
         ["DAF"],
-        (e) => callVoidHandle(module, module._tspice_dafcls, e.nativeHandle),
+        (entry: SpiceHandleEntry) => callVoidHandle(module, module._tspice_dafcls, entry.nativeHandle),
         "dafcls",
       ),
 

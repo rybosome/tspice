@@ -7,7 +7,7 @@ import { WASM_ERR_MAX_BYTES, WASM_MAX_ALLOC_BYTES, withAllocs, withMalloc } from
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
-import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
 
 const UTF8_ENCODER = new TextEncoder();
 
@@ -228,7 +228,7 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       spiceHandles.close(
         handle,
         EK_ONLY,
-        (entry) => callVoidHandle(module, module._tspice_ekcls, entry.nativeHandle),
+        (entry: SpiceHandleEntry) => callVoidHandle(module, module._tspice_ekcls, entry.nativeHandle),
         "ekcls",
       ),
 

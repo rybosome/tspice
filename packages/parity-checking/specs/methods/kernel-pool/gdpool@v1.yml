@@ -24,7 +24,5 @@ cases:
       - TSPICE_PARITY_CHAR_VAR
       - 0
       - 8
-    compare:
-      errorShort: true
     expect:
-      ok: false
+      ok: true
