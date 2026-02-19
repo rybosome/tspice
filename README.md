@@ -1,6 +1,6 @@
 # tspice
 
-[![CI](https://github.com/rybosome/tspice/actions/workflows/ci.yml/badge.svg)](https://github.com/rybosome/tspice/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/rybosome/tspice)](LICENSE)
+[![CI](https://github.com/rybosome/tspice/actions/workflows/ci.yml/badge.svg)](https://github.com/rybosome/tspice/actions/workflows/ci.yml) [![npm version](https://img.shields.io/npm/v/%40rybosome%2Ftspice)](https://www.npmjs.com/package/@rybosome/tspice) [![License](https://img.shields.io/github/license/rybosome/tspice)](LICENSE)
 
 TypeScript-first access to NASA’s SPICE geometry toolkit — in **Node.js** and the **browser** (via WebAssembly).
 
