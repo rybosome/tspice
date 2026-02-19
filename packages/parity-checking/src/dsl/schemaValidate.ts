@@ -101,6 +101,7 @@ function parseKernelEntry(value: unknown, label: string): string | { path: strin
   }
 
   const obj = assertRecord(value, label);
+  assertNoUnknownKeys(obj, label, ["path", "restrictToDir"]);
   const pathValue = assertString(obj.path, `${label}.path`);
   const restrictToDir =
     obj.restrictToDir === undefined ? undefined : assertString(obj.restrictToDir, `${label}.restrictToDir`);

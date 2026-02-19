@@ -122,9 +122,20 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
 
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
-    throw new Error(
-      `cspice-runner unavailable: ${status.hint}. Remediation: ensure CSPICE is available and run parity pretest build.`,
-    );
+    return {
+      skipped: true,
+      skipReason: `cspice-runner unavailable: ${status.hint}`,
+      workflowCount: specs.workflows.length,
+      methodCount: specs.methods.length,
+      crossCuttingSpecCount: specs.crossCutting.length,
+      contractCount: completeness.contractCount,
+      coveredCount: completeness.coveredCount,
+      denylistCount: completeness.denylistCount,
+      aliasCount: aliasCoverage.aliasCount,
+      aliasGuardValidatedCount: 0,
+      methodCaseCount: 0,
+      crossCuttingCaseCount: 0,
+    };
   }
 
   const paritySummary = await withRunners(async (runners) => {
