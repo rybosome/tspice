@@ -24,7 +24,10 @@ class ErrorRunner implements CaseRunner {
 class SuccessRunner implements CaseRunner {
   readonly kind = "stub-success";
 
-  async runCase(_input: RunCaseInput): Promise<RunCaseResult> {
+  readonly inputs: RunCaseInput[] = [];
+
+  async runCase(input: RunCaseInput): Promise<RunCaseResult> {
+    this.inputs.push(input);
     return {
       ok: true,
       result: 123,
@@ -32,8 +35,11 @@ class SuccessRunner implements CaseRunner {
   }
 }
 
-function buildResolved(expect: ResolvedMethodSpec["method"]["cases"][number]["expect"]): ResolvedMethodSpec {
-  return {
+function buildResolved(
+  expect: ResolvedMethodSpec["method"]["cases"][number]["expect"],
+  mergedSetup?: ResolvedMethodSpec["mergedSetup"],
+): ResolvedMethodSpec {
+  const resolved: ResolvedMethodSpec = {
     method: {
       id: "methods/time/str2et@v1",
       kind: "method",
@@ -60,6 +66,12 @@ function buildResolved(expect: ResolvedMethodSpec["method"]["cases"][number]["ex
       errorShort: true,
     },
   };
+
+  if (mergedSetup !== undefined) {
+    resolved.mergedSetup = mergedSetup;
+  }
+
+  return resolved;
 }
 
 describe("method case expectation semantics", () => {
@@ -92,5 +104,29 @@ describe("method case expectation semantics", () => {
         cspice: runner,
       }),
     ).rejects.toThrow(/expect\.errorShort requires both outcomes to fail/);
+  });
+
+  it("accepts merged setup kernel objects when reparsing runtime scenarios", async () => {
+    const kernelEntry = {
+      path: "/tmp/kernels/example.tm",
+      restrictToDir: "/tmp/kernels",
+    };
+    const resolved = buildResolved(undefined, {
+      kernels: [kernelEntry],
+    });
+
+    const tspice = new SuccessRunner();
+    const cspice = new SuccessRunner();
+
+    const summary = await executeMethodSpecParity(resolved, {
+      tspice,
+      cspice,
+    });
+
+    expect(summary.caseCount).toBe(1);
+    expect(tspice.inputs).toHaveLength(1);
+    expect(cspice.inputs).toHaveLength(1);
+    expect(tspice.inputs[0]?.setup?.kernels).toEqual([kernelEntry]);
+    expect(cspice.inputs[0]?.setup?.kernels).toEqual([kernelEntry]);
   });
 });
