@@ -43,6 +43,19 @@ function assertFiniteNumber(value: unknown, label: string): number {
   return value;
 }
 
+function assertNoUnknownKeys(obj: Record<string, unknown>, label: string, allowedKeys: readonly string[]): void {
+  const allowed = new Set(allowedKeys);
+
+  for (const key of Object.keys(obj)) {
+    if (!allowed.has(key)) {
+      const allowedText = allowedKeys.map((k) => JSON.stringify(k)).join(", ");
+      throw new TypeError(
+        `${label} has unknown key: ${JSON.stringify(key)} (allowed keys: ${allowedText})`,
+      );
+    }
+  }
+}
+
 function parseStringArray(value: unknown, label: string): string[] | undefined {
   if (value === undefined) return undefined;
   if (!Array.isArray(value)) {
@@ -55,13 +68,7 @@ function parseCompare(value: unknown, label: string): ScenarioCompareAst | undef
   if (value === undefined) return undefined;
 
   const obj = assertRecord(value, label);
-  const allowed = new Set(["tolAbs", "tolRel", "angleWrapPi", "errorShort"]);
-
-  for (const key of Object.keys(obj)) {
-    if (!allowed.has(key)) {
-      throw new TypeError(`${label} has unknown key ${JSON.stringify(key)}`);
-    }
-  }
+  assertNoUnknownKeys(obj, label, ["tolAbs", "tolRel", "angleWrapPi", "errorShort"]);
 
   const out: ScenarioCompareAst = {};
 
@@ -109,12 +116,7 @@ function parseSetup(value: unknown, label: string): ScenarioSetupAst | undefined
   if (value === undefined) return undefined;
 
   const obj = assertRecord(value, label);
-  const allowed = new Set(["kernels"]);
-  for (const key of Object.keys(obj)) {
-    if (!allowed.has(key)) {
-      throw new TypeError(`${label} has unknown key ${JSON.stringify(key)}`);
-    }
-  }
+  assertNoUnknownKeys(obj, label, ["kernels"]);
 
   if (obj.kernels === undefined) return undefined;
   if (!Array.isArray(obj.kernels)) {
@@ -129,12 +131,7 @@ function parseMethodCaseExpectation(value: unknown, label: string): MethodCaseEx
   if (value === undefined) return undefined;
 
   const obj = assertRecord(value, label);
-  const allowed = new Set(["ok", "errorShort"]);
-  for (const key of Object.keys(obj)) {
-    if (!allowed.has(key)) {
-      throw new TypeError(`${label} has unknown key ${JSON.stringify(key)}`);
-    }
-  }
+  assertNoUnknownKeys(obj, label, ["ok", "errorShort"]);
 
   const out: MethodCaseExpectation = {};
   if (obj.ok !== undefined) {
@@ -149,6 +146,8 @@ function parseMethodCaseExpectation(value: unknown, label: string): MethodCaseEx
 
 function parseMethodCase(value: unknown, label: string): MethodCaseSpec {
   const obj = assertRecord(value, label);
+  assertNoUnknownKeys(obj, label, ["id", "args", "setup", "compare", "expect"]);
+
   const out: MethodCaseSpec = {
     id: assertString(obj.id, `${label}.id`),
   };
@@ -256,6 +255,8 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpec {
 
   if (obj.defaults !== undefined) {
     const defaultsObj = assertRecord(obj.defaults, "method.defaults");
+    assertNoUnknownKeys(defaultsObj, "method.defaults", ["compare"]);
+
     const defaultsCompare = parseCompare(defaultsObj.compare, "method.defaults.compare");
     if (defaultsCompare !== undefined) {
       out.defaults = {

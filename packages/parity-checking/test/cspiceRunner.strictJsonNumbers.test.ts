@@ -7,10 +7,6 @@ import {
   getCspiceRunnerStatus,
 } from "../src/runners/cspiceRunner.js";
 
-function isRequired(): boolean {
-  return process.env.TSPICE_BACKEND_VERIFY_REQUIRED === "true";
-}
-
 type RunnerResponse =
   | { ok: true; result: unknown }
   | { ok: false; error: { code?: string; message: string; detail?: string } };
@@ -49,19 +45,9 @@ describe("cspice-runner strict JSON number/int literal grammar", () => {
   const status = getCspiceRunnerStatus();
 
   if (!status.ready) {
-    if (!isRequired()) {
-      it("cspice-runner unavailable (skipping strict JSON literal tests)", () => {
-        // eslint-disable-next-line no-console
-        console.warn(
-          `[parity-checking] cspice-runner unavailable; skipping strict JSON literal tests (TSPICE_BACKEND_VERIFY_REQUIRED=false): ${status.hint}`,
-        );
-      });
-      return;
-    }
-
-    it("cspice-runner required but unavailable", () => {
+    it("cspice-runner unavailable", () => {
       throw new Error(
-        `[parity-checking] cspice-runner required but unavailable: ${status.hint}. ` +
+        `[parity-checking] cspice-runner unavailable: ${status.hint}. ` +
           `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
           `State: ${status.statePath}`,
       );

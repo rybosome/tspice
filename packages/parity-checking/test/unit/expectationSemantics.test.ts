@@ -21,38 +21,53 @@ class ErrorRunner implements CaseRunner {
   }
 }
 
+class SuccessRunner implements CaseRunner {
+  readonly kind = "stub-success";
+
+  async runCase(_input: RunCaseInput): Promise<RunCaseResult> {
+    return {
+      ok: true,
+      result: 123,
+    };
+  }
+}
+
+function buildResolved(expect: ResolvedMethodSpec["method"]["cases"][number]["expect"]): ResolvedMethodSpec {
+  return {
+    method: {
+      id: "methods/time/str2et@v1",
+      kind: "method",
+      contractMethod: "time.str2et",
+      canonicalMethod: "time.str2et",
+      defaults: {
+        compare: {
+          errorShort: true,
+        },
+      },
+      cases: [
+        {
+          id: "invalid",
+          args: ["NOT_A_TIME"],
+          expect,
+        },
+      ],
+      meta: {
+        sourcePath: "/tmp/str2et.yml",
+      },
+    },
+    includeOrder: [],
+    mergedCompareDefaults: {
+      errorShort: true,
+    },
+  };
+}
+
 describe("method case expectation semantics", () => {
   it("enforces cases[].expect.ok and cases[].expect.errorShort", async () => {
-    const resolved: ResolvedMethodSpec = {
-      method: {
-        id: "methods/time/str2et@v1",
-        kind: "method",
-        contractMethod: "time.str2et",
-        canonicalMethod: "time.str2et",
-        defaults: {
-          compare: {
-            errorShort: true,
-          },
-        },
-        cases: [
-          {
-            id: "invalid",
-            args: ["NOT_A_TIME"],
-            expect: {
-              ok: false,
-              errorShort: "SPICE(BADTIMESTRING)",
-            },
-          },
-        ],
-        meta: {
-          sourcePath: "/tmp/str2et.yml",
-        },
-      },
-      includeOrder: [],
-      mergedCompareDefaults: {
-        errorShort: true,
-      },
-    };
+    const resolved = buildResolved({
+      ok: false,
+      errorShort: "SPICE(BADTIMESTRING)",
+    });
 
     const runner = new ErrorRunner();
 
@@ -62,5 +77,20 @@ describe("method case expectation semantics", () => {
     });
 
     expect(summary.caseCount).toBe(1);
+  });
+
+  it("fails expect.errorShort when either runner succeeds", async () => {
+    const resolved = buildResolved({
+      errorShort: "SPICE(BADTIMESTRING)",
+    });
+
+    const runner = new SuccessRunner();
+
+    await expect(
+      executeMethodSpecParity(resolved, {
+        tspice: runner,
+        cspice: runner,
+      }),
+    ).rejects.toThrow(/expect\.errorShort requires both outcomes to fail/);
   });
 });

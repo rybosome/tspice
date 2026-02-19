@@ -175,11 +175,17 @@ export async function executeMethodSpecParity(
       cspiceCase.outcome.ok,
     );
 
-    if (!tspiceCase.outcome.ok || !cspiceCase.outcome.ok) {
+    if (caseExpect?.errorShort !== undefined) {
+      if (tspiceCase.outcome.ok || cspiceCase.outcome.ok) {
+        throw new Error(
+          `Invalid expect.errorShort contract (${method.id} case=${tspiceCase.case.id}): expect.errorShort requires both outcomes to fail, but got tspice.ok=${tspiceCase.outcome.ok}, cspice.ok=${cspiceCase.outcome.ok}`,
+        );
+      }
+
       assertExpectedErrorShort(
         method.id,
         tspiceCase.case.id,
-        caseExpect?.errorShort,
+        caseExpect.errorShort,
         tspiceCase.outcome.ok ? undefined : tspiceCase.outcome.error.spice?.short,
         cspiceCase.outcome.ok ? undefined : cspiceCase.outcome.error.spice?.short,
       );

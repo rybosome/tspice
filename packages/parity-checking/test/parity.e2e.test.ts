@@ -6,12 +6,7 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
   it("runs full guard pipeline and parity execution", async () => {
     const summary = await runParityEngine();
 
-    if (summary.skipped) {
-      // eslint-disable-next-line no-console
-      console.warn(`[parity-checking] cspice-runner unavailable; skipping parity execution: ${summary.skipReason}`);
-      expect(summary.methodCount).toBeGreaterThan(0);
-      return;
-    }
+    expect(summary.skipped).toBe(false);
 
     expect(summary.workflowCount).toBeGreaterThan(0);
     expect(summary.methodCount).toBe(73);
