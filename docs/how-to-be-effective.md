@@ -84,6 +84,37 @@ Notes:
 - `pnpm run check:native` runs the full native pipeline (build + stage + build/test).
 - Native builds require Python 3 and a working `node-gyp` toolchain.
 
+### linux-arm64 CSPICE source build (`nix develop`, Phase 1)
+
+For `linux-arm64` (`aarch64`), use the repo `flake.nix` dev shell to run the known-good CSPICE source build flow from issue #465.
+
+```bash
+# Enter the aarch64 dev shell (includes tcsh/csh, gcc, make, binutils, node)
+nix develop
+
+# Fetch CSPICE source and resolve the source-tree location
+node scripts/fetch-cspice.mjs --source
+TOOLKIT=$(node -p "require('./scripts/cspice.manifest.json').toolkitVersion")
+export CSPICE_DIR="$PWD/.cache/cspice/$TOOLKIT/source/cspice"
+
+# Build CSPICE static libraries from source
+rm -f "$CSPICE_DIR/lib/cspice.a" "$CSPICE_DIR/lib/csupport.a"
+find "$CSPICE_DIR/src/cspice" "$CSPICE_DIR/src/csupport" -maxdepth 1 -type f \( -name '*.o' -o -name '*.a' \) -delete
+( cd "$CSPICE_DIR/src/cspice" && tcsh ./mkprodct.csh )
+( cd "$CSPICE_DIR/src/csupport" && tcsh ./mkprodct.csh )
+
+# Verify required artifacts and wire into tspice scripts
+ls -l "$CSPICE_DIR/lib/cspice.a" "$CSPICE_DIR/lib/csupport.a"
+ls -l "$CSPICE_DIR/include/SpiceUsr.h" "$CSPICE_DIR/include/SpiceZfc.h" "$CSPICE_DIR/include/SpiceZmc.h"
+TSPICE_CSPICE_DIR="$CSPICE_DIR" node scripts/print-cspice-dir.mjs
+```
+
+The shell exports these required NAIF build overrides:
+
+- `TKCOMPILER=gcc`
+- `TKCOMPILEOPTIONS='-c -ansi -O2 -fPIC -DNON_UNIX_STDIO'`
+- `TKLINKOPTIONS='-lm'`
+
 ### Publishing `@rybosome/tspice`
 
 The publishable entry point is `@rybosome/tspice`.
