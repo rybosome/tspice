@@ -1481,7 +1481,7 @@ async function furnshOsKernelForNative(
 /** Create a CaseRunner that executes calls using an in-process tspice backend (node/wasm/auto). */
 export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}): Promise<CaseRunner> {
   const requested =
-    options.backend ?? parseBackendEnv(process.env.TSPICE_PARITY_BACKEND ?? process.env.TSPICE_BACKEND_VERIFY_BACKEND) ?? "auto";
+    options.backend ?? parseBackendEnv(process.env.TSPICE_PARITY_BACKEND) ?? "auto";
 
   const { backend, kind } = await createBackendForRunner(requested);
 

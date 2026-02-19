@@ -64,6 +64,39 @@ describe("schema validation", () => {
           cases: [{ id: "basic", args: ["x"] }],
         },
       }),
-    ).toThrow(/unknown key/);
+    ).toThrow(/method\.defaults\.compare has unknown key: "nope"/);
+  });
+
+  it("rejects unknown method.defaults keys with allowed key hints", () => {
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "/tmp/method.yml",
+        data: {
+          id: "methods/time/str2et@v1",
+          kind: "method",
+          contractMethod: "time.str2et",
+          canonicalMethod: "time.str2et",
+          defaults: { compar: { tolAbs: 1e-12 } },
+          cases: [{ id: "basic", args: ["x"] }],
+        },
+      }),
+    ).toThrow(/method\.defaults has unknown key: "compar" \(allowed keys: "compare"\)/);
+  });
+
+  it("rejects unknown method.cases[] keys with allowed key hints", () => {
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "/tmp/method.yml",
+        data: {
+          id: "methods/time/str2et@v1",
+          kind: "method",
+          contractMethod: "time.str2et",
+          canonicalMethod: "time.str2et",
+          cases: [{ id: "basic", args: ["x"], expec: { ok: true } }],
+        },
+      }),
+    ).toThrow(
+      /method\.cases\[0\] has unknown key: "expec" \(allowed keys: "id", "args", "setup", "compare", "expect"\)/,
+    );
   });
 });

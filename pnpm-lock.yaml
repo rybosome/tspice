@@ -192,29 +192,6 @@ importers:
 
   packages/backend-shim-c: {}
 
-  packages/backend-verify:
-    dependencies:
-      '@rybosome/tspice':
-        specifier: workspace:*
-        version: link:../tspice
-      yaml:
-        specifier: ^2.8.1
-        version: 2.8.2
-    devDependencies:
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.6
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.6)
-    optionalDependencies:
-      '@rybosome/tspice-backend-node':
-        specifier: workspace:*
-        version: link:../backend-node
-
   packages/backend-wasm:
     dependencies:
       '@rybosome/tspice-backend-contract':

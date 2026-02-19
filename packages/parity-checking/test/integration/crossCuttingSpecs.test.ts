@@ -13,10 +13,12 @@ import { getCspiceRunnerStatus } from "../../src/runners/cspiceRunner.js";
 describe("cross-cutting spec discovery and execution", () => {
   it("discovers and executes all cross-cutting yaml specs", async () => {
     const status = getCspiceRunnerStatus();
-    if (!status.ready && process.env.TSPICE_BACKEND_VERIFY_REQUIRED !== "true") {
-      // eslint-disable-next-line no-console
-      console.warn(`[parity-checking] cspice-runner unavailable; skipping cross-cutting integration test: ${status.hint}`);
-      return;
+    if (!status.ready) {
+      throw new Error(
+        `[parity-checking] cspice-runner unavailable: ${status.hint}. ` +
+          `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
+          `State: ${status.statePath}`,
+      );
     }
 
     const testDir = path.dirname(fileURLToPath(import.meta.url));

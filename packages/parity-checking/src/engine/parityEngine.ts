@@ -62,11 +62,6 @@ async function loadParitySpecs(): Promise<LoadedParitySpecs> {
   };
 }
 
-function cspiceRequired(): boolean {
-  const explicit = process.env.TSPICE_PARITY_REQUIRED ?? process.env.TSPICE_BACKEND_VERIFY_REQUIRED;
-  return explicit === "true";
-}
-
 export type ParityEngineSummary = {
   skipped: boolean;
   skipReason?: string;
@@ -127,25 +122,8 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
 
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
-    if (!cspiceRequired()) {
-      return {
-        skipped: true,
-        skipReason: status.hint,
-        workflowCount: specs.workflows.length,
-        methodCount: specs.methods.length,
-        crossCuttingSpecCount: specs.crossCutting.length,
-        contractCount: completeness.contractCount,
-        coveredCount: completeness.coveredCount,
-        denylistCount: completeness.denylistCount,
-        aliasCount: aliasCoverage.aliasCount,
-        aliasGuardValidatedCount: 0,
-        methodCaseCount: 0,
-        crossCuttingCaseCount: 0,
-      };
-    }
-
     throw new Error(
-      `cspice-runner required but unavailable: ${status.hint}. Remediation: ensure CSPICE is available and run parity pretest build.`,
+      `cspice-runner unavailable: ${status.hint}. Remediation: ensure CSPICE is available and run parity pretest build.`,
     );
   }
 

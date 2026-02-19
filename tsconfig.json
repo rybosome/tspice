@@ -26,9 +26,6 @@
       "path": "./packages/tspice"
     },
     {
-      "path": "./packages/backend-verify"
-    },
-    {
       "path": "./packages/parity-checking"
     }
   ]

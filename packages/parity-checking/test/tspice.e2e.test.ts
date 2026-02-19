@@ -14,10 +14,12 @@ import { createCspiceRunner, getCspiceRunnerStatus } from "../src/runners/cspice
 describe("parity-checking method execution", () => {
   it("executes str2et method spec parity", async () => {
     const status = getCspiceRunnerStatus();
-    if (!status.ready && process.env.TSPICE_BACKEND_VERIFY_REQUIRED !== "true") {
-      // eslint-disable-next-line no-console
-      console.warn(`[parity-checking] cspice-runner unavailable; skipping tspice.e2e: ${status.hint}`);
-      return;
+    if (!status.ready) {
+      throw new Error(
+        `[parity-checking] cspice-runner unavailable: ${status.hint}. ` +
+          `Remediation: ensure CSPICE is available (pnpm -w fetch:cspice) and rebuild (pnpm test:verify). ` +
+          `State: ${status.statePath}`,
+      );
     }
 
     const methodPath = path.resolve(
