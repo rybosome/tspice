@@ -180,6 +180,7 @@ function parseMethodCase(value: unknown, label: string): MethodCaseSpec {
 /** Parse and validate a workflow YAML document. */
 export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
+  assertNoUnknownKeys(obj, "workflow", ["id", "kind", "uses", "setup", "compareDefaults", "notes"]);
 
   const id = assertString(obj.id, "workflow.id");
   const kind = assertString(obj.kind, "workflow.kind");
@@ -221,6 +222,16 @@ export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
 /** Parse and validate a method YAML document. */
 export function parseMethodSpec(file: ScenarioYamlFile): MethodSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
+  assertNoUnknownKeys(obj, "method", [
+    "id",
+    "kind",
+    "contractMethod",
+    "canonicalMethod",
+    "uses",
+    "setup",
+    "defaults",
+    "cases",
+  ]);
 
   const id = assertString(obj.id, "method.id");
   const kind = assertString(obj.kind, "method.kind");
@@ -270,6 +281,7 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpec {
 
 function parseCrossCuttingExpectation(value: unknown, label: string): CrossCuttingCaseExpectation {
   const obj = assertRecord(value, label);
+  assertNoUnknownKeys(obj, label, ["ok", "errorCode"]);
 
   const out: CrossCuttingCaseExpectation = {
     ok: assertBoolean(obj.ok, `${label}.ok`),
@@ -284,6 +296,7 @@ function parseCrossCuttingExpectation(value: unknown, label: string): CrossCutti
 
 function parseCrossCuttingCase(value: unknown, label: string): CrossCuttingCaseSpec {
   const obj = assertRecord(value, label);
+  assertNoUnknownKeys(obj, label, ["id", "transport", "rawRequest", "expect"]);
 
   const transport = assertString(obj.transport, `${label}.transport`);
   if (transport !== "native") {
@@ -301,6 +314,7 @@ function parseCrossCuttingCase(value: unknown, label: string): CrossCuttingCaseS
 /** Parse and validate a cross-cutting YAML document. */
 export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
+  assertNoUnknownKeys(obj, "crossCutting", ["schemaVersion", "kind", "id", "owner", "cases"]);
 
   const schemaVersion = assertFiniteNumber(obj.schemaVersion, "crossCutting.schemaVersion");
   if (schemaVersion !== 1) {
