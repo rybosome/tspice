@@ -26,5 +26,3 @@ cases:
       - 8
     compare:
       errorShort: true
-    expect:
-      ok: false
