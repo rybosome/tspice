@@ -99,4 +99,101 @@ describe("schema validation", () => {
       /method\.cases\[0\] has unknown key: "expec" \(allowed keys: "id", "args", "setup", "compare", "expect"\)/,
     );
   });
+
+  it("rejects unknown workflow top-level keys", () => {
+    expect(() =>
+      parseWorkflowSpec({
+        sourcePath: "/tmp/workflow.yml",
+        data: {
+          id: "workflows/time/common@v1",
+          kind: "workflow",
+          usess: ["methods/time/str2et@v1"],
+        },
+      }),
+    ).toThrow(/workflow has unknown key: "usess"/);
+  });
+
+  it("rejects unknown method top-level keys", () => {
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "/tmp/method.yml",
+        data: {
+          id: "methods/time/str2et@v1",
+          kind: "method",
+          contractMethod: "time.str2et",
+          canonicalMethod: "time.str2et",
+          canonicalMthod: "time.str2et",
+          cases: [{ id: "basic", args: ["x"] }],
+        },
+      }),
+    ).toThrow(/method has unknown key: "canonicalMthod"/);
+  });
+
+  it("rejects unknown cross-cutting top-level keys", () => {
+    expect(() =>
+      parseCrossCuttingSpec({
+        sourcePath: "/tmp/cross.yml",
+        data: {
+          schemaVersion: 1,
+          kind: "crossCuttingSpec",
+          id: "native-protocol/strict-parsing@v1",
+          owner: "parity-checking",
+          ownr: "parity-checking",
+          cases: [
+            {
+              id: "rejects-trailing-bytes",
+              transport: "native",
+              rawRequest: '{"call":"time.str2et","args":["2020-01-01"]}garbage',
+              expect: { ok: false, errorCode: "invalid_request" },
+            },
+          ],
+        },
+      }),
+    ).toThrow(/crossCutting has unknown key: "ownr"/);
+  });
+
+  it("rejects unknown cross-cutting cases[] keys", () => {
+    expect(() =>
+      parseCrossCuttingSpec({
+        sourcePath: "/tmp/cross.yml",
+        data: {
+          schemaVersion: 1,
+          kind: "crossCuttingSpec",
+          id: "native-protocol/strict-parsing@v1",
+          owner: "parity-checking",
+          cases: [
+            {
+              id: "rejects-trailing-bytes",
+              transport: "native",
+              transprt: "native",
+              rawRequest: '{"call":"time.str2et","args":["2020-01-01"]}garbage',
+              expect: { ok: false, errorCode: "invalid_request" },
+            },
+          ],
+        },
+      }),
+    ).toThrow(/crossCutting\.cases\[0\] has unknown key: "transprt"/);
+  });
+
+  it("rejects unknown cross-cutting expect keys", () => {
+    expect(() =>
+      parseCrossCuttingSpec({
+        sourcePath: "/tmp/cross.yml",
+        data: {
+          schemaVersion: 1,
+          kind: "crossCuttingSpec",
+          id: "native-protocol/strict-parsing@v1",
+          owner: "parity-checking",
+          cases: [
+            {
+              id: "rejects-trailing-bytes",
+              transport: "native",
+              rawRequest: '{"call":"time.str2et","args":["2020-01-01"]}garbage',
+              expect: { ok: false, errorCod: "invalid_request" },
+            },
+          ],
+        },
+      }),
+    ).toThrow(/crossCutting\.cases\[0\]\.expect has unknown key: "errorCod"/);
+  });
 });
