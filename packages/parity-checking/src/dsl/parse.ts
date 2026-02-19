@@ -87,14 +87,6 @@ function parseCompare(raw: unknown, label: string): ScenarioCompareAst {
   return out;
 }
 
-function asStringArray(value: unknown, label: string): string[] {
-  if (value === undefined) return [];
-  if (!Array.isArray(value)) {
-    throw new TypeError(`${label} must be an array of strings (got ${JSON.stringify(value)})`);
-  }
-  return value.map((v, i) => assertString(v, `${label}[${i}]`));
-}
-
 function fileExists(p: string): boolean {
   return fs.existsSync(p);
 }
@@ -291,14 +283,45 @@ function expandFixturesMacrosInValue(value: unknown, sourceDir: string): unknown
   return value;
 }
 
+function resolveKernelObjectPath(rawPath: string, sourceDir: string): string {
+  const expanded = expandFixturesMacroString(rawPath, sourceDir);
+  return path.isAbsolute(expanded) ? path.resolve(expanded) : path.resolve(sourceDir, expanded);
+}
+
+function parseKernelEntry(value: unknown, label: string, sourceDir: string): KernelEntry[] {
+  if (typeof value === "string") {
+    return resolveKernelPaths(value, sourceDir);
+  }
+
+  if (!isRecord(value)) {
+    throw new TypeError(`${label} must be a string or object (got ${JSON.stringify(value)})`);
+  }
+
+  const kernelPath = resolveKernelObjectPath(assertString(value.path, `${label}.path`), sourceDir);
+  const restrictToDir =
+    value.restrictToDir === undefined
+      ? undefined
+      : resolveKernelObjectPath(assertString(value.restrictToDir, `${label}.restrictToDir`), sourceDir);
+
+  return [restrictToDir === undefined ? { path: kernelPath } : { path: kernelPath, restrictToDir }];
+}
+
+function parseKernelArray(value: unknown, label: string, sourceDir: string): KernelEntry[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) {
+    throw new TypeError(`${label} must be an array (got ${JSON.stringify(value)})`);
+  }
+
+  return value.flatMap((entry, index) => parseKernelEntry(entry, `${label}[${index}]`, sourceDir));
+}
+
 function parseSetup(raw: unknown, sourceDir: string): ScenarioSetupAst {
   if (raw === undefined) return {};
   if (!isRecord(raw)) {
     throw new TypeError(`setup must be a mapping/object (got ${JSON.stringify(raw)})`);
   }
 
-  const kernelsRaw = raw.kernels;
-  const kernels = asStringArray(kernelsRaw, "setup.kernels").flatMap((p) => resolveKernelPaths(p, sourceDir));
+  const kernels = parseKernelArray(raw.kernels, "setup.kernels", sourceDir);
 
   return kernels.length === 0 ? {} : { kernels };
 }
