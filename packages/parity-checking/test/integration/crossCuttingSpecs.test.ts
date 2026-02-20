@@ -11,10 +11,8 @@ import { parseCrossCuttingSpec } from "../../src/dsl/schemaValidate.js";
 import { getCspiceRunnerStatus } from "../../src/runners/cspiceRunner.js";
 
 describe("cross-cutting spec discovery and execution", () => {
-  const status = getCspiceRunnerStatus();
-  const maybeIt = status.ready ? it : it.skip;
-
-  maybeIt("discovers and executes all cross-cutting yaml specs", async () => {
+  it("discovers and executes all cross-cutting yaml specs", async () => {
+    const status = getCspiceRunnerStatus();
     const testDir = path.dirname(fileURLToPath(import.meta.url));
     const rootDir = path.resolve(testDir, "../../specs/cross-cutting");
 
@@ -22,6 +20,7 @@ describe("cross-cutting spec discovery and execution", () => {
     expect(files.length).toBeGreaterThan(0);
 
     let executedCases = 0;
+    let skippedSpecs = 0;
     for (const filePath of files) {
       const spec = parseCrossCuttingSpec({
         sourcePath: filePath,
@@ -29,9 +28,22 @@ describe("cross-cutting spec discovery and execution", () => {
       });
 
       const summary = await executeCrossCuttingSpec(spec);
+      if (summary.skipped) {
+        skippedSpecs++;
+        expect(summary.skipReason).toMatch(/^cspice-runner unavailable:/);
+        continue;
+      }
+
       executedCases += summary.caseCount;
     }
 
+    if (!status.ready) {
+      expect(skippedSpecs).toBe(files.length);
+      expect(executedCases).toBe(0);
+      return;
+    }
+
+    expect(skippedSpecs).toBe(0);
     expect(executedCases).toBeGreaterThan(0);
   });
 });

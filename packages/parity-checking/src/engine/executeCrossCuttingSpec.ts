@@ -102,15 +102,20 @@ async function invokeRawNativeRequest(rawRequest: string): Promise<RawRunnerResp
 export type CrossCuttingExecutionSummary = {
   specId: string;
   caseCount: number;
+  skipped: boolean;
+  skipReason?: string;
 };
 
 /** Execute one cross-cutting spec against the native CSPICE runner. */
 export async function executeCrossCuttingSpec(spec: CrossCuttingSpec): Promise<CrossCuttingExecutionSummary> {
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
-    throw new Error(
-      `Cross-cutting execution requires native cspice-runner, but it is unavailable: ${status.hint}`,
-    );
+    return {
+      specId: spec.id,
+      caseCount: 0,
+      skipped: true,
+      skipReason: `cspice-runner unavailable: ${status.hint}`,
+    };
   }
 
   for (const scenarioCase of spec.cases) {
@@ -135,5 +140,6 @@ export async function executeCrossCuttingSpec(spec: CrossCuttingSpec): Promise<C
   return {
     specId: spec.id,
     caseCount: spec.cases.length,
+    skipped: false,
   };
 }
