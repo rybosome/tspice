@@ -140,7 +140,7 @@ main().catch(console.error);
 
 ## Coverage
 
-CSPICE exposes 652 public routines; 154 are currently implemented in `tspice`.
+CSPICE exposes 652 public routines; 162 are currently implemented in `tspice`.
 
 - **Detailed function inventory:** [`docs/cspice-function-inventory.md`](docs/cspice-function-inventory.md)
 

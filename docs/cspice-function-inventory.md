@@ -7,13 +7,13 @@ Sources:
 - CSPICE routine list + brief descriptions: https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html (NAIF official index)
 - tspice implemented routines: backend contract surface via `SpiceBackend` in `packages/backend-contract/src/index.ts`
 
-SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`, `DskApi`.
+SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `GeometryGfApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`, `DskApi`.
 
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceBackend): 154
-- Planned (not yet implemented): 495
+- Implemented now (SpiceBackend): 162
+- Planned (not yet implemented): 487
 - Excluded: 3
 
 ## Implemented now
@@ -88,6 +88,14 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`
 | `georec_c` | Geodetic to rectangular coordinates |
 | `getfat_c` | Get file architecture and type |
 | `getmsg_c` | Get Error Message |
+| `gfdist_c` | GF, distance search |
+| `gfrefn_c` | GF, default refinement estimator |
+| `gfrepf_c` | GF, progress report finalization |
+| `gfrepi_c` | GF, progress report initialization |
+| `gfsep_c` | GF, angular separation search |
+| `gfsstp_c` | Geometry finder set step size |
+| `gfstep_c` | Geometry finder step size |
+| `gfstol_c` | GF, set a tolerance value for GF |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
 | `illumf_c` | Illumination angles, general source, return flags |
@@ -365,7 +373,6 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
 | `gfbail_c` | GF, interrupt signal indicator |
 | `gfclrh_c` | GF, clear interrupt signal handler status |
-| `gfdist_c` | GF, distance search |
 | `gfevnt_c` | GF, geometric event finder |
 | `gffove_c` | GF, is target in FOV? |
 | `gfilum_c` | GF, illumination angle search |
@@ -374,17 +381,10 @@ SpiceBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`
 | `gfoclt_c` | GF, find occultation |
 | `gfpa_c` | GF, phase angle search |
 | `gfposc_c` | GF, observer-target vector coordinate search |
-| `gfrefn_c` | GF, default refinement estimator |
-| `gfrepf_c` | GF, progress report finalization |
-| `gfrepi_c` | GF, progress report initialization |
 | `gfrepu_c` | GF, progress report update |
 | `gfrfov_c` | GF, is ray in FOV? |
 | `gfrr_c` | GF, range rate search |
-| `gfsep_c` | GF, angular separation search |
 | `gfsntc_c` | GF, surface intercept vector coordinate search |
-| `gfsstp_c` | Geometry finder set step size |
-| `gfstep_c` | Geometry finder step size |
-| `gfstol_c` | GF, set a tolerance value for GF |
 | `gfsubc_c` | GF, subpoint vector coordinate search |
 | `gftfov_c` | GF, is target in FOV? |
 | `gfudb_c` | GF, user defined boolean |
