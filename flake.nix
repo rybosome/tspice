@@ -5,33 +5,40 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
   };
 
-  outputs = { nixpkgs, ... }: {
-    devShells.aarch64-linux.default =
-      let
-        pkgs = import nixpkgs { system = "aarch64-linux"; };
-        cshCompat = pkgs.writeShellScriptBin "csh" ''
-          exec ${pkgs.tcsh}/bin/tcsh "$@"
-        '';
-      in
-      pkgs.mkShell {
-        packages = [
-          pkgs.binutils
-          cshCompat
-          pkgs.file
-          pkgs.gcc
-          pkgs.gnumake
-          pkgs.gnutar
-          pkgs.ncompress
-          pkgs.nodejs_22
-          pkgs.ripgrep
-          pkgs.tcsh
-        ];
+  outputs = { nixpkgs, ... }:
+    let
+      mkPkgs = system: import nixpkgs { inherit system; };
 
-        shellHook = ''
-          export TKCOMPILER=gcc
-          export TKCOMPILEOPTIONS='-c -ansi -O2 -fPIC -DNON_UNIX_STDIO'
-          export TKLINKOPTIONS='-lm'
-        '';
-      };
-  };
+      mkCspiceBuildDevShell = system:
+        let
+          pkgs = mkPkgs system;
+          cshCompat = pkgs.writeShellScriptBin "csh" ''
+            exec ${pkgs.tcsh}/bin/tcsh "$@"
+          '';
+        in
+        pkgs.mkShell {
+          packages = [
+            pkgs.binutils
+            cshCompat
+            pkgs.file
+            pkgs.gcc
+            pkgs.gnumake
+            pkgs.gnutar
+            pkgs.ncompress
+            pkgs.nodejs_22
+            pkgs.ripgrep
+            pkgs.tcsh
+          ];
+
+          shellHook = ''
+            export TKCOMPILER=gcc
+            export TKCOMPILEOPTIONS='-c -ansi -O2 -fPIC -DNON_UNIX_STDIO'
+            export TKLINKOPTIONS='-lm'
+          '';
+        };
+    in
+    {
+      # Intentionally exposed only for linux-arm64 (Nix system: aarch64-linux).
+      devShells.aarch64-linux.default = mkCspiceBuildDevShell "aarch64-linux";
+    };
 }

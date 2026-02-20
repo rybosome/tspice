@@ -88,6 +88,8 @@ Notes:
 
 For `linux-arm64` (`aarch64`), use the repo `flake.nix` dev shell to run the known-good CSPICE source build flow from issue #465.
 
+The flake intentionally exposes this build shell only as `devShells.aarch64-linux.default`.
+
 ```bash
 # Enter the aarch64 dev shell (includes tcsh/csh, gcc, make, binutils, node)
 nix develop
