@@ -1,0 +1,13 @@
+id: methods/cells-windows/newCharCell@v1
+kind: method
+contractMethod: cells-windows.newCharCell
+canonicalMethod: cells-windows.newCharCell
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.newCharCell.basic
+    args:
+      - 4
+      - 32
+    expect:
+      ok: true

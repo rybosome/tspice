@@ -1,0 +1,12 @@
+id: methods/cells-windows/size@v1
+kind: method
+contractMethod: cells-windows.size
+canonicalMethod: cells-windows.size
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.size.char
+    args:
+      - [char, 4, 32]
+    expect:
+      ok: true

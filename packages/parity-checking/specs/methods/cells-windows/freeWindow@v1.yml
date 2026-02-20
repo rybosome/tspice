@@ -1,0 +1,12 @@
+id: methods/cells-windows/freeWindow@v1
+kind: method
+contractMethod: cells-windows.freeWindow
+canonicalMethod: cells-windows.freeWindow
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.freeWindow.basic
+    args:
+      - 4
+    expect:
+      ok: true

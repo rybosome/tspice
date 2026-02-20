@@ -1,0 +1,12 @@
+id: methods/cells-windows/newDoubleCell@v1
+kind: method
+contractMethod: cells-windows.newDoubleCell
+canonicalMethod: cells-windows.newDoubleCell
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.newDoubleCell.basic
+    args:
+      - 8
+    expect:
+      ok: true

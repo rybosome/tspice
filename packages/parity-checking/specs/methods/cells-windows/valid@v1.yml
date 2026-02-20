@@ -1,0 +1,14 @@
+id: methods/cells-windows/valid@v1
+kind: method
+contractMethod: cells-windows.valid
+canonicalMethod: cells-windows.valid
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.valid.int
+    args:
+      - 8
+      - 0
+      - [int, 8]
+    expect:
+      ok: true

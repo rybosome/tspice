@@ -1,0 +1,12 @@
+id: methods/cells-windows/freeCell@v1
+kind: method
+contractMethod: cells-windows.freeCell
+canonicalMethod: cells-windows.freeCell
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.freeCell.int
+    args:
+      - [int, 8]
+    expect:
+      ok: true

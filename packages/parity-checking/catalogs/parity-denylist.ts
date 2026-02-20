@@ -2,23 +2,12 @@
 // Source catalogs: contract-methods.json - method specs canonical coverage
 
 export const PARITY_DENYLIST = [
-  "cells-windows.card",
   "cells-windows.cellGetc",
   "cells-windows.cellGetd",
   "cells-windows.cellGeti",
-  "cells-windows.freeCell",
-  "cells-windows.freeWindow",
   "cells-windows.insrtc",
   "cells-windows.insrtd",
   "cells-windows.insrti",
-  "cells-windows.newCharCell",
-  "cells-windows.newDoubleCell",
-  "cells-windows.newIntCell",
-  "cells-windows.newWindow",
-  "cells-windows.scard",
-  "cells-windows.size",
-  "cells-windows.ssize",
-  "cells-windows.valid",
   "cells-windows.wncard",
   "cells-windows.wnfetd",
   "cells-windows.wninsd",

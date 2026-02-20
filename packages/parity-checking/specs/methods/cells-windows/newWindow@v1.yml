@@ -1,0 +1,12 @@
+id: methods/cells-windows/newWindow@v1
+kind: method
+contractMethod: cells-windows.newWindow
+canonicalMethod: cells-windows.newWindow
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.newWindow.basic
+    args:
+      - 4
+    expect:
+      ok: true

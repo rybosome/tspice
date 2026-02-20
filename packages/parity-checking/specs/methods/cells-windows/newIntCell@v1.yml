@@ -1,0 +1,12 @@
+id: methods/cells-windows/newIntCell@v1
+kind: method
+contractMethod: cells-windows.newIntCell
+canonicalMethod: cells-windows.newIntCell
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.newIntCell.basic
+    args:
+      - 8
+    expect:
+      ok: true

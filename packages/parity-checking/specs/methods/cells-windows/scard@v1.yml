@@ -1,0 +1,13 @@
+id: methods/cells-windows/scard@v1
+kind: method
+contractMethod: cells-windows.scard
+canonicalMethod: cells-windows.scard
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.scard.zero
+    args:
+      - 0
+      - [int, 8]
+    expect:
+      ok: true

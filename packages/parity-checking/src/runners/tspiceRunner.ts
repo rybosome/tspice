@@ -195,6 +195,147 @@ function rewriteKdataOsPathIfNeeded(backend: SpiceBackend, result: unknown): unk
   return { ...r, file: osPath };
 }
 
+type CellsWindowsRecipe =
+  | { kind: "int"; size: number }
+  | { kind: "double"; size: number }
+  | { kind: "char"; size: number; length: number }
+  | { kind: "window"; maxIntervals: number };
+
+type PreparedCellsWindowsHandle = {
+  kind: "cell" | "window";
+  handle: unknown;
+  release: () => void;
+};
+
+function parseCellsWindowsRecipe(value: unknown, label: string): CellsWindowsRecipe {
+  if (!Array.isArray(value)) {
+    invalidArgs(
+      `${label} expects a tuple recipe: [\"int\", size] | [\"double\", size] | [\"char\", size, length] | [\"window\", maxIntervals] (got ${formatValue(value)})`,
+    );
+  }
+
+  if (typeof value[0] !== "string") {
+    invalidArgs(`${label}[0] expects a recipe kind string (got ${formatValue(value[0])})`);
+  }
+
+  const kind = value[0];
+
+  if (kind === "int" || kind === "double") {
+    if (value.length !== 2) {
+      invalidArgs(`${label} ${kind} recipe expects exactly 2 elements [${JSON.stringify(kind)}, size]`);
+    }
+
+    assertInteger(value[1], `${label}[1]`);
+    if (value[1] < 0) {
+      invalidArgs(`${label}[1] expects size >= 0 (got ${formatValue(value[1])})`);
+    }
+
+    return { kind, size: value[1] };
+  }
+
+  if (kind === "char") {
+    if (value.length !== 3) {
+      invalidArgs(`${label} char recipe expects exactly 3 elements [\"char\", size, length]`);
+    }
+
+    assertInteger(value[1], `${label}[1]`);
+    assertInteger(value[2], `${label}[2]`);
+
+    if (value[1] < 0) {
+      invalidArgs(`${label}[1] expects size >= 0 (got ${formatValue(value[1])})`);
+    }
+    if (value[2] <= 0) {
+      invalidArgs(`${label}[2] expects length > 0 (got ${formatValue(value[2])})`);
+    }
+
+    return {
+      kind,
+      size: value[1],
+      length: value[2],
+    };
+  }
+
+  if (kind === "window") {
+    if (value.length !== 2) {
+      invalidArgs(`${label} window recipe expects exactly 2 elements [\"window\", maxIntervals]`);
+    }
+
+    assertInteger(value[1], `${label}[1]`);
+    if (value[1] < 0) {
+      invalidArgs(`${label}[1] expects maxIntervals >= 0 (got ${formatValue(value[1])})`);
+    }
+
+    return { kind, maxIntervals: value[1] };
+  }
+
+  invalidArgs(
+    `${label}[0] expects one of \"int\", \"double\", \"char\", \"window\" (got ${formatValue(kind)})`,
+  );
+}
+
+function prepareCellsWindowsHandle(
+  backend: SpiceBackend,
+  recipe: CellsWindowsRecipe,
+): PreparedCellsWindowsHandle {
+  let released = false;
+
+  if (recipe.kind === "int") {
+    const cell = backend.newIntCell(recipe.size);
+    return {
+      kind: "cell",
+      handle: cell,
+      release: () => {
+        if (released) return;
+        released = true;
+        backend.freeCell(cell);
+      },
+    };
+  }
+
+  if (recipe.kind === "double") {
+    const cell = backend.newDoubleCell(recipe.size);
+    return {
+      kind: "cell",
+      handle: cell,
+      release: () => {
+        if (released) return;
+        released = true;
+        backend.freeCell(cell);
+      },
+    };
+  }
+
+  if (recipe.kind === "char") {
+    const cell = backend.newCharCell(recipe.size, recipe.length);
+    return {
+      kind: "cell",
+      handle: cell,
+      release: () => {
+        if (released) return;
+        released = true;
+        backend.freeCell(cell);
+      },
+    };
+  }
+
+  const window = backend.newWindow(recipe.maxIntervals);
+  return {
+    kind: "window",
+    handle: window,
+    release: () => {
+      if (released) return;
+      released = true;
+      backend.freeWindow(window);
+    },
+  };
+}
+
+function asCellsWindowsCellArg(
+  handle: PreparedCellsWindowsHandle,
+): Parameters<SpiceBackend["card"]>[0] {
+  return handle.handle as Parameters<SpiceBackend["card"]>[0];
+}
+
 const DISPATCH: Record<string, DispatchFn> = {
   // time
   "time.str2et": (backend, args) => {
@@ -975,6 +1116,192 @@ const DISPATCH: Record<string, DispatchFn> = {
       invalidArgs(`kernel-pool.expool expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     return backend.expool(args[0]);
+  },
+
+  // cells-windows
+  "cells-windows.newIntCell": (backend, args) => {
+    assertInteger(args[0], "cells-windows.newIntCell args[0]");
+    if (args[0] < 0) {
+      invalidArgs(
+        `cells-windows.newIntCell expects args[0] (size) to be >= 0 (got ${formatValue(args[0])})`,
+      );
+    }
+
+    const cell = backend.newIntCell(args[0]);
+    try {
+      return {
+        kind: "int",
+        size: backend.size(cell),
+        card: backend.card(cell),
+      };
+    } finally {
+      backend.freeCell(cell);
+    }
+  },
+
+  "cells-windows.newDoubleCell": (backend, args) => {
+    assertInteger(args[0], "cells-windows.newDoubleCell args[0]");
+    if (args[0] < 0) {
+      invalidArgs(
+        `cells-windows.newDoubleCell expects args[0] (size) to be >= 0 (got ${formatValue(args[0])})`,
+      );
+    }
+
+    const cell = backend.newDoubleCell(args[0]);
+    try {
+      return {
+        kind: "double",
+        size: backend.size(cell),
+        card: backend.card(cell),
+      };
+    } finally {
+      backend.freeCell(cell);
+    }
+  },
+
+  "cells-windows.newCharCell": (backend, args) => {
+    assertInteger(args[0], "cells-windows.newCharCell args[0]");
+    assertInteger(args[1], "cells-windows.newCharCell args[1]");
+
+    if (args[0] < 0) {
+      invalidArgs(
+        `cells-windows.newCharCell expects args[0] (size) to be >= 0 (got ${formatValue(args[0])})`,
+      );
+    }
+    if (args[1] <= 0) {
+      invalidArgs(
+        `cells-windows.newCharCell expects args[1] (length) to be > 0 (got ${formatValue(args[1])})`,
+      );
+    }
+
+    const cell = backend.newCharCell(args[0], args[1]);
+    try {
+      return {
+        kind: "char",
+        size: backend.size(cell),
+        card: backend.card(cell),
+        length: args[1],
+      };
+    } finally {
+      backend.freeCell(cell);
+    }
+  },
+
+  "cells-windows.newWindow": (backend, args) => {
+    assertInteger(args[0], "cells-windows.newWindow args[0]");
+    if (args[0] < 0) {
+      invalidArgs(
+        `cells-windows.newWindow expects args[0] (maxIntervals) to be >= 0 (got ${formatValue(args[0])})`,
+      );
+    }
+
+    const window = backend.newWindow(args[0]);
+    try {
+      return {
+        kind: "window",
+        size: backend.size(window),
+        card: backend.card(window),
+      };
+    } finally {
+      backend.freeWindow(window);
+    }
+  },
+
+  "cells-windows.freeCell": (backend, args) => {
+    const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.freeCell args[0]");
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    if (prepared.kind !== "cell") {
+      prepared.release();
+      invalidArgs("cells-windows.freeCell expects a non-window recipe");
+    }
+
+    prepared.release();
+    return null;
+  },
+
+  "cells-windows.freeWindow": (backend, args) => {
+    assertInteger(args[0], "cells-windows.freeWindow args[0]");
+    if (args[0] < 0) {
+      invalidArgs(
+        `cells-windows.freeWindow expects args[0] (maxIntervals) to be >= 0 (got ${formatValue(args[0])})`,
+      );
+    }
+
+    const window = backend.newWindow(args[0]);
+    backend.freeWindow(window);
+    return null;
+  },
+
+  "cells-windows.card": (backend, args) => {
+    const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.card args[0]");
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    try {
+      return backend.card(asCellsWindowsCellArg(prepared));
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.size": (backend, args) => {
+    const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.size args[0]");
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    try {
+      return backend.size(asCellsWindowsCellArg(prepared));
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.scard": (backend, args) => {
+    assertInteger(args[0], "cells-windows.scard args[0]");
+    const recipe = parseCellsWindowsRecipe(args[1], "cells-windows.scard args[1]");
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const cellArg = asCellsWindowsCellArg(prepared);
+
+    try {
+      backend.scard(args[0], cellArg);
+      return {
+        card: backend.card(cellArg),
+        size: backend.size(cellArg),
+      };
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.ssize": (backend, args) => {
+    assertInteger(args[0], "cells-windows.ssize args[0]");
+    const recipe = parseCellsWindowsRecipe(args[1], "cells-windows.ssize args[1]");
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const cellArg = asCellsWindowsCellArg(prepared);
+
+    try {
+      backend.ssize(args[0], cellArg);
+      return {
+        card: backend.card(cellArg),
+        size: backend.size(cellArg),
+      };
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.valid": (backend, args) => {
+    assertInteger(args[0], "cells-windows.valid args[0]");
+    assertInteger(args[1], "cells-windows.valid args[1]");
+    const recipe = parseCellsWindowsRecipe(args[2], "cells-windows.valid args[2]");
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const cellArg = asCellsWindowsCellArg(prepared);
+
+    try {
+      backend.valid(args[0], args[1], cellArg);
+      return {
+        card: backend.card(cellArg),
+        size: backend.size(cellArg),
+      };
+    } finally {
+      prepared.release();
+    }
   },
 
   // ephemeris

@@ -1,0 +1,4 @@
+id: workflows/legacy/cells-windows.basic@v1
+kind: workflow
+notes:
+  - Added for cells/windows lifecycle parity migration coverage.

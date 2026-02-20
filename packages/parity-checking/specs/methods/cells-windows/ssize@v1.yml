@@ -1,0 +1,13 @@
+id: methods/cells-windows/ssize@v1
+kind: method
+contractMethod: cells-windows.ssize
+canonicalMethod: cells-windows.ssize
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.ssize.int
+    args:
+      - 6
+      - [int, 8]
+    expect:
+      ok: true
