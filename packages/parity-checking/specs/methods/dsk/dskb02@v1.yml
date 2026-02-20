@@ -1,0 +1,12 @@
+id: methods/dsk/dskb02@v1
+kind: method
+contractMethod: dsk.dskb02
+canonicalMethod: dsk.dskb02
+uses:
+  - workflows/legacy/dsk.basic@v1
+cases:
+  - id: bookkeeping-from-minimal-dsk
+    args:
+      - $FIXTURES/kernels/de421_minimal.bds
+    expect:
+      ok: true

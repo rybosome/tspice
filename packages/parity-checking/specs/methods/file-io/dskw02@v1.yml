@@ -1,0 +1,12 @@
+id: methods/file-io/dskw02@v1
+kind: method
+contractMethod: file-io.dskw02
+canonicalMethod: file-io.dskw02
+uses:
+  - workflows/legacy/file-io.dsk-writers@v1
+cases:
+  - id: write-single-segment-dsk
+    args:
+      - parity-file-io-dskw02
+    expect:
+      ok: true

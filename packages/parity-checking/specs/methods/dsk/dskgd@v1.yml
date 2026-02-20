@@ -1,0 +1,12 @@
+id: methods/dsk/dskgd@v1
+kind: method
+contractMethod: dsk.dskgd
+canonicalMethod: dsk.dskgd
+uses:
+  - workflows/legacy/dsk.basic@v1
+cases:
+  - id: descriptor-from-minimal-dsk
+    args:
+      - $FIXTURES/kernels/de421_minimal.bds
+    expect:
+      ok: true

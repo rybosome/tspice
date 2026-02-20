@@ -1,0 +1,10 @@
+id: methods/file-io/dskmi2@v1
+kind: method
+contractMethod: file-io.dskmi2
+canonicalMethod: file-io.dskmi2
+uses:
+  - workflows/legacy/file-io.dsk-writers@v1
+cases:
+  - id: minimal-triangle-index
+    expect:
+      ok: true

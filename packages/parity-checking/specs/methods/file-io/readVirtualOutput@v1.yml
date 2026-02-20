@@ -1,0 +1,13 @@
+id: methods/file-io/readVirtualOutput@v1
+kind: method
+contractMethod: file-io.readVirtualOutput
+canonicalMethod: file-io.readVirtualOutput
+uses:
+  - workflows/legacy/file-io.dsk-writers@v1
+cases:
+  - id: read-spk-virtual-output-bytes
+    args:
+      - kind: virtual-output
+        path: parity-read-virtual-output
+    expect:
+      ok: true

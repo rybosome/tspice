@@ -1,0 +1,14 @@
+id: methods/file-io/dskopn@v1
+kind: method
+contractMethod: file-io.dskopn
+canonicalMethod: file-io.dskopn
+uses:
+  - workflows/legacy/file-io.dsk-writers@v1
+cases:
+  - id: open-close-temp-dsk
+    args:
+      - parity-file-io-dskopn
+      - TSPICE
+      - 0
+    expect:
+      ok: true

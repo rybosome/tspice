@@ -1,0 +1,12 @@
+id: methods/dsk/dsksrf@v1
+kind: method
+contractMethod: dsk.dsksrf
+canonicalMethod: dsk.dsksrf
+uses:
+  - workflows/legacy/dsk.basic@v1
+cases:
+  - id: surface-ids-from-minimal-dsk
+    args:
+      - $FIXTURES/kernels/de421_minimal.bds
+    expect:
+      ok: true

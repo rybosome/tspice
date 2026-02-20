@@ -371,6 +371,78 @@ async function cleanupFileIoTempPath(filePath: string): Promise<void> {
   }
 }
 
+const DSK_MINIMAL_NV = 3;
+const DSK_MINIMAL_VERTICES: readonly number[] = [
+  0, 0, 0,
+  1, 0, 0,
+  0, 1, 0,
+];
+const DSK_MINIMAL_NP = 1;
+const DSK_MINIMAL_PLATES: readonly number[] = [1, 2, 3];
+const DSK_MINIMAL_CORPAR: readonly number[] = new Array(10).fill(0);
+const DSK_MINIMAL_FINSCL = 0.2;
+const DSK_MINIMAL_CORSCL = 5;
+const DSK_MINIMAL_WORKSZ = 100_000;
+const DSK_MINIMAL_VOXPSZ = 5_000;
+const DSK_MINIMAL_VOXLSZ = 5_000;
+const DSK_MINIMAL_SPXISZ = 150_000;
+
+const READ_VIRTUAL_OUTPUT_STATES: readonly number[] = [
+  // t=0
+  0, 0, 0, 1, 0, 0,
+  // t=60
+  60, 0, 0, 1, 0, 0,
+];
+
+function assertVirtualOutputArg(value: unknown, call: string, index: number): Parameters<SpiceBackend["readVirtualOutput"]>[0] {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    invalidArgs(`${call} expects args[${index}] to be { kind: \"virtual-output\", path: string } (got ${formatValue(value)})`);
+  }
+
+  const obj = value as Record<string, unknown>;
+  if (obj.kind !== "virtual-output") {
+    invalidArgs(`${call} expects args[${index}].kind to be \"virtual-output\" (got ${formatValue(obj.kind)})`);
+  }
+  if (typeof obj.path !== "string") {
+    invalidArgs(`${call} expects args[${index}].path to be a string (got ${formatValue(obj.path)})`);
+  }
+
+  return {
+    kind: "virtual-output",
+    path: obj.path,
+  };
+}
+
+function readIntCellValues(
+  backend: SpiceBackend,
+  cell: Parameters<SpiceBackend["cellGeti"]>[0],
+): number[] {
+  const n = backend.card(cell);
+  const out: number[] = [];
+  for (let i = 0; i < n; i++) {
+    out.push(backend.cellGeti(cell, i));
+  }
+  return out;
+}
+
+function computeMinimalDskSpatialIndex(
+  backend: SpiceBackend,
+): ReturnType<SpiceBackend["dskmi2"]> {
+  return backend.dskmi2(
+    DSK_MINIMAL_NV,
+    DSK_MINIMAL_VERTICES,
+    DSK_MINIMAL_NP,
+    DSK_MINIMAL_PLATES,
+    DSK_MINIMAL_FINSCL,
+    DSK_MINIMAL_CORSCL,
+    DSK_MINIMAL_WORKSZ,
+    DSK_MINIMAL_VOXPSZ,
+    DSK_MINIMAL_VOXLSZ,
+    true,
+    DSK_MINIMAL_SPXISZ,
+  );
+}
+
 const DISPATCH: Record<string, DispatchFn> = {
   // time
   "time.str2et": (backend, args) => {
@@ -1153,6 +1225,79 @@ const DISPATCH: Record<string, DispatchFn> = {
     return backend.expool(args[0]);
   },
 
+  // dsk
+  "dsk.dskobj": (backend, args) => {
+    assertStringArg(args[0], "dsk.dskobj", 0);
+
+    const bodids = backend.newIntCell(128);
+    try {
+      backend.dskobj(args[0], bodids);
+      return readIntCellValues(backend, bodids);
+    } finally {
+      backend.freeCell(bodids);
+    }
+  },
+
+  "dsk.dsksrf": (backend, args) => {
+    assertStringArg(args[0], "dsk.dsksrf", 0);
+
+    const bodids = backend.newIntCell(128);
+    const srfids = backend.newIntCell(128);
+    try {
+      backend.dskobj(args[0], bodids);
+      const bodies = readIntCellValues(backend, bodids);
+      if (bodies.length === 0) {
+        return { foundBody: false, bodyid: null, surfaces: [] };
+      }
+
+      const bodyid = bodies[0];
+      if (bodyid === undefined) {
+        return { foundBody: false, bodyid: null, surfaces: [] };
+      }
+      backend.dsksrf(args[0], bodyid, srfids);
+      return {
+        foundBody: true,
+        bodyid,
+        surfaces: readIntCellValues(backend, srfids),
+      };
+    } finally {
+      backend.freeCell(srfids);
+      backend.freeCell(bodids);
+    }
+  },
+
+  "dsk.dskgd": (backend, args) => {
+    assertStringArg(args[0], "dsk.dskgd", 0);
+
+    const handle = backend.dasopr(args[0]);
+    try {
+      const first = backend.dlabfs(handle);
+      if (!first.found) {
+        invalidArgs("dsk.dskgd expected at least one DLA segment in args[0] DSK path");
+      }
+
+      return backend.dskgd(handle, first.descr);
+    } finally {
+      backend.dascls(handle);
+    }
+  },
+
+  "dsk.dskb02": (backend, args) => {
+    assertStringArg(args[0], "dsk.dskb02", 0);
+
+    const handle = backend.dasopr(args[0]);
+    try {
+      const first = backend.dlabfs(handle);
+      if (!first.found) {
+        invalidArgs("dsk.dskb02 expected at least one DLA segment in args[0] DSK path");
+      }
+
+      return backend.dskb02(handle, first.descr);
+    } finally {
+      backend.dascls(handle);
+    }
+  },
+
   // file-io
   "file-io.exists": (backend, args) => {
     assertStringArg(args[0], "file-io.exists", 0);
@@ -1258,6 +1403,147 @@ const DISPATCH: Record<string, DispatchFn> = {
 
       await cleanupFileIoTempPath(tempPath);
     }
+  },
+
+  "file-io.dskopn": async (backend, args) => {
+    assertStringArg(args[0], "file-io.dskopn", 0);
+    assertStringArg(args[1], "file-io.dskopn", 1);
+    assertInteger(args[2], "file-io.dskopn args[2]");
+    if (args[2] < 0) {
+      invalidArgs(`file-io.dskopn expects args[2] (ncomch) to be >= 0 (got ${formatValue(args[2])})`);
+    }
+
+    const tempPath = makeFileIoTempPath(args[0], ".bds");
+    const handle = backend.dskopn(tempPath, args[1], args[2]);
+    let closed = false;
+
+    try {
+      backend.dascls(handle);
+      closed = true;
+
+      const fat = backend.getfat(tempPath);
+      return {
+        exists: backend.exists(tempPath),
+        arch: fat.arch,
+        type: fat.type,
+      };
+    } finally {
+      if (!closed) {
+        try {
+          backend.dascls(handle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      await cleanupFileIoTempPath(tempPath);
+    }
+  },
+
+  "file-io.dskmi2": (backend) => {
+    const { spaixd, spaixi } = computeMinimalDskSpatialIndex(backend);
+
+    let nonZeroCount = 0;
+    for (const v of spaixi) {
+      if (v !== 0) nonZeroCount += 1;
+    }
+
+    return {
+      spaixd,
+      spaixiLength: spaixi.length,
+      spaixiNonZeroCount: nonZeroCount,
+    };
+  },
+
+  "file-io.dskw02": async (backend, args) => {
+    assertStringArg(args[0], "file-io.dskw02", 0);
+
+    const tempPath = makeFileIoTempPath(args[0], ".bds");
+    const handle = backend.dskopn(tempPath, "TSPICE", 0);
+    let handleClosed = false;
+
+    try {
+      const { spaixd, spaixi } = computeMinimalDskSpatialIndex(backend);
+
+      backend.dskw02(
+        handle,
+        399,
+        1,
+        2,
+        "J2000",
+        3,
+        DSK_MINIMAL_CORPAR,
+        0,
+        1,
+        0,
+        1,
+        -0.1,
+        0.1,
+        0,
+        1,
+        DSK_MINIMAL_NV,
+        DSK_MINIMAL_VERTICES,
+        DSK_MINIMAL_NP,
+        DSK_MINIMAL_PLATES,
+        spaixd,
+        spaixi,
+      );
+
+      backend.dascls(handle);
+      handleClosed = true;
+
+      const fat = backend.getfat(tempPath);
+      const readHandle = backend.dasopr(tempPath);
+      try {
+        const first = backend.dlabfs(readHandle);
+        const next = first.found ? backend.dlafns(readHandle, first.descr) : { found: false as const };
+        return {
+          exists: backend.exists(tempPath),
+          arch: fat.arch,
+          type: fat.type,
+          firstFound: first.found,
+          nextFound: next.found,
+        };
+      } finally {
+        backend.dascls(readHandle);
+      }
+    } finally {
+      if (!handleClosed) {
+        try {
+          backend.dascls(handle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      await cleanupFileIoTempPath(tempPath);
+    }
+  },
+
+  "file-io.readVirtualOutput": (backend, args) => {
+    const output = assertVirtualOutputArg(args[0], "file-io.readVirtualOutput", 0);
+
+    const handle = backend.spkopn(output, "TSPICE", 0);
+    try {
+      backend.spkw08(
+        handle,
+        1000,
+        0,
+        "J2000",
+        0,
+        60,
+        "TSPICE_PARITY_RVO",
+        1,
+        READ_VIRTUAL_OUTPUT_STATES,
+        0,
+        60,
+      );
+    } finally {
+      backend.spkcls(handle);
+    }
+
+    const bytes = backend.readVirtualOutput(output);
+    return { byteLength: bytes.byteLength };
   },
 
   "file-io.dlabfs": (backend, args) => {

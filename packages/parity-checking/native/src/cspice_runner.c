@@ -51,6 +51,14 @@
 // This keeps the runner deterministic (invalid_args) instead of OOM/overflow.
 #define CSPICE_RUNNER_MAX_KPOOL_ALLOC_BYTES (64 * 1024 * 1024)
 
+// Minimal triangle mesh used by DSK parity scenarios.
+#define DSK_MINIMAL_NV 3
+#define DSK_MINIMAL_NP 1
+#define DSK_MINIMAL_WORKSZ 100000
+#define DSK_MINIMAL_VOXPSZ 5000
+#define DSK_MINIMAL_VOXLSZ 5000
+#define DSK_MINIMAL_SPXISZ 150000
+
 // --- Minimal JSON parsing via jsmn (public domain) --------------------------
 // https://github.com/zserge/jsmn
 
@@ -1798,6 +1806,7 @@ static void sanitize_file_io_temp_tag(const char *tag,
 }
 
 static bool build_file_io_temp_path(const char *tag,
+                                    const char *extension,
                                     char *outPath,
                                     size_t outPathBytes,
                                     char *detail,
@@ -1821,14 +1830,25 @@ static bool build_file_io_temp_path(const char *tag,
   static uint64_t counter = 0;
   counter += 1;
 
+  if (extension == NULL || extension[0] == '\0') {
+    extension = ".tmp";
+  }
+
+  const char *extLead = "";
+  if (extension[0] != '.') {
+    extLead = ".";
+  }
+
   const int n = snprintf(
       outPath,
       outPathBytes,
-      "%s/tspice-parity-%s-%ld-%" PRIu64 ".dla",
+      "%s/tspice-parity-%s-%ld-%" PRIu64 "%s%s",
       tmpDir,
       safeTag,
       (long)getpid(),
-      (uint64_t)counter);
+      (uint64_t)counter,
+      extLead,
+      extension);
 
   if (n < 0 || (size_t)n >= outPathBytes) {
     if (detail != NULL && detailBytes > 0) {
@@ -1866,6 +1886,136 @@ static void write_found_dla_descriptor_json(const SpiceDLADescr *descr,
   fputs(",\"csize\":", stdout);
   fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->csize);
   fputs("}}}\n", stdout);
+}
+
+static const SpiceDouble DSK_MINIMAL_VERTICES[DSK_MINIMAL_NV][3] = {
+    {0.0, 0.0, 0.0},
+    {1.0, 0.0, 0.0},
+    {0.0, 1.0, 0.0},
+};
+
+static const SpiceInt DSK_MINIMAL_PLATES[DSK_MINIMAL_NP][3] = {
+    {1, 2, 3},
+};
+
+static const SpiceDouble DSK_MINIMAL_CORPAR[SPICE_DSK_NSYPAR] = {
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+};
+
+static const SpiceDouble READ_VIRTUAL_OUTPUT_STATES[2][6] = {
+    {0.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+    {60.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+};
+
+static void write_dsk_descriptor_json(const SpiceDSKDescr *descr) {
+  fputs("{\"ok\":true,\"result\":{", stdout);
+
+  fputs("\"surfce\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->surfce);
+  fputs(",\"center\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->center);
+  fputs(",\"dclass\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->dclass);
+  fputs(",\"dtype\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->dtype);
+  fputs(",\"frmcde\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->frmcde);
+  fputs(",\"corsys\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->corsys);
+
+  fputs(",\"corpar\":[", stdout);
+  for (int i = 0; i < SPICE_DSK_NSYPAR; i++) {
+    if (i > 0) {
+      fputc(',', stdout);
+    }
+    fprintf(stdout, "%.17g", (double)descr->corpar[i]);
+  }
+  fputc(']', stdout);
+
+  fputs(",\"co1min\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co1min);
+  fputs(",\"co1max\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co1max);
+  fputs(",\"co2min\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co2min);
+  fputs(",\"co2max\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co2max);
+  fputs(",\"co3min\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co3min);
+  fputs(",\"co3max\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co3max);
+  fputs(",\"start\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->start);
+  fputs(",\"stop\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->stop);
+
+  fputs("}}\n", stdout);
+}
+
+static void write_dskb02_json(
+    SpiceInt nv,
+    SpiceInt np,
+    SpiceInt nvxtot,
+    const SpiceDouble vtxbds[3][2],
+    SpiceDouble voxsiz,
+    const SpiceDouble voxori[3],
+    const SpiceInt vgrext[3],
+    SpiceInt cgscal,
+    SpiceInt vtxnpl,
+    SpiceInt voxnpt,
+    SpiceInt voxnpl) {
+  fputs("{\"ok\":true,\"result\":{", stdout);
+  fputs("\"nv\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)nv);
+  fputs(",\"np\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)np);
+  fputs(",\"nvxtot\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)nvxtot);
+
+  fputs(",\"vtxbds\":[", stdout);
+  for (int axis = 0; axis < 3; axis++) {
+    if (axis > 0) {
+      fputc(',', stdout);
+    }
+    fputc('[', stdout);
+    fprintf(stdout, "%.17g", (double)vtxbds[axis][0]);
+    fputc(',', stdout);
+    fprintf(stdout, "%.17g", (double)vtxbds[axis][1]);
+    fputc(']', stdout);
+  }
+  fputc(']', stdout);
+
+  fputs(",\"voxsiz\":", stdout);
+  fprintf(stdout, "%.17g", (double)voxsiz);
+
+  fputs(",\"voxori\":[", stdout);
+  for (int i = 0; i < 3; i++) {
+    if (i > 0) {
+      fputc(',', stdout);
+    }
+    fprintf(stdout, "%.17g", (double)voxori[i]);
+  }
+  fputc(']', stdout);
+
+  fputs(",\"vgrext\":[", stdout);
+  for (int i = 0; i < 3; i++) {
+    if (i > 0) {
+      fputc(',', stdout);
+    }
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)vgrext[i]);
+  }
+  fputc(']', stdout);
+
+  fputs(",\"cgscal\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)cgscal);
+  fputs(",\"vtxnpl\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)vtxnpl);
+  fputs(",\"voxnpt\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)voxnpt);
+  fputs(",\"voxnpl\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)voxnpl);
+
+  fputs("}}\n", stdout);
 }
 
 
@@ -1952,6 +2102,12 @@ typedef enum {
   CALL_KERNELS_KXTRCT,
   CALL_KERNELS_KPLFRM,
 
+  // dsk
+  CALL_DSK_DSKOBJ,
+  CALL_DSK_DSKSRF,
+  CALL_DSK_DSKGD,
+  CALL_DSK_DSKB02,
+
   // file-io
   CALL_FILE_IO_DAFBFS,
   CALL_FILE_IO_DAFCLS,
@@ -1963,6 +2119,10 @@ typedef enum {
   CALL_FILE_IO_DLACLS,
   CALL_FILE_IO_DLAFNS,
   CALL_FILE_IO_DLAOPN,
+  CALL_FILE_IO_DSKMI2,
+  CALL_FILE_IO_DSKOPN,
+  CALL_FILE_IO_DSKW02,
+  CALL_FILE_IO_READ_VIRTUAL_OUTPUT,
   CALL_FILE_IO_EXISTS,
   CALL_FILE_IO_GETFAT,
 
@@ -2105,6 +2265,12 @@ static CallId parse_call_id(const char *call) {
       {"kernels.kxtrct", CALL_KERNELS_KXTRCT},
       {"kernels.kplfrm", CALL_KERNELS_KPLFRM},
 
+      // dsk
+      {"dsk.dskobj", CALL_DSK_DSKOBJ},
+      {"dsk.dsksrf", CALL_DSK_DSKSRF},
+      {"dsk.dskgd", CALL_DSK_DSKGD},
+      {"dsk.dskb02", CALL_DSK_DSKB02},
+
       // file-io
       {"file-io.dafbfs", CALL_FILE_IO_DAFBFS},
       {"file-io.dafcls", CALL_FILE_IO_DAFCLS},
@@ -2116,6 +2282,10 @@ static CallId parse_call_id(const char *call) {
       {"file-io.dlacls", CALL_FILE_IO_DLACLS},
       {"file-io.dlafns", CALL_FILE_IO_DLAFNS},
       {"file-io.dlaopn", CALL_FILE_IO_DLAOPN},
+      {"file-io.dskmi2", CALL_FILE_IO_DSKMI2},
+      {"file-io.dskopn", CALL_FILE_IO_DSKOPN},
+      {"file-io.dskw02", CALL_FILE_IO_DSKW02},
+      {"file-io.readVirtualOutput", CALL_FILE_IO_READ_VIRTUAL_OUTPUT},
       {"file-io.exists", CALL_FILE_IO_EXISTS},
       {"file-io.getfat", CALL_FILE_IO_GETFAT},
 
@@ -7111,6 +7281,364 @@ int main(void) {
     goto done;
   }
 
+  // --- dsk --------------------------------------------------------------
+
+  case CALL_DSK_DSKOBJ: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "dsk.dskobj expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "dsk.dskobj expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SPICEINT_CELL(bodids, 128);
+    dskobj_c(path, &bodids);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dskobj", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    const SpiceInt n = card_c(&bodids);
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_spiceint_array((const SpiceInt *)bodids.data, (int)n);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_DSK_DSKSRF: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "dsk.dsksrf expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "dsk.dsksrf expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SPICEINT_CELL(bodids, 128);
+    dskobj_c(path, &bodids);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(path);
+      write_error_json("SPICE error in dskobj (dsk.dsksrf setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    const SpiceInt nBodies = card_c(&bodids);
+    if (nBodies <= 0) {
+      free(path);
+      fputs("{\"ok\":true,\"result\":{\"foundBody\":false,\"bodyid\":null,\"surfaces\":[]}}\n", stdout);
+      goto done;
+    }
+
+    const SpiceInt *bodyData = (const SpiceInt *)bodids.data;
+    const SpiceInt bodyid = bodyData[0];
+
+    SPICEINT_CELL(srfids, 128);
+    dsksrf_c(path, bodyid, &srfids);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dsksrf", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    const SpiceInt nSurfaces = card_c(&srfids);
+    fputs("{\"ok\":true,\"result\":{\"foundBody\":true,\"bodyid\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)bodyid);
+    fputs(",\"surfaces\":", stdout);
+    json_print_spiceint_array((const SpiceInt *)srfids.data, (int)nSurfaces);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_DSK_DSKGD: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "dsk.dskgd expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "dsk.dskgd expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    SpiceInt handle = 0;
+    bool opened = false;
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto dskgd_cleanup;
+    }
+
+    dasopr_c(path, &handle);
+    free(path);
+    path = NULL;
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dasopr (dsk.dskgd setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto dskgd_cleanup;
+    }
+    opened = true;
+
+    SpiceDLADescr dladsc;
+    SpiceBoolean found = SPICEFALSE;
+    dlabfs_c(handle, &dladsc, &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlabfs (dsk.dskgd setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto dskgd_cleanup;
+    }
+
+    if (found != SPICETRUE) {
+      write_error_json_ex(
+          "invalid_args",
+          "dsk.dskgd expected at least one DLA segment in args[0] DSK path",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto dskgd_cleanup;
+    }
+
+    SpiceDSKDescr dskdsc;
+    dskgd_c(handle, &dladsc, &dskdsc);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dskgd", shortMsg, longMsg, traceMsg);
+      goto dskgd_cleanup;
+    }
+
+    dascls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dascls (dsk.dskgd cleanup)", shortMsg, longMsg,
+                       traceMsg);
+      goto dskgd_cleanup;
+    }
+    opened = false;
+
+    write_dsk_descriptor_json(&dskdsc);
+
+  dskgd_cleanup:
+    if (opened) {
+      reset_c();
+      dascls_c(handle);
+      reset_c();
+    }
+    free(path);
+    goto done;
+  }
+
+  case CALL_DSK_DSKB02: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "dsk.dskb02 expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "dsk.dskb02 expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    SpiceInt handle = 0;
+    bool opened = false;
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto dskb02_cleanup;
+    }
+
+    dasopr_c(path, &handle);
+    free(path);
+    path = NULL;
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dasopr (dsk.dskb02 setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto dskb02_cleanup;
+    }
+    opened = true;
+
+    SpiceDLADescr dladsc;
+    SpiceBoolean found = SPICEFALSE;
+    dlabfs_c(handle, &dladsc, &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlabfs (dsk.dskb02 setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto dskb02_cleanup;
+    }
+
+    if (found != SPICETRUE) {
+      write_error_json_ex(
+          "invalid_args",
+          "dsk.dskb02 expected at least one DLA segment in args[0] DSK path",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto dskb02_cleanup;
+    }
+
+    SpiceInt nv = 0;
+    SpiceInt np = 0;
+    SpiceInt nvxtot = 0;
+    SpiceDouble vtxbds[3][2] = {{0}};
+    SpiceDouble voxsiz = 0.0;
+    SpiceDouble voxori[3] = {0.0, 0.0, 0.0};
+    SpiceInt vgrext[3] = {0, 0, 0};
+    SpiceInt cgscal = 0;
+    SpiceInt vtxnpl = 0;
+    SpiceInt voxnpt = 0;
+    SpiceInt voxnpl = 0;
+
+    dskb02_c(handle,
+             &dladsc,
+             &nv,
+             &np,
+             &nvxtot,
+             vtxbds,
+             &voxsiz,
+             voxori,
+             vgrext,
+             &cgscal,
+             &vtxnpl,
+             &voxnpt,
+             &voxnpl);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dskb02", shortMsg, longMsg, traceMsg);
+      goto dskb02_cleanup;
+    }
+
+    dascls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dascls (dsk.dskb02 cleanup)", shortMsg, longMsg,
+                       traceMsg);
+      goto dskb02_cleanup;
+    }
+    opened = false;
+
+    write_dskb02_json(nv, np, nvxtot, vtxbds, voxsiz, voxori, vgrext, cgscal,
+                      vtxnpl, voxnpt, voxnpl);
+
+  dskb02_cleanup:
+    if (opened) {
+      reset_c();
+      dascls_c(handle);
+      reset_c();
+    }
+    free(path);
+    goto done;
+  }
+
   // --- file-io ----------------------------------------------------------
 
   case CALL_FILE_IO_EXISTS: {
@@ -7738,7 +8266,7 @@ int main(void) {
       goto file_io_dlaopn_cleanup;
     }
 
-    if (!build_file_io_temp_path(pathTag, tempPath, sizeof(tempPath), detail,
+    if (!build_file_io_temp_path(pathTag, ".dla", tempPath, sizeof(tempPath), detail,
                                  sizeof(detail))) {
       write_error_json_ex("invalid_args",
                           "file-io.dlaopn could not build temp output path",
@@ -7826,6 +8354,747 @@ int main(void) {
     free(pathTag);
     free(ftype);
     free(ifname);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DSKOPN: {
+    char *pathTag = NULL;
+    char *ifname = NULL;
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "file-io.dskopn expects args[0]=string tag args[1]=string ifname args[2]=integer ncomch",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto file_io_dskopn_cleanup;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int ifnameTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int ncomchTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dskopn expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto file_io_dskopn_cleanup;
+    }
+    if (ifnameTok < 0 || ifnameTok >= tokenCount || tokens[ifnameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dskopn expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto file_io_dskopn_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &pathTag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto file_io_dskopn_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t ifnameErr =
+        jsmn_strdup(input, &tokens[ifnameTok], &ifname, strDetail, sizeof(strDetail));
+    if (ifnameErr != JSMN_STRDUP_OK) {
+      if (ifnameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto file_io_dskopn_cleanup;
+    }
+
+    SpiceInt ncomch = 0;
+    char detail[256] = {0};
+    if (!parse_spiceint_arg(input, tokens, tokenCount, ncomchTok,
+                            "file-io.dskopn args[2]", &ncomch,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "file-io.dskopn expects args[2] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto file_io_dskopn_cleanup;
+    }
+    if (ncomch < 0) {
+      write_error_json_ex("invalid_args",
+                          "file-io.dskopn expects args[2] (ncomch) to be >= 0",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_dskopn_cleanup;
+    }
+
+    if (!build_file_io_temp_path(pathTag, ".bds", tempPath, sizeof(tempPath), detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "file-io.dskopn could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_dskopn_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+
+    dskopn_c(tempPath, ifname, ncomch, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dskopn", shortMsg, longMsg, traceMsg);
+      goto file_io_dskopn_cleanup;
+    }
+    handleOpened = true;
+
+    dascls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dascls (file-io.dskopn cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskopn_cleanup;
+    }
+    handleOpened = false;
+
+    const SpiceBoolean exists = exists_c(tempPath);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in exists (file-io.dskopn check)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskopn_cleanup;
+    }
+
+    char arch[128];
+    char type[128];
+    arch[0] = '\0';
+    type[0] = '\0';
+    getfat_c(tempPath, (SpiceInt)sizeof(arch), (SpiceInt)sizeof(type), arch, type);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in getfat (file-io.dskopn check)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskopn_cleanup;
+    }
+    trim_fixed_width_c_string_end(arch, sizeof(arch));
+    trim_fixed_width_c_string_end(type, sizeof(type));
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":{\"exists\":", stdout);
+    fputs(exists == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"arch\":\"", stdout);
+    json_print_escaped(arch);
+    fputs("\",\"type\":\"", stdout);
+    json_print_escaped(type);
+    fputs("\"}}\n", stdout);
+
+  file_io_dskopn_cleanup:
+    if (handleOpened) {
+      reset_c();
+      dascls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    free(pathTag);
+    free(ifname);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DSKMI2: {
+    SpiceDouble spaixd[SPICE_DSK02_IXDFIX];
+    SpiceInt *spaixi = NULL;
+    SpiceInt(*work)[2] = NULL;
+
+    if ((size_t)DSK_MINIMAL_SPXISZ > SIZE_MAX / sizeof(SpiceInt)) {
+      write_error_json_ex("invalid_args",
+                          "file-io.dskmi2 spaixi allocation overflow",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_dskmi2_cleanup;
+    }
+
+    if ((size_t)DSK_MINIMAL_WORKSZ > SIZE_MAX / sizeof(SpiceInt[2])) {
+      write_error_json_ex("invalid_args",
+                          "file-io.dskmi2 workspace allocation overflow",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_dskmi2_cleanup;
+    }
+
+    spaixi = (SpiceInt *)calloc((size_t)DSK_MINIMAL_SPXISZ, sizeof(SpiceInt));
+    work = (SpiceInt(*)[2])malloc(sizeof(SpiceInt[2]) * (size_t)DSK_MINIMAL_WORKSZ);
+    if (spaixi == NULL || work == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto file_io_dskmi2_cleanup;
+    }
+
+    dskmi2_c((SpiceInt)DSK_MINIMAL_NV,
+             (ConstSpiceDouble(*)[3])DSK_MINIMAL_VERTICES,
+             (SpiceInt)DSK_MINIMAL_NP,
+             (ConstSpiceInt(*)[3])DSK_MINIMAL_PLATES,
+             (SpiceDouble)0.2,
+             (SpiceInt)5,
+             (SpiceInt)DSK_MINIMAL_WORKSZ,
+             (SpiceInt)DSK_MINIMAL_VOXPSZ,
+             (SpiceInt)DSK_MINIMAL_VOXLSZ,
+             SPICETRUE,
+             (SpiceInt)DSK_MINIMAL_SPXISZ,
+             work,
+             spaixd,
+             spaixi);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dskmi2", shortMsg, longMsg, traceMsg);
+      goto file_io_dskmi2_cleanup;
+    }
+
+    SpiceInt nonZeroCount = 0;
+    for (SpiceInt i = 0; i < (SpiceInt)DSK_MINIMAL_SPXISZ; i++) {
+      if (spaixi[i] != 0) {
+        nonZeroCount += 1;
+      }
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"spaixd\":", stdout);
+    json_print_double_array(spaixd, SPICE_DSK02_IXDFIX);
+    fputs(",\"spaixiLength\":", stdout);
+    fprintf(stdout, "%d", DSK_MINIMAL_SPXISZ);
+    fputs(",\"spaixiNonZeroCount\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)nonZeroCount);
+    fputs("}}\n", stdout);
+
+  file_io_dskmi2_cleanup:
+    free(spaixi);
+    free(work);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DSKW02: {
+    char *pathTag = NULL;
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+
+    SpiceInt writeHandle = 0;
+    bool writeHandleOpened = false;
+
+    SpiceInt readHandle = 0;
+    bool readHandleOpened = false;
+
+    SpiceInt *spaixi = NULL;
+    SpiceInt(*work)[2] = NULL;
+
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.dskw02 expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto file_io_dskw02_cleanup;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dskw02 expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto file_io_dskw02_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &pathTag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto file_io_dskw02_cleanup;
+    }
+
+    char detail[256] = {0};
+    if (!build_file_io_temp_path(pathTag, ".bds", tempPath, sizeof(tempPath), detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "file-io.dskw02 could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_dskw02_cleanup;
+    }
+    tempPathReady = true;
+
+    if ((size_t)DSK_MINIMAL_SPXISZ > SIZE_MAX / sizeof(SpiceInt)) {
+      write_error_json_ex("invalid_args",
+                          "file-io.dskw02 spaixi allocation overflow",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_dskw02_cleanup;
+    }
+    if ((size_t)DSK_MINIMAL_WORKSZ > SIZE_MAX / sizeof(SpiceInt[2])) {
+      write_error_json_ex("invalid_args",
+                          "file-io.dskw02 workspace allocation overflow",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_dskw02_cleanup;
+    }
+
+    spaixi = (SpiceInt *)calloc((size_t)DSK_MINIMAL_SPXISZ, sizeof(SpiceInt));
+    work = (SpiceInt(*)[2])malloc(sizeof(SpiceInt[2]) * (size_t)DSK_MINIMAL_WORKSZ);
+    if (spaixi == NULL || work == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      goto file_io_dskw02_cleanup;
+    }
+
+    SpiceDouble spaixd[SPICE_DSK02_IXDFIX];
+
+    remove(tempPath);
+    dskopn_c(tempPath, "TSPICE", 0, &writeHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dskopn (file-io.dskw02 setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskw02_cleanup;
+    }
+    writeHandleOpened = true;
+
+    dskmi2_c((SpiceInt)DSK_MINIMAL_NV,
+             (ConstSpiceDouble(*)[3])DSK_MINIMAL_VERTICES,
+             (SpiceInt)DSK_MINIMAL_NP,
+             (ConstSpiceInt(*)[3])DSK_MINIMAL_PLATES,
+             (SpiceDouble)0.2,
+             (SpiceInt)5,
+             (SpiceInt)DSK_MINIMAL_WORKSZ,
+             (SpiceInt)DSK_MINIMAL_VOXPSZ,
+             (SpiceInt)DSK_MINIMAL_VOXLSZ,
+             SPICETRUE,
+             (SpiceInt)DSK_MINIMAL_SPXISZ,
+             work,
+             spaixd,
+             spaixi);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dskmi2 (file-io.dskw02 setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskw02_cleanup;
+    }
+
+    dskw02_c(writeHandle,
+             (SpiceInt)399,
+             (SpiceInt)1,
+             (SpiceInt)2,
+             "J2000",
+             (SpiceInt)3,
+             DSK_MINIMAL_CORPAR,
+             (SpiceDouble)0.0,
+             (SpiceDouble)1.0,
+             (SpiceDouble)0.0,
+             (SpiceDouble)1.0,
+             (SpiceDouble)-0.1,
+             (SpiceDouble)0.1,
+             (SpiceDouble)0.0,
+             (SpiceDouble)1.0,
+             (SpiceInt)DSK_MINIMAL_NV,
+             (ConstSpiceDouble(*)[3])DSK_MINIMAL_VERTICES,
+             (SpiceInt)DSK_MINIMAL_NP,
+             (ConstSpiceInt(*)[3])DSK_MINIMAL_PLATES,
+             spaixd,
+             spaixi);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dskw02", shortMsg, longMsg, traceMsg);
+      goto file_io_dskw02_cleanup;
+    }
+
+    dascls_c(writeHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dascls (file-io.dskw02 cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskw02_cleanup;
+    }
+    writeHandleOpened = false;
+
+    const SpiceBoolean exists = exists_c(tempPath);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in exists (file-io.dskw02 check)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskw02_cleanup;
+    }
+
+    char arch[128];
+    char type[128];
+    arch[0] = '\0';
+    type[0] = '\0';
+    getfat_c(tempPath, (SpiceInt)sizeof(arch), (SpiceInt)sizeof(type), arch, type);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in getfat (file-io.dskw02 check)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskw02_cleanup;
+    }
+    trim_fixed_width_c_string_end(arch, sizeof(arch));
+    trim_fixed_width_c_string_end(type, sizeof(type));
+
+    dasopr_c(tempPath, &readHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dasopr (file-io.dskw02 probe)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskw02_cleanup;
+    }
+    readHandleOpened = true;
+
+    SpiceDLADescr first;
+    SpiceBoolean firstFound = SPICEFALSE;
+    dlabfs_c(readHandle, &first, &firstFound);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlabfs (file-io.dskw02 probe)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskw02_cleanup;
+    }
+
+    SpiceBoolean nextFound = SPICEFALSE;
+    if (firstFound == SPICETRUE) {
+      SpiceDLADescr next;
+      dlafns_c(readHandle, &first, &next, &nextFound);
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                            sizeof(traceMsg));
+        write_error_json("SPICE error in dlafns (file-io.dskw02 probe)", shortMsg,
+                         longMsg, traceMsg);
+        goto file_io_dskw02_cleanup;
+      }
+    }
+
+    dascls_c(readHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dascls (file-io.dskw02 probe cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dskw02_cleanup;
+    }
+    readHandleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":{\"exists\":", stdout);
+    fputs(exists == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"arch\":\"", stdout);
+    json_print_escaped(arch);
+    fputs("\",\"type\":\"", stdout);
+    json_print_escaped(type);
+    fputs("\",\"firstFound\":", stdout);
+    fputs(firstFound == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"nextFound\":", stdout);
+    fputs(nextFound == SPICETRUE ? "true" : "false", stdout);
+    fputs("}}\n", stdout);
+
+  file_io_dskw02_cleanup:
+    if (readHandleOpened) {
+      reset_c();
+      dascls_c(readHandle);
+      reset_c();
+    }
+    if (writeHandleOpened) {
+      reset_c();
+      dascls_c(writeHandle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    free(spaixi);
+    free(work);
+    free(pathTag);
+    goto done;
+  }
+
+  case CALL_FILE_IO_READ_VIRTUAL_OUTPUT: {
+    char *pathTag = NULL;
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    FILE *fp = NULL;
+
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "file-io.readVirtualOutput expects args[0]={kind:\"virtual-output\",path:string}",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto file_io_read_virtual_output_cleanup;
+    }
+
+    const int outputTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (outputTok < 0 || outputTok >= tokenCount || tokens[outputTok].type != JSMN_OBJECT) {
+      write_error_json_ex(
+          "invalid_args",
+          "file-io.readVirtualOutput expects args[0]={kind:\"virtual-output\",path:string}",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto file_io_read_virtual_output_cleanup;
+    }
+
+    const int kindTok = jsmn_find_object_key(input, tokens, outputTok, "kind", tokenCount);
+    const int pathTok = jsmn_find_object_key(input, tokens, outputTok, "path", tokenCount);
+    if (kindTok < 0 || kindTok >= tokenCount || tokens[kindTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "file-io.readVirtualOutput expects args[0].kind to be \"virtual-output\"",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_read_virtual_output_cleanup;
+    }
+    if (!jsmn_token_streq(input, &tokens[kindTok], "virtual-output")) {
+      write_error_json_ex("invalid_args",
+                          "file-io.readVirtualOutput expects args[0].kind to be \"virtual-output\"",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_read_virtual_output_cleanup;
+    }
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "file-io.readVirtualOutput expects args[0].path to be a string",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_read_virtual_output_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &pathTag, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto file_io_read_virtual_output_cleanup;
+    }
+
+    char detail[256] = {0};
+    if (!build_file_io_temp_path(pathTag, ".bsp", tempPath, sizeof(tempPath), detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "file-io.readVirtualOutput could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_read_virtual_output_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+
+    spkopn_c(tempPath, "TSPICE", 0, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkopn (file-io.readVirtualOutput setup)",
+                       shortMsg,
+                       longMsg,
+                       traceMsg);
+      goto file_io_read_virtual_output_cleanup;
+    }
+    handleOpened = true;
+
+    spkw08_c(handle,
+             (SpiceInt)1000,
+             (SpiceInt)0,
+             "J2000",
+             (SpiceDouble)0.0,
+             (SpiceDouble)60.0,
+             "TSPICE_PARITY_RVO",
+             (SpiceInt)1,
+             (SpiceInt)2,
+             (ConstSpiceDouble(*)[6])READ_VIRTUAL_OUTPUT_STATES,
+             (SpiceDouble)0.0,
+             (SpiceDouble)60.0);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkw08", shortMsg, longMsg, traceMsg);
+      goto file_io_read_virtual_output_cleanup;
+    }
+
+    spkcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkcls (file-io.readVirtualOutput cleanup)",
+                       shortMsg,
+                       longMsg,
+                       traceMsg);
+      goto file_io_read_virtual_output_cleanup;
+    }
+    handleOpened = false;
+
+    fp = fopen(tempPath, "rb");
+    if (fp == NULL) {
+      write_error_json_ex("invalid_args",
+                          "file-io.readVirtualOutput failed to open temporary output",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_read_virtual_output_cleanup;
+    }
+
+    if (fseek(fp, 0, SEEK_END) != 0) {
+      write_error_json_ex("invalid_args",
+                          "file-io.readVirtualOutput failed to seek temporary output",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_read_virtual_output_cleanup;
+    }
+
+    const long fileBytes = ftell(fp);
+    if (fileBytes < 0) {
+      write_error_json_ex("invalid_args",
+                          "file-io.readVirtualOutput failed to measure temporary output",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_read_virtual_output_cleanup;
+    }
+
+    fclose(fp);
+    fp = NULL;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":{\"byteLength\":", stdout);
+    fprintf(stdout, "%ld", fileBytes);
+    fputs("}}\n", stdout);
+
+  file_io_read_virtual_output_cleanup:
+    if (fp != NULL) {
+      fclose(fp);
+    }
+    if (handleOpened) {
+      reset_c();
+      spkcls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    free(pathTag);
     goto done;
   }
 

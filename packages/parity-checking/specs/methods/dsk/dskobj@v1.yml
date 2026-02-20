@@ -1,0 +1,12 @@
+id: methods/dsk/dskobj@v1
+kind: method
+contractMethod: dsk.dskobj
+canonicalMethod: dsk.dskobj
+uses:
+  - workflows/legacy/dsk.basic@v1
+cases:
+  - id: body-ids-from-minimal-dsk
+    args:
+      - $FIXTURES/kernels/de421_minimal.bds
+    expect:
+      ok: true
