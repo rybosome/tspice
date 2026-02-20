@@ -1,0 +1,10 @@
+kind: method
+id: method.ek.ektnam@v1
+contractMethod: ek.ektnam
+canonicalMethod: ek.ektnam
+uses:
+  - workflow.legacy.ek.basic@v1
+cases:
+  - id: reads-table-name-at-index-zero
+    args:
+      - 0

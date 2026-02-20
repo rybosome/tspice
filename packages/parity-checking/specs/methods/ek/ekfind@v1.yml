@@ -1,0 +1,10 @@
+kind: method
+id: method.ek.ekfind@v1
+contractMethod: ek.ekfind
+canonicalMethod: ek.ekfind
+uses:
+  - workflow.legacy.ek.basic@v1
+cases:
+  - id: finds-rows-by-column
+    args:
+      - SELECT EVENT FROM CASSINI_NOISE_EVENTS

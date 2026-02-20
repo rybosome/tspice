@@ -1,0 +1,12 @@
+kind: method
+id: method.ek.ekcls@v1
+contractMethod: ek.ekcls
+canonicalMethod: ek.ekcls
+uses:
+  - workflow.legacy.ek.basic@v1
+cases:
+  - id: closes-new-handle
+    args:
+      - ek-close
+      - TSPICE
+      - 0

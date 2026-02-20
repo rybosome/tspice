@@ -1,0 +1,12 @@
+kind: method
+id: method.ek.eknseg@v1
+contractMethod: ek.eknseg
+canonicalMethod: ek.eknseg
+uses:
+  - workflow.legacy.ek.basic@v1
+cases:
+  - id: reads-segment-count
+    args:
+      - ek-segments
+      - TSPICE
+      - 0

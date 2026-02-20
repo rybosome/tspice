@@ -1,0 +1,12 @@
+kind: method
+id: method.ek.ekopr@v1
+contractMethod: ek.ekopr
+canonicalMethod: ek.ekopr
+uses:
+  - workflow.legacy.ek.basic@v1
+cases:
+  - id: opens-existing-ek-for-read
+    args:
+      - ek-open-read
+      - TSPICE
+      - 0

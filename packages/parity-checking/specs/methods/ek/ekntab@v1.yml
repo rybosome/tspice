@@ -1,0 +1,9 @@
+kind: method
+id: method.ek.ekntab@v1
+contractMethod: ek.ekntab
+canonicalMethod: ek.ekntab
+uses:
+  - workflow.legacy.ek.basic@v1
+cases:
+  - id: returns-loaded-table-count
+    args: []

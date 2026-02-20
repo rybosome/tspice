@@ -1,0 +1,12 @@
+kind: method
+id: method.ek.ekopn@v1
+contractMethod: ek.ekopn
+canonicalMethod: ek.ekopn
+uses:
+  - workflow.legacy.ek.basic@v1
+cases:
+  - id: opens-new-ek-for-write
+    args:
+      - ek-open-create
+      - TSPICE
+      - 0

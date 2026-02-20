@@ -1,0 +1,18 @@
+kind: method
+id: method.ek.ekgi@v1
+contractMethod: ek.ekgi
+canonicalMethod: ek.ekgi
+uses:
+  - workflow.legacy.ek.basic@v1
+cases:
+  - id: fails-on-double-column
+    args:
+      - SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS
+      - 0
+      - 0
+      - 0
+    expect:
+      ok: false
+      errorShort: SPICE(INVALIDTYPE)
+    compare:
+      errorShort: true

@@ -1,0 +1,13 @@
+kind: method
+id: method.ek.ekgd@v1
+contractMethod: ek.ekgd
+canonicalMethod: ek.ekgd
+uses:
+  - workflow.legacy.ek.basic@v1
+cases:
+  - id: reads-command-exec-time
+    args:
+      - SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS
+      - 0
+      - 0
+      - 0

@@ -443,6 +443,19 @@ function computeMinimalDskSpatialIndex(
   );
 }
 
+function ensureEkQueryReady(backend: SpiceBackend, call: string, query: string, row: number): void {
+  const queryResult = backend.ekfind(query);
+  if (!queryResult.ok) {
+    invalidArgs(`${call} setup query failed: ${queryResult.errmsg}`);
+  }
+
+  if (row >= queryResult.nmrows) {
+    invalidArgs(
+      `${call} row index ${row} is out of bounds for query result size ${queryResult.nmrows}`,
+    );
+  }
+}
+
 const DISPATCH: Record<string, DispatchFn> = {
   // time
   "time.str2et": (backend, args) => {
@@ -1985,6 +1998,270 @@ const DISPATCH: Record<string, DispatchFn> = {
     } finally {
       prepared.release();
     }
+  },
+
+  // ek
+  "ek.ekopn": async (backend, args) => {
+    assertStringArg(args[0], "ek.ekopn", 0);
+    assertStringArg(args[1], "ek.ekopn", 1);
+    assertInteger(args[2], "ek.ekopn args[2]");
+    if (args[2] < 0) {
+      invalidArgs(`ek.ekopn expects args[2] (ncomch) to be >= 0 (got ${formatValue(args[2])})`);
+    }
+
+    const tempPath = makeFileIoTempPath(args[0], ".bes");
+    const handle = backend.ekopn(tempPath, args[1], args[2]);
+    let handleClosed = false;
+
+    try {
+      backend.ekcls(handle);
+      handleClosed = true;
+
+      const fat = backend.getfat(tempPath);
+      return {
+        exists: backend.exists(tempPath),
+        arch: fat.arch,
+        type: fat.type,
+      };
+    } finally {
+      if (!handleClosed) {
+        try {
+          backend.ekcls(handle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      await cleanupFileIoTempPath(tempPath);
+    }
+  },
+
+  "ek.ekopr": async (backend, args) => {
+    assertStringArg(args[0], "ek.ekopr", 0);
+    assertStringArg(args[1], "ek.ekopr", 1);
+    assertInteger(args[2], "ek.ekopr args[2]");
+    if (args[2] < 0) {
+      invalidArgs(`ek.ekopr expects args[2] (ncomch) to be >= 0 (got ${formatValue(args[2])})`);
+    }
+
+    const tempPath = makeFileIoTempPath(args[0], ".bes");
+    const seedHandle = backend.ekopn(tempPath, args[1], args[2]);
+    let seedHandleClosed = false;
+
+    let readHandle: ReturnType<SpiceBackend["ekopr"]> | null = null;
+
+    try {
+      backend.ekcls(seedHandle);
+      seedHandleClosed = true;
+
+      readHandle = backend.ekopr(tempPath);
+      const nseg = backend.eknseg(readHandle);
+      backend.ekcls(readHandle);
+      readHandle = null;
+
+      return { opened: true, nseg };
+    } finally {
+      if (readHandle !== null) {
+        try {
+          backend.ekcls(readHandle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      if (!seedHandleClosed) {
+        try {
+          backend.ekcls(seedHandle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      await cleanupFileIoTempPath(tempPath);
+    }
+  },
+
+  "ek.ekopw": async (backend, args) => {
+    assertStringArg(args[0], "ek.ekopw", 0);
+    assertStringArg(args[1], "ek.ekopw", 1);
+    assertInteger(args[2], "ek.ekopw args[2]");
+    if (args[2] < 0) {
+      invalidArgs(`ek.ekopw expects args[2] (ncomch) to be >= 0 (got ${formatValue(args[2])})`);
+    }
+
+    const tempPath = makeFileIoTempPath(args[0], ".bes");
+    const seedHandle = backend.ekopn(tempPath, args[1], args[2]);
+    let seedHandleClosed = false;
+
+    let writeHandle: ReturnType<SpiceBackend["ekopw"]> | null = null;
+
+    try {
+      backend.ekcls(seedHandle);
+      seedHandleClosed = true;
+
+      writeHandle = backend.ekopw(tempPath);
+      backend.ekcls(writeHandle);
+      writeHandle = null;
+
+      return { opened: true };
+    } finally {
+      if (writeHandle !== null) {
+        try {
+          backend.ekcls(writeHandle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      if (!seedHandleClosed) {
+        try {
+          backend.ekcls(seedHandle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      await cleanupFileIoTempPath(tempPath);
+    }
+  },
+
+  "ek.ekcls": async (backend, args) => {
+    assertStringArg(args[0], "ek.ekcls", 0);
+    assertStringArg(args[1], "ek.ekcls", 1);
+    assertInteger(args[2], "ek.ekcls args[2]");
+    if (args[2] < 0) {
+      invalidArgs(`ek.ekcls expects args[2] (ncomch) to be >= 0 (got ${formatValue(args[2])})`);
+    }
+
+    const tempPath = makeFileIoTempPath(args[0], ".bes");
+    const handle = backend.ekopn(tempPath, args[1], args[2]);
+    let handleClosed = false;
+
+    try {
+      backend.ekcls(handle);
+      handleClosed = true;
+      return null;
+    } finally {
+      if (!handleClosed) {
+        try {
+          backend.ekcls(handle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      await cleanupFileIoTempPath(tempPath);
+    }
+  },
+
+  "ek.eknseg": async (backend, args) => {
+    assertStringArg(args[0], "ek.eknseg", 0);
+    assertStringArg(args[1], "ek.eknseg", 1);
+    assertInteger(args[2], "ek.eknseg args[2]");
+    if (args[2] < 0) {
+      invalidArgs(`ek.eknseg expects args[2] (ncomch) to be >= 0 (got ${formatValue(args[2])})`);
+    }
+
+    const tempPath = makeFileIoTempPath(args[0], ".bes");
+    const seedHandle = backend.ekopn(tempPath, args[1], args[2]);
+    let seedHandleClosed = false;
+
+    let readHandle: ReturnType<SpiceBackend["ekopr"]> | null = null;
+
+    try {
+      backend.ekcls(seedHandle);
+      seedHandleClosed = true;
+
+      readHandle = backend.ekopr(tempPath);
+      const nseg = backend.eknseg(readHandle);
+      backend.ekcls(readHandle);
+      readHandle = null;
+      return nseg;
+    } finally {
+      if (readHandle !== null) {
+        try {
+          backend.ekcls(readHandle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      if (!seedHandleClosed) {
+        try {
+          backend.ekcls(seedHandle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      await cleanupFileIoTempPath(tempPath);
+    }
+  },
+
+  "ek.ekntab": (backend) => {
+    return backend.ekntab();
+  },
+
+  "ek.ektnam": (backend, args) => {
+    assertInteger(args[0], "ek.ektnam args[0]");
+    if (args[0] < 0) {
+      invalidArgs(`ek.ektnam expects args[0] to be >= 0 (got ${formatValue(args[0])})`);
+    }
+
+    return backend.ektnam(args[0]);
+  },
+
+  "ek.ekfind": (backend, args) => {
+    assertStringArg(args[0], "ek.ekfind", 0);
+    return backend.ekfind(args[0]);
+  },
+
+  "ek.ekgc": (backend, args) => {
+    assertStringArg(args[0], "ek.ekgc", 0);
+    assertInteger(args[1], "ek.ekgc args[1]");
+    assertInteger(args[2], "ek.ekgc args[2]");
+    assertInteger(args[3], "ek.ekgc args[3]");
+
+    if (args[1] < 0 || args[2] < 0 || args[3] < 0) {
+      invalidArgs(
+        `ek.ekgc expects args[1..3] to be >= 0 (got ${formatValue(args[1])}, ${formatValue(args[2])}, ${formatValue(args[3])})`,
+      );
+    }
+
+    ensureEkQueryReady(backend, "ek.ekgc", args[0], args[2]);
+    return backend.ekgc(args[1], args[2], args[3]);
+  },
+
+  "ek.ekgd": (backend, args) => {
+    assertStringArg(args[0], "ek.ekgd", 0);
+    assertInteger(args[1], "ek.ekgd args[1]");
+    assertInteger(args[2], "ek.ekgd args[2]");
+    assertInteger(args[3], "ek.ekgd args[3]");
+
+    if (args[1] < 0 || args[2] < 0 || args[3] < 0) {
+      invalidArgs(
+        `ek.ekgd expects args[1..3] to be >= 0 (got ${formatValue(args[1])}, ${formatValue(args[2])}, ${formatValue(args[3])})`,
+      );
+    }
+
+    ensureEkQueryReady(backend, "ek.ekgd", args[0], args[2]);
+    return backend.ekgd(args[1], args[2], args[3]);
+  },
+
+  "ek.ekgi": (backend, args) => {
+    assertStringArg(args[0], "ek.ekgi", 0);
+    assertInteger(args[1], "ek.ekgi args[1]");
+    assertInteger(args[2], "ek.ekgi args[2]");
+    assertInteger(args[3], "ek.ekgi args[3]");
+
+    if (args[1] < 0 || args[2] < 0 || args[3] < 0) {
+      invalidArgs(
+        `ek.ekgi expects args[1..3] to be >= 0 (got ${formatValue(args[1])}, ${formatValue(args[2])}, ${formatValue(args[3])})`,
+      );
+    }
+
+    ensureEkQueryReady(backend, "ek.ekgi", args[0], args[2]);
+    return backend.ekgi(args[1], args[2], args[3]);
   },
 
   // ephemeris

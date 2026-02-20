@@ -1,0 +1,7 @@
+kind: workflow
+id: workflow.legacy.ek.basic@v1
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+notes:
+  - Provides CASSINI_NOISE_EVENTS table coverage for EK query/read methods.
