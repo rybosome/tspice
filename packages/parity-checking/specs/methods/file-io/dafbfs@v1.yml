@@ -1,0 +1,12 @@
+id: methods/file-io/dafbfs@v1
+kind: method
+contractMethod: file-io.dafbfs
+canonicalMethod: file-io.dafbfs
+uses:
+  - workflows/legacy/file-io.basic@v1
+cases:
+  - id: file-io.dafbfs.daf-forward-search
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true

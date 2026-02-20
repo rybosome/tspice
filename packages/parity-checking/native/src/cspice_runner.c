@@ -1752,6 +1752,122 @@ static normalize_bod_item_err_t normalize_bod_item(const char *item, char **out)
   return NORMALIZE_BOD_ITEM_OK;
 }
 
+static void sanitize_file_io_temp_tag(const char *tag,
+                                      char *out,
+                                      size_t outBytes) {
+  if (outBytes == 0) {
+    return;
+  }
+
+  if (tag == NULL) {
+    tag = "";
+  }
+
+  size_t w = 0;
+  bool prevDash = false;
+  for (size_t i = 0; tag[i] != '\0' && w + 1 < outBytes && w < 64; i++) {
+    const unsigned char c = (unsigned char)tag[i];
+    if (isalnum(c) || c == '.' || c == '_' || c == '-') {
+      out[w++] = (char)c;
+      prevDash = (c == '-');
+      continue;
+    }
+
+    if (!prevDash && w + 1 < outBytes && w < 64) {
+      out[w++] = '-';
+      prevDash = true;
+    }
+  }
+
+  while (w > 0 && out[w - 1] == '-') {
+    w--;
+  }
+
+  if (w == 0) {
+    const char fallback[] = "file-io";
+    size_t j = 0;
+    while (fallback[j] != '\0' && j + 1 < outBytes) {
+      out[j] = fallback[j];
+      j++;
+    }
+    out[j] = '\0';
+    return;
+  }
+
+  out[w] = '\0';
+}
+
+static bool build_file_io_temp_path(const char *tag,
+                                    char *outPath,
+                                    size_t outPathBytes,
+                                    char *detail,
+                                    size_t detailBytes) {
+  if (outPath == NULL || outPathBytes == 0) {
+    if (detail != NULL && detailBytes > 0) {
+      snprintf(detail, detailBytes,
+               "temp path output buffer is missing");
+    }
+    return false;
+  }
+
+  char safeTag[80];
+  sanitize_file_io_temp_tag(tag, safeTag, sizeof(safeTag));
+
+  const char *tmpDir = getenv("TMPDIR");
+  if (tmpDir == NULL || tmpDir[0] == '\0') {
+    tmpDir = "/tmp";
+  }
+
+  static uint64_t counter = 0;
+  counter += 1;
+
+  const int n = snprintf(
+      outPath,
+      outPathBytes,
+      "%s/tspice-parity-%s-%ld-%" PRIu64 ".dla",
+      tmpDir,
+      safeTag,
+      (long)getpid(),
+      (uint64_t)counter);
+
+  if (n < 0 || (size_t)n >= outPathBytes) {
+    if (detail != NULL && detailBytes > 0) {
+      snprintf(detail, detailBytes,
+               "failed to build temporary file path");
+    }
+    return false;
+  }
+
+  return true;
+}
+
+static void write_found_dla_descriptor_json(const SpiceDLADescr *descr,
+                                            SpiceBoolean found) {
+  if (found != SPICETRUE) {
+    fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+    return;
+  }
+
+  fputs("{\"ok\":true,\"result\":{\"found\":true,\"descr\":{", stdout);
+  fputs("\"bwdptr\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->bwdptr);
+  fputs(",\"fwdptr\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->fwdptr);
+  fputs(",\"ibase\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->ibase);
+  fputs(",\"isize\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->isize);
+  fputs(",\"dbase\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->dbase);
+  fputs(",\"dsize\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->dsize);
+  fputs(",\"cbase\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->cbase);
+  fputs(",\"csize\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->csize);
+  fputs("}}}\n", stdout);
+}
+
 
 
 typedef enum {
@@ -1835,6 +1951,20 @@ typedef enum {
   CALL_KERNELS_KINFO,
   CALL_KERNELS_KXTRCT,
   CALL_KERNELS_KPLFRM,
+
+  // file-io
+  CALL_FILE_IO_DAFBFS,
+  CALL_FILE_IO_DAFCLS,
+  CALL_FILE_IO_DAFFNA,
+  CALL_FILE_IO_DAFOPR,
+  CALL_FILE_IO_DASCLS,
+  CALL_FILE_IO_DASOPR,
+  CALL_FILE_IO_DLABFS,
+  CALL_FILE_IO_DLACLS,
+  CALL_FILE_IO_DLAFNS,
+  CALL_FILE_IO_DLAOPN,
+  CALL_FILE_IO_EXISTS,
+  CALL_FILE_IO_GETFAT,
 
   // cells-windows
   CALL_CELLS_WINDOWS_NEW_INT_CELL,
@@ -1974,6 +2104,20 @@ static CallId parse_call_id(const char *call) {
       {"kernels.kinfo", CALL_KERNELS_KINFO},
       {"kernels.kxtrct", CALL_KERNELS_KXTRCT},
       {"kernels.kplfrm", CALL_KERNELS_KPLFRM},
+
+      // file-io
+      {"file-io.dafbfs", CALL_FILE_IO_DAFBFS},
+      {"file-io.dafcls", CALL_FILE_IO_DAFCLS},
+      {"file-io.daffna", CALL_FILE_IO_DAFFNA},
+      {"file-io.dafopr", CALL_FILE_IO_DAFOPR},
+      {"file-io.dascls", CALL_FILE_IO_DASCLS},
+      {"file-io.dasopr", CALL_FILE_IO_DASOPR},
+      {"file-io.dlabfs", CALL_FILE_IO_DLABFS},
+      {"file-io.dlacls", CALL_FILE_IO_DLACLS},
+      {"file-io.dlafns", CALL_FILE_IO_DLAFNS},
+      {"file-io.dlaopn", CALL_FILE_IO_DLAOPN},
+      {"file-io.exists", CALL_FILE_IO_EXISTS},
+      {"file-io.getfat", CALL_FILE_IO_GETFAT},
 
       // cells-windows
       {"cells-windows.newIntCell", CALL_CELLS_WINDOWS_NEW_INT_CELL},
@@ -6964,6 +7108,951 @@ int main(void) {
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_spiceint_array((const SpiceInt *)idset.data, (int)n);
     fputs("}\n", stdout);
+    goto done;
+  }
+
+  // --- file-io ----------------------------------------------------------
+
+  case CALL_FILE_IO_EXISTS: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.exists expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.exists expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    const SpiceBoolean exists = exists_c(path);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in exists", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    fputs(exists == SPICETRUE ? "true" : "false", stdout);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_FILE_IO_GETFAT: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.getfat expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.getfat expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    char arch[128];
+    char type[128];
+    arch[0] = '\0';
+    type[0] = '\0';
+
+    getfat_c(path, (SpiceInt)sizeof(arch), (SpiceInt)sizeof(type), arch, type);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in getfat", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(arch, sizeof(arch));
+    trim_fixed_width_c_string_end(type, sizeof(type));
+
+    fputs("{\"ok\":true,\"result\":{\"arch\":\"", stdout);
+    json_print_escaped(arch);
+    fputs("\",\"type\":\"", stdout);
+    json_print_escaped(type);
+    fputs("\"}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DAFOPR: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.dafopr expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dafopr expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    dafopr_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafopr", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    dafcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafcls (file-io.dafopr cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"opened\":true}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DAFCLS: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.dafcls expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dafcls expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    dafopr_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafopr (file-io.dafcls setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    dafcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafcls", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DAFBFS: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.dafbfs expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dafbfs expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    dafopr_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafopr (file-io.dafbfs setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    dafbfs_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafbfs", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceBoolean found = SPICEFALSE;
+    daffna_c(&found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in daffna (file-io.dafbfs check)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    dafcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafcls (file-io.dafbfs cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    fputs(found == SPICETRUE ? "true" : "false", stdout);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DAFFNA: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.daffna expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.daffna expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    dafopr_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafopr (file-io.daffna setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    dafbfs_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafbfs (file-io.daffna setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceBoolean first = SPICEFALSE;
+    daffna_c(&first);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in first daffna", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceBoolean second = SPICEFALSE;
+    if (first == SPICETRUE) {
+      daffna_c(&second);
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                            sizeof(traceMsg));
+        write_error_json("SPICE error in second daffna", shortMsg, longMsg, traceMsg);
+        goto done;
+      }
+    }
+
+    dafcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dafcls (file-io.daffna cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"first\":", stdout);
+    fputs(first == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"second\":", stdout);
+    fputs(second == SPICETRUE ? "true" : "false", stdout);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DASOPR: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.dasopr expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dasopr expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    dasopr_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dasopr", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceDLADescr firstDescr;
+    SpiceBoolean firstFound = SPICEFALSE;
+    dlabfs_c(handle, &firstDescr, &firstFound);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlabfs (file-io.dasopr probe)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    dascls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dascls (file-io.dasopr cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"opened\":true,\"firstSegmentFound\":", stdout);
+    fputs(firstFound == SPICETRUE ? "true" : "false", stdout);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DASCLS: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.dascls expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dascls expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    dasopr_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dasopr (file-io.dascls setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    dascls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dascls", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DLAOPN: {
+    char *pathTag = NULL;
+    char *ftype = NULL;
+    char *ifname = NULL;
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    if (tokens[argsTok].size < 4) {
+      write_error_json_ex(
+          "invalid_args",
+          "file-io.dlaopn expects args[0]=string tag args[1]=string ftype args[2]=string ifname args[3]=integer ncomch",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto file_io_dlaopn_cleanup;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int ftypeTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int ifnameTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    const int ncomchTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dlaopn expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto file_io_dlaopn_cleanup;
+    }
+    if (ftypeTok < 0 || ftypeTok >= tokenCount || tokens[ftypeTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dlaopn expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto file_io_dlaopn_cleanup;
+    }
+    if (ifnameTok < 0 || ifnameTok >= tokenCount || tokens[ifnameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dlaopn expects args[2] to be a string", NULL, NULL, NULL, NULL);
+      goto file_io_dlaopn_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &pathTag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto file_io_dlaopn_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t ftypeErr =
+        jsmn_strdup(input, &tokens[ftypeTok], &ftype, strDetail, sizeof(strDetail));
+    if (ftypeErr != JSMN_STRDUP_OK) {
+      if (ftypeErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto file_io_dlaopn_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t ifnameErr =
+        jsmn_strdup(input, &tokens[ifnameTok], &ifname, strDetail, sizeof(strDetail));
+    if (ifnameErr != JSMN_STRDUP_OK) {
+      if (ifnameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto file_io_dlaopn_cleanup;
+    }
+
+    SpiceInt ncomch = 0;
+    char detail[256] = {0};
+    if (!parse_spiceint_arg(input, tokens, tokenCount, ncomchTok,
+                            "file-io.dlaopn args[3]", &ncomch,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "file-io.dlaopn expects args[3] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto file_io_dlaopn_cleanup;
+    }
+
+    if (ncomch < 0) {
+      write_error_json_ex("invalid_args",
+                          "file-io.dlaopn expects args[3] (ncomch) to be >= 0",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_dlaopn_cleanup;
+    }
+
+    if (!build_file_io_temp_path(pathTag, tempPath, sizeof(tempPath), detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "file-io.dlaopn could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto file_io_dlaopn_cleanup;
+    }
+    tempPathReady = true;
+
+    // Best-effort stale cleanup before create.
+    remove(tempPath);
+
+    dlaopn_c(tempPath, ftype, ifname, ncomch, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlaopn", shortMsg, longMsg, traceMsg);
+      goto file_io_dlaopn_cleanup;
+    }
+    handleOpened = true;
+
+    SpiceDLADescr firstDescr;
+    SpiceBoolean found = SPICEFALSE;
+    dlabfs_c(handle, &firstDescr, &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlabfs (file-io.dlaopn probe)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dlaopn_cleanup;
+    }
+
+    dlacls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlacls (file-io.dlaopn cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dlaopn_cleanup;
+    }
+    handleOpened = false;
+
+    const SpiceBoolean exists = exists_c(tempPath);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in exists (file-io.dlaopn check)", shortMsg,
+                       longMsg, traceMsg);
+      goto file_io_dlaopn_cleanup;
+    }
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":{\"found\":", stdout);
+    fputs(found == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"exists\":", stdout);
+    fputs(exists == SPICETRUE ? "true" : "false", stdout);
+    fputs("}}\n", stdout);
+
+  file_io_dlaopn_cleanup:
+    if (handleOpened) {
+      // Best-effort close after any failure path.
+      reset_c();
+      dlacls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    free(pathTag);
+    free(ftype);
+    free(ifname);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DLABFS: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.dlabfs expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dlabfs expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    dasopr_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dasopr (file-io.dlabfs setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceDLADescr descr;
+    SpiceBoolean found = SPICEFALSE;
+    dlabfs_c(handle, &descr, &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlabfs", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    dascls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dascls (file-io.dlabfs cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    write_found_dla_descriptor_json(&descr, found);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DLAFNS: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.dlafns expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dlafns expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    dasopr_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dasopr (file-io.dlafns setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceDLADescr first;
+    SpiceBoolean firstFound = SPICEFALSE;
+    dlabfs_c(handle, &first, &firstFound);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlabfs (file-io.dlafns setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    if (firstFound != SPICETRUE) {
+      dascls_c(handle);
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                            sizeof(traceMsg));
+        write_error_json("SPICE error in dascls (file-io.dlafns cleanup)", shortMsg,
+                         longMsg, traceMsg);
+        goto done;
+      }
+
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    SpiceDLADescr next;
+    SpiceBoolean nextFound = SPICEFALSE;
+    dlafns_c(handle, &first, &next, &nextFound);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlafns", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    dascls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dascls (file-io.dlafns cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    write_found_dla_descriptor_json(&next, nextFound);
+    goto done;
+  }
+
+  case CALL_FILE_IO_DLACLS: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "file-io.dlacls expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "file-io.dlacls expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    dasopr_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dasopr (file-io.dlacls setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    dlacls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in dlacls", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
     goto done;
   }
 

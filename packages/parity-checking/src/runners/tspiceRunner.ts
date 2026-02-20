@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import crypto from "node:crypto";
-import { readFile, realpath, stat } from "node:fs/promises";
+import { readFile, realpath, rm, stat } from "node:fs/promises";
 
 import { spiceClients, type SpiceBackend } from "@rybosome/tspice";
 
@@ -340,6 +340,35 @@ function asCellsWindowsWindowArg(
   handle: PreparedCellsWindowsHandle,
 ): Parameters<SpiceBackend["wncard"]>[0] {
   return handle.handle as Parameters<SpiceBackend["wncard"]>[0];
+}
+
+function sanitizeFileIoTempTag(tag: string): string {
+  const cleaned = tag
+    .trim()
+    .replace(/[^a-zA-Z0-9._-]/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 64);
+
+  return cleaned.length > 0 ? cleaned : "file-io";
+}
+
+function makeFileIoTempPath(tag: string, extension: string): string {
+  const baseTag = sanitizeFileIoTempTag(tag);
+  const ext = extension.startsWith(".") ? extension : `.${extension}`;
+  const suffix = typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : crypto.randomBytes(16).toString("hex");
+  const tmpDir = process.env.TMPDIR && process.env.TMPDIR.length > 0 ? process.env.TMPDIR : "/tmp";
+
+  return path.join(tmpDir, `tspice-parity-${baseTag}-${process.pid}-${suffix}${ext}`);
+}
+
+async function cleanupFileIoTempPath(filePath: string): Promise<void> {
+  try {
+    await rm(filePath, { force: true });
+  } catch {
+    // best-effort cleanup
+  }
 }
 
 const DISPATCH: Record<string, DispatchFn> = {
@@ -1122,6 +1151,148 @@ const DISPATCH: Record<string, DispatchFn> = {
       invalidArgs(`kernel-pool.expool expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
     return backend.expool(args[0]);
+  },
+
+  // file-io
+  "file-io.exists": (backend, args) => {
+    assertStringArg(args[0], "file-io.exists", 0);
+    return backend.exists(args[0]);
+  },
+
+  "file-io.getfat": (backend, args) => {
+    assertStringArg(args[0], "file-io.getfat", 0);
+    return backend.getfat(args[0]);
+  },
+
+  "file-io.dafopr": (backend, args) => {
+    assertStringArg(args[0], "file-io.dafopr", 0);
+
+    const handle = backend.dafopr(args[0]);
+    try {
+      return { opened: true };
+    } finally {
+      backend.dafcls(handle);
+    }
+  },
+
+  "file-io.dafcls": (backend, args) => {
+    assertStringArg(args[0], "file-io.dafcls", 0);
+
+    const handle = backend.dafopr(args[0]);
+    backend.dafcls(handle);
+    return null;
+  },
+
+  "file-io.dafbfs": (backend, args) => {
+    assertStringArg(args[0], "file-io.dafbfs", 0);
+
+    const handle = backend.dafopr(args[0]);
+    try {
+      backend.dafbfs(handle);
+      return backend.daffna(handle);
+    } finally {
+      backend.dafcls(handle);
+    }
+  },
+
+  "file-io.daffna": (backend, args) => {
+    assertStringArg(args[0], "file-io.daffna", 0);
+
+    const handle = backend.dafopr(args[0]);
+    try {
+      backend.dafbfs(handle);
+      const first = backend.daffna(handle);
+      const second = first ? backend.daffna(handle) : false;
+      return { first, second };
+    } finally {
+      backend.dafcls(handle);
+    }
+  },
+
+  "file-io.dasopr": (backend, args) => {
+    assertStringArg(args[0], "file-io.dasopr", 0);
+
+    const handle = backend.dasopr(args[0]);
+    try {
+      const firstSegment = backend.dlabfs(handle);
+      return { opened: true, firstSegmentFound: firstSegment.found };
+    } finally {
+      backend.dascls(handle);
+    }
+  },
+
+  "file-io.dascls": (backend, args) => {
+    assertStringArg(args[0], "file-io.dascls", 0);
+
+    const handle = backend.dasopr(args[0]);
+    backend.dascls(handle);
+    return null;
+  },
+
+  "file-io.dlaopn": async (backend, args) => {
+    assertStringArg(args[0], "file-io.dlaopn", 0);
+    assertStringArg(args[1], "file-io.dlaopn", 1);
+    assertStringArg(args[2], "file-io.dlaopn", 2);
+    assertInteger(args[3], "file-io.dlaopn args[3]");
+    if (args[3] < 0) {
+      invalidArgs(`file-io.dlaopn expects args[3] (ncomch) to be >= 0 (got ${formatValue(args[3])})`);
+    }
+
+    const tempPath = makeFileIoTempPath(args[0], ".dla");
+    const handle = backend.dlaopn(tempPath, args[1], args[2], args[3]);
+    let closed = false;
+
+    try {
+      const first = backend.dlabfs(handle);
+      backend.dlacls(handle);
+      closed = true;
+      return { found: first.found, exists: backend.exists(tempPath) };
+    } finally {
+      if (!closed) {
+        try {
+          backend.dlacls(handle);
+        } catch {
+          // best-effort close during error cleanup
+        }
+      }
+
+      await cleanupFileIoTempPath(tempPath);
+    }
+  },
+
+  "file-io.dlabfs": (backend, args) => {
+    assertStringArg(args[0], "file-io.dlabfs", 0);
+
+    const handle = backend.dasopr(args[0]);
+    try {
+      return backend.dlabfs(handle);
+    } finally {
+      backend.dascls(handle);
+    }
+  },
+
+  "file-io.dlafns": (backend, args) => {
+    assertStringArg(args[0], "file-io.dlafns", 0);
+
+    const handle = backend.dasopr(args[0]);
+    try {
+      const first = backend.dlabfs(handle);
+      if (!first.found) {
+        return { found: false };
+      }
+
+      return backend.dlafns(handle, first.descr);
+    } finally {
+      backend.dascls(handle);
+    }
+  },
+
+  "file-io.dlacls": (backend, args) => {
+    assertStringArg(args[0], "file-io.dlacls", 0);
+
+    const handle = backend.dasopr(args[0]);
+    backend.dlacls(handle);
+    return null;
   },
 
   // cells-windows

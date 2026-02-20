@@ -1,0 +1,12 @@
+id: methods/file-io/dafopr@v1
+kind: method
+contractMethod: file-io.dafopr
+canonicalMethod: file-io.dafopr
+uses:
+  - workflows/legacy/file-io.basic@v1
+cases:
+  - id: file-io.dafopr.open-daf-read-only
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true

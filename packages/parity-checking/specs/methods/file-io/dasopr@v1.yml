@@ -1,0 +1,12 @@
+id: methods/file-io/dasopr@v1
+kind: method
+contractMethod: file-io.dasopr
+canonicalMethod: file-io.dasopr
+uses:
+  - workflows/legacy/file-io.basic@v1
+cases:
+  - id: file-io.dasopr.open-das-read-only
+    args:
+      - $FIXTURES/dsk-minimal/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
+    expect:
+      ok: true

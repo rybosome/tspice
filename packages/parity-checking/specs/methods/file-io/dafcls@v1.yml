@@ -1,0 +1,12 @@
+id: methods/file-io/dafcls@v1
+kind: method
+contractMethod: file-io.dafcls
+canonicalMethod: file-io.dafcls
+uses:
+  - workflows/legacy/file-io.basic@v1
+cases:
+  - id: file-io.dafcls.close-opened-daf
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true

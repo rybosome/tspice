@@ -1,0 +1,12 @@
+id: methods/file-io/daffna@v1
+kind: method
+contractMethod: file-io.daffna
+canonicalMethod: file-io.daffna
+uses:
+  - workflows/legacy/file-io.basic@v1
+cases:
+  - id: file-io.daffna.find-next-daf-array
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true

@@ -1,0 +1,12 @@
+id: methods/file-io/exists@v1
+kind: method
+contractMethod: file-io.exists
+canonicalMethod: file-io.exists
+uses:
+  - workflows/legacy/file-io.basic@v1
+cases:
+  - id: file-io.exists.fixture-path
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true

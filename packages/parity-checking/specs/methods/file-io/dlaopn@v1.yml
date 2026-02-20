@@ -1,0 +1,15 @@
+id: methods/file-io/dlaopn@v1
+kind: method
+contractMethod: file-io.dlaopn
+canonicalMethod: file-io.dlaopn
+uses:
+  - workflows/legacy/file-io.basic@v1
+cases:
+  - id: file-io.dlaopn.create-dla-writer
+    args:
+      - parity-dlaopn
+      - DLA
+      - TSPICE
+      - 0
+    expect:
+      ok: true

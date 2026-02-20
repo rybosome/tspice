@@ -1,0 +1,12 @@
+id: methods/file-io/getfat@v1
+kind: method
+contractMethod: file-io.getfat
+canonicalMethod: file-io.getfat
+uses:
+  - workflows/legacy/file-io.basic@v1
+cases:
+  - id: file-io.getfat.file-architecture-and-type
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true
