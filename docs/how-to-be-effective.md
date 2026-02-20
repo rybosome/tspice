@@ -117,6 +117,39 @@ The shell exports these required NAIF build overrides:
 - `TKCOMPILEOPTIONS='-c -ansi -O2 -fPIC -DNON_UNIX_STDIO'`
 - `TKLINKOPTIONS='-lm'`
 
+### linux-arm64 CSPICE hermetic package (`mkDerivation`, Phase 2)
+
+Phase 2 converts the validated shell flow into a hermetic derivation at `packages.aarch64-linux.cspice-linux-arm64` (also exposed as `.#cspice-linux-arm64`).
+
+The derivation fetches pinned CSPICE source from `scripts/cspice.manifest.json`, builds static libs with the same NAIF env vars as Phase 1, and installs outputs into `$out/include` + `$out/lib`.
+
+```bash
+# Build hermetic CSPICE output (creates ./result symlink)
+nix build .#cspice-linux-arm64
+
+# Verify required artifacts
+OUT="$(readlink -f ./result)"
+ls -l "$OUT/lib/cspice.a" "$OUT/lib/csupport.a"
+ls -l "$OUT/include/SpiceUsr.h" "$OUT/include/SpiceZfc.h" "$OUT/include/SpiceZmc.h"
+
+# Verify archive members are aarch64 objects
+TMPDIR="$(mktemp -d)"
+CSPICE_OBJ="$(ar t "$OUT/lib/cspice.a" | sed -n '1p')"
+CSUPPORT_OBJ="$(ar t "$OUT/lib/csupport.a" | sed -n '1p')"
+ar p "$OUT/lib/cspice.a" "$CSPICE_OBJ" > "$TMPDIR/cspice.o"
+ar p "$OUT/lib/csupport.a" "$CSUPPORT_OBJ" > "$TMPDIR/csupport.o"
+file "$TMPDIR/cspice.o" "$TMPDIR/csupport.o"
+rm -rf "$TMPDIR"
+```
+
+For a quick reproducibility check, compare repeated no-link builds:
+
+```bash
+OUT1="$(nix build --no-link --print-out-paths .#cspice-linux-arm64)"
+OUT2="$(nix build --no-link --print-out-paths .#cspice-linux-arm64)"
+test "$OUT1" = "$OUT2" && echo "repeatable output path: $OUT1"
+```
+
 ### Publishing `@rybosome/tspice`
 
 The publishable entry point is `@rybosome/tspice`.
