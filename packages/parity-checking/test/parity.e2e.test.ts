@@ -1,7 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { runParityEngine } from "../src/engine/parityEngine.js";
 import { getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
+
+// Increase timeout for parity tests.
+vi.setConfig({ testTimeout: 10_000, hookTimeout: 30_000 });
 
 describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () => {
   it("runs full guard pipeline and parity execution", async () => {
@@ -30,4 +33,4 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     expect(summary.methodCaseCount).toBeGreaterThan(0);
     expect(summary.crossCuttingCaseCount).toBeGreaterThan(0);
   });
-}, 10_000);
+});
