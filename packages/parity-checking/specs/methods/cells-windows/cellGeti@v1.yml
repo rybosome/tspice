@@ -1,0 +1,13 @@
+id: methods/cells-windows/cellGeti@v1
+kind: method
+contractMethod: cells-windows.cellGeti
+canonicalMethod: cells-windows.cellGeti
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.cellGeti.basic
+    args:
+      - [int, 8]
+      - 1
+    expect:
+      ok: true

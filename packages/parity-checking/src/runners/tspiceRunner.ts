@@ -336,6 +336,12 @@ function asCellsWindowsCellArg(
   return handle.handle as Parameters<SpiceBackend["card"]>[0];
 }
 
+function asCellsWindowsWindowArg(
+  handle: PreparedCellsWindowsHandle,
+): Parameters<SpiceBackend["wncard"]>[0] {
+  return handle.handle as Parameters<SpiceBackend["wncard"]>[0];
+}
+
 const DISPATCH: Record<string, DispatchFn> = {
   // time
   "time.str2et": (backend, args) => {
@@ -1298,6 +1304,226 @@ const DISPATCH: Record<string, DispatchFn> = {
       return {
         card: backend.card(cellArg),
         size: backend.size(cellArg),
+      };
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.insrti": (backend, args) => {
+    assertInteger(args[0], "cells-windows.insrti args[0]");
+    const recipe = parseCellsWindowsRecipe(args[1], "cells-windows.insrti args[1]");
+    if (recipe.kind !== "int") {
+      invalidArgs("cells-windows.insrti expects args[1] to be an int recipe [\"int\", size]");
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["insrti"]>[1];
+
+    try {
+      backend.insrti(args[0], cell);
+      return {
+        card: backend.card(cell),
+        size: backend.size(cell),
+      };
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.insrtd": (backend, args) => {
+    assertNumberArg(args[0], "cells-windows.insrtd", 0);
+    const recipe = parseCellsWindowsRecipe(args[1], "cells-windows.insrtd args[1]");
+    if (recipe.kind !== "double") {
+      invalidArgs("cells-windows.insrtd expects args[1] to be a double recipe [\"double\", size]");
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["insrtd"]>[1];
+
+    try {
+      backend.insrtd(args[0], cell);
+      return {
+        card: backend.card(cell),
+        size: backend.size(cell),
+      };
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.insrtc": (backend, args) => {
+    assertStringArg(args[0], "cells-windows.insrtc", 0);
+    const recipe = parseCellsWindowsRecipe(args[1], "cells-windows.insrtc args[1]");
+    if (recipe.kind !== "char") {
+      invalidArgs(
+        "cells-windows.insrtc expects args[1] to be a char recipe [\"char\", size, length]",
+      );
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["insrtc"]>[1];
+
+    try {
+      backend.insrtc(args[0], cell);
+      return {
+        card: backend.card(cell),
+        size: backend.size(cell),
+      };
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.cellGeti": (backend, args) => {
+    const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.cellGeti args[0]");
+    assertInteger(args[1], "cells-windows.cellGeti args[1]");
+
+    if (recipe.kind !== "int") {
+      invalidArgs("cells-windows.cellGeti expects args[0] to be an int recipe [\"int\", size]");
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["cellGeti"]>[0];
+
+    try {
+      backend.insrti(3, cell);
+      backend.insrti(1, cell);
+      backend.insrti(2, cell);
+      return backend.cellGeti(cell, args[1]);
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.cellGetd": (backend, args) => {
+    const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.cellGetd args[0]");
+    assertInteger(args[1], "cells-windows.cellGetd args[1]");
+
+    if (recipe.kind !== "double") {
+      invalidArgs(
+        "cells-windows.cellGetd expects args[0] to be a double recipe [\"double\", size]",
+      );
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["cellGetd"]>[0];
+
+    try {
+      backend.insrtd(3.25, cell);
+      backend.insrtd(-1.0, cell);
+      return backend.cellGetd(cell, args[1]);
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.cellGetc": (backend, args) => {
+    const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.cellGetc args[0]");
+    assertInteger(args[1], "cells-windows.cellGetc args[1]");
+
+    if (recipe.kind !== "char") {
+      invalidArgs(
+        "cells-windows.cellGetc expects args[0] to be a char recipe [\"char\", size, length]",
+      );
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["cellGetc"]>[0];
+
+    try {
+      backend.insrtc("b", cell);
+      backend.insrtc("a", cell);
+      backend.insrtc("c", cell);
+      return backend.cellGetc(cell, args[1]);
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.wninsd": (backend, args) => {
+    assertNumberArg(args[0], "cells-windows.wninsd", 0);
+    assertNumberArg(args[1], "cells-windows.wninsd", 1);
+    const recipe = parseCellsWindowsRecipe(args[2], "cells-windows.wninsd args[2]");
+    if (recipe.kind !== "window") {
+      invalidArgs("cells-windows.wninsd expects args[2] to be a window recipe [\"window\", maxIntervals]");
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const window = asCellsWindowsWindowArg(prepared);
+
+    try {
+      backend.wninsd(args[0], args[1], window);
+
+      const intervals = backend.wncard(window);
+      if (intervals > 0) {
+        return {
+          card: intervals,
+          first: backend.wnfetd(window, 0),
+        };
+      }
+
+      return { card: intervals };
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.wncard": (backend, args) => {
+    const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.wncard args[0]");
+    if (recipe.kind !== "window") {
+      invalidArgs("cells-windows.wncard expects args[0] to be a window recipe [\"window\", maxIntervals]");
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const window = asCellsWindowsWindowArg(prepared);
+
+    try {
+      backend.wninsd(0, 1, window);
+      backend.wninsd(2, 3, window);
+      backend.wninsd(0.5, 2.5, window);
+      return backend.wncard(window);
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.wnfetd": (backend, args) => {
+    const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.wnfetd args[0]");
+    assertInteger(args[1], "cells-windows.wnfetd args[1]");
+    if (recipe.kind !== "window") {
+      invalidArgs("cells-windows.wnfetd expects args[0] to be a window recipe [\"window\", maxIntervals]");
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const window = asCellsWindowsWindowArg(prepared);
+
+    try {
+      backend.wninsd(0, 1, window);
+      backend.wninsd(2, 3, window);
+      backend.wninsd(0.5, 2.5, window);
+      return backend.wnfetd(window, args[1]);
+    } finally {
+      prepared.release();
+    }
+  },
+
+  "cells-windows.wnvald": (backend, args) => {
+    assertInteger(args[0], "cells-windows.wnvald args[0]");
+    assertInteger(args[1], "cells-windows.wnvald args[1]");
+    const recipe = parseCellsWindowsRecipe(args[2], "cells-windows.wnvald args[2]");
+    if (recipe.kind !== "window") {
+      invalidArgs("cells-windows.wnvald expects args[2] to be a window recipe [\"window\", maxIntervals]");
+    }
+
+    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const window = asCellsWindowsWindowArg(prepared);
+
+    try {
+      backend.wnvald(args[0], args[1], window);
+      return {
+        card: backend.wncard(window),
+        size: backend.size(window),
       };
     } finally {
       prepared.release();

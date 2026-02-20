@@ -1848,6 +1848,16 @@ typedef enum {
   CALL_CELLS_WINDOWS_SIZE,
   CALL_CELLS_WINDOWS_SSIZE,
   CALL_CELLS_WINDOWS_VALID,
+  CALL_CELLS_WINDOWS_INSRTI,
+  CALL_CELLS_WINDOWS_INSRTD,
+  CALL_CELLS_WINDOWS_INSRTC,
+  CALL_CELLS_WINDOWS_CELL_GETI,
+  CALL_CELLS_WINDOWS_CELL_GETD,
+  CALL_CELLS_WINDOWS_CELL_GETC,
+  CALL_CELLS_WINDOWS_WNINSD,
+  CALL_CELLS_WINDOWS_WNCARD,
+  CALL_CELLS_WINDOWS_WNFETD,
+  CALL_CELLS_WINDOWS_WNVALD,
 
   // kernel-pool
   CALL_GDPOOL,
@@ -1977,6 +1987,16 @@ static CallId parse_call_id(const char *call) {
       {"cells-windows.size", CALL_CELLS_WINDOWS_SIZE},
       {"cells-windows.ssize", CALL_CELLS_WINDOWS_SSIZE},
       {"cells-windows.valid", CALL_CELLS_WINDOWS_VALID},
+      {"cells-windows.insrti", CALL_CELLS_WINDOWS_INSRTI},
+      {"cells-windows.insrtd", CALL_CELLS_WINDOWS_INSRTD},
+      {"cells-windows.insrtc", CALL_CELLS_WINDOWS_INSRTC},
+      {"cells-windows.cellGeti", CALL_CELLS_WINDOWS_CELL_GETI},
+      {"cells-windows.cellGetd", CALL_CELLS_WINDOWS_CELL_GETD},
+      {"cells-windows.cellGetc", CALL_CELLS_WINDOWS_CELL_GETC},
+      {"cells-windows.wninsd", CALL_CELLS_WINDOWS_WNINSD},
+      {"cells-windows.wncard", CALL_CELLS_WINDOWS_WNCARD},
+      {"cells-windows.wnfetd", CALL_CELLS_WINDOWS_WNFETD},
+      {"cells-windows.wnvald", CALL_CELLS_WINDOWS_WNVALD},
 
       // kernel-pool
       {"kernel-pool.gdpool", CALL_GDPOOL},
@@ -7839,6 +7859,1172 @@ int main(void) {
     fputs("}}\n", stdout);
 
     runner_free_allocated_cell(cell);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_INSRTI: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrti expects args[0]=integer item args[1]=int recipe tuple",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int itemTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt item = 0;
+    RunnerCellRecipe recipe;
+    char detail[256] = {0};
+
+    if (!parse_spiceint_arg(input, tokens, tokenCount, itemTok,
+                            "cells-windows.insrti args[0]", &item,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrti expects args[0] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrti expects args[1] to be an int recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_INT) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrti expects args[1] to be [\"int\",size]",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *cell = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &cell, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.insrti setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.insrti could not allocate transient int cell",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    insrti_c(item, cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in insrti_c", shortMsg, longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    const SpiceInt outCard = card_c(cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in card_c (cells-windows.insrti)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    const SpiceInt outSize = size_c(cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in size_c (cells-windows.insrti)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"card\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)outCard);
+    fputs(",\"size\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)outSize);
+    fputs("}}\n", stdout);
+
+    runner_free_allocated_cell(cell);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_INSRTD: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrtd expects args[0]=number item args[1]=double recipe tuple",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int itemTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble item = 0.0;
+    parse_result itemParse = PARSE_INVALID;
+    if (itemTok >= 0 && itemTok < tokenCount) {
+      itemParse = jsmn_parse_double(input, &tokens[itemTok], &item);
+    }
+    if (itemTok < 0 || itemTok >= tokenCount || itemParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrtd expects args[0] to be a number",
+          itemParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (itemParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL, NULL, NULL);
+      goto done;
+    }
+
+    RunnerCellRecipe recipe;
+    char detail[256] = {0};
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrtd expects args[1] to be a double recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_DOUBLE) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrtd expects args[1] to be [\"double\",size]",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *cell = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &cell, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.insrtd setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.insrtd could not allocate transient double cell",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    insrtd_c(item, cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in insrtd_c", shortMsg, longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    const SpiceInt outCard = card_c(cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in card_c (cells-windows.insrtd)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    const SpiceInt outSize = size_c(cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in size_c (cells-windows.insrtd)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"card\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)outCard);
+    fputs(",\"size\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)outSize);
+    fputs("}}\n", stdout);
+
+    runner_free_allocated_cell(cell);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_INSRTC: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrtc expects args[0]=string item args[1]=char recipe tuple",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int itemTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    if (itemTok < 0 || itemTok >= tokenCount || tokens[itemTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "cells-windows.insrtc expects args[0] to be a string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *item = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t itemErr =
+        jsmn_strdup(input, &tokens[itemTok], &item, strDetail, sizeof(strDetail));
+    if (itemErr != JSMN_STRDUP_OK) {
+      if (itemErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    RunnerCellRecipe recipe;
+    char detail[256] = {0};
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrtc expects args[1] to be a char recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      free(item);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_CHAR) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.insrtc expects args[1] to be [\"char\",size,length]",
+          NULL, NULL, NULL, NULL);
+      free(item);
+      goto done;
+    }
+
+    SpiceCell *cell = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &cell, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.insrtc setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.insrtc could not allocate transient char cell",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      free(item);
+      goto done;
+    }
+
+    insrtc_c(item, cell);
+    free(item);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in insrtc_c", shortMsg, longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    const SpiceInt outCard = card_c(cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in card_c (cells-windows.insrtc)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    const SpiceInt outSize = size_c(cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in size_c (cells-windows.insrtc)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"card\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)outCard);
+    fputs(",\"size\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)outSize);
+    fputs("}}\n", stdout);
+
+    runner_free_allocated_cell(cell);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_CELL_GETI: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGeti expects args[0]=int recipe tuple args[1]=integer index",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int indexTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    RunnerCellRecipe recipe;
+    SpiceInt index = 0;
+    char detail[256] = {0};
+
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGeti expects args[0] to be an int recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_INT) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGeti expects args[0] to be [\"int\",size]",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (!parse_spiceint_arg(input, tokens, tokenCount, indexTok,
+                            "cells-windows.cellGeti args[1]", &index,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGeti expects args[1] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *cell = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &cell, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.cellGeti setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.cellGeti could not allocate transient int cell",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    insrti_c(3, cell);
+    insrti_c(1, cell);
+    insrti_c(2, cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error while priming cells-windows.cellGeti", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    const SpiceInt card = card_c(cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in card_c (cells-windows.cellGeti)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    if (index < 0 || index >= card) {
+      write_error_json_ex("invalid_args",
+                          "cells-windows.cellGeti index out of range",
+                          NULL, NULL, NULL, NULL);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    SpiceInt item = 0;
+    SPICE_CELL_GET_I(cell, index, &item);
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)item);
+    fputs("}\n", stdout);
+
+    runner_free_allocated_cell(cell);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_CELL_GETD: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGetd expects args[0]=double recipe tuple args[1]=integer index",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int indexTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    RunnerCellRecipe recipe;
+    SpiceInt index = 0;
+    char detail[256] = {0};
+
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGetd expects args[0] to be a double recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_DOUBLE) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGetd expects args[0] to be [\"double\",size]",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (!parse_spiceint_arg(input, tokens, tokenCount, indexTok,
+                            "cells-windows.cellGetd args[1]", &index,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGetd expects args[1] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *cell = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &cell, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.cellGetd setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.cellGetd could not allocate transient double cell",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    insrtd_c(3.25, cell);
+    insrtd_c(-1.0, cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error while priming cells-windows.cellGetd", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    const SpiceInt card = card_c(cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in card_c (cells-windows.cellGetd)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    if (index < 0 || index >= card) {
+      write_error_json_ex("invalid_args",
+                          "cells-windows.cellGetd index out of range",
+                          NULL, NULL, NULL, NULL);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    SpiceDouble item = 0.0;
+    SPICE_CELL_GET_D(cell, index, &item);
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    fprintf(stdout, "%.17g", (double)item);
+    fputs("}\n", stdout);
+
+    runner_free_allocated_cell(cell);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_CELL_GETC: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGetc expects args[0]=char recipe tuple args[1]=integer index",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int indexTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    RunnerCellRecipe recipe;
+    SpiceInt index = 0;
+    char detail[256] = {0};
+
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGetc expects args[0] to be a char recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_CHAR) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGetc expects args[0] to be [\"char\",size,length]",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (!parse_spiceint_arg(input, tokens, tokenCount, indexTok,
+                            "cells-windows.cellGetc args[1]", &index,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.cellGetc expects args[1] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *cell = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &cell, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.cellGetc setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.cellGetc could not allocate transient char cell",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    insrtc_c("b", cell);
+    insrtc_c("a", cell);
+    insrtc_c("c", cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error while priming cells-windows.cellGetc", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    const SpiceInt card = card_c(cell);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in card_c (cells-windows.cellGetc)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    if (index < 0 || index >= card) {
+      write_error_json_ex("invalid_args",
+                          "cells-windows.cellGetc index out of range",
+                          NULL, NULL, NULL, NULL);
+      runner_free_allocated_cell(cell);
+      goto done;
+    }
+
+    SpiceChar item[4096];
+    item[0] = '\0';
+    SPICE_CELL_GET_C(cell, index, (SpiceInt)sizeof(item), item);
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(item);
+    fputs("\"}\n", stdout);
+
+    runner_free_allocated_cell(cell);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_WNINSD: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wninsd expects args[0]=number left args[1]=number right args[2]=window recipe tuple",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int leftTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int rightTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceDouble left = 0.0;
+    SpiceDouble right = 0.0;
+    parse_result leftParse = PARSE_INVALID;
+    parse_result rightParse = PARSE_INVALID;
+
+    if (leftTok >= 0 && leftTok < tokenCount) {
+      leftParse = jsmn_parse_double(input, &tokens[leftTok], &left);
+    }
+    if (leftTok < 0 || leftTok >= tokenCount || leftParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wninsd expects args[0] to be a number",
+          leftParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (leftParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (rightTok >= 0 && rightTok < tokenCount) {
+      rightParse = jsmn_parse_double(input, &tokens[rightTok], &right);
+    }
+    if (rightTok < 0 || rightTok >= tokenCount || rightParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wninsd expects args[1] to be a number",
+          rightParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (rightParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL, NULL, NULL);
+      goto done;
+    }
+
+    RunnerCellRecipe recipe;
+    char detail[256] = {0};
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wninsd expects args[2] to be a window recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_WINDOW) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wninsd expects args[2] to be [\"window\",maxIntervals]",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *window = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &window, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.wninsd setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.wninsd could not allocate transient window",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    wninsd_c(left, right, window);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in wninsd_c", shortMsg, longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    const SpiceInt card = wncard_c(window);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in wncard_c (cells-windows.wninsd)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    if (card > 0) {
+      SpiceDouble firstLeft = 0.0;
+      SpiceDouble firstRight = 0.0;
+      wnfetd_c(window, 0, &firstLeft, &firstRight);
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in wnfetd_c (cells-windows.wninsd)", shortMsg,
+                         longMsg, traceMsg);
+        runner_free_allocated_cell(window);
+        goto done;
+      }
+
+      fputs("{\"ok\":true,\"result\":{\"card\":", stdout);
+      fprintf(stdout, "%" PRIdMAX, (intmax_t)card);
+      fputs(",\"first\":[", stdout);
+      fprintf(stdout, "%.17g", (double)firstLeft);
+      fputs(",", stdout);
+      fprintf(stdout, "%.17g", (double)firstRight);
+      fputs("]}}\n", stdout);
+    } else {
+      fputs("{\"ok\":true,\"result\":{\"card\":", stdout);
+      fprintf(stdout, "%" PRIdMAX, (intmax_t)card);
+      fputs("}}\n", stdout);
+    }
+
+    runner_free_allocated_cell(window);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_WNCARD: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wncard expects args[0]=window recipe tuple",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    RunnerCellRecipe recipe;
+    char detail[256] = {0};
+
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wncard expects args[0] to be a window recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_WINDOW) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wncard expects args[0] to be [\"window\",maxIntervals]",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *window = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &window, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.wncard setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.wncard could not allocate transient window",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    wninsd_c(0.0, 1.0, window);
+    wninsd_c(2.0, 3.0, window);
+    wninsd_c(0.5, 2.5, window);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error while priming cells-windows.wncard", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    const SpiceInt card = wncard_c(window);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in wncard_c (cells-windows.wncard)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)card);
+    fputs("}\n", stdout);
+
+    runner_free_allocated_cell(window);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_WNFETD: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wnfetd expects args[0]=window recipe tuple args[1]=integer index",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int indexTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    RunnerCellRecipe recipe;
+    SpiceInt index = 0;
+    char detail[256] = {0};
+
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wnfetd expects args[0] to be a window recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_WINDOW) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wnfetd expects args[0] to be [\"window\",maxIntervals]",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (!parse_spiceint_arg(input, tokens, tokenCount, indexTok,
+                            "cells-windows.wnfetd args[1]", &index,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wnfetd expects args[1] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *window = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &window, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.wnfetd setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.wnfetd could not allocate transient window",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    wninsd_c(0.0, 1.0, window);
+    wninsd_c(2.0, 3.0, window);
+    wninsd_c(0.5, 2.5, window);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error while priming cells-windows.wnfetd", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    const SpiceInt card = wncard_c(window);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in wncard_c (cells-windows.wnfetd)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    if (index < 0 || index >= card) {
+      write_error_json_ex("invalid_args",
+                          "cells-windows.wnfetd index out of range",
+                          NULL, NULL, NULL, NULL);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    SpiceDouble left = 0.0;
+    SpiceDouble right = 0.0;
+    wnfetd_c(window, index, &left, &right);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in wnfetd_c (cells-windows.wnfetd)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":[", stdout);
+    fprintf(stdout, "%.17g", (double)left);
+    fputs(",", stdout);
+    fprintf(stdout, "%.17g", (double)right);
+    fputs("]}\n", stdout);
+
+    runner_free_allocated_cell(window);
+    goto done;
+  }
+
+  case CALL_CELLS_WINDOWS_WNVALD: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wnvald expects args[0]=integer size args[1]=integer n args[2]=window recipe tuple",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int sizeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int nTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int recipeTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    SpiceInt size = 0;
+    SpiceInt n = 0;
+    RunnerCellRecipe recipe;
+    char detail[256] = {0};
+
+    if (!parse_spiceint_arg(input, tokens, tokenCount, sizeTok,
+                            "cells-windows.wnvald args[0]", &size,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wnvald expects args[0] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (!parse_spiceint_arg(input, tokens, tokenCount, nTok,
+                            "cells-windows.wnvald args[1]", &n,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wnvald expects args[1] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, recipeTok,
+                                    &recipe, detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wnvald expects args[2] to be a window recipe tuple",
+          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    if (recipe.kind != RUNNER_CELL_RECIPE_WINDOW) {
+      write_error_json_ex(
+          "invalid_args",
+          "cells-windows.wnvald expects args[2] to be [\"window\",maxIntervals]",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *window = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&recipe, &window, &isWindow, detail,
+                                       sizeof(detail))) {
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                            traceMsg, sizeof(traceMsg));
+        write_error_json("SPICE error in cells-windows.wnvald setup", shortMsg,
+                         longMsg, traceMsg);
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "cells-windows.wnvald could not allocate transient window",
+            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    wnvald_c(size, n, window);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in wnvald_c", shortMsg, longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    const SpiceInt outCard = wncard_c(window);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in wncard_c (cells-windows.wnvald)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    const SpiceInt outSize = size_c(window);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in size_c (cells-windows.wnvald)", shortMsg,
+                       longMsg, traceMsg);
+      runner_free_allocated_cell(window);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"card\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)outCard);
+    fputs(",\"size\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)outSize);
+    fputs("}}\n", stdout);
+
+    runner_free_allocated_cell(window);
     goto done;
   }
 

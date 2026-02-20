@@ -3,7 +3,7 @@ import { readParityDenylist } from "../generated/readParityDenylist.js";
 
 import type { MethodSpec } from "../dsl/types.js";
 
-const BASELINE_CANONICAL_METHOD_COVERAGE = 84;
+const BASELINE_CANONICAL_METHOD_COVERAGE = 94;
 const MAX_BASELINE_DENYLIST_SIZE = 89;
 
 function stableSort(a: string, b: string): number {

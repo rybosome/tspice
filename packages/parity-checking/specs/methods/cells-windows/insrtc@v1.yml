@@ -1,0 +1,13 @@
+id: methods/cells-windows/insrtc@v1
+kind: method
+contractMethod: cells-windows.insrtc
+canonicalMethod: cells-windows.insrtc
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.insrtc.basic
+    args:
+      - alpha
+      - [char, 8, 16]
+    expect:
+      ok: true

@@ -1,0 +1,14 @@
+id: methods/cells-windows/wninsd@v1
+kind: method
+contractMethod: cells-windows.wninsd
+canonicalMethod: cells-windows.wninsd
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.wninsd.basic
+    args:
+      - 0.5
+      - 2.5
+      - [window, 4]
+    expect:
+      ok: true

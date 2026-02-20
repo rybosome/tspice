@@ -1,0 +1,12 @@
+id: methods/cells-windows/wncard@v1
+kind: method
+contractMethod: cells-windows.wncard
+canonicalMethod: cells-windows.wncard
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.wncard.basic
+    args:
+      - [window, 4]
+    expect:
+      ok: true

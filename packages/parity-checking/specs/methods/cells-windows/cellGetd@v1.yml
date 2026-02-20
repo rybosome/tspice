@@ -1,0 +1,13 @@
+id: methods/cells-windows/cellGetd@v1
+kind: method
+contractMethod: cells-windows.cellGetd
+canonicalMethod: cells-windows.cellGetd
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.cellGetd.basic
+    args:
+      - [double, 8]
+      - 1
+    expect:
+      ok: true

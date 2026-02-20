@@ -1,0 +1,13 @@
+id: methods/cells-windows/insrti@v1
+kind: method
+contractMethod: cells-windows.insrti
+canonicalMethod: cells-windows.insrti
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.insrti.basic
+    args:
+      - 2
+      - [int, 8]
+    expect:
+      ok: true

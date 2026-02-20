@@ -1,0 +1,13 @@
+id: methods/cells-windows/wnfetd@v1
+kind: method
+contractMethod: cells-windows.wnfetd
+canonicalMethod: cells-windows.wnfetd
+uses:
+  - workflows/legacy/cells-windows.basic@v1
+cases:
+  - id: cells-windows.wnfetd.basic
+    args:
+      - [window, 4]
+      - 0
+    expect:
+      ok: true
