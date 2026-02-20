@@ -1,0 +1,11 @@
+kind: method
+id: method.ek.ekffld@v1
+contractMethod: ek.ekffld
+canonicalMethod: ek.ekffld
+uses:
+  - workflow.legacy.ek.fast-write@v1
+cases:
+  - id: finalizes-fast-write-segment
+    args: []
+    expect:
+      ok: true

@@ -1,0 +1,11 @@
+kind: method
+id: method.ek.ekacld@v1
+contractMethod: ek.ekacld
+canonicalMethod: ek.ekacld
+uses:
+  - workflow.legacy.ek.fast-write@v1
+cases:
+  - id: appends-double-column-fast-write
+    args: []
+    expect:
+      ok: true

@@ -2109,11 +2109,16 @@ typedef enum {
   CALL_DSK_DSKB02,
 
   // ek
+  CALL_EK_EKACLC,
+  CALL_EK_EKACLD,
+  CALL_EK_EKACLI,
   CALL_EK_EKCLS,
+  CALL_EK_EKFFLD,
   CALL_EK_EKFIND,
   CALL_EK_EKGC,
   CALL_EK_EKGD,
   CALL_EK_EKGI,
+  CALL_EK_EKIFLD,
   CALL_EK_EKNSEG,
   CALL_EK_EKNTAB,
   CALL_EK_EKOPN,
@@ -2285,11 +2290,16 @@ static CallId parse_call_id(const char *call) {
       {"dsk.dskb02", CALL_DSK_DSKB02},
 
       // ek
+      {"ek.ekaclc", CALL_EK_EKACLC},
+      {"ek.ekacld", CALL_EK_EKACLD},
+      {"ek.ekacli", CALL_EK_EKACLI},
       {"ek.ekcls", CALL_EK_EKCLS},
+      {"ek.ekffld", CALL_EK_EKFFLD},
       {"ek.ekfind", CALL_EK_EKFIND},
       {"ek.ekgc", CALL_EK_EKGC},
       {"ek.ekgd", CALL_EK_EKGD},
       {"ek.ekgi", CALL_EK_EKGI},
+      {"ek.ekifld", CALL_EK_EKIFLD},
       {"ek.eknseg", CALL_EK_EKNSEG},
       {"ek.ekntab", CALL_EK_EKNTAB},
       {"ek.ekopn", CALL_EK_EKOPN},
@@ -8207,6 +8217,608 @@ int main(void) {
     }
     free(pathTag);
     free(ifname);
+    goto done;
+  }
+
+  case CALL_EK_EKIFLD: {
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    static const char cnames[1][16] = {"ID"};
+    static const char decls[1][64] = {"DATATYPE = INTEGER"};
+    SpiceInt segno = 0;
+    SpiceInt rcptrs[3] = {0, 0, 0};
+
+    SpiceInt entszs[3] = {1, 1, 1};
+    SpiceBoolean nlflgs[3] = {SPICEFALSE, SPICEFALSE, SPICEFALSE};
+    SpiceInt ivals[3] = {1, 2, 3};
+    SpiceInt wkindx[3] = {0, 0, 0};
+
+    char detail[256] = {0};
+    if (!build_file_io_temp_path("ek-ekifld", ".bes", tempPath, sizeof(tempPath),
+                                 detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "ek.ekifld could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto ek_ekifld_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+
+    ekopn_c(tempPath, "TSPICE", 0, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekopn (ek.ekifld setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto ek_ekifld_cleanup;
+    }
+    handleOpened = true;
+
+    ekifld_c(handle,
+             "PARITY_EK_IFLD",
+             (SpiceInt)1,
+             (SpiceInt)3,
+             (SpiceInt)sizeof(cnames[0]),
+             (const void *)cnames,
+             (SpiceInt)sizeof(decls[0]),
+             (const void *)decls,
+             &segno,
+             rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekifld", shortMsg, longMsg, traceMsg);
+      goto ek_ekifld_cleanup;
+    }
+
+    ekacli_c(handle, segno, "ID", ivals, entszs, nlflgs, rcptrs, wkindx);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekacli (ek.ekifld cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekifld_cleanup;
+    }
+
+    ekffld_c(handle, segno, rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekffld (ek.ekifld cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekifld_cleanup;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekcls (ek.ekifld cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekifld_cleanup;
+    }
+    handleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fprintf(stdout,
+            "{\"ok\":true,\"result\":{\"segno\":%" PRIdMAX ",\"rcptrsLength\":3}}\n",
+            (intmax_t)segno);
+
+  ek_ekifld_cleanup:
+    if (handleOpened) {
+      reset_c();
+      ekcls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    goto done;
+  }
+
+  case CALL_EK_EKACLI: {
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    static const char cnames[1][16] = {"ID"};
+    static const char decls[1][64] = {"DATATYPE = INTEGER"};
+    SpiceInt segno = 0;
+    SpiceInt rcptrs[3] = {0, 0, 0};
+    SpiceInt entszs[3] = {1, 1, 1};
+    SpiceBoolean nlflgs[3] = {SPICEFALSE, SPICEFALSE, SPICEFALSE};
+    SpiceInt ivals[3] = {1, 2, 3};
+    SpiceInt wkindx[3] = {0, 0, 0};
+
+    char detail[256] = {0};
+    if (!build_file_io_temp_path("ek-ekacli", ".bes", tempPath, sizeof(tempPath),
+                                 detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "ek.ekacli could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto ek_ekacli_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+
+    ekopn_c(tempPath, "TSPICE", 0, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekopn (ek.ekacli setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto ek_ekacli_cleanup;
+    }
+    handleOpened = true;
+
+    ekifld_c(handle,
+             "PARITY_EK_ACLI",
+             (SpiceInt)1,
+             (SpiceInt)3,
+             (SpiceInt)sizeof(cnames[0]),
+             (const void *)cnames,
+             (SpiceInt)sizeof(decls[0]),
+             (const void *)decls,
+             &segno,
+             rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekifld (ek.ekacli setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto ek_ekacli_cleanup;
+    }
+
+    ekacli_c(handle, segno, "ID", ivals, entszs, nlflgs, rcptrs, wkindx);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekacli", shortMsg, longMsg, traceMsg);
+      goto ek_ekacli_cleanup;
+    }
+
+    ekffld_c(handle, segno, rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekffld (ek.ekacli cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekacli_cleanup;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekcls (ek.ekacli cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekacli_cleanup;
+    }
+    handleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+
+  ek_ekacli_cleanup:
+    if (handleOpened) {
+      reset_c();
+      ekcls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    goto done;
+  }
+
+  case CALL_EK_EKACLD: {
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    static const char cnames[1][16] = {"COST"};
+    static const char decls[1][64] = {"DATATYPE = DOUBLE PRECISION"};
+    SpiceInt segno = 0;
+    SpiceInt rcptrs[3] = {0, 0, 0};
+    SpiceInt entszs[3] = {1, 1, 1};
+    SpiceBoolean nlflgs[3] = {SPICEFALSE, SPICEFALSE, SPICEFALSE};
+    SpiceDouble dvals[3] = {10.5, 20.25, 30.0};
+    SpiceInt wkindx[3] = {0, 0, 0};
+
+    char detail[256] = {0};
+    if (!build_file_io_temp_path("ek-ekacld", ".bes", tempPath, sizeof(tempPath),
+                                 detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "ek.ekacld could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto ek_ekacld_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+
+    ekopn_c(tempPath, "TSPICE", 0, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekopn (ek.ekacld setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto ek_ekacld_cleanup;
+    }
+    handleOpened = true;
+
+    ekifld_c(handle,
+             "PARITY_EK_ACLD",
+             (SpiceInt)1,
+             (SpiceInt)3,
+             (SpiceInt)sizeof(cnames[0]),
+             (const void *)cnames,
+             (SpiceInt)sizeof(decls[0]),
+             (const void *)decls,
+             &segno,
+             rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekifld (ek.ekacld setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto ek_ekacld_cleanup;
+    }
+
+    ekacld_c(handle, segno, "COST", dvals, entszs, nlflgs, rcptrs, wkindx);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekacld", shortMsg, longMsg, traceMsg);
+      goto ek_ekacld_cleanup;
+    }
+
+    ekffld_c(handle, segno, rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekffld (ek.ekacld cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekacld_cleanup;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekcls (ek.ekacld cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekacld_cleanup;
+    }
+    handleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+
+  ek_ekacld_cleanup:
+    if (handleOpened) {
+      reset_c();
+      ekcls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    goto done;
+  }
+
+  case CALL_EK_EKACLC: {
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    static const char cnames[1][16] = {"NAME"};
+    static const char decls[1][64] = {"DATATYPE = CHARACTER*(32)"};
+    static const char cvals[3][16] = {"ALICE", "BOB", "CAROL"};
+
+    SpiceInt segno = 0;
+    SpiceInt rcptrs[3] = {0, 0, 0};
+    SpiceInt entszs[3] = {1, 1, 1};
+    SpiceBoolean nlflgs[3] = {SPICEFALSE, SPICEFALSE, SPICEFALSE};
+    SpiceInt wkindx[3] = {0, 0, 0};
+
+    char detail[256] = {0};
+    if (!build_file_io_temp_path("ek-ekaclc", ".bes", tempPath, sizeof(tempPath),
+                                 detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "ek.ekaclc could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto ek_ekaclc_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+
+    ekopn_c(tempPath, "TSPICE", 0, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekopn (ek.ekaclc setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto ek_ekaclc_cleanup;
+    }
+    handleOpened = true;
+
+    ekifld_c(handle,
+             "PARITY_EK_ACLC",
+             (SpiceInt)1,
+             (SpiceInt)3,
+             (SpiceInt)sizeof(cnames[0]),
+             (const void *)cnames,
+             (SpiceInt)sizeof(decls[0]),
+             (const void *)decls,
+             &segno,
+             rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekifld (ek.ekaclc setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto ek_ekaclc_cleanup;
+    }
+
+    ekaclc_c(handle,
+             segno,
+             "NAME",
+             (SpiceInt)sizeof(cvals[0]),
+             (const void *)cvals,
+             entszs,
+             nlflgs,
+             rcptrs,
+             wkindx);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekaclc", shortMsg, longMsg, traceMsg);
+      goto ek_ekaclc_cleanup;
+    }
+
+    ekffld_c(handle, segno, rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekffld (ek.ekaclc cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekaclc_cleanup;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekcls (ek.ekaclc cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekaclc_cleanup;
+    }
+    handleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+
+  ek_ekaclc_cleanup:
+    if (handleOpened) {
+      reset_c();
+      ekcls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    goto done;
+  }
+
+  case CALL_EK_EKFFLD: {
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    static const char cnames[1][16] = {"ID"};
+    static const char decls[1][64] = {"DATATYPE = INTEGER"};
+    SpiceInt segno = 0;
+    SpiceInt rcptrs[3] = {0, 0, 0};
+    SpiceInt entszs[3] = {1, 1, 1};
+    SpiceBoolean nlflgs[3] = {SPICEFALSE, SPICEFALSE, SPICEFALSE};
+    SpiceInt ivals[3] = {1, 2, 3};
+    SpiceInt wkindx[3] = {0, 0, 0};
+
+    char detail[256] = {0};
+    if (!build_file_io_temp_path("ek-ekffld", ".bes", tempPath, sizeof(tempPath),
+                                 detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "ek.ekffld could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto ek_ekffld_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+
+    ekopn_c(tempPath, "TSPICE", 0, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekopn (ek.ekffld setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto ek_ekffld_cleanup;
+    }
+    handleOpened = true;
+
+    ekifld_c(handle,
+             "PARITY_EK_FFLD",
+             (SpiceInt)1,
+             (SpiceInt)3,
+             (SpiceInt)sizeof(cnames[0]),
+             (const void *)cnames,
+             (SpiceInt)sizeof(decls[0]),
+             (const void *)decls,
+             &segno,
+             rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekifld (ek.ekffld setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto ek_ekffld_cleanup;
+    }
+
+    ekacli_c(handle, segno, "ID", ivals, entszs, nlflgs, rcptrs, wkindx);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekacli (ek.ekffld setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekffld_cleanup;
+    }
+
+    ekffld_c(handle, segno, rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekffld", shortMsg, longMsg, traceMsg);
+      goto ek_ekffld_cleanup;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekcls (ek.ekffld cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto ek_ekffld_cleanup;
+    }
+    handleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+
+  ek_ekffld_cleanup:
+    if (handleOpened) {
+      reset_c();
+      ekcls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
     goto done;
   }
 

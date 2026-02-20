@@ -1,0 +1,11 @@
+kind: method
+id: method.ek.ekacli@v1
+contractMethod: ek.ekacli
+canonicalMethod: ek.ekacli
+uses:
+  - workflow.legacy.ek.fast-write@v1
+cases:
+  - id: appends-integer-column-fast-write
+    args: []
+    expect:
+      ok: true

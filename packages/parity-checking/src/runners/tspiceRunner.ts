@@ -456,6 +456,40 @@ function ensureEkQueryReady(backend: SpiceBackend, call: string, query: string, 
   }
 }
 
+const EK_FAST_WRITE_NROWS = 3;
+const EK_FAST_WRITE_ENTSZS: readonly number[] = [1, 1, 1];
+const EK_FAST_WRITE_NLFLGS: readonly boolean[] = [false, false, false];
+const EK_FAST_WRITE_IVALS: readonly number[] = [1, 2, 3];
+const EK_FAST_WRITE_DVALS: readonly number[] = [10.5, 20.25, 30];
+const EK_FAST_WRITE_CVALS: readonly string[] = ["ALICE", "BOB", "CAROL"];
+
+async function withEkFastWriteHandle<T>(
+  backend: SpiceBackend,
+  tag: string,
+  run: (handle: ReturnType<SpiceBackend["ekopn"]>) => T | Promise<T>,
+): Promise<T> {
+  const tempPath = makeFileIoTempPath(tag, ".bes");
+  const handle = backend.ekopn(tempPath, "TSPICE", 0);
+  let handleClosed = false;
+
+  try {
+    const result = await run(handle);
+    backend.ekcls(handle);
+    handleClosed = true;
+    return result;
+  } finally {
+    if (!handleClosed) {
+      try {
+        backend.ekcls(handle);
+      } catch {
+        // best-effort close during error cleanup
+      }
+    }
+
+    await cleanupFileIoTempPath(tempPath);
+  }
+}
+
 const DISPATCH: Record<string, DispatchFn> = {
   // time
   "time.str2et": (backend, args) => {
@@ -2123,6 +2157,130 @@ const DISPATCH: Record<string, DispatchFn> = {
 
       await cleanupFileIoTempPath(tempPath);
     }
+  },
+
+  "ek.ekifld": async (backend) => {
+    return withEkFastWriteHandle(backend, "ek-ekifld", (handle) => {
+      const { segno, rcptrs } = backend.ekifld(
+        handle,
+        "PARITY_EK_IFLD",
+        EK_FAST_WRITE_NROWS,
+        ["ID"],
+        ["DATATYPE = INTEGER"],
+      );
+
+      backend.ekacli(
+        handle,
+        segno,
+        "ID",
+        EK_FAST_WRITE_IVALS,
+        EK_FAST_WRITE_ENTSZS,
+        EK_FAST_WRITE_NLFLGS,
+        rcptrs,
+      );
+      backend.ekffld(handle, segno, rcptrs);
+
+      return {
+        segno,
+        rcptrsLength: rcptrs.length,
+      };
+    });
+  },
+
+  "ek.ekacli": async (backend) => {
+    return withEkFastWriteHandle(backend, "ek-ekacli", (handle) => {
+      const { segno, rcptrs } = backend.ekifld(
+        handle,
+        "PARITY_EK_ACLI",
+        EK_FAST_WRITE_NROWS,
+        ["ID"],
+        ["DATATYPE = INTEGER"],
+      );
+
+      backend.ekacli(
+        handle,
+        segno,
+        "ID",
+        EK_FAST_WRITE_IVALS,
+        EK_FAST_WRITE_ENTSZS,
+        EK_FAST_WRITE_NLFLGS,
+        rcptrs,
+      );
+      backend.ekffld(handle, segno, rcptrs);
+      return null;
+    });
+  },
+
+  "ek.ekacld": async (backend) => {
+    return withEkFastWriteHandle(backend, "ek-ekacld", (handle) => {
+      const { segno, rcptrs } = backend.ekifld(
+        handle,
+        "PARITY_EK_ACLD",
+        EK_FAST_WRITE_NROWS,
+        ["COST"],
+        ["DATATYPE = DOUBLE PRECISION"],
+      );
+
+      backend.ekacld(
+        handle,
+        segno,
+        "COST",
+        EK_FAST_WRITE_DVALS,
+        EK_FAST_WRITE_ENTSZS,
+        EK_FAST_WRITE_NLFLGS,
+        rcptrs,
+      );
+      backend.ekffld(handle, segno, rcptrs);
+      return null;
+    });
+  },
+
+  "ek.ekaclc": async (backend) => {
+    return withEkFastWriteHandle(backend, "ek-ekaclc", (handle) => {
+      const { segno, rcptrs } = backend.ekifld(
+        handle,
+        "PARITY_EK_ACLC",
+        EK_FAST_WRITE_NROWS,
+        ["NAME"],
+        ["DATATYPE = CHARACTER*(32)"],
+      );
+
+      backend.ekaclc(
+        handle,
+        segno,
+        "NAME",
+        EK_FAST_WRITE_CVALS,
+        EK_FAST_WRITE_ENTSZS,
+        EK_FAST_WRITE_NLFLGS,
+        rcptrs,
+      );
+      backend.ekffld(handle, segno, rcptrs);
+      return null;
+    });
+  },
+
+  "ek.ekffld": async (backend) => {
+    return withEkFastWriteHandle(backend, "ek-ekffld", (handle) => {
+      const { segno, rcptrs } = backend.ekifld(
+        handle,
+        "PARITY_EK_FFLD",
+        EK_FAST_WRITE_NROWS,
+        ["ID"],
+        ["DATATYPE = INTEGER"],
+      );
+
+      backend.ekacli(
+        handle,
+        segno,
+        "ID",
+        EK_FAST_WRITE_IVALS,
+        EK_FAST_WRITE_ENTSZS,
+        EK_FAST_WRITE_NLFLGS,
+        rcptrs,
+      );
+      backend.ekffld(handle, segno, rcptrs);
+      return null;
+    });
   },
 
   "ek.ekcls": async (backend, args) => {

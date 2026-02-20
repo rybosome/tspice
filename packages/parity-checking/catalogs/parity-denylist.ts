@@ -2,11 +2,6 @@
 // Source catalogs: contract-methods.json - method specs canonical coverage
 
 export const PARITY_DENYLIST = [
-  "ek.ekaclc",
-  "ek.ekacld",
-  "ek.ekacli",
-  "ek.ekffld",
-  "ek.ekifld",
   "ephemeris.spkcls",
   "ephemeris.spkcov",
   "ephemeris.spkobj",
