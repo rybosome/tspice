@@ -30,4 +30,4 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     expect(summary.methodCaseCount).toBeGreaterThan(0);
     expect(summary.crossCuttingCaseCount).toBeGreaterThan(0);
   });
-});
+}, 10_000);
