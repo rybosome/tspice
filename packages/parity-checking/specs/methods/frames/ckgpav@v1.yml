@@ -1,0 +1,11 @@
+id: methods/frames/ckgpav@v1
+kind: method
+contractMethod: frames.ckgpav
+canonicalMethod: frames.ckgpav
+uses:
+  - workflows/legacy/frames.ck.basic@v1
+cases:
+  - id: frames.ckgpav.mgs-minimal
+    args:
+      - $FIXTURES/mgs-minimal/mgs_hga_hinge_v2.bc
+      - MGS_SPACECRAFT

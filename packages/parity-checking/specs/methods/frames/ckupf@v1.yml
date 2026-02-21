@@ -1,0 +1,10 @@
+id: methods/frames/ckupf@v1
+kind: method
+contractMethod: frames.ckupf
+canonicalMethod: frames.ckupf
+uses:
+  - workflows/legacy/frames.ck.basic@v1
+cases:
+  - id: frames.ckupf.mgs-minimal
+    args:
+      - $FIXTURES/mgs-minimal/mgs_hga_hinge_v2.bc

@@ -1,0 +1,10 @@
+id: methods/frames/ckobj@v1
+kind: method
+contractMethod: frames.ckobj
+canonicalMethod: frames.ckobj
+uses:
+  - workflows/legacy/frames.ck.basic@v1
+cases:
+  - id: frames.ckobj.mgs-minimal
+    args:
+      - $FIXTURES/mgs-minimal/mgs_hga_hinge_v2.bc

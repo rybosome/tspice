@@ -1,0 +1,11 @@
+id: methods/frames/ckgp@v1
+kind: method
+contractMethod: frames.ckgp
+canonicalMethod: frames.ckgp
+uses:
+  - workflows/legacy/frames.ck.basic@v1
+cases:
+  - id: frames.ckgp.mgs-minimal
+    args:
+      - $FIXTURES/mgs-minimal/mgs_hga_hinge_v2.bc
+      - MGS_SPACECRAFT

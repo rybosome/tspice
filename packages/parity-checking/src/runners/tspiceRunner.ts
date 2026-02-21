@@ -425,6 +425,138 @@ function readIntCellValues(
   return out;
 }
 
+function readWindowIntervals(
+  backend: SpiceBackend,
+  window: Parameters<SpiceBackend["wnfetd"]>[0],
+): number[] {
+  const intervalCount = backend.wncard(window);
+  const out: number[] = [];
+  for (let i = 0; i < intervalCount; i++) {
+    const [left, right] = backend.wnfetd(window, i);
+    out.push(left, right);
+  }
+  return out;
+}
+
+async function resolveKernelPathArgForRunner(
+  backend: SpiceBackend,
+  value: unknown,
+  call: string,
+  index: number,
+): Promise<string> {
+  assertStringArg(value, call, index);
+  if (backend.kind === "wasm") {
+    return await wasmVirtualKernelIdFromMaybeOsPath(value);
+  }
+  return value;
+}
+
+function deriveCkPointingProbe(
+  backend: SpiceBackend,
+  call: string,
+  ckPath: string,
+): { inst: number; sclkdp: number; tol: number } {
+  const ids = backend.newIntCell(128);
+  const cover = backend.newWindow(256);
+
+  try {
+    backend.ckobj(ckPath, ids);
+    const objectIds = readIntCellValues(backend, ids);
+    const inst = objectIds[0];
+    if (inst === undefined) {
+      invalidArgs(`${call} expected args[0] CK path to contain at least one object id`);
+    }
+
+    backend.ckcov(ckPath, inst, false, "SEGMENT", 0, "SCLK", cover);
+    const intervalCount = backend.wncard(cover);
+    if (intervalCount < 1) {
+      invalidArgs(`${call} expected args[0] CK path to have at least one SCLK coverage interval`);
+    }
+
+    const [left, right] = backend.wnfetd(cover, 0);
+    return {
+      inst,
+      sclkdp: (left + right) / 2,
+      tol: Math.max(1, (right - left) / 2),
+    };
+  } finally {
+    backend.freeWindow(cover);
+    backend.freeCell(ids);
+  }
+}
+
+async function runFramesCkgp(backend: SpiceBackend, args: unknown[], call: string): Promise<unknown> {
+  const ckPath = await resolveKernelPathArgForRunner(backend, args[0], call, 0);
+  assertStringArg(args[1], call, 1);
+
+  const probe = deriveCkPointingProbe(backend, call, ckPath);
+  return backend.ckgp(probe.inst, probe.sclkdp, probe.tol, args[1]);
+}
+
+async function runFramesCkgpav(backend: SpiceBackend, args: unknown[], call: string): Promise<unknown> {
+  const ckPath = await resolveKernelPathArgForRunner(backend, args[0], call, 0);
+  assertStringArg(args[1], call, 1);
+
+  const probe = deriveCkPointingProbe(backend, call, ckPath);
+  return backend.ckgpav(probe.inst, probe.sclkdp, probe.tol, args[1]);
+}
+
+async function runFramesCklpf(backend: SpiceBackend, args: unknown[], call: string): Promise<unknown> {
+  const ckPath = await resolveKernelPathArgForRunner(backend, args[0], call, 0);
+
+  const handle = backend.cklpf(ckPath);
+  backend.ckupf(handle);
+  return { loaded: true };
+}
+
+async function runFramesCkupf(backend: SpiceBackend, args: unknown[], call: string): Promise<unknown> {
+  const ckPath = await resolveKernelPathArgForRunner(backend, args[0], call, 0);
+
+  const handle = backend.cklpf(ckPath);
+  backend.ckupf(handle);
+  return null;
+}
+
+async function runFramesCkobj(backend: SpiceBackend, args: unknown[], call: string): Promise<unknown> {
+  const ckPath = await resolveKernelPathArgForRunner(backend, args[0], call, 0);
+
+  const ids = backend.newIntCell(128);
+  try {
+    backend.ckobj(ckPath, ids);
+    return readIntCellValues(backend, ids);
+  } finally {
+    backend.freeCell(ids);
+  }
+}
+
+async function runFramesCkcov(backend: SpiceBackend, args: unknown[], call: string): Promise<unknown> {
+  const ckPath = await resolveKernelPathArgForRunner(backend, args[0], call, 0);
+
+  const ids = backend.newIntCell(128);
+  const cover = backend.newWindow(256);
+  try {
+    backend.ckobj(ckPath, ids);
+    const objectIds = readIntCellValues(backend, ids);
+    const idcode = objectIds[0];
+    if (idcode === undefined) {
+      invalidArgs(`${call} expected args[0] CK path to contain at least one object id`);
+    }
+
+    backend.ckcov(ckPath, idcode, false, "SEGMENT", 0, "SCLK", cover);
+
+    return {
+      idcode,
+      needav: false,
+      level: "SEGMENT",
+      timsys: "SCLK",
+      intervals: readWindowIntervals(backend, cover),
+    };
+  } finally {
+    backend.freeWindow(cover);
+    backend.freeCell(ids);
+  }
+}
+
 function computeMinimalDskSpatialIndex(
   backend: SpiceBackend,
 ): ReturnType<SpiceBackend["dskmi2"]> {
@@ -898,6 +1030,54 @@ const DISPATCH: Record<string, DispatchFn> = {
     assertInteger(args[0], "ccifrm args[0]");
     assertInteger(args[1], "ccifrm args[1]");
     return backend.ccifrm(args[0], args[1]);
+  },
+
+  "frames.ckgp": async (backend, args) => {
+    return await runFramesCkgp(backend, args, "frames.ckgp");
+  },
+
+  ckgp: async (backend, args) => {
+    return await runFramesCkgp(backend, args, "ckgp");
+  },
+
+  "frames.ckgpav": async (backend, args) => {
+    return await runFramesCkgpav(backend, args, "frames.ckgpav");
+  },
+
+  ckgpav: async (backend, args) => {
+    return await runFramesCkgpav(backend, args, "ckgpav");
+  },
+
+  "frames.cklpf": async (backend, args) => {
+    return await runFramesCklpf(backend, args, "frames.cklpf");
+  },
+
+  cklpf: async (backend, args) => {
+    return await runFramesCklpf(backend, args, "cklpf");
+  },
+
+  "frames.ckupf": async (backend, args) => {
+    return await runFramesCkupf(backend, args, "frames.ckupf");
+  },
+
+  ckupf: async (backend, args) => {
+    return await runFramesCkupf(backend, args, "ckupf");
+  },
+
+  "frames.ckobj": async (backend, args) => {
+    return await runFramesCkobj(backend, args, "frames.ckobj");
+  },
+
+  ckobj: async (backend, args) => {
+    return await runFramesCkobj(backend, args, "ckobj");
+  },
+
+  "frames.ckcov": async (backend, args) => {
+    return await runFramesCkcov(backend, args, "frames.ckcov");
+  },
+
+  ckcov: async (backend, args) => {
+    return await runFramesCkcov(backend, args, "ckcov");
   },
 
   "frames.sxform": (backend, args) => {

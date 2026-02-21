@@ -1,0 +1,10 @@
+id: methods/frames/cklpf@v1
+kind: method
+contractMethod: frames.cklpf
+canonicalMethod: frames.cklpf
+uses:
+  - workflows/legacy/frames.ck.basic@v1
+cases:
+  - id: frames.cklpf.mgs-minimal
+    args:
+      - $FIXTURES/mgs-minimal/mgs_hga_hinge_v2.bc
