@@ -21,7 +21,7 @@ import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
-import type { SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type { SpiceHandleEntry, SpiceHandleRegistry } from "../runtime/spice-handles.js";
 import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
 
 
@@ -818,7 +818,7 @@ export function createEphemerisApi(
       handles.close(
         handle,
         ["SPK"],
-        (e) => callVoidHandle(module, module._tspice_spkcls, e.nativeHandle),
+        (entry: SpiceHandleEntry) => callVoidHandle(module, module._tspice_spkcls, entry.nativeHandle),
         "spkcls",
       );
       if (resolved) {

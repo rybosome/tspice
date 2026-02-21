@@ -1,0 +1,22 @@
+id: methods/ids-names/bodn2c@v1
+kind: method
+contractMethod: ids-names.bodn2c
+canonicalMethod: ids-names.bodn2c
+uses:
+  - workflows/legacy/ids-names.basic@v1
+cases:
+  - id: bodn2c-earth
+    args:
+      - EARTH
+    expect:
+      ok: true
+  - id: bodn2c-earth-lower
+    args:
+      - earth
+    expect:
+      ok: true
+  - id: bodn2c-unknown
+    args:
+      - NOT_A_BODY
+    expect:
+      ok: true

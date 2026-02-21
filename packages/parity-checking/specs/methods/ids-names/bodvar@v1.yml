@@ -1,0 +1,19 @@
+id: methods/ids-names/bodvar@v1
+kind: method
+contractMethod: ids-names.bodvar
+canonicalMethod: ids-names.bodvar
+uses:
+  - workflows/legacy/ids-names.basic@v1
+cases:
+  - id: bodvar-char-typed-item
+    args:
+      - 399
+      - FOO
+    expect:
+      ok: true
+  - id: bodvar-radii
+    args:
+      - 399
+      - RADII
+    expect:
+      ok: true

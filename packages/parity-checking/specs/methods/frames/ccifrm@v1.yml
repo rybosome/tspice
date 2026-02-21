@@ -1,0 +1,13 @@
+id: methods/frames/ccifrm@v1
+kind: method
+contractMethod: frames.ccifrm
+canonicalMethod: frames.ccifrm
+uses:
+  - workflows/legacy/frames.basic@v1
+cases:
+  - id: ccifrm-j2000
+    args:
+      - 1
+      - 1
+    expect:
+      ok: true

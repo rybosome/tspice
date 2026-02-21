@@ -1,0 +1,19 @@
+{
+  "bodc2n": "ids-names.bodc2n",
+  "bodc2s": "ids-names.bodc2s",
+  "boddef": "ids-names.boddef",
+  "bodfnd": "ids-names.bodfnd",
+  "bodn2c": "ids-names.bodn2c",
+  "bods2c": "ids-names.bods2c",
+  "bodvar": "ids-names.bodvar",
+  "ccifrm": "frames.ccifrm",
+  "cidfrm": "frames.cidfrm",
+  "cnmfrm": "frames.cnmfrm",
+  "et2utc": "time.et2utc",
+  "frinfo": "frames.frinfo",
+  "frmnam": "frames.frmnam",
+  "namfrm": "frames.namfrm",
+  "pxform": "frames.pxform",
+  "str2et": "time.str2et",
+  "sxform": "frames.sxform"
+}

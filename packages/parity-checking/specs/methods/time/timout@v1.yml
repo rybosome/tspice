@@ -1,0 +1,13 @@
+id: methods/time/timout@v1
+kind: method
+contractMethod: time.timout
+canonicalMethod: time.timout
+uses:
+  - workflows/legacy/time.misc.basic@v1
+cases:
+  - id: time.timout
+    args:
+      - 0
+      - YYYY-MON-DD HR:MN:SC.### ::TDB
+    expect:
+      ok: true

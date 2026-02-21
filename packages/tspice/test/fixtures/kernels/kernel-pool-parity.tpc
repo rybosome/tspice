@@ -10,7 +10,7 @@ KPL/PCK
 
 \\begintext
 
-This is a tiny text kernel fixture used by backend-verify parity scenarios.
+This is a tiny text kernel fixture used by parity-checking scenarios.
 
 It defines a small set of kernel pool variables with known types/sizes:
 

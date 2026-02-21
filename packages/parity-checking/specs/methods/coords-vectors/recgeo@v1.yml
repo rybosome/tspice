@@ -1,0 +1,18 @@
+id: methods/coords-vectors/recgeo@v1
+kind: method
+contractMethod: coords-vectors.recgeo
+canonicalMethod: coords-vectors.recgeo
+uses:
+  - workflows/legacy/coords-vectors.basic@v1
+cases:
+  - id: coords-vectors.recgeo
+    args:
+      - - 1.5
+        - 0.6
+        - 0.2
+      - 2
+      - 0.05
+    compare:
+      angleWrapPi: true
+    expect:
+      ok: true

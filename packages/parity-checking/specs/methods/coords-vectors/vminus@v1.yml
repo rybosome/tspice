@@ -1,0 +1,14 @@
+id: methods/coords-vectors/vminus@v1
+kind: method
+contractMethod: coords-vectors.vminus
+canonicalMethod: coords-vectors.vminus
+uses:
+  - workflows/legacy/coords-vectors.basic@v1
+cases:
+  - id: coords-vectors.vminus
+    args:
+      - - 1
+        - 2
+        - 3
+    expect:
+      ok: true

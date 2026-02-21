@@ -1,0 +1,15 @@
+id: methods/coords-vectors/vscl@v1
+kind: method
+contractMethod: coords-vectors.vscl
+canonicalMethod: coords-vectors.vscl
+uses:
+  - workflows/legacy/coords-vectors.basic@v1
+cases:
+  - id: coords-vectors.vscl
+    args:
+      - 2
+      - - 1
+        - 2
+        - 3
+    expect:
+      ok: true

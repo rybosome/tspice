@@ -1,0 +1,28 @@
+id: methods/kernel-pool/gdpool@v1
+kind: method
+contractMethod: kernel-pool.gdpool
+canonicalMethod: kernel-pool.gdpool
+uses:
+  - workflows/legacy/kernel-pool.basic@v1
+cases:
+  - id: gdpool-double-var
+    args:
+      - TSPICE_PARITY_DOUBLE_VAR
+      - 0
+      - 8
+    expect:
+      ok: true
+  - id: gdpool-missing
+    args:
+      - TSPICE_PARITY_MISSING_VAR
+      - 0
+      - 8
+    expect:
+      ok: true
+  - id: gdpool-type-mismatch
+    args:
+      - TSPICE_PARITY_CHAR_VAR
+      - 0
+      - 8
+    expect:
+      ok: true
