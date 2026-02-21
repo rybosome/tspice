@@ -229,22 +229,27 @@ export type ResolvedMethodSpec = {
   mergedCompareDefaults?: ScenarioCompareAst;
 };
 
+/** Type guard for schemaVersion=2 method specs. */
 export function isMethodSpecV2(method: AnyMethodSpec): method is MethodSpecV2 {
   return (method as Partial<MethodSpecV2>).schemaVersion === 2;
 }
 
+/** Return the canonical spec identifier for v1/v2 method specs. */
 export function methodSpecId(method: AnyMethodSpec): string {
   return isMethodSpecV2(method) ? method.manifest.id : method.id;
 }
 
+/** Return the canonical backend method name for v1/v2 method specs. */
 export function methodCanonicalMethod(method: AnyMethodSpec): string {
   return isMethodSpecV2(method) ? method.contract.canonicalMethod : method.canonicalMethod;
 }
 
+/** Type guard for schemaVersion=2 cross-cutting specs. */
 export function isCrossCuttingSpecV2(spec: AnyCrossCuttingSpec): spec is CrossCuttingSpecV2 {
   return spec.schemaVersion === 2;
 }
 
+/** Return the canonical spec identifier for v1/v2 cross-cutting specs. */
 export function crossCuttingSpecId(spec: AnyCrossCuttingSpec): string {
   return isCrossCuttingSpecV2(spec) ? spec.manifest.id : spec.id;
 }

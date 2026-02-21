@@ -1537,6 +1537,21 @@ static bool v2_parse_ref_name(const char *expr, const char *prefix,
   return true;
 }
 
+static char *v2_strdup(const char *value) {
+  if (value == NULL) {
+    return NULL;
+  }
+
+  size_t len = strlen(value) + 1;
+  char *copy = (char *)malloc(len);
+  if (copy == NULL) {
+    return NULL;
+  }
+
+  memcpy(copy, value, len);
+  return copy;
+}
+
 static int v2_find_ref_index(const V2RefEntry *refs, const int refCount,
                              const char *name) {
   for (int i = 0; i < refCount; i++) {
@@ -1561,6 +1576,7 @@ static void v2_free_ref_entry(V2RefEntry *entry) {
   free(entry->name);
   entry->name = NULL;
   entry->type = V2_REF_NONE;
+  memset(&entry->cell, 0, sizeof(entry->cell));
   entry->intValue = 0;
 }
 
@@ -1584,7 +1600,7 @@ static bool v2_add_ref_cell(V2RefEntry *refs, int *refCount, const char *name,
     return false;
   }
 
-  char *ownedName = strdup(name);
+  char *ownedName = v2_strdup(name);
   if (ownedName == NULL) {
     write_error_json("Out of memory", NULL, NULL, NULL);
     return false;
@@ -1615,7 +1631,7 @@ static bool v2_add_ref_int(V2RefEntry *refs, int *refCount, const char *name,
     return false;
   }
 
-  char *ownedName = strdup(name);
+  char *ownedName = v2_strdup(name);
   if (ownedName == NULL) {
     write_error_json("Out of memory", NULL, NULL, NULL);
     return false;
@@ -1991,12 +2007,7 @@ static bool v2_execute_free_cell_step(const char *json, const jsmntok_t *tokens,
 
   (void)argsTok;
 
-  if (refs[refIndex].cellStorage != NULL) {
-    free(refs[refIndex].cellStorage);
-    refs[refIndex].cellStorage = NULL;
-  }
-
-  refs[refIndex].type = V2_REF_NONE;
+  v2_free_ref_entry(&refs[refIndex]);
   return true;
 }
 

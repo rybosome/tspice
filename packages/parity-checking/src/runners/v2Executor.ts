@@ -131,26 +131,42 @@ function resolveSpiceIntExpression(
 
 function resolveCellReference(
   expr: unknown,
-  args: Record<string, unknown>,
   refs: Map<string, RefValue>,
   label: string,
-): ReturnType<SpiceBackend["newIntCell"]> {
-  const value = resolveExpression(expr, args, refs, label);
-
-  for (const refValue of refs.values()) {
-    if (refValue.kind === "cell" && refValue.value === value) {
-      return refValue.value;
-    }
+): { name: string; value: ReturnType<SpiceBackend["newIntCell"]> } {
+  if (typeof expr !== "string") {
+    invalidArgs(`${label} must be a string $refs.<name> (got ${formatValue(expr)})`);
   }
 
-  invalidArgs(`${label} must resolve to a cell reference (got ${formatValue(value)})`);
+  const token = resolveReferenceToken(expr);
+  if (!token || token.source !== "refs") {
+    invalidArgs(`${label} must reference $refs.<name> (got ${formatValue(expr)})`);
+  }
+
+  const refValue = refs.get(token.key);
+  if (!refValue) {
+    invalidRequest(`${label} references missing ref ${JSON.stringify(token.key)}`);
+  }
+
+  if (refValue.kind !== "cell") {
+    invalidArgs(`${label} must reference a cell (got ${refValue.kind})`);
+  }
+
+  return { name: token.key, value: refValue.value };
 }
 
 function validateCaseArgs(input: RunCaseInputV2): Record<string, unknown> {
   const caseArgs = asRecord(input.args, "v2.args");
   const contractArgs = input.contract.args ?? [];
 
-  const contractArgNames = new Set(contractArgs.map((arg) => arg.name));
+  const contractArgNames = new Set<string>();
+  for (const argSpec of contractArgs) {
+    if (contractArgNames.has(argSpec.name)) {
+      invalidRequest(`Duplicate contract arg name ${JSON.stringify(argSpec.name)}`);
+    }
+    contractArgNames.add(argSpec.name);
+  }
+
   for (const key of Object.keys(caseArgs)) {
     if (!contractArgNames.has(key)) {
       invalidArgs(`v2.args has unknown key ${JSON.stringify(key)} for ${input.contract.contractMethod}`);
@@ -240,15 +256,23 @@ function freeCellRef(
   refs: Map<string, RefValue>,
   freedCells: Set<unknown>,
   target: unknown,
-  args: Record<string, unknown>,
 ): void {
-  const cell = resolveCellReference(target, args, refs, "freeCell.target");
+  const { name, value: cell } = resolveCellReference(target, refs, "freeCell.target");
   if (freedCells.has(cell)) {
+    refs.delete(name);
     return;
   }
 
   backend.freeCell(cell);
   freedCells.add(cell);
+  refs.delete(name);
+}
+
+function defineRef(refs: Map<string, RefValue>, name: string, value: RefValue, label: string): void {
+  if (refs.has(name)) {
+    invalidRequest(`${label} defines duplicate ref name ${JSON.stringify(name)}`);
+  }
+  refs.set(name, value);
 }
 
 async function executeStep(
@@ -270,7 +294,7 @@ async function executeStep(
       }
 
       const cell = backend.newIntCell(size);
-      refs.set(step.as, { kind: "cell", value: cell });
+      defineRef(refs, step.as, { kind: "cell", value: cell }, "allocCell.as");
       return undefined;
     }
 
@@ -279,7 +303,7 @@ async function executeStep(
         invalidRequest(`spiceCall ${step.call} expects exactly one input ref`);
       }
 
-      const cell = resolveCellReference(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+      const { value: cell } = resolveCellReference(step.in[0], refs, `spiceCall(${step.call}).in[0]`);
       let value: number;
       if (step.call === "card_c") {
         value = asSpiceInt(backend.card(cell), `spiceCall(${step.call}).result`);
@@ -289,7 +313,7 @@ async function executeStep(
         unsupportedCall(`Unsupported spiceCall op: ${step.call}`);
       }
 
-      refs.set(step.as, { kind: "int", value });
+      defineRef(refs, step.as, { kind: "int", value }, `spiceCall(${step.call}).as`);
       return undefined;
     }
 
@@ -298,7 +322,7 @@ async function executeStep(
     }
 
     case "freeCell": {
-      freeCellRef(backend, refs, freedCells, step.target, args);
+      freeCellRef(backend, refs, freedCells, step.target);
       return undefined;
     }
 
@@ -309,6 +333,7 @@ async function executeStep(
   }
 }
 
+/** Convert any thrown value into a structured v2 runner error report. */
 export function asV2RunnerError(error: unknown): RunnerErrorReport {
   if (error instanceof Error) {
     const report: RunnerErrorReport = {
@@ -330,6 +355,7 @@ export function asV2RunnerError(error: unknown): RunnerErrorReport {
   };
 }
 
+/** Execute a single v2 parity case against a concrete backend implementation. */
 export async function executeV2CaseWithBackend(
   backend: SpiceBackend,
   input: RunCaseInputV2,
