@@ -1,0 +1,12 @@
+id: methods/ephemeris/spkw08@v1
+kind: method
+contractMethod: ephemeris.spkw08
+canonicalMethod: ephemeris.spkw08
+uses:
+  - workflows/legacy/ephemeris.spk-writers.basic@v1
+cases:
+  - id: ephemeris.spkw08.write-minimal-segment
+    args:
+      - parity-ephemeris-spkw08
+    expect:
+      ok: true

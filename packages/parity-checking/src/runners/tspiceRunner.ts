@@ -413,6 +413,33 @@ function assertVirtualOutputArg(value: unknown, call: string, index: number): Pa
   };
 }
 
+function spkVirtualOutputFromTag(value: unknown, call: string, index: number): Parameters<SpiceBackend["readVirtualOutput"]>[0] {
+  assertStringArg(value, call, index);
+  return {
+    kind: "virtual-output",
+    path: value,
+  };
+}
+
+function writeMinimalSpkw08Segment(
+  backend: SpiceBackend,
+  handle: Parameters<SpiceBackend["spkw08"]>[0],
+): void {
+  backend.spkw08(
+    handle,
+    1000,
+    0,
+    "J2000",
+    0,
+    60,
+    "TSPICE_PARITY_SPK",
+    1,
+    READ_VIRTUAL_OUTPUT_STATES,
+    0,
+    60,
+  );
+}
+
 function readIntCellValues(
   backend: SpiceBackend,
   cell: Parameters<SpiceBackend["cellGeti"]>[0],
@@ -554,6 +581,147 @@ async function runFramesCkcov(backend: SpiceBackend, args: unknown[], call: stri
   } finally {
     backend.freeWindow(cover);
     backend.freeCell(ids);
+  }
+}
+
+async function runEphemerisSpkobj(backend: SpiceBackend, args: unknown[], call: string): Promise<unknown> {
+  const spkPath = await resolveKernelPathArgForRunner(backend, args[0], call, 0);
+
+  const ids = backend.newIntCell(128);
+  try {
+    backend.spkobj(spkPath, ids);
+    return readIntCellValues(backend, ids);
+  } finally {
+    backend.freeCell(ids);
+  }
+}
+
+async function runEphemerisSpkcov(backend: SpiceBackend, args: unknown[], call: string): Promise<unknown> {
+  const spkPath = await resolveKernelPathArgForRunner(backend, args[0], call, 0);
+  assertInteger(args[1], `${call} args[1]`);
+
+  const cover = backend.newWindow(256);
+  try {
+    backend.spkcov(spkPath, args[1], cover);
+    return {
+      idcode: args[1],
+      intervals: readWindowIntervals(backend, cover),
+    };
+  } finally {
+    backend.freeWindow(cover);
+  }
+}
+
+function runEphemerisSpkopn(backend: SpiceBackend, args: unknown[], call: string): unknown {
+  const output = spkVirtualOutputFromTag(args[0], call, 0);
+  assertStringArg(args[1], call, 1);
+  assertInteger(args[2], `${call} args[2]`);
+  if (args[2] < 0) {
+    invalidArgs(`${call} expects args[2] (ncomch) to be >= 0 (got ${formatValue(args[2])})`);
+  }
+
+  const handle = backend.spkopn(output, args[1], args[2]);
+  let handleClosed = false;
+
+  try {
+    backend.spkcls(handle);
+    handleClosed = true;
+    backend.readVirtualOutput(output);
+    return { opened: true };
+  } finally {
+    if (!handleClosed) {
+      try {
+        backend.spkcls(handle);
+      } catch {
+        // best-effort close during error cleanup
+      }
+    }
+  }
+}
+
+function runEphemerisSpkopa(backend: SpiceBackend, args: unknown[], call: string): unknown {
+  const output = spkVirtualOutputFromTag(args[0], call, 0);
+
+  const seedHandle = backend.spkopn(output, "TSPICE", 0);
+  let seedHandleClosed = false;
+  let appendHandle: ReturnType<SpiceBackend["spkopa"]> | null = null;
+
+  try {
+    backend.spkcls(seedHandle);
+    seedHandleClosed = true;
+
+    appendHandle = backend.spkopa(output);
+    backend.spkcls(appendHandle);
+    appendHandle = null;
+
+    backend.readVirtualOutput(output);
+    return { opened: true };
+  } finally {
+    if (appendHandle !== null) {
+      try {
+        backend.spkcls(appendHandle);
+      } catch {
+        // best-effort close during error cleanup
+      }
+    }
+
+    if (!seedHandleClosed) {
+      try {
+        backend.spkcls(seedHandle);
+      } catch {
+        // best-effort close during error cleanup
+      }
+    }
+  }
+}
+
+function runEphemerisSpkcls(backend: SpiceBackend, args: unknown[], call: string): unknown {
+  const output = spkVirtualOutputFromTag(args[0], call, 0);
+  assertStringArg(args[1], call, 1);
+  assertInteger(args[2], `${call} args[2]`);
+  if (args[2] < 0) {
+    invalidArgs(`${call} expects args[2] (ncomch) to be >= 0 (got ${formatValue(args[2])})`);
+  }
+
+  const handle = backend.spkopn(output, args[1], args[2]);
+  let handleClosed = false;
+
+  try {
+    backend.spkcls(handle);
+    handleClosed = true;
+    return null;
+  } finally {
+    if (!handleClosed) {
+      try {
+        backend.spkcls(handle);
+      } catch {
+        // best-effort close during error cleanup
+      }
+    }
+  }
+}
+
+function runEphemerisSpkw08(backend: SpiceBackend, args: unknown[], call: string): unknown {
+  const output = spkVirtualOutputFromTag(args[0], call, 0);
+
+  const handle = backend.spkopn(output, "TSPICE", 0);
+  let handleClosed = false;
+
+  try {
+    writeMinimalSpkw08Segment(backend, handle);
+    backend.spkcls(handle);
+    handleClosed = true;
+
+    backend.readVirtualOutput(output);
+    return { wrote: true };
+  } finally {
+    if (!handleClosed) {
+      try {
+        backend.spkcls(handle);
+      } catch {
+        // best-effort close during error cleanup
+      }
+    }
   }
 }
 
@@ -2793,6 +2961,14 @@ const DISPATCH: Record<string, DispatchFn> = {
     return backend.spkssb(args[0], args[1], args[2]);
   },
 
+  "ephemeris.spkcov": async (backend, args) => {
+    return await runEphemerisSpkcov(backend, args, "ephemeris.spkcov");
+  },
+
+  "ephemeris.spkobj": async (backend, args) => {
+    return await runEphemerisSpkobj(backend, args, "ephemeris.spkobj");
+  },
+
   "ephemeris.spksfs": (backend, args) => {
     assertInteger(args[0], "ephemeris.spksfs args[0]");
     assertNumberArg(args[1], "ephemeris.spksfs", 1);
@@ -2813,6 +2989,22 @@ const DISPATCH: Record<string, DispatchFn> = {
   "ephemeris.spkuds": (backend, args) => {
     assertSpkPackedDescriptor(args[0], "ephemeris.spkuds args[0]");
     return backend.spkuds(args[0]);
+  },
+
+  "ephemeris.spkopn": (backend, args) => {
+    return runEphemerisSpkopn(backend, args, "ephemeris.spkopn");
+  },
+
+  "ephemeris.spkopa": (backend, args) => {
+    return runEphemerisSpkopa(backend, args, "ephemeris.spkopa");
+  },
+
+  "ephemeris.spkcls": (backend, args) => {
+    return runEphemerisSpkcls(backend, args, "ephemeris.spkcls");
+  },
+
+  "ephemeris.spkw08": (backend, args) => {
+    return runEphemerisSpkw08(backend, args, "ephemeris.spkw08");
   },
 
 

@@ -1,0 +1,12 @@
+id: methods/ephemeris/spkopa@v1
+kind: method
+contractMethod: ephemeris.spkopa
+canonicalMethod: ephemeris.spkopa
+uses:
+  - workflows/legacy/ephemeris.spk-writers.basic@v1
+cases:
+  - id: ephemeris.spkopa.append-existing-temp
+    args:
+      - parity-ephemeris-spkopa
+    expect:
+      ok: true

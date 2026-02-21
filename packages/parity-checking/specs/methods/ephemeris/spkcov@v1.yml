@@ -1,0 +1,13 @@
+id: methods/ephemeris/spkcov@v1
+kind: method
+contractMethod: ephemeris.spkcov
+canonicalMethod: ephemeris.spkcov
+uses:
+  - workflows/legacy/ephemeris.spk-read.basic@v1
+cases:
+  - id: ephemeris.spkcov.de440s-earth
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+      - 399
+    expect:
+      ok: true

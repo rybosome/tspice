@@ -2,13 +2,6 @@
 // Source catalogs: contract-methods.json - method specs canonical coverage
 
 export const PARITY_DENYLIST = [
-  "ephemeris.spkcls",
-  "ephemeris.spkcov",
-  "ephemeris.spkobj",
-  "ephemeris.spkopa",
-  "ephemeris.spkopn",
-  "ephemeris.spkuds",
-  "ephemeris.spkw08",
   "geometry-gf.gfdist",
   "geometry-gf.gfrefn",
   "geometry-gf.gfrepf",

@@ -1,0 +1,12 @@
+id: methods/ephemeris/spkuds@v1
+kind: method
+contractMethod: ephemeris.spkuds
+canonicalMethod: ephemeris.spkuds
+uses:
+  - workflows/legacy/ephemeris.spk-read.basic@v1
+cases:
+  - id: ephemeris.spkuds.zero-descriptor
+    args:
+      - [0, 0, 0, 0, 0]
+    expect:
+      ok: true

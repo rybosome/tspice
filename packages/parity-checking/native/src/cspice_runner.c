@@ -2113,9 +2113,15 @@ typedef enum {
   CALL_SPKGEO,
   CALL_SPKGPS,
   CALL_SPKSSB,
+  CALL_SPKCOV,
+  CALL_SPKOBJ,
   CALL_SPKPDS,
   CALL_SPKUDS,
   CALL_SPKSFS,
+  CALL_SPKOPN,
+  CALL_SPKOPA,
+  CALL_SPKCLS,
+  CALL_SPKW08,
 
 
 
@@ -2321,9 +2327,15 @@ static CallId parse_call_id(const char *call) {
       {"ephemeris.spkgeo", CALL_SPKGEO},
       {"ephemeris.spkgps", CALL_SPKGPS},
       {"ephemeris.spkssb", CALL_SPKSSB},
+      {"ephemeris.spkcov", CALL_SPKCOV},
+      {"ephemeris.spkobj", CALL_SPKOBJ},
       {"ephemeris.spkpds", CALL_SPKPDS},
       {"ephemeris.spkuds", CALL_SPKUDS},
       {"ephemeris.spksfs", CALL_SPKSFS},
+      {"ephemeris.spkopn", CALL_SPKOPN},
+      {"ephemeris.spkopa", CALL_SPKOPA},
+      {"ephemeris.spkcls", CALL_SPKCLS},
+      {"ephemeris.spkw08", CALL_SPKW08},
 
 
 
@@ -7864,6 +7876,138 @@ int main(void) {
     goto done;
   }
 
+  case CALL_SPKCOV: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex("invalid_args", "ephemeris.spkcov expects args[0]=string args[1]=int", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int idcodeTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkcov expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt idcode = 0;
+    char detail[256] = {0};
+    if (!parse_spiceint_arg(input, tokens, tokenCount, idcodeTok,
+                            "ephemeris.spkcov args[1]", &idcode,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "ephemeris.spkcov expects args[1] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SPICEDOUBLE_CELL(cover, 512);
+    spkcov_c(path, idcode, &cover);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkcov", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    const SpiceInt intervalCount = wncard_c(&cover);
+    SpiceDouble intervals[512];
+    for (SpiceInt i = 0; i < intervalCount; i++) {
+      SpiceDouble left = 0.0;
+      SpiceDouble right = 0.0;
+      wnfetd_c(&cover, i, &left, &right);
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                            sizeof(traceMsg));
+        write_error_json("SPICE error in wnfetd (ephemeris.spkcov)", shortMsg, longMsg,
+                         traceMsg);
+        goto done;
+      }
+
+      intervals[(size_t)i * 2u] = left;
+      intervals[(size_t)i * 2u + 1u] = right;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"idcode\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)idcode);
+    fputs(",\"intervals\":", stdout);
+    json_print_double_array(intervals, (int)(intervalCount * 2));
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKOBJ: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "ephemeris.spkobj expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkobj expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SPICEINT_CELL(ids, 128);
+    spkobj_c(path, &ids);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkobj", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    const SpiceInt n = card_c(&ids);
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_spiceint_array((const SpiceInt *)ids.data, (int)n);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
   case CALL_SPKPDS: {
     if (tokens[argsTok].size < 6) {
       write_error_json_ex("invalid_args", "ephemeris.spkpds expects args[0]=int args[1]=int args[2]=string args[3]=int args[4]=number args[5]=number", NULL, NULL, NULL, NULL);
@@ -8114,6 +8258,522 @@ int main(void) {
     fputs(",\"ident\":\"", stdout);
     json_print_escaped(ident);
     fputs("\"}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_SPKOPN: {
+    char *pathTag = NULL;
+    char *ifname = NULL;
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "ephemeris.spkopn expects args[0]=string tag args[1]=string ifname args[2]=integer ncomch",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto spkopn_cleanup;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int ifnameTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int ncomchTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkopn expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto spkopn_cleanup;
+    }
+    if (ifnameTok < 0 || ifnameTok >= tokenCount || tokens[ifnameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkopn expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto spkopn_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &pathTag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto spkopn_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t ifnameErr =
+        jsmn_strdup(input, &tokens[ifnameTok], &ifname, strDetail, sizeof(strDetail));
+    if (ifnameErr != JSMN_STRDUP_OK) {
+      if (ifnameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto spkopn_cleanup;
+    }
+
+    SpiceInt ncomch = 0;
+    char detail[256] = {0};
+    if (!parse_spiceint_arg(input, tokens, tokenCount, ncomchTok,
+                            "ephemeris.spkopn args[2]", &ncomch,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "ephemeris.spkopn expects args[2] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto spkopn_cleanup;
+    }
+    if (ncomch < 0) {
+      write_error_json_ex("invalid_args",
+                          "ephemeris.spkopn expects args[2] (ncomch) to be >= 0",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto spkopn_cleanup;
+    }
+
+    if (!build_file_io_temp_path(pathTag, ".bsp", tempPath, sizeof(tempPath), detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "ephemeris.spkopn could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto spkopn_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+    spkopn_c(tempPath, ifname, ncomch, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkopn", shortMsg, longMsg, traceMsg);
+      goto spkopn_cleanup;
+    }
+    handleOpened = true;
+
+    spkcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkcls (ephemeris.spkopn cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto spkopn_cleanup;
+    }
+    handleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":{\"opened\":true}}\n", stdout);
+
+  spkopn_cleanup:
+    if (handleOpened) {
+      reset_c();
+      spkcls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    free(pathTag);
+    free(ifname);
+    goto done;
+  }
+
+  case CALL_SPKOPA: {
+    char *pathTag = NULL;
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+
+    SpiceInt createHandle = 0;
+    bool createHandleOpened = false;
+    SpiceInt appendHandle = 0;
+    bool appendHandleOpened = false;
+
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "ephemeris.spkopa expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto spkopa_cleanup;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkopa expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto spkopa_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &pathTag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto spkopa_cleanup;
+    }
+
+    char detail[256] = {0};
+    if (!build_file_io_temp_path(pathTag, ".bsp", tempPath, sizeof(tempPath), detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "ephemeris.spkopa could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto spkopa_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+
+    spkopn_c(tempPath, "TSPICE", 0, &createHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkopn (ephemeris.spkopa setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto spkopa_cleanup;
+    }
+    createHandleOpened = true;
+
+    spkcls_c(createHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkcls (ephemeris.spkopa setup cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto spkopa_cleanup;
+    }
+    createHandleOpened = false;
+
+    spkopa_c(tempPath, &appendHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkopa", shortMsg, longMsg, traceMsg);
+      goto spkopa_cleanup;
+    }
+    appendHandleOpened = true;
+
+    spkcls_c(appendHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkcls (ephemeris.spkopa cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto spkopa_cleanup;
+    }
+    appendHandleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":{\"opened\":true}}\n", stdout);
+
+  spkopa_cleanup:
+    if (appendHandleOpened) {
+      reset_c();
+      spkcls_c(appendHandle);
+      reset_c();
+    }
+    if (createHandleOpened) {
+      reset_c();
+      spkcls_c(createHandle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    free(pathTag);
+    goto done;
+  }
+
+  case CALL_SPKCLS: {
+    char *pathTag = NULL;
+    char *ifname = NULL;
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "ephemeris.spkcls expects args[0]=string tag args[1]=string ifname args[2]=integer ncomch",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto spkcls_cleanup;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int ifnameTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int ncomchTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkcls expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto spkcls_cleanup;
+    }
+    if (ifnameTok < 0 || ifnameTok >= tokenCount || tokens[ifnameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkcls expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto spkcls_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &pathTag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto spkcls_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t ifnameErr =
+        jsmn_strdup(input, &tokens[ifnameTok], &ifname, strDetail, sizeof(strDetail));
+    if (ifnameErr != JSMN_STRDUP_OK) {
+      if (ifnameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto spkcls_cleanup;
+    }
+
+    SpiceInt ncomch = 0;
+    char detail[256] = {0};
+    if (!parse_spiceint_arg(input, tokens, tokenCount, ncomchTok,
+                            "ephemeris.spkcls args[2]", &ncomch,
+                            detail, sizeof(detail))) {
+      write_error_json_ex(
+          "invalid_args",
+          "ephemeris.spkcls expects args[2] to be an integer (SpiceInt range)",
+          detail[0] ? detail : NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto spkcls_cleanup;
+    }
+    if (ncomch < 0) {
+      write_error_json_ex("invalid_args",
+                          "ephemeris.spkcls expects args[2] (ncomch) to be >= 0",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto spkcls_cleanup;
+    }
+
+    if (!build_file_io_temp_path(pathTag, ".bsp", tempPath, sizeof(tempPath), detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "ephemeris.spkcls could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto spkcls_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+    spkopn_c(tempPath, ifname, ncomch, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkopn (ephemeris.spkcls setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto spkcls_cleanup;
+    }
+    handleOpened = true;
+
+    spkcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkcls", shortMsg, longMsg, traceMsg);
+      goto spkcls_cleanup;
+    }
+    handleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+
+  spkcls_cleanup:
+    if (handleOpened) {
+      reset_c();
+      spkcls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    free(pathTag);
+    free(ifname);
+    goto done;
+  }
+
+  case CALL_SPKW08: {
+    char *pathTag = NULL;
+    char tempPath[PATH_MAX];
+    tempPath[0] = '\0';
+    bool tempPathReady = false;
+    SpiceInt handle = 0;
+    bool handleOpened = false;
+
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "ephemeris.spkw08 expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto spkw08_cleanup;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ephemeris.spkw08 expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto spkw08_cleanup;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &pathTag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto spkw08_cleanup;
+    }
+
+    char detail[256] = {0};
+    if (!build_file_io_temp_path(pathTag, ".bsp", tempPath, sizeof(tempPath), detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "ephemeris.spkw08 could not build temp output path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto spkw08_cleanup;
+    }
+    tempPathReady = true;
+
+    remove(tempPath);
+    spkopn_c(tempPath, "TSPICE", 0, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkopn (ephemeris.spkw08 setup)", shortMsg,
+                       longMsg, traceMsg);
+      goto spkw08_cleanup;
+    }
+    handleOpened = true;
+
+    spkw08_c(handle,
+             (SpiceInt)1000,
+             (SpiceInt)0,
+             "J2000",
+             (SpiceDouble)0.0,
+             (SpiceDouble)60.0,
+             "TSPICE_PARITY_SPK",
+             (SpiceInt)1,
+             (SpiceInt)2,
+             (ConstSpiceDouble(*)[6])READ_VIRTUAL_OUTPUT_STATES,
+             (SpiceDouble)0.0,
+             (SpiceDouble)60.0);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkw08", shortMsg, longMsg, traceMsg);
+      goto spkw08_cleanup;
+    }
+
+    spkcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in spkcls (ephemeris.spkw08 cleanup)", shortMsg,
+                       longMsg, traceMsg);
+      goto spkw08_cleanup;
+    }
+    handleOpened = false;
+
+    remove(tempPath);
+    tempPathReady = false;
+
+    fputs("{\"ok\":true,\"result\":{\"wrote\":true}}\n", stdout);
+
+  spkw08_cleanup:
+    if (handleOpened) {
+      reset_c();
+      spkcls_c(handle);
+      reset_c();
+    }
+    if (tempPathReady) {
+      remove(tempPath);
+    }
+    free(pathTag);
     goto done;
   }
 

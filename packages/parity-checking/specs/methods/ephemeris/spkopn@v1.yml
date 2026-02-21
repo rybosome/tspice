@@ -1,0 +1,14 @@
+id: methods/ephemeris/spkopn@v1
+kind: method
+contractMethod: ephemeris.spkopn
+canonicalMethod: ephemeris.spkopn
+uses:
+  - workflows/legacy/ephemeris.spk-writers.basic@v1
+cases:
+  - id: ephemeris.spkopn.open-close-temp
+    args:
+      - parity-ephemeris-spkopn
+      - TSPICE
+      - 0
+    expect:
+      ok: true
