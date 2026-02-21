@@ -1,0 +1,11 @@
+id: methods/geometry-gf/gfrepf@v1
+kind: method
+contractMethod: geometry-gf.gfrepf
+canonicalMethod: geometry-gf.gfrepf
+uses:
+  - workflows/legacy/geometry-gf.basic@v1
+cases:
+  - id: geometry-gf.gfrepf.nominal
+    args: []
+    expect:
+      ok: true

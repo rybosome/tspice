@@ -1,0 +1,17 @@
+id: methods/geometry-gf/gfrepi@v1
+kind: method
+contractMethod: geometry-gf.gfrepi
+canonicalMethod: geometry-gf.gfrepi
+uses:
+  - workflows/legacy/geometry-gf.basic@v1
+cases:
+  - id: geometry-gf.gfrepi.empty-window
+    compare:
+      errorShort: true
+    args:
+      - [window, 8]
+      - parity begin
+      - parity end
+    expect:
+      ok: false
+      errorShort: SPICE(NOINTERVAL)

@@ -1,0 +1,24 @@
+id: methods/geometry-gf/gfdist@v1
+kind: method
+contractMethod: geometry-gf.gfdist
+canonicalMethod: geometry-gf.gfdist
+uses:
+  - workflows/legacy/geometry-gf.basic@v1
+cases:
+  - id: geometry-gf.gfdist.empty-cnfine
+    compare:
+      errorShort: true
+    args:
+      - MOON
+      - NONE
+      - EARTH
+      - '>'
+      - 0
+      - 0
+      - 3600
+      - 100
+      - [window, 8]
+      - [window, 32]
+    expect:
+      ok: false
+      errorShort: SPICE(NOINTERVAL)

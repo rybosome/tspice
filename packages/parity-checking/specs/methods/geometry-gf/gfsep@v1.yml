@@ -1,0 +1,29 @@
+id: methods/geometry-gf/gfsep@v1
+kind: method
+contractMethod: geometry-gf.gfsep
+canonicalMethod: geometry-gf.gfsep
+uses:
+  - workflows/legacy/geometry-gf.basic@v1
+cases:
+  - id: geometry-gf.gfsep.empty-cnfine
+    compare:
+      errorShort: true
+    args:
+      - MOON
+      - POINT
+      - J2000
+      - SUN
+      - POINT
+      - J2000
+      - NONE
+      - EARTH
+      - '>'
+      - 0
+      - 0
+      - 3600
+      - 100
+      - [window, 8]
+      - [window, 32]
+    expect:
+      ok: false
+      errorShort: SPICE(NOINTERVAL)

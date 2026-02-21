@@ -2,12 +2,4 @@
 // Source catalogs: contract-methods.json - method specs canonical coverage
 
 export const PARITY_DENYLIST = [
-  "geometry-gf.gfdist",
-  "geometry-gf.gfrefn",
-  "geometry-gf.gfrepf",
-  "geometry-gf.gfrepi",
-  "geometry-gf.gfsep",
-  "geometry-gf.gfsstp",
-  "geometry-gf.gfstep",
-  "geometry-gf.gfstol",
 ] as const;

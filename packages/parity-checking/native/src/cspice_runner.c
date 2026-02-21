@@ -891,6 +891,26 @@ static parse_result jsmn_parse_int(const char *json, const jsmntok_t *tok,
   return PARSE_OK;
 }
 
+static bool jsmn_parse_boolean(const char *json, const jsmntok_t *tok,
+                               SpiceBoolean *out) {
+  if (tok->type != JSMN_PRIMITIVE) {
+    return false;
+  }
+
+  const int n = tok->end - tok->start;
+  if (n == 4 && strncmp(json + tok->start, "true", 4) == 0) {
+    *out = SPICETRUE;
+    return true;
+  }
+
+  if (n == 5 && strncmp(json + tok->start, "false", 5) == 0) {
+    *out = SPICEFALSE;
+    return true;
+  }
+
+  return false;
+}
+
 
 static bool jsmn_parse_double_array_fixed(const char *json, jsmntok_t *tokens,
                                          int arrayTok, int tokenCount,
@@ -2115,6 +2135,14 @@ typedef enum {
   CALL_GEOMETRY_OCCULT,
   CALL_GEOMETRY_NVC2PL,
   CALL_GEOMETRY_PL2NVC,
+  CALL_GEOMETRY_GF_GFSSTP,
+  CALL_GEOMETRY_GF_GFSTEP,
+  CALL_GEOMETRY_GF_GFSTOL,
+  CALL_GEOMETRY_GF_GFREFN,
+  CALL_GEOMETRY_GF_GFREPI,
+  CALL_GEOMETRY_GF_GFREPF,
+  CALL_GEOMETRY_GF_GFSEP,
+  CALL_GEOMETRY_GF_GFDIST,
 
   // ephemeris
   CALL_SPKEZR,
@@ -2340,6 +2368,16 @@ static CallId parse_call_id(const char *call) {
       {"geometry.occult", CALL_GEOMETRY_OCCULT},
       {"geometry.nvc2pl", CALL_GEOMETRY_NVC2PL},
       {"geometry.pl2nvc", CALL_GEOMETRY_PL2NVC},
+
+      // geometry-gf
+      {"geometry-gf.gfsstp", CALL_GEOMETRY_GF_GFSSTP},
+      {"geometry-gf.gfstep", CALL_GEOMETRY_GF_GFSTEP},
+      {"geometry-gf.gfstol", CALL_GEOMETRY_GF_GFSTOL},
+      {"geometry-gf.gfrefn", CALL_GEOMETRY_GF_GFREFN},
+      {"geometry-gf.gfrepi", CALL_GEOMETRY_GF_GFREPI},
+      {"geometry-gf.gfrepf", CALL_GEOMETRY_GF_GFREPF},
+      {"geometry-gf.gfsep", CALL_GEOMETRY_GF_GFSEP},
+      {"geometry-gf.gfdist", CALL_GEOMETRY_GF_GFDIST},
 
       // ephemeris
       {"ephemeris.spkezr", CALL_SPKEZR},
@@ -8608,6 +8646,627 @@ int main(void) {
     fputs("}}\n", stdout);
     goto done;
   }
+  case CALL_GEOMETRY_GF_GFSSTP: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfsstp expects args[0]=step", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    int stepTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble step = 0.0;
+    if (stepTok < 0 || stepTok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[stepTok], &step) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfsstp expects args[0] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    gfsstp_c(step);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gfsstp", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_GF_GFSTEP: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfstep expects args[0]=time", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    int timeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble time = 0.0;
+    if (timeTok < 0 || timeTok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[timeTok], &time) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfstep expects args[0] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble step = 0.0;
+    gfstep_c(time, &step);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gfstep", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)step);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_GF_GFSTOL: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfstol expects args[0]=value", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    int valueTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble value = 0.0;
+    if (valueTok < 0 || valueTok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[valueTok], &value) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfstol expects args[0] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    gfstol_c(value);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gfstol", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_GF_GFREFN: {
+    if (tokens[argsTok].size < 4) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfrefn expects args[0]=t1 args[1]=t2 args[2]=s1 args[3]=s2", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    int t1Tok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int t2Tok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int s1Tok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int s2Tok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+
+    SpiceDouble t1 = 0.0;
+    SpiceDouble t2 = 0.0;
+    if (t1Tok < 0 || t1Tok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[t1Tok], &t1) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfrefn expects args[0] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (t2Tok < 0 || t2Tok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[t2Tok], &t2) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfrefn expects args[1] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceBoolean s1 = SPICEFALSE;
+    SpiceBoolean s2 = SPICEFALSE;
+    if (!jsmn_parse_boolean(input, &tokens[s1Tok], &s1)) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfrefn expects args[2] to be a boolean",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (!jsmn_parse_boolean(input, &tokens[s2Tok], &s2)) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfrefn expects args[3] to be a boolean",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble outT = 0.0;
+    gfrefn_c(t1, t2, s1, s2, &outT);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gfrefn", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)outT);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_GF_GFREPI: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfrepi expects args[0]=windowRecipe args[1]=begmss args[2]=endmss", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    int windowTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int begmssTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int endmssTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (begmssTok < 0 || begmssTok >= tokenCount || tokens[begmssTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfrepi expects args[1] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (endmssTok < 0 || endmssTok >= tokenCount || tokens[endmssTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfrepi expects args[2] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    RunnerCellRecipe windowRecipe;
+    char detail[256] = {0};
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, windowTok,
+                                    &windowRecipe, detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfrepi expects args[0] to be a cell/window recipe",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (windowRecipe.kind != RUNNER_CELL_RECIPE_WINDOW) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfrepi expects args[0] to be [\"window\",maxIntervals]",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *window = NULL;
+    bool isWindow = false;
+    if (!runner_alloc_cell_from_recipe(&windowRecipe, &window, &isWindow, detail,
+                                       sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfrepi window allocation failed",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    (void)isWindow;
+
+    char *begmss = NULL;
+    char *endmss = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t begmssErr =
+        jsmn_strdup(input, &tokens[begmssTok], &begmss, strDetail, sizeof(strDetail));
+    if (begmssErr != JSMN_STRDUP_OK) {
+      runner_free_allocated_cell(window);
+      if (begmssErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t endmssErr =
+        jsmn_strdup(input, &tokens[endmssTok], &endmss, strDetail, sizeof(strDetail));
+    if (endmssErr != JSMN_STRDUP_OK) {
+      free(begmss);
+      runner_free_allocated_cell(window);
+      if (endmssErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    gfrepi_c(window, begmss, endmss);
+    free(begmss);
+    free(endmss);
+    runner_free_allocated_cell(window);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gfrepi", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_GF_GFREPF: {
+    gfrepf_c();
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gfrepf", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_GF_GFSEP: {
+    if (tokens[argsTok].size < 15) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfsep expects 15 args", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int stringIndexes[9] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    const char *stringLabels[9] = {
+        "geometry-gf.gfsep expects args[0] to be a string",
+        "geometry-gf.gfsep expects args[1] to be a string",
+        "geometry-gf.gfsep expects args[2] to be a string",
+        "geometry-gf.gfsep expects args[3] to be a string",
+        "geometry-gf.gfsep expects args[4] to be a string",
+        "geometry-gf.gfsep expects args[5] to be a string",
+        "geometry-gf.gfsep expects args[6] to be a string",
+        "geometry-gf.gfsep expects args[7] to be a string",
+        "geometry-gf.gfsep expects args[8] to be a string",
+    };
+    int stringToks[9];
+    for (int i = 0; i < 9; i++) {
+      stringToks[i] = jsmn_get_array_elem(tokens, argsTok, stringIndexes[i], tokenCount);
+      if (stringToks[i] < 0 || stringToks[i] >= tokenCount ||
+          tokens[stringToks[i]].type != JSMN_STRING) {
+        write_error_json_ex("invalid_args", stringLabels[i], NULL, NULL, NULL, NULL);
+        goto done;
+      }
+    }
+
+    int refvalTok = jsmn_get_array_elem(tokens, argsTok, 9, tokenCount);
+    int adjustTok = jsmn_get_array_elem(tokens, argsTok, 10, tokenCount);
+    int stepTok = jsmn_get_array_elem(tokens, argsTok, 11, tokenCount);
+    int nintvlsTok = jsmn_get_array_elem(tokens, argsTok, 12, tokenCount);
+    int cnfineTok = jsmn_get_array_elem(tokens, argsTok, 13, tokenCount);
+    int resultTok = jsmn_get_array_elem(tokens, argsTok, 14, tokenCount);
+
+    SpiceDouble refval = 0.0;
+    SpiceDouble adjust = 0.0;
+    SpiceDouble step = 0.0;
+    if (refvalTok < 0 || refvalTok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[refvalTok], &refval) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfsep expects args[9] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (adjustTok < 0 || adjustTok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[adjustTok], &adjust) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfsep expects args[10] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (stepTok < 0 || stepTok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[stepTok], &step) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfsep expects args[11] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char detail[256] = {0};
+    SpiceInt nintvls = 0;
+    if (!parse_spiceint_arg(input, tokens, tokenCount, nintvlsTok,
+                            "geometry-gf.gfsep args[12]", &nintvls, detail,
+                            sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfsep expects args[12] to be an integer",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    RunnerCellRecipe cnfineRecipe;
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, cnfineTok,
+                                    &cnfineRecipe, detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfsep expects args[13] to be a cell/window recipe",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (cnfineRecipe.kind != RUNNER_CELL_RECIPE_WINDOW) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfsep expects args[13] to be [\"window\",maxIntervals]",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    RunnerCellRecipe resultRecipe;
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, resultTok,
+                                    &resultRecipe, detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfsep expects args[14] to be a cell/window recipe",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (resultRecipe.kind != RUNNER_CELL_RECIPE_WINDOW) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfsep expects args[14] to be [\"window\",maxIntervals]",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *cnfine = NULL;
+    SpiceCell *result = NULL;
+    bool cnfineIsWindow = false;
+    bool resultIsWindow = false;
+    if (!runner_alloc_cell_from_recipe(&cnfineRecipe, &cnfine, &cnfineIsWindow,
+                                       detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfsep cnfine allocation failed",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (!runner_alloc_cell_from_recipe(&resultRecipe, &result, &resultIsWindow,
+                                       detail, sizeof(detail))) {
+      runner_free_allocated_cell(cnfine);
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfsep result allocation failed",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    (void)cnfineIsWindow;
+    (void)resultIsWindow;
+
+    char *stringArgs[9] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+    for (int i = 0; i < 9; i++) {
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t dupErr =
+          jsmn_strdup(input, &tokens[stringToks[i]], &stringArgs[i], strDetail,
+                      sizeof(strDetail));
+      if (dupErr != JSMN_STRDUP_OK) {
+        for (int j = 0; j <= i; j++) {
+          free(stringArgs[j]);
+        }
+        runner_free_allocated_cell(result);
+        runner_free_allocated_cell(cnfine);
+        if (dupErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        goto done;
+      }
+    }
+
+    gfsep_c(
+        stringArgs[0],
+        stringArgs[1],
+        stringArgs[2],
+        stringArgs[3],
+        stringArgs[4],
+        stringArgs[5],
+        stringArgs[6],
+        stringArgs[7],
+        stringArgs[8],
+        refval,
+        adjust,
+        step,
+        nintvls,
+        cnfine,
+        result);
+
+    for (int i = 0; i < 9; i++) {
+      free(stringArgs[i]);
+    }
+    runner_free_allocated_cell(result);
+    runner_free_allocated_cell(cnfine);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gfsep", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_GF_GFDIST: {
+    if (tokens[argsTok].size < 10) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfdist expects 10 args", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int stringIndexes[4] = {0, 1, 2, 3};
+    const char *stringLabels[4] = {
+        "geometry-gf.gfdist expects args[0] to be a string",
+        "geometry-gf.gfdist expects args[1] to be a string",
+        "geometry-gf.gfdist expects args[2] to be a string",
+        "geometry-gf.gfdist expects args[3] to be a string",
+    };
+    int stringToks[4];
+    for (int i = 0; i < 4; i++) {
+      stringToks[i] = jsmn_get_array_elem(tokens, argsTok, stringIndexes[i], tokenCount);
+      if (stringToks[i] < 0 || stringToks[i] >= tokenCount ||
+          tokens[stringToks[i]].type != JSMN_STRING) {
+        write_error_json_ex("invalid_args", stringLabels[i], NULL, NULL, NULL, NULL);
+        goto done;
+      }
+    }
+
+    int refvalTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+    int adjustTok = jsmn_get_array_elem(tokens, argsTok, 5, tokenCount);
+    int stepTok = jsmn_get_array_elem(tokens, argsTok, 6, tokenCount);
+    int nintvlsTok = jsmn_get_array_elem(tokens, argsTok, 7, tokenCount);
+    int cnfineTok = jsmn_get_array_elem(tokens, argsTok, 8, tokenCount);
+    int resultTok = jsmn_get_array_elem(tokens, argsTok, 9, tokenCount);
+
+    SpiceDouble refval = 0.0;
+    SpiceDouble adjust = 0.0;
+    SpiceDouble step = 0.0;
+    if (refvalTok < 0 || refvalTok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[refvalTok], &refval) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfdist expects args[4] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (adjustTok < 0 || adjustTok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[adjustTok], &adjust) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfdist expects args[5] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (stepTok < 0 || stepTok >= tokenCount ||
+        jsmn_parse_double(input, &tokens[stepTok], &step) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry-gf.gfdist expects args[6] to be a number",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char detail[256] = {0};
+    SpiceInt nintvls = 0;
+    if (!parse_spiceint_arg(input, tokens, tokenCount, nintvlsTok,
+                            "geometry-gf.gfdist args[7]", &nintvls, detail,
+                            sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfdist expects args[7] to be an integer",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    RunnerCellRecipe cnfineRecipe;
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, cnfineTok,
+                                    &cnfineRecipe, detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfdist expects args[8] to be a cell/window recipe",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (cnfineRecipe.kind != RUNNER_CELL_RECIPE_WINDOW) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfdist expects args[8] to be [\"window\",maxIntervals]",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    RunnerCellRecipe resultRecipe;
+    if (!parse_cells_windows_recipe(input, tokens, tokenCount, resultTok,
+                                    &resultRecipe, detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfdist expects args[9] to be a cell/window recipe",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (resultRecipe.kind != RUNNER_CELL_RECIPE_WINDOW) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfdist expects args[9] to be [\"window\",maxIntervals]",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceCell *cnfine = NULL;
+    SpiceCell *result = NULL;
+    bool cnfineIsWindow = false;
+    bool resultIsWindow = false;
+    if (!runner_alloc_cell_from_recipe(&cnfineRecipe, &cnfine, &cnfineIsWindow,
+                                       detail, sizeof(detail))) {
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfdist cnfine allocation failed",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (!runner_alloc_cell_from_recipe(&resultRecipe, &result, &resultIsWindow,
+                                       detail, sizeof(detail))) {
+      runner_free_allocated_cell(cnfine);
+      write_error_json_ex("invalid_args",
+                          "geometry-gf.gfdist result allocation failed",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    (void)cnfineIsWindow;
+    (void)resultIsWindow;
+
+    char *stringArgs[4] = {NULL, NULL, NULL, NULL};
+    for (int i = 0; i < 4; i++) {
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t dupErr =
+          jsmn_strdup(input, &tokens[stringToks[i]], &stringArgs[i], strDetail,
+                      sizeof(strDetail));
+      if (dupErr != JSMN_STRDUP_OK) {
+        for (int j = 0; j <= i; j++) {
+          free(stringArgs[j]);
+        }
+        runner_free_allocated_cell(result);
+        runner_free_allocated_cell(cnfine);
+        if (dupErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        goto done;
+      }
+    }
+
+    gfdist_c(
+        stringArgs[0],
+        stringArgs[1],
+        stringArgs[2],
+        stringArgs[3],
+        refval,
+        adjust,
+        step,
+        nintvls,
+        cnfine,
+        result);
+
+    for (int i = 0; i < 4; i++) {
+      free(stringArgs[i]);
+    }
+    runner_free_allocated_cell(result);
+    runner_free_allocated_cell(cnfine);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in gfdist", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
 
 
 

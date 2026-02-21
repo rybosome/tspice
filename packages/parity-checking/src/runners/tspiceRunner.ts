@@ -81,6 +81,12 @@ function assertNumberArg(value: unknown, call: string, index: number): asserts v
   }
 }
 
+function assertBooleanArg(value: unknown, call: string, index: number): asserts value is boolean {
+  if (typeof value !== "boolean") {
+    invalidArgs(`${call} expects args[${index}] to be a boolean (got ${formatValue(value)})`);
+  }
+}
+
 
 type Vec3 = [number, number, number];
 type Mat3RowMajor = Parameters<SpiceBackend["mxm"]>[0];
@@ -3288,6 +3294,155 @@ const DISPATCH: Record<string, DispatchFn> = {
   "geometry.pl2nvc": (backend, args) => {
     assertPlane4(args[0], "geometry.pl2nvc args[0]");
     return backend.pl2nvc(args[0]);
+  },
+
+  // geometry-gf
+  "geometry-gf.gfsstp": (backend, args) => {
+    assertNumberArg(args[0], "geometry-gf.gfsstp", 0);
+    backend.gfsstp(args[0]);
+    return null;
+  },
+
+  "geometry-gf.gfstep": (backend, args) => {
+    assertNumberArg(args[0], "geometry-gf.gfstep", 0);
+    return backend.gfstep(args[0]);
+  },
+
+  "geometry-gf.gfstol": (backend, args) => {
+    assertNumberArg(args[0], "geometry-gf.gfstol", 0);
+    backend.gfstol(args[0]);
+    return null;
+  },
+
+  "geometry-gf.gfrefn": (backend, args) => {
+    assertNumberArg(args[0], "geometry-gf.gfrefn", 0);
+    assertNumberArg(args[1], "geometry-gf.gfrefn", 1);
+    assertBooleanArg(args[2], "geometry-gf.gfrefn", 2);
+    assertBooleanArg(args[3], "geometry-gf.gfrefn", 3);
+    return backend.gfrefn(args[0], args[1], args[2], args[3]);
+  },
+
+  "geometry-gf.gfrepi": (backend, args) => {
+    const recipe = parseCellsWindowsRecipe(args[0], "geometry-gf.gfrepi args[0]");
+    if (recipe.kind !== "window") {
+      invalidArgs("geometry-gf.gfrepi expects args[0] to be [\"window\",maxIntervals]");
+    }
+
+    assertStringArg(args[1], "geometry-gf.gfrepi", 1);
+    assertStringArg(args[2], "geometry-gf.gfrepi", 2);
+
+    const windowPrepared = prepareCellsWindowsHandle(backend, recipe);
+    try {
+      backend.gfrepi(
+        asCellsWindowsWindowArg(windowPrepared) as Parameters<SpiceBackend["gfrepi"]>[0],
+        args[1],
+        args[2],
+      );
+      return null;
+    } finally {
+      windowPrepared.release();
+    }
+  },
+
+  "geometry-gf.gfrepf": (backend, _args) => {
+    backend.gfrepf();
+    return null;
+  },
+
+  "geometry-gf.gfsep": (backend, args) => {
+    assertStringArg(args[0], "geometry-gf.gfsep", 0);
+    assertStringArg(args[1], "geometry-gf.gfsep", 1);
+    assertStringArg(args[2], "geometry-gf.gfsep", 2);
+    assertStringArg(args[3], "geometry-gf.gfsep", 3);
+    assertStringArg(args[4], "geometry-gf.gfsep", 4);
+    assertStringArg(args[5], "geometry-gf.gfsep", 5);
+    assertStringArg(args[6], "geometry-gf.gfsep", 6);
+    assertStringArg(args[7], "geometry-gf.gfsep", 7);
+    assertStringArg(args[8], "geometry-gf.gfsep", 8);
+    assertNumberArg(args[9], "geometry-gf.gfsep", 9);
+    assertNumberArg(args[10], "geometry-gf.gfsep", 10);
+    assertNumberArg(args[11], "geometry-gf.gfsep", 11);
+    assertInteger(args[12], "geometry-gf.gfsep args[12]");
+
+    const cnfineRecipe = parseCellsWindowsRecipe(args[13], "geometry-gf.gfsep args[13]");
+    if (cnfineRecipe.kind !== "window") {
+      invalidArgs("geometry-gf.gfsep expects args[13] to be [\"window\",maxIntervals]");
+    }
+
+    const resultRecipe = parseCellsWindowsRecipe(args[14], "geometry-gf.gfsep args[14]");
+    if (resultRecipe.kind !== "window") {
+      invalidArgs("geometry-gf.gfsep expects args[14] to be [\"window\",maxIntervals]");
+    }
+
+    const cnfinePrepared = prepareCellsWindowsHandle(backend, cnfineRecipe);
+    const resultPrepared = prepareCellsWindowsHandle(backend, resultRecipe);
+
+    try {
+      backend.gfsep(
+        args[0],
+        args[1],
+        args[2],
+        args[3],
+        args[4],
+        args[5],
+        args[6],
+        args[7],
+        args[8],
+        args[9],
+        args[10],
+        args[11],
+        args[12],
+        asCellsWindowsWindowArg(cnfinePrepared) as Parameters<SpiceBackend["gfsep"]>[13],
+        asCellsWindowsWindowArg(resultPrepared) as Parameters<SpiceBackend["gfsep"]>[14],
+      );
+      return null;
+    } finally {
+      resultPrepared.release();
+      cnfinePrepared.release();
+    }
+  },
+
+  "geometry-gf.gfdist": (backend, args) => {
+    assertStringArg(args[0], "geometry-gf.gfdist", 0);
+    assertStringArg(args[1], "geometry-gf.gfdist", 1);
+    assertStringArg(args[2], "geometry-gf.gfdist", 2);
+    assertStringArg(args[3], "geometry-gf.gfdist", 3);
+    assertNumberArg(args[4], "geometry-gf.gfdist", 4);
+    assertNumberArg(args[5], "geometry-gf.gfdist", 5);
+    assertNumberArg(args[6], "geometry-gf.gfdist", 6);
+    assertInteger(args[7], "geometry-gf.gfdist args[7]");
+
+    const cnfineRecipe = parseCellsWindowsRecipe(args[8], "geometry-gf.gfdist args[8]");
+    if (cnfineRecipe.kind !== "window") {
+      invalidArgs("geometry-gf.gfdist expects args[8] to be [\"window\",maxIntervals]");
+    }
+
+    const resultRecipe = parseCellsWindowsRecipe(args[9], "geometry-gf.gfdist args[9]");
+    if (resultRecipe.kind !== "window") {
+      invalidArgs("geometry-gf.gfdist expects args[9] to be [\"window\",maxIntervals]");
+    }
+
+    const cnfinePrepared = prepareCellsWindowsHandle(backend, cnfineRecipe);
+    const resultPrepared = prepareCellsWindowsHandle(backend, resultRecipe);
+
+    try {
+      backend.gfdist(
+        args[0],
+        args[1],
+        args[2],
+        args[3],
+        args[4],
+        args[5],
+        args[6],
+        args[7],
+        asCellsWindowsWindowArg(cnfinePrepared) as Parameters<SpiceBackend["gfdist"]>[8],
+        asCellsWindowsWindowArg(resultPrepared) as Parameters<SpiceBackend["gfdist"]>[9],
+      );
+      return null;
+    } finally {
+      resultPrepared.release();
+      cnfinePrepared.release();
+    }
   },
 
 };

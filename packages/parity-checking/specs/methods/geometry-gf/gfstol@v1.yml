@@ -1,0 +1,12 @@
+id: methods/geometry-gf/gfstol@v1
+kind: method
+contractMethod: geometry-gf.gfstol
+canonicalMethod: geometry-gf.gfstol
+uses:
+  - workflows/legacy/geometry-gf.basic@v1
+cases:
+  - id: geometry-gf.gfstol.nominal
+    args:
+      - 0.000001
+    expect:
+      ok: true

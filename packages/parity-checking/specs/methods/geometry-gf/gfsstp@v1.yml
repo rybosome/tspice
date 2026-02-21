@@ -1,0 +1,12 @@
+id: methods/geometry-gf/gfsstp@v1
+kind: method
+contractMethod: geometry-gf.gfsstp
+canonicalMethod: geometry-gf.gfsstp
+uses:
+  - workflows/legacy/geometry-gf.basic@v1
+cases:
+  - id: geometry-gf.gfsstp.nominal-step
+    args:
+      - 60
+    expect:
+      ok: true

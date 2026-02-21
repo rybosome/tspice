@@ -1,0 +1,12 @@
+id: methods/geometry-gf/gfstep@v1
+kind: method
+contractMethod: geometry-gf.gfstep
+canonicalMethod: geometry-gf.gfstep
+uses:
+  - workflows/legacy/geometry-gf.basic@v1
+cases:
+  - id: geometry-gf.gfstep.nominal-time
+    args:
+      - 12345
+    expect:
+      ok: true
