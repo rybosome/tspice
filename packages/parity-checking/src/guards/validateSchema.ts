@@ -1,3 +1,5 @@
+import { crossCuttingSpecId, methodSpecId } from "../dsl/types.js";
+
 import type { LoadedParitySpecs } from "../dsl/types.js";
 
 function assertUnique(values: string[], label: string): void {
@@ -18,26 +20,26 @@ export function validateSchema(specs: LoadedParitySpecs): void {
   );
 
   assertUnique(
-    specs.methods.map((method) => method.id),
+    specs.methods.map((method) => methodSpecId(method)),
     "method id",
   );
 
   assertUnique(
-    specs.crossCutting.map((spec) => spec.id),
+    specs.crossCutting.map((spec) => crossCuttingSpecId(spec)),
     "cross-cutting spec id",
   );
 
   for (const method of specs.methods) {
     assertUnique(
       method.cases.map((scenarioCase) => scenarioCase.id),
-      `case id in ${method.id}`,
+      `case id in ${methodSpecId(method)}`,
     );
   }
 
   for (const spec of specs.crossCutting) {
     assertUnique(
       spec.cases.map((scenarioCase) => scenarioCase.id),
-      `cross-cutting case id in ${spec.id}`,
+      `cross-cutting case id in ${crossCuttingSpecId(spec)}`,
     );
   }
 }

@@ -1,8 +1,9 @@
 import { spawn } from "node:child_process";
 
 import { getCspiceRunnerBinaryPath, getCspiceRunnerStatus } from "../runners/cspiceRunner.js";
+import { crossCuttingSpecId } from "../dsl/types.js";
 
-import type { CrossCuttingSpec } from "../dsl/types.js";
+import type { AnyCrossCuttingSpec } from "../dsl/types.js";
 
 type RawRunnerResponse = {
   ok: boolean;
@@ -107,11 +108,13 @@ export type CrossCuttingExecutionSummary = {
 };
 
 /** Execute one cross-cutting spec against the native CSPICE runner. */
-export async function executeCrossCuttingSpec(spec: CrossCuttingSpec): Promise<CrossCuttingExecutionSummary> {
+export async function executeCrossCuttingSpec(spec: AnyCrossCuttingSpec): Promise<CrossCuttingExecutionSummary> {
+  const specId = crossCuttingSpecId(spec);
+
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
     return {
-      specId: spec.id,
+      specId,
       caseCount: 0,
       skipped: true,
       skipReason: `cspice-runner unavailable: ${status.hint}`,
@@ -123,7 +126,7 @@ export async function executeCrossCuttingSpec(spec: CrossCuttingSpec): Promise<C
 
     if (response.ok !== scenarioCase.expect.ok) {
       throw new Error(
-        `Cross-cutting mismatch in ${spec.id} case=${scenarioCase.id}: expected ok=${scenarioCase.expect.ok}, got ok=${response.ok}`,
+        `Cross-cutting mismatch in ${specId} case=${scenarioCase.id}: expected ok=${scenarioCase.expect.ok}, got ok=${response.ok}`,
       );
     }
 
@@ -131,14 +134,14 @@ export async function executeCrossCuttingSpec(spec: CrossCuttingSpec): Promise<C
       const actualErrorCode = response.error?.code;
       if (actualErrorCode !== scenarioCase.expect.errorCode) {
         throw new Error(
-          `Cross-cutting mismatch in ${spec.id} case=${scenarioCase.id}: expected error.code=${scenarioCase.expect.errorCode}, got ${String(actualErrorCode)}`,
+          `Cross-cutting mismatch in ${specId} case=${scenarioCase.id}: expected error.code=${scenarioCase.expect.errorCode}, got ${String(actualErrorCode)}`,
         );
       }
     }
   }
 
   return {
-    specId: spec.id,
+    specId,
     caseCount: spec.cases.length,
     skipped: false,
   };

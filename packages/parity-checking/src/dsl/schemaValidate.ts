@@ -1,10 +1,16 @@
 import type {
+  AnyCrossCuttingSpec,
+  AnyMethodSpec,
   CrossCuttingCaseExpectation,
   CrossCuttingCaseSpec,
   CrossCuttingSpec,
+  CrossCuttingSpecV2,
   MethodCaseExpectation,
   MethodCaseSpec,
+  MethodCaseSpecV2,
   MethodSpec,
+  MethodSpecV2,
+  MethodWorkflowStepV2,
   ScenarioCompareAst,
   ScenarioSetupAst,
   ScenarioYamlFile,
@@ -41,6 +47,14 @@ function assertFiniteNumber(value: unknown, label: string): number {
     throw new TypeError(`${label} must be a finite number`);
   }
   return value;
+}
+
+function assertInteger(value: unknown, label: string): number {
+  const n = assertFiniteNumber(value, label);
+  if (!Number.isInteger(n)) {
+    throw new TypeError(`${label} must be an integer`);
+  }
+  return n;
 }
 
 function assertNoUnknownKeys(obj: Record<string, unknown>, label: string, allowedKeys: readonly string[]): void {
@@ -132,11 +146,14 @@ function parseMethodCaseExpectation(value: unknown, label: string): MethodCaseEx
   if (value === undefined) return undefined;
 
   const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["ok", "errorShort"]);
+  assertNoUnknownKeys(obj, label, ["ok", "errorCode", "errorShort"]);
 
   const out: MethodCaseExpectation = {};
   if (obj.ok !== undefined) {
     out.ok = assertBoolean(obj.ok, `${label}.ok`);
+  }
+  if (obj.errorCode !== undefined) {
+    out.errorCode = assertString(obj.errorCode, `${label}.errorCode`);
   }
   if (obj.errorShort !== undefined) {
     out.errorShort = assertString(obj.errorShort, `${label}.errorShort`);
@@ -158,6 +175,36 @@ function parseMethodCase(value: unknown, label: string): MethodCaseSpec {
       throw new TypeError(`${label}.args must be an array`);
     }
     out.args = obj.args;
+  }
+
+  const setup = parseSetup(obj.setup, `${label}.setup`);
+  if (setup !== undefined) {
+    out.setup = setup;
+  }
+
+  const compare = parseCompare(obj.compare, `${label}.compare`);
+  if (compare !== undefined) {
+    out.compare = compare;
+  }
+
+  const expect = parseMethodCaseExpectation(obj.expect, `${label}.expect`);
+  if (expect !== undefined) {
+    out.expect = expect;
+  }
+
+  return out;
+}
+
+function parseMethodCaseV2(value: unknown, label: string): MethodCaseSpecV2 {
+  const obj = assertRecord(value, label);
+  assertNoUnknownKeys(obj, label, ["id", "args", "setup", "compare", "expect"]);
+
+  const out: MethodCaseSpecV2 = {
+    id: assertString(obj.id, `${label}.id`),
+  };
+
+  if (obj.args !== undefined) {
+    out.args = assertRecord(obj.args, `${label}.args`);
   }
 
   const setup = parseSetup(obj.setup, `${label}.setup`);
@@ -220,7 +267,7 @@ export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
   return out;
 }
 
-/** Parse and validate a method YAML document. */
+/** Parse and validate a legacy (v1) method YAML document. */
 export function parseMethodSpec(file: ScenarioYamlFile): MethodSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
   assertNoUnknownKeys(obj, "method", [
@@ -280,6 +327,332 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpec {
   return out;
 }
 
+function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflowStepV2 {
+  const obj = assertRecord(value, label);
+
+  const op = assertString(obj.op, `${label}.op`);
+  switch (op) {
+    case "allocCell": {
+      assertNoUnknownKeys(obj, label, ["op", "as", "params"]);
+      const params = assertRecord(obj.params, `${label}.params`);
+      assertNoUnknownKeys(params, `${label}.params`, ["kind", "size"]);
+      const kind = assertString(params.kind, `${label}.params.kind`);
+      if (kind !== "int") {
+        throw new TypeError(`${label}.params.kind must be \"int\"`);
+      }
+      if (!("size" in params)) {
+        throw new TypeError(`${label}.params.size is required`);
+      }
+
+      return {
+        op: "allocCell",
+        as: assertString(obj.as, `${label}.as`),
+        params: {
+          kind: "int",
+          size: params.size,
+        },
+      };
+    }
+
+    case "spiceCall": {
+      assertNoUnknownKeys(obj, label, ["op", "call", "in", "as"]);
+      const call = assertString(obj.call, `${label}.call`);
+      if (call !== "card_c" && call !== "size_c") {
+        throw new TypeError(`${label}.call must be \"card_c\" or \"size_c\"`);
+      }
+      if (!Array.isArray(obj.in)) {
+        throw new TypeError(`${label}.in must be an array`);
+      }
+
+      return {
+        op: "spiceCall",
+        call,
+        in: obj.in,
+        as: assertString(obj.as, `${label}.as`),
+      };
+    }
+
+    case "projectResult": {
+      assertNoUnknownKeys(obj, label, ["op", "out"]);
+      return {
+        op: "projectResult",
+        out: assertRecord(obj.out, `${label}.out`),
+      };
+    }
+
+    case "freeCell": {
+      assertNoUnknownKeys(obj, label, ["op", "target"]);
+      if (!("target" in obj)) {
+        throw new TypeError(`${label}.target is required`);
+      }
+      return {
+        op: "freeCell",
+        target: obj.target,
+      };
+    }
+
+    default:
+      throw new TypeError(`${label}.op has unsupported value ${JSON.stringify(op)}`);
+  }
+}
+
+function parseMethodSpecV2ContractResult(
+  value: unknown,
+  label: string,
+): MethodSpecV2["contract"]["result"] {
+  const obj = assertRecord(value, label);
+  assertNoUnknownKeys(obj, label, ["type", "required", "properties"]);
+
+  const type = assertString(obj.type, `${label}.type`);
+  if (type !== "object") {
+    throw new TypeError(`${label}.type must be \"object\"`);
+  }
+
+  const required = parseStringArray(obj.required, `${label}.required`);
+
+  const propertiesObj = assertRecord(obj.properties, `${label}.properties`);
+  const properties: MethodSpecV2["contract"]["result"]["properties"] = {};
+
+  for (const [name, rawProperty] of Object.entries(propertiesObj)) {
+    const property = assertRecord(rawProperty, `${label}.properties.${name}`);
+    assertNoUnknownKeys(property, `${label}.properties.${name}`, ["const", "type"]);
+
+    if (property.const === undefined && property.type === undefined) {
+      throw new TypeError(
+        `${label}.properties.${name} must define at least one of \"const\" or \"type\"`,
+      );
+    }
+
+    const out: MethodSpecV2["contract"]["result"]["properties"][string] = {};
+
+    if (property.const !== undefined) {
+      const constant = property.const;
+      if (
+        typeof constant !== "string" &&
+        typeof constant !== "number" &&
+        typeof constant !== "boolean" &&
+        constant !== null
+      ) {
+        throw new TypeError(
+          `${label}.properties.${name}.const must be string|number|boolean|null`,
+        );
+      }
+      out.const = constant;
+    }
+
+    if (property.type !== undefined) {
+      const propertyType = assertString(property.type, `${label}.properties.${name}.type`);
+      if (propertyType !== "spiceInt") {
+        throw new TypeError(`${label}.properties.${name}.type must be \"spiceInt\"`);
+      }
+      out.type = "spiceInt";
+    }
+
+    properties[name] = out;
+  }
+
+  return {
+    type: "object",
+    ...(required ? { required } : {}),
+    properties,
+  };
+}
+
+function parseMethodSpecV2Contract(
+  value: unknown,
+  label: string,
+): MethodSpecV2["contract"] {
+  const obj = assertRecord(value, label);
+  assertNoUnknownKeys(obj, label, ["contractMethod", "canonicalMethod", "aliases", "args", "result", "errors"]);
+
+  const aliases = parseStringArray(obj.aliases, `${label}.aliases`);
+
+  const args =
+    obj.args === undefined
+      ? undefined
+      : (() => {
+          if (!Array.isArray(obj.args)) {
+            throw new TypeError(`${label}.args must be an array`);
+          }
+          return obj.args.map((entry, index) => {
+            const arg = assertRecord(entry, `${label}.args[${index}]`);
+            assertNoUnknownKeys(arg, `${label}.args[${index}]`, ["name", "type", "constraints"]);
+
+            const type = assertString(arg.type, `${label}.args[${index}].type`);
+            if (type !== "spiceInt") {
+              throw new TypeError(`${label}.args[${index}].type must be \"spiceInt\"`);
+            }
+
+            const constraints =
+              arg.constraints === undefined
+                ? undefined
+                : (() => {
+                    const parsed = assertRecord(arg.constraints, `${label}.args[${index}].constraints`);
+                    assertNoUnknownKeys(parsed, `${label}.args[${index}].constraints`, ["min", "max"]);
+                    const min =
+                      parsed.min === undefined
+                        ? undefined
+                        : assertInteger(parsed.min, `${label}.args[${index}].constraints.min`);
+                    const max =
+                      parsed.max === undefined
+                        ? undefined
+                        : assertInteger(parsed.max, `${label}.args[${index}].constraints.max`);
+                    return {
+                      ...(min === undefined ? {} : { min }),
+                      ...(max === undefined ? {} : { max }),
+                    };
+                  })();
+
+            return {
+              name: assertString(arg.name, `${label}.args[${index}].name`),
+              type: "spiceInt" as const,
+              ...(constraints && Object.keys(constraints).length > 0 ? { constraints } : {}),
+            };
+          });
+        })();
+
+  const errors =
+    obj.errors === undefined
+      ? undefined
+      : (() => {
+          if (!Array.isArray(obj.errors)) {
+            throw new TypeError(`${label}.errors must be an array`);
+          }
+
+          return obj.errors.map((entry, index) => {
+            const errorSpec = assertRecord(entry, `${label}.errors[${index}]`);
+            assertNoUnknownKeys(errorSpec, `${label}.errors[${index}]`, ["code"]);
+            return {
+              code: assertString(errorSpec.code, `${label}.errors[${index}].code`),
+            };
+          });
+        })();
+
+  return {
+    contractMethod: assertString(obj.contractMethod, `${label}.contractMethod`),
+    canonicalMethod: assertString(obj.canonicalMethod, `${label}.canonicalMethod`),
+    ...(aliases ? { aliases } : {}),
+    ...(args ? { args } : {}),
+    result: parseMethodSpecV2ContractResult(obj.result, `${label}.result`),
+    ...(errors ? { errors } : {}),
+  };
+}
+
+/** Parse and validate a v2 method YAML document. */
+export function parseMethodSpecV2(file: ScenarioYamlFile): MethodSpecV2 {
+  const obj = assertRecord(file.data, `${file.sourcePath}`);
+  assertNoUnknownKeys(obj, "methodV2", [
+    "schemaVersion",
+    "manifest",
+    "contract",
+    "setup",
+    "defaults",
+    "workflow",
+    "cases",
+  ]);
+
+  const schemaVersion = assertInteger(obj.schemaVersion, "methodV2.schemaVersion");
+  if (schemaVersion !== 2) {
+    throw new TypeError(`methodV2.schemaVersion must be 2 (got ${schemaVersion})`);
+  }
+
+  const manifest = assertRecord(obj.manifest, "methodV2.manifest");
+  assertNoUnknownKeys(manifest, "methodV2.manifest", ["id", "kind"]);
+
+  const manifestKind = assertString(manifest.kind, "methodV2.manifest.kind");
+  if (manifestKind !== "method") {
+    throw new TypeError(`methodV2.manifest.kind must be \"method\" (got ${JSON.stringify(manifestKind)})`);
+  }
+
+  const workflowObj = assertRecord(obj.workflow, "methodV2.workflow");
+  assertNoUnknownKeys(workflowObj, "methodV2.workflow", ["steps", "cleanup"]);
+
+  if (!Array.isArray(workflowObj.steps) || workflowObj.steps.length === 0) {
+    throw new TypeError("methodV2.workflow.steps must be a non-empty array");
+  }
+
+  const steps = workflowObj.steps.map((entry, index) =>
+    parseMethodWorkflowStepV2(entry, `methodV2.workflow.steps[${index}]`),
+  );
+
+  const cleanup =
+    workflowObj.cleanup === undefined
+      ? undefined
+      : (() => {
+          if (!Array.isArray(workflowObj.cleanup)) {
+            throw new TypeError("methodV2.workflow.cleanup must be an array");
+          }
+          return workflowObj.cleanup.map((entry, index) =>
+            parseMethodWorkflowStepV2(entry, `methodV2.workflow.cleanup[${index}]`),
+          );
+        })();
+
+  if (!Array.isArray(obj.cases) || obj.cases.length === 0) {
+    throw new TypeError("methodV2.cases must be a non-empty array");
+  }
+
+  const out: MethodSpecV2 = {
+    schemaVersion: 2,
+    manifest: {
+      id: assertString(manifest.id, "methodV2.manifest.id"),
+      kind: "method",
+    },
+    contract: parseMethodSpecV2Contract(obj.contract, "methodV2.contract"),
+    workflow: {
+      steps,
+      ...(cleanup ? { cleanup } : {}),
+    },
+    cases: obj.cases.map((entry, index) => parseMethodCaseV2(entry, `methodV2.cases[${index}]`)),
+    meta: {
+      sourcePath: file.sourcePath,
+    },
+  };
+
+  const setup = parseSetup(obj.setup, "methodV2.setup");
+  if (setup !== undefined) {
+    out.setup = setup;
+  }
+
+  if (obj.defaults !== undefined) {
+    const defaultsObj = assertRecord(obj.defaults, "methodV2.defaults");
+    assertNoUnknownKeys(defaultsObj, "methodV2.defaults", ["compare"]);
+
+    const defaultsCompare = parseCompare(defaultsObj.compare, "methodV2.defaults.compare");
+    if (defaultsCompare !== undefined) {
+      out.defaults = {
+        compare: defaultsCompare,
+      };
+    }
+  }
+
+  return out;
+}
+
+/** Parse and validate either a v1 (legacy) or v2 method YAML document. */
+export function parseMethodSpecAny(file: ScenarioYamlFile): AnyMethodSpec {
+  const obj = assertRecord(file.data, `${file.sourcePath}`);
+
+  if (obj.schemaVersion === undefined) {
+    return parseMethodSpec(file);
+  }
+
+  const schemaVersion = assertInteger(obj.schemaVersion, "method.schemaVersion");
+  if (schemaVersion === 2) {
+    return parseMethodSpecV2(file);
+  }
+
+  if (schemaVersion === 1) {
+    // Back-compat: allow schemaVersion: 1 on legacy shape.
+    const { schemaVersion: _ignored, ...legacy } = obj;
+    return parseMethodSpec({
+      ...file,
+      data: legacy,
+    });
+  }
+
+  throw new TypeError(`method.schemaVersion must be 1 or 2 (got ${schemaVersion})`);
+}
+
 function parseCrossCuttingExpectation(value: unknown, label: string): CrossCuttingCaseExpectation {
   const obj = assertRecord(value, label);
   assertNoUnknownKeys(obj, label, ["ok", "errorCode"]);
@@ -312,12 +685,12 @@ function parseCrossCuttingCase(value: unknown, label: string): CrossCuttingCaseS
   };
 }
 
-/** Parse and validate a cross-cutting YAML document. */
+/** Parse and validate a v1 cross-cutting YAML document. */
 export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
   assertNoUnknownKeys(obj, "crossCutting", ["schemaVersion", "kind", "id", "owner", "cases"]);
 
-  const schemaVersion = assertFiniteNumber(obj.schemaVersion, "crossCutting.schemaVersion");
+  const schemaVersion = assertInteger(obj.schemaVersion, "crossCutting.schemaVersion");
   if (schemaVersion !== 1) {
     throw new TypeError(`crossCutting.schemaVersion must be 1 (got ${schemaVersion})`);
   }
@@ -341,4 +714,56 @@ export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpec 
       sourcePath: file.sourcePath,
     },
   };
+}
+
+/** Parse and validate a v2 cross-cutting YAML document. */
+export function parseCrossCuttingSpecV2(file: ScenarioYamlFile): CrossCuttingSpecV2 {
+  const obj = assertRecord(file.data, `${file.sourcePath}`);
+  assertNoUnknownKeys(obj, "crossCuttingV2", ["schemaVersion", "manifest", "cases"]);
+
+  const schemaVersion = assertInteger(obj.schemaVersion, "crossCuttingV2.schemaVersion");
+  if (schemaVersion !== 2) {
+    throw new TypeError(`crossCuttingV2.schemaVersion must be 2 (got ${schemaVersion})`);
+  }
+
+  const manifest = assertRecord(obj.manifest, "crossCuttingV2.manifest");
+  assertNoUnknownKeys(manifest, "crossCuttingV2.manifest", ["id", "kind"]);
+
+  const kind = assertString(manifest.kind, "crossCuttingV2.manifest.kind");
+  if (kind !== "crossCuttingSpec") {
+    throw new TypeError(
+      `crossCuttingV2.manifest.kind must be \"crossCuttingSpec\" (got ${JSON.stringify(kind)})`,
+    );
+  }
+
+  if (!Array.isArray(obj.cases) || obj.cases.length === 0) {
+    throw new TypeError("crossCuttingV2.cases must be a non-empty array");
+  }
+
+  return {
+    schemaVersion: 2,
+    manifest: {
+      id: assertString(manifest.id, "crossCuttingV2.manifest.id"),
+      kind: "crossCuttingSpec",
+    },
+    cases: obj.cases.map((entry, index) => parseCrossCuttingCase(entry, `crossCuttingV2.cases[${index}]`)),
+    meta: {
+      sourcePath: file.sourcePath,
+    },
+  };
+}
+
+/** Parse and validate either a v1 or v2 cross-cutting YAML document. */
+export function parseCrossCuttingSpecAny(file: ScenarioYamlFile): AnyCrossCuttingSpec {
+  const obj = assertRecord(file.data, `${file.sourcePath}`);
+
+  const schemaVersion = assertInteger(obj.schemaVersion, "crossCutting.schemaVersion");
+  if (schemaVersion === 1) {
+    return parseCrossCuttingSpec(file);
+  }
+  if (schemaVersion === 2) {
+    return parseCrossCuttingSpecV2(file);
+  }
+
+  throw new TypeError(`crossCutting.schemaVersion must be 1 or 2 (got ${schemaVersion})`);
 }

@@ -11,6 +11,7 @@ import {
 } from "../kernels/metaKernel.js";
 
 import { spiceShortSymbol } from "../errors/spiceShort.js";
+import { executeV2CaseWithBackend } from "./v2Executor.js";
 
 import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
 
@@ -1532,6 +1533,11 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           } else {
             await furnshOsKernelForNative(backend, kernel.path, loadedKernels, kernel.restrictToDir);
           }
+        }
+
+        if (input.schemaVersion === 2) {
+          const result = await executeV2CaseWithBackend(backend, input);
+          return { ok: true, result };
         }
 
         const fn = DISPATCH[input.call];

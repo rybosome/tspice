@@ -34,6 +34,26 @@ function stableSort(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function canonicalMethodFromSpecData(data: unknown, filePath: string): string {
+  if (!isRecord(data)) {
+    throw new Error(`Method spec must be an object: ${filePath}`);
+  }
+
+  if (typeof data.canonicalMethod === "string") {
+    return data.canonicalMethod;
+  }
+
+  if (isRecord(data.contract) && typeof data.contract.canonicalMethod === "string") {
+    return data.contract.canonicalMethod;
+  }
+
+  throw new Error(`Missing canonicalMethod in ${filePath}`);
+}
+
 describe("parity-checking spec coverage", () => {
   it("covers canonical contract methods or denylist entries", () => {
     const testDir = path.dirname(fileURLToPath(import.meta.url));
@@ -41,11 +61,8 @@ describe("parity-checking spec coverage", () => {
 
     const coveredCanonical = new Set<string>();
     for (const filePath of discoverYamlFiles(methodsDir)) {
-      const data = parseYaml(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
-      if (typeof data.canonicalMethod !== "string") {
-        throw new Error(`Missing canonicalMethod in ${filePath}`);
-      }
-      coveredCanonical.add(data.canonicalMethod);
+      const data = parseYaml(fs.readFileSync(filePath, "utf8"));
+      coveredCanonical.add(canonicalMethodFromSpecData(data, filePath));
     }
 
     const contract = readContractCatalog().sort(stableSort);
@@ -63,7 +80,7 @@ describe("parity-checking spec coverage", () => {
     expect(missing).toEqual([]);
 
     expect(contract.length).toBe(173);
-    expect(coveredCanonical.size).toBe(73);
-    expect(denylist.length).toBe(100);
+    expect(coveredCanonical.size).toBe(74);
+    expect(denylist.length).toBe(99);
   });
 });

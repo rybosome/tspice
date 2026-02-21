@@ -1475,6 +1475,1011 @@ static CallId parse_call_id(const char *call) {
   return CALL_NONE;
 }
 
+#define V2_MAX_REFS 64
+
+typedef enum {
+  V2_REF_NONE = 0,
+  V2_REF_INT,
+  V2_REF_INT_CELL,
+} V2RefType;
+
+typedef struct {
+  char *name;
+  V2RefType type;
+  SpiceInt intValue;
+  SpiceCell cell;
+  SpiceInt *cellStorage;
+} V2RefEntry;
+
+static bool v2_parse_int_token_or_error(const char *json, const jsmntok_t *tok,
+                                        SpiceInt *out, const char *label) {
+  parse_result pr = jsmn_parse_int(json, tok, out);
+  if (pr == PARSE_OK) {
+    return true;
+  }
+
+  if (pr == PARSE_UNSUPPORTED) {
+    write_unsupported_spiceint_width_error();
+    return false;
+  }
+
+  char msg[256];
+  switch (pr) {
+  case PARSE_TOO_LONG:
+    snprintf(msg, sizeof(msg), "%s is too long", label);
+    break;
+  case PARSE_OUT_OF_RANGE:
+    snprintf(msg, sizeof(msg), "%s is out of range", label);
+    break;
+  case PARSE_INVALID:
+  default:
+    snprintf(msg, sizeof(msg), "%s must be an integer", label);
+    break;
+  }
+
+  write_error_json_ex("invalid_args", msg, NULL, NULL, NULL, NULL);
+  return false;
+}
+
+static bool v2_parse_ref_name(const char *expr, const char *prefix,
+                              const char **outName) {
+  const size_t prefixLen = strlen(prefix);
+  if (strncmp(expr, prefix, prefixLen) != 0) {
+    return false;
+  }
+
+  const char *name = expr + prefixLen;
+  if (name[0] == '\0') {
+    return false;
+  }
+
+  *outName = name;
+  return true;
+}
+
+static int v2_find_ref_index(const V2RefEntry *refs, const int refCount,
+                             const char *name) {
+  for (int i = 0; i < refCount; i++) {
+    if (refs[i].name != NULL && strcmp(refs[i].name, name) == 0) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+static void v2_free_ref_entry(V2RefEntry *entry) {
+  if (entry == NULL) {
+    return;
+  }
+
+  if (entry->cellStorage != NULL) {
+    free(entry->cellStorage);
+    entry->cellStorage = NULL;
+  }
+
+  free(entry->name);
+  entry->name = NULL;
+  entry->type = V2_REF_NONE;
+  entry->intValue = 0;
+}
+
+static void v2_free_all_refs(V2RefEntry *refs, const int refCount) {
+  for (int i = 0; i < refCount; i++) {
+    v2_free_ref_entry(&refs[i]);
+  }
+}
+
+static bool v2_add_ref_cell(V2RefEntry *refs, int *refCount, const char *name,
+                            const SpiceCell *cell, SpiceInt *storage) {
+  if (v2_find_ref_index(refs, *refCount, name) >= 0) {
+    write_error_json_ex("invalid_request", "Duplicate v2 ref name", name, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  if (*refCount >= V2_MAX_REFS) {
+    write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
+                        NULL);
+    return false;
+  }
+
+  char *ownedName = strdup(name);
+  if (ownedName == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  V2RefEntry *entry = &refs[*refCount];
+  memset(entry, 0, sizeof(*entry));
+  entry->name = ownedName;
+  entry->type = V2_REF_INT_CELL;
+  entry->cell = *cell;
+  entry->cellStorage = storage;
+
+  (*refCount)++;
+  return true;
+}
+
+static bool v2_add_ref_int(V2RefEntry *refs, int *refCount, const char *name,
+                           const SpiceInt value) {
+  if (v2_find_ref_index(refs, *refCount, name) >= 0) {
+    write_error_json_ex("invalid_request", "Duplicate v2 ref name", name, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  if (*refCount >= V2_MAX_REFS) {
+    write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
+                        NULL);
+    return false;
+  }
+
+  char *ownedName = strdup(name);
+  if (ownedName == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  V2RefEntry *entry = &refs[*refCount];
+  memset(entry, 0, sizeof(*entry));
+  entry->name = ownedName;
+  entry->type = V2_REF_INT;
+  entry->intValue = value;
+
+  (*refCount)++;
+  return true;
+}
+
+static bool v2_resolve_spiceint_expr(const char *json, const jsmntok_t *tokens,
+                                     const int tokenCount, const int exprTok,
+                                     const int argsTok, const V2RefEntry *refs,
+                                     const int refCount, const char *label,
+                                     SpiceInt *out) {
+  if (exprTok < 0 || exprTok >= tokenCount) {
+    write_error_json_ex("invalid_request", "Invalid v2 expression token", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  const jsmntok_t *tok = &tokens[exprTok];
+  if (tok->type == JSMN_PRIMITIVE) {
+    return v2_parse_int_token_or_error(json, tok, out, label);
+  }
+
+  if (tok->type != JSMN_STRING) {
+    write_error_json_ex("invalid_args", "Expression must resolve to integer",
+                        label, NULL, NULL, NULL);
+    return false;
+  }
+
+  char exprDetail[256];
+  exprDetail[0] = '\0';
+  char *expr = NULL;
+  jsmn_strdup_err_t exprErr =
+      jsmn_strdup(json, tok, &expr, exprDetail, sizeof(exprDetail));
+  if (exprErr != JSMN_STRDUP_OK) {
+    if (exprErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          exprDetail[0] ? exprDetail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    return false;
+  }
+
+  const char *argName = NULL;
+  const char *refName = NULL;
+
+  if (v2_parse_ref_name(expr, "$args.", &argName)) {
+    int valueTok = jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+    if (valueTok < 0) {
+      write_error_json_ex("invalid_args", "Missing v2 argument", argName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    bool ok = v2_parse_int_token_or_error(json, &tokens[valueTok], out, label);
+    free(expr);
+    return ok;
+  }
+
+  if (v2_parse_ref_name(expr, "$refs.", &refName)) {
+    int refIndex = v2_find_ref_index(refs, refCount, refName);
+    if (refIndex < 0) {
+      write_error_json_ex("invalid_request", "Unknown v2 ref", refName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    if (refs[refIndex].type != V2_REF_INT) {
+      write_error_json_ex("invalid_args", "v2 ref is not an integer", refName,
+                          NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    *out = refs[refIndex].intValue;
+    free(expr);
+    return true;
+  }
+
+  write_error_json_ex("invalid_args", "Unsupported v2 integer expression", expr,
+                      NULL, NULL, NULL);
+  free(expr);
+  return false;
+}
+
+static bool v2_resolve_cell_ref(const char *json, const jsmntok_t *tokens,
+                                const int tokenCount, const int tokenIndex,
+                                V2RefEntry *refs, const int refCount,
+                                const char *label, int *outRefIndex) {
+  if (tokenIndex < 0 || tokenIndex >= tokenCount ||
+      tokens[tokenIndex].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request", "Cell ref expression must be a string",
+                        label, NULL, NULL, NULL);
+    return false;
+  }
+
+  char detail[256];
+  detail[0] = '\0';
+  char *expr = NULL;
+  jsmn_strdup_err_t exprErr =
+      jsmn_strdup(json, &tokens[tokenIndex], &expr, detail, sizeof(detail));
+  if (exprErr != JSMN_STRDUP_OK) {
+    if (exprErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    return false;
+  }
+
+  const char *refName = NULL;
+  if (!v2_parse_ref_name(expr, "$refs.", &refName)) {
+    write_error_json_ex("invalid_args", "Cell ref must use $refs.<name>", expr,
+                        NULL, NULL, NULL);
+    free(expr);
+    return false;
+  }
+
+  int refIndex = v2_find_ref_index(refs, refCount, refName);
+  if (refIndex < 0) {
+    write_error_json_ex("invalid_request", "Unknown v2 ref", refName, NULL,
+                        NULL, NULL);
+    free(expr);
+    return false;
+  }
+
+  if (refs[refIndex].type != V2_REF_INT_CELL || refs[refIndex].cellStorage == NULL) {
+    write_error_json_ex("invalid_args", "v2 ref is not an allocated int cell",
+                        refName, NULL, NULL, NULL);
+    free(expr);
+    return false;
+  }
+
+  *outRefIndex = refIndex;
+  free(expr);
+  return true;
+}
+
+static bool v2_execute_alloc_cell_step(const char *json, const jsmntok_t *tokens,
+                                       const int tokenCount, const int stepTok,
+                                       const int argsTok, V2RefEntry *refs,
+                                       int *refCount) {
+  int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
+  int paramsTok =
+      jsmn_find_object_key(json, tokens, stepTok, "params", tokenCount);
+  if (asTok < 0 || tokens[asTok].type != JSMN_STRING || paramsTok < 0 ||
+      tokens[paramsTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_request",
+                        "allocCell requires string 'as' and object 'params'",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  char asDetail[256];
+  asDetail[0] = '\0';
+  char *asName = NULL;
+  jsmn_strdup_err_t asErr =
+      jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
+  if (asErr != JSMN_STRDUP_OK) {
+    if (asErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    return false;
+  }
+
+  int kindTok = jsmn_find_object_key(json, tokens, paramsTok, "kind", tokenCount);
+  int sizeTok = jsmn_find_object_key(json, tokens, paramsTok, "size", tokenCount);
+  if (kindTok < 0 || tokens[kindTok].type != JSMN_STRING || sizeTok < 0) {
+    write_error_json_ex("invalid_request",
+                        "allocCell.params requires string kind and size", NULL,
+                        NULL, NULL, NULL);
+    free(asName);
+    return false;
+  }
+
+  if (!jsmn_token_streq(json, &tokens[kindTok], "int")) {
+    write_error_json_ex("unsupported_call", "allocCell.kind currently supports only int",
+                        NULL, NULL, NULL, NULL);
+    free(asName);
+    return false;
+  }
+
+  SpiceInt size = 0;
+  if (!v2_resolve_spiceint_expr(json, tokens, tokenCount, sizeTok, argsTok, refs,
+                                *refCount, "allocCell.params.size", &size)) {
+    free(asName);
+    return false;
+  }
+
+  if (size < 0) {
+    write_error_json_ex("invalid_args", "allocCell.params.size must be >= 0", NULL,
+                        NULL, NULL, NULL);
+    free(asName);
+    return false;
+  }
+
+  size_t cellSize = (size_t)size;
+  if (cellSize > (SIZE_MAX / sizeof(SpiceInt)) - (size_t)SPICE_CELL_CTRLSZ) {
+    write_error_json_ex("invalid_args", "allocCell.params.size is too large", NULL,
+                        NULL, NULL, NULL);
+    free(asName);
+    return false;
+  }
+
+  const size_t elemCount = (size_t)SPICE_CELL_CTRLSZ + cellSize;
+  SpiceInt *storage = (SpiceInt *)calloc(elemCount, sizeof(SpiceInt));
+  if (storage == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    free(asName);
+    return false;
+  }
+
+  SpiceCell cell;
+  memset(&cell, 0, sizeof(cell));
+  cell.dtype = SPICE_INT;
+  cell.length = 0;
+  cell.size = size;
+  cell.card = 0;
+  cell.isSet = SPICETRUE;
+  cell.adjust = SPICEFALSE;
+  cell.init = SPICEFALSE;
+  cell.base = (void *)storage;
+  cell.data = (void *)(storage + SPICE_CELL_CTRLSZ);
+
+  ssize_c(size, &cell);
+  scard_c(0, &cell);
+
+  if (failed_c() == SPICETRUE) {
+    char shortMsg[1841];
+    char longMsg[1841];
+    char traceMsg[1841];
+    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                        traceMsg, sizeof(traceMsg));
+    write_error_json_ex("spice_error", "SPICE error in allocCell", NULL, shortMsg,
+                        longMsg, traceMsg);
+    free(storage);
+    free(asName);
+    return false;
+  }
+
+  bool ok = v2_add_ref_cell(refs, refCount, asName, &cell, storage);
+  free(asName);
+  if (!ok) {
+    free(storage);
+    return false;
+  }
+
+  return true;
+}
+
+static bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
+                                       const int tokenCount, const int stepTok,
+                                       const int argsTok, V2RefEntry *refs,
+                                       int *refCount) {
+  int callTok = jsmn_find_object_key(json, tokens, stepTok, "call", tokenCount);
+  int inTok = jsmn_find_object_key(json, tokens, stepTok, "in", tokenCount);
+  int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
+  if (callTok < 0 || tokens[callTok].type != JSMN_STRING || inTok < 0 ||
+      tokens[inTok].type != JSMN_ARRAY || asTok < 0 ||
+      tokens[asTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request",
+                        "spiceCall requires string call, array in, and string as",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  if (tokens[inTok].size != 1) {
+    write_error_json_ex("invalid_request", "spiceCall currently expects one input",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  int inExprTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+  int refIndex = -1;
+  if (!v2_resolve_cell_ref(json, tokens, tokenCount, inExprTok, refs, *refCount,
+                           "spiceCall.in[0]", &refIndex)) {
+    return false;
+  }
+
+  char callDetail[256];
+  callDetail[0] = '\0';
+  char *callName = NULL;
+  jsmn_strdup_err_t callErr =
+      jsmn_strdup(json, &tokens[callTok], &callName, callDetail, sizeof(callDetail));
+  if (callErr != JSMN_STRDUP_OK) {
+    if (callErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          callDetail[0] ? callDetail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    return false;
+  }
+
+  SpiceInt out = 0;
+  if (strcmp(callName, "card_c") == 0) {
+    out = card_c(&refs[refIndex].cell);
+  } else if (strcmp(callName, "size_c") == 0) {
+    out = size_c(&refs[refIndex].cell);
+  } else {
+    write_error_json_ex("unsupported_call", "Unsupported v2 spiceCall", callName,
+                        NULL, NULL, NULL);
+    free(callName);
+    return false;
+  }
+
+  if (failed_c() == SPICETRUE) {
+    char shortMsg[1841];
+    char longMsg[1841];
+    char traceMsg[1841];
+    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                        traceMsg, sizeof(traceMsg));
+    write_error_json_ex("spice_error", "SPICE error in spiceCall", callName,
+                        shortMsg, longMsg, traceMsg);
+    free(callName);
+    return false;
+  }
+
+  char asDetail[256];
+  asDetail[0] = '\0';
+  char *asName = NULL;
+  jsmn_strdup_err_t asErr =
+      jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
+  if (asErr != JSMN_STRDUP_OK) {
+    if (asErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    free(callName);
+    return false;
+  }
+
+  bool ok = v2_add_ref_int(refs, refCount, asName, out);
+  free(asName);
+  free(callName);
+  return ok;
+}
+
+static bool v2_execute_free_cell_step(const char *json, const jsmntok_t *tokens,
+                                      const int tokenCount, const int stepTok,
+                                      const int argsTok, V2RefEntry *refs,
+                                      const int refCount) {
+  int targetTok =
+      jsmn_find_object_key(json, tokens, stepTok, "target", tokenCount);
+  if (targetTok < 0) {
+    write_error_json_ex("invalid_request", "freeCell requires target", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  int refIndex = -1;
+  if (!v2_resolve_cell_ref(json, tokens, tokenCount, targetTok, refs, refCount,
+                           "freeCell.target", &refIndex)) {
+    return false;
+  }
+
+  (void)argsTok;
+
+  if (refs[refIndex].cellStorage != NULL) {
+    free(refs[refIndex].cellStorage);
+    refs[refIndex].cellStorage = NULL;
+  }
+
+  refs[refIndex].type = V2_REF_NONE;
+  return true;
+}
+
+static bool v2_print_project_value(const char *json, const jsmntok_t *tokens,
+                                   const int tokenCount, const int valueTok,
+                                   const int argsTok, const V2RefEntry *refs,
+                                   const int refCount) {
+  const jsmntok_t *tok = &tokens[valueTok];
+  if (tok->type == JSMN_PRIMITIVE) {
+    fwrite(json + tok->start, 1, (size_t)(tok->end - tok->start), stdout);
+    return true;
+  }
+
+  if (tok->type != JSMN_STRING) {
+    write_error_json_ex("invalid_request",
+                        "projectResult.out values must be primitive or string",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  char detail[256];
+  detail[0] = '\0';
+  char *value = NULL;
+  jsmn_strdup_err_t valueErr =
+      jsmn_strdup(json, tok, &value, detail, sizeof(detail));
+  if (valueErr != JSMN_STRDUP_OK) {
+    if (valueErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    return false;
+  }
+
+  const char *argName = NULL;
+  const char *refName = NULL;
+  if (v2_parse_ref_name(value, "$args.", &argName)) {
+    int argTok = jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+    if (argTok < 0) {
+      write_error_json_ex("invalid_args", "Missing v2 argument", argName, NULL,
+                          NULL, NULL);
+      free(value);
+      return false;
+    }
+
+    SpiceInt argVal = 0;
+    if (!v2_parse_int_token_or_error(json, &tokens[argTok], &argVal,
+                                     "projectResult argument")) {
+      free(value);
+      return false;
+    }
+
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)argVal);
+    free(value);
+    return true;
+  }
+
+  if (v2_parse_ref_name(value, "$refs.", &refName)) {
+    int refIndex = v2_find_ref_index(refs, refCount, refName);
+    if (refIndex < 0) {
+      write_error_json_ex("invalid_request", "Unknown v2 ref", refName, NULL,
+                          NULL, NULL);
+      free(value);
+      return false;
+    }
+
+    if (refs[refIndex].type != V2_REF_INT) {
+      write_error_json_ex("invalid_args", "projectResult ref must be integer",
+                          refName, NULL, NULL, NULL);
+      free(value);
+      return false;
+    }
+
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)refs[refIndex].intValue);
+    free(value);
+    return true;
+  }
+
+  fputc('"', stdout);
+  json_print_escaped(value);
+  fputc('"', stdout);
+  free(value);
+  return true;
+}
+
+static bool v2_write_project_result_json(const char *json,
+                                         const jsmntok_t *tokens,
+                                         const int tokenCount,
+                                         const int outTok,
+                                         const int argsTok,
+                                         const V2RefEntry *refs,
+                                         const int refCount) {
+  if (outTok < 0 || outTok >= tokenCount || tokens[outTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_request", "projectResult.out must be an object",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  fputs("{\"ok\":true,\"result\":{", stdout);
+
+  int pairCount = jsmn_object_pair_count(&tokens[outTok]);
+  if (pairCount < 0) {
+    write_error_json_ex("invalid_request", "projectResult.out parse error", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int idx = outTok + 1;
+  bool first = true;
+  for (int i = 0; i < pairCount; i++) {
+    int keyTok = idx;
+    int valueTok = idx + 1;
+    if (valueTok >= tokenCount || tokens[keyTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_request", "projectResult.out parse error", NULL,
+                          NULL, NULL, NULL);
+      return false;
+    }
+
+    char detail[256];
+    detail[0] = '\0';
+    char *key = NULL;
+    jsmn_strdup_err_t keyErr =
+        jsmn_strdup(json, &tokens[keyTok], &key, detail, sizeof(detail));
+    if (keyErr != JSMN_STRDUP_OK) {
+      if (keyErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      return false;
+    }
+
+    if (!first) {
+      fputc(',', stdout);
+    }
+    first = false;
+
+    fputc('"', stdout);
+    json_print_escaped(key);
+    fputs("\":", stdout);
+    free(key);
+
+    if (!v2_print_project_value(json, tokens, tokenCount, valueTok, argsTok, refs,
+                                refCount)) {
+      return false;
+    }
+
+    idx = jsmn_skip_subtree(tokens, valueTok, tokenCount);
+  }
+
+  fputs("}}\n", stdout);
+  return true;
+}
+
+static bool v2_execute_workflow_request(const char *json, const jsmntok_t *tokens,
+                                        const int tokenCount) {
+  int argsTok = jsmn_find_object_key(json, tokens, 0, "args", tokenCount);
+  if (argsTok < 0 || tokens[argsTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_request", "v2 request requires object args", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int workflowTok =
+      jsmn_find_object_key(json, tokens, 0, "workflow", tokenCount);
+  if (workflowTok < 0 || tokens[workflowTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_request", "v2 request requires workflow object",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  int stepsTok =
+      jsmn_find_object_key(json, tokens, workflowTok, "steps", tokenCount);
+  if (stepsTok < 0 || tokens[stepsTok].type != JSMN_ARRAY ||
+      tokens[stepsTok].size <= 0) {
+    write_error_json_ex("invalid_request",
+                        "v2 workflow.steps must be a non-empty array", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int cleanupTok =
+      jsmn_find_object_key(json, tokens, workflowTok, "cleanup", tokenCount);
+  if (cleanupTok >= 0 && tokens[cleanupTok].type != JSMN_ARRAY) {
+    write_error_json_ex("invalid_request", "v2 workflow.cleanup must be an array",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  V2RefEntry refs[V2_MAX_REFS];
+  memset(refs, 0, sizeof(refs));
+  int refCount = 0;
+
+  int resultOutTok = -1;
+  bool ok = true;
+
+  for (int i = 0; i < tokens[stepsTok].size; i++) {
+    int stepTok = jsmn_get_array_elem(tokens, stepsTok, i, tokenCount);
+    if (stepTok < 0 || tokens[stepTok].type != JSMN_OBJECT) {
+      write_error_json_ex("invalid_request", "v2 workflow step must be an object",
+                          NULL, NULL, NULL, NULL);
+      ok = false;
+      break;
+    }
+
+    int opTok = jsmn_find_object_key(json, tokens, stepTok, "op", tokenCount);
+    if (opTok < 0 || tokens[opTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_request", "v2 workflow step missing string op",
+                          NULL, NULL, NULL, NULL);
+      ok = false;
+      break;
+    }
+
+    if (jsmn_token_streq(json, &tokens[opTok], "allocCell")) {
+      if (!v2_execute_alloc_cell_step(json, tokens, tokenCount, stepTok, argsTok,
+                                      refs, &refCount)) {
+        ok = false;
+        break;
+      }
+      continue;
+    }
+
+    if (jsmn_token_streq(json, &tokens[opTok], "spiceCall")) {
+      if (!v2_execute_spice_call_step(json, tokens, tokenCount, stepTok, argsTok,
+                                      refs, &refCount)) {
+        ok = false;
+        break;
+      }
+      continue;
+    }
+
+    if (jsmn_token_streq(json, &tokens[opTok], "projectResult")) {
+      int outTok =
+          jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
+      if (outTok < 0 || tokens[outTok].type != JSMN_OBJECT) {
+        write_error_json_ex("invalid_request",
+                            "projectResult requires object out", NULL, NULL,
+                            NULL, NULL);
+        ok = false;
+        break;
+      }
+
+      resultOutTok = outTok;
+      continue;
+    }
+
+    if (jsmn_token_streq(json, &tokens[opTok], "freeCell")) {
+      if (!v2_execute_free_cell_step(json, tokens, tokenCount, stepTok, argsTok,
+                                     refs, refCount)) {
+        ok = false;
+        break;
+      }
+      continue;
+    }
+
+    write_error_json_ex("unsupported_call", "Unsupported v2 workflow op", NULL,
+                        NULL, NULL, NULL);
+    ok = false;
+    break;
+  }
+
+  if (ok && resultOutTok < 0) {
+    write_error_json_ex("invalid_request",
+                        "v2 workflow must include projectResult", NULL, NULL,
+                        NULL, NULL);
+    ok = false;
+  }
+
+  if (ok && cleanupTok >= 0) {
+    for (int i = 0; i < tokens[cleanupTok].size; i++) {
+      int stepTok = jsmn_get_array_elem(tokens, cleanupTok, i, tokenCount);
+      if (stepTok < 0 || tokens[stepTok].type != JSMN_OBJECT) {
+        write_error_json_ex("invalid_request",
+                            "v2 cleanup step must be an object", NULL, NULL,
+                            NULL, NULL);
+        ok = false;
+        break;
+      }
+
+      int opTok = jsmn_find_object_key(json, tokens, stepTok, "op", tokenCount);
+      if (opTok < 0 || tokens[opTok].type != JSMN_STRING) {
+        write_error_json_ex("invalid_request", "v2 cleanup step missing op", NULL,
+                            NULL, NULL, NULL);
+        ok = false;
+        break;
+      }
+
+      if (!jsmn_token_streq(json, &tokens[opTok], "freeCell")) {
+        write_error_json_ex("unsupported_call", "Unsupported v2 cleanup op", NULL,
+                            NULL, NULL, NULL);
+        ok = false;
+        break;
+      }
+
+      if (!v2_execute_free_cell_step(json, tokens, tokenCount, stepTok, argsTok,
+                                     refs, refCount)) {
+        ok = false;
+        break;
+      }
+    }
+  }
+
+  if (ok) {
+    ok = v2_write_project_result_json(json, tokens, tokenCount, resultOutTok,
+                                      argsTok, refs, refCount);
+  }
+
+  v2_free_all_refs(refs, refCount);
+  return ok;
+}
+
+static bool apply_setup_kernels(const char *input, const jsmntok_t *tokens,
+                                const int tokenCount, const int setupTok,
+                                int *exitCode) {
+  if (setupTok < 0 || tokens[setupTok].type != JSMN_OBJECT) {
+    return true;
+  }
+
+  int kernelsTok =
+      jsmn_find_object_key(input, tokens, setupTok, "kernels", tokenCount);
+  if (kernelsTok < 0) {
+    return true;
+  }
+
+  if (tokens[kernelsTok].type != JSMN_ARRAY) {
+    write_error_json_ex("invalid_request", "setup.kernels must be an array", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int nKernels = tokens[kernelsTok].size;
+  int idx = kernelsTok + 1;
+  char strDetail[256];
+
+  for (int i = 0; i < nKernels; i++) {
+    if (idx >= tokenCount) {
+      write_error_json_ex("invalid_request", "setup.kernels parse error", NULL,
+                          NULL, NULL, NULL);
+      return false;
+    }
+
+    char *kernelPath = NULL;
+    char *restrictToDir = NULL;
+
+    if (tokens[idx].type == JSMN_STRING) {
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t kErr =
+          jsmn_strdup(input, &tokens[idx], &kernelPath, strDetail,
+                      sizeof(strDetail));
+      if (kErr != JSMN_STRDUP_OK) {
+        if (kErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL,
+                              NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        return false;
+      }
+    } else if (tokens[idx].type == JSMN_OBJECT) {
+      int pathTok =
+          jsmn_find_object_key(input, tokens, idx, "path", tokenCount);
+      if (pathTok < 0 || tokens[pathTok].type != JSMN_STRING) {
+        write_error_json_ex(
+            "invalid_request",
+            "setup.kernels entries must have a string 'path' field", NULL,
+            NULL, NULL, NULL);
+        return false;
+      }
+
+      strDetail[0] = '\0';
+      jsmn_strdup_err_t pathErr =
+          jsmn_strdup(input, &tokens[pathTok], &kernelPath, strDetail,
+                      sizeof(strDetail));
+      if (pathErr != JSMN_STRDUP_OK) {
+        if (pathErr == JSMN_STRDUP_INVALID) {
+          write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                              strDetail[0] ? strDetail : NULL, NULL, NULL,
+                              NULL);
+        } else {
+          write_error_json("Out of memory", NULL, NULL, NULL);
+        }
+        return false;
+      }
+
+      int restrictTok = jsmn_find_object_key(input, tokens, idx, "restrictToDir",
+                                             tokenCount);
+      if (restrictTok >= 0) {
+        if (tokens[restrictTok].type != JSMN_STRING) {
+          write_error_json_ex("invalid_request",
+                              "setup.kernels[].restrictToDir must be a string",
+                              NULL, NULL, NULL, NULL);
+          free(kernelPath);
+          return false;
+        }
+
+        strDetail[0] = '\0';
+        jsmn_strdup_err_t restrictErr =
+            jsmn_strdup(input, &tokens[restrictTok], &restrictToDir, strDetail,
+                        sizeof(strDetail));
+        if (restrictErr != JSMN_STRDUP_OK) {
+          if (restrictErr == JSMN_STRDUP_INVALID) {
+            write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                                strDetail[0] ? strDetail : NULL, NULL, NULL,
+                                NULL);
+          } else {
+            write_error_json("Out of memory", NULL, NULL, NULL);
+          }
+          free(kernelPath);
+          return false;
+        }
+      }
+    } else {
+      write_error_json_ex("invalid_request",
+                          "setup.kernels entries must be strings or objects",
+                          NULL, NULL, NULL, NULL);
+      return false;
+    }
+
+    char *prevCwd = NULL;
+    if (restrictToDir != NULL) {
+      prevCwd = getcwd(NULL, 0);
+      if (prevCwd == NULL) {
+        write_error_json("Failed to getcwd before kernel load", NULL, NULL, NULL);
+        *exitCode = 1;
+        free(kernelPath);
+        free(restrictToDir);
+        return false;
+      }
+
+      if (chdir(restrictToDir) != 0) {
+        char msg[512];
+        snprintf(msg, sizeof(msg),
+                 "Failed to chdir to restrictToDir: %s (dir=%s)",
+                 strerror(errno), restrictToDir);
+        write_error_json(msg, NULL, NULL, NULL);
+        *exitCode = 1;
+        free(prevCwd);
+        free(kernelPath);
+        free(restrictToDir);
+        return false;
+      }
+    }
+
+    furnsh_c(kernelPath);
+
+    if (prevCwd != NULL) {
+      if (chdir(prevCwd) != 0) {
+        char msg[512];
+        snprintf(msg, sizeof(msg),
+                 "Failed to restore cwd after kernel load: %s (cwd=%s)",
+                 strerror(errno), prevCwd);
+        write_error_json(msg, NULL, NULL, NULL);
+        *exitCode = 1;
+        free(prevCwd);
+        free(kernelPath);
+        free(restrictToDir);
+        return false;
+      }
+      free(prevCwd);
+    }
+
+    free(kernelPath);
+    free(restrictToDir);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in furnsh", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    idx = jsmn_skip_subtree(tokens, idx, tokenCount);
+  }
+
+  return true;
+}
+
 int main(void) {
   int exitCode = 0;
 
@@ -1608,38 +2613,26 @@ int main(void) {
   int callTok = jsmn_find_object_key(input, tokens, 0, "call", tokenCount);
   int argsTok = jsmn_find_object_key(input, tokens, 0, "args", tokenCount);
   int setupTok = jsmn_find_object_key(input, tokens, 0, "setup", tokenCount);
-
-  if (callTok < 0) {
-    free(tokens);
-    free(input);
-    write_error_json_ex("invalid_request", "Missing required field: call", NULL,
-                        NULL, NULL, NULL);
-    return 0;
-  }
-
-  if (tokens[callTok].type != JSMN_STRING) {
-    free(tokens);
-    free(input);
-    write_error_json_ex("invalid_request", "call must be a string", NULL, NULL,
-                        NULL, NULL);
-    return 0;
-  }
+  int schemaVersionTok =
+      jsmn_find_object_key(input, tokens, 0, "schemaVersion", tokenCount);
 
   char *call = NULL;
-  char strDetail[256];
-  strDetail[0] = '\0';
-  jsmn_strdup_err_t callErr =
-      jsmn_strdup(input, &tokens[callTok], &call, strDetail, sizeof(strDetail));
-  if (callErr != JSMN_STRDUP_OK) {
-    free(tokens);
-    free(input);
-    if (callErr == JSMN_STRDUP_INVALID) {
-      write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                          strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
-    } else {
-      write_error_json("Out of memory", NULL, NULL, NULL);
+
+  bool isV2Request = false;
+  if (schemaVersionTok >= 0) {
+    SpiceInt schemaVersion = 0;
+    if (!v2_parse_int_token_or_error(input, &tokens[schemaVersionTok],
+                                     &schemaVersion, "schemaVersion")) {
+      goto done;
     }
-    return 0;
+
+    if (schemaVersion == 2) {
+      isV2Request = true;
+    } else if (schemaVersion != 1) {
+      write_error_json_ex("invalid_request", "Unsupported schemaVersion", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
   }
 
   // --- Per-case isolation + error policy.
@@ -1648,167 +2641,44 @@ int main(void) {
   erract_c("SET", 0, "RETURN");
   errprt_c("SET", 0, "NONE");
 
-  // Setup: load kernels if provided.
-  if (setupTok >= 0 && tokens[setupTok].type == JSMN_OBJECT) {
-    int kernelsTok = jsmn_find_object_key(input, tokens, setupTok, "kernels", tokenCount);
-    if (kernelsTok >= 0) {
-      if (tokens[kernelsTok].type != JSMN_ARRAY) {
-        write_error_json_ex("invalid_request", "setup.kernels must be an array",
-                            NULL, NULL, NULL, NULL);
-        goto done;
-      }
+  if (!apply_setup_kernels(input, tokens, tokenCount, setupTok, &exitCode)) {
+    goto done;
+  }
 
-      int nKernels = tokens[kernelsTok].size;
-      int idx = kernelsTok + 1;
-      for (int i = 0; i < nKernels; i++) {
-        if (idx >= tokenCount) {
-          write_error_json_ex("invalid_request", "setup.kernels parse error",
-                              NULL, NULL, NULL, NULL);
-          goto done;
-        }
-
-        char *kernelPath = NULL;
-        char *restrictToDir = NULL;
-
-        if (tokens[idx].type == JSMN_STRING) {
-          strDetail[0] = '\0';
-          jsmn_strdup_err_t kErr =
-              jsmn_strdup(input, &tokens[idx], &kernelPath, strDetail, sizeof(strDetail));
-          if (kErr != JSMN_STRDUP_OK) {
-            if (kErr == JSMN_STRDUP_INVALID) {
-              write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                                  strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
-            } else {
-              write_error_json("Out of memory", NULL, NULL, NULL);
-            }
-            goto done;
-          }
-        } else if (tokens[idx].type == JSMN_OBJECT) {
-          int pathTok = jsmn_find_object_key(input, tokens, idx, "path", tokenCount);
-          if (pathTok < 0 || tokens[pathTok].type != JSMN_STRING) {
-            write_error_json_ex(
-                "invalid_request",
-                "setup.kernels entries must have a string 'path' field",
-                NULL,
-                NULL,
-                NULL,
-                NULL);
-            goto done;
-          }
-
-          strDetail[0] = '\0';
-          jsmn_strdup_err_t pathErr =
-              jsmn_strdup(input, &tokens[pathTok], &kernelPath, strDetail, sizeof(strDetail));
-          if (pathErr != JSMN_STRDUP_OK) {
-            if (pathErr == JSMN_STRDUP_INVALID) {
-              write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                                  strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
-            } else {
-              write_error_json("Out of memory", NULL, NULL, NULL);
-            }
-            goto done;
-          }
-
-          int restrictTok = jsmn_find_object_key(input, tokens, idx, "restrictToDir", tokenCount);
-          if (restrictTok >= 0) {
-            if (tokens[restrictTok].type != JSMN_STRING) {
-              write_error_json_ex(
-                  "invalid_request",
-                  "setup.kernels[].restrictToDir must be a string",
-                  NULL,
-                  NULL,
-                  NULL,
-                  NULL);
-              free(kernelPath);
-              goto done;
-            }
-
-            strDetail[0] = '\0';
-            jsmn_strdup_err_t restrictErr = jsmn_strdup(input, &tokens[restrictTok],
-                                                       &restrictToDir, strDetail,
-                                                       sizeof(strDetail));
-            if (restrictErr != JSMN_STRDUP_OK) {
-              if (restrictErr == JSMN_STRDUP_INVALID) {
-                write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                                    strDetail[0] ? strDetail : NULL, NULL, NULL,
-                                    NULL);
-              } else {
-                write_error_json("Out of memory", NULL, NULL, NULL);
-              }
-              free(kernelPath);
-              goto done;
-            }
-          }
-        } else {
-          write_error_json_ex(
-              "invalid_request",
-              "setup.kernels entries must be strings or objects",
-              NULL,
-              NULL,
-              NULL,
-              NULL);
-          goto done;
-        }
-
-        char *prevCwd = NULL;
-        if (restrictToDir != NULL) {
-          prevCwd = getcwd(NULL, 0);
-          if (prevCwd == NULL) {
-            write_error_json("Failed to getcwd before kernel load", NULL, NULL, NULL);
-            exitCode = 1;
-            free(kernelPath);
-            free(restrictToDir);
-            goto done;
-          }
-
-          if (chdir(restrictToDir) != 0) {
-            char msg[512];
-            snprintf(msg, sizeof(msg),
-                     "Failed to chdir to restrictToDir: %s (dir=%s)",
-                     strerror(errno), restrictToDir);
-            write_error_json(msg, NULL, NULL, NULL);
-            exitCode = 1;
-            free(prevCwd);
-            free(kernelPath);
-            free(restrictToDir);
-            goto done;
-          }
-        }
-
-        furnsh_c(kernelPath);
-
-        if (prevCwd != NULL) {
-          if (chdir(prevCwd) != 0) {
-            char msg[512];
-            snprintf(msg, sizeof(msg),
-                     "Failed to restore cwd after kernel load: %s (cwd=%s)",
-                     strerror(errno), prevCwd);
-            write_error_json(msg, NULL, NULL, NULL);
-            exitCode = 1;
-            free(prevCwd);
-            free(kernelPath);
-            free(restrictToDir);
-            goto done;
-          }
-          free(prevCwd);
-        }
-
-        free(kernelPath);
-        free(restrictToDir);
-
-        if (failed_c() == SPICETRUE) {
-          char shortMsg[1841];
-          char longMsg[1841];
-          char traceMsg[1841];
-          capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                              traceMsg, sizeof(traceMsg));
-          write_error_json("SPICE error in furnsh", shortMsg, longMsg, traceMsg);
-          goto done;
-        }
-
-        idx = jsmn_skip_subtree(tokens, idx, tokenCount);
-      }
+  if (isV2Request) {
+    (void)argsTok;
+    (void)callTok;
+    if (!v2_execute_workflow_request(input, tokens, tokenCount)) {
+      goto done;
     }
+
+    goto done;
+  }
+
+  if (callTok < 0) {
+    write_error_json_ex("invalid_request", "Missing required field: call", NULL,
+                        NULL, NULL, NULL);
+    goto done;
+  }
+
+  if (tokens[callTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request", "call must be a string", NULL, NULL,
+                        NULL, NULL);
+    goto done;
+  }
+
+  char strDetail[256];
+  strDetail[0] = '\0';
+  jsmn_strdup_err_t callErr =
+      jsmn_strdup(input, &tokens[callTok], &call, strDetail, sizeof(strDetail));
+  if (callErr != JSMN_STRDUP_OK) {
+    if (callErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    goto done;
   }
 
   if (argsTok < 0) {

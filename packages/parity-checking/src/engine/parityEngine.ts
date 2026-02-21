@@ -7,13 +7,14 @@ import { loadYamlFile } from "../dsl/loadYaml.js";
 import { mergeResolvedMethodSpec } from "../dsl/mergeResolvedSpec.js";
 import { resolveMethodIncludes } from "../dsl/resolveIncludes.js";
 import {
-  parseCrossCuttingSpec,
-  parseMethodSpec,
+  parseCrossCuttingSpecAny,
+  parseMethodSpecAny,
   parseWorkflowSpec,
 } from "../dsl/schemaValidate.js";
 import { runDispatchAliasParityGuard } from "./dispatchParityGuard.js";
 import { executeCrossCuttingSpec } from "./executeCrossCuttingSpec.js";
 import { executeMethodSpecParity } from "./executeMethodSpec.js";
+import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateCrossCuttingSpecs } from "../guards/validateCrossCuttingSpecs.js";
 import { validateDispatchAliasCoverage } from "../guards/validateDispatchAliasCoverage.js";
@@ -22,7 +23,12 @@ import { validateSchema } from "../guards/validateSchema.js";
 import { createCspiceRunner, getCspiceRunnerStatus } from "../runners/cspiceRunner.js";
 import { createTspiceRunner } from "../runners/tspiceRunner.js";
 
-import type { LoadedParitySpecs, ResolvedMethodSpec } from "../dsl/types.js";
+import {
+  crossCuttingSpecId,
+  isMethodSpecV2,
+  methodSpecId,
+} from "../dsl/types.js";
+import type { LoadedParitySpecs, MethodSpec, MethodSpecV2, ResolvedMethodSpec } from "../dsl/types.js";
 import type { CaseRunner } from "../runners/types.js";
 
 function packageRoot(): string {
@@ -46,14 +52,14 @@ async function loadParitySpecs(): Promise<LoadedParitySpecs> {
   ).sort((a, b) => stableSort(a.id, b.id));
 
   const methods = (
-    await Promise.all(methodFiles.map(async (filePath) => parseMethodSpec(await loadYamlFile(filePath))))
-  ).sort((a, b) => stableSort(a.id, b.id));
+    await Promise.all(methodFiles.map(async (filePath) => parseMethodSpecAny(await loadYamlFile(filePath))))
+  ).sort((a, b) => stableSort(methodSpecId(a), methodSpecId(b)));
 
   const crossCutting = (
     await Promise.all(
-      crossCuttingFiles.map(async (filePath) => parseCrossCuttingSpec(await loadYamlFile(filePath))),
+      crossCuttingFiles.map(async (filePath) => parseCrossCuttingSpecAny(await loadYamlFile(filePath))),
     )
-  ).sort((a, b) => stableSort(a.id, b.id));
+  ).sort((a, b) => stableSort(crossCuttingSpecId(a), crossCuttingSpecId(b)));
 
   return {
     workflows,
@@ -115,8 +121,11 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
   validateCrossCuttingSpecs(specs.crossCutting);
   const aliasCoverage = validateDispatchAliasCoverage();
 
+  const v1Methods: MethodSpec[] = specs.methods.filter((method): method is MethodSpec => !isMethodSpecV2(method));
+  const v2Methods: MethodSpecV2[] = specs.methods.filter(isMethodSpecV2);
+
   const workflowIndex = buildWorkflowIndex(specs.workflows);
-  const resolvedMethods: ResolvedMethodSpec[] = specs.methods.map((method) =>
+  const resolvedMethods: ResolvedMethodSpec[] = v1Methods.map((method) =>
     mergeResolvedMethodSpec(method, resolveMethodIncludes(method, workflowIndex)),
   );
 
@@ -148,6 +157,11 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
     let methodCaseCount = 0;
     for (const method of resolvedMethods) {
       const summary = await executeMethodSpecParity(method, runners);
+      methodCaseCount += summary.caseCount;
+    }
+
+    for (const method of v2Methods) {
+      const summary = await executeMethodSpecParityV2(method, runners);
       methodCaseCount += summary.caseCount;
     }
 
