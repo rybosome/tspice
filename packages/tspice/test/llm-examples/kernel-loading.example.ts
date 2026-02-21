@@ -1,9 +1,7 @@
-import type { KernelSource } from "@rybosome/tspice";
+import type { KernelSource, SpiceSync } from "@rybosome/tspice";
 import { spiceClients } from "@rybosome/tspice";
 
 import { readFile } from "node:fs/promises";
-
-type SpiceSync = Awaited<ReturnType<typeof spiceClients.toSync>>["spice"];
 
 /**
  * Example: load kernels from the OS filesystem (Node backend only).

@@ -1,6 +1,4 @@
-import { kernels, spiceClients } from "@rybosome/tspice";
-
-type SpiceWebWorker = Awaited<ReturnType<typeof spiceClients.toWebWorker>>["spice"];
+import { kernels, spiceClients, type SpiceAsync } from "@rybosome/tspice";
 
 /**
  * Example: create an async WebWorker client in the browser.
@@ -11,7 +9,7 @@ type SpiceWebWorker = Awaited<ReturnType<typeof spiceClients.toWebWorker>>["spic
  * - WebWorker clients are async: all `spice.kit.*` calls return Promises.
  */
 export async function withWebWorkerClient<T>(
-  fn: (spice: SpiceWebWorker) => Promise<T> | T,
+  fn: (spice: SpiceAsync) => Promise<T> | T,
 ): Promise<T> {
   const { spice, dispose } = await spiceClients.toWebWorker();
 
