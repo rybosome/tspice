@@ -2105,6 +2105,17 @@ typedef enum {
   CALL_VSCL,
   CALL_VSUB,
 
+  // geometry
+  CALL_GEOMETRY_SUBPNT,
+  CALL_GEOMETRY_SUBSLR,
+  CALL_GEOMETRY_SINCPT,
+  CALL_GEOMETRY_ILUMIN,
+  CALL_GEOMETRY_ILLUMG,
+  CALL_GEOMETRY_ILLUMF,
+  CALL_GEOMETRY_OCCULT,
+  CALL_GEOMETRY_NVC2PL,
+  CALL_GEOMETRY_PL2NVC,
+
   // ephemeris
   CALL_SPKEZR,
   CALL_SPKPOS,
@@ -2318,6 +2329,17 @@ static CallId parse_call_id(const char *call) {
       {"coords-vectors.vnorm", CALL_VNORM},
       {"coords-vectors.vscl", CALL_VSCL},
       {"coords-vectors.vsub", CALL_VSUB},
+
+      // geometry
+      {"geometry.subpnt", CALL_GEOMETRY_SUBPNT},
+      {"geometry.subslr", CALL_GEOMETRY_SUBSLR},
+      {"geometry.sincpt", CALL_GEOMETRY_SINCPT},
+      {"geometry.ilumin", CALL_GEOMETRY_ILUMIN},
+      {"geometry.illumg", CALL_GEOMETRY_ILLUMG},
+      {"geometry.illumf", CALL_GEOMETRY_ILLUMF},
+      {"geometry.occult", CALL_GEOMETRY_OCCULT},
+      {"geometry.nvc2pl", CALL_GEOMETRY_NVC2PL},
+      {"geometry.pl2nvc", CALL_GEOMETRY_PL2NVC},
 
       // ephemeris
       {"ephemeris.spkezr", CALL_SPKEZR},
@@ -7091,6 +7113,1499 @@ int main(void) {
     fputs("{\"ok\":true,\"result\":", stdout);
     json_print_double_array(out, 3);
     fputs("}\n", stdout);
+    goto done;
+  }
+
+
+
+  // geometry
+  case CALL_GEOMETRY_SUBPNT: {
+    if (tokens[argsTok].size < 6) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.subpnt expects args[0]=method args[1]=target args[2]=et args[3]=fixref args[4]=abcorr args[5]=observer",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int methodTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int targetTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int fixrefTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+    int observerTok = jsmn_get_array_elem(tokens, argsTok, 5, tokenCount);
+
+    if (methodTok < 0 || methodTok >= tokenCount || tokens[methodTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subpnt expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (targetTok < 0 || targetTok >= tokenCount || tokens[targetTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subpnt expects args[1] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (fixrefTok < 0 || fixrefTok >= tokenCount || tokens[fixrefTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subpnt expects args[3] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subpnt expects args[4] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (observerTok < 0 || observerTok >= tokenCount || tokens[observerTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subpnt expects args[5] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry.subpnt expects args[2] to be a number", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *method = NULL;
+    char *target = NULL;
+    char *fixref = NULL;
+    char *abcorr = NULL;
+    char *observer = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t methodErr =
+        jsmn_strdup(input, &tokens[methodTok], &method, strDetail, sizeof(strDetail));
+    if (methodErr != JSMN_STRDUP_OK) {
+      if (methodErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targetErr =
+        jsmn_strdup(input, &tokens[targetTok], &target, strDetail, sizeof(strDetail));
+    if (targetErr != JSMN_STRDUP_OK) {
+      free(method);
+      if (targetErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fixrefErr =
+        jsmn_strdup(input, &tokens[fixrefTok], &fixref, strDetail, sizeof(strDetail));
+    if (fixrefErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      if (fixrefErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcorrErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcorrErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(fixref);
+      if (abcorrErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t observerErr =
+        jsmn_strdup(input, &tokens[observerTok], &observer, strDetail, sizeof(strDetail));
+    if (observerErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(fixref);
+      free(abcorr);
+      if (observerErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble spoint[3];
+    SpiceDouble trgepc = 0.0;
+    SpiceDouble srfvec[3];
+    subpnt_c(method, target, et, fixref, abcorr, observer, spoint, &trgepc, srfvec);
+    free(method);
+    free(target);
+    free(fixref);
+    free(abcorr);
+    free(observer);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in subpnt", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"spoint\":", stdout);
+    json_print_double_array(spoint, 3);
+    fputs(",\"trgepc\":", stdout);
+    fprintf(stdout, "%.17g", (double)trgepc);
+    fputs(",\"srfvec\":", stdout);
+    json_print_double_array(srfvec, 3);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_SUBSLR: {
+    if (tokens[argsTok].size < 6) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.subslr expects args[0]=method args[1]=target args[2]=et args[3]=fixref args[4]=abcorr args[5]=observer",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int methodTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int targetTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int fixrefTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+    int observerTok = jsmn_get_array_elem(tokens, argsTok, 5, tokenCount);
+
+    if (methodTok < 0 || methodTok >= tokenCount || tokens[methodTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subslr expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (targetTok < 0 || targetTok >= tokenCount || tokens[targetTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subslr expects args[1] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (fixrefTok < 0 || fixrefTok >= tokenCount || tokens[fixrefTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subslr expects args[3] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subslr expects args[4] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (observerTok < 0 || observerTok >= tokenCount || tokens[observerTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.subslr expects args[5] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry.subslr expects args[2] to be a number", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *method = NULL;
+    char *target = NULL;
+    char *fixref = NULL;
+    char *abcorr = NULL;
+    char *observer = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t methodErr =
+        jsmn_strdup(input, &tokens[methodTok], &method, strDetail, sizeof(strDetail));
+    if (methodErr != JSMN_STRDUP_OK) {
+      if (methodErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targetErr =
+        jsmn_strdup(input, &tokens[targetTok], &target, strDetail, sizeof(strDetail));
+    if (targetErr != JSMN_STRDUP_OK) {
+      free(method);
+      if (targetErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fixrefErr =
+        jsmn_strdup(input, &tokens[fixrefTok], &fixref, strDetail, sizeof(strDetail));
+    if (fixrefErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      if (fixrefErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcorrErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcorrErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(fixref);
+      if (abcorrErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t observerErr =
+        jsmn_strdup(input, &tokens[observerTok], &observer, strDetail, sizeof(strDetail));
+    if (observerErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(fixref);
+      free(abcorr);
+      if (observerErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble spoint[3];
+    SpiceDouble trgepc = 0.0;
+    SpiceDouble srfvec[3];
+    subslr_c(method, target, et, fixref, abcorr, observer, spoint, &trgepc, srfvec);
+    free(method);
+    free(target);
+    free(fixref);
+    free(abcorr);
+    free(observer);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in subslr", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"spoint\":", stdout);
+    json_print_double_array(spoint, 3);
+    fputs(",\"trgepc\":", stdout);
+    fprintf(stdout, "%.17g", (double)trgepc);
+    fputs(",\"srfvec\":", stdout);
+    json_print_double_array(srfvec, 3);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_SINCPT: {
+    if (tokens[argsTok].size < 8) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.sincpt expects args[0]=method args[1]=target args[2]=et args[3]=fixref args[4]=abcorr args[5]=observer args[6]=dref args[7]=dvec",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int methodTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int targetTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int fixrefTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+    int observerTok = jsmn_get_array_elem(tokens, argsTok, 5, tokenCount);
+    int drefTok = jsmn_get_array_elem(tokens, argsTok, 6, tokenCount);
+    int dvecTok = jsmn_get_array_elem(tokens, argsTok, 7, tokenCount);
+
+    if (methodTok < 0 || methodTok >= tokenCount || tokens[methodTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.sincpt expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (targetTok < 0 || targetTok >= tokenCount || tokens[targetTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.sincpt expects args[1] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (fixrefTok < 0 || fixrefTok >= tokenCount || tokens[fixrefTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.sincpt expects args[3] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.sincpt expects args[4] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (observerTok < 0 || observerTok >= tokenCount || tokens[observerTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.sincpt expects args[5] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (drefTok < 0 || drefTok >= tokenCount || tokens[drefTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.sincpt expects args[6] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry.sincpt expects args[2] to be a number", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble dvec[3];
+    if (!jsmn_parse_vec3(input, tokens, dvecTok, tokenCount, dvec)) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.sincpt expects args[7] to be a length-3 array of numbers",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *method = NULL;
+    char *target = NULL;
+    char *fixref = NULL;
+    char *abcorr = NULL;
+    char *observer = NULL;
+    char *dref = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t methodErr =
+        jsmn_strdup(input, &tokens[methodTok], &method, strDetail, sizeof(strDetail));
+    if (methodErr != JSMN_STRDUP_OK) {
+      if (methodErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targetErr =
+        jsmn_strdup(input, &tokens[targetTok], &target, strDetail, sizeof(strDetail));
+    if (targetErr != JSMN_STRDUP_OK) {
+      free(method);
+      if (targetErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fixrefErr =
+        jsmn_strdup(input, &tokens[fixrefTok], &fixref, strDetail, sizeof(strDetail));
+    if (fixrefErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      if (fixrefErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcorrErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcorrErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(fixref);
+      if (abcorrErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t observerErr =
+        jsmn_strdup(input, &tokens[observerTok], &observer, strDetail, sizeof(strDetail));
+    if (observerErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(fixref);
+      free(abcorr);
+      if (observerErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t drefErr =
+        jsmn_strdup(input, &tokens[drefTok], &dref, strDetail, sizeof(strDetail));
+    if (drefErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(fixref);
+      free(abcorr);
+      free(observer);
+      if (drefErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble spoint[3];
+    SpiceDouble trgepc = 0.0;
+    SpiceDouble srfvec[3];
+    SpiceBoolean found = SPICEFALSE;
+    sincpt_c(method, target, et, fixref, abcorr, observer, dref, dvec, spoint, &trgepc, srfvec,
+             &found);
+    free(method);
+    free(target);
+    free(fixref);
+    free(abcorr);
+    free(observer);
+    free(dref);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in sincpt", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"spoint\":", stdout);
+    json_print_double_array(spoint, 3);
+    fputs(",\"trgepc\":", stdout);
+    fprintf(stdout, "%.17g", (double)trgepc);
+    fputs(",\"srfvec\":", stdout);
+    json_print_double_array(srfvec, 3);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_ILUMIN: {
+    if (tokens[argsTok].size < 7) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.ilumin expects args[0]=method args[1]=target args[2]=et args[3]=fixref args[4]=abcorr args[5]=observer args[6]=spoint",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int methodTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int targetTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int fixrefTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+    int observerTok = jsmn_get_array_elem(tokens, argsTok, 5, tokenCount);
+    int spointTok = jsmn_get_array_elem(tokens, argsTok, 6, tokenCount);
+
+    if (methodTok < 0 || methodTok >= tokenCount || tokens[methodTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.ilumin expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (targetTok < 0 || targetTok >= tokenCount || tokens[targetTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.ilumin expects args[1] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (fixrefTok < 0 || fixrefTok >= tokenCount || tokens[fixrefTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.ilumin expects args[3] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.ilumin expects args[4] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (observerTok < 0 || observerTok >= tokenCount || tokens[observerTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.ilumin expects args[5] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry.ilumin expects args[2] to be a number", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble spoint[3];
+    if (!jsmn_parse_vec3(input, tokens, spointTok, tokenCount, spoint)) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.ilumin expects args[6] to be a length-3 array of numbers",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *method = NULL;
+    char *target = NULL;
+    char *fixref = NULL;
+    char *abcorr = NULL;
+    char *observer = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t methodErr =
+        jsmn_strdup(input, &tokens[methodTok], &method, strDetail, sizeof(strDetail));
+    if (methodErr != JSMN_STRDUP_OK) {
+      if (methodErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targetErr =
+        jsmn_strdup(input, &tokens[targetTok], &target, strDetail, sizeof(strDetail));
+    if (targetErr != JSMN_STRDUP_OK) {
+      free(method);
+      if (targetErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fixrefErr =
+        jsmn_strdup(input, &tokens[fixrefTok], &fixref, strDetail, sizeof(strDetail));
+    if (fixrefErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      if (fixrefErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcorrErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcorrErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(fixref);
+      if (abcorrErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t observerErr =
+        jsmn_strdup(input, &tokens[observerTok], &observer, strDetail, sizeof(strDetail));
+    if (observerErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(fixref);
+      free(abcorr);
+      if (observerErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble trgepc = 0.0;
+    SpiceDouble srfvec[3];
+    SpiceDouble phase = 0.0;
+    SpiceDouble incdnc = 0.0;
+    SpiceDouble emissn = 0.0;
+    ilumin_c(method, target, et, fixref, abcorr, observer, spoint, &trgepc, srfvec, &phase,
+             &incdnc, &emissn);
+    free(method);
+    free(target);
+    free(fixref);
+    free(abcorr);
+    free(observer);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ilumin", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"trgepc\":", stdout);
+    fprintf(stdout, "%.17g", (double)trgepc);
+    fputs(",\"srfvec\":", stdout);
+    json_print_double_array(srfvec, 3);
+    fputs(",\"phase\":", stdout);
+    fprintf(stdout, "%.17g", (double)phase);
+    fputs(",\"incdnc\":", stdout);
+    fprintf(stdout, "%.17g", (double)incdnc);
+    fputs(",\"emissn\":", stdout);
+    fprintf(stdout, "%.17g", (double)emissn);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_ILLUMG: {
+    if (tokens[argsTok].size < 8) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.illumg expects args[0]=method args[1]=target args[2]=ilusrc args[3]=et args[4]=fixref args[5]=abcorr args[6]=observer args[7]=spoint",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int methodTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int targetTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int ilusrcTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int fixrefTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 5, tokenCount);
+    int observerTok = jsmn_get_array_elem(tokens, argsTok, 6, tokenCount);
+    int spointTok = jsmn_get_array_elem(tokens, argsTok, 7, tokenCount);
+
+    if (methodTok < 0 || methodTok >= tokenCount || tokens[methodTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumg expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (targetTok < 0 || targetTok >= tokenCount || tokens[targetTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumg expects args[1] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (ilusrcTok < 0 || ilusrcTok >= tokenCount || tokens[ilusrcTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumg expects args[2] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (fixrefTok < 0 || fixrefTok >= tokenCount || tokens[fixrefTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumg expects args[4] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumg expects args[5] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (observerTok < 0 || observerTok >= tokenCount || tokens[observerTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumg expects args[6] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry.illumg expects args[3] to be a number", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble spoint[3];
+    if (!jsmn_parse_vec3(input, tokens, spointTok, tokenCount, spoint)) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.illumg expects args[7] to be a length-3 array of numbers",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *method = NULL;
+    char *target = NULL;
+    char *ilusrc = NULL;
+    char *fixref = NULL;
+    char *abcorr = NULL;
+    char *observer = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t methodErr =
+        jsmn_strdup(input, &tokens[methodTok], &method, strDetail, sizeof(strDetail));
+    if (methodErr != JSMN_STRDUP_OK) {
+      if (methodErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targetErr =
+        jsmn_strdup(input, &tokens[targetTok], &target, strDetail, sizeof(strDetail));
+    if (targetErr != JSMN_STRDUP_OK) {
+      free(method);
+      if (targetErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t ilusrcErr =
+        jsmn_strdup(input, &tokens[ilusrcTok], &ilusrc, strDetail, sizeof(strDetail));
+    if (ilusrcErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      if (ilusrcErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fixrefErr =
+        jsmn_strdup(input, &tokens[fixrefTok], &fixref, strDetail, sizeof(strDetail));
+    if (fixrefErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(ilusrc);
+      if (fixrefErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcorrErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcorrErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(ilusrc);
+      free(fixref);
+      if (abcorrErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t observerErr =
+        jsmn_strdup(input, &tokens[observerTok], &observer, strDetail, sizeof(strDetail));
+    if (observerErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(ilusrc);
+      free(fixref);
+      free(abcorr);
+      if (observerErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble trgepc = 0.0;
+    SpiceDouble srfvec[3];
+    SpiceDouble phase = 0.0;
+    SpiceDouble incdnc = 0.0;
+    SpiceDouble emissn = 0.0;
+    illumg_c(method, target, ilusrc, et, fixref, abcorr, observer, spoint, &trgepc, srfvec,
+             &phase, &incdnc, &emissn);
+    free(method);
+    free(target);
+    free(ilusrc);
+    free(fixref);
+    free(abcorr);
+    free(observer);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in illumg", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"trgepc\":", stdout);
+    fprintf(stdout, "%.17g", (double)trgepc);
+    fputs(",\"srfvec\":", stdout);
+    json_print_double_array(srfvec, 3);
+    fputs(",\"phase\":", stdout);
+    fprintf(stdout, "%.17g", (double)phase);
+    fputs(",\"incdnc\":", stdout);
+    fprintf(stdout, "%.17g", (double)incdnc);
+    fputs(",\"emissn\":", stdout);
+    fprintf(stdout, "%.17g", (double)emissn);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_ILLUMF: {
+    if (tokens[argsTok].size < 8) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.illumf expects args[0]=method args[1]=target args[2]=ilusrc args[3]=et args[4]=fixref args[5]=abcorr args[6]=observer args[7]=spoint",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int methodTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int targetTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int ilusrcTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int fixrefTok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 5, tokenCount);
+    int observerTok = jsmn_get_array_elem(tokens, argsTok, 6, tokenCount);
+    int spointTok = jsmn_get_array_elem(tokens, argsTok, 7, tokenCount);
+
+    if (methodTok < 0 || methodTok >= tokenCount || tokens[methodTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumf expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (targetTok < 0 || targetTok >= tokenCount || tokens[targetTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumf expects args[1] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (ilusrcTok < 0 || ilusrcTok >= tokenCount || tokens[ilusrcTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumf expects args[2] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (fixrefTok < 0 || fixrefTok >= tokenCount || tokens[fixrefTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumf expects args[4] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumf expects args[5] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (observerTok < 0 || observerTok >= tokenCount || tokens[observerTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.illumf expects args[6] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry.illumf expects args[3] to be a number", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble spoint[3];
+    if (!jsmn_parse_vec3(input, tokens, spointTok, tokenCount, spoint)) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.illumf expects args[7] to be a length-3 array of numbers",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *method = NULL;
+    char *target = NULL;
+    char *ilusrc = NULL;
+    char *fixref = NULL;
+    char *abcorr = NULL;
+    char *observer = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t methodErr =
+        jsmn_strdup(input, &tokens[methodTok], &method, strDetail, sizeof(strDetail));
+    if (methodErr != JSMN_STRDUP_OK) {
+      if (methodErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targetErr =
+        jsmn_strdup(input, &tokens[targetTok], &target, strDetail, sizeof(strDetail));
+    if (targetErr != JSMN_STRDUP_OK) {
+      free(method);
+      if (targetErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t ilusrcErr =
+        jsmn_strdup(input, &tokens[ilusrcTok], &ilusrc, strDetail, sizeof(strDetail));
+    if (ilusrcErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      if (ilusrcErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t fixrefErr =
+        jsmn_strdup(input, &tokens[fixrefTok], &fixref, strDetail, sizeof(strDetail));
+    if (fixrefErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(ilusrc);
+      if (fixrefErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcorrErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcorrErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(ilusrc);
+      free(fixref);
+      if (abcorrErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t observerErr =
+        jsmn_strdup(input, &tokens[observerTok], &observer, strDetail, sizeof(strDetail));
+    if (observerErr != JSMN_STRDUP_OK) {
+      free(method);
+      free(target);
+      free(ilusrc);
+      free(fixref);
+      free(abcorr);
+      if (observerErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble trgepc = 0.0;
+    SpiceDouble srfvec[3];
+    SpiceDouble phase = 0.0;
+    SpiceDouble incdnc = 0.0;
+    SpiceDouble emissn = 0.0;
+    SpiceBoolean visibl = SPICEFALSE;
+    SpiceBoolean lit = SPICEFALSE;
+    illumf_c(method, target, ilusrc, et, fixref, abcorr, observer, spoint, &trgepc, srfvec,
+             &phase, &incdnc, &emissn, &visibl, &lit);
+    free(method);
+    free(target);
+    free(ilusrc);
+    free(fixref);
+    free(abcorr);
+    free(observer);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in illumf", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"trgepc\":", stdout);
+    fprintf(stdout, "%.17g", (double)trgepc);
+    fputs(",\"srfvec\":", stdout);
+    json_print_double_array(srfvec, 3);
+    fputs(",\"phase\":", stdout);
+    fprintf(stdout, "%.17g", (double)phase);
+    fputs(",\"incdnc\":", stdout);
+    fprintf(stdout, "%.17g", (double)incdnc);
+    fputs(",\"emissn\":", stdout);
+    fprintf(stdout, "%.17g", (double)emissn);
+    fputs(",\"visibl\":", stdout);
+    fputs(visibl == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"lit\":", stdout);
+    fputs(lit == SPICETRUE ? "true" : "false", stdout);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_OCCULT: {
+    if (tokens[argsTok].size < 9) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.occult expects args[0]=targ1 args[1]=shape1 args[2]=frame1 args[3]=targ2 args[4]=shape2 args[5]=frame2 args[6]=abcorr args[7]=observer args[8]=et",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int targ1Tok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int shape1Tok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    int frame1Tok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    int targ2Tok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+    int shape2Tok = jsmn_get_array_elem(tokens, argsTok, 4, tokenCount);
+    int frame2Tok = jsmn_get_array_elem(tokens, argsTok, 5, tokenCount);
+    int abcorrTok = jsmn_get_array_elem(tokens, argsTok, 6, tokenCount);
+    int observerTok = jsmn_get_array_elem(tokens, argsTok, 7, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 8, tokenCount);
+
+    if (targ1Tok < 0 || targ1Tok >= tokenCount || tokens[targ1Tok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.occult expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (shape1Tok < 0 || shape1Tok >= tokenCount || tokens[shape1Tok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.occult expects args[1] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (frame1Tok < 0 || frame1Tok >= tokenCount || tokens[frame1Tok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.occult expects args[2] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (targ2Tok < 0 || targ2Tok >= tokenCount || tokens[targ2Tok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.occult expects args[3] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (shape2Tok < 0 || shape2Tok >= tokenCount || tokens[shape2Tok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.occult expects args[4] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (frame2Tok < 0 || frame2Tok >= tokenCount || tokens[frame2Tok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.occult expects args[5] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (abcorrTok < 0 || abcorrTok >= tokenCount || tokens[abcorrTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.occult expects args[6] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+    if (observerTok < 0 || observerTok >= tokenCount || tokens[observerTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "geometry.occult expects args[7] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    if (etTok < 0 || etTok >= tokenCount || jsmn_parse_double(input, &tokens[etTok], &et) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry.occult expects args[8] to be a number", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *targ1 = NULL;
+    char *shape1 = NULL;
+    char *frame1 = NULL;
+    char *targ2 = NULL;
+    char *shape2 = NULL;
+    char *frame2 = NULL;
+    char *abcorr = NULL;
+    char *observer = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targ1Err =
+        jsmn_strdup(input, &tokens[targ1Tok], &targ1, strDetail, sizeof(strDetail));
+    if (targ1Err != JSMN_STRDUP_OK) {
+      if (targ1Err == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t shape1Err =
+        jsmn_strdup(input, &tokens[shape1Tok], &shape1, strDetail, sizeof(strDetail));
+    if (shape1Err != JSMN_STRDUP_OK) {
+      free(targ1);
+      if (shape1Err == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t frame1Err =
+        jsmn_strdup(input, &tokens[frame1Tok], &frame1, strDetail, sizeof(strDetail));
+    if (frame1Err != JSMN_STRDUP_OK) {
+      free(targ1);
+      free(shape1);
+      if (frame1Err == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t targ2Err =
+        jsmn_strdup(input, &tokens[targ2Tok], &targ2, strDetail, sizeof(strDetail));
+    if (targ2Err != JSMN_STRDUP_OK) {
+      free(targ1);
+      free(shape1);
+      free(frame1);
+      if (targ2Err == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t shape2Err =
+        jsmn_strdup(input, &tokens[shape2Tok], &shape2, strDetail, sizeof(strDetail));
+    if (shape2Err != JSMN_STRDUP_OK) {
+      free(targ1);
+      free(shape1);
+      free(frame1);
+      free(targ2);
+      if (shape2Err == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t frame2Err =
+        jsmn_strdup(input, &tokens[frame2Tok], &frame2, strDetail, sizeof(strDetail));
+    if (frame2Err != JSMN_STRDUP_OK) {
+      free(targ1);
+      free(shape1);
+      free(frame1);
+      free(targ2);
+      free(shape2);
+      if (frame2Err == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t abcorrErr =
+        jsmn_strdup(input, &tokens[abcorrTok], &abcorr, strDetail, sizeof(strDetail));
+    if (abcorrErr != JSMN_STRDUP_OK) {
+      free(targ1);
+      free(shape1);
+      free(frame1);
+      free(targ2);
+      free(shape2);
+      free(frame2);
+      if (abcorrErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t observerErr =
+        jsmn_strdup(input, &tokens[observerTok], &observer, strDetail, sizeof(strDetail));
+    if (observerErr != JSMN_STRDUP_OK) {
+      free(targ1);
+      free(shape1);
+      free(frame1);
+      free(targ2);
+      free(shape2);
+      free(frame2);
+      free(abcorr);
+      if (observerErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt ocltid = 0;
+    occult_c(targ1, shape1, frame1, targ2, shape2, frame2, abcorr, observer, et, &ocltid);
+    free(targ1);
+    free(shape1);
+    free(frame1);
+    free(targ2);
+    free(shape2);
+    free(frame2);
+    free(abcorr);
+    free(observer);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in occult", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%" PRIdMAX "}\n", (intmax_t)ocltid);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_NVC2PL: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.nvc2pl expects args[0]=normal args[1]=konst",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int normalTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int konstTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceDouble normal[3];
+    if (!jsmn_parse_vec3(input, tokens, normalTok, tokenCount, normal)) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.nvc2pl expects args[0] to be a length-3 array of numbers",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble konst = 0.0;
+    if (konstTok < 0 || konstTok >= tokenCount || jsmn_parse_double(input, &tokens[konstTok], &konst) != PARSE_OK) {
+      write_error_json_ex("invalid_args", "geometry.nvc2pl expects args[1] to be a number", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpicePlane plane;
+    nvc2pl_c(normal, konst, &plane);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in nvc2pl", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceDouble outPlane[4];
+    outPlane[0] = plane.normal[0];
+    outPlane[1] = plane.normal[1];
+    outPlane[2] = plane.normal[2];
+    outPlane[3] = plane.constant;
+
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_double_array(outPlane, 4);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_GEOMETRY_PL2NVC: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.pl2nvc expects args[0]=plane",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int planeTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceDouble planeData[4];
+    if (!jsmn_parse_double_array_fixed(input, tokens, planeTok, tokenCount, 4, planeData)) {
+      write_error_json_ex(
+          "invalid_args",
+          "geometry.pl2nvc expects args[0] to be a length-4 array of numbers",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpicePlane plane;
+    plane.normal[0] = planeData[0];
+    plane.normal[1] = planeData[1];
+    plane.normal[2] = planeData[2];
+    plane.constant = planeData[3];
+
+    SpiceDouble normal[3];
+    SpiceDouble konst = 0.0;
+    pl2nvc_c(&plane, normal, &konst);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in pl2nvc", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"normal\":", stdout);
+    json_print_double_array(normal, 3);
+    fputs(",\"konst\":", stdout);
+    fprintf(stdout, "%.17g", (double)konst);
+    fputs("}}\n", stdout);
     goto done;
   }
 

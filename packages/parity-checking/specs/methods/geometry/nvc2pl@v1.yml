@@ -1,0 +1,15 @@
+id: methods/geometry/nvc2pl@v1
+kind: method
+contractMethod: geometry.nvc2pl
+canonicalMethod: geometry.nvc2pl
+uses:
+  - workflows/legacy/geometry.basic@v1
+cases:
+  - id: geometry.nvc2pl.basic
+    args:
+      - - 1
+        - 2
+        - 3
+      - 4
+    expect:
+      ok: true

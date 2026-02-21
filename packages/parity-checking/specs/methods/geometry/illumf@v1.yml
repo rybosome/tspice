@@ -1,0 +1,21 @@
+id: methods/geometry/illumf@v1
+kind: method
+contractMethod: geometry.illumf
+canonicalMethod: geometry.illumf
+uses:
+  - workflows/legacy/geometry.basic@v1
+cases:
+  - id: geometry.illumf.ellipsoid-spoint
+    args:
+      - ELLIPSOID
+      - MOON
+      - SUN
+      - 0
+      - IAU_MOON
+      - NONE
+      - EARTH
+      - - 1737.4
+        - 0
+        - 0
+    expect:
+      ok: true

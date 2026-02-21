@@ -1,0 +1,17 @@
+id: methods/geometry/subpnt@v1
+kind: method
+contractMethod: geometry.subpnt
+canonicalMethod: geometry.subpnt
+uses:
+  - workflows/legacy/geometry.basic@v1
+cases:
+  - id: geometry.subpnt.moon-near-point
+    args:
+      - Near point: Ellipsoid
+      - MOON
+      - 0
+      - IAU_MOON
+      - NONE
+      - EARTH
+    expect:
+      ok: true

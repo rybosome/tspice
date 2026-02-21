@@ -1,0 +1,20 @@
+id: methods/geometry/occult@v1
+kind: method
+contractMethod: geometry.occult
+canonicalMethod: geometry.occult
+uses:
+  - workflows/legacy/geometry.basic@v1
+cases:
+  - id: geometry.occult.moon-vs-sun
+    args:
+      - MOON
+      - ELLIPSOID
+      - IAU_MOON
+      - SUN
+      - ELLIPSOID
+      - IAU_SUN
+      - NONE
+      - EARTH
+      - 0
+    expect:
+      ok: true

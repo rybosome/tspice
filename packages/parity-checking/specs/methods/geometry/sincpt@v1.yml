@@ -1,0 +1,21 @@
+id: methods/geometry/sincpt@v1
+kind: method
+contractMethod: geometry.sincpt
+canonicalMethod: geometry.sincpt
+uses:
+  - workflows/legacy/geometry.basic@v1
+cases:
+  - id: geometry.sincpt.ellipsoid-ray
+    args:
+      - ELLIPSOID
+      - MOON
+      - 0
+      - IAU_MOON
+      - NONE
+      - EARTH
+      - J2000
+      - - 1
+        - 0
+        - 0
+    expect:
+      ok: true

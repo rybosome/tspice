@@ -1,0 +1,17 @@
+id: methods/geometry/subslr@v1
+kind: method
+contractMethod: geometry.subslr
+canonicalMethod: geometry.subslr
+uses:
+  - workflows/legacy/geometry.basic@v1
+cases:
+  - id: geometry.subslr.moon-near-point
+    args:
+      - Near point: Ellipsoid
+      - MOON
+      - 0
+      - IAU_MOON
+      - NONE
+      - EARTH
+    expect:
+      ok: true
