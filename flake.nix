@@ -52,7 +52,7 @@
         let
           pkgs = mkPkgs system;
         in
-        pkgs.stdenvNoCC.mkDerivation rec {
+        pkgs.stdenv.mkDerivation rec {
           pname = "tspice-cspice-linux-arm64";
           version = cspiceManifest.toolkitVersion;
 
@@ -95,11 +95,14 @@
             cspiceObj="$(ar t cspice/lib/cspice.a | sed -n '1p')"
             csupportObj="$(ar t cspice/lib/csupport.a | sed -n '1p')"
 
+            test -n "$cspiceObj"
+            test -n "$csupportObj"
+
             ar p cspice/lib/cspice.a "$cspiceObj" > "$tmpdir/cspice.o"
             ar p cspice/lib/csupport.a "$csupportObj" > "$tmpdir/csupport.o"
 
-            file "$tmpdir/cspice.o" | grep -E 'ARM aarch64'
-            file "$tmpdir/csupport.o" | grep -E 'ARM aarch64'
+            file "$tmpdir/cspice.o" | grep -E 'ARM aarch64|AArch64'
+            file "$tmpdir/csupport.o" | grep -E 'ARM aarch64|AArch64'
 
             runHook postCheck
           '';
