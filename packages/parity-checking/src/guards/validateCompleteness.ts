@@ -1,9 +1,10 @@
 import { readContractCatalog } from "../generated/readContractCatalog.js";
 import { readParityDenylist } from "../generated/readParityDenylist.js";
+import { methodCanonicalMethod } from "../dsl/types.js";
 
-import type { MethodSpec } from "../dsl/types.js";
+import type { AnyMethodSpec } from "../dsl/types.js";
 
-const BASELINE_CANONICAL_METHOD_COVERAGE = 73;
+const BASELINE_CANONICAL_METHOD_COVERAGE = 74;
 const MAX_BASELINE_DENYLIST_SIZE = 100;
 
 function stableSort(a: string, b: string): number {
@@ -17,12 +18,12 @@ export type CompletenessValidationSummary = {
 };
 
 /** Enforce parity catalog coverage invariants for migration safety. */
-export function validateCompleteness(methodSpecs: MethodSpec[]): CompletenessValidationSummary {
+export function validateCompleteness(methodSpecs: AnyMethodSpec[]): CompletenessValidationSummary {
   const contractMethods = readContractCatalog();
   const denylist = readParityDenylist();
 
   const contractSet = new Set(contractMethods);
-  const coveredCanonical = new Set(methodSpecs.map((method) => method.canonicalMethod));
+  const coveredCanonical = new Set(methodSpecs.map((method) => methodCanonicalMethod(method)));
 
   if (new Set(denylist).size !== denylist.length) {
     throw new Error("Parity denylist must not contain duplicate entries.");

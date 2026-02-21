@@ -51,6 +51,7 @@ export type WorkflowSpec = {
 
 export type MethodCaseExpectation = {
   ok?: boolean;
+  errorCode?: string;
   errorShort?: string;
 };
 
@@ -78,6 +79,106 @@ export type MethodSpec = {
   };
 };
 
+export type MethodManifestV2 = {
+  id: string;
+  kind: "method";
+};
+
+export type MethodArgConstraintSpecV2 = {
+  min?: number;
+  max?: number;
+};
+
+export type MethodArgSpecV2 = {
+  name: string;
+  type: "spiceInt";
+  constraints?: MethodArgConstraintSpecV2;
+};
+
+export type MethodResultPropertySpecV2 = {
+  const?: string | number | boolean | null;
+  type?: "spiceInt";
+};
+
+export type MethodResultSpecV2 = {
+  type: "object";
+  required?: string[];
+  properties: Record<string, MethodResultPropertySpecV2>;
+};
+
+export type MethodErrorSpecV2 = {
+  code: string;
+};
+
+export type MethodContractV2 = {
+  contractMethod: string;
+  canonicalMethod: string;
+  aliases?: string[];
+  args?: MethodArgSpecV2[];
+  result: MethodResultSpecV2;
+  errors?: MethodErrorSpecV2[];
+};
+
+export type MethodWorkflowOpAllocCellV2 = {
+  op: "allocCell";
+  as: string;
+  params: {
+    kind: "int";
+    size: unknown;
+  };
+};
+
+export type MethodWorkflowOpSpiceCallV2 = {
+  op: "spiceCall";
+  call: "card_c" | "size_c";
+  in: unknown[];
+  as: string;
+};
+
+export type MethodWorkflowOpProjectResultV2 = {
+  op: "projectResult";
+  out: Record<string, unknown>;
+};
+
+export type MethodWorkflowOpFreeCellV2 = {
+  op: "freeCell";
+  target: unknown;
+};
+
+export type MethodWorkflowStepV2 =
+  | MethodWorkflowOpAllocCellV2
+  | MethodWorkflowOpSpiceCallV2
+  | MethodWorkflowOpProjectResultV2
+  | MethodWorkflowOpFreeCellV2;
+
+export type MethodCaseSpecV2 = {
+  id: string;
+  args?: Record<string, unknown>;
+  setup?: ScenarioSetupAst;
+  compare?: ScenarioCompareAst;
+  expect?: MethodCaseExpectation;
+};
+
+export type MethodSpecV2 = {
+  schemaVersion: 2;
+  manifest: MethodManifestV2;
+  contract: MethodContractV2;
+  setup?: ScenarioSetupAst;
+  defaults?: {
+    compare?: ScenarioCompareAst;
+  };
+  workflow: {
+    steps: MethodWorkflowStepV2[];
+    cleanup?: MethodWorkflowStepV2[];
+  };
+  cases: MethodCaseSpecV2[];
+  meta: {
+    sourcePath: string;
+  };
+};
+
+export type AnyMethodSpec = MethodSpec | MethodSpecV2;
+
 export type CrossCuttingCaseExpectation = {
   ok: boolean;
   errorCode?: string;
@@ -101,10 +202,24 @@ export type CrossCuttingSpec = {
   };
 };
 
+export type CrossCuttingSpecV2 = {
+  schemaVersion: 2;
+  manifest: {
+    id: string;
+    kind: "crossCuttingSpec";
+  };
+  cases: CrossCuttingCaseSpec[];
+  meta: {
+    sourcePath: string;
+  };
+};
+
+export type AnyCrossCuttingSpec = CrossCuttingSpec | CrossCuttingSpecV2;
+
 export type LoadedParitySpecs = {
   workflows: WorkflowSpec[];
-  methods: MethodSpec[];
-  crossCutting: CrossCuttingSpec[];
+  methods: AnyMethodSpec[];
+  crossCutting: AnyCrossCuttingSpec[];
 };
 
 export type ResolvedMethodSpec = {
@@ -113,3 +228,23 @@ export type ResolvedMethodSpec = {
   mergedSetup?: ScenarioSetupAst;
   mergedCompareDefaults?: ScenarioCompareAst;
 };
+
+export function isMethodSpecV2(method: AnyMethodSpec): method is MethodSpecV2 {
+  return (method as Partial<MethodSpecV2>).schemaVersion === 2;
+}
+
+export function methodSpecId(method: AnyMethodSpec): string {
+  return isMethodSpecV2(method) ? method.manifest.id : method.id;
+}
+
+export function methodCanonicalMethod(method: AnyMethodSpec): string {
+  return isMethodSpecV2(method) ? method.contract.canonicalMethod : method.canonicalMethod;
+}
+
+export function isCrossCuttingSpecV2(spec: AnyCrossCuttingSpec): spec is CrossCuttingSpecV2 {
+  return spec.schemaVersion === 2;
+}
+
+export function crossCuttingSpecId(spec: AnyCrossCuttingSpec): string {
+  return isCrossCuttingSpecV2(spec) ? spec.manifest.id : spec.id;
+}

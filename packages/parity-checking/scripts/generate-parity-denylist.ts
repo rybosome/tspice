@@ -8,6 +8,31 @@ function stableSort(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function canonicalMethodFromSpecData(data: unknown, filePath: string): string {
+  if (!isRecord(data)) {
+    throw new Error(`Method spec must be an object: ${filePath}`);
+  }
+
+  if (typeof data.canonicalMethod === "string" && data.canonicalMethod.trim() !== "") {
+    return data.canonicalMethod;
+  }
+
+  const contract = data.contract;
+  if (
+    isRecord(contract) &&
+    typeof contract.canonicalMethod === "string" &&
+    contract.canonicalMethod.trim() !== ""
+  ) {
+    return contract.canonicalMethod;
+  }
+
+  throw new Error(`Method spec missing canonicalMethod: ${filePath}`);
+}
+
 function discoverYamlFiles(rootDir: string): string[] {
   const out: string[] = [];
   if (!fs.existsSync(rootDir)) {
@@ -46,14 +71,7 @@ if (!Array.isArray(contractCatalog)) {
 const coveredCanonical = new Set<string>();
 for (const filePath of discoverYamlFiles(methodSpecsRoot)) {
   const data = parseYaml(fs.readFileSync(filePath, "utf8"));
-  if (!data || typeof data !== "object") {
-    throw new Error(`Method spec must be an object: ${filePath}`);
-  }
-  const canonical = (data as Record<string, unknown>).canonicalMethod;
-  if (typeof canonical !== "string" || canonical.trim() === "") {
-    throw new Error(`Method spec missing canonicalMethod: ${filePath}`);
-  }
-  coveredCanonical.add(canonical);
+  coveredCanonical.add(canonicalMethodFromSpecData(data, filePath));
 }
 
 const denylist = contractCatalog

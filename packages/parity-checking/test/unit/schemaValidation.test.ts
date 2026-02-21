@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  parseCrossCuttingSpecAny,
   parseCrossCuttingSpec,
+  parseMethodSpecAny,
   parseMethodSpec,
   parseWorkflowSpec,
 } from "../../src/dsl/schemaValidate.js";
@@ -220,5 +222,100 @@ describe("schema validation", () => {
         },
       }),
     ).toThrow(/crossCutting\.cases\[0\]\.expect has unknown key: "errorCod"/);
+  });
+
+  it("parses valid v2 method and cross-cutting specs via schemaVersion router", () => {
+    const methodV2 = parseMethodSpecAny({
+      sourcePath: "/tmp/method-v2.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "methods/cells-windows/newIntCell@v2",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "cells-windows.newIntCell",
+          canonicalMethod: "cells-windows.newIntCell",
+          args: [{ name: "size", type: "spiceInt", constraints: { min: 0 } }],
+          result: {
+            type: "object",
+            required: ["kind", "size", "card"],
+            properties: {
+              kind: { const: "int" },
+              size: { type: "spiceInt" },
+              card: { type: "spiceInt" },
+            },
+          },
+          errors: [{ code: "invalid_args" }],
+        },
+        workflow: {
+          steps: [
+            {
+              op: "allocCell",
+              as: "cell",
+              params: { kind: "int", size: "$args.size" },
+            },
+            {
+              op: "spiceCall",
+              call: "card_c",
+              in: ["$refs.cell"],
+              as: "card",
+            },
+            {
+              op: "projectResult",
+              out: {
+                kind: "int",
+                size: "$args.size",
+                card: "$refs.card",
+              },
+            },
+          ],
+          cleanup: [{ op: "freeCell", target: "$refs.cell" }],
+        },
+        cases: [{ id: "basic", args: { size: 8 }, expect: { ok: true } }],
+      },
+    });
+
+    const crossV2 = parseCrossCuttingSpecAny({
+      sourcePath: "/tmp/cross-v2.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "native-protocol/strict-parsing@v2",
+          kind: "crossCuttingSpec",
+        },
+        cases: [
+          {
+            id: "rejects-trailing-bytes",
+            transport: "native",
+            rawRequest: '{"call":"cells-windows.newIntCell","args":[8]}\\u0000junk',
+            expect: { ok: false, errorCode: "invalid_request" },
+          },
+        ],
+      },
+    });
+
+    expect(methodV2).toMatchObject({ schemaVersion: 2 });
+    expect(crossV2).toMatchObject({ schemaVersion: 2 });
+  });
+
+  it("rejects unsupported schema versions", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v3.yml",
+        data: {
+          schemaVersion: 3,
+        },
+      }),
+    ).toThrow(/method\.schemaVersion must be 1 or 2/);
+
+    expect(() =>
+      parseCrossCuttingSpecAny({
+        sourcePath: "/tmp/cross-v3.yml",
+        data: {
+          schemaVersion: 3,
+        },
+      }),
+    ).toThrow(/crossCutting\.schemaVersion must be 1 or 2/);
   });
 });

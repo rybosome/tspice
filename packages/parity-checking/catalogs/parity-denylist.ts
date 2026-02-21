@@ -13,7 +13,6 @@ export const PARITY_DENYLIST = [
   "cells-windows.insrti",
   "cells-windows.newCharCell",
   "cells-windows.newDoubleCell",
-  "cells-windows.newIntCell",
   "cells-windows.newWindow",
   "cells-windows.scard",
   "cells-windows.size",

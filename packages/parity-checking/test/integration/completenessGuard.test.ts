@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { parse as parseYaml } from "yaml";
 import { describe, expect, it } from "vitest";
 
-import { parseMethodSpec } from "../../src/dsl/schemaValidate.js";
+import { parseMethodSpecAny } from "../../src/dsl/schemaValidate.js";
 import { validateCompleteness } from "../../src/guards/validateCompleteness.js";
 
 function discoverYamlFiles(rootDir: string): string[] {
@@ -36,7 +36,7 @@ describe("completeness guard", () => {
     const methodsDir = path.resolve(testDir, "../../specs/methods");
 
     const methods = discoverYamlFiles(methodsDir).map((filePath) =>
-      parseMethodSpec({
+      parseMethodSpecAny({
         sourcePath: filePath,
         data: parseYaml(fs.readFileSync(filePath, "utf8")),
       }),
@@ -44,7 +44,7 @@ describe("completeness guard", () => {
 
     const summary = validateCompleteness(methods);
     expect(summary.contractCount).toBe(173);
-    expect(summary.coveredCount).toBe(73);
-    expect(summary.denylistCount).toBe(100);
+    expect(summary.coveredCount).toBe(74);
+    expect(summary.denylistCount).toBe(99);
   });
 });

@@ -4,11 +4,90 @@ export type CaseSetup = {
   kernels?: KernelEntry[];
 };
 
-export type RunCaseInput = {
+export type RunCaseInputV1 = {
+  schemaVersion?: 1;
   setup?: CaseSetup;
   call: string;
   args: unknown[];
 };
+
+export type V2ContractArgSpec = {
+  name: string;
+  type: "spiceInt";
+  constraints?: {
+    min?: number;
+    max?: number;
+  };
+};
+
+export type V2ContractResultProperty = {
+  const?: string | number | boolean | null;
+  type?: "spiceInt";
+};
+
+export type V2ContractResultSpec = {
+  type: "object";
+  required?: string[];
+  properties: Record<string, V2ContractResultProperty>;
+};
+
+export type V2ContractSpec = {
+  contractMethod: string;
+  canonicalMethod: string;
+  aliases?: string[];
+  args?: V2ContractArgSpec[];
+  result: V2ContractResultSpec;
+  errors?: Array<{ code: string }>;
+};
+
+export type V2WorkflowAllocCellStep = {
+  op: "allocCell";
+  as: string;
+  params: {
+    kind: "int";
+    size: unknown;
+  };
+};
+
+export type V2WorkflowSpiceCallStep = {
+  op: "spiceCall";
+  call: "card_c" | "size_c";
+  in: unknown[];
+  as: string;
+};
+
+export type V2WorkflowProjectResultStep = {
+  op: "projectResult";
+  out: Record<string, unknown>;
+};
+
+export type V2WorkflowFreeCellStep = {
+  op: "freeCell";
+  target: unknown;
+};
+
+export type V2WorkflowStep =
+  | V2WorkflowAllocCellStep
+  | V2WorkflowSpiceCallStep
+  | V2WorkflowProjectResultStep
+  | V2WorkflowFreeCellStep;
+
+export type RunCaseInputV2 = {
+  schemaVersion: 2;
+  setup?: CaseSetup;
+  manifest: {
+    id: string;
+    kind: "method";
+  };
+  contract: V2ContractSpec;
+  args: Record<string, unknown>;
+  workflow: {
+    steps: V2WorkflowStep[];
+    cleanup?: V2WorkflowStep[];
+  };
+};
+
+export type RunCaseInput = RunCaseInputV1 | RunCaseInputV2;
 
 export type SpiceErrorState = {
   failed: boolean;
