@@ -1,0 +1,13 @@
+id: methods/time/sce2c@v1
+kind: method
+contractMethod: time.sce2c
+canonicalMethod: time.sce2c
+uses:
+  - workflows/legacy/time.sclk.basic@v1
+cases:
+  - id: time.sce2c
+    args:
+      - -77
+      - -287063909.06101716
+    expect:
+      ok: true

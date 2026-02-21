@@ -1,0 +1,13 @@
+id: methods/time/scencd@v1
+kind: method
+contractMethod: time.scencd
+canonicalMethod: time.scencd
+uses:
+  - workflows/legacy/time.sclk.basic@v1
+cases:
+  - id: time.scencd
+    args:
+      - -77
+      - "593328:90:5:0"
+    expect:
+      ok: true

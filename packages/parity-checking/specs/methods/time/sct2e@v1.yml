@@ -1,0 +1,13 @@
+id: methods/time/sct2e@v1
+kind: method
+contractMethod: time.sct2e
+canonicalMethod: time.sct2e
+uses:
+  - workflows/legacy/time.sclk.basic@v1
+cases:
+  - id: time.sct2e
+    args:
+      - -77
+      - 4319435080
+    expect:
+      ok: true

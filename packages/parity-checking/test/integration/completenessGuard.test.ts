@@ -44,7 +44,7 @@ describe("completeness guard", () => {
 
     const summary = validateCompleteness(methods);
     expect(summary.contractCount).toBe(173);
-    expect(summary.coveredCount).toBe(130);
-    expect(summary.denylistCount).toBe(43);
+    expect(summary.coveredCount).toBe(136);
+    expect(summary.denylistCount).toBe(37);
   });
 });
