@@ -1,0 +1,11 @@
+id: methods/error/failed@v1
+kind: method
+contractMethod: error.failed
+canonicalMethod: error.failed
+uses:
+  - workflows/legacy/error.basic@v1
+cases:
+  - id: error.failed.clean-state
+    args: []
+    expect:
+      ok: true

@@ -1,0 +1,12 @@
+id: methods/error/chkin@v1
+kind: method
+contractMethod: error.chkin
+canonicalMethod: error.chkin
+uses:
+  - workflows/legacy/error.basic@v1
+cases:
+  - id: error.chkin.basic
+    args:
+      - TSPICE_PARITY_CHKIN
+    expect:
+      ok: true

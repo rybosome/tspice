@@ -1,0 +1,15 @@
+id: methods/error/sigerr@v1
+kind: method
+contractMethod: error.sigerr
+canonicalMethod: error.sigerr
+uses:
+  - workflows/legacy/error.basic@v1
+cases:
+  - id: error.sigerr.raises
+    args:
+      - SPICE(PARITYSIGERR)
+    compare:
+      errorShort: true
+    expect:
+      ok: false
+      errorShort: SPICE(PARITYSIGERR)

@@ -1,0 +1,12 @@
+id: methods/error/setmsg@v1
+kind: method
+contractMethod: error.setmsg
+canonicalMethod: error.setmsg
+uses:
+  - workflows/legacy/error.basic@v1
+cases:
+  - id: error.setmsg.basic
+    args:
+      - TSPICE parity long message
+    expect:
+      ok: true

@@ -1,0 +1,12 @@
+id: methods/error/chkout@v1
+kind: method
+contractMethod: error.chkout
+canonicalMethod: error.chkout
+uses:
+  - workflows/legacy/error.basic@v1
+cases:
+  - id: error.chkout.basic
+    args:
+      - TSPICE_PARITY_CHKOUT
+    expect:
+      ok: true

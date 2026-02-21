@@ -1,0 +1,12 @@
+id: methods/error/getmsg@v1
+kind: method
+contractMethod: error.getmsg
+canonicalMethod: error.getmsg
+uses:
+  - workflows/legacy/error.basic@v1
+cases:
+  - id: error.getmsg.long
+    args:
+      - LONG
+    expect:
+      ok: true

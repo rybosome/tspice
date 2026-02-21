@@ -1,0 +1,11 @@
+id: methods/error/reset@v1
+kind: method
+contractMethod: error.reset
+canonicalMethod: error.reset
+uses:
+  - workflows/legacy/error.basic@v1
+cases:
+  - id: error.reset.basic
+    args: []
+    expect:
+      ok: true

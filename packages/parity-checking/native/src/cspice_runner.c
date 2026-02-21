@@ -2049,6 +2049,15 @@ typedef enum {
   CALL_TIME_TPICTR,
   CALL_TIME_TIMDEF,
 
+  // error
+  CALL_ERROR_FAILED,
+  CALL_ERROR_RESET,
+  CALL_ERROR_GETMSG,
+  CALL_ERROR_SETMSG,
+  CALL_ERROR_SIGERR,
+  CALL_ERROR_CHKIN,
+  CALL_ERROR_CHKOUT,
+
   // ids-names
   CALL_BODN2C,
   CALL_BODC2N,
@@ -2220,6 +2229,15 @@ static CallId parse_call_id(const char *call) {
       {"time.tparse", CALL_TIME_TPARSE},
       {"time.tpictr", CALL_TIME_TPICTR},
       {"time.timdef", CALL_TIME_TIMDEF},
+
+      // error
+      {"error.failed", CALL_ERROR_FAILED},
+      {"error.reset", CALL_ERROR_RESET},
+      {"error.getmsg", CALL_ERROR_GETMSG},
+      {"error.setmsg", CALL_ERROR_SETMSG},
+      {"error.sigerr", CALL_ERROR_SIGERR},
+      {"error.chkin", CALL_ERROR_CHKIN},
+      {"error.chkout", CALL_ERROR_CHKOUT},
 
       // ids-names
       {"ids-names.bodn2c", CALL_BODN2C},
@@ -2745,6 +2763,345 @@ int main(void) {
   }
 
   switch (callId) {
+  case CALL_ERROR_FAILED: {
+    if (tokens[argsTok].size > 0) {
+      write_error_json_ex("invalid_args", "error.failed expects no arguments", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceBoolean outFailed = failed_c();
+    fputs("{\"ok\":true,\"result\":", stdout);
+    fputs(outFailed == SPICETRUE ? "true" : "false", stdout);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_ERROR_RESET: {
+    if (tokens[argsTok].size > 0) {
+      write_error_json_ex("invalid_args", "error.reset expects no arguments", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    // Prime mutable error buffers so reset() is exercised deterministically.
+    setmsg_c("TSPICE parity reset prelude");
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in setmsg (reset prelude)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    reset_c();
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in reset", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_ERROR_GETMSG: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "error.getmsg expects args[0]=string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int whichTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (whichTok < 0 || whichTok >= tokenCount ||
+        tokens[whichTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "error.getmsg expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *which = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t whichErr =
+        jsmn_strdup(input, &tokens[whichTok], &which, strDetail,
+                    sizeof(strDetail));
+    if (whichErr != JSMN_STRDUP_OK) {
+      if (whichErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (strcmp(which, "SHORT") != 0 && strcmp(which, "LONG") != 0 &&
+        strcmp(which, "EXPLAIN") != 0) {
+      free(which);
+      write_error_json_ex(
+          "invalid_args",
+          "error.getmsg expects args[0] to be \"SHORT\", \"LONG\", or \"EXPLAIN\"",
+          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    // Prime a stable long-message payload because getmsg() reads global buffers.
+    setmsg_c("TSPICE parity getmsg long message");
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(which);
+      write_error_json("SPICE error in setmsg (getmsg prime)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    SpiceChar msg[1841];
+    msg[0] = '\0';
+    getmsg_c(which, (SpiceInt)sizeof(msg), msg);
+    free(which);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in getmsg", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(msg);
+    fputs("\"}\n", stdout);
+    goto done;
+  }
+
+  case CALL_ERROR_SETMSG: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "error.setmsg expects args[0]=string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int msgTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (msgTok < 0 || msgTok >= tokenCount || tokens[msgTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "error.setmsg expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *msg = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t msgErr =
+        jsmn_strdup(input, &tokens[msgTok], &msg, strDetail, sizeof(strDetail));
+    if (msgErr != JSMN_STRDUP_OK) {
+      if (msgErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    setmsg_c(msg);
+    free(msg);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in setmsg", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_ERROR_SIGERR: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "error.sigerr expects args[0]=string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int shortTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (shortTok < 0 || shortTok >= tokenCount ||
+        tokens[shortTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "error.sigerr expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *shortMsgArg = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t shortErr =
+        jsmn_strdup(input, &tokens[shortTok], &shortMsgArg, strDetail,
+                    sizeof(strDetail));
+    if (shortErr != JSMN_STRDUP_OK) {
+      if (shortErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    // Preserve deterministic long-message content in the raised SPICE error.
+    setmsg_c("TSPICE parity sigerr long message");
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(shortMsgArg);
+      write_error_json("SPICE error in setmsg (sigerr prelude)", shortMsg,
+                       longMsg, traceMsg);
+      goto done;
+    }
+
+    sigerr_c(shortMsgArg);
+    free(shortMsgArg);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in sigerr", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_ERROR_CHKIN: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "error.chkin expects args[0]=string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "error.chkin expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    chkin_c(name);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in chkin", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_ERROR_CHKOUT: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "error.chkout expects args[0]=string",
+                          NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    int nameTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (nameTok < 0 || nameTok >= tokenCount || tokens[nameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "error.chkout expects args[0] to be a string", NULL,
+                          NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *name = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t nameErr =
+        jsmn_strdup(input, &tokens[nameTok], &name, strDetail, sizeof(strDetail));
+    if (nameErr != JSMN_STRDUP_OK) {
+      if (nameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    // `chkout` is deterministic after a matching `chkin` in this case.
+    chkin_c(name);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(name);
+      write_error_json("SPICE error in chkin (chkout prime)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    chkout_c(name);
+    free(name);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json("SPICE error in chkout", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
   case CALL_TIME_STR2ET: {
     if (tokens[argsTok].size < 1) {
       write_error_json_ex(
