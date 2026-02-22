@@ -7,6 +7,12 @@
 // Implements:
 //   - time.str2et (alias: str2et) args: [string] -> number
 //   - time.et2utc (alias: et2utc) args: [number, string, number] -> string
+//   - time.scs2e args: [number, string] -> number
+//   - time.sce2s args: [number, number] -> string
+//   - time.scencd args: [number, string] -> number
+//   - time.scdecd args: [number, number] -> string
+//   - time.sct2e args: [number, number] -> number
+//   - time.sce2c args: [number, number] -> number
 //
 //   - ids-names.bodn2c (alias: bodn2c) args: [string] -> {found, code?}
 //   - ids-names.bodc2n (alias: bodc2n) args: [number] -> {found, name?}
@@ -1528,6 +1534,12 @@ typedef enum {
   // time
   CALL_TIME_STR2ET,
   CALL_TIME_ET2UTC,
+  CALL_TIME_SCS2E,
+  CALL_TIME_SCE2S,
+  CALL_TIME_SCENCD,
+  CALL_TIME_SCDECD,
+  CALL_TIME_SCT2E,
+  CALL_TIME_SCE2C,
 
   // time (misc)
   CALL_TIME_SPICE_VERSION,
@@ -1628,6 +1640,12 @@ static CallId parse_call_id(const char *call) {
       {"str2et", CALL_TIME_STR2ET},
       {"time.et2utc", CALL_TIME_ET2UTC},
       {"et2utc", CALL_TIME_ET2UTC},
+      {"time.scs2e", CALL_TIME_SCS2E},
+      {"time.sce2s", CALL_TIME_SCE2S},
+      {"time.scencd", CALL_TIME_SCENCD},
+      {"time.scdecd", CALL_TIME_SCDECD},
+      {"time.sct2e", CALL_TIME_SCT2E},
+      {"time.sce2c", CALL_TIME_SCE2C},
 
       // time (misc)
       {"time.spiceVersion", CALL_TIME_SPICE_VERSION},
@@ -3135,6 +3153,448 @@ int main(void) {
     fputs("{\"ok\":true,\"result\":\"", stdout);
     json_print_escaped(utc);
     fputs("\"}\n", stdout);
+    goto done;
+  }
+
+  case CALL_TIME_SCS2E: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.scs2e expects args[0]=number args[1]=string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int scTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int sclkchTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt sc = 0;
+    parse_result scParse = PARSE_INVALID;
+    if (scTok >= 0 && scTok < tokenCount) {
+      scParse = jsmn_parse_int(input, &tokens[scTok], &sc);
+    }
+    if (scTok < 0 || scTok >= tokenCount || scParse != PARSE_OK) {
+      if (scParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "time.scs2e expects args[0] to be an integer (SpiceInt range)",
+            scParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    if (sclkchTok < 0 || sclkchTok >= tokenCount || tokens[sclkchTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.scs2e expects args[1] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *sclkch = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t sclkchErr =
+        jsmn_strdup(input, &tokens[sclkchTok], &sclkch, strDetail, sizeof(strDetail));
+    if (sclkchErr != JSMN_STRDUP_OK) {
+      if (sclkchErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    scs2e_c(sc, sclkch, &et);
+    free(sclkch);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in scs2e", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)et);
+    goto done;
+  }
+
+  case CALL_TIME_SCE2S: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.sce2s expects args[0]=number args[1]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int scTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt sc = 0;
+    parse_result scParse = PARSE_INVALID;
+    if (scTok >= 0 && scTok < tokenCount) {
+      scParse = jsmn_parse_int(input, &tokens[scTok], &sc);
+    }
+    if (scTok < 0 || scTok >= tokenCount || scParse != PARSE_OK) {
+      if (scParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "time.sce2s expects args[0] to be an integer (SpiceInt range)",
+            scParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    parse_result etParse = PARSE_INVALID;
+    if (etTok >= 0 && etTok < tokenCount) {
+      etParse = jsmn_parse_double(input, &tokens[etTok], &et);
+    }
+    if (etTok < 0 || etTok >= tokenCount || etParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.sce2s expects args[1] to be a number",
+          etParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (etParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceChar out[2048];
+    out[0] = '\0';
+    sce2s_c(sc, et, (SpiceInt)sizeof(out), out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in sce2s", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(out);
+    fputs("\"}\n", stdout);
+    goto done;
+  }
+
+  case CALL_TIME_SCENCD: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.scencd expects args[0]=number args[1]=string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int scTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int sclkchTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt sc = 0;
+    parse_result scParse = PARSE_INVALID;
+    if (scTok >= 0 && scTok < tokenCount) {
+      scParse = jsmn_parse_int(input, &tokens[scTok], &sc);
+    }
+    if (scTok < 0 || scTok >= tokenCount || scParse != PARSE_OK) {
+      if (scParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "time.scencd expects args[0] to be an integer (SpiceInt range)",
+            scParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    if (sclkchTok < 0 || sclkchTok >= tokenCount || tokens[sclkchTok].type != JSMN_STRING) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.scencd expects args[1] to be a string",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    char *sclkch = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t sclkchErr =
+        jsmn_strdup(input, &tokens[sclkchTok], &sclkch, strDetail, sizeof(strDetail));
+    if (sclkchErr != JSMN_STRDUP_OK) {
+      if (sclkchErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble sclkdp = 0.0;
+    scencd_c(sc, sclkch, &sclkdp);
+    free(sclkch);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in scencd", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)sclkdp);
+    goto done;
+  }
+
+  case CALL_TIME_SCDECD: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.scdecd expects args[0]=number args[1]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int scTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int sclkdpTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt sc = 0;
+    parse_result scParse = PARSE_INVALID;
+    if (scTok >= 0 && scTok < tokenCount) {
+      scParse = jsmn_parse_int(input, &tokens[scTok], &sc);
+    }
+    if (scTok < 0 || scTok >= tokenCount || scParse != PARSE_OK) {
+      if (scParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "time.scdecd expects args[0] to be an integer (SpiceInt range)",
+            scParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble sclkdp = 0.0;
+    parse_result sclkdpParse = PARSE_INVALID;
+    if (sclkdpTok >= 0 && sclkdpTok < tokenCount) {
+      sclkdpParse = jsmn_parse_double(input, &tokens[sclkdpTok], &sclkdp);
+    }
+    if (sclkdpTok < 0 || sclkdpTok >= tokenCount || sclkdpParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.scdecd expects args[1] to be a number",
+          sclkdpParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (sclkdpParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceChar out[2048];
+    out[0] = '\0';
+    scdecd_c(sc, sclkdp, (SpiceInt)sizeof(out), out);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in scdecd", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":\"", stdout);
+    json_print_escaped(out);
+    fputs("\"}\n", stdout);
+    goto done;
+  }
+
+  case CALL_TIME_SCT2E: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.sct2e expects args[0]=number args[1]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int scTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int sclkdpTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt sc = 0;
+    parse_result scParse = PARSE_INVALID;
+    if (scTok >= 0 && scTok < tokenCount) {
+      scParse = jsmn_parse_int(input, &tokens[scTok], &sc);
+    }
+    if (scTok < 0 || scTok >= tokenCount || scParse != PARSE_OK) {
+      if (scParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "time.sct2e expects args[0] to be an integer (SpiceInt range)",
+            scParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble sclkdp = 0.0;
+    parse_result sclkdpParse = PARSE_INVALID;
+    if (sclkdpTok >= 0 && sclkdpTok < tokenCount) {
+      sclkdpParse = jsmn_parse_double(input, &tokens[sclkdpTok], &sclkdp);
+    }
+    if (sclkdpTok < 0 || sclkdpTok >= tokenCount || sclkdpParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.sct2e expects args[1] to be a number",
+          sclkdpParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (sclkdpParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    sct2e_c(sc, sclkdp, &et);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in sct2e", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)et);
+    goto done;
+  }
+
+  case CALL_TIME_SCE2C: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.sce2c expects args[0]=number args[1]=number",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    int scTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    int etTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+
+    SpiceInt sc = 0;
+    parse_result scParse = PARSE_INVALID;
+    if (scTok >= 0 && scTok < tokenCount) {
+      scParse = jsmn_parse_int(input, &tokens[scTok], &sc);
+    }
+    if (scTok < 0 || scTok >= tokenCount || scParse != PARSE_OK) {
+      if (scParse == PARSE_UNSUPPORTED) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "time.sce2c expects args[0] to be an integer (SpiceInt range)",
+            scParse == PARSE_TOO_LONG ? "numeric literal too long" : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    SpiceDouble et = 0.0;
+    parse_result etParse = PARSE_INVALID;
+    if (etTok >= 0 && etTok < tokenCount) {
+      etParse = jsmn_parse_double(input, &tokens[etTok], &et);
+    }
+    if (etTok < 0 || etTok >= tokenCount || etParse != PARSE_OK) {
+      write_error_json_ex(
+          "invalid_args",
+          "time.sce2c expects args[1] to be a number",
+          etParse == PARSE_TOO_LONG
+              ? "numeric literal too long"
+              : (etParse == PARSE_OUT_OF_RANGE ? "numeric literal out of range" : NULL),
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble sclkdp = 0.0;
+    sce2c_c(sc, et, &sclkdp);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in sce2c", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fprintf(stdout, "{\"ok\":true,\"result\":%.17g}\n", (double)sclkdp);
     goto done;
   }
 

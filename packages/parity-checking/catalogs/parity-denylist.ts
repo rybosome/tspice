@@ -39,10 +39,4 @@ export const PARITY_DENYLIST = [
   "geometry.sincpt",
   "geometry.subpnt",
   "geometry.subslr",
-  "time.scdecd",
-  "time.sce2c",
-  "time.sce2s",
-  "time.scencd",
-  "time.scs2e",
-  "time.sct2e",
 ] as const;

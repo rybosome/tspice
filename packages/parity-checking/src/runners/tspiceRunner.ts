@@ -277,6 +277,72 @@ const DISPATCH: Record<string, DispatchFn> = {
     return backend.et2utc(args[0], args[1], args[2]);
   },
 
+  "time.scs2e": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`time.scs2e expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`time.scs2e expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "time.scs2e args[0]");
+    return backend.scs2e(args[0], args[1]);
+  },
+
+  "time.sce2s": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`time.sce2s expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`time.sce2s expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "time.sce2s args[0]");
+    return backend.sce2s(args[0], args[1]);
+  },
+
+  "time.scencd": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`time.scencd expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "string") {
+      invalidArgs(`time.scencd expects args[1] to be a string (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "time.scencd args[0]");
+    return backend.scencd(args[0], args[1]);
+  },
+
+  "time.scdecd": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`time.scdecd expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`time.scdecd expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "time.scdecd args[0]");
+    return backend.scdecd(args[0], args[1]);
+  },
+
+  "time.sct2e": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`time.sct2e expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`time.sct2e expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "time.sct2e args[0]");
+    return backend.sct2e(args[0], args[1]);
+  },
+
+  "time.sce2c": (backend, args) => {
+    if (typeof args[0] !== "number") {
+      invalidArgs(`time.sce2c expects args[0] to be a number (got ${formatValue(args[0])})`);
+    }
+    if (typeof args[1] !== "number") {
+      invalidArgs(`time.sce2c expects args[1] to be a number (got ${formatValue(args[1])})`);
+    }
+    assertInteger(args[0], "time.sce2c args[0]");
+    return backend.sce2c(args[0], args[1]);
+  },
+
   // ids-names
   "ids-names.bodn2c": (backend, args) => {
     if (typeof args[0] !== "string") {

@@ -1,0 +1,29 @@
+schemaVersion: 2
+manifest:
+  id: methods/time/sce2s@v2
+  kind: method
+contract:
+  contractMethod: time.sce2s
+  canonicalMethod: time.sce2s
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+    - $FIXTURES/cook_01.tsc
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: time.sce2s
+    args:
+      - -77
+      - -287063909.06101716
+    expect:
+      ok: true
