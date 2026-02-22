@@ -11,8 +11,6 @@ contract:
   args:
     - name: size
       type: spiceInt
-      constraints:
-        min: 0
   result:
     type: object
     required: [kind, size, card]
