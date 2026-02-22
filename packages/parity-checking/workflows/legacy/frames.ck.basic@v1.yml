@@ -1,8 +1,0 @@
-id: workflows/legacy/frames.ck.basic@v1
-kind: workflow
-setup:
-  kernels:
-    - $FIXTURES/mgs-minimal
-notes:
-  - Loads deterministic MGS CK + SCLK fixtures for CK parity calls.
-  - Methods pass CK paths directly so file-oriented APIs run against the same kernel pack.

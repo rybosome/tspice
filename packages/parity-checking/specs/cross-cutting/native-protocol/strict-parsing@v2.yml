@@ -1,7 +1,7 @@
-schemaVersion: 1
-kind: crossCuttingSpec
-id: native-protocol/strict-parsing@v1
-owner: parity-checking
+schemaVersion: 2
+manifest:
+  id: native-protocol/strict-parsing@v2
+  kind: crossCuttingSpec
 cases:
   - id: rejects-trailing-bytes
     transport: native

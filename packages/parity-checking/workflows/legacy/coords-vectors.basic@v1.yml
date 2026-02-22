@@ -1,8 +1,0 @@
-id: workflows/legacy/coords-vectors.basic@v1
-kind: workflow
-compareDefaults:
-  tolAbs: 1e-12
-  tolRel: 1e-12
-notes:
-  - Migrated from legacy scenario coords-vectors.basic.yml.
-  - Generated during parity-checking migration from backend-verify.

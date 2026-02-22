@@ -83,4 +83,15 @@ describe("parity-checking spec coverage", () => {
     expect(coveredCanonical.size).toBe(173);
     expect(denylist.length).toBe(0);
   });
+
+  it("keeps generated parity denylist catalog present and empty", () => {
+    const testDir = path.dirname(fileURLToPath(import.meta.url));
+    const denylistPath = path.resolve(testDir, "../catalogs/parity-denylist.json");
+
+    expect(fs.existsSync(denylistPath)).toBe(true);
+
+    const raw = JSON.parse(fs.readFileSync(denylistPath, "utf8")) as unknown;
+    expect(raw).toEqual([]);
+    expect(readParityDenylist()).toEqual([]);
+  });
 });

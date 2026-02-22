@@ -1,4 +1,0 @@
-kind: workflow
-id: workflow.legacy.ek.fast-write@v1
-notes:
-  - Provides temp-file EK fast-write coverage for ekifld/ekac*/ekffld methods.
