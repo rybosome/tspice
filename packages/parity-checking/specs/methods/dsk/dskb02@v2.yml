@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/dsk/dskb02@v2
+  kind: method
+contract:
+  contractMethod: dsk.dskb02
+  canonicalMethod: dsk.dskb02
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: bookkeeping-from-minimal-dsk
+    args:
+      - $FIXTURES/kernels/de421_minimal.bds
+    expect:
+      ok: true

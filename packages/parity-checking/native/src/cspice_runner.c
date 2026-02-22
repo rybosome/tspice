@@ -50,6 +50,14 @@
 // This keeps the runner deterministic (invalid_args) instead of OOM/overflow.
 #define CSPICE_RUNNER_MAX_KPOOL_ALLOC_BYTES (64 * 1024 * 1024)
 
+// Minimal triangle mesh used by DSK parity scenarios.
+#define DSK_MINIMAL_NV 3
+#define DSK_MINIMAL_NP 1
+#define DSK_MINIMAL_WORKSZ 100000
+#define DSK_MINIMAL_VOXPSZ 5000
+#define DSK_MINIMAL_VOXLSZ 5000
+#define DSK_MINIMAL_SPXISZ 150000
+
 // --- Minimal JSON parsing via jsmn (public domain) --------------------------
 // https://github.com/zserge/jsmn
 
@@ -1300,6 +1308,7 @@ static void sanitize_file_io_temp_tag(const char *tag,
 }
 
 static bool build_file_io_temp_path(const char *tag,
+                                    const char *extension,
                                     char *outPath,
                                     size_t outPathBytes,
                                     char *detail,
@@ -1323,14 +1332,25 @@ static bool build_file_io_temp_path(const char *tag,
   static uint64_t counter = 0;
   counter += 1;
 
+  if (extension == NULL || extension[0] == '\0') {
+    extension = ".tmp";
+  }
+
+  const char *extLead = "";
+  if (extension[0] != '.') {
+    extLead = ".";
+  }
+
   const int n = snprintf(
       outPath,
       outPathBytes,
-      "%s/tspice-parity-%s-%ld-%" PRIu64 ".dla",
+      "%s/tspice-parity-%s-%ld-%" PRIu64 "%s%s",
       tmpDir,
       safeTag,
       (long)getpid(),
-      (uint64_t)counter);
+      (uint64_t)counter,
+      extLead,
+      extension);
 
   if (n < 0 || (size_t)n >= outPathBytes) {
     if (detail != NULL && detailBytes > 0) {
@@ -1368,6 +1388,136 @@ static void write_found_dla_descriptor_json(const SpiceDLADescr *descr,
   fputs(",\"csize\":", stdout);
   fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->csize);
   fputs("}}}\n", stdout);
+}
+
+static const SpiceDouble DSK_MINIMAL_VERTICES[DSK_MINIMAL_NV][3] = {
+    {0.0, 0.0, 0.0},
+    {1.0, 0.0, 0.0},
+    {0.0, 1.0, 0.0},
+};
+
+static const SpiceInt DSK_MINIMAL_PLATES[DSK_MINIMAL_NP][3] = {
+    {1, 2, 3},
+};
+
+static const SpiceDouble DSK_MINIMAL_CORPAR[SPICE_DSK_NSYPAR] = {
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+};
+
+static const SpiceDouble READ_VIRTUAL_OUTPUT_STATES[2][6] = {
+    {0.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+    {60.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+};
+
+static void write_dsk_descriptor_json(const SpiceDSKDescr *descr) {
+  fputs("{\"ok\":true,\"result\":{", stdout);
+
+  fputs("\"surfce\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->surfce);
+  fputs(",\"center\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->center);
+  fputs(",\"dclass\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->dclass);
+  fputs(",\"dtype\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->dtype);
+  fputs(",\"frmcde\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->frmcde);
+  fputs(",\"corsys\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->corsys);
+
+  fputs(",\"corpar\":[", stdout);
+  for (int i = 0; i < SPICE_DSK_NSYPAR; i++) {
+    if (i > 0) {
+      fputc(',', stdout);
+    }
+    fprintf(stdout, "%.17g", (double)descr->corpar[i]);
+  }
+  fputc(']', stdout);
+
+  fputs(",\"co1min\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co1min);
+  fputs(",\"co1max\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co1max);
+  fputs(",\"co2min\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co2min);
+  fputs(",\"co2max\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co2max);
+  fputs(",\"co3min\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co3min);
+  fputs(",\"co3max\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->co3max);
+  fputs(",\"start\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->start);
+  fputs(",\"stop\":", stdout);
+  fprintf(stdout, "%.17g", (double)descr->stop);
+
+  fputs("}}\n", stdout);
+}
+
+static void write_dskb02_json(
+    SpiceInt nv,
+    SpiceInt np,
+    SpiceInt nvxtot,
+    const SpiceDouble vtxbds[3][2],
+    SpiceDouble voxsiz,
+    const SpiceDouble voxori[3],
+    const SpiceInt vgrext[3],
+    SpiceInt cgscal,
+    SpiceInt vtxnpl,
+    SpiceInt voxnpt,
+    SpiceInt voxnpl) {
+  fputs("{\"ok\":true,\"result\":{", stdout);
+  fputs("\"nv\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)nv);
+  fputs(",\"np\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)np);
+  fputs(",\"nvxtot\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)nvxtot);
+
+  fputs(",\"vtxbds\":[", stdout);
+  for (int axis = 0; axis < 3; axis++) {
+    if (axis > 0) {
+      fputc(',', stdout);
+    }
+    fputc('[', stdout);
+    fprintf(stdout, "%.17g", (double)vtxbds[axis][0]);
+    fputc(',', stdout);
+    fprintf(stdout, "%.17g", (double)vtxbds[axis][1]);
+    fputc(']', stdout);
+  }
+  fputc(']', stdout);
+
+  fputs(",\"voxsiz\":", stdout);
+  fprintf(stdout, "%.17g", (double)voxsiz);
+
+  fputs(",\"voxori\":[", stdout);
+  for (int i = 0; i < 3; i++) {
+    if (i > 0) {
+      fputc(',', stdout);
+    }
+    fprintf(stdout, "%.17g", (double)voxori[i]);
+  }
+  fputc(']', stdout);
+
+  fputs(",\"vgrext\":[", stdout);
+  for (int i = 0; i < 3; i++) {
+    if (i > 0) {
+      fputc(',', stdout);
+    }
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)vgrext[i]);
+  }
+  fputc(']', stdout);
+
+  fputs(",\"cgscal\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)cgscal);
+  fputs(",\"vtxnpl\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)vtxnpl);
+  fputs(",\"voxnpt\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)voxnpt);
+  fputs(",\"voxnpl\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)voxnpl);
+
+  fputs("}}\n", stdout);
 }
 
 

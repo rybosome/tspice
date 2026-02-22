@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/dsk/dsksrf@v2
+  kind: method
+contract:
+  contractMethod: dsk.dsksrf
+  canonicalMethod: dsk.dsksrf
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: surface-ids-from-minimal-dsk
+    args:
+      - $FIXTURES/kernels/de421_minimal.bds
+    expect:
+      ok: true

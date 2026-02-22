@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/dskw02@v2
+  kind: method
+contract:
+  contractMethod: file-io.dskw02
+  canonicalMethod: file-io.dskw02
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: write-single-segment-dsk
+    args:
+      - parity-file-io-dskw02
+    expect:
+      ok: true

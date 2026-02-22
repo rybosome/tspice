@@ -1,0 +1,22 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/dskopn@v2
+  kind: method
+contract:
+  contractMethod: file-io.dskopn
+  canonicalMethod: file-io.dskopn
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: open-close-temp-dsk
+    args:
+      - parity-file-io-dskopn
+      - TSPICE
+      - 0
+    expect:
+      ok: true
