@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernels/ktotal@v2
+  kind: method
+contract:
+  contractMethod: kernels.ktotal
+  canonicalMethod: kernels.ktotal
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: kernels.ktotal
+    args:
+      - ALL
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    expect:
+      ok: true

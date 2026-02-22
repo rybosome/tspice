@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernels/furnsh@v2
+  kind: method
+contract:
+  contractMethod: kernels.furnsh
+  canonicalMethod: kernels.furnsh
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: kernels.furnsh.text-kernel
+    args:
+      - $FIXTURES/kernel-pool-parity.tpc
+    expect:
+      ok: true

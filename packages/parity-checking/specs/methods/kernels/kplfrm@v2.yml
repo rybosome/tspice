@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernels/kplfrm@v2
+  kind: method
+contract:
+  contractMethod: kernels.kplfrm
+  canonicalMethod: kernels.kplfrm
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: kernels.kplfrm
+    args:
+      - 4
+    setup:
+      kernels:
+        - $FIXTURES/frames-minimal/earth_topo_201023.tf
+    expect:
+      ok: true

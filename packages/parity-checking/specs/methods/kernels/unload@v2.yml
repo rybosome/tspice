@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernels/unload@v2
+  kind: method
+contract:
+  contractMethod: kernels.unload
+  canonicalMethod: kernels.unload
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: kernels.unload.text-kernel
+    args:
+      - $FIXTURES/kernel-pool-parity.tpc
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    expect:
+      ok: true

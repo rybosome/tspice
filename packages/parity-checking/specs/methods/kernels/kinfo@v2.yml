@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernels/kinfo@v2
+  kind: method
+contract:
+  contractMethod: kernels.kinfo
+  canonicalMethod: kernels.kinfo
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: kernels.kinfo
+    args:
+      - $FIXTURES/kernel-pool-parity.tpc
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    expect:
+      ok: true

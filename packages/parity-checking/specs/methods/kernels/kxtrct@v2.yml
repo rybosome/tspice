@@ -1,0 +1,22 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernels/kxtrct@v2
+  kind: method
+contract:
+  contractMethod: kernels.kxtrct
+  canonicalMethod: kernels.kxtrct
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: kernels.kxtrct
+    args:
+      - A
+      - - =
+      - A B C = D
+    expect:
+      ok: true

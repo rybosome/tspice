@@ -1,0 +1,24 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernels/kdata@v2
+  kind: method
+contract:
+  contractMethod: kernels.kdata
+  canonicalMethod: kernels.kdata
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: kernels.kdata
+    args:
+      - 0
+      - ALL
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    expect:
+      ok: true
