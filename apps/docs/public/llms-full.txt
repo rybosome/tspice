@@ -147,9 +147,7 @@ These example files are committed and typechecked as part of the monorepo TypeSc
 ### `packages/tspice/test/llm-examples/backend-env-selection.example.ts`
 
 ```ts
-import { spiceClients } from "@rybosome/tspice";
-
-type SpiceSync = Awaited<ReturnType<typeof spiceClients.toSync>>["spice"];
+import { spiceClients, type SpiceSync } from "@rybosome/tspice";
 
 function parseBackend(input: string | undefined): "wasm" | "node" {
   // Default to WASM for portability.
@@ -193,12 +191,9 @@ export async function getToolkitVersion(backend: "wasm" | "node") {
 ### `packages/tspice/test/llm-examples/kernel-loading.example.ts`
 
 ```ts
-import type { KernelSource } from "@rybosome/tspice";
-import { spiceClients } from "@rybosome/tspice";
+import { spiceClients, type KernelSource, type SpiceSync } from "@rybosome/tspice";
 
 import { readFile } from "node:fs/promises";
-
-type SpiceSync = Awaited<ReturnType<typeof spiceClients.toSync>>["spice"];
 
 /**
  * Example: load kernels from the OS filesystem (Node backend only).
@@ -352,9 +347,7 @@ export async function utcEtRoundTrip(lskBytes: Uint8Array) {
 ### `packages/tspice/test/llm-examples/webworker-client.example.ts`
 
 ```ts
-import { kernels, spiceClients } from "@rybosome/tspice";
-
-type SpiceWebWorker = Awaited<ReturnType<typeof spiceClients.toWebWorker>>["spice"];
+import { kernels, spiceClients, type SpiceAsync } from "@rybosome/tspice";
 
 /**
  * Example: create an async WebWorker client in the browser.
@@ -365,7 +358,7 @@ type SpiceWebWorker = Awaited<ReturnType<typeof spiceClients.toWebWorker>>["spic
  * - WebWorker clients are async: all `spice.kit.*` calls return Promises.
  */
 export async function withWebWorkerClient<T>(
-  fn: (spice: SpiceWebWorker) => Promise<T> | T,
+  fn: (spice: SpiceAsync) => Promise<T> | T,
 ): Promise<T> {
   const { spice, dispose } = await spiceClients.toWebWorker();
 

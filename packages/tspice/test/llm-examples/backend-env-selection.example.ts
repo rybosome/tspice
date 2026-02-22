@@ -1,6 +1,4 @@
-import { spiceClients } from "@rybosome/tspice";
-
-type SpiceSync = Awaited<ReturnType<typeof spiceClients.toSync>>["spice"];
+import { spiceClients, type SpiceSync } from "@rybosome/tspice";
 
 function parseBackend(input: string | undefined): "wasm" | "node" {
   // Default to WASM for portability.
