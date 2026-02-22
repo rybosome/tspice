@@ -1,9 +1,4 @@
 [
-  "ek.ekaclc",
-  "ek.ekacld",
-  "ek.ekacli",
-  "ek.ekffld",
-  "ek.ekifld",
   "ephemeris.spkcls",
   "ephemeris.spkcov",
   "ephemeris.spkobj",

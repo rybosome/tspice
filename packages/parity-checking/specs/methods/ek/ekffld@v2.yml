@@ -1,0 +1,19 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekffld@v2
+  kind: method
+contract:
+  contractMethod: ek.ekffld
+  canonicalMethod: ek.ekffld
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: finalizes-fast-write-segment
+    args: []
+    expect:
+      ok: true

@@ -1,0 +1,19 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekacli@v2
+  kind: method
+contract:
+  contractMethod: ek.ekacli
+  canonicalMethod: ek.ekacli
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: appends-integer-column-fast-write
+    args: []
+    expect:
+      ok: true

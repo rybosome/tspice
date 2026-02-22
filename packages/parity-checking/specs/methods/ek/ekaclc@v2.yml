@@ -1,0 +1,19 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekaclc@v2
+  kind: method
+contract:
+  contractMethod: ek.ekaclc
+  canonicalMethod: ek.ekaclc
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: appends-character-column-fast-write
+    args: []
+    expect:
+      ok: true
