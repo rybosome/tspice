@@ -5,12 +5,17 @@ import { fileURLToPath } from "node:url";
 
 import type {
   CaseRunner,
-  RunCaseInputV1,
   RunCaseInput,
   RunCaseResult,
   RunnerErrorReport,
   SpiceErrorState,
 } from "./types.js";
+
+type LegacyInvokeInput = {
+  setup?: RunCaseInput["setup"];
+  call: string;
+  args: unknown[];
+};
 
 export type CspiceRunnerBuildState = {
   available: boolean;
@@ -145,7 +150,7 @@ export type InvokeRunnerOptions = {
 /** Invoke the CSPICE runner binary for a single call and normalize its response. */
 export async function invokeRunner(
   binaryPath: string,
-  input: RunCaseInput,
+  input: RunCaseInput | LegacyInvokeInput,
   opts: InvokeRunnerOptions = {},
 ): Promise<CRunnerResponse> {
   const timeoutMs = opts.timeoutMs ?? 15_000;
@@ -435,7 +440,7 @@ function asSpiceErrorState(err: CRunnerError["error"]): SpiceErrorState {
   return spice;
 }
 
-function toLegacyInvokeInput(input: Extract<RunCaseInput, { schemaVersion: 2 }>): RunCaseInputV1 | null {
+function toLegacyInvokeInput(input: RunCaseInput): LegacyInvokeInput | null {
   if (input.workflow.steps.length !== 1) {
     return null;
   }
@@ -484,8 +489,7 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
       }
 
       try {
-        const effectiveInput =
-          input.schemaVersion === 2 ? (toLegacyInvokeInput(input) ?? input) : input;
+        const effectiveInput = toLegacyInvokeInput(input) ?? input;
 
         const out = await invokeRunner(binaryPath, effectiveInput);
         if (out.ok) {

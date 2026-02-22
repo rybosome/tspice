@@ -1,19 +1,14 @@
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { buildWorkflowIndex } from "../dsl/buildWorkflowIndex.js";
 import { discoverCrossCuttingSpecs, discoverYamlFiles } from "../dsl/discoverCrossCuttingSpecs.js";
 import { loadYamlFile } from "../dsl/loadYaml.js";
-import { mergeResolvedMethodSpec } from "../dsl/mergeResolvedSpec.js";
-import { resolveMethodIncludes } from "../dsl/resolveIncludes.js";
 import {
   parseCrossCuttingSpecAny,
   parseMethodSpecAny,
   parseWorkflowSpec,
 } from "../dsl/schemaValidate.js";
-import { runDispatchAliasParityGuard } from "./dispatchParityGuard.js";
 import { executeCrossCuttingSpec } from "./executeCrossCuttingSpec.js";
-import { executeMethodSpecParity } from "./executeMethodSpec.js";
 import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateCrossCuttingSpecs } from "../guards/validateCrossCuttingSpecs.js";
@@ -28,7 +23,7 @@ import {
   isMethodSpecV2,
   methodSpecId,
 } from "../dsl/types.js";
-import type { LoadedParitySpecs, MethodSpec, MethodSpecV2, ResolvedMethodSpec } from "../dsl/types.js";
+import type { LoadedParitySpecs, MethodSpecV2 } from "../dsl/types.js";
 import type { CaseRunner } from "../runners/types.js";
 
 function packageRoot(): string {
@@ -99,17 +94,6 @@ async function withRunners<T>(
   }
 }
 
-async function withTspiceRunner<T>(fn: (runner: CaseRunner) => Promise<T>): Promise<T> {
-  let tspice: CaseRunner | undefined;
-
-  try {
-    tspice = await createTspiceRunner();
-    return await fn(tspice);
-  } finally {
-    await tspice?.dispose?.();
-  }
-}
-
 /** Run parity validation across dispatch aliases, cross-cutting specs, and method specs. */
 export async function runParityEngine(): Promise<ParityEngineSummary> {
   const specs = await loadParitySpecs();
@@ -121,13 +105,7 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
   validateCrossCuttingSpecs(specs.crossCutting);
   const aliasCoverage = validateDispatchAliasCoverage();
 
-  const v1Methods: MethodSpec[] = specs.methods.filter((method): method is MethodSpec => !isMethodSpecV2(method));
-  const v2Methods: MethodSpecV2[] = specs.methods.filter(isMethodSpecV2);
-
-  const workflowIndex = buildWorkflowIndex(specs.workflows);
-  const resolvedMethods: ResolvedMethodSpec[] = v1Methods.map((method) =>
-    mergeResolvedMethodSpec(method, resolveMethodIncludes(method, workflowIndex)),
-  );
+  const methods: MethodSpecV2[] = specs.methods.filter(isMethodSpecV2);
 
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
@@ -155,12 +133,7 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
     }
 
     let methodCaseCount = 0;
-    for (const method of resolvedMethods) {
-      const summary = await executeMethodSpecParity(method, runners);
-      methodCaseCount += summary.caseCount;
-    }
-
-    for (const method of v2Methods) {
+    for (const method of methods) {
       const summary = await executeMethodSpecParityV2(method, runners);
       methodCaseCount += summary.caseCount;
     }
@@ -180,12 +153,5 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
     };
   });
 
-  const aliasGuard = await withTspiceRunner(async (tspiceRunner) =>
-    runDispatchAliasParityGuard(resolvedMethods, tspiceRunner),
-  );
-
-  return {
-    ...paritySummary,
-    aliasGuardValidatedCount: aliasGuard.validatedAliasCount,
-  };
+  return paritySummary;
 }

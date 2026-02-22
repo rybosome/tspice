@@ -57,7 +57,7 @@ function unsupportedCall(message: string): never {
   throw err;
 }
 
-function toLegacyInvokeInput(input: Extract<RunCaseInput, { schemaVersion: 2 }>): {
+function toLegacyInvokeInput(input: RunCaseInput): {
   setup: typeof input.setup;
   call: string;
   args: unknown[];
@@ -2045,28 +2045,18 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           }
         }
 
-        if (input.schemaVersion === 2) {
-          const legacyInput = toLegacyInvokeInput(input);
-          if (legacyInput !== null) {
-            const fn = DISPATCH[legacyInput.call];
-            if (!fn) {
-              unsupportedCall(`Unsupported call: ${formatValue(legacyInput.call)}`);
-            }
-
-            const result = await fn(backend, legacyInput.args);
-            return { ok: true, result };
+        const legacyInput = toLegacyInvokeInput(input);
+        if (legacyInput !== null) {
+          const fn = DISPATCH[legacyInput.call];
+          if (!fn) {
+            unsupportedCall(`Unsupported call: ${formatValue(legacyInput.call)}`);
           }
 
-          const result = await executeV2CaseWithBackend(backend, input);
+          const result = await fn(backend, legacyInput.args);
           return { ok: true, result };
         }
 
-        const fn = DISPATCH[input.call];
-        if (!fn) {
-          unsupportedCall(`Unsupported call: ${formatValue(input.call)}`);
-        }
-
-        const result = await fn(backend, input.args);
+        const result = await executeV2CaseWithBackend(backend, input);
         return { ok: true, result };
       } catch (error) {
         const report = safeErrorReport(error);

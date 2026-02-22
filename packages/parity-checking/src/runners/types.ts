@@ -4,13 +4,6 @@ export type CaseSetup = {
   kernels?: KernelEntry[];
 };
 
-export type RunCaseInputV1 = {
-  schemaVersion?: 1;
-  setup?: CaseSetup;
-  call: string;
-  args: unknown[];
-};
-
 export type V2ContractArgSpec = {
   name: string;
   type: "spiceInt";
@@ -114,7 +107,7 @@ export type RunCaseInputV2 = {
   };
 };
 
-export type RunCaseInput = RunCaseInputV1 | RunCaseInputV2;
+export type RunCaseInput = RunCaseInputV2;
 
 export type SpiceErrorState = {
   failed: boolean;

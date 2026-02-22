@@ -705,25 +705,11 @@ export function parseMethodSpecV2(file: ScenarioYamlFile): MethodSpecV2 {
 export function parseMethodSpecAny(file: ScenarioYamlFile): AnyMethodSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
 
-  if (obj.schemaVersion === undefined) {
-    return parseMethodSpec(file);
+  if (obj.schemaVersion !== 2) {
+    throw new TypeError(`method.schemaVersion must be 2 (got ${JSON.stringify(obj.schemaVersion)})`);
   }
 
-  const schemaVersion = assertInteger(obj.schemaVersion, "method.schemaVersion");
-  if (schemaVersion === 2) {
-    return parseMethodSpecV2(file);
-  }
-
-  if (schemaVersion === 1) {
-    // Back-compat: allow schemaVersion: 1 on legacy shape.
-    const { schemaVersion: _ignored, ...legacy } = obj;
-    return parseMethodSpec({
-      ...file,
-      data: legacy,
-    });
-  }
-
-  throw new TypeError(`method.schemaVersion must be 1 or 2 (got ${schemaVersion})`);
+  return parseMethodSpecV2(file);
 }
 
 function parseCrossCuttingExpectation(value: unknown, label: string): CrossCuttingCaseExpectation {
@@ -830,13 +816,9 @@ export function parseCrossCuttingSpecV2(file: ScenarioYamlFile): CrossCuttingSpe
 export function parseCrossCuttingSpecAny(file: ScenarioYamlFile): AnyCrossCuttingSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
 
-  const schemaVersion = assertInteger(obj.schemaVersion, "crossCutting.schemaVersion");
-  if (schemaVersion === 1) {
-    return parseCrossCuttingSpec(file);
-  }
-  if (schemaVersion === 2) {
-    return parseCrossCuttingSpecV2(file);
+  if (obj.schemaVersion !== 2) {
+    throw new TypeError(`crossCutting.schemaVersion must be 2 (got ${JSON.stringify(obj.schemaVersion)})`);
   }
 
-  throw new TypeError(`crossCutting.schemaVersion must be 1 or 2 (got ${schemaVersion})`);
+  return parseCrossCuttingSpecV2(file);
 }
