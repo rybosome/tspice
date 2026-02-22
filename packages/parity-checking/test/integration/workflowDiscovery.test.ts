@@ -5,8 +5,8 @@ import { fileURLToPath } from "node:url";
 import { parse as parseYaml } from "yaml";
 import { describe, expect, it } from "vitest";
 
-import { parseMethodSpecAny } from "../../src/dsl/schemaValidate.js";
-import { validateCompleteness } from "../../src/guards/validateCompleteness.js";
+import { buildWorkflowIndex } from "../../src/dsl/buildWorkflowIndex.js";
+import { parseWorkflowSpec } from "../../src/dsl/schemaValidate.js";
 
 function discoverYamlFiles(rootDir: string): string[] {
   const out: string[] = [];
@@ -30,22 +30,22 @@ function discoverYamlFiles(rootDir: string): string[] {
   return out;
 }
 
-describe("completeness guard", () => {
-  it("validates contract coverage against generated catalogs", () => {
+describe("workflow discovery", () => {
+  it("discovers the EK fast-write sentinel workflow", () => {
     const testDir = path.dirname(fileURLToPath(import.meta.url));
-    const methodsDir = path.resolve(testDir, "../../specs/methods");
+    const workflowsDir = path.resolve(testDir, "../../workflows");
 
-    const methods = discoverYamlFiles(methodsDir).map((filePath) =>
-      parseMethodSpecAny({
+    const workflows = discoverYamlFiles(workflowsDir).map((filePath) =>
+      parseWorkflowSpec({
         sourcePath: filePath,
         data: parseYaml(fs.readFileSync(filePath, "utf8")),
       }),
     );
 
-    const summary = validateCompleteness(methods);
-    expect(summary.contractCount).toBeGreaterThan(0);
-    expect(summary.coveredCount).toBeGreaterThan(0);
-    expect(summary.denylistCount).toBeGreaterThanOrEqual(0);
-    expect(summary.coveredCount + summary.denylistCount).toBe(summary.contractCount);
+    const workflowIndex = buildWorkflowIndex(workflows);
+    const workflow = workflowIndex.get("workflow.legacy.ek.fast-write@v1");
+
+    expect(workflow).toBeDefined();
+    expect(workflow?.notes?.some((note) => note.includes("wiring-only"))).toBe(true);
   });
 });

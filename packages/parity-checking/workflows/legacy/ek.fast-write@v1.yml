@@ -1,0 +1,5 @@
+kind: workflow
+id: workflow.legacy.ek.fast-write@v1
+notes:
+  - Discovery sentinel for planned temp-file EK fast-write end-to-end coverage.
+  - Current v2 EK fast-write method specs are wiring-only and assert unsupported_call until runWorkflow support lands.

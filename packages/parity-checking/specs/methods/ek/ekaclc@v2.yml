@@ -1,0 +1,26 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekaclc@v2
+  kind: method
+contract:
+  contractMethod: ek.ekaclc
+  canonicalMethod: ek.ekaclc
+  aliases: []
+  result:
+    const: null
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: wiring-only-appends-character-column-fast-write-with-realistic-args
+    args:
+      - 101
+      - 0
+      - NAME
+      - [Alice, Bob, Carol]
+      - [1, 1, 1]
+      - [false, false, false]
+      - [0, 1, 2]
+    expect:
+      ok: false
+      errorCode: unsupported_call

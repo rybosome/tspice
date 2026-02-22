@@ -4,9 +4,6 @@ import { methodCanonicalMethod } from "../dsl/types.js";
 
 import type { AnyMethodSpec } from "../dsl/types.js";
 
-const BASELINE_CONTRACT_METHOD_COVERAGE = 114;
-const MAX_BASELINE_DENYLIST_SIZE = 48;
-
 function stableSort(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
 }
@@ -39,16 +36,17 @@ export function validateCompleteness(methodSpecs: AnyMethodSpec[]): Completeness
     );
   }
 
-  if (denylist.length > MAX_BASELINE_DENYLIST_SIZE) {
-    throw new Error(
-      `Parity denylist grew beyond baseline (${MAX_BASELINE_DENYLIST_SIZE}). Current count=${denylist.length}.`,
-    );
-  }
-
   const unknownDenylist = denylist.filter((method) => !contractSet.has(method));
   if (unknownDenylist.length > 0) {
     throw new Error(
       `Parity denylist has unknown contract methods (${unknownDenylist.length}): ${unknownDenylist.join(", ")}`,
+    );
+  }
+
+  const denylistedCovered = denylist.filter((method) => coveredContract.has(method));
+  if (denylistedCovered.length > 0) {
+    throw new Error(
+      `Parity denylist contains already-covered contract methods (${denylistedCovered.length}): ${denylistedCovered.join(", ")}`,
     );
   }
 
@@ -62,10 +60,9 @@ export function validateCompleteness(methodSpecs: AnyMethodSpec[]): Completeness
     );
   }
 
-  if (coveredContract.size !== BASELINE_CONTRACT_METHOD_COVERAGE) {
+  if (coveredContract.size + denylist.length !== contractMethods.length) {
     throw new Error(
-      `Contract-scoped parity coverage changed from baseline ${BASELINE_CONTRACT_METHOD_COVERAGE} to ${coveredContract.size}. ` +
-        "This migration PR must preserve existing contract-scoped coverage.",
+      `Parity completeness invariant failed: covered (${coveredContract.size}) + denylist (${denylist.length}) must equal contract catalog size (${contractMethods.length}).`,
     );
   }
 

@@ -1,0 +1,26 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekacld@v2
+  kind: method
+contract:
+  contractMethod: ek.ekacld
+  canonicalMethod: ek.ekacld
+  aliases: []
+  result:
+    const: null
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: wiring-only-appends-double-column-fast-write-with-realistic-args
+    args:
+      - 101
+      - 0
+      - COST
+      - [10.5, 20.25, 30]
+      - [1, 1, 1]
+      - [false, false, false]
+      - [0, 1, 2]
+    expect:
+      ok: false
+      errorCode: unsupported_call

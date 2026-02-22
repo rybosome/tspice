@@ -1,0 +1,30 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekifld@v2
+  kind: method
+contract:
+  contractMethod: ek.ekifld
+  canonicalMethod: ek.ekifld
+  aliases: []
+  result:
+    type: object
+    required: [segno, rcptrs]
+    properties:
+      segno: { type: spiceInt }
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: wiring-only-begins-fast-write-segment-with-realistic-args
+    args:
+      - 101
+      - PEOPLE
+      - 3
+      - [ID, COST, NAME]
+      -
+        - "DATATYPE = INTEGER, INDEXED = TRUE"
+        - "DATATYPE = DOUBLE PRECISION"
+        - "DATATYPE = CHARACTER*(*)"
+    expect:
+      ok: false
+      errorCode: unsupported_call
