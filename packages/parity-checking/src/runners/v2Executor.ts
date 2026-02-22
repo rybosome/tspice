@@ -201,6 +201,23 @@ function validateCaseArgs(input: RunCaseInputV2): Record<string, unknown> {
   return validated;
 }
 
+/**
+ * Shared static validation for schema-v2 case payloads before runner dispatch.
+ *
+ * Returns normalized/validated args for reuse by callers that continue execution.
+ */
+export function validateV2CasePreflight(input: RunCaseInputV2): Record<string, unknown> {
+  if (input.schemaVersion !== 2) {
+    invalidRequest(`executeV2CaseWithBackend expected schemaVersion=2 (got ${formatValue(input.schemaVersion)})`);
+  }
+
+  if (input.manifest.kind !== "method") {
+    invalidRequest(`v2.manifest.kind must be \"method\" (got ${formatValue(input.manifest.kind)})`);
+  }
+
+  return validateCaseArgs(input);
+}
+
 function validateResultProperty(
   propertyLabel: string,
   descriptor: V2ContractResultProperty,
@@ -357,18 +374,10 @@ export async function executeV2CaseWithBackend(
   backend: SpiceBackend,
   input: RunCaseInputV2,
 ): Promise<unknown> {
-  if (input.schemaVersion !== 2) {
-    invalidRequest(`executeV2CaseWithBackend expected schemaVersion=2 (got ${formatValue(input.schemaVersion)})`);
-  }
-
-  if (input.manifest.kind !== "method") {
-    invalidRequest(`v2.manifest.kind must be \"method\" (got ${formatValue(input.manifest.kind)})`);
-  }
-
   const refs = new Map<string, RefValue>();
   const freedCells = new Set<unknown>();
 
-  const args = validateCaseArgs(input);
+  const args = validateV2CasePreflight(input);
 
   let projectedResult: unknown = undefined;
   let hasProjectedResult = false;

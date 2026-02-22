@@ -10,6 +10,7 @@ import type {
   RunnerErrorReport,
   SpiceErrorState,
 } from "./types.js";
+import { validateV2CasePreflight } from "./v2Executor.js";
 
 export type CspiceRunnerBuildState = {
   available: boolean;
@@ -90,6 +91,10 @@ export function getCspiceRunnerStatus(): { ready: boolean; hint: string; statePa
 function safeErrorReport(error: unknown): RunnerErrorReport {
   if (error instanceof Error) {
     const report: RunnerErrorReport = { message: error.message };
+    const withCode = error as Error & { code?: unknown };
+    if (typeof withCode.code === "string") {
+      report.code = withCode.code;
+    }
     return report;
   }
 
@@ -452,6 +457,10 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
       }
 
       try {
+        if (input.schemaVersion === 2) {
+          validateV2CasePreflight(input);
+        }
+
         const out = await invokeRunner(binaryPath, input);
         if (out.ok) {
           return { ok: true, result: out.result };

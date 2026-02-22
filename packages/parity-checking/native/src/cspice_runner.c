@@ -1563,6 +1563,16 @@ static int v2_find_ref_index(const V2RefEntry *refs, const int refCount,
   return -1;
 }
 
+static int v2_find_free_ref_slot(const V2RefEntry *refs, const int refCount) {
+  for (int i = 0; i < refCount; i++) {
+    if (refs[i].name == NULL) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
 static void v2_free_ref_entry(V2RefEntry *entry) {
   if (entry == NULL) {
     return;
@@ -1594,10 +1604,15 @@ static bool v2_add_ref_cell(V2RefEntry *refs, int *refCount, const char *name,
     return false;
   }
 
-  if (*refCount >= V2_MAX_REFS) {
+  int slot = v2_find_free_ref_slot(refs, *refCount);
+  if (slot < 0 && *refCount >= V2_MAX_REFS) {
     write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
                         NULL);
     return false;
+  }
+
+  if (slot < 0) {
+    slot = *refCount;
   }
 
   char *ownedName = v2_strdup(name);
@@ -1606,14 +1621,16 @@ static bool v2_add_ref_cell(V2RefEntry *refs, int *refCount, const char *name,
     return false;
   }
 
-  V2RefEntry *entry = &refs[*refCount];
+  V2RefEntry *entry = &refs[slot];
   memset(entry, 0, sizeof(*entry));
   entry->name = ownedName;
   entry->type = V2_REF_INT_CELL;
   entry->cell = *cell;
   entry->cellStorage = storage;
 
-  (*refCount)++;
+  if (slot == *refCount) {
+    (*refCount)++;
+  }
   return true;
 }
 
@@ -1625,10 +1642,15 @@ static bool v2_add_ref_int(V2RefEntry *refs, int *refCount, const char *name,
     return false;
   }
 
-  if (*refCount >= V2_MAX_REFS) {
+  int slot = v2_find_free_ref_slot(refs, *refCount);
+  if (slot < 0 && *refCount >= V2_MAX_REFS) {
     write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
                         NULL);
     return false;
+  }
+
+  if (slot < 0) {
+    slot = *refCount;
   }
 
   char *ownedName = v2_strdup(name);
@@ -1637,13 +1659,15 @@ static bool v2_add_ref_int(V2RefEntry *refs, int *refCount, const char *name,
     return false;
   }
 
-  V2RefEntry *entry = &refs[*refCount];
+  V2RefEntry *entry = &refs[slot];
   memset(entry, 0, sizeof(*entry));
   entry->name = ownedName;
   entry->type = V2_REF_INT;
   entry->intValue = value;
 
-  (*refCount)++;
+  if (slot == *refCount) {
+    (*refCount)++;
+  }
   return true;
 }
 
