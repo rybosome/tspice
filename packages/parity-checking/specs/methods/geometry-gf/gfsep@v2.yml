@@ -1,0 +1,47 @@
+schemaVersion: 2
+manifest:
+  id: methods/geometry-gf/gfsep@v2
+  kind: method
+contract:
+  contractMethod: geometry-gf.gfsep
+  canonicalMethod: geometry-gf.gfsep
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+    - $FIXTURES/ephemeris-de440s
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: geometry-gf.gfsep.empty-cnfine
+    args:
+      - MOON
+      - POINT
+      - J2000
+      - SUN
+      - POINT
+      - J2000
+      - NONE
+      - EARTH
+      - ">"
+      - 0
+      - 0
+      - 3600
+      - 100
+      - - window
+        - 8
+      - - window
+        - 32
+    compare:
+      errorShort: true
+    expect:
+      ok: false
+      errorShort: SPICE(NOINTERVAL)

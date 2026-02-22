@@ -1,0 +1,28 @@
+schemaVersion: 2
+manifest:
+  id: methods/geometry-gf/gfstep@v2
+  kind: method
+contract:
+  contractMethod: geometry-gf.gfstep
+  canonicalMethod: geometry-gf.gfstep
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+    - $FIXTURES/ephemeris-de440s
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: geometry-gf.gfstep.nominal-time
+    args:
+      - 12345
+    expect:
+      ok: true
