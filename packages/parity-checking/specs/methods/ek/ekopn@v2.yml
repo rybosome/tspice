@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekopn@v2
+  kind: method
+contract:
+  contractMethod: ek.ekopn
+  canonicalMethod: ek.ekopn
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: opens-new-ek-for-write
+    args:
+      - ek-open-create
+      - TSPICE
+      - 0

@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.eknseg@v2
+  kind: method
+contract:
+  contractMethod: ek.eknseg
+  canonicalMethod: ek.eknseg
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: reads-segment-count
+    args:
+      - ek-segments
+      - TSPICE
+      - 0

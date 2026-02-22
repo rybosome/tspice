@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekopr@v2
+  kind: method
+contract:
+  contractMethod: ek.ekopr
+  canonicalMethod: ek.ekopr
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: opens-existing-ek-for-read
+    args:
+      - ek-open-read
+      - TSPICE
+      - 0

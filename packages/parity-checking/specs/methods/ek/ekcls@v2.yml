@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekcls@v2
+  kind: method
+contract:
+  contractMethod: ek.ekcls
+  canonicalMethod: ek.ekcls
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: closes-new-handle
+    args:
+      - ek-close
+      - TSPICE
+      - 0

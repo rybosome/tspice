@@ -1,0 +1,24 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekgc@v2
+  kind: method
+contract:
+  contractMethod: ek.ekgc
+  canonicalMethod: ek.ekgc
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: reads-event-string
+    args:
+      - SELECT EVENT FROM CASSINI_NOISE_EVENTS
+      - 0
+      - 0
+      - 0

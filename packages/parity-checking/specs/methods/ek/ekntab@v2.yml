@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekntab@v2
+  kind: method
+contract:
+  contractMethod: ek.ekntab
+  canonicalMethod: ek.ekntab
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: returns-loaded-table-count
+    args: []
