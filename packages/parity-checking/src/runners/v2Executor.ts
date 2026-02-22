@@ -344,9 +344,6 @@ export function asV2RunnerError(error: unknown): RunnerErrorReport {
     if (typeof withCode.code === "string") {
       report.code = withCode.code;
     }
-
-    if (error.name) report.name = error.name;
-    if (error.stack) report.stack = error.stack;
     return report;
   }
 

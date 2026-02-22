@@ -1229,8 +1229,6 @@ const DISPATCH: Record<string, DispatchFn> = {
 function safeErrorReport(error: unknown): RunnerErrorReport {
   if (error instanceof Error) {
     const report: RunnerErrorReport = { message: error.message };
-    if (error.name) report.name = error.name;
-    if (error.stack) report.stack = error.stack;
 
     const anyErr = error as unknown as { code?: unknown };
     if (isRunnerValidationCode(anyErr.code)) report.code = anyErr.code;
