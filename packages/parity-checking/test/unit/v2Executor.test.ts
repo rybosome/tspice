@@ -151,6 +151,29 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
+  it("reports allocWindow.params.maxIntervals validation errors for zero", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.contract.args = [{ name: "maxIntervals", type: "spiceInt" }];
+    input.args = { maxIntervals: 0 };
+    input.workflow.steps = [
+      {
+        op: "allocWindow",
+        as: "window",
+        params: { maxIntervals: "$args.maxIntervals" },
+      },
+      {
+        op: "projectResult",
+        out: {},
+      },
+    ];
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_args",
+      message: "allocWindow.params.maxIntervals must be >= 1",
+    });
+  });
+
   it("rejects unknown v2 args during shared preflight validation", () => {
     const input = createBaseInput();
     input.args = {

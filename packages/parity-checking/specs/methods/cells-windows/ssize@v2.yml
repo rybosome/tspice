@@ -17,10 +17,12 @@ contract:
       constraints: { min: 0 }
   result:
     type: object
-    required: [size, card]
+    required: [size, card, windowSize, windowCard]
     properties:
       size: { type: spiceInt }
       card: { type: spiceInt }
+      windowSize: { type: spiceInt }
+      windowCard: { type: spiceInt }
   errors:
     - code: invalid_args
     - code: spice_error
@@ -33,9 +35,18 @@ workflow:
         kind: int
         size: $args.allocSize
 
+    - op: allocWindow
+      as: window
+      params:
+        maxIntervals: 4
+
     - op: spiceCall
       call: ssize_c
       in: [$args.newSize, $refs.cell]
+
+    - op: spiceCall
+      call: ssize_c
+      in: [$args.newSize, $refs.window]
 
     - op: spiceCall
       call: size_c
@@ -47,12 +58,27 @@ workflow:
       in: [$refs.cell]
       as: card
 
+    - op: spiceCall
+      call: size_c
+      in: [$refs.window]
+      as: windowSize
+
+    - op: spiceCall
+      call: card_c
+      in: [$refs.window]
+      as: windowCard
+
     - op: projectResult
       out:
         size: $refs.size
         card: $refs.card
+        windowSize: $refs.windowSize
+        windowCard: $refs.windowCard
 
   cleanup:
+    - op: freeWindow
+      target: $refs.window
+
     - op: freeCell
       target: $refs.cell
 

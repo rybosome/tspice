@@ -11,6 +11,7 @@ contract:
   args:
     - name: maxIntervals
       type: spiceInt
+      constraints: { min: 1 }
   result:
     type: object
     properties: {}
@@ -36,6 +37,12 @@ cases:
     args: { maxIntervals: 4 }
     expect:
       ok: true
+
+  - id: rejects-zero-max-intervals
+    args: { maxIntervals: 0 }
+    expect:
+      ok: false
+      errorCode: invalid_args
 
   - id: rejects-negative-max-intervals
     args: { maxIntervals: -1 }

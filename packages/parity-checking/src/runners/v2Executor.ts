@@ -12,7 +12,10 @@ type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_ca
 const SPICE_INT32_MIN = -2147483648;
 const SPICE_INT32_MAX = 2147483647;
 
-type CellHandle = ReturnType<SpiceBackend["newIntCell"]>;
+type CellHandle =
+  | ReturnType<SpiceBackend["newIntCell"]>
+  | ReturnType<SpiceBackend["newDoubleCell"]>
+  | ReturnType<SpiceBackend["newCharCell"]>;
 type WindowHandle = ReturnType<SpiceBackend["newWindow"]>;
 
 type RefValue =
@@ -403,8 +406,8 @@ async function executeStep(
         refs,
         "allocWindow.params.maxIntervals",
       );
-      if (maxIntervals < 0) {
-        invalidArgs("allocWindow.params.maxIntervals must be >= 0");
+      if (maxIntervals < 1) {
+        invalidArgs("allocWindow.params.maxIntervals must be >= 1");
       }
 
       const window = backend.newWindow(maxIntervals);
