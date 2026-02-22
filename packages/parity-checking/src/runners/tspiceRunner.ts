@@ -1252,6 +1252,14 @@ const DISPATCH: Record<string, DispatchFn> = {
     return backend.spkssb(args[0], args[1], args[2]);
   },
 
+  "ephemeris.spkcov": async (backend, args) => {
+    return await runEphemerisSpkcov(backend, args, "ephemeris.spkcov");
+  },
+
+  "ephemeris.spkobj": async (backend, args) => {
+    return await runEphemerisSpkobj(backend, args, "ephemeris.spkobj");
+  },
+
   "ephemeris.spksfs": (backend, args) => {
     assertInteger(args[0], "ephemeris.spksfs args[0]");
     assertNumberArg(args[1], "ephemeris.spksfs", 1);
@@ -1272,6 +1280,22 @@ const DISPATCH: Record<string, DispatchFn> = {
   "ephemeris.spkuds": (backend, args) => {
     assertSpkPackedDescriptor(args[0], "ephemeris.spkuds args[0]");
     return backend.spkuds(args[0]);
+  },
+
+  "ephemeris.spkopn": (backend, args) => {
+    return runEphemerisSpkopn(backend, args, "ephemeris.spkopn");
+  },
+
+  "ephemeris.spkopa": (backend, args) => {
+    return runEphemerisSpkopa(backend, args, "ephemeris.spkopa");
+  },
+
+  "ephemeris.spkcls": (backend, args) => {
+    return runEphemerisSpkcls(backend, args, "ephemeris.spkcls");
+  },
+
+  "ephemeris.spkw08": (backend, args) => {
+    return runEphemerisSpkw08(backend, args, "ephemeris.spkw08");
   },
 
 

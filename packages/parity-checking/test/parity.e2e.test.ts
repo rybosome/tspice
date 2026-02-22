@@ -12,11 +12,11 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     const summary = await runParityEngine();
 
     expect(summary.workflowCount).toBeGreaterThan(0);
-    expect(summary.methodCount).toBe(149);
+    expect(summary.methodCount).toBe(156);
     expect(summary.crossCuttingSpecCount).toBeGreaterThan(0);
     expect(summary.contractCount).toBe(173);
-    expect(summary.coveredCount).toBe(149);
-    expect(summary.denylistCount).toBe(24);
+    expect(summary.coveredCount).toBe(156);
+    expect(summary.denylistCount).toBe(17);
     expect(summary.aliasCount).toBe(17);
 
     if (!status.ready) {

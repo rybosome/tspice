@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/ephemeris/spkw08@v2
+  kind: method
+contract:
+  contractMethod: ephemeris.spkw08
+  canonicalMethod: ephemeris.spkw08
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: ephemeris.spkw08.write-minimal-segment
+    args:
+      - parity-ephemeris-spkw08
+    expect:
+      ok: true

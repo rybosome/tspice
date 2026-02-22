@@ -1,0 +1,28 @@
+schemaVersion: 2
+manifest:
+  id: methods/ephemeris/spkobj@v2
+  kind: method
+contract:
+  contractMethod: ephemeris.spkobj
+  canonicalMethod: ephemeris.spkobj
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+    - $FIXTURES/ephemeris-de440s
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: ephemeris.spkobj.de440s
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true

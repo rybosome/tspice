@@ -1,0 +1,22 @@
+schemaVersion: 2
+manifest:
+  id: methods/ephemeris/spkcls@v2
+  kind: method
+contract:
+  contractMethod: ephemeris.spkcls
+  canonicalMethod: ephemeris.spkcls
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: ephemeris.spkcls.close-opened-temp
+    args:
+      - parity-ephemeris-spkcls
+      - TSPICE
+      - 0
+    expect:
+      ok: true
