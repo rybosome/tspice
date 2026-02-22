@@ -1,0 +1,37 @@
+schemaVersion: 2
+manifest:
+  id: methods/geometry/sincpt@v2
+  kind: method
+contract:
+  contractMethod: geometry.sincpt
+  canonicalMethod: geometry.sincpt
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+    - $FIXTURES/ephemeris-de440s
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: geometry.sincpt.ellipsoid-ray
+    args:
+      - ELLIPSOID
+      - MOON
+      - 0
+      - IAU_MOON
+      - NONE
+      - EARTH
+      - J2000
+      - - 1
+        - 0
+        - 0
+    expect:
+      ok: true

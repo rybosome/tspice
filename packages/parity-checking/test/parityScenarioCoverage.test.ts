@@ -80,7 +80,7 @@ describe("parity-checking spec coverage", () => {
     expect(missing).toEqual([]);
 
     expect(contract.length).toBe(173);
-    expect(coveredCanonical.size).toBe(156);
-    expect(denylist.length).toBe(17);
+    expect(coveredCanonical.size).toBe(165);
+    expect(denylist.length).toBe(8);
   });
 });

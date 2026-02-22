@@ -1,0 +1,36 @@
+schemaVersion: 2
+manifest:
+  id: methods/geometry/occult@v2
+  kind: method
+contract:
+  contractMethod: geometry.occult
+  canonicalMethod: geometry.occult
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+    - $FIXTURES/ephemeris-de440s
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: geometry.occult.moon-vs-sun
+    args:
+      - MOON
+      - ELLIPSOID
+      - IAU_MOON
+      - SUN
+      - ELLIPSOID
+      - IAU_SUN
+      - NONE
+      - EARTH
+      - 0
+    expect:
+      ok: true

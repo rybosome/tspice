@@ -120,6 +120,7 @@ function assertNumberArg(value: unknown, call: string, index: number): asserts v
 
 type Vec3 = [number, number, number];
 type Mat3RowMajor = Parameters<SpiceBackend["mxm"]>[0];
+type Plane4 = Parameters<SpiceBackend["pl2nvc"]>[0];
 type SpkPackedDescriptor = Parameters<SpiceBackend["spkuds"]>[0];
 
 function assertVec3(value: unknown, label: string): asserts value is Vec3 {
@@ -146,6 +147,22 @@ function assertMat3RowMajor(value: unknown, label: string): asserts value is Mat
     invalidArgs(`${label} expects a length-9 array of numbers (got length ${value.length})`);
   }
   for (let i = 0; i < 9; i++) {
+    if (typeof value[i] !== "number") {
+      invalidArgs(
+        `${label} expects element ${i} to be a number (got ${formatValue(value[i])})`,
+      );
+    }
+  }
+}
+
+function assertPlane4(value: unknown, label: string): asserts value is Plane4 {
+  if (!Array.isArray(value)) {
+    invalidArgs(`${label} expects a length-4 array of numbers (got ${formatValue(value)})`);
+  }
+  if (value.length !== 4) {
+    invalidArgs(`${label} expects a length-4 array of numbers (got length ${value.length})`);
+  }
+  for (let i = 0; i < 4; i++) {
     if (typeof value[i] !== "number") {
       invalidArgs(
         `${label} expects element ${i} to be a number (got ${formatValue(value[i])})`,
@@ -1460,6 +1477,108 @@ const DISPATCH: Record<string, DispatchFn> = {
     assertVec3(args[0], "coords-vectors.vsub args[0]");
     assertVec3(args[1], "coords-vectors.vsub args[1]");
     return backend.vsub(args[0], args[1]);
+  },
+
+  // geometry
+  "geometry.subpnt": (backend, args) => {
+    assertStringArg(args[0], "geometry.subpnt", 0);
+    assertStringArg(args[1], "geometry.subpnt", 1);
+    assertNumberArg(args[2], "geometry.subpnt", 2);
+    assertStringArg(args[3], "geometry.subpnt", 3);
+    assertStringArg(args[4], "geometry.subpnt", 4);
+    assertStringArg(args[5], "geometry.subpnt", 5);
+    return backend.subpnt(args[0], args[1], args[2], args[3], args[4], args[5]);
+  },
+
+  "geometry.subslr": (backend, args) => {
+    assertStringArg(args[0], "geometry.subslr", 0);
+    assertStringArg(args[1], "geometry.subslr", 1);
+    assertNumberArg(args[2], "geometry.subslr", 2);
+    assertStringArg(args[3], "geometry.subslr", 3);
+    assertStringArg(args[4], "geometry.subslr", 4);
+    assertStringArg(args[5], "geometry.subslr", 5);
+    return backend.subslr(args[0], args[1], args[2], args[3], args[4], args[5]);
+  },
+
+  "geometry.sincpt": (backend, args) => {
+    assertStringArg(args[0], "geometry.sincpt", 0);
+    assertStringArg(args[1], "geometry.sincpt", 1);
+    assertNumberArg(args[2], "geometry.sincpt", 2);
+    assertStringArg(args[3], "geometry.sincpt", 3);
+    assertStringArg(args[4], "geometry.sincpt", 4);
+    assertStringArg(args[5], "geometry.sincpt", 5);
+    assertStringArg(args[6], "geometry.sincpt", 6);
+    assertVec3(args[7], "geometry.sincpt args[7]");
+    return backend.sincpt(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+  },
+
+  "geometry.ilumin": (backend, args) => {
+    assertStringArg(args[0], "geometry.ilumin", 0);
+    assertStringArg(args[1], "geometry.ilumin", 1);
+    assertNumberArg(args[2], "geometry.ilumin", 2);
+    assertStringArg(args[3], "geometry.ilumin", 3);
+    assertStringArg(args[4], "geometry.ilumin", 4);
+    assertStringArg(args[5], "geometry.ilumin", 5);
+    assertVec3(args[6], "geometry.ilumin args[6]");
+    return backend.ilumin(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+  },
+
+  "geometry.illumg": (backend, args) => {
+    assertStringArg(args[0], "geometry.illumg", 0);
+    assertStringArg(args[1], "geometry.illumg", 1);
+    assertStringArg(args[2], "geometry.illumg", 2);
+    assertNumberArg(args[3], "geometry.illumg", 3);
+    assertStringArg(args[4], "geometry.illumg", 4);
+    assertStringArg(args[5], "geometry.illumg", 5);
+    assertStringArg(args[6], "geometry.illumg", 6);
+    assertVec3(args[7], "geometry.illumg args[7]");
+    return backend.illumg(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+  },
+
+  "geometry.illumf": (backend, args) => {
+    assertStringArg(args[0], "geometry.illumf", 0);
+    assertStringArg(args[1], "geometry.illumf", 1);
+    assertStringArg(args[2], "geometry.illumf", 2);
+    assertNumberArg(args[3], "geometry.illumf", 3);
+    assertStringArg(args[4], "geometry.illumf", 4);
+    assertStringArg(args[5], "geometry.illumf", 5);
+    assertStringArg(args[6], "geometry.illumf", 6);
+    assertVec3(args[7], "geometry.illumf args[7]");
+    return backend.illumf(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+  },
+
+  "geometry.occult": (backend, args) => {
+    assertStringArg(args[0], "geometry.occult", 0);
+    assertStringArg(args[1], "geometry.occult", 1);
+    assertStringArg(args[2], "geometry.occult", 2);
+    assertStringArg(args[3], "geometry.occult", 3);
+    assertStringArg(args[4], "geometry.occult", 4);
+    assertStringArg(args[5], "geometry.occult", 5);
+    assertStringArg(args[6], "geometry.occult", 6);
+    assertStringArg(args[7], "geometry.occult", 7);
+    assertNumberArg(args[8], "geometry.occult", 8);
+    return backend.occult(
+      args[0],
+      args[1],
+      args[2],
+      args[3],
+      args[4],
+      args[5],
+      args[6],
+      args[7],
+      args[8],
+    );
+  },
+
+  "geometry.nvc2pl": (backend, args) => {
+    assertVec3(args[0], "geometry.nvc2pl args[0]");
+    assertNumberArg(args[1], "geometry.nvc2pl", 1);
+    return backend.nvc2pl(args[0], args[1]);
+  },
+
+  "geometry.pl2nvc": (backend, args) => {
+    assertPlane4(args[0], "geometry.pl2nvc args[0]");
+    return backend.pl2nvc(args[0]);
   },
 
 };

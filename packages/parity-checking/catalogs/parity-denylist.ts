@@ -10,13 +10,4 @@ export const PARITY_DENYLIST = [
   "geometry-gf.gfsstp",
   "geometry-gf.gfstep",
   "geometry-gf.gfstol",
-  "geometry.illumf",
-  "geometry.illumg",
-  "geometry.ilumin",
-  "geometry.nvc2pl",
-  "geometry.occult",
-  "geometry.pl2nvc",
-  "geometry.sincpt",
-  "geometry.subpnt",
-  "geometry.subslr",
 ] as const;
