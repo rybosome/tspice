@@ -125,6 +125,76 @@ describe("executeV2CaseWithBackend", () => {
     expect(freeCellMock).toHaveBeenCalledTimes(2);
   });
 
+  it("frees cell/window handles independently when identities collide", async () => {
+    const freeCellMock = vi.fn((_cell: number) => {});
+    const freeWindowMock = vi.fn((_window: number) => {});
+    const backend = {
+      kind: "fake",
+      newIntCell: vi.fn((_size: number): number => 7),
+      newWindow: vi.fn((_maxIntervals: number): number => 7),
+      card: vi.fn((_handle: number): number => 0),
+      size: vi.fn((_handle: number): number => 0),
+      freeCell: freeCellMock,
+      freeWindow: freeWindowMock,
+    } as unknown as SpiceBackend;
+
+    const input = createBaseInput();
+    input.contract.args = [];
+    input.args = {};
+    input.contract.result = {
+      type: "object",
+      required: [],
+      properties: {},
+    };
+    input.workflow.steps = [
+      {
+        op: "allocCell",
+        as: "cell",
+        params: { kind: "int", size: 1 },
+      },
+      {
+        op: "allocWindow",
+        as: "window",
+        params: { maxIntervals: 1 },
+      },
+      {
+        op: "projectResult",
+        out: {},
+      },
+    ];
+    input.workflow.cleanup = [
+      {
+        op: "freeCell",
+        target: "$refs.cell",
+      },
+      {
+        op: "freeWindow",
+        target: "$refs.window",
+      },
+    ];
+
+    const result = await executeV2CaseWithBackend(backend, input);
+
+    expect(result).toEqual({});
+    expect(freeCellMock).toHaveBeenCalledTimes(1);
+    expect(freeWindowMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports invalid_args when card_c is missing as in bypassed schema input", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps[1] = {
+      op: "spiceCall",
+      call: "card_c",
+      in: ["$refs.cell"],
+    };
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_args",
+      message: 'spiceCall card_c requires an "as" output ref',
+    });
+  });
+
   it("rejects duplicate contract arg names", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
