@@ -122,17 +122,31 @@ export type MethodContractV2 = {
 export type MethodWorkflowOpAllocCellV2 = {
   op: "allocCell";
   as: string;
+  params:
+    | {
+        kind: "int" | "double";
+        size: unknown;
+      }
+    | {
+        kind: "char";
+        size: unknown;
+        length: unknown;
+      };
+};
+
+export type MethodWorkflowOpAllocWindowV2 = {
+  op: "allocWindow";
+  as: string;
   params: {
-    kind: "int";
-    size: unknown;
+    maxIntervals: unknown;
   };
 };
 
 export type MethodWorkflowOpSpiceCallV2 = {
   op: "spiceCall";
-  call: "card_c" | "size_c";
+  call: "card_c" | "size_c" | "scard_c" | "ssize_c" | "valid_c";
   in: unknown[];
-  as: string;
+  as?: string;
 };
 
 export type MethodWorkflowOpProjectResultV2 = {
@@ -145,11 +159,18 @@ export type MethodWorkflowOpFreeCellV2 = {
   target: unknown;
 };
 
+export type MethodWorkflowOpFreeWindowV2 = {
+  op: "freeWindow";
+  target: unknown;
+};
+
 export type MethodWorkflowStepV2 =
   | MethodWorkflowOpAllocCellV2
+  | MethodWorkflowOpAllocWindowV2
   | MethodWorkflowOpSpiceCallV2
   | MethodWorkflowOpProjectResultV2
-  | MethodWorkflowOpFreeCellV2;
+  | MethodWorkflowOpFreeCellV2
+  | MethodWorkflowOpFreeWindowV2;
 
 export type MethodCaseSpecV2 = {
   id: string;

@@ -12,10 +12,17 @@ type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_ca
 const SPICE_INT32_MIN = -2147483648;
 const SPICE_INT32_MAX = 2147483647;
 
+type CellHandle = ReturnType<SpiceBackend["newIntCell"]>;
+type WindowHandle = ReturnType<SpiceBackend["newWindow"]>;
+
 type RefValue =
   | {
       kind: "cell";
-      value: ReturnType<SpiceBackend["newIntCell"]>;
+      value: CellHandle;
+    }
+  | {
+      kind: "window";
+      value: WindowHandle;
     }
   | {
       kind: "int";
@@ -129,11 +136,11 @@ function resolveSpiceIntExpression(
   return asSpiceInt(value, label);
 }
 
-function resolveCellReference(
+function resolveRefReference(
   expr: unknown,
   refs: Map<string, RefValue>,
   label: string,
-): { name: string; value: ReturnType<SpiceBackend["newIntCell"]> } {
+): { name: string; ref: RefValue } {
   if (typeof expr !== "string") {
     invalidArgs(`${label} must be a string $refs.<name> (got ${formatValue(expr)})`);
   }
@@ -148,11 +155,52 @@ function resolveCellReference(
     invalidRequest(`${label} references missing ref ${JSON.stringify(token.key)}`);
   }
 
-  if (refValue.kind !== "cell") {
-    invalidArgs(`${label} must reference a cell (got ${refValue.kind})`);
+  return {
+    name: token.key,
+    ref: refValue,
+  };
+}
+
+function resolveCellReference(
+  expr: unknown,
+  refs: Map<string, RefValue>,
+  label: string,
+): { name: string; value: CellHandle } {
+  const { name, ref } = resolveRefReference(expr, refs, label);
+
+  if (ref.kind !== "cell") {
+    invalidArgs(`${label} must reference a cell (got ${ref.kind})`);
   }
 
-  return { name: token.key, value: refValue.value };
+  return { name, value: ref.value };
+}
+
+function resolveWindowReference(
+  expr: unknown,
+  refs: Map<string, RefValue>,
+  label: string,
+): { name: string; value: WindowHandle } {
+  const { name, ref } = resolveRefReference(expr, refs, label);
+
+  if (ref.kind !== "window") {
+    invalidArgs(`${label} must reference a window (got ${ref.kind})`);
+  }
+
+  return { name, value: ref.value };
+}
+
+function resolveCellOrWindowReference(
+  expr: unknown,
+  refs: Map<string, RefValue>,
+  label: string,
+): { name: string; value: CellHandle | WindowHandle } {
+  const { name, ref } = resolveRefReference(expr, refs, label);
+
+  if (ref.kind !== "cell" && ref.kind !== "window") {
+    invalidArgs(`${label} must reference a cell/window (got ${ref.kind})`);
+  }
+
+  return { name, value: ref.value };
 }
 
 function validateCaseArgs(input: RunCaseInputV2): Record<string, unknown> {
@@ -254,17 +302,34 @@ function projectResult(
 function freeCellRef(
   backend: SpiceBackend,
   refs: Map<string, RefValue>,
-  freedCells: Set<unknown>,
+  freedHandles: Set<unknown>,
   target: unknown,
 ): void {
   const { name, value: cell } = resolveCellReference(target, refs, "freeCell.target");
-  if (freedCells.has(cell)) {
+  if (freedHandles.has(cell)) {
     refs.delete(name);
     return;
   }
 
   backend.freeCell(cell);
-  freedCells.add(cell);
+  freedHandles.add(cell);
+  refs.delete(name);
+}
+
+function freeWindowRef(
+  backend: SpiceBackend,
+  refs: Map<string, RefValue>,
+  freedHandles: Set<unknown>,
+  target: unknown,
+): void {
+  const { name, value: window } = resolveWindowReference(target, refs, "freeWindow.target");
+  if (freedHandles.has(window)) {
+    refs.delete(name);
+    return;
+  }
+
+  backend.freeWindow(window);
+  freedHandles.add(window);
   refs.delete(name);
 }
 
@@ -280,41 +345,142 @@ async function executeStep(
   step: V2WorkflowStep,
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
-  freedCells: Set<unknown>,
+  freedHandles: Set<unknown>,
 ): Promise<Record<string, unknown> | undefined> {
   switch (step.op) {
     case "allocCell": {
-      if (step.params.kind !== "int") {
-        unsupportedCall(`Unsupported allocCell kind: ${step.params.kind}`);
-      }
-
       const size = resolveSpiceIntExpression(step.params.size, args, refs, "allocCell.params.size");
       if (size < 0) {
         invalidArgs("allocCell.params.size must be >= 0");
       }
 
-      const cell = backend.newIntCell(size);
+      let cell: CellHandle;
+      if (step.params.kind === "int") {
+        cell = backend.newIntCell(size);
+      } else if (step.params.kind === "double") {
+        cell = backend.newDoubleCell(size);
+      } else if (step.params.kind === "char") {
+        const length = resolveSpiceIntExpression(
+          step.params.length,
+          args,
+          refs,
+          "allocCell.params.length",
+        );
+        if (length < 1) {
+          invalidArgs("allocCell.params.length must be >= 1");
+        }
+
+        cell = backend.newCharCell(size, length);
+      } else {
+        unsupportedCall(`Unsupported allocCell kind: ${(step.params as { kind: unknown }).kind}`);
+      }
+
       defineRef(refs, step.as, { kind: "cell", value: cell }, "allocCell.as");
       return undefined;
     }
 
-    case "spiceCall": {
-      if (step.in.length !== 1) {
-        invalidRequest(`spiceCall ${step.call} expects exactly one input ref`);
+    case "allocWindow": {
+      const maxIntervals = resolveSpiceIntExpression(
+        step.params.maxIntervals,
+        args,
+        refs,
+        "allocWindow.params.maxIntervals",
+      );
+      if (maxIntervals < 0) {
+        invalidArgs("allocWindow.params.maxIntervals must be >= 0");
       }
 
-      const { value: cell } = resolveCellReference(step.in[0], refs, `spiceCall(${step.call}).in[0]`);
-      let value: number;
-      if (step.call === "card_c") {
-        value = asSpiceInt(backend.card(cell), `spiceCall(${step.call}).result`);
-      } else if (step.call === "size_c") {
-        value = asSpiceInt(backend.size(cell), `spiceCall(${step.call}).result`);
-      } else {
-        unsupportedCall(`Unsupported spiceCall op: ${step.call}`);
-      }
-
-      defineRef(refs, step.as, { kind: "int", value }, `spiceCall(${step.call}).as`);
+      const window = backend.newWindow(maxIntervals);
+      defineRef(refs, step.as, { kind: "window", value: window }, "allocWindow.as");
       return undefined;
+    }
+
+    case "spiceCall": {
+      if (step.call === "card_c" || step.call === "size_c") {
+        if (step.in.length !== 1) {
+          invalidRequest(`spiceCall ${step.call} expects exactly one input ref`);
+        }
+
+        if (!step.as) {
+          invalidRequest(`spiceCall ${step.call} requires an \"as\" output ref`);
+        }
+
+        const { value: handle } = resolveCellOrWindowReference(
+          step.in[0],
+          refs,
+          `spiceCall(${step.call}).in[0]`,
+        );
+        const value =
+          step.call === "card_c"
+            ? asSpiceInt(backend.card(handle), `spiceCall(${step.call}).result`)
+            : asSpiceInt(backend.size(handle), `spiceCall(${step.call}).result`);
+
+        defineRef(refs, step.as, { kind: "int", value }, `spiceCall(${step.call}).as`);
+        return undefined;
+      }
+
+      if (step.call === "scard_c") {
+        if (step.in.length !== 2) {
+          invalidRequest(`spiceCall ${step.call} expects [card, cellOrWindow] inputs`);
+        }
+
+        const card = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        if (card < 0) {
+          invalidArgs(`spiceCall(${step.call}).in[0] must be >= 0`);
+        }
+
+        const { value: handle } = resolveCellOrWindowReference(
+          step.in[1],
+          refs,
+          `spiceCall(${step.call}).in[1]`,
+        );
+        backend.scard(card, handle);
+        return undefined;
+      }
+
+      if (step.call === "ssize_c") {
+        if (step.in.length !== 2) {
+          invalidRequest(`spiceCall ${step.call} expects [size, cellOrWindow] inputs`);
+        }
+
+        const size = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        if (size < 0) {
+          invalidArgs(`spiceCall(${step.call}).in[0] must be >= 0`);
+        }
+
+        const { value: handle } = resolveCellOrWindowReference(
+          step.in[1],
+          refs,
+          `spiceCall(${step.call}).in[1]`,
+        );
+        backend.ssize(size, handle);
+        return undefined;
+      }
+
+      if (step.call === "valid_c") {
+        if (step.in.length !== 3) {
+          invalidRequest(`spiceCall ${step.call} expects [size, n, cellOrWindow] inputs`);
+        }
+
+        const size = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        const n = resolveSpiceIntExpression(step.in[1], args, refs, `spiceCall(${step.call}).in[1]`);
+        if (size < 0) {
+          invalidArgs(`spiceCall(${step.call}).in[0] must be >= 0`);
+        }
+        if (n < 0) {
+          invalidArgs(`spiceCall(${step.call}).in[1] must be >= 0`);
+        }
+
+        const { value: handle } = resolveCellOrWindowReference(
+          step.in[2],
+          refs,
+          `spiceCall(${step.call}).in[2]`,
+        );
+        backend.valid(size, n, handle);
+        return undefined;
+      }
+
+      unsupportedCall(`Unsupported spiceCall op: ${step.call}`);
     }
 
     case "projectResult": {
@@ -322,7 +488,12 @@ async function executeStep(
     }
 
     case "freeCell": {
-      freeCellRef(backend, refs, freedCells, step.target);
+      freeCellRef(backend, refs, freedHandles, step.target);
+      return undefined;
+    }
+
+    case "freeWindow": {
+      freeWindowRef(backend, refs, freedHandles, step.target);
       return undefined;
     }
 
@@ -366,7 +537,7 @@ export async function executeV2CaseWithBackend(
   }
 
   const refs = new Map<string, RefValue>();
-  const freedCells = new Set<unknown>();
+  const freedHandles = new Set<unknown>();
 
   const args = validateCaseArgs(input);
 
@@ -376,7 +547,7 @@ export async function executeV2CaseWithBackend(
 
   try {
     for (const [index, step] of input.workflow.steps.entries()) {
-      const maybeResult = await executeStep(backend, step, args, refs, freedCells);
+      const maybeResult = await executeStep(backend, step, args, refs, freedHandles);
       if (step.op === "projectResult") {
         projectedResult = maybeResult;
         hasProjectedResult = true;
@@ -398,7 +569,7 @@ export async function executeV2CaseWithBackend(
 
   for (const step of input.workflow.cleanup ?? []) {
     try {
-      await executeStep(backend, step, args, refs, freedCells);
+      await executeStep(backend, step, args, refs, freedHandles);
     } catch (cleanupError) {
       if (terminalError === undefined) {
         terminalError = cleanupError;
@@ -408,17 +579,21 @@ export async function executeV2CaseWithBackend(
   }
 
   for (const refValue of refs.values()) {
-    if (refValue.kind !== "cell") {
+    if (refValue.kind === "int") {
       continue;
     }
 
-    if (freedCells.has(refValue.value)) {
+    if (freedHandles.has(refValue.value)) {
       continue;
     }
 
     try {
-      backend.freeCell(refValue.value);
-      freedCells.add(refValue.value);
+      if (refValue.kind === "cell") {
+        backend.freeCell(refValue.value);
+      } else {
+        backend.freeWindow(refValue.value);
+      }
+      freedHandles.add(refValue.value);
     } catch {
       // best effort cleanup
     }

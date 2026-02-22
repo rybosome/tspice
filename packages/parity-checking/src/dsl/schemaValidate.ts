@@ -335,21 +335,59 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
     case "allocCell": {
       assertNoUnknownKeys(obj, label, ["op", "as", "params"]);
       const params = assertRecord(obj.params, `${label}.params`);
-      assertNoUnknownKeys(params, `${label}.params`, ["kind", "size"]);
+      assertNoUnknownKeys(params, `${label}.params`, ["kind", "size", "length"]);
       const kind = assertString(params.kind, `${label}.params.kind`);
-      if (kind !== "int") {
-        throw new TypeError(`${label}.params.kind must be \"int\"`);
-      }
       if (!("size" in params)) {
         throw new TypeError(`${label}.params.size is required`);
       }
 
+      if (kind === "int" || kind === "double") {
+        if ("length" in params) {
+          throw new TypeError(`${label}.params.length is only valid for kind=\"char\"`);
+        }
+
+        return {
+          op: "allocCell",
+          as: assertString(obj.as, `${label}.as`),
+          params: {
+            kind,
+            size: params.size,
+          },
+        };
+      }
+
+      if (kind === "char") {
+        if (!("length" in params)) {
+          throw new TypeError(`${label}.params.length is required when kind=\"char\"`);
+        }
+
+        return {
+          op: "allocCell",
+          as: assertString(obj.as, `${label}.as`),
+          params: {
+            kind: "char",
+            size: params.size,
+            length: params.length,
+          },
+        };
+      }
+
+      throw new TypeError(`${label}.params.kind must be \"int\", \"double\", or \"char\"`);
+    }
+
+    case "allocWindow": {
+      assertNoUnknownKeys(obj, label, ["op", "as", "params"]);
+      const params = assertRecord(obj.params, `${label}.params`);
+      assertNoUnknownKeys(params, `${label}.params`, ["maxIntervals"]);
+      if (!("maxIntervals" in params)) {
+        throw new TypeError(`${label}.params.maxIntervals is required`);
+      }
+
       return {
-        op: "allocCell",
+        op: "allocWindow",
         as: assertString(obj.as, `${label}.as`),
         params: {
-          kind: "int",
-          size: params.size,
+          maxIntervals: params.maxIntervals,
         },
       };
     }
@@ -357,18 +395,34 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
     case "spiceCall": {
       assertNoUnknownKeys(obj, label, ["op", "call", "in", "as"]);
       const call = assertString(obj.call, `${label}.call`);
-      if (call !== "card_c" && call !== "size_c") {
-        throw new TypeError(`${label}.call must be \"card_c\" or \"size_c\"`);
+      if (
+        call !== "card_c" &&
+        call !== "size_c" &&
+        call !== "scard_c" &&
+        call !== "ssize_c" &&
+        call !== "valid_c"
+      ) {
+        throw new TypeError(
+          `${label}.call must be \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", or \"valid_c\"`,
+        );
       }
       if (!Array.isArray(obj.in)) {
         throw new TypeError(`${label}.in must be an array`);
+      }
+
+      if (call === "card_c" || call === "size_c") {
+        if (obj.as === undefined) {
+          throw new TypeError(`${label}.as is required when call=${JSON.stringify(call)}`);
+        }
+      } else if (obj.as !== undefined) {
+        throw new TypeError(`${label}.as is not allowed when call=${JSON.stringify(call)}`);
       }
 
       return {
         op: "spiceCall",
         call,
         in: obj.in,
-        as: assertString(obj.as, `${label}.as`),
+        ...(obj.as === undefined ? {} : { as: assertString(obj.as, `${label}.as`) }),
       };
     }
 
@@ -387,6 +441,17 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
       }
       return {
         op: "freeCell",
+        target: obj.target,
+      };
+    }
+
+    case "freeWindow": {
+      assertNoUnknownKeys(obj, label, ["op", "target"]);
+      if (!("target" in obj)) {
+        throw new TypeError(`${label}.target is required`);
+      }
+      return {
+        op: "freeWindow",
         target: obj.target,
       };
     }

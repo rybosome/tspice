@@ -1,0 +1,54 @@
+schemaVersion: 2
+
+manifest:
+  id: methods/cells-windows/card@v2
+  kind: method
+
+contract:
+  contractMethod: cells-windows.card
+  canonicalMethod: cells-windows.card
+  aliases: []
+  args:
+    - name: size
+      type: spiceInt
+  result:
+    type: object
+    required: [card]
+    properties:
+      card: { type: spiceInt }
+  errors:
+    - code: invalid_args
+    - code: spice_error
+
+workflow:
+  steps:
+    - op: allocCell
+      as: cell
+      params:
+        kind: int
+        size: $args.size
+
+    - op: spiceCall
+      call: card_c
+      in: [$refs.cell]
+      as: card
+
+    - op: projectResult
+      out:
+        card: $refs.card
+
+  cleanup:
+    - op: freeCell
+      target: $refs.cell
+
+cases:
+  - id: basic
+    args: { size: 8 }
+    expect:
+      ok: true
+
+  - id: rejects-negative-size
+    args: { size: -1 }
+    expect:
+      ok: false
+      errorCode: invalid_args
