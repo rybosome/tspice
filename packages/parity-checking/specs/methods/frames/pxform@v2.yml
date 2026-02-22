@@ -1,0 +1,45 @@
+schemaVersion: 2
+manifest:
+  id: methods/frames/pxform@v2
+  kind: method
+contract:
+  contractMethod: frames.pxform
+  canonicalMethod: frames.pxform
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/frames-minimal
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: pxform-identity
+    args:
+      - J2000
+      - J2000
+      - 1234.5
+    expect:
+      ok: true
+  - id: pxform-j2000-b1950
+    args:
+      - J2000
+      - B1950
+      - 0
+    expect:
+      ok: true
+  - id: pxform-unknown
+    args:
+      - J2000
+      - NO_SUCH_FRAME
+      - 0
+    compare:
+      errorShort: true
+    expect:
+      ok: false

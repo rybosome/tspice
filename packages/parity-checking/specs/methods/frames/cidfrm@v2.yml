@@ -1,0 +1,27 @@
+schemaVersion: 2
+manifest:
+  id: methods/frames/cidfrm@v2
+  kind: method
+contract:
+  contractMethod: frames.cidfrm
+  canonicalMethod: frames.cidfrm
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/frames-minimal
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: cidfrm-earth
+    args:
+      - 399
+    expect:
+      ok: true
