@@ -204,7 +204,7 @@ function parseMethodCaseV2(value: unknown, label: string): MethodCaseSpecV2 {
   };
 
   if (obj.args !== undefined) {
-    out.args = assertRecord(obj.args, `${label}.args`);
+    out.args = obj.args;
   }
 
   const setup = parseSetup(obj.setup, `${label}.setup`);
@@ -431,6 +431,14 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         op: "spiceCall",
         call,
         in: obj.in,
+      };
+    }
+
+    case "invokeLegacyCall": {
+      assertNoUnknownKeys(obj, label, ["op", "call"]);
+      return {
+        op: "invokeLegacyCall",
+        ...(obj.call === undefined ? {} : { call: assertString(obj.call, `${label}.call`) }),
       };
     }
 

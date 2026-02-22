@@ -1,0 +1,22 @@
+schemaVersion: 2
+manifest:
+  id: methods/cells-windows/cellGetd@v2
+  kind: method
+contract:
+  contractMethod: cells-windows.cellGetd
+  canonicalMethod: cells-windows.cellGetd
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: cells-windows.cellGetd.basic
+    args:
+      - - double
+        - 8
+      - 1
+    expect:
+      ok: true
