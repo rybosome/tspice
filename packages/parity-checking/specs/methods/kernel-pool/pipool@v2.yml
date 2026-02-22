@@ -1,0 +1,25 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernel-pool/pipool@v2
+  kind: method
+contract:
+  contractMethod: kernel-pool.pipool
+  canonicalMethod: kernel-pool.pipool
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: pipool-write
+    args:
+      - TSPICE_PARITY_PIPOOL_WRITTEN
+      - - -2147483648
+        - 2147483647
+    expect:
+      ok: true

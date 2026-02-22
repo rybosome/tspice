@@ -1,0 +1,24 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernel-pool/swpool@v2
+  kind: method
+contract:
+  contractMethod: kernel-pool.swpool
+  canonicalMethod: kernel-pool.swpool
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: swpool-watch
+    args:
+      - TSPICE_PARITY_AGENT
+      - - TSPICE_PARITY_DOUBLE_VAR
+    expect:
+      ok: true

@@ -1,9 +1,20 @@
-id: methods/kernel-pool/gipool@v1
-kind: method
-contractMethod: kernel-pool.gipool
-canonicalMethod: kernel-pool.gipool
-uses:
-  - workflows/legacy/kernel-pool.basic@v1
+schemaVersion: 2
+manifest:
+  id: methods/kernel-pool/gipool@v2
+  kind: method
+contract:
+  contractMethod: kernel-pool.gipool
+  canonicalMethod: kernel-pool.gipool
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
 cases:
   - id: gipool-int-var
     args:

@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernel-pool/cvpool@v2
+  kind: method
+contract:
+  contractMethod: kernel-pool.cvpool
+  canonicalMethod: kernel-pool.cvpool
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: cvpool-check
+    args:
+      - TSPICE_PARITY_AGENT
+    expect:
+      ok: true

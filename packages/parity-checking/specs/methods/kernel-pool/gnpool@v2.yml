@@ -1,0 +1,32 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernel-pool/gnpool@v2
+  kind: method
+contract:
+  contractMethod: kernel-pool.gnpool
+  canonicalMethod: kernel-pool.gnpool
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: gnpool-missing
+    args:
+      - NO_MATCH_*
+      - 0
+      - 16
+    expect:
+      ok: true
+  - id: gnpool-wildcard
+    args:
+      - TSPICE_PARITY_*
+      - 0
+      - 16
+    expect:
+      ok: true

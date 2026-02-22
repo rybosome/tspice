@@ -1,0 +1,26 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernel-pool/pdpool@v2
+  kind: method
+contract:
+  contractMethod: kernel-pool.pdpool
+  canonicalMethod: kernel-pool.pdpool
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: pdpool-write
+    args:
+      - TSPICE_PARITY_PDPOOL_WRITTEN
+      - - 1
+        - 2
+        - 3
+    expect:
+      ok: true

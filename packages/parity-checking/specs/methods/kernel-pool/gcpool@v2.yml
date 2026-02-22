@@ -1,9 +1,20 @@
-id: methods/kernel-pool/gcpool@v1
-kind: method
-contractMethod: kernel-pool.gcpool
-canonicalMethod: kernel-pool.gcpool
-uses:
-  - workflows/legacy/kernel-pool.basic@v1
+schemaVersion: 2
+manifest:
+  id: methods/kernel-pool/gcpool@v2
+  kind: method
+contract:
+  contractMethod: kernel-pool.gcpool
+  canonicalMethod: kernel-pool.gcpool
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
 cases:
   - id: gcpool-char-var
     args:

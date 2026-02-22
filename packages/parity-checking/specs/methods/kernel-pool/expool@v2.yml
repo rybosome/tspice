@@ -1,0 +1,33 @@
+schemaVersion: 2
+manifest:
+  id: methods/kernel-pool/expool@v2
+  kind: method
+contract:
+  contractMethod: kernel-pool.expool
+  canonicalMethod: kernel-pool.expool
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: expool-char-miss
+    args:
+      - TSPICE_PARITY_CHAR_VAR
+    expect:
+      ok: true
+  - id: expool-found
+    args:
+      - TSPICE_PARITY_DOUBLE_VAR
+    expect:
+      ok: true
+  - id: expool-missing
+    args:
+      - TSPICE_PARITY_MISSING_VAR
+    expect:
+      ok: true
