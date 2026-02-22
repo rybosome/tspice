@@ -1,0 +1,31 @@
+schemaVersion: 2
+manifest:
+  id: methods/ids-names/bodvar@v2
+  kind: method
+contract:
+  contractMethod: ids-names.bodvar
+  canonicalMethod: ids-names.bodvar
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/frames-minimal
+    - $FIXTURES/body399-char-foo.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: bodvar-char-typed-item
+    args:
+      - 399
+      - FOO
+    expect:
+      ok: true
+  - id: bodvar-radii
+    args:
+      - 399
+      - RADII
+    expect:
+      ok: true

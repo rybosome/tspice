@@ -1,0 +1,37 @@
+schemaVersion: 2
+manifest:
+  id: methods/ids-names/bodfnd@v2
+  kind: method
+contract:
+  contractMethod: ids-names.bodfnd
+  canonicalMethod: ids-names.bodfnd
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/frames-minimal
+    - $FIXTURES/body399-char-foo.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: bodfnd-char-typed-item
+    args:
+      - 399
+      - FOO
+    expect:
+      ok: true
+  - id: bodfnd-radii
+    args:
+      - 399
+      - RADII
+    expect:
+      ok: true
+  - id: bodfnd-radii-normalized
+    args:
+      - 399
+      - "  radii  "
+    expect:
+      ok: true

@@ -1,0 +1,34 @@
+schemaVersion: 2
+manifest:
+  id: methods/ids-names/bodn2c@v2
+  kind: method
+contract:
+  contractMethod: ids-names.bodn2c
+  canonicalMethod: ids-names.bodn2c
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/frames-minimal
+    - $FIXTURES/body399-char-foo.tpc
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: bodn2c-earth
+    args:
+      - EARTH
+    expect:
+      ok: true
+  - id: bodn2c-earth-lower
+    args:
+      - earth
+    expect:
+      ok: true
+  - id: bodn2c-unknown
+    args:
+      - NOT_A_BODY
+    expect:
+      ok: true
