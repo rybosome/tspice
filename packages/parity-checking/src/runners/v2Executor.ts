@@ -32,6 +32,11 @@ type RefValue =
       value: number;
     };
 
+type FreedHandles = {
+  cell: Set<CellHandle>;
+  window: Set<WindowHandle>;
+};
+
 function formatValue(value: unknown): string {
   if (typeof value === "number") {
     if (Number.isNaN(value)) return "NaN";
@@ -322,34 +327,34 @@ function projectResult(
 function freeCellRef(
   backend: SpiceBackend,
   refs: Map<string, RefValue>,
-  freedHandles: Set<unknown>,
+  freedHandles: FreedHandles,
   target: unknown,
 ): void {
   const { name, value: cell } = resolveCellReference(target, refs, "freeCell.target");
-  if (freedHandles.has(cell)) {
+  if (freedHandles.cell.has(cell)) {
     refs.delete(name);
     return;
   }
 
   backend.freeCell(cell);
-  freedHandles.add(cell);
+  freedHandles.cell.add(cell);
   refs.delete(name);
 }
 
 function freeWindowRef(
   backend: SpiceBackend,
   refs: Map<string, RefValue>,
-  freedHandles: Set<unknown>,
+  freedHandles: FreedHandles,
   target: unknown,
 ): void {
   const { name, value: window } = resolveWindowReference(target, refs, "freeWindow.target");
-  if (freedHandles.has(window)) {
+  if (freedHandles.window.has(window)) {
     refs.delete(name);
     return;
   }
 
   backend.freeWindow(window);
-  freedHandles.add(window);
+  freedHandles.window.add(window);
   refs.delete(name);
 }
 
@@ -365,7 +370,7 @@ async function executeStep(
   step: V2WorkflowStep,
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
-  freedHandles: Set<unknown>,
+  freedHandles: FreedHandles,
 ): Promise<Record<string, unknown> | undefined> {
   switch (step.op) {
     case "allocCell": {
@@ -421,8 +426,10 @@ async function executeStep(
           invalidRequest(`spiceCall ${step.call} expects exactly one input ref`);
         }
 
-        if (!step.as) {
-          invalidRequest(`spiceCall ${step.call} requires an \"as\" output ref`);
+        if (step.as === undefined) {
+          // Schema validation should make this unreachable, but keep a defensive
+          // runtime guard for direct inputs that bypass the schema parser.
+          invalidArgs(`spiceCall ${step.call} requires an \"as\" output ref`);
         }
 
         const { value: handle } = resolveCellOrWindowReference(
@@ -549,7 +556,10 @@ export async function executeV2CaseWithBackend(
   input: RunCaseInputV2,
 ): Promise<unknown> {
   const refs = new Map<string, RefValue>();
-  const freedHandles = new Set<unknown>();
+  const freedHandles: FreedHandles = {
+    cell: new Set<CellHandle>(),
+    window: new Set<WindowHandle>(),
+  };
 
   const args = validateV2CasePreflight(input);
 
@@ -595,17 +605,28 @@ export async function executeV2CaseWithBackend(
       continue;
     }
 
-    if (freedHandles.has(refValue.value)) {
+    if (refValue.kind === "cell") {
+      if (freedHandles.cell.has(refValue.value)) {
+        continue;
+      }
+
+      try {
+        backend.freeCell(refValue.value);
+        freedHandles.cell.add(refValue.value);
+      } catch {
+        // best effort cleanup
+      }
+
+      continue;
+    }
+
+    if (freedHandles.window.has(refValue.value)) {
       continue;
     }
 
     try {
-      if (refValue.kind === "cell") {
-        backend.freeCell(refValue.value);
-      } else {
-        backend.freeWindow(refValue.value);
-      }
-      freedHandles.add(refValue.value);
+      backend.freeWindow(refValue.value);
+      freedHandles.window.add(refValue.value);
     } catch {
       // best effort cleanup
     }
