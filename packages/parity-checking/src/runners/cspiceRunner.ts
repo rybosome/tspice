@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import type {
   CaseRunner,
+  RunCaseInputV1,
   RunCaseInput,
   RunCaseResult,
   RunnerErrorReport,
@@ -439,6 +440,37 @@ function asSpiceErrorState(err: CRunnerError["error"]): SpiceErrorState {
   return spice;
 }
 
+function toLegacyInvokeInput(input: Extract<RunCaseInput, { schemaVersion: 2 }>): RunCaseInputV1 | null {
+  if (input.workflow.steps.length !== 1) {
+    return null;
+  }
+
+  const [step] = input.workflow.steps;
+  if (step?.op !== "invokeLegacyCall") {
+    return null;
+  }
+
+  if ((input.workflow.cleanup?.length ?? 0) > 0) {
+    throw new Error("v2 invokeLegacyCall workflow must not define cleanup steps");
+  }
+
+  const call = step.call ?? input.contract.contractMethod;
+  if (typeof call !== "string" || call.trim() === "") {
+    throw new Error("v2 invokeLegacyCall requires a non-empty call name");
+  }
+
+  const args = input.args ?? [];
+  if (!Array.isArray(args)) {
+    throw new Error(`v2 invokeLegacyCall expects case args to be an array (got ${JSON.stringify(args)})`);
+  }
+
+  return {
+    ...(input.setup === undefined ? {} : { setup: input.setup }),
+    call,
+    args,
+  };
+}
+
 /** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
 export async function createCspiceRunner(): Promise<CaseRunner> {
   const binaryPath = getCspiceRunnerBinaryPath();
@@ -461,7 +493,10 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
           validateV2CasePreflight(input);
         }
 
-        const out = await invokeRunner(binaryPath, input);
+        const effectiveInput =
+          input.schemaVersion === 2 ? (toLegacyInvokeInput(input) ?? input) : input;
+
+        const out = await invokeRunner(binaryPath, effectiveInput);
         if (out.ok) {
           return { ok: true, result: out.result };
         }

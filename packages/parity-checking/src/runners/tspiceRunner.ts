@@ -57,6 +57,41 @@ function unsupportedCall(message: string): never {
   throw err;
 }
 
+function toLegacyInvokeInput(input: Extract<RunCaseInput, { schemaVersion: 2 }>): {
+  setup: typeof input.setup;
+  call: string;
+  args: unknown[];
+} | null {
+  if (input.workflow.steps.length !== 1) {
+    return null;
+  }
+
+  const [step] = input.workflow.steps;
+  if (step?.op !== "invokeLegacyCall") {
+    return null;
+  }
+
+  if ((input.workflow.cleanup?.length ?? 0) > 0) {
+    invalidRequest("v2 invokeLegacyCall workflow must not define cleanup steps");
+  }
+
+  const call = step.call ?? input.contract.contractMethod;
+  if (typeof call !== "string" || call.trim() === "") {
+    invalidRequest("v2 invokeLegacyCall requires a non-empty call name");
+  }
+
+  const args = input.args ?? [];
+  if (!Array.isArray(args)) {
+    invalidArgs(`v2 invokeLegacyCall expects case args to be an array (got ${formatValue(args)})`);
+  }
+
+  return {
+    setup: input.setup,
+    call,
+    args,
+  };
+}
+
 /** Assert that a value is a finite integer (used for runner argument validation). */
 function assertInteger(value: unknown, label: string): asserts value is number {
   if (typeof value !== "number") {
@@ -1534,6 +1569,17 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
         }
 
         if (input.schemaVersion === 2) {
+          const legacyInput = toLegacyInvokeInput(input);
+          if (legacyInput !== null) {
+            const fn = DISPATCH[legacyInput.call];
+            if (!fn) {
+              unsupportedCall(`Unsupported call: ${formatValue(legacyInput.call)}`);
+            }
+
+            const result = await fn(backend, legacyInput.args);
+            return { ok: true, result };
+          }
+
           const result = await executeV2CaseWithBackend(backend, input);
           return { ok: true, result };
         }

@@ -160,6 +160,10 @@ export type MethodWorkflowOpSpiceCallV2 =
   | MethodWorkflowOpSpiceCallWithOutputV2
   | MethodWorkflowOpSpiceCallWithoutOutputV2;
 
+export type MethodWorkflowOpInvokeLegacyCallV2 = {
+  op: "invokeLegacyCall";
+  call?: string;
+};
 export type MethodWorkflowOpProjectResultV2 = {
   op: "projectResult";
   out: Record<string, unknown>;
@@ -179,13 +183,14 @@ export type MethodWorkflowStepV2 =
   | MethodWorkflowOpAllocCellV2
   | MethodWorkflowOpAllocWindowV2
   | MethodWorkflowOpSpiceCallV2
+  | MethodWorkflowOpInvokeLegacyCallV2
   | MethodWorkflowOpProjectResultV2
   | MethodWorkflowOpFreeCellV2
   | MethodWorkflowOpFreeWindowV2;
 
 export type MethodCaseSpecV2 = {
   id: string;
-  args?: Record<string, unknown>;
+  args?: unknown;
   setup?: ScenarioSetupAst;
   compare?: ScenarioCompareAst;
   expect?: MethodCaseExpectation;

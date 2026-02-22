@@ -1,0 +1,21 @@
+schemaVersion: 2
+manifest:
+  id: methods/cells-windows/wncard@v2
+  kind: method
+contract:
+  contractMethod: cells-windows.wncard
+  canonicalMethod: cells-windows.wncard
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: cells-windows.wncard.basic
+    args:
+      - - window
+        - 4
+    expect:
+      ok: true

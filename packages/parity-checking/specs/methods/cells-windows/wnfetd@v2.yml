@@ -1,0 +1,22 @@
+schemaVersion: 2
+manifest:
+  id: methods/cells-windows/wnfetd@v2
+  kind: method
+contract:
+  contractMethod: cells-windows.wnfetd
+  canonicalMethod: cells-windows.wnfetd
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: cells-windows.wnfetd.basic
+    args:
+      - - window
+        - 4
+      - 0
+    expect:
+      ok: true

@@ -81,6 +81,10 @@ export type V2WorkflowSpiceCallStep =
   | V2WorkflowSpiceCallWithOutputStep
   | V2WorkflowSpiceCallWithoutOutputStep;
 
+export type V2WorkflowInvokeLegacyCallStep = {
+  op: "invokeLegacyCall";
+  call?: string;
+};
 export type V2WorkflowProjectResultStep = {
   op: "projectResult";
   out: Record<string, unknown>;
@@ -100,6 +104,7 @@ export type V2WorkflowStep =
   | V2WorkflowAllocCellStep
   | V2WorkflowAllocWindowStep
   | V2WorkflowSpiceCallStep
+  | V2WorkflowInvokeLegacyCallStep
   | V2WorkflowProjectResultStep
   | V2WorkflowFreeCellStep
   | V2WorkflowFreeWindowStep;
@@ -112,7 +117,7 @@ export type RunCaseInputV2 = {
     kind: "method";
   };
   contract: V2ContractSpec;
-  args: Record<string, unknown>;
+  args: unknown;
   workflow: {
     steps: V2WorkflowStep[];
     cleanup?: V2WorkflowStep[];

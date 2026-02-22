@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: methods/cells-windows/cellGetc@v2
+  kind: method
+contract:
+  contractMethod: cells-windows.cellGetc
+  canonicalMethod: cells-windows.cellGetc
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: cells-windows.cellGetc.basic
+    args:
+      - - char
+        - 8
+        - 16
+      - 2
+    expect:
+      ok: true
