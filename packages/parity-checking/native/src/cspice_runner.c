@@ -1480,7 +1480,8 @@ static CallId parse_call_id(const char *call) {
 typedef enum {
   V2_REF_NONE = 0,
   V2_REF_INT,
-  V2_REF_INT_CELL,
+  V2_REF_CELL,
+  V2_REF_WINDOW,
 } V2RefType;
 
 typedef struct {
@@ -1488,7 +1489,7 @@ typedef struct {
   V2RefType type;
   SpiceInt intValue;
   SpiceCell cell;
-  SpiceInt *cellStorage;
+  void *storage;
 } V2RefEntry;
 
 static bool v2_parse_int_token_or_error(const char *json, const jsmntok_t *tok,
@@ -1563,24 +1564,14 @@ static int v2_find_ref_index(const V2RefEntry *refs, const int refCount,
   return -1;
 }
 
-static int v2_find_free_ref_slot(const V2RefEntry *refs, const int refCount) {
-  for (int i = 0; i < refCount; i++) {
-    if (refs[i].name == NULL) {
-      return i;
-    }
-  }
-
-  return -1;
-}
-
 static void v2_free_ref_entry(V2RefEntry *entry) {
   if (entry == NULL) {
     return;
   }
 
-  if (entry->cellStorage != NULL) {
-    free(entry->cellStorage);
-    entry->cellStorage = NULL;
+  if (entry->storage != NULL) {
+    free(entry->storage);
+    entry->storage = NULL;
   }
 
   free(entry->name);
@@ -1597,22 +1588,18 @@ static void v2_free_all_refs(V2RefEntry *refs, const int refCount) {
 }
 
 static bool v2_add_ref_cell(V2RefEntry *refs, int *refCount, const char *name,
-                            const SpiceCell *cell, SpiceInt *storage) {
+                            const V2RefType type, const SpiceCell *cell,
+                            void *storage) {
   if (v2_find_ref_index(refs, *refCount, name) >= 0) {
     write_error_json_ex("invalid_request", "Duplicate v2 ref name", name, NULL,
                         NULL, NULL);
     return false;
   }
 
-  int slot = v2_find_free_ref_slot(refs, *refCount);
-  if (slot < 0 && *refCount >= V2_MAX_REFS) {
+  if (*refCount >= V2_MAX_REFS) {
     write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
                         NULL);
     return false;
-  }
-
-  if (slot < 0) {
-    slot = *refCount;
   }
 
   char *ownedName = v2_strdup(name);
@@ -1621,16 +1608,14 @@ static bool v2_add_ref_cell(V2RefEntry *refs, int *refCount, const char *name,
     return false;
   }
 
-  V2RefEntry *entry = &refs[slot];
+  V2RefEntry *entry = &refs[*refCount];
   memset(entry, 0, sizeof(*entry));
   entry->name = ownedName;
-  entry->type = V2_REF_INT_CELL;
+  entry->type = type;
   entry->cell = *cell;
-  entry->cellStorage = storage;
+  entry->storage = storage;
 
-  if (slot == *refCount) {
-    (*refCount)++;
-  }
+  (*refCount)++;
   return true;
 }
 
@@ -1642,15 +1627,10 @@ static bool v2_add_ref_int(V2RefEntry *refs, int *refCount, const char *name,
     return false;
   }
 
-  int slot = v2_find_free_ref_slot(refs, *refCount);
-  if (slot < 0 && *refCount >= V2_MAX_REFS) {
+  if (*refCount >= V2_MAX_REFS) {
     write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
                         NULL);
     return false;
-  }
-
-  if (slot < 0) {
-    slot = *refCount;
   }
 
   char *ownedName = v2_strdup(name);
@@ -1659,15 +1639,13 @@ static bool v2_add_ref_int(V2RefEntry *refs, int *refCount, const char *name,
     return false;
   }
 
-  V2RefEntry *entry = &refs[slot];
+  V2RefEntry *entry = &refs[*refCount];
   memset(entry, 0, sizeof(*entry));
   entry->name = ownedName;
   entry->type = V2_REF_INT;
   entry->intValue = value;
 
-  if (slot == *refCount) {
-    (*refCount)++;
-  }
+  (*refCount)++;
   return true;
 }
 
@@ -1752,13 +1730,17 @@ static bool v2_resolve_spiceint_expr(const char *json, const jsmntok_t *tokens,
   return false;
 }
 
-static bool v2_resolve_cell_ref(const char *json, const jsmntok_t *tokens,
-                                const int tokenCount, const int tokenIndex,
-                                V2RefEntry *refs, const int refCount,
-                                const char *label, int *outRefIndex) {
+static bool v2_resolve_ref_by_type(const char *json, const jsmntok_t *tokens,
+                                   const int tokenCount, const int tokenIndex,
+                                   V2RefEntry *refs, const int refCount,
+                                   const char *label,
+                                   const V2RefType expectedType,
+                                   const char *invalidRefMessage,
+                                   int *outRefIndex) {
   if (tokenIndex < 0 || tokenIndex >= tokenCount ||
       tokens[tokenIndex].type != JSMN_STRING) {
-    write_error_json_ex("invalid_request", "Cell ref expression must be a string",
+    write_error_json_ex("invalid_request",
+                        "Ref expression must be a string",
                         label, NULL, NULL, NULL);
     return false;
   }
@@ -1780,7 +1762,7 @@ static bool v2_resolve_cell_ref(const char *json, const jsmntok_t *tokens,
 
   const char *refName = NULL;
   if (!v2_parse_ref_name(expr, "$refs.", &refName)) {
-    write_error_json_ex("invalid_args", "Cell ref must use $refs.<name>", expr,
+    write_error_json_ex("invalid_args", "Ref must use $refs.<name>", expr,
                         NULL, NULL, NULL);
     free(expr);
     return false;
@@ -1794,8 +1776,104 @@ static bool v2_resolve_cell_ref(const char *json, const jsmntok_t *tokens,
     return false;
   }
 
-  if (refs[refIndex].type != V2_REF_INT_CELL || refs[refIndex].cellStorage == NULL) {
-    write_error_json_ex("invalid_args", "v2 ref is not an allocated int cell",
+  if (refs[refIndex].type != expectedType || refs[refIndex].storage == NULL) {
+    write_error_json_ex("invalid_args", invalidRefMessage,
+                        refName, NULL, NULL, NULL);
+    free(expr);
+    return false;
+  }
+
+  *outRefIndex = refIndex;
+  free(expr);
+  return true;
+}
+
+static bool v2_resolve_cell_ref(const char *json, const jsmntok_t *tokens,
+                                const int tokenCount, const int tokenIndex,
+                                V2RefEntry *refs, const int refCount,
+                                const char *label, int *outRefIndex) {
+  return v2_resolve_ref_by_type(
+      json,
+      tokens,
+      tokenCount,
+      tokenIndex,
+      refs,
+      refCount,
+      label,
+      V2_REF_CELL,
+      "v2 ref is not an allocated cell",
+      outRefIndex);
+}
+
+static bool v2_resolve_window_ref(const char *json, const jsmntok_t *tokens,
+                                  const int tokenCount, const int tokenIndex,
+                                  V2RefEntry *refs, const int refCount,
+                                  const char *label, int *outRefIndex) {
+  return v2_resolve_ref_by_type(
+      json,
+      tokens,
+      tokenCount,
+      tokenIndex,
+      refs,
+      refCount,
+      label,
+      V2_REF_WINDOW,
+      "v2 ref is not an allocated window",
+      outRefIndex);
+}
+
+static bool v2_resolve_cell_or_window_ref(const char *json,
+                                          const jsmntok_t *tokens,
+                                          const int tokenCount,
+                                          const int tokenIndex,
+                                          V2RefEntry *refs,
+                                          const int refCount,
+                                          const char *label,
+                                          int *outRefIndex) {
+  if (tokenIndex < 0 || tokenIndex >= tokenCount ||
+      tokens[tokenIndex].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request",
+                        "Ref expression must be a string",
+                        label, NULL, NULL, NULL);
+    return false;
+  }
+
+  char detail[256];
+  detail[0] = '\0';
+  char *expr = NULL;
+  jsmn_strdup_err_t exprErr =
+      jsmn_strdup(json, &tokens[tokenIndex], &expr, detail, sizeof(detail));
+  if (exprErr != JSMN_STRDUP_OK) {
+    if (exprErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    return false;
+  }
+
+  const char *refName = NULL;
+  if (!v2_parse_ref_name(expr, "$refs.", &refName)) {
+    write_error_json_ex("invalid_args", "Ref must use $refs.<name>", expr,
+                        NULL, NULL, NULL);
+    free(expr);
+    return false;
+  }
+
+  int refIndex = v2_find_ref_index(refs, refCount, refName);
+  if (refIndex < 0) {
+    write_error_json_ex("invalid_request", "Unknown v2 ref", refName, NULL,
+                        NULL, NULL);
+    free(expr);
+    return false;
+  }
+
+  if ((refs[refIndex].type != V2_REF_CELL &&
+       refs[refIndex].type != V2_REF_WINDOW) ||
+      refs[refIndex].storage == NULL) {
+    write_error_json_ex("invalid_args",
+                        "v2 ref is not an allocated cell/window",
                         refName, NULL, NULL, NULL);
     free(expr);
     return false;
@@ -1846,13 +1924,6 @@ static bool v2_execute_alloc_cell_step(const char *json, const jsmntok_t *tokens
     return false;
   }
 
-  if (!jsmn_token_streq(json, &tokens[kindTok], "int")) {
-    write_error_json_ex("unsupported_call", "allocCell.kind currently supports only int",
-                        NULL, NULL, NULL, NULL);
-    free(asName);
-    return false;
-  }
-
   SpiceInt size = 0;
   if (!v2_resolve_spiceint_expr(json, tokens, tokenCount, sizeTok, argsTok, refs,
                                 *refCount, "allocCell.params.size", &size)) {
@@ -1867,33 +1938,139 @@ static bool v2_execute_alloc_cell_step(const char *json, const jsmntok_t *tokens
     return false;
   }
 
-  size_t cellSize = (size_t)size;
-  if (cellSize > (SIZE_MAX / sizeof(SpiceInt)) - (size_t)SPICE_CELL_CTRLSZ) {
-    write_error_json_ex("invalid_args", "allocCell.params.size is too large", NULL,
+  void *storage = NULL;
+  SpiceCell cell;
+  memset(&cell, 0, sizeof(cell));
+
+  if (jsmn_token_streq(json, &tokens[kindTok], "int")) {
+    size_t cellSize = (size_t)size;
+    if (cellSize > (SIZE_MAX / sizeof(SpiceInt)) - (size_t)SPICE_CELL_CTRLSZ) {
+      write_error_json_ex("invalid_args", "allocCell.params.size is too large",
+                          NULL, NULL, NULL, NULL);
+      free(asName);
+      return false;
+    }
+
+    const size_t elemCount = (size_t)SPICE_CELL_CTRLSZ + cellSize;
+    SpiceInt *intStorage = (SpiceInt *)calloc(elemCount, sizeof(SpiceInt));
+    if (intStorage == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      free(asName);
+      return false;
+    }
+
+    storage = intStorage;
+    cell.dtype = SPICE_INT;
+    cell.length = 0;
+    cell.size = size;
+    cell.card = 0;
+    cell.isSet = SPICETRUE;
+    cell.adjust = SPICEFALSE;
+    cell.init = SPICEFALSE;
+    cell.base = (void *)intStorage;
+    cell.data = (void *)(intStorage + SPICE_CELL_CTRLSZ);
+  } else if (jsmn_token_streq(json, &tokens[kindTok], "double")) {
+    size_t cellSize = (size_t)size;
+    if (cellSize > (SIZE_MAX / sizeof(SpiceDouble)) - (size_t)SPICE_CELL_CTRLSZ) {
+      write_error_json_ex("invalid_args", "allocCell.params.size is too large",
+                          NULL, NULL, NULL, NULL);
+      free(asName);
+      return false;
+    }
+
+    const size_t elemCount = (size_t)SPICE_CELL_CTRLSZ + cellSize;
+    SpiceDouble *doubleStorage =
+        (SpiceDouble *)calloc(elemCount, sizeof(SpiceDouble));
+    if (doubleStorage == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      free(asName);
+      return false;
+    }
+
+    storage = doubleStorage;
+    cell.dtype = SPICE_DP;
+    cell.length = 0;
+    cell.size = size;
+    cell.card = 0;
+    cell.isSet = SPICETRUE;
+    cell.adjust = SPICEFALSE;
+    cell.init = SPICEFALSE;
+    cell.base = (void *)doubleStorage;
+    cell.data = (void *)(doubleStorage + SPICE_CELL_CTRLSZ);
+  } else if (jsmn_token_streq(json, &tokens[kindTok], "char")) {
+    int lengthTok =
+        jsmn_find_object_key(json, tokens, paramsTok, "length", tokenCount);
+    if (lengthTok < 0) {
+      write_error_json_ex("invalid_request",
+                          "allocCell.params.kind=char requires length",
+                          NULL, NULL, NULL, NULL);
+      free(asName);
+      return false;
+    }
+
+    SpiceInt length = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  lengthTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "allocCell.params.length",
+                                  &length)) {
+      free(asName);
+      return false;
+    }
+
+    if (length < 1) {
+      write_error_json_ex("invalid_args", "allocCell.params.length must be >= 1",
+                          NULL, NULL, NULL, NULL);
+      free(asName);
+      return false;
+    }
+
+    const size_t cellSize = (size_t)size;
+    const size_t charLength = (size_t)length;
+    if (cellSize > SIZE_MAX - (size_t)SPICE_CELL_CTRLSZ) {
+      write_error_json_ex("invalid_args", "allocCell.params.size is too large",
+                          NULL, NULL, NULL, NULL);
+      free(asName);
+      return false;
+    }
+
+    const size_t slotCount = (size_t)SPICE_CELL_CTRLSZ + cellSize;
+    if (charLength > SIZE_MAX / slotCount) {
+      write_error_json_ex("invalid_args",
+                          "allocCell.params.length is too large",
+                          NULL, NULL, NULL, NULL);
+      free(asName);
+      return false;
+    }
+
+    const size_t elemCount = slotCount * charLength;
+    SpiceChar *charStorage = (SpiceChar *)calloc(elemCount, sizeof(SpiceChar));
+    if (charStorage == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      free(asName);
+      return false;
+    }
+
+    storage = charStorage;
+    cell.dtype = SPICE_CHR;
+    cell.length = length;
+    cell.size = size;
+    cell.card = 0;
+    cell.isSet = SPICETRUE;
+    cell.adjust = SPICEFALSE;
+    cell.init = SPICEFALSE;
+    cell.base = (void *)charStorage;
+    cell.data = (void *)(charStorage + ((size_t)SPICE_CELL_CTRLSZ * charLength));
+  } else {
+    write_error_json_ex("unsupported_call", "Unsupported allocCell kind", NULL,
                         NULL, NULL, NULL);
     free(asName);
     return false;
   }
-
-  const size_t elemCount = (size_t)SPICE_CELL_CTRLSZ + cellSize;
-  SpiceInt *storage = (SpiceInt *)calloc(elemCount, sizeof(SpiceInt));
-  if (storage == NULL) {
-    write_error_json("Out of memory", NULL, NULL, NULL);
-    free(asName);
-    return false;
-  }
-
-  SpiceCell cell;
-  memset(&cell, 0, sizeof(cell));
-  cell.dtype = SPICE_INT;
-  cell.length = 0;
-  cell.size = size;
-  cell.card = 0;
-  cell.isSet = SPICETRUE;
-  cell.adjust = SPICEFALSE;
-  cell.init = SPICEFALSE;
-  cell.base = (void *)storage;
-  cell.data = (void *)(storage + SPICE_CELL_CTRLSZ);
 
   ssize_c(size, &cell);
   scard_c(0, &cell);
@@ -1911,7 +2088,134 @@ static bool v2_execute_alloc_cell_step(const char *json, const jsmntok_t *tokens
     return false;
   }
 
-  bool ok = v2_add_ref_cell(refs, refCount, asName, &cell, storage);
+  bool ok = v2_add_ref_cell(refs, refCount, asName, V2_REF_CELL, &cell, storage);
+  free(asName);
+  if (!ok) {
+    free(storage);
+    return false;
+  }
+
+  return true;
+}
+
+static bool v2_execute_alloc_window_step(const char *json,
+                                         const jsmntok_t *tokens,
+                                         const int tokenCount,
+                                         const int stepTok,
+                                         const int argsTok,
+                                         V2RefEntry *refs,
+                                         int *refCount) {
+  int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
+  int paramsTok =
+      jsmn_find_object_key(json, tokens, stepTok, "params", tokenCount);
+  if (asTok < 0 || tokens[asTok].type != JSMN_STRING || paramsTok < 0 ||
+      tokens[paramsTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_request",
+                        "allocWindow requires string 'as' and object 'params'",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  int maxIntervalsTok =
+      jsmn_find_object_key(json, tokens, paramsTok, "maxIntervals", tokenCount);
+  if (maxIntervalsTok < 0) {
+    write_error_json_ex("invalid_request",
+                        "allocWindow.params requires maxIntervals", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  SpiceInt maxIntervals = 0;
+  if (!v2_resolve_spiceint_expr(json,
+                                tokens,
+                                tokenCount,
+                                maxIntervalsTok,
+                                argsTok,
+                                refs,
+                                *refCount,
+                                "allocWindow.params.maxIntervals",
+                                &maxIntervals)) {
+    return false;
+  }
+
+  if (maxIntervals < 1) {
+    write_error_json_ex("invalid_args",
+                        "allocWindow.params.maxIntervals must be >= 1", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  if (maxIntervals > (SpiceInt)(INT_MAX / 2)) {
+    write_error_json_ex("invalid_args",
+                        "allocWindow.params.maxIntervals is too large", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  const SpiceInt windowSize = maxIntervals * 2;
+  const size_t cellSize = (size_t)windowSize;
+  if (cellSize > (SIZE_MAX / sizeof(SpiceDouble)) - (size_t)SPICE_CELL_CTRLSZ) {
+    write_error_json_ex("invalid_args", "allocWindow.params.maxIntervals is too large",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  const size_t elemCount = (size_t)SPICE_CELL_CTRLSZ + cellSize;
+  SpiceDouble *storage = (SpiceDouble *)calloc(elemCount, sizeof(SpiceDouble));
+  if (storage == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  SpiceCell window;
+  memset(&window, 0, sizeof(window));
+  window.dtype = SPICE_DP;
+  window.length = 0;
+  window.size = windowSize;
+  window.card = 0;
+  window.isSet = SPICETRUE;
+  window.adjust = SPICEFALSE;
+  window.init = SPICEFALSE;
+  window.base = (void *)storage;
+  window.data = (void *)(storage + SPICE_CELL_CTRLSZ);
+
+  ssize_c(windowSize, &window);
+  scard_c(0, &window);
+
+  if (failed_c() == SPICETRUE) {
+    char shortMsg[1841];
+    char longMsg[1841];
+    char traceMsg[1841];
+    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                        traceMsg, sizeof(traceMsg));
+    write_error_json_ex("spice_error", "SPICE error in allocWindow", NULL,
+                        shortMsg, longMsg, traceMsg);
+    free(storage);
+    return false;
+  }
+
+  char asDetail[256];
+  asDetail[0] = '\0';
+  char *asName = NULL;
+  jsmn_strdup_err_t asErr =
+      jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
+  if (asErr != JSMN_STRDUP_OK) {
+    if (asErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    free(storage);
+    return false;
+  }
+
+  bool ok = v2_add_ref_cell(refs,
+                            refCount,
+                            asName,
+                            V2_REF_WINDOW,
+                            &window,
+                            (void *)storage);
   free(asName);
   if (!ok) {
     free(storage);
@@ -1929,24 +2233,10 @@ static bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens
   int inTok = jsmn_find_object_key(json, tokens, stepTok, "in", tokenCount);
   int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
   if (callTok < 0 || tokens[callTok].type != JSMN_STRING || inTok < 0 ||
-      tokens[inTok].type != JSMN_ARRAY || asTok < 0 ||
-      tokens[asTok].type != JSMN_STRING) {
+      tokens[inTok].type != JSMN_ARRAY) {
     write_error_json_ex("invalid_request",
-                        "spiceCall requires string call, array in, and string as",
+                        "spiceCall requires string call and array in",
                         NULL, NULL, NULL, NULL);
-    return false;
-  }
-
-  if (tokens[inTok].size != 1) {
-    write_error_json_ex("invalid_request", "spiceCall currently expects one input",
-                        NULL, NULL, NULL, NULL);
-    return false;
-  }
-
-  int inExprTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
-  int refIndex = -1;
-  if (!v2_resolve_cell_ref(json, tokens, tokenCount, inExprTok, refs, *refCount,
-                           "spiceCall.in[0]", &refIndex)) {
     return false;
   }
 
@@ -1965,11 +2255,232 @@ static bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens
     return false;
   }
 
-  SpiceInt out = 0;
-  if (strcmp(callName, "card_c") == 0) {
-    out = card_c(&refs[refIndex].cell);
-  } else if (strcmp(callName, "size_c") == 0) {
-    out = size_c(&refs[refIndex].cell);
+  const int inputCount = tokens[inTok].size;
+
+  if (strcmp(callName, "card_c") == 0 || strcmp(callName, "size_c") == 0) {
+    if (inputCount != 1) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall card_c/size_c expects one input",
+                          NULL, NULL, NULL, NULL);
+      free(callName);
+      return false;
+    }
+
+    if (asTok < 0 || tokens[asTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall card_c/size_c requires string as",
+                          NULL, NULL, NULL, NULL);
+      free(callName);
+      return false;
+    }
+
+    int inExprTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+    int refIndex = -1;
+    if (!v2_resolve_cell_or_window_ref(json,
+                                       tokens,
+                                       tokenCount,
+                                       inExprTok,
+                                       refs,
+                                       *refCount,
+                                       "spiceCall.in[0]",
+                                       &refIndex)) {
+      free(callName);
+      return false;
+    }
+
+    SpiceInt out =
+        (strcmp(callName, "card_c") == 0) ? card_c(&refs[refIndex].cell)
+                                           : size_c(&refs[refIndex].cell);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      write_error_json_ex("spice_error", "SPICE error in spiceCall", callName,
+                          shortMsg, longMsg, traceMsg);
+      free(callName);
+      return false;
+    }
+
+    char asDetail[256];
+    asDetail[0] = '\0';
+    char *asName = NULL;
+    jsmn_strdup_err_t asErr =
+        jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
+    if (asErr != JSMN_STRDUP_OK) {
+      if (asErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      free(callName);
+      return false;
+    }
+
+    bool ok = v2_add_ref_int(refs, refCount, asName, out);
+    free(asName);
+    free(callName);
+    return ok;
+  }
+
+  if (strcmp(callName, "scard_c") == 0) {
+    if (inputCount != 2) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall scard_c expects [card, cellOrWindow]",
+                          NULL, NULL, NULL, NULL);
+      free(callName);
+      return false;
+    }
+
+    int cardTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+    SpiceInt card = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  cardTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(scard_c).in[0]",
+                                  &card)) {
+      free(callName);
+      return false;
+    }
+
+    if (card < 0) {
+      write_error_json_ex("invalid_args", "spiceCall(scard_c).in[0] must be >= 0",
+                          NULL, NULL, NULL, NULL);
+      free(callName);
+      return false;
+    }
+
+    int targetTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
+    int refIndex = -1;
+    if (!v2_resolve_cell_or_window_ref(json,
+                                       tokens,
+                                       tokenCount,
+                                       targetTok,
+                                       refs,
+                                       *refCount,
+                                       "spiceCall(scard_c).in[1]",
+                                       &refIndex)) {
+      free(callName);
+      return false;
+    }
+
+    scard_c(card, &refs[refIndex].cell);
+  } else if (strcmp(callName, "ssize_c") == 0) {
+    if (inputCount != 2) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ssize_c expects [size, cellOrWindow]",
+                          NULL, NULL, NULL, NULL);
+      free(callName);
+      return false;
+    }
+
+    int sizeTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+    SpiceInt newSize = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  sizeTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(ssize_c).in[0]",
+                                  &newSize)) {
+      free(callName);
+      return false;
+    }
+
+    if (newSize < 0) {
+      write_error_json_ex("invalid_args", "spiceCall(ssize_c).in[0] must be >= 0",
+                          NULL, NULL, NULL, NULL);
+      free(callName);
+      return false;
+    }
+
+    int targetTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
+    int refIndex = -1;
+    if (!v2_resolve_cell_or_window_ref(json,
+                                       tokens,
+                                       tokenCount,
+                                       targetTok,
+                                       refs,
+                                       *refCount,
+                                       "spiceCall(ssize_c).in[1]",
+                                       &refIndex)) {
+      free(callName);
+      return false;
+    }
+
+    ssize_c(newSize, &refs[refIndex].cell);
+  } else if (strcmp(callName, "valid_c") == 0) {
+    if (inputCount != 3) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall valid_c expects [size, n, cellOrWindow]",
+                          NULL, NULL, NULL, NULL);
+      free(callName);
+      return false;
+    }
+
+    int sizeTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+    int nTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
+    SpiceInt sizeArg = 0;
+    SpiceInt nArg = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  sizeTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(valid_c).in[0]",
+                                  &sizeArg) ||
+        !v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  nTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(valid_c).in[1]",
+                                  &nArg)) {
+      free(callName);
+      return false;
+    }
+
+    if (sizeArg < 0) {
+      write_error_json_ex("invalid_args", "spiceCall(valid_c).in[0] must be >= 0",
+                          NULL, NULL, NULL, NULL);
+      free(callName);
+      return false;
+    }
+    if (nArg < 0) {
+      write_error_json_ex("invalid_args", "spiceCall(valid_c).in[1] must be >= 0",
+                          NULL, NULL, NULL, NULL);
+      free(callName);
+      return false;
+    }
+
+    int targetTok = jsmn_get_array_elem(tokens, inTok, 2, tokenCount);
+    int refIndex = -1;
+    if (!v2_resolve_cell_or_window_ref(json,
+                                       tokens,
+                                       tokenCount,
+                                       targetTok,
+                                       refs,
+                                       *refCount,
+                                       "spiceCall(valid_c).in[2]",
+                                       &refIndex)) {
+      free(callName);
+      return false;
+    }
+
+    valid_c(sizeArg, nArg, &refs[refIndex].cell);
   } else {
     write_error_json_ex("unsupported_call", "Unsupported v2 spiceCall", callName,
                         NULL, NULL, NULL);
@@ -1989,26 +2500,8 @@ static bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens
     return false;
   }
 
-  char asDetail[256];
-  asDetail[0] = '\0';
-  char *asName = NULL;
-  jsmn_strdup_err_t asErr =
-      jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
-  if (asErr != JSMN_STRDUP_OK) {
-    if (asErr == JSMN_STRDUP_INVALID) {
-      write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                          asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
-    } else {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-    }
-    free(callName);
-    return false;
-  }
-
-  bool ok = v2_add_ref_int(refs, refCount, asName, out);
-  free(asName);
   free(callName);
-  return ok;
+  return true;
 }
 
 static bool v2_execute_free_cell_step(const char *json, const jsmntok_t *tokens,
@@ -2035,184 +2528,46 @@ static bool v2_execute_free_cell_step(const char *json, const jsmntok_t *tokens,
   return true;
 }
 
-typedef struct {
-  char *data;
-  size_t len;
-  size_t cap;
-} V2JsonBuffer;
-
-static void v2_json_buffer_init(V2JsonBuffer *buf) {
-  if (buf == NULL) {
-    return;
-  }
-
-  buf->data = NULL;
-  buf->len = 0;
-  buf->cap = 0;
-}
-
-static void v2_json_buffer_free(V2JsonBuffer *buf) {
-  if (buf == NULL) {
-    return;
-  }
-
-  free(buf->data);
-  buf->data = NULL;
-  buf->len = 0;
-  buf->cap = 0;
-}
-
-static bool v2_json_buffer_reserve(V2JsonBuffer *buf, const size_t extraBytes) {
-  if (buf == NULL) {
+static bool v2_execute_free_window_step(const char *json,
+                                        const jsmntok_t *tokens,
+                                        const int tokenCount,
+                                        const int stepTok,
+                                        const int argsTok,
+                                        V2RefEntry *refs,
+                                        const int refCount) {
+  int targetTok =
+      jsmn_find_object_key(json, tokens, stepTok, "target", tokenCount);
+  if (targetTok < 0) {
+    write_error_json_ex("invalid_request", "freeWindow requires target", NULL,
+                        NULL, NULL, NULL);
     return false;
   }
 
-  if (extraBytes > SIZE_MAX - buf->len - 1U) {
+  int refIndex = -1;
+  if (!v2_resolve_window_ref(json,
+                             tokens,
+                             tokenCount,
+                             targetTok,
+                             refs,
+                             refCount,
+                             "freeWindow.target",
+                             &refIndex)) {
     return false;
   }
 
-  const size_t need = buf->len + extraBytes + 1U;
-  if (need <= buf->cap) {
-    return true;
-  }
+  (void)argsTok;
 
-  size_t nextCap = (buf->cap > 0) ? buf->cap : 128U;
-  while (nextCap < need) {
-    if (nextCap > (SIZE_MAX / 2U)) {
-      nextCap = need;
-      break;
-    }
-    nextCap *= 2U;
-  }
-
-  char *nextData = (char *)realloc(buf->data, nextCap);
-  if (nextData == NULL) {
-    return false;
-  }
-
-  buf->data = nextData;
-  buf->cap = nextCap;
+  v2_free_ref_entry(&refs[refIndex]);
   return true;
 }
 
-static bool v2_json_buffer_append_bytes(V2JsonBuffer *buf, const char *src,
-                                        const size_t srcLen) {
-  if (srcLen == 0) {
-    return true;
-  }
-
-  if (src == NULL) {
-    return false;
-  }
-
-  if (!v2_json_buffer_reserve(buf, srcLen)) {
-    return false;
-  }
-
-  memcpy(buf->data + buf->len, src, srcLen);
-  buf->len += srcLen;
-  buf->data[buf->len] = '\0';
-  return true;
-}
-
-static bool v2_json_buffer_append_cstr(V2JsonBuffer *buf, const char *src) {
-  if (src == NULL) {
-    return false;
-  }
-
-  return v2_json_buffer_append_bytes(buf, src, strlen(src));
-}
-
-static bool v2_json_buffer_append_char(V2JsonBuffer *buf, const char c) {
-  return v2_json_buffer_append_bytes(buf, &c, 1U);
-}
-
-static bool v2_json_buffer_append_int(V2JsonBuffer *buf, const SpiceInt value) {
-  char tmp[64];
-  const int written = snprintf(tmp, sizeof(tmp), "%" PRIdMAX, (intmax_t)value);
-  if (written < 0 || (size_t)written >= sizeof(tmp)) {
-    return false;
-  }
-
-  return v2_json_buffer_append_bytes(buf, tmp, (size_t)written);
-}
-
-static bool v2_json_buffer_append_escaped(V2JsonBuffer *buf, const char *s) {
-  if (s == NULL) {
-    return false;
-  }
-
-  for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
-    const unsigned char c = *p;
-    switch (c) {
-    case '"':
-      if (!v2_json_buffer_append_cstr(buf, "\\\"")) {
-        return false;
-      }
-      break;
-    case '\\':
-      if (!v2_json_buffer_append_cstr(buf, "\\\\")) {
-        return false;
-      }
-      break;
-    case '\b':
-      if (!v2_json_buffer_append_cstr(buf, "\\b")) {
-        return false;
-      }
-      break;
-    case '\f':
-      if (!v2_json_buffer_append_cstr(buf, "\\f")) {
-        return false;
-      }
-      break;
-    case '\n':
-      if (!v2_json_buffer_append_cstr(buf, "\\n")) {
-        return false;
-      }
-      break;
-    case '\r':
-      if (!v2_json_buffer_append_cstr(buf, "\\r")) {
-        return false;
-      }
-      break;
-    case '\t':
-      if (!v2_json_buffer_append_cstr(buf, "\\t")) {
-        return false;
-      }
-      break;
-    default:
-      if (c < 0x20U) {
-        char escape[7];
-        const int escLen = snprintf(escape, sizeof(escape), "\\u%04x",
-                                    (unsigned int)c);
-        if (escLen != 6 || !v2_json_buffer_append_bytes(buf, escape, 6U)) {
-          return false;
-        }
-      } else {
-        if (!v2_json_buffer_append_char(buf, (char)c)) {
-          return false;
-        }
-      }
-      break;
-    }
-  }
-
-  return true;
-}
-
-static bool v2_append_project_value_json(V2JsonBuffer *out, const char *json,
-                                         const jsmntok_t *tokens,
-                                         const int tokenCount,
-                                         const int valueTok, const int argsTok,
-                                         const V2RefEntry *refs,
-                                         const int refCount) {
+static bool v2_print_project_value(const char *json, const jsmntok_t *tokens,
+                                   const int tokenCount, const int valueTok,
+                                   const int argsTok, const V2RefEntry *refs,
+                                   const int refCount) {
   const jsmntok_t *tok = &tokens[valueTok];
   if (tok->type == JSMN_PRIMITIVE) {
-    if (!v2_json_buffer_append_bytes(out, json + tok->start,
-                                     (size_t)(tok->end - tok->start))) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-      return false;
-    }
+    fwrite(json + tok->start, 1, (size_t)(tok->end - tok->start), stdout);
     return true;
   }
 
@@ -2256,12 +2611,7 @@ static bool v2_append_project_value_json(V2JsonBuffer *out, const char *json,
       return false;
     }
 
-    if (!v2_json_buffer_append_int(out, argVal)) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-      free(value);
-      return false;
-    }
-
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)argVal);
     free(value);
     return true;
   }
@@ -2282,58 +2632,37 @@ static bool v2_append_project_value_json(V2JsonBuffer *out, const char *json,
       return false;
     }
 
-    if (!v2_json_buffer_append_int(out, refs[refIndex].intValue)) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-      free(value);
-      return false;
-    }
-
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)refs[refIndex].intValue);
     free(value);
     return true;
   }
 
-  bool ok = v2_json_buffer_append_char(out, '"') &&
-            v2_json_buffer_append_escaped(out, value) &&
-            v2_json_buffer_append_char(out, '"');
-  if (!ok) {
-    write_error_json("Out of memory", NULL, NULL, NULL);
-    free(value);
-    return false;
-  }
-
+  fputc('"', stdout);
+  json_print_escaped(value);
+  fputc('"', stdout);
   free(value);
   return true;
 }
 
-static bool v2_materialize_project_result_object_json(
-    const char *json, const jsmntok_t *tokens, const int tokenCount,
-    const int outTok, const int argsTok, const V2RefEntry *refs,
-    const int refCount, char **outJsonObject) {
-  if (outJsonObject == NULL) {
-    write_error_json("Out of memory", NULL, NULL, NULL);
-    return false;
-  }
-
-  *outJsonObject = NULL;
-
+static bool v2_write_project_result_json(const char *json,
+                                         const jsmntok_t *tokens,
+                                         const int tokenCount,
+                                         const int outTok,
+                                         const int argsTok,
+                                         const V2RefEntry *refs,
+                                         const int refCount) {
   if (outTok < 0 || outTok >= tokenCount || tokens[outTok].type != JSMN_OBJECT) {
     write_error_json_ex("invalid_request", "projectResult.out must be an object",
                         NULL, NULL, NULL, NULL);
     return false;
   }
 
+  fputs("{\"ok\":true,\"result\":{", stdout);
+
   int pairCount = jsmn_object_pair_count(&tokens[outTok]);
   if (pairCount < 0) {
     write_error_json_ex("invalid_request", "projectResult.out parse error", NULL,
                         NULL, NULL, NULL);
-    return false;
-  }
-
-  V2JsonBuffer out;
-  v2_json_buffer_init(&out);
-  if (!v2_json_buffer_append_char(&out, '{')) {
-    write_error_json("Out of memory", NULL, NULL, NULL);
-    v2_json_buffer_free(&out);
     return false;
   }
 
@@ -2345,7 +2674,6 @@ static bool v2_materialize_project_result_object_json(
     if (valueTok >= tokenCount || tokens[keyTok].type != JSMN_STRING) {
       write_error_json_ex("invalid_request", "projectResult.out parse error", NULL,
                           NULL, NULL, NULL);
-      v2_json_buffer_free(&out);
       return false;
     }
 
@@ -2361,102 +2689,28 @@ static bool v2_materialize_project_result_object_json(
       } else {
         write_error_json("Out of memory", NULL, NULL, NULL);
       }
-      v2_json_buffer_free(&out);
       return false;
     }
 
-    bool appendOk = true;
     if (!first) {
-      appendOk = v2_json_buffer_append_char(&out, ',');
+      fputc(',', stdout);
     }
     first = false;
 
-    appendOk = appendOk && v2_json_buffer_append_char(&out, '"') &&
-               v2_json_buffer_append_escaped(&out, key) &&
-               v2_json_buffer_append_cstr(&out, "\":");
+    fputc('"', stdout);
+    json_print_escaped(key);
+    fputs("\":", stdout);
     free(key);
 
-    if (!appendOk) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-      v2_json_buffer_free(&out);
-      return false;
-    }
-
-    if (!v2_append_project_value_json(&out, json, tokens, tokenCount, valueTok,
-                                      argsTok, refs, refCount)) {
-      v2_json_buffer_free(&out);
+    if (!v2_print_project_value(json, tokens, tokenCount, valueTok, argsTok, refs,
+                                refCount)) {
       return false;
     }
 
     idx = jsmn_skip_subtree(tokens, valueTok, tokenCount);
   }
 
-  if (!v2_json_buffer_append_char(&out, '}')) {
-    write_error_json("Out of memory", NULL, NULL, NULL);
-    v2_json_buffer_free(&out);
-    return false;
-  }
-
-  *outJsonObject = out.data;
-  return true;
-}
-
-static bool v2_dispatch_workflow_step(
-    const char *json, const jsmntok_t *tokens, const int tokenCount,
-    const int stepTok, const int opTok, const int argsTok, V2RefEntry *refs,
-    int *refCount, const bool captureProjectResult,
-    char **projectResultObjectJson, const char *unsupportedOpMessage) {
-  if (jsmn_token_streq(json, &tokens[opTok], "allocCell")) {
-    return v2_execute_alloc_cell_step(json, tokens, tokenCount, stepTok, argsTok,
-                                      refs, refCount);
-  }
-
-  if (jsmn_token_streq(json, &tokens[opTok], "spiceCall")) {
-    return v2_execute_spice_call_step(json, tokens, tokenCount, stepTok, argsTok,
-                                      refs, refCount);
-  }
-
-  if (jsmn_token_streq(json, &tokens[opTok], "projectResult")) {
-    int outTok = jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
-    char *nextProjectResult = NULL;
-    if (!v2_materialize_project_result_object_json(
-            json, tokens, tokenCount, outTok, argsTok, refs, *refCount,
-            &nextProjectResult)) {
-      return false;
-    }
-
-    if (captureProjectResult && projectResultObjectJson != NULL) {
-      free(*projectResultObjectJson);
-      *projectResultObjectJson = nextProjectResult;
-    } else {
-      free(nextProjectResult);
-    }
-
-    return true;
-  }
-
-  if (jsmn_token_streq(json, &tokens[opTok], "freeCell")) {
-    return v2_execute_free_cell_step(json, tokens, tokenCount, stepTok, argsTok,
-                                     refs, *refCount);
-  }
-
-  write_error_json_ex("unsupported_call", unsupportedOpMessage, NULL, NULL, NULL,
-                      NULL);
-  return false;
-}
-
-static bool v2_write_project_result_success_json(
-    const char *projectResultObjectJson) {
-  if (projectResultObjectJson == NULL) {
-    write_error_json_ex("invalid_request",
-                        "v2 workflow must include projectResult", NULL, NULL,
-                        NULL, NULL);
-    return false;
-  }
-
-  fputs("{\"ok\":true,\"result\":", stdout);
-  fputs(projectResultObjectJson, stdout);
-  fputs("}\n", stdout);
+  fputs("}}\n", stdout);
   return true;
 }
 
@@ -2499,7 +2753,7 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
   memset(refs, 0, sizeof(refs));
   int refCount = 0;
 
-  char *projectResultObjectJson = NULL;
+  int resultOutTok = -1;
   bool ok = true;
 
   for (int i = 0; i < tokens[stepsTok].size; i++) {
@@ -2519,15 +2773,83 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
       break;
     }
 
-    if (!v2_dispatch_workflow_step(
-            json, tokens, tokenCount, stepTok, opTok, argsTok, refs, &refCount,
-            true, &projectResultObjectJson, "Unsupported v2 workflow op")) {
-      ok = false;
-      break;
+    if (jsmn_token_streq(json, &tokens[opTok], "allocCell")) {
+      if (!v2_execute_alloc_cell_step(json, tokens, tokenCount, stepTok, argsTok,
+                                      refs, &refCount)) {
+        ok = false;
+        break;
+      }
+      continue;
     }
+
+    if (jsmn_token_streq(json, &tokens[opTok], "allocWindow")) {
+      if (!v2_execute_alloc_window_step(json,
+                                        tokens,
+                                        tokenCount,
+                                        stepTok,
+                                        argsTok,
+                                        refs,
+                                        &refCount)) {
+        ok = false;
+        break;
+      }
+      continue;
+    }
+
+    if (jsmn_token_streq(json, &tokens[opTok], "spiceCall")) {
+      if (!v2_execute_spice_call_step(json, tokens, tokenCount, stepTok, argsTok,
+                                      refs, &refCount)) {
+        ok = false;
+        break;
+      }
+      continue;
+    }
+
+    if (jsmn_token_streq(json, &tokens[opTok], "projectResult")) {
+      int outTok =
+          jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
+      if (outTok < 0 || tokens[outTok].type != JSMN_OBJECT) {
+        write_error_json_ex("invalid_request",
+                            "projectResult requires object out", NULL, NULL,
+                            NULL, NULL);
+        ok = false;
+        break;
+      }
+
+      resultOutTok = outTok;
+      continue;
+    }
+
+    if (jsmn_token_streq(json, &tokens[opTok], "freeCell")) {
+      if (!v2_execute_free_cell_step(json, tokens, tokenCount, stepTok, argsTok,
+                                     refs, refCount)) {
+        ok = false;
+        break;
+      }
+      continue;
+    }
+
+    if (jsmn_token_streq(json, &tokens[opTok], "freeWindow")) {
+      if (!v2_execute_free_window_step(json,
+                                       tokens,
+                                       tokenCount,
+                                       stepTok,
+                                       argsTok,
+                                       refs,
+                                       refCount)) {
+        ok = false;
+        break;
+      }
+      continue;
+    }
+
+    write_error_json_ex("unsupported_call", "Unsupported v2 workflow op", NULL,
+                        NULL, NULL, NULL);
+    ok = false;
+    break;
   }
 
-  if (ok && projectResultObjectJson == NULL) {
+  if (ok && resultOutTok < 0) {
     write_error_json_ex("invalid_request",
                         "v2 workflow must include projectResult", NULL, NULL,
                         NULL, NULL);
@@ -2553,20 +2875,46 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
         break;
       }
 
-      if (!v2_dispatch_workflow_step(
-              json, tokens, tokenCount, stepTok, opTok, argsTok, refs,
-              &refCount, false, NULL, "Unsupported v2 cleanup op")) {
-        ok = false;
-        break;
+      if (jsmn_token_streq(json, &tokens[opTok], "freeCell")) {
+        if (!v2_execute_free_cell_step(json,
+                                       tokens,
+                                       tokenCount,
+                                       stepTok,
+                                       argsTok,
+                                       refs,
+                                       refCount)) {
+          ok = false;
+          break;
+        }
+        continue;
       }
+
+      if (jsmn_token_streq(json, &tokens[opTok], "freeWindow")) {
+        if (!v2_execute_free_window_step(json,
+                                         tokens,
+                                         tokenCount,
+                                         stepTok,
+                                         argsTok,
+                                         refs,
+                                         refCount)) {
+          ok = false;
+          break;
+        }
+        continue;
+      }
+
+      write_error_json_ex("unsupported_call", "Unsupported v2 cleanup op", NULL,
+                          NULL, NULL, NULL);
+      ok = false;
+      break;
     }
   }
 
   if (ok) {
-    ok = v2_write_project_result_success_json(projectResultObjectJson);
+    ok = v2_write_project_result_json(json, tokens, tokenCount, resultOutTok,
+                                      argsTok, refs, refCount);
   }
 
-  free(projectResultObjectJson);
   v2_free_all_refs(refs, refCount);
   return ok;
 }
