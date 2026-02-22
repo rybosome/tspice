@@ -185,7 +185,6 @@ describe("cspice-runner v2 workflow behavior", () => {
       expect(out.response.error.detail).toBe("cleanupSize");
     }
   });
-
   it("reuses freed ref slots under alloc/free churn", () => {
     const steps: Array<Record<string, unknown>> = [];
     for (let i = 0; i < 80; i++) {
