@@ -1,0 +1,72 @@
+schemaVersion: 2
+
+manifest:
+  id: methods/cells-windows/valid@v2
+  kind: method
+
+contract:
+  contractMethod: cells-windows.valid
+  canonicalMethod: cells-windows.valid
+  aliases: []
+  args:
+    - name: allocSize
+      type: spiceInt
+      constraints: { min: 0 }
+    - name: size
+      type: spiceInt
+      constraints: { min: 0 }
+    - name: n
+      type: spiceInt
+      constraints: { min: 0 }
+  result:
+    type: object
+    required: [size, card]
+    properties:
+      size: { type: spiceInt }
+      card: { type: spiceInt }
+  errors:
+    - code: invalid_args
+    - code: spice_error
+
+workflow:
+  steps:
+    - op: allocCell
+      as: cell
+      params:
+        kind: int
+        size: $args.allocSize
+
+    - op: spiceCall
+      call: valid_c
+      in: [$args.size, $args.n, $refs.cell]
+
+    - op: spiceCall
+      call: size_c
+      in: [$refs.cell]
+      as: size
+
+    - op: spiceCall
+      call: card_c
+      in: [$refs.cell]
+      as: card
+
+    - op: projectResult
+      out:
+        size: $refs.size
+        card: $refs.card
+
+  cleanup:
+    - op: freeCell
+      target: $refs.cell
+
+cases:
+  - id: basic
+    args: { allocSize: 8, size: 8, n: 0 }
+    expect:
+      ok: true
+
+  - id: rejects-negative-n
+    args: { allocSize: 8, size: 8, n: -1 }
+    expect:
+      ok: false
+      errorCode: invalid_args

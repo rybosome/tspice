@@ -1,0 +1,45 @@
+schemaVersion: 2
+
+manifest:
+  id: methods/cells-windows/freeCell@v2
+  kind: method
+
+contract:
+  contractMethod: cells-windows.freeCell
+  canonicalMethod: cells-windows.freeCell
+  aliases: []
+  args:
+    - name: size
+      type: spiceInt
+  result:
+    type: object
+    properties: {}
+  errors:
+    - code: invalid_args
+    - code: spice_error
+
+workflow:
+  steps:
+    - op: allocCell
+      as: cell
+      params:
+        kind: int
+        size: $args.size
+
+    - op: freeCell
+      target: $refs.cell
+
+    - op: projectResult
+      out: {}
+
+cases:
+  - id: basic
+    args: { size: 8 }
+    expect:
+      ok: true
+
+  - id: rejects-negative-size
+    args: { size: -1 }
+    expect:
+      ok: false
+      errorCode: invalid_args

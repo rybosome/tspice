@@ -43,17 +43,31 @@ export type V2ContractSpec = {
 export type V2WorkflowAllocCellStep = {
   op: "allocCell";
   as: string;
+  params:
+    | {
+        kind: "int" | "double";
+        size: unknown;
+      }
+    | {
+        kind: "char";
+        size: unknown;
+        length: unknown;
+      };
+};
+
+export type V2WorkflowAllocWindowStep = {
+  op: "allocWindow";
+  as: string;
   params: {
-    kind: "int";
-    size: unknown;
+    maxIntervals: unknown;
   };
 };
 
 export type V2WorkflowSpiceCallStep = {
   op: "spiceCall";
-  call: "card_c" | "size_c";
+  call: "card_c" | "size_c" | "scard_c" | "ssize_c" | "valid_c";
   in: unknown[];
-  as: string;
+  as?: string;
 };
 
 export type V2WorkflowProjectResultStep = {
@@ -66,11 +80,18 @@ export type V2WorkflowFreeCellStep = {
   target: unknown;
 };
 
+export type V2WorkflowFreeWindowStep = {
+  op: "freeWindow";
+  target: unknown;
+};
+
 export type V2WorkflowStep =
   | V2WorkflowAllocCellStep
+  | V2WorkflowAllocWindowStep
   | V2WorkflowSpiceCallStep
   | V2WorkflowProjectResultStep
-  | V2WorkflowFreeCellStep;
+  | V2WorkflowFreeCellStep
+  | V2WorkflowFreeWindowStep;
 
 export type RunCaseInputV2 = {
   schemaVersion: 2;
