@@ -138,4 +138,16 @@ describe("executeV2CaseWithBackend", () => {
       message: expect.stringContaining("Duplicate contract arg name"),
     });
   });
+
+  it("reports allocCell.params.size validation errors for negative sizes", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.contract.args = [{ name: "size", type: "spiceInt" }];
+    input.args = { size: -1 };
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_args",
+      message: "allocCell.params.size must be >= 0",
+    });
+  });
 });

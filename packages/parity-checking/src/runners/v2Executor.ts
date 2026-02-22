@@ -290,7 +290,7 @@ async function executeStep(
 
       const size = resolveSpiceIntExpression(step.params.size, args, refs, "allocCell.params.size");
       if (size < 0) {
-        invalidArgs(`allocCell.params.size must be >= 0 (got ${size})`);
+        invalidArgs("allocCell.params.size must be >= 0");
       }
 
       const cell = backend.newIntCell(size);
