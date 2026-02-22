@@ -1,0 +1,30 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekgc@v2
+  kind: method
+contract:
+  contractMethod: ek.ekgc
+  canonicalMethod: ek.ekgc
+  aliases: []
+  result:
+    type: object
+    required: [found, isNull, value]
+    properties:
+      found: { const: true }
+      isNull: { const: false }
+      value: { const: ISS_WAC_ShutterBladeBMove }
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: reads-event-string
+    args:
+      - SELECT EVENT FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'
+      - 0
+      - 0
+      - 0
+    expect:
+      ok: true

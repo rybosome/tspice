@@ -1,0 +1,33 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekgi@v2
+  kind: method
+contract:
+  contractMethod: ek.ekgi
+  canonicalMethod: ek.ekgi
+  aliases: []
+  result:
+    type: object
+    required: [found, isNull, value]
+    properties:
+      found: { const: true }
+      isNull: { const: false }
+      value: { type: spiceInt }
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: fails-on-double-column
+    args:
+      - SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'
+      - 0
+      - 0
+      - 0
+    compare:
+      errorShort: true
+    expect:
+      ok: false
+      errorShort: SPICE(INVALIDTYPE)

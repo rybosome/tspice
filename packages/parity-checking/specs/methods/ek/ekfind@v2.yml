@@ -1,0 +1,26 @@
+schemaVersion: 2
+manifest:
+  id: method.ek.ekfind@v2
+  kind: method
+contract:
+  contractMethod: ek.ekfind
+  canonicalMethod: ek.ekfind
+  aliases: []
+  result:
+    type: object
+    required: [ok, nmrows]
+    properties:
+      ok: { const: true }
+      nmrows: { const: 186, type: spiceInt }
+setup:
+  kernels:
+    - ../../../backend-node/test/fixtures/ek-fixture.bes
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: finds-rows-by-column
+    args:
+      - SELECT EVENT FROM CASSINI_NOISE_EVENTS
+    expect:
+      ok: true
