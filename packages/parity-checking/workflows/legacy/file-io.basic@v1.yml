@@ -1,0 +1,4 @@
+id: workflows/legacy/file-io.basic@v1
+kind: workflow
+notes:
+  - Added for file I/O core parity migration coverage.
