@@ -1,0 +1,30 @@
+schemaVersion: 2
+manifest:
+  id: methods/ephemeris/spkssb@v2
+  kind: method
+contract:
+  contractMethod: ephemeris.spkssb
+  canonicalMethod: ephemeris.spkssb
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+    - $FIXTURES/ephemeris-de440s
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: ephemeris.spkssb.earth
+    args:
+      - 399
+      - 0
+      - J2000
+    expect:
+      ok: true
