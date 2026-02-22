@@ -1,0 +1,5 @@
+id: workflows/legacy/error.basic@v1
+kind: workflow
+notes:
+  - Deterministic harness for global error-state APIs.
+  - Runners isolate and reset CSPICE state for every parity case.

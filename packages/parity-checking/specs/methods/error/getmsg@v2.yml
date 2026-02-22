@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/error/getmsg@v2
+  kind: method
+contract:
+  contractMethod: error.getmsg
+  canonicalMethod: error.getmsg
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: error.getmsg.long
+    args:
+      - LONG
+    expect:
+      ok: true

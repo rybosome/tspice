@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/error/setmsg@v2
+  kind: method
+contract:
+  contractMethod: error.setmsg
+  canonicalMethod: error.setmsg
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: error.setmsg.basic
+    args:
+      - TSPICE parity long message
+    expect:
+      ok: true

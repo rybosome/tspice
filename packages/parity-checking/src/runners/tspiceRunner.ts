@@ -343,6 +343,71 @@ const DISPATCH: Record<string, DispatchFn> = {
     return backend.sce2c(args[0], args[1]);
   },
 
+  // error
+  "error.failed": (backend) => {
+    return backend.failed();
+  },
+
+  "error.reset": (backend) => {
+    // Prime mutable error buffers so reset() is exercised deterministically.
+    backend.setmsg("TSPICE parity reset prelude");
+    backend.reset();
+    return null;
+  },
+
+  "error.getmsg": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`error.getmsg expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    if (args[0] !== "SHORT" && args[0] !== "LONG" && args[0] !== "EXPLAIN") {
+      invalidArgs(
+        `error.getmsg expects args[0] to be "SHORT", "LONG", or "EXPLAIN" (got ${formatValue(args[0])})`,
+      );
+    }
+
+    // Prime a stable long-message payload because getmsg() reads global buffers.
+    backend.setmsg("TSPICE parity getmsg long message");
+    return backend.getmsg(args[0]);
+  },
+
+  "error.setmsg": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`error.setmsg expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    backend.setmsg(args[0]);
+    return null;
+  },
+
+  "error.sigerr": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`error.sigerr expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+
+    // Preserve deterministic long-message content in the raised SPICE error.
+    backend.setmsg("TSPICE parity sigerr long message");
+    backend.sigerr(args[0]);
+    return null;
+  },
+
+  "error.chkin": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`error.chkin expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+    backend.chkin(args[0]);
+    return null;
+  },
+
+  "error.chkout": (backend, args) => {
+    if (typeof args[0] !== "string") {
+      invalidArgs(`error.chkout expects args[0] to be a string (got ${formatValue(args[0])})`);
+    }
+
+    // `chkout` is deterministic after matching `chkin` within the same case.
+    backend.chkin(args[0]);
+    backend.chkout(args[0]);
+    return null;
+  },
+
   // ids-names
   "ids-names.bodn2c": (backend, args) => {
     if (typeof args[0] !== "string") {

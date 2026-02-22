@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/error/chkin@v2
+  kind: method
+contract:
+  contractMethod: error.chkin
+  canonicalMethod: error.chkin
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: error.chkin.basic
+    args:
+      - TSPICE_PARITY_CHKIN
+    expect:
+      ok: true

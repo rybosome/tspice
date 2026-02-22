@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/error/chkout@v2
+  kind: method
+contract:
+  contractMethod: error.chkout
+  canonicalMethod: error.chkout
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: error.chkout.basic
+    args:
+      - TSPICE_PARITY_CHKOUT
+    expect:
+      ok: true

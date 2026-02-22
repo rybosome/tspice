@@ -1,0 +1,19 @@
+schemaVersion: 2
+manifest:
+  id: methods/error/failed@v2
+  kind: method
+contract:
+  contractMethod: error.failed
+  canonicalMethod: error.failed
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: error.failed.clean-state
+    args: []
+    expect:
+      ok: true

@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: methods/error/sigerr@v2
+  kind: method
+contract:
+  contractMethod: error.sigerr
+  canonicalMethod: error.sigerr
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: error.sigerr.raises
+    args:
+      - SPICE(PARITYSIGERR)
+    compare:
+      errorShort: true
+    expect:
+      ok: false
+      errorShort: SPICE(PARITYSIGERR)
