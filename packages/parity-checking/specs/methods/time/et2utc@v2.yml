@@ -1,9 +1,20 @@
-id: methods/time/et2utc@v1
-kind: method
-contractMethod: time.et2utc
-canonicalMethod: time.et2utc
-uses:
-  - workflows/legacy/time.et2utc.basic@v1
+schemaVersion: 2
+manifest:
+  id: methods/time/et2utc@v2
+  kind: method
+contract:
+  contractMethod: time.et2utc
+  canonicalMethod: time.et2utc
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+workflow:
+  steps:
+    - op: invokeLegacyCall
 cases:
   - id: bad-format
     args:

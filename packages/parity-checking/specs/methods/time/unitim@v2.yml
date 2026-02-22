@@ -1,0 +1,29 @@
+schemaVersion: 2
+manifest:
+  id: methods/time/unitim@v2
+  kind: method
+contract:
+  contractMethod: time.unitim
+  canonicalMethod: time.unitim
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: time.unitim
+    args:
+      - 0
+      - ET
+      - TAI
+    expect:
+      ok: true

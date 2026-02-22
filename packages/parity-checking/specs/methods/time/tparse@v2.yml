@@ -1,0 +1,27 @@
+schemaVersion: 2
+manifest:
+  id: methods/time/tparse@v2
+  kind: method
+contract:
+  contractMethod: time.tparse
+  canonicalMethod: time.tparse
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: time.tparse
+    args:
+      - 2000 JAN 01 12:00:00
+    expect:
+      ok: true
