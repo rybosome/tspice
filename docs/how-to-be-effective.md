@@ -92,7 +92,7 @@ The flake intentionally exposes this build shell only as `devShells.aarch64-linu
 
 ```bash
 # Enter the aarch64 dev shell (includes tcsh/csh, gcc, make, binutils, node)
-nix develop
+nix develop .#devShells.aarch64-linux.default
 
 # Fetch CSPICE source and resolve the source-tree location
 node scripts/fetch-cspice.mjs --source
@@ -110,6 +110,8 @@ ls -l "$CSPICE_DIR/lib/cspice.a" "$CSPICE_DIR/lib/csupport.a"
 ls -l "$CSPICE_DIR/include/SpiceUsr.h" "$CSPICE_DIR/include/SpiceZfc.h" "$CSPICE_DIR/include/SpiceZmc.h"
 TSPICE_CSPICE_DIR="$CSPICE_DIR" node scripts/print-cspice-dir.mjs
 ```
+
+If you're on a non-`aarch64` host, pass `--system aarch64-linux` and use emulation or a remote `aarch64-linux` builder.
 
 The shell exports these required NAIF build overrides:
 
