@@ -1,0 +1,22 @@
+schemaVersion: 2
+manifest:
+  id: methods/frames/ckgpav@v2
+  kind: method
+contract:
+  contractMethod: frames.ckgpav
+  canonicalMethod: frames.ckgpav
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/mgs-minimal
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: frames.ckgpav.mgs-minimal
+    args:
+      - $FIXTURES/mgs-minimal/mgs_hga_hinge_v2.bc
+      - MGS_SPACECRAFT

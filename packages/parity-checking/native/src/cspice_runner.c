@@ -1576,6 +1576,12 @@ typedef enum {
   CALL_CNMFRM,
   CALL_FRINFO,
   CALL_CCIFRM,
+  CALL_CKGP,
+  CALL_CKGPAV,
+  CALL_CKLPF,
+  CALL_CKUPF,
+  CALL_CKOBJ,
+  CALL_CKCOV,
   CALL_PXFORM,
   CALL_SXFORM,
 
@@ -1704,6 +1710,18 @@ static CallId parse_call_id(const char *call) {
       {"frinfo", CALL_FRINFO},
       {"frames.ccifrm", CALL_CCIFRM},
       {"ccifrm", CALL_CCIFRM},
+      {"frames.ckgp", CALL_CKGP},
+      {"ckgp", CALL_CKGP},
+      {"frames.ckgpav", CALL_CKGPAV},
+      {"ckgpav", CALL_CKGPAV},
+      {"frames.cklpf", CALL_CKLPF},
+      {"cklpf", CALL_CKLPF},
+      {"frames.ckupf", CALL_CKUPF},
+      {"ckupf", CALL_CKUPF},
+      {"frames.ckobj", CALL_CKOBJ},
+      {"ckobj", CALL_CKOBJ},
+      {"frames.ckcov", CALL_CKCOV},
+      {"ckcov", CALL_CKCOV},
       {"frames.pxform", CALL_PXFORM},
       {"pxform", CALL_PXFORM},
       {"frames.sxform", CALL_SXFORM},
@@ -5559,6 +5577,596 @@ int main(void) {
     json_print_escaped(frname);
     fputs("\",\"center\":", stdout);
     fprintf(stdout, "%" PRIdMAX, (intmax_t)center);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_CKGP: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.ckgp expects args[0]=string ckPath args[1]=string ref",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int refTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "frames.ckgp expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (refTok < 0 || refTok >= tokenCount || tokens[refTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "frames.ckgp expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    char *ref = NULL;
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t refErr =
+        jsmn_strdup(input, &tokens[refTok], &ref, strDetail, sizeof(strDetail));
+    if (refErr != JSMN_STRDUP_OK) {
+      free(path);
+      if (refErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SPICEINT_CELL(ids, 128);
+    ckobj_c(path, &ids);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(path);
+      free(ref);
+      write_error_json("SPICE error in ckobj (frames.ckgp setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    const SpiceInt nIds = card_c(&ids);
+    if (nIds <= 0) {
+      free(path);
+      free(ref);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.ckgp expected args[0] CK path to contain at least one object id",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const SpiceInt inst = ((const SpiceInt *)ids.data)[0];
+
+    SPICEDOUBLE_CELL(cover, 512);
+    ckcov_c(path, inst, SPICEFALSE, "SEGMENT", 0.0, "SCLK", &cover);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(path);
+      free(ref);
+      write_error_json("SPICE error in ckcov (frames.ckgp setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    const SpiceInt intervalCount = wncard_c(&cover);
+    if (intervalCount < 1) {
+      free(path);
+      free(ref);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.ckgp expected args[0] CK path to have at least one SCLK coverage interval",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble left = 0.0;
+    SpiceDouble right = 0.0;
+    wnfetd_c(&cover, 0, &left, &right);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(path);
+      free(ref);
+      write_error_json("SPICE error in wnfetd (frames.ckgp setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    const SpiceDouble sclkdp = (left + right) / 2.0;
+    SpiceDouble tol = (right - left) / 2.0;
+    if (tol < 1.0) {
+      tol = 1.0;
+    }
+
+    SpiceDouble cmat[3][3];
+    SpiceDouble clkout = 0.0;
+    SpiceBoolean found = SPICEFALSE;
+    ckgp_c(inst, sclkdp, tol, ref, cmat, &clkout, &found);
+    free(path);
+    free(ref);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ckgp", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"cmat\":", stdout);
+    json_print_mat3_rowmajor(cmat);
+    fputs(",\"clkout\":", stdout);
+    fprintf(stdout, "%.17g", (double)clkout);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_CKGPAV: {
+    if (tokens[argsTok].size < 2) {
+      write_error_json_ex(
+          "invalid_args",
+          "frames.ckgpav expects args[0]=string ckPath args[1]=string ref",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int refTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "frames.ckgpav expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (refTok < 0 || refTok >= tokenCount || tokens[refTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "frames.ckgpav expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    char *ref = NULL;
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t refErr =
+        jsmn_strdup(input, &tokens[refTok], &ref, strDetail, sizeof(strDetail));
+    if (refErr != JSMN_STRDUP_OK) {
+      free(path);
+      if (refErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SPICEINT_CELL(ids, 128);
+    ckobj_c(path, &ids);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(path);
+      free(ref);
+      write_error_json("SPICE error in ckobj (frames.ckgpav setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    const SpiceInt nIds = card_c(&ids);
+    if (nIds <= 0) {
+      free(path);
+      free(ref);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.ckgpav expected args[0] CK path to contain at least one object id",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const SpiceInt inst = ((const SpiceInt *)ids.data)[0];
+
+    SPICEDOUBLE_CELL(cover, 512);
+    ckcov_c(path, inst, SPICEFALSE, "SEGMENT", 0.0, "SCLK", &cover);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(path);
+      free(ref);
+      write_error_json("SPICE error in ckcov (frames.ckgpav setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    const SpiceInt intervalCount = wncard_c(&cover);
+    if (intervalCount < 1) {
+      free(path);
+      free(ref);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.ckgpav expected args[0] CK path to have at least one SCLK coverage interval",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    SpiceDouble left = 0.0;
+    SpiceDouble right = 0.0;
+    wnfetd_c(&cover, 0, &left, &right);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(path);
+      free(ref);
+      write_error_json("SPICE error in wnfetd (frames.ckgpav setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    const SpiceDouble sclkdp = (left + right) / 2.0;
+    SpiceDouble tol = (right - left) / 2.0;
+    if (tol < 1.0) {
+      tol = 1.0;
+    }
+
+    SpiceDouble cmat[3][3];
+    SpiceDouble av[3] = {0.0, 0.0, 0.0};
+    SpiceDouble clkout = 0.0;
+    SpiceBoolean found = SPICEFALSE;
+    ckgpav_c(inst, sclkdp, tol, ref, cmat, av, &clkout, &found);
+    free(path);
+    free(ref);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ckgpav", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    if (found != SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":true,\"cmat\":", stdout);
+    json_print_mat3_rowmajor(cmat);
+    fputs(",\"av\":", stdout);
+    json_print_double_array(av, 3);
+    fputs(",\"clkout\":", stdout);
+    fprintf(stdout, "%.17g", (double)clkout);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_CKLPF: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "frames.cklpf expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "frames.cklpf expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    cklpf_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in cklpf", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    ckupf_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ckupf (frames.cklpf cleanup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"loaded\":true}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_CKUPF: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "frames.ckupf expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "frames.ckupf expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    cklpf_c(path, &handle);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in cklpf (frames.ckupf setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    ckupf_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ckupf", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":null}\n", stdout);
+    goto done;
+  }
+
+  case CALL_CKOBJ: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "frames.ckobj expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "frames.ckobj expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SPICEINT_CELL(ids, 128);
+    ckobj_c(path, &ids);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ckobj", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    const SpiceInt n = card_c(&ids);
+    fputs("{\"ok\":true,\"result\":", stdout);
+    json_print_spiceint_array((const SpiceInt *)ids.data, (int)n);
+    fputs("}\n", stdout);
+    goto done;
+  }
+
+  case CALL_CKCOV: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "frames.ckcov expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int pathTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (pathTok < 0 || pathTok >= tokenCount || tokens[pathTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "frames.ckcov expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *path = NULL;
+    strDetail[0] = '\0';
+    const jsmn_strdup_err_t pathErr =
+        jsmn_strdup(input, &tokens[pathTok], &path, strDetail, sizeof(strDetail));
+    if (pathErr != JSMN_STRDUP_OK) {
+      if (pathErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SPICEINT_CELL(ids, 128);
+    ckobj_c(path, &ids);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(path);
+      write_error_json("SPICE error in ckobj (frames.ckcov setup)", shortMsg, longMsg,
+                       traceMsg);
+      goto done;
+    }
+
+    const SpiceInt nIds = card_c(&ids);
+    if (nIds <= 0) {
+      free(path);
+      write_error_json_ex(
+          "invalid_args",
+          "frames.ckcov expected args[0] CK path to contain at least one object id",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const SpiceInt idcode = ((const SpiceInt *)ids.data)[0];
+
+    SPICEDOUBLE_CELL(cover, 512);
+    ckcov_c(path, idcode, SPICEFALSE, "SEGMENT", 0.0, "SCLK", &cover);
+    free(path);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ckcov", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    const SpiceInt intervalCount = wncard_c(&cover);
+    SpiceDouble intervals[512];
+    for (SpiceInt i = 0; i < intervalCount; i++) {
+      SpiceDouble left = 0.0;
+      SpiceDouble right = 0.0;
+      wnfetd_c(&cover, i, &left, &right);
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                            sizeof(traceMsg));
+        write_error_json("SPICE error in wnfetd (frames.ckcov)", shortMsg, longMsg,
+                         traceMsg);
+        goto done;
+      }
+
+      intervals[(size_t)i * 2u] = left;
+      intervals[(size_t)i * 2u + 1u] = right;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"idcode\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)idcode);
+    fputs(",\"needav\":false,\"level\":\"SEGMENT\",\"timsys\":\"SCLK\",\"intervals\":", stdout);
+    json_print_double_array(intervals, (int)(intervalCount * 2));
     fputs("}}\n", stdout);
     goto done;
   }

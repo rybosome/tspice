@@ -1,0 +1,21 @@
+schemaVersion: 2
+manifest:
+  id: methods/frames/ckobj@v2
+  kind: method
+contract:
+  contractMethod: frames.ckobj
+  canonicalMethod: frames.ckobj
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/mgs-minimal
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: frames.ckobj.mgs-minimal
+    args:
+      - $FIXTURES/mgs-minimal/mgs_hga_hinge_v2.bc

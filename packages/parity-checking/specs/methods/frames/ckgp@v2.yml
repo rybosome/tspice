@@ -1,0 +1,22 @@
+schemaVersion: 2
+manifest:
+  id: methods/frames/ckgp@v2
+  kind: method
+contract:
+  contractMethod: frames.ckgp
+  canonicalMethod: frames.ckgp
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/mgs-minimal
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: frames.ckgp.mgs-minimal
+    args:
+      - $FIXTURES/mgs-minimal/mgs_hga_hinge_v2.bc
+      - MGS_SPACECRAFT

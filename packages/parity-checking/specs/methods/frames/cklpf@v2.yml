@@ -1,0 +1,21 @@
+schemaVersion: 2
+manifest:
+  id: methods/frames/cklpf@v2
+  kind: method
+contract:
+  contractMethod: frames.cklpf
+  canonicalMethod: frames.cklpf
+  aliases: []
+  result:
+    type: object
+    properties: {}
+setup:
+  kernels:
+    - $FIXTURES/mgs-minimal
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: frames.cklpf.mgs-minimal
+    args:
+      - $FIXTURES/mgs-minimal/mgs_hga_hinge_v2.bc

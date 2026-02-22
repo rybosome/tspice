@@ -641,6 +641,54 @@ const DISPATCH: Record<string, DispatchFn> = {
     return backend.ccifrm(args[0], args[1]);
   },
 
+  "frames.ckgp": async (backend, args) => {
+    return await runFramesCkgp(backend, args, "frames.ckgp");
+  },
+
+  ckgp: async (backend, args) => {
+    return await runFramesCkgp(backend, args, "ckgp");
+  },
+
+  "frames.ckgpav": async (backend, args) => {
+    return await runFramesCkgpav(backend, args, "frames.ckgpav");
+  },
+
+  ckgpav: async (backend, args) => {
+    return await runFramesCkgpav(backend, args, "ckgpav");
+  },
+
+  "frames.cklpf": async (backend, args) => {
+    return await runFramesCklpf(backend, args, "frames.cklpf");
+  },
+
+  cklpf: async (backend, args) => {
+    return await runFramesCklpf(backend, args, "cklpf");
+  },
+
+  "frames.ckupf": async (backend, args) => {
+    return await runFramesCkupf(backend, args, "frames.ckupf");
+  },
+
+  ckupf: async (backend, args) => {
+    return await runFramesCkupf(backend, args, "ckupf");
+  },
+
+  "frames.ckobj": async (backend, args) => {
+    return await runFramesCkobj(backend, args, "frames.ckobj");
+  },
+
+  ckobj: async (backend, args) => {
+    return await runFramesCkobj(backend, args, "ckobj");
+  },
+
+  "frames.ckcov": async (backend, args) => {
+    return await runFramesCkcov(backend, args, "frames.ckcov");
+  },
+
+  ckcov: async (backend, args) => {
+    return await runFramesCkcov(backend, args, "ckcov");
+  },
+
   "frames.sxform": (backend, args) => {
     if (typeof args[0] !== "string") {
       invalidArgs(`frames.sxform expects args[0] to be a string (got ${formatValue(args[0])})`);
