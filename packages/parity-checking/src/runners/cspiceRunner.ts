@@ -90,8 +90,6 @@ export function getCspiceRunnerStatus(): { ready: boolean; hint: string; statePa
 function safeErrorReport(error: unknown): RunnerErrorReport {
   if (error instanceof Error) {
     const report: RunnerErrorReport = { message: error.message };
-    if (error.name) report.name = error.name;
-    if (error.stack) report.stack = error.stack;
     return report;
   }
 
@@ -423,7 +421,13 @@ export async function invokeRunner(
 }
 
 function asSpiceErrorState(err: CRunnerError["error"]): SpiceErrorState {
-  const spice: SpiceErrorState = { failed: true };
+  const failed =
+    err.code === "spice_error" ||
+    err.spiceShort !== undefined ||
+    err.spiceLong !== undefined ||
+    err.spiceTrace !== undefined;
+
+  const spice: SpiceErrorState = { failed };
   if (err.spiceShort) spice.short = err.spiceShort;
   if (err.spiceLong) spice.long = err.spiceLong;
   if (err.spiceTrace) spice.trace = err.spiceTrace;
