@@ -2,6 +2,81 @@
 
 This document is intended for LLMs and tool builders. It describes the public surface area of `@rybosome/tspice`, key types, and includes typechecked examples.
 
+## Quickstart Decision Guide
+
+1. **Fastest browser demo (no kernel hosting):** use `kernels.tspice().pick(...)` + `.toAsync({ backend: "wasm" })` (main thread, async).
+2. **Browser app with heavier workloads:** still use async APIs, but switch to `.toWebWorker()` so SPICE work runs off the main thread.
+3. **Node service/CLI:** use `.toSync(...)` or `.toAsync(...)` with explicit backend selection and your own kernel strategy.
+4. **Production deployments:** prefer `kernels.naif(...)` or `kernels.custom(...)` with self-hosted/proxied kernels; treat `kernels.tspice()` as quickstart/demo-only.
+
+
+## Mental model
+
+- Configure a client builder first (optional `.caching(...)`, `.withFetch(...)`, `.withKernels(...)`).
+- Call one terminal builder method (`.toSync()`, `.toAsync()`, or `.toWebWorker()`) to create the client.
+- Terminal methods eagerly validate/setup and may preload kernel packs.
+- You always get `{ spice, dispose }`; call `dispose()` when done.
+
+
+## Execution modes + API symmetry
+
+| Builder call | Thread/process model | Client API type | When to use |
+| --- | --- | --- | --- |
+| `toSync(opts?)` | In-process | `Spice` (sync-style methods) | Node scripts/tests or call-sites that prefer direct return values. |
+| `toAsync(opts?)` | In-process | `SpiceAsync` (Promise-returning methods) | Browser demos or lightweight async flows on the main thread. |
+| `toWebWorker(opts?)` | Browser WebWorker | `SpiceAsync` (Promise-returning methods) | Recommended for heavier browser workloads to keep UI responsive. |
+
+Notes:
+
+- `toAsync()` and `toWebWorker()` are both async and both return `SpiceAsync`; the main difference is **where SPICE executes** (main thread vs worker thread).
+- Sync/async APIs are intentionally symmetric: the same `spice.raw.*` and `spice.kit.*` method names exist on both; async variants return Promises.
+- `toWebWorker()` uses an inline blob-module worker by default. If your bundler/deployment cannot resolve the worker's WASM asset automatically, pass `wasmUrl` (or provide a custom `worker`).
+
+
+## Kernel catalogs (choose intentionally)
+
+| Catalog | Best for | Defaults / shape | Caveats |
+| --- | --- | --- | --- |
+| `kernels.tspice()` | Zero-config quickstarts and demos | Curated ids from a hosted community mirror; call `.pick(...)` to build a `KernelPack`. | **Not for production.** Community-hosted/best-effort; use for demos and quickstarts. |
+| `kernels.naif(opts?)` | Full typed NAIF `generic_kernels` inventory | Defaults to NAIF host + typed `NaifKernelId`; optional `origin`, `pathBase`, `baseUrl`. | NAIF canonical host typically lacks browser CORS headers. In browsers, self-host/proxy (often relative `origin` + `baseUrl`); in Node, use absolute URLs. |
+| `kernels.custom({ origin, pathBase, baseUrl? })` | Mission/app-specific kernel sets | String ids map to `{ url: origin + id, path: pathBase + id }`; explicit `{ url, path? }` entries supported. | You own hosting + path conventions. Ensure ordering and coverage match your use case. |
+
+
+## Minimal Browser Example (No Kernel Hosting Required)
+
+This quickstart-style snippet uses `kernels.tspice()` for a no-hosting demo path:
+
+```ts
+import { kernels, spiceClients } from "@rybosome/tspice";
+
+const pack = kernels.tspice().pick("lsk/naif0012.tls");
+
+const { spice, dispose } = await spiceClients
+  .withKernels(pack)
+  .toAsync({ backend: "wasm" });
+
+try {
+  const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
+  console.log(et);
+} finally {
+  await dispose();
+}
+```
+
+See: `packages/tspice/test/llm-examples/browser-minimal-no-hosting.example.ts`
+
+Important: this `kernels.tspice()` path is for quickstarts/demos. For production, use `kernels.naif(...)` or `kernels.custom(...)` with kernels you host/control.
+
+
+## Common mistakes
+
+- Forgetting to call `dispose()` on returned clients.
+- Treating `kernels.tspice()` as a production dependency instead of a quickstart/demo convenience.
+- Assuming browser direct-fetch from canonical NAIF URLs always works (CORS often blocks this).
+- Using `toAsync({ backend: "wasm" })` for heavy interactive workloads where `toWebWorker()` is a better fit.
+- Assuming `toWebWorker()` requires hand-rolled message protocols; tspice owns the worker RPC layer.
+
+
 ## Public API surface (generated)
 
 Source: `packages/tspice/src/index.ts`
@@ -175,6 +250,35 @@ export async function getToolkitVersion(backend: "wasm" | "node") {
   const { spice, dispose } = await spiceClients.toSync({ backend });
   try {
     return spice.kit.toolkitVersion();
+  } finally {
+    await dispose();
+  }
+}
+```
+
+### `packages/tspice/test/llm-examples/browser-minimal-no-hosting.example.ts`
+
+```ts
+import { kernels, spiceClients } from "@rybosome/tspice";
+
+/**
+ * Minimal browser-oriented quickstart:
+ *
+ * - Uses `kernels.tspice()` so demo code can run without self-hosting kernels.
+ * - Uses `toAsync({ backend: "wasm" })`, so SPICE runs on the main thread.
+ *
+ * For production, prefer self-hosted/proxied kernels via `kernels.naif(...)`
+ * or `kernels.custom(...)`. For heavier UI workloads, prefer `toWebWorker()`.
+ */
+export async function browserUtcToEtQuickstart() {
+  const pack = kernels.tspice().pick("lsk/naif0012.tls");
+
+  const { spice, dispose } = await spiceClients
+    .withKernels(pack)
+    .toAsync({ backend: "wasm" });
+
+  try {
+    return await spice.kit.utcToEt("2000 JAN 01 12:00:00");
   } finally {
     await dispose();
   }
