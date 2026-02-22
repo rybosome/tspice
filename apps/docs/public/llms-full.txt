@@ -15,23 +15,16 @@ Source: `packages/tspice/src/index.ts`
 - `assertMat3ArrayLike9`
 - `brandMat3ColMajor`
 - `brandMat3RowMajor`
-- `createBackend`
-- `createSpice`
-- `createSpiceAsync`
 - `isBrandedMat3ColMajor`
 - `isBrandedMat3RowMajor`
 - `isMat3ArrayLike9`
 - `kernels`
-- `resolveKernelUrl`
 - `spiceClients`
 
 ### Type exports
 
 - `AberrationCorrection`
 - `BodyRef`
-- `CreateBackendOptions`
-- `CreateSpiceAsyncOptions`
-- `CreateSpiceOptions`
 - `CustomKernelCatalog`
 - `CustomKernelEntry`
 - `CustomKernelPick`
