@@ -1,0 +1,28 @@
+schemaVersion: 2
+manifest:
+  id: methods/coords-vectors/reclat@v2
+  kind: method
+contract:
+  contractMethod: coords-vectors.reclat
+  canonicalMethod: coords-vectors.reclat
+  aliases: []
+  result:
+    type: object
+    properties: {}
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: coords-vectors.reclat
+    args:
+      - - 0.8
+        - 1.2
+        - 0.5
+    compare:
+      angleWrapPi: true
+    expect:
+      ok: true

@@ -1,0 +1,30 @@
+schemaVersion: 2
+manifest:
+  id: methods/coords-vectors/recgeo@v2
+  kind: method
+contract:
+  contractMethod: coords-vectors.recgeo
+  canonicalMethod: coords-vectors.recgeo
+  aliases: []
+  result:
+    type: object
+    properties: {}
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: coords-vectors.recgeo
+    args:
+      - - 1.5
+        - 0.6
+        - 0.2
+      - 2
+      - 0.05
+    compare:
+      angleWrapPi: true
+    expect:
+      ok: true

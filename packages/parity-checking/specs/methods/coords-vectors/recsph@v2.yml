@@ -1,0 +1,28 @@
+schemaVersion: 2
+manifest:
+  id: methods/coords-vectors/recsph@v2
+  kind: method
+contract:
+  contractMethod: coords-vectors.recsph
+  canonicalMethod: coords-vectors.recsph
+  aliases: []
+  result:
+    type: object
+    properties: {}
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: coords-vectors.recsph
+    args:
+      - - 1.1
+        - 0.7
+        - 0.4
+    compare:
+      angleWrapPi: true
+    expect:
+      ok: true

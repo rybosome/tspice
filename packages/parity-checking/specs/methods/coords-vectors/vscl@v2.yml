@@ -1,0 +1,27 @@
+schemaVersion: 2
+manifest:
+  id: methods/coords-vectors/vscl@v2
+  kind: method
+contract:
+  contractMethod: coords-vectors.vscl
+  canonicalMethod: coords-vectors.vscl
+  aliases: []
+  result:
+    type: object
+    properties: {}
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: coords-vectors.vscl
+    args:
+      - 2
+      - - 1
+        - 2
+        - 3
+    expect:
+      ok: true
