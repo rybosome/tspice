@@ -2011,13 +2011,184 @@ static bool v2_execute_free_cell_step(const char *json, const jsmntok_t *tokens,
   return true;
 }
 
-static bool v2_print_project_value(const char *json, const jsmntok_t *tokens,
-                                   const int tokenCount, const int valueTok,
-                                   const int argsTok, const V2RefEntry *refs,
-                                   const int refCount) {
+typedef struct {
+  char *data;
+  size_t len;
+  size_t cap;
+} V2JsonBuffer;
+
+static void v2_json_buffer_init(V2JsonBuffer *buf) {
+  if (buf == NULL) {
+    return;
+  }
+
+  buf->data = NULL;
+  buf->len = 0;
+  buf->cap = 0;
+}
+
+static void v2_json_buffer_free(V2JsonBuffer *buf) {
+  if (buf == NULL) {
+    return;
+  }
+
+  free(buf->data);
+  buf->data = NULL;
+  buf->len = 0;
+  buf->cap = 0;
+}
+
+static bool v2_json_buffer_reserve(V2JsonBuffer *buf, const size_t extraBytes) {
+  if (buf == NULL) {
+    return false;
+  }
+
+  if (extraBytes > SIZE_MAX - buf->len - 1U) {
+    return false;
+  }
+
+  const size_t need = buf->len + extraBytes + 1U;
+  if (need <= buf->cap) {
+    return true;
+  }
+
+  size_t nextCap = (buf->cap > 0) ? buf->cap : 128U;
+  while (nextCap < need) {
+    if (nextCap > (SIZE_MAX / 2U)) {
+      nextCap = need;
+      break;
+    }
+    nextCap *= 2U;
+  }
+
+  char *nextData = (char *)realloc(buf->data, nextCap);
+  if (nextData == NULL) {
+    return false;
+  }
+
+  buf->data = nextData;
+  buf->cap = nextCap;
+  return true;
+}
+
+static bool v2_json_buffer_append_bytes(V2JsonBuffer *buf, const char *src,
+                                        const size_t srcLen) {
+  if (srcLen == 0) {
+    return true;
+  }
+
+  if (src == NULL) {
+    return false;
+  }
+
+  if (!v2_json_buffer_reserve(buf, srcLen)) {
+    return false;
+  }
+
+  memcpy(buf->data + buf->len, src, srcLen);
+  buf->len += srcLen;
+  buf->data[buf->len] = '\0';
+  return true;
+}
+
+static bool v2_json_buffer_append_cstr(V2JsonBuffer *buf, const char *src) {
+  if (src == NULL) {
+    return false;
+  }
+
+  return v2_json_buffer_append_bytes(buf, src, strlen(src));
+}
+
+static bool v2_json_buffer_append_char(V2JsonBuffer *buf, const char c) {
+  return v2_json_buffer_append_bytes(buf, &c, 1U);
+}
+
+static bool v2_json_buffer_append_int(V2JsonBuffer *buf, const SpiceInt value) {
+  char tmp[64];
+  const int written = snprintf(tmp, sizeof(tmp), "%" PRIdMAX, (intmax_t)value);
+  if (written < 0 || (size_t)written >= sizeof(tmp)) {
+    return false;
+  }
+
+  return v2_json_buffer_append_bytes(buf, tmp, (size_t)written);
+}
+
+static bool v2_json_buffer_append_escaped(V2JsonBuffer *buf, const char *s) {
+  if (s == NULL) {
+    return false;
+  }
+
+  for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
+    const unsigned char c = *p;
+    switch (c) {
+    case '"':
+      if (!v2_json_buffer_append_cstr(buf, "\\\"")) {
+        return false;
+      }
+      break;
+    case '\\':
+      if (!v2_json_buffer_append_cstr(buf, "\\\\")) {
+        return false;
+      }
+      break;
+    case '\b':
+      if (!v2_json_buffer_append_cstr(buf, "\\b")) {
+        return false;
+      }
+      break;
+    case '\f':
+      if (!v2_json_buffer_append_cstr(buf, "\\f")) {
+        return false;
+      }
+      break;
+    case '\n':
+      if (!v2_json_buffer_append_cstr(buf, "\\n")) {
+        return false;
+      }
+      break;
+    case '\r':
+      if (!v2_json_buffer_append_cstr(buf, "\\r")) {
+        return false;
+      }
+      break;
+    case '\t':
+      if (!v2_json_buffer_append_cstr(buf, "\\t")) {
+        return false;
+      }
+      break;
+    default:
+      if (c < 0x20U) {
+        char escape[7];
+        const int escLen = snprintf(escape, sizeof(escape), "\\u%04x",
+                                    (unsigned int)c);
+        if (escLen != 6 || !v2_json_buffer_append_bytes(buf, escape, 6U)) {
+          return false;
+        }
+      } else {
+        if (!v2_json_buffer_append_char(buf, (char)c)) {
+          return false;
+        }
+      }
+      break;
+    }
+  }
+
+  return true;
+}
+
+static bool v2_append_project_value_json(V2JsonBuffer *out, const char *json,
+                                         const jsmntok_t *tokens,
+                                         const int tokenCount,
+                                         const int valueTok, const int argsTok,
+                                         const V2RefEntry *refs,
+                                         const int refCount) {
   const jsmntok_t *tok = &tokens[valueTok];
   if (tok->type == JSMN_PRIMITIVE) {
-    fwrite(json + tok->start, 1, (size_t)(tok->end - tok->start), stdout);
+    if (!v2_json_buffer_append_bytes(out, json + tok->start,
+                                     (size_t)(tok->end - tok->start))) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
     return true;
   }
 
@@ -2061,7 +2232,12 @@ static bool v2_print_project_value(const char *json, const jsmntok_t *tokens,
       return false;
     }
 
-    fprintf(stdout, "%" PRIdMAX, (intmax_t)argVal);
+    if (!v2_json_buffer_append_int(out, argVal)) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      free(value);
+      return false;
+    }
+
     free(value);
     return true;
   }
@@ -2082,37 +2258,58 @@ static bool v2_print_project_value(const char *json, const jsmntok_t *tokens,
       return false;
     }
 
-    fprintf(stdout, "%" PRIdMAX, (intmax_t)refs[refIndex].intValue);
+    if (!v2_json_buffer_append_int(out, refs[refIndex].intValue)) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      free(value);
+      return false;
+    }
+
     free(value);
     return true;
   }
 
-  fputc('"', stdout);
-  json_print_escaped(value);
-  fputc('"', stdout);
+  bool ok = v2_json_buffer_append_char(out, '"') &&
+            v2_json_buffer_append_escaped(out, value) &&
+            v2_json_buffer_append_char(out, '"');
+  if (!ok) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    free(value);
+    return false;
+  }
+
   free(value);
   return true;
 }
 
-static bool v2_write_project_result_json(const char *json,
-                                         const jsmntok_t *tokens,
-                                         const int tokenCount,
-                                         const int outTok,
-                                         const int argsTok,
-                                         const V2RefEntry *refs,
-                                         const int refCount) {
+static bool v2_materialize_project_result_object_json(
+    const char *json, const jsmntok_t *tokens, const int tokenCount,
+    const int outTok, const int argsTok, const V2RefEntry *refs,
+    const int refCount, char **outJsonObject) {
+  if (outJsonObject == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  *outJsonObject = NULL;
+
   if (outTok < 0 || outTok >= tokenCount || tokens[outTok].type != JSMN_OBJECT) {
     write_error_json_ex("invalid_request", "projectResult.out must be an object",
                         NULL, NULL, NULL, NULL);
     return false;
   }
 
-  fputs("{\"ok\":true,\"result\":{", stdout);
-
   int pairCount = jsmn_object_pair_count(&tokens[outTok]);
   if (pairCount < 0) {
     write_error_json_ex("invalid_request", "projectResult.out parse error", NULL,
                         NULL, NULL, NULL);
+    return false;
+  }
+
+  V2JsonBuffer out;
+  v2_json_buffer_init(&out);
+  if (!v2_json_buffer_append_char(&out, '{')) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    v2_json_buffer_free(&out);
     return false;
   }
 
@@ -2124,6 +2321,7 @@ static bool v2_write_project_result_json(const char *json,
     if (valueTok >= tokenCount || tokens[keyTok].type != JSMN_STRING) {
       write_error_json_ex("invalid_request", "projectResult.out parse error", NULL,
                           NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
       return false;
     }
 
@@ -2139,28 +2337,102 @@ static bool v2_write_project_result_json(const char *json,
       } else {
         write_error_json("Out of memory", NULL, NULL, NULL);
       }
+      v2_json_buffer_free(&out);
       return false;
     }
 
+    bool appendOk = true;
     if (!first) {
-      fputc(',', stdout);
+      appendOk = v2_json_buffer_append_char(&out, ',');
     }
     first = false;
 
-    fputc('"', stdout);
-    json_print_escaped(key);
-    fputs("\":", stdout);
+    appendOk = appendOk && v2_json_buffer_append_char(&out, '"') &&
+               v2_json_buffer_append_escaped(&out, key) &&
+               v2_json_buffer_append_cstr(&out, "\":");
     free(key);
 
-    if (!v2_print_project_value(json, tokens, tokenCount, valueTok, argsTok, refs,
-                                refCount)) {
+    if (!appendOk) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    if (!v2_append_project_value_json(&out, json, tokens, tokenCount, valueTok,
+                                      argsTok, refs, refCount)) {
+      v2_json_buffer_free(&out);
       return false;
     }
 
     idx = jsmn_skip_subtree(tokens, valueTok, tokenCount);
   }
 
-  fputs("}}\n", stdout);
+  if (!v2_json_buffer_append_char(&out, '}')) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    v2_json_buffer_free(&out);
+    return false;
+  }
+
+  *outJsonObject = out.data;
+  return true;
+}
+
+static bool v2_dispatch_workflow_step(
+    const char *json, const jsmntok_t *tokens, const int tokenCount,
+    const int stepTok, const int opTok, const int argsTok, V2RefEntry *refs,
+    int *refCount, const bool captureProjectResult,
+    char **projectResultObjectJson, const char *unsupportedOpMessage) {
+  if (jsmn_token_streq(json, &tokens[opTok], "allocCell")) {
+    return v2_execute_alloc_cell_step(json, tokens, tokenCount, stepTok, argsTok,
+                                      refs, refCount);
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "spiceCall")) {
+    return v2_execute_spice_call_step(json, tokens, tokenCount, stepTok, argsTok,
+                                      refs, refCount);
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "projectResult")) {
+    int outTok = jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
+    char *nextProjectResult = NULL;
+    if (!v2_materialize_project_result_object_json(
+            json, tokens, tokenCount, outTok, argsTok, refs, *refCount,
+            &nextProjectResult)) {
+      return false;
+    }
+
+    if (captureProjectResult && projectResultObjectJson != NULL) {
+      free(*projectResultObjectJson);
+      *projectResultObjectJson = nextProjectResult;
+    } else {
+      free(nextProjectResult);
+    }
+
+    return true;
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "freeCell")) {
+    return v2_execute_free_cell_step(json, tokens, tokenCount, stepTok, argsTok,
+                                     refs, *refCount);
+  }
+
+  write_error_json_ex("unsupported_call", unsupportedOpMessage, NULL, NULL, NULL,
+                      NULL);
+  return false;
+}
+
+static bool v2_write_project_result_success_json(
+    const char *projectResultObjectJson) {
+  if (projectResultObjectJson == NULL) {
+    write_error_json_ex("invalid_request",
+                        "v2 workflow must include projectResult", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  fputs("{\"ok\":true,\"result\":", stdout);
+  fputs(projectResultObjectJson, stdout);
+  fputs("}\n", stdout);
   return true;
 }
 
@@ -2203,7 +2475,7 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
   memset(refs, 0, sizeof(refs));
   int refCount = 0;
 
-  int resultOutTok = -1;
+  char *projectResultObjectJson = NULL;
   bool ok = true;
 
   for (int i = 0; i < tokens[stepsTok].size; i++) {
@@ -2223,55 +2495,15 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
       break;
     }
 
-    if (jsmn_token_streq(json, &tokens[opTok], "allocCell")) {
-      if (!v2_execute_alloc_cell_step(json, tokens, tokenCount, stepTok, argsTok,
-                                      refs, &refCount)) {
-        ok = false;
-        break;
-      }
-      continue;
+    if (!v2_dispatch_workflow_step(
+            json, tokens, tokenCount, stepTok, opTok, argsTok, refs, &refCount,
+            true, &projectResultObjectJson, "Unsupported v2 workflow op")) {
+      ok = false;
+      break;
     }
-
-    if (jsmn_token_streq(json, &tokens[opTok], "spiceCall")) {
-      if (!v2_execute_spice_call_step(json, tokens, tokenCount, stepTok, argsTok,
-                                      refs, &refCount)) {
-        ok = false;
-        break;
-      }
-      continue;
-    }
-
-    if (jsmn_token_streq(json, &tokens[opTok], "projectResult")) {
-      int outTok =
-          jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
-      if (outTok < 0 || tokens[outTok].type != JSMN_OBJECT) {
-        write_error_json_ex("invalid_request",
-                            "projectResult requires object out", NULL, NULL,
-                            NULL, NULL);
-        ok = false;
-        break;
-      }
-
-      resultOutTok = outTok;
-      continue;
-    }
-
-    if (jsmn_token_streq(json, &tokens[opTok], "freeCell")) {
-      if (!v2_execute_free_cell_step(json, tokens, tokenCount, stepTok, argsTok,
-                                     refs, refCount)) {
-        ok = false;
-        break;
-      }
-      continue;
-    }
-
-    write_error_json_ex("unsupported_call", "Unsupported v2 workflow op", NULL,
-                        NULL, NULL, NULL);
-    ok = false;
-    break;
   }
 
-  if (ok && resultOutTok < 0) {
+  if (ok && projectResultObjectJson == NULL) {
     write_error_json_ex("invalid_request",
                         "v2 workflow must include projectResult", NULL, NULL,
                         NULL, NULL);
@@ -2297,15 +2529,9 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
         break;
       }
 
-      if (!jsmn_token_streq(json, &tokens[opTok], "freeCell")) {
-        write_error_json_ex("unsupported_call", "Unsupported v2 cleanup op", NULL,
-                            NULL, NULL, NULL);
-        ok = false;
-        break;
-      }
-
-      if (!v2_execute_free_cell_step(json, tokens, tokenCount, stepTok, argsTok,
-                                     refs, refCount)) {
+      if (!v2_dispatch_workflow_step(
+              json, tokens, tokenCount, stepTok, opTok, argsTok, refs,
+              &refCount, false, NULL, "Unsupported v2 cleanup op")) {
         ok = false;
         break;
       }
@@ -2313,10 +2539,10 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
   }
 
   if (ok) {
-    ok = v2_write_project_result_json(json, tokens, tokenCount, resultOutTok,
-                                      argsTok, refs, refCount);
+    ok = v2_write_project_result_success_json(projectResultObjectJson);
   }
 
+  free(projectResultObjectJson);
   v2_free_all_refs(refs, refCount);
   return ok;
 }
