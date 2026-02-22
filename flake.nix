@@ -66,7 +66,7 @@
 
           unpackPhase = ''
             runHook preUnpack
-            uncompress -c "$src" | tar -xf -
+            tar --auto-compress -xf "$src"
             runHook postUnpack
           '';
 
@@ -92,17 +92,23 @@
             tmpdir="$(mktemp -d)"
             trap 'rm -rf "$tmpdir"' EXIT
 
-            cspiceObj="$(ar t cspice/lib/cspice.a | sed -n '1p')"
-            csupportObj="$(ar t cspice/lib/csupport.a | sed -n '1p')"
+            for archive in cspice/lib/cspice.a cspice/lib/csupport.a; do
+              members="$(ar t "$archive")"
+              test -n "$members"
 
-            test -n "$cspiceObj"
-            test -n "$csupportObj"
+              while IFS= read -r member; do
+                test -n "$member"
 
-            ar p cspice/lib/cspice.a "$cspiceObj" > "$tmpdir/cspice.o"
-            ar p cspice/lib/csupport.a "$csupportObj" > "$tmpdir/csupport.o"
+                objFile="$(mktemp "$tmpdir/obj.XXXXXX")"
+                ar p "$archive" "$member" > "$objFile"
 
-            file "$tmpdir/cspice.o" | grep -E 'ARM aarch64|AArch64'
-            file "$tmpdir/csupport.o" | grep -E 'ARM aarch64|AArch64'
+                if ! file "$objFile" | grep -E 'ARM aarch64|AArch64' >/dev/null; then
+                  echo "Expected AArch64 object in $archive member $member"
+                  file "$objFile"
+                  exit 1
+                fi
+              done <<< "$members"
+            done
 
             runHook postCheck
           '';
