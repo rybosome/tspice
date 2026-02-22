@@ -71,18 +71,6 @@
         "description": "Type-brand a length-9 number array as Mat3RowMajor (row-major) without copying."
       },
       {
-        "name": "createBackend",
-        "description": "Create a low-level SPICE backend implementation (wasm or node) conforming to the backend contract."
-      },
-      {
-        "name": "createSpice",
-        "description": "Create a sync-ish tspice client (raw backend + higher-level kit helpers)."
-      },
-      {
-        "name": "createSpiceAsync",
-        "description": "Create an async tspice client mirroring the sync surface area (all methods return Promises)."
-      },
-      {
         "name": "isBrandedMat3ColMajor",
         "description": "Runtime predicate that checks whether a value is branded as Mat3ColMajor."
       },
@@ -99,10 +87,6 @@
         "description": "Kernel catalogs for building KernelPack objects via .pick(...) (NAIF, curated tspice, and custom)."
       },
       {
-        "name": "resolveKernelUrl",
-        "description": "Resolve a kernel URL against KernelPack.baseUrl with root-relative URL behavior (matches loadKernelPack semantics)."
-      },
-      {
         "name": "spiceClients",
         "description": "Higher-level client builder that can produce in-process, async, or WebWorker clients and a dispose() lifecycle."
       }
@@ -115,18 +99,6 @@
       {
         "name": "BodyRef",
         "description": "Body identifier accepted by kit APIs (NAIF name string or numeric id)."
-      },
-      {
-        "name": "CreateBackendOptions",
-        "description": "Options accepted by createBackend() (explicit backend selection + optional wasmUrl override)."
-      },
-      {
-        "name": "CreateSpiceAsyncOptions",
-        "description": "Alias of CreateSpiceOptions."
-      },
-      {
-        "name": "CreateSpiceOptions",
-        "description": "Options accepted by createSpice(): backend selection + optional backendInstance override."
       },
       {
         "name": "CustomKernelCatalog",
