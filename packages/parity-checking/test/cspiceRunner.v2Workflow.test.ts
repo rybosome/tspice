@@ -185,4 +185,40 @@ describe("cspice-runner v2 workflow behavior", () => {
       expect(out.response.error.detail).toBe("cleanupSize");
     }
   });
+
+  it("reuses freed ref slots under alloc/free churn", () => {
+    const steps: Array<Record<string, unknown>> = [];
+    for (let i = 0; i < 80; i++) {
+      steps.push({
+        op: "allocCell",
+        as: `cell${i}`,
+        params: {
+          kind: "int",
+          size: 1,
+        },
+      });
+      steps.push({
+        op: "freeCell",
+        target: `$refs.cell${i}`,
+      });
+    }
+
+    steps.push({
+      op: "projectResult",
+      out: {
+        ok: 1,
+      },
+    });
+
+    const payload = {
+      schemaVersion: 2,
+      args: {},
+      workflow: {
+        steps,
+      },
+    };
+
+    const out = invokeRaw(payload);
+    expect(out.response).toEqual({ ok: true, result: { ok: 1 } });
+  });
 });

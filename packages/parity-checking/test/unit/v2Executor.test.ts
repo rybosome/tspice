@@ -1,7 +1,7 @@
 import type { SpiceBackend } from "@rybosome/tspice";
 import { describe, expect, it, vi } from "vitest";
 
-import { executeV2CaseWithBackend } from "../../src/runners/v2Executor.js";
+import { executeV2CaseWithBackend, validateV2CasePreflight } from "../../src/runners/v2Executor.js";
 import type { RunCaseInputV2 } from "../../src/runners/types.js";
 
 type TestCell = {
@@ -149,5 +149,23 @@ describe("executeV2CaseWithBackend", () => {
       code: "invalid_args",
       message: "allocCell.params.size must be >= 0",
     });
+  });
+
+  it("rejects unknown v2 args during shared preflight validation", () => {
+    const input = createBaseInput();
+    input.args = {
+      size: 3,
+      extra: 1,
+    };
+
+    try {
+      validateV2CasePreflight(input);
+      throw new Error("Expected validateV2CasePreflight to throw");
+    } catch (error) {
+      expect(error).toMatchObject({
+        code: "invalid_args",
+        message: expect.stringContaining("unknown key"),
+      });
+    }
   });
 });
