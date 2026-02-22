@@ -1,0 +1,21 @@
+schemaVersion: 2
+manifest:
+  id: methods/dsk/dskgd@v2
+  kind: method
+contract:
+  contractMethod: dsk.dskgd
+  canonicalMethod: dsk.dskgd
+  aliases: []
+  result:
+    type: object
+    minProperties: 1
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: descriptor-from-minimal-dsk
+    args:
+      - $FIXTURES/kernels/de421_minimal.bds
+    expect:
+      ok: true

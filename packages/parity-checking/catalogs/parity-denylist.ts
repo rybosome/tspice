@@ -2,10 +2,6 @@
 // Source catalogs: contract-methods.json - method specs canonical coverage
 
 export const PARITY_DENYLIST = [
-  "dsk.dskb02",
-  "dsk.dskgd",
-  "dsk.dskobj",
-  "dsk.dsksrf",
   "ek.ekaclc",
   "ek.ekacld",
   "ek.ekacli",
@@ -36,9 +32,6 @@ export const PARITY_DENYLIST = [
   "error.reset",
   "error.setmsg",
   "error.sigerr",
-  "file-io.dskmi2",
-  "file-io.dskopn",
-  "file-io.dskw02",
   "frames.ckcov",
   "frames.ckgp",
   "frames.ckgpav",

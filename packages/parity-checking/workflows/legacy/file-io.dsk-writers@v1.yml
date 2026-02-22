@@ -1,0 +1,4 @@
+id: workflows/legacy/file-io.dsk-writers@v1
+kind: workflow
+notes:
+  - DSK writer/readback scenarios manage their own temporary output paths.

@@ -144,10 +144,11 @@ function sanitizeFileIoTempTag(tag: string): string {
   return out.length > 0 ? out : "file-io";
 }
 
-function buildFileIoTempPath(tag: string): string {
+function buildFileIoTempPath(tag: string, extension = ".tmp"): string {
   const safeTag = sanitizeFileIoTempTag(tag);
+  const safeExtension = extension.startsWith(".") ? extension : `.${extension}`;
   const suffix = crypto.randomBytes(6).toString("hex");
-  return path.join(os.tmpdir(), `tspice-parity-${safeTag}-${suffix}.dla`);
+  return path.join(os.tmpdir(), `tspice-parity-${safeTag}-${suffix}${safeExtension}`);
 }
 
 async function resolveFileIoPathForBackend(
@@ -1233,7 +1234,7 @@ const DISPATCH: Record<string, DispatchFn> = {
     assertStringArg(args[2], "file-io.dlaopn", 2);
     assertNonNegativeSpiceIntArg(args[3], "file-io.dlaopn", 3);
 
-    const tempOsPath = buildFileIoTempPath(args[0]);
+    const tempOsPath = buildFileIoTempPath(args[0], ".dla");
     const tempPath = await resolveFileIoPathForBackend(
       backend,
       backendKind,

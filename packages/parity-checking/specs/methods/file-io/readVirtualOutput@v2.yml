@@ -1,0 +1,21 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/readVirtualOutput@v2
+  kind: method
+contract:
+  contractMethod: file-io.readVirtualOutput
+  canonicalMethod: file-io.readVirtualOutput
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: read-spk-virtual-output-bytes
+    args:
+      - kind: virtual-output
+        path: parity-read-virtual-output
+    expect:
+      ok: true

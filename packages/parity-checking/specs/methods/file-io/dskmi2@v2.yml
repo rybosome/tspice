@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/dskmi2@v2
+  kind: method
+contract:
+  contractMethod: file-io.dskmi2
+  canonicalMethod: file-io.dskmi2
+  aliases: []
+  result:
+    type: object
+    minProperties: 1
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: minimal-triangle-index
+    args: []
+    expect:
+      ok: true

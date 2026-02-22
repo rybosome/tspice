@@ -1,0 +1,4 @@
+id: workflows/legacy/dsk.basic@v1
+kind: workflow
+notes:
+  - DSK parity scenarios operate on explicit DSK paths provided per case.
