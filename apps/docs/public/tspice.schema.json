@@ -220,6 +220,10 @@
       "description": "Backend selection (Node vs WASM) + spiceClients lifecycle/dispose."
     },
     {
+      "repoPath": "packages/tspice/test/llm-examples/browser-minimal-no-hosting.example.ts",
+      "description": "Minimal browser quickstart using kernels.tspice() + toAsync({ backend: 'wasm' })."
+    },
+    {
       "repoPath": "packages/tspice/test/llm-examples/kernel-loading.example.ts",
       "description": "Kernel loading patterns via KernelSource (filesystem path vs bytes)."
     },

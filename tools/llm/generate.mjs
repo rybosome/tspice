@@ -317,6 +317,42 @@ Repo paths:
 `;
 }
 function buildLlmsFullTxt({ exports, kernelSourceType, workerLikeType, spiceClientsWebWorkerOptionsType, examples }) {
+  const quickstartDecisionGuideSection = `## Quickstart Decision Guide\n\n1. **Fastest browser demo (no kernel hosting):** use \`kernels.tspice().pick(...)\` + \`.toAsync({ backend: "wasm" })\` (main thread, async).\n2. **Browser app with heavier workloads:** still use async APIs, but switch to \`.toWebWorker()\` so SPICE work runs off the main thread.\n3. **Node service/CLI:** use \`.toSync(...)\` or \`.toAsync(...)\` with explicit backend selection and your own kernel strategy.\n4. **Production deployments:** prefer \`kernels.naif(...)\` or \`kernels.custom(...)\` with self-hosted/proxied kernels; treat \`kernels.tspice()\` as quickstart/demo-only.\n`;
+
+  const mentalModelSection = `## Mental model\n\n- Configure a client builder first (optional \`.caching(...)\`, \`.withFetch(...)\`, \`.withKernels(...)\`).\n- Call one terminal builder method (\`.toSync()\`, \`.toAsync()\`, or \`.toWebWorker()\`) to create the client.\n- Terminal methods eagerly validate/setup and may preload kernel packs.\n- You always get \`{ spice, dispose }\`; call \`dispose()\` when done.\n`;
+
+  const executionModesSection = `## Execution modes + API symmetry\n\n| Builder call | Thread/process model | Client API type | When to use |
+| --- | --- | --- | --- |
+| \`toSync(opts?)\` | In-process | \`Spice\` (sync-style methods) | Node scripts/tests or call-sites that prefer direct return values. |
+| \`toAsync(opts?)\` | In-process | \`SpiceAsync\` (Promise-returning methods) | Browser demos or lightweight async flows on the main thread. |
+| \`toWebWorker(opts?)\` | Browser WebWorker | \`SpiceAsync\` (Promise-returning methods) | Recommended for heavier browser workloads to keep UI responsive. |
+\nNotes:\n\n- \`toAsync()\` and \`toWebWorker()\` are both async and both return \`SpiceAsync\`; the main difference is **where SPICE executes** (main thread vs worker thread).\n- Sync/async APIs are intentionally symmetric: the same \`spice.raw.*\` and \`spice.kit.*\` method names exist on both; async variants return Promises.\n- \`toWebWorker()\` uses an inline blob-module worker by default. If your bundler/deployment cannot resolve the worker's WASM asset automatically, pass \`wasmUrl\` (or provide a custom \`worker\`).\n`;
+
+  const kernelCatalogsSection = `## Kernel catalogs (choose intentionally)\n\n| Catalog | Best for | Defaults / shape | Caveats |
+| --- | --- | --- | --- |
+| \`kernels.tspice()\` | Zero-config quickstarts and demos | Curated ids from a hosted community mirror; call \`.pick(...)\` to build a \`KernelPack\`. | **Not for production.** Community-hosted/best-effort; use for demos and quickstarts. |
+| \`kernels.naif(opts?)\` | Full typed NAIF \`generic_kernels\` inventory | Defaults to NAIF host + typed \`NaifKernelId\`; optional \`origin\`, \`pathBase\`, \`baseUrl\`. | NAIF canonical host typically lacks browser CORS headers. In browsers, self-host/proxy (often relative \`origin\` + \`baseUrl\`); in Node, use absolute URLs. |
+| \`kernels.custom({ origin, pathBase, baseUrl? })\` | Mission/app-specific kernel sets | String ids map to \`{ url: origin + id, path: pathBase + id }\`; explicit \`{ url, path? }\` entries supported. | You own hosting + path conventions. Ensure ordering and coverage match your use case. |
+`;
+
+  const minimalBrowserExampleSection = `## Minimal Browser Example (No Kernel Hosting Required)\n\nThis quickstart-style snippet uses \`kernels.tspice()\` for a no-hosting demo path:\n\n\`\`\`ts\nimport { kernels, spiceClients } from "@rybosome/tspice";
+
+const pack = kernels.tspice().pick("lsk/naif0012.tls");
+
+const { spice, dispose } = await spiceClients
+  .withKernels(pack)
+  .toAsync({ backend: "wasm" });
+
+try {
+  const et = await spice.kit.utcToEt("2000 JAN 01 12:00:00");
+  console.log(et);
+} finally {
+  await dispose();
+}
+\`\`\`\n\nSee: \`packages/tspice/test/llm-examples/browser-minimal-no-hosting.example.ts\`\n\nImportant: this \`kernels.tspice()\` path is for quickstarts/demos. For production, use \`kernels.naif(...)\` or \`kernels.custom(...)\` with kernels you host/control.\n`;
+
+  const commonMistakesSection = `## Common mistakes\n\n- Forgetting to call \`dispose()\` on returned clients.\n- Treating \`kernels.tspice()\` as a production dependency instead of a quickstart/demo convenience.\n- Assuming browser direct-fetch from canonical NAIF URLs always works (CORS often blocks this).\n- Using \`toAsync({ backend: "wasm" })\` for heavy interactive workloads where \`toWebWorker()\` is a better fit.\n- Assuming \`toWebWorker()\` requires hand-rolled message protocols; tspice owns the worker RPC layer.\n`;
+
   const exportSection = `## Public API surface (generated)\n\nSource: \`packages/tspice/src/index.ts\`\n\n### Value exports\n\n${exports.valueExports.map((n) => `- \`${n}\``).join("\n")}\n\n### Type exports\n\n${exports.typeExports.map((n) => `- \`${n}\``).join("\n")}\n`;
 
   const webWorkerSection = `## WebWorker (browser)\n\nUse \`spiceClients.toWebWorker()\` to run the WASM backend inside a WebWorker and get an async \`spice\` client.\n\nGuidance:\n\n- Use \`await spiceClients.toWebWorker(opts?)\`. It returns \`{ spice, dispose }\`.\n- You usually do **not** create \`new Worker()\` manually; when \`opts.worker\` is omitted, tspice creates an internal inline blob-module worker.\n- Do **not** invent worker entrypoints, message protocols, or APIs like \`backend.expose(...)\`. tspice owns the worker transport.\n- WebWorker clients are async: all \`spice.kit.*\` / \`spice.raw.*\` calls return Promises.\n\nSee: \`packages/tspice/test/llm-examples/webworker-client.example.ts\`\n\n### SpiceClientsWebWorkerOptions (generated)\n\nSources:\n\n- \`packages/tspice/src/clients/spiceClients.ts\` (\`SpiceClientsWebWorkerOptions\`)\n- \`packages/tspice/src/worker/transport/createWorkerTransport.ts\` (\`WorkerLike\`)\n\n\`\`\`ts\n${workerLikeType}\n\n${spiceClientsWebWorkerOptionsType}\n\`\`\`\n\n### Kernel packs (catalogs: \`kernels.naif(...)\` / \`kernels.custom(...)\` / \`kernels.tspice()\`)\n\nUse a catalog + \`.pick(...)\` to build a \`KernelPack\` (ordered kernel URLs + virtual load paths).\n\`KernelPack.baseUrl\` optionally roots relative kernel URLs at load time.\nPass a pack (or packs) to \`spiceClients.withKernels(packOrPacks)\` before calling \`.toWebWorker()\` to preload kernels in the worker.\nUse \`spiceClients.withFetch(fetchFn)\` to override the \`fetch\` implementation used for kernel pack loading.\n`;
@@ -336,7 +372,7 @@ function buildLlmsFullTxt({ exports, kernelSourceType, workerLikeType, spiceClie
 
   const generatorSection = `## Regenerating these artifacts\n\nFrom the repo root:\n\n\`\`\`sh\npnpm generate:llm\n\`\`\`\n\nGenerated outputs:\n\n- \`llms.txt\`\n- \`apps/docs/public/llms.txt\`\n- \`apps/docs/public/llms-full.txt\`\n- \`apps/docs/public/tspice.schema.json\`\n`;
 
-  return `# tspice — LLM/tool artifacts (full)\n\nThis document is intended for LLMs and tool builders. It describes the public surface area of \`@rybosome/tspice\`, key types, and includes typechecked examples.\n\n${exportSection}\n\n${webWorkerSection}\n\n${kernelSourceSection}\n\n${examplesSection}\n\n${policiesSection}\n\n${nonGoalsSection}\n\n${generatorSection}`;
+  return `# tspice — LLM/tool artifacts (full)\n\nThis document is intended for LLMs and tool builders. It describes the public surface area of \`@rybosome/tspice\`, key types, and includes typechecked examples.\n\n${quickstartDecisionGuideSection}\n\n${mentalModelSection}\n\n${executionModesSection}\n\n${kernelCatalogsSection}\n\n${minimalBrowserExampleSection}\n\n${commonMistakesSection}\n\n${exportSection}\n\n${webWorkerSection}\n\n${kernelSourceSection}\n\n${examplesSection}\n\n${policiesSection}\n\n${nonGoalsSection}\n\n${generatorSection}`;
 }
 
 function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
@@ -441,6 +477,8 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
   const exampleDescriptionsByPath = {
     "packages/tspice/test/llm-examples/backend-env-selection.example.ts":
       "Backend selection (Node vs WASM) + spiceClients lifecycle/dispose.",
+    "packages/tspice/test/llm-examples/browser-minimal-no-hosting.example.ts":
+      "Minimal browser quickstart using kernels.tspice() + toAsync({ backend: 'wasm' }).",
     "packages/tspice/test/llm-examples/kernel-loading.example.ts":
       "Kernel loading patterns via KernelSource (filesystem path vs bytes).",
     "packages/tspice/test/llm-examples/state-and-frame-transform.example.ts":
