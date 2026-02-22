@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/exists@v2
+  kind: method
+contract:
+  contractMethod: file-io.exists
+  canonicalMethod: file-io.exists
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: file-io.exists.fixture-path
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true

@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/dafbfs@v2
+  kind: method
+contract:
+  contractMethod: file-io.dafbfs
+  canonicalMethod: file-io.dafbfs
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: file-io.dafbfs.daf-forward-search
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true

@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import crypto from "node:crypto";
-import { readFile, realpath, stat } from "node:fs/promises";
+import { readFile, realpath, rm, stat } from "node:fs/promises";
 
 import { spiceClients, type SpiceBackend } from "@rybosome/tspice";
 

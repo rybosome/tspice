@@ -1254,6 +1254,122 @@ static normalize_bod_item_err_t normalize_bod_item(const char *item, char **out)
   return NORMALIZE_BOD_ITEM_OK;
 }
 
+static void sanitize_file_io_temp_tag(const char *tag,
+                                      char *out,
+                                      size_t outBytes) {
+  if (outBytes == 0) {
+    return;
+  }
+
+  if (tag == NULL) {
+    tag = "";
+  }
+
+  size_t w = 0;
+  bool prevDash = false;
+  for (size_t i = 0; tag[i] != '\0' && w + 1 < outBytes && w < 64; i++) {
+    const unsigned char c = (unsigned char)tag[i];
+    if (isalnum(c) || c == '.' || c == '_' || c == '-') {
+      out[w++] = (char)c;
+      prevDash = (c == '-');
+      continue;
+    }
+
+    if (!prevDash && w + 1 < outBytes && w < 64) {
+      out[w++] = '-';
+      prevDash = true;
+    }
+  }
+
+  while (w > 0 && out[w - 1] == '-') {
+    w--;
+  }
+
+  if (w == 0) {
+    const char fallback[] = "file-io";
+    size_t j = 0;
+    while (fallback[j] != '\0' && j + 1 < outBytes) {
+      out[j] = fallback[j];
+      j++;
+    }
+    out[j] = '\0';
+    return;
+  }
+
+  out[w] = '\0';
+}
+
+static bool build_file_io_temp_path(const char *tag,
+                                    char *outPath,
+                                    size_t outPathBytes,
+                                    char *detail,
+                                    size_t detailBytes) {
+  if (outPath == NULL || outPathBytes == 0) {
+    if (detail != NULL && detailBytes > 0) {
+      snprintf(detail, detailBytes,
+               "temp path output buffer is missing");
+    }
+    return false;
+  }
+
+  char safeTag[80];
+  sanitize_file_io_temp_tag(tag, safeTag, sizeof(safeTag));
+
+  const char *tmpDir = getenv("TMPDIR");
+  if (tmpDir == NULL || tmpDir[0] == '\0') {
+    tmpDir = "/tmp";
+  }
+
+  static uint64_t counter = 0;
+  counter += 1;
+
+  const int n = snprintf(
+      outPath,
+      outPathBytes,
+      "%s/tspice-parity-%s-%ld-%" PRIu64 ".dla",
+      tmpDir,
+      safeTag,
+      (long)getpid(),
+      (uint64_t)counter);
+
+  if (n < 0 || (size_t)n >= outPathBytes) {
+    if (detail != NULL && detailBytes > 0) {
+      snprintf(detail, detailBytes,
+               "failed to build temporary file path");
+    }
+    return false;
+  }
+
+  return true;
+}
+
+static void write_found_dla_descriptor_json(const SpiceDLADescr *descr,
+                                            SpiceBoolean found) {
+  if (found != SPICETRUE) {
+    fputs("{\"ok\":true,\"result\":{\"found\":false}}\n", stdout);
+    return;
+  }
+
+  fputs("{\"ok\":true,\"result\":{\"found\":true,\"descr\":{", stdout);
+  fputs("\"bwdptr\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->bwdptr);
+  fputs(",\"fwdptr\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->fwdptr);
+  fputs(",\"ibase\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->ibase);
+  fputs(",\"isize\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->isize);
+  fputs(",\"dbase\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->dbase);
+  fputs(",\"dsize\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->dsize);
+  fputs(",\"cbase\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->cbase);
+  fputs(",\"csize\":", stdout);
+  fprintf(stdout, "%" PRIdMAX, (intmax_t)descr->csize);
+  fputs("}}}\n", stdout);
+}
+
 
 
 typedef enum {

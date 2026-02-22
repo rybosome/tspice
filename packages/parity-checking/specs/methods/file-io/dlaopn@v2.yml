@@ -1,0 +1,23 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/dlaopn@v2
+  kind: method
+contract:
+  contractMethod: file-io.dlaopn
+  canonicalMethod: file-io.dlaopn
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: file-io.dlaopn.create-dla-writer
+    args:
+      - parity-dlaopn
+      - DLA
+      - TSPICE
+      - 0
+    expect:
+      ok: true

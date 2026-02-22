@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/dafopr@v2
+  kind: method
+contract:
+  contractMethod: file-io.dafopr
+  canonicalMethod: file-io.dafopr
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: file-io.dafopr.open-daf-read-only
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true
