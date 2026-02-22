@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/dascls@v2
+  kind: method
+contract:
+  contractMethod: file-io.dascls
+  canonicalMethod: file-io.dascls
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: file-io.dascls.close-opened-das
+    args:
+      - $FIXTURES/dsk-minimal/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
+    expect:
+      ok: true

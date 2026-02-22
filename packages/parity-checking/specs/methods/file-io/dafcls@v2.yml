@@ -1,0 +1,20 @@
+schemaVersion: 2
+manifest:
+  id: methods/file-io/dafcls@v2
+  kind: method
+contract:
+  contractMethod: file-io.dafcls
+  canonicalMethod: file-io.dafcls
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: file-io.dafcls.close-opened-daf
+    args:
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
+    expect:
+      ok: true
