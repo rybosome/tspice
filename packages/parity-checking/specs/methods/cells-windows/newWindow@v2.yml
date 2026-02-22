@@ -1,0 +1,57 @@
+schemaVersion: 2
+
+manifest:
+  id: methods/cells-windows/newWindow@v2
+  kind: method
+
+contract:
+  contractMethod: cells-windows.newWindow
+  canonicalMethod: cells-windows.newWindow
+  aliases: []
+  args:
+    - name: maxIntervals
+      type: spiceInt
+  result:
+    type: object
+    required: [kind, maxIntervals, card]
+    properties:
+      kind: { const: window }
+      maxIntervals: { type: spiceInt }
+      card: { type: spiceInt }
+  errors:
+    - code: invalid_args
+    - code: spice_error
+
+workflow:
+  steps:
+    - op: allocWindow
+      as: window
+      params:
+        maxIntervals: $args.maxIntervals
+
+    - op: spiceCall
+      call: card_c
+      in: [$refs.window]
+      as: card
+
+    - op: projectResult
+      out:
+        kind: window
+        maxIntervals: $args.maxIntervals
+        card: $refs.card
+
+  cleanup:
+    - op: freeWindow
+      target: $refs.window
+
+cases:
+  - id: basic
+    args: { maxIntervals: 4 }
+    expect:
+      ok: true
+
+  - id: rejects-negative-max-intervals
+    args: { maxIntervals: -1 }
+    expect:
+      ok: false
+      errorCode: invalid_args
