@@ -1,0 +1,22 @@
+schemaVersion: 2
+manifest:
+  id: methods/cells-windows/cellGeti@v2
+  kind: method
+contract:
+  contractMethod: cells-windows.cellGeti
+  canonicalMethod: cells-windows.cellGeti
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: invokeLegacyCall
+cases:
+  - id: cells-windows.cellGeti.basic
+    args:
+      - - int
+        - 8
+      - 1
+    expect:
+      ok: true
