@@ -414,7 +414,16 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         if (obj.as === undefined) {
           throw new TypeError(`${label}.as is required when call=${JSON.stringify(call)}`);
         }
-      } else if (obj.as !== undefined) {
+
+        return {
+          op: "spiceCall",
+          call,
+          in: obj.in,
+          as: assertString(obj.as, `${label}.as`),
+        };
+      }
+
+      if (obj.as !== undefined) {
         throw new TypeError(`${label}.as is not allowed when call=${JSON.stringify(call)}`);
       }
 
@@ -422,7 +431,6 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         op: "spiceCall",
         call,
         in: obj.in,
-        ...(obj.as === undefined ? {} : { as: assertString(obj.as, `${label}.as`) }),
       };
     }
 

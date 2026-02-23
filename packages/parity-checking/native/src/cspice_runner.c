@@ -2162,9 +2162,9 @@ static bool v2_execute_alloc_window_step(const char *json,
     return false;
   }
 
-  if (maxIntervals < 1) {
+  if (maxIntervals < 0) {
     write_error_json_ex("invalid_args",
-                        "allocWindow.params.maxIntervals must be >= 1", NULL,
+                        "allocWindow.params.maxIntervals must be >= 0", NULL,
                         NULL, NULL, NULL);
     return false;
   }
@@ -2348,6 +2348,14 @@ static bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens
     free(asName);
     free(callName);
     return ok;
+  }
+
+  if (asTok >= 0) {
+    write_error_json_ex("invalid_request",
+                        "spiceCall scard_c/ssize_c/valid_c does not allow as",
+                        NULL, NULL, NULL, NULL);
+    free(callName);
+    return false;
   }
 
   if (strcmp(callName, "scard_c") == 0) {
