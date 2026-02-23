@@ -384,6 +384,61 @@ describe("schema validation", () => {
     ).toThrow(/cases\[0\]\.args must be an array when workflow uses invokeLegacyCall/);
   });
 
+  it("rejects array-shaped case args when workflow does not use invokeLegacyCall", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-non-legacy-array-args.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/time/spiceVersion@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.spiceVersion",
+            canonicalMethod: "time.spiceVersion",
+            result: {
+              type: "object",
+              properties: {},
+            },
+          },
+          workflow: {
+            steps: [{ op: "projectResult", out: { ok: true } }],
+          },
+          cases: [{ id: "basic", args: [] }],
+        },
+      }),
+    ).toThrow(/cases\[0\]\.args must be an object when workflow does not use invokeLegacyCall/);
+  });
+
+  it("rejects workflow cleanup entries that use invokeLegacyCall", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-cleanup-invoke-legacy.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/time/spiceVersion@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.spiceVersion",
+            canonicalMethod: "time.spiceVersion",
+            result: {
+              type: "object",
+              properties: {},
+            },
+          },
+          workflow: {
+            steps: [{ op: "projectResult", out: { ok: true } }],
+            cleanup: [{ op: "invokeLegacyCall" }],
+          },
+          cases: [{ id: "basic", args: {} }],
+        },
+      }),
+    ).toThrow(/workflow\.cleanup must not include invokeLegacyCall/);
+  });
+
   it("rejects unsupported schema versions", () => {
     expect(() =>
       parseMethodSpecAny({

@@ -230,8 +230,21 @@ function validateInvokeLegacyCallWorkflowShapeV2(
   cleanup: MethodWorkflowStepV2[] | undefined,
   cases: MethodCaseSpecV2[],
 ): void {
-  const hasInvokeLegacyCall = steps.some((step) => step.op === "invokeLegacyCall");
-  if (!hasInvokeLegacyCall) {
+  const hasInvokeLegacyCallInSteps = steps.some((step) => step.op === "invokeLegacyCall");
+  const hasInvokeLegacyCallInCleanup = (cleanup ?? []).some((step) => step.op === "invokeLegacyCall");
+
+  if (hasInvokeLegacyCallInCleanup) {
+    throw new TypeError("methodV2.workflow.cleanup must not include invokeLegacyCall");
+  }
+
+  if (!hasInvokeLegacyCallInSteps) {
+    for (const [index, scenarioCase] of cases.entries()) {
+      if (scenarioCase.args !== undefined && !isRecord(scenarioCase.args)) {
+        throw new TypeError(
+          `methodV2.cases[${index}].args must be an object when workflow does not use invokeLegacyCall`,
+        );
+      }
+    }
     return;
   }
 
