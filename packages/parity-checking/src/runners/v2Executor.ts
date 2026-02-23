@@ -400,6 +400,9 @@ async function executeStep(
         unsupportedCall(`Unsupported allocCell kind: ${(step.params as { kind: unknown }).kind}`);
       }
 
+      // A backend can reuse a numeric handle value after free; treat this
+      // allocation as a fresh live handle so end-of-case cleanup still frees it.
+      freedHandles.cell.delete(cell);
       defineRef(refs, step.as, { kind: "cell", value: cell }, "allocCell.as");
       return undefined;
     }
@@ -416,6 +419,9 @@ async function executeStep(
       }
 
       const window = backend.newWindow(maxIntervals);
+      // A backend can reuse a numeric handle value after free; clear stale
+      // dedupe state so this new live window is not skipped during teardown.
+      freedHandles.window.delete(window);
       defineRef(refs, step.as, { kind: "window", value: window }, "allocWindow.as");
       return undefined;
     }

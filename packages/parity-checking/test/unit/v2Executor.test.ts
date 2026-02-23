@@ -125,6 +125,107 @@ describe("executeV2CaseWithBackend", () => {
     expect(freeCellMock).toHaveBeenCalledTimes(2);
   });
 
+  it("frees a reused cell handle at case end after prior free in the same case", async () => {
+    const freeCellMock = vi.fn((_cell: number) => {});
+    const backend = {
+      kind: "fake",
+      newDoubleCell: vi.fn((_size: number): number => 23),
+      newIntCell: vi.fn((_size: number): number => 101),
+      newWindow: vi.fn((_maxIntervals: number): number => 0),
+      card: vi.fn((_handle: number): number => 0),
+      size: vi.fn((_handle: number): number => 0),
+      freeCell: freeCellMock,
+      freeWindow: vi.fn((_window: number) => {}),
+    } as unknown as SpiceBackend;
+
+    const input = createBaseInput();
+    input.contract.args = [];
+    input.args = {};
+    input.contract.result = {
+      type: "object",
+      required: [],
+      properties: {},
+    };
+    input.workflow.steps = [
+      {
+        op: "allocCell",
+        as: "first",
+        params: { kind: "double", size: 1 },
+      },
+      {
+        op: "freeCell",
+        target: "$refs.first",
+      },
+      {
+        op: "allocCell",
+        as: "second",
+        params: { kind: "double", size: 1 },
+      },
+      {
+        op: "projectResult",
+        out: {},
+      },
+    ];
+    input.workflow.cleanup = [];
+
+    const result = await executeV2CaseWithBackend(backend, input);
+
+    expect(result).toEqual({});
+    expect(freeCellMock).toHaveBeenCalledTimes(2);
+    expect(freeCellMock).toHaveBeenNthCalledWith(1, 23);
+    expect(freeCellMock).toHaveBeenNthCalledWith(2, 23);
+  });
+
+  it("frees a reused window handle at case end after prior free in the same case", async () => {
+    const freeWindowMock = vi.fn((_window: number) => {});
+    const backend = {
+      kind: "fake",
+      newIntCell: vi.fn((_size: number): number => 101),
+      newWindow: vi.fn((_maxIntervals: number): number => 19),
+      card: vi.fn((_handle: number): number => 0),
+      size: vi.fn((_handle: number): number => 0),
+      freeCell: vi.fn((_cell: number) => {}),
+      freeWindow: freeWindowMock,
+    } as unknown as SpiceBackend;
+
+    const input = createBaseInput();
+    input.contract.args = [];
+    input.args = {};
+    input.contract.result = {
+      type: "object",
+      required: [],
+      properties: {},
+    };
+    input.workflow.steps = [
+      {
+        op: "allocWindow",
+        as: "first",
+        params: { maxIntervals: 1 },
+      },
+      {
+        op: "freeWindow",
+        target: "$refs.first",
+      },
+      {
+        op: "allocWindow",
+        as: "second",
+        params: { maxIntervals: 1 },
+      },
+      {
+        op: "projectResult",
+        out: {},
+      },
+    ];
+    input.workflow.cleanup = [];
+
+    const result = await executeV2CaseWithBackend(backend, input);
+
+    expect(result).toEqual({});
+    expect(freeWindowMock).toHaveBeenCalledTimes(2);
+    expect(freeWindowMock).toHaveBeenNthCalledWith(1, 19);
+    expect(freeWindowMock).toHaveBeenNthCalledWith(2, 19);
+  });
+
   it("frees cell/window handles independently when identities collide", async () => {
     const freeCellMock = vi.fn((_cell: number) => {});
     const freeWindowMock = vi.fn((_window: number) => {});
