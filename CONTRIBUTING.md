@@ -73,6 +73,27 @@ PRs that do not pass automated checks will not be reviewed.
 
 Automation is part of the project’s maintenance model.
 
+### Coverage reporting (report-only)
+
+The repository includes a report-only coverage lane for pull requests.
+
+From the repo root:
+
+- `pnpm coverage` — run all coverage-enabled package tests via Turbo
+- `pnpm coverage:js` — JS-only coverage lane (matches `test:js` semantics)
+- `pnpm coverage:parity` — parity lens coverage (`packages/parity-checking`)
+- `pnpm coverage:non-parity` — coverage excluding `packages/parity-checking`
+- `pnpm coverage:report` — aggregate package summaries into JSON + markdown
+
+Current coverage lenses in the aggregate report:
+
+- **repo:** all discovered package coverage summaries
+- **parity:** tests run under `packages/parity-checking`
+- **non-parity:** all discovered summaries except `packages/parity-checking`
+- **js-only:** summaries aligned with the JS-only lane (`test:js` excludes `@rybosome/tspice-backend-node`)
+
+Coverage is currently informational only (no threshold enforcement).
+
 ---
 
 ## Responsiveness

@@ -4,6 +4,9 @@ dist
 .cache
 .cache/cspice
 .cache/wasm-build
+/coverage
+apps/*/coverage
+packages/*/coverage
 packages/*/dist-publish
 packages/backend-node/native/generated
 packages/tspice/backend-wasm

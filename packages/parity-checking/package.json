@@ -11,7 +11,9 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -21,7 +23,8 @@
     "generate:catalogs": "pnpm run generate:contract-catalog && pnpm run generate:alias-map && pnpm run generate:denylist",
     "check:generated": "node ./scripts/check-generated.mjs",
     "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && pnpm run check:generated && node ./scripts/pretest-cspice-runner.mjs",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:coverage": "pnpm run --if-present pretest && vitest run --coverage --coverage.provider=v8 --coverage.reporter=text-summary --coverage.reporter=json-summary --coverage.reporter=lcov --coverage.reportsDirectory=coverage"
   },
   "dependencies": {
     "@rybosome/tspice": "workspace:*",
@@ -34,6 +37,7 @@
   "devDependencies": {
     "@types/node": "^22.10.2",
     "tsx": "^4.20.5",
-    "vitest": "^2.1.8"
+    "vitest": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4"
   }
 }
