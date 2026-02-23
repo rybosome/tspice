@@ -24,7 +24,7 @@
     "build:full": "pnpm -w fetch:cspice && node-gyp rebuild --directory native && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
     "test": "vitest run",
-    "test:coverage": "pnpm run --if-present pretest && vitest run --coverage --coverage.provider=v8 --coverage.reporter=text-summary --coverage.reporter=json-summary --coverage.reporter=lcov --coverage.reportsDirectory=coverage"
+    "test:coverage": "node ../../scripts/run-vitest-coverage.mjs"
   },
   "dependencies": {
     "@rybosome/tspice-backend-contract": "workspace:*",

@@ -33,5 +33,7 @@ See the full script list in [`../package.json`](../package.json).
 | `print-spice-version.mjs` | Prints toolkit/runtime version info (useful for debugging). |
 | `print-cspice-dir.mjs` | Prints the CSPICE directory being used (useful for debugging build env issues). |
 | `read-pnpm-version.cjs` | Utility for reading the pinned pnpm version (CI/bootstrap helper). |
+| `workspace-packages.mjs` | Shared workspace manifest discovery derived from `pnpm-workspace.yaml`. |
 | `check-test-coverage-scripts.mjs` | Guardrail that fails if in-scope Vitest packages are missing `test:coverage`. |
-| `coverage/aggregate.mjs` | Aggregates package `coverage-summary.json` outputs into JSON + markdown report lenses. |
+| `run-vitest-coverage.mjs` | Shared `test:coverage` runner (pretest + standardized Vitest coverage flags). |
+| `coverage/aggregate.mjs` | Aggregates package `coverage-summary.json` outputs into JSON + markdown views (all-unit, backend classical, backend parity contribution semantics). |

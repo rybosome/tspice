@@ -1,0 +1,75 @@
+name: Coverage (PR comment)
+
+on:
+  workflow_run:
+    workflows:
+      - Coverage (PR)
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  publish-comment:
+    if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Resolve PR number from workflow_run payload
+        id: pr
+        run: |
+          pr_number="$(jq -r '.workflow_run.pull_requests[0].number // empty' "$GITHUB_EVENT_PATH")"
+
+          if [ -z "$pr_number" ]; then
+            echo "No pull request found in workflow_run payload."
+            exit 1
+          fi
+
+          echo "number=$pr_number" >> "$GITHUB_OUTPUT"
+
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-pr-${{ steps.pr.outputs.number }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: coverage-artifact
+
+      - name: Resolve coverage comment body path
+        id: coverage_comment
+        run: |
+          comment_path="coverage-artifact/coverage/coverage-comment.md"
+
+          if [ ! -f "$comment_path" ]; then
+            comment_path="coverage-artifact/coverage-comment.md"
+          fi
+
+          if [ ! -f "$comment_path" ]; then
+            echo "Coverage comment body not found in downloaded artifact."
+            find coverage-artifact -maxdepth 4 -type f -print
+            exit 1
+          fi
+
+          echo "path=$comment_path" >> "$GITHUB_OUTPUT"
+
+      - name: Find existing coverage comment
+        id: find_coverage_comment
+        uses: peter-evans/find-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.pr.outputs.number }}
+          comment-author: github-actions[bot]
+          body-includes: "<!-- coverage-pr-summary -->"
+
+      - name: Create or update coverage comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.pr.outputs.number }}
+          comment-id: ${{ steps.find_coverage_comment.outputs.comment-id }}
+          edit-mode: replace
+          body-path: ${{ steps.coverage_comment.outputs.path }}
