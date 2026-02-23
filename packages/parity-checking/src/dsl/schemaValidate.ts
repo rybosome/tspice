@@ -225,6 +225,31 @@ function parseMethodCaseV2(value: unknown, label: string): MethodCaseSpecV2 {
   return out;
 }
 
+function validateInvokeLegacyCallWorkflowShapeV2(
+  steps: MethodWorkflowStepV2[],
+  cleanup: MethodWorkflowStepV2[] | undefined,
+  cases: MethodCaseSpecV2[],
+): void {
+  const hasInvokeLegacyCall = steps.some((step) => step.op === "invokeLegacyCall");
+  if (!hasInvokeLegacyCall) {
+    return;
+  }
+
+  if (steps.length !== 1 || steps[0]?.op !== "invokeLegacyCall") {
+    throw new TypeError("methodV2.workflow.steps must contain only invokeLegacyCall when that op is used");
+  }
+
+  if ((cleanup?.length ?? 0) > 0) {
+    throw new TypeError("methodV2.workflow.cleanup must be empty when workflow uses invokeLegacyCall");
+  }
+
+  for (const [index, scenarioCase] of cases.entries()) {
+    if (!Array.isArray(scenarioCase.args)) {
+      throw new TypeError(`methodV2.cases[${index}].args must be an array when workflow uses invokeLegacyCall`);
+    }
+  }
+}
+
 /** Parse and validate a workflow YAML document. */
 export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
   const obj = assertRecord(file.data, `${file.sourcePath}`);
@@ -672,6 +697,9 @@ export function parseMethodSpecV2(file: ScenarioYamlFile): MethodSpecV2 {
     throw new TypeError("methodV2.cases must be a non-empty array");
   }
 
+  const cases = obj.cases.map((entry, index) => parseMethodCaseV2(entry, `methodV2.cases[${index}]`));
+  validateInvokeLegacyCallWorkflowShapeV2(steps, cleanup, cases);
+
   const out: MethodSpecV2 = {
     schemaVersion: 2,
     manifest: {
@@ -683,7 +711,7 @@ export function parseMethodSpecV2(file: ScenarioYamlFile): MethodSpecV2 {
       steps,
       ...(cleanup ? { cleanup } : {}),
     },
-    cases: obj.cases.map((entry, index) => parseMethodCaseV2(entry, `methodV2.cases[${index}]`)),
+    cases,
     meta: {
       sourcePath: file.sourcePath,
     },

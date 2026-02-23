@@ -69,4 +69,41 @@ describe("v2 runner preflight parity", () => {
       await cspice.dispose?.();
     }
   });
+
+  maybeIt("lowers invokeLegacyCall before v2 preflight in cspice runner", async () => {
+    const cspice = await createCspiceRunner();
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "methods/time/tkvrsn@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "time.tkvrsn",
+        canonicalMethod: "time.tkvrsn",
+        aliases: [],
+        result: {
+          type: "object",
+          properties: {},
+        },
+        errors: [],
+      },
+      args: ["TOOLKIT"],
+      workflow: {
+        steps: [{ op: "invokeLegacyCall" }],
+      },
+    };
+
+    try {
+      const out = await cspice.runCase(input);
+      expect(out.ok).toBe(true);
+
+      if (out.ok) {
+        expect(typeof out.result).toBe("string");
+      }
+    } finally {
+      await cspice.dispose?.();
+    }
+  });
 });
