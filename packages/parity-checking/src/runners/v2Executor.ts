@@ -432,7 +432,7 @@ async function executeStep(
           invalidRequest(`spiceCall ${step.call} expects exactly one input ref`);
         }
 
-        if (step.as === undefined) {
+        if ((step as { as?: unknown }).as === undefined) {
           // Schema validation should make this unreachable, but keep a defensive
           // runtime guard for direct inputs that bypass the schema parser.
           invalidArgs(`spiceCall ${step.call} requires an \"as\" output ref`);
