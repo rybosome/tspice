@@ -61,6 +61,8 @@ describe("v2 runner preflight parity", () => {
         expect(tspiceOut.error.code).toBe("invalid_args");
         expect(cspiceOut.error.code).toBe("invalid_args");
         expect(cspiceOut.error.message).toBe(tspiceOut.error.message);
+        expect(tspiceOut.error.spice).toEqual({ failed: false });
+        expect(cspiceOut.error.spice).toEqual({ failed: false });
       }
     } finally {
       await tspice.dispose?.();

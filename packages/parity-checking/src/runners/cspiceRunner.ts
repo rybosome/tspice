@@ -473,7 +473,9 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
         };
         return { ok: false, error: report };
       } catch (error) {
-        return { ok: false, error: safeErrorReport(error) };
+        const report = safeErrorReport(error);
+        report.spice = report.spice ?? { failed: false };
+        return { ok: false, error: report };
       }
     },
   };
