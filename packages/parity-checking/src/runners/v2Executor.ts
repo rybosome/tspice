@@ -548,6 +548,12 @@ async function executeStep(
       return undefined;
     }
 
+    case "invokeLegacyCall": {
+      invalidRequest(
+        "v2 workflow step invokeLegacyCall must be lowered before executeV2CaseWithBackend dispatch",
+      );
+    }
+
     default: {
       const exhaustive: never = step;
       unsupportedCall(`Unsupported workflow op ${(exhaustive as { op?: string }).op ?? "<unknown>"}`);
