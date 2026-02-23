@@ -11,6 +11,7 @@ import {
 } from "../kernels/metaKernel.js";
 
 import { spiceShortSymbol } from "../errors/spiceShort.js";
+import { lowerV2InvokeLegacyCall } from "./legacyInvoke.js";
 import { executeV2CaseWithBackend } from "./v2Executor.js";
 
 import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
@@ -55,41 +56,6 @@ function unsupportedCall(message: string): never {
   const err = new Error(message) as Error & { code?: RunnerValidationCode };
   err.code = "unsupported_call";
   throw err;
-}
-
-function toLegacyInvokeInput(input: Extract<RunCaseInput, { schemaVersion: 2 }>): {
-  setup: typeof input.setup;
-  call: string;
-  args: unknown[];
-} | null {
-  if (input.workflow.steps.length !== 1) {
-    return null;
-  }
-
-  const [step] = input.workflow.steps;
-  if (step?.op !== "invokeLegacyCall") {
-    return null;
-  }
-
-  if ((input.workflow.cleanup?.length ?? 0) > 0) {
-    invalidRequest("v2 invokeLegacyCall workflow must not define cleanup steps");
-  }
-
-  const call = step.call ?? input.contract.contractMethod;
-  if (typeof call !== "string" || call.trim() === "") {
-    invalidRequest("v2 invokeLegacyCall requires a non-empty call name");
-  }
-
-  const args = input.args ?? [];
-  if (!Array.isArray(args)) {
-    invalidArgs(`v2 invokeLegacyCall expects case args to be an array (got ${formatValue(args)})`);
-  }
-
-  return {
-    setup: input.setup,
-    call,
-    args,
-  };
 }
 
 /** Assert that a value is a finite integer (used for runner argument validation). */
@@ -1937,7 +1903,10 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
         }
 
         if (input.schemaVersion === 2) {
-          const legacyInput = toLegacyInvokeInput(input);
+          const legacyInput = lowerV2InvokeLegacyCall(input, {
+            invalidRequest,
+            invalidArgs,
+          });
           if (legacyInput !== null) {
             const fn = DISPATCH[legacyInput.call];
             if (!fn) {

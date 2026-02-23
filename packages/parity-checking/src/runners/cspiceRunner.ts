@@ -5,13 +5,15 @@ import { fileURLToPath } from "node:url";
 
 import type {
   CaseRunner,
-  RunCaseInputV1,
   RunCaseInput,
   RunCaseResult,
   RunnerErrorReport,
   SpiceErrorState,
 } from "./types.js";
+import { lowerV2InvokeLegacyCall } from "./legacyInvoke.js";
 import { validateV2CasePreflight } from "./v2Executor.js";
+
+type RunnerValidationCode = "invalid_request" | "invalid_args";
 
 export type CspiceRunnerBuildState = {
   available: boolean;
@@ -100,6 +102,20 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
   }
 
   return { message: String(error) };
+}
+
+function failValidation(code: RunnerValidationCode, message: string): never {
+  const err = new TypeError(message) as TypeError & { code?: RunnerValidationCode };
+  err.code = code;
+  throw err;
+}
+
+function invalidRequest(message: string): never {
+  return failValidation("invalid_request", message);
+}
+
+function invalidArgs(message: string): never {
+  return failValidation("invalid_args", message);
 }
 
 type CRunnerOk = { ok: true; result: unknown };
@@ -440,37 +456,6 @@ function asSpiceErrorState(err: CRunnerError["error"]): SpiceErrorState {
   return spice;
 }
 
-function toLegacyInvokeInput(input: Extract<RunCaseInput, { schemaVersion: 2 }>): RunCaseInputV1 | null {
-  if (input.workflow.steps.length !== 1) {
-    return null;
-  }
-
-  const [step] = input.workflow.steps;
-  if (step?.op !== "invokeLegacyCall") {
-    return null;
-  }
-
-  if ((input.workflow.cleanup?.length ?? 0) > 0) {
-    throw new Error("v2 invokeLegacyCall workflow must not define cleanup steps");
-  }
-
-  const call = step.call ?? input.contract.contractMethod;
-  if (typeof call !== "string" || call.trim() === "") {
-    throw new Error("v2 invokeLegacyCall requires a non-empty call name");
-  }
-
-  const args = input.args ?? [];
-  if (!Array.isArray(args)) {
-    throw new Error(`v2 invokeLegacyCall expects case args to be an array (got ${JSON.stringify(args)})`);
-  }
-
-  return {
-    ...(input.setup === undefined ? {} : { setup: input.setup }),
-    call,
-    args,
-  };
-}
-
 /** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
 export async function createCspiceRunner(): Promise<CaseRunner> {
   const binaryPath = getCspiceRunnerBinaryPath();
@@ -489,12 +474,27 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
       }
 
       try {
-        if (input.schemaVersion === 2) {
-          validateV2CasePreflight(input);
-        }
+        let effectiveInput: RunCaseInput;
 
-        const effectiveInput =
-          input.schemaVersion === 2 ? (toLegacyInvokeInput(input) ?? input) : input;
+        if (input.schemaVersion === 2) {
+          const legacyInput = lowerV2InvokeLegacyCall(input, {
+            invalidRequest,
+            invalidArgs,
+          });
+
+          if (legacyInput !== null) {
+            effectiveInput = {
+              ...(input.setup === undefined ? {} : { setup: input.setup }),
+              call: legacyInput.call,
+              args: legacyInput.args,
+            };
+          } else {
+            validateV2CasePreflight(input);
+            effectiveInput = input;
+          }
+        } else {
+          effectiveInput = input;
+        }
 
         const out = await invokeRunner(binaryPath, effectiveInput);
         if (out.ok) {

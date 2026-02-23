@@ -299,6 +299,91 @@ describe("schema validation", () => {
     expect(crossV2).toMatchObject({ schemaVersion: 2 });
   });
 
+  it("rejects invokeLegacyCall workflows that include additional steps", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-legacy-shape.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/time/spiceVersion@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.spiceVersion",
+            canonicalMethod: "time.spiceVersion",
+            result: {
+              type: "object",
+              properties: {},
+            },
+          },
+          workflow: {
+            steps: [
+              { op: "invokeLegacyCall" },
+              { op: "projectResult", out: { ok: true } },
+            ],
+          },
+          cases: [{ id: "basic", args: [] }],
+        },
+      }),
+    ).toThrow(/must contain only invokeLegacyCall/);
+  });
+
+  it("rejects invokeLegacyCall workflows that define cleanup steps", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-legacy-cleanup.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/time/spiceVersion@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.spiceVersion",
+            canonicalMethod: "time.spiceVersion",
+            result: {
+              type: "object",
+              properties: {},
+            },
+          },
+          workflow: {
+            steps: [{ op: "invokeLegacyCall" }],
+            cleanup: [{ op: "projectResult", out: { ignored: true } }],
+          },
+          cases: [{ id: "basic", args: [] }],
+        },
+      }),
+    ).toThrow(/workflow\.cleanup must be empty/);
+  });
+
+  it("rejects non-array case args when workflow uses invokeLegacyCall", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-legacy-args.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/time/tkvrsn@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
+            result: {
+              type: "object",
+              properties: {},
+            },
+          },
+          workflow: {
+            steps: [{ op: "invokeLegacyCall" }],
+          },
+          cases: [{ id: "toolkit", args: { mode: "TOOLKIT" } }],
+        },
+      }),
+    ).toThrow(/cases\[0\]\.args must be an array when workflow uses invokeLegacyCall/);
+  });
+
   it("rejects unsupported schema versions", () => {
     expect(() =>
       parseMethodSpecAny({
