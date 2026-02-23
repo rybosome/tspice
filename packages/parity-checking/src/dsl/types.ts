@@ -142,12 +142,23 @@ export type MethodWorkflowOpAllocWindowV2 = {
   };
 };
 
-export type MethodWorkflowOpSpiceCallV2 = {
+export type MethodWorkflowOpSpiceCallWithOutputV2 = {
   op: "spiceCall";
-  call: "card_c" | "size_c" | "scard_c" | "ssize_c" | "valid_c";
+  call: "card_c" | "size_c";
   in: unknown[];
-  as?: string;
+  as: string;
 };
+
+export type MethodWorkflowOpSpiceCallWithoutOutputV2 = {
+  op: "spiceCall";
+  call: "scard_c" | "ssize_c" | "valid_c";
+  in: unknown[];
+  as?: never;
+};
+
+export type MethodWorkflowOpSpiceCallV2 =
+  | MethodWorkflowOpSpiceCallWithOutputV2
+  | MethodWorkflowOpSpiceCallWithoutOutputV2;
 
 export type MethodWorkflowOpProjectResultV2 = {
   op: "projectResult";

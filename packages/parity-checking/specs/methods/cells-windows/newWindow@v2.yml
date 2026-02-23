@@ -11,13 +11,14 @@ contract:
   args:
     - name: maxIntervals
       type: spiceInt
-      constraints: { min: 1 }
+      constraints: { min: 0 }
   result:
     type: object
-    required: [kind, maxIntervals, card]
+    required: [kind, maxIntervals, windowSize, card]
     properties:
       kind: { const: window }
       maxIntervals: { type: spiceInt }
+      windowSize: { type: spiceInt }
       card: { type: spiceInt }
   errors:
     - code: invalid_args
@@ -35,10 +36,16 @@ workflow:
       in: [$refs.window]
       as: card
 
+    - op: spiceCall
+      call: size_c
+      in: [$refs.window]
+      as: windowSize
+
     - op: projectResult
       out:
         kind: window
         maxIntervals: $args.maxIntervals
+        windowSize: $refs.windowSize
         card: $refs.card
 
   cleanup:
@@ -51,11 +58,10 @@ cases:
     expect:
       ok: true
 
-  - id: rejects-zero-max-intervals
+  - id: allows-zero-max-intervals
     args: { maxIntervals: 0 }
     expect:
-      ok: false
-      errorCode: invalid_args
+      ok: true
 
   - id: rejects-negative-max-intervals
     args: { maxIntervals: -1 }

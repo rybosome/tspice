@@ -63,12 +63,23 @@ export type V2WorkflowAllocWindowStep = {
   };
 };
 
-export type V2WorkflowSpiceCallStep = {
+export type V2WorkflowSpiceCallWithOutputStep = {
   op: "spiceCall";
-  call: "card_c" | "size_c" | "scard_c" | "ssize_c" | "valid_c";
+  call: "card_c" | "size_c";
   in: unknown[];
-  as?: string;
+  as: string;
 };
+
+export type V2WorkflowSpiceCallWithoutOutputStep = {
+  op: "spiceCall";
+  call: "scard_c" | "ssize_c" | "valid_c";
+  in: unknown[];
+  as?: never;
+};
+
+export type V2WorkflowSpiceCallStep =
+  | V2WorkflowSpiceCallWithOutputStep
+  | V2WorkflowSpiceCallWithoutOutputStep;
 
 export type V2WorkflowProjectResultStep = {
   op: "projectResult";

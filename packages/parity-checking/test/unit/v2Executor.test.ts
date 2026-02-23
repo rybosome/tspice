@@ -288,11 +288,27 @@ describe("executeV2CaseWithBackend", () => {
       op: "spiceCall",
       call: "card_c",
       in: ["$refs.cell"],
-    };
+    } as unknown as RunCaseInputV2["workflow"]["steps"][number];
 
     await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
       code: "invalid_args",
       message: 'spiceCall card_c requires an "as" output ref',
+    });
+  });
+
+  it("reports invalid_args when scard_c includes as in bypassed schema input", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps[1] = {
+      op: "spiceCall",
+      call: "scard_c",
+      in: [0, "$refs.cell"],
+      as: "ignored",
+    } as unknown as RunCaseInputV2["workflow"]["steps"][number];
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_args",
+      message: 'spiceCall scard_c does not allow an "as" output ref',
     });
   });
 
@@ -322,11 +338,11 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
-  it("reports allocWindow.params.maxIntervals validation errors for zero", async () => {
+  it("reports allocWindow.params.maxIntervals validation errors for negative values", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
     input.contract.args = [{ name: "maxIntervals", type: "spiceInt" }];
-    input.args = { maxIntervals: 0 };
+    input.args = { maxIntervals: -1 };
     input.workflow.steps = [
       {
         op: "allocWindow",
@@ -341,7 +357,7 @@ describe("executeV2CaseWithBackend", () => {
 
     await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
       code: "invalid_args",
-      message: "allocWindow.params.maxIntervals must be >= 1",
+      message: "allocWindow.params.maxIntervals must be >= 0",
     });
   });
 

@@ -414,8 +414,8 @@ async function executeStep(
         refs,
         "allocWindow.params.maxIntervals",
       );
-      if (maxIntervals < 1) {
-        invalidArgs("allocWindow.params.maxIntervals must be >= 1");
+      if (maxIntervals < 0) {
+        invalidArgs("allocWindow.params.maxIntervals must be >= 0");
       }
 
       const window = backend.newWindow(maxIntervals);
@@ -453,6 +453,12 @@ async function executeStep(
       }
 
       if (step.call === "scard_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          // Schema validation should make this unreachable, but keep a defensive
+          // runtime guard for direct inputs that bypass the schema parser.
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
         if (step.in.length !== 2) {
           invalidRequest(`spiceCall ${step.call} expects [card, cellOrWindow] inputs`);
         }
@@ -472,6 +478,12 @@ async function executeStep(
       }
 
       if (step.call === "ssize_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          // Schema validation should make this unreachable, but keep a defensive
+          // runtime guard for direct inputs that bypass the schema parser.
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
         if (step.in.length !== 2) {
           invalidRequest(`spiceCall ${step.call} expects [size, cellOrWindow] inputs`);
         }
@@ -491,6 +503,12 @@ async function executeStep(
       }
 
       if (step.call === "valid_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          // Schema validation should make this unreachable, but keep a defensive
+          // runtime guard for direct inputs that bypass the schema parser.
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
         if (step.in.length !== 3) {
           invalidRequest(`spiceCall ${step.call} expects [size, n, cellOrWindow] inputs`);
         }
