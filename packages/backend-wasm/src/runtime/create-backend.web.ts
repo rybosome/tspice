@@ -1,6 +1,7 @@
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
-import { assertEmscriptenModule, type EmscriptenModule } from "../lowlevel/exports.js";
+import type { EmscriptenModule } from "../lowlevel/exports.js";
+import * as emscriptenExports from "../lowlevel/exports.js";
 
 import { createCoordsVectorsApi } from "../domains/coords-vectors.js";
 import { createCellsWindowsApi } from "../domains/cells-windows.js";
@@ -97,7 +98,7 @@ export async function createWasmBackend(
 
   const validateEmscriptenModule = options.validateEmscriptenModule ?? true;
   if (validateEmscriptenModule) {
-    assertEmscriptenModule(module);
+    emscriptenExports.assertEmscriptenModule(module);
   }
 
 

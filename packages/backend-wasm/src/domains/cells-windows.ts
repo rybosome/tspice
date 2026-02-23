@@ -11,7 +11,7 @@ import {
 } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
-import { assertEmscriptenModule } from "../lowlevel/exports.js";
+import * as emscriptenExports from "../lowlevel/exports.js";
 
 import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
@@ -320,7 +320,7 @@ export function assertWasmOwnedWindowHandle(
 
 /** Create a {@link CellsWindowsApi} implementation backed by a WASM Emscripten module. */
 export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
-  assertEmscriptenModule(module);
+  emscriptenExports.assertEmscriptenModule(module);
 
   // Security + correctness: track allocated pointers per backend instance.
   //
