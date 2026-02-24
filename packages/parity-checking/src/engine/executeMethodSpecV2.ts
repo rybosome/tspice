@@ -3,6 +3,7 @@ import { formatMismatchReport } from "../compare/report.js";
 import { DEFAULT_TOL_ABS, DEFAULT_TOL_REL } from "../config/constants.js";
 import { mergeCompareChain, mergeSetupChain } from "../dsl/mergeResolvedSpec.js";
 import { spiceShortSymbol } from "../errors/spiceShort.js";
+import { validateV2ContractResultOrThrow } from "../runners/v2ContractResultValidation.js";
 
 import type { MethodSpecV2 } from "../dsl/types.js";
 import type { CaseRunner, RunCaseInputV2 } from "../runners/types.js";
@@ -36,6 +37,29 @@ function buildCompareOptions(tolAbs: number, tolRel: number, angleWrapPi: boolea
     out.angleWrapPi = angleWrapPi;
   }
   return out;
+}
+
+function formatErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
+function assertContractResultMatches(
+  label: string,
+  runnerName: "tspice" | "cspice",
+  method: MethodSpecV2,
+  caseId: string,
+  result: unknown,
+): void {
+  try {
+    validateV2ContractResultOrThrow(result, method.contract.result, `${runnerName}.result`, (message) => {
+      throw new Error(message);
+    });
+  } catch (error) {
+    throw new Error(
+      `Contract result validation failed (${label} case=${caseId} runner=${runnerName}): ${formatErrorMessage(error)}`,
+    );
+  }
 }
 
 function assertExpectedOutcome(
@@ -216,6 +240,9 @@ export async function executeMethodSpecParityV2(
 
       continue;
     }
+
+    assertContractResultMatches(method.manifest.id, "tspice", method, scenarioCase.id, tspiceOutcome.result);
+    assertContractResultMatches(method.manifest.id, "cspice", method, scenarioCase.id, cspiceOutcome.result);
 
     const tspiceResult = normalizeVolatileResultFields(method.contract.contractMethod, tspiceOutcome.result);
     const cspiceResult = normalizeVolatileResultFields(method.contract.contractMethod, cspiceOutcome.result);

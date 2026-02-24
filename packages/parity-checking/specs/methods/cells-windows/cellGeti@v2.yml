@@ -7,8 +7,10 @@ contract:
   canonicalMethod: cells-windows.cellGeti
   aliases: []
   result:
-    type: object
-    properties: {}
+    const: 2
+  errors:
+    - code: invalid_args
+    - code: spice_error
 workflow:
   steps:
     - op: invokeLegacyCall
@@ -20,3 +22,30 @@ cases:
       - 1
     expect:
       ok: true
+
+  - id: cells-windows.cellGeti.rejects-negative-size
+    args:
+      - - int
+        - -1
+      - 0
+    expect:
+      ok: false
+      errorCode: invalid_args
+
+  - id: cells-windows.cellGeti.rejects-wrong-recipe-kind
+    args:
+      - - double
+        - 8
+      - 0
+    expect:
+      ok: false
+      errorCode: invalid_args
+
+  - id: cells-windows.cellGeti.rejects-non-integer-index
+    args:
+      - - int
+        - 8
+      - 0.5
+    expect:
+      ok: false
+      errorCode: invalid_args

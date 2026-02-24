@@ -25,11 +25,25 @@ export type V2ContractResultProperty = {
   type?: "spiceInt";
 };
 
-export type V2ContractResultSpec = {
+export type V2ContractResultConstValue =
+  | string
+  | number
+  | boolean
+  | null
+  | V2ContractResultConstValue[]
+  | { [key: string]: V2ContractResultConstValue };
+
+export type V2ContractResultConstSpec = {
+  const: V2ContractResultConstValue;
+};
+
+export type V2ContractResultObjectSpec = {
   type: "object";
   required?: string[];
   properties: Record<string, V2ContractResultProperty>;
 };
+
+export type V2ContractResultSpec = V2ContractResultObjectSpec | V2ContractResultConstSpec;
 
 export type V2ContractSpec = {
   contractMethod: string;

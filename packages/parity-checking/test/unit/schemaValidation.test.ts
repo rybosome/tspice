@@ -299,6 +299,39 @@ describe("schema validation", () => {
     expect(crossV2).toMatchObject({ schemaVersion: 2 });
   });
 
+  it("parses v2 method contract.result const literals (including arrays/objects)", () => {
+    const methodV2 = parseMethodSpecAny({
+      sourcePath: "/tmp/method-v2-legacy-const.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "methods/cells-windows/wnfetd@v2",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "cells-windows.wnfetd",
+          canonicalMethod: "cells-windows.wnfetd",
+          result: {
+            const: [0, { hi: 3 }],
+          },
+        },
+        workflow: {
+          steps: [{ op: "invokeLegacyCall" }],
+        },
+        cases: [{ id: "basic", args: [["window", 4], 0], expect: { ok: true } }],
+      },
+    });
+
+    expect(methodV2).toMatchObject({
+      schemaVersion: 2,
+      contract: {
+        result: {
+          const: [0, { hi: 3 }],
+        },
+      },
+    });
+  });
+
   it("rejects invokeLegacyCall workflows that include additional steps", () => {
     expect(() =>
       parseMethodSpecAny({

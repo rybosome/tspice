@@ -7,8 +7,10 @@ contract:
   canonicalMethod: cells-windows.wncard
   aliases: []
   result:
-    type: object
-    properties: {}
+    const: 1
+  errors:
+    - code: invalid_args
+    - code: spice_error
 workflow:
   steps:
     - op: invokeLegacyCall
@@ -19,3 +21,19 @@ cases:
         - 4
     expect:
       ok: true
+
+  - id: cells-windows.wncard.rejects-negative-max-intervals
+    args:
+      - - window
+        - -1
+    expect:
+      ok: false
+      errorCode: invalid_args
+
+  - id: cells-windows.wncard.rejects-wrong-recipe-kind
+    args:
+      - - double
+        - 8
+    expect:
+      ok: false
+      errorCode: invalid_args
