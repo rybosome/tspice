@@ -145,6 +145,47 @@ function snapshotTransportSurfaceMethodKeys(spice: SpiceLike): TransportSurfaceM
   };
 }
 
+function normalizeTransportMethodKeyList(value: unknown, label: string): ReadonlySet<string> {
+  if (!Array.isArray(value) || !value.every((v): v is string => typeof v === "string")) {
+    throw new Error(`${label} must be a string[]`);
+  }
+
+  const out = new Set<string>();
+  for (const key of value) {
+    if (!isSafeRpcKey(key) || blockedStringKeys.has(key)) {
+      throw new Error(`${label} contains invalid method key: ${JSON.stringify(key)}`);
+    }
+    out.add(key);
+  }
+  return out;
+}
+
+function parseTransportSurfaceMethodKeys(value: unknown): TransportSurfaceMethodKeys {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("meta.surfaceMethodKeys response must be an object");
+  }
+
+  const rec = value as Record<string, unknown>;
+  return {
+    rawMethodKeys: normalizeTransportMethodKeyList(rec.rawMethodKeys, "meta.surfaceMethodKeys.rawMethodKeys"),
+    kitMethodKeys: normalizeTransportMethodKeyList(rec.kitMethodKeys, "meta.surfaceMethodKeys.kitMethodKeys"),
+  };
+}
+
+async function requestTransportSurfaceMethodKeys(
+  transport: SpiceTransport,
+): Promise<TransportSurfaceMethodKeys> {
+  try {
+    const response = await transport.request("meta.surfaceMethodKeys", []);
+    return parseTransportSurfaceMethodKeys(response);
+  } catch (error) {
+    throw new Error(
+      "Transport must support meta.surfaceMethodKeys so tspice can enforce known raw/kit proxy keys",
+      { cause: error },
+    );
+  }
+}
+
 function createSpiceTransportFromSpiceLike(spice: SpiceLike): SpiceTransport {
   return {
     request: async (op: string, args: unknown[]): Promise<unknown> => {
@@ -409,7 +450,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         : undefined;
 
       const transport = cachedTransport ?? baseTransport;
-      const spice = createSpiceAsyncFromTransport(transport);
+      const surfaceMethodKeys = await requestTransportSurfaceMethodKeys(baseTransport);
+      const spice = createSpiceAsyncFromTransport(transport, surfaceMethodKeys);
 
       // Web-worker clients currently always use the WASM backend.
       Object.defineProperty(spice.raw, "kind", { value: "wasm", enumerable: true });

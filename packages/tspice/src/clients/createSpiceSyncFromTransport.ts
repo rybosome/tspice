@@ -54,6 +54,32 @@ function createNamespacedProxy(
 
   const inspectCustom = Symbol.for("nodejs.util.inspect.custom");
 
+  const getOrCreateRpcFn = (prop: string): RpcFn => {
+    if (fnCache.has(prop)) {
+      const cached = fnCache.get(prop)!;
+      // LRU: bump recency by reinserting.
+      fnCache.delete(prop);
+      fnCache.set(prop, cached);
+      return cached;
+    }
+
+    const fn: RpcFn = (...args: unknown[]) => t.request(`${namespace}.${prop}`, args);
+
+    if (fnCache.size >= MAX_FN_CACHE_ENTRIES) {
+      const oldest = fnCache.keys().next().value as string | undefined;
+      if (oldest !== undefined) fnCache.delete(oldest);
+    }
+
+    fnCache.set(prop, fn);
+    return fn;
+  };
+
+  const isKnownMethodKey = (prop: string): boolean => {
+    if (!isSafeRpcKey(prop)) return false;
+    if (knownMethodKeys && !knownMethodKeys.has(prop)) return false;
+    return true;
+  };
+
   return new Proxy(target, {
     get(_target, prop) {
       // Prevent the proxy from being treated as a thenable.
@@ -80,26 +106,72 @@ function createNamespacedProxy(
         }
       }
 
-      if (!isSafeRpcKey(prop)) return undefined;
-      if (knownMethodKeys && !knownMethodKeys.has(prop)) return undefined;
+      if (!isKnownMethodKey(prop)) return undefined;
 
-      if (fnCache.has(prop)) {
-        const cached = fnCache.get(prop)!;
-        // LRU: bump recency by reinserting.
-        fnCache.delete(prop);
-        fnCache.set(prop, cached);
-        return cached;
+      return getOrCreateRpcFn(prop);
+    },
+
+    has(_target, prop) {
+      if (prop === Symbol.toStringTag) return true;
+      if (prop === inspectCustom) return true;
+
+      if (typeof prop !== "string") return false;
+      if (prop === "toString" || prop === "valueOf") return true;
+      if (blockedStringKeys.has(prop)) return false;
+
+      if (namespace === "raw" && prop === "kind") {
+        return Object.prototype.hasOwnProperty.call(_target, prop);
       }
 
-      const fn = (...args: unknown[]) => t.request(`${namespace}.${prop}`, args);
+      return isKnownMethodKey(prop);
+    },
 
-      if (fnCache.size >= MAX_FN_CACHE_ENTRIES) {
-        const oldest = fnCache.keys().next().value as string | undefined;
-        if (oldest !== undefined) fnCache.delete(oldest);
+    ownKeys(_target) {
+      const out: (string | symbol)[] = [];
+      const seen = new Set<string | symbol>();
+      const push = (key: string | symbol): void => {
+        if (seen.has(key)) return;
+        seen.add(key);
+        out.push(key);
+      };
+
+      for (const key of Reflect.ownKeys(_target)) {
+        push(key);
       }
 
-      fnCache.set(prop, fn);
-      return fn;
+      if (knownMethodKeys) {
+        for (const key of knownMethodKeys) {
+          if (blockedStringKeys.has(key)) continue;
+          if (!isSafeRpcKey(key)) continue;
+          push(key);
+        }
+      }
+
+      return out;
+    },
+
+    getOwnPropertyDescriptor(_target, prop) {
+      const own = Reflect.getOwnPropertyDescriptor(_target, prop);
+      if (own) return own;
+
+      if (typeof prop !== "string") return undefined;
+      if (blockedStringKeys.has(prop)) return undefined;
+      if (prop === "toString" || prop === "valueOf") {
+        return {
+          configurable: true,
+          enumerable: false,
+          writable: false,
+          value: prop === "toString" ? toString : valueOf,
+        };
+      }
+      if (!isKnownMethodKey(prop)) return undefined;
+
+      return {
+        configurable: true,
+        enumerable: true,
+        writable: false,
+        value: getOrCreateRpcFn(prop),
+      };
     },
   });
 }

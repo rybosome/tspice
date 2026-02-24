@@ -1,5 +1,6 @@
 import type {
   CellsWindowsApi,
+  CellsWindowsKitApi,
   SpiceCharCell,
   SpiceDoubleCell,
   SpiceIntCell,
@@ -327,7 +328,7 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
   // In the WASM backend, cell/window handles are raw pointers. Without this
   // tracking, callers could attempt to free arbitrary pointers or double-free
   // previously-freed handles.
-  const { allocatedCells, allocatedWindows, charCellLengths } = getOrInitWasmHandleOwnership(module);
+  const { allocatedCells, allocatedWindows } = getOrInitWasmHandleOwnership(module);
 
   function assertKnownCell(handle: number, context: string): void {
     if (!allocatedCells.has(handle)) {
@@ -410,6 +411,98 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
       assertSpiceInt32NonNegative(n, "wnvald(n)");
       assertKnownWindow(window as unknown as number, "wnvald()");
       tspiceCallWnvald(module, size, n, window);
+    },
+  };
+}
+
+/** Create backend kit hooks for cells/windows backed by a WASM Emscripten module. */
+export function createCellsWindowsKitApi(module: EmscriptenModule): CellsWindowsKitApi {
+  assertEmscriptenModule(module);
+
+  // Security + correctness: track allocated pointers per backend instance.
+  //
+  // In the WASM backend, cell/window handles are raw pointers. Without this
+  // tracking, callers could attempt to free arbitrary pointers or double-free
+  // previously-freed handles.
+  const { allocatedCells, allocatedWindows, charCellLengths } = getOrInitWasmHandleOwnership(module);
+
+  function assertKnownCell(handle: number, context: string): void {
+    if (!allocatedCells.has(handle)) {
+      throw new RangeError(
+        `${context}: unknown/expired WASM cell handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+      );
+    }
+  }
+
+  function assertKnownWindow(handle: number, context: string): void {
+    if (!allocatedWindows.has(handle)) {
+      throw new RangeError(
+        `${context}: unknown/expired WASM window handle ${handle} (handles are per-module; did you mix Node/WASM backends or multiple WASM backends?)`,
+      );
+    }
+  }
+
+  return {
+    newIntCell: (size) => {
+      assertSpiceInt32NonNegative(size, "newIntCell(size)");
+      const cell = tspiceCallNewIntCell(module, size);
+      allocatedCells.add(cell as unknown as number);
+      return cell;
+    },
+    newDoubleCell: (size) => {
+      assertSpiceInt32NonNegative(size, "newDoubleCell(size)");
+      const cell = tspiceCallNewDoubleCell(module, size);
+      allocatedCells.add(cell as unknown as number);
+      return cell;
+    },
+    newCharCell: (size, length) => {
+      assertSpiceInt32NonNegative(size, "newCharCell(size)");
+      assertSpiceInt32(length, "newCharCell(length)", { min: 1 });
+      const cell = tspiceCallNewCharCell(module, size, length);
+      allocatedCells.add(cell as unknown as number);
+      charCellLengths.set(cell as unknown as number, length);
+      return cell;
+    },
+    newWindow: (maxIntervals) => {
+      assertSpiceInt32NonNegative(maxIntervals, "newWindow(maxIntervals)");
+      const window = tspiceCallNewWindow(module, maxIntervals);
+      allocatedWindows.add(window as unknown as number);
+      return window;
+    },
+
+    freeCell: (cell) => {
+      const handle = cell as unknown as number;
+      assertKnownCell(handle, "freeCell()");
+      tspiceCallFreeCell(module, handle);
+      allocatedCells.delete(handle);
+      charCellLengths.delete(handle);
+    },
+    freeWindow: (window) => {
+      const handle = window as unknown as number;
+      assertKnownWindow(handle, "freeWindow()");
+      tspiceCallFreeWindow(module, handle);
+      allocatedWindows.delete(handle);
+    },
+
+    cellGeti: (cell, index) => {
+      assertSpiceInt32NonNegative(index, "cellGeti(index)");
+      assertKnownCell(cell as unknown as number, "cellGeti()");
+      return tspiceCallCellGeti(module, cell, index);
+    },
+    cellGetd: (cell, index) => {
+      assertSpiceInt32NonNegative(index, "cellGetd(index)");
+      assertKnownCell(cell as unknown as number, "cellGetd()");
+      return tspiceCallCellGetd(module, cell, index);
+    },
+    cellGetc: (cell, index) => {
+      assertSpiceInt32NonNegative(index, "cellGetc(index)");
+      assertKnownCell(cell as unknown as number, "cellGetc()");
+      const handle = cell as unknown as number;
+      const outMaxBytes = charCellLengths.get(handle);
+      if (outMaxBytes === undefined) {
+        throw new RangeError(`cellGetc(): unknown/expired char cell handle ${handle} (handles are per-module)`);
+      }
+      return tspiceCallCellGetc(module, cell, index, outMaxBytes);
     },
   };
 }

@@ -1,22 +1,11 @@
-import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type { CellsWindowsKitApi } from "@rybosome/tspice-backend-contract";
 
 import { wrapSpiceError } from "../../errors.js";
 
 /** Create cell/window helpers for a given backend. */
 export function createCellsWindowsKit(
-  cspice: SpiceBackend,
-): Pick<
-  SpiceBackend,
-  | "newIntCell"
-  | "newDoubleCell"
-  | "newCharCell"
-  | "newWindow"
-  | "freeCell"
-  | "freeWindow"
-  | "cellGeti"
-  | "cellGetd"
-  | "cellGetc"
-> {
+  cspice: CellsWindowsKitApi,
+): CellsWindowsKitApi {
   return {
     newIntCell: (size) => {
       try {
