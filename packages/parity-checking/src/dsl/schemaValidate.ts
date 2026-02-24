@@ -9,6 +9,7 @@ import type {
   MethodCaseSpec,
   MethodCaseSpecV2,
   MethodResultConstValueV2,
+  MethodResultObjectSpecV2,
   MethodSpec,
   MethodSpecV2,
   MethodWorkflowStepV2,
@@ -561,7 +562,7 @@ function parseMethodSpecV2ContractResult(
   const required = parseStringArray(obj.required, `${label}.required`);
 
   const propertiesObj = assertRecord(obj.properties, `${label}.properties`);
-  const properties: MethodSpecV2["contract"]["result"]["properties"] = {};
+  const properties: MethodResultObjectSpecV2["properties"] = {};
 
   for (const [name, rawProperty] of Object.entries(propertiesObj)) {
     const property = assertRecord(rawProperty, `${label}.properties.${name}`);
@@ -573,7 +574,7 @@ function parseMethodSpecV2ContractResult(
       );
     }
 
-    const out: MethodSpecV2["contract"]["result"]["properties"][string] = {};
+    const out: MethodResultObjectSpecV2["properties"][string] = {};
 
     if (property.const !== undefined) {
       const constant = property.const;
