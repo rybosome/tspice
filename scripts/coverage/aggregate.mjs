@@ -78,6 +78,13 @@ function aggregateLens(lensName, entries) {
   const totals = emptySummaryTotals();
 
   for (const entry of entries) {
+    if (!entry?.summary || typeof entry.summary !== "object" || !entry.summary.total) {
+      const entryName = typeof entry?.name === "string" ? entry.name : "<unknown>";
+      throw new Error(
+        `aggregateLens(${lensName}) expected observed entries with summary.total; received invalid entry for ${entryName}`,
+      );
+    }
+
     for (const metricName of METRICS) {
       addMetric(totals[metricName], entry.summary.total?.[metricName]);
     }

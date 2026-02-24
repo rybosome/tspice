@@ -1,94 +1,58 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
+import { parse as parseYaml } from "yaml";
+
 const DEFAULT_WORKSPACE_FILE = "pnpm-workspace.yaml";
 
 function normalizePath(filePath) {
   return filePath.split(path.sep).join("/");
 }
 
-function stripInlineComment(line) {
-  let inSingleQuote = false;
-  let inDoubleQuote = false;
-
-  for (let i = 0; i < line.length; i += 1) {
-    const char = line[i];
-
-    if (char === "'" && !inDoubleQuote) {
-      inSingleQuote = !inSingleQuote;
-      continue;
-    }
-
-    if (char === '"' && !inSingleQuote) {
-      inDoubleQuote = !inDoubleQuote;
-      continue;
-    }
-
-    if (char === "#" && !inSingleQuote && !inDoubleQuote) {
-      return line.slice(0, i).trimEnd();
-    }
-  }
-
-  return line.trimEnd();
-}
-
-function unquote(value) {
-  if (value.length < 2) {
-    return value;
-  }
-
-  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-    return value.slice(1, -1);
-  }
-
-  return value;
-}
-
 export function parseWorkspacePackagePatterns(workspaceRaw) {
-  const lines = workspaceRaw.split(/\r?\n/);
-  const patterns = [];
+  let workspaceDocument;
 
-  let inPackagesSection = false;
-
-  for (const rawLine of lines) {
-    const line = stripInlineComment(rawLine);
-
-    if (!inPackagesSection) {
-      if (/^\s*packages\s*:\s*$/.test(line)) {
-        inPackagesSection = true;
-      }
-      continue;
-    }
-
-    if (/^\s*$/.test(line)) {
-      continue;
-    }
-
-    if (/^\S/.test(line)) {
-      break;
-    }
-
-    const match = line.match(/^\s*-\s*(.+?)\s*$/);
-    if (!match) {
-      continue;
-    }
-
-    const pattern = unquote(match[1].trim());
-    if (pattern.length === 0) {
-      continue;
-    }
-
-    patterns.push(pattern);
+  try {
+    workspaceDocument = parseYaml(workspaceRaw);
+  } catch (error) {
+    throw new Error("Failed to parse workspace YAML", { cause: error });
   }
 
-  return patterns;
+  if (!workspaceDocument || typeof workspaceDocument !== "object" || Array.isArray(workspaceDocument)) {
+    throw new Error("Workspace YAML must parse to an object containing a `packages` array");
+  }
+
+  const packagePatterns = workspaceDocument.packages;
+  if (!Array.isArray(packagePatterns)) {
+    throw new Error("Workspace YAML field `packages` must be an array");
+  }
+
+  return packagePatterns.map((pattern, index) => {
+    if (typeof pattern !== "string") {
+      throw new Error(`Workspace package pattern at index ${index} must be a string`);
+    }
+
+    const normalizedPattern = pattern.trim();
+    if (normalizedPattern.length === 0) {
+      throw new Error(`Workspace package pattern at index ${index} must not be empty`);
+    }
+
+    return normalizedPattern;
+  });
 }
 
 export async function readWorkspacePackagePatterns(workspaceFile = DEFAULT_WORKSPACE_FILE) {
   const workspacePath = path.resolve(workspaceFile);
   const workspaceRaw = await fs.readFile(workspacePath, "utf8");
 
-  const patterns = parseWorkspacePackagePatterns(workspaceRaw);
+  let patterns;
+
+  try {
+    patterns = parseWorkspacePackagePatterns(workspaceRaw);
+  } catch (error) {
+    throw new Error(`Failed to parse workspace package patterns from ${workspaceFile}`, { cause: error });
+  }
+
   if (patterns.length === 0) {
     throw new Error(`No workspace package patterns found in ${workspaceFile}`);
   }
@@ -164,12 +128,88 @@ function globPatternToRegExp(pattern) {
 
 const WALK_SKIP_DIRECTORIES = new Set([".git", "node_modules"]);
 
-async function listAllPackageManifests(cwd) {
+for (const directoryName of [".cache", ".turbo", "build", "coverage", "dist", "out"]) {
+  WALK_SKIP_DIRECTORIES.add(directoryName);
+}
+
+function containsGlobSyntax(pathSegment) {
+  return /[*?[]/.test(pathSegment);
+}
+
+function stripManifestSuffix(manifestPattern) {
+  const normalized = normalizePath(manifestPattern);
+
+  if (normalized === "package.json") {
+    return "";
+  }
+
+  return normalized.endsWith("/package.json")
+    ? normalized.slice(0, -"/package.json".length)
+    : normalized;
+}
+
+function deriveFallbackWalkRoots(includeManifestPatterns) {
+  const rootSet = new Set();
+
+  for (const manifestPattern of includeManifestPatterns) {
+    const packagePattern = stripManifestSuffix(manifestPattern);
+    if (packagePattern.length === 0) {
+      rootSet.add("");
+      continue;
+    }
+
+    const segments = packagePattern.split("/").filter((segment) => segment.length > 0);
+    const literalSegments = [];
+
+    for (const segment of segments) {
+      if (containsGlobSyntax(segment)) {
+        break;
+      }
+
+      literalSegments.push(segment);
+    }
+
+    rootSet.add(literalSegments.join("/"));
+  }
+
+  const roots = Array.from(rootSet).map((root) => normalizePath(root).replace(/\/+$/, ""));
+  roots.sort((a, b) => a.length - b.length || a.localeCompare(b));
+
+  const dedupedRoots = [];
+  for (const root of roots) {
+    if (dedupedRoots.some((existingRoot) => existingRoot === "" || root === existingRoot || root.startsWith(`${existingRoot}/`))) {
+      continue;
+    }
+
+    dedupedRoots.push(root);
+  }
+
+  return dedupedRoots.length > 0 ? dedupedRoots : [""];
+}
+
+async function listAllPackageManifests(cwd, roots = [""]) {
   const manifestPaths = [];
+  const visitedDirectories = new Set();
 
   async function walk(relativeDirectory) {
+    const normalizedDirectory = normalizePath(relativeDirectory).replace(/\/+$/, "");
+    if (visitedDirectories.has(normalizedDirectory)) {
+      return;
+    }
+    visitedDirectories.add(normalizedDirectory);
+
     const directoryPath = relativeDirectory.length === 0 ? cwd : path.resolve(cwd, relativeDirectory);
-    const entries = await fs.readdir(directoryPath, { withFileTypes: true });
+    let entries;
+
+    try {
+      entries = await fs.readdir(directoryPath, { withFileTypes: true });
+    } catch (error) {
+      if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+        return;
+      }
+
+      throw error;
+    }
 
     for (const entry of entries) {
       if (entry.isDirectory()) {
@@ -193,7 +233,10 @@ async function listAllPackageManifests(cwd) {
     }
   }
 
-  await walk("");
+  for (const root of roots) {
+    await walk(root);
+  }
+
   return manifestPaths;
 }
 
@@ -213,8 +256,9 @@ async function globManifests(cwd, includeManifestPatterns, excludeManifestPatter
 
   const includeMatchers = includeManifestPatterns.map((pattern) => globPatternToRegExp(pattern));
   const excludeMatchers = excludeManifestPatterns.map((pattern) => globPatternToRegExp(pattern));
+  const fallbackWalkRoots = deriveFallbackWalkRoots(includeManifestPatterns);
 
-  const manifestPaths = await listAllPackageManifests(cwd);
+  const manifestPaths = await listAllPackageManifests(cwd, fallbackWalkRoots);
   const filteredManifestPaths = manifestPaths.filter((manifestPath) => {
     const included = includeMatchers.some((matcher) => matcher.test(manifestPath));
     if (!included) {

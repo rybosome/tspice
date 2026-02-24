@@ -12,9 +12,7 @@ function hasVitestDependency(manifest) {
     ...(manifest.devDependencies ?? {}),
   };
 
-  return Object.keys(dependencies).some(
-    (dependencyName) => dependencyName === "vitest" || dependencyName.startsWith("@vitest/"),
-  );
+  return typeof dependencies.vitest === "string" && dependencies.vitest.trim().length > 0;
 }
 
 function hasCoverageScript(scripts) {
