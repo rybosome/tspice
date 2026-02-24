@@ -25,12 +25,12 @@ export function createKernelKit(
     loadKernel: (kernel) => {
       try {
         if (typeof kernel === "string") {
-          cspice.furnsh(kernel);
+          cspice.raw.furnsh(kernel);
           return;
         }
 
         const normalized = normalizeVirtualKernelPath(kernel.path);
-        cspice.furnsh({ ...kernel, path: normalized });
+        cspice.raw.furnsh({ ...kernel, path: normalized });
         byteBackedKernelPaths?.add(normalized);
       } catch (error) {
         throw wrapSpiceError("loadKernel", error);
@@ -43,7 +43,7 @@ export function createKernelKit(
         // For backend-native unloading (e.g. OS filesystem paths), use `raw.unload()`.
         const normalized = normalizeVirtualKernelPath(path);
         try {
-          cspice.unload(normalized);
+          cspice.raw.unload(normalized);
         } finally {
           byteBackedKernelPaths?.delete(normalized);
         }

@@ -11,7 +11,7 @@ export function createFramesKit(cspice: SpiceBackend): {
   return {
     frameTransform: (from, to, et) => {
       try {
-        return Mat3.fromRowMajor(cspice.pxform(from, to, et));
+        return Mat3.fromRowMajor(cspice.raw.pxform(from, to, et));
       } catch (error) {
         throw wrapSpiceError("frameTransform", error);
       }

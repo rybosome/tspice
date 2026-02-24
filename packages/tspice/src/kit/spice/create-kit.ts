@@ -35,7 +35,7 @@ export function createKit(cspice: SpiceBackend, options: CreateKitOptions = {}):
 
     kclear: () => {
       try {
-        cspice.kclear();
+        cspice.raw.kclear();
       } catch (error) {
         throw wrapSpiceError("kclear", error);
       } finally {
