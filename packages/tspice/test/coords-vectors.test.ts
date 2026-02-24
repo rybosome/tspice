@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import { brandMat3RowMajor, spiceClients } from "@rybosome/tspice";
-import type { SpiceBackend } from "@rybosome/tspice";
+import type { Spice } from "@rybosome/tspice";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
 type CoordsVectorsBackend = Pick<
-  SpiceBackend,
+  Spice["raw"],
   | "reclat"
   | "latrec"
   | "recsph"

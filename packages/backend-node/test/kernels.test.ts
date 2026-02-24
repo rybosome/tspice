@@ -17,14 +17,14 @@ describe("@rybosome/tspice-backend-node kernels", () => {
 
     const wordsq = "KEY 1 TERM";
 
-    const baseline = backend.kxtrct("KEY", ["TERM"], wordsq);
-    const trimmedInputs = backend.kxtrct(" KEY ", [" TERM "], wordsq);
+    const baseline = backend.raw.kxtrct("KEY", ["TERM"], wordsq);
+    const trimmedInputs = backend.raw.kxtrct(" KEY ", [" TERM "], wordsq);
     expect(trimmedInputs).toEqual(baseline);
 
-    const emptyTerms = backend.kxtrct("KEY", [" ", "TERM", ""], wordsq);
+    const emptyTerms = backend.raw.kxtrct("KEY", [" ", "TERM", ""], wordsq);
     expect(emptyTerms).toEqual(baseline);
 
-    expect(() => backend.kxtrct("   ", ["TERM"], wordsq)).toThrow(/kxtrct keywd must be a non-empty string/i);
+    expect(() => backend.raw.kxtrct("   ", ["TERM"], wordsq)).toThrow(/kxtrct keywd must be a non-empty string/i);
   });
 
   itNative("can furnsh/unload path-backed kernels", () => {
@@ -35,10 +35,10 @@ describe("@rybosome/tspice-backend-node kernels", () => {
     const withTesting = backend as typeof backend & { __ktotalAll(): number };
     const before = withTesting.__ktotalAll();
 
-    backend.furnsh(fixturePath);
+    backend.raw.furnsh(fixturePath);
     expect(withTesting.__ktotalAll()).toBe(before + 1);
 
-    backend.unload(fixturePath);
+    backend.raw.unload(fixturePath);
     expect(withTesting.__ktotalAll()).toBe(before);
   });
 
@@ -53,11 +53,11 @@ describe("@rybosome/tspice-backend-node kernels", () => {
     const withTesting = backend as typeof backend & { __ktotalAll(): number };
     const before = withTesting.__ktotalAll();
 
-    backend.furnsh({ path: kernelPath, bytes });
+    backend.raw.furnsh({ path: kernelPath, bytes });
     expect(withTesting.__ktotalAll()).toBe(before + 1);
 
     // The contract path is the virtual id; ensure `kinfo()` resolves it.
-    const info = backend.kinfo(kernelPath);
+    const info = backend.raw.kinfo(kernelPath);
     expect(info.found).toBe(true);
     if (info.found) {
       expect(info.filtyp).toBeTruthy();
@@ -66,12 +66,12 @@ describe("@rybosome/tspice-backend-node kernels", () => {
     }
 
     // `kdata()` should map the staged temp file path back to the virtual id.
-    const totalAll = backend.ktotal("ALL");
+    const totalAll = backend.raw.ktotal("ALL");
     expect(totalAll).toBeGreaterThan(0);
 
     let sawVirtual = false;
     for (let i = 0; i < totalAll; i++) {
-      const kd = backend.kdata(i, "ALL");
+      const kd = backend.raw.kdata(i, "ALL");
       expect(kd.found).toBe(true);
       if (!kd.found) continue;
       expect(kd.file).toBeTruthy();
@@ -85,10 +85,10 @@ describe("@rybosome/tspice-backend-node kernels", () => {
     expect(sawVirtual).toBe(true);
 
     // Array input should behave like an OR of kinds.
-    expect(backend.ktotal(["META", "TEXT"]))
-      .toBe(backend.ktotal("META") + backend.ktotal("TEXT"));
+    expect(backend.raw.ktotal(["META", "TEXT"]))
+      .toBe(backend.raw.ktotal("META") + backend.raw.ktotal("TEXT"));
 
-    backend.unload(kernelPath);
+    backend.raw.unload(kernelPath);
     expect(withTesting.__ktotalAll()).toBe(before);
   });
 });

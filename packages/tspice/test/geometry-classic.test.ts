@@ -74,19 +74,19 @@ async function furnishNaifKernels(backend: Awaited<ReturnType<typeof createBacke
   const pck = await ensureKernelFile(PCK);
   const spk = await ensureKernelFile(SPK);
 
-  backend.kclear();
+  backend.raw.kclear();
 
   if (backendKind === "node") {
-    backend.furnsh(lskPath);
-    backend.furnsh(pck.path);
-    backend.furnsh(spk.path);
+    backend.raw.furnsh(lskPath);
+    backend.raw.furnsh(pck.path);
+    backend.raw.furnsh(spk.path);
     return;
   }
 
   const lskBytes = fs.readFileSync(lskPath);
-  backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
-  backend.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
-  backend.furnsh({ path: `${SPK.name}`, bytes: spk.bytes });
+  backend.raw.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+  backend.raw.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
+  backend.raw.furnsh({ path: `${SPK.name}`, bytes: spk.bytes });
 }
 
 describe("geometry classic", () => {
@@ -105,19 +105,19 @@ describe("geometry classic", () => {
     const observer = "EARTH";
     const ilusrc = "SUN";
 
-    const { spoint } = backend.subpnt(subpntMethod, target, et, fixref, abcorr, observer);
+    const { spoint } = backend.raw.subpnt(subpntMethod, target, et, fixref, abcorr, observer);
 
-    const g = backend.illumg(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
-    const f = backend.illumf(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
+    const g = backend.raw.illumg(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
+    const f = backend.raw.illumf(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
 
     // Compute expected illumination angles from definitions (no aberration corrections).
-    const radii = backend.bodvar(301, "RADII");
+    const radii = backend.raw.bodvar(301, "RADII");
     expect(radii).toHaveLength(3);
     const radii3 = [radii[0]!, radii[1]!, radii[2]!] as const;
 
     const normal = ellipsoidSurfaceNormal({ spoint, radii: radii3 });
-    const obspos = backend.spkpos(observer, et, fixref, abcorr, target).pos as [number, number, number];
-    const srcpos = backend.spkpos(ilusrc, et, fixref, abcorr, target).pos as [number, number, number];
+    const obspos = backend.raw.spkpos(observer, et, fixref, abcorr, target).pos as [number, number, number];
+    const srcpos = backend.raw.spkpos(ilusrc, et, fixref, abcorr, target).pos as [number, number, number];
 
     const srfToObs = vsub(obspos, spoint);
     const srfToSrc = vsub(srcpos, spoint);
@@ -165,10 +165,10 @@ describe("geometry classic", () => {
     const observer = "EARTH";
     const dref = "J2000";
 
-    const { pos: obsToTarg } = backend.spkpos(target, et, dref, abcorr, observer);
+    const { pos: obsToTarg } = backend.raw.spkpos(target, et, dref, abcorr, observer);
     const dvec: [number, number, number] = [-obsToTarg[0]!, -obsToTarg[1]!, -obsToTarg[2]!];
 
-    const out = backend.sincpt(method, target, et, fixref, abcorr, observer, dref, dvec);
+    const out = backend.raw.sincpt(method, target, et, fixref, abcorr, observer, dref, dvec);
     expect(out).toEqual({ found: false });
   }
 
@@ -187,8 +187,8 @@ describe("geometry classic", () => {
     const normal: [number, number, number] = [1, 2, 3];
     const konst = 4;
 
-    const planeNode = node.nvc2pl(normal, konst);
-    const planeWasm = wasm.nvc2pl(normal, konst);
+    const planeNode = node.raw.nvc2pl(normal, konst);
+    const planeWasm = wasm.raw.nvc2pl(normal, konst);
 
     expect(planeNode).toHaveLength(4);
     expect(planeWasm).toHaveLength(4);
@@ -196,8 +196,8 @@ describe("geometry classic", () => {
       expect(planeNode[i]!).toBeCloseTo(planeWasm[i]!, 12);
     }
 
-    const outNode = node.pl2nvc(planeNode);
-    const outWasm = wasm.pl2nvc(planeWasm);
+    const outNode = node.raw.pl2nvc(planeNode);
+    const outWasm = wasm.raw.pl2nvc(planeWasm);
 
     expect(outNode.normal).toHaveLength(3);
     expect(outWasm.normal).toHaveLength(3);

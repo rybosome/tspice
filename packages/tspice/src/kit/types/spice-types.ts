@@ -1,4 +1,4 @@
-import type { KernelSource, SpiceBackend, SpiceCharCell, SpiceDoubleCell, SpiceIntCell, SpiceKitBackend, SpiceWindow } from "@rybosome/tspice-backend-contract";
+import type { KernelSource, SpiceBackend, SpiceCharCell, SpiceDoubleCell, SpiceIntCell, SpiceWindow, VirtualOutput } from "@rybosome/tspice-backend-contract";
 
 import type {
   AberrationCorrection,
@@ -21,7 +21,13 @@ export interface SpiceKit {
   kclear(): void;
 
   /** Convenience wrapper around `tkvrsn(\"TOOLKIT\")`. */
+  spiceVersion(): string;
+
+  /** Convenience wrapper around `tkvrsn(\"TOOLKIT\")`. */
   toolkitVersion(): string;
+
+  /** Read bytes from a backend-managed virtual output file. */
+  readVirtualOutput(output: VirtualOutput): Uint8Array;
 
   /** Convert UTC time string to ET seconds past J2000. */
   utcToEt(utc: string): SpiceTime;
@@ -89,12 +95,28 @@ export type PromisifyObject<T extends object> = {
   [K in keyof T]: PromisifyFn<T[K]>;
 };
 
+type HiddenRawHelpers =
+  | "spiceVersion"
+  | "readVirtualOutput"
+  | "newIntCell"
+  | "newDoubleCell"
+  | "newCharCell"
+  | "newWindow"
+  | "freeCell"
+  | "freeWindow"
+  | "cellGeti"
+  | "cellGetd"
+  | "cellGetc";
+
+/** Raw tspice surface: backend raw primitives (minus kit-moved helpers) plus backend metadata. */
+export type SpiceRaw = Omit<SpiceBackend["raw"], HiddenRawHelpers> & Pick<SpiceBackend, "kind">;
+
 /**
  * Top-level sync-ish client type (returned by `spiceClients.toSync()`).
  */
 export type Spice = {
   /** Raw backend primitives (verbatim). */
-  raw: SpiceBackend;
+  raw: SpiceRaw;
   /** Higher-level helpers and typed conveniences. */
   kit: SpiceKit;
 };
@@ -110,6 +132,6 @@ export type SpiceSync = Spice;
  * Mirrors the sync surface area, but wraps every function in a `Promise`.
  */
 export type SpiceAsync = {
-  raw: PromisifyObject<SpiceBackend>;
+  raw: PromisifyObject<SpiceRaw>;
   kit: PromisifyObject<SpiceKit>;
 };

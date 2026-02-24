@@ -25,10 +25,10 @@ const DSK_FIXTURE_BYTES = fs.readFileSync(
 const DSK_FILENAME = "apophis_g_25000mm_rad_obj_0000n00000_v001.bds" as const;
 
 function readIntCell(backend: SpiceBackend, cell: SpiceIntCell): number[] {
-  const n = backend.card(cell);
+  const n = backend.raw.card(cell);
   const out: number[] = [];
   for (let i = 0; i < n; i++) {
-    out.push(backend.cellGeti(cell, i));
+    out.push(backend.kit.cellGeti(cell, i));
   }
   return out;
 }
@@ -55,14 +55,14 @@ describe("dsk parity", () => {
 
     try {
       // WASM backend needs the bytes staged into its virtual FS.
-      wasm.furnsh({ path: DSK_FILENAME, bytes: DSK_FIXTURE_BYTES });
+      wasm.raw.furnsh({ path: DSK_FILENAME, bytes: DSK_FIXTURE_BYTES });
       didFurnsh = true;
-      const nodeBodids = node.newIntCell(100);
-      const wasmBodids = wasm.newIntCell(100);
+      const nodeBodids = node.kit.newIntCell(100);
+      const wasmBodids = wasm.kit.newIntCell(100);
 
       try {
-        node.dskobj(dskPath, nodeBodids);
-        wasm.dskobj(DSK_FILENAME, wasmBodids);
+        node.raw.dskobj(dskPath, nodeBodids);
+        wasm.raw.dskobj(DSK_FILENAME, wasmBodids);
 
         const nodeBodies = readIntCell(node, nodeBodids);
         const wasmBodies = readIntCell(wasm, wasmBodids);
@@ -73,11 +73,11 @@ describe("dsk parity", () => {
         const bodyid = nodeBodies[0];
         expect(typeof bodyid).toBe("number");
 
-        const nodeSrfids = node.newIntCell(100);
-        const wasmSrfids = wasm.newIntCell(100);
+        const nodeSrfids = node.kit.newIntCell(100);
+        const wasmSrfids = wasm.kit.newIntCell(100);
         try {
-          node.dsksrf(dskPath, bodyid, nodeSrfids);
-          wasm.dsksrf(DSK_FILENAME, bodyid, wasmSrfids);
+          node.raw.dsksrf(dskPath, bodyid, nodeSrfids);
+          wasm.raw.dsksrf(DSK_FILENAME, bodyid, wasmSrfids);
 
           const nodeSurfaces = readIntCell(node, nodeSrfids);
           const wasmSurfaces = readIntCell(wasm, wasmSrfids);
@@ -85,22 +85,22 @@ describe("dsk parity", () => {
           expect(nodeSurfaces.length).toBeGreaterThanOrEqual(1);
           expect(nodeSurfaces).toEqual(wasmSurfaces);
         } finally {
-          node.freeCell(nodeSrfids);
-          wasm.freeCell(wasmSrfids);
+          node.kit.freeCell(nodeSrfids);
+          wasm.kit.freeCell(wasmSrfids);
         }
       } finally {
-        node.freeCell(nodeBodids);
-        wasm.freeCell(wasmBodids);
+        node.kit.freeCell(nodeBodids);
+        wasm.kit.freeCell(wasmBodids);
       }
     } finally {
       try {
         if (didFurnsh) {
-          wasm.unload(DSK_FILENAME);
+          wasm.raw.unload(DSK_FILENAME);
         }
       } finally {
         // Ensure kernel pool cleanup even if unload fails.
-        wasm.kclear();
-        node.kclear();
+        wasm.raw.kclear();
+        node.raw.kclear();
       }
     }
   });
@@ -108,38 +108,38 @@ describe("dsk parity", () => {
   itNative("dskobj throws TypeError on wrong-dtype cell handle", () => {
     const node = createNodeBackend();
 
-    const wrong = node.newDoubleCell(100);
+    const wrong = node.kit.newDoubleCell(100);
     try {
       // The JS wrapper can't know the underlying native cell dtype, so this
       // is enforced at the native boundary.
       expect(() => (node as any).dskobj(dskPath, wrong)).toThrow(TypeError);
     } finally {
-      node.freeCell(wrong);
-      node.kclear();
+      node.kit.freeCell(wrong);
+      node.raw.kclear();
     }
   });
 
   itNative("dsksrf throws TypeError on wrong-dtype cell handle", () => {
     const node = createNodeBackend();
 
-    const wrong = node.newCharCell(10, 16);
+    const wrong = node.kit.newCharCell(10, 16);
     try {
       expect(() => (node as any).dsksrf(dskPath, 0, wrong)).toThrow(TypeError);
     } finally {
-      node.freeCell(wrong);
-      node.kclear();
+      node.kit.freeCell(wrong);
+      node.raw.kclear();
     }
   });
 
   itNative("dskobj throws RangeError on expired handle", () => {
     const node = createNodeBackend();
 
-    const bodids = node.newIntCell(10);
-    node.freeCell(bodids);
+    const bodids = node.kit.newIntCell(10);
+    node.kit.freeCell(bodids);
     try {
       expect(() => (node as any).dskobj(dskPath, bodids)).toThrow(RangeError);
     } finally {
-      node.kclear();
+      node.raw.kclear();
     }
   });
 });

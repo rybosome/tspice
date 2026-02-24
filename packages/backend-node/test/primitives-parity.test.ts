@@ -129,27 +129,27 @@ describe("primitives parity (node vs wasm)", () => {
 
     try {
       // Ensure deterministic parsing defaults for `str2et`.
-      node.timdef("SET", "SYSTEM", "UTC");
-      wasm.timdef("SET", "SYSTEM", "UTC");
-      node.timdef("SET", "CALENDAR", "GREGORIAN");
-      wasm.timdef("SET", "CALENDAR", "GREGORIAN");
+      node.raw.timdef("SET", "SYSTEM", "UTC");
+      wasm.raw.timdef("SET", "SYSTEM", "UTC");
+      node.raw.timdef("SET", "CALENDAR", "GREGORIAN");
+      wasm.raw.timdef("SET", "CALENDAR", "GREGORIAN");
 
-      node.furnsh({ path: "/kernels/naif0012.tls", bytes: lsk });
-      node.furnsh({ path: "/kernels/de405s.bsp", bytes: spk });
-      wasm.furnsh({ path: "/kernels/naif0012.tls", bytes: lsk });
-      wasm.furnsh({ path: "/kernels/de405s.bsp", bytes: spk });
+      node.raw.furnsh({ path: "/kernels/naif0012.tls", bytes: lsk });
+      node.raw.furnsh({ path: "/kernels/de405s.bsp", bytes: spk });
+      wasm.raw.furnsh({ path: "/kernels/naif0012.tls", bytes: lsk });
+      wasm.raw.furnsh({ path: "/kernels/de405s.bsp", bytes: spk });
 
       const time = "2000 JAN 01 12:00:00";
 
       // `str2et` converts from the default TIMDEF system (UTC) to ET.
-      const etNode = node.str2et(time);
-      const etWasm = wasm.str2et(time);
+      const etNode = node.raw.str2et(time);
+      const etWasm = wasm.raw.str2et(time);
       expectClose(etNode, etWasm);
 
       // Leading whitespace in time pictures is meaningful; preserve it (no `.trim()`).
       const timoutLeadingPicture = "::UTC  YYYY-MON-DD HR:MN:SC.###";
-      const timoutLeadingNode = node.timout(etNode, timoutLeadingPicture);
-      const timoutLeadingWasm = wasm.timout(etWasm, timoutLeadingPicture);
+      const timoutLeadingNode = node.raw.timout(etNode, timoutLeadingPicture);
+      const timoutLeadingWasm = wasm.raw.timout(etWasm, timoutLeadingPicture);
       expect(timoutLeadingNode).toBe(timoutLeadingWasm);
       expect(timoutLeadingNode.startsWith("  ")).toBe(true);
       expect(timoutLeadingWasm.startsWith("  ")).toBe(true);
@@ -157,8 +157,8 @@ describe("primitives parity (node vs wasm)", () => {
       // `tparse` parses a UTC time string and returns UTC seconds past J2000 on a
       // formal calendar (fixed 86400-second days; no leap seconds). It is
       // UTC-only and does not consult TIMDEF SYSTEM/ZONE.
-      const sp2000Node = node.tparse(time);
-      const sp2000Wasm = wasm.tparse(time);
+      const sp2000Node = node.raw.tparse(time);
+      const sp2000Wasm = wasm.raw.tparse(time);
       expectClose(sp2000Node, sp2000Wasm);
 
       // `tparse_c` is UTC-only and rejects time systems/zones in the input string.
@@ -167,20 +167,20 @@ describe("primitives parity (node vs wasm)", () => {
         "2000-01-01T12:00:00 PDT",
         "2000-01-01T12:00:00+05:00",
       ]) {
-        expect(() => node.tparse(bad)).toThrow();
-        expect(() => wasm.tparse(bad)).toThrow();
+        expect(() => node.raw.tparse(bad)).toThrow();
+        expect(() => wasm.raw.tparse(bad)).toThrow();
       }
 
-      const deltaNode = node.deltet(etNode, "ET");
-      const deltaWasm = wasm.deltet(etWasm, "ET");
+      const deltaNode = node.raw.deltet(etNode, "ET");
+      const deltaWasm = wasm.raw.deltet(etWasm, "ET");
       expectClose(deltaNode, deltaWasm);
 
-      const taiNode = node.unitim(etNode, "ET", "TAI");
-      const taiWasm = wasm.unitim(etWasm, "ET", "TAI");
+      const taiNode = node.raw.unitim(etNode, "ET", "TAI");
+      const taiWasm = wasm.raw.unitim(etWasm, "ET", "TAI");
       expectClose(taiNode, taiWasm);
 
-      const etNodeRound = node.unitim(taiNode, "TAI", "ET");
-      const etWasmRound = wasm.unitim(taiWasm, "TAI", "ET");
+      const etNodeRound = node.raw.unitim(taiNode, "TAI", "ET");
+      const etWasmRound = wasm.raw.unitim(taiWasm, "TAI", "ET");
       expectClose(etNodeRound, etWasmRound);
       expectClose(etNodeRound, etNode);
 
@@ -194,58 +194,58 @@ describe("primitives parity (node vs wasm)", () => {
       const longTemplate = " ".repeat(80);
       const shortTemplate = "X";
 
-      expect(() => node.tpictr("", shortTemplate)).toThrow(RangeError);
-      expect(() => wasm.tpictr("", shortTemplate)).toThrow(RangeError);
-      expect(() => node.tpictr(tpictrSampleA, "")).toThrow(RangeError);
-      expect(() => wasm.tpictr(tpictrSampleA, "")).toThrow(RangeError);
+      expect(() => node.raw.tpictr("", shortTemplate)).toThrow(RangeError);
+      expect(() => wasm.raw.tpictr("", shortTemplate)).toThrow(RangeError);
+      expect(() => node.raw.tpictr(tpictrSampleA, "")).toThrow(RangeError);
+      expect(() => wasm.raw.tpictr(tpictrSampleA, "")).toThrow(RangeError);
 
-      const pictNodeALong = node.tpictr(tpictrSampleA, longTemplate);
-      const pictWasmALong = wasm.tpictr(tpictrSampleA, longTemplate);
+      const pictNodeALong = node.raw.tpictr(tpictrSampleA, longTemplate);
+      const pictWasmALong = wasm.raw.tpictr(tpictrSampleA, longTemplate);
       expect(pictNodeALong).toBe(pictWasmALong);
       expect(pictNodeALong).toBe(expectedPicturA);
 
-      const pictNodeAShort = node.tpictr(tpictrSampleA, shortTemplate);
-      const pictWasmAShort = wasm.tpictr(tpictrSampleA, shortTemplate);
+      const pictNodeAShort = node.raw.tpictr(tpictrSampleA, shortTemplate);
+      const pictWasmAShort = wasm.raw.tpictr(tpictrSampleA, shortTemplate);
       expect(pictNodeAShort).toBe(pictWasmAShort);
       expect(pictNodeAShort).toBe(expectedPicturA);
       expect(pictNodeAShort).toBe(pictNodeALong);
 
-      const pictNodeBShort = node.tpictr(tpictrSampleB, shortTemplate);
-      const pictWasmBShort = wasm.tpictr(tpictrSampleB, shortTemplate);
+      const pictNodeBShort = node.raw.tpictr(tpictrSampleB, shortTemplate);
+      const pictWasmBShort = wasm.raw.tpictr(tpictrSampleB, shortTemplate);
       expect(pictNodeBShort).toBe(pictWasmBShort);
       expect(pictNodeBShort).toBe(expectedPicturB);
 
-      const pictNodeBLong = node.tpictr(tpictrSampleB, longTemplate);
-      const pictWasmBLong = wasm.tpictr(tpictrSampleB, longTemplate);
+      const pictNodeBLong = node.raw.tpictr(tpictrSampleB, longTemplate);
+      const pictWasmBLong = wasm.raw.tpictr(tpictrSampleB, longTemplate);
       expect(pictNodeBLong).toBe(pictWasmBLong);
       expect(pictNodeBLong).toBe(expectedPicturB);
 
       expect(pictNodeBLong).not.toBe(pictNodeALong);
 
       // TIMDEF is global state in CSPICE: verify GET/SET works, and restore.
-      const calNode0 = node.timdef("GET", "CALENDAR");
-      const calWasm0 = wasm.timdef("GET", "CALENDAR");
+      const calNode0 = node.raw.timdef("GET", "CALENDAR");
+      const calWasm0 = wasm.raw.timdef("GET", "CALENDAR");
       expect(calNode0).toBe(calWasm0);
 
       const calAlt = calNode0 === "GREGORIAN" ? "JULIAN" : "GREGORIAN";
 
-      node.timdef("SET", "CALENDAR", calAlt);
-      wasm.timdef("SET", "CALENDAR", calAlt);
-      expect(node.timdef("GET", "CALENDAR")).toBe(calAlt);
-      expect(wasm.timdef("GET", "CALENDAR")).toBe(calAlt);
+      node.raw.timdef("SET", "CALENDAR", calAlt);
+      wasm.raw.timdef("SET", "CALENDAR", calAlt);
+      expect(node.raw.timdef("GET", "CALENDAR")).toBe(calAlt);
+      expect(wasm.raw.timdef("GET", "CALENDAR")).toBe(calAlt);
 
       // Restore so later operations in this test don't depend on ordering.
-      node.timdef("SET", "CALENDAR", calNode0);
-      wasm.timdef("SET", "CALENDAR", calWasm0);
-      expect(node.timdef("GET", "CALENDAR")).toBe(calNode0);
-      expect(wasm.timdef("GET", "CALENDAR")).toBe(calWasm0);
+      node.raw.timdef("SET", "CALENDAR", calNode0);
+      wasm.raw.timdef("SET", "CALENDAR", calWasm0);
+      expect(node.raw.timdef("GET", "CALENDAR")).toBe(calNode0);
+      expect(wasm.raw.timdef("GET", "CALENDAR")).toBe(calWasm0);
 
-      const utcNode = node.et2utc(etNode, "C", 3);
-      const utcWasm = wasm.et2utc(etWasm, "C", 3);
+      const utcNode = node.raw.et2utc(etNode, "C", 3);
+      const utcWasm = wasm.raw.et2utc(etWasm, "C", 3);
       expect(utcNode).toBe(utcWasm);
 
-      const mNode = node.pxform("J2000", "J2000", etNode);
-      const mWasm = wasm.pxform("J2000", "J2000", etWasm);
+      const mNode = node.raw.pxform("J2000", "J2000", etNode);
+      const mWasm = wasm.raw.pxform("J2000", "J2000", etWasm);
       expect(mNode).toHaveLength(9);
       expect(mWasm).toHaveLength(9);
       for (let i = 0; i < 9; i++) {
@@ -256,8 +256,8 @@ describe("primitives parity (node vs wasm)", () => {
       expectClose(mNode[4]!, 1);
       expectClose(mNode[8]!, 1);
 
-      const spkNode = node.spkezr("EARTH", etNode, "J2000", "NONE", "SUN");
-      const spkWasm = wasm.spkezr("EARTH", etWasm, "J2000", "NONE", "SUN");
+      const spkNode = node.raw.spkezr("EARTH", etNode, "J2000", "NONE", "SUN");
+      const spkWasm = wasm.raw.spkezr("EARTH", etWasm, "J2000", "NONE", "SUN");
       expectClose(spkNode.lt, spkWasm.lt);
       for (let i = 0; i < 6; i++) {
         expectClose(spkNode.state[i]!, spkWasm.state[i]!);
@@ -269,14 +269,14 @@ describe("primitives parity (node vs wasm)", () => {
 
     // Best-effort cleanup.
     try {
-      wasm.unload("/kernels/de405s.bsp");
-      wasm.unload("/kernels/naif0012.tls");
+      wasm.raw.unload("/kernels/de405s.bsp");
+      wasm.raw.unload("/kernels/naif0012.tls");
     } catch {
       // ignore
     }
     try {
-      node.unload("/kernels/de405s.bsp");
-      node.unload("/kernels/naif0012.tls");
+      node.raw.unload("/kernels/de405s.bsp");
+      node.raw.unload("/kernels/naif0012.tls");
     } catch {
       // ignore
     }

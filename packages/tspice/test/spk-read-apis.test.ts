@@ -41,13 +41,13 @@ describe("SPK read APIs + coverage/object queries", () => {
     const pck = await ensureKernelFile(PCK);
     const spk = await ensureKernelFile(SPK);
 
-    backend.kclear();
-    backend.furnsh(lskPath);
-    backend.furnsh(pck.path);
-    backend.furnsh({ path: SPK.name, bytes: spk.bytes });
+    backend.raw.kclear();
+    backend.raw.furnsh(lskPath);
+    backend.raw.furnsh(pck.path);
+    backend.raw.furnsh({ path: SPK.name, bytes: spk.bytes });
 
-    const { state: stateStr, lt: ltStr } = backend.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
-    const { state: stateNum, lt: ltNum } = backend.spkez(399, 0, "J2000", "NONE", 10);
+    const { state: stateStr, lt: ltStr } = backend.raw.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
+    const { state: stateNum, lt: ltNum } = backend.raw.spkez(399, 0, "J2000", "NONE", 10);
 
     expect(stateNum).toHaveLength(6);
     expect(ltNum).toBeGreaterThan(0);
@@ -55,30 +55,30 @@ describe("SPK read APIs + coverage/object queries", () => {
     expect(Math.abs(ltNum - ltStr)).toBeLessThan(1e-9);
 
     // --- additional SPK read API surface smoke tests ---
-    const { pos: posSpkezp, lt: ltSpkezp } = backend.spkezp(399, 0, "J2000", "NONE", 10);
+    const { pos: posSpkezp, lt: ltSpkezp } = backend.raw.spkezp(399, 0, "J2000", "NONE", 10);
     expect(posSpkezp).toHaveLength(3);
     expect(ltSpkezp).toBeGreaterThan(0);
     expectStatesClose([...posSpkezp], [...stateNum].slice(0, 3));
     expect(Math.abs(ltSpkezp - ltNum)).toBeLessThan(1e-9);
 
-    const { state: stateSpkgeo, lt: ltSpkgeo } = backend.spkgeo(399, 0, "J2000", 10);
+    const { state: stateSpkgeo, lt: ltSpkgeo } = backend.raw.spkgeo(399, 0, "J2000", 10);
     expect(stateSpkgeo).toHaveLength(6);
     expect(ltSpkgeo).toBeGreaterThan(0);
     expectStatesClose([...stateSpkgeo], [...stateNum]);
     expect(Math.abs(ltSpkgeo - ltNum)).toBeLessThan(1e-9);
 
-    const { pos: posSpkgps, lt: ltSpkgps } = backend.spkgps(399, 0, "J2000", 10);
+    const { pos: posSpkgps, lt: ltSpkgps } = backend.raw.spkgps(399, 0, "J2000", 10);
     expect(posSpkgps).toHaveLength(3);
     expect(ltSpkgps).toBeGreaterThan(0);
     expectStatesClose([...posSpkgps], [...posSpkezp]);
     expect(Math.abs(ltSpkgps - ltSpkezp)).toBeLessThan(1e-9);
 
-    const stateSpkssb = backend.spkssb(399, 0, "J2000");
-    const { state: stateGeoSSB } = backend.spkgeo(399, 0, "J2000", 0);
+    const stateSpkssb = backend.raw.spkssb(399, 0, "J2000");
+    const { state: stateGeoSSB } = backend.raw.spkgeo(399, 0, "J2000", 0);
     expectStatesClose([...stateSpkssb], [...stateGeoSSB]);
 
     // spksfs found/not-found + spkuds via a real segment descriptor
-    const seg = backend.spksfs(399, 0);
+    const seg = backend.raw.spksfs(399, 0);
     expect(seg.found).toBe(true);
     if (!seg.found) {
       throw new Error("Expected spksfs(399, 0) to find a segment");
@@ -87,19 +87,19 @@ describe("SPK read APIs + coverage/object queries", () => {
     expect(seg.ident.length).toBeGreaterThan(0);
     expect(seg.descr).toHaveLength(5);
 
-    const segDescr = backend.spkuds(seg.descr);
+    const segDescr = backend.raw.spkuds(seg.descr);
     expect(segDescr.body).toBe(399);
     expect(segDescr.first).toBeLessThanOrEqual(0);
     expect(segDescr.last).toBeGreaterThanOrEqual(0);
     expect(segDescr.baddr).toBeGreaterThan(0);
     expect(segDescr.eaddr).toBeGreaterThanOrEqual(segDescr.baddr);
 
-    const segMissing = backend.spksfs(999999, 0);
+    const segMissing = backend.raw.spksfs(999999, 0);
     expect(segMissing.found).toBe(false);
 
     // spkpds + spkuds round-trip
-    const packed = backend.spkpds(399, 10, "J2000", 2, -1, 1);
-    const unpacked = backend.spkuds(packed);
+    const packed = backend.raw.spkpds(399, 10, "J2000", 2, -1, 1);
+    const unpacked = backend.raw.spkuds(packed);
     expect(unpacked.body).toBe(399);
     expect(unpacked.center).toBe(10);
     expect(unpacked.frame).toBe(1); // J2000
@@ -109,33 +109,33 @@ describe("SPK read APIs + coverage/object queries", () => {
     expect(unpacked.baddr).toBe(0);
     expect(unpacked.eaddr).toBe(0);
 
-    const ids = backend.newIntCell(1000);
-    backend.spkobj(SPK.name, ids);
-    const idCount = backend.card(ids);
+    const ids = backend.kit.newIntCell(1000);
+    backend.raw.spkobj(SPK.name, ids);
+    const idCount = backend.raw.card(ids);
     expect(idCount).toBeGreaterThan(0);
 
     const idList: number[] = [];
     for (let i = 0; i < idCount; i++) {
-      idList.push(backend.cellGeti(ids, i));
+      idList.push(backend.kit.cellGeti(ids, i));
     }
     expect(idList).toContain(399);
 
-    const cover = backend.newWindow(16);
-    backend.spkcov(SPK.name, 399, cover);
-    const nIntervals = backend.wncard(cover);
+    const cover = backend.kit.newWindow(16);
+    backend.raw.spkcov(SPK.name, 399, cover);
+    const nIntervals = backend.raw.wncard(cover);
     expect(nIntervals).toBeGreaterThan(0);
 
     let coversJ2000 = false;
     for (let i = 0; i < nIntervals; i++) {
-      const [left, right] = backend.wnfetd(cover, i);
+      const [left, right] = backend.raw.wnfetd(cover, i);
       if (left <= 0 && right >= 0) {
         coversJ2000 = true;
       }
     }
     expect(coversJ2000).toBe(true);
 
-    backend.freeWindow(cover);
-    backend.freeCell(ids);
+    backend.kit.freeWindow(cover);
+    backend.kit.freeCell(ids);
   }, 60_000);
 
   it("wasm backend: spkez + spkcov/spkobj", async () => {
@@ -144,13 +144,13 @@ describe("SPK read APIs + coverage/object queries", () => {
     const pck = await ensureKernelFile(PCK);
     const spk = await ensureKernelFile(SPK);
 
-    backend.kclear();
-    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
-    backend.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
-    backend.furnsh({ path: `${SPK.name}`, bytes: spk.bytes });
+    backend.raw.kclear();
+    backend.raw.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+    backend.raw.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
+    backend.raw.furnsh({ path: `${SPK.name}`, bytes: spk.bytes });
 
-    const { state: stateStr, lt: ltStr } = backend.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
-    const { state: stateNum, lt: ltNum } = backend.spkez(399, 0, "J2000", "NONE", 10);
+    const { state: stateStr, lt: ltStr } = backend.raw.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
+    const { state: stateNum, lt: ltNum } = backend.raw.spkez(399, 0, "J2000", "NONE", 10);
 
     expect(stateNum).toHaveLength(6);
     expect(ltNum).toBeGreaterThan(0);
@@ -158,30 +158,30 @@ describe("SPK read APIs + coverage/object queries", () => {
     expect(Math.abs(ltNum - ltStr)).toBeLessThan(1e-9);
 
     // --- additional SPK read API surface smoke tests ---
-    const { pos: posSpkezp, lt: ltSpkezp } = backend.spkezp(399, 0, "J2000", "NONE", 10);
+    const { pos: posSpkezp, lt: ltSpkezp } = backend.raw.spkezp(399, 0, "J2000", "NONE", 10);
     expect(posSpkezp).toHaveLength(3);
     expect(ltSpkezp).toBeGreaterThan(0);
     expectStatesClose([...posSpkezp], [...stateNum].slice(0, 3));
     expect(Math.abs(ltSpkezp - ltNum)).toBeLessThan(1e-9);
 
-    const { state: stateSpkgeo, lt: ltSpkgeo } = backend.spkgeo(399, 0, "J2000", 10);
+    const { state: stateSpkgeo, lt: ltSpkgeo } = backend.raw.spkgeo(399, 0, "J2000", 10);
     expect(stateSpkgeo).toHaveLength(6);
     expect(ltSpkgeo).toBeGreaterThan(0);
     expectStatesClose([...stateSpkgeo], [...stateNum]);
     expect(Math.abs(ltSpkgeo - ltNum)).toBeLessThan(1e-9);
 
-    const { pos: posSpkgps, lt: ltSpkgps } = backend.spkgps(399, 0, "J2000", 10);
+    const { pos: posSpkgps, lt: ltSpkgps } = backend.raw.spkgps(399, 0, "J2000", 10);
     expect(posSpkgps).toHaveLength(3);
     expect(ltSpkgps).toBeGreaterThan(0);
     expectStatesClose([...posSpkgps], [...posSpkezp]);
     expect(Math.abs(ltSpkgps - ltSpkezp)).toBeLessThan(1e-9);
 
-    const stateSpkssb = backend.spkssb(399, 0, "J2000");
-    const { state: stateGeoSSB } = backend.spkgeo(399, 0, "J2000", 0);
+    const stateSpkssb = backend.raw.spkssb(399, 0, "J2000");
+    const { state: stateGeoSSB } = backend.raw.spkgeo(399, 0, "J2000", 0);
     expectStatesClose([...stateSpkssb], [...stateGeoSSB]);
 
     // spksfs found/not-found + spkuds via a real segment descriptor
-    const seg = backend.spksfs(399, 0);
+    const seg = backend.raw.spksfs(399, 0);
     expect(seg.found).toBe(true);
     if (!seg.found) {
       throw new Error("Expected spksfs(399, 0) to find a segment");
@@ -190,19 +190,19 @@ describe("SPK read APIs + coverage/object queries", () => {
     expect(seg.ident.length).toBeGreaterThan(0);
     expect(seg.descr).toHaveLength(5);
 
-    const segDescr = backend.spkuds(seg.descr);
+    const segDescr = backend.raw.spkuds(seg.descr);
     expect(segDescr.body).toBe(399);
     expect(segDescr.first).toBeLessThanOrEqual(0);
     expect(segDescr.last).toBeGreaterThanOrEqual(0);
     expect(segDescr.baddr).toBeGreaterThan(0);
     expect(segDescr.eaddr).toBeGreaterThanOrEqual(segDescr.baddr);
 
-    const segMissing = backend.spksfs(999999, 0);
+    const segMissing = backend.raw.spksfs(999999, 0);
     expect(segMissing.found).toBe(false);
 
     // spkpds + spkuds round-trip
-    const packed = backend.spkpds(399, 10, "J2000", 2, -1, 1);
-    const unpacked = backend.spkuds(packed);
+    const packed = backend.raw.spkpds(399, 10, "J2000", 2, -1, 1);
+    const unpacked = backend.raw.spkuds(packed);
     expect(unpacked.body).toBe(399);
     expect(unpacked.center).toBe(10);
     expect(unpacked.frame).toBe(1); // J2000
@@ -212,32 +212,32 @@ describe("SPK read APIs + coverage/object queries", () => {
     expect(unpacked.baddr).toBe(0);
     expect(unpacked.eaddr).toBe(0);
 
-    const ids = backend.newIntCell(1000);
-    backend.spkobj(SPK.name, ids);
-    const idCount = backend.card(ids);
+    const ids = backend.kit.newIntCell(1000);
+    backend.raw.spkobj(SPK.name, ids);
+    const idCount = backend.raw.card(ids);
     expect(idCount).toBeGreaterThan(0);
 
     const idList: number[] = [];
     for (let i = 0; i < idCount; i++) {
-      idList.push(backend.cellGeti(ids, i));
+      idList.push(backend.kit.cellGeti(ids, i));
     }
     expect(idList).toContain(399);
 
-    const cover = backend.newWindow(16);
-    backend.spkcov(SPK.name, 399, cover);
-    const nIntervals = backend.wncard(cover);
+    const cover = backend.kit.newWindow(16);
+    backend.raw.spkcov(SPK.name, 399, cover);
+    const nIntervals = backend.raw.wncard(cover);
     expect(nIntervals).toBeGreaterThan(0);
 
     let coversJ2000 = false;
     for (let i = 0; i < nIntervals; i++) {
-      const [left, right] = backend.wnfetd(cover, i);
+      const [left, right] = backend.raw.wnfetd(cover, i);
       if (left <= 0 && right >= 0) {
         coversJ2000 = true;
       }
     }
     expect(coversJ2000).toBe(true);
 
-    backend.freeWindow(cover);
-    backend.freeCell(ids);
+    backend.kit.freeWindow(cover);
+    backend.kit.freeCell(ids);
   }, 60_000);
 });

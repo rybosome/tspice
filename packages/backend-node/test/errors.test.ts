@@ -13,7 +13,7 @@ describe("SPICE errors (node backend)", () => {
     let err: unknown;
     try {
       // With no kernels loaded, this should reliably fail with NOLOADEDFILES.
-      backend.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
+      backend.raw.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
     } catch (e) {
       err = e;
     }
@@ -35,12 +35,12 @@ describe("SPICE errors (node backend)", () => {
     const backend = createNodeBackend();
 
     // bodn2c is a Found-style routine: unknown names are not exceptional.
-    expect(backend.bodn2c("NOT_A_BODY")).toEqual({ found: false });
+    expect(backend.raw.bodn2c("NOT_A_BODY")).toEqual({ found: false });
   });
 
   itNative("rejects invalid getmsg(which) selectors at the boundary", () => {
     const backend = createNodeBackend();
-    expect(() => backend.getmsg("NOPE" as never)).toThrow(/getmsg\(which\)/i);
-    expect(() => backend.getmsg("NOPE" as never)).toThrow(/SHORT|LONG|EXPLAIN/);
+    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(/getmsg\(which\)/i);
+    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(/SHORT|LONG|EXPLAIN/);
   });
 });

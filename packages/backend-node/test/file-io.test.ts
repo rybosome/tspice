@@ -22,10 +22,10 @@ describe("@rybosome/tspice-backend-node file-io", () => {
       const spkPath = path.join(tmpDir, "de405s.bsp");
       fs.writeFileSync(spkPath, spk);
 
-      const handle = backend.dafopr(spkPath);
-      backend.dafbfs(handle);
-      expect(backend.daffna(handle)).toBe(true);
-      backend.dafcls(handle);
+      const handle = backend.raw.dafopr(spkPath);
+      backend.raw.dafbfs(handle);
+      expect(backend.raw.daffna(handle)).toBe(true);
+      backend.raw.dafcls(handle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -41,9 +41,9 @@ describe("@rybosome/tspice-backend-node file-io", () => {
       const spkPath = path.join(tmpDir, "de405s.bsp");
       fs.writeFileSync(spkPath, spk);
 
-      const handle = backend.dafopr(spkPath);
-      backend.dafcls(handle);
-      expect(() => backend.dafcls(handle)).toThrow(/invalid|closed/i);
+      const handle = backend.raw.dafopr(spkPath);
+      backend.raw.dafcls(handle);
+      expect(() => backend.raw.dafcls(handle)).toThrow(/invalid|closed/i);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -52,19 +52,19 @@ describe("@rybosome/tspice-backend-node file-io", () => {
   itNative("throws on invalid handle usage", () => {
     const backend = createNodeBackend();
 
-    expect(() => backend.dafcls(123 as unknown as SpiceHandle)).toThrow(/invalid|closed/i);
+    expect(() => backend.raw.dafcls(123 as unknown as SpiceHandle)).toThrow(/invalid|closed/i);
 
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
 
     try {
       const dlaPath = path.join(tmpDir, "test.dla");
 
-      const dlaHandle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
-      backend.dlacls(dlaHandle);
+      const dlaHandle = backend.raw.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      backend.raw.dlacls(dlaHandle);
 
-      const dasHandle = backend.dasopr(dlaPath);
-      expect(() => backend.dafbfs(dasHandle as unknown as SpiceHandle)).toThrow(/DAF/i);
-      backend.dascls(dasHandle);
+      const dasHandle = backend.raw.dasopr(dlaPath);
+      expect(() => backend.raw.dafbfs(dasHandle as unknown as SpiceHandle)).toThrow(/DAF/i);
+      backend.raw.dascls(dasHandle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -78,11 +78,11 @@ describe("@rybosome/tspice-backend-node file-io", () => {
     try {
       const dlaPath = path.join(tmpDir, "create-close.dla");
 
-      const handle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
-      expect(backend.dlabfs(handle)).toEqual({ found: false });
-      backend.dlacls(handle);
+      const handle = backend.raw.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      expect(backend.raw.dlabfs(handle)).toEqual({ found: false });
+      backend.raw.dlacls(handle);
 
-      expect(backend.exists(dlaPath)).toBe(true);
+      expect(backend.raw.exists(dlaPath)).toBe(true);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -95,9 +95,9 @@ describe("@rybosome/tspice-backend-node file-io", () => {
 
     try {
       const dlaPath = path.join(tmpDir, "dascls-dlaopn-close.dla");
-      const handle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
-      backend.dascls(handle);
-      expect(backend.exists(dlaPath)).toBe(true);
+      const handle = backend.raw.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      backend.raw.dascls(handle);
+      expect(backend.raw.exists(dlaPath)).toBe(true);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -111,11 +111,11 @@ describe("@rybosome/tspice-backend-node file-io", () => {
     try {
       const dlaPath = path.join(tmpDir, "dlacls-dasopr-close.dla");
 
-      const dlaHandle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
-      backend.dlacls(dlaHandle);
+      const dlaHandle = backend.raw.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      backend.raw.dlacls(dlaHandle);
 
-      const dasHandle = backend.dasopr(dlaPath);
-      backend.dlacls(dasHandle);
+      const dasHandle = backend.raw.dasopr(dlaPath);
+      backend.raw.dlacls(dasHandle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -129,12 +129,12 @@ describe("@rybosome/tspice-backend-node file-io", () => {
     try {
       const dlaPath = path.join(tmpDir, "dlabfs-dasopr.dla");
 
-      const dlaHandle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
-      backend.dlacls(dlaHandle);
+      const dlaHandle = backend.raw.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      backend.raw.dlacls(dlaHandle);
 
-      const dasHandle = backend.dasopr(dlaPath);
-      expect(backend.dlabfs(dasHandle)).toEqual({ found: false });
-      backend.dascls(dasHandle);
+      const dasHandle = backend.raw.dasopr(dlaPath);
+      expect(backend.raw.dlabfs(dasHandle)).toEqual({ found: false });
+      backend.raw.dascls(dasHandle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -153,9 +153,9 @@ describe("@rybosome/tspice-backend-node file-io", () => {
       );
       fs.writeFileSync(dskPath, dsk);
 
-      const handle = backend.dasopr(dskPath);
+      const handle = backend.raw.dasopr(dskPath);
       try {
-        let next = backend.dlabfs(handle);
+        let next = backend.raw.dlabfs(handle);
         let count = 0;
 
         while (next.found) {
@@ -163,13 +163,13 @@ describe("@rybosome/tspice-backend-node file-io", () => {
           if (count > 10_000) {
             throw new Error("DLA segment traversal did not terminate");
           }
-          next = backend.dlafns(handle, next.descr);
+          next = backend.raw.dlafns(handle, next.descr);
         }
 
         expect(count).toBeGreaterThanOrEqual(1);
       } finally {
         // Close via the DAS-backed close path (DSKs are DLA files).
-        backend.dascls(handle);
+        backend.raw.dascls(handle);
       }
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -183,7 +183,7 @@ describe("@rybosome/tspice-backend-node file-io", () => {
 
     try {
       const dlaPath = path.join(tmpDir, "dlafns-descr-validation.dla");
-      const handle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      const handle = backend.raw.dlaopn(dlaPath, "DLA", "TSPICE", 0);
 
       const badDescr: DlaDescriptor = {
         bwdptr: 0,
@@ -197,8 +197,8 @@ describe("@rybosome/tspice-backend-node file-io", () => {
         csize: 2147483648,
       };
 
-      expect(() => backend.dlafns(handle, badDescr)).toThrow(/32-bit|int32/i);
-      backend.dlacls(handle);
+      expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(/32-bit|int32/i);
+      backend.raw.dlacls(handle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -211,7 +211,7 @@ describe("@rybosome/tspice-backend-node file-io", () => {
 
     try {
       const dlaPath = path.join(tmpDir, "dlafns-descr-negative-validation.dla");
-      const handle = backend.dlaopn(dlaPath, "DLA", "TSPICE", 0);
+      const handle = backend.raw.dlaopn(dlaPath, "DLA", "TSPICE", 0);
 
       const badDescr: DlaDescriptor = {
         bwdptr: 0,
@@ -224,8 +224,8 @@ describe("@rybosome/tspice-backend-node file-io", () => {
         csize: 0,
       };
 
-      expect(() => backend.dlafns(handle, badDescr)).toThrow(/ibase.*>=\s*0/i);
-      backend.dlacls(handle);
+      expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(/ibase.*>=\s*0/i);
+      backend.raw.dlacls(handle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -248,9 +248,9 @@ describe("@rybosome/tspice-backend-node file-io", () => {
       const np = 1;
       const plates = [1, 2, 3];
 
-      const handle = backend.dskopn(outPath, "TSPICE", 0);
+      const handle = backend.raw.dskopn(outPath, "TSPICE", 0);
       try {
-        const { spaixd, spaixi } = backend.dskmi2(
+        const { spaixd, spaixi } = backend.raw.dskmi2(
           nv,
           vrtces,
           np,
@@ -264,7 +264,7 @@ describe("@rybosome/tspice-backend-node file-io", () => {
           200_000, // spxisz (must exceed SPICE_DSK02_IXIFIX + overhead)
         );
 
-        backend.dskw02(
+        backend.raw.dskw02(
           handle,
           399, // center (Earth)
           1, // surfid
@@ -288,23 +288,23 @@ describe("@rybosome/tspice-backend-node file-io", () => {
           spaixi,
         );
       } finally {
-        backend.dascls(handle);
+        backend.raw.dascls(handle);
       }
 
       expect(fs.existsSync(outPath)).toBe(true);
-      expect(backend.getfat(outPath).type).toBe("DSK");
+      expect(backend.raw.getfat(outPath).type).toBe("DSK");
 
-      const readHandle = backend.dasopr(outPath);
+      const readHandle = backend.raw.dasopr(outPath);
       try {
-        const first = backend.dlabfs(readHandle);
+        const first = backend.raw.dlabfs(readHandle);
         expect(first.found).toBe(true);
         if (!first.found) {
           throw new Error("Expected to find a DLA segment in the written DSK");
         }
 
-        expect(backend.dlafns(readHandle, first.descr)).toEqual({ found: false });
+        expect(backend.raw.dlafns(readHandle, first.descr)).toEqual({ found: false });
       } finally {
-        backend.dascls(readHandle);
+        backend.raw.dascls(readHandle);
       }
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });

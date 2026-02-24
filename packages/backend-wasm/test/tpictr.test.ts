@@ -19,11 +19,11 @@ describe("tpictr", () => {
     const shortTemplate = "X";
     const longTemplate = " ".repeat(4_096);
 
-    expect(wasm.tpictr(sampleA, shortTemplate)).toBe(expectedA);
-    expect(wasm.tpictr(sampleA, longTemplate)).toBe(expectedA);
+    expect(wasm.raw.tpictr(sampleA, shortTemplate)).toBe(expectedA);
+    expect(wasm.raw.tpictr(sampleA, longTemplate)).toBe(expectedA);
 
-    expect(wasm.tpictr(sampleB, shortTemplate)).toBe(expectedB);
-    expect(wasm.tpictr(sampleB, longTemplate)).toBe(expectedB);
+    expect(wasm.raw.tpictr(sampleB, shortTemplate)).toBe(expectedB);
+    expect(wasm.raw.tpictr(sampleB, longTemplate)).toBe(expectedB);
 
     expect(expectedA).not.toBe(expectedB);
   });
@@ -40,7 +40,7 @@ describe("tpictr", () => {
     // use a long-ish one here to match that expectation.
     const template = " ".repeat(4_096);
 
-    const out = wasm.tpictr(sample, template);
+    const out = wasm.raw.tpictr(sample, template);
 
     const expected = `DD Mon YYYY${pad}HR:MN:SC UTC ::UTC`;
     expect(out).toBe(expected);
@@ -63,7 +63,7 @@ describe("tpictr", () => {
 
     expect(sample.length).toBe(sampleCap);
 
-    const out = wasm.tpictr(sample, template);
+    const out = wasm.raw.tpictr(sample, template);
     const expected = `DD Mon YYYY${pad}HR:MN:SC UTC ::UTC`;
     expect(out).toBe(expected);
     expect(out.length).toBe(expected.length);
