@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { createCellsWindowsApi } from "../src/domains/cells-windows.js";
+import { createCellsWindowsKitApi } from "../src/domains/cells-windows.js";
 
 // These tests intentionally do not require the native addon to be available.
 // We validate that the JS wrapper performs early argument checking before
@@ -11,7 +11,7 @@ describe("@rybosome/tspice-backend-node cells/windows validation", () => {
     const freeCell = vi.fn();
     const freeWindow = vi.fn();
 
-    const api = createCellsWindowsApi({ freeCell, freeWindow } as never);
+    const api = createCellsWindowsKitApi({ freeCell, freeWindow } as never);
 
     expect(() => api.freeCell(-1 as never)).toThrow(/freeCell\(cell\)/);
     expect(() => api.freeCell(1.25 as never)).toThrow(/freeCell\(cell\)/);

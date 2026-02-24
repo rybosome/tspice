@@ -22,12 +22,12 @@ export type SpiceCharCell = number & { readonly [__spiceCharCellBrand]: true };
 export type SpiceWindow = number & { readonly [__spiceWindowBrand]: true };
 
 /**
-* Backend-only cell/window helpers exposed to higher-level kit code.
-*
-* These are intentionally split from {@link CellsWindowsApi} so raw/kit
-* surfaces can evolve independently while backends still provide native hooks
-* for allocation and inspection.
-*/
+ * Backend-only cell/window helpers exposed to higher-level kit code.
+ *
+ * These are intentionally split from {@link CellsWindowsApi} so raw/kit
+ * surfaces can evolve independently while backends still provide native hooks
+ * for allocation and inspection.
+ */
 export interface CellsWindowsKitApi {
 
   // -- Creation / destruction -------------------------------------------------

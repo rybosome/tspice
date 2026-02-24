@@ -177,10 +177,10 @@ if (backend.kind !== "node") {
   throw new Error(`Expected backend.kind to be "node"; got: ${backend.kind}`);
 }
 
-const version = backend.spiceVersion();
+const version = spice.kit.spiceVersion();
 if (typeof version !== "string" || version.length === 0) {
   throw new Error(
-    `Expected spiceVersion() to return a non-empty string; got: ${String(version)}`,
+    `Expected spice.kit.spiceVersion() to return a non-empty string; got: ${String(version)}`,
   );
 }
 
