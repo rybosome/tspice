@@ -1,4 +1,7 @@
 import type { SpiceBackend } from "@rybosome/tspice";
+import type { SpiceKitCompatHelpers } from "@rybosome/tspice-core";
+
+type ParityBackend = SpiceBackend & SpiceKitCompatHelpers;
 
 import type {
   RunCaseInputV2,
@@ -13,10 +16,10 @@ const SPICE_INT32_MIN = -2147483648;
 const SPICE_INT32_MAX = 2147483647;
 
 type CellHandle =
-  | ReturnType<SpiceBackend["newIntCell"]>
-  | ReturnType<SpiceBackend["newDoubleCell"]>
-  | ReturnType<SpiceBackend["newCharCell"]>;
-type WindowHandle = ReturnType<SpiceBackend["newWindow"]>;
+  | ReturnType<ParityBackend["newIntCell"]>
+  | ReturnType<ParityBackend["newDoubleCell"]>
+  | ReturnType<ParityBackend["newCharCell"]>;
+type WindowHandle = ReturnType<ParityBackend["newWindow"]>;
 
 type RefValue =
   | {
@@ -325,7 +328,7 @@ function projectResult(
 }
 
 function freeCellRef(
-  backend: SpiceBackend,
+  backend: ParityBackend,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
   target: unknown,
@@ -342,7 +345,7 @@ function freeCellRef(
 }
 
 function freeWindowRef(
-  backend: SpiceBackend,
+  backend: ParityBackend,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
   target: unknown,
@@ -366,7 +369,7 @@ function defineRef(refs: Map<string, RefValue>, name: string, value: RefValue, l
 }
 
 async function executeStep(
-  backend: SpiceBackend,
+  backend: ParityBackend,
   step: V2WorkflowStep,
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
@@ -576,7 +579,7 @@ export function asV2RunnerError(error: unknown): RunnerErrorReport {
 
 /** Execute a single v2 parity case against a concrete backend implementation. */
 export async function executeV2CaseWithBackend(
-  backend: SpiceBackend,
+  backend: ParityBackend,
   input: RunCaseInputV2,
 ): Promise<unknown> {
   const refs = new Map<string, RefValue>();

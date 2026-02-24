@@ -229,12 +229,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         : undefined;
 
       // Use an uncached spice instance for kernel loading/cleanup.
-      const raw = createSpiceSyncFromTransport(baseTransport);
-      const spice = createSpiceSyncFromTransport(cachedTransport ?? baseTransport);
-
-      // Preserve non-function backend metadata.
-      Object.defineProperty(raw.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
-      Object.defineProperty(spice.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
+      const raw = createSpiceSyncFromTransport(baseTransport, baseSpice.kind);
+      const spice = createSpiceSyncFromTransport(cachedTransport ?? baseTransport, baseSpice.kind);
 
       let disposePromise: Promise<void> | undefined;
 
@@ -297,10 +293,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         : undefined;
 
       const transport = cachedTransport ?? baseTransport;
-      const spice = createSpiceAsyncFromTransport(transport);
-
-      // Preserve non-function backend metadata.
-      Object.defineProperty(spice.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
+      const spice = createSpiceAsyncFromTransport(transport, baseSpice.kind);
 
       let disposePromise: Promise<void> | undefined;
 
@@ -381,10 +374,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         : undefined;
 
       const transport = cachedTransport ?? baseTransport;
-      const spice = createSpiceAsyncFromTransport(transport);
-
-      // Web-worker clients currently always use the WASM backend.
-      Object.defineProperty(spice.raw, "kind", { value: "wasm", enumerable: true });
+      const spice = createSpiceAsyncFromTransport(transport, "wasm");
 
       let disposePromise: Promise<void> | undefined;
 

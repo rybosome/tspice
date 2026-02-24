@@ -3,6 +3,7 @@ export type {
   Mat3ColMajor,
   Mat3RowMajor,
   SpiceBackend,
+  SpiceBackendKind,
 } from "@rybosome/tspice-backend-contract";
 
 export {
@@ -12,7 +13,7 @@ export {
   brandMat3RowMajor,
   isBrandedMat3ColMajor,
   isBrandedMat3RowMajor,
-} from "@rybosome/tspice-backend-contract";
+} from "@rybosome/tspice-core";
 
 export type {
   AberrationCorrection,

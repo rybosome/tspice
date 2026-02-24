@@ -8,7 +8,8 @@ import type {
 import {
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
-} from "@rybosome/tspice-backend-contract";
+  type CellsWindowsKitCompatApi,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import { assertEmscriptenModule } from "../lowlevel/exports.js";
@@ -319,7 +320,7 @@ export function assertWasmOwnedWindowHandle(
 }
 
 /** Create a {@link CellsWindowsApi} implementation backed by a WASM Emscripten module. */
-export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
+export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi & CellsWindowsKitCompatApi {
   assertEmscriptenModule(module);
 
   // Security + correctness: track allocated pointers per backend instance.

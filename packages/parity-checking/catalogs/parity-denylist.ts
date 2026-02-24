@@ -2,9 +2,6 @@
 // Source catalogs: contract-methods.json - method specs canonical coverage
 
 export const PARITY_DENYLIST = [
-  "cells-windows.cellGetc",
-  "cells-windows.cellGetd",
-  "cells-windows.cellGeti",
   "cells-windows.insrtc",
   "cells-windows.insrtd",
   "cells-windows.insrti",
@@ -61,7 +58,6 @@ export const PARITY_DENYLIST = [
   "file-io.dskw02",
   "file-io.exists",
   "file-io.getfat",
-  "file-io.readVirtualOutput",
   "frames.ckcov",
   "frames.ckgp",
   "frames.ckgpav",

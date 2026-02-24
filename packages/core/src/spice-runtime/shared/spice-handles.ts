@@ -1,4 +1,4 @@
-import type { SpiceHandle } from "./types.js";
+import type { SpiceHandle } from "@rybosome/tspice-backend-contract";
 import { SPICE_INT32_MAX, SPICE_INT32_MIN } from "./spice-int.js";
 import { SpiceBackendContractError } from "./errors.js";
 

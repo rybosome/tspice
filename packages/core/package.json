@@ -24,5 +24,8 @@
     "@types/node": "^22.10.2",
     "typescript": "^5.9.3",
     "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "@rybosome/tspice-backend-contract": "workspace:*"
   }
 }

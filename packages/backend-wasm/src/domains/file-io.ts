@@ -5,7 +5,11 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32, assertSpiceInt32NonNegative } from "@rybosome/tspice-backend-contract";
+import {
+  assertSpiceInt32,
+  assertSpiceInt32NonNegative,
+  type FileIoKitCompatApi,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -155,7 +159,7 @@ export function createFileIoApi(
   module: EmscriptenModule,
   handles: SpiceHandleRegistry,
   virtualOutputs: VirtualOutputRegistry,
-): FileIoApi {
+): FileIoApi & FileIoKitCompatApi {
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(
       handle,
@@ -704,5 +708,5 @@ export function createFileIoApi(
         module._free(framePtr);
       }
     },
-  } satisfies FileIoApi;
+  } satisfies FileIoApi & FileIoKitCompatApi;
 }

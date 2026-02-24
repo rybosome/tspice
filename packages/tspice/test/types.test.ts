@@ -65,8 +65,8 @@ type _AsyncToolkitVersionReturnsPromise = Assert<
 type _AsyncKtotalReturnsPromise = Assert<
   ReturnType<AsyncSpice["raw"]["ktotal"]> extends Promise<number> ? true : false
 >;
-type _AsyncRawKindIsNotPromise = AssertFalse<
-  AsyncSpice["raw"]["kind"] extends Promise<unknown> ? true : false
+type _AsyncKindIsNotPromise = AssertFalse<
+  AsyncSpice["kind"] extends Promise<unknown> ? true : false
 >;
 
 describe("TypeScript type assertions", () => {

@@ -5,9 +5,6 @@
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
 export interface TimeApi {
-  /** Return the underlying SPICE toolkit version string. */
-  spiceVersion(): string;
-
   /**
    * Thin wrapper over the SPICE primitive `tkvrsn()`.
    *

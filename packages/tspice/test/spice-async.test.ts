@@ -17,15 +17,15 @@ const sortedOwnKeys = (value: object): OwnKey[] =>
   });
 
 describe("spiceClients.toAsync()", () => {
-  it("returns exactly { raw, kit } and makes methods awaitable", async () => {
+  it("returns exactly { kind, raw, kit } and makes methods awaitable", async () => {
     const { spice, dispose } = await spiceClients.toAsync({ backend: "wasm" });
     try {
       // Tight runtime assertion: prevent accidental extra top-level exports like
       // `{ raw, kit, version }`.
-      expect(sortedOwnKeys(spice)).toEqual(["kit", "raw"]);
+      expect(sortedOwnKeys(spice)).toEqual(["kind", "kit", "raw"]);
 
       // Non-function properties should pass through.
-      expect(spice.raw.kind).toBe("wasm");
+      expect(spice.kind).toBe("wasm");
 
       // Raw methods are awaitable.
       await spice.raw.kclear();

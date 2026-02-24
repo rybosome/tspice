@@ -151,6 +151,9 @@ importers:
       '@rybosome/tspice-backend-contract':
         specifier: workspace:*
         version: link:../backend-contract
+      '@rybosome/tspice-core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       '@types/node':
         specifier: ^22.10.2
@@ -228,6 +231,10 @@ importers:
         version: 2.1.9(@types/node@22.19.6)
 
   packages/core:
+    dependencies:
+      '@rybosome/tspice-backend-contract':
+        specifier: workspace:*
+        version: link:../backend-contract
     devDependencies:
       '@types/node':
         specifier: ^22.10.2
@@ -244,6 +251,9 @@ importers:
       '@rybosome/tspice':
         specifier: workspace:*
         version: link:../tspice
+      '@rybosome/tspice-core':
+        specifier: workspace:*
+        version: link:../core
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

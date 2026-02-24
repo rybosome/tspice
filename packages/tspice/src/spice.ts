@@ -1,4 +1,5 @@
-import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type { SpiceBackend, SpiceBackendKind } from "@rybosome/tspice-backend-contract";
+import type { SpiceKitCompatHelpers } from "@rybosome/tspice-core";
 
 import type { CreateBackendOptions } from "./backend.js";
 import { createBackend } from "./backend.js";
@@ -12,16 +13,40 @@ export type CreateSpiceOptions = CreateBackendOptions & {
    *
    * Useful for testing or advanced callers.
    */
-  backendInstance?: SpiceBackend;
+  backendInstance?: (SpiceBackend & { kind: SpiceBackendKind }) & Partial<SpiceKitCompatHelpers>;
 };
 
 export type CreateSpiceAsyncOptions = CreateSpiceOptions;
+
+type BackendRuntimeSurface = (SpiceBackend & { kind: SpiceBackendKind }) & Partial<SpiceKitCompatHelpers>;
+
+const HIDDEN_RAW_KEYS = new Set<string>([
+  // Moved off raw (strict/fast cleanup) onto `kit.*`.
+  "newIntCell",
+  "newDoubleCell",
+  "newCharCell",
+  "newWindow",
+  "freeCell",
+  "freeWindow",
+  "cellGeti",
+  "cellGetd",
+  "cellGetc",
+  "spiceVersion",
+  "readVirtualOutput",
+
+  // Ownership moved to the top-level `Spice` / `SpiceAsync` object.
+  "kind",
+]);
+
+function isHiddenRawKey(prop: PropertyKey): boolean {
+  return typeof prop === "string" && HIDDEN_RAW_KEYS.has(prop);
+}
 
 /**
  * Create a sync {@link Spice} client backed by the requested backend/transport.
  */
 export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
-  const backend = options.backendInstance ?? (await createBackend(options));
+  const backend = (options.backendInstance ?? (await createBackend(options))) as BackendRuntimeSurface;
 
   // Track kernels loaded from bytes so `kit.unloadKernel()` can accept flexible
   // path forms (e.g. `/kernels/foo.tls`) across backends.
@@ -33,9 +58,14 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   // - prototype methods aren't lost (object spread only copies own props)
   // - methods are bound to the original backend instance (avoid mis-bound `this`)
   // - method identity is stable (`raw.furnsh === raw.furnsh`)
+  // - hidden raw keys (`kind`, compat helpers) can be removed from the runtime raw surface
   const boundMethods = new Map<PropertyKey, Function>();
-  const handler: ProxyHandler<SpiceBackend> = {
+  const handler: ProxyHandler<BackendRuntimeSurface> = {
     get: (target, prop) => {
+      if (isHiddenRawKey(prop)) {
+        return undefined;
+      }
+
       // Use `target` as the receiver so accessor/prototype lookups see
       // `this === target` (not the Proxy). Calls are still applied to `target`
       // below to preserve `this` binding for methods.
@@ -71,12 +101,28 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
       return value;
     },
+
+    has: (target, prop) => {
+      if (isHiddenRawKey(prop)) return false;
+      return Reflect.has(target, prop);
+    },
+
+    ownKeys: (target) => Reflect.ownKeys(target).filter((key) => !isHiddenRawKey(key)),
+
+    getOwnPropertyDescriptor: (target, prop) => {
+      if (isHiddenRawKey(prop)) return undefined;
+      return Reflect.getOwnPropertyDescriptor(target, prop);
+    },
   };
 
-  const raw: SpiceBackend = new Proxy(backend, handler);
-  const kit = createKit(raw, { byteBackedKernelPaths });
+  const raw: SpiceBackend = new Proxy(backend, handler) as unknown as SpiceBackend;
+  const kit = createKit(raw, { byteBackedKernelPaths, compatHelpers: backend });
 
-  return { raw, kit };
+  return {
+    kind: backend.kind,
+    raw,
+    kit,
+  };
 }
 
 function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
@@ -117,9 +163,10 @@ function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
 export async function createSpiceAsync(
   options: CreateSpiceAsyncOptions,
 ): Promise<SpiceAsync> {
-  const { raw, kit } = await createSpice(options);
+  const { kind, raw, kit } = await createSpice(options);
 
   return {
+    kind,
     raw: promisifyApi(raw),
     kit: promisifyApi(kit),
   };

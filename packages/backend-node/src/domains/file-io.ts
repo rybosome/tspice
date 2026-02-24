@@ -5,7 +5,7 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { invariant, type FileIoKitCompatApi } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
@@ -59,7 +59,7 @@ function normalizeFoundDlaDescriptor(value: unknown, context: string): FoundDlaD
 }
 
 /** Create a {@link FileIoApi} implementation backed by the native Node addon. */
-export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistry, outputs: VirtualOutputStager): FileIoApi {
+export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistry, outputs: VirtualOutputStager): FileIoApi & FileIoKitCompatApi {
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(
       handle,
@@ -218,7 +218,7 @@ export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistr
         spaixd,
         spaixi,
       ),
-  } satisfies FileIoApi;
+  } satisfies FileIoApi & FileIoKitCompatApi;
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
     value: () => handles.size(),

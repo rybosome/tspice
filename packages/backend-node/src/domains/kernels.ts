@@ -7,11 +7,11 @@ import type {
   KernelsApi,
 } from "@rybosome/tspice-backend-contract";
 import {
+  invariant,
   matchesKernelKind,
   nativeKindQueryOrNull,
   normalizeKindInput,
-} from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";

@@ -3,6 +3,9 @@ import crypto from "node:crypto";
 import { readFile, realpath, stat } from "node:fs/promises";
 
 import { spiceClients, type SpiceBackend } from "@rybosome/tspice";
+import type { SpiceKitCompatHelpers } from "@rybosome/tspice-core";
+
+type ParityBackend = SpiceBackend & SpiceKitCompatHelpers & { kind: "node" | "wasm" | "fake" };
 
 import {
   resolveMetaKernelKernelsToLoad,
@@ -15,7 +18,7 @@ import { executeV2CaseWithBackend } from "./v2Executor.js";
 
 import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
 
-type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown | Promise<unknown>;
+type DispatchFn = (backend: ParityBackend, args: unknown[]) => unknown | Promise<unknown>;
 
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
 
@@ -84,8 +87,8 @@ function assertNumberArg(value: unknown, call: string, index: number): asserts v
 
 
 type Vec3 = [number, number, number];
-type Mat3RowMajor = Parameters<SpiceBackend["mxm"]>[0];
-type SpkPackedDescriptor = Parameters<SpiceBackend["spkuds"]>[0];
+type Mat3RowMajor = Parameters<ParityBackend["mxm"]>[0];
+type SpkPackedDescriptor = Parameters<ParityBackend["spkuds"]>[0];
 
 function assertVec3(value: unknown, label: string): asserts value is Vec3 {
   if (!Array.isArray(value)) {
@@ -178,7 +181,7 @@ function kernelKindQueryFromArg(value: unknown, label: string): string {
   invalidArgs(`${label} expects a string or string[] (got ${formatValue(value)})`);
 }
 
-function rewriteKdataOsPathIfNeeded(backend: SpiceBackend, result: unknown): unknown {
+function rewriteKdataOsPathIfNeeded(backend: ParityBackend, result: unknown): unknown {
   if (backend.kind !== "wasm") return result;
   if (typeof result !== "object" || result === null) return result;
 
@@ -1270,7 +1273,7 @@ function inferSpiceFromError(error: unknown): SpiceErrorState | null {
   };
 }
 
-function tryConfigureErrorPolicy(backend: SpiceBackend): void {
+function tryConfigureErrorPolicy(backend: ParityBackend): void {
   // Not part of the backend contract, but may exist on some implementations.
   const b = backend as unknown as {
     erract?: (op: string, action: string) => void;
@@ -1290,14 +1293,14 @@ function tryConfigureErrorPolicy(backend: SpiceBackend): void {
   }
 }
 
-function isolateCase(backend: SpiceBackend): void {
+function isolateCase(backend: ParityBackend): void {
   // Clear any kernel pool / loaded kernels and reset the SPICE error state.
   backend.kclear();
   backend.reset();
   tryConfigureErrorPolicy(backend);
 }
 
-function captureSpiceErrorState(backend: SpiceBackend): SpiceErrorState {
+function captureSpiceErrorState(backend: ParityBackend): SpiceErrorState {
   let failed = false;
   try {
     failed = backend.failed();
@@ -1355,17 +1358,34 @@ function isMissingNativeAddon(error: unknown): boolean {
   return false;
 }
 
+function createParityBackendAdapter(spice: { kind: "node" | "wasm" | "fake"; raw: object; kit: object }): ParityBackend {
+  return new Proxy(Object.create(null) as Record<PropertyKey, unknown>, {
+    get(_target, prop) {
+      if (prop === "kind") return spice.kind;
+      if (typeof prop !== "string") return undefined;
+
+      const kitValue = (spice.kit as Record<string, unknown>)[prop];
+      if (typeof kitValue === "function") return (kitValue as (...args: unknown[]) => unknown).bind(spice.kit);
+      if (kitValue !== undefined) return kitValue;
+
+      const rawValue = (spice.raw as Record<string, unknown>)[prop];
+      if (typeof rawValue === "function") return (rawValue as (...args: unknown[]) => unknown).bind(spice.raw);
+      return rawValue;
+    },
+  }) as unknown as ParityBackend;
+}
+
 async function createBackendForRunner(
   backend: TspiceRunnerBackend,
-): Promise<{ backend: SpiceBackend; kind: string }> {
-  const createNodeBackend = async (): Promise<SpiceBackend> => {
+): Promise<{ backend: ParityBackend; kind: string }> {
+  const createNodeBackend = async (): Promise<ParityBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "node" });
-    return spice.raw;
+    return createParityBackendAdapter({ kind: spice.kind, raw: spice.raw, kit: spice.kit });
   };
 
-  const createWasmBackend = async (): Promise<SpiceBackend> => {
+  const createWasmBackend = async (): Promise<ParityBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "wasm" });
-    return spice.raw;
+    return createParityBackendAdapter({ kind: spice.kind, raw: spice.raw, kit: spice.kit });
   };
 
   if (backend === "node") {
@@ -1401,7 +1421,7 @@ function normalizeKernelEntry(entry: KernelEntry): { path: string; restrictToDir
 }
 
 async function furnshOsKernelForWasm(
-  backend: SpiceBackend,
+  backend: ParityBackend,
   osPath: string,
   loaded: Set<string>,
   restrictToDir?: string,
@@ -1442,7 +1462,7 @@ async function furnshOsKernelForWasm(
 }
 
 async function furnshOsKernelForNative(
-  backend: SpiceBackend,
+  backend: ParityBackend,
   osPath: string,
   loaded: Set<string>,
   restrictToDir?: string,

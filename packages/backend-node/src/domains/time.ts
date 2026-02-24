@@ -1,10 +1,10 @@
 import type { TimeApi } from "@rybosome/tspice-backend-contract";
-import { assertNever, invariant } from "@rybosome/tspice-core";
+import { assertNever, invariant, type TimeKitCompatApi } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
 /** Create a {@link TimeApi} implementation backed by the native Node addon. */
-export function createTimeApi(native: NativeAddon): TimeApi {
+export function createTimeApi(native: NativeAddon): TimeApi & TimeKitCompatApi {
   function timdef(action: "GET", item: string): string;
   function timdef(action: "SET", item: string, value: string): void;
   function timdef(action: "GET" | "SET", item: string, value?: string): string | void {

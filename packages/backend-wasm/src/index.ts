@@ -1,4 +1,5 @@
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type { SpiceKitCompatHelpers } from "@rybosome/tspice-core";
 
 export type { CreateWasmBackendOptions } from "./runtime/create-backend-options.js";
 import type { CreateWasmBackendOptions } from "./runtime/create-backend-options.js";
@@ -14,4 +15,4 @@ export declare const WASM_JS_FILENAME: string;
 
 export declare function createWasmBackend(
   options?: CreateWasmBackendOptions,
-): Promise<SpiceBackend & { kind: "wasm" }>;
+): Promise<SpiceBackend & SpiceKitCompatHelpers & { kind: "wasm" }>;

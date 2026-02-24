@@ -6,7 +6,7 @@ import type {
 import {
   assertMat3ArrayLike9,
   brandMat3RowMajor,
-} from "@rybosome/tspice-backend-contract";
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 

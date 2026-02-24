@@ -78,3 +78,64 @@ export function normalizeVirtualKernelPath(input: string): string {
 
   return out.join("/");
 }
+
+export type { BrandMat3Options } from "./spice-runtime/shared/mat3.js";
+export {
+  assertMat3ArrayLike9,
+  isMat3ArrayLike9,
+  brandMat3ColMajor,
+  brandMat3RowMajor,
+  isBrandedMat3ColMajor,
+  isBrandedMat3RowMajor,
+} from "./spice-runtime/shared/mat3.js";
+
+export type { BrandVecOptions } from "./spice-runtime/shared/vec.js";
+export {
+  assertVec3ArrayLike3,
+  assertVec6ArrayLike6,
+  isVec3ArrayLike3,
+  isVec6ArrayLike6,
+  brandVec3,
+  brandVec6,
+  isBrandedVec3,
+  isBrandedVec6,
+} from "./spice-runtime/shared/vec.js";
+
+export type { BrandMat6Options } from "./spice-runtime/shared/mat6.js";
+export {
+  assertMat6ArrayLike36,
+  isMat6ArrayLike36,
+  brandMat6RowMajor,
+  isBrandedMat6RowMajor,
+} from "./spice-runtime/shared/mat6.js";
+
+export {
+  SPICE_INT32_MIN,
+  SPICE_INT32_MAX,
+  assertSpiceInt32,
+  assertSpiceInt32NonNegative,
+} from "./spice-runtime/shared/spice-int.js";
+
+export type {
+  SpiceHandleEntry,
+  SpiceHandleKind,
+  SpiceHandleRegistry,
+} from "./spice-runtime/shared/spice-handles.js";
+export { createSpiceHandleRegistry } from "./spice-runtime/shared/spice-handles.js";
+export { SpiceBackendContractError } from "./spice-runtime/shared/errors.js";
+
+export {
+  normalizeKindInput,
+  nativeKindQueryOrNull,
+  matchesKernelKind,
+  kxtrctJs,
+} from "./spice-runtime/domains/kernels-utils.js";
+export { normalizeBodItem } from "./spice-runtime/domains/ids-names-normalize.js";
+export { isGetmsgWhich, assertGetmsgWhich } from "./spice-runtime/domains/error.js";
+
+export type {
+  CellsWindowsKitCompatApi,
+  TimeKitCompatApi,
+  FileIoKitCompatApi,
+  SpiceKitCompatHelpers,
+} from "./spice-runtime/compat-helpers.js";

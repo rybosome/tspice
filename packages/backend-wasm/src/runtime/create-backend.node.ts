@@ -445,7 +445,7 @@ export async function createWasmBackend(
     ...createCellsWindowsApi(module),
     ...createEkApi(module, spiceHandles),
     ...createDskApi(module, spiceHandles),
-  } satisfies SpiceBackend;
+  } satisfies SpiceBackend & { kind: "wasm" };
 
   return backend;
 }

@@ -1,4 +1,5 @@
 import type { Spice } from "../kit/types/spice-types.js";
+import type { SpiceBackendKind } from "@rybosome/tspice-backend-contract";
 
 import type { SpiceTransportSync } from "../transport/types.js";
 
@@ -62,16 +63,6 @@ function createNamespacedProxy(
       if (prop === "toString") return toString;
       if (prop === "valueOf") return valueOf;
 
-      // Static, non-function backend properties (e.g. `raw.kind`).
-      //
-      // Higher-level builders can define these via
-      // `Object.defineProperty(spice.raw, "kind", { value: ... })`.
-      if (namespace === "raw" && prop === "kind") {
-        if (Object.prototype.hasOwnProperty.call(_target, prop)) {
-          return (_target as Record<string, unknown>)[prop];
-        }
-      }
-
       if (!isSafeRpcKey(prop)) return undefined;
 
       if (fnCache.has(prop)) {
@@ -96,8 +87,9 @@ function createNamespacedProxy(
 }
 
 /** Create a sync {@link Spice} client that forwards calls over a {@link SpiceTransportSync}. */
-export function createSpiceSyncFromTransport(t: SpiceTransportSync): Spice {
+export function createSpiceSyncFromTransport(t: SpiceTransportSync, kind: SpiceBackendKind): Spice {
   return {
+    kind,
     raw: createNamespacedProxy(t, "raw") as unknown as Spice["raw"],
     kit: createNamespacedProxy(t, "kit") as unknown as Spice["kit"],
   };

@@ -1,5 +1,5 @@
 import type { TimeApi } from "@rybosome/tspice-backend-contract";
-import { assertNever } from "@rybosome/tspice-core";
+import { assertNever, type TimeKitCompatApi } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -292,7 +292,7 @@ export function getToolkitVersion(module: EmscriptenModule): string {
 }
 
 /** Create a {@link TimeApi} implementation backed by a WASM Emscripten module. */
-export function createTimeApi(module: EmscriptenModule, toolkitVersion: string): TimeApi {
+export function createTimeApi(module: EmscriptenModule, toolkitVersion: string): TimeApi & TimeKitCompatApi {
   return {
     spiceVersion: () => toolkitVersion,
     tkvrsn: (item) => {

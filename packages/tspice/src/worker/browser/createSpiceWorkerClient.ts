@@ -101,7 +101,7 @@ export function createSpiceWorkerClient<
     ? opts.wrapTransport(baseTransport)
     : (baseTransport as unknown as TTransport);
 
-  const spice = createSpiceAsyncFromTransport(transport);
+  const spice = createSpiceAsyncFromTransport(transport, "wasm");
 
   let disposePromise: Promise<void> | undefined;
 

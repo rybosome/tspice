@@ -4,7 +4,7 @@ import {
   matchesKernelKind,
   nativeKindQueryOrNull,
   normalizeKindInput,
-} from "@rybosome/tspice-backend-contract";
+} from "@rybosome/tspice-core";
 
 describe("matchesKernelKind", () => {
   it("treats requested tokens as trim + case-insensitive", () => {

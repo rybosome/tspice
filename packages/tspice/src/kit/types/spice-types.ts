@@ -1,4 +1,5 @@
-import type { KernelSource, SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type { KernelSource, SpiceBackend, SpiceBackendKind } from "@rybosome/tspice-backend-contract";
+import type { SpiceKitCompatHelpers } from "@rybosome/tspice-core";
 
 import type {
   AberrationCorrection,
@@ -12,7 +13,7 @@ import type { Mat3 } from "../math/mat3.js";
 /**
  * Higher-level helpers and convenience APIs built on top of the raw backend.
  */
-export type SpiceKit = {
+export type SpiceKit = SpiceKitCompatHelpers & {
   /** Load a SPICE kernel. */
   loadKernel(kernel: KernelSource): void;
   /** Unload a previously-loaded SPICE kernel. */
@@ -47,6 +48,8 @@ export type PromisifyObject<T extends object> = {
  * Top-level sync-ish client type (returned by `spiceClients.toSync()`).
  */
 export type Spice = {
+  /** Backend kind metadata (moved off `raw`). */
+  kind: SpiceBackendKind;
   /** Raw backend primitives (verbatim). */
   raw: SpiceBackend;
   /** Higher-level helpers and typed conveniences. */
@@ -64,6 +67,8 @@ export type SpiceSync = Spice;
  * Mirrors the sync surface area, but wraps every function in a `Promise`.
  */
 export type SpiceAsync = {
+  /** Backend kind metadata (moved off `raw`). */
+  kind: SpiceBackendKind;
   raw: PromisifyObject<SpiceBackend>;
   kit: PromisifyObject<SpiceKit>;
 };

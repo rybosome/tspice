@@ -1,6 +1,8 @@
 # `SpiceBackend` ↔ CSPICE mapping (backend-contract parity)
 
-This doc maps each `SpiceBackend` domain method from `packages/backend-contract/src/domains/*` to the underlying CSPICE routine(s) the backend is expected to call.
+This doc explains how `SpiceBackend` methods map to CSPICE and documents the parity invariants that enforce that mapping.
+
+**Issue #524 (strict/fast cleanup) update:** non-1:1 helpers were removed from `SpiceBackend` / `spice.raw` and moved to higher-level `spice.kit` APIs.
 
 ## Scope
 
@@ -10,15 +12,30 @@ Included domains (from `packages/backend-contract/src/domains/`):
 - `ids-names`
 - `frames`
 - `kernels`
+- `kernel-pool`
 - `error`
 - `ephemeris`
 - `geometry`
+- `geometry-gf`
 - `coords-vectors`
+- `file-io`
+- `cells-windows`
+- `ek`
+- `dsk`
 
-> Note: This mapping is intended to be complete (method-level) for all domains listed here.
-> Follow-up work is primarily around parity tests, fixtures for kernel-heavy routines (CK/FK/IK), and per-routine edge-case semantics.
->
-> Recommended first parity-test targets (lowest fixture complexity): `time`, `ids-names`, `frames`. This is a prioritization hint only — not a statement about completeness of the other domains.
+## Full mapping source of truth (machine-checked)
+
+The **complete method-level mapping** is enforced by code, not only by the hand-maintained tables in this doc:
+
+- `SpiceBackend` members are generated into `packages/parity-checking/catalogs/contract-methods.json`
+- each member must match a CSPICE inventory entry (case-insensitive canonical routine name) or a checked-in allowlist entry with rationale
+- allowlist file: `packages/backend-contract/config/spicebackend-cspice-allowlist.json`
+
+For 1:1 analogue methods, the mapping rule is:
+
+- `domain.method` ↔ CSPICE `method_c`
+
+Examples and domain-specific caveats are documented below; completeness is guarded by the backend-contract invariant tests.
 
 ## Contract + type conventions (shared)
 
@@ -96,7 +113,6 @@ For generic solar system work, these NAIF standards are commonly used:
 
 | domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
 | --- | --- | --- | --- | --- | --- |
-| `time.spiceVersion()` | `tkvrsn_c("TOOLKIT")` | `(): string` | `string` | exact string match | none |
 | `time.tkvrsn(item)` | `tkvrsn_c` | `(item: "TOOLKIT"): string` | `string` | exact string match | none |
 | `time.str2et(time)` | `str2et_c` | `(time: string): number` | `number` | floating compare (ET seconds) | **stateful**: uses TIMDEF defaults (SYSTEM/CALENDAR/ZONE); requires LSK (`*.tls`); may depend on loaded time constants in kernel pool |
 | `time.et2utc(et, format, prec)` | `et2utc_c` | `(et: number, format: string, prec: number): string` | `string` | exact string match (format-dependent) | requires LSK (`*.tls`) |
@@ -115,7 +131,7 @@ For generic solar system work, these NAIF standards are commonly used:
 
 Notes:
 
-- `spiceVersion()` is a convenience alias; the contract also exposes `tkvrsn("TOOLKIT")` explicitly.
+- `spiceVersion()` is **not** part of `SpiceBackend` / `spice.raw` anymore (issue #524 strict/fast cleanup). Use `time.tkvrsn("TOOLKIT")` on raw or `spice.kit.spiceVersion()` on the high-level client.
 
 - Many time routines (notably `str2et`, `timout`, and `tpictr`) depend on TIMDEF defaults (SYSTEM/CALENDAR/ZONE). These defaults are global mutable state in CSPICE; tests should snapshot/restore if they change them to avoid order dependence.
 
@@ -243,3 +259,31 @@ Most routines in this domain are **pure math** and require no kernels.
 | `coords-vectors.recgeo(rect, re, f)` | `recgeo_c` | `(rect: SpiceVector3, re: number, f: number)` | `{ lon: number; lat: number; alt: number }` | float tolerance; angles radians | none |
 | `coords-vectors.mxv(m, v)` | `mxv_c` | `(m: Mat3RowMajor, v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
 | `coords-vectors.mtxv(m, v)` | `mtxv_c` | `(m: Mat3RowMajor, v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
+
+---
+
+## Strict/fast migration table (`raw.*` → `kit.*`)
+
+The following helpers were intentionally removed from `SpiceBackend` / `spice.raw` because they are not 1:1 CSPICE analogues, but runtime behavior remains available on `spice.kit`:
+
+| Removed raw API | Replacement | Notes |
+| --- | --- | --- |
+| `raw.newIntCell(size)` | `kit.newIntCell(size)` | cell helper (non-analogue convenience) |
+| `raw.newDoubleCell(size)` | `kit.newDoubleCell(size)` | cell helper (non-analogue convenience) |
+| `raw.newCharCell(size, length)` | `kit.newCharCell(size, length)` | cell helper (non-analogue convenience) |
+| `raw.newWindow(maxIntervals)` | `kit.newWindow(maxIntervals)` | window helper (non-analogue convenience) |
+| `raw.freeCell(cell)` | `kit.freeCell(cell)` | cleanup helper |
+| `raw.freeWindow(window)` | `kit.freeWindow(window)` | cleanup helper |
+| `raw.cellGeti(cell, index)` | `kit.cellGeti(cell, index)` | debug/test helper copy-out |
+| `raw.cellGetd(cell, index)` | `kit.cellGetd(cell, index)` | debug/test helper copy-out |
+| `raw.cellGetc(cell, index)` | `kit.cellGetc(cell, index)` | debug/test helper copy-out |
+| `raw.readVirtualOutput(output)` | `kit.readVirtualOutput(output)` | backend virtual-output convenience |
+| `raw.spiceVersion()` | `kit.spiceVersion()` | raw analogue is `raw.tkvrsn("TOOLKIT")` |
+| `raw.kind` | `spice.kind` | `.kind` ownership moved to top-level `Spice` / `SpiceAsync` |
+
+## Allowlist exceptions (CSPICE parity invariant)
+
+- File: `packages/backend-contract/config/spicebackend-cspice-allowlist.json`
+- Current exceptions: **none**
+
+If an exception is added later, include a short rationale in the allowlist entry and update this section with the same rationale.

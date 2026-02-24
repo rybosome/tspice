@@ -7,7 +7,7 @@ describe("@rybosome/tspice", () => {
   it("defaults to the WASM backend when no opts are provided", async () => {
     const { spice, dispose } = await spiceClients.toSync();
     try {
-      expect(spice.raw.kind).toBe("wasm");
+      expect(spice.kind).toBe("wasm");
       expect(spice.kit.toolkitVersion()).toBeTypeOf("string");
     } finally {
       await dispose();

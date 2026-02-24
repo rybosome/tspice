@@ -34,7 +34,8 @@ import {
   matchesKernelKind,
   normalizeBodItem,
   normalizeKindInput,
-} from "@rybosome/tspice-backend-contract";
+} from "@rybosome/tspice-core";
+import type { SpiceKitCompatHelpers } from "@rybosome/tspice-core";
 
 /**
  * A deterministic, pure-TS "toy" backend.
@@ -749,7 +750,7 @@ function assertNonEmptyString(fn: string, field: string, value: string): void {
  *
  * Intended for tests and UI development without native/WASM backends.
  */
-export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBackend & { kind: "fake" } {
+export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBackend & SpiceKitCompatHelpers & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
   let spiceShort = "";
@@ -2208,7 +2209,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     georec: (lon, lat, alt, re, f) => georec(lon, lat, alt, re, f),
     recgeo: (rect, re, f) => recgeo(rect, re, f),
-  } satisfies SpiceBackend & { kind: "fake" };
+  } satisfies SpiceBackend & SpiceKitCompatHelpers & { kind: "fake" };
 
   return backend;
 }

@@ -1,5 +1,5 @@
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { invariant, type SpiceKitCompatHelpers } from "@rybosome/tspice-core";
 
 import { getNativeAddon } from "./native.js";
 
@@ -31,13 +31,13 @@ export function spiceVersion(): string {
 }
 
 /** Create a {@link SpiceBackend} implementation backed by the native Node addon. */
-export function createNodeBackend(): SpiceBackend & { kind: "node" } {
+export function createNodeBackend(): SpiceBackend & SpiceKitCompatHelpers & { kind: "node" } {
   const native = getNodeBinding();
   const stager = createKernelStager();
   const spiceHandles = createSpiceHandleRegistry();
   const outputs = createVirtualOutputStager();
 
-  const backend: SpiceBackend & { kind: "node" } = {
+  const backend: SpiceBackend & SpiceKitCompatHelpers & { kind: "node" } = {
     kind: "node",
     ...createTimeApi(native),
     ...createKernelsApi(native, stager),
@@ -56,7 +56,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   };
 
   // Internal testing hook (not part of the public backend contract).
-  (backend as SpiceBackend & { __ktotalAll(): number }).__ktotalAll = () => native.__ktotalAll();
+  (backend as unknown as SpiceBackend & { __ktotalAll(): number }).__ktotalAll = () => native.__ktotalAll();
 
   // Internal best-effort cleanup hook (not part of the public backend contract).
   // Closes all currently-registered DAF/DAS/DLA/EK/SPK handles and throws an AggregateError if any closes fail.

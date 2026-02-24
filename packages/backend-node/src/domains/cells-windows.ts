@@ -8,13 +8,14 @@ import type {
 import {
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
-} from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+  invariant,
+  type CellsWindowsKitCompatApi,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
 /** Create a {@link CellsWindowsApi} implementation backed by the native Node addon. */
-export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
+export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi & CellsWindowsKitCompatApi {
   return {
     newIntCell: (size) => {
       assertSpiceInt32NonNegative(size, "newIntCell(size)");

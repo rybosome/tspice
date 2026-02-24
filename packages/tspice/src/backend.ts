@@ -1,11 +1,11 @@
 import type { SpiceBackend, SpiceBackendKind } from "@rybosome/tspice-backend-contract";
-import { assertNever } from "@rybosome/tspice-core";
+import { assertNever, type SpiceKitCompatHelpers } from "@rybosome/tspice-core";
 
 export type { SpiceBackend, SpiceBackendKind } from "@rybosome/tspice-backend-contract";
 
 export type BackendKind = Exclude<SpiceBackendKind, "fake">;
 
-export type SpiceBackendOfKind<K extends BackendKind = BackendKind> = SpiceBackend & {
+export type SpiceBackendOfKind<K extends BackendKind = BackendKind> = SpiceBackend & SpiceKitCompatHelpers & {
   kind: K;
 };
 
