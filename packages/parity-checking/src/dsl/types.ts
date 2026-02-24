@@ -100,11 +100,25 @@ export type MethodResultPropertySpecV2 = {
   type?: "spiceInt";
 };
 
-export type MethodResultSpecV2 = {
+export type MethodResultConstValueV2 =
+  | string
+  | number
+  | boolean
+  | null
+  | MethodResultConstValueV2[]
+  | { [key: string]: MethodResultConstValueV2 };
+
+export type MethodResultConstSpecV2 = {
+  const: MethodResultConstValueV2;
+};
+
+export type MethodResultObjectSpecV2 = {
   type: "object";
   required?: string[];
   properties: Record<string, MethodResultPropertySpecV2>;
 };
+
+export type MethodResultSpecV2 = MethodResultObjectSpecV2 | MethodResultConstSpecV2;
 
 export type MethodErrorSpecV2 = {
   code: string;

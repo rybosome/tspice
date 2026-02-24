@@ -3,9 +3,9 @@ import type { SpiceBackend } from "@rybosome/tspice";
 import type {
   RunCaseInputV2,
   RunnerErrorReport,
-  V2ContractResultProperty,
   V2WorkflowStep,
 } from "./types.js";
+import { validateV2ContractResultOrThrow } from "./v2ContractResultValidation.js";
 
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
 
@@ -274,40 +274,8 @@ export function validateV2CasePreflight(input: RunCaseInputV2): Record<string, u
   return validateCaseArgs(input);
 }
 
-function validateResultProperty(
-  propertyLabel: string,
-  descriptor: V2ContractResultProperty,
-  value: unknown,
-): void {
-  if (descriptor.const !== undefined && value !== descriptor.const) {
-    invalidRequest(`${propertyLabel} must equal const ${formatValue(descriptor.const)} (got ${formatValue(value)})`);
-  }
-
-  if (descriptor.type === "spiceInt") {
-    asSpiceInt(value, propertyLabel);
-  }
-}
-
 function validateProjectedResult(projectedResult: unknown, input: RunCaseInputV2): void {
-  if (input.contract.result.type !== "object") {
-    unsupportedCall(`Unsupported v2 contract.result.type: ${input.contract.result.type}`);
-  }
-
-  const resultObj = asRecord(projectedResult, "v2.projectedResult");
-
-  for (const requiredKey of input.contract.result.required ?? []) {
-    if (!Object.prototype.hasOwnProperty.call(resultObj, requiredKey)) {
-      invalidRequest(`v2.projectedResult missing required key ${JSON.stringify(requiredKey)}`);
-    }
-  }
-
-  for (const [key, descriptor] of Object.entries(input.contract.result.properties)) {
-    if (!Object.prototype.hasOwnProperty.call(resultObj, key)) {
-      continue;
-    }
-
-    validateResultProperty(`v2.projectedResult.${key}`, descriptor, resultObj[key]);
-  }
+  validateV2ContractResultOrThrow(projectedResult, input.contract.result, "v2.projectedResult", invalidRequest);
 }
 
 function projectResult(

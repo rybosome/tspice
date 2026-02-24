@@ -8,7 +8,17 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [card, size]
+    properties:
+      card:
+        type: spiceInt
+        const: 0
+      size:
+        type: spiceInt
+        const: 8
+  errors:
+    - code: invalid_args
+    - code: spice_error
 workflow:
   steps:
     - op: invokeLegacyCall
@@ -21,3 +31,43 @@ cases:
         - 4
     expect:
       ok: true
+
+  - id: cells-windows.wnvald.rejects-negative-max-intervals
+    args:
+      - 8
+      - 0
+      - - window
+        - -1
+    expect:
+      ok: false
+      errorCode: invalid_args
+
+  - id: cells-windows.wnvald.rejects-non-integer-size
+    args:
+      - 8.5
+      - 0
+      - - window
+        - 4
+    expect:
+      ok: false
+      errorCode: invalid_args
+
+  - id: cells-windows.wnvald.rejects-non-integer-cardinality
+    args:
+      - 8
+      - 0.5
+      - - window
+        - 4
+    expect:
+      ok: false
+      errorCode: invalid_args
+
+  - id: cells-windows.wnvald.rejects-wrong-recipe-kind
+    args:
+      - 8
+      - 0
+      - - double
+        - 8
+    expect:
+      ok: false
+      errorCode: invalid_args

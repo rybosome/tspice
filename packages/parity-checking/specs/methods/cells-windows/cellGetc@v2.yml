@@ -7,8 +7,10 @@ contract:
   canonicalMethod: cells-windows.cellGetc
   aliases: []
   result:
-    type: object
-    properties: {}
+    const: c
+  errors:
+    - code: invalid_args
+    - code: spice_error
 workflow:
   steps:
     - op: invokeLegacyCall
@@ -21,3 +23,32 @@ cases:
       - 2
     expect:
       ok: true
+
+  - id: cells-windows.cellGetc.rejects-invalid-length
+    args:
+      - - char
+        - 8
+        - 0
+      - 0
+    expect:
+      ok: false
+      errorCode: invalid_args
+
+  - id: cells-windows.cellGetc.rejects-negative-size
+    args:
+      - - char
+        - -1
+        - 16
+      - 0
+    expect:
+      ok: false
+      errorCode: invalid_args
+
+  - id: cells-windows.cellGetc.rejects-non-char-recipe
+    args:
+      - - int
+        - 8
+      - 0
+    expect:
+      ok: false
+      errorCode: invalid_args

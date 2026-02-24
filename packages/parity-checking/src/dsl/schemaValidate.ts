@@ -8,6 +8,7 @@ import type {
   MethodCaseExpectation,
   MethodCaseSpec,
   MethodCaseSpecV2,
+  MethodResultConstValueV2,
   MethodSpec,
   MethodSpecV2,
   MethodWorkflowStepV2,
@@ -515,11 +516,41 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
   }
 }
 
+function parseMethodResultConstValueV2(value: unknown, label: string): MethodResultConstValueV2 {
+  if (
+    value === null ||
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ) {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((entry, index) => parseMethodResultConstValueV2(entry, `${label}[${index}]`));
+  }
+
+  const obj = assertRecord(value, label);
+  const out: Record<string, MethodResultConstValueV2> = {};
+  for (const [key, entry] of Object.entries(obj)) {
+    out[key] = parseMethodResultConstValueV2(entry, `${label}.${key}`);
+  }
+  return out;
+}
+
 function parseMethodSpecV2ContractResult(
   value: unknown,
   label: string,
 ): MethodSpecV2["contract"]["result"] {
   const obj = assertRecord(value, label);
+
+  if (Object.prototype.hasOwnProperty.call(obj, "const")) {
+    assertNoUnknownKeys(obj, label, ["const"]);
+    return {
+      const: parseMethodResultConstValueV2(obj.const, `${label}.const`),
+    };
+  }
+
   assertNoUnknownKeys(obj, label, ["type", "required", "properties"]);
 
   const type = assertString(obj.type, `${label}.type`);
