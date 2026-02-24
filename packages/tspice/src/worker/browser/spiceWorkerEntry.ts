@@ -53,23 +53,6 @@ type TransportSurfaceMethodKeysPayload = {
   kitMethodKeys: string[];
 };
 
-const allowedKitMethodList = [
-  "loadKernel",
-  "unloadKernel",
-  "kclear",
-  "toolkitVersion",
-  "utcToEt",
-  "etToUtc",
-  "frameTransform",
-  "getState",
-] as const satisfies readonly (keyof SpiceAsync["kit"])[];
-
-const defaultAllowlist: RpcAllowlist = {
-  // NOTE: `kit` is deliberately allowlisted because it's a small, curated API.
-  // `raw` is intentionally not allowlisted here (see module comment below).
-  kit: new Set<string>(allowedKitMethodList),
-};
-
 function snapshotFunctionKeys(target: object): ReadonlySet<string> {
   const out = new Set<string>();
   const obj = target as Record<string, unknown>;
@@ -80,6 +63,15 @@ function snapshotFunctionKeys(target: object): ReadonlySet<string> {
   }
 
   return out;
+}
+
+function createDefaultAllowlist(spice: SpiceAsync): RpcAllowlist {
+  // NOTE: `kit` is allowlisted by default. Derive this from the runtime kit
+  // surface so new/renamed methods are picked up automatically.
+  // `raw` is intentionally not allowlisted here (see module comment below).
+  return {
+    kit: snapshotFunctionKeys(spice.kit as object),
+  };
 }
 
 function snapshotExposedMethodKeys(
@@ -115,7 +107,7 @@ function createSpiceTransportFromSpiceAsync(
     allowlist?: RpcAllowlist;
   },
 ): SpiceTransport {
-  const allowlist = opts?.allowlist ?? defaultAllowlist;
+  const allowlist = opts?.allowlist ?? createDefaultAllowlist(spice);
 
   return {
     request: async (op: string, args: unknown[]): Promise<unknown> => {
@@ -172,7 +164,7 @@ function createSpiceTransportFromSpiceAsync(
 // Security/design note:
 // - This worker entry is intended for internal workspace use.
 // - By default, it exposes:
-//   - `kit.*` as a small, curated allowlist (see `allowedKitMethodList`), and
+//   - `kit.*` via an allowlist snapshot derived from runtime `spice.kit` keys, and
 //   - `raw.*` without an allowlist (subject to the blocked key checks above).
 // - If you need a tighter RPC capability set (especially for `raw.*`), create
 //   a custom worker entry and provide an explicit allowlist.
