@@ -4,7 +4,7 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 import * as emscriptenExports from "../lowlevel/exports.js";
 
 import { createCoordsVectorsApi } from "../domains/coords-vectors.js";
-import { createCellsWindowsApi } from "../domains/cells-windows.js";
+import { createCellsWindowsApi, createCellsWindowsKitApi } from "../domains/cells-windows.js";
 import { createEphemerisApi } from "../domains/ephemeris.js";
 import { createFramesApi } from "../domains/frames.js";
 import { createGeometryApi } from "../domains/geometry.js";
@@ -444,6 +444,7 @@ export async function createWasmBackend(
     ...createFileIoApi(module, spiceHandles, virtualOutputs),
     ...createErrorApi(module),
     ...createCellsWindowsApi(module),
+    ...createCellsWindowsKitApi(module),
     ...createEkApi(module, spiceHandles),
     ...createDskApi(module, spiceHandles),
   } satisfies SpiceBackend;

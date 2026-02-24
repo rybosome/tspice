@@ -21,7 +21,65 @@ export type SpiceCharCell = number & { readonly [__spiceCharCellBrand]: true };
 /** Opaque handle to a CSPICE DP window (a `SPICE_DP` cell interpreted as intervals). */
 export type SpiceWindow = number & { readonly [__spiceWindowBrand]: true };
 
-/** Backend contract for low-level SPICE cell/window operations. */
+/**
+* Backend-only cell/window helpers exposed to higher-level kit code.
+*
+* These are intentionally split from {@link CellsWindowsApi} so raw/kit
+* surfaces can evolve independently while backends still provide native hooks
+* for allocation and inspection.
+*/
+export interface CellsWindowsKitApi {
+
+  // -- Creation / destruction -------------------------------------------------
+
+  /** Create an empty integer set cell with the given capacity. */
+  newIntCell(size: number): SpiceIntCell;
+
+  /** Create an empty double-precision set cell with the given capacity. */
+  newDoubleCell(size: number): SpiceDoubleCell;
+
+  /**
+   * Create an empty character set cell.
+   *
+   * `length` is the maximum string length (including trailing NUL). CSPICE
+   * generally expects `length >= 2` and recommends `length >= 5`.
+   */
+  newCharCell(size: number, length: number): SpiceCharCell;
+
+  /** Create an empty DP window with capacity for `maxIntervals` intervals. */
+  newWindow(maxIntervals: number): SpiceWindow;
+
+  /** Free a previously-created cell handle. */
+  freeCell(cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell): void;
+
+  /** Free a previously-created window handle. */
+  freeWindow(window: SpiceWindow): void;
+
+  // -- Cell element inspection (copies, no raw data views) -------------------
+
+  /**
+   * Element inspection helpers.
+   *
+   * Notes:
+   * - These methods **copy** data out of the underlying cell.
+   * - They are not intended as a high-performance bulk read API.
+   */
+
+  /** Fetch the `index`th element of an integer cell. */
+  cellGeti(cell: SpiceIntCell, index: number): number;
+
+  /** Fetch the `index`th element of a double cell. */
+  cellGetd(cell: SpiceDoubleCell, index: number): number;
+
+  /**
+   * Fetch the `index`th element of a character cell.
+   *
+   * Backends may right-trim whitespace to match common CSPICE string handling.
+   */
+  cellGetc(cell: SpiceCharCell, index: number): string;
+}
+
+/** Backend contract for low-level raw SPICE cell/window operations. */
 export interface CellsWindowsApi {
 
   // -- Cells ------------------------------------------------------------------

@@ -48,6 +48,11 @@ type RpcNamespace = "raw" | "kit";
 
 type RpcAllowlist = Partial<Record<RpcNamespace, ReadonlySet<string>>>;
 
+type TransportSurfaceMethodKeysPayload = {
+  rawMethodKeys: string[];
+  kitMethodKeys: string[];
+};
+
 const allowedKitMethodList = [
   "loadKernel",
   "unloadKernel",
@@ -65,6 +70,40 @@ const defaultAllowlist: RpcAllowlist = {
   kit: new Set<string>(allowedKitMethodList),
 };
 
+function snapshotFunctionKeys(target: object): ReadonlySet<string> {
+  const out = new Set<string>();
+  const obj = target as Record<string, unknown>;
+
+  for (const key of Object.keys(obj)) {
+    if (!isSafeRpcKey(key) || blockedStringKeys.has(key)) continue;
+    if (typeof obj[key] === "function") out.add(key);
+  }
+
+  return out;
+}
+
+function snapshotExposedMethodKeys(
+  spice: SpiceAsync,
+  allowlist: RpcAllowlist,
+): TransportSurfaceMethodKeysPayload {
+  const rawMethodKeys = snapshotFunctionKeys(spice.raw as object);
+  const kitMethodKeys = snapshotFunctionKeys(spice.kit as object);
+
+  const filterByAllowlist = (
+    keys: ReadonlySet<string>,
+    namespace: RpcNamespace,
+  ): string[] => {
+    const nsAllowlist = allowlist[namespace];
+    if (!nsAllowlist) return Array.from(keys);
+    return Array.from(keys).filter((key) => nsAllowlist.has(key));
+  };
+
+  return {
+    rawMethodKeys: filterByAllowlist(rawMethodKeys, "raw"),
+    kitMethodKeys: filterByAllowlist(kitMethodKeys, "kit"),
+  };
+}
+
 function createSpiceTransportFromSpiceAsync(
   spice: SpiceAsync,
   opts?: {
@@ -80,6 +119,13 @@ function createSpiceTransportFromSpiceAsync(
 
   return {
     request: async (op: string, args: unknown[]): Promise<unknown> => {
+      if (op === "meta.surfaceMethodKeys") {
+        if (args.length !== 0) {
+          throw new Error("meta.surfaceMethodKeys does not accept arguments");
+        }
+        return snapshotExposedMethodKeys(spice, allowlist);
+      }
+
       const dot = op.indexOf(".");
       if (dot <= 0 || dot === op.length - 1) {
         throw new Error(`Invalid op: ${op}`);

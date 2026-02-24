@@ -19,7 +19,7 @@ import { createKernelPoolApi } from "./domains/kernel-pool.js";
 import { createTimeApi } from "./domains/time.js";
 import { createFileIoApi } from "./domains/file-io.js";
 import { createErrorApi } from "./domains/error.js";
-import { createCellsWindowsApi } from "./domains/cells-windows.js";
+import { createCellsWindowsApi, createCellsWindowsKitApi } from "./domains/cells-windows.js";
 import { createDskApi } from "./domains/dsk.js";
 import { createEkApi } from "./domains/ek.js";
 
@@ -51,6 +51,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     ...createFileIoApi(native, spiceHandles, outputs),
     ...createErrorApi(native),
     ...createCellsWindowsApi(native),
+    ...createCellsWindowsKitApi(native),
     ...createEkApi(native, spiceHandles, stager),
     ...createDskApi(native, spiceHandles),
   };

@@ -106,7 +106,7 @@ import type { GeometryGfApi } from "./domains/geometry-gf.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
 import type { FileIoApi } from "./domains/file-io.js";
 import type { ErrorApi } from "./domains/error.js";
-import type { CellsWindowsApi } from "./domains/cells-windows.js";
+import type { CellsWindowsApi, CellsWindowsKitApi } from "./domains/cells-windows.js";
 import type { DskApi } from "./domains/dsk.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
@@ -128,6 +128,7 @@ export interface SpiceBackend
     FileIoApi,
     ErrorApi,
     CellsWindowsApi,
+    CellsWindowsKitApi,
     DskApi {
   /** Which backend implementation is in use. */
   readonly kind: SpiceBackendKind;

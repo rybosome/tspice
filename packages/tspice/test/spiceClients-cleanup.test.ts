@@ -14,6 +14,12 @@ describe("spiceClients cleanup", () => {
 
     const server: SpiceTransport = {
       request: async (op) => {
+        if (op === "meta.surfaceMethodKeys") {
+          return {
+            rawMethodKeys: [],
+            kitMethodKeys: ["toolkitVersion"],
+          };
+        }
         if (op === "kit.toolkitVersion") return "TSPICE_TEST";
         throw new Error(`Unexpected op: ${op}`);
       },

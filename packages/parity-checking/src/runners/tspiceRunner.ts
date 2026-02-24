@@ -2,7 +2,7 @@ import * as path from "node:path";
 import crypto from "node:crypto";
 import { readFile, realpath, stat } from "node:fs/promises";
 
-import { spiceClients, type SpiceBackend } from "@rybosome/tspice";
+import { spiceClients, type Spice, type SpiceBackend } from "@rybosome/tspice";
 
 import {
   resolveMetaKernelKernelsToLoad,
@@ -1727,14 +1727,29 @@ function isMissingNativeAddon(error: unknown): boolean {
 async function createBackendForRunner(
   backend: TspiceRunnerBackend,
 ): Promise<{ backend: SpiceBackend; kind: string }> {
+  const withKitMovedHelpers = (spice: Spice): SpiceBackend => ({
+    ...spice.raw,
+    newIntCell: spice.kit.newIntCell,
+    newDoubleCell: spice.kit.newDoubleCell,
+    newCharCell: spice.kit.newCharCell,
+    newWindow: spice.kit.newWindow,
+    freeCell: spice.kit.freeCell,
+    freeWindow: spice.kit.freeWindow,
+    cellGeti: spice.kit.cellGeti,
+    cellGetd: spice.kit.cellGetd,
+    cellGetc: spice.kit.cellGetc,
+    spiceVersion: spice.kit.spiceVersion,
+    readVirtualOutput: spice.kit.readVirtualOutput,
+  });
+
   const createNodeBackend = async (): Promise<SpiceBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "node" });
-    return spice.raw;
+    return withKitMovedHelpers(spice);
   };
 
   const createWasmBackend = async (): Promise<SpiceBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "wasm" });
-    return spice.raw;
+    return withKitMovedHelpers(spice);
   };
 
   if (backend === "node") {
