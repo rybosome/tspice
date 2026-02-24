@@ -95,7 +95,15 @@ export type PromisifyObject<T extends object> = {
   [K in keyof T]: PromisifyFn<T[K]>;
 };
 
-/** Raw tspice surface: backend raw primitives (minus kit-moved helpers) plus backend metadata. */
+/**
+ * Raw tspice surface.
+ *
+ * This cannot be typed as `SpiceBackend` because `Spice["raw"]` is a namespaced
+ * view (raw methods + `raw.kind`) rather than the top-level backend object
+ * (`{ raw, kit, kind }`). It also cannot be just `SpiceBackend["raw"]` because
+ * tspice intentionally exposes backend kind at `raw.kind` for both direct and
+ * transport-backed clients.
+ */
 export type SpiceRaw = SpiceBackend["raw"] & Pick<SpiceBackend, "kind">;
 
 /**
