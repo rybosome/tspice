@@ -2,6 +2,13 @@ import type { SpiceAsync } from "../kit/types/spice-types.js";
 
 import type { SpiceTransport } from "../transport/types.js";
 
+export type CreateSpiceAsyncFromTransportOptions = {
+  /** Optional surface snapshot to avoid exposing phantom RPC methods via property access. */
+  rawMethodKeys?: Iterable<string>;
+  /** Optional surface snapshot to avoid exposing phantom RPC methods via property access. */
+  kitMethodKeys?: Iterable<string>;
+};
+
 const blockedStringKeys = new Set<string>([
   // Prototype / constructor escapes
   "__proto__",
@@ -23,25 +30,12 @@ const blockedStringKeys = new Set<string>([
   "__lookupSetter__",
 ]);
 
-const hiddenRawToKitMethods = new Set<string>([
-  "newIntCell",
-  "newDoubleCell",
-  "newCharCell",
-  "newWindow",
-  "freeCell",
-  "freeWindow",
-  "cellGeti",
-  "cellGetd",
-  "cellGetc",
-  "spiceVersion",
-  "readVirtualOutput",
-]);
-
 const isSafeRpcKey = (key: string): boolean => /^[A-Za-z_$][\w$]*$/.test(key);
 
 function createNamespacedProxy(
   t: SpiceTransport,
   namespace: "raw" | "kit",
+  knownMethodKeys?: ReadonlySet<string>,
 ): Record<string, unknown> {
   // Use a null-prototype target to reduce surprising Object.prototype behavior.
   const target = Object.create(null) as Record<string, unknown>;
@@ -86,10 +80,8 @@ function createNamespacedProxy(
         }
       }
 
-      // Helpers intentionally moved from `raw` to `kit`.
-      if (namespace === "raw" && hiddenRawToKitMethods.has(prop)) return undefined;
-
       if (!isSafeRpcKey(prop)) return undefined;
+      if (knownMethodKeys && !knownMethodKeys.has(prop)) return undefined;
 
       const cached = fnCache.get(prop);
       // `fnCache` only stores functions, so `undefined` is a safe miss sentinel.
@@ -114,9 +106,15 @@ function createNamespacedProxy(
 }
 
 /** Create an async {@link SpiceAsync} client that forwards calls over a {@link SpiceTransport}. */
-export function createSpiceAsyncFromTransport(t: SpiceTransport): SpiceAsync {
+export function createSpiceAsyncFromTransport(
+  t: SpiceTransport,
+  options: CreateSpiceAsyncFromTransportOptions = {},
+): SpiceAsync {
+  const rawMethodKeys = options.rawMethodKeys ? new Set(options.rawMethodKeys) : undefined;
+  const kitMethodKeys = options.kitMethodKeys ? new Set(options.kitMethodKeys) : undefined;
+
   return {
-    raw: createNamespacedProxy(t, "raw") as SpiceAsync["raw"],
-    kit: createNamespacedProxy(t, "kit") as SpiceAsync["kit"],
+    raw: createNamespacedProxy(t, "raw", rawMethodKeys) as SpiceAsync["raw"],
+    kit: createNamespacedProxy(t, "kit", kitMethodKeys) as SpiceAsync["kit"],
   };
 }

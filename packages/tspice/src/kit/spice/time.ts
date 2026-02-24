@@ -3,13 +3,22 @@ import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 import { wrapSpiceError } from "../../errors.js";
 import type { SpiceTime } from "../../types.js";
 
-/** Create time conversion helpers (`str2et`/`et2utc` wrappers) for a given backend. */
+/** Create time/version helpers for a given backend. */
 export function createTimeKit(cspice: SpiceBackend): {
+  spiceVersion(): string;
   toolkitVersion(): string;
   utcToEt(utc: string): SpiceTime;
   etToUtc(et: SpiceTime, format?: string, prec?: number): string;
 } {
   return {
+    spiceVersion: () => {
+      try {
+        return cspice.tkvrsn("TOOLKIT");
+      } catch (error) {
+        throw wrapSpiceError("spiceVersion", error);
+      }
+    },
+
     toolkitVersion: () => {
       try {
         return cspice.tkvrsn("TOOLKIT");

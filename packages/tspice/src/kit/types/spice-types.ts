@@ -9,7 +9,8 @@ import type {
 } from "../../types.js";
 import type { Mat3 } from "../math/mat3.js";
 
-type RawToKitMovedMethodNames =
+type SpiceKitMovedHelpers = Pick<
+  SpiceBackend,
   | "newIntCell"
   | "newDoubleCell"
   | "newCharCell"
@@ -20,15 +21,15 @@ type RawToKitMovedMethodNames =
   | "cellGetd"
   | "cellGetc"
   | "spiceVersion"
-  | "readVirtualOutput";
+  | "readVirtualOutput"
+>;
 
-type RawToKitMovedMethods = Pick<SpiceBackend, RawToKitMovedMethodNames>;
-type SpiceRaw = Omit<SpiceBackend, RawToKitMovedMethodNames>;
+type SpiceRaw = Omit<SpiceBackend, keyof SpiceKitMovedHelpers>;
 
 /**
  * Higher-level helpers and convenience APIs built on top of the raw backend.
  */
-export type SpiceKit = RawToKitMovedMethods & {
+export type SpiceKit = SpiceKitMovedHelpers & {
   /** Load a SPICE kernel. */
   loadKernel(kernel: KernelSource): void;
   /** Unload a previously-loaded SPICE kernel. */
@@ -63,7 +64,7 @@ export type PromisifyObject<T extends object> = {
  * Top-level sync-ish client type (returned by `spiceClients.toSync()`).
  */
 export type Spice = {
-  /** Raw backend primitives (with raw->kit compat helpers hidden). */
+  /** Raw backend primitives (moved helpers removed). */
   raw: SpiceRaw;
   /** Higher-level helpers and typed conveniences. */
   kit: SpiceKit;

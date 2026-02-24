@@ -3,6 +3,8 @@ import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 import { wrapSpiceError } from "../../errors.js";
 import type { SpiceKit } from "../types/spice-types.js";
 
+import { createCellsWindowsKit } from "./cells-windows.js";
+import { createFileIoKit } from "./file-io.js";
 import { createFramesKit } from "./frames.js";
 import { createKernelKit } from "./kernels.js";
 import { createStateKit } from "./state.js";
@@ -26,91 +28,10 @@ export function createKit(cspice: SpiceBackend, options: CreateKitOptions = {}):
       byteBackedKernelPaths ? { byteBackedKernelPaths } : {},
     ),
     ...createTimeKit(cspice),
+    ...createFileIoKit(cspice),
     ...createFramesKit(cspice),
     ...createStateKit(cspice),
-
-    // Moved off `raw` onto `kit` (compat surface for higher-level tspice clients).
-    spiceVersion: () => {
-      try {
-        return cspice.tkvrsn("TOOLKIT");
-      } catch (error) {
-        throw wrapSpiceError("spiceVersion", error);
-      }
-    },
-
-    readVirtualOutput: (output) => {
-      try {
-        return cspice.readVirtualOutput(output);
-      } catch (error) {
-        throw wrapSpiceError("readVirtualOutput", error);
-      }
-    },
-
-    newIntCell: (size) => {
-      try {
-        return cspice.newIntCell(size);
-      } catch (error) {
-        throw wrapSpiceError("newIntCell", error);
-      }
-    },
-    newDoubleCell: (size) => {
-      try {
-        return cspice.newDoubleCell(size);
-      } catch (error) {
-        throw wrapSpiceError("newDoubleCell", error);
-      }
-    },
-    newCharCell: (size, length) => {
-      try {
-        return cspice.newCharCell(size, length);
-      } catch (error) {
-        throw wrapSpiceError("newCharCell", error);
-      }
-    },
-    newWindow: (maxIntervals) => {
-      try {
-        return cspice.newWindow(maxIntervals);
-      } catch (error) {
-        throw wrapSpiceError("newWindow", error);
-      }
-    },
-
-    freeCell: (cell) => {
-      try {
-        cspice.freeCell(cell);
-      } catch (error) {
-        throw wrapSpiceError("freeCell", error);
-      }
-    },
-    freeWindow: (window) => {
-      try {
-        cspice.freeWindow(window);
-      } catch (error) {
-        throw wrapSpiceError("freeWindow", error);
-      }
-    },
-
-    cellGeti: (cell, index) => {
-      try {
-        return cspice.cellGeti(cell, index);
-      } catch (error) {
-        throw wrapSpiceError("cellGeti", error);
-      }
-    },
-    cellGetd: (cell, index) => {
-      try {
-        return cspice.cellGetd(cell, index);
-      } catch (error) {
-        throw wrapSpiceError("cellGetd", error);
-      }
-    },
-    cellGetc: (cell, index) => {
-      try {
-        return cspice.cellGetc(cell, index);
-      } catch (error) {
-        throw wrapSpiceError("cellGetc", error);
-      }
-    },
+    ...createCellsWindowsKit(cspice),
 
     kclear: () => {
       try {
