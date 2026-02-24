@@ -1,4 +1,4 @@
-import type { Spice } from "@rybosome/tspice";
+import type { SpiceBackend } from "@rybosome/tspice";
 
 import type {
   RunCaseInputV2,
@@ -7,28 +7,16 @@ import type {
 } from "./types.js";
 import { validateV2ContractResultOrThrow } from "./v2ContractResultValidation.js";
 
-type RunnerSpiceBackend = Spice["raw"] & Pick<Spice["kit"],
-  | "newIntCell"
-  | "newDoubleCell"
-  | "newCharCell"
-  | "newWindow"
-  | "freeCell"
-  | "freeWindow"
-  | "cellGeti"
-  | "cellGetd"
-  | "cellGetc"
->;
-
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
 
 const SPICE_INT32_MIN = -2147483648;
 const SPICE_INT32_MAX = 2147483647;
 
 type CellHandle =
-  | ReturnType<RunnerSpiceBackend["newIntCell"]>
-  | ReturnType<RunnerSpiceBackend["newDoubleCell"]>
-  | ReturnType<RunnerSpiceBackend["newCharCell"]>;
-type WindowHandle = ReturnType<RunnerSpiceBackend["newWindow"]>;
+  | ReturnType<SpiceBackend["kit"]["newIntCell"]>
+  | ReturnType<SpiceBackend["kit"]["newDoubleCell"]>
+  | ReturnType<SpiceBackend["kit"]["newCharCell"]>;
+type WindowHandle = ReturnType<SpiceBackend["kit"]["newWindow"]>;
 
 type RefValue =
   | {
@@ -48,6 +36,16 @@ type FreedHandles = {
   cell: Set<CellHandle>;
   window: Set<WindowHandle>;
 };
+
+function getRawBackend(backend: SpiceBackend): SpiceBackend["raw"] {
+  const nested = (backend as unknown as { raw?: SpiceBackend["raw"] }).raw;
+  return nested ?? (backend as unknown as SpiceBackend["raw"]);
+}
+
+function getKitBackend(backend: SpiceBackend): SpiceBackend["kit"] {
+  const nested = (backend as unknown as { kit?: SpiceBackend["kit"] }).kit;
+  return nested ?? (backend as unknown as SpiceBackend["kit"]);
+}
 
 function formatValue(value: unknown): string {
   if (typeof value === "number") {
@@ -305,35 +303,37 @@ function projectResult(
 }
 
 function freeCellRef(
-  backend: RunnerSpiceBackend,
+  backend: SpiceBackend,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
   target: unknown,
 ): void {
+  const kit = getKitBackend(backend);
   const { name, value: cell } = resolveCellReference(target, refs, "freeCell.target");
   if (freedHandles.cell.has(cell)) {
     refs.delete(name);
     return;
   }
 
-  backend.freeCell(cell);
+  kit.freeCell(cell);
   freedHandles.cell.add(cell);
   refs.delete(name);
 }
 
 function freeWindowRef(
-  backend: RunnerSpiceBackend,
+  backend: SpiceBackend,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
   target: unknown,
 ): void {
+  const kit = getKitBackend(backend);
   const { name, value: window } = resolveWindowReference(target, refs, "freeWindow.target");
   if (freedHandles.window.has(window)) {
     refs.delete(name);
     return;
   }
 
-  backend.freeWindow(window);
+  kit.freeWindow(window);
   freedHandles.window.add(window);
   refs.delete(name);
 }
@@ -346,12 +346,15 @@ function defineRef(refs: Map<string, RefValue>, name: string, value: RefValue, l
 }
 
 async function executeStep(
-  backend: RunnerSpiceBackend,
+  backend: SpiceBackend,
   step: V2WorkflowStep,
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
 ): Promise<Record<string, unknown> | undefined> {
+  const raw = getRawBackend(backend);
+  const kit = getKitBackend(backend);
+
   switch (step.op) {
     case "allocCell": {
       const size = resolveSpiceIntExpression(step.params.size, args, refs, "allocCell.params.size");
@@ -361,9 +364,9 @@ async function executeStep(
 
       let cell: CellHandle;
       if (step.params.kind === "int") {
-        cell = backend.newIntCell(size);
+        cell = kit.newIntCell(size);
       } else if (step.params.kind === "double") {
-        cell = backend.newDoubleCell(size);
+        cell = kit.newDoubleCell(size);
       } else if (step.params.kind === "char") {
         const length = resolveSpiceIntExpression(
           step.params.length,
@@ -375,7 +378,7 @@ async function executeStep(
           invalidArgs("allocCell.params.length must be >= 1");
         }
 
-        cell = backend.newCharCell(size, length);
+        cell = kit.newCharCell(size, length);
       } else {
         unsupportedCall(`Unsupported allocCell kind: ${(step.params as { kind: unknown }).kind}`);
       }
@@ -398,7 +401,7 @@ async function executeStep(
         invalidArgs("allocWindow.params.maxIntervals must be >= 0");
       }
 
-      const window = backend.newWindow(maxIntervals);
+      const window = kit.newWindow(maxIntervals);
       // A backend can reuse a numeric handle value after free; clear stale
       // dedupe state so this new live window is not skipped during teardown.
       freedHandles.window.delete(window);
@@ -425,8 +428,8 @@ async function executeStep(
         );
         const value =
           step.call === "card_c"
-            ? asSpiceInt(backend.card(handle), `spiceCall(${step.call}).result`)
-            : asSpiceInt(backend.size(handle), `spiceCall(${step.call}).result`);
+            ? asSpiceInt(raw.card(handle), `spiceCall(${step.call}).result`)
+            : asSpiceInt(raw.size(handle), `spiceCall(${step.call}).result`);
 
         defineRef(refs, step.as, { kind: "int", value }, `spiceCall(${step.call}).as`);
         return undefined;
@@ -453,7 +456,7 @@ async function executeStep(
           refs,
           `spiceCall(${step.call}).in[1]`,
         );
-        backend.scard(card, handle);
+        raw.scard(card, handle);
         return undefined;
       }
 
@@ -478,7 +481,7 @@ async function executeStep(
           refs,
           `spiceCall(${step.call}).in[1]`,
         );
-        backend.ssize(size, handle);
+        raw.ssize(size, handle);
         return undefined;
       }
 
@@ -507,7 +510,7 @@ async function executeStep(
           refs,
           `spiceCall(${step.call}).in[2]`,
         );
-        backend.valid(size, n, handle);
+        raw.valid(size, n, handle);
         return undefined;
       }
 
@@ -562,9 +565,11 @@ export function asV2RunnerError(error: unknown): RunnerErrorReport {
 
 /** Execute a single v2 parity case against a concrete backend implementation. */
 export async function executeV2CaseWithBackend(
-  backend: RunnerSpiceBackend,
+  backend: SpiceBackend,
   input: RunCaseInputV2,
 ): Promise<unknown> {
+  const kit = getKitBackend(backend);
+
   const refs = new Map<string, RefValue>();
   const freedHandles: FreedHandles = {
     cell: new Set<CellHandle>(),
@@ -621,7 +626,7 @@ export async function executeV2CaseWithBackend(
       }
 
       try {
-        backend.freeCell(refValue.value);
+        kit.freeCell(refValue.value);
         freedHandles.cell.add(refValue.value);
       } catch {
         // best effort cleanup
@@ -635,7 +640,7 @@ export async function executeV2CaseWithBackend(
     }
 
     try {
-      backend.freeWindow(refValue.value);
+      kit.freeWindow(refValue.value);
       freedHandles.window.add(refValue.value);
     } catch {
       // best effort cleanup

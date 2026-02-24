@@ -2,7 +2,7 @@ import * as path from "node:path";
 import crypto from "node:crypto";
 import { readFile, realpath, stat } from "node:fs/promises";
 
-import { spiceClients, type Spice } from "@rybosome/tspice";
+import { spiceClients, type Spice, type SpiceBackend } from "@rybosome/tspice";
 
 import {
   resolveMetaKernelKernelsToLoad,
@@ -16,21 +16,12 @@ import { executeV2CaseWithBackend } from "./v2Executor.js";
 
 import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
 
-type RunnerSpiceBackend = Spice["raw"] & Pick<Spice["kit"],
-  | "newIntCell"
-  | "newDoubleCell"
-  | "newCharCell"
-  | "newWindow"
-  | "freeCell"
-  | "freeWindow"
-  | "cellGeti"
-  | "cellGetd"
-  | "cellGetc"
-  | "spiceVersion"
-  | "readVirtualOutput"
->;
-
-type DispatchFn = (backend: RunnerSpiceBackend, args: unknown[]) => unknown | Promise<unknown>;
+type DispatchFn = (
+  backend: SpiceBackend["raw"],
+  args: unknown[],
+  kit: SpiceBackend["kit"],
+  backendKind: SpiceBackend["kind"],
+) => unknown | Promise<unknown>;
 
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
 
@@ -99,8 +90,8 @@ function assertNumberArg(value: unknown, call: string, index: number): asserts v
 
 
 type Vec3 = [number, number, number];
-type Mat3RowMajor = Parameters<RunnerSpiceBackend["mxm"]>[0];
-type SpkPackedDescriptor = Parameters<RunnerSpiceBackend["spkuds"]>[0];
+type Mat3RowMajor = Parameters<SpiceBackend["raw"]["mxm"]>[0];
+type SpkPackedDescriptor = Parameters<SpiceBackend["raw"]["spkuds"]>[0];
 
 function assertVec3(value: unknown, label: string): asserts value is Vec3 {
   if (!Array.isArray(value)) {
@@ -193,8 +184,8 @@ function kernelKindQueryFromArg(value: unknown, label: string): string {
   invalidArgs(`${label} expects a string or string[] (got ${formatValue(value)})`);
 }
 
-function rewriteKdataOsPathIfNeeded(backend: RunnerSpiceBackend, result: unknown): unknown {
-  if (backend.kind !== "wasm") return result;
+function rewriteKdataOsPathIfNeeded(backendKind: SpiceBackend["kind"], result: unknown): unknown {
+  if (backendKind !== "wasm") return result;
   if (typeof result !== "object" || result === null) return result;
 
   const r = result as Record<string, unknown>;
@@ -691,7 +682,7 @@ const DISPATCH: Record<string, DispatchFn> = {
 
   // time (misc)
   "time.spiceVersion": (backend) => {
-    return backend.spiceVersion();
+    return backend.tkvrsn("TOOLKIT");
   },
 
   "time.tkvrsn": (backend, args) => {
@@ -791,12 +782,12 @@ const DISPATCH: Record<string, DispatchFn> = {
 
 
   // kernels
-  "kernels.furnsh": async (backend, args) => {
+  "kernels.furnsh": async (backend, args, _kit, backendKind) => {
     if (typeof args[0] !== "string") {
       invalidArgs(`kernels.furnsh expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
 
-    if (backend.kind === "wasm") {
+    if (backendKind === "wasm") {
       // WASM kernel paths must be virtual ids; when scenarios pass an OS path,
       // furnish it as bytes under a deterministic virtual id.
       try {
@@ -817,12 +808,12 @@ const DISPATCH: Record<string, DispatchFn> = {
     return null;
   },
 
-  "kernels.unload": async (backend, args) => {
+  "kernels.unload": async (backend, args, _kit, backendKind) => {
     if (typeof args[0] !== "string") {
       invalidArgs(`kernels.unload expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
 
-    if (backend.kind === "wasm") {
+    if (backendKind === "wasm") {
       backend.unload(await wasmVirtualKernelIdFromMaybeOsPath(args[0]));
       return null;
     }
@@ -846,24 +837,24 @@ const DISPATCH: Record<string, DispatchFn> = {
     return backend.ktotal(kindQuery);
   },
 
-  "kernels.kdata": (backend, args) => {
+  "kernels.kdata": (backend, args, _kit, backendKind) => {
     assertInteger(args[0], "kernels.kdata args[0]");
 
     // `kdata` kind is optional.
     if (args.length < 2 || args[1] === undefined) {
-      return rewriteKdataOsPathIfNeeded(backend, backend.kdata(args[0]));
+      return rewriteKdataOsPathIfNeeded(backendKind, backend.kdata(args[0]));
     }
 
     const kindQuery = kernelKindQueryFromArg(args[1], "kernels.kdata args[1]");
-    return rewriteKdataOsPathIfNeeded(backend, backend.kdata(args[0], kindQuery));
+    return rewriteKdataOsPathIfNeeded(backendKind, backend.kdata(args[0], kindQuery));
   },
 
-  "kernels.kinfo": async (backend, args) => {
+  "kernels.kinfo": async (backend, args, _kit, backendKind) => {
     if (typeof args[0] !== "string") {
       invalidArgs(`kernels.kinfo expects args[0] to be a string (got ${formatValue(args[0])})`);
     }
 
-    if (backend.kind === "wasm") {
+    if (backendKind === "wasm") {
       return backend.kinfo(await wasmVirtualKernelIdFromMaybeOsPath(args[0]));
     }
 
@@ -883,14 +874,14 @@ const DISPATCH: Record<string, DispatchFn> = {
     return backend.kxtrct(args[0], args[1] as string[], args[2]);
   },
 
-  "kernels.kplfrm": (backend, args) => {
+  "kernels.kplfrm": (backend, args, kit, backendKind) => {
     // Contract signature mutates a SpiceIntCell; for parity scenarios we return
     // the resulting ID set as an integer array so it can be compared.
     assertInteger(args[0], "kernels.kplfrm args[0]");
 
     const frmcls = args[0];
 
-    if (backend.kind === "wasm") {
+    if (backendKind === "wasm") {
       // The WASM backend doesn't currently export `kplfrm`; emulate it by
       // scanning the kernel pool for `FRAME_<id>_CLASS` assignments.
       const ids = new Set<number>();
@@ -927,14 +918,14 @@ const DISPATCH: Record<string, DispatchFn> = {
     // `CELLTOOSMALL`.
     let size = 1024;
     for (let attempt = 0; attempt < 5; attempt++) {
-      const cell = backend.newIntCell(size);
+      const cell = kit.newIntCell(size);
       try {
         backend.kplfrm(frmcls, cell);
 
         const n = backend.card(cell);
         const out: number[] = [];
         for (let i = 0; i < n; i++) {
-          out.push(backend.cellGeti(cell, i));
+          out.push(kit.cellGeti(cell, i));
         }
         return out;
       } catch (error) {
@@ -945,7 +936,7 @@ const DISPATCH: Record<string, DispatchFn> = {
         }
         throw error;
       } finally {
-        backend.freeCell(cell);
+        kit.freeCell(cell);
       }
     }
 
@@ -1653,7 +1644,7 @@ function inferSpiceFromError(error: unknown): SpiceErrorState | null {
   };
 }
 
-function tryConfigureErrorPolicy(backend: RunnerSpiceBackend): void {
+function tryConfigureErrorPolicy(backend: SpiceBackend["raw"]): void {
   // Not part of the backend contract, but may exist on some implementations.
   const b = backend as unknown as {
     erract?: (op: string, action: string) => void;
@@ -1673,14 +1664,14 @@ function tryConfigureErrorPolicy(backend: RunnerSpiceBackend): void {
   }
 }
 
-function isolateCase(backend: RunnerSpiceBackend): void {
+function isolateCase(backend: SpiceBackend["raw"]): void {
   // Clear any kernel pool / loaded kernels and reset the SPICE error state.
   backend.kclear();
   backend.reset();
   tryConfigureErrorPolicy(backend);
 }
 
-function captureSpiceErrorState(backend: RunnerSpiceBackend): SpiceErrorState {
+function captureSpiceErrorState(backend: SpiceBackend["raw"]): SpiceErrorState {
   let failed = false;
   try {
     failed = backend.failed();
@@ -1740,30 +1731,21 @@ function isMissingNativeAddon(error: unknown): boolean {
 
 async function createBackendForRunner(
   backend: TspiceRunnerBackend,
-): Promise<{ backend: RunnerSpiceBackend; kind: string }> {
-  const withKitMovedHelpers = (spice: Spice): RunnerSpiceBackend => ({
-    ...spice.raw,
-    newIntCell: spice.kit.newIntCell,
-    newDoubleCell: spice.kit.newDoubleCell,
-    newCharCell: spice.kit.newCharCell,
-    newWindow: spice.kit.newWindow,
-    freeCell: spice.kit.freeCell,
-    freeWindow: spice.kit.freeWindow,
-    cellGeti: spice.kit.cellGeti,
-    cellGetd: spice.kit.cellGetd,
-    cellGetc: spice.kit.cellGetc,
-    spiceVersion: spice.kit.spiceVersion,
-    readVirtualOutput: spice.kit.readVirtualOutput,
+): Promise<{ backend: SpiceBackend; kind: string }> {
+  const toBackendContract = (spice: Spice): SpiceBackend => ({
+    raw: spice.raw as unknown as SpiceBackend["raw"],
+    kit: spice.kit,
+    kind: spice.raw.kind,
   });
 
-  const createNodeBackend = async (): Promise<RunnerSpiceBackend> => {
+  const createNodeBackend = async (): Promise<SpiceBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "node" });
-    return withKitMovedHelpers(spice);
+    return toBackendContract(spice);
   };
 
-  const createWasmBackend = async (): Promise<RunnerSpiceBackend> => {
+  const createWasmBackend = async (): Promise<SpiceBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "wasm" });
-    return withKitMovedHelpers(spice);
+    return toBackendContract(spice);
   };
 
   if (backend === "node") {
@@ -1799,7 +1781,7 @@ function normalizeKernelEntry(entry: KernelEntry): { path: string; restrictToDir
 }
 
 async function furnshOsKernelForWasm(
-  backend: RunnerSpiceBackend,
+  backend: SpiceBackend["raw"],
   osPath: string,
   loaded: Set<string>,
   restrictToDir?: string,
@@ -1840,7 +1822,7 @@ async function furnshOsKernelForWasm(
 }
 
 async function furnshOsKernelForNative(
-  backend: RunnerSpiceBackend,
+  backend: SpiceBackend["raw"],
   osPath: string,
   loaded: Set<string>,
   restrictToDir?: string,
@@ -1889,18 +1871,18 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
       // Best-effort cleanup so the runner can be reused across tests or
       // torn down without leaking state/resources.
       try {
-        backend.kclear();
+        backend.raw.kclear();
       } catch {
         // ignore
       }
       try {
-        backend.reset();
+        backend.raw.reset();
       } catch {
         // ignore
       }
 
       // Not part of the backend contract, but may exist on some implementations.
-      const b = backend as unknown as {
+      const b = backend.raw as unknown as {
         dispose?: () => void | Promise<void>;
         close?: () => void | Promise<void>;
       };
@@ -1918,16 +1900,16 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
     },
 
     async runCase(input: RunCaseInput): Promise<RunCaseResult> {
-      isolateCase(backend);
+      isolateCase(backend.raw);
 
       try {
         const loadedKernels = new Set<string>();
         for (const kernelEntry of input.setup?.kernels ?? []) {
           const kernel = normalizeKernelEntry(kernelEntry);
           if (backend.kind === "wasm") {
-            await furnshOsKernelForWasm(backend, kernel.path, loadedKernels, kernel.restrictToDir);
+            await furnshOsKernelForWasm(backend.raw, kernel.path, loadedKernels, kernel.restrictToDir);
           } else {
-            await furnshOsKernelForNative(backend, kernel.path, loadedKernels, kernel.restrictToDir);
+            await furnshOsKernelForNative(backend.raw, kernel.path, loadedKernels, kernel.restrictToDir);
           }
         }
 
@@ -1955,12 +1937,12 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           unsupportedCall(`Unsupported call: ${formatValue(input.call)}`);
         }
 
-        const result = await fn(backend, input.args);
+        const result = await fn(backend.raw, input.args, backend.kit, backend.kind);
         return { ok: true, result };
       } catch (error) {
         const report = safeErrorReport(error);
 
-        const captured = captureSpiceErrorState(backend);
+        const captured = captureSpiceErrorState(backend.raw);
         const inferredState = inferSpiceFromError(error);
 
         // Prefer the backend-reported SPICE state, but fall back to inference
@@ -1973,7 +1955,7 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
 
         // Ensure subsequent cases start clean.
         try {
-          backend.reset();
+          backend.raw.reset();
         } catch {
           // ignore
         }
@@ -1982,12 +1964,12 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
       } finally {
         // Per-case isolation: don't allow kernels or error state to leak.
         try {
-          backend.kclear();
+          backend.raw.kclear();
         } catch {
           // ignore
         }
         try {
-          backend.reset();
+          backend.raw.reset();
         } catch {
           // ignore
         }
