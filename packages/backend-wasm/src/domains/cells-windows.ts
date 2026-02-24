@@ -354,47 +354,6 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
   }
 
   return {
-    newIntCell: (size) => {
-      assertSpiceInt32NonNegative(size, "newIntCell(size)");
-      const cell = tspiceCallNewIntCell(module, size);
-      allocatedCells.add(cell as unknown as number);
-      return cell;
-    },
-    newDoubleCell: (size) => {
-      assertSpiceInt32NonNegative(size, "newDoubleCell(size)");
-      const cell = tspiceCallNewDoubleCell(module, size);
-      allocatedCells.add(cell as unknown as number);
-      return cell;
-    },
-    newCharCell: (size, length) => {
-      assertSpiceInt32NonNegative(size, "newCharCell(size)");
-      assertSpiceInt32(length, "newCharCell(length)", { min: 1 });
-      const cell = tspiceCallNewCharCell(module, size, length);
-      allocatedCells.add(cell as unknown as number);
-      charCellLengths.set(cell as unknown as number, length);
-      return cell;
-    },
-    newWindow: (maxIntervals) => {
-      assertSpiceInt32NonNegative(maxIntervals, "newWindow(maxIntervals)");
-      const window = tspiceCallNewWindow(module, maxIntervals);
-      allocatedWindows.add(window as unknown as number);
-      return window;
-    },
-
-    freeCell: (cell) => {
-      const handle = cell as unknown as number;
-      assertKnownCell(handle, "freeCell()");
-      tspiceCallFreeCell(module, handle);
-      allocatedCells.delete(handle);
-      charCellLengths.delete(handle);
-    },
-    freeWindow: (window) => {
-      const handle = window as unknown as number;
-      assertKnownWindow(handle, "freeWindow()");
-      tspiceCallFreeWindow(module, handle);
-      allocatedWindows.delete(handle);
-    },
-
     ssize: (size, cell) => {
       assertSpiceInt32NonNegative(size, "ssize(size)");
       assertKnownCellOrWindow(cell as unknown as number, "ssize()");
@@ -433,28 +392,6 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
       assertKnownCell(cell as unknown as number, "insrtc()");
       tspiceCallInsrtc(module, item, cell);
     },
-
-    cellGeti: (cell, index) => {
-      assertSpiceInt32NonNegative(index, "cellGeti(index)");
-      assertKnownCell(cell as unknown as number, "cellGeti()");
-      return tspiceCallCellGeti(module, cell, index);
-    },
-    cellGetd: (cell, index) => {
-      assertSpiceInt32NonNegative(index, "cellGetd(index)");
-      assertKnownCell(cell as unknown as number, "cellGetd()");
-      return tspiceCallCellGetd(module, cell, index);
-    },
-    cellGetc: (cell, index) => {
-      assertSpiceInt32NonNegative(index, "cellGetc(index)");
-      assertKnownCell(cell as unknown as number, "cellGetc()");
-      const handle = cell as unknown as number;
-      const outMaxBytes = charCellLengths.get(handle);
-      if (outMaxBytes === undefined) {
-        throw new RangeError(`cellGetc(): unknown/expired char cell handle ${handle} (handles are per-module)`);
-      }
-      return tspiceCallCellGetc(module, cell, index, outMaxBytes);
-    },
-
     wninsd: (left, right, window) => {
       assertKnownWindow(window as unknown as number, "wninsd()");
       tspiceCallWninsd(module, left, right, window);
