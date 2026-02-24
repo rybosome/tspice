@@ -3,14 +3,6 @@ import path from "node:path";
 
 import { listWorkspacePackageManifests } from "../workspace-packages.mjs";
 
-const BACKEND_FOCUS_PACKAGE_NAMES = [
-  "@rybosome/tspice-backend-node",
-  "@rybosome/tspice-backend-wasm",
-];
-const BACKEND_PARITY_CONTRIBUTION_REASON =
-  "n/a: package-local Vitest coverage summaries only include files for the package under test. " +
-  "Parity-checking tests currently do not emit backend-node/backend-wasm coverage summaries, so a true backend parity contribution metric is unavailable.";
-
 const METRICS = ["lines", "statements", "functions", "branches"];
 
 const JSON_OUTPUT_PATH = process.env.COVERAGE_REPORT_JSON ?? "coverage/coverage-report.json";
@@ -112,15 +104,6 @@ function formatMetric(metric) {
   return `${metric.pct.toFixed(2)}% (${metric.covered}/${metric.total})`;
 }
 
-function formatTotalsInline(totals) {
-  return [
-    `lines ${formatMetric(totals.lines)}`,
-    `statements ${formatMetric(totals.statements)}`,
-    `functions ${formatMetric(totals.functions)}`,
-    `branches ${formatMetric(totals.branches)}`,
-  ].join(" · ");
-}
-
 function hasCoverageScript(manifest) {
   return (
     typeof manifest.scripts?.["test:coverage"] === "string" &&
@@ -182,7 +165,6 @@ async function readCoverageSummary(target) {
 
 function toMarkdown(report) {
   const allUnit = report.views.allUnitTests;
-  const backendClassical = report.views.backendClassical;
 
   const observedPackages =
     report.observedPackages.length === 0
@@ -198,18 +180,17 @@ function toMarkdown(report) {
           .map((entry) => `- ${entry.name} (${entry.summaryPath})`)
           .join("\n");
 
-  const backendVisibilityRows = report.backendPackageVisibility
-    .map((entry) => {
-      const allUnitMetrics = entry.allUnitTests
-        ? formatTotalsInline(entry.allUnitTests)
-        : "n/a";
-      const backendClassicalMetrics = entry.backendClassical
-        ? formatTotalsInline(entry.backendClassical)
-        : "n/a";
-
-      return `| ${entry.name} | ${allUnitMetrics} | ${backendClassicalMetrics} | n/a |`;
-    })
-    .join("\n");
+  const packageSummaries =
+    report.packageSummaries.length === 0
+      ? "- none"
+      : [
+          "| Package | Lines | Statements | Functions | Branches |",
+          "| --- | ---: | ---: | ---: | ---: |",
+          ...report.packageSummaries.map(
+            (entry) =>
+              `| ${entry.name} | ${formatMetric(entry.totals.lines)} | ${formatMetric(entry.totals.statements)} | ${formatMetric(entry.totals.functions)} | ${formatMetric(entry.totals.branches)} |`,
+          ),
+        ].join("\n");
 
   const incompleteNotice = report.complete
     ? ""
@@ -222,18 +203,12 @@ function toMarkdown(report) {
     "## Coverage summary (report-only)",
     incompleteNotice,
     "",
-    "| View | Package count | Lines | Statements | Functions | Branches |",
+    "| Summary | Package count | Lines | Statements | Functions | Branches |",
     "| --- | ---: | ---: | ---: | ---: | ---: |",
     `| ${allUnit.lens} | ${allUnit.packageCount} | ${formatMetric(allUnit.totals.lines)} | ${formatMetric(allUnit.totals.statements)} | ${formatMetric(allUnit.totals.functions)} | ${formatMetric(allUnit.totals.branches)} |`,
-    `| ${backendClassical.lens} | ${backendClassical.packageCount} | ${formatMetric(backendClassical.totals.lines)} | ${formatMetric(backendClassical.totals.statements)} | ${formatMetric(backendClassical.totals.functions)} | ${formatMetric(backendClassical.totals.branches)} |`,
-    "| backend-parity-contribution | n/a | n/a | n/a | n/a | n/a |",
     "",
-    `Parity contribution semantics: ${report.views.backendParityContribution.reason}`,
-    "",
-    "### Backend package visibility (`backend-node` / `backend-wasm`)",
-    "| Package | All unit tests | Backend classical (parity disabled) | Backend parity contribution |",
-    "| --- | --- | --- | --- |",
-    backendVisibilityRows,
+    "### Package coverage summaries",
+    packageSummaries,
     "",
     "### Coverage inputs",
     observedPackages,
@@ -262,28 +237,6 @@ async function main() {
     );
   }
 
-  const observedByName = new Map(observed.map((entry) => [entry.name, entry]));
-
-  const backendPackageVisibility = BACKEND_FOCUS_PACKAGE_NAMES.map((packageName) => {
-    const entry = observedByName.get(packageName);
-
-    return {
-      name: packageName,
-      allUnitTests: entry ? finalizeSummaryTotals(entry.summary.total) : null,
-      backendClassical: entry ? finalizeSummaryTotals(entry.summary.total) : null,
-      parityContribution: {
-        status: "n/a",
-        reason: BACKEND_PARITY_CONTRIBUTION_REASON,
-      },
-      observed: Boolean(entry),
-      summaryPath: entry?.summaryPath ?? null,
-    };
-  });
-
-  const backendClassicalObserved = observed.filter((entry) =>
-    BACKEND_FOCUS_PACKAGE_NAMES.includes(entry.name),
-  );
-
   const report = {
     generatedAt: new Date().toISOString(),
     allowMissingSummaries: ALLOW_MISSING_SUMMARIES,
@@ -294,6 +247,12 @@ async function main() {
       summaryPath: entry.summaryPath,
       manifestPath: entry.manifestPath,
     })),
+    packageSummaries: observed.map((entry) => ({
+      name: entry.name,
+      summaryPath: entry.summaryPath,
+      manifestPath: entry.manifestPath,
+      totals: finalizeSummaryTotals(entry.summary.total),
+    })),
     missingSummaries: missing.map((entry) => ({
       name: entry.name,
       summaryPath: entry.summaryPath,
@@ -301,14 +260,7 @@ async function main() {
     })),
     views: {
       allUnitTests: aggregateLens("all-unit-tests", observed),
-      backendClassical: aggregateLens("backend-classical-tests", backendClassicalObserved),
-      backendParityContribution: {
-        lens: "backend-parity-contribution",
-        status: "n/a",
-        reason: BACKEND_PARITY_CONTRIBUTION_REASON,
-      },
     },
-    backendPackageVisibility,
   };
 
   const markdown = toMarkdown(report);
