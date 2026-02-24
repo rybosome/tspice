@@ -21,6 +21,8 @@ Use it as practical guidance for planning, implementation, testing, docs updates
 
 Use this as the default routing map before editing files.
 
+- Keep this table in sync with repo structure: if you add, remove, rename, or move a package/app/path listed here, update this table in the same PR.
+
 | If your task is about... | Primary location(s) | Notes |
 | --- | --- | --- |
 | Public facade/API exports | `packages/tspice` | End-user entrypoint (`@rybosome/tspice`) and `raw`/`kit` user-facing surface. |
@@ -55,12 +57,17 @@ This boundary is core to repo semantics.
 
 ## 4) Type-safety expectations
 
-Production code quality gates:
+Production code quality gates (for new/changed production code):
 
-- Avoid unsafe escape hatches in production code:
+- Avoid introducing unsafe escape hatches:
   - no `as unknown as ...`
+  - no `as any`
   - no unbounded `any`
+  - no `// @ts-ignore`
+  - no `// @ts-expect-error` without a narrow, documented reason
+  - no `eslint-disable` used to bypass type-safety rules
   - no unsafe casts used to bypass typing/contracts
+- If an exception is truly necessary, keep it narrow and document the reason inline.
 - Prefer explicit types and narrowings that explain intent.
 - Keep public API types stable and legible.
 - If runtime input is uncertain, validate/parse explicitly instead of asserting blindly.
@@ -155,7 +162,7 @@ Definition of Done checklist:
 - [ ] Type-safety expectations are met.
 - [ ] Required tests/parity expectations are met (or explicitly exceptioned).
 - [ ] Docs/JSDoc are updated when needed.
-- [ ] CI status on GitHub is green for required checks.
+- [ ] GitHub CI required checks have completed (not pending) and are green.
 - [ ] PR description captures validation and any known limitations.
 
 ## 9) Labeling policy status (placeholder only)
