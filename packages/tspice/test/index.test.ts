@@ -8,7 +8,11 @@ describe("@rybosome/tspice", () => {
     const { spice, dispose } = await spiceClients.toSync();
     try {
       expect(spice.raw.kind).toBe("wasm");
+      expect((spice.raw as { spiceVersion?: unknown }).spiceVersion).toBeUndefined();
+      expect((spice.raw as { newIntCell?: unknown }).newIntCell).toBeUndefined();
+
       expect(spice.kit.toolkitVersion()).toBeTypeOf("string");
+      expect(spice.kit.spiceVersion()).toBeTypeOf("string");
     } finally {
       await dispose();
     }

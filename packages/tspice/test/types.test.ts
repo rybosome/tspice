@@ -58,9 +58,40 @@ type _AsyncSpiceHasNoFurnsh = AssertFalse<HasKey<AsyncSpice, "furnsh">>;
 type _AsyncRawKeysMatch = Assert<KeysEqual<AsyncSpice["raw"], SyncSpice["raw"]>>;
 type _AsyncKitKeysMatch = Assert<KeysEqual<AsyncSpice["kit"], SyncSpice["kit"]>>;
 
+// Moved helpers: hidden on `raw`, exposed on `kit`.
+type _RawHidesNewIntCell = AssertFalse<HasKey<SyncSpice["raw"], "newIntCell">>;
+type _RawHidesNewDoubleCell = AssertFalse<HasKey<SyncSpice["raw"], "newDoubleCell">>;
+type _RawHidesNewCharCell = AssertFalse<HasKey<SyncSpice["raw"], "newCharCell">>;
+type _RawHidesNewWindow = AssertFalse<HasKey<SyncSpice["raw"], "newWindow">>;
+type _RawHidesFreeCell = AssertFalse<HasKey<SyncSpice["raw"], "freeCell">>;
+type _RawHidesFreeWindow = AssertFalse<HasKey<SyncSpice["raw"], "freeWindow">>;
+type _RawHidesCellGeti = AssertFalse<HasKey<SyncSpice["raw"], "cellGeti">>;
+type _RawHidesCellGetd = AssertFalse<HasKey<SyncSpice["raw"], "cellGetd">>;
+type _RawHidesCellGetc = AssertFalse<HasKey<SyncSpice["raw"], "cellGetc">>;
+type _RawHidesSpiceVersion = AssertFalse<HasKey<SyncSpice["raw"], "spiceVersion">>;
+type _RawHidesReadVirtualOutput = AssertFalse<HasKey<SyncSpice["raw"], "readVirtualOutput">>;
+
+type _KitHasNewIntCell = Assert<HasKey<SyncSpice["kit"], "newIntCell">>;
+type _KitHasNewDoubleCell = Assert<HasKey<SyncSpice["kit"], "newDoubleCell">>;
+type _KitHasNewCharCell = Assert<HasKey<SyncSpice["kit"], "newCharCell">>;
+type _KitHasNewWindow = Assert<HasKey<SyncSpice["kit"], "newWindow">>;
+type _KitHasFreeCell = Assert<HasKey<SyncSpice["kit"], "freeCell">>;
+type _KitHasFreeWindow = Assert<HasKey<SyncSpice["kit"], "freeWindow">>;
+type _KitHasCellGeti = Assert<HasKey<SyncSpice["kit"], "cellGeti">>;
+type _KitHasCellGetd = Assert<HasKey<SyncSpice["kit"], "cellGetd">>;
+type _KitHasCellGetc = Assert<HasKey<SyncSpice["kit"], "cellGetc">>;
+type _KitHasSpiceVersion = Assert<HasKey<SyncSpice["kit"], "spiceVersion">>;
+type _KitHasReadVirtualOutput = Assert<HasKey<SyncSpice["kit"], "readVirtualOutput">>;
+
 // Spot-check a few async return types.
 type _AsyncToolkitVersionReturnsPromise = Assert<
   ReturnType<AsyncSpice["kit"]["toolkitVersion"]> extends Promise<string> ? true : false
+>;
+type _AsyncSpiceVersionReturnsPromise = Assert<
+  ReturnType<AsyncSpice["kit"]["spiceVersion"]> extends Promise<string> ? true : false
+>;
+type _AsyncNewIntCellReturnsPromise = Assert<
+  ReturnType<AsyncSpice["kit"]["newIntCell"]> extends Promise<unknown> ? true : false
 >;
 type _AsyncKtotalReturnsPromise = Assert<
   ReturnType<AsyncSpice["raw"]["ktotal"]> extends Promise<number> ? true : false

@@ -23,6 +23,20 @@ const blockedStringKeys = new Set<string>([
   "__lookupSetter__",
 ]);
 
+const hiddenRawToKitMethods = new Set<string>([
+  "newIntCell",
+  "newDoubleCell",
+  "newCharCell",
+  "newWindow",
+  "freeCell",
+  "freeWindow",
+  "cellGeti",
+  "cellGetd",
+  "cellGetc",
+  "spiceVersion",
+  "readVirtualOutput",
+]);
+
 const isSafeRpcKey = (key: string): boolean => /^[A-Za-z_$][\w$]*$/.test(key);
 
 function createNamespacedProxy(
@@ -71,6 +85,9 @@ function createNamespacedProxy(
           return (_target as Record<string, unknown>)[prop];
         }
       }
+
+      // Helpers intentionally moved from `raw` to `kit`.
+      if (namespace === "raw" && hiddenRawToKitMethods.has(prop)) return undefined;
 
       if (!isSafeRpcKey(prop)) return undefined;
 

@@ -5,6 +5,20 @@ import type { SpiceBackend } from "@rybosome/tspice";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
+type CoordsVectorsBackend = Pick<
+  SpiceBackend,
+  | "reclat"
+  | "latrec"
+  | "recsph"
+  | "sphrec"
+  | "vnorm"
+  | "vhat"
+  | "vdot"
+  | "vcrss"
+  | "mxv"
+  | "mtxv"
+>;
+
 function expectVec3Close(actual: [number, number, number], expected: [number, number, number], precision = 12) {
   for (let i = 0; i < 3; i++) {
     expect(actual[i]!).toBeCloseTo(expected[i]!, precision);
@@ -14,7 +28,7 @@ function expectVec3Close(actual: [number, number, number], expected: [number, nu
 describe("coordinate conversions + vector/matrix helpers", () => {
   const itNode = it.runIf(nodeBackendAvailable);
 
-  function runSharedTests(backend: SpiceBackend) {
+  function runSharedTests(backend: CoordsVectorsBackend) {
     const rect: [number, number, number] = [1, 2, 3];
 
     // reclat/latrec round-trip
