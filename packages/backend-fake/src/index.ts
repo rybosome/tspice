@@ -2211,6 +2211,8 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
   } satisfies SpiceRawBackend & SpiceKitBackend;
 
   const {
+    spiceVersion,
+    readVirtualOutput,
     newIntCell,
     newDoubleCell,
     newCharCell,
@@ -2227,6 +2229,8 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     kind: "fake",
     raw,
     kit: {
+      spiceVersion,
+      readVirtualOutput,
       newIntCell,
       newDoubleCell,
       newCharCell,

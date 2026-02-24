@@ -108,11 +108,14 @@ export async function createWasmBackend(
   const fsApi = createWasmFs(module);
   const spiceHandles = createSpiceHandleRegistry();
   const virtualOutputs = createVirtualOutputRegistry();
+  const { spiceVersion: kitSpiceVersion, ...timeApi } = createTimeApi(module, toolkitVersion);
+  const { readVirtualOutput: kitReadVirtualOutput, ...fileIoApi } =
+    createFileIoApi(module, spiceHandles, virtualOutputs);
 
   const backend = {
     kind: "wasm",
     raw: {
-      ...createTimeApi(module, toolkitVersion),
+      ...timeApi,
       ...createKernelsApi(module, fsApi),
       ...createKernelPoolApi(module),
       ...createIdsNamesApi(module),
@@ -121,13 +124,15 @@ export async function createWasmBackend(
       ...createGeometryApi(module),
       ...createGeometryGfApi(module),
       ...createCoordsVectorsApi(module),
-      ...createFileIoApi(module, spiceHandles, virtualOutputs),
+      ...fileIoApi,
       ...createErrorApi(module),
       ...createCellsWindowsApi(module),
       ...createEkApi(module, spiceHandles),
       ...createDskApi(module, spiceHandles),
     },
     kit: {
+      spiceVersion: kitSpiceVersion,
+      readVirtualOutput: kitReadVirtualOutput,
       ...createCellsWindowsKitApi(module),
     },
   } satisfies SpiceBackend;
