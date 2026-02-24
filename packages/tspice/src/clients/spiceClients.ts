@@ -120,6 +120,31 @@ type SpiceLike = Pick<Spice, "raw" | "kit"> | Pick<SpiceAsync, "raw" | "kit">;
 
 type RpcNamespace = "raw" | "kit";
 
+type TransportSurfaceMethodKeys = {
+  rawMethodKeys: ReadonlySet<string>;
+  kitMethodKeys: ReadonlySet<string>;
+};
+
+function snapshotFunctionKeys(target: object): ReadonlySet<string> {
+  const out = new Set<string>();
+  const obj = target as Record<string, unknown>;
+
+  for (const key of Object.keys(obj)) {
+    if (typeof obj[key] === "function") {
+      out.add(key);
+    }
+  }
+
+  return out;
+}
+
+function snapshotTransportSurfaceMethodKeys(spice: SpiceLike): TransportSurfaceMethodKeys {
+  return {
+    rawMethodKeys: snapshotFunctionKeys(spice.raw as object),
+    kitMethodKeys: snapshotFunctionKeys(spice.kit as object),
+  };
+}
+
 function createSpiceTransportFromSpiceLike(spice: SpiceLike): SpiceTransport {
   return {
     request: async (op: string, args: unknown[]): Promise<unknown> => {
@@ -229,8 +254,10 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         : undefined;
 
       // Use an uncached spice instance for kernel loading/cleanup.
-      const raw = createSpiceSyncFromTransport(baseTransport);
-      const spice = createSpiceSyncFromTransport(cachedTransport ?? baseTransport);
+      const surfaceMethodKeys = snapshotTransportSurfaceMethodKeys(baseSpice);
+
+      const raw = createSpiceSyncFromTransport(baseTransport, surfaceMethodKeys);
+      const spice = createSpiceSyncFromTransport(cachedTransport ?? baseTransport, surfaceMethodKeys);
 
       // Preserve non-function backend metadata.
       Object.defineProperty(raw.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
@@ -297,7 +324,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         : undefined;
 
       const transport = cachedTransport ?? baseTransport;
-      const spice = createSpiceAsyncFromTransport(transport);
+      const surfaceMethodKeys = snapshotTransportSurfaceMethodKeys(baseSpice);
+      const spice = createSpiceAsyncFromTransport(transport, surfaceMethodKeys);
 
       // Preserve non-function backend metadata.
       Object.defineProperty(spice.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });

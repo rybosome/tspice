@@ -17,48 +17,14 @@ export type CreateSpiceOptions = CreateBackendOptions & {
 
 export type CreateSpiceAsyncOptions = CreateSpiceOptions;
 
-const HIDDEN_RAW_TO_KIT_METHODS = new Set<string>([
-  "newIntCell",
-  "newDoubleCell",
-  "newCharCell",
-  "newWindow",
-  "freeCell",
-  "freeWindow",
-  "cellGeti",
-  "cellGetd",
-  "cellGetc",
-  "spiceVersion",
-  "readVirtualOutput",
-]);
-
-function isHiddenRawToKitMethod(prop: PropertyKey): boolean {
-  return typeof prop === "string" && HIDDEN_RAW_TO_KIT_METHODS.has(prop);
-}
-
-/**
- * Create a sync {@link Spice} client backed by the requested backend/transport.
- */
-export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
-  const backend = options.backendInstance ?? (await createBackend(options));
-
-  // Track kernels loaded from bytes so `kit.unloadKernel()` can accept flexible
-  // path forms (e.g. `/kernels/foo.tls`) across backends.
-  const byteBackedKernelPaths = new Set<string>();
-
-  // Keep `raw.kclear()` and `kit`'s internal tracking in sync.
-  //
-  // Use a Proxy so:
-  // - prototype methods aren't lost (object spread only copies own props)
-  // - methods are bound to the original backend instance (avoid mis-bound `this`)
-  // - method identity is stable (`raw.furnsh === raw.furnsh`)
-  // - raw->kit moved helpers are hidden from `spice.raw`
+function createRawApi(
+  backend: SpiceBackend,
+  byteBackedKernelPaths: Set<string>,
+): Spice["raw"] {
+  // Keep raw methods bound and preserve kclear bookkeeping synchronization.
   const boundMethods = new Map<PropertyKey, Function>();
   const handler: ProxyHandler<SpiceBackend> = {
     get: (target, prop) => {
-      if (isHiddenRawToKitMethod(prop)) {
-        return undefined;
-      }
-
       // Use `target` as the receiver so accessor/prototype lookups see
       // `this === target` (not the Proxy). Calls are still applied to `target`
       // below to preserve `this` binding for methods.
@@ -94,21 +60,55 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
       return value;
     },
-
-    has: (target, prop) => {
-      if (isHiddenRawToKitMethod(prop)) return false;
-      return Reflect.has(target, prop);
-    },
-
-    ownKeys: (target) => Reflect.ownKeys(target).filter((key) => !isHiddenRawToKitMethod(key)),
-
-    getOwnPropertyDescriptor: (target, prop) => {
-      if (isHiddenRawToKitMethod(prop)) return undefined;
-      return Reflect.getOwnPropertyDescriptor(target, prop);
-    },
   };
 
-  const raw: Spice["raw"] = new Proxy(backend, handler) as unknown as Spice["raw"];
+  const rawSource = new Proxy(backend, handler) as SpiceBackend;
+
+  // True breaking move from `raw` to `kit`: remove migrated helpers at raw
+  // construction time (no raw proxy-hide/denylist compat layer).
+  const {
+    newIntCell: omittedNewIntCell,
+    newDoubleCell: omittedNewDoubleCell,
+    newCharCell: omittedNewCharCell,
+    newWindow: omittedNewWindow,
+    freeCell: omittedFreeCell,
+    freeWindow: omittedFreeWindow,
+    cellGeti: omittedCellGeti,
+    cellGetd: omittedCellGetd,
+    cellGetc: omittedCellGetc,
+    spiceVersion: omittedSpiceVersion,
+    readVirtualOutput: omittedReadVirtualOutput,
+    ...raw
+  } = rawSource;
+
+  void [
+    omittedNewIntCell,
+    omittedNewDoubleCell,
+    omittedNewCharCell,
+    omittedNewWindow,
+    omittedFreeCell,
+    omittedFreeWindow,
+    omittedCellGeti,
+    omittedCellGetd,
+    omittedCellGetc,
+    omittedSpiceVersion,
+    omittedReadVirtualOutput,
+  ];
+
+  return raw as Spice["raw"];
+}
+
+/**
+ * Create a sync {@link Spice} client backed by the requested backend/transport.
+ */
+export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
+  const backend = options.backendInstance ?? (await createBackend(options));
+
+  // Track kernels loaded from bytes so `kit.unloadKernel()` can accept flexible
+  // path forms (e.g. `/kernels/foo.tls`) across backends.
+  const byteBackedKernelPaths = new Set<string>();
+
+  const raw = createRawApi(backend, byteBackedKernelPaths);
   const kit = createKit(backend, { byteBackedKernelPaths });
 
   return { raw, kit };
