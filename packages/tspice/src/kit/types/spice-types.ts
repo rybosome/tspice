@@ -9,10 +9,26 @@ import type {
 } from "../../types.js";
 import type { Mat3 } from "../math/mat3.js";
 
+type MovedRawHelperKey =
+  | "spiceVersion"
+  | "readVirtualOutput"
+  | "newIntCell"
+  | "newDoubleCell"
+  | "newCharCell"
+  | "newWindow"
+  | "freeCell"
+  | "freeWindow"
+  | "cellGeti"
+  | "cellGetd"
+  | "cellGetc";
+
+type MovedRawHelpers = Pick<SpiceBackend, MovedRawHelperKey>;
+type SpiceRaw = Omit<SpiceBackend, MovedRawHelperKey>;
+
 /**
  * Higher-level helpers and convenience APIs built on top of the raw backend.
  */
-export type SpiceKit = {
+export type SpiceKit = MovedRawHelpers & {
   /** Load a SPICE kernel. */
   loadKernel(kernel: KernelSource): void;
   /** Unload a previously-loaded SPICE kernel. */
@@ -48,7 +64,7 @@ export type PromisifyObject<T extends object> = {
  */
 export type Spice = {
   /** Raw backend primitives (verbatim). */
-  raw: SpiceBackend;
+  raw: SpiceRaw;
   /** Higher-level helpers and typed conveniences. */
   kit: SpiceKit;
 };
@@ -64,6 +80,6 @@ export type SpiceSync = Spice;
  * Mirrors the sync surface area, but wraps every function in a `Promise`.
  */
 export type SpiceAsync = {
-  raw: PromisifyObject<SpiceBackend>;
+  raw: PromisifyObject<SpiceRaw>;
   kit: PromisifyObject<SpiceKit>;
 };

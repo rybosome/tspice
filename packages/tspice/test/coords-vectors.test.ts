@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { brandMat3RowMajor, spiceClients } from "@rybosome/tspice";
-import type { SpiceBackend } from "@rybosome/tspice";
+import type { Spice } from "@rybosome/tspice";
 
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
@@ -14,7 +14,7 @@ function expectVec3Close(actual: [number, number, number], expected: [number, nu
 describe("coordinate conversions + vector/matrix helpers", () => {
   const itNode = it.runIf(nodeBackendAvailable);
 
-  function runSharedTests(backend: SpiceBackend) {
+  function runSharedTests(backend: Spice["raw"]) {
     const rect: [number, number, number] = [1, 2, 3];
 
     // reclat/latrec round-trip

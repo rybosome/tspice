@@ -39,4 +39,22 @@ describe("spiceClients.toAsync()", () => {
       await dispose();
     }
   });
+
+  it("hides moved helper methods on raw and exposes them on kit", async () => {
+    const { spice, dispose } = await spiceClients.toAsync({ backend: "wasm" });
+    try {
+      await expect((spice.raw as unknown as { spiceVersion: () => Promise<string> }).spiceVersion()).rejects.toThrow();
+      await expect(
+        (spice.raw as unknown as { newIntCell: (size: number) => Promise<number> }).newIntCell(4),
+      ).rejects.toThrow();
+
+      const toolkitVersion = await spice.kit.toolkitVersion();
+      expect(await spice.kit.spiceVersion()).toBe(toolkitVersion);
+
+      const cell = await spice.kit.newIntCell(4);
+      await spice.kit.freeCell(cell);
+    } finally {
+      await dispose();
+    }
+  });
 });

@@ -45,6 +45,12 @@ type _SyncClientHasDispose = Assert<HasKey<SyncClient, "dispose">>;
 type _SyncSpiceHasRaw = Assert<HasKey<SyncSpice, "raw">>;
 type _SyncSpiceHasKit = Assert<HasKey<SyncSpice, "kit">>;
 type _SyncSpiceHasNoFurnsh = AssertFalse<HasKey<SyncSpice, "furnsh">>;
+type _SyncRawHidesSpiceVersion = AssertFalse<HasKey<SyncSpice["raw"], "spiceVersion">>;
+type _SyncRawHidesNewIntCell = AssertFalse<HasKey<SyncSpice["raw"], "newIntCell">>;
+type _SyncKitHasSpiceVersion = Assert<HasKey<SyncSpice["kit"], "spiceVersion">>;
+type _SyncKitHasReadVirtualOutput = Assert<HasKey<SyncSpice["kit"], "readVirtualOutput">>;
+type _SyncKitHasNewIntCell = Assert<HasKey<SyncSpice["kit"], "newIntCell">>;
+type _SyncKitHasCellGeti = Assert<HasKey<SyncSpice["kit"], "cellGeti">>;
 
 type KeysEqual<A extends object, B extends object> = [keyof A] extends [keyof B]
   ? [keyof B] extends [keyof A]
@@ -64,6 +70,9 @@ type _AsyncToolkitVersionReturnsPromise = Assert<
 >;
 type _AsyncKtotalReturnsPromise = Assert<
   ReturnType<AsyncSpice["raw"]["ktotal"]> extends Promise<number> ? true : false
+>;
+type _AsyncNewIntCellReturnsPromise = Assert<
+  ReturnType<AsyncSpice["kit"]["newIntCell"]> extends Promise<number> ? true : false
 >;
 type _AsyncRawKindIsNotPromise = AssertFalse<
   AsyncSpice["raw"]["kind"] extends Promise<unknown> ? true : false

@@ -17,6 +17,25 @@ export type CreateSpiceOptions = CreateBackendOptions & {
 
 export type CreateSpiceAsyncOptions = CreateSpiceOptions;
 
+const HIDDEN_RAW_HELPER_KEYS = new Set<string>([
+  // Moved off `raw` onto `kit`.
+  "newIntCell",
+  "newDoubleCell",
+  "newCharCell",
+  "newWindow",
+  "freeCell",
+  "freeWindow",
+  "cellGeti",
+  "cellGetd",
+  "cellGetc",
+  "spiceVersion",
+  "readVirtualOutput",
+]);
+
+function isHiddenRawHelperKey(prop: PropertyKey): boolean {
+  return typeof prop === "string" && HIDDEN_RAW_HELPER_KEYS.has(prop);
+}
+
 /**
  * Create a sync {@link Spice} client backed by the requested backend/transport.
  */
@@ -33,9 +52,14 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   // - prototype methods aren't lost (object spread only copies own props)
   // - methods are bound to the original backend instance (avoid mis-bound `this`)
   // - method identity is stable (`raw.furnsh === raw.furnsh`)
+  // - selected helper methods can be hidden from the public `raw` surface
   const boundMethods = new Map<PropertyKey, Function>();
   const handler: ProxyHandler<SpiceBackend> = {
     get: (target, prop) => {
+      if (isHiddenRawHelperKey(prop)) {
+        return undefined;
+      }
+
       // Use `target` as the receiver so accessor/prototype lookups see
       // `this === target` (not the Proxy). Calls are still applied to `target`
       // below to preserve `this` binding for methods.
@@ -71,10 +95,25 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
       return value;
     },
+
+    has: (target, prop) => {
+      if (isHiddenRawHelperKey(prop)) return false;
+      return Reflect.has(target, prop);
+    },
+
+    ownKeys: (target) => Reflect.ownKeys(target).filter((key) => !isHiddenRawHelperKey(key)),
+
+    getOwnPropertyDescriptor: (target, prop) => {
+      if (isHiddenRawHelperKey(prop)) return undefined;
+      return Reflect.getOwnPropertyDescriptor(target, prop);
+    },
   };
 
-  const raw: SpiceBackend = new Proxy(backend, handler);
-  const kit = createKit(raw, { byteBackedKernelPaths });
+  const raw = new Proxy(backend, handler) as unknown as Spice["raw"];
+  const kit = createKit(raw as unknown as SpiceBackend, {
+    byteBackedKernelPaths,
+    rawHelperSource: backend,
+  });
 
   return { raw, kit };
 }
