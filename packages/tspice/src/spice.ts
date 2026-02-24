@@ -75,46 +75,7 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
   const rawInternal = new Proxy(backend.raw, internalHandler);
 
-  const hiddenRawHelpers = new Set<PropertyKey>([
-    "spiceVersion",
-    "readVirtualOutput",
-    "newIntCell",
-    "newDoubleCell",
-    "newCharCell",
-    "newWindow",
-    "freeCell",
-    "freeWindow",
-    "cellGeti",
-    "cellGetd",
-    "cellGetc",
-  ]);
-  const publicHandler: ProxyHandler<SpiceBackend["raw"]> = {
-    get: (target, prop, receiver) => {
-      if (hiddenRawHelpers.has(prop)) {
-        return undefined;
-      }
-      return Reflect.get(target, prop, receiver);
-    },
-
-    has: (target, prop) => {
-      if (hiddenRawHelpers.has(prop)) {
-        return false;
-      }
-      return Reflect.has(target, prop);
-    },
-
-    ownKeys: (target) =>
-      Reflect.ownKeys(target).filter((key) => !hiddenRawHelpers.has(key)),
-
-    getOwnPropertyDescriptor: (target, prop) => {
-      if (hiddenRawHelpers.has(prop)) {
-        return undefined;
-      }
-      return Reflect.getOwnPropertyDescriptor(target, prop);
-    },
-  };
-
-  const raw = new Proxy(rawInternal, publicHandler) as unknown as SpiceRaw;
+  const raw = rawInternal as unknown as SpiceRaw;
   Object.defineProperty(raw, "kind", { value: backend.kind, enumerable: true });
 
   const kit = createKit(

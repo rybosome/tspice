@@ -113,7 +113,7 @@ export type SpiceBackendKind = "node" | "wasm" | "fake";
 
 /** Composition of all raw domain APIs.  */
 export interface SpiceRawBackend
-  extends TimeApi,
+  extends Omit<TimeApi, "spiceVersion">,
     KernelsApi,
     KernelPoolApi,
     EkApi,
@@ -123,13 +123,16 @@ export interface SpiceRawBackend
     GeometryApi,
     GeometryGfApi,
     CoordsVectorsApi,
-    FileIoApi,
+    Omit<FileIoApi, "readVirtualOutput">,
     ErrorApi,
     CellsWindowsApi,
     DskApi { }
 
 /** Composition of all kit domain APIs.  */
-export interface SpiceKitBackend extends CellsWindowsKitApi { }
+export interface SpiceKitBackend
+  extends CellsWindowsKitApi,
+    Pick<TimeApi, "spiceVersion">,
+    Pick<FileIoApi, "readVirtualOutput"> { }
 
 /** Unified backend contract */
 export interface SpiceBackend {

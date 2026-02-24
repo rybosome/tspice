@@ -36,11 +36,13 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const stager = createKernelStager();
   const spiceHandles = createSpiceHandleRegistry();
   const outputs = createVirtualOutputStager();
+  const { spiceVersion: kitSpiceVersion, ...timeApi } = createTimeApi(native);
+  const { readVirtualOutput: kitReadVirtualOutput, ...fileIoApi } = createFileIoApi(native, spiceHandles, outputs);
 
   const backend: SpiceBackend & { kind: "node" } = {
     kind: "node",
     raw: {
-      ...createTimeApi(native),
+      ...timeApi,
       ...createKernelsApi(native, stager),
       ...createKernelPoolApi(native),
       ...createIdsNamesApi(native),
@@ -49,13 +51,15 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
       ...createCoordsVectorsApi(native),
-      ...createFileIoApi(native, spiceHandles, outputs),
+      ...fileIoApi,
       ...createErrorApi(native),
       ...createCellsWindowsApi(native),
       ...createEkApi(native, spiceHandles, stager),
       ...createDskApi(native, spiceHandles),
     },
     kit: {
+      spiceVersion: kitSpiceVersion,
+      readVirtualOutput: kitReadVirtualOutput,
       ...createCellsWindowsKitApi(native),
     },
   };

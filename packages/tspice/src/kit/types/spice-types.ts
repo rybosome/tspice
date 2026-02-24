@@ -95,21 +95,8 @@ export type PromisifyObject<T extends object> = {
   [K in keyof T]: PromisifyFn<T[K]>;
 };
 
-type HiddenRawHelpers =
-  | "spiceVersion"
-  | "readVirtualOutput"
-  | "newIntCell"
-  | "newDoubleCell"
-  | "newCharCell"
-  | "newWindow"
-  | "freeCell"
-  | "freeWindow"
-  | "cellGeti"
-  | "cellGetd"
-  | "cellGetc";
-
 /** Raw tspice surface: backend raw primitives (minus kit-moved helpers) plus backend metadata. */
-export type SpiceRaw = Omit<SpiceBackend["raw"], HiddenRawHelpers> & Pick<SpiceBackend, "kind">;
+export type SpiceRaw = SpiceBackend["raw"] & Pick<SpiceBackend, "kind">;
 
 /**
  * Top-level sync-ish client type (returned by `spiceClients.toSync()`).
