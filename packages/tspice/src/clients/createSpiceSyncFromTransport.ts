@@ -2,11 +2,15 @@ import type { Spice } from "../kit/types/spice-types.js";
 
 import type { SpiceTransportSync } from "../transport/types.js";
 
-export type CreateSpiceSyncFromTransportOptions = {
-  /** Optional surface snapshot to avoid exposing phantom RPC methods via property access. */
-  rawMethodKeys?: Iterable<string>;
-  /** Optional surface snapshot to avoid exposing phantom RPC methods via property access. */
-  kitMethodKeys?: Iterable<string>;
+type MethodKeys<T extends object> = Extract<{
+  [K in keyof T]-?: T[K] extends (...args: unknown[]) => unknown ? K : never;
+}[keyof T], string>;
+
+type SurfaceMethodKeySnapshot = {
+  /** Surface snapshot to avoid exposing phantom RPC methods via property access. */
+  raw: ReadonlySet<MethodKeys<Spice["raw"]>>;
+  /** Surface snapshot to avoid exposing phantom RPC methods via property access. */
+  kit: ReadonlySet<MethodKeys<Spice["kit"]>>;
 };
 
 const blockedStringKeys = new Set<string>([
@@ -179,10 +183,10 @@ function createNamespacedProxy(
 /** Create a sync {@link Spice} client that forwards calls over a {@link SpiceTransportSync}. */
 export function createSpiceSyncFromTransport(
   t: SpiceTransportSync,
-  options: CreateSpiceSyncFromTransportOptions = {},
+  surfaceMethodKeys?: SurfaceMethodKeySnapshot,
 ): Spice {
-  const rawMethodKeys = options.rawMethodKeys ? new Set(options.rawMethodKeys) : undefined;
-  const kitMethodKeys = options.kitMethodKeys ? new Set(options.kitMethodKeys) : undefined;
+  const rawMethodKeys = surfaceMethodKeys?.raw;
+  const kitMethodKeys = surfaceMethodKeys?.kit;
 
   return {
     raw: createNamespacedProxy(t, "raw", rawMethodKeys) as unknown as Spice["raw"],
