@@ -16,7 +16,7 @@ describe("SPICE errors (wasm backend)", () => {
     let err: unknown;
     try {
       // With no kernels loaded, this should reliably fail with NOLOADEDFILES.
-      backend.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
+      backend.raw.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
     } catch (e) {
       err = e;
     }
@@ -35,12 +35,12 @@ describe("SPICE errors (wasm backend)", () => {
   });
 
   it("preserves Found-style {found:false} behavior", () => {
-    expect(backend.bodn2c("NOT_A_BODY")).toEqual({ found: false });
+    expect(backend.raw.bodn2c("NOT_A_BODY")).toEqual({ found: false });
   });
 
   it("rejects invalid getmsg(which) selectors at the boundary", () => {
-    expect(() => backend.getmsg("NOPE" as never)).toThrow(/getmsg\(which\)/i);
-    expect(() => backend.getmsg("NOPE" as never)).toThrow(/SHORT|LONG|EXPLAIN/);
+    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(/getmsg\(which\)/i);
+    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(/SHORT|LONG|EXPLAIN/);
   });
 });
 

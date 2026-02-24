@@ -2,7 +2,7 @@ import * as path from "node:path";
 import crypto from "node:crypto";
 import { readFile, realpath, stat } from "node:fs/promises";
 
-import { spiceClients, type Spice, type SpiceBackend } from "@rybosome/tspice";
+import { spiceClients, type Spice } from "@rybosome/tspice";
 
 import {
   resolveMetaKernelKernelsToLoad,
@@ -16,7 +16,21 @@ import { executeV2CaseWithBackend } from "./v2Executor.js";
 
 import type { CaseRunner, KernelEntry, RunCaseInput, RunCaseResult, RunnerErrorReport, SpiceErrorState } from "./types.js";
 
-type DispatchFn = (backend: SpiceBackend, args: unknown[]) => unknown | Promise<unknown>;
+type RunnerSpiceBackend = Spice["raw"] & Pick<Spice["kit"],
+  | "newIntCell"
+  | "newDoubleCell"
+  | "newCharCell"
+  | "newWindow"
+  | "freeCell"
+  | "freeWindow"
+  | "cellGeti"
+  | "cellGetd"
+  | "cellGetc"
+  | "spiceVersion"
+  | "readVirtualOutput"
+>;
+
+type DispatchFn = (backend: RunnerSpiceBackend, args: unknown[]) => unknown | Promise<unknown>;
 
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
 
@@ -85,8 +99,8 @@ function assertNumberArg(value: unknown, call: string, index: number): asserts v
 
 
 type Vec3 = [number, number, number];
-type Mat3RowMajor = Parameters<SpiceBackend["mxm"]>[0];
-type SpkPackedDescriptor = Parameters<SpiceBackend["spkuds"]>[0];
+type Mat3RowMajor = Parameters<RunnerSpiceBackend["mxm"]>[0];
+type SpkPackedDescriptor = Parameters<RunnerSpiceBackend["spkuds"]>[0];
 
 function assertVec3(value: unknown, label: string): asserts value is Vec3 {
   if (!Array.isArray(value)) {
@@ -179,7 +193,7 @@ function kernelKindQueryFromArg(value: unknown, label: string): string {
   invalidArgs(`${label} expects a string or string[] (got ${formatValue(value)})`);
 }
 
-function rewriteKdataOsPathIfNeeded(backend: SpiceBackend, result: unknown): unknown {
+function rewriteKdataOsPathIfNeeded(backend: RunnerSpiceBackend, result: unknown): unknown {
   if (backend.kind !== "wasm") return result;
   if (typeof result !== "object" || result === null) return result;
 
@@ -1639,7 +1653,7 @@ function inferSpiceFromError(error: unknown): SpiceErrorState | null {
   };
 }
 
-function tryConfigureErrorPolicy(backend: SpiceBackend): void {
+function tryConfigureErrorPolicy(backend: RunnerSpiceBackend): void {
   // Not part of the backend contract, but may exist on some implementations.
   const b = backend as unknown as {
     erract?: (op: string, action: string) => void;
@@ -1659,14 +1673,14 @@ function tryConfigureErrorPolicy(backend: SpiceBackend): void {
   }
 }
 
-function isolateCase(backend: SpiceBackend): void {
+function isolateCase(backend: RunnerSpiceBackend): void {
   // Clear any kernel pool / loaded kernels and reset the SPICE error state.
   backend.kclear();
   backend.reset();
   tryConfigureErrorPolicy(backend);
 }
 
-function captureSpiceErrorState(backend: SpiceBackend): SpiceErrorState {
+function captureSpiceErrorState(backend: RunnerSpiceBackend): SpiceErrorState {
   let failed = false;
   try {
     failed = backend.failed();
@@ -1726,8 +1740,8 @@ function isMissingNativeAddon(error: unknown): boolean {
 
 async function createBackendForRunner(
   backend: TspiceRunnerBackend,
-): Promise<{ backend: SpiceBackend; kind: string }> {
-  const withKitMovedHelpers = (spice: Spice): SpiceBackend => ({
+): Promise<{ backend: RunnerSpiceBackend; kind: string }> {
+  const withKitMovedHelpers = (spice: Spice): RunnerSpiceBackend => ({
     ...spice.raw,
     newIntCell: spice.kit.newIntCell,
     newDoubleCell: spice.kit.newDoubleCell,
@@ -1742,12 +1756,12 @@ async function createBackendForRunner(
     readVirtualOutput: spice.kit.readVirtualOutput,
   });
 
-  const createNodeBackend = async (): Promise<SpiceBackend> => {
+  const createNodeBackend = async (): Promise<RunnerSpiceBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "node" });
     return withKitMovedHelpers(spice);
   };
 
-  const createWasmBackend = async (): Promise<SpiceBackend> => {
+  const createWasmBackend = async (): Promise<RunnerSpiceBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "wasm" });
     return withKitMovedHelpers(spice);
   };
@@ -1785,7 +1799,7 @@ function normalizeKernelEntry(entry: KernelEntry): { path: string; restrictToDir
 }
 
 async function furnshOsKernelForWasm(
-  backend: SpiceBackend,
+  backend: RunnerSpiceBackend,
   osPath: string,
   loaded: Set<string>,
   restrictToDir?: string,
@@ -1826,7 +1840,7 @@ async function furnshOsKernelForWasm(
 }
 
 async function furnshOsKernelForNative(
-  backend: SpiceBackend,
+  backend: RunnerSpiceBackend,
   osPath: string,
   loaded: Set<string>,
   restrictToDir?: string,

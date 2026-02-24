@@ -19,13 +19,13 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
 
     // NOTE: SPICE supports the special kernel kind "ALL", but our public backend
     // contract intentionally does not expose it.
-    const ktotalAll = () => backend.ktotal("ALL" as any);
+    const ktotalAll = () => backend.raw.ktotal("ALL" as any);
 
     const before = ktotalAll();
-    backend.furnsh({ path: kernelPath, bytes });
+    backend.raw.furnsh({ path: kernelPath, bytes });
     expect(ktotalAll()).toBe(before + 1);
 
-    const info = backend.kinfo("kernels/minimal.tm");
+    const info = backend.raw.kinfo("kernels/minimal.tm");
     expect(info.found).toBe(true);
     if (info.found) {
       expect(info.filtyp).toBeTruthy();
@@ -35,7 +35,7 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
     const totalAll = ktotalAll();
     let sawKernel = false;
     for (let i = 0; i < totalAll; i++) {
-      const kd = backend.kdata(i, "ALL" as any);
+      const kd = backend.raw.kdata(i, "ALL" as any);
       expect(kd.found).toBe(true);
       if (!kd.found) continue;
       expect(kd.file).toBeTruthy();
@@ -47,36 +47,36 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
     }
     expect(sawKernel).toBe(true);
 
-    expect(backend.ktotal(["META", "TEXT"]))
-      .toBe(backend.ktotal("META") + backend.ktotal("TEXT"));
+    expect(backend.raw.ktotal(["META", "TEXT"]))
+      .toBe(backend.raw.ktotal("META") + backend.raw.ktotal("TEXT"));
 
-    backend.unload(kernelPath);
+    backend.raw.unload(kernelPath);
     expect(ktotalAll()).toBe(before);
   });
 
   it("throws for kplfrm until the WASM export is implemented", async () => {
     const backend = await createWasmBackend();
 
-    const idset = backend.newIntCell(4);
+    const idset = backend.kit.newIntCell(4);
 
     try {
-      backend.insrti(1, idset);
-      backend.insrti(2, idset);
-      expect(backend.card(idset)).toBe(2);
+      backend.raw.insrti(1, idset);
+      backend.raw.insrti(2, idset);
+      expect(backend.raw.card(idset)).toBe(2);
 
-      expect(() => backend.kplfrm(1, idset)).toThrow(/kplfrm.*not supported/i);
+      expect(() => backend.raw.kplfrm(1, idset)).toThrow(/kplfrm.*not supported/i);
 
       // Ensure we don't silently clear/modify the output set.
-      expect(backend.card(idset)).toBe(2);
+      expect(backend.raw.card(idset)).toBe(2);
     } finally {
-      backend.freeCell(idset);
+      backend.kit.freeCell(idset);
     }
   });
 
   it("rejects OS/URL-looking string paths (virtual ids only)", async () => {
     const backend = await createWasmBackend();
 
-    expect(() => backend.furnsh("file:///tmp/naif0012.tls")).toThrow(/virtual ids/i);
-    expect(() => backend.unload("/var/data/naif0012.tls")).toThrow(/virtual ids/i);
+    expect(() => backend.raw.furnsh("file:///tmp/naif0012.tls")).toThrow(/virtual ids/i);
+    expect(() => backend.raw.unload("/var/data/naif0012.tls")).toThrow(/virtual ids/i);
   });
 });

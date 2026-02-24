@@ -15,7 +15,7 @@ describe("@rybosome/tspice-backend-wasm", () => {
   it("loads the wasm module", async () => {
     const backend = await createWasmBackend();
     expect(backend.kind).toBe("wasm");
-    const version = backend.tkvrsn("TOOLKIT");
+    const version = backend.raw.tkvrsn("TOOLKIT");
     expect(version).not.toBe("");
     expect(version).toContain(toolkitVersion);
   });
@@ -26,9 +26,9 @@ describe("@rybosome/tspice-backend-wasm", () => {
     // Before any watch is set up, most agents will report no update.
     // (Exact initial state is not critical; we mainly care that swpool([]) doesn't throw
     // and that cvpool toggles as documented.)
-    backend.swpool("AGENT", []);
+    backend.raw.swpool("AGENT", []);
 
-    expect(backend.cvpool("AGENT")).toBe(true);
-    expect(backend.cvpool("AGENT")).toBe(false);
+    expect(backend.raw.cvpool("AGENT")).toBe(true);
+    expect(backend.raw.cvpool("AGENT")).toBe(false);
   });
 });

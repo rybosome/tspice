@@ -14,6 +14,8 @@ import type {
   KernelPoolVarType,
   Pl2nvcResult,
   SpiceBackend,
+  SpiceKitBackend,
+  SpiceRawBackend,
   SpiceHandle,
   SpiceIntCell,
   SpiceWindow,
@@ -881,9 +883,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     return [r, r, r];
   };
 
-  const backend = {
-    kind: "fake",
-
+  const rawAndKit = {
     spiceVersion: () => FAKE_SPICE_VERSION,
 
     failed: () => spiceFailed,
@@ -2208,6 +2208,35 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     georec: (lon, lat, alt, re, f) => georec(lon, lat, alt, re, f),
     recgeo: (rect, re, f) => recgeo(rect, re, f),
+  } satisfies SpiceRawBackend & SpiceKitBackend;
+
+  const {
+    newIntCell,
+    newDoubleCell,
+    newCharCell,
+    newWindow,
+    freeCell,
+    freeWindow,
+    cellGeti,
+    cellGetd,
+    cellGetc,
+    ...raw
+  } = rawAndKit;
+
+  const backend = {
+    kind: "fake",
+    raw,
+    kit: {
+      newIntCell,
+      newDoubleCell,
+      newCharCell,
+      newWindow,
+      freeCell,
+      freeWindow,
+      cellGeti,
+      cellGetd,
+      cellGetc,
+    },
   } satisfies SpiceBackend & { kind: "fake" };
 
   return backend;

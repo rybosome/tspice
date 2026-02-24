@@ -1,4 +1,4 @@
-import type { SpiceBackend } from "@rybosome/tspice";
+import type { Spice } from "@rybosome/tspice";
 
 import type {
   RunCaseInputV2,
@@ -7,16 +7,28 @@ import type {
 } from "./types.js";
 import { validateV2ContractResultOrThrow } from "./v2ContractResultValidation.js";
 
+type RunnerSpiceBackend = Spice["raw"] & Pick<Spice["kit"],
+  | "newIntCell"
+  | "newDoubleCell"
+  | "newCharCell"
+  | "newWindow"
+  | "freeCell"
+  | "freeWindow"
+  | "cellGeti"
+  | "cellGetd"
+  | "cellGetc"
+>;
+
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
 
 const SPICE_INT32_MIN = -2147483648;
 const SPICE_INT32_MAX = 2147483647;
 
 type CellHandle =
-  | ReturnType<SpiceBackend["newIntCell"]>
-  | ReturnType<SpiceBackend["newDoubleCell"]>
-  | ReturnType<SpiceBackend["newCharCell"]>;
-type WindowHandle = ReturnType<SpiceBackend["newWindow"]>;
+  | ReturnType<RunnerSpiceBackend["newIntCell"]>
+  | ReturnType<RunnerSpiceBackend["newDoubleCell"]>
+  | ReturnType<RunnerSpiceBackend["newCharCell"]>;
+type WindowHandle = ReturnType<RunnerSpiceBackend["newWindow"]>;
 
 type RefValue =
   | {
@@ -293,7 +305,7 @@ function projectResult(
 }
 
 function freeCellRef(
-  backend: SpiceBackend,
+  backend: RunnerSpiceBackend,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
   target: unknown,
@@ -310,7 +322,7 @@ function freeCellRef(
 }
 
 function freeWindowRef(
-  backend: SpiceBackend,
+  backend: RunnerSpiceBackend,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
   target: unknown,
@@ -334,7 +346,7 @@ function defineRef(refs: Map<string, RefValue>, name: string, value: RefValue, l
 }
 
 async function executeStep(
-  backend: SpiceBackend,
+  backend: RunnerSpiceBackend,
   step: V2WorkflowStep,
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
@@ -550,7 +562,7 @@ export function asV2RunnerError(error: unknown): RunnerErrorReport {
 
 /** Execute a single v2 parity case against a concrete backend implementation. */
 export async function executeV2CaseWithBackend(
-  backend: SpiceBackend,
+  backend: RunnerSpiceBackend,
   input: RunCaseInputV2,
 ): Promise<unknown> {
   const refs = new Map<string, RefValue>();

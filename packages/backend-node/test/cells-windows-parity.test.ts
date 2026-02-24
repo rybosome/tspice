@@ -7,39 +7,39 @@ import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
 
 function runScenario(b: SpiceBackend) {
-  const icell = b.newIntCell(10);
-  const dcell = b.newDoubleCell(10);
-  const ccell = b.newCharCell(10, 16);
-  const win = b.newWindow(4);
+  const icell = b.kit.newIntCell(10);
+  const dcell = b.kit.newDoubleCell(10);
+  const ccell = b.kit.newCharCell(10, 16);
+  const win = b.kit.newWindow(4);
 
   try {
-    b.insrti(3, icell);
-    b.insrti(1, icell);
-    b.insrti(2, icell);
+    b.raw.insrti(3, icell);
+    b.raw.insrti(1, icell);
+    b.raw.insrti(2, icell);
 
-    b.insrtd(3.25, dcell);
-    b.insrtd(-1.0, dcell);
+    b.raw.insrtd(3.25, dcell);
+    b.raw.insrtd(-1.0, dcell);
 
-    b.insrtc("b", ccell);
-    b.insrtc("a", ccell);
-    b.insrtc("c", ccell);
+    b.raw.insrtc("b", ccell);
+    b.raw.insrtc("a", ccell);
+    b.raw.insrtc("c", ccell);
 
-    b.wninsd(0, 1, win);
-    b.wninsd(2, 3, win);
-    b.wninsd(0.5, 2.5, win);
+    b.raw.wninsd(0, 1, win);
+    b.raw.wninsd(2, 3, win);
+    b.raw.wninsd(0.5, 2.5, win);
 
     return {
-      ints: [b.cellGeti(icell, 0), b.cellGeti(icell, 1), b.cellGeti(icell, 2)],
-      doubles: [b.cellGetd(dcell, 0), b.cellGetd(dcell, 1)],
-      chars: [b.cellGetc(ccell, 0), b.cellGetc(ccell, 1), b.cellGetc(ccell, 2)],
-      winCard: b.wncard(win),
-      win0: b.wnfetd(win, 0),
+      ints: [b.kit.cellGeti(icell, 0), b.kit.cellGeti(icell, 1), b.kit.cellGeti(icell, 2)],
+      doubles: [b.kit.cellGetd(dcell, 0), b.kit.cellGetd(dcell, 1)],
+      chars: [b.kit.cellGetc(ccell, 0), b.kit.cellGetc(ccell, 1), b.kit.cellGetc(ccell, 2)],
+      winCard: b.raw.wncard(win),
+      win0: b.raw.wnfetd(win, 0),
     };
   } finally {
-    b.freeCell(icell);
-    b.freeCell(dcell);
-    b.freeCell(ccell);
-    b.freeWindow(win);
+    b.kit.freeCell(icell);
+    b.kit.freeCell(dcell);
+    b.kit.freeCell(ccell);
+    b.kit.freeWindow(win);
   }
 }
 

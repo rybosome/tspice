@@ -3,7 +3,7 @@ import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 import type { CreateBackendOptions } from "./backend.js";
 import { createBackend } from "./backend.js";
 
-import type { PromisifyObject, Spice, SpiceAsync } from "./kit/types/spice-types.js";
+import type { PromisifyObject, Spice, SpiceAsync, SpiceRaw } from "./kit/types/spice-types.js";
 import { createKit } from "./kit/spice/create-kit.js";
 
 export type CreateSpiceOptions = CreateBackendOptions & {
@@ -34,7 +34,7 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   // - methods are bound to the original backend instance (avoid mis-bound `this`)
   // - method identity is stable (`raw.furnsh === raw.furnsh`)
   const boundMethods = new Map<PropertyKey, Function>();
-  const handler: ProxyHandler<SpiceBackend> = {
+  const internalHandler: ProxyHandler<SpiceBackend["raw"]> = {
     get: (target, prop) => {
       // Use `target` as the receiver so accessor/prototype lookups see
       // `this === target` (not the Proxy). Calls are still applied to `target`
@@ -47,7 +47,7 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
           return existing;
         }
         const fn = value as unknown as () => void;
-        const wrapped: SpiceBackend["kclear"] = () => {
+        const wrapped: SpiceBackend["raw"]["kclear"] = () => {
           try {
             Reflect.apply(fn, target, []);
           } finally {
@@ -73,8 +73,58 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
     },
   };
 
-  const raw: SpiceBackend = new Proxy(backend, handler);
-  const kit = createKit(raw, { byteBackedKernelPaths });
+  const rawInternal = new Proxy(backend.raw, internalHandler);
+
+  const hiddenRawHelpers = new Set<PropertyKey>([
+    "spiceVersion",
+    "readVirtualOutput",
+    "newIntCell",
+    "newDoubleCell",
+    "newCharCell",
+    "newWindow",
+    "freeCell",
+    "freeWindow",
+    "cellGeti",
+    "cellGetd",
+    "cellGetc",
+  ]);
+  const publicHandler: ProxyHandler<SpiceBackend["raw"]> = {
+    get: (target, prop, receiver) => {
+      if (hiddenRawHelpers.has(prop)) {
+        return undefined;
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+
+    has: (target, prop) => {
+      if (hiddenRawHelpers.has(prop)) {
+        return false;
+      }
+      return Reflect.has(target, prop);
+    },
+
+    ownKeys: (target) =>
+      Reflect.ownKeys(target).filter((key) => !hiddenRawHelpers.has(key)),
+
+    getOwnPropertyDescriptor: (target, prop) => {
+      if (hiddenRawHelpers.has(prop)) {
+        return undefined;
+      }
+      return Reflect.getOwnPropertyDescriptor(target, prop);
+    },
+  };
+
+  const raw = new Proxy(rawInternal, publicHandler) as unknown as SpiceRaw;
+  Object.defineProperty(raw, "kind", { value: backend.kind, enumerable: true });
+
+  const kit = createKit(
+    {
+      kind: backend.kind,
+      raw: rawInternal,
+      kit: backend.kit,
+    },
+    { byteBackedKernelPaths },
+  );
 
   return { raw, kit };
 }
