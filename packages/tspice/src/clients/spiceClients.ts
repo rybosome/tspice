@@ -120,61 +120,78 @@ type SpiceLike = Pick<Spice, "raw" | "kit"> | Pick<SpiceAsync, "raw" | "kit">;
 
 type RpcNamespace = "raw" | "kit";
 
-type TransportSurfaceMethodKeys = {
-  rawMethodKeys: ReadonlySet<string>;
-  kitMethodKeys: ReadonlySet<string>;
+type MethodKeys<T extends object> = Extract<{
+  [K in keyof T]-?: T[K] extends (...args: unknown[]) => unknown ? K : never;
+}[keyof T], string>;
+
+type TransportSurfaceMethodKeys<TSpice extends SpiceLike> = {
+  raw: ReadonlySet<MethodKeys<TSpice["raw"]>>;
+  kit: ReadonlySet<MethodKeys<TSpice["kit"]>>;
 };
 
-function snapshotFunctionKeys(target: object): ReadonlySet<string> {
-  const out = new Set<string>();
+function snapshotFunctionKeys<T extends object>(target: T): ReadonlySet<MethodKeys<T>> {
+  const out = new Set<MethodKeys<T>>();
   const obj = target as Record<string, unknown>;
 
   for (const key of Object.keys(obj)) {
     if (typeof obj[key] === "function") {
-      out.add(key);
+      out.add(key as MethodKeys<T>);
     }
   }
 
   return out;
 }
 
-function snapshotTransportSurfaceMethodKeys(spice: SpiceLike): TransportSurfaceMethodKeys {
+function snapshotTransportSurfaceMethodKeys<TSpice extends SpiceLike>(
+  spice: TSpice,
+): TransportSurfaceMethodKeys<TSpice> {
   return {
-    rawMethodKeys: snapshotFunctionKeys(spice.raw as object),
-    kitMethodKeys: snapshotFunctionKeys(spice.kit as object),
+    raw: snapshotFunctionKeys(spice.raw) as TransportSurfaceMethodKeys<TSpice>["raw"],
+    kit: snapshotFunctionKeys(spice.kit) as TransportSurfaceMethodKeys<TSpice>["kit"],
   };
 }
 
-function normalizeTransportMethodKeyList(value: unknown, label: string): ReadonlySet<string> {
+function normalizeTransportMethodKeyList<TKey extends string>(
+  value: unknown,
+  label: string,
+): ReadonlySet<TKey> {
   if (!Array.isArray(value) || !value.every((v): v is string => typeof v === "string")) {
     throw new Error(`${label} must be a string[]`);
   }
 
-  const out = new Set<string>();
+  const out = new Set<TKey>();
   for (const key of value) {
     if (!isSafeRpcKey(key) || blockedStringKeys.has(key)) {
       throw new Error(`${label} contains invalid method key: ${JSON.stringify(key)}`);
     }
-    out.add(key);
+    out.add(key as TKey);
   }
   return out;
 }
 
-function parseTransportSurfaceMethodKeys(value: unknown): TransportSurfaceMethodKeys {
+function parseTransportSurfaceMethodKeys(
+  value: unknown,
+): TransportSurfaceMethodKeys<Pick<SpiceAsync, "raw" | "kit">> {
   if (typeof value !== "object" || value === null) {
     throw new Error("meta.surfaceMethodKeys response must be an object");
   }
 
   const rec = value as Record<string, unknown>;
   return {
-    rawMethodKeys: normalizeTransportMethodKeyList(rec.rawMethodKeys, "meta.surfaceMethodKeys.rawMethodKeys"),
-    kitMethodKeys: normalizeTransportMethodKeyList(rec.kitMethodKeys, "meta.surfaceMethodKeys.kitMethodKeys"),
+    raw: normalizeTransportMethodKeyList<MethodKeys<SpiceAsync["raw"]>>(
+      rec.rawMethodKeys,
+      "meta.surfaceMethodKeys.rawMethodKeys",
+    ),
+    kit: normalizeTransportMethodKeyList<MethodKeys<SpiceAsync["kit"]>>(
+      rec.kitMethodKeys,
+      "meta.surfaceMethodKeys.kitMethodKeys",
+    ),
   };
 }
 
 async function requestTransportSurfaceMethodKeys(
   transport: SpiceTransport,
-): Promise<TransportSurfaceMethodKeys> {
+): Promise<TransportSurfaceMethodKeys<Pick<SpiceAsync, "raw" | "kit">>> {
   try {
     const response = await transport.request("meta.surfaceMethodKeys", []);
     return parseTransportSurfaceMethodKeys(response);
