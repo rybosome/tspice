@@ -17,11 +17,22 @@ export type CreateSpiceOptions = CreateBackendOptions & {
 
 export type CreateSpiceAsyncOptions = CreateSpiceOptions;
 
-function createRawApi(
-  backend: SpiceBackend,
-  byteBackedKernelPaths: Set<string>,
-): Spice["raw"] {
-  // Keep raw methods bound and preserve kclear bookkeeping synchronization.
+/**
+ * Create a sync {@link Spice} client backed by the requested backend/transport.
+ */
+export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
+  const backend = options.backendInstance ?? (await createBackend(options));
+
+  // Track kernels loaded from bytes so `kit.unloadKernel()` can accept flexible
+  // path forms (e.g. `/kernels/foo.tls`) across backends.
+  const byteBackedKernelPaths = new Set<string>();
+
+  // Keep `raw.kclear()` and `kit`'s internal tracking in sync.
+  //
+  // Use a Proxy so:
+  // - prototype methods aren't lost (object spread only copies own props)
+  // - methods are bound to the original backend instance (avoid mis-bound `this`)
+  // - method identity is stable (`raw.furnsh === raw.furnsh`)
   const boundMethods = new Map<PropertyKey, Function>();
   const handler: ProxyHandler<SpiceBackend> = {
     get: (target, prop) => {
@@ -62,54 +73,8 @@ function createRawApi(
     },
   };
 
-  const rawSource = new Proxy(backend, handler) as SpiceBackend;
-
-  // True breaking move from `raw` to `kit`: remove migrated helpers at raw
-  // construction time (no raw proxy-hide/denylist compat layer).
-  const {
-    newIntCell: omittedNewIntCell,
-    newDoubleCell: omittedNewDoubleCell,
-    newCharCell: omittedNewCharCell,
-    newWindow: omittedNewWindow,
-    freeCell: omittedFreeCell,
-    freeWindow: omittedFreeWindow,
-    cellGeti: omittedCellGeti,
-    cellGetd: omittedCellGetd,
-    cellGetc: omittedCellGetc,
-    spiceVersion: omittedSpiceVersion,
-    readVirtualOutput: omittedReadVirtualOutput,
-    ...raw
-  } = rawSource;
-
-  void [
-    omittedNewIntCell,
-    omittedNewDoubleCell,
-    omittedNewCharCell,
-    omittedNewWindow,
-    omittedFreeCell,
-    omittedFreeWindow,
-    omittedCellGeti,
-    omittedCellGetd,
-    omittedCellGetc,
-    omittedSpiceVersion,
-    omittedReadVirtualOutput,
-  ];
-
-  return raw as Spice["raw"];
-}
-
-/**
- * Create a sync {@link Spice} client backed by the requested backend/transport.
- */
-export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
-  const backend = options.backendInstance ?? (await createBackend(options));
-
-  // Track kernels loaded from bytes so `kit.unloadKernel()` can accept flexible
-  // path forms (e.g. `/kernels/foo.tls`) across backends.
-  const byteBackedKernelPaths = new Set<string>();
-
-  const raw = createRawApi(backend, byteBackedKernelPaths);
-  const kit = createKit(backend, { byteBackedKernelPaths });
+  const raw: SpiceBackend = new Proxy(backend, handler);
+  const kit = createKit(raw, { byteBackedKernelPaths });
 
   return { raw, kit };
 }
