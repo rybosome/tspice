@@ -27,6 +27,10 @@ describe("spiceClients.toAsync()", () => {
       // Non-function properties should pass through.
       expect(spice.raw.kind).toBe("wasm");
 
+      // Helpers moved from `raw` to `kit` should be hidden on the raw namespace.
+      expect((spice.raw as { spiceVersion?: unknown }).spiceVersion).toBeUndefined();
+      expect((spice.raw as { newIntCell?: unknown }).newIntCell).toBeUndefined();
+
       // Raw methods are awaitable.
       await spice.raw.kclear();
       expect(await spice.raw.ktotal("ALL")).toBe(0);
@@ -35,6 +39,7 @@ describe("spiceClients.toAsync()", () => {
       const version = await spice.kit.toolkitVersion();
       expect(version).toBeTypeOf("string");
       expect(version).not.toBe("");
+      expect(await spice.kit.spiceVersion()).toBe(version);
     } finally {
       await dispose();
     }
