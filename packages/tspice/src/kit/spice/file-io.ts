@@ -7,7 +7,7 @@ export function createFileIoKit(cspice: SpiceBackend): Pick<SpiceBackend, "readV
   return {
     readVirtualOutput: (output) => {
       try {
-        return cspice.readVirtualOutput(output);
+        return cspice.raw.readVirtualOutput(output);
       } catch (error) {
         throw wrapSpiceError("readVirtualOutput", error);
       }

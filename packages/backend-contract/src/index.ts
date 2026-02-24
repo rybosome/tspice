@@ -111,10 +111,8 @@ import type { DskApi } from "./domains/dsk.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
 
-/**
- * Unified backend contract (composition of all domain APIs).
- */
-export interface SpiceBackend
+/** Composition of all raw domain APIs.  */
+export interface SpiceRawBackend
   extends TimeApi,
     KernelsApi,
     KernelPoolApi,
@@ -128,8 +126,19 @@ export interface SpiceBackend
     FileIoApi,
     ErrorApi,
     CellsWindowsApi,
-    CellsWindowsKitApi,
-    DskApi {
+    DskApi { }
+
+/** Composition of all kit domain APIs.  */
+export interface SpiceKitBackend extends CellsWindowsKitApi { }
+
+/** Unified backend contract */
+export interface SpiceBackend {
+  /** Low-level, CSPICE-analogous functions. */
+  raw: SpiceRawBackend;
+
+  /** Higher-level, tspice-defined functions. */
+  kit: SpiceKitBackend;
+
   /** Which backend implementation is in use. */
   readonly kind: SpiceBackendKind;
 }

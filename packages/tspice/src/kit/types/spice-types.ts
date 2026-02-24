@@ -1,4 +1,4 @@
-import type { KernelSource, SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type { KernelSource, SpiceBackend, SpiceCharCell, SpiceDoubleCell, SpiceIntCell, SpiceKitBackend, SpiceWindow } from "@rybosome/tspice-backend-contract";
 
 import type {
   AberrationCorrection,
@@ -12,7 +12,7 @@ import type { Mat3 } from "../math/mat3.js";
 /**
  * Higher-level helpers and convenience APIs built on top of the raw backend.
  */
-export type SpiceKit = {
+export interface SpiceKit {
   /** Load a SPICE kernel. */
   loadKernel(kernel: KernelSource): void;
   /** Unload a previously-loaded SPICE kernel. */
@@ -33,6 +33,52 @@ export type SpiceKit = {
 
   /** Convenience wrapper around `spkezr` that returns a structured state vector. */
   getState(args: GetStateArgs): StateVector;
+
+  /** Create an empty integer set cell with the given capacity. */
+  newIntCell(size: number): SpiceIntCell;
+
+  /** Create an empty double-precision set cell with the given capacity. */
+  newDoubleCell(size: number): SpiceDoubleCell;
+
+  /**
+   * Create an empty character set cell.
+   *
+   * `length` is the maximum string length (including trailing NUL). CSPICE
+   * generally expects `length >= 2` and recommends `length >= 5`.
+   */
+  newCharCell(size: number, length: number): SpiceCharCell;
+
+  /** Create an empty DP window with capacity for `maxIntervals` intervals. */
+  newWindow(maxIntervals: number): SpiceWindow;
+
+  /** Free a previously-created cell handle. */
+  freeCell(cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell): void;
+
+  /** Free a previously-created window handle. */
+  freeWindow(window: SpiceWindow): void;
+
+  // -- Cell element inspection (copies, no raw data views) -------------------
+
+  /**
+   * Element inspection helpers.
+   *
+   * Notes:
+   * - These methods **copy** data out of the underlying cell.
+   * - They are not intended as a high-performance bulk read API.
+   */
+
+  /** Fetch the `index`th element of an integer cell. */
+  cellGeti(cell: SpiceIntCell, index: number): number;
+
+  /** Fetch the `index`th element of a double cell. */
+  cellGetd(cell: SpiceDoubleCell, index: number): number;
+
+  /**
+   * Fetch the `index`th element of a character cell.
+   *
+   * Backends may right-trim whitespace to match common CSPICE string handling.
+   */
+  cellGetc(cell: SpiceCharCell, index: number): string;
 };
 
 export type PromisifyFn<T> = T extends (...args: infer A) => infer R

@@ -39,21 +39,25 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
 
   const backend: SpiceBackend & { kind: "node" } = {
     kind: "node",
-    ...createTimeApi(native),
-    ...createKernelsApi(native, stager),
-    ...createKernelPoolApi(native),
-    ...createIdsNamesApi(native),
-    ...createFramesApi(native),
-    ...createEphemerisApi(native, spiceHandles, stager, outputs),
-    ...createGeometryApi(native),
-    ...createGeometryGfApi(native),
-    ...createCoordsVectorsApi(native),
-    ...createFileIoApi(native, spiceHandles, outputs),
-    ...createErrorApi(native),
-    ...createCellsWindowsApi(native),
-    ...createCellsWindowsKitApi(native),
-    ...createEkApi(native, spiceHandles, stager),
-    ...createDskApi(native, spiceHandles),
+    raw: {
+      ...createTimeApi(native),
+      ...createKernelsApi(native, stager),
+      ...createKernelPoolApi(native),
+      ...createIdsNamesApi(native),
+      ...createFramesApi(native),
+      ...createEphemerisApi(native, spiceHandles, stager, outputs),
+      ...createGeometryApi(native),
+      ...createGeometryGfApi(native),
+      ...createCoordsVectorsApi(native),
+      ...createFileIoApi(native, spiceHandles, outputs),
+      ...createErrorApi(native),
+      ...createCellsWindowsApi(native),
+      ...createEkApi(native, spiceHandles, stager),
+      ...createDskApi(native, spiceHandles),
+    },
+    kit: {
+      ...createCellsWindowsKitApi(native),
+    },
   };
 
   // Internal testing hook (not part of the public backend contract).
@@ -75,7 +79,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
         try {
           if (entry.kind === "SPK") {
             // Ensure VirtualOutputStager bookkeeping stays consistent.
-            backend.spkcls(handle as any);
+            backend.raw.spkcls(handle as any);
             continue;
           }
 

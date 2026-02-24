@@ -1,15 +1,15 @@
-import type { CellsWindowsKitApi } from "@rybosome/tspice-backend-contract";
+import type { CellsWindowsKitApi, SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import { wrapSpiceError } from "../../errors.js";
 
 /** Create cell/window helpers for a given backend. */
 export function createCellsWindowsKit(
-  cspice: CellsWindowsKitApi,
+  cspice: SpiceBackend,
 ): CellsWindowsKitApi {
   return {
     newIntCell: (size) => {
       try {
-        return cspice.newIntCell(size);
+        return cspice.kit.newIntCell(size);
       } catch (error) {
         throw wrapSpiceError("newIntCell", error);
       }
@@ -17,7 +17,7 @@ export function createCellsWindowsKit(
 
     newDoubleCell: (size) => {
       try {
-        return cspice.newDoubleCell(size);
+        return cspice.kit.newDoubleCell(size);
       } catch (error) {
         throw wrapSpiceError("newDoubleCell", error);
       }
@@ -25,7 +25,7 @@ export function createCellsWindowsKit(
 
     newCharCell: (size, length) => {
       try {
-        return cspice.newCharCell(size, length);
+        return cspice.kit.newCharCell(size, length);
       } catch (error) {
         throw wrapSpiceError("newCharCell", error);
       }
@@ -33,7 +33,7 @@ export function createCellsWindowsKit(
 
     newWindow: (maxIntervals) => {
       try {
-        return cspice.newWindow(maxIntervals);
+        return cspice.kit.newWindow(maxIntervals);
       } catch (error) {
         throw wrapSpiceError("newWindow", error);
       }
@@ -41,7 +41,7 @@ export function createCellsWindowsKit(
 
     freeCell: (cell) => {
       try {
-        cspice.freeCell(cell);
+        cspice.kit.freeCell(cell);
       } catch (error) {
         throw wrapSpiceError("freeCell", error);
       }
@@ -49,7 +49,7 @@ export function createCellsWindowsKit(
 
     freeWindow: (window) => {
       try {
-        cspice.freeWindow(window);
+        cspice.kit.freeWindow(window);
       } catch (error) {
         throw wrapSpiceError("freeWindow", error);
       }
@@ -57,7 +57,7 @@ export function createCellsWindowsKit(
 
     cellGeti: (cell, index) => {
       try {
-        return cspice.cellGeti(cell, index);
+        return cspice.kit.cellGeti(cell, index);
       } catch (error) {
         throw wrapSpiceError("cellGeti", error);
       }
@@ -65,7 +65,7 @@ export function createCellsWindowsKit(
 
     cellGetd: (cell, index) => {
       try {
-        return cspice.cellGetd(cell, index);
+        return cspice.kit.cellGetd(cell, index);
       } catch (error) {
         throw wrapSpiceError("cellGetd", error);
       }
@@ -73,7 +73,7 @@ export function createCellsWindowsKit(
 
     cellGetc: (cell, index) => {
       try {
-        return cspice.cellGetc(cell, index);
+        return cspice.kit.cellGetc(cell, index);
       } catch (error) {
         throw wrapSpiceError("cellGetc", error);
       }

@@ -111,21 +111,25 @@ export async function createWasmBackend(
 
   const backend = {
     kind: "wasm",
-    ...createTimeApi(module, toolkitVersion),
-    ...createKernelsApi(module, fsApi),
-    ...createKernelPoolApi(module),
-    ...createIdsNamesApi(module),
-    ...createFramesApi(module),
-    ...createEphemerisApi(module, spiceHandles, virtualOutputs),
-    ...createGeometryApi(module),
-    ...createGeometryGfApi(module),
-    ...createCoordsVectorsApi(module),
-    ...createFileIoApi(module, spiceHandles, virtualOutputs),
-    ...createErrorApi(module),
-    ...createCellsWindowsApi(module),
-    ...createCellsWindowsKitApi(module),
-    ...createEkApi(module, spiceHandles),
-    ...createDskApi(module, spiceHandles),
+    raw: {
+      ...createTimeApi(module, toolkitVersion),
+      ...createKernelsApi(module, fsApi),
+      ...createKernelPoolApi(module),
+      ...createIdsNamesApi(module),
+      ...createFramesApi(module),
+      ...createEphemerisApi(module, spiceHandles, virtualOutputs),
+      ...createGeometryApi(module),
+      ...createGeometryGfApi(module),
+      ...createCoordsVectorsApi(module),
+      ...createFileIoApi(module, spiceHandles, virtualOutputs),
+      ...createErrorApi(module),
+      ...createCellsWindowsApi(module),
+      ...createEkApi(module, spiceHandles),
+      ...createDskApi(module, spiceHandles),
+    },
+    kit: {
+      ...createCellsWindowsKitApi(module),
+    },
   } satisfies SpiceBackend;
 
   return backend;

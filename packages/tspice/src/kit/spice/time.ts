@@ -13,7 +13,7 @@ export function createTimeKit(cspice: SpiceBackend): {
   return {
     spiceVersion: () => {
       try {
-        return cspice.tkvrsn("TOOLKIT");
+        return cspice.raw.tkvrsn("TOOLKIT");
       } catch (error) {
         throw wrapSpiceError("spiceVersion", error);
       }
@@ -21,7 +21,7 @@ export function createTimeKit(cspice: SpiceBackend): {
 
     toolkitVersion: () => {
       try {
-        return cspice.tkvrsn("TOOLKIT");
+        return cspice.raw.tkvrsn("TOOLKIT");
       } catch (error) {
         throw wrapSpiceError("toolkitVersion", error);
       }
@@ -29,7 +29,7 @@ export function createTimeKit(cspice: SpiceBackend): {
 
     utcToEt: (utc) => {
       try {
-        return cspice.str2et(utc);
+        return cspice.raw.str2et(utc);
       } catch (error) {
         throw wrapSpiceError("utcToEt", error);
       }
@@ -37,7 +37,7 @@ export function createTimeKit(cspice: SpiceBackend): {
 
     etToUtc: (et, format = "C", prec = 3) => {
       try {
-        return cspice.et2utc(et, format, prec);
+        return cspice.raw.et2utc(et, format, prec);
       } catch (error) {
         throw wrapSpiceError("etToUtc", error);
       }

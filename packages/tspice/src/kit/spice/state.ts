@@ -32,7 +32,7 @@ export function createStateKit(cspice: SpiceBackend): {
         const targetStr = String(target);
         const observerStr = String(observer);
 
-        const { state, lt } = cspice.spkezr(targetStr, at, frame, aberration, observerStr);
+        const { state, lt } = cspice.raw.spkezr(targetStr, at, frame, aberration, observerStr);
         const { position, velocity } = splitState(state);
         return {
           et: at,
