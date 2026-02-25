@@ -417,7 +417,7 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
 
 /** Create backend kit hooks for cells/windows backed by a WASM Emscripten module. */
 export function createCellsWindowsKitApi(module: EmscriptenModule): CellsWindowsKitApi {
-  assertEmscriptenModule(module);
+  emscriptenExports.assertEmscriptenModule(module);
 
   // Security + correctness: track allocated pointers per backend instance.
   //
