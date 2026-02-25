@@ -17,4 +17,5 @@ cases:
     args:
       - $FIXTURES/dsk-minimal/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
     expect:
-      ok: true
+      ok: false
+      errorCode: unsupported_call

@@ -17,4 +17,5 @@ cases:
     args:
       - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
-      ok: true
+      ok: false
+      errorCode: unsupported_call

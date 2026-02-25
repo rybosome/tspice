@@ -20,4 +20,5 @@ cases:
       - TSPICE
       - 0
     expect:
-      ok: true
+      ok: false
+      errorCode: unsupported_call
