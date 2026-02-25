@@ -38,11 +38,11 @@ describe("SPK writers (type 8)", () => {
 
     // Lifecycle: virtual outputs should not be readable until the writer handle
     // is closed.
-    expect(() => backend.raw.readVirtualOutput(output)).toThrow(/open|close/i);
+    expect(() => backend.kit.readVirtualOutput(output)).toThrow(/open|close/i);
 
     backend.raw.spkcls(handle);
 
-    const bytes = backend.raw.readVirtualOutput(output);
+    const bytes = backend.kit.readVirtualOutput(output);
     expect(bytes.byteLength).toBeGreaterThan(0);
 
     // Contract: return a plain Uint8Array (not a Node Buffer).
@@ -74,7 +74,7 @@ describe("SPK writers (type 8)", () => {
     const backend = createNodeBackend();
 
     expect(() =>
-      backend.raw.readVirtualOutput({ kind: "virtual-output", path: "missing-output.bsp" }),
+      backend.kit.readVirtualOutput({ kind: "virtual-output", path: "missing-output.bsp" }),
     ).toThrow(/no staged file found|virtual output/i);
   });
 });
