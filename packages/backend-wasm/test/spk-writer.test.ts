@@ -34,7 +34,7 @@ describe("SPK writers (type 8)", () => {
 
     // Lifecycle: virtual outputs should not be readable until the writer handle
     // is closed.
-    expect(() => backend.raw.readVirtualOutput(output)).toThrow(/open|close/i);
+    expect(() => backend.kit.readVirtualOutput(output)).toThrow(/open|close/i);
 
     backend.raw.spkcls(handle);
 
@@ -49,7 +49,7 @@ describe("SPK writers (type 8)", () => {
     expect(state[4]).toBeCloseTo(0, 10);
     expect(state[5]).toBeCloseTo(0, 10);
 
-    const bytes = backend.raw.readVirtualOutput(output);
+    const bytes = backend.kit.readVirtualOutput(output);
     expect(bytes.byteLength).toBeGreaterThan(0);
   });
 
@@ -57,7 +57,7 @@ describe("SPK writers (type 8)", () => {
     const backend = await createWasmBackend();
 
     expect(() =>
-      backend.raw.readVirtualOutput({ kind: "virtual-output", path: "naif0012.tls" }),
+      backend.kit.readVirtualOutput({ kind: "virtual-output", path: "naif0012.tls" }),
     ).toThrow(/known virtual output|writer/i);
   });
 });

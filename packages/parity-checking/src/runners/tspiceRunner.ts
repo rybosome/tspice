@@ -281,72 +281,72 @@ function parseCellsWindowsRecipe(value: unknown, label: string): CellsWindowsRec
 }
 
 function prepareCellsWindowsHandle(
-  backend: SpiceBackend,
+  kit: SpiceBackend["kit"],
   recipe: CellsWindowsRecipe,
 ): PreparedCellsWindowsHandle {
   let released = false;
 
   if (recipe.kind === "int") {
-    const cell = backend.newIntCell(recipe.size);
+    const cell = kit.newIntCell(recipe.size);
     return {
       kind: "cell",
       handle: cell,
       release: () => {
         if (released) return;
         released = true;
-        backend.freeCell(cell);
+        kit.freeCell(cell);
       },
     };
   }
 
   if (recipe.kind === "double") {
-    const cell = backend.newDoubleCell(recipe.size);
+    const cell = kit.newDoubleCell(recipe.size);
     return {
       kind: "cell",
       handle: cell,
       release: () => {
         if (released) return;
         released = true;
-        backend.freeCell(cell);
+        kit.freeCell(cell);
       },
     };
   }
 
   if (recipe.kind === "char") {
-    const cell = backend.newCharCell(recipe.size, recipe.length);
+    const cell = kit.newCharCell(recipe.size, recipe.length);
     return {
       kind: "cell",
       handle: cell,
       release: () => {
         if (released) return;
         released = true;
-        backend.freeCell(cell);
+        kit.freeCell(cell);
       },
     };
   }
 
-  const window = backend.newWindow(recipe.maxIntervals);
+  const window = kit.newWindow(recipe.maxIntervals);
   return {
     kind: "window",
     handle: window,
     release: () => {
       if (released) return;
       released = true;
-      backend.freeWindow(window);
+      kit.freeWindow(window);
     },
   };
 }
 
 function asCellsWindowsCellArg(
   handle: PreparedCellsWindowsHandle,
-): Parameters<SpiceBackend["card"]>[0] {
-  return handle.handle as Parameters<SpiceBackend["card"]>[0];
+): Parameters<SpiceBackend["raw"]["card"]>[0] {
+  return handle.handle as Parameters<SpiceBackend["raw"]["card"]>[0];
 }
 
 function asCellsWindowsWindowArg(
   handle: PreparedCellsWindowsHandle,
-): Parameters<SpiceBackend["wncard"]>[0] {
-  return handle.handle as Parameters<SpiceBackend["wncard"]>[0];
+): Parameters<SpiceBackend["raw"]["wncard"]>[0] {
+  return handle.handle as Parameters<SpiceBackend["raw"]["wncard"]>[0];
 }
 
 const DISPATCH: Record<string, DispatchFn> = {
@@ -1132,15 +1132,15 @@ const DISPATCH: Record<string, DispatchFn> = {
   },
 
 
-  "cells-windows.insrti": (backend, args) => {
+  "cells-windows.insrti": (backend, args, kit) => {
     assertInteger(args[0], "cells-windows.insrti args[0]");
     const recipe = parseCellsWindowsRecipe(args[1], "cells-windows.insrti args[1]");
     if (recipe.kind !== "int") {
       invalidArgs("cells-windows.insrti expects args[1] to be an int recipe [\"int\", size]");
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
-    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["insrti"]>[1];
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["raw"]["insrti"]>[1];
 
     try {
       backend.insrti(args[0], cell);
@@ -1153,15 +1153,15 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
   },
 
-  "cells-windows.insrtd": (backend, args) => {
+  "cells-windows.insrtd": (backend, args, kit) => {
     assertNumberArg(args[0], "cells-windows.insrtd", 0);
     const recipe = parseCellsWindowsRecipe(args[1], "cells-windows.insrtd args[1]");
     if (recipe.kind !== "double") {
       invalidArgs("cells-windows.insrtd expects args[1] to be a double recipe [\"double\", size]");
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
-    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["insrtd"]>[1];
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["raw"]["insrtd"]>[1];
 
     try {
       backend.insrtd(args[0], cell);
@@ -1174,7 +1174,7 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
   },
 
-  "cells-windows.insrtc": (backend, args) => {
+  "cells-windows.insrtc": (backend, args, kit) => {
     assertStringArg(args[0], "cells-windows.insrtc", 0);
     const recipe = parseCellsWindowsRecipe(args[1], "cells-windows.insrtc args[1]");
     if (recipe.kind !== "char") {
@@ -1183,8 +1183,8 @@ const DISPATCH: Record<string, DispatchFn> = {
       );
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
-    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["insrtc"]>[1];
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["raw"]["insrtc"]>[1];
 
     try {
       backend.insrtc(args[0], cell);
@@ -1197,7 +1197,7 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
   },
 
-  "cells-windows.cellGeti": (backend, args) => {
+  "cells-windows.cellGeti": (backend, args, kit) => {
     const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.cellGeti args[0]");
     assertInteger(args[1], "cells-windows.cellGeti args[1]");
 
@@ -1205,20 +1205,20 @@ const DISPATCH: Record<string, DispatchFn> = {
       invalidArgs("cells-windows.cellGeti expects args[0] to be an int recipe [\"int\", size]");
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
-    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["cellGeti"]>[0];
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["kit"]["cellGeti"]>[0];
 
     try {
       backend.insrti(3, cell);
       backend.insrti(1, cell);
       backend.insrti(2, cell);
-      return backend.cellGeti(cell, args[1]);
+      return kit.cellGeti(cell, args[1]);
     } finally {
       prepared.release();
     }
   },
 
-  "cells-windows.cellGetd": (backend, args) => {
+  "cells-windows.cellGetd": (backend, args, kit) => {
     const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.cellGetd args[0]");
     assertInteger(args[1], "cells-windows.cellGetd args[1]");
 
@@ -1228,19 +1228,19 @@ const DISPATCH: Record<string, DispatchFn> = {
       );
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
-    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["cellGetd"]>[0];
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["kit"]["cellGetd"]>[0];
 
     try {
       backend.insrtd(3.25, cell);
       backend.insrtd(-1.0, cell);
-      return backend.cellGetd(cell, args[1]);
+      return kit.cellGetd(cell, args[1]);
     } finally {
       prepared.release();
     }
   },
 
-  "cells-windows.cellGetc": (backend, args) => {
+  "cells-windows.cellGetc": (backend, args, kit) => {
     const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.cellGetc args[0]");
     assertInteger(args[1], "cells-windows.cellGetc args[1]");
 
@@ -1250,20 +1250,20 @@ const DISPATCH: Record<string, DispatchFn> = {
       );
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
-    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["cellGetc"]>[0];
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
+    const cell = asCellsWindowsCellArg(prepared) as Parameters<SpiceBackend["kit"]["cellGetc"]>[0];
 
     try {
       backend.insrtc("b", cell);
       backend.insrtc("a", cell);
       backend.insrtc("c", cell);
-      return backend.cellGetc(cell, args[1]);
+      return kit.cellGetc(cell, args[1]);
     } finally {
       prepared.release();
     }
   },
 
-  "cells-windows.wninsd": (backend, args) => {
+  "cells-windows.wninsd": (backend, args, kit) => {
     assertNumberArg(args[0], "cells-windows.wninsd", 0);
     assertNumberArg(args[1], "cells-windows.wninsd", 1);
     const recipe = parseCellsWindowsRecipe(args[2], "cells-windows.wninsd args[2]");
@@ -1271,7 +1271,7 @@ const DISPATCH: Record<string, DispatchFn> = {
       invalidArgs("cells-windows.wninsd expects args[2] to be a window recipe [\"window\", maxIntervals]");
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
     const window = asCellsWindowsWindowArg(prepared);
 
     try {
@@ -1291,13 +1291,13 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
   },
 
-  "cells-windows.wncard": (backend, args) => {
+  "cells-windows.wncard": (backend, args, kit) => {
     const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.wncard args[0]");
     if (recipe.kind !== "window") {
       invalidArgs("cells-windows.wncard expects args[0] to be a window recipe [\"window\", maxIntervals]");
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
     const window = asCellsWindowsWindowArg(prepared);
 
     try {
@@ -1310,14 +1310,14 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
   },
 
-  "cells-windows.wnfetd": (backend, args) => {
+  "cells-windows.wnfetd": (backend, args, kit) => {
     const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.wnfetd args[0]");
     assertInteger(args[1], "cells-windows.wnfetd args[1]");
     if (recipe.kind !== "window") {
       invalidArgs("cells-windows.wnfetd expects args[0] to be a window recipe [\"window\", maxIntervals]");
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
     const window = asCellsWindowsWindowArg(prepared);
 
     try {
@@ -1330,7 +1330,7 @@ const DISPATCH: Record<string, DispatchFn> = {
     }
   },
 
-  "cells-windows.wnvald": (backend, args) => {
+  "cells-windows.wnvald": (backend, args, kit) => {
     assertInteger(args[0], "cells-windows.wnvald args[0]");
     assertInteger(args[1], "cells-windows.wnvald args[1]");
     const recipe = parseCellsWindowsRecipe(args[2], "cells-windows.wnvald args[2]");
@@ -1338,7 +1338,7 @@ const DISPATCH: Record<string, DispatchFn> = {
       invalidArgs("cells-windows.wnvald expects args[2] to be a window recipe [\"window\", maxIntervals]");
     }
 
-    const prepared = prepareCellsWindowsHandle(backend, recipe);
+    const prepared = prepareCellsWindowsHandle(kit, recipe);
     const window = asCellsWindowsWindowArg(prepared);
 
     try {
@@ -1924,7 +1924,7 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
               unsupportedCall(`Unsupported call: ${formatValue(legacyInput.call)}`);
             }
 
-            const result = await fn(backend, legacyInput.args);
+            const result = await fn(backend.raw, legacyInput.args, backend.kit, backend.kind);
             return { ok: true, result };
           }
 

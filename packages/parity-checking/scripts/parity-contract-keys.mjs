@@ -47,44 +47,83 @@ export function getExportedInterface(sourceFile, interfaceName) {
 *
 * We keep this intentionally strict so contract changes fail loudly.
 */
-export function extractSpiceBackendApis(indexSourceFile) {
-  for (const stmt of indexSourceFile.statements) {
-    if (!ts.isInterfaceDeclaration(stmt)) continue;
-    if (stmt.name.text !== "SpiceBackend") continue;
-
-    const extendsClause = stmt.heritageClauses?.find((c) => c.token === ts.SyntaxKind.ExtendsKeyword);
-    if (!extendsClause) {
-      throw new Error("SpiceBackend has no extends clause (unexpected)");
-    }
-
-    const apiNames = [];
-    for (const t of extendsClause.types) {
-      const expr = t.expression;
-      if (!ts.isIdentifier(expr)) {
-        throw new Error(
-          `Unsupported SpiceBackend extends type (expected identifier): ${expr.getText(indexSourceFile)}`,
-        );
-      }
-
-      const name = expr.text;
-      if (!name.endsWith("Api")) {
-        throw new Error(
-          `SpiceBackend extends ${name}, which does not end with "Api". ` +
-            "Update parity contract key extraction if this is intentional.",
-        );
-      }
-      apiNames.push(name);
-    }
-
-    // Determinism + guard against accidental duplication.
-    const uniq = Array.from(new Set(apiNames));
-    if (uniq.length !== apiNames.length) {
-      throw new Error("SpiceBackend extends list must not contain duplicates.");
-    }
-    return uniq.sort(stableCompare);
+function extractApiNamesFromTypeName(name, typeArguments, sourceFile) {
+  if (name.endsWith("Api")) {
+    return [name];
   }
 
-  throw new Error("Could not find interface SpiceBackend in backend-contract/src/index.ts");
+  if (name === "Pick" || name === "Omit") {
+    const baseType = typeArguments?.[0];
+    if (!baseType || !ts.isTypeReferenceNode(baseType)) {
+      throw new Error(
+        `Unsupported ${name}<...> shape in backend contract: expected first type arg to be a type reference`,
+      );
+    }
+    return extractApiNamesFromTypeReference(baseType, sourceFile);
+  }
+
+  throw new Error(
+    `Unsupported backend contract composition type: ${name}. ` +
+      "Update parity contract key extraction if this is intentional.",
+  );
+}
+
+function extractApiNamesFromTypeReference(typeRef, sourceFile) {
+  const typeName = typeRef.typeName;
+  if (!ts.isIdentifier(typeName)) {
+    throw new Error(
+      `Unsupported backend contract type reference: ${typeRef.getText(sourceFile)}`,
+    );
+  }
+
+  return extractApiNamesFromTypeName(typeName.text, typeRef.typeArguments, sourceFile);
+}
+
+function extractApiNamesFromHeritageType(heritageType, sourceFile) {
+  const expr = heritageType.expression;
+  if (!ts.isIdentifier(expr)) {
+    throw new Error(
+      `Unsupported backend contract heritage type: ${heritageType.getText(sourceFile)}`,
+    );
+  }
+
+  return extractApiNamesFromTypeName(expr.text, heritageType.typeArguments, sourceFile);
+}
+
+export function extractSpiceBackendApis(indexSourceFile) {
+  const targetInterfaces = ["SpiceRawBackend", "SpiceKitBackend"];
+  const apiNames = [];
+
+  for (const interfaceName of targetInterfaces) {
+    let found = false;
+
+    for (const stmt of indexSourceFile.statements) {
+      if (!ts.isInterfaceDeclaration(stmt)) continue;
+      if (stmt.name.text !== interfaceName) continue;
+
+      found = true;
+
+      const extendsClause = stmt.heritageClauses?.find((c) => c.token === ts.SyntaxKind.ExtendsKeyword);
+      if (!extendsClause) {
+        throw new Error(`${interfaceName} has no extends clause (unexpected)`);
+      }
+
+      for (const t of extendsClause.types) {
+        apiNames.push(...extractApiNamesFromHeritageType(t, indexSourceFile));
+      }
+
+      break;
+    }
+
+    if (!found) {
+      throw new Error(
+        `Could not find interface ${interfaceName} in backend-contract/src/index.ts`,
+      );
+    }
+  }
+
+  // Determinism + de-dup across raw + kit composition.
+  return Array.from(new Set(apiNames)).sort(stableCompare);
 }
 
 function kebabCaseFromPascalCase(input) {
