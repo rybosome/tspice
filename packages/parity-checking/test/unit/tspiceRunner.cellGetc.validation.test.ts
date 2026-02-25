@@ -136,6 +136,44 @@ const wrongKindCases: InvalidRecipeCase[] = [
   },
 ];
 
+const spiceIntValidationCases: InvalidRecipeCase[] = [
+  {
+    method: "cells-windows.cellGeti",
+    args: [["int", 8], 0.5],
+    expectedMessage: "cells-windows.cellGeti expects args[1] to be an integer (SpiceInt range)",
+  },
+  {
+    method: "cells-windows.cellGetd",
+    args: [["double", 8], 0.5],
+    expectedMessage: "cells-windows.cellGetd expects args[1] to be an integer (SpiceInt range)",
+  },
+  {
+    method: "cells-windows.cellGetc",
+    args: [["char", 8, 8], 0.5],
+    expectedMessage: "cells-windows.cellGetc expects args[1] to be an integer (SpiceInt range)",
+  },
+  {
+    method: "cells-windows.wnfetd",
+    args: [["window", 8], 0.5],
+    expectedMessage: "cells-windows.wnfetd expects args[1] to be an integer (SpiceInt range)",
+  },
+  {
+    method: "cells-windows.wnvald",
+    args: [0.5, 8, ["window", 8]],
+    expectedMessage: "cells-windows.wnvald expects args[0] to be an integer (SpiceInt range)",
+  },
+  {
+    method: "cells-windows.wnvald",
+    args: [8, 0.5, ["window", 8]],
+    expectedMessage: "cells-windows.wnvald expects args[1] to be an integer (SpiceInt range)",
+  },
+  {
+    method: "cells-windows.cellGetd",
+    args: [["double", 8], 2147483648],
+    expectedMessage: "cells-windows.cellGetd expects args[1] to be an integer (SpiceInt range)",
+  },
+];
+
 describe("tspiceRunner cells-windows tuple validation", () => {
   let tspice: CaseRunner;
 
@@ -165,6 +203,12 @@ describe("tspiceRunner cells-windows tuple validation", () => {
 
   for (const testCase of wrongKindCases) {
     it(`returns exact wrong-kind tuple shape for ${testCase.method}`, async () => {
+      await expectInvalidArgsMessage(testCase);
+    });
+  }
+
+  for (const testCase of spiceIntValidationCases) {
+    it(`returns SpiceInt-style integer validation for ${testCase.method}`, async () => {
       await expectInvalidArgsMessage(testCase);
     });
   }
