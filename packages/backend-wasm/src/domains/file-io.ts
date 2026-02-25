@@ -1,6 +1,7 @@
 import type {
   DlaDescriptor,
   FileIoApi,
+  FileIoKitApi,
   FoundDlaDescriptor,
   SpiceHandle,
   VirtualOutput,
@@ -154,7 +155,6 @@ function callVoidHandle(
 export function createFileIoApi(
   module: EmscriptenModule,
   handles: SpiceHandleRegistry,
-  virtualOutputs: VirtualOutputRegistry,
 ): FileIoApi {
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(
@@ -216,38 +216,6 @@ export function createFileIoApi(
         });
       } finally {
         module._free(pathPtr);
-      }
-    },
-
-    readVirtualOutput: (output: VirtualOutput) => {
-      if (typeof output !== "object" || output === null) {
-        throw new Error("readVirtualOutput(output): expected an object");
-      }
-      const obj = output as { kind?: unknown; path?: unknown };
-      if (obj.kind !== "virtual-output") {
-        throw new Error("readVirtualOutput(output): expected kind='virtual-output'");
-      }
-      if (typeof obj.path !== "string") {
-        throw new Error("readVirtualOutput(output): expected path to be a string");
-      }
-
-      const resolved = resolveKernelPath(obj.path);
-
-      // Namespace/lifecycle restriction: `readVirtualOutput()` should not be a
-      // generic WASM-FS read primitive.
-      virtualOutputs.assertReadable(resolved, obj.path);
-
-      // Emscripten returns a Uint8Array for binary reads.
-      try {
-        return module.FS.readFile(resolved, { encoding: "binary" });
-      } catch (error) {
-        // Emscripten FS errors use Node-style codes in the message, but don't
-        // reliably surface a typed `code` property.
-        throw new Error(
-          `readVirtualOutput(): failed to read VirtualOutput ${JSON.stringify(obj.path)} at ${resolved}. ` +
-            "Make sure the writer handle was closed successfully before reading.",
-          { cause: error },
-        );
       }
     },
 
@@ -705,4 +673,44 @@ export function createFileIoApi(
       }
     },
   } satisfies FileIoApi;
+}
+
+/** Create a {@link FileIoKitApi} implementation for virtual output reads. */
+export function createFileIoKitApi(
+  module: EmscriptenModule,
+  virtualOutputs: VirtualOutputRegistry,
+): FileIoKitApi {
+  return {
+    readVirtualOutput: (output: VirtualOutput) => {
+      if (typeof output !== "object" || output === null) {
+        throw new Error("readVirtualOutput(output): expected an object");
+      }
+      const obj = output as { kind?: unknown; path?: unknown };
+      if (obj.kind !== "virtual-output") {
+        throw new Error("readVirtualOutput(output): expected kind='virtual-output'");
+      }
+      if (typeof obj.path !== "string") {
+        throw new Error("readVirtualOutput(output): expected path to be a string");
+      }
+
+      const resolved = resolveKernelPath(obj.path);
+
+      // Namespace/lifecycle restriction: `readVirtualOutput()` should not be a
+      // generic WASM-FS read primitive.
+      virtualOutputs.assertReadable(resolved, obj.path);
+
+      // Emscripten returns a Uint8Array for binary reads.
+      try {
+        return module.FS.readFile(resolved, { encoding: "binary" });
+      } catch (error) {
+        // Emscripten FS errors use Node-style codes in the message, but don't
+        // reliably surface a typed `code` property.
+        throw new Error(
+          `readVirtualOutput(): failed to read VirtualOutput ${JSON.stringify(obj.path)} at ${resolved}. ` +
+            "Make sure the writer handle was closed successfully before reading.",
+          { cause: error },
+        );
+      }
+    },
+  };
 }

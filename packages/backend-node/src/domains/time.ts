@@ -1,4 +1,4 @@
-import type { TimeApi } from "@rybosome/tspice-backend-contract";
+import type { TimeApi, TimeKitApi } from "@rybosome/tspice-backend-contract";
 import { assertNever, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
@@ -34,12 +34,6 @@ export function createTimeApi(native: NativeAddon): TimeApi {
   }
 
   return {
-    spiceVersion: () => {
-      const version = native.spiceVersion();
-      invariant(typeof version === "string", "Expected native backend spiceVersion() to return a string");
-      return version;
-    },
-
     tkvrsn: (item) => {
       invariant(item === "TOOLKIT", `Unsupported tkvrsn item: ${item}`);
       const version = native.spiceVersion();
@@ -127,6 +121,17 @@ export function createTimeApi(native: NativeAddon): TimeApi {
       const out = native.sce2c(sc, et);
       invariant(typeof out === "number", "Expected sce2c() to return a number");
       return out;
+    },
+  };
+}
+
+/** Create a {@link TimeKitApi} implementation backed by the native Node addon. */
+export function createTimeKitApi(native: NativeAddon): TimeKitApi {
+  return {
+    spiceVersion: () => {
+      const version = native.spiceVersion();
+      invariant(typeof version === "string", "Expected native backend spiceVersion() to return a string");
+      return version;
     },
   };
 }

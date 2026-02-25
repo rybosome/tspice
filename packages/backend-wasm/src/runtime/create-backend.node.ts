@@ -12,8 +12,8 @@ import { createGeometryGfApi } from "../domains/geometry-gf.js";
 import { createIdsNamesApi } from "../domains/ids-names.js";
 import { createKernelsApi } from "../domains/kernels.js";
 import { createKernelPoolApi } from "../domains/kernel-pool.js";
-import { createTimeApi, getToolkitVersion } from "../domains/time.js";
-import { createFileIoApi } from "../domains/file-io.js";
+import { createTimeApi, createTimeKitApi, getToolkitVersion } from "../domains/time.js";
+import { createFileIoApi, createFileIoKitApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
 import { createDskApi } from "../domains/dsk.js";
 import { createEkApi } from "../domains/ek.js";
@@ -429,9 +429,8 @@ export async function createWasmBackend(
   const fsApi = createWasmFs(module);
   const spiceHandles = createSpiceHandleRegistry();
   const virtualOutputs = createVirtualOutputRegistry();
-  const { spiceVersion: kitSpiceVersion, ...timeApi } = createTimeApi(module, toolkitVersion);
-  const { readVirtualOutput: kitReadVirtualOutput, ...fileIoApi } =
-    createFileIoApi(module, spiceHandles, virtualOutputs);
+  const timeApi = createTimeApi(module, toolkitVersion);
+  const fileIoApi = createFileIoApi(module, spiceHandles);
 
   const backend = {
     kind: "wasm",
@@ -452,8 +451,8 @@ export async function createWasmBackend(
       ...createDskApi(module, spiceHandles),
     },
     kit: {
-      spiceVersion: kitSpiceVersion,
-      readVirtualOutput: kitReadVirtualOutput,
+      ...createTimeKitApi(toolkitVersion),
+      ...createFileIoKitApi(module, virtualOutputs),
       ...createCellsWindowsKitApi(module),
     },
 

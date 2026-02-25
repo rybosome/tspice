@@ -97,29 +97,23 @@ export * from "./domains/dsk.js";
 import type { KernelsApi } from "./domains/kernels.js";
 import type { KernelPoolApi } from "./domains/kernel-pool.js";
 import type { EkApi } from "./domains/ek.js";
-import type { TimeApi } from "./domains/time.js";
+import type { TimeApi, TimeKitApi } from "./domains/time.js";
 import type { IdsNamesApi } from "./domains/ids-names.js";
 import type { FramesApi } from "./domains/frames.js";
 import type { EphemerisApi } from "./domains/ephemeris.js";
 import type { GeometryApi } from "./domains/geometry.js";
 import type { GeometryGfApi } from "./domains/geometry-gf.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
-import type { FileIoApi } from "./domains/file-io.js";
+import type { FileIoApi, FileIoKitApi } from "./domains/file-io.js";
 import type { ErrorApi } from "./domains/error.js";
 import type { CellsWindowsApi, CellsWindowsKitApi } from "./domains/cells-windows.js";
 import type { DskApi } from "./domains/dsk.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
 
-/** Backend-only time helpers exposed to higher-level kit code. */
-export interface TimeKitApi extends Pick<TimeApi, "spiceVersion"> { }
-
-/** Backend-only file I/O helpers exposed to higher-level kit code. */
-export interface FileIoKitApi extends Pick<FileIoApi, "readVirtualOutput"> { }
-
 /** Composition of all raw domain APIs.  */
 export interface SpiceRawBackend
-  extends Omit<TimeApi, "spiceVersion">,
+  extends TimeApi,
     KernelsApi,
     KernelPoolApi,
     EkApi,
@@ -129,7 +123,7 @@ export interface SpiceRawBackend
     GeometryApi,
     GeometryGfApi,
     CoordsVectorsApi,
-    Omit<FileIoApi, "readVirtualOutput">,
+    FileIoApi,
     ErrorApi,
     CellsWindowsApi,
     DskApi { }

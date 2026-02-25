@@ -16,8 +16,8 @@ import { createGeometryGfApi } from "./domains/geometry-gf.js";
 import { createIdsNamesApi } from "./domains/ids-names.js";
 import { createKernelsApi } from "./domains/kernels.js";
 import { createKernelPoolApi } from "./domains/kernel-pool.js";
-import { createTimeApi } from "./domains/time.js";
-import { createFileIoApi } from "./domains/file-io.js";
+import { createTimeApi, createTimeKitApi } from "./domains/time.js";
+import { createFileIoApi, createFileIoKitApi } from "./domains/file-io.js";
 import { createErrorApi } from "./domains/error.js";
 import { createCellsWindowsApi, createCellsWindowsKitApi } from "./domains/cells-windows.js";
 import { createDskApi } from "./domains/dsk.js";
@@ -36,8 +36,8 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const stager = createKernelStager();
   const spiceHandles = createSpiceHandleRegistry();
   const outputs = createVirtualOutputStager();
-  const { spiceVersion: kitSpiceVersion, ...timeApi } = createTimeApi(native);
-  const { readVirtualOutput: kitReadVirtualOutput, ...fileIoApi } = createFileIoApi(native, spiceHandles, outputs);
+  const timeApi = createTimeApi(native);
+  const fileIoApi = createFileIoApi(native, spiceHandles);
 
   const backend: SpiceBackend & { kind: "node" } = {
     kind: "node",
@@ -58,8 +58,8 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createDskApi(native, spiceHandles),
     },
     kit: {
-      spiceVersion: kitSpiceVersion,
-      readVirtualOutput: kitReadVirtualOutput,
+      ...createTimeKitApi(native),
+      ...createFileIoKitApi(outputs),
       ...createCellsWindowsKitApi(native),
     },
   };

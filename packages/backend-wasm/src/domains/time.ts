@@ -1,4 +1,4 @@
-import type { TimeApi } from "@rybosome/tspice-backend-contract";
+import type { TimeApi, TimeKitApi } from "@rybosome/tspice-backend-contract";
 import { assertNever } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
@@ -294,7 +294,6 @@ export function getToolkitVersion(module: EmscriptenModule): string {
 /** Create a {@link TimeApi} implementation backed by a WASM Emscripten module. */
 export function createTimeApi(module: EmscriptenModule, toolkitVersion: string): TimeApi {
   return {
-    spiceVersion: () => toolkitVersion,
     tkvrsn: (item) => {
       if (item !== "TOOLKIT") {
         throw new Error(`Unsupported tkvrsn item: ${item}`);
@@ -364,5 +363,12 @@ export function createTimeApi(module: EmscriptenModule, toolkitVersion: string):
     scdecd: (sc, sclkdp) => tspiceCallScdecd(module, sc, sclkdp),
     sct2e: (sc, sclkdp) => tspiceCallSct2e(module, sc, sclkdp),
     sce2c: (sc, et) => tspiceCallSce2c(module, sc, et),
+  };
+}
+
+/** Create a {@link TimeKitApi} implementation backed by a WASM Emscripten module. */
+export function createTimeKitApi(toolkitVersion: string): TimeKitApi {
+  return {
+    spiceVersion: () => toolkitVersion,
   };
 }

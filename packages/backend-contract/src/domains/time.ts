@@ -4,10 +4,12 @@
  * - Methods throw on invalid arguments or SPICE errors.
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
-export interface TimeApi {
+export interface TimeKitApi {
   /** Return the underlying SPICE toolkit version string. */
   spiceVersion(): string;
+}
 
+export interface TimeApi {
   /**
    * Thin wrapper over the SPICE primitive `tkvrsn()`.
    *
