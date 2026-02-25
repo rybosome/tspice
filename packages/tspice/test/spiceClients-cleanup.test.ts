@@ -9,6 +9,28 @@ import { exposeTransportToWorker } from "../src/worker/transport/exposeTransport
 import { createConnectedWorkerPair } from "./_helpers/fakeWorker.js";
 
 describe("spiceClients cleanup", () => {
+  it("toWebWorker() disposes an owned worker when meta.surfaceMethodKeys bootstrap fails", async () => {
+    const { worker, scope } = createConnectedWorkerPair();
+
+    const server: SpiceTransport = {
+      request: async (op) => {
+        if (op === "meta.surfaceMethodKeys") {
+          throw new Error("meta.surfaceMethodKeys unavailable");
+        }
+        throw new Error(`Unexpected op: ${op}`);
+      },
+    };
+    exposeTransportToWorker({ transport: server, self: scope, closeOnDispose: false });
+
+    await expect(
+      spiceClients.toWebWorker({ worker: () => worker }),
+    ).rejects.toThrow(/meta\.surfaceMethodKeys/i);
+
+    // Worker termination is deferred by a macrotask.
+    await nextMacrotask();
+    expect(worker.terminated).toBe(true);
+  });
+
   it("toWebWorker() disposes an owned worker when kernel preload fails", async () => {
     const { worker, scope } = createConnectedWorkerPair();
 
