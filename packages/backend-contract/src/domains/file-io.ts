@@ -39,14 +39,8 @@ export type FoundDlaDescriptor =
       descr: DlaDescriptor;
     };
 
-/** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA + virtual outputs). */
-export interface FileIoApi {
-  /** Returns whether a file exists at `path`. */
-  exists(path: string): boolean;
-
-  /** Determine SPICE file architecture + type (see `getfat_c`). */
-  getfat(path: string): { arch: string; type: string };
-
+/** Backend-only file I/O helpers exposed to higher-level kit code. */
+export interface FileIoKitApi {
   /**
    * Read back bytes for a previously-created virtual output file.
    *
@@ -57,6 +51,15 @@ export interface FileIoApi {
    *   API. This is intentionally **not** a general filesystem read.
    */
   readVirtualOutput(output: VirtualOutput): Uint8Array;
+}
+
+/** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA). */
+export interface FileIoApi {
+  /** Returns whether a file exists at `path`. */
+  exists(path: string): boolean;
+
+  /** Determine SPICE file architecture + type (see `getfat_c`). */
+  getfat(path: string): { arch: string; type: string };
 
   // --- DAF -----------------------------------------------------------------
 

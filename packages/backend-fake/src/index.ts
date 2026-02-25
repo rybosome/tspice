@@ -14,6 +14,7 @@ import type {
   KernelPoolVarType,
   Pl2nvcResult,
   SpiceBackend,
+  FileIoKitApi,
   SpiceKitBackend,
   SpiceRawBackend,
   SpiceHandle,
@@ -27,6 +28,7 @@ import type {
   SpkposResult,
   SpkezrResult,
   SubPointResult,
+  TimeKitApi,
 } from "@rybosome/tspice-backend-contract";
 import {
   assertGetmsgWhich,
@@ -883,9 +885,17 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     return [r, r, r];
   };
 
-  const rawAndKit = {
+  const timeKitApi = {
     spiceVersion: () => FAKE_SPICE_VERSION,
+  } satisfies TimeKitApi;
 
+  const fileIoKitApi = {
+    readVirtualOutput: (_output: VirtualOutput) => {
+      throw new Error("Fake backend: readVirtualOutput() is not implemented");
+    },
+  } satisfies FileIoKitApi;
+
+  const rawAndKit = {
     failed: () => spiceFailed,
     reset: () => {
       spiceFailed = false;
@@ -1899,9 +1909,6 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     getfat: (_path: string) => {
       throw new Error("Fake backend: getfat() is not implemented");
     },
-    readVirtualOutput: (_output: VirtualOutput) => {
-      throw new Error("Fake backend: readVirtualOutput() is not implemented");
-    },
     dafopr: (_path: string) => {
       throw new Error("Fake backend: dafopr() is not implemented");
     },
@@ -2208,11 +2215,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     georec: (lon, lat, alt, re, f) => georec(lon, lat, alt, re, f),
     recgeo: (rect, re, f) => recgeo(rect, re, f),
-  } satisfies SpiceRawBackend & SpiceKitBackend;
+  } satisfies SpiceRawBackend & Omit<SpiceKitBackend, "spiceVersion" | "readVirtualOutput">;
 
   const {
-    spiceVersion,
-    readVirtualOutput,
     newIntCell,
     newDoubleCell,
     newCharCell,
@@ -2229,8 +2234,8 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     kind: "fake",
     raw,
     kit: {
-      spiceVersion,
-      readVirtualOutput,
+      ...timeKitApi,
+      ...fileIoKitApi,
       newIntCell,
       newDoubleCell,
       newCharCell,

@@ -1,6 +1,7 @@
 import type {
   DlaDescriptor,
   FileIoApi,
+  FileIoKitApi,
   FoundDlaDescriptor,
   SpiceHandle,
   VirtualOutput,
@@ -59,7 +60,7 @@ function normalizeFoundDlaDescriptor(value: unknown, context: string): FoundDlaD
 }
 
 /** Create a {@link FileIoApi} implementation backed by the native Node addon. */
-export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistry, outputs: VirtualOutputStager): FileIoApi {
+export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistry): FileIoApi {
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(
       handle,
@@ -87,14 +88,6 @@ export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistr
       invariant(typeof obj.arch === "string", "Expected getfat().arch to be a string");
       invariant(typeof obj.type === "string", "Expected getfat().type to be a string");
       return { arch: obj.arch, type: obj.type };
-    },
-
-    readVirtualOutput: (output: VirtualOutput) => {
-      invariant(output && typeof output === "object", "readVirtualOutput(output): expected an object");
-      const obj = output as { kind?: unknown; path?: unknown };
-      invariant(obj.kind === "virtual-output", "readVirtualOutput(output): expected kind='virtual-output'");
-      invariant(typeof obj.path === "string", "readVirtualOutput(output): expected path to be a string");
-      return outputs.readVirtualOutput({ kind: "virtual-output", path: obj.path });
     },
 
     dafopr: (path: string) => handles.register("DAF", native.dafopr(path)),
@@ -226,4 +219,17 @@ export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistr
   });
 
   return api;
+}
+
+/** Create a {@link FileIoKitApi} implementation for virtual output reads. */
+export function createFileIoKitApi(outputs: VirtualOutputStager): FileIoKitApi {
+  return {
+    readVirtualOutput: (output: VirtualOutput) => {
+      invariant(output && typeof output === "object", "readVirtualOutput(output): expected an object");
+      const obj = output as { kind?: unknown; path?: unknown };
+      invariant(obj.kind === "virtual-output", "readVirtualOutput(output): expected kind='virtual-output'");
+      invariant(typeof obj.path === "string", "readVirtualOutput(output): expected path to be a string");
+      return outputs.readVirtualOutput({ kind: "virtual-output", path: obj.path });
+    },
+  };
 }
