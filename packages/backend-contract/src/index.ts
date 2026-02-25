@@ -111,6 +111,12 @@ import type { DskApi } from "./domains/dsk.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
 
+/** Backend-only time helpers exposed to higher-level kit code. */
+export interface TimeKitApi extends Pick<TimeApi, "spiceVersion"> { }
+
+/** Backend-only file I/O helpers exposed to higher-level kit code. */
+export interface FileIoKitApi extends Pick<FileIoApi, "readVirtualOutput"> { }
+
 /** Composition of all raw domain APIs.  */
 export interface SpiceRawBackend
   extends Omit<TimeApi, "spiceVersion">,
@@ -131,8 +137,8 @@ export interface SpiceRawBackend
 /** Composition of all kit domain APIs.  */
 export interface SpiceKitBackend
   extends CellsWindowsKitApi,
-    Pick<TimeApi, "spiceVersion">,
-    Pick<FileIoApi, "readVirtualOutput"> { }
+    TimeKitApi,
+    FileIoKitApi { }
 
 /** Unified backend contract */
 export interface SpiceBackend {
