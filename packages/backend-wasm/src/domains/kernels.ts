@@ -12,7 +12,7 @@ import {
   matchesKernelKind,
   nativeKindQueryOrNull,
   normalizeKindInput,
-} from "@rybosome/tspice-backend-contract";
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 

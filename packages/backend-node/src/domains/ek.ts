@@ -1,10 +1,12 @@
 import {
-  assertSpiceInt32,
-  assertSpiceInt32NonNegative,
   type EkApi,
   type SpiceHandle,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  assertSpiceInt32NonNegative,
+  invariant,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";

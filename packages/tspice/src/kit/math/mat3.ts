@@ -1,5 +1,5 @@
 import type { Mat3ColMajor, Mat3RowMajor } from "@rybosome/tspice-backend-contract";
-import { brandMat3ColMajor, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import { brandMat3ColMajor, brandMat3RowMajor } from "@rybosome/tspice-core";
 
 function cloneRowMajor(m: Readonly<Mat3RowMajor>): Mat3RowMajor {
   // Ensure we don't retain a mutable caller-provided array reference.

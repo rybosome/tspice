@@ -32,46 +32,13 @@ export type {
   Vec6,
 } from "./shared/types.js";
 
-export type { BrandMat3Options } from "./shared/mat3.js";
-export {
-  assertMat3ArrayLike9,
-  isMat3ArrayLike9,
-  brandMat3ColMajor,
-  brandMat3RowMajor,
-  isBrandedMat3ColMajor,
-  isBrandedMat3RowMajor,
-} from "./shared/mat3.js";
-
-export type { BrandVecOptions } from "./shared/vec.js";
-export {
-  assertVec3ArrayLike3,
-  assertVec6ArrayLike6,
-  isVec3ArrayLike3,
-  isVec6ArrayLike6,
-  brandVec3,
-  brandVec6,
-  isBrandedVec3,
-  isBrandedVec6,
-} from "./shared/vec.js";
-
-export type { BrandMat6Options } from "./shared/mat6.js";
-export {
-  assertMat6ArrayLike36,
-  isMat6ArrayLike36,
-  brandMat6RowMajor,
-  isBrandedMat6RowMajor,
-} from "./shared/mat6.js";
-
+export type { AssertSpiceInt32Options } from "./shared/spice-int.js";
 export {
   SPICE_INT32_MIN,
   SPICE_INT32_MAX,
-  assertSpiceInt32,
-  assertSpiceInt32NonNegative,
 } from "./shared/spice-int.js";
 
 export type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "./shared/spice-handles.js";
-export { createSpiceHandleRegistry } from "./shared/spice-handles.js";
-export { SpiceBackendContractError } from "./shared/errors.js";
 
 // Explicit re-exports to ensure these types are always available from the package root.
 // (Some TS build modes can be sensitive to type-only exports being pulled via `export *`.)
@@ -80,10 +47,8 @@ export type { KernelKindInput, KernelsApi } from "./domains/kernels.js";
 export * from "./domains/kernels.js";
 export * from "./domains/kernel-pool.js";
 export * from "./domains/ek.js";
-export * from "./domains/kernels-utils.js";
 export * from "./domains/time.js";
 export * from "./domains/ids-names.js";
-export * from "./domains/ids-names-normalize.js";
 export * from "./domains/frames.js";
 export * from "./domains/ephemeris.js";
 export * from "./domains/geometry.js";

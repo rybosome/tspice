@@ -1,4 +1,4 @@
-import type { Vec3, Vec6 } from "./types.js";
+import type { Vec3, Vec6 } from "@rybosome/tspice-backend-contract";
 
 type FreezeMode = "never" | "dev" | "always";
 

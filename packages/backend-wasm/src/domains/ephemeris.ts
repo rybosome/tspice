@@ -13,7 +13,7 @@ import type {
   SpkposResult,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32 } from "@rybosome/tspice-backend-contract";
+import { assertSpiceInt32 } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 

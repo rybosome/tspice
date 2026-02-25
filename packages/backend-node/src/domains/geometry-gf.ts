@@ -1,8 +1,7 @@
 import type {
   GeometryGfApi,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { assertSpiceInt32, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 

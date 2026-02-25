@@ -1,7 +1,7 @@
 /**
  * Contract conventions:
- * - Inputs are validated at the backend boundary. This package provides shared runtime helpers
- *   (e.g. `normalizeKindInput`) that backends can reuse and that throw `RangeError` on invalid tokens.
+* - Inputs are validated at the backend boundary. Shared runtime helpers
+*   (e.g. `normalizeKindInput`) are provided by `@rybosome/tspice-core`.
  * - Methods throw on invalid arguments or SPICE errors.
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */

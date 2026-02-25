@@ -1,4 +1,4 @@
-import type { Mat6RowMajor } from "./types.js";
+import type { Mat6RowMajor } from "@rybosome/tspice-backend-contract";
 
 type FreezeMode = "never" | "dev" | "always";
 
