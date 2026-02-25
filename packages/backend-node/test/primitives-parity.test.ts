@@ -120,8 +120,8 @@ describe("primitives parity (node vs wasm)", () => {
 
     // TIMDEF defaults are global (per backend implementation). Snapshot/restore
     // so this test is order-independent.
-    const nodeTimdef0 = snapshotTimdefDefaults(node);
-    const wasmTimdef0 = snapshotTimdefDefaults(wasm);
+    const nodeTimdef0 = snapshotTimdefDefaults(node.raw);
+    const wasmTimdef0 = snapshotTimdefDefaults(wasm.raw);
 
     let primaryErr: unknown = undefined;
     let hasPrimaryErr = false;
@@ -282,12 +282,12 @@ describe("primitives parity (node vs wasm)", () => {
     }
 
     try {
-      restoreTimdefDefaults(node, nodeTimdef0, "node");
+      restoreTimdefDefaults(node.raw, nodeTimdef0, "node");
     } catch (err) {
       cleanupErrors.push(err);
     }
     try {
-      restoreTimdefDefaults(wasm, wasmTimdef0, "wasm");
+      restoreTimdefDefaults(wasm.raw, wasmTimdef0, "wasm");
     } catch (err) {
       cleanupErrors.push(err);
     }

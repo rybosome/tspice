@@ -112,7 +112,7 @@ describe("dsk parity", () => {
     try {
       // The JS wrapper can't know the underlying native cell dtype, so this
       // is enforced at the native boundary.
-      expect(() => (node as any).dskobj(dskPath, wrong)).toThrow(TypeError);
+      expect(() => (node.raw as any).dskobj(dskPath, wrong)).toThrow(TypeError);
     } finally {
       node.kit.freeCell(wrong);
       node.raw.kclear();
@@ -137,7 +137,7 @@ describe("dsk parity", () => {
     const bodids = node.kit.newIntCell(10);
     node.kit.freeCell(bodids);
     try {
-      expect(() => (node as any).dskobj(dskPath, bodids)).toThrow(RangeError);
+      expect(() => (node.raw as any).dskobj(dskPath, bodids)).toThrow(RangeError);
     } finally {
       node.raw.kclear();
     }
