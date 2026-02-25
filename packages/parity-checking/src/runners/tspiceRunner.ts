@@ -2006,7 +2006,7 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           if (legacyInput !== null) {
             const fn = DISPATCH[legacyInput.call];
             if (!fn) {
-              unsupportedCall(`Unsupported call: ${formatValue(legacyInput.call)}`);
+              unsupportedCall("Unsupported call");
             }
 
             const result = await fn(backend.raw, legacyInput.args, backend.kit, backend.kind);
@@ -2019,7 +2019,7 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
 
         const fn = DISPATCH[input.call];
         if (!fn) {
-          unsupportedCall(`Unsupported call: ${formatValue(input.call)}`);
+          unsupportedCall("Unsupported call");
         }
 
         const result = await fn(backend.raw, input.args, backend.kit, backend.kind);
