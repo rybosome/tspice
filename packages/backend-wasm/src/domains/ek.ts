@@ -1,5 +1,5 @@
 import type { EkApi, SpiceHandle } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32, assertSpiceInt32NonNegative } from "@rybosome/tspice-backend-contract";
+import { assertSpiceInt32, assertSpiceInt32NonNegative } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 

@@ -1,4 +1,5 @@
-import { normalizeBodItem, type IdsNamesApi } from "@rybosome/tspice-backend-contract";
+import type { IdsNamesApi } from "@rybosome/tspice-backend-contract";
+import { normalizeBodItem } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 

@@ -11,6 +11,9 @@
       "path": "../backend-contract"
     },
     {
+      "path": "../core"
+    },
+    {
       "path": "../backend-wasm"
     }
   ]

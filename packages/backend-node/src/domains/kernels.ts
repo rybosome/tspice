@@ -10,8 +10,8 @@ import {
   matchesKernelKind,
   nativeKindQueryOrNull,
   normalizeKindInput,
-} from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+  invariant,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";

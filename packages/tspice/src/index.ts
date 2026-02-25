@@ -12,7 +12,7 @@ export {
   brandMat3RowMajor,
   isBrandedMat3ColMajor,
   isBrandedMat3RowMajor,
-} from "@rybosome/tspice-backend-contract";
+} from "@rybosome/tspice-core";
 
 export type {
   AberrationCorrection,

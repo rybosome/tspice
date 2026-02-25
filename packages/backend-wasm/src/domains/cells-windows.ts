@@ -9,7 +9,7 @@ import type {
 import {
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
-} from "@rybosome/tspice-backend-contract";
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import * as emscriptenExports from "../lowlevel/exports.js";

@@ -1,5 +1,5 @@
-import { assertGetmsgWhich, type ErrorApi } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import type { ErrorApi } from "@rybosome/tspice-backend-contract";
+import { assertGetmsgWhich, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 

@@ -3,8 +3,7 @@ import type {
   SpiceMatrix6x6,
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
-import { brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { brandMat3RowMajor, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 

@@ -26,7 +26,8 @@ export interface IdsNamesApi {
    * Return true if a body constant exists in the kernel pool.
    *
    * Normalization:
-   * - `item` is normalized as `normalizeBodItem(item)` (trim ASCII whitespace + ASCII-only uppercase)
+   * - `item` is normalized as `normalizeBodItem(item)` from `@rybosome/tspice-core`
+   *   (trim ASCII whitespace + ASCII-only uppercase)
    *   before lookup.
    */
   bodfnd(body: number, item: string): boolean;
@@ -35,7 +36,8 @@ export interface IdsNamesApi {
    * Return values of a body constant from the kernel pool.
    *
    * Normalization:
-   * - `item` is normalized as `normalizeBodItem(item)` (trim ASCII whitespace + ASCII-only uppercase)
+   * - `item` is normalized as `normalizeBodItem(item)` from `@rybosome/tspice-core`
+   *   (trim ASCII whitespace + ASCII-only uppercase)
    *   before lookup.
    *
    * Missing-item semantics:

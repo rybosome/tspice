@@ -9,7 +9,7 @@ import type {
   SpiceVector3,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32NonNegative, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
+import { assertSpiceInt32NonNegative, brandMat3RowMajor } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 

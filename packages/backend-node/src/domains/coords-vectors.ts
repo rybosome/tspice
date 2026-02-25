@@ -1,6 +1,5 @@
 import type { CoordsVectorsApi, SpiceVector3 } from "@rybosome/tspice-backend-contract";
-import { assertMat3ArrayLike9, brandMat3RowMajor } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { assertMat3ArrayLike9, brandMat3RowMajor, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 

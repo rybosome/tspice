@@ -9,8 +9,8 @@ import type {
 import {
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
-} from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+  invariant,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 

@@ -38,7 +38,7 @@ import {
   matchesKernelKind,
   normalizeBodItem,
   normalizeKindInput,
-} from "@rybosome/tspice-backend-contract";
+} from "@rybosome/tspice-core";
 
 /**
  * A deterministic, pure-TS "toy" backend.

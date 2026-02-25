@@ -1,4 +1,5 @@
-import { assertGetmsgWhich, type ErrorApi } from "@rybosome/tspice-backend-contract";
+import type { ErrorApi } from "@rybosome/tspice-backend-contract";
+import { assertGetmsgWhich } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
