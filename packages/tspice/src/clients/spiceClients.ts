@@ -467,11 +467,6 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         : undefined;
 
       const transport = cachedTransport ?? baseTransport;
-      const surfaceMethodKeys = await requestTransportSurfaceMethodKeys(baseTransport);
-      const spice = createSpiceAsyncFromTransport(transport, surfaceMethodKeys);
-
-      // Web-worker clients currently always use the WASM backend.
-      Object.defineProperty(spice.raw, "kind", { value: "wasm", enumerable: true });
 
       let disposePromise: Promise<void> | undefined;
 
@@ -503,23 +498,31 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
       const dispose = (): Promise<void> => disposeAsync();
 
-      const client: SpiceClientBuildResult<SpiceAsync> = { spice, dispose };
-
-      // Runtime alias for Explicit Resource Management. Do not polyfill.
-      if (typeof (Symbol as any).asyncDispose === "symbol") {
-        (client as any)[(Symbol as any).asyncDispose] = dispose;
-      }
-
       try {
+        const surfaceMethodKeys = await requestTransportSurfaceMethodKeys(baseTransport);
+        const spice = createSpiceAsyncFromTransport(transport, surfaceMethodKeys);
+
+        // Web-worker clients currently always use the WASM backend.
+        Object.defineProperty(spice.raw, "kind", { value: "wasm", enumerable: true });
+
+        const client: SpiceClientBuildResult<SpiceAsync> = { spice, dispose };
+
+        // Runtime alias for Explicit Resource Management. Do not polyfill.
+        if (typeof (Symbol as any).asyncDispose === "symbol") {
+          (client as any)[(Symbol as any).asyncDispose] = dispose;
+        }
+
         // Eagerly create/validate the worker transport so `.toWebWorker()` throws
         // (instead of deferring errors to the first spice call).
         await spice.kit.toolkitVersion();
 
         await loadKernelBatches(spice);
+
+        return client;
       } catch (error) {
-        // `toWebWorker()` does eager validation + kernel preload. Ensure we
-        // don't leak a worker/transport/caches if any eager step throws before
-        // the caller receives `dispose()`.
+        // `toWebWorker()` does eager bootstrap validation + kernel preload.
+        // Ensure we don't leak worker/transport/caches if any eager step
+        // throws before the caller receives `dispose()`.
         //
         // Note: for owned workers, `workerTransport.dispose()` signals a global
         // dispose message (`tspice:dispose`) by default, which triggers worker-
@@ -527,8 +530,6 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         await disposeAsync();
         throw error;
       }
-
-      return client;
     },
   };
 
