@@ -38,16 +38,16 @@ describe("@rybosome/tspice-backend-node kernel pool", () => {
     // Regression test: signature guard should reject non-array `values`.
     // (This yields a clearer, consistent boundary error than letting it fall
     // through to ReadStringArray.)
-    expect(() => (b as any).pcpool("A", "NOT_ARRAY")).toThrow(TypeError);
-    expect(() => (b as any).pcpool("A", "NOT_ARRAY")).toThrow(/expects \(string, string\[\]\)/i);
+    expect(() => (b.raw as any).pcpool("A", "NOT_ARRAY")).toThrow(TypeError);
+    expect(() => (b.raw as any).pcpool("A", "NOT_ARRAY")).toThrow(/expects \(string, string\[\]\)/i);
   });
 
   itNative("swpool validates its (string, string[]) signature", () => {
     const b = createNodeBackend();
 
     // Regression test: signature guard should reject non-array `names`.
-    expect(() => (b as any).swpool("AGENT", "NOT_ARRAY")).toThrow(TypeError);
-    expect(() => (b as any).swpool("AGENT", "NOT_ARRAY")).toThrow(/expects \(string, string\[\]\)/i);
+    expect(() => (b.raw as any).swpool("AGENT", "NOT_ARRAY")).toThrow(TypeError);
+    expect(() => (b.raw as any).swpool("AGENT", "NOT_ARRAY")).toThrow(/expects \(string, string\[\]\)/i);
   });
 
   itNative("swpool rejects empty/blank names entries", () => {

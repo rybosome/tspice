@@ -27,6 +27,11 @@
 
 
 #include "SpiceUsr.h"
+#include "SpiceZmc.h"
+
+#ifndef NULLCHAR
+#define NULLCHAR ((SpiceChar)0)
+#endif
 
 #include <math.h>
 
