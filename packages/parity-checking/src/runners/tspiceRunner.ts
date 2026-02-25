@@ -1241,13 +1241,21 @@ const DISPATCH: Record<string, DispatchFn> = {
   },
 
   "cells-windows.cellGetc": (backend, args, kit) => {
-    const recipe = parseCellsWindowsRecipe(args[0], "cells-windows.cellGetc args[0]");
+    let recipe: CellsWindowsRecipe;
+    try {
+      recipe = parseCellsWindowsRecipe(args[0], "cells-windows.cellGetc args[0]");
+    } catch (error) {
+      const code = (error as { code?: unknown }).code;
+      if (code === "invalid_args") {
+        invalidArgs("cells-windows.cellGetc expects args[0] to be a char recipe tuple");
+      }
+      throw error;
+    }
+
     assertInteger(args[1], "cells-windows.cellGetc args[1]");
 
     if (recipe.kind !== "char") {
-      invalidArgs(
-        "cells-windows.cellGetc expects args[0] to be a char recipe [\"char\", size, length]",
-      );
+      invalidArgs("cells-windows.cellGetc expects args[0] to be [\"char\",size,length]");
     }
 
     const prepared = prepareCellsWindowsHandle(kit, recipe);
