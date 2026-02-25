@@ -1307,6 +1307,7 @@ static void sanitize_file_io_temp_tag(const char *tag,
 static bool build_file_io_temp_path(const char *tag,
                                     char *outPath,
                                     size_t outPathBytes,
+                                    int *outFd,
                                     char *detail,
                                     size_t detailBytes) {
   if (outPath == NULL || outPathBytes == 0) {
@@ -1316,6 +1317,16 @@ static bool build_file_io_temp_path(const char *tag,
     }
     return false;
   }
+
+  if (outFd == NULL) {
+    if (detail != NULL && detailBytes > 0) {
+      snprintf(detail, detailBytes,
+               "temp file descriptor output is missing");
+    }
+    return false;
+  }
+
+  *outFd = -1;
 
   char safeTag[80];
   sanitize_file_io_temp_tag(tag, safeTag, sizeof(safeTag));
@@ -1352,17 +1363,8 @@ static bool build_file_io_temp_path(const char *tag,
     return false;
   }
 
-  if (close(fd) != 0) {
-    const int closeErr = errno;
-    (void)unlink(outPath);
-    if (detail != NULL && detailBytes > 0) {
-      snprintf(detail,
-               detailBytes,
-               "failed to finalize secure temporary file path: %s",
-               strerror(closeErr));
-    }
-    return false;
-  }
+  // Caller owns the descriptor and must close it after use.
+  *outFd = fd;
 
   return true;
 }
