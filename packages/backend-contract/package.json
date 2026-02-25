@@ -21,6 +21,9 @@
     "prepack": "pnpm run build",
     "test": "vitest run"
   },
+  "dependencies": {
+    "@rybosome/tspice-core": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "typescript": "^5.9.3",

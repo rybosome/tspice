@@ -20,9 +20,6 @@
     "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
     "test": "vitest run"
   },
-  "dependencies": {
-    "@rybosome/tspice-backend-contract": "workspace:*"
-  },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "typescript": "^5.9.3",

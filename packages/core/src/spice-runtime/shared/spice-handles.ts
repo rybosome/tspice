@@ -3,7 +3,7 @@ import type {
   SpiceHandleEntry,
   SpiceHandleKind,
   SpiceHandleRegistry,
-} from "@rybosome/tspice-backend-contract";
+} from "./types.js";
 import { SPICE_INT32_MAX, SPICE_INT32_MIN } from "./spice-int.js";
 import { SpiceBackendContractError } from "./errors.js";
 

@@ -5,10 +5,7 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
-  "include": ["src/**/*.ts"],
-  "references": [
-    {
-      "path": "../backend-contract"
-    }
+  "include": [
+    "src/**/*.ts"
   ]
 }

@@ -1,11 +1,12 @@
 /**
  * Contract conventions:
-* - Inputs are validated at the backend boundary. Shared runtime helpers
-*   (e.g. `normalizeKindInput`) are provided by `@rybosome/tspice-core`.
+ * - Inputs are validated at the backend boundary. Shared runtime helpers
+ *   (e.g. `normalizeKindInput`) are provided by `@rybosome/tspice-core`.
  * - Methods throw on invalid arguments or SPICE errors.
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
-import type { Found, KernelData, KernelInfo, KernelKind, KernelSource } from "../shared/types.js";
+import type { KernelKindInput as CoreKernelKindInput } from "@rybosome/tspice-core";
+import type { Found, KernelData, KernelInfo, KernelSource } from "../shared/types.js";
 import type { SpiceIntCell } from "./cells-windows.js";
 
 /**
@@ -20,7 +21,7 @@ import type { SpiceIntCell } from "./cells-windows.js";
  * Unknown/empty tokens throw `RangeError`.
  * An empty array (`[]`) is invalid and throws `RangeError`.
  */
-export type KernelKindInput = KernelKind | readonly KernelKind[] | string;
+export type KernelKindInput = CoreKernelKindInput;
 
 /** Backend contract for kernel management and kernel metadata queries. */
 export interface KernelsApi {
