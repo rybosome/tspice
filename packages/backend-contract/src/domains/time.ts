@@ -9,6 +9,7 @@ export interface TimeKitApi {
   spiceVersion(): string;
 }
 
+/** Time-domain backend API surface over SPICE primitives. */
 export interface TimeApi {
   /**
    * Thin wrapper over the SPICE primitive `tkvrsn()`.
