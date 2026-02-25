@@ -1,3 +1,15 @@
+import type {
+  Found as CoreFound,
+  KernelData as CoreKernelData,
+  KernelKind as CoreKernelKind,
+  Mat3ColMajor as CoreMat3ColMajor,
+  Mat3RowMajor as CoreMat3RowMajor,
+  Mat6RowMajor as CoreMat6RowMajor,
+  SpiceHandle as CoreSpiceHandle,
+  Vec3 as CoreVec3,
+  Vec6 as CoreVec6,
+} from "@rybosome/tspice-core";
+
 export type KernelSource =
   | string
   | {
@@ -26,19 +38,7 @@ export type VirtualOutput = {
 };
 
 /** Kernel types used by summary/introspection APIs. */
-export type KernelKind =
-  | "ALL"
-  | "SPK"
-  | "CK"
-  | "PCK"
-  | "DSK"
-  | "TEXT"
-  | "LSK"
-  | "FK"
-  | "IK"
-  | "SCLK"
-  | "EK"
-  | "META";
+export type KernelKind = CoreKernelKind;
 
 /**
  * Optional-return convention for lookups where "not found" is a normal outcome.
@@ -49,11 +49,7 @@ export type KernelKind =
  * - Throw for invalid arguments, SPICE errors, and other exceptional failures.
  * - When `found: true`, extra fields are present on the returned object.
  */
-export type Found<T> =
-  | {
-      found: false;
-    }
-  | ({ found: true } & T);
+export type Found<T> = CoreFound<T>;
 
 /** Convenience alias for the most common Found payload shape. */
 export type FoundValue<T> = Found<{ value: T }>;
@@ -65,12 +61,7 @@ export type FoundDouble = FoundValue<number>;
 /** Extract the payload type of a `Found<...>` result. */
 export type FoundPayload<T> = T extends Found<infer P> ? P : never;
 
-export type KernelData = {
-  file: string;
-  filtyp: string;
-  source: string;
-  handle: number;
-};
+export type KernelData = CoreKernelData;
 
 /** Result payload for `kinfo()`. */
 export type KernelInfo = {
@@ -103,23 +94,13 @@ export type SpicePlane = [number, number, number, number];
 
 // -- Branded handles -------------------------------------------------------
 
-// Type-only brand (no runtime Symbol export).
-declare const __spiceHandleBrand: unique symbol;
-
 /** Opaque numeric handle returned by low-level SPICE file APIs (DAF/DAS/DLA). */
-export type SpiceHandle = number & { readonly [__spiceHandleBrand]: true };
+export type SpiceHandle = CoreSpiceHandle;
 
 // -- Branded vector/matrix helpers -----------------------------------------
 
-// Type-only brands (no runtime Symbol export).
-declare const __vec3Brand: unique symbol;
-export type Vec3 = readonly [number, number, number] & { readonly [__vec3Brand]: true };
-
-// Type-only brands (no runtime Symbol export).
-declare const __vec6Brand: unique symbol;
-export type Vec6 = readonly [number, number, number, number, number, number] & {
-  readonly [__vec6Brand]: true;
-};
+export type Vec3 = CoreVec3;
+export type Vec6 = CoreVec6;
 
 // -- Fixed-width string helpers ----------------------------------------------
 
@@ -152,38 +133,14 @@ export interface StringArrayResult {
  *
  * Row-major layout: `[m00,m01,m02, m10,m11,m12, m20,m21,m22]`.
  */
-// Type-only brand (no runtime Symbol export).
-declare const __mat3RowMajorBrand: unique symbol;
-export type Mat3RowMajor = readonly [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-] & { readonly [__mat3RowMajorBrand]: true };
+export type Mat3RowMajor = CoreMat3RowMajor;
 
 /**
  * 3x3 matrix encoded as a length-9 array in **column-major** order.
  *
  * Column-major layout: `[m00,m10,m20, m01,m11,m21, m02,m12,m22]`.
  */
-// Type-only brand (no runtime Symbol export).
-declare const __mat3ColMajorBrand: unique symbol;
-export type Mat3ColMajor = readonly [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-] & { readonly [__mat3ColMajorBrand]: true };
+export type Mat3ColMajor = CoreMat3ColMajor;
 
 
 export type SpiceMatrix6x6 = [
@@ -230,9 +187,7 @@ export type SpiceMatrix6x6 = [
  *
  * Row-major layout: `[m00,m01,...,m05, m10,m11,...,m15, ..., m50,...,m55]`.
  */
-// Type-only brand (no runtime Symbol export).
-declare const __mat6RowMajorBrand: unique symbol;
-export type Mat6RowMajor = Readonly<SpiceMatrix6x6> & { readonly [__mat6RowMajorBrand]: true };
+export type Mat6RowMajor = CoreMat6RowMajor;
 
 export type SpiceStateVector = [
   number,

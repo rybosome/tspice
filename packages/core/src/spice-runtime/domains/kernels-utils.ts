@@ -1,4 +1,4 @@
-import type { Found, KernelData, KernelKind, KernelKindInput } from "@rybosome/tspice-backend-contract";
+import type { Found, KernelData, KernelKind, KernelKindInput } from "../shared/types.js";
 
 const SUPPORTED_QUERY_KIND_TOKENS = [
   "ALL",

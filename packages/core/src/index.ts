@@ -119,10 +119,20 @@ export {
 
 export { SpiceBackendContractError } from "./spice-runtime/shared/errors.js";
 export type {
+  Found,
+  KernelData,
+  KernelKind,
+  KernelKindInput,
+  Mat3ColMajor,
+  Mat3RowMajor,
+  Mat6RowMajor,
+  SpiceHandle,
   SpiceHandleEntry,
   SpiceHandleKind,
   SpiceHandleRegistry,
-} from "@rybosome/tspice-backend-contract";
+  Vec3,
+  Vec6,
+} from "./spice-runtime/shared/types.js";
 export { createSpiceHandleRegistry } from "./spice-runtime/shared/spice-handles.js";
 
 export type { GetmsgWhich } from "./spice-runtime/domains/error.js";
