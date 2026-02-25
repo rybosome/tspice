@@ -14,9 +14,9 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     expect(summary.workflowCount).toBeGreaterThan(0);
     expect(summary.methodCount).toBe(94);
     expect(summary.crossCuttingSpecCount).toBeGreaterThan(0);
-    expect(summary.contractCount).toBe(173);
+    expect(summary.contractCount).toBe(162);
     expect(summary.coveredCount).toBe(94);
-    expect(summary.denylistCount).toBe(89);
+    expect(summary.denylistCount).toBe(78);
     expect(summary.aliasCount).toBe(17);
 
     if (!status.ready) {

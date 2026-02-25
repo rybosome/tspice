@@ -91,7 +91,7 @@ function extractApiNamesFromHeritageType(heritageType, sourceFile) {
 }
 
 export function extractSpiceBackendApis(indexSourceFile) {
-  const targetInterfaces = ["SpiceRawBackend", "SpiceKitBackend"];
+  const targetInterfaces = ["SpiceRawBackend"];
   const apiNames = [];
 
   for (const interfaceName of targetInterfaces) {
@@ -122,7 +122,7 @@ export function extractSpiceBackendApis(indexSourceFile) {
     }
   }
 
-  // Determinism + de-dup across raw + kit composition.
+  // Determinism + de-dup.
   return Array.from(new Set(apiNames)).sort(stableCompare);
 }
 
