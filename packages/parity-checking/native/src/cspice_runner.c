@@ -1325,22 +1325,41 @@ static bool build_file_io_temp_path(const char *tag,
     tmpDir = "/tmp";
   }
 
-  static uint64_t counter = 0;
-  counter += 1;
-
   const int n = snprintf(
       outPath,
       outPathBytes,
-      "%s/tspice-parity-%s-%ld-%" PRIu64 ".dla",
+      "%s/tspice-parity-%s-XXXXXX.dla",
       tmpDir,
-      safeTag,
-      (long)getpid(),
-      (uint64_t)counter);
+      safeTag);
 
   if (n < 0 || (size_t)n >= outPathBytes) {
     if (detail != NULL && detailBytes > 0) {
       snprintf(detail, detailBytes,
                "failed to build temporary file path");
+    }
+    return false;
+  }
+
+  errno = 0;
+  const int fd = mkstemps(outPath, 4);
+  if (fd < 0) {
+    if (detail != NULL && detailBytes > 0) {
+      snprintf(detail,
+               detailBytes,
+               "failed to create secure temporary file path: %s",
+               strerror(errno));
+    }
+    return false;
+  }
+
+  if (close(fd) != 0) {
+    const int closeErr = errno;
+    (void)unlink(outPath);
+    if (detail != NULL && detailBytes > 0) {
+      snprintf(detail,
+               detailBytes,
+               "failed to finalize secure temporary file path: %s",
+               strerror(closeErr));
     }
     return false;
   }
