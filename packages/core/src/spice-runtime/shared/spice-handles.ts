@@ -26,8 +26,12 @@ function asSpiceHandle(handleId: number): SpiceHandle {
 }
 
 type InternalSpiceHandleRegistry = SpiceHandleRegistry & {
-  __entries: () => ReadonlyArray<readonly [SpiceHandle, SpiceHandleEntry]>;
+  __entries: () => ReadonlyArray<readonly [SpiceHandle, Readonly<SpiceHandleEntry>]>;
 };
+
+function snapshotSpiceHandleEntry(entry: SpiceHandleEntry): Readonly<SpiceHandleEntry> {
+  return Object.freeze({ kind: entry.kind, nativeHandle: entry.nativeHandle });
+}
 
 /**
  * Create an in-memory registry for opaque {@link SpiceHandle} values.
@@ -109,7 +113,10 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
 
     // Internal hook used by the Node backend to best-effort dispose all open handles.
     // Not part of the public backend contract.
-    __entries: () => Array.from(handles.entries()).map(([handleId, entry]) => [asSpiceHandle(handleId), entry] as const),
+    __entries: () =>
+      Array.from(handles.entries(), ([handleId, entry]) =>
+        [asSpiceHandle(handleId), snapshotSpiceHandleEntry(entry)] as const,
+      ),
   };
 
   return registry;

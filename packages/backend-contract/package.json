@@ -16,7 +16,9 @@
     "dist"
   ],
   "scripts": {
+    "prebuild": "pnpm -C ../core build",
     "build": "tsc -p tsconfig.json",
+    "pretypecheck": "pnpm -C ../core build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "prepack": "pnpm run build",
     "test": "vitest run"
