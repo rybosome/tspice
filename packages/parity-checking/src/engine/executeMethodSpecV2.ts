@@ -27,6 +27,16 @@ function normalizeVolatileResultFields(call: string, result: unknown): unknown {
   return rest;
 }
 
+function normalizeRunnerErrorForParity(error: unknown): unknown {
+  if (!isRecord(error) || !("details" in error)) {
+    return error;
+  }
+
+  const rest = { ...error };
+  delete rest.details;
+  return rest;
+}
+
 function buildCompareOptions(tolAbs: number, tolRel: number, angleWrapPi: boolean | undefined): {
   tolAbs: number;
   tolRel: number;
@@ -206,10 +216,18 @@ export async function executeMethodSpecParityV2(
         throw new Error(`Outcome mismatch (${label}): one runner succeeded while the other failed`);
       }
 
-      const tspiceError = tspiceOutcome.error;
-      const cspiceError = cspiceOutcome.error;
+      const tspiceError = normalizeRunnerErrorForParity(tspiceOutcome.error);
+      const cspiceError = normalizeRunnerErrorForParity(cspiceOutcome.error);
 
-      if (errorShort && tspiceError.spice?.short && cspiceError.spice?.short) {
+      if (
+        errorShort &&
+        isRecord(tspiceError) &&
+        isRecord(cspiceError) &&
+        isRecord(tspiceError.spice) &&
+        isRecord(cspiceError.spice) &&
+        typeof tspiceError.spice.short === "string" &&
+        typeof cspiceError.spice.short === "string"
+      ) {
         const tspiceSymbol = spiceShortSymbol(tspiceError.spice.short);
         const cspiceSymbol = spiceShortSymbol(cspiceError.spice.short);
 

@@ -75,9 +75,15 @@ function invalidArgs(message: string): never {
   throw err;
 }
 
-function unsupportedCall(message: string): never {
-  const err = new Error(message) as Error & { code?: RunnerValidationCode };
+function unsupportedCall(message: string, details?: RunnerErrorReport["details"]): never {
+  const err = new Error(message) as Error & {
+    code?: RunnerValidationCode;
+    details?: RunnerErrorReport["details"];
+  };
   err.code = "unsupported_call";
+  if (details !== undefined) {
+    err.details = details;
+  }
   throw err;
 }
 
@@ -551,9 +557,16 @@ export function asV2RunnerError(error: unknown): RunnerErrorReport {
       message: error.message,
     };
 
-    const withCode = error as Error & { code?: string };
+    const withCode = error as Error & { code?: string; details?: unknown };
     if (typeof withCode.code === "string") {
       report.code = withCode.code;
+    }
+    if (
+      typeof withCode.details === "object" &&
+      withCode.details !== null &&
+      !Array.isArray(withCode.details)
+    ) {
+      report.details = { ...(withCode.details as Record<string, unknown>) };
     }
     return report;
   }

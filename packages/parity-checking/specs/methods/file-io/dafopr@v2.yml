@@ -9,13 +9,30 @@ contract:
   result:
     type: object
     properties: {}
+  errors:
+    - code: invalid_args
+    - code: spice_error
 workflow:
   steps:
     - op: invokeLegacyCall
 cases:
-  - id: file-io.dafopr.open-daf-read-only
+  - id: file-io.dafopr.opens-and-closes-spk
     args:
-      - $FIXTURES/ephemeris-de440s/de440s.bsp
+      - $FIXTURES/de440s/de440s.bsp
+    expect:
+      ok: true
+
+  - id: file-io.dafopr.missing-file
+    compare:
+      errorShort: true
+    args:
+      - $FIXTURES/de440s/does-not-exist.bsp
     expect:
       ok: false
-      errorCode: unsupported_call
+
+  - id: file-io.dafopr.rejects-non-string-path
+    args:
+      - 42
+    expect:
+      ok: false
+      errorCode: invalid_args

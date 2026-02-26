@@ -9,6 +9,9 @@ contract:
   result:
     type: object
     properties: {}
+  errors:
+    - code: invalid_args
+    - code: spice_error
 workflow:
   steps:
     - op: invokeLegacyCall
@@ -20,5 +23,24 @@ cases:
       - TSPICE
       - 0
     expect:
+      ok: true
+
+  - id: file-io.dlaopn.rejects-negative-comment-size
+    args:
+      - parity-dlaopn
+      - DLA
+      - TSPICE
+      - -1
+    expect:
       ok: false
-      errorCode: unsupported_call
+      errorCode: invalid_args
+
+  - id: file-io.dlaopn.rejects-non-string-tag
+    args:
+      - 42
+      - DLA
+      - TSPICE
+      - 0
+    expect:
+      ok: false
+      errorCode: invalid_args

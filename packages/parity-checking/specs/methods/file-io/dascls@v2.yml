@@ -9,13 +9,30 @@ contract:
   result:
     type: object
     properties: {}
+  errors:
+    - code: invalid_args
+    - code: spice_error
 workflow:
   steps:
     - op: invokeLegacyCall
 cases:
-  - id: file-io.dascls.close-opened-das
+  - id: file-io.dascls.opens-and-closes-dsk
     args:
-      - $FIXTURES/dsk-minimal/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
+      - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
+    expect:
+      ok: true
+
+  - id: file-io.dascls.missing-file
+    compare:
+      errorShort: true
+    args:
+      - $FIXTURES/apophis-g-25000mm/does-not-exist.bds
     expect:
       ok: false
-      errorCode: unsupported_call
+
+  - id: file-io.dascls.rejects-non-string-path
+    args:
+      - 42
+    expect:
+      ok: false
+      errorCode: invalid_args

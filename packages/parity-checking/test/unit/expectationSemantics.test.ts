@@ -129,4 +129,70 @@ describe("method case expectation semantics", () => {
     expect(tspice.inputs[0]?.setup?.kernels).toEqual([kernelEntry]);
     expect(cspice.inputs[0]?.setup?.kernels).toEqual([kernelEntry]);
   });
+
+  it("ignores error.details metadata differences during parity comparison", async () => {
+    const resolved: ResolvedMethodSpec = {
+      method: {
+        id: "methods/file-io/unsupported@v1",
+        kind: "method",
+        contractMethod: "file-io.unknown",
+        canonicalMethod: "file-io.unknown",
+        cases: [
+          {
+            id: "unsupported",
+            args: [],
+            expect: {
+              ok: false,
+              errorCode: "unsupported_call",
+            },
+          },
+        ],
+        meta: {
+          sourcePath: "/tmp/file-io-unsupported.yml",
+        },
+      },
+      includeOrder: [],
+    };
+
+    const tspice: CaseRunner = {
+      kind: "stub-tspice",
+      async runCase(): Promise<RunCaseResult> {
+        return {
+          ok: false,
+          error: {
+            code: "unsupported_call",
+            message: "Unsupported call",
+            details: {
+              call: "file-io.exists",
+            },
+            spice: { failed: false },
+          },
+        };
+      },
+    };
+
+    const cspice: CaseRunner = {
+      kind: "stub-cspice",
+      async runCase(): Promise<RunCaseResult> {
+        return {
+          ok: false,
+          error: {
+            code: "unsupported_call",
+            message: "Unsupported call",
+            details: {
+              call: "file-io.getfat",
+            },
+            spice: { failed: false },
+          },
+        };
+      },
+    };
+
+    await expect(
+      executeMethodSpecParity(resolved, {
+        tspice,
+        cspice,
+      }),
+    ).resolves.toMatchObject({ caseCount: 1 });
+  });
 });

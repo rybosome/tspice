@@ -1,4 +1,5 @@
 import * as path from "node:path";
+import os from "node:os";
 import crypto from "node:crypto";
 import { readFile, realpath, stat } from "node:fs/promises";
 
@@ -57,9 +58,15 @@ function invalidArgs(message: string): never {
   throw err;
 }
 
-function unsupportedCall(message: string): never {
-  const err = new Error(message) as Error & { code?: RunnerValidationCode };
+function unsupportedCall(message: string, details?: RunnerErrorReport["details"]): never {
+  const err = new Error(message) as Error & {
+    code?: RunnerValidationCode;
+    details?: RunnerErrorReport["details"];
+  };
   err.code = "unsupported_call";
+  if (details !== undefined) {
+    err.details = details;
+  }
   throw err;
 }
 
@@ -90,6 +97,88 @@ function assertNumberArg(value: unknown, call: string, index: number): asserts v
 
 const SPICE_INT32_MIN = -2147483648;
 const SPICE_INT32_MAX = 2147483647;
+
+function assertNonNegativeSpiceIntArg(value: unknown, call: string, index: number): asserts value is number {
+  assertInteger(value, `${call} args[${index}]`);
+  if (value < 0 || value > SPICE_INT32_MAX) {
+    invalidArgs(`${call} expects args[${index}] to be an integer (SpiceInt range)`);
+  }
+}
+
+function assertNonEmptyStringArg(value: unknown, call: string, index: number): asserts value is string {
+  assertStringArg(value, call, index);
+  if (value.trim() === "") {
+    invalidArgs(`${call} expects args[${index}] to be a non-empty string`);
+  }
+}
+
+function sanitizeFileIoTempTag(tag: string): string {
+  const maxLen = 64;
+  let out = "";
+  let prevDash = false;
+
+  for (const ch of tag) {
+    if (out.length >= maxLen) break;
+
+    const allowed =
+      (ch >= "a" && ch <= "z") ||
+      (ch >= "A" && ch <= "Z") ||
+      (ch >= "0" && ch <= "9") ||
+      ch === "." ||
+      ch === "_" ||
+      ch === "-";
+
+    if (allowed) {
+      out += ch;
+      prevDash = ch === "-";
+      continue;
+    }
+
+    if (!prevDash && out.length < maxLen) {
+      out += "-";
+      prevDash = true;
+    }
+  }
+
+  out = out.replace(/-+$/g, "");
+  return out.length > 0 ? out : "file-io";
+}
+
+function buildFileIoTempPath(tag: string): string {
+  const safeTag = sanitizeFileIoTempTag(tag);
+  const suffix = crypto.randomBytes(6).toString("hex");
+  return path.join(os.tmpdir(), `tspice-parity-${safeTag}-${suffix}.dla`);
+}
+
+async function resolveFileIoPathForBackend(
+  backend: SpiceBackend["raw"],
+  backendKind: SpiceBackend["kind"],
+  pathOrVid: string,
+): Promise<string> {
+  if (backendKind !== "wasm") {
+    return pathOrVid;
+  }
+
+  // Preserve explicit virtual ids.
+  if (!path.isAbsolute(pathOrVid) && !pathOrVid.includes("/") && !pathOrVid.includes("\\")) {
+    return pathOrVid;
+  }
+
+  const absPath = path.resolve(pathOrVid);
+  const vid = await kernelVirtualIdFromOsPath(absPath);
+
+  try {
+    const bytes = await readFile(absPath);
+    WASM_KERNEL_VID_TO_OS_PATH.set(vid, absPath);
+    backend.furnsh({ path: vid, bytes });
+  } catch (error) {
+    if (!isFsNotFoundError(error)) {
+      throw error;
+    }
+  }
+
+  return vid;
+}
 
 function assertCellsWindowsSpiceIntArg(value: unknown, method: string, index: number): asserts value is number {
   if (
@@ -1021,6 +1110,136 @@ const DISPATCH: Record<string, DispatchFn> = {
     return [];
   },
 
+  // file-io
+  "file-io.exists": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.exists", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    return { exists: backend.exists(targetPath) };
+  },
+
+  "file-io.getfat": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.getfat", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const out = backend.getfat(targetPath);
+    return { arch: out.arch, type: out.type };
+  },
+
+  "file-io.dafopr": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.dafopr", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const handle = backend.dafopr(targetPath);
+    try {
+      return { opened: true };
+    } finally {
+      backend.dafcls(handle);
+    }
+  },
+
+  "file-io.dafcls": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.dafcls", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const handle = backend.dafopr(targetPath);
+    backend.dafcls(handle);
+    return { closed: true };
+  },
+
+  "file-io.dafbfs": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.dafbfs", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const handle = backend.dafopr(targetPath);
+    try {
+      backend.dafbfs(handle);
+      return { searchStarted: true };
+    } finally {
+      backend.dafcls(handle);
+    }
+  },
+
+  "file-io.daffna": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.daffna", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const handle = backend.dafopr(targetPath);
+    try {
+      backend.dafbfs(handle);
+      return { found: backend.daffna(handle) };
+    } finally {
+      backend.dafcls(handle);
+    }
+  },
+
+  "file-io.dasopr": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.dasopr", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const handle = backend.dasopr(targetPath);
+    try {
+      return { opened: true };
+    } finally {
+      backend.dascls(handle);
+    }
+  },
+
+  "file-io.dascls": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.dascls", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const handle = backend.dasopr(targetPath);
+    backend.dascls(handle);
+    return { closed: true };
+  },
+
+  "file-io.dlaopn": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.dlaopn", 0);
+    assertStringArg(args[1], "file-io.dlaopn", 1);
+    assertStringArg(args[2], "file-io.dlaopn", 2);
+    assertNonNegativeSpiceIntArg(args[3], "file-io.dlaopn", 3);
+
+    const tempPath = await resolveFileIoPathForBackend(
+      backend,
+      backendKind,
+      buildFileIoTempPath(args[0]),
+    );
+    const handle = backend.dlaopn(tempPath, args[1], args[2], args[3]);
+    try {
+      return backend.dlabfs(handle);
+    } finally {
+      backend.dlacls(handle);
+    }
+  },
+
+  "file-io.dlabfs": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.dlabfs", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const handle = backend.dasopr(targetPath);
+    try {
+      return backend.dlabfs(handle);
+    } finally {
+      backend.dascls(handle);
+    }
+  },
+
+  "file-io.dlafns": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.dlafns", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const handle = backend.dasopr(targetPath);
+    try {
+      const first = backend.dlabfs(handle);
+      if (!first.found) {
+        return { found: false };
+      }
+
+      return backend.dlafns(handle, first.descr);
+    } finally {
+      backend.dascls(handle);
+    }
+  },
+
+  "file-io.dlacls": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "file-io.dlacls", 0);
+    const targetPath = await resolveFileIoPathForBackend(backend, backendKind, args[0]);
+    const handle = backend.dasopr(targetPath);
+    backend.dlacls(handle);
+    return { closed: true };
+  },
+
   // kernel-pool
   "kernel-pool.gdpool": (backend, args) => {
     if (typeof args[0] !== "string") {
@@ -1689,8 +1908,11 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
   if (error instanceof Error) {
     const report: RunnerErrorReport = { message: error.message };
 
-    const anyErr = error as unknown as { code?: unknown };
+    const anyErr = error as unknown as { code?: unknown; details?: unknown };
     if (isRunnerValidationCode(anyErr.code)) report.code = anyErr.code;
+    if (typeof anyErr.details === "object" && anyErr.details !== null && !Array.isArray(anyErr.details)) {
+      report.details = { ...(anyErr.details as Record<string, unknown>) };
+    }
 
     return report;
   }
@@ -2006,7 +2228,7 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           if (legacyInput !== null) {
             const fn = DISPATCH[legacyInput.call];
             if (!fn) {
-              unsupportedCall("Unsupported call");
+              unsupportedCall("Unsupported call", { call: legacyInput.call });
             }
 
             const result = await fn(backend.raw, legacyInput.args, backend.kit, backend.kind);
@@ -2019,7 +2241,7 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
 
         const fn = DISPATCH[input.call];
         if (!fn) {
-          unsupportedCall("Unsupported call");
+          unsupportedCall("Unsupported call", { call: input.call });
         }
 
         const result = await fn(backend.raw, input.args, backend.kit, backend.kind);

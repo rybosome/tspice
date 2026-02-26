@@ -94,9 +94,16 @@ export function getCspiceRunnerStatus(): { ready: boolean; hint: string; statePa
 function safeErrorReport(error: unknown): RunnerErrorReport {
   if (error instanceof Error) {
     const report: RunnerErrorReport = { message: error.message };
-    const withCode = error as Error & { code?: unknown };
+    const withCode = error as Error & { code?: unknown; details?: unknown };
     if (typeof withCode.code === "string") {
       report.code = withCode.code;
+    }
+    if (
+      typeof withCode.details === "object" &&
+      withCode.details !== null &&
+      !Array.isArray(withCode.details)
+    ) {
+      report.details = { ...(withCode.details as Record<string, unknown>) };
     }
     return report;
   }
@@ -125,6 +132,10 @@ type CRunnerError = {
   error: {
     code?: string;
     message: string;
+    details?: {
+      call?: string;
+      [key: string]: unknown;
+    };
     spiceShort?: string;
     spiceLong?: string;
     spiceTrace?: string;
@@ -504,6 +515,7 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
         const report: RunnerErrorReport = {
           ...(out.error.code ? { code: out.error.code } : {}),
           message: out.error.message,
+          ...(out.error.details ? { details: out.error.details } : {}),
           spice: asSpiceErrorState(out.error),
         };
         return { ok: false, error: report };

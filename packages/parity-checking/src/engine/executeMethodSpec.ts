@@ -27,6 +27,16 @@ function normalizeVolatileResultFields(call: string, result: unknown): unknown {
   return rest;
 }
 
+function normalizeRunnerErrorForParity(error: unknown): unknown {
+  if (!isRecord(error) || !("details" in error)) {
+    return error;
+  }
+
+  const rest = { ...error };
+  delete rest.details;
+  return rest;
+}
+
 
 function buildCompareOptions(tolAbs: number, tolRel: number, angleWrapPi: boolean | undefined): {
   tolAbs: number;
@@ -229,8 +239,8 @@ export async function executeMethodSpecParity(
       }
 
       const cmp = compareValues(
-        tspiceCase.outcome.ok ? undefined : tspiceCase.outcome.error,
-        cspiceCase.outcome.ok ? undefined : cspiceCase.outcome.error,
+        normalizeRunnerErrorForParity(tspiceCase.outcome.ok ? undefined : tspiceCase.outcome.error),
+        normalizeRunnerErrorForParity(cspiceCase.outcome.ok ? undefined : cspiceCase.outcome.error),
         buildCompareOptions(tolAbs, tolRel, angleWrapPi),
       );
 
