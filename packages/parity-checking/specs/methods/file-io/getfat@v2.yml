@@ -9,13 +9,36 @@ contract:
   result:
     type: object
     properties: {}
+  errors:
+    - code: invalid_args
+    - code: spice_error
 workflow:
   steps:
     - op: invokeLegacyCall
 cases:
-  - id: file-io.getfat.file-architecture-and-type
+  - id: file-io.getfat.classifies-spk
     args:
-      - $FIXTURES/ephemeris-de440s/de440s.bsp
+      - $FIXTURES/de440s/de440s.bsp
+    expect:
+      ok: true
+
+  - id: file-io.getfat.classifies-dsk
+    args:
+      - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
+    expect:
+      ok: true
+
+  - id: file-io.getfat.missing-file
+    compare:
+      errorShort: true
+    args:
+      - $FIXTURES/de440s/does-not-exist.bsp
     expect:
       ok: false
-      errorCode: unsupported_call
+
+  - id: file-io.getfat.rejects-non-string-path
+    args:
+      - 42
+    expect:
+      ok: false
+      errorCode: invalid_args

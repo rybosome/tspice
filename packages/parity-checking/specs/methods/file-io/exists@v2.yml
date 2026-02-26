@@ -9,13 +9,27 @@ contract:
   result:
     type: object
     properties: {}
+  errors:
+    - code: invalid_args
 workflow:
   steps:
     - op: invokeLegacyCall
 cases:
-  - id: file-io.exists.fixture-path
+  - id: file-io.exists.present-file
     args:
-      - $FIXTURES/ephemeris-de440s/de440s.bsp
+      - $FIXTURES/de440s/de440s.bsp
+    expect:
+      ok: true
+
+  - id: file-io.exists.missing-file
+    args:
+      - $FIXTURES/de440s/does-not-exist.bsp
+    expect:
+      ok: true
+
+  - id: file-io.exists.rejects-non-string-path
+    args:
+      - 42
     expect:
       ok: false
-      errorCode: unsupported_call
+      errorCode: invalid_args

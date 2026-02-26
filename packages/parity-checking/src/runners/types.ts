@@ -152,6 +152,10 @@ export type RunnerErrorReport = {
   code?: string;
   name?: string;
   message: string;
+  details?: {
+    call?: string;
+    [key: string]: unknown;
+  };
   stack?: string;
   spice?: SpiceErrorState;
 };

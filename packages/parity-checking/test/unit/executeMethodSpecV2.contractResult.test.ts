@@ -57,4 +57,54 @@ describe("executeMethodSpecParityV2 contract.result validation", () => {
       }),
     ).rejects.toThrow(/Contract result validation failed/);
   });
+
+  it("ignores error.details metadata differences during v2 parity comparison", async () => {
+    const method = buildMethod({
+      type: "object",
+      properties: {},
+    });
+    method.contract.contractMethod = "file-io.unknown";
+    method.contract.canonicalMethod = "file-io.unknown";
+    method.cases = [
+      {
+        id: "unsupported",
+        args: [],
+        expect: {
+          ok: false,
+          errorCode: "unsupported_call",
+        },
+      },
+    ];
+
+    const tspice = new StubRunner({
+      ok: false,
+      error: {
+        code: "unsupported_call",
+        message: "Unsupported call",
+        details: {
+          call: "file-io.exists",
+        },
+        spice: { failed: false },
+      },
+    });
+
+    const cspice = new StubRunner({
+      ok: false,
+      error: {
+        code: "unsupported_call",
+        message: "Unsupported call",
+        details: {
+          call: "file-io.getfat",
+        },
+        spice: { failed: false },
+      },
+    });
+
+    await expect(
+      executeMethodSpecParityV2(method, {
+        tspice,
+        cspice,
+      }),
+    ).resolves.toMatchObject({ caseCount: 1 });
+  });
 });
