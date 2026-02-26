@@ -1,7 +1,7 @@
 import * as path from "node:path";
 import os from "node:os";
 import crypto from "node:crypto";
-import { readFile, realpath, stat } from "node:fs/promises";
+import { readFile, realpath, rm, stat } from "node:fs/promises";
 
 import { spiceClients, type Spice, type SpiceBackend } from "@rybosome/tspice";
 
@@ -170,7 +170,7 @@ async function resolveFileIoPathForBackend(
   try {
     const bytes = await readFile(absPath);
     WASM_KERNEL_VID_TO_OS_PATH.set(vid, absPath);
-    backend.furnsh({ path: vid, bytes });
+    stageWasmFileIoVirtualPath(backend, vid, bytes);
   } catch (error) {
     if (!isFsNotFoundError(error)) {
       throw error;
@@ -178,6 +178,47 @@ async function resolveFileIoPathForBackend(
   }
 
   return vid;
+}
+
+type WasmFileIoVirtualFsHooks = {
+  __stageVirtualFileForFileIo?: (path: string, bytes: Uint8Array) => void;
+  __deleteVirtualFileForFileIo?: (path: string) => void;
+};
+
+function stageWasmFileIoVirtualPath(
+  backend: SpiceBackend["raw"],
+  virtualPath: string,
+  bytes: Uint8Array,
+): void {
+  const hooks = backend as unknown as WasmFileIoVirtualFsHooks;
+  const stage = hooks.__stageVirtualFileForFileIo;
+  if (!stage) {
+    throw new Error("WASM backend missing __stageVirtualFileForFileIo(path, bytes)");
+  }
+  stage(virtualPath, bytes);
+}
+
+function deleteWasmFileIoVirtualPathBestEffort(
+  backend: SpiceBackend["raw"],
+  virtualPath: string,
+): void {
+  const hooks = backend as unknown as WasmFileIoVirtualFsHooks;
+  const remove = hooks.__deleteVirtualFileForFileIo;
+  if (!remove) return;
+
+  try {
+    remove(virtualPath);
+  } catch {
+    // best-effort cleanup only
+  }
+}
+
+async function deleteNodePathBestEffort(pathToDelete: string): Promise<void> {
+  try {
+    await rm(pathToDelete, { force: true });
+  } catch {
+    // best-effort cleanup only
+  }
 }
 
 function assertCellsWindowsSpiceIntArg(value: unknown, method: string, index: number): asserts value is number {
@@ -1192,16 +1233,32 @@ const DISPATCH: Record<string, DispatchFn> = {
     assertStringArg(args[2], "file-io.dlaopn", 2);
     assertNonNegativeSpiceIntArg(args[3], "file-io.dlaopn", 3);
 
+    const tempOsPath = buildFileIoTempPath(args[0]);
     const tempPath = await resolveFileIoPathForBackend(
       backend,
       backendKind,
-      buildFileIoTempPath(args[0]),
+      tempOsPath,
     );
     const handle = backend.dlaopn(tempPath, args[1], args[2], args[3]);
     try {
       return backend.dlabfs(handle);
     } finally {
-      backend.dlacls(handle);
+      let closeError: unknown;
+      try {
+        backend.dlacls(handle);
+      } catch (error) {
+        closeError = error;
+      }
+
+      await deleteNodePathBestEffort(tempOsPath);
+      if (backendKind === "wasm") {
+        WASM_KERNEL_VID_TO_OS_PATH.delete(tempPath);
+        deleteWasmFileIoVirtualPathBestEffort(backend, tempPath);
+      }
+
+      if (closeError !== undefined) {
+        throw closeError;
+      }
     }
   },
 
