@@ -8,8 +8,9 @@ contract:
   aliases: []
   result:
     type: object
-    minProperties: 1
-    properties: {}
+    required: [opened]
+    properties:
+      opened: { const: true }
 workflow:
   steps:
     - op: invokeLegacyCall
