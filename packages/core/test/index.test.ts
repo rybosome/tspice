@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   assertNever,
+  createSpiceHandleRegistry,
   invariant,
   matchesKernelKind,
   nativeKindQueryOrNull,
@@ -95,6 +96,32 @@ describe("@rybosome/tspice-core", () => {
     const long = "a".repeat(100_000);
     expect(() => mod.normalizeBodItem(long)).toThrow(/too long/i);
     expect(mod.normalizeBodItem("  ß  ")).toBe("ß");
+  });
+
+  it("returns defensive read-only snapshots from internal __entries", () => {
+    const registry = createSpiceHandleRegistry();
+    const handle = registry.register("EK", 42);
+    const entriesHook = (
+      registry as unknown as {
+        __entries?: () => ReadonlyArray<readonly [unknown, Readonly<{ kind: string; nativeHandle: number }>]>
+      }
+    ).__entries;
+
+    const entriesA = entriesHook?.() ?? [];
+    expect(entriesA).toHaveLength(1);
+    const [snapHandleA, snapEntryA] = entriesA[0]!;
+    expect(snapHandleA).toBe(handle);
+    expect(snapEntryA).toEqual({ kind: "EK", nativeHandle: 42 });
+    expect(Object.isFrozen(snapEntryA)).toBe(true);
+
+    expect(() => {
+      (snapEntryA as { nativeHandle: number }).nativeHandle = 99;
+    }).toThrow(TypeError);
+
+    const entriesB = entriesHook?.() ?? [];
+    const snapEntryB = entriesB[0]?.[1];
+    expect(snapEntryB).toEqual({ kind: "EK", nativeHandle: 42 });
+    expect(snapEntryB).not.toBe(snapEntryA);
   });
 });
 
