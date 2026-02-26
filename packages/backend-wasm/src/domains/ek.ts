@@ -19,6 +19,10 @@ const kMaxEkVallenBytes = 1_000_000;
 
 const EK_ONLY = ["EK"] as const satisfies readonly SpiceHandleKind[];
 
+type InternalSpiceHandleRegistry = SpiceHandleRegistry & {
+  __entries?: () => ReadonlyArray<readonly [SpiceHandle, SpiceHandleEntry]>;
+};
+
 function utf8TruncateLen(encoded: Uint8Array, maxBytes: number): number {
   if (maxBytes <= 0) {
     return 0;
@@ -801,7 +805,7 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
     value: () => {
-      const entries = spiceHandles.__entries?.();
+      const entries = (spiceHandles as unknown as InternalSpiceHandleRegistry).__entries?.();
       if (!entries) {
         return spiceHandles.size();
       }
