@@ -70,10 +70,6 @@ export type SpiceHandleRegistry = {
     context: string,
   ) => void;
   size: () => number;
-
-  // Internal hook used by some backends for best-effort cleanup.
-  // Not part of the stable public API, but safe to ignore.
-  __entries?: () => ReadonlyArray<readonly [SpiceHandle, SpiceHandleEntry]>;
 };
 
 // -- Branded vector/matrix helpers -----------------------------------------

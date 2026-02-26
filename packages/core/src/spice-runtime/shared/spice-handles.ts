@@ -25,6 +25,10 @@ function asSpiceHandle(handleId: number): SpiceHandle {
   return handleId as unknown as SpiceHandle;
 }
 
+type InternalSpiceHandleRegistry = SpiceHandleRegistry & {
+  __entries: () => ReadonlyArray<readonly [SpiceHandle, SpiceHandleEntry]>;
+};
+
 /**
  * Create an in-memory registry for opaque {@link SpiceHandle} values.
  *
@@ -97,7 +101,7 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
     handles.delete(handleId);
   }
 
-  return {
+  const registry: InternalSpiceHandleRegistry = {
     register,
     lookup,
     close,
@@ -107,4 +111,6 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
     // Not part of the public backend contract.
     __entries: () => Array.from(handles.entries()).map(([handleId, entry]) => [asSpiceHandle(handleId), entry] as const),
   };
+
+  return registry;
 }
