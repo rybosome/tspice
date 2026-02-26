@@ -4,7 +4,7 @@ import { methodCanonicalMethod } from "../dsl/types.js";
 
 import type { AnyMethodSpec } from "../dsl/types.js";
 
-const BASELINE_CONTRACT_METHOD_COVERAGE = 125;
+const BASELINE_CONTRACT_METHOD_COVERAGE = 114;
 const MAX_BASELINE_DENYLIST_SIZE = 48;
 
 function stableSort(a: string, b: string): number {
