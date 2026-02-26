@@ -16,6 +16,6 @@ cases:
   - id: read-spk-virtual-output-bytes
     args:
       - kind: virtual-output
-        path: parity-read-virtual-output
+        path: parity-read-virtual-output.bsp
     expect:
       ok: true

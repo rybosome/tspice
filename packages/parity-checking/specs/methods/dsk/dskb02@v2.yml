@@ -8,8 +8,10 @@ contract:
   aliases: []
   result:
     type: object
-    minProperties: 1
-    properties: {}
+    required: [nv, np]
+    properties:
+      nv: { type: spiceInt }
+      np: { type: spiceInt }
 workflow:
   steps:
     - op: invokeLegacyCall

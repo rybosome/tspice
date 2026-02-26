@@ -8,7 +8,6 @@ contract:
   aliases: []
   result:
     type: object
-    minProperties: 1
     properties: {}
 workflow:
   steps:
