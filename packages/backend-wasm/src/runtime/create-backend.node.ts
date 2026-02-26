@@ -18,7 +18,7 @@ import { createErrorApi } from "../domains/error.js";
 import { createDskApi } from "../domains/dsk.js";
 import { createEkApi } from "../domains/ek.js";
 
-import { createWasmFs } from "./fs.js";
+import { createWasmFs, resolveKernelPath } from "./fs.js";
 import { createSpiceHandleRegistry } from "./spice-handles.js";
 import { createVirtualOutputRegistry } from "./virtual-outputs.js";
 
@@ -457,6 +457,31 @@ export async function createWasmBackend(
     },
 
   } satisfies SpiceBackend;
+
+  Object.defineProperties(backend.raw, {
+    __stageVirtualFileForFileIo: {
+      value: (virtualPath: string, bytes: Uint8Array) => {
+        fsApi.writeFile(resolveKernelPath(virtualPath), bytes);
+      },
+      enumerable: false,
+    },
+    __deleteVirtualFileForFileIo: {
+      value: (virtualPath: string) => {
+        const resolved = resolveKernelPath(virtualPath);
+        try {
+          module.FS.unlink(resolved);
+        } catch (error) {
+          const anyErr = error as { code?: unknown; message?: unknown };
+          const msg = typeof anyErr.message === "string" ? anyErr.message : "";
+          if (anyErr.code === "ENOENT" || /ENOENT/i.test(msg)) {
+            return;
+          }
+          throw error;
+        }
+      },
+      enumerable: false,
+    },
+  });
 
   return backend;
 }
