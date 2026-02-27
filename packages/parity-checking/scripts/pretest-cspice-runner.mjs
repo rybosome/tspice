@@ -115,6 +115,24 @@ function isUpToDate(binaryPath, sources) {
   return true;
 }
 
+function listRunnerFiles(pkgRoot, ext) {
+  const srcDir = path.join(pkgRoot, "native", "src");
+  const entries = fs.readdirSync(srcDir, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isFile() && /^cspice_runner.*\.[ch]$/.test(entry.name))
+    .filter((entry) => entry.name.endsWith(ext))
+    .map((entry) => path.join(srcDir, entry.name))
+    .sort();
+}
+
+function getRunnerSources(pkgRoot) {
+  return listRunnerFiles(pkgRoot, ".c");
+}
+
+function getRunnerHeaders(pkgRoot) {
+  return listRunnerFiles(pkgRoot, ".h");
+}
+
 function run(command, args, opts) {
   const r = spawnSync(command, args, { encoding: "utf8", ...opts });
   return r;
@@ -126,8 +144,17 @@ function main() {
   const repoRoot = getRepoRoot(pkgRoot);
 
   const binaryPath = getBinaryPath(pkgRoot);
-  const statePath = getStatePath(pkgRoot);
-  const sourcePath = path.join(pkgRoot, "native", "src", "cspice_runner.c");
+  const sourcePaths = getRunnerSources(pkgRoot);
+  const sourceDependencies = [...sourcePaths, ...getRunnerHeaders(pkgRoot)];
+
+  if (sourcePaths.length === 0) {
+    throw new Error("No cspice_runner*.c sources found under native/src");
+  }
+
+  const entrySourcePath = path.join(pkgRoot, "native", "src", "cspice_runner.c");
+  if (!sourcePaths.includes(entrySourcePath)) {
+    throw new Error(`Missing required runner entry source: ${entrySourcePath}`);
+  }
 
   if (process.platform === "win32") {
     writeState(pkgRoot, {
@@ -138,7 +165,7 @@ function main() {
     return;
   }
 
-  if (isUpToDate(binaryPath, [sourcePath])) {
+  if (isUpToDate(binaryPath, sourceDependencies)) {
     writeState(pkgRoot, { available: true, binaryPath, reused: true });
     return;
   }
@@ -212,10 +239,12 @@ function main() {
     "-O2",
     "-std=c99",
     "-I",
+    path.join(pkgRoot, "native", "src"),
+    "-I",
     path.join(cspiceDir, "include"),
     "-o",
     binaryPath,
-    sourcePath,
+    ...sourcePaths,
     path.join(cspiceDir, "lib", "cspice.a"),
     path.join(cspiceDir, "lib", "csupport.a"),
   ];
