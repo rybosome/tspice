@@ -441,6 +441,15 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         call !== "scard_c" &&
         call !== "ssize_c" &&
         call !== "valid_c" &&
+        call !== "ekifld_c" &&
+        call !== "ekacli_c" &&
+        call !== "ekacld_c" &&
+        call !== "ekaclc_c" &&
+        call !== "ekffld_c" &&
+        call !== "ekfind_c" &&
+        call !== "ekgi_c" &&
+        call !== "ekgd_c" &&
+        call !== "ekgc_c" &&
         call !== "dskobj_c" &&
         call !== "dsksrf_c" &&
         call !== "dskgd_c" &&
@@ -451,7 +460,7 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         call !== "readVirtualOutput"
       ) {
         throw new TypeError(
-          `${label}.call must be one of \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", \"valid_c\", \"dskobj_c\", \"dsksrf_c\", \"dskgd_c\", \"dskb02_c\", \"dskmi2_c\", \"dskopn_c\", \"dskw02_c\", or \"readVirtualOutput\"`,
+          `${label}.call must be one of \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", \"valid_c\", \"ekifld_c\", \"ekacli_c\", \"ekacld_c\", \"ekaclc_c\", \"ekffld_c\", \"ekfind_c\", \"ekgi_c\", \"ekgd_c\", \"ekgc_c\", \"dskobj_c\", \"dsksrf_c\", \"dskgd_c\", \"dskb02_c\", \"dskmi2_c\", \"dskopn_c\", \"dskw02_c\", or \"readVirtualOutput\"`,
         );
       }
       if (!Array.isArray(obj.in)) {

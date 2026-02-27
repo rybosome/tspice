@@ -65,6 +65,14 @@
 #define DSK_MINIMAL_VOXLSZ 1024
 #define DSK_MINIMAL_SPXISZ 8192
 
+#define EK_FAST_WRITE_NROWS 3
+#define EK_FAST_WRITE_NCOLS 3
+#define EK_FAST_WRITE_CNAME_LEN 16
+#define EK_FAST_WRITE_DECL_LEN 64
+#define EK_FAST_WRITE_CHAR_VALUE_LEN 16
+#define EK_FAST_WRITE_STRING_MAX_BYTES 1024
+#define EK_FAST_WRITE_FIND_ERRMSG_LEN 1024
+
 // --- Minimal JSON parsing via jsmn (public domain) --------------------------
 // https://github.com/zserge/jsmn
 
@@ -1461,6 +1469,37 @@ static const SpiceDouble DSK_MINIMAL_CORPAR[SPICE_DSK_NSYPAR] = {
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 };
 
+static const SpiceChar EK_FAST_WRITE_TABLE[] = "PEOPLE";
+static const SpiceChar EK_FAST_WRITE_QUERY[] =
+    "SELECT ID, COST, NAME FROM PEOPLE ORDER BY ID";
+static const SpiceChar
+    EK_FAST_WRITE_CNAMES[EK_FAST_WRITE_NCOLS][EK_FAST_WRITE_CNAME_LEN] = {
+        "ID",
+        "COST",
+        "NAME",
+};
+static const SpiceChar
+    EK_FAST_WRITE_DECLS[EK_FAST_WRITE_NCOLS][EK_FAST_WRITE_DECL_LEN] = {
+        "DATATYPE = INTEGER, INDEXED = TRUE",
+        "DATATYPE = DOUBLE PRECISION",
+        "DATATYPE = CHARACTER*(*)",
+};
+static const SpiceInt EK_FAST_WRITE_IDS[EK_FAST_WRITE_NROWS] = {1, 2, 3};
+static const SpiceDouble EK_FAST_WRITE_COSTS[EK_FAST_WRITE_NROWS] = {10.5, 20.25,
+                                                                     30.0};
+static const SpiceChar
+    EK_FAST_WRITE_NAMES[EK_FAST_WRITE_NROWS][EK_FAST_WRITE_CHAR_VALUE_LEN] = {
+        "Alice",
+        "Bob",
+        "Carol",
+};
+static const SpiceInt EK_FAST_WRITE_ENTSZS[EK_FAST_WRITE_NROWS] = {1, 1, 1};
+static const SpiceBoolean EK_FAST_WRITE_NLFLGS[EK_FAST_WRITE_NROWS] = {
+    SPICEFALSE,
+    SPICEFALSE,
+    SPICEFALSE,
+};
+
 static const SpiceDouble READ_VIRTUAL_OUTPUT_STATES[2][6] = {
     {0.0, 0.0, 0.0, 1.0, 0.0, 0.0},
     {60.0, 0.0, 0.0, 1.0, 0.0, 0.0},
@@ -2395,6 +2434,63 @@ typedef struct {
   void *storage;
 } V2RefEntry;
 
+typedef struct {
+  bool active;
+  bool loaded;
+  bool queryReady;
+  bool handleOpen;
+  SpiceInt handle;
+  SpiceInt segno;
+  SpiceInt *rcptrs;
+  char *path;
+} V2EkFastWriteState;
+
+static void v2_ek_fast_write_state_init(V2EkFastWriteState *state) {
+  if (state == NULL) {
+    return;
+  }
+
+  memset(state, 0, sizeof(*state));
+}
+
+static void v2_ek_fast_write_state_cleanup(V2EkFastWriteState *state) {
+  if (state == NULL) {
+    return;
+  }
+
+  if (state->handleOpen) {
+    ekcls_c(state->handle);
+    if (failed_c() == SPICETRUE) {
+      reset_c();
+    }
+    state->handleOpen = false;
+  }
+
+  if (state->loaded && state->path != NULL) {
+    unload_c(state->path);
+    if (failed_c() == SPICETRUE) {
+      reset_c();
+    }
+    state->loaded = false;
+  }
+
+  if (state->path != NULL) {
+    unlink(state->path);
+    free(state->path);
+    state->path = NULL;
+  }
+
+  if (state->rcptrs != NULL) {
+    free(state->rcptrs);
+    state->rcptrs = NULL;
+  }
+
+  state->active = false;
+  state->queryReady = false;
+  state->handle = 0;
+  state->segno = 0;
+}
+
 static bool v2_parse_int_token_or_error(const char *json, const jsmntok_t *tok,
                                         SpiceInt *out, const char *label) {
   parse_result pr = jsmn_parse_int(json, tok, out);
@@ -3155,7 +3251,8 @@ static bool v2_execute_alloc_window_step(const char *json,
 static bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
                                        const int tokenCount, const int stepTok,
                                        const int argsTok, V2RefEntry *refs,
-                                       int *refCount) {
+                                       int *refCount,
+                                       V2EkFastWriteState *ekState) {
   int callTok = jsmn_find_object_key(json, tokens, stepTok, "call", tokenCount);
   int inTok = jsmn_find_object_key(json, tokens, stepTok, "in", tokenCount);
   int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
@@ -3490,10 +3587,846 @@ static bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens
 
   if (asTok >= 0) {
     write_error_json_ex("invalid_request",
-                        "spiceCall scard_c/ssize_c/valid_c/dskobj_c/dsksrf_c/dskmi2_c/dskopn_c/dskw02_c/readVirtualOutput does not allow as",
+                        "spiceCall scard_c/ssize_c/valid_c/ekifld_c/ekacli_c/ekacld_c/ekaclc_c/ekffld_c/ekfind_c/ekgi_c/ekgd_c/ekgc_c/dskobj_c/dsksrf_c/dskmi2_c/dskopn_c/dskw02_c/readVirtualOutput does not allow as",
                         NULL, NULL, NULL, NULL);
     free(callName);
     return false;
+  }
+
+  if (strcmp(callName, "ekifld_c") == 0) {
+    if (inputCount != 0) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekifld_c expects no inputs",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (ekState == NULL) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekifld_c requires EK workflow state",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    v2_ek_fast_write_state_cleanup(ekState);
+
+    char detail[256];
+    detail[0] = '\0';
+    char tempPath[PATH_MAX];
+    int tempFd = -1;
+    if (!build_file_io_temp_path("v2-ek-fast-write",
+                                 ".bes",
+                                 tempPath,
+                                 sizeof(tempPath),
+                                 &tempFd,
+                                 detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_request",
+                          "Failed to create temporary EK path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (tempFd >= 0) {
+      close(tempFd);
+      tempFd = -1;
+    }
+    unlink(tempPath);
+
+    SpiceInt handle = 0;
+    ekopn_c(tempPath, "TSPICE", 0, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      unlink(tempPath);
+      free(callName);
+      write_error_json("SPICE error in ekopn", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    SpiceInt *rcptrs =
+        (SpiceInt *)calloc((size_t)EK_FAST_WRITE_NROWS, sizeof(SpiceInt));
+    if (rcptrs == NULL) {
+      ekcls_c(handle);
+      if (failed_c() == SPICETRUE) {
+        reset_c();
+      }
+      unlink(tempPath);
+      free(callName);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceInt segno = 0;
+    ekifld_c(handle,
+             EK_FAST_WRITE_TABLE,
+             (SpiceInt)EK_FAST_WRITE_NCOLS,
+             (SpiceInt)EK_FAST_WRITE_NROWS,
+             (SpiceInt)EK_FAST_WRITE_CNAME_LEN,
+             (const void *)EK_FAST_WRITE_CNAMES,
+             (SpiceInt)EK_FAST_WRITE_DECL_LEN,
+             (const void *)EK_FAST_WRITE_DECLS,
+             &segno,
+             rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(rcptrs);
+      ekcls_c(handle);
+      if (failed_c() == SPICETRUE) {
+        reset_c();
+      }
+      unlink(tempPath);
+      free(callName);
+      write_error_json("SPICE error in ekifld", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    char *ownedPath = v2_strdup(tempPath);
+    if (ownedPath == NULL) {
+      free(rcptrs);
+      ekcls_c(handle);
+      if (failed_c() == SPICETRUE) {
+        reset_c();
+      }
+      unlink(tempPath);
+      free(callName);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    ekState->active = true;
+    ekState->loaded = false;
+    ekState->queryReady = false;
+    ekState->handleOpen = true;
+    ekState->handle = handle;
+    ekState->segno = segno;
+    ekState->rcptrs = rcptrs;
+    ekState->path = ownedPath;
+
+    free(callName);
+    return true;
+  }
+
+  if (strcmp(callName, "ekacli_c") == 0) {
+    if (inputCount != 0) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekacli_c expects no inputs",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (ekState == NULL || !ekState->active) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekacli_c requires prior ekifld_c",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (!ekState->handleOpen || ekState->rcptrs == NULL) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekacli_c requires an open EK fast-write handle",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    SpiceInt wkindx[EK_FAST_WRITE_NROWS] = {0};
+    ekacli_c(ekState->handle,
+             ekState->segno,
+             "ID",
+             EK_FAST_WRITE_IDS,
+             EK_FAST_WRITE_ENTSZS,
+             EK_FAST_WRITE_NLFLGS,
+             ekState->rcptrs,
+             wkindx);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(callName);
+      write_error_json("SPICE error in ekacli", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    ekState->queryReady = false;
+    free(callName);
+    return true;
+  }
+
+  if (strcmp(callName, "ekacld_c") == 0) {
+    if (inputCount != 0) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekacld_c expects no inputs",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (ekState == NULL || !ekState->active) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekacld_c requires prior ekifld_c",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (!ekState->handleOpen || ekState->rcptrs == NULL) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekacld_c requires an open EK fast-write handle",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    SpiceInt wkindx[EK_FAST_WRITE_NROWS] = {0};
+    ekacld_c(ekState->handle,
+             ekState->segno,
+             "COST",
+             EK_FAST_WRITE_COSTS,
+             EK_FAST_WRITE_ENTSZS,
+             EK_FAST_WRITE_NLFLGS,
+             ekState->rcptrs,
+             wkindx);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(callName);
+      write_error_json("SPICE error in ekacld", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    ekState->queryReady = false;
+    free(callName);
+    return true;
+  }
+
+  if (strcmp(callName, "ekaclc_c") == 0) {
+    if (inputCount != 0) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekaclc_c expects no inputs",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (ekState == NULL || !ekState->active) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekaclc_c requires prior ekifld_c",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (!ekState->handleOpen || ekState->rcptrs == NULL) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekaclc_c requires an open EK fast-write handle",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    SpiceInt wkindx[EK_FAST_WRITE_NROWS] = {0};
+    ekaclc_c(ekState->handle,
+             ekState->segno,
+             "NAME",
+             (SpiceInt)EK_FAST_WRITE_CHAR_VALUE_LEN,
+             (const void *)EK_FAST_WRITE_NAMES,
+             EK_FAST_WRITE_ENTSZS,
+             EK_FAST_WRITE_NLFLGS,
+             ekState->rcptrs,
+             wkindx);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(callName);
+      write_error_json("SPICE error in ekaclc", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    ekState->queryReady = false;
+    free(callName);
+    return true;
+  }
+
+  if (strcmp(callName, "ekffld_c") == 0) {
+    if (inputCount != 0) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekffld_c expects no inputs",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (ekState == NULL || !ekState->active) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekffld_c requires prior ekifld_c",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (!ekState->handleOpen || ekState->rcptrs == NULL) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekffld_c requires an open EK fast-write handle",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    ekffld_c(ekState->handle, ekState->segno, ekState->rcptrs);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(callName);
+      write_error_json("SPICE error in ekffld", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    ekcls_c(ekState->handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(callName);
+      write_error_json("SPICE error in ekcls", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    ekState->handleOpen = false;
+    ekState->handle = 0;
+
+    furnsh_c(ekState->path);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(callName);
+      write_error_json("SPICE error in furnsh", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    ekState->loaded = true;
+    ekState->queryReady = false;
+    free(callName);
+    return true;
+  }
+
+  if (strcmp(callName, "ekfind_c") == 0) {
+    if (inputCount != 1) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekfind_c expects [expectedRowCount]",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (ekState == NULL || !ekState->active || !ekState->loaded) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekfind_c requires a finalized EK via ekffld_c",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    int expectedTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+    SpiceInt expectedRows = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  expectedTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(ekfind_c).in[0]",
+                                  &expectedRows)) {
+      free(callName);
+      return false;
+    }
+
+    if (expectedRows < 0) {
+      write_error_json_ex("invalid_args",
+                          "spiceCall(ekfind_c).in[0] must be >= 0",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    SpiceInt nmrows = 0;
+    SpiceBoolean queryError = SPICEFALSE;
+    SpiceChar errmsg[EK_FAST_WRITE_FIND_ERRMSG_LEN];
+    errmsg[0] = '\0';
+    ekfind_c(EK_FAST_WRITE_QUERY,
+             (SpiceInt)EK_FAST_WRITE_FIND_ERRMSG_LEN,
+             &nmrows,
+             &queryError,
+             errmsg);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(callName);
+      write_error_json("SPICE error in ekfind", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    if (queryError == SPICETRUE) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall(ekfind_c) query failed",
+                          errmsg[0] ? errmsg : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (nmrows != expectedRows) {
+      char mismatch[128];
+      snprintf(mismatch,
+               sizeof(mismatch),
+               "expected=%" PRIdMAX " actual=%" PRIdMAX,
+               (intmax_t)expectedRows,
+               (intmax_t)nmrows);
+      write_error_json_ex("invalid_request",
+                          "spiceCall(ekfind_c) row count mismatch",
+                          mismatch,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    ekState->queryReady = true;
+    free(callName);
+    return true;
+  }
+
+  if (strcmp(callName, "ekgi_c") == 0) {
+    if (inputCount != 2) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekgi_c expects [row, expectedValue]",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (ekState == NULL || !ekState->queryReady) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekgi_c requires a successful prior ekfind_c",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    int rowTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+    int expectedTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
+    SpiceInt row = 0;
+    SpiceInt expected = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  rowTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(ekgi_c).in[0]",
+                                  &row) ||
+        !v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  expectedTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(ekgi_c).in[1]",
+                                  &expected)) {
+      free(callName);
+      return false;
+    }
+
+    if (row < 0) {
+      write_error_json_ex("invalid_args",
+                          "spiceCall(ekgi_c).in[0] must be >= 0",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    SpiceInt actual = 0;
+    SpiceBoolean isNull = SPICEFALSE;
+    SpiceBoolean found = SPICEFALSE;
+    ekgi_c((SpiceInt)0, row, (SpiceInt)0, &actual, &isNull, &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(callName);
+      write_error_json("SPICE error in ekgi", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    if (found != SPICETRUE || isNull == SPICETRUE || actual != expected) {
+      char mismatch[160];
+      snprintf(mismatch,
+               sizeof(mismatch),
+               "row=%" PRIdMAX " expected=%" PRIdMAX " actual=%" PRIdMAX
+               " found=%d isNull=%d",
+               (intmax_t)row,
+               (intmax_t)expected,
+               (intmax_t)actual,
+               found == SPICETRUE ? 1 : 0,
+               isNull == SPICETRUE ? 1 : 0);
+      write_error_json_ex("invalid_request",
+                          "spiceCall(ekgi_c) value mismatch",
+                          mismatch,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    free(callName);
+    return true;
+  }
+
+  if (strcmp(callName, "ekgd_c") == 0) {
+    if (inputCount != 2) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekgd_c expects [row, expectedValue]",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (ekState == NULL || !ekState->queryReady) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekgd_c requires a successful prior ekfind_c",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    int rowTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+    int expectedTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
+    SpiceInt row = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  rowTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(ekgd_c).in[0]",
+                                  &row)) {
+      free(callName);
+      return false;
+    }
+
+    if (row < 0) {
+      write_error_json_ex("invalid_args",
+                          "spiceCall(ekgd_c).in[0] must be >= 0",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (expectedTok < 0 || expectedTok >= tokenCount) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall(ekgd_c).in[1] is missing",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    SpiceDouble expected = 0.0;
+    if (jsmn_parse_double(json, &tokens[expectedTok], &expected) != PARSE_OK) {
+      write_error_json_ex("invalid_args",
+                          "spiceCall(ekgd_c).in[1] must be a finite number",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    SpiceDouble actual = 0.0;
+    SpiceBoolean isNull = SPICEFALSE;
+    SpiceBoolean found = SPICEFALSE;
+    ekgd_c((SpiceInt)1, row, (SpiceInt)0, &actual, &isNull, &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(callName);
+      write_error_json("SPICE error in ekgd", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    if (found != SPICETRUE || isNull == SPICETRUE ||
+        fabs(actual - expected) > 1e-12) {
+      char mismatch[224];
+      snprintf(mismatch,
+               sizeof(mismatch),
+               "row=%" PRIdMAX " expected=%0.17g actual=%0.17g found=%d isNull=%d",
+               (intmax_t)row,
+               expected,
+               actual,
+               found == SPICETRUE ? 1 : 0,
+               isNull == SPICETRUE ? 1 : 0);
+      write_error_json_ex("invalid_request",
+                          "spiceCall(ekgd_c) value mismatch",
+                          mismatch,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    free(callName);
+    return true;
+  }
+
+  if (strcmp(callName, "ekgc_c") == 0) {
+    if (inputCount != 2) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekgc_c expects [row, expectedValue]",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (ekState == NULL || !ekState->queryReady) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekgc_c requires a successful prior ekfind_c",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    int rowTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+    int expectedTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
+    SpiceInt row = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  rowTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(ekgc_c).in[0]",
+                                  &row)) {
+      free(callName);
+      return false;
+    }
+
+    if (row < 0) {
+      write_error_json_ex("invalid_args",
+                          "spiceCall(ekgc_c).in[0] must be >= 0",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (expectedTok < 0 || expectedTok >= tokenCount ||
+        tokens[expectedTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "spiceCall(ekgc_c).in[1] must be a string",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    char expectedDetail[256];
+    expectedDetail[0] = '\0';
+    char *expected = NULL;
+    jsmn_strdup_err_t expectedErr = jsmn_strdup(json,
+                                                &tokens[expectedTok],
+                                                &expected,
+                                                expectedDetail,
+                                                sizeof(expectedDetail));
+    if (expectedErr != JSMN_STRDUP_OK) {
+      if (expectedErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            expectedDetail[0] ? expectedDetail : NULL, NULL, NULL,
+                            NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      free(callName);
+      return false;
+    }
+
+    SpiceChar actual[EK_FAST_WRITE_STRING_MAX_BYTES];
+    actual[0] = '\0';
+    SpiceBoolean isNull = SPICEFALSE;
+    SpiceBoolean found = SPICEFALSE;
+    ekgc_c((SpiceInt)2,
+           row,
+           (SpiceInt)0,
+           (SpiceInt)EK_FAST_WRITE_STRING_MAX_BYTES,
+           actual,
+           &isNull,
+           &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(expected);
+      free(callName);
+      write_error_json("SPICE error in ekgc", shortMsg, longMsg, traceMsg);
+      return false;
+    }
+
+    if (found != SPICETRUE || isNull == SPICETRUE || strcmp(actual, expected) != 0) {
+      char mismatch[256];
+      snprintf(mismatch,
+               sizeof(mismatch),
+               "row=%" PRIdMAX " expected=%s actual=%s found=%d isNull=%d",
+               (intmax_t)row,
+               expected,
+               actual,
+               found == SPICETRUE ? 1 : 0,
+               isNull == SPICETRUE ? 1 : 0);
+      write_error_json_ex("invalid_request",
+                          "spiceCall(ekgc_c) value mismatch",
+                          mismatch,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(expected);
+      free(callName);
+      return false;
+    }
+
+    free(expected);
+    free(callName);
+    return true;
   }
 
   if (strcmp(callName, "scard_c") == 0) {
@@ -4550,7 +5483,8 @@ static bool v2_materialize_project_result_object_json(
 static bool v2_dispatch_workflow_step(
     const char *json, const jsmntok_t *tokens, const int tokenCount,
     const int stepTok, const int opTok, const int argsTok, V2RefEntry *refs,
-    int *refCount, const bool captureProjectResult,
+    int *refCount, V2EkFastWriteState *ekState,
+    const bool captureProjectResult,
     char **projectResultObjectJson, const char *unsupportedOpMessage) {
   if (jsmn_token_streq(json, &tokens[opTok], "allocCell")) {
     return v2_execute_alloc_cell_step(json, tokens, tokenCount, stepTok, argsTok,
@@ -4564,7 +5498,7 @@ static bool v2_dispatch_workflow_step(
 
   if (jsmn_token_streq(json, &tokens[opTok], "spiceCall")) {
     return v2_execute_spice_call_step(json, tokens, tokenCount, stepTok, argsTok,
-                                      refs, refCount);
+                                      refs, refCount, ekState);
   }
 
   if (jsmn_token_streq(json, &tokens[opTok], "projectResult")) {
@@ -4655,6 +5589,9 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
   memset(refs, 0, sizeof(refs));
   int refCount = 0;
 
+  V2EkFastWriteState ekState;
+  v2_ek_fast_write_state_init(&ekState);
+
   char *projectResultObjectJson = NULL;
   bool ok = true;
 
@@ -4677,7 +5614,8 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
 
     if (!v2_dispatch_workflow_step(
             json, tokens, tokenCount, stepTok, opTok, argsTok, refs, &refCount,
-            true, &projectResultObjectJson, "Unsupported v2 workflow op")) {
+            &ekState, true, &projectResultObjectJson,
+            "Unsupported v2 workflow op")) {
       ok = false;
       break;
     }
@@ -4711,7 +5649,8 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
 
       if (!v2_dispatch_workflow_step(
               json, tokens, tokenCount, stepTok, opTok, argsTok, refs,
-              &refCount, false, NULL, "Unsupported v2 cleanup op")) {
+              &refCount, &ekState, false, NULL,
+              "Unsupported v2 cleanup op")) {
         ok = false;
         break;
       }
@@ -4723,6 +5662,7 @@ static bool v2_execute_workflow_request(const char *json, const jsmntok_t *token
   }
 
   free(projectResultObjectJson);
+  v2_ek_fast_write_state_cleanup(&ekState);
   v2_free_all_refs(refs, refCount);
   return ok;
 }

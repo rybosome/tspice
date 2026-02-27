@@ -39,6 +39,22 @@ const READ_VIRTUAL_OUTPUT_STATES = [
   60, 0, 0, 1, 0, 0,
 ];
 
+const EK_FAST_WRITE_NROWS = 3;
+const EK_FAST_WRITE_TABLE = "PEOPLE";
+const EK_FAST_WRITE_QUERY = "SELECT ID, COST, NAME FROM PEOPLE ORDER BY ID";
+const EK_FAST_WRITE_COLUMN_NAMES = ["ID", "COST", "NAME"] as const;
+const EK_FAST_WRITE_DECLS = [
+  "DATATYPE = INTEGER, INDEXED = TRUE",
+  "DATATYPE = DOUBLE PRECISION",
+  "DATATYPE = CHARACTER*(*)",
+] as const;
+const EK_FAST_WRITE_IDS = [1, 2, 3] as const;
+const EK_FAST_WRITE_COSTS = [10.5, 20.25, 30] as const;
+const EK_FAST_WRITE_NAMES = ["Alice", "Bob", "Carol"] as const;
+const EK_FAST_WRITE_ENTSZS = [1, 1, 1] as const;
+const EK_FAST_WRITE_NLFLGS = [false, false, false] as const;
+const EK_FAST_WRITE_DOUBLE_TOLERANCE = 1e-12;
+
 type CellHandle =
   | ReturnType<SpiceBackend["kit"]["newIntCell"]>
   | ReturnType<SpiceBackend["kit"]["newDoubleCell"]>
@@ -46,6 +62,20 @@ type CellHandle =
 type WindowHandle = ReturnType<SpiceBackend["kit"]["newWindow"]>;
 type DasHandle = ReturnType<SpiceBackend["raw"]["dasopr"]>;
 type DskOpenHandle = ReturnType<SpiceBackend["raw"]["dskopn"]>;
+type EkFastWriteHandle = ReturnType<SpiceBackend["raw"]["ekopn"]>;
+
+type EkFastWriteState = {
+  path: string;
+  handle: EkFastWriteHandle | null;
+  segno: number;
+  rcptrs: number[];
+  loaded: boolean;
+  queryReady: boolean;
+};
+
+type V2RunnerState = {
+  ekFastWrite: EkFastWriteState | undefined;
+};
 
 type RefValue =
   | {
@@ -102,9 +132,9 @@ function deleteTempPathBestEffort(backend: SpiceBackend, filePath: string): void
   }
 }
 
-function deleteVirtualOutputPathBestEffort(backend: SpiceBackend, virtualOutputPath: string): void {
+function deletePathBestEffort(backend: SpiceBackend, filePath: string): void {
   if (backend.kind !== "wasm") {
-    deleteTempPathBestEffort(backend, virtualOutputPath);
+    deleteTempPathBestEffort(backend, filePath);
     return;
   }
 
@@ -112,16 +142,18 @@ function deleteVirtualOutputPathBestEffort(backend: SpiceBackend, virtualOutputP
   const remove = hooks.__deleteVirtualFileForFileIo;
 
   if (!remove) {
-    // `readVirtualOutput()` has no public delete API. If this optional hook is
-    // unavailable, cleanup is owned by backend instance disposal.
     return;
   }
 
   try {
-    remove(virtualOutputPath);
+    remove(filePath);
   } catch {
     // best effort cleanup
   }
+}
+
+function deleteVirtualOutputPathBestEffort(backend: SpiceBackend, virtualOutputPath: string): void {
+  deletePathBestEffort(backend, virtualOutputPath);
 }
 
 function closeDasHandlePreserveError(raw: SpiceBackend["raw"], handle: DasHandle, priorError: unknown): void {
@@ -338,6 +370,19 @@ function resolveStringExpression(
   return value;
 }
 
+function resolveFiniteNumberExpression(
+  expr: unknown,
+  args: Record<string, unknown>,
+  refs: Map<string, RefValue>,
+  label: string,
+): number {
+  const value = resolveExpression(expr, args, refs, label);
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    invalidArgs(`${label} must be a finite number (got ${formatValue(value)})`);
+  }
+  return value;
+}
+
 function resolveRefReference(
   expr: unknown,
   refs: Map<string, RefValue>,
@@ -529,12 +574,40 @@ function defineRef(refs: Map<string, RefValue>, name: string, value: RefValue, l
   refs.set(name, value);
 }
 
+function cleanupEkFastWriteState(backend: SpiceBackend, state: EkFastWriteState | undefined): void {
+  if (!state) {
+    return;
+  }
+
+  const raw = getRawBackend(backend);
+
+  if (state.handle !== null) {
+    try {
+      raw.ekcls(state.handle);
+    } catch {
+      // best effort cleanup
+    }
+    state.handle = null;
+  }
+
+  if (state.loaded) {
+    try {
+      raw.unload(state.path);
+    } catch {
+      // best effort cleanup
+    }
+  }
+
+  deletePathBestEffort(backend, state.path);
+}
+
 async function executeStep(
   backend: SpiceBackend,
   step: V2WorkflowStep,
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
+  state: V2RunnerState,
 ): Promise<Record<string, unknown> | undefined> {
   const raw = getRawBackend(backend);
   const kit = getKitBackend(backend);
@@ -695,6 +768,327 @@ async function executeStep(
           `spiceCall(${step.call}).in[2]`,
         );
         raw.valid(size, n, handle);
+        return undefined;
+      }
+
+      if (step.call === "ekifld_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        cleanupEkFastWriteState(backend, state.ekFastWrite);
+        state.ekFastWrite = undefined;
+
+        const tempPath = buildTempPath(backend, "ek-fast-write", ".bes");
+        let handle: EkFastWriteHandle | null = null;
+
+        try {
+          handle = raw.ekopn(tempPath, "TSPICE", 0);
+          const begin = raw.ekifld(
+            handle,
+            EK_FAST_WRITE_TABLE,
+            EK_FAST_WRITE_NROWS,
+            EK_FAST_WRITE_COLUMN_NAMES,
+            EK_FAST_WRITE_DECLS,
+          );
+
+          const segno = asSpiceInt(begin.segno, `spiceCall(${step.call}).result.segno`);
+          if (begin.rcptrs.length !== EK_FAST_WRITE_NROWS) {
+            invalidRequest(
+              `spiceCall(${step.call}) expected rcptrs length ${EK_FAST_WRITE_NROWS} (got ${begin.rcptrs.length})`,
+            );
+          }
+
+          const rcptrs = begin.rcptrs.map((value: unknown, index: number) =>
+            asSpiceInt(value, `spiceCall(${step.call}).result.rcptrs[${index}]`),
+          );
+
+          state.ekFastWrite = {
+            path: tempPath,
+            handle,
+            segno,
+            rcptrs,
+            loaded: false,
+            queryReady: false,
+          };
+          return undefined;
+        } catch (error) {
+          if (handle !== null) {
+            try {
+              raw.ekcls(handle);
+            } catch {
+              // best effort cleanup
+            }
+          }
+          deletePathBestEffort(backend, tempPath);
+          throw error;
+        }
+      }
+
+      if (step.call === "ekacli_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        if (!state.ekFastWrite) {
+          invalidRequest(`spiceCall ${step.call} requires a prior ekifld_c step`);
+        }
+
+        if (state.ekFastWrite.handle === null) {
+          invalidRequest(`spiceCall ${step.call} requires an open EK handle`);
+        }
+
+        raw.ekacli(
+          state.ekFastWrite.handle,
+          state.ekFastWrite.segno,
+          "ID",
+          EK_FAST_WRITE_IDS,
+          EK_FAST_WRITE_ENTSZS,
+          EK_FAST_WRITE_NLFLGS,
+          state.ekFastWrite.rcptrs,
+        );
+
+        state.ekFastWrite.queryReady = false;
+        return undefined;
+      }
+
+      if (step.call === "ekacld_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        if (!state.ekFastWrite) {
+          invalidRequest(`spiceCall ${step.call} requires a prior ekifld_c step`);
+        }
+
+        if (state.ekFastWrite.handle === null) {
+          invalidRequest(`spiceCall ${step.call} requires an open EK handle`);
+        }
+
+        raw.ekacld(
+          state.ekFastWrite.handle,
+          state.ekFastWrite.segno,
+          "COST",
+          EK_FAST_WRITE_COSTS,
+          EK_FAST_WRITE_ENTSZS,
+          EK_FAST_WRITE_NLFLGS,
+          state.ekFastWrite.rcptrs,
+        );
+
+        state.ekFastWrite.queryReady = false;
+        return undefined;
+      }
+
+      if (step.call === "ekaclc_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        if (!state.ekFastWrite) {
+          invalidRequest(`spiceCall ${step.call} requires a prior ekifld_c step`);
+        }
+
+        if (state.ekFastWrite.handle === null) {
+          invalidRequest(`spiceCall ${step.call} requires an open EK handle`);
+        }
+
+        raw.ekaclc(
+          state.ekFastWrite.handle,
+          state.ekFastWrite.segno,
+          "NAME",
+          EK_FAST_WRITE_NAMES,
+          EK_FAST_WRITE_ENTSZS,
+          EK_FAST_WRITE_NLFLGS,
+          state.ekFastWrite.rcptrs,
+        );
+
+        state.ekFastWrite.queryReady = false;
+        return undefined;
+      }
+
+      if (step.call === "ekffld_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        if (!state.ekFastWrite) {
+          invalidRequest(`spiceCall ${step.call} requires a prior ekifld_c step`);
+        }
+
+        if (state.ekFastWrite.handle === null) {
+          invalidRequest(`spiceCall ${step.call} requires an open EK handle`);
+        }
+
+        raw.ekffld(state.ekFastWrite.handle, state.ekFastWrite.segno, state.ekFastWrite.rcptrs);
+        raw.ekcls(state.ekFastWrite.handle);
+        state.ekFastWrite.handle = null;
+
+        raw.furnsh(state.ekFastWrite.path);
+        state.ekFastWrite.loaded = true;
+        state.ekFastWrite.queryReady = false;
+        return undefined;
+      }
+
+      if (step.call === "ekfind_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 1) {
+          invalidRequest(`spiceCall ${step.call} expects [expectedRowCount]`);
+        }
+
+        if (!state.ekFastWrite || !state.ekFastWrite.loaded) {
+          invalidRequest(`spiceCall ${step.call} requires a finalized EK via ekffld_c`);
+        }
+
+        const expectedRows = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        if (expectedRows < 0) {
+          invalidArgs(`spiceCall(${step.call}).in[0] must be >= 0`);
+        }
+
+        const find = raw.ekfind(EK_FAST_WRITE_QUERY);
+        if (!find.ok) {
+          invalidRequest(`spiceCall(${step.call}) query failed: ${find.errmsg}`);
+        }
+
+        const nmrows = asSpiceInt(find.nmrows, `spiceCall(${step.call}).result.nmrows`);
+        if (nmrows !== expectedRows) {
+          invalidRequest(
+            `spiceCall(${step.call}) expected ${expectedRows} rows from ${JSON.stringify(EK_FAST_WRITE_QUERY)} (got ${nmrows})`,
+          );
+        }
+
+        state.ekFastWrite.queryReady = true;
+        return undefined;
+      }
+
+      if (step.call === "ekgi_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 2) {
+          invalidRequest(`spiceCall ${step.call} expects [row, expectedValue]`);
+        }
+
+        if (!state.ekFastWrite || !state.ekFastWrite.queryReady) {
+          invalidRequest(`spiceCall ${step.call} requires a successful prior ekfind_c step`);
+        }
+
+        const row = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        const expected = resolveSpiceIntExpression(step.in[1], args, refs, `spiceCall(${step.call}).in[1]`);
+        if (row < 0) {
+          invalidArgs(`spiceCall(${step.call}).in[0] must be >= 0`);
+        }
+
+        const got = raw.ekgi(0, row, 0);
+        if (!got.found) {
+          invalidRequest(`spiceCall(${step.call}) expected found=true at row ${row}`);
+        }
+        if (got.isNull) {
+          invalidRequest(`spiceCall(${step.call}) expected non-null value at row ${row}`);
+        }
+
+        const actual = asSpiceInt(got.value, `spiceCall(${step.call}).result.value`);
+        if (actual !== expected) {
+          invalidRequest(`spiceCall(${step.call}) expected ${expected} at row ${row} (got ${actual})`);
+        }
+
+        return undefined;
+      }
+
+      if (step.call === "ekgd_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 2) {
+          invalidRequest(`spiceCall ${step.call} expects [row, expectedValue]`);
+        }
+
+        if (!state.ekFastWrite || !state.ekFastWrite.queryReady) {
+          invalidRequest(`spiceCall ${step.call} requires a successful prior ekfind_c step`);
+        }
+
+        const row = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        const expected = resolveFiniteNumberExpression(step.in[1], args, refs, `spiceCall(${step.call}).in[1]`);
+        if (row < 0) {
+          invalidArgs(`spiceCall(${step.call}).in[0] must be >= 0`);
+        }
+
+        const got = raw.ekgd(1, row, 0);
+        if (!got.found) {
+          invalidRequest(`spiceCall(${step.call}) expected found=true at row ${row}`);
+        }
+        if (got.isNull) {
+          invalidRequest(`spiceCall(${step.call}) expected non-null value at row ${row}`);
+        }
+
+        const actual = got.value;
+        if (!Number.isFinite(actual)) {
+          invalidRequest(`spiceCall(${step.call}) returned non-finite value at row ${row}`);
+        }
+        if (Math.abs(actual - expected) > EK_FAST_WRITE_DOUBLE_TOLERANCE) {
+          invalidRequest(`spiceCall(${step.call}) expected ${expected} at row ${row} (got ${actual})`);
+        }
+
+        return undefined;
+      }
+
+      if (step.call === "ekgc_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 2) {
+          invalidRequest(`spiceCall ${step.call} expects [row, expectedValue]`);
+        }
+
+        if (!state.ekFastWrite || !state.ekFastWrite.queryReady) {
+          invalidRequest(`spiceCall ${step.call} requires a successful prior ekfind_c step`);
+        }
+
+        const row = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        const expected = resolveStringExpression(step.in[1], args, refs, `spiceCall(${step.call}).in[1]`);
+        if (row < 0) {
+          invalidArgs(`spiceCall(${step.call}).in[0] must be >= 0`);
+        }
+
+        const got = raw.ekgc(2, row, 0);
+        if (!got.found) {
+          invalidRequest(`spiceCall(${step.call}) expected found=true at row ${row}`);
+        }
+        if (got.isNull) {
+          invalidRequest(`spiceCall(${step.call}) expected non-null value at row ${row}`);
+        }
+
+        if (got.value !== expected) {
+          invalidRequest(
+            `spiceCall(${step.call}) expected ${JSON.stringify(expected)} at row ${row} (got ${JSON.stringify(got.value)})`,
+          );
+        }
+
         return undefined;
       }
 
@@ -1057,6 +1451,9 @@ export async function executeV2CaseWithBackend(
     cell: new Set<CellHandle>(),
     window: new Set<WindowHandle>(),
   };
+  const state: V2RunnerState = {
+    ekFastWrite: undefined,
+  };
 
   const args = validateV2CasePreflight(input);
 
@@ -1066,7 +1463,7 @@ export async function executeV2CaseWithBackend(
 
   try {
     for (const [index, step] of input.workflow.steps.entries()) {
-      const maybeResult = await executeStep(backend, step, args, refs, freedHandles);
+      const maybeResult = await executeStep(backend, step, args, refs, freedHandles, state);
       if (step.op === "projectResult") {
         projectedResult = maybeResult;
         hasProjectedResult = true;
@@ -1088,7 +1485,7 @@ export async function executeV2CaseWithBackend(
 
   for (const step of input.workflow.cleanup ?? []) {
     try {
-      await executeStep(backend, step, args, refs, freedHandles);
+      await executeStep(backend, step, args, refs, freedHandles, state);
     } catch (cleanupError) {
       if (terminalError === undefined) {
         terminalError = cleanupError;
@@ -1128,6 +1525,9 @@ export async function executeV2CaseWithBackend(
       // best effort cleanup
     }
   }
+
+  cleanupEkFastWriteState(backend, state.ekFastWrite);
+  state.ekFastWrite = undefined;
 
   if (terminalError !== undefined) {
     throw terminalError;

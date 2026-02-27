@@ -312,6 +312,162 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
+  it("executes EK fast-write spiceCall workflows and validates readback semantics", async () => {
+    const ekopnMock = vi.fn((): number => 101);
+    const ekifldMock = vi.fn(() => ({ segno: 5, rcptrs: [0, 0, 0] }));
+    const ekacliMock = vi.fn(() => {});
+    const ekacldMock = vi.fn(() => {});
+    const ekaclcMock = vi.fn(() => {});
+    const ekffldMock = vi.fn(() => {});
+    const ekclsMock = vi.fn(() => {});
+    const furnshMock = vi.fn(() => {});
+    const unloadMock = vi.fn(() => {});
+    const ekfindMock = vi.fn(() => ({ ok: true as const, nmrows: 3 }));
+    const ekgiMock = vi.fn((_selidx: number, row: number) => ({
+      found: true as const,
+      isNull: false as const,
+      value: [1, 2, 3][row] ?? -1,
+    }));
+    const ekgdMock = vi.fn((_selidx: number, row: number) => ({
+      found: true as const,
+      isNull: false as const,
+      value: [10.5, 20.25, 30][row] ?? NaN,
+    }));
+    const ekgcMock = vi.fn((_selidx: number, row: number) => ({
+      found: true as const,
+      isNull: false as const,
+      value: ["Alice", "Bob", "Carol"][row] ?? "",
+    }));
+
+    const backend = {
+      kind: "fake",
+      ekopn: ekopnMock,
+      ekifld: ekifldMock,
+      ekacli: ekacliMock,
+      ekacld: ekacldMock,
+      ekaclc: ekaclcMock,
+      ekffld: ekffldMock,
+      ekcls: ekclsMock,
+      furnsh: furnshMock,
+      unload: unloadMock,
+      ekfind: ekfindMock,
+      ekgi: ekgiMock,
+      ekgd: ekgdMock,
+      ekgc: ekgcMock,
+    } as unknown as SpiceBackend;
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "methods/ek/ekffld@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "ek.ekffld",
+        canonicalMethod: "ek.ekffld",
+        args: [],
+        result: {
+          type: "object",
+          required: ["validated"],
+          properties: {
+            validated: { const: true },
+          },
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          { op: "spiceCall", call: "ekifld_c", in: [] },
+          { op: "spiceCall", call: "ekacli_c", in: [] },
+          { op: "spiceCall", call: "ekacld_c", in: [] },
+          { op: "spiceCall", call: "ekaclc_c", in: [] },
+          { op: "spiceCall", call: "ekffld_c", in: [] },
+          { op: "spiceCall", call: "ekfind_c", in: [3] },
+          { op: "spiceCall", call: "ekgi_c", in: [0, 1] },
+          { op: "spiceCall", call: "ekgd_c", in: [1, 20.25] },
+          { op: "spiceCall", call: "ekgc_c", in: [2, "Carol"] },
+          { op: "projectResult", out: { validated: true } },
+        ],
+      },
+    };
+
+    const result = await executeV2CaseWithBackend(backend, input);
+
+    expect(result).toEqual({ validated: true });
+    expect(ekopnMock).toHaveBeenCalledTimes(1);
+    expect(ekifldMock).toHaveBeenCalledTimes(1);
+    expect(ekacliMock).toHaveBeenCalledTimes(1);
+    expect(ekacldMock).toHaveBeenCalledTimes(1);
+    expect(ekaclcMock).toHaveBeenCalledTimes(1);
+    expect(ekffldMock).toHaveBeenCalledTimes(1);
+    expect(ekfindMock).toHaveBeenCalledTimes(1);
+    expect(ekgiMock).toHaveBeenCalledTimes(1);
+    expect(ekgdMock).toHaveBeenCalledTimes(1);
+    expect(ekgcMock).toHaveBeenCalledTimes(1);
+    expect(ekclsMock).toHaveBeenCalledTimes(1);
+    expect(unloadMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("cleans up EK state when semantic readback verification fails", async () => {
+    const ekclsMock = vi.fn(() => {});
+    const unloadMock = vi.fn(() => {});
+    const backend = {
+      kind: "fake",
+      ekopn: vi.fn((): number => 101),
+      ekifld: vi.fn(() => ({ segno: 5, rcptrs: [0, 0, 0] })),
+      ekacli: vi.fn(() => {}),
+      ekacld: vi.fn(() => {}),
+      ekaclc: vi.fn(() => {}),
+      ekffld: vi.fn(() => {}),
+      ekcls: ekclsMock,
+      furnsh: vi.fn(() => {}),
+      unload: unloadMock,
+      ekfind: vi.fn(() => ({ ok: true as const, nmrows: 3 })),
+      ekgi: vi.fn(() => ({ found: true as const, isNull: false as const, value: 99 })),
+    } as unknown as SpiceBackend;
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "methods/ek/ekacli@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "ek.ekacli",
+        canonicalMethod: "ek.ekacli",
+        args: [],
+        result: {
+          type: "object",
+          required: ["validated"],
+          properties: {
+            validated: { const: true },
+          },
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          { op: "spiceCall", call: "ekifld_c", in: [] },
+          { op: "spiceCall", call: "ekacli_c", in: [] },
+          { op: "spiceCall", call: "ekacld_c", in: [] },
+          { op: "spiceCall", call: "ekaclc_c", in: [] },
+          { op: "spiceCall", call: "ekffld_c", in: [] },
+          { op: "spiceCall", call: "ekfind_c", in: [3] },
+          { op: "spiceCall", call: "ekgi_c", in: [0, 1] },
+          { op: "projectResult", out: { validated: true } },
+        ],
+      },
+    };
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_request",
+      message: expect.stringContaining("spiceCall(ekgi_c) expected 1"),
+    });
+
+    expect(ekclsMock).toHaveBeenCalledTimes(1);
+    expect(unloadMock).toHaveBeenCalledTimes(1);
+  });
+
   it("rejects duplicate contract arg names", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();

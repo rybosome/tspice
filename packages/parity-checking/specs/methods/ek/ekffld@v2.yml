@@ -1,22 +1,56 @@
 schemaVersion: 2
 manifest:
-  id: method.ek.ekffld@v2
+  id: methods/ek/ekffld@v2
   kind: method
+
 contract:
   contractMethod: ek.ekffld
   canonicalMethod: ek.ekffld
-  aliases: []
   result:
-    const: null
+    type: object
+    required: [validated, rows, method]
+    properties:
+      validated: { const: true }
+      rows: { const: 3 }
+      method: { const: ekffld_c }
+
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: ekifld_c
+      in: []
+    - op: spiceCall
+      call: ekacli_c
+      in: []
+    - op: spiceCall
+      call: ekacld_c
+      in: []
+    - op: spiceCall
+      call: ekaclc_c
+      in: []
+    - op: spiceCall
+      call: ekffld_c
+      in: []
+    - op: spiceCall
+      call: ekfind_c
+      in: [3]
+    - op: spiceCall
+      call: ekgi_c
+      in: [2, 3]
+    - op: spiceCall
+      call: ekgd_c
+      in: [2, 30]
+    - op: spiceCall
+      call: ekgc_c
+      in: [2, Carol]
+    - op: projectResult
+      out:
+        validated: true
+        rows: 3
+        method: ekffld_c
+
 cases:
-  - id: wiring-only-finalizes-fast-write-segment-with-realistic-args
-    args:
-      - 101
-      - 0
-      - [0, 1, 2]
+  - id: fast-write-roundtrip
+    args: {}
     expect:
-      ok: false
-      errorCode: unsupported_call
+      ok: true

@@ -1,26 +1,56 @@
 schemaVersion: 2
 manifest:
-  id: method.ek.ekacli@v2
+  id: methods/ek/ekacli@v2
   kind: method
+
 contract:
   contractMethod: ek.ekacli
   canonicalMethod: ek.ekacli
-  aliases: []
   result:
-    const: null
+    type: object
+    required: [validated, rows, method]
+    properties:
+      validated: { const: true }
+      rows: { const: 3 }
+      method: { const: ekacli_c }
+
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: ekifld_c
+      in: []
+    - op: spiceCall
+      call: ekacli_c
+      in: []
+    - op: spiceCall
+      call: ekacld_c
+      in: []
+    - op: spiceCall
+      call: ekaclc_c
+      in: []
+    - op: spiceCall
+      call: ekffld_c
+      in: []
+    - op: spiceCall
+      call: ekfind_c
+      in: [3]
+    - op: spiceCall
+      call: ekgi_c
+      in: [0, 1]
+    - op: spiceCall
+      call: ekgi_c
+      in: [1, 2]
+    - op: spiceCall
+      call: ekgi_c
+      in: [2, 3]
+    - op: projectResult
+      out:
+        validated: true
+        rows: 3
+        method: ekacli_c
+
 cases:
-  - id: wiring-only-appends-integer-column-fast-write-with-realistic-args
-    args:
-      - 101
-      - 0
-      - ID
-      - [1, 2, 3]
-      - [1, 1, 1]
-      - [false, false, false]
-      - [0, 1, 2]
+  - id: fast-write-roundtrip
+    args: {}
     expect:
-      ok: false
-      errorCode: unsupported_call
+      ok: true

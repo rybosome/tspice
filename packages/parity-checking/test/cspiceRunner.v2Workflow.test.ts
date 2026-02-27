@@ -220,4 +220,28 @@ describe("cspice-runner v2 workflow behavior", () => {
     const out = invokeRaw(payload);
     expect(out.response).toEqual({ ok: true, result: { ok: 1 } });
   });
+
+  it("executes EK fast-write workflow ops with semantic readback checks", () => {
+    const payload = {
+      schemaVersion: 2,
+      args: {},
+      workflow: {
+        steps: [
+          { op: "spiceCall", call: "ekifld_c", in: [] },
+          { op: "spiceCall", call: "ekacli_c", in: [] },
+          { op: "spiceCall", call: "ekacld_c", in: [] },
+          { op: "spiceCall", call: "ekaclc_c", in: [] },
+          { op: "spiceCall", call: "ekffld_c", in: [] },
+          { op: "spiceCall", call: "ekfind_c", in: [3] },
+          { op: "spiceCall", call: "ekgi_c", in: [0, 1] },
+          { op: "spiceCall", call: "ekgd_c", in: [1, 20.25] },
+          { op: "spiceCall", call: "ekgc_c", in: [2, "Carol"] },
+          { op: "projectResult", out: { validated: 1 } },
+        ],
+      },
+    };
+
+    const out = invokeRaw(payload);
+    expect(out.response).toEqual({ ok: true, result: { validated: 1 } });
+  });
 });

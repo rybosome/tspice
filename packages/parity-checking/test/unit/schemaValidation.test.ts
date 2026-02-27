@@ -332,6 +332,58 @@ describe("schema validation", () => {
     });
   });
 
+  it("parses v2 EK fast-write spiceCall workflow ops", () => {
+    const methodV2 = parseMethodSpecAny({
+      sourcePath: "/tmp/method-v2-ek-fast-write.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "methods/ek/ekacli@v2",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "ek.ekacli",
+          canonicalMethod: "ek.ekacli",
+          result: {
+            type: "object",
+            required: ["validated"],
+            properties: {
+              validated: { const: true },
+            },
+          },
+        },
+        workflow: {
+          steps: [
+            { op: "spiceCall", call: "ekifld_c", in: [] },
+            { op: "spiceCall", call: "ekacli_c", in: [] },
+            { op: "spiceCall", call: "ekacld_c", in: [] },
+            { op: "spiceCall", call: "ekaclc_c", in: [] },
+            { op: "spiceCall", call: "ekffld_c", in: [] },
+            { op: "spiceCall", call: "ekfind_c", in: [3] },
+            { op: "spiceCall", call: "ekgi_c", in: [0, 1] },
+            { op: "spiceCall", call: "ekgd_c", in: [0, 10.5] },
+            { op: "spiceCall", call: "ekgc_c", in: [0, "Alice"] },
+            { op: "projectResult", out: { validated: true } },
+          ],
+        },
+        cases: [{ id: "roundtrip", args: {}, expect: { ok: true } }],
+      },
+    });
+
+    expect(methodV2).toMatchObject({ schemaVersion: 2 });
+    expect(methodV2.workflow.steps.filter((step) => step.op === "spiceCall").map((step) => step.call)).toEqual([
+      "ekifld_c",
+      "ekacli_c",
+      "ekacld_c",
+      "ekaclc_c",
+      "ekffld_c",
+      "ekfind_c",
+      "ekgi_c",
+      "ekgd_c",
+      "ekgc_c",
+    ]);
+  });
+
   it("rejects invokeLegacyCall workflows that include additional steps", () => {
     expect(() =>
       parseMethodSpecAny({
