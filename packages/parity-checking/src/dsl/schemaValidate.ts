@@ -440,17 +440,25 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         call !== "size_c" &&
         call !== "scard_c" &&
         call !== "ssize_c" &&
-        call !== "valid_c"
+        call !== "valid_c" &&
+        call !== "dskobj_c" &&
+        call !== "dsksrf_c" &&
+        call !== "dskgd_c" &&
+        call !== "dskb02_c" &&
+        call !== "dskmi2_c" &&
+        call !== "dskopn_c" &&
+        call !== "dskw02_c" &&
+        call !== "readVirtualOutput"
       ) {
         throw new TypeError(
-          `${label}.call must be \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", or \"valid_c\"`,
+          `${label}.call must be one of \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", \"valid_c\", \"dskobj_c\", \"dsksrf_c\", \"dskgd_c\", \"dskb02_c\", \"dskmi2_c\", \"dskopn_c\", \"dskw02_c\", or \"readVirtualOutput\"`,
         );
       }
       if (!Array.isArray(obj.in)) {
         throw new TypeError(`${label}.in must be an array`);
       }
 
-      if (call === "card_c" || call === "size_c") {
+      if (call === "card_c" || call === "size_c" || call === "dskgd_c" || call === "dskb02_c") {
         if (obj.as === undefined) {
           throw new TypeError(`${label}.as is required when call=${JSON.stringify(call)}`);
         }
