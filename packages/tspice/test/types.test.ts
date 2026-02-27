@@ -15,6 +15,13 @@ type _NoCreateBackend = AssertFalse<HasKey<Tspice, "createBackend">>;
 type _NoCreateSpice = AssertFalse<HasKey<Tspice, "createSpice">>;
 type _NoCreateSpiceAsync = AssertFalse<HasKey<Tspice, "createSpiceAsync">>;
 type _NoResolveKernelUrl = AssertFalse<HasKey<Tspice, "resolveKernelUrl">>;
+type _NoAssertMat3ArrayLike9 = AssertFalse<HasKey<Tspice, "assertMat3ArrayLike9">>;
+type _NoIsMat3ArrayLike9 = AssertFalse<HasKey<Tspice, "isMat3ArrayLike9">>;
+type _NoBrandMat3ColMajor = AssertFalse<HasKey<Tspice, "brandMat3ColMajor">>;
+type _NoBrandMat3RowMajor = AssertFalse<HasKey<Tspice, "brandMat3RowMajor">>;
+type _NoIsBrandedMat3ColMajor = AssertFalse<HasKey<Tspice, "isBrandedMat3ColMajor">>;
+type _NoIsBrandedMat3RowMajor = AssertFalse<HasKey<Tspice, "isBrandedMat3RowMajor">>;
+type _NoTspiceKernelIds = AssertFalse<HasKey<Tspice, "TSPICE_KERNEL_IDS">>;
 
 // --- removed option types should not be exported from the package root ---
 

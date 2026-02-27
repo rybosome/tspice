@@ -86,13 +86,6 @@ Source: `packages/tspice/src/index.ts`
 - `J2000`
 - `Mat3`
 - `SpiceError`
-- `TSPICE_KERNEL_IDS`
-- `assertMat3ArrayLike9`
-- `brandMat3ColMajor`
-- `brandMat3RowMajor`
-- `isBrandedMat3ColMajor`
-- `isBrandedMat3RowMajor`
-- `isMat3ArrayLike9`
 - `kernels`
 - `spiceClients`
 
