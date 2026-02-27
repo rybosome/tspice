@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { rmSync } from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -65,6 +66,10 @@ type FreedHandles = {
   window: Set<WindowHandle>;
 };
 
+type WasmVirtualOutputCleanupHooks = {
+  __deleteVirtualFileForFileIo?: (path: string) => void;
+};
+
 function sanitizeTempTag(tag: string): string {
   const cleaned = tag
     .toLowerCase()
@@ -76,7 +81,7 @@ function sanitizeTempTag(tag: string): string {
 function buildTempPath(backend: SpiceBackend, tag: string, extension: string): string {
   const safeTag = sanitizeTempTag(tag);
   const ext = extension.startsWith(".") ? extension : `.${extension}`;
-  const suffix = `${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 10)}`;
+  const suffix = crypto.randomBytes(6).toString("hex");
 
   if (backend.kind === "wasm") {
     return `tspice-parity-${safeTag}-${suffix}${ext}`;
@@ -92,6 +97,28 @@ function deleteTempPathBestEffort(backend: SpiceBackend, filePath: string): void
 
   try {
     rmSync(filePath, { force: true });
+  } catch {
+    // best effort cleanup
+  }
+}
+
+function deleteVirtualOutputPathBestEffort(backend: SpiceBackend, virtualOutputPath: string): void {
+  if (backend.kind !== "wasm") {
+    deleteTempPathBestEffort(backend, virtualOutputPath);
+    return;
+  }
+
+  const hooks = getRawBackend(backend) as unknown as WasmVirtualOutputCleanupHooks;
+  const remove = hooks.__deleteVirtualFileForFileIo;
+
+  if (!remove) {
+    // `readVirtualOutput()` has no public delete API. If this optional hook is
+    // unavailable, cleanup is owned by backend instance disposal.
+    return;
+  }
+
+  try {
+    remove(virtualOutputPath);
   } catch {
     // best effort cleanup
   }
@@ -161,11 +188,15 @@ function writeMinimalDskFile(backend: SpiceBackend, filePath: string): void {
   }
 }
 
-async function withMinimalDskFile<T>(backend: SpiceBackend, tag: string, fn: (filePath: string) => T): Promise<T> {
+async function withMinimalDskFile<T>(
+  backend: SpiceBackend,
+  tag: string,
+  fn: (filePath: string) => T | Promise<T>,
+): Promise<T> {
   const tempPath = buildTempPath(backend, tag, ".bds");
   try {
     writeMinimalDskFile(backend, tempPath);
-    return fn(tempPath);
+    return await fn(tempPath);
   } finally {
     deleteTempPathBestEffort(backend, tempPath);
   }
@@ -944,7 +975,13 @@ async function executeStep(
           throw writeError;
         }
 
-        const bytes = kit.readVirtualOutput(output);
+        const bytes = (() => {
+          try {
+            return kit.readVirtualOutput(output);
+          } finally {
+            deleteVirtualOutputPathBestEffort(backend, output.path);
+          }
+        })();
         if (!(bytes instanceof Uint8Array) || bytes.byteLength < 1) {
           invalidRequest("spiceCall(readVirtualOutput) expected non-empty output bytes");
         }
