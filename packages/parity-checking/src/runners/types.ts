@@ -79,14 +79,23 @@ export type V2WorkflowAllocWindowStep = {
 
 export type V2WorkflowSpiceCallWithOutputStep = {
   op: "spiceCall";
-  call: "card_c" | "size_c";
+  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c";
   in: unknown[];
   as: string;
 };
 
 export type V2WorkflowSpiceCallWithoutOutputStep = {
   op: "spiceCall";
-  call: "scard_c" | "ssize_c" | "valid_c";
+  call:
+    | "scard_c"
+    | "ssize_c"
+    | "valid_c"
+    | "dskobj_c"
+    | "dsksrf_c"
+    | "dskmi2_c"
+    | "dskopn_c"
+    | "dskw02_c"
+    | "readVirtualOutput";
   in: unknown[];
   as?: never;
 };

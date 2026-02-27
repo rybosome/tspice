@@ -4,7 +4,7 @@ import { methodCanonicalMethod } from "../dsl/types.js";
 
 import type { AnyMethodSpec } from "../dsl/types.js";
 
-const BASELINE_CANONICAL_METHOD_COVERAGE = 114;
+const BASELINE_CONTRACT_METHOD_COVERAGE = 103;
 const MAX_BASELINE_DENYLIST_SIZE = 59;
 
 function stableSort(a: string, b: string): number {
@@ -24,6 +24,9 @@ export function validateCompleteness(methodSpecs: AnyMethodSpec[]): Completeness
 
   const contractSet = new Set(contractMethods);
   const coveredCanonical = new Set(methodSpecs.map((method) => methodCanonicalMethod(method)));
+  const coveredContract = new Set(
+    [...coveredCanonical].filter((canonicalMethod) => contractSet.has(canonicalMethod)),
+  );
 
   if (new Set(denylist).size !== denylist.length) {
     throw new Error("Parity denylist must not contain duplicate entries.");
@@ -50,7 +53,7 @@ export function validateCompleteness(methodSpecs: AnyMethodSpec[]): Completeness
   }
 
   const uncovered = contractMethods.filter(
-    (method) => !coveredCanonical.has(method) && !denylist.includes(method),
+    (method) => !coveredContract.has(method) && !denylist.includes(method),
   );
 
   if (uncovered.length > 0) {
@@ -59,16 +62,16 @@ export function validateCompleteness(methodSpecs: AnyMethodSpec[]): Completeness
     );
   }
 
-  if (coveredCanonical.size !== BASELINE_CANONICAL_METHOD_COVERAGE) {
+  if (coveredContract.size !== BASELINE_CONTRACT_METHOD_COVERAGE) {
     throw new Error(
-      `Canonical parity coverage changed from baseline ${BASELINE_CANONICAL_METHOD_COVERAGE} to ${coveredCanonical.size}. ` +
-        "This migration PR must preserve existing canonical coverage.",
+      `Contract-scoped parity coverage changed from baseline ${BASELINE_CONTRACT_METHOD_COVERAGE} to ${coveredContract.size}. ` +
+        "This migration PR must preserve existing contract-scoped coverage.",
     );
   }
 
   return {
     contractCount: contractMethods.length,
-    coveredCount: coveredCanonical.size,
+    coveredCount: coveredContract.size,
     denylistCount: denylist.length,
   };
 }

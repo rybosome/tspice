@@ -1,3 +1,7 @@
+import { rmSync } from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
+
 import type { SpiceBackend } from "@rybosome/tspice";
 
 import type {
@@ -12,11 +16,35 @@ type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_ca
 const SPICE_INT32_MIN = -2147483648;
 const SPICE_INT32_MAX = 2147483647;
 
+const DSK_MINIMAL_NV = 3;
+const DSK_MINIMAL_NP = 1;
+const DSK_MINIMAL_WORKSZ = 2048;
+const DSK_MINIMAL_VOXPSZ = 512;
+const DSK_MINIMAL_VOXLSZ = 1024;
+const DSK_MINIMAL_SPXISZ = 8192;
+
+const DSK_MINIMAL_VERTICES = [
+  0, 0, 0,
+  1, 0, 0,
+  0, 1, 0,
+];
+
+const DSK_MINIMAL_PLATES = [1, 2, 3];
+
+const DSK_MINIMAL_CORPAR = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+const READ_VIRTUAL_OUTPUT_STATES = [
+  0, 0, 0, 1, 0, 0,
+  60, 0, 0, 1, 0, 0,
+];
+
 type CellHandle =
   | ReturnType<SpiceBackend["kit"]["newIntCell"]>
   | ReturnType<SpiceBackend["kit"]["newDoubleCell"]>
   | ReturnType<SpiceBackend["kit"]["newCharCell"]>;
 type WindowHandle = ReturnType<SpiceBackend["kit"]["newWindow"]>;
+type DasHandle = ReturnType<SpiceBackend["raw"]["dasopr"]>;
+type DskOpenHandle = ReturnType<SpiceBackend["raw"]["dskopn"]>;
 
 type RefValue =
   | {
@@ -36,6 +64,112 @@ type FreedHandles = {
   cell: Set<CellHandle>;
   window: Set<WindowHandle>;
 };
+
+function sanitizeTempTag(tag: string): string {
+  const cleaned = tag
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return cleaned.length > 0 ? cleaned : "v2";
+}
+
+function buildTempPath(backend: SpiceBackend, tag: string, extension: string): string {
+  const safeTag = sanitizeTempTag(tag);
+  const ext = extension.startsWith(".") ? extension : `.${extension}`;
+  const suffix = `${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 10)}`;
+
+  if (backend.kind === "wasm") {
+    return `tspice-parity-${safeTag}-${suffix}${ext}`;
+  }
+
+  return path.join(os.tmpdir(), `tspice-parity-${safeTag}-${suffix}${ext}`);
+}
+
+function deleteTempPathBestEffort(backend: SpiceBackend, filePath: string): void {
+  if (backend.kind === "wasm") {
+    return;
+  }
+
+  try {
+    rmSync(filePath, { force: true });
+  } catch {
+    // best effort cleanup
+  }
+}
+
+function closeDasHandlePreserveError(raw: SpiceBackend["raw"], handle: DasHandle, priorError: unknown): void {
+  try {
+    raw.dascls(handle);
+  } catch (closeError) {
+    if (priorError === undefined) {
+      throw closeError;
+    }
+  }
+}
+
+function writeMinimalDskFile(backend: SpiceBackend, filePath: string): void {
+  const raw = getRawBackend(backend);
+  const handle = raw.dskopn(filePath, "TSPICE", 0);
+
+  let writeError: unknown = undefined;
+  try {
+    const { spaixd, spaixi } = raw.dskmi2(
+      DSK_MINIMAL_NV,
+      DSK_MINIMAL_VERTICES,
+      DSK_MINIMAL_NP,
+      DSK_MINIMAL_PLATES,
+      0.2,
+      5,
+      DSK_MINIMAL_WORKSZ,
+      DSK_MINIMAL_VOXPSZ,
+      DSK_MINIMAL_VOXLSZ,
+      true,
+      DSK_MINIMAL_SPXISZ,
+    );
+
+    raw.dskw02(
+      handle,
+      399,
+      1,
+      2,
+      "J2000",
+      3,
+      DSK_MINIMAL_CORPAR,
+      0,
+      1,
+      0,
+      1,
+      -0.1,
+      0.1,
+      0,
+      1,
+      DSK_MINIMAL_NV,
+      DSK_MINIMAL_VERTICES,
+      DSK_MINIMAL_NP,
+      DSK_MINIMAL_PLATES,
+      spaixd,
+      spaixi,
+    );
+  } catch (error) {
+    writeError = error;
+  }
+
+  closeDasHandlePreserveError(raw, handle, writeError);
+
+  if (writeError !== undefined) {
+    throw writeError;
+  }
+}
+
+async function withMinimalDskFile<T>(backend: SpiceBackend, tag: string, fn: (filePath: string) => T): Promise<T> {
+  const tempPath = buildTempPath(backend, tag, ".bds");
+  try {
+    writeMinimalDskFile(backend, tempPath);
+    return fn(tempPath);
+  } finally {
+    deleteTempPathBestEffort(backend, tempPath);
+  }
+}
 
 function getRawBackend(backend: SpiceBackend): SpiceBackend["raw"] {
   const nested = (backend as unknown as { raw?: SpiceBackend["raw"] }).raw;
@@ -158,6 +292,19 @@ function resolveSpiceIntExpression(
 ): number {
   const value = resolveExpression(expr, args, refs, label);
   return asSpiceInt(value, label);
+}
+
+function resolveStringExpression(
+  expr: unknown,
+  args: Record<string, unknown>,
+  refs: Map<string, RefValue>,
+  label: string,
+): string {
+  const value = resolveExpression(expr, args, refs, label);
+  if (typeof value !== "string") {
+    invalidArgs(`${label} must be a string (got ${formatValue(value)})`);
+  }
+  return value;
 }
 
 function resolveRefReference(
@@ -517,6 +664,291 @@ async function executeStep(
           `spiceCall(${step.call}).in[2]`,
         );
         raw.valid(size, n, handle);
+        return undefined;
+      }
+
+      if (step.call === "dskopn_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        const tempPath = buildTempPath(backend, "dskopn", ".bds");
+        let handle: DskOpenHandle | undefined;
+        let opError: unknown = undefined;
+
+        try {
+          handle = raw.dskopn(tempPath, "TSPICE", 0);
+        } catch (error) {
+          opError = error;
+        }
+
+        if (handle !== undefined) {
+          closeDasHandlePreserveError(raw, handle, opError);
+        }
+
+        deleteTempPathBestEffort(backend, tempPath);
+
+        if (opError !== undefined) {
+          throw opError;
+        }
+
+        return undefined;
+      }
+
+      if (step.call === "dskmi2_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        const spatial = raw.dskmi2(
+          DSK_MINIMAL_NV,
+          DSK_MINIMAL_VERTICES,
+          DSK_MINIMAL_NP,
+          DSK_MINIMAL_PLATES,
+          0.2,
+          5,
+          DSK_MINIMAL_WORKSZ,
+          DSK_MINIMAL_VOXPSZ,
+          DSK_MINIMAL_VOXLSZ,
+          true,
+          DSK_MINIMAL_SPXISZ,
+        );
+
+        if (spatial.spaixd.length < 1 || spatial.spaixi.length < 1) {
+          invalidRequest(`spiceCall(${step.call}) expected non-empty spatial index outputs`);
+        }
+
+        return undefined;
+      }
+
+      if (step.call === "dskw02_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        const tempPath = buildTempPath(backend, "dskw02", ".bds");
+        try {
+          writeMinimalDskFile(backend, tempPath);
+        } finally {
+          deleteTempPathBestEffort(backend, tempPath);
+        }
+
+        return undefined;
+      }
+
+      if (step.call === "dskobj_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        await withMinimalDskFile(backend, "dskobj", (dskPath) => {
+          const bodids = kit.newIntCell(100);
+          try {
+            raw.dskobj(dskPath, bodids);
+            const count = asSpiceInt(raw.card(bodids), "spiceCall(dskobj_c).result.count");
+            if (count < 1) {
+              invalidRequest("spiceCall(dskobj_c) expected at least one body id");
+            }
+          } finally {
+            kit.freeCell(bodids);
+          }
+        });
+
+        return undefined;
+      }
+
+      if (step.call === "dsksrf_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        await withMinimalDskFile(backend, "dsksrf", (dskPath) => {
+          const bodids = kit.newIntCell(100);
+          const srfids = kit.newIntCell(100);
+          try {
+            raw.dskobj(dskPath, bodids);
+            const bodyCount = asSpiceInt(raw.card(bodids), "spiceCall(dsksrf_c).bodyCount");
+            if (bodyCount < 1) {
+              invalidRequest("spiceCall(dsksrf_c) expected at least one body id");
+            }
+
+            const bodyId = asSpiceInt(kit.cellGeti(bodids, 0), "spiceCall(dsksrf_c).bodyId");
+            raw.dsksrf(dskPath, bodyId, srfids);
+
+            const surfaceCount = asSpiceInt(raw.card(srfids), "spiceCall(dsksrf_c).surfaceCount");
+            if (surfaceCount < 1) {
+              invalidRequest("spiceCall(dsksrf_c) expected at least one surface id");
+            }
+          } finally {
+            kit.freeCell(srfids);
+            kit.freeCell(bodids);
+          }
+        });
+
+        return undefined;
+      }
+
+      if (step.call === "dskgd_c") {
+        if (step.in.length !== 1) {
+          invalidRequest(`spiceCall ${step.call} expects one selector input`);
+        }
+
+        if ((step as { as?: unknown }).as === undefined) {
+          invalidArgs(`spiceCall ${step.call} requires an \"as\" output ref`);
+        }
+
+        const selector = resolveStringExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        if (selector !== "surfce" && selector !== "center") {
+          invalidArgs(
+            `spiceCall(${step.call}).in[0] must be \"surfce\" or \"center\" (got ${formatValue(selector)})`,
+          );
+        }
+
+        const value = await withMinimalDskFile(backend, "dskgd", (dskPath) => {
+          const handle = raw.dasopr(dskPath);
+          let queryError: unknown = undefined;
+          let selected = 0;
+
+          try {
+            const first = raw.dlabfs(handle);
+            if (!first.found) {
+              invalidRequest("spiceCall(dskgd_c) expected a DLA segment in minimal DSK");
+            }
+
+            const descriptor = raw.dskgd(handle, first.descr);
+            selected = selector === "surfce" ? descriptor.surfce : descriptor.center;
+          } catch (error) {
+            queryError = error;
+          }
+
+          closeDasHandlePreserveError(raw, handle, queryError);
+          if (queryError !== undefined) {
+            throw queryError;
+          }
+
+          return asSpiceInt(selected, `spiceCall(${step.call}).result.${selector}`);
+        });
+
+        defineRef(refs, step.as, { kind: "int", value }, `spiceCall(${step.call}).as`);
+        return undefined;
+      }
+
+      if (step.call === "dskb02_c") {
+        if (step.in.length !== 1) {
+          invalidRequest(`spiceCall ${step.call} expects one selector input`);
+        }
+
+        if ((step as { as?: unknown }).as === undefined) {
+          invalidArgs(`spiceCall ${step.call} requires an \"as\" output ref`);
+        }
+
+        const selector = resolveStringExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        if (selector !== "nv" && selector !== "np") {
+          invalidArgs(
+            `spiceCall(${step.call}).in[0] must be \"nv\" or \"np\" (got ${formatValue(selector)})`,
+          );
+        }
+
+        const value = await withMinimalDskFile(backend, "dskb02", (dskPath) => {
+          const handle = raw.dasopr(dskPath);
+          let queryError: unknown = undefined;
+          let selected = 0;
+
+          try {
+            const first = raw.dlabfs(handle);
+            if (!first.found) {
+              invalidRequest("spiceCall(dskb02_c) expected a DLA segment in minimal DSK");
+            }
+
+            const bookkeeping = raw.dskb02(handle, first.descr);
+            selected = selector === "nv" ? bookkeeping.nv : bookkeeping.np;
+          } catch (error) {
+            queryError = error;
+          }
+
+          closeDasHandlePreserveError(raw, handle, queryError);
+          if (queryError !== undefined) {
+            throw queryError;
+          }
+
+          return asSpiceInt(selected, `spiceCall(${step.call}).result.${selector}`);
+        });
+
+        defineRef(refs, step.as, { kind: "int", value }, `spiceCall(${step.call}).as`);
+        return undefined;
+      }
+
+      if (step.call === "readVirtualOutput") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
+        }
+
+        if (step.in.length !== 0) {
+          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        }
+
+        const output = {
+          kind: "virtual-output" as const,
+          path: buildTempPath(backend, "read-virtual-output", ".bsp"),
+        };
+
+        const handle = raw.spkopn(output, "TSPICE", 0);
+        let writeError: unknown = undefined;
+        try {
+          raw.spkw08(
+            handle,
+            1000,
+            0,
+            "J2000",
+            0,
+            60,
+            "TSPICE_V2_READ_VO",
+            1,
+            READ_VIRTUAL_OUTPUT_STATES,
+            0,
+            60,
+          );
+        } catch (error) {
+          writeError = error;
+        }
+
+        try {
+          raw.spkcls(handle);
+        } catch (closeError) {
+          if (writeError === undefined) {
+            throw closeError;
+          }
+        }
+
+        if (writeError !== undefined) {
+          throw writeError;
+        }
+
+        const bytes = kit.readVirtualOutput(output);
+        if (!(bytes instanceof Uint8Array) || bytes.byteLength < 1) {
+          invalidRequest("spiceCall(readVirtualOutput) expected non-empty output bytes");
+        }
+
         return undefined;
       }
 

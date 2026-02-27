@@ -13,12 +13,13 @@ contract:
       opened: { const: true }
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: dskopn_c
+      in: []
+    - op: projectResult
+      out:
+        opened: true
 cases:
   - id: open-close-temp-dsk
-    args:
-      - parity-file-io-dskopn
-      - TSPICE
-      - 0
     expect:
       ok: true

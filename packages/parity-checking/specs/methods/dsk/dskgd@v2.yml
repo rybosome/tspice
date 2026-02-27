@@ -14,10 +14,19 @@ contract:
       center: { type: spiceInt }
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: dskgd_c
+      in: [surfce]
+      as: surfce
+    - op: spiceCall
+      call: dskgd_c
+      in: [center]
+      as: center
+    - op: projectResult
+      out:
+        surfce: $refs.surfce
+        center: $refs.center
 cases:
   - id: descriptor-from-minimal-dsk
-    args:
-      - $FIXTURES/kernels/de421_minimal.bds
     expect:
       ok: true

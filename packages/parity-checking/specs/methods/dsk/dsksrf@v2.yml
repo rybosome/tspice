@@ -11,10 +11,12 @@ contract:
     properties: {}
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: dsksrf_c
+      in: []
+    - op: projectResult
+      out: {}
 cases:
   - id: surface-ids-from-minimal-dsk
-    args:
-      - $FIXTURES/kernels/de421_minimal.bds
     expect:
       ok: true

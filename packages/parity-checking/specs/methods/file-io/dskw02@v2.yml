@@ -13,10 +13,13 @@ contract:
       written: { const: true }
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: dskw02_c
+      in: []
+    - op: projectResult
+      out:
+        written: true
 cases:
   - id: write-single-segment-dsk
-    args:
-      - parity-file-io-dskw02
     expect:
       ok: true
