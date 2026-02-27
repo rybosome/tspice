@@ -8,7 +8,10 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [ok, nseg]
+    properties:
+      ok: { const: true }
+      nseg: { const: 1, type: spiceInt }
 setup:
   kernels:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
@@ -21,3 +24,5 @@ cases:
       - ek-segments
       - TSPICE
       - 0
+    expect:
+      ok: true

@@ -8,7 +8,10 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [ok, closed]
+    properties:
+      ok: { const: true }
+      closed: { const: true }
 setup:
   kernels:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
@@ -21,3 +24,5 @@ cases:
       - ek-close
       - TSPICE
       - 0
+    expect:
+      ok: true

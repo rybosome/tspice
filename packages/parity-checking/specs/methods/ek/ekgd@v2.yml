@@ -8,10 +8,12 @@ contract:
   aliases: []
   result:
     type: object
-    required: [found, isNull, value]
+    required: [ok, found, isNull, value]
     properties:
+      ok: { const: true }
       found: { const: true }
       isNull: { const: false }
+      value: { const: 58202426.04357445 }
 setup:
   kernels:
     - ../../../backend-node/test/fixtures/ek-fixture.bes

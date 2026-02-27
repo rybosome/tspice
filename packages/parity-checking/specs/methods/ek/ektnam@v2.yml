@@ -8,7 +8,10 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [ok, name]
+    properties:
+      ok: { const: true }
+      name: { const: CASSINI_NOISE_EVENTS }
 setup:
   kernels:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
@@ -19,3 +22,5 @@ cases:
   - id: reads-table-name-at-index-zero
     args:
       - 0
+    expect:
+      ok: true

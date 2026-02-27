@@ -8,7 +8,10 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [ok, handle]
+    properties:
+      ok: { const: true }
+      handle: { type: spiceInt }
 setup:
   kernels:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
@@ -21,3 +24,5 @@ cases:
       - ek-open-write
       - TSPICE
       - 0
+    expect:
+      ok: true

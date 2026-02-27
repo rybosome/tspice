@@ -8,7 +8,10 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [ok, ntab]
+    properties:
+      ok: { const: true }
+      ntab: { const: 1, type: spiceInt }
 setup:
   kernels:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
@@ -18,3 +21,5 @@ workflow:
 cases:
   - id: returns-loaded-table-count
     args: []
+    expect:
+      ok: true
