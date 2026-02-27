@@ -10885,6 +10885,14 @@ int main(void) {
       char traceMsg[1841];
       capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
                           sizeof(traceMsg));
+
+      // Best-effort cleanup for the handle opened by ekopr_c above.
+      // reset_c() is required so cleanup calls are not skipped while SPICE is
+      // in failed state from eknseg_c.
+      reset_c();
+      ekcls_c(handle);
+      reset_c();
+
       write_error_json("SPICE error in eknseg", shortMsg, longMsg, traceMsg);
       goto done;
     }

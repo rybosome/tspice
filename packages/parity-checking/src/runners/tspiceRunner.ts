@@ -231,11 +231,16 @@ function firstLoadedEkKernelPathOrThrow(
     invalidRequest(`${call} requires at least one loaded EK kernel in setup.kernels`);
   }
 
-  if (typeof firstEk.file !== "string" || firstEk.file.trim() === "") {
+  if (typeof firstEk.file !== "string") {
     invalidRequest(`${call} could not resolve loaded EK kernel path from kdata(0, \"EK\")`);
   }
 
-  return firstEk.file;
+  const ekPath = firstEk.file.trimEnd();
+  if (ekPath === "") {
+    invalidRequest(`${call} could not resolve loaded EK kernel path from kdata(0, \"EK\")`);
+  }
+
+  return ekPath;
 }
 
 async function createTempEkPath(
