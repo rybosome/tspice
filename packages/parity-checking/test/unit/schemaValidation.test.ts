@@ -299,6 +299,100 @@ describe("schema validation", () => {
     expect(crossV2).toMatchObject({ schemaVersion: 2 });
   });
 
+  it("accepts EK workflow spiceCall ops with output refs", () => {
+    const methodV2 = parseMethodSpecAny({
+      sourcePath: "/tmp/method-v2-ekgc.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "method.ek.ekgc@v2",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "ek.ekgc",
+          canonicalMethod: "ek.ekgc",
+          result: {
+            type: "object",
+            required: ["found", "isNull", "value"],
+            properties: {
+              found: { const: true },
+              isNull: { const: false },
+              value: { const: "ISS_WAC_ShutterBladeBMove" },
+            },
+          },
+        },
+        workflow: {
+          steps: [
+            {
+              op: "spiceCall",
+              call: "ekgc_c",
+              in: [
+                "SELECT EVENT FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'",
+                0,
+                0,
+                0,
+              ],
+              as: "read",
+            },
+            {
+              op: "projectResult",
+              out: {
+                found: "$refs.read.found",
+                isNull: "$refs.read.isNull",
+                value: "$refs.read.value",
+              },
+            },
+          ],
+        },
+        cases: [{ id: "reads-event", args: {}, expect: { ok: true } }],
+      },
+    });
+
+    expect(methodV2).toMatchObject({ schemaVersion: 2 });
+  });
+
+  it("requires as for EK workflow spiceCall ops", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-ekgc-missing-as.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "method.ek.ekgc@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "ek.ekgc",
+            canonicalMethod: "ek.ekgc",
+            result: {
+              type: "object",
+              required: ["found"],
+              properties: {
+                found: { const: true },
+              },
+            },
+          },
+          workflow: {
+            steps: [
+              {
+                op: "spiceCall",
+                call: "ekgc_c",
+                in: ["SELECT EVENT FROM CASSINI_NOISE_EVENTS", 0, 0, 0],
+              },
+              {
+                op: "projectResult",
+                out: {
+                  found: true,
+                },
+              },
+            ],
+          },
+          cases: [{ id: "reads-event", args: {}, expect: { ok: true } }],
+        },
+      }),
+    ).toThrow(/workflow\.steps\[0\]\.as is required when call="ekgc_c"/);
+  });
+
   it("parses v2 method contract.result const literals (including arrays/objects)", () => {
     const methodV2 = parseMethodSpecAny({
       sourcePath: "/tmp/method-v2-legacy-const.yml",

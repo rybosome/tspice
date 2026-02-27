@@ -1349,48 +1349,28 @@ const DISPATCH: Record<string, DispatchFn> = {
   },
 
   "ek.ekgc": (backend, args) => {
-    assertStringArg(args[0], "ek.ekgc", 0);
+    assertNonNegativeSpiceIntArg(args[0], "ek.ekgc", 0);
     assertNonNegativeSpiceIntArg(args[1], "ek.ekgc", 1);
     assertNonNegativeSpiceIntArg(args[2], "ek.ekgc", 2);
-    assertNonNegativeSpiceIntArg(args[3], "ek.ekgc", 3);
-
-    const find = backend.ekfind(args[0]);
-    if (!find.ok) {
-      invalidRequest(`ek.ekgc query failed in ekfind: ${find.errmsg}`);
-    }
-
-    return backend.ekgc(args[1], args[2], args[3]);
+    return backend.ekgc(args[0], args[1], args[2]);
   },
 
   "ek.ekgd": (backend, args) => {
-    assertStringArg(args[0], "ek.ekgd", 0);
+    assertNonNegativeSpiceIntArg(args[0], "ek.ekgd", 0);
     assertNonNegativeSpiceIntArg(args[1], "ek.ekgd", 1);
     assertNonNegativeSpiceIntArg(args[2], "ek.ekgd", 2);
-    assertNonNegativeSpiceIntArg(args[3], "ek.ekgd", 3);
-
-    const find = backend.ekfind(args[0]);
-    if (!find.ok) {
-      invalidRequest(`ek.ekgd query failed in ekfind: ${find.errmsg}`);
-    }
 
     return {
       ok: true,
-      ...backend.ekgd(args[1], args[2], args[3]),
+      ...backend.ekgd(args[0], args[1], args[2]),
     };
   },
 
   "ek.ekgi": (backend, args) => {
-    assertStringArg(args[0], "ek.ekgi", 0);
+    assertNonNegativeSpiceIntArg(args[0], "ek.ekgi", 0);
     assertNonNegativeSpiceIntArg(args[1], "ek.ekgi", 1);
     assertNonNegativeSpiceIntArg(args[2], "ek.ekgi", 2);
-    assertNonNegativeSpiceIntArg(args[3], "ek.ekgi", 3);
-
-    const find = backend.ekfind(args[0]);
-    if (!find.ok) {
-      invalidRequest(`ek.ekgi query failed in ekfind: ${find.errmsg}`);
-    }
-
-    return backend.ekgi(args[1], args[2], args[3]);
+    return backend.ekgi(args[0], args[1], args[2]);
   },
 
   "ek.ekntab": (backend) => {

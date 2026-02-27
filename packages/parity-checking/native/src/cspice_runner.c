@@ -2483,7 +2483,11 @@ static CallId parse_call_id(const char *call) {
 
 typedef enum {
   V2_REF_NONE = 0,
+  V2_REF_NULL,
   V2_REF_INT,
+  V2_REF_BOOL,
+  V2_REF_DOUBLE,
+  V2_REF_STRING,
   V2_REF_CELL,
   V2_REF_WINDOW,
 } V2RefType;
@@ -2492,6 +2496,9 @@ typedef struct {
   char *name;
   V2RefType type;
   SpiceInt intValue;
+  SpiceBoolean boolValue;
+  SpiceDouble doubleValue;
+  char *stringValue;
   SpiceCell cell;
   void *storage;
 } V2RefEntry;
@@ -2583,6 +2590,9 @@ static void v2_free_ref_entry(V2RefEntry *entry) {
     return;
   }
 
+  free(entry->stringValue);
+  entry->stringValue = NULL;
+
   if (entry->storage != NULL) {
     free(entry->storage);
     entry->storage = NULL;
@@ -2593,6 +2603,8 @@ static void v2_free_ref_entry(V2RefEntry *entry) {
   entry->type = V2_REF_NONE;
   memset(&entry->cell, 0, sizeof(entry->cell));
   entry->intValue = 0;
+  entry->boolValue = SPICEFALSE;
+  entry->doubleValue = 0.0;
 }
 
 static void v2_free_all_refs(V2RefEntry *refs, const int refCount) {
@@ -2675,6 +2687,182 @@ static bool v2_add_ref_int(V2RefEntry *refs, int *refCount, const char *name,
     (*refCount)++;
   }
   return true;
+}
+
+static bool v2_add_ref_null(V2RefEntry *refs, int *refCount, const char *name) {
+  if (v2_find_ref_index(refs, *refCount, name) >= 0) {
+    write_error_json_ex("invalid_request", "Duplicate v2 ref name", name, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  int slot = v2_find_free_ref_slot(refs, *refCount);
+  if (slot < 0 && *refCount >= V2_MAX_REFS) {
+    write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
+                        NULL);
+    return false;
+  }
+
+  if (slot < 0) {
+    slot = *refCount;
+  }
+
+  char *ownedName = v2_strdup(name);
+  if (ownedName == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  V2RefEntry *entry = &refs[slot];
+  memset(entry, 0, sizeof(*entry));
+  entry->name = ownedName;
+  entry->type = V2_REF_NULL;
+
+  if (slot == *refCount) {
+    (*refCount)++;
+  }
+  return true;
+}
+
+static bool v2_add_ref_bool(V2RefEntry *refs, int *refCount, const char *name,
+                            const SpiceBoolean value) {
+  if (v2_find_ref_index(refs, *refCount, name) >= 0) {
+    write_error_json_ex("invalid_request", "Duplicate v2 ref name", name, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  int slot = v2_find_free_ref_slot(refs, *refCount);
+  if (slot < 0 && *refCount >= V2_MAX_REFS) {
+    write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
+                        NULL);
+    return false;
+  }
+
+  if (slot < 0) {
+    slot = *refCount;
+  }
+
+  char *ownedName = v2_strdup(name);
+  if (ownedName == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  V2RefEntry *entry = &refs[slot];
+  memset(entry, 0, sizeof(*entry));
+  entry->name = ownedName;
+  entry->type = V2_REF_BOOL;
+  entry->boolValue = value;
+
+  if (slot == *refCount) {
+    (*refCount)++;
+  }
+  return true;
+}
+
+static bool v2_add_ref_double(V2RefEntry *refs, int *refCount, const char *name,
+                              const SpiceDouble value) {
+  if (v2_find_ref_index(refs, *refCount, name) >= 0) {
+    write_error_json_ex("invalid_request", "Duplicate v2 ref name", name, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  int slot = v2_find_free_ref_slot(refs, *refCount);
+  if (slot < 0 && *refCount >= V2_MAX_REFS) {
+    write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
+                        NULL);
+    return false;
+  }
+
+  if (slot < 0) {
+    slot = *refCount;
+  }
+
+  char *ownedName = v2_strdup(name);
+  if (ownedName == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  V2RefEntry *entry = &refs[slot];
+  memset(entry, 0, sizeof(*entry));
+  entry->name = ownedName;
+  entry->type = V2_REF_DOUBLE;
+  entry->doubleValue = value;
+
+  if (slot == *refCount) {
+    (*refCount)++;
+  }
+  return true;
+}
+
+static bool v2_add_ref_string(V2RefEntry *refs, int *refCount, const char *name,
+                              const char *value) {
+  if (v2_find_ref_index(refs, *refCount, name) >= 0) {
+    write_error_json_ex("invalid_request", "Duplicate v2 ref name", name, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  int slot = v2_find_free_ref_slot(refs, *refCount);
+  if (slot < 0 && *refCount >= V2_MAX_REFS) {
+    write_error_json_ex("invalid_request", "Too many v2 refs", NULL, NULL, NULL,
+                        NULL);
+    return false;
+  }
+
+  if (slot < 0) {
+    slot = *refCount;
+  }
+
+  char *ownedName = v2_strdup(name);
+  if (ownedName == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  char *ownedValue = v2_strdup(value != NULL ? value : "");
+  if (ownedValue == NULL) {
+    free(ownedName);
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  V2RefEntry *entry = &refs[slot];
+  memset(entry, 0, sizeof(*entry));
+  entry->name = ownedName;
+  entry->type = V2_REF_STRING;
+  entry->stringValue = ownedValue;
+
+  if (slot == *refCount) {
+    (*refCount)++;
+  }
+  return true;
+}
+
+static char *v2_join_ref_suffix(const char *base, const char *suffix) {
+  if (base == NULL || suffix == NULL) {
+    return NULL;
+  }
+
+  const size_t baseLen = strlen(base);
+  const size_t suffixLen = strlen(suffix);
+  if (baseLen > SIZE_MAX - suffixLen - 1U) {
+    return NULL;
+  }
+
+  const size_t totalLen = baseLen + suffixLen;
+  char *joined = (char *)malloc(totalLen + 1U);
+  if (joined == NULL) {
+    return NULL;
+  }
+
+  memcpy(joined, base, baseLen);
+  memcpy(joined + baseLen, suffix, suffixLen);
+  joined[totalLen] = '\0';
+  return joined;
 }
 
 static bool v2_resolve_spiceint_expr(const char *json, const jsmntok_t *tokens,
@@ -3589,6 +3777,300 @@ static bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens
     return ok;
   }
 
+  if (strcmp(callName, "ekgc_c") == 0 || strcmp(callName, "ekgd_c") == 0 ||
+      strcmp(callName, "ekgi_c") == 0) {
+    if (inputCount != 4) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekgc_c/ekgd_c/ekgi_c expects [query, selidx, row, elment]",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    if (asTok < 0 || tokens[asTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall ekgc_c/ekgd_c/ekgi_c requires string as",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    int queryTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
+    if (queryTok < 0 || queryTok >= tokenCount ||
+        tokens[queryTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "spiceCall ekgc_c/ekgd_c/ekgi_c query must be a string",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(callName);
+      return false;
+    }
+
+    char queryDetail[256];
+    queryDetail[0] = '\0';
+    char *query = NULL;
+    jsmn_strdup_err_t queryErr = jsmn_strdup(json,
+                                             &tokens[queryTok],
+                                             &query,
+                                             queryDetail,
+                                             sizeof(queryDetail));
+    if (queryErr != JSMN_STRDUP_OK) {
+      if (queryErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            queryDetail[0] ? queryDetail : NULL,
+                            NULL,
+                            NULL,
+                            NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      free(callName);
+      return false;
+    }
+
+    int selidxTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
+    int rowTok = jsmn_get_array_elem(tokens, inTok, 2, tokenCount);
+    int elmentTok = jsmn_get_array_elem(tokens, inTok, 3, tokenCount);
+
+    SpiceInt selidx = 0;
+    SpiceInt row = 0;
+    SpiceInt elment = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  selidxTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(ek*_c).in[1]",
+                                  &selidx) ||
+        !v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  rowTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(ek*_c).in[2]",
+                                  &row) ||
+        !v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  elmentTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  "spiceCall(ek*_c).in[3]",
+                                  &elment)) {
+      free(query);
+      free(callName);
+      return false;
+    }
+
+    if (selidx < 0 || row < 0 || elment < 0) {
+      write_error_json_ex("invalid_args",
+                          "spiceCall(ek*_c) selidx/row/elment must be >= 0",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(query);
+      free(callName);
+      return false;
+    }
+
+    char asDetail[256];
+    asDetail[0] = '\0';
+    char *asName = NULL;
+    jsmn_strdup_err_t asErr =
+        jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
+    if (asErr != JSMN_STRDUP_OK) {
+      if (asErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      free(query);
+      free(callName);
+      return false;
+    }
+
+    char *foundRefName = v2_join_ref_suffix(asName, ".found");
+    char *isNullRefName = v2_join_ref_suffix(asName, ".isNull");
+    char *valueRefName = v2_join_ref_suffix(asName, ".value");
+    if (foundRefName == NULL || isNullRefName == NULL || valueRefName == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      free(valueRefName);
+      free(isNullRefName);
+      free(foundRefName);
+      free(asName);
+      free(query);
+      free(callName);
+      return false;
+    }
+
+    SpiceInt nmrows = 0;
+    SpiceBoolean queryFailed = SPICEFALSE;
+    SpiceChar errMsg[1841];
+    errMsg[0] = '\0';
+    ekfind_c(query, (SpiceInt)sizeof(errMsg), &nmrows, &queryFailed, errMsg);
+    (void)nmrows;
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                          traceMsg, sizeof(traceMsg));
+      free(valueRefName);
+      free(isNullRefName);
+      free(foundRefName);
+      free(asName);
+      free(query);
+      free(callName);
+      write_error_json("SPICE error in ekfind (spiceCall prequery)",
+                       shortMsg,
+                       longMsg,
+                       traceMsg);
+      return false;
+    }
+
+    if (queryFailed == SPICETRUE) {
+      write_error_json_ex("invalid_request",
+                          "spiceCall query failed in ekfind",
+                          errMsg[0] ? errMsg : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(valueRefName);
+      free(isNullRefName);
+      free(foundRefName);
+      free(asName);
+      free(query);
+      free(callName);
+      return false;
+    }
+
+    SpiceBoolean found = SPICEFALSE;
+    SpiceBoolean isNull = SPICEFALSE;
+    SpiceInt intValue = 0;
+    SpiceDouble doubleValue = 0.0;
+    SpiceChar charValue[1841];
+    charValue[0] = '\0';
+
+    if (strcmp(callName, "ekgc_c") == 0) {
+      ekgc_c(selidx,
+             row,
+             elment,
+             (SpiceInt)sizeof(charValue),
+             charValue,
+             &isNull,
+             &found);
+
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg,
+                            sizeof(shortMsg),
+                            longMsg,
+                            sizeof(longMsg),
+                            traceMsg,
+                            sizeof(traceMsg));
+        free(valueRefName);
+        free(isNullRefName);
+        free(foundRefName);
+        free(asName);
+        free(query);
+        free(callName);
+        write_error_json("SPICE error in ekgc", shortMsg, longMsg, traceMsg);
+        return false;
+      }
+    } else if (strcmp(callName, "ekgd_c") == 0) {
+      ekgd_c(selidx, row, elment, &doubleValue, &isNull, &found);
+
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg,
+                            sizeof(shortMsg),
+                            longMsg,
+                            sizeof(longMsg),
+                            traceMsg,
+                            sizeof(traceMsg));
+        free(valueRefName);
+        free(isNullRefName);
+        free(foundRefName);
+        free(asName);
+        free(query);
+        free(callName);
+        write_error_json("SPICE error in ekgd", shortMsg, longMsg, traceMsg);
+        return false;
+      }
+    } else {
+      ekgi_c(selidx, row, elment, &intValue, &isNull, &found);
+
+      if (failed_c() == SPICETRUE) {
+        char shortMsg[1841];
+        char longMsg[1841];
+        char traceMsg[1841];
+        capture_spice_error(shortMsg,
+                            sizeof(shortMsg),
+                            longMsg,
+                            sizeof(longMsg),
+                            traceMsg,
+                            sizeof(traceMsg));
+        free(valueRefName);
+        free(isNullRefName);
+        free(foundRefName);
+        free(asName);
+        free(query);
+        free(callName);
+        write_error_json("SPICE error in ekgi", shortMsg, longMsg, traceMsg);
+        return false;
+      }
+    }
+
+    bool ok = v2_add_ref_bool(refs, refCount, foundRefName, found);
+    if (ok) {
+      if (found == SPICETRUE) {
+        ok = v2_add_ref_bool(refs, refCount, isNullRefName, isNull);
+      } else {
+        ok = v2_add_ref_null(refs, refCount, isNullRefName);
+      }
+    }
+
+    if (ok) {
+      if (found != SPICETRUE || isNull == SPICETRUE) {
+        ok = v2_add_ref_null(refs, refCount, valueRefName);
+      } else if (strcmp(callName, "ekgc_c") == 0) {
+        ok = v2_add_ref_string(refs, refCount, valueRefName, charValue);
+      } else if (strcmp(callName, "ekgd_c") == 0) {
+        ok = v2_add_ref_double(refs, refCount, valueRefName, doubleValue);
+      } else {
+        ok = v2_add_ref_int(refs, refCount, valueRefName, intValue);
+      }
+    }
+
+    free(valueRefName);
+    free(isNullRefName);
+    free(foundRefName);
+    free(asName);
+    free(query);
+    free(callName);
+    return ok;
+  }
+
   if (asTok >= 0) {
     write_error_json_ex("invalid_request",
                         "spiceCall scard_c/ssize_c/valid_c/dskobj_c/dsksrf_c/dskmi2_c/dskopn_c/dskw02_c/readVirtualOutput does not allow as",
@@ -4384,6 +4866,21 @@ static bool v2_json_buffer_append_int(V2JsonBuffer *buf, const SpiceInt value) {
   return v2_json_buffer_append_bytes(buf, tmp, (size_t)written);
 }
 
+static bool v2_json_buffer_append_double(V2JsonBuffer *buf,
+                                         const SpiceDouble value) {
+  if (!isfinite((double)value)) {
+    return false;
+  }
+
+  char tmp[64];
+  const int written = snprintf(tmp, sizeof(tmp), "%.17g", (double)value);
+  if (written < 0 || (size_t)written >= sizeof(tmp)) {
+    return false;
+  }
+
+  return v2_json_buffer_append_bytes(buf, tmp, (size_t)written);
+}
+
 static bool v2_json_buffer_append_escaped(V2JsonBuffer *buf, const char *s) {
   if (s == NULL) {
     return false;
@@ -4522,14 +5019,53 @@ static bool v2_append_project_value_json(V2JsonBuffer *out, const char *json,
       return false;
     }
 
-    if (refs[refIndex].type != V2_REF_INT) {
-      write_error_json_ex("invalid_args", "projectResult ref must be integer",
-                          refName, NULL, NULL, NULL);
+    bool appendOk = false;
+    switch (refs[refIndex].type) {
+    case V2_REF_INT:
+      appendOk = v2_json_buffer_append_int(out, refs[refIndex].intValue);
+      break;
+    case V2_REF_BOOL:
+      appendOk = v2_json_buffer_append_cstr(
+          out,
+          refs[refIndex].boolValue == SPICETRUE ? "true" : "false");
+      break;
+    case V2_REF_DOUBLE:
+      appendOk = v2_json_buffer_append_double(out, refs[refIndex].doubleValue);
+      if (!appendOk) {
+        write_error_json_ex("invalid_request",
+                            "projectResult ref contains a non-finite double",
+                            refName,
+                            NULL,
+                            NULL,
+                            NULL);
+        free(value);
+        return false;
+      }
+      break;
+    case V2_REF_STRING:
+      appendOk = v2_json_buffer_append_char(out, '"') &&
+                 v2_json_buffer_append_escaped(
+                     out,
+                     refs[refIndex].stringValue != NULL
+                         ? refs[refIndex].stringValue
+                         : "") &&
+                 v2_json_buffer_append_char(out, '"');
+      break;
+    case V2_REF_NULL:
+      appendOk = v2_json_buffer_append_cstr(out, "null");
+      break;
+    default:
+      write_error_json_ex("invalid_args",
+                          "projectResult ref must be a scalar value",
+                          refName,
+                          NULL,
+                          NULL,
+                          NULL);
       free(value);
       return false;
     }
 
-    if (!v2_json_buffer_append_int(out, refs[refIndex].intValue)) {
+    if (!appendOk) {
       write_error_json("Out of memory", NULL, NULL, NULL);
       free(value);
       return false;

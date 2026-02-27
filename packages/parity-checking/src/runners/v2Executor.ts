@@ -59,6 +59,10 @@ type RefValue =
   | {
       kind: "int";
       value: number;
+    }
+  | {
+      kind: "value";
+      value: unknown;
     };
 
 type FreedHandles = {
@@ -929,6 +933,49 @@ async function executeStep(
         return undefined;
       }
 
+      if (step.call === "ekgc_c" || step.call === "ekgd_c" || step.call === "ekgi_c") {
+        if (step.in.length !== 4) {
+          invalidRequest(`spiceCall ${step.call} expects [query, selidx, row, elment] inputs`);
+        }
+
+        if ((step as { as?: unknown }).as === undefined) {
+          invalidArgs(`spiceCall ${step.call} requires an \"as\" output ref`);
+        }
+
+        const query = resolveStringExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        const selidx = resolveSpiceIntExpression(step.in[1], args, refs, `spiceCall(${step.call}).in[1]`);
+        const row = resolveSpiceIntExpression(step.in[2], args, refs, `spiceCall(${step.call}).in[2]`);
+        const elment = resolveSpiceIntExpression(step.in[3], args, refs, `spiceCall(${step.call}).in[3]`);
+
+        if (selidx < 0 || row < 0 || elment < 0) {
+          invalidArgs(`spiceCall(${step.call}) selidx/row/elment must be >= 0`);
+        }
+
+        const find = raw.ekfind(query);
+        if (!find.ok) {
+          invalidRequest(`spiceCall(${step.call}) query failed in ekfind: ${find.errmsg}`);
+        }
+
+        const readResult =
+          step.call === "ekgc_c"
+            ? raw.ekgc(selidx, row, elment)
+            : step.call === "ekgd_c"
+              ? raw.ekgd(selidx, row, elment)
+              : raw.ekgi(selidx, row, elment);
+
+        const found = readResult.found;
+        const isNull = readResult.found ? readResult.isNull : null;
+        const value =
+          readResult.found && readResult.isNull === false && "value" in readResult
+            ? readResult.value
+            : null;
+
+        defineRef(refs, `${step.as}.found`, { kind: "value", value: found }, `spiceCall(${step.call}).as.found`);
+        defineRef(refs, `${step.as}.isNull`, { kind: "value", value: isNull }, `spiceCall(${step.call}).as.isNull`);
+        defineRef(refs, `${step.as}.value`, { kind: "value", value }, `spiceCall(${step.call}).as.value`);
+        return undefined;
+      }
+
       if (step.call === "readVirtualOutput") {
         if ((step as { as?: unknown }).as !== undefined) {
           invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
@@ -1098,7 +1145,7 @@ export async function executeV2CaseWithBackend(
   }
 
   for (const refValue of refs.values()) {
-    if (refValue.kind === "int") {
+    if (refValue.kind === "int" || refValue.kind === "value") {
       continue;
     }
 

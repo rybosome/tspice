@@ -79,7 +79,7 @@ export type V2WorkflowAllocWindowStep = {
 
 export type V2WorkflowSpiceCallWithOutputStep = {
   op: "spiceCall";
-  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c";
+  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c" | "ekgc_c" | "ekgd_c" | "ekgi_c";
   in: unknown[];
   as: string;
 };

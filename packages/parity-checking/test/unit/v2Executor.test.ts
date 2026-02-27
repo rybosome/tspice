@@ -361,6 +361,140 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
+  it("executes ekgc_c via workflow op and projects read refs", async () => {
+    const ekfindMock = vi.fn(() => ({ ok: true as const, nmrows: 1 }));
+    const ekgcMock = vi.fn(() => ({
+      found: true as const,
+      isNull: false as const,
+      value: "ISS_WAC_ShutterBladeBMove",
+    }));
+
+    const backend = {
+      kind: "fake",
+      raw: {
+        ekfind: ekfindMock,
+        ekgc: ekgcMock,
+      },
+      kit: {},
+    } as unknown as SpiceBackend;
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "method.ek.ekgc@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "ek.ekgc",
+        canonicalMethod: "ek.ekgc",
+        aliases: [],
+        result: {
+          type: "object",
+          required: ["found", "isNull", "value"],
+          properties: {
+            found: { const: true },
+            isNull: { const: false },
+            value: { const: "ISS_WAC_ShutterBladeBMove" },
+          },
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          {
+            op: "spiceCall",
+            call: "ekgc_c",
+            in: [
+              "SELECT EVENT FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'",
+              0,
+              0,
+              0,
+            ],
+            as: "read",
+          },
+          {
+            op: "projectResult",
+            out: {
+              found: "$refs.read.found",
+              isNull: "$refs.read.isNull",
+              value: "$refs.read.value",
+            },
+          },
+        ],
+      },
+    };
+
+    const result = await executeV2CaseWithBackend(backend, input);
+
+    expect(result).toEqual({
+      found: true,
+      isNull: false,
+      value: "ISS_WAC_ShutterBladeBMove",
+    });
+    expect(ekfindMock).toHaveBeenCalledTimes(1);
+    expect(ekfindMock).toHaveBeenCalledWith(
+      "SELECT EVENT FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'",
+    );
+    expect(ekgcMock).toHaveBeenCalledWith(0, 0, 0);
+  });
+
+  it("reports invalid_request when ek*_c prequery fails", async () => {
+    const backend = {
+      kind: "fake",
+      raw: {
+        ekfind: vi.fn(() => ({ ok: false as const, errmsg: "bad query" })),
+        ekgd: vi.fn(() => ({ found: true as const, isNull: false as const, value: 1 })),
+      },
+      kit: {},
+    } as unknown as SpiceBackend;
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "method.ek.ekgd@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "ek.ekgd",
+        canonicalMethod: "ek.ekgd",
+        aliases: [],
+        result: {
+          type: "object",
+          required: ["found", "isNull", "value"],
+          properties: {
+            found: { const: true },
+            isNull: { const: false },
+            value: { const: 1 },
+          },
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          {
+            op: "spiceCall",
+            call: "ekgd_c",
+            in: ["SELECT * FROM BAD_TABLE", 0, 0, 0],
+            as: "read",
+          },
+          {
+            op: "projectResult",
+            out: {
+              found: "$refs.read.found",
+              isNull: "$refs.read.isNull",
+              value: "$refs.read.value",
+            },
+          },
+        ],
+      },
+    };
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_request",
+      message: "spiceCall(ekgd_c) query failed in ekfind: bad query",
+    });
+  });
+
   it("rejects unknown v2 args during shared preflight validation", () => {
     const input = createBaseInput();
     input.args = {

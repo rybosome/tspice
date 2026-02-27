@@ -18,14 +18,22 @@ setup:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: ekgi_c
+      in:
+        - SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'
+        - 0
+        - 0
+        - 0
+      as: read
+    - op: projectResult
+      out:
+        found: $refs.read.found
+        isNull: $refs.read.isNull
+        value: $refs.read.value
 cases:
   - id: fails-on-double-column
-    args:
-      - SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'
-      - 0
-      - 0
-      - 0
+    args: {}
     compare:
       errorShort: true
     expect:

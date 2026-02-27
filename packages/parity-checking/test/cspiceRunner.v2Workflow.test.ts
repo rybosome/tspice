@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
@@ -52,6 +54,10 @@ function invokeRaw(payload: unknown): {
 
 describe("cspice-runner v2 workflow behavior", () => {
   const status = getCspiceRunnerStatus();
+  const ekFixturePath = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "../../backend-node/test/fixtures/ek-fixture.bes",
+  );
 
   if (!status.ready) {
     it.skip(
@@ -185,6 +191,50 @@ describe("cspice-runner v2 workflow behavior", () => {
       expect(out.response.error.detail).toBe("cleanupSize");
     }
   });
+
+  it("executes EK query/read via v2 spiceCall ops", () => {
+    const payload = {
+      schemaVersion: 2,
+      setup: {
+        kernels: [ekFixturePath],
+      },
+      args: {},
+      workflow: {
+        steps: [
+          {
+            op: "spiceCall",
+            call: "ekgd_c",
+            in: [
+              "SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'",
+              0,
+              0,
+              0,
+            ],
+            as: "read",
+          },
+          {
+            op: "projectResult",
+            out: {
+              found: "$refs.read.found",
+              isNull: "$refs.read.isNull",
+              value: "$refs.read.value",
+            },
+          },
+        ],
+      },
+    };
+
+    const out = invokeRaw(payload);
+    expect(out.response.ok).toBe(true);
+    if (out.response.ok) {
+      expect(out.response.result).toEqual({
+        found: true,
+        isNull: false,
+        value: 58202426.04357445,
+      });
+    }
+  });
+
   it("reuses freed ref slots under alloc/free churn", () => {
     const steps: Array<Record<string, unknown>> = [];
     for (let i = 0; i < 80; i++) {

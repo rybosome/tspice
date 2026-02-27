@@ -19,13 +19,22 @@ setup:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: ekgd_c
+      in:
+        - SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'
+        - 0
+        - 0
+        - 0
+      as: read
+    - op: projectResult
+      out:
+        ok: true
+        found: $refs.read.found
+        isNull: $refs.read.isNull
+        value: $refs.read.value
 cases:
   - id: reads-command-exec-time
-    args:
-      - SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'
-      - 0
-      - 0
-      - 0
+    args: {}
     expect:
       ok: true

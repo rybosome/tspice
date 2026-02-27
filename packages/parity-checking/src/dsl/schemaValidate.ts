@@ -445,20 +445,31 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         call !== "dsksrf_c" &&
         call !== "dskgd_c" &&
         call !== "dskb02_c" &&
+        call !== "ekgc_c" &&
+        call !== "ekgd_c" &&
+        call !== "ekgi_c" &&
         call !== "dskmi2_c" &&
         call !== "dskopn_c" &&
         call !== "dskw02_c" &&
         call !== "readVirtualOutput"
       ) {
         throw new TypeError(
-          `${label}.call must be one of \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", \"valid_c\", \"dskobj_c\", \"dsksrf_c\", \"dskgd_c\", \"dskb02_c\", \"dskmi2_c\", \"dskopn_c\", \"dskw02_c\", or \"readVirtualOutput\"`,
+          `${label}.call must be one of \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", \"valid_c\", \"dskobj_c\", \"dsksrf_c\", \"dskgd_c\", \"dskb02_c\", \"ekgc_c\", \"ekgd_c\", \"ekgi_c\", \"dskmi2_c\", \"dskopn_c\", \"dskw02_c\", or \"readVirtualOutput\"`,
         );
       }
       if (!Array.isArray(obj.in)) {
         throw new TypeError(`${label}.in must be an array`);
       }
 
-      if (call === "card_c" || call === "size_c" || call === "dskgd_c" || call === "dskb02_c") {
+      if (
+        call === "card_c" ||
+        call === "size_c" ||
+        call === "dskgd_c" ||
+        call === "dskb02_c" ||
+        call === "ekgc_c" ||
+        call === "ekgd_c" ||
+        call === "ekgi_c"
+      ) {
         if (obj.as === undefined) {
           throw new TypeError(`${label}.as is required when call=${JSON.stringify(call)}`);
         }
