@@ -5,15 +5,6 @@ export type {
   SpiceBackend,
 } from "@rybosome/tspice-backend-contract";
 
-export {
-  assertMat3ArrayLike9,
-  isMat3ArrayLike9,
-  brandMat3ColMajor,
-  brandMat3RowMajor,
-  isBrandedMat3ColMajor,
-  isBrandedMat3RowMajor,
-} from "@rybosome/tspice-core";
-
 export type {
   AberrationCorrection,
   BodyRef,
@@ -52,7 +43,7 @@ export type {
 
 export type { NaifKernelId } from "./kernels/naifKernelId.js";
 
-export { kernels, TSPICE_KERNEL_IDS } from "./kernels/kernels.js";
+export { kernels } from "./kernels/kernels.js";
 
 export type {
   KernelPack,
