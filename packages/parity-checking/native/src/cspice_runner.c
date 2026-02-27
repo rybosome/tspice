@@ -1420,6 +1420,81 @@ static bool build_file_io_temp_path(const char *tag,
   return true;
 }
 
+static bool resolve_first_loaded_ek_path(char *outPath,
+                                         size_t outPathBytes,
+                                         const char *callName) {
+  if (outPath == NULL || outPathBytes == 0) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  char file[2048];
+  char filtyp[256];
+  char source[2048];
+  file[0] = '\0';
+  filtyp[0] = '\0';
+  source[0] = '\0';
+
+  SpiceInt handle = 0;
+  SpiceBoolean found = SPICEFALSE;
+  kdata_c(0,
+          "EK",
+          (SpiceInt)sizeof(file),
+          (SpiceInt)sizeof(filtyp),
+          (SpiceInt)sizeof(source),
+          file,
+          filtyp,
+          source,
+          &handle,
+          &found);
+
+  if (failed_c() == SPICETRUE) {
+    char shortMsg[1841];
+    char longMsg[1841];
+    char traceMsg[1841];
+    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                        traceMsg, sizeof(traceMsg));
+    write_error_json("SPICE error in kdata (resolve EK kernel)", shortMsg,
+                     longMsg, traceMsg);
+    return false;
+  }
+
+  if (found != SPICETRUE) {
+    char detail[256];
+    snprintf(detail,
+             sizeof(detail),
+             "%s requires at least one loaded EK kernel in setup.kernels",
+             callName != NULL ? callName : "ek call");
+    write_error_json_ex("invalid_request", detail, NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  trim_fixed_width_c_string_end(file, sizeof(file));
+  if (file[0] == '\0') {
+    write_error_json_ex("invalid_request",
+                        "Loaded EK kernel path from kdata(0, \"EK\") is empty",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  const size_t fileLen = strlen(file);
+  if (fileLen + 1 > outPathBytes) {
+    write_error_json_ex("invalid_request",
+                        "Loaded EK kernel path is too long",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  memcpy(outPath, file, fileLen + 1);
+  return true;
+}
+
 static void write_found_dla_descriptor_json(const SpiceDLADescr *descr,
                                             SpiceBoolean found) {
   if (found != SPICETRUE) {
@@ -2189,6 +2264,19 @@ typedef enum {
   CALL_FILE_IO_DLAFNS,
   CALL_FILE_IO_DLACLS,
 
+  // ek
+  CALL_EK_EKOPR,
+  CALL_EK_EKOPW,
+  CALL_EK_EKOPN,
+  CALL_EK_EKCLS,
+  CALL_EK_EKNTAB,
+  CALL_EK_EKTNAM,
+  CALL_EK_EKNSEG,
+  CALL_EK_EKFIND,
+  CALL_EK_EKGC,
+  CALL_EK_EKGD,
+  CALL_EK_EKGI,
+
 
 
   // kernels
@@ -2330,6 +2418,19 @@ static CallId parse_call_id(const char *call) {
       {"file-io.dlabfs", CALL_FILE_IO_DLABFS},
       {"file-io.dlafns", CALL_FILE_IO_DLAFNS},
       {"file-io.dlacls", CALL_FILE_IO_DLACLS},
+
+      // ek
+      {"ek.ekopr", CALL_EK_EKOPR},
+      {"ek.ekopw", CALL_EK_EKOPW},
+      {"ek.ekopn", CALL_EK_EKOPN},
+      {"ek.ekcls", CALL_EK_EKCLS},
+      {"ek.ekntab", CALL_EK_EKNTAB},
+      {"ek.ektnam", CALL_EK_EKTNAM},
+      {"ek.eknseg", CALL_EK_EKNSEG},
+      {"ek.ekfind", CALL_EK_EKFIND},
+      {"ek.ekgc", CALL_EK_EKGC},
+      {"ek.ekgd", CALL_EK_EKGD},
+      {"ek.ekgi", CALL_EK_EKGI},
 
 
 
@@ -9991,6 +10092,1230 @@ int main(void) {
     }
 
     fputs("{\"ok\":true,\"result\":{\"closed\":true}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKOPN: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "ek.ekopn expects args[0]=string args[1]=string args[2]=integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int ifnameTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int ncomchTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekopn expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (ifnameTok < 0 || ifnameTok >= tokenCount || tokens[ifnameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekopn expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt ncomch = 0;
+    char detail[256];
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input,
+                            tokens,
+                            tokenCount,
+                            ncomchTok,
+                            "ek.ekopn args[2]",
+                            &ncomch,
+                            detail,
+                            sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ek.ekopn expects args[2] to be an integer (SpiceInt range)",
+            detail[0] ? detail : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    if (ncomch < 0) {
+      write_error_json_ex("invalid_args", "ek.ekopn expects args[2] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *tag = NULL;
+    char *ifname = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &tag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t ifnameErr =
+        jsmn_strdup(input, &tokens[ifnameTok], &ifname, strDetail, sizeof(strDetail));
+    if (ifnameErr != JSMN_STRDUP_OK) {
+      free(tag);
+      if (ifnameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (tag[0] == '\0') {
+      free(tag);
+      free(ifname);
+      write_error_json_ex("invalid_args", "ek.ekopn expects args[0] to be a non-empty string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char tempPath[PATH_MAX];
+    int tempFd = -1;
+    detail[0] = '\0';
+    if (!build_file_io_temp_path(tag,
+                                 ".bes",
+                                 tempPath,
+                                 sizeof(tempPath),
+                                 &tempFd,
+                                 detail,
+                                 sizeof(detail))) {
+      free(tag);
+      free(ifname);
+      write_error_json_ex("invalid_request",
+                          "Failed to create temporary EK path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto done;
+    }
+
+    if (tempFd >= 0) {
+      close(tempFd);
+      tempFd = -1;
+    }
+    unlink(tempPath);
+
+    SpiceInt handle = 0;
+    ekopn_c(tempPath, ifname, ncomch, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekopn", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekcls (ekopn cleanup)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    free(tag);
+    free(ifname);
+    unlink(tempPath);
+
+    fputs("{\"ok\":true,\"result\":{\"ok\":true,\"handle\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)handle);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKOPR: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "ek.ekopr expects args[0]=string args[1]=string args[2]=integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int ifnameTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int ncomchTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekopr expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (ifnameTok < 0 || ifnameTok >= tokenCount || tokens[ifnameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekopr expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt ncomch = 0;
+    char detail[256];
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input,
+                            tokens,
+                            tokenCount,
+                            ncomchTok,
+                            "ek.ekopr args[2]",
+                            &ncomch,
+                            detail,
+                            sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ek.ekopr expects args[2] to be an integer (SpiceInt range)",
+            detail[0] ? detail : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    if (ncomch < 0) {
+      write_error_json_ex("invalid_args", "ek.ekopr expects args[2] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *tag = NULL;
+    char *ifname = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &tag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t ifnameErr =
+        jsmn_strdup(input, &tokens[ifnameTok], &ifname, strDetail, sizeof(strDetail));
+    if (ifnameErr != JSMN_STRDUP_OK) {
+      free(tag);
+      if (ifnameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (tag[0] == '\0') {
+      free(tag);
+      free(ifname);
+      write_error_json_ex("invalid_args", "ek.ekopr expects args[0] to be a non-empty string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char tempPath[PATH_MAX];
+    int tempFd = -1;
+    detail[0] = '\0';
+    if (!build_file_io_temp_path(tag,
+                                 ".bes",
+                                 tempPath,
+                                 sizeof(tempPath),
+                                 &tempFd,
+                                 detail,
+                                 sizeof(detail))) {
+      free(tag);
+      free(ifname);
+      write_error_json_ex("invalid_request",
+                          "Failed to create temporary EK path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto done;
+    }
+
+    if (tempFd >= 0) {
+      close(tempFd);
+      tempFd = -1;
+    }
+    unlink(tempPath);
+
+    SpiceInt seedHandle = 0;
+    ekopn_c(tempPath, ifname, ncomch, &seedHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekopn (ekopr seed)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    ekcls_c(seedHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekcls (ekopr seed cleanup)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    ekopr_c(tempPath, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekopr", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekcls (ekopr cleanup)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    free(tag);
+    free(ifname);
+    unlink(tempPath);
+
+    fputs("{\"ok\":true,\"result\":{\"ok\":true,\"handle\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)handle);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKOPW: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "ek.ekopw expects args[0]=string args[1]=string args[2]=integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int ifnameTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int ncomchTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekopw expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (ifnameTok < 0 || ifnameTok >= tokenCount || tokens[ifnameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekopw expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt ncomch = 0;
+    char detail[256];
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input,
+                            tokens,
+                            tokenCount,
+                            ncomchTok,
+                            "ek.ekopw args[2]",
+                            &ncomch,
+                            detail,
+                            sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ek.ekopw expects args[2] to be an integer (SpiceInt range)",
+            detail[0] ? detail : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    if (ncomch < 0) {
+      write_error_json_ex("invalid_args", "ek.ekopw expects args[2] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *tag = NULL;
+    char *ifname = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &tag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t ifnameErr =
+        jsmn_strdup(input, &tokens[ifnameTok], &ifname, strDetail, sizeof(strDetail));
+    if (ifnameErr != JSMN_STRDUP_OK) {
+      free(tag);
+      if (ifnameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (tag[0] == '\0') {
+      free(tag);
+      free(ifname);
+      write_error_json_ex("invalid_args", "ek.ekopw expects args[0] to be a non-empty string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char tempPath[PATH_MAX];
+    int tempFd = -1;
+    detail[0] = '\0';
+    if (!build_file_io_temp_path(tag,
+                                 ".bes",
+                                 tempPath,
+                                 sizeof(tempPath),
+                                 &tempFd,
+                                 detail,
+                                 sizeof(detail))) {
+      free(tag);
+      free(ifname);
+      write_error_json_ex("invalid_request",
+                          "Failed to create temporary EK path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto done;
+    }
+
+    if (tempFd >= 0) {
+      close(tempFd);
+      tempFd = -1;
+    }
+    unlink(tempPath);
+
+    SpiceInt seedHandle = 0;
+    ekopn_c(tempPath, ifname, ncomch, &seedHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekopn (ekopw seed)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    ekcls_c(seedHandle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekcls (ekopw seed cleanup)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    ekopw_c(tempPath, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekopw", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekcls (ekopw cleanup)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    free(tag);
+    free(ifname);
+    unlink(tempPath);
+
+    fputs("{\"ok\":true,\"result\":{\"ok\":true,\"handle\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)handle);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKCLS: {
+    if (tokens[argsTok].size < 3) {
+      write_error_json_ex(
+          "invalid_args",
+          "ek.ekcls expects args[0]=string args[1]=string args[2]=integer (SpiceInt range)",
+          NULL,
+          NULL,
+          NULL,
+          NULL);
+      goto done;
+    }
+
+    const int tagTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int ifnameTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int ncomchTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+
+    if (tagTok < 0 || tagTok >= tokenCount || tokens[tagTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekcls expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+    if (ifnameTok < 0 || ifnameTok >= tokenCount || tokens[ifnameTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekcls expects args[1] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt ncomch = 0;
+    char detail[256];
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input,
+                            tokens,
+                            tokenCount,
+                            ncomchTok,
+                            "ek.ekcls args[2]",
+                            &ncomch,
+                            detail,
+                            sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex(
+            "invalid_args",
+            "ek.ekcls expects args[2] to be an integer (SpiceInt range)",
+            detail[0] ? detail : NULL,
+            NULL,
+            NULL,
+            NULL);
+      }
+      goto done;
+    }
+
+    if (ncomch < 0) {
+      write_error_json_ex("invalid_args", "ek.ekcls expects args[2] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *tag = NULL;
+    char *ifname = NULL;
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t tagErr =
+        jsmn_strdup(input, &tokens[tagTok], &tag, strDetail, sizeof(strDetail));
+    if (tagErr != JSMN_STRDUP_OK) {
+      if (tagErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t ifnameErr =
+        jsmn_strdup(input, &tokens[ifnameTok], &ifname, strDetail, sizeof(strDetail));
+    if (ifnameErr != JSMN_STRDUP_OK) {
+      free(tag);
+      if (ifnameErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (tag[0] == '\0') {
+      free(tag);
+      free(ifname);
+      write_error_json_ex("invalid_args", "ek.ekcls expects args[0] to be a non-empty string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char tempPath[PATH_MAX];
+    int tempFd = -1;
+    detail[0] = '\0';
+    if (!build_file_io_temp_path(tag,
+                                 ".bes",
+                                 tempPath,
+                                 sizeof(tempPath),
+                                 &tempFd,
+                                 detail,
+                                 sizeof(detail))) {
+      free(tag);
+      free(ifname);
+      write_error_json_ex("invalid_request",
+                          "Failed to create temporary EK path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      goto done;
+    }
+
+    if (tempFd >= 0) {
+      close(tempFd);
+      tempFd = -1;
+    }
+    unlink(tempPath);
+
+    SpiceInt handle = 0;
+    ekopn_c(tempPath, ifname, ncomch, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekopn (ekcls seed)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      free(tag);
+      free(ifname);
+      unlink(tempPath);
+      write_error_json("SPICE error in ekcls", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    free(tag);
+    free(ifname);
+    unlink(tempPath);
+
+    fputs("{\"ok\":true,\"result\":{\"ok\":true,\"closed\":true}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKNTAB: {
+    SpiceInt ntab = 0;
+    ekntab_c(&ntab);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekntab", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"ok\":true,\"ntab\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)ntab);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKTNAM: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "ek.ektnam expects args[0] to be an integer (SpiceInt range)", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int indexTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    SpiceInt index = 0;
+    char detail[256];
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input,
+                            tokens,
+                            tokenCount,
+                            indexTok,
+                            "ek.ektnam args[0]",
+                            &index,
+                            detail,
+                            sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args",
+                            "ek.ektnam expects args[0] to be an integer (SpiceInt range)",
+                            detail[0] ? detail : NULL,
+                            NULL,
+                            NULL,
+                            NULL);
+      }
+      goto done;
+    }
+
+    if (index < 0) {
+      write_error_json_ex("invalid_args", "ek.ektnam expects args[0] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char tableName[256];
+    memset(tableName, 0, sizeof(tableName));
+    ektnam_c(index, (SpiceInt)sizeof(tableName), tableName);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ektnam", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(tableName, sizeof(tableName));
+
+    fputs("{\"ok\":true,\"result\":{\"ok\":true,\"name\":\"", stdout);
+    json_print_escaped(tableName);
+    fputs("\"}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKNSEG: {
+    char ekPath[PATH_MAX];
+    if (!resolve_first_loaded_ek_path(ekPath, sizeof(ekPath), "ek.eknseg")) {
+      goto done;
+    }
+
+    SpiceInt handle = 0;
+    ekopr_c(ekPath, &handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekopr (eknseg)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    SpiceInt nseg = 0;
+    eknseg_c(handle, &nseg);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in eknseg", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    ekcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekcls (eknseg cleanup)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"ok\":true,\"nseg\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)nseg);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKFIND: {
+    if (tokens[argsTok].size < 1) {
+      write_error_json_ex("invalid_args", "ek.ekfind expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int queryTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    if (queryTok < 0 || queryTok >= tokenCount || tokens[queryTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekfind expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *query = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t queryErr =
+        jsmn_strdup(input, &tokens[queryTok], &query, strDetail, sizeof(strDetail));
+    if (queryErr != JSMN_STRDUP_OK) {
+      if (queryErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt nmrows = 0;
+    SpiceBoolean queryFailed = SPICEFALSE;
+    char errMsg[1841];
+    memset(errMsg, 0, sizeof(errMsg));
+
+    ekfind_c(query, (SpiceInt)sizeof(errMsg), &nmrows, &queryFailed, errMsg);
+    free(query);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekfind", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(errMsg, sizeof(errMsg));
+
+    if (queryFailed == SPICETRUE) {
+      fputs("{\"ok\":true,\"result\":{\"ok\":false,\"errmsg\":\"", stdout);
+      json_print_escaped(errMsg);
+      fputs("\"}}\n", stdout);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"ok\":true,\"nmrows\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)nmrows);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKGC: {
+    if (tokens[argsTok].size < 4) {
+      write_error_json_ex("invalid_args", "ek.ekgc expects args[0]=string args[1]=integer args[2]=integer args[3]=integer", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int queryTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int selidxTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int rowTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    const int elmentTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+
+    if (queryTok < 0 || queryTok >= tokenCount || tokens[queryTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekgc expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char detail[256];
+    detail[0] = '\0';
+
+    SpiceInt selidx = 0;
+    if (!parse_spiceint_arg(input, tokens, tokenCount, selidxTok, "ek.ekgc args[1]", &selidx, detail, sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "ek.ekgc expects args[1] to be an integer (SpiceInt range)", detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt row = 0;
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input, tokens, tokenCount, rowTok, "ek.ekgc args[2]", &row, detail, sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "ek.ekgc expects args[2] to be an integer (SpiceInt range)", detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt elment = 0;
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input, tokens, tokenCount, elmentTok, "ek.ekgc args[3]", &elment, detail, sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "ek.ekgc expects args[3] to be an integer (SpiceInt range)", detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (selidx < 0 || row < 0 || elment < 0) {
+      write_error_json_ex("invalid_args", "ek.ekgc expects args[1..3] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *query = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t queryErr =
+        jsmn_strdup(input, &tokens[queryTok], &query, strDetail, sizeof(strDetail));
+    if (queryErr != JSMN_STRDUP_OK) {
+      if (queryErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt nmrows = 0;
+    SpiceBoolean queryFailed = SPICEFALSE;
+    char errMsg[1841];
+    memset(errMsg, 0, sizeof(errMsg));
+    ekfind_c(query, (SpiceInt)sizeof(errMsg), &nmrows, &queryFailed, errMsg);
+    free(query);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekfind (ekgc prequery)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(errMsg, sizeof(errMsg));
+    if (queryFailed == SPICETRUE) {
+      write_error_json_ex("invalid_request", "ek.ekgc query failed in ekfind", errMsg[0] ? errMsg : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceChar cdata[2048];
+    memset(cdata, 0, sizeof(cdata));
+    SpiceBoolean isNull = SPICEFALSE;
+    SpiceBoolean found = SPICEFALSE;
+    ekgc_c(selidx, row, elment, (SpiceInt)sizeof(cdata), cdata, &isNull, &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekgc", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(cdata, sizeof(cdata));
+
+    fputs("{\"ok\":true,\"result\":{\"found\":", stdout);
+    fputs(found == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"isNull\":", stdout);
+    fputs(isNull == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"value\":\"", stdout);
+    json_print_escaped(cdata);
+    fputs("\"}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKGD: {
+    if (tokens[argsTok].size < 4) {
+      write_error_json_ex("invalid_args", "ek.ekgd expects args[0]=string args[1]=integer args[2]=integer args[3]=integer", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int queryTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int selidxTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int rowTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    const int elmentTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+
+    if (queryTok < 0 || queryTok >= tokenCount || tokens[queryTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekgd expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char detail[256];
+    detail[0] = '\0';
+
+    SpiceInt selidx = 0;
+    if (!parse_spiceint_arg(input, tokens, tokenCount, selidxTok, "ek.ekgd args[1]", &selidx, detail, sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "ek.ekgd expects args[1] to be an integer (SpiceInt range)", detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt row = 0;
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input, tokens, tokenCount, rowTok, "ek.ekgd args[2]", &row, detail, sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "ek.ekgd expects args[2] to be an integer (SpiceInt range)", detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt elment = 0;
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input, tokens, tokenCount, elmentTok, "ek.ekgd args[3]", &elment, detail, sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "ek.ekgd expects args[3] to be an integer (SpiceInt range)", detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (selidx < 0 || row < 0 || elment < 0) {
+      write_error_json_ex("invalid_args", "ek.ekgd expects args[1..3] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *query = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t queryErr =
+        jsmn_strdup(input, &tokens[queryTok], &query, strDetail, sizeof(strDetail));
+    if (queryErr != JSMN_STRDUP_OK) {
+      if (queryErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt nmrows = 0;
+    SpiceBoolean queryFailed = SPICEFALSE;
+    char errMsg[1841];
+    memset(errMsg, 0, sizeof(errMsg));
+    ekfind_c(query, (SpiceInt)sizeof(errMsg), &nmrows, &queryFailed, errMsg);
+    free(query);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekfind (ekgd prequery)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(errMsg, sizeof(errMsg));
+    if (queryFailed == SPICETRUE) {
+      write_error_json_ex("invalid_request", "ek.ekgd query failed in ekfind", errMsg[0] ? errMsg : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceDouble value = 0.0;
+    SpiceBoolean isNull = SPICEFALSE;
+    SpiceBoolean found = SPICEFALSE;
+    ekgd_c(selidx, row, elment, &value, &isNull, &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekgd", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"ok\":true,\"found\":", stdout);
+    fputs(found == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"isNull\":", stdout);
+    fputs(isNull == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"value\":", stdout);
+    fprintf(stdout, "%.17g", (double)value);
+    fputs("}}\n", stdout);
+    goto done;
+  }
+
+  case CALL_EK_EKGI: {
+    if (tokens[argsTok].size < 4) {
+      write_error_json_ex("invalid_args", "ek.ekgi expects args[0]=string args[1]=integer args[2]=integer args[3]=integer", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    const int queryTok = jsmn_get_array_elem(tokens, argsTok, 0, tokenCount);
+    const int selidxTok = jsmn_get_array_elem(tokens, argsTok, 1, tokenCount);
+    const int rowTok = jsmn_get_array_elem(tokens, argsTok, 2, tokenCount);
+    const int elmentTok = jsmn_get_array_elem(tokens, argsTok, 3, tokenCount);
+
+    if (queryTok < 0 || queryTok >= tokenCount || tokens[queryTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "ek.ekgi expects args[0] to be a string", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char detail[256];
+    detail[0] = '\0';
+
+    SpiceInt selidx = 0;
+    if (!parse_spiceint_arg(input, tokens, tokenCount, selidxTok, "ek.ekgi args[1]", &selidx, detail, sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "ek.ekgi expects args[1] to be an integer (SpiceInt range)", detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt row = 0;
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input, tokens, tokenCount, rowTok, "ek.ekgi args[2]", &row, detail, sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "ek.ekgi expects args[2] to be an integer (SpiceInt range)", detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt elment = 0;
+    detail[0] = '\0';
+    if (!parse_spiceint_arg(input, tokens, tokenCount, elmentTok, "ek.ekgi args[3]", &elment, detail, sizeof(detail))) {
+      if (strstr(detail, "supported SpiceInt width") != NULL) {
+        write_unsupported_spiceint_width_error();
+      } else {
+        write_error_json_ex("invalid_args", "ek.ekgi expects args[3] to be an integer (SpiceInt range)", detail[0] ? detail : NULL, NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    if (selidx < 0 || row < 0 || elment < 0) {
+      write_error_json_ex("invalid_args", "ek.ekgi expects args[1..3] to be >= 0", NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    char *query = NULL;
+    strDetail[0] = '\0';
+    jsmn_strdup_err_t queryErr =
+        jsmn_strdup(input, &tokens[queryTok], &query, strDetail, sizeof(strDetail));
+    if (queryErr != JSMN_STRDUP_OK) {
+      if (queryErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            strDetail[0] ? strDetail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      goto done;
+    }
+
+    SpiceInt nmrows = 0;
+    SpiceBoolean queryFailed = SPICEFALSE;
+    char errMsg[1841];
+    memset(errMsg, 0, sizeof(errMsg));
+    ekfind_c(query, (SpiceInt)sizeof(errMsg), &nmrows, &queryFailed, errMsg);
+    free(query);
+
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekfind (ekgi prequery)", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    trim_fixed_width_c_string_end(errMsg, sizeof(errMsg));
+    if (queryFailed == SPICETRUE) {
+      write_error_json_ex("invalid_request", "ek.ekgi query failed in ekfind", errMsg[0] ? errMsg : NULL, NULL, NULL, NULL);
+      goto done;
+    }
+
+    SpiceInt value = 0;
+    SpiceBoolean isNull = SPICEFALSE;
+    SpiceBoolean found = SPICEFALSE;
+    ekgi_c(selidx, row, elment, &value, &isNull, &found);
+    if (failed_c() == SPICETRUE) {
+      char shortMsg[1841];
+      char longMsg[1841];
+      char traceMsg[1841];
+      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg), traceMsg,
+                          sizeof(traceMsg));
+      write_error_json("SPICE error in ekgi", shortMsg, longMsg, traceMsg);
+      goto done;
+    }
+
+    fputs("{\"ok\":true,\"result\":{\"found\":", stdout);
+    fputs(found == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"isNull\":", stdout);
+    fputs(isNull == SPICETRUE ? "true" : "false", stdout);
+    fputs(",\"value\":", stdout);
+    fprintf(stdout, "%" PRIdMAX, (intmax_t)value);
+    fputs("}}\n", stdout);
     goto done;
   }
 

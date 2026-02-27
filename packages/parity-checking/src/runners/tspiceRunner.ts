@@ -222,6 +222,45 @@ async function deleteNodePathBestEffort(pathToDelete: string): Promise<void> {
   }
 }
 
+function firstLoadedEkKernelPathOrThrow(
+  backend: SpiceBackend["raw"],
+  call: string,
+): string {
+  const firstEk = backend.kdata(0, "EK");
+  if (!firstEk.found) {
+    invalidRequest(`${call} requires at least one loaded EK kernel in setup.kernels`);
+  }
+
+  if (typeof firstEk.file !== "string" || firstEk.file.trim() === "") {
+    invalidRequest(`${call} could not resolve loaded EK kernel path from kdata(0, \"EK\")`);
+  }
+
+  return firstEk.file;
+}
+
+async function createTempEkPath(
+  backend: SpiceBackend["raw"],
+  backendKind: SpiceBackend["kind"],
+  tag: string,
+): Promise<{ tempOsPath: string; tempPath: string }> {
+  const tempOsPath = buildFileIoTempPath(tag, ".bes");
+  const tempPath = await resolveFileIoPathForBackend(backend, backendKind, tempOsPath);
+  return { tempOsPath, tempPath };
+}
+
+async function cleanupTempEkPath(
+  backend: SpiceBackend["raw"],
+  backendKind: SpiceBackend["kind"],
+  tempOsPath: string,
+  tempPath: string,
+): Promise<void> {
+  await deleteNodePathBestEffort(tempOsPath);
+  if (backendKind === "wasm") {
+    WASM_KERNEL_VID_TO_OS_PATH.delete(tempPath);
+    deleteWasmFileIoVirtualPathBestEffort(backend, tempPath);
+  }
+}
+
 function assertCellsWindowsSpiceIntArg(value: unknown, method: string, index: number): asserts value is number {
   if (
     typeof value !== "number" ||
@@ -1296,6 +1335,173 @@ const DISPATCH: Record<string, DispatchFn> = {
     const handle = backend.dasopr(targetPath);
     backend.dlacls(handle);
     return { closed: true };
+  },
+
+  // ek
+  "ek.ekfind": (backend, args) => {
+    assertStringArg(args[0], "ek.ekfind", 0);
+    return backend.ekfind(args[0]);
+  },
+
+  "ek.ekgc": (backend, args) => {
+    assertStringArg(args[0], "ek.ekgc", 0);
+    assertNonNegativeSpiceIntArg(args[1], "ek.ekgc", 1);
+    assertNonNegativeSpiceIntArg(args[2], "ek.ekgc", 2);
+    assertNonNegativeSpiceIntArg(args[3], "ek.ekgc", 3);
+
+    const find = backend.ekfind(args[0]);
+    if (!find.ok) {
+      invalidRequest(`ek.ekgc query failed in ekfind: ${find.errmsg}`);
+    }
+
+    return backend.ekgc(args[1], args[2], args[3]);
+  },
+
+  "ek.ekgd": (backend, args) => {
+    assertStringArg(args[0], "ek.ekgd", 0);
+    assertNonNegativeSpiceIntArg(args[1], "ek.ekgd", 1);
+    assertNonNegativeSpiceIntArg(args[2], "ek.ekgd", 2);
+    assertNonNegativeSpiceIntArg(args[3], "ek.ekgd", 3);
+
+    const find = backend.ekfind(args[0]);
+    if (!find.ok) {
+      invalidRequest(`ek.ekgd query failed in ekfind: ${find.errmsg}`);
+    }
+
+    return {
+      ok: true,
+      ...backend.ekgd(args[1], args[2], args[3]),
+    };
+  },
+
+  "ek.ekgi": (backend, args) => {
+    assertStringArg(args[0], "ek.ekgi", 0);
+    assertNonNegativeSpiceIntArg(args[1], "ek.ekgi", 1);
+    assertNonNegativeSpiceIntArg(args[2], "ek.ekgi", 2);
+    assertNonNegativeSpiceIntArg(args[3], "ek.ekgi", 3);
+
+    const find = backend.ekfind(args[0]);
+    if (!find.ok) {
+      invalidRequest(`ek.ekgi query failed in ekfind: ${find.errmsg}`);
+    }
+
+    return backend.ekgi(args[1], args[2], args[3]);
+  },
+
+  "ek.ekntab": (backend) => {
+    return {
+      ok: true,
+      ntab: backend.ekntab(),
+    };
+  },
+
+  "ek.ektnam": (backend, args) => {
+    assertNonNegativeSpiceIntArg(args[0], "ek.ektnam", 0);
+    return {
+      ok: true,
+      name: backend.ektnam(args[0]),
+    };
+  },
+
+  "ek.eknseg": (backend) => {
+    const ekPath = firstLoadedEkKernelPathOrThrow(backend, "ek.eknseg");
+    const handle = backend.ekopr(ekPath);
+    try {
+      return {
+        ok: true,
+        nseg: backend.eknseg(handle),
+      };
+    } finally {
+      backend.ekcls(handle);
+    }
+  },
+
+  "ek.ekopn": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "ek.ekopn", 0);
+    assertStringArg(args[1], "ek.ekopn", 1);
+    assertNonNegativeSpiceIntArg(args[2], "ek.ekopn", 2);
+
+    const { tempOsPath, tempPath } = await createTempEkPath(backend, backendKind, args[0]);
+    const handle = backend.ekopn(tempPath, args[1], args[2]);
+    try {
+      return {
+        ok: true,
+        handle,
+      };
+    } finally {
+      try {
+        backend.ekcls(handle);
+      } finally {
+        await cleanupTempEkPath(backend, backendKind, tempOsPath, tempPath);
+      }
+    }
+  },
+
+  "ek.ekopr": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "ek.ekopr", 0);
+    assertStringArg(args[1], "ek.ekopr", 1);
+    assertNonNegativeSpiceIntArg(args[2], "ek.ekopr", 2);
+
+    const { tempOsPath, tempPath } = await createTempEkPath(backend, backendKind, args[0]);
+    const seedHandle = backend.ekopn(tempPath, args[1], args[2]);
+    backend.ekcls(seedHandle);
+
+    const handle = backend.ekopr(tempPath);
+    try {
+      return {
+        ok: true,
+        handle,
+      };
+    } finally {
+      try {
+        backend.ekcls(handle);
+      } finally {
+        await cleanupTempEkPath(backend, backendKind, tempOsPath, tempPath);
+      }
+    }
+  },
+
+  "ek.ekopw": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "ek.ekopw", 0);
+    assertStringArg(args[1], "ek.ekopw", 1);
+    assertNonNegativeSpiceIntArg(args[2], "ek.ekopw", 2);
+
+    const { tempOsPath, tempPath } = await createTempEkPath(backend, backendKind, args[0]);
+    const seedHandle = backend.ekopn(tempPath, args[1], args[2]);
+    backend.ekcls(seedHandle);
+
+    const handle = backend.ekopw(tempPath);
+    try {
+      return {
+        ok: true,
+        handle,
+      };
+    } finally {
+      try {
+        backend.ekcls(handle);
+      } finally {
+        await cleanupTempEkPath(backend, backendKind, tempOsPath, tempPath);
+      }
+    }
+  },
+
+  "ek.ekcls": async (backend, args, _kit, backendKind) => {
+    assertNonEmptyStringArg(args[0], "ek.ekcls", 0);
+    assertStringArg(args[1], "ek.ekcls", 1);
+    assertNonNegativeSpiceIntArg(args[2], "ek.ekcls", 2);
+
+    const { tempOsPath, tempPath } = await createTempEkPath(backend, backendKind, args[0]);
+    const handle = backend.ekopn(tempPath, args[1], args[2]);
+
+    try {
+      backend.ekcls(handle);
+      return {
+        ok: true,
+        closed: true,
+      };
+    } finally {
+      await cleanupTempEkPath(backend, backendKind, tempOsPath, tempPath);
+    }
   },
 
   // kernel-pool
