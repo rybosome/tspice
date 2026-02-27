@@ -8,14 +8,17 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [readBytes]
+    properties:
+      readBytes: { const: true }
 workflow:
   steps:
     - op: spiceCall
       call: readVirtualOutput
       in: []
     - op: projectResult
-      out: {}
+      out:
+        readBytes: true
 cases:
   - id: read-spk-virtual-output-bytes
     expect:

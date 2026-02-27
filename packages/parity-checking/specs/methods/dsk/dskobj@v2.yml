@@ -8,14 +8,17 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [hasBodyIds]
+    properties:
+      hasBodyIds: { const: true }
 workflow:
   steps:
     - op: spiceCall
       call: dskobj_c
       in: []
     - op: projectResult
-      out: {}
+      out:
+        hasBodyIds: true
 cases:
   - id: body-ids-from-minimal-dsk
     expect:
