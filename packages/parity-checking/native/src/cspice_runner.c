@@ -4064,11 +4064,31 @@ static bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens
       return false;
     }
 
+    errno = 0;
     long fileBytes = ftell(fp);
+    int ftellErrno = errno;
     fclose(fp);
     unlink(tempPath);
 
-    if (fileBytes <= 0) {
+    if (fileBytes < 0) {
+      char detail[256];
+      if (ftellErrno != 0) {
+        snprintf(detail, sizeof(detail), "ftell failed: %s", strerror(ftellErrno));
+      } else {
+        snprintf(detail, sizeof(detail), "ftell failed: unknown error");
+      }
+
+      free(callName);
+      write_error_json_ex("invalid_request",
+                          "readVirtualOutput could not determine temporary output file size",
+                          detail,
+                          NULL,
+                          NULL,
+                          NULL);
+      return false;
+    }
+
+    if (fileBytes == 0) {
       free(callName);
       write_error_json_ex("invalid_request",
                           "readVirtualOutput expected non-empty output bytes",
