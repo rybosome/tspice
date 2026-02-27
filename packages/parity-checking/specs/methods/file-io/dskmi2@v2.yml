@@ -8,14 +8,17 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [computedSpatialIndex]
+    properties:
+      computedSpatialIndex: { const: true }
 workflow:
   steps:
     - op: spiceCall
       call: dskmi2_c
       in: []
     - op: projectResult
-      out: {}
+      out:
+        computedSpatialIndex: true
 cases:
   - id: minimal-triangle-index
     expect:

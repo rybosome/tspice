@@ -8,14 +8,17 @@ contract:
   aliases: []
   result:
     type: object
-    properties: {}
+    required: [hasSurfaceIds]
+    properties:
+      hasSurfaceIds: { const: true }
 workflow:
   steps:
     - op: spiceCall
       call: dsksrf_c
       in: []
     - op: projectResult
-      out: {}
+      out:
+        hasSurfaceIds: true
 cases:
   - id: surface-ids-from-minimal-dsk
     expect:
