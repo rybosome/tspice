@@ -445,6 +445,14 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         call !== "dsksrf_c" &&
         call !== "dskgd_c" &&
         call !== "dskb02_c" &&
+        call !== "ekfind_c" &&
+        call !== "ekntab_c" &&
+        call !== "ektnam_c" &&
+        call !== "eknseg_c" &&
+        call !== "ekopn_c" &&
+        call !== "ekopr_c" &&
+        call !== "ekopw_c" &&
+        call !== "ekcls_c" &&
         call !== "ekgc_c" &&
         call !== "ekgd_c" &&
         call !== "ekgi_c" &&
@@ -454,7 +462,7 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         call !== "readVirtualOutput"
       ) {
         throw new TypeError(
-          `${label}.call must be one of \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", \"valid_c\", \"dskobj_c\", \"dsksrf_c\", \"dskgd_c\", \"dskb02_c\", \"ekgc_c\", \"ekgd_c\", \"ekgi_c\", \"dskmi2_c\", \"dskopn_c\", \"dskw02_c\", or \"readVirtualOutput\"`,
+          `${label}.call must be one of \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", \"valid_c\", \"dskobj_c\", \"dsksrf_c\", \"dskgd_c\", \"dskb02_c\", \"ekfind_c\", \"ekgc_c\", \"ekgd_c\", \"ekgi_c\", \"ekntab_c\", \"ektnam_c\", \"eknseg_c\", \"ekopn_c\", \"ekopr_c\", \"ekopw_c\", \"ekcls_c\", \"dskmi2_c\", \"dskopn_c\", \"dskw02_c\", or \"readVirtualOutput\"`,
         );
       }
       if (!Array.isArray(obj.in)) {
@@ -466,9 +474,16 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         call === "size_c" ||
         call === "dskgd_c" ||
         call === "dskb02_c" ||
+        call === "ekfind_c" ||
         call === "ekgc_c" ||
         call === "ekgd_c" ||
-        call === "ekgi_c"
+        call === "ekgi_c" ||
+        call === "ekntab_c" ||
+        call === "ektnam_c" ||
+        call === "eknseg_c" ||
+        call === "ekopn_c" ||
+        call === "ekopr_c" ||
+        call === "ekopw_c"
       ) {
         if (obj.as === undefined) {
           throw new TypeError(`${label}.as is required when call=${JSON.stringify(call)}`);
@@ -649,8 +664,23 @@ function parseMethodSpecV2Contract(
             assertNoUnknownKeys(arg, `${label}.args[${index}]`, ["name", "type", "constraints"]);
 
             const type = assertString(arg.type, `${label}.args[${index}].type`);
-            if (type !== "spiceInt") {
-              throw new TypeError(`${label}.args[${index}].type must be \"spiceInt\"`);
+            if (type !== "spiceInt" && type !== "string") {
+              throw new TypeError(`${label}.args[${index}].type must be \"spiceInt\" or \"string\"`);
+            }
+
+            const name = assertString(arg.name, `${label}.args[${index}].name`);
+
+            if (type === "string") {
+              if (arg.constraints !== undefined) {
+                throw new TypeError(
+                  `${label}.args[${index}].constraints is only allowed when type=\"spiceInt\"`,
+                );
+              }
+
+              return {
+                name,
+                type: "string" as const,
+              };
             }
 
             const constraints =
@@ -674,7 +704,7 @@ function parseMethodSpecV2Contract(
                   })();
 
             return {
-              name: assertString(arg.name, `${label}.args[${index}].name`),
+              name,
               type: "spiceInt" as const,
               ...(constraints && Object.keys(constraints).length > 0 ? { constraints } : {}),
             };

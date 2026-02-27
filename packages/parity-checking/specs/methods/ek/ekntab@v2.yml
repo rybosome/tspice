@@ -17,9 +17,17 @@ setup:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: ekntab_c
+      in: []
+      as: ntab
+
+    - op: projectResult
+      out:
+        ok: true
+        ntab: $refs.ntab
 cases:
   - id: returns-loaded-table-count
-    args: []
+    args: {}
     expect:
       ok: true

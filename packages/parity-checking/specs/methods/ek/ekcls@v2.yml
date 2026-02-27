@@ -6,6 +6,14 @@ contract:
   contractMethod: ek.ekcls
   canonicalMethod: ek.ekcls
   aliases: []
+  args:
+    - name: tag
+      type: string
+    - name: ifname
+      type: string
+    - name: ncomch
+      type: spiceInt
+      constraints: { min: 0 }
   result:
     type: object
     required: [ok, closed]
@@ -17,12 +25,19 @@ setup:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: ekcls_c
+      in: [$args.tag, $args.ifname, $args.ncomch]
+
+    - op: projectResult
+      out:
+        ok: true
+        closed: true
 cases:
   - id: closes-new-handle
     args:
-      - ek-close
-      - TSPICE
-      - 0
+      tag: ek-close
+      ifname: TSPICE
+      ncomch: 0
     expect:
       ok: true

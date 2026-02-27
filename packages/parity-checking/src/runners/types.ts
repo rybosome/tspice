@@ -13,12 +13,18 @@ export type RunCaseInputV1 = {
 
 export type V2ContractArgSpec = {
   name: string;
-  type: "spiceInt";
-  constraints?: {
-    min?: number;
-    max?: number;
-  };
-};
+} & (
+  | {
+      type: "spiceInt";
+      constraints?: {
+        min?: number;
+        max?: number;
+      };
+    }
+  | {
+      type: "string";
+    }
+);
 
 export type V2ContractResultProperty = {
   const?: string | number | boolean | null;
@@ -79,7 +85,21 @@ export type V2WorkflowAllocWindowStep = {
 
 export type V2WorkflowSpiceCallWithOutputStep = {
   op: "spiceCall";
-  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c" | "ekgc_c" | "ekgd_c" | "ekgi_c";
+  call:
+    | "card_c"
+    | "size_c"
+    | "dskgd_c"
+    | "dskb02_c"
+    | "ekfind_c"
+    | "ekgc_c"
+    | "ekgd_c"
+    | "ekgi_c"
+    | "ekntab_c"
+    | "ektnam_c"
+    | "eknseg_c"
+    | "ekopn_c"
+    | "ekopr_c"
+    | "ekopw_c";
   in: unknown[];
   as: string;
 };
@@ -92,6 +112,7 @@ export type V2WorkflowSpiceCallWithoutOutputStep = {
     | "valid_c"
     | "dskobj_c"
     | "dsksrf_c"
+    | "ekcls_c"
     | "dskmi2_c"
     | "dskopn_c"
     | "dskw02_c"

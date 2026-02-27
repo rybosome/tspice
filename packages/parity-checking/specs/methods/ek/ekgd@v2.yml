@@ -6,6 +6,18 @@ contract:
   contractMethod: ek.ekgd
   canonicalMethod: ek.ekgd
   aliases: []
+  args:
+    - name: query
+      type: string
+    - name: selidx
+      type: spiceInt
+      constraints: { min: 0 }
+    - name: row
+      type: spiceInt
+      constraints: { min: 0 }
+    - name: elment
+      type: spiceInt
+      constraints: { min: 0 }
   result:
     type: object
     required: [ok, found, isNull, value]
@@ -21,12 +33,9 @@ workflow:
   steps:
     - op: spiceCall
       call: ekgd_c
-      in:
-        - SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'
-        - 0
-        - 0
-        - 0
+      in: [$args.query, $args.selidx, $args.row, $args.elment]
       as: read
+
     - op: projectResult
       out:
         ok: true
@@ -35,6 +44,10 @@ workflow:
         value: $refs.read.value
 cases:
   - id: reads-command-exec-time
-    args: {}
+    args:
+      query: "SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'"
+      selidx: 0
+      row: 0
+      elment: 0
     expect:
       ok: true

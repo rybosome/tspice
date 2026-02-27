@@ -6,6 +6,14 @@ contract:
   contractMethod: ek.ekopn
   canonicalMethod: ek.ekopn
   aliases: []
+  args:
+    - name: tag
+      type: string
+    - name: ifname
+      type: string
+    - name: ncomch
+      type: spiceInt
+      constraints: { min: 0 }
   result:
     type: object
     required: [ok, handle]
@@ -17,12 +25,20 @@ setup:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: ekopn_c
+      in: [$args.tag, $args.ifname, $args.ncomch]
+      as: handle
+
+    - op: projectResult
+      out:
+        ok: true
+        handle: $refs.handle
 cases:
   - id: opens-new-ek-for-write
     args:
-      - ek-open-create
-      - TSPICE
-      - 0
+      tag: ek-open-create
+      ifname: TSPICE
+      ncomch: 0
     expect:
       ok: true

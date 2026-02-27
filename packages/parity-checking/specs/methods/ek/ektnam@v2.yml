@@ -6,6 +6,10 @@ contract:
   contractMethod: ek.ektnam
   canonicalMethod: ek.ektnam
   aliases: []
+  args:
+    - name: index
+      type: spiceInt
+      constraints: { min: 0 }
   result:
     type: object
     required: [ok, name]
@@ -17,10 +21,18 @@ setup:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: ektnam_c
+      in: [$args.index]
+      as: name
+
+    - op: projectResult
+      out:
+        ok: true
+        name: $refs.name
 cases:
   - id: reads-table-name-at-index-zero
     args:
-      - 0
+      index: 0
     expect:
       ok: true

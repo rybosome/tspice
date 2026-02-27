@@ -6,6 +6,9 @@ contract:
   contractMethod: ek.ekfind
   canonicalMethod: ek.ekfind
   aliases: []
+  args:
+    - name: query
+      type: string
   result:
     type: object
     required: [ok, nmrows]
@@ -17,10 +20,18 @@ setup:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: ekfind_c
+      in: [$args.query]
+      as: find
+
+    - op: projectResult
+      out:
+        ok: $refs.find.ok
+        nmrows: $refs.find.nmrows
 cases:
   - id: finds-rows-by-column
     args:
-      - SELECT EVENT FROM CASSINI_NOISE_EVENTS
+      query: SELECT EVENT FROM CASSINI_NOISE_EVENTS
     expect:
       ok: true

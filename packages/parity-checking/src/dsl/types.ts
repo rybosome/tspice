@@ -91,9 +91,15 @@ export type MethodArgConstraintSpecV2 = {
 
 export type MethodArgSpecV2 = {
   name: string;
-  type: "spiceInt";
-  constraints?: MethodArgConstraintSpecV2;
-};
+} & (
+  | {
+      type: "spiceInt";
+      constraints?: MethodArgConstraintSpecV2;
+    }
+  | {
+      type: "string";
+    }
+);
 
 export type MethodResultPropertySpecV2 = {
   const?: string | number | boolean | null;
@@ -158,7 +164,21 @@ export type MethodWorkflowOpAllocWindowV2 = {
 
 export type MethodWorkflowOpSpiceCallWithOutputV2 = {
   op: "spiceCall";
-  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c" | "ekgc_c" | "ekgd_c" | "ekgi_c";
+  call:
+    | "card_c"
+    | "size_c"
+    | "dskgd_c"
+    | "dskb02_c"
+    | "ekfind_c"
+    | "ekgc_c"
+    | "ekgd_c"
+    | "ekgi_c"
+    | "ekntab_c"
+    | "ektnam_c"
+    | "eknseg_c"
+    | "ekopn_c"
+    | "ekopr_c"
+    | "ekopw_c";
   in: unknown[];
   as: string;
 };
@@ -171,6 +191,7 @@ export type MethodWorkflowOpSpiceCallWithoutOutputV2 = {
     | "valid_c"
     | "dskobj_c"
     | "dsksrf_c"
+    | "ekcls_c"
     | "dskmi2_c"
     | "dskopn_c"
     | "dskw02_c"

@@ -17,12 +17,17 @@ setup:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
 workflow:
   steps:
-    - op: invokeLegacyCall
+    - op: spiceCall
+      call: eknseg_c
+      in: []
+      as: nseg
+
+    - op: projectResult
+      out:
+        ok: true
+        nseg: $refs.nseg
 cases:
   - id: reads-segment-count
-    args:
-      - ek-segments
-      - TSPICE
-      - 0
+    args: {}
     expect:
       ok: true

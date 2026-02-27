@@ -6,6 +6,18 @@ contract:
   contractMethod: ek.ekgi
   canonicalMethod: ek.ekgi
   aliases: []
+  args:
+    - name: query
+      type: string
+    - name: selidx
+      type: spiceInt
+      constraints: { min: 0 }
+    - name: row
+      type: spiceInt
+      constraints: { min: 0 }
+    - name: elment
+      type: spiceInt
+      constraints: { min: 0 }
   result:
     type: object
     required: [found, isNull, value]
@@ -20,12 +32,9 @@ workflow:
   steps:
     - op: spiceCall
       call: ekgi_c
-      in:
-        - SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'
-        - 0
-        - 0
-        - 0
+      in: [$args.query, $args.selidx, $args.row, $args.elment]
       as: read
+
     - op: projectResult
       out:
         found: $refs.read.found
@@ -33,7 +42,11 @@ workflow:
         value: $refs.read.value
 cases:
   - id: fails-on-double-column
-    args: {}
+    args:
+      query: "SELECT COMMAND_EXEC_TIME FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'"
+      selidx: 0
+      row: 0
+      elment: 0
     compare:
       errorShort: true
     expect:
