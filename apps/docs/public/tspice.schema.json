@@ -55,34 +55,6 @@
         "description": "Error thrown when underlying SPICE/CSPICE operations fail."
       },
       {
-        "name": "TSPICE_KERNEL_IDS",
-        "description": "Public export from @rybosome/tspice."
-      },
-      {
-        "name": "assertMat3ArrayLike9",
-        "description": "Runtime assertion that a value is a length-9 array-like suitable for a 3×3 matrix."
-      },
-      {
-        "name": "brandMat3ColMajor",
-        "description": "Type-brand a length-9 number array as Mat3ColMajor (column-major) without copying."
-      },
-      {
-        "name": "brandMat3RowMajor",
-        "description": "Type-brand a length-9 number array as Mat3RowMajor (row-major) without copying."
-      },
-      {
-        "name": "isBrandedMat3ColMajor",
-        "description": "Runtime predicate that checks whether a value is branded as Mat3ColMajor."
-      },
-      {
-        "name": "isBrandedMat3RowMajor",
-        "description": "Runtime predicate that checks whether a value is branded as Mat3RowMajor."
-      },
-      {
-        "name": "isMat3ArrayLike9",
-        "description": "Type guard that checks whether a value is a length-9 array-like suitable for a 3×3 matrix."
-      },
-      {
         "name": "kernels",
         "description": "Kernel catalogs for building KernelPack objects via .pick(...) (NAIF, curated tspice, and custom)."
       },
