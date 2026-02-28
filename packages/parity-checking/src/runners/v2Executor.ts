@@ -565,13 +565,13 @@ function executeAssertStep(
     }
   })();
 
-  if (passed) {
-    return;
-  }
-
   const errorSpec = asRecord(step.error, "assert.error");
   const code = asNonEmptyString(errorSpec.code, "assert.error.code");
   const message = asNonEmptyString(errorSpec.message, "assert.error.message");
+
+  if (passed) {
+    return;
+  }
 
   const assertionError = new Error(message) as Error & { code?: string };
   assertionError.code = code;
