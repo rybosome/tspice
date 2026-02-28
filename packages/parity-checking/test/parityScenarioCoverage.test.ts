@@ -82,7 +82,7 @@ describe("parity-checking spec coverage", () => {
     const coveredContractCount = contract.filter((method) => coveredCanonical.has(method)).length;
 
     expect(contract.length).toBe(162);
-    expect(coveredContractCount).toBe(103);
-    expect(denylist.length).toBe(59);
+    expect(coveredContractCount).toBe(104);
+    expect(denylist.length).toBe(58);
   });
 });

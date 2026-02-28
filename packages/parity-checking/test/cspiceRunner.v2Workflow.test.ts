@@ -185,6 +185,55 @@ describe("cspice-runner v2 workflow behavior", () => {
       expect(out.response.error.detail).toBe("cleanupSize");
     }
   });
+
+
+  it("executes declarative eknseg flow via resolveFirstLoadedEkPath + open/query/close ops", () => {
+    const payload = {
+      schemaVersion: 2,
+      setup: {
+        kernels: [ekFixturePath],
+      },
+      args: {},
+      workflow: {
+        steps: [
+          {
+            op: "resolveFirstLoadedEkPath",
+            as: "ekPath",
+          },
+          {
+            op: "spiceCall",
+            call: "ekopr_c",
+            in: ["$refs.ekPath"],
+            as: "handle",
+          },
+          {
+            op: "spiceCall",
+            call: "eknseg_c",
+            in: ["$refs.handle"],
+            as: "nseg",
+          },
+          {
+            op: "projectResult",
+            out: {
+              ok: true,
+              nseg: "$refs.nseg",
+            },
+          },
+        ],
+        cleanup: [
+          {
+            op: "spiceCall",
+            call: "ekcls_c",
+            in: ["$refs.handle"],
+          },
+        ],
+      },
+    };
+
+    const out = invokeRaw(payload);
+    expect(out.response).toEqual({ ok: true, result: { ok: true, nseg: 1 } });
+  });
+
   it("reuses freed ref slots under alloc/free churn", () => {
     const steps: Array<Record<string, unknown>> = [];
     for (let i = 0; i < 80; i++) {

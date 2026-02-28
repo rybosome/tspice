@@ -77,9 +77,14 @@ export type V2WorkflowAllocWindowStep = {
   };
 };
 
+export type V2WorkflowResolveFirstLoadedEkPathStep = {
+  op: "resolveFirstLoadedEkPath";
+  as: string;
+};
+
 export type V2WorkflowSpiceCallWithOutputStep = {
   op: "spiceCall";
-  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c";
+  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c" | "ekopr_c" | "eknseg_c";
   in: unknown[];
   as: string;
 };
@@ -95,6 +100,7 @@ export type V2WorkflowSpiceCallWithoutOutputStep = {
     | "dskmi2_c"
     | "dskopn_c"
     | "dskw02_c"
+    | "ekcls_c"
     | "readVirtualOutput";
   in: unknown[];
   as?: never;
@@ -126,6 +132,7 @@ export type V2WorkflowFreeWindowStep = {
 export type V2WorkflowStep =
   | V2WorkflowAllocCellStep
   | V2WorkflowAllocWindowStep
+  | V2WorkflowResolveFirstLoadedEkPathStep
   | V2WorkflowSpiceCallStep
   | V2WorkflowInvokeLegacyCallStep
   | V2WorkflowProjectResultStep

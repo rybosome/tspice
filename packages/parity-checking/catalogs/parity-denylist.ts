@@ -12,7 +12,6 @@ export const PARITY_DENYLIST = [
   "ek.ekgd",
   "ek.ekgi",
   "ek.ekifld",
-  "ek.eknseg",
   "ek.ekntab",
   "ek.ekopn",
   "ek.ekopr",

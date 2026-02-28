@@ -156,9 +156,14 @@ export type MethodWorkflowOpAllocWindowV2 = {
   };
 };
 
+export type MethodWorkflowOpResolveFirstLoadedEkPathV2 = {
+  op: "resolveFirstLoadedEkPath";
+  as: string;
+};
+
 export type MethodWorkflowOpSpiceCallWithOutputV2 = {
   op: "spiceCall";
-  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c";
+  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c" | "ekopr_c" | "eknseg_c";
   in: unknown[];
   as: string;
 };
@@ -174,6 +179,7 @@ export type MethodWorkflowOpSpiceCallWithoutOutputV2 = {
     | "dskmi2_c"
     | "dskopn_c"
     | "dskw02_c"
+    | "ekcls_c"
     | "readVirtualOutput";
   in: unknown[];
   as?: never;
@@ -205,6 +211,7 @@ export type MethodWorkflowOpFreeWindowV2 = {
 export type MethodWorkflowStepV2 =
   | MethodWorkflowOpAllocCellV2
   | MethodWorkflowOpAllocWindowV2
+  | MethodWorkflowOpResolveFirstLoadedEkPathV2
   | MethodWorkflowOpSpiceCallV2
   | MethodWorkflowOpInvokeLegacyCallV2
   | MethodWorkflowOpProjectResultV2

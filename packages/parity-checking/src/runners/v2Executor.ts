@@ -202,6 +202,24 @@ async function withMinimalDskFile<T>(
   }
 }
 
+function firstLoadedEkKernelPathOrThrow(raw: SpiceBackend["raw"], callName: string): string {
+  const firstEk = raw.kdata(0, "EK");
+  if (!firstEk.found) {
+    invalidRequest(`${callName} requires at least one loaded EK kernel in setup.kernels`);
+  }
+
+  if (typeof firstEk.file !== "string") {
+    invalidRequest(`${callName} could not resolve loaded EK kernel path from kdata(0, "EK")`);
+  }
+
+  const ekPath = firstEk.file.trimEnd();
+  if (ekPath === "") {
+    invalidRequest(`${callName} could not resolve loaded EK kernel path from kdata(0, "EK")`);
+  }
+
+  return ekPath;
+}
+
 function getRawBackend(backend: SpiceBackend): SpiceBackend["raw"] {
   const nested = (backend as unknown as { raw?: SpiceBackend["raw"] }).raw;
   return nested ?? (backend as unknown as SpiceBackend["raw"]);
@@ -593,6 +611,12 @@ async function executeStep(
       return undefined;
     }
 
+    case "resolveFirstLoadedEkPath": {
+      const ekPath = firstLoadedEkKernelPathOrThrow(raw, "resolveFirstLoadedEkPath");
+      defineRef(refs, step.as, { kind: "value", value: ekPath }, "resolveFirstLoadedEkPath.as");
+      return undefined;
+    }
+
     case "spiceCall": {
       if (step.call === "card_c" || step.call === "size_c") {
         if (step.in.length !== 1) {
@@ -926,6 +950,56 @@ async function executeStep(
         });
 
         defineRef(refs, step.as, { kind: "int", value }, `spiceCall(${step.call}).as`);
+        return undefined;
+      }
+
+
+      if (step.call === "eknseg_c") {
+        if (step.in.length !== 1) {
+          invalidRequest(`spiceCall ${step.call} expects one handle input`);
+        }
+
+        if ((step as { as?: unknown }).as === undefined) {
+          invalidArgs(`spiceCall ${step.call} requires an "as" output ref`);
+        }
+
+        const handle = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        const nseg = asSpiceInt(raw.eknseg(handle), `spiceCall(${step.call}).result.nseg`);
+
+        defineRef(refs, step.as, { kind: "int", value: nseg }, `spiceCall(${step.call}).as`);
+        return undefined;
+      }
+
+      if (step.call === "ekopr_c") {
+        if (step.in.length !== 1) {
+          invalidRequest(`spiceCall ${step.call} expects one path input`);
+        }
+
+        if ((step as { as?: unknown }).as === undefined) {
+          invalidArgs(`spiceCall ${step.call} requires an "as" output ref`);
+        }
+
+        const path = resolveStringExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        if (path.length === 0) {
+          invalidArgs(`spiceCall(${step.call}).in[0] must be a non-empty string`);
+        }
+
+        const handle = asSpiceInt(raw.ekopr(path), `spiceCall(${step.call}).result.handle`);
+        defineRef(refs, step.as, { kind: "int", value: handle }, `spiceCall(${step.call}).as`);
+        return undefined;
+      }
+
+      if (step.call === "ekcls_c") {
+        if ((step as { as?: unknown }).as !== undefined) {
+          invalidArgs(`spiceCall ${step.call} does not allow an "as" output ref`);
+        }
+
+        if (step.in.length !== 1) {
+          invalidRequest(`spiceCall ${step.call} expects one handle input`);
+        }
+
+        const handle = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        raw.ekcls(handle);
         return undefined;
       }
 

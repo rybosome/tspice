@@ -299,6 +299,110 @@ describe("schema validation", () => {
     expect(crossV2).toMatchObject({ schemaVersion: 2 });
   });
 
+
+
+  it("accepts resolveFirstLoadedEkPath workflow ops", () => {
+    const methodV2 = parseMethodSpecAny({
+      sourcePath: "/tmp/method-v2-eknseg-declarative.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "method.ek.eknseg@v2",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "ek.eknseg",
+          canonicalMethod: "ek.eknseg",
+          result: {
+            type: "object",
+            required: ["ok", "nseg"],
+            properties: {
+              ok: { const: true },
+              nseg: { const: 1 },
+            },
+          },
+        },
+        workflow: {
+          steps: [
+            {
+              op: "resolveFirstLoadedEkPath",
+              as: "ekPath",
+            },
+            {
+              op: "spiceCall",
+              call: "ekopr_c",
+              in: ["$refs.ekPath"],
+              as: "handle",
+            },
+            {
+              op: "spiceCall",
+              call: "eknseg_c",
+              in: ["$refs.handle"],
+              as: "nseg",
+            },
+            {
+              op: "projectResult",
+              out: {
+                ok: true,
+                nseg: "$refs.nseg",
+              },
+            },
+          ],
+          cleanup: [
+            {
+              op: "spiceCall",
+              call: "ekcls_c",
+              in: ["$refs.handle"],
+            },
+          ],
+        },
+        cases: [{ id: "reads-segment-count", args: {}, expect: { ok: true } }],
+      },
+    });
+
+    expect(methodV2).toMatchObject({ schemaVersion: 2 });
+  });
+
+  it("requires as for resolveFirstLoadedEkPath workflow ops", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-eknseg-missing-as.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "method.ek.eknseg@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "ek.eknseg",
+            canonicalMethod: "ek.eknseg",
+            result: {
+              type: "object",
+              required: ["ok"],
+              properties: {
+                ok: { const: true },
+              },
+            },
+          },
+          workflow: {
+            steps: [
+              {
+                op: "resolveFirstLoadedEkPath",
+              },
+              {
+                op: "projectResult",
+                out: {
+                  ok: true,
+                },
+              },
+            ],
+          },
+          cases: [{ id: "basic", args: {}, expect: { ok: true } }],
+        },
+      }),
+    ).toThrow(/workflow\.steps\[0\]\.as must be a non-empty string/);
+  });
+
   it("parses v2 method contract.result const literals (including arrays/objects)", () => {
     const methodV2 = parseMethodSpecAny({
       sourcePath: "/tmp/method-v2-legacy-const.yml",
