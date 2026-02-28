@@ -380,6 +380,26 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
+  it("rejects invalid assert.error fields even when assertions pass", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps.splice(2, 0, {
+      op: "assert",
+      test: {
+        gte: ["$refs.size", 3],
+      },
+      error: {
+        code: "",
+        message: "size must be >= 3",
+      },
+    });
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_request",
+      message: expect.stringContaining("assert.error.code must be a non-empty string"),
+    });
+  });
+
   it("returns provided assert error code/message when assertions fail", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
