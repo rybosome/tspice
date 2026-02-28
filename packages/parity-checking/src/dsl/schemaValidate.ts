@@ -432,6 +432,14 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
       };
     }
 
+    case "resolveFirstLoadedEkPath": {
+      assertNoUnknownKeys(obj, label, ["op", "as"]);
+      return {
+        op: "resolveFirstLoadedEkPath",
+        as: assertString(obj.as, `${label}.as`),
+      };
+    }
+
     case "spiceCall": {
       assertNoUnknownKeys(obj, label, ["op", "call", "in", "as"]);
       const call = assertString(obj.call, `${label}.call`);

@@ -642,6 +642,12 @@ async function executeStep(
       return undefined;
     }
 
+    case "resolveFirstLoadedEkPath": {
+      const ekPath = firstLoadedEkKernelPathOrThrow(raw, "resolveFirstLoadedEkPath");
+      defineRef(refs, step.as, { kind: "value", value: ekPath }, "resolveFirstLoadedEkPath.as");
+      return undefined;
+    }
+
     case "spiceCall": {
       if (step.call === "card_c" || step.call === "size_c") {
         if (step.in.length !== 1) {
@@ -1035,45 +1041,41 @@ async function executeStep(
       }
 
       if (step.call === "eknseg_c") {
-        if (step.in.length !== 0) {
-          invalidRequest(`spiceCall ${step.call} expects no inputs`);
+        if (step.in.length !== 1) {
+          invalidRequest(`spiceCall ${step.call} expects one handle input`);
         }
 
         if ((step as { as?: unknown }).as === undefined) {
           invalidArgs(`spiceCall ${step.call} requires an \"as\" output ref`);
         }
 
-        const ekPath = firstLoadedEkKernelPathOrThrow(raw, `spiceCall(${step.call})`);
-        const handle = raw.ekopr(ekPath);
-
-        let opError: unknown = undefined;
-        let nseg = 0;
-
-        try {
-          nseg = asSpiceInt(raw.eknseg(handle), `spiceCall(${step.call}).result.nseg`);
-        } catch (error) {
-          opError = error;
-        }
-
-        try {
-          raw.ekcls(handle);
-        } catch (closeError) {
-          if (opError === undefined) {
-            opError = closeError;
-          }
-        }
-
-        if (opError !== undefined) {
-          throw opError;
-        }
+        const handle = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        const nseg = asSpiceInt(raw.eknseg(handle), `spiceCall(${step.call}).result.nseg`);
 
         defineRef(refs, step.as, { kind: "int", value: nseg }, `spiceCall(${step.call}).as`);
         return undefined;
       }
 
+      if (step.call === "ekopr_c" && step.in.length === 1) {
+        if ((step as { as?: unknown }).as === undefined) {
+          invalidArgs(`spiceCall ${step.call} requires an \"as\" output ref`);
+        }
+
+        const path = resolveStringExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+        if (path.length === 0) {
+          invalidArgs(`spiceCall(${step.call}).in[0] must be a non-empty string`);
+        }
+
+        const handle = asSpiceInt(raw.ekopr(path), `spiceCall(${step.call}).result.handle`);
+        defineRef(refs, step.as, { kind: "int", value: handle }, `spiceCall(${step.call}).as`);
+        return undefined;
+      }
+
       if (step.call === "ekopn_c" || step.call === "ekopr_c" || step.call === "ekopw_c") {
         if (step.in.length !== 3) {
-          invalidRequest(`spiceCall ${step.call} expects [tag, ifname, ncomch] inputs`);
+          invalidRequest(
+            `spiceCall ${step.call} expects ${step.call === "ekopr_c" ? "[path] or " : ""}[tag, ifname, ncomch] inputs`,
+          );
         }
 
         if ((step as { as?: unknown }).as === undefined) {
@@ -1117,8 +1119,14 @@ async function executeStep(
           invalidArgs(`spiceCall ${step.call} does not allow an \"as\" output ref`);
         }
 
+        if (step.in.length === 1) {
+          const handle = resolveSpiceIntExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
+          raw.ekcls(handle);
+          return undefined;
+        }
+
         if (step.in.length !== 3) {
-          invalidRequest(`spiceCall ${step.call} expects [tag, ifname, ncomch] inputs`);
+          invalidRequest(`spiceCall ${step.call} expects [handle] or [tag, ifname, ncomch] inputs`);
         }
 
         const tag = resolveStringExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);

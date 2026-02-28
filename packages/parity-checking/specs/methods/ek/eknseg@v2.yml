@@ -17,15 +17,27 @@ setup:
     - ../../../backend-node/test/fixtures/ek-fixture.bes
 workflow:
   steps:
+    - op: resolveFirstLoadedEkPath
+      as: ekPath
+
+    - op: spiceCall
+      call: ekopr_c
+      in: [$refs.ekPath]
+      as: handle
+
     - op: spiceCall
       call: eknseg_c
-      in: []
+      in: [$refs.handle]
       as: nseg
 
     - op: projectResult
       out:
         ok: true
         nseg: $refs.nseg
+  cleanup:
+    - op: spiceCall
+      call: ekcls_c
+      in: [$refs.handle]
 cases:
   - id: reads-segment-count
     args: {}

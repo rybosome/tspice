@@ -438,6 +438,140 @@ describe("executeV2CaseWithBackend", () => {
     expect(ekgcMock).toHaveBeenCalledWith(0, 0, 0);
   });
 
+  it("executes declarative eknseg flow via resolveFirstLoadedEkPath + open/query/close ops", async () => {
+    const kdataMock = vi.fn(() => ({ found: true as const, file: "/tmp/trim-me.ek      \t" }));
+    const ekoprMock = vi.fn(() => 42);
+    const eknsegMock = vi.fn(() => 7);
+    const ekclsMock = vi.fn();
+
+    const backend = {
+      kind: "fake",
+      raw: {
+        kdata: kdataMock,
+        ekopr: ekoprMock,
+        eknseg: eknsegMock,
+        ekcls: ekclsMock,
+      },
+      kit: {},
+    } as unknown as SpiceBackend;
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "method.ek.eknseg@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "ek.eknseg",
+        canonicalMethod: "ek.eknseg",
+        aliases: [],
+        result: {
+          type: "object",
+          required: ["ok", "nseg"],
+          properties: {
+            ok: { const: true },
+            nseg: { const: 7 },
+          },
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          {
+            op: "resolveFirstLoadedEkPath",
+            as: "ekPath",
+          },
+          {
+            op: "spiceCall",
+            call: "ekopr_c",
+            in: ["$refs.ekPath"],
+            as: "handle",
+          },
+          {
+            op: "spiceCall",
+            call: "eknseg_c",
+            in: ["$refs.handle"],
+            as: "nseg",
+          },
+          {
+            op: "projectResult",
+            out: {
+              ok: true,
+              nseg: "$refs.nseg",
+            },
+          },
+        ],
+        cleanup: [
+          {
+            op: "spiceCall",
+            call: "ekcls_c",
+            in: ["$refs.handle"],
+          },
+        ],
+      },
+    };
+
+    const result = await executeV2CaseWithBackend(backend, input);
+
+    expect(result).toEqual({ ok: true, nseg: 7 });
+    expect(kdataMock).toHaveBeenCalledWith(0, "EK");
+    expect(ekoprMock).toHaveBeenCalledWith("/tmp/trim-me.ek");
+    expect(eknsegMock).toHaveBeenCalledWith(42);
+    expect(ekclsMock).toHaveBeenCalledWith(42);
+  });
+
+  it("requires one handle input for spiceCall eknseg_c", async () => {
+    const backend = {
+      kind: "fake",
+      raw: {
+        eknseg: vi.fn(() => 0),
+      },
+      kit: {},
+    } as unknown as SpiceBackend;
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "method.ek.eknseg@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "ek.eknseg",
+        canonicalMethod: "ek.eknseg",
+        aliases: [],
+        result: {
+          type: "object",
+          required: ["nseg"],
+          properties: {
+            nseg: { type: "spiceInt" },
+          },
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          {
+            op: "spiceCall",
+            call: "eknseg_c",
+            in: [],
+            as: "nseg",
+          },
+          {
+            op: "projectResult",
+            out: {
+              nseg: "$refs.nseg",
+            },
+          },
+        ],
+      },
+    };
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_request",
+      message: "spiceCall eknseg_c expects one handle input",
+    });
+  });
+
   it("reports invalid_request when ek*_c prequery fails", async () => {
     const backend = {
       kind: "fake",

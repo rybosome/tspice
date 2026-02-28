@@ -83,6 +83,11 @@ export type V2WorkflowAllocWindowStep = {
   };
 };
 
+export type V2WorkflowResolveFirstLoadedEkPathStep = {
+  op: "resolveFirstLoadedEkPath";
+  as: string;
+};
+
 export type V2WorkflowSpiceCallWithOutputStep = {
   op: "spiceCall";
   call:
@@ -147,6 +152,7 @@ export type V2WorkflowFreeWindowStep = {
 export type V2WorkflowStep =
   | V2WorkflowAllocCellStep
   | V2WorkflowAllocWindowStep
+  | V2WorkflowResolveFirstLoadedEkPathStep
   | V2WorkflowSpiceCallStep
   | V2WorkflowInvokeLegacyCallStep
   | V2WorkflowProjectResultStep

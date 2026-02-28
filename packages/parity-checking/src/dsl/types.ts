@@ -162,6 +162,11 @@ export type MethodWorkflowOpAllocWindowV2 = {
   };
 };
 
+export type MethodWorkflowOpResolveFirstLoadedEkPathV2 = {
+  op: "resolveFirstLoadedEkPath";
+  as: string;
+};
+
 export type MethodWorkflowOpSpiceCallWithOutputV2 = {
   op: "spiceCall";
   call:
@@ -226,6 +231,7 @@ export type MethodWorkflowOpFreeWindowV2 = {
 export type MethodWorkflowStepV2 =
   | MethodWorkflowOpAllocCellV2
   | MethodWorkflowOpAllocWindowV2
+  | MethodWorkflowOpResolveFirstLoadedEkPathV2
   | MethodWorkflowOpSpiceCallV2
   | MethodWorkflowOpInvokeLegacyCallV2
   | MethodWorkflowOpProjectResultV2
