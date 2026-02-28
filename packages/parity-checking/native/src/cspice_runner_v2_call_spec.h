@@ -1,6 +1,8 @@
 #ifndef CSPICE_RUNNER_V2_CALL_SPEC_H
 #define CSPICE_RUNNER_V2_CALL_SPEC_H
 
+#include <stdint.h>
+
 #include "cspice_runner_common.h"
 
 typedef enum {
@@ -28,7 +30,7 @@ typedef enum {
 typedef struct {
   V2SpiceCallId id;
   const char *name;
-  int arity;
+  uint8_t arity;
   V2SpiceCallOutputPolicy outputPolicy;
 } V2SpiceCallSpec;
 

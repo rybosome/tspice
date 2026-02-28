@@ -1,5 +1,7 @@
 #include "cspice_runner_v2_call_spec.h"
 
+#include <string.h>
+
 const V2SpiceCallSpec *v2_lookup_spice_call_spec(const char *callName) {
   static const V2SpiceCallSpec table[] = {
       {V2_SPICE_CALL_CARD_C, "card_c", 1, V2_SPICE_CALL_OUTPUT_REQUIRED},
