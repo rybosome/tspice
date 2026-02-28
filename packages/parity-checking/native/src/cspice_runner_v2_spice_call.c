@@ -254,6 +254,21 @@ static bool v2_execute_minimal_dsk_selector_int_spice_call(
     const char *json, const jsmntok_t *tokens, int tokenCount, int inTok,
     int asTok, V2RefEntry *refs, int *refCount, const V2SpiceCallSpec *callSpec,
     const char *callName) {
+  const V2SpiceComplexCallSpec *complexSpec = &callSpec->complexCallSpec;
+  if (complexSpec->tempTag == NULL ||
+      complexSpec->selectorValueKind ==
+          V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE ||
+      complexSpec->selectorPrimary == NULL ||
+      complexSpec->selectorSecondary == NULL) {
+    write_error_json_ex("invalid_request",
+                        "Unsupported complex minimal DSK selector metadata",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
   int selectorTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
   if (selectorTok < 0 || selectorTok >= tokenCount ||
       tokens[selectorTok].type != JSMN_STRING) {
@@ -284,14 +299,8 @@ static bool v2_execute_minimal_dsk_selector_int_spice_call(
     return false;
   }
 
-  bool selectorOk = false;
-  if (callSpec->id == V2_SPICE_CALL_DSKGD_C) {
-    selectorOk = (strcmp(selector, "surfce") == 0 ||
-                  strcmp(selector, "center") == 0);
-  } else if (callSpec->id == V2_SPICE_CALL_DSKB02_C) {
-    selectorOk = (strcmp(selector, "nv") == 0 || strcmp(selector, "np") == 0);
-  }
-
+  bool selectorOk = (strcmp(selector, complexSpec->selectorPrimary) == 0 ||
+                     strcmp(selector, complexSpec->selectorSecondary) == 0);
   if (!selectorOk) {
     write_error_json_ex("invalid_args",
                         "spiceCall selector is invalid for requested call",
@@ -305,9 +314,7 @@ static bool v2_execute_minimal_dsk_selector_int_spice_call(
 
   char tempPath[PATH_MAX];
   if (!v2_write_minimal_dsk_file(
-          callSpec->id == V2_SPICE_CALL_DSKGD_C ? "v2-dskgd" : "v2-dskb02",
-          tempPath,
-          sizeof(tempPath))) {
+          complexSpec->tempTag, tempPath, sizeof(tempPath))) {
     free(selector);
     return false;
   }
@@ -356,7 +363,8 @@ static bool v2_execute_minimal_dsk_selector_int_spice_call(
   }
 
   SpiceInt outValue = 0;
-  if (callSpec->id == V2_SPICE_CALL_DSKGD_C) {
+  if (complexSpec->selectorValueKind ==
+      V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKGD) {
     SpiceDSKDescr dskdsc;
     dskgd_c(handle, &dladsc, &dskdsc);
     if (failed_c() == SPICETRUE) {
@@ -372,8 +380,11 @@ static bool v2_execute_minimal_dsk_selector_int_spice_call(
       return false;
     }
 
-    outValue = (strcmp(selector, "surfce") == 0) ? dskdsc.surfce : dskdsc.center;
-  } else {
+    outValue = (strcmp(selector, complexSpec->selectorPrimary) == 0)
+                   ? dskdsc.surfce
+                   : dskdsc.center;
+  } else if (complexSpec->selectorValueKind ==
+             V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKB02) {
     SpiceInt nv = 0;
     SpiceInt np = 0;
     SpiceInt nvxtot = 0;
@@ -413,7 +424,19 @@ static bool v2_execute_minimal_dsk_selector_int_spice_call(
       return false;
     }
 
-    outValue = (strcmp(selector, "nv") == 0) ? nv : np;
+    outValue =
+        (strcmp(selector, complexSpec->selectorPrimary) == 0) ? nv : np;
+  } else {
+    dascls_c(handle);
+    unlink(tempPath);
+    free(selector);
+    write_error_json_ex("invalid_request",
+                        "Unsupported complex minimal DSK selector metadata",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
   }
 
   dascls_c(handle);
@@ -453,15 +476,8 @@ static bool v2_execute_minimal_dsk_selector_int_spice_call(
   return ok;
 }
 
-static bool v2_execute_minimal_dsk_body_id_presence_spice_call(
-    const char *callName) {
-  (void)callName;
-
-  char tempPath[PATH_MAX];
-  if (!v2_write_minimal_dsk_file("v2-dskobj", tempPath, sizeof(tempPath))) {
-    return false;
-  }
-
+static bool v2_check_minimal_dsk_body_id_presence(const char *tempPath,
+                                                  const char *callName) {
   SPICEINT_CELL(bodids, 100);
   dskobj_c(tempPath, &bodids);
   if (failed_c() == SPICETRUE) {
@@ -470,7 +486,6 @@ static bool v2_execute_minimal_dsk_body_id_presence_spice_call(
     char traceMsg[1841];
     capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
                         traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
     write_error_json("SPICE error in dskobj", shortMsg, longMsg, traceMsg);
     return false;
   }
@@ -482,16 +497,19 @@ static bool v2_execute_minimal_dsk_body_id_presence_spice_call(
     char traceMsg[1841];
     capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
                         traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
     write_error_json("SPICE error in card_c (dskobj)", shortMsg, longMsg,
                      traceMsg);
     return false;
   }
 
   if (bodyCount < 1) {
-    unlink(tempPath);
+    char message[160];
+    snprintf(message,
+             sizeof(message),
+             "spiceCall(%s) expected at least one body id",
+             callName);
     write_error_json_ex("invalid_request",
-                        "spiceCall(dskobj_c) expected at least one body id",
+                        message,
                         NULL,
                         NULL,
                         NULL,
@@ -499,19 +517,11 @@ static bool v2_execute_minimal_dsk_body_id_presence_spice_call(
     return false;
   }
 
-  unlink(tempPath);
   return true;
 }
 
-static bool v2_execute_minimal_dsk_surface_id_presence_spice_call(
-    const char *callName) {
-  (void)callName;
-
-  char tempPath[PATH_MAX];
-  if (!v2_write_minimal_dsk_file("v2-dsksrf", tempPath, sizeof(tempPath))) {
-    return false;
-  }
-
+static bool v2_check_minimal_dsk_surface_id_presence(const char *tempPath,
+                                                     const char *callName) {
   SPICEINT_CELL(bodids, 100);
   SPICEINT_CELL(srfids, 100);
 
@@ -522,7 +532,6 @@ static bool v2_execute_minimal_dsk_surface_id_presence_spice_call(
     char traceMsg[1841];
     capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
                         traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
     write_error_json("SPICE error in dskobj (dsksrf setup)", shortMsg, longMsg,
                      traceMsg);
     return false;
@@ -535,16 +544,19 @@ static bool v2_execute_minimal_dsk_surface_id_presence_spice_call(
     char traceMsg[1841];
     capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
                         traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
     write_error_json("SPICE error in card_c (dsksrf body ids)", shortMsg,
                      longMsg, traceMsg);
     return false;
   }
 
   if (bodyCount < 1) {
-    unlink(tempPath);
+    char message[160];
+    snprintf(message,
+             sizeof(message),
+             "spiceCall(%s) expected at least one body id",
+             callName);
     write_error_json_ex("invalid_request",
-                        "spiceCall(dsksrf_c) expected at least one body id",
+                        message,
                         NULL,
                         NULL,
                         NULL,
@@ -562,7 +574,6 @@ static bool v2_execute_minimal_dsk_surface_id_presence_spice_call(
     char traceMsg[1841];
     capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
                         traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
     write_error_json("SPICE error in dsksrf", shortMsg, longMsg, traceMsg);
     return false;
   }
@@ -574,16 +585,19 @@ static bool v2_execute_minimal_dsk_surface_id_presence_spice_call(
     char traceMsg[1841];
     capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
                         traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
     write_error_json("SPICE error in card_c (dsksrf surface ids)", shortMsg,
                      longMsg, traceMsg);
     return false;
   }
 
   if (surfaceCount < 1) {
-    unlink(tempPath);
+    char message[160];
+    snprintf(message,
+             sizeof(message),
+             "spiceCall(%s) expected at least one surface id",
+             callName);
     write_error_json_ex("invalid_request",
-                        "spiceCall(dsksrf_c) expected at least one surface id",
+                        message,
                         NULL,
                         NULL,
                         NULL,
@@ -591,16 +605,67 @@ static bool v2_execute_minimal_dsk_surface_id_presence_spice_call(
     return false;
   }
 
-  unlink(tempPath);
   return true;
 }
 
-static bool v2_execute_read_virtual_output_bytes_spice_call(void) {
+static bool v2_execute_minimal_dsk_presence_spice_call(
+    const V2SpiceCallSpec *callSpec, const char *callName) {
+  const V2SpiceComplexCallSpec *complexSpec = &callSpec->complexCallSpec;
+  if (complexSpec->tempTag == NULL ||
+      complexSpec->presenceKind == V2_SPICE_MINIMAL_DSK_PRESENCE_NONE) {
+    write_error_json_ex("invalid_request",
+                        "Unsupported complex minimal DSK presence metadata",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char tempPath[PATH_MAX];
+  if (!v2_write_minimal_dsk_file(
+          complexSpec->tempTag, tempPath, sizeof(tempPath))) {
+    return false;
+  }
+
+  bool ok = false;
+  if (complexSpec->presenceKind == V2_SPICE_MINIMAL_DSK_PRESENCE_BODY_ID) {
+    ok = v2_check_minimal_dsk_body_id_presence(tempPath, callName);
+  } else if (complexSpec->presenceKind ==
+             V2_SPICE_MINIMAL_DSK_PRESENCE_SURFACE_ID) {
+    ok = v2_check_minimal_dsk_surface_id_presence(tempPath, callName);
+  } else {
+    write_error_json_ex("invalid_request",
+                        "Unsupported complex minimal DSK presence metadata",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    ok = false;
+  }
+
+  unlink(tempPath);
+  return ok;
+}
+
+static bool v2_execute_read_virtual_output_bytes_spice_call(
+    const V2SpiceCallSpec *callSpec) {
+  const char *tempTag = callSpec->complexCallSpec.tempTag;
+  if (tempTag == NULL) {
+    write_error_json_ex("invalid_request",
+                        "Unsupported complex readVirtualOutput metadata",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
   char detail[256];
   detail[0] = '\0';
   char tempPath[PATH_MAX];
   int tempFd = -1;
-  if (!build_file_io_temp_path("v2-read-virtual-output",
+  if (!build_file_io_temp_path(tempTag,
                                ".bsp",
                                tempPath,
                                sizeof(tempPath),
@@ -730,6 +795,50 @@ static bool v2_execute_read_virtual_output_bytes_spice_call(void) {
   }
 
   return true;
+}
+
+static bool v2_execute_complex_spice_call(
+    const char *json, const jsmntok_t *tokens, int tokenCount, int inTok,
+    int asTok, V2RefEntry *refs, int *refCount, const V2SpiceCallSpec *callSpec,
+    const char *callName) {
+  if (callSpec->executionKind != V2_SPICE_CALL_EXEC_COMPLEX) {
+    write_error_json_ex("invalid_request",
+                        "Unsupported v2 complex spiceCall execution lane",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  switch (callSpec->complexCallSpec.kind) {
+  case V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_SELECTOR_INT:
+    return v2_execute_minimal_dsk_selector_int_spice_call(
+        json,
+        tokens,
+        tokenCount,
+        inTok,
+        asTok,
+        refs,
+        refCount,
+        callSpec,
+        callName);
+
+  case V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_PRESENCE:
+    return v2_execute_minimal_dsk_presence_spice_call(callSpec, callName);
+
+  case V2_SPICE_COMPLEX_CALL_READ_VIRTUAL_OUTPUT_BYTES:
+    return v2_execute_read_virtual_output_bytes_spice_call(callSpec);
+
+  default:
+    write_error_json_ex("invalid_request",
+                        "Unsupported v2 complex spiceCall metadata",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
 }
 
 static bool v2_execute_legacy_dskopn_spice_call(void) {
@@ -958,29 +1067,16 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
                                       callName);
     break;
 
-  case V2_SPICE_CALL_EXEC_MINIMAL_DSK_SELECTOR_INT:
-    ok = v2_execute_minimal_dsk_selector_int_spice_call(
-        json,
-        tokens,
-        tokenCount,
-        inTok,
-        asTok,
-        refs,
-        refCount,
-        callSpec,
-        callName);
-    break;
-
-  case V2_SPICE_CALL_EXEC_MINIMAL_DSK_BODY_ID_PRESENCE:
-    ok = v2_execute_minimal_dsk_body_id_presence_spice_call(callName);
-    break;
-
-  case V2_SPICE_CALL_EXEC_MINIMAL_DSK_SURFACE_ID_PRESENCE:
-    ok = v2_execute_minimal_dsk_surface_id_presence_spice_call(callName);
-    break;
-
-  case V2_SPICE_CALL_EXEC_READ_VIRTUAL_OUTPUT_BYTES:
-    ok = v2_execute_read_virtual_output_bytes_spice_call();
+  case V2_SPICE_CALL_EXEC_COMPLEX:
+    ok = v2_execute_complex_spice_call(json,
+                                       tokens,
+                                       tokenCount,
+                                       inTok,
+                                       asTok,
+                                       refs,
+                                       refCount,
+                                       callSpec,
+                                       callName);
     break;
 
   case V2_SPICE_CALL_EXEC_LEGACY:

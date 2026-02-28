@@ -9,6 +9,14 @@
       .arity = (ARITY),                                                        \
       .outputPolicy = (OUTPUT_POLICY),                                         \
       .executionKind = V2_SPICE_CALL_EXEC_LEGACY,                             \
+      .complexCallSpec = {                                                     \
+          .kind = V2_SPICE_COMPLEX_CALL_NONE,                                  \
+          .tempTag = NULL,                                                     \
+          .selectorValueKind = V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,       \
+          .selectorPrimary = NULL,                                              \
+          .selectorSecondary = NULL,                                            \
+          .presenceKind = V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,                  \
+      },                                                                       \
       .argKinds = {                                                            \
           V2_SPICE_CALL_ARG_NONE,                                              \
           V2_SPICE_CALL_ARG_NONE,                                              \
@@ -27,6 +35,14 @@
       .arity = 1,                                                                 \
       .outputPolicy = V2_SPICE_CALL_OUTPUT_REQUIRED,                              \
       .executionKind = V2_SPICE_CALL_EXEC_SIMPLE_SCALAR_INT,                      \
+      .complexCallSpec = {                                                        \
+          .kind = V2_SPICE_COMPLEX_CALL_NONE,                                     \
+          .tempTag = NULL,                                                        \
+          .selectorValueKind = V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,          \
+          .selectorPrimary = NULL,                                                 \
+          .selectorSecondary = NULL,                                               \
+          .presenceKind = V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,                     \
+      },                                                                          \
       .argKinds = {                                                                \
           V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,                                   \
           V2_SPICE_CALL_ARG_NONE,                                                 \
@@ -53,6 +69,15 @@
       .arity = (ARITY),                                \
       .outputPolicy = V2_SPICE_CALL_OUTPUT_FORBIDDEN,  \
       .executionKind = V2_SPICE_CALL_EXEC_SIMPLE_VOID, \
+      .complexCallSpec = {                             \
+          .kind = V2_SPICE_COMPLEX_CALL_NONE,          \
+          .tempTag = NULL,                             \
+          .selectorValueKind =                          \
+              V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE, \
+          .selectorPrimary = NULL,                     \
+          .selectorSecondary = NULL,                   \
+          .presenceKind = V2_SPICE_MINIMAL_DSK_PRESENCE_NONE, \
+      },                                               \
       .argKinds = {                                    \
           (ARG0_KIND),                                 \
           (ARG1_KIND),                                 \
@@ -68,7 +93,12 @@
                              NAME,              \
                              ARITY,             \
                              OUTPUT_POLICY,     \
-                             EXEC_KIND,         \
+                             COMPLEX_KIND,      \
+                             TEMP_TAG,          \
+                             SELECTOR_KIND,     \
+                             SELECTOR_PRIMARY,  \
+                             SELECTOR_SECONDARY, \
+                             PRESENCE_KIND,     \
                              ARITY_MESSAGE,     \
                              OUTPUT_MESSAGE)    \
   {                                              \
@@ -76,7 +106,15 @@
       .name = (NAME),                            \
       .arity = (ARITY),                          \
       .outputPolicy = (OUTPUT_POLICY),           \
-      .executionKind = (EXEC_KIND),              \
+      .executionKind = V2_SPICE_CALL_EXEC_COMPLEX, \
+      .complexCallSpec = {                       \
+          .kind = (COMPLEX_KIND),                \
+          .tempTag = (TEMP_TAG),                 \
+          .selectorValueKind = (SELECTOR_KIND),  \
+          .selectorPrimary = (SELECTOR_PRIMARY), \
+          .selectorSecondary = (SELECTOR_SECONDARY), \
+          .presenceKind = (PRESENCE_KIND),       \
+      },                                         \
       .argKinds = {                              \
           V2_SPICE_CALL_ARG_NONE,                \
           V2_SPICE_CALL_ARG_NONE,                \
@@ -129,28 +167,48 @@ const V2SpiceCallSpec *v2_lookup_spice_call_spec(const char *callName) {
                            "dskobj_c",
                            0,
                            V2_SPICE_CALL_OUTPUT_FORBIDDEN,
-                           V2_SPICE_CALL_EXEC_MINIMAL_DSK_BODY_ID_PRESENCE,
+                           V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_PRESENCE,
+                           "v2-dskobj",
+                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,
+                           NULL,
+                           NULL,
+                           V2_SPICE_MINIMAL_DSK_PRESENCE_BODY_ID,
                            "spiceCall dskobj_c expects no inputs",
                            NULL),
       V2_COMPLEX_CALL_SPEC(V2_SPICE_CALL_DSKSRF_C,
                            "dsksrf_c",
                            0,
                            V2_SPICE_CALL_OUTPUT_FORBIDDEN,
-                           V2_SPICE_CALL_EXEC_MINIMAL_DSK_SURFACE_ID_PRESENCE,
+                           V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_PRESENCE,
+                           "v2-dsksrf",
+                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,
+                           NULL,
+                           NULL,
+                           V2_SPICE_MINIMAL_DSK_PRESENCE_SURFACE_ID,
                            "spiceCall dsksrf_c expects no inputs",
                            NULL),
       V2_COMPLEX_CALL_SPEC(V2_SPICE_CALL_DSKGD_C,
                            "dskgd_c",
                            1,
                            V2_SPICE_CALL_OUTPUT_REQUIRED,
-                           V2_SPICE_CALL_EXEC_MINIMAL_DSK_SELECTOR_INT,
+                           V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_SELECTOR_INT,
+                           "v2-dskgd",
+                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKGD,
+                           "surfce",
+                           "center",
+                           V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,
                            "spiceCall dskgd_c expects one selector input",
                            "spiceCall dskgd_c requires string as"),
       V2_COMPLEX_CALL_SPEC(V2_SPICE_CALL_DSKB02_C,
                            "dskb02_c",
                            1,
                            V2_SPICE_CALL_OUTPUT_REQUIRED,
-                           V2_SPICE_CALL_EXEC_MINIMAL_DSK_SELECTOR_INT,
+                           V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_SELECTOR_INT,
+                           "v2-dskb02",
+                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKB02,
+                           "nv",
+                           "np",
+                           V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,
                            "spiceCall dskb02_c expects one selector input",
                            "spiceCall dskb02_c requires string as"),
       V2_LEGACY_CALL_SPEC(V2_SPICE_CALL_DSKMI2_C,
@@ -169,7 +227,12 @@ const V2SpiceCallSpec *v2_lookup_spice_call_spec(const char *callName) {
                            "readVirtualOutput",
                            0,
                            V2_SPICE_CALL_OUTPUT_FORBIDDEN,
-                           V2_SPICE_CALL_EXEC_READ_VIRTUAL_OUTPUT_BYTES,
+                           V2_SPICE_COMPLEX_CALL_READ_VIRTUAL_OUTPUT_BYTES,
+                           "v2-read-virtual-output",
+                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,
+                           NULL,
+                           NULL,
+                           V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,
                            "spiceCall readVirtualOutput expects no inputs",
                            NULL),
   };

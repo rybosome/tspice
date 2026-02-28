@@ -33,11 +33,36 @@ typedef enum {
   V2_SPICE_CALL_EXEC_LEGACY = 0,
   V2_SPICE_CALL_EXEC_SIMPLE_SCALAR_INT,
   V2_SPICE_CALL_EXEC_SIMPLE_VOID,
-  V2_SPICE_CALL_EXEC_MINIMAL_DSK_SELECTOR_INT,
-  V2_SPICE_CALL_EXEC_MINIMAL_DSK_BODY_ID_PRESENCE,
-  V2_SPICE_CALL_EXEC_MINIMAL_DSK_SURFACE_ID_PRESENCE,
-  V2_SPICE_CALL_EXEC_READ_VIRTUAL_OUTPUT_BYTES,
+  V2_SPICE_CALL_EXEC_COMPLEX,
 } V2SpiceCallExecutionKind;
+
+typedef enum {
+  V2_SPICE_COMPLEX_CALL_NONE = 0,
+  V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_SELECTOR_INT,
+  V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_PRESENCE,
+  V2_SPICE_COMPLEX_CALL_READ_VIRTUAL_OUTPUT_BYTES,
+} V2SpiceComplexCallKind;
+
+typedef enum {
+  V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE = 0,
+  V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKGD,
+  V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKB02,
+} V2SpiceMinimalDskSelectorValueKind;
+
+typedef enum {
+  V2_SPICE_MINIMAL_DSK_PRESENCE_NONE = 0,
+  V2_SPICE_MINIMAL_DSK_PRESENCE_BODY_ID,
+  V2_SPICE_MINIMAL_DSK_PRESENCE_SURFACE_ID,
+} V2SpiceMinimalDskPresenceKind;
+
+typedef struct {
+  V2SpiceComplexCallKind kind;
+  const char *tempTag;
+  V2SpiceMinimalDskSelectorValueKind selectorValueKind;
+  const char *selectorPrimary;
+  const char *selectorSecondary;
+  V2SpiceMinimalDskPresenceKind presenceKind;
+} V2SpiceComplexCallSpec;
 
 typedef enum {
   V2_SPICE_CALL_ARG_NONE = 0,
@@ -51,6 +76,7 @@ typedef struct {
   uint8_t arity;
   V2SpiceCallOutputPolicy outputPolicy;
   V2SpiceCallExecutionKind executionKind;
+  V2SpiceComplexCallSpec complexCallSpec;
   V2SpiceCallArgKind argKinds[V2_SPICE_CALL_MAX_ARGS];
   unsigned int nonNegativeIntArgMask;
   int cellWritebackArgIndex;
