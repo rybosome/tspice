@@ -1,3 +1,5 @@
+import type { AssertOperator } from "../assertOperators.js";
+
 export type KernelEntry = string | { path: string; restrictToDir?: string };
 
 export type CaseSetup = {
@@ -109,13 +111,7 @@ export type V2WorkflowInvokeLegacyCallStep = {
   call?: string;
 };
 
-export type V2WorkflowAssertOperator =
-  | "eq"
-  | "ne"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte";
+export type V2WorkflowAssertOperator = AssertOperator;
 
 export type V2WorkflowAssertTest =
   | { eq: [unknown, unknown] }

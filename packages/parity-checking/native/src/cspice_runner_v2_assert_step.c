@@ -1,3 +1,5 @@
+#include <ctype.h>
+
 #include "cspice_runner_json_emit.h"
 #include "cspice_runner_error.h"
 #include "cspice_runner_v2_refs.h"
@@ -47,6 +49,48 @@ static bool v2_strdup_string_token_or_error(const char *json,
   }
 
   return true;
+}
+
+static bool v2_get_single_object_pair_tokens(const jsmntok_t *tokens,
+                                             const int tokenCount,
+                                             const int objectTok,
+                                             int *outKeyTok,
+                                             int *outValueTok) {
+  if (objectTok < 0 || objectTok >= tokenCount ||
+      tokens[objectTok].type != JSMN_OBJECT) {
+    return false;
+  }
+
+  const int pairCount = jsmn_object_pair_count(&tokens[objectTok]);
+  if (pairCount != 1) {
+    return false;
+  }
+
+  int cursor = objectTok + 1;
+  for (int pair = 0; pair < pairCount; pair++) {
+    if (cursor < 0 || cursor >= tokenCount ||
+        tokens[cursor].type != JSMN_STRING) {
+      return false;
+    }
+
+    const int keyTok = cursor;
+    const int valueTok = keyTok + 1;
+    if (valueTok < 0 || valueTok >= tokenCount) {
+      return false;
+    }
+
+    const int nextTok = jsmn_skip_subtree(tokens, valueTok, tokenCount);
+    if (nextTok <= valueTok || nextTok > tokenCount) {
+      return false;
+    }
+
+    cursor = nextTok;
+    *outKeyTok = keyTok;
+    *outValueTok = valueTok;
+    return true;
+  }
+
+  return false;
 }
 
 static bool v2_is_assert_operator_supported(const char *operatorName) {
@@ -118,11 +162,10 @@ bool v2_execute_assert_step(const char *json, const jsmntok_t *tokens,
     return false;
   }
 
-  int operatorTok = testTok + 1;
-  int operandsTok = operatorTok + 1;
-  if (operatorTok < 0 || operatorTok >= tokenCount ||
-      tokens[operatorTok].type != JSMN_STRING ||
-      operandsTok < 0 || operandsTok >= tokenCount) {
+  int operatorTok = -1;
+  int operandsTok = -1;
+  if (!v2_get_single_object_pair_tokens(tokens, tokenCount, testTok,
+                                        &operatorTok, &operandsTok)) {
     write_error_json_ex("invalid_request", "assert.test parse error", NULL,
                         NULL, NULL, NULL);
     return false;

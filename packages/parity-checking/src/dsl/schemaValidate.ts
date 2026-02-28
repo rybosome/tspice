@@ -8,7 +8,6 @@ import type {
   MethodCaseExpectation,
   MethodCaseSpec,
   MethodCaseSpecV2,
-  MethodWorkflowAssertOperatorV2,
   MethodResultConstValueV2,
   MethodResultObjectSpecV2,
   MethodSpec,
@@ -19,15 +18,7 @@ import type {
   ScenarioYamlFile,
   WorkflowSpec,
 } from "./types.js";
-
-const METHOD_WORKFLOW_ASSERT_OPERATORS: ReadonlySet<MethodWorkflowAssertOperatorV2> = new Set([
-  "eq",
-  "ne",
-  "gt",
-  "gte",
-  "lt",
-  "lte",
-]);
+import { ASSERT_OPERATOR_NAMES_TEXT, isAssertOperator } from "../assertOperators.js";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -509,11 +500,14 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
         throw new TypeError(`${label}.test must define exactly one operator`);
       }
 
-      const [operatorRaw, operandsRaw] = testEntries[0] as [string, unknown];
-      if (!METHOD_WORKFLOW_ASSERT_OPERATORS.has(operatorRaw as MethodWorkflowAssertOperatorV2)) {
-        throw new TypeError(
-          `${label}.test operator must be one of \"eq\", \"ne\", \"gt\", \"gte\", \"lt\", \"lte\"`,
-        );
+      const testEntry = testEntries[0];
+      if (!testEntry) {
+        throw new TypeError(`${label}.test must define exactly one operator`);
+      }
+
+      const [operatorRaw, operandsRaw] = testEntry;
+      if (!isAssertOperator(operatorRaw)) {
+        throw new TypeError(`${label}.test operator must be one of ${ASSERT_OPERATOR_NAMES_TEXT}`);
       }
 
       if (!Array.isArray(operandsRaw) || operandsRaw.length !== 2) {
@@ -521,7 +515,7 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
       }
 
       const operands: [unknown, unknown] = [operandsRaw[0], operandsRaw[1]];
-      const operator = operatorRaw as MethodWorkflowAssertOperatorV2;
+      const operator = operatorRaw;
 
       const errorObj = assertRecord(obj.error, `${label}.error`);
       assertNoUnknownKeys(errorObj, `${label}.error`, ["code", "message"]);
