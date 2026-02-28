@@ -27,11 +27,31 @@ typedef enum {
   V2_SPICE_CALL_OUTPUT_REQUIRED,
 } V2SpiceCallOutputPolicy;
 
+#define V2_SPICE_CALL_MAX_ARGS 3
+
+typedef enum {
+  V2_SPICE_CALL_EXEC_LEGACY = 0,
+  V2_SPICE_CALL_EXEC_SIMPLE_SCALAR_INT,
+  V2_SPICE_CALL_EXEC_SIMPLE_VOID,
+} V2SpiceCallExecutionKind;
+
+typedef enum {
+  V2_SPICE_CALL_ARG_NONE = 0,
+  V2_SPICE_CALL_ARG_INT_EXPR,
+  V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,
+} V2SpiceCallArgKind;
+
 typedef struct {
   V2SpiceCallId id;
   const char *name;
   uint8_t arity;
   V2SpiceCallOutputPolicy outputPolicy;
+  V2SpiceCallExecutionKind executionKind;
+  V2SpiceCallArgKind argKinds[V2_SPICE_CALL_MAX_ARGS];
+  unsigned int nonNegativeIntArgMask;
+  int cellWritebackArgIndex;
+  const char *arityErrorMessage;
+  const char *missingOutputErrorMessage;
 } V2SpiceCallSpec;
 
 const V2SpiceCallSpec *v2_lookup_spice_call_spec(const char *callName);
