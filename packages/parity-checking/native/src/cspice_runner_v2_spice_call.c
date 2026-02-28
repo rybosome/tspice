@@ -6,6 +6,8 @@
 #include "cspice_runner_v2_fixtures.h"
 #include "cspice_runner_v2_spice_call.h"
 
+#include <limits.h>
+
 typedef struct {
   SpiceInt intArgs[V2_SPICE_CALL_MAX_ARGS];
   int cellOrWindowRefIndices[V2_SPICE_CALL_MAX_ARGS];
@@ -40,6 +42,8 @@ static bool v2_resolve_simple_spice_call_args(const char *json,
                                               const char *callName,
                                               V2SimpleSpiceCallArgs *outArgs) {
   v2_init_simple_spice_call_args(outArgs);
+  const unsigned int nonNegativeMaskWidth =
+      (unsigned int)(sizeof(callSpec->nonNegativeIntArgMask) * CHAR_BIT);
 
   for (int argIndex = 0; argIndex < callSpec->arity; argIndex++) {
     int argTok = jsmn_get_array_elem(tokens, inTok, argIndex, tokenCount);
@@ -59,7 +63,8 @@ static bool v2_resolve_simple_spice_call_args(const char *json,
         return false;
       }
 
-      if ((callSpec->nonNegativeIntArgMask & (1u << (unsigned int)argIndex)) !=
+      if ((unsigned int)argIndex < nonNegativeMaskWidth &&
+          (callSpec->nonNegativeIntArgMask & (1u << (unsigned int)argIndex)) !=
               0u &&
           outArgs->intArgs[argIndex] < 0) {
         char message[128];
@@ -134,18 +139,17 @@ static bool v2_dispatch_simple_spice_call(const V2SpiceCallSpec *callSpec,
       return false;
     }
 
-    SpiceCell cellValue = refs[refIndex].cell;
+    SpiceCell *cellValue = &refs[refIndex].cell;
     if (callSpec->id == V2_SPICE_CALL_SCARD_C) {
-      scard_c(args->intArgs[0], &cellValue);
+      scard_c(args->intArgs[0], cellValue);
     } else if (callSpec->id == V2_SPICE_CALL_SSIZE_C) {
-      ssize_c(args->intArgs[0], &cellValue);
+      ssize_c(args->intArgs[0], cellValue);
     } else if (callSpec->id == V2_SPICE_CALL_VALID_C) {
-      valid_c(args->intArgs[0], args->intArgs[1], &cellValue);
+      valid_c(args->intArgs[0], args->intArgs[1], cellValue);
     } else {
       return false;
     }
 
-    refs[refIndex].cell = cellValue;
     return true;
   }
 
@@ -172,6 +176,19 @@ static bool v2_execute_simple_spice_call(const char *json,
     return false;
   }
 
+  if (callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_VOID &&
+      (callSpec->cellWritebackArgIndex < 0 ||
+       callSpec->cellWritebackArgIndex >= (int)callSpec->arity ||
+       callSpec->cellWritebackArgIndex >= V2_SPICE_CALL_MAX_ARGS)) {
+    write_error_json_ex("invalid_request",
+                        "Unsupported generic v2 spiceCall writeback metadata",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
   const int inputCount = tokens[inTok].size;
   if (inputCount != callSpec->arity) {
     char fallback[96];
@@ -185,6 +202,18 @@ static bool v2_execute_simple_spice_call(const char *json,
                         callSpec->arityErrorMessage != NULL
                             ? callSpec->arityErrorMessage
                             : fallback,
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  if (callSpec->outputPolicy == V2_SPICE_CALL_OUTPUT_FORBIDDEN && asTok >= 0) {
+    char fallback[128];
+    snprintf(fallback, sizeof(fallback), "spiceCall %s does not allow as", callName);
+    write_error_json_ex("invalid_request",
+                        fallback,
                         NULL,
                         NULL,
                         NULL,
@@ -222,6 +251,7 @@ static bool v2_execute_simple_spice_call(const char *json,
   }
 
   SpiceInt scalarOut = 0;
+  reset_c();
   if (!v2_dispatch_simple_spice_call(callSpec, &args, refs, &scalarOut)) {
     write_error_json_ex("invalid_request",
                         "Unsupported generic v2 spiceCall metadata",
@@ -541,15 +571,6 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     return ok;
   }
 
-  if (asTok >= 0 && callSpec != NULL &&
-      outputPolicy == V2_SPICE_CALL_OUTPUT_FORBIDDEN) {
-    write_error_json_ex("invalid_request",
-                        "spiceCall scard_c/ssize_c/valid_c/dskobj_c/dsksrf_c/dskmi2_c/dskopn_c/dskw02_c/readVirtualOutput does not allow as",
-                        NULL, NULL, NULL, NULL);
-    free(callName);
-    return false;
-  }
-
   if (callSpec != NULL &&
       (callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_SCALAR_INT ||
        callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_VOID)) {
@@ -565,6 +586,18 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
                                            callName);
     free(callName);
     return ok;
+  }
+
+  if (asTok >= 0 && callSpec != NULL &&
+      outputPolicy == V2_SPICE_CALL_OUTPUT_FORBIDDEN) {
+    write_error_json_ex("invalid_request",
+                        "spiceCall dskobj_c/dsksrf_c/dskmi2_c/dskopn_c/dskw02_c/readVirtualOutput does not allow as",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    free(callName);
+    return false;
   }
 
   if (callId == V2_SPICE_CALL_DSKOPN_C) {
