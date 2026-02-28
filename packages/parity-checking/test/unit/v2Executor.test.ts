@@ -361,6 +361,45 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
+  it("evaluates assert workflow steps and continues when assertions pass", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps.splice(2, 0, {
+      op: "assert",
+      test: {
+        gte: ["$refs.size", 3],
+      },
+      error: {
+        code: "assert_size_too_small",
+        message: "size must be >= 3",
+      },
+    });
+
+    await expect(executeV2CaseWithBackend(backend, input)).resolves.toEqual({
+      size: 3,
+    });
+  });
+
+  it("returns provided assert error code/message when assertions fail", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps.splice(2, 0, {
+      op: "assert",
+      test: {
+        gt: ["$refs.size", 3],
+      },
+      error: {
+        code: "assert_size_gt_three",
+        message: "size must be > 3",
+      },
+    });
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "assert_size_gt_three",
+      message: "size must be > 3",
+    });
+  });
+
   it("rejects unknown v2 args during shared preflight validation", () => {
     const input = createBaseInput();
     input.args = {

@@ -299,6 +299,166 @@ describe("schema validation", () => {
     expect(crossV2).toMatchObject({ schemaVersion: 2 });
   });
 
+  it("parses v2 assert workflow steps", () => {
+    const methodV2 = parseMethodSpecAny({
+      sourcePath: "/tmp/method-v2-assert.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "methods/cells-windows/newIntCell-assert@v2",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "cells-windows.newIntCell",
+          canonicalMethod: "cells-windows.newIntCell",
+          args: [{ name: "size", type: "spiceInt", constraints: { min: 0 } }],
+          result: {
+            type: "object",
+            required: ["size"],
+            properties: {
+              size: { type: "spiceInt" },
+            },
+          },
+        },
+        workflow: {
+          steps: [
+            {
+              op: "assert",
+              test: {
+                gte: ["$args.size", 0],
+              },
+              error: {
+                code: "assert_size_non_negative",
+                message: "size must be non-negative",
+              },
+            },
+            {
+              op: "projectResult",
+              out: {
+                size: "$args.size",
+              },
+            },
+          ],
+        },
+        cases: [{ id: "ok", args: { size: 3 }, expect: { ok: true } }],
+      },
+    });
+
+    expect(methodV2).toMatchObject({
+      schemaVersion: 2,
+      workflow: {
+        steps: expect.arrayContaining([
+          {
+            op: "assert",
+            test: {
+              gte: ["$args.size", 0],
+            },
+            error: {
+              code: "assert_size_non_negative",
+              message: "size must be non-negative",
+            },
+          },
+        ]),
+      },
+    });
+  });
+
+  it("rejects v2 assert workflows with unsupported operators", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-assert-bad-op.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/cells-windows/newIntCell-assert@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "cells-windows.newIntCell",
+            canonicalMethod: "cells-windows.newIntCell",
+            args: [{ name: "size", type: "spiceInt", constraints: { min: 0 } }],
+            result: {
+              type: "object",
+              required: ["size"],
+              properties: {
+                size: { type: "spiceInt" },
+              },
+            },
+          },
+          workflow: {
+            steps: [
+              {
+                op: "assert",
+                test: {
+                  between: ["$args.size", 0],
+                },
+                error: {
+                  code: "assert_size_invalid",
+                  message: "size failed assertion",
+                },
+              },
+              {
+                op: "projectResult",
+                out: {
+                  size: "$args.size",
+                },
+              },
+            ],
+          },
+          cases: [{ id: "ok", args: { size: 3 }, expect: { ok: true } }],
+        },
+      }),
+    ).toThrow(/methodV2\.workflow\.steps\[0\]\.test operator must be one of/);
+  });
+
+  it("rejects v2 assert workflows with non-binary tests", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-assert-bad-arity.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/cells-windows/newIntCell-assert@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "cells-windows.newIntCell",
+            canonicalMethod: "cells-windows.newIntCell",
+            args: [{ name: "size", type: "spiceInt", constraints: { min: 0 } }],
+            result: {
+              type: "object",
+              required: ["size"],
+              properties: {
+                size: { type: "spiceInt" },
+              },
+            },
+          },
+          workflow: {
+            steps: [
+              {
+                op: "assert",
+                test: {
+                  eq: ["$args.size"],
+                },
+                error: {
+                  code: "assert_size_invalid",
+                  message: "size failed assertion",
+                },
+              },
+              {
+                op: "projectResult",
+                out: {
+                  size: "$args.size",
+                },
+              },
+            ],
+          },
+          cases: [{ id: "ok", args: { size: 3 }, expect: { ok: true } }],
+        },
+      }),
+    ).toThrow(/methodV2\.workflow\.steps\[0\]\.test\.eq must be a 2-item array/);
+  });
+
   it("parses v2 method contract.result const literals (including arrays/objects)", () => {
     const methodV2 = parseMethodSpecAny({
       sourcePath: "/tmp/method-v2-legacy-const.yml",

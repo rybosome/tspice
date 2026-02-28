@@ -70,6 +70,48 @@ describe("v2 runner preflight parity", () => {
     }
   });
 
+  maybeIt("reports matching assert failure envelopes for tspice and cspice runners", async () => {
+    const tspice = await createTspiceRunner();
+    const cspice = await createCspiceRunner();
+
+    const input = createBaseInput();
+    input.workflow.steps = [
+      {
+        op: "assert",
+        test: {
+          gt: ["$args.size", 3],
+        },
+        error: {
+          code: "assert_size_gt_three",
+          message: "size must be > 3",
+        },
+      },
+      {
+        op: "projectResult",
+        out: { size: "$args.size" },
+      },
+    ];
+
+    try {
+      const [tspiceOut, cspiceOut] = await Promise.all([tspice.runCase(input), cspice.runCase(input)]);
+
+      expect(tspiceOut.ok).toBe(false);
+      expect(cspiceOut.ok).toBe(false);
+
+      if (!tspiceOut.ok && !cspiceOut.ok) {
+        expect(tspiceOut.error.code).toBe("assert_size_gt_three");
+        expect(cspiceOut.error.code).toBe("assert_size_gt_three");
+        expect(tspiceOut.error.message).toBe("size must be > 3");
+        expect(cspiceOut.error.message).toBe("size must be > 3");
+        expect(tspiceOut.error.spice).toEqual({ failed: false });
+        expect(cspiceOut.error.spice).toEqual({ failed: false });
+      }
+    } finally {
+      await tspice.dispose?.();
+      await cspice.dispose?.();
+    }
+  });
+
   maybeIt("lowers invokeLegacyCall before v2 preflight in cspice runner", async () => {
     const cspice = await createCspiceRunner();
 

@@ -2,6 +2,7 @@
 #include "cspice_runner_error.h"
 #include "cspice_runner_v2_refs.h"
 #include "cspice_runner_v2_alloc_steps.h"
+#include "cspice_runner_v2_assert_step.h"
 #include "cspice_runner_v2_spice_call.h"
 #include "cspice_runner_v2_json_buffer.h"
 #include "cspice_runner_v2_workflow.h"
@@ -24,6 +25,11 @@ bool v2_dispatch_workflow_step(
   if (jsmn_token_streq(json, &tokens[opTok], "spiceCall")) {
     return v2_execute_spice_call_step(json, tokens, tokenCount, stepTok, argsTok,
                                       refs, refCount);
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "assert")) {
+    return v2_execute_assert_step(json, tokens, tokenCount, stepTok, argsTok,
+                                  refs, *refCount);
   }
 
   if (jsmn_token_streq(json, &tokens[opTok], "projectResult")) {
