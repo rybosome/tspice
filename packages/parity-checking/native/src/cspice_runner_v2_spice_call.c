@@ -6,6 +6,267 @@
 #include "cspice_runner_v2_fixtures.h"
 #include "cspice_runner_v2_spice_call.h"
 
+typedef struct {
+  SpiceInt intArgs[V2_SPICE_CALL_MAX_ARGS];
+  int cellOrWindowRefIndices[V2_SPICE_CALL_MAX_ARGS];
+} V2SimpleSpiceCallArgs;
+
+static void v2_init_simple_spice_call_args(V2SimpleSpiceCallArgs *args) {
+  for (int i = 0; i < V2_SPICE_CALL_MAX_ARGS; i++) {
+    args->intArgs[i] = 0;
+    args->cellOrWindowRefIndices[i] = -1;
+  }
+}
+
+static void v2_format_simple_arg_label(const char *callName,
+                                       int argIndex,
+                                       char *buffer,
+                                       size_t bufferSize) {
+  if (bufferSize == 0) {
+    return;
+  }
+
+  snprintf(buffer, bufferSize, "spiceCall(%s).in[%d]", callName, argIndex);
+}
+
+static bool v2_resolve_simple_spice_call_args(const char *json,
+                                              const jsmntok_t *tokens,
+                                              int tokenCount,
+                                              int inTok,
+                                              int argsTok,
+                                              V2RefEntry *refs,
+                                              int refCount,
+                                              const V2SpiceCallSpec *callSpec,
+                                              const char *callName,
+                                              V2SimpleSpiceCallArgs *outArgs) {
+  v2_init_simple_spice_call_args(outArgs);
+
+  for (int argIndex = 0; argIndex < callSpec->arity; argIndex++) {
+    int argTok = jsmn_get_array_elem(tokens, inTok, argIndex, tokenCount);
+    char label[96];
+    v2_format_simple_arg_label(callName, argIndex, label, sizeof(label));
+
+    if (callSpec->argKinds[argIndex] == V2_SPICE_CALL_ARG_INT_EXPR) {
+      if (!v2_resolve_spiceint_expr(json,
+                                    tokens,
+                                    tokenCount,
+                                    argTok,
+                                    argsTok,
+                                    refs,
+                                    refCount,
+                                    label,
+                                    &outArgs->intArgs[argIndex])) {
+        return false;
+      }
+
+      if ((callSpec->nonNegativeIntArgMask & (1u << (unsigned int)argIndex)) !=
+              0u &&
+          outArgs->intArgs[argIndex] < 0) {
+        char message[128];
+        snprintf(message, sizeof(message), "%s must be >= 0", label);
+        write_error_json_ex("invalid_args", message, NULL, NULL, NULL, NULL);
+        return false;
+      }
+
+      continue;
+    }
+
+    if (callSpec->argKinds[argIndex] == V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF) {
+      int refIndex = -1;
+      if (!v2_resolve_cell_or_window_ref(json,
+                                         tokens,
+                                         tokenCount,
+                                         argTok,
+                                         refs,
+                                         refCount,
+                                         label,
+                                         &refIndex)) {
+        return false;
+      }
+
+      outArgs->cellOrWindowRefIndices[argIndex] = refIndex;
+      continue;
+    }
+
+    write_error_json_ex("invalid_request",
+                        "Unsupported simple spiceCall argument metadata",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  return true;
+}
+
+static bool v2_dispatch_simple_spice_call(const V2SpiceCallSpec *callSpec,
+                                          const V2SimpleSpiceCallArgs *args,
+                                          V2RefEntry *refs,
+                                          SpiceInt *scalarOut) {
+  if (callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_SCALAR_INT) {
+    int refIndex = args->cellOrWindowRefIndices[0];
+    if (refIndex < 0) {
+      return false;
+    }
+
+    if (callSpec->id == V2_SPICE_CALL_CARD_C) {
+      *scalarOut = card_c(&refs[refIndex].cell);
+      return true;
+    }
+
+    if (callSpec->id == V2_SPICE_CALL_SIZE_C) {
+      *scalarOut = size_c(&refs[refIndex].cell);
+      return true;
+    }
+
+    return false;
+  }
+
+  if (callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_VOID) {
+    if (callSpec->cellWritebackArgIndex < 0 ||
+        callSpec->cellWritebackArgIndex >= V2_SPICE_CALL_MAX_ARGS) {
+      return false;
+    }
+
+    int refIndex = args->cellOrWindowRefIndices[callSpec->cellWritebackArgIndex];
+    if (refIndex < 0) {
+      return false;
+    }
+
+    SpiceCell cellValue = refs[refIndex].cell;
+    if (callSpec->id == V2_SPICE_CALL_SCARD_C) {
+      scard_c(args->intArgs[0], &cellValue);
+    } else if (callSpec->id == V2_SPICE_CALL_SSIZE_C) {
+      ssize_c(args->intArgs[0], &cellValue);
+    } else if (callSpec->id == V2_SPICE_CALL_VALID_C) {
+      valid_c(args->intArgs[0], args->intArgs[1], &cellValue);
+    } else {
+      return false;
+    }
+
+    refs[refIndex].cell = cellValue;
+    return true;
+  }
+
+  return false;
+}
+
+static bool v2_execute_simple_spice_call(const char *json,
+                                         const jsmntok_t *tokens,
+                                         int tokenCount,
+                                         int inTok,
+                                         int asTok,
+                                         int argsTok,
+                                         V2RefEntry *refs,
+                                         int *refCount,
+                                         const V2SpiceCallSpec *callSpec,
+                                         const char *callName) {
+  if (callSpec->arity > V2_SPICE_CALL_MAX_ARGS) {
+    write_error_json_ex("invalid_request",
+                        "Unsupported generic v2 spiceCall arity metadata",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  const int inputCount = tokens[inTok].size;
+  if (inputCount != callSpec->arity) {
+    char fallback[96];
+    snprintf(fallback,
+             sizeof(fallback),
+             "spiceCall %s expects %d input%s",
+             callName,
+             callSpec->arity,
+             (callSpec->arity == 1) ? "" : "s");
+    write_error_json_ex("invalid_request",
+                        callSpec->arityErrorMessage != NULL
+                            ? callSpec->arityErrorMessage
+                            : fallback,
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  if (callSpec->outputPolicy == V2_SPICE_CALL_OUTPUT_REQUIRED &&
+      (asTok < 0 || tokens[asTok].type != JSMN_STRING)) {
+    char fallback[96];
+    snprintf(fallback, sizeof(fallback), "spiceCall %s requires string as", callName);
+    write_error_json_ex("invalid_request",
+                        callSpec->missingOutputErrorMessage != NULL
+                            ? callSpec->missingOutputErrorMessage
+                            : fallback,
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  V2SimpleSpiceCallArgs args;
+  if (!v2_resolve_simple_spice_call_args(json,
+                                         tokens,
+                                         tokenCount,
+                                         inTok,
+                                         argsTok,
+                                         refs,
+                                         *refCount,
+                                         callSpec,
+                                         callName,
+                                         &args)) {
+    return false;
+  }
+
+  SpiceInt scalarOut = 0;
+  if (!v2_dispatch_simple_spice_call(callSpec, &args, refs, &scalarOut)) {
+    write_error_json_ex("invalid_request",
+                        "Unsupported generic v2 spiceCall metadata",
+                        callName,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  if (failed_c() == SPICETRUE) {
+    char shortMsg[1841];
+    char longMsg[1841];
+    char traceMsg[1841];
+    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                        traceMsg, sizeof(traceMsg));
+    write_error_json_ex("spice_error", "SPICE error in spiceCall", callName,
+                        shortMsg, longMsg, traceMsg);
+    return false;
+  }
+
+  if (callSpec->outputPolicy != V2_SPICE_CALL_OUTPUT_REQUIRED) {
+    return true;
+  }
+
+  char asDetail[256];
+  asDetail[0] = '\0';
+  char *asName = NULL;
+  jsmn_strdup_err_t asErr =
+      jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
+  if (asErr != JSMN_STRDUP_OK) {
+    if (asErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    return false;
+  }
+
+  bool ok = v2_add_ref_int(refs, refCount, asName, scalarOut);
+  free(asName);
+  return ok;
+}
+
 bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
                                        const int tokenCount, const int stepTok,
                                        const int argsTok, V2RefEntry *refs,
@@ -44,75 +305,6 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
   const V2SpiceCallOutputPolicy outputPolicy =
       (callSpec != NULL) ? callSpec->outputPolicy
                          : V2_SPICE_CALL_OUTPUT_FORBIDDEN;
-
-  if (callId == V2_SPICE_CALL_CARD_C || callId == V2_SPICE_CALL_SIZE_C) {
-    if (inputCount != expectedArity) {
-      write_error_json_ex("invalid_request",
-                          "spiceCall card_c/size_c expects one input",
-                          NULL, NULL, NULL, NULL);
-      free(callName);
-      return false;
-    }
-
-    if (asTok < 0 || tokens[asTok].type != JSMN_STRING) {
-      write_error_json_ex("invalid_request",
-                          "spiceCall card_c/size_c requires string as",
-                          NULL, NULL, NULL, NULL);
-      free(callName);
-      return false;
-    }
-
-    int inExprTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
-    int refIndex = -1;
-    if (!v2_resolve_cell_or_window_ref(json,
-                                       tokens,
-                                       tokenCount,
-                                       inExprTok,
-                                       refs,
-                                       *refCount,
-                                       "spiceCall.in[0]",
-                                       &refIndex)) {
-      free(callName);
-      return false;
-    }
-
-    SpiceInt out =
-        (callId == V2_SPICE_CALL_CARD_C) ? card_c(&refs[refIndex].cell)
-                                         : size_c(&refs[refIndex].cell);
-
-    if (failed_c() == SPICETRUE) {
-      char shortMsg[1841];
-      char longMsg[1841];
-      char traceMsg[1841];
-      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                          traceMsg, sizeof(traceMsg));
-      write_error_json_ex("spice_error", "SPICE error in spiceCall", callName,
-                          shortMsg, longMsg, traceMsg);
-      free(callName);
-      return false;
-    }
-
-    char asDetail[256];
-    asDetail[0] = '\0';
-    char *asName = NULL;
-    jsmn_strdup_err_t asErr =
-        jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
-    if (asErr != JSMN_STRDUP_OK) {
-      if (asErr == JSMN_STRDUP_INVALID) {
-        write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                            asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
-      } else {
-        write_error_json("Out of memory", NULL, NULL, NULL);
-      }
-      free(callName);
-      return false;
-    }
-
-    bool ok = v2_add_ref_int(refs, refCount, asName, out);
-    free(asName);
-    free(callName);
-    return ok;
-  }
 
   if (callId == V2_SPICE_CALL_DSKGD_C || callId == V2_SPICE_CALL_DSKB02_C) {
     if (inputCount != expectedArity) {
@@ -358,162 +550,24 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     return false;
   }
 
-  if (callId == V2_SPICE_CALL_SCARD_C) {
-    if (inputCount != expectedArity) {
-      write_error_json_ex("invalid_request",
-                          "spiceCall scard_c expects [card, cellOrWindow]",
-                          NULL, NULL, NULL, NULL);
-      free(callName);
-      return false;
-    }
+  if (callSpec != NULL &&
+      (callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_SCALAR_INT ||
+       callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_VOID)) {
+    bool ok = v2_execute_simple_spice_call(json,
+                                           tokens,
+                                           tokenCount,
+                                           inTok,
+                                           asTok,
+                                           argsTok,
+                                           refs,
+                                           refCount,
+                                           callSpec,
+                                           callName);
+    free(callName);
+    return ok;
+  }
 
-    int cardTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
-    SpiceInt card = 0;
-    if (!v2_resolve_spiceint_expr(json,
-                                  tokens,
-                                  tokenCount,
-                                  cardTok,
-                                  argsTok,
-                                  refs,
-                                  *refCount,
-                                  "spiceCall(scard_c).in[0]",
-                                  &card)) {
-      free(callName);
-      return false;
-    }
-
-    if (card < 0) {
-      write_error_json_ex("invalid_args", "spiceCall(scard_c).in[0] must be >= 0",
-                          NULL, NULL, NULL, NULL);
-      free(callName);
-      return false;
-    }
-
-    int targetTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
-    int refIndex = -1;
-    if (!v2_resolve_cell_or_window_ref(json,
-                                       tokens,
-                                       tokenCount,
-                                       targetTok,
-                                       refs,
-                                       *refCount,
-                                       "spiceCall(scard_c).in[1]",
-                                       &refIndex)) {
-      free(callName);
-      return false;
-    }
-
-    scard_c(card, &refs[refIndex].cell);
-  } else if (callId == V2_SPICE_CALL_SSIZE_C) {
-    if (inputCount != expectedArity) {
-      write_error_json_ex("invalid_request",
-                          "spiceCall ssize_c expects [size, cellOrWindow]",
-                          NULL, NULL, NULL, NULL);
-      free(callName);
-      return false;
-    }
-
-    int sizeTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
-    SpiceInt newSize = 0;
-    if (!v2_resolve_spiceint_expr(json,
-                                  tokens,
-                                  tokenCount,
-                                  sizeTok,
-                                  argsTok,
-                                  refs,
-                                  *refCount,
-                                  "spiceCall(ssize_c).in[0]",
-                                  &newSize)) {
-      free(callName);
-      return false;
-    }
-
-    if (newSize < 0) {
-      write_error_json_ex("invalid_args", "spiceCall(ssize_c).in[0] must be >= 0",
-                          NULL, NULL, NULL, NULL);
-      free(callName);
-      return false;
-    }
-
-    int targetTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
-    int refIndex = -1;
-    if (!v2_resolve_cell_or_window_ref(json,
-                                       tokens,
-                                       tokenCount,
-                                       targetTok,
-                                       refs,
-                                       *refCount,
-                                       "spiceCall(ssize_c).in[1]",
-                                       &refIndex)) {
-      free(callName);
-      return false;
-    }
-
-    ssize_c(newSize, &refs[refIndex].cell);
-  } else if (callId == V2_SPICE_CALL_VALID_C) {
-    if (inputCount != expectedArity) {
-      write_error_json_ex("invalid_request",
-                          "spiceCall valid_c expects [size, n, cellOrWindow]",
-                          NULL, NULL, NULL, NULL);
-      free(callName);
-      return false;
-    }
-
-    int sizeTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
-    int nTok = jsmn_get_array_elem(tokens, inTok, 1, tokenCount);
-    SpiceInt sizeArg = 0;
-    SpiceInt nArg = 0;
-    if (!v2_resolve_spiceint_expr(json,
-                                  tokens,
-                                  tokenCount,
-                                  sizeTok,
-                                  argsTok,
-                                  refs,
-                                  *refCount,
-                                  "spiceCall(valid_c).in[0]",
-                                  &sizeArg) ||
-        !v2_resolve_spiceint_expr(json,
-                                  tokens,
-                                  tokenCount,
-                                  nTok,
-                                  argsTok,
-                                  refs,
-                                  *refCount,
-                                  "spiceCall(valid_c).in[1]",
-                                  &nArg)) {
-      free(callName);
-      return false;
-    }
-
-    if (sizeArg < 0) {
-      write_error_json_ex("invalid_args", "spiceCall(valid_c).in[0] must be >= 0",
-                          NULL, NULL, NULL, NULL);
-      free(callName);
-      return false;
-    }
-    if (nArg < 0) {
-      write_error_json_ex("invalid_args", "spiceCall(valid_c).in[1] must be >= 0",
-                          NULL, NULL, NULL, NULL);
-      free(callName);
-      return false;
-    }
-
-    int targetTok = jsmn_get_array_elem(tokens, inTok, 2, tokenCount);
-    int refIndex = -1;
-    if (!v2_resolve_cell_or_window_ref(json,
-                                       tokens,
-                                       tokenCount,
-                                       targetTok,
-                                       refs,
-                                       *refCount,
-                                       "spiceCall(valid_c).in[2]",
-                                       &refIndex)) {
-      free(callName);
-      return false;
-    }
-
-    valid_c(sizeArg, nArg, &refs[refIndex].cell);
-  } else if (callId == V2_SPICE_CALL_DSKOPN_C) {
+  if (callId == V2_SPICE_CALL_DSKOPN_C) {
     if (inputCount != expectedArity) {
       write_error_json_ex("invalid_request",
                           "spiceCall dskopn_c expects no inputs",
