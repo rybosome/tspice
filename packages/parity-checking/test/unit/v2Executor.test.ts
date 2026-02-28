@@ -380,6 +380,97 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
+  it("projects integer refs via project workflow steps", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps = [
+      {
+        op: "project",
+        out: {
+          selectedSize: "$args.size",
+        },
+      },
+      {
+        op: "projectResult",
+        out: {
+          size: "$refs.selectedSize",
+        },
+      },
+    ];
+    input.workflow.cleanup = [];
+
+    await expect(executeV2CaseWithBackend(backend, input)).resolves.toEqual({
+      size: 3,
+    });
+  });
+
+  it("executes switch workflow branches and returns selected projectResult", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps = [
+      {
+        op: "project",
+        out: {
+          selectedSize: "$args.size",
+        },
+      },
+      {
+        op: "switch",
+        on: "$refs.selectedSize",
+        cases: {
+          0: [
+            {
+              op: "projectResult",
+              out: {
+                size: 0,
+              },
+            },
+          ],
+        },
+        default: [
+          {
+            op: "projectResult",
+            out: {
+              size: "$refs.selectedSize",
+            },
+          },
+        ],
+      },
+    ];
+    input.workflow.cleanup = [];
+
+    await expect(executeV2CaseWithBackend(backend, input)).resolves.toEqual({
+      size: 3,
+    });
+  });
+
+  it("reports invalid_request for unmatched switch without default", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps = [
+      {
+        op: "switch",
+        on: "$args.size",
+        cases: {
+          0: [
+            {
+              op: "projectResult",
+              out: {
+                size: 0,
+              },
+            },
+          ],
+        },
+      },
+    ];
+    input.workflow.cleanup = [];
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_request",
+      message: expect.stringContaining("no matching case"),
+    });
+  });
+
   it("rejects invalid assert.error fields even when assertions pass", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();

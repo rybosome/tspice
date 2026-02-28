@@ -176,6 +176,84 @@ describe("cspice-runner v2 workflow behavior", () => {
     }
   });
 
+  it("supports project + switch workflow steps in native v2 runner", () => {
+    const payload = {
+      schemaVersion: 2,
+      args: {
+        size: 3,
+      },
+      workflow: {
+        steps: [
+          {
+            op: "project",
+            out: {
+              selectedSize: "$args.size",
+            },
+          },
+          {
+            op: "switch",
+            on: "$refs.selectedSize",
+            cases: {
+              0: [
+                {
+                  op: "projectResult",
+                  out: {
+                    size: 0,
+                  },
+                },
+              ],
+            },
+            default: [
+              {
+                op: "projectResult",
+                out: {
+                  size: "$refs.selectedSize",
+                },
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    const out = invokeRaw(payload);
+    expect(out.response).toEqual({ ok: true, result: { size: 3 } });
+  });
+
+  it("emits invalid_request when switch has no matching case/default", () => {
+    const payload = {
+      schemaVersion: 2,
+      args: {
+        size: 3,
+      },
+      workflow: {
+        steps: [
+          {
+            op: "switch",
+            on: "$args.size",
+            cases: {
+              0: [
+                {
+                  op: "projectResult",
+                  out: {
+                    size: 0,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    };
+
+    const out = invokeRaw(payload);
+    expect(out.response.ok).toBe(false);
+    if (!out.response.ok) {
+      expect(out.response.error.code).toBe("invalid_request");
+      expect(out.response.error.message).toContain("no matching case");
+    }
+  });
+
   it("resolves projectResult before cleanup steps run", () => {
     const payload = {
       schemaVersion: 2,

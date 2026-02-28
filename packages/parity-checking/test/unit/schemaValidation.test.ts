@@ -459,6 +459,126 @@ describe("schema validation", () => {
     ).toThrow(/methodV2\.workflow\.steps\[0\]\.test\.eq must be a 2-item array/);
   });
 
+  it("parses v2 project and switch workflow steps", () => {
+    const methodV2 = parseMethodSpecAny({
+      sourcePath: "/tmp/method-v2-project-switch.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "methods/cells-windows/newIntCell-project-switch@v2",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "cells-windows.newIntCell",
+          canonicalMethod: "cells-windows.newIntCell",
+          args: [{ name: "size", type: "spiceInt", constraints: { min: 0 } }],
+          result: {
+            type: "object",
+            required: ["size"],
+            properties: {
+              size: { type: "spiceInt" },
+            },
+          },
+        },
+        workflow: {
+          steps: [
+            {
+              op: "project",
+              out: {
+                selectedSize: "$args.size",
+              },
+            },
+            {
+              op: "switch",
+              on: "$refs.selectedSize",
+              cases: {
+                0: [
+                  {
+                    op: "projectResult",
+                    out: {
+                      size: 0,
+                    },
+                  },
+                ],
+              },
+              default: [
+                {
+                  op: "projectResult",
+                  out: {
+                    size: "$refs.selectedSize",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        cases: [{ id: "ok", args: { size: 3 }, expect: { ok: true } }],
+      },
+    });
+
+    expect(methodV2).toMatchObject({
+      schemaVersion: 2,
+      workflow: {
+        steps: expect.arrayContaining([
+          expect.objectContaining({
+            op: "project",
+            out: {
+              selectedSize: "$args.size",
+            },
+          }),
+          expect.objectContaining({
+            op: "switch",
+            on: "$refs.selectedSize",
+          }),
+        ]),
+      },
+    });
+  });
+
+  it("rejects v2 switch workflows with non-array case entries", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-switch-invalid-case.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/cells-windows/newIntCell-project-switch@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "cells-windows.newIntCell",
+            canonicalMethod: "cells-windows.newIntCell",
+            args: [{ name: "size", type: "spiceInt", constraints: { min: 0 } }],
+            result: {
+              type: "object",
+              required: ["size"],
+              properties: {
+                size: { type: "spiceInt" },
+              },
+            },
+          },
+          workflow: {
+            steps: [
+              {
+                op: "switch",
+                on: "$args.size",
+                cases: {
+                  bad: {
+                    op: "projectResult",
+                    out: {
+                      size: 1,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+          cases: [{ id: "ok", args: { size: 3 }, expect: { ok: true } }],
+        },
+      }),
+    ).toThrow(/methodV2\.workflow\.steps\[0\]\.cases\.bad must be an array/);
+  });
+
   it("parses v2 method contract.result const literals (including arrays/objects)", () => {
     const methodV2 = parseMethodSpecAny({
       sourcePath: "/tmp/method-v2-legacy-const.yml",

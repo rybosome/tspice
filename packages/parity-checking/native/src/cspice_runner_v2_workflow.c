@@ -7,6 +7,456 @@
 #include "cspice_runner_v2_json_buffer.h"
 #include "cspice_runner_v2_workflow.h"
 
+static bool v2_strdup_token_slice(const char *json,
+                                  const jsmntok_t *tok,
+                                  char **out) {
+  if (json == NULL || tok == NULL || out == NULL || tok->start < 0 ||
+      tok->end < tok->start) {
+    return false;
+  }
+
+  const size_t len = (size_t)(tok->end - tok->start);
+  if (len > SIZE_MAX - 1U) {
+    return false;
+  }
+
+  char *copy = (char *)malloc(len + 1U);
+  if (copy == NULL) {
+    return false;
+  }
+
+  memcpy(copy, json + tok->start, len);
+  copy[len] = '\0';
+  *out = copy;
+  return true;
+}
+
+static bool v2_copy_switch_value_token(const char *json,
+                                       const jsmntok_t *tokens,
+                                       const int tokenCount,
+                                       const int valueTok,
+                                       char **outKey) {
+  if (valueTok < 0 || valueTok >= tokenCount || outKey == NULL) {
+    write_error_json_ex("invalid_request", "switch.on could not resolve token",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  const jsmntok_t *tok = &tokens[valueTok];
+  if (tok->type == JSMN_PRIMITIVE) {
+    if (!v2_strdup_token_slice(json, tok, outKey)) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+    return true;
+  }
+
+  if (tok->type == JSMN_STRING) {
+    char detail[256];
+    detail[0] = '\0';
+    char *value = NULL;
+    jsmn_strdup_err_t err =
+        jsmn_strdup(json, tok, &value, detail, sizeof(detail));
+    if (err != JSMN_STRDUP_OK) {
+      if (err == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      return false;
+    }
+
+    *outKey = value;
+    return true;
+  }
+
+  write_error_json_ex("invalid_args",
+                      "switch.on expression must resolve to primitive or string",
+                      NULL,
+                      NULL,
+                      NULL,
+                      NULL);
+  return false;
+}
+
+static bool v2_resolve_switch_case_key(const char *json,
+                                       const jsmntok_t *tokens,
+                                       const int tokenCount,
+                                       const int onTok,
+                                       const int argsTok,
+                                       const V2RefEntry *refs,
+                                       const int refCount,
+                                       char **outKey) {
+  *outKey = NULL;
+
+  if (onTok < 0 || onTok >= tokenCount) {
+    write_error_json_ex("invalid_request", "switch requires on expression", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  const jsmntok_t *tok = &tokens[onTok];
+  if (tok->type == JSMN_PRIMITIVE) {
+    if (!v2_strdup_token_slice(json, tok, outKey)) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+    return true;
+  }
+
+  if (tok->type != JSMN_STRING) {
+    write_error_json_ex("invalid_args",
+                        "switch.on must be primitive or string expression",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char detail[256];
+  detail[0] = '\0';
+  char *expr = NULL;
+  jsmn_strdup_err_t exprErr =
+      jsmn_strdup(json, tok, &expr, detail, sizeof(detail));
+  if (exprErr != JSMN_STRDUP_OK) {
+    if (exprErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    return false;
+  }
+
+  const char *argName = NULL;
+  const char *refName = NULL;
+
+  if (v2_parse_ref_name(expr, "$args.", &argName)) {
+    int argTok = jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+    if (argTok < 0) {
+      write_error_json_ex("invalid_args", "Missing v2 argument", argName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    bool ok = v2_copy_switch_value_token(json,
+                                         tokens,
+                                         tokenCount,
+                                         argTok,
+                                         outKey);
+    free(expr);
+    return ok;
+  }
+
+  if (v2_parse_ref_name(expr, "$refs.", &refName)) {
+    int refIndex = v2_find_ref_index(refs, refCount, refName);
+    if (refIndex < 0) {
+      write_error_json_ex("invalid_request", "Unknown v2 ref", refName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    if (refs[refIndex].type != V2_REF_INT) {
+      write_error_json_ex("invalid_args", "switch.on ref must be integer",
+                          refName, NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    char intText[64];
+    const int n = snprintf(intText,
+                           sizeof(intText),
+                           "%" PRIdMAX,
+                           (intmax_t)refs[refIndex].intValue);
+    if (n < 0 || (size_t)n >= sizeof(intText)) {
+      free(expr);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    char *copy = strdup(intText);
+    if (copy == NULL) {
+      free(expr);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    *outKey = copy;
+    free(expr);
+    return true;
+  }
+
+  *outKey = expr;
+  return true;
+}
+
+static bool v2_execute_step_array(
+    const char *json, const jsmntok_t *tokens, const int tokenCount,
+    const int stepsTok, const int argsTok, V2RefEntry *refs, int *refCount,
+    const bool captureProjectResult, char **projectResultObjectJson,
+    const char *invalidStepMessage, const char *missingOpMessage,
+    const char *unsupportedOpMessage) {
+  if (stepsTok < 0 || stepsTok >= tokenCount ||
+      tokens[stepsTok].type != JSMN_ARRAY) {
+    write_error_json_ex("invalid_request", invalidStepMessage, NULL, NULL, NULL,
+                        NULL);
+    return false;
+  }
+
+  for (int i = 0; i < tokens[stepsTok].size; i++) {
+    int stepTok = jsmn_get_array_elem(tokens, stepsTok, i, tokenCount);
+    if (stepTok < 0 || tokens[stepTok].type != JSMN_OBJECT) {
+      write_error_json_ex("invalid_request", invalidStepMessage, NULL, NULL,
+                          NULL, NULL);
+      return false;
+    }
+
+    int opTok = jsmn_find_object_key(json, tokens, stepTok, "op", tokenCount);
+    if (opTok < 0 || tokens[opTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_request", missingOpMessage, NULL, NULL, NULL,
+                          NULL);
+      return false;
+    }
+
+    if (!v2_dispatch_workflow_step(json,
+                                   tokens,
+                                   tokenCount,
+                                   stepTok,
+                                   opTok,
+                                   argsTok,
+                                   refs,
+                                   refCount,
+                                   captureProjectResult,
+                                   projectResultObjectJson,
+                                   unsupportedOpMessage)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+static bool v2_execute_project_step(const char *json,
+                                    const jsmntok_t *tokens,
+                                    const int tokenCount,
+                                    const int stepTok,
+                                    const int argsTok,
+                                    V2RefEntry *refs,
+                                    int *refCount) {
+  int outTok = jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
+  if (outTok < 0 || outTok >= tokenCount || tokens[outTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_request", "project.out must be an object", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  const int pairCount = jsmn_object_pair_count(&tokens[outTok]);
+  if (pairCount < 0) {
+    write_error_json_ex("invalid_request", "project.out parse error", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  int idx = outTok + 1;
+  for (int i = 0; i < pairCount; i++) {
+    int keyTok = idx;
+    int valueTok = idx + 1;
+    if (valueTok >= tokenCount || tokens[keyTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_request", "project.out parse error", NULL,
+                          NULL, NULL, NULL);
+      return false;
+    }
+
+    char detail[256];
+    detail[0] = '\0';
+    char *key = NULL;
+    jsmn_strdup_err_t keyErr =
+        jsmn_strdup(json, &tokens[keyTok], &key, detail, sizeof(detail));
+    if (keyErr != JSMN_STRDUP_OK) {
+      if (keyErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      return false;
+    }
+
+    char label[256];
+    const int labelLen =
+        snprintf(label, sizeof(label), "project.out.%s", key);
+    if (labelLen < 0 || (size_t)labelLen >= sizeof(label)) {
+      free(key);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceInt projected = 0;
+    if (!v2_resolve_spiceint_expr(json,
+                                  tokens,
+                                  tokenCount,
+                                  valueTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  label,
+                                  &projected)) {
+      free(key);
+      return false;
+    }
+
+    bool ok = v2_add_ref_int(refs, refCount, key, projected);
+    free(key);
+    if (!ok) {
+      return false;
+    }
+
+    idx = jsmn_skip_subtree(tokens, valueTok, tokenCount);
+    if (idx < 0) {
+      write_error_json_ex("invalid_request", "project.out parse error", NULL,
+                          NULL, NULL, NULL);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+static bool v2_execute_switch_step(
+    const char *json, const jsmntok_t *tokens, const int tokenCount,
+    const int stepTok, const int argsTok, V2RefEntry *refs, int *refCount,
+    const bool captureProjectResult, char **projectResultObjectJson) {
+  int onTok = jsmn_find_object_key(json, tokens, stepTok, "on", tokenCount);
+  int casesTok =
+      jsmn_find_object_key(json, tokens, stepTok, "cases", tokenCount);
+  int defaultTok =
+      jsmn_find_object_key(json, tokens, stepTok, "default", tokenCount);
+
+  if (onTok < 0) {
+    write_error_json_ex("invalid_request", "switch requires on", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  if (casesTok < 0 || casesTok >= tokenCount ||
+      tokens[casesTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_request", "switch.cases must be an object",
+                        NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  char *switchKey = NULL;
+  if (!v2_resolve_switch_case_key(json,
+                                  tokens,
+                                  tokenCount,
+                                  onTok,
+                                  argsTok,
+                                  refs,
+                                  *refCount,
+                                  &switchKey)) {
+    return false;
+  }
+
+  int pairCount = jsmn_object_pair_count(&tokens[casesTok]);
+  if (pairCount < 0) {
+    free(switchKey);
+    write_error_json_ex("invalid_request", "switch.cases parse error", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int idx = casesTok + 1;
+  for (int i = 0; i < pairCount; i++) {
+    int keyTok = idx;
+    int branchTok = idx + 1;
+    if (branchTok >= tokenCount || tokens[keyTok].type != JSMN_STRING) {
+      free(switchKey);
+      write_error_json_ex("invalid_request", "switch.cases parse error", NULL,
+                          NULL, NULL, NULL);
+      return false;
+    }
+
+    char detail[256];
+    detail[0] = '\0';
+    char *caseName = NULL;
+    jsmn_strdup_err_t keyErr =
+        jsmn_strdup(json, &tokens[keyTok], &caseName, detail, sizeof(detail));
+    if (keyErr != JSMN_STRDUP_OK) {
+      free(switchKey);
+      if (keyErr == JSMN_STRDUP_INVALID) {
+        write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                            detail[0] ? detail : NULL, NULL, NULL, NULL);
+      } else {
+        write_error_json("Out of memory", NULL, NULL, NULL);
+      }
+      return false;
+    }
+
+    bool match = (strcmp(caseName, switchKey) == 0);
+    free(caseName);
+
+    if (match) {
+      if (!v2_execute_step_array(
+              json,
+              tokens,
+              tokenCount,
+              branchTok,
+              argsTok,
+              refs,
+              refCount,
+              captureProjectResult,
+              projectResultObjectJson,
+              "switch case must be an array",
+              "switch case step missing op",
+              "Unsupported v2 switch op")) {
+        free(switchKey);
+        return false;
+      }
+
+      free(switchKey);
+      return true;
+    }
+
+    idx = jsmn_skip_subtree(tokens, branchTok, tokenCount);
+    if (idx < 0) {
+      free(switchKey);
+      write_error_json_ex("invalid_request", "switch.cases parse error", NULL,
+                          NULL, NULL, NULL);
+      return false;
+    }
+  }
+
+  if (defaultTok >= 0) {
+    bool ok = v2_execute_step_array(json,
+                                    tokens,
+                                    tokenCount,
+                                    defaultTok,
+                                    argsTok,
+                                    refs,
+                                    refCount,
+                                    captureProjectResult,
+                                    projectResultObjectJson,
+                                    "switch.default must be an array",
+                                    "switch default step missing op",
+                                    "Unsupported v2 switch op");
+    free(switchKey);
+    return ok;
+  }
+
+  write_error_json_ex("invalid_request",
+                      "switch.on has no matching case and no default",
+                      switchKey,
+                      NULL,
+                      NULL,
+                      NULL);
+  free(switchKey);
+  return false;
+}
+
 bool v2_dispatch_workflow_step(
     const char *json, const jsmntok_t *tokens, const int tokenCount,
     const int stepTok, const int opTok, const int argsTok, V2RefEntry *refs,
@@ -30,6 +480,23 @@ bool v2_dispatch_workflow_step(
   if (jsmn_token_streq(json, &tokens[opTok], "assert")) {
     return v2_execute_assert_step(json, tokens, tokenCount, stepTok, argsTok,
                                   refs, *refCount);
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "project")) {
+    return v2_execute_project_step(json, tokens, tokenCount, stepTok, argsTok,
+                                   refs, refCount);
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "switch")) {
+    return v2_execute_switch_step(json,
+                                  tokens,
+                                  tokenCount,
+                                  stepTok,
+                                  argsTok,
+                                  refs,
+                                  refCount,
+                                  captureProjectResult,
+                                  projectResultObjectJson);
   }
 
   if (jsmn_token_streq(json, &tokens[opTok], "projectResult")) {
@@ -82,7 +549,7 @@ static bool v2_write_project_result_success_json(
 }
 
 bool v2_execute_workflow_request(const char *json, const jsmntok_t *tokens,
-                                        const int tokenCount) {
+                                 const int tokenCount) {
   int argsTok = jsmn_find_object_key(json, tokens, 0, "args", tokenCount);
   if (argsTok < 0 || tokens[argsTok].type != JSMN_OBJECT) {
     write_error_json_ex("invalid_request", "v2 request requires object args", NULL,
@@ -123,30 +590,18 @@ bool v2_execute_workflow_request(const char *json, const jsmntok_t *tokens,
   char *projectResultObjectJson = NULL;
   bool ok = true;
 
-  for (int i = 0; i < tokens[stepsTok].size; i++) {
-    int stepTok = jsmn_get_array_elem(tokens, stepsTok, i, tokenCount);
-    if (stepTok < 0 || tokens[stepTok].type != JSMN_OBJECT) {
-      write_error_json_ex("invalid_request", "v2 workflow step must be an object",
-                          NULL, NULL, NULL, NULL);
-      ok = false;
-      break;
-    }
-
-    int opTok = jsmn_find_object_key(json, tokens, stepTok, "op", tokenCount);
-    if (opTok < 0 || tokens[opTok].type != JSMN_STRING) {
-      write_error_json_ex("invalid_request", "v2 workflow step missing string op",
-                          NULL, NULL, NULL, NULL);
-      ok = false;
-      break;
-    }
-
-    if (!v2_dispatch_workflow_step(
-            json, tokens, tokenCount, stepTok, opTok, argsTok, refs, &refCount,
-            true, &projectResultObjectJson, "Unsupported v2 workflow op")) {
-      ok = false;
-      break;
-    }
-  }
+  ok = v2_execute_step_array(json,
+                             tokens,
+                             tokenCount,
+                             stepsTok,
+                             argsTok,
+                             refs,
+                             &refCount,
+                             true,
+                             &projectResultObjectJson,
+                             "v2 workflow step must be an object",
+                             "v2 workflow step missing string op",
+                             "Unsupported v2 workflow op");
 
   if (ok && projectResultObjectJson == NULL) {
     write_error_json_ex("invalid_request",
@@ -156,31 +611,18 @@ bool v2_execute_workflow_request(const char *json, const jsmntok_t *tokens,
   }
 
   if (ok && cleanupTok >= 0) {
-    for (int i = 0; i < tokens[cleanupTok].size; i++) {
-      int stepTok = jsmn_get_array_elem(tokens, cleanupTok, i, tokenCount);
-      if (stepTok < 0 || tokens[stepTok].type != JSMN_OBJECT) {
-        write_error_json_ex("invalid_request",
-                            "v2 cleanup step must be an object", NULL, NULL,
-                            NULL, NULL);
-        ok = false;
-        break;
-      }
-
-      int opTok = jsmn_find_object_key(json, tokens, stepTok, "op", tokenCount);
-      if (opTok < 0 || tokens[opTok].type != JSMN_STRING) {
-        write_error_json_ex("invalid_request", "v2 cleanup step missing op", NULL,
-                            NULL, NULL, NULL);
-        ok = false;
-        break;
-      }
-
-      if (!v2_dispatch_workflow_step(
-              json, tokens, tokenCount, stepTok, opTok, argsTok, refs,
-              &refCount, false, NULL, "Unsupported v2 cleanup op")) {
-        ok = false;
-        break;
-      }
-    }
+    ok = v2_execute_step_array(json,
+                               tokens,
+                               tokenCount,
+                               cleanupTok,
+                               argsTok,
+                               refs,
+                               &refCount,
+                               false,
+                               NULL,
+                               "v2 cleanup step must be an object",
+                               "v2 cleanup step missing op",
+                               "Unsupported v2 cleanup op");
   }
 
   if (ok) {
