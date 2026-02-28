@@ -213,6 +213,18 @@ export type MethodWorkflowOpProjectResultV2 = {
   out: Record<string, unknown>;
 };
 
+export type MethodWorkflowOpProjectV2 = {
+  op: "project";
+  out: Record<string, unknown>;
+};
+
+export type MethodWorkflowOpSwitchV2 = {
+  op: "switch";
+  on: unknown;
+  cases: Record<string, MethodWorkflowStepV2[]>;
+  default?: MethodWorkflowStepV2[];
+};
+
 export type MethodWorkflowOpFreeCellV2 = {
   op: "freeCell";
   target: unknown;
@@ -229,6 +241,8 @@ export type MethodWorkflowStepV2 =
   | MethodWorkflowOpSpiceCallV2
   | MethodWorkflowOpInvokeLegacyCallV2
   | MethodWorkflowOpAssertV2
+  | MethodWorkflowOpProjectV2
+  | MethodWorkflowOpSwitchV2
   | MethodWorkflowOpProjectResultV2
   | MethodWorkflowOpFreeCellV2
   | MethodWorkflowOpFreeWindowV2;

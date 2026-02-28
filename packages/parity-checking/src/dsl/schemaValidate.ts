@@ -233,8 +233,28 @@ function validateInvokeLegacyCallWorkflowShapeV2(
   cleanup: MethodWorkflowStepV2[] | undefined,
   cases: MethodCaseSpecV2[],
 ): void {
-  const hasInvokeLegacyCallInSteps = steps.some((step) => step.op === "invokeLegacyCall");
-  const hasInvokeLegacyCallInCleanup = (cleanup ?? []).some((step) => step.op === "invokeLegacyCall");
+  const workflowContainsInvokeLegacyCall = (entries: MethodWorkflowStepV2[]): boolean =>
+    entries.some((step) => {
+      if (step.op === "invokeLegacyCall") {
+        return true;
+      }
+
+      if (step.op === "switch") {
+        const branchSteps = Object.values(step.cases).flat();
+        if (workflowContainsInvokeLegacyCall(branchSteps)) {
+          return true;
+        }
+
+        if (step.default && workflowContainsInvokeLegacyCall(step.default)) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+  const hasInvokeLegacyCallInSteps = workflowContainsInvokeLegacyCall(steps);
+  const hasInvokeLegacyCallInCleanup = workflowContainsInvokeLegacyCall(cleanup ?? []);
 
   if (hasInvokeLegacyCallInCleanup) {
     throw new TypeError("methodV2.workflow.cleanup must not include invokeLegacyCall");
@@ -554,6 +574,54 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
       return {
         op: "projectResult",
         out: assertRecord(obj.out, `${label}.out`),
+      };
+    }
+
+    case "project": {
+      assertNoUnknownKeys(obj, label, ["op", "out"]);
+      return {
+        op: "project",
+        out: assertRecord(obj.out, `${label}.out`),
+      };
+    }
+
+    case "switch": {
+      assertNoUnknownKeys(obj, label, ["op", "on", "cases", "default"]);
+      if (!("on" in obj)) {
+        throw new TypeError(`${label}.on is required`);
+      }
+
+      const rawCases = assertRecord(obj.cases, `${label}.cases`);
+      const cases: Record<string, MethodWorkflowStepV2[]> = {};
+
+      for (const [caseName, caseStepsRaw] of Object.entries(rawCases)) {
+        if (!Array.isArray(caseStepsRaw)) {
+          throw new TypeError(`${label}.cases.${caseName} must be an array`);
+        }
+
+        cases[caseName] = caseStepsRaw.map((entry, index) =>
+          parseMethodWorkflowStepV2(entry, `${label}.cases.${caseName}[${index}]`),
+        );
+      }
+
+      const defaultSteps =
+        obj.default === undefined
+          ? undefined
+          : (() => {
+              if (!Array.isArray(obj.default)) {
+                throw new TypeError(`${label}.default must be an array`);
+              }
+
+              return obj.default.map((entry, index) =>
+                parseMethodWorkflowStepV2(entry, `${label}.default[${index}]`),
+              );
+            })();
+
+      return {
+        op: "switch",
+        on: obj.on,
+        cases,
+        ...(defaultSteps === undefined ? {} : { default: defaultSteps }),
       };
     }
 

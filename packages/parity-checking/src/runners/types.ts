@@ -135,6 +135,18 @@ export type V2WorkflowProjectResultStep = {
   out: Record<string, unknown>;
 };
 
+export type V2WorkflowProjectStep = {
+  op: "project";
+  out: Record<string, unknown>;
+};
+
+export type V2WorkflowSwitchStep = {
+  op: "switch";
+  on: unknown;
+  cases: Record<string, V2WorkflowStep[]>;
+  default?: V2WorkflowStep[];
+};
+
 export type V2WorkflowFreeCellStep = {
   op: "freeCell";
   target: unknown;
@@ -151,6 +163,8 @@ export type V2WorkflowStep =
   | V2WorkflowSpiceCallStep
   | V2WorkflowInvokeLegacyCallStep
   | V2WorkflowAssertStep
+  | V2WorkflowProjectStep
+  | V2WorkflowSwitchStep
   | V2WorkflowProjectResultStep
   | V2WorkflowFreeCellStep
   | V2WorkflowFreeWindowStep;
