@@ -613,7 +613,7 @@ async function executeStep(
 
     case "resolveFirstLoadedEkPath": {
       const ekPath = firstLoadedEkKernelPathOrThrow(raw, "resolveFirstLoadedEkPath");
-      defineRef(refs, step.as, { kind: "value", value: ekPath }, "resolveFirstLoadedEkPath.as");
+      defineRef(refs, step.as, { kind: "int", value: ekPath }, "resolveFirstLoadedEkPath.as");
       return undefined;
     }
 
