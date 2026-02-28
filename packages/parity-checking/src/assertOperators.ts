@@ -6,6 +6,7 @@ export const ASSERT_OPERATOR_NAMES_TEXT = ASSERT_OPERATORS.map((operator) => JSO
 
 const ASSERT_OPERATOR_SET: ReadonlySet<string> = new Set(ASSERT_OPERATORS);
 
+/** Type guard for supported assert operators. */
 export function isAssertOperator(value: string): value is AssertOperator {
   return ASSERT_OPERATOR_SET.has(value);
 }
