@@ -139,6 +139,43 @@ describe("cspice-runner v2 workflow behavior", () => {
     expect(out.response).toEqual({ ok: true, result: { value: 1 } });
   });
 
+  it("returns provided assert error code/message when assertion fails", () => {
+    const payload = {
+      schemaVersion: 2,
+      args: {
+        size: 3,
+      },
+      workflow: {
+        steps: [
+          {
+            op: "assert",
+            test: {
+              gt: ["$args.size", 3],
+            },
+            error: {
+              code: "assert_size_gt_three",
+              message: "size must be > 3",
+            },
+          },
+          {
+            op: "projectResult",
+            out: {
+              size: "$args.size",
+            },
+          },
+        ],
+      },
+    };
+
+    const out = invokeRaw(payload);
+
+    expect(out.response.ok).toBe(false);
+    if (!out.response.ok) {
+      expect(out.response.error.code).toBe("assert_size_gt_three");
+      expect(out.response.error.message).toBe("size must be > 3");
+    }
+  });
+
   it("resolves projectResult before cleanup steps run", () => {
     const payload = {
       schemaVersion: 2,

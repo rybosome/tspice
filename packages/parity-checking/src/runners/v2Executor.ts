@@ -8,6 +8,7 @@ import type { SpiceBackend } from "@rybosome/tspice";
 import type {
   RunCaseInputV2,
   RunnerErrorReport,
+  V2WorkflowAssertOperator,
   V2WorkflowStep,
 } from "./types.js";
 import { validateV2ContractResultOrThrow } from "./v2ContractResultValidation.js";
@@ -23,6 +24,15 @@ const DSK_MINIMAL_WORKSZ = 2048;
 const DSK_MINIMAL_VOXPSZ = 512;
 const DSK_MINIMAL_VOXLSZ = 1024;
 const DSK_MINIMAL_SPXISZ = 8192;
+
+const V2_ASSERT_OPERATORS: ReadonlySet<V2WorkflowAssertOperator> = new Set([
+  "eq",
+  "ne",
+  "gt",
+  "gte",
+  "lt",
+  "lte",
+]);
 
 const DSK_MINIMAL_VERTICES = [
   0, 0, 0,
@@ -271,6 +281,18 @@ function asSpiceInt(value: unknown, label: string): number {
   return value;
 }
 
+function asNonEmptyString(value: unknown, label: string): string {
+  if (typeof value !== "string" || value.trim() === "") {
+    invalidRequest(`${label} must be a non-empty string (got ${formatValue(value)})`);
+  }
+
+  return value;
+}
+
+function isV2AssertOperator(value: string): value is V2WorkflowAssertOperator {
+  return V2_ASSERT_OPERATORS.has(value as V2WorkflowAssertOperator);
+}
+
 function resolveReferenceToken(reference: string): { source: "args" | "refs"; key: string } | null {
   if (!reference.startsWith("$")) return null;
 
@@ -484,6 +506,59 @@ function projectResult(
   }
 
   return projected;
+}
+
+function executeAssertStep(
+  step: Extract<V2WorkflowStep, { op: "assert" }>,
+  args: Record<string, unknown>,
+  refs: Map<string, RefValue>,
+): void {
+  const test = asRecord(step.test, "assert.test");
+  const entries = Object.entries(test);
+  if (entries.length !== 1) {
+    invalidRequest("assert.test must define exactly one operator");
+  }
+
+  const [operatorRaw, operandsRaw] = entries[0] as [string, unknown];
+  if (!isV2AssertOperator(operatorRaw)) {
+    invalidRequest("assert.test operator must be one of \"eq\", \"ne\", \"gt\", \"gte\", \"lt\", \"lte\"");
+  }
+
+  if (!Array.isArray(operandsRaw) || operandsRaw.length !== 2) {
+    invalidRequest(`assert.test.${operatorRaw} must be a 2-item array`);
+  }
+
+  const left = resolveSpiceIntExpression(operandsRaw[0], args, refs, `assert.test.${operatorRaw}[0]`);
+  const right = resolveSpiceIntExpression(operandsRaw[1], args, refs, `assert.test.${operatorRaw}[1]`);
+
+  const passed = (() => {
+    switch (operatorRaw) {
+      case "eq":
+        return left === right;
+      case "ne":
+        return left !== right;
+      case "gt":
+        return left > right;
+      case "gte":
+        return left >= right;
+      case "lt":
+        return left < right;
+      case "lte":
+        return left <= right;
+    }
+  })();
+
+  if (passed) {
+    return;
+  }
+
+  const errorSpec = asRecord(step.error, "assert.error");
+  const code = asNonEmptyString(errorSpec.code, "assert.error.code");
+  const message = asNonEmptyString(errorSpec.message, "assert.error.message");
+
+  const assertionError = new Error(message) as Error & { code?: string };
+  assertionError.code = code;
+  throw assertionError;
 }
 
 function freeCellRef(
@@ -994,6 +1069,11 @@ async function executeStep(
 
     case "projectResult": {
       return projectResult(step.out, args, refs);
+    }
+
+    case "assert": {
+      executeAssertStep(step, args, refs);
+      return undefined;
     }
 
     case "freeCell": {

@@ -108,6 +108,32 @@ export type V2WorkflowInvokeLegacyCallStep = {
   op: "invokeLegacyCall";
   call?: string;
 };
+
+export type V2WorkflowAssertOperator =
+  | "eq"
+  | "ne"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte";
+
+export type V2WorkflowAssertTest =
+  | { eq: [unknown, unknown] }
+  | { ne: [unknown, unknown] }
+  | { gt: [unknown, unknown] }
+  | { gte: [unknown, unknown] }
+  | { lt: [unknown, unknown] }
+  | { lte: [unknown, unknown] };
+
+export type V2WorkflowAssertStep = {
+  op: "assert";
+  test: V2WorkflowAssertTest;
+  error: {
+    code: string;
+    message: string;
+  };
+};
+
 export type V2WorkflowProjectResultStep = {
   op: "projectResult";
   out: Record<string, unknown>;
@@ -128,6 +154,7 @@ export type V2WorkflowStep =
   | V2WorkflowAllocWindowStep
   | V2WorkflowSpiceCallStep
   | V2WorkflowInvokeLegacyCallStep
+  | V2WorkflowAssertStep
   | V2WorkflowProjectResultStep
   | V2WorkflowFreeCellStep
   | V2WorkflowFreeWindowStep;

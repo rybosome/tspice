@@ -26,10 +26,6 @@ type DispatchFn = (
 
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
 
-function isRunnerValidationCode(value: unknown): value is RunnerValidationCode {
-  return value === "invalid_request" || value === "invalid_args" || value === "unsupported_call";
-}
-
 function formatValue(value: unknown): string {
   if (typeof value === "number") {
     if (Number.isNaN(value)) return "NaN";
@@ -1967,7 +1963,7 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
     const report: RunnerErrorReport = { message: error.message };
 
     const anyErr = error as unknown as { code?: unknown; details?: unknown };
-    if (isRunnerValidationCode(anyErr.code)) report.code = anyErr.code;
+    if (typeof anyErr.code === "string") report.code = anyErr.code;
     if (typeof anyErr.details === "object" && anyErr.details !== null && !Array.isArray(anyErr.details)) {
       report.details = { ...(anyErr.details as Record<string, unknown>) };
     }
