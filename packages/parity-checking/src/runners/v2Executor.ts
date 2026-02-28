@@ -45,6 +45,7 @@ type CellHandle =
   | ReturnType<SpiceBackend["kit"]["newIntCell"]>
   | ReturnType<SpiceBackend["kit"]["newDoubleCell"]>
   | ReturnType<SpiceBackend["kit"]["newCharCell"]>;
+type IntCellHandle = ReturnType<SpiceBackend["kit"]["newIntCell"]>;
 type WindowHandle = ReturnType<SpiceBackend["kit"]["newWindow"]>;
 type DasHandle = ReturnType<SpiceBackend["raw"]["dasopr"]>;
 type DskOpenHandle = ReturnType<SpiceBackend["raw"]["dskopn"]>;
@@ -79,51 +80,89 @@ type V2ComplexSpiceCallName =
   | "dsksrf_c"
   | "readVirtualOutput";
 
-type V2ComplexSpiceCallExecutionKind =
-  | "minimalDskSelectorInt"
-  | "minimalDskBodyIdPresence"
-  | "minimalDskSurfaceIdPresence"
-  | "readVirtualOutputBytes";
-
 type V2ComplexSpiceCallOutputPolicy = "required" | "forbidden";
 
-type V2ComplexSpiceCallSpec = {
+type V2ComplexSpiceCallBase = {
   call: V2ComplexSpiceCallName;
-  executionKind: V2ComplexSpiceCallExecutionKind;
   arity: number;
   outputPolicy: V2ComplexSpiceCallOutputPolicy;
+  tempTag: string;
 };
+
+type V2MinimalDskSelectorValueKind = "dskgd" | "dskb02";
+type V2MinimalDskPresenceKind = "bodyId" | "surfaceId";
+
+type V2ComplexSpiceCallSpec =
+  | (V2ComplexSpiceCallBase & {
+      kind: "minimalDskSelectorInt";
+      selectorValueKind: V2MinimalDskSelectorValueKind;
+      selectorPrimary: string;
+      selectorSecondary: string;
+    })
+  | (V2ComplexSpiceCallBase & {
+      kind: "minimalDskPresence";
+      presenceKind: V2MinimalDskPresenceKind;
+    })
+  | (V2ComplexSpiceCallBase & {
+      kind: "readVirtualOutputBytes";
+    });
+
+type V2MinimalDskSelectorSpiceCallSpec = Extract<
+  V2ComplexSpiceCallSpec,
+  { kind: "minimalDskSelectorInt" }
+>;
+type V2MinimalDskPresenceSpiceCallSpec = Extract<
+  V2ComplexSpiceCallSpec,
+  { kind: "minimalDskPresence" }
+>;
+type V2ReadVirtualOutputSpiceCallSpec = Extract<
+  V2ComplexSpiceCallSpec,
+  { kind: "readVirtualOutputBytes" }
+>;
 
 type V2SpiceCallStep = Extract<V2WorkflowStep, { op: "spiceCall" }>;
 
 const V2_COMPLEX_SPICE_CALL_SPECS: readonly V2ComplexSpiceCallSpec[] = [
   {
     call: "dskgd_c",
-    executionKind: "minimalDskSelectorInt",
+    kind: "minimalDskSelectorInt",
+    tempTag: "v2-dskgd",
+    selectorValueKind: "dskgd",
+    selectorPrimary: "surfce",
+    selectorSecondary: "center",
     arity: 1,
     outputPolicy: "required",
   },
   {
     call: "dskb02_c",
-    executionKind: "minimalDskSelectorInt",
+    kind: "minimalDskSelectorInt",
+    tempTag: "v2-dskb02",
+    selectorValueKind: "dskb02",
+    selectorPrimary: "nv",
+    selectorSecondary: "np",
     arity: 1,
     outputPolicy: "required",
   },
   {
     call: "dskobj_c",
-    executionKind: "minimalDskBodyIdPresence",
+    kind: "minimalDskPresence",
+    tempTag: "v2-dskobj",
+    presenceKind: "bodyId",
     arity: 0,
     outputPolicy: "forbidden",
   },
   {
     call: "dsksrf_c",
-    executionKind: "minimalDskSurfaceIdPresence",
+    kind: "minimalDskPresence",
+    tempTag: "v2-dsksrf",
+    presenceKind: "surfaceId",
     arity: 0,
     outputPolicy: "forbidden",
   },
   {
     call: "readVirtualOutput",
-    executionKind: "readVirtualOutputBytes",
+    kind: "readVirtualOutputBytes",
+    tempTag: "v2-read-virtual-output",
     arity: 0,
     outputPolicy: "forbidden",
   },
@@ -669,24 +708,21 @@ function forbidSpiceCallOutputRef(step: V2SpiceCallStep): void {
 async function executeMinimalDskSelectorIntCall(
   backend: SpiceBackend,
   step: V2SpiceCallStep,
+  spec: V2MinimalDskSelectorSpiceCallSpec,
   outputRef: string,
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
 ): Promise<void> {
   const selector = resolveStringExpression(step.in[0], args, refs, `spiceCall(${step.call}).in[0]`);
 
-  if (step.call === "dskgd_c" && selector !== "surfce" && selector !== "center") {
+  if (selector !== spec.selectorPrimary && selector !== spec.selectorSecondary) {
     invalidArgs(
-      `spiceCall(${step.call}).in[0] must be "surfce" or "center" (got ${formatValue(selector)})`,
+      `spiceCall(${step.call}).in[0] must be ${JSON.stringify(spec.selectorPrimary)} or ${JSON.stringify(spec.selectorSecondary)} (got ${formatValue(selector)})`,
     );
   }
 
-  if (step.call === "dskb02_c" && selector !== "nv" && selector !== "np") {
-    invalidArgs(`spiceCall(${step.call}).in[0] must be "nv" or "np" (got ${formatValue(selector)})`);
-  }
-
   const raw = getRawBackend(backend);
-  const value = await withMinimalDskFile(backend, step.call.replace(/_c$/, ""), (dskPath) => {
+  const value = await withMinimalDskFile(backend, spec.tempTag, (dskPath) => {
     const handle = raw.dasopr(dskPath);
     let queryError: unknown = undefined;
     let selected = 0;
@@ -697,12 +733,12 @@ async function executeMinimalDskSelectorIntCall(
         invalidRequest(`spiceCall(${step.call}) expected a DLA segment in minimal DSK`);
       }
 
-      if (step.call === "dskgd_c") {
+      if (spec.selectorValueKind === "dskgd") {
         const descriptor = raw.dskgd(handle, first.descr);
-        selected = selector === "surfce" ? descriptor.surfce : descriptor.center;
+        selected = selector === spec.selectorPrimary ? descriptor.surfce : descriptor.center;
       } else {
         const bookkeeping = raw.dskb02(handle, first.descr);
-        selected = selector === "nv" ? bookkeeping.nv : bookkeeping.np;
+        selected = selector === spec.selectorPrimary ? bookkeeping.nv : bookkeeping.np;
       }
     } catch (error) {
       queryError = error;
@@ -719,59 +755,63 @@ async function executeMinimalDskSelectorIntCall(
   defineRef(refs, outputRef, { kind: "int", value }, `spiceCall(${step.call}).as`);
 }
 
-async function executeMinimalDskBodyIdPresenceCall(backend: SpiceBackend): Promise<void> {
+async function executeMinimalDskPresenceCall(
+  backend: SpiceBackend,
+  step: V2SpiceCallStep,
+  spec: V2MinimalDskPresenceSpiceCallSpec,
+): Promise<void> {
   const raw = getRawBackend(backend);
   const kit = getKitBackend(backend);
 
-  await withMinimalDskFile(backend, "dskobj", (dskPath) => {
-    const bodids = kit.newIntCell(100);
+  await withMinimalDskFile(backend, spec.tempTag, (dskPath) => {
+    const bodids: IntCellHandle = kit.newIntCell(100);
+    const srfids: IntCellHandle | undefined =
+      spec.presenceKind === "surfaceId" ? kit.newIntCell(100) : undefined;
+
     try {
       raw.dskobj(dskPath, bodids);
-      const count = asSpiceInt(raw.card(bodids), "spiceCall(dskobj_c).result.count");
-      if (count < 1) {
-        invalidRequest("spiceCall(dskobj_c) expected at least one body id");
-      }
-    } finally {
-      kit.freeCell(bodids);
-    }
-  });
-}
-
-async function executeMinimalDskSurfaceIdPresenceCall(backend: SpiceBackend): Promise<void> {
-  const raw = getRawBackend(backend);
-  const kit = getKitBackend(backend);
-
-  await withMinimalDskFile(backend, "dsksrf", (dskPath) => {
-    const bodids = kit.newIntCell(100);
-    const srfids = kit.newIntCell(100);
-    try {
-      raw.dskobj(dskPath, bodids);
-      const bodyCount = asSpiceInt(raw.card(bodids), "spiceCall(dsksrf_c).bodyCount");
+      const bodyCount = asSpiceInt(raw.card(bodids), `spiceCall(${step.call}).bodyCount`);
       if (bodyCount < 1) {
-        invalidRequest("spiceCall(dsksrf_c) expected at least one body id");
+        invalidRequest(`spiceCall(${step.call}) expected at least one body id`);
       }
 
-      const bodyId = asSpiceInt(kit.cellGeti(bodids, 0), "spiceCall(dsksrf_c).bodyId");
+      if (spec.presenceKind === "bodyId") {
+        return;
+      }
+
+      const bodyId = asSpiceInt(kit.cellGeti(bodids, 0), `spiceCall(${step.call}).bodyId`);
+      if (srfids === undefined) {
+        invalidRequest(`spiceCall(${step.call}) missing surface-id metadata`);
+      }
+
       raw.dsksrf(dskPath, bodyId, srfids);
 
-      const surfaceCount = asSpiceInt(raw.card(srfids), "spiceCall(dsksrf_c).surfaceCount");
+      const surfaceCount = asSpiceInt(
+        raw.card(srfids),
+        `spiceCall(${step.call}).surfaceCount`,
+      );
       if (surfaceCount < 1) {
-        invalidRequest("spiceCall(dsksrf_c) expected at least one surface id");
+        invalidRequest(`spiceCall(${step.call}) expected at least one surface id`);
       }
     } finally {
-      kit.freeCell(srfids);
+      if (srfids !== undefined) {
+        kit.freeCell(srfids);
+      }
       kit.freeCell(bodids);
     }
   });
 }
 
-async function executeReadVirtualOutputBytesCall(backend: SpiceBackend): Promise<void> {
+async function executeReadVirtualOutputBytesCall(
+  backend: SpiceBackend,
+  spec: V2ReadVirtualOutputSpiceCallSpec,
+): Promise<void> {
   const raw = getRawBackend(backend);
   const kit = getKitBackend(backend);
 
   const output = {
     kind: "virtual-output" as const,
-    path: buildTempPath(backend, "read-virtual-output", ".bsp"),
+    path: buildTempPath(backend, spec.tempTag, ".bsp"),
   };
 
   const handle = raw.spkopn(output, "TSPICE", 0);
@@ -835,25 +875,21 @@ async function executeComplexSpiceCall(
     forbidSpiceCallOutputRef(step);
   }
 
-  switch (spec.executionKind) {
+  switch (spec.kind) {
     case "minimalDskSelectorInt": {
       if (outputRef === undefined) {
         invalidRequest(`spiceCall ${step.call} requires an output ref`);
       }
-      await executeMinimalDskSelectorIntCall(backend, step, outputRef, args, refs);
+      await executeMinimalDskSelectorIntCall(backend, step, spec, outputRef, args, refs);
       return;
     }
 
-    case "minimalDskBodyIdPresence":
-      await executeMinimalDskBodyIdPresenceCall(backend);
-      return;
-
-    case "minimalDskSurfaceIdPresence":
-      await executeMinimalDskSurfaceIdPresenceCall(backend);
+    case "minimalDskPresence":
+      await executeMinimalDskPresenceCall(backend, step, spec);
       return;
 
     case "readVirtualOutputBytes":
-      await executeReadVirtualOutputBytesCall(backend);
+      await executeReadVirtualOutputBytesCall(backend, spec);
       return;
   }
 }
@@ -867,6 +903,10 @@ function executeAssertStep(
 
   const left = resolveSpiceIntExpression(operands[0], args, refs, `assert.test.${operator}[0]`);
   const right = resolveSpiceIntExpression(operands[1], args, refs, `assert.test.${operator}[1]`);
+
+  const errorSpec = asRecord(step.error, "assert.error");
+  const code = asNonEmptyString(errorSpec.code, "assert.error.code");
+  const message = asNonEmptyString(errorSpec.message, "assert.error.message");
 
   const passed = (() => {
     switch (operator) {
@@ -884,10 +924,6 @@ function executeAssertStep(
         return left <= right;
     }
   })();
-
-  const errorSpec = asRecord(step.error, "assert.error");
-  const code = asNonEmptyString(errorSpec.code, "assert.error.code");
-  const message = asNonEmptyString(errorSpec.message, "assert.error.message");
 
   if (passed) {
     return;
