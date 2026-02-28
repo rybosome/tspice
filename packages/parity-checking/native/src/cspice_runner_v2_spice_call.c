@@ -1,6 +1,7 @@
 #include "cspice_runner_json_emit.h"
 #include "cspice_runner_error.h"
 #include "cspice_runner_temp_files.h"
+#include "cspice_runner_v2_call_spec.h"
 #include "cspice_runner_v2_refs.h"
 #include "cspice_runner_v2_fixtures.h"
 #include "cspice_runner_v2_spice_call.h"
@@ -36,9 +37,12 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
   }
 
   const int inputCount = tokens[inTok].size;
+  const V2SpiceCallSpec *callSpec = v2_lookup_spice_call_spec(callName);
+  const V2SpiceCallId callId =
+      (callSpec != NULL) ? callSpec->id : V2_SPICE_CALL_NONE;
 
-  if (strcmp(callName, "card_c") == 0 || strcmp(callName, "size_c") == 0) {
-    if (inputCount != 1) {
+  if (callId == V2_SPICE_CALL_CARD_C || callId == V2_SPICE_CALL_SIZE_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall card_c/size_c expects one input",
                           NULL, NULL, NULL, NULL);
@@ -69,8 +73,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     }
 
     SpiceInt out =
-        (strcmp(callName, "card_c") == 0) ? card_c(&refs[refIndex].cell)
-                                           : size_c(&refs[refIndex].cell);
+        (callId == V2_SPICE_CALL_CARD_C) ? card_c(&refs[refIndex].cell)
+                                         : size_c(&refs[refIndex].cell);
 
     if (failed_c() == SPICETRUE) {
       char shortMsg[1841];
@@ -106,8 +110,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     return ok;
   }
 
-  if (strcmp(callName, "dskgd_c") == 0 || strcmp(callName, "dskb02_c") == 0) {
-    if (inputCount != 1) {
+  if (callId == V2_SPICE_CALL_DSKGD_C || callId == V2_SPICE_CALL_DSKB02_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall dskgd_c/dskb02_c expects one selector input",
                           NULL, NULL, NULL, NULL);
@@ -154,7 +158,7 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     }
 
     bool selectorOk = false;
-    if (strcmp(callName, "dskgd_c") == 0) {
+    if (callId == V2_SPICE_CALL_DSKGD_C) {
       selectorOk = (strcmp(selector, "surfce") == 0 ||
                     strcmp(selector, "center") == 0);
     } else {
@@ -175,7 +179,7 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
 
     char tempPath[PATH_MAX];
     if (!v2_write_minimal_dsk_file(
-            strcmp(callName, "dskgd_c") == 0 ? "v2-dskgd" : "v2-dskb02",
+            callId == V2_SPICE_CALL_DSKGD_C ? "v2-dskgd" : "v2-dskb02",
             tempPath,
             sizeof(tempPath))) {
       free(selector);
@@ -231,7 +235,7 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
 
     SpiceInt outValue = 0;
 
-    if (strcmp(callName, "dskgd_c") == 0) {
+    if (callId == V2_SPICE_CALL_DSKGD_C) {
       SpiceDSKDescr dskdsc;
       dskgd_c(handle, &dladsc, &dskdsc);
       if (failed_c() == SPICETRUE) {
@@ -341,7 +345,9 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     return ok;
   }
 
-  if (asTok >= 0) {
+  if (asTok >= 0 &&
+      (callSpec == NULL ||
+       callSpec->outputPolicy == V2_SPICE_CALL_OUTPUT_FORBIDDEN)) {
     write_error_json_ex("invalid_request",
                         "spiceCall scard_c/ssize_c/valid_c/dskobj_c/dsksrf_c/dskmi2_c/dskopn_c/dskw02_c/readVirtualOutput does not allow as",
                         NULL, NULL, NULL, NULL);
@@ -349,8 +355,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     return false;
   }
 
-  if (strcmp(callName, "scard_c") == 0) {
-    if (inputCount != 2) {
+  if (callId == V2_SPICE_CALL_SCARD_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall scard_c expects [card, cellOrWindow]",
                           NULL, NULL, NULL, NULL);
@@ -395,8 +401,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     }
 
     scard_c(card, &refs[refIndex].cell);
-  } else if (strcmp(callName, "ssize_c") == 0) {
-    if (inputCount != 2) {
+  } else if (callId == V2_SPICE_CALL_SSIZE_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall ssize_c expects [size, cellOrWindow]",
                           NULL, NULL, NULL, NULL);
@@ -441,8 +447,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     }
 
     ssize_c(newSize, &refs[refIndex].cell);
-  } else if (strcmp(callName, "valid_c") == 0) {
-    if (inputCount != 3) {
+  } else if (callId == V2_SPICE_CALL_VALID_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall valid_c expects [size, n, cellOrWindow]",
                           NULL, NULL, NULL, NULL);
@@ -504,8 +510,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     }
 
     valid_c(sizeArg, nArg, &refs[refIndex].cell);
-  } else if (strcmp(callName, "dskopn_c") == 0) {
-    if (inputCount != 0) {
+  } else if (callId == V2_SPICE_CALL_DSKOPN_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall dskopn_c expects no inputs",
                           NULL, NULL, NULL, NULL);
@@ -569,8 +575,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     unlink(tempPath);
     free(callName);
     return true;
-  } else if (strcmp(callName, "dskmi2_c") == 0) {
-    if (inputCount != 0) {
+  } else if (callId == V2_SPICE_CALL_DSKMI2_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall dskmi2_c expects no inputs",
                           NULL, NULL, NULL, NULL);
@@ -625,8 +631,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
 
     free(callName);
     return true;
-  } else if (strcmp(callName, "dskw02_c") == 0) {
-    if (inputCount != 0) {
+  } else if (callId == V2_SPICE_CALL_DSKW02_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall dskw02_c expects no inputs",
                           NULL, NULL, NULL, NULL);
@@ -643,8 +649,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     unlink(tempPath);
     free(callName);
     return true;
-  } else if (strcmp(callName, "dskobj_c") == 0) {
-    if (inputCount != 0) {
+  } else if (callId == V2_SPICE_CALL_DSKOBJ_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall dskobj_c expects no inputs",
                           NULL, NULL, NULL, NULL);
@@ -701,8 +707,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     unlink(tempPath);
     free(callName);
     return true;
-  } else if (strcmp(callName, "dsksrf_c") == 0) {
-    if (inputCount != 0) {
+  } else if (callId == V2_SPICE_CALL_DSKSRF_C) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall dsksrf_c expects no inputs",
                           NULL, NULL, NULL, NULL);
@@ -804,8 +810,8 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
     unlink(tempPath);
     free(callName);
     return true;
-  } else if (strcmp(callName, "readVirtualOutput") == 0) {
-    if (inputCount != 0) {
+  } else if (callId == V2_SPICE_CALL_READ_VIRTUAL_OUTPUT) {
+    if (inputCount != callSpec->arity) {
       write_error_json_ex("invalid_request",
                           "spiceCall readVirtualOutput expects no inputs",
                           NULL, NULL, NULL, NULL);
