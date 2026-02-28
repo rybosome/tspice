@@ -1,4 +1,5 @@
 import type { CompareOptions } from "../compare/types.js";
+import type { AssertOperator } from "../assertOperators.js";
 import type { KernelEntry } from "../runners/types.js";
 
 export type ScenarioCompareAst = CompareOptions & {
@@ -188,13 +189,7 @@ export type MethodWorkflowOpInvokeLegacyCallV2 = {
   call?: string;
 };
 
-export type MethodWorkflowAssertOperatorV2 =
-  | "eq"
-  | "ne"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte";
+export type MethodWorkflowAssertOperatorV2 = AssertOperator;
 
 export type MethodWorkflowAssertTestV2 =
   | { eq: [unknown, unknown] }

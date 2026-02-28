@@ -11,6 +11,7 @@ import type {
   V2WorkflowAssertOperator,
   V2WorkflowStep,
 } from "./types.js";
+import { ASSERT_OPERATOR_NAMES_TEXT } from "../assertOperators.js";
 import { validateV2ContractResultOrThrow } from "./v2ContractResultValidation.js";
 
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
@@ -24,15 +25,6 @@ const DSK_MINIMAL_WORKSZ = 2048;
 const DSK_MINIMAL_VOXPSZ = 512;
 const DSK_MINIMAL_VOXLSZ = 1024;
 const DSK_MINIMAL_SPXISZ = 8192;
-
-const V2_ASSERT_OPERATORS: ReadonlySet<V2WorkflowAssertOperator> = new Set([
-  "eq",
-  "ne",
-  "gt",
-  "gte",
-  "lt",
-  "lte",
-]);
 
 const DSK_MINIMAL_VERTICES = [
   0, 0, 0,
@@ -289,8 +281,46 @@ function asNonEmptyString(value: unknown, label: string): string {
   return value;
 }
 
-function isV2AssertOperator(value: string): value is V2WorkflowAssertOperator {
-  return V2_ASSERT_OPERATORS.has(value as V2WorkflowAssertOperator);
+function normalizeAssertOperands(operandsRaw: unknown, operator: V2WorkflowAssertOperator): [unknown, unknown] {
+  if (!Array.isArray(operandsRaw) || operandsRaw.length !== 2) {
+    invalidRequest(`assert.test.${operator} must be a 2-item array`);
+  }
+
+  return [operandsRaw[0], operandsRaw[1]];
+}
+
+function extractAssertOperatorAndOperands(
+  test: Extract<V2WorkflowStep, { op: "assert" }>["test"],
+): { operator: V2WorkflowAssertOperator; operands: [unknown, unknown] } {
+  if (Object.keys(test).length !== 1) {
+    invalidRequest("assert.test must define exactly one operator");
+  }
+
+  if ("eq" in test) {
+    return { operator: "eq", operands: normalizeAssertOperands(test.eq, "eq") };
+  }
+
+  if ("ne" in test) {
+    return { operator: "ne", operands: normalizeAssertOperands(test.ne, "ne") };
+  }
+
+  if ("gt" in test) {
+    return { operator: "gt", operands: normalizeAssertOperands(test.gt, "gt") };
+  }
+
+  if ("gte" in test) {
+    return { operator: "gte", operands: normalizeAssertOperands(test.gte, "gte") };
+  }
+
+  if ("lt" in test) {
+    return { operator: "lt", operands: normalizeAssertOperands(test.lt, "lt") };
+  }
+
+  if ("lte" in test) {
+    return { operator: "lte", operands: normalizeAssertOperands(test.lte, "lte") };
+  }
+
+  invalidRequest(`assert.test operator must be one of ${ASSERT_OPERATOR_NAMES_TEXT}`);
 }
 
 function resolveReferenceToken(reference: string): { source: "args" | "refs"; key: string } | null {
@@ -513,26 +543,13 @@ function executeAssertStep(
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
 ): void {
-  const test = asRecord(step.test, "assert.test");
-  const entries = Object.entries(test);
-  if (entries.length !== 1) {
-    invalidRequest("assert.test must define exactly one operator");
-  }
+  const { operator, operands } = extractAssertOperatorAndOperands(step.test);
 
-  const [operatorRaw, operandsRaw] = entries[0] as [string, unknown];
-  if (!isV2AssertOperator(operatorRaw)) {
-    invalidRequest("assert.test operator must be one of \"eq\", \"ne\", \"gt\", \"gte\", \"lt\", \"lte\"");
-  }
-
-  if (!Array.isArray(operandsRaw) || operandsRaw.length !== 2) {
-    invalidRequest(`assert.test.${operatorRaw} must be a 2-item array`);
-  }
-
-  const left = resolveSpiceIntExpression(operandsRaw[0], args, refs, `assert.test.${operatorRaw}[0]`);
-  const right = resolveSpiceIntExpression(operandsRaw[1], args, refs, `assert.test.${operatorRaw}[1]`);
+  const left = resolveSpiceIntExpression(operands[0], args, refs, `assert.test.${operator}[0]`);
+  const right = resolveSpiceIntExpression(operands[1], args, refs, `assert.test.${operator}[1]`);
 
   const passed = (() => {
-    switch (operatorRaw) {
+    switch (operator) {
       case "eq":
         return left === right;
       case "ne":
