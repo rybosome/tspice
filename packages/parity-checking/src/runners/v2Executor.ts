@@ -1083,8 +1083,8 @@ const V2_SPICE_CALL_INVOKERS = {
   },
 } satisfies Record<V2SpiceCallName, V2SpiceCallInvoker>;
 
-function lookupSpiceCallInvoker(call: string): V2SpiceCallInvoker | undefined {
-  return (V2_SPICE_CALL_INVOKERS as Partial<Record<string, V2SpiceCallInvoker>>)[call];
+function lookupSpiceCallInvoker(call: V2SpiceCallName): V2SpiceCallInvoker {
+  return V2_SPICE_CALL_INVOKERS[call];
 }
 
 function executeSpiceCallFromSpec(
