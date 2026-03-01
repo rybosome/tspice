@@ -869,9 +869,40 @@ const DSKB02_NAMED_SPICE_INT_OUTPUTS = [
   "vtxnpl",
   "voxnpt",
   "voxnpl",
-] as const;
+] as const satisfies readonly (keyof DskType2Bookkeeping)[];
 
-const DSKB02_NAMED_SPICE_INT_OUTPUT_SET = new Set<string>(DSKB02_NAMED_SPICE_INT_OUTPUTS);
+type Dskb02NamedSpiceIntOutputKey = (typeof DSKB02_NAMED_SPICE_INT_OUTPUTS)[number];
+type Dskb02NamedSpiceIntOutputs = {
+  [key in Dskb02NamedSpiceIntOutputKey]: DskType2Bookkeeping[key];
+};
+
+const DSKB02_NAMED_SPICE_INT_OUTPUT_SET: ReadonlySet<string> = new Set(DSKB02_NAMED_SPICE_INT_OUTPUTS);
+
+function isDskb02NamedSpiceIntOutputKey(outputName: string): outputName is Dskb02NamedSpiceIntOutputKey {
+  return DSKB02_NAMED_SPICE_INT_OUTPUT_SET.has(outputName);
+}
+
+function toNamedDskb02SpiceIntOutputs(bookkeeping: DskType2Bookkeeping): Dskb02NamedSpiceIntOutputs {
+  return {
+    nv: bookkeeping.nv,
+    np: bookkeeping.np,
+    nvxtot: bookkeeping.nvxtot,
+    cgscal: bookkeeping.cgscal,
+    vtxnpl: bookkeeping.vtxnpl,
+    voxnpt: bookkeeping.voxnpt,
+    voxnpl: bookkeeping.voxnpl,
+  };
+}
+
+function requireDskb02NamedSpiceIntOutputKey(step: V2SpiceCallStep, outputName: string): Dskb02NamedSpiceIntOutputKey {
+  if (!isDskb02NamedSpiceIntOutputKey(outputName)) {
+    invalidArgs(
+      `spiceCall ${step.call}.out has unsupported key ${JSON.stringify(outputName)} (supported: ${DSKB02_NAMED_SPICE_INT_OUTPUTS.join(", ")})`,
+    );
+  }
+
+  return outputName;
+}
 
 function applyNamedDskb02Outputs(
   step: V2SpiceCallStep,
@@ -879,16 +910,14 @@ function applyNamedDskb02Outputs(
   bookkeeping: DskType2Bookkeeping,
   refs: Map<string, RefValue>,
 ): void {
-  const outputRecord = bookkeeping as unknown as Record<string, unknown>;
-  for (const [outputName, refName] of Object.entries(outMap)) {
-    if (!DSKB02_NAMED_SPICE_INT_OUTPUT_SET.has(outputName)) {
-      invalidArgs(
-        `spiceCall ${step.call}.out has unsupported key ${JSON.stringify(outputName)} (supported: ${DSKB02_NAMED_SPICE_INT_OUTPUTS.join(", ")})`,
-      );
-    }
+  const namedOutputs = toNamedDskb02SpiceIntOutputs(bookkeeping);
 
-    const value = asSpiceInt(outputRecord[outputName], `spiceCall(${step.call}).out.${outputName}`);
-    defineRef(refs, refName, { kind: "int", value }, `spiceCall(${step.call}).out.${outputName}`);
+  for (const [outputName, refName] of Object.entries(outMap)) {
+    const outputKey = requireDskb02NamedSpiceIntOutputKey(step, outputName);
+    const outputLabel = `spiceCall(${step.call}).out.${outputKey}`;
+
+    const value = asSpiceInt(namedOutputs[outputKey], outputLabel);
+    defineRef(refs, refName, { kind: "int", value }, outputLabel);
   }
 }
 

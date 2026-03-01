@@ -403,6 +403,138 @@ describe("executeV2CaseWithBackend", () => {
     expect(raw.dascls).toHaveBeenCalled();
   });
 
+  it("maps dskb02 named outputs for valid keys and rejects unsupported extras", async () => {
+    const dlabfsDescr = {
+      bwdptr: 0,
+      fwdptr: 0,
+      ibase: 0,
+      isize: 1,
+      dbase: 0,
+      dsize: 1,
+      cbase: 0,
+      csize: 1,
+    };
+
+    const dskb02Bookkeeping = {
+      nv: 8,
+      np: 6,
+      nvxtot: 8,
+      vtxbds: [
+        [0, 1],
+        [0, 1],
+        [0, 1],
+      ],
+      voxsiz: 1,
+      voxori: [0, 0, 0],
+      vgrext: [1, 1, 1],
+      cgscal: 1,
+      vtxnpl: 3,
+      voxnpt: 4,
+      voxnpl: 5,
+    };
+
+    const createBackend = (): SpiceBackend => {
+      const raw = {
+        dskopn: vi.fn((_path: string, _ifname: string, _ncomch: number) => 12),
+        dskmi2: vi.fn(() => ({ spaixd: [1], spaixi: [1] })),
+        dskw02: vi.fn(() => {}),
+        dascls: vi.fn((_handle: number) => {}),
+        dasopr: vi.fn((_path: string) => 77),
+        dlabfs: vi.fn((_handle: number) => ({ found: true as const, descr: dlabfsDescr })),
+        dskb02: vi.fn((_handle: number, _descr: unknown) => dskb02Bookkeeping),
+      };
+      const kit = {
+        newIntCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+        newDoubleCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+        newCharCell: vi.fn((_size: number, _length: number) => ({ size: 0, card: 0 })),
+        newWindow: vi.fn((_maxIntervals: number) => ({ card: 0 })),
+        freeCell: vi.fn(() => {}),
+        freeWindow: vi.fn(() => {}),
+        readVirtualOutput: vi.fn((_output: { kind: string; path: string }) => new Uint8Array([1])),
+      };
+
+      return {
+        kind: "node",
+        raw,
+        kit,
+      } as SpiceBackend;
+    };
+
+    const createInput = (out: Record<string, string>): RunCaseInputV2 => ({
+      schemaVersion: 2,
+      manifest: {
+        id: "methods/dsk/dskb02@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "dsk.dskb02",
+        canonicalMethod: "dsk.dskb02",
+        args: [],
+        result: {
+          type: "object",
+          required: ["value"],
+          properties: {
+            value: { type: "spiceInt" },
+          },
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          { op: "materialize", fixture: "minimalDsk", as: "dskPath" },
+          { op: "dasOpen", path: "$refs.dskPath", as: "dasHandle" },
+          { op: "dlaBeginForwardSearch", handle: "$refs.dasHandle", as: "dladsc" },
+          {
+            op: "spiceCall",
+            call: "dskb02_c",
+            in: ["$refs.dasHandle", "$refs.dladsc"],
+            out,
+          },
+          { op: "projectResult", out: { value: "$refs.value" } },
+        ],
+        cleanup: [
+          { op: "dasClose", target: "$refs.dasHandle" },
+          { op: "unlink", target: "$refs.dskPath" },
+        ],
+      },
+    });
+
+    const validProjectionCases = [
+      { key: "nv", expected: dskb02Bookkeeping.nv },
+      { key: "np", expected: dskb02Bookkeeping.np },
+      { key: "nvxtot", expected: dskb02Bookkeeping.nvxtot },
+      { key: "cgscal", expected: dskb02Bookkeeping.cgscal },
+      { key: "vtxnpl", expected: dskb02Bookkeeping.vtxnpl },
+      { key: "voxnpt", expected: dskb02Bookkeeping.voxnpt },
+      { key: "voxnpl", expected: dskb02Bookkeeping.voxnpl },
+    ] as const;
+
+    for (const testCase of validProjectionCases) {
+      const backend = createBackend();
+      const result = await executeV2CaseWithBackend(backend, createInput({ [testCase.key]: "value" }));
+      expect(result).toEqual({ value: testCase.expected });
+    }
+
+    const invalidProjectionCases = [
+      {
+        out: { vtxbds: "value" },
+        rejectedKey: "vtxbds",
+      },
+      {
+        out: { nv: "value", unexpectedExtra: "other" },
+        rejectedKey: "unexpectedExtra",
+      },
+    ] as const;
+
+    for (const testCase of invalidProjectionCases) {
+      const backend = createBackend();
+      await expect(executeV2CaseWithBackend(backend, createInput({ ...testCase.out }))).rejects.toMatchObject({
+        code: "invalid_args",
+        message: expect.stringContaining(`unsupported key ${JSON.stringify(testCase.rejectedKey)}`),
+      });
+    }
+  });
+
   it("reports invalid_args when card_c is missing as in bypassed schema input", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
