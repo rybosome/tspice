@@ -974,6 +974,119 @@ function executeReadVirtualOutputCall(backend: SpiceBackend, outputPath: string)
   }
 }
 
+type V2SpiceCallInvokerContext = {
+  backend: SpiceBackend;
+  raw: SpiceBackend["raw"];
+  step: V2SpiceCallStep;
+  resolvedArgs: readonly unknown[];
+  outputRef: string | undefined;
+  outMap: Record<string, string> | undefined;
+  refs: Map<string, RefValue>;
+};
+
+type V2SpiceCallInvoker = (context: V2SpiceCallInvokerContext) => void;
+
+const V2_SPICE_CALL_INVOKERS = {
+  card_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
+    const value = asSpiceInt(raw.card(resolvedArgs[0] as CellHandle | WindowHandle), `spiceCall(${step.call}).result`);
+    defineRef(refs, outputRef!, { kind: "int", value }, `spiceCall(${step.call}).as`);
+  },
+
+  size_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
+    const value = asSpiceInt(raw.size(resolvedArgs[0] as CellHandle | WindowHandle), `spiceCall(${step.call}).result`);
+    defineRef(refs, outputRef!, { kind: "int", value }, `spiceCall(${step.call}).as`);
+  },
+
+  scard_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
+    raw.scard(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
+  },
+
+  ssize_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
+    raw.ssize(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
+  },
+
+  valid_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
+    raw.valid(resolvedArgs[0] as number, resolvedArgs[1] as number, resolvedArgs[2] as CellHandle | WindowHandle);
+  },
+
+  dskobj_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
+    raw.dskobj(resolvedArgs[0] as string, resolvedArgs[1] as IntCellHandle);
+  },
+
+  dsksrf_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
+    raw.dsksrf(resolvedArgs[0] as string, resolvedArgs[1] as number, resolvedArgs[2] as IntCellHandle);
+  },
+
+  dskgd_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
+    const descriptor = raw.dskgd(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
+    defineRef(refs, outputRef!, { kind: "dskDescriptor", value: descriptor }, `spiceCall(${step.call}).as`);
+  },
+
+  dskb02_c: ({ raw, step, resolvedArgs, outMap, refs }: V2SpiceCallInvokerContext): void => {
+    const bookkeeping = raw.dskb02(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
+    applyNamedDskb02Outputs(step, outMap ?? {}, bookkeeping, refs);
+  },
+
+  readVirtualOutput: ({ backend, resolvedArgs }: V2SpiceCallInvokerContext): void => {
+    executeReadVirtualOutputCall(backend, resolvedArgs[0] as string);
+  },
+
+  dskopn_c: ({ backend, raw }: V2SpiceCallInvokerContext): void => {
+    const tempPath = buildTempPath(backend, "dskopn", ".bds");
+    let handle: DskOpenHandle | undefined;
+    let opError: unknown = undefined;
+
+    try {
+      handle = raw.dskopn(tempPath, "TSPICE", 0);
+    } catch (error) {
+      opError = error;
+    }
+
+    if (handle !== undefined) {
+      closeDasHandlePreserveError(raw, handle, opError);
+    }
+
+    unlinkPathBestEffort(backend, tempPath);
+
+    if (opError !== undefined) {
+      throw opError;
+    }
+  },
+
+  dskmi2_c: ({ raw, step }: V2SpiceCallInvokerContext): void => {
+    const spatial = raw.dskmi2(
+      DSK_MINIMAL_NV,
+      DSK_MINIMAL_VERTICES,
+      DSK_MINIMAL_NP,
+      DSK_MINIMAL_PLATES,
+      0.2,
+      5,
+      DSK_MINIMAL_WORKSZ,
+      DSK_MINIMAL_VOXPSZ,
+      DSK_MINIMAL_VOXLSZ,
+      true,
+      DSK_MINIMAL_SPXISZ,
+    );
+
+    if (spatial.spaixd.length < 1 || spatial.spaixi.length < 1) {
+      invalidRequest(`spiceCall(${step.call}) expected non-empty spatial index outputs`);
+    }
+  },
+
+  dskw02_c: ({ backend }: V2SpiceCallInvokerContext): void => {
+    const tempPath = buildTempPath(backend, "dskw02", ".bds");
+    try {
+      writeMinimalDskFile(backend, tempPath);
+    } finally {
+      unlinkPathBestEffort(backend, tempPath);
+    }
+  },
+} satisfies Record<V2SpiceCallName, V2SpiceCallInvoker>;
+
+function lookupSpiceCallInvoker(call: string): V2SpiceCallInvoker | undefined {
+  return (V2_SPICE_CALL_INVOKERS as Partial<Record<string, V2SpiceCallInvoker>>)[call];
+}
+
 function executeSpiceCallFromSpec(
   backend: SpiceBackend,
   step: V2SpiceCallStep,
@@ -1018,111 +1131,20 @@ function executeSpiceCallFromSpec(
     forbidSpiceCallOutMap(step);
   }
 
-  switch (step.call) {
-    case "card_c": {
-      const value = asSpiceInt(raw.card(resolvedArgs[0] as CellHandle | WindowHandle), `spiceCall(${step.call}).result`);
-      defineRef(refs, outputRef!, { kind: "int", value }, `spiceCall(${step.call}).as`);
-      return;
-    }
-
-    case "size_c": {
-      const value = asSpiceInt(raw.size(resolvedArgs[0] as CellHandle | WindowHandle), `spiceCall(${step.call}).result`);
-      defineRef(refs, outputRef!, { kind: "int", value }, `spiceCall(${step.call}).as`);
-      return;
-    }
-
-    case "scard_c":
-      raw.scard(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
-      return;
-
-    case "ssize_c":
-      raw.ssize(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
-      return;
-
-    case "valid_c":
-      raw.valid(resolvedArgs[0] as number, resolvedArgs[1] as number, resolvedArgs[2] as CellHandle | WindowHandle);
-      return;
-
-    case "dskobj_c":
-      raw.dskobj(resolvedArgs[0] as string, resolvedArgs[1] as IntCellHandle);
-      return;
-
-    case "dsksrf_c":
-      raw.dsksrf(resolvedArgs[0] as string, resolvedArgs[1] as number, resolvedArgs[2] as IntCellHandle);
-      return;
-
-    case "dskgd_c": {
-      const descriptor = raw.dskgd(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
-      defineRef(refs, outputRef!, { kind: "dskDescriptor", value: descriptor }, `spiceCall(${step.call}).as`);
-      return;
-    }
-
-    case "dskb02_c": {
-      const bookkeeping = raw.dskb02(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
-      applyNamedDskb02Outputs(step, outMap ?? {}, bookkeeping, refs);
-      return;
-    }
-
-    case "readVirtualOutput":
-      executeReadVirtualOutputCall(backend, resolvedArgs[0] as string);
-      return;
-
-    case "dskopn_c": {
-      const tempPath = buildTempPath(backend, "dskopn", ".bds");
-      let handle: DskOpenHandle | undefined;
-      let opError: unknown = undefined;
-
-      try {
-        handle = raw.dskopn(tempPath, "TSPICE", 0);
-      } catch (error) {
-        opError = error;
-      }
-
-      if (handle !== undefined) {
-        closeDasHandlePreserveError(raw, handle, opError);
-      }
-
-      unlinkPathBestEffort(backend, tempPath);
-
-      if (opError !== undefined) {
-        throw opError;
-      }
-
-      return;
-    }
-
-    case "dskmi2_c": {
-      const spatial = raw.dskmi2(
-        DSK_MINIMAL_NV,
-        DSK_MINIMAL_VERTICES,
-        DSK_MINIMAL_NP,
-        DSK_MINIMAL_PLATES,
-        0.2,
-        5,
-        DSK_MINIMAL_WORKSZ,
-        DSK_MINIMAL_VOXPSZ,
-        DSK_MINIMAL_VOXLSZ,
-        true,
-        DSK_MINIMAL_SPXISZ,
-      );
-
-      if (spatial.spaixd.length < 1 || spatial.spaixi.length < 1) {
-        invalidRequest(`spiceCall(${step.call}) expected non-empty spatial index outputs`);
-      }
-
-      return;
-    }
-
-    case "dskw02_c": {
-      const tempPath = buildTempPath(backend, "dskw02", ".bds");
-      try {
-        writeMinimalDskFile(backend, tempPath);
-      } finally {
-        unlinkPathBestEffort(backend, tempPath);
-      }
-      return;
-    }
+  const invokeSpiceCall = lookupSpiceCallInvoker(step.call);
+  if (!invokeSpiceCall) {
+    unsupportedCall(`Unsupported spiceCall op: ${step.call}`);
   }
+
+  invokeSpiceCall({
+    backend,
+    raw,
+    step,
+    resolvedArgs,
+    outputRef,
+    outMap,
+    refs,
+  });
 }
 
 function executeAssertStep(

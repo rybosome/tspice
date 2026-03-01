@@ -566,6 +566,23 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
+  it("reports invalid_args when size_c includes out in bypassed schema input", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps[1] = {
+      op: "spiceCall",
+      call: "size_c",
+      in: ["$refs.cell"],
+      as: "size",
+      out: { ignored: "ignored" },
+    } as unknown as RunCaseInputV2["workflow"]["steps"][number];
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_args",
+      message: 'spiceCall size_c does not allow an "out" map',
+    });
+  });
+
   it("rejects duplicate contract arg names", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
