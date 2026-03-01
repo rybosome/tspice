@@ -845,6 +845,40 @@ describe("schema validation", () => {
     ).toThrow(/out is required when call="dskb02_c"/);
   });
 
+  it("rejects removed pseudo spiceCall names in v2 workflows", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-removed-pseudo-spice-call.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/file-io/dskopn@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "file-io.dskopn",
+            canonicalMethod: "file-io.dskopn",
+            result: {
+              type: "object",
+              properties: {},
+            },
+          },
+          workflow: {
+            steps: [
+              {
+                op: "spiceCall",
+                call: "dskopn_c",
+                in: [],
+              },
+              { op: "projectResult", out: {} },
+            ],
+          },
+          cases: [{ id: "legacy", args: {}, expect: { ok: true } }],
+        },
+      }),
+    ).toThrow(/call must be one of/);
+  });
+
   it("rejects unsupported schema versions", () => {
     expect(() =>
       parseMethodSpecAny({

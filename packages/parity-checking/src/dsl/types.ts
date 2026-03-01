@@ -166,11 +166,7 @@ export type MethodWorkflowSpiceCallNameV2 =
   | "dskobj_c"
   | "dsksrf_c"
   | "dskgd_c"
-  | "dskb02_c"
-  | "dskmi2_c"
-  | "dskopn_c"
-  | "dskw02_c"
-  | "readVirtualOutput";
+  | "dskb02_c";
 
 export type MethodWorkflowOpSpiceCallV2 = {
   op: "spiceCall";

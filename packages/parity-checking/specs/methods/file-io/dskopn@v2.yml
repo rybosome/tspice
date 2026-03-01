@@ -13,12 +13,20 @@ contract:
       opened: { const: true }
 workflow:
   steps:
-    - op: spiceCall
-      call: dskopn_c
-      in: []
+    - op: materialize
+      fixture: minimalDsk
+      as: dskPath
+    - op: dasOpen
+      path: $refs.dskPath
+      as: dasHandle
+    - op: dasClose
+      target: $refs.dasHandle
     - op: projectResult
       out:
         opened: true
+  cleanup:
+    - op: unlink
+      target: $refs.dskPath
 cases:
   - id: open-close-temp-dsk
     expect:

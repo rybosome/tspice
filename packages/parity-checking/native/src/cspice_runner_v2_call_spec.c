@@ -93,42 +93,6 @@ static const V2SpiceCallSpec V2_SPICE_CALL_SPECS[] = {
              ARG_UNUSED,
              0U,
              V2_SPICE_CALL_OUTPUT_NAMED_DSKB02),
-
-    SPEC_ROW(V2_SPICE_CALL_DSKMI2,
-             "dskmi2_c",
-             0,
-             ARG_UNUSED,
-             ARG_UNUSED,
-             ARG_UNUSED,
-             0U,
-             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
-
-    SPEC_ROW(V2_SPICE_CALL_DSKOPN,
-             "dskopn_c",
-             0,
-             ARG_UNUSED,
-             ARG_UNUSED,
-             ARG_UNUSED,
-             0U,
-             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
-
-    SPEC_ROW(V2_SPICE_CALL_DSKW02,
-             "dskw02_c",
-             0,
-             ARG_UNUSED,
-             ARG_UNUSED,
-             ARG_UNUSED,
-             0U,
-             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
-
-    SPEC_ROW(V2_SPICE_CALL_READ_VIRTUAL_OUTPUT,
-             "readVirtualOutput",
-             1,
-             V2_SPICE_CALL_ARG_PATH_EXPR,
-             ARG_UNUSED,
-             ARG_UNUSED,
-             0U,
-             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
 };
 
 #undef SPEC_ROW

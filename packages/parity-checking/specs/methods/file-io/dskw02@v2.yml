@@ -13,12 +13,33 @@ contract:
       written: { const: true }
 workflow:
   steps:
+    - op: materialize
+      fixture: minimalDsk
+      as: dskPath
+    - op: dasOpen
+      path: $refs.dskPath
+      as: dasHandle
+    - op: dlaBeginForwardSearch
+      handle: $refs.dasHandle
+      as: dladsc
     - op: spiceCall
-      call: dskw02_c
-      in: []
+      call: dskgd_c
+      in: [$refs.dasHandle, $refs.dladsc]
+      as: dskdsc
+    - op: assert
+      test:
+        eq: [$refs.dskdsc.dtype, 2]
+      error:
+        code: invalid_request
+        message: Expected type-2 DSK segment metadata
     - op: projectResult
       out:
         written: true
+  cleanup:
+    - op: dasClose
+      target: $refs.dasHandle
+    - op: unlink
+      target: $refs.dskPath
 cases:
   - id: write-single-segment-dsk
     expect:

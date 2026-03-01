@@ -13,12 +13,34 @@ contract:
       computedSpatialIndex: { const: true }
 workflow:
   steps:
+    - op: materialize
+      fixture: minimalDsk
+      as: dskPath
+    - op: dasOpen
+      path: $refs.dskPath
+      as: dasHandle
+    - op: dlaBeginForwardSearch
+      handle: $refs.dasHandle
+      as: dladsc
     - op: spiceCall
-      call: dskmi2_c
-      in: []
+      call: dskb02_c
+      in: [$refs.dasHandle, $refs.dladsc]
+      out:
+        nvxtot: nvxtot
+    - op: assert
+      test:
+        gt: [$refs.nvxtot, 0]
+      error:
+        code: invalid_request
+        message: Expected non-empty DSK spatial index
     - op: projectResult
       out:
         computedSpatialIndex: true
+  cleanup:
+    - op: dasClose
+      target: $refs.dasHandle
+    - op: unlink
+      target: $refs.dskPath
 cases:
   - id: minimal-triangle-index
     expect:
