@@ -79,32 +79,58 @@ export type V2WorkflowAllocWindowStep = {
   };
 };
 
-export type V2WorkflowSpiceCallWithOutputStep = {
+export type V2WorkflowSpiceCallName =
+  | "card_c"
+  | "size_c"
+  | "scard_c"
+  | "ssize_c"
+  | "valid_c"
+  | "dskobj_c"
+  | "dsksrf_c"
+  | "dskgd_c"
+  | "dskb02_c"
+  | "dskmi2_c"
+  | "dskopn_c"
+  | "dskw02_c"
+  | "readVirtualOutput";
+
+export type V2WorkflowSpiceCallStep = {
   op: "spiceCall";
-  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c";
+  call: V2WorkflowSpiceCallName;
   in: unknown[];
+  as?: string;
+  out?: Record<string, string>;
+};
+
+export type V2WorkflowMaterializeFixture = "minimalDsk" | "virtualOutputSpk";
+
+export type V2WorkflowMaterializeStep = {
+  op: "materialize";
+  fixture: V2WorkflowMaterializeFixture;
   as: string;
 };
 
-export type V2WorkflowSpiceCallWithoutOutputStep = {
-  op: "spiceCall";
-  call:
-    | "scard_c"
-    | "ssize_c"
-    | "valid_c"
-    | "dskobj_c"
-    | "dsksrf_c"
-    | "dskmi2_c"
-    | "dskopn_c"
-    | "dskw02_c"
-    | "readVirtualOutput";
-  in: unknown[];
-  as?: never;
+export type V2WorkflowDasOpenStep = {
+  op: "dasOpen";
+  path: unknown;
+  as: string;
 };
 
-export type V2WorkflowSpiceCallStep =
-  | V2WorkflowSpiceCallWithOutputStep
-  | V2WorkflowSpiceCallWithoutOutputStep;
+export type V2WorkflowDlaBeginForwardSearchStep = {
+  op: "dlaBeginForwardSearch";
+  handle: unknown;
+  as: string;
+};
+
+export type V2WorkflowDasCloseStep = {
+  op: "dasClose";
+  target: unknown;
+};
+
+export type V2WorkflowUnlinkStep = {
+  op: "unlink";
+  target: unknown;
+};
 
 export type V2WorkflowInvokeLegacyCallStep = {
   op: "invokeLegacyCall";
@@ -160,6 +186,11 @@ export type V2WorkflowFreeWindowStep = {
 export type V2WorkflowStep =
   | V2WorkflowAllocCellStep
   | V2WorkflowAllocWindowStep
+  | V2WorkflowMaterializeStep
+  | V2WorkflowDasOpenStep
+  | V2WorkflowDlaBeginForwardSearchStep
+  | V2WorkflowDasCloseStep
+  | V2WorkflowUnlinkStep
   | V2WorkflowSpiceCallStep
   | V2WorkflowInvokeLegacyCallStep
   | V2WorkflowAssertStep

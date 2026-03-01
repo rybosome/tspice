@@ -5,7 +5,7 @@ manifest:
 contract:
   contractMethod: file-io.readVirtualOutput
   canonicalMethod: file-io.readVirtualOutput
-  aliases: []
+  args: []
   result:
     type: object
     required: [readBytes]
@@ -13,13 +13,19 @@ contract:
       readBytes: { const: true }
 workflow:
   steps:
+    - op: materialize
+      fixture: virtualOutputSpk
+      as: outputPath
     - op: spiceCall
       call: readVirtualOutput
-      in: []
+      in: [$refs.outputPath]
     - op: projectResult
       out:
         readBytes: true
+  cleanup:
+    - op: unlink
+      target: $refs.outputPath
 cases:
-  - id: read-spk-virtual-output-bytes
-    expect:
-      ok: true
+  - id: reads-bytes
+    args: {}
+    expect: { ok: true }

@@ -12,6 +12,7 @@ import type {
   MethodResultObjectSpecV2,
   MethodSpec,
   MethodSpecV2,
+  MethodWorkflowSpiceCallNameV2,
   MethodWorkflowStepV2,
   ScenarioCompareAst,
   ScenarioSetupAst,
@@ -19,6 +20,37 @@ import type {
   WorkflowSpec,
 } from "./types.js";
 import { ASSERT_OPERATOR_NAMES_TEXT, isAssertOperator } from "../assertOperators.js";
+
+type V2SpiceCallOutputShape = "none" | "as" | "out";
+
+const V2_SPICE_CALL_OUTPUT_SHAPES: Record<string, V2SpiceCallOutputShape> = {
+  card_c: "as",
+  size_c: "as",
+  scard_c: "none",
+  ssize_c: "none",
+  valid_c: "none",
+  dskobj_c: "none",
+  dsksrf_c: "none",
+  dskgd_c: "as",
+  dskb02_c: "out",
+  dskmi2_c: "none",
+  dskopn_c: "none",
+  dskw02_c: "none",
+  readVirtualOutput: "none",
+};
+
+const V2_SPICE_CALL_NAMES_TEXT = Object.keys(V2_SPICE_CALL_OUTPUT_SHAPES)
+  .map((name) => JSON.stringify(name))
+  .join(", ");
+
+function parseSpiceCallOutMap(value: unknown, label: string): Record<string, string> {
+  const out = assertRecord(value, label);
+  const mapped: Record<string, string> = {};
+  for (const [key, rawTarget] of Object.entries(out)) {
+    mapped[key] = assertString(rawTarget, `${label}.${key}`);
+  }
+  return mapped;
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -453,52 +485,129 @@ function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflo
       };
     }
 
-    case "spiceCall": {
-      assertNoUnknownKeys(obj, label, ["op", "call", "in", "as"]);
-      const call = assertString(obj.call, `${label}.call`);
-      if (
-        call !== "card_c" &&
-        call !== "size_c" &&
-        call !== "scard_c" &&
-        call !== "ssize_c" &&
-        call !== "valid_c" &&
-        call !== "dskobj_c" &&
-        call !== "dsksrf_c" &&
-        call !== "dskgd_c" &&
-        call !== "dskb02_c" &&
-        call !== "dskmi2_c" &&
-        call !== "dskopn_c" &&
-        call !== "dskw02_c" &&
-        call !== "readVirtualOutput"
-      ) {
+    case "materialize": {
+      assertNoUnknownKeys(obj, label, ["op", "fixture", "as"]);
+      const fixture = assertString(obj.fixture, `${label}.fixture`);
+      if (fixture !== "minimalDsk" && fixture !== "virtualOutputSpk") {
         throw new TypeError(
-          `${label}.call must be one of \"card_c\", \"size_c\", \"scard_c\", \"ssize_c\", \"valid_c\", \"dskobj_c\", \"dsksrf_c\", \"dskgd_c\", \"dskb02_c\", \"dskmi2_c\", \"dskopn_c\", \"dskw02_c\", or \"readVirtualOutput\"`,
+          `${label}.fixture must be one of ${JSON.stringify("minimalDsk")} or ${JSON.stringify("virtualOutputSpk")}`,
         );
       }
+
+      return {
+        op: "materialize",
+        fixture,
+        as: assertString(obj.as, `${label}.as`),
+      };
+    }
+
+    case "dasOpen": {
+      assertNoUnknownKeys(obj, label, ["op", "path", "as"]);
+      if (!("path" in obj)) {
+        throw new TypeError(`${label}.path is required`);
+      }
+
+      return {
+        op: "dasOpen",
+        path: obj.path,
+        as: assertString(obj.as, `${label}.as`),
+      };
+    }
+
+    case "dlaBeginForwardSearch": {
+      assertNoUnknownKeys(obj, label, ["op", "handle", "as"]);
+      if (!("handle" in obj)) {
+        throw new TypeError(`${label}.handle is required`);
+      }
+
+      return {
+        op: "dlaBeginForwardSearch",
+        handle: obj.handle,
+        as: assertString(obj.as, `${label}.as`),
+      };
+    }
+
+    case "dasClose": {
+      assertNoUnknownKeys(obj, label, ["op", "target"]);
+      if (!("target" in obj)) {
+        throw new TypeError(`${label}.target is required`);
+      }
+
+      return {
+        op: "dasClose",
+        target: obj.target,
+      };
+    }
+
+    case "unlink": {
+      assertNoUnknownKeys(obj, label, ["op", "target"]);
+      if (!("target" in obj)) {
+        throw new TypeError(`${label}.target is required`);
+      }
+
+      return {
+        op: "unlink",
+        target: obj.target,
+      };
+    }
+
+    case "spiceCall": {
+      assertNoUnknownKeys(obj, label, ["op", "call", "in", "as", "out"]);
+      const call = assertString(obj.call, `${label}.call`);
+      const outputShape = V2_SPICE_CALL_OUTPUT_SHAPES[call];
+      if (outputShape === undefined) {
+        throw new TypeError(`${label}.call must be one of ${V2_SPICE_CALL_NAMES_TEXT}`);
+      }
+      const callName = call as MethodWorkflowSpiceCallNameV2;
       if (!Array.isArray(obj.in)) {
         throw new TypeError(`${label}.in must be an array`);
       }
 
-      if (call === "card_c" || call === "size_c" || call === "dskgd_c" || call === "dskb02_c") {
+      if (outputShape === "as") {
         if (obj.as === undefined) {
           throw new TypeError(`${label}.as is required when call=${JSON.stringify(call)}`);
         }
 
+        if (obj.out !== undefined) {
+          throw new TypeError(`${label}.out is not allowed when call=${JSON.stringify(call)}`);
+        }
+
+        const asValue = assertString(obj.as, `${label}.as`);
+
         return {
           op: "spiceCall",
-          call,
+          call: callName,
           in: obj.in,
-          as: assertString(obj.as, `${label}.as`),
+          as: asValue,
         };
       }
 
-      if (obj.as !== undefined) {
-        throw new TypeError(`${label}.as is not allowed when call=${JSON.stringify(call)}`);
+      if (outputShape === "out") {
+        if (obj.out === undefined) {
+          throw new TypeError(`${label}.out is required when call=${JSON.stringify(call)}`);
+        }
+
+        if (obj.as !== undefined) {
+          throw new TypeError(`${label}.as is not allowed when call=${JSON.stringify(call)}`);
+        }
+
+        const outValue = parseSpiceCallOutMap(obj.out, `${label}.out`);
+
+        return {
+          op: "spiceCall",
+          call: callName,
+          in: obj.in,
+          out: outValue,
+        };
+      }
+
+      if (obj.as !== undefined || obj.out !== undefined) {
+        throw new TypeError(`${label}.as/out are not allowed when call=${JSON.stringify(call)}`);
       }
 
       return {
         op: "spiceCall",
-        call,
+        call: callName,
         in: obj.in,
       };
     }

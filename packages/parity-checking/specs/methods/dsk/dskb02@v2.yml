@@ -5,28 +5,57 @@ manifest:
 contract:
   contractMethod: dsk.dskb02
   canonicalMethod: dsk.dskb02
-  aliases: []
+  args:
+    - name: selector
+      type: spiceInt
+      constraints:
+        min: 0
+        max: 1
   result:
     type: object
-    required: [nv, np]
+    required: [selector, value]
     properties:
-      nv: { type: spiceInt }
-      np: { type: spiceInt }
+      selector: { type: spiceInt }
+      value: { type: spiceInt }
 workflow:
   steps:
+    - op: materialize
+      fixture: minimalDsk
+      as: dskPath
+    - op: dasOpen
+      path: $refs.dskPath
+      as: dasHandle
+    - op: dlaBeginForwardSearch
+      handle: $refs.dasHandle
+      as: dladsc
     - op: spiceCall
       call: dskb02_c
-      in: [nv]
-      as: nv
-    - op: spiceCall
-      call: dskb02_c
-      in: [np]
-      as: np
-    - op: projectResult
+      in: [$refs.dasHandle, $refs.dladsc]
       out:
-        nv: $refs.nv
-        np: $refs.np
+        nv: nv
+        np: np
+    - op: switch
+      on: $args.selector
+      cases:
+        0:
+          - op: projectResult
+            out:
+              selector: $args.selector
+              value: $refs.nv
+        1:
+          - op: projectResult
+            out:
+              selector: $args.selector
+              value: $refs.np
+  cleanup:
+    - op: dasClose
+      target: $refs.dasHandle
+    - op: unlink
+      target: $refs.dskPath
 cases:
-  - id: bookkeeping-from-minimal-dsk
-    expect:
-      ok: true
+  - id: selector-nv
+    args: { selector: 0 }
+    expect: { ok: true }
+  - id: selector-np
+    args: { selector: 1 }
+    expect: { ok: true }

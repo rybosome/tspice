@@ -281,6 +281,128 @@ describe("executeV2CaseWithBackend", () => {
     expect(freeWindowMock).toHaveBeenCalledTimes(1);
   });
 
+  it("executes generic DSK workflow ops with descriptor projection and named outs", async () => {
+    const dskDescriptor = {
+      surfce: 401,
+      center: 499,
+      dclass: 1,
+      dtype: 2,
+      frmcde: 10013,
+      corsys: 1,
+      corpar: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      co1min: 0,
+      co1max: 1,
+      co2min: 0,
+      co2max: 1,
+      co3min: 0,
+      co3max: 1,
+      start: 0,
+      stop: 1,
+    };
+
+    const dlabfsDescr = {
+      bwdptr: 0,
+      fwdptr: 0,
+      ibase: 0,
+      isize: 1,
+      dbase: 0,
+      dsize: 1,
+      cbase: 0,
+      csize: 1,
+    };
+
+    const raw = {
+      dskopn: vi.fn((_path: string, _ifname: string, _ncomch: number) => 12),
+      dskmi2: vi.fn(() => ({ spaixd: [1], spaixi: [1] })),
+      dskw02: vi.fn(() => {}),
+      dascls: vi.fn((_handle: number) => {}),
+      dasopr: vi.fn((_path: string) => 77),
+      dlabfs: vi.fn((_handle: number) => ({ found: true as const, descr: dlabfsDescr })),
+      dskgd: vi.fn((_handle: number, _descr: unknown) => dskDescriptor),
+      dskb02: vi.fn((_handle: number, _descr: unknown) => ({
+          nv: 8,
+          np: 6,
+          nvxtot: 8,
+          vtxbds: [
+            [0, 1],
+            [0, 1],
+            [0, 1],
+          ],
+          voxsiz: 1,
+          voxori: [0, 0, 0],
+          vgrext: [1, 1, 1],
+          cgscal: 1,
+          vtxnpl: 3,
+          voxnpt: 4,
+          voxnpl: 5,
+        })),
+    };
+    const kit = {
+      newIntCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+      newDoubleCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+      newCharCell: vi.fn((_size: number, _length: number) => ({ size: 0, card: 0 })),
+      newWindow: vi.fn((_maxIntervals: number) => ({ card: 0 })),
+      freeCell: vi.fn(() => {}),
+      freeWindow: vi.fn(() => {}),
+      readVirtualOutput: vi.fn((_output: { kind: string; path: string }) => new Uint8Array([1])),
+    };
+
+    const backend = {
+      kind: "node",
+      raw,
+      kit,
+    } as unknown as SpiceBackend;
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "methods/dsk/dskb02@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "dsk.dskb02",
+        canonicalMethod: "dsk.dskb02",
+        args: [],
+        result: {
+          type: "object",
+          required: ["surfce", "nv"],
+          properties: {
+            surfce: { type: "spiceInt" },
+            nv: { type: "spiceInt" },
+          },
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          { op: "materialize", fixture: "minimalDsk", as: "dskPath" },
+          { op: "dasOpen", path: "$refs.dskPath", as: "dasHandle" },
+          { op: "dlaBeginForwardSearch", handle: "$refs.dasHandle", as: "dladsc" },
+          { op: "spiceCall", call: "dskgd_c", in: ["$refs.dasHandle", "$refs.dladsc"], as: "dskdsc" },
+          { op: "project", out: { surfce: "$refs.dskdsc.surfce" } },
+          {
+            op: "spiceCall",
+            call: "dskb02_c",
+            in: ["$refs.dasHandle", "$refs.dladsc"],
+            out: { nv: "nv" },
+          },
+          { op: "projectResult", out: { surfce: "$refs.surfce", nv: "$refs.nv" } },
+        ],
+        cleanup: [
+          { op: "dasClose", target: "$refs.dasHandle" },
+          { op: "unlink", target: "$refs.dskPath" },
+        ],
+      },
+    };
+
+    const result = await executeV2CaseWithBackend(backend, input);
+
+    expect(result).toEqual({ surfce: 401, nv: 8 });
+    expect(raw.dskgd).toHaveBeenCalledTimes(1);
+    expect(raw.dskb02).toHaveBeenCalledTimes(1);
+    expect(raw.dascls).toHaveBeenCalled();
+  });
+
   it("reports invalid_args when card_c is missing as in bypassed schema input", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();

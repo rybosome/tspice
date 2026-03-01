@@ -1,5 +1,7 @@
 #include "cspice_runner_json_emit.h"
 #include "cspice_runner_error.h"
+#include "cspice_runner_temp_files.h"
+#include "cspice_runner_v2_fixtures.h"
 #include "cspice_runner_v2_refs.h"
 #include "cspice_runner_v2_alloc_steps.h"
 #include "cspice_runner_v2_assert_step.h"
@@ -28,6 +30,387 @@ static bool v2_strdup_token_slice(const char *json,
   memcpy(copy, json + tok->start, len);
   copy[len] = '\0';
   *out = copy;
+  return true;
+}
+
+static bool v2_write_spice_failure(const char *messagePrefix) {
+  char shortMsg[1841];
+  char longMsg[1841];
+  char traceMsg[1841];
+  capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                      traceMsg, sizeof(traceMsg));
+  write_error_json_ex("spice_error", messagePrefix, NULL, shortMsg, longMsg,
+                      traceMsg);
+  return false;
+}
+
+static bool v2_resolve_string_expr(const char *json,
+                                   const jsmntok_t *tokens,
+                                   const int tokenCount,
+                                   const int exprTok,
+                                   const int argsTok,
+                                   V2RefEntry *refs,
+                                   const int refCount,
+                                   const char *label,
+                                   char **out) {
+  if (exprTok < 0 || exprTok >= tokenCount ||
+      tokens[exprTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_args", "Expression must be a string", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  char detail[256];
+  detail[0] = '\0';
+  char *expr = NULL;
+  jsmn_strdup_err_t exprErr =
+      jsmn_strdup(json, &tokens[exprTok], &expr, detail, sizeof(detail));
+  if (exprErr != JSMN_STRDUP_OK) {
+    if (exprErr == JSMN_STRDUP_INVALID) {
+      write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                          detail[0] ? detail : NULL, NULL, NULL, NULL);
+    } else {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+    }
+    return false;
+  }
+
+  const char *argName = NULL;
+  const char *refName = NULL;
+
+  if (v2_parse_ref_name(expr, "$args.", &argName)) {
+    int valueTok =
+        jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+    if (valueTok < 0 || tokens[valueTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "Missing or invalid v2 string argument",
+                          argName, NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    char *value = NULL;
+    bool ok = v2_strdup_token_slice(json, &tokens[valueTok], &value);
+    free(expr);
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    *out = value;
+    return true;
+  }
+
+  if (v2_parse_ref_name(expr, "$refs.", &refName)) {
+    if (strchr(refName, '.') != NULL) {
+      write_error_json_ex("invalid_args", "Ref must use $refs.<name>", refName,
+                          NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    int refIndex = v2_find_ref_index(refs, refCount, refName);
+    if (refIndex < 0) {
+      write_error_json_ex("invalid_request", "Unknown v2 ref", refName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    if (refs[refIndex].type != V2_REF_PATH || refs[refIndex].pathValue == NULL) {
+      write_error_json_ex("invalid_args", "v2 ref is not a path", refName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    char *value = strdup(refs[refIndex].pathValue);
+    free(expr);
+    if (value == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    *out = value;
+    return true;
+  }
+
+  *out = expr;
+  return true;
+}
+
+static bool v2_execute_materialize_step(const char *json,
+                                        const jsmntok_t *tokens,
+                                        const int tokenCount,
+                                        const int stepTok,
+                                        V2RefEntry *refs,
+                                        int *refCount) {
+  int fixtureTok =
+      jsmn_find_object_key(json, tokens, stepTok, "fixture", tokenCount);
+  int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
+  if (fixtureTok < 0 || tokens[fixtureTok].type != JSMN_STRING || asTok < 0 ||
+      tokens[asTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request",
+                        "materialize requires string fixture/as", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  char *fixture = NULL;
+  char *asName = NULL;
+  if (!v2_strdup_token_slice(json, &tokens[fixtureTok], &fixture) ||
+      !v2_strdup_token_slice(json, &tokens[asTok], &asName)) {
+    free(fixture);
+    free(asName);
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  char pathBuf[PATH_MAX];
+  bool ok = false;
+  if (strcmp(fixture, "minimalDsk") == 0) {
+    ok = v2_write_minimal_dsk_file("v2-materialize-minimal-dsk", pathBuf,
+                                   sizeof(pathBuf));
+  } else if (strcmp(fixture, "virtualOutputSpk") == 0) {
+    char detail[256];
+    detail[0] = '\0';
+    int tempFd = -1;
+    if (!build_file_io_temp_path("v2-materialize-virtual-output",
+                                 ".bsp",
+                                 pathBuf,
+                                 sizeof(pathBuf),
+                                 &tempFd,
+                                 detail,
+                                 sizeof(detail))) {
+      write_error_json_ex("invalid_request",
+                          "Failed to create virtual output temp path",
+                          detail[0] ? detail : NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      ok = false;
+    } else {
+      if (tempFd >= 0) {
+        close(tempFd);
+      }
+      unlink(pathBuf);
+
+      SpiceInt handle = 0;
+      spkopn_c(pathBuf, "TSPICE", 0, &handle);
+      if (failed_c() == SPICETRUE) {
+        unlink(pathBuf);
+        ok = v2_write_spice_failure("SPICE error in spkopn_c");
+      } else {
+        spkw08_c(handle,
+                 1000,
+                 0,
+                 "J2000",
+                 0,
+                 60,
+                 "TSPICE_V2_READ_VO",
+                 1,
+                 (SpiceDouble(*)[6])READ_VIRTUAL_OUTPUT_STATES,
+                 0,
+                 60);
+        if (failed_c() == SPICETRUE) {
+          spkcls_c(handle);
+          unlink(pathBuf);
+          ok = v2_write_spice_failure("SPICE error in spkw08_c");
+        } else {
+          spkcls_c(handle);
+          if (failed_c() == SPICETRUE) {
+            unlink(pathBuf);
+            ok = v2_write_spice_failure("SPICE error in spkcls_c");
+          } else {
+            ok = true;
+          }
+        }
+      }
+    }
+  } else {
+    write_error_json_ex("invalid_args", "Unknown materialize fixture", fixture,
+                        NULL, NULL, NULL);
+    ok = false;
+  }
+
+  if (ok) {
+    ok = v2_add_ref_path(refs, refCount, asName, pathBuf);
+  }
+
+  free(fixture);
+  free(asName);
+  return ok;
+}
+
+static bool v2_execute_das_open_step(const char *json,
+                                     const jsmntok_t *tokens,
+                                     const int tokenCount,
+                                     const int stepTok,
+                                     const int argsTok,
+                                     V2RefEntry *refs,
+                                     int *refCount) {
+  int pathTok = jsmn_find_object_key(json, tokens, stepTok, "path", tokenCount);
+  int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
+  if (pathTok < 0 || asTok < 0 || tokens[asTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request", "dasOpen requires path/as", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  char *path = NULL;
+  if (!v2_resolve_string_expr(json,
+                              tokens,
+                              tokenCount,
+                              pathTok,
+                              argsTok,
+                              refs,
+                              *refCount,
+                              "dasOpen.path",
+                              &path)) {
+    return false;
+  }
+
+  char *asName = NULL;
+  if (!v2_strdup_token_slice(json, &tokens[asTok], &asName)) {
+    free(path);
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  SpiceInt handle = 0;
+  dasopr_c(path, &handle);
+  free(path);
+  if (failed_c() == SPICETRUE) {
+    free(asName);
+    return v2_write_spice_failure("SPICE error in dasopr_c");
+  }
+
+  bool ok = v2_add_ref_das_handle(refs, refCount, asName, handle);
+  free(asName);
+  return ok;
+}
+
+static bool v2_execute_dla_begin_forward_search_step(
+    const char *json, const jsmntok_t *tokens, const int tokenCount,
+    const int stepTok, V2RefEntry *refs, int *refCount) {
+  int handleTok =
+      jsmn_find_object_key(json, tokens, stepTok, "handle", tokenCount);
+  int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
+  if (handleTok < 0 || asTok < 0 || tokens[asTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request",
+                        "dlaBeginForwardSearch requires handle/as", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  int handleRefIndex = -1;
+  if (!v2_resolve_das_handle_ref(json,
+                                 tokens,
+                                 tokenCount,
+                                 handleTok,
+                                 refs,
+                                 *refCount,
+                                 "dlaBeginForwardSearch.handle",
+                                 &handleRefIndex)) {
+    return false;
+  }
+
+  char *asName = NULL;
+  if (!v2_strdup_token_slice(json, &tokens[asTok], &asName)) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  SpiceBoolean found = SPICEFALSE;
+  SpiceDLADescr descr;
+  memset(&descr, 0, sizeof(descr));
+  dlabfs_c(refs[handleRefIndex].handleValue, &descr, &found);
+  if (failed_c() == SPICETRUE) {
+    free(asName);
+    return v2_write_spice_failure("SPICE error in dlabfs_c");
+  }
+
+  if (found != SPICETRUE) {
+    write_error_json_ex("invalid_request",
+                        "dlaBeginForwardSearch expected a DLA segment",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    free(asName);
+    return false;
+  }
+
+  bool ok = v2_add_ref_dla_descr(refs, refCount, asName, &descr);
+  free(asName);
+  return ok;
+}
+
+static bool v2_execute_das_close_step(const char *json,
+                                      const jsmntok_t *tokens,
+                                      const int tokenCount,
+                                      const int stepTok,
+                                      V2RefEntry *refs,
+                                      const int refCount) {
+  int targetTok =
+      jsmn_find_object_key(json, tokens, stepTok, "target", tokenCount);
+  if (targetTok < 0) {
+    write_error_json_ex("invalid_request", "dasClose requires target", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int refIndex = -1;
+  if (!v2_resolve_das_handle_ref(json,
+                                 tokens,
+                                 tokenCount,
+                                 targetTok,
+                                 refs,
+                                 refCount,
+                                 "dasClose.target",
+                                 &refIndex)) {
+    return false;
+  }
+
+  dascls_c(refs[refIndex].handleValue);
+  if (failed_c() == SPICETRUE) {
+    return v2_write_spice_failure("SPICE error in dascls_c");
+  }
+
+  v2_free_ref_entry(&refs[refIndex]);
+  return true;
+}
+
+static bool v2_execute_unlink_step(const char *json,
+                                   const jsmntok_t *tokens,
+                                   const int tokenCount,
+                                   const int stepTok,
+                                   V2RefEntry *refs,
+                                   const int refCount) {
+  int targetTok =
+      jsmn_find_object_key(json, tokens, stepTok, "target", tokenCount);
+  if (targetTok < 0) {
+    write_error_json_ex("invalid_request", "unlink requires target", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  int refIndex = -1;
+  if (!v2_resolve_path_ref(json,
+                           tokens,
+                           tokenCount,
+                           targetTok,
+                           refs,
+                           refCount,
+                           "unlink.target",
+                           &refIndex)) {
+    return false;
+  }
+
+  if (refs[refIndex].pathValue != NULL) {
+    unlink(refs[refIndex].pathValue);
+  }
+
+  v2_free_ref_entry(&refs[refIndex]);
   return true;
 }
 
@@ -472,6 +855,31 @@ bool v2_dispatch_workflow_step(
                                         argsTok, refs, refCount);
   }
 
+  if (jsmn_token_streq(json, &tokens[opTok], "materialize")) {
+    return v2_execute_materialize_step(
+        json, tokens, tokenCount, stepTok, refs, refCount);
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "dasOpen")) {
+    return v2_execute_das_open_step(
+        json, tokens, tokenCount, stepTok, argsTok, refs, refCount);
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "dlaBeginForwardSearch")) {
+    return v2_execute_dla_begin_forward_search_step(
+        json, tokens, tokenCount, stepTok, refs, refCount);
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "dasClose")) {
+    return v2_execute_das_close_step(
+        json, tokens, tokenCount, stepTok, refs, *refCount);
+  }
+
+  if (jsmn_token_streq(json, &tokens[opTok], "unlink")) {
+    return v2_execute_unlink_step(json, tokens, tokenCount, stepTok, refs,
+                                  *refCount);
+  }
+
   if (jsmn_token_streq(json, &tokens[opTok], "spiceCall")) {
     return v2_execute_spice_call_step(json, tokens, tokenCount, stepTok, argsTok,
                                       refs, refCount);
@@ -546,6 +954,28 @@ static bool v2_write_project_result_success_json(
   fputs(projectResultObjectJson, stdout);
   fputs("}\n", stdout);
   return true;
+}
+
+static void v2_cleanup_live_refs_best_effort(V2RefEntry *refs,
+                                             int refCount) {
+  for (int i = 0; i < refCount; i++) {
+    if (refs[i].name == NULL) {
+      continue;
+    }
+
+    if (refs[i].type == V2_REF_DAS_HANDLE) {
+      dascls_c(refs[i].handleValue);
+      if (failed_c() == SPICETRUE) {
+        reset_c();
+      }
+      continue;
+    }
+
+    if (refs[i].type == V2_REF_PATH && refs[i].pathValue != NULL) {
+      unlink(refs[i].pathValue);
+      continue;
+    }
+  }
 }
 
 bool v2_execute_workflow_request(const char *json, const jsmntok_t *tokens,
@@ -629,6 +1059,7 @@ bool v2_execute_workflow_request(const char *json, const jsmntok_t *tokens,
     ok = v2_write_project_result_success_json(projectResultObjectJson);
   }
 
+  v2_cleanup_live_refs_best_effort(refs, refCount);
   free(projectResultObjectJson);
   v2_free_all_refs(refs, refCount);
   return ok;

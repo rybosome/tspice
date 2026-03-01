@@ -2,901 +2,370 @@
 #include "cspice_runner_error.h"
 #include "cspice_runner_temp_files.h"
 #include "cspice_runner_v2_call_spec.h"
-#include "cspice_runner_v2_refs.h"
 #include "cspice_runner_v2_fixtures.h"
+#include "cspice_runner_v2_refs.h"
 #include "cspice_runner_v2_spice_call.h"
 
-#include <limits.h>
+static bool v2_strdup_json_token(const char *json, const jsmntok_t *tok,
+                                 char **out) {
+  char detail[256];
+  detail[0] = '\0';
+  jsmn_strdup_err_t err = jsmn_strdup(json, tok, out, detail, sizeof(detail));
+  if (err == JSMN_STRDUP_OK) {
+    return true;
+  }
+
+  if (err == JSMN_STRDUP_INVALID) {
+    write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                        detail[0] ? detail : NULL, NULL, NULL, NULL);
+  } else {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+  }
+  return false;
+}
+
+static bool v2_write_spice_failure(const char *messagePrefix) {
+  char shortMsg[1841];
+  char longMsg[1841];
+  char traceMsg[1841];
+  capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
+                      traceMsg, sizeof(traceMsg));
+  write_error_json_ex("spice_error", messagePrefix, NULL, shortMsg, longMsg,
+                      traceMsg);
+  return false;
+}
+
+static bool v2_resolve_path_expr(const char *json, const jsmntok_t *tokens,
+                                 int tokenCount, int exprTok, int argsTok,
+                                 V2RefEntry *refs, int refCount,
+                                 const char *label, char **outPath) {
+  if (exprTok < 0 || exprTok >= tokenCount ||
+      tokens[exprTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_args", "Path expression must be a string", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  char *expr = NULL;
+  if (!v2_strdup_json_token(json, &tokens[exprTok], &expr)) {
+    return false;
+  }
+
+  const char *argName = NULL;
+  const char *refName = NULL;
+
+  if (v2_parse_ref_name(expr, "$args.", &argName)) {
+    int valueTok =
+        jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+    if (valueTok < 0 || tokens[valueTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args", "Missing or invalid v2 string argument",
+                          argName, NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    char *resolved = NULL;
+    bool ok = v2_strdup_json_token(json, &tokens[valueTok], &resolved);
+    free(expr);
+    if (!ok) {
+      return false;
+    }
+
+    *outPath = resolved;
+    return true;
+  }
+
+  if (v2_parse_ref_name(expr, "$refs.", &refName)) {
+    if (strchr(refName, '.') != NULL) {
+      write_error_json_ex("invalid_args", "Ref must use $refs.<name>", refName,
+                          NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    int refIndex = v2_find_ref_index(refs, refCount, refName);
+    if (refIndex < 0) {
+      write_error_json_ex("invalid_request", "Unknown v2 ref", refName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    if (refs[refIndex].type != V2_REF_PATH || refs[refIndex].pathValue == NULL) {
+      write_error_json_ex("invalid_args", "v2 ref is not a path", refName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    char *resolved = strdup(refs[refIndex].pathValue);
+    free(expr);
+    if (resolved == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    *outPath = resolved;
+    return true;
+  }
+
+  *outPath = expr;
+  return true;
+}
+
+static bool v2_require_as_output_ref(const char *json, const jsmntok_t *tokens,
+                                     int tokenCount, int stepTok,
+                                     const V2SpiceCallSpec *spec,
+                                     char **outName) {
+  int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
+  if (asTok < 0 || tokens[asTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_args",
+                        "spiceCall requires string \"as\" output ref",
+                        spec->name, NULL, NULL, NULL);
+    return false;
+  }
+
+  return v2_strdup_json_token(json, &tokens[asTok], outName);
+}
+
+static bool v2_forbid_as_output_ref(const char *json, const jsmntok_t *tokens,
+                                    int tokenCount, int stepTok,
+                                    const V2SpiceCallSpec *spec) {
+  int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
+  if (asTok >= 0) {
+    write_error_json_ex("invalid_args",
+                        "spiceCall does not allow \"as\" output ref",
+                        spec->name, NULL, NULL, NULL);
+    return false;
+  }
+
+  return true;
+}
+
+static bool v2_require_out_map(const char *json, const jsmntok_t *tokens,
+                               int tokenCount, int stepTok,
+                               const V2SpiceCallSpec *spec,
+                               int *outMapTok) {
+  int outTok = jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
+  if (outTok < 0 || tokens[outTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_args",
+                        "spiceCall requires object \"out\" map",
+                        spec->name, NULL, NULL, NULL);
+    return false;
+  }
+
+  *outMapTok = outTok;
+  return true;
+}
+
+static bool v2_forbid_out_map(const char *json, const jsmntok_t *tokens,
+                              int tokenCount, int stepTok,
+                              const V2SpiceCallSpec *spec) {
+  int outTok = jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
+  if (outTok >= 0) {
+    write_error_json_ex("invalid_args", "spiceCall does not allow \"out\" map",
+                        spec->name, NULL, NULL, NULL);
+    return false;
+  }
+
+  return true;
+}
 
 typedef struct {
-  SpiceInt intArgs[V2_SPICE_CALL_MAX_ARGS];
-  int cellOrWindowRefIndices[V2_SPICE_CALL_MAX_ARGS];
-} V2SimpleSpiceCallArgs;
+  SpiceInt intValues[V2_SPICE_CALL_MAX_ARITY];
+  int refIndices[V2_SPICE_CALL_MAX_ARITY];
+  char *pathValues[V2_SPICE_CALL_MAX_ARITY];
+} V2ResolvedSpiceCallArgs;
 
-static void v2_init_simple_spice_call_args(V2SimpleSpiceCallArgs *args) {
-  for (int i = 0; i < V2_SPICE_CALL_MAX_ARGS; i++) {
-    args->intArgs[i] = 0;
-    args->cellOrWindowRefIndices[i] = -1;
+static void v2_clear_resolved_args(V2ResolvedSpiceCallArgs *args) {
+  memset(args, 0, sizeof(*args));
+  for (int i = 0; i < V2_SPICE_CALL_MAX_ARITY; i++) {
+    args->refIndices[i] = -1;
   }
 }
 
-static void v2_format_simple_arg_label(const char *callName,
-                                       int argIndex,
-                                       char *buffer,
-                                       size_t bufferSize) {
-  if (bufferSize == 0) {
-    return;
+static void v2_free_resolved_args(V2ResolvedSpiceCallArgs *args) {
+  for (int i = 0; i < V2_SPICE_CALL_MAX_ARITY; i++) {
+    free(args->pathValues[i]);
+    args->pathValues[i] = NULL;
   }
-
-  snprintf(buffer, bufferSize, "spiceCall(%s).in[%d]", callName, argIndex);
 }
 
-static bool v2_resolve_simple_spice_call_args(const char *json,
-                                              const jsmntok_t *tokens,
-                                              int tokenCount,
-                                              int inTok,
-                                              int argsTok,
-                                              V2RefEntry *refs,
-                                              int refCount,
-                                              const V2SpiceCallSpec *callSpec,
-                                              const char *callName,
-                                              V2SimpleSpiceCallArgs *outArgs) {
-  v2_init_simple_spice_call_args(outArgs);
-  const unsigned int nonNegativeMaskWidth =
-      (unsigned int)(sizeof(callSpec->nonNegativeIntArgMask) * CHAR_BIT);
+static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
+                                 int tokenCount, int stepTok, int argsTok,
+                                 V2RefEntry *refs, int refCount,
+                                 const V2SpiceCallSpec *spec,
+                                 V2ResolvedSpiceCallArgs *out) {
+  int inTok = jsmn_find_object_key(json, tokens, stepTok, "in", tokenCount);
+  if (inTok < 0 || tokens[inTok].type != JSMN_ARRAY) {
+    write_error_json_ex("invalid_request", "spiceCall requires array \"in\"",
+                        spec->name, NULL, NULL, NULL);
+    return false;
+  }
 
-  for (int argIndex = 0; argIndex < callSpec->arity; argIndex++) {
-    int argTok = jsmn_get_array_elem(tokens, inTok, argIndex, tokenCount);
-    char label[96];
-    v2_format_simple_arg_label(callName, argIndex, label, sizeof(label));
+  if (tokens[inTok].size != spec->arity) {
+    char msg[128];
+    snprintf(msg, sizeof(msg), "spiceCall expects %d input(s)", spec->arity);
+    write_error_json_ex("invalid_request", msg, spec->name, NULL, NULL, NULL);
+    return false;
+  }
 
-    if (callSpec->argKinds[argIndex] == V2_SPICE_CALL_ARG_INT_EXPR) {
+  v2_clear_resolved_args(out);
+
+  int idx = inTok + 1;
+  for (int i = 0; i < spec->arity; i++) {
+    int valueTok = idx;
+    switch (spec->argKinds[i]) {
+    case V2_SPICE_CALL_ARG_INT_EXPR: {
+      char label[128];
+      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
       if (!v2_resolve_spiceint_expr(json,
                                     tokens,
                                     tokenCount,
-                                    argTok,
+                                    valueTok,
                                     argsTok,
                                     refs,
                                     refCount,
                                     label,
-                                    &outArgs->intArgs[argIndex])) {
+                                    &out->intValues[i])) {
+        v2_free_resolved_args(out);
         return false;
       }
 
-      if ((unsigned int)argIndex < nonNegativeMaskWidth &&
-          (callSpec->nonNegativeIntArgMask & (1u << (unsigned int)argIndex)) !=
-              0u &&
-          outArgs->intArgs[argIndex] < 0) {
-        char message[128];
-        snprintf(message, sizeof(message), "%s must be >= 0", label);
-        write_error_json_ex("invalid_args", message, NULL, NULL, NULL, NULL);
+      if ((spec->nonNegativeIntArgMask & (1U << i)) != 0U &&
+          out->intValues[i] < 0) {
+        write_error_json_ex("invalid_args", "spiceCall integer input must be >= 0",
+                            spec->name, NULL, NULL, NULL);
+        v2_free_resolved_args(out);
         return false;
       }
-
-      continue;
+      break;
     }
 
-    if (callSpec->argKinds[argIndex] == V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF) {
+    case V2_SPICE_CALL_ARG_CELL_REF: {
       int refIndex = -1;
-      if (!v2_resolve_cell_or_window_ref(json,
-                                         tokens,
-                                         tokenCount,
-                                         argTok,
-                                         refs,
-                                         refCount,
-                                         label,
-                                         &refIndex)) {
+      char label[128];
+      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      if (!v2_resolve_cell_ref(
+              json, tokens, tokenCount, valueTok, refs, refCount, label,
+              &refIndex)) {
+        v2_free_resolved_args(out);
         return false;
       }
-
-      outArgs->cellOrWindowRefIndices[argIndex] = refIndex;
-      continue;
+      out->refIndices[i] = refIndex;
+      break;
     }
 
-    write_error_json_ex("invalid_request",
-                        "Unsupported simple spiceCall argument metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
+    case V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF: {
+      int refIndex = -1;
+      char label[128];
+      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      if (!v2_resolve_cell_or_window_ref(
+              json, tokens, tokenCount, valueTok, refs, refCount, label,
+              &refIndex)) {
+        v2_free_resolved_args(out);
+        return false;
+      }
+      out->refIndices[i] = refIndex;
+      break;
+    }
+
+    case V2_SPICE_CALL_ARG_PATH_EXPR: {
+      char label[128];
+      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      if (!v2_resolve_path_expr(json,
+                                tokens,
+                                tokenCount,
+                                valueTok,
+                                argsTok,
+                                refs,
+                                refCount,
+                                label,
+                                &out->pathValues[i])) {
+        v2_free_resolved_args(out);
+        return false;
+      }
+      break;
+    }
+
+    case V2_SPICE_CALL_ARG_DAS_HANDLE_REF: {
+      int refIndex = -1;
+      char label[128];
+      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      if (!v2_resolve_das_handle_ref(
+              json, tokens, tokenCount, valueTok, refs, refCount, label,
+              &refIndex)) {
+        v2_free_resolved_args(out);
+        return false;
+      }
+      out->refIndices[i] = refIndex;
+      break;
+    }
+
+    case V2_SPICE_CALL_ARG_DLA_DESCR_REF: {
+      int refIndex = -1;
+      char label[128];
+      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      if (!v2_resolve_dla_descr_ref(
+              json, tokens, tokenCount, valueTok, refs, refCount, label,
+              &refIndex)) {
+        v2_free_resolved_args(out);
+        return false;
+      }
+      out->refIndices[i] = refIndex;
+      break;
+    }
+    }
+
+    idx = jsmn_skip_subtree(tokens, valueTok, tokenCount);
+    if (idx < 0) {
+      write_error_json_ex("invalid_request", "spiceCall input parse error", NULL,
+                          NULL, NULL, NULL);
+      v2_free_resolved_args(out);
+      return false;
+    }
   }
 
   return true;
 }
 
-static bool v2_dispatch_simple_spice_call(const V2SpiceCallSpec *callSpec,
-                                          const V2SimpleSpiceCallArgs *args,
-                                          V2RefEntry *refs,
-                                          SpiceInt *scalarOut) {
-  if (callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_SCALAR_INT) {
-    int refIndex = args->cellOrWindowRefIndices[0];
-    if (refIndex < 0) {
-      return false;
-    }
-
-    if (callSpec->id == V2_SPICE_CALL_CARD_C) {
-      *scalarOut = card_c(&refs[refIndex].cell);
-      return true;
-    }
-
-    if (callSpec->id == V2_SPICE_CALL_SIZE_C) {
-      *scalarOut = size_c(&refs[refIndex].cell);
-      return true;
-    }
-
-    return false;
-  }
-
-  if (callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_VOID) {
-    if (callSpec->cellWritebackArgIndex < 0 ||
-        callSpec->cellWritebackArgIndex >= V2_SPICE_CALL_MAX_ARGS) {
-      return false;
-    }
-
-    int refIndex = args->cellOrWindowRefIndices[callSpec->cellWritebackArgIndex];
-    if (refIndex < 0) {
-      return false;
-    }
-
-    SpiceCell *cellValue = &refs[refIndex].cell;
-    if (callSpec->id == V2_SPICE_CALL_SCARD_C) {
-      scard_c(args->intArgs[0], cellValue);
-    } else if (callSpec->id == V2_SPICE_CALL_SSIZE_C) {
-      ssize_c(args->intArgs[0], cellValue);
-    } else if (callSpec->id == V2_SPICE_CALL_VALID_C) {
-      valid_c(args->intArgs[0], args->intArgs[1], cellValue);
-    } else {
-      return false;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-static bool v2_execute_simple_spice_call(const char *json,
-                                         const jsmntok_t *tokens,
-                                         int tokenCount,
-                                         int inTok,
-                                         int asTok,
-                                         int argsTok,
-                                         V2RefEntry *refs,
-                                         int *refCount,
-                                         const V2SpiceCallSpec *callSpec,
-                                         const char *callName) {
-  if (callSpec->arity > V2_SPICE_CALL_MAX_ARGS) {
-    write_error_json_ex("invalid_request",
-                        "Unsupported generic v2 spiceCall arity metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  if (callSpec->executionKind == V2_SPICE_CALL_EXEC_SIMPLE_VOID &&
-      (callSpec->cellWritebackArgIndex < 0 ||
-       callSpec->cellWritebackArgIndex >= (int)callSpec->arity ||
-       callSpec->cellWritebackArgIndex >= V2_SPICE_CALL_MAX_ARGS)) {
-    write_error_json_ex("invalid_request",
-                        "Unsupported generic v2 spiceCall writeback metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  V2SimpleSpiceCallArgs args;
-  if (!v2_resolve_simple_spice_call_args(json,
-                                         tokens,
-                                         tokenCount,
-                                         inTok,
-                                         argsTok,
-                                         refs,
-                                         *refCount,
-                                         callSpec,
-                                         callName,
-                                         &args)) {
-    return false;
-  }
-
-  SpiceInt scalarOut = 0;
-  reset_c();
-  if (!v2_dispatch_simple_spice_call(callSpec, &args, refs, &scalarOut)) {
-    write_error_json_ex("invalid_request",
-                        "Unsupported generic v2 spiceCall metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    write_error_json_ex("spice_error", "SPICE error in spiceCall", callName,
-                        shortMsg, longMsg, traceMsg);
-    return false;
-  }
-
-  if (callSpec->outputPolicy != V2_SPICE_CALL_OUTPUT_REQUIRED) {
-    return true;
-  }
-
-  char asDetail[256];
-  asDetail[0] = '\0';
-  char *asName = NULL;
-  jsmn_strdup_err_t asErr =
-      jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
-  if (asErr != JSMN_STRDUP_OK) {
-    if (asErr == JSMN_STRDUP_INVALID) {
-      write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                          asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
-    } else {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-    }
-    return false;
-  }
-
-  bool ok = v2_add_ref_int(refs, refCount, asName, scalarOut);
-  free(asName);
-  return ok;
-}
-
-static bool v2_execute_minimal_dsk_selector_int_spice_call(
-    const char *json, const jsmntok_t *tokens, int tokenCount, int inTok,
-    int asTok, V2RefEntry *refs, int *refCount, const V2SpiceCallSpec *callSpec,
-    const char *callName) {
-  const V2SpiceComplexCallSpec *complexSpec = &callSpec->complexCallSpec;
-  if (complexSpec->tempTag == NULL ||
-      complexSpec->selectorValueKind ==
-          V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE ||
-      complexSpec->selectorPrimary == NULL ||
-      complexSpec->selectorSecondary == NULL) {
-    write_error_json_ex("invalid_request",
-                        "Unsupported complex minimal DSK selector metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  int selectorTok = jsmn_get_array_elem(tokens, inTok, 0, tokenCount);
-  if (selectorTok < 0 || selectorTok >= tokenCount ||
-      tokens[selectorTok].type != JSMN_STRING) {
-    write_error_json_ex(
-        "invalid_args",
-        "spiceCall dskgd_c/dskb02_c selector must be a string",
-        NULL,
-        NULL,
-        NULL,
-        NULL);
-    return false;
-  }
-
-  char selectorDetail[256];
-  selectorDetail[0] = '\0';
-  char *selector = NULL;
-  jsmn_strdup_err_t selectorErr =
-      jsmn_strdup(json, &tokens[selectorTok], &selector, selectorDetail,
-                  sizeof(selectorDetail));
-  if (selectorErr != JSMN_STRDUP_OK) {
-    if (selectorErr == JSMN_STRDUP_INVALID) {
-      write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                          selectorDetail[0] ? selectorDetail : NULL, NULL, NULL,
-                          NULL);
-    } else {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-    }
-    return false;
-  }
-
-  bool selectorOk = (strcmp(selector, complexSpec->selectorPrimary) == 0 ||
-                     strcmp(selector, complexSpec->selectorSecondary) == 0);
-  if (!selectorOk) {
-    write_error_json_ex("invalid_args",
-                        "spiceCall selector is invalid for requested call",
-                        selector,
-                        NULL,
-                        NULL,
-                        NULL);
-    free(selector);
-    return false;
-  }
-
+static bool v2_execute_dskopn_legacy_call(void) {
   char tempPath[PATH_MAX];
-  if (!v2_write_minimal_dsk_file(
-          complexSpec->tempTag, tempPath, sizeof(tempPath))) {
-    free(selector);
-    return false;
-  }
-
-  SpiceInt handle = 0;
-  dasopr_c(tempPath, &handle);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
-    free(selector);
-    write_error_json("SPICE error in dasopr", shortMsg, longMsg, traceMsg);
-    return false;
-  }
-
-  SpiceDLADescr dladsc;
-  SpiceBoolean found = SPICEFALSE;
-  dlabfs_c(handle, &dladsc, &found);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    dascls_c(handle);
-    unlink(tempPath);
-    free(selector);
-    write_error_json("SPICE error in dlabfs", shortMsg, longMsg, traceMsg);
-    return false;
-  }
-
-  if (found != SPICETRUE) {
-    dascls_c(handle);
-    unlink(tempPath);
-    write_error_json_ex("invalid_request",
-                        "spiceCall expected a DLA segment in minimal DSK",
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    free(selector);
-    return false;
-  }
-
-  SpiceInt outValue = 0;
-  if (complexSpec->selectorValueKind ==
-      V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKGD) {
-    SpiceDSKDescr dskdsc;
-    dskgd_c(handle, &dladsc, &dskdsc);
-    if (failed_c() == SPICETRUE) {
-      char shortMsg[1841];
-      char longMsg[1841];
-      char traceMsg[1841];
-      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                          traceMsg, sizeof(traceMsg));
-      dascls_c(handle);
-      unlink(tempPath);
-      free(selector);
-      write_error_json("SPICE error in dskgd", shortMsg, longMsg, traceMsg);
-      return false;
-    }
-
-    outValue = (strcmp(selector, complexSpec->selectorPrimary) == 0)
-                   ? dskdsc.surfce
-                   : dskdsc.center;
-  } else if (complexSpec->selectorValueKind ==
-             V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKB02) {
-    SpiceInt nv = 0;
-    SpiceInt np = 0;
-    SpiceInt nvxtot = 0;
-    SpiceDouble vtxbds[3][2];
-    SpiceDouble voxsiz = 0.0;
-    SpiceDouble voxori[3];
-    SpiceInt vgrext[3];
-    SpiceInt cgscal = 0;
-    SpiceInt vtxnpl = 0;
-    SpiceInt voxnpt = 0;
-    SpiceInt voxnpl = 0;
-
-    dskb02_c(handle,
-             &dladsc,
-             &nv,
-             &np,
-             &nvxtot,
-             vtxbds,
-             &voxsiz,
-             voxori,
-             vgrext,
-             &cgscal,
-             &vtxnpl,
-             &voxnpt,
-             &voxnpl);
-
-    if (failed_c() == SPICETRUE) {
-      char shortMsg[1841];
-      char longMsg[1841];
-      char traceMsg[1841];
-      capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                          traceMsg, sizeof(traceMsg));
-      dascls_c(handle);
-      unlink(tempPath);
-      free(selector);
-      write_error_json("SPICE error in dskb02", shortMsg, longMsg, traceMsg);
-      return false;
-    }
-
-    outValue =
-        (strcmp(selector, complexSpec->selectorPrimary) == 0) ? nv : np;
-  } else {
-    dascls_c(handle);
-    unlink(tempPath);
-    free(selector);
-    write_error_json_ex("invalid_request",
-                        "Unsupported complex minimal DSK selector metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  dascls_c(handle);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
-    free(selector);
-    write_error_json("SPICE error in dascls", shortMsg, longMsg, traceMsg);
-    return false;
-  }
-
-  unlink(tempPath);
-
-  char asDetail[256];
-  asDetail[0] = '\0';
-  char *asName = NULL;
-  jsmn_strdup_err_t asErr =
-      jsmn_strdup(json, &tokens[asTok], &asName, asDetail, sizeof(asDetail));
-  if (asErr != JSMN_STRDUP_OK) {
-    if (asErr == JSMN_STRDUP_INVALID) {
-      write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                          asDetail[0] ? asDetail : NULL, NULL, NULL, NULL);
-    } else {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-    }
-    free(selector);
-    return false;
-  }
-
-  bool ok = v2_add_ref_int(refs, refCount, asName, outValue);
-  free(asName);
-  free(selector);
-  return ok;
-}
-
-static bool v2_check_minimal_dsk_body_id_presence(const char *tempPath,
-                                                  const char *callName) {
-  SPICEINT_CELL(bodids, 100);
-  dskobj_c(tempPath, &bodids);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    write_error_json("SPICE error in dskobj", shortMsg, longMsg, traceMsg);
-    return false;
-  }
-
-  const SpiceInt bodyCount = card_c(&bodids);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    write_error_json("SPICE error in card_c (dskobj)", shortMsg, longMsg,
-                     traceMsg);
-    return false;
-  }
-
-  if (bodyCount < 1) {
-    char message[160];
-    snprintf(message,
-             sizeof(message),
-             "spiceCall(%s) expected at least one body id",
-             callName);
-    write_error_json_ex("invalid_request",
-                        message,
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  return true;
-}
-
-static bool v2_check_minimal_dsk_surface_id_presence(const char *tempPath,
-                                                     const char *callName) {
-  SPICEINT_CELL(bodids, 100);
-  SPICEINT_CELL(srfids, 100);
-
-  dskobj_c(tempPath, &bodids);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    write_error_json("SPICE error in dskobj (dsksrf setup)", shortMsg, longMsg,
-                     traceMsg);
-    return false;
-  }
-
-  const SpiceInt bodyCount = card_c(&bodids);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    write_error_json("SPICE error in card_c (dsksrf body ids)", shortMsg,
-                     longMsg, traceMsg);
-    return false;
-  }
-
-  if (bodyCount < 1) {
-    char message[160];
-    snprintf(message,
-             sizeof(message),
-             "spiceCall(%s) expected at least one body id",
-             callName);
-    write_error_json_ex("invalid_request",
-                        message,
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  const SpiceInt *bodyValues = (const SpiceInt *)bodids.data;
-  const SpiceInt bodyid = bodyValues[0];
-
-  dsksrf_c(tempPath, bodyid, &srfids);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    write_error_json("SPICE error in dsksrf", shortMsg, longMsg, traceMsg);
-    return false;
-  }
-
-  const SpiceInt surfaceCount = card_c(&srfids);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    write_error_json("SPICE error in card_c (dsksrf surface ids)", shortMsg,
-                     longMsg, traceMsg);
-    return false;
-  }
-
-  if (surfaceCount < 1) {
-    char message[160];
-    snprintf(message,
-             sizeof(message),
-             "spiceCall(%s) expected at least one surface id",
-             callName);
-    write_error_json_ex("invalid_request",
-                        message,
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  return true;
-}
-
-static bool v2_execute_minimal_dsk_presence_spice_call(
-    const V2SpiceCallSpec *callSpec, const char *callName) {
-  const V2SpiceComplexCallSpec *complexSpec = &callSpec->complexCallSpec;
-  if (complexSpec->tempTag == NULL ||
-      complexSpec->presenceKind == V2_SPICE_MINIMAL_DSK_PRESENCE_NONE) {
-    write_error_json_ex("invalid_request",
-                        "Unsupported complex minimal DSK presence metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  char tempPath[PATH_MAX];
-  if (!v2_write_minimal_dsk_file(
-          complexSpec->tempTag, tempPath, sizeof(tempPath))) {
-    return false;
-  }
-
-  bool ok = false;
-  if (complexSpec->presenceKind == V2_SPICE_MINIMAL_DSK_PRESENCE_BODY_ID) {
-    ok = v2_check_minimal_dsk_body_id_presence(tempPath, callName);
-  } else if (complexSpec->presenceKind ==
-             V2_SPICE_MINIMAL_DSK_PRESENCE_SURFACE_ID) {
-    ok = v2_check_minimal_dsk_surface_id_presence(tempPath, callName);
-  } else {
-    write_error_json_ex("invalid_request",
-                        "Unsupported complex minimal DSK presence metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    ok = false;
-  }
-
-  unlink(tempPath);
-  return ok;
-}
-
-static bool v2_execute_read_virtual_output_bytes_spice_call(
-    const V2SpiceCallSpec *callSpec) {
-  const char *tempTag = callSpec->complexCallSpec.tempTag;
-  if (tempTag == NULL) {
-    write_error_json_ex("invalid_request",
-                        "Unsupported complex readVirtualOutput metadata",
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
   char detail[256];
   detail[0] = '\0';
-  char tempPath[PATH_MAX];
   int tempFd = -1;
-  if (!build_file_io_temp_path(tempTag,
-                               ".bsp",
-                               tempPath,
-                               sizeof(tempPath),
-                               &tempFd,
-                               detail,
+  if (!build_file_io_temp_path("v2-dskopn", ".bds", tempPath,
+                               sizeof(tempPath), &tempFd, detail,
                                sizeof(detail))) {
-    write_error_json_ex("invalid_request",
-                        "Failed to create temporary SPK path",
-                        detail[0] ? detail : NULL,
-                        NULL,
-                        NULL,
-                        NULL);
+    write_error_json_ex("invalid_request", "Failed to create DSK temp path",
+                        detail[0] ? detail : NULL, NULL, NULL, NULL);
     return false;
   }
 
   if (tempFd >= 0) {
     close(tempFd);
-  }
-  unlink(tempPath);
-
-  SpiceInt handle = 0;
-  spkopn_c(tempPath, "TSPICE", 0, &handle);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
-    write_error_json("SPICE error in spkopn", shortMsg, longMsg, traceMsg);
-    return false;
-  }
-
-  spkw08_c(handle,
-           1000,
-           0,
-           "J2000",
-           0,
-           60,
-           "TSPICE_V2_READ_VO",
-           1,
-           2,
-           READ_VIRTUAL_OUTPUT_STATES,
-           0,
-           60);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    spkcls_c(handle);
-    unlink(tempPath);
-    write_error_json("SPICE error in spkw08", shortMsg, longMsg, traceMsg);
-    return false;
-  }
-
-  spkcls_c(handle);
-  if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    unlink(tempPath);
-    write_error_json("SPICE error in spkcls", shortMsg, longMsg, traceMsg);
-    return false;
-  }
-
-  FILE *fp = fopen(tempPath, "rb");
-  if (fp == NULL) {
-    unlink(tempPath);
-    write_error_json_ex("invalid_request",
-                        "readVirtualOutput could not open temporary output file",
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  if (fseek(fp, 0, SEEK_END) != 0) {
-    fclose(fp);
-    unlink(tempPath);
-    write_error_json_ex("invalid_request",
-                        "readVirtualOutput could not seek temporary output file",
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  errno = 0;
-  long fileBytes = ftell(fp);
-  int ftellErrno = errno;
-  fclose(fp);
-  unlink(tempPath);
-
-  if (fileBytes < 0) {
-    char detailText[256];
-    if (ftellErrno != 0) {
-      snprintf(detailText, sizeof(detailText), "ftell failed: %s",
-               strerror(ftellErrno));
-    } else {
-      snprintf(detailText, sizeof(detailText), "ftell failed: unknown error");
-    }
-
-    write_error_json_ex(
-        "invalid_request",
-        "readVirtualOutput could not determine temporary output file size",
-        detailText,
-        NULL,
-        NULL,
-        NULL);
-    return false;
-  }
-
-  if (fileBytes == 0) {
-    write_error_json_ex("invalid_request",
-                        "readVirtualOutput expected non-empty output bytes",
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  return true;
-}
-
-static bool v2_execute_complex_spice_call(
-    const char *json, const jsmntok_t *tokens, int tokenCount, int inTok,
-    int asTok, V2RefEntry *refs, int *refCount, const V2SpiceCallSpec *callSpec,
-    const char *callName) {
-  if (callSpec->executionKind != V2_SPICE_CALL_EXEC_COMPLEX) {
-    write_error_json_ex("invalid_request",
-                        "Unsupported v2 complex spiceCall execution lane",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  switch (callSpec->complexCallSpec.kind) {
-  case V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_SELECTOR_INT:
-    return v2_execute_minimal_dsk_selector_int_spice_call(
-        json,
-        tokens,
-        tokenCount,
-        inTok,
-        asTok,
-        refs,
-        refCount,
-        callSpec,
-        callName);
-
-  case V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_PRESENCE:
-    return v2_execute_minimal_dsk_presence_spice_call(callSpec, callName);
-
-  case V2_SPICE_COMPLEX_CALL_READ_VIRTUAL_OUTPUT_BYTES:
-    return v2_execute_read_virtual_output_bytes_spice_call(callSpec);
-
-  default:
-    write_error_json_ex("invalid_request",
-                        "Unsupported v2 complex spiceCall metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-}
-
-static bool v2_execute_legacy_dskopn_spice_call(void) {
-  char detail[256];
-  detail[0] = '\0';
-  char tempPath[PATH_MAX];
-  int tempFd = -1;
-  if (!build_file_io_temp_path("v2-dskopn",
-                               ".bds",
-                               tempPath,
-                               sizeof(tempPath),
-                               &tempFd,
-                               detail,
-                               sizeof(detail))) {
-    write_error_json_ex("invalid_request",
-                        "Failed to create temporary DSK path",
-                        detail[0] ? detail : NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    return false;
-  }
-
-  if (tempFd >= 0) {
-    close(tempFd);
+    tempFd = -1;
   }
   unlink(tempPath);
 
   SpiceInt handle = 0;
   dskopn_c(tempPath, "TSPICE", 0, &handle);
   if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
     unlink(tempPath);
-    write_error_json("SPICE error in dskopn", shortMsg, longMsg, traceMsg);
-    return false;
+    return v2_write_spice_failure("SPICE error in dskopn_c");
   }
 
   dascls_c(handle);
   if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
     unlink(tempPath);
-    write_error_json("SPICE error in dascls", shortMsg, longMsg, traceMsg);
-    return false;
+    return v2_write_spice_failure("SPICE error in dascls_c");
   }
 
   unlink(tempPath);
   return true;
 }
 
-static bool v2_execute_legacy_dskmi2_spice_call(void) {
+static bool v2_execute_dskmi2_legacy_call(void) {
   if ((size_t)DSK_MINIMAL_WORKSZ > SIZE_MAX / sizeof(SpiceInt[2])) {
     write_error_json("Out of memory", NULL, NULL, NULL);
     return false;
@@ -930,19 +399,21 @@ static bool v2_execute_legacy_dskmi2_spice_call(void) {
   free(work);
 
   if (failed_c() == SPICETRUE) {
-    char shortMsg[1841];
-    char longMsg[1841];
-    char traceMsg[1841];
-    capture_spice_error(shortMsg, sizeof(shortMsg), longMsg, sizeof(longMsg),
-                        traceMsg, sizeof(traceMsg));
-    write_error_json("SPICE error in dskmi2", shortMsg, longMsg, traceMsg);
+    return v2_write_spice_failure("SPICE error in dskmi2_c");
+  }
+
+  if (SPICE_DSK02_IXDFIX <= 0 || DSK_MINIMAL_SPXISZ <= 0 ||
+      spaixd[0] != spaixd[0] || spaixi[0] < 0) {
+    write_error_json_ex("invalid_request",
+                        "spiceCall dskmi2_c expected non-empty outputs",
+                        NULL, NULL, NULL, NULL);
     return false;
   }
 
   return true;
 }
 
-static bool v2_execute_legacy_dskw02_spice_call(void) {
+static bool v2_execute_dskw02_legacy_call(void) {
   char tempPath[PATH_MAX];
   if (!v2_write_minimal_dsk_file("v2-dskw02", tempPath, sizeof(tempPath))) {
     return false;
@@ -952,162 +423,383 @@ static bool v2_execute_legacy_dskw02_spice_call(void) {
   return true;
 }
 
-bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
-                                const int tokenCount, const int stepTok,
-                                const int argsTok, V2RefEntry *refs,
-                                int *refCount) {
-  int callTok = jsmn_find_object_key(json, tokens, stepTok, "call", tokenCount);
-  int inTok = jsmn_find_object_key(json, tokens, stepTok, "in", tokenCount);
-  int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
-  if (callTok < 0 || tokens[callTok].type != JSMN_STRING || inTok < 0 ||
-      tokens[inTok].type != JSMN_ARRAY) {
+static bool v2_execute_read_virtual_output_call(const char *path) {
+  FILE *fp = fopen(path, "rb");
+  if (fp == NULL) {
+    char detail[384];
+    snprintf(detail, sizeof(detail), "%s (%s)", path, strerror(errno));
     write_error_json_ex("invalid_request",
-                        "spiceCall requires string call and array in",
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
+                        "spiceCall readVirtualOutput failed to open file",
+                        detail, NULL, NULL, NULL);
     return false;
   }
 
-  char callDetail[256];
-  callDetail[0] = '\0';
-  char *callName = NULL;
-  jsmn_strdup_err_t callErr =
-      jsmn_strdup(json, &tokens[callTok], &callName, callDetail,
-                  sizeof(callDetail));
-  if (callErr != JSMN_STRDUP_OK) {
-    if (callErr == JSMN_STRDUP_INVALID) {
-      write_error_json_ex("invalid_request", "Invalid JSON string escape",
-                          callDetail[0] ? callDetail : NULL, NULL, NULL, NULL);
-    } else {
-      write_error_json("Out of memory", NULL, NULL, NULL);
+  if (fseek(fp, 0, SEEK_END) != 0) {
+    fclose(fp);
+    write_error_json_ex("invalid_request",
+                        "spiceCall readVirtualOutput could not read file size",
+                        path, NULL, NULL, NULL);
+    return false;
+  }
+
+  long size = ftell(fp);
+  fclose(fp);
+  if (size <= 0) {
+    write_error_json_ex("invalid_request",
+                        "spiceCall readVirtualOutput expected non-empty bytes",
+                        path, NULL, NULL, NULL);
+    return false;
+  }
+
+  return true;
+}
+
+static bool v2_try_resolve_named_dskb02_value(const char *name,
+                                               SpiceInt nv,
+                                               SpiceInt np,
+                                               SpiceInt nvxtot,
+                                               SpiceInt cgscal,
+                                               SpiceInt vtxnpl,
+                                               SpiceInt voxnpt,
+                                               SpiceInt voxnpl,
+                                               SpiceInt *out) {
+  if (strcmp(name, "nv") == 0) {
+    *out = nv;
+    return true;
+  }
+  if (strcmp(name, "np") == 0) {
+    *out = np;
+    return true;
+  }
+  if (strcmp(name, "nvxtot") == 0) {
+    *out = nvxtot;
+    return true;
+  }
+  if (strcmp(name, "cgscal") == 0) {
+    *out = cgscal;
+    return true;
+  }
+  if (strcmp(name, "vtxnpl") == 0) {
+    *out = vtxnpl;
+    return true;
+  }
+  if (strcmp(name, "voxnpt") == 0) {
+    *out = voxnpt;
+    return true;
+  }
+  if (strcmp(name, "voxnpl") == 0) {
+    *out = voxnpl;
+    return true;
+  }
+
+  return false;
+}
+
+static bool v2_emit_named_dskb02_outputs(const char *json,
+                                         const jsmntok_t *tokens,
+                                         int tokenCount,
+                                         int outMapTok,
+                                         V2RefEntry *refs,
+                                         int *refCount,
+                                         SpiceInt nv,
+                                         SpiceInt np,
+                                         SpiceInt nvxtot,
+                                         SpiceInt cgscal,
+                                         SpiceInt vtxnpl,
+                                         SpiceInt voxnpt,
+                                         SpiceInt voxnpl) {
+  const int pairCount = jsmn_object_pair_count(&tokens[outMapTok]);
+  if (pairCount < 0) {
+    write_error_json_ex("invalid_request", "spiceCall out map parse error", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int idx = outMapTok + 1;
+  for (int i = 0; i < pairCount; i++) {
+    int keyTok = idx;
+    int valueTok = idx + 1;
+    if (valueTok >= tokenCount || tokens[keyTok].type != JSMN_STRING ||
+        tokens[valueTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_request", "spiceCall out map parse error", NULL,
+                          NULL, NULL, NULL);
+      return false;
     }
-    return false;
-  }
 
-  const V2SpiceCallSpec *callSpec = v2_lookup_spice_call_spec(callName);
-  if (callSpec == NULL) {
-    write_error_json_ex("unsupported_call",
-                        "Unsupported v2 spiceCall",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
-    free(callName);
-    return false;
-  }
+    char *outName = NULL;
+    char *refName = NULL;
+    if (!v2_strdup_json_token(json, &tokens[keyTok], &outName) ||
+        !v2_strdup_json_token(json, &tokens[valueTok], &refName)) {
+      free(outName);
+      free(refName);
+      return false;
+    }
 
-  const int inputCount = tokens[inTok].size;
-  if (inputCount != (int)callSpec->arity) {
-    char fallback[96];
-    snprintf(fallback,
-             sizeof(fallback),
-             "spiceCall %s expects %d input%s",
-             callName,
-             callSpec->arity,
-             (callSpec->arity == 1) ? "" : "s");
-    write_error_json_ex("invalid_request",
-                        callSpec->arityErrorMessage != NULL
-                            ? callSpec->arityErrorMessage
-                            : fallback,
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    free(callName);
-    return false;
-  }
-
-  if (callSpec->outputPolicy == V2_SPICE_CALL_OUTPUT_FORBIDDEN && asTok >= 0) {
-    char fallback[128];
-    snprintf(fallback, sizeof(fallback), "spiceCall %s does not allow as",
-             callName);
-    write_error_json_ex("invalid_request",
-                        fallback,
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    free(callName);
-    return false;
-  }
-
-  if (callSpec->outputPolicy == V2_SPICE_CALL_OUTPUT_REQUIRED &&
-      (asTok < 0 || tokens[asTok].type != JSMN_STRING)) {
-    char fallback[96];
-    snprintf(fallback, sizeof(fallback), "spiceCall %s requires string as",
-             callName);
-    write_error_json_ex("invalid_request",
-                        callSpec->missingOutputErrorMessage != NULL
-                            ? callSpec->missingOutputErrorMessage
-                            : fallback,
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL);
-    free(callName);
-    return false;
-  }
-
-  bool ok = false;
-
-  switch (callSpec->executionKind) {
-  case V2_SPICE_CALL_EXEC_SIMPLE_SCALAR_INT:
-  case V2_SPICE_CALL_EXEC_SIMPLE_VOID:
-    ok = v2_execute_simple_spice_call(json,
-                                      tokens,
-                                      tokenCount,
-                                      inTok,
-                                      asTok,
-                                      argsTok,
-                                      refs,
-                                      refCount,
-                                      callSpec,
-                                      callName);
-    break;
-
-  case V2_SPICE_CALL_EXEC_COMPLEX:
-    ok = v2_execute_complex_spice_call(json,
-                                       tokens,
-                                       tokenCount,
-                                       inTok,
-                                       asTok,
-                                       refs,
-                                       refCount,
-                                       callSpec,
-                                       callName);
-    break;
-
-  case V2_SPICE_CALL_EXEC_LEGACY:
-    if (callSpec->id == V2_SPICE_CALL_DSKOPN_C) {
-      ok = v2_execute_legacy_dskopn_spice_call();
-    } else if (callSpec->id == V2_SPICE_CALL_DSKMI2_C) {
-      ok = v2_execute_legacy_dskmi2_spice_call();
-    } else if (callSpec->id == V2_SPICE_CALL_DSKW02_C) {
-      ok = v2_execute_legacy_dskw02_spice_call();
-    } else {
-      write_error_json_ex("invalid_request",
-                          "Unsupported legacy v2 spiceCall metadata",
-                          callName,
+    SpiceInt value = 0;
+    if (!v2_try_resolve_named_dskb02_value(outName,
+                                            nv,
+                                            np,
+                                            nvxtot,
+                                            cgscal,
+                                            vtxnpl,
+                                            voxnpt,
+                                            voxnpl,
+                                            &value)) {
+      write_error_json_ex("invalid_args",
+                          "Unsupported dskb02 named out param",
+                          outName,
                           NULL,
                           NULL,
                           NULL);
-      ok = false;
+      free(outName);
+      free(refName);
+      return false;
+    }
+
+    bool ok = v2_add_ref_int(refs, refCount, refName, value);
+    free(outName);
+    free(refName);
+    if (!ok) {
+      return false;
+    }
+
+    idx = jsmn_skip_subtree(tokens, valueTok, tokenCount);
+    if (idx < 0) {
+      write_error_json_ex("invalid_request", "spiceCall out map parse error", NULL,
+                          NULL, NULL, NULL);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
+                                int tokenCount, int stepTok,
+                                int argsTok, V2RefEntry *refs,
+                                int *refCount) {
+  int callTok = jsmn_find_object_key(json, tokens, stepTok, "call", tokenCount);
+  if (callTok < 0 || tokens[callTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request", "spiceCall requires string call", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  char *callName = NULL;
+  if (!v2_strdup_json_token(json, &tokens[callTok], &callName)) {
+    return false;
+  }
+
+  const V2SpiceCallSpec *spec = v2_lookup_spice_call_spec(callName);
+  if (spec == NULL) {
+    write_error_json_ex("unsupported_call", "Unsupported v2 spiceCall", callName,
+                        NULL, NULL, NULL);
+    free(callName);
+    return false;
+  }
+
+  char *asRefName = NULL;
+  int outMapTok = -1;
+  switch (spec->outputKind) {
+  case V2_SPICE_CALL_OUTPUT_AS_INT:
+  case V2_SPICE_CALL_OUTPUT_AS_DSK_DESCR:
+    if (!v2_require_as_output_ref(
+            json, tokens, tokenCount, stepTok, spec, &asRefName) ||
+        !v2_forbid_out_map(json, tokens, tokenCount, stepTok, spec)) {
+      free(callName);
+      free(asRefName);
+      return false;
     }
     break;
 
+  case V2_SPICE_CALL_OUTPUT_NAMED_DSKB02:
+    if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, spec) ||
+        !v2_require_out_map(json,
+                            tokens,
+                            tokenCount,
+                            stepTok,
+                            spec,
+                            &outMapTok)) {
+      free(callName);
+      return false;
+    }
+    break;
+
+  case V2_SPICE_CALL_OUTPUT_FORBIDDEN:
+    if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, spec) ||
+        !v2_forbid_out_map(json, tokens, tokenCount, stepTok, spec)) {
+      free(callName);
+      return false;
+    }
+    break;
+  }
+
+  V2ResolvedSpiceCallArgs resolved;
+  if (!v2_resolve_call_args(json,
+                            tokens,
+                            tokenCount,
+                            stepTok,
+                            argsTok,
+                            refs,
+                            *refCount,
+                            spec,
+                            &resolved)) {
+    free(callName);
+    free(asRefName);
+    return false;
+  }
+
+  bool ok = true;
+  switch (spec->id) {
+  case V2_SPICE_CALL_CARD: {
+    SpiceInt value = card_c(&refs[resolved.refIndices[0]].cell);
+    if (failed_c() == SPICETRUE) {
+      ok = v2_write_spice_failure("SPICE error in card_c");
+      break;
+    }
+
+    ok = v2_add_ref_int(refs, refCount, asRefName, value);
+    break;
+  }
+
+  case V2_SPICE_CALL_SIZE: {
+    SpiceInt value = size_c(&refs[resolved.refIndices[0]].cell);
+    if (failed_c() == SPICETRUE) {
+      ok = v2_write_spice_failure("SPICE error in size_c");
+      break;
+    }
+
+    ok = v2_add_ref_int(refs, refCount, asRefName, value);
+    break;
+  }
+
+  case V2_SPICE_CALL_SCARD:
+    scard_c(resolved.intValues[0], &refs[resolved.refIndices[1]].cell);
+    if (failed_c() == SPICETRUE) {
+      ok = v2_write_spice_failure("SPICE error in scard_c");
+    }
+    break;
+
+  case V2_SPICE_CALL_SSIZE:
+    ssize_c(resolved.intValues[0], &refs[resolved.refIndices[1]].cell);
+    if (failed_c() == SPICETRUE) {
+      ok = v2_write_spice_failure("SPICE error in ssize_c");
+    }
+    break;
+
+  case V2_SPICE_CALL_VALID:
+    valid_c(resolved.intValues[0],
+            resolved.intValues[1],
+            &refs[resolved.refIndices[2]].cell);
+    if (failed_c() == SPICETRUE) {
+      ok = v2_write_spice_failure("SPICE error in valid_c");
+    }
+    break;
+
+  case V2_SPICE_CALL_DSKOBJ:
+    dskobj_c(resolved.pathValues[0], &refs[resolved.refIndices[1]].cell);
+    if (failed_c() == SPICETRUE) {
+      ok = v2_write_spice_failure("SPICE error in dskobj_c");
+    }
+    break;
+
+  case V2_SPICE_CALL_DSKSRF:
+    dsksrf_c(resolved.pathValues[0],
+             resolved.intValues[1],
+             &refs[resolved.refIndices[2]].cell);
+    if (failed_c() == SPICETRUE) {
+      ok = v2_write_spice_failure("SPICE error in dsksrf_c");
+    }
+    break;
+
+  case V2_SPICE_CALL_DSKGD: {
+    SpiceDSKDescr descriptor;
+    memset(&descriptor, 0, sizeof(descriptor));
+    dskgd_c(refs[resolved.refIndices[0]].handleValue,
+            &refs[resolved.refIndices[1]].dlaDescrValue,
+            &descriptor);
+    if (failed_c() == SPICETRUE) {
+      ok = v2_write_spice_failure("SPICE error in dskgd_c");
+      break;
+    }
+
+    ok = v2_add_ref_dsk_descr(refs, refCount, asRefName, &descriptor);
+    break;
+  }
+
+  case V2_SPICE_CALL_DSKB02: {
+    SpiceInt nv = 0;
+    SpiceInt np = 0;
+    SpiceInt nvxtot = 0;
+    SpiceDouble vtxbds[3][2];
+    SpiceDouble voxsiz = 0.0;
+    SpiceDouble voxori[3];
+    SpiceDouble vgrext[3];
+    SpiceInt cgscal = 0;
+    SpiceInt vtxnpl = 0;
+    SpiceInt voxnpt = 0;
+    SpiceInt voxnpl = 0;
+
+    dskb02_c(refs[resolved.refIndices[0]].handleValue,
+             &refs[resolved.refIndices[1]].dlaDescrValue,
+             &nv,
+             &np,
+             &nvxtot,
+             vtxbds,
+             &voxsiz,
+             voxori,
+             vgrext,
+             &cgscal,
+             &vtxnpl,
+             &voxnpt,
+             &voxnpl);
+    if (failed_c() == SPICETRUE) {
+      ok = v2_write_spice_failure("SPICE error in dskb02_c");
+      break;
+    }
+
+    ok = v2_emit_named_dskb02_outputs(json,
+                                      tokens,
+                                      tokenCount,
+                                      outMapTok,
+                                      refs,
+                                      refCount,
+                                      nv,
+                                      np,
+                                      nvxtot,
+                                      cgscal,
+                                      vtxnpl,
+                                      voxnpt,
+                                      voxnpl);
+    break;
+  }
+
+  case V2_SPICE_CALL_DSKOPN:
+    ok = v2_execute_dskopn_legacy_call();
+    break;
+
+  case V2_SPICE_CALL_DSKMI2:
+    ok = v2_execute_dskmi2_legacy_call();
+    break;
+
+  case V2_SPICE_CALL_DSKW02:
+    ok = v2_execute_dskw02_legacy_call();
+    break;
+
+  case V2_SPICE_CALL_READ_VIRTUAL_OUTPUT:
+    ok = v2_execute_read_virtual_output_call(resolved.pathValues[0]);
+    break;
+
+  case V2_SPICE_CALL_UNKNOWN:
   default:
-    write_error_json_ex("invalid_request",
-                        "Unsupported v2 spiceCall execution metadata",
-                        callName,
-                        NULL,
-                        NULL,
-                        NULL);
+    write_error_json_ex("unsupported_call", "Unsupported v2 spiceCall", callName,
+                        NULL, NULL, NULL);
     ok = false;
     break;
   }
 
+  v2_free_resolved_args(&resolved);
   free(callName);
+  free(asRefName);
   return ok;
 }

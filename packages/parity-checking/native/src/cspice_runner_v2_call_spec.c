@@ -1,256 +1,146 @@
 #include "cspice_runner_v2_call_spec.h"
 
-#include <string.h>
+#define ARG_UNUSED V2_SPICE_CALL_ARG_INT_EXPR
 
-#define V2_LEGACY_CALL_SPEC(ID, NAME, ARITY, OUTPUT_POLICY)                  \
-  {                                                                           \
-      .id = (ID),                                                              \
-      .name = (NAME),                                                          \
-      .arity = (ARITY),                                                        \
-      .outputPolicy = (OUTPUT_POLICY),                                         \
-      .executionKind = V2_SPICE_CALL_EXEC_LEGACY,                             \
-      .complexCallSpec = {                                                     \
-          .kind = V2_SPICE_COMPLEX_CALL_NONE,                                  \
-          .tempTag = NULL,                                                     \
-          .selectorValueKind = V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,       \
-          .selectorPrimary = NULL,                                              \
-          .selectorSecondary = NULL,                                            \
-          .presenceKind = V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,                  \
-      },                                                                       \
-      .argKinds = {                                                            \
-          V2_SPICE_CALL_ARG_NONE,                                              \
-          V2_SPICE_CALL_ARG_NONE,                                              \
-          V2_SPICE_CALL_ARG_NONE,                                              \
-      },                                                                        \
-      .nonNegativeIntArgMask = 0u,                                             \
-      .cellWritebackArgIndex = -1,                                             \
-      .arityErrorMessage = NULL,                                               \
-      .missingOutputErrorMessage = NULL,                                       \
+#define SPEC_ROW(_id, _name, _arity, _k0, _k1, _k2, _nonNegMask, _outKind) \
+  {                                                                      \
+      .id = (_id),                                                       \
+      .name = (_name),                                                   \
+      .arity = (_arity),                                                 \
+      .argKinds = {(_k0), (_k1), (_k2)},                                 \
+      .nonNegativeIntArgMask = (_nonNegMask),                            \
+      .outputKind = (_outKind),                                          \
   }
 
-#define V2_SIMPLE_SCALAR_INT_CALL_SPEC(ID, NAME, ARITY_MESSAGE, OUTPUT_MESSAGE) \
-  {                                                                              \
-      .id = (ID),                                                                 \
-      .name = (NAME),                                                             \
-      .arity = 1,                                                                 \
-      .outputPolicy = V2_SPICE_CALL_OUTPUT_REQUIRED,                              \
-      .executionKind = V2_SPICE_CALL_EXEC_SIMPLE_SCALAR_INT,                      \
-      .complexCallSpec = {                                                        \
-          .kind = V2_SPICE_COMPLEX_CALL_NONE,                                     \
-          .tempTag = NULL,                                                        \
-          .selectorValueKind = V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,          \
-          .selectorPrimary = NULL,                                                 \
-          .selectorSecondary = NULL,                                               \
-          .presenceKind = V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,                     \
-      },                                                                          \
-      .argKinds = {                                                                \
-          V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,                                   \
-          V2_SPICE_CALL_ARG_NONE,                                                 \
-          V2_SPICE_CALL_ARG_NONE,                                                 \
-      },                                                                           \
-      .nonNegativeIntArgMask = 0u,                                                \
-      .cellWritebackArgIndex = -1,                                                \
-      .arityErrorMessage = (ARITY_MESSAGE),                                       \
-      .missingOutputErrorMessage = (OUTPUT_MESSAGE),                              \
-  }
+static const V2SpiceCallSpec V2_SPICE_CALL_SPECS[] = {
+    SPEC_ROW(V2_SPICE_CALL_CARD,
+             "card_c",
+             1,
+             V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,
+             ARG_UNUSED,
+             ARG_UNUSED,
+             0U,
+             V2_SPICE_CALL_OUTPUT_AS_INT),
 
-#define V2_SIMPLE_VOID_CALL_SPEC(ID,                  \
-                                 NAME,                \
-                                 ARITY,               \
-                                 ARG0_KIND,           \
-                                 ARG1_KIND,           \
-                                 ARG2_KIND,           \
-                                 NONNEG_MASK,         \
-                                 WRITEBACK_INDEX,     \
-                                 ARITY_MESSAGE)       \
-  {                                                    \
-      .id = (ID),                                      \
-      .name = (NAME),                                  \
-      .arity = (ARITY),                                \
-      .outputPolicy = V2_SPICE_CALL_OUTPUT_FORBIDDEN,  \
-      .executionKind = V2_SPICE_CALL_EXEC_SIMPLE_VOID, \
-      .complexCallSpec = {                             \
-          .kind = V2_SPICE_COMPLEX_CALL_NONE,          \
-          .tempTag = NULL,                             \
-          .selectorValueKind =                          \
-              V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE, \
-          .selectorPrimary = NULL,                     \
-          .selectorSecondary = NULL,                   \
-          .presenceKind = V2_SPICE_MINIMAL_DSK_PRESENCE_NONE, \
-      },                                               \
-      .argKinds = {                                    \
-          (ARG0_KIND),                                 \
-          (ARG1_KIND),                                 \
-          (ARG2_KIND),                                 \
-      },                                               \
-      .nonNegativeIntArgMask = (NONNEG_MASK),         \
-      .cellWritebackArgIndex = (WRITEBACK_INDEX),     \
-      .arityErrorMessage = (ARITY_MESSAGE),            \
-      .missingOutputErrorMessage = NULL,               \
-  }
+    SPEC_ROW(V2_SPICE_CALL_SIZE,
+             "size_c",
+             1,
+             V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,
+             ARG_UNUSED,
+             ARG_UNUSED,
+             0U,
+             V2_SPICE_CALL_OUTPUT_AS_INT),
 
-#define V2_COMPLEX_CALL_SPEC(ID,                \
-                             NAME,              \
-                             ARITY,             \
-                             OUTPUT_POLICY,     \
-                             COMPLEX_KIND,      \
-                             TEMP_TAG,          \
-                             SELECTOR_KIND,     \
-                             SELECTOR_PRIMARY,  \
-                             SELECTOR_SECONDARY, \
-                             PRESENCE_KIND,     \
-                             ARITY_MESSAGE,     \
-                             OUTPUT_MESSAGE)    \
-  {                                              \
-      .id = (ID),                                \
-      .name = (NAME),                            \
-      .arity = (ARITY),                          \
-      .outputPolicy = (OUTPUT_POLICY),           \
-      .executionKind = V2_SPICE_CALL_EXEC_COMPLEX, \
-      .complexCallSpec = {                       \
-          .kind = (COMPLEX_KIND),                \
-          .tempTag = (TEMP_TAG),                 \
-          .selectorValueKind = (SELECTOR_KIND),  \
-          .selectorPrimary = (SELECTOR_PRIMARY), \
-          .selectorSecondary = (SELECTOR_SECONDARY), \
-          .presenceKind = (PRESENCE_KIND),       \
-      },                                         \
-      .argKinds = {                              \
-          V2_SPICE_CALL_ARG_NONE,                \
-          V2_SPICE_CALL_ARG_NONE,                \
-          V2_SPICE_CALL_ARG_NONE,                \
-      },                                         \
-      .nonNegativeIntArgMask = 0u,               \
-      .cellWritebackArgIndex = -1,               \
-      .arityErrorMessage = (ARITY_MESSAGE),      \
-      .missingOutputErrorMessage = (OUTPUT_MESSAGE), \
-  }
+    SPEC_ROW(V2_SPICE_CALL_SCARD,
+             "scard_c",
+             2,
+             V2_SPICE_CALL_ARG_INT_EXPR,
+             V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,
+             ARG_UNUSED,
+             1U << 0,
+             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
 
-const V2SpiceCallSpec *v2_lookup_spice_call_spec(const char *callName) {
-  static const V2SpiceCallSpec table[] = {
-      V2_SIMPLE_SCALAR_INT_CALL_SPEC(V2_SPICE_CALL_CARD_C,
-                                     "card_c",
-                                     "spiceCall card_c/size_c expects one input",
-                                     "spiceCall card_c/size_c requires string as"),
-      V2_SIMPLE_SCALAR_INT_CALL_SPEC(V2_SPICE_CALL_SIZE_C,
-                                     "size_c",
-                                     "spiceCall card_c/size_c expects one input",
-                                     "spiceCall card_c/size_c requires string as"),
-      V2_SIMPLE_VOID_CALL_SPEC(V2_SPICE_CALL_SCARD_C,
-                               "scard_c",
-                               2,
-                               V2_SPICE_CALL_ARG_INT_EXPR,
-                               V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,
-                               V2_SPICE_CALL_ARG_NONE,
-                               (1u << 0),
-                               1,
-                               "spiceCall scard_c expects [card, cellOrWindow]"),
-      V2_SIMPLE_VOID_CALL_SPEC(V2_SPICE_CALL_SSIZE_C,
-                               "ssize_c",
-                               2,
-                               V2_SPICE_CALL_ARG_INT_EXPR,
-                               V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,
-                               V2_SPICE_CALL_ARG_NONE,
-                               (1u << 0),
-                               1,
-                               "spiceCall ssize_c expects [size, cellOrWindow]"),
-      V2_SIMPLE_VOID_CALL_SPEC(V2_SPICE_CALL_VALID_C,
-                               "valid_c",
-                               3,
-                               V2_SPICE_CALL_ARG_INT_EXPR,
-                               V2_SPICE_CALL_ARG_INT_EXPR,
-                               V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,
-                               (1u << 0) | (1u << 1),
-                               2,
-                               "spiceCall valid_c expects [size, n, cellOrWindow]"),
-      V2_COMPLEX_CALL_SPEC(V2_SPICE_CALL_DSKOBJ_C,
-                           "dskobj_c",
-                           0,
-                           V2_SPICE_CALL_OUTPUT_FORBIDDEN,
-                           V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_PRESENCE,
-                           "v2-dskobj",
-                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,
-                           NULL,
-                           NULL,
-                           V2_SPICE_MINIMAL_DSK_PRESENCE_BODY_ID,
-                           "spiceCall dskobj_c expects no inputs",
-                           NULL),
-      V2_COMPLEX_CALL_SPEC(V2_SPICE_CALL_DSKSRF_C,
-                           "dsksrf_c",
-                           0,
-                           V2_SPICE_CALL_OUTPUT_FORBIDDEN,
-                           V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_PRESENCE,
-                           "v2-dsksrf",
-                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,
-                           NULL,
-                           NULL,
-                           V2_SPICE_MINIMAL_DSK_PRESENCE_SURFACE_ID,
-                           "spiceCall dsksrf_c expects no inputs",
-                           NULL),
-      V2_COMPLEX_CALL_SPEC(V2_SPICE_CALL_DSKGD_C,
-                           "dskgd_c",
-                           1,
-                           V2_SPICE_CALL_OUTPUT_REQUIRED,
-                           V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_SELECTOR_INT,
-                           "v2-dskgd",
-                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKGD,
-                           "surfce",
-                           "center",
-                           V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,
-                           "spiceCall dskgd_c expects one selector input",
-                           "spiceCall dskgd_c requires string as"),
-      V2_COMPLEX_CALL_SPEC(V2_SPICE_CALL_DSKB02_C,
-                           "dskb02_c",
-                           1,
-                           V2_SPICE_CALL_OUTPUT_REQUIRED,
-                           V2_SPICE_COMPLEX_CALL_MINIMAL_DSK_SELECTOR_INT,
-                           "v2-dskb02",
-                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_DSKB02,
-                           "nv",
-                           "np",
-                           V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,
-                           "spiceCall dskb02_c expects one selector input",
-                           "spiceCall dskb02_c requires string as"),
-      V2_LEGACY_CALL_SPEC(V2_SPICE_CALL_DSKMI2_C,
-                          "dskmi2_c",
-                          0,
-                          V2_SPICE_CALL_OUTPUT_FORBIDDEN),
-      V2_LEGACY_CALL_SPEC(V2_SPICE_CALL_DSKOPN_C,
-                          "dskopn_c",
-                          0,
-                          V2_SPICE_CALL_OUTPUT_FORBIDDEN),
-      V2_LEGACY_CALL_SPEC(V2_SPICE_CALL_DSKW02_C,
-                          "dskw02_c",
-                          0,
-                          V2_SPICE_CALL_OUTPUT_FORBIDDEN),
-      V2_COMPLEX_CALL_SPEC(V2_SPICE_CALL_READ_VIRTUAL_OUTPUT,
-                           "readVirtualOutput",
-                           0,
-                           V2_SPICE_CALL_OUTPUT_FORBIDDEN,
-                           V2_SPICE_COMPLEX_CALL_READ_VIRTUAL_OUTPUT_BYTES,
-                           "v2-read-virtual-output",
-                           V2_SPICE_MINIMAL_DSK_SELECTOR_VALUE_NONE,
-                           NULL,
-                           NULL,
-                           V2_SPICE_MINIMAL_DSK_PRESENCE_NONE,
-                           "spiceCall readVirtualOutput expects no inputs",
-                           NULL),
-  };
+    SPEC_ROW(V2_SPICE_CALL_SSIZE,
+             "ssize_c",
+             2,
+             V2_SPICE_CALL_ARG_INT_EXPR,
+             V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,
+             ARG_UNUSED,
+             1U << 0,
+             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
 
-  if (callName == NULL) {
-    return NULL;
-  }
+    SPEC_ROW(V2_SPICE_CALL_VALID,
+             "valid_c",
+             3,
+             V2_SPICE_CALL_ARG_INT_EXPR,
+             V2_SPICE_CALL_ARG_INT_EXPR,
+             V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF,
+             (1U << 0) | (1U << 1),
+             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
 
-  for (size_t i = 0; i < sizeof(table) / sizeof(table[0]); i++) {
-    if (strcmp(callName, table[i].name) == 0) {
-      return &table[i];
+    SPEC_ROW(V2_SPICE_CALL_DSKOBJ,
+             "dskobj_c",
+             2,
+             V2_SPICE_CALL_ARG_PATH_EXPR,
+             V2_SPICE_CALL_ARG_CELL_REF,
+             ARG_UNUSED,
+             0U,
+             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
+
+    SPEC_ROW(V2_SPICE_CALL_DSKSRF,
+             "dsksrf_c",
+             3,
+             V2_SPICE_CALL_ARG_PATH_EXPR,
+             V2_SPICE_CALL_ARG_INT_EXPR,
+             V2_SPICE_CALL_ARG_CELL_REF,
+             0U,
+             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
+
+    SPEC_ROW(V2_SPICE_CALL_DSKGD,
+             "dskgd_c",
+             2,
+             V2_SPICE_CALL_ARG_DAS_HANDLE_REF,
+             V2_SPICE_CALL_ARG_DLA_DESCR_REF,
+             ARG_UNUSED,
+             0U,
+             V2_SPICE_CALL_OUTPUT_AS_DSK_DESCR),
+
+    SPEC_ROW(V2_SPICE_CALL_DSKB02,
+             "dskb02_c",
+             2,
+             V2_SPICE_CALL_ARG_DAS_HANDLE_REF,
+             V2_SPICE_CALL_ARG_DLA_DESCR_REF,
+             ARG_UNUSED,
+             0U,
+             V2_SPICE_CALL_OUTPUT_NAMED_DSKB02),
+
+    SPEC_ROW(V2_SPICE_CALL_DSKMI2,
+             "dskmi2_c",
+             0,
+             ARG_UNUSED,
+             ARG_UNUSED,
+             ARG_UNUSED,
+             0U,
+             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
+
+    SPEC_ROW(V2_SPICE_CALL_DSKOPN,
+             "dskopn_c",
+             0,
+             ARG_UNUSED,
+             ARG_UNUSED,
+             ARG_UNUSED,
+             0U,
+             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
+
+    SPEC_ROW(V2_SPICE_CALL_DSKW02,
+             "dskw02_c",
+             0,
+             ARG_UNUSED,
+             ARG_UNUSED,
+             ARG_UNUSED,
+             0U,
+             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
+
+    SPEC_ROW(V2_SPICE_CALL_READ_VIRTUAL_OUTPUT,
+             "readVirtualOutput",
+             1,
+             V2_SPICE_CALL_ARG_PATH_EXPR,
+             ARG_UNUSED,
+             ARG_UNUSED,
+             0U,
+             V2_SPICE_CALL_OUTPUT_FORBIDDEN),
+};
+
+#undef SPEC_ROW
+#undef ARG_UNUSED
+
+const V2SpiceCallSpec *v2_lookup_spice_call_spec(const char *name) {
+  const int count = (int)(sizeof(V2_SPICE_CALL_SPECS) / sizeof(V2_SPICE_CALL_SPECS[0]));
+  for (int i = 0; i < count; i++) {
+    if (strcmp(V2_SPICE_CALL_SPECS[i].name, name) == 0) {
+      return &V2_SPICE_CALL_SPECS[i];
     }
   }
 
   return NULL;
 }
-
-#undef V2_LEGACY_CALL_SPEC
-#undef V2_SIMPLE_SCALAR_INT_CALL_SPEC
-#undef V2_SIMPLE_VOID_CALL_SPEC
-#undef V2_COMPLEX_CALL_SPEC

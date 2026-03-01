@@ -157,32 +157,56 @@ export type MethodWorkflowOpAllocWindowV2 = {
   };
 };
 
-export type MethodWorkflowOpSpiceCallWithOutputV2 = {
+export type MethodWorkflowSpiceCallNameV2 =
+  | "card_c"
+  | "size_c"
+  | "scard_c"
+  | "ssize_c"
+  | "valid_c"
+  | "dskobj_c"
+  | "dsksrf_c"
+  | "dskgd_c"
+  | "dskb02_c"
+  | "dskmi2_c"
+  | "dskopn_c"
+  | "dskw02_c"
+  | "readVirtualOutput";
+
+export type MethodWorkflowOpSpiceCallV2 = {
   op: "spiceCall";
-  call: "card_c" | "size_c" | "dskgd_c" | "dskb02_c";
+  call: MethodWorkflowSpiceCallNameV2;
   in: unknown[];
+  as?: string;
+  out?: Record<string, string>;
+};
+
+export type MethodWorkflowOpMaterializeV2 = {
+  op: "materialize";
+  fixture: "minimalDsk" | "virtualOutputSpk";
   as: string;
 };
 
-export type MethodWorkflowOpSpiceCallWithoutOutputV2 = {
-  op: "spiceCall";
-  call:
-    | "scard_c"
-    | "ssize_c"
-    | "valid_c"
-    | "dskobj_c"
-    | "dsksrf_c"
-    | "dskmi2_c"
-    | "dskopn_c"
-    | "dskw02_c"
-    | "readVirtualOutput";
-  in: unknown[];
-  as?: never;
+export type MethodWorkflowOpDasOpenV2 = {
+  op: "dasOpen";
+  path: unknown;
+  as: string;
 };
 
-export type MethodWorkflowOpSpiceCallV2 =
-  | MethodWorkflowOpSpiceCallWithOutputV2
-  | MethodWorkflowOpSpiceCallWithoutOutputV2;
+export type MethodWorkflowOpDlaBeginForwardSearchV2 = {
+  op: "dlaBeginForwardSearch";
+  handle: unknown;
+  as: string;
+};
+
+export type MethodWorkflowOpDasCloseV2 = {
+  op: "dasClose";
+  target: unknown;
+};
+
+export type MethodWorkflowOpUnlinkV2 = {
+  op: "unlink";
+  target: unknown;
+};
 
 export type MethodWorkflowOpInvokeLegacyCallV2 = {
   op: "invokeLegacyCall";
@@ -238,6 +262,11 @@ export type MethodWorkflowOpFreeWindowV2 = {
 export type MethodWorkflowStepV2 =
   | MethodWorkflowOpAllocCellV2
   | MethodWorkflowOpAllocWindowV2
+  | MethodWorkflowOpMaterializeV2
+  | MethodWorkflowOpDasOpenV2
+  | MethodWorkflowOpDlaBeginForwardSearchV2
+  | MethodWorkflowOpDasCloseV2
+  | MethodWorkflowOpUnlinkV2
   | MethodWorkflowOpSpiceCallV2
   | MethodWorkflowOpInvokeLegacyCallV2
   | MethodWorkflowOpAssertV2
