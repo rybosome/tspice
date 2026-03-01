@@ -752,6 +752,99 @@ describe("schema validation", () => {
     ).toThrow(/workflow\.cleanup must not include invokeLegacyCall/);
   });
 
+  it("parses v2 dskb02_c spiceCall using named out map", () => {
+    const methodV2 = parseMethodSpecAny({
+      sourcePath: "/tmp/method-v2-dskb02-out.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "methods/dsk/dskb02@v2",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "dsk.dskb02",
+          canonicalMethod: "dsk.dskb02",
+          result: {
+            type: "object",
+            required: ["nv"],
+            properties: {
+              nv: { type: "spiceInt" },
+            },
+          },
+        },
+        workflow: {
+          steps: [
+            { op: "materialize", fixture: "minimalDsk", as: "dskPath" },
+            { op: "dasOpen", path: "$refs.dskPath", as: "dasHandle" },
+            { op: "dlaBeginForwardSearch", handle: "$refs.dasHandle", as: "dladsc" },
+            {
+              op: "spiceCall",
+              call: "dskb02_c",
+              in: ["$refs.dasHandle", "$refs.dladsc"],
+              out: { nv: "nv" },
+            },
+            { op: "projectResult", out: { nv: "$refs.nv" } },
+          ],
+          cleanup: [
+            { op: "dasClose", target: "$refs.dasHandle" },
+            { op: "unlink", target: "$refs.dskPath" },
+          ],
+        },
+        cases: [{ id: "ok", args: {}, expect: { ok: true } }],
+      },
+    });
+
+    expect(methodV2).toMatchObject({ schemaVersion: 2 });
+    expect(methodV2.workflow.steps[0]).toMatchObject({
+      op: "materialize",
+      fixture: "minimalDsk",
+      as: "dskPath",
+    });
+    expect(methodV2.workflow.steps[3]).toMatchObject({
+      op: "spiceCall",
+      call: "dskb02_c",
+      out: { nv: "nv" },
+    });
+  });
+
+  it("rejects dskb02_c spiceCall entries that omit out map", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-dskb02-missing-out.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/dsk/dskb02@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "dsk.dskb02",
+            canonicalMethod: "dsk.dskb02",
+            result: {
+              type: "object",
+              required: ["nv"],
+              properties: {
+                nv: { type: "spiceInt" },
+              },
+            },
+          },
+          workflow: {
+            steps: [
+              {
+                op: "spiceCall",
+                call: "dskb02_c",
+                in: ["$refs.handle", "$refs.dladsc"],
+                as: "nv",
+              },
+              { op: "projectResult", out: { nv: 1 } },
+            ],
+          },
+          cases: [{ id: "bad", args: {}, expect: { ok: false } }],
+        },
+      }),
+    ).toThrow(/out is required when call="dskb02_c"/);
+  });
+
   it("rejects unsupported schema versions", () => {
     expect(() =>
       parseMethodSpecAny({

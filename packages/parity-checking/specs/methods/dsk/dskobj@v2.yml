@@ -5,21 +5,44 @@ manifest:
 contract:
   contractMethod: dsk.dskobj
   canonicalMethod: dsk.dskobj
-  aliases: []
+  args: []
   result:
     type: object
-    required: [hasBodyIds]
+    required: [hasBodies]
     properties:
-      hasBodyIds: { const: true }
+      hasBodies: { const: true }
 workflow:
   steps:
+    - op: materialize
+      fixture: minimalDsk
+      as: dskPath
+    - op: allocCell
+      as: bodyIds
+      params:
+        kind: int
+        size: 100
     - op: spiceCall
       call: dskobj_c
-      in: []
+      in: [$refs.dskPath, $refs.bodyIds]
+    - op: spiceCall
+      call: card_c
+      in: [$refs.bodyIds]
+      as: bodyCount
+    - op: assert
+      test:
+        gt: [$refs.bodyCount, 0]
+      error:
+        code: assert_dskobj_has_bodies
+        message: dskobj expected at least one body id
     - op: projectResult
       out:
-        hasBodyIds: true
+        hasBodies: true
+  cleanup:
+    - op: freeCell
+      target: $refs.bodyIds
+    - op: unlink
+      target: $refs.dskPath
 cases:
-  - id: body-ids-from-minimal-dsk
-    expect:
-      ok: true
+  - id: has-bodies
+    args: {}
+    expect: { ok: true }

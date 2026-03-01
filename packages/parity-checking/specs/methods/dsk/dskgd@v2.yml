@@ -5,28 +5,59 @@ manifest:
 contract:
   contractMethod: dsk.dskgd
   canonicalMethod: dsk.dskgd
-  aliases: []
+  args:
+    - name: selector
+      type: spiceInt
+      constraints:
+        min: 0
+        max: 1
   result:
     type: object
-    required: [surfce, center]
+    required: [selector, value]
     properties:
-      surfce: { type: spiceInt }
-      center: { type: spiceInt }
+      selector: { type: spiceInt }
+      value: { type: spiceInt }
 workflow:
   steps:
+    - op: materialize
+      fixture: minimalDsk
+      as: dskPath
+    - op: dasOpen
+      path: $refs.dskPath
+      as: dasHandle
+    - op: dlaBeginForwardSearch
+      handle: $refs.dasHandle
+      as: dladsc
     - op: spiceCall
       call: dskgd_c
-      in: [surfce]
-      as: surfce
-    - op: spiceCall
-      call: dskgd_c
-      in: [center]
-      as: center
-    - op: projectResult
+      in: [$refs.dasHandle, $refs.dladsc]
+      as: dskdsc
+    - op: project
       out:
-        surfce: $refs.surfce
-        center: $refs.center
+        surfce: $refs.dskdsc.surfce
+        center: $refs.dskdsc.center
+    - op: switch
+      on: $args.selector
+      cases:
+        0:
+          - op: projectResult
+            out:
+              selector: $args.selector
+              value: $refs.surfce
+        1:
+          - op: projectResult
+            out:
+              selector: $args.selector
+              value: $refs.center
+  cleanup:
+    - op: dasClose
+      target: $refs.dasHandle
+    - op: unlink
+      target: $refs.dskPath
 cases:
-  - id: descriptor-from-minimal-dsk
-    expect:
-      ok: true
+  - id: selector-surfce
+    args: { selector: 0 }
+    expect: { ok: true }
+  - id: selector-center
+    args: { selector: 1 }
+    expect: { ok: true }
