@@ -71,6 +71,8 @@ See [/guide/browser](/guide/browser).
 
 Use `.withKernels(pack)` to eagerly fetch and load kernels before you start calling SPICE routines:
 
+If you pass an array (`.withKernels([packA, packB])`), it must be non-empty.
+
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 

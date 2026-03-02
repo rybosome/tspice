@@ -96,6 +96,7 @@ Use `kernels.naif()` to target the full NAIF `generic_kernels` inventory.
 - By default, `origin` is `https://naif.jpl.nasa.gov/pub/naif/generic_kernels/`.
 - By default, `pathBase` is empty (`""`), so `kernel.path` matches the picked leaf id.
 - Optional overrides are available via `kernels.naif({ origin?, pathBase?, baseUrl? })`.
+- `origin` is a build-time URL prefix (`origin + id`), not the URL authority/origin concept.
 - `baseUrl` (when set) becomes `pack.baseUrl` and is used at load time to resolve **relative** kernel URLs.
 
 > Note: `pick(...)` preserves caller-provided ordering (no sorting / “safe load order” magic).
@@ -123,11 +124,17 @@ const selfHostedPack = kernels
 
 ### Custom kernels
 
-Use `kernels.custom({ origin, pathBase, baseUrl? })` to build a `KernelPack` for arbitrary kernels.
+`kernels.custom` has two explicit modes:
 
-- Passing string ids maps to `{ url: origin + id, path: pathBase + id }`.
-- You can also pass explicit `{ url, path? }` entries as an escape hatch.
-  If `path` is omitted, it defaults to a stable hashed path like `/kernels/<hash>-<basename(url)>`.
+- `kernels.custom()` (no opts): URL-entry-only mode.
+  - `pick(...)` accepts only explicit `{ url, path? }` entries.
+- `kernels.custom({ origin, pathBase, baseUrl? })`: mapping mode.
+  - String ids map to `{ url: origin + id, path: pathBase + id }`.
+  - `origin` is a build-time URL prefix (`origin + id`), not the URL authority/origin concept.
+  - You can still pass explicit `{ url, path? }` entries as an escape hatch.
+
+If `path` is omitted on explicit entries, it defaults to a stable hashed path like
+`/kernels/<hash>-<basename(url)>`.
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
@@ -149,12 +156,32 @@ const { spice } = await spiceClients
   .toAsync({ backend: "wasm" });
 ```
 
+```ts
+// URL-entry-only mode (no origin/pathBase mapping):
+const urlOnlyPack = kernels.custom().pick(
+  { url: "https://example.com/de440.bsp" },
+  { url: "https://example.com/pck00011.tpc" },
+);
+```
+
 ### Batching semantics
 
 Kernel load order matches call order:
 
 - `withKernels(pack)` appends 1 batch
-- `withKernels(packs)` appends multiple batches
+- `withKernels(packs)` appends multiple batches (**`packs` must be non-empty**)
+
+### Migration note (breaking): `withKernels([])`
+
+`spiceClients.withKernels([])` used to be accepted as a no-op. It is now rejected:
+
+- TypeScript now requires a non-empty tuple for array calls.
+- Runtime now throws if `[]` is passed (including untyped/JS callers).
+
+Migration options:
+
+- Guard dynamic arrays before calling: `if (packs.length) builder = builder.withKernels(packs);`
+- Or append packs one at a time with repeated `withKernels(pack)` calls.
 
 ## Backend notes
 

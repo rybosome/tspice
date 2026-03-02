@@ -180,11 +180,16 @@ export type TspiceKernelCatalog = {
 // --- Custom ---
 
 export type KernelsCustomOptions = {
-  /** Kernel URL prefix used for string ids (see `pick(...)`). */
+  /**
+   * Kernel URL prefix used for string ids (see `pick(...)`).
+   *
+   * This is a *build-time* prefix, not the URL "origin" authority concept.
+   * String ids are mapped as `url = origin + id`.
+   */
   origin: string;
-  /** Optional base URL used when resolving relative kernel URLs. */
+  /** Optional directory-style base URL used when resolving relative kernel URLs at load time. */
   baseUrl?: string;
-  /** Virtual path prefix used when mapping string ids to `kernel.path`. */
+  /** Virtual path prefix used when mapping string ids to `kernel.path` (`pathBase + id`). */
   pathBase: string;
 };
 
@@ -294,9 +299,16 @@ export const kernels = {
   /**
    * Configurable catalog for application/mission-specific kernels.
    *
-   * - String ids are mapped as `{ url: origin + id, path: pathBase + id }`.
-   * - Explicit `{ url, path? }` entries are passed through; when `path` is
-   *   omitted it defaults to a stable hashed path.
+   * Two modes are available:
+   *
+   * - `kernels.custom()` (no opts): URL-entry-only mode.
+   *   `pick(...)` accepts only explicit `{ url, path? }` entries.
+   * - `kernels.custom({ origin, pathBase, baseUrl? })`: mapping mode.
+   *   `pick(...)` accepts string ids and/or explicit `{ url, path? }` entries.
+   *
+   * In mapping mode, string ids map to `{ url: origin + id, path: pathBase + id }`.
+   * Explicit `{ url, path? }` entries are passed through; when `path` is
+   * omitted it defaults to a stable hashed path.
    */
   custom: (() => {
     function custom(): CustomKernelCatalogUrlOnly;
