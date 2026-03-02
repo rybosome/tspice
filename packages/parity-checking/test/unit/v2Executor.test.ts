@@ -583,6 +583,25 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
+  it("reports unsupported_call for removed pseudo spiceCall names in bypassed schema input", async () => {
+    const { backend } = createBackendStub();
+    const removedPseudoCalls = ["dskopn_c", "dskmi2_c", "dskw02_c", "readVirtualOutput"] as const;
+
+    for (const removedCall of removedPseudoCalls) {
+      const input = createBaseInput();
+      input.workflow.steps[1] = {
+        op: "spiceCall",
+        call: removedCall,
+        in: [],
+      } as unknown as RunCaseInputV2["workflow"]["steps"][number];
+
+      await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+        code: "unsupported_call",
+        message: `Unsupported spiceCall op: ${removedCall}`,
+      });
+    }
+  });
+
   it("rejects duplicate contract arg names", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();

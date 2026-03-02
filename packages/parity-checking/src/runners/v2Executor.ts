@@ -48,7 +48,6 @@ type CellHandle =
 type IntCellHandle = ReturnType<SpiceBackend["kit"]["newIntCell"]>;
 type WindowHandle = ReturnType<SpiceBackend["kit"]["newWindow"]>;
 type DasHandle = ReturnType<SpiceBackend["raw"]["dasopr"]>;
-type DskOpenHandle = ReturnType<SpiceBackend["raw"]["dskopn"]>;
 type DlaDescriptor = Extract<
   ReturnType<SpiceBackend["raw"]["dlabfs"]>,
   { found: true }
@@ -172,30 +171,6 @@ const V2_SPICE_CALL_SPECS: readonly V2SpiceCallSpec[] = [
     arity: 2,
     argKinds: ["dasHandleRef", "dlaDescriptorRef"],
     outputMode: "outNamedDskb02",
-  },
-  {
-    call: "dskmi2_c",
-    arity: 0,
-    argKinds: [],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskopn_c",
-    arity: 0,
-    argKinds: [],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskw02_c",
-    arity: 0,
-    argKinds: [],
-    outputMode: "forbidden",
-  },
-  {
-    call: "readVirtualOutput",
-    arity: 1,
-    argKinds: ["pathExpr"],
-    outputMode: "forbidden",
   },
 ];
 
@@ -961,19 +936,6 @@ function writeVirtualOutputSpkFixture(backend: SpiceBackend, outputPath: string)
   }
 }
 
-function executeReadVirtualOutputCall(backend: SpiceBackend, outputPath: string): void {
-  const kit = getKitBackend(backend);
-  const output = {
-    kind: "virtual-output" as const,
-    path: outputPath,
-  };
-
-  const bytes = kit.readVirtualOutput(output);
-  if (!(bytes instanceof Uint8Array) || bytes.byteLength < 1) {
-    invalidRequest("spiceCall(readVirtualOutput) expected non-empty output bytes");
-  }
-}
-
 type V2SpiceCallInvokerContext = {
   backend: SpiceBackend;
   raw: SpiceBackend["raw"];
@@ -1025,61 +987,6 @@ const V2_SPICE_CALL_INVOKERS = {
   dskb02_c: ({ raw, step, resolvedArgs, outMap, refs }: V2SpiceCallInvokerContext): void => {
     const bookkeeping = raw.dskb02(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
     applyNamedDskb02Outputs(step, outMap ?? {}, bookkeeping, refs);
-  },
-
-  readVirtualOutput: ({ backend, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    executeReadVirtualOutputCall(backend, resolvedArgs[0] as string);
-  },
-
-  dskopn_c: ({ backend, raw }: V2SpiceCallInvokerContext): void => {
-    const tempPath = buildTempPath(backend, "dskopn", ".bds");
-    let handle: DskOpenHandle | undefined;
-    let opError: unknown = undefined;
-
-    try {
-      handle = raw.dskopn(tempPath, "TSPICE", 0);
-    } catch (error) {
-      opError = error;
-    }
-
-    if (handle !== undefined) {
-      closeDasHandlePreserveError(raw, handle, opError);
-    }
-
-    unlinkPathBestEffort(backend, tempPath);
-
-    if (opError !== undefined) {
-      throw opError;
-    }
-  },
-
-  dskmi2_c: ({ raw, step }: V2SpiceCallInvokerContext): void => {
-    const spatial = raw.dskmi2(
-      DSK_MINIMAL_NV,
-      DSK_MINIMAL_VERTICES,
-      DSK_MINIMAL_NP,
-      DSK_MINIMAL_PLATES,
-      0.2,
-      5,
-      DSK_MINIMAL_WORKSZ,
-      DSK_MINIMAL_VOXPSZ,
-      DSK_MINIMAL_VOXLSZ,
-      true,
-      DSK_MINIMAL_SPXISZ,
-    );
-
-    if (spatial.spaixd.length < 1 || spatial.spaixi.length < 1) {
-      invalidRequest(`spiceCall(${step.call}) expected non-empty spatial index outputs`);
-    }
-  },
-
-  dskw02_c: ({ backend }: V2SpiceCallInvokerContext): void => {
-    const tempPath = buildTempPath(backend, "dskw02", ".bds");
-    try {
-      writeMinimalDskFile(backend, tempPath);
-    } finally {
-      unlinkPathBestEffort(backend, tempPath);
-    }
   },
 } satisfies Record<V2SpiceCallName, V2SpiceCallInvoker>;
 

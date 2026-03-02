@@ -845,6 +845,52 @@ describe("schema validation", () => {
     ).toThrow(/out is required when call="dskb02_c"/);
   });
 
+  it("rejects removed pseudo spiceCall names and keeps explicit call registry", () => {
+    const removedPseudoCalls = ["dskopn_c", "dskmi2_c", "dskw02_c", "readVirtualOutput"] as const;
+
+    for (const removedCall of removedPseudoCalls) {
+      let errorMessage = "";
+
+      try {
+        parseMethodSpecAny({
+          sourcePath: `/tmp/method-v2-removed-${removedCall}.yml`,
+          data: {
+            schemaVersion: 2,
+            manifest: {
+              id: "methods/file-io/dskopn@v2",
+              kind: "method",
+            },
+            contract: {
+              contractMethod: "file-io.dskopn",
+              canonicalMethod: "file-io.dskopn",
+              result: {
+                type: "object",
+                properties: {},
+              },
+            },
+            workflow: {
+              steps: [
+                {
+                  op: "spiceCall",
+                  call: removedCall,
+                  in: [],
+                },
+                { op: "projectResult", out: {} },
+              ],
+            },
+            cases: [{ id: "legacy", args: {}, expect: { ok: true } }],
+          },
+        });
+      } catch (error) {
+        errorMessage = error instanceof Error ? error.message : String(error);
+      }
+
+      expect(errorMessage).toMatch(/call must be one of/);
+      expect(errorMessage).toContain('"dskb02_c"');
+      expect(errorMessage).not.toContain(`"${removedCall}"`);
+    }
+  });
+
   it("rejects unsupported schema versions", () => {
     expect(() =>
       parseMethodSpecAny({

@@ -33,10 +33,6 @@ const V2_SPICE_CALL_OUTPUT_SHAPES: Record<string, V2SpiceCallOutputShape> = {
   dsksrf_c: "none",
   dskgd_c: "as",
   dskb02_c: "out",
-  dskmi2_c: "none",
-  dskopn_c: "none",
-  dskw02_c: "none",
-  readVirtualOutput: "none",
 };
 
 const V2_SPICE_CALL_NAMES_TEXT = Object.keys(V2_SPICE_CALL_OUTPUT_SHAPES)

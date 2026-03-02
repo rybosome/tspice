@@ -18,6 +18,10 @@ const TARGET_METHOD_SPEC_PATHS = [
   "specs/methods/dsk/dskb02@v2.yml",
   "specs/methods/dsk/dskobj@v2.yml",
   "specs/methods/dsk/dsksrf@v2.yml",
+  "specs/methods/file-io/dskopn@v2.yml",
+  "specs/methods/file-io/dskmi2@v2.yml",
+  "specs/methods/file-io/dskw02@v2.yml",
+  "specs/methods/file-io/readVirtualOutput@v2.yml",
 ] as const;
 
 function packageRoot(): string {
