@@ -12,8 +12,10 @@ const ABSOLUTE_URL_RE = /^[A-Za-z][A-Za-z\d+.-]*:/;
 function isAbsoluteKernelUrlPrefix(kernelUrlPrefix: string): boolean {
   if (kernelUrlPrefix.startsWith("//")) {
     throw new Error(
-      `kernels.*(): protocol-relative URLs (\"//...\") are not supported in Node. ` +
-        `Node requires scheme-based URLs like \"https://...\". Got: ${kernelUrlPrefix}`,
+      `kernels.*(): invalid origin URL prefix. ` +
+        `Expected: scheme-based URLs like \"https://...\" or non-protocol-relative paths. ` +
+        `Got: ${kernelUrlPrefix}. ` +
+        `Hint: replace leading \"//\" with an explicit scheme.`,
     );
   }
 
@@ -26,7 +28,9 @@ function normalizeOrigin(origin: string): string {
   if (origin === "") return "";
   const trimmed = origin.trim();
   if (!trimmed) {
-    throw new Error("kernels.*(): origin cannot be blank/whitespace");
+    throw new Error(
+      "kernels.*(): invalid origin. Expected: non-empty, non-whitespace string (or \"\" for no prefix). Got: blank/whitespace.",
+    );
   }
   return ensureTrailingSlash(trimmed);
 }
@@ -36,7 +40,9 @@ function normalizePathBase(pathBase: string): string {
   if (pathBase === "") return "";
   const trimmed = pathBase.trim();
   if (!trimmed) {
-    throw new Error("kernels.*(): pathBase cannot be blank/whitespace");
+    throw new Error(
+      "kernels.*(): invalid pathBase. Expected: non-empty, non-whitespace string (or \"\" for no path prefix). Got: blank/whitespace.",
+    );
   }
   return ensureTrailingSlash(trimmed);
 }
@@ -54,7 +60,7 @@ function assertDirectoryStyleBaseUrl(baseUrl: string): void {
     const base = hasScheme ? new URL(baseUrl) : new URL(baseUrl, "https://tspice.invalid");
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `kernels.*(): absolute baseUrl must be directory-style (pathname must end with "/"): ${baseUrl}`,
+        `kernels.*(): invalid absolute baseUrl. Expected: absolute baseUrl must be directory-style (pathname must end with "/"). Got: ${baseUrl}. Hint: use a directory URL like https://example.com/myapp/.`,
       );
     }
     return;
@@ -64,14 +70,16 @@ function assertDirectoryStyleBaseUrl(baseUrl: string): void {
     const base = new URL(baseUrl, "https://tspice.invalid");
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `kernels.*(): path-absolute baseUrl must be directory-style (pathname must end with "/"): ${baseUrl}`,
+        `kernels.*(): invalid path-absolute baseUrl. Expected: path-absolute baseUrl pathname to end with "/". Got: ${baseUrl}. Hint: use /myapp/ instead of /myapp.`,
       );
     }
     return;
   }
 
   if (!baseUrl.endsWith("/")) {
-    throw new Error(`kernels.*(): baseUrl must be directory-style (end with "/"): ${baseUrl}`);
+    throw new Error(
+      `kernels.*(): invalid relative baseUrl. Expected: baseUrl to be directory-style (end with "/"). Got: ${baseUrl}. Hint: use myapp/ instead of myapp.`,
+    );
   }
 }
 
@@ -80,16 +88,22 @@ function normalizePickArgs<T>(
   rest: readonly T[],
 ): readonly T[] {
   if (first === undefined) {
-    throw new Error("pick(): expected at least one id/entry");
+    throw new Error(
+      "kernels.*().pick(): missing kernel selection; expected at least one id/entry. Got: undefined.",
+    );
   }
 
   if (Array.isArray(first)) {
     if (rest.length) {
-      throw new Error("pick(): when passing an array, do not pass additional arguments");
+      throw new Error(
+        "kernels.*().pick(): ambiguous argument form. Expected: either pick([entries...]) or pick(first, ...rest). Got: array first argument plus additional arguments. Hint: choose one calling style.",
+      );
     }
 
     if (first.length === 0) {
-      throw new Error("pick(): expected at least one id/entry");
+      throw new Error(
+        "kernels.*().pick(): missing kernel selection; expected at least one id/entry. Got: empty array.",
+      );
     }
     // Defensive copy to avoid time-of-check/time-of-use surprises if the caller
     // mutates their input array while `pick()` is processing.
@@ -274,8 +288,10 @@ export const kernels = {
       for (const id of ids) {
         if (!allowed.has(id)) {
           throw new Error(
-            `kernels.tspice().pick(): unknown id ${JSON.stringify(id)}. ` +
-              `This catalog is intentionally small. For the full NAIF inventory, use kernels.naif().pick(...).`,
+            `kernels.tspice().pick(): unsupported curated kernel id. ` +
+              `Expected: one of TSPICE_KERNEL_IDS. ` +
+              `Got: ${JSON.stringify(id)}. ` +
+              `Hint: use kernels.naif().pick(...) for non-curated NAIF IDs.`,
           );
         }
       }
@@ -321,7 +337,7 @@ export const kernels = {
             // Safety guard: callers can always bypass TS.
             if (origin === undefined || pathBase === undefined) {
               throw new Error(
-                "kernels.custom().pick(): string ids require kernels.custom({ origin, pathBase, baseUrl? })",
+                "kernels.custom().pick(): string-id mapping is not configured. Expected: string ids require kernels.custom({ origin, pathBase, baseUrl? }). Got: string id with opts omitted. Hint: provide mapping opts or pass explicit { url, path? } entries.",
               );
             }
             return buildLeafPathKernel(entry, { origin, pathBase });
