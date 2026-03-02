@@ -13,17 +13,28 @@ export interface IdsNamesApi {
   /** SPICE `bodc2n_c`: look up a body name by NAIF ID code. */
   bodc2n(code: number): Found<{ name: string }>;
 
-  /** Map a NAIF body ID code to a name (or decimal string if unknown). */
+  /**
+   * Map a NAIF body ID code to a name (or decimal string if unknown).
+   * Mapping: direct CSPICE (`bodc2s_c`).
+   */
   bodc2s(code: number): string;
 
-  /** Map a body name or numeric string to a NAIF body ID code. */
+  /**
+   * Map a body name or numeric string to a NAIF body ID code.
+   * Mapping: direct CSPICE (`bods2c_c`).
+   */
   bods2c(name: string): Found<{ code: number }>;
 
-  /** Define a body name/code mapping (side effect). */
+  /**
+   * Define a body name/code mapping (side effect).
+   * Mapping: direct CSPICE (`boddef_c`).
+   */
   boddef(name: string, code: number): void;
 
   /**
    * Return true if a body constant exists in the kernel pool.
+   * Mapping: non-direct/composite; normalizes `item` and checks the derived
+   * `BODY<body>_<ITEM>` kernel-pool variable.
    *
    * Normalization:
    * - `item` is normalized as `normalizeBodItem(item)` from `@rybosome/tspice-core`
@@ -34,6 +45,8 @@ export interface IdsNamesApi {
 
   /**
    * Return values of a body constant from the kernel pool.
+   * Mapping: non-direct/composite; normalizes `item` and reads numeric values
+   * from the derived `BODY<body>_<ITEM>` kernel-pool variable.
    *
    * Normalization:
    * - `item` is normalized as `normalizeBodItem(item)` from `@rybosome/tspice-core`

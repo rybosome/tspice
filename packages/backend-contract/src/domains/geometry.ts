@@ -64,6 +64,7 @@ export interface GeometryApi {
   /**
    * Compute illumination angles at a surface point, with a caller-specified
    * illumination source body.
+   * Mapping: direct CSPICE (`illumg_c`).
    */
   illumg(
     method: string,
@@ -78,6 +79,7 @@ export interface GeometryApi {
 
   /**
    * Compute illumination angles + visibility/lighting flags at a surface point.
+   * Mapping: direct CSPICE (`illumf_c`).
    */
   illumf(
     method: string,
@@ -103,9 +105,15 @@ export interface GeometryApi {
     et: number,
   ): number;
 
-  /** Convert a normal vector + constant to a plane. */
+  /**
+   * Convert a normal vector + constant to a plane.
+   * Mapping: direct CSPICE (`nvc2pl_c`).
+   */
   nvc2pl(normal: SpiceVector3, konst: number): SpicePlane;
 
-  /** Convert a plane to a unit normal vector + constant. */
+  /**
+   * Convert a plane to a unit normal vector + constant.
+   * Mapping: direct CSPICE (`pl2nvc_c`).
+   */
   pl2nvc(plane: SpicePlane): Pl2nvcResult;
 }

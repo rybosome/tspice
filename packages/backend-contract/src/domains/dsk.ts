@@ -46,15 +46,27 @@ export type DskType2Bookkeeping = {
 
 /** Backend contract for DSK (Digital Shape Kernel) segment queries. */
 export interface DskApi {
-  /** Return the set of body IDs for which the specified DSK has segments. */
+  /**
+   * Return the set of body IDs for which the specified DSK has segments.
+   * Mapping: direct CSPICE (`dskobj_c`).
+   */
   dskobj(dsk: string, bodids: SpiceIntCell): void;
 
-  /** Return the set of surface IDs for which the specified DSK has segments. */
+  /**
+   * Return the set of surface IDs for which the specified DSK has segments.
+   * Mapping: direct CSPICE (`dsksrf_c`).
+   */
   dsksrf(dsk: string, bodyid: number, srfids: SpiceIntCell): void;
 
-  /** Return the descriptor of a DSK segment. */
+  /**
+   * Return the descriptor of a DSK segment.
+   * Mapping: direct CSPICE (`dskgd_c`).
+   */
   dskgd(handle: SpiceHandle, dladsc: DlaDescriptor): DskDescriptor;
 
-  /** Return the type 2 DSK segment bookkeeping parameters. */
+  /**
+   * Return the type 2 DSK segment bookkeeping parameters.
+   * Mapping: direct CSPICE (`dskb02_c`).
+   */
   dskb02(handle: SpiceHandle, dladsc: DlaDescriptor): DskType2Bookkeeping;
 }
