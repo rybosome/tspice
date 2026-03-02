@@ -20,6 +20,58 @@ import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
 
 const I32_MAX = 2147483647;
 
+function formatGot(value: unknown): string {
+  const json = JSON.stringify(value);
+  return json === undefined ? String(value) : json;
+}
+
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
+
+function describeStatesInput(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `Array(length=${value.length})`;
+  }
+  if (value instanceof Float64Array) {
+    return `Float64Array(length=${value.length})`;
+  }
+  return formatGot(value);
+}
+
+function throwInvalidVirtualOutput(context: string, value: unknown): never {
+  throw new TypeError(
+    formatExpectedGot(
+      context,
+      `VirtualOutput { kind: \"virtual-output\", path: string }`,
+      value,
+    ),
+  );
+}
+
+function validateSpkw08States(states: readonly number[] | Float64Array): number {
+  if (!Array.isArray(states) && !(states instanceof Float64Array)) {
+    throw new TypeError(
+      formatExpectedGot("spkw08(states)", "number[] or Float64Array", describeStatesInput(states)),
+    );
+  }
+
+  if (states.length === 0 || states.length % 6 !== 0) {
+    throw new RangeError(
+      formatExpectedGot("spkw08(states.length)", "a non-zero multiple of 6", states.length),
+    );
+  }
+
+  const n = states.length / 6;
+  if (!Number.isSafeInteger(n) || n <= 0 || n > I32_MAX) {
+    throw new RangeError(
+      formatExpectedGot("spkw08(n)", `a signed 32-bit integer (1..${I32_MAX})`, n),
+    );
+  }
+
+  return n;
+}
+
 function assertSpkPackedDescriptor(out: unknown, label: string): asserts out is SpkPackedDescriptor {
   invariant(Array.isArray(out) && out.length === 5, `Expected ${label} to be a length-5 array`);
   for (let i = 0; i < 5; i++) {
@@ -43,7 +95,9 @@ function resolveSpkPath(outputs: VirtualOutputStager, file: string | VirtualOutp
   }
 
   // Be defensive: callers can cast.
-  invariant(isVirtualOutput(file), `${context}: expected VirtualOutput {kind:'virtual-output', path:string}`);
+  if (!isVirtualOutput(file)) {
+    throwInvalidVirtualOutput(context, file);
+  }
   return outputs.resolvePathForSpice(file);
 }
 
@@ -182,7 +236,9 @@ export function createEphemerisApi(
       const handle = handles.register("SPK", nativeHandle);
       if (typeof file !== "string") {
         // `resolveSpkPath` already validated, but be defensive: callers can cast.
-        invariant(isVirtualOutput(file), "spkopn(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        if (!isVirtualOutput(file)) {
+          throwInvalidVirtualOutput("spkopn(file)", file);
+        }
         const out: VirtualOutput = { kind: "virtual-output", path: file.path };
         outputs.markOpen(out);
         virtualOutputByHandle.set(handle, out);
@@ -197,7 +253,9 @@ export function createEphemerisApi(
 
       const handle = handles.register("SPK", nativeHandle);
       if (typeof file !== "string") {
-        invariant(isVirtualOutput(file), "spkopa(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        if (!isVirtualOutput(file)) {
+          throwInvalidVirtualOutput("spkopa(file)", file);
+        }
         const out: VirtualOutput = { kind: "virtual-output", path: file.path };
         outputs.markOpen(out);
         virtualOutputByHandle.set(handle, out);
@@ -228,18 +286,7 @@ export function createEphemerisApi(
       epoch1: number,
       step: number,
     ) => {
-      invariant(
-        Array.isArray(states) || states instanceof Float64Array,
-        "spkw08(states): expected number[] or Float64Array",
-      );
-      invariant(states.length % 6 === 0, "spkw08(): expected states.length to be a multiple of 6");
-      invariant(states.length > 0, "spkw08(): expected at least one state record");
-
-      const n = states.length / 6;
-      invariant(
-        Number.isSafeInteger(n) && n > 0 && n <= I32_MAX,
-        `spkw08(): expected states.length/6 to be a 32-bit signed integer (got n=${n})`,
-      );
+      validateSpkw08States(states);
 
       const nativeHandle = handles.lookup(handle, ["SPK"], "spkw08").nativeHandle;
       native.spkw08(nativeHandle, body, center, frame, first, last, segid, degree, states, epoch1, step);

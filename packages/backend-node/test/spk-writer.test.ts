@@ -70,6 +70,41 @@ describe("SPK writers (type 8)", () => {
     ).toThrow(/\.\.|invalid/i);
   });
 
+  itNative("validates spkw08(states) shape before calling native", () => {
+    const backend = createNodeBackend();
+
+    expect(() =>
+      backend.raw.spkw08(
+        123 as never,
+        1000,
+        0,
+        "J2000",
+        0,
+        60,
+        "TSPICE_TYPE8_TEST",
+        1,
+        [],
+        0,
+        60,
+      ),
+    ).toThrow(RangeError);
+    expect(() =>
+      backend.raw.spkw08(
+        123 as never,
+        1000,
+        0,
+        "J2000",
+        0,
+        60,
+        "TSPICE_TYPE8_TEST",
+        1,
+        [],
+        0,
+        60,
+      ),
+    ).toThrow(/Expected:.*non-zero multiple of 6/i);
+  });
+
   itNative("provides a clearer error for missing virtual output files", () => {
     const backend = createNodeBackend();
 

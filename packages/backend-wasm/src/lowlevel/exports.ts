@@ -1804,10 +1804,17 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
+function formatGot(value: unknown): string {
+  const json = JSON.stringify(value);
+  return json === undefined ? String(value) : json;
+}
+
 /** Assert that an object looks like the expected tspice Emscripten module export surface. */
 export function assertEmscriptenModule(m: unknown): asserts m is EmscriptenModule {
   if (!isRecord(m)) {
-    throw new TypeError("Expected Emscripten module to be an object");
+    throw new TypeError(
+      `assertEmscriptenModule(module): Expected: an object. Got: ${formatGot(m)}`,
+    );
   }
 
   const invalid: string[] = [];
@@ -1833,7 +1840,8 @@ export function assertEmscriptenModule(m: unknown): asserts m is EmscriptenModul
 
   if (invalid.length > 0) {
     throw new TypeError(
-      `Invalid tspice WASM module (missing/invalid exports): ${invalid.join(", ")}. ` +
+      `assertEmscriptenModule(module): Expected: the full tspice WASM export surface. ` +
+        `Got: missing/invalid exports: ${invalid.join(", ")}. ` +
         `tspice requires the full export surface (core wrappers + cells/windows helpers + Emscripten FS incl FS.mkdirTree). ` +
         `You can skip this check for debugging via CreateWasmBackendOptions.validateEmscriptenModule=false ` +
         `(Node: TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT=1), but missing exports will still crash later.`,

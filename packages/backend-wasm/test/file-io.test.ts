@@ -124,6 +124,8 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
       csize: 2147483648,
     };
 
+    expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(TypeError);
+    expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(/Expected:/i);
     expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(/32-bit|int32/i);
     backend.raw.dlacls(handle);
   });
@@ -145,6 +147,8 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
       csize: 0,
     };
 
+    expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(RangeError);
+    expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(/Expected:/i);
     expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(/ibase.*>=\s*0/i);
     backend.raw.dlacls(handle);
   });

@@ -41,6 +41,15 @@ const DESCR_KEYS = [
   "csize",
 ] as const;
 
+function formatGot(value: unknown): string {
+  const json = JSON.stringify(value);
+  return json === undefined ? String(value) : json;
+}
+
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
+
 function readHeapI32(module: EmscriptenModule, idx: number, context: string): number {
   const heap = module.HEAP32;
   const v = heap[idx];
@@ -117,7 +126,7 @@ function readDlaDescr8(module: EmscriptenModule, ptr: number): DlaDescriptor {
 
 function assertDlaDescriptor(value: unknown, context: string): asserts value is DlaDescriptor {
   if (typeof value !== "object" || value === null) {
-    throw new Error(`${context}: expected an object`);
+    throw new TypeError(formatExpectedGot(context, "a DlaDescriptor object", value));
   }
   const obj = value as Record<string, unknown>;
   for (const key of DESCR_KEYS) {
@@ -128,12 +137,18 @@ function assertDlaDescriptor(value: unknown, context: string): asserts value is 
       v < I32_MIN ||
       v > I32_MAX
     ) {
-      throw new Error(`${context}: expected ${key} to be a 32-bit signed integer`);
+      throw new TypeError(
+        formatExpectedGot(
+          `${context}.${key}`,
+          `a signed 32-bit integer (${I32_MIN}..${I32_MAX})`,
+          v,
+        ),
+      );
     }
 
     const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
     if (v < min) {
-      throw new Error(`${context}: expected ${key} to be >= ${min}`);
+      throw new RangeError(formatExpectedGot(`${context}.${key}`, `>= ${min}`, v));
     }
   }
 }
@@ -449,43 +464,55 @@ export function createFileIoApi(
 
       const expectedVrtcesLen = nv * 3;
       if (expectedVrtcesLen <= 0) {
-        throw new RangeError("dskmi2(nv): expected nv > 0");
+        throw new RangeError(formatExpectedGot("dskmi2(nv)", "> 0", nv));
       }
       if (vrtces.length !== expectedVrtcesLen) {
-        throw new RangeError(`dskmi2(vrtces): expected length ${expectedVrtcesLen}, got ${vrtces.length}`);
+        throw new RangeError(
+          formatExpectedGot("dskmi2(vrtces.length)", `exactly ${expectedVrtcesLen}`, vrtces.length),
+        );
       }
 
       const expectedPlatesLen = np * 3;
       if (expectedPlatesLen <= 0) {
-        throw new RangeError("dskmi2(np): expected np > 0");
+        throw new RangeError(formatExpectedGot("dskmi2(np)", "> 0", np));
       }
       if (plates.length !== expectedPlatesLen) {
-        throw new RangeError(`dskmi2(plates): expected length ${expectedPlatesLen}, got ${plates.length}`);
+        throw new RangeError(
+          formatExpectedGot("dskmi2(plates.length)", `exactly ${expectedPlatesLen}`, plates.length),
+        );
       }
 
       for (let i = 0; i < plates.length; i++) {
         const v = plates[i];
         if (v === undefined) {
-          throw new RangeError(`dskmi2(plates[${i}]): expected a value, got undefined`);
+          throw new TypeError(
+            formatExpectedGot(`dskmi2(plates[${i}])`, "a signed 32-bit integer index", v),
+          );
         }
         assertSpiceInt32(v, `dskmi2(plates[${i}])`);
         if (v < 1 || v > nv) {
-          throw new RangeError(`dskmi2(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`);
+          throw new RangeError(
+            formatExpectedGot(`dskmi2(plates[${i}])`, `an index in [1, nv] where nv=${nv}`, v),
+          );
         }
       }
 
       if (worksz <= 0) {
-        throw new RangeError("dskmi2(worksz): expected worksz > 0");
+        throw new RangeError(formatExpectedGot("dskmi2(worksz)", "> 0", worksz));
       }
       if (worksz > DSKMI2_MAX_SIZE) {
-        throw new RangeError(`dskmi2(worksz): expected worksz <= ${DSKMI2_MAX_SIZE}, got ${worksz}`);
+        throw new RangeError(
+          formatExpectedGot("dskmi2(worksz)", `<= ${DSKMI2_MAX_SIZE}`, worksz),
+        );
       }
 
       if (spxisz <= 0) {
-        throw new RangeError("dskmi2(spxisz): expected spxisz > 0");
+        throw new RangeError(formatExpectedGot("dskmi2(spxisz)", "> 0", spxisz));
       }
       if (spxisz > DSKMI2_MAX_SIZE) {
-        throw new RangeError(`dskmi2(spxisz): expected spxisz <= ${DSKMI2_MAX_SIZE}, got ${spxisz}`);
+        throw new RangeError(
+          formatExpectedGot("dskmi2(spxisz)", `<= ${DSKMI2_MAX_SIZE}`, spxisz),
+        );
       }
 
       const vrtcesBytes = expectedVrtcesLen * 8;
@@ -570,48 +597,68 @@ export function createFileIoApi(
 
       const expectedVrtcesLen = nv * 3;
       if (expectedVrtcesLen <= 0) {
-        throw new RangeError("dskw02(nv): expected nv > 0");
+        throw new RangeError(formatExpectedGot("dskw02(nv)", "> 0", nv));
       }
       if (vrtces.length !== expectedVrtcesLen) {
-        throw new RangeError(`dskw02(vrtces): expected length ${expectedVrtcesLen}, got ${vrtces.length}`);
+        throw new RangeError(
+          formatExpectedGot("dskw02(vrtces.length)", `exactly ${expectedVrtcesLen}`, vrtces.length),
+        );
       }
 
       const expectedPlatesLen = np * 3;
       if (expectedPlatesLen <= 0) {
-        throw new RangeError("dskw02(np): expected np > 0");
+        throw new RangeError(formatExpectedGot("dskw02(np)", "> 0", np));
       }
       if (plates.length !== expectedPlatesLen) {
-        throw new RangeError(`dskw02(plates): expected length ${expectedPlatesLen}, got ${plates.length}`);
+        throw new RangeError(
+          formatExpectedGot("dskw02(plates.length)", `exactly ${expectedPlatesLen}`, plates.length),
+        );
       }
 
       for (let i = 0; i < plates.length; i++) {
         const v = plates[i];
         if (v === undefined) {
-          throw new RangeError(`dskw02(plates[${i}]): expected a value, got undefined`);
+          throw new TypeError(
+            formatExpectedGot(`dskw02(plates[${i}])`, "a signed 32-bit integer index", v),
+          );
         }
         assertSpiceInt32(v, `dskw02(plates[${i}])`);
         if (v < 1 || v > nv) {
-          throw new RangeError(`dskw02(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`);
+          throw new RangeError(
+            formatExpectedGot(`dskw02(plates[${i}])`, `an index in [1, nv] where nv=${nv}`, v),
+          );
         }
       }
 
       if (corpar.length !== 10) {
-        throw new RangeError(`dskw02(corpar): expected length 10, got ${corpar.length}`);
+        throw new RangeError(
+          formatExpectedGot("dskw02(corpar.length)", "exactly 10", corpar.length),
+        );
       }
       if (spaixd.length !== DSK02_IXDFIX) {
-        throw new RangeError(`dskw02(spaixd): expected length ${DSK02_IXDFIX}, got ${spaixd.length}`);
+        throw new RangeError(
+          formatExpectedGot(
+            "dskw02(spaixd.length)",
+            `exactly ${DSK02_IXDFIX}`,
+            spaixd.length,
+          ),
+        );
       }
 
       const spaixiLen = spaixi.length;
       assertSpiceInt32NonNegative(spaixiLen, "dskw02(spaixi.length)");
       if (spaixiLen <= 0) {
-        throw new RangeError("dskw02(spaixi): expected a non-empty array");
+        throw new RangeError(
+          formatExpectedGot("dskw02(spaixi.length)", "> 0", spaixiLen),
+        );
       }
 
       for (let i = 0; i < spaixiLen; i++) {
         const v = spaixi[i];
         if (v === undefined) {
-          throw new RangeError(`dskw02(spaixi[${i}]): expected a value, got undefined`);
+          throw new TypeError(
+            formatExpectedGot(`dskw02(spaixi[${i}])`, "a signed 32-bit integer", v),
+          );
         }
         assertSpiceInt32(v, `dskw02(spaixi[${i}])`);
       }
@@ -683,14 +730,18 @@ export function createFileIoKitApi(
   return {
     readVirtualOutput: (output: VirtualOutput) => {
       if (typeof output !== "object" || output === null) {
-        throw new Error("readVirtualOutput(output): expected an object");
+        throw new TypeError(
+          formatExpectedGot("readVirtualOutput(output)", "a VirtualOutput object", output),
+        );
       }
       const obj = output as { kind?: unknown; path?: unknown };
       if (obj.kind !== "virtual-output") {
-        throw new Error("readVirtualOutput(output): expected kind='virtual-output'");
+        throw new TypeError(
+          formatExpectedGot("readVirtualOutput(output.kind)", '"virtual-output"', obj.kind),
+        );
       }
       if (typeof obj.path !== "string") {
-        throw new Error("readVirtualOutput(output): expected path to be a string");
+        throw new TypeError(formatExpectedGot("readVirtualOutput(output.path)", "a string", obj.path));
       }
 
       const resolved = resolveKernelPath(obj.path);

@@ -11,18 +11,30 @@ export const WASM_ERR_MAX_BYTES = 2048;
  */
 export const WASM_MAX_ALLOC_BYTES = 256 * 1024 * 1024; // 256 MiB
 
+function formatGot(value: unknown): string {
+  const json = JSON.stringify(value);
+  return json === undefined ? String(value) : json;
+}
+
+function formatInvalidMallocSize(expected: string, got: unknown): string {
+  return `Invalid WASM malloc size. Expected: ${expected}. Got: ${formatGot(got)}`;
+}
+
 function assertValidMallocSize(size: number): void {
+  if (typeof size !== "number") {
+    throw new TypeError(formatInvalidMallocSize("a number", size));
+  }
   if (!Number.isFinite(size)) {
-    throw new Error(`Invalid WASM malloc size: ${String(size)} (expected a finite number)`);
+    throw new RangeError(formatInvalidMallocSize("a finite number", size));
   }
   if (!Number.isSafeInteger(size)) {
-    throw new Error(`Invalid WASM malloc size: ${String(size)} (expected a safe integer)`);
+    throw new TypeError(formatInvalidMallocSize("a safe integer", size));
   }
   if (size <= 0) {
-    throw new Error(`Invalid WASM malloc size: ${String(size)} (expected > 0)`);
+    throw new RangeError(formatInvalidMallocSize("> 0", size));
   }
   if (size > WASM_MAX_ALLOC_BYTES) {
-    throw new Error(`Invalid WASM malloc size: ${String(size)} (max ${WASM_MAX_ALLOC_BYTES})`);
+    throw new RangeError(formatInvalidMallocSize(`<= ${WASM_MAX_ALLOC_BYTES}`, size));
   }
 }
 
