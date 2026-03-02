@@ -39,7 +39,7 @@ Notes:
 | --- | --- | --- | --- |
 | `kernels.tspice()` | Zero-config quickstarts and demos | Curated ids from a hosted community mirror; call `.pick(...)` to build a `KernelPack`. | **Not for production.** Community-hosted/best-effort; use for demos and quickstarts. |
 | `kernels.naif(opts?)` | Full typed NAIF `generic_kernels` inventory | Defaults to NAIF host + typed `NaifKernelId`; optional `origin`, `pathBase`, `baseUrl`. | NAIF canonical host typically lacks browser CORS headers. In browsers, self-host/proxy (often relative `origin` + `baseUrl`); in Node, use absolute URLs. |
-| `kernels.custom({ origin, pathBase, baseUrl? })` | Mission/app-specific kernel sets | String ids map to `{ url: origin + id, path: pathBase + id }`; explicit `{ url, path? }` entries supported. | You own hosting + path conventions. Ensure ordering and coverage match your use case. |
+| `kernels.custom(...)` | Mission/app-specific kernel sets | Two modes: `kernels.custom()` accepts explicit `{ url, path? }` entries; `kernels.custom({ origin, pathBase, baseUrl? })` also accepts string ids mapped to `{ url: origin + id, path: pathBase + id }`. | You own hosting + path conventions. Ensure ordering and coverage match your use case. |
 
 
 ## Minimal Browser Example (No Kernel Hosting Required)
@@ -178,7 +178,7 @@ export type SpiceClientsWebWorkerOptions = {
 
 Use a catalog + `.pick(...)` to build a `KernelPack` (ordered kernel URLs + virtual load paths).
 `KernelPack.baseUrl` optionally roots relative kernel URLs at load time.
-Pass a pack (or packs) to `spiceClients.withKernels(packOrPacks)` before calling `.toWebWorker()` to preload kernels in the worker.
+Pass a pack (or a non-empty array of packs) to `spiceClients.withKernels(...)` before calling `.toWebWorker()` to preload kernels in the worker.
 Use `spiceClients.withFetch(fetchFn)` to override the `fetch` implementation used for kernel pack loading.
 
 
@@ -466,7 +466,8 @@ export async function withWebWorkerClient<T>(
  * Example: preload kernels before creating the worker client.
  *
  * Use `kernels.*(...).pick(...)` to build a `KernelPack` (URLs + virtual load paths).
- * Pass a pack (or packs) to `spiceClients.withKernels(packOrPacks)` before calling `.toWebWorker()`.
+ * Pass a pack (or a non-empty array of packs) to `spiceClients.withKernels(...)`
+ * before calling `.toWebWorker()`.
  */
 export async function createWebWorkerClientWithNaifKernels() {
   const pack = kernels

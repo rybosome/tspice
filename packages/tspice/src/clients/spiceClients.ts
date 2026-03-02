@@ -23,6 +23,8 @@ type KernelBatch = {
   pack: KernelPack;
 };
 
+type NonEmptyKernelPacks = readonly [KernelPack, ...KernelPack[]];
+
 type BuilderState = {
   cachingOptions?: WithCachingOptions;
   kernelBatches: readonly KernelBatch[];
@@ -73,12 +75,13 @@ export type SpiceClientsBuilder = {
    *
    * Batching semantics:
    * - `withKernels(pack)` appends a single batch
-   * - `withKernels(packs)` appends multiple batches
+   * - `withKernels(packs)` appends multiple batches (must be non-empty)
    *
    * Kernel load order matches call order (batch order preserved; within each
    * pack, kernel order preserved).
    */
-  withKernels(packOrPacks: KernelPack | KernelPack[]): SpiceClientsBuilder;
+  withKernels(pack: KernelPack): SpiceClientsBuilder;
+  withKernels(packs: NonEmptyKernelPacks): SpiceClientsBuilder;
 
   /** Build a sync-ish in-process client. */
   toSync(opts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>>;
@@ -320,8 +323,19 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
     withFetch: (fetchFn) => createBuilder({ ...state, kernelFetch: fetchFn }),
 
-    withKernels: (packOrPacks: KernelPack | KernelPack[]) => {
-      const packs = Array.isArray(packOrPacks) ? packOrPacks : [packOrPacks];
+    withKernels: (packOrPacks: KernelPack | NonEmptyKernelPacks) => {
+      const packs = (
+        Array.isArray(packOrPacks)
+          ? packOrPacks
+          : [packOrPacks]
+      ) as readonly KernelPack[];
+
+      if (packs.length === 0) {
+        throw new Error(
+          "spiceClients.withKernels(): expected a KernelPack or a non-empty KernelPack[]",
+        );
+      }
+
       return addKernelBatches(packs);
     },
 
