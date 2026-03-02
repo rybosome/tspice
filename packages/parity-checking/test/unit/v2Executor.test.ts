@@ -535,6 +535,218 @@ describe("executeV2CaseWithBackend", () => {
     }
   });
 
+  it("supports anchored dskmi2/dskw02 flow with array refs from dskmi2 out map", async () => {
+    const dskopnMock = vi.fn((_path: string, _ifname: string, _ncomch: number) => 42);
+    const dskmi2Mock = vi.fn(() => ({ spaixd: [11, 12], spaixi: [21, 22, 23] }));
+    const dskw02Mock = vi.fn(() => {});
+    const dasclsMock = vi.fn((_handle: number) => {});
+
+    const backend = {
+      kind: "node",
+      raw: {
+        dskopn: dskopnMock,
+        dskmi2: dskmi2Mock,
+        dskw02: dskw02Mock,
+        dascls: dasclsMock,
+      },
+      kit: {
+        newIntCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+        newDoubleCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+        newCharCell: vi.fn((_size: number, _length: number) => ({ size: 0, card: 0 })),
+        newWindow: vi.fn((_maxIntervals: number) => ({ card: 0 })),
+        freeCell: vi.fn(() => {}),
+        freeWindow: vi.fn(() => {}),
+        readVirtualOutput: vi.fn((_output: { kind: string; path: string }) => new Uint8Array([1])),
+      },
+    } as unknown as SpiceBackend;
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "methods/file-io/dskw02@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "file-io.dskw02",
+        canonicalMethod: "file-io.dskw02",
+        args: [],
+        result: {
+          type: "object",
+          required: ["spaixdLength", "spaixiLength"],
+          properties: {
+            spaixdLength: { type: "spiceInt" },
+            spaixiLength: { type: "spiceInt" },
+          },
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          {
+            op: "spiceCall",
+            call: "dskmi2_c",
+            in: [
+              3,
+              [0, 0, 0, 1, 0, 0, 0, 1, 0],
+              1,
+              [1, 2, 3],
+              0.2,
+              5,
+              2048,
+              512,
+              1024,
+              true,
+              8192,
+            ],
+            out: {
+              spaixd: "spaixd",
+              spaixi: "spaixi",
+              spaixdLength: "spaixdLength",
+              spaixiLength: "spaixiLength",
+            },
+          },
+          {
+            op: "spiceCall",
+            call: "dskopn_c",
+            in: ["/tmp/anchored-dskw02.bds", "TSPICE", 0],
+            as: "handle",
+          },
+          {
+            op: "spiceCall",
+            call: "dskw02_c",
+            in: [
+              "$refs.handle",
+              399,
+              1,
+              2,
+              "J2000",
+              3,
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              0,
+              1,
+              0,
+              1,
+              -0.1,
+              0.1,
+              0,
+              1,
+              3,
+              [0, 0, 0, 1, 0, 0, 0, 1, 0],
+              1,
+              [1, 2, 3],
+              "$refs.spaixd",
+              "$refs.spaixi",
+            ],
+          },
+          {
+            op: "projectResult",
+            out: {
+              spaixdLength: "$refs.spaixdLength",
+              spaixiLength: "$refs.spaixiLength",
+            },
+          },
+        ],
+        cleanup: [{ op: "dasClose", target: "$refs.handle" }],
+      },
+    };
+
+    const result = await executeV2CaseWithBackend(backend, input);
+
+    expect(result).toEqual({ spaixdLength: 2, spaixiLength: 3 });
+    expect(dskopnMock).toHaveBeenCalledWith("/tmp/anchored-dskw02.bds", "TSPICE", 0);
+    expect(dskmi2Mock).toHaveBeenCalledTimes(1);
+    expect(dskw02Mock).toHaveBeenCalledWith(
+      42,
+      399,
+      1,
+      2,
+      "J2000",
+      3,
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      0,
+      1,
+      0,
+      1,
+      -0.1,
+      0.1,
+      0,
+      1,
+      3,
+      [0, 0, 0, 1, 0, 0, 0, 1, 0],
+      1,
+      [1, 2, 3],
+      [11, 12],
+      [21, 22, 23],
+    );
+    expect(dasclsMock).toHaveBeenCalledWith(42);
+  });
+
+  it("rejects unsupported dskmi2 out-map keys", async () => {
+    const backend = {
+      kind: "node",
+      raw: {
+        dskmi2: vi.fn(() => ({ spaixd: [1], spaixi: [1] })),
+      },
+      kit: {
+        newIntCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+        newDoubleCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+        newCharCell: vi.fn((_size: number, _length: number) => ({ size: 0, card: 0 })),
+        newWindow: vi.fn((_maxIntervals: number) => ({ card: 0 })),
+        freeCell: vi.fn(() => {}),
+        freeWindow: vi.fn(() => {}),
+        readVirtualOutput: vi.fn((_output: { kind: string; path: string }) => new Uint8Array([1])),
+      },
+    } as unknown as SpiceBackend;
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 2,
+      manifest: {
+        id: "methods/file-io/dskmi2@v2",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "file-io.dskmi2",
+        canonicalMethod: "file-io.dskmi2",
+        args: [],
+        result: {
+          type: "object",
+          properties: {},
+        },
+      },
+      args: {},
+      workflow: {
+        steps: [
+          {
+            op: "spiceCall",
+            call: "dskmi2_c",
+            in: [
+              3,
+              [0, 0, 0, 1, 0, 0, 0, 1, 0],
+              1,
+              [1, 2, 3],
+              0.2,
+              5,
+              2048,
+              512,
+              1024,
+              true,
+              8192,
+            ],
+            out: {
+              unexpected: "value",
+            },
+          },
+          { op: "projectResult", out: {} },
+        ],
+      },
+    };
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_args",
+      message: expect.stringContaining("unsupported key \"unexpected\""),
+    });
+  });
+
   it("reports invalid_args when card_c is missing as in bypassed schema input", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
@@ -583,18 +795,93 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
-  it("reports unsupported_call for removed pseudo spiceCall names in bypassed schema input", async () => {
-    const { backend } = createBackendStub();
+  it("reports invalid_args when dskopn_c omits as in bypassed schema input", async () => {
+    const backend = {
+      kind: "node",
+      raw: {
+        dskopn: vi.fn((_path: string, _ifname: string, _ncomch: number) => 11),
+      },
+      kit: {
+        newIntCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+        freeCell: vi.fn(() => {}),
+      },
+    } as unknown as SpiceBackend;
+
     const input = createBaseInput();
-    input.workflow.steps[1] = {
-      op: "spiceCall",
-      call: "dskw02_c",
-      in: [],
-    } as unknown as RunCaseInputV2["workflow"]["steps"][number];
+    input.contract = {
+      contractMethod: "file-io.dskopn",
+      canonicalMethod: "file-io.dskopn",
+      args: [],
+      result: { type: "object", properties: {} },
+    };
+    input.args = {};
+    input.workflow.steps = [
+      {
+        op: "spiceCall",
+        call: "dskopn_c",
+        in: ["/tmp/test.bds", "TSPICE", 0],
+      } as unknown as RunCaseInputV2["workflow"]["steps"][number],
+      {
+        op: "projectResult",
+        out: {},
+      },
+    ];
+    input.workflow.cleanup = [];
 
     await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
-      code: "unsupported_call",
-      message: "Unsupported spiceCall op: dskw02_c",
+      code: "invalid_args",
+      message: 'spiceCall dskopn_c requires an "as" output ref',
+    });
+  });
+
+  it("reports invalid_args when dskmi2_c omits out in bypassed schema input", async () => {
+    const backend = {
+      kind: "node",
+      raw: {
+        dskmi2: vi.fn(() => ({ spaixd: [1], spaixi: [1] })),
+      },
+      kit: {
+        newIntCell: vi.fn((_size: number) => ({ size: 0, card: 0 })),
+        freeCell: vi.fn(() => {}),
+      },
+    } as unknown as SpiceBackend;
+
+    const input = createBaseInput();
+    input.contract = {
+      contractMethod: "file-io.dskmi2",
+      canonicalMethod: "file-io.dskmi2",
+      args: [],
+      result: { type: "object", properties: {} },
+    };
+    input.args = {};
+    input.workflow.steps = [
+      {
+        op: "spiceCall",
+        call: "dskmi2_c",
+        in: [
+          3,
+          [0, 0, 0, 1, 0, 0, 0, 1, 0],
+          1,
+          [1, 2, 3],
+          0.2,
+          5,
+          2048,
+          512,
+          1024,
+          true,
+          8192,
+        ],
+      } as unknown as RunCaseInputV2["workflow"]["steps"][number],
+      {
+        op: "projectResult",
+        out: {},
+      },
+    ];
+    input.workflow.cleanup = [];
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_args",
+      message: 'spiceCall dskmi2_c requires an "out" map',
     });
   });
 

@@ -845,10 +845,56 @@ describe("schema validation", () => {
     ).toThrow(/out is required when call="dskb02_c"/);
   });
 
-  it("rejects removed pseudo spiceCall names in v2 workflows", () => {
+  it("parses v2 dskopn_c spiceCall requiring as output", () => {
+    const methodV2 = parseMethodSpecAny({
+      sourcePath: "/tmp/method-v2-dskopn-as.yml",
+      data: {
+        schemaVersion: 2,
+        manifest: {
+          id: "methods/file-io/dskopn@v2",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "file-io.dskopn",
+          canonicalMethod: "file-io.dskopn",
+          result: {
+            type: "object",
+            required: ["opened"],
+            properties: {
+              opened: { const: true },
+            },
+          },
+        },
+        workflow: {
+          steps: [
+            {
+              op: "spiceCall",
+              call: "dskopn_c",
+              in: ["/tmp/test.bds", "TSPICE", 0],
+              as: "handle",
+            },
+            {
+              op: "projectResult",
+              out: { opened: true },
+            },
+          ],
+        },
+        cases: [{ id: "ok", args: {}, expect: { ok: true } }],
+      },
+    });
+
+    expect(methodV2).toMatchObject({ schemaVersion: 2 });
+    expect(methodV2.workflow.steps[0]).toMatchObject({
+      op: "spiceCall",
+      call: "dskopn_c",
+      as: "handle",
+    });
+  });
+
+  it("rejects dskopn_c spiceCall entries that omit as", () => {
     expect(() =>
       parseMethodSpecAny({
-        sourcePath: "/tmp/method-v2-removed-pseudo-spice-call.yml",
+        sourcePath: "/tmp/method-v2-dskopn-missing-as.yml",
         data: {
           schemaVersion: 2,
           manifest: {
@@ -868,15 +914,61 @@ describe("schema validation", () => {
               {
                 op: "spiceCall",
                 call: "dskopn_c",
-                in: [],
+                in: ["/tmp/test.bds", "TSPICE", 0],
               },
               { op: "projectResult", out: {} },
             ],
           },
-          cases: [{ id: "legacy", args: {}, expect: { ok: true } }],
+          cases: [{ id: "bad", args: {}, expect: { ok: false } }],
         },
       }),
-    ).toThrow(/call must be one of/);
+    ).toThrow(/as is required when call="dskopn_c"/);
+  });
+
+  it("rejects dskmi2_c spiceCall entries that omit out map", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "/tmp/method-v2-dskmi2-missing-out.yml",
+        data: {
+          schemaVersion: 2,
+          manifest: {
+            id: "methods/file-io/dskmi2@v2",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "file-io.dskmi2",
+            canonicalMethod: "file-io.dskmi2",
+            result: {
+              type: "object",
+              properties: {},
+            },
+          },
+          workflow: {
+            steps: [
+              {
+                op: "spiceCall",
+                call: "dskmi2_c",
+                in: [
+                  3,
+                  [0, 0, 0, 1, 0, 0, 0, 1, 0],
+                  1,
+                  [1, 2, 3],
+                  0.2,
+                  5,
+                  2048,
+                  512,
+                  1024,
+                  true,
+                  8192,
+                ],
+              },
+              { op: "projectResult", out: {} },
+            ],
+          },
+          cases: [{ id: "bad", args: {}, expect: { ok: false } }],
+        },
+      }),
+    ).toThrow(/out is required when call="dskmi2_c"/);
   });
 
   it("rejects unsupported schema versions", () => {

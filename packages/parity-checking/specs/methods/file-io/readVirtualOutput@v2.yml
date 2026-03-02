@@ -16,6 +16,9 @@ workflow:
     - op: materialize
       fixture: virtualOutputSpk
       as: outputPath
+    - op: spiceCall
+      call: readVirtualOutput
+      in: [$refs.outputPath]
     - op: projectResult
       out:
         readBytes: true

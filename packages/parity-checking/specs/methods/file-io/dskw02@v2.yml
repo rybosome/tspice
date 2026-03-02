@@ -16,28 +16,77 @@ workflow:
     - op: materialize
       fixture: minimalDsk
       as: dskPath
+    - op: unlink
+      target: $refs.dskPath
+    - op: spiceCall
+      call: dskopn_c
+      in: [$refs.dskPath, "TSPICE", 0]
+      as: handle
+    - op: spiceCall
+      call: dskmi2_c
+      in:
+        - 3
+        - [0, 0, 0, 1, 0, 0, 0, 1, 0]
+        - 1
+        - [1, 2, 3]
+        - 0.2
+        - 5
+        - 2048
+        - 512
+        - 1024
+        - true
+        - 8192
+      out:
+        spaixd: spaixd
+        spaixi: spaixi
+    - op: spiceCall
+      call: dskw02_c
+      in:
+        - $refs.handle
+        - 399
+        - 1
+        - 2
+        - "J2000"
+        - 3
+        - [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        - 0
+        - 1
+        - 0
+        - 1
+        - -0.1
+        - 0.1
+        - 0
+        - 1
+        - 3
+        - [0, 0, 0, 1, 0, 0, 0, 1, 0]
+        - 1
+        - [1, 2, 3]
+        - $refs.spaixd
+        - $refs.spaixi
+    - op: dasClose
+      target: $refs.handle
     - op: dasOpen
       path: $refs.dskPath
-      as: dasHandle
+      as: verifyHandle
     - op: dlaBeginForwardSearch
-      handle: $refs.dasHandle
+      handle: $refs.verifyHandle
       as: dladsc
     - op: spiceCall
-      call: dskgd_c
-      in: [$refs.dasHandle, $refs.dladsc]
-      as: dskdsc
+      call: dskb02_c
+      in: [$refs.verifyHandle, $refs.dladsc]
+      out:
+        np: plateCount
     - op: assert
-      test:
-        eq: [$refs.dskdsc.dtype, 2]
+      test: { gt: [$refs.plateCount, 0] }
       error:
-        code: invalid_request
-        message: Expected type-2 DSK segment metadata
+        code: assert_dskw02_wrote_segment
+        message: dskw02 expected a non-empty plate segment
     - op: projectResult
       out:
         written: true
   cleanup:
     - op: dasClose
-      target: $refs.dasHandle
+      target: $refs.verifyHandle
     - op: unlink
       target: $refs.dskPath
 cases:

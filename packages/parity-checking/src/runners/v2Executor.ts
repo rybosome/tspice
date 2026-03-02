@@ -48,13 +48,13 @@ type CellHandle =
 type IntCellHandle = ReturnType<SpiceBackend["kit"]["newIntCell"]>;
 type WindowHandle = ReturnType<SpiceBackend["kit"]["newWindow"]>;
 type DasHandle = ReturnType<SpiceBackend["raw"]["dasopr"]>;
-type DskOpenHandle = ReturnType<SpiceBackend["raw"]["dskopn"]>;
 type DlaDescriptor = Extract<
   ReturnType<SpiceBackend["raw"]["dlabfs"]>,
   { found: true }
 >["descr"];
 type DskDescriptor = ReturnType<SpiceBackend["raw"]["dskgd"]>;
 type DskType2Bookkeeping = ReturnType<SpiceBackend["raw"]["dskb02"]>;
+type Dskmi2SpatialIndex = ReturnType<SpiceBackend["raw"]["dskmi2"]>;
 
 type RefValue =
   | {
@@ -84,6 +84,14 @@ type RefValue =
   | {
       kind: "dskDescriptor";
       value: DskDescriptor;
+    }
+  | {
+      kind: "doubleArray";
+      value: number[];
+    }
+  | {
+      kind: "intArray";
+      value: number[];
     };
 
 type FreedHandles = {
@@ -100,12 +108,23 @@ type V2SpiceCallStep = Extract<V2WorkflowStep, { op: "spiceCall" }>;
 type V2SpiceCallName = V2SpiceCallStep["call"];
 type V2SpiceCallArgKind =
   | "intExpr"
+  | "doubleExpr"
+  | "booleanExpr"
+  | "stringExpr"
+  | "doubleArrayExpr"
+  | "intArrayExpr"
   | "cellRef"
   | "cellOrWindowRef"
   | "pathExpr"
   | "dasHandleRef"
   | "dlaDescriptorRef";
-type V2SpiceCallOutputMode = "forbidden" | "asSpiceInt" | "asDskDescriptor" | "outNamedDskb02";
+type V2SpiceCallOutputMode =
+  | "forbidden"
+  | "asSpiceInt"
+  | "asDskDescriptor"
+  | "asDasHandle"
+  | "outNamedDskb02"
+  | "outNamedDskmi2";
 
 type V2SpiceCallSpec = {
   call: V2SpiceCallName;
@@ -172,6 +191,67 @@ const V2_SPICE_CALL_SPECS: readonly V2SpiceCallSpec[] = [
     arity: 2,
     argKinds: ["dasHandleRef", "dlaDescriptorRef"],
     outputMode: "outNamedDskb02",
+  },
+  {
+    call: "dskopn_c",
+    arity: 3,
+    argKinds: ["pathExpr", "stringExpr", "intExpr"],
+    nonNegativeIntArgMask: 1 << 2,
+    outputMode: "asDasHandle",
+  },
+  {
+    call: "dskmi2_c",
+    arity: 11,
+    argKinds: [
+      "intExpr",
+      "doubleArrayExpr",
+      "intExpr",
+      "intArrayExpr",
+      "doubleExpr",
+      "intExpr",
+      "intExpr",
+      "intExpr",
+      "intExpr",
+      "booleanExpr",
+      "intExpr",
+    ],
+    nonNegativeIntArgMask: (1 << 0) | (1 << 2) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 10),
+    outputMode: "outNamedDskmi2",
+  },
+  {
+    call: "dskw02_c",
+    arity: 21,
+    argKinds: [
+      "dasHandleRef",
+      "intExpr",
+      "intExpr",
+      "intExpr",
+      "stringExpr",
+      "intExpr",
+      "doubleArrayExpr",
+      "doubleExpr",
+      "doubleExpr",
+      "doubleExpr",
+      "doubleExpr",
+      "doubleExpr",
+      "doubleExpr",
+      "doubleExpr",
+      "doubleExpr",
+      "intExpr",
+      "doubleArrayExpr",
+      "intExpr",
+      "intArrayExpr",
+      "doubleArrayExpr",
+      "intArrayExpr",
+    ],
+    nonNegativeIntArgMask: (1 << 15) | (1 << 17),
+    outputMode: "forbidden",
+  },
+  {
+    call: "readVirtualOutput",
+    arity: 1,
+    argKinds: ["pathExpr"],
+    outputMode: "forbidden",
   },
 ];
 
@@ -368,6 +448,38 @@ function asSpiceInt(value: unknown, label: string): number {
   return value;
 }
 
+function asFiniteDouble(value: unknown, label: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    invalidArgs(`${label} must be a finite number (got ${formatValue(value)})`);
+  }
+
+  return value;
+}
+
+function asBoolean(value: unknown, label: string): boolean {
+  if (typeof value !== "boolean") {
+    invalidArgs(`${label} must be a boolean (got ${formatValue(value)})`);
+  }
+
+  return value;
+}
+
+function asDoubleArray(value: unknown, label: string): number[] {
+  if (!Array.isArray(value)) {
+    invalidArgs(`${label} must be a number[] (got ${formatValue(value)})`);
+  }
+
+  return value.map((entry, index) => asFiniteDouble(entry, `${label}[${index}]`));
+}
+
+function asSpiceIntArray(value: unknown, label: string): number[] {
+  if (!Array.isArray(value)) {
+    invalidArgs(`${label} must be a spiceInt[] (got ${formatValue(value)})`);
+  }
+
+  return value.map((entry, index) => asSpiceInt(entry, `${label}[${index}]`));
+}
+
 function asNonEmptyString(value: unknown, label: string): string {
   if (typeof value !== "string" || value.trim() === "") {
     invalidRequest(`${label} must be a non-empty string (got ${formatValue(value)})`);
@@ -510,6 +622,46 @@ function resolveSpiceIntExpression(
 ): number {
   const value = resolveExpression(expr, args, refs, label);
   return asSpiceInt(value, label);
+}
+
+function resolveDoubleExpression(
+  expr: unknown,
+  args: Record<string, unknown>,
+  refs: Map<string, RefValue>,
+  label: string,
+): number {
+  const value = resolveExpression(expr, args, refs, label);
+  return asFiniteDouble(value, label);
+}
+
+function resolveBooleanExpression(
+  expr: unknown,
+  args: Record<string, unknown>,
+  refs: Map<string, RefValue>,
+  label: string,
+): boolean {
+  const value = resolveExpression(expr, args, refs, label);
+  return asBoolean(value, label);
+}
+
+function resolveDoubleArrayExpression(
+  expr: unknown,
+  args: Record<string, unknown>,
+  refs: Map<string, RefValue>,
+  label: string,
+): number[] {
+  const value = resolveExpression(expr, args, refs, label);
+  return asDoubleArray(value, label);
+}
+
+function resolveSpiceIntArrayExpression(
+  expr: unknown,
+  args: Record<string, unknown>,
+  refs: Map<string, RefValue>,
+  label: string,
+): number[] {
+  const value = resolveExpression(expr, args, refs, label);
+  return asSpiceIntArray(value, label);
 }
 
 function resolveStringExpression(
@@ -820,6 +972,21 @@ function resolveSpiceCallArg(
     case "intExpr":
       return resolveSpiceIntExpression(expr, args, refs, label);
 
+    case "doubleExpr":
+      return resolveDoubleExpression(expr, args, refs, label);
+
+    case "booleanExpr":
+      return resolveBooleanExpression(expr, args, refs, label);
+
+    case "doubleArrayExpr":
+      return resolveDoubleArrayExpression(expr, args, refs, label);
+
+    case "intArrayExpr":
+      return resolveSpiceIntArrayExpression(expr, args, refs, label);
+
+    case "stringExpr":
+      return resolveStringExpression(expr, args, refs, label);
+
     case "cellRef":
       return resolveCellReference(expr, refs, label).value;
 
@@ -897,6 +1064,57 @@ function applyNamedDskb02Outputs(
   }
 }
 
+const DSKMI2_NAMED_OUTPUT_KEYS = ["spaixd", "spaixi", "spaixdLength", "spaixiLength"] as const;
+
+type Dskmi2NamedOutputKey = (typeof DSKMI2_NAMED_OUTPUT_KEYS)[number];
+
+const DSKMI2_NAMED_OUTPUT_SET: ReadonlySet<string> = new Set(DSKMI2_NAMED_OUTPUT_KEYS);
+
+function isDskmi2NamedOutputKey(outputName: string): outputName is Dskmi2NamedOutputKey {
+  return DSKMI2_NAMED_OUTPUT_SET.has(outputName);
+}
+
+function requireDskmi2NamedOutputKey(step: V2SpiceCallStep, outputName: string): Dskmi2NamedOutputKey {
+  if (!isDskmi2NamedOutputKey(outputName)) {
+    invalidArgs(
+      `spiceCall ${step.call}.out has unsupported key ${JSON.stringify(outputName)} (supported: ${DSKMI2_NAMED_OUTPUT_KEYS.join(", ")})`,
+    );
+  }
+
+  return outputName;
+}
+
+function applyNamedDskmi2Outputs(
+  step: V2SpiceCallStep,
+  outMap: Record<string, string>,
+  spatialIndex: Dskmi2SpatialIndex,
+  refs: Map<string, RefValue>,
+): void {
+  for (const [outputName, refName] of Object.entries(outMap)) {
+    const outputKey = requireDskmi2NamedOutputKey(step, outputName);
+    const outputLabel = `spiceCall(${step.call}).out.${outputKey}`;
+
+    if (outputKey === "spaixd") {
+      defineRef(refs, refName, { kind: "doubleArray", value: [...spatialIndex.spaixd] }, outputLabel);
+      continue;
+    }
+
+    if (outputKey === "spaixi") {
+      defineRef(refs, refName, { kind: "intArray", value: [...spatialIndex.spaixi] }, outputLabel);
+      continue;
+    }
+
+    if (outputKey === "spaixdLength") {
+      const value = asSpiceInt(spatialIndex.spaixd.length, outputLabel);
+      defineRef(refs, refName, { kind: "int", value }, outputLabel);
+      continue;
+    }
+
+    const value = asSpiceInt(spatialIndex.spaixi.length, outputLabel);
+    defineRef(refs, refName, { kind: "int", value }, outputLabel);
+  }
+}
+
 function writeVirtualOutputSpkFixture(backend: SpiceBackend, outputPath: string): void {
   const raw = getRawBackend(backend);
   const output = {
@@ -934,6 +1152,19 @@ function writeVirtualOutputSpkFixture(backend: SpiceBackend, outputPath: string)
 
   if (writeError !== undefined) {
     throw writeError;
+  }
+}
+
+function executeReadVirtualOutputCall(backend: SpiceBackend, outputPath: string): void {
+  const kit = getKitBackend(backend);
+  const output = {
+    kind: "virtual-output" as const,
+    path: outputPath,
+  };
+
+  const bytes = kit.readVirtualOutput(output);
+  if (!(bytes instanceof Uint8Array) || bytes.byteLength < 1) {
+    invalidRequest("spiceCall(readVirtualOutput) expected non-empty output bytes");
   }
 }
 
@@ -989,6 +1220,63 @@ const V2_SPICE_CALL_INVOKERS = {
     const bookkeeping = raw.dskb02(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
     applyNamedDskb02Outputs(step, outMap ?? {}, bookkeeping, refs);
   },
+
+  dskopn_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
+    const handle = raw.dskopn(
+      resolvedArgs[0] as string,
+      resolvedArgs[1] as string,
+      resolvedArgs[2] as number,
+    );
+    defineRef(refs, outputRef!, { kind: "dasHandle", value: handle }, `spiceCall(${step.call}).as`);
+  },
+
+  dskmi2_c: ({ raw, step, resolvedArgs, outMap, refs }: V2SpiceCallInvokerContext): void => {
+    const spatialIndex = raw.dskmi2(
+      resolvedArgs[0] as number,
+      resolvedArgs[1] as number[],
+      resolvedArgs[2] as number,
+      resolvedArgs[3] as number[],
+      resolvedArgs[4] as number,
+      resolvedArgs[5] as number,
+      resolvedArgs[6] as number,
+      resolvedArgs[7] as number,
+      resolvedArgs[8] as number,
+      resolvedArgs[9] as boolean,
+      resolvedArgs[10] as number,
+    );
+
+    applyNamedDskmi2Outputs(step, outMap ?? {}, spatialIndex, refs);
+  },
+
+  dskw02_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
+    raw.dskw02(
+      resolvedArgs[0] as DasHandle,
+      resolvedArgs[1] as number,
+      resolvedArgs[2] as number,
+      resolvedArgs[3] as number,
+      resolvedArgs[4] as string,
+      resolvedArgs[5] as number,
+      resolvedArgs[6] as number[],
+      resolvedArgs[7] as number,
+      resolvedArgs[8] as number,
+      resolvedArgs[9] as number,
+      resolvedArgs[10] as number,
+      resolvedArgs[11] as number,
+      resolvedArgs[12] as number,
+      resolvedArgs[13] as number,
+      resolvedArgs[14] as number,
+      resolvedArgs[15] as number,
+      resolvedArgs[16] as number[],
+      resolvedArgs[17] as number,
+      resolvedArgs[18] as number[],
+      resolvedArgs[19] as number[],
+      resolvedArgs[20] as number[],
+    );
+  },
+
+  readVirtualOutput: ({ backend, resolvedArgs }: V2SpiceCallInvokerContext): void => {
+    executeReadVirtualOutputCall(backend, resolvedArgs[0] as string);
+  },
 } satisfies Record<V2SpiceCallName, V2SpiceCallInvoker>;
 
 function lookupSpiceCallInvoker(call: string): V2SpiceCallInvoker | undefined {
@@ -1027,15 +1315,18 @@ function executeSpiceCallFromSpec(
 
   const raw = getRawBackend(backend);
   const outputRef =
-    spec.outputMode === "asSpiceInt" || spec.outputMode === "asDskDescriptor"
+    spec.outputMode === "asSpiceInt" || spec.outputMode === "asDskDescriptor" || spec.outputMode === "asDasHandle"
       ? requireSpiceCallOutputRef(step)
       : undefined;
-  const outMap = spec.outputMode === "outNamedDskb02" ? requireSpiceCallOutMap(step) : undefined;
+  const outMap =
+    spec.outputMode === "outNamedDskb02" || spec.outputMode === "outNamedDskmi2"
+      ? requireSpiceCallOutMap(step)
+      : undefined;
 
-  if (spec.outputMode !== "asSpiceInt" && spec.outputMode !== "asDskDescriptor") {
+  if (spec.outputMode !== "asSpiceInt" && spec.outputMode !== "asDskDescriptor" && spec.outputMode !== "asDasHandle") {
     forbidSpiceCallOutputRef(step);
   }
-  if (spec.outputMode !== "outNamedDskb02") {
+  if (spec.outputMode !== "outNamedDskb02" && spec.outputMode !== "outNamedDskmi2") {
     forbidSpiceCallOutMap(step);
   }
 
@@ -1401,6 +1692,8 @@ export async function executeV2CaseWithBackend(
   for (const refValue of refs.values()) {
     if (
       refValue.kind === "int" ||
+      refValue.kind === "doubleArray" ||
+      refValue.kind === "intArray" ||
       refValue.kind === "dlaDescriptor" ||
       refValue.kind === "dskDescriptor"
     ) {

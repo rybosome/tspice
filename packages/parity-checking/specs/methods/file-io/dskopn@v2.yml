@@ -16,11 +16,19 @@ workflow:
     - op: materialize
       fixture: minimalDsk
       as: dskPath
+    - op: unlink
+      target: $refs.dskPath
+    - op: spiceCall
+      call: dskopn_c
+      in: [$refs.dskPath, "TSPICE", 0]
+      as: handle
+    - op: dasClose
+      target: $refs.handle
     - op: dasOpen
       path: $refs.dskPath
-      as: dasHandle
+      as: reopened
     - op: dasClose
-      target: $refs.dasHandle
+      target: $refs.reopened
     - op: projectResult
       out:
         opened: true

@@ -15,6 +15,8 @@ typedef enum {
   V2_REF_DAS_HANDLE,
   V2_REF_DLA_DESCR,
   V2_REF_DSK_DESCR,
+  V2_REF_DOUBLE_ARRAY,
+  V2_REF_INT_ARRAY,
 } V2RefType;
 
 typedef struct {
@@ -23,6 +25,10 @@ typedef struct {
   SpiceInt intValue;
   SpiceInt handleValue;
   char *pathValue;
+  SpiceDouble *doubleArrayValue;
+  int doubleArrayLen;
+  SpiceInt *intArrayValue;
+  int intArrayLen;
   SpiceCell cell;
   SpiceDLADescr dlaDescrValue;
   SpiceDSKDescr dskDescrValue;
@@ -49,6 +55,14 @@ bool v2_add_ref_dla_descr(V2RefEntry *refs, int *refCount, const char *name,
                           const SpiceDLADescr *descr);
 bool v2_add_ref_dsk_descr(V2RefEntry *refs, int *refCount, const char *name,
                           const SpiceDSKDescr *descr);
+bool v2_add_ref_double_array(V2RefEntry *refs, int *refCount,
+                             const char *name,
+                             const SpiceDouble *values,
+                             int valueCount);
+bool v2_add_ref_int_array(V2RefEntry *refs, int *refCount,
+                          const char *name,
+                          const SpiceInt *values,
+                          int valueCount);
 bool v2_resolve_spiceint_expr(const char *json, const jsmntok_t *tokens,
                               int tokenCount, int exprTok, int argsTok,
                               const V2RefEntry *refs, int refCount,
@@ -77,5 +91,21 @@ bool v2_resolve_dla_descr_ref(const char *json, const jsmntok_t *tokens,
                               int tokenCount, int tokenIndex,
                               V2RefEntry *refs, int refCount,
                               const char *label, int *outRefIndex);
+bool v2_resolve_double_array_ref(const char *json,
+                                 const jsmntok_t *tokens,
+                                 int tokenCount,
+                                 int tokenIndex,
+                                 V2RefEntry *refs,
+                                 int refCount,
+                                 const char *label,
+                                 int *outRefIndex);
+bool v2_resolve_int_array_ref(const char *json,
+                              const jsmntok_t *tokens,
+                              int tokenCount,
+                              int tokenIndex,
+                              V2RefEntry *refs,
+                              int refCount,
+                              const char *label,
+                              int *outRefIndex);
 
 #endif

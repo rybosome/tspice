@@ -134,6 +134,14 @@ void v2_free_ref_entry(V2RefEntry *entry) {
   free(entry->pathValue);
   entry->pathValue = NULL;
 
+  free(entry->doubleArrayValue);
+  entry->doubleArrayValue = NULL;
+  entry->doubleArrayLen = 0;
+
+  free(entry->intArrayValue);
+  entry->intArrayValue = NULL;
+  entry->intArrayLen = 0;
+
   free(entry->name);
   entry->name = NULL;
 
@@ -229,6 +237,98 @@ bool v2_add_ref_dsk_descr(V2RefEntry *refs, int *refCount, const char *name,
 
   entry->type = V2_REF_DSK_DESCR;
   entry->dskDescrValue = *descr;
+  return true;
+}
+
+bool v2_add_ref_double_array(V2RefEntry *refs,
+                             int *refCount,
+                             const char *name,
+                             const SpiceDouble *values,
+                             const int valueCount) {
+  if (valueCount < 0) {
+    write_error_json_ex("invalid_request", "Invalid double array length", name,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  if (valueCount > 0 && values == NULL) {
+    write_error_json_ex("invalid_request", "Missing double array values", name,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  V2RefEntry *entry = NULL;
+  if (!v2_prepare_ref_slot(refs, refCount, name, &entry)) {
+    return false;
+  }
+
+  SpiceDouble *copy = NULL;
+  if (valueCount > 0) {
+    if ((size_t)valueCount > SIZE_MAX / sizeof(SpiceDouble)) {
+      v2_free_ref_entry(entry);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    copy = (SpiceDouble *)malloc(sizeof(SpiceDouble) * (size_t)valueCount);
+    if (copy == NULL) {
+      v2_free_ref_entry(entry);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    memcpy(copy, values, sizeof(SpiceDouble) * (size_t)valueCount);
+  }
+
+  entry->type = V2_REF_DOUBLE_ARRAY;
+  entry->doubleArrayValue = copy;
+  entry->doubleArrayLen = valueCount;
+  return true;
+}
+
+bool v2_add_ref_int_array(V2RefEntry *refs,
+                          int *refCount,
+                          const char *name,
+                          const SpiceInt *values,
+                          const int valueCount) {
+  if (valueCount < 0) {
+    write_error_json_ex("invalid_request", "Invalid int array length", name,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  if (valueCount > 0 && values == NULL) {
+    write_error_json_ex("invalid_request", "Missing int array values", name,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  V2RefEntry *entry = NULL;
+  if (!v2_prepare_ref_slot(refs, refCount, name, &entry)) {
+    return false;
+  }
+
+  SpiceInt *copy = NULL;
+  if (valueCount > 0) {
+    if ((size_t)valueCount > SIZE_MAX / sizeof(SpiceInt)) {
+      v2_free_ref_entry(entry);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    copy = (SpiceInt *)malloc(sizeof(SpiceInt) * (size_t)valueCount);
+    if (copy == NULL) {
+      v2_free_ref_entry(entry);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    memcpy(copy, values, sizeof(SpiceInt) * (size_t)valueCount);
+  }
+
+  entry->type = V2_REF_INT_ARRAY;
+  entry->intArrayValue = copy;
+  entry->intArrayLen = valueCount;
   return true;
 }
 
@@ -571,6 +671,46 @@ bool v2_resolve_dla_descr_ref(const char *json, const jsmntok_t *tokens,
                                 label,
                                 V2_REF_DLA_DESCR,
                                 "v2 ref is not a DLA descriptor",
+                                outRefIndex);
+}
+
+bool v2_resolve_double_array_ref(const char *json,
+                                 const jsmntok_t *tokens,
+                                 const int tokenCount,
+                                 const int tokenIndex,
+                                 V2RefEntry *refs,
+                                 const int refCount,
+                                 const char *label,
+                                 int *outRefIndex) {
+  return v2_resolve_ref_by_type(json,
+                                tokens,
+                                tokenCount,
+                                tokenIndex,
+                                refs,
+                                refCount,
+                                label,
+                                V2_REF_DOUBLE_ARRAY,
+                                "v2 ref is not a double array",
+                                outRefIndex);
+}
+
+bool v2_resolve_int_array_ref(const char *json,
+                              const jsmntok_t *tokens,
+                              const int tokenCount,
+                              const int tokenIndex,
+                              V2RefEntry *refs,
+                              const int refCount,
+                              const char *label,
+                              int *outRefIndex) {
+  return v2_resolve_ref_by_type(json,
+                                tokens,
+                                tokenCount,
+                                tokenIndex,
+                                refs,
+                                refCount,
+                                label,
+                                V2_REF_INT_ARRAY,
+                                "v2 ref is not an int array",
                                 outRefIndex);
 }
 
