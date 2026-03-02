@@ -17,11 +17,13 @@ It owns:
 - `catalogs/contract-methods.json` — generated canonical contract methods
 - `catalogs/alias-map.json` — generated alias -> canonical map
 - `catalogs/parity-denylist.json` / `catalogs/parity-denylist.ts` — generated denylist
+- `catalogs/cspice-mapping-matrix.json` — canonical raw method -> CSPICE mapping matrix
 
 ## Scripts
 
 - `pnpm -C packages/parity-checking generate:catalogs`
 - `pnpm -C packages/parity-checking check:generated`
+- `pnpm -C packages/parity-checking check:cspice-mapping`
 - `pnpm -C packages/parity-checking test`
 
 `test` runs the full guard pipeline before parity execution:

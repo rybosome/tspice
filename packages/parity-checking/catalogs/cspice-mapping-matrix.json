@@ -1,0 +1,821 @@
+{
+  "schemaVersion": 1,
+  "sourceCatalog": "packages/parity-checking/catalogs/contract-methods.json",
+  "summary": {
+    "totalMethods": 162,
+    "directMappings": 161,
+    "nonDirectCompositeMappings": 1
+  },
+  "entries": [
+    {
+      "method": "cells-windows.card",
+      "status": "direct",
+      "cspiceSymbol": "card_c"
+    },
+    {
+      "method": "cells-windows.insrtc",
+      "status": "direct",
+      "cspiceSymbol": "insrtc_c"
+    },
+    {
+      "method": "cells-windows.insrtd",
+      "status": "direct",
+      "cspiceSymbol": "insrtd_c"
+    },
+    {
+      "method": "cells-windows.insrti",
+      "status": "direct",
+      "cspiceSymbol": "insrti_c"
+    },
+    {
+      "method": "cells-windows.scard",
+      "status": "direct",
+      "cspiceSymbol": "scard_c"
+    },
+    {
+      "method": "cells-windows.size",
+      "status": "direct",
+      "cspiceSymbol": "size_c"
+    },
+    {
+      "method": "cells-windows.ssize",
+      "status": "direct",
+      "cspiceSymbol": "ssize_c"
+    },
+    {
+      "method": "cells-windows.valid",
+      "status": "direct",
+      "cspiceSymbol": "valid_c"
+    },
+    {
+      "method": "cells-windows.wncard",
+      "status": "direct",
+      "cspiceSymbol": "wncard_c"
+    },
+    {
+      "method": "cells-windows.wnfetd",
+      "status": "direct",
+      "cspiceSymbol": "wnfetd_c"
+    },
+    {
+      "method": "cells-windows.wninsd",
+      "status": "direct",
+      "cspiceSymbol": "wninsd_c"
+    },
+    {
+      "method": "cells-windows.wnvald",
+      "status": "direct",
+      "cspiceSymbol": "wnvald_c"
+    },
+    {
+      "method": "coords-vectors.axisar",
+      "status": "direct",
+      "cspiceSymbol": "axisar_c"
+    },
+    {
+      "method": "coords-vectors.georec",
+      "status": "direct",
+      "cspiceSymbol": "georec_c"
+    },
+    {
+      "method": "coords-vectors.latrec",
+      "status": "direct",
+      "cspiceSymbol": "latrec_c"
+    },
+    {
+      "method": "coords-vectors.mtxv",
+      "status": "direct",
+      "cspiceSymbol": "mtxv_c"
+    },
+    {
+      "method": "coords-vectors.mxm",
+      "status": "direct",
+      "cspiceSymbol": "mxm_c"
+    },
+    {
+      "method": "coords-vectors.mxv",
+      "status": "direct",
+      "cspiceSymbol": "mxv_c"
+    },
+    {
+      "method": "coords-vectors.recgeo",
+      "status": "direct",
+      "cspiceSymbol": "recgeo_c"
+    },
+    {
+      "method": "coords-vectors.reclat",
+      "status": "direct",
+      "cspiceSymbol": "reclat_c"
+    },
+    {
+      "method": "coords-vectors.recsph",
+      "status": "direct",
+      "cspiceSymbol": "recsph_c"
+    },
+    {
+      "method": "coords-vectors.rotate",
+      "status": "direct",
+      "cspiceSymbol": "rotate_c"
+    },
+    {
+      "method": "coords-vectors.rotmat",
+      "status": "direct",
+      "cspiceSymbol": "rotmat_c"
+    },
+    {
+      "method": "coords-vectors.sphrec",
+      "status": "direct",
+      "cspiceSymbol": "sphrec_c"
+    },
+    {
+      "method": "coords-vectors.vadd",
+      "status": "direct",
+      "cspiceSymbol": "vadd_c"
+    },
+    {
+      "method": "coords-vectors.vcrss",
+      "status": "direct",
+      "cspiceSymbol": "vcrss_c"
+    },
+    {
+      "method": "coords-vectors.vdot",
+      "status": "direct",
+      "cspiceSymbol": "vdot_c"
+    },
+    {
+      "method": "coords-vectors.vhat",
+      "status": "direct",
+      "cspiceSymbol": "vhat_c"
+    },
+    {
+      "method": "coords-vectors.vminus",
+      "status": "direct",
+      "cspiceSymbol": "vminus_c"
+    },
+    {
+      "method": "coords-vectors.vnorm",
+      "status": "direct",
+      "cspiceSymbol": "vnorm_c"
+    },
+    {
+      "method": "coords-vectors.vscl",
+      "status": "direct",
+      "cspiceSymbol": "vscl_c"
+    },
+    {
+      "method": "coords-vectors.vsub",
+      "status": "direct",
+      "cspiceSymbol": "vsub_c"
+    },
+    {
+      "method": "dsk.dskb02",
+      "status": "direct",
+      "cspiceSymbol": "dskb02_c"
+    },
+    {
+      "method": "dsk.dskgd",
+      "status": "direct",
+      "cspiceSymbol": "dskgd_c"
+    },
+    {
+      "method": "dsk.dskobj",
+      "status": "direct",
+      "cspiceSymbol": "dskobj_c"
+    },
+    {
+      "method": "dsk.dsksrf",
+      "status": "direct",
+      "cspiceSymbol": "dsksrf_c"
+    },
+    {
+      "method": "ek.ekaclc",
+      "status": "direct",
+      "cspiceSymbol": "ekaclc_c"
+    },
+    {
+      "method": "ek.ekacld",
+      "status": "direct",
+      "cspiceSymbol": "ekacld_c"
+    },
+    {
+      "method": "ek.ekacli",
+      "status": "direct",
+      "cspiceSymbol": "ekacli_c"
+    },
+    {
+      "method": "ek.ekcls",
+      "status": "direct",
+      "cspiceSymbol": "ekcls_c"
+    },
+    {
+      "method": "ek.ekffld",
+      "status": "direct",
+      "cspiceSymbol": "ekffld_c"
+    },
+    {
+      "method": "ek.ekfind",
+      "status": "direct",
+      "cspiceSymbol": "ekfind_c"
+    },
+    {
+      "method": "ek.ekgc",
+      "status": "direct",
+      "cspiceSymbol": "ekgc_c"
+    },
+    {
+      "method": "ek.ekgd",
+      "status": "direct",
+      "cspiceSymbol": "ekgd_c"
+    },
+    {
+      "method": "ek.ekgi",
+      "status": "direct",
+      "cspiceSymbol": "ekgi_c"
+    },
+    {
+      "method": "ek.ekifld",
+      "status": "direct",
+      "cspiceSymbol": "ekifld_c"
+    },
+    {
+      "method": "ek.eknseg",
+      "status": "direct",
+      "cspiceSymbol": "eknseg_c"
+    },
+    {
+      "method": "ek.ekntab",
+      "status": "direct",
+      "cspiceSymbol": "ekntab_c"
+    },
+    {
+      "method": "ek.ekopn",
+      "status": "direct",
+      "cspiceSymbol": "ekopn_c"
+    },
+    {
+      "method": "ek.ekopr",
+      "status": "direct",
+      "cspiceSymbol": "ekopr_c"
+    },
+    {
+      "method": "ek.ekopw",
+      "status": "direct",
+      "cspiceSymbol": "ekopw_c"
+    },
+    {
+      "method": "ek.ektnam",
+      "status": "direct",
+      "cspiceSymbol": "ektnam_c"
+    },
+    {
+      "method": "ephemeris.spkcls",
+      "status": "direct",
+      "cspiceSymbol": "spkcls_c"
+    },
+    {
+      "method": "ephemeris.spkcov",
+      "status": "direct",
+      "cspiceSymbol": "spkcov_c"
+    },
+    {
+      "method": "ephemeris.spkez",
+      "status": "direct",
+      "cspiceSymbol": "spkez_c"
+    },
+    {
+      "method": "ephemeris.spkezp",
+      "status": "direct",
+      "cspiceSymbol": "spkezp_c"
+    },
+    {
+      "method": "ephemeris.spkezr",
+      "status": "direct",
+      "cspiceSymbol": "spkezr_c"
+    },
+    {
+      "method": "ephemeris.spkgeo",
+      "status": "direct",
+      "cspiceSymbol": "spkgeo_c"
+    },
+    {
+      "method": "ephemeris.spkgps",
+      "status": "direct",
+      "cspiceSymbol": "spkgps_c"
+    },
+    {
+      "method": "ephemeris.spkobj",
+      "status": "direct",
+      "cspiceSymbol": "spkobj_c"
+    },
+    {
+      "method": "ephemeris.spkopa",
+      "status": "direct",
+      "cspiceSymbol": "spkopa_c"
+    },
+    {
+      "method": "ephemeris.spkopn",
+      "status": "direct",
+      "cspiceSymbol": "spkopn_c"
+    },
+    {
+      "method": "ephemeris.spkpds",
+      "status": "direct",
+      "cspiceSymbol": "spkpds_c"
+    },
+    {
+      "method": "ephemeris.spkpos",
+      "status": "direct",
+      "cspiceSymbol": "spkpos_c"
+    },
+    {
+      "method": "ephemeris.spksfs",
+      "status": "direct",
+      "cspiceSymbol": "spksfs_c"
+    },
+    {
+      "method": "ephemeris.spkssb",
+      "status": "direct",
+      "cspiceSymbol": "spkssb_c"
+    },
+    {
+      "method": "ephemeris.spkuds",
+      "status": "direct",
+      "cspiceSymbol": "spkuds_c"
+    },
+    {
+      "method": "ephemeris.spkw08",
+      "status": "direct",
+      "cspiceSymbol": "spkw08_c"
+    },
+    {
+      "method": "error.chkin",
+      "status": "direct",
+      "cspiceSymbol": "chkin_c"
+    },
+    {
+      "method": "error.chkout",
+      "status": "direct",
+      "cspiceSymbol": "chkout_c"
+    },
+    {
+      "method": "error.failed",
+      "status": "direct",
+      "cspiceSymbol": "failed_c"
+    },
+    {
+      "method": "error.getmsg",
+      "status": "direct",
+      "cspiceSymbol": "getmsg_c"
+    },
+    {
+      "method": "error.reset",
+      "status": "direct",
+      "cspiceSymbol": "reset_c"
+    },
+    {
+      "method": "error.setmsg",
+      "status": "direct",
+      "cspiceSymbol": "setmsg_c"
+    },
+    {
+      "method": "error.sigerr",
+      "status": "direct",
+      "cspiceSymbol": "sigerr_c"
+    },
+    {
+      "method": "file-io.dafbfs",
+      "status": "direct",
+      "cspiceSymbol": "dafbfs_c"
+    },
+    {
+      "method": "file-io.dafcls",
+      "status": "direct",
+      "cspiceSymbol": "dafcls_c"
+    },
+    {
+      "method": "file-io.daffna",
+      "status": "direct",
+      "cspiceSymbol": "daffna_c"
+    },
+    {
+      "method": "file-io.dafopr",
+      "status": "direct",
+      "cspiceSymbol": "dafopr_c"
+    },
+    {
+      "method": "file-io.dascls",
+      "status": "direct",
+      "cspiceSymbol": "dascls_c"
+    },
+    {
+      "method": "file-io.dasopr",
+      "status": "direct",
+      "cspiceSymbol": "dasopr_c"
+    },
+    {
+      "method": "file-io.dlabfs",
+      "status": "direct",
+      "cspiceSymbol": "dlabfs_c"
+    },
+    {
+      "method": "file-io.dlacls",
+      "status": "direct",
+      "cspiceSymbol": "dlacls_c"
+    },
+    {
+      "method": "file-io.dlafns",
+      "status": "direct",
+      "cspiceSymbol": "dlafns_c"
+    },
+    {
+      "method": "file-io.dlaopn",
+      "status": "direct",
+      "cspiceSymbol": "dlaopn_c"
+    },
+    {
+      "method": "file-io.dskmi2",
+      "status": "direct",
+      "cspiceSymbol": "dskmi2_c"
+    },
+    {
+      "method": "file-io.dskopn",
+      "status": "direct",
+      "cspiceSymbol": "dskopn_c"
+    },
+    {
+      "method": "file-io.dskw02",
+      "status": "direct",
+      "cspiceSymbol": "dskw02_c"
+    },
+    {
+      "method": "file-io.exists",
+      "status": "non-direct/composite",
+      "rationale": "Filesystem existence preflight is implemented via host runtime file APIs; CSPICE has no `exists_c` routine."
+    },
+    {
+      "method": "file-io.getfat",
+      "status": "direct",
+      "cspiceSymbol": "getfat_c"
+    },
+    {
+      "method": "frames.ccifrm",
+      "status": "direct",
+      "cspiceSymbol": "ccifrm_c"
+    },
+    {
+      "method": "frames.cidfrm",
+      "status": "direct",
+      "cspiceSymbol": "cidfrm_c"
+    },
+    {
+      "method": "frames.ckcov",
+      "status": "direct",
+      "cspiceSymbol": "ckcov_c"
+    },
+    {
+      "method": "frames.ckgp",
+      "status": "direct",
+      "cspiceSymbol": "ckgp_c"
+    },
+    {
+      "method": "frames.ckgpav",
+      "status": "direct",
+      "cspiceSymbol": "ckgpav_c"
+    },
+    {
+      "method": "frames.cklpf",
+      "status": "direct",
+      "cspiceSymbol": "cklpf_c"
+    },
+    {
+      "method": "frames.ckobj",
+      "status": "direct",
+      "cspiceSymbol": "ckobj_c"
+    },
+    {
+      "method": "frames.ckupf",
+      "status": "direct",
+      "cspiceSymbol": "ckupf_c"
+    },
+    {
+      "method": "frames.cnmfrm",
+      "status": "direct",
+      "cspiceSymbol": "cnmfrm_c"
+    },
+    {
+      "method": "frames.frinfo",
+      "status": "direct",
+      "cspiceSymbol": "frinfo_c"
+    },
+    {
+      "method": "frames.frmnam",
+      "status": "direct",
+      "cspiceSymbol": "frmnam_c"
+    },
+    {
+      "method": "frames.namfrm",
+      "status": "direct",
+      "cspiceSymbol": "namfrm_c"
+    },
+    {
+      "method": "frames.pxform",
+      "status": "direct",
+      "cspiceSymbol": "pxform_c"
+    },
+    {
+      "method": "frames.sxform",
+      "status": "direct",
+      "cspiceSymbol": "sxform_c"
+    },
+    {
+      "method": "geometry-gf.gfdist",
+      "status": "direct",
+      "cspiceSymbol": "gfdist_c"
+    },
+    {
+      "method": "geometry-gf.gfrefn",
+      "status": "direct",
+      "cspiceSymbol": "gfrefn_c"
+    },
+    {
+      "method": "geometry-gf.gfrepf",
+      "status": "direct",
+      "cspiceSymbol": "gfrepf_c"
+    },
+    {
+      "method": "geometry-gf.gfrepi",
+      "status": "direct",
+      "cspiceSymbol": "gfrepi_c"
+    },
+    {
+      "method": "geometry-gf.gfsep",
+      "status": "direct",
+      "cspiceSymbol": "gfsep_c"
+    },
+    {
+      "method": "geometry-gf.gfsstp",
+      "status": "direct",
+      "cspiceSymbol": "gfsstp_c"
+    },
+    {
+      "method": "geometry-gf.gfstep",
+      "status": "direct",
+      "cspiceSymbol": "gfstep_c"
+    },
+    {
+      "method": "geometry-gf.gfstol",
+      "status": "direct",
+      "cspiceSymbol": "gfstol_c"
+    },
+    {
+      "method": "geometry.illumf",
+      "status": "direct",
+      "cspiceSymbol": "illumf_c"
+    },
+    {
+      "method": "geometry.illumg",
+      "status": "direct",
+      "cspiceSymbol": "illumg_c"
+    },
+    {
+      "method": "geometry.ilumin",
+      "status": "direct",
+      "cspiceSymbol": "ilumin_c"
+    },
+    {
+      "method": "geometry.nvc2pl",
+      "status": "direct",
+      "cspiceSymbol": "nvc2pl_c"
+    },
+    {
+      "method": "geometry.occult",
+      "status": "direct",
+      "cspiceSymbol": "occult_c"
+    },
+    {
+      "method": "geometry.pl2nvc",
+      "status": "direct",
+      "cspiceSymbol": "pl2nvc_c"
+    },
+    {
+      "method": "geometry.sincpt",
+      "status": "direct",
+      "cspiceSymbol": "sincpt_c"
+    },
+    {
+      "method": "geometry.subpnt",
+      "status": "direct",
+      "cspiceSymbol": "subpnt_c"
+    },
+    {
+      "method": "geometry.subslr",
+      "status": "direct",
+      "cspiceSymbol": "subslr_c"
+    },
+    {
+      "method": "ids-names.bodc2n",
+      "status": "direct",
+      "cspiceSymbol": "bodc2n_c"
+    },
+    {
+      "method": "ids-names.bodc2s",
+      "status": "direct",
+      "cspiceSymbol": "bodc2s_c"
+    },
+    {
+      "method": "ids-names.boddef",
+      "status": "direct",
+      "cspiceSymbol": "boddef_c"
+    },
+    {
+      "method": "ids-names.bodfnd",
+      "status": "direct",
+      "cspiceSymbol": "bodfnd_c"
+    },
+    {
+      "method": "ids-names.bodn2c",
+      "status": "direct",
+      "cspiceSymbol": "bodn2c_c"
+    },
+    {
+      "method": "ids-names.bods2c",
+      "status": "direct",
+      "cspiceSymbol": "bods2c_c"
+    },
+    {
+      "method": "ids-names.bodvar",
+      "status": "direct",
+      "cspiceSymbol": "bodvar_c"
+    },
+    {
+      "method": "kernel-pool.cvpool",
+      "status": "direct",
+      "cspiceSymbol": "cvpool_c"
+    },
+    {
+      "method": "kernel-pool.dtpool",
+      "status": "direct",
+      "cspiceSymbol": "dtpool_c"
+    },
+    {
+      "method": "kernel-pool.expool",
+      "status": "direct",
+      "cspiceSymbol": "expool_c"
+    },
+    {
+      "method": "kernel-pool.gcpool",
+      "status": "direct",
+      "cspiceSymbol": "gcpool_c"
+    },
+    {
+      "method": "kernel-pool.gdpool",
+      "status": "direct",
+      "cspiceSymbol": "gdpool_c"
+    },
+    {
+      "method": "kernel-pool.gipool",
+      "status": "direct",
+      "cspiceSymbol": "gipool_c"
+    },
+    {
+      "method": "kernel-pool.gnpool",
+      "status": "direct",
+      "cspiceSymbol": "gnpool_c"
+    },
+    {
+      "method": "kernel-pool.pcpool",
+      "status": "direct",
+      "cspiceSymbol": "pcpool_c"
+    },
+    {
+      "method": "kernel-pool.pdpool",
+      "status": "direct",
+      "cspiceSymbol": "pdpool_c"
+    },
+    {
+      "method": "kernel-pool.pipool",
+      "status": "direct",
+      "cspiceSymbol": "pipool_c"
+    },
+    {
+      "method": "kernel-pool.swpool",
+      "status": "direct",
+      "cspiceSymbol": "swpool_c"
+    },
+    {
+      "method": "kernels.furnsh",
+      "status": "direct",
+      "cspiceSymbol": "furnsh_c"
+    },
+    {
+      "method": "kernels.kclear",
+      "status": "direct",
+      "cspiceSymbol": "kclear_c"
+    },
+    {
+      "method": "kernels.kdata",
+      "status": "direct",
+      "cspiceSymbol": "kdata_c"
+    },
+    {
+      "method": "kernels.kinfo",
+      "status": "direct",
+      "cspiceSymbol": "kinfo_c"
+    },
+    {
+      "method": "kernels.kplfrm",
+      "status": "direct",
+      "cspiceSymbol": "kplfrm_c"
+    },
+    {
+      "method": "kernels.ktotal",
+      "status": "direct",
+      "cspiceSymbol": "ktotal_c"
+    },
+    {
+      "method": "kernels.kxtrct",
+      "status": "direct",
+      "cspiceSymbol": "kxtrct_c"
+    },
+    {
+      "method": "kernels.unload",
+      "status": "direct",
+      "cspiceSymbol": "unload_c"
+    },
+    {
+      "method": "time.deltet",
+      "status": "direct",
+      "cspiceSymbol": "deltet_c"
+    },
+    {
+      "method": "time.et2utc",
+      "status": "direct",
+      "cspiceSymbol": "et2utc_c"
+    },
+    {
+      "method": "time.scdecd",
+      "status": "direct",
+      "cspiceSymbol": "scdecd_c"
+    },
+    {
+      "method": "time.sce2c",
+      "status": "direct",
+      "cspiceSymbol": "sce2c_c"
+    },
+    {
+      "method": "time.sce2s",
+      "status": "direct",
+      "cspiceSymbol": "sce2s_c"
+    },
+    {
+      "method": "time.scencd",
+      "status": "direct",
+      "cspiceSymbol": "scencd_c"
+    },
+    {
+      "method": "time.scs2e",
+      "status": "direct",
+      "cspiceSymbol": "scs2e_c"
+    },
+    {
+      "method": "time.sct2e",
+      "status": "direct",
+      "cspiceSymbol": "sct2e_c"
+    },
+    {
+      "method": "time.str2et",
+      "status": "direct",
+      "cspiceSymbol": "str2et_c"
+    },
+    {
+      "method": "time.timdef",
+      "status": "direct",
+      "cspiceSymbol": "timdef_c"
+    },
+    {
+      "method": "time.timout",
+      "status": "direct",
+      "cspiceSymbol": "timout_c"
+    },
+    {
+      "method": "time.tkvrsn",
+      "status": "direct",
+      "cspiceSymbol": "tkvrsn_c"
+    },
+    {
+      "method": "time.tparse",
+      "status": "direct",
+      "cspiceSymbol": "tparse_c"
+    },
+    {
+      "method": "time.tpictr",
+      "status": "direct",
+      "cspiceSymbol": "tpictr_c"
+    },
+    {
+      "method": "time.unitim",
+      "status": "direct",
+      "cspiceSymbol": "unitim_c"
+    }
+  ]
+}

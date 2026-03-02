@@ -1,245 +1,253 @@
-# `SpiceBackend` ↔ CSPICE mapping (backend-contract parity)
+# Raw `SpiceRawBackend` ↔ CSPICE mapping matrix
 
-This doc maps each `SpiceBackend` domain method from `packages/backend-contract/src/domains/*` to the underlying CSPICE routine(s) the backend is expected to call.
+This matrix is the canonical raw mapping inventory for `SpiceRawBackend` methods.
+Every canonical method from `packages/parity-checking/catalogs/contract-methods.json` has exactly one explicit mapping entry:
 
-## Scope
+- `direct`: maps to a concrete CSPICE routine symbol.
+- `non-direct/composite`: no 1:1 CSPICE routine; rationale is required.
 
-Included domains (from `packages/backend-contract/src/domains/`):
+## Canonical sources
 
-- `time`
-- `ids-names`
-- `frames`
-- `kernels`
-- `error`
-- `ephemeris`
-- `geometry`
-- `coords-vectors`
+- Contract method inventory: `packages/parity-checking/catalogs/contract-methods.json`
+- Mapping matrix (machine-readable): `packages/parity-checking/catalogs/cspice-mapping-matrix.json`
+- Validation command: `pnpm -C packages/parity-checking run check:cspice-mapping`
 
-> Note: This mapping is intended to be complete (method-level) for all domains listed here.
-> Follow-up work is primarily around parity tests, fixtures for kernel-heavy routines (CK/FK/IK), and per-routine edge-case semantics.
->
-> Recommended first parity-test targets (lowest fixture complexity): `time`, `ids-names`, `frames`. This is a prioritization hint only — not a statement about completeness of the other domains.
+## Totals
 
-## Contract + type conventions (shared)
+- Total methods: **162**
+- Direct mappings: **161**
+- Non-direct/composite mappings: **1**
+- Unmapped methods: **0** (validated by script)
 
-Shared types are defined in `packages/backend-contract/src/shared/types.ts`.
+## Domain: `cells-windows`
 
-- **Units** follow NAIF/SPICE conventions unless otherwise stated:
-  - `et`: seconds past J2000 **TDB**
-  - distances: km
-  - angles: radians
-- **Optional results** use `Found<T>`:
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `cells-windows.card` | direct | `card_c` | — |
+| `cells-windows.insrtc` | direct | `insrtc_c` | — |
+| `cells-windows.insrtd` | direct | `insrtd_c` | — |
+| `cells-windows.insrti` | direct | `insrti_c` | — |
+| `cells-windows.scard` | direct | `scard_c` | — |
+| `cells-windows.size` | direct | `size_c` | — |
+| `cells-windows.ssize` | direct | `ssize_c` | — |
+| `cells-windows.valid` | direct | `valid_c` | — |
+| `cells-windows.wncard` | direct | `wncard_c` | — |
+| `cells-windows.wnfetd` | direct | `wnfetd_c` | — |
+| `cells-windows.wninsd` | direct | `wninsd_c` | — |
+| `cells-windows.wnvald` | direct | `wnvald_c` | — |
 
-  ```ts
-  export type Found<T> = { found: false } | ({ found: true } & T);
-  ```
+## Domain: `coords-vectors`
 
-  Backends must return `{ found: false }` for legitimate “not found” outcomes and must not throw in those cases.
-- **Vectors/matrices**:
-  - `SpiceVector3`: `[number, number, number]`
-  - `Mat3RowMajor`: length-9 array in row-major order: `[m00,m01,m02, m10,m11,m12, m20,m21,m22]`
-  - `SpiceMatrix6x6` / `Mat6RowMajor`: length-36 array in row-major order
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `coords-vectors.axisar` | direct | `axisar_c` | — |
+| `coords-vectors.georec` | direct | `georec_c` | — |
+| `coords-vectors.latrec` | direct | `latrec_c` | — |
+| `coords-vectors.mtxv` | direct | `mtxv_c` | — |
+| `coords-vectors.mxm` | direct | `mxm_c` | — |
+| `coords-vectors.mxv` | direct | `mxv_c` | — |
+| `coords-vectors.recgeo` | direct | `recgeo_c` | — |
+| `coords-vectors.reclat` | direct | `reclat_c` | — |
+| `coords-vectors.recsph` | direct | `recsph_c` | — |
+| `coords-vectors.rotate` | direct | `rotate_c` | — |
+| `coords-vectors.rotmat` | direct | `rotmat_c` | — |
+| `coords-vectors.sphrec` | direct | `sphrec_c` | — |
+| `coords-vectors.vadd` | direct | `vadd_c` | — |
+| `coords-vectors.vcrss` | direct | `vcrss_c` | — |
+| `coords-vectors.vdot` | direct | `vdot_c` | — |
+| `coords-vectors.vhat` | direct | `vhat_c` | — |
+| `coords-vectors.vminus` | direct | `vminus_c` | — |
+| `coords-vectors.vnorm` | direct | `vnorm_c` | — |
+| `coords-vectors.vscl` | direct | `vscl_c` | — |
+| `coords-vectors.vsub` | direct | `vsub_c` | — |
 
-### Suggested numeric comparison tolerances (starting point)
+## Domain: `dsk`
 
-When comparing backend implementations (e.g. node vs wasm), use element-wise comparisons for vectors/matrices.
-These tolerances are a reasonable *starting point*; tighten/loosen as needed for specific kernels and platforms.
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `dsk.dskb02` | direct | `dskb02_c` | — |
+| `dsk.dskgd` | direct | `dskgd_c` | — |
+| `dsk.dskobj` | direct | `dskobj_c` | — |
+| `dsk.dsksrf` | direct | `dsksrf_c` | — |
 
-- Pure math (coords/vectors): `atol = 1e-12`
-- Frame transforms (pxform/sxform): `atol = 1e-12`
-- Ephemeris/geometry vectors in km: `atol = 1e-9` km
-- Epochs/light time in seconds: `atol = 1e-9` s
+## Domain: `ek`
 
-> Note: Element-wise `atol` is not always sufficient.
-> For transforms (e.g. `pxform`/`sxform`), also check invariants like orthonormality (`R·Rᵀ ≈ I`) and `det(R) ≈ +1`.
-> For ephemeris/geometry (`spkezr`/`spkpos`, etc.), tolerances may need to vary by `abcorr`, loaded kernels, and platform.
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `ek.ekaclc` | direct | `ekaclc_c` | — |
+| `ek.ekacld` | direct | `ekacld_c` | — |
+| `ek.ekacli` | direct | `ekacli_c` | — |
+| `ek.ekcls` | direct | `ekcls_c` | — |
+| `ek.ekffld` | direct | `ekffld_c` | — |
+| `ek.ekfind` | direct | `ekfind_c` | — |
+| `ek.ekgc` | direct | `ekgc_c` | — |
+| `ek.ekgd` | direct | `ekgd_c` | — |
+| `ek.ekgi` | direct | `ekgi_c` | — |
+| `ek.ekifld` | direct | `ekifld_c` | — |
+| `ek.eknseg` | direct | `eknseg_c` | — |
+| `ek.ekntab` | direct | `ekntab_c` | — |
+| `ek.ekopn` | direct | `ekopn_c` | — |
+| `ek.ekopr` | direct | `ekopr_c` | — |
+| `ek.ekopw` | direct | `ekopw_c` | — |
+| `ek.ektnam` | direct | `ektnam_c` | — |
 
+## Domain: `ephemeris`
 
-## Kernel fixtures present in this repo
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `ephemeris.spkcls` | direct | `spkcls_c` | — |
+| `ephemeris.spkcov` | direct | `spkcov_c` | — |
+| `ephemeris.spkez` | direct | `spkez_c` | — |
+| `ephemeris.spkezp` | direct | `spkezp_c` | — |
+| `ephemeris.spkezr` | direct | `spkezr_c` | — |
+| `ephemeris.spkgeo` | direct | `spkgeo_c` | — |
+| `ephemeris.spkgps` | direct | `spkgps_c` | — |
+| `ephemeris.spkobj` | direct | `spkobj_c` | — |
+| `ephemeris.spkopa` | direct | `spkopa_c` | — |
+| `ephemeris.spkopn` | direct | `spkopn_c` | — |
+| `ephemeris.spkpds` | direct | `spkpds_c` | — |
+| `ephemeris.spkpos` | direct | `spkpos_c` | — |
+| `ephemeris.spksfs` | direct | `spksfs_c` | — |
+| `ephemeris.spkssb` | direct | `spkssb_c` | — |
+| `ephemeris.spkuds` | direct | `spkuds_c` | — |
+| `ephemeris.spkw08` | direct | `spkw08_c` | — |
 
-These are useful when writing tests/fixtures for stateful routines (time conversions, ephemeris, body constants, etc.).
+## Domain: `error`
 
-- LSK (leapseconds):
-  - `apps/orrery/public/kernels/naif/naif0012.tls`
-  - `packages/tspice/test/fixtures/kernels/naif0012.tls`
-- PCK (planetary constants, text):
-  - `apps/orrery/public/kernels/naif/pck00011.tpc`
-- SPK (ephemeris):
-  - `apps/orrery/public/kernels/naif/de432s.bsp`
-- SCLK (spacecraft clock, text):
-  - `packages/tspice/test/fixtures/kernels/cook_01.tsc`
-- Meta-kernel placeholders:
-  - `packages/backend-node/test/fixtures/minimal.tm`
-  - `packages/backend-wasm/test/fixtures/minimal.tm`
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `error.chkin` | direct | `chkin_c` | — |
+| `error.chkout` | direct | `chkout_c` | — |
+| `error.failed` | direct | `failed_c` | — |
+| `error.getmsg` | direct | `getmsg_c` | — |
+| `error.reset` | direct | `reset_c` | — |
+| `error.setmsg` | direct | `setmsg_c` | — |
+| `error.sigerr` | direct | `sigerr_c` | — |
 
-### Kernel types not currently present (suggested NAIF/mission kernels)
+## Domain: `file-io`
 
-Some APIs below require kernels that don’t appear in-repo today (e.g. CK pointing, frame kernels).
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `file-io.dafbfs` | direct | `dafbfs_c` | — |
+| `file-io.dafcls` | direct | `dafcls_c` | — |
+| `file-io.daffna` | direct | `daffna_c` | — |
+| `file-io.dafopr` | direct | `dafopr_c` | — |
+| `file-io.dascls` | direct | `dascls_c` | — |
+| `file-io.dasopr` | direct | `dasopr_c` | — |
+| `file-io.dlabfs` | direct | `dlabfs_c` | — |
+| `file-io.dlacls` | direct | `dlacls_c` | — |
+| `file-io.dlafns` | direct | `dlafns_c` | — |
+| `file-io.dlaopn` | direct | `dlaopn_c` | — |
+| `file-io.dskmi2` | direct | `dskmi2_c` | — |
+| `file-io.dskopn` | direct | `dskopn_c` | — |
+| `file-io.dskw02` | direct | `dskw02_c` | — |
+| `file-io.exists` | non-direct/composite | — | Filesystem existence preflight is implemented via host runtime file APIs; CSPICE has no `exists_c` routine. |
+| `file-io.getfat` | direct | `getfat_c` | — |
 
-Typical inputs by category:
+## Domain: `frames`
 
-- FK: frame definitions (often mission-specific `*.tf`)
-- IK: instrument definitions / FOV parameters (often mission-specific `*.ti`)
-- SCLK: spacecraft clock coefficients (`*.tsc`)
-- CK: attitude/pointing (`*.bc`)
-- SPK: ephemerides (`*.bsp`)
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `frames.ccifrm` | direct | `ccifrm_c` | — |
+| `frames.cidfrm` | direct | `cidfrm_c` | — |
+| `frames.ckcov` | direct | `ckcov_c` | — |
+| `frames.ckgp` | direct | `ckgp_c` | — |
+| `frames.ckgpav` | direct | `ckgpav_c` | — |
+| `frames.cklpf` | direct | `cklpf_c` | — |
+| `frames.ckobj` | direct | `ckobj_c` | — |
+| `frames.ckupf` | direct | `ckupf_c` | — |
+| `frames.cnmfrm` | direct | `cnmfrm_c` | — |
+| `frames.frinfo` | direct | `frinfo_c` | — |
+| `frames.frmnam` | direct | `frmnam_c` | — |
+| `frames.namfrm` | direct | `namfrm_c` | — |
+| `frames.pxform` | direct | `pxform_c` | — |
+| `frames.sxform` | direct | `sxform_c` | — |
 
-For generic solar system work, these NAIF standards are commonly used:
+## Domain: `geometry`
 
-- `naif0012.tls` (LSK) — needed for many UTC↔ET conversions
-- `pck00011.tpc` (text PCK) — body radii/shape constants for ellipsoid geometry
-- `de432s.bsp` (SPK) — planetary ephemerides
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `geometry.illumf` | direct | `illumf_c` | — |
+| `geometry.illumg` | direct | `illumg_c` | — |
+| `geometry.ilumin` | direct | `ilumin_c` | — |
+| `geometry.nvc2pl` | direct | `nvc2pl_c` | — |
+| `geometry.occult` | direct | `occult_c` | — |
+| `geometry.pl2nvc` | direct | `pl2nvc_c` | — |
+| `geometry.sincpt` | direct | `sincpt_c` | — |
+| `geometry.subpnt` | direct | `subpnt_c` | — |
+| `geometry.subslr` | direct | `subslr_c` | — |
 
----
+## Domain: `geometry-gf`
 
-## Domain: `time` (`TimeApi`)
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `geometry-gf.gfdist` | direct | `gfdist_c` | — |
+| `geometry-gf.gfrefn` | direct | `gfrefn_c` | — |
+| `geometry-gf.gfrepf` | direct | `gfrepf_c` | — |
+| `geometry-gf.gfrepi` | direct | `gfrepi_c` | — |
+| `geometry-gf.gfsep` | direct | `gfsep_c` | — |
+| `geometry-gf.gfsstp` | direct | `gfsstp_c` | — |
+| `geometry-gf.gfstep` | direct | `gfstep_c` | — |
+| `geometry-gf.gfstol` | direct | `gfstol_c` | — |
 
-| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
-| --- | --- | --- | --- | --- | --- |
-| `time.spiceVersion()` | `tkvrsn_c("TOOLKIT")` | `(): string` | `string` | exact string match | none |
-| `time.tkvrsn(item)` | `tkvrsn_c` | `(item: "TOOLKIT"): string` | `string` | exact string match | none |
-| `time.str2et(time)` | `str2et_c` | `(time: string): number` | `number` | floating compare (ET seconds) | **stateful**: uses TIMDEF defaults (SYSTEM/CALENDAR/ZONE); requires LSK (`*.tls`); may depend on loaded time constants in kernel pool |
-| `time.et2utc(et, format, prec)` | `et2utc_c` | `(et: number, format: string, prec: number): string` | `string` | exact string match (format-dependent) | requires LSK (`*.tls`) |
-| `time.timout(et, picture)` | `timout_c` | `(et: number, picture: string): string` | `string` | exact string match (picture-dependent) | requires LSK (`*.tls`) for many pictures |
-| `time.deltet(epoch, eptype)` | `deltet_c` | `(epoch: number, eptype: "ET" | "UTC"): number` | `number` | floating compare (seconds) | requires LSK (`*.tls`) |
-| `time.unitim(epoch, insys, outsys)` | `unitim_c` | `(epoch: number, insys: string, outsys: string): number` | `number` | floating compare (seconds) | requires LSK (`*.tls`) |
-| `time.tparse(timstr)` | `tparse_c` | `(timstr: string): number` | `number` | floating compare (UTC seconds past J2000; formal calendar / no leap seconds) | stateless; UTC-only (rejects time system/zone labels); no kernels |
-| `time.tpictr(sample, pictur)` | `tpictr_c` | `(sample: string, pictur: string): string` | `string` | exact string match | **stateful**: interprets sample using TIMDEF defaults; no kernels |
-| `time.timdef(action, item, value?)` | `timdef_c` | overload: `("GET", item)` / `("SET", item, value)` | `string` / `void` | exact string match for `GET` | stateful (mutates time conversion defaults); no kernels |
-| `time.scs2e(sc, sclkch)` | `scs2e_c` | `(sc: number, sclkch: string): number` | `number` | floating compare (ET seconds) | requires SCLK kernel (`*.tsc`) for `sc`; typically also needs LSK |
-| `time.sce2s(sc, et)` | `sce2s_c` | `(sc: number, et: number): string` | `string` | exact string match | requires SCLK kernel (`*.tsc`) for `sc`; typically also needs LSK |
-| `time.scencd(sc, sclkch)` | `scencd_c` | `(sc: number, sclkch: string): number` | `number` | floating compare (ticks) | requires SCLK kernel (`*.tsc`) for `sc` |
-| `time.scdecd(sc, sclkdp)` | `scdecd_c` | `(sc: number, sclkdp: number): string` | `string` | exact string match | requires SCLK kernel (`*.tsc`) for `sc` |
-| `time.sct2e(sc, sclkdp)` | `sct2e_c` | `(sc: number, sclkdp: number): number` | `number` | floating compare (ET seconds) | requires SCLK kernel (`*.tsc`) for `sc`; often also needs LSK |
-| `time.sce2c(sc, et)` | `sce2c_c` | `(sc: number, et: number): number` | `number` | floating compare (ticks) | requires SCLK kernel (`*.tsc`) for `sc`; often also needs LSK |
+## Domain: `ids-names`
 
-Notes:
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `ids-names.bodc2n` | direct | `bodc2n_c` | — |
+| `ids-names.bodc2s` | direct | `bodc2s_c` | — |
+| `ids-names.boddef` | direct | `boddef_c` | — |
+| `ids-names.bodfnd` | direct | `bodfnd_c` | — |
+| `ids-names.bodn2c` | direct | `bodn2c_c` | — |
+| `ids-names.bods2c` | direct | `bods2c_c` | — |
+| `ids-names.bodvar` | direct | `bodvar_c` | — |
 
-- `spiceVersion()` is a convenience alias; the contract also exposes `tkvrsn("TOOLKIT")` explicitly.
+## Domain: `kernel-pool`
 
-- Many time routines (notably `str2et`, `timout`, and `tpictr`) depend on TIMDEF defaults (SYSTEM/CALENDAR/ZONE). These defaults are global mutable state in CSPICE; tests should snapshot/restore if they change them to avoid order dependence.
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `kernel-pool.cvpool` | direct | `cvpool_c` | — |
+| `kernel-pool.dtpool` | direct | `dtpool_c` | — |
+| `kernel-pool.expool` | direct | `expool_c` | — |
+| `kernel-pool.gcpool` | direct | `gcpool_c` | — |
+| `kernel-pool.gdpool` | direct | `gdpool_c` | — |
+| `kernel-pool.gipool` | direct | `gipool_c` | — |
+| `kernel-pool.gnpool` | direct | `gnpool_c` | — |
+| `kernel-pool.pcpool` | direct | `pcpool_c` | — |
+| `kernel-pool.pdpool` | direct | `pdpool_c` | — |
+| `kernel-pool.pipool` | direct | `pipool_c` | — |
+| `kernel-pool.swpool` | direct | `swpool_c` | — |
 
----
+## Domain: `kernels`
 
-## Domain: `ids-names` (`IdsNamesApi`)
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `kernels.furnsh` | direct | `furnsh_c` | — |
+| `kernels.kclear` | direct | `kclear_c` | — |
+| `kernels.kdata` | direct | `kdata_c` | — |
+| `kernels.kinfo` | direct | `kinfo_c` | — |
+| `kernels.kplfrm` | direct | `kplfrm_c` | — |
+| `kernels.ktotal` | direct | `ktotal_c` | — |
+| `kernels.kxtrct` | direct | `kxtrct_c` | — |
+| `kernels.unload` | direct | `unload_c` | — |
 
-| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
-| --- | --- | --- | --- | --- | --- |
-| `ids-names.bodn2c(name)` | `bodn2c_c` | `(name: string): Found<{ code: number }>` | `Found<{ code: number }>` | exact integer match | requires kernels defining body names/IDs (commonly PCK/SPK and/or mission kernels); “not found” is reported via `found` output flag |
-| `ids-names.bodc2n(code)` | `bodc2n_c` | `(code: number): Found<{ name: string }>` | `Found<{ name: string }>` | exact string match | requires kernels defining body names/IDs; “not found” is reported via `found` output flag |
+## Domain: `time`
 
----
+| method | mapping status | CSPICE entrypoint | rationale |
+| --- | --- | --- | --- |
+| `time.deltet` | direct | `deltet_c` | — |
+| `time.et2utc` | direct | `et2utc_c` | — |
+| `time.scdecd` | direct | `scdecd_c` | — |
+| `time.sce2c` | direct | `sce2c_c` | — |
+| `time.sce2s` | direct | `sce2s_c` | — |
+| `time.scencd` | direct | `scencd_c` | — |
+| `time.scs2e` | direct | `scs2e_c` | — |
+| `time.sct2e` | direct | `sct2e_c` | — |
+| `time.str2et` | direct | `str2et_c` | — |
+| `time.timdef` | direct | `timdef_c` | — |
+| `time.timout` | direct | `timout_c` | — |
+| `time.tkvrsn` | direct | `tkvrsn_c` | — |
+| `time.tparse` | direct | `tparse_c` | — |
+| `time.tpictr` | direct | `tpictr_c` | — |
+| `time.unitim` | direct | `unitim_c` | — |
 
-## Domain: `frames` (`FramesApi`)
-
-| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
-| --- | --- | --- | --- | --- | --- |
-| `frames.namfrm(name)` | `namfrm_c` | `(name: string): Found<{ code: number }>` | `Found<{ code: number }>` | exact integer match | requires FK and/or built-in frame definitions; per NAIF docs, `namfrm_c` returns the frame code, or `0` if `name` is not recognized (there is no `found` output). In this project `J2000` is code `1` (see tests), so treating `0` as “not found” is safe. If you want to avoid depending on the `0` sentinel, validate the returned code via `frinfo_c` (it provides a `found` flag). |
-| `frames.frmnam(code)` | `frmnam_c` | `(code: number): Found<{ name: string }>` | `Found<{ name: string }>` | exact string match | requires FK and/or built-in frame definitions; “not found” is reported via `found` output flag |
-| `frames.cidfrm(center)` | `cidfrm_c` | `(center: number): Found<{ frcode: number; frname: string }>` | `Found<{ frcode: number; frname: string }>` | exact integer/string match | requires kernels defining center→frame associations (FK / PCK / mission kernels); “not found” via `found` |
-| `frames.cnmfrm(centerName)` | `cnmfrm_c` | `(centerName: string): Found<{ frcode: number; frname: string }>` | `Found<{ frcode: number; frname: string }>` | exact integer/string match | requires kernels defining name→center and center→frame associations; “not found” via `found` |
-| `frames.ckgp(inst, sclkdp, tol, ref)` | `ckgp_c` | `(inst: number, sclkdp: number, tol: number, ref: string): Found<{ cmat: Mat3RowMajor; clkout: number }>` | `Found<{ cmat: Mat3RowMajor; clkout: number }>` | matrix element-wise float tolerance; `clkout` float tolerance | **stateful**: requires loaded CK (pointing) + SCLK (`*.tsc`); `ref` frame must be defined (FK); “not found” via `found` |
-| `frames.ckgpav(inst, sclkdp, tol, ref)` | `ckgpav_c` | `(inst: number, sclkdp: number, tol: number, ref: string): Found<{ cmat: Mat3RowMajor; av: SpiceVector3; clkout: number }>` | `Found<{ cmat: Mat3RowMajor; av: SpiceVector3; clkout: number }>` | matrix/vector element-wise float tolerance | **stateful**: requires loaded CK + SCLK; `ref` frame must be defined; “not found” via `found` |
-| `frames.pxform(from, to, et)` | `pxform_c` | `(from: string, to: string, et: number): Mat3RowMajor` | `Mat3RowMajor` | matrix element-wise float tolerance | **stateful**: depends on loaded frame definitions (FK, PCK, CK for dynamic frames) |
-| `frames.sxform(from, to, et)` | `sxform_c` | `(from: string, to: string, et: number): SpiceMatrix6x6` | `SpiceMatrix6x6` | matrix element-wise float tolerance | **stateful**: depends on loaded frame definitions; may require CK for rotating frames |
-
-Notes:
-
-- Matrix outputs in this contract are encoded in **row-major** order (see `Mat3RowMajor` / `SpiceMatrix6x6`).
-
----
-
-## Domain: `kernels` (`KernelsApi`)
-
-| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
-| --- | --- | --- | --- | --- | --- |
-| `kernels.furnsh(kernel)` | `furnsh_c` | `(kernel: KernelSource): void` | `void` | n/a | **stateful**: mutates kernel pool + loaded-kernel set; `KernelSource` may be a path or `{ path, bytes }` where backend writes bytes then furnshes the path |
-| `kernels.unload(path)` | `unload_c` | `(path: string): void` | `void` | n/a | **stateful**: unloads a previously loaded kernel |
-| `kernels.kclear()` | `kclear_c` | `(): void` | `void` | n/a | **stateful**: clears all loaded kernels and the kernel pool |
-| `kernels.ktotal(kind?)` | `ktotal_c` | `(kind?: KernelKindInput): number` | `number` | exact integer match | **stateful**: returns count of currently loaded kernels (optionally filtered) |
-| `kernels.kdata(which, kind?)` | `kdata_c` | `(which: number, kind?: KernelKindInput): Found<KernelData>` | `Found<KernelData>` | `filtyp` exact; path-like fields may require normalization (see Notes) | **stateful**: queries loaded-kernel table; returns `{ found: false }` when `which` is out of range for the selected kind |
-
-Notes:
-
-- **Kind token normalization (`KernelKindInput`):** `kind` may be a single token, an array of tokens, or a whitespace-separated string (CSPICE-style). Tokens are trimmed + case-insensitive; duplicates are ignored (first-seen order preserved). If `ALL` is present alongside other tokens, it normalizes to `["ALL"]`. Invalid/empty tokens (including `[]`) throw `RangeError`.
-- **TEXT subtype inference:** SPICE often reports text kernels with `filtyp: "TEXT"` even when they are logically `LSK`/`FK`/`IK`/`SCLK`. When subtypes are requested, backends infer the subtype best-effort from the `kernel.file` extension (e.g. `.tls`/`.lsk` → `LSK`). If `TEXT` is requested, subtype tokens are redundant (and may be ignored/canonicalized away).
-
-- **Global state + determinism:** `furnsh` mutates process-global CSPICE state (kernel pool + loaded-kernel table). Load order can affect results. For deterministic tests, prefer an explicit load order and call `kernels.kclear()` between tests/suites to avoid cross-test leakage.
-- **`KernelSource` bytes safety:** when `KernelSource` is `{ path, bytes }`, backends should treat `path` as **untrusted** input. Write bytes only into a backend-controlled directory / virtual FS namespace, reject absolute paths and `..` segments, and (ideally) clean up temp artifacts on `unload()` / `kclear()` or process exit.
-- **`KernelSource.path` portability + `kdata()` observability:** `KernelSource` does **not** have a single portable path semantics across backends:
-  - In Node, `furnsh(string)` is an OS filesystem path.
-  - In WASM, `furnsh(string)` is typically a virtual WASM-FS path (commonly under `/kernels/...`).
-
-  For cross-backend parity tests, prefer `furnsh({ path, bytes })` and treat `path` as a *virtual identifier* (POSIX-style, normalized; no `..`, optional `/kernels/` prefix).
-  Backends may rewrite this identifier to an internal storage path (temp files, virtual FS namespaces), but should do so deterministically and keep it observable:
-  - `unload(path)` should accept the normalized virtual identifier (even if internally rewritten).
-  - `kdata()` should return a stable identifier for byte-backed kernels (ideally the normalized virtual path), rather than leaking randomized temp-file paths that would break parity.
-
----
-
-## Domain: `error` (`ErrorApi`)
-
-| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
-| --- | --- | --- | --- | --- | --- |
-| `error.failed()` | `failed_c` | `(): boolean` | `boolean` | exact boolean | **stateful**: reflects the CSPICE error status flag |
-| `error.reset()` | `reset_c` | `(): void` | `void` | n/a | **stateful**: clears the CSPICE error status and stored messages |
-| `error.getmsg(which)` | `getmsg_c` | `(which: "SHORT" \| "LONG" \| "EXPLAIN"): string` | `string` | exact string match | **stateful**: reads CSPICE error message buffers |
-| `error.setmsg(message)` | `setmsg_c` | `(message: string): void` | `void` | n/a | **stateful**: sets the long message text used by `sigerr` |
-| `error.sigerr(short)` | `sigerr_c` | `(short: string): void` | `void` | n/a | **stateful**: signals an error; tspice backends configure CSPICE to `RETURN` and surface this as a thrown JS/TS error (and typically capture + reset CSPICE error state) |
-| `error.chkin(name)` | `chkin_c` | `(name: string): void` | `void` | n/a | **stateful**: pushes `name` onto the SPICE traceback stack |
-| `error.chkout(name)` | `chkout_c` | `(name: string): void` | `void` | n/a | **stateful**: pops `name` from the SPICE traceback stack |
-
-Notes:
-
-- **Project convention:** tspice backends configure CSPICE error handling to be deterministic (`erract_c("SET", 0, "RETURN")`, `errprt_c("SET", 0, "NONE")`, or equivalent). Backend domain methods then translate CSPICE failures into thrown JS/TS errors.
-- **`setmsg` + `sigerr`:** `setmsg(long)` sets the long message used by the next `sigerr(short)`. In Node/WASM backends, `sigerr()` is expected to throw and the backend will capture + reset CSPICE error state so subsequent calls are not poisoned.
-
----
-
-## Domain: `ephemeris` (`EphemerisApi`)
-
-| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
-| --- | --- | --- | --- | --- | --- |
-| `ephemeris.spkezr(target, et, ref, abcorr, observer)` | `spkezr_c` | `(target: string, et: number, ref: string, abcorr: AbCorr \| string, observer: string): SpkezrResult` | `{ state: [x,y,z,vx,vy,vz], lt: number }` | float tolerance on each component + `lt` | **stateful**: requires SPK (`*.bsp`); may also require FK/PCK/CK depending on `ref`; aberration correction must match CSPICE `abcorr` parsing |
-| `ephemeris.spkpos(target, et, ref, abcorr, observer)` | `spkpos_c` | `(target: string, et: number, ref: string, abcorr: AbCorr \| string, observer: string): SpkposResult` | `{ pos: [x,y,z], lt: number }` | float tolerance on each component + `lt` | **stateful**: requires SPK; may also require FK/PCK/CK depending on `ref` |
-
----
-
-## Domain: `geometry` (`GeometryApi`)
-
-| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
-| --- | --- | --- | --- | --- | --- |
-| `geometry.subpnt(method, target, et, fixref, abcorr, observer)` | `subpnt_c` | `(method: string, target: string, et: number, fixref: string, abcorr: AbCorr \| string, observer: string): SubPointResult` | `{ spoint: SpiceVector3; trgepc: number; srfvec: SpiceVector3 }` | float tolerance on vectors + `trgepc` | **stateful**: requires SPK (observer/target positions) and body shape/frames (often PCK + FK); method choice may require additional kernels (e.g. DSK for high-res shapes) |
-| `geometry.subslr(method, target, et, fixref, abcorr, observer)` | `subslr_c` | `(method: string, target: string, et: number, fixref: string, abcorr: AbCorr \| string, observer: string): SubPointResult` | `{ spoint: SpiceVector3; trgepc: number; srfvec: SpiceVector3 }` | float tolerance on vectors + `trgepc` | **stateful**: requires SPK + shape kernels (PCK/DSK) + frame kernels; includes Sun geometry (Sun must be available in loaded ephemerides) |
-| `geometry.sincpt(method, target, et, fixref, abcorr, observer, dref, dvec)` | `sincpt_c` | `(method: string, target: string, et: number, fixref: string, abcorr: AbCorr \| string, observer: string, dref: string, dvec: SpiceVector3): Found<SubPointResult>` | `Found<SubPointResult>` | float tolerance on vectors + `trgepc` when found | **stateful**: requires SPK + shape kernels (PCK/DSK) + frame kernels; “not found” uses `found` output flag (ray misses target) |
-| `geometry.ilumin(method, target, et, fixref, abcorr, observer, spoint)` | `ilumin_c` | `(method: string, target: string, et: number, fixref: string, abcorr: AbCorr \| string, observer: string, spoint: SpiceVector3): IluminResult` | `{ trgepc: number; srfvec: SpiceVector3; phase: number; incdnc: number; emissn: number }` | float tolerance on all fields | **stateful**: requires SPK + shape kernels (PCK/DSK) + frame kernels; angles are in radians |
-| `geometry.occult(targ1, shape1, frame1, targ2, shape2, frame2, abcorr, observer, et)` | `occult_c` | `(targ1: string, shape1: string, frame1: string, targ2: string, shape2: string, frame2: string, abcorr: AbCorr \| string, observer: string, et: number): number` | `number` | exact integer match (occultation code) | **stateful**: requires SPK (all bodies) + shape kernels (PCK/DSK) + any referenced frames; output is an integer condition code defined by CSPICE `occult_c` |
-
----
-
-## Domain: `coords-vectors` (`CoordsVectorsApi`)
-
-Most routines in this domain are **pure math** and require no kernels.
-
-| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
-| --- | --- | --- | --- | --- | --- |
-| `coords-vectors.reclat(rect)` | `reclat_c` | `(rect: SpiceVector3)` | `{ radius: number; lon: number; lat: number }` | float tolerance; angles radians | none |
-| `coords-vectors.latrec(radius, lon, lat)` | `latrec_c` | `(radius: number, lon: number, lat: number)` | `SpiceVector3` | float tolerance | none |
-| `coords-vectors.recsph(rect)` | `recsph_c` | `(rect: SpiceVector3)` | `{ radius: number; colat: number; lon: number }` | float tolerance; angles radians | none |
-| `coords-vectors.sphrec(radius, colat, lon)` | `sphrec_c` | `(radius: number, colat: number, lon: number)` | `SpiceVector3` | float tolerance | none |
-| `coords-vectors.vnorm(v)` | `vnorm_c` | `(v: SpiceVector3)` | `number` | float tolerance | none |
-| `coords-vectors.vhat(v)` | `vhat_c` | `(v: SpiceVector3)` | `SpiceVector3` | float tolerance | none; **zero-vector behavior:** returns `[0,0,0]` without throwing (matches `vhat_c`) |
-| `coords-vectors.vdot(a, b)` | `vdot_c` | `(a: SpiceVector3, b: SpiceVector3)` | `number` | float tolerance | none |
-| `coords-vectors.vcrss(a, b)` | `vcrss_c` | `(a: SpiceVector3, b: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
-| `coords-vectors.vadd(a, b)` | `vadd_c` | `(a: SpiceVector3, b: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
-| `coords-vectors.vsub(a, b)` | `vsub_c` | `(a: SpiceVector3, b: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
-| `coords-vectors.vminus(v)` | `vminus_c` | `(v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
-| `coords-vectors.vscl(s, v)` | `vscl_c` | `(s: number, v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
-| `coords-vectors.mxm(a, b)` | `mxm_c` | `(a: Mat3RowMajor, b: Mat3RowMajor)` | `Mat3RowMajor` | float tolerance | none |
-| `coords-vectors.rotate(angle, axis)` | `rotate_c` | `(angle: number, axis: number)` | `Mat3RowMajor` | float tolerance; angle radians; axis ∈ {1,2,3} | none |
-| `coords-vectors.rotmat(m, angle, axis)` | `rotmat_c` | `(m: Mat3RowMajor, angle: number, axis: number)` | `Mat3RowMajor` | float tolerance | none |
-| `coords-vectors.axisar(axis, angle)` | `axisar_c` | `(axis: SpiceVector3, angle: number)` | `Mat3RowMajor` | float tolerance | none |
-| `coords-vectors.georec(lon, lat, alt, re, f)` | `georec_c` | `(lon: number, lat: number, alt: number, re: number, f: number)` | `SpiceVector3` | float tolerance; angles radians | none |
-| `coords-vectors.recgeo(rect, re, f)` | `recgeo_c` | `(rect: SpiceVector3, re: number, f: number)` | `{ lon: number; lat: number; alt: number }` | float tolerance; angles radians | none |
-| `coords-vectors.mxv(m, v)` | `mxv_c` | `(m: Mat3RowMajor, v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
-| `coords-vectors.mtxv(m, v)` | `mtxv_c` | `(m: Mat3RowMajor, v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |

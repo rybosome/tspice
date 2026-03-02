@@ -19,6 +19,7 @@
     "generate:alias-map": "tsx ./scripts/generate-alias-map.ts",
     "generate:denylist": "tsx ./scripts/generate-parity-denylist.ts",
     "generate:catalogs": "pnpm run generate:contract-catalog && pnpm run generate:alias-map && pnpm run generate:denylist",
+    "check:cspice-mapping": "node ./scripts/check-cspice-mapping.mjs",
     "check:generated": "node ./scripts/check-generated.mjs",
     "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && pnpm run check:generated && node ./scripts/pretest-cspice-runner.mjs",
     "test": "vitest run"
