@@ -100,6 +100,8 @@ Note: in Node, `fetch()` requires absolute URLs. Either build packs with absolut
 
 Kernels (what they are, where they come from, and hosting strategies) are covered in [/guide/kernels](/guide/kernels).
 
+If client construction fails (backend load, worker setup, kernel preload URL/path/fetch errors), use [/guide/troubleshooting](/guide/troubleshooting).
+
 ## Caching (optional)
 
 `.caching(...)` adds an **in-memory** memoization layer to the client transport (works with `toSync()`, `toAsync()`, and `toWebWorker()`).

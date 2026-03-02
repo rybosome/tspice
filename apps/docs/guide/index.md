@@ -7,3 +7,4 @@ This section is the onboarding path for using `@rybosome/tspice`.
 3. [Kernels](/guide/kernels)
 4. [Browser (WASM + Web Worker)](/guide/browser)
 5. [Node (native backend)](/guide/node)
+6. [Troubleshooting](/guide/troubleshooting)

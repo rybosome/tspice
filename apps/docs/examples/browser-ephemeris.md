@@ -10,6 +10,8 @@ If you want a full reference implementation, see the Orrery app:
 
 - `https://github.com/rybosome/orrery/blob/main/src/spice/createSpiceClient.ts`
 
+If client creation or kernel loading fails while following this recipe, see [/guide/troubleshooting](/guide/troubleshooting).
+
 ## Kernels required (and why)
 
 For basic planet-to-planet state vectors you typically need:

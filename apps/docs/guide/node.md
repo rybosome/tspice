@@ -23,6 +23,8 @@ If you see errors about missing native bindings, see the backend package docs:
 
 - `@rybosome/tspice-backend-node`
 
+For a broader error catalog (native addon resolution, wasm fallback, kernel preload/fetch issues), see [/guide/troubleshooting](/guide/troubleshooting).
+
 ## Loading kernels from the filesystem
 
 With the native backend, kernels can be loaded directly from absolute filesystem paths (no URL hosting required):

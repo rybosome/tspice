@@ -62,3 +62,4 @@ See [/guide/kernels](/guide/kernels) for details (including `baseUrl` and custom
 - [Creating clients](/guide/creating-clients)
 - [Browser (WASM + Web Worker)](/guide/browser)
 - [Node (native backend)](/guide/node)
+- [Troubleshooting common setup/runtime errors](/guide/troubleshooting)
