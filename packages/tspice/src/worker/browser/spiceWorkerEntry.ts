@@ -3,6 +3,7 @@ import type { SpiceAsync } from "../../kit/types/spice-types.js";
 
 import type { SpiceTransport } from "../../transport/types.js";
 import { exposeTransportToWorker } from "../transport/exposeTransportToWorker.js";
+import { resolveWorkerRpcInvocation } from "./workerRpcOp.js";
 
 type TspiceWorkerConfig = {
   wasmUrl?: string;
@@ -118,34 +119,16 @@ function createSpiceTransportFromSpiceAsync(
         return snapshotExposedMethodKeys(spice, allowlist);
       }
 
-      const dot = op.indexOf(".");
-      if (dot <= 0 || dot === op.length - 1) {
-        throw new Error(`Invalid op: ${op}`);
-      }
-
-      const namespace = op.slice(0, dot);
-      const method = op.slice(dot + 1);
-
-      if (namespace !== "raw" && namespace !== "kit") {
-        throw new Error(`Unknown namespace: ${namespace}`);
-      }
-
-      if (!isSafeRpcKey(method) || blockedStringKeys.has(method)) {
-        throw new Error(`Invalid method name: ${method}`);
-      }
-
-      const ns = namespace satisfies RpcNamespace;
-
-      const nsAllowlist = allowlist[ns];
-      if (nsAllowlist && !nsAllowlist.has(method)) {
-        throw new Error(`Disallowed op: ${op}`);
-      }
-
-      const target = spice[ns] as unknown as Record<string, unknown>;
-      const fn = target[method];
-      if (typeof fn !== "function") {
-        throw new Error(`Unknown op: ${op}`);
-      }
+      const { fn, target } = resolveWorkerRpcInvocation({
+        op,
+        allowlist,
+        surfaces: {
+          raw: spice.raw as unknown as Record<string, unknown>,
+          kit: spice.kit as unknown as Record<string, unknown>,
+        },
+        isSafeRpcKey,
+        blockedStringKeys,
+      });
 
       // `spice.raw` and `spice.kit` are proxies that return bound/wrapped
       // functions, but use Reflect.apply to be defensive about `this`.

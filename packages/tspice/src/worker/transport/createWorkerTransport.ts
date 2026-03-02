@@ -170,8 +170,29 @@ export function createWorkerTransport(opts: {
 
   let nextId = 1;
 
+  const quote = (value: string): string => JSON.stringify(value);
+
   const formatRequestContext = (op: string, id?: number): string =>
-    id === undefined ? `(op=${op})` : `(op=${op}, id=${id})`;
+    id === undefined ? `(op=${quote(op)})` : `(op=${quote(op)}, id=${id})`;
+
+  const createInternalProtocolError = (opts: {
+    summary: string;
+    op: string;
+    id?: number;
+    expected?: string;
+    got?: string;
+    hint?: string;
+  }): Error => {
+    const parts = [
+      `Internal worker RPC protocol error: ${opts.summary} ${formatRequestContext(opts.op, opts.id)}.`,
+    ];
+
+    if (opts.expected) parts.push(`Expected: ${opts.expected}.`);
+    if (opts.got) parts.push(`Got: ${opts.got}.`);
+    if (opts.hint) parts.push(`Hint: ${opts.hint}.`);
+
+    return new Error(parts.join(" "));
+  };
 
   const ensureCanScheduleMacrotask = (): void => {
     if (canScheduleMacrotask === undefined) {
@@ -371,9 +392,14 @@ export function createWorkerTransport(opts: {
     if (msg.ok === true) {
       if (!("value" in msg)) {
         kind = "reject";
-        error = new Error(
-          `Malformed worker response: ok=true but missing value ${formatRequestContext(op, id)}`,
-        );
+        error = createInternalProtocolError({
+          summary: "malformed worker response packet",
+          op,
+          id,
+          expected: 'a response with "ok: true" and a "value" field',
+          got: '"ok: true" without "value"',
+          hint: "This indicates an internal worker transport/protocol mismatch",
+        });
       } else {
         kind = "resolve";
         value = decodeRpcValue((msg as Extract<RpcResponse, { ok: true }>).value);
@@ -381,16 +407,28 @@ export function createWorkerTransport(opts: {
     } else if (msg.ok === false) {
       if (!("error" in msg)) {
         kind = "reject";
-        error = new Error(
-          `Malformed worker response: ok=false but missing error ${formatRequestContext(op, id)}`,
-        );
+        error = createInternalProtocolError({
+          summary: "malformed worker response packet",
+          op,
+          id,
+          expected: 'a response with "ok: false" and an "error" field',
+          got: '"ok: false" without "error"',
+          hint: "This indicates an internal worker transport/protocol mismatch",
+        });
       } else {
         kind = "reject";
         error = deserializeError((msg as Extract<RpcResponse, { ok: false }>).error);
       }
     } else {
       kind = "reject";
-      error = new Error(`Malformed worker response: missing ok flag ${formatRequestContext(op, id)}`);
+      error = createInternalProtocolError({
+        summary: "malformed worker response packet",
+        op,
+        id,
+        expected: 'a response with a boolean "ok" flag',
+        got: 'response missing "ok"',
+        hint: "This indicates an internal worker transport/protocol mismatch",
+      });
     }
 
     queuedSettlementById.set(id, { pending, kind, value, error });
@@ -406,16 +444,28 @@ export function createWorkerTransport(opts: {
     }
 
     const safeMessage = typeof message === "string" && message.length > 0 ? message : "Worker error";
-    terminalTeardown(new Error(safeMessage), {
-      getReason: (pending, id) => new Error(`${safeMessage} ${formatRequestContext(pending.op, id)}`),
+    const baseMessage = `Internal worker runtime error: ${safeMessage}`;
+
+    terminalTeardown(new Error(baseMessage), {
+      getReason: (pending, id) =>
+        new Error(`${baseMessage} ${formatRequestContext(pending.op, id)}`),
     });
   };
 
   const onMessageError = (_ev: unknown): void => {
-    const err = new Error("Worker message deserialization failed");
+    const err = new Error(
+      "Internal worker RPC transport error: worker message deserialization failed",
+    );
     terminalTeardown(err, {
       getReason: (pending, id) =>
-        new Error(`Worker message deserialization failed ${formatRequestContext(pending.op, id)}`),
+        createInternalProtocolError({
+          summary: "worker message deserialization failed",
+          op: pending.op,
+          id,
+          expected: "a structured-clone-safe worker RPC response packet",
+          got: "a message that failed deserialization",
+          hint: "This indicates an internal worker transport/protocol failure",
+        }),
     });
   };
 
