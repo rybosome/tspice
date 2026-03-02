@@ -3,6 +3,11 @@ export const GETMSG_WHICH_VALUES = ["SHORT", "LONG", "EXPLAIN"] as const;
 
 export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
 
+function formatGot(value: unknown): string {
+  const json = JSON.stringify(value);
+  return json === undefined ? String(value) : json;
+}
+
 /** Type guard for {@link GetmsgWhich}. */
 export function isGetmsgWhich(which: unknown): which is GetmsgWhich {
   return (
@@ -22,5 +27,5 @@ export function isGetmsgWhich(which: unknown): which is GetmsgWhich {
 export function assertGetmsgWhich(which: unknown): asserts which is GetmsgWhich {
   if (isGetmsgWhich(which)) return;
   const allowed = GETMSG_WHICH_VALUES.map((v) => JSON.stringify(v)).join(" | ");
-  throw new TypeError(`getmsg(which) expected one of ${allowed} (got ${JSON.stringify(which)})`);
+  throw new TypeError(`getmsg(which): Expected: one of ${allowed}. Got: ${formatGot(which)}`);
 }

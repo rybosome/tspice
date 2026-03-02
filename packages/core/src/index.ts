@@ -26,6 +26,11 @@ export function assertNever(value: never, message = "Unexpected value"): never {
   throw new Error(`${message}: ${String(value)}`);
 }
 
+function formatGot(value: unknown): string {
+  const json = JSON.stringify(value);
+  return json === undefined ? String(value) : json;
+}
+
 /**
  * Normalize a *virtual* kernel identifier so the same `path` works across backends
  * (Node temp-file staging vs WASM `/kernels/...` FS).
@@ -36,11 +41,17 @@ export function assertNever(value: never, message = "Unexpected value"): never {
  * - repeated slashes and `.` segments are collapsed
  */
 export function normalizeVirtualKernelPath(input: string): string {
+  if (typeof input !== "string") {
+    throw new TypeError(`normalizeVirtualKernelPath(input): Expected: a string. Got: ${formatGot(input)}`);
+  }
+
   // NOTE: Avoid `String.prototype.replaceAll` for compatibility with older
   // JS runtimes / conservative build targets.
   const raw = input.replace(/\\/g, "/").trim();
   if (!raw) {
-    throw new Error("Kernel path must be non-empty");
+    throw new RangeError(
+      `normalizeVirtualKernelPath(input): Invalid kernel path. Expected: a non-empty virtual path string. Got: ${formatGot(input)}`,
+    );
   }
 
   // Strip leading slashes so `/kernels/foo.tls` behaves like `kernels/foo.tls`.
@@ -67,13 +78,17 @@ export function normalizeVirtualKernelPath(input: string): string {
       continue;
     }
     if (seg === "..") {
-      throw new Error(`Invalid kernel path (.. not allowed): ${input}`);
+      throw new RangeError(
+        `normalizeVirtualKernelPath(input): Invalid kernel path. Expected: no ".." segments. Got: ${formatGot(input)}`,
+      );
     }
     out.push(seg);
   }
 
   if (out.length === 0) {
-    throw new Error(`Invalid kernel path: ${input}`);
+    throw new RangeError(
+      `normalizeVirtualKernelPath(input): Invalid kernel path. Expected: at least one non-empty segment after normalization. Got: ${formatGot(input)}`,
+    );
   }
 
   return out.join("/");

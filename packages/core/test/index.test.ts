@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  assertGetmsgWhich,
   assertNever,
   createSpiceHandleRegistry,
   invariant,
@@ -23,8 +24,16 @@ describe("@rybosome/tspice-core", () => {
     expect(normalizeVirtualKernelPath("/kernels//naif0012.tls")).toBe("naif0012.tls");
 
     // Guard against the prefix-only edge case.
+    expect(() => normalizeVirtualKernelPath("/kernels")).toThrow(RangeError);
     expect(() => normalizeVirtualKernelPath("/kernels")).toThrow("Invalid kernel path");
     expect(() => normalizeVirtualKernelPath("kernels")).toThrow("Invalid kernel path");
+    expect(() => normalizeVirtualKernelPath(123 as unknown as string)).toThrow(TypeError);
+  });
+
+  it("normalizes getmsg(which) validation errors", () => {
+    expect(() => assertGetmsgWhich("NOPE")).toThrow(TypeError);
+    expect(() => assertGetmsgWhich("NOPE")).toThrow(/Expected: one of/i);
+    expect(() => assertGetmsgWhich("NOPE")).toThrow(/Got:/i);
   });
 
   it("exports Mat3 branding + validation helpers at runtime", async () => {
@@ -41,7 +50,9 @@ describe("@rybosome/tspice-core", () => {
     expect(mod.isBrandedMat3ColMajor(m)).toBe(false);
     expect(mod.isMat3ArrayLike9(m)).toBe(true);
 
+    expect(() => mod.brandMat3RowMajor([1, 2, 3] as unknown)).toThrow(TypeError);
     expect(() => mod.brandMat3RowMajor([1, 2, 3] as unknown)).toThrow(/length-9/i);
+    expect(() => mod.brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, Infinity] as unknown)).toThrow(RangeError);
     expect(() => mod.brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, Infinity] as unknown)).toThrow(/finite/i);
   });
 
@@ -62,8 +73,11 @@ describe("@rybosome/tspice-core", () => {
     expect(mod.isVec3ArrayLike3(v3)).toBe(true);
     expect(mod.isBrandedVec3(new Float64Array([1, 2, 3]))).toBe(false);
 
+    expect(() => mod.brandVec3([1, 2] as unknown)).toThrow(TypeError);
     expect(() => mod.brandVec3([1, 2] as unknown)).toThrow(/length-3/i);
+    expect(() => mod.brandVec3([1, 2, Infinity] as unknown)).toThrow(RangeError);
     expect(() => mod.brandVec3([1, 2, Infinity] as unknown)).toThrow(/finite/i);
+    expect(() => mod.brandVec3(new DataView(new ArrayBuffer(24)) as unknown)).toThrow(TypeError);
     expect(() => mod.brandVec3(new DataView(new ArrayBuffer(24)) as unknown)).toThrow(/DataView/i);
 
     const v6 = mod.brandVec6([1, 2, 3, 4, 5, 6], { freeze: "never" });
@@ -77,7 +91,9 @@ describe("@rybosome/tspice-core", () => {
     const m6 = mod.brandMat6RowMajor(m36, { freeze: "never" });
     expect(mod.isBrandedMat6RowMajor(m6)).toBe(true);
     expect(mod.isMat6ArrayLike36(m6)).toBe(true);
+    expect(() => mod.brandMat6RowMajor(Array.from({ length: 35 }, () => 0) as unknown)).toThrow(TypeError);
     expect(() => mod.brandMat6RowMajor(Array.from({ length: 35 }, () => 0) as unknown)).toThrow(/length-36/i);
+    expect(() => mod.brandMat6RowMajor([...m36.slice(0, 35), Infinity] as unknown)).toThrow(RangeError);
     expect(() => mod.brandMat6RowMajor([...m36.slice(0, 35), Infinity] as unknown)).toThrow(/finite/i);
   });
 
@@ -177,7 +193,7 @@ describe("matchesKernelKind", () => {
 describe("normalizeKindInput", () => {
   it("throws RangeError for empty arrays", () => {
     expect(() => normalizeKindInput([])).toThrowError(RangeError);
-    expect(() => normalizeKindInput([])).toThrowError("Kernel kind array must not be empty");
+    expect(() => normalizeKindInput([])).toThrowError(/normalizeKindInput\(kind\): Expected: a non-empty array/i);
   });
 });
 

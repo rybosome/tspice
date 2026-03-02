@@ -7,16 +7,25 @@ import type {
 import { SPICE_INT32_MAX, SPICE_INT32_MIN } from "./spice-int.js";
 import { SpiceBackendContractError } from "./errors.js";
 
+function formatGot(value: unknown): string {
+  const json = JSON.stringify(value);
+  return json === undefined ? String(value) : json;
+}
+
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
+
 function asHandleId(handle: SpiceHandle, context: string): number {
   const id = handle as unknown as number;
   if (typeof id !== "number" || !Number.isFinite(id) || !Number.isInteger(id)) {
-    throw new TypeError(`${context}: expected a SpiceHandle to be an integer number`);
+    throw new TypeError(formatExpectedGot(context, "a SpiceHandle represented by a finite integer", handle));
   }
   if (id <= 0) {
-    throw new RangeError(`${context}: expected a SpiceHandle to be > 0 (got ${id})`);
+    throw new RangeError(formatExpectedGot(context, "a SpiceHandle > 0", id));
   }
   if (!Number.isSafeInteger(id)) {
-    throw new RangeError(`${context}: expected a SpiceHandle to be a safe integer (got ${id})`);
+    throw new RangeError(formatExpectedGot(context, "a safe-integer SpiceHandle", id));
   }
   return id;
 }
@@ -50,7 +59,7 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
       nativeHandle > SPICE_INT32_MAX
     ) {
       throw new SpiceBackendContractError(
-        `backend contract violation: expected backend to return a 32-bit signed integer handle for ${kind} (got ${nativeHandle})`,
+        `backend contract violation (${kind}): Expected: a signed 32-bit integer handle. Got: ${formatGot(nativeHandle)}`,
       );
     }
 
@@ -77,10 +86,14 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
     const handleId = asHandleId(handle, `${context}: lookup(handle)`);
     const entry = handles.get(handleId);
     if (!entry) {
-      throw new RangeError(`${context}: invalid or closed SpiceHandle ${handleId}`);
+      throw new RangeError(
+        formatExpectedGot(context, "an open SpiceHandle (not invalid or closed)", handleId),
+      );
     }
     if (!expected.includes(entry.kind)) {
-      throw new TypeError(`${context}: SpiceHandle ${handleId} has kind ${entry.kind}, expected ${expected.join(" or ")}`);
+      throw new TypeError(
+        `${context}: Expected: SpiceHandle kind ${expected.join(" or ")}. Got: ${entry.kind} (handle ${handleId})`,
+      );
     }
     return entry;
   }
@@ -94,10 +107,14 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
     const handleId = asHandleId(handle, `${context}: close(handle)`);
     const entry = handles.get(handleId);
     if (!entry) {
-      throw new RangeError(`${context}: invalid or closed SpiceHandle ${handleId}`);
+      throw new RangeError(
+        formatExpectedGot(context, "an open SpiceHandle (not invalid or closed)", handleId),
+      );
     }
     if (!expected.includes(entry.kind)) {
-      throw new TypeError(`${context}: SpiceHandle ${handleId} has kind ${entry.kind}, expected ${expected.join(" or ")}`);
+      throw new TypeError(
+        `${context}: Expected: SpiceHandle kind ${expected.join(" or ")}. Got: ${entry.kind} (handle ${handleId})`,
+      );
     }
 
     // Close-once semantics: only forget the handle after the native close succeeds.

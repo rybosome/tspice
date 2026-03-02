@@ -81,8 +81,27 @@ function isLengthArrayLike(x: unknown, expectedLength: number): x is ArrayLike<u
   );
 }
 
-function formatVecError(label: string, expectedLength: number, detail: string): string {
-  return `${label}: expected a length-${expectedLength} array of finite numbers (${detail})`;
+function formatGotValue(value: unknown): string {
+  const json = JSON.stringify(value);
+  return json === undefined ? String(value) : json;
+}
+
+function describeShape(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `Array(length=${value.length})`;
+  }
+  if (value instanceof DataView) {
+    return `DataView(byteLength=${value.byteLength})`;
+  }
+  if (isTypedArrayView(value)) {
+    const ctorName = value.constructor.name || "TypedArray";
+    return `${ctorName}(length=${value.length})`;
+  }
+  return formatGotValue(value);
+}
+
+function formatExpectedGot(label: string, expected: string, got: string): string {
+  return `${label}: Expected: ${expected}. Got: ${got}`;
 }
 
 function tryDefineBrand(target: object, brand: symbol): void {
@@ -115,17 +134,36 @@ function assertVecArrayLikeFinite(
   const { label, length } = options;
 
   if (value instanceof DataView) {
-    throw new Error(`${label}: DataView is not a supported vector input (use a TypedArray or number[]).`);
+    throw new TypeError(
+      formatExpectedGot(
+        label,
+        `a length-${length} number[] or numeric TypedArray`,
+        describeShape(value),
+      ),
+    );
   }
 
   if (!isLengthArrayLike(value, length)) {
-    throw new Error(formatVecError(label, length, "wrong shape"));
+    throw new TypeError(
+      formatExpectedGot(
+        label,
+        `a length-${length} number[] or numeric TypedArray`,
+        describeShape(value),
+      ),
+    );
   }
 
   for (let i = 0; i < length; i++) {
     const v = value[i];
-    if (!isFiniteNumber(v)) {
-      throw new Error(formatVecError(label, length, `index ${i} was ${String(v)}`));
+    if (typeof v !== "number") {
+      throw new TypeError(
+        formatExpectedGot(label, `a finite number at index ${i}`, formatGotValue(v)),
+      );
+    }
+    if (!Number.isFinite(v)) {
+      throw new RangeError(
+        formatExpectedGot(label, `a finite number at index ${i}`, formatGotValue(v)),
+      );
     }
   }
 }

@@ -79,8 +79,27 @@ function isLength36ArrayLike(x: unknown): x is ArrayLike<unknown> {
   );
 }
 
-function formatMat6Error(label: string, detail: string): string {
-  return `${label}: expected a length-36 array of finite numbers (${detail})`;
+function formatGotValue(value: unknown): string {
+  const json = JSON.stringify(value);
+  return json === undefined ? String(value) : json;
+}
+
+function describeShape(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `Array(length=${value.length})`;
+  }
+  if (value instanceof DataView) {
+    return `DataView(byteLength=${value.byteLength})`;
+  }
+  if (isTypedArrayView(value)) {
+    const ctorName = value.constructor.name || "TypedArray";
+    return `${ctorName}(length=${value.length})`;
+  }
+  return formatGotValue(value);
+}
+
+function formatExpectedGot(label: string, expected: string, got: string): string {
+  return `${label}: Expected: ${expected}. Got: ${got}`;
 }
 
 /** Runtime validation that an input is a length-36 array-like of finite numbers. */
@@ -91,17 +110,28 @@ export function assertMat6ArrayLike36(
   const label = options?.label ?? "Mat6";
 
   if (value instanceof DataView) {
-    throw new Error(`${label}: DataView is not a supported Mat6 input (use a TypedArray or number[]).`);
+    throw new TypeError(
+      formatExpectedGot(label, "a length-36 number[] or numeric TypedArray", describeShape(value)),
+    );
   }
 
   if (!isLength36ArrayLike(value)) {
-    throw new Error(formatMat6Error(label, "wrong shape"));
+    throw new TypeError(
+      formatExpectedGot(label, "a length-36 number[] or numeric TypedArray", describeShape(value)),
+    );
   }
 
   for (let i = 0; i < 36; i++) {
     const v = value[i];
-    if (!isFiniteNumber(v)) {
-      throw new Error(formatMat6Error(label, `index ${i} was ${String(v)}`));
+    if (typeof v !== "number") {
+      throw new TypeError(
+        formatExpectedGot(label, `a finite number at index ${i}`, formatGotValue(v)),
+      );
+    }
+    if (!Number.isFinite(v)) {
+      throw new RangeError(
+        formatExpectedGot(label, `a finite number at index ${i}`, formatGotValue(v)),
+      );
     }
   }
 }
