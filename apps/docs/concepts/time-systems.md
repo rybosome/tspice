@@ -76,3 +76,5 @@ If you need to control SPICE’s global time parsing defaults (TIMDEF), use `raw
 - **`str2et` is stateful.** It depends on global TIMDEF defaults (SYSTEM/CALENDAR/ZONE). If you change them, you’re changing process/instance-wide behavior.
 - **Time strings can be ambiguous.** Prefer explicit formats and time zones when possible.
 - **Convert once at the boundary.** Don’t repeatedly bounce between UTC and ET inside inner loops.
+
+If you hit kernel-missing or preload setup errors, see [/guide/troubleshooting](/guide/troubleshooting).

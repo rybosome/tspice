@@ -60,7 +60,10 @@ try {
 }
 ```
 
+If browser setup fails (worker creation/module config, wasm URL loading, kernel fetch/CORS), use [/guide/troubleshooting](/guide/troubleshooting).
+
 ## Next
 
 - Kernel details: [/guide/kernels](/guide/kernels)
 - Client builder & lifecycle: [/guide/creating-clients](/guide/creating-clients)
+- Troubleshooting: [/guide/troubleshooting](/guide/troubleshooting)

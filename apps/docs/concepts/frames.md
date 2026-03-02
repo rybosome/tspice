@@ -92,3 +92,5 @@ const cm = [rm[0], rm[3], rm[6], rm[1], rm[4], rm[7], rm[2], rm[5], rm[8]];
 - **Row-major vs column-major:** most rendering/math ecosystems default to column-major; use `Mat3.colMajor` when integrating.
 - **Kernel dependencies are easy to miss:** if a frame is kernel-defined, transforms will fail until you load the right FK/PCK/CK/SCLK.
 - **Time dependence:** transforms for rotating frames vary with `et`; cache carefully.
+
+If frame calls fail due to missing kernels or setup issues, see [/guide/troubleshooting](/guide/troubleshooting).

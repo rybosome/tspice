@@ -197,6 +197,10 @@ pnpm --filter @rybosome/tspice run test
 
 ## Troubleshooting / FAQ
 
+Start with the docs troubleshooting guide for common user-fixable errors (backend load, worker setup, kernel URL/path/baseUrl/fetch config, and missing required kernels):
+
+- <https://rybosome.github.io/tspice/guide/troubleshooting>
+
 ### “Native addon tspice_backend_node.node not found” / “Failed to load tspice native backend ...”
 
 If you selected the Node/native backend (`backend: "node"`) and you’re running from the workspace and haven’t built the addon yet:

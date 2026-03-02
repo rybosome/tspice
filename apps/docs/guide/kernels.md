@@ -10,6 +10,8 @@ Examples:
 
 In `tspice`, you typically **fetch kernels** and **load them** during client construction.
 
+If preload or kernel-selection errors block setup, see [/guide/troubleshooting](/guide/troubleshooting).
+
 ## Kernel packs
 
 `tspice` uses a simple `KernelPack` structure:
@@ -210,3 +212,4 @@ try {
 
 - Browser specifics: [/guide/browser](/guide/browser)
 - Node specifics: [/guide/node](/guide/node)
+- Troubleshooting: [/guide/troubleshooting](/guide/troubleshooting)
