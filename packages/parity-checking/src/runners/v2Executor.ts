@@ -1411,6 +1411,12 @@ async function executeStep(
       );
     }
 
+    case "script": {
+      invalidRequest(
+        "v3 workflow step script is parsed explicitly and must be executed by a script-capable runtime",
+      );
+    }
+
     default: {
       const exhaustive: never = step;
       unsupportedCall(`Unsupported workflow op ${(exhaustive as { op?: string }).op ?? "<unknown>"}`);

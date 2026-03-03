@@ -199,6 +199,14 @@ export type MethodWorkflowOpCallContractV3 = {
   call?: string;
 };
 
+export type MethodWorkflowOpScriptV3 = {
+  op: "script";
+  code: string;
+  in?: Record<string, unknown>;
+  as?: string;
+  out?: Record<string, string>;
+};
+
 export type MethodWorkflowAssertOperatorV3 = AssertOperator;
 
 export type MethodWorkflowAssertTestV3 =
@@ -255,6 +263,7 @@ export type MethodWorkflowStepV3 =
   | MethodWorkflowOpUnlinkV3
   | MethodWorkflowOpSpiceCallV3
   | MethodWorkflowOpCallContractV3
+  | MethodWorkflowOpScriptV3
   | MethodWorkflowOpAssertV3
   | MethodWorkflowOpProjectV3
   | MethodWorkflowOpSwitchV3
@@ -357,6 +366,7 @@ export type MethodWorkflowOpDlaBeginForwardSearchV2 = MethodWorkflowOpDlaBeginFo
 export type MethodWorkflowOpDasCloseV2 = MethodWorkflowOpDasCloseV3;
 export type MethodWorkflowOpUnlinkV2 = MethodWorkflowOpUnlinkV3;
 export type MethodWorkflowOpInvokeLegacyCallV2 = MethodWorkflowOpCallContractV3;
+export type MethodWorkflowOpScriptV2 = MethodWorkflowOpScriptV3;
 export type MethodWorkflowAssertOperatorV2 = MethodWorkflowAssertOperatorV3;
 export type MethodWorkflowAssertTestV2 = MethodWorkflowAssertTestV3;
 export type MethodWorkflowOpAssertV2 = MethodWorkflowOpAssertV3;
