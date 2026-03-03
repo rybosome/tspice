@@ -13,8 +13,8 @@ describe("schema validation (v3)", () => {
           kind: "method",
         },
         contract: {
-          contractMethod: "time.spiceVersion",
-          canonicalMethod: "time.spiceVersion",
+          contractMethod: "time.tkvrsn",
+          canonicalMethod: "time.tkvrsn",
         },
         workflow: {
           steps: [{ op: "callContract" }],
@@ -43,8 +43,8 @@ describe("schema validation (v3)", () => {
           kind: "method",
         },
         contract: {
-          contractMethod: "time.spiceVersion",
-          canonicalMethod: "time.spiceVersion",
+          contractMethod: "time.tkvrsn",
+          canonicalMethod: "time.tkvrsn",
         },
         suites: [
           {
@@ -74,8 +74,8 @@ describe("schema validation (v3)", () => {
             kind: "method",
           },
           contract: {
-            contractMethod: "time.spiceVersion",
-            canonicalMethod: "time.spiceVersion",
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
           },
           workflow: {
             steps: [{ op: "callContract" }],
@@ -135,8 +135,8 @@ describe("schema validation (v3)", () => {
             kind: "method",
           },
           contract: {
-            contractMethod: "time.spiceVersion",
-            canonicalMethod: "time.spiceVersion",
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
           },
           defaults: {
             compare: {
@@ -161,8 +161,8 @@ describe("schema validation (v3)", () => {
             kind: "method",
           },
           contract: {
-            contractMethod: "time.spiceVersion",
-            canonicalMethod: "time.spiceVersion",
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
           },
           workflow: {
             steps: [{ op: "callContract" }],
@@ -191,8 +191,8 @@ describe("schema validation (v3)", () => {
           kind: "method",
         },
         contract: {
-          contractMethod: "time.spiceVersion",
-          canonicalMethod: "time.spiceVersion",
+          contractMethod: "time.tkvrsn",
+          canonicalMethod: "time.tkvrsn",
         },
         workflow: {
           steps: [
@@ -237,8 +237,8 @@ describe("schema validation (v3)", () => {
             kind: "method",
           },
           contract: {
-            contractMethod: "time.spiceVersion",
-            canonicalMethod: "time.spiceVersion",
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
           },
           workflow: {
             steps: [
@@ -264,8 +264,8 @@ describe("schema validation (v3)", () => {
             kind: "method",
           },
           contract: {
-            contractMethod: "time.spiceVersion",
-            canonicalMethod: "time.spiceVersion",
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
           },
           workflow: {
             steps: [

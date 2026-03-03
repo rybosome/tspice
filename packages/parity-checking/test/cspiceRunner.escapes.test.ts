@@ -45,20 +45,22 @@ describe("cspice-runner JSON string escaping", () => {
   const maybeIt = cspiceRunnerReady() ? it : it.skip;
 
   maybeIt("rejects invalid JSON string escape sequences", () => {
-    const out = runRawJson('{"call":"str2et","args":["bad\\q"]}\n') as any;
+    const out = runRawJson(
+      '{"schemaVersion":3,"manifest":{"id":"methods/test/noop@v3","kind":"method"},"contract":{"contractMethod":"test.noop","canonicalMethod":"test.noop"},"args":{},"setup":{"kernels":["bad\\q"]},"workflow":{"steps":[{"op":"projectResult","out":{"ok":0}}]}}\n',
+    ) as any;
 
     expect(out.ok).toBe(false);
     expect(out.error?.code).toBe("invalid_request");
     expect(out.error?.message).toMatch(/invalid json string escape/i);
   });
 
-  maybeIt("unescapes \\uXXXX and recognizes escaped call names", () => {
-    // If the runner doesn't unescape \u0032, the call will be treated as
-    // unsupported.
-    const out = runRawJson('{"call":"time.str\\u0032et","args":[]}\n') as any;
+  maybeIt("unescapes \\uXXXX in workflow spiceCall names", () => {
+    const out = runRawJson(
+      '{"schemaVersion":3,"manifest":{"id":"methods/cells-windows/size@v3","kind":"method"},"contract":{"contractMethod":"cells-windows.size","canonicalMethod":"cells-windows.size"},"args":{"size":1},"workflow":{"steps":[{"op":"allocCell","as":"cell","params":{"kind":"int","size":"$args.size"}},{"op":"spiceCall","call":"siz\\u0065_c","in":["$refs.cell"],"as":"size"},{"op":"projectResult","out":{"size":"$refs.size"}}],"cleanup":[{"op":"freeCell","target":"$refs.cell"}]}}\n',
+    ) as any;
 
-    expect(out.ok).toBe(false);
-    expect(out.error?.message).toMatch(/expects args\[0\]/i);
+    expect(out.ok).toBe(true);
+    expect(out.result).toEqual({ size: 1 });
   });
 
   maybeIt("unescapes \\\\ and \\/ in setup.kernels paths", () => {
@@ -76,6 +78,16 @@ describe("cspice-runner JSON string escaping", () => {
     fs.copyFileSync(path.join(fixturePack, "naif0012.tls"), path.join(packDir, "naif0012.tls"));
 
     const input = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/test/noop@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "test.noop",
+        canonicalMethod: "test.noop",
+      },
+      args: {},
       setup: {
         kernels: [
           {
@@ -84,8 +96,14 @@ describe("cspice-runner JSON string escaping", () => {
           },
         ],
       },
-      call: "time.str2et",
-      args: ["2000 JAN 01 12:00:00 TDB"],
+      workflow: {
+        steps: [
+          {
+            op: "projectResult",
+            out: { ok: 0 },
+          },
+        ],
+      },
     };
 
     // Force forward slashes to appear as `\/` escape sequences in JSON.
@@ -93,6 +111,6 @@ describe("cspice-runner JSON string escaping", () => {
     const out = runRawJson(payload) as any;
 
     expect(out.ok).toBe(true);
-    expect(typeof out.result).toBe("number");
+    expect(out.result).toEqual({ ok: 0 });
   });
 });

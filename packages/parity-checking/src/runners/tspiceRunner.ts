@@ -897,10 +897,6 @@ const DISPATCH: Record<string, DispatchFn> = {
   },
 
   // time (misc)
-  "time.spiceVersion": (backend) => {
-    return backend.tkvrsn("TOOLKIT");
-  },
-
   "time.tkvrsn": (backend, args) => {
     if (typeof args[0] !== "string") {
       invalidArgs(`time.tkvrsn expects args[0] to be a string (got ${formatValue(args[0])})`);
