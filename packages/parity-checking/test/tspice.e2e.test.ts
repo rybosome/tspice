@@ -6,8 +6,7 @@ import { parse as parseYaml } from "yaml";
 import { describe, expect, it } from "vitest";
 
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
-import { parseMethodSpec, parseWorkflowSpec } from "../src/dsl/schemaValidate.js";
-import { mergeResolvedMethodSpec } from "../src/dsl/mergeResolvedSpec.js";
+import { parseMethodSpec } from "../src/dsl/schemaValidate.js";
 import { executeMethodSpecParity } from "../src/engine/executeMethodSpec.js";
 import { createCspiceRunner, getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
 
@@ -18,7 +17,7 @@ describe("parity-checking method execution", () => {
   maybeIt("executes str2et method spec parity", async () => {
     const methodPath = path.resolve(
       path.dirname(fileURLToPath(import.meta.url)),
-      "../specs/methods/time/str2et@v1.yml",
+      "../specs/methods/time/str2et@v3.yml",
     );
 
     const method = parseMethodSpec({
@@ -26,25 +25,13 @@ describe("parity-checking method execution", () => {
       data: parseYaml(fs.readFileSync(methodPath, "utf8")),
     });
 
-    const workflowPath = path.resolve(
-      path.dirname(fileURLToPath(import.meta.url)),
-      "../workflows/legacy/time.str2et.basic@v1.yml",
-    );
-
-    const workflow = parseWorkflowSpec({
-      sourcePath: workflowPath,
-      data: parseYaml(fs.readFileSync(workflowPath, "utf8")),
-    });
-
-    const resolved = mergeResolvedMethodSpec(method, [workflow]);
-
     const tspice = await createTspiceRunner();
     const cspice = await createCspiceRunner();
 
     try {
-      const summary = await executeMethodSpecParity(resolved, { tspice, cspice });
+      const summary = await executeMethodSpecParity(method, { tspice, cspice });
       expect(summary.caseCount).toBeGreaterThan(0);
-      expect(summary.methodId).toBe("methods/time/str2et@v1");
+      expect(summary.methodId).toBe("methods/time/str2et@v3");
     } finally {
       await tspice.dispose?.();
       await cspice.dispose?.();

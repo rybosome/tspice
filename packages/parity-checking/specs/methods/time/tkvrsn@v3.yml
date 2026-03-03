@@ -1,0 +1,23 @@
+schemaVersion: 3
+manifest:
+  id: methods/time/tkvrsn@v3
+  kind: method
+contract:
+  contractMethod: time.tkvrsn
+  canonicalMethod: time.tkvrsn
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: time.tkvrsn
+    args:
+      - TOOLKIT
+    expect:
+      ok: true

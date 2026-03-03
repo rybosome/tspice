@@ -1,0 +1,102 @@
+schemaVersion: 3
+manifest:
+  id: methods/cells-windows/scard@v3
+  kind: method
+contract:
+  contractMethod: cells-windows.scard
+  canonicalMethod: cells-windows.scard
+  aliases: []
+  args:
+    - name: size
+      type: spiceInt
+      constraints:
+        min: 0
+    - name: card
+      type: spiceInt
+      constraints:
+        min: 0
+  result:
+    type: object
+    required:
+      - size
+      - card
+      - windowSize
+      - windowCard
+    properties:
+      size:
+        type: spiceInt
+      card:
+        type: spiceInt
+      windowSize:
+        type: spiceInt
+      windowCard:
+        type: spiceInt
+  errors:
+    - code: invalid_args
+    - code: spice_error
+workflow:
+  steps:
+    - op: allocCell
+      as: cell
+      params:
+        kind: int
+        size: $args.size
+    - op: allocWindow
+      as: window
+      params:
+        maxIntervals: 4
+    - op: spiceCall
+      call: scard_c
+      in:
+        - $args.card
+        - $refs.cell
+    - op: spiceCall
+      call: scard_c
+      in:
+        - $args.card
+        - $refs.window
+    - op: spiceCall
+      call: size_c
+      in:
+        - $refs.cell
+      as: size
+    - op: spiceCall
+      call: card_c
+      in:
+        - $refs.cell
+      as: card
+    - op: spiceCall
+      call: size_c
+      in:
+        - $refs.window
+      as: windowSize
+    - op: spiceCall
+      call: card_c
+      in:
+        - $refs.window
+      as: windowCard
+    - op: projectResult
+      out:
+        size: $refs.size
+        card: $refs.card
+        windowSize: $refs.windowSize
+        windowCard: $refs.windowCard
+  cleanup:
+    - op: freeWindow
+      target: $refs.window
+    - op: freeCell
+      target: $refs.cell
+cases:
+  - id: basic
+    args:
+      size: 8
+      card: 2
+    expect:
+      ok: true
+  - id: rejects-negative-card
+    args:
+      size: 8
+      card: -1
+    expect:
+      ok: false
+      errorCode: invalid_args

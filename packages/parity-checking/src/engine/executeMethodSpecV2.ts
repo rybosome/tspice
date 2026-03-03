@@ -5,9 +5,18 @@ import { mergeCompareChain, mergeSetupChain } from "../dsl/mergeResolvedSpec.js"
 import { spiceShortSymbol } from "../errors/spiceShort.js";
 import { validateV2ContractResultOrThrow } from "../runners/v2ContractResultValidation.js";
 
-import type { MethodSpecV2 } from "../dsl/types.js";
+import type { MethodCaseExpectation, MethodCaseSpecV2, MethodSpecV2, ScenarioCompareAst, ScenarioSetupAst } from "../dsl/types.js";
 import type { CaseRunner, RunCaseInputV2 } from "../runners/types.js";
 import type { MethodExecutionSummary } from "./executeMethodSpec.js";
+
+type MethodRunCase = {
+  caseId: string;
+  workflow: Exclude<MethodSpecV2["workflow"], undefined>;
+  args: unknown;
+  expect?: MethodCaseExpectation;
+  setupChain: Array<ScenarioSetupAst | undefined>;
+  compareChain: Array<ScenarioCompareAst | undefined>;
+};
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -61,6 +70,10 @@ function assertContractResultMatches(
   caseId: string,
   result: unknown,
 ): void {
+  if (method.contract.result === undefined) {
+    return;
+  }
+
   try {
     validateV2ContractResultOrThrow(result, method.contract.result, `${runnerName}.result`, (message) => {
       throw new Error(message);
@@ -115,15 +128,11 @@ function assertExpectedErrorShort(
 
   const expectedSymbol = spiceShortSymbol(expectedErrorShort);
   if (!expectedSymbol) {
-    throw new Error(
-      `Invalid expect.errorShort for ${methodId} case=${caseId}: ${JSON.stringify(expectedErrorShort)}`,
-    );
+    throw new Error(`Invalid expect.errorShort for ${methodId} case=${caseId}: ${JSON.stringify(expectedErrorShort)}`);
   }
 
   if (!tspiceShort || !cspiceShort) {
-    throw new Error(
-      `Missing spice.short while validating expect.errorShort for ${methodId} case=${caseId}`,
-    );
+    throw new Error(`Missing spice.short while validating expect.errorShort for ${methodId} case=${caseId}`);
   }
 
   const tspiceSymbol = spiceShortSymbol(tspiceShort);
@@ -136,7 +145,53 @@ function assertExpectedErrorShort(
   }
 }
 
-/** Execute and compare one v2 method spec across tspice and cspice runners. */
+function isCallContractOnlyWorkflow(workflow: Exclude<MethodSpecV2["workflow"], undefined>): boolean {
+  return workflow.steps.length === 1 && workflow.steps[0]?.op === "callContract";
+}
+
+function pushRuns(
+  out: MethodRunCase[],
+  workflow: Exclude<MethodSpecV2["workflow"], undefined>,
+  cases: MethodCaseSpecV2[],
+  labelPrefix: string,
+  setupChainHead: Array<ScenarioSetupAst | undefined>,
+  compareChainHead: Array<ScenarioCompareAst | undefined>,
+): void {
+  for (const scenarioCase of cases) {
+    out.push({
+      caseId: labelPrefix ? `${labelPrefix}:${scenarioCase.id}` : scenarioCase.id,
+      workflow,
+      args: scenarioCase.args,
+      setupChain: [...setupChainHead, scenarioCase.setup],
+      compareChain: [...compareChainHead, scenarioCase.compare],
+      ...(scenarioCase.expect !== undefined ? { expect: scenarioCase.expect } : {}),
+    });
+  }
+}
+
+function buildMethodRuns(method: MethodSpecV2): MethodRunCase[] {
+  const runs: MethodRunCase[] = [];
+
+  if (method.workflow && method.cases) {
+    pushRuns(runs, method.workflow, method.cases, "", [method.setup], [method.defaults?.compare]);
+    return runs;
+  }
+
+  for (const suite of method.suites ?? []) {
+    pushRuns(
+      runs,
+      suite.workflow,
+      suite.cases,
+      suite.id,
+      [method.setup, suite.setup],
+      [method.defaults?.compare, suite.defaults?.compare],
+    );
+  }
+
+  return runs;
+}
+
+/** Execute and compare one v3 method spec across tspice and cspice runners. */
 export async function executeMethodSpecParityV2(
   method: MethodSpecV2,
   runners: {
@@ -144,16 +199,20 @@ export async function executeMethodSpecParityV2(
     cspice: CaseRunner;
   },
 ): Promise<MethodExecutionSummary> {
-  for (const scenarioCase of method.cases) {
-    const setup = mergeSetupChain([method.setup, scenarioCase.setup]);
-    const compare = mergeCompareChain([method.defaults?.compare, scenarioCase.compare]);
+  const runs = buildMethodRuns(method);
+
+  for (const run of runs) {
+    const setup = mergeSetupChain(run.setupChain);
+    const compare = mergeCompareChain(run.compareChain);
+
+    const argsDefault = isCallContractOnlyWorkflow(run.workflow) ? [] : {};
 
     const caseInput: RunCaseInputV2 = {
-      schemaVersion: 2 as const,
+      schemaVersion: 3,
       manifest: method.manifest,
       contract: method.contract,
-      args: scenarioCase.args ?? {},
-      workflow: method.workflow,
+      args: run.args ?? argsDefault,
+      workflow: run.workflow,
       ...(setup === undefined ? {} : { setup }),
     };
 
@@ -167,35 +226,29 @@ export async function executeMethodSpecParityV2(
     const angleWrapPi = compare?.angleWrapPi;
     const errorShort = compare?.errorShort ?? false;
 
-    const label = `${method.manifest.id} case=${scenarioCase.id} call=${method.contract.contractMethod}`;
+    const label = `${method.manifest.id} case=${run.caseId} call=${method.contract.contractMethod}`;
 
-    assertExpectedOutcome(
-      method.manifest.id,
-      scenarioCase.id,
-      scenarioCase.expect?.ok,
-      tspiceOutcome.ok,
-      cspiceOutcome.ok,
-    );
+    assertExpectedOutcome(method.manifest.id, run.caseId, run.expect?.ok, tspiceOutcome.ok, cspiceOutcome.ok);
 
     assertExpectedErrorCode(
       method.manifest.id,
-      scenarioCase.id,
-      scenarioCase.expect?.errorCode,
+      run.caseId,
+      run.expect?.errorCode,
       tspiceOutcome.ok ? undefined : tspiceOutcome.error.code,
       cspiceOutcome.ok ? undefined : cspiceOutcome.error.code,
     );
 
-    if (scenarioCase.expect?.errorShort !== undefined) {
+    if (run.expect?.errorShort !== undefined) {
       if (tspiceOutcome.ok || cspiceOutcome.ok) {
         throw new Error(
-          `Invalid expect.errorShort contract (${method.manifest.id} case=${scenarioCase.id}): expect.errorShort requires both outcomes to fail, but got tspice.ok=${tspiceOutcome.ok}, cspice.ok=${cspiceOutcome.ok}`,
+          `Invalid expect.errorShort contract (${method.manifest.id} case=${run.caseId}): expect.errorShort requires both outcomes to fail, but got tspice.ok=${tspiceOutcome.ok}, cspice.ok=${cspiceOutcome.ok}`,
         );
       }
 
       assertExpectedErrorShort(
         method.manifest.id,
-        scenarioCase.id,
-        scenarioCase.expect.errorShort,
+        run.caseId,
+        run.expect.errorShort,
         tspiceOutcome.error.spice?.short,
         cspiceOutcome.error.spice?.short,
       );
@@ -212,12 +265,8 @@ export async function executeMethodSpecParityV2(
     }
 
     if (!tspiceOutcome.ok || !cspiceOutcome.ok) {
-      if (tspiceOutcome.ok || cspiceOutcome.ok) {
-        throw new Error(`Outcome mismatch (${label}): one runner succeeded while the other failed`);
-      }
-
-      const tspiceError = normalizeRunnerErrorForParity(tspiceOutcome.error);
-      const cspiceError = normalizeRunnerErrorForParity(cspiceOutcome.error);
+      const tspiceError = normalizeRunnerErrorForParity(tspiceOutcome.ok ? undefined : tspiceOutcome.error);
+      const cspiceError = normalizeRunnerErrorForParity(cspiceOutcome.ok ? undefined : cspiceOutcome.error);
 
       if (
         errorShort &&
@@ -238,20 +287,13 @@ export async function executeMethodSpecParityV2(
         }
 
         if (tspiceSymbol !== cspiceSymbol) {
-          throw new Error(
-            `errorShort mismatch (${label}) tspice=${tspiceSymbol} cspice=${cspiceSymbol}`,
-          );
+          throw new Error(`errorShort mismatch (${label}) tspice=${tspiceSymbol} cspice=${cspiceSymbol}`);
         }
 
         continue;
       }
 
-      const cmp = compareValues(
-        tspiceError,
-        cspiceError,
-        buildCompareOptions(tolAbs, tolRel, angleWrapPi),
-      );
-
+      const cmp = compareValues(tspiceError, cspiceError, buildCompareOptions(tolAbs, tolRel, angleWrapPi));
       if (!cmp.ok) {
         throw new Error(`Error mismatch (${label}):\n${formatMismatchReport(cmp.mismatches)}`);
       }
@@ -259,18 +301,13 @@ export async function executeMethodSpecParityV2(
       continue;
     }
 
-    assertContractResultMatches(method.manifest.id, "tspice", method, scenarioCase.id, tspiceOutcome.result);
-    assertContractResultMatches(method.manifest.id, "cspice", method, scenarioCase.id, cspiceOutcome.result);
+    assertContractResultMatches(method.manifest.id, "tspice", method, run.caseId, tspiceOutcome.result);
+    assertContractResultMatches(method.manifest.id, "cspice", method, run.caseId, cspiceOutcome.result);
 
     const tspiceResult = normalizeVolatileResultFields(method.contract.contractMethod, tspiceOutcome.result);
     const cspiceResult = normalizeVolatileResultFields(method.contract.contractMethod, cspiceOutcome.result);
 
-    const cmp = compareValues(
-      tspiceResult,
-      cspiceResult,
-      buildCompareOptions(tolAbs, tolRel, angleWrapPi),
-    );
-
+    const cmp = compareValues(tspiceResult, cspiceResult, buildCompareOptions(tolAbs, tolRel, angleWrapPi));
     if (!cmp.ok) {
       throw new Error(`Result mismatch (${label}):\n${formatMismatchReport(cmp.mismatches)}`);
     }
@@ -278,6 +315,6 @@ export async function executeMethodSpecParityV2(
 
   return {
     methodId: method.manifest.id,
-    caseCount: method.cases.length,
+    caseCount: runs.length,
   };
 }

@@ -1,0 +1,39 @@
+schemaVersion: 3
+manifest:
+  id: methods/file-io/readVirtualOutput@v3
+  kind: method
+contract:
+  contractMethod: file-io.readVirtualOutput
+  canonicalMethod: file-io.readVirtualOutput
+  args: []
+  result:
+    type: object
+    required:
+      - readBytes
+    properties:
+      readBytes:
+        const: true
+workflow:
+  steps:
+    - op: withResource
+      as: outputPath
+      acquire:
+        op: materialize
+        fixture: virtualOutputSpk
+        as: outputPath
+      steps:
+        - op: spiceCall
+          call: readVirtualOutput
+          in:
+            - $refs.outputPath
+        - op: projectResult
+          out:
+            readBytes: true
+      finally:
+        - op: unlink
+          target: $refs.outputPath
+cases:
+  - id: reads-bytes
+    args: {}
+    expect:
+      ok: true

@@ -29,9 +29,9 @@ function createBackendStub(): BackendStub {
 
 function createBaseInput(): RunCaseInputV2 {
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     manifest: {
-      id: "methods/cells-windows/newIntCell@v2",
+      id: "methods/cells-windows/newIntCell@v3",
       kind: "method",
     },
     contract: {
@@ -354,9 +354,9 @@ describe("executeV2CaseWithBackend", () => {
     } as unknown as SpiceBackend;
 
     const input: RunCaseInputV2 = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       manifest: {
-        id: "methods/dsk/dskb02@v2",
+        id: "methods/dsk/dskb02@v3",
         kind: "method",
       },
       contract: {
@@ -461,9 +461,9 @@ describe("executeV2CaseWithBackend", () => {
     };
 
     const createInput = (out: Record<string, string>): RunCaseInputV2 => ({
-      schemaVersion: 2,
+      schemaVersion: 3,
       manifest: {
-        id: "methods/dsk/dskb02@v2",
+        id: "methods/dsk/dskb02@v3",
         kind: "method",
       },
       contract: {

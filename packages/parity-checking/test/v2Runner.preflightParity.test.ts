@@ -6,9 +6,9 @@ import type { RunCaseInputV2 } from "../src/runners/types.js";
 
 function createBaseInput(): RunCaseInputV2 {
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     manifest: {
-      id: "methods/cells-windows/newIntCell@v2",
+      id: "methods/cells-windows/newIntCell@v3",
       kind: "method",
     },
     contract: {
@@ -37,7 +37,7 @@ function createBaseInput(): RunCaseInputV2 {
   };
 }
 
-describe("v2 runner preflight parity", () => {
+describe("v3 runner preflight parity", () => {
   const status = getCspiceRunnerStatus();
   const maybeIt = status.ready ? it : it.skip;
 
@@ -112,13 +112,13 @@ describe("v2 runner preflight parity", () => {
     }
   });
 
-  maybeIt("lowers invokeLegacyCall before v2 preflight in cspice runner", async () => {
+  maybeIt("lowers callContract before v3 preflight in cspice runner", async () => {
     const cspice = await createCspiceRunner();
 
     const input: RunCaseInputV2 = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       manifest: {
-        id: "methods/time/tkvrsn@v2",
+        id: "methods/time/tkvrsn@v3",
         kind: "method",
       },
       contract: {
@@ -133,7 +133,7 @@ describe("v2 runner preflight parity", () => {
       },
       args: ["TOOLKIT"],
       workflow: {
-        steps: [{ op: "invokeLegacyCall" }],
+        steps: [{ op: "callContract" }],
       },
     };
 

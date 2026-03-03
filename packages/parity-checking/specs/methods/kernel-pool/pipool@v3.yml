@@ -1,0 +1,21 @@
+schemaVersion: 3
+manifest:
+  id: methods/kernel-pool/pipool@v3
+  kind: method
+contract:
+  contractMethod: kernel-pool.pipool
+  canonicalMethod: kernel-pool.pipool
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: pipool-write
+    args:
+      - TSPICE_PARITY_PIPOOL_WRITTEN
+      - - -2147483648
+        - 2147483647
+    expect:
+      ok: true

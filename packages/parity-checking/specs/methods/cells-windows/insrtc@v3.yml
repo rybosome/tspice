@@ -1,0 +1,23 @@
+schemaVersion: 3
+manifest:
+  id: methods/cells-windows/insrtc@v3
+  kind: method
+contract:
+  contractMethod: cells-windows.insrtc
+  canonicalMethod: cells-windows.insrtc
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: cells-windows.insrtc.basic
+    args:
+      - alpha
+      - - char
+        - 8
+        - 16
+    expect:
+      ok: true

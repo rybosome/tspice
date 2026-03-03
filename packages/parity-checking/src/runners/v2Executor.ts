@@ -707,19 +707,23 @@ function validateCaseArgs(input: RunCaseInputV2): Record<string, unknown> {
  * Returns normalized/validated args for reuse by callers that continue execution.
  */
 export function validateV2CasePreflight(input: RunCaseInputV2): Record<string, unknown> {
-  if (input.schemaVersion !== 2) {
-    invalidRequest(`executeV2CaseWithBackend expected schemaVersion=2 (got ${formatValue(input.schemaVersion)})`);
+  if (input.schemaVersion !== 3) {
+    invalidRequest(`executeV2CaseWithBackend expected schemaVersion=3 (got ${formatValue(input.schemaVersion)})`);
   }
 
   if (input.manifest.kind !== "method") {
-    invalidRequest(`v2.manifest.kind must be \"method\" (got ${formatValue(input.manifest.kind)})`);
+    invalidRequest(`v3.manifest.kind must be \"method\" (got ${formatValue(input.manifest.kind)})`);
   }
 
   return validateCaseArgs(input);
 }
 
 function validateProjectedResult(projectedResult: unknown, input: RunCaseInputV2): void {
-  validateV2ContractResultOrThrow(projectedResult, input.contract.result, "v2.projectedResult", invalidRequest);
+  if (input.contract.result === undefined) {
+    return;
+  }
+
+  validateV2ContractResultOrThrow(projectedResult, input.contract.result, "v3.projectedResult", invalidRequest);
 }
 
 function projectResult(
@@ -1401,9 +1405,9 @@ async function executeStep(
       return undefined;
     }
 
-    case "invokeLegacyCall": {
+    case "callContract": {
       invalidRequest(
-        "v2 workflow step invokeLegacyCall must be lowered before executeV2CaseWithBackend dispatch",
+        "v3 workflow step callContract must be lowered before executeV2CaseWithBackend dispatch",
       );
     }
 

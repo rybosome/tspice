@@ -30,10 +30,26 @@ export function validateSchema(specs: LoadedParitySpecs): void {
   );
 
   for (const method of specs.methods) {
-    assertUnique(
-      method.cases.map((scenarioCase) => scenarioCase.id),
-      `case id in ${methodSpecId(method)}`,
-    );
+    if (method.cases) {
+      assertUnique(
+        method.cases.map((scenarioCase) => scenarioCase.id),
+        `case id in ${methodSpecId(method)}`,
+      );
+    }
+
+    if (method.suites) {
+      assertUnique(
+        method.suites.map((suite) => suite.id),
+        `suite id in ${methodSpecId(method)}`,
+      );
+
+      for (const suite of method.suites) {
+        assertUnique(
+          suite.cases.map((scenarioCase) => scenarioCase.id),
+          `case id in ${methodSpecId(method)} suite=${suite.id}`,
+        );
+      }
+    }
   }
 
   for (const spec of specs.crossCutting) {

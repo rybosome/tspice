@@ -1,0 +1,16 @@
+schemaVersion: 3
+manifest:
+  id: methods/kernels/furnsh@v3
+  kind: method
+contract:
+  contractMethod: kernels.furnsh
+  canonicalMethod: kernels.furnsh
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: kernels.furnsh.text-kernel
+    args:
+      - $FIXTURES/kernel-pool-parity.tpc
+    expect:
+      ok: true

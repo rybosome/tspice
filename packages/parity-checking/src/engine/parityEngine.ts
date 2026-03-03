@@ -1,34 +1,21 @@
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { buildWorkflowIndex } from "../dsl/buildWorkflowIndex.js";
 import { discoverCrossCuttingSpecs, discoverYamlFiles } from "../dsl/discoverCrossCuttingSpecs.js";
 import { loadYamlFile } from "../dsl/loadYaml.js";
-import { mergeResolvedMethodSpec } from "../dsl/mergeResolvedSpec.js";
-import { resolveMethodIncludes } from "../dsl/resolveIncludes.js";
-import {
-  parseCrossCuttingSpecAny,
-  parseMethodSpecAny,
-  parseWorkflowSpec,
-} from "../dsl/schemaValidate.js";
+import { parseCrossCuttingSpecAny, parseMethodSpecAny } from "../dsl/schemaValidate.js";
 import { runDispatchAliasParityGuard } from "./dispatchParityGuard.js";
 import { executeCrossCuttingSpec } from "./executeCrossCuttingSpec.js";
-import { executeMethodSpecParity } from "./executeMethodSpec.js";
 import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateCrossCuttingSpecs } from "../guards/validateCrossCuttingSpecs.js";
 import { validateDispatchAliasCoverage } from "../guards/validateDispatchAliasCoverage.js";
-import { validateIncludeGraph } from "../guards/validateIncludeGraph.js";
 import { validateSchema } from "../guards/validateSchema.js";
 import { createCspiceRunner, getCspiceRunnerStatus } from "../runners/cspiceRunner.js";
 import { createTspiceRunner } from "../runners/tspiceRunner.js";
 
-import {
-  crossCuttingSpecId,
-  isMethodSpecV2,
-  methodSpecId,
-} from "../dsl/types.js";
-import type { LoadedParitySpecs, MethodSpec, MethodSpecV2, ResolvedMethodSpec } from "../dsl/types.js";
+import { crossCuttingSpecId, methodSpecId } from "../dsl/types.js";
+import type { LoadedParitySpecs, ResolvedMethodSpec } from "../dsl/types.js";
 import type { CaseRunner } from "../runners/types.js";
 
 function packageRoot(): string {
@@ -43,13 +30,8 @@ function stableSort(a: string, b: string): number {
 async function loadParitySpecs(): Promise<LoadedParitySpecs> {
   const root = packageRoot();
 
-  const workflowFiles = discoverYamlFiles(path.join(root, "workflows"));
   const methodFiles = discoverYamlFiles(path.join(root, "specs", "methods"));
   const crossCuttingFiles = discoverCrossCuttingSpecs(path.join(root, "specs", "cross-cutting"));
-
-  const workflows = (
-    await Promise.all(workflowFiles.map(async (filePath) => parseWorkflowSpec(await loadYamlFile(filePath))))
-  ).sort((a, b) => stableSort(a.id, b.id));
 
   const methods = (
     await Promise.all(methodFiles.map(async (filePath) => parseMethodSpecAny(await loadYamlFile(filePath))))
@@ -62,7 +44,7 @@ async function loadParitySpecs(): Promise<LoadedParitySpecs> {
   ).sort((a, b) => stableSort(crossCuttingSpecId(a), crossCuttingSpecId(b)));
 
   return {
-    workflows,
+    workflows: [],
     methods,
     crossCutting,
   };
@@ -115,26 +97,24 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
   const specs = await loadParitySpecs();
 
   validateSchema(specs);
-  validateIncludeGraph(specs);
 
   const completeness = validateCompleteness(specs.methods);
   validateCrossCuttingSpecs(specs.crossCutting);
   const aliasCoverage = validateDispatchAliasCoverage();
 
-  const v1Methods: MethodSpec[] = specs.methods.filter((method): method is MethodSpec => !isMethodSpecV2(method));
-  const v2Methods: MethodSpecV2[] = specs.methods.filter(isMethodSpecV2);
-
-  const workflowIndex = buildWorkflowIndex(specs.workflows);
-  const resolvedMethods: ResolvedMethodSpec[] = v1Methods.map((method) =>
-    mergeResolvedMethodSpec(method, resolveMethodIncludes(method, workflowIndex)),
-  );
+  const resolvedMethods: ResolvedMethodSpec[] = specs.methods.map((method) => ({
+    method,
+    includeOrder: [],
+    ...(method.setup !== undefined ? { mergedSetup: method.setup } : {}),
+    ...(method.defaults?.compare !== undefined ? { mergedCompareDefaults: method.defaults.compare } : {}),
+  }));
 
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
     return {
       skipped: true,
       skipReason: `cspice-runner unavailable: ${status.hint}`,
-      workflowCount: specs.workflows.length,
+      workflowCount: 0,
       methodCount: specs.methods.length,
       crossCuttingSpecCount: specs.crossCutting.length,
       contractCount: completeness.contractCount,
@@ -155,19 +135,14 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
     }
 
     let methodCaseCount = 0;
-    for (const method of resolvedMethods) {
-      const summary = await executeMethodSpecParity(method, runners);
-      methodCaseCount += summary.caseCount;
-    }
-
-    for (const method of v2Methods) {
+    for (const method of specs.methods) {
       const summary = await executeMethodSpecParityV2(method, runners);
       methodCaseCount += summary.caseCount;
     }
 
     return {
       skipped: false,
-      workflowCount: specs.workflows.length,
+      workflowCount: 0,
       methodCount: specs.methods.length,
       crossCuttingSpecCount: specs.crossCutting.length,
       contractCount: completeness.contractCount,

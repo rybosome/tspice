@@ -50,7 +50,7 @@ function invokeRaw(payload: unknown): {
   };
 }
 
-describe("cspice-runner v2 workflow behavior", () => {
+describe("cspice-runner v3 workflow behavior", () => {
   const status = getCspiceRunnerStatus();
 
   if (!status.ready) {
@@ -64,7 +64,7 @@ describe("cspice-runner v2 workflow behavior", () => {
 
   it("emits a single structured error envelope for projection resolution failures", () => {
     const payload = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       args: {
         present: 7,
       },
@@ -95,7 +95,7 @@ describe("cspice-runner v2 workflow behavior", () => {
 
   it("accepts generic v2 cleanup ops without overriding the primary projected result", () => {
     const payload = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       args: {},
       workflow: {
         steps: [
@@ -141,7 +141,7 @@ describe("cspice-runner v2 workflow behavior", () => {
 
   it("returns provided assert error code/message when assertion fails", () => {
     const payload = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       args: {
         size: 3,
       },
@@ -176,9 +176,9 @@ describe("cspice-runner v2 workflow behavior", () => {
     }
   });
 
-  it("supports project + switch workflow steps in native v2 runner", () => {
+  it("supports project + switch workflow steps in native v3 runner", () => {
     const payload = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       args: {
         size: 3,
       },
@@ -222,7 +222,7 @@ describe("cspice-runner v2 workflow behavior", () => {
 
   it("emits invalid_request when switch has no matching case/default", () => {
     const payload = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       args: {
         size: 3,
       },
@@ -256,7 +256,7 @@ describe("cspice-runner v2 workflow behavior", () => {
 
   it("resolves projectResult before cleanup steps run", () => {
     const payload = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       args: {
         size: 4,
       },
@@ -325,7 +325,7 @@ describe("cspice-runner v2 workflow behavior", () => {
     });
 
     const payload = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       args: {},
       workflow: {
         steps,

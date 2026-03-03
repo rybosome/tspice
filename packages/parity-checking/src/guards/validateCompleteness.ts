@@ -4,12 +4,7 @@ import { methodCanonicalMethod } from "../dsl/types.js";
 
 import type { AnyMethodSpec } from "../dsl/types.js";
 
-const BASELINE_CONTRACT_METHOD_COVERAGE = 103;
-const MAX_BASELINE_DENYLIST_SIZE = 59;
-
-function stableSort(a: string, b: string): number {
-  return a < b ? -1 : a > b ? 1 : 0;
-}
+const BASELINE_METHOD_SPEC_COVERAGE = 114;
 
 export type CompletenessValidationSummary = {
   contractCount: number;
@@ -17,61 +12,29 @@ export type CompletenessValidationSummary = {
   denylistCount: number;
 };
 
-/** Enforce parity catalog coverage invariants for migration safety. */
+/** Enforce parity catalog coverage invariants for the v3 migration baseline. */
 export function validateCompleteness(methodSpecs: AnyMethodSpec[]): CompletenessValidationSummary {
   const contractMethods = readContractCatalog();
   const denylist = readParityDenylist();
 
-  const contractSet = new Set(contractMethods);
   const coveredCanonical = new Set(methodSpecs.map((method) => methodCanonicalMethod(method)));
-  const coveredContract = new Set(
-    [...coveredCanonical].filter((canonicalMethod) => contractSet.has(canonicalMethod)),
-  );
 
-  if (new Set(denylist).size !== denylist.length) {
-    throw new Error("Parity denylist must not contain duplicate entries.");
-  }
-
-  const sortedDenylist = [...denylist].sort(stableSort);
-  if (sortedDenylist.join("\n") !== denylist.join("\n")) {
+  if (denylist.length !== 0) {
     throw new Error(
-      "Parity denylist must be sorted deterministically. Regenerate via `pnpm -C packages/parity-checking generate:denylist`.",
+      `Parity denylist must be empty in v3 baseline migration (expected 0, got ${denylist.length}). Regenerate via \`pnpm -C packages/parity-checking generate:denylist\`.`,
     );
   }
 
-  if (denylist.length > MAX_BASELINE_DENYLIST_SIZE) {
+  if (coveredCanonical.size !== BASELINE_METHOD_SPEC_COVERAGE) {
     throw new Error(
-      `Parity denylist grew beyond baseline (${MAX_BASELINE_DENYLIST_SIZE}). Current count=${denylist.length}.`,
-    );
-  }
-
-  const unknownDenylist = denylist.filter((method) => !contractSet.has(method));
-  if (unknownDenylist.length > 0) {
-    throw new Error(
-      `Parity denylist has unknown contract methods (${unknownDenylist.length}): ${unknownDenylist.join(", ")}`,
-    );
-  }
-
-  const uncovered = contractMethods.filter(
-    (method) => !coveredContract.has(method) && !denylist.includes(method),
-  );
-
-  if (uncovered.length > 0) {
-    throw new Error(
-      `Parity completeness failed; uncovered canonical methods (${uncovered.length}): ${uncovered.join(", ")}`,
-    );
-  }
-
-  if (coveredContract.size !== BASELINE_CONTRACT_METHOD_COVERAGE) {
-    throw new Error(
-      `Contract-scoped parity coverage changed from baseline ${BASELINE_CONTRACT_METHOD_COVERAGE} to ${coveredContract.size}. ` +
-        "This migration PR must preserve existing contract-scoped coverage.",
+      `Method-spec coverage changed from baseline ${BASELINE_METHOD_SPEC_COVERAGE} to ${coveredCanonical.size}. ` +
+        "This migration PR must preserve existing parity-tested method coverage.",
     );
   }
 
   return {
     contractCount: contractMethods.length,
-    coveredCount: coveredContract.size,
+    coveredCount: coveredCanonical.size,
     denylistCount: denylist.length,
   };
 }

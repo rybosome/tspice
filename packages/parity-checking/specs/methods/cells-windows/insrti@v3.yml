@@ -1,0 +1,22 @@
+schemaVersion: 3
+manifest:
+  id: methods/cells-windows/insrti@v3
+  kind: method
+contract:
+  contractMethod: cells-windows.insrti
+  canonicalMethod: cells-windows.insrti
+  aliases: []
+  result:
+    type: object
+    properties: {}
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: cells-windows.insrti.basic
+    args:
+      - 2
+      - - int
+        - 8
+    expect:
+      ok: true

@@ -1,0 +1,29 @@
+schemaVersion: 3
+manifest:
+  id: methods/kernel-pool/dtpool@v3
+  kind: method
+contract:
+  contractMethod: kernel-pool.dtpool
+  canonicalMethod: kernel-pool.dtpool
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: dtpool-char-var
+    args:
+      - TSPICE_PARITY_CHAR_VAR
+    expect:
+      ok: true
+  - id: dtpool-double-var
+    args:
+      - TSPICE_PARITY_DOUBLE_VAR
+    expect:
+      ok: true
+  - id: dtpool-missing
+    args:
+      - TSPICE_PARITY_MISSING_VAR
+    expect:
+      ok: true

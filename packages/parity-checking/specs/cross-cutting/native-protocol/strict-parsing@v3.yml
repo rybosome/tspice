@@ -1,0 +1,11 @@
+schemaVersion: 3
+manifest:
+  id: native-protocol/strict-parsing@v3
+  kind: crossCuttingSpec
+cases:
+  - id: rejects-trailing-bytes
+    transport: native
+    rawRequest: '{"call":"time.str2et","args":["2020-01-01"]}garbage'
+    expect:
+      ok: false
+      errorCode: invalid_request

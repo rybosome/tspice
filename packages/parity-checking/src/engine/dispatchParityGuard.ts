@@ -10,6 +10,28 @@ import { readAliasMap } from "../generated/readAliasMap.js";
 import type { CaseRunner } from "../runners/types.js";
 import type { ResolvedMethodSpec } from "../dsl/types.js";
 
+type LegacyLikeMethod = {
+  id?: string;
+  canonicalMethod?: string;
+  defaults?: { compare?: { tolAbs?: number; tolRel?: number; angleWrapPi?: boolean; errorShort?: boolean } };
+  cases?: Array<{ id: string; args?: unknown; setup?: unknown; compare?: unknown }>;
+  contract?: { canonicalMethod?: string };
+  manifest?: { id?: string };
+  meta?: { sourcePath?: string };
+};
+
+function methodCanonical(method: LegacyLikeMethod): string {
+  return method.contract?.canonicalMethod ?? method.canonicalMethod ?? "";
+}
+
+function methodId(method: LegacyLikeMethod): string {
+  return method.manifest?.id ?? method.id ?? "unknown-method";
+}
+
+function methodSourcePath(method: LegacyLikeMethod): string {
+  return method.meta?.sourcePath ?? "dispatch-alias-guard";
+}
+
 export type DispatchAliasGuardSummary = {
   validatedAliasCount: number;
 };
@@ -49,8 +71,8 @@ export async function runDispatchAliasParityGuard(
   const aliasMap = readAliasMap();
 
   const methodByCanonical = new Map<string, ResolvedMethodSpec>();
-  for (const method of resolvedMethods) {
-    methodByCanonical.set(method.method.canonicalMethod, method);
+  for (const resolvedMethod of resolvedMethods) {
+    methodByCanonical.set(methodCanonical(resolvedMethod.method as LegacyLikeMethod), resolvedMethod);
   }
 
   let validatedAliasCount = 0;
@@ -63,23 +85,24 @@ export async function runDispatchAliasParityGuard(
       );
     }
 
-    if (resolvedMethod.method.cases.length === 0) {
-      throw new Error(
-        `Dispatch alias guard failed: method ${resolvedMethod.method.id} has no cases for alias ${alias}`,
-      );
+    const method = resolvedMethod.method as LegacyLikeMethod;
+    const methodCases = method.cases ?? [];
+
+    if (methodCases.length === 0) {
+      throw new Error(`Dispatch alias guard failed: method ${methodId(method)} has no cases for alias ${alias}`);
     }
 
-    for (const caseSpec of resolvedMethod.method.cases) {
+    for (const caseSpec of methodCases) {
       const caseLabel = caseSpec.id;
-      const setup = mergeSetupChain([resolvedMethod.mergedSetup, caseSpec.setup]);
+      const setup = mergeSetupChain([resolvedMethod.mergedSetup, caseSpec.setup as undefined]);
       const compare = mergeCompareChain([
         resolvedMethod.mergedCompareDefaults,
-        resolvedMethod.method.defaults?.compare,
-        caseSpec.compare,
+        method.defaults?.compare,
+        caseSpec.compare as undefined,
       ]);
 
       const scenario = parseScenario({
-        sourcePath: resolvedMethod.method.meta.sourcePath,
+        sourcePath: methodSourcePath(method),
         data: {
           name: `dispatch-alias-guard:${alias}:${caseLabel}`,
           setup,
@@ -88,12 +111,12 @@ export async function runDispatchAliasParityGuard(
             {
               id: "canonical",
               call: canonical,
-              args: caseSpec.args ?? [],
+              args: Array.isArray(caseSpec.args) ? caseSpec.args : [],
             },
             {
               id: "alias",
               call: alias,
-              args: caseSpec.args ?? [],
+              args: Array.isArray(caseSpec.args) ? caseSpec.args : [],
             },
           ],
         },

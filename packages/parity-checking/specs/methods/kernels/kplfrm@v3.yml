@@ -1,0 +1,19 @@
+schemaVersion: 3
+manifest:
+  id: methods/kernels/kplfrm@v3
+  kind: method
+contract:
+  contractMethod: kernels.kplfrm
+  canonicalMethod: kernels.kplfrm
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: kernels.kplfrm
+    args:
+      - 4
+    setup:
+      kernels:
+        - $FIXTURES/frames-minimal/earth_topo_201023.tf
+    expect:
+      ok: true

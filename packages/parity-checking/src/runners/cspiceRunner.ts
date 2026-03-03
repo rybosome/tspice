@@ -6,11 +6,12 @@ import { fileURLToPath } from "node:url";
 import type {
   CaseRunner,
   RunCaseInput,
+  RunCaseInputV3,
   RunCaseResult,
   RunnerErrorReport,
   SpiceErrorState,
 } from "./types.js";
-import { lowerV2InvokeLegacyCall } from "./legacyInvoke.js";
+import { lowerV3CallContract } from "./legacyInvoke.js";
 import { validateV2CasePreflight } from "./v2Executor.js";
 
 type RunnerValidationCode = "invalid_request" | "invalid_args";
@@ -467,6 +468,10 @@ function asSpiceErrorState(err: CRunnerError["error"]): SpiceErrorState {
   return spice;
 }
 
+function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
+  return typeof input === "object" && input !== null && "schemaVersion" in input;
+}
+
 /** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
 export async function createCspiceRunner(): Promise<CaseRunner> {
   const binaryPath = getCspiceRunnerBinaryPath();
@@ -487,8 +492,8 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
       try {
         let effectiveInput: RunCaseInput;
 
-        if (input.schemaVersion === 2) {
-          const legacyInput = lowerV2InvokeLegacyCall(input, {
+        if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
+          const legacyInput = lowerV3CallContract(input, {
             invalidRequest,
             invalidArgs,
           });

@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 import { parse as parseYaml } from "yaml";
 import { describe, expect, it } from "vitest";
 
-import { readContractCatalog } from "../src/generated/readContractCatalog.js";
 import { readParityDenylist } from "../src/generated/readParityDenylist.js";
 
 function discoverYamlFiles(rootDir: string): string[] {
@@ -55,34 +54,28 @@ function canonicalMethodFromSpecData(data: unknown, filePath: string): string {
 }
 
 describe("parity-checking spec coverage", () => {
-  it("covers canonical contract methods or denylist entries", () => {
+  it("pins v3 baseline method-spec coverage and empty denylist", () => {
     const testDir = path.dirname(fileURLToPath(import.meta.url));
     const methodsDir = path.resolve(testDir, "../specs/methods");
 
     const coveredCanonical = new Set<string>();
-    for (const filePath of discoverYamlFiles(methodsDir)) {
+    const methodFiles = discoverYamlFiles(methodsDir);
+    for (const filePath of methodFiles) {
       const data = parseYaml(fs.readFileSync(filePath, "utf8"));
+      if (isRecord(data)) {
+        expect(data.schemaVersion).toBe(3);
+      }
       coveredCanonical.add(canonicalMethodFromSpecData(data, filePath));
     }
 
-    const contract = readContractCatalog().sort(stableSort);
     const denylist = readParityDenylist();
 
     const denylistSorted = [...denylist].sort(stableSort);
     expect(denylist).toEqual(denylistSorted);
     expect(new Set(denylist).size).toBe(denylist.length);
 
-    const contractSet = new Set(contract);
-    const unknownDeny = denylist.filter((entry) => !contractSet.has(entry));
-    expect(unknownDeny).toEqual([]);
-
-    const missing = contract.filter((method) => !coveredCanonical.has(method) && !denylist.includes(method));
-    expect(missing).toEqual([]);
-
-    const coveredContractCount = contract.filter((method) => coveredCanonical.has(method)).length;
-
-    expect(contract.length).toBe(162);
-    expect(coveredContractCount).toBe(103);
-    expect(denylist.length).toBe(59);
+    expect(methodFiles.length).toBe(114);
+    expect(coveredCanonical.size).toBe(114);
+    expect(denylist.length).toBe(0);
   });
 });

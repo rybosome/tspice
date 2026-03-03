@@ -1,0 +1,46 @@
+schemaVersion: 3
+manifest:
+  id: methods/cells-windows/freeWindow@v3
+  kind: method
+contract:
+  contractMethod: cells-windows.freeWindow
+  canonicalMethod: cells-windows.freeWindow
+  aliases: []
+  args:
+    - name: maxIntervals
+      type: spiceInt
+      constraints:
+        min: 0
+  result:
+    type: object
+    properties: {}
+  errors:
+    - code: invalid_args
+    - code: spice_error
+workflow:
+  steps:
+    - op: allocWindow
+      as: window
+      params:
+        maxIntervals: $args.maxIntervals
+    - op: freeWindow
+      target: $refs.window
+    - op: projectResult
+      out: {}
+cases:
+  - id: basic
+    args:
+      maxIntervals: 4
+    expect:
+      ok: true
+  - id: allows-zero-max-intervals
+    args:
+      maxIntervals: 0
+    expect:
+      ok: true
+  - id: rejects-negative-max-intervals
+    args:
+      maxIntervals: -1
+    expect:
+      ok: false
+      errorCode: invalid_args

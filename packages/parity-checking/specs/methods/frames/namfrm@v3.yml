@@ -1,0 +1,33 @@
+schemaVersion: 3
+manifest:
+  id: methods/frames/namfrm@v3
+  kind: method
+contract:
+  contractMethod: frames.namfrm
+  canonicalMethod: frames.namfrm
+setup:
+  kernels:
+    - $FIXTURES/frames-minimal
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: namfrm-b1950
+    args:
+      - B1950
+    expect:
+      ok: true
+  - id: namfrm-j2000
+    args:
+      - J2000
+    expect:
+      ok: true
+  - id: namfrm-unknown
+    args:
+      - NO_SUCH_FRAME
+    expect:
+      ok: true
