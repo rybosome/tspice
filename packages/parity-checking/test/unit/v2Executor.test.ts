@@ -73,6 +73,37 @@ function createBaseInput(): RunCaseInputV2 {
 }
 
 describe("executeV2CaseWithBackend", () => {
+  it("fails explicitly on script workflow steps instead of treating them as callContract", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+
+    input.workflow.steps = [
+      {
+        op: "script",
+        in: {
+          size: "$args.size",
+        },
+        code: "return { doubled: size * 2 };",
+        as: "rawScriptResult",
+        out: {
+          doubled: "doubled",
+        },
+      },
+      {
+        op: "projectResult",
+        out: {
+          size: "$refs.doubled",
+        },
+      },
+    ];
+    input.workflow.cleanup = [];
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_request",
+      message: expect.stringContaining("script"),
+    });
+  });
+
   it("rejects duplicate v2 ref names", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();

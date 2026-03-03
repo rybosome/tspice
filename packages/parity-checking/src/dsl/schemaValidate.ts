@@ -79,10 +79,35 @@ function parseCompareAst(value: unknown, label: string): ScenarioCompareAst {
   ensureKnownKeys(obj, ["tolAbs", "tolRel", "angleWrapPi", "errorShort"], label);
 
   const out: ScenarioCompareAst = {};
-  if (obj.tolAbs !== undefined) out.tolAbs = asFiniteNumber(obj.tolAbs, `${label}.tolAbs`);
-  if (obj.tolRel !== undefined) out.tolRel = asFiniteNumber(obj.tolRel, `${label}.tolRel`);
+  if (obj.tolAbs !== undefined) {
+    const n = asFiniteNumber(obj.tolAbs, `${label}.tolAbs`);
+    if (n < 0) {
+      throw new TypeError(`${label}.tolAbs must be >= 0 (got ${n})`);
+    }
+    out.tolAbs = n;
+  }
+
+  if (obj.tolRel !== undefined) {
+    const n = asFiniteNumber(obj.tolRel, `${label}.tolRel`);
+    if (n < 0) {
+      throw new TypeError(`${label}.tolRel must be >= 0 (got ${n})`);
+    }
+    out.tolRel = n;
+  }
+
   if (obj.angleWrapPi !== undefined) out.angleWrapPi = asBoolean(obj.angleWrapPi, `${label}.angleWrapPi`);
   if (obj.errorShort !== undefined) out.errorShort = asBoolean(obj.errorShort, `${label}.errorShort`);
+  return out;
+}
+
+function parseStringMap(value: unknown, label: string): Record<string, string> {
+  const obj = asRecord(value, label);
+  const out: Record<string, string> = {};
+
+  for (const [key, entry] of Object.entries(obj)) {
+    out[key] = asString(entry, `${label}.${key}`);
+  }
+
   return out;
 }
 
@@ -444,10 +469,19 @@ function parseStepCore(
     const code = asString(obj.code, `${label}.code`);
     assertScriptSecurity(code, label);
 
-    // Current runtime lowering: script behaves as an explicit contract call step.
-    // This keeps script authoring available in v3 while preserving deterministic runner behavior.
+    const scriptIn = obj.in === undefined ? undefined : asRecord(obj.in, `${label}.in`);
+    const scriptOut = obj.out === undefined ? undefined : parseStringMap(obj.out, `${label}.out`);
+
     return {
-      steps: [{ op: "callContract" }],
+      steps: [
+        {
+          op: "script",
+          code,
+          ...(scriptIn === undefined ? {} : { in: scriptIn }),
+          ...(obj.as === undefined ? {} : { as: asString(obj.as, `${label}.as`) }),
+          ...(scriptOut === undefined ? {} : { out: scriptOut }),
+        },
+      ],
       cleanup: [],
     };
   }

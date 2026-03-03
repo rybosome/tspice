@@ -124,6 +124,108 @@ describe("schema validation (v3)", () => {
     ).toThrow(/use withResource instead/);
   });
 
+  it("rejects negative compare tolerances at schema-parse time", () => {
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "specs/methods/time/invalid-tol-abs@v3.yml",
+        data: {
+          schemaVersion: 3,
+          manifest: {
+            id: "methods/time/invalid-tol-abs@v3",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.spiceVersion",
+            canonicalMethod: "time.spiceVersion",
+          },
+          defaults: {
+            compare: {
+              tolAbs: -1,
+            },
+          },
+          workflow: {
+            steps: [{ op: "callContract" }],
+          },
+          cases: [{ id: "invalid", args: [] }],
+        },
+      }),
+    ).toThrow(/tolAbs must be >= 0/);
+
+    expect(() =>
+      parseMethodSpecAny({
+        sourcePath: "specs/methods/time/invalid-tol-rel@v3.yml",
+        data: {
+          schemaVersion: 3,
+          manifest: {
+            id: "methods/time/invalid-tol-rel@v3",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.spiceVersion",
+            canonicalMethod: "time.spiceVersion",
+          },
+          workflow: {
+            steps: [{ op: "callContract" }],
+          },
+          cases: [
+            {
+              id: "invalid",
+              args: [],
+              compare: {
+                tolRel: -0.25,
+              },
+            },
+          ],
+        },
+      }),
+    ).toThrow(/tolRel must be >= 0/);
+  });
+
+  it("preserves script step semantics in parsed workflow AST", () => {
+    const method = parseMethodSpecAny({
+      sourcePath: "specs/methods/time/script-ast@v3.yml",
+      data: {
+        schemaVersion: 3,
+        manifest: {
+          id: "methods/time/script-ast@v3",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "time.spiceVersion",
+          canonicalMethod: "time.spiceVersion",
+        },
+        workflow: {
+          steps: [
+            {
+              op: "script",
+              in: {
+                value: "$args.value",
+              },
+              code: "return { doubled: value * 2 };",
+              as: "rawScriptResult",
+              out: {
+                doubled: "doubledRef",
+              },
+            },
+          ],
+        },
+        cases: [{ id: "ok", args: { value: 2 } }],
+      },
+    });
+
+    expect(method.workflow?.steps[0]).toEqual({
+      op: "script",
+      in: {
+        value: "$args.value",
+      },
+      code: "return { doubled: value * 2 };",
+      as: "rawScriptResult",
+      out: {
+        doubled: "doubledRef",
+      },
+    });
+  });
+
   it("rejects script.language and disallowed script imports", () => {
     expect(() =>
       parseMethodSpecAny({
@@ -147,7 +249,7 @@ describe("schema validation (v3)", () => {
               },
             ],
           },
-          cases: [{ id: "invalid", args: [] }],
+          cases: [{ id: "invalid", args: {} }],
         },
       }),
     ).toThrow(/script implies TypeScript/);
@@ -173,7 +275,7 @@ describe("schema validation (v3)", () => {
               },
             ],
           },
-          cases: [{ id: "invalid", args: [] }],
+          cases: [{ id: "invalid", args: {} }],
         },
       }),
     ).toThrow(/module imports are not allowed/);

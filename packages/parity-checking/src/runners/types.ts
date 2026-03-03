@@ -137,6 +137,14 @@ export type V3WorkflowCallContractStep = {
   call?: string;
 };
 
+export type V3WorkflowScriptStep = {
+  op: "script";
+  code: string;
+  in?: Record<string, unknown>;
+  as?: string;
+  out?: Record<string, string>;
+};
+
 export type V3WorkflowAssertOperator = AssertOperator;
 
 export type V3WorkflowAssertTest =
@@ -193,6 +201,7 @@ export type V3WorkflowStep =
   | V3WorkflowUnlinkStep
   | V3WorkflowSpiceCallStep
   | V3WorkflowCallContractStep
+  | V3WorkflowScriptStep
   | V3WorkflowAssertStep
   | V3WorkflowProjectStep
   | V3WorkflowSwitchStep
@@ -236,6 +245,7 @@ export type V2WorkflowDlaBeginForwardSearchStep = V3WorkflowDlaBeginForwardSearc
 export type V2WorkflowDasCloseStep = V3WorkflowDasCloseStep;
 export type V2WorkflowUnlinkStep = V3WorkflowUnlinkStep;
 export type V2WorkflowInvokeLegacyCallStep = V3WorkflowCallContractStep;
+export type V2WorkflowScriptStep = V3WorkflowScriptStep;
 export type V2WorkflowAssertOperator = V3WorkflowAssertOperator;
 export type V2WorkflowAssertTest = V3WorkflowAssertTest;
 export type V2WorkflowAssertStep = V3WorkflowAssertStep;
