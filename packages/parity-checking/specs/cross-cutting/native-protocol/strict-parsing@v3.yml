@@ -5,7 +5,7 @@ manifest:
 cases:
   - id: rejects-trailing-bytes
     transport: native
-    rawRequest: '{"call":"time.str2et","args":["2020-01-01"]}garbage'
+    rawRequest: '{"schemaVersion":3,"manifest":{"id":"methods/test/noop@v3","kind":"method"},"contract":{"contractMethod":"test.noop","canonicalMethod":"test.noop","result":{"type":"object","required":["ok"],"properties":{"ok":{"type":"spiceInt"}}}},"args":{},"workflow":{"steps":[{"op":"projectResult","out":{"ok":0}}]}}garbage'
     expect:
       ok: false
       errorCode: invalid_request

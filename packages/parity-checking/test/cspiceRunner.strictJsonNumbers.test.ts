@@ -41,7 +41,15 @@ function invokeRaw(json: string): RunnerResponse {
   return JSON.parse(out) as RunnerResponse;
 }
 
-describe("cspice-runner strict JSON number/int literal grammar", () => {
+function buildSchemaVersionPayload(literal: string): string {
+  return `{"schemaVersion":${literal},"manifest":{"id":"methods/test/noop@v3","kind":"method"},"contract":{"contractMethod":"test.noop","canonicalMethod":"test.noop"},"args":{},"workflow":{"steps":[{"op":"projectResult","out":{"ok":0}}]}}\n`;
+}
+
+function buildAllocSizePayload(literal: string): string {
+  return `{"schemaVersion":3,"manifest":{"id":"methods/cells-windows/size@v3","kind":"method"},"contract":{"contractMethod":"cells-windows.size","canonicalMethod":"cells-windows.size"},"args":{"size":${literal}},"workflow":{"steps":[{"op":"allocCell","as":"cell","params":{"kind":"int","size":"$args.size"}},{"op":"spiceCall","call":"size_c","in":["$refs.cell"],"as":"size"},{"op":"projectResult","out":{"size":"$refs.size"}}],"cleanup":[{"op":"freeCell","target":"$refs.cell"}]}}\n`;
+}
+
+describe("cspice-runner strict JSON integer literal grammar", () => {
   const status = getCspiceRunnerStatus();
 
   if (!status.ready) {
@@ -53,103 +61,60 @@ describe("cspice-runner strict JSON number/int literal grammar", () => {
     return;
   }
 
-  const numberCases: Array<{ literal: string; ok: boolean }> = [
-    // accepted
-    { literal: "0", ok: true },
-    { literal: "-0", ok: true },
-    { literal: "1", ok: true },
-    { literal: "-1", ok: true },
-    { literal: "1.0", ok: true },
-    { literal: "1e0", ok: true },
-    { literal: "1e+0", ok: true },
-    { literal: "1e-0", ok: true },
-
-    // rejected (invalid JSON number literal)
-    { literal: "+0", ok: false },
-    { literal: "01", ok: false },
-    { literal: "-01", ok: false },
-    { literal: "1.", ok: false },
-    { literal: "1e", ok: false },
-    { literal: "1e+", ok: false },
-    { literal: "1e-", ok: false },
-
-    // rejected (non-finite after strtod)
-    { literal: "1e309", ok: false },
-
-    // rejected (not a JSON number)
+  const schemaVersionCases: Array<{ literal: string; ok: boolean }> = [
+    { literal: "3", ok: true },
+    { literal: "4", ok: false },
+    { literal: "+3", ok: false },
+    { literal: "03", ok: false },
+    { literal: "3.0", ok: false },
+    { literal: "3e0", ok: false },
+    { literal: "3.", ok: false },
+    { literal: "3e", ok: false },
+    { literal: "3e+", ok: false },
+    { literal: "3e-", ok: false },
+    { literal: "9223372036854775808", ok: false },
     { literal: "NaN", ok: false },
     { literal: "Infinity", ok: false },
     { literal: "-Infinity", ok: false },
   ];
 
-  for (const c of numberCases) {
-    it(`parses strict JSON number: ${c.literal}`, () => {
-      const payload = `{"call":"frames.pxform","args":["J2000","J2000",${c.literal}]}\n`;
-      const out = invokeRaw(payload);
+  for (const c of schemaVersionCases) {
+    it(`parses schemaVersion literal strictly: ${c.literal}`, () => {
+      const out = invokeRaw(buildSchemaVersionPayload(c.literal));
 
-      if (c.ok) {
-        expect(out.ok).toBe(true);
-        if (out.ok) {
-          expect(Array.isArray(out.result)).toBe(true);
-        }
-      } else {
+      expect(out.ok).toBe(c.ok);
+      if (!c.ok) {
         expect(out.ok).toBe(false);
         if (!out.ok) {
-          expect(out.error.code).toBe("invalid_args");
-          expect(out.error.message).toBe("frames.pxform expects args[2] to be a number");
-
-          if (c.literal === "1e309") {
-            expect(out.error.detail).toBe("numeric literal out of range");
-          }
+          expect(out.error.code).toBe("invalid_request");
         }
       }
     });
   }
 
-  const intCases: Array<{ literal: string; ok: boolean }> = [
-    // accepted
-    { literal: "0", ok: true },
-    { literal: "-0", ok: true },
-    { literal: "1", ok: true },
-    { literal: "-1", ok: true },
-    { literal: "10", ok: true },
-
-    // rejected (invalid JSON int literal)
-    { literal: "+0", ok: false },
-    { literal: "01", ok: false },
-    { literal: "-01", ok: false },
-    { literal: "1.0", ok: false },
-    { literal: "1e0", ok: false },
-    { literal: "1.", ok: false },
-
-    // rejected (range)
-    { literal: "9223372036854775808", ok: false },
-
-    // rejected (not a number)
-    { literal: "NaN", ok: false },
+  const allocSizeCases: Array<{ literal: string; ok: boolean; errorCode: "invalid_request" | "invalid_args" }> = [
+    { literal: "1", ok: true, errorCode: "invalid_args" },
+    { literal: "+1", ok: false, errorCode: "invalid_request" },
+    { literal: "01", ok: false, errorCode: "invalid_request" },
+    { literal: "1.0", ok: false, errorCode: "invalid_args" },
+    { literal: "1e0", ok: false, errorCode: "invalid_args" },
+    { literal: "9223372036854775808", ok: false, errorCode: "invalid_args" },
+    { literal: "NaN", ok: false, errorCode: "invalid_request" },
   ];
 
-  for (const c of intCases) {
-    it(`parses strict JSON int: ${c.literal}`, () => {
-      const payload = `{"call":"frames.frmnam","args":[${c.literal}]}\n`;
-      const out = invokeRaw(payload);
+  for (const c of allocSizeCases) {
+    it(`parses allocCell integer arg strictly: ${c.literal}`, () => {
+      const out = invokeRaw(buildAllocSizePayload(c.literal));
 
       if (c.ok) {
         expect(out.ok).toBe(true);
         if (out.ok) {
-          expect(out.result).toEqual(
-            expect.objectContaining({
-              found: expect.any(Boolean),
-            }),
-          );
+          expect(out.result).toEqual({ size: 1 });
         }
       } else {
         expect(out.ok).toBe(false);
         if (!out.ok) {
-          expect(out.error.code).toBe("invalid_args");
-          expect(out.error.message).toBe(
-            "frames.frmnam expects args[0] to be an integer (SpiceInt range)",
-          );
+          expect(out.error.code).toBe(c.errorCode);
         }
       }
     });

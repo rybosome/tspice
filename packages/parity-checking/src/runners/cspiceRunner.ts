@@ -3,18 +3,18 @@ import * as fs from "node:fs";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
+import type { Spice, SpiceBackend } from "@rybosome/tspice";
+
 import type {
   CaseRunner,
   RunCaseInput,
+  RunCaseInputV2,
   RunCaseInputV3,
   RunCaseResult,
   RunnerErrorReport,
   SpiceErrorState,
 } from "./types.js";
-import { lowerV3CallContract } from "./legacyInvoke.js";
-import { validateV2CasePreflight } from "./v2Executor.js";
-
-type RunnerValidationCode = "invalid_request" | "invalid_args";
+import { executeV2CaseWithBackend, validateV2CasePreflight } from "./v2Executor.js";
 
 export type CspiceRunnerBuildState = {
   available: boolean;
@@ -110,20 +110,6 @@ function safeErrorReport(error: unknown): RunnerErrorReport {
   }
 
   return { message: String(error) };
-}
-
-function failValidation(code: RunnerValidationCode, message: string): never {
-  const err = new TypeError(message) as TypeError & { code?: RunnerValidationCode };
-  err.code = code;
-  throw err;
-}
-
-function invalidRequest(message: string): never {
-  return failValidation("invalid_request", message);
-}
-
-function invalidArgs(message: string): never {
-  return failValidation("invalid_args", message);
 }
 
 type CRunnerOk = { ok: true; result: unknown };
@@ -472,47 +458,99 @@ function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
   return typeof input === "object" && input !== null && "schemaVersion" in input;
 }
 
+function isSingleCallContractWorkflow(input: RunCaseInputV3): boolean {
+  return input.workflow.steps.length === 1 && input.workflow.steps[0]?.op === "callContract";
+}
+
+function toBackendContract(spice: Spice): SpiceBackend {
+  return {
+    raw: spice.raw as unknown as SpiceBackend["raw"],
+    kit: spice.kit,
+    kind: spice.raw.kind,
+  };
+}
+
+async function loadNodeBackendForCallContract(): Promise<SpiceBackend> {
+  const { spiceClients } = await import("@rybosome/tspice");
+  const { spice } = await spiceClients.toSync({ backend: "node" });
+  return toBackendContract(spice);
+}
+
 /** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
 export async function createCspiceRunner(): Promise<CaseRunner> {
   const binaryPath = getCspiceRunnerBinaryPath();
+  let callContractBackend: SpiceBackend | undefined;
+  let callContractBackendPromise: Promise<SpiceBackend> | undefined;
+
+  const getCallContractBackend = async (): Promise<SpiceBackend> => {
+    if (callContractBackend) {
+      return callContractBackend;
+    }
+
+    if (!callContractBackendPromise) {
+      callContractBackendPromise = loadNodeBackendForCallContract();
+    }
+
+    callContractBackend = await callContractBackendPromise;
+    return callContractBackend;
+  };
+
+  const disposeCallContractBackend = async (): Promise<void> => {
+    if (!callContractBackend) {
+      return;
+    }
+
+    const backend = callContractBackend;
+    callContractBackend = undefined;
+    callContractBackendPromise = undefined;
+
+    try {
+      backend.raw.kclear();
+    } catch {
+      // best effort
+    }
+
+    try {
+      backend.raw.reset();
+    } catch {
+      // best effort
+    }
+
+    try {
+      (backend.raw as unknown as { close?: () => void }).close?.();
+    } catch {
+      // best effort
+    }
+  };
 
   return {
     kind: "cspice(raw)",
 
     async runCase(input: RunCaseInput): Promise<RunCaseResult> {
-      if (!fs.existsSync(binaryPath)) {
-        return {
-          ok: false,
-          error: {
-            message: `cspice-runner binary not found: ${binaryPath} (run: pnpm -C packages/parity-checking test)`,
-          },
-        };
-      }
-
       try {
-        let effectiveInput: RunCaseInput;
+        const useInProcessCallContractPath =
+          isRunCaseInputV3(input) && input.schemaVersion === 3 && isSingleCallContractWorkflow(input);
 
-        if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
-          const legacyInput = lowerV3CallContract(input, {
-            invalidRequest,
-            invalidArgs,
-          });
-
-          if (legacyInput !== null) {
-            effectiveInput = {
-              ...(input.setup === undefined ? {} : { setup: input.setup }),
-              call: legacyInput.call,
-              args: legacyInput.args,
-            };
-          } else {
-            validateV2CasePreflight(input);
-            effectiveInput = input;
-          }
-        } else {
-          effectiveInput = input;
+        if (useInProcessCallContractPath) {
+          const backend = await getCallContractBackend();
+          const result = await executeV2CaseWithBackend(backend, input as RunCaseInputV2);
+          return { ok: true, result };
         }
 
-        const out = await invokeRunner(binaryPath, effectiveInput);
+        if (!fs.existsSync(binaryPath)) {
+          return {
+            ok: false,
+            error: {
+              message: `cspice-runner binary not found: ${binaryPath} (run: pnpm -C packages/parity-checking test)`,
+            },
+          };
+        }
+
+        if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
+          validateV2CasePreflight(input);
+        }
+
+        const out = await invokeRunner(binaryPath, input);
         if (out.ok) {
           return { ok: true, result: out.result };
         }
@@ -529,6 +567,10 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
         report.spice = report.spice ?? { failed: false };
         return { ok: false, error: report };
       }
+    },
+
+    async dispose(): Promise<void> {
+      await disposeCallContractBackend();
     },
   };
 }

@@ -92,6 +92,11 @@ type FreedHandles = {
   das: Set<DasHandle>;
 };
 
+type CallContractExecutionContext = {
+  args: unknown[];
+  defaultCall: string;
+};
+
 type WasmVirtualOutputCleanupHooks = {
   __deleteVirtualFileForFileIo?: (path: string) => void;
 };
@@ -701,12 +706,7 @@ function validateCaseArgs(input: RunCaseInputV2): Record<string, unknown> {
   return validated;
 }
 
-/**
- * Shared static validation for schema-v2 case payloads before runner dispatch.
- *
- * Returns normalized/validated args for reuse by callers that continue execution.
- */
-export function validateV2CasePreflight(input: RunCaseInputV2): Record<string, unknown> {
+function validateV2Envelope(input: RunCaseInputV2): void {
   if (input.schemaVersion !== 3) {
     invalidRequest(`executeV2CaseWithBackend expected schemaVersion=3 (got ${formatValue(input.schemaVersion)})`);
   }
@@ -714,8 +714,52 @@ export function validateV2CasePreflight(input: RunCaseInputV2): Record<string, u
   if (input.manifest.kind !== "method") {
     invalidRequest(`v3.manifest.kind must be \"method\" (got ${formatValue(input.manifest.kind)})`);
   }
+}
+
+/**
+ * Shared static validation for schema-v2 case payloads before runner dispatch.
+ *
+ * Returns normalized/validated args for reuse by callers that continue execution.
+ */
+export function validateV2CasePreflight(input: RunCaseInputV2): Record<string, unknown> {
+  validateV2Envelope(input);
 
   return validateCaseArgs(input);
+}
+
+function resolveCallContractMethodName(stepCall: unknown, defaultCall: string): string {
+  const resolvedCall = stepCall === undefined ? defaultCall : stepCall;
+  const call = asNonEmptyString(resolvedCall, "callContract.call").trim();
+  if (call.length === 0) {
+    invalidRequest("v3 callContract requires a non-empty call name");
+  }
+
+  const method = call.includes(".") ? call.slice(call.lastIndexOf(".") + 1) : call;
+  if (method.length === 0) {
+    invalidRequest("v3 callContract requires a non-empty backend method name");
+  }
+
+  return method;
+}
+
+async function executeCallContractStep(
+  backend: SpiceBackend,
+  step: Extract<V2WorkflowStep, { op: "callContract" }>,
+  context: CallContractExecutionContext,
+): Promise<unknown> {
+  const raw = getRawBackend(backend);
+  const method = resolveCallContractMethodName(step.call, context.defaultCall);
+  const maybeInvoker = (raw as unknown as Record<string, unknown>)[method];
+
+  if (typeof maybeInvoker !== "function") {
+    unsupportedCall("Unsupported call", { call: step.call ?? context.defaultCall });
+  }
+
+  return await (maybeInvoker as (...callArgs: unknown[]) => unknown).apply(raw, context.args);
+}
+
+function hasCallContractStep(steps: V2WorkflowStep[]): boolean {
+  return steps.some((step) => step.op === "callContract");
 }
 
 function validateProjectedResult(projectedResult: unknown, input: RunCaseInputV2): void {
@@ -1240,7 +1284,8 @@ async function executeStep(
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
-): Promise<Record<string, unknown> | undefined> {
+  callContractContext?: CallContractExecutionContext,
+): Promise<unknown | undefined> {
   const raw = getRawBackend(backend);
   const kit = getKitBackend(backend);
 
@@ -1375,9 +1420,16 @@ async function executeStep(
         );
       }
 
-      let projectedResult: Record<string, unknown> | undefined;
+      let projectedResult: unknown | undefined;
       for (const branchStep of selectedBranch) {
-        const maybeResult = await executeStep(backend, branchStep, args, refs, freedHandles);
+        const maybeResult = await executeStep(
+          backend,
+          branchStep,
+          args,
+          refs,
+          freedHandles,
+          callContractContext,
+        );
         if (maybeResult !== undefined) {
           projectedResult = maybeResult;
         }
@@ -1406,9 +1458,11 @@ async function executeStep(
     }
 
     case "callContract": {
-      invalidRequest(
-        "v3 workflow step callContract must be lowered before executeV2CaseWithBackend dispatch",
-      );
+      if (!callContractContext) {
+        invalidRequest("callContract execution context is missing");
+      }
+
+      return await executeCallContractStep(backend, step, callContractContext);
     }
 
     case "script": {
@@ -1455,6 +1509,8 @@ export async function executeV2CaseWithBackend(
   backend: SpiceBackend,
   input: RunCaseInputV2,
 ): Promise<unknown> {
+  validateV2Envelope(input);
+
   const kit = getKitBackend(backend);
   const raw = getRawBackend(backend);
 
@@ -1465,7 +1521,36 @@ export async function executeV2CaseWithBackend(
     das: new Set<DasHandle>(),
   };
 
-  const args = validateV2CasePreflight(input);
+  const hasWorkflowCallContract = hasCallContractStep(input.workflow.steps);
+  const hasCleanupCallContract = hasCallContractStep(input.workflow.cleanup ?? []);
+
+  if (hasCleanupCallContract) {
+    invalidRequest("v3 callContract workflow must not define cleanup steps");
+  }
+
+  const isSingleCallContractWorkflow =
+    input.workflow.steps.length === 1 && input.workflow.steps[0]?.op === "callContract";
+
+  if (hasWorkflowCallContract && !isSingleCallContractWorkflow) {
+    invalidRequest("v3 callContract is only supported as a single-step workflow");
+  }
+
+  let callContractContext: CallContractExecutionContext | undefined;
+  let args: Record<string, unknown>;
+
+  if (isSingleCallContractWorkflow) {
+    if (!Array.isArray(input.args)) {
+      invalidArgs(`v3 callContract expects case args to be an array (got ${formatValue(input.args)})`);
+    }
+
+    callContractContext = {
+      args: input.args,
+      defaultCall: asNonEmptyString(input.contract.contractMethod, "contract.contractMethod"),
+    };
+    args = {};
+  } else {
+    args = validateCaseArgs(input);
+  }
 
   let projectedResult: unknown = undefined;
   let hasProjectedResult = false;
@@ -1473,7 +1558,14 @@ export async function executeV2CaseWithBackend(
 
   try {
     for (const step of input.workflow.steps) {
-      const maybeResult = await executeStep(backend, step, args, refs, freedHandles);
+      const maybeResult = await executeStep(
+        backend,
+        step,
+        args,
+        refs,
+        freedHandles,
+        callContractContext,
+      );
       if (maybeResult !== undefined) {
         projectedResult = maybeResult;
         hasProjectedResult = true;
@@ -1491,7 +1583,7 @@ export async function executeV2CaseWithBackend(
 
   for (const step of input.workflow.cleanup ?? []) {
     try {
-      await executeStep(backend, step, args, refs, freedHandles);
+      await executeStep(backend, step, args, refs, freedHandles, callContractContext);
     } catch (cleanupError) {
       if (terminalError === undefined) {
         terminalError = cleanupError;

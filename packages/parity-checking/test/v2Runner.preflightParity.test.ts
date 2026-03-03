@@ -112,7 +112,7 @@ describe("v3 runner preflight parity", () => {
     }
   });
 
-  maybeIt("lowers callContract before v3 preflight in cspice runner", async () => {
+  maybeIt("executes callContract via v3 workflow path in cspice runner", async () => {
     const cspice = await createCspiceRunner();
 
     const input: RunCaseInputV2 = {

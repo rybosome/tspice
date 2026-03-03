@@ -16,8 +16,16 @@ describe("cspice-runner protocol", () => {
     ].join("; ");
 
     const input = {
-      call: "noop",
-      args: [],
+      schemaVersion: 3,
+      manifest: { id: "methods/noop@v3", kind: "method" },
+      contract: {
+        contractMethod: "test.noop",
+        canonicalMethod: "test.noop",
+      },
+      args: {},
+      workflow: {
+        steps: [{ op: "projectResult", out: { ok: 0 } }],
+      },
       setup: {
         kernels: [
           { path: "/a/pack1/pack1.tm", restrictToDir: "/a/pack1" },

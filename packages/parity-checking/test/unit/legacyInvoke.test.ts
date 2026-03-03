@@ -54,10 +54,10 @@ describe("lowerV2InvokeLegacyCall", () => {
 
   it("uses workflow step.call override when provided", () => {
     const input = makeInput();
-    input.workflow.steps = [{ op: "callContract", call: "time.spiceVersion" }];
+    input.workflow.steps = [{ op: "callContract", call: "time.timout" }];
 
     const lowered = lowerV2InvokeLegacyCall(input, validation);
-    expect(lowered?.call).toBe("time.spiceVersion");
+    expect(lowered?.call).toBe("time.timout");
   });
 
   it("returns null for non-legacy workflows", () => {
