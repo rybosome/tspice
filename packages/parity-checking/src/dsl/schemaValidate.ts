@@ -826,6 +826,7 @@ function assertCaseShapeForWorkflow(
   }
 }
 
+/** Parses a methodV3 YAML document into a validated method spec AST. */
 export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
   const obj = asRecord(file.data, "methodV3");
   ensureKnownKeys(
@@ -907,6 +908,7 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
   return method;
 }
 
+/** Backward-compatible method parser entry point for legacy call sites. */
 export function parseMethodSpecAny(file: ScenarioYamlFile): MethodSpecV3 {
   return parseMethodSpec(file);
 }
@@ -938,6 +940,7 @@ function parseCrossCuttingCase(value: unknown, label: string): CrossCuttingCaseS
   };
 }
 
+/** Parses a crossCuttingV3 YAML document into a validated cross-cutting spec AST. */
 export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpecV3 {
   const obj = asRecord(file.data, "crossCuttingV3");
   ensureKnownKeys(obj, ["schemaVersion", "manifest", "cases"], "crossCuttingV3");
@@ -968,6 +971,7 @@ export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpecV
   };
 }
 
+/** Backward-compatible cross-cutting parser entry point for legacy call sites. */
 export function parseCrossCuttingSpecAny(file: ScenarioYamlFile): CrossCuttingSpecV3 {
   return parseCrossCuttingSpec(file);
 }

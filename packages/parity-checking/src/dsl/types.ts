@@ -371,15 +371,18 @@ export type MethodSpecV2 = MethodSpecV3;
 export type CrossCuttingSpec = CrossCuttingSpecV3;
 export type CrossCuttingSpecV2 = CrossCuttingSpecV3;
 
+/** Compatibility type guard while v2 references still exist (all method specs are v3). */
 export function isMethodSpecV2(_method: AnyMethodSpec): _method is MethodSpecV3 {
   return true;
 }
 
+/** Returns a stable method id from v3 `manifest.id` or legacy top-level `id`. */
 export function methodSpecId(method: AnyMethodSpec): string {
   const legacy = method as unknown as { id?: string; manifest?: { id?: string } };
   return legacy.manifest?.id ?? legacy.id ?? "unknown-method";
 }
 
+/** Returns the canonical method name from v3 contract metadata or legacy shape. */
 export function methodCanonicalMethod(method: AnyMethodSpec): string {
   const legacy = method as unknown as {
     canonicalMethod?: string;
@@ -388,10 +391,12 @@ export function methodCanonicalMethod(method: AnyMethodSpec): string {
   return legacy.contract?.canonicalMethod ?? legacy.canonicalMethod ?? "";
 }
 
+/** Compatibility type guard while v2 references still exist (all cross-cutting specs are v3). */
 export function isCrossCuttingSpecV2(_spec: AnyCrossCuttingSpec): _spec is CrossCuttingSpecV3 {
   return true;
 }
 
+/** Returns a stable cross-cutting spec id from v3 `manifest.id` or legacy top-level `id`. */
 export function crossCuttingSpecId(spec: AnyCrossCuttingSpec): string {
   const legacy = spec as unknown as { id?: string; manifest?: { id?: string } };
   return legacy.manifest?.id ?? legacy.id ?? "unknown-cross-cutting";
