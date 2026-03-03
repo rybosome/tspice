@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { AnyMethodSpec } from "../../src/dsl/types.js";
+import {
+  BASELINE_CONTRACT_METHOD_COUNT,
+  BASELINE_CONTRACT_METHOD_COVERAGE,
+  BASELINE_METHOD_SPEC_COVERAGE,
+  BASELINE_UNCOVERED_CONTRACT_METHODS,
+} from "../../src/guards/completenessBaseline.js";
 
 const { readContractCatalogMock, readParityDenylistMock } = vi.hoisted(() => ({
   readContractCatalogMock: vi.fn<() => string[]>(),
@@ -17,12 +23,16 @@ vi.mock("../../src/generated/readParityDenylist.js", () => ({
 
 import { validateCompleteness } from "../../src/guards/validateCompleteness.js";
 
-const BASELINE_COVERED_METHODS = Array.from({ length: 114 }, (_entry, index) =>
+const BASELINE_COVERED_METHODS = Array.from({ length: BASELINE_METHOD_SPEC_COVERAGE }, (_entry, index) =>
   `covered.method.${index}`,
 );
-const BASELINE_CONTRACT_COVERED_METHODS = BASELINE_COVERED_METHODS.slice(0, 103);
-const BASELINE_UNCOVERED_METHODS = Array.from({ length: 59 }, (_entry, index) =>
-  `uncovered.method.${index}`,
+const BASELINE_CONTRACT_COVERED_METHODS = BASELINE_COVERED_METHODS.slice(
+  0,
+  BASELINE_CONTRACT_METHOD_COVERAGE,
+);
+const BASELINE_UNCOVERED_METHODS = Array.from(
+  { length: BASELINE_UNCOVERED_CONTRACT_METHODS },
+  (_entry, index) => `uncovered.method.${index}`,
 );
 const BASELINE_CONTRACT_METHODS = [
   ...BASELINE_CONTRACT_COVERED_METHODS,
@@ -63,8 +73,8 @@ describe("validateCompleteness", () => {
     const summary = validateCompleteness(makeMethodSpecs(BASELINE_COVERED_METHODS));
 
     expect(summary).toEqual({
-      contractCount: 162,
-      coveredCount: 114,
+      contractCount: BASELINE_CONTRACT_METHOD_COUNT,
+      coveredCount: BASELINE_METHOD_SPEC_COVERAGE,
       denylistCount: 0,
     });
   });

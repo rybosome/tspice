@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { runParityEngine } from "../src/engine/parityEngine.js";
+import { BASELINE_METHOD_SPEC_COVERAGE } from "../src/guards/completenessBaseline.js";
 import { getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
 
 // Increase timeout for parity tests.
@@ -12,10 +13,10 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     const summary = await runParityEngine();
 
     expect(summary.workflowCount).toBe(0);
-    expect(summary.methodCount).toBe(114);
+    expect(summary.methodCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(summary.crossCuttingSpecCount).toBeGreaterThan(0);
     expect(summary.contractCount).toBe(162);
-    expect(summary.coveredCount).toBe(114);
+    expect(summary.coveredCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(summary.denylistCount).toBe(0);
     expect(summary.aliasCount).toBe(17);
 

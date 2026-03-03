@@ -1,14 +1,14 @@
 import { readContractCatalog } from "../generated/readContractCatalog.js";
 import { readParityDenylist } from "../generated/readParityDenylist.js";
 import { methodCanonicalMethod } from "../dsl/types.js";
+import {
+  BASELINE_CONTRACT_METHOD_COUNT,
+  BASELINE_CONTRACT_METHOD_COVERAGE,
+  BASELINE_METHOD_SPEC_COVERAGE,
+  BASELINE_UNCOVERED_CONTRACT_METHODS,
+} from "./completenessBaseline.js";
 
 import type { AnyMethodSpec } from "../dsl/types.js";
-
-const BASELINE_METHOD_SPEC_COVERAGE = 114;
-const BASELINE_CONTRACT_METHOD_COVERAGE = 103;
-const BASELINE_CONTRACT_METHOD_COUNT = 162;
-const BASELINE_UNCOVERED_CONTRACT_METHODS =
-  BASELINE_CONTRACT_METHOD_COUNT - BASELINE_CONTRACT_METHOD_COVERAGE;
 
 export type CompletenessValidationSummary = {
   contractCount: number;
