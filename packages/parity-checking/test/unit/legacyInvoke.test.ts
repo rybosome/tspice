@@ -22,9 +22,9 @@ const validation = {
 
 function makeInput(): RunCaseInputV2 {
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     manifest: {
-      id: "methods/time/tkvrsn@v2",
+      id: "methods/time/tkvrsn@v3",
       kind: "method",
     },
     contract: {
@@ -37,13 +37,13 @@ function makeInput(): RunCaseInputV2 {
     },
     args: ["TOOLKIT"],
     workflow: {
-      steps: [{ op: "invokeLegacyCall" }],
+      steps: [{ op: "callContract" }],
     },
   };
 }
 
 describe("lowerV2InvokeLegacyCall", () => {
-  it("returns lowered call+args for single-step invokeLegacyCall workflows", () => {
+  it("returns lowered call+args for single-step callContract workflows", () => {
     const lowered = lowerV2InvokeLegacyCall(makeInput(), validation);
 
     expect(lowered).toEqual({
@@ -54,7 +54,7 @@ describe("lowerV2InvokeLegacyCall", () => {
 
   it("uses workflow step.call override when provided", () => {
     const input = makeInput();
-    input.workflow.steps = [{ op: "invokeLegacyCall", call: "time.spiceVersion" }];
+    input.workflow.steps = [{ op: "callContract", call: "time.spiceVersion" }];
 
     const lowered = lowerV2InvokeLegacyCall(input, validation);
     expect(lowered?.call).toBe("time.spiceVersion");
@@ -72,7 +72,7 @@ describe("lowerV2InvokeLegacyCall", () => {
     expect(lowerV2InvokeLegacyCall(input, validation)).toBeNull();
   });
 
-  it("raises invalid_request when invokeLegacyCall defines cleanup steps", () => {
+  it("raises invalid_request when callContract defines cleanup steps", () => {
     const input = makeInput();
     input.workflow.cleanup = [{ op: "freeCell", target: "$refs.tmp" }];
 
@@ -87,7 +87,7 @@ describe("lowerV2InvokeLegacyCall", () => {
     }
   });
 
-  it("raises invalid_args when invokeLegacyCall case args are not an array", () => {
+  it("raises invalid_args when callContract case args are not an array", () => {
     const input = makeInput();
     input.args = { mode: "TOOLKIT" };
 

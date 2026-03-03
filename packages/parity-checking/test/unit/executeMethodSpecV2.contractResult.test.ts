@@ -17,9 +17,9 @@ class StubRunner implements CaseRunner {
 
 function buildMethod(resultSchema: MethodSpecV2["contract"]["result"]): MethodSpecV2 {
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     manifest: {
-      id: "methods/cells-windows/cellGeti@v2",
+      id: "methods/cells-windows/cellGeti@v3",
       kind: "method",
     },
     contract: {
@@ -30,7 +30,7 @@ function buildMethod(resultSchema: MethodSpecV2["contract"]["result"]): MethodSp
       errors: [],
     },
     workflow: {
-      steps: [{ op: "invokeLegacyCall" }],
+      steps: [{ op: "callContract" }],
     },
     cases: [
       {
@@ -40,13 +40,13 @@ function buildMethod(resultSchema: MethodSpecV2["contract"]["result"]): MethodSp
       },
     ],
     meta: {
-      sourcePath: "/tmp/cellGeti@v2.yml",
+      sourcePath: "/tmp/cellGeti@v3.yml",
     },
   };
 }
 
 describe("executeMethodSpecParityV2 contract.result validation", () => {
-  it("validates invokeLegacyCall success results against v2 contract.result const", async () => {
+  it("validates callContract success results against v2 contract.result const", async () => {
     const method = buildMethod({ const: 2 });
     const runner = new StubRunner({ ok: true, result: 999 });
 

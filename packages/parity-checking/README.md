@@ -11,12 +11,31 @@ It owns:
 
 ## Layout
 
-- `workflows/**` — reusable include workflows (`kind: workflow`)
-- `specs/methods/**` — per-method parity specs (`kind: method`)
-- `specs/cross-cutting/**` — executable cross-cutting specs (`kind: crossCuttingSpec`)
+- `specs/methods/**` — per-method parity specs (`schemaVersion: 3`, `manifest.kind: method`)
+- `specs/cross-cutting/**` — executable cross-cutting specs (`schemaVersion: 3`, `manifest.kind: crossCuttingSpec`)
 - `catalogs/contract-methods.json` — generated canonical contract methods
 - `catalogs/alias-map.json` — generated alias -> canonical map
-- `catalogs/parity-denylist.json` / `catalogs/parity-denylist.ts` — generated denylist
+- `catalogs/parity-denylist.json` / `catalogs/parity-denylist.ts` — generated denylist (v3 baseline is empty)
+
+## Method DSL (v3)
+
+Method specs are v3-only. v1/v2 documents are no longer accepted.
+
+Top-level shape:
+
+- exactly one of:
+  - singular `workflow` + `cases`, or
+  - `suites[]` (each suite carries its own `workflow` + `cases`)
+- shared `contract` block
+- optional `setup` / `defaults.compare`
+
+Workflow highlights:
+
+- `callContract` for direct contract-method invocation from case args
+- `spiceCall`, `project`, `projectResult`, `assert`, `switch`, etc. for explicit declarative flows
+- `withResource` is first-class for lifecycle scoping
+  - low-level lifecycle steps (`dasOpen`, `dlaBeginForwardSearch`, `dasClose`, `unlink`) are rejected when authored directly outside `withResource`
+- `script` implies TypeScript (no `language` field). Script validation rejects module imports and direct network/fs access patterns.
 
 ## Scripts
 
@@ -27,8 +46,7 @@ It owns:
 `test` runs the full guard pipeline before parity execution:
 
 1. schema validity,
-2. include graph validity,
-3. completeness against generated contract catalog,
-4. cross-cutting spec discovery/validation/execution,
-5. centralized dispatch alias parity guard,
-6. method parity execution (tspice vs cspice).
+2. completeness against v3 baseline coverage expectations,
+3. cross-cutting spec discovery/validation/execution,
+4. centralized dispatch alias parity guard,
+5. method parity execution (tspice vs cspice).

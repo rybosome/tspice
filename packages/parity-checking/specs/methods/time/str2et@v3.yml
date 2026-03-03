@@ -1,0 +1,35 @@
+schemaVersion: 3
+manifest:
+  id: methods/time/str2et@v3
+  kind: method
+contract:
+  contractMethod: time.str2et
+  canonicalMethod: time.str2et
+setup:
+  kernels:
+    - $FIXTURES/basic-time
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: invalid
+    args:
+      - not a time
+    compare:
+      errorShort: true
+    expect:
+      ok: false
+  - id: iso-utc
+    args:
+      - 2010-01-02T03:04:05
+    expect:
+      ok: true
+  - id: j2000-tdb
+    args:
+      - 2000 JAN 01 12:00:00 TDB
+    expect:
+      ok: true

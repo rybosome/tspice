@@ -1,0 +1,27 @@
+schemaVersion: 3
+manifest:
+  id: methods/file-io/dskmi2@v3
+  kind: method
+contract:
+  contractMethod: file-io.dskmi2
+  canonicalMethod: file-io.dskmi2
+  aliases: []
+  result:
+    type: object
+    required:
+      - computedSpatialIndex
+    properties:
+      computedSpatialIndex:
+        const: true
+workflow:
+  steps:
+    - op: spiceCall
+      call: dskmi2_c
+      in: []
+    - op: projectResult
+      out:
+        computedSpatialIndex: true
+cases:
+  - id: minimal-triangle-index
+    expect:
+      ok: true

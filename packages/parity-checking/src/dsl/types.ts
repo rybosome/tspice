@@ -1,50 +1,51 @@
 import type { CompareOptions } from "../compare/types.js";
 import type { AssertOperator } from "../assertOperators.js";
-import type { KernelEntry } from "../runners/types.js";
 
+/** AST shape for per-scenario compare options in YAML. */
 export type ScenarioCompareAst = CompareOptions & {
-  /** If true, compare only `spice.short` when both sides throw. */
   errorShort?: boolean;
 };
 
+/** AST shape for per-scenario setup (currently just kernel list). */
 export type ScenarioSetupAst = {
-  /** Kernel entries (resolved to absolute paths by the parser). */
-  kernels?: KernelEntry[];
+  kernels?: Array<string | { path: string; restrictToDir?: string }>;
 };
 
+/** AST shape for a single scenario case. */
 export type ScenarioCaseAst = {
   id: string;
-  setup?: ScenarioSetupAst;
-  compare?: ScenarioCompareAst;
   call: string;
   args?: unknown[];
+  setup?: ScenarioSetupAst;
+  compare?: ScenarioCompareAst;
   expect?: unknown;
 };
 
+/** AST shape for a full scenario document. */
 export type ScenarioAst = {
-  /** Human-readable name. */
   name?: string;
   setup?: ScenarioSetupAst;
   compare?: ScenarioCompareAst;
   cases: ScenarioCaseAst[];
-  meta: {
-    sourcePath: string;
+  meta?: {
+    sourcePath?: string;
   };
 };
 
+/** Raw YAML file wrapper for validation/parsing. */
 export type ScenarioYamlFile = {
   sourcePath: string;
   text?: string;
   data: unknown;
 };
 
+/** Legacy reusable workflow spec referenced by `uses` includes. */
 export type WorkflowSpec = {
   id: string;
   kind: "workflow";
   uses?: string[];
   setup?: ScenarioSetupAst;
   compareDefaults?: ScenarioCompareAst;
-  notes?: string[];
   meta: {
     sourcePath: string;
   };
@@ -52,89 +53,74 @@ export type WorkflowSpec = {
 
 export type MethodCaseExpectation = {
   ok?: boolean;
-  errorCode?: string;
   errorShort?: string;
+  errorCode?: string;
 };
 
-export type MethodCaseSpec = {
+export type MethodCaseSpecV3 = {
   id: string;
-  args?: unknown[];
+  args?: unknown;
   setup?: ScenarioSetupAst;
   compare?: ScenarioCompareAst;
   expect?: MethodCaseExpectation;
 };
 
-export type MethodSpec = {
-  id: string;
-  kind: "method";
-  contractMethod: string;
-  canonicalMethod: string;
-  uses?: string[];
-  setup?: ScenarioSetupAst;
-  defaults?: {
-    compare?: ScenarioCompareAst;
-  };
-  cases: MethodCaseSpec[];
-  meta: {
-    sourcePath: string;
-  };
-};
-
-export type MethodManifestV2 = {
+export type MethodManifestV3 = {
   id: string;
   kind: "method";
 };
 
-export type MethodArgConstraintSpecV2 = {
+export type MethodArgConstraintSpecV3 = {
   min?: number;
   max?: number;
 };
 
-export type MethodArgSpecV2 = {
+export type MethodArgSpecV3 = {
   name: string;
   type: "spiceInt";
-  constraints?: MethodArgConstraintSpecV2;
+  constraints?: MethodArgConstraintSpecV3;
 };
 
-export type MethodResultPropertySpecV2 = {
-  const?: string | number | boolean | null;
+export type MethodResultPropertySpecV3 = {
+  const?: MethodResultConstValueV3;
   type?: "spiceInt";
 };
 
-export type MethodResultConstValueV2 =
+export type MethodResultConstValueV3 =
   | string
   | number
   | boolean
   | null
-  | MethodResultConstValueV2[]
-  | { [key: string]: MethodResultConstValueV2 };
+  | MethodResultConstValueV3[]
+  | { [key: string]: MethodResultConstValueV3 };
 
-export type MethodResultConstSpecV2 = {
-  const: MethodResultConstValueV2;
+export type MethodResultConstSpecV3 = {
+  const: MethodResultConstValueV3;
 };
 
-export type MethodResultObjectSpecV2 = {
+export type MethodResultObjectSpecV3 = {
   type: "object";
   required?: string[];
-  properties: Record<string, MethodResultPropertySpecV2>;
+  properties: Record<string, MethodResultPropertySpecV3>;
 };
 
-export type MethodResultSpecV2 = MethodResultObjectSpecV2 | MethodResultConstSpecV2;
+export type MethodResultSpecV3 = MethodResultObjectSpecV3 | MethodResultConstSpecV3;
 
-export type MethodErrorSpecV2 = {
+export type MethodErrorSpecV3 = {
   code: string;
 };
 
-export type MethodContractV2 = {
+export type MethodContractV3 = {
   contractMethod: string;
   canonicalMethod: string;
   aliases?: string[];
-  args?: MethodArgSpecV2[];
-  result: MethodResultSpecV2;
-  errors?: MethodErrorSpecV2[];
+  args?: MethodArgSpecV3[];
+  /** Optional for callContract-centric migrated specs. */
+  result?: MethodResultSpecV3;
+  errors?: MethodErrorSpecV3[];
 };
 
-export type MethodWorkflowOpAllocCellV2 = {
+export type MethodWorkflowOpAllocCellV3 = {
   op: "allocCell";
   as: string;
   params:
@@ -149,7 +135,7 @@ export type MethodWorkflowOpAllocCellV2 = {
       };
 };
 
-export type MethodWorkflowOpAllocWindowV2 = {
+export type MethodWorkflowOpAllocWindowV3 = {
   op: "allocWindow";
   as: string;
   params: {
@@ -157,7 +143,7 @@ export type MethodWorkflowOpAllocWindowV2 = {
   };
 };
 
-export type MethodWorkflowSpiceCallNameV2 =
+export type MethodWorkflowSpiceCallNameV3 =
   | "card_c"
   | "size_c"
   | "scard_c"
@@ -172,50 +158,50 @@ export type MethodWorkflowSpiceCallNameV2 =
   | "dskw02_c"
   | "readVirtualOutput";
 
-export type MethodWorkflowOpSpiceCallV2 = {
+export type MethodWorkflowOpSpiceCallV3 = {
   op: "spiceCall";
-  call: MethodWorkflowSpiceCallNameV2;
+  call: MethodWorkflowSpiceCallNameV3;
   in: unknown[];
   as?: string;
   out?: Record<string, string>;
 };
 
-export type MethodWorkflowOpMaterializeV2 = {
+export type MethodWorkflowOpMaterializeV3 = {
   op: "materialize";
   fixture: "minimalDsk" | "virtualOutputSpk";
   as: string;
 };
 
-export type MethodWorkflowOpDasOpenV2 = {
+export type MethodWorkflowOpDasOpenV3 = {
   op: "dasOpen";
   path: unknown;
   as: string;
 };
 
-export type MethodWorkflowOpDlaBeginForwardSearchV2 = {
+export type MethodWorkflowOpDlaBeginForwardSearchV3 = {
   op: "dlaBeginForwardSearch";
   handle: unknown;
   as: string;
 };
 
-export type MethodWorkflowOpDasCloseV2 = {
+export type MethodWorkflowOpDasCloseV3 = {
   op: "dasClose";
   target: unknown;
 };
 
-export type MethodWorkflowOpUnlinkV2 = {
+export type MethodWorkflowOpUnlinkV3 = {
   op: "unlink";
   target: unknown;
 };
 
-export type MethodWorkflowOpInvokeLegacyCallV2 = {
-  op: "invokeLegacyCall";
+export type MethodWorkflowOpCallContractV3 = {
+  op: "callContract";
   call?: string;
 };
 
-export type MethodWorkflowAssertOperatorV2 = AssertOperator;
+export type MethodWorkflowAssertOperatorV3 = AssertOperator;
 
-export type MethodWorkflowAssertTestV2 =
+export type MethodWorkflowAssertTestV3 =
   | { eq: [unknown, unknown] }
   | { ne: [unknown, unknown] }
   | { gt: [unknown, unknown] }
@@ -223,86 +209,92 @@ export type MethodWorkflowAssertTestV2 =
   | { lt: [unknown, unknown] }
   | { lte: [unknown, unknown] };
 
-export type MethodWorkflowOpAssertV2 = {
+export type MethodWorkflowOpAssertV3 = {
   op: "assert";
-  test: MethodWorkflowAssertTestV2;
+  test: MethodWorkflowAssertTestV3;
   error: {
     code: string;
     message: string;
   };
 };
 
-export type MethodWorkflowOpProjectResultV2 = {
+export type MethodWorkflowOpProjectResultV3 = {
   op: "projectResult";
   out: Record<string, unknown>;
 };
 
-export type MethodWorkflowOpProjectV2 = {
+export type MethodWorkflowOpProjectV3 = {
   op: "project";
   out: Record<string, unknown>;
 };
 
-export type MethodWorkflowOpSwitchV2 = {
+export type MethodWorkflowOpSwitchV3 = {
   op: "switch";
   on: unknown;
-  cases: Record<string, MethodWorkflowStepV2[]>;
-  default?: MethodWorkflowStepV2[];
+  cases: Record<string, MethodWorkflowStepV3[]>;
+  default?: MethodWorkflowStepV3[];
 };
 
-export type MethodWorkflowOpFreeCellV2 = {
+export type MethodWorkflowOpFreeCellV3 = {
   op: "freeCell";
   target: unknown;
 };
 
-export type MethodWorkflowOpFreeWindowV2 = {
+export type MethodWorkflowOpFreeWindowV3 = {
   op: "freeWindow";
   target: unknown;
 };
 
-export type MethodWorkflowStepV2 =
-  | MethodWorkflowOpAllocCellV2
-  | MethodWorkflowOpAllocWindowV2
-  | MethodWorkflowOpMaterializeV2
-  | MethodWorkflowOpDasOpenV2
-  | MethodWorkflowOpDlaBeginForwardSearchV2
-  | MethodWorkflowOpDasCloseV2
-  | MethodWorkflowOpUnlinkV2
-  | MethodWorkflowOpSpiceCallV2
-  | MethodWorkflowOpInvokeLegacyCallV2
-  | MethodWorkflowOpAssertV2
-  | MethodWorkflowOpProjectV2
-  | MethodWorkflowOpSwitchV2
-  | MethodWorkflowOpProjectResultV2
-  | MethodWorkflowOpFreeCellV2
-  | MethodWorkflowOpFreeWindowV2;
+export type MethodWorkflowStepV3 =
+  | MethodWorkflowOpAllocCellV3
+  | MethodWorkflowOpAllocWindowV3
+  | MethodWorkflowOpMaterializeV3
+  | MethodWorkflowOpDasOpenV3
+  | MethodWorkflowOpDlaBeginForwardSearchV3
+  | MethodWorkflowOpDasCloseV3
+  | MethodWorkflowOpUnlinkV3
+  | MethodWorkflowOpSpiceCallV3
+  | MethodWorkflowOpCallContractV3
+  | MethodWorkflowOpAssertV3
+  | MethodWorkflowOpProjectV3
+  | MethodWorkflowOpSwitchV3
+  | MethodWorkflowOpProjectResultV3
+  | MethodWorkflowOpFreeCellV3
+  | MethodWorkflowOpFreeWindowV3;
 
-export type MethodCaseSpecV2 = {
-  id: string;
-  args?: unknown;
-  setup?: ScenarioSetupAst;
-  compare?: ScenarioCompareAst;
-  expect?: MethodCaseExpectation;
+export type MethodWorkflowV3 = {
+  steps: MethodWorkflowStepV3[];
+  cleanup?: MethodWorkflowStepV3[];
 };
 
-export type MethodSpecV2 = {
-  schemaVersion: 2;
-  manifest: MethodManifestV2;
-  contract: MethodContractV2;
+export type MethodSuiteSpecV3 = {
+  id: string;
   setup?: ScenarioSetupAst;
   defaults?: {
     compare?: ScenarioCompareAst;
   };
-  workflow: {
-    steps: MethodWorkflowStepV2[];
-    cleanup?: MethodWorkflowStepV2[];
+  workflow: MethodWorkflowV3;
+  cases: MethodCaseSpecV3[];
+};
+
+export type MethodSpecV3 = {
+  schemaVersion: 3;
+  manifest: MethodManifestV3;
+  contract: MethodContractV3;
+  setup?: ScenarioSetupAst;
+  defaults?: {
+    compare?: ScenarioCompareAst;
   };
-  cases: MethodCaseSpecV2[];
+  uses?: string[];
+  workflow?: MethodWorkflowV3;
+  cases?: MethodCaseSpecV3[];
+  suites?: MethodSuiteSpecV3[];
   meta: {
     sourcePath: string;
   };
 };
 
-export type AnyMethodSpec = MethodSpec | MethodSpecV2;
+export type AnyMethodSpec = MethodSpecV3;
 
 export type CrossCuttingCaseExpectation = {
   ok: boolean;
@@ -316,19 +308,8 @@ export type CrossCuttingCaseSpec = {
   expect: CrossCuttingCaseExpectation;
 };
 
-export type CrossCuttingSpec = {
-  schemaVersion: 1;
-  kind: "crossCuttingSpec";
-  id: string;
-  owner: string;
-  cases: CrossCuttingCaseSpec[];
-  meta: {
-    sourcePath: string;
-  };
-};
-
-export type CrossCuttingSpecV2 = {
-  schemaVersion: 2;
+export type CrossCuttingSpecV3 = {
+  schemaVersion: 3;
   manifest: {
     id: string;
     kind: "crossCuttingSpec";
@@ -339,7 +320,7 @@ export type CrossCuttingSpecV2 = {
   };
 };
 
-export type AnyCrossCuttingSpec = CrossCuttingSpec | CrossCuttingSpecV2;
+export type AnyCrossCuttingSpec = CrossCuttingSpecV3;
 
 export type LoadedParitySpecs = {
   workflows: WorkflowSpec[];
@@ -348,33 +329,70 @@ export type LoadedParitySpecs = {
 };
 
 export type ResolvedMethodSpec = {
-  method: MethodSpec;
+  method: MethodSpecV3;
   includeOrder: WorkflowSpec[];
   mergedSetup?: ScenarioSetupAst;
   mergedCompareDefaults?: ScenarioCompareAst;
 };
 
-/** Type guard for schemaVersion=2 method specs. */
-export function isMethodSpecV2(method: AnyMethodSpec): method is MethodSpecV2 {
-  return (method as Partial<MethodSpecV2>).schemaVersion === 2;
+// Backward-compatible aliases (to ease rename churn while code moves to v3 names).
+export type MethodSpec = MethodSpecV3;
+export type MethodManifestV2 = MethodManifestV3;
+export type MethodArgConstraintSpecV2 = MethodArgConstraintSpecV3;
+export type MethodArgSpecV2 = MethodArgSpecV3;
+export type MethodResultPropertySpecV2 = MethodResultPropertySpecV3;
+export type MethodResultConstValueV2 = MethodResultConstValueV3;
+export type MethodResultConstSpecV2 = MethodResultConstSpecV3;
+export type MethodResultObjectSpecV2 = MethodResultObjectSpecV3;
+export type MethodResultSpecV2 = MethodResultSpecV3;
+export type MethodErrorSpecV2 = MethodErrorSpecV3;
+export type MethodContractV2 = MethodContractV3;
+export type MethodWorkflowOpAllocCellV2 = MethodWorkflowOpAllocCellV3;
+export type MethodWorkflowOpAllocWindowV2 = MethodWorkflowOpAllocWindowV3;
+export type MethodWorkflowSpiceCallNameV2 = MethodWorkflowSpiceCallNameV3;
+export type MethodWorkflowOpSpiceCallV2 = MethodWorkflowOpSpiceCallV3;
+export type MethodWorkflowOpMaterializeV2 = MethodWorkflowOpMaterializeV3;
+export type MethodWorkflowOpDasOpenV2 = MethodWorkflowOpDasOpenV3;
+export type MethodWorkflowOpDlaBeginForwardSearchV2 = MethodWorkflowOpDlaBeginForwardSearchV3;
+export type MethodWorkflowOpDasCloseV2 = MethodWorkflowOpDasCloseV3;
+export type MethodWorkflowOpUnlinkV2 = MethodWorkflowOpUnlinkV3;
+export type MethodWorkflowOpInvokeLegacyCallV2 = MethodWorkflowOpCallContractV3;
+export type MethodWorkflowAssertOperatorV2 = MethodWorkflowAssertOperatorV3;
+export type MethodWorkflowAssertTestV2 = MethodWorkflowAssertTestV3;
+export type MethodWorkflowOpAssertV2 = MethodWorkflowOpAssertV3;
+export type MethodWorkflowOpProjectResultV2 = MethodWorkflowOpProjectResultV3;
+export type MethodWorkflowOpProjectV2 = MethodWorkflowOpProjectV3;
+export type MethodWorkflowOpSwitchV2 = MethodWorkflowOpSwitchV3;
+export type MethodWorkflowOpFreeCellV2 = MethodWorkflowOpFreeCellV3;
+export type MethodWorkflowOpFreeWindowV2 = MethodWorkflowOpFreeWindowV3;
+export type MethodWorkflowStepV2 = MethodWorkflowStepV3;
+export type MethodCaseSpecV2 = MethodCaseSpecV3;
+export type MethodSpecV2 = MethodSpecV3;
+export type CrossCuttingSpec = CrossCuttingSpecV3;
+export type CrossCuttingSpecV2 = CrossCuttingSpecV3;
+
+export function isMethodSpecV2(_method: AnyMethodSpec): _method is MethodSpecV3 {
+  return true;
 }
 
-/** Return the canonical spec identifier for v1/v2 method specs. */
 export function methodSpecId(method: AnyMethodSpec): string {
-  return isMethodSpecV2(method) ? method.manifest.id : method.id;
+  const legacy = method as unknown as { id?: string; manifest?: { id?: string } };
+  return legacy.manifest?.id ?? legacy.id ?? "unknown-method";
 }
 
-/** Return the canonical backend method name for v1/v2 method specs. */
 export function methodCanonicalMethod(method: AnyMethodSpec): string {
-  return isMethodSpecV2(method) ? method.contract.canonicalMethod : method.canonicalMethod;
+  const legacy = method as unknown as {
+    canonicalMethod?: string;
+    contract?: { canonicalMethod?: string };
+  };
+  return legacy.contract?.canonicalMethod ?? legacy.canonicalMethod ?? "";
 }
 
-/** Type guard for schemaVersion=2 cross-cutting specs. */
-export function isCrossCuttingSpecV2(spec: AnyCrossCuttingSpec): spec is CrossCuttingSpecV2 {
-  return spec.schemaVersion === 2;
+export function isCrossCuttingSpecV2(_spec: AnyCrossCuttingSpec): _spec is CrossCuttingSpecV3 {
+  return true;
 }
 
-/** Return the canonical spec identifier for v1/v2 cross-cutting specs. */
 export function crossCuttingSpecId(spec: AnyCrossCuttingSpec): string {
-  return isCrossCuttingSpecV2(spec) ? spec.manifest.id : spec.id;
+  const legacy = spec as unknown as { id?: string; manifest?: { id?: string } };
+  return legacy.manifest?.id ?? legacy.id ?? "unknown-cross-cutting";
 }

@@ -1,0 +1,25 @@
+schemaVersion: 3
+manifest:
+  id: methods/frames/sxform@v3
+  kind: method
+contract:
+  contractMethod: frames.sxform
+  canonicalMethod: frames.sxform
+setup:
+  kernels:
+    - $FIXTURES/frames-minimal
+defaults:
+  compare:
+    tolAbs: 1e-12
+    tolRel: 1e-12
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: sxform-identity
+    args:
+      - J2000
+      - J2000
+      - 0
+    expect:
+      ok: true

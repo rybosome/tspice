@@ -1,0 +1,22 @@
+schemaVersion: 3
+manifest:
+  id: methods/kernel-pool/pdpool@v3
+  kind: method
+contract:
+  contractMethod: kernel-pool.pdpool
+  canonicalMethod: kernel-pool.pdpool
+setup:
+  kernels:
+    - $FIXTURES/kernel-pool-parity.tpc
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: pdpool-write
+    args:
+      - TSPICE_PARITY_PDPOOL_WRITTEN
+      - - 1
+        - 2
+        - 3
+    expect:
+      ok: true

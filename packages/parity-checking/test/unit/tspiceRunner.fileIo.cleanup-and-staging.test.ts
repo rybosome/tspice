@@ -21,9 +21,9 @@ import { createTspiceRunner } from "../../src/runners/tspiceRunner.js";
 
 function createInput(method: string, args: unknown[]): RunCaseInputV2 {
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     manifest: {
-      id: `methods/${method.replaceAll(".", "/")}@v2`,
+      id: `methods/${method.replaceAll(".", "/")}@v3`,
       kind: "method",
     },
     contract: {
@@ -35,7 +35,7 @@ function createInput(method: string, args: unknown[]): RunCaseInputV2 {
     },
     args,
     workflow: {
-      steps: [{ op: "invokeLegacyCall" }],
+      steps: [{ op: "callContract" }],
     },
   };
 }

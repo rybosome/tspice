@@ -1,0 +1,41 @@
+schemaVersion: 3
+manifest:
+  id: methods/file-io/getfat@v3
+  kind: method
+contract:
+  contractMethod: file-io.getfat
+  canonicalMethod: file-io.getfat
+  aliases: []
+  result:
+    type: object
+    properties: {}
+  errors:
+    - code: invalid_args
+    - code: spice_error
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: file-io.getfat.classifies-spk
+    args:
+      - $FIXTURES/de440s/de440s.bsp
+    expect:
+      ok: true
+  - id: file-io.getfat.classifies-dsk
+    args:
+      - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
+    expect:
+      ok: true
+  - id: file-io.getfat.missing-file
+    compare:
+      errorShort: true
+    args:
+      - $FIXTURES/de440s/does-not-exist.bsp
+    expect:
+      ok: false
+  - id: file-io.getfat.rejects-non-string-path
+    args:
+      - 42
+    expect:
+      ok: false
+      errorCode: invalid_args

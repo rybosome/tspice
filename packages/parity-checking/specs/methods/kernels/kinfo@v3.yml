@@ -1,0 +1,19 @@
+schemaVersion: 3
+manifest:
+  id: methods/kernels/kinfo@v3
+  kind: method
+contract:
+  contractMethod: kernels.kinfo
+  canonicalMethod: kernels.kinfo
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: kernels.kinfo
+    args:
+      - $FIXTURES/kernel-pool-parity.tpc
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    expect:
+      ok: true

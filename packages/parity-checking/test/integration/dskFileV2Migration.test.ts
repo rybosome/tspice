@@ -14,10 +14,10 @@ import type { MethodSpecV2 } from "../../src/dsl/types.js";
 import type { CaseRunner } from "../../src/runners/types.js";
 
 const TARGET_METHOD_SPEC_PATHS = [
-  "specs/methods/dsk/dskgd@v2.yml",
-  "specs/methods/dsk/dskb02@v2.yml",
-  "specs/methods/dsk/dskobj@v2.yml",
-  "specs/methods/dsk/dsksrf@v2.yml",
+  "specs/methods/dsk/dskgd@v3.yml",
+  "specs/methods/dsk/dskb02@v3.yml",
+  "specs/methods/dsk/dskobj@v3.yml",
+  "specs/methods/dsk/dsksrf@v3.yml",
 ] as const;
 
 function packageRoot(): string {
@@ -48,11 +48,11 @@ async function withRunners<T>(
   }
 }
 
-describe.sequential("targeted v2 DSK/file parity coverage", () => {
+describe.sequential("targeted v3 DSK/file parity coverage", () => {
   const status = getCspiceRunnerStatus();
   const maybeIt = status.ready ? it : it.skip;
 
-  maybeIt("executes migrated DSK/file v2 method specs across tspice and cspice", async () => {
+  maybeIt("executes migrated DSK/file v3 method specs across tspice and cspice", async () => {
     const specs = await Promise.all(TARGET_METHOD_SPEC_PATHS.map((specPath) => loadMethodSpec(specPath)));
 
     await withRunners(async (runners) => {

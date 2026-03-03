@@ -1,0 +1,18 @@
+schemaVersion: 3
+manifest:
+  id: methods/kernels/kxtrct@v3
+  kind: method
+contract:
+  contractMethod: kernels.kxtrct
+  canonicalMethod: kernels.kxtrct
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: kernels.kxtrct
+    args:
+      - A
+      - - =
+      - A B C = D
+    expect:
+      ok: true

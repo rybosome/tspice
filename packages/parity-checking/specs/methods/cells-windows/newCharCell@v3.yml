@@ -1,0 +1,75 @@
+schemaVersion: 3
+manifest:
+  id: methods/cells-windows/newCharCell@v3
+  kind: method
+contract:
+  contractMethod: cells-windows.newCharCell
+  canonicalMethod: cells-windows.newCharCell
+  aliases: []
+  args:
+    - name: size
+      type: spiceInt
+    - name: length
+      type: spiceInt
+      constraints:
+        min: 1
+  result:
+    type: object
+    required:
+      - kind
+      - size
+      - length
+      - card
+    properties:
+      kind:
+        const: char
+      size:
+        type: spiceInt
+      length:
+        type: spiceInt
+      card:
+        type: spiceInt
+  errors:
+    - code: invalid_args
+    - code: spice_error
+workflow:
+  steps:
+    - op: allocCell
+      as: cell
+      params:
+        kind: char
+        size: $args.size
+        length: $args.length
+    - op: spiceCall
+      call: card_c
+      in:
+        - $refs.cell
+      as: card
+    - op: spiceCall
+      call: size_c
+      in:
+        - $refs.cell
+      as: size
+    - op: projectResult
+      out:
+        kind: char
+        size: $refs.size
+        length: $args.length
+        card: $refs.card
+  cleanup:
+    - op: freeCell
+      target: $refs.cell
+cases:
+  - id: basic
+    args:
+      size: 8
+      length: 16
+    expect:
+      ok: true
+  - id: rejects-invalid-length
+    args:
+      size: 8
+      length: 0
+    expect:
+      ok: false
+      errorCode: invalid_args

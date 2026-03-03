@@ -1,0 +1,36 @@
+schemaVersion: 3
+manifest:
+  id: methods/file-io/dafcls@v3
+  kind: method
+contract:
+  contractMethod: file-io.dafcls
+  canonicalMethod: file-io.dafcls
+  aliases: []
+  result:
+    type: object
+    properties: {}
+  errors:
+    - code: invalid_args
+    - code: spice_error
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: file-io.dafcls.opens-and-closes-spk
+    args:
+      - $FIXTURES/de440s/de440s.bsp
+    expect:
+      ok: true
+  - id: file-io.dafcls.missing-file
+    compare:
+      errorShort: true
+    args:
+      - $FIXTURES/de440s/does-not-exist.bsp
+    expect:
+      ok: false
+  - id: file-io.dafcls.rejects-non-string-path
+    args:
+      - 42
+    expect:
+      ok: false
+      errorCode: invalid_args

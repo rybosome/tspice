@@ -1,0 +1,21 @@
+schemaVersion: 3
+manifest:
+  id: methods/ids-names/boddef@v3
+  kind: method
+contract:
+  contractMethod: ids-names.boddef
+  canonicalMethod: ids-names.boddef
+setup:
+  kernels:
+    - $FIXTURES/frames-minimal
+    - $FIXTURES/body399-char-foo.tpc
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: boddef-test-body
+    args:
+      - TSPICE_TEST_BODY
+      - 123456789
+    expect:
+      ok: true

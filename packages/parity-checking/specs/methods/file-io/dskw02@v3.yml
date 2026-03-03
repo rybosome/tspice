@@ -1,0 +1,27 @@
+schemaVersion: 3
+manifest:
+  id: methods/file-io/dskw02@v3
+  kind: method
+contract:
+  contractMethod: file-io.dskw02
+  canonicalMethod: file-io.dskw02
+  aliases: []
+  result:
+    type: object
+    required:
+      - written
+    properties:
+      written:
+        const: true
+workflow:
+  steps:
+    - op: spiceCall
+      call: dskw02_c
+      in: []
+    - op: projectResult
+      out:
+        written: true
+cases:
+  - id: write-single-segment-dsk
+    expect:
+      ok: true

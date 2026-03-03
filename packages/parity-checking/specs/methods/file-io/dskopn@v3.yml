@@ -1,0 +1,27 @@
+schemaVersion: 3
+manifest:
+  id: methods/file-io/dskopn@v3
+  kind: method
+contract:
+  contractMethod: file-io.dskopn
+  canonicalMethod: file-io.dskopn
+  aliases: []
+  result:
+    type: object
+    required:
+      - opened
+    properties:
+      opened:
+        const: true
+workflow:
+  steps:
+    - op: spiceCall
+      call: dskopn_c
+      in: []
+    - op: projectResult
+      out:
+        opened: true
+cases:
+  - id: open-close-temp-dsk
+    expect:
+      ok: true

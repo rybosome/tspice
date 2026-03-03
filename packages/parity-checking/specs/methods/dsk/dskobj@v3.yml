@@ -1,0 +1,65 @@
+schemaVersion: 3
+manifest:
+  id: methods/dsk/dskobj@v3
+  kind: method
+contract:
+  contractMethod: dsk.dskobj
+  canonicalMethod: dsk.dskobj
+  args: []
+  result:
+    type: object
+    required:
+      - hasBodies
+    properties:
+      hasBodies:
+        const: true
+workflow:
+  steps:
+    - op: withResource
+      as: dskPath
+      acquire:
+        op: materialize
+        fixture: minimalDsk
+        as: dskPath
+      steps:
+        - op: withResource
+          as: bodyIds
+          acquire:
+            op: allocCell
+            as: bodyIds
+            params:
+              kind: int
+              size: 100
+          steps:
+            - op: spiceCall
+              call: dskobj_c
+              in:
+                - $refs.dskPath
+                - $refs.bodyIds
+            - op: spiceCall
+              call: card_c
+              in:
+                - $refs.bodyIds
+              as: bodyCount
+            - op: assert
+              test:
+                gt:
+                  - $refs.bodyCount
+                  - 0
+              error:
+                code: assert_dskobj_has_bodies
+                message: dskobj expected at least one body id
+            - op: projectResult
+              out:
+                hasBodies: true
+          finally:
+            - op: freeCell
+              target: $refs.bodyIds
+      finally:
+        - op: unlink
+          target: $refs.dskPath
+cases:
+  - id: has-bodies
+    args: {}
+    expect:
+      ok: true

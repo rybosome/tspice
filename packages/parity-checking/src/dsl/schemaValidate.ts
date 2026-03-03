@@ -1,330 +1,135 @@
+import { ASSERT_OPERATORS, type AssertOperator } from "../assertOperators.js";
+
 import type {
-  AnyCrossCuttingSpec,
-  AnyMethodSpec,
+  CrossCuttingSpecV3,
   CrossCuttingCaseExpectation,
   CrossCuttingCaseSpec,
-  CrossCuttingSpec,
-  CrossCuttingSpecV2,
   MethodCaseExpectation,
-  MethodCaseSpec,
-  MethodCaseSpecV2,
-  MethodResultConstValueV2,
-  MethodResultObjectSpecV2,
-  MethodSpec,
-  MethodSpecV2,
-  MethodWorkflowSpiceCallNameV2,
-  MethodWorkflowStepV2,
+  MethodCaseSpecV3,
+  MethodContractV3,
+  MethodResultConstValueV3,
+  MethodResultObjectSpecV3,
+  MethodResultPropertySpecV3,
+  MethodResultSpecV3,
+  MethodSpecV3,
+  MethodSuiteSpecV3,
+  MethodWorkflowStepV3,
   ScenarioCompareAst,
   ScenarioSetupAst,
   ScenarioYamlFile,
   WorkflowSpec,
 } from "./types.js";
-import { ASSERT_OPERATOR_NAMES_TEXT, isAssertOperator } from "../assertOperators.js";
 
-type V2SpiceCallOutputShape = "none" | "as" | "out";
-
-const V2_SPICE_CALL_OUTPUT_SHAPES: Record<string, V2SpiceCallOutputShape> = {
-  card_c: "as",
-  size_c: "as",
-  scard_c: "none",
-  ssize_c: "none",
-  valid_c: "none",
-  dskobj_c: "none",
-  dsksrf_c: "none",
-  dskgd_c: "as",
-  dskb02_c: "out",
-  dskmi2_c: "none",
-  dskopn_c: "none",
-  dskw02_c: "none",
-  readVirtualOutput: "none",
-};
-
-const V2_SPICE_CALL_NAMES_TEXT = Object.keys(V2_SPICE_CALL_OUTPUT_SHAPES)
-  .map((name) => JSON.stringify(name))
-  .join(", ");
-
-function parseSpiceCallOutMap(value: unknown, label: string): Record<string, string> {
-  const out = assertRecord(value, label);
-  const mapped: Record<string, string> = {};
-  for (const [key, rawTarget] of Object.entries(out)) {
-    mapped[key] = assertString(rawTarget, `${label}.${key}`);
+function formatValue(value: unknown): string {
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
   }
-  return mapped;
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+function asRecord(value: unknown, label: string): Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new TypeError(`${label} must be an object (got ${formatValue(value)})`);
+  }
+  return value as Record<string, unknown>;
 }
 
-function assertRecord(value: unknown, label: string): Record<string, unknown> {
-  if (!isRecord(value)) {
-    throw new TypeError(`${label} must be an object`);
+function asArray(value: unknown, label: string): unknown[] {
+  if (!Array.isArray(value)) {
+    throw new TypeError(`${label} must be an array (got ${formatValue(value)})`);
   }
   return value;
 }
 
-function assertString(value: unknown, label: string): string {
+function asString(value: unknown, label: string): string {
   if (typeof value !== "string" || value.trim() === "") {
-    throw new TypeError(`${label} must be a non-empty string`);
+    throw new TypeError(`${label} must be a non-empty string (got ${formatValue(value)})`);
   }
   return value;
 }
 
-function assertBoolean(value: unknown, label: string): boolean {
-  if (typeof value !== "boolean") {
-    throw new TypeError(`${label} must be a boolean`);
-  }
-  return value;
-}
-
-function assertFiniteNumber(value: unknown, label: string): number {
+function asFiniteNumber(value: unknown, label: string): number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
-    throw new TypeError(`${label} must be a finite number`);
+    throw new TypeError(`${label} must be a finite number (got ${formatValue(value)})`);
   }
   return value;
 }
 
-function assertInteger(value: unknown, label: string): number {
-  const n = assertFiniteNumber(value, label);
-  if (!Number.isInteger(n)) {
-    throw new TypeError(`${label} must be an integer`);
+function asBoolean(value: unknown, label: string): boolean {
+  if (typeof value !== "boolean") {
+    throw new TypeError(`${label} must be boolean (got ${formatValue(value)})`);
   }
-  return n;
+  return value;
 }
 
-function assertNoUnknownKeys(obj: Record<string, unknown>, label: string, allowedKeys: readonly string[]): void {
-  const allowed = new Set(allowedKeys);
-
-  for (const key of Object.keys(obj)) {
-    if (!allowed.has(key)) {
-      const allowedText = allowedKeys.map((k) => JSON.stringify(k)).join(", ");
+function ensureKnownKeys(record: Record<string, unknown>, allowed: string[], label: string): void {
+  for (const key of Object.keys(record)) {
+    if (!allowed.includes(key)) {
+      const sortedAllowed = [...allowed].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
       throw new TypeError(
-        `${label} has unknown key: ${JSON.stringify(key)} (allowed keys: ${allowedText})`,
+        `${label} has unknown key: ${JSON.stringify(key)} (allowed keys: ${sortedAllowed.map((k) => JSON.stringify(k)).join(", ")})`,
       );
     }
   }
 }
 
-function parseStringArray(value: unknown, label: string): string[] | undefined {
-  if (value === undefined) return undefined;
-  if (!Array.isArray(value)) {
-    throw new TypeError(`${label} must be an array of strings`);
-  }
-  return value.map((v, i) => assertString(v, `${label}[${i}]`));
-}
-
-function parseCompare(value: unknown, label: string): ScenarioCompareAst | undefined {
-  if (value === undefined) return undefined;
-
-  const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["tolAbs", "tolRel", "angleWrapPi", "errorShort"]);
+function parseCompareAst(value: unknown, label: string): ScenarioCompareAst {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["tolAbs", "tolRel", "angleWrapPi", "errorShort"], label);
 
   const out: ScenarioCompareAst = {};
-
-  if (obj.tolAbs !== undefined) {
-    const n = assertFiniteNumber(obj.tolAbs, `${label}.tolAbs`);
-    if (n < 0) throw new TypeError(`${label}.tolAbs must be >= 0`);
-    out.tolAbs = n;
-  }
-
-  if (obj.tolRel !== undefined) {
-    const n = assertFiniteNumber(obj.tolRel, `${label}.tolRel`);
-    if (n < 0) throw new TypeError(`${label}.tolRel must be >= 0`);
-    out.tolRel = n;
-  }
-
-  if (obj.angleWrapPi !== undefined) {
-    out.angleWrapPi = assertBoolean(obj.angleWrapPi, `${label}.angleWrapPi`);
-  }
-
-  if (obj.errorShort !== undefined) {
-    out.errorShort = assertBoolean(obj.errorShort, `${label}.errorShort`);
-  }
-
-  return Object.keys(out).length === 0 ? undefined : out;
+  if (obj.tolAbs !== undefined) out.tolAbs = asFiniteNumber(obj.tolAbs, `${label}.tolAbs`);
+  if (obj.tolRel !== undefined) out.tolRel = asFiniteNumber(obj.tolRel, `${label}.tolRel`);
+  if (obj.angleWrapPi !== undefined) out.angleWrapPi = asBoolean(obj.angleWrapPi, `${label}.angleWrapPi`);
+  if (obj.errorShort !== undefined) out.errorShort = asBoolean(obj.errorShort, `${label}.errorShort`);
+  return out;
 }
 
 function parseKernelEntry(value: unknown, label: string): string | { path: string; restrictToDir?: string } {
   if (typeof value === "string") {
+    if (value.trim() === "") {
+      throw new TypeError(`${label} must be a non-empty string`);
+    }
     return value;
   }
 
-  const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["path", "restrictToDir"]);
-  const pathValue = assertString(obj.path, `${label}.path`);
-  const restrictToDir =
-    obj.restrictToDir === undefined ? undefined : assertString(obj.restrictToDir, `${label}.restrictToDir`);
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["path", "restrictToDir"], label);
 
-  if (restrictToDir === undefined) {
-    return { path: pathValue };
-  }
-
-  return { path: pathValue, restrictToDir };
-}
-
-function parseSetup(value: unknown, label: string): ScenarioSetupAst | undefined {
-  if (value === undefined) return undefined;
-
-  const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["kernels"]);
-
-  if (obj.kernels === undefined) return undefined;
-  if (!Array.isArray(obj.kernels)) {
-    throw new TypeError(`${label}.kernels must be an array`);
-  }
-
-  const kernels = obj.kernels.map((entry, index) => parseKernelEntry(entry, `${label}.kernels[${index}]`));
-  return kernels.length === 0 ? undefined : { kernels };
-}
-
-function parseMethodCaseExpectation(value: unknown, label: string): MethodCaseExpectation | undefined {
-  if (value === undefined) return undefined;
-
-  const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["ok", "errorCode", "errorShort"]);
-
-  const out: MethodCaseExpectation = {};
-  if (obj.ok !== undefined) {
-    out.ok = assertBoolean(obj.ok, `${label}.ok`);
-  }
-  if (obj.errorCode !== undefined) {
-    out.errorCode = assertString(obj.errorCode, `${label}.errorCode`);
-  }
-  if (obj.errorShort !== undefined) {
-    out.errorShort = assertString(obj.errorShort, `${label}.errorShort`);
-  }
-
-  return Object.keys(out).length === 0 ? undefined : out;
-}
-
-function parseMethodCase(value: unknown, label: string): MethodCaseSpec {
-  const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["id", "args", "setup", "compare", "expect"]);
-
-  const out: MethodCaseSpec = {
-    id: assertString(obj.id, `${label}.id`),
+  const out: { path: string; restrictToDir?: string } = {
+    path: asString(obj.path, `${label}.path`),
   };
 
-  if (obj.args !== undefined) {
-    if (!Array.isArray(obj.args)) {
-      throw new TypeError(`${label}.args must be an array`);
-    }
-    out.args = obj.args;
-  }
-
-  const setup = parseSetup(obj.setup, `${label}.setup`);
-  if (setup !== undefined) {
-    out.setup = setup;
-  }
-
-  const compare = parseCompare(obj.compare, `${label}.compare`);
-  if (compare !== undefined) {
-    out.compare = compare;
-  }
-
-  const expect = parseMethodCaseExpectation(obj.expect, `${label}.expect`);
-  if (expect !== undefined) {
-    out.expect = expect;
+  if (obj.restrictToDir !== undefined) {
+    out.restrictToDir = asString(obj.restrictToDir, `${label}.restrictToDir`);
   }
 
   return out;
 }
 
-function parseMethodCaseV2(value: unknown, label: string): MethodCaseSpecV2 {
-  const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["id", "args", "setup", "compare", "expect"]);
+function parseSetupAst(value: unknown, label: string): ScenarioSetupAst {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["kernels"], label);
 
-  const out: MethodCaseSpecV2 = {
-    id: assertString(obj.id, `${label}.id`),
-  };
-
-  if (obj.args !== undefined) {
-    out.args = obj.args;
-  }
-
-  const setup = parseSetup(obj.setup, `${label}.setup`);
-  if (setup !== undefined) {
-    out.setup = setup;
-  }
-
-  const compare = parseCompare(obj.compare, `${label}.compare`);
-  if (compare !== undefined) {
-    out.compare = compare;
-  }
-
-  const expect = parseMethodCaseExpectation(obj.expect, `${label}.expect`);
-  if (expect !== undefined) {
-    out.expect = expect;
+  const out: ScenarioSetupAst = {};
+  if (obj.kernels !== undefined) {
+    const kernels = asArray(obj.kernels, `${label}.kernels`).map((entry, i) =>
+      parseKernelEntry(entry, `${label}.kernels[${i}]`),
+    );
+    out.kernels = kernels;
   }
 
   return out;
 }
 
-function validateInvokeLegacyCallWorkflowShapeV2(
-  steps: MethodWorkflowStepV2[],
-  cleanup: MethodWorkflowStepV2[] | undefined,
-  cases: MethodCaseSpecV2[],
-): void {
-  const workflowContainsInvokeLegacyCall = (entries: MethodWorkflowStepV2[]): boolean =>
-    entries.some((step) => {
-      if (step.op === "invokeLegacyCall") {
-        return true;
-      }
-
-      if (step.op === "switch") {
-        const branchSteps = Object.values(step.cases).flat();
-        if (workflowContainsInvokeLegacyCall(branchSteps)) {
-          return true;
-        }
-
-        if (step.default && workflowContainsInvokeLegacyCall(step.default)) {
-          return true;
-        }
-      }
-
-      return false;
-    });
-
-  const hasInvokeLegacyCallInSteps = workflowContainsInvokeLegacyCall(steps);
-  const hasInvokeLegacyCallInCleanup = workflowContainsInvokeLegacyCall(cleanup ?? []);
-
-  if (hasInvokeLegacyCallInCleanup) {
-    throw new TypeError("methodV2.workflow.cleanup must not include invokeLegacyCall");
-  }
-
-  if (!hasInvokeLegacyCallInSteps) {
-    for (const [index, scenarioCase] of cases.entries()) {
-      if (scenarioCase.args !== undefined && !isRecord(scenarioCase.args)) {
-        throw new TypeError(
-          `methodV2.cases[${index}].args must be an object when workflow does not use invokeLegacyCall`,
-        );
-      }
-    }
-    return;
-  }
-
-  if (steps.length !== 1 || steps[0]?.op !== "invokeLegacyCall") {
-    throw new TypeError("methodV2.workflow.steps must contain only invokeLegacyCall when that op is used");
-  }
-
-  if ((cleanup?.length ?? 0) > 0) {
-    throw new TypeError("methodV2.workflow.cleanup must be empty when workflow uses invokeLegacyCall");
-  }
-
-  for (const [index, scenarioCase] of cases.entries()) {
-    if (!Array.isArray(scenarioCase.args)) {
-      throw new TypeError(`methodV2.cases[${index}].args must be an array when workflow uses invokeLegacyCall`);
-    }
-  }
-}
-
-/** Parse and validate a workflow YAML document. */
+/** Legacy workflow include parser (kept for historical workflow files). */
 export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
-  const obj = assertRecord(file.data, `${file.sourcePath}`);
-  assertNoUnknownKeys(obj, "workflow", ["id", "kind", "uses", "setup", "compareDefaults", "notes"]);
+  const obj = asRecord(file.data, "workflow");
+  ensureKnownKeys(obj, ["id", "kind", "uses", "setup", "compareDefaults"], "workflow");
 
-  const id = assertString(obj.id, "workflow.id");
-  const kind = assertString(obj.kind, "workflow.kind");
+  const id = asString(obj.id, "workflow.id");
+  const kind = asString(obj.kind, "workflow.kind");
   if (kind !== "workflow") {
     throw new TypeError(`workflow.kind must be \"workflow\" (got ${JSON.stringify(kind)})`);
   }
@@ -332,836 +137,841 @@ export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
   const out: WorkflowSpec = {
     id,
     kind: "workflow",
-    meta: {
-      sourcePath: file.sourcePath,
-    },
+    meta: { sourcePath: file.sourcePath },
   };
 
-  const uses = parseStringArray(obj.uses, "workflow.uses");
-  if (uses !== undefined) {
-    out.uses = uses;
+  if (obj.uses !== undefined) {
+    out.uses = asArray(obj.uses, "workflow.uses").map((entry, i) =>
+      asString(entry, `workflow.uses[${i}]`),
+    );
   }
 
-  const setup = parseSetup(obj.setup, "workflow.setup");
-  if (setup !== undefined) {
-    out.setup = setup;
+  if (obj.setup !== undefined) {
+    out.setup = parseSetupAst(obj.setup, "workflow.setup");
   }
 
-  const compareDefaults = parseCompare(obj.compareDefaults, "workflow.compareDefaults");
-  if (compareDefaults !== undefined) {
-    out.compareDefaults = compareDefaults;
-  }
-
-  const notes = parseStringArray(obj.notes, "workflow.notes");
-  if (notes !== undefined) {
-    out.notes = notes;
+  if (obj.compareDefaults !== undefined) {
+    out.compareDefaults = parseCompareAst(obj.compareDefaults, "workflow.compareDefaults");
   }
 
   return out;
 }
 
-/** Parse and validate a legacy (v1) method YAML document. */
-export function parseMethodSpec(file: ScenarioYamlFile): MethodSpec {
-  const obj = assertRecord(file.data, `${file.sourcePath}`);
-  assertNoUnknownKeys(obj, "method", [
-    "id",
-    "kind",
-    "contractMethod",
-    "canonicalMethod",
-    "uses",
-    "setup",
-    "defaults",
-    "cases",
-  ]);
+function parseMethodCaseExpectation(value: unknown, label: string): MethodCaseExpectation {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["ok", "errorShort", "errorCode"], label);
 
-  const id = assertString(obj.id, "method.id");
-  const kind = assertString(obj.kind, "method.kind");
-  if (kind !== "method") {
-    throw new TypeError(`method.kind must be \"method\" (got ${JSON.stringify(kind)})`);
-  }
+  const out: MethodCaseExpectation = {};
+  if (obj.ok !== undefined) out.ok = asBoolean(obj.ok, `${label}.ok`);
+  if (obj.errorShort !== undefined) out.errorShort = asString(obj.errorShort, `${label}.errorShort`);
+  if (obj.errorCode !== undefined) out.errorCode = asString(obj.errorCode, `${label}.errorCode`);
+  return out;
+}
 
-  if (!Array.isArray(obj.cases) || obj.cases.length === 0) {
-    throw new TypeError("method.cases must be a non-empty array");
-  }
+function parseMethodCase(value: unknown, label: string): MethodCaseSpecV3 {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["id", "args", "setup", "compare", "expect"], label);
 
-  const out: MethodSpec = {
-    id,
-    kind: "method",
-    contractMethod: assertString(obj.contractMethod, "method.contractMethod"),
-    canonicalMethod: assertString(obj.canonicalMethod, "method.canonicalMethod"),
-    cases: obj.cases.map((entry, index) => parseMethodCase(entry, `method.cases[${index}]`)),
-    meta: {
-      sourcePath: file.sourcePath,
-    },
+  const out: MethodCaseSpecV3 = {
+    id: asString(obj.id, `${label}.id`),
   };
 
-  const uses = parseStringArray(obj.uses, "method.uses");
-  if (uses !== undefined) {
-    out.uses = uses;
+  if (Object.prototype.hasOwnProperty.call(obj, "args")) {
+    out.args = obj.args;
+  }
+  if (obj.setup !== undefined) out.setup = parseSetupAst(obj.setup, `${label}.setup`);
+  if (obj.compare !== undefined) out.compare = parseCompareAst(obj.compare, `${label}.compare`);
+  if (obj.expect !== undefined) out.expect = parseMethodCaseExpectation(obj.expect, `${label}.expect`);
+
+  return out;
+}
+
+function isMethodResultConstValue(value: unknown): value is MethodResultConstValueV3 {
+  if (value === null) return true;
+
+  const t = typeof value;
+  if (t === "string" || t === "number" || t === "boolean") {
+    return true;
   }
 
-  const setup = parseSetup(obj.setup, "method.setup");
-  if (setup !== undefined) {
-    out.setup = setup;
+  if (Array.isArray(value)) {
+    return value.every((entry) => isMethodResultConstValue(entry));
   }
 
-  if (obj.defaults !== undefined) {
-    const defaultsObj = assertRecord(obj.defaults, "method.defaults");
-    assertNoUnknownKeys(defaultsObj, "method.defaults", ["compare"]);
+  if (t === "object") {
+    const record = value as Record<string, unknown>;
+    return Object.values(record).every((entry) => isMethodResultConstValue(entry));
+  }
 
-    const defaultsCompare = parseCompare(defaultsObj.compare, "method.defaults.compare");
-    if (defaultsCompare !== undefined) {
-      out.defaults = {
-        compare: defaultsCompare,
-      };
+  return false;
+}
+
+function parseMethodResultProperty(value: unknown, label: string): MethodResultPropertySpecV3 {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["const", "type"], label);
+
+  const out: MethodResultPropertySpecV3 = {};
+  if (Object.prototype.hasOwnProperty.call(obj, "const")) {
+    if (!isMethodResultConstValue(obj.const)) {
+      throw new TypeError(`${label}.const must be JSON-serializable`);
     }
+    out.const = obj.const;
+  }
+
+  if (obj.type !== undefined) {
+    const type = asString(obj.type, `${label}.type`);
+    if (type !== "spiceInt") {
+      throw new TypeError(`${label}.type must be \"spiceInt\" (got ${JSON.stringify(type)})`);
+    }
+    out.type = "spiceInt";
+  }
+
+  if (out.const === undefined && out.type === undefined) {
+    throw new TypeError(`${label} must define at least one of { const, type }`);
   }
 
   return out;
 }
 
-function parseMethodWorkflowStepV2(value: unknown, label: string): MethodWorkflowStepV2 {
-  const obj = assertRecord(value, label);
+function parseMethodResultSpec(value: unknown, label: string): MethodResultSpecV3 {
+  const obj = asRecord(value, label);
 
-  const op = assertString(obj.op, `${label}.op`);
-  switch (op) {
-    case "allocCell": {
-      assertNoUnknownKeys(obj, label, ["op", "as", "params"]);
-      const params = assertRecord(obj.params, `${label}.params`);
-      assertNoUnknownKeys(params, `${label}.params`, ["kind", "size", "length"]);
-      const kind = assertString(params.kind, `${label}.params.kind`);
-      if (!("size" in params)) {
-        throw new TypeError(`${label}.params.size is required`);
+  if (Object.prototype.hasOwnProperty.call(obj, "const")) {
+    ensureKnownKeys(obj, ["const"], label);
+    if (!isMethodResultConstValue(obj.const)) {
+      throw new TypeError(`${label}.const must be JSON-serializable`);
+    }
+    return { const: obj.const };
+  }
+
+  ensureKnownKeys(obj, ["type", "required", "properties"], label);
+
+  const type = asString(obj.type, `${label}.type`);
+  if (type !== "object") {
+    throw new TypeError(`${label}.type must be \"object\" (got ${JSON.stringify(type)})`);
+  }
+
+  const out: MethodResultObjectSpecV3 = {
+    type: "object",
+    properties: {},
+  };
+
+  if (obj.required !== undefined) {
+    out.required = asArray(obj.required, `${label}.required`).map((entry, i) =>
+      asString(entry, `${label}.required[${i}]`),
+    );
+  }
+
+  const propertiesObj = asRecord(obj.properties, `${label}.properties`);
+  for (const [prop, propSpec] of Object.entries(propertiesObj)) {
+    out.properties[prop] = parseMethodResultProperty(propSpec, `${label}.properties.${prop}`);
+  }
+
+  return out;
+}
+
+function parseMethodContract(value: unknown, label: string): MethodContractV3 {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["contractMethod", "canonicalMethod", "aliases", "args", "result", "errors"], label);
+
+  const out: MethodContractV3 = {
+    contractMethod: asString(obj.contractMethod, `${label}.contractMethod`),
+    canonicalMethod: asString(obj.canonicalMethod, `${label}.canonicalMethod`),
+  };
+
+  if (obj.aliases !== undefined) {
+    out.aliases = asArray(obj.aliases, `${label}.aliases`).map((entry, i) =>
+      asString(entry, `${label}.aliases[${i}]`),
+    );
+  }
+
+  if (obj.args !== undefined) {
+    out.args = asArray(obj.args, `${label}.args`).map((entry, i) => {
+      const arg = asRecord(entry, `${label}.args[${i}]`);
+      ensureKnownKeys(arg, ["name", "type", "constraints"], `${label}.args[${i}]`);
+
+      const type = asString(arg.type, `${label}.args[${i}].type`);
+      if (type !== "spiceInt") {
+        throw new TypeError(`${label}.args[${i}].type must be \"spiceInt\"`);
       }
 
-      if (kind === "int" || kind === "double") {
-        if ("length" in params) {
-          throw new TypeError(`${label}.params.length is only valid for kind=\"char\"`);
-        }
+      const parsed: {
+        name: string;
+        type: "spiceInt";
+        constraints?: {
+          min?: number;
+          max?: number;
+        };
+      } = {
+        name: asString(arg.name, `${label}.args[${i}].name`),
+        type: "spiceInt",
+      };
 
+      if (arg.constraints !== undefined) {
+        const constraints = asRecord(arg.constraints, `${label}.args[${i}].constraints`);
+        ensureKnownKeys(constraints, ["min", "max"], `${label}.args[${i}].constraints`);
+        parsed.constraints = {};
+        if (constraints.min !== undefined) {
+          parsed.constraints.min = asFiniteNumber(constraints.min, `${label}.args[${i}].constraints.min`);
+        }
+        if (constraints.max !== undefined) {
+          parsed.constraints.max = asFiniteNumber(constraints.max, `${label}.args[${i}].constraints.max`);
+        }
+      }
+
+      return parsed;
+    });
+  }
+
+  if (obj.result !== undefined) {
+    out.result = parseMethodResultSpec(obj.result, `${label}.result`);
+  }
+
+  if (obj.errors !== undefined) {
+    out.errors = asArray(obj.errors, `${label}.errors`).map((entry, i) => {
+      const e = asRecord(entry, `${label}.errors[${i}]`);
+      ensureKnownKeys(e, ["code"], `${label}.errors[${i}]`);
+      return { code: asString(e.code, `${label}.errors[${i}].code`) };
+    });
+  }
+
+  return out;
+}
+
+type LoweredWorkflow = {
+  steps: MethodWorkflowStepV3[];
+  cleanup: MethodWorkflowStepV3[];
+};
+
+function combineLowered(entries: LoweredWorkflow[]): LoweredWorkflow {
+  const out: LoweredWorkflow = { steps: [], cleanup: [] };
+  for (const entry of entries) {
+    out.steps.push(...entry.steps);
+    if (entry.cleanup.length > 0) {
+      out.cleanup = [...entry.cleanup, ...out.cleanup];
+    }
+  }
+  return out;
+}
+
+function parseAssertOperator(test: Record<string, unknown>, label: string): { operator: AssertOperator; operands: [unknown, unknown] } {
+  const keys = Object.keys(test);
+  if (keys.length !== 1) {
+    throw new TypeError(`${label} must define exactly one operator`);
+  }
+
+  const operator = keys[0] as AssertOperator;
+  if (!ASSERT_OPERATORS.includes(operator)) {
+    throw new TypeError(`${label} operator must be one of: ${ASSERT_OPERATORS.join(", ")}`);
+  }
+
+  const value = test[operator];
+  if (!Array.isArray(value) || value.length !== 2) {
+    throw new TypeError(`${label}.${operator} must be a 2-item array`);
+  }
+
+  return {
+    operator,
+    operands: [value[0], value[1]],
+  };
+}
+
+function assertScriptSecurity(code: string, label: string): void {
+  const forbiddenPatterns: Array<[RegExp, string]> = [
+    [/\bimport\b/, "module imports are not allowed"],
+    [/\brequire\s*\(/, "CommonJS require is not allowed"],
+    [/\bfrom\s+['"][^'"]+['"]/, "module imports are not allowed"],
+    [/\bfs\b/, "direct fs access is not allowed"],
+    [/\bhttps?\b/, "network access is not allowed"],
+    [/\bnet\b/, "network access is not allowed"],
+  ];
+
+  for (const [pattern, message] of forbiddenPatterns) {
+    if (pattern.test(code)) {
+      throw new TypeError(`${label}.code rejected: ${message}`);
+    }
+  }
+}
+
+function parseStepCore(
+  value: unknown,
+  label: string,
+  options: { allowLifecycleOps: boolean },
+): LoweredWorkflow {
+  const obj = asRecord(value, label);
+  const op = asString(obj.op, `${label}.op`);
+
+  if (op === "withResource") {
+    ensureKnownKeys(obj, ["op", "as", "acquire", "steps", "finally"], label);
+
+    const alias = asString(obj.as, `${label}.as`);
+
+    const acquireParsed = parseStepCore(obj.acquire, `${label}.acquire`, { allowLifecycleOps: true });
+    if (acquireParsed.steps.length !== 1 || acquireParsed.cleanup.length > 0) {
+      throw new TypeError(`${label}.acquire must lower to exactly one concrete step with no intrinsic cleanup`);
+    }
+
+    const acquire = acquireParsed.steps[0]!;
+    if ("as" in acquire) {
+      (acquire as { as: string }).as = alias;
+    } else {
+      throw new TypeError(`${label}.acquire step must support an \"as\" field`);
+    }
+
+    const nestedEntries = asArray(obj.steps, `${label}.steps`).map((entry, i) =>
+      parseStepCore(entry, `${label}.steps[${i}]`, { allowLifecycleOps: false }),
+    );
+    const nested = combineLowered(nestedEntries);
+
+    const finallyEntries = asArray(obj.finally, `${label}.finally`).map((entry, i) =>
+      parseStepCore(entry, `${label}.finally[${i}]`, { allowLifecycleOps: true }),
+    );
+    const finalLowered = combineLowered(finallyEntries);
+
+    return {
+      steps: [acquire, ...nested.steps],
+      cleanup: [...nested.cleanup, ...finalLowered.steps, ...finalLowered.cleanup],
+    };
+  }
+
+  if (op === "script") {
+    ensureKnownKeys(obj, ["op", "as", "in", "out", "code", "language"], label);
+
+    if (Object.prototype.hasOwnProperty.call(obj, "language")) {
+      throw new TypeError(`${label}.language is not supported in v3 (script implies TypeScript)`);
+    }
+
+    const code = asString(obj.code, `${label}.code`);
+    assertScriptSecurity(code, label);
+
+    // Current runtime lowering: script behaves as an explicit contract call step.
+    // This keeps script authoring available in v3 while preserving deterministic runner behavior.
+    return {
+      steps: [{ op: "callContract" }],
+      cleanup: [],
+    };
+  }
+
+  switch (op) {
+    case "allocCell": {
+      ensureKnownKeys(obj, ["op", "as", "params"], label);
+      const params = asRecord(obj.params, `${label}.params`);
+      const kind = asString(params.kind, `${label}.params.kind`);
+
+      if (kind === "int" || kind === "double") {
+        ensureKnownKeys(params, ["kind", "size"], `${label}.params`);
         return {
-          op: "allocCell",
-          as: assertString(obj.as, `${label}.as`),
-          params: {
-            kind,
-            size: params.size,
-          },
+          steps: [
+            {
+              op: "allocCell",
+              as: asString(obj.as, `${label}.as`),
+              params: {
+                kind,
+                size: params.size,
+              },
+            },
+          ],
+          cleanup: [],
         };
       }
 
       if (kind === "char") {
-        if (!("length" in params)) {
-          throw new TypeError(`${label}.params.length is required when kind=\"char\"`);
-        }
-
+        ensureKnownKeys(params, ["kind", "size", "length"], `${label}.params`);
         return {
-          op: "allocCell",
-          as: assertString(obj.as, `${label}.as`),
-          params: {
-            kind: "char",
-            size: params.size,
-            length: params.length,
-          },
+          steps: [
+            {
+              op: "allocCell",
+              as: asString(obj.as, `${label}.as`),
+              params: {
+                kind,
+                size: params.size,
+                length: params.length,
+              },
+            },
+          ],
+          cleanup: [],
         };
       }
 
-      throw new TypeError(`${label}.params.kind must be \"int\", \"double\", or \"char\"`);
+      throw new TypeError(`${label}.params.kind must be one of: int, double, char`);
     }
 
     case "allocWindow": {
-      assertNoUnknownKeys(obj, label, ["op", "as", "params"]);
-      const params = assertRecord(obj.params, `${label}.params`);
-      assertNoUnknownKeys(params, `${label}.params`, ["maxIntervals"]);
-      if (!("maxIntervals" in params)) {
-        throw new TypeError(`${label}.params.maxIntervals is required`);
-      }
-
+      ensureKnownKeys(obj, ["op", "as", "params"], label);
+      const params = asRecord(obj.params, `${label}.params`);
+      ensureKnownKeys(params, ["maxIntervals"], `${label}.params`);
       return {
-        op: "allocWindow",
-        as: assertString(obj.as, `${label}.as`),
-        params: {
-          maxIntervals: params.maxIntervals,
-        },
+        steps: [
+          {
+            op: "allocWindow",
+            as: asString(obj.as, `${label}.as`),
+            params: {
+              maxIntervals: params.maxIntervals,
+            },
+          },
+        ],
+        cleanup: [],
       };
     }
 
     case "materialize": {
-      assertNoUnknownKeys(obj, label, ["op", "fixture", "as"]);
-      const fixture = assertString(obj.fixture, `${label}.fixture`);
+      ensureKnownKeys(obj, ["op", "fixture", "as"], label);
+      const fixture = asString(obj.fixture, `${label}.fixture`);
       if (fixture !== "minimalDsk" && fixture !== "virtualOutputSpk") {
-        throw new TypeError(
-          `${label}.fixture must be one of ${JSON.stringify("minimalDsk")} or ${JSON.stringify("virtualOutputSpk")}`,
-        );
+        throw new TypeError(`${label}.fixture must be one of: minimalDsk, virtualOutputSpk`);
       }
 
       return {
-        op: "materialize",
-        fixture,
-        as: assertString(obj.as, `${label}.as`),
-      };
-    }
-
-    case "dasOpen": {
-      assertNoUnknownKeys(obj, label, ["op", "path", "as"]);
-      if (!("path" in obj)) {
-        throw new TypeError(`${label}.path is required`);
-      }
-
-      return {
-        op: "dasOpen",
-        path: obj.path,
-        as: assertString(obj.as, `${label}.as`),
-      };
-    }
-
-    case "dlaBeginForwardSearch": {
-      assertNoUnknownKeys(obj, label, ["op", "handle", "as"]);
-      if (!("handle" in obj)) {
-        throw new TypeError(`${label}.handle is required`);
-      }
-
-      return {
-        op: "dlaBeginForwardSearch",
-        handle: obj.handle,
-        as: assertString(obj.as, `${label}.as`),
-      };
-    }
-
-    case "dasClose": {
-      assertNoUnknownKeys(obj, label, ["op", "target"]);
-      if (!("target" in obj)) {
-        throw new TypeError(`${label}.target is required`);
-      }
-
-      return {
-        op: "dasClose",
-        target: obj.target,
-      };
-    }
-
-    case "unlink": {
-      assertNoUnknownKeys(obj, label, ["op", "target"]);
-      if (!("target" in obj)) {
-        throw new TypeError(`${label}.target is required`);
-      }
-
-      return {
-        op: "unlink",
-        target: obj.target,
+        steps: [
+          {
+            op: "materialize",
+            fixture,
+            as: asString(obj.as, `${label}.as`),
+          },
+        ],
+        cleanup: [],
       };
     }
 
     case "spiceCall": {
-      assertNoUnknownKeys(obj, label, ["op", "call", "in", "as", "out"]);
-      const call = assertString(obj.call, `${label}.call`);
-      const outputShape = V2_SPICE_CALL_OUTPUT_SHAPES[call];
-      if (outputShape === undefined) {
-        throw new TypeError(`${label}.call must be one of ${V2_SPICE_CALL_NAMES_TEXT}`);
-      }
-      const callName = call as MethodWorkflowSpiceCallNameV2;
-      if (!Array.isArray(obj.in)) {
-        throw new TypeError(`${label}.in must be an array`);
-      }
-
-      if (outputShape === "as") {
-        if (obj.as === undefined) {
-          throw new TypeError(`${label}.as is required when call=${JSON.stringify(call)}`);
-        }
-
-        if (obj.out !== undefined) {
-          throw new TypeError(`${label}.out is not allowed when call=${JSON.stringify(call)}`);
-        }
-
-        const asValue = assertString(obj.as, `${label}.as`);
-
-        return {
-          op: "spiceCall",
-          call: callName,
-          in: obj.in,
-          as: asValue,
-        };
-      }
-
-      if (outputShape === "out") {
-        if (obj.out === undefined) {
-          throw new TypeError(`${label}.out is required when call=${JSON.stringify(call)}`);
-        }
-
-        if (obj.as !== undefined) {
-          throw new TypeError(`${label}.as is not allowed when call=${JSON.stringify(call)}`);
-        }
-
-        const outValue = parseSpiceCallOutMap(obj.out, `${label}.out`);
-
-        return {
-          op: "spiceCall",
-          call: callName,
-          in: obj.in,
-          out: outValue,
-        };
-      }
-
-      if (obj.as !== undefined || obj.out !== undefined) {
-        throw new TypeError(`${label}.as/out are not allowed when call=${JSON.stringify(call)}`);
-      }
-
+      ensureKnownKeys(obj, ["op", "call", "in", "as", "out"], label);
       return {
-        op: "spiceCall",
-        call: callName,
-        in: obj.in,
+        steps: [
+          {
+            op: "spiceCall",
+            call: asString(obj.call, `${label}.call`) as MethodWorkflowStepV3 extends { op: "spiceCall"; call: infer T } ? T : never,
+            in: asArray(obj.in, `${label}.in`),
+            ...(obj.as !== undefined ? { as: asString(obj.as, `${label}.as`) } : {}),
+            ...(obj.out !== undefined ? { out: asRecord(obj.out, `${label}.out`) as Record<string, string> } : {}),
+          },
+        ],
+        cleanup: [],
       };
     }
 
-    case "invokeLegacyCall": {
-      assertNoUnknownKeys(obj, label, ["op", "call"]);
+    case "callContract": {
+      ensureKnownKeys(obj, ["op", "call"], label);
       return {
-        op: "invokeLegacyCall",
-        ...(obj.call === undefined ? {} : { call: assertString(obj.call, `${label}.call`) }),
+        steps: [
+          {
+            op: "callContract",
+            ...(obj.call !== undefined ? { call: asString(obj.call, `${label}.call`) } : {}),
+          },
+        ],
+        cleanup: [],
       };
     }
 
     case "assert": {
-      assertNoUnknownKeys(obj, label, ["op", "test", "error"]);
-
-      const test = assertRecord(obj.test, `${label}.test`);
-      const testEntries = Object.entries(test);
-      if (testEntries.length !== 1) {
-        throw new TypeError(`${label}.test must define exactly one operator`);
-      }
-
-      const testEntry = testEntries[0];
-      if (!testEntry) {
-        throw new TypeError(`${label}.test must define exactly one operator`);
-      }
-
-      const [operatorRaw, operandsRaw] = testEntry;
-      if (!isAssertOperator(operatorRaw)) {
-        throw new TypeError(`${label}.test operator must be one of ${ASSERT_OPERATOR_NAMES_TEXT}`);
-      }
-
-      if (!Array.isArray(operandsRaw) || operandsRaw.length !== 2) {
-        throw new TypeError(`${label}.test.${operatorRaw} must be a 2-item array`);
-      }
-
-      const operands: [unknown, unknown] = [operandsRaw[0], operandsRaw[1]];
-      const operator = operatorRaw;
-
-      const errorObj = assertRecord(obj.error, `${label}.error`);
-      assertNoUnknownKeys(errorObj, `${label}.error`, ["code", "message"]);
-      const code = assertString(errorObj.code, `${label}.error.code`);
-      const message = assertString(errorObj.message, `${label}.error.message`);
-
-      const testOut = (() => {
-        switch (operator) {
-          case "eq":
-            return { eq: operands };
-          case "ne":
-            return { ne: operands };
-          case "gt":
-            return { gt: operands };
-          case "gte":
-            return { gte: operands };
-          case "lt":
-            return { lt: operands };
-          case "lte":
-            return { lte: operands };
-        }
-      })();
+      ensureKnownKeys(obj, ["op", "test", "error"], label);
+      const test = asRecord(obj.test, `${label}.test`);
+      const { operator, operands } = parseAssertOperator(test, `${label}.test`);
+      const error = asRecord(obj.error, `${label}.error`);
+      ensureKnownKeys(error, ["code", "message"], `${label}.error`);
 
       return {
-        op: "assert",
-        test: testOut,
-        error: {
-          code,
-          message,
-        },
+        steps: [
+          {
+            op: "assert",
+            test: {
+              [operator]: operands,
+            } as MethodWorkflowStepV3 extends { op: "assert"; test: infer T } ? T : never,
+            error: {
+              code: asString(error.code, `${label}.error.code`),
+              message: asString(error.message, `${label}.error.message`),
+            },
+          },
+        ],
+        cleanup: [],
       };
     }
 
     case "projectResult": {
-      assertNoUnknownKeys(obj, label, ["op", "out"]);
+      ensureKnownKeys(obj, ["op", "out"], label);
       return {
-        op: "projectResult",
-        out: assertRecord(obj.out, `${label}.out`),
+        steps: [
+          {
+            op: "projectResult",
+            out: asRecord(obj.out, `${label}.out`),
+          },
+        ],
+        cleanup: [],
       };
     }
 
     case "project": {
-      assertNoUnknownKeys(obj, label, ["op", "out"]);
+      ensureKnownKeys(obj, ["op", "out"], label);
       return {
-        op: "project",
-        out: assertRecord(obj.out, `${label}.out`),
+        steps: [
+          {
+            op: "project",
+            out: asRecord(obj.out, `${label}.out`),
+          },
+        ],
+        cleanup: [],
       };
     }
 
     case "switch": {
-      assertNoUnknownKeys(obj, label, ["op", "on", "cases", "default"]);
-      if (!("on" in obj)) {
-        throw new TypeError(`${label}.on is required`);
-      }
+      ensureKnownKeys(obj, ["op", "on", "cases", "default"], label);
+      const casesObj = asRecord(obj.cases, `${label}.cases`);
+      const parsedCases: Record<string, MethodWorkflowStepV3[]> = {};
 
-      const rawCases = assertRecord(obj.cases, `${label}.cases`);
-      const cases: Record<string, MethodWorkflowStepV2[]> = {};
-
-      for (const [caseName, caseStepsRaw] of Object.entries(rawCases)) {
-        if (!Array.isArray(caseStepsRaw)) {
-          throw new TypeError(`${label}.cases.${caseName} must be an array`);
-        }
-
-        cases[caseName] = caseStepsRaw.map((entry, index) =>
-          parseMethodWorkflowStepV2(entry, `${label}.cases.${caseName}[${index}]`),
+      for (const [caseKey, caseStepsValue] of Object.entries(casesObj)) {
+        const caseEntries = asArray(caseStepsValue, `${label}.cases.${caseKey}`);
+        const lowered = combineLowered(
+          caseEntries.map((entry, i) => parseStepCore(entry, `${label}.cases.${caseKey}[${i}]`, { allowLifecycleOps: false })),
         );
+        if (lowered.cleanup.length > 0) {
+          throw new TypeError(`${label}.cases.${caseKey} contains withResource cleanup which is not supported inside switch branches`);
+        }
+        parsedCases[caseKey] = lowered.steps;
       }
 
-      const defaultSteps =
-        obj.default === undefined
-          ? undefined
-          : (() => {
-              if (!Array.isArray(obj.default)) {
-                throw new TypeError(`${label}.default must be an array`);
-              }
-
-              return obj.default.map((entry, index) =>
-                parseMethodWorkflowStepV2(entry, `${label}.default[${index}]`),
-              );
-            })();
+      let parsedDefault: MethodWorkflowStepV3[] | undefined;
+      if (obj.default !== undefined) {
+        const defaultEntries = asArray(obj.default, `${label}.default`);
+        const loweredDefault = combineLowered(
+          defaultEntries.map((entry, i) => parseStepCore(entry, `${label}.default[${i}]`, { allowLifecycleOps: false })),
+        );
+        if (loweredDefault.cleanup.length > 0) {
+          throw new TypeError(`${label}.default contains withResource cleanup which is not supported inside switch branches`);
+        }
+        parsedDefault = loweredDefault.steps;
+      }
 
       return {
-        op: "switch",
-        on: obj.on,
-        cases,
-        ...(defaultSteps === undefined ? {} : { default: defaultSteps }),
+        steps: [
+          {
+            op: "switch",
+            on: obj.on,
+            cases: parsedCases,
+            ...(parsedDefault ? { default: parsedDefault } : {}),
+          },
+        ],
+        cleanup: [],
       };
     }
 
     case "freeCell": {
-      assertNoUnknownKeys(obj, label, ["op", "target"]);
-      if (!("target" in obj)) {
-        throw new TypeError(`${label}.target is required`);
-      }
+      ensureKnownKeys(obj, ["op", "target"], label);
       return {
-        op: "freeCell",
-        target: obj.target,
+        steps: [
+          {
+            op: "freeCell",
+            target: obj.target,
+          },
+        ],
+        cleanup: [],
       };
     }
 
     case "freeWindow": {
-      assertNoUnknownKeys(obj, label, ["op", "target"]);
-      if (!("target" in obj)) {
-        throw new TypeError(`${label}.target is required`);
-      }
+      ensureKnownKeys(obj, ["op", "target"], label);
       return {
-        op: "freeWindow",
-        target: obj.target,
+        steps: [
+          {
+            op: "freeWindow",
+            target: obj.target,
+          },
+        ],
+        cleanup: [],
+      };
+    }
+
+    case "dasOpen":
+    case "dlaBeginForwardSearch":
+    case "dasClose":
+    case "unlink": {
+      if (!options.allowLifecycleOps) {
+        throw new TypeError(
+          `${label}.op=${JSON.stringify(op)} is not allowed in authored v3 workflows; use withResource instead`,
+        );
+      }
+
+      if (op === "dasOpen") {
+        ensureKnownKeys(obj, ["op", "path", "as"], label);
+        return {
+          steps: [
+            {
+              op,
+              path: obj.path,
+              as: asString(obj.as, `${label}.as`),
+            },
+          ],
+          cleanup: [],
+        };
+      }
+
+      if (op === "dlaBeginForwardSearch") {
+        ensureKnownKeys(obj, ["op", "handle", "as"], label);
+        return {
+          steps: [
+            {
+              op,
+              handle: obj.handle,
+              as: asString(obj.as, `${label}.as`),
+            },
+          ],
+          cleanup: [],
+        };
+      }
+
+      ensureKnownKeys(obj, ["op", "target"], label);
+      return {
+        steps: [
+          {
+            op,
+            target: obj.target,
+          } as Extract<MethodWorkflowStepV3, { op: "dasClose" | "unlink" }>,
+        ],
+        cleanup: [],
       };
     }
 
     default:
-      throw new TypeError(`${label}.op has unsupported value ${JSON.stringify(op)}`);
+      throw new TypeError(`Unsupported workflow op: ${JSON.stringify(op)}`);
   }
 }
 
-function parseMethodResultConstValueV2(value: unknown, label: string): MethodResultConstValueV2 {
-  if (
-    value === null ||
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
-  ) {
-    return value;
+function parseWorkflow(value: unknown, label: string): { steps: MethodWorkflowStepV3[]; cleanup?: MethodWorkflowStepV3[] } {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["steps", "cleanup"], label);
+
+  const stepValues = asArray(obj.steps, `${label}.steps`);
+  if (stepValues.length === 0) {
+    throw new TypeError(`${label}.steps must be a non-empty array`);
   }
 
-  if (Array.isArray(value)) {
-    return value.map((entry, index) => parseMethodResultConstValueV2(entry, `${label}[${index}]`));
-  }
-
-  const obj = assertRecord(value, label);
-  const out: Record<string, MethodResultConstValueV2> = {};
-  for (const [key, entry] of Object.entries(obj)) {
-    out[key] = parseMethodResultConstValueV2(entry, `${label}.${key}`);
-  }
-  return out;
-}
-
-function parseMethodSpecV2ContractResult(
-  value: unknown,
-  label: string,
-): MethodSpecV2["contract"]["result"] {
-  const obj = assertRecord(value, label);
-
-  if (Object.prototype.hasOwnProperty.call(obj, "const")) {
-    assertNoUnknownKeys(obj, label, ["const"]);
-    return {
-      const: parseMethodResultConstValueV2(obj.const, `${label}.const`),
-    };
-  }
-
-  assertNoUnknownKeys(obj, label, ["type", "required", "properties"]);
-
-  const type = assertString(obj.type, `${label}.type`);
-  if (type !== "object") {
-    throw new TypeError(`${label}.type must be \"object\"`);
-  }
-
-  const required = parseStringArray(obj.required, `${label}.required`);
-
-  const propertiesObj = assertRecord(obj.properties, `${label}.properties`);
-  const properties: MethodResultObjectSpecV2["properties"] = {};
-
-  for (const [name, rawProperty] of Object.entries(propertiesObj)) {
-    const property = assertRecord(rawProperty, `${label}.properties.${name}`);
-    assertNoUnknownKeys(property, `${label}.properties.${name}`, ["const", "type"]);
-
-    if (property.const === undefined && property.type === undefined) {
-      throw new TypeError(
-        `${label}.properties.${name} must define at least one of \"const\" or \"type\"`,
-      );
-    }
-
-    const out: MethodResultObjectSpecV2["properties"][string] = {};
-
-    if (property.const !== undefined) {
-      const constant = property.const;
-      if (
-        typeof constant !== "string" &&
-        typeof constant !== "number" &&
-        typeof constant !== "boolean" &&
-        constant !== null
-      ) {
-        throw new TypeError(
-          `${label}.properties.${name}.const must be string|number|boolean|null`,
-        );
-      }
-      out.const = constant;
-    }
-
-    if (property.type !== undefined) {
-      const propertyType = assertString(property.type, `${label}.properties.${name}.type`);
-      if (propertyType !== "spiceInt") {
-        throw new TypeError(`${label}.properties.${name}.type must be \"spiceInt\"`);
-      }
-      out.type = "spiceInt";
-    }
-
-    properties[name] = out;
-  }
-
-  return {
-    type: "object",
-    ...(required ? { required } : {}),
-    properties,
-  };
-}
-
-function parseMethodSpecV2Contract(
-  value: unknown,
-  label: string,
-): MethodSpecV2["contract"] {
-  const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["contractMethod", "canonicalMethod", "aliases", "args", "result", "errors"]);
-
-  const aliases = parseStringArray(obj.aliases, `${label}.aliases`);
-
-  const args =
-    obj.args === undefined
-      ? undefined
-      : (() => {
-          if (!Array.isArray(obj.args)) {
-            throw new TypeError(`${label}.args must be an array`);
-          }
-          return obj.args.map((entry, index) => {
-            const arg = assertRecord(entry, `${label}.args[${index}]`);
-            assertNoUnknownKeys(arg, `${label}.args[${index}]`, ["name", "type", "constraints"]);
-
-            const type = assertString(arg.type, `${label}.args[${index}].type`);
-            if (type !== "spiceInt") {
-              throw new TypeError(`${label}.args[${index}].type must be \"spiceInt\"`);
-            }
-
-            const constraints =
-              arg.constraints === undefined
-                ? undefined
-                : (() => {
-                    const parsed = assertRecord(arg.constraints, `${label}.args[${index}].constraints`);
-                    assertNoUnknownKeys(parsed, `${label}.args[${index}].constraints`, ["min", "max"]);
-                    const min =
-                      parsed.min === undefined
-                        ? undefined
-                        : assertInteger(parsed.min, `${label}.args[${index}].constraints.min`);
-                    const max =
-                      parsed.max === undefined
-                        ? undefined
-                        : assertInteger(parsed.max, `${label}.args[${index}].constraints.max`);
-                    return {
-                      ...(min === undefined ? {} : { min }),
-                      ...(max === undefined ? {} : { max }),
-                    };
-                  })();
-
-            return {
-              name: assertString(arg.name, `${label}.args[${index}].name`),
-              type: "spiceInt" as const,
-              ...(constraints && Object.keys(constraints).length > 0 ? { constraints } : {}),
-            };
-          });
-        })();
-
-  const errors =
-    obj.errors === undefined
-      ? undefined
-      : (() => {
-          if (!Array.isArray(obj.errors)) {
-            throw new TypeError(`${label}.errors must be an array`);
-          }
-
-          return obj.errors.map((entry, index) => {
-            const errorSpec = assertRecord(entry, `${label}.errors[${index}]`);
-            assertNoUnknownKeys(errorSpec, `${label}.errors[${index}]`, ["code"]);
-            return {
-              code: assertString(errorSpec.code, `${label}.errors[${index}].code`),
-            };
-          });
-        })();
-
-  return {
-    contractMethod: assertString(obj.contractMethod, `${label}.contractMethod`),
-    canonicalMethod: assertString(obj.canonicalMethod, `${label}.canonicalMethod`),
-    ...(aliases ? { aliases } : {}),
-    ...(args ? { args } : {}),
-    result: parseMethodSpecV2ContractResult(obj.result, `${label}.result`),
-    ...(errors ? { errors } : {}),
-  };
-}
-
-/** Parse and validate a v2 method YAML document. */
-export function parseMethodSpecV2(file: ScenarioYamlFile): MethodSpecV2 {
-  const obj = assertRecord(file.data, `${file.sourcePath}`);
-  assertNoUnknownKeys(obj, "methodV2", [
-    "schemaVersion",
-    "manifest",
-    "contract",
-    "setup",
-    "defaults",
-    "workflow",
-    "cases",
-  ]);
-
-  const schemaVersion = assertInteger(obj.schemaVersion, "methodV2.schemaVersion");
-  if (schemaVersion !== 2) {
-    throw new TypeError(`methodV2.schemaVersion must be 2 (got ${schemaVersion})`);
-  }
-
-  const manifest = assertRecord(obj.manifest, "methodV2.manifest");
-  assertNoUnknownKeys(manifest, "methodV2.manifest", ["id", "kind"]);
-
-  const manifestKind = assertString(manifest.kind, "methodV2.manifest.kind");
-  if (manifestKind !== "method") {
-    throw new TypeError(`methodV2.manifest.kind must be \"method\" (got ${JSON.stringify(manifestKind)})`);
-  }
-
-  const workflowObj = assertRecord(obj.workflow, "methodV2.workflow");
-  assertNoUnknownKeys(workflowObj, "methodV2.workflow", ["steps", "cleanup"]);
-
-  if (!Array.isArray(workflowObj.steps) || workflowObj.steps.length === 0) {
-    throw new TypeError("methodV2.workflow.steps must be a non-empty array");
-  }
-
-  const steps = workflowObj.steps.map((entry, index) =>
-    parseMethodWorkflowStepV2(entry, `methodV2.workflow.steps[${index}]`),
+  const loweredBody = combineLowered(
+    stepValues.map((entry, i) => parseStepCore(entry, `${label}.steps[${i}]`, { allowLifecycleOps: false })),
   );
 
-  const cleanup =
-    workflowObj.cleanup === undefined
-      ? undefined
-      : (() => {
-          if (!Array.isArray(workflowObj.cleanup)) {
-            throw new TypeError("methodV2.workflow.cleanup must be an array");
-          }
-          return workflowObj.cleanup.map((entry, index) =>
-            parseMethodWorkflowStepV2(entry, `methodV2.workflow.cleanup[${index}]`),
-          );
-        })();
+  const explicitCleanup = obj.cleanup !== undefined
+    ? combineLowered(
+        asArray(obj.cleanup, `${label}.cleanup`).map((entry, i) =>
+          parseStepCore(entry, `${label}.cleanup[${i}]`, { allowLifecycleOps: false }),
+        ),
+      )
+    : { steps: [] as MethodWorkflowStepV3[], cleanup: [] as MethodWorkflowStepV3[] };
 
-  if (!Array.isArray(obj.cases) || obj.cases.length === 0) {
-    throw new TypeError("methodV2.cases must be a non-empty array");
-  }
+  const cleanup = [
+    ...loweredBody.cleanup,
+    ...explicitCleanup.steps,
+    ...explicitCleanup.cleanup,
+  ];
 
-  const cases = obj.cases.map((entry, index) => parseMethodCaseV2(entry, `methodV2.cases[${index}]`));
-  validateInvokeLegacyCallWorkflowShapeV2(steps, cleanup, cases);
+  return {
+    steps: loweredBody.steps,
+    ...(cleanup.length > 0 ? { cleanup } : {}),
+  };
+}
 
-  const out: MethodSpecV2 = {
-    schemaVersion: 2,
-    manifest: {
-      id: assertString(manifest.id, "methodV2.manifest.id"),
-      kind: "method",
-    },
-    contract: parseMethodSpecV2Contract(obj.contract, "methodV2.contract"),
-    workflow: {
-      steps,
-      ...(cleanup ? { cleanup } : {}),
-    },
-    cases,
-    meta: {
-      sourcePath: file.sourcePath,
-    },
+function parseMethodSuite(value: unknown, label: string): MethodSuiteSpecV3 {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["id", "setup", "defaults", "workflow", "cases"], label);
+
+  const out: MethodSuiteSpecV3 = {
+    id: asString(obj.id, `${label}.id`),
+    workflow: parseWorkflow(obj.workflow, `${label}.workflow`),
+    cases: asArray(obj.cases, `${label}.cases`).map((entry, i) =>
+      parseMethodCase(entry, `${label}.cases[${i}]`),
+    ),
   };
 
-  const setup = parseSetup(obj.setup, "methodV2.setup");
-  if (setup !== undefined) {
-    out.setup = setup;
+  if (obj.setup !== undefined) {
+    out.setup = parseSetupAst(obj.setup, `${label}.setup`);
   }
 
   if (obj.defaults !== undefined) {
-    const defaultsObj = assertRecord(obj.defaults, "methodV2.defaults");
-    assertNoUnknownKeys(defaultsObj, "methodV2.defaults", ["compare"]);
-
-    const defaultsCompare = parseCompare(defaultsObj.compare, "methodV2.defaults.compare");
-    if (defaultsCompare !== undefined) {
-      out.defaults = {
-        compare: defaultsCompare,
-      };
+    const defaults = asRecord(obj.defaults, `${label}.defaults`);
+    ensureKnownKeys(defaults, ["compare"], `${label}.defaults`);
+    out.defaults = {};
+    if (defaults.compare !== undefined) {
+      out.defaults.compare = parseCompareAst(defaults.compare, `${label}.defaults.compare`);
     }
   }
 
   return out;
 }
 
-/** Parse and validate either a v1 (legacy) or v2 method YAML document. */
-export function parseMethodSpecAny(file: ScenarioYamlFile): AnyMethodSpec {
-  const obj = assertRecord(file.data, `${file.sourcePath}`);
+function assertCaseShapeForWorkflow(
+  workflow: { steps: MethodWorkflowStepV3[] },
+  cases: MethodCaseSpecV3[],
+  label: string,
+): void {
+  const isCallContractOnly =
+    workflow.steps.length === 1 &&
+    workflow.steps[0]?.op === "callContract";
 
-  if (obj.schemaVersion === undefined) {
-    return parseMethodSpec(file);
+  for (const [index, scenarioCase] of cases.entries()) {
+    if (isCallContractOnly) {
+      if (scenarioCase.args === undefined) {
+        continue;
+      }
+
+      if (!Array.isArray(scenarioCase.args)) {
+        throw new TypeError(`${label}[${index}].args must be an array when workflow uses callContract`);
+      }
+      continue;
+    }
+
+    if (scenarioCase.args === undefined) {
+      continue;
+    }
+
+    if (typeof scenarioCase.args !== "object" || scenarioCase.args === null || Array.isArray(scenarioCase.args)) {
+      throw new TypeError(`${label}[${index}].args must be an object when workflow does not use callContract`);
+    }
   }
-
-  const schemaVersion = assertInteger(obj.schemaVersion, "method.schemaVersion");
-  if (schemaVersion === 2) {
-    return parseMethodSpecV2(file);
-  }
-
-  if (schemaVersion === 1) {
-    // Back-compat: allow schemaVersion: 1 on legacy shape.
-    const { schemaVersion: _ignored, ...legacy } = obj;
-    return parseMethodSpec({
-      ...file,
-      data: legacy,
-    });
-  }
-
-  throw new TypeError(`method.schemaVersion must be 1 or 2 (got ${schemaVersion})`);
 }
 
-function parseCrossCuttingExpectation(value: unknown, label: string): CrossCuttingCaseExpectation {
-  const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["ok", "errorCode"]);
+export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
+  const obj = asRecord(file.data, "methodV3");
+  ensureKnownKeys(
+    obj,
+    ["schemaVersion", "manifest", "contract", "setup", "defaults", "workflow", "cases", "suites"],
+    "methodV3",
+  );
 
-  const out: CrossCuttingCaseExpectation = {
-    ok: assertBoolean(obj.ok, `${label}.ok`),
-  };
-
-  if (obj.errorCode !== undefined) {
-    out.errorCode = assertString(obj.errorCode, `${label}.errorCode`);
+  const schemaVersion = asFiniteNumber(obj.schemaVersion, "methodV3.schemaVersion");
+  if (!Number.isInteger(schemaVersion) || schemaVersion !== 3) {
+    throw new TypeError(`methodV3.schemaVersion must be 3 (got ${schemaVersion})`);
   }
 
-  return out;
+  const manifest = asRecord(obj.manifest, "methodV3.manifest");
+  ensureKnownKeys(manifest, ["id", "kind"], "methodV3.manifest");
+
+  const method: MethodSpecV3 = {
+    schemaVersion: 3,
+    manifest: {
+      id: asString(manifest.id, "methodV3.manifest.id"),
+      kind: (() => {
+        const kind = asString(manifest.kind, "methodV3.manifest.kind");
+        if (kind !== "method") {
+          throw new TypeError(`methodV3.manifest.kind must be \"method\" (got ${JSON.stringify(kind)})`);
+        }
+        return "method" as const;
+      })(),
+    },
+    contract: parseMethodContract(obj.contract, "methodV3.contract"),
+    meta: { sourcePath: file.sourcePath },
+  };
+
+  if (obj.setup !== undefined) {
+    method.setup = parseSetupAst(obj.setup, "methodV3.setup");
+  }
+
+  if (obj.defaults !== undefined) {
+    const defaults = asRecord(obj.defaults, "methodV3.defaults");
+    ensureKnownKeys(defaults, ["compare"], "methodV3.defaults");
+    method.defaults = {};
+    if (defaults.compare !== undefined) {
+      method.defaults.compare = parseCompareAst(defaults.compare, "methodV3.defaults.compare");
+    }
+  }
+
+  const hasWorkflow = Object.prototype.hasOwnProperty.call(obj, "workflow");
+  const hasSuites = Object.prototype.hasOwnProperty.call(obj, "suites");
+
+  if (hasWorkflow === hasSuites) {
+    throw new TypeError("methodV3 must define exactly one of workflow/cases or suites[]");
+  }
+
+  if (hasWorkflow) {
+    if (!Object.prototype.hasOwnProperty.call(obj, "cases")) {
+      throw new TypeError("methodV3.cases is required when workflow is defined");
+    }
+
+    method.workflow = parseWorkflow(obj.workflow, "methodV3.workflow");
+    method.cases = asArray(obj.cases, "methodV3.cases").map((entry, i) =>
+      parseMethodCase(entry, `methodV3.cases[${i}]`),
+    );
+
+    assertCaseShapeForWorkflow(method.workflow, method.cases, "methodV3.cases");
+  } else {
+    const suites = asArray(obj.suites, "methodV3.suites").map((entry, i) =>
+      parseMethodSuite(entry, `methodV3.suites[${i}]`),
+    );
+    if (suites.length === 0) {
+      throw new TypeError("methodV3.suites must be a non-empty array");
+    }
+
+    for (const [index, suite] of suites.entries()) {
+      assertCaseShapeForWorkflow(suite.workflow, suite.cases, `methodV3.suites[${index}].cases`);
+    }
+
+    method.suites = suites;
+  }
+
+  return method;
+}
+
+export function parseMethodSpecAny(file: ScenarioYamlFile): MethodSpecV3 {
+  return parseMethodSpec(file);
+}
+
+function parseCrossCuttingCaseExpectation(value: unknown, label: string): CrossCuttingCaseExpectation {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["ok", "errorCode"], label);
+
+  return {
+    ok: asBoolean(obj.ok, `${label}.ok`),
+    ...(obj.errorCode !== undefined ? { errorCode: asString(obj.errorCode, `${label}.errorCode`) } : {}),
+  };
 }
 
 function parseCrossCuttingCase(value: unknown, label: string): CrossCuttingCaseSpec {
-  const obj = assertRecord(value, label);
-  assertNoUnknownKeys(obj, label, ["id", "transport", "rawRequest", "expect"]);
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["id", "transport", "rawRequest", "expect"], label);
 
-  const transport = assertString(obj.transport, `${label}.transport`);
+  const transport = asString(obj.transport, `${label}.transport`);
   if (transport !== "native") {
-    throw new TypeError(`${label}.transport must be \"native\"`);
+    throw new TypeError(`${label}.transport must be \"native\" (got ${JSON.stringify(transport)})`);
   }
 
   return {
-    id: assertString(obj.id, `${label}.id`),
+    id: asString(obj.id, `${label}.id`),
     transport: "native",
-    rawRequest: assertString(obj.rawRequest, `${label}.rawRequest`),
-    expect: parseCrossCuttingExpectation(obj.expect, `${label}.expect`),
+    rawRequest: asString(obj.rawRequest, `${label}.rawRequest`),
+    expect: parseCrossCuttingCaseExpectation(obj.expect, `${label}.expect`),
   };
 }
 
-/** Parse and validate a v1 cross-cutting YAML document. */
-export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpec {
-  const obj = assertRecord(file.data, `${file.sourcePath}`);
-  assertNoUnknownKeys(obj, "crossCutting", ["schemaVersion", "kind", "id", "owner", "cases"]);
+export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpecV3 {
+  const obj = asRecord(file.data, "crossCuttingV3");
+  ensureKnownKeys(obj, ["schemaVersion", "manifest", "cases"], "crossCuttingV3");
 
-  const schemaVersion = assertInteger(obj.schemaVersion, "crossCutting.schemaVersion");
-  if (schemaVersion !== 1) {
-    throw new TypeError(`crossCutting.schemaVersion must be 1 (got ${schemaVersion})`);
+  const schemaVersion = asFiniteNumber(obj.schemaVersion, "crossCuttingV3.schemaVersion");
+  if (!Number.isInteger(schemaVersion) || schemaVersion !== 3) {
+    throw new TypeError(`crossCuttingV3.schemaVersion must be 3 (got ${schemaVersion})`);
   }
 
-  const kind = assertString(obj.kind, "crossCutting.kind");
+  const manifest = asRecord(obj.manifest, "crossCuttingV3.manifest");
+  ensureKnownKeys(manifest, ["id", "kind"], "crossCuttingV3.manifest");
+
+  const kind = asString(manifest.kind, "crossCuttingV3.manifest.kind");
   if (kind !== "crossCuttingSpec") {
-    throw new TypeError(`crossCutting.kind must be \"crossCuttingSpec\" (got ${JSON.stringify(kind)})`);
-  }
-
-  if (!Array.isArray(obj.cases) || obj.cases.length === 0) {
-    throw new TypeError("crossCutting.cases must be a non-empty array");
+    throw new TypeError(`crossCuttingV3.manifest.kind must be \"crossCuttingSpec\" (got ${JSON.stringify(kind)})`);
   }
 
   return {
-    schemaVersion: 1,
-    kind: "crossCuttingSpec",
-    id: assertString(obj.id, "crossCutting.id"),
-    owner: assertString(obj.owner, "crossCutting.owner"),
-    cases: obj.cases.map((entry, index) => parseCrossCuttingCase(entry, `crossCutting.cases[${index}]`)),
-    meta: {
-      sourcePath: file.sourcePath,
-    },
-  };
-}
-
-/** Parse and validate a v2 cross-cutting YAML document. */
-export function parseCrossCuttingSpecV2(file: ScenarioYamlFile): CrossCuttingSpecV2 {
-  const obj = assertRecord(file.data, `${file.sourcePath}`);
-  assertNoUnknownKeys(obj, "crossCuttingV2", ["schemaVersion", "manifest", "cases"]);
-
-  const schemaVersion = assertInteger(obj.schemaVersion, "crossCuttingV2.schemaVersion");
-  if (schemaVersion !== 2) {
-    throw new TypeError(`crossCuttingV2.schemaVersion must be 2 (got ${schemaVersion})`);
-  }
-
-  const manifest = assertRecord(obj.manifest, "crossCuttingV2.manifest");
-  assertNoUnknownKeys(manifest, "crossCuttingV2.manifest", ["id", "kind"]);
-
-  const kind = assertString(manifest.kind, "crossCuttingV2.manifest.kind");
-  if (kind !== "crossCuttingSpec") {
-    throw new TypeError(
-      `crossCuttingV2.manifest.kind must be \"crossCuttingSpec\" (got ${JSON.stringify(kind)})`,
-    );
-  }
-
-  if (!Array.isArray(obj.cases) || obj.cases.length === 0) {
-    throw new TypeError("crossCuttingV2.cases must be a non-empty array");
-  }
-
-  return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     manifest: {
-      id: assertString(manifest.id, "crossCuttingV2.manifest.id"),
+      id: asString(manifest.id, "crossCuttingV3.manifest.id"),
       kind: "crossCuttingSpec",
     },
-    cases: obj.cases.map((entry, index) => parseCrossCuttingCase(entry, `crossCuttingV2.cases[${index}]`)),
-    meta: {
-      sourcePath: file.sourcePath,
-    },
+    cases: asArray(obj.cases, "crossCuttingV3.cases").map((entry, i) =>
+      parseCrossCuttingCase(entry, `crossCuttingV3.cases[${i}]`),
+    ),
+    meta: { sourcePath: file.sourcePath },
   };
 }
 
-/** Parse and validate either a v1 or v2 cross-cutting YAML document. */
-export function parseCrossCuttingSpecAny(file: ScenarioYamlFile): AnyCrossCuttingSpec {
-  const obj = assertRecord(file.data, `${file.sourcePath}`);
-
-  const schemaVersion = assertInteger(obj.schemaVersion, "crossCutting.schemaVersion");
-  if (schemaVersion === 1) {
-    return parseCrossCuttingSpec(file);
-  }
-  if (schemaVersion === 2) {
-    return parseCrossCuttingSpecV2(file);
-  }
-
-  throw new TypeError(`crossCutting.schemaVersion must be 1 or 2 (got ${schemaVersion})`);
+export function parseCrossCuttingSpecAny(file: ScenarioYamlFile): CrossCuttingSpecV3 {
+  return parseCrossCuttingSpec(file);
 }
+
+// Backward-compatible names referenced by older tests/importers.
+export const parseMethodSpecV2 = parseMethodSpec;
+export const parseCrossCuttingSpecV2 = parseCrossCuttingSpec;

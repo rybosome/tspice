@@ -176,7 +176,7 @@ int main(void) {
 
   char *call = NULL;
 
-  bool isV2Request = false;
+  bool isV3Request = false;
   if (schemaVersionTok >= 0) {
     SpiceInt schemaVersion = 0;
     if (!v2_parse_int_token_or_error(input, &tokens[schemaVersionTok],
@@ -184,9 +184,9 @@ int main(void) {
       goto done;
     }
 
-    if (schemaVersion == 2) {
-      isV2Request = true;
-    } else if (schemaVersion != 1) {
+    if (schemaVersion == 3) {
+      isV3Request = true;
+    } else {
       write_error_json_ex("invalid_request", "Unsupported schemaVersion", NULL,
                           NULL, NULL, NULL);
       goto done;
@@ -203,7 +203,7 @@ int main(void) {
     goto done;
   }
 
-  if (isV2Request) {
+  if (isV3Request) {
     (void)argsTok;
     (void)callTok;
     if (!v2_execute_workflow_request(input, tokens, tokenCount)) {

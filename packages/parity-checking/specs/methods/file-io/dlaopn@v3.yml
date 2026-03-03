@@ -1,0 +1,44 @@
+schemaVersion: 3
+manifest:
+  id: methods/file-io/dlaopn@v3
+  kind: method
+contract:
+  contractMethod: file-io.dlaopn
+  canonicalMethod: file-io.dlaopn
+  aliases: []
+  result:
+    type: object
+    properties: {}
+  errors:
+    - code: invalid_args
+    - code: spice_error
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: file-io.dlaopn.create-dla-writer
+    args:
+      - parity-dlaopn
+      - DLA
+      - TSPICE
+      - 0
+    expect:
+      ok: true
+  - id: file-io.dlaopn.rejects-negative-comment-size
+    args:
+      - parity-dlaopn
+      - DLA
+      - TSPICE
+      - -1
+    expect:
+      ok: false
+      errorCode: invalid_args
+  - id: file-io.dlaopn.rejects-non-string-tag
+    args:
+      - 42
+      - DLA
+      - TSPICE
+      - 0
+    expect:
+      ok: false
+      errorCode: invalid_args

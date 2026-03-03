@@ -1,0 +1,20 @@
+schemaVersion: 3
+manifest:
+  id: methods/kernels/kdata@v3
+  kind: method
+contract:
+  contractMethod: kernels.kdata
+  canonicalMethod: kernels.kdata
+workflow:
+  steps:
+    - op: callContract
+cases:
+  - id: kernels.kdata
+    args:
+      - 0
+      - ALL
+    setup:
+      kernels:
+        - $FIXTURES/kernel-pool-parity.tpc
+    expect:
+      ok: true
