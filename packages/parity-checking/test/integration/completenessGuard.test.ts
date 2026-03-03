@@ -6,6 +6,10 @@ import { parse as parseYaml } from "yaml";
 import { describe, expect, it } from "vitest";
 
 import { parseMethodSpecAny } from "../../src/dsl/schemaValidate.js";
+import {
+  BASELINE_CONTRACT_METHOD_COUNT,
+  BASELINE_METHOD_SPEC_COVERAGE,
+} from "../../src/guards/completenessBaseline.js";
 import { validateCompleteness } from "../../src/guards/validateCompleteness.js";
 
 function discoverYamlFiles(rootDir: string): string[] {
@@ -43,8 +47,8 @@ describe("completeness guard", () => {
     );
 
     const summary = validateCompleteness(methods);
-    expect(summary.contractCount).toBe(162);
-    expect(summary.coveredCount).toBe(114);
+    expect(summary.contractCount).toBe(BASELINE_CONTRACT_METHOD_COUNT);
+    expect(summary.coveredCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(summary.denylistCount).toBe(0);
   });
 });

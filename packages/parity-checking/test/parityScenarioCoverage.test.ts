@@ -6,6 +6,7 @@ import { parse as parseYaml } from "yaml";
 import { describe, expect, it } from "vitest";
 
 import { readParityDenylist } from "../src/generated/readParityDenylist.js";
+import { BASELINE_METHOD_SPEC_COVERAGE } from "../src/guards/completenessBaseline.js";
 
 function discoverYamlFiles(rootDir: string): string[] {
   const out: string[] = [];
@@ -74,8 +75,8 @@ describe("parity-checking spec coverage", () => {
     expect(denylist).toEqual(denylistSorted);
     expect(new Set(denylist).size).toBe(denylist.length);
 
-    expect(methodFiles.length).toBe(114);
-    expect(coveredCanonical.size).toBe(114);
+    expect(methodFiles.length).toBe(BASELINE_METHOD_SPEC_COVERAGE);
+    expect(coveredCanonical.size).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(denylist.length).toBe(0);
   });
 });
