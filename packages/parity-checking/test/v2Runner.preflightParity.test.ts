@@ -1,6 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
-import { createCspiceRunner, getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
+import {
+  CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV,
+  createCspiceRunner,
+  getCspiceRunnerStatus,
+  isCspiceCallContractNodeDebugEnabled,
+} from "../src/runners/cspiceRunner.js";
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
 import type { RunCaseInputV2 } from "../src/runners/types.js";
 
@@ -36,6 +41,16 @@ function createBaseInput(): RunCaseInputV2 {
     },
   };
 }
+
+const originalCallContractDebugEnv = process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV];
+
+afterEach(() => {
+  if (originalCallContractDebugEnv === undefined) {
+    delete process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV];
+  } else {
+    process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV] = originalCallContractDebugEnv;
+  }
+});
 
 describe("v3 runner preflight parity", () => {
   const status = getCspiceRunnerStatus();
@@ -112,7 +127,10 @@ describe("v3 runner preflight parity", () => {
     }
   });
 
-  maybeIt("executes callContract via v3 workflow path in cspice runner", async () => {
+  maybeIt("executes callContract via v3 workflow path with native-default semantics", async () => {
+    delete process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV];
+    expect(isCspiceCallContractNodeDebugEnabled()).toBe(false);
+
     const cspice = await createCspiceRunner();
 
     const input: RunCaseInputV2 = {

@@ -137,6 +137,28 @@ type CRunnerError = {
 
 type CRunnerResponse = CRunnerOk | CRunnerError;
 
+export const CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV =
+  "TSPICE_PARITY_CSPICE_CALL_CONTRACT_NODE_DEBUG";
+
+function parseBooleanEnv(raw: string | undefined): boolean {
+  if (!raw) return false;
+  switch (raw.trim().toLowerCase()) {
+    case "1":
+    case "true":
+    case "yes":
+    case "on":
+      return true;
+    default:
+      return false;
+  }
+}
+
+export function isCspiceCallContractNodeDebugEnabled(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return parseBooleanEnv(env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV]);
+}
+
 function isCRunnerResponse(value: unknown): value is CRunnerResponse {
   if (typeof value !== "object" || value === null) return false;
   const v = value as Record<string, unknown>;
@@ -543,6 +565,7 @@ async function loadNodeBackendForCallContract(): Promise<SpiceBackend> {
 /** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
 export async function createCspiceRunner(): Promise<CaseRunner> {
   const binaryPath = getCspiceRunnerBinaryPath();
+  const callContractNodeDebugEnabled = isCspiceCallContractNodeDebugEnabled();
   let callContractBackend: SpiceBackend | undefined;
   let callContractBackendPromise: Promise<SpiceBackend> | undefined;
 
@@ -592,7 +615,12 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
 
     async runCase(input: RunCaseInput): Promise<RunCaseResult> {
       try {
-        if (isRunCaseInputV3(input) && input.schemaVersion === 3 && isSingleCallContractWorkflow(input)) {
+        if (
+          callContractNodeDebugEnabled &&
+          isRunCaseInputV3(input) &&
+          input.schemaVersion === 3 &&
+          isSingleCallContractWorkflow(input)
+        ) {
           const backend = await getCallContractBackend();
           isolateFastPathCase(backend.raw);
 
