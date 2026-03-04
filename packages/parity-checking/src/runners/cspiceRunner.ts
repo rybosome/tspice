@@ -153,6 +153,7 @@ function parseBooleanEnv(raw: string | undefined): boolean {
   }
 }
 
+/** Return whether CSPICE call-contract node debugging is enabled via env. */
 export function isCspiceCallContractNodeDebugEnabled(
   env: NodeJS.ProcessEnv = process.env,
 ): boolean {
