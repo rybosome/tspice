@@ -21,7 +21,12 @@ vi.mock("../../src/runners/v2Executor.js", () => ({
   validateV2CasePreflight: validateV2CasePreflightMock,
 }));
 
-import { createCspiceRunner } from "../../src/runners/cspiceRunner.js";
+import {
+  CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV,
+  createCspiceRunner,
+} from "../../src/runners/cspiceRunner.js";
+
+const originalCallContractDebugEnv = process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV];
 
 function createFastPathInput(kernels: KernelEntry[] = []): RunCaseInputV2 {
   return {
@@ -46,13 +51,36 @@ function createFastPathInput(kernels: KernelEntry[] = []): RunCaseInputV2 {
 }
 
 afterEach(() => {
+  if (originalCallContractDebugEnv === undefined) {
+    delete process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV];
+  } else {
+    process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV] = originalCallContractDebugEnv;
+  }
+
   toSyncMock.mockReset();
   executeV2CaseWithBackendMock.mockReset();
   validateV2CasePreflightMock.mockReset();
 });
 
 describe("createCspiceRunner fast path", () => {
+  it("does not initialize node backend for single-step callContract by default", async () => {
+    delete process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV];
+
+    const runner = await createCspiceRunner();
+
+    try {
+      await runner.runCase(createFastPathInput());
+
+      expect(toSyncMock).not.toHaveBeenCalled();
+      expect(executeV2CaseWithBackendMock).not.toHaveBeenCalled();
+    } finally {
+      await runner.dispose?.();
+    }
+  });
+
   it("applies setup.kernels and isolates state before/after each fast-path case", async () => {
+    process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV] = "1";
+
     const raw = {
       kind: "node",
       kclear: vi.fn(),
@@ -110,6 +138,8 @@ describe("createCspiceRunner fast path", () => {
         secondInput,
       );
 
+      expect(toSyncMock).toHaveBeenCalledTimes(1);
+
       expect(validateV2CasePreflightMock).not.toHaveBeenCalled();
     } finally {
       await runner.dispose?.();
@@ -117,6 +147,8 @@ describe("createCspiceRunner fast path", () => {
   });
 
   it("still performs post-case isolation when fast-path execution fails", async () => {
+    process.env[CSPICE_CALL_CONTRACT_NODE_DEBUG_ENV] = "1";
+
     const raw = {
       kind: "node",
       kclear: vi.fn(),
