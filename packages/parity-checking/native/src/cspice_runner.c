@@ -18,10 +18,43 @@ int main(void) {
   }
 
   size_t inputLen = 0;
-  char *input = read_stdin_all(&inputLen);
-  if (input == NULL) {
-    write_error_json("Failed to read stdin", NULL, NULL, NULL);
-    return 1;
+  char *input = NULL;
+  ReadStdinErr readErr = read_all_stdin(&input, &inputLen);
+  if (readErr != READ_STDIN_OK) {
+    switch (readErr) {
+    case READ_STDIN_TOO_LARGE: {
+      char msg[128];
+      snprintf(msg, sizeof(msg), "stdin too large (max %zu bytes)",
+               (size_t)CSPICE_RUNNER_MAX_STDIN_BYTES);
+      write_error_json_ex("stdin_too_large", msg, NULL, NULL, NULL, NULL);
+      exitCode = 1;
+      break;
+    }
+    case READ_STDIN_OOM:
+      write_error_json_ex("stdin_oom", "Out of memory while reading stdin", NULL,
+                          NULL, NULL, NULL);
+      exitCode = 1;
+      break;
+    case READ_STDIN_IO: {
+      const char *detail = errno != 0 ? strerror(errno) : NULL;
+      write_error_json_ex("stdin_io", "Failed to read stdin", detail, NULL, NULL,
+                          NULL);
+      exitCode = 1;
+      break;
+    }
+    case READ_STDIN_OVERFLOW:
+      write_error_json_ex("stdin_overflow",
+                          "Internal overflow while reading stdin", NULL, NULL,
+                          NULL, NULL);
+      exitCode = 1;
+      break;
+    default:
+      write_error_json_ex("stdin_error", "Failed to read stdin", NULL, NULL, NULL,
+                          NULL);
+      exitCode = 1;
+      break;
+    }
+    return exitCode;
   }
 
   int tokenCapacity = 512;
