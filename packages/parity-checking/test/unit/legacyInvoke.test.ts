@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { lowerV2InvokeLegacyCall } from "../../src/runners/legacyInvoke.js";
+import { lowerV3CallContract } from "../../src/runners/legacyInvoke.js";
 import type { RunCaseInputV2 } from "../../src/runners/types.js";
 
 type RunnerValidationCode = "invalid_request" | "invalid_args";
@@ -42,9 +42,9 @@ function makeInput(): RunCaseInputV2 {
   };
 }
 
-describe("lowerV2InvokeLegacyCall", () => {
+describe("lowerV3CallContract", () => {
   it("returns lowered call+args for single-step callContract workflows", () => {
-    const lowered = lowerV2InvokeLegacyCall(makeInput(), validation);
+    const lowered = lowerV3CallContract(makeInput(), validation);
 
     expect(lowered).toEqual({
       call: "time.tkvrsn",
@@ -56,7 +56,7 @@ describe("lowerV2InvokeLegacyCall", () => {
     const input = makeInput();
     input.workflow.steps = [{ op: "callContract", call: "time.timout" }];
 
-    const lowered = lowerV2InvokeLegacyCall(input, validation);
+    const lowered = lowerV3CallContract(input, validation);
     expect(lowered?.call).toBe("time.timout");
   });
 
@@ -69,19 +69,19 @@ describe("lowerV2InvokeLegacyCall", () => {
       },
     ];
 
-    expect(lowerV2InvokeLegacyCall(input, validation)).toBeNull();
+    expect(lowerV3CallContract(input, validation)).toBeNull();
   });
 
   it("raises invalid_request when callContract defines cleanup steps", () => {
     const input = makeInput();
     input.workflow.cleanup = [{ op: "freeCell", target: "$refs.tmp" }];
 
-    expect(() => lowerV2InvokeLegacyCall(input, validation)).toThrow(
+    expect(() => lowerV3CallContract(input, validation)).toThrow(
       /workflow must not define cleanup steps/,
     );
 
     try {
-      lowerV2InvokeLegacyCall(input, validation);
+      lowerV3CallContract(input, validation);
     } catch (error) {
       expect((error as { code?: string }).code).toBe("invalid_request");
     }
@@ -91,12 +91,12 @@ describe("lowerV2InvokeLegacyCall", () => {
     const input = makeInput();
     input.args = { mode: "TOOLKIT" };
 
-    expect(() => lowerV2InvokeLegacyCall(input, validation)).toThrow(
+    expect(() => lowerV3CallContract(input, validation)).toThrow(
       /expects case args to be an array/,
     );
 
     try {
-      lowerV2InvokeLegacyCall(input, validation);
+      lowerV3CallContract(input, validation);
     } catch (error) {
       expect((error as { code?: string }).code).toBe("invalid_args");
     }
