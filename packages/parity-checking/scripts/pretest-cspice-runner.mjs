@@ -148,10 +148,15 @@ function listRunnerFiles(pkgRoot, ext) {
         return true;
       }
 
-      return (
-        rel === `generated/function_registry${ext}` ||
-        (ext === ".h" && rel === "generated/native_call_dispatch.h")
-      );
+      const generatedAllowlist = new Set([
+        `generated/function_registry${ext}`,
+        ...(ext === ".h"
+          ? ["generated/native_call_dispatch.h", "generated/native_return_bindings.h"]
+          : []),
+        ...(ext === ".c" ? ["generated/native_return_bindings.c"] : []),
+      ]);
+
+      return generatedAllowlist.has(rel);
     })
     .sort();
 }

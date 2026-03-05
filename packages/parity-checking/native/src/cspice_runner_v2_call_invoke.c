@@ -4,6 +4,7 @@
 #include "cspice_runner_v2_fixtures.h"
 #include "cspice_runner_v2_call_invoke.h"
 #include "generated/native_call_dispatch.h"
+#include "generated/native_return_bindings.h"
 
 #include <string.h>
 
@@ -590,7 +591,9 @@ static bool v2_invoke_dskw02_c(const V2CallInvokeContext *context) {
   return v2_execute_dskw02_legacy_call();
 }
 
-static bool v2_invoke_tkvrsn_c(const V2CallInvokeContext *context) {
+static bool v2_invoke_return_expr_string_to_json_string(
+    const V2CallInvokeContext *context,
+    V2NativeReturnExprStringToJsonStringFn invokeFn) {
   if (context->returnValueJson == NULL) {
     write_error_json_ex("invalid_request",
                         "call result.mode=return requires return capture",
@@ -598,27 +601,66 @@ static bool v2_invoke_tkvrsn_c(const V2CallInvokeContext *context) {
     return false;
   }
 
+  if (invokeFn == NULL) {
+    write_error_json_ex("invalid_request", "Missing native return binding invoker",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
+  if (context->spec == NULL || context->spec->arity != 1 ||
+      context->spec->argKinds[0] != V2_FUNCTION_ARG_EXPR) {
+    write_error_json_ex("invalid_request",
+                        "Invalid native return binding signature",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
+  char argLabel[128];
+  snprintf(argLabel, sizeof(argLabel), "call(%s).in[0]",
+           context->fnName != NULL ? context->fnName : "<unknown>");
+
   char *item = NULL;
   if (!v2_resolve_expr_string_value(context,
                                     context->resolved->valueTokens[0],
-                                    "call(time.tkvrsn).in[0]",
+                                    argLabel,
                                     &item)) {
     return false;
   }
 
-  const char *version = tkvrsn_c(item);
+  const char *value = invokeFn(item);
   free(item);
   if (failed_c() == SPICETRUE) {
-    return v2_write_spice_failure("SPICE error in tkvrsn_c");
+    return v2_write_spice_failure("SPICE error in generated return binding call");
   }
 
-  char *valueJson = v2_quote_json_string(version);
+  char *valueJson = v2_quote_json_string(value);
   if (valueJson == NULL) {
     return false;
   }
 
   *context->returnValueJson = valueJson;
   return true;
+}
+
+static bool v2_invoke_contract_return_binding(
+    const V2CallInvokeContext *context,
+    const V2NativeReturnBindingEntry *binding) {
+  if (binding == NULL) {
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
+  switch (binding->kind) {
+  case V2_NATIVE_RETURN_BINDING_EXPR_STRING_TO_JSON_STRING:
+    return v2_invoke_return_expr_string_to_json_string(
+        context, binding->exprStringToJsonStringFn);
+  case V2_NATIVE_RETURN_BINDING_NONE:
+  default:
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
 }
 
 static bool v2_invoke_contract_return(const V2CallInvokeContext *context) {
@@ -628,14 +670,16 @@ static bool v2_invoke_contract_return(const V2CallInvokeContext *context) {
     return false;
   }
 
-  switch (context->spec->id) {
-  case V2_FUNCTION_ID_TIME_TKVRSN:
-    return v2_invoke_tkvrsn_c(context);
-  default:
+  const V2NativeReturnBindingEntry *binding =
+      v2_lookup_native_return_binding(context->spec->id);
+
+  if (binding == NULL) {
     write_error_json_ex("unsupported_call", "Unsupported v2 call",
                         context->fnName, NULL, NULL, NULL);
     return false;
   }
+
+  return v2_invoke_contract_return_binding(context, binding);
 }
 
 typedef bool (*V2CallInvokerFn)(const V2CallInvokeContext *context);

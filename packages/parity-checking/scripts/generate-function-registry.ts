@@ -20,6 +20,8 @@ type FunctionResultMode =
   | "asDskDescriptor"
   | "outNamedDskb02";
 
+type NativeReturnBindingKind = "exprStringToJsonString";
+
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
 
 const NATIVE_INVOKER_NAME_REGEX = /^[A-Za-z_][A-Za-z0-9_]*$/;
@@ -31,6 +33,9 @@ type FunctionRegistryEntry = {
     contractMethod: string;
     cSymbol: string;
     nativeInvoker: string;
+    returnBinding?: {
+      kind: NativeReturnBindingKind;
+    };
   };
   arity: number;
   argKinds: FunctionArgKind[];
@@ -62,6 +67,8 @@ const ALLOWED_RESULT_MODES: ReadonlySet<string> = new Set([
   "asDskDescriptor",
   "outNamedDskb02",
 ]);
+
+const ALLOWED_RETURN_BINDING_KINDS: ReadonlySet<string> = new Set(["exprStringToJsonString"]);
 
 const ARG_KIND_ENUM: Record<FunctionArgKind, string> = {
   expr: "V2_FUNCTION_ARG_EXPR",
@@ -149,6 +156,25 @@ function parseRegistryEntry(raw: unknown, label: string): FunctionRegistryEntry 
     throw new TypeError(`${label}.impl.nativeInvoker must be a valid C identifier (got ${nativeInvoker})`);
   }
 
+  let returnBinding: { kind: NativeReturnBindingKind } | undefined;
+  const returnBindingRaw = implRaw.returnBinding;
+  if (returnBindingRaw !== undefined) {
+    if (!isRecord(returnBindingRaw)) {
+      throw new TypeError(`${label}.impl.returnBinding must be an object`);
+    }
+
+    const kind = asString(returnBindingRaw.kind, `${label}.impl.returnBinding.kind`);
+    if (!ALLOWED_RETURN_BINDING_KINDS.has(kind)) {
+      throw new TypeError(
+        `${label}.impl.returnBinding.kind must be one of: ${[...ALLOWED_RETURN_BINDING_KINDS].join(", ")}`,
+      );
+    }
+
+    returnBinding = {
+      kind: kind as NativeReturnBindingKind,
+    };
+  }
+
   const arity = asFiniteInt(raw.arity, `${label}.arity`);
   if (arity < 0) {
     throw new TypeError(`${label}.arity must be >= 0`);
@@ -200,6 +226,7 @@ function parseRegistryEntry(raw: unknown, label: string): FunctionRegistryEntry 
       contractMethod,
       cSymbol,
       nativeInvoker,
+      ...(returnBinding ? { returnBinding } : {}),
     },
     arity,
     argKinds,
@@ -343,6 +370,18 @@ function validateRegistry(
       );
     }
 
+    if (entry.impl.returnBinding && entry.result.mode !== "return") {
+      throw new Error(
+        `Function ${entry.id} defines impl.returnBinding but result.mode is ${entry.result.mode}; expected return`,
+      );
+    }
+
+    if (entry.impl.returnBinding && entry.impl.nativeInvoker !== SHARED_RETURN_NATIVE_INVOKER) {
+      throw new Error(
+        `Function ${entry.id} defines impl.returnBinding but nativeInvoker is ${entry.impl.nativeInvoker}; expected ${SHARED_RETURN_NATIVE_INVOKER}`,
+      );
+    }
+
     return {
       ...entry,
       aliases,
@@ -390,6 +429,9 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("    contractMethod: string;");
   lines.push("    cSymbol: string;");
   lines.push("    nativeInvoker: string;");
+  lines.push("    returnBinding?: {");
+  lines.push("      kind: \"exprStringToJsonString\";");
+  lines.push("    };");
   lines.push("  };");
   lines.push("  arity: number;");
   lines.push("  argKinds: readonly FunctionArgKind[];");
@@ -407,6 +449,11 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
     lines.push(`      contractMethod: ${JSON.stringify(entry.impl.contractMethod)},`);
     lines.push(`      cSymbol: ${JSON.stringify(entry.impl.cSymbol)},`);
     lines.push(`      nativeInvoker: ${JSON.stringify(entry.impl.nativeInvoker)},`);
+    if (entry.impl.returnBinding) {
+      lines.push("      returnBinding: {");
+      lines.push(`        kind: ${JSON.stringify(entry.impl.returnBinding.kind)},`);
+      lines.push("      },");
+    }
     lines.push("    },");
     lines.push(`    arity: ${entry.arity},`);
     lines.push(`    argKinds: ${JSON.stringify(entry.argKinds)},`);
@@ -592,6 +639,156 @@ function renderCC(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   return `${lines.join("\n")}\n`;
 }
 
+type GeneratedNativeReturnBindingEntry = {
+  id: string;
+  enumId: string;
+  cSymbol: string;
+  kind: NativeReturnBindingKind | "none";
+};
+
+const NATIVE_RETURN_BINDING_KIND_C: Record<GeneratedNativeReturnBindingEntry["kind"], string> = {
+  none: "V2_NATIVE_RETURN_BINDING_NONE",
+  exprStringToJsonString: "V2_NATIVE_RETURN_BINDING_EXPR_STRING_TO_JSON_STRING",
+};
+
+function collectGeneratedNativeReturnBindings(
+  entries: readonly FunctionRegistryEntry[],
+): GeneratedNativeReturnBindingEntry[] {
+  return entries
+    .filter(
+      (entry) =>
+        entry.result.mode === "return" && entry.impl.nativeInvoker === SHARED_RETURN_NATIVE_INVOKER,
+    )
+    .map((entry) => ({
+      id: entry.id,
+      enumId: `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`,
+      cSymbol: entry.impl.cSymbol,
+      kind: entry.impl.returnBinding?.kind ?? "none",
+    }));
+}
+
+function renderTsNativeReturnBindings(
+  entries: readonly GeneratedNativeReturnBindingEntry[],
+  sourceRelPath: string,
+): string {
+  const lines: string[] = [];
+  lines.push("/* eslint-disable */");
+  lines.push("// GENERATED FILE - DO NOT EDIT.");
+  lines.push(`// Source: ${sourceRelPath}`);
+  lines.push("");
+  lines.push("export type NativeReturnBindingKind =");
+  lines.push('  | "none"');
+  lines.push('  | "exprStringToJsonString"');
+  lines.push(";");
+  lines.push("");
+  lines.push("export type NativeReturnBindingEntry = {");
+  lines.push("  id: string;");
+  lines.push("  enumId: string;");
+  lines.push("  cSymbol: string;");
+  lines.push("  kind: NativeReturnBindingKind;");
+  lines.push("};");
+  lines.push("");
+  lines.push("export const nativeReturnBindings: readonly NativeReturnBindingEntry[] = [");
+
+  for (const entry of entries) {
+    lines.push("  {");
+    lines.push(`    id: ${JSON.stringify(entry.id)},`);
+    lines.push(`    enumId: ${JSON.stringify(entry.enumId)},`);
+    lines.push(`    cSymbol: ${JSON.stringify(entry.cSymbol)},`);
+    lines.push(`    kind: ${JSON.stringify(entry.kind)},`);
+    lines.push("  },");
+  }
+
+  lines.push("];");
+  lines.push("");
+  lines.push("const nativeReturnBindingById = new Map<string, NativeReturnBindingEntry>();");
+  lines.push("for (const entry of nativeReturnBindings) {");
+  lines.push("  nativeReturnBindingById.set(entry.id, entry);");
+  lines.push("}");
+  lines.push("");
+  lines.push("export function lookupNativeReturnBindingEntry(fnId: string): NativeReturnBindingEntry | undefined {");
+  lines.push("  return nativeReturnBindingById.get(fnId);");
+  lines.push("}");
+  lines.push("");
+
+  return `${lines.join("\n")}\n`;
+}
+
+function renderNativeReturnBindingsHeader(sourceRelPath: string): string {
+  const lines: string[] = [];
+  lines.push("#ifndef PARITY_CHECKING_GENERATED_NATIVE_RETURN_BINDINGS_H");
+  lines.push("#define PARITY_CHECKING_GENERATED_NATIVE_RETURN_BINDINGS_H");
+  lines.push("");
+  lines.push("// GENERATED FILE - DO NOT EDIT.");
+  lines.push(`// Source: ${sourceRelPath}`);
+  lines.push("");
+  lines.push("#include \"generated/function_registry.h\"");
+  lines.push("");
+  lines.push("typedef enum {");
+  lines.push("  V2_NATIVE_RETURN_BINDING_NONE = 0,");
+  lines.push("  V2_NATIVE_RETURN_BINDING_EXPR_STRING_TO_JSON_STRING,");
+  lines.push("} V2NativeReturnBindingKind;");
+  lines.push("");
+  lines.push("typedef const char *(*V2NativeReturnExprStringToJsonStringFn)(const char *value);");
+  lines.push("");
+  lines.push("typedef struct {");
+  lines.push("  V2FunctionId fnId;");
+  lines.push("  const char *fnIdText;");
+  lines.push("  const char *cSymbol;");
+  lines.push("  V2NativeReturnBindingKind kind;");
+  lines.push("  V2NativeReturnExprStringToJsonStringFn exprStringToJsonStringFn;");
+  lines.push("} V2NativeReturnBindingEntry;");
+  lines.push("");
+  lines.push("const V2NativeReturnBindingEntry *v2_lookup_native_return_binding(V2FunctionId fnId);");
+  lines.push("");
+  lines.push("#endif");
+
+  return `${lines.join("\n")}\n`;
+}
+
+function renderNativeReturnBindingsSource(
+  entries: readonly GeneratedNativeReturnBindingEntry[],
+  sourceRelPath: string,
+): string {
+  const lines: string[] = [];
+  lines.push("// GENERATED FILE - DO NOT EDIT.");
+  lines.push(`// Source: ${sourceRelPath}`);
+  lines.push("");
+  lines.push("#include \"cspice_runner_common.h\"");
+  lines.push("#include \"generated/native_return_bindings.h\"");
+  lines.push("");
+  lines.push("#include <stddef.h>");
+  lines.push("");
+  lines.push("static const V2NativeReturnBindingEntry V2_NATIVE_RETURN_BINDINGS[] = {");
+
+  for (const entry of entries) {
+    const fnPtr = entry.kind === "exprStringToJsonString" ? entry.cSymbol : "NULL";
+    lines.push("  {");
+    lines.push(`    ${entry.enumId},`);
+    lines.push(`    ${JSON.stringify(entry.id)},`);
+    lines.push(`    ${JSON.stringify(entry.cSymbol)},`);
+    lines.push(`    ${NATIVE_RETURN_BINDING_KIND_C[entry.kind]},`);
+    lines.push(`    ${fnPtr},`);
+    lines.push("  },");
+  }
+
+  lines.push("};");
+  lines.push("");
+  lines.push("const V2NativeReturnBindingEntry *v2_lookup_native_return_binding(V2FunctionId fnId) {");
+  lines.push("  const size_t count = sizeof(V2_NATIVE_RETURN_BINDINGS) / sizeof(V2_NATIVE_RETURN_BINDINGS[0]);");
+  lines.push("  for (size_t i = 0; i < count; i++) {");
+  lines.push("    if (V2_NATIVE_RETURN_BINDINGS[i].fnId == fnId) {");
+  lines.push("      return &V2_NATIVE_RETURN_BINDINGS[i];");
+  lines.push("    }");
+  lines.push("  }");
+  lines.push("");
+  lines.push("  return NULL;");
+  lines.push("}");
+  lines.push("");
+
+  return `${lines.join("\n")}\n`;
+}
+
 function renderTsNativeCallDispatch(entries: readonly FunctionRegistryEntry[], sourceRelPath: string): string {
   const lines: string[] = [];
   lines.push("/* eslint-disable */");
@@ -678,20 +875,41 @@ function main(): void {
   const nativeInvokers = collectNativeInvokers(pkgRoot);
 
   const validatedEntries = validateRegistry(parsedRegistry, contractMethods, nativeSymbols, nativeInvokers);
+  const generatedNativeReturnBindings = collectGeneratedNativeReturnBindings(validatedEntries);
 
   const sourceRelPath = path.relative(repoRoot, registryPath).replaceAll(path.sep, "/");
 
   const tsOutPath = path.join(pkgRoot, "src", "generated", "functionRegistry.ts");
   const tsNativeDispatchOutPath = path.join(pkgRoot, "src", "generated", "nativeCallDispatch.ts");
+  const tsNativeReturnBindingsOutPath = path.join(pkgRoot, "src", "generated", "nativeReturnBindings.ts");
   const cHeaderOutPath = path.join(pkgRoot, "native", "src", "generated", "function_registry.h");
   const cSourceOutPath = path.join(pkgRoot, "native", "src", "generated", "function_registry.c");
   const cNativeDispatchHeaderOutPath = path.join(pkgRoot, "native", "src", "generated", "native_call_dispatch.h");
+  const cNativeReturnBindingsHeaderOutPath = path.join(
+    pkgRoot,
+    "native",
+    "src",
+    "generated",
+    "native_return_bindings.h",
+  );
+  const cNativeReturnBindingsSourceOutPath = path.join(
+    pkgRoot,
+    "native",
+    "src",
+    "generated",
+    "native_return_bindings.c",
+  );
 
   fs.mkdirSync(path.dirname(tsOutPath), { recursive: true });
   fs.mkdirSync(path.dirname(cHeaderOutPath), { recursive: true });
 
   fs.writeFileSync(tsOutPath, renderTs(validatedEntries, sourceRelPath), "utf8");
   fs.writeFileSync(tsNativeDispatchOutPath, renderTsNativeCallDispatch(validatedEntries, sourceRelPath), "utf8");
+  fs.writeFileSync(
+    tsNativeReturnBindingsOutPath,
+    renderTsNativeReturnBindings(generatedNativeReturnBindings, sourceRelPath),
+    "utf8",
+  );
   fs.writeFileSync(cHeaderOutPath, renderCH(validatedEntries, sourceRelPath), "utf8");
   fs.writeFileSync(cSourceOutPath, renderCC(validatedEntries, sourceRelPath), "utf8");
   fs.writeFileSync(
@@ -699,9 +917,19 @@ function main(): void {
     renderNativeCallDispatchHeader(validatedEntries, sourceRelPath),
     "utf8",
   );
+  fs.writeFileSync(
+    cNativeReturnBindingsHeaderOutPath,
+    renderNativeReturnBindingsHeader(sourceRelPath),
+    "utf8",
+  );
+  fs.writeFileSync(
+    cNativeReturnBindingsSourceOutPath,
+    renderNativeReturnBindingsSource(generatedNativeReturnBindings, sourceRelPath),
+    "utf8",
+  );
 
   console.log(
-    `[parity-checking] wrote function registry (${validatedEntries.length}) -> ${tsOutPath}, ${tsNativeDispatchOutPath}, ${cHeaderOutPath}, ${cSourceOutPath}, ${cNativeDispatchHeaderOutPath}`,
+    `[parity-checking] wrote function registry (${validatedEntries.length}) -> ${tsOutPath}, ${tsNativeDispatchOutPath}, ${tsNativeReturnBindingsOutPath}, ${cHeaderOutPath}, ${cSourceOutPath}, ${cNativeDispatchHeaderOutPath}, ${cNativeReturnBindingsHeaderOutPath}, ${cNativeReturnBindingsSourceOutPath}`,
   );
 }
 

@@ -1071,8 +1071,7 @@ async function executeCallFromSpec(
     forbidCallOutMap(step);
 
     if (
-      dispatchEntry.invoker !== SHARED_RETURN_NATIVE_INVOKER &&
-      dispatchEntry.invoker !== "v2_invoke_tkvrsn_c"
+      dispatchEntry.invoker !== SHARED_RETURN_NATIVE_INVOKER
     ) {
       unsupportedCall("Unsupported call", { call: step.fn, invoker: dispatchEntry.invoker });
     }

@@ -106,7 +106,7 @@
   X(V2_FUNCTION_ID_TIME_STR2ET, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_TIME_TIMDEF, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_TIME_TIMOUT, v2_invoke_contract_return) \
-  X(V2_FUNCTION_ID_TIME_TKVRSN, v2_invoke_tkvrsn_c) \
+  X(V2_FUNCTION_ID_TIME_TKVRSN, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_TIME_TPARSE, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_TIME_TPICTR, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_TIME_UNITIM, v2_invoke_contract_return)

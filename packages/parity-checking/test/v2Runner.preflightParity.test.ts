@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { createCspiceRunner, getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
+import { lookupNativeReturnBindingEntry } from "../src/generated/nativeReturnBindings.js";
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
 import type { RunCaseInputV2 } from "../src/runners/types.js";
 
@@ -149,6 +150,10 @@ describe("v3 runner preflight parity", () => {
   maybeIt("executes call via v3 workflow path in cspice runner", async () => {
     const cspice = await createCspiceRunner();
 
+    const returnBinding = lookupNativeReturnBindingEntry("time.tkvrsn");
+    expect(returnBinding).toBeDefined();
+    expect(returnBinding?.kind).toBe("exprStringToJsonString");
+
     const input: RunCaseInputV2 = {
       schemaVersion: 3,
       manifest: {
@@ -182,4 +187,45 @@ describe("v3 runner preflight parity", () => {
       await cspice.dispose?.();
     }
   });
+
+  maybeIt(
+    "returns unsupported_call for shared return dispatch rows without typed generated return bindings",
+    async () => {
+      const cspice = await createCspiceRunner();
+
+      const returnBinding = lookupNativeReturnBindingEntry("ids-names.bodc2s");
+      expect(returnBinding).toBeDefined();
+      expect(returnBinding?.kind).toBe("none");
+
+      const input: RunCaseInputV2 = {
+        schemaVersion: 3,
+        manifest: {
+          id: "methods/ids-names/bodc2s@v3",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "ids-names.bodc2s",
+          canonicalMethod: "ids-names.bodc2s",
+          aliases: [],
+          args: [{ name: "code", type: "spiceInt" }],
+          result: { const: "EARTH" },
+          errors: [],
+        },
+        args: { code: 399 },
+        workflow: {
+          steps: [{ op: "call", fn: "ids-names.bodc2s", in: ["$args.code"] }],
+        },
+      };
+
+      try {
+        const out = await cspice.runCase(input);
+        expect(out.ok).toBe(false);
+        if (!out.ok) {
+          expect(out.error.code).toBe("unsupported_call");
+        }
+      } finally {
+        await cspice.dispose?.();
+      }
+    },
+  );
 });

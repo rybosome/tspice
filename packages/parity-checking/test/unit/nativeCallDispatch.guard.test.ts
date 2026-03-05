@@ -7,6 +7,9 @@ import { describe, expect, it } from "vitest";
 
 import { functionRegistry, lookupFunctionRegistryEntry } from "../../src/generated/functionRegistry.js";
 import { nativeCallDispatch } from "../../src/generated/nativeCallDispatch.js";
+import { nativeReturnBindings } from "../../src/generated/nativeReturnBindings.js";
+
+const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
 
 function toEnumSegment(value: string): string {
   const normalized = value
@@ -72,6 +75,40 @@ describe("native call dispatch codegen guard", () => {
     const actual = [...nativeCallDispatch].sort((a, b) => a.id.localeCompare(b.id));
 
     expect(actual).toEqual(expected);
+  });
+
+  it("keeps generated native return bindings aligned with shared return dispatch entries", () => {
+    const expected = functionRegistry
+      .filter(
+        (entry) =>
+          entry.result.mode === "return" &&
+          entry.impl.nativeInvoker === SHARED_RETURN_NATIVE_INVOKER,
+      )
+      .map((entry) => ({
+        id: entry.id,
+        enumId: `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`,
+        cSymbol: entry.impl.cSymbol,
+        kind: entry.impl.returnBinding?.kind ?? "none",
+      }))
+      .sort((a, b) => a.id.localeCompare(b.id));
+
+    const actual = [...nativeReturnBindings].sort((a, b) => a.id.localeCompare(b.id));
+
+    expect(actual).toEqual(expected);
+  });
+
+  it("covers every shared return dispatch row with generated return binding metadata", () => {
+    const bindingById = new Map(nativeReturnBindings.map((entry) => [entry.id, entry]));
+
+    const sharedReturnDispatchRows = nativeCallDispatch.filter(
+      (entry) => entry.invoker === SHARED_RETURN_NATIVE_INVOKER,
+    );
+
+    for (const entry of sharedReturnDispatchRows) {
+      const binding = bindingById.get(entry.id);
+      expect(binding, `Missing generated native return binding for fn id: ${entry.id}`).toBeDefined();
+      expect(binding?.cSymbol).toBe(entry.cSymbol);
+    }
   });
 
   it("ensures every call fn referenced by parity method workflows resolves to a native dispatch target", () => {

@@ -16,9 +16,12 @@ const generatedFiles = [
   "packages/parity-checking/catalogs/parity-denylist.ts",
   "packages/parity-checking/src/generated/functionRegistry.ts",
   "packages/parity-checking/src/generated/nativeCallDispatch.ts",
+  "packages/parity-checking/src/generated/nativeReturnBindings.ts",
   "packages/parity-checking/native/src/generated/function_registry.h",
   "packages/parity-checking/native/src/generated/function_registry.c",
   "packages/parity-checking/native/src/generated/native_call_dispatch.h",
+  "packages/parity-checking/native/src/generated/native_return_bindings.h",
+  "packages/parity-checking/native/src/generated/native_return_bindings.c",
 ];
 
 function run(command, args, options = {}) {

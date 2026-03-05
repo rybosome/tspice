@@ -1294,7 +1294,9 @@ functions:
     impl:
       contractMethod: time.tkvrsn
       cSymbol: tkvrsn_c
-      nativeInvoker: v2_invoke_tkvrsn_c
+      nativeInvoker: v2_invoke_contract_return
+      returnBinding:
+        kind: exprStringToJsonString
     arity: 1
     argKinds:
       - expr

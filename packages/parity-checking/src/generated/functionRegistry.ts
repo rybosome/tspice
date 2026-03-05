@@ -27,6 +27,9 @@ export type FunctionRegistryEntry = {
     contractMethod: string;
     cSymbol: string;
     nativeInvoker: string;
+    returnBinding?: {
+      kind: "exprStringToJsonString";
+    };
   };
   arity: number;
   argKinds: readonly FunctionArgKind[];
@@ -1232,7 +1235,10 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.tkvrsn",
       cSymbol: "tkvrsn_c",
-      nativeInvoker: "v2_invoke_tkvrsn_c",
+      nativeInvoker: "v2_invoke_contract_return",
+      returnBinding: {
+        kind: "exprStringToJsonString",
+      },
     },
     arity: 1,
     argKinds: ["expr"],
