@@ -3,9 +3,9 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { discoverYamlFiles } from "../../src/dsl/discoverCrossCuttingSpecs.js";
+import { discoverYamlFiles } from "../../src/dsl/discoverYamlFiles.js";
 import { loadYamlFile } from "../../src/dsl/loadYaml.js";
-import { parseMethodSpecAny } from "../../src/dsl/schemaValidate.js";
+import { parseMethodSpec } from "../../src/dsl/schemaValidate.js";
 import {
   BASELINE_CONTRACT_METHOD_COUNT,
   BASELINE_METHOD_SPEC_COVERAGE,
@@ -18,7 +18,7 @@ describe("completeness guard", () => {
     const methodsDir = path.resolve(testDir, "../../specs/methods");
 
     const methods = await Promise.all(
-      discoverYamlFiles(methodsDir).map(async (filePath) => parseMethodSpecAny(await loadYamlFile(filePath))),
+      discoverYamlFiles(methodsDir).map(async (filePath) => parseMethodSpec(await loadYamlFile(filePath))),
     );
 
     const summary = validateCompleteness(methods);

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { parseCrossCuttingSpecAny, parseMethodSpecAny } from "../../src/dsl/schemaValidate.js";
+import { parseCrossCuttingSpec, parseMethodSpec } from "../../src/dsl/schemaValidate.js";
 
 describe("schema validation (v3)", () => {
   it("parses valid v3 method spec with workflow+cases", () => {
-    const method = parseMethodSpecAny({
+    const method = parseMethodSpec({
       sourcePath: "specs/methods/time/spiceVersion@v3.yml",
       data: {
         schemaVersion: 3,
@@ -34,7 +34,7 @@ describe("schema validation (v3)", () => {
   });
 
   it("parses valid v3 method spec with suites[]", () => {
-    const method = parseMethodSpecAny({
+    const method = parseMethodSpec({
       sourcePath: "specs/methods/time/suites-sample@v3.yml",
       data: {
         schemaVersion: 3,
@@ -65,7 +65,7 @@ describe("schema validation (v3)", () => {
 
   it("rejects methods that define both workflow and suites", () => {
     expect(() =>
-      parseMethodSpecAny({
+      parseMethodSpec({
         sourcePath: "specs/methods/time/invalid-both@v3.yml",
         data: {
           schemaVersion: 3,
@@ -97,7 +97,7 @@ describe("schema validation (v3)", () => {
 
   it("rejects authored lifecycle ops outside withResource", () => {
     expect(() =>
-      parseMethodSpecAny({
+      parseMethodSpec({
         sourcePath: "specs/methods/dsk/invalid-lifecycle@v3.yml",
         data: {
           schemaVersion: 3,
@@ -126,7 +126,7 @@ describe("schema validation (v3)", () => {
 
   it("rejects negative compare tolerances at schema-parse time", () => {
     expect(() =>
-      parseMethodSpecAny({
+      parseMethodSpec({
         sourcePath: "specs/methods/time/invalid-tol-abs@v3.yml",
         data: {
           schemaVersion: 3,
@@ -152,7 +152,7 @@ describe("schema validation (v3)", () => {
     ).toThrow(/tolAbs must be >= 0/);
 
     expect(() =>
-      parseMethodSpecAny({
+      parseMethodSpec({
         sourcePath: "specs/methods/time/invalid-tol-rel@v3.yml",
         data: {
           schemaVersion: 3,
@@ -182,7 +182,7 @@ describe("schema validation (v3)", () => {
   });
 
   it("preserves script step semantics in parsed workflow AST", () => {
-    const method = parseMethodSpecAny({
+    const method = parseMethodSpec({
       sourcePath: "specs/methods/time/script-ast@v3.yml",
       data: {
         schemaVersion: 3,
@@ -228,7 +228,7 @@ describe("schema validation (v3)", () => {
 
   it("rejects script.language and disallowed script imports", () => {
     expect(() =>
-      parseMethodSpecAny({
+      parseMethodSpec({
         sourcePath: "specs/methods/time/invalid-script-language@v3.yml",
         data: {
           schemaVersion: 3,
@@ -255,7 +255,7 @@ describe("schema validation (v3)", () => {
     ).toThrow(/script implies TypeScript/);
 
     expect(() =>
-      parseMethodSpecAny({
+      parseMethodSpec({
         sourcePath: "specs/methods/time/invalid-script-import@v3.yml",
         data: {
           schemaVersion: 3,
@@ -282,7 +282,7 @@ describe("schema validation (v3)", () => {
   });
 
   it("parses valid v3 cross-cutting spec", () => {
-    const spec = parseCrossCuttingSpecAny({
+    const spec = parseCrossCuttingSpec({
       sourcePath: "specs/cross-cutting/native-protocol/strict-parsing@v3.yml",
       data: {
         schemaVersion: 3,
