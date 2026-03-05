@@ -1,12 +1,11 @@
-import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { parse as parseYaml } from "yaml";
 import { describe, expect, it } from "vitest";
 
 import { executeCrossCuttingSpec } from "../../src/engine/executeCrossCuttingSpec.js";
 import { discoverCrossCuttingSpecs } from "../../src/dsl/discoverCrossCuttingSpecs.js";
+import { loadYamlFile } from "../../src/dsl/loadYaml.js";
 import { parseCrossCuttingSpec } from "../../src/dsl/schemaValidate.js";
 import { getCspiceRunnerStatus } from "../../src/runners/cspiceRunner.js";
 
@@ -22,10 +21,7 @@ describe("cross-cutting spec discovery and execution", () => {
     let executedCases = 0;
     let skippedSpecs = 0;
     for (const filePath of files) {
-      const spec = parseCrossCuttingSpec({
-        sourcePath: filePath,
-        data: parseYaml(fs.readFileSync(filePath, "utf8")),
-      });
+      const spec = parseCrossCuttingSpec(await loadYamlFile(filePath));
 
       const summary = await executeCrossCuttingSpec(spec);
       if (summary.skipped) {

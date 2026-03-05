@@ -1,10 +1,9 @@
-import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { parse as parseYaml } from "yaml";
 import { describe, expect, it } from "vitest";
 
+import { loadYamlFile } from "../src/dsl/loadYaml.js";
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
 import { parseMethodSpec } from "../src/dsl/schemaValidate.js";
 import { executeMethodSpecParity } from "../src/engine/executeMethodSpec.js";
@@ -20,10 +19,7 @@ describe("parity-checking method execution", () => {
       "../specs/methods/time/str2et@v3.yml",
     );
 
-    const method = parseMethodSpec({
-      sourcePath: methodPath,
-      data: parseYaml(fs.readFileSync(methodPath, "utf8")),
-    });
+    const method = parseMethodSpec(await loadYamlFile(methodPath));
 
     const tspice = await createTspiceRunner();
     const cspice = await createCspiceRunner();
