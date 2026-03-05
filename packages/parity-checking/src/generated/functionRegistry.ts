@@ -20,15 +20,13 @@ export type FunctionResultMode =
   | "return"
 ;
 
-export type FunctionInvokeKind = "backendMethod" | "spice";
-
 export type FunctionRegistryEntry = {
   id: string;
   aliases: readonly string[];
   impl: {
     contractMethod: string;
     cSymbol: string;
-    invoke: FunctionInvokeKind;
+    nativeInvoker: string;
   };
   arity: number;
   argKinds: readonly FunctionArgKind[];
@@ -43,7 +41,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.card",
       cSymbol: "card_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_card_c",
     },
     arity: 1,
     argKinds: ["cellOrWindowRef"],
@@ -55,7 +53,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.insrtc",
       cSymbol: "insrtc_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -67,7 +65,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.insrtd",
       cSymbol: "insrtd_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -79,7 +77,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.insrti",
       cSymbol: "insrti_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -91,7 +89,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.scard",
       cSymbol: "scard_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_scard_c",
     },
     arity: 2,
     argKinds: ["intExpr","cellOrWindowRef"],
@@ -104,7 +102,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.size",
       cSymbol: "size_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_size_c",
     },
     arity: 1,
     argKinds: ["cellOrWindowRef"],
@@ -116,7 +114,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.ssize",
       cSymbol: "ssize_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_ssize_c",
     },
     arity: 2,
     argKinds: ["intExpr","cellOrWindowRef"],
@@ -129,7 +127,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.valid",
       cSymbol: "valid_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_valid_c",
     },
     arity: 3,
     argKinds: ["intExpr","intExpr","cellOrWindowRef"],
@@ -142,7 +140,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.wncard",
       cSymbol: "wncard_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -154,7 +152,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.wnfetd",
       cSymbol: "wnfetd_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -166,7 +164,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.wninsd",
       cSymbol: "wninsd_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -178,7 +176,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.wnvald",
       cSymbol: "wnvald_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -190,7 +188,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.axisar",
       cSymbol: "axisar_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -202,7 +200,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.georec",
       cSymbol: "georec_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 5,
     argKinds: ["expr","expr","expr","expr","expr"],
@@ -214,7 +212,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.latrec",
       cSymbol: "latrec_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -226,7 +224,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.mtxv",
       cSymbol: "mtxv_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -238,7 +236,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.mxm",
       cSymbol: "mxm_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -250,7 +248,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.mxv",
       cSymbol: "mxv_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -262,7 +260,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.recgeo",
       cSymbol: "recgeo_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -274,7 +272,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.reclat",
       cSymbol: "reclat_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -286,7 +284,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.recsph",
       cSymbol: "recsph_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -298,7 +296,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.rotate",
       cSymbol: "rotate_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -310,7 +308,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.rotmat",
       cSymbol: "rotmat_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -322,7 +320,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.sphrec",
       cSymbol: "sphrec_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -334,7 +332,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.vadd",
       cSymbol: "vadd_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -346,7 +344,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.vcrss",
       cSymbol: "vcrss_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -358,7 +356,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.vdot",
       cSymbol: "vdot_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -370,7 +368,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.vhat",
       cSymbol: "vhat_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -382,7 +380,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.vminus",
       cSymbol: "vminus_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -394,7 +392,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.vnorm",
       cSymbol: "vnorm_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -406,7 +404,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.vscl",
       cSymbol: "vscl_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -418,7 +416,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "coords-vectors.vsub",
       cSymbol: "vsub_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -430,7 +428,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dskb02",
       cSymbol: "dskb02_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_dskb02_c",
     },
     arity: 2,
     argKinds: ["dasHandleRef","dlaDescriptorRef"],
@@ -442,7 +440,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dskgd",
       cSymbol: "dskgd_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_dskgd_c",
     },
     arity: 2,
     argKinds: ["dasHandleRef","dlaDescriptorRef"],
@@ -454,7 +452,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dskobj",
       cSymbol: "dskobj_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_dskobj_c",
     },
     arity: 2,
     argKinds: ["pathExpr","cellRef"],
@@ -466,7 +464,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dsksrf",
       cSymbol: "dsksrf_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_dsksrf_c",
     },
     arity: 3,
     argKinds: ["pathExpr","intExpr","cellRef"],
@@ -478,7 +476,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ephemeris.spkez",
       cSymbol: "spkez_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 5,
     argKinds: ["expr","expr","expr","expr","expr"],
@@ -490,7 +488,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ephemeris.spkezp",
       cSymbol: "spkezp_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 5,
     argKinds: ["expr","expr","expr","expr","expr"],
@@ -502,7 +500,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ephemeris.spkezr",
       cSymbol: "spkezr_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 5,
     argKinds: ["expr","expr","expr","expr","expr"],
@@ -514,7 +512,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ephemeris.spkgeo",
       cSymbol: "spkgeo_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 4,
     argKinds: ["expr","expr","expr","expr"],
@@ -526,7 +524,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ephemeris.spkgps",
       cSymbol: "spkgps_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 4,
     argKinds: ["expr","expr","expr","expr"],
@@ -538,7 +536,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ephemeris.spkpds",
       cSymbol: "spkpds_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 6,
     argKinds: ["expr","expr","expr","expr","expr","expr"],
@@ -550,7 +548,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ephemeris.spkpos",
       cSymbol: "spkpos_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 5,
     argKinds: ["expr","expr","expr","expr","expr"],
@@ -562,7 +560,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ephemeris.spksfs",
       cSymbol: "spksfs_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -574,7 +572,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ephemeris.spkssb",
       cSymbol: "spkssb_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -586,7 +584,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dafbfs",
       cSymbol: "dafbfs_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -598,7 +596,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dafcls",
       cSymbol: "dafcls_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -610,7 +608,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.daffna",
       cSymbol: "daffna_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -622,7 +620,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dafopr",
       cSymbol: "dafopr_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -634,7 +632,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dascls",
       cSymbol: "dascls_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -646,7 +644,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dasopr",
       cSymbol: "dasopr_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -658,7 +656,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dlabfs",
       cSymbol: "dlabfs_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -670,7 +668,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dlacls",
       cSymbol: "dascls_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -682,7 +680,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dlafns",
       cSymbol: "dlafns_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -694,7 +692,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dlaopn",
       cSymbol: "dlaopn_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 4,
     argKinds: ["expr","expr","expr","expr"],
@@ -706,7 +704,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dskmi2",
       cSymbol: "dskmi2_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_dskmi2_c",
     },
     arity: 0,
     argKinds: [],
@@ -718,7 +716,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dskopn",
       cSymbol: "dskopn_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_dskopn_c",
     },
     arity: 0,
     argKinds: [],
@@ -730,7 +728,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.dskw02",
       cSymbol: "dskw02_c",
-      invoke: "spice",
+      nativeInvoker: "v2_invoke_dskw02_c",
     },
     arity: 0,
     argKinds: [],
@@ -742,7 +740,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.exists",
       cSymbol: "exists_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -754,7 +752,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "file-io.getfat",
       cSymbol: "getfat_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -766,7 +764,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "frames.ccifrm",
       cSymbol: "ccifrm_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -778,7 +776,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "frames.cidfrm",
       cSymbol: "cidfrm_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -790,7 +788,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "frames.cnmfrm",
       cSymbol: "cnmfrm_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -802,7 +800,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "frames.frinfo",
       cSymbol: "frinfo_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -814,7 +812,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "frames.frmnam",
       cSymbol: "frmnam_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -826,7 +824,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "frames.namfrm",
       cSymbol: "namfrm_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -838,7 +836,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "frames.pxform",
       cSymbol: "pxform_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -850,7 +848,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "frames.sxform",
       cSymbol: "sxform_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -862,7 +860,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ids-names.bodc2n",
       cSymbol: "bodc2n_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -874,7 +872,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ids-names.bodc2s",
       cSymbol: "bodc2s_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -886,7 +884,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ids-names.boddef",
       cSymbol: "boddef_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -898,7 +896,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ids-names.bodfnd",
       cSymbol: "bodfnd_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -910,7 +908,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ids-names.bodn2c",
       cSymbol: "bodn2c_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -922,7 +920,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ids-names.bods2c",
       cSymbol: "bods2c_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -934,7 +932,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "ids-names.bodvar",
       cSymbol: "bodvcd_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -946,7 +944,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.cvpool",
       cSymbol: "cvpool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -958,7 +956,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.dtpool",
       cSymbol: "dtpool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -970,7 +968,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.expool",
       cSymbol: "expool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -982,7 +980,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.gcpool",
       cSymbol: "gcpool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -994,7 +992,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.gdpool",
       cSymbol: "gdpool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -1006,7 +1004,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.gipool",
       cSymbol: "gipool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -1018,7 +1016,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.gnpool",
       cSymbol: "gnpool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -1030,7 +1028,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.pcpool",
       cSymbol: "pcpool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -1042,7 +1040,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.pdpool",
       cSymbol: "pdpool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -1054,7 +1052,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.pipool",
       cSymbol: "pipool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -1066,7 +1064,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernel-pool.swpool",
       cSymbol: "swpool_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -1078,7 +1076,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernels.furnsh",
       cSymbol: "furnsh_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -1090,7 +1088,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernels.kclear",
       cSymbol: "kclear_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 0,
     argKinds: [],
@@ -1102,7 +1100,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernels.kdata",
       cSymbol: "kdata_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -1114,7 +1112,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernels.kinfo",
       cSymbol: "kinfo_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -1126,7 +1124,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernels.kplfrm",
       cSymbol: "kplfrm_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -1138,7 +1136,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernels.ktotal",
       cSymbol: "ktotal_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -1150,7 +1148,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernels.kxtrct",
       cSymbol: "kxtrct_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -1162,7 +1160,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "kernels.unload",
       cSymbol: "unload_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -1174,7 +1172,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.deltet",
       cSymbol: "deltet_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -1186,7 +1184,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.et2utc",
       cSymbol: "et2utc_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],
@@ -1198,7 +1196,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.str2et",
       cSymbol: "str2et_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -1210,7 +1208,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.timdef",
       cSymbol: "timdef_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -1222,7 +1220,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.timout",
       cSymbol: "timout_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -1234,7 +1232,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.tkvrsn",
       cSymbol: "tkvrsn_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_tkvrsn_c",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -1246,7 +1244,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.tparse",
       cSymbol: "tparse_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,
     argKinds: ["expr"],
@@ -1258,7 +1256,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.tpictr",
       cSymbol: "tpictr_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 2,
     argKinds: ["expr","expr"],
@@ -1270,7 +1268,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "time.unitim",
       cSymbol: "unitim_c",
-      invoke: "backendMethod",
+      nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 3,
     argKinds: ["expr","expr","expr"],

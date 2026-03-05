@@ -25,11 +25,6 @@ typedef enum {
 } V2FunctionResultMode;
 
 typedef enum {
-  V2_FUNCTION_INVOKE_BACKEND_METHOD = 0,
-  V2_FUNCTION_INVOKE_SPICE,
-} V2FunctionInvokeKind;
-
-typedef enum {
   V2_FUNCTION_ID_UNKNOWN = 0,
   V2_FUNCTION_ID_CELLS_WINDOWS_CARD,
   V2_FUNCTION_ID_CELLS_WINDOWS_INSRTC,
@@ -145,7 +140,6 @@ typedef struct {
   V2FunctionArgKind argKinds[V2_FUNCTION_MAX_ARITY];
   unsigned int nonNegativeIntArgMask;
   V2FunctionResultMode resultMode;
-  V2FunctionInvokeKind invokeKind;
   const char *contractMethod;
   const char *cSymbol;
 } V2FunctionSpec;

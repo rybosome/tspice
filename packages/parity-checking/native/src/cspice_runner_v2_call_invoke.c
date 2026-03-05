@@ -315,37 +315,6 @@ static bool v2_execute_dskw02_legacy_call(void) {
   return true;
 }
 
-static bool v2_execute_read_virtual_output_call(const char *path) {
-  FILE *fp = fopen(path, "rb");
-  if (fp == NULL) {
-    char detail[384];
-    snprintf(detail, sizeof(detail), "%s (%s)", path, strerror(errno));
-    write_error_json_ex("invalid_request",
-                        "call readVirtualOutput failed to open file",
-                        detail, NULL, NULL, NULL);
-    return false;
-  }
-
-  if (fseek(fp, 0, SEEK_END) != 0) {
-    fclose(fp);
-    write_error_json_ex("invalid_request",
-                        "call readVirtualOutput could not read file size",
-                        path, NULL, NULL, NULL);
-    return false;
-  }
-
-  long size = ftell(fp);
-  fclose(fp);
-  if (size <= 0) {
-    write_error_json_ex("invalid_request",
-                        "call readVirtualOutput expected non-empty bytes",
-                        path, NULL, NULL, NULL);
-    return false;
-  }
-
-  return true;
-}
-
 static bool v2_try_resolve_named_dskb02_value(const char *name,
                                                SpiceInt nv,
                                                SpiceInt np,
@@ -621,11 +590,6 @@ static bool v2_invoke_dskw02_c(const V2CallInvokeContext *context) {
   return v2_execute_dskw02_legacy_call();
 }
 
-static bool v2_invoke_readVirtualOutput(
-    const V2CallInvokeContext *context) {
-  return v2_execute_read_virtual_output_call(context->resolved->pathValues[0]);
-}
-
 static bool v2_invoke_tkvrsn_c(const V2CallInvokeContext *context) {
   if (context->returnValueJson == NULL) {
     write_error_json_ex("invalid_request",
@@ -657,6 +621,23 @@ static bool v2_invoke_tkvrsn_c(const V2CallInvokeContext *context) {
   return true;
 }
 
+static bool v2_invoke_contract_return(const V2CallInvokeContext *context) {
+  if (context == NULL || context->spec == NULL) {
+    write_error_json_ex("unsupported_call", "Unsupported v2 call", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  switch (context->spec->id) {
+  case V2_FUNCTION_ID_TIME_TKVRSN:
+    return v2_invoke_tkvrsn_c(context);
+  default:
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+}
+
 typedef bool (*V2CallInvokerFn)(const V2CallInvokeContext *context);
 
 #define V2_NATIVE_CALL_DISPATCH_CASE(_fnId, _invoker) \
@@ -666,16 +647,6 @@ typedef bool (*V2CallInvokerFn)(const V2CallInvokeContext *context);
 static V2CallInvokerFn v2_lookup_call_invoker(const V2FunctionId fnId) {
   switch (fnId) {
     V2_NATIVE_CALL_DISPATCH_ROWS(V2_NATIVE_CALL_DISPATCH_CASE)
-  default:
-    return NULL;
-  }
-}
-
-static V2CallInvokerFn v2_lookup_backend_method_invoker(
-    const V2FunctionId fnId) {
-  switch (fnId) {
-  case V2_FUNCTION_ID_TIME_TKVRSN:
-    return v2_invoke_tkvrsn_c;
   default:
     return NULL;
   }
@@ -694,18 +665,7 @@ bool v2_invoke_call(const V2CallInvokeContext *context) {
     *context->returnValueJson = NULL;
   }
 
-  V2CallInvokerFn invoker = NULL;
-  switch (context->spec->invokeKind) {
-  case V2_FUNCTION_INVOKE_SPICE:
-    invoker = v2_lookup_call_invoker(context->spec->id);
-    break;
-  case V2_FUNCTION_INVOKE_BACKEND_METHOD:
-    invoker = v2_lookup_backend_method_invoker(context->spec->id);
-    break;
-  default:
-    invoker = NULL;
-    break;
-  }
+  V2CallInvokerFn invoker = v2_lookup_call_invoker(context->spec->id);
 
   if (invoker == NULL) {
     write_error_json_ex("unsupported_call", "Unsupported v2 call",

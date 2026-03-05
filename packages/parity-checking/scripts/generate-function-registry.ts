@@ -20,7 +20,9 @@ type FunctionResultMode =
   | "asDskDescriptor"
   | "outNamedDskb02";
 
-type FunctionInvokeKind = "backendMethod" | "spice";
+const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
+
+const NATIVE_INVOKER_NAME_REGEX = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 type FunctionRegistryEntry = {
   id: string;
@@ -28,7 +30,7 @@ type FunctionRegistryEntry = {
   impl: {
     contractMethod: string;
     cSymbol: string;
-    invoke: FunctionInvokeKind;
+    nativeInvoker: string;
   };
   arity: number;
   argKinds: FunctionArgKind[];
@@ -61,8 +63,6 @@ const ALLOWED_RESULT_MODES: ReadonlySet<string> = new Set([
   "outNamedDskb02",
 ]);
 
-const ALLOWED_INVOKE_KINDS: ReadonlySet<string> = new Set(["backendMethod", "spice"]);
-
 const ARG_KIND_ENUM: Record<FunctionArgKind, string> = {
   expr: "V2_FUNCTION_ARG_EXPR",
   intExpr: "V2_FUNCTION_ARG_INT_EXPR",
@@ -79,11 +79,6 @@ const RESULT_MODE_ENUM: Record<FunctionResultMode, string> = {
   asSpiceInt: "V2_FUNCTION_RESULT_AS_SPICE_INT",
   asDskDescriptor: "V2_FUNCTION_RESULT_AS_DSK_DESCRIPTOR",
   outNamedDskb02: "V2_FUNCTION_RESULT_OUT_NAMED_DSKB02",
-};
-
-const INVOKE_KIND_ENUM: Record<FunctionInvokeKind, string> = {
-  backendMethod: "V2_FUNCTION_INVOKE_BACKEND_METHOD",
-  spice: "V2_FUNCTION_INVOKE_SPICE",
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -149,9 +144,9 @@ function parseRegistryEntry(raw: unknown, label: string): FunctionRegistryEntry 
 
   const contractMethod = asString(implRaw.contractMethod, `${label}.impl.contractMethod`);
   const cSymbol = asString(implRaw.cSymbol, `${label}.impl.cSymbol`);
-  const invoke = asString(implRaw.invoke, `${label}.impl.invoke`);
-  if (!ALLOWED_INVOKE_KINDS.has(invoke)) {
-    throw new TypeError(`${label}.impl.invoke must be one of: ${[...ALLOWED_INVOKE_KINDS].join(", ")}`);
+  const nativeInvoker = asString(implRaw.nativeInvoker, `${label}.impl.nativeInvoker`);
+  if (!NATIVE_INVOKER_NAME_REGEX.test(nativeInvoker)) {
+    throw new TypeError(`${label}.impl.nativeInvoker must be a valid C identifier (got ${nativeInvoker})`);
   }
 
   const arity = asFiniteInt(raw.arity, `${label}.arity`);
@@ -204,7 +199,7 @@ function parseRegistryEntry(raw: unknown, label: string): FunctionRegistryEntry 
     impl: {
       contractMethod,
       cSymbol,
-      invoke: invoke as FunctionInvokeKind,
+      nativeInvoker,
     },
     arity,
     argKinds,
@@ -267,10 +262,27 @@ function collectNativeSymbols(repoRoot: string, pkgRoot: string): Set<string> {
     }
   }
 
-  // Internal pseudo-symbol used by parity fixtures.
-  symbols.add("readVirtualOutput");
-
   return symbols;
+}
+
+function collectNativeInvokers(pkgRoot: string): Set<string> {
+  const files = walkFiles(path.join(pkgRoot, "native", "src")).filter((filePath) =>
+    filePath.endsWith(".c"),
+  );
+
+  const invokers = new Set<string>();
+  const invokerRegex = /\b(v2_invoke_[A-Za-z0-9_]+)\s*\(/g;
+
+  for (const filePath of files) {
+    const text = fs.readFileSync(filePath, "utf8");
+    let match = invokerRegex.exec(text);
+    while (match) {
+      invokers.add(match[1]);
+      match = invokerRegex.exec(text);
+    }
+  }
+
+  return invokers;
 }
 
 function stableSortedUnique(values: readonly string[]): string[] {
@@ -281,6 +293,7 @@ function validateRegistry(
   registry: ParsedRegistry,
   knownContractMethods: ReadonlySet<string>,
   nativeSymbols: ReadonlySet<string>,
+  nativeInvokers: ReadonlySet<string>,
 ): FunctionRegistryEntry[] {
   const idSet = new Set<string>();
   const aliasOwner = new Map<string, string>();
@@ -309,6 +322,12 @@ function validateRegistry(
       );
     }
 
+    if (!nativeInvokers.has(entry.impl.nativeInvoker)) {
+      throw new Error(
+        `Function ${entry.id} references native invoker not found in source inventory: ${entry.impl.nativeInvoker}`,
+      );
+    }
+
     const aliases = stableSortedUnique(entry.aliases);
     for (const alias of aliases) {
       const owner = aliasOwner.get(alias);
@@ -318,13 +337,9 @@ function validateRegistry(
       aliasOwner.set(alias, entry.id);
     }
 
-    if (entry.impl.invoke === "spice" && entry.result.mode === "return") {
-      throw new Error(`Function ${entry.id} uses invoke=spice with result.mode=return (unsupported)`);
-    }
-
-    if (entry.impl.invoke === "backendMethod" && entry.result.mode !== "return") {
+    if (entry.result.mode !== "return" && entry.impl.nativeInvoker === SHARED_RETURN_NATIVE_INVOKER) {
       throw new Error(
-        `Function ${entry.id} uses invoke=backendMethod and must use result.mode=return (got ${entry.result.mode})`,
+        `Function ${entry.id} uses nativeInvoker=${SHARED_RETURN_NATIVE_INVOKER} but result.mode is ${entry.result.mode}; expected return`,
       );
     }
 
@@ -344,19 +359,6 @@ function toEnumSegment(value: string): string {
     .replace(/_+/g, "_")
     .toUpperCase();
   return normalized.length > 0 ? normalized : "UNKNOWN";
-}
-
-function toIdentifierSegment(value: string): string {
-  const normalized = value
-    .replace(/[^A-Za-z0-9_]+/g, "_")
-    .replace(/^_+|_+$/g, "")
-    .replace(/_+/g, "_");
-
-  if (normalized.length === 0) {
-    return "unknown";
-  }
-
-  return /^[0-9]/.test(normalized) ? `_${normalized}` : normalized;
 }
 
 function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: string): string {
@@ -381,16 +383,13 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push(";");
   lines.push("");
 
-  lines.push("export type FunctionInvokeKind = \"backendMethod\" | \"spice\";");
-  lines.push("");
-
   lines.push("export type FunctionRegistryEntry = {");
   lines.push("  id: string;");
   lines.push("  aliases: readonly string[];");
   lines.push("  impl: {");
   lines.push("    contractMethod: string;");
   lines.push("    cSymbol: string;");
-  lines.push("    invoke: FunctionInvokeKind;");
+  lines.push("    nativeInvoker: string;");
   lines.push("  };");
   lines.push("  arity: number;");
   lines.push("  argKinds: readonly FunctionArgKind[];");
@@ -407,7 +406,7 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
     lines.push("    impl: {");
     lines.push(`      contractMethod: ${JSON.stringify(entry.impl.contractMethod)},`);
     lines.push(`      cSymbol: ${JSON.stringify(entry.impl.cSymbol)},`);
-    lines.push(`      invoke: ${JSON.stringify(entry.impl.invoke)},`);
+    lines.push(`      nativeInvoker: ${JSON.stringify(entry.impl.nativeInvoker)},`);
     lines.push("    },");
     lines.push(`    arity: ${entry.arity},`);
     lines.push(`    argKinds: ${JSON.stringify(entry.argKinds)},`);
@@ -480,11 +479,6 @@ function renderCH(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("} V2FunctionResultMode;");
   lines.push("");
   lines.push("typedef enum {");
-  lines.push("  V2_FUNCTION_INVOKE_BACKEND_METHOD = 0,");
-  lines.push("  V2_FUNCTION_INVOKE_SPICE,");
-  lines.push("} V2FunctionInvokeKind;");
-  lines.push("");
-  lines.push("typedef enum {");
   lines.push(...idEnumRows);
   lines.push("} V2FunctionId;");
   lines.push("");
@@ -497,7 +491,6 @@ function renderCH(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("  V2FunctionArgKind argKinds[V2_FUNCTION_MAX_ARITY];");
   lines.push("  unsigned int nonNegativeIntArgMask;");
   lines.push("  V2FunctionResultMode resultMode;");
-  lines.push("  V2FunctionInvokeKind invokeKind;");
   lines.push("  const char *contractMethod;");
   lines.push("  const char *cSymbol;");
   lines.push("} V2FunctionSpec;");
@@ -548,7 +541,6 @@ function renderCC(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
     lines.push(`    { ${argKinds.join(", ")} },`);
     lines.push(`    ${entry.nonNegativeIntArgMask ?? 0}u,`);
     lines.push(`    ${RESULT_MODE_ENUM[entry.result.mode]},`);
-    lines.push(`    ${INVOKE_KIND_ENUM[entry.impl.invoke]},`);
     lines.push(`    ${JSON.stringify(entry.impl.contractMethod)},`);
     lines.push(`    ${JSON.stringify(entry.impl.cSymbol)},`);
     lines.push("  },");
@@ -601,8 +593,6 @@ function renderCC(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
 }
 
 function renderTsNativeCallDispatch(entries: readonly FunctionRegistryEntry[], sourceRelPath: string): string {
-  const spiceEntries = entries.filter((entry) => entry.impl.invoke === "spice");
-
   const lines: string[] = [];
   lines.push("/* eslint-disable */");
   lines.push("// GENERATED FILE - DO NOT EDIT.");
@@ -617,26 +607,34 @@ function renderTsNativeCallDispatch(entries: readonly FunctionRegistryEntry[], s
   lines.push("");
   lines.push("export const nativeCallDispatch: readonly NativeCallDispatchEntry[] = [");
 
-  for (const entry of spiceEntries) {
+  for (const entry of entries) {
     const enumId = `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`;
-    const invoker = `v2_invoke_${toIdentifierSegment(entry.impl.cSymbol)}`;
     lines.push("  {");
     lines.push(`    id: ${JSON.stringify(entry.id)},`);
     lines.push(`    enumId: ${JSON.stringify(enumId)},`);
     lines.push(`    cSymbol: ${JSON.stringify(entry.impl.cSymbol)},`);
-    lines.push(`    invoker: ${JSON.stringify(invoker)},`);
+    lines.push(`    invoker: ${JSON.stringify(entry.impl.nativeInvoker)},`);
     lines.push("  },");
   }
 
   lines.push("];");
   lines.push("");
 
+  lines.push("const nativeCallDispatchById = new Map<string, NativeCallDispatchEntry>();");
+  lines.push("for (const entry of nativeCallDispatch) {");
+  lines.push("  nativeCallDispatchById.set(entry.id, entry);");
+  lines.push("}");
+  lines.push("");
+
+  lines.push("export function lookupNativeCallDispatchEntry(fnId: string): NativeCallDispatchEntry | undefined {");
+  lines.push("  return nativeCallDispatchById.get(fnId);");
+  lines.push("}");
+  lines.push("");
+
   return `${lines.join("\n")}\n`;
 }
 
 function renderNativeCallDispatchHeader(entries: readonly FunctionRegistryEntry[], sourceRelPath: string): string {
-  const spiceEntries = entries.filter((entry) => entry.impl.invoke === "spice");
-
   const lines: string[] = [];
   lines.push("#ifndef PARITY_CHECKING_GENERATED_NATIVE_CALL_DISPATCH_H");
   lines.push("#define PARITY_CHECKING_GENERATED_NATIVE_CALL_DISPATCH_H");
@@ -644,18 +642,17 @@ function renderNativeCallDispatchHeader(entries: readonly FunctionRegistryEntry[
   lines.push("// GENERATED FILE - DO NOT EDIT.");
   lines.push(`// Source: ${sourceRelPath}`);
   lines.push("");
-  lines.push("// X-macro rows for native spice call dispatch.");
+  lines.push("// X-macro rows for native v2 call dispatch.");
   lines.push("// Usage: V2_NATIVE_CALL_DISPATCH_ROWS(MY_ROW_MACRO)");
 
-  if (spiceEntries.length === 0) {
-    lines.push("#define V2_NATIVE_CALL_DISPATCH_ROWS(X) /* no spice-invoke entries */");
+  if (entries.length === 0) {
+    lines.push("#define V2_NATIVE_CALL_DISPATCH_ROWS(X) /* no callable entries */");
   } else {
     lines.push("#define V2_NATIVE_CALL_DISPATCH_ROWS(X) \\");
-    spiceEntries.forEach((entry, index) => {
+    entries.forEach((entry, index) => {
       const idConst = `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`;
-      const invoker = `v2_invoke_${toIdentifierSegment(entry.impl.cSymbol)}`;
-      const suffix = index === spiceEntries.length - 1 ? "" : ' \\';
-      lines.push(`  X(${idConst}, ${invoker})${suffix}`);
+      const suffix = index === entries.length - 1 ? "" : ' \\';
+      lines.push(`  X(${idConst}, ${entry.impl.nativeInvoker})${suffix}`);
     });
   }
 
@@ -678,8 +675,9 @@ function main(): void {
 
   const contractMethods = readContractCatalog(contractCatalogPath);
   const nativeSymbols = collectNativeSymbols(repoRoot, pkgRoot);
+  const nativeInvokers = collectNativeInvokers(pkgRoot);
 
-  const validatedEntries = validateRegistry(parsedRegistry, contractMethods, nativeSymbols);
+  const validatedEntries = validateRegistry(parsedRegistry, contractMethods, nativeSymbols, nativeInvokers);
 
   const sourceRelPath = path.relative(repoRoot, registryPath).replaceAll(path.sep, "/");
 
