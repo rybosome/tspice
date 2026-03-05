@@ -203,7 +203,8 @@ bool v2_append_project_value_json(V2JsonBuffer *out, const char *json,
   const char *argName = NULL;
   const char *refName = NULL;
   if (v2_parse_ref_name(value, "$args.", &argName)) {
-    int argTok = jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+    int argTok =
+        v2_find_arg_value_token(json, tokens, tokenCount, argsTok, argName);
     if (argTok < 0) {
       write_error_json_ex("invalid_args", "Missing v2 argument", argName, NULL,
                           NULL, NULL);

@@ -48,6 +48,53 @@ bool v2_parse_ref_name(const char *expr, const char *prefix,
   return true;
 }
 
+static bool v2_parse_non_negative_index(const char *text, int *outIndex) {
+  if (text == NULL || text[0] == '\0' || outIndex == NULL) {
+    return false;
+  }
+
+  int value = 0;
+  for (const char *p = text; *p != '\0'; p++) {
+    if (*p < '0' || *p > '9') {
+      return false;
+    }
+
+    const int digit = *p - '0';
+    if (value > (INT_MAX - digit) / 10) {
+      return false;
+    }
+    value = (value * 10) + digit;
+  }
+
+  *outIndex = value;
+  return true;
+}
+
+int v2_find_arg_value_token(const char *json,
+                            const jsmntok_t *tokens,
+                            const int tokenCount,
+                            const int argsTok,
+                            const char *argName) {
+  if (argName == NULL || argsTok < 0 || argsTok >= tokenCount) {
+    return -1;
+  }
+
+  const jsmntok_t *args = &tokens[argsTok];
+  if (args->type == JSMN_OBJECT) {
+    return jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+  }
+
+  if (args->type == JSMN_ARRAY) {
+    int index = -1;
+    if (!v2_parse_non_negative_index(argName, &index)) {
+      return -1;
+    }
+    return jsmn_get_array_elem(tokens, argsTok, index, tokenCount);
+  }
+
+  return -1;
+}
+
 static char *v2_strdup(const char *value) {
   if (value == NULL) {
     return NULL;
@@ -343,8 +390,8 @@ bool v2_resolve_spiceint_expr(const char *json, const jsmntok_t *tokens,
   const char *refNameExpr = NULL;
 
   if (v2_parse_ref_name(expr, "$args.", &argName)) {
-    int valueTok =
-        jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+    int valueTok = v2_find_arg_value_token(json, tokens, tokenCount, argsTok,
+                                            argName);
     if (valueTok < 0) {
       write_error_json_ex("invalid_args", "Missing v2 argument", argName, NULL,
                           NULL, NULL);

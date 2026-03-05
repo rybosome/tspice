@@ -43,7 +43,7 @@ static bool v2_resolve_path_expr(const char *json, const jsmntok_t *tokens,
 
   if (v2_parse_ref_name(expr, "$args.", &argName)) {
     int valueTok =
-        jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+        v2_find_arg_value_token(json, tokens, tokenCount, argsTok, argName);
     if (valueTok < 0 || tokens[valueTok].type != JSMN_STRING) {
       write_error_json_ex("invalid_args", "Missing or invalid v2 string argument",
                           argName, NULL, NULL, NULL);
@@ -160,6 +160,7 @@ static void v2_clear_resolved_args(V2ResolvedCallArgs *args) {
   memset(args, 0, sizeof(*args));
   for (int i = 0; i < V2_FUNCTION_MAX_ARITY; i++) {
     args->refIndices[i] = -1;
+    args->valueTokens[i] = -1;
   }
 }
 
@@ -297,11 +298,8 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
     }
 
     case V2_FUNCTION_ARG_EXPR:
-      write_error_json_ex("unsupported_call",
-                          "Native call runner does not support expr arguments",
-                          fnName, NULL, NULL, NULL);
-      v2_free_resolved_args(out);
-      return false;
+      out->valueTokens[i] = valueTok;
+      break;
     }
 
     idx = jsmn_skip_subtree(tokens, valueTok, tokenCount);
@@ -319,7 +317,12 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
 bool v2_execute_call_step(const char *json, const jsmntok_t *tokens,
                           int tokenCount, int stepTok,
                           int argsTok, V2RefEntry *refs,
-                          int *refCount) {
+                          int *refCount,
+                          char **returnValueJson) {
+  if (returnValueJson != NULL) {
+    *returnValueJson = NULL;
+  }
+
   int fnTok = jsmn_find_object_key(json, tokens, stepTok, "fn", tokenCount);
   if (fnTok < 0 || tokens[fnTok].type != JSMN_STRING) {
     write_error_json_ex("invalid_request", "call requires string fn", NULL,
@@ -336,14 +339,6 @@ bool v2_execute_call_step(const char *json, const jsmntok_t *tokens,
   if (spec == NULL) {
     write_error_json_ex("unsupported_call", "Unsupported v2 call", fnName,
                         NULL, NULL, NULL);
-    free(fnName);
-    return false;
-  }
-
-  if (spec->invokeKind != V2_FUNCTION_INVOKE_SPICE) {
-    write_error_json_ex("unsupported_call",
-                        "Native runner only supports spice-invoked functions",
-                        fnName, NULL, NULL, NULL);
     free(fnName);
     return false;
   }
@@ -384,11 +379,12 @@ bool v2_execute_call_step(const char *json, const jsmntok_t *tokens,
     break;
 
   case V2_FUNCTION_RESULT_RETURN:
-    write_error_json_ex("unsupported_call",
-                        "Native call runner does not support return-mode functions",
-                        fnName, NULL, NULL, NULL);
-    free(fnName);
-    return false;
+    if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, fnName) ||
+        !v2_forbid_out_map(json, tokens, tokenCount, stepTok, fnName)) {
+      free(fnName);
+      return false;
+    }
+    break;
   }
 
   V2ResolvedCallArgs resolved;
@@ -413,14 +409,29 @@ bool v2_execute_call_step(const char *json, const jsmntok_t *tokens,
       .tokenCount = tokenCount,
       .fnName = fnName,
       .spec = spec,
+      .argsTok = argsTok,
       .asRefName = asRefName,
       .outMapTok = outMapTok,
+      .returnValueJson = returnValueJson,
       .resolved = &resolved,
       .refs = refs,
       .refCount = refCount,
   };
 
   bool ok = v2_invoke_call(&invokeContext);
+
+  if (ok && spec->resultMode == V2_FUNCTION_RESULT_RETURN &&
+      returnValueJson != NULL && *returnValueJson == NULL) {
+    write_error_json_ex("invalid_request",
+                        "call result.mode=return expected invoker output",
+                        fnName, NULL, NULL, NULL);
+    ok = false;
+  }
+
+  if (!ok && returnValueJson != NULL && *returnValueJson != NULL) {
+    free(*returnValueJson);
+    *returnValueJson = NULL;
+  }
 
   v2_free_resolved_args(&resolved);
   free(fnName);

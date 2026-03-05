@@ -77,42 +77,6 @@ function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
   return typeof input === "object" && input !== null && "schemaVersion" in input;
 }
 
-type LoweredV3PositionalCall = {
-  call: string;
-  args: unknown[];
-};
-
-function lowerV3PositionalCall(
-  input: RunCaseInputV3,
-  context: {
-    invalidRequest: (message: string) => never;
-    invalidArgs: (message: string) => never;
-  },
-): LoweredV3PositionalCall | null {
-  if (input.workflow.steps.length !== 1 || input.workflow.steps[0]?.op !== "call") {
-    return null;
-  }
-
-  if ((input.workflow.cleanup?.length ?? 0) > 0) {
-    context.invalidRequest("v3 single-step call workflow must not define cleanup steps");
-  }
-
-  if (!Array.isArray(input.args)) {
-    context.invalidArgs(`v3 call expects case args to be an array (got ${formatValue(input.args)})`);
-  }
-
-  const step = input.workflow.steps[0];
-  const call = typeof step.fn === "string" ? step.fn.trim() : "";
-  if (call.length === 0) {
-    context.invalidRequest("v3 call requires a non-empty fn");
-  }
-
-  return {
-    call,
-    args: input.args,
-  };
-}
-
 /** Assert that a value is a finite integer (used for runner argument validation). */
 function assertInteger(value: unknown, label: string): asserts value is number {
   if (typeof value !== "number") {
@@ -2318,21 +2282,6 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
         }
 
         if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
-          const loweredCall = lowerV3PositionalCall(input, {
-            invalidRequest,
-            invalidArgs,
-          });
-
-          if (loweredCall !== null) {
-            const fn = DISPATCH[loweredCall.call];
-            if (!fn) {
-              unsupportedCall("Unsupported call", { call: loweredCall.call });
-            }
-
-            const result = await fn(backend.raw, loweredCall.args, backend.kit, backend.kind);
-            return { ok: true, result };
-          }
-
           const result = await executeV2CaseWithBackend(backend, input);
           return { ok: true, result };
         }

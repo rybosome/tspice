@@ -10,6 +10,7 @@ typedef struct {
   SpiceInt intValues[V2_FUNCTION_MAX_ARITY];
   int refIndices[V2_FUNCTION_MAX_ARITY];
   char *pathValues[V2_FUNCTION_MAX_ARITY];
+  int valueTokens[V2_FUNCTION_MAX_ARITY];
 } V2ResolvedCallArgs;
 
 typedef struct {
@@ -18,8 +19,10 @@ typedef struct {
   int tokenCount;
   const char *fnName;
   const V2FunctionSpec *spec;
+  int argsTok;
   const char *asRefName;
   int outMapTok;
+  char **returnValueJson;
   V2ResolvedCallArgs *resolved;
   V2RefEntry *refs;
   int *refCount;

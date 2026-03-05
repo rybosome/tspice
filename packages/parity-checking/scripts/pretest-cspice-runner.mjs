@@ -148,7 +148,10 @@ function listRunnerFiles(pkgRoot, ext) {
         return true;
       }
 
-      return rel === `generated/function_registry${ext}`;
+      return (
+        rel === `generated/function_registry${ext}` ||
+        (ext === ".h" && rel === "generated/native_call_dispatch.h")
+      );
     })
     .sort();
 }

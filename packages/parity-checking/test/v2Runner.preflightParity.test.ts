@@ -41,6 +41,40 @@ describe("v3 runner preflight parity", () => {
   const status = getCspiceRunnerStatus();
   const maybeIt = status.ready ? it : it.skip;
 
+  it("executes own-spec single-call workflows with object args in tspice runner", async () => {
+    const tspice = await createTspiceRunner();
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/ids-names/bodc2s@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "ids-names.bodc2s",
+        canonicalMethod: "ids-names.bodc2s",
+        aliases: [],
+        args: [{ name: "code", type: "spiceInt" }],
+        result: { const: "EARTH" },
+        errors: [],
+      },
+      args: { code: 399 },
+      workflow: {
+        steps: [{ op: "call", fn: "ids-names.bodc2s", in: ["$args.code"] }],
+      },
+    };
+
+    try {
+      const out = await tspice.runCase(input);
+      expect(out.ok).toBe(true);
+      if (out.ok) {
+        expect(typeof out.result).toBe("string");
+      }
+    } finally {
+      await tspice.dispose?.();
+    }
+  });
+
   maybeIt("reports the same contract-arg validation failure for tspice and cspice runners", async () => {
     const tspice = await createTspiceRunner();
     const cspice = await createCspiceRunner();

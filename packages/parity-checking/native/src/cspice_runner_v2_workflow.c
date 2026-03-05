@@ -80,7 +80,7 @@ static bool v2_resolve_string_expr(const char *json,
 
   if (v2_parse_ref_name(expr, "$args.", &argName)) {
     int valueTok =
-        jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+        v2_find_arg_value_token(json, tokens, tokenCount, argsTok, argName);
     if (valueTok < 0 || tokens[valueTok].type != JSMN_STRING) {
       write_error_json_ex("invalid_args", "Missing or invalid v2 string argument",
                           argName, NULL, NULL, NULL);
@@ -517,7 +517,8 @@ static bool v2_resolve_switch_case_key(const char *json,
   const char *refName = NULL;
 
   if (v2_parse_ref_name(expr, "$args.", &argName)) {
-    int argTok = jsmn_find_object_key(json, tokens, argsTok, argName, tokenCount);
+    int argTok =
+        v2_find_arg_value_token(json, tokens, tokenCount, argsTok, argName);
     if (argTok < 0) {
       write_error_json_ex("invalid_args", "Missing v2 argument", argName, NULL,
                           NULL, NULL);
@@ -881,8 +882,29 @@ bool v2_dispatch_workflow_step(
   }
 
   if (jsmn_token_streq(json, &tokens[opTok], "call")) {
-    return v2_execute_call_step(json, tokens, tokenCount, stepTok, argsTok,
-                                refs, refCount);
+    char *callReturnJson = NULL;
+    bool ok = v2_execute_call_step(json,
+                                   tokens,
+                                   tokenCount,
+                                   stepTok,
+                                   argsTok,
+                                   refs,
+                                   refCount,
+                                   captureProjectResult ? &callReturnJson : NULL);
+    if (!ok) {
+      free(callReturnJson);
+      return false;
+    }
+
+    if (captureProjectResult && projectResultObjectJson != NULL &&
+        callReturnJson != NULL) {
+      free(*projectResultObjectJson);
+      *projectResultObjectJson = callReturnJson;
+    } else {
+      free(callReturnJson);
+    }
+
+    return true;
   }
 
   if (jsmn_token_streq(json, &tokens[opTok], "assert")) {
@@ -981,9 +1003,12 @@ static void v2_cleanup_live_refs_best_effort(V2RefEntry *refs,
 bool v2_execute_workflow_request(const char *json, const jsmntok_t *tokens,
                                  const int tokenCount) {
   int argsTok = jsmn_find_object_key(json, tokens, 0, "args", tokenCount);
-  if (argsTok < 0 || tokens[argsTok].type != JSMN_OBJECT) {
-    write_error_json_ex("invalid_request", "v2 request requires object args", NULL,
-                        NULL, NULL, NULL);
+  if (argsTok < 0 ||
+      (tokens[argsTok].type != JSMN_OBJECT &&
+       tokens[argsTok].type != JSMN_ARRAY)) {
+    write_error_json_ex("invalid_request",
+                        "v2 request requires args object or array", NULL, NULL,
+                        NULL, NULL);
     return false;
   }
 

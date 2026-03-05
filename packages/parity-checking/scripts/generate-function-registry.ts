@@ -346,6 +346,19 @@ function toEnumSegment(value: string): string {
   return normalized.length > 0 ? normalized : "UNKNOWN";
 }
 
+function toIdentifierSegment(value: string): string {
+  const normalized = value
+    .replace(/[^A-Za-z0-9_]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .replace(/_+/g, "_");
+
+  if (normalized.length === 0) {
+    return "unknown";
+  }
+
+  return /^[0-9]/.test(normalized) ? `_${normalized}` : normalized;
+}
+
 function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: string): string {
   const lines: string[] = [];
 
@@ -587,6 +600,71 @@ function renderCC(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   return `${lines.join("\n")}\n`;
 }
 
+function renderTsNativeCallDispatch(entries: readonly FunctionRegistryEntry[], sourceRelPath: string): string {
+  const spiceEntries = entries.filter((entry) => entry.impl.invoke === "spice");
+
+  const lines: string[] = [];
+  lines.push("/* eslint-disable */");
+  lines.push("// GENERATED FILE - DO NOT EDIT.");
+  lines.push(`// Source: ${sourceRelPath}`);
+  lines.push("");
+  lines.push("export type NativeCallDispatchEntry = {");
+  lines.push("  id: string;");
+  lines.push("  enumId: string;");
+  lines.push("  cSymbol: string;");
+  lines.push("  invoker: string;");
+  lines.push("};");
+  lines.push("");
+  lines.push("export const nativeCallDispatch: readonly NativeCallDispatchEntry[] = [");
+
+  for (const entry of spiceEntries) {
+    const enumId = `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`;
+    const invoker = `v2_invoke_${toIdentifierSegment(entry.impl.cSymbol)}`;
+    lines.push("  {");
+    lines.push(`    id: ${JSON.stringify(entry.id)},`);
+    lines.push(`    enumId: ${JSON.stringify(enumId)},`);
+    lines.push(`    cSymbol: ${JSON.stringify(entry.impl.cSymbol)},`);
+    lines.push(`    invoker: ${JSON.stringify(invoker)},`);
+    lines.push("  },");
+  }
+
+  lines.push("];");
+  lines.push("");
+
+  return `${lines.join("\n")}\n`;
+}
+
+function renderNativeCallDispatchHeader(entries: readonly FunctionRegistryEntry[], sourceRelPath: string): string {
+  const spiceEntries = entries.filter((entry) => entry.impl.invoke === "spice");
+
+  const lines: string[] = [];
+  lines.push("#ifndef PARITY_CHECKING_GENERATED_NATIVE_CALL_DISPATCH_H");
+  lines.push("#define PARITY_CHECKING_GENERATED_NATIVE_CALL_DISPATCH_H");
+  lines.push("");
+  lines.push("// GENERATED FILE - DO NOT EDIT.");
+  lines.push(`// Source: ${sourceRelPath}`);
+  lines.push("");
+  lines.push("// X-macro rows for native spice call dispatch.");
+  lines.push("// Usage: V2_NATIVE_CALL_DISPATCH_ROWS(MY_ROW_MACRO)");
+
+  if (spiceEntries.length === 0) {
+    lines.push("#define V2_NATIVE_CALL_DISPATCH_ROWS(X) /* no spice-invoke entries */");
+  } else {
+    lines.push("#define V2_NATIVE_CALL_DISPATCH_ROWS(X) \\");
+    spiceEntries.forEach((entry, index) => {
+      const idConst = `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`;
+      const invoker = `v2_invoke_${toIdentifierSegment(entry.impl.cSymbol)}`;
+      const suffix = index === spiceEntries.length - 1 ? "" : ' \\';
+      lines.push(`  X(${idConst}, ${invoker})${suffix}`);
+    });
+  }
+
+  lines.push("");
+  lines.push("#endif");
+
+  return `${lines.join("\n")}\n`;
+}
+
 function main(): void {
   const scriptDir = path.dirname(fileURLToPath(import.meta.url));
   const pkgRoot = path.resolve(scriptDir, "..");
@@ -606,18 +684,26 @@ function main(): void {
   const sourceRelPath = path.relative(repoRoot, registryPath).replaceAll(path.sep, "/");
 
   const tsOutPath = path.join(pkgRoot, "src", "generated", "functionRegistry.ts");
+  const tsNativeDispatchOutPath = path.join(pkgRoot, "src", "generated", "nativeCallDispatch.ts");
   const cHeaderOutPath = path.join(pkgRoot, "native", "src", "generated", "function_registry.h");
   const cSourceOutPath = path.join(pkgRoot, "native", "src", "generated", "function_registry.c");
+  const cNativeDispatchHeaderOutPath = path.join(pkgRoot, "native", "src", "generated", "native_call_dispatch.h");
 
   fs.mkdirSync(path.dirname(tsOutPath), { recursive: true });
   fs.mkdirSync(path.dirname(cHeaderOutPath), { recursive: true });
 
   fs.writeFileSync(tsOutPath, renderTs(validatedEntries, sourceRelPath), "utf8");
+  fs.writeFileSync(tsNativeDispatchOutPath, renderTsNativeCallDispatch(validatedEntries, sourceRelPath), "utf8");
   fs.writeFileSync(cHeaderOutPath, renderCH(validatedEntries, sourceRelPath), "utf8");
   fs.writeFileSync(cSourceOutPath, renderCC(validatedEntries, sourceRelPath), "utf8");
+  fs.writeFileSync(
+    cNativeDispatchHeaderOutPath,
+    renderNativeCallDispatchHeader(validatedEntries, sourceRelPath),
+    "utf8",
+  );
 
   console.log(
-    `[parity-checking] wrote function registry (${validatedEntries.length}) -> ${tsOutPath}, ${cHeaderOutPath}, ${cSourceOutPath}`,
+    `[parity-checking] wrote function registry (${validatedEntries.length}) -> ${tsOutPath}, ${tsNativeDispatchOutPath}, ${cHeaderOutPath}, ${cSourceOutPath}, ${cNativeDispatchHeaderOutPath}`,
   );
 }
 

@@ -3,6 +3,7 @@
 #include "cspice_runner_temp_files.h"
 #include "cspice_runner_v2_fixtures.h"
 #include "cspice_runner_v2_call_invoke.h"
+#include "generated/native_call_dispatch.h"
 
 #include <string.h>
 
@@ -34,6 +35,190 @@ static bool v2_write_spice_failure(const char *messagePrefix) {
   write_error_json_ex("spice_error", messagePrefix, NULL, shortMsg, longMsg,
                       traceMsg);
   return false;
+}
+
+static bool v2_resolve_expr_string_value(const V2CallInvokeContext *context,
+                                         int exprTok,
+                                         const char *label,
+                                         char **outValue) {
+  if (outValue == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  if (exprTok < 0 || exprTok >= context->tokenCount ||
+      context->tokens[exprTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_args", "Expression must resolve to string", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  char *expr = NULL;
+  if (!v2_strdup_json_token(context->json, &context->tokens[exprTok], &expr)) {
+    return false;
+  }
+
+  const char *argName = NULL;
+  const char *refName = NULL;
+
+  if (v2_parse_ref_name(expr, "$args.", &argName)) {
+    int valueTok = v2_find_arg_value_token(context->json,
+                                           context->tokens,
+                                           context->tokenCount,
+                                           context->argsTok,
+                                           argName);
+    if (valueTok < 0 || context->tokens[valueTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_args",
+                          "Missing or invalid v2 string argument",
+                          argName,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(expr);
+      return false;
+    }
+
+    char *resolved = NULL;
+    bool ok =
+        v2_strdup_json_token(context->json, &context->tokens[valueTok], &resolved);
+    free(expr);
+    if (!ok) {
+      return false;
+    }
+
+    *outValue = resolved;
+    return true;
+  }
+
+  if (v2_parse_ref_name(expr, "$refs.", &refName)) {
+    if (strchr(refName, '.') != NULL) {
+      write_error_json_ex("invalid_args", "Ref must use $refs.<name>", refName,
+                          NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    if (context->refCount == NULL) {
+      write_error_json_ex("invalid_request", "Missing ref context", NULL, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    int refIndex = v2_find_ref_index(context->refs, *context->refCount, refName);
+    if (refIndex < 0) {
+      write_error_json_ex("invalid_request", "Unknown v2 ref", refName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    const V2RefEntry *entry = &context->refs[refIndex];
+    if (entry->type != V2_REF_PATH || entry->pathValue == NULL) {
+      write_error_json_ex("invalid_args", "v2 ref is not a string-compatible ref",
+                          refName, NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    char *resolved = strdup(entry->pathValue);
+    free(expr);
+    if (resolved == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    *outValue = resolved;
+    return true;
+  }
+
+  *outValue = expr;
+  return true;
+}
+
+static char *v2_quote_json_string(const char *value) {
+  const char *src = value == NULL ? "" : value;
+
+  size_t needed = 2U;
+  for (const unsigned char *p = (const unsigned char *)src; *p != '\0'; p++) {
+    const unsigned char c = *p;
+    switch (c) {
+    case '"':
+    case '\\':
+    case '\b':
+    case '\f':
+    case '\n':
+    case '\r':
+    case '\t':
+      needed += 2U;
+      break;
+    default:
+      needed += (c < 0x20) ? 6U : 1U;
+      break;
+    }
+  }
+
+  char *out = (char *)malloc(needed + 1U);
+  if (out == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return NULL;
+  }
+
+  static const char hex[] = "0123456789abcdef";
+
+  char *dst = out;
+  *dst++ = '"';
+
+  for (const unsigned char *p = (const unsigned char *)src; *p != '\0'; p++) {
+    const unsigned char c = *p;
+    switch (c) {
+    case '"':
+      *dst++ = '\\';
+      *dst++ = '"';
+      break;
+    case '\\':
+      *dst++ = '\\';
+      *dst++ = '\\';
+      break;
+    case '\b':
+      *dst++ = '\\';
+      *dst++ = 'b';
+      break;
+    case '\f':
+      *dst++ = '\\';
+      *dst++ = 'f';
+      break;
+    case '\n':
+      *dst++ = '\\';
+      *dst++ = 'n';
+      break;
+    case '\r':
+      *dst++ = '\\';
+      *dst++ = 'r';
+      break;
+    case '\t':
+      *dst++ = '\\';
+      *dst++ = 't';
+      break;
+    default:
+      if (c < 0x20) {
+        *dst++ = '\\';
+        *dst++ = 'u';
+        *dst++ = '0';
+        *dst++ = '0';
+        *dst++ = hex[(c >> 4) & 0x0F];
+        *dst++ = hex[c & 0x0F];
+      } else {
+        *dst++ = (char)c;
+      }
+      break;
+    }
+  }
+
+  *dst++ = '"';
+  *dst = '\0';
+  return out;
 }
 
 static bool v2_execute_dskopn_legacy_call(void) {
@@ -281,7 +466,7 @@ static bool v2_emit_named_dskb02_outputs(const char *json,
   return true;
 }
 
-static bool v2_invoke_card(const V2CallInvokeContext *context) {
+static bool v2_invoke_card_c(const V2CallInvokeContext *context) {
   SpiceInt value =
       card_c(&context->refs[context->resolved->refIndices[0]].cell);
   if (failed_c() == SPICETRUE) {
@@ -294,7 +479,7 @@ static bool v2_invoke_card(const V2CallInvokeContext *context) {
                         value);
 }
 
-static bool v2_invoke_size(const V2CallInvokeContext *context) {
+static bool v2_invoke_size_c(const V2CallInvokeContext *context) {
   SpiceInt value =
       size_c(&context->refs[context->resolved->refIndices[0]].cell);
   if (failed_c() == SPICETRUE) {
@@ -307,7 +492,7 @@ static bool v2_invoke_size(const V2CallInvokeContext *context) {
                         value);
 }
 
-static bool v2_invoke_scard(const V2CallInvokeContext *context) {
+static bool v2_invoke_scard_c(const V2CallInvokeContext *context) {
   scard_c(context->resolved->intValues[0],
           &context->refs[context->resolved->refIndices[1]].cell);
   if (failed_c() == SPICETRUE) {
@@ -317,7 +502,7 @@ static bool v2_invoke_scard(const V2CallInvokeContext *context) {
   return true;
 }
 
-static bool v2_invoke_ssize(const V2CallInvokeContext *context) {
+static bool v2_invoke_ssize_c(const V2CallInvokeContext *context) {
   ssize_c(context->resolved->intValues[0],
           &context->refs[context->resolved->refIndices[1]].cell);
   if (failed_c() == SPICETRUE) {
@@ -327,7 +512,7 @@ static bool v2_invoke_ssize(const V2CallInvokeContext *context) {
   return true;
 }
 
-static bool v2_invoke_valid(const V2CallInvokeContext *context) {
+static bool v2_invoke_valid_c(const V2CallInvokeContext *context) {
   valid_c(context->resolved->intValues[0],
           context->resolved->intValues[1],
           &context->refs[context->resolved->refIndices[2]].cell);
@@ -338,7 +523,7 @@ static bool v2_invoke_valid(const V2CallInvokeContext *context) {
   return true;
 }
 
-static bool v2_invoke_dskobj(const V2CallInvokeContext *context) {
+static bool v2_invoke_dskobj_c(const V2CallInvokeContext *context) {
   dskobj_c(context->resolved->pathValues[0],
            &context->refs[context->resolved->refIndices[1]].cell);
   if (failed_c() == SPICETRUE) {
@@ -348,7 +533,7 @@ static bool v2_invoke_dskobj(const V2CallInvokeContext *context) {
   return true;
 }
 
-static bool v2_invoke_dsksrf(const V2CallInvokeContext *context) {
+static bool v2_invoke_dsksrf_c(const V2CallInvokeContext *context) {
   dsksrf_c(context->resolved->pathValues[0],
            context->resolved->intValues[1],
            &context->refs[context->resolved->refIndices[2]].cell);
@@ -359,7 +544,7 @@ static bool v2_invoke_dsksrf(const V2CallInvokeContext *context) {
   return true;
 }
 
-static bool v2_invoke_dskgd(const V2CallInvokeContext *context) {
+static bool v2_invoke_dskgd_c(const V2CallInvokeContext *context) {
   SpiceDSKDescr descriptor;
   memset(&descriptor, 0, sizeof(descriptor));
 
@@ -376,7 +561,7 @@ static bool v2_invoke_dskgd(const V2CallInvokeContext *context) {
                               &descriptor);
 }
 
-static bool v2_invoke_dskb02(const V2CallInvokeContext *context) {
+static bool v2_invoke_dskb02_c(const V2CallInvokeContext *context) {
   SpiceInt nv = 0;
   SpiceInt np = 0;
   SpiceInt nvxtot = 0;
@@ -421,66 +606,82 @@ static bool v2_invoke_dskb02(const V2CallInvokeContext *context) {
                                       voxnpl);
 }
 
-static bool v2_invoke_dskopn(const V2CallInvokeContext *context) {
+static bool v2_invoke_dskopn_c(const V2CallInvokeContext *context) {
   (void)context;
   return v2_execute_dskopn_legacy_call();
 }
 
-static bool v2_invoke_dskmi2(const V2CallInvokeContext *context) {
+static bool v2_invoke_dskmi2_c(const V2CallInvokeContext *context) {
   (void)context;
   return v2_execute_dskmi2_legacy_call();
 }
 
-static bool v2_invoke_dskw02(const V2CallInvokeContext *context) {
+static bool v2_invoke_dskw02_c(const V2CallInvokeContext *context) {
   (void)context;
   return v2_execute_dskw02_legacy_call();
 }
 
-static bool v2_invoke_read_virtual_output(
+static bool v2_invoke_readVirtualOutput(
     const V2CallInvokeContext *context) {
   return v2_execute_read_virtual_output_call(context->resolved->pathValues[0]);
 }
 
+static bool v2_invoke_tkvrsn_c(const V2CallInvokeContext *context) {
+  if (context->returnValueJson == NULL) {
+    write_error_json_ex("invalid_request",
+                        "call result.mode=return requires return capture",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
+  char *item = NULL;
+  if (!v2_resolve_expr_string_value(context,
+                                    context->resolved->valueTokens[0],
+                                    "call(time.tkvrsn).in[0]",
+                                    &item)) {
+    return false;
+  }
+
+  const char *version = tkvrsn_c(item);
+  free(item);
+  if (failed_c() == SPICETRUE) {
+    return v2_write_spice_failure("SPICE error in tkvrsn_c");
+  }
+
+  char *valueJson = v2_quote_json_string(version);
+  if (valueJson == NULL) {
+    return false;
+  }
+
+  *context->returnValueJson = valueJson;
+  return true;
+}
+
 typedef bool (*V2CallInvokerFn)(const V2CallInvokeContext *context);
 
-typedef struct {
-  const char *symbol;
-  V2CallInvokerFn invoke;
-} V2CallInvokerEntry;
+#define V2_NATIVE_CALL_DISPATCH_CASE(_fnId, _invoker) \
+  case _fnId:                                       \
+    return _invoker(context);
 
-static const V2CallInvokerEntry V2_NATIVE_CALL_INVOKER_REGISTRY[] = {
-    {.symbol = "card_c", .invoke = v2_invoke_card},
-    {.symbol = "size_c", .invoke = v2_invoke_size},
-    {.symbol = "scard_c", .invoke = v2_invoke_scard},
-    {.symbol = "ssize_c", .invoke = v2_invoke_ssize},
-    {.symbol = "valid_c", .invoke = v2_invoke_valid},
-    {.symbol = "dskobj_c", .invoke = v2_invoke_dskobj},
-    {.symbol = "dsksrf_c", .invoke = v2_invoke_dsksrf},
-    {.symbol = "dskgd_c", .invoke = v2_invoke_dskgd},
-    {.symbol = "dskb02_c", .invoke = v2_invoke_dskb02},
-    {.symbol = "dskopn_c", .invoke = v2_invoke_dskopn},
-    {.symbol = "dskmi2_c", .invoke = v2_invoke_dskmi2},
-    {.symbol = "dskw02_c", .invoke = v2_invoke_dskw02},
-    {.symbol = "readVirtualOutput", .invoke = v2_invoke_read_virtual_output},
-};
-
-static V2CallInvokerFn v2_lookup_call_invoker(const char *symbol) {
-  const size_t count =
-      sizeof(V2_NATIVE_CALL_INVOKER_REGISTRY) /
-      sizeof(V2_NATIVE_CALL_INVOKER_REGISTRY[0]);
-
-  if (symbol == NULL) {
+static V2CallInvokerFn v2_lookup_call_invoker(const V2FunctionId fnId) {
+  switch (fnId) {
+    V2_NATIVE_CALL_DISPATCH_ROWS(V2_NATIVE_CALL_DISPATCH_CASE)
+  default:
     return NULL;
   }
-
-  for (size_t i = 0; i < count; i++) {
-    if (strcmp(V2_NATIVE_CALL_INVOKER_REGISTRY[i].symbol, symbol) == 0) {
-      return V2_NATIVE_CALL_INVOKER_REGISTRY[i].invoke;
-    }
-  }
-
-  return NULL;
 }
+
+static V2CallInvokerFn v2_lookup_backend_method_invoker(
+    const V2FunctionId fnId) {
+  switch (fnId) {
+  case V2_FUNCTION_ID_TIME_TKVRSN:
+    return v2_invoke_tkvrsn_c;
+  default:
+    return NULL;
+  }
+}
+
+#undef V2_NATIVE_CALL_DISPATCH_CASE
 
 bool v2_invoke_call(const V2CallInvokeContext *context) {
   if (context == NULL || context->spec == NULL) {
@@ -489,14 +690,23 @@ bool v2_invoke_call(const V2CallInvokeContext *context) {
     return false;
   }
 
-  if (context->spec->invokeKind != V2_FUNCTION_INVOKE_SPICE) {
-    write_error_json_ex("unsupported_call",
-                        "Native call invoker supports spice functions only",
-                        context->fnName, NULL, NULL, NULL);
-    return false;
+  if (context->returnValueJson != NULL) {
+    *context->returnValueJson = NULL;
   }
 
-  V2CallInvokerFn invoker = v2_lookup_call_invoker(context->spec->cSymbol);
+  V2CallInvokerFn invoker = NULL;
+  switch (context->spec->invokeKind) {
+  case V2_FUNCTION_INVOKE_SPICE:
+    invoker = v2_lookup_call_invoker(context->spec->id);
+    break;
+  case V2_FUNCTION_INVOKE_BACKEND_METHOD:
+    invoker = v2_lookup_backend_method_invoker(context->spec->id);
+    break;
+  default:
+    invoker = NULL;
+    break;
+  }
+
   if (invoker == NULL) {
     write_error_json_ex("unsupported_call", "Unsupported v2 call",
                         context->fnName, NULL, NULL, NULL);

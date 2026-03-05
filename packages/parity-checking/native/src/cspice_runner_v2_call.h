@@ -8,6 +8,7 @@
 bool v2_execute_call_step(const char *json, const jsmntok_t *tokens,
                           int tokenCount, int stepTok,
                           int argsTok, V2RefEntry *refs,
-                          int *refCount);
+                          int *refCount,
+                          char **returnValueJson);
 
 #endif

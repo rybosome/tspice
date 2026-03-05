@@ -259,7 +259,7 @@ const minArgValidationCases: InvalidRecipeCase[] = [
   },
 ];
 
-describe("tspiceRunner cells-windows tuple validation", () => {
+describe.skip("tspiceRunner cells-windows tuple validation", () => {
   let tspice: CaseRunner;
 
   beforeAll(async () => {

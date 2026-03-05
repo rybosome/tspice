@@ -15,6 +15,18 @@ class StubRunner implements CaseRunner {
   }
 }
 
+class RecordingRunner implements CaseRunner {
+  readonly kind = "stub";
+  readonly calls: RunCaseInput[] = [];
+
+  constructor(private readonly outcome: RunCaseResult) {}
+
+  async runCase(input: RunCaseInput): Promise<RunCaseResult> {
+    this.calls.push(input);
+    return this.outcome;
+  }
+}
+
 function buildMethod(resultSchema: MethodSpecV2["contract"]["result"]): MethodSpecV2 {
   return {
     schemaVersion: 3,
@@ -106,5 +118,63 @@ describe("executeMethodSpecParityV2 contract.result validation", () => {
         cspice,
       }),
     ).resolves.toMatchObject({ caseCount: 1 });
+  });
+
+  it("keeps own-spec single-call workflows on the unified v3 shape for both runners", async () => {
+    const method: MethodSpecV2 = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/time/tkvrsn@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "time.tkvrsn",
+        canonicalMethod: "time.tkvrsn",
+        aliases: [],
+        args: [{ name: "item", type: "spiceInt" }],
+        result: { const: "N0067" },
+        errors: [],
+      },
+      workflow: {
+        steps: [{ op: "call", fn: "time.tkvrsn", in: ["$args.item"] }],
+      },
+      cases: [
+        {
+          id: "toolkit",
+          args: { item: 0 },
+          expect: { ok: true },
+        },
+      ],
+      meta: {
+        sourcePath: "/tmp/tkvrsn@v3.yml",
+      },
+    };
+
+    const tspice = new RecordingRunner({ ok: true, result: "N0067" });
+    const cspice = new RecordingRunner({ ok: true, result: "N0067" });
+
+    await expect(
+      executeMethodSpecParityV2(method, {
+        tspice,
+        cspice,
+      }),
+    ).resolves.toMatchObject({ caseCount: 1 });
+
+    expect(tspice.calls).toHaveLength(1);
+    expect(cspice.calls).toHaveLength(1);
+    expect(tspice.calls[0]).toMatchObject({
+      schemaVersion: 3,
+      args: { item: 0 },
+      workflow: {
+        steps: [{ op: "call", fn: "time.tkvrsn", in: ["$args.item"] }],
+      },
+    });
+    expect(cspice.calls[0]).toMatchObject({
+      schemaVersion: 3,
+      args: { item: 0 },
+      workflow: {
+        steps: [{ op: "call", fn: "time.tkvrsn", in: ["$args.item"] }],
+      },
+    });
   });
 });
