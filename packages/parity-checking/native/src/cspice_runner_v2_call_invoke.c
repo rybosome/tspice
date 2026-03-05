@@ -1,7 +1,5 @@
 #include "cspice_runner_json_emit.h"
 #include "cspice_runner_error.h"
-#include "cspice_runner_temp_files.h"
-#include "cspice_runner_v2_fixtures.h"
 #include "cspice_runner_v2_call_invoke.h"
 #include "generated/native_call_dispatch.h"
 #include "generated/native_return_bindings.h"
@@ -222,100 +220,6 @@ static char *v2_quote_json_string(const char *value) {
   return out;
 }
 
-static bool v2_execute_dskopn_legacy_call(void) {
-  char tempPath[PATH_MAX];
-  char detail[256];
-  detail[0] = '\0';
-  int tempFd = -1;
-  if (!build_file_io_temp_path("v2-dskopn", ".bds", tempPath,
-                               sizeof(tempPath), &tempFd, detail,
-                               sizeof(detail))) {
-    write_error_json_ex("invalid_request", "Failed to create DSK temp path",
-                        detail[0] ? detail : NULL, NULL, NULL, NULL);
-    return false;
-  }
-
-  if (tempFd >= 0) {
-    close(tempFd);
-    tempFd = -1;
-  }
-  unlink(tempPath);
-
-  SpiceInt handle = 0;
-  dskopn_c(tempPath, "TSPICE", 0, &handle);
-  if (failed_c() == SPICETRUE) {
-    unlink(tempPath);
-    return v2_write_spice_failure("SPICE error in dskopn_c");
-  }
-
-  dascls_c(handle);
-  if (failed_c() == SPICETRUE) {
-    unlink(tempPath);
-    return v2_write_spice_failure("SPICE error in dascls_c");
-  }
-
-  unlink(tempPath);
-  return true;
-}
-
-static bool v2_execute_dskmi2_legacy_call(void) {
-  if ((size_t)DSK_MINIMAL_WORKSZ > SIZE_MAX / sizeof(SpiceInt[2])) {
-    write_error_json("Out of memory", NULL, NULL, NULL);
-    return false;
-  }
-
-  SpiceInt(*work)[2] = (SpiceInt(*)[2])malloc(sizeof(SpiceInt[2]) *
-                                              (size_t)DSK_MINIMAL_WORKSZ);
-  if (work == NULL) {
-    write_error_json("Out of memory", NULL, NULL, NULL);
-    return false;
-  }
-
-  SpiceDouble spaixd[SPICE_DSK02_IXDFIX];
-  SpiceInt spaixi[DSK_MINIMAL_SPXISZ];
-
-  dskmi2_c((SpiceInt)DSK_MINIMAL_NV,
-           (SpiceDouble(*)[3])DSK_MINIMAL_VERTICES,
-           (SpiceInt)DSK_MINIMAL_NP,
-           (SpiceInt(*)[3])DSK_MINIMAL_PLATES,
-           0.2,
-           5,
-           (SpiceInt)DSK_MINIMAL_WORKSZ,
-           (SpiceInt)DSK_MINIMAL_VOXPSZ,
-           (SpiceInt)DSK_MINIMAL_VOXLSZ,
-           SPICETRUE,
-           (SpiceInt)DSK_MINIMAL_SPXISZ,
-           work,
-           spaixd,
-           spaixi);
-
-  free(work);
-
-  if (failed_c() == SPICETRUE) {
-    return v2_write_spice_failure("SPICE error in dskmi2_c");
-  }
-
-  if (SPICE_DSK02_IXDFIX <= 0 || DSK_MINIMAL_SPXISZ <= 0 ||
-      spaixd[0] != spaixd[0] || spaixi[0] < 0) {
-    write_error_json_ex("invalid_request",
-                        "call dskmi2_c expected non-empty outputs",
-                        NULL, NULL, NULL, NULL);
-    return false;
-  }
-
-  return true;
-}
-
-static bool v2_execute_dskw02_legacy_call(void) {
-  char tempPath[PATH_MAX];
-  if (!v2_write_minimal_dsk_file("v2-dskw02", tempPath, sizeof(tempPath))) {
-    return false;
-  }
-
-  unlink(tempPath);
-  return true;
-}
-
 static bool v2_try_resolve_named_dskb02_value(const char *name,
                                                SpiceInt nv,
                                                SpiceInt np,
@@ -436,11 +340,33 @@ static bool v2_emit_named_dskb02_outputs(const char *json,
   return true;
 }
 
-static bool v2_invoke_card_c(const V2CallInvokeContext *context) {
-  SpiceInt value =
-      card_c(&context->refs[context->resolved->refIndices[0]].cell);
+static bool v2_invoke_sig_cell_or_window_ref_to_as_spice_int(
+    const V2CallInvokeContext *context) {
+  SpiceInt value = 0;
+  const char *symbol = NULL;
+
+  switch (context->spec->id) {
+  case V2_FUNCTION_ID_CELLS_WINDOWS_CARD:
+    symbol = "card_c";
+    value = card_c(&context->refs[context->resolved->refIndices[0]].cell);
+    break;
+  case V2_FUNCTION_ID_CELLS_WINDOWS_SIZE:
+    symbol = "size_c";
+    value = size_c(&context->refs[context->resolved->refIndices[0]].cell);
+    break;
+  default:
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
   if (failed_c() == SPICETRUE) {
-    return v2_write_spice_failure("SPICE error in card_c");
+    char msg[96];
+    snprintf(msg,
+             sizeof(msg),
+             "SPICE error in %s",
+             symbol != NULL ? symbol : "generated call binding");
+    return v2_write_spice_failure(msg);
   }
 
   return v2_add_ref_int(context->refs,
@@ -449,40 +375,47 @@ static bool v2_invoke_card_c(const V2CallInvokeContext *context) {
                         value);
 }
 
-static bool v2_invoke_size_c(const V2CallInvokeContext *context) {
-  SpiceInt value =
-      size_c(&context->refs[context->resolved->refIndices[0]].cell);
-  if (failed_c() == SPICETRUE) {
-    return v2_write_spice_failure("SPICE error in size_c");
+static bool v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden(
+    const V2CallInvokeContext *context) {
+  const char *symbol = NULL;
+
+  switch (context->spec->id) {
+  case V2_FUNCTION_ID_CELLS_WINDOWS_SCARD:
+    symbol = "scard_c";
+    scard_c(context->resolved->intValues[0],
+            &context->refs[context->resolved->refIndices[1]].cell);
+    break;
+  case V2_FUNCTION_ID_CELLS_WINDOWS_SSIZE:
+    symbol = "ssize_c";
+    ssize_c(context->resolved->intValues[0],
+            &context->refs[context->resolved->refIndices[1]].cell);
+    break;
+  default:
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
   }
 
-  return v2_add_ref_int(context->refs,
-                        context->refCount,
-                        context->asRefName,
-                        value);
-}
-
-static bool v2_invoke_scard_c(const V2CallInvokeContext *context) {
-  scard_c(context->resolved->intValues[0],
-          &context->refs[context->resolved->refIndices[1]].cell);
   if (failed_c() == SPICETRUE) {
-    return v2_write_spice_failure("SPICE error in scard_c");
+    char msg[96];
+    snprintf(msg,
+             sizeof(msg),
+             "SPICE error in %s",
+             symbol != NULL ? symbol : "generated call binding");
+    return v2_write_spice_failure(msg);
   }
 
   return true;
 }
 
-static bool v2_invoke_ssize_c(const V2CallInvokeContext *context) {
-  ssize_c(context->resolved->intValues[0],
-          &context->refs[context->resolved->refIndices[1]].cell);
-  if (failed_c() == SPICETRUE) {
-    return v2_write_spice_failure("SPICE error in ssize_c");
+static bool v2_invoke_sig_int_expr_int_expr_cell_or_window_ref_to_forbidden(
+    const V2CallInvokeContext *context) {
+  if (context->spec->id != V2_FUNCTION_ID_CELLS_WINDOWS_VALID) {
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
   }
 
-  return true;
-}
-
-static bool v2_invoke_valid_c(const V2CallInvokeContext *context) {
   valid_c(context->resolved->intValues[0],
           context->resolved->intValues[1],
           &context->refs[context->resolved->refIndices[2]].cell);
@@ -493,7 +426,14 @@ static bool v2_invoke_valid_c(const V2CallInvokeContext *context) {
   return true;
 }
 
-static bool v2_invoke_dskobj_c(const V2CallInvokeContext *context) {
+static bool v2_invoke_sig_path_expr_cell_ref_to_forbidden(
+    const V2CallInvokeContext *context) {
+  if (context->spec->id != V2_FUNCTION_ID_DSK_DSKOBJ) {
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
   dskobj_c(context->resolved->pathValues[0],
            &context->refs[context->resolved->refIndices[1]].cell);
   if (failed_c() == SPICETRUE) {
@@ -503,7 +443,14 @@ static bool v2_invoke_dskobj_c(const V2CallInvokeContext *context) {
   return true;
 }
 
-static bool v2_invoke_dsksrf_c(const V2CallInvokeContext *context) {
+static bool v2_invoke_sig_path_expr_int_expr_cell_ref_to_forbidden(
+    const V2CallInvokeContext *context) {
+  if (context->spec->id != V2_FUNCTION_ID_DSK_DSKSRF) {
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
   dsksrf_c(context->resolved->pathValues[0],
            context->resolved->intValues[1],
            &context->refs[context->resolved->refIndices[2]].cell);
@@ -514,7 +461,14 @@ static bool v2_invoke_dsksrf_c(const V2CallInvokeContext *context) {
   return true;
 }
 
-static bool v2_invoke_dskgd_c(const V2CallInvokeContext *context) {
+static bool v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor(
+    const V2CallInvokeContext *context) {
+  if (context->spec->id != V2_FUNCTION_ID_DSK_DSKGD) {
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
   SpiceDSKDescr descriptor;
   memset(&descriptor, 0, sizeof(descriptor));
 
@@ -531,7 +485,14 @@ static bool v2_invoke_dskgd_c(const V2CallInvokeContext *context) {
                               &descriptor);
 }
 
-static bool v2_invoke_dskb02_c(const V2CallInvokeContext *context) {
+static bool v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_out_named_dskb02(
+    const V2CallInvokeContext *context) {
+  if (context->spec->id != V2_FUNCTION_ID_DSK_DSKB02) {
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
   SpiceInt nv = 0;
   SpiceInt np = 0;
   SpiceInt nvxtot = 0;
@@ -574,21 +535,6 @@ static bool v2_invoke_dskb02_c(const V2CallInvokeContext *context) {
                                       vtxnpl,
                                       voxnpt,
                                       voxnpl);
-}
-
-static bool v2_invoke_dskopn_c(const V2CallInvokeContext *context) {
-  (void)context;
-  return v2_execute_dskopn_legacy_call();
-}
-
-static bool v2_invoke_dskmi2_c(const V2CallInvokeContext *context) {
-  (void)context;
-  return v2_execute_dskmi2_legacy_call();
-}
-
-static bool v2_invoke_dskw02_c(const V2CallInvokeContext *context) {
-  (void)context;
-  return v2_execute_dskw02_legacy_call();
 }
 
 static bool v2_invoke_return_expr_string_to_json_string(

@@ -4,17 +4,26 @@ import { runDispatchAliasParityGuard } from "../../src/engine/dispatchParityGuar
 import { readAliasMap } from "../../src/generated/readAliasMap.js";
 
 import type { ResolvedMethodSpec } from "../../src/dsl/types.js";
-import type { CaseRunner, RunCaseInput, RunCaseResult } from "../../src/runners/types.js";
+import type { CaseRunner, RunCaseInput, RunCaseInputV2, RunCaseResult } from "../../src/runners/types.js";
 
 class StubRunner implements CaseRunner {
   readonly kind = "stub";
-  readonly calls: RunCaseInput[] = [];
+  readonly calls: RunCaseInputV2[] = [];
 
   constructor(private readonly aliasMap: Record<string, string>) {}
 
   async runCase(input: RunCaseInput): Promise<RunCaseResult> {
+    if (input.schemaVersion !== 3) {
+      throw new Error("StubRunner expected schemaVersion=3 input");
+    }
+
+    const callStep = input.workflow.steps[0];
+    if (!callStep || callStep.op !== "call") {
+      throw new Error("StubRunner expected a first workflow step of op=call");
+    }
+
     this.calls.push(input);
-    const canonicalCall = this.aliasMap[input.call] ?? input.call;
+    const canonicalCall = this.aliasMap[callStep.fn] ?? callStep.fn;
     return {
       ok: true,
       result: {
@@ -25,13 +34,21 @@ class StubRunner implements CaseRunner {
   }
 }
 
-function makeResolvedMethod(canonicalMethod: string, cases: Array<{ id: string; args?: unknown[] }>): ResolvedMethodSpec {
+function makeResolvedMethod(canonicalMethod: string, cases: Array<{ id: string; args?: unknown }>): ResolvedMethodSpec {
   return {
     method: {
-      id: `methods/${canonicalMethod.replace(".", "/")}@v1`,
-      kind: "method",
-      contractMethod: canonicalMethod,
-      canonicalMethod,
+      schemaVersion: 3,
+      manifest: {
+        id: `methods/${canonicalMethod.replace(".", "/")}@v3`,
+        kind: "method",
+      },
+      contract: {
+        contractMethod: canonicalMethod,
+        canonicalMethod,
+        aliases: [],
+        args: [],
+        errors: [],
+      },
       cases,
       meta: { sourcePath: `/tmp/${canonicalMethod}.yml` },
     },
@@ -61,7 +78,7 @@ describe("runDispatchAliasParityGuard", () => {
     const aliasMap = readAliasMap();
     const runner = new StubRunner(aliasMap);
     const resolvedMethods = makeResolvedMethods(aliasMap).map((method) =>
-      method.method.canonicalMethod === "time.str2et"
+      method.method.contract.canonicalMethod === "time.str2et"
         ? makeResolvedMethod("time.str2et", [
             { id: "case-a", args: ["2000 JAN 01 12:00:00 TDB"] },
             { id: "case-b", args: ["2000 JAN 02 12:00:00 TDB"] },
@@ -71,7 +88,13 @@ describe("runDispatchAliasParityGuard", () => {
 
     await runDispatchAliasParityGuard(resolvedMethods, runner);
 
-    const aliasCalls = runner.calls.filter((call) => call.call === "str2et").map((call) => call.args[0]);
+    const aliasCalls = runner.calls
+      .filter((input) => {
+        const step = input.workflow.steps[0];
+        return step?.op === "call" && step.fn === "str2et";
+      })
+      .map((input) => (Array.isArray(input.args) ? input.args[0] : undefined));
+
     expect(aliasCalls).toEqual(["2000 JAN 01 12:00:00 TDB", "2000 JAN 02 12:00:00 TDB"]);
   });
 });

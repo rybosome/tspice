@@ -7,14 +7,14 @@
 // X-macro rows for native v2 call dispatch.
 // Usage: V2_NATIVE_CALL_DISPATCH_ROWS(MY_ROW_MACRO)
 #define V2_NATIVE_CALL_DISPATCH_ROWS(X) \
-  X(V2_FUNCTION_ID_CELLS_WINDOWS_CARD, v2_invoke_card_c) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_CARD, v2_invoke_sig_cell_or_window_ref_to_as_spice_int) \
   X(V2_FUNCTION_ID_CELLS_WINDOWS_INSRTC, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_CELLS_WINDOWS_INSRTD, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_CELLS_WINDOWS_INSRTI, v2_invoke_contract_return) \
-  X(V2_FUNCTION_ID_CELLS_WINDOWS_SCARD, v2_invoke_scard_c) \
-  X(V2_FUNCTION_ID_CELLS_WINDOWS_SIZE, v2_invoke_size_c) \
-  X(V2_FUNCTION_ID_CELLS_WINDOWS_SSIZE, v2_invoke_ssize_c) \
-  X(V2_FUNCTION_ID_CELLS_WINDOWS_VALID, v2_invoke_valid_c) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_SCARD, v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_SIZE, v2_invoke_sig_cell_or_window_ref_to_as_spice_int) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_SSIZE, v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_VALID, v2_invoke_sig_int_expr_int_expr_cell_or_window_ref_to_forbidden) \
   X(V2_FUNCTION_ID_CELLS_WINDOWS_WNCARD, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_CELLS_WINDOWS_WNFETD, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_CELLS_WINDOWS_WNINSD, v2_invoke_contract_return) \
@@ -39,10 +39,10 @@
   X(V2_FUNCTION_ID_COORDS_VECTORS_VNORM, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_COORDS_VECTORS_VSCL, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_COORDS_VECTORS_VSUB, v2_invoke_contract_return) \
-  X(V2_FUNCTION_ID_DSK_DSKB02, v2_invoke_dskb02_c) \
-  X(V2_FUNCTION_ID_DSK_DSKGD, v2_invoke_dskgd_c) \
-  X(V2_FUNCTION_ID_DSK_DSKOBJ, v2_invoke_dskobj_c) \
-  X(V2_FUNCTION_ID_DSK_DSKSRF, v2_invoke_dsksrf_c) \
+  X(V2_FUNCTION_ID_DSK_DSKB02, v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_out_named_dskb02) \
+  X(V2_FUNCTION_ID_DSK_DSKGD, v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor) \
+  X(V2_FUNCTION_ID_DSK_DSKOBJ, v2_invoke_sig_path_expr_cell_ref_to_forbidden) \
+  X(V2_FUNCTION_ID_DSK_DSKSRF, v2_invoke_sig_path_expr_int_expr_cell_ref_to_forbidden) \
   X(V2_FUNCTION_ID_EPHEMERIS_SPKEZ, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_EPHEMERIS_SPKEZP, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_EPHEMERIS_SPKEZR, v2_invoke_contract_return) \
@@ -62,9 +62,6 @@
   X(V2_FUNCTION_ID_FILE_IO_DLACLS, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_FILE_IO_DLAFNS, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_FILE_IO_DLAOPN, v2_invoke_contract_return) \
-  X(V2_FUNCTION_ID_FILE_IO_DSKMI2, v2_invoke_dskmi2_c) \
-  X(V2_FUNCTION_ID_FILE_IO_DSKOPN, v2_invoke_dskopn_c) \
-  X(V2_FUNCTION_ID_FILE_IO_DSKW02, v2_invoke_dskw02_c) \
   X(V2_FUNCTION_ID_FILE_IO_EXISTS, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_FILE_IO_GETFAT, v2_invoke_contract_return) \
   X(V2_FUNCTION_ID_FRAMES_CCIFRM, v2_invoke_contract_return) \

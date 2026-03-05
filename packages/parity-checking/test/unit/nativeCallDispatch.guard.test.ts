@@ -10,6 +10,26 @@ import { nativeCallDispatch } from "../../src/generated/nativeCallDispatch.js";
 import { nativeReturnBindings } from "../../src/generated/nativeReturnBindings.js";
 
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
+const LEGACY_BESPOKE_NATIVE_INVOKERS = new Set([
+  "v2_invoke_card_c",
+  "v2_invoke_size_c",
+  "v2_invoke_scard_c",
+  "v2_invoke_ssize_c",
+  "v2_invoke_valid_c",
+  "v2_invoke_dskobj_c",
+  "v2_invoke_dsksrf_c",
+  "v2_invoke_dskgd_c",
+  "v2_invoke_dskb02_c",
+  "v2_invoke_dskopn_c",
+  "v2_invoke_dskmi2_c",
+  "v2_invoke_dskw02_c",
+]);
+
+const REMOVED_DSK_HELPER_CALL_FNS = new Set([
+  "file-io.dskopn",
+  "file-io.dskmi2",
+  "file-io.dskw02",
+]);
 
 function toEnumSegment(value: string): string {
   const normalized = value
@@ -145,6 +165,31 @@ describe("native call dispatch codegen guard", () => {
 
     for (const entry of nativeCallDispatch) {
       expect(implementedInvokers.has(entry.invoker)).toBe(true);
+    }
+  });
+
+  it("does not regress to legacy bespoke non-return native invoker names", () => {
+    for (const entry of nativeCallDispatch) {
+      expect(
+        LEGACY_BESPOKE_NATIVE_INVOKERS.has(entry.invoker),
+        `dispatch row ${entry.id} regressed to legacy invoker ${entry.invoker}`,
+      ).toBe(false);
+    }
+  });
+
+  it("keeps method workflows off removed legacy DSK helper call fns", () => {
+    const testDir = path.dirname(fileURLToPath(import.meta.url));
+    const packageRoot = path.resolve(testDir, "..", "..");
+    const methodsDir = path.join(packageRoot, "specs", "methods");
+
+    const callFns = new Set<string>();
+    for (const filePath of discoverYamlFiles(methodsDir)) {
+      const parsed = parseYaml(readFileSync(filePath, "utf8"));
+      collectCallFns(parsed, callFns);
+    }
+
+    for (const fn of REMOVED_DSK_HELPER_CALL_FNS) {
+      expect(callFns.has(fn), `workflow should not call removed helper ${fn}`).toBe(false);
     }
   });
 });

@@ -2,21 +2,27 @@ import { compareValues } from "../compare/compare.js";
 import { formatMismatchReport } from "../compare/report.js";
 import { DEFAULT_TOL_ABS, DEFAULT_TOL_REL } from "../config/constants.js";
 import { mergeCompareChain, mergeSetupChain } from "../dsl/mergeResolvedSpec.js";
-import { parseScenario } from "../dsl/parse.js";
-import { executeScenario } from "../dsl/execute.js";
 import { spiceShortSymbol } from "../errors/spiceShort.js";
 import { readAliasMap } from "../generated/readAliasMap.js";
 
 import type { CaseRunner } from "../runners/types.js";
-import type { ResolvedMethodSpec } from "../dsl/types.js";
+import type { MethodResultSpecV3, ResolvedMethodSpec } from "../dsl/types.js";
+import type { RunCaseInputV2 } from "../runners/types.js";
 
 type LegacyLikeMethod = {
   id?: string;
   canonicalMethod?: string;
   defaults?: { compare?: { tolAbs?: number; tolRel?: number; angleWrapPi?: boolean; errorShort?: boolean } };
   cases?: Array<{ id: string; args?: unknown; setup?: unknown; compare?: unknown }>;
-  contract?: { canonicalMethod?: string };
-  manifest?: { id?: string };
+  contract?: {
+    contractMethod?: string;
+    canonicalMethod?: string;
+    aliases?: string[];
+    args?: Array<{ name: string; type: "spiceInt"; constraints?: { min?: number; max?: number } }>;
+    result?: MethodResultSpecV3;
+    errors?: Array<{ code: string }>;
+  };
+  manifest?: { id?: string; kind?: "method" };
   meta?: { sourcePath?: string };
 };
 
@@ -63,6 +69,60 @@ function buildCompareOptions(tolAbs: number, tolRel: number, angleWrapPi: boolea
   return out;
 }
 
+function normalizeCaseArgs(rawArgs: unknown): unknown {
+  if (Array.isArray(rawArgs)) {
+    return rawArgs;
+  }
+
+  if (typeof rawArgs === "object" && rawArgs !== null) {
+    return rawArgs as Record<string, unknown>;
+  }
+
+  return {};
+}
+
+function buildCallInput(
+  method: LegacyLikeMethod,
+  call: string,
+  callArgs: unknown,
+  setup: unknown,
+  scenarioName: string,
+): RunCaseInputV2 {
+  const normalizedArgs = normalizeCaseArgs(callArgs);
+  const argInputs = Array.isArray(normalizedArgs)
+    ? normalizedArgs.map((_value, index) => `$args.${index}`)
+    : (method.contract?.args ?? []).map((arg) => `$args.${arg.name}`);
+
+  const canonicalMethod = methodCanonical(method) || call;
+
+  return {
+    schemaVersion: 3,
+    manifest: {
+      id: method.manifest?.id ?? scenarioName,
+      kind: "method",
+    },
+    contract: {
+      contractMethod: method.contract?.contractMethod ?? canonicalMethod,
+      canonicalMethod,
+      aliases: method.contract?.aliases ?? [],
+      args: method.contract?.args ?? [],
+      ...(method.contract?.result !== undefined ? { result: method.contract.result } : {}),
+      errors: method.contract?.errors ?? [],
+    },
+    args: normalizedArgs,
+    ...(setup !== undefined ? { setup: setup as { kernels?: Array<string | { path: string; restrictToDir?: string }> } } : {}),
+    workflow: {
+      steps: [
+        {
+          op: "call",
+          fn: call,
+          in: argInputs,
+        },
+      ],
+    },
+  };
+}
+
 /** Validate that each dispatch alias matches its canonical method behavior. */
 export async function runDispatchAliasParityGuard(
   resolvedMethods: ResolvedMethodSpec[],
@@ -101,40 +161,17 @@ export async function runDispatchAliasParityGuard(
         caseSpec.compare as undefined,
       ]);
 
-      const scenario = parseScenario({
-        sourcePath: methodSourcePath(method),
-        data: {
-          name: `dispatch-alias-guard:${alias}:${caseLabel}`,
-          setup,
-          compare,
-          cases: [
-            {
-              id: "canonical",
-              call: canonical,
-              args: Array.isArray(caseSpec.args) ? caseSpec.args : [],
-            },
-            {
-              id: "alias",
-              call: alias,
-              args: Array.isArray(caseSpec.args) ? caseSpec.args : [],
-            },
-          ],
-        },
-      });
+      const scenarioName = `dispatch-alias-guard:${alias}:${caseLabel}`;
+      const canonicalOut = await tspiceRunner.runCase(
+        buildCallInput(method, canonical, caseSpec.args, setup, scenarioName),
+      );
+      const aliasOut = await tspiceRunner.runCase(
+        buildCallInput(method, alias, caseSpec.args, setup, scenarioName),
+      );
 
-      const out = await executeScenario(scenario, tspiceRunner);
-      const canonicalOut = out.cases.find((scenarioCase) => scenarioCase.case.id === "canonical");
-      const aliasOut = out.cases.find((scenarioCase) => scenarioCase.case.id === "alias");
-
-      if (!canonicalOut || !aliasOut) {
+      if (canonicalOut.ok !== aliasOut.ok) {
         throw new Error(
-          `Dispatch alias guard internal error: missing canonical/alias outputs for ${alias} case ${caseLabel}`,
-        );
-      }
-
-      if (canonicalOut.outcome.ok !== aliasOut.outcome.ok) {
-        throw new Error(
-          `Dispatch alias guard mismatch for alias ${alias} -> ${canonical} case ${caseLabel}: canonical.ok=${canonicalOut.outcome.ok}, alias.ok=${aliasOut.outcome.ok}`,
+          `Dispatch alias guard mismatch for alias ${alias} -> ${canonical} case ${caseLabel}: canonical.ok=${canonicalOut.ok}, alias.ok=${aliasOut.ok}`,
         );
       }
 
@@ -143,10 +180,10 @@ export async function runDispatchAliasParityGuard(
       const angleWrapPi = compare?.angleWrapPi;
       const errorShort = compare?.errorShort ?? false;
 
-      if (!canonicalOut.outcome.ok || !aliasOut.outcome.ok) {
+      if (!canonicalOut.ok || !aliasOut.ok) {
         if (errorShort) {
-          const canonicalShort = canonicalOut.outcome.ok ? undefined : canonicalOut.outcome.error.spice?.short;
-          const aliasShort = aliasOut.outcome.ok ? undefined : aliasOut.outcome.error.spice?.short;
+          const canonicalShort = canonicalOut.ok ? undefined : canonicalOut.error.spice?.short;
+          const aliasShort = aliasOut.ok ? undefined : aliasOut.error.spice?.short;
           const canonicalSymbol = canonicalShort ? spiceShortSymbol(canonicalShort) : null;
           const aliasSymbol = aliasShort ? spiceShortSymbol(aliasShort) : null;
 
@@ -157,8 +194,8 @@ export async function runDispatchAliasParityGuard(
           }
         } else {
           const cmp = compareValues(
-            canonicalOut.outcome.ok ? undefined : canonicalOut.outcome.error,
-            aliasOut.outcome.ok ? undefined : aliasOut.outcome.error,
+            canonicalOut.ok ? undefined : canonicalOut.error,
+            aliasOut.ok ? undefined : aliasOut.error,
             buildCompareOptions(tolAbs, tolRel, angleWrapPi),
           );
 
@@ -173,8 +210,8 @@ export async function runDispatchAliasParityGuard(
       }
 
       const cmp = compareValues(
-        normalizeResult(canonical, canonicalOut.outcome.result),
-        normalizeResult(alias, aliasOut.outcome.result),
+        normalizeResult(canonical, canonicalOut.result),
+        normalizeResult(alias, aliasOut.result),
         buildCompareOptions(tolAbs, tolRel, angleWrapPi),
       );
 

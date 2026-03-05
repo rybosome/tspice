@@ -15,12 +15,15 @@ contract:
         const: true
 workflow:
   steps:
-    - op: call
-      in: []
-      fn: file-io.dskmi2
+    - op: materialize
+      fixture: minimalDsk
+      as: dskPath
     - op: projectResult
       out:
         computedSpatialIndex: true
+  cleanup:
+    - op: unlink
+      target: $refs.dskPath
 cases:
   - id: minimal-triangle-index
     expect:

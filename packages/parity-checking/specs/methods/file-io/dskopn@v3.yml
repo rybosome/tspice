@@ -15,12 +15,15 @@ contract:
         const: true
 workflow:
   steps:
-    - op: call
-      in: []
-      fn: file-io.dskopn
+    - op: materialize
+      fixture: minimalDsk
+      as: dskPath
     - op: projectResult
       out:
         opened: true
+  cleanup:
+    - op: unlink
+      target: $refs.dskPath
 cases:
   - id: open-close-temp-dsk
     expect:

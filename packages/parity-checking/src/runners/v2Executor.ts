@@ -922,6 +922,7 @@ type V2NativeCallInvokerContext = {
   backend: SpiceBackend;
   raw: SpiceBackend["raw"];
   step: V2CallStep;
+  spec: FunctionRegistryEntry;
   resolvedArgs: readonly unknown[];
   outputRef: string | undefined;
   outMap: Record<string, string> | undefined;
@@ -931,95 +932,140 @@ type V2NativeCallInvokerContext = {
 type V2NativeCallInvoker = (context: V2NativeCallInvokerContext) => void;
 
 const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
-  v2_invoke_card_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2NativeCallInvokerContext): void => {
-    const value = asSpiceInt(raw.card(resolvedArgs[0] as CellHandle | WindowHandle), `call(${step.fn}).result`);
+  v2_invoke_sig_cell_or_window_ref_to_as_spice_int: ({
+    raw,
+    step,
+    spec,
+    resolvedArgs,
+    outputRef,
+    refs,
+  }: V2NativeCallInvokerContext): void => {
+    const handle = resolvedArgs[0] as CellHandle | WindowHandle;
+
+    const value = (() => {
+      switch (spec.impl.cSymbol) {
+        case "card_c":
+          return asSpiceInt(raw.card(handle), `call(${step.fn}).result`);
+        case "size_c":
+          return asSpiceInt(raw.size(handle), `call(${step.fn}).result`);
+        default:
+          unsupportedCall("Unsupported call", {
+            call: step.fn,
+            invoker: spec.impl.nativeInvoker,
+            cSymbol: spec.impl.cSymbol,
+          });
+      }
+    })();
+
     defineRef(refs, outputRef!, { kind: "int", value }, `call(${step.fn}).as`);
   },
 
-  v2_invoke_size_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2NativeCallInvokerContext): void => {
-    const value = asSpiceInt(raw.size(resolvedArgs[0] as CellHandle | WindowHandle), `call(${step.fn}).result`);
-    defineRef(refs, outputRef!, { kind: "int", value }, `call(${step.fn}).as`);
+  v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden: ({
+    raw,
+    step,
+    spec,
+    resolvedArgs,
+  }: V2NativeCallInvokerContext): void => {
+    switch (spec.impl.cSymbol) {
+      case "scard_c":
+        raw.scard(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
+        return;
+      case "ssize_c":
+        raw.ssize(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
+        return;
+      default:
+        unsupportedCall("Unsupported call", {
+          call: step.fn,
+          invoker: spec.impl.nativeInvoker,
+          cSymbol: spec.impl.cSymbol,
+        });
+    }
   },
 
-  v2_invoke_scard_c: ({ raw, resolvedArgs }: V2NativeCallInvokerContext): void => {
-    raw.scard(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
-  },
-
-  v2_invoke_ssize_c: ({ raw, resolvedArgs }: V2NativeCallInvokerContext): void => {
-    raw.ssize(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
-  },
-
-  v2_invoke_valid_c: ({ raw, resolvedArgs }: V2NativeCallInvokerContext): void => {
+  v2_invoke_sig_int_expr_int_expr_cell_or_window_ref_to_forbidden: ({
+    raw,
+    step,
+    spec,
+    resolvedArgs,
+  }: V2NativeCallInvokerContext): void => {
+    if (spec.impl.cSymbol !== "valid_c") {
+      unsupportedCall("Unsupported call", {
+        call: step.fn,
+        invoker: spec.impl.nativeInvoker,
+        cSymbol: spec.impl.cSymbol,
+      });
+    }
     raw.valid(resolvedArgs[0] as number, resolvedArgs[1] as number, resolvedArgs[2] as CellHandle | WindowHandle);
   },
 
-  v2_invoke_dskobj_c: ({ raw, resolvedArgs }: V2NativeCallInvokerContext): void => {
+  v2_invoke_sig_path_expr_cell_ref_to_forbidden: ({
+    raw,
+    step,
+    spec,
+    resolvedArgs,
+  }: V2NativeCallInvokerContext): void => {
+    if (spec.impl.cSymbol !== "dskobj_c") {
+      unsupportedCall("Unsupported call", {
+        call: step.fn,
+        invoker: spec.impl.nativeInvoker,
+        cSymbol: spec.impl.cSymbol,
+      });
+    }
     raw.dskobj(resolvedArgs[0] as string, resolvedArgs[1] as IntCellHandle);
   },
 
-  v2_invoke_dsksrf_c: ({ raw, resolvedArgs }: V2NativeCallInvokerContext): void => {
+  v2_invoke_sig_path_expr_int_expr_cell_ref_to_forbidden: ({
+    raw,
+    step,
+    spec,
+    resolvedArgs,
+  }: V2NativeCallInvokerContext): void => {
+    if (spec.impl.cSymbol !== "dsksrf_c") {
+      unsupportedCall("Unsupported call", {
+        call: step.fn,
+        invoker: spec.impl.nativeInvoker,
+        cSymbol: spec.impl.cSymbol,
+      });
+    }
     raw.dsksrf(resolvedArgs[0] as string, resolvedArgs[1] as number, resolvedArgs[2] as IntCellHandle);
   },
 
-  v2_invoke_dskgd_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2NativeCallInvokerContext): void => {
+  v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor: ({
+    raw,
+    step,
+    spec,
+    resolvedArgs,
+    outputRef,
+    refs,
+  }: V2NativeCallInvokerContext): void => {
+    if (spec.impl.cSymbol !== "dskgd_c") {
+      unsupportedCall("Unsupported call", {
+        call: step.fn,
+        invoker: spec.impl.nativeInvoker,
+        cSymbol: spec.impl.cSymbol,
+      });
+    }
     const descriptor = raw.dskgd(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
     defineRef(refs, outputRef!, { kind: "dskDescriptor", value: descriptor }, `call(${step.fn}).as`);
   },
 
-  v2_invoke_dskb02_c: ({ raw, step, resolvedArgs, outMap, refs }: V2NativeCallInvokerContext): void => {
+  v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_out_named_dskb02: ({
+    raw,
+    step,
+    spec,
+    resolvedArgs,
+    outMap,
+    refs,
+  }: V2NativeCallInvokerContext): void => {
+    if (spec.impl.cSymbol !== "dskb02_c") {
+      unsupportedCall("Unsupported call", {
+        call: step.fn,
+        invoker: spec.impl.nativeInvoker,
+        cSymbol: spec.impl.cSymbol,
+      });
+    }
     const bookkeeping = raw.dskb02(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
     applyNamedDskb02Outputs(step, outMap ?? {}, bookkeeping, refs);
-  },
-
-  v2_invoke_dskopn_c: ({ backend, raw }: V2NativeCallInvokerContext): void => {
-    const tempPath = buildTempPath(backend, "dskopn", ".bds");
-    let handle: DskOpenHandle | undefined;
-    let opError: unknown = undefined;
-
-    try {
-      handle = raw.dskopn(tempPath, "TSPICE", 0);
-    } catch (error) {
-      opError = error;
-    }
-
-    if (handle !== undefined) {
-      closeDasHandlePreserveError(raw, handle, opError);
-    }
-
-    unlinkPathBestEffort(backend, tempPath);
-
-    if (opError !== undefined) {
-      throw opError;
-    }
-  },
-
-  v2_invoke_dskmi2_c: ({ raw, step }: V2NativeCallInvokerContext): void => {
-    const spatial = raw.dskmi2(
-      DSK_MINIMAL_NV,
-      DSK_MINIMAL_VERTICES,
-      DSK_MINIMAL_NP,
-      DSK_MINIMAL_PLATES,
-      0.2,
-      5,
-      DSK_MINIMAL_WORKSZ,
-      DSK_MINIMAL_VOXPSZ,
-      DSK_MINIMAL_VOXLSZ,
-      true,
-      DSK_MINIMAL_SPXISZ,
-    );
-
-    if (spatial.spaixd.length < 1 || spatial.spaixi.length < 1) {
-      invalidRequest(`call(${step.fn}) expected non-empty spatial index outputs`);
-    }
-  },
-
-  v2_invoke_dskw02_c: ({ backend }: V2NativeCallInvokerContext): void => {
-    const tempPath = buildTempPath(backend, "dskw02", ".bds");
-    try {
-      writeMinimalDskFile(backend, tempPath);
-    } finally {
-      unlinkPathBestEffort(backend, tempPath);
-    }
   },
 };
 
@@ -1102,6 +1148,7 @@ async function executeCallFromSpec(
     backend,
     raw,
     step,
+    spec,
     resolvedArgs,
     outputRef,
     outMap,

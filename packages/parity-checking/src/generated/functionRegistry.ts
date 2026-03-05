@@ -44,7 +44,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.card",
       cSymbol: "card_c",
-      nativeInvoker: "v2_invoke_card_c",
+      nativeInvoker: "v2_invoke_sig_cell_or_window_ref_to_as_spice_int",
     },
     arity: 1,
     argKinds: ["cellOrWindowRef"],
@@ -92,7 +92,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.scard",
       cSymbol: "scard_c",
-      nativeInvoker: "v2_invoke_scard_c",
+      nativeInvoker: "v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden",
     },
     arity: 2,
     argKinds: ["intExpr","cellOrWindowRef"],
@@ -105,7 +105,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.size",
       cSymbol: "size_c",
-      nativeInvoker: "v2_invoke_size_c",
+      nativeInvoker: "v2_invoke_sig_cell_or_window_ref_to_as_spice_int",
     },
     arity: 1,
     argKinds: ["cellOrWindowRef"],
@@ -117,7 +117,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.ssize",
       cSymbol: "ssize_c",
-      nativeInvoker: "v2_invoke_ssize_c",
+      nativeInvoker: "v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden",
     },
     arity: 2,
     argKinds: ["intExpr","cellOrWindowRef"],
@@ -130,7 +130,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.valid",
       cSymbol: "valid_c",
-      nativeInvoker: "v2_invoke_valid_c",
+      nativeInvoker: "v2_invoke_sig_int_expr_int_expr_cell_or_window_ref_to_forbidden",
     },
     arity: 3,
     argKinds: ["intExpr","intExpr","cellOrWindowRef"],
@@ -431,7 +431,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dskb02",
       cSymbol: "dskb02_c",
-      nativeInvoker: "v2_invoke_dskb02_c",
+      nativeInvoker: "v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_out_named_dskb02",
     },
     arity: 2,
     argKinds: ["dasHandleRef","dlaDescriptorRef"],
@@ -443,7 +443,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dskgd",
       cSymbol: "dskgd_c",
-      nativeInvoker: "v2_invoke_dskgd_c",
+      nativeInvoker: "v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor",
     },
     arity: 2,
     argKinds: ["dasHandleRef","dlaDescriptorRef"],
@@ -455,7 +455,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dskobj",
       cSymbol: "dskobj_c",
-      nativeInvoker: "v2_invoke_dskobj_c",
+      nativeInvoker: "v2_invoke_sig_path_expr_cell_ref_to_forbidden",
     },
     arity: 2,
     argKinds: ["pathExpr","cellRef"],
@@ -467,7 +467,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dsksrf",
       cSymbol: "dsksrf_c",
-      nativeInvoker: "v2_invoke_dsksrf_c",
+      nativeInvoker: "v2_invoke_sig_path_expr_int_expr_cell_ref_to_forbidden",
     },
     arity: 3,
     argKinds: ["pathExpr","intExpr","cellRef"],
@@ -700,42 +700,6 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     arity: 4,
     argKinds: ["expr","expr","expr","expr"],
     result: { mode: "return" },
-  },
-  {
-    id: "file-io.dskmi2",
-    aliases: ["dskmi2_c"],
-    impl: {
-      contractMethod: "file-io.dskmi2",
-      cSymbol: "dskmi2_c",
-      nativeInvoker: "v2_invoke_dskmi2_c",
-    },
-    arity: 0,
-    argKinds: [],
-    result: { mode: "forbidden" },
-  },
-  {
-    id: "file-io.dskopn",
-    aliases: ["dskopn_c"],
-    impl: {
-      contractMethod: "file-io.dskopn",
-      cSymbol: "dskopn_c",
-      nativeInvoker: "v2_invoke_dskopn_c",
-    },
-    arity: 0,
-    argKinds: [],
-    result: { mode: "forbidden" },
-  },
-  {
-    id: "file-io.dskw02",
-    aliases: ["dskw02_c"],
-    impl: {
-      contractMethod: "file-io.dskw02",
-      cSymbol: "dskw02_c",
-      nativeInvoker: "v2_invoke_dskw02_c",
-    },
-    arity: 0,
-    argKinds: [],
-    result: { mode: "forbidden" },
   },
   {
     id: "file-io.exists",
