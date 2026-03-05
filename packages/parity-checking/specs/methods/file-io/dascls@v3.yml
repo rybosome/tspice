@@ -14,7 +14,10 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.dascls
+      in:
+        - $args.0
 cases:
   - id: file-io.dascls.opens-and-closes-dsk
     args:

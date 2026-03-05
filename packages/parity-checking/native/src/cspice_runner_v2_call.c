@@ -1,8 +1,8 @@
 #include "cspice_runner_json_emit.h"
-#include "cspice_runner_v2_call_spec.h"
 #include "cspice_runner_v2_refs.h"
-#include "cspice_runner_v2_spice_call.h"
-#include "cspice_runner_v2_spice_invoke.h"
+#include "cspice_runner_v2_call.h"
+#include "cspice_runner_v2_call_invoke.h"
+#include "generated/function_registry.h"
 
 static bool v2_strdup_json_token(const char *json, const jsmntok_t *tok,
                                  char **out) {
@@ -102,13 +102,13 @@ static bool v2_resolve_path_expr(const char *json, const jsmntok_t *tokens,
 
 static bool v2_require_as_output_ref(const char *json, const jsmntok_t *tokens,
                                      int tokenCount, int stepTok,
-                                     const V2SpiceCallSpec *spec,
+                                     const char *fnName,
                                      char **outName) {
   int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
   if (asTok < 0 || tokens[asTok].type != JSMN_STRING) {
     write_error_json_ex("invalid_args",
-                        "spiceCall requires string \"as\" output ref",
-                        spec->name, NULL, NULL, NULL);
+                        "call requires string \"as\" output ref", fnName,
+                        NULL, NULL, NULL);
     return false;
   }
 
@@ -117,12 +117,11 @@ static bool v2_require_as_output_ref(const char *json, const jsmntok_t *tokens,
 
 static bool v2_forbid_as_output_ref(const char *json, const jsmntok_t *tokens,
                                     int tokenCount, int stepTok,
-                                    const V2SpiceCallSpec *spec) {
+                                    const char *fnName) {
   int asTok = jsmn_find_object_key(json, tokens, stepTok, "as", tokenCount);
   if (asTok >= 0) {
-    write_error_json_ex("invalid_args",
-                        "spiceCall does not allow \"as\" output ref",
-                        spec->name, NULL, NULL, NULL);
+    write_error_json_ex("invalid_args", "call does not allow \"as\" output ref",
+                        fnName, NULL, NULL, NULL);
     return false;
   }
 
@@ -131,13 +130,12 @@ static bool v2_forbid_as_output_ref(const char *json, const jsmntok_t *tokens,
 
 static bool v2_require_out_map(const char *json, const jsmntok_t *tokens,
                                int tokenCount, int stepTok,
-                               const V2SpiceCallSpec *spec,
+                               const char *fnName,
                                int *outMapTok) {
   int outTok = jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
   if (outTok < 0 || tokens[outTok].type != JSMN_OBJECT) {
-    write_error_json_ex("invalid_args",
-                        "spiceCall requires object \"out\" map",
-                        spec->name, NULL, NULL, NULL);
+    write_error_json_ex("invalid_args", "call requires object \"out\" map",
+                        fnName, NULL, NULL, NULL);
     return false;
   }
 
@@ -147,26 +145,26 @@ static bool v2_require_out_map(const char *json, const jsmntok_t *tokens,
 
 static bool v2_forbid_out_map(const char *json, const jsmntok_t *tokens,
                               int tokenCount, int stepTok,
-                              const V2SpiceCallSpec *spec) {
+                              const char *fnName) {
   int outTok = jsmn_find_object_key(json, tokens, stepTok, "out", tokenCount);
   if (outTok >= 0) {
-    write_error_json_ex("invalid_args", "spiceCall does not allow \"out\" map",
-                        spec->name, NULL, NULL, NULL);
+    write_error_json_ex("invalid_args", "call does not allow \"out\" map",
+                        fnName, NULL, NULL, NULL);
     return false;
   }
 
   return true;
 }
 
-static void v2_clear_resolved_args(V2ResolvedSpiceCallArgs *args) {
+static void v2_clear_resolved_args(V2ResolvedCallArgs *args) {
   memset(args, 0, sizeof(*args));
-  for (int i = 0; i < V2_SPICE_CALL_MAX_ARITY; i++) {
+  for (int i = 0; i < V2_FUNCTION_MAX_ARITY; i++) {
     args->refIndices[i] = -1;
   }
 }
 
-static void v2_free_resolved_args(V2ResolvedSpiceCallArgs *args) {
-  for (int i = 0; i < V2_SPICE_CALL_MAX_ARITY; i++) {
+static void v2_free_resolved_args(V2ResolvedCallArgs *args) {
+  for (int i = 0; i < V2_FUNCTION_MAX_ARITY; i++) {
     free(args->pathValues[i]);
     args->pathValues[i] = NULL;
   }
@@ -175,19 +173,20 @@ static void v2_free_resolved_args(V2ResolvedSpiceCallArgs *args) {
 static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
                                  int tokenCount, int stepTok, int argsTok,
                                  V2RefEntry *refs, int refCount,
-                                 const V2SpiceCallSpec *spec,
-                                 V2ResolvedSpiceCallArgs *out) {
+                                 const V2FunctionSpec *spec,
+                                 const char *fnName,
+                                 V2ResolvedCallArgs *out) {
   int inTok = jsmn_find_object_key(json, tokens, stepTok, "in", tokenCount);
   if (inTok < 0 || tokens[inTok].type != JSMN_ARRAY) {
-    write_error_json_ex("invalid_request", "spiceCall requires array \"in\"",
-                        spec->name, NULL, NULL, NULL);
+    write_error_json_ex("invalid_request", "call requires array \"in\"",
+                        fnName, NULL, NULL, NULL);
     return false;
   }
 
   if (tokens[inTok].size != spec->arity) {
     char msg[128];
-    snprintf(msg, sizeof(msg), "spiceCall expects %d input(s)", spec->arity);
-    write_error_json_ex("invalid_request", msg, spec->name, NULL, NULL, NULL);
+    snprintf(msg, sizeof(msg), "call expects %d input(s)", spec->arity);
+    write_error_json_ex("invalid_request", msg, fnName, NULL, NULL, NULL);
     return false;
   }
 
@@ -197,9 +196,9 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
   for (int i = 0; i < spec->arity; i++) {
     int valueTok = idx;
     switch (spec->argKinds[i]) {
-    case V2_SPICE_CALL_ARG_INT_EXPR: {
+    case V2_FUNCTION_ARG_INT_EXPR: {
       char label[128];
-      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      snprintf(label, sizeof(label), "call(%s).in[%d]", fnName, i);
       if (!v2_resolve_spiceint_expr(json,
                                     tokens,
                                     tokenCount,
@@ -215,18 +214,18 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
 
       if ((spec->nonNegativeIntArgMask & (1U << i)) != 0U &&
           out->intValues[i] < 0) {
-        write_error_json_ex("invalid_args", "spiceCall integer input must be >= 0",
-                            spec->name, NULL, NULL, NULL);
+        write_error_json_ex("invalid_args", "call integer input must be >= 0",
+                            fnName, NULL, NULL, NULL);
         v2_free_resolved_args(out);
         return false;
       }
       break;
     }
 
-    case V2_SPICE_CALL_ARG_CELL_REF: {
+    case V2_FUNCTION_ARG_CELL_REF: {
       int refIndex = -1;
       char label[128];
-      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      snprintf(label, sizeof(label), "call(%s).in[%d]", fnName, i);
       if (!v2_resolve_cell_ref(
               json, tokens, tokenCount, valueTok, refs, refCount, label,
               &refIndex)) {
@@ -237,10 +236,10 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
       break;
     }
 
-    case V2_SPICE_CALL_ARG_CELL_OR_WINDOW_REF: {
+    case V2_FUNCTION_ARG_CELL_OR_WINDOW_REF: {
       int refIndex = -1;
       char label[128];
-      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      snprintf(label, sizeof(label), "call(%s).in[%d]", fnName, i);
       if (!v2_resolve_cell_or_window_ref(
               json, tokens, tokenCount, valueTok, refs, refCount, label,
               &refIndex)) {
@@ -251,9 +250,9 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
       break;
     }
 
-    case V2_SPICE_CALL_ARG_PATH_EXPR: {
+    case V2_FUNCTION_ARG_PATH_EXPR: {
       char label[128];
-      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      snprintf(label, sizeof(label), "call(%s).in[%d]", fnName, i);
       if (!v2_resolve_path_expr(json,
                                 tokens,
                                 tokenCount,
@@ -269,10 +268,10 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
       break;
     }
 
-    case V2_SPICE_CALL_ARG_DAS_HANDLE_REF: {
+    case V2_FUNCTION_ARG_DAS_HANDLE_REF: {
       int refIndex = -1;
       char label[128];
-      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      snprintf(label, sizeof(label), "call(%s).in[%d]", fnName, i);
       if (!v2_resolve_das_handle_ref(
               json, tokens, tokenCount, valueTok, refs, refCount, label,
               &refIndex)) {
@@ -283,10 +282,10 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
       break;
     }
 
-    case V2_SPICE_CALL_ARG_DLA_DESCR_REF: {
+    case V2_FUNCTION_ARG_DLA_DESCRIPTOR_REF: {
       int refIndex = -1;
       char label[128];
-      snprintf(label, sizeof(label), "spiceCall(%s).in[%d]", spec->name, i);
+      snprintf(label, sizeof(label), "call(%s).in[%d]", fnName, i);
       if (!v2_resolve_dla_descr_ref(
               json, tokens, tokenCount, valueTok, refs, refCount, label,
               &refIndex)) {
@@ -296,11 +295,18 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
       out->refIndices[i] = refIndex;
       break;
     }
+
+    case V2_FUNCTION_ARG_EXPR:
+      write_error_json_ex("unsupported_call",
+                          "Native call runner does not support expr arguments",
+                          fnName, NULL, NULL, NULL);
+      v2_free_resolved_args(out);
+      return false;
     }
 
     idx = jsmn_skip_subtree(tokens, valueTok, tokenCount);
     if (idx < 0) {
-      write_error_json_ex("invalid_request", "spiceCall input parse error", NULL,
+      write_error_json_ex("invalid_request", "call input parse error", NULL,
                           NULL, NULL, NULL);
       v2_free_resolved_args(out);
       return false;
@@ -310,67 +316,82 @@ static bool v2_resolve_call_args(const char *json, const jsmntok_t *tokens,
   return true;
 }
 
-bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
-                                int tokenCount, int stepTok,
-                                int argsTok, V2RefEntry *refs,
-                                int *refCount) {
-  int callTok = jsmn_find_object_key(json, tokens, stepTok, "call", tokenCount);
-  if (callTok < 0 || tokens[callTok].type != JSMN_STRING) {
-    write_error_json_ex("invalid_request", "spiceCall requires string call", NULL,
+bool v2_execute_call_step(const char *json, const jsmntok_t *tokens,
+                          int tokenCount, int stepTok,
+                          int argsTok, V2RefEntry *refs,
+                          int *refCount) {
+  int fnTok = jsmn_find_object_key(json, tokens, stepTok, "fn", tokenCount);
+  if (fnTok < 0 || tokens[fnTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request", "call requires string fn", NULL,
                         NULL, NULL, NULL);
     return false;
   }
 
-  char *callName = NULL;
-  if (!v2_strdup_json_token(json, &tokens[callTok], &callName)) {
+  char *fnName = NULL;
+  if (!v2_strdup_json_token(json, &tokens[fnTok], &fnName)) {
     return false;
   }
 
-  const V2SpiceCallSpec *spec = v2_lookup_spice_call_spec(callName);
+  const V2FunctionSpec *spec = v2_lookup_function_spec(fnName);
   if (spec == NULL) {
-    write_error_json_ex("unsupported_call", "Unsupported v2 spiceCall", callName,
+    write_error_json_ex("unsupported_call", "Unsupported v2 call", fnName,
                         NULL, NULL, NULL);
-    free(callName);
+    free(fnName);
+    return false;
+  }
+
+  if (spec->invokeKind != V2_FUNCTION_INVOKE_SPICE) {
+    write_error_json_ex("unsupported_call",
+                        "Native runner only supports spice-invoked functions",
+                        fnName, NULL, NULL, NULL);
+    free(fnName);
     return false;
   }
 
   char *asRefName = NULL;
   int outMapTok = -1;
-  switch (spec->outputKind) {
-  case V2_SPICE_CALL_OUTPUT_AS_INT:
-  case V2_SPICE_CALL_OUTPUT_AS_DSK_DESCR:
+  switch (spec->resultMode) {
+  case V2_FUNCTION_RESULT_AS_SPICE_INT:
+  case V2_FUNCTION_RESULT_AS_DSK_DESCRIPTOR:
     if (!v2_require_as_output_ref(
-            json, tokens, tokenCount, stepTok, spec, &asRefName) ||
-        !v2_forbid_out_map(json, tokens, tokenCount, stepTok, spec)) {
-      free(callName);
+            json, tokens, tokenCount, stepTok, fnName, &asRefName) ||
+        !v2_forbid_out_map(json, tokens, tokenCount, stepTok, fnName)) {
+      free(fnName);
       free(asRefName);
       return false;
     }
     break;
 
-  case V2_SPICE_CALL_OUTPUT_NAMED_DSKB02:
-    if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, spec) ||
+  case V2_FUNCTION_RESULT_OUT_NAMED_DSKB02:
+    if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, fnName) ||
         !v2_require_out_map(json,
                             tokens,
                             tokenCount,
                             stepTok,
-                            spec,
+                            fnName,
                             &outMapTok)) {
-      free(callName);
+      free(fnName);
       return false;
     }
     break;
 
-  case V2_SPICE_CALL_OUTPUT_FORBIDDEN:
-    if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, spec) ||
-        !v2_forbid_out_map(json, tokens, tokenCount, stepTok, spec)) {
-      free(callName);
+  case V2_FUNCTION_RESULT_FORBIDDEN:
+    if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, fnName) ||
+        !v2_forbid_out_map(json, tokens, tokenCount, stepTok, fnName)) {
+      free(fnName);
       return false;
     }
     break;
+
+  case V2_FUNCTION_RESULT_RETURN:
+    write_error_json_ex("unsupported_call",
+                        "Native call runner does not support return-mode functions",
+                        fnName, NULL, NULL, NULL);
+    free(fnName);
+    return false;
   }
 
-  V2ResolvedSpiceCallArgs resolved;
+  V2ResolvedCallArgs resolved;
   if (!v2_resolve_call_args(json,
                             tokens,
                             tokenCount,
@@ -379,17 +400,18 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
                             refs,
                             *refCount,
                             spec,
+                            fnName,
                             &resolved)) {
-    free(callName);
+    free(fnName);
     free(asRefName);
     return false;
   }
 
-  V2SpiceCallInvokeContext invokeContext = {
+  V2CallInvokeContext invokeContext = {
       .json = json,
       .tokens = tokens,
       .tokenCount = tokenCount,
-      .callName = callName,
+      .fnName = fnName,
       .spec = spec,
       .asRefName = asRefName,
       .outMapTok = outMapTok,
@@ -398,10 +420,10 @@ bool v2_execute_spice_call_step(const char *json, const jsmntok_t *tokens,
       .refCount = refCount,
   };
 
-  bool ok = v2_invoke_spice_call(&invokeContext);
+  bool ok = v2_invoke_call(&invokeContext);
 
   v2_free_resolved_args(&resolved);
-  free(callName);
+  free(fnName);
   free(asRefName);
   return ok;
 }

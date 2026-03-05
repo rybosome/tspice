@@ -15,9 +15,9 @@ contract:
         const: true
 workflow:
   steps:
-    - op: spiceCall
-      call: dskopn_c
+    - op: call
       in: []
+      fn: file-io.dskopn
     - op: projectResult
       out:
         opened: true

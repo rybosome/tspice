@@ -15,9 +15,9 @@ contract:
         const: true
 workflow:
   steps:
-    - op: spiceCall
-      call: dskmi2_c
+    - op: call
       in: []
+      fn: file-io.dskmi2
     - op: projectResult
       out:
         computedSpatialIndex: true

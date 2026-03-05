@@ -115,7 +115,7 @@ export type MethodContractV3 = {
   canonicalMethod: string;
   aliases?: string[];
   args?: MethodArgSpecV3[];
-  /** Optional for callContract-centric migrated specs. */
+  /** Optional for methods that return scalar or ad-hoc object values. */
   result?: MethodResultSpecV3;
   errors?: MethodErrorSpecV3[];
 };
@@ -143,24 +143,9 @@ export type MethodWorkflowOpAllocWindowV3 = {
   };
 };
 
-export type MethodWorkflowSpiceCallNameV3 =
-  | "card_c"
-  | "size_c"
-  | "scard_c"
-  | "ssize_c"
-  | "valid_c"
-  | "dskobj_c"
-  | "dsksrf_c"
-  | "dskgd_c"
-  | "dskb02_c"
-  | "dskmi2_c"
-  | "dskopn_c"
-  | "dskw02_c"
-  | "readVirtualOutput";
-
-export type MethodWorkflowOpSpiceCallV3 = {
-  op: "spiceCall";
-  call: MethodWorkflowSpiceCallNameV3;
+export type MethodWorkflowOpCallV3 = {
+  op: "call";
+  fn: string;
   in: unknown[];
   as?: string;
   out?: Record<string, string>;
@@ -192,11 +177,6 @@ export type MethodWorkflowOpDasCloseV3 = {
 export type MethodWorkflowOpUnlinkV3 = {
   op: "unlink";
   target: unknown;
-};
-
-export type MethodWorkflowOpCallContractV3 = {
-  op: "callContract";
-  call?: string;
 };
 
 export type MethodWorkflowOpScriptV3 = {
@@ -261,8 +241,7 @@ export type MethodWorkflowStepV3 =
   | MethodWorkflowOpDlaBeginForwardSearchV3
   | MethodWorkflowOpDasCloseV3
   | MethodWorkflowOpUnlinkV3
-  | MethodWorkflowOpSpiceCallV3
-  | MethodWorkflowOpCallContractV3
+  | MethodWorkflowOpCallV3
   | MethodWorkflowOpScriptV3
   | MethodWorkflowOpAssertV3
   | MethodWorkflowOpProjectV3
@@ -358,14 +337,12 @@ export type MethodErrorSpecV2 = MethodErrorSpecV3;
 export type MethodContractV2 = MethodContractV3;
 export type MethodWorkflowOpAllocCellV2 = MethodWorkflowOpAllocCellV3;
 export type MethodWorkflowOpAllocWindowV2 = MethodWorkflowOpAllocWindowV3;
-export type MethodWorkflowSpiceCallNameV2 = MethodWorkflowSpiceCallNameV3;
-export type MethodWorkflowOpSpiceCallV2 = MethodWorkflowOpSpiceCallV3;
+export type MethodWorkflowOpCallV2 = MethodWorkflowOpCallV3;
 export type MethodWorkflowOpMaterializeV2 = MethodWorkflowOpMaterializeV3;
 export type MethodWorkflowOpDasOpenV2 = MethodWorkflowOpDasOpenV3;
 export type MethodWorkflowOpDlaBeginForwardSearchV2 = MethodWorkflowOpDlaBeginForwardSearchV3;
 export type MethodWorkflowOpDasCloseV2 = MethodWorkflowOpDasCloseV3;
 export type MethodWorkflowOpUnlinkV2 = MethodWorkflowOpUnlinkV3;
-export type MethodWorkflowOpInvokeLegacyCallV2 = MethodWorkflowOpCallContractV3;
 export type MethodWorkflowOpScriptV2 = MethodWorkflowOpScriptV3;
 export type MethodWorkflowAssertOperatorV2 = MethodWorkflowAssertOperatorV3;
 export type MethodWorkflowAssertTestV2 = MethodWorkflowAssertTestV3;

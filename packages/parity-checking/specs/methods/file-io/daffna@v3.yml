@@ -14,7 +14,10 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.daffna
+      in:
+        - $args.0
 cases:
   - id: file-io.daffna.finds-first-array-in-spk
     args:

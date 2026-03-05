@@ -17,7 +17,7 @@ describe("schema validation (v3)", () => {
           canonicalMethod: "time.tkvrsn",
         },
         workflow: {
-          steps: [{ op: "callContract" }],
+          steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
         },
         cases: [
           {
@@ -29,7 +29,7 @@ describe("schema validation (v3)", () => {
     });
 
     expect(method.manifest.id).toBe("methods/time/spiceVersion@v3");
-    expect(method.workflow?.steps[0]?.op).toBe("callContract");
+    expect(method.workflow?.steps[0]?.op).toBe("call");
     expect(method.cases).toHaveLength(1);
   });
 
@@ -50,7 +50,7 @@ describe("schema validation (v3)", () => {
           {
             id: "default",
             workflow: {
-              steps: [{ op: "callContract" }],
+              steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
             },
             cases: [{ id: "ok", args: [] }],
           },
@@ -78,14 +78,14 @@ describe("schema validation (v3)", () => {
             canonicalMethod: "time.tkvrsn",
           },
           workflow: {
-            steps: [{ op: "callContract" }],
+            steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
           },
           cases: [{ id: "ok", args: [] }],
           suites: [
             {
               id: "dup",
               workflow: {
-                steps: [{ op: "callContract" }],
+                steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
               },
               cases: [{ id: "ok", args: [] }],
             },
@@ -144,7 +144,7 @@ describe("schema validation (v3)", () => {
             },
           },
           workflow: {
-            steps: [{ op: "callContract" }],
+            steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
           },
           cases: [{ id: "invalid", args: [] }],
         },
@@ -165,7 +165,7 @@ describe("schema validation (v3)", () => {
             canonicalMethod: "time.tkvrsn",
           },
           workflow: {
-            steps: [{ op: "callContract" }],
+            steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
           },
           cases: [
             {

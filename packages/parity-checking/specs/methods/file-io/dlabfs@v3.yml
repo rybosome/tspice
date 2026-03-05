@@ -14,7 +14,10 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.dlabfs
+      in:
+        - $args.0
 cases:
   - id: file-io.dlabfs.find-first-segment-in-dsk
     args:

@@ -11,7 +11,11 @@ contract:
     properties: {}
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: cells-windows.insrtd
+      in:
+        - $args.0
+        - $args.1
 cases:
   - id: cells-windows.insrtd.basic
     args:

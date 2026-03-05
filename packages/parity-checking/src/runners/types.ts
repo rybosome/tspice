@@ -51,7 +51,7 @@ export type V3ContractSpec = {
   canonicalMethod: string;
   aliases?: string[];
   args?: V3ContractArgSpec[];
-  /** Optional for callContract-first specs migrated from v1. */
+  /** Optional for methods that return scalar or ad-hoc object values. */
   result?: V3ContractResultSpec;
   errors?: Array<{ code: string }>;
 };
@@ -79,24 +79,9 @@ export type V3WorkflowAllocWindowStep = {
   };
 };
 
-export type V3WorkflowSpiceCallName =
-  | "card_c"
-  | "size_c"
-  | "scard_c"
-  | "ssize_c"
-  | "valid_c"
-  | "dskobj_c"
-  | "dsksrf_c"
-  | "dskgd_c"
-  | "dskb02_c"
-  | "dskmi2_c"
-  | "dskopn_c"
-  | "dskw02_c"
-  | "readVirtualOutput";
-
-export type V3WorkflowSpiceCallStep = {
-  op: "spiceCall";
-  call: V3WorkflowSpiceCallName;
+export type V3WorkflowCallStep = {
+  op: "call";
+  fn: string;
   in: unknown[];
   as?: string;
   out?: Record<string, string>;
@@ -130,11 +115,6 @@ export type V3WorkflowDasCloseStep = {
 export type V3WorkflowUnlinkStep = {
   op: "unlink";
   target: unknown;
-};
-
-export type V3WorkflowCallContractStep = {
-  op: "callContract";
-  call?: string;
 };
 
 export type V3WorkflowScriptStep = {
@@ -199,8 +179,7 @@ export type V3WorkflowStep =
   | V3WorkflowDlaBeginForwardSearchStep
   | V3WorkflowDasCloseStep
   | V3WorkflowUnlinkStep
-  | V3WorkflowSpiceCallStep
-  | V3WorkflowCallContractStep
+  | V3WorkflowCallStep
   | V3WorkflowScriptStep
   | V3WorkflowAssertStep
   | V3WorkflowProjectStep
@@ -236,15 +215,13 @@ export type V2ContractResultSpec = V3ContractResultSpec;
 export type V2ContractSpec = V3ContractSpec;
 export type V2WorkflowAllocCellStep = V3WorkflowAllocCellStep;
 export type V2WorkflowAllocWindowStep = V3WorkflowAllocWindowStep;
-export type V2WorkflowSpiceCallName = V3WorkflowSpiceCallName;
-export type V2WorkflowSpiceCallStep = V3WorkflowSpiceCallStep;
+export type V2WorkflowCallStep = V3WorkflowCallStep;
 export type V2WorkflowMaterializeFixture = V3WorkflowMaterializeFixture;
 export type V2WorkflowMaterializeStep = V3WorkflowMaterializeStep;
 export type V2WorkflowDasOpenStep = V3WorkflowDasOpenStep;
 export type V2WorkflowDlaBeginForwardSearchStep = V3WorkflowDlaBeginForwardSearchStep;
 export type V2WorkflowDasCloseStep = V3WorkflowDasCloseStep;
 export type V2WorkflowUnlinkStep = V3WorkflowUnlinkStep;
-export type V2WorkflowInvokeLegacyCallStep = V3WorkflowCallContractStep;
 export type V2WorkflowScriptStep = V3WorkflowScriptStep;
 export type V2WorkflowAssertOperator = V3WorkflowAssertOperator;
 export type V2WorkflowAssertTest = V3WorkflowAssertTest;

@@ -30,7 +30,7 @@ function buildMethod(resultSchema: MethodSpecV2["contract"]["result"]): MethodSp
       errors: [],
     },
     workflow: {
-      steps: [{ op: "callContract" }],
+      steps: [{ op: "call", fn: "cells-windows.cellGeti", in: ["$args.0", "$args.1"] }],
     },
     cases: [
       {
@@ -46,7 +46,7 @@ function buildMethod(resultSchema: MethodSpecV2["contract"]["result"]): MethodSp
 }
 
 describe("executeMethodSpecParityV2 contract.result validation", () => {
-  it("validates callContract success results against v2 contract.result const", async () => {
+  it("validates call success results against v2 contract.result const", async () => {
     const method = buildMethod({ const: 2 });
     const runner = new StubRunner({ ok: true, result: 999 });
 

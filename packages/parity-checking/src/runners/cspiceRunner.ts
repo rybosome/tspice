@@ -1,26 +1,17 @@
 import * as path from "node:path";
 import * as fs from "node:fs";
 import { spawn } from "node:child_process";
-import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-
-import type { Spice, SpiceBackend } from "@rybosome/tspice";
-
-import {
-  resolveMetaKernelKernelsToLoad,
-  sanitizeMetaKernelTextForNativeNoKernels,
-} from "../kernels/metaKernel.js";
 
 import type {
   CaseRunner,
-  KernelEntry,
   RunCaseInput,
   RunCaseInputV3,
   RunCaseResult,
   RunnerErrorReport,
   SpiceErrorState,
 } from "./types.js";
-import { executeV2CaseWithBackend, validateV2CasePreflight } from "./v2Executor.js";
+import { validateV2CasePreflight } from "./v2Executor.js";
 
 export type CspiceRunnerBuildState = {
   available: boolean;
@@ -464,147 +455,15 @@ function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
   return typeof input === "object" && input !== null && "schemaVersion" in input;
 }
 
-function isSingleCallContractWorkflow(input: RunCaseInputV3): boolean {
-  return input.workflow.steps.length === 1 && input.workflow.steps[0]?.op === "callContract";
-}
-
-function isolateFastPathCase(raw: SpiceBackend["raw"]): void {
-  try {
-    raw.kclear();
-  } catch {
-    // best effort
-  }
-
-  try {
-    raw.reset();
-  } catch {
-    // best effort
-  }
-}
-
-function normalizeKernelEntry(entry: KernelEntry): { path: string; restrictToDir?: string } {
-  return typeof entry === "string" ? { path: entry } : entry;
-}
-
-async function furnshOsKernelForNativeFastPath(
-  raw: SpiceBackend["raw"],
-  osPath: string,
-  loaded: Set<string>,
-  restrictToDir?: string,
-): Promise<void> {
-  const absPath = path.resolve(osPath);
-
-  // Native can load via OS-path or via bytes (sanitized meta-kernel). Keep those
-  // distinct so we don't incorrectly dedupe across modes.
-  const mode = restrictToDir && path.extname(absPath).toLowerCase() === ".tm" ? "bytes" : "ospath";
-  const loadedKey = `${mode}:${absPath}`;
-  if (loaded.has(loadedKey)) return;
-  loaded.add(loadedKey);
-
-  if (restrictToDir && path.extname(absPath).toLowerCase() === ".tm") {
-    const metaKernelText = await readFile(absPath, "utf8");
-
-    const kernelsToLoad = resolveMetaKernelKernelsToLoad(metaKernelText, absPath, { restrictToDir });
-
-    const sanitized = sanitizeMetaKernelTextForNativeNoKernels(metaKernelText);
-    raw.furnsh({ path: absPath, bytes: Buffer.from(sanitized, "utf8") });
-
-    for (const k of kernelsToLoad) {
-      await furnshOsKernelForNativeFastPath(raw, k, loaded, restrictToDir);
-    }
-    return;
-  }
-
-  raw.furnsh(absPath);
-}
-
-async function applyFastPathSetup(raw: SpiceBackend["raw"], kernels: KernelEntry[]): Promise<void> {
-  const loaded = new Set<string>();
-  for (const kernelEntry of kernels) {
-    const kernel = normalizeKernelEntry(kernelEntry);
-    await furnshOsKernelForNativeFastPath(raw, kernel.path, loaded, kernel.restrictToDir);
-  }
-}
-
-function toBackendContract(spice: Spice): SpiceBackend {
-  return {
-    raw: spice.raw as unknown as SpiceBackend["raw"],
-    kit: spice.kit,
-    kind: spice.raw.kind,
-  };
-}
-
-async function loadNodeBackendForCallContract(): Promise<SpiceBackend> {
-  const { spiceClients } = await import("@rybosome/tspice");
-  const { spice } = await spiceClients.toSync({ backend: "node" });
-  return toBackendContract(spice);
-}
-
 /** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
 export async function createCspiceRunner(): Promise<CaseRunner> {
   const binaryPath = getCspiceRunnerBinaryPath();
-  let callContractBackend: SpiceBackend | undefined;
-  let callContractBackendPromise: Promise<SpiceBackend> | undefined;
-
-  const getCallContractBackend = async (): Promise<SpiceBackend> => {
-    if (callContractBackend) {
-      return callContractBackend;
-    }
-
-    if (!callContractBackendPromise) {
-      callContractBackendPromise = loadNodeBackendForCallContract();
-    }
-
-    callContractBackend = await callContractBackendPromise;
-    return callContractBackend;
-  };
-
-  const disposeCallContractBackend = async (): Promise<void> => {
-    if (!callContractBackend) {
-      return;
-    }
-
-    const backend = callContractBackend;
-    callContractBackend = undefined;
-    callContractBackendPromise = undefined;
-
-    try {
-      backend.raw.kclear();
-    } catch {
-      // best effort
-    }
-
-    try {
-      backend.raw.reset();
-    } catch {
-      // best effort
-    }
-
-    try {
-      (backend.raw as unknown as { close?: () => void }).close?.();
-    } catch {
-      // best effort
-    }
-  };
 
   return {
     kind: "cspice(raw)",
 
     async runCase(input: RunCaseInput): Promise<RunCaseResult> {
       try {
-        if (isRunCaseInputV3(input) && input.schemaVersion === 3 && isSingleCallContractWorkflow(input)) {
-          const backend = await getCallContractBackend();
-          isolateFastPathCase(backend.raw);
-
-          try {
-            await applyFastPathSetup(backend.raw, input.setup?.kernels ?? []);
-            const result = await executeV2CaseWithBackend(backend, input);
-            return { ok: true, result };
-          } finally {
-            isolateFastPathCase(backend.raw);
-          }
-        }
-
         if (!fs.existsSync(binaryPath)) {
           return {
             ok: false,
@@ -637,8 +496,6 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
       }
     },
 
-    async dispose(): Promise<void> {
-      await disposeCallContractBackend();
-    },
+    async dispose(): Promise<void> {},
   };
 }

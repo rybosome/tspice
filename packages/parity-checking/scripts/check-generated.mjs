@@ -14,6 +14,9 @@ const generatedFiles = [
   "packages/parity-checking/catalogs/alias-map.json",
   "packages/parity-checking/catalogs/parity-denylist.json",
   "packages/parity-checking/catalogs/parity-denylist.ts",
+  "packages/parity-checking/src/generated/functionRegistry.ts",
+  "packages/parity-checking/native/src/generated/function_registry.h",
+  "packages/parity-checking/native/src/generated/function_registry.c",
 ];
 
 function run(command, args, options = {}) {
@@ -51,6 +54,7 @@ function resolveRepoRoot(startCwd) {
 const repoRoot = resolveRepoRoot(packageRoot);
 
 run(pnpmCmd, ["run", "generate:catalogs"], { cwd: packageRoot });
+run(pnpmCmd, ["run", "generate:function-registry"], { cwd: packageRoot });
 
 const missingGeneratedFiles = generatedFiles.filter(
   (relativePath) => !fs.existsSync(path.join(repoRoot, relativePath)),

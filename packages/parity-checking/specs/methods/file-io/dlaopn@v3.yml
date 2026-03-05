@@ -14,7 +14,13 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.dlaopn
+      in:
+        - $args.0
+        - $args.1
+        - $args.2
+        - $args.3
 cases:
   - id: file-io.dlaopn.create-dla-writer
     args:

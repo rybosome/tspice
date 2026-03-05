@@ -112,7 +112,7 @@ describe("v3 runner preflight parity", () => {
     }
   });
 
-  maybeIt("executes callContract via v3 workflow path in cspice runner", async () => {
+  maybeIt("executes call via v3 workflow path in cspice runner", async () => {
     const cspice = await createCspiceRunner();
 
     const input: RunCaseInputV2 = {
@@ -133,7 +133,7 @@ describe("v3 runner preflight parity", () => {
       },
       args: ["TOOLKIT"],
       workflow: {
-        steps: [{ op: "callContract" }],
+        steps: [{ op: "call", fn: "time.tkvrsn", in: ["$args.0"] }],
       },
     };
 

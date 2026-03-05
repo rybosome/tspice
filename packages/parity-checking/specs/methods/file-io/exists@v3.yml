@@ -13,7 +13,10 @@ contract:
     - code: invalid_args
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.exists
+      in:
+        - $args.0
 cases:
   - id: file-io.exists.present-file
     args:

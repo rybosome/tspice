@@ -7,7 +7,10 @@ contract:
   canonicalMethod: kernels.unload
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernels.unload
+      in:
+        - $args.0
 cases:
   - id: kernels.unload.text-kernel
     args:

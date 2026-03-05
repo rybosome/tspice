@@ -15,9 +15,9 @@ contract:
         const: true
 workflow:
   steps:
-    - op: spiceCall
-      call: dskw02_c
+    - op: call
       in: []
+      fn: file-io.dskw02
     - op: projectResult
       out:
         written: true

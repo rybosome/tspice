@@ -20,6 +20,8 @@ vi.mock("@rybosome/tspice", () => ({
 import { createTspiceRunner } from "../../src/runners/tspiceRunner.js";
 
 function createInput(method: string, args: unknown[]): RunCaseInputV2 {
+  const inRefs = args.map((_, index) => `$args.${index}`);
+
   return {
     schemaVersion: 3,
     manifest: {
@@ -35,7 +37,7 @@ function createInput(method: string, args: unknown[]): RunCaseInputV2 {
     },
     args,
     workflow: {
-      steps: [{ op: "callContract" }],
+      steps: [{ op: "call", fn: method, in: inRefs }],
     },
   };
 }

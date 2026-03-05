@@ -12,7 +12,6 @@ import {
 } from "../kernels/metaKernel.js";
 
 import { spiceShortSymbol } from "../errors/spiceShort.js";
-import { lowerV3CallContract } from "./legacyInvoke.js";
 import { executeV2CaseWithBackend } from "./v2Executor.js";
 
 import type {
@@ -76,6 +75,42 @@ function unsupportedCall(message: string, details?: RunnerErrorReport["details"]
 
 function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
   return typeof input === "object" && input !== null && "schemaVersion" in input;
+}
+
+type LoweredV3PositionalCall = {
+  call: string;
+  args: unknown[];
+};
+
+function lowerV3PositionalCall(
+  input: RunCaseInputV3,
+  context: {
+    invalidRequest: (message: string) => never;
+    invalidArgs: (message: string) => never;
+  },
+): LoweredV3PositionalCall | null {
+  if (input.workflow.steps.length !== 1 || input.workflow.steps[0]?.op !== "call") {
+    return null;
+  }
+
+  if ((input.workflow.cleanup?.length ?? 0) > 0) {
+    context.invalidRequest("v3 single-step call workflow must not define cleanup steps");
+  }
+
+  if (!Array.isArray(input.args)) {
+    context.invalidArgs(`v3 call expects case args to be an array (got ${formatValue(input.args)})`);
+  }
+
+  const step = input.workflow.steps[0];
+  const call = typeof step.fn === "string" ? step.fn.trim() : "";
+  if (call.length === 0) {
+    context.invalidRequest("v3 call requires a non-empty fn");
+  }
+
+  return {
+    call,
+    args: input.args,
+  };
 }
 
 /** Assert that a value is a finite integer (used for runner argument validation). */
@@ -2283,17 +2318,18 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
         }
 
         if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
-          const legacyInput = lowerV3CallContract(input, {
+          const loweredCall = lowerV3PositionalCall(input, {
             invalidRequest,
             invalidArgs,
           });
-          if (legacyInput !== null) {
-            const fn = DISPATCH[legacyInput.call];
+
+          if (loweredCall !== null) {
+            const fn = DISPATCH[loweredCall.call];
             if (!fn) {
-              unsupportedCall("Unsupported call", { call: legacyInput.call });
+              unsupportedCall("Unsupported call", { call: loweredCall.call });
             }
 
-            const result = await fn(backend.raw, legacyInput.args, backend.kit, backend.kind);
+            const result = await fn(backend.raw, loweredCall.args, backend.kit, backend.kind);
             return { ok: true, result };
           }
 
