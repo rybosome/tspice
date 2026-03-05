@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import { executeCrossCuttingSpec } from "../../src/engine/executeCrossCuttingSpec.js";
-import { discoverCrossCuttingSpecs } from "../../src/dsl/discoverCrossCuttingSpecs.js";
+import { discoverYamlFiles } from "../../src/dsl/discoverYamlFiles.js";
 import { loadYamlFile } from "../../src/dsl/loadYaml.js";
 import { parseCrossCuttingSpec } from "../../src/dsl/schemaValidate.js";
 import { getCspiceRunnerStatus } from "../../src/runners/cspiceRunner.js";
@@ -15,7 +15,7 @@ describe("cross-cutting spec discovery and execution", () => {
     const testDir = path.dirname(fileURLToPath(import.meta.url));
     const rootDir = path.resolve(testDir, "../../specs/cross-cutting");
 
-    const files = discoverCrossCuttingSpecs(rootDir);
+    const files = discoverYamlFiles(rootDir);
     expect(files.length).toBeGreaterThan(0);
 
     let executedCases = 0;

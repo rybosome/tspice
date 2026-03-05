@@ -7,10 +7,10 @@ export type {
   WorkflowSpec,
 } from "./dsl/types.js";
 
-export { loadScenarioYamlFile } from "./dsl/load.js";
 export { parseScenario } from "./dsl/parse.js";
 export { executeScenario } from "./dsl/execute.js";
 
+export { discoverYamlFiles } from "./dsl/discoverYamlFiles.js";
 export { loadYamlFile } from "./dsl/loadYaml.js";
 export { parseMethodSpec, parseWorkflowSpec, parseCrossCuttingSpec } from "./dsl/schemaValidate.js";
 export { buildWorkflowIndex } from "./dsl/buildWorkflowIndex.js";

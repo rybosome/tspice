@@ -1,9 +1,9 @@
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { discoverCrossCuttingSpecs, discoverYamlFiles } from "../dsl/discoverCrossCuttingSpecs.js";
+import { discoverYamlFiles } from "../dsl/discoverYamlFiles.js";
 import { loadYamlFile } from "../dsl/loadYaml.js";
-import { parseCrossCuttingSpecAny, parseMethodSpecAny } from "../dsl/schemaValidate.js";
+import { parseCrossCuttingSpec, parseMethodSpec } from "../dsl/schemaValidate.js";
 import { runDispatchAliasParityGuard } from "./dispatchParityGuard.js";
 import { executeCrossCuttingSpec } from "./executeCrossCuttingSpec.js";
 import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
@@ -31,15 +31,15 @@ async function loadParitySpecs(): Promise<LoadedParitySpecs> {
   const root = packageRoot();
 
   const methodFiles = discoverYamlFiles(path.join(root, "specs", "methods"));
-  const crossCuttingFiles = discoverCrossCuttingSpecs(path.join(root, "specs", "cross-cutting"));
+  const crossCuttingFiles = discoverYamlFiles(path.join(root, "specs", "cross-cutting"));
 
   const methods = (
-    await Promise.all(methodFiles.map(async (filePath) => parseMethodSpecAny(await loadYamlFile(filePath))))
+    await Promise.all(methodFiles.map(async (filePath) => parseMethodSpec(await loadYamlFile(filePath))))
   ).sort((a, b) => stableSort(methodSpecId(a), methodSpecId(b)));
 
   const crossCutting = (
     await Promise.all(
-      crossCuttingFiles.map(async (filePath) => parseCrossCuttingSpecAny(await loadYamlFile(filePath))),
+      crossCuttingFiles.map(async (filePath) => parseCrossCuttingSpec(await loadYamlFile(filePath))),
     )
   ).sort((a, b) => stableSort(crossCuttingSpecId(a), crossCuttingSpecId(b)));
 

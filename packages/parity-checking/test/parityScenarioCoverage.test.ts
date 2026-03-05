@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { discoverYamlFiles } from "../src/dsl/discoverCrossCuttingSpecs.js";
+import { discoverYamlFiles } from "../src/dsl/discoverYamlFiles.js";
 import { loadYamlFile } from "../src/dsl/loadYaml.js";
 import { readParityDenylist } from "../src/generated/readParityDenylist.js";
 import { BASELINE_METHOD_SPEC_COVERAGE } from "../src/guards/completenessBaseline.js";

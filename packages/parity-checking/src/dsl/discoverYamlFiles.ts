@@ -32,8 +32,3 @@ export function discoverYamlFiles(rootDir: string): string[] {
   visit(rootDir);
   return out;
 }
-
-/** Discover cross-cutting spec YAML files in deterministic order. */
-export function discoverCrossCuttingSpecs(rootDir: string): string[] {
-  return discoverYamlFiles(rootDir);
-}

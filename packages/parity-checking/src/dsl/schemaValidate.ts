@@ -942,11 +942,6 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
   return method;
 }
 
-/** Backward-compatible method parser entry point for legacy call sites. */
-export function parseMethodSpecAny(file: ScenarioYamlFile): MethodSpecV3 {
-  return parseMethodSpec(file);
-}
-
 function parseCrossCuttingCaseExpectation(value: unknown, label: string): CrossCuttingCaseExpectation {
   const obj = asRecord(value, label);
   ensureKnownKeys(obj, ["ok", "errorCode"], label);
@@ -1005,11 +1000,3 @@ export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpecV
   };
 }
 
-/** Backward-compatible cross-cutting parser entry point for legacy call sites. */
-export function parseCrossCuttingSpecAny(file: ScenarioYamlFile): CrossCuttingSpecV3 {
-  return parseCrossCuttingSpec(file);
-}
-
-// Backward-compatible names referenced by older tests/importers.
-export const parseMethodSpecV2 = parseMethodSpec;
-export const parseCrossCuttingSpecV2 = parseCrossCuttingSpec;
