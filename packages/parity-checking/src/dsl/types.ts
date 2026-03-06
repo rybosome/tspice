@@ -312,7 +312,6 @@ export type AnyCrossCuttingSpec = CrossCuttingSpecV3;
 export type LoadedParitySpecs = {
   workflows: WorkflowSpec[];
   methods: AnyMethodSpec[];
-  crossCutting: AnyCrossCuttingSpec[];
 };
 
 export type ResolvedMethodSpec = {

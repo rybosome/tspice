@@ -14,7 +14,6 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
 
     expect(summary.workflowCount).toBe(0);
     expect(summary.methodCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
-    expect(summary.crossCuttingSpecCount).toBeGreaterThan(0);
     expect(summary.contractCount).toBe(162);
     expect(summary.coveredCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(summary.denylistCount).toBe(0);
@@ -25,12 +24,10 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
       expect(summary.skipped).toBe(true);
       expect(summary.skipReason).toMatch(/^cspice-runner unavailable:/);
       expect(summary.methodCaseCount).toBe(0);
-      expect(summary.crossCuttingCaseCount).toBe(0);
       return;
     }
 
     expect(summary.skipped).toBe(false);
     expect(summary.methodCaseCount).toBeGreaterThan(0);
-    expect(summary.crossCuttingCaseCount).toBeGreaterThan(0);
   });
 });

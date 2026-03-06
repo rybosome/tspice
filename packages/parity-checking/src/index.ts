@@ -19,7 +19,6 @@ export { mergeResolvedMethodSpec } from "./dsl/mergeResolvedSpec.js";
 
 export { runParityEngine } from "./engine/parityEngine.js";
 export { executeMethodSpecParity } from "./engine/executeMethodSpec.js";
-export { executeCrossCuttingSpec } from "./engine/executeCrossCuttingSpec.js";
 
 export type { CaseRunner, RunCaseInput, RunCaseResult, RunnerErrorReport } from "./runners/types.js";
 export { createTspiceRunner } from "./runners/tspiceRunner.js";
