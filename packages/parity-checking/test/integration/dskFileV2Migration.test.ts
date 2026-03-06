@@ -4,8 +4,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import { loadYamlFile } from "../../src/dsl/loadYaml.js";
-import { parseMethodSpecAny } from "../../src/dsl/schemaValidate.js";
-import { isMethodSpecV2 } from "../../src/dsl/types.js";
+import { parseMethodSpec } from "../../src/dsl/schemaValidate.js";
 import { executeMethodSpecParityV2 } from "../../src/engine/executeMethodSpecV2.js";
 import { createCspiceRunner, getCspiceRunnerStatus } from "../../src/runners/cspiceRunner.js";
 import { createTspiceRunner } from "../../src/runners/tspiceRunner.js";
@@ -27,12 +26,7 @@ function packageRoot(): string {
 
 async function loadMethodSpec(relativePath: string): Promise<MethodSpecV2> {
   const filePath = path.join(packageRoot(), relativePath);
-  const spec = parseMethodSpecAny(await loadYamlFile(filePath));
-  if (!isMethodSpecV2(spec)) {
-    throw new Error(`Expected v2 method spec at ${relativePath}`);
-  }
-
-  return spec;
+  return parseMethodSpec(await loadYamlFile(filePath));
 }
 
 async function withRunners<T>(

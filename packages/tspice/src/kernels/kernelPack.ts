@@ -99,8 +99,10 @@ function isAbsoluteUrl(url: string): boolean {
 
 function throwProtocolRelativeUrlError(opts: { label: string; url: string }): never {
   throw new Error(
-    `${opts.label}: protocol-relative URLs (\"//...\") are not supported in Node. ` +
-      `Node requires scheme-based URLs like \"https://...\". Got: ${opts.url}`,
+    `${opts.label}: invalid URL form. ` +
+      `Expected: scheme-based URLs like \"https://...\" or non-protocol-relative paths. ` +
+      `Got: ${opts.url}. ` +
+      `Hint: replace leading \"//\" with an explicit scheme.`,
   );
 }
 
@@ -137,8 +139,10 @@ export function resolveKernelUrl(
 
     if (rootRelativeKernelUrlBehavior === "error") {
       throw new Error(
-        `loadKernelPack(): root-relative kernel.url (${url}) cannot be combined with baseUrl (${normalizedBaseUrl}). ` +
-          `Either make the kernel URL relative, or set rootRelativeKernelUrlBehavior: \"bypassBaseUrl\" / \"applyBaseOrigin\".`,
+        `loadKernelPack(): incompatible root-relative kernel URL with current behavior. ` +
+          `Expected: relative kernel.url when rootRelativeKernelUrlBehavior=\"error\". ` +
+          `Got: kernel.url=${url}, baseUrl=${normalizedBaseUrl}. ` +
+          `Hint: use a relative kernel URL or set rootRelativeKernelUrlBehavior to \"bypassBaseUrl\" or \"applyBaseOrigin\".`,
       );
     }
 
@@ -162,7 +166,7 @@ export function resolveKernelUrl(
     // file-vs-directory behavior of `new URL(url, baseUrl)`.
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): absolute baseUrl must be directory-style (pathname must end with \"/\"): ${normalizedBaseUrl}`,
+        `loadKernelPack(): invalid absolute baseUrl. Expected: absolute baseUrl must be directory-style (pathname must end with \"/\"). Got: ${normalizedBaseUrl}. Hint: append a trailing slash to indicate directory semantics.`,
       );
     }
 
@@ -176,7 +180,7 @@ export function resolveKernelUrl(
     const base = new URL(normalizedBaseUrl, "https://tspice.invalid");
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): path-absolute baseUrl must be directory-style (pathname must end with \"/\"): ${normalizedBaseUrl}`,
+        `loadKernelPack(): invalid path-absolute baseUrl. Expected: path-absolute baseUrl pathname to end with \"/\". Got: ${normalizedBaseUrl}. Hint: use /myapp/ instead of /myapp.`,
       );
     }
 
@@ -188,7 +192,7 @@ export function resolveKernelUrl(
   // Treat the base as a directory prefix.
   if (!normalizedBaseUrl.endsWith("/")) {
     throw new Error(
-      `loadKernelPack(): baseUrl must be directory-style (end with \"/\"): ${normalizedBaseUrl}`,
+      `loadKernelPack(): invalid relative baseUrl. Expected: baseUrl to be directory-style (end with \"/\"). Got: ${normalizedBaseUrl}. Hint: use myapp/ instead of myapp.`,
     );
   }
 
@@ -198,7 +202,9 @@ export function resolveKernelUrl(
 async function fetchKernelBytes(fetchFn: FetchLike, url: string): Promise<Uint8Array> {
   const res = await fetchFn(url);
   if (!res.ok) {
-    throw new Error(`Failed to fetch kernel: ${url} (status=${res.status} ${res.statusText})`);
+    throw new Error(
+      `loadKernelPack(): failed to fetch kernel bytes. Expected: HTTP success response for ${url}. Got: status=${res.status} ${res.statusText}. Hint: verify URL, network access, and auth/CORS settings.`,
+    );
   }
 
   return new Uint8Array(await res.arrayBuffer());
@@ -221,7 +227,7 @@ export async function loadKernelPack(
   // Migration guard: `baseUrl` moved from load options to `pack.baseUrl`.
   if (opts && Object.prototype.hasOwnProperty.call(opts as unknown as object, "baseUrl")) {
     throw new Error(
-      "loadKernelPack(): opts.baseUrl has been removed; set pack.baseUrl instead (and pass the pack to spiceClients.withKernels(pack))",
+      "loadKernelPack(): deprecated option used. Expected: opts.baseUrl has been removed; set pack.baseUrl instead (and pass the pack to spiceClients.withKernels(pack)). Got: opts.baseUrl provided.",
     );
   }
 
@@ -230,7 +236,7 @@ export async function loadKernelPack(
 
   if (!fetchFn) {
     throw new Error(
-      "loadKernelPack(): `fetch` is not available. Provide a fetch implementation via opts.fetch (or via spiceClients.withFetch(fetch)), or set globalThis.fetch.",
+      "loadKernelPack(): fetch implementation missing. Expected: opts.fetch, spiceClients.withFetch(fetch), or globalThis.fetch. Got: undefined. Hint: inject a fetch function in non-browser or sandboxed runtimes.",
     );
   }
 
