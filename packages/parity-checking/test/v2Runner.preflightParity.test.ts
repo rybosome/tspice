@@ -147,6 +147,44 @@ describe("v3 runner preflight parity", () => {
     }
   });
 
+  maybeIt("rejects forbidden call output bindings in cspice runner", async () => {
+    const cspice = await createCspiceRunner();
+
+    const input = createBaseInput();
+    input.workflow.steps = [
+      {
+        op: "allocCell",
+        as: "cell",
+        params: { kind: "int", size: "$args.size" },
+      },
+      {
+        op: "call",
+        fn: "cells-windows.scard",
+        in: [0, "$refs.cell"],
+        out: {
+          ignored: "ignored",
+        },
+      } as unknown as RunCaseInputV2["workflow"]["steps"][number],
+      {
+        op: "projectResult",
+        out: { size: "$args.size" },
+      },
+    ];
+    input.workflow.cleanup = [{ op: "freeCell", target: "$refs.cell" }];
+
+    try {
+      const out = await cspice.runCase(input);
+      expect(out.ok).toBe(false);
+
+      if (!out.ok) {
+        expect(out.error.code).toBe("invalid_args");
+        expect(out.error.message).toContain("out");
+      }
+    } finally {
+      await cspice.dispose?.();
+    }
+  });
+
   maybeIt("executes call via v3 workflow path in cspice runner", async () => {
     const cspice = await createCspiceRunner();
 

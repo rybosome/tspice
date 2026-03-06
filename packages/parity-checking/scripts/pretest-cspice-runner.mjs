@@ -151,9 +151,18 @@ function listRunnerFiles(pkgRoot, ext) {
       const generatedAllowlist = new Set([
         `generated/function_registry${ext}`,
         ...(ext === ".h"
-          ? ["generated/native_call_dispatch.h", "generated/native_return_bindings.h"]
+          ? [
+              "generated/native_call_dispatch.h",
+              "generated/native_as_spice_int_bindings.h",
+              "generated/native_return_bindings.h",
+            ]
           : []),
-        ...(ext === ".c" ? ["generated/native_return_bindings.c"] : []),
+        ...(ext === ".c"
+          ? [
+              "generated/native_as_spice_int_bindings.c",
+              "generated/native_return_bindings.c",
+            ]
+          : []),
       ]);
 
       return generatedAllowlist.has(rel);

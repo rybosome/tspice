@@ -20,6 +20,10 @@ export type FunctionResultMode =
   | "return"
 ;
 
+export type OutputBindingPolicy =
+  | "forbidden"
+;
+
 export type FunctionRegistryEntry = {
   id: string;
   aliases: readonly string[];
@@ -34,7 +38,10 @@ export type FunctionRegistryEntry = {
   arity: number;
   argKinds: readonly FunctionArgKind[];
   nonNegativeIntArgMask?: number;
-  result: { mode: FunctionResultMode };
+  result: {
+    mode: FunctionResultMode;
+    outputBindingPolicy?: OutputBindingPolicy;
+  };
 };
 
 export const functionRegistry: readonly FunctionRegistryEntry[] = [
@@ -97,7 +104,10 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     arity: 2,
     argKinds: ["intExpr","cellOrWindowRef"],
     nonNegativeIntArgMask: 1,
-    result: { mode: "forbidden" },
+    result: {
+      mode: "forbidden",
+      outputBindingPolicy: "forbidden",
+    },
   },
   {
     id: "cells-windows.size",
@@ -122,7 +132,10 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     arity: 2,
     argKinds: ["intExpr","cellOrWindowRef"],
     nonNegativeIntArgMask: 1,
-    result: { mode: "forbidden" },
+    result: {
+      mode: "forbidden",
+      outputBindingPolicy: "forbidden",
+    },
   },
   {
     id: "cells-windows.valid",
@@ -135,7 +148,10 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     arity: 3,
     argKinds: ["intExpr","intExpr","cellOrWindowRef"],
     nonNegativeIntArgMask: 3,
-    result: { mode: "forbidden" },
+    result: {
+      mode: "forbidden",
+      outputBindingPolicy: "forbidden",
+    },
   },
   {
     id: "cells-windows.wncard",
@@ -459,7 +475,10 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     },
     arity: 2,
     argKinds: ["pathExpr","cellRef"],
-    result: { mode: "forbidden" },
+    result: {
+      mode: "forbidden",
+      outputBindingPolicy: "forbidden",
+    },
   },
   {
     id: "dsk.dsksrf",
@@ -471,7 +490,10 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     },
     arity: 3,
     argKinds: ["pathExpr","intExpr","cellRef"],
-    result: { mode: "forbidden" },
+    result: {
+      mode: "forbidden",
+      outputBindingPolicy: "forbidden",
+    },
   },
   {
     id: "ephemeris.spkez",

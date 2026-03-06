@@ -1,6 +1,7 @@
 #include "cspice_runner_json_emit.h"
 #include "cspice_runner_error.h"
 #include "cspice_runner_v2_call_invoke.h"
+#include "generated/native_as_spice_int_bindings.h"
 #include "generated/native_call_dispatch.h"
 #include "generated/native_return_bindings.h"
 
@@ -220,6 +221,8 @@ static char *v2_quote_json_string(const char *value) {
   return out;
 }
 
+// DSK-specific named-out whitelist lane intentionally remains bespoke for PR #582.
+// TODO(parity-struct-capture): replace with generated generic struct output mapping.
 static bool v2_try_resolve_named_dskb02_value(const char *name,
                                                SpiceInt nv,
                                                SpiceInt np,
@@ -342,30 +345,26 @@ static bool v2_emit_named_dskb02_outputs(const char *json,
 
 static bool v2_invoke_sig_cell_or_window_ref_to_as_spice_int(
     const V2CallInvokeContext *context) {
-  SpiceInt value = 0;
-  const char *symbol = NULL;
+  const V2NativeAsSpiceIntBindingEntry *binding =
+      v2_lookup_native_as_spice_int_binding(context->spec->id);
 
-  switch (context->spec->id) {
-  case V2_FUNCTION_ID_CELLS_WINDOWS_CARD:
-    symbol = "card_c";
-    value = card_c(&context->refs[context->resolved->refIndices[0]].cell);
-    break;
-  case V2_FUNCTION_ID_CELLS_WINDOWS_SIZE:
-    symbol = "size_c";
-    value = size_c(&context->refs[context->resolved->refIndices[0]].cell);
-    break;
-  default:
+  if (binding == NULL || binding->invokeFn == NULL || binding->cSymbol == NULL ||
+      strcmp(binding->cSymbol, context->spec->cSymbol) != 0) {
     write_error_json_ex("unsupported_call", "Unsupported v2 call",
                         context->fnName, NULL, NULL, NULL);
     return false;
   }
+
+  SpiceInt value =
+      binding->invokeFn(&context->refs[context->resolved->refIndices[0]].cell);
 
   if (failed_c() == SPICETRUE) {
     char msg[96];
     snprintf(msg,
              sizeof(msg),
              "SPICE error in %s",
-             symbol != NULL ? symbol : "generated call binding");
+             binding->cSymbol[0] != '\0' ? binding->cSymbol
+                                          : "generated call binding");
     return v2_write_spice_failure(msg);
   }
 
@@ -463,6 +462,7 @@ static bool v2_invoke_sig_path_expr_int_expr_cell_ref_to_forbidden(
 
 static bool v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor(
     const V2CallInvokeContext *context) {
+  // DSK descriptor projection remains isolated pending generic struct capture.
   if (context->spec->id != V2_FUNCTION_ID_DSK_DSKGD) {
     write_error_json_ex("unsupported_call", "Unsupported v2 call",
                         context->fnName, NULL, NULL, NULL);
@@ -487,6 +487,7 @@ static bool v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor
 
 static bool v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_out_named_dskb02(
     const V2CallInvokeContext *context) {
+  // Named DSK multi-out remains isolated/deferred; do not expand bespoke paths.
   if (context->spec->id != V2_FUNCTION_ID_DSK_DSKB02) {
     write_error_json_ex("unsupported_call", "Unsupported v2 call",
                         context->fnName, NULL, NULL, NULL);

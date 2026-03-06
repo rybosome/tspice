@@ -20,9 +20,12 @@ type FunctionResultMode =
   | "asDskDescriptor"
   | "outNamedDskb02";
 
+type OutputBindingPolicy = "forbidden";
+
 type NativeReturnBindingKind = "exprStringToJsonString";
 
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
+const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_sig_cell_or_window_ref_to_as_spice_int";
 
 const NATIVE_INVOKER_NAME_REGEX = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
@@ -42,6 +45,7 @@ type FunctionRegistryEntry = {
   nonNegativeIntArgMask?: number;
   result: {
     mode: FunctionResultMode;
+    outputBindingPolicy?: OutputBindingPolicy;
   };
 };
 
@@ -69,6 +73,7 @@ const ALLOWED_RESULT_MODES: ReadonlySet<string> = new Set([
 ]);
 
 const ALLOWED_RETURN_BINDING_KINDS: ReadonlySet<string> = new Set(["exprStringToJsonString"]);
+const ALLOWED_OUTPUT_BINDING_POLICIES: ReadonlySet<string> = new Set(["forbidden"]);
 
 const ARG_KIND_ENUM: Record<FunctionArgKind, string> = {
   expr: "V2_FUNCTION_ARG_EXPR",
@@ -86,6 +91,11 @@ const RESULT_MODE_ENUM: Record<FunctionResultMode, string> = {
   asSpiceInt: "V2_FUNCTION_RESULT_AS_SPICE_INT",
   asDskDescriptor: "V2_FUNCTION_RESULT_AS_DSK_DESCRIPTOR",
   outNamedDskb02: "V2_FUNCTION_RESULT_OUT_NAMED_DSKB02",
+};
+
+const OUTPUT_BINDING_POLICY_ENUM: Record<OutputBindingPolicy | "none", string> = {
+  none: "V2_FUNCTION_OUTPUT_BINDING_POLICY_NONE",
+  forbidden: "V2_FUNCTION_OUTPUT_BINDING_POLICY_FORBIDDEN",
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -219,6 +229,19 @@ function parseRegistryEntry(raw: unknown, label: string): FunctionRegistryEntry 
     throw new TypeError(`${label}.result.mode must be one of: ${[...ALLOWED_RESULT_MODES].join(", ")}`);
   }
 
+  let outputBindingPolicy: OutputBindingPolicy | undefined;
+  const outputBindingPolicyRaw = resultRaw.outputBindingPolicy;
+  if (outputBindingPolicyRaw !== undefined) {
+    const policy = asString(outputBindingPolicyRaw, `${label}.result.outputBindingPolicy`);
+    if (!ALLOWED_OUTPUT_BINDING_POLICIES.has(policy)) {
+      throw new TypeError(
+        `${label}.result.outputBindingPolicy must be one of: ${[...ALLOWED_OUTPUT_BINDING_POLICIES].join(", ")}`,
+      );
+    }
+
+    outputBindingPolicy = policy as OutputBindingPolicy;
+  }
+
   return {
     id,
     aliases,
@@ -233,6 +256,7 @@ function parseRegistryEntry(raw: unknown, label: string): FunctionRegistryEntry 
     ...(nonNegativeIntArgMask === undefined ? {} : { nonNegativeIntArgMask }),
     result: {
       mode: mode as FunctionResultMode,
+      ...(outputBindingPolicy ? { outputBindingPolicy } : {}),
     },
   };
 }
@@ -382,6 +406,47 @@ function validateRegistry(
       );
     }
 
+    if (entry.result.mode === "forbidden" && entry.result.outputBindingPolicy !== "forbidden") {
+      throw new Error(
+        `Function ${entry.id} uses result.mode=forbidden but result.outputBindingPolicy is ${entry.result.outputBindingPolicy ?? "<unset>"}; expected forbidden`,
+      );
+    }
+
+    if (entry.result.outputBindingPolicy && entry.result.mode !== "forbidden") {
+      throw new Error(
+        `Function ${entry.id} defines result.outputBindingPolicy=${entry.result.outputBindingPolicy} but result.mode is ${entry.result.mode}; expected forbidden`,
+      );
+    }
+
+    if (entry.result.mode === "asSpiceInt") {
+      if (entry.impl.nativeInvoker !== SHARED_AS_SPICE_INT_NATIVE_INVOKER) {
+        throw new Error(
+          `Function ${entry.id} uses result.mode=asSpiceInt but nativeInvoker is ${entry.impl.nativeInvoker}; expected ${SHARED_AS_SPICE_INT_NATIVE_INVOKER}`,
+        );
+      }
+
+      if (entry.arity !== 1 || entry.argKinds[0] !== "cellOrWindowRef") {
+        throw new Error(
+          `Function ${entry.id} uses result.mode=asSpiceInt but signature is not (cellOrWindowRef)->asSpiceInt`,
+        );
+      }
+
+      if (!entry.impl.cSymbol.endsWith("_c")) {
+        throw new Error(
+          `Function ${entry.id} uses result.mode=asSpiceInt but cSymbol=${entry.impl.cSymbol} is not a *_c symbol`,
+        );
+      }
+    }
+
+    if (
+      entry.impl.nativeInvoker === SHARED_AS_SPICE_INT_NATIVE_INVOKER &&
+      entry.result.mode !== "asSpiceInt"
+    ) {
+      throw new Error(
+        `Function ${entry.id} uses nativeInvoker=${SHARED_AS_SPICE_INT_NATIVE_INVOKER} but result.mode is ${entry.result.mode}; expected asSpiceInt`,
+      );
+    }
+
     return {
       ...entry,
       aliases,
@@ -422,6 +487,13 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push(";");
   lines.push("");
 
+  lines.push("export type OutputBindingPolicy =");
+  for (const policy of [...ALLOWED_OUTPUT_BINDING_POLICIES].sort()) {
+    lines.push(`  | \"${policy}\"`);
+  }
+  lines.push(";");
+  lines.push("");
+
   lines.push("export type FunctionRegistryEntry = {");
   lines.push("  id: string;");
   lines.push("  aliases: readonly string[];");
@@ -436,7 +508,10 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("  arity: number;");
   lines.push("  argKinds: readonly FunctionArgKind[];");
   lines.push("  nonNegativeIntArgMask?: number;");
-  lines.push("  result: { mode: FunctionResultMode };");
+  lines.push("  result: {");
+  lines.push("    mode: FunctionResultMode;");
+  lines.push("    outputBindingPolicy?: OutputBindingPolicy;");
+  lines.push("  };");
   lines.push("};");
   lines.push("");
 
@@ -460,7 +535,14 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
     if (entry.nonNegativeIntArgMask !== undefined) {
       lines.push(`    nonNegativeIntArgMask: ${entry.nonNegativeIntArgMask},`);
     }
-    lines.push(`    result: { mode: ${JSON.stringify(entry.result.mode)} },`);
+    if (entry.result.outputBindingPolicy) {
+      lines.push("    result: {");
+      lines.push(`      mode: ${JSON.stringify(entry.result.mode)},`);
+      lines.push(`      outputBindingPolicy: ${JSON.stringify(entry.result.outputBindingPolicy)},`);
+      lines.push("    },");
+    } else {
+      lines.push(`    result: { mode: ${JSON.stringify(entry.result.mode)} },`);
+    }
     lines.push("  },");
   }
   lines.push("];");
@@ -526,6 +608,11 @@ function renderCH(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("} V2FunctionResultMode;");
   lines.push("");
   lines.push("typedef enum {");
+  lines.push("  V2_FUNCTION_OUTPUT_BINDING_POLICY_NONE = 0,");
+  lines.push("  V2_FUNCTION_OUTPUT_BINDING_POLICY_FORBIDDEN,");
+  lines.push("} V2FunctionOutputBindingPolicy;");
+  lines.push("");
+  lines.push("typedef enum {");
   lines.push(...idEnumRows);
   lines.push("} V2FunctionId;");
   lines.push("");
@@ -538,6 +625,7 @@ function renderCH(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("  V2FunctionArgKind argKinds[V2_FUNCTION_MAX_ARITY];");
   lines.push("  unsigned int nonNegativeIntArgMask;");
   lines.push("  V2FunctionResultMode resultMode;");
+  lines.push("  V2FunctionOutputBindingPolicy outputBindingPolicy;");
   lines.push("  const char *contractMethod;");
   lines.push("  const char *cSymbol;");
   lines.push("} V2FunctionSpec;");
@@ -588,6 +676,7 @@ function renderCC(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
     lines.push(`    { ${argKinds.join(", ")} },`);
     lines.push(`    ${entry.nonNegativeIntArgMask ?? 0}u,`);
     lines.push(`    ${RESULT_MODE_ENUM[entry.result.mode]},`);
+    lines.push(`    ${OUTPUT_BINDING_POLICY_ENUM[entry.result.outputBindingPolicy ?? "none"]},`);
     lines.push(`    ${JSON.stringify(entry.impl.contractMethod)},`);
     lines.push(`    ${JSON.stringify(entry.impl.cSymbol)},`);
     lines.push("  },");
@@ -629,6 +718,178 @@ function renderCC(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("    const V2FunctionNameMapEntry entry = V2_FUNCTION_NAME_MAP[i];");
   lines.push("    if (strcmp(fn, entry.name) == 0) {");
   lines.push("      return &V2_FUNCTION_SPECS[entry.specIndex];");
+  lines.push("    }");
+  lines.push("  }");
+  lines.push("");
+  lines.push("  return NULL;");
+  lines.push("}");
+  lines.push("");
+
+  return `${lines.join("\n")}\n`;
+}
+
+type GeneratedNativeAsSpiceIntBindingKind = "cellOrWindowRefToSpiceInt";
+
+type GeneratedNativeAsSpiceIntBindingEntry = {
+  id: string;
+  enumId: string;
+  cSymbol: string;
+  backendMethod: string;
+  kind: GeneratedNativeAsSpiceIntBindingKind;
+};
+
+const NATIVE_AS_SPICE_INT_BINDING_KIND_C: Record<GeneratedNativeAsSpiceIntBindingKind, string> = {
+  cellOrWindowRefToSpiceInt: "V2_NATIVE_AS_SPICE_INT_BINDING_CELL_OR_WINDOW_REF_TO_SPICE_INT",
+};
+
+function toBackendMethodFromCSymbol(cSymbol: string, id: string): string {
+  if (!cSymbol.endsWith("_c")) {
+    throw new Error(`Function ${id} has non-*_c symbol for asSpiceInt binding: ${cSymbol}`);
+  }
+
+  const backendMethod = cSymbol.slice(0, -2);
+  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(backendMethod)) {
+    throw new Error(`Function ${id} has invalid backend method derived from ${cSymbol}: ${backendMethod}`);
+  }
+
+  return backendMethod;
+}
+
+function collectGeneratedNativeAsSpiceIntBindings(
+  entries: readonly FunctionRegistryEntry[],
+): GeneratedNativeAsSpiceIntBindingEntry[] {
+  return entries
+    .filter(
+      (entry) =>
+        entry.result.mode === "asSpiceInt" &&
+        entry.impl.nativeInvoker === SHARED_AS_SPICE_INT_NATIVE_INVOKER,
+    )
+    .map((entry) => ({
+      id: entry.id,
+      enumId: `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`,
+      cSymbol: entry.impl.cSymbol,
+      backendMethod: toBackendMethodFromCSymbol(entry.impl.cSymbol, entry.id),
+      kind: "cellOrWindowRefToSpiceInt",
+    }));
+}
+
+function renderTsNativeAsSpiceIntBindings(
+  entries: readonly GeneratedNativeAsSpiceIntBindingEntry[],
+  sourceRelPath: string,
+): string {
+  const lines: string[] = [];
+  lines.push("/* eslint-disable */");
+  lines.push("// GENERATED FILE - DO NOT EDIT.");
+  lines.push(`// Source: ${sourceRelPath}`);
+  lines.push("");
+  lines.push("export type NativeAsSpiceIntBindingKind =");
+  lines.push('  | "cellOrWindowRefToSpiceInt"');
+  lines.push(";");
+  lines.push("");
+  lines.push("export type NativeAsSpiceIntBindingEntry = {");
+  lines.push("  id: string;");
+  lines.push("  enumId: string;");
+  lines.push("  cSymbol: string;");
+  lines.push("  backendMethod: string;");
+  lines.push("  kind: NativeAsSpiceIntBindingKind;");
+  lines.push("};");
+  lines.push("");
+  lines.push("export const nativeAsSpiceIntBindings: readonly NativeAsSpiceIntBindingEntry[] = [");
+
+  for (const entry of entries) {
+    lines.push("  {");
+    lines.push(`    id: ${JSON.stringify(entry.id)},`);
+    lines.push(`    enumId: ${JSON.stringify(entry.enumId)},`);
+    lines.push(`    cSymbol: ${JSON.stringify(entry.cSymbol)},`);
+    lines.push(`    backendMethod: ${JSON.stringify(entry.backendMethod)},`);
+    lines.push(`    kind: ${JSON.stringify(entry.kind)},`);
+    lines.push("  },");
+  }
+
+  lines.push("];");
+  lines.push("");
+  lines.push("const nativeAsSpiceIntBindingById = new Map<string, NativeAsSpiceIntBindingEntry>();");
+  lines.push("for (const entry of nativeAsSpiceIntBindings) {");
+  lines.push("  nativeAsSpiceIntBindingById.set(entry.id, entry);");
+  lines.push("}");
+  lines.push("");
+  lines.push(
+    "export function lookupNativeAsSpiceIntBindingEntry(fnId: string): NativeAsSpiceIntBindingEntry | undefined {",
+  );
+  lines.push("  return nativeAsSpiceIntBindingById.get(fnId);");
+  lines.push("}");
+  lines.push("");
+
+  return `${lines.join("\n")}\n`;
+}
+
+function renderNativeAsSpiceIntBindingsHeader(sourceRelPath: string): string {
+  const lines: string[] = [];
+  lines.push("#ifndef PARITY_CHECKING_GENERATED_NATIVE_AS_SPICE_INT_BINDINGS_H");
+  lines.push("#define PARITY_CHECKING_GENERATED_NATIVE_AS_SPICE_INT_BINDINGS_H");
+  lines.push("");
+  lines.push("// GENERATED FILE - DO NOT EDIT.");
+  lines.push(`// Source: ${sourceRelPath}`);
+  lines.push("");
+  lines.push("#include \"cspice_runner_common.h\"");
+  lines.push("#include \"generated/function_registry.h\"");
+  lines.push("");
+  lines.push("typedef enum {");
+  lines.push("  V2_NATIVE_AS_SPICE_INT_BINDING_CELL_OR_WINDOW_REF_TO_SPICE_INT = 0,");
+  lines.push("} V2NativeAsSpiceIntBindingKind;");
+  lines.push("");
+  lines.push("typedef SpiceInt (*V2NativeAsSpiceIntCellOrWindowRefToSpiceIntFn)(SpiceCell *cell);");
+  lines.push("");
+  lines.push("typedef struct {");
+  lines.push("  V2FunctionId fnId;");
+  lines.push("  const char *fnIdText;");
+  lines.push("  const char *cSymbol;");
+  lines.push("  V2NativeAsSpiceIntBindingKind kind;");
+  lines.push("  V2NativeAsSpiceIntCellOrWindowRefToSpiceIntFn invokeFn;");
+  lines.push("} V2NativeAsSpiceIntBindingEntry;");
+  lines.push("");
+  lines.push("const V2NativeAsSpiceIntBindingEntry *v2_lookup_native_as_spice_int_binding(V2FunctionId fnId);");
+  lines.push("");
+  lines.push("#endif");
+
+  return `${lines.join("\n")}\n`;
+}
+
+function renderNativeAsSpiceIntBindingsSource(
+  entries: readonly GeneratedNativeAsSpiceIntBindingEntry[],
+  sourceRelPath: string,
+): string {
+  const lines: string[] = [];
+  lines.push("// GENERATED FILE - DO NOT EDIT.");
+  lines.push(`// Source: ${sourceRelPath}`);
+  lines.push("");
+  lines.push("#include \"generated/native_as_spice_int_bindings.h\"");
+  lines.push("");
+  lines.push("#include <stddef.h>");
+  lines.push("");
+  lines.push("static const V2NativeAsSpiceIntBindingEntry V2_NATIVE_AS_SPICE_INT_BINDINGS[] = {");
+
+  for (const entry of entries) {
+    lines.push("  {");
+    lines.push(`    ${entry.enumId},`);
+    lines.push(`    ${JSON.stringify(entry.id)},`);
+    lines.push(`    ${JSON.stringify(entry.cSymbol)},`);
+    lines.push(`    ${NATIVE_AS_SPICE_INT_BINDING_KIND_C[entry.kind]},`);
+    lines.push(`    ${entry.cSymbol},`);
+    lines.push("  },");
+  }
+
+  lines.push("};");
+  lines.push("");
+  lines.push(
+    "const V2NativeAsSpiceIntBindingEntry *v2_lookup_native_as_spice_int_binding(V2FunctionId fnId) {",
+  );
+  lines.push(
+    "  const size_t count = sizeof(V2_NATIVE_AS_SPICE_INT_BINDINGS) / sizeof(V2_NATIVE_AS_SPICE_INT_BINDINGS[0]);",
+  );
+  lines.push("  for (size_t i = 0; i < count; i++) {");
+  lines.push("    if (V2_NATIVE_AS_SPICE_INT_BINDINGS[i].fnId == fnId) {");
+  lines.push("      return &V2_NATIVE_AS_SPICE_INT_BINDINGS[i];");
   lines.push("    }");
   lines.push("  }");
   lines.push("");
@@ -875,16 +1136,37 @@ function main(): void {
   const nativeInvokers = collectNativeInvokers(pkgRoot);
 
   const validatedEntries = validateRegistry(parsedRegistry, contractMethods, nativeSymbols, nativeInvokers);
+  const generatedNativeAsSpiceIntBindings = collectGeneratedNativeAsSpiceIntBindings(validatedEntries);
   const generatedNativeReturnBindings = collectGeneratedNativeReturnBindings(validatedEntries);
 
   const sourceRelPath = path.relative(repoRoot, registryPath).replaceAll(path.sep, "/");
 
   const tsOutPath = path.join(pkgRoot, "src", "generated", "functionRegistry.ts");
   const tsNativeDispatchOutPath = path.join(pkgRoot, "src", "generated", "nativeCallDispatch.ts");
+  const tsNativeAsSpiceIntBindingsOutPath = path.join(
+    pkgRoot,
+    "src",
+    "generated",
+    "nativeAsSpiceIntBindings.ts",
+  );
   const tsNativeReturnBindingsOutPath = path.join(pkgRoot, "src", "generated", "nativeReturnBindings.ts");
   const cHeaderOutPath = path.join(pkgRoot, "native", "src", "generated", "function_registry.h");
   const cSourceOutPath = path.join(pkgRoot, "native", "src", "generated", "function_registry.c");
   const cNativeDispatchHeaderOutPath = path.join(pkgRoot, "native", "src", "generated", "native_call_dispatch.h");
+  const cNativeAsSpiceIntBindingsHeaderOutPath = path.join(
+    pkgRoot,
+    "native",
+    "src",
+    "generated",
+    "native_as_spice_int_bindings.h",
+  );
+  const cNativeAsSpiceIntBindingsSourceOutPath = path.join(
+    pkgRoot,
+    "native",
+    "src",
+    "generated",
+    "native_as_spice_int_bindings.c",
+  );
   const cNativeReturnBindingsHeaderOutPath = path.join(
     pkgRoot,
     "native",
@@ -906,6 +1188,11 @@ function main(): void {
   fs.writeFileSync(tsOutPath, renderTs(validatedEntries, sourceRelPath), "utf8");
   fs.writeFileSync(tsNativeDispatchOutPath, renderTsNativeCallDispatch(validatedEntries, sourceRelPath), "utf8");
   fs.writeFileSync(
+    tsNativeAsSpiceIntBindingsOutPath,
+    renderTsNativeAsSpiceIntBindings(generatedNativeAsSpiceIntBindings, sourceRelPath),
+    "utf8",
+  );
+  fs.writeFileSync(
     tsNativeReturnBindingsOutPath,
     renderTsNativeReturnBindings(generatedNativeReturnBindings, sourceRelPath),
     "utf8",
@@ -915,6 +1202,16 @@ function main(): void {
   fs.writeFileSync(
     cNativeDispatchHeaderOutPath,
     renderNativeCallDispatchHeader(validatedEntries, sourceRelPath),
+    "utf8",
+  );
+  fs.writeFileSync(
+    cNativeAsSpiceIntBindingsHeaderOutPath,
+    renderNativeAsSpiceIntBindingsHeader(sourceRelPath),
+    "utf8",
+  );
+  fs.writeFileSync(
+    cNativeAsSpiceIntBindingsSourceOutPath,
+    renderNativeAsSpiceIntBindingsSource(generatedNativeAsSpiceIntBindings, sourceRelPath),
     "utf8",
   );
   fs.writeFileSync(
@@ -929,7 +1226,7 @@ function main(): void {
   );
 
   console.log(
-    `[parity-checking] wrote function registry (${validatedEntries.length}) -> ${tsOutPath}, ${tsNativeDispatchOutPath}, ${tsNativeReturnBindingsOutPath}, ${cHeaderOutPath}, ${cSourceOutPath}, ${cNativeDispatchHeaderOutPath}, ${cNativeReturnBindingsHeaderOutPath}, ${cNativeReturnBindingsSourceOutPath}`,
+    `[parity-checking] wrote function registry (${validatedEntries.length}) -> ${tsOutPath}, ${tsNativeDispatchOutPath}, ${tsNativeAsSpiceIntBindingsOutPath}, ${tsNativeReturnBindingsOutPath}, ${cHeaderOutPath}, ${cSourceOutPath}, ${cNativeDispatchHeaderOutPath}, ${cNativeAsSpiceIntBindingsHeaderOutPath}, ${cNativeAsSpiceIntBindingsSourceOutPath}, ${cNativeReturnBindingsHeaderOutPath}, ${cNativeReturnBindingsSourceOutPath}`,
   );
 }
 

@@ -345,46 +345,56 @@ bool v2_execute_call_step(const char *json, const jsmntok_t *tokens,
 
   char *asRefName = NULL;
   int outMapTok = -1;
-  switch (spec->resultMode) {
-  case V2_FUNCTION_RESULT_AS_SPICE_INT:
-  case V2_FUNCTION_RESULT_AS_DSK_DESCRIPTOR:
-    if (!v2_require_as_output_ref(
-            json, tokens, tokenCount, stepTok, fnName, &asRefName) ||
-        !v2_forbid_out_map(json, tokens, tokenCount, stepTok, fnName)) {
-      free(fnName);
-      free(asRefName);
-      return false;
-    }
-    break;
-
-  case V2_FUNCTION_RESULT_OUT_NAMED_DSKB02:
-    if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, fnName) ||
-        !v2_require_out_map(json,
-                            tokens,
-                            tokenCount,
-                            stepTok,
-                            fnName,
-                            &outMapTok)) {
-      free(fnName);
-      return false;
-    }
-    break;
-
-  case V2_FUNCTION_RESULT_FORBIDDEN:
+  if (spec->outputBindingPolicy == V2_FUNCTION_OUTPUT_BINDING_POLICY_FORBIDDEN) {
     if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, fnName) ||
         !v2_forbid_out_map(json, tokens, tokenCount, stepTok, fnName)) {
       free(fnName);
       return false;
     }
-    break;
+  } else {
+    switch (spec->resultMode) {
+    case V2_FUNCTION_RESULT_AS_SPICE_INT:
+    case V2_FUNCTION_RESULT_AS_DSK_DESCRIPTOR:
+      if (!v2_require_as_output_ref(
+              json, tokens, tokenCount, stepTok, fnName, &asRefName) ||
+          !v2_forbid_out_map(json, tokens, tokenCount, stepTok, fnName)) {
+        free(fnName);
+        free(asRefName);
+        return false;
+      }
+      break;
 
-  case V2_FUNCTION_RESULT_RETURN:
-    if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, fnName) ||
-        !v2_forbid_out_map(json, tokens, tokenCount, stepTok, fnName)) {
+    case V2_FUNCTION_RESULT_OUT_NAMED_DSKB02:
+      if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, fnName) ||
+          !v2_require_out_map(json,
+                              tokens,
+                              tokenCount,
+                              stepTok,
+                              fnName,
+                              &outMapTok)) {
+        free(fnName);
+        return false;
+      }
+      break;
+
+    case V2_FUNCTION_RESULT_FORBIDDEN:
+      write_error_json_ex("invalid_request",
+                          "Generated output binding policy mismatch",
+                          fnName,
+                          NULL,
+                          NULL,
+                          NULL);
       free(fnName);
       return false;
+
+    case V2_FUNCTION_RESULT_RETURN:
+      if (!v2_forbid_as_output_ref(json, tokens, tokenCount, stepTok, fnName) ||
+          !v2_forbid_out_map(json, tokens, tokenCount, stepTok, fnName)) {
+        free(fnName);
+        return false;
+      }
+      break;
     }
-    break;
   }
 
   V2ResolvedCallArgs resolved;

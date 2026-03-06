@@ -65,6 +65,7 @@ functions:
     nonNegativeIntArgMask: 1
     result:
       mode: forbidden
+      outputBindingPolicy: forbidden
   - id: cells-windows.size
     aliases:
       - size_c
@@ -91,6 +92,7 @@ functions:
     nonNegativeIntArgMask: 1
     result:
       mode: forbidden
+      outputBindingPolicy: forbidden
   - id: cells-windows.valid
     aliases:
       - valid_c
@@ -106,6 +108,7 @@ functions:
     nonNegativeIntArgMask: 3
     result:
       mode: forbidden
+      outputBindingPolicy: forbidden
   - id: cells-windows.wncard
     aliases:
       - wncard_c
@@ -460,6 +463,7 @@ functions:
       - cellRef
     result:
       mode: forbidden
+      outputBindingPolicy: forbidden
   - id: dsk.dsksrf
     aliases:
       - dsksrf_c
@@ -474,6 +478,7 @@ functions:
       - cellRef
     result:
       mode: forbidden
+      outputBindingPolicy: forbidden
   - id: ephemeris.spkez
     aliases:
       - spkez_c

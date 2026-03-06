@@ -597,6 +597,22 @@ describe("executeV2CaseWithBackend", () => {
     });
   });
 
+  it("reports invalid_args when scard_c includes out in bypassed schema input", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps[1] = {
+      op: "call",
+      fn: "cells-windows.scard",
+      in: [0, "$refs.cell"],
+      out: { ignored: "ignored" },
+    } as unknown as RunCaseInputV2["workflow"]["steps"][number];
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_args",
+      message: 'call cells-windows.scard does not allow an "out" map',
+    });
+  });
+
   it("reports invalid_args when size_c includes out in bypassed schema input", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();

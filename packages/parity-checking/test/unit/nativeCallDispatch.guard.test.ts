@@ -7,9 +7,11 @@ import { describe, expect, it } from "vitest";
 
 import { functionRegistry, lookupFunctionRegistryEntry } from "../../src/generated/functionRegistry.js";
 import { nativeCallDispatch } from "../../src/generated/nativeCallDispatch.js";
+import { nativeAsSpiceIntBindings } from "../../src/generated/nativeAsSpiceIntBindings.js";
 import { nativeReturnBindings } from "../../src/generated/nativeReturnBindings.js";
 
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
+const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_sig_cell_or_window_ref_to_as_spice_int";
 const LEGACY_BESPOKE_NATIVE_INVOKERS = new Set([
   "v2_invoke_card_c",
   "v2_invoke_size_c",
@@ -117,6 +119,27 @@ describe("native call dispatch codegen guard", () => {
     expect(actual).toEqual(expected);
   });
 
+  it("keeps generated asSpiceInt bindings aligned with shared asSpiceInt dispatch entries", () => {
+    const expected = functionRegistry
+      .filter(
+        (entry) =>
+          entry.result.mode === "asSpiceInt" &&
+          entry.impl.nativeInvoker === SHARED_AS_SPICE_INT_NATIVE_INVOKER,
+      )
+      .map((entry) => ({
+        id: entry.id,
+        enumId: `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`,
+        cSymbol: entry.impl.cSymbol,
+        backendMethod: entry.impl.cSymbol.replace(/_c$/, ""),
+        kind: "cellOrWindowRefToSpiceInt",
+      }))
+      .sort((a, b) => a.id.localeCompare(b.id));
+
+    const actual = [...nativeAsSpiceIntBindings].sort((a, b) => a.id.localeCompare(b.id));
+
+    expect(actual).toEqual(expected);
+  });
+
   it("covers every shared return dispatch row with generated return binding metadata", () => {
     const bindingById = new Map(nativeReturnBindings.map((entry) => [entry.id, entry]));
 
@@ -128,6 +151,30 @@ describe("native call dispatch codegen guard", () => {
       const binding = bindingById.get(entry.id);
       expect(binding, `Missing generated native return binding for fn id: ${entry.id}`).toBeDefined();
       expect(binding?.cSymbol).toBe(entry.cSymbol);
+    }
+  });
+
+  it("covers every asSpiceInt dispatch row with generated asSpiceInt binding metadata", () => {
+    const bindingById = new Map(nativeAsSpiceIntBindings.map((entry) => [entry.id, entry]));
+
+    const asSpiceIntDispatchRows = nativeCallDispatch.filter(
+      (entry) => entry.invoker === SHARED_AS_SPICE_INT_NATIVE_INVOKER,
+    );
+
+    for (const entry of asSpiceIntDispatchRows) {
+      const binding = bindingById.get(entry.id);
+      expect(binding, `Missing generated native asSpiceInt binding for fn id: ${entry.id}`).toBeDefined();
+      expect(binding?.cSymbol).toBe(entry.cSymbol);
+      expect(binding?.kind).toBe("cellOrWindowRefToSpiceInt");
+    }
+  });
+
+  it("requires explicit forbidden output binding policy for forbidden result modes", () => {
+    const forbiddenEntries = functionRegistry.filter((entry) => entry.result.mode === "forbidden");
+    expect(forbiddenEntries.length).toBeGreaterThan(0);
+
+    for (const entry of forbiddenEntries) {
+      expect(entry.result.outputBindingPolicy).toBe("forbidden");
     }
   });
 

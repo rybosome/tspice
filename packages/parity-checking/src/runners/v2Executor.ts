@@ -16,6 +16,12 @@ import {
   lookupNativeCallDispatchEntry,
 } from "../generated/nativeCallDispatch.js";
 import type {
+  NativeAsSpiceIntBindingEntry,
+} from "../generated/nativeAsSpiceIntBindings.js";
+import {
+  lookupNativeAsSpiceIntBindingEntry,
+} from "../generated/nativeAsSpiceIntBindings.js";
+import type {
   RunCaseInputV2,
   RunnerErrorReport,
   V2WorkflowAssertOperator,
@@ -52,6 +58,7 @@ const READ_VIRTUAL_OUTPUT_STATES = [
 ];
 
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
+const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_sig_cell_or_window_ref_to_as_spice_int";
 
 type CellHandle =
   | ReturnType<SpiceBackend["kit"]["newIntCell"]>
@@ -784,6 +791,10 @@ function forbidCallOutMap(step: V2CallStep): void {
   }
 }
 
+function hasForbiddenOutputBindingPolicy(spec: FunctionRegistryEntry): boolean {
+  return spec.result.outputBindingPolicy === "forbidden";
+}
+
 function resolveCallArg(
   step: V2CallStep,
   argIndex: number,
@@ -818,6 +829,9 @@ function resolveCallArg(
   }
 }
 
+// DSK-specific bespoke named-out lane kept intentionally isolated for PR #582.
+// TODO(parity-struct-capture): replace this whitelist path with generated generic
+// struct capture/output projection metadata in a follow-up issue.
 const DSKB02_NAMED_SPICE_INT_OUTPUTS = [
   "nv",
   "np",
@@ -931,6 +945,60 @@ type V2NativeCallInvokerContext = {
 
 type V2NativeCallInvoker = (context: V2NativeCallInvokerContext) => void;
 
+function resolveNativeAsSpiceIntBinding(
+  step: V2CallStep,
+  spec: FunctionRegistryEntry,
+): NativeAsSpiceIntBindingEntry {
+  const binding = lookupNativeAsSpiceIntBindingEntry(spec.id);
+  if (!binding || binding.cSymbol !== spec.impl.cSymbol) {
+    unsupportedCall("Unsupported call", {
+      call: step.fn,
+      invoker: spec.impl.nativeInvoker,
+      cSymbol: spec.impl.cSymbol,
+    });
+  }
+
+  return binding;
+}
+
+function resolveNativeAsSpiceIntRawInvoker(
+  raw: SpiceBackend["raw"],
+  binding: NativeAsSpiceIntBindingEntry,
+): ((handle: CellHandle | WindowHandle) => unknown) {
+  const candidate = Reflect.get(raw as object, binding.backendMethod);
+  if (typeof candidate !== "function") {
+    unsupportedCall("Unsupported call", {
+      id: binding.id,
+      cSymbol: binding.cSymbol,
+      backendMethod: binding.backendMethod,
+    });
+  }
+
+  return candidate as (handle: CellHandle | WindowHandle) => unknown;
+}
+
+function invokeAsSpiceIntFromGeneratedBinding(
+  raw: SpiceBackend["raw"],
+  step: V2CallStep,
+  spec: FunctionRegistryEntry,
+  handle: CellHandle | WindowHandle,
+): number {
+  const binding = resolveNativeAsSpiceIntBinding(step, spec);
+
+  if (binding.kind !== "cellOrWindowRefToSpiceInt") {
+    unsupportedCall("Unsupported call", {
+      call: step.fn,
+      invoker: spec.impl.nativeInvoker,
+      cSymbol: spec.impl.cSymbol,
+      bindingKind: binding.kind,
+    });
+  }
+
+  const invoke = resolveNativeAsSpiceIntRawInvoker(raw, binding);
+  const value = invoke(handle);
+  return asSpiceInt(value, `call(${step.fn}).result`);
+}
+
 const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
   v2_invoke_sig_cell_or_window_ref_to_as_spice_int: ({
     raw,
@@ -942,20 +1010,7 @@ const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
   }: V2NativeCallInvokerContext): void => {
     const handle = resolvedArgs[0] as CellHandle | WindowHandle;
 
-    const value = (() => {
-      switch (spec.impl.cSymbol) {
-        case "card_c":
-          return asSpiceInt(raw.card(handle), `call(${step.fn}).result`);
-        case "size_c":
-          return asSpiceInt(raw.size(handle), `call(${step.fn}).result`);
-        default:
-          unsupportedCall("Unsupported call", {
-            call: step.fn,
-            invoker: spec.impl.nativeInvoker,
-            cSymbol: spec.impl.cSymbol,
-          });
-      }
-    })();
+    const value = invokeAsSpiceIntFromGeneratedBinding(raw, step, spec, handle);
 
     defineRef(refs, outputRef!, { kind: "int", value }, `call(${step.fn}).as`);
   },
@@ -1038,6 +1093,8 @@ const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
     outputRef,
     refs,
   }: V2NativeCallInvokerContext): void => {
+    // DSK descriptor projection is intentionally isolated in this bespoke lane.
+    // TODO(parity-struct-capture): migrate to generated struct output binding.
     if (spec.impl.cSymbol !== "dskgd_c") {
       unsupportedCall("Unsupported call", {
         call: step.fn,
@@ -1057,6 +1114,8 @@ const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
     outMap,
     refs,
   }: V2NativeCallInvokerContext): void => {
+    // DSK named multi-out remains intentionally isolated/deferred for now.
+    // TODO(parity-struct-capture): replace with generic generated multi-output wiring.
     if (spec.impl.cSymbol !== "dskb02_c") {
       unsupportedCall("Unsupported call", {
         call: step.fn,
@@ -1093,6 +1152,10 @@ async function executeCallFromSpec(
     invalidRequest(`Generated native dispatch mismatch for call ${step.fn}`);
   }
 
+  if (spec.result.mode === "asSpiceInt" && dispatchEntry.invoker !== SHARED_AS_SPICE_INT_NATIVE_INVOKER) {
+    invalidRequest(`Generated asSpiceInt dispatch mismatch for call ${step.fn}`);
+  }
+
   validateCallArity(step, spec.arity);
   const resolvedArgs = spec.argKinds.map((argKind, index) =>
     resolveCallArg(step, index, argKind, args, refs),
@@ -1125,6 +1188,10 @@ async function executeCallFromSpec(
     return await executeBackendMethodCall(backend, spec, step.fn, resolvedArgs);
   }
 
+  if (spec.result.mode === "forbidden" && !hasForbiddenOutputBindingPolicy(spec)) {
+    invalidRequest(`Generated output binding policy mismatch for call ${step.fn}`);
+  }
+
   const invokeSpiceCall = lookupNativeCallInvoker(dispatchEntry.invoker);
   if (!invokeSpiceCall) {
     unsupportedCall("Unsupported call", { call: step.fn, invoker: dispatchEntry.invoker });
@@ -1137,11 +1204,16 @@ async function executeCallFromSpec(
       : undefined;
   const outMap = spec.result.mode === "outNamedDskb02" ? requireCallOutMap(step) : undefined;
 
-  if (spec.result.mode !== "asSpiceInt" && spec.result.mode !== "asDskDescriptor") {
+  if (hasForbiddenOutputBindingPolicy(spec)) {
     forbidCallOutputRef(step);
-  }
-  if (spec.result.mode !== "outNamedDskb02") {
     forbidCallOutMap(step);
+  } else {
+    if (spec.result.mode !== "asSpiceInt" && spec.result.mode !== "asDskDescriptor") {
+      forbidCallOutputRef(step);
+    }
+    if (spec.result.mode !== "outNamedDskb02") {
+      forbidCallOutMap(step);
+    }
   }
 
   invokeSpiceCall({
