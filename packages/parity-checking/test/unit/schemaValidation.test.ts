@@ -283,7 +283,7 @@ describe("schema validation (v3)", () => {
 
   it("parses valid v3 cross-cutting spec", () => {
     const spec = parseCrossCuttingSpec({
-      sourcePath: "specs/cross-cutting/native-protocol/strict-parsing@v3.yml",
+      sourcePath: "specs/cross-cutting/native-protocol/sample@v3.yml",
       data: {
         schemaVersion: 3,
         manifest: {
