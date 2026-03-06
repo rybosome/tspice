@@ -11,7 +11,6 @@ const packageRoot = path.resolve(scriptDir, "..");
 
 const generatedFiles = [
   "packages/parity-checking/catalogs/contract-methods.json",
-  "packages/parity-checking/catalogs/alias-map.json",
   "packages/parity-checking/catalogs/parity-denylist.json",
   "packages/parity-checking/catalogs/parity-denylist.ts",
 ];

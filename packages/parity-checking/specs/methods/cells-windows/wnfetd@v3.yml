@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: cells-windows.wnfetd
   canonicalMethod: cells-windows.wnfetd
-  aliases: []
   result:
     const:
       - 0

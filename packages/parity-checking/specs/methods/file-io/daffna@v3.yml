@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: file-io.daffna
   canonicalMethod: file-io.daffna
-  aliases: []
   result:
     type: object
     properties: {}

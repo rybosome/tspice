@@ -113,7 +113,6 @@ export type MethodErrorSpecV3 = {
 export type MethodContractV3 = {
   contractMethod: string;
   canonicalMethod: string;
-  aliases?: string[];
   args?: MethodArgSpecV3[];
   /** Optional for callContract-centric migrated specs. */
   result?: MethodResultSpecV3;
