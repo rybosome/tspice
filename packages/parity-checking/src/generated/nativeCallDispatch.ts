@@ -325,7 +325,7 @@ export const nativeCallDispatch: readonly NativeCallDispatchEntry[] = [
   {
     id: "file-io.dlacls",
     enumId: "V2_FUNCTION_ID_FILE_IO_DLACLS",
-    cSymbol: "dascls_c",
+    cSymbol: "dlacls_c",
     invoker: "v2_invoke_contract_return",
   },
   {

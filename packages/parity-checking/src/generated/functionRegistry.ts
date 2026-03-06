@@ -670,7 +670,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     aliases: ["dlacls_c"],
     impl: {
       contractMethod: "file-io.dlacls",
-      cSymbol: "dascls_c",
+      cSymbol: "dlacls_c",
       nativeInvoker: "v2_invoke_contract_return",
     },
     arity: 1,

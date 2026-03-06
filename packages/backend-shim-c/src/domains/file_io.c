@@ -219,8 +219,12 @@ int tspice_dlacls(int handle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
 
-  // DLA segments are stored in DAS files; close via DAS close helper.
-  return tspice_dascls(handle, err, errMaxBytes);
+  dlacls_c((SpiceInt)handle);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
 }
 
 

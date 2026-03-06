@@ -311,7 +311,7 @@ static const V2NativeReturnBindingEntry V2_NATIVE_RETURN_BINDINGS[] = {
   {
     V2_FUNCTION_ID_FILE_IO_DLACLS,
     "file-io.dlacls",
-    "dascls_c",
+    "dlacls_c",
     V2_NATIVE_RETURN_BINDING_NONE,
     NULL,
   },

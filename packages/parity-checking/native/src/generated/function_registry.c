@@ -535,7 +535,7 @@ static const V2FunctionSpec V2_FUNCTION_SPECS[] = {
     0u,
     V2_FUNCTION_RESULT_RETURN,
     "file-io.dlacls",
-    "dascls_c",
+    "dlacls_c",
   },
   {
     V2_FUNCTION_ID_FILE_IO_DLAFNS,
