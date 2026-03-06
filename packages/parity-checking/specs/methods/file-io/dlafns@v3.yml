@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: file-io.dlafns
   canonicalMethod: file-io.dlafns
-  aliases: []
   result:
     type: object
     properties: {}

@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: cells-windows.scard
   canonicalMethod: cells-windows.scard
-  aliases: []
   args:
     - name: size
       type: spiceInt

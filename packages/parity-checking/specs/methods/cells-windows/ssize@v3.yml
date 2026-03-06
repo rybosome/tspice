@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: cells-windows.ssize
   canonicalMethod: cells-windows.ssize
-  aliases: []
   args:
     - name: allocSize
       type: spiceInt

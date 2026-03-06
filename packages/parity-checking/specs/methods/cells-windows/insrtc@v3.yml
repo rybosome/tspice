@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: cells-windows.insrtc
   canonicalMethod: cells-windows.insrtc
-  aliases: []
   result:
     type: object
     properties: {}

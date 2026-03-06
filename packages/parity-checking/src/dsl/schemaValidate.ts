@@ -297,18 +297,12 @@ function parseMethodResultSpec(value: unknown, label: string): MethodResultSpecV
 
 function parseMethodContract(value: unknown, label: string): MethodContractV3 {
   const obj = asRecord(value, label);
-  ensureKnownKeys(obj, ["contractMethod", "canonicalMethod", "aliases", "args", "result", "errors"], label);
+  ensureKnownKeys(obj, ["contractMethod", "canonicalMethod", "args", "result", "errors"], label);
 
   const out: MethodContractV3 = {
     contractMethod: asString(obj.contractMethod, `${label}.contractMethod`),
     canonicalMethod: asString(obj.canonicalMethod, `${label}.canonicalMethod`),
   };
-
-  if (obj.aliases !== undefined) {
-    out.aliases = asArray(obj.aliases, `${label}.aliases`).map((entry, i) =>
-      asString(entry, `${label}.aliases[${i}]`),
-    );
-  }
 
   if (obj.args !== undefined) {
     out.args = asArray(obj.args, `${label}.args`).map((entry, i) => {

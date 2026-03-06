@@ -49,7 +49,6 @@ export type V3ContractResultSpec = V3ContractResultObjectSpec | V3ContractResult
 export type V3ContractSpec = {
   contractMethod: string;
   canonicalMethod: string;
-  aliases?: string[];
   args?: V3ContractArgSpec[];
   /** Optional for methods that return scalar or ad-hoc object values. */
   result?: V3ContractResultSpec;

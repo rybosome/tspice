@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: file-io.dskopn
   canonicalMethod: file-io.dskopn
-  aliases: []
   result:
     type: object
     required:

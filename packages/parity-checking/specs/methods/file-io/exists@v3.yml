@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: file-io.exists
   canonicalMethod: file-io.exists
-  aliases: []
   result:
     type: object
     properties: {}

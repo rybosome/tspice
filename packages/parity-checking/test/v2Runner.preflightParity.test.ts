@@ -15,7 +15,6 @@ function createBaseInput(): RunCaseInputV2 {
     contract: {
       contractMethod: "cells-windows.newIntCell",
       canonicalMethod: "cells-windows.newIntCell",
-      aliases: [],
       args: [{ name: "size", type: "spiceInt", constraints: { min: 0 } }],
       result: {
         type: "object",
@@ -201,7 +200,6 @@ describe("v3 runner preflight parity", () => {
       contract: {
         contractMethod: "time.tkvrsn",
         canonicalMethod: "time.tkvrsn",
-        aliases: [],
         result: {
           type: "object",
           properties: {},

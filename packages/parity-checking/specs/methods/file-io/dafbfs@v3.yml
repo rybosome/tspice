@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: file-io.dafbfs
   canonicalMethod: file-io.dafbfs
-  aliases: []
   result:
     type: object
     properties: {}

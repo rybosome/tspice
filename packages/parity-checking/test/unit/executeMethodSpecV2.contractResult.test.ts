@@ -37,7 +37,6 @@ function buildMethod(resultSchema: MethodSpecV2["contract"]["result"]): MethodSp
     contract: {
       contractMethod: "cells-windows.cellGeti",
       canonicalMethod: "cells-windows.cellGeti",
-      aliases: [],
       result: resultSchema,
       errors: [],
     },

@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: file-io.dskw02
   canonicalMethod: file-io.dskw02
-  aliases: []
   result:
     type: object
     required:

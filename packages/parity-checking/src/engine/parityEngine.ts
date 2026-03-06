@@ -4,18 +4,16 @@ import { fileURLToPath } from "node:url";
 import { discoverYamlFiles } from "../dsl/discoverYamlFiles.js";
 import { loadYamlFile } from "../dsl/loadYaml.js";
 import { parseCrossCuttingSpec, parseMethodSpec } from "../dsl/schemaValidate.js";
-import { runDispatchAliasParityGuard } from "./dispatchParityGuard.js";
 import { executeCrossCuttingSpec } from "./executeCrossCuttingSpec.js";
 import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateCrossCuttingSpecs } from "../guards/validateCrossCuttingSpecs.js";
-import { validateDispatchAliasCoverage } from "../guards/validateDispatchAliasCoverage.js";
 import { validateSchema } from "../guards/validateSchema.js";
 import { createCspiceRunner, getCspiceRunnerStatus } from "../runners/cspiceRunner.js";
 import { createTspiceRunner } from "../runners/tspiceRunner.js";
 
 import { crossCuttingSpecId, methodSpecId } from "../dsl/types.js";
-import type { LoadedParitySpecs, ResolvedMethodSpec } from "../dsl/types.js";
+import type { LoadedParitySpecs } from "../dsl/types.js";
 import type { CaseRunner } from "../runners/types.js";
 
 function packageRoot(): string {
@@ -59,8 +57,6 @@ export type ParityEngineSummary = {
   contractCount: number;
   coveredCount: number;
   denylistCount: number;
-  aliasCount: number;
-  aliasGuardValidatedCount: number;
   methodCaseCount: number;
   crossCuttingCaseCount: number;
 };
@@ -81,18 +77,7 @@ async function withRunners<T>(
   }
 }
 
-async function withTspiceRunner<T>(fn: (runner: CaseRunner) => Promise<T>): Promise<T> {
-  let tspice: CaseRunner | undefined;
-
-  try {
-    tspice = await createTspiceRunner();
-    return await fn(tspice);
-  } finally {
-    await tspice?.dispose?.();
-  }
-}
-
-/** Run parity validation across dispatch aliases, cross-cutting specs, and method specs. */
+/** Run parity validation across cross-cutting specs and method specs. */
 export async function runParityEngine(): Promise<ParityEngineSummary> {
   const specs = await loadParitySpecs();
 
@@ -100,14 +85,6 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
 
   const completeness = validateCompleteness(specs.methods);
   validateCrossCuttingSpecs(specs.crossCutting);
-  const aliasCoverage = validateDispatchAliasCoverage();
-
-  const resolvedMethods: ResolvedMethodSpec[] = specs.methods.map((method) => ({
-    method,
-    includeOrder: [],
-    ...(method.setup !== undefined ? { mergedSetup: method.setup } : {}),
-    ...(method.defaults?.compare !== undefined ? { mergedCompareDefaults: method.defaults.compare } : {}),
-  }));
 
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
@@ -120,8 +97,6 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
       contractCount: completeness.contractCount,
       coveredCount: completeness.coveredCount,
       denylistCount: completeness.denylistCount,
-      aliasCount: aliasCoverage.aliasCount,
-      aliasGuardValidatedCount: 0,
       methodCaseCount: 0,
       crossCuttingCaseCount: 0,
     };
@@ -148,19 +123,10 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
       contractCount: completeness.contractCount,
       coveredCount: completeness.coveredCount,
       denylistCount: completeness.denylistCount,
-      aliasCount: aliasCoverage.aliasCount,
-      aliasGuardValidatedCount: 0,
       methodCaseCount,
       crossCuttingCaseCount,
     };
   });
 
-  const aliasGuard = await withTspiceRunner(async (tspiceRunner) =>
-    runDispatchAliasParityGuard(resolvedMethods, tspiceRunner),
-  );
-
-  return {
-    ...paritySummary,
-    aliasGuardValidatedCount: aliasGuard.validatedAliasCount,
-  };
+  return paritySummary;
 }
