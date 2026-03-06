@@ -15,15 +15,19 @@ contract:
         const: true
 workflow:
   steps:
-    - op: materialize
-      fixture: minimalDsk
+    - op: withResource
       as: dskPath
-    - op: projectResult
-      out:
-        written: true
-  cleanup:
-    - op: unlink
-      target: $refs.dskPath
+      acquire:
+        op: materialize
+        fixture: minimalDsk
+        as: dskPath
+      steps:
+        - op: projectResult
+          out:
+            written: true
+      finally:
+        - op: unlink
+          target: $refs.dskPath
 cases:
   - id: write-single-segment-dsk
     expect:
