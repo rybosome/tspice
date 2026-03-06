@@ -29,7 +29,6 @@ function createInput(method: string, args: unknown[]): RunCaseInputV2 {
     contract: {
       contractMethod: method,
       canonicalMethod: method,
-      aliases: [],
       result: { const: null },
       errors: [{ code: "invalid_args" }, { code: "spice_error" }],
     },

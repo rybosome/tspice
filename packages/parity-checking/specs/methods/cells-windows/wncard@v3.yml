@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: cells-windows.wncard
   canonicalMethod: cells-windows.wncard
-  aliases: []
   result:
     const: 1
   errors:

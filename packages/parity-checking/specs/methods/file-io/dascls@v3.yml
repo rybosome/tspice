@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: file-io.dascls
   canonicalMethod: file-io.dascls
-  aliases: []
   result:
     type: object
     properties: {}

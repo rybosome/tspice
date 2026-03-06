@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: file-io.dskmi2
   canonicalMethod: file-io.dskmi2
-  aliases: []
   result:
     type: object
     required:

@@ -5,7 +5,6 @@ manifest:
 contract:
   contractMethod: file-io.getfat
   canonicalMethod: file-io.getfat
-  aliases: []
   result:
     type: object
     properties: {}
