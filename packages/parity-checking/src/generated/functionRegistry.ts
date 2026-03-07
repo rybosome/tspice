@@ -55,7 +55,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.card",
       cSymbol: "card_c",
-      nativeInvoker: "v2_invoke_sig_cell_or_window_ref_to_as_spice_int",
+      nativeInvoker: "v2_invoke_contract_as_spice_int",
     },
     arity: 1,
     argKinds: ["cellOrWindowRef"],
@@ -103,7 +103,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.scard",
       cSymbol: "scard_c",
-      nativeInvoker: "v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden",
+      nativeInvoker: "v2_invoke_contract_forbidden",
     },
     arity: 2,
     argKinds: ["intExpr","cellOrWindowRef"],
@@ -119,7 +119,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.size",
       cSymbol: "size_c",
-      nativeInvoker: "v2_invoke_sig_cell_or_window_ref_to_as_spice_int",
+      nativeInvoker: "v2_invoke_contract_as_spice_int",
     },
     arity: 1,
     argKinds: ["cellOrWindowRef"],
@@ -131,7 +131,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.ssize",
       cSymbol: "ssize_c",
-      nativeInvoker: "v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden",
+      nativeInvoker: "v2_invoke_contract_forbidden",
     },
     arity: 2,
     argKinds: ["intExpr","cellOrWindowRef"],
@@ -147,7 +147,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "cells-windows.valid",
       cSymbol: "valid_c",
-      nativeInvoker: "v2_invoke_sig_int_expr_int_expr_cell_or_window_ref_to_forbidden",
+      nativeInvoker: "v2_invoke_contract_forbidden",
     },
     arity: 3,
     argKinds: ["intExpr","intExpr","cellOrWindowRef"],
@@ -475,7 +475,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dskobj",
       cSymbol: "dskobj_c",
-      nativeInvoker: "v2_invoke_sig_path_expr_cell_ref_to_forbidden",
+      nativeInvoker: "v2_invoke_contract_forbidden",
     },
     arity: 2,
     argKinds: ["pathExpr","cellRef"],
@@ -490,7 +490,7 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
     impl: {
       contractMethod: "dsk.dsksrf",
       cSymbol: "dsksrf_c",
-      nativeInvoker: "v2_invoke_sig_path_expr_int_expr_cell_ref_to_forbidden",
+      nativeInvoker: "v2_invoke_contract_forbidden",
     },
     arity: 3,
     argKinds: ["pathExpr","intExpr","cellRef"],

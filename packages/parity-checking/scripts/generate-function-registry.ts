@@ -28,7 +28,8 @@ type NativeReturnBindingKind =
   | "exprSpiceIntToJsonStringViaSizedOutBuffer";
 
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
-const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_sig_cell_or_window_ref_to_as_spice_int";
+const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_contract_as_spice_int";
+const SHARED_FORBIDDEN_NATIVE_INVOKER = "v2_invoke_contract_forbidden";
 
 const NATIVE_INVOKER_NAME_REGEX = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
@@ -435,9 +436,24 @@ function validateRegistry(
       );
     }
 
+    if (entry.result.mode === "forbidden" && entry.impl.nativeInvoker !== SHARED_FORBIDDEN_NATIVE_INVOKER) {
+      throw new Error(
+        `Function ${entry.id} uses result.mode=forbidden but nativeInvoker is ${entry.impl.nativeInvoker}; expected ${SHARED_FORBIDDEN_NATIVE_INVOKER}`,
+      );
+    }
+
     if (entry.result.outputBindingPolicy && entry.result.mode !== "forbidden") {
       throw new Error(
         `Function ${entry.id} defines result.outputBindingPolicy=${entry.result.outputBindingPolicy} but result.mode is ${entry.result.mode}; expected forbidden`,
+      );
+    }
+
+    if (
+      entry.impl.nativeInvoker === SHARED_FORBIDDEN_NATIVE_INVOKER &&
+      entry.result.mode !== "forbidden"
+    ) {
+      throw new Error(
+        `Function ${entry.id} uses nativeInvoker=${SHARED_FORBIDDEN_NATIVE_INVOKER} but result.mode is ${entry.result.mode}; expected forbidden`,
       );
     }
 

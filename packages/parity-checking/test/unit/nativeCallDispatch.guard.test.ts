@@ -11,7 +11,8 @@ import { nativeAsSpiceIntBindings } from "../../src/generated/nativeAsSpiceIntBi
 import { nativeReturnBindings } from "../../src/generated/nativeReturnBindings.js";
 
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
-const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_sig_cell_or_window_ref_to_as_spice_int";
+const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_contract_as_spice_int";
+const SHARED_FORBIDDEN_NATIVE_INVOKER = "v2_invoke_contract_forbidden";
 const EXECUTABLE_NATIVE_RETURN_BINDING_KINDS = new Set([
   "generatedReturnBindingLane",
   "exprStringToJsonString",
@@ -184,6 +185,7 @@ describe("native call dispatch codegen guard", () => {
 
     for (const entry of forbiddenEntries) {
       expect(entry.result.outputBindingPolicy).toBe("forbidden");
+      expect(entry.impl.nativeInvoker).toBe(SHARED_FORBIDDEN_NATIVE_INVOKER);
     }
   });
 

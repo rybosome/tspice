@@ -343,7 +343,7 @@ static bool v2_emit_named_dskb02_outputs(const char *json,
   return true;
 }
 
-static bool v2_invoke_sig_cell_or_window_ref_to_as_spice_int(
+static bool v2_invoke_contract_as_spice_int(
     const V2CallInvokeContext *context) {
   const V2NativeAsSpiceIntBindingEntry *binding =
       v2_lookup_native_as_spice_int_binding(context->spec->id);
@@ -374,8 +374,7 @@ static bool v2_invoke_sig_cell_or_window_ref_to_as_spice_int(
                         value);
 }
 
-static bool v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden(
-    const V2CallInvokeContext *context) {
+static bool v2_invoke_contract_forbidden(const V2CallInvokeContext *context) {
   const char *symbol = NULL;
 
   switch (context->spec->id) {
@@ -389,9 +388,43 @@ static bool v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden(
     ssize_c(context->resolved->intValues[0],
             &context->refs[context->resolved->refIndices[1]].cell);
     break;
+  case V2_FUNCTION_ID_CELLS_WINDOWS_VALID:
+    symbol = "valid_c";
+    valid_c(context->resolved->intValues[0],
+            context->resolved->intValues[1],
+            &context->refs[context->resolved->refIndices[2]].cell);
+    break;
+  case V2_FUNCTION_ID_DSK_DSKOBJ:
+    symbol = "dskobj_c";
+    dskobj_c(context->resolved->pathValues[0],
+             &context->refs[context->resolved->refIndices[1]].cell);
+    break;
+  case V2_FUNCTION_ID_DSK_DSKSRF:
+    symbol = "dsksrf_c";
+    dsksrf_c(context->resolved->pathValues[0],
+             context->resolved->intValues[1],
+             &context->refs[context->resolved->refIndices[2]].cell);
+    break;
   default:
     write_error_json_ex("unsupported_call", "Unsupported v2 call",
                         context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
+  if (context->spec->cSymbol == NULL || strcmp(context->spec->cSymbol, symbol) != 0) {
+    char detail[256];
+    detail[0] = '\0';
+    snprintf(detail,
+             sizeof(detail),
+             "resolved.cSymbol=%s spec.cSymbol=%s",
+             symbol,
+             context->spec->cSymbol != NULL ? context->spec->cSymbol : "<null>");
+    write_error_json_ex("invalid_request",
+                        "Generated forbidden call symbol mismatch",
+                        detail,
+                        NULL,
+                        NULL,
+                        NULL);
     return false;
   }
 
@@ -400,61 +433,8 @@ static bool v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden(
     snprintf(msg,
              sizeof(msg),
              "SPICE error in %s",
-             symbol != NULL ? symbol : "generated call binding");
+             symbol[0] != '\0' ? symbol : "generated call binding");
     return v2_write_spice_failure(msg);
-  }
-
-  return true;
-}
-
-static bool v2_invoke_sig_int_expr_int_expr_cell_or_window_ref_to_forbidden(
-    const V2CallInvokeContext *context) {
-  if (context->spec->id != V2_FUNCTION_ID_CELLS_WINDOWS_VALID) {
-    write_error_json_ex("unsupported_call", "Unsupported v2 call",
-                        context->fnName, NULL, NULL, NULL);
-    return false;
-  }
-
-  valid_c(context->resolved->intValues[0],
-          context->resolved->intValues[1],
-          &context->refs[context->resolved->refIndices[2]].cell);
-  if (failed_c() == SPICETRUE) {
-    return v2_write_spice_failure("SPICE error in valid_c");
-  }
-
-  return true;
-}
-
-static bool v2_invoke_sig_path_expr_cell_ref_to_forbidden(
-    const V2CallInvokeContext *context) {
-  if (context->spec->id != V2_FUNCTION_ID_DSK_DSKOBJ) {
-    write_error_json_ex("unsupported_call", "Unsupported v2 call",
-                        context->fnName, NULL, NULL, NULL);
-    return false;
-  }
-
-  dskobj_c(context->resolved->pathValues[0],
-           &context->refs[context->resolved->refIndices[1]].cell);
-  if (failed_c() == SPICETRUE) {
-    return v2_write_spice_failure("SPICE error in dskobj_c");
-  }
-
-  return true;
-}
-
-static bool v2_invoke_sig_path_expr_int_expr_cell_ref_to_forbidden(
-    const V2CallInvokeContext *context) {
-  if (context->spec->id != V2_FUNCTION_ID_DSK_DSKSRF) {
-    write_error_json_ex("unsupported_call", "Unsupported v2 call",
-                        context->fnName, NULL, NULL, NULL);
-    return false;
-  }
-
-  dsksrf_c(context->resolved->pathValues[0],
-           context->resolved->intValues[1],
-           &context->refs[context->resolved->refIndices[2]].cell);
-  if (failed_c() == SPICETRUE) {
-    return v2_write_spice_failure("SPICE error in dsksrf_c");
   }
 
   return true;

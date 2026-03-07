@@ -58,7 +58,7 @@ const READ_VIRTUAL_OUTPUT_STATES = [
 ];
 
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
-const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_sig_cell_or_window_ref_to_as_spice_int";
+const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_contract_as_spice_int";
 
 type CellHandle =
   | ReturnType<SpiceBackend["kit"]["newIntCell"]>
@@ -1000,7 +1000,7 @@ function invokeAsSpiceIntFromGeneratedBinding(
 }
 
 const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
-  v2_invoke_sig_cell_or_window_ref_to_as_spice_int: ({
+  v2_invoke_contract_as_spice_int: ({
     raw,
     step,
     spec,
@@ -1015,7 +1015,7 @@ const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
     defineRef(refs, outputRef!, { kind: "int", value }, `call(${step.fn}).as`);
   },
 
-  v2_invoke_sig_int_expr_cell_or_window_ref_to_forbidden: ({
+  v2_invoke_contract_forbidden: ({
     raw,
     step,
     spec,
@@ -1028,6 +1028,19 @@ const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
       case "ssize_c":
         raw.ssize(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
         return;
+      case "valid_c":
+        raw.valid(
+          resolvedArgs[0] as number,
+          resolvedArgs[1] as number,
+          resolvedArgs[2] as CellHandle | WindowHandle,
+        );
+        return;
+      case "dskobj_c":
+        raw.dskobj(resolvedArgs[0] as string, resolvedArgs[1] as IntCellHandle);
+        return;
+      case "dsksrf_c":
+        raw.dsksrf(resolvedArgs[0] as string, resolvedArgs[1] as number, resolvedArgs[2] as IntCellHandle);
+        return;
       default:
         unsupportedCall("Unsupported call", {
           call: step.fn,
@@ -1035,54 +1048,6 @@ const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
           cSymbol: spec.impl.cSymbol,
         });
     }
-  },
-
-  v2_invoke_sig_int_expr_int_expr_cell_or_window_ref_to_forbidden: ({
-    raw,
-    step,
-    spec,
-    resolvedArgs,
-  }: V2NativeCallInvokerContext): void => {
-    if (spec.impl.cSymbol !== "valid_c") {
-      unsupportedCall("Unsupported call", {
-        call: step.fn,
-        invoker: spec.impl.nativeInvoker,
-        cSymbol: spec.impl.cSymbol,
-      });
-    }
-    raw.valid(resolvedArgs[0] as number, resolvedArgs[1] as number, resolvedArgs[2] as CellHandle | WindowHandle);
-  },
-
-  v2_invoke_sig_path_expr_cell_ref_to_forbidden: ({
-    raw,
-    step,
-    spec,
-    resolvedArgs,
-  }: V2NativeCallInvokerContext): void => {
-    if (spec.impl.cSymbol !== "dskobj_c") {
-      unsupportedCall("Unsupported call", {
-        call: step.fn,
-        invoker: spec.impl.nativeInvoker,
-        cSymbol: spec.impl.cSymbol,
-      });
-    }
-    raw.dskobj(resolvedArgs[0] as string, resolvedArgs[1] as IntCellHandle);
-  },
-
-  v2_invoke_sig_path_expr_int_expr_cell_ref_to_forbidden: ({
-    raw,
-    step,
-    spec,
-    resolvedArgs,
-  }: V2NativeCallInvokerContext): void => {
-    if (spec.impl.cSymbol !== "dsksrf_c") {
-      unsupportedCall("Unsupported call", {
-        call: step.fn,
-        invoker: spec.impl.nativeInvoker,
-        cSymbol: spec.impl.cSymbol,
-      });
-    }
-    raw.dsksrf(resolvedArgs[0] as string, resolvedArgs[1] as number, resolvedArgs[2] as IntCellHandle);
   },
 
   v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor: ({
