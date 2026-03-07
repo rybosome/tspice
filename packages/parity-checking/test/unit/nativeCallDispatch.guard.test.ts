@@ -12,6 +12,11 @@ import { nativeReturnBindings } from "../../src/generated/nativeReturnBindings.j
 
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
 const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_sig_cell_or_window_ref_to_as_spice_int";
+const EXECUTABLE_NATIVE_RETURN_BINDING_KINDS = new Set([
+  "generatedReturnBindingLane",
+  "exprStringToJsonString",
+  "exprSpiceIntToJsonStringViaSizedOutBuffer",
+]);
 const LEGACY_BESPOKE_NATIVE_INVOKERS = new Set([
   "v2_invoke_card_c",
   "v2_invoke_size_c",
@@ -110,7 +115,7 @@ describe("native call dispatch codegen guard", () => {
         id: entry.id,
         enumId: `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`,
         cSymbol: entry.impl.cSymbol,
-        kind: entry.impl.returnBinding?.kind ?? "none",
+        kind: entry.impl.returnBinding?.kind ?? "generatedReturnBindingLane",
       }))
       .sort((a, b) => a.id.localeCompare(b.id));
 
@@ -151,6 +156,10 @@ describe("native call dispatch codegen guard", () => {
       const binding = bindingById.get(entry.id);
       expect(binding, `Missing generated native return binding for fn id: ${entry.id}`).toBeDefined();
       expect(binding?.cSymbol).toBe(entry.cSymbol);
+      expect(
+        EXECUTABLE_NATIVE_RETURN_BINDING_KINDS.has(binding?.kind ?? ""),
+        `Non-executable native return binding metadata for fn id: ${entry.id}`,
+      ).toBe(true);
     }
   });
 

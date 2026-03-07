@@ -884,6 +884,8 @@ functions:
       contractMethod: ids-names.bodc2s
       cSymbol: bodc2s_c
       nativeInvoker: v2_invoke_contract_return
+      returnBinding:
+        kind: exprSpiceIntToJsonStringViaSizedOutBuffer
     arity: 1
     argKinds:
       - expr

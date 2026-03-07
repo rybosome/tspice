@@ -22,7 +22,10 @@ type FunctionResultMode =
 
 type OutputBindingPolicy = "forbidden";
 
-type NativeReturnBindingKind = "exprStringToJsonString";
+type NativeReturnBindingKind =
+  | "generatedReturnBindingLane"
+  | "exprStringToJsonString"
+  | "exprSpiceIntToJsonStringViaSizedOutBuffer";
 
 const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
 const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_sig_cell_or_window_ref_to_as_spice_int";
@@ -72,7 +75,11 @@ const ALLOWED_RESULT_MODES: ReadonlySet<string> = new Set([
   "outNamedDskb02",
 ]);
 
-const ALLOWED_RETURN_BINDING_KINDS: ReadonlySet<string> = new Set(["exprStringToJsonString"]);
+const ALLOWED_RETURN_BINDING_KINDS: ReadonlySet<string> = new Set([
+  "generatedReturnBindingLane",
+  "exprStringToJsonString",
+  "exprSpiceIntToJsonStringViaSizedOutBuffer",
+]);
 const ALLOWED_OUTPUT_BINDING_POLICIES: ReadonlySet<string> = new Set(["forbidden"]);
 
 const ARG_KIND_ENUM: Record<FunctionArgKind, string> = {
@@ -406,6 +413,22 @@ function validateRegistry(
       );
     }
 
+    if (entry.impl.returnBinding?.kind === "exprStringToJsonString") {
+      if (entry.arity !== 1 || entry.argKinds[0] !== "expr") {
+        throw new Error(
+          `Function ${entry.id} uses returnBinding.kind=exprStringToJsonString but signature is not (expr)->return`,
+        );
+      }
+    }
+
+    if (entry.impl.returnBinding?.kind === "exprSpiceIntToJsonStringViaSizedOutBuffer") {
+      if (entry.arity !== 1 || entry.argKinds[0] !== "expr") {
+        throw new Error(
+          `Function ${entry.id} uses returnBinding.kind=exprSpiceIntToJsonStringViaSizedOutBuffer but signature is not (expr)->return`,
+        );
+      }
+    }
+
     if (entry.result.mode === "forbidden" && entry.result.outputBindingPolicy !== "forbidden") {
       throw new Error(
         `Function ${entry.id} uses result.mode=forbidden but result.outputBindingPolicy is ${entry.result.outputBindingPolicy ?? "<unset>"}; expected forbidden`,
@@ -502,7 +525,11 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("    cSymbol: string;");
   lines.push("    nativeInvoker: string;");
   lines.push("    returnBinding?: {");
-  lines.push("      kind: \"exprStringToJsonString\";");
+  lines.push("      kind:");
+  for (const kind of [...ALLOWED_RETURN_BINDING_KINDS].sort()) {
+    lines.push(`        | \"${kind}\"`);
+  }
+  lines.push("      ;");
   lines.push("    };");
   lines.push("  };");
   lines.push("  arity: number;");
@@ -904,13 +931,27 @@ type GeneratedNativeReturnBindingEntry = {
   id: string;
   enumId: string;
   cSymbol: string;
-  kind: NativeReturnBindingKind | "none";
+  kind: NativeReturnBindingKind;
 };
 
+const DEFAULT_NATIVE_RETURN_BINDING_KIND: NativeReturnBindingKind = "generatedReturnBindingLane";
+
+const EXECUTABLE_NATIVE_RETURN_BINDING_KINDS: ReadonlySet<NativeReturnBindingKind> = new Set([
+  "generatedReturnBindingLane",
+  "exprStringToJsonString",
+  "exprSpiceIntToJsonStringViaSizedOutBuffer",
+]);
+
 const NATIVE_RETURN_BINDING_KIND_C: Record<GeneratedNativeReturnBindingEntry["kind"], string> = {
-  none: "V2_NATIVE_RETURN_BINDING_NONE",
+  generatedReturnBindingLane: "V2_NATIVE_RETURN_BINDING_GENERATED_RETURN_BINDING_LANE",
   exprStringToJsonString: "V2_NATIVE_RETURN_BINDING_EXPR_STRING_TO_JSON_STRING",
+  exprSpiceIntToJsonStringViaSizedOutBuffer:
+    "V2_NATIVE_RETURN_BINDING_EXPR_SPICE_INT_TO_JSON_STRING_VIA_SIZED_OUT_BUFFER",
 };
+
+function resolveNativeReturnBindingKind(entry: FunctionRegistryEntry): NativeReturnBindingKind {
+  return entry.impl.returnBinding?.kind ?? DEFAULT_NATIVE_RETURN_BINDING_KIND;
+}
 
 function collectGeneratedNativeReturnBindings(
   entries: readonly FunctionRegistryEntry[],
@@ -920,12 +961,21 @@ function collectGeneratedNativeReturnBindings(
       (entry) =>
         entry.result.mode === "return" && entry.impl.nativeInvoker === SHARED_RETURN_NATIVE_INVOKER,
     )
-    .map((entry) => ({
-      id: entry.id,
-      enumId: `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`,
-      cSymbol: entry.impl.cSymbol,
-      kind: entry.impl.returnBinding?.kind ?? "none",
-    }));
+    .map((entry) => {
+      const kind = resolveNativeReturnBindingKind(entry);
+      if (!EXECUTABLE_NATIVE_RETURN_BINDING_KINDS.has(kind)) {
+        throw new Error(
+          `Function ${entry.id} uses non-executable native return binding metadata kind: ${kind}`,
+        );
+      }
+
+      return {
+        id: entry.id,
+        enumId: `V2_FUNCTION_ID_${toEnumSegment(entry.id)}`,
+        cSymbol: entry.impl.cSymbol,
+        kind,
+      };
+    });
 }
 
 function renderTsNativeReturnBindings(
@@ -938,8 +988,9 @@ function renderTsNativeReturnBindings(
   lines.push(`// Source: ${sourceRelPath}`);
   lines.push("");
   lines.push("export type NativeReturnBindingKind =");
-  lines.push('  | "none"');
-  lines.push('  | "exprStringToJsonString"');
+  for (const kind of [...ALLOWED_RETURN_BINDING_KINDS].sort()) {
+    lines.push(`  | \"${kind}\"`);
+  }
   lines.push(";");
   lines.push("");
   lines.push("export type NativeReturnBindingEntry = {");
@@ -983,14 +1034,19 @@ function renderNativeReturnBindingsHeader(sourceRelPath: string): string {
   lines.push("// GENERATED FILE - DO NOT EDIT.");
   lines.push(`// Source: ${sourceRelPath}`);
   lines.push("");
+  lines.push("#include \"cspice_runner_common.h\"");
   lines.push("#include \"generated/function_registry.h\"");
   lines.push("");
   lines.push("typedef enum {");
-  lines.push("  V2_NATIVE_RETURN_BINDING_NONE = 0,");
+  lines.push("  V2_NATIVE_RETURN_BINDING_GENERATED_RETURN_BINDING_LANE = 0,");
   lines.push("  V2_NATIVE_RETURN_BINDING_EXPR_STRING_TO_JSON_STRING,");
+  lines.push("  V2_NATIVE_RETURN_BINDING_EXPR_SPICE_INT_TO_JSON_STRING_VIA_SIZED_OUT_BUFFER,");
   lines.push("} V2NativeReturnBindingKind;");
   lines.push("");
   lines.push("typedef const char *(*V2NativeReturnExprStringToJsonStringFn)(const char *value);");
+  lines.push(
+    "typedef void (*V2NativeReturnExprSpiceIntToJsonStringViaSizedOutBufferFn)(SpiceInt code, SpiceInt outMaxBytes, SpiceChar *outValue);",
+  );
   lines.push("");
   lines.push("typedef struct {");
   lines.push("  V2FunctionId fnId;");
@@ -998,6 +1054,9 @@ function renderNativeReturnBindingsHeader(sourceRelPath: string): string {
   lines.push("  const char *cSymbol;");
   lines.push("  V2NativeReturnBindingKind kind;");
   lines.push("  V2NativeReturnExprStringToJsonStringFn exprStringToJsonStringFn;");
+  lines.push(
+    "  V2NativeReturnExprSpiceIntToJsonStringViaSizedOutBufferFn exprSpiceIntToJsonStringViaSizedOutBufferFn;",
+  );
   lines.push("} V2NativeReturnBindingEntry;");
   lines.push("");
   lines.push("const V2NativeReturnBindingEntry *v2_lookup_native_return_binding(V2FunctionId fnId);");
@@ -1023,13 +1082,16 @@ function renderNativeReturnBindingsSource(
   lines.push("static const V2NativeReturnBindingEntry V2_NATIVE_RETURN_BINDINGS[] = {");
 
   for (const entry of entries) {
-    const fnPtr = entry.kind === "exprStringToJsonString" ? entry.cSymbol : "NULL";
+    const exprStringToJsonStringFn = entry.kind === "exprStringToJsonString" ? entry.cSymbol : "NULL";
+    const exprSpiceIntToJsonStringViaSizedOutBufferFn =
+      entry.kind === "exprSpiceIntToJsonStringViaSizedOutBuffer" ? entry.cSymbol : "NULL";
     lines.push("  {");
     lines.push(`    ${entry.enumId},`);
     lines.push(`    ${JSON.stringify(entry.id)},`);
     lines.push(`    ${JSON.stringify(entry.cSymbol)},`);
     lines.push(`    ${NATIVE_RETURN_BINDING_KIND_C[entry.kind]},`);
-    lines.push(`    ${fnPtr},`);
+    lines.push(`    ${exprStringToJsonStringFn},`);
+    lines.push(`    ${exprSpiceIntToJsonStringViaSizedOutBufferFn},`);
     lines.push("  },");
   }
 

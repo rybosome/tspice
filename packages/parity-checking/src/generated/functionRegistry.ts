@@ -32,7 +32,11 @@ export type FunctionRegistryEntry = {
     cSymbol: string;
     nativeInvoker: string;
     returnBinding?: {
-      kind: "exprStringToJsonString";
+      kind:
+        | "exprSpiceIntToJsonStringViaSizedOutBuffer"
+        | "exprStringToJsonString"
+        | "generatedReturnBindingLane"
+      ;
     };
   };
   arity: number;
@@ -862,6 +866,9 @@ export const functionRegistry: readonly FunctionRegistryEntry[] = [
       contractMethod: "ids-names.bodc2s",
       cSymbol: "bodc2s_c",
       nativeInvoker: "v2_invoke_contract_return",
+      returnBinding: {
+        kind: "exprSpiceIntToJsonStringViaSizedOutBuffer",
+      },
     },
     arity: 1,
     argKinds: ["expr"],

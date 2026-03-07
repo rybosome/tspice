@@ -589,6 +589,83 @@ static bool v2_invoke_return_expr_string_to_json_string(
   return true;
 }
 
+static bool v2_invoke_return_expr_spice_int_to_json_string_via_sized_out_buffer(
+    const V2CallInvokeContext *context,
+    V2NativeReturnExprSpiceIntToJsonStringViaSizedOutBufferFn invokeFn) {
+  if (context->returnValueJson == NULL) {
+    write_error_json_ex("invalid_request",
+                        "call result.mode=return requires return capture",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
+  if (invokeFn == NULL) {
+    write_error_json_ex("invalid_request", "Missing native return binding invoker",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
+  if (context->spec == NULL || context->spec->arity != 1 ||
+      context->spec->argKinds[0] != V2_FUNCTION_ARG_EXPR) {
+    write_error_json_ex("invalid_request",
+                        "Invalid native return binding signature",
+                        context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
+  char argLabel[128];
+  snprintf(argLabel, sizeof(argLabel), "call(%s).in[0]",
+           context->fnName != NULL ? context->fnName : "<unknown>");
+
+  const int resolvedRefCount =
+      (context->refCount != NULL) ? *context->refCount : 0;
+
+  SpiceInt code = 0;
+  if (!v2_resolve_spiceint_expr(context->json,
+                                context->tokens,
+                                context->tokenCount,
+                                context->resolved->valueTokens[0],
+                                context->argsTok,
+                                context->refs,
+                                resolvedRefCount,
+                                argLabel,
+                                &code)) {
+    return false;
+  }
+
+  enum { V2_RETURN_STRING_BUFFER_BYTES = 128 };
+  SpiceChar value[V2_RETURN_STRING_BUFFER_BYTES];
+  memset(value, 0, sizeof(value));
+
+  invokeFn(code, (SpiceInt)V2_RETURN_STRING_BUFFER_BYTES, value);
+  value[V2_RETURN_STRING_BUFFER_BYTES - 1] = '\0';
+
+  if (failed_c() == SPICETRUE) {
+    return v2_write_spice_failure("SPICE error in generated return binding call");
+  }
+
+  char *valueJson = v2_quote_json_string(value);
+  if (valueJson == NULL) {
+    return false;
+  }
+
+  *context->returnValueJson = valueJson;
+  return true;
+}
+
+static bool v2_invoke_generated_return_binding_lane(
+    const V2CallInvokeContext *context,
+    const V2NativeReturnBindingEntry *binding) {
+  (void)binding;
+  write_error_json_ex("invalid_request",
+                      "Generated return binding lane requires executable invoker metadata",
+                      context != NULL ? context->fnName : NULL,
+                      NULL,
+                      NULL,
+                      NULL);
+  return false;
+}
+
 static bool v2_invoke_contract_return_binding(
     const V2CallInvokeContext *context,
     const V2NativeReturnBindingEntry *binding) {
@@ -599,10 +676,14 @@ static bool v2_invoke_contract_return_binding(
   }
 
   switch (binding->kind) {
+  case V2_NATIVE_RETURN_BINDING_GENERATED_RETURN_BINDING_LANE:
+    return v2_invoke_generated_return_binding_lane(context, binding);
   case V2_NATIVE_RETURN_BINDING_EXPR_STRING_TO_JSON_STRING:
     return v2_invoke_return_expr_string_to_json_string(
         context, binding->exprStringToJsonStringFn);
-  case V2_NATIVE_RETURN_BINDING_NONE:
+  case V2_NATIVE_RETURN_BINDING_EXPR_SPICE_INT_TO_JSON_STRING_VIA_SIZED_OUT_BUFFER:
+    return v2_invoke_return_expr_spice_int_to_json_string_via_sized_out_buffer(
+        context, binding->exprSpiceIntToJsonStringViaSizedOutBufferFn);
   default:
     write_error_json_ex("unsupported_call", "Unsupported v2 call",
                         context->fnName, NULL, NULL, NULL);
@@ -623,6 +704,24 @@ static bool v2_invoke_contract_return(const V2CallInvokeContext *context) {
   if (binding == NULL) {
     write_error_json_ex("unsupported_call", "Unsupported v2 call",
                         context->fnName, NULL, NULL, NULL);
+    return false;
+  }
+
+  if (binding->cSymbol == NULL ||
+      strcmp(binding->cSymbol, context->spec->cSymbol) != 0) {
+    char detail[256];
+    detail[0] = '\0';
+    snprintf(detail,
+             sizeof(detail),
+             "binding.cSymbol=%s spec.cSymbol=%s",
+             binding->cSymbol != NULL ? binding->cSymbol : "<null>",
+             context->spec->cSymbol != NULL ? context->spec->cSymbol : "<null>");
+    write_error_json_ex("invalid_request",
+                        "Generated native return binding symbol mismatch",
+                        detail,
+                        NULL,
+                        NULL,
+                        NULL);
     return false;
   }
 

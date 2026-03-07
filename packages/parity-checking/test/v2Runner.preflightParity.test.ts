@@ -225,13 +225,13 @@ describe("v3 runner preflight parity", () => {
   });
 
   maybeIt(
-    "returns unsupported_call for shared return dispatch rows without typed generated return bindings",
+    "executes bodc2s via generated native return binding lane",
     async () => {
       const cspice = await createCspiceRunner();
 
       const returnBinding = lookupNativeReturnBindingEntry("ids-names.bodc2s");
       expect(returnBinding).toBeDefined();
-      expect(returnBinding?.kind).toBe("none");
+      expect(returnBinding?.kind).toBe("exprSpiceIntToJsonStringViaSizedOutBuffer");
 
       const input: RunCaseInputV2 = {
         schemaVersion: 3,
@@ -255,9 +255,9 @@ describe("v3 runner preflight parity", () => {
 
       try {
         const out = await cspice.runCase(input);
-        expect(out.ok).toBe(false);
-        if (!out.ok) {
-          expect(out.error.code).toBe("unsupported_call");
+        expect(out.ok).toBe(true);
+        if (out.ok) {
+          expect(typeof out.result).toBe("string");
         }
       } finally {
         await cspice.dispose?.();
