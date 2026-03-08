@@ -14,12 +14,19 @@ contract:
         const: true
 workflow:
   steps:
-    - op: spiceCall
-      call: dskmi2_c
-      in: []
-    - op: projectResult
-      out:
-        computedSpatialIndex: true
+    - op: withResource
+      as: dskPath
+      acquire:
+        op: materialize
+        fixture: minimalDsk
+        as: dskPath
+      steps:
+        - op: projectResult
+          out:
+            computedSpatialIndex: true
+      finally:
+        - op: unlink
+          target: $refs.dskPath
 cases:
   - id: minimal-triangle-index
     expect:

@@ -149,10 +149,6 @@ function assertExpectedErrorShort(
   }
 }
 
-function isCallContractOnlyWorkflow(workflow: Exclude<MethodSpecV2["workflow"], undefined>): boolean {
-  return workflow.steps.length === 1 && workflow.steps[0]?.op === "callContract";
-}
-
 function pushRuns(
   out: MethodRunCase[],
   workflow: Exclude<MethodSpecV2["workflow"], undefined>,
@@ -211,13 +207,11 @@ export async function executeMethodSpecParityV2(
     const setup = mergeSetupChain(run.setupChain);
     const compare = mergeCompareChain(run.compareChain);
 
-    const argsDefault = isCallContractOnlyWorkflow(run.workflow) ? [] : {};
-
     const caseInput: RunCaseInputV2 = {
       schemaVersion: 3,
       manifest: method.manifest,
       contract: method.contract,
-      args: run.args ?? argsDefault,
+      args: run.args ?? {},
       workflow: run.workflow,
       ...(setup === undefined ? {} : { setup }),
     };

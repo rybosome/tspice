@@ -10,7 +10,11 @@ setup:
     - $FIXTURES/kernel-pool-parity.tpc
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernel-pool.pipool
+      in:
+        - $args.0
+        - $args.1
 cases:
   - id: pipool-write
     args:

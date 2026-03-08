@@ -13,6 +13,17 @@ const generatedFiles = [
   "packages/parity-checking/catalogs/contract-methods.json",
   "packages/parity-checking/catalogs/parity-denylist.json",
   "packages/parity-checking/catalogs/parity-denylist.ts",
+  "packages/parity-checking/src/generated/functionRegistry.ts",
+  "packages/parity-checking/src/generated/nativeCallDispatch.ts",
+  "packages/parity-checking/src/generated/nativeAsSpiceIntBindings.ts",
+  "packages/parity-checking/src/generated/nativeReturnBindings.ts",
+  "packages/parity-checking/native/src/generated/function_registry.h",
+  "packages/parity-checking/native/src/generated/function_registry.c",
+  "packages/parity-checking/native/src/generated/native_call_dispatch.h",
+  "packages/parity-checking/native/src/generated/native_as_spice_int_bindings.h",
+  "packages/parity-checking/native/src/generated/native_as_spice_int_bindings.c",
+  "packages/parity-checking/native/src/generated/native_return_bindings.h",
+  "packages/parity-checking/native/src/generated/native_return_bindings.c",
 ];
 
 function run(command, args, options = {}) {
@@ -50,6 +61,7 @@ function resolveRepoRoot(startCwd) {
 const repoRoot = resolveRepoRoot(packageRoot);
 
 run(pnpmCmd, ["run", "generate:catalogs"], { cwd: packageRoot });
+run(pnpmCmd, ["run", "generate:function-registry"], { cwd: packageRoot });
 
 const missingGeneratedFiles = generatedFiles.filter(
   (relativePath) => !fs.existsSync(path.join(repoRoot, relativePath)),

@@ -561,29 +561,16 @@ function parseStepCore(
       };
     }
 
-    case "spiceCall": {
-      ensureKnownKeys(obj, ["op", "call", "in", "as", "out"], label);
+    case "call": {
+      ensureKnownKeys(obj, ["op", "fn", "in", "as", "out"], label);
       return {
         steps: [
           {
-            op: "spiceCall",
-            call: asString(obj.call, `${label}.call`) as MethodWorkflowStepV3 extends { op: "spiceCall"; call: infer T } ? T : never,
+            op: "call",
+            fn: asString(obj.fn, `${label}.fn`),
             in: asArray(obj.in, `${label}.in`),
             ...(obj.as !== undefined ? { as: asString(obj.as, `${label}.as`) } : {}),
             ...(obj.out !== undefined ? { out: asRecord(obj.out, `${label}.out`) as Record<string, string> } : {}),
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "callContract": {
-      ensureKnownKeys(obj, ["op", "call"], label);
-      return {
-        steps: [
-          {
-            op: "callContract",
-            ...(obj.call !== undefined ? { call: asString(obj.call, `${label}.call`) } : {}),
           },
         ],
         cleanup: [],
@@ -828,18 +815,23 @@ function assertCaseShapeForWorkflow(
   cases: MethodCaseSpecV3[],
   label: string,
 ): void {
-  const isCallContractOnly =
+  const isSingleCallWorkflow =
     workflow.steps.length === 1 &&
-    workflow.steps[0]?.op === "callContract";
+    workflow.steps[0]?.op === "call";
 
   for (const [index, scenarioCase] of cases.entries()) {
-    if (isCallContractOnly) {
+    if (isSingleCallWorkflow) {
       if (scenarioCase.args === undefined) {
         continue;
       }
 
-      if (!Array.isArray(scenarioCase.args)) {
-        throw new TypeError(`${label}[${index}].args must be an array when workflow uses callContract`);
+      const isObjectArgs =
+        typeof scenarioCase.args === "object" &&
+        scenarioCase.args !== null &&
+        !Array.isArray(scenarioCase.args);
+
+      if (!Array.isArray(scenarioCase.args) && !isObjectArgs) {
+        throw new TypeError(`${label}[${index}].args must be an array or object when workflow is a single call`);
       }
       continue;
     }
@@ -849,7 +841,7 @@ function assertCaseShapeForWorkflow(
     }
 
     if (typeof scenarioCase.args !== "object" || scenarioCase.args === null || Array.isArray(scenarioCase.args)) {
-      throw new TypeError(`${label}[${index}].args must be an object when workflow does not use callContract`);
+      throw new TypeError(`${label}[${index}].args must be an object when workflow is not a single call`);
     }
   }
 }

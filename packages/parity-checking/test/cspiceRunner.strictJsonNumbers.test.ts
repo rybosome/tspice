@@ -46,7 +46,7 @@ function buildSchemaVersionPayload(literal: string): string {
 }
 
 function buildAllocSizePayload(literal: string): string {
-  return `{"schemaVersion":3,"manifest":{"id":"methods/cells-windows/size@v3","kind":"method"},"contract":{"contractMethod":"cells-windows.size","canonicalMethod":"cells-windows.size"},"args":{"size":${literal}},"workflow":{"steps":[{"op":"allocCell","as":"cell","params":{"kind":"int","size":"$args.size"}},{"op":"spiceCall","call":"size_c","in":["$refs.cell"],"as":"size"},{"op":"projectResult","out":{"size":"$refs.size"}}],"cleanup":[{"op":"freeCell","target":"$refs.cell"}]}}\n`;
+  return `{"schemaVersion":3,"manifest":{"id":"methods/cells-windows/size@v3","kind":"method"},"contract":{"contractMethod":"cells-windows.size","canonicalMethod":"cells-windows.size"},"args":{"size":${literal}},"workflow":{"steps":[{"op":"allocCell","as":"cell","params":{"kind":"int","size":"$args.size"}},{"op":"call","fn":"cells-windows.size","in":["$refs.cell"],"as":"size"},{"op":"projectResult","out":{"size":"$refs.size"}}],"cleanup":[{"op":"freeCell","target":"$refs.cell"}]}}\n`;
 }
 
 describe("cspice-runner strict JSON integer literal grammar", () => {

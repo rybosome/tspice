@@ -13,7 +13,10 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.dlafns
+      in:
+        - $args.0
 cases:
   - id: file-io.dlafns.walk-next-segment-in-dsk
     args:

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { createCspiceRunner, getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
+import { lookupNativeReturnBindingEntry } from "../src/generated/nativeReturnBindings.js";
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
 import type { RunCaseInputV2 } from "../src/runners/types.js";
 
@@ -39,6 +40,40 @@ function createBaseInput(): RunCaseInputV2 {
 describe("v3 runner preflight parity", () => {
   const status = getCspiceRunnerStatus();
   const maybeIt = status.ready ? it : it.skip;
+
+  it("executes own-spec single-call workflows with object args in tspice runner", async () => {
+    const tspice = await createTspiceRunner();
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/ids-names/bodc2s@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "ids-names.bodc2s",
+        canonicalMethod: "ids-names.bodc2s",
+        aliases: [],
+        args: [{ name: "code", type: "spiceInt" }],
+        result: { const: "EARTH" },
+        errors: [],
+      },
+      args: { code: 399 },
+      workflow: {
+        steps: [{ op: "call", fn: "ids-names.bodc2s", in: ["$args.code"] }],
+      },
+    };
+
+    try {
+      const out = await tspice.runCase(input);
+      expect(out.ok).toBe(true);
+      if (out.ok) {
+        expect(typeof out.result).toBe("string");
+      }
+    } finally {
+      await tspice.dispose?.();
+    }
+  });
 
   maybeIt("reports the same contract-arg validation failure for tspice and cspice runners", async () => {
     const tspice = await createTspiceRunner();
@@ -111,8 +146,50 @@ describe("v3 runner preflight parity", () => {
     }
   });
 
-  maybeIt("executes callContract via v3 workflow path in cspice runner", async () => {
+  maybeIt("rejects forbidden call output bindings in cspice runner", async () => {
     const cspice = await createCspiceRunner();
+
+    const input = createBaseInput();
+    input.workflow.steps = [
+      {
+        op: "allocCell",
+        as: "cell",
+        params: { kind: "int", size: "$args.size" },
+      },
+      {
+        op: "call",
+        fn: "cells-windows.scard",
+        in: [0, "$refs.cell"],
+        out: {
+          ignored: "ignored",
+        },
+      } as unknown as RunCaseInputV2["workflow"]["steps"][number],
+      {
+        op: "projectResult",
+        out: { size: "$args.size" },
+      },
+    ];
+    input.workflow.cleanup = [{ op: "freeCell", target: "$refs.cell" }];
+
+    try {
+      const out = await cspice.runCase(input);
+      expect(out.ok).toBe(false);
+
+      if (!out.ok) {
+        expect(out.error.code).toBe("invalid_args");
+        expect(out.error.message).toContain("out");
+      }
+    } finally {
+      await cspice.dispose?.();
+    }
+  });
+
+  maybeIt("executes call via v3 workflow path in cspice runner", async () => {
+    const cspice = await createCspiceRunner();
+
+    const returnBinding = lookupNativeReturnBindingEntry("time.tkvrsn");
+    expect(returnBinding).toBeDefined();
+    expect(returnBinding?.kind).toBe("exprStringToJsonString");
 
     const input: RunCaseInputV2 = {
       schemaVersion: 3,
@@ -131,7 +208,7 @@ describe("v3 runner preflight parity", () => {
       },
       args: ["TOOLKIT"],
       workflow: {
-        steps: [{ op: "callContract" }],
+        steps: [{ op: "call", fn: "time.tkvrsn", in: ["$args.0"] }],
       },
     };
 
@@ -146,4 +223,45 @@ describe("v3 runner preflight parity", () => {
       await cspice.dispose?.();
     }
   });
+
+  maybeIt(
+    "executes bodc2s via generated native return binding lane",
+    async () => {
+      const cspice = await createCspiceRunner();
+
+      const returnBinding = lookupNativeReturnBindingEntry("ids-names.bodc2s");
+      expect(returnBinding).toBeDefined();
+      expect(returnBinding?.kind).toBe("exprSpiceIntToJsonStringViaSizedOutBuffer");
+
+      const input: RunCaseInputV2 = {
+        schemaVersion: 3,
+        manifest: {
+          id: "methods/ids-names/bodc2s@v3",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "ids-names.bodc2s",
+          canonicalMethod: "ids-names.bodc2s",
+          aliases: [],
+          args: [{ name: "code", type: "spiceInt" }],
+          result: { const: "EARTH" },
+          errors: [],
+        },
+        args: { code: 399 },
+        workflow: {
+          steps: [{ op: "call", fn: "ids-names.bodc2s", in: ["$args.code"] }],
+        },
+      };
+
+      try {
+        const out = await cspice.runCase(input);
+        expect(out.ok).toBe(true);
+        if (out.ok) {
+          expect(typeof out.result).toBe("string");
+        }
+      } finally {
+        await cspice.dispose?.();
+      }
+    },
+  );
 });

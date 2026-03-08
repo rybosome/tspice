@@ -54,9 +54,9 @@ describe("cspice-runner JSON string escaping", () => {
     expect(out.error?.message).toMatch(/invalid json string escape/i);
   });
 
-  maybeIt("unescapes \\uXXXX in workflow spiceCall names", () => {
+  maybeIt("unescapes \\uXXXX in workflow call fn names", () => {
     const out = runRawJson(
-      '{"schemaVersion":3,"manifest":{"id":"methods/cells-windows/size@v3","kind":"method"},"contract":{"contractMethod":"cells-windows.size","canonicalMethod":"cells-windows.size"},"args":{"size":1},"workflow":{"steps":[{"op":"allocCell","as":"cell","params":{"kind":"int","size":"$args.size"}},{"op":"spiceCall","call":"siz\\u0065_c","in":["$refs.cell"],"as":"size"},{"op":"projectResult","out":{"size":"$refs.size"}}],"cleanup":[{"op":"freeCell","target":"$refs.cell"}]}}\n',
+      '{"schemaVersion":3,"manifest":{"id":"methods/cells-windows/size@v3","kind":"method"},"contract":{"contractMethod":"cells-windows.size","canonicalMethod":"cells-windows.size"},"args":{"size":1},"workflow":{"steps":[{"op":"allocCell","as":"cell","params":{"kind":"int","size":"$args.size"}},{"op":"call","fn":"cells-windows.siz\\u0065","in":["$refs.cell"],"as":"size"},{"op":"projectResult","out":{"size":"$refs.size"}}],"cleanup":[{"op":"freeCell","target":"$refs.cell"}]}}\n',
     ) as any;
 
     expect(out.ok).toBe(true);

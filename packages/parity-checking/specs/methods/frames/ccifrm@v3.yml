@@ -14,7 +14,11 @@ defaults:
     tolRel: 1e-12
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: frames.ccifrm
+      in:
+        - $args.0
+        - $args.1
 cases:
   - id: ccifrm-j2000
     args:

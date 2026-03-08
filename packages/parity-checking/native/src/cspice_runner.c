@@ -158,7 +158,7 @@ int main(void) {
     goto done;
   }
 
-  if (!v2_execute_workflow_request(input, tokens, tokenCount, setupTok)) {
+  if (!v2_execute_workflow_request(input, tokens, tokenCount)) {
     exitCode = 1;
     goto done;
   }

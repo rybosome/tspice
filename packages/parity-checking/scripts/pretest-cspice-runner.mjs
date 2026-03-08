@@ -131,13 +131,58 @@ function isUpToDate(binaryPath, sources) {
   return true;
 }
 
+function walkFilesRecursive(rootDir) {
+  const out = [];
+  const stack = [rootDir];
+
+  while (stack.length > 0) {
+    const dir = stack.pop();
+    if (!dir) continue;
+
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const abs = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        stack.push(abs);
+      } else if (entry.isFile()) {
+        out.push(abs);
+      }
+    }
+  }
+
+  return out;
+}
+
 function listRunnerFiles(pkgRoot, ext) {
   const srcDir = path.join(pkgRoot, "native", "src");
-  const entries = fs.readdirSync(srcDir, { withFileTypes: true });
-  return entries
-    .filter((entry) => entry.isFile() && /^cspice_runner.*\.[ch]$/.test(entry.name))
-    .filter((entry) => entry.name.endsWith(ext))
-    .map((entry) => path.join(srcDir, entry.name))
+  return walkFilesRecursive(srcDir)
+    .filter((absPath) => absPath.endsWith(ext))
+    .filter((absPath) => {
+      const rel = path.relative(srcDir, absPath).replaceAll(path.sep, "/");
+      const base = path.basename(absPath);
+      if (/^cspice_runner.*\.[ch]$/.test(base)) {
+        return true;
+      }
+
+      const generatedAllowlist = new Set([
+        `generated/function_registry${ext}`,
+        ...(ext === ".h"
+          ? [
+              "generated/native_call_dispatch.h",
+              "generated/native_as_spice_int_bindings.h",
+              "generated/native_return_bindings.h",
+            ]
+          : []),
+        ...(ext === ".c"
+          ? [
+              "generated/native_as_spice_int_bindings.c",
+              "generated/native_return_bindings.c",
+            ]
+          : []),
+      ]);
+
+      return generatedAllowlist.has(rel);
+    })
     .sort();
 }
 

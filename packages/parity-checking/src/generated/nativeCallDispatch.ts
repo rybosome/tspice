@@ -1,0 +1,623 @@
+/* eslint-disable */
+// GENERATED FILE - DO NOT EDIT.
+// Source: packages/parity-checking/registry/functions.registry.yml
+
+export type NativeCallDispatchEntry = {
+  id: string;
+  enumId: string;
+  cSymbol: string;
+  invoker: string;
+};
+
+export const nativeCallDispatch: readonly NativeCallDispatchEntry[] = [
+  {
+    id: "cells-windows.card",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_CARD",
+    cSymbol: "card_c",
+    invoker: "v2_invoke_contract_as_spice_int",
+  },
+  {
+    id: "cells-windows.insrtc",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_INSRTC",
+    cSymbol: "insrtc_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "cells-windows.insrtd",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_INSRTD",
+    cSymbol: "insrtd_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "cells-windows.insrti",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_INSRTI",
+    cSymbol: "insrti_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "cells-windows.scard",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_SCARD",
+    cSymbol: "scard_c",
+    invoker: "v2_invoke_contract_forbidden",
+  },
+  {
+    id: "cells-windows.size",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_SIZE",
+    cSymbol: "size_c",
+    invoker: "v2_invoke_contract_as_spice_int",
+  },
+  {
+    id: "cells-windows.ssize",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_SSIZE",
+    cSymbol: "ssize_c",
+    invoker: "v2_invoke_contract_forbidden",
+  },
+  {
+    id: "cells-windows.valid",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_VALID",
+    cSymbol: "valid_c",
+    invoker: "v2_invoke_contract_forbidden",
+  },
+  {
+    id: "cells-windows.wncard",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_WNCARD",
+    cSymbol: "wncard_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "cells-windows.wnfetd",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_WNFETD",
+    cSymbol: "wnfetd_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "cells-windows.wninsd",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_WNINSD",
+    cSymbol: "wninsd_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "cells-windows.wnvald",
+    enumId: "V2_FUNCTION_ID_CELLS_WINDOWS_WNVALD",
+    cSymbol: "wnvald_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.axisar",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_AXISAR",
+    cSymbol: "axisar_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.georec",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_GEOREC",
+    cSymbol: "georec_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.latrec",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_LATREC",
+    cSymbol: "latrec_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.mtxv",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_MTXV",
+    cSymbol: "mtxv_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.mxm",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_MXM",
+    cSymbol: "mxm_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.mxv",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_MXV",
+    cSymbol: "mxv_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.recgeo",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_RECGEO",
+    cSymbol: "recgeo_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.reclat",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_RECLAT",
+    cSymbol: "reclat_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.recsph",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_RECSPH",
+    cSymbol: "recsph_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.rotate",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_ROTATE",
+    cSymbol: "rotate_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.rotmat",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_ROTMAT",
+    cSymbol: "rotmat_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.sphrec",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_SPHREC",
+    cSymbol: "sphrec_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.vadd",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_VADD",
+    cSymbol: "vadd_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.vcrss",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_VCRSS",
+    cSymbol: "vcrss_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.vdot",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_VDOT",
+    cSymbol: "vdot_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.vhat",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_VHAT",
+    cSymbol: "vhat_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.vminus",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_VMINUS",
+    cSymbol: "vminus_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.vnorm",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_VNORM",
+    cSymbol: "vnorm_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.vscl",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_VSCL",
+    cSymbol: "vscl_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "coords-vectors.vsub",
+    enumId: "V2_FUNCTION_ID_COORDS_VECTORS_VSUB",
+    cSymbol: "vsub_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "dsk.dskb02",
+    enumId: "V2_FUNCTION_ID_DSK_DSKB02",
+    cSymbol: "dskb02_c",
+    invoker: "v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_out_named_dskb02",
+  },
+  {
+    id: "dsk.dskgd",
+    enumId: "V2_FUNCTION_ID_DSK_DSKGD",
+    cSymbol: "dskgd_c",
+    invoker: "v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor",
+  },
+  {
+    id: "dsk.dskobj",
+    enumId: "V2_FUNCTION_ID_DSK_DSKOBJ",
+    cSymbol: "dskobj_c",
+    invoker: "v2_invoke_contract_forbidden",
+  },
+  {
+    id: "dsk.dsksrf",
+    enumId: "V2_FUNCTION_ID_DSK_DSKSRF",
+    cSymbol: "dsksrf_c",
+    invoker: "v2_invoke_contract_forbidden",
+  },
+  {
+    id: "ephemeris.spkez",
+    enumId: "V2_FUNCTION_ID_EPHEMERIS_SPKEZ",
+    cSymbol: "spkez_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ephemeris.spkezp",
+    enumId: "V2_FUNCTION_ID_EPHEMERIS_SPKEZP",
+    cSymbol: "spkezp_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ephemeris.spkezr",
+    enumId: "V2_FUNCTION_ID_EPHEMERIS_SPKEZR",
+    cSymbol: "spkezr_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ephemeris.spkgeo",
+    enumId: "V2_FUNCTION_ID_EPHEMERIS_SPKGEO",
+    cSymbol: "spkgeo_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ephemeris.spkgps",
+    enumId: "V2_FUNCTION_ID_EPHEMERIS_SPKGPS",
+    cSymbol: "spkgps_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ephemeris.spkpds",
+    enumId: "V2_FUNCTION_ID_EPHEMERIS_SPKPDS",
+    cSymbol: "spkpds_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ephemeris.spkpos",
+    enumId: "V2_FUNCTION_ID_EPHEMERIS_SPKPOS",
+    cSymbol: "spkpos_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ephemeris.spksfs",
+    enumId: "V2_FUNCTION_ID_EPHEMERIS_SPKSFS",
+    cSymbol: "spksfs_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ephemeris.spkssb",
+    enumId: "V2_FUNCTION_ID_EPHEMERIS_SPKSSB",
+    cSymbol: "spkssb_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.dafbfs",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DAFBFS",
+    cSymbol: "dafbfs_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.dafcls",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DAFCLS",
+    cSymbol: "dafcls_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.daffna",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DAFFNA",
+    cSymbol: "daffna_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.dafopr",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DAFOPR",
+    cSymbol: "dafopr_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.dascls",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DASCLS",
+    cSymbol: "dascls_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.dasopr",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DASOPR",
+    cSymbol: "dasopr_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.dlabfs",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DLABFS",
+    cSymbol: "dlabfs_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.dlacls",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DLACLS",
+    cSymbol: "dlacls_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.dlafns",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DLAFNS",
+    cSymbol: "dlafns_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.dlaopn",
+    enumId: "V2_FUNCTION_ID_FILE_IO_DLAOPN",
+    cSymbol: "dlaopn_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.exists",
+    enumId: "V2_FUNCTION_ID_FILE_IO_EXISTS",
+    cSymbol: "exists_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "file-io.getfat",
+    enumId: "V2_FUNCTION_ID_FILE_IO_GETFAT",
+    cSymbol: "getfat_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "frames.ccifrm",
+    enumId: "V2_FUNCTION_ID_FRAMES_CCIFRM",
+    cSymbol: "ccifrm_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "frames.cidfrm",
+    enumId: "V2_FUNCTION_ID_FRAMES_CIDFRM",
+    cSymbol: "cidfrm_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "frames.cnmfrm",
+    enumId: "V2_FUNCTION_ID_FRAMES_CNMFRM",
+    cSymbol: "cnmfrm_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "frames.frinfo",
+    enumId: "V2_FUNCTION_ID_FRAMES_FRINFO",
+    cSymbol: "frinfo_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "frames.frmnam",
+    enumId: "V2_FUNCTION_ID_FRAMES_FRMNAM",
+    cSymbol: "frmnam_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "frames.namfrm",
+    enumId: "V2_FUNCTION_ID_FRAMES_NAMFRM",
+    cSymbol: "namfrm_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "frames.pxform",
+    enumId: "V2_FUNCTION_ID_FRAMES_PXFORM",
+    cSymbol: "pxform_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "frames.sxform",
+    enumId: "V2_FUNCTION_ID_FRAMES_SXFORM",
+    cSymbol: "sxform_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ids-names.bodc2n",
+    enumId: "V2_FUNCTION_ID_IDS_NAMES_BODC2N",
+    cSymbol: "bodc2n_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ids-names.bodc2s",
+    enumId: "V2_FUNCTION_ID_IDS_NAMES_BODC2S",
+    cSymbol: "bodc2s_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ids-names.boddef",
+    enumId: "V2_FUNCTION_ID_IDS_NAMES_BODDEF",
+    cSymbol: "boddef_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ids-names.bodfnd",
+    enumId: "V2_FUNCTION_ID_IDS_NAMES_BODFND",
+    cSymbol: "bodfnd_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ids-names.bodn2c",
+    enumId: "V2_FUNCTION_ID_IDS_NAMES_BODN2C",
+    cSymbol: "bodn2c_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ids-names.bods2c",
+    enumId: "V2_FUNCTION_ID_IDS_NAMES_BODS2C",
+    cSymbol: "bods2c_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "ids-names.bodvar",
+    enumId: "V2_FUNCTION_ID_IDS_NAMES_BODVAR",
+    cSymbol: "bodvcd_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.cvpool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_CVPOOL",
+    cSymbol: "cvpool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.dtpool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_DTPOOL",
+    cSymbol: "dtpool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.expool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_EXPOOL",
+    cSymbol: "expool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.gcpool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_GCPOOL",
+    cSymbol: "gcpool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.gdpool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_GDPOOL",
+    cSymbol: "gdpool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.gipool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_GIPOOL",
+    cSymbol: "gipool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.gnpool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_GNPOOL",
+    cSymbol: "gnpool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.pcpool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_PCPOOL",
+    cSymbol: "pcpool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.pdpool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_PDPOOL",
+    cSymbol: "pdpool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.pipool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_PIPOOL",
+    cSymbol: "pipool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernel-pool.swpool",
+    enumId: "V2_FUNCTION_ID_KERNEL_POOL_SWPOOL",
+    cSymbol: "swpool_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernels.furnsh",
+    enumId: "V2_FUNCTION_ID_KERNELS_FURNSH",
+    cSymbol: "furnsh_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernels.kclear",
+    enumId: "V2_FUNCTION_ID_KERNELS_KCLEAR",
+    cSymbol: "kclear_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernels.kdata",
+    enumId: "V2_FUNCTION_ID_KERNELS_KDATA",
+    cSymbol: "kdata_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernels.kinfo",
+    enumId: "V2_FUNCTION_ID_KERNELS_KINFO",
+    cSymbol: "kinfo_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernels.kplfrm",
+    enumId: "V2_FUNCTION_ID_KERNELS_KPLFRM",
+    cSymbol: "kplfrm_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernels.ktotal",
+    enumId: "V2_FUNCTION_ID_KERNELS_KTOTAL",
+    cSymbol: "ktotal_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernels.kxtrct",
+    enumId: "V2_FUNCTION_ID_KERNELS_KXTRCT",
+    cSymbol: "kxtrct_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "kernels.unload",
+    enumId: "V2_FUNCTION_ID_KERNELS_UNLOAD",
+    cSymbol: "unload_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "time.deltet",
+    enumId: "V2_FUNCTION_ID_TIME_DELTET",
+    cSymbol: "deltet_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "time.et2utc",
+    enumId: "V2_FUNCTION_ID_TIME_ET2UTC",
+    cSymbol: "et2utc_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "time.str2et",
+    enumId: "V2_FUNCTION_ID_TIME_STR2ET",
+    cSymbol: "str2et_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "time.timdef",
+    enumId: "V2_FUNCTION_ID_TIME_TIMDEF",
+    cSymbol: "timdef_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "time.timout",
+    enumId: "V2_FUNCTION_ID_TIME_TIMOUT",
+    cSymbol: "timout_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "time.tkvrsn",
+    enumId: "V2_FUNCTION_ID_TIME_TKVRSN",
+    cSymbol: "tkvrsn_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "time.tparse",
+    enumId: "V2_FUNCTION_ID_TIME_TPARSE",
+    cSymbol: "tparse_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "time.tpictr",
+    enumId: "V2_FUNCTION_ID_TIME_TPICTR",
+    cSymbol: "tpictr_c",
+    invoker: "v2_invoke_contract_return",
+  },
+  {
+    id: "time.unitim",
+    enumId: "V2_FUNCTION_ID_TIME_UNITIM",
+    cSymbol: "unitim_c",
+    invoker: "v2_invoke_contract_return",
+  },
+];
+
+const nativeCallDispatchById = new Map<string, NativeCallDispatchEntry>();
+for (const entry of nativeCallDispatch) {
+  nativeCallDispatchById.set(entry.id, entry);
+}
+
+export function lookupNativeCallDispatchEntry(fnId: string): NativeCallDispatchEntry | undefined {
+  return nativeCallDispatchById.get(fnId);
+}
+

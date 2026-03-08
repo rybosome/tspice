@@ -15,7 +15,13 @@ defaults:
     tolRel: 1e-12
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: ephemeris.spkgeo
+      in:
+        - $args.0
+        - $args.1
+        - $args.2
+        - $args.3
 cases:
   - id: ephemeris.spkgeo.earth-sun
     args:
