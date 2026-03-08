@@ -79,6 +79,12 @@ pnpm -C packages/backend-node run build:native
 pnpm run stage:native-platform
 ```
 
+For linux-arm64 devbox parity work, run native preflight first:
+
+```bash
+pnpm run preflight:parity:native
+```
+
 Notes:
 
 - `pnpm run check:native` runs the full native pipeline (build + stage + build/test).

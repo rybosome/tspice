@@ -15,6 +15,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "preflight:native": "node ./scripts/preflight-native-prereqs.mjs",
     "generate:contract-catalog": "tsx ./scripts/generate-contract-catalog.ts",
     "generate:denylist": "tsx ./scripts/generate-parity-denylist.ts",
     "generate:catalogs": "pnpm run generate:contract-catalog && pnpm run generate:denylist",

@@ -18,6 +18,7 @@
     "fetch:cspice": "node scripts/fetch-cspice.mjs",
     "format:check": "pnpm -C apps/orrery run format:check",
     "lint": "pnpm run lint:jsdoc && pnpm -r --if-present lint",
+    "preflight:parity:native": "pnpm -C packages/parity-checking run preflight:native",
     "stage:native-platform": "node scripts/stage-native-platform.mjs",
     "test": "turbo run test",
     "test:js": "turbo run test --filter=!@rybosome/tspice-backend-node",

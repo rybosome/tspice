@@ -38,9 +38,41 @@ Workflow highlights:
 
 ## Scripts
 
+- `pnpm run preflight:parity:native`
 - `pnpm -C packages/parity-checking generate:catalogs`
 - `pnpm -C packages/parity-checking check:generated`
 - `pnpm -C packages/parity-checking test`
+
+### Native parity preflight (linux-arm64 devbox)
+
+Run this before native parity-checking work:
+
+```bash
+pnpm run preflight:parity:native
+```
+
+Or package-local:
+
+```bash
+pnpm -C packages/parity-checking run preflight:native
+```
+
+This command fails fast unless all required native prerequisites are present:
+
+- `nix` is available on `PATH`
+- `TSPICE_CSPICE_DIR` is set
+- `$TSPICE_CSPICE_DIR` contains the expected CSPICE layout:
+  - `include/SpiceUsr.h`
+  - `lib/cspice.a`
+  - `lib/csupport.a`
+
+The preflight does not assume prior shell setup. Example one-shot invocation:
+
+```bash
+TSPICE_CSPICE_DIR=/abs/path/to/cspice pnpm run preflight:parity:native
+```
+
+If `nix` is unavailable, install/enable it first. If you bootstrap CSPICE through an equivalent non-Nix path, set `TSPICE_CSPICE_DIR` to that install root before running parity checks.
 
 `test` runs the full guard pipeline before parity execution:
 
