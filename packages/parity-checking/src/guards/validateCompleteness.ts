@@ -1,4 +1,5 @@
 import { readContractCatalog } from "../generated/readContractCatalog.js";
+import { readMethodSurfaceRegistry } from "../generated/readMethodSurfaceRegistry.js";
 import { readParityDenylist } from "../generated/readParityDenylist.js";
 import { methodCanonicalMethod } from "../dsl/types.js";
 import {
@@ -19,9 +20,20 @@ export type CompletenessValidationSummary = {
 /** Enforce parity catalog coverage invariants for the v3 migration baseline. */
 export function validateCompleteness(methodSpecs: AnyMethodSpec[]): CompletenessValidationSummary {
   const contractMethods = readContractCatalog();
+  const methodSurface = readMethodSurfaceRegistry();
   const denylist = readParityDenylist();
 
   const coveredCanonical = new Set(methodSpecs.map((method) => methodCanonicalMethod(method)));
+  const methodSurfaceCanonical = methodSurface.map((entry) => entry.canonicalMethod);
+  const methodSurfaceSet = new Set(methodSurfaceCanonical);
+
+  const missingMethodSurfaceCoverage = methodSurfaceCanonical.filter(
+    (canonicalMethod) => !coveredCanonical.has(canonicalMethod),
+  );
+  const unexpectedCoveredCanonical = [...coveredCanonical].filter(
+    (canonicalMethod) => !methodSurfaceSet.has(canonicalMethod),
+  );
+
   const contractSet = new Set(contractMethods);
   const coveredContract = new Set(
     [...coveredCanonical].filter((canonicalMethod) => contractSet.has(canonicalMethod)),
@@ -31,6 +43,33 @@ export function validateCompleteness(methodSpecs: AnyMethodSpec[]): Completeness
   if (denylist.length !== 0) {
     throw new Error(
       `Parity denylist must be empty in v3 baseline migration (expected 0, got ${denylist.length}). Regenerate via \`pnpm -C packages/parity-checking generate:denylist\`.`,
+    );
+  }
+
+  if (methodSurface.length !== BASELINE_METHOD_SPEC_COVERAGE) {
+    throw new Error(
+      `Method-surface registry size changed from baseline ${BASELINE_METHOD_SPEC_COVERAGE} to ${methodSurface.length}. ` +
+        "Update registry/specs together and regenerate artifacts.",
+    );
+  }
+
+  if (missingMethodSurfaceCoverage.length > 0 || unexpectedCoveredCanonical.length > 0) {
+    const missingPreview = missingMethodSurfaceCoverage.slice(0, 8).join(", ");
+    const unexpectedPreview = unexpectedCoveredCanonical.slice(0, 8).join(", ");
+
+    const diagnostics = [
+      `missing=${missingMethodSurfaceCoverage.length}`,
+      `unexpected=${unexpectedCoveredCanonical.length}`,
+      missingPreview ? `missingSample=${missingPreview}${missingMethodSurfaceCoverage.length > 8 ? ", ..." : ""}` : "",
+      unexpectedPreview
+        ? `unexpectedSample=${unexpectedPreview}${unexpectedCoveredCanonical.length > 8 ? ", ..." : ""}`
+        : "",
+    ]
+      .filter(Boolean)
+      .join("; ");
+
+    throw new Error(
+      "Parity method-spec coverage must exactly match registry/method-surface.yml. " + diagnostics,
     );
   }
 

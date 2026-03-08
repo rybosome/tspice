@@ -32,3 +32,4 @@ export { formatMismatchReport } from "./compare/report.js";
 
 export { readContractCatalog } from "./generated/readContractCatalog.js";
 export { readParityDenylist } from "./generated/readParityDenylist.js";
+export { readMethodSurfaceRegistry } from "./generated/readMethodSurfaceRegistry.js";

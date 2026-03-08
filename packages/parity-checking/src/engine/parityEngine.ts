@@ -226,6 +226,8 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
   const proofEnabled = isParityProofNativeV2Enabled();
   const proofDisabledSummary = buildDisabledProofSummary();
 
+  console.info(`[parity-proof] ${proofEnabled ? "proof=native-v2" : proofDisabledSummary.marker}`);
+
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
     if (proofEnabled) {

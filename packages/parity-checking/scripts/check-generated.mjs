@@ -13,6 +13,8 @@ const generatedFiles = [
   "packages/parity-checking/catalogs/contract-methods.json",
   "packages/parity-checking/catalogs/parity-denylist.json",
   "packages/parity-checking/catalogs/parity-denylist.ts",
+  "packages/parity-checking/catalogs/method-surface.json",
+  "packages/parity-checking/src/generated/methodSurfaceRegistry.ts",
 ];
 
 function run(command, args, options = {}) {
@@ -49,6 +51,7 @@ function resolveRepoRoot(startCwd) {
 
 const repoRoot = resolveRepoRoot(packageRoot);
 
+run(pnpmCmd, ["run", "check:method-surface-sync"], { cwd: packageRoot });
 run(pnpmCmd, ["run", "generate:catalogs"], { cwd: packageRoot });
 
 const missingGeneratedFiles = generatedFiles.filter(

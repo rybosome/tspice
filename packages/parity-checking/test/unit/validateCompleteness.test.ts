@@ -8,13 +8,20 @@ import {
   BASELINE_UNCOVERED_CONTRACT_METHODS,
 } from "../../src/guards/completenessBaseline.js";
 
-const { readContractCatalogMock, readParityDenylistMock } = vi.hoisted(() => ({
+const { readContractCatalogMock, readMethodSurfaceRegistryMock, readParityDenylistMock } = vi.hoisted(() => ({
   readContractCatalogMock: vi.fn<() => string[]>(),
+  readMethodSurfaceRegistryMock: vi.fn<
+    () => Array<{ manifestId: string; canonicalMethod: string; contractMethod: string; workflowKind: "callContract" | "workflow" }>
+  >(),
   readParityDenylistMock: vi.fn<() => string[]>(),
 }));
 
 vi.mock("../../src/generated/readContractCatalog.js", () => ({
   readContractCatalog: readContractCatalogMock,
+}));
+
+vi.mock("../../src/generated/readMethodSurfaceRegistry.js", () => ({
+  readMethodSurfaceRegistry: readMethodSurfaceRegistryMock,
 }));
 
 vi.mock("../../src/generated/readParityDenylist.js", () => ({
@@ -38,6 +45,13 @@ const BASELINE_CONTRACT_METHODS = [
   ...BASELINE_CONTRACT_COVERED_METHODS,
   ...BASELINE_UNCOVERED_METHODS,
 ];
+
+const BASELINE_METHOD_SURFACE_REGISTRY = BASELINE_COVERED_METHODS.map((canonicalMethod, index) => ({
+  manifestId: `methods/test/${index}@v3`,
+  canonicalMethod,
+  contractMethod: canonicalMethod,
+  workflowKind: "callContract" as const,
+}));
 
 function makeMethodSpecs(canonicalMethods: string[]): AnyMethodSpec[] {
   return canonicalMethods.map((canonicalMethod, index) => ({
@@ -63,9 +77,11 @@ function makeMethodSpecs(canonicalMethods: string[]): AnyMethodSpec[] {
 describe("validateCompleteness", () => {
   beforeEach(() => {
     readContractCatalogMock.mockReset();
+    readMethodSurfaceRegistryMock.mockReset();
     readParityDenylistMock.mockReset();
 
     readContractCatalogMock.mockReturnValue([...BASELINE_CONTRACT_METHODS]);
+    readMethodSurfaceRegistryMock.mockReturnValue([...BASELINE_METHOD_SURFACE_REGISTRY]);
     readParityDenylistMock.mockReturnValue([]);
   });
 
@@ -77,6 +93,14 @@ describe("validateCompleteness", () => {
       coveredCount: BASELINE_METHOD_SPEC_COVERAGE,
       denylistCount: 0,
     });
+  });
+
+  it("fails when method-spec coverage diverges from method-surface registry", () => {
+    const shortCoverage = BASELINE_COVERED_METHODS.slice(0, BASELINE_COVERED_METHODS.length - 1);
+
+    expect(() => validateCompleteness(makeMethodSpecs(shortCoverage))).toThrow(
+      /must exactly match registry\/method-surface\.yml/,
+    );
   });
 
   it("fails when uncovered catalog methods increase", () => {

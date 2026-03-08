@@ -7,7 +7,7 @@ It owns:
 - pre-execution guard pipeline,
 - tspice/cspice parity runtime comparison,
 - cross-cutting spec execution,
-- generated parity catalogs.
+- generated parity catalogs + method-surface registry artifacts.
 
 ## Layout
 
@@ -15,6 +15,8 @@ It owns:
 - `specs/cross-cutting/**` — executable cross-cutting specs (`schemaVersion: 3`, `manifest.kind: crossCuttingSpec`)
 - `catalogs/contract-methods.json` — generated canonical contract methods
 - `catalogs/parity-denylist.json` / `catalogs/parity-denylist.ts` — generated denylist (v3 baseline is empty)
+- `registry/method-surface.yml` — canonical YAML registry for v3 method-surface coverage
+- `catalogs/method-surface.json` / `src/generated/methodSurfaceRegistry.ts` — generated artifacts from the YAML method-surface registry
 
 ## Method DSL (v3)
 
@@ -39,6 +41,8 @@ Workflow highlights:
 ## Scripts
 
 - `pnpm run preflight:parity:native`
+- `pnpm -C packages/parity-checking sync:method-surface`
+- `pnpm -C packages/parity-checking check:method-surface-sync`
 - `pnpm -C packages/parity-checking generate:catalogs`
 - `pnpm -C packages/parity-checking check:generated`
 - `pnpm -C packages/parity-checking test`

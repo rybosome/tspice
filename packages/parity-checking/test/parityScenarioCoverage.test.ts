@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { discoverYamlFiles } from "../src/dsl/discoverYamlFiles.js";
 import { loadYamlFile } from "../src/dsl/loadYaml.js";
+import { readMethodSurfaceRegistry } from "../src/generated/readMethodSurfaceRegistry.js";
 import { readParityDenylist } from "../src/generated/readParityDenylist.js";
 import { BASELINE_METHOD_SPEC_COVERAGE } from "../src/guards/completenessBaseline.js";
 
@@ -33,7 +34,7 @@ function canonicalMethodFromSpecData(data: unknown, filePath: string): string {
 }
 
 describe("parity-checking spec coverage", () => {
-  it("pins v3 baseline method-spec coverage and empty denylist", async () => {
+  it("pins v3 baseline method-spec coverage, method-surface registry parity, and empty denylist", async () => {
     const testDir = path.dirname(fileURLToPath(import.meta.url));
     const methodsDir = path.resolve(testDir, "../specs/methods");
 
@@ -47,6 +48,10 @@ describe("parity-checking spec coverage", () => {
       coveredCanonical.add(canonicalMethodFromSpecData(data, filePath));
     }
 
+    const methodSurfaceRegistry = readMethodSurfaceRegistry();
+    const methodSurfaceCanonical = methodSurfaceRegistry.map((entry) => entry.canonicalMethod).sort(stableSort);
+    const coveredCanonicalSorted = [...coveredCanonical].sort(stableSort);
+
     const denylist = readParityDenylist();
 
     const denylistSorted = [...denylist].sort(stableSort);
@@ -55,6 +60,8 @@ describe("parity-checking spec coverage", () => {
 
     expect(methodFiles.length).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(coveredCanonical.size).toBe(BASELINE_METHOD_SPEC_COVERAGE);
+    expect(methodSurfaceRegistry.length).toBe(BASELINE_METHOD_SPEC_COVERAGE);
+    expect(coveredCanonicalSorted).toEqual(methodSurfaceCanonical);
     expect(denylist.length).toBe(0);
   });
 });
