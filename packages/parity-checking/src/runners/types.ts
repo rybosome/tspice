@@ -281,11 +281,18 @@ export type RunCaseResult =
   | { ok: true; result: unknown }
   | { ok: false; error: RunnerErrorReport };
 
+export type CaseRunnerBackendMetadata = {
+  requestedBackend: "auto" | "node" | "wasm";
+  actualBackend: "node" | "wasm";
+  fallbackDetected: boolean;
+};
+
 /**
  * Minimal runner interface used by the backend verification DSL.
  */
 export interface CaseRunner {
   readonly kind: string;
+  readonly backendMetadata?: CaseRunnerBackendMetadata;
   /** Execute a single case (including any setup) and return its outcome. */
   runCase(input: RunCaseInput): Promise<RunCaseResult>;
   /** Optional cleanup hook for releasing any runner resources. */
