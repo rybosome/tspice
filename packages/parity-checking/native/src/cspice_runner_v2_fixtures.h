@@ -7,11 +7,12 @@
 #define DSK_MINIMAL_NV 3
 #define DSK_MINIMAL_NP 1
 // Keep these comfortably above documented dskmi2 lower bounds for the
-// 1-plate fixture while avoiding the 100k+ stress-test sizing used elsewhere.
-#define DSK_MINIMAL_WORKSZ 2048
-#define DSK_MINIMAL_VOXPSZ 512
+// 1-plate fixture while avoiding the much larger stress-test sizing used
+// elsewhere.
+#define DSK_MINIMAL_WORKSZ 4096
+#define DSK_MINIMAL_VOXPSZ 4096
 #define DSK_MINIMAL_VOXLSZ 1024
-#define DSK_MINIMAL_SPXISZ 8192
+#define DSK_MINIMAL_SPXISZ 131072
 
 extern const SpiceDouble DSK_MINIMAL_VERTICES[DSK_MINIMAL_NV][3];
 extern const SpiceInt DSK_MINIMAL_PLATES[DSK_MINIMAL_NP][3];

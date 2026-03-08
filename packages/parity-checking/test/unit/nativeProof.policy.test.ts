@@ -27,6 +27,26 @@ function baseCallContractInput(): RunCaseInputV2 {
   };
 }
 
+function baseCallContractObjectArgsInput(): RunCaseInputV2 {
+  const base = baseCallContractInput();
+
+  return {
+    ...base,
+    args: {
+      token: 1,
+    },
+    contract: {
+      ...base.contract,
+      args: [
+        {
+          name: "token",
+          type: "spiceInt",
+        },
+      ],
+    },
+  };
+}
+
 describe("native proof policy", () => {
   it("treats PARITY_PROOF_NATIVE_V2 as a strict gate (exactly '1')", () => {
     expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "1" })).toBe(true);
@@ -45,8 +65,18 @@ describe("native proof policy", () => {
     expect(plan.ops).toEqual(["callContract"]);
   });
 
-  it("forces native reference transport for non-excepted callContract cases in proof mode", () => {
+  it("keeps positional callContract workflows on fast-path in proof mode", () => {
     const plan = resolveReferenceExecutionPlan(baseCallContractInput(), {
+      proofMode: true,
+    });
+
+    expect(plan.transport).toBe("callContract-fast-path");
+    expect(plan.excepted).toBe(false);
+    expect(plan.ops).toEqual(["callContract"]);
+  });
+
+  it("uses native transport for object-arg callContract workflows in proof mode", () => {
+    const plan = resolveReferenceExecutionPlan(baseCallContractObjectArgsInput(), {
       proofMode: true,
     });
 

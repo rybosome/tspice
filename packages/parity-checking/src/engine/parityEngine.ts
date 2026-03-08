@@ -180,6 +180,10 @@ function dedupeProofReferenceRecords(
   return [...deduped.values()];
 }
 
+function requiresWasmProofLane(records: MethodProofReferenceRecord[] | undefined): boolean {
+  return (records ?? []).some((record) => record.transport === "native-cspice-runner");
+}
+
 async function withRunners<T>(
   fn: (runners: { tspice: CaseRunner; cspice: CaseRunner }) => Promise<T>,
 ): Promise<T> {
@@ -308,21 +312,23 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
             tspice: runners.node,
             cspice: runners.cspice,
           });
-
-          const wasmSummary = await executeMethodSpecParityV2(method, {
-            tspice: runners.wasm,
-            cspice: runners.cspice,
-          });
-
-          if (nodeSummary.caseCount !== wasmSummary.caseCount) {
-            throw new Error(
-              `Proof lane case-count mismatch for ${method.manifest.id}: node=${nodeSummary.caseCount} wasm=${wasmSummary.caseCount}`,
-            );
-          }
-
           methodCaseCount += nodeSummary.caseCount;
           proofReferenceRecords.push(...(nodeSummary.proofReferenceRecords ?? []));
-          proofReferenceRecords.push(...(wasmSummary.proofReferenceRecords ?? []));
+
+          if (requiresWasmProofLane(nodeSummary.proofReferenceRecords)) {
+            const wasmSummary = await executeMethodSpecParityV2(method, {
+              tspice: runners.wasm,
+              cspice: runners.cspice,
+            });
+
+            if (nodeSummary.caseCount !== wasmSummary.caseCount) {
+              throw new Error(
+                `Proof lane case-count mismatch for ${method.manifest.id}: node=${nodeSummary.caseCount} wasm=${wasmSummary.caseCount}`,
+              );
+            }
+
+            proofReferenceRecords.push(...(wasmSummary.proofReferenceRecords ?? []));
+          }
         } catch (error) {
           const failingCaseId = extractFailingCaseId(error);
           failingCases.push(

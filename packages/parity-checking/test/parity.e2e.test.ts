@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { runParityEngine } from "../src/engine/parityEngine.js";
 import { BASELINE_METHOD_SPEC_COVERAGE } from "../src/guards/completenessBaseline.js";
+import { isParityProofNativeV2Enabled, parityProofMarker } from "../src/proof/nativeProof.js";
 import { getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
 
 // Increase timeout for parity tests.
@@ -10,6 +11,7 @@ vi.setConfig({ testTimeout: 10_000, hookTimeout: 30_000 });
 describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () => {
   it("runs full guard pipeline and parity execution", async () => {
     const status = getCspiceRunnerStatus();
+    const proofEnabled = isParityProofNativeV2Enabled();
     const summary = await runParityEngine();
 
     expect(summary.workflowCount).toBe(0);
@@ -18,8 +20,8 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     expect(summary.contractCount).toBe(162);
     expect(summary.coveredCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(summary.denylistCount).toBe(0);
-    expect(summary.proof.marker).toBe("proof=disabled");
-    expect(summary.proof.mode).toBe("disabled");
+    expect(summary.proof.marker).toBe(parityProofMarker());
+    expect(summary.proof.mode).toBe(proofEnabled ? "native-v2" : "disabled");
 
     if (!status.ready) {
       expect(summary.skipped).toBe(true);

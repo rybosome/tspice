@@ -17,14 +17,14 @@ workflow:
 cases:
   - id: file-io.dlacls.opens-via-das-and-closes-via-dla
     args:
-      - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
+      - $FIXTURES/dsk-minimal/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
     expect:
       ok: true
   - id: file-io.dlacls.missing-file
     compare:
       errorShort: true
     args:
-      - $FIXTURES/apophis-g-25000mm/does-not-exist.bds
+      - $FIXTURES/dsk-minimal/does-not-exist.bds
     expect:
       ok: false
   - id: file-io.dlacls.rejects-non-string-path

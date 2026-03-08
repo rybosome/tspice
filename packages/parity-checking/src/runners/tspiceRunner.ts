@@ -1,7 +1,9 @@
 import * as path from "node:path";
 import os from "node:os";
 import crypto from "node:crypto";
+import { existsSync, statSync } from "node:fs";
 import { readFile, realpath, rm, stat } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 
 import { spiceClients, type Spice, type SpiceBackend } from "@rybosome/tspice";
 
@@ -2193,8 +2195,80 @@ async function kernelVirtualIdFromOsPath(osPath: string): Promise<string> {
   return `ospath/${hash}/${base}`;
 }
 
+function packageRoot(): string {
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  return path.resolve(here, "..", "..");
+}
+
+function fixturesRoot(): string {
+  const fromEnv = process.env.TSPICE_FIXTURES_DIR?.trim();
+  if (fromEnv) {
+    return path.isAbsolute(fromEnv) ? fromEnv : path.resolve(process.cwd(), fromEnv);
+  }
+
+  return path.resolve(packageRoot(), "..", "tspice", "test", "fixtures", "kernels");
+}
+
+function expandFixturesKernelPath(kernelPath: string): string {
+  if (
+    kernelPath === "$FIXTURES" ||
+    kernelPath.startsWith("$FIXTURES/") ||
+    kernelPath.startsWith("$FIXTURES\\")
+  ) {
+    const root = fixturesRoot();
+    const suffix = kernelPath.slice("$FIXTURES".length).replace(/^[/\\]/, "");
+    const resolved = path.resolve(root, suffix);
+    const rel = path.relative(root, resolved);
+
+    if (rel === ".." || rel.startsWith(`..${path.sep}`)) {
+      throw new Error(`$FIXTURES path must not escape fixtures root: ${JSON.stringify(kernelPath)}`);
+    }
+
+    return resolved;
+  }
+
+  if (kernelPath.startsWith("$FIXTURES")) {
+    throw new Error(`Invalid $FIXTURES usage: ${JSON.stringify(kernelPath)} (expected $FIXTURES/<path>)`);
+  }
+
+  return kernelPath;
+}
+
+function maybeExpandFixturePackDirAlias(kernelPath: string): { path: string; restrictToDir?: string } {
+  const resolved = path.resolve(kernelPath);
+
+  try {
+    if (!statSync(resolved).isDirectory()) {
+      return { path: resolved };
+    }
+  } catch {
+    return { path: resolved };
+  }
+
+  const metaKernel = path.join(resolved, `${path.basename(resolved)}.tm`);
+  if (!existsSync(metaKernel)) {
+    throw new Error(
+      `Kernel directory ${JSON.stringify(resolved)} was treated as a fixture pack alias but is missing meta-kernel ${JSON.stringify(metaKernel)}.`,
+    );
+  }
+
+  return {
+    path: metaKernel,
+    restrictToDir: resolved,
+  };
+}
+
 function normalizeKernelEntry(entry: KernelEntry): { path: string; restrictToDir?: string } {
-  return typeof entry === "string" ? { path: entry } : entry;
+  if (typeof entry === "string") {
+    return maybeExpandFixturePackDirAlias(expandFixturesKernelPath(entry));
+  }
+
+  return {
+    path: expandFixturesKernelPath(entry.path),
+    ...(entry.restrictToDir === undefined
+      ? {}
+      : { restrictToDir: expandFixturesKernelPath(entry.restrictToDir) }),
+  };
 }
 
 async function furnshOsKernelForWasm(

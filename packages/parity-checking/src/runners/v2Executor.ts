@@ -30,10 +30,12 @@ const SPICE_INT32_MAX = 2147483647;
 
 const DSK_MINIMAL_NV = 3;
 const DSK_MINIMAL_NP = 1;
-const DSK_MINIMAL_WORKSZ = 2048;
-const DSK_MINIMAL_VOXPSZ = 512;
+const DSK_MINIMAL_WORKSZ = 4096;
+const DSK_MINIMAL_VOXPSZ = 4096;
 const DSK_MINIMAL_VOXLSZ = 1024;
-const DSK_MINIMAL_SPXISZ = 8192;
+// Keep this comfortably above CSPICE's runtime minimum for the synthetic
+// 1-plate fixture used by parity tests (INTINDEXTOOSMALL otherwise).
+const DSK_MINIMAL_SPXISZ = 131072;
 
 const DSK_MINIMAL_VERTICES = [
   0, 0, 0,

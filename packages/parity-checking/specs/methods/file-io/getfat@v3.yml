@@ -17,19 +17,19 @@ workflow:
 cases:
   - id: file-io.getfat.classifies-spk
     args:
-      - $FIXTURES/de440s/de440s.bsp
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
       ok: true
   - id: file-io.getfat.classifies-dsk
     args:
-      - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
+      - $FIXTURES/dsk-minimal/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
     expect:
       ok: true
   - id: file-io.getfat.missing-file
     compare:
       errorShort: true
     args:
-      - $FIXTURES/de440s/does-not-exist.bsp
+      - $FIXTURES/ephemeris-de440s/does-not-exist.bsp
     expect:
       ok: false
   - id: file-io.getfat.rejects-non-string-path

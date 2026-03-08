@@ -1,3 +1,6 @@
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { compareValues } from "../compare/compare.js";
 import { formatMismatchReport } from "../compare/report.js";
 import { DEFAULT_TOL_ABS, DEFAULT_TOL_REL } from "../config/constants.js";
@@ -24,6 +27,61 @@ type MethodRunCase = {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function packageRoot(): string {
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  return path.resolve(here, "..", "..");
+}
+
+function fixturesRoot(): string {
+  const fromEnv = process.env.TSPICE_FIXTURES_DIR?.trim();
+  if (fromEnv) {
+    return path.isAbsolute(fromEnv) ? fromEnv : path.resolve(process.cwd(), fromEnv);
+  }
+
+  return path.resolve(packageRoot(), "..", "tspice", "test", "fixtures", "kernels");
+}
+
+function expandFixturesMacroString(value: string): string {
+  if (value === "$FIXTURES" || value.startsWith("$FIXTURES/") || value.startsWith("$FIXTURES\\")) {
+    const root = fixturesRoot();
+    const suffix = value.slice("$FIXTURES".length).replace(/^[/\\]/, "");
+    const resolved = path.resolve(root, suffix);
+    const rel = path.relative(root, resolved);
+
+    if (rel === ".." || rel.startsWith(`..${path.sep}`)) {
+      throw new Error(`$FIXTURES path must not escape fixtures root: ${JSON.stringify(value)}`);
+    }
+
+    return resolved;
+  }
+
+  if (value.startsWith("$FIXTURES")) {
+    throw new Error(`Invalid $FIXTURES usage: ${JSON.stringify(value)} (expected $FIXTURES/<path>)`);
+  }
+
+  return value;
+}
+
+function expandFixturesMacrosInValue(value: unknown): unknown {
+  if (typeof value === "string") {
+    return expandFixturesMacroString(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((entry) => expandFixturesMacrosInValue(entry));
+  }
+
+  if (isRecord(value)) {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value)) {
+      out[k] = expandFixturesMacrosInValue(v);
+    }
+    return out;
+  }
+
+  return value;
 }
 
 function normalizeVolatileResultFields(call: string, result: unknown): unknown {
@@ -217,7 +275,7 @@ export async function executeMethodSpecParityV2(
       schemaVersion: 3,
       manifest: method.manifest,
       contract: method.contract,
-      args: run.args ?? argsDefault,
+      args: expandFixturesMacrosInValue(run.args ?? argsDefault),
       workflow: run.workflow,
       ...(setup === undefined ? {} : { setup }),
     };
@@ -232,10 +290,20 @@ export async function executeMethodSpecParityV2(
       });
     }
 
-    const [tspiceOutcome, cspiceOutcome] = await Promise.all([
-      runners.tspice.runCase(caseInput),
-      runners.cspice.runCase(caseInput),
-    ]);
+    let tspiceOutcome: Awaited<ReturnType<CaseRunner["runCase"]>>;
+    let cspiceOutcome: Awaited<ReturnType<CaseRunner["runCase"]>>;
+
+    if (isCallContractOnlyWorkflow(run.workflow)) {
+      // The callContract fast-path may reuse a shared in-process Node backend.
+      // Execute lanes sequentially to avoid cross-runner kernel-state races.
+      tspiceOutcome = await runners.tspice.runCase(caseInput);
+      cspiceOutcome = await runners.cspice.runCase(caseInput);
+    } else {
+      [tspiceOutcome, cspiceOutcome] = await Promise.all([
+        runners.tspice.runCase(caseInput),
+        runners.cspice.runCase(caseInput),
+      ]);
+    }
 
     const tolAbs = compare?.tolAbs ?? DEFAULT_TOL_ABS;
     const tolRel = compare?.tolRel ?? DEFAULT_TOL_REL;

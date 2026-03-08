@@ -47,6 +47,10 @@ function resolveCallContractMethod(input: RunCaseInputV3): string | undefined {
   return undefined;
 }
 
+function hasPositionalCallContractArgs(input: RunCaseInputV3): boolean {
+  return Array.isArray(input.args);
+}
+
 function collectWorkflowOps(input: RunCaseInput): string[] {
   if (!isRunCaseInputV3(input) || input.schemaVersion !== 3) {
     return [];
@@ -100,7 +104,12 @@ export function resolveReferenceExecutionPlan(
   const method = resolveCallContractMethod(input);
   const excepted = isProofExceptionMethod(method);
 
-  if (proofMode && !excepted) {
+  // Native proof transport currently expects object-shaped v3 args.
+  // Legacy single-step callContract method specs still provide positional
+  // array args and must stay on the callContract fast-path until migrated.
+  const nativeEligibleCallContract = !hasPositionalCallContractArgs(input);
+
+  if (proofMode && !excepted && nativeEligibleCallContract) {
     return {
       transport: "native-cspice-runner",
       excepted,

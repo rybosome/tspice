@@ -146,4 +146,79 @@ describe("v3 runner preflight parity", () => {
       await cspice.dispose?.();
     }
   });
+
+  maybeIt("executes cells/windows callContract recipes via cspice fast-path", async () => {
+    const cspice = await createCspiceRunner();
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/cells-windows/insrtc@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "cells-windows.insrtc",
+        canonicalMethod: "cells-windows.insrtc",
+        result: {
+          type: "object",
+          properties: {},
+        },
+        errors: [],
+      },
+      args: ["alpha", ["char", 8, 16]],
+      workflow: {
+        steps: [{ op: "callContract" }],
+      },
+    };
+
+    try {
+      const out = await cspice.runCase(input);
+      expect(out.ok).toBe(true);
+
+      if (out.ok) {
+        expect(out.result).toEqual({ card: 1, size: 8 });
+      }
+    } finally {
+      await cspice.dispose?.();
+    }
+  });
+
+  maybeIt("expands $FIXTURES setup kernels in callContract fast-path", async () => {
+    const cspice = await createCspiceRunner();
+
+    const input: RunCaseInputV2 = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/time/tkvrsn@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "time.tkvrsn",
+        canonicalMethod: "time.tkvrsn",
+        result: {
+          type: "object",
+          properties: {},
+        },
+        errors: [],
+      },
+      setup: {
+        kernels: ["$FIXTURES/basic-time"],
+      },
+      args: ["TOOLKIT"],
+      workflow: {
+        steps: [{ op: "callContract" }],
+      },
+    };
+
+    try {
+      const out = await cspice.runCase(input);
+      expect(out.ok).toBe(true);
+
+      if (out.ok) {
+        expect(typeof out.result).toBe("string");
+      }
+    } finally {
+      await cspice.dispose?.();
+    }
+  });
 });

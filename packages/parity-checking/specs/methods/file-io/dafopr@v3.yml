@@ -17,14 +17,14 @@ workflow:
 cases:
   - id: file-io.dafopr.opens-and-closes-spk
     args:
-      - $FIXTURES/de440s/de440s.bsp
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
       ok: true
   - id: file-io.dafopr.missing-file
     compare:
       errorShort: true
     args:
-      - $FIXTURES/de440s/does-not-exist.bsp
+      - $FIXTURES/ephemeris-de440s/does-not-exist.bsp
     expect:
       ok: false
   - id: file-io.dafopr.rejects-non-string-path
