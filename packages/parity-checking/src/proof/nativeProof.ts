@@ -7,7 +7,7 @@ export const PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST = ["dskb02_c", "dskgd_c"
 
 export type NativeProofExceptionMethod = (typeof PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST)[number];
 
-export type ReferenceTransport = "native-cspice-runner" | "callContract-fast-path";
+export type ReferenceTransport = "native-cspice-runner";
 
 export type ReferenceExecutionPlan = {
   transport: ReferenceTransport;
@@ -78,15 +78,17 @@ export function parityProofMarker(env: NodeJS.ProcessEnv = process.env): string 
 }
 
 /**
- * Resolve the reference execution transport and exception metadata for a case.
+ * Resolve native reference execution metadata for a case.
+ *
+ * In proof v2, CSPICE native runner is always the reference transport; exception
+ * metadata is retained only for temporary DSK observability.
  */
 export function resolveReferenceExecutionPlan(
   input: RunCaseInput,
-  options: {
+  _options: {
     proofMode?: boolean;
   } = {},
 ): ReferenceExecutionPlan {
-  const proofMode = options.proofMode ?? isParityProofNativeV2Enabled();
   const ops = collectWorkflowOps(input);
 
   if (!isRunCaseInputV3(input) || input.schemaVersion !== 3 || !isSingleCallContractWorkflow(input)) {
@@ -100,16 +102,8 @@ export function resolveReferenceExecutionPlan(
   const method = resolveCallContractMethod(input);
   const excepted = isProofExceptionMethod(method);
 
-  if (proofMode && !excepted) {
-    return {
-      transport: "native-cspice-runner",
-      excepted,
-      ops,
-    };
-  }
-
   return {
-    transport: "callContract-fast-path",
+    transport: "native-cspice-runner",
     excepted,
     ...(excepted && method ? { exceptionMethod: method } : {}),
     ops,

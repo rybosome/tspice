@@ -9,6 +9,14 @@
 #include "cspice_runner_v2_json_buffer.h"
 #include "cspice_runner_v2_workflow.h"
 
+#include <sys/wait.h>
+
+#if defined(__APPLE__)
+#include <mach-o/dyld.h>
+#endif
+
+#define V2_CALL_CONTRACT_CHILD_OUTPUT_MAX_BYTES (1024U * 1024U)
+
 static bool v2_strdup_token_slice(const char *json,
                                   const jsmntok_t *tok,
                                   char **out) {
@@ -42,6 +50,551 @@ static bool v2_write_spice_failure(const char *messagePrefix) {
   write_error_json_ex("spice_error", messagePrefix, NULL, shortMsg, longMsg,
                       traceMsg);
   return false;
+}
+
+static bool v2_write_all_fd(int fd, const char *data, size_t len) {
+  if (fd < 0 || data == NULL) {
+    return false;
+  }
+
+  size_t written = 0;
+  while (written < len) {
+    ssize_t n = write(fd, data + written, len - written);
+    if (n < 0) {
+      if (errno == EINTR) {
+        continue;
+      }
+      return false;
+    }
+
+    if (n == 0) {
+      return false;
+    }
+
+    written += (size_t)n;
+  }
+
+  return true;
+}
+
+static bool v2_read_all_fd_capped(int fd, char **out) {
+  if (fd < 0 || out == NULL) {
+    return false;
+  }
+
+  *out = NULL;
+  size_t cap = 4096;
+  size_t len = 0;
+  char *buf = (char *)malloc(cap);
+  if (buf == NULL) {
+    return false;
+  }
+
+  while (true) {
+    if (len + 1 >= cap) {
+      size_t nextCap = cap * 2U;
+      if (nextCap <= cap || nextCap > V2_CALL_CONTRACT_CHILD_OUTPUT_MAX_BYTES) {
+        free(buf);
+        write_error_json_ex("invalid_request",
+                            "callContract child output too large",
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL);
+        return false;
+      }
+
+      char *next = (char *)realloc(buf, nextCap);
+      if (next == NULL) {
+        free(buf);
+        return false;
+      }
+      buf = next;
+      cap = nextCap;
+    }
+
+    ssize_t n = read(fd, buf + len, cap - len - 1U);
+    if (n < 0) {
+      if (errno == EINTR) {
+        continue;
+      }
+      free(buf);
+      return false;
+    }
+
+    if (n == 0) {
+      break;
+    }
+
+    len += (size_t)n;
+    if (len > V2_CALL_CONTRACT_CHILD_OUTPUT_MAX_BYTES) {
+      free(buf);
+      write_error_json_ex("invalid_request",
+                          "callContract child output too large",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      return false;
+    }
+  }
+
+  buf[len] = '\0';
+  *out = buf;
+  return true;
+}
+
+static bool v2_parse_json_tokens(const char *json,
+                                 jsmntok_t **outTokens,
+                                 int *outTokenCount) {
+  if (json == NULL || outTokens == NULL || outTokenCount == NULL) {
+    return false;
+  }
+
+  const size_t inputLen = strlen(json);
+  int tokenCap = 256;
+  jsmn_parser parser;
+  jsmntok_t *tokens = NULL;
+
+  while (true) {
+    tokens = (jsmntok_t *)malloc(sizeof(jsmntok_t) * (size_t)tokenCap);
+    if (tokens == NULL) {
+      return false;
+    }
+
+    jsmn_init(&parser);
+    const int tokenCount =
+        jsmn_parse(&parser, json, inputLen, tokens, (unsigned int)tokenCap);
+    if (tokenCount >= 0) {
+      *outTokens = tokens;
+      *outTokenCount = tokenCount;
+      return true;
+    }
+
+    free(tokens);
+    tokens = NULL;
+
+    if (tokenCount == -1) {
+      tokenCap *= 2;
+      if (tokenCap > 8192) {
+        return false;
+      }
+      continue;
+    }
+
+    return false;
+  }
+}
+
+static bool v2_strdup_json_token_value(const char *json,
+                                       const jsmntok_t *tok,
+                                       char **out) {
+  if (json == NULL || tok == NULL || out == NULL || tok->start < 0 ||
+      tok->end < tok->start) {
+    return false;
+  }
+
+  int start = tok->start;
+  int end = tok->end;
+
+  if (tok->type == JSMN_STRING) {
+    start -= 1;
+    end += 1;
+    if (start < 0 || end <= start) {
+      return false;
+    }
+  }
+
+  const size_t len = (size_t)(end - start);
+  if (len > SIZE_MAX - 1U) {
+    return false;
+  }
+
+  char *copy = (char *)malloc(len + 1U);
+  if (copy == NULL) {
+    return false;
+  }
+
+  memcpy(copy, json + start, len);
+  copy[len] = '\0';
+  *out = copy;
+  return true;
+}
+
+static bool v2_emit_child_error_response(const char *responseJson) {
+  if (responseJson == NULL) {
+    return false;
+  }
+
+  const char *start = responseJson;
+  while (*start != '\0' && isspace((unsigned char)*start)) {
+    start++;
+  }
+
+  const char *end = responseJson + strlen(responseJson);
+  while (end > start && isspace((unsigned char)*(end - 1))) {
+    end--;
+  }
+
+  if (end <= start) {
+    return false;
+  }
+
+  fwrite(start, 1U, (size_t)(end - start), stdout);
+  fputc('\n', stdout);
+  return true;
+}
+
+static bool v2_extract_child_result_json(const char *responseJson,
+                                         char **outResultJson) {
+  if (responseJson == NULL || outResultJson == NULL) {
+    return false;
+  }
+
+  *outResultJson = NULL;
+
+  jsmntok_t *tokens = NULL;
+  int tokenCount = 0;
+  if (!v2_parse_json_tokens(responseJson, &tokens, &tokenCount) ||
+      tokens == NULL || tokenCount <= 0 || tokens[0].type != JSMN_OBJECT) {
+    free(tokens);
+    write_error_json_ex("invalid_request",
+                        "callContract child returned invalid JSON",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  int okTok =
+      jsmn_find_object_key(responseJson, tokens, 0, "ok", tokenCount);
+  if (okTok < 0 || tokens[okTok].type != JSMN_PRIMITIVE) {
+    free(tokens);
+    write_error_json_ex("invalid_request",
+                        "callContract child response missing ok",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  const bool okValue = jsmn_token_streq(responseJson, &tokens[okTok], "true");
+  if (!okValue) {
+    free(tokens);
+    if (!v2_emit_child_error_response(responseJson)) {
+      write_error_json_ex("invalid_request",
+                          "callContract child returned empty error response",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+    }
+    return false;
+  }
+
+  int resultTok =
+      jsmn_find_object_key(responseJson, tokens, 0, "result", tokenCount);
+  if (resultTok < 0) {
+    free(tokens);
+    write_error_json_ex("invalid_request",
+                        "callContract child response missing result",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char *resultJson = NULL;
+  const bool copied =
+      v2_strdup_json_token_value(responseJson, &tokens[resultTok], &resultJson);
+  free(tokens);
+  if (!copied || resultJson == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  *outResultJson = resultJson;
+  return true;
+}
+
+static bool v2_build_legacy_call_contract_request(
+    const char *json,
+    const jsmntok_t *tokens,
+    const int tokenCount,
+    const int stepTok,
+    const int argsTok,
+    char **outRequestJson) {
+  if (json == NULL || tokens == NULL || outRequestJson == NULL) {
+    return false;
+  }
+
+  *outRequestJson = NULL;
+
+  int callTok = jsmn_find_object_key(json, tokens, stepTok, "call", tokenCount);
+  if (callTok >= 0 && tokens[callTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request",
+                        "callContract.call must be a string",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  if (callTok < 0) {
+    int contractTok =
+        jsmn_find_object_key(json, tokens, 0, "contract", tokenCount);
+    if (contractTok < 0 || tokens[contractTok].type != JSMN_OBJECT) {
+      write_error_json_ex("invalid_request",
+                          "v2 request requires contract object",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      return false;
+    }
+
+    callTok = jsmn_find_object_key(json,
+                                   tokens,
+                                   contractTok,
+                                   "contractMethod",
+                                   tokenCount);
+    if (callTok < 0 || tokens[callTok].type != JSMN_STRING) {
+      write_error_json_ex("invalid_request",
+                          "contract.contractMethod must be a string",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      return false;
+    }
+  }
+
+  if (argsTok < 0 || argsTok >= tokenCount || tokens[argsTok].type != JSMN_ARRAY) {
+    write_error_json_ex("invalid_request",
+                        "v3 callContract expects args to be an array",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  int setupTok = jsmn_find_object_key(json, tokens, 0, "setup", tokenCount);
+  if (setupTok >= 0 && tokens[setupTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_request",
+                        "setup must be an object when provided",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  const size_t callLen = (size_t)(tokens[callTok].end - tokens[callTok].start);
+  const size_t argsLen = (size_t)(tokens[argsTok].end - tokens[argsTok].start);
+  const size_t setupLen =
+      setupTok >= 0 ? (size_t)(tokens[setupTok].end - tokens[setupTok].start) : 0U;
+
+  const size_t fixedPrefixLen = strlen("{\"call\":\"");
+  const size_t fixedMiddleLen = strlen("\",\"args\":");
+  const size_t fixedSetupPrefixLen = strlen(",\"setup\":");
+
+  size_t totalLen = fixedPrefixLen + callLen + fixedMiddleLen + argsLen + 1U;
+  if (setupTok >= 0) {
+    totalLen += fixedSetupPrefixLen + setupLen;
+  }
+
+  char *requestJson = (char *)malloc(totalLen);
+  if (requestJson == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  char *cursor = requestJson;
+  memcpy(cursor, "{\"call\":\"", fixedPrefixLen);
+  cursor += fixedPrefixLen;
+  memcpy(cursor, json + tokens[callTok].start, callLen);
+  cursor += callLen;
+
+  memcpy(cursor, "\",\"args\":", fixedMiddleLen);
+  cursor += fixedMiddleLen;
+  memcpy(cursor, json + tokens[argsTok].start, argsLen);
+  cursor += argsLen;
+
+  if (setupTok >= 0) {
+    memcpy(cursor, ",\"setup\":", fixedSetupPrefixLen);
+    cursor += fixedSetupPrefixLen;
+    memcpy(cursor, json + tokens[setupTok].start, setupLen);
+    cursor += setupLen;
+  }
+
+  *cursor++ = '}';
+  *cursor = '\0';
+
+  *outRequestJson = requestJson;
+  return true;
+}
+
+static bool v2_run_legacy_request_subprocess(const char *requestJson,
+                                             char **outResponseJson) {
+  if (requestJson == NULL || outResponseJson == NULL) {
+    return false;
+  }
+
+  *outResponseJson = NULL;
+
+  int stdinPipe[2] = {-1, -1};
+  int stdoutPipe[2] = {-1, -1};
+
+  char selfPath[PATH_MAX];
+  memset(selfPath, 0, sizeof(selfPath));
+#if defined(__linux__)
+  {
+    const ssize_t selfPathLen = readlink("/proc/self/exe", selfPath,
+                                         sizeof(selfPath) - 1U);
+    if (selfPathLen <= 0 ||
+        (size_t)selfPathLen >= sizeof(selfPath)) {
+      write_error_json_ex("invalid_request",
+                          "callContract could not resolve runner executable path",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      return false;
+    }
+    selfPath[selfPathLen] = '\0';
+  }
+#elif defined(__APPLE__)
+  {
+    uint32_t size = (uint32_t)sizeof(selfPath);
+    if (_NSGetExecutablePath(selfPath, &size) != 0) {
+      write_error_json_ex("invalid_request",
+                          "callContract could not resolve runner executable path",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      return false;
+    }
+
+    char resolved[PATH_MAX];
+    if (realpath(selfPath, resolved) != NULL) {
+      const size_t resolvedLen = strlen(resolved);
+      if (resolvedLen + 1U > sizeof(selfPath)) {
+        write_error_json_ex("invalid_request",
+                            "callContract resolved runner path is too long",
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL);
+        return false;
+      }
+
+      memcpy(selfPath, resolved, resolvedLen + 1U);
+    }
+  }
+#else
+  write_error_json_ex("invalid_request",
+                      "callContract native execution is unsupported on this platform",
+                      NULL,
+                      NULL,
+                      NULL,
+                      NULL);
+  return false;
+#endif
+
+  if (pipe(stdinPipe) != 0 || pipe(stdoutPipe) != 0) {
+    if (stdinPipe[0] >= 0) {
+      close(stdinPipe[0]);
+      close(stdinPipe[1]);
+    }
+    if (stdoutPipe[0] >= 0) {
+      close(stdoutPipe[0]);
+      close(stdoutPipe[1]);
+    }
+    write_error_json_ex("invalid_request",
+                        "callContract could not create child pipes",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  pid_t pid = fork();
+  if (pid < 0) {
+    close(stdinPipe[0]);
+    close(stdinPipe[1]);
+    close(stdoutPipe[0]);
+    close(stdoutPipe[1]);
+    write_error_json_ex("invalid_request",
+                        "callContract could not fork child process",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  if (pid == 0) {
+    (void)dup2(stdinPipe[0], STDIN_FILENO);
+    (void)dup2(stdoutPipe[1], STDOUT_FILENO);
+
+    close(stdinPipe[0]);
+    close(stdinPipe[1]);
+    close(stdoutPipe[0]);
+    close(stdoutPipe[1]);
+
+    execl(selfPath, "cspice-runner", (char *)NULL);
+    _exit(127);
+  }
+
+  close(stdinPipe[0]);
+  close(stdoutPipe[1]);
+
+  const size_t requestLen = strlen(requestJson);
+  bool writeOk = v2_write_all_fd(stdinPipe[1], requestJson, requestLen);
+  if (writeOk) {
+    writeOk = v2_write_all_fd(stdinPipe[1], "\n", 1U);
+  }
+  close(stdinPipe[1]);
+
+  if (!writeOk) {
+    close(stdoutPipe[0]);
+    (void)waitpid(pid, NULL, 0);
+    write_error_json_ex("invalid_request",
+                        "callContract could not write child request",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char *childOutput = NULL;
+  bool readOk = v2_read_all_fd_capped(stdoutPipe[0], &childOutput);
+  close(stdoutPipe[0]);
+
+  int status = 0;
+  (void)waitpid(pid, &status, 0);
+
+  if (!readOk || childOutput == NULL) {
+    free(childOutput);
+    write_error_json_ex("invalid_request",
+                        "callContract could not read child response",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  *outResponseJson = childOutput;
+  return true;
 }
 
 static bool v2_resolve_string_expr(const char *json,
@@ -709,6 +1262,53 @@ static bool v2_execute_project_step(const char *json,
   return true;
 }
 
+static bool v2_execute_call_contract_step(
+    const char *json,
+    const jsmntok_t *tokens,
+    const int tokenCount,
+    const int stepTok,
+    const int argsTok,
+    const bool captureProjectResult,
+    char **projectResultObjectJson) {
+  if (!captureProjectResult || projectResultObjectJson == NULL) {
+    write_error_json_ex("invalid_request",
+                        "callContract is only supported in workflow.steps",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char *requestJson = NULL;
+  if (!v2_build_legacy_call_contract_request(
+          json, tokens, tokenCount, stepTok, argsTok, &requestJson)) {
+    free(requestJson);
+    return false;
+  }
+
+  char *responseJson = NULL;
+  const bool invoked =
+      v2_run_legacy_request_subprocess(requestJson, &responseJson);
+  free(requestJson);
+  if (!invoked) {
+    free(responseJson);
+    return false;
+  }
+
+  char *resultJson = NULL;
+  const bool extracted = v2_extract_child_result_json(responseJson, &resultJson);
+  free(responseJson);
+  if (!extracted) {
+    free(resultJson);
+    return false;
+  }
+
+  free(*projectResultObjectJson);
+  *projectResultObjectJson = resultJson;
+  return true;
+}
+
 static bool v2_execute_switch_step(
     const char *json, const jsmntok_t *tokens, const int tokenCount,
     const int stepTok, const int argsTok, V2RefEntry *refs, int *refCount,
@@ -885,6 +1485,16 @@ bool v2_dispatch_workflow_step(
                                       refs, refCount);
   }
 
+  if (jsmn_token_streq(json, &tokens[opTok], "callContract")) {
+    return v2_execute_call_contract_step(json,
+                                         tokens,
+                                         tokenCount,
+                                         stepTok,
+                                         argsTok,
+                                         captureProjectResult,
+                                         projectResultObjectJson);
+  }
+
   if (jsmn_token_streq(json, &tokens[opTok], "assert")) {
     return v2_execute_assert_step(json, tokens, tokenCount, stepTok, argsTok,
                                   refs, *refCount);
@@ -978,11 +1588,82 @@ static void v2_cleanup_live_refs_best_effort(V2RefEntry *refs,
   }
 }
 
+static bool v2_step_array_contains_op(const char *json,
+                                      const jsmntok_t *tokens,
+                                      const int tokenCount,
+                                      const int stepsTok,
+                                      const char *opName,
+                                      bool *outContains) {
+  if (outContains == NULL) {
+    return false;
+  }
+
+  *outContains = false;
+
+  if (stepsTok < 0 || stepsTok >= tokenCount ||
+      tokens[stepsTok].type != JSMN_ARRAY) {
+    return false;
+  }
+
+  for (int i = 0; i < tokens[stepsTok].size; i++) {
+    const int stepTok = jsmn_get_array_elem(tokens, stepsTok, i, tokenCount);
+    if (stepTok < 0 || stepTok >= tokenCount ||
+        tokens[stepTok].type != JSMN_OBJECT) {
+      return false;
+    }
+
+    const int opTok =
+        jsmn_find_object_key(json, tokens, stepTok, "op", tokenCount);
+    if (opTok < 0 || opTok >= tokenCount || tokens[opTok].type != JSMN_STRING) {
+      return false;
+    }
+
+    if (jsmn_token_streq(json, &tokens[opTok], opName)) {
+      *outContains = true;
+      return true;
+    }
+  }
+
+  return true;
+}
+
+static bool v2_is_single_call_contract_workflow(const char *json,
+                                                const jsmntok_t *tokens,
+                                                const int tokenCount,
+                                                const int stepsTok,
+                                                bool *outIsSingle) {
+  if (outIsSingle == NULL) {
+    return false;
+  }
+
+  *outIsSingle = false;
+
+  if (stepsTok < 0 || stepsTok >= tokenCount ||
+      tokens[stepsTok].type != JSMN_ARRAY || tokens[stepsTok].size != 1) {
+    return true;
+  }
+
+  const int onlyStepTok = jsmn_get_array_elem(tokens, stepsTok, 0, tokenCount);
+  if (onlyStepTok < 0 || onlyStepTok >= tokenCount ||
+      tokens[onlyStepTok].type != JSMN_OBJECT) {
+    return false;
+  }
+
+  const int opTok =
+      jsmn_find_object_key(json, tokens, onlyStepTok, "op", tokenCount);
+  if (opTok < 0 || opTok >= tokenCount || tokens[opTok].type != JSMN_STRING) {
+    return false;
+  }
+
+  *outIsSingle = jsmn_token_streq(json, &tokens[opTok], "callContract");
+  return true;
+}
+
 bool v2_execute_workflow_request(const char *json, const jsmntok_t *tokens,
                                  const int tokenCount) {
   int argsTok = jsmn_find_object_key(json, tokens, 0, "args", tokenCount);
-  if (argsTok < 0 || tokens[argsTok].type != JSMN_OBJECT) {
-    write_error_json_ex("invalid_request", "v2 request requires object args", NULL,
+  if (argsTok < 0) {
+    write_error_json_ex("invalid_request", "v2 request requires args", NULL,
                         NULL, NULL, NULL);
     return false;
   }
@@ -1010,6 +1691,101 @@ bool v2_execute_workflow_request(const char *json, const jsmntok_t *tokens,
   if (cleanupTok >= 0 && tokens[cleanupTok].type != JSMN_ARRAY) {
     write_error_json_ex("invalid_request", "v2 workflow.cleanup must be an array",
                         NULL, NULL, NULL, NULL);
+    return false;
+  }
+
+  bool isSingleCallContract = false;
+  if (!v2_is_single_call_contract_workflow(
+          json, tokens, tokenCount, stepsTok, &isSingleCallContract)) {
+    write_error_json_ex("invalid_request",
+                        "v2 workflow.steps parse error",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  bool hasWorkflowCallContract = false;
+  if (!v2_step_array_contains_op(json,
+                                 tokens,
+                                 tokenCount,
+                                 stepsTok,
+                                 "callContract",
+                                 &hasWorkflowCallContract)) {
+    write_error_json_ex("invalid_request",
+                        "v2 workflow.steps parse error",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  bool hasCleanupCallContract = false;
+  if (cleanupTok >= 0 &&
+      !v2_step_array_contains_op(json,
+                                 tokens,
+                                 tokenCount,
+                                 cleanupTok,
+                                 "callContract",
+                                 &hasCleanupCallContract)) {
+    write_error_json_ex("invalid_request",
+                        "v2 workflow.cleanup parse error",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  if (hasCleanupCallContract) {
+    write_error_json_ex("invalid_request",
+                        "v3 callContract workflow must not define cleanup steps",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  if (hasWorkflowCallContract && !isSingleCallContract) {
+    write_error_json_ex("invalid_request",
+                        "v3 callContract is only supported as a single-step workflow",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  if (isSingleCallContract) {
+    if (tokens[argsTok].type != JSMN_ARRAY) {
+      write_error_json_ex("invalid_args",
+                          "v3 callContract expects case args to be an array",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      return false;
+    }
+
+    if (cleanupTok >= 0 && tokens[cleanupTok].size > 0) {
+      write_error_json_ex("invalid_request",
+                          "v3 callContract workflow must not define cleanup steps",
+                          NULL,
+                          NULL,
+                          NULL,
+                          NULL);
+      return false;
+    }
+  } else if (tokens[argsTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_request",
+                        "v2 request requires object args",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
     return false;
   }
 

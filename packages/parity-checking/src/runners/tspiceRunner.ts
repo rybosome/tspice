@@ -10,9 +10,9 @@ import {
   sanitizeMetaKernelTextForNativeNoKernels,
   sanitizeMetaKernelTextForWasm,
 } from "../kernels/metaKernel.js";
+import { METHOD_SURFACE_CALL_CONTRACT_CANONICAL } from "../generated/methodSurfaceRegistry.js";
 
 import { spiceShortSymbol } from "../errors/spiceShort.js";
-import { lowerV3CallContract } from "./legacyInvoke.js";
 import { executeV2CaseWithBackend } from "./v2Executor.js";
 
 import type {
@@ -1966,6 +1966,55 @@ const DISPATCH: Record<string, DispatchFn> = {
 
 };
 
+function buildCallContractDispatchRegistry(): Record<string, DispatchFn> {
+  const registry: Record<string, DispatchFn> = {};
+
+  for (const canonicalMethod of METHOD_SURFACE_CALL_CONTRACT_CANONICAL) {
+    const handler = DISPATCH[canonicalMethod];
+    if (typeof handler === "function") {
+      registry[canonicalMethod] = handler;
+    }
+  }
+
+  return registry;
+}
+
+const CALL_CONTRACT_DISPATCH = buildCallContractDispatchRegistry();
+
+/** Report v3 callContract dispatch key coverage against generated canonical keys. */
+export function getCallContractDispatchRegistryCoverage(): {
+  keys: string[];
+  missingCanonical: string[];
+  extraKeys: string[];
+} {
+  const keys = Object.keys(CALL_CONTRACT_DISPATCH).sort();
+  const keySet = new Set(keys);
+  const canonical = [...METHOD_SURFACE_CALL_CONTRACT_CANONICAL].sort();
+  const canonicalSet = new Set(canonical);
+
+  const missingCanonical = canonical.filter((method) => !keySet.has(method));
+  const extraKeys = keys.filter((method) => !canonicalSet.has(method));
+
+  return {
+    keys,
+    missingCanonical,
+    extraKeys,
+  };
+}
+
+function dispatchCallContractFromRegistry(
+  backend: SpiceBackend,
+  call: string,
+  args: unknown[],
+): unknown | Promise<unknown> {
+  const fn = CALL_CONTRACT_DISPATCH[call] ?? DISPATCH[call];
+  if (!fn) {
+    unsupportedCall("Unsupported call", { call });
+  }
+
+  return fn(backend.raw, args, backend.kit, backend.kind);
+}
+
 function safeErrorReport(error: unknown): RunnerErrorReport {
   if (error instanceof Error) {
     const report: RunnerErrorReport = { message: error.message };
@@ -2344,21 +2393,11 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
         }
 
         if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
-          const legacyInput = lowerV3CallContract(input, {
-            invalidRequest,
-            invalidArgs,
+          const result = await executeV2CaseWithBackend(backend, input, {
+            callContractDispatcher(call, args) {
+              return dispatchCallContractFromRegistry(backend, call, args);
+            },
           });
-          if (legacyInput !== null) {
-            const fn = DISPATCH[legacyInput.call];
-            if (!fn) {
-              unsupportedCall("Unsupported call", { call: legacyInput.call });
-            }
-
-            const result = await fn(backend.raw, legacyInput.args, backend.kit, backend.kind);
-            return { ok: true, result };
-          }
-
-          const result = await executeV2CaseWithBackend(backend, input);
           return { ok: true, result };
         }
 

@@ -97,6 +97,16 @@ type CallContractExecutionContext = {
   defaultCall: string;
 };
 
+export type CallContractDispatcher = (
+  call: string,
+  args: unknown[],
+  backend: SpiceBackend,
+) => unknown | Promise<unknown>;
+
+export type ExecuteV2CaseWithBackendOptions = {
+  callContractDispatcher?: CallContractDispatcher;
+};
+
 type WasmVirtualOutputCleanupHooks = {
   __deleteVirtualFileForFileIo?: (path: string) => void;
 };
@@ -724,16 +734,32 @@ function validateV2Envelope(input: RunCaseInputV2): void {
 export function validateV2CasePreflight(input: RunCaseInputV2): Record<string, unknown> {
   validateV2Envelope(input);
 
+  if (isSingleCallContractWorkflow(input)) {
+    if ((input.workflow.cleanup?.length ?? 0) > 0) {
+      invalidRequest("v3 callContract workflow must not define cleanup steps");
+    }
+
+    if (!Array.isArray(input.args)) {
+      invalidArgs(`v3 callContract expects case args to be an array (got ${formatValue(input.args)})`);
+    }
+
+    return {};
+  }
+
   return validateCaseArgs(input);
 }
 
-function resolveCallContractMethodName(stepCall: unknown, defaultCall: string): string {
+function resolveCallContractCallName(stepCall: unknown, defaultCall: string): string {
   const resolvedCall = stepCall === undefined ? defaultCall : stepCall;
   const call = asNonEmptyString(resolvedCall, "callContract.call").trim();
   if (call.length === 0) {
     invalidRequest("v3 callContract requires a non-empty call name");
   }
 
+  return call;
+}
+
+function resolveCallContractBackendMethodName(call: string): string {
   const method = call.includes(".") ? call.slice(call.lastIndexOf(".") + 1) : call;
   if (method.length === 0) {
     invalidRequest("v3 callContract requires a non-empty backend method name");
@@ -746,20 +772,33 @@ async function executeCallContractStep(
   backend: SpiceBackend,
   step: Extract<V2WorkflowStep, { op: "callContract" }>,
   context: CallContractExecutionContext,
+  dispatcher?: CallContractDispatcher,
 ): Promise<unknown> {
+  const call = resolveCallContractCallName(step.call, context.defaultCall);
+
+  if (dispatcher) {
+    const dispatched = await dispatcher(call, context.args, backend);
+    return dispatched === undefined ? null : dispatched;
+  }
+
   const raw = getRawBackend(backend);
-  const method = resolveCallContractMethodName(step.call, context.defaultCall);
+  const method = resolveCallContractBackendMethodName(call);
   const maybeInvoker = (raw as unknown as Record<string, unknown>)[method];
 
   if (typeof maybeInvoker !== "function") {
-    unsupportedCall("Unsupported call", { call: step.call ?? context.defaultCall });
+    unsupportedCall("Unsupported call", { call });
   }
 
-  return await (maybeInvoker as (...callArgs: unknown[]) => unknown).apply(raw, context.args);
+  const out = await (maybeInvoker as (...callArgs: unknown[]) => unknown).apply(raw, context.args);
+  return out === undefined ? null : out;
 }
 
 function hasCallContractStep(steps: V2WorkflowStep[]): boolean {
   return steps.some((step) => step.op === "callContract");
+}
+
+function isSingleCallContractWorkflow(input: RunCaseInputV2): boolean {
+  return input.workflow.steps.length === 1 && input.workflow.steps[0]?.op === "callContract";
 }
 
 function validateProjectedResult(projectedResult: unknown, input: RunCaseInputV2): void {
@@ -1285,6 +1324,7 @@ async function executeStep(
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
   callContractContext?: CallContractExecutionContext,
+  callContractDispatcher?: CallContractDispatcher,
 ): Promise<unknown | undefined> {
   const raw = getRawBackend(backend);
   const kit = getKitBackend(backend);
@@ -1429,6 +1469,7 @@ async function executeStep(
           refs,
           freedHandles,
           callContractContext,
+          callContractDispatcher,
         );
         if (maybeResult !== undefined) {
           projectedResult = maybeResult;
@@ -1462,7 +1503,7 @@ async function executeStep(
         invalidRequest("callContract execution context is missing");
       }
 
-      return await executeCallContractStep(backend, step, callContractContext);
+      return await executeCallContractStep(backend, step, callContractContext, callContractDispatcher);
     }
 
     case "script": {
@@ -1508,6 +1549,7 @@ export function asV2RunnerError(error: unknown): RunnerErrorReport {
 export async function executeV2CaseWithBackend(
   backend: SpiceBackend,
   input: RunCaseInputV2,
+  options: ExecuteV2CaseWithBackendOptions = {},
 ): Promise<unknown> {
   validateV2Envelope(input);
 
@@ -1528,17 +1570,16 @@ export async function executeV2CaseWithBackend(
     invalidRequest("v3 callContract workflow must not define cleanup steps");
   }
 
-  const isSingleCallContractWorkflow =
-    input.workflow.steps.length === 1 && input.workflow.steps[0]?.op === "callContract";
+  const singleCallContractWorkflow = isSingleCallContractWorkflow(input);
 
-  if (hasWorkflowCallContract && !isSingleCallContractWorkflow) {
+  if (hasWorkflowCallContract && !singleCallContractWorkflow) {
     invalidRequest("v3 callContract is only supported as a single-step workflow");
   }
 
   let callContractContext: CallContractExecutionContext | undefined;
   let args: Record<string, unknown>;
 
-  if (isSingleCallContractWorkflow) {
+  if (singleCallContractWorkflow) {
     if (!Array.isArray(input.args)) {
       invalidArgs(`v3 callContract expects case args to be an array (got ${formatValue(input.args)})`);
     }
@@ -1565,6 +1606,7 @@ export async function executeV2CaseWithBackend(
         refs,
         freedHandles,
         callContractContext,
+        options.callContractDispatcher,
       );
       if (maybeResult !== undefined) {
         projectedResult = maybeResult;
@@ -1583,7 +1625,15 @@ export async function executeV2CaseWithBackend(
 
   for (const step of input.workflow.cleanup ?? []) {
     try {
-      await executeStep(backend, step, args, refs, freedHandles, callContractContext);
+      await executeStep(
+        backend,
+        step,
+        args,
+        refs,
+        freedHandles,
+        callContractContext,
+        options.callContractDispatcher,
+      );
     } catch (cleanupError) {
       if (terminalError === undefined) {
         terminalError = cleanupError;

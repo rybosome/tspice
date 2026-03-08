@@ -173,7 +173,15 @@ function dedupeProofReferenceRecords(
   const deduped = new Map<string, MethodProofReferenceRecord>();
 
   for (const record of records) {
-    const key = `${record.method}::${record.caseId}::${record.transport}::${record.ops.join(",")}`;
+    const key = [
+      record.method,
+      record.caseId,
+      record.referenceLane,
+      record.transport,
+      record.excepted ? "excepted" : "not-excepted",
+      record.exceptionMethod ?? "",
+      record.ops.join(","),
+    ].join("::");
     deduped.set(key, record);
   }
 

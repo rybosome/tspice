@@ -8,7 +8,10 @@ import type { CaseRunner } from "../runners/types.js";
 export type MethodProofReferenceRecord = {
   method: string;
   caseId: string;
+  referenceLane: "cspice";
   transport: ReferenceTransport;
+  excepted?: boolean;
+  exceptionMethod?: string;
   ops: string[];
 };
 

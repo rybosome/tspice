@@ -227,7 +227,14 @@ export async function executeMethodSpecParityV2(
       proofReferenceRecords.push({
         method: method.manifest.id,
         caseId: run.caseId,
+        referenceLane: "cspice",
         transport: referencePlan.transport,
+        ...(referencePlan.excepted
+          ? {
+              excepted: true,
+              ...(referencePlan.exceptionMethod ? { exceptionMethod: referencePlan.exceptionMethod } : {}),
+            }
+          : {}),
         ops: referencePlan.ops,
       });
     }

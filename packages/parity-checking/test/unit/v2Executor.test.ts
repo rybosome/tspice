@@ -829,4 +829,28 @@ describe("executeV2CaseWithBackend", () => {
       });
     }
   });
+
+  it("accepts array args for single-step callContract preflight", () => {
+    const input = createBaseInput();
+    input.contract.contractMethod = "time.tkvrsn";
+    input.contract.canonicalMethod = "time.tkvrsn";
+    input.contract.args = [];
+    input.args = ["TOOLKIT"];
+    input.workflow.steps = [{ op: "callContract" }];
+    input.workflow.cleanup = [];
+
+    expect(() => validateV2CasePreflight(input)).not.toThrow();
+  });
+
+  it("rejects non-array args for single-step callContract preflight", () => {
+    const input = createBaseInput();
+    input.contract.contractMethod = "time.tkvrsn";
+    input.contract.canonicalMethod = "time.tkvrsn";
+    input.contract.args = [];
+    input.args = { toolkit: "TOOLKIT" };
+    input.workflow.steps = [{ op: "callContract" }];
+    input.workflow.cleanup = [];
+
+    expect(() => validateV2CasePreflight(input)).toThrowError(/expects case args to be an array/i);
+  });
 });
