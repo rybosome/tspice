@@ -15,6 +15,8 @@ It owns:
 - `specs/cross-cutting/**` — executable cross-cutting specs (`schemaVersion: 3`, `manifest.kind: crossCuttingSpec`)
 - `catalogs/contract-methods.json` — generated canonical contract methods
 - `catalogs/parity-denylist.json` / `catalogs/parity-denylist.ts` — generated denylist (v3 baseline is empty)
+- `catalogs/v2-spice-call-manifest.json` — source-of-truth metadata for v2 `spiceCall` bindings
+- `src/generated/v2SpiceCallRegistry.ts` + `native/src/cspice_runner_v2_spice_calls_generated.{h,c}` — generated TS/native wrappers from the v2 manifest
 
 ## Method DSL (v3)
 

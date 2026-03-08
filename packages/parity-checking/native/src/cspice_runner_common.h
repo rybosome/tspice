@@ -1,6 +1,10 @@
 #ifndef CSPICE_RUNNER_COMMON_H
 #define CSPICE_RUNNER_COMMON_H
 
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#endif
+
 #include "SpiceUsr.h"
 #include "SpiceZmc.h"
 

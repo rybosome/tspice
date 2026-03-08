@@ -1,4 +1,5 @@
 import type { AssertOperator } from "../assertOperators.js";
+import type { V2GeneratedSpiceCallName } from "../generated/v2SpiceCallRegistry.js";
 
 export type KernelEntry = string | { path: string; restrictToDir?: string };
 
@@ -78,20 +79,7 @@ export type V3WorkflowAllocWindowStep = {
   };
 };
 
-export type V3WorkflowSpiceCallName =
-  | "card_c"
-  | "size_c"
-  | "scard_c"
-  | "ssize_c"
-  | "valid_c"
-  | "dskobj_c"
-  | "dsksrf_c"
-  | "dskgd_c"
-  | "dskb02_c"
-  | "dskmi2_c"
-  | "dskopn_c"
-  | "dskw02_c"
-  | "readVirtualOutput";
+export type V3WorkflowSpiceCallName = V2GeneratedSpiceCallName;
 
 export type V3WorkflowSpiceCallStep = {
   op: "spiceCall";

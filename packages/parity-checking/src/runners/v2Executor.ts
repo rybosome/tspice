@@ -12,6 +12,15 @@ import type {
   V2WorkflowStep,
 } from "./types.js";
 import { ASSERT_OPERATOR_NAMES_TEXT } from "../assertOperators.js";
+import {
+  V2_DSKB02_NAMED_OUTPUTS,
+  invokeGeneratedV2SpiceCall,
+  lookupGeneratedV2SpiceCallSpec,
+} from "../generated/v2SpiceCallRegistry.js";
+import type {
+  V2GeneratedSpiceCallArgKind,
+  V2GeneratedSpiceCallInvokeContext,
+} from "../generated/v2SpiceCallRegistry.js";
 import { validateV2ContractResultOrThrow } from "./v2ContractResultValidation.js";
 
 type RunnerValidationCode = "invalid_request" | "invalid_args" | "unsupported_call";
@@ -45,7 +54,6 @@ type CellHandle =
   | ReturnType<SpiceBackend["kit"]["newIntCell"]>
   | ReturnType<SpiceBackend["kit"]["newDoubleCell"]>
   | ReturnType<SpiceBackend["kit"]["newCharCell"]>;
-type IntCellHandle = ReturnType<SpiceBackend["kit"]["newIntCell"]>;
 type WindowHandle = ReturnType<SpiceBackend["kit"]["newWindow"]>;
 type DasHandle = ReturnType<SpiceBackend["raw"]["dasopr"]>;
 type DskOpenHandle = ReturnType<SpiceBackend["raw"]["dskopn"]>;
@@ -102,111 +110,7 @@ type WasmVirtualOutputCleanupHooks = {
 };
 
 type V2SpiceCallStep = Extract<V2WorkflowStep, { op: "spiceCall" }>;
-type V2SpiceCallName = V2SpiceCallStep["call"];
-type V2SpiceCallArgKind =
-  | "intExpr"
-  | "cellRef"
-  | "cellOrWindowRef"
-  | "pathExpr"
-  | "dasHandleRef"
-  | "dlaDescriptorRef";
-type V2SpiceCallOutputMode = "forbidden" | "asSpiceInt" | "asDskDescriptor" | "outNamedDskb02";
-
-type V2SpiceCallSpec = {
-  call: V2SpiceCallName;
-  arity: number;
-  argKinds: readonly V2SpiceCallArgKind[];
-  nonNegativeIntArgMask?: number;
-  outputMode: V2SpiceCallOutputMode;
-};
-
-const V2_SPICE_CALL_SPECS: readonly V2SpiceCallSpec[] = [
-  {
-    call: "card_c",
-    arity: 1,
-    argKinds: ["cellOrWindowRef"],
-    outputMode: "asSpiceInt",
-  },
-  {
-    call: "size_c",
-    arity: 1,
-    argKinds: ["cellOrWindowRef"],
-    outputMode: "asSpiceInt",
-  },
-  {
-    call: "scard_c",
-    arity: 2,
-    argKinds: ["intExpr", "cellOrWindowRef"],
-    nonNegativeIntArgMask: 1 << 0,
-    outputMode: "forbidden",
-  },
-  {
-    call: "ssize_c",
-    arity: 2,
-    argKinds: ["intExpr", "cellOrWindowRef"],
-    nonNegativeIntArgMask: 1 << 0,
-    outputMode: "forbidden",
-  },
-  {
-    call: "valid_c",
-    arity: 3,
-    argKinds: ["intExpr", "intExpr", "cellOrWindowRef"],
-    nonNegativeIntArgMask: (1 << 0) | (1 << 1),
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskobj_c",
-    arity: 2,
-    argKinds: ["pathExpr", "cellRef"],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dsksrf_c",
-    arity: 3,
-    argKinds: ["pathExpr", "intExpr", "cellRef"],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskgd_c",
-    arity: 2,
-    argKinds: ["dasHandleRef", "dlaDescriptorRef"],
-    outputMode: "asDskDescriptor",
-  },
-  {
-    call: "dskb02_c",
-    arity: 2,
-    argKinds: ["dasHandleRef", "dlaDescriptorRef"],
-    outputMode: "outNamedDskb02",
-  },
-  {
-    call: "dskmi2_c",
-    arity: 0,
-    argKinds: [],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskopn_c",
-    arity: 0,
-    argKinds: [],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskw02_c",
-    arity: 0,
-    argKinds: [],
-    outputMode: "forbidden",
-  },
-  {
-    call: "readVirtualOutput",
-    arity: 1,
-    argKinds: ["pathExpr"],
-    outputMode: "forbidden",
-  },
-];
-
-function lookupSpiceCallSpec(call: string): V2SpiceCallSpec | undefined {
-  return V2_SPICE_CALL_SPECS.find((spec) => spec.call === call);
-}
+type V2SpiceCallArgKind = V2GeneratedSpiceCallArgKind;
 
 function sanitizeTempTag(tag: string): string {
   const cleaned = tag
@@ -909,22 +813,20 @@ function resolveSpiceCallArg(
   }
 }
 
-const DSKB02_NAMED_SPICE_INT_OUTPUTS = [
-  "nv",
-  "np",
-  "nvxtot",
-  "cgscal",
-  "vtxnpl",
-  "voxnpt",
-  "voxnpl",
-] as const satisfies readonly (keyof DskType2Bookkeeping)[];
-
-type Dskb02NamedSpiceIntOutputKey = (typeof DSKB02_NAMED_SPICE_INT_OUTPUTS)[number];
+type Dskb02NamedSpiceIntOutputKey = (typeof V2_DSKB02_NAMED_OUTPUTS)[number];
 type Dskb02NamedSpiceIntOutputs = {
   [key in Dskb02NamedSpiceIntOutputKey]: DskType2Bookkeeping[key];
 };
 
-const DSKB02_NAMED_SPICE_INT_OUTPUT_SET: ReadonlySet<string> = new Set(DSKB02_NAMED_SPICE_INT_OUTPUTS);
+type Dskb02OutputKeyValidation = Dskb02NamedSpiceIntOutputKey extends keyof DskType2Bookkeeping
+  ? true
+  : false;
+
+const DSKB02_OUTPUT_KEY_VALIDATION: Dskb02OutputKeyValidation = true;
+
+void DSKB02_OUTPUT_KEY_VALIDATION;
+
+const DSKB02_NAMED_SPICE_INT_OUTPUT_SET: ReadonlySet<string> = new Set(V2_DSKB02_NAMED_OUTPUTS);
 
 function isDskb02NamedSpiceIntOutputKey(outputName: string): outputName is Dskb02NamedSpiceIntOutputKey {
   return DSKB02_NAMED_SPICE_INT_OUTPUT_SET.has(outputName);
@@ -945,7 +847,7 @@ function toNamedDskb02SpiceIntOutputs(bookkeeping: DskType2Bookkeeping): Dskb02N
 function requireDskb02NamedSpiceIntOutputKey(step: V2SpiceCallStep, outputName: string): Dskb02NamedSpiceIntOutputKey {
   if (!isDskb02NamedSpiceIntOutputKey(outputName)) {
     invalidArgs(
-      `spiceCall ${step.call}.out has unsupported key ${JSON.stringify(outputName)} (supported: ${DSKB02_NAMED_SPICE_INT_OUTPUTS.join(", ")})`,
+      `spiceCall ${step.call}.out has unsupported key ${JSON.stringify(outputName)} (supported: ${V2_DSKB02_NAMED_OUTPUTS.join(", ")})`,
     );
   }
 
@@ -1022,117 +924,55 @@ function executeReadVirtualOutputCall(backend: SpiceBackend, outputPath: string)
   }
 }
 
-type V2SpiceCallInvokerContext = {
-  backend: SpiceBackend;
-  raw: SpiceBackend["raw"];
-  step: V2SpiceCallStep;
-  resolvedArgs: readonly unknown[];
-  outputRef: string | undefined;
-  outMap: Record<string, string> | undefined;
-  refs: Map<string, RefValue>;
-};
+function executeDskopnLegacyCall(backend: SpiceBackend, raw: SpiceBackend["raw"]): void {
+  const tempPath = buildTempPath(backend, "dskopn", ".bds");
+  let handle: DskOpenHandle | undefined;
+  let opError: unknown = undefined;
 
-type V2SpiceCallInvoker = (context: V2SpiceCallInvokerContext) => void;
+  try {
+    handle = raw.dskopn(tempPath, "TSPICE", 0);
+  } catch (error) {
+    opError = error;
+  }
 
-const V2_SPICE_CALL_INVOKERS = {
-  card_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
-    const value = asSpiceInt(raw.card(resolvedArgs[0] as CellHandle | WindowHandle), `spiceCall(${step.call}).result`);
-    defineRef(refs, outputRef!, { kind: "int", value }, `spiceCall(${step.call}).as`);
-  },
+  if (handle !== undefined) {
+    closeDasHandlePreserveError(raw, handle, opError);
+  }
 
-  size_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
-    const value = asSpiceInt(raw.size(resolvedArgs[0] as CellHandle | WindowHandle), `spiceCall(${step.call}).result`);
-    defineRef(refs, outputRef!, { kind: "int", value }, `spiceCall(${step.call}).as`);
-  },
+  unlinkPathBestEffort(backend, tempPath);
 
-  scard_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.scard(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
-  },
+  if (opError !== undefined) {
+    throw opError;
+  }
+}
 
-  ssize_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.ssize(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
-  },
+function executeDskmi2LegacyCall(raw: SpiceBackend["raw"], step: V2SpiceCallStep): void {
+  const spatial = raw.dskmi2(
+    DSK_MINIMAL_NV,
+    DSK_MINIMAL_VERTICES,
+    DSK_MINIMAL_NP,
+    DSK_MINIMAL_PLATES,
+    0.2,
+    5,
+    DSK_MINIMAL_WORKSZ,
+    DSK_MINIMAL_VOXPSZ,
+    DSK_MINIMAL_VOXLSZ,
+    true,
+    DSK_MINIMAL_SPXISZ,
+  );
 
-  valid_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.valid(resolvedArgs[0] as number, resolvedArgs[1] as number, resolvedArgs[2] as CellHandle | WindowHandle);
-  },
+  if (spatial.spaixd.length < 1 || spatial.spaixi.length < 1) {
+    invalidRequest(`spiceCall(${step.call}) expected non-empty spatial index outputs`);
+  }
+}
 
-  dskobj_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.dskobj(resolvedArgs[0] as string, resolvedArgs[1] as IntCellHandle);
-  },
-
-  dsksrf_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.dsksrf(resolvedArgs[0] as string, resolvedArgs[1] as number, resolvedArgs[2] as IntCellHandle);
-  },
-
-  dskgd_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
-    const descriptor = raw.dskgd(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
-    defineRef(refs, outputRef!, { kind: "dskDescriptor", value: descriptor }, `spiceCall(${step.call}).as`);
-  },
-
-  dskb02_c: ({ raw, step, resolvedArgs, outMap, refs }: V2SpiceCallInvokerContext): void => {
-    const bookkeeping = raw.dskb02(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
-    applyNamedDskb02Outputs(step, outMap ?? {}, bookkeeping, refs);
-  },
-
-  readVirtualOutput: ({ backend, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    executeReadVirtualOutputCall(backend, resolvedArgs[0] as string);
-  },
-
-  dskopn_c: ({ backend, raw }: V2SpiceCallInvokerContext): void => {
-    const tempPath = buildTempPath(backend, "dskopn", ".bds");
-    let handle: DskOpenHandle | undefined;
-    let opError: unknown = undefined;
-
-    try {
-      handle = raw.dskopn(tempPath, "TSPICE", 0);
-    } catch (error) {
-      opError = error;
-    }
-
-    if (handle !== undefined) {
-      closeDasHandlePreserveError(raw, handle, opError);
-    }
-
+function executeDskw02LegacyCall(backend: SpiceBackend): void {
+  const tempPath = buildTempPath(backend, "dskw02", ".bds");
+  try {
+    writeMinimalDskFile(backend, tempPath);
+  } finally {
     unlinkPathBestEffort(backend, tempPath);
-
-    if (opError !== undefined) {
-      throw opError;
-    }
-  },
-
-  dskmi2_c: ({ raw, step }: V2SpiceCallInvokerContext): void => {
-    const spatial = raw.dskmi2(
-      DSK_MINIMAL_NV,
-      DSK_MINIMAL_VERTICES,
-      DSK_MINIMAL_NP,
-      DSK_MINIMAL_PLATES,
-      0.2,
-      5,
-      DSK_MINIMAL_WORKSZ,
-      DSK_MINIMAL_VOXPSZ,
-      DSK_MINIMAL_VOXLSZ,
-      true,
-      DSK_MINIMAL_SPXISZ,
-    );
-
-    if (spatial.spaixd.length < 1 || spatial.spaixi.length < 1) {
-      invalidRequest(`spiceCall(${step.call}) expected non-empty spatial index outputs`);
-    }
-  },
-
-  dskw02_c: ({ backend }: V2SpiceCallInvokerContext): void => {
-    const tempPath = buildTempPath(backend, "dskw02", ".bds");
-    try {
-      writeMinimalDskFile(backend, tempPath);
-    } finally {
-      unlinkPathBestEffort(backend, tempPath);
-    }
-  },
-} satisfies Record<V2SpiceCallName, V2SpiceCallInvoker>;
-
-function lookupSpiceCallInvoker(call: V2SpiceCallName): V2SpiceCallInvoker {
-  return V2_SPICE_CALL_INVOKERS[call];
+  }
 }
 
 function executeSpiceCallFromSpec(
@@ -1141,7 +981,7 @@ function executeSpiceCallFromSpec(
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
 ): void {
-  const spec = lookupSpiceCallSpec(step.call);
+  const spec = lookupGeneratedV2SpiceCallSpec(step.call);
   if (!spec) {
     unsupportedCall(`Unsupported spiceCall op: ${step.call}`);
   }
@@ -1151,7 +991,7 @@ function executeSpiceCallFromSpec(
     resolveSpiceCallArg(step, index, argKind, args, refs),
   );
 
-  if (spec.nonNegativeIntArgMask !== undefined) {
+  if (spec.nonNegativeIntArgMask !== 0) {
     for (let i = 0; i < spec.argKinds.length; i++) {
       const isNonNegativeArg = (spec.nonNegativeIntArgMask & (1 << i)) !== 0;
       if (!isNonNegativeArg || spec.argKinds[i] !== "intExpr") {
@@ -1179,20 +1019,47 @@ function executeSpiceCallFromSpec(
     forbidSpiceCallOutMap(step);
   }
 
-  const invokeSpiceCall = lookupSpiceCallInvoker(step.call);
-  if (!invokeSpiceCall) {
-    unsupportedCall(`Unsupported spiceCall op: ${step.call}`);
-  }
-
-  invokeSpiceCall({
+  const invokeContext: V2GeneratedSpiceCallInvokeContext = {
     backend,
     raw,
-    step,
     resolvedArgs,
-    outputRef,
-    outMap,
-    refs,
-  });
+    defineSpiceIntResult: (rawValue): void => {
+      if (!outputRef) {
+        invalidArgs(`spiceCall ${step.call} requires an "as" output ref`);
+      }
+
+      const value = asSpiceInt(rawValue, `spiceCall(${step.call}).result`);
+      defineRef(refs, outputRef, { kind: "int", value }, `spiceCall(${step.call}).as`);
+    },
+    defineDskDescriptorResult: (descriptor): void => {
+      if (!outputRef) {
+        invalidArgs(`spiceCall ${step.call} requires an "as" output ref`);
+      }
+
+      defineRef(refs, outputRef, { kind: "dskDescriptor", value: descriptor }, `spiceCall(${step.call}).as`);
+    },
+    applyNamedDskb02Outputs: (bookkeeping): void => {
+      if (!outMap) {
+        invalidArgs(`spiceCall ${step.call} requires an "out" map`);
+      }
+
+      applyNamedDskb02Outputs(step, outMap, bookkeeping, refs);
+    },
+    executeDskopnLegacy: (): void => {
+      executeDskopnLegacyCall(backend, raw);
+    },
+    executeDskmi2Legacy: (): void => {
+      executeDskmi2LegacyCall(raw, step);
+    },
+    executeDskw02Legacy: (): void => {
+      executeDskw02LegacyCall(backend);
+    },
+    executeReadVirtualOutput: (outputPath: string): void => {
+      executeReadVirtualOutputCall(backend, outputPath);
+    },
+  };
+
+  invokeGeneratedV2SpiceCall(step.call, invokeContext);
 }
 
 function executeAssertStep(

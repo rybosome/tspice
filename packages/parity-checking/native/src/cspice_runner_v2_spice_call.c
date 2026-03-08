@@ -1,8 +1,6 @@
 #include "cspice_runner_json_emit.h"
-#include "cspice_runner_v2_call_spec.h"
-#include "cspice_runner_v2_refs.h"
 #include "cspice_runner_v2_spice_call.h"
-#include "cspice_runner_v2_spice_invoke.h"
+#include "cspice_runner_v2_spice_calls_generated.h"
 
 static bool v2_strdup_json_token(const char *json, const jsmntok_t *tok,
                                  char **out) {

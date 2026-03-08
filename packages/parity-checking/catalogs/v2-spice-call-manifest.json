@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "calls": [
+    {
+      "call": "card_c",
+      "arity": 1,
+      "argKinds": ["cellOrWindowRef"],
+      "outputMode": "asSpiceInt",
+      "invokeLane": "direct"
+    },
+    {
+      "call": "size_c",
+      "arity": 1,
+      "argKinds": ["cellOrWindowRef"],
+      "outputMode": "asSpiceInt",
+      "invokeLane": "direct"
+    },
+    {
+      "call": "scard_c",
+      "arity": 2,
+      "argKinds": ["intExpr", "cellOrWindowRef"],
+      "nonNegativeIntArgMask": 1,
+      "outputMode": "forbidden",
+      "invokeLane": "direct"
+    },
+    {
+      "call": "ssize_c",
+      "arity": 2,
+      "argKinds": ["intExpr", "cellOrWindowRef"],
+      "nonNegativeIntArgMask": 1,
+      "outputMode": "forbidden",
+      "invokeLane": "direct"
+    },
+    {
+      "call": "valid_c",
+      "arity": 3,
+      "argKinds": ["intExpr", "intExpr", "cellOrWindowRef"],
+      "nonNegativeIntArgMask": 3,
+      "outputMode": "forbidden",
+      "invokeLane": "direct"
+    },
+    {
+      "call": "dskobj_c",
+      "arity": 2,
+      "argKinds": ["pathExpr", "cellRef"],
+      "outputMode": "forbidden",
+      "invokeLane": "direct"
+    },
+    {
+      "call": "dsksrf_c",
+      "arity": 3,
+      "argKinds": ["pathExpr", "intExpr", "cellRef"],
+      "outputMode": "forbidden",
+      "invokeLane": "direct"
+    },
+    {
+      "call": "dskgd_c",
+      "arity": 2,
+      "argKinds": ["dasHandleRef", "dlaDescriptorRef"],
+      "outputMode": "asDskDescriptor",
+      "invokeLane": "direct"
+    },
+    {
+      "call": "dskb02_c",
+      "arity": 2,
+      "argKinds": ["dasHandleRef", "dlaDescriptorRef"],
+      "outputMode": "outNamedDskb02",
+      "invokeLane": "direct",
+      "namedOutputs": ["nv", "np", "nvxtot", "cgscal", "vtxnpl", "voxnpt", "voxnpl"]
+    },
+    {
+      "call": "dskmi2_c",
+      "arity": 0,
+      "argKinds": [],
+      "outputMode": "forbidden",
+      "invokeLane": "legacyDskmi2"
+    },
+    {
+      "call": "dskopn_c",
+      "arity": 0,
+      "argKinds": [],
+      "outputMode": "forbidden",
+      "invokeLane": "legacyDskopn"
+    },
+    {
+      "call": "dskw02_c",
+      "arity": 0,
+      "argKinds": [],
+      "outputMode": "forbidden",
+      "invokeLane": "legacyDskw02"
+    },
+    {
+      "call": "readVirtualOutput",
+      "arity": 1,
+      "argKinds": ["pathExpr"],
+      "outputMode": "forbidden",
+      "invokeLane": "readVirtualOutput"
+    }
+  ]
+}

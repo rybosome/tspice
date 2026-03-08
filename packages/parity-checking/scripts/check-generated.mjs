@@ -13,6 +13,9 @@ const generatedFiles = [
   "packages/parity-checking/catalogs/contract-methods.json",
   "packages/parity-checking/catalogs/parity-denylist.json",
   "packages/parity-checking/catalogs/parity-denylist.ts",
+  "packages/parity-checking/src/generated/v2SpiceCallRegistry.ts",
+  "packages/parity-checking/native/src/cspice_runner_v2_spice_calls_generated.h",
+  "packages/parity-checking/native/src/cspice_runner_v2_spice_calls_generated.c",
 ];
 
 function run(command, args, options = {}) {

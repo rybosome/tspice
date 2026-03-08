@@ -208,6 +208,7 @@ static bool v2_execute_materialize_step(const char *json,
                  60,
                  "TSPICE_V2_READ_VO",
                  1,
+                 2,
                  (SpiceDouble(*)[6])READ_VIRTUAL_OUTPUT_STATES,
                  0,
                  60);

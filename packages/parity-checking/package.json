@@ -17,7 +17,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "generate:contract-catalog": "tsx ./scripts/generate-contract-catalog.ts",
     "generate:denylist": "tsx ./scripts/generate-parity-denylist.ts",
-    "generate:catalogs": "pnpm run generate:contract-catalog && pnpm run generate:denylist",
+    "generate:v2-spice-calls": "tsx ./scripts/generate-v2-spice-call-artifacts.ts",
+    "generate:catalogs": "pnpm run generate:contract-catalog && pnpm run generate:denylist && pnpm run generate:v2-spice-calls",
     "check:generated": "node ./scripts/check-generated.mjs",
     "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && pnpm run check:generated && node ./scripts/pretest-cspice-runner.mjs",
     "test": "vitest run"

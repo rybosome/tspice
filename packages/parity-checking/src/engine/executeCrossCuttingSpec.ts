@@ -54,18 +54,32 @@ async function invokeRawNativeRequest(rawRequest: string): Promise<RawRunnerResp
     child.on("close", (code, signal) => {
       clearTimeout(timer);
 
+      const out = stdout.trim();
+      const err = stderr.trim();
+
       if (code !== 0 || signal) {
+        if (out) {
+          try {
+            const parsed = JSON.parse(out) as unknown;
+            if (typeof parsed === "object" && parsed !== null && typeof (parsed as RawRunnerResponse).ok === "boolean") {
+              resolve(parsed as RawRunnerResponse);
+              return;
+            }
+          } catch {
+            // Fall through to transport-level failure error.
+          }
+        }
+
         reject(
           new Error(
-            `cross-cutting native request failed (code=${String(code)}, signal=${String(signal)} stdout=${JSON.stringify(stdout.trim())} stderr=${JSON.stringify(stderr.trim())})`,
+            `cross-cutting native request failed (code=${String(code)}, signal=${String(signal)} stdout=${JSON.stringify(out)} stderr=${JSON.stringify(err)})`,
           ),
         );
         return;
       }
 
-      const out = stdout.trim();
       if (!out) {
-        reject(new Error(`cross-cutting native request produced no output (stderr=${JSON.stringify(stderr.trim())})`));
+        reject(new Error(`cross-cutting native request produced no output (stderr=${JSON.stringify(err)})`));
         return;
       }
 

@@ -1,5 +1,6 @@
 import type { CompareOptions } from "../compare/types.js";
 import type { AssertOperator } from "../assertOperators.js";
+import type { V2GeneratedSpiceCallName } from "../generated/v2SpiceCallRegistry.js";
 
 /** AST shape for per-scenario compare options in YAML. */
 export type ScenarioCompareAst = CompareOptions & {
@@ -142,20 +143,7 @@ export type MethodWorkflowOpAllocWindowV3 = {
   };
 };
 
-export type MethodWorkflowSpiceCallNameV3 =
-  | "card_c"
-  | "size_c"
-  | "scard_c"
-  | "ssize_c"
-  | "valid_c"
-  | "dskobj_c"
-  | "dsksrf_c"
-  | "dskgd_c"
-  | "dskb02_c"
-  | "dskmi2_c"
-  | "dskopn_c"
-  | "dskw02_c"
-  | "readVirtualOutput";
+export type MethodWorkflowSpiceCallNameV3 = V2GeneratedSpiceCallName;
 
 export type MethodWorkflowOpSpiceCallV3 = {
   op: "spiceCall";
