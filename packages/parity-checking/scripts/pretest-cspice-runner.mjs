@@ -3,9 +3,25 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
+const PROOF_ENV = "PARITY_PROOF_NATIVE_V2";
+
 function isCI() {
   const v = process.env.CI;
   return v === "true" || v === "1";
+}
+
+function isNativeProofMode() {
+  return process.env[PROOF_ENV] === "1";
+}
+
+function failIfProofModeUnavailable(reason) {
+  if (!isNativeProofMode()) {
+    return;
+  }
+
+  throw new Error(
+    `${reason} (native proof mode requires runner availability: ${PROOF_ENV}=1)`,
+  );
 }
 
 function getRepoRoot(pkgRoot) {
@@ -157,11 +173,13 @@ function main() {
   }
 
   if (process.platform === "win32") {
+    const reason = "cspice-runner build is not supported on win32";
     writeState(pkgRoot, {
       available: false,
-      reason: "cspice-runner build is not supported on win32",
+      reason,
       binaryPath,
     });
+    failIfProofModeUnavailable(reason);
     return;
   }
 
@@ -186,6 +204,7 @@ function main() {
           cspiceDir,
           details: validation.reason,
         });
+        failIfProofModeUnavailable(validation.reason);
         return;
       }
 
@@ -199,18 +218,21 @@ function main() {
         cspiceDir,
         details: validation.reason,
       });
+      failIfProofModeUnavailable(validation.reason);
       return;
     }
 
     if (isCI()) {
+      const reason =
+        "CSPICE not available in CI (set TSPICE_CSPICE_DIR or prefetch .cache/cspice)";
       writeState(pkgRoot, {
         available: false,
-        reason:
-          "CSPICE not available in CI (set TSPICE_CSPICE_DIR or prefetch .cache/cspice)",
+        reason,
         binaryPath,
         cspiceDir,
         details: validation.reason,
       });
+      failIfProofModeUnavailable(reason);
       return;
     }
 
@@ -287,8 +309,15 @@ try {
     binaryPath: getBinaryPath(pkgRoot),
   });
 
-  console.error(
-    `[parity-checking] cspice-runner unavailable; parity tests will be skipped.\n${message}`,
-  );
-  process.exitCode = 0;
+  if (isNativeProofMode()) {
+    console.error(
+      `[parity-checking] cspice-runner unavailable; failing because ${PROOF_ENV}=1.\n${message}`,
+    );
+    process.exitCode = 1;
+  } else {
+    console.error(
+      `[parity-checking] cspice-runner unavailable; parity tests will be skipped.\n${message}`,
+    );
+    process.exitCode = 0;
+  }
 }

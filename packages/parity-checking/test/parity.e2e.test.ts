@@ -18,6 +18,8 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     expect(summary.contractCount).toBe(162);
     expect(summary.coveredCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(summary.denylistCount).toBe(0);
+    expect(summary.proof.marker).toBe("proof=disabled");
+    expect(summary.proof.mode).toBe("disabled");
 
     if (!status.ready) {
       expect(summary.skipped).toBe(true);

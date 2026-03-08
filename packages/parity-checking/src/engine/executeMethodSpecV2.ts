@@ -3,6 +3,10 @@ import { formatMismatchReport } from "../compare/report.js";
 import { DEFAULT_TOL_ABS, DEFAULT_TOL_REL } from "../config/constants.js";
 import { mergeCompareChain, mergeSetupChain } from "../dsl/mergeResolvedSpec.js";
 import { spiceShortSymbol } from "../errors/spiceShort.js";
+import {
+  isParityProofNativeV2Enabled,
+  resolveReferenceExecutionPlan,
+} from "../proof/nativeProof.js";
 import { validateV2ContractResultOrThrow } from "../runners/v2ContractResultValidation.js";
 
 import type { MethodCaseExpectation, MethodCaseSpecV2, MethodSpecV2, ScenarioCompareAst, ScenarioSetupAst } from "../dsl/types.js";
@@ -200,6 +204,8 @@ export async function executeMethodSpecParityV2(
   },
 ): Promise<MethodExecutionSummary> {
   const runs = buildMethodRuns(method);
+  const proofEnabled = isParityProofNativeV2Enabled();
+  const proofReferenceRecords: MethodExecutionSummary["proofReferenceRecords"] = [];
 
   for (const run of runs) {
     const setup = mergeSetupChain(run.setupChain);
@@ -215,6 +221,16 @@ export async function executeMethodSpecParityV2(
       workflow: run.workflow,
       ...(setup === undefined ? {} : { setup }),
     };
+
+    if (proofEnabled) {
+      const referencePlan = resolveReferenceExecutionPlan(caseInput, { proofMode: true });
+      proofReferenceRecords.push({
+        method: method.manifest.id,
+        caseId: run.caseId,
+        transport: referencePlan.transport,
+        ops: referencePlan.ops,
+      });
+    }
 
     const [tspiceOutcome, cspiceOutcome] = await Promise.all([
       runners.tspice.runCase(caseInput),
@@ -316,5 +332,6 @@ export async function executeMethodSpecParityV2(
   return {
     methodId: method.manifest.id,
     caseCount: runs.length,
+    ...(proofEnabled ? { proofReferenceRecords } : {}),
   };
 }

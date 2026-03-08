@@ -2100,7 +2100,21 @@ function isMissingNativeAddon(error: unknown): boolean {
 
 async function createBackendForRunner(
   backend: TspiceRunnerBackend,
-): Promise<{ backend: SpiceBackend; kind: string }> {
+): Promise<{
+  backend: SpiceBackend;
+  actualBackend: "node" | "wasm";
+  fallbackDetected: boolean;
+}> {
+  const normalizeResolvedBackendKind = (kind: SpiceBackend["kind"]): "node" | "wasm" => {
+    if (kind === "node" || kind === "wasm") {
+      return kind;
+    }
+
+    throw new Error(
+      `Unsupported tspice backend kind from spice client: ${String(kind)} (expected "node" or "wasm")`,
+    );
+  };
+
   const toBackendContract = (spice: Spice): SpiceBackend => ({
     raw: spice.raw as unknown as SpiceBackend["raw"],
     kit: spice.kit,
@@ -2109,27 +2123,61 @@ async function createBackendForRunner(
 
   const createNodeBackend = async (): Promise<SpiceBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "node" });
-    return toBackendContract(spice);
+    const backend = toBackendContract(spice);
+    const actual = normalizeResolvedBackendKind(backend.kind);
+    if (actual !== "node") {
+      throw new Error(
+        `tspice backend mismatch: requested=node but spice client reported ${JSON.stringify(actual)}`,
+      );
+    }
+    return backend;
   };
 
   const createWasmBackend = async (): Promise<SpiceBackend> => {
     const { spice } = await spiceClients.toSync({ backend: "wasm" });
-    return toBackendContract(spice);
+    const backend = toBackendContract(spice);
+    const actual = normalizeResolvedBackendKind(backend.kind);
+    if (actual !== "wasm") {
+      throw new Error(
+        `tspice backend mismatch: requested=wasm but spice client reported ${JSON.stringify(actual)}`,
+      );
+    }
+    return backend;
   };
 
   if (backend === "node") {
-    return { backend: await createNodeBackend(), kind: "tspice(node)" };
+    const selected = await createNodeBackend();
+    return {
+      backend: selected,
+      actualBackend: normalizeResolvedBackendKind(selected.kind),
+      fallbackDetected: false,
+    };
   }
   if (backend === "wasm") {
-    return { backend: await createWasmBackend(), kind: "tspice(wasm)" };
+    const selected = await createWasmBackend();
+    return {
+      backend: selected,
+      actualBackend: normalizeResolvedBackendKind(selected.kind),
+      fallbackDetected: false,
+    };
   }
 
   // auto: prefer node, but fall back to wasm when the native addon isn't staged.
   try {
-    return { backend: await createNodeBackend(), kind: "tspice(node)" };
+    const selected = await createNodeBackend();
+    return {
+      backend: selected,
+      actualBackend: normalizeResolvedBackendKind(selected.kind),
+      fallbackDetected: false,
+    };
   } catch (error) {
     if (isMissingNativeAddon(error)) {
-      return { backend: await createWasmBackend(), kind: "tspice(wasm)" };
+      const selected = await createWasmBackend();
+      return {
+        backend: selected,
+        actualBackend: normalizeResolvedBackendKind(selected.kind),
+        fallbackDetected: true,
+      };
     }
     throw error;
   }
@@ -2231,10 +2279,23 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
   const requested =
     options.backend ?? parseBackendEnv(process.env.TSPICE_PARITY_BACKEND) ?? "auto";
 
-  const { backend, kind } = await createBackendForRunner(requested);
+  const { backend, actualBackend, fallbackDetected } = await createBackendForRunner(requested);
+
+  if (requested !== "auto" && actualBackend !== requested) {
+    throw new Error(
+      `tspice runner backend mismatch: requested=${requested}, actual=${actualBackend}`,
+    );
+  }
+
+  const kind = `tspice(${actualBackend})`;
 
   return {
     kind,
+    backendMetadata: {
+      requestedBackend: requested,
+      actualBackend,
+      fallbackDetected,
+    },
 
     async dispose(): Promise<void> {
       // Best-effort cleanup so the runner can be reused across tests or

@@ -2,11 +2,20 @@ import { mergeCompareChain, mergeSetupChain } from "../dsl/mergeResolvedSpec.js"
 import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
 
 import type { MethodSpecV2, ScenarioCompareAst, ScenarioSetupAst } from "../dsl/types.js";
+import type { ReferenceTransport } from "../proof/nativeProof.js";
 import type { CaseRunner } from "../runners/types.js";
+
+export type MethodProofReferenceRecord = {
+  method: string;
+  caseId: string;
+  transport: ReferenceTransport;
+  ops: string[];
+};
 
 export type MethodExecutionSummary = {
   methodId: string;
   caseCount: number;
+  proofReferenceRecords?: MethodProofReferenceRecord[];
 };
 
 type LegacyResolvedLike = {

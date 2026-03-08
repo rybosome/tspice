@@ -10,6 +10,7 @@ import {
   resolveMetaKernelKernelsToLoad,
   sanitizeMetaKernelTextForNativeNoKernels,
 } from "../kernels/metaKernel.js";
+import { resolveReferenceExecutionPlan } from "../proof/nativeProof.js";
 
 import type {
   CaseRunner,
@@ -592,7 +593,14 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
 
     async runCase(input: RunCaseInput): Promise<RunCaseResult> {
       try {
-        if (isRunCaseInputV3(input) && input.schemaVersion === 3 && isSingleCallContractWorkflow(input)) {
+        const referencePlan = resolveReferenceExecutionPlan(input);
+
+        if (
+          referencePlan.transport === "callContract-fast-path" &&
+          isRunCaseInputV3(input) &&
+          input.schemaVersion === 3 &&
+          isSingleCallContractWorkflow(input)
+        ) {
           const backend = await getCallContractBackend();
           isolateFastPathCase(backend.raw);
 
