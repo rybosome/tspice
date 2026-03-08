@@ -115,11 +115,14 @@ main() {
   echo "Hermetic CSPICE output: $cspiceOut"
   TSPICE_CSPICE_DIR="$cspiceOut" node scripts/print-cspice-dir.mjs
 
-  phase "Phase 4: Install JS dependencies and build backend-node against hermetic CSPICE"
+  phase "Phase 4: Install JS dependencies and build required workspace packages"
   pnpm install --frozen-lockfile
+  pnpm -w turbo run build --filter=@rybosome/tspice
+
+  phase "Phase 5: Build backend-node against hermetic CSPICE"
   TSPICE_CSPICE_DIR="$cspiceOut" pnpm -C packages/backend-node run build:native
 
-  phase "Phase 5: Self-test parity runner forwarding via toolkit version call"
+  phase "Phase 6: Self-test parity runner forwarding via toolkit version call"
   cat > "$parityScript" <<'TS'
 (async () => {
   const repoRoot = process.env.TSPICE_REPO_ROOT;
