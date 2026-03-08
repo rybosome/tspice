@@ -60,7 +60,7 @@ describe("v3 runner preflight parity", () => {
       },
       args: { code: 399 },
       workflow: {
-        steps: [{ op: "call", fn: "ids-names.bodc2s", in: ["$args.code"] }],
+        steps: [{ op: "call", call: "ids-names.bodc2s", in: ["$args.code"] }],
       },
     };
 
@@ -158,7 +158,7 @@ describe("v3 runner preflight parity", () => {
       },
       {
         op: "call",
-        fn: "cells-windows.scard",
+        call: "cells-windows.scard",
         in: [0, "$refs.cell"],
         out: {
           ignored: "ignored",
@@ -208,7 +208,7 @@ describe("v3 runner preflight parity", () => {
       },
       args: ["TOOLKIT"],
       workflow: {
-        steps: [{ op: "call", fn: "time.tkvrsn", in: ["$args.0"] }],
+        steps: [{ op: "call", call: "time.tkvrsn", in: ["$args.0"] }],
       },
     };
 
@@ -249,7 +249,7 @@ describe("v3 runner preflight parity", () => {
         },
         args: { code: 399 },
         workflow: {
-          steps: [{ op: "call", fn: "ids-names.bodc2s", in: ["$args.code"] }],
+          steps: [{ op: "call", call: "ids-names.bodc2s", in: ["$args.code"] }],
         },
       };
 

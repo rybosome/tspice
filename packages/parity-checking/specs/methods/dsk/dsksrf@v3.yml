@@ -41,7 +41,7 @@ workflow:
                     - $refs.dasHandle
                     - $refs.dladsc
                   as: dskdsc
-                  fn: dsk.dskgd
+                  call: dsk.dskgd
                 - op: project
                   out:
                     bodyId: $refs.dskdsc.center
@@ -59,12 +59,12 @@ workflow:
                         - $refs.dskPath
                         - $refs.bodyId
                         - $refs.surfaceIds
-                      fn: dsk.dsksrf
+                      call: self
                     - op: call
                       in:
                         - $refs.surfaceIds
                       as: surfaceCount
-                      fn: cells-windows.card
+                      call: cells-windows.card
                     - op: assert
                       test:
                         gt:

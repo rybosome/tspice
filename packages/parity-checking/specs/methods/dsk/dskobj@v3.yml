@@ -35,12 +35,12 @@ workflow:
               in:
                 - $refs.dskPath
                 - $refs.bodyIds
-              fn: dsk.dskobj
+              call: self
             - op: call
               in:
                 - $refs.bodyIds
               as: bodyCount
-              fn: cells-windows.card
+              call: cells-windows.card
             - op: assert
               test:
                 gt:

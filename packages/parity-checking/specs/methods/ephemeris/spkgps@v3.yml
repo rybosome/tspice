@@ -16,7 +16,7 @@ defaults:
 workflow:
   steps:
     - op: call
-      fn: ephemeris.spkgps
+      call: self
       in:
         - $args.0
         - $args.1

@@ -17,7 +17,7 @@ describe("schema validation (v3)", () => {
           canonicalMethod: "time.tkvrsn",
         },
         workflow: {
-          steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
+          steps: [{ op: "call", call: "time.tkvrsn", in: [] }],
         },
         cases: [
           {
@@ -50,7 +50,7 @@ describe("schema validation (v3)", () => {
           {
             id: "default",
             workflow: {
-              steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
+              steps: [{ op: "call", call: "time.tkvrsn", in: [] }],
             },
             cases: [{ id: "ok", args: [] }],
           },
@@ -78,14 +78,14 @@ describe("schema validation (v3)", () => {
             canonicalMethod: "time.tkvrsn",
           },
           workflow: {
-            steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
+            steps: [{ op: "call", call: "time.tkvrsn", in: [] }],
           },
           cases: [{ id: "ok", args: [] }],
           suites: [
             {
               id: "dup",
               workflow: {
-                steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
+                steps: [{ op: "call", call: "time.tkvrsn", in: [] }],
               },
               cases: [{ id: "ok", args: [] }],
             },
@@ -144,7 +144,7 @@ describe("schema validation (v3)", () => {
             },
           },
           workflow: {
-            steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
+            steps: [{ op: "call", call: "time.tkvrsn", in: [] }],
           },
           cases: [{ id: "invalid", args: [] }],
         },
@@ -165,7 +165,7 @@ describe("schema validation (v3)", () => {
             canonicalMethod: "time.tkvrsn",
           },
           workflow: {
-            steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
+            steps: [{ op: "call", call: "time.tkvrsn", in: [] }],
           },
           cases: [
             {

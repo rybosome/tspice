@@ -12,7 +12,7 @@ setup:
 workflow:
   steps:
     - op: call
-      fn: ids-names.bods2c
+      call: self
       in:
         - $args.0
 cases:

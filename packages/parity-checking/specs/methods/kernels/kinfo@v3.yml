@@ -8,7 +8,7 @@ contract:
 workflow:
   steps:
     - op: call
-      fn: kernels.kinfo
+      call: self
       in:
         - $args.0
 cases:

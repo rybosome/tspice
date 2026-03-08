@@ -562,12 +562,26 @@ function parseStepCore(
     }
 
     case "call": {
-      ensureKnownKeys(obj, ["op", "fn", "in", "as", "out"], label);
+      ensureKnownKeys(obj, ["op", "call", "fn", "in", "as", "out"], label);
+
+      if (obj.call === undefined && obj.fn === undefined) {
+        throw new TypeError(`${label} must define call target via \"call\" (or legacy \"fn\")`);
+      }
+
+      const call = asString(obj.call ?? obj.fn, `${label}.call`);
+      if (obj.call !== undefined && obj.fn !== undefined) {
+        const legacyFn = asString(obj.fn, `${label}.fn`);
+        if (legacyFn !== call) {
+          throw new TypeError(`${label}.call and ${label}.fn must match when both are provided`);
+        }
+      }
+
       return {
         steps: [
           {
             op: "call",
-            fn: asString(obj.fn, `${label}.fn`),
+            call,
+            fn: call,
             in: asArray(obj.in, `${label}.in`),
             ...(obj.as !== undefined ? { as: asString(obj.as, `${label}.as`) } : {}),
             ...(obj.out !== undefined ? { out: asRecord(obj.out, `${label}.out`) as Record<string, string> } : {}),

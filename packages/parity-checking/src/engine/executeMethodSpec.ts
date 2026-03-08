@@ -76,7 +76,7 @@ function toMethodSpecV3(input: MethodSpecV2 | LegacyResolvedLike): MethodSpecV2 
     ...(mergedCompare ? { defaults: { compare: mergedCompare } } : {}),
     workflow:
       legacy.workflow ?? {
-        steps: [{ op: "call", fn: legacy.contractMethod ?? "unknown.method", in: [] }],
+        steps: [{ op: "call", call: legacy.contractMethod ?? "unknown.method", in: [] }],
       },
     cases: legacy.cases ?? [],
     ...(legacy.suites !== undefined ? { suites: legacy.suites } : {}),

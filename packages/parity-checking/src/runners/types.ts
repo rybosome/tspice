@@ -80,7 +80,9 @@ export type V3WorkflowAllocWindowStep = {
 
 export type V3WorkflowCallStep = {
   op: "call";
-  fn: string;
+  call?: string;
+  /** @deprecated use `call` */
+  fn?: string;
   in: unknown[];
   as?: string;
   out?: Record<string, string>;

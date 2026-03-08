@@ -29,7 +29,7 @@ workflow:
       in:
         - $refs.cell
       as: card
-      fn: cells-windows.card
+      call: self
     - op: projectResult
       out:
         card: $refs.card

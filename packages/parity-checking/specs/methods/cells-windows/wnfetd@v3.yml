@@ -15,7 +15,7 @@ contract:
 workflow:
   steps:
     - op: call
-      fn: cells-windows.wnfetd
+      call: self
       in:
         - $args.0
         - $args.1

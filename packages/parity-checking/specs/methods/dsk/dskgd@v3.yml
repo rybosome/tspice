@@ -49,7 +49,7 @@ workflow:
                     - $refs.dasHandle
                     - $refs.dladsc
                   as: dskdsc
-                  fn: dsk.dskgd
+                  call: self
                 - op: project
                   out:
                     surfce: $refs.dskdsc.surfce

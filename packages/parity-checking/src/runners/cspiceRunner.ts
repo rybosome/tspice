@@ -10,6 +10,7 @@ import type {
   RunCaseResult,
   RunnerErrorReport,
   SpiceErrorState,
+  V3WorkflowStep,
 } from "./types.js";
 import { validateV2CasePreflight } from "./v2Executor.js";
 
@@ -455,6 +456,69 @@ function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
   return typeof input === "object" && input !== null && "schemaVersion" in input;
 }
 
+function normalizeStepCallTargetsForNative(
+  step: V3WorkflowStep,
+  contractMethod: string,
+): V3WorkflowStep {
+  if (step.op === "call") {
+    const rawTarget = step.call ?? step.fn;
+    const resolvedTarget =
+      typeof rawTarget === "string" && rawTarget.trim().length > 0 && rawTarget.trim() !== "self"
+        ? rawTarget.trim()
+        : contractMethod;
+
+    return {
+      ...step,
+      call: resolvedTarget,
+      fn: resolvedTarget,
+    };
+  }
+
+  if (step.op === "switch") {
+    return {
+      ...step,
+      cases: Object.fromEntries(
+        Object.entries(step.cases).map(([key, branch]) => [
+          key,
+          branch.map((branchStep) => normalizeStepCallTargetsForNative(branchStep, contractMethod)),
+        ]),
+      ),
+      ...(step.default
+        ? {
+            default: step.default.map((branchStep) =>
+              normalizeStepCallTargetsForNative(branchStep, contractMethod),
+            ),
+          }
+        : {}),
+    };
+  }
+
+  return step;
+}
+
+function normalizeInputCallTargetsForNative(input: RunCaseInput): RunCaseInput {
+  if (!isRunCaseInputV3(input) || input.schemaVersion !== 3) {
+    return input;
+  }
+
+  const contractMethod = input.contract.contractMethod;
+  return {
+    ...input,
+    workflow: {
+      steps: input.workflow.steps.map((step) =>
+        normalizeStepCallTargetsForNative(step, contractMethod),
+      ),
+      ...(input.workflow.cleanup
+        ? {
+            cleanup: input.workflow.cleanup.map((step) =>
+              normalizeStepCallTargetsForNative(step, contractMethod),
+            ),
+          }
+        : {}),
+    },
+  };
+}
+
 /** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
 export async function createCspiceRunner(): Promise<CaseRunner> {
   const binaryPath = getCspiceRunnerBinaryPath();
@@ -473,11 +537,13 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
           };
         }
 
-        if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
-          validateV2CasePreflight(input);
+        const normalizedInput = normalizeInputCallTargetsForNative(input);
+
+        if (isRunCaseInputV3(normalizedInput) && normalizedInput.schemaVersion === 3) {
+          validateV2CasePreflight(normalizedInput);
         }
 
-        const out = await invokeRunner(binaryPath, input);
+        const out = await invokeRunner(binaryPath, normalizedInput);
         if (out.ok) {
           return { ok: true, result: out.result };
         }

@@ -480,7 +480,7 @@ static bool v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_out_named_dskb02(
   SpiceDouble vtxbds[3][2];
   SpiceDouble voxsiz = 0.0;
   SpiceDouble voxori[3];
-  SpiceDouble vgrext[3];
+  SpiceInt vgrext[3];
   SpiceInt cgscal = 0;
   SpiceInt vtxnpl = 0;
   SpiceInt voxnpt = 0;
@@ -712,7 +712,7 @@ typedef bool (*V2CallInvokerFn)(const V2CallInvokeContext *context);
 
 #define V2_NATIVE_CALL_DISPATCH_CASE(_fnId, _invoker) \
   case _fnId:                                       \
-    return _invoker(context);
+    return _invoker;
 
 static V2CallInvokerFn v2_lookup_call_invoker(const V2FunctionId fnId) {
   switch (fnId) {

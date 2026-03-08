@@ -8,7 +8,7 @@ import {
 
 import type { RunCaseInputV2 } from "../../src/runners/types.js";
 
-function baseCallContractInput(): RunCaseInputV2 {
+function baseInput(contractMethod = "time.tkvrsn"): RunCaseInputV2 {
   return {
     schemaVersion: 3,
     manifest: {
@@ -16,13 +16,13 @@ function baseCallContractInput(): RunCaseInputV2 {
       kind: "method",
     },
     contract: {
-      contractMethod: "time.tkvrsn",
-      canonicalMethod: "time.tkvrsn",
+      contractMethod,
+      canonicalMethod: contractMethod,
       errors: [],
     },
     args: ["TOOLKIT"],
     workflow: {
-      steps: [{ op: "callContract" }],
+      steps: [{ op: "call", call: "self", in: ["$args.0"] }],
     },
   };
 }
@@ -35,42 +35,29 @@ describe("native proof policy", () => {
     expect(isParityProofNativeV2Enabled({})).toBe(false);
   });
 
-  it("keeps callContract fast-path in non-proof mode", () => {
-    const plan = resolveReferenceExecutionPlan(baseCallContractInput(), {
-      proofMode: false,
-    });
-
-    expect(plan.transport).toBe("callContract-fast-path");
-    expect(plan.excepted).toBe(false);
-    expect(plan.ops).toEqual(["callContract"]);
-  });
-
-  it("forces native reference transport for non-excepted callContract cases in proof mode", () => {
-    const plan = resolveReferenceExecutionPlan(baseCallContractInput(), {
-      proofMode: true,
-    });
+  it("always records native-cspice-runner transport", () => {
+    const plan = resolveReferenceExecutionPlan(baseInput());
 
     expect(plan.transport).toBe("native-cspice-runner");
     expect(plan.excepted).toBe(false);
-    expect(plan.ops).toEqual(["callContract"]);
+    expect(plan.ops).toEqual(["call"]);
   });
 
-  it("allows only frozen exception methods to keep callContract fast-path in proof mode", () => {
-    const input = baseCallContractInput();
-    input.workflow.steps = [{ op: "callContract", call: "dskgd_c" }];
-
-    const plan = resolveReferenceExecutionPlan(input, {
-      proofMode: true,
-    });
-
+  it("keeps frozen exception allowlist constrained to dskb02_c + dskgd_c", () => {
     expect(PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST).toEqual(["dskb02_c", "dskgd_c"]);
-    expect(plan.transport).toBe("callContract-fast-path");
-    expect(plan.excepted).toBe(true);
-    expect(plan.exceptionMethod).toBe("dskgd_c");
+
+    const dskgd = resolveReferenceExecutionPlan(baseInput("dsk.dskgd"));
+    expect(dskgd.transport).toBe("native-cspice-runner");
+    expect(dskgd.excepted).toBe(true);
+    expect(dskgd.exceptionMethod).toBe("dskgd_c");
+
+    const dskb02 = resolveReferenceExecutionPlan(baseInput("dsk.dskb02"));
+    expect(dskb02.excepted).toBe(true);
+    expect(dskb02.exceptionMethod).toBe("dskb02_c");
   });
 
-  it("keeps non-callContract workflows on native reference transport in proof mode", () => {
-    const input = baseCallContractInput();
+  it("tracks workflow op inventory for non-call workflows", () => {
+    const input = baseInput();
     input.workflow.steps = [
       {
         op: "projectResult",
@@ -80,9 +67,7 @@ describe("native proof policy", () => {
       },
     ];
 
-    const plan = resolveReferenceExecutionPlan(input, {
-      proofMode: true,
-    });
+    const plan = resolveReferenceExecutionPlan(input);
 
     expect(plan.transport).toBe("native-cspice-runner");
     expect(plan.excepted).toBe(false);

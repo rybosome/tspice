@@ -144,7 +144,7 @@ main() {
         canonicalMethod: "time.tkvrsn"
       },
       args: ["TOOLKIT"],
-      workflow: { steps: [{ op: "callContract" }] }
+      workflow: { steps: [{ op: "call", call: "self", in: ["$args.0"] }] }
     });
 
     if (!result.ok) {

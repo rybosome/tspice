@@ -48,32 +48,32 @@ workflow:
       in:
         - $args.card
         - $refs.cell
-      fn: cells-windows.scard
+      call: self
     - op: call
       in:
         - $args.card
         - $refs.window
-      fn: cells-windows.scard
+      call: self
     - op: call
       in:
         - $refs.cell
       as: size
-      fn: cells-windows.size
+      call: cells-windows.size
     - op: call
       in:
         - $refs.cell
       as: card
-      fn: cells-windows.card
+      call: cells-windows.card
     - op: call
       in:
         - $refs.window
       as: windowSize
-      fn: cells-windows.size
+      call: cells-windows.size
     - op: call
       in:
         - $refs.window
       as: windowCard
-      fn: cells-windows.card
+      call: cells-windows.card
     - op: projectResult
       out:
         size: $refs.size

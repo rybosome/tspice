@@ -217,7 +217,7 @@ export async function executeMethodSpecParityV2(
     };
 
     if (proofEnabled) {
-      const referencePlan = resolveReferenceExecutionPlan(caseInput, { proofMode: true });
+      const referencePlan = resolveReferenceExecutionPlan(caseInput);
       proofReferenceRecords.push({
         method: method.manifest.id,
         caseId: run.caseId,

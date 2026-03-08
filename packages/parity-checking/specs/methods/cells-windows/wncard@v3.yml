@@ -13,7 +13,7 @@ contract:
 workflow:
   steps:
     - op: call
-      fn: cells-windows.wncard
+      call: self
       in:
         - $args.0
 cases:

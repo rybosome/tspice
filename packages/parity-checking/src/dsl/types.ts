@@ -144,7 +144,9 @@ export type MethodWorkflowOpAllocWindowV3 = {
 
 export type MethodWorkflowOpCallV3 = {
   op: "call";
-  fn: string;
+  call?: string;
+  /** @deprecated use `call` */
+  fn?: string;
   in: unknown[];
   as?: string;
   out?: Record<string, string>;

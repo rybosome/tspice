@@ -41,7 +41,7 @@ function buildMethod(resultSchema: MethodSpecV2["contract"]["result"]): MethodSp
       errors: [],
     },
     workflow: {
-      steps: [{ op: "call", fn: "cells-windows.cellGeti", in: ["$args.0", "$args.1"] }],
+      steps: [{ op: "call", call: "cells-windows.cellGeti", in: ["$args.0", "$args.1"] }],
     },
     cases: [
       {
@@ -135,7 +135,7 @@ describe("executeMethodSpecParityV2 contract.result validation", () => {
         errors: [],
       },
       workflow: {
-        steps: [{ op: "call", fn: "time.tkvrsn", in: ["$args.item"] }],
+        steps: [{ op: "call", call: "time.tkvrsn", in: ["$args.item"] }],
       },
       cases: [
         {
@@ -165,14 +165,14 @@ describe("executeMethodSpecParityV2 contract.result validation", () => {
       schemaVersion: 3,
       args: { item: 0 },
       workflow: {
-        steps: [{ op: "call", fn: "time.tkvrsn", in: ["$args.item"] }],
+        steps: [{ op: "call", call: "time.tkvrsn", in: ["$args.item"] }],
       },
     });
     expect(cspice.calls[0]).toMatchObject({
       schemaVersion: 3,
       args: { item: 0 },
       workflow: {
-        steps: [{ op: "call", fn: "time.tkvrsn", in: ["$args.item"] }],
+        steps: [{ op: "call", call: "time.tkvrsn", in: ["$args.item"] }],
       },
     });
   });

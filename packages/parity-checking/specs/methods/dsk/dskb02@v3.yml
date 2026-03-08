@@ -51,7 +51,7 @@ workflow:
                   out:
                     nv: nv
                     np: np
-                  fn: dsk.dskb02
+                  call: self
                 - op: switch
                   on: $args.selector
                   cases:

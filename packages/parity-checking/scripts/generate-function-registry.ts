@@ -20,6 +20,8 @@ type FunctionResultMode =
   | "asDskDescriptor"
   | "outNamedDskb02";
 
+type FunctionResultDelivery = "returnValue" | "outArg" | "none";
+
 type OutputBindingPolicy = "forbidden";
 
 type NativeReturnBindingKind =
@@ -35,7 +37,6 @@ const NATIVE_INVOKER_NAME_REGEX = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 type FunctionRegistryEntry = {
   id: string;
-  aliases: string[];
   impl: {
     contractMethod: string;
     cSymbol: string;
@@ -101,6 +102,14 @@ const RESULT_MODE_ENUM: Record<FunctionResultMode, string> = {
   outNamedDskb02: "V2_FUNCTION_RESULT_OUT_NAMED_DSKB02",
 };
 
+const RESULT_DELIVERY_BY_MODE: Record<FunctionResultMode, FunctionResultDelivery> = {
+  return: "returnValue",
+  forbidden: "none",
+  asSpiceInt: "outArg",
+  asDskDescriptor: "outArg",
+  outNamedDskb02: "outArg",
+};
+
 const OUTPUT_BINDING_POLICY_ENUM: Record<OutputBindingPolicy | "none", string> = {
   none: "V2_FUNCTION_OUTPUT_BINDING_POLICY_NONE",
   forbidden: "V2_FUNCTION_OUTPUT_BINDING_POLICY_FORBIDDEN",
@@ -160,7 +169,9 @@ function parseRegistryEntry(raw: unknown, label: string): FunctionRegistryEntry 
   }
 
   const id = asString(raw.id, `${label}.id`);
-  const aliases = asStringArray(raw.aliases ?? [], `${label}.aliases`);
+  if (raw.aliases !== undefined) {
+    throw new TypeError(`${label}.aliases is no longer supported; use id-only registry entries`);
+  }
 
   const implRaw = raw.impl;
   if (!isRecord(implRaw)) {
@@ -252,7 +263,6 @@ function parseRegistryEntry(raw: unknown, label: string): FunctionRegistryEntry 
 
   return {
     id,
-    aliases,
     impl: {
       contractMethod,
       cSymbol,
@@ -344,10 +354,6 @@ function collectNativeInvokers(pkgRoot: string): Set<string> {
   return invokers;
 }
 
-function stableSortedUnique(values: readonly string[]): string[] {
-  return [...new Set(values)].sort((a, b) => a.localeCompare(b));
-}
-
 function validateRegistry(
   registry: ParsedRegistry,
   knownContractMethods: ReadonlySet<string>,
@@ -355,7 +361,6 @@ function validateRegistry(
   nativeInvokers: ReadonlySet<string>,
 ): FunctionRegistryEntry[] {
   const idSet = new Set<string>();
-  const aliasOwner = new Map<string, string>();
 
   const normalized = registry.functions.map((entry) => {
     if (idSet.has(entry.id)) {
@@ -385,15 +390,6 @@ function validateRegistry(
       throw new Error(
         `Function ${entry.id} references native invoker not found in source inventory: ${entry.impl.nativeInvoker}`,
       );
-    }
-
-    const aliases = stableSortedUnique(entry.aliases);
-    for (const alias of aliases) {
-      const owner = aliasOwner.get(alias);
-      if (owner && owner !== entry.id) {
-        throw new Error(`Alias ${alias} is duplicated across function ids: ${owner}, ${entry.id}`);
-      }
-      aliasOwner.set(alias, entry.id);
     }
 
     if (entry.result.mode !== "return" && entry.impl.nativeInvoker === SHARED_RETURN_NATIVE_INVOKER) {
@@ -486,10 +482,7 @@ function validateRegistry(
       );
     }
 
-    return {
-      ...entry,
-      aliases,
-    };
+    return entry;
   });
 
   return normalized.sort((a, b) => a.id.localeCompare(b.id));
@@ -526,6 +519,13 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push(";");
   lines.push("");
 
+  lines.push("export type FunctionResultDelivery =");
+  lines.push("  | \"none\"");
+  lines.push("  | \"outArg\"");
+  lines.push("  | \"returnValue\"");
+  lines.push(";");
+  lines.push("");
+
   lines.push("export type OutputBindingPolicy =");
   for (const policy of [...ALLOWED_OUTPUT_BINDING_POLICIES].sort()) {
     lines.push(`  | \"${policy}\"`);
@@ -535,7 +535,6 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
 
   lines.push("export type FunctionRegistryEntry = {");
   lines.push("  id: string;");
-  lines.push("  aliases: readonly string[];");
   lines.push("  impl: {");
   lines.push("    contractMethod: string;");
   lines.push("    cSymbol: string;");
@@ -553,6 +552,7 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("  nonNegativeIntArgMask?: number;");
   lines.push("  result: {");
   lines.push("    mode: FunctionResultMode;");
+  lines.push("    delivery: FunctionResultDelivery;");
   lines.push("    outputBindingPolicy?: OutputBindingPolicy;");
   lines.push("  };");
   lines.push("};");
@@ -562,7 +562,6 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   for (const entry of entries) {
     lines.push("  {");
     lines.push(`    id: ${JSON.stringify(entry.id)},`);
-    lines.push(`    aliases: ${JSON.stringify(entry.aliases)},`);
     lines.push("    impl: {");
     lines.push(`      contractMethod: ${JSON.stringify(entry.impl.contractMethod)},`);
     lines.push(`      cSymbol: ${JSON.stringify(entry.impl.cSymbol)},`);
@@ -581,10 +580,13 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
     if (entry.result.outputBindingPolicy) {
       lines.push("    result: {");
       lines.push(`      mode: ${JSON.stringify(entry.result.mode)},`);
+      lines.push(`      delivery: ${JSON.stringify(RESULT_DELIVERY_BY_MODE[entry.result.mode])},`);
       lines.push(`      outputBindingPolicy: ${JSON.stringify(entry.result.outputBindingPolicy)},`);
       lines.push("    },");
     } else {
-      lines.push(`    result: { mode: ${JSON.stringify(entry.result.mode)} },`);
+      lines.push(
+        `    result: { mode: ${JSON.stringify(entry.result.mode)}, delivery: ${JSON.stringify(RESULT_DELIVERY_BY_MODE[entry.result.mode])} },`,
+      );
     }
     lines.push("  },");
   }
@@ -594,9 +596,6 @@ function renderTs(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
   lines.push("const functionRegistryByName = new Map<string, FunctionRegistryEntry>();");
   lines.push("for (const entry of functionRegistry) {");
   lines.push("  functionRegistryByName.set(entry.id, entry);");
-  lines.push("  for (const alias of entry.aliases) {");
-  lines.push("    functionRegistryByName.set(alias, entry);");
-  lines.push("  }");
   lines.push("}");
   lines.push("");
 
@@ -738,9 +737,6 @@ function renderCC(entries: readonly FunctionRegistryEntry[], sourceRelPath: stri
     const index = idToIndex.get(entry.id);
     if (index === undefined) continue;
     nameMap.push({ name: entry.id, index });
-    for (const alias of entry.aliases) {
-      nameMap.push({ name: alias, index });
-    }
   }
   nameMap.sort((a, b) => a.name.localeCompare(b.name) || a.index - b.index);
 
@@ -1203,7 +1199,7 @@ function main(): void {
   const pkgRoot = path.resolve(scriptDir, "..");
   const repoRoot = path.resolve(pkgRoot, "..", "..");
 
-  const registryPath = path.join(pkgRoot, "registry", "functions.registry.yml");
+  const registryPath = path.join(pkgRoot, "catalogs", "spice-function-registry.v2.yml");
   const contractCatalogPath = path.join(pkgRoot, "catalogs", "contract-methods.json");
 
   const rawRegistry = parseYaml(fs.readFileSync(registryPath, "utf8"));

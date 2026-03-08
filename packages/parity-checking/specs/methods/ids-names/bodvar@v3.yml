@@ -12,7 +12,7 @@ setup:
 workflow:
   steps:
     - op: call
-      fn: ids-names.bodvar
+      call: self
       in:
         - $args.0
         - $args.1

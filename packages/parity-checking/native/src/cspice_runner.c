@@ -8,6 +8,18 @@
 #include "cspice_runner_setup_kernels.h"
 #include "cspice_runner_v2_workflow.h"
 
+#ifndef JSMN_ERROR_NOMEM
+#define JSMN_ERROR_NOMEM (-1)
+#endif
+
+#ifndef JSMN_ERROR_INVAL
+#define JSMN_ERROR_INVAL (-2)
+#endif
+
+#ifndef JSMN_ERROR_PART
+#define JSMN_ERROR_PART (-3)
+#endif
+
 int main(void) {
   int exitCode = 0;
 
@@ -67,14 +79,16 @@ int main(void) {
 
   int tokenCount = 0;
   while (true) {
-    int parseErr = jsmn_parse_full(input,
-                                   inputLen,
-                                   tokens,
-                                   tokenCapacity,
-                                   &tokenCount,
-                                   true,
-                                   true);
-    if (parseErr == 0) {
+    jsmn_parser parser;
+    jsmn_init(&parser);
+
+    int parseErr = jsmn_parse(&parser,
+                              input,
+                              inputLen,
+                              tokens,
+                              (unsigned int)tokenCapacity);
+    if (parseErr >= 0) {
+      tokenCount = parseErr;
       break;
     }
 
@@ -116,9 +130,9 @@ int main(void) {
     goto done;
   }
 
-  int setupTok = jsmn_find_object_key(input, tokens, 0, tokenCount, "setup");
+  int setupTok = jsmn_find_object_key(input, tokens, 0, "setup", tokenCount);
   int schemaVersionTok =
-      jsmn_find_object_key(input, tokens, 0, tokenCount, "schemaVersion");
+      jsmn_find_object_key(input, tokens, 0, "schemaVersion", tokenCount);
 
   if (schemaVersionTok < 0 || schemaVersionTok >= tokenCount) {
     write_error_json_ex("invalid_request", "Missing required field: schemaVersion",

@@ -36,7 +36,7 @@ function createInput(method: string, args: unknown[]): RunCaseInputV2 {
     },
     args,
     workflow: {
-      steps: [{ op: "call", fn: method, in: inRefs }],
+      steps: [{ op: "call", call: method, in: inRefs }],
     },
   };
 }

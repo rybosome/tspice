@@ -29,7 +29,7 @@ workflow:
       in:
         - $refs.cell
       as: size
-      fn: cells-windows.size
+      call: self
     - op: projectResult
       out:
         size: $refs.size

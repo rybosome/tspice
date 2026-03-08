@@ -323,9 +323,13 @@ bool v2_execute_call_step(const char *json, const jsmntok_t *tokens,
     *returnValueJson = NULL;
   }
 
-  int fnTok = jsmn_find_object_key(json, tokens, stepTok, "fn", tokenCount);
+  int fnTok = jsmn_find_object_key(json, tokens, stepTok, "call", tokenCount);
   if (fnTok < 0 || tokens[fnTok].type != JSMN_STRING) {
-    write_error_json_ex("invalid_request", "call requires string fn", NULL,
+    fnTok = jsmn_find_object_key(json, tokens, stepTok, "fn", tokenCount);
+  }
+
+  if (fnTok < 0 || tokens[fnTok].type != JSMN_STRING) {
+    write_error_json_ex("invalid_request", "call requires string call", NULL,
                         NULL, NULL, NULL);
     return false;
   }

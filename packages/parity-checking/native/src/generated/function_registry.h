@@ -2,7 +2,7 @@
 #define PARITY_CHECKING_GENERATED_FUNCTION_REGISTRY_H
 
 // GENERATED FILE - DO NOT EDIT.
-// Source: packages/parity-checking/registry/functions.registry.yml
+// Source: packages/parity-checking/catalogs/spice-function-registry.v2.yml
 
 #include <stdbool.h>
 

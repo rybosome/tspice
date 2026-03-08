@@ -2,7 +2,7 @@
 #define PARITY_CHECKING_GENERATED_NATIVE_CALL_DISPATCH_H
 
 // GENERATED FILE - DO NOT EDIT.
-// Source: packages/parity-checking/registry/functions.registry.yml
+// Source: packages/parity-checking/catalogs/spice-function-registry.v2.yml
 
 // X-macro rows for native v2 call dispatch.
 // Usage: V2_NATIVE_CALL_DISPATCH_ROWS(MY_ROW_MACRO)

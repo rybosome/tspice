@@ -11,7 +11,7 @@ setup:
 workflow:
   steps:
     - op: call
-      fn: kernel-pool.gnpool
+      call: self
       in:
         - $args.0
         - $args.1

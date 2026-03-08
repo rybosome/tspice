@@ -1,6 +1,6 @@
 /* eslint-disable */
 // GENERATED FILE - DO NOT EDIT.
-// Source: packages/parity-checking/registry/functions.registry.yml
+// Source: packages/parity-checking/catalogs/spice-function-registry.v2.yml
 
 export type NativeAsSpiceIntBindingKind =
   | "cellOrWindowRefToSpiceInt"

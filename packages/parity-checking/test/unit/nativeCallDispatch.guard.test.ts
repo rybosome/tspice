@@ -204,10 +204,10 @@ describe("native call dispatch codegen guard", () => {
 
     for (const fn of [...callFns].sort((a, b) => a.localeCompare(b))) {
       const registryEntry = lookupFunctionRegistryEntry(fn);
-      expect(registryEntry, `Missing function registry entry for call fn: ${fn}`).toBeDefined();
+      expect(registryEntry, `Missing function registry entry for call call: ${fn}`).toBeDefined();
 
       const dispatchEntry = dispatchById.get(registryEntry!.id);
-      expect(dispatchEntry, `Missing native dispatch target for call fn: ${fn} (id=${registryEntry!.id})`).toBeDefined();
+      expect(dispatchEntry, `Missing native dispatch target for call call: ${fn} (id=${registryEntry!.id})`).toBeDefined();
     }
   });
 

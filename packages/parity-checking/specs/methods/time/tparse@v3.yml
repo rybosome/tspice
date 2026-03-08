@@ -15,7 +15,7 @@ defaults:
 workflow:
   steps:
     - op: call
-      fn: time.tparse
+      call: self
       in:
         - $args.0
 cases:

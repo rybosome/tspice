@@ -12,7 +12,7 @@ defaults:
 workflow:
   steps:
     - op: call
-      fn: coords-vectors.reclat
+      call: self
       in:
         - $args.0
 cases:

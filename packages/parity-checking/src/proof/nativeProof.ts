@@ -1,4 +1,6 @@
-import type { RunCaseInput, RunCaseInputV3 } from "../runners/types.js";
+import { lookupFunctionRegistryEntry } from "../generated/functionRegistry.js";
+
+import type { RunCaseInput, RunCaseInputV3, V3WorkflowCallStep } from "../runners/types.js";
 
 export const PARITY_PROOF_NATIVE_V2_ENV = "PARITY_PROOF_NATIVE_V2" as const;
 export const PARITY_PROOF_NATIVE_V2_ENABLED_VALUE = "1" as const;
@@ -7,7 +9,7 @@ export const PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST = ["dskb02_c", "dskgd_c"
 
 export type NativeProofExceptionMethod = (typeof PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST)[number];
 
-export type ReferenceTransport = "native-cspice-runner" | "callContract-fast-path";
+export type ReferenceTransport = "native-cspice-runner";
 
 export type ReferenceExecutionPlan = {
   transport: ReferenceTransport;
@@ -16,35 +18,10 @@ export type ReferenceExecutionPlan = {
   ops: string[];
 };
 
+const PROOF_EXCEPTION_ALLOWLIST = new Set<string>(PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST);
+
 function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
   return typeof input === "object" && input !== null && "schemaVersion" in input;
-}
-
-function isSingleCallContractWorkflow(input: RunCaseInputV3): boolean {
-  return input.workflow.steps.length === 1 && input.workflow.steps[0]?.op === "callContract";
-}
-
-function resolveCallContractMethod(input: RunCaseInputV3): string | undefined {
-  if (!isSingleCallContractWorkflow(input)) {
-    return undefined;
-  }
-
-  const step = input.workflow.steps[0];
-  if (!step || step.op !== "callContract") {
-    return undefined;
-  }
-
-  const workflowCall = step.call;
-  if (typeof workflowCall === "string" && workflowCall.trim().length > 0) {
-    return workflowCall.trim();
-  }
-
-  const contractMethod = input.contract.contractMethod;
-  if (typeof contractMethod === "string" && contractMethod.trim().length > 0) {
-    return contractMethod.trim();
-  }
-
-  return undefined;
 }
 
 function collectWorkflowOps(input: RunCaseInput): string[] {
@@ -57,10 +34,29 @@ function collectWorkflowOps(input: RunCaseInput): string[] {
   return [...stepOps, ...cleanupOps];
 }
 
-const PROOF_EXCEPTION_ALLOWLIST = new Set<string>(PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST);
+function resolveCallMethod(input: RunCaseInputV3): string | undefined {
+  const firstCallStep = input.workflow.steps.find((step): step is V3WorkflowCallStep => step.op === "call");
+  const explicitCall = firstCallStep?.call ?? firstCallStep?.fn;
 
-function isProofExceptionMethod(method: string | undefined): method is NativeProofExceptionMethod {
-  return typeof method === "string" && PROOF_EXCEPTION_ALLOWLIST.has(method);
+  if (typeof explicitCall === "string" && explicitCall.trim().length > 0 && explicitCall.trim() !== "self") {
+    return explicitCall.trim();
+  }
+
+  const contractMethod = input.contract.contractMethod;
+  if (typeof contractMethod === "string" && contractMethod.trim().length > 0) {
+    return contractMethod.trim();
+  }
+
+  return undefined;
+}
+
+function resolveMethodCSymbol(method: string | undefined): string | undefined {
+  if (!method) {
+    return undefined;
+  }
+
+  const entry = lookupFunctionRegistryEntry(method);
+  return entry?.impl.cSymbol;
 }
 
 /**
@@ -78,18 +74,14 @@ export function parityProofMarker(env: NodeJS.ProcessEnv = process.env): string 
 }
 
 /**
- * Resolve the reference execution transport and exception metadata for a case.
+ * Resolve reference execution metadata for proof reporting.
+ *
+ * CSPICE reference execution is always native runner dispatch.
  */
-export function resolveReferenceExecutionPlan(
-  input: RunCaseInput,
-  options: {
-    proofMode?: boolean;
-  } = {},
-): ReferenceExecutionPlan {
-  const proofMode = options.proofMode ?? isParityProofNativeV2Enabled();
+export function resolveReferenceExecutionPlan(input: RunCaseInput): ReferenceExecutionPlan {
   const ops = collectWorkflowOps(input);
 
-  if (!isRunCaseInputV3(input) || input.schemaVersion !== 3 || !isSingleCallContractWorkflow(input)) {
+  if (!isRunCaseInputV3(input) || input.schemaVersion !== 3) {
     return {
       transport: "native-cspice-runner",
       excepted: false,
@@ -97,21 +89,13 @@ export function resolveReferenceExecutionPlan(
     };
   }
 
-  const method = resolveCallContractMethod(input);
-  const excepted = isProofExceptionMethod(method);
-
-  if (proofMode && !excepted) {
-    return {
-      transport: "native-cspice-runner",
-      excepted,
-      ops,
-    };
-  }
+  const cSymbol = resolveMethodCSymbol(resolveCallMethod(input));
+  const excepted = typeof cSymbol === "string" && PROOF_EXCEPTION_ALLOWLIST.has(cSymbol);
 
   return {
-    transport: "callContract-fast-path",
+    transport: "native-cspice-runner",
     excepted,
-    ...(excepted && method ? { exceptionMethod: method } : {}),
+    ...(excepted && cSymbol ? { exceptionMethod: cSymbol as NativeProofExceptionMethod } : {}),
     ops,
   };
 }

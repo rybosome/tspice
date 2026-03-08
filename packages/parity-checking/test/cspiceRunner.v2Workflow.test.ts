@@ -117,7 +117,7 @@ describe("cspice-runner v3 workflow behavior", () => {
           },
           {
             op: "call",
-            fn: "cells-windows.size",
+            call: "cells-windows.size",
             in: ["$refs.tmp"],
             as: "tmpSize",
           },
@@ -280,7 +280,7 @@ describe("cspice-runner v3 workflow behavior", () => {
         cleanup: [
           {
             op: "call",
-            fn: "cells-windows.size",
+            call: "cells-windows.size",
             in: ["$refs.cell"],
             as: "cleanupSize",
           },

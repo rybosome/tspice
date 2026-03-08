@@ -1,5 +1,5 @@
 // GENERATED FILE - DO NOT EDIT.
-// Source: packages/parity-checking/registry/functions.registry.yml
+// Source: packages/parity-checking/catalogs/spice-function-registry.v2.yml
 
 #include "generated/native_as_spice_int_bindings.h"
 

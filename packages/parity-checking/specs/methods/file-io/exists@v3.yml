@@ -13,7 +13,7 @@ contract:
 workflow:
   steps:
     - op: call
-      fn: file-io.exists
+      call: self
       in:
         - $args.0
 cases:

@@ -15,7 +15,7 @@ defaults:
 workflow:
   steps:
     - op: call
-      fn: time.unitim
+      call: self
       in:
         - $args.0
         - $args.1

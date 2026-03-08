@@ -15,7 +15,7 @@ defaults:
 workflow:
   steps:
     - op: call
-      fn: time.tkvrsn
+      call: self
       in:
         - $args.0
 cases:
