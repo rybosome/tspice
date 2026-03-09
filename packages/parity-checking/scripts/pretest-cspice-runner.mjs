@@ -141,12 +141,25 @@ function listRunnerFiles(pkgRoot, ext) {
     .sort();
 }
 
+function listGeneratedRunnerFiles(pkgRoot, ext) {
+  const generatedDir = path.join(pkgRoot, "native", "src", "generated");
+  if (!fs.existsSync(generatedDir)) {
+    return [];
+  }
+
+  const entries = fs.readdirSync(generatedDir, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(ext))
+    .map((entry) => path.join(generatedDir, entry.name))
+    .sort();
+}
+
 function getRunnerSources(pkgRoot) {
-  return listRunnerFiles(pkgRoot, ".c");
+  return [...listRunnerFiles(pkgRoot, ".c"), ...listGeneratedRunnerFiles(pkgRoot, ".c")];
 }
 
 function getRunnerHeaders(pkgRoot) {
-  return listRunnerFiles(pkgRoot, ".h");
+  return [...listRunnerFiles(pkgRoot, ".h"), ...listGeneratedRunnerFiles(pkgRoot, ".h")];
 }
 
 function run(command, args, opts) {
@@ -199,7 +212,7 @@ function main() {
         writeState(pkgRoot, {
           available: false,
           reason:
-            "Automatic CSPICE fetch is not supported on linux-arm64 (set TSPICE_CSPICE_DIR to a prebuilt CSPICE install)",
+            "Automatic CSPICE fetch is not supported on linux-arm64 (run scripts/bootstrap-linux-arm64-proof.sh or set TSPICE_CSPICE_DIR to a prebuilt CSPICE install)",
           binaryPath,
           cspiceDir,
           details: validation.reason,
@@ -213,7 +226,7 @@ function main() {
       writeState(pkgRoot, {
         available: false,
         reason:
-          "Automatic CSPICE fetch is not supported on linux-arm64 (set TSPICE_CSPICE_DIR to a prebuilt CSPICE install)",
+          "Automatic CSPICE fetch is not supported on linux-arm64 (run scripts/bootstrap-linux-arm64-proof.sh or set TSPICE_CSPICE_DIR to a prebuilt CSPICE install)",
         binaryPath,
         cspiceDir,
         details: validation.reason,

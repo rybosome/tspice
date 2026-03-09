@@ -55,7 +55,7 @@ function main() {
   if (!validateCspiceDir(cspiceDir)) {
     if (process.platform === "linux" && process.arch === "arm64") {
       throw new Error(
-        `CSPICE not found at ${cspiceDir}. On linux-arm64 you must set TSPICE_CSPICE_DIR to a prebuilt CSPICE install.`
+        `CSPICE not found at ${cspiceDir}. On linux-arm64 run scripts/bootstrap-linux-arm64-proof.sh (or set TSPICE_CSPICE_DIR to a prebuilt CSPICE install).`
       );
     }
 

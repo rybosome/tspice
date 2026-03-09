@@ -79,6 +79,12 @@ pnpm -C packages/backend-node run build:native
 pnpm run stage:native-platform
 ```
 
+On `linux-arm64`, run this once first to stage a hermetic CSPICE layout into the repo cache:
+
+```bash
+pnpm run bootstrap:linux-arm64-proof
+```
+
 Notes:
 
 - `pnpm run check:native` runs the full native pipeline (build + stage + build/test).

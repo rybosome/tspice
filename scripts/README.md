@@ -9,6 +9,7 @@ In most cases, you should prefer invoking these via the **workspace root** `pack
 From the repo root:
 
 ```bash
+pnpm run bootstrap:linux-arm64-proof
 pnpm run check:compliance
 pnpm run check:versions
 pnpm run fetch:cspice
@@ -24,6 +25,7 @@ See the full script list in [`../package.json`](../package.json).
 | `check-compliance-files.mjs` | Validates required compliance/disclosure files and links are present (CI guard). |
 | `verify-native-package-versions.mjs` | Ensures `tspice-native-*` package versions match `@rybosome/tspice`. |
 | `fetch-cspice.mjs` | Fetches the pinned CSPICE sources/archives used by native + wasm builds. |
+| `bootstrap-linux-arm64-proof.sh` | Linux-arm64 bootstrap for hermetic CSPICE + proof-mode parity runner setup. |
 | `cspice.manifest.json` | Manifest (pins + URLs) consumed by `fetch-cspice.mjs`. |
 | `build-backend-wasm.mjs` | Regenerates the checked-in wasm artifacts under `packages/backend-wasm/emscripten/` (requires Emscripten). |
 | `backend-wasm-assets.mjs` | Shared constants for wasm asset filenames used by build/copy scripts. |

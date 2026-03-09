@@ -10,6 +10,7 @@
     "build:js": "turbo run build --filter=!@rybosome/tspice-backend-node",
     "generate:llm": "node tools/llm/generate.mjs",
     "check": "pnpm run check:js",
+    "bootstrap:linux-arm64-proof": "bash scripts/bootstrap-linux-arm64-proof.sh",
     "check:bench-contract": "pnpm bench:contract validate benchmarks/contracts/v1/example.yml",
     "check:compliance": "node scripts/check-compliance-files.mjs",
     "check:js": "pnpm run check:compliance && pnpm run check:versions && pnpm run format:check && pnpm run lint && pnpm run build:js && pnpm run check:bench-contract && pnpm run typecheck && pnpm run test:js",

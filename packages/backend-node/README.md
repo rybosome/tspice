@@ -103,6 +103,8 @@ If you set `TSPICE_CSPICE_DIR`, native builds will use CSPICE from that path ins
 - `include/` (e.g. `SpiceUsr.h`)
 - `lib/` (e.g. `cspice.a` and `csupport.a`)
 
+On `linux-arm64`, run `pnpm run bootstrap:linux-arm64-proof` once to stage a hermetic CSPICE layout into `.cache/cspice/.../linux-arm64/cspice`.
+
 ### `TSPICE_BACKEND_NODE_BINDING_PATH`
 
 By default, this package tries to load the addon from:

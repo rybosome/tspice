@@ -117,6 +117,10 @@ function validateCspiceSourceDir(cspiceDir) {
   return fs.existsSync(spiceUsr) && fs.existsSync(srcDir);
 }
 
+function defaultCspiceDir(repoRoot, toolkitVersion, platform = process.platform, arch = process.arch) {
+  return path.join(repoRoot, ".cache", "cspice", toolkitVersion, `${platform}-${arch}`, "cspice");
+}
+
 async function ensureCachedArchive({ url, sha256, cacheDir, validateDir }) {
   ensureDir(cacheDir);
 
@@ -172,6 +176,10 @@ async function ensureCachedArchive({ url, sha256, cacheDir, validateDir }) {
 
 async function main() {
   const mode = process.argv.includes("--source") ? "source" : "archive";
+  const manifest = readManifest();
+  const toolkitVersion = manifest.toolkitVersion;
+  const repoRoot = getRepoRoot();
+  const defaultDir = defaultCspiceDir(repoRoot, toolkitVersion);
 
   const override = process.env.TSPICE_CSPICE_DIR;
   if (override && mode === "archive") {
@@ -187,17 +195,18 @@ async function main() {
   }
 
   if (mode === "archive" && process.platform === "linux" && process.arch === "arm64") {
+    if (validateCspiceDir(defaultDir)) {
+      console.log(`CSPICE ready: ${defaultDir}`);
+      return;
+    }
+
     throw new Error(
-      "Automatic CSPICE fetch is not supported on linux-arm64. Set TSPICE_CSPICE_DIR to a prebuilt CSPICE install."
+      "Automatic CSPICE fetch is not supported on linux-arm64. Run scripts/bootstrap-linux-arm64-proof.sh once, or set TSPICE_CSPICE_DIR to a prebuilt CSPICE install."
     );
   }
 
   // Note: we intentionally do not validate ELF/Mach-O arch or attempt to rebuild CSPICE here.
   // If the prebuilt archives are incompatible with the current host, provide a compatible install via TSPICE_CSPICE_DIR.
-
-  const manifest = readManifest();
-  const toolkitVersion = manifest.toolkitVersion;
-  const repoRoot = getRepoRoot();
 
   if (mode === "source") {
     const source = manifest.source;
@@ -222,13 +231,7 @@ async function main() {
   const archiveKey = resolveArchiveKey(manifest, process.platform, process.arch);
   const { url, sha256 } = manifest.archives[archiveKey];
 
-  const cacheDir = path.join(
-    repoRoot,
-    ".cache",
-    "cspice",
-    toolkitVersion,
-    `${process.platform}-${process.arch}`
-  );
+  const cacheDir = path.dirname(defaultDir);
 
   console.log(`Ensuring CSPICE ${toolkitVersion} (${archiveKey})...`);
   const cspiceDir = await ensureCachedArchive({
