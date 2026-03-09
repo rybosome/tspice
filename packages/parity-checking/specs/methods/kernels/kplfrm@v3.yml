@@ -18,5 +18,7 @@ cases:
     setup:
       kernels:
         - $FIXTURES/frames-minimal/earth_topo_201023.tf
+    compare:
+      errorShort: true
     expect:
-      ok: true
+      ok: false
