@@ -304,36 +304,9 @@ export type MethodSpecV3 = {
 
 export type AnyMethodSpec = MethodSpecV3;
 
-export type CrossCuttingCaseExpectation = {
-  ok: boolean;
-  errorCode?: string;
-};
-
-export type CrossCuttingCaseSpec = {
-  id: string;
-  transport: "native";
-  rawRequest: string;
-  expect: CrossCuttingCaseExpectation;
-};
-
-export type CrossCuttingSpecV3 = {
-  schemaVersion: 3;
-  manifest: {
-    id: string;
-    kind: "crossCuttingSpec";
-  };
-  cases: CrossCuttingCaseSpec[];
-  meta: {
-    sourcePath: string;
-  };
-};
-
-export type AnyCrossCuttingSpec = CrossCuttingSpecV3;
-
 export type LoadedParitySpecs = {
   workflows: WorkflowSpec[];
   methods: AnyMethodSpec[];
-  crossCutting: AnyCrossCuttingSpec[];
 };
 
 export type ResolvedMethodSpec = {
@@ -377,8 +350,6 @@ export type MethodWorkflowOpFreeWindowV2 = MethodWorkflowOpFreeWindowV3;
 export type MethodWorkflowStepV2 = MethodWorkflowStepV3;
 export type MethodCaseSpecV2 = MethodCaseSpecV3;
 export type MethodSpecV2 = MethodSpecV3;
-export type CrossCuttingSpec = CrossCuttingSpecV3;
-export type CrossCuttingSpecV2 = CrossCuttingSpecV3;
 
 /** Compatibility type guard while v2 references still exist (all method specs are v3). */
 export function isMethodSpecV2(_method: AnyMethodSpec): _method is MethodSpecV3 {
@@ -398,15 +369,4 @@ export function methodCanonicalMethod(method: AnyMethodSpec): string {
     contract?: { canonicalMethod?: string };
   };
   return legacy.contract?.canonicalMethod ?? legacy.canonicalMethod ?? "";
-}
-
-/** Compatibility type guard while v2 references still exist (all cross-cutting specs are v3). */
-export function isCrossCuttingSpecV2(_spec: AnyCrossCuttingSpec): _spec is CrossCuttingSpecV3 {
-  return true;
-}
-
-/** Returns a stable cross-cutting spec id from v3 `manifest.id` or legacy top-level `id`. */
-export function crossCuttingSpecId(spec: AnyCrossCuttingSpec): string {
-  const legacy = spec as unknown as { id?: string; manifest?: { id?: string } };
-  return legacy.manifest?.id ?? legacy.id ?? "unknown-cross-cutting";
 }

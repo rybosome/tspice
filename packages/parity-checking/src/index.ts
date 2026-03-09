@@ -1,6 +1,5 @@
 export type { ScenarioAst, ScenarioCaseAst, ScenarioSetupAst } from "./dsl/types.js";
 export type {
-  CrossCuttingSpec,
   LoadedParitySpecs,
   MethodSpec,
   ResolvedMethodSpec,
@@ -12,14 +11,13 @@ export { executeScenario } from "./dsl/execute.js";
 
 export { discoverYamlFiles } from "./dsl/discoverYamlFiles.js";
 export { loadYamlFile } from "./dsl/loadYaml.js";
-export { parseMethodSpec, parseWorkflowSpec, parseCrossCuttingSpec } from "./dsl/schemaValidate.js";
+export { parseMethodSpec, parseWorkflowSpec } from "./dsl/schemaValidate.js";
 export { buildWorkflowIndex } from "./dsl/buildWorkflowIndex.js";
 export { resolveMethodIncludes } from "./dsl/resolveIncludes.js";
 export { mergeResolvedMethodSpec } from "./dsl/mergeResolvedSpec.js";
 
 export { runParityEngine } from "./engine/parityEngine.js";
 export { executeMethodSpecParity } from "./engine/executeMethodSpec.js";
-export { executeCrossCuttingSpec } from "./engine/executeCrossCuttingSpec.js";
 
 export type { CaseRunner, RunCaseInput, RunCaseResult, RunnerErrorReport } from "./runners/types.js";
 export { createTspiceRunner } from "./runners/tspiceRunner.js";
