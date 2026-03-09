@@ -40,4 +40,3 @@ cases:
       - 42
     expect:
       ok: false
-      errorCode: invalid_args

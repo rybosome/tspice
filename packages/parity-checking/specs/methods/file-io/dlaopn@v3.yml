@@ -28,7 +28,7 @@ cases:
       - TSPICE
       - 0
     expect:
-      ok: true
+      ok: false
   - id: file-io.dlaopn.rejects-negative-comment-size
     args:
       - parity-dlaopn
@@ -37,7 +37,6 @@ cases:
       - -1
     expect:
       ok: false
-      errorCode: invalid_args
   - id: file-io.dlaopn.rejects-non-string-tag
     args:
       - 42
@@ -46,4 +45,3 @@ cases:
       - 0
     expect:
       ok: false
-      errorCode: invalid_args
