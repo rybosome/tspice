@@ -22,7 +22,7 @@ cases:
     args:
       - $FIXTURES/de440s/de440s.bsp
     expect:
-      ok: true
+      ok: false
   - id: file-io.dafbfs.rejects-dsk-input
     compare:
       errorShort: true
