@@ -1,9 +1,6 @@
 import { ASSERT_OPERATORS, type AssertOperator } from "../assertOperators.js";
 
 import type {
-  CrossCuttingSpecV3,
-  CrossCuttingCaseExpectation,
-  CrossCuttingCaseSpec,
   MethodCaseExpectation,
   MethodCaseSpecV3,
   MethodContractV3,
@@ -934,63 +931,5 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
   }
 
   return method;
-}
-
-function parseCrossCuttingCaseExpectation(value: unknown, label: string): CrossCuttingCaseExpectation {
-  const obj = asRecord(value, label);
-  ensureKnownKeys(obj, ["ok", "errorCode"], label);
-
-  return {
-    ok: asBoolean(obj.ok, `${label}.ok`),
-    ...(obj.errorCode !== undefined ? { errorCode: asString(obj.errorCode, `${label}.errorCode`) } : {}),
-  };
-}
-
-function parseCrossCuttingCase(value: unknown, label: string): CrossCuttingCaseSpec {
-  const obj = asRecord(value, label);
-  ensureKnownKeys(obj, ["id", "transport", "rawRequest", "expect"], label);
-
-  const transport = asString(obj.transport, `${label}.transport`);
-  if (transport !== "native") {
-    throw new TypeError(`${label}.transport must be \"native\" (got ${JSON.stringify(transport)})`);
-  }
-
-  return {
-    id: asString(obj.id, `${label}.id`),
-    transport: "native",
-    rawRequest: asString(obj.rawRequest, `${label}.rawRequest`),
-    expect: parseCrossCuttingCaseExpectation(obj.expect, `${label}.expect`),
-  };
-}
-
-/** Parses a crossCuttingV3 YAML document into a validated cross-cutting spec AST. */
-export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpecV3 {
-  const obj = asRecord(file.data, "crossCuttingV3");
-  ensureKnownKeys(obj, ["schemaVersion", "manifest", "cases"], "crossCuttingV3");
-
-  const schemaVersion = asFiniteNumber(obj.schemaVersion, "crossCuttingV3.schemaVersion");
-  if (!Number.isInteger(schemaVersion) || schemaVersion !== 3) {
-    throw new TypeError(`crossCuttingV3.schemaVersion must be 3 (got ${schemaVersion})`);
-  }
-
-  const manifest = asRecord(obj.manifest, "crossCuttingV3.manifest");
-  ensureKnownKeys(manifest, ["id", "kind"], "crossCuttingV3.manifest");
-
-  const kind = asString(manifest.kind, "crossCuttingV3.manifest.kind");
-  if (kind !== "crossCuttingSpec") {
-    throw new TypeError(`crossCuttingV3.manifest.kind must be \"crossCuttingSpec\" (got ${JSON.stringify(kind)})`);
-  }
-
-  return {
-    schemaVersion: 3,
-    manifest: {
-      id: asString(manifest.id, "crossCuttingV3.manifest.id"),
-      kind: "crossCuttingSpec",
-    },
-    cases: asArray(obj.cases, "crossCuttingV3.cases").map((entry, i) =>
-      parseCrossCuttingCase(entry, `crossCuttingV3.cases[${i}]`),
-    ),
-    meta: { sourcePath: file.sourcePath },
-  };
 }
 

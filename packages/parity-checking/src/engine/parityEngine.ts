@@ -3,11 +3,9 @@ import { fileURLToPath } from "node:url";
 
 import { discoverYamlFiles } from "../dsl/discoverYamlFiles.js";
 import { loadYamlFile } from "../dsl/loadYaml.js";
-import { parseCrossCuttingSpec, parseMethodSpec } from "../dsl/schemaValidate.js";
-import { executeCrossCuttingSpec } from "./executeCrossCuttingSpec.js";
+import { parseMethodSpec } from "../dsl/schemaValidate.js";
 import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
-import { validateCrossCuttingSpecs } from "../guards/validateCrossCuttingSpecs.js";
 import { validateSchema } from "../guards/validateSchema.js";
 import {
   PARITY_PROOF_NATIVE_V2_ENV,
@@ -18,7 +16,7 @@ import {
 import { createCspiceRunner, getCspiceRunnerStatus } from "../runners/cspiceRunner.js";
 import { createTspiceRunner } from "../runners/tspiceRunner.js";
 
-import { crossCuttingSpecId, methodSpecId } from "../dsl/types.js";
+import { methodSpecId } from "../dsl/types.js";
 import type { LoadedParitySpecs } from "../dsl/types.js";
 import type { MethodProofReferenceRecord } from "./executeMethodSpec.js";
 import type { CaseRunner } from "../runners/types.js";
@@ -50,22 +48,14 @@ async function loadParitySpecs(): Promise<LoadedParitySpecs> {
   const root = packageRoot();
 
   const methodFiles = discoverYamlFiles(path.join(root, "specs", "methods"));
-  const crossCuttingFiles = discoverYamlFiles(path.join(root, "specs", "cross-cutting"));
 
   const methods = (
     await Promise.all(methodFiles.map(async (filePath) => parseMethodSpec(await loadYamlFile(filePath))))
   ).sort((a, b) => stableSort(methodSpecId(a), methodSpecId(b)));
 
-  const crossCutting = (
-    await Promise.all(
-      crossCuttingFiles.map(async (filePath) => parseCrossCuttingSpec(await loadYamlFile(filePath))),
-    )
-  ).sort((a, b) => stableSort(crossCuttingSpecId(a), crossCuttingSpecId(b)));
-
   return {
     workflows: [],
     methods,
-    crossCutting,
   };
 }
 
@@ -95,12 +85,10 @@ export type ParityEngineSummary = {
   skipReason?: string;
   workflowCount: number;
   methodCount: number;
-  crossCuttingSpecCount: number;
   contractCount: number;
   coveredCount: number;
   denylistCount: number;
   methodCaseCount: number;
-  crossCuttingCaseCount: number;
   proof: ParityProofSummary;
 };
 
@@ -214,14 +202,13 @@ async function withProofRunners<T>(
   }
 }
 
-/** Run parity validation across cross-cutting specs and method specs. */
+/** Run parity validation across method specs. */
 export async function runParityEngine(): Promise<ParityEngineSummary> {
   const specs = await loadParitySpecs();
 
   validateSchema(specs);
 
   const completeness = validateCompleteness(specs.methods);
-  validateCrossCuttingSpecs(specs.crossCutting);
 
   const proofEnabled = isParityProofNativeV2Enabled();
   const proofDisabledSummary = buildDisabledProofSummary();
@@ -239,24 +226,16 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
       skipReason: `cspice-runner unavailable: ${status.hint}`,
       workflowCount: 0,
       methodCount: specs.methods.length,
-      crossCuttingSpecCount: specs.crossCutting.length,
       contractCount: completeness.contractCount,
       coveredCount: completeness.coveredCount,
       denylistCount: completeness.denylistCount,
       methodCaseCount: 0,
-      crossCuttingCaseCount: 0,
       proof: proofDisabledSummary,
     };
   }
 
   if (!proofEnabled) {
     const paritySummary = await withRunners(async (runners) => {
-      let crossCuttingCaseCount = 0;
-      for (const spec of specs.crossCutting) {
-        const summary = await executeCrossCuttingSpec(spec);
-        crossCuttingCaseCount += summary.caseCount;
-      }
-
       let methodCaseCount = 0;
       for (const method of specs.methods) {
         const summary = await executeMethodSpecParityV2(method, runners);
@@ -267,12 +246,10 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
         skipped: false,
         workflowCount: 0,
         methodCount: specs.methods.length,
-        crossCuttingSpecCount: specs.crossCutting.length,
         contractCount: completeness.contractCount,
         coveredCount: completeness.coveredCount,
         denylistCount: completeness.denylistCount,
         methodCaseCount,
-        crossCuttingCaseCount,
       };
     });
 
@@ -294,12 +271,6 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
     paritySummary = await withProofRunners(async (runners) => {
       proofLaneBackendRecords.push(verifyProofLaneRunner("node", runners.node));
       proofLaneBackendRecords.push(verifyProofLaneRunner("wasm", runners.wasm));
-
-      let crossCuttingCaseCount = 0;
-      for (const spec of specs.crossCutting) {
-        const summary = await executeCrossCuttingSpec(spec);
-        crossCuttingCaseCount += summary.caseCount;
-      }
 
       let methodCaseCount = 0;
       for (const method of specs.methods) {
@@ -339,12 +310,10 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
         skipped: false,
         workflowCount: 0,
         methodCount: specs.methods.length,
-        crossCuttingSpecCount: specs.crossCutting.length,
         contractCount: completeness.contractCount,
         coveredCount: completeness.coveredCount,
         denylistCount: completeness.denylistCount,
         methodCaseCount,
-        crossCuttingCaseCount,
       };
     });
   } catch (error) {

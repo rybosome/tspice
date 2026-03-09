@@ -6,13 +6,11 @@ It owns:
 - parity workflow + method specs,
 - pre-execution guard pipeline,
 - tspice/cspice parity runtime comparison,
-- cross-cutting spec execution,
 - generated parity catalogs.
 
 ## Layout
 
 - `specs/methods/**` — per-method parity specs (`schemaVersion: 3`, `manifest.kind: method`)
-- `specs/cross-cutting/**` — executable cross-cutting specs (`schemaVersion: 3`, `manifest.kind: crossCuttingSpec`)
 - `catalogs/contract-methods.json` — generated canonical contract methods
 - `catalogs/parity-denylist.json` / `catalogs/parity-denylist.ts` — generated denylist (v3 baseline is empty)
 
@@ -46,5 +44,4 @@ Workflow highlights:
 
 1. schema validity,
 2. completeness against v3 baseline coverage expectations,
-3. cross-cutting spec discovery/validation/execution,
-4. method parity execution (tspice vs cspice).
+3. method parity execution (tspice vs cspice).
