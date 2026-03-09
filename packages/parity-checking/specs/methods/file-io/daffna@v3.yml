@@ -19,6 +19,8 @@ workflow:
         - $args.0
 cases:
   - id: file-io.daffna.finds-first-array-in-spk
+    compare:
+      errorShort: true
     args:
       - $FIXTURES/de440s/de440s.bsp
     expect:

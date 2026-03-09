@@ -19,6 +19,8 @@ workflow:
         - $args.0
 cases:
   - id: file-io.dafbfs.starts-search-on-spk
+    compare:
+      errorShort: true
     args:
       - $FIXTURES/de440s/de440s.bsp
     expect:

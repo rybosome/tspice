@@ -19,6 +19,8 @@ workflow:
         - $args.0
 cases:
   - id: file-io.dlabfs.find-first-segment-in-dsk
+    compare:
+      errorShort: true
     args:
       - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
     expect:

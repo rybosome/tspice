@@ -22,6 +22,8 @@ workflow:
         - $args.3
 cases:
   - id: file-io.dlaopn.create-dla-writer
+    compare:
+      errorShort: true
     args:
       - parity-dlaopn
       - DLA
