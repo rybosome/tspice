@@ -1,4 +1,7 @@
+import * as path from "node:path";
+
 import { ASSERT_OPERATORS, type AssertOperator } from "../assertOperators.js";
+import { expandFixturesMacroString, resolveKernelPaths } from "./parse.js";
 
 import type {
   CrossCuttingSpecV3,
@@ -111,36 +114,43 @@ function parseStringMap(value: unknown, label: string): Record<string, string> {
   return out;
 }
 
-function parseKernelEntry(value: unknown, label: string): string | { path: string; restrictToDir?: string } {
+function resolveKernelObjectPath(rawPath: string, sourceDir: string): string {
+  const expanded = expandFixturesMacroString(rawPath, sourceDir);
+  return path.isAbsolute(expanded) ? path.resolve(expanded) : path.resolve(sourceDir, expanded);
+}
+
+function parseKernelEntry(
+  value: unknown,
+  label: string,
+  sourceDir: string,
+): Array<string | { path: string; restrictToDir?: string }> {
   if (typeof value === "string") {
     if (value.trim() === "") {
       throw new TypeError(`${label} must be a non-empty string`);
     }
-    return value;
+    return resolveKernelPaths(value, sourceDir);
   }
 
   const obj = asRecord(value, label);
   ensureKnownKeys(obj, ["path", "restrictToDir"], label);
 
-  const out: { path: string; restrictToDir?: string } = {
-    path: asString(obj.path, `${label}.path`),
-  };
+  const kernelPath = resolveKernelObjectPath(asString(obj.path, `${label}.path`), sourceDir);
+  const restrictToDir =
+    obj.restrictToDir === undefined
+      ? undefined
+      : resolveKernelObjectPath(asString(obj.restrictToDir, `${label}.restrictToDir`), sourceDir);
 
-  if (obj.restrictToDir !== undefined) {
-    out.restrictToDir = asString(obj.restrictToDir, `${label}.restrictToDir`);
-  }
-
-  return out;
+  return [restrictToDir === undefined ? { path: kernelPath } : { path: kernelPath, restrictToDir }];
 }
 
-function parseSetupAst(value: unknown, label: string): ScenarioSetupAst {
+function parseSetupAst(value: unknown, label: string, sourceDir: string): ScenarioSetupAst {
   const obj = asRecord(value, label);
   ensureKnownKeys(obj, ["kernels"], label);
 
   const out: ScenarioSetupAst = {};
   if (obj.kernels !== undefined) {
-    const kernels = asArray(obj.kernels, `${label}.kernels`).map((entry, i) =>
-      parseKernelEntry(entry, `${label}.kernels[${i}]`),
+    const kernels = asArray(obj.kernels, `${label}.kernels`).flatMap((entry, i) =>
+      parseKernelEntry(entry, `${label}.kernels[${i}]`, sourceDir),
     );
     out.kernels = kernels;
   }
@@ -150,6 +160,7 @@ function parseSetupAst(value: unknown, label: string): ScenarioSetupAst {
 
 /** Legacy workflow include parser (kept for historical workflow files). */
 export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
+  const sourceDir = path.dirname(file.sourcePath);
   const obj = asRecord(file.data, "workflow");
   ensureKnownKeys(obj, ["id", "kind", "uses", "setup", "compareDefaults"], "workflow");
 
@@ -172,7 +183,7 @@ export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
   }
 
   if (obj.setup !== undefined) {
-    out.setup = parseSetupAst(obj.setup, "workflow.setup");
+    out.setup = parseSetupAst(obj.setup, "workflow.setup", sourceDir);
   }
 
   if (obj.compareDefaults !== undefined) {
@@ -193,7 +204,7 @@ function parseMethodCaseExpectation(value: unknown, label: string): MethodCaseEx
   return out;
 }
 
-function parseMethodCase(value: unknown, label: string): MethodCaseSpecV3 {
+function parseMethodCase(value: unknown, label: string, sourceDir: string): MethodCaseSpecV3 {
   const obj = asRecord(value, label);
   ensureKnownKeys(obj, ["id", "args", "setup", "compare", "expect"], label);
 
@@ -204,7 +215,7 @@ function parseMethodCase(value: unknown, label: string): MethodCaseSpecV3 {
   if (Object.prototype.hasOwnProperty.call(obj, "args")) {
     out.args = obj.args;
   }
-  if (obj.setup !== undefined) out.setup = parseSetupAst(obj.setup, `${label}.setup`);
+  if (obj.setup !== undefined) out.setup = parseSetupAst(obj.setup, `${label}.setup`, sourceDir);
   if (obj.compare !== undefined) out.compare = parseCompareAst(obj.compare, `${label}.compare`);
   if (obj.expect !== undefined) out.expect = parseMethodCaseExpectation(obj.expect, `${label}.expect`);
 
@@ -796,7 +807,7 @@ function parseWorkflow(value: unknown, label: string): { steps: MethodWorkflowSt
   };
 }
 
-function parseMethodSuite(value: unknown, label: string): MethodSuiteSpecV3 {
+function parseMethodSuite(value: unknown, label: string, sourceDir: string): MethodSuiteSpecV3 {
   const obj = asRecord(value, label);
   ensureKnownKeys(obj, ["id", "setup", "defaults", "workflow", "cases"], label);
 
@@ -804,12 +815,12 @@ function parseMethodSuite(value: unknown, label: string): MethodSuiteSpecV3 {
     id: asString(obj.id, `${label}.id`),
     workflow: parseWorkflow(obj.workflow, `${label}.workflow`),
     cases: asArray(obj.cases, `${label}.cases`).map((entry, i) =>
-      parseMethodCase(entry, `${label}.cases[${i}]`),
+      parseMethodCase(entry, `${label}.cases[${i}]`, sourceDir),
     ),
   };
 
   if (obj.setup !== undefined) {
-    out.setup = parseSetupAst(obj.setup, `${label}.setup`);
+    out.setup = parseSetupAst(obj.setup, `${label}.setup`, sourceDir);
   }
 
   if (obj.defaults !== undefined) {
@@ -862,6 +873,7 @@ function assertCaseShapeForWorkflow(
 
 /** Parses a methodV3 YAML document into a validated method spec AST. */
 export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
+  const sourceDir = path.dirname(file.sourcePath);
   const obj = asRecord(file.data, "methodV3");
   ensureKnownKeys(
     obj,
@@ -894,7 +906,7 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
   };
 
   if (obj.setup !== undefined) {
-    method.setup = parseSetupAst(obj.setup, "methodV3.setup");
+    method.setup = parseSetupAst(obj.setup, "methodV3.setup", sourceDir);
   }
 
   if (obj.defaults !== undefined) {
@@ -920,13 +932,13 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
 
     method.workflow = parseWorkflow(obj.workflow, "methodV3.workflow");
     method.cases = asArray(obj.cases, "methodV3.cases").map((entry, i) =>
-      parseMethodCase(entry, `methodV3.cases[${i}]`),
+      parseMethodCase(entry, `methodV3.cases[${i}]`, sourceDir),
     );
 
     assertCaseShapeForWorkflow(method.workflow, method.cases, "methodV3.cases");
   } else {
     const suites = asArray(obj.suites, "methodV3.suites").map((entry, i) =>
-      parseMethodSuite(entry, `methodV3.suites[${i}]`),
+      parseMethodSuite(entry, `methodV3.suites[${i}]`, sourceDir),
     );
     if (suites.length === 0) {
       throw new TypeError("methodV3.suites must be a non-empty array");

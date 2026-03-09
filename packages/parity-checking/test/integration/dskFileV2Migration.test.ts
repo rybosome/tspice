@@ -36,7 +36,7 @@ async function withRunners<T>(
   const cspice = await createCspiceRunner();
 
   try {
-    return await fn({ tspice, cspice });
+    return await call({ tspice, cspice });
   } finally {
     await Promise.allSettled([tspice.dispose?.(), cspice.dispose?.()]);
   }

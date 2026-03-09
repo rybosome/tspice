@@ -202,7 +202,8 @@ function expandFixturePackDir(dirPath: string, originalEntry: string): KernelEnt
   return { path: metaKernel, restrictToDir: dirPath };
 }
 
-function resolveKernelPaths(p: string, sourceDir: string): KernelEntry[] {
+/** Resolve a kernel path expression (including `$FIXTURES` aliases) into loadable entries. */
+export function resolveKernelPaths(p: string, sourceDir: string): KernelEntry[] {
   const resolveMaybePack = (resolved: string): KernelEntry[] => {
     // If it exists and is a directory, treat it as a fixture-pack alias.
     if (isExistingDir(resolved)) {
@@ -241,7 +242,8 @@ function resolveKernelPaths(p: string, sourceDir: string): KernelEntry[] {
 }
 
 
-function expandFixturesMacroString(p: string, sourceDir: string): string {
+/** Expand a `$FIXTURES/...` macro into the discovered fixtures root for a source file. */
+export function expandFixturesMacroString(p: string, sourceDir: string): string {
   // Only expand $FIXTURES macros; leave all other strings untouched.
   if (p === "$FIXTURES" || p.startsWith("$FIXTURES/") || p.startsWith("$FIXTURES\\")) {
     const suffix = p.slice("$FIXTURES".length).replace(/^[/\\]/, "");
