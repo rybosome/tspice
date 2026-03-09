@@ -14,7 +14,6 @@ import type {
   ScenarioCompareAst,
   ScenarioSetupAst,
   ScenarioYamlFile,
-  WorkflowSpec,
 } from "./types.js";
 
 function formatValue(value: unknown): string {
@@ -140,40 +139,6 @@ function parseSetupAst(value: unknown, label: string): ScenarioSetupAst {
       parseKernelEntry(entry, `${label}.kernels[${i}]`),
     );
     out.kernels = kernels;
-  }
-
-  return out;
-}
-
-/** Legacy workflow include parser (kept for historical workflow files). */
-export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
-  const obj = asRecord(file.data, "workflow");
-  ensureKnownKeys(obj, ["id", "kind", "uses", "setup", "compareDefaults"], "workflow");
-
-  const id = asString(obj.id, "workflow.id");
-  const kind = asString(obj.kind, "workflow.kind");
-  if (kind !== "workflow") {
-    throw new TypeError(`workflow.kind must be \"workflow\" (got ${JSON.stringify(kind)})`);
-  }
-
-  const out: WorkflowSpec = {
-    id,
-    kind: "workflow",
-    meta: { sourcePath: file.sourcePath },
-  };
-
-  if (obj.uses !== undefined) {
-    out.uses = asArray(obj.uses, "workflow.uses").map((entry, i) =>
-      asString(entry, `workflow.uses[${i}]`),
-    );
-  }
-
-  if (obj.setup !== undefined) {
-    out.setup = parseSetupAst(obj.setup, "workflow.setup");
-  }
-
-  if (obj.compareDefaults !== undefined) {
-    out.compareDefaults = parseCompareAst(obj.compareDefaults, "workflow.compareDefaults");
   }
 
   return out;

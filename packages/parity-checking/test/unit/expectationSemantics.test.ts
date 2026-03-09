@@ -2,8 +2,34 @@ import { describe, expect, it } from "vitest";
 
 import { executeMethodSpecParity } from "../../src/engine/executeMethodSpec.js";
 
+import type { MethodCaseExpectation, ScenarioSetupAst } from "../../src/dsl/types.js";
 import type { CaseRunner, RunCaseInput, RunCaseResult } from "../../src/runners/types.js";
-import type { ResolvedMethodSpec } from "../../src/dsl/types.js";
+
+type LegacyResolvedInput = {
+  method: {
+    id: string;
+    kind: "method";
+    contractMethod: string;
+    canonicalMethod: string;
+    defaults?: {
+      compare?: {
+        errorShort?: boolean;
+      };
+    };
+    cases: Array<{
+      id: string;
+      args: unknown;
+      expect?: MethodCaseExpectation;
+    }>;
+    meta: {
+      sourcePath: string;
+    };
+  };
+  mergedSetup?: ScenarioSetupAst;
+  mergedCompareDefaults?: {
+    errorShort?: boolean;
+  };
+};
 
 class ErrorRunner implements CaseRunner {
   readonly kind = "stub-error";
@@ -36,10 +62,10 @@ class SuccessRunner implements CaseRunner {
 }
 
 function buildResolved(
-  expect: ResolvedMethodSpec["method"]["cases"][number]["expect"],
-  mergedSetup?: ResolvedMethodSpec["mergedSetup"],
-): ResolvedMethodSpec {
-  const resolved: ResolvedMethodSpec = {
+  expect: MethodCaseExpectation | undefined,
+  mergedSetup?: ScenarioSetupAst,
+): LegacyResolvedInput {
+  const resolved: LegacyResolvedInput = {
     method: {
       id: "methods/time/str2et@v1",
       kind: "method",
@@ -61,7 +87,6 @@ function buildResolved(
         sourcePath: "/tmp/str2et.yml",
       },
     },
-    includeOrder: [],
     mergedCompareDefaults: {
       errorShort: true,
     },
@@ -131,7 +156,7 @@ describe("method case expectation semantics", () => {
   });
 
   it("ignores error.details metadata differences during parity comparison", async () => {
-    const resolved: ResolvedMethodSpec = {
+    const resolved: LegacyResolvedInput = {
       method: {
         id: "methods/file-io/unsupported@v1",
         kind: "method",
@@ -151,7 +176,6 @@ describe("method case expectation semantics", () => {
           sourcePath: "/tmp/file-io-unsupported.yml",
         },
       },
-      includeOrder: [],
     };
 
     const tspice: CaseRunner = {

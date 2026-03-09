@@ -54,7 +54,6 @@ async function loadParitySpecs(): Promise<LoadedParitySpecs> {
   ).sort((a, b) => stableSort(methodSpecId(a), methodSpecId(b)));
 
   return {
-    workflows: [],
     methods,
   };
 }

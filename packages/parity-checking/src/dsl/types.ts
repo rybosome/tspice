@@ -39,18 +39,6 @@ export type ScenarioYamlFile = {
   data: unknown;
 };
 
-/** Legacy reusable workflow spec referenced by `uses` includes. */
-export type WorkflowSpec = {
-  id: string;
-  kind: "workflow";
-  uses?: string[];
-  setup?: ScenarioSetupAst;
-  compareDefaults?: ScenarioCompareAst;
-  meta: {
-    sourcePath: string;
-  };
-};
-
 export type MethodCaseExpectation = {
   ok?: boolean;
   errorShort?: string;
@@ -293,7 +281,6 @@ export type MethodSpecV3 = {
   defaults?: {
     compare?: ScenarioCompareAst;
   };
-  uses?: string[];
   workflow?: MethodWorkflowV3;
   cases?: MethodCaseSpecV3[];
   suites?: MethodSuiteSpecV3[];
@@ -305,15 +292,7 @@ export type MethodSpecV3 = {
 export type AnyMethodSpec = MethodSpecV3;
 
 export type LoadedParitySpecs = {
-  workflows: WorkflowSpec[];
   methods: AnyMethodSpec[];
-};
-
-export type ResolvedMethodSpec = {
-  method: MethodSpecV3;
-  includeOrder: WorkflowSpec[];
-  mergedSetup?: ScenarioSetupAst;
-  mergedCompareDefaults?: ScenarioCompareAst;
 };
 
 // Backward-compatible aliases (to ease rename churn while code moves to v3 names).
