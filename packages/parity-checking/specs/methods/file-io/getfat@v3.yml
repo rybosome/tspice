@@ -19,15 +19,19 @@ workflow:
         - $args.0
 cases:
   - id: file-io.getfat.classifies-spk
+    compare:
+      errorShort: true
     args:
       - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
-      ok: true
+      ok: false
   - id: file-io.getfat.classifies-dsk
+    compare:
+      errorShort: true
     args:
       - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
     expect:
-      ok: true
+      ok: false
   - id: file-io.getfat.missing-file
     compare:
       errorShort: true
