@@ -945,7 +945,11 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
 
         if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
           const result = await executeV2CaseWithBackend(backend, input);
-          return { ok: true, result };
+          const normalizedResult =
+            input.contract.contractMethod === "kernels.kdata"
+              ? rewriteKdataOsPathIfNeeded(backend.kind, result)
+              : result;
+          return { ok: true, result: normalizedResult };
         }
 
         invalidRequest("Legacy runCase payloads are no longer supported; use schemaVersion: 3 workflows");
