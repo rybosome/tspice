@@ -119,6 +119,54 @@ describe("executeMethodSpecParityV2 contract.result validation", () => {
     ).resolves.toMatchObject({ caseCount: 1 });
   });
 
+  it("treats compare.errorShort as satisfied when both errors are non-spice", async () => {
+    const method = buildMethod({
+      type: "object",
+      properties: {},
+    });
+
+    method.defaults = {
+      compare: {
+        errorShort: true,
+      },
+    };
+    method.contract.contractMethod = "dafopr";
+    method.contract.canonicalMethod = "dafopr";
+    method.cases = [
+      {
+        id: "rejects-non-string-path",
+        args: [{ bad: "path" }],
+        expect: {
+          ok: false,
+          errorCode: "invalid_request",
+        },
+      },
+    ];
+
+    const tspice = new StubRunner({
+      ok: false,
+      error: {
+        code: "invalid_request",
+        message: "path must be a string",
+      },
+    });
+
+    const cspice = new StubRunner({
+      ok: false,
+      error: {
+        code: "invalid_request",
+        message: "expected string path",
+      },
+    });
+
+    await expect(
+      executeMethodSpecParityV2(method, {
+        tspice,
+        cspice,
+      }),
+    ).resolves.toMatchObject({ caseCount: 1 });
+  });
+
   it("keeps own-spec single-call workflows on the unified v3 shape for both runners", async () => {
     const method: MethodSpecV2 = {
       schemaVersion: 3,

@@ -278,28 +278,43 @@ export async function executeMethodSpecParityV2(
       const tspiceError = normalizeRunnerErrorForParity(tspiceOutcome.ok ? undefined : tspiceOutcome.error);
       const cspiceError = normalizeRunnerErrorForParity(cspiceOutcome.ok ? undefined : cspiceOutcome.error);
 
-      if (
-        errorShort &&
-        isRecord(tspiceError) &&
-        isRecord(cspiceError) &&
-        isRecord(tspiceError.spice) &&
-        isRecord(cspiceError.spice) &&
-        typeof tspiceError.spice.short === "string" &&
-        typeof cspiceError.spice.short === "string"
-      ) {
-        const tspiceSymbol = spiceShortSymbol(tspiceError.spice.short);
-        const cspiceSymbol = spiceShortSymbol(cspiceError.spice.short);
+      if (errorShort) {
+        const tspiceShort =
+          isRecord(tspiceError) && isRecord(tspiceError.spice) && typeof tspiceError.spice.short === "string"
+            ? tspiceError.spice.short
+            : undefined;
+        const cspiceShort =
+          isRecord(cspiceError) && isRecord(cspiceError.spice) && typeof cspiceError.spice.short === "string"
+            ? cspiceError.spice.short
+            : undefined;
 
-        if (!tspiceSymbol || !cspiceSymbol) {
+        const tspiceHasShort = tspiceShort !== undefined;
+        const cspiceHasShort = cspiceShort !== undefined;
+
+        if (tspiceHasShort && cspiceHasShort) {
+          const tspiceSymbol = spiceShortSymbol(tspiceShort);
+          const cspiceSymbol = spiceShortSymbol(cspiceShort);
+
+          if (!tspiceSymbol || !cspiceSymbol) {
+            throw new Error(
+              `errorShort comparison failed to normalize symbol (${label}) tspice=${JSON.stringify(tspiceShort)} cspice=${JSON.stringify(cspiceShort)}`,
+            );
+          }
+
+          if (tspiceSymbol !== cspiceSymbol) {
+            throw new Error(`errorShort mismatch (${label}) tspice=${tspiceSymbol} cspice=${cspiceSymbol}`);
+          }
+
+          continue;
+        }
+
+        if (tspiceHasShort !== cspiceHasShort) {
           throw new Error(
-            `errorShort comparison failed to normalize symbol (${label}) tspice=${JSON.stringify(tspiceError.spice.short)} cspice=${JSON.stringify(cspiceError.spice.short)}`,
+            `errorShort mismatch (${label}) spice.short presence differs tspice=${tspiceHasShort} cspice=${cspiceHasShort}`,
           );
         }
 
-        if (tspiceSymbol !== cspiceSymbol) {
-          throw new Error(`errorShort mismatch (${label}) tspice=${tspiceSymbol} cspice=${cspiceSymbol}`);
-        }
-
+        // compare.errorShort is satisfied if neither side has spice.short.
         continue;
       }
 
