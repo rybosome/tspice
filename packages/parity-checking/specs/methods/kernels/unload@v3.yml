@@ -10,11 +10,12 @@ workflow:
     - op: call
       call: self
       in:
-        - $args.0
+        - $FIXTURES/kernel-pool-parity.tpc
+    - op: projectResult
+      out: {}
 cases:
   - id: kernels.unload.text-kernel
-    args:
-      - $FIXTURES/kernel-pool-parity.tpc
+    args: {}
     setup:
       kernels:
         - $FIXTURES/kernel-pool-parity.tpc
