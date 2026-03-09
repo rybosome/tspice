@@ -25,7 +25,7 @@ cases:
     compare:
       errorShort: true
     args:
-      - parity-dlaopn
+      - parity-missing-dir/parity-dlaopn
       - DLA
       - TSPICE
       - 0
