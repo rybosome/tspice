@@ -36,6 +36,8 @@ cases:
     expect:
       ok: false
   - id: file-io.getfat.rejects-non-string-path
+    compare:
+      errorShort: true
     args:
       - 42
     expect:

@@ -33,6 +33,8 @@ cases:
     expect:
       ok: false
   - id: file-io.dlafns.rejects-non-string-path
+    compare:
+      errorShort: true
     args:
       - 42
     expect:

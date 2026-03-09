@@ -40,6 +40,8 @@ cases:
     expect:
       ok: false
   - id: file-io.dlaopn.rejects-non-string-tag
+    compare:
+      errorShort: true
     args:
       - 42
       - DLA

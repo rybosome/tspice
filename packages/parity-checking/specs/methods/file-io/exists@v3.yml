@@ -28,6 +28,8 @@ cases:
     expect:
       ok: true
   - id: file-io.exists.rejects-non-string-path
+    compare:
+      errorShort: true
     args:
       - 42
     expect:
