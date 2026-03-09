@@ -14,7 +14,7 @@ import type {
 } from "./types.js";
 import { validateV2CasePreflight } from "./v2Executor.js";
 import { createTspiceRunner } from "./tspiceRunner.js";
-import { lookupNativeReturnBindingEntry } from "../generated/nativeReturnBindings.js";
+import { isParityProofNativeV2Enabled } from "../proof/nativeProof.js";
 
 export type CspiceRunnerBuildState = {
   available: boolean;
@@ -521,27 +521,19 @@ function normalizeInputCallTargetsForNative(input: RunCaseInput): RunCaseInput {
   };
 }
 
-const GENERATED_RETURN_BINDING_FALLBACK_METHODS: ReadonlySet<string> = new Set([
-  "cells-windows.insrtc",
-  "cells-windows.insrtd",
-  "cells-windows.insrti",
-  "cells-windows.wncard",
-  "cells-windows.wnfetd",
-  "cells-windows.wninsd",
-  "cells-windows.wnvald",
-]);
+const GENERATED_RETURN_BINDING_METADATA_ERROR_CODE = "invalid_request";
+const GENERATED_RETURN_BINDING_METADATA_ERROR_MESSAGE =
+  "Generated return binding lane requires executable invoker metadata";
 
-function shouldUseGeneratedReturnBindingFallback(input: RunCaseInput): boolean {
-  if (!isRunCaseInputV3(input) || input.schemaVersion !== 3) {
+function isGeneratedReturnBindingMetadataFailure(response: CRunnerResponse): response is CRunnerError {
+  if (response.ok) {
     return false;
   }
 
-  if (!GENERATED_RETURN_BINDING_FALLBACK_METHODS.has(input.contract.contractMethod)) {
-    return false;
-  }
-
-  const binding = lookupNativeReturnBindingEntry(input.contract.contractMethod);
-  return binding?.kind === "generatedReturnBindingLane";
+  return (
+    response.error.code === GENERATED_RETURN_BINDING_METADATA_ERROR_CODE &&
+    response.error.message === GENERATED_RETURN_BINDING_METADATA_ERROR_MESSAGE
+  );
 }
 
 /** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
@@ -576,14 +568,15 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
           validateV2CasePreflight(normalizedInput);
         }
 
-        if (shouldUseGeneratedReturnBindingFallback(normalizedInput)) {
-          const fallbackRunner = await getGeneratedReturnBindingFallback();
-          return await fallbackRunner.runCase(normalizedInput);
-        }
-
         const out = await invokeRunner(binaryPath, normalizedInput);
         if (out.ok) {
           return { ok: true, result: out.result };
+        }
+
+        const proofModeEnabled = isParityProofNativeV2Enabled();
+        if (!proofModeEnabled && isGeneratedReturnBindingMetadataFailure(out)) {
+          const fallbackRunner = await getGeneratedReturnBindingFallback();
+          return await fallbackRunner.runCase(normalizedInput);
         }
 
         const report: RunnerErrorReport = {

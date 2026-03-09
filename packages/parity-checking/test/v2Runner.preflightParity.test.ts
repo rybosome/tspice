@@ -264,4 +264,39 @@ describe("v3 runner preflight parity", () => {
       }
     },
   );
+
+  maybeIt(
+    "falls back for generated return binding metadata gaps when proof mode is disabled",
+    async () => {
+      const cspice = await createCspiceRunner();
+
+      const returnBinding = lookupNativeReturnBindingEntry("coords-vectors.axisar");
+      expect(returnBinding).toBeDefined();
+      expect(returnBinding?.kind).toBe("generatedReturnBindingLane");
+
+      const input: RunCaseInputV2 = {
+        schemaVersion: 3,
+        manifest: {
+          id: "methods/coords-vectors/axisar@v3",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "coords-vectors.axisar",
+          canonicalMethod: "coords-vectors.axisar",
+          errors: [],
+        },
+        args: [[0.1, 0.2, 0.3], 1.2],
+        workflow: {
+          steps: [{ op: "call", call: "coords-vectors.axisar", in: ["$args.0", "$args.1"] }],
+        },
+      };
+
+      try {
+        const out = await cspice.runCase(input);
+        expect(out.ok).toBe(true);
+      } finally {
+        await cspice.dispose?.();
+      }
+    },
+  );
 });

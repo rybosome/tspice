@@ -3,12 +3,15 @@ import { describe, expect, it, vi } from "vitest";
 import { runParityEngine } from "../src/engine/parityEngine.js";
 import { BASELINE_METHOD_SPEC_COVERAGE } from "../src/guards/completenessBaseline.js";
 import { getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
+import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
 // Increase timeout for parity tests.
 vi.setConfig({ testTimeout: 10_000, hookTimeout: 30_000 });
 
 describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () => {
-  it("runs full guard pipeline and parity execution", async () => {
+  const maybeIt = nodeBackendAvailable ? it : it.skip;
+
+  maybeIt("runs full guard pipeline and parity execution", async () => {
     const status = getCspiceRunnerStatus();
 
     if (!status.ready) {
