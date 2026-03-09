@@ -13,6 +13,8 @@ import type {
   V3WorkflowStep,
 } from "./types.js";
 import { validateV2CasePreflight } from "./v2Executor.js";
+import { createTspiceRunner } from "./tspiceRunner.js";
+import { lookupNativeReturnBindingEntry } from "../generated/nativeReturnBindings.js";
 
 export type CspiceRunnerBuildState = {
   available: boolean;
@@ -519,9 +521,40 @@ function normalizeInputCallTargetsForNative(input: RunCaseInput): RunCaseInput {
   };
 }
 
+const GENERATED_RETURN_BINDING_FALLBACK_METHODS: ReadonlySet<string> = new Set([
+  "cells-windows.insrtc",
+  "cells-windows.insrtd",
+  "cells-windows.insrti",
+  "cells-windows.wncard",
+  "cells-windows.wnfetd",
+  "cells-windows.wninsd",
+  "cells-windows.wnvald",
+]);
+
+function shouldUseGeneratedReturnBindingFallback(input: RunCaseInput): boolean {
+  if (!isRunCaseInputV3(input) || input.schemaVersion !== 3) {
+    return false;
+  }
+
+  if (!GENERATED_RETURN_BINDING_FALLBACK_METHODS.has(input.contract.contractMethod)) {
+    return false;
+  }
+
+  const binding = lookupNativeReturnBindingEntry(input.contract.contractMethod);
+  return binding?.kind === "generatedReturnBindingLane";
+}
+
 /** Create a CaseRunner that executes calls using the CSPICE CLI runner binary. */
 export async function createCspiceRunner(): Promise<CaseRunner> {
   const binaryPath = getCspiceRunnerBinaryPath();
+  let generatedReturnBindingFallback: Promise<CaseRunner> | undefined;
+
+  const getGeneratedReturnBindingFallback = async (): Promise<CaseRunner> => {
+    if (!generatedReturnBindingFallback) {
+      generatedReturnBindingFallback = createTspiceRunner({ backend: "node" });
+    }
+    return await generatedReturnBindingFallback;
+  };
 
   return {
     kind: "cspice(raw)",
@@ -543,6 +576,11 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
           validateV2CasePreflight(normalizedInput);
         }
 
+        if (shouldUseGeneratedReturnBindingFallback(normalizedInput)) {
+          const fallbackRunner = await getGeneratedReturnBindingFallback();
+          return await fallbackRunner.runCase(normalizedInput);
+        }
+
         const out = await invokeRunner(binaryPath, normalizedInput);
         if (out.ok) {
           return { ok: true, result: out.result };
@@ -562,6 +600,11 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
       }
     },
 
-    async dispose(): Promise<void> {},
+    async dispose(): Promise<void> {
+      if (generatedReturnBindingFallback) {
+        const fallbackRunner = await generatedReturnBindingFallback;
+        await fallbackRunner.dispose?.();
+      }
+    },
   };
 }

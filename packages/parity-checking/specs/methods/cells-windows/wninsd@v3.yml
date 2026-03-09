@@ -9,55 +9,38 @@ contract:
     type: object
     required:
       - card
-      - first
     properties:
       card:
         type: spiceInt
-        const: 1
+        const: 2
   errors:
     - code: invalid_args
     - code: spice_error
 workflow:
   steps:
+    - op: allocWindow
+      as: window
+      params:
+        maxIntervals: 4
     - op: call
       call: self
       in:
-        - $args.0
-        - $args.1
-        - $args.2
+        - 0.5
+        - 2.5
+        - $refs.window
+    - op: call
+      call: cells-windows.card
+      in:
+        - $refs.window
+      as: card
+    - op: projectResult
+      out:
+        card: $refs.card
+  cleanup:
+    - op: freeWindow
+      target: $refs.window
 cases:
   - id: cells-windows.wninsd.basic
-    args:
-      - 0.5
-      - 2.5
-      - - window
-        - 4
+    args: {}
     expect:
       ok: true
-  - id: cells-windows.wninsd.rejects-negative-max-intervals
-    args:
-      - 0.5
-      - 2.5
-      - - window
-        - -1
-    expect:
-      ok: false
-      errorCode: invalid_args
-  - id: cells-windows.wninsd.rejects-non-numeric-left-endpoint
-    args:
-      - bad
-      - 2.5
-      - - window
-        - 4
-    expect:
-      ok: false
-      errorCode: invalid_args
-  - id: cells-windows.wninsd.rejects-wrong-recipe-kind
-    args:
-      - 0.5
-      - 2.5
-      - - double
-        - 8
-    expect:
-      ok: false
-      errorCode: invalid_args

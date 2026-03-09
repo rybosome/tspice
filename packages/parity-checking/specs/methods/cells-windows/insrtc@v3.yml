@@ -7,20 +7,38 @@ contract:
   canonicalMethod: cells-windows.insrtc
   result:
     type: object
-    properties: {}
+    required:
+      - card
+    properties:
+      card:
+        type: spiceInt
+        const: 1
 workflow:
   steps:
+    - op: allocCell
+      as: cell
+      params:
+        kind: char
+        size: 8
+        length: 16
     - op: call
       call: self
       in:
-        - $args.0
-        - $args.1
+        - alpha
+        - $refs.cell
+    - op: call
+      call: cells-windows.card
+      in:
+        - $refs.cell
+      as: card
+    - op: projectResult
+      out:
+        card: $refs.card
+  cleanup:
+    - op: freeCell
+      target: $refs.cell
 cases:
   - id: cells-windows.insrtc.basic
-    args:
-      - alpha
-      - - char
-        - 8
-        - 16
+    args: {}
     expect:
       ok: true
