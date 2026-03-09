@@ -22,6 +22,8 @@ workflow:
         - $args.3
 cases:
   - id: file-io.dlaopn.rejects-negative-comment-size
+    compare:
+      errorShort: true
     args:
       - parity-dlaopn
       - DLA
