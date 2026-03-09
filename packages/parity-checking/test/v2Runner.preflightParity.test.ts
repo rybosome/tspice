@@ -4,6 +4,7 @@ import { createCspiceRunner, getCspiceRunnerStatus } from "../src/runners/cspice
 import { lookupNativeReturnBindingEntry } from "../src/generated/nativeReturnBindings.js";
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
 import type { RunCaseInputV2 } from "../src/runners/types.js";
+import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
 function createBaseInput(): RunCaseInputV2 {
   return {
@@ -40,6 +41,7 @@ function createBaseInput(): RunCaseInputV2 {
 describe("v3 runner preflight parity", () => {
   const status = getCspiceRunnerStatus();
   const maybeIt = status.ready ? it : it.skip;
+  const maybeNodeBackendIt = nodeBackendAvailable ? maybeIt : it.skip;
 
   it("executes own-spec single-call workflows with object args in tspice runner", async () => {
     const tspice = await createTspiceRunner();
@@ -265,7 +267,7 @@ describe("v3 runner preflight parity", () => {
     },
   );
 
-  maybeIt(
+  maybeNodeBackendIt(
     "falls back for generated return binding metadata gaps when proof mode is disabled",
     async () => {
       const cspice = await createCspiceRunner();
