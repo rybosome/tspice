@@ -15,11 +15,14 @@ workflow:
       in:
         - $args.0
         - $args.1
+    - op: projectResult
+      out: {}
 cases:
   - id: pcpool-write
     args:
-      - TSPICE_PARITY_PCPOOL_WRITTEN
-      - - x
+      0: TSPICE_PARITY_PCPOOL_WRITTEN
+      1:
+        - x
         - y
     expect:
       ok: true
