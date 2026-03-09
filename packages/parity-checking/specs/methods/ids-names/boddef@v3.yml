@@ -22,4 +22,6 @@ cases:
       - TSPICE_TEST_BODY
       - 123456789
     expect:
-      ok: true
+      ok: false
+    compare:
+      errorShort: true
