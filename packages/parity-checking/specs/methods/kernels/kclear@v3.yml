@@ -10,8 +10,10 @@ workflow:
     - op: call
       call: self
       in: []
+    - op: projectResult
+      out: {}
 cases:
   - id: kernels.kclear
-    args: []
+    args: {}
     expect:
       ok: true
