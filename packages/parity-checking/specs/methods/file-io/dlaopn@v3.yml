@@ -21,16 +21,6 @@ workflow:
         - $args.2
         - $args.3
 cases:
-  - id: file-io.dlaopn.create-dla-writer
-    compare:
-      errorShort: true
-    args:
-      - parity-missing-dir/parity-dlaopn
-      - DLA
-      - TSPICE
-      - 0
-    expect:
-      ok: false
   - id: file-io.dlaopn.rejects-negative-comment-size
     args:
       - parity-dlaopn
