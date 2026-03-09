@@ -22,7 +22,7 @@ cases:
     compare:
       errorShort: true
     args:
-      - $FIXTURES/de440s/de440s.bsp
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
       ok: false
   - id: file-io.daffna.rejects-dsk-input

@@ -20,7 +20,7 @@ workflow:
 cases:
   - id: file-io.getfat.classifies-spk
     args:
-      - $FIXTURES/de440s/de440s.bsp
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
       ok: true
   - id: file-io.getfat.classifies-dsk
@@ -32,7 +32,7 @@ cases:
     compare:
       errorShort: true
     args:
-      - $FIXTURES/de440s/does-not-exist.bsp
+      - $FIXTURES/ephemeris-de440s/does-not-exist.bsp
     expect:
       ok: false
   - id: file-io.getfat.rejects-non-string-path
