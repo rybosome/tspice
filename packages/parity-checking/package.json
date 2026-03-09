@@ -21,7 +21,8 @@
     "generate:function-registry": "tsx ./scripts/generate-function-registry.ts",
     "check:generated": "node ./scripts/check-generated.mjs",
     "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && pnpm run check:generated && node ./scripts/pretest-cspice-runner.mjs",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:verify": "pnpm -w run test:verify"
   },
   "dependencies": {
     "@rybosome/tspice": "workspace:*",
