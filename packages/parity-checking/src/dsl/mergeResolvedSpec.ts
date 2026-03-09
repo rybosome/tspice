@@ -1,6 +1,6 @@
 import type { KernelEntry } from "../runners/types.js";
 
-import type { MethodSpec, ResolvedMethodSpec, ScenarioCompareAst, ScenarioSetupAst, WorkflowSpec } from "./types.js";
+import type { ScenarioCompareAst, ScenarioSetupAst } from "./types.js";
 
 function kernelEntryKey(entry: KernelEntry): string {
   return typeof entry === "string" ? `str:${entry}` : `obj:${JSON.stringify(entry)}`;
@@ -39,27 +39,3 @@ export function mergeCompareChain(compareChain: Array<ScenarioCompareAst | undef
   return Object.keys(out).length === 0 ? undefined : out;
 }
 
-/** Build a method spec with includes merged into setup and compare defaults. */
-export function mergeResolvedMethodSpec(method: MethodSpec, includeOrder: WorkflowSpec[]): ResolvedMethodSpec {
-  const mergedSetup = mergeSetupChain([...includeOrder.map((workflow) => workflow.setup), method.setup]);
-
-  const mergedCompareDefaults = mergeCompareChain([
-    ...includeOrder.map((workflow) => workflow.compareDefaults),
-    method.defaults?.compare,
-  ]);
-
-  const out: ResolvedMethodSpec = {
-    method,
-    includeOrder,
-  };
-
-  if (mergedSetup !== undefined) {
-    out.mergedSetup = mergedSetup;
-  }
-
-  if (mergedCompareDefaults !== undefined) {
-    out.mergedCompareDefaults = mergedCompareDefaults;
-  }
-
-  return out;
-}

@@ -3,7 +3,7 @@
 `@rybosome/tspice-parity-checking` is the canonical parity owner for this repo.
 It owns:
 
-- parity workflow + method specs,
+- parity method specs,
 - pre-execution guard pipeline,
 - tspice/cspice parity runtime comparison,
 - generated parity catalogs.
