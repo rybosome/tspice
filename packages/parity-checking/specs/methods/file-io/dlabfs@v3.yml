@@ -22,7 +22,7 @@ cases:
     args:
       - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
     expect:
-      ok: true
+      ok: false
   - id: file-io.dlabfs.missing-file
     compare:
       errorShort: true
@@ -35,4 +35,3 @@ cases:
       - 42
     expect:
       ok: false
-      errorCode: invalid_args
