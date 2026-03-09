@@ -13,15 +13,12 @@ workflow:
     - op: call
       call: self
       in:
-        - $args.0
-        - $args.1
+        - TSPICE_PARITY_AGENT
+        -
+          - TSPICE_PARITY_DOUBLE_VAR
     - op: projectResult
       out: {}
 cases:
   - id: swpool-watch
-    args:
-      0: TSPICE_PARITY_AGENT
-      1:
-        - TSPICE_PARITY_DOUBLE_VAR
     expect:
       ok: true

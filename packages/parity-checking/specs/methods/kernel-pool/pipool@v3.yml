@@ -13,16 +13,13 @@ workflow:
     - op: call
       call: self
       in:
-        - $args.0
-        - $args.1
+        - TSPICE_PARITY_PIPOOL_WRITTEN
+        -
+          - -2147483648
+          - 2147483647
     - op: projectResult
       out: {}
 cases:
   - id: pipool-write
-    args:
-      0: TSPICE_PARITY_PIPOOL_WRITTEN
-      1:
-        - -2147483648
-        - 2147483647
     expect:
       ok: true
