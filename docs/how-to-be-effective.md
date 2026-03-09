@@ -85,6 +85,11 @@ On `linux-arm64`, run this once first to stage a hermetic CSPICE layout into the
 pnpm run bootstrap:linux-arm64-proof
 ```
 
+`bootstrap:linux-arm64-proof` defaults to a non-mutating posture:
+
+- It **does not** auto-install Nix unless you opt in with `TSPICE_BOOTSTRAP_INSTALL_NIX=1`.
+- It **does not** modify `~/.config/nix/nix.conf` unless you opt in with `TSPICE_BOOTSTRAP_CONFIGURE_NIX=1`.
+
 Notes:
 
 - `pnpm run check:native` runs the full native pipeline (build + stage + build/test).

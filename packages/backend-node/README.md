@@ -105,6 +105,11 @@ If you set `TSPICE_CSPICE_DIR`, native builds will use CSPICE from that path ins
 
 On `linux-arm64`, run `pnpm run bootstrap:linux-arm64-proof` once to stage a hermetic CSPICE layout into `.cache/cspice/.../linux-arm64/cspice`.
 
+Bootstrap safety defaults:
+
+- `TSPICE_BOOTSTRAP_INSTALL_NIX=1` is required to allow network Nix install when `nix` is missing.
+- `TSPICE_BOOTSTRAP_CONFIGURE_NIX=1` is required to allow bootstrap to write `~/.config/nix/nix.conf`.
+
 ### `TSPICE_BACKEND_NODE_BINDING_PATH`
 
 By default, this package tries to load the addon from:

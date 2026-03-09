@@ -5,8 +5,41 @@ phase() {
   printf '\n========== %s =========='"\n" "$1"
 }
 
-PR_WORKTREE=""
 PARITY_SCRIPT=""
+NIX_BUILD_DIR=""
+
+PINNED_CSPICE_SOURCE_SHA="50a3d804f11857608e6954acf68728c84091ffce"
+PINNED_CSPICE_FLAKE_REF="github:rybosome/tspice/${PINNED_CSPICE_SOURCE_SHA}#cspice-linux-arm64"
+
+parse_opt_in_flag() {
+  local envName="$1"
+  local raw="${2:-0}"
+  case "$raw" in
+    0|"")
+      printf '0'
+      ;;
+    1)
+      printf '1'
+      ;;
+    *)
+      echo "ERROR: ${envName} must be 0 or 1 (received: ${raw})." >&2
+      exit 1
+      ;;
+  esac
+}
+
+print_bootstrap_help() {
+  cat >&2 <<'HELP'
+Bootstrap options:
+  - TSPICE_BOOTSTRAP_INSTALL_NIX=1
+      Allow network install of Nix when `nix` is missing.
+      Default is 0 (off): script fails with instructions instead of auto-installing.
+
+  - TSPICE_BOOTSTRAP_CONFIGURE_NIX=1
+      Allow writing `experimental-features = nix-command flakes` to ~/.config/nix/nix.conf.
+      Default is 0 (off): no global Nix config mutation.
+HELP
+}
 
 ensure_user_var() {
   if [ -z "${USER:-}" ]; then
@@ -52,6 +85,10 @@ configure_nix() {
   fi
 }
 
+nix_flakes() {
+  nix --extra-experimental-features 'nix-command flakes' "$@"
+}
+
 validate_cspice_dir() {
   local dir="$1"
   [ -f "$dir/include/SpiceUsr.h" ] && [ -f "$dir/lib/cspice.a" ] && [ -f "$dir/lib/csupport.a" ]
@@ -79,26 +116,36 @@ main() {
   local cacheLink
   cacheLink="$cacheDir/cspice"
 
-  local prNumber="467"
-  local prHeadSha="50a3d804f11857608e6954acf68728c84091ffce"
-  local prRef="refs/remotes/origin/pr/${prNumber}-head"
+  local bootstrapInstallNix
+  bootstrapInstallNix="$(parse_opt_in_flag "TSPICE_BOOTSTRAP_INSTALL_NIX" "${TSPICE_BOOTSTRAP_INSTALL_NIX:-0}")"
+  local bootstrapConfigureNix
+  bootstrapConfigureNix="$(parse_opt_in_flag "TSPICE_BOOTSTRAP_CONFIGURE_NIX" "${TSPICE_BOOTSTRAP_CONFIGURE_NIX:-0}")"
+
   PARITY_SCRIPT="$(mktemp "${TMPDIR:-/tmp}/parity-tkvrsn-XXXXXX.ts")"
 
   cleanup() {
     if [ -n "${PARITY_SCRIPT:-}" ]; then
       rm -f "$PARITY_SCRIPT"
     fi
-    if [ -n "${PR_WORKTREE:-}" ]; then
-      git worktree remove --force "$PR_WORKTREE" >/dev/null 2>&1 || true
-      rm -rf "$PR_WORKTREE"
+    if [ -n "${NIX_BUILD_DIR:-}" ]; then
+      rm -rf "$NIX_BUILD_DIR"
     fi
   }
   trap cleanup EXIT
 
-  phase "Phase 1: Install and configure Nix"
+  phase "Phase 1: Ensure Nix is available"
   if command -v nix >/dev/null 2>&1 || [ -x "$HOME/.nix-profile/bin/nix" ]; then
     echo "Nix already installed."
   else
+    if [ "$bootstrapInstallNix" != "1" ]; then
+      echo "ERROR: nix is required, but no nix installation was found." >&2
+      echo "Install Nix first: https://nixos.org/download/" >&2
+      echo "Or opt in to automatic install for this command:" >&2
+      echo "  TSPICE_BOOTSTRAP_INSTALL_NIX=1 pnpm run bootstrap:linux-arm64-proof" >&2
+      print_bootstrap_help
+      exit 1
+    fi
+
     local nixInstaller
     nixInstaller="$(mktemp "${TMPDIR:-/tmp}/nix-installer-XXXXXX.sh")"
     curl --proto '=https' --tlsv1.2 -fsSL https://nixos.org/nix/install -o "$nixInstaller"
@@ -106,33 +153,31 @@ main() {
     rm -f "$nixInstaller"
   fi
   load_nix_env
-  configure_nix
+
+  if [ "$bootstrapConfigureNix" = "1" ]; then
+    configure_nix
+  else
+    echo "Skipping ~/.config/nix/nix.conf mutation (set TSPICE_BOOTSTRAP_CONFIGURE_NIX=1 to opt in)."
+  fi
+
   nix --version
 
   phase "Phase 2: Verify Nix by launching a base flake"
-  nix shell github:NixOS/nixpkgs/nixos-25.05#hello --command hello
+  nix_flakes shell github:NixOS/nixpkgs/nixos-25.05#hello --command hello
 
   phase "Phase 3: Build hermetic CSPICE and stage repo cache"
   if validate_cspice_dir "$cacheLink"; then
     echo "Reusing cached CSPICE layout: $cacheLink"
   else
-    git fetch --no-tags origin "refs/pull/${prNumber}/head:${prRef}"
-    local actualPrSha
-    actualPrSha="$(git rev-parse "$prRef")"
-    if [ "$actualPrSha" != "$prHeadSha" ]; then
-      echo "ERROR: PR #${prNumber} head SHA mismatch. Expected ${prHeadSha}, got ${actualPrSha}." >&2
-      exit 1
-    fi
-
-    PR_WORKTREE="$(mktemp -d "${TMPDIR:-/tmp}/tspice-pr${prNumber}-XXXXXX")"
-    git worktree add --detach "$PR_WORKTREE" "$prHeadSha" >/dev/null
+    echo "Building pinned hermetic CSPICE source: $PINNED_CSPICE_FLAKE_REF"
+    NIX_BUILD_DIR="$(mktemp -d "${TMPDIR:-/tmp}/tspice-cspice-build-XXXXXX")"
     (
-      cd "$PR_WORKTREE"
-      nix build .#cspice-linux-arm64 --print-build-logs
+      cd "$NIX_BUILD_DIR"
+      nix_flakes build "$PINNED_CSPICE_FLAKE_REF" --print-build-logs
     )
 
     local cspiceOut
-    cspiceOut="$(readlink -f "$PR_WORKTREE/result")"
+    cspiceOut="$(readlink -f "$NIX_BUILD_DIR/result")"
     if ! validate_cspice_dir "$cspiceOut"; then
       echo "ERROR: Hermetic CSPICE build output is missing required layout: $cspiceOut" >&2
       exit 1

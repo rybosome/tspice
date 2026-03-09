@@ -25,7 +25,7 @@ See the full script list in [`../package.json`](../package.json).
 | `check-compliance-files.mjs` | Validates required compliance/disclosure files and links are present (CI guard). |
 | `verify-native-package-versions.mjs` | Ensures `tspice-native-*` package versions match `@rybosome/tspice`. |
 | `fetch-cspice.mjs` | Fetches the pinned CSPICE sources/archives used by native + wasm builds. |
-| `bootstrap-linux-arm64-proof.sh` | Linux-arm64 bootstrap for hermetic CSPICE + proof-mode parity runner setup. |
+| `bootstrap-linux-arm64-proof.sh` | Linux-arm64 bootstrap for hermetic CSPICE + proof-mode parity runner setup (Nix install/config are opt-in via env flags). |
 | `cspice.manifest.json` | Manifest (pins + URLs) consumed by `fetch-cspice.mjs`. |
 | `build-backend-wasm.mjs` | Regenerates the checked-in wasm artifacts under `packages/backend-wasm/emscripten/` (requires Emscripten). |
 | `backend-wasm-assets.mjs` | Shared constants for wasm asset filenames used by build/copy scripts. |
@@ -35,3 +35,12 @@ See the full script list in [`../package.json`](../package.json).
 | `print-spice-version.mjs` | Prints toolkit/runtime version info (useful for debugging). |
 | `print-cspice-dir.mjs` | Prints the CSPICE directory being used (useful for debugging build env issues). |
 | `read-pnpm-version.cjs` | Utility for reading the pinned pnpm version (CI/bootstrap helper). |
+
+### `bootstrap-linux-arm64-proof.sh` opt-in flags
+
+- `TSPICE_BOOTSTRAP_INSTALL_NIX=1`
+  - Allows bootstrap to download and run the Nix installer if `nix` is missing.
+  - Default is off; without this flag, missing Nix fails with explicit install instructions.
+- `TSPICE_BOOTSTRAP_CONFIGURE_NIX=1`
+  - Allows bootstrap to write `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf`.
+  - Default is off; bootstrap avoids mutating global Nix config unless this is set.
