@@ -42,7 +42,8 @@ Shared types are defined in `packages/backend-contract/src/shared/types.ts`.
 
 ### Suggested numeric comparison tolerances (starting point)
 
-When comparing backend implementations (e.g. node vs wasm), use element-wise comparisons for vectors/matrices.
+When comparing backend implementations for parity, treat `cspice` as the reference lane and evaluate both
+`node` vs `cspice` and `wasm` vs `cspice` using element-wise comparisons for vectors/matrices.
 These tolerances are a reasonable *starting point*; tighten/loosen as needed for specific kernels and platforms.
 
 - Pure math (coords/vectors): `atol = 1e-12`

@@ -17,17 +17,20 @@ function collectWorkflowOps(input: RunCaseInput): string[] {
 }
 
 /**
- * Return true when native proof v2 mode is enabled via process env.
- */
-export function isParityProofNativeV2Enabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  return env[PARITY_PROOF_NATIVE_V2_ENV] === PARITY_PROOF_NATIVE_V2_ENABLED_VALUE;
+* Native proof v2 orchestration is always active.
+*
+* The legacy env gate is intentionally ignored so parity orchestration always
+* compares both tspice lanes (`node`, `wasm`) against the native cspice lane.
+*/
+export function isParityProofNativeV2Enabled(_env: NodeJS.ProcessEnv = process.env): boolean {
+  return true;
 }
 
 /**
- * Return a stable marker describing the current native proof mode.
- */
-export function parityProofMarker(env: NodeJS.ProcessEnv = process.env): string {
-  return isParityProofNativeV2Enabled(env) ? "proof=native-v2" : "proof=disabled";
+* Return a stable marker describing the enforced orchestration mode.
+*/
+export function parityProofMarker(_env: NodeJS.ProcessEnv = process.env): string {
+  return "proof=native-v2";
 }
 
 /**

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   isParityProofNativeV2Enabled,
+  parityProofMarker,
   resolveReferenceExecutionPlan,
 } from "../../src/proof/nativeProof.js";
 
@@ -27,14 +28,17 @@ function baseCallContractInput(): RunCaseInputV3 {
 }
 
 describe("native proof policy", () => {
-  it("treats PARITY_PROOF_NATIVE_V2 as a strict gate (exactly '1')", () => {
+  it("always enables native proof orchestration", () => {
     expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "1" })).toBe(true);
-    expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "0" })).toBe(false);
-    expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "true" })).toBe(false);
-    expect(isParityProofNativeV2Enabled({})).toBe(false);
+    expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "0" })).toBe(true);
+    expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "true" })).toBe(true);
+    expect(isParityProofNativeV2Enabled({})).toBe(true);
+
+    expect(parityProofMarker({ PARITY_PROOF_NATIVE_V2: "1" })).toBe("proof=native-v2");
+    expect(parityProofMarker({ PARITY_PROOF_NATIVE_V2: "0" })).toBe("proof=native-v2");
   });
 
-  it("keeps callContract workflows on native reference transport in non-proof mode", () => {
+  it("keeps callContract workflows on native reference transport", () => {
     const plan = resolveReferenceExecutionPlan(baseCallContractInput(), {
       proofMode: false,
     });
@@ -43,7 +47,7 @@ describe("native proof policy", () => {
     expect(plan.ops).toEqual(["callContract"]);
   });
 
-  it("keeps callContract workflows on native reference transport in proof mode", () => {
+  it("keeps callContract workflows on native reference transport when proofMode flag is passed", () => {
     const plan = resolveReferenceExecutionPlan(baseCallContractInput(), {
       proofMode: true,
     });
@@ -64,7 +68,7 @@ describe("native proof policy", () => {
     expect(plan.ops).toEqual(["callContract"]);
   });
 
-  it("keeps non-callContract workflows on native reference transport in proof mode", () => {
+  it("keeps non-callContract workflows on native reference transport", () => {
     const input = baseCallContractInput();
     input.workflow.steps = [
       {

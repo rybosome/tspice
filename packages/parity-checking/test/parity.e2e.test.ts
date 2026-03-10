@@ -17,17 +17,36 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     expect(summary.contractCount).toBe(162);
     expect(summary.coveredCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(summary.denylistCount).toBe(0);
-    expect(summary.proof.marker).toBe("proof=disabled");
-    expect(summary.proof.mode).toBe("disabled");
+    expect(summary.proof.marker).toBe("proof=native-v2");
+    expect(summary.proof.mode).toBe("native-v2");
+    expect(summary.proof.referenceVerification).toBe("native-cspice-runner");
+    expect(summary.proof.laneVerification).toBe("strict-requested-equals-actual");
 
     if (!status.ready) {
       expect(summary.skipped).toBe(true);
       expect(summary.skipReason).toMatch(/^cspice-runner unavailable:/);
       expect(summary.methodCaseCount).toBe(0);
+      expect(summary.proof.perCaseReferenceRecords).toEqual([]);
+      expect(summary.proof.perLaneBackendRecords).toEqual([]);
       return;
     }
 
     expect(summary.skipped).toBe(false);
     expect(summary.methodCaseCount).toBeGreaterThan(0);
+    expect(summary.proof.perCaseReferenceRecords.length).toBeGreaterThan(0);
+    expect(summary.proof.perLaneBackendRecords).toEqual([
+      {
+        lane: "node",
+        requestedBackend: "node",
+        actualBackend: "node",
+        verified: true,
+      },
+      {
+        lane: "wasm",
+        requestedBackend: "wasm",
+        actualBackend: "wasm",
+        verified: true,
+      },
+    ]);
   });
 });

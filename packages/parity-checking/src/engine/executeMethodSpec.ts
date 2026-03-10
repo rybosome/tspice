@@ -14,7 +14,7 @@ export type MethodProofReferenceRecord = {
 export type MethodExecutionSummary = {
   methodId: string;
   caseCount: number;
-  proofReferenceRecords?: MethodProofReferenceRecord[];
+  proofReferenceRecords: MethodProofReferenceRecord[];
 };
 
 /**

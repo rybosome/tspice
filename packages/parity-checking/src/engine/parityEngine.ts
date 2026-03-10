@@ -7,11 +7,7 @@ import { parseMethodSpec } from "../dsl/schemaValidate.js";
 import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateSchema } from "../guards/validateSchema.js";
-import {
-  PARITY_PROOF_NATIVE_V2_ENV,
-  isParityProofNativeV2Enabled,
-  parityProofMarker,
-} from "../proof/nativeProof.js";
+import { parityProofMarker } from "../proof/nativeProof.js";
 import { createCspiceRunner, getCspiceRunnerStatus } from "../runners/cspiceRunner.js";
 import { createTspiceRunner } from "../runners/tspiceRunner.js";
 
@@ -68,9 +64,9 @@ export type ParityProofLaneBackendRecord = {
 
 export type ParityProofSummary = {
   marker: string;
-  mode: "disabled" | "native-v2";
-  referenceVerification: "disabled" | "native-cspice-runner";
-  laneVerification: "disabled" | "strict-requested-equals-actual";
+  mode: "native-v2";
+  referenceVerification: "native-cspice-runner";
+  laneVerification: "strict-requested-equals-actual";
   exceptions: string[];
   fallbackDetected: boolean;
   failingCases: string[];
@@ -89,20 +85,6 @@ export type ParityEngineSummary = {
   methodCaseCount: number;
   proof: ParityProofSummary;
 };
-
-function buildDisabledProofSummary(): ParityProofSummary {
-  return {
-    marker: "proof=disabled",
-    mode: "disabled",
-    referenceVerification: "disabled",
-    laneVerification: "disabled",
-    exceptions: [],
-    fallbackDetected: false,
-    failingCases: [],
-    perCaseReferenceRecords: [],
-    perLaneBackendRecords: [],
-  };
-}
 
 function backendFromRunnerKind(kind: string): ProofLane | undefined {
   if (kind === "tspice(node)") {
@@ -166,22 +148,6 @@ function dedupeProofReferenceRecords(
   return [...deduped.values()];
 }
 
-async function withRunners<T>(
-  fn: (runners: { tspice: CaseRunner; cspice: CaseRunner }) => Promise<T>,
-): Promise<T> {
-  let tspice: CaseRunner | undefined;
-  let cspice: CaseRunner | undefined;
-
-  try {
-    tspice = await createTspiceRunner();
-    cspice = await createCspiceRunner();
-
-    return await fn({ tspice, cspice });
-  } finally {
-    await Promise.allSettled([tspice?.dispose?.(), cspice?.dispose?.()]);
-  }
-}
-
 async function withProofRunners<T>(
   fn: (runners: { node: CaseRunner; wasm: CaseRunner; cspice: CaseRunner }) => Promise<T>,
 ): Promise<T> {
@@ -208,17 +174,8 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
 
   const completeness = validateCompleteness(specs.methods);
 
-  const proofEnabled = isParityProofNativeV2Enabled();
-  const proofDisabledSummary = buildDisabledProofSummary();
-
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
-    if (proofEnabled) {
-      throw new Error(
-        `cspice-runner unavailable in proof mode (${PARITY_PROOF_NATIVE_V2_ENV}=1): ${status.hint}`,
-      );
-    }
-
     return {
       skipped: true,
       skipReason: `cspice-runner unavailable: ${status.hint}`,
@@ -228,32 +185,17 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
       coveredCount: completeness.coveredCount,
       denylistCount: completeness.denylistCount,
       methodCaseCount: 0,
-      proof: proofDisabledSummary,
-    };
-  }
-
-  if (!proofEnabled) {
-    const paritySummary = await withRunners(async (runners) => {
-      let methodCaseCount = 0;
-      for (const method of specs.methods) {
-        const summary = await executeMethodSpecParityV2(method, runners);
-        methodCaseCount += summary.caseCount;
-      }
-
-      return {
-        skipped: false,
-        workflowCount: 0,
-        methodCount: specs.methods.length,
-        contractCount: completeness.contractCount,
-        coveredCount: completeness.coveredCount,
-        denylistCount: completeness.denylistCount,
-        methodCaseCount,
-      };
-    });
-
-    return {
-      ...paritySummary,
-      proof: proofDisabledSummary,
+      proof: {
+        marker: parityProofMarker(),
+        mode: "native-v2",
+        referenceVerification: "native-cspice-runner",
+        laneVerification: "strict-requested-equals-actual",
+        exceptions: [],
+        fallbackDetected: false,
+        failingCases: [],
+        perCaseReferenceRecords: [],
+        perLaneBackendRecords: [],
+      },
     };
   }
 
@@ -290,8 +232,8 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
           }
 
           methodCaseCount += nodeSummary.caseCount;
-          proofReferenceRecords.push(...(nodeSummary.proofReferenceRecords ?? []));
-          proofReferenceRecords.push(...(wasmSummary.proofReferenceRecords ?? []));
+          proofReferenceRecords.push(...nodeSummary.proofReferenceRecords);
+          proofReferenceRecords.push(...wasmSummary.proofReferenceRecords);
         } catch (error) {
           const failingCaseId = extractFailingCaseId(error);
           failingCases.push(

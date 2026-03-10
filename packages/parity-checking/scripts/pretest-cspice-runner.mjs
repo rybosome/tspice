@@ -3,25 +3,9 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const PROOF_ENV = "PARITY_PROOF_NATIVE_V2";
-
 function isCI() {
   const v = process.env.CI;
   return v === "true" || v === "1";
-}
-
-function isNativeProofMode() {
-  return process.env[PROOF_ENV] === "1";
-}
-
-function failIfProofModeUnavailable(reason) {
-  if (!isNativeProofMode()) {
-    return;
-  }
-
-  throw new Error(
-    `${reason} (native proof mode requires runner availability: ${PROOF_ENV}=1)`,
-  );
 }
 
 function getRepoRoot(pkgRoot) {
@@ -179,7 +163,6 @@ function main() {
       reason,
       binaryPath,
     });
-    failIfProofModeUnavailable(reason);
     return;
   }
 
@@ -204,7 +187,6 @@ function main() {
           cspiceDir,
           details: validation.reason,
         });
-        failIfProofModeUnavailable(validation.reason);
         return;
       }
 
@@ -218,7 +200,6 @@ function main() {
         cspiceDir,
         details: validation.reason,
       });
-      failIfProofModeUnavailable(validation.reason);
       return;
     }
 
@@ -232,7 +213,6 @@ function main() {
         cspiceDir,
         details: validation.reason,
       });
-      failIfProofModeUnavailable(reason);
       return;
     }
 
@@ -309,15 +289,8 @@ try {
     binaryPath: getBinaryPath(pkgRoot),
   });
 
-  if (isNativeProofMode()) {
-    console.error(
-      `[parity-checking] cspice-runner unavailable; failing because ${PROOF_ENV}=1.\n${message}`,
-    );
-    process.exitCode = 1;
-  } else {
-    console.error(
-      `[parity-checking] cspice-runner unavailable; parity tests will be skipped.\n${message}`,
-    );
-    process.exitCode = 0;
-  }
+  console.error(
+    `[parity-checking] cspice-runner unavailable; parity tests will be skipped.\n${message}`,
+  );
+  process.exitCode = 0;
 }

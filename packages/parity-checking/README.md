@@ -5,7 +5,7 @@ It owns:
 
 - parity method specs,
 - pre-execution guard pipeline,
-- tspice/cspice parity runtime comparison,
+- parity runtime orchestration with `cspice` as the reference lane (`node` vs `cspice` and `wasm` vs `cspice`),
 - generated parity catalogs.
 
 ## Layout
@@ -44,4 +44,4 @@ Workflow highlights:
 
 1. schema validity,
 2. completeness against v3 baseline coverage expectations,
-3. method parity execution (tspice vs cspice).
+3. method parity execution (`node` vs `cspice` and `wasm` vs `cspice`).
