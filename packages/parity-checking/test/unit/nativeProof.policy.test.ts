@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST,
   isParityProofNativeV2Enabled,
   resolveReferenceExecutionPlan,
 } from "../../src/proof/nativeProof.js";
@@ -35,27 +34,25 @@ describe("native proof policy", () => {
     expect(isParityProofNativeV2Enabled({})).toBe(false);
   });
 
-  it("keeps callContract fast-path in non-proof mode", () => {
+  it("keeps callContract workflows on native reference transport in non-proof mode", () => {
     const plan = resolveReferenceExecutionPlan(baseCallContractInput(), {
       proofMode: false,
     });
 
-    expect(plan.transport).toBe("callContract-fast-path");
-    expect(plan.excepted).toBe(false);
+    expect(plan.transport).toBe("native-cspice-runner");
     expect(plan.ops).toEqual(["callContract"]);
   });
 
-  it("forces native reference transport for non-excepted callContract cases in proof mode", () => {
+  it("keeps callContract workflows on native reference transport in proof mode", () => {
     const plan = resolveReferenceExecutionPlan(baseCallContractInput(), {
       proofMode: true,
     });
 
     expect(plan.transport).toBe("native-cspice-runner");
-    expect(plan.excepted).toBe(false);
     expect(plan.ops).toEqual(["callContract"]);
   });
 
-  it("allows only frozen exception methods to keep callContract fast-path in proof mode", () => {
+  it("does not allow legacy exception methods to re-enable fast-path transport", () => {
     const input = baseCallContractInput();
     input.workflow.steps = [{ op: "callContract", call: "dskgd_c" }];
 
@@ -63,10 +60,8 @@ describe("native proof policy", () => {
       proofMode: true,
     });
 
-    expect(PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST).toEqual(["dskb02_c", "dskgd_c"]);
-    expect(plan.transport).toBe("callContract-fast-path");
-    expect(plan.excepted).toBe(true);
-    expect(plan.exceptionMethod).toBe("dskgd_c");
+    expect(plan.transport).toBe("native-cspice-runner");
+    expect(plan.ops).toEqual(["callContract"]);
   });
 
   it("keeps non-callContract workflows on native reference transport in proof mode", () => {
@@ -85,7 +80,6 @@ describe("native proof policy", () => {
     });
 
     expect(plan.transport).toBe("native-cspice-runner");
-    expect(plan.excepted).toBe(false);
     expect(plan.ops).toEqual(["projectResult"]);
   });
 });
