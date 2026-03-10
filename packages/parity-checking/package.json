@@ -14,6 +14,7 @@
   "files": ["dist"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "pretypecheck": "pnpm -w turbo run build --filter=@rybosome/tspice",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "generate:contract-catalog": "tsx ./scripts/generate-contract-catalog.ts",
     "generate:denylist": "tsx ./scripts/generate-parity-denylist.ts",
