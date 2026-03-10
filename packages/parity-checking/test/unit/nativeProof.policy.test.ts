@@ -6,9 +6,9 @@ import {
   resolveReferenceExecutionPlan,
 } from "../../src/proof/nativeProof.js";
 
-import type { RunCaseInputV2 } from "../../src/runners/types.js";
+import type { RunCaseInputV3 } from "../../src/runners/types.js";
 
-function baseCallContractInput(): RunCaseInputV2 {
+function baseCallContractInput(): RunCaseInputV3 {
   return {
     schemaVersion: 3,
     manifest: {

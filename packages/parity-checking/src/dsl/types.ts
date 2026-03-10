@@ -295,57 +295,15 @@ export type LoadedParitySpecs = {
   methods: AnyMethodSpec[];
 };
 
-// Backward-compatible aliases (to ease rename churn while code moves to v3 names).
+// Canonical method spec alias exposed by package API.
 export type MethodSpec = MethodSpecV3;
-export type MethodManifestV2 = MethodManifestV3;
-export type MethodArgConstraintSpecV2 = MethodArgConstraintSpecV3;
-export type MethodArgSpecV2 = MethodArgSpecV3;
-export type MethodResultPropertySpecV2 = MethodResultPropertySpecV3;
-export type MethodResultConstValueV2 = MethodResultConstValueV3;
-export type MethodResultConstSpecV2 = MethodResultConstSpecV3;
-export type MethodResultObjectSpecV2 = MethodResultObjectSpecV3;
-export type MethodResultSpecV2 = MethodResultSpecV3;
-export type MethodErrorSpecV2 = MethodErrorSpecV3;
-export type MethodContractV2 = MethodContractV3;
-export type MethodWorkflowOpAllocCellV2 = MethodWorkflowOpAllocCellV3;
-export type MethodWorkflowOpAllocWindowV2 = MethodWorkflowOpAllocWindowV3;
-export type MethodWorkflowSpiceCallNameV2 = MethodWorkflowSpiceCallNameV3;
-export type MethodWorkflowOpSpiceCallV2 = MethodWorkflowOpSpiceCallV3;
-export type MethodWorkflowOpMaterializeV2 = MethodWorkflowOpMaterializeV3;
-export type MethodWorkflowOpDasOpenV2 = MethodWorkflowOpDasOpenV3;
-export type MethodWorkflowOpDlaBeginForwardSearchV2 = MethodWorkflowOpDlaBeginForwardSearchV3;
-export type MethodWorkflowOpDasCloseV2 = MethodWorkflowOpDasCloseV3;
-export type MethodWorkflowOpUnlinkV2 = MethodWorkflowOpUnlinkV3;
-export type MethodWorkflowOpInvokeLegacyCallV2 = MethodWorkflowOpCallContractV3;
-export type MethodWorkflowOpScriptV2 = MethodWorkflowOpScriptV3;
-export type MethodWorkflowAssertOperatorV2 = MethodWorkflowAssertOperatorV3;
-export type MethodWorkflowAssertTestV2 = MethodWorkflowAssertTestV3;
-export type MethodWorkflowOpAssertV2 = MethodWorkflowOpAssertV3;
-export type MethodWorkflowOpProjectResultV2 = MethodWorkflowOpProjectResultV3;
-export type MethodWorkflowOpProjectV2 = MethodWorkflowOpProjectV3;
-export type MethodWorkflowOpSwitchV2 = MethodWorkflowOpSwitchV3;
-export type MethodWorkflowOpFreeCellV2 = MethodWorkflowOpFreeCellV3;
-export type MethodWorkflowOpFreeWindowV2 = MethodWorkflowOpFreeWindowV3;
-export type MethodWorkflowStepV2 = MethodWorkflowStepV3;
-export type MethodCaseSpecV2 = MethodCaseSpecV3;
-export type MethodSpecV2 = MethodSpecV3;
 
-/** Compatibility type guard while v2 references still exist (all method specs are v3). */
-export function isMethodSpecV2(_method: AnyMethodSpec): _method is MethodSpecV3 {
-  return true;
-}
-
-/** Returns a stable method id from v3 `manifest.id` or legacy top-level `id`. */
+/** Returns a stable method id from canonical `manifest.id`. */
 export function methodSpecId(method: AnyMethodSpec): string {
-  const legacy = method as unknown as { id?: string; manifest?: { id?: string } };
-  return legacy.manifest?.id ?? legacy.id ?? "unknown-method";
+  return method.manifest.id;
 }
 
-/** Returns the canonical method name from v3 contract metadata or legacy shape. */
+/** Returns the canonical method name from contract metadata. */
 export function methodCanonicalMethod(method: AnyMethodSpec): string {
-  const legacy = method as unknown as {
-    canonicalMethod?: string;
-    contract?: { canonicalMethod?: string };
-  };
-  return legacy.contract?.canonicalMethod ?? legacy.canonicalMethod ?? "";
+  return method.contract.canonicalMethod;
 }

@@ -1,4 +1,4 @@
-import type { RunCaseInput, RunCaseInputV3 } from "../runners/types.js";
+import type { RunCaseInput } from "../runners/types.js";
 
 export const PARITY_PROOF_NATIVE_V2_ENV = "PARITY_PROOF_NATIVE_V2" as const;
 export const PARITY_PROOF_NATIVE_V2_ENABLED_VALUE = "1" as const;
@@ -16,15 +16,11 @@ export type ReferenceExecutionPlan = {
   ops: string[];
 };
 
-function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
-  return typeof input === "object" && input !== null && "schemaVersion" in input;
-}
-
-function isSingleCallContractWorkflow(input: RunCaseInputV3): boolean {
+function isSingleCallContractWorkflow(input: RunCaseInput): boolean {
   return input.workflow.steps.length === 1 && input.workflow.steps[0]?.op === "callContract";
 }
 
-function resolveCallContractMethod(input: RunCaseInputV3): string | undefined {
+function resolveCallContractMethod(input: RunCaseInput): string | undefined {
   if (!isSingleCallContractWorkflow(input)) {
     return undefined;
   }
@@ -48,10 +44,6 @@ function resolveCallContractMethod(input: RunCaseInputV3): string | undefined {
 }
 
 function collectWorkflowOps(input: RunCaseInput): string[] {
-  if (!isRunCaseInputV3(input) || input.schemaVersion !== 3) {
-    return [];
-  }
-
   const stepOps = input.workflow.steps.map((step) => step.op);
   const cleanupOps = (input.workflow.cleanup ?? []).map((step) => step.op);
   return [...stepOps, ...cleanupOps];
@@ -89,7 +81,7 @@ export function resolveReferenceExecutionPlan(
   const proofMode = options.proofMode ?? isParityProofNativeV2Enabled();
   const ops = collectWorkflowOps(input);
 
-  if (!isRunCaseInputV3(input) || input.schemaVersion !== 3 || !isSingleCallContractWorkflow(input)) {
+  if (!isSingleCallContractWorkflow(input)) {
     return {
       transport: "native-cspice-runner",
       excepted: false,

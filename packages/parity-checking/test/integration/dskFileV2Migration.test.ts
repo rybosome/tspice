@@ -9,7 +9,7 @@ import { executeMethodSpecParityV2 } from "../../src/engine/executeMethodSpecV2.
 import { createCspiceRunner, getCspiceRunnerStatus } from "../../src/runners/cspiceRunner.js";
 import { createTspiceRunner } from "../../src/runners/tspiceRunner.js";
 
-import type { MethodSpecV2 } from "../../src/dsl/types.js";
+import type { MethodSpecV3 } from "../../src/dsl/types.js";
 import type { CaseRunner } from "../../src/runners/types.js";
 
 const TARGET_METHOD_SPEC_PATHS = [
@@ -24,7 +24,7 @@ function packageRoot(): string {
   return path.resolve(here, "..", "..");
 }
 
-async function loadMethodSpec(relativePath: string): Promise<MethodSpecV2> {
+async function loadMethodSpec(relativePath: string): Promise<MethodSpecV3> {
   const filePath = path.join(packageRoot(), relativePath);
   return parseMethodSpec(await loadYamlFile(filePath));
 }

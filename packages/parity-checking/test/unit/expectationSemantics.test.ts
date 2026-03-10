@@ -2,14 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { executeMethodSpecParity } from "../../src/engine/executeMethodSpec.js";
 
-import type { MethodCaseExpectation, ScenarioSetupAst } from "../../src/dsl/types.js";
+import type { MethodCaseExpectation, MethodSpecV3, ScenarioSetupAst } from "../../src/dsl/types.js";
 import type { CaseRunner, RunCaseInput, RunCaseResult } from "../../src/runners/types.js";
-
-type ParityInput = Parameters<typeof executeMethodSpecParity>[0];
-type LegacyResolvedInput = Pick<
-  Extract<ParityInput, { method: unknown }>,
-  "method" | "mergedSetup" | "mergedCompareDefaults"
->;
 
 class ErrorRunner implements CaseRunner {
   readonly kind = "stub-error";
@@ -41,54 +35,52 @@ class SuccessRunner implements CaseRunner {
   }
 }
 
-function buildResolved(
-  expect: MethodCaseExpectation | undefined,
-  mergedSetup?: ScenarioSetupAst,
-): LegacyResolvedInput {
-  const resolved: LegacyResolvedInput = {
-    method: {
-      id: "methods/time/str2et@v1",
+function buildMethod(
+  expectSpec: MethodCaseExpectation | undefined,
+  setup?: ScenarioSetupAst,
+): MethodSpecV3 {
+  return {
+    schemaVersion: 3,
+    manifest: {
+      id: "methods/time/str2et@v3",
       kind: "method",
+    },
+    contract: {
       contractMethod: "time.str2et",
       canonicalMethod: "time.str2et",
-      defaults: {
-        compare: {
-          errorShort: true,
-        },
-      },
-      cases: [
-        {
-          id: "invalid",
-          args: ["NOT_A_TIME"],
-          expect,
-        },
-      ],
-      meta: {
-        sourcePath: "/tmp/str2et.yml",
+    },
+    ...(setup !== undefined ? { setup } : {}),
+    defaults: {
+      compare: {
+        errorShort: true,
       },
     },
-    mergedCompareDefaults: {
-      errorShort: true,
+    workflow: {
+      steps: [{ op: "callContract" }],
+    },
+    cases: [
+      {
+        id: "invalid",
+        args: ["NOT_A_TIME"],
+        expect: expectSpec,
+      },
+    ],
+    meta: {
+      sourcePath: "/tmp/str2et.yml",
     },
   };
-
-  if (mergedSetup !== undefined) {
-    resolved.mergedSetup = mergedSetup;
-  }
-
-  return resolved;
 }
 
 describe("method case expectation semantics", () => {
   it("enforces cases[].expect.ok and cases[].expect.errorShort", async () => {
-    const resolved = buildResolved({
+    const method = buildMethod({
       ok: false,
       errorShort: "SPICE(BADTIMESTRING)",
     });
 
     const runner = new ErrorRunner();
 
-    const summary = await executeMethodSpecParity(resolved, {
+    const summary = await executeMethodSpecParity(method, {
       tspice: runner,
       cspice: runner,
     });
@@ -97,33 +89,33 @@ describe("method case expectation semantics", () => {
   });
 
   it("fails expect.errorShort when either runner succeeds", async () => {
-    const resolved = buildResolved({
+    const method = buildMethod({
       errorShort: "SPICE(BADTIMESTRING)",
     });
 
     const runner = new SuccessRunner();
 
     await expect(
-      executeMethodSpecParity(resolved, {
+      executeMethodSpecParity(method, {
         tspice: runner,
         cspice: runner,
       }),
     ).rejects.toThrow(/expect\.errorShort requires both outcomes to fail/);
   });
 
-  it("accepts merged setup kernel objects when reparsing runtime scenarios", async () => {
+  it("preserves setup kernel objects in runner input", async () => {
     const kernelEntry = {
       path: "/tmp/kernels/example.tm",
       restrictToDir: "/tmp/kernels",
     };
-    const resolved = buildResolved(undefined, {
+    const method = buildMethod(undefined, {
       kernels: [kernelEntry],
     });
 
     const tspice = new SuccessRunner();
     const cspice = new SuccessRunner();
 
-    const summary = await executeMethodSpecParity(resolved, {
+    const summary = await executeMethodSpecParity(method, {
       tspice,
       cspice,
     });
@@ -136,25 +128,31 @@ describe("method case expectation semantics", () => {
   });
 
   it("ignores error.details metadata differences during parity comparison", async () => {
-    const resolved: LegacyResolvedInput = {
-      method: {
-        id: "methods/file-io/unsupported@v1",
+    const method: MethodSpecV3 = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/file-io/unsupported@v3",
         kind: "method",
+      },
+      contract: {
         contractMethod: "file-io.unknown",
         canonicalMethod: "file-io.unknown",
-        cases: [
-          {
-            id: "unsupported",
-            args: [],
-            expect: {
-              ok: false,
-              errorCode: "unsupported_call",
-            },
+      },
+      workflow: {
+        steps: [{ op: "callContract" }],
+      },
+      cases: [
+        {
+          id: "unsupported",
+          args: [],
+          expect: {
+            ok: false,
+            errorCode: "unsupported_call",
           },
-        ],
-        meta: {
-          sourcePath: "/tmp/file-io-unsupported.yml",
         },
+      ],
+      meta: {
+        sourcePath: "/tmp/file-io-unsupported.yml",
       },
     };
 
@@ -193,7 +191,7 @@ describe("method case expectation semantics", () => {
     };
 
     await expect(
-      executeMethodSpecParity(resolved, {
+      executeMethodSpecParity(method, {
         tspice,
         cspice,
       }),
