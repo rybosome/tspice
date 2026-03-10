@@ -5,31 +5,11 @@ import { executeMethodSpecParity } from "../../src/engine/executeMethodSpec.js";
 import type { MethodCaseExpectation, ScenarioSetupAst } from "../../src/dsl/types.js";
 import type { CaseRunner, RunCaseInput, RunCaseResult } from "../../src/runners/types.js";
 
-type LegacyResolvedInput = {
-  method: {
-    id: string;
-    kind: "method";
-    contractMethod: string;
-    canonicalMethod: string;
-    defaults?: {
-      compare?: {
-        errorShort?: boolean;
-      };
-    };
-    cases: Array<{
-      id: string;
-      args: unknown;
-      expect?: MethodCaseExpectation;
-    }>;
-    meta: {
-      sourcePath: string;
-    };
-  };
-  mergedSetup?: ScenarioSetupAst;
-  mergedCompareDefaults?: {
-    errorShort?: boolean;
-  };
-};
+type ParityInput = Parameters<typeof executeMethodSpecParity>[0];
+type LegacyResolvedInput = Pick<
+  Extract<ParityInput, { method: unknown }>,
+  "method" | "mergedSetup" | "mergedCompareDefaults"
+>;
 
 class ErrorRunner implements CaseRunner {
   readonly kind = "stub-error";
