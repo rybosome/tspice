@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { createTspiceRunner } from "../../src/runners/tspiceRunner.js";
-import type { CaseRunner, RunCaseInputV2 } from "../../src/runners/types.js";
+import type { CaseRunner, RunCaseInputV3 } from "../../src/runners/types.js";
 
-function createInput(method: string, args: unknown[]): RunCaseInputV2 {
+function createInput(method: string, args: unknown[]): RunCaseInputV3 {
   return {
     schemaVersion: 3,
     manifest: {

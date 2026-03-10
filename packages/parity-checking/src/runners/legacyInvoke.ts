@@ -1,6 +1,4 @@
-import type { RunCaseInput } from "./types.js";
-
-type V3RunCaseInput = Extract<RunCaseInput, { schemaVersion: 3 }>;
+import type { RunCaseInputV3 } from "./types.js";
 
 export type LegacyInvokeValidation = {
   invalidRequest(message: string): never;
@@ -34,7 +32,7 @@ function formatValue(value: unknown): string {
  * Returns null when the workflow is not a single callContract step.
  */
 export function lowerV3CallContract(
-  input: V3RunCaseInput,
+  input: RunCaseInputV3,
   validation: LegacyInvokeValidation,
 ): LoweredLegacyInvokeInput | null {
   if (input.workflow.steps.length !== 1) {
@@ -65,6 +63,3 @@ export function lowerV3CallContract(
     args,
   };
 }
-
-// Backward-compatible export name for tests/modules that still import old symbol.
-export const lowerV2InvokeLegacyCall = lowerV3CallContract;

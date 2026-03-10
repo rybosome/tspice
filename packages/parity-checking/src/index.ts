@@ -1,8 +1,5 @@
-export type { ScenarioAst, ScenarioCaseAst, ScenarioSetupAst } from "./dsl/types.js";
+export type { ScenarioSetupAst } from "./dsl/types.js";
 export type { LoadedParitySpecs, MethodSpec } from "./dsl/types.js";
-
-export { parseScenario } from "./dsl/parse.js";
-export { executeScenario } from "./dsl/execute.js";
 
 export { discoverYamlFiles } from "./dsl/discoverYamlFiles.js";
 export { loadYamlFile } from "./dsl/loadYaml.js";

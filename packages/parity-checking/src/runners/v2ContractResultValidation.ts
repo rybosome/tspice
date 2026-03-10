@@ -1,7 +1,7 @@
 import { compareValues } from "../compare/compare.js";
 import { formatMismatchReport } from "../compare/report.js";
 
-import type { V2ContractResultProperty, V2ContractResultSpec } from "./types.js";
+import type { V3ContractResultProperty, V3ContractResultSpec } from "./types.js";
 
 const SPICE_INT32_MIN = -2147483648;
 const SPICE_INT32_MAX = 2147483647;
@@ -51,7 +51,7 @@ function assertSpiceInt(value: unknown, label: string, fail: (message: string) =
 
 function validateResultProperty(
   propertyLabel: string,
-  descriptor: V2ContractResultProperty,
+  descriptor: V3ContractResultProperty,
   value: unknown,
   fail: (message: string) => never,
 ): void {
@@ -72,7 +72,7 @@ function validateResultProperty(
  */
 export function validateV2ContractResultOrThrow(
   runtimeResult: unknown,
-  contractResult: V2ContractResultSpec,
+  contractResult: V3ContractResultSpec,
   label: string,
   fail: (message: string) => never,
 ): void {

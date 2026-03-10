@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { createCspiceRunner, getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
 import { createTspiceRunner } from "../src/runners/tspiceRunner.js";
-import type { RunCaseInputV2 } from "../src/runners/types.js";
+import type { RunCaseInputV3 } from "../src/runners/types.js";
 
-function createBaseInput(): RunCaseInputV2 {
+function createBaseInput(): RunCaseInputV3 {
   return {
     schemaVersion: 3,
     manifest: {
@@ -114,7 +114,7 @@ describe("v3 runner preflight parity", () => {
   maybeIt("executes callContract via v3 workflow path in cspice runner", async () => {
     const cspice = await createCspiceRunner();
 
-    const input: RunCaseInputV2 = {
+    const input: RunCaseInputV3 = {
       schemaVersion: 3,
       manifest: {
         id: "methods/time/tkvrsn@v3",

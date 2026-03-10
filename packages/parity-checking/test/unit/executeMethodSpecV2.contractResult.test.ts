@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { executeMethodSpecParityV2 } from "../../src/engine/executeMethodSpecV2.js";
 
-import type { MethodSpecV2 } from "../../src/dsl/types.js";
+import type { MethodSpecV3 } from "../../src/dsl/types.js";
 import type { CaseRunner, RunCaseInput, RunCaseResult } from "../../src/runners/types.js";
 
 class StubRunner implements CaseRunner {
@@ -15,7 +15,7 @@ class StubRunner implements CaseRunner {
   }
 }
 
-function buildMethod(resultSchema: MethodSpecV2["contract"]["result"]): MethodSpecV2 {
+function buildMethod(resultSchema: MethodSpecV3["contract"]["result"]): MethodSpecV3 {
   return {
     schemaVersion: 3,
     manifest: {

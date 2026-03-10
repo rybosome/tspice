@@ -16,7 +16,6 @@ import type {
   CaseRunner,
   KernelEntry,
   RunCaseInput,
-  RunCaseInputV3,
   RunCaseResult,
   RunnerErrorReport,
   SpiceErrorState,
@@ -461,11 +460,7 @@ function asSpiceErrorState(err: CRunnerError["error"]): SpiceErrorState {
   return spice;
 }
 
-function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
-  return typeof input === "object" && input !== null && "schemaVersion" in input;
-}
-
-function isSingleCallContractWorkflow(input: RunCaseInputV3): boolean {
+function isSingleCallContractWorkflow(input: RunCaseInput): boolean {
   return input.workflow.steps.length === 1 && input.workflow.steps[0]?.op === "callContract";
 }
 
@@ -597,8 +592,6 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
 
         if (
           referencePlan.transport === "callContract-fast-path" &&
-          isRunCaseInputV3(input) &&
-          input.schemaVersion === 3 &&
           isSingleCallContractWorkflow(input)
         ) {
           const backend = await getCallContractBackend();
@@ -622,9 +615,7 @@ export async function createCspiceRunner(): Promise<CaseRunner> {
           };
         }
 
-        if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
-          validateV2CasePreflight(input);
-        }
+        validateV2CasePreflight(input);
 
         const out = await invokeRunner(binaryPath, input);
         if (out.ok) {

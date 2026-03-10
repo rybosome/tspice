@@ -19,7 +19,6 @@ import type {
   CaseRunner,
   KernelEntry,
   RunCaseInput,
-  RunCaseInputV3,
   RunCaseResult,
   RunnerErrorReport,
   SpiceErrorState,
@@ -72,10 +71,6 @@ function unsupportedCall(message: string, details?: RunnerErrorReport["details"]
     err.details = details;
   }
   throw err;
-}
-
-function isRunCaseInputV3(input: RunCaseInput): input is RunCaseInputV3 {
-  return typeof input === "object" && input !== null && "schemaVersion" in input;
 }
 
 /** Assert that a value is a finite integer (used for runner argument validation). */
@@ -2343,33 +2338,21 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
           }
         }
 
-        if (isRunCaseInputV3(input) && input.schemaVersion === 3) {
-          const legacyInput = lowerV3CallContract(input, {
-            invalidRequest,
-            invalidArgs,
-          });
-          if (legacyInput !== null) {
-            const fn = DISPATCH[legacyInput.call];
-            if (!fn) {
-              unsupportedCall("Unsupported call", { call: legacyInput.call });
-            }
-
-            const result = await fn(backend.raw, legacyInput.args, backend.kit, backend.kind);
-            return { ok: true, result };
+        const legacyInput = lowerV3CallContract(input, {
+          invalidRequest,
+          invalidArgs,
+        });
+        if (legacyInput !== null) {
+          const fn = DISPATCH[legacyInput.call];
+          if (!fn) {
+            unsupportedCall("Unsupported call", { call: legacyInput.call });
           }
 
-          const result = await executeV2CaseWithBackend(backend, input);
+          const result = await fn(backend.raw, legacyInput.args, backend.kit, backend.kind);
           return { ok: true, result };
         }
 
-        const legacyInput = input as Extract<RunCaseInput, { call: string; args: unknown[] }>;
-
-        const fn = DISPATCH[legacyInput.call];
-        if (!fn) {
-          unsupportedCall("Unsupported call", { call: legacyInput.call });
-        }
-
-        const result = await fn(backend.raw, legacyInput.args, backend.kit, backend.kind);
+        const result = await executeV2CaseWithBackend(backend, input);
         return { ok: true, result };
       } catch (error) {
         const report = safeErrorReport(error);

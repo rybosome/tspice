@@ -2,7 +2,7 @@ import type { SpiceBackend } from "@rybosome/tspice";
 import { describe, expect, it, vi } from "vitest";
 
 import { executeV2CaseWithBackend, validateV2CasePreflight } from "../../src/runners/v2Executor.js";
-import type { RunCaseInputV2 } from "../../src/runners/types.js";
+import type { RunCaseInputV3 } from "../../src/runners/types.js";
 
 type TestCell = {
   size: number;
@@ -27,7 +27,7 @@ function createBackendStub(): BackendStub {
   return { backend, freeCellMock };
 }
 
-function createBaseInput(): RunCaseInputV2 {
+function createBaseInput(): RunCaseInputV3 {
   return {
     schemaVersion: 3,
     manifest: {
@@ -383,7 +383,7 @@ describe("executeV2CaseWithBackend", () => {
       kit,
     } as unknown as SpiceBackend;
 
-    const input: RunCaseInputV2 = {
+    const input: RunCaseInputV3 = {
       schemaVersion: 3,
       manifest: {
         id: "methods/dsk/dskb02@v3",
@@ -490,7 +490,7 @@ describe("executeV2CaseWithBackend", () => {
       } as SpiceBackend;
     };
 
-    const createInput = (out: Record<string, string>): RunCaseInputV2 => ({
+    const createInput = (out: Record<string, string>): RunCaseInputV3 => ({
       schemaVersion: 3,
       manifest: {
         id: "methods/dsk/dskb02@v3",
@@ -572,7 +572,7 @@ describe("executeV2CaseWithBackend", () => {
       op: "spiceCall",
       call: "card_c",
       in: ["$refs.cell"],
-    } as unknown as RunCaseInputV2["workflow"]["steps"][number];
+    } as unknown as RunCaseInputV3["workflow"]["steps"][number];
 
     await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
       code: "invalid_args",
@@ -588,7 +588,7 @@ describe("executeV2CaseWithBackend", () => {
       call: "scard_c",
       in: [0, "$refs.cell"],
       as: "ignored",
-    } as unknown as RunCaseInputV2["workflow"]["steps"][number];
+    } as unknown as RunCaseInputV3["workflow"]["steps"][number];
 
     await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
       code: "invalid_args",
@@ -605,7 +605,7 @@ describe("executeV2CaseWithBackend", () => {
       in: ["$refs.cell"],
       as: "size",
       out: { ignored: "ignored" },
-    } as unknown as RunCaseInputV2["workflow"]["steps"][number];
+    } as unknown as RunCaseInputV3["workflow"]["steps"][number];
 
     await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
       code: "invalid_args",

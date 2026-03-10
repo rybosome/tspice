@@ -9,13 +9,13 @@ import {
 } from "../proof/nativeProof.js";
 import { validateV2ContractResultOrThrow } from "../runners/v2ContractResultValidation.js";
 
-import type { MethodCaseExpectation, MethodCaseSpecV2, MethodSpecV2, ScenarioCompareAst, ScenarioSetupAst } from "../dsl/types.js";
-import type { CaseRunner, RunCaseInputV2 } from "../runners/types.js";
+import type { MethodCaseExpectation, MethodCaseSpecV3, MethodSpecV3, ScenarioCompareAst, ScenarioSetupAst } from "../dsl/types.js";
+import type { CaseRunner, RunCaseInputV3 } from "../runners/types.js";
 import type { MethodExecutionSummary } from "./executeMethodSpec.js";
 
 type MethodRunCase = {
   caseId: string;
-  workflow: Exclude<MethodSpecV2["workflow"], undefined>;
+  workflow: Exclude<MethodSpecV3["workflow"], undefined>;
   args: unknown;
   expect?: MethodCaseExpectation;
   setupChain: Array<ScenarioSetupAst | undefined>;
@@ -70,7 +70,7 @@ function formatErrorMessage(error: unknown): string {
 function assertContractResultMatches(
   label: string,
   runnerName: "tspice" | "cspice",
-  method: MethodSpecV2,
+  method: MethodSpecV3,
   caseId: string,
   result: unknown,
 ): void {
@@ -149,14 +149,14 @@ function assertExpectedErrorShort(
   }
 }
 
-function isCallContractOnlyWorkflow(workflow: Exclude<MethodSpecV2["workflow"], undefined>): boolean {
+function isCallContractOnlyWorkflow(workflow: Exclude<MethodSpecV3["workflow"], undefined>): boolean {
   return workflow.steps.length === 1 && workflow.steps[0]?.op === "callContract";
 }
 
 function pushRuns(
   out: MethodRunCase[],
-  workflow: Exclude<MethodSpecV2["workflow"], undefined>,
-  cases: MethodCaseSpecV2[],
+  workflow: Exclude<MethodSpecV3["workflow"], undefined>,
+  cases: MethodCaseSpecV3[],
   labelPrefix: string,
   setupChainHead: Array<ScenarioSetupAst | undefined>,
   compareChainHead: Array<ScenarioCompareAst | undefined>,
@@ -173,7 +173,7 @@ function pushRuns(
   }
 }
 
-function buildMethodRuns(method: MethodSpecV2): MethodRunCase[] {
+function buildMethodRuns(method: MethodSpecV3): MethodRunCase[] {
   const runs: MethodRunCase[] = [];
 
   if (method.workflow && method.cases) {
@@ -197,7 +197,7 @@ function buildMethodRuns(method: MethodSpecV2): MethodRunCase[] {
 
 /** Execute and compare one v3 method spec across tspice and cspice runners. */
 export async function executeMethodSpecParityV2(
-  method: MethodSpecV2,
+  method: MethodSpecV3,
   runners: {
     tspice: CaseRunner;
     cspice: CaseRunner;
@@ -213,7 +213,7 @@ export async function executeMethodSpecParityV2(
 
     const argsDefault = isCallContractOnlyWorkflow(run.workflow) ? [] : {};
 
-    const caseInput: RunCaseInputV2 = {
+    const caseInput: RunCaseInputV3 = {
       schemaVersion: 3,
       manifest: method.manifest,
       contract: method.contract,

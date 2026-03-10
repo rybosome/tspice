@@ -5,7 +5,7 @@ import { mkdtemp, writeFile } from "node:fs/promises";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { RunCaseInputV2 } from "../../src/runners/types.js";
+import type { RunCaseInputV3 } from "../../src/runners/types.js";
 
 const { toSyncMock } = vi.hoisted(() => ({
   toSyncMock: vi.fn(),
@@ -19,7 +19,7 @@ vi.mock("@rybosome/tspice", () => ({
 
 import { createTspiceRunner } from "../../src/runners/tspiceRunner.js";
 
-function createInput(method: string, args: unknown[]): RunCaseInputV2 {
+function createInput(method: string, args: unknown[]): RunCaseInputV3 {
   return {
     schemaVersion: 3,
     manifest: {

@@ -6,10 +6,10 @@ import * as path from "node:path";
 import type { SpiceBackend } from "@rybosome/tspice";
 
 import type {
-  RunCaseInputV2,
+  RunCaseInputV3,
   RunnerErrorReport,
-  V2WorkflowAssertOperator,
-  V2WorkflowStep,
+  V3WorkflowAssertOperator,
+  V3WorkflowStep,
 } from "./types.js";
 import { ASSERT_OPERATOR_NAMES_TEXT } from "../assertOperators.js";
 import { validateV2ContractResultOrThrow } from "./v2ContractResultValidation.js";
@@ -101,7 +101,7 @@ type WasmVirtualOutputCleanupHooks = {
   __deleteVirtualFileForFileIo?: (path: string) => void;
 };
 
-type V2SpiceCallStep = Extract<V2WorkflowStep, { op: "spiceCall" }>;
+type V2SpiceCallStep = Extract<V3WorkflowStep, { op: "spiceCall" }>;
 type V2SpiceCallName = V2SpiceCallStep["call"];
 type V2SpiceCallArgKind =
   | "intExpr"
@@ -405,7 +405,7 @@ function asNonEmptyString(value: unknown, label: string): string {
   return value;
 }
 
-function normalizeAssertOperands(operandsRaw: unknown, operator: V2WorkflowAssertOperator): [unknown, unknown] {
+function normalizeAssertOperands(operandsRaw: unknown, operator: V3WorkflowAssertOperator): [unknown, unknown] {
   if (!Array.isArray(operandsRaw) || operandsRaw.length !== 2) {
     invalidRequest(`assert.test.${operator} must be a 2-item array`);
   }
@@ -414,8 +414,8 @@ function normalizeAssertOperands(operandsRaw: unknown, operator: V2WorkflowAsser
 }
 
 function extractAssertOperatorAndOperands(
-  test: Extract<V2WorkflowStep, { op: "assert" }>["test"],
-): { operator: V2WorkflowAssertOperator; operands: [unknown, unknown] } {
+  test: Extract<V3WorkflowStep, { op: "assert" }>["test"],
+): { operator: V3WorkflowAssertOperator; operands: [unknown, unknown] } {
   if (Object.keys(test).length !== 1) {
     invalidRequest("assert.test must define exactly one operator");
   }
@@ -660,7 +660,7 @@ function resolveDlaDescriptorReference(
   return { name, value: ref.value };
 }
 
-function validateCaseArgs(input: RunCaseInputV2): Record<string, unknown> {
+function validateCaseArgs(input: RunCaseInputV3): Record<string, unknown> {
   const caseArgs = asRecord(input.args, "v2.args");
   const contractArgs = input.contract.args ?? [];
 
@@ -706,7 +706,7 @@ function validateCaseArgs(input: RunCaseInputV2): Record<string, unknown> {
   return validated;
 }
 
-function validateV2Envelope(input: RunCaseInputV2): void {
+function validateV2Envelope(input: RunCaseInputV3): void {
   if (input.schemaVersion !== 3) {
     invalidRequest(`executeV2CaseWithBackend expected schemaVersion=3 (got ${formatValue(input.schemaVersion)})`);
   }
@@ -721,7 +721,7 @@ function validateV2Envelope(input: RunCaseInputV2): void {
  *
  * Returns normalized/validated args for reuse by callers that continue execution.
  */
-export function validateV2CasePreflight(input: RunCaseInputV2): Record<string, unknown> {
+export function validateV2CasePreflight(input: RunCaseInputV3): Record<string, unknown> {
   validateV2Envelope(input);
 
   return validateCaseArgs(input);
@@ -744,7 +744,7 @@ function resolveCallContractMethodName(stepCall: unknown, defaultCall: string): 
 
 async function executeCallContractStep(
   backend: SpiceBackend,
-  step: Extract<V2WorkflowStep, { op: "callContract" }>,
+  step: Extract<V3WorkflowStep, { op: "callContract" }>,
   context: CallContractExecutionContext,
 ): Promise<unknown> {
   const raw = getRawBackend(backend);
@@ -758,11 +758,11 @@ async function executeCallContractStep(
   return await (maybeInvoker as (...callArgs: unknown[]) => unknown).apply(raw, context.args);
 }
 
-function hasCallContractStep(steps: V2WorkflowStep[]): boolean {
+function hasCallContractStep(steps: V3WorkflowStep[]): boolean {
   return steps.some((step) => step.op === "callContract");
 }
 
-function validateProjectedResult(projectedResult: unknown, input: RunCaseInputV2): void {
+function validateProjectedResult(projectedResult: unknown, input: RunCaseInputV3): void {
   if (input.contract.result === undefined) {
     return;
   }
@@ -1196,7 +1196,7 @@ function executeSpiceCallFromSpec(
 }
 
 function executeAssertStep(
-  step: Extract<V2WorkflowStep, { op: "assert" }>,
+  step: Extract<V3WorkflowStep, { op: "assert" }>,
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
 ): void {
@@ -1280,7 +1280,7 @@ function defineRef(refs: Map<string, RefValue>, name: string, value: RefValue, l
 
 async function executeStep(
   backend: SpiceBackend,
-  step: V2WorkflowStep,
+  step: V3WorkflowStep,
   args: Record<string, unknown>,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
@@ -1507,7 +1507,7 @@ export function asV2RunnerError(error: unknown): RunnerErrorReport {
 /** Execute a single v2 parity case against a concrete backend implementation. */
 export async function executeV2CaseWithBackend(
   backend: SpiceBackend,
-  input: RunCaseInputV2,
+  input: RunCaseInputV3,
 ): Promise<unknown> {
   validateV2Envelope(input);
 
