@@ -111,7 +111,7 @@ describe("v3 runner preflight parity", () => {
     }
   });
 
-  maybeIt("executes callContract via v3 workflow path in cspice runner", async () => {
+  maybeIt("fails explicitly when callContract attempts to use cspice lane", async () => {
     const cspice = await createCspiceRunner();
 
     const input: RunCaseInputV3 = {
@@ -137,10 +137,16 @@ describe("v3 runner preflight parity", () => {
 
     try {
       const out = await cspice.runCase(input);
-      expect(out.ok).toBe(true);
+      expect(out.ok).toBe(false);
 
-      if (out.ok) {
-        expect(typeof out.result).toBe("string");
+      if (!out.ok) {
+        expect(out.error.code).toBe("unsupported_call");
+        expect(out.error.message).toContain("CSPICE lane is native-only");
+        expect(out.error.details).toEqual({
+          op: "callContract",
+          transport: "native-cspice-runner",
+        });
+        expect(out.error.spice).toEqual({ failed: false });
       }
     } finally {
       await cspice.dispose?.();

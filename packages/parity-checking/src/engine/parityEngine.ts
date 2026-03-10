@@ -9,7 +9,6 @@ import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateSchema } from "../guards/validateSchema.js";
 import {
   PARITY_PROOF_NATIVE_V2_ENV,
-  PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST,
   isParityProofNativeV2Enabled,
   parityProofMarker,
 } from "../proof/nativeProof.js";
@@ -97,7 +96,7 @@ function buildDisabledProofSummary(): ParityProofSummary {
     mode: "disabled",
     referenceVerification: "disabled",
     laneVerification: "disabled",
-    exceptions: [...PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST],
+    exceptions: [],
     fallbackDetected: false,
     failingCases: [],
     perCaseReferenceRecords: [],
@@ -339,7 +338,7 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
       mode: "native-v2",
       referenceVerification: "native-cspice-runner",
       laneVerification: "strict-requested-equals-actual",
-      exceptions: [...PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST],
+      exceptions: [],
       fallbackDetected,
       failingCases,
       perCaseReferenceRecords: dedupedReferenceRecords,
