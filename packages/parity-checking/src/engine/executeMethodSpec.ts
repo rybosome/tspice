@@ -18,7 +18,7 @@ export type MethodExecutionSummary = {
 };
 
 /**
-* Canonical parity executor entrypoint.
+ * Canonical parity executor entrypoint.
  */
 export async function executeMethodSpecParity(
   input: MethodSpecV3,
