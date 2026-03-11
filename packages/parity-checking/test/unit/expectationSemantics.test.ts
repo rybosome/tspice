@@ -56,7 +56,7 @@ function buildMethod(
       },
     },
     workflow: {
-      steps: [{ op: "callContract" }],
+      steps: [{ op: "call", in: [] }],
     },
     cases: [
       {
@@ -139,7 +139,7 @@ describe("method case expectation semantics", () => {
         canonicalMethod: "file-io.unknown",
       },
       workflow: {
-        steps: [{ op: "callContract" }],
+        steps: [{ op: "call", in: [] }],
       },
       cases: [
         {

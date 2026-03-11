@@ -27,26 +27,30 @@ function invokeRaw(payload: unknown): {
     throw res.error;
   }
 
-  if (res.status !== 0) {
-    throw new Error(
-      `cspice-runner exited non-zero (status=${res.status ?? "null"} signal=${res.signal ?? "null"}) ` +
-        `stdout=${JSON.stringify(res.stdout)} stderr=${JSON.stringify(res.stderr)}`,
-    );
-  }
-
   const stdout = res.stdout ?? "";
   const stderr = res.stderr ?? "";
   const trimmed = stdout.trim();
   if (!trimmed) {
     throw new Error(
-      `cspice-runner produced empty stdout (stderr=${JSON.stringify(stderr)})`,
+      `cspice-runner produced empty stdout (status=${res.status ?? "null"} signal=${res.signal ?? "null"} stderr=${JSON.stringify(stderr)})`,
+    );
+  }
+
+  let response: RunnerResponse;
+  try {
+    response = JSON.parse(trimmed) as RunnerResponse;
+  } catch (cause) {
+    throw new Error(
+      `cspice-runner produced non-JSON stdout (status=${res.status ?? "null"} signal=${res.signal ?? "null"}) ` +
+        `stdout=${JSON.stringify(stdout)} stderr=${JSON.stringify(stderr)}`,
+      { cause },
     );
   }
 
   return {
     stdout,
     stderr,
-    response: JSON.parse(trimmed) as RunnerResponse,
+    response,
   };
 }
 
@@ -116,8 +120,8 @@ describe("cspice-runner v3 workflow behavior", () => {
             },
           },
           {
-            op: "spiceCall",
-            call: "size_c",
+            op: "call",
+            call: "cells-windows.size",
             in: ["$refs.tmp"],
             as: "tmpSize",
           },
@@ -279,8 +283,8 @@ describe("cspice-runner v3 workflow behavior", () => {
         ],
         cleanup: [
           {
-            op: "spiceCall",
-            call: "size_c",
+            op: "call",
+            call: "cells-windows.size",
             in: ["$refs.cell"],
             as: "cleanupSize",
           },

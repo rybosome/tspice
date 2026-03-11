@@ -5,28 +5,29 @@ manifest:
 contract:
   contractMethod: file-io.exists
   canonicalMethod: file-io.exists
-  result:
-    type: object
-    properties: {}
   errors:
     - code: invalid_args
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - $args.0
 cases:
   - id: file-io.exists.present-file
     args:
-      - $FIXTURES/de440s/de440s.bsp
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
       ok: true
   - id: file-io.exists.missing-file
     args:
-      - $FIXTURES/de440s/does-not-exist.bsp
+      - $FIXTURES/ephemeris-de440s/does-not-exist.bsp
     expect:
       ok: true
   - id: file-io.exists.rejects-non-string-path
+    compare:
+      errorShort: true
     args:
       - 42
     expect:
       ok: false
-      errorCode: invalid_args

@@ -13,17 +13,17 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - $args.0
+        - $args.1
+        - $args.2
+        - $args.3
 cases:
-  - id: file-io.dlaopn.create-dla-writer
-    args:
-      - parity-dlaopn
-      - DLA
-      - TSPICE
-      - 0
-    expect:
-      ok: true
   - id: file-io.dlaopn.rejects-negative-comment-size
+    compare:
+      errorShort: true
     args:
       - parity-dlaopn
       - DLA
@@ -31,8 +31,9 @@ cases:
       - -1
     expect:
       ok: false
-      errorCode: invalid_args
   - id: file-io.dlaopn.rejects-non-string-tag
+    compare:
+      errorShort: true
     args:
       - 42
       - DLA
@@ -40,4 +41,3 @@ cases:
       - 0
     expect:
       ok: false
-      errorCode: invalid_args

@@ -30,13 +30,13 @@ async function loadMethodSpec(relativePath: string): Promise<MethodSpecV3> {
 }
 
 async function withRunners<T>(
-  fn: (runners: { tspice: CaseRunner; cspice: CaseRunner }) => Promise<T>,
+  call: (runners: { tspice: CaseRunner; cspice: CaseRunner }) => Promise<T>,
 ): Promise<T> {
   const tspice = await createTspiceRunner();
   const cspice = await createCspiceRunner();
 
   try {
-    return await fn({ tspice, cspice });
+    return await call({ tspice, cspice });
   } finally {
     await Promise.allSettled([tspice.dispose?.(), cspice.dispose?.()]);
   }

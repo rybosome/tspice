@@ -10,7 +10,12 @@ setup:
     - $FIXTURES/kernel-pool-parity.tpc
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - $args.0
+        - $args.1
+        - $args.2
 cases:
   - id: gnpool-missing
     args:

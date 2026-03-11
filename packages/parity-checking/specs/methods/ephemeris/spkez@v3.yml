@@ -15,7 +15,14 @@ defaults:
     tolRel: 1e-12
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - $args.0
+        - $args.1
+        - $args.2
+        - $args.3
+        - $args.4
 cases:
   - id: ephemeris.spkez.earth-sun
     args:

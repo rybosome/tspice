@@ -18,7 +18,7 @@ function buildInput(): RunCaseInputV3 {
     },
     args: [],
     workflow: {
-      steps: [{ op: "callContract" }],
+      steps: [{ op: "call", in: [] }],
     },
   };
 }

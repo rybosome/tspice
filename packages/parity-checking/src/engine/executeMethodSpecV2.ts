@@ -9,13 +9,13 @@ import {
 } from "../proof/nativeProof.js";
 import { validateV2ContractResultOrThrow } from "../runners/v2ContractResultValidation.js";
 
-import type { MethodCaseExpectation, MethodCaseSpecV3, MethodSpecV3, ScenarioCompareAst, ScenarioSetupAst } from "../dsl/types.js";
-import type { CaseRunner, RunCaseInputV3 } from "../runners/types.js";
+import type { MethodCaseExpectation, MethodCaseSpecV2, MethodSpecV2, ScenarioCompareAst, ScenarioSetupAst } from "../dsl/types.js";
+import type { CaseRunner, RunCaseInputV2 } from "../runners/types.js";
 import type { MethodExecutionSummary } from "./executeMethodSpec.js";
 
 type MethodRunCase = {
   caseId: string;
-  workflow: Exclude<MethodSpecV3["workflow"], undefined>;
+  workflow: Exclude<MethodSpecV2["workflow"], undefined>;
   args: unknown;
   expect?: MethodCaseExpectation;
   setupChain: Array<ScenarioSetupAst | undefined>;
@@ -70,7 +70,7 @@ function formatErrorMessage(error: unknown): string {
 function assertContractResultMatches(
   label: string,
   runnerName: "tspice" | "cspice",
-  method: MethodSpecV3,
+  method: MethodSpecV2,
   caseId: string,
   result: unknown,
 ): void {
@@ -149,14 +149,10 @@ function assertExpectedErrorShort(
   }
 }
 
-function isCallContractOnlyWorkflow(workflow: Exclude<MethodSpecV3["workflow"], undefined>): boolean {
-  return workflow.steps.length === 1 && workflow.steps[0]?.op === "callContract";
-}
-
 function pushRuns(
   out: MethodRunCase[],
-  workflow: Exclude<MethodSpecV3["workflow"], undefined>,
-  cases: MethodCaseSpecV3[],
+  workflow: Exclude<MethodSpecV2["workflow"], undefined>,
+  cases: MethodCaseSpecV2[],
   labelPrefix: string,
   setupChainHead: Array<ScenarioSetupAst | undefined>,
   compareChainHead: Array<ScenarioCompareAst | undefined>,
@@ -173,7 +169,7 @@ function pushRuns(
   }
 }
 
-function buildMethodRuns(method: MethodSpecV3): MethodRunCase[] {
+function buildMethodRuns(method: MethodSpecV2): MethodRunCase[] {
   const runs: MethodRunCase[] = [];
 
   if (method.workflow && method.cases) {
@@ -197,7 +193,7 @@ function buildMethodRuns(method: MethodSpecV3): MethodRunCase[] {
 
 /** Execute and compare one v3 method spec across tspice and cspice runners. */
 export async function executeMethodSpecParityV2(
-  method: MethodSpecV3,
+  method: MethodSpecV2,
   runners: {
     tspice: CaseRunner;
     cspice: CaseRunner;
@@ -211,19 +207,17 @@ export async function executeMethodSpecParityV2(
     const setup = mergeSetupChain(run.setupChain);
     const compare = mergeCompareChain(run.compareChain);
 
-    const argsDefault = isCallContractOnlyWorkflow(run.workflow) ? [] : {};
-
-    const caseInput: RunCaseInputV3 = {
+    const caseInput: RunCaseInputV2 = {
       schemaVersion: 3,
       manifest: method.manifest,
       contract: method.contract,
-      args: run.args ?? argsDefault,
+      args: run.args ?? {},
       workflow: run.workflow,
       ...(setup === undefined ? {} : { setup }),
     };
 
     if (proofEnabled) {
-      const referencePlan = resolveReferenceExecutionPlan(caseInput, { proofMode: true });
+      const referencePlan = resolveReferenceExecutionPlan(caseInput);
       proofReferenceRecords.push({
         method: method.manifest.id,
         caseId: run.caseId,
@@ -284,28 +278,43 @@ export async function executeMethodSpecParityV2(
       const tspiceError = normalizeRunnerErrorForParity(tspiceOutcome.ok ? undefined : tspiceOutcome.error);
       const cspiceError = normalizeRunnerErrorForParity(cspiceOutcome.ok ? undefined : cspiceOutcome.error);
 
-      if (
-        errorShort &&
-        isRecord(tspiceError) &&
-        isRecord(cspiceError) &&
-        isRecord(tspiceError.spice) &&
-        isRecord(cspiceError.spice) &&
-        typeof tspiceError.spice.short === "string" &&
-        typeof cspiceError.spice.short === "string"
-      ) {
-        const tspiceSymbol = spiceShortSymbol(tspiceError.spice.short);
-        const cspiceSymbol = spiceShortSymbol(cspiceError.spice.short);
+      if (errorShort) {
+        const tspiceShort =
+          isRecord(tspiceError) && isRecord(tspiceError.spice) && typeof tspiceError.spice.short === "string"
+            ? tspiceError.spice.short
+            : undefined;
+        const cspiceShort =
+          isRecord(cspiceError) && isRecord(cspiceError.spice) && typeof cspiceError.spice.short === "string"
+            ? cspiceError.spice.short
+            : undefined;
 
-        if (!tspiceSymbol || !cspiceSymbol) {
+        const tspiceHasShort = tspiceShort !== undefined;
+        const cspiceHasShort = cspiceShort !== undefined;
+
+        if (tspiceHasShort && cspiceHasShort) {
+          const tspiceSymbol = spiceShortSymbol(tspiceShort);
+          const cspiceSymbol = spiceShortSymbol(cspiceShort);
+
+          if (!tspiceSymbol || !cspiceSymbol) {
+            throw new Error(
+              `errorShort comparison failed to normalize symbol (${label}) tspice=${JSON.stringify(tspiceShort)} cspice=${JSON.stringify(cspiceShort)}`,
+            );
+          }
+
+          if (tspiceSymbol !== cspiceSymbol) {
+            throw new Error(`errorShort mismatch (${label}) tspice=${tspiceSymbol} cspice=${cspiceSymbol}`);
+          }
+
+          continue;
+        }
+
+        if (tspiceHasShort !== cspiceHasShort) {
           throw new Error(
-            `errorShort comparison failed to normalize symbol (${label}) tspice=${JSON.stringify(tspiceError.spice.short)} cspice=${JSON.stringify(cspiceError.spice.short)}`,
+            `errorShort mismatch (${label}) spice.short presence differs tspice=${tspiceHasShort} cspice=${cspiceHasShort}`,
           );
         }
 
-        if (tspiceSymbol !== cspiceSymbol) {
-          throw new Error(`errorShort mismatch (${label}) tspice=${tspiceSymbol} cspice=${cspiceSymbol}`);
-        }
-
+        // compare.errorShort is satisfied if neither side has spice.short.
         continue;
       }
 

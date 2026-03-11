@@ -56,8 +56,8 @@ function createBaseInput(): RunCaseInputV3 {
           params: { kind: "int", size: "$args.size" },
         },
         {
-          op: "spiceCall",
-          call: "size_c",
+          op: "call",
+          call: "cells-windows.size",
           in: ["$refs.cell"],
           as: "size",
         },
@@ -72,7 +72,7 @@ function createBaseInput(): RunCaseInputV3 {
 }
 
 describe("executeV2CaseWithBackend", () => {
-  it("fails explicitly on script workflow steps instead of treating them as callContract", async () => {
+  it("fails explicitly on script workflow steps instead of treating them as regular call ops", async () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
 
@@ -107,8 +107,8 @@ describe("executeV2CaseWithBackend", () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
     input.workflow.steps.splice(2, 0, {
-      op: "spiceCall",
-      call: "card_c",
+      op: "call",
+      call: "cells-windows.card",
       in: ["$refs.cell"],
       as: "size",
     });
@@ -138,8 +138,8 @@ describe("executeV2CaseWithBackend", () => {
         params: { kind: "int", size: 2 },
       },
       {
-        op: "spiceCall",
-        call: "size_c",
+        op: "call",
+        call: "cells-windows.size",
         in: ["$refs.cell"],
         as: "size",
       },
@@ -374,7 +374,6 @@ describe("executeV2CaseWithBackend", () => {
       newWindow: vi.fn((_maxIntervals: number) => ({ card: 0 })),
       freeCell: vi.fn(() => {}),
       freeWindow: vi.fn(() => {}),
-      readVirtualOutput: vi.fn((_output: { kind: string; path: string }) => new Uint8Array([1])),
     };
 
     const backend = {
@@ -408,11 +407,11 @@ describe("executeV2CaseWithBackend", () => {
           { op: "materialize", fixture: "minimalDsk", as: "dskPath" },
           { op: "dasOpen", path: "$refs.dskPath", as: "dasHandle" },
           { op: "dlaBeginForwardSearch", handle: "$refs.dasHandle", as: "dladsc" },
-          { op: "spiceCall", call: "dskgd_c", in: ["$refs.dasHandle", "$refs.dladsc"], as: "dskdsc" },
+          { op: "call", call: "dsk.dskgd", in: ["$refs.dasHandle", "$refs.dladsc"], as: "dskdsc" },
           { op: "project", out: { surfce: "$refs.dskdsc.surfce" } },
           {
-            op: "spiceCall",
-            call: "dskb02_c",
+            op: "call",
+            call: "dsk.dskb02",
             in: ["$refs.dasHandle", "$refs.dladsc"],
             out: { nv: "nv" },
           },
@@ -480,7 +479,6 @@ describe("executeV2CaseWithBackend", () => {
         newWindow: vi.fn((_maxIntervals: number) => ({ card: 0 })),
         freeCell: vi.fn(() => {}),
         freeWindow: vi.fn(() => {}),
-        readVirtualOutput: vi.fn((_output: { kind: string; path: string }) => new Uint8Array([1])),
       };
 
       return {
@@ -515,8 +513,8 @@ describe("executeV2CaseWithBackend", () => {
           { op: "dasOpen", path: "$refs.dskPath", as: "dasHandle" },
           { op: "dlaBeginForwardSearch", handle: "$refs.dasHandle", as: "dladsc" },
           {
-            op: "spiceCall",
-            call: "dskb02_c",
+            op: "call",
+            call: "dsk.dskb02",
             in: ["$refs.dasHandle", "$refs.dladsc"],
             out,
           },
@@ -569,14 +567,14 @@ describe("executeV2CaseWithBackend", () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
     input.workflow.steps[1] = {
-      op: "spiceCall",
-      call: "card_c",
+      op: "call",
+      call: "cells-windows.card",
       in: ["$refs.cell"],
     } as unknown as RunCaseInputV3["workflow"]["steps"][number];
 
     await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
       code: "invalid_args",
-      message: 'spiceCall card_c requires an "as" output ref',
+      message: 'call cells-windows.card requires an "as" output ref',
     });
   });
 
@@ -584,15 +582,31 @@ describe("executeV2CaseWithBackend", () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
     input.workflow.steps[1] = {
-      op: "spiceCall",
-      call: "scard_c",
+      op: "call",
+      call: "cells-windows.scard",
       in: [0, "$refs.cell"],
       as: "ignored",
     } as unknown as RunCaseInputV3["workflow"]["steps"][number];
 
     await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
       code: "invalid_args",
-      message: 'spiceCall scard_c does not allow an "as" output ref',
+      message: 'call cells-windows.scard does not allow an "as" output ref',
+    });
+  });
+
+  it("reports invalid_args when scard_c includes out in bypassed schema input", async () => {
+    const { backend } = createBackendStub();
+    const input = createBaseInput();
+    input.workflow.steps[1] = {
+      op: "call",
+      call: "cells-windows.scard",
+      in: [0, "$refs.cell"],
+      out: { ignored: "ignored" },
+    } as unknown as RunCaseInputV2["workflow"]["steps"][number];
+
+    await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
+      code: "invalid_args",
+      message: 'call cells-windows.scard does not allow an "out" map',
     });
   });
 
@@ -600,8 +614,8 @@ describe("executeV2CaseWithBackend", () => {
     const { backend } = createBackendStub();
     const input = createBaseInput();
     input.workflow.steps[1] = {
-      op: "spiceCall",
-      call: "size_c",
+      op: "call",
+      call: "cells-windows.size",
       in: ["$refs.cell"],
       as: "size",
       out: { ignored: "ignored" },
@@ -609,7 +623,7 @@ describe("executeV2CaseWithBackend", () => {
 
     await expect(executeV2CaseWithBackend(backend, input)).rejects.toMatchObject({
       code: "invalid_args",
-      message: 'spiceCall size_c does not allow an "out" map',
+      message: 'call cells-windows.size does not allow an "out" map',
     });
   });
 

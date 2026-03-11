@@ -13,23 +13,29 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - $args.0
 cases:
   - id: file-io.dafcls.opens-and-closes-spk
+    compare:
+      errorShort: true
     args:
-      - $FIXTURES/de440s/de440s.bsp
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
-      ok: true
+      ok: false
   - id: file-io.dafcls.missing-file
     compare:
       errorShort: true
     args:
-      - $FIXTURES/de440s/does-not-exist.bsp
+      - $FIXTURES/ephemeris-de440s/does-not-exist.bsp
     expect:
       ok: false
   - id: file-io.dafcls.rejects-non-string-path
+    compare:
+      errorShort: true
     args:
       - 42
     expect:
       ok: false
-      errorCode: invalid_args

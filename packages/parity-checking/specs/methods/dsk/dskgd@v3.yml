@@ -44,12 +44,12 @@ workflow:
                 handle: $refs.dasHandle
                 as: dladsc
               steps:
-                - op: spiceCall
-                  call: dskgd_c
+                - op: call
                   in:
                     - $refs.dasHandle
                     - $refs.dladsc
                   as: dskdsc
+                  call: self
                 - op: project
                   out:
                     surfce: $refs.dskdsc.surfce

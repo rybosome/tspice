@@ -11,7 +11,10 @@ setup:
     - $FIXTURES/body399-char-foo.tpc
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - $args.0
 cases:
   - id: bodn2c-earth
     args:

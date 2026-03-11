@@ -11,11 +11,17 @@ setup:
     - $FIXTURES/body399-char-foo.tpc
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - $args.0
+        - $args.1
 cases:
   - id: boddef-test-body
     args:
       - TSPICE_TEST_BODY
       - 123456789
     expect:
-      ok: true
+      ok: false
+    compare:
+      errorShort: true

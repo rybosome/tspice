@@ -31,16 +31,16 @@ workflow:
               kind: int
               size: 100
           steps:
-            - op: spiceCall
-              call: dskobj_c
+            - op: call
               in:
                 - $refs.dskPath
                 - $refs.bodyIds
-            - op: spiceCall
-              call: card_c
+              call: self
+            - op: call
               in:
                 - $refs.bodyIds
               as: bodyCount
+              call: cells-windows.card
             - op: assert
               test:
                 gt:

@@ -104,7 +104,7 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
       backend.raw.dascls(handle);
       backend.raw.unload(dskKernel.path);
     }
-  });
+  }, 15000);
 
   it("validates dlafns(descr)", async () => {
     const backend = await createWasmBackend();

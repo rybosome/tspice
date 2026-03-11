@@ -1,0 +1,111 @@
+#ifndef PARITY_CHECKING_GENERATED_NATIVE_CALL_DISPATCH_H
+#define PARITY_CHECKING_GENERATED_NATIVE_CALL_DISPATCH_H
+
+// GENERATED FILE - DO NOT EDIT.
+// Source: packages/parity-checking/catalogs/spice-function-registry.v2.yml
+
+// X-macro rows for native v2 call dispatch.
+// Usage: V2_NATIVE_CALL_DISPATCH_ROWS(MY_ROW_MACRO)
+#define V2_NATIVE_CALL_DISPATCH_ROWS(X) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_CARD, v2_invoke_contract_as_spice_int) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_INSRTC, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_INSRTD, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_INSRTI, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_SCARD, v2_invoke_contract_forbidden) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_SIZE, v2_invoke_contract_as_spice_int) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_SSIZE, v2_invoke_contract_forbidden) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_VALID, v2_invoke_contract_forbidden) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_WNCARD, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_WNFETD, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_WNINSD, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_CELLS_WINDOWS_WNVALD, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_AXISAR, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_GEOREC, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_LATREC, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_MTXV, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_MXM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_MXV, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_RECGEO, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_RECLAT, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_RECSPH, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_ROTATE, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_ROTMAT, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_SPHREC, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_VADD, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_VCRSS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_VDOT, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_VHAT, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_VMINUS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_VNORM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_VSCL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_COORDS_VECTORS_VSUB, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_DSK_DSKB02, v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_out_named_dskb02) \
+  X(V2_FUNCTION_ID_DSK_DSKGD, v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor) \
+  X(V2_FUNCTION_ID_DSK_DSKOBJ, v2_invoke_contract_forbidden) \
+  X(V2_FUNCTION_ID_DSK_DSKSRF, v2_invoke_contract_forbidden) \
+  X(V2_FUNCTION_ID_EPHEMERIS_SPKEZ, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_EPHEMERIS_SPKEZP, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_EPHEMERIS_SPKEZR, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_EPHEMERIS_SPKGEO, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_EPHEMERIS_SPKGPS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_EPHEMERIS_SPKPDS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_EPHEMERIS_SPKPOS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_EPHEMERIS_SPKSFS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_EPHEMERIS_SPKSSB, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DAFBFS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DAFCLS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DAFFNA, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DAFOPR, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DASCLS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DASOPR, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DLABFS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DLACLS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DLAFNS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_DLAOPN, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_EXISTS, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FILE_IO_GETFAT, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FRAMES_CCIFRM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FRAMES_CIDFRM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FRAMES_CNMFRM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FRAMES_FRINFO, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FRAMES_FRMNAM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FRAMES_NAMFRM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FRAMES_PXFORM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_FRAMES_SXFORM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_IDS_NAMES_BODC2N, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_IDS_NAMES_BODC2S, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_IDS_NAMES_BODDEF, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_IDS_NAMES_BODFND, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_IDS_NAMES_BODN2C, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_IDS_NAMES_BODS2C, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_IDS_NAMES_BODVAR, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_CVPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_DTPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_EXPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_GCPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_GDPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_GIPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_GNPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_PCPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_PDPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_PIPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNEL_POOL_SWPOOL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNELS_FURNSH, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNELS_KCLEAR, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNELS_KDATA, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNELS_KINFO, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNELS_KPLFRM, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNELS_KTOTAL, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNELS_KXTRCT, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_KERNELS_UNLOAD, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_TIME_DELTET, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_TIME_ET2UTC, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_TIME_STR2ET, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_TIME_TIMDEF, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_TIME_TIMOUT, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_TIME_TKVRSN, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_TIME_TPARSE, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_TIME_TPICTR, v2_invoke_contract_return) \
+  X(V2_FUNCTION_ID_TIME_UNITIM, v2_invoke_contract_return)
+
+#endif

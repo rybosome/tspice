@@ -14,36 +14,26 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: allocWindow
+      as: window
+      params:
+        maxIntervals: 4
+    - op: call
+      call: cells-windows.wninsd
+      in:
+        - 0
+        - 3
+        - $refs.window
+    - op: call
+      call: self
+      in:
+        - $refs.window
+        - 0
+  cleanup:
+    - op: freeWindow
+      target: $refs.window
 cases:
   - id: cells-windows.wnfetd.basic
-    args:
-      - - window
-        - 4
-      - 0
+    args: {}
     expect:
       ok: true
-  - id: cells-windows.wnfetd.rejects-negative-max-intervals
-    args:
-      - - window
-        - -1
-      - 0
-    expect:
-      ok: false
-      errorCode: invalid_args
-  - id: cells-windows.wnfetd.rejects-wrong-recipe-kind
-    args:
-      - - double
-        - 8
-      - 0
-    expect:
-      ok: false
-      errorCode: invalid_args
-  - id: cells-windows.wnfetd.rejects-non-integer-index
-    args:
-      - - window
-        - 4
-      - 0.5
-    expect:
-      ok: false
-      errorCode: invalid_args

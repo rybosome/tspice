@@ -7,12 +7,13 @@ contract:
   canonicalMethod: kernels.kclear
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in: []
+    - op: projectResult
+      out: {}
 cases:
   - id: kernels.kclear
-    args: []
-    setup:
-      kernels:
-        - $FIXTURES/kernel-pool-parity.tpc
+    args: {}
     expect:
       ok: true

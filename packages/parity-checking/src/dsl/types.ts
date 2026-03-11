@@ -39,6 +39,18 @@ export type ScenarioYamlFile = {
   data: unknown;
 };
 
+/** Legacy reusable workflow spec referenced by `uses` includes. */
+export type WorkflowSpec = {
+  id: string;
+  kind: "workflow";
+  uses?: string[];
+  setup?: ScenarioSetupAst;
+  compareDefaults?: ScenarioCompareAst;
+  meta: {
+    sourcePath: string;
+  };
+};
+
 export type MethodCaseExpectation = {
   ok?: boolean;
   errorShort?: string;
@@ -102,7 +114,7 @@ export type MethodContractV3 = {
   contractMethod: string;
   canonicalMethod: string;
   args?: MethodArgSpecV3[];
-  /** Optional for callContract-centric migrated specs. */
+  /** Optional for methods that return scalar or ad-hoc object values. */
   result?: MethodResultSpecV3;
   errors?: MethodErrorSpecV3[];
 };
@@ -130,24 +142,11 @@ export type MethodWorkflowOpAllocWindowV3 = {
   };
 };
 
-export type MethodWorkflowSpiceCallNameV3 =
-  | "card_c"
-  | "size_c"
-  | "scard_c"
-  | "ssize_c"
-  | "valid_c"
-  | "dskobj_c"
-  | "dsksrf_c"
-  | "dskgd_c"
-  | "dskb02_c"
-  | "dskmi2_c"
-  | "dskopn_c"
-  | "dskw02_c"
-  | "readVirtualOutput";
-
-export type MethodWorkflowOpSpiceCallV3 = {
-  op: "spiceCall";
-  call: MethodWorkflowSpiceCallNameV3;
+export type MethodWorkflowOpCallV3 = {
+  op: "call";
+  call?: string;
+  /** @deprecated use `call` */
+  fn?: string;
   in: unknown[];
   as?: string;
   out?: Record<string, string>;
@@ -179,11 +178,6 @@ export type MethodWorkflowOpDasCloseV3 = {
 export type MethodWorkflowOpUnlinkV3 = {
   op: "unlink";
   target: unknown;
-};
-
-export type MethodWorkflowOpCallContractV3 = {
-  op: "callContract";
-  call?: string;
 };
 
 export type MethodWorkflowOpScriptV3 = {
@@ -248,8 +242,7 @@ export type MethodWorkflowStepV3 =
   | MethodWorkflowOpDlaBeginForwardSearchV3
   | MethodWorkflowOpDasCloseV3
   | MethodWorkflowOpUnlinkV3
-  | MethodWorkflowOpSpiceCallV3
-  | MethodWorkflowOpCallContractV3
+  | MethodWorkflowOpCallV3
   | MethodWorkflowOpScriptV3
   | MethodWorkflowOpAssertV3
   | MethodWorkflowOpProjectV3
@@ -281,6 +274,7 @@ export type MethodSpecV3 = {
   defaults?: {
     compare?: ScenarioCompareAst;
   };
+  uses?: string[];
   workflow?: MethodWorkflowV3;
   cases?: MethodCaseSpecV3[];
   suites?: MethodSuiteSpecV3[];
@@ -291,19 +285,106 @@ export type MethodSpecV3 = {
 
 export type AnyMethodSpec = MethodSpecV3;
 
+export type CrossCuttingCaseExpectation = {
+  ok: boolean;
+  errorCode?: string;
+};
+
+export type CrossCuttingCaseSpec = {
+  id: string;
+  transport: "native";
+  rawRequest: string;
+  expect: CrossCuttingCaseExpectation;
+};
+
+export type CrossCuttingSpecV3 = {
+  schemaVersion: 3;
+  manifest: {
+    id: string;
+    kind: "crossCuttingSpec";
+  };
+  cases: CrossCuttingCaseSpec[];
+  meta: {
+    sourcePath: string;
+  };
+};
+
+export type AnyCrossCuttingSpec = CrossCuttingSpecV3;
+
 export type LoadedParitySpecs = {
+  workflows: WorkflowSpec[];
   methods: AnyMethodSpec[];
 };
 
-// Canonical method spec alias exposed by package API.
-export type MethodSpec = MethodSpecV3;
+export type ResolvedMethodSpec = {
+  method: MethodSpecV3;
+  includeOrder: WorkflowSpec[];
+  mergedSetup?: ScenarioSetupAst;
+  mergedCompareDefaults?: ScenarioCompareAst;
+};
 
-/** Returns a stable method id from canonical `manifest.id`. */
-export function methodSpecId(method: AnyMethodSpec): string {
-  return method.manifest.id;
+// Backward-compatible aliases (to ease rename churn while code moves to v3 names).
+export type MethodSpec = MethodSpecV3;
+export type MethodManifestV2 = MethodManifestV3;
+export type MethodArgConstraintSpecV2 = MethodArgConstraintSpecV3;
+export type MethodArgSpecV2 = MethodArgSpecV3;
+export type MethodResultPropertySpecV2 = MethodResultPropertySpecV3;
+export type MethodResultConstValueV2 = MethodResultConstValueV3;
+export type MethodResultConstSpecV2 = MethodResultConstSpecV3;
+export type MethodResultObjectSpecV2 = MethodResultObjectSpecV3;
+export type MethodResultSpecV2 = MethodResultSpecV3;
+export type MethodErrorSpecV2 = MethodErrorSpecV3;
+export type MethodContractV2 = MethodContractV3;
+export type MethodWorkflowOpAllocCellV2 = MethodWorkflowOpAllocCellV3;
+export type MethodWorkflowOpAllocWindowV2 = MethodWorkflowOpAllocWindowV3;
+export type MethodWorkflowOpCallV2 = MethodWorkflowOpCallV3;
+export type MethodWorkflowOpMaterializeV2 = MethodWorkflowOpMaterializeV3;
+export type MethodWorkflowOpDasOpenV2 = MethodWorkflowOpDasOpenV3;
+export type MethodWorkflowOpDlaBeginForwardSearchV2 = MethodWorkflowOpDlaBeginForwardSearchV3;
+export type MethodWorkflowOpDasCloseV2 = MethodWorkflowOpDasCloseV3;
+export type MethodWorkflowOpUnlinkV2 = MethodWorkflowOpUnlinkV3;
+export type MethodWorkflowOpScriptV2 = MethodWorkflowOpScriptV3;
+export type MethodWorkflowAssertOperatorV2 = MethodWorkflowAssertOperatorV3;
+export type MethodWorkflowAssertTestV2 = MethodWorkflowAssertTestV3;
+export type MethodWorkflowOpAssertV2 = MethodWorkflowOpAssertV3;
+export type MethodWorkflowOpProjectResultV2 = MethodWorkflowOpProjectResultV3;
+export type MethodWorkflowOpProjectV2 = MethodWorkflowOpProjectV3;
+export type MethodWorkflowOpSwitchV2 = MethodWorkflowOpSwitchV3;
+export type MethodWorkflowOpFreeCellV2 = MethodWorkflowOpFreeCellV3;
+export type MethodWorkflowOpFreeWindowV2 = MethodWorkflowOpFreeWindowV3;
+export type MethodWorkflowStepV2 = MethodWorkflowStepV3;
+export type MethodCaseSpecV2 = MethodCaseSpecV3;
+export type MethodSpecV2 = MethodSpecV3;
+export type CrossCuttingSpec = CrossCuttingSpecV3;
+export type CrossCuttingSpecV2 = CrossCuttingSpecV3;
+
+/** Compatibility type guard while v2 references still exist (all method specs are v3). */
+export function isMethodSpecV2(_method: AnyMethodSpec): _method is MethodSpecV3 {
+  return true;
 }
 
-/** Returns the canonical method name from contract metadata. */
+/** Returns a stable method id from v3 `manifest.id` or legacy top-level `id`. */
+export function methodSpecId(method: AnyMethodSpec): string {
+  const legacy = method as unknown as { id?: string; manifest?: { id?: string } };
+  return legacy.manifest?.id ?? legacy.id ?? "unknown-method";
+}
+
+/** Returns the canonical method name from v3 contract metadata or legacy shape. */
 export function methodCanonicalMethod(method: AnyMethodSpec): string {
-  return method.contract.canonicalMethod;
+  const legacy = method as unknown as {
+    canonicalMethod?: string;
+    contract?: { canonicalMethod?: string };
+  };
+  return legacy.contract?.canonicalMethod ?? legacy.canonicalMethod ?? "";
+}
+
+/** Compatibility type guard while v2 references still exist (all cross-cutting specs are v3). */
+export function isCrossCuttingSpecV2(_spec: AnyCrossCuttingSpec): _spec is CrossCuttingSpecV3 {
+  return true;
+}
+
+/** Returns a stable cross-cutting spec id from v3 `manifest.id` or legacy top-level `id`. */
+export function crossCuttingSpecId(spec: AnyCrossCuttingSpec): string {
+  const legacy = spec as unknown as { id?: string; manifest?: { id?: string } };
+  return legacy.manifest?.id ?? legacy.id ?? "unknown-cross-cutting";
 }

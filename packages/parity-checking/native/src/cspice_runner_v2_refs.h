@@ -33,6 +33,9 @@ bool v2_parse_int_token_or_error(const char *json, const jsmntok_t *tok,
                                  SpiceInt *out, const char *label);
 bool v2_parse_ref_name(const char *expr, const char *prefix,
                        const char **outName);
+int v2_find_arg_value_token(const char *json, const jsmntok_t *tokens,
+                            int tokenCount, int argsTok,
+                            const char *argName);
 int v2_find_ref_index(const V2RefEntry *refs, int refCount, const char *name);
 int v2_find_free_ref_slot(const V2RefEntry *refs, int refCount);
 void v2_free_ref_entry(V2RefEntry *entry);

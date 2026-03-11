@@ -9,6 +9,7 @@ import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateSchema } from "../guards/validateSchema.js";
 import {
   PARITY_PROOF_NATIVE_V2_ENV,
+  PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST,
   isParityProofNativeV2Enabled,
   parityProofMarker,
 } from "../proof/nativeProof.js";
@@ -53,6 +54,7 @@ async function loadParitySpecs(): Promise<LoadedParitySpecs> {
   ).sort((a, b) => stableSort(methodSpecId(a), methodSpecId(b)));
 
   return {
+    workflows: [],
     methods,
   };
 }
@@ -89,20 +91,6 @@ export type ParityEngineSummary = {
   methodCaseCount: number;
   proof: ParityProofSummary;
 };
-
-function buildDisabledProofSummary(): ParityProofSummary {
-  return {
-    marker: "proof=disabled",
-    mode: "disabled",
-    referenceVerification: "disabled",
-    laneVerification: "disabled",
-    exceptions: [],
-    fallbackDetected: false,
-    failingCases: [],
-    perCaseReferenceRecords: [],
-    perLaneBackendRecords: [],
-  };
-}
 
 function backendFromRunnerKind(kind: string): ProofLane | undefined {
   if (kind === "tspice(node)") {
@@ -166,22 +154,6 @@ function dedupeProofReferenceRecords(
   return [...deduped.values()];
 }
 
-async function withRunners<T>(
-  fn: (runners: { tspice: CaseRunner; cspice: CaseRunner }) => Promise<T>,
-): Promise<T> {
-  let tspice: CaseRunner | undefined;
-  let cspice: CaseRunner | undefined;
-
-  try {
-    tspice = await createTspiceRunner();
-    cspice = await createCspiceRunner();
-
-    return await fn({ tspice, cspice });
-  } finally {
-    await Promise.allSettled([tspice?.dispose?.(), cspice?.dispose?.()]);
-  }
-}
-
 async function withProofRunners<T>(
   fn: (runners: { node: CaseRunner; wasm: CaseRunner; cspice: CaseRunner }) => Promise<T>,
 ): Promise<T> {
@@ -209,52 +181,14 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
   const completeness = validateCompleteness(specs.methods);
 
   const proofEnabled = isParityProofNativeV2Enabled();
-  const proofDisabledSummary = buildDisabledProofSummary();
 
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
-    if (proofEnabled) {
-      throw new Error(
-        `cspice-runner unavailable in proof mode (${PARITY_PROOF_NATIVE_V2_ENV}=1): ${status.hint}`,
-      );
-    }
-
-    return {
-      skipped: true,
-      skipReason: `cspice-runner unavailable: ${status.hint}`,
-      workflowCount: 0,
-      methodCount: specs.methods.length,
-      contractCount: completeness.contractCount,
-      coveredCount: completeness.coveredCount,
-      denylistCount: completeness.denylistCount,
-      methodCaseCount: 0,
-      proof: proofDisabledSummary,
-    };
-  }
-
-  if (!proofEnabled) {
-    const paritySummary = await withRunners(async (runners) => {
-      let methodCaseCount = 0;
-      for (const method of specs.methods) {
-        const summary = await executeMethodSpecParityV2(method, runners);
-        methodCaseCount += summary.caseCount;
-      }
-
-      return {
-        skipped: false,
-        workflowCount: 0,
-        methodCount: specs.methods.length,
-        contractCount: completeness.contractCount,
-        coveredCount: completeness.coveredCount,
-        denylistCount: completeness.denylistCount,
-        methodCaseCount,
-      };
-    });
-
-    return {
-      ...paritySummary,
-      proof: proofDisabledSummary,
-    };
+    throw new Error(
+      proofEnabled
+        ? `cspice-runner unavailable in proof mode (${PARITY_PROOF_NATIVE_V2_ENV}=1): ${status.hint}`
+        : `cspice-runner unavailable: ${status.hint}`,
+    );
   }
 
   const failingCases: string[] = [];
@@ -335,10 +269,10 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
     ...paritySummary,
     proof: {
       marker: parityProofMarker(),
-      mode: "native-v2",
+      mode: proofEnabled ? "native-v2" : "disabled",
       referenceVerification: "native-cspice-runner",
       laneVerification: "strict-requested-equals-actual",
-      exceptions: [],
+      exceptions: [...PARITY_PROOF_NATIVE_V2_EXCEPTION_ALLOWLIST],
       fallbackDetected,
       failingCases,
       perCaseReferenceRecords: dedupedReferenceRecords,

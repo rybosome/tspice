@@ -10,12 +10,16 @@ setup:
     - $FIXTURES/kernel-pool-parity.tpc
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - TSPICE_PARITY_PIPOOL_WRITTEN
+        -
+          - -2147483648
+          - 2147483647
+    - op: projectResult
+      out: {}
 cases:
   - id: pipool-write
-    args:
-      - TSPICE_PARITY_PIPOOL_WRITTEN
-      - - -2147483648
-        - 2147483647
     expect:
       ok: true

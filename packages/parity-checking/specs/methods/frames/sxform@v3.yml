@@ -14,7 +14,12 @@ defaults:
     tolRel: 1e-12
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - $args.0
+        - $args.1
+        - $args.2
 cases:
   - id: sxform-identity
     args:

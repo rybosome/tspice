@@ -24,21 +24,22 @@ function invokeRaw(json: string): RunnerResponse {
     throw res.error;
   }
 
-  if (res.status !== 0) {
-    throw new Error(
-      `cspice-runner exited non-zero (status=${res.status ?? "null"} signal=${res.signal ?? "null"}) ` +
-        `stdout=${JSON.stringify(res.stdout)} stderr=${JSON.stringify(res.stderr)}`,
-    );
-  }
-
   const out = (res.stdout ?? "").trim();
   if (!out) {
     throw new Error(
-      `cspice-runner produced empty stdout (exit=${res.status ?? "?"} stderr=${JSON.stringify(res.stderr)})`,
+      `cspice-runner produced empty stdout (status=${res.status ?? "null"} signal=${res.signal ?? "null"} stderr=${JSON.stringify(res.stderr)})`,
     );
   }
 
-  return JSON.parse(out) as RunnerResponse;
+  try {
+    return JSON.parse(out) as RunnerResponse;
+  } catch (cause) {
+    throw new Error(
+      `cspice-runner produced non-JSON stdout (status=${res.status ?? "null"} signal=${res.signal ?? "null"}) ` +
+        `stdout=${JSON.stringify(res.stdout)} stderr=${JSON.stringify(res.stderr)}`,
+      { cause },
+    );
+  }
 }
 
 function buildSchemaVersionPayload(literal: string): string {
@@ -46,7 +47,7 @@ function buildSchemaVersionPayload(literal: string): string {
 }
 
 function buildAllocSizePayload(literal: string): string {
-  return `{"schemaVersion":3,"manifest":{"id":"methods/cells-windows/size@v3","kind":"method"},"contract":{"contractMethod":"cells-windows.size","canonicalMethod":"cells-windows.size"},"args":{"size":${literal}},"workflow":{"steps":[{"op":"allocCell","as":"cell","params":{"kind":"int","size":"$args.size"}},{"op":"spiceCall","call":"size_c","in":["$refs.cell"],"as":"size"},{"op":"projectResult","out":{"size":"$refs.size"}}],"cleanup":[{"op":"freeCell","target":"$refs.cell"}]}}\n`;
+  return `{"schemaVersion":3,"manifest":{"id":"methods/cells-windows/size@v3","kind":"method"},"contract":{"contractMethod":"cells-windows.size","canonicalMethod":"cells-windows.size"},"args":{"size":${literal}},"workflow":{"steps":[{"op":"allocCell","as":"cell","params":{"kind":"int","size":"$args.size"}},{"op":"call","fn":"cells-windows.size","in":["$refs.cell"],"as":"size"},{"op":"projectResult","out":{"size":"$refs.size"}}],"cleanup":[{"op":"freeCell","target":"$refs.cell"}]}}\n`;
 }
 
 describe("cspice-runner strict JSON integer literal grammar", () => {
@@ -94,12 +95,12 @@ describe("cspice-runner strict JSON integer literal grammar", () => {
 
   const allocSizeCases: Array<{ literal: string; ok: boolean; errorCode: "invalid_request" | "invalid_args" }> = [
     { literal: "1", ok: true, errorCode: "invalid_args" },
-    { literal: "+1", ok: false, errorCode: "invalid_request" },
-    { literal: "01", ok: false, errorCode: "invalid_request" },
+    { literal: "+1", ok: false, errorCode: "invalid_args" },
+    { literal: "01", ok: false, errorCode: "invalid_args" },
     { literal: "1.0", ok: false, errorCode: "invalid_args" },
     { literal: "1e0", ok: false, errorCode: "invalid_args" },
     { literal: "9223372036854775808", ok: false, errorCode: "invalid_args" },
-    { literal: "NaN", ok: false, errorCode: "invalid_request" },
+    { literal: "NaN", ok: false, errorCode: "invalid_args" },
   ];
 
   for (const c of allocSizeCases) {

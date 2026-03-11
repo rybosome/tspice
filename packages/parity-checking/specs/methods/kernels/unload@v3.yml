@@ -7,11 +7,15 @@ contract:
   canonicalMethod: kernels.unload
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      call: self
+      in:
+        - $FIXTURES/kernel-pool-parity.tpc
+    - op: projectResult
+      out: {}
 cases:
   - id: kernels.unload.text-kernel
-    args:
-      - $FIXTURES/kernel-pool-parity.tpc
+    args: {}
     setup:
       kernels:
         - $FIXTURES/kernel-pool-parity.tpc
