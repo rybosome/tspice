@@ -25,6 +25,7 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     if (!status.ready) {
       expect(summary.skipped).toBe(true);
       expect(summary.skipReason).toMatch(/^cspice-runner unavailable:/);
+      expect(summary.proof.verificationSkipped).toBe(true);
       expect(summary.methodCaseCount).toBe(0);
       expect(summary.proof.perCaseReferenceRecords).toEqual([]);
       expect(summary.proof.perLaneBackendRecords).toEqual([]);
@@ -32,6 +33,7 @@ describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () =
     }
 
     expect(summary.skipped).toBe(false);
+    expect(summary.proof.verificationSkipped).toBe(false);
     expect(summary.methodCaseCount).toBeGreaterThan(0);
     expect(summary.proof.perCaseReferenceRecords.length).toBeGreaterThan(0);
     expect(summary.proof.perLaneBackendRecords).toEqual([

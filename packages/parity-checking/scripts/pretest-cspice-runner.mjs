@@ -3,9 +3,15 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
+const PARITY_PROOF_NATIVE_V2_STRICT_ENV = "PARITY_PROOF_NATIVE_V2_STRICT";
+
 function isCI() {
   const v = process.env.CI;
   return v === "true" || v === "1";
+}
+
+function isStrictParityProofMode() {
+  return process.env[PARITY_PROOF_NATIVE_V2_STRICT_ENV] === "1";
 }
 
 function getRepoRoot(pkgRoot) {
@@ -289,8 +295,19 @@ try {
     binaryPath: getBinaryPath(pkgRoot),
   });
 
-  console.error(
-    `[parity-checking] cspice-runner unavailable; parity tests will be skipped.\n${message}`,
-  );
-  process.exitCode = 0;
+  // Default behavior remains non-fatal so local + CI parity suites can skip
+  // when CSPICE bootstrap fails. Opt-in strict mode can be used to make this
+  // path fatal when proof-lane enforcement is required.
+  if (isStrictParityProofMode()) {
+    console.error(
+      `[parity-checking] cspice-runner bootstrap failed and strict mode is enabled (${PARITY_PROOF_NATIVE_V2_STRICT_ENV}=1).\n${message}`,
+    );
+    process.exitCode = 1;
+  } else {
+    console.error(
+      `[parity-checking] cspice-runner unavailable; parity tests will be skipped. ` +
+        `(set ${PARITY_PROOF_NATIVE_V2_STRICT_ENV}=1 to treat bootstrap failures as fatal).\n${message}`,
+    );
+    process.exitCode = 0;
+  }
 }

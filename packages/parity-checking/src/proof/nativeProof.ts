@@ -1,7 +1,6 @@
 import type { RunCaseInput } from "../runners/types.js";
 
-export const PARITY_PROOF_NATIVE_V2_ENV = "PARITY_PROOF_NATIVE_V2" as const;
-export const PARITY_PROOF_NATIVE_V2_ENABLED_VALUE = "1" as const;
+export const NATIVE_PROOF_V2_MARKER = "proof=native-v2" as const;
 
 export type ReferenceTransport = "native-cspice-runner";
 
@@ -22,15 +21,29 @@ function collectWorkflowOps(input: RunCaseInput): string[] {
 * The legacy env gate is intentionally ignored so parity orchestration always
 * compares both tspice lanes (`node`, `wasm`) against the native cspice lane.
 */
-export function isParityProofNativeV2Enabled(_env: NodeJS.ProcessEnv = process.env): boolean {
+export function isNativeProofV2AlwaysOn(): true {
   return true;
 }
 
 /**
 * Return a stable marker describing the enforced orchestration mode.
 */
-export function parityProofMarker(_env: NodeJS.ProcessEnv = process.env): string {
-  return "proof=native-v2";
+export function nativeProofV2Marker(): typeof NATIVE_PROOF_V2_MARKER {
+  return NATIVE_PROOF_V2_MARKER;
+}
+
+/**
+* @deprecated Native proof v2 is always enabled; use isNativeProofV2AlwaysOn().
+*/
+export function isParityProofNativeV2Enabled(_env: NodeJS.ProcessEnv = process.env): boolean {
+  return isNativeProofV2AlwaysOn();
+}
+
+/**
+* @deprecated Native proof v2 is always enabled; use nativeProofV2Marker().
+*/
+export function parityProofMarker(_env: NodeJS.ProcessEnv = process.env): typeof NATIVE_PROOF_V2_MARKER {
+  return nativeProofV2Marker();
 }
 
 /**

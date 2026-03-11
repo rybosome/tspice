@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  isNativeProofV2AlwaysOn,
   isParityProofNativeV2Enabled,
+  nativeProofV2Marker,
   parityProofMarker,
   resolveReferenceExecutionPlan,
 } from "../../src/proof/nativeProof.js";
@@ -28,7 +30,12 @@ function baseCallContractInput(): RunCaseInputV3 {
 }
 
 describe("native proof policy", () => {
-  it("always enables native proof orchestration", () => {
+  it("exposes explicit always-on native proof helpers", () => {
+    expect(isNativeProofV2AlwaysOn()).toBe(true);
+    expect(nativeProofV2Marker()).toBe("proof=native-v2");
+  });
+
+  it("keeps deprecated env-shaped wrappers as always-on pass-throughs", () => {
     expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "1" })).toBe(true);
     expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "0" })).toBe(true);
     expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "true" })).toBe(true);

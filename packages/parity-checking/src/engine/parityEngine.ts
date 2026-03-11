@@ -7,7 +7,7 @@ import { parseMethodSpec } from "../dsl/schemaValidate.js";
 import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateSchema } from "../guards/validateSchema.js";
-import { parityProofMarker } from "../proof/nativeProof.js";
+import { nativeProofV2Marker } from "../proof/nativeProof.js";
 import { createCspiceRunner, getCspiceRunnerStatus } from "../runners/cspiceRunner.js";
 import { createTspiceRunner } from "../runners/tspiceRunner.js";
 
@@ -65,6 +65,7 @@ export type ParityProofLaneBackendRecord = {
 export type ParityProofSummary = {
   marker: string;
   mode: "native-v2";
+  verificationSkipped: boolean;
   referenceVerification: "native-cspice-runner";
   laneVerification: "strict-requested-equals-actual";
   exceptions: string[];
@@ -186,8 +187,9 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
       denylistCount: completeness.denylistCount,
       methodCaseCount: 0,
       proof: {
-        marker: parityProofMarker(),
+        marker: nativeProofV2Marker(),
         mode: "native-v2",
+        verificationSkipped: true,
         referenceVerification: "native-cspice-runner",
         laneVerification: "strict-requested-equals-actual",
         exceptions: [],
@@ -259,7 +261,7 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
   } catch (error) {
     const failed = failingCases.length > 0 ? ` failingCases=${failingCases.join(",")}` : "";
     throw new Error(
-      `Proof parity execution failed (${parityProofMarker()})${failed}: ${formatErrorMessage(error)}`,
+      `Proof parity execution failed (${nativeProofV2Marker()})${failed}: ${formatErrorMessage(error)}`,
       { cause: error instanceof Error ? error : undefined },
     );
   }
@@ -276,8 +278,9 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
   return {
     ...paritySummary,
     proof: {
-      marker: parityProofMarker(),
+      marker: nativeProofV2Marker(),
       mode: "native-v2",
+      verificationSkipped: false,
       referenceVerification: "native-cspice-runner",
       laneVerification: "strict-requested-equals-actual",
       exceptions: [],
