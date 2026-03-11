@@ -318,20 +318,107 @@ static bool v2_resolve_expr_double_value(const V2CallInvokeContext *context,
                                          int exprTok,
                                          const char *label,
                                          SpiceDouble *outValue) {
-  int valueTok = -1;
-  if (!v2_resolve_expr_value_token(context, exprTok, label, &valueTok)) {
+  if (context == NULL || outValue == NULL) {
+    write_error_json_ex("invalid_request", "Missing expression context", label,
+                        NULL, NULL, NULL);
     return false;
   }
 
-  if (valueTok < 0 || valueTok >= context->tokenCount ||
-      context->tokens[valueTok].type != JSMN_PRIMITIVE) {
+  if (exprTok < 0 || exprTok >= context->tokenCount) {
+    write_error_json_ex("invalid_request", "Invalid v2 expression token", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  const jsmntok_t *tok = &context->tokens[exprTok];
+  if (tok->type == JSMN_PRIMITIVE) {
+    return v2_parse_double_token_or_error(context->json, tok, outValue, label);
+  }
+
+  if (tok->type != JSMN_STRING) {
     write_error_json_ex("invalid_args", "Expression must resolve to number", label,
                         NULL, NULL, NULL);
     return false;
   }
 
-  return v2_parse_double_token_or_error(
-      context->json, &context->tokens[valueTok], outValue, label);
+  char *expr = NULL;
+  if (!v2_strdup_json_token(context->json, tok, &expr)) {
+    return false;
+  }
+
+  const char *argName = NULL;
+  if (v2_parse_ref_name(expr, "$args.", &argName)) {
+    const int argTok = v2_find_arg_value_token(context->json,
+                                                context->tokens,
+                                                context->tokenCount,
+                                                context->argsTok,
+                                                argName);
+    if (argTok < 0) {
+      write_error_json_ex("invalid_args", "Missing v2 argument", argName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    if (context->tokens[argTok].type != JSMN_PRIMITIVE) {
+      write_error_json_ex("invalid_args", "Expression must resolve to number",
+                          label, NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    const bool ok =
+        v2_parse_double_token_or_error(context->json, &context->tokens[argTok],
+                                       outValue, label);
+    free(expr);
+    return ok;
+  }
+
+  const char *refName = NULL;
+  if (v2_parse_ref_name(expr, "$refs.", &refName)) {
+    if (strchr(refName, '.') != NULL) {
+      write_error_json_ex(
+          "invalid_args",
+          "Generated return binding expression does not support dotted $refs references",
+          refName,
+          NULL,
+          NULL,
+          NULL);
+      free(expr);
+      return false;
+    }
+
+    const int resolvedRefCount =
+        (context->refCount != NULL) ? *context->refCount : 0;
+    const int refIndex = v2_find_ref_index(context->refs, resolvedRefCount, refName);
+    if (refIndex < 0) {
+      write_error_json_ex("invalid_request", "Unknown v2 ref", refName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    const V2RefEntry *entry = &context->refs[refIndex];
+    if (entry->type != V2_REF_INT) {
+      write_error_json_ex("invalid_args",
+                          "Generated return binding numeric expression expects integer ref",
+                          refName,
+                          NULL,
+                          NULL,
+                          NULL);
+      free(expr);
+      return false;
+    }
+
+    *outValue = (SpiceDouble)entry->intValue;
+    free(expr);
+    return true;
+  }
+
+  write_error_json_ex("invalid_args", "Expression must resolve to number", label,
+                      NULL, NULL, NULL);
+  free(expr);
+  return false;
 }
 
 static bool v2_resolve_expr_vec3_value(const V2CallInvokeContext *context,
@@ -521,6 +608,72 @@ static bool v2_set_return_json_from_named_triple(const V2CallInvokeContext *cont
   return ok;
 }
 
+static bool v2_set_return_json_from_literal(const V2CallInvokeContext *context,
+                                            const char *jsonLiteral) {
+  if (context == NULL || context->returnValueJson == NULL) {
+    write_error_json_ex("invalid_request",
+                        "call result.mode=return requires return capture",
+                        context != NULL ? context->fnName : NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char *jsonValue = strdup(jsonLiteral != NULL ? jsonLiteral : "null");
+  if (jsonValue == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  *context->returnValueJson = jsonValue;
+  return true;
+}
+
+static bool v2_set_return_json_from_bool(const V2CallInvokeContext *context,
+                                         SpiceBoolean value) {
+  return v2_set_return_json_from_literal(
+      context, value == SPICETRUE ? "true" : "false");
+}
+
+static bool v2_set_return_json_from_spiceint(const V2CallInvokeContext *context,
+                                             SpiceInt value) {
+  V2JsonBuffer out;
+  v2_json_buffer_init(&out);
+
+  bool ok = v2_json_buffer_append_int(&out, value);
+  if (!ok) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    v2_json_buffer_free(&out);
+    return false;
+  }
+
+  ok = v2_set_return_json_from_buffer(context, &out);
+  v2_json_buffer_free(&out);
+  return ok;
+}
+
+static bool v2_set_return_json_from_string(const V2CallInvokeContext *context,
+                                           const char *value) {
+  if (context == NULL || context->returnValueJson == NULL) {
+    write_error_json_ex("invalid_request",
+                        "call result.mode=return requires return capture",
+                        context != NULL ? context->fnName : NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char *jsonValue = v2_quote_json_string(value != NULL ? value : "");
+  if (jsonValue == NULL) {
+    return false;
+  }
+
+  *context->returnValueJson = jsonValue;
+  return true;
+}
+
 static void v2_build_call_arg_label(const V2CallInvokeContext *context,
                                     int argIndex,
                                     char *out,
@@ -553,6 +706,24 @@ static bool v2_resolve_expr_spiceint_value(const V2CallInvokeContext *context,
                                   resolvedRefCount,
                                   label,
                                   outValue);
+}
+
+static bool v2_resolve_expr_cell_or_window_ref_index(
+    const V2CallInvokeContext *context,
+    int exprTok,
+    const char *label,
+    int *outRefIndex) {
+  const int resolvedRefCount =
+      (context->refCount != NULL) ? *context->refCount : 0;
+
+  return v2_resolve_cell_or_window_ref(context->json,
+                                       context->tokens,
+                                       context->tokenCount,
+                                       exprTok,
+                                       context->refs,
+                                       resolvedRefCount,
+                                       label,
+                                       outRefIndex);
 }
 
 static void v2_flatten_mat3_rowmajor(const SpiceDouble in[3][3],
@@ -1400,6 +1571,276 @@ static bool v2_invoke_generated_return_binding_lane(
     }
 
     return v2_set_return_json_from_vec(context, out, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "kclear_c") == 0) {
+    kclear_c();
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in kclear_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "exists_c") == 0) {
+    char *path = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &path)) {
+      return false;
+    }
+
+    const SpiceBoolean exists = exists_c(path);
+    free(path);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in exists_c");
+    }
+
+    return v2_set_return_json_from_bool(context, exists);
+  }
+
+  if (strcmp(binding->cSymbol, "expool_c") == 0) {
+    char *name = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name)) {
+      return false;
+    }
+
+    SpiceBoolean found = SPICEFALSE;
+    expool_c(name, &found);
+    free(name);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in expool_c");
+    }
+
+    return v2_set_return_json_from_bool(context, found);
+  }
+
+  if (strcmp(binding->cSymbol, "bodfnd_c") == 0) {
+    SpiceInt body = 0;
+    char *item = NULL;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &body) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &item)) {
+      free(item);
+      return false;
+    }
+
+    const SpiceBoolean found = bodfnd_c(body, item);
+    free(item);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in bodfnd_c");
+    }
+
+    return v2_set_return_json_from_bool(context, found);
+  }
+
+  if (strcmp(binding->cSymbol, "str2et_c") == 0) {
+    char *time = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &time)) {
+      return false;
+    }
+
+    SpiceDouble et = 0.0;
+    str2et_c(time, &et);
+    free(time);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in str2et_c");
+    }
+
+    return v2_set_return_json_from_double(context, et);
+  }
+
+  if (strcmp(binding->cSymbol, "unitim_c") == 0) {
+    SpiceDouble epoch = 0.0;
+    char *insys = NULL;
+    char *outsys = NULL;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &epoch) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &insys) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &outsys)) {
+      free(insys);
+      free(outsys);
+      return false;
+    }
+
+    const SpiceDouble out = unitim_c(epoch, insys, outsys);
+    free(insys);
+    free(outsys);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in unitim_c");
+    }
+
+    return v2_set_return_json_from_double(context, out);
+  }
+
+  if (strcmp(binding->cSymbol, "et2utc_c") == 0) {
+    SpiceDouble et = 0.0;
+    char *format = NULL;
+    SpiceInt prec = 0;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &et) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &format) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[2], arg2, &prec)) {
+      free(format);
+      return false;
+    }
+
+    enum { V2_ET2UTC_RETURN_BUFFER_BYTES = 16 * 1024 };
+    SpiceChar out[V2_ET2UTC_RETURN_BUFFER_BYTES];
+    memset(out, 0, sizeof(out));
+
+    et2utc_c(et,
+             format,
+             prec,
+             (SpiceInt)V2_ET2UTC_RETURN_BUFFER_BYTES,
+             out);
+    free(format);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in et2utc_c");
+    }
+
+    out[V2_ET2UTC_RETURN_BUFFER_BYTES - 1] = '\0';
+    return v2_set_return_json_from_string(context, out);
+  }
+
+  if (strcmp(binding->cSymbol, "insrtc_c") == 0) {
+    char *item = NULL;
+    int cellRefIndex = -1;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &item) ||
+        !v2_resolve_expr_cell_or_window_ref_index(
+            context, context->resolved->valueTokens[1], arg1, &cellRefIndex)) {
+      free(item);
+      return false;
+    }
+
+    insrtc_c(item, &context->refs[cellRefIndex].cell);
+    free(item);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in insrtc_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "insrtd_c") == 0) {
+    SpiceDouble item = 0.0;
+    int cellRefIndex = -1;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &item) ||
+        !v2_resolve_expr_cell_or_window_ref_index(
+            context, context->resolved->valueTokens[1], arg1, &cellRefIndex)) {
+      return false;
+    }
+
+    insrtd_c(item, &context->refs[cellRefIndex].cell);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in insrtd_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "insrti_c") == 0) {
+    SpiceInt item = 0;
+    int cellRefIndex = -1;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &item) ||
+        !v2_resolve_expr_cell_or_window_ref_index(
+            context, context->resolved->valueTokens[1], arg1, &cellRefIndex)) {
+      return false;
+    }
+
+    insrti_c(item, &context->refs[cellRefIndex].cell);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in insrti_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "wninsd_c") == 0) {
+    SpiceDouble left = 0.0;
+    SpiceDouble right = 0.0;
+    int windowRefIndex = -1;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &left) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &right) ||
+        !v2_resolve_expr_cell_or_window_ref_index(
+            context, context->resolved->valueTokens[2], arg2, &windowRefIndex)) {
+      return false;
+    }
+
+    wninsd_c(left, right, &context->refs[windowRefIndex].cell);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in wninsd_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "wnvald_c") == 0) {
+    SpiceInt insize = 0;
+    SpiceInt n = 0;
+    int windowRefIndex = -1;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &insize) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &n) ||
+        !v2_resolve_expr_cell_or_window_ref_index(
+            context, context->resolved->valueTokens[2], arg2, &windowRefIndex)) {
+      return false;
+    }
+
+    wnvald_c(insize, n, &context->refs[windowRefIndex].cell);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in wnvald_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "wncard_c") == 0) {
+    int windowRefIndex = -1;
+    if (!v2_resolve_expr_cell_or_window_ref_index(
+            context, context->resolved->valueTokens[0], arg0, &windowRefIndex)) {
+      return false;
+    }
+
+    const SpiceInt out = wncard_c(&context->refs[windowRefIndex].cell);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in wncard_c");
+    }
+
+    return v2_set_return_json_from_spiceint(context, out);
+  }
+
+  if (strcmp(binding->cSymbol, "wnfetd_c") == 0) {
+    int windowRefIndex = -1;
+    SpiceInt n = 0;
+    if (!v2_resolve_expr_cell_or_window_ref_index(
+            context, context->resolved->valueTokens[0], arg0, &windowRefIndex) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &n)) {
+      return false;
+    }
+
+    SpiceDouble left = 0.0;
+    SpiceDouble right = 0.0;
+    wnfetd_c(&context->refs[windowRefIndex].cell, n, &left, &right);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in wnfetd_c");
+    }
+
+    SpiceDouble out[2] = { left, right };
+    return v2_set_return_json_from_vec(context, out, 2);
   }
 
   write_error_json_ex("unsupported_call", "Unsupported v2 call",

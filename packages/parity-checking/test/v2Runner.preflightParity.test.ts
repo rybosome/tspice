@@ -303,4 +303,115 @@ describe("v3 runner preflight parity", () => {
       }
     },
   );
+
+  maybeIt(
+    "executes file-io.exists via generated native return binding lane with $refs path input",
+    async () => {
+      const cspice = await createCspiceRunner();
+
+      const returnBinding = lookupNativeReturnBindingEntry("file-io.exists");
+      expect(returnBinding).toBeDefined();
+      expect(returnBinding?.kind).toBe("generatedReturnBindingLane");
+
+      const input: RunCaseInputV2 = {
+        schemaVersion: 3,
+        manifest: {
+          id: "methods/file-io/exists@v3",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "file-io.exists",
+          canonicalMethod: "file-io.exists",
+          errors: [],
+        },
+        args: {},
+        workflow: {
+          steps: [
+            {
+              op: "materialize",
+              fixture: "virtualOutputSpk",
+              as: "spkPath",
+            },
+            {
+              op: "call",
+              call: "file-io.exists",
+              in: ["$refs.spkPath"],
+            },
+          ],
+        },
+      };
+
+      try {
+        const out = await cspice.runCase(input);
+        expect(out.ok).toBe(true);
+        if (out.ok) {
+          expect(out.result).toBe(true);
+        }
+      } finally {
+        await cspice.dispose?.();
+      }
+    },
+  );
+
+  maybeIt(
+    "executes cells-windows.wncard via generated native return binding lane with $refs window input",
+    async () => {
+      const cspice = await createCspiceRunner();
+
+      const returnBinding = lookupNativeReturnBindingEntry("cells-windows.wncard");
+      expect(returnBinding).toBeDefined();
+      expect(returnBinding?.kind).toBe("generatedReturnBindingLane");
+
+      const input: RunCaseInputV2 = {
+        schemaVersion: 3,
+        manifest: {
+          id: "methods/cells-windows/wncard@v3",
+          kind: "method",
+        },
+        contract: {
+          contractMethod: "cells-windows.wncard",
+          canonicalMethod: "cells-windows.wncard",
+          errors: [],
+        },
+        args: {},
+        workflow: {
+          steps: [
+            {
+              op: "allocWindow",
+              as: "window",
+              params: {
+                maxIntervals: 4,
+              },
+            },
+            {
+              op: "call",
+              call: "cells-windows.wninsd",
+              in: [0, 3, "$refs.window"],
+            },
+            {
+              op: "call",
+              call: "cells-windows.wncard",
+              in: ["$refs.window"],
+            },
+          ],
+          cleanup: [
+            {
+              op: "freeWindow",
+              target: "$refs.window",
+            },
+          ],
+        },
+      };
+
+      try {
+        const out = await cspice.runCase(input);
+        expect(out.ok).toBe(true);
+        if (out.ok) {
+          expect(out.result).toBe(1);
+        }
+      } finally {
+        await cspice.dispose?.();
+      }
+    },
+  );
 });
