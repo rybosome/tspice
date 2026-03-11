@@ -1,6 +1,7 @@
 #include "cspice_runner_json_emit.h"
 #include "cspice_runner_error.h"
 #include "cspice_runner_v2_call_invoke.h"
+#include "cspice_runner_v2_json_buffer.h"
 #include "generated/native_as_spice_int_bindings.h"
 #include "generated/native_call_dispatch.h"
 #include "generated/native_return_bindings.h"
@@ -219,6 +220,349 @@ static char *v2_quote_json_string(const char *value) {
   *dst++ = '"';
   *dst = '\0';
   return out;
+}
+
+static bool v2_parse_double_token_or_error(const char *json,
+                                           const jsmntok_t *tok,
+                                           SpiceDouble *out,
+                                           const char *label) {
+  parse_result pr = jsmn_parse_double(json, tok, out);
+  if (pr == PARSE_OK) {
+    return true;
+  }
+
+  char msg[256];
+  switch (pr) {
+  case PARSE_TOO_LONG:
+    snprintf(msg, sizeof(msg), "%s is too long", label);
+    break;
+  case PARSE_OUT_OF_RANGE:
+    snprintf(msg, sizeof(msg), "%s is out of range", label);
+    break;
+  case PARSE_INVALID:
+  case PARSE_UNSUPPORTED:
+  default:
+    snprintf(msg, sizeof(msg), "%s must be a number", label);
+    break;
+  }
+
+  write_error_json_ex("invalid_args", msg, NULL, NULL, NULL, NULL);
+  return false;
+}
+
+static bool v2_resolve_expr_value_token(const V2CallInvokeContext *context,
+                                        int exprTok,
+                                        const char *label,
+                                        int *outValueTok) {
+  if (outValueTok == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  if (exprTok < 0 || exprTok >= context->tokenCount) {
+    write_error_json_ex("invalid_request", "Invalid v2 expression token", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  const jsmntok_t *tok = &context->tokens[exprTok];
+  if (tok->type != JSMN_STRING) {
+    *outValueTok = exprTok;
+    return true;
+  }
+
+  char *expr = NULL;
+  if (!v2_strdup_json_token(context->json, tok, &expr)) {
+    return false;
+  }
+
+  const char *argName = NULL;
+  if (v2_parse_ref_name(expr, "$args.", &argName)) {
+    const int argTok = v2_find_arg_value_token(context->json,
+                                                context->tokens,
+                                                context->tokenCount,
+                                                context->argsTok,
+                                                argName);
+    if (argTok < 0) {
+      write_error_json_ex("invalid_args", "Missing v2 argument", argName, NULL,
+                          NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    *outValueTok = argTok;
+    free(expr);
+    return true;
+  }
+
+  const char *refName = NULL;
+  if (v2_parse_ref_name(expr, "$refs.", &refName)) {
+    write_error_json_ex(
+        "invalid_args",
+        "Generated return binding expression does not support $refs references",
+        refName,
+        NULL,
+        NULL,
+        NULL);
+    free(expr);
+    return false;
+  }
+
+  *outValueTok = exprTok;
+  free(expr);
+  return true;
+}
+
+static bool v2_resolve_expr_double_value(const V2CallInvokeContext *context,
+                                         int exprTok,
+                                         const char *label,
+                                         SpiceDouble *outValue) {
+  int valueTok = -1;
+  if (!v2_resolve_expr_value_token(context, exprTok, label, &valueTok)) {
+    return false;
+  }
+
+  if (valueTok < 0 || valueTok >= context->tokenCount ||
+      context->tokens[valueTok].type != JSMN_PRIMITIVE) {
+    write_error_json_ex("invalid_args", "Expression must resolve to number", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  return v2_parse_double_token_or_error(
+      context->json, &context->tokens[valueTok], outValue, label);
+}
+
+static bool v2_resolve_expr_vec3_value(const V2CallInvokeContext *context,
+                                       int exprTok,
+                                       const char *label,
+                                       SpiceDouble outVec[3]) {
+  int valueTok = -1;
+  if (!v2_resolve_expr_value_token(context, exprTok, label, &valueTok)) {
+    return false;
+  }
+
+  if (!jsmn_parse_vec3(context->json,
+                       (jsmntok_t *)context->tokens,
+                       valueTok,
+                       context->tokenCount,
+                       outVec)) {
+    write_error_json_ex("invalid_args", "Expression must resolve to vec3", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  return true;
+}
+
+static bool v2_resolve_expr_mat3_value(const V2CallInvokeContext *context,
+                                       int exprTok,
+                                       const char *label,
+                                       SpiceDouble outMat[3][3]) {
+  int valueTok = -1;
+  if (!v2_resolve_expr_value_token(context, exprTok, label, &valueTok)) {
+    return false;
+  }
+
+  if (!jsmn_parse_mat3_rowmajor(context->json,
+                                (jsmntok_t *)context->tokens,
+                                valueTok,
+                                context->tokenCount,
+                                outMat)) {
+    write_error_json_ex("invalid_args",
+                        "Expression must resolve to row-major 3x3 matrix", label,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  return true;
+}
+
+static bool v2_json_buffer_append_double(V2JsonBuffer *buf,
+                                         SpiceDouble value) {
+  if (!isfinite(value)) {
+    write_error_json_ex("invalid_request",
+                        "Generated return binding produced non-finite number",
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char tmp[64];
+  const int written = snprintf(tmp, sizeof(tmp), "%.17g", (double)value);
+  if (written < 0 || (size_t)written >= sizeof(tmp)) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  if (!v2_json_buffer_append_bytes(buf, tmp, (size_t)written)) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  return true;
+}
+
+static bool v2_set_return_json_from_buffer(const V2CallInvokeContext *context,
+                                           V2JsonBuffer *buf) {
+  if (context == NULL || context->returnValueJson == NULL) {
+    write_error_json_ex("invalid_request",
+                        "call result.mode=return requires return capture",
+                        context != NULL ? context->fnName : NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char *result = buf->data;
+  if (result == NULL) {
+    result = strdup("null");
+    if (result == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+  }
+
+  *context->returnValueJson = result;
+  buf->data = NULL;
+  buf->len = 0;
+  buf->cap = 0;
+  return true;
+}
+
+static bool v2_set_return_json_from_double(const V2CallInvokeContext *context,
+                                           SpiceDouble value) {
+  V2JsonBuffer out;
+  v2_json_buffer_init(&out);
+
+  bool ok = v2_json_buffer_append_double(&out, value) &&
+            v2_set_return_json_from_buffer(context, &out);
+  v2_json_buffer_free(&out);
+  return ok;
+}
+
+static bool v2_set_return_json_from_vec(const V2CallInvokeContext *context,
+                                        const SpiceDouble *values,
+                                        int len) {
+  V2JsonBuffer out;
+  v2_json_buffer_init(&out);
+
+  bool ok = v2_json_buffer_append_char(&out, '[');
+  for (int i = 0; ok && i < len; i++) {
+    if (i > 0) {
+      ok = v2_json_buffer_append_char(&out, ',');
+    }
+    if (ok) {
+      ok = v2_json_buffer_append_double(&out, values[i]);
+    }
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_char(&out, ']');
+  }
+  if (!ok) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    v2_json_buffer_free(&out);
+    return false;
+  }
+
+  ok = v2_set_return_json_from_buffer(context, &out);
+  v2_json_buffer_free(&out);
+  return ok;
+}
+
+static bool v2_set_return_json_from_named_triple(const V2CallInvokeContext *context,
+                                                 const char *nameA,
+                                                 SpiceDouble valueA,
+                                                 const char *nameB,
+                                                 SpiceDouble valueB,
+                                                 const char *nameC,
+                                                 SpiceDouble valueC) {
+  V2JsonBuffer out;
+  v2_json_buffer_init(&out);
+
+  bool ok = v2_json_buffer_append_char(&out, '{');
+
+  if (ok) {
+    ok = v2_json_buffer_append_char(&out, '"') &&
+         v2_json_buffer_append_escaped(&out, nameA) &&
+         v2_json_buffer_append_cstr(&out, "\":") &&
+         v2_json_buffer_append_double(&out, valueA);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_cstr(&out, ",\"") &&
+         v2_json_buffer_append_escaped(&out, nameB) &&
+         v2_json_buffer_append_cstr(&out, "\":") &&
+         v2_json_buffer_append_double(&out, valueB);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_cstr(&out, ",\"") &&
+         v2_json_buffer_append_escaped(&out, nameC) &&
+         v2_json_buffer_append_cstr(&out, "\":") &&
+         v2_json_buffer_append_double(&out, valueC);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_char(&out, '}');
+  }
+
+  if (!ok) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    v2_json_buffer_free(&out);
+    return false;
+  }
+
+  ok = v2_set_return_json_from_buffer(context, &out);
+  v2_json_buffer_free(&out);
+  return ok;
+}
+
+static void v2_build_call_arg_label(const V2CallInvokeContext *context,
+                                    int argIndex,
+                                    char *out,
+                                    size_t outBytes) {
+  if (out == NULL || outBytes == 0U) {
+    return;
+  }
+
+  snprintf(out,
+           outBytes,
+           "call(%s).in[%d]",
+           context != NULL && context->fnName != NULL ? context->fnName
+                                                       : "<unknown>",
+           argIndex);
+}
+
+static bool v2_resolve_expr_spiceint_value(const V2CallInvokeContext *context,
+                                           int exprTok,
+                                           const char *label,
+                                           SpiceInt *outValue) {
+  const int resolvedRefCount =
+      (context->refCount != NULL) ? *context->refCount : 0;
+
+  return v2_resolve_spiceint_expr(context->json,
+                                  context->tokens,
+                                  context->tokenCount,
+                                  exprTok,
+                                  context->argsTok,
+                                  context->refs,
+                                  resolvedRefCount,
+                                  label,
+                                  outValue);
+}
+
+static void v2_flatten_mat3_rowmajor(const SpiceDouble in[3][3],
+                                     SpiceDouble out[9]) {
+  int k = 0;
+  for (int r = 0; r < 3; r++) {
+    for (int c = 0; c < 3; c++) {
+      out[k++] = in[r][c];
+    }
+  }
 }
 
 // DSK-specific named-out whitelist lane intentionally remains bespoke for PR #582.
@@ -636,13 +980,430 @@ static bool v2_invoke_return_expr_spice_int_to_json_string_via_sized_out_buffer(
 static bool v2_invoke_generated_return_binding_lane(
     const V2CallInvokeContext *context,
     const V2NativeReturnBindingEntry *binding) {
-  (void)binding;
-  write_error_json_ex("invalid_request",
-                      "Generated return binding lane requires executable invoker metadata",
-                      context != NULL ? context->fnName : NULL,
-                      NULL,
-                      NULL,
-                      NULL);
+  if (context == NULL || context->spec == NULL || binding == NULL ||
+      binding->cSymbol == NULL) {
+    write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                        context != NULL ? context->fnName : NULL,
+                        NULL,
+                        NULL,
+                        NULL);
+    return false;
+  }
+
+  char arg0[128];
+  char arg1[128];
+  char arg2[128];
+  char arg3[128];
+  char arg4[128];
+  v2_build_call_arg_label(context, 0, arg0, sizeof(arg0));
+  v2_build_call_arg_label(context, 1, arg1, sizeof(arg1));
+  v2_build_call_arg_label(context, 2, arg2, sizeof(arg2));
+  v2_build_call_arg_label(context, 3, arg3, sizeof(arg3));
+  v2_build_call_arg_label(context, 4, arg4, sizeof(arg4));
+
+  if (strcmp(binding->cSymbol, "axisar_c") == 0) {
+    SpiceDouble axis[3];
+    SpiceDouble angle = 0.0;
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, axis) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &angle)) {
+      return false;
+    }
+
+    SpiceDouble outMatrix[3][3];
+    axisar_c(axis, angle, outMatrix);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in axisar_c");
+    }
+
+    SpiceDouble outFlat[9];
+    v2_flatten_mat3_rowmajor(outMatrix, outFlat);
+    return v2_set_return_json_from_vec(context, outFlat, 9);
+  }
+
+  if (strcmp(binding->cSymbol, "georec_c") == 0) {
+    SpiceDouble lon = 0.0;
+    SpiceDouble lat = 0.0;
+    SpiceDouble alt = 0.0;
+    SpiceDouble re = 0.0;
+    SpiceDouble f = 0.0;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &lon) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &lat) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[2], arg2, &alt) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[3], arg3, &re) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[4], arg4, &f)) {
+      return false;
+    }
+
+    SpiceDouble rectan[3];
+    georec_c(lon, lat, alt, re, f, rectan);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in georec_c");
+    }
+
+    return v2_set_return_json_from_vec(context, rectan, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "latrec_c") == 0) {
+    SpiceDouble radius = 0.0;
+    SpiceDouble lon = 0.0;
+    SpiceDouble lat = 0.0;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &radius) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &lon) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[2], arg2, &lat)) {
+      return false;
+    }
+
+    SpiceDouble rectan[3];
+    latrec_c(radius, lon, lat, rectan);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in latrec_c");
+    }
+
+    return v2_set_return_json_from_vec(context, rectan, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "mtxv_c") == 0) {
+    SpiceDouble matrix[3][3];
+    SpiceDouble vector[3];
+    if (!v2_resolve_expr_mat3_value(
+            context, context->resolved->valueTokens[0], arg0, matrix) ||
+        !v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[1], arg1, vector)) {
+      return false;
+    }
+
+    SpiceDouble out[3];
+    mtxv_c(matrix, vector, out);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in mtxv_c");
+    }
+
+    return v2_set_return_json_from_vec(context, out, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "mxm_c") == 0) {
+    SpiceDouble left[3][3];
+    SpiceDouble right[3][3];
+    if (!v2_resolve_expr_mat3_value(
+            context, context->resolved->valueTokens[0], arg0, left) ||
+        !v2_resolve_expr_mat3_value(
+            context, context->resolved->valueTokens[1], arg1, right)) {
+      return false;
+    }
+
+    SpiceDouble outMatrix[3][3];
+    mxm_c(left, right, outMatrix);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in mxm_c");
+    }
+
+    SpiceDouble outFlat[9];
+    v2_flatten_mat3_rowmajor(outMatrix, outFlat);
+    return v2_set_return_json_from_vec(context, outFlat, 9);
+  }
+
+  if (strcmp(binding->cSymbol, "mxv_c") == 0) {
+    SpiceDouble matrix[3][3];
+    SpiceDouble vector[3];
+    if (!v2_resolve_expr_mat3_value(
+            context, context->resolved->valueTokens[0], arg0, matrix) ||
+        !v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[1], arg1, vector)) {
+      return false;
+    }
+
+    SpiceDouble out[3];
+    mxv_c(matrix, vector, out);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in mxv_c");
+    }
+
+    return v2_set_return_json_from_vec(context, out, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "recgeo_c") == 0) {
+    SpiceDouble rectan[3];
+    SpiceDouble re = 0.0;
+    SpiceDouble f = 0.0;
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, rectan) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &re) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[2], arg2, &f)) {
+      return false;
+    }
+
+    SpiceDouble lon = 0.0;
+    SpiceDouble lat = 0.0;
+    SpiceDouble alt = 0.0;
+    recgeo_c(rectan, re, f, &lon, &lat, &alt);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in recgeo_c");
+    }
+
+    return v2_set_return_json_from_named_triple(
+        context, "lon", lon, "lat", lat, "alt", alt);
+  }
+
+  if (strcmp(binding->cSymbol, "reclat_c") == 0) {
+    SpiceDouble rectan[3];
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, rectan)) {
+      return false;
+    }
+
+    SpiceDouble radius = 0.0;
+    SpiceDouble lon = 0.0;
+    SpiceDouble lat = 0.0;
+    reclat_c(rectan, &radius, &lon, &lat);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in reclat_c");
+    }
+
+    return v2_set_return_json_from_named_triple(
+        context, "radius", radius, "lon", lon, "lat", lat);
+  }
+
+  if (strcmp(binding->cSymbol, "recsph_c") == 0) {
+    SpiceDouble rectan[3];
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, rectan)) {
+      return false;
+    }
+
+    SpiceDouble radius = 0.0;
+    SpiceDouble colat = 0.0;
+    SpiceDouble lon = 0.0;
+    recsph_c(rectan, &radius, &colat, &lon);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in recsph_c");
+    }
+
+    return v2_set_return_json_from_named_triple(
+        context, "radius", radius, "colat", colat, "lon", lon);
+  }
+
+  if (strcmp(binding->cSymbol, "rotate_c") == 0) {
+    SpiceDouble angle = 0.0;
+    SpiceInt axis = 0;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &angle) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &axis)) {
+      return false;
+    }
+
+    SpiceDouble outMatrix[3][3];
+    rotate_c(angle, axis, outMatrix);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in rotate_c");
+    }
+
+    SpiceDouble outFlat[9];
+    v2_flatten_mat3_rowmajor(outMatrix, outFlat);
+    return v2_set_return_json_from_vec(context, outFlat, 9);
+  }
+
+  if (strcmp(binding->cSymbol, "rotmat_c") == 0) {
+    SpiceDouble matrix[3][3];
+    SpiceDouble angle = 0.0;
+    SpiceInt axis = 0;
+    if (!v2_resolve_expr_mat3_value(
+            context, context->resolved->valueTokens[0], arg0, matrix) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &angle) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[2], arg2, &axis)) {
+      return false;
+    }
+
+    SpiceDouble outMatrix[3][3];
+    rotmat_c(matrix, angle, axis, outMatrix);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in rotmat_c");
+    }
+
+    SpiceDouble outFlat[9];
+    v2_flatten_mat3_rowmajor(outMatrix, outFlat);
+    return v2_set_return_json_from_vec(context, outFlat, 9);
+  }
+
+  if (strcmp(binding->cSymbol, "sphrec_c") == 0) {
+    SpiceDouble radius = 0.0;
+    SpiceDouble colat = 0.0;
+    SpiceDouble lon = 0.0;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &radius) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &colat) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[2], arg2, &lon)) {
+      return false;
+    }
+
+    SpiceDouble rectan[3];
+    sphrec_c(radius, colat, lon, rectan);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in sphrec_c");
+    }
+
+    return v2_set_return_json_from_vec(context, rectan, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "vadd_c") == 0) {
+    SpiceDouble left[3];
+    SpiceDouble right[3];
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, left) ||
+        !v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[1], arg1, right)) {
+      return false;
+    }
+
+    SpiceDouble out[3];
+    vadd_c(left, right, out);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in vadd_c");
+    }
+
+    return v2_set_return_json_from_vec(context, out, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "vcrss_c") == 0) {
+    SpiceDouble left[3];
+    SpiceDouble right[3];
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, left) ||
+        !v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[1], arg1, right)) {
+      return false;
+    }
+
+    SpiceDouble out[3];
+    vcrss_c(left, right, out);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in vcrss_c");
+    }
+
+    return v2_set_return_json_from_vec(context, out, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "vdot_c") == 0) {
+    SpiceDouble left[3];
+    SpiceDouble right[3];
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, left) ||
+        !v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[1], arg1, right)) {
+      return false;
+    }
+
+    const SpiceDouble dot = vdot_c(left, right);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in vdot_c");
+    }
+
+    return v2_set_return_json_from_double(context, dot);
+  }
+
+  if (strcmp(binding->cSymbol, "vhat_c") == 0) {
+    SpiceDouble input[3];
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, input)) {
+      return false;
+    }
+
+    SpiceDouble out[3];
+    vhat_c(input, out);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in vhat_c");
+    }
+
+    return v2_set_return_json_from_vec(context, out, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "vminus_c") == 0) {
+    SpiceDouble input[3];
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, input)) {
+      return false;
+    }
+
+    SpiceDouble out[3];
+    vminus_c(input, out);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in vminus_c");
+    }
+
+    return v2_set_return_json_from_vec(context, out, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "vnorm_c") == 0) {
+    SpiceDouble input[3];
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, input)) {
+      return false;
+    }
+
+    const SpiceDouble norm = vnorm_c(input);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in vnorm_c");
+    }
+
+    return v2_set_return_json_from_double(context, norm);
+  }
+
+  if (strcmp(binding->cSymbol, "vscl_c") == 0) {
+    SpiceDouble scale = 0.0;
+    SpiceDouble input[3];
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &scale) ||
+        !v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[1], arg1, input)) {
+      return false;
+    }
+
+    SpiceDouble out[3];
+    vscl_c(scale, input, out);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in vscl_c");
+    }
+
+    return v2_set_return_json_from_vec(context, out, 3);
+  }
+
+  if (strcmp(binding->cSymbol, "vsub_c") == 0) {
+    SpiceDouble left[3];
+    SpiceDouble right[3];
+    if (!v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[0], arg0, left) ||
+        !v2_resolve_expr_vec3_value(
+            context, context->resolved->valueTokens[1], arg1, right)) {
+      return false;
+    }
+
+    SpiceDouble out[3];
+    vsub_c(left, right, out);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in vsub_c");
+    }
+
+    return v2_set_return_json_from_vec(context, out, 3);
+  }
+
+  write_error_json_ex("unsupported_call", "Unsupported v2 call",
+                      context->fnName, NULL, NULL, NULL);
   return false;
 }
 
