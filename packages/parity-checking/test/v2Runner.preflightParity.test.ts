@@ -414,4 +414,226 @@ describe("v3 runner preflight parity", () => {
       }
     },
   );
+
+  maybeIt(
+    "executes representative generated return-binding calls across remaining domains",
+    async () => {
+      const cspice = await createCspiceRunner();
+
+      const cases: Array<{
+        name: string;
+        input: RunCaseInputV2;
+        assertResult: (result: unknown) => void;
+      }> = [
+        {
+          name: "ephemeris.spkgeo",
+          input: {
+            schemaVersion: 3,
+            manifest: {
+              id: "preflight/ephemeris/spkgeo",
+              kind: "method",
+            },
+            contract: {
+              contractMethod: "ephemeris.spkgeo",
+              canonicalMethod: "ephemeris.spkgeo",
+              errors: [],
+            },
+            args: {},
+            workflow: {
+              steps: [
+                { op: "materialize", fixture: "virtualOutputSpk", as: "spkPath" },
+                { op: "call", call: "kernels.furnsh", in: ["$refs.spkPath"] },
+                { op: "call", call: "ephemeris.spkgeo", in: [1000, 30, "J2000", 0] },
+              ],
+              cleanup: [
+                { op: "call", call: "kernels.unload", in: ["$refs.spkPath"] },
+                { op: "unlink", target: "$refs.spkPath" },
+              ],
+            },
+          },
+          assertResult: (result) => {
+            expect(result).toMatchObject({
+              state: expect.any(Array),
+              lt: expect.any(Number),
+            });
+            expect((result as { state: unknown[] }).state).toHaveLength(6);
+          },
+        },
+        {
+          name: "file-io.getfat",
+          input: {
+            schemaVersion: 3,
+            manifest: {
+              id: "preflight/file-io/getfat",
+              kind: "method",
+            },
+            contract: {
+              contractMethod: "file-io.getfat",
+              canonicalMethod: "file-io.getfat",
+              errors: [],
+            },
+            args: {},
+            workflow: {
+              steps: [
+                { op: "materialize", fixture: "virtualOutputSpk", as: "spkPath" },
+                { op: "call", call: "file-io.getfat", in: ["$refs.spkPath"] },
+              ],
+              cleanup: [{ op: "unlink", target: "$refs.spkPath" }],
+            },
+          },
+          assertResult: (result) => {
+            expect(result).toMatchObject({
+              arch: expect.any(String),
+              type: expect.any(String),
+            });
+          },
+        },
+        {
+          name: "frames.namfrm",
+          input: {
+            schemaVersion: 3,
+            manifest: {
+              id: "preflight/frames/namfrm",
+              kind: "method",
+            },
+            contract: {
+              contractMethod: "frames.namfrm",
+              canonicalMethod: "frames.namfrm",
+              errors: [],
+            },
+            args: ["J2000"],
+            workflow: {
+              steps: [{ op: "call", call: "frames.namfrm", in: ["$args.0"] }],
+            },
+          },
+          assertResult: (result) => {
+            expect(result).toMatchObject({ found: true, code: 1 });
+          },
+        },
+        {
+          name: "ids-names.bodn2c",
+          input: {
+            schemaVersion: 3,
+            manifest: {
+              id: "preflight/ids-names/bodn2c",
+              kind: "method",
+            },
+            contract: {
+              contractMethod: "ids-names.bodn2c",
+              canonicalMethod: "ids-names.bodn2c",
+              errors: [],
+            },
+            args: ["EARTH"],
+            workflow: {
+              steps: [{ op: "call", call: "ids-names.bodn2c", in: ["$args.0"] }],
+            },
+          },
+          assertResult: (result) => {
+            expect(result).toMatchObject({ found: true, code: 399 });
+          },
+        },
+        {
+          name: "kernel-pool.pdpool+gdpool",
+          input: {
+            schemaVersion: 3,
+            manifest: {
+              id: "preflight/kernel-pool/gdpool",
+              kind: "method",
+            },
+            contract: {
+              contractMethod: "kernel-pool.gdpool",
+              canonicalMethod: "kernel-pool.gdpool",
+              errors: [],
+            },
+            args: {},
+            workflow: {
+              steps: [
+                { op: "call", call: "kernel-pool.pdpool", in: ["TSPICE_PRECHECK_V2", [1, 2, 3]] },
+                { op: "call", call: "kernel-pool.gdpool", in: ["TSPICE_PRECHECK_V2", 0, 3] },
+              ],
+            },
+          },
+          assertResult: (result) => {
+            expect(result).toMatchObject({ found: true, values: [1, 2, 3] });
+          },
+        },
+        {
+          name: "kernels.kdata",
+          input: {
+            schemaVersion: 3,
+            manifest: {
+              id: "preflight/kernels/kdata",
+              kind: "method",
+            },
+            contract: {
+              contractMethod: "kernels.kdata",
+              canonicalMethod: "kernels.kdata",
+              errors: [],
+            },
+            args: {},
+            workflow: {
+              steps: [
+                { op: "materialize", fixture: "virtualOutputSpk", as: "spkPath" },
+                { op: "call", call: "kernels.furnsh", in: ["$refs.spkPath"] },
+                { op: "call", call: "kernels.kdata", in: [0, "ALL"] },
+              ],
+              cleanup: [
+                { op: "call", call: "kernels.unload", in: ["$refs.spkPath"] },
+                { op: "unlink", target: "$refs.spkPath" },
+              ],
+            },
+          },
+          assertResult: (result) => {
+            expect(result).toMatchObject({
+              found: true,
+              file: expect.any(String),
+              filtyp: expect.any(String),
+              source: expect.any(String),
+              handle: expect.any(Number),
+            });
+          },
+        },
+        {
+          name: "time.tparse",
+          input: {
+            schemaVersion: 3,
+            manifest: {
+              id: "preflight/time/tparse",
+              kind: "method",
+            },
+            contract: {
+              contractMethod: "time.tparse",
+              canonicalMethod: "time.tparse",
+              errors: [],
+            },
+            args: ["2000 JAN 01 12:00:00"],
+            workflow: {
+              steps: [{ op: "call", call: "time.tparse", in: ["$args.0"] }],
+            },
+          },
+          assertResult: (result) => {
+            expect(typeof result).toBe("number");
+          },
+        },
+      ];
+
+      try {
+        for (const testCase of cases) {
+          const out = await cspice.runCase(testCase.input);
+          if (!out.ok) {
+            expect(out.error.code, `${testCase.name} should not be unsupported_call`).not.toBe(
+              "unsupported_call",
+            );
+          }
+          expect(out.ok, `${testCase.name} should succeed`).toBe(true);
+
+          if (out.ok) {
+            testCase.assertResult(out.result);
+          }
+        }
+      } finally {
+        await cspice.dispose?.();
+      }
+    },
+  );
 });

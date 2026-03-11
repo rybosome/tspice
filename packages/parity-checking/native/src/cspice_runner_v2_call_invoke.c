@@ -1,12 +1,27 @@
 #include "cspice_runner_json_emit.h"
 #include "cspice_runner_error.h"
+#include "cspice_runner_cells.h"
 #include "cspice_runner_v2_call_invoke.h"
 #include "cspice_runner_v2_json_buffer.h"
 #include "generated/native_as_spice_int_bindings.h"
 #include "generated/native_call_dispatch.h"
 #include "generated/native_return_bindings.h"
 
+#include <limits.h>
 #include <string.h>
+
+#ifndef dlacls_c
+#define dlacls_c dascls_c
+#endif
+
+static bool v2_resolve_expr_double_value(const V2CallInvokeContext *context,
+                                         int exprTok,
+                                         const char *label,
+                                         SpiceDouble *outValue);
+static bool v2_resolve_expr_spiceint_value(const V2CallInvokeContext *context,
+                                           int exprTok,
+                                           const char *label,
+                                           SpiceInt *outValue);
 
 static bool v2_strdup_json_token(const char *json, const jsmntok_t *tok,
                                  char **out) {
@@ -314,6 +329,504 @@ static bool v2_resolve_expr_value_token(const V2CallInvokeContext *context,
   return true;
 }
 
+static bool v2_is_ascii_whitespace(char c) {
+  switch (c) {
+  case ' ':
+  case '\t':
+  case '\n':
+  case '\r':
+  case '\f':
+  case '\v':
+    return true;
+  default:
+    return false;
+  }
+}
+
+static void v2_trim_ascii_trailing_whitespace(char *value) {
+  if (value == NULL) {
+    return;
+  }
+
+  size_t len = strlen(value);
+  while (len > 0 && v2_is_ascii_whitespace(value[len - 1])) {
+    value[len - 1] = '\0';
+    len--;
+  }
+}
+
+static bool v2_json_buffer_append_json_key(V2JsonBuffer *out,
+                                           const char *key) {
+  return v2_json_buffer_append_char(out, '"') &&
+         v2_json_buffer_append_escaped(out, key != NULL ? key : "") &&
+         v2_json_buffer_append_cstr(out, "\":");
+}
+
+static bool v2_json_buffer_append_json_string(V2JsonBuffer *out,
+                                              const char *value) {
+  return v2_json_buffer_append_char(out, '"') &&
+         v2_json_buffer_append_escaped(out, value != NULL ? value : "") &&
+         v2_json_buffer_append_char(out, '"');
+}
+
+static bool v2_json_buffer_append_double_array(V2JsonBuffer *out,
+                                               const SpiceDouble *values,
+                                               int len) {
+  bool ok = v2_json_buffer_append_char(out, '[');
+  for (int i = 0; ok && i < len; i++) {
+    if (i > 0) {
+      ok = v2_json_buffer_append_char(out, ',');
+    }
+    if (ok) {
+      ok = v2_json_buffer_append_double(out, values[i]);
+    }
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_char(out, ']');
+  }
+  return ok;
+}
+
+static bool v2_json_buffer_append_spiceint_array(V2JsonBuffer *out,
+                                                 const SpiceInt *values,
+                                                 int len) {
+  bool ok = v2_json_buffer_append_char(out, '[');
+  for (int i = 0; ok && i < len; i++) {
+    if (i > 0) {
+      ok = v2_json_buffer_append_char(out, ',');
+    }
+    if (ok) {
+      ok = v2_json_buffer_append_int(out, values[i]);
+    }
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_char(out, ']');
+  }
+  return ok;
+}
+
+static bool v2_json_buffer_append_string_array(V2JsonBuffer *out,
+                                               char *const *values,
+                                               int len) {
+  bool ok = v2_json_buffer_append_char(out, '[');
+  for (int i = 0; ok && i < len; i++) {
+    if (i > 0) {
+      ok = v2_json_buffer_append_char(out, ',');
+    }
+    if (ok) {
+      ok = v2_json_buffer_append_json_string(out, values[i]);
+    }
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_char(out, ']');
+  }
+  return ok;
+}
+
+static bool v2_resolve_expr_array_token(const V2CallInvokeContext *context,
+                                        int exprTok,
+                                        const char *label,
+                                        int *outArrayTok,
+                                        int *outLength) {
+  if (outArrayTok == NULL || outLength == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int valueTok = -1;
+  if (!v2_resolve_expr_value_token(context, exprTok, label, &valueTok)) {
+    return false;
+  }
+
+  if (valueTok < 0 || valueTok >= context->tokenCount ||
+      context->tokens[valueTok].type != JSMN_ARRAY) {
+    write_error_json_ex("invalid_args", "Expression must resolve to array", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  *outArrayTok = valueTok;
+  *outLength = context->tokens[valueTok].size;
+  return true;
+}
+
+static bool v2_resolve_expr_object_token(const V2CallInvokeContext *context,
+                                         int exprTok,
+                                         const char *label,
+                                         int *outObjectTok) {
+  if (outObjectTok == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int valueTok = -1;
+  if (!v2_resolve_expr_value_token(context, exprTok, label, &valueTok)) {
+    return false;
+  }
+
+  if (valueTok < 0 || valueTok >= context->tokenCount ||
+      context->tokens[valueTok].type != JSMN_OBJECT) {
+    write_error_json_ex("invalid_args", "Expression must resolve to object", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  *outObjectTok = valueTok;
+  return true;
+}
+
+static bool v2_resolve_expr_double_array_values(const V2CallInvokeContext *context,
+                                                int exprTok,
+                                                const char *label,
+                                                SpiceDouble **outValues,
+                                                int *outLength) {
+  if (outValues == NULL || outLength == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int arrayTok = -1;
+  int length = 0;
+  if (!v2_resolve_expr_array_token(context, exprTok, label, &arrayTok, &length)) {
+    return false;
+  }
+
+  SpiceDouble *values = NULL;
+  if (length > 0) {
+    values = (SpiceDouble *)calloc((size_t)length, sizeof(SpiceDouble));
+    if (values == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+  }
+
+  for (int i = 0; i < length; i++) {
+    const int elemTok =
+        jsmn_get_array_elem((jsmntok_t *)context->tokens,
+                            arrayTok,
+                            context->tokenCount,
+                            i);
+    if (elemTok < 0) {
+      free(values);
+      write_error_json_ex("invalid_args", "Array element is missing", label,
+                          NULL, NULL, NULL);
+      return false;
+    }
+
+    if (!v2_resolve_expr_double_value(context, elemTok, label, &values[i])) {
+      free(values);
+      return false;
+    }
+  }
+
+  *outValues = values;
+  *outLength = length;
+  return true;
+}
+
+static bool v2_resolve_expr_spiceint_array_values(
+    const V2CallInvokeContext *context,
+    int exprTok,
+    const char *label,
+    SpiceInt **outValues,
+    int *outLength) {
+  if (outValues == NULL || outLength == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int arrayTok = -1;
+  int length = 0;
+  if (!v2_resolve_expr_array_token(context, exprTok, label, &arrayTok, &length)) {
+    return false;
+  }
+
+  SpiceInt *values = NULL;
+  if (length > 0) {
+    values = (SpiceInt *)calloc((size_t)length, sizeof(SpiceInt));
+    if (values == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+  }
+
+  for (int i = 0; i < length; i++) {
+    const int elemTok =
+        jsmn_get_array_elem((jsmntok_t *)context->tokens,
+                            arrayTok,
+                            context->tokenCount,
+                            i);
+    if (elemTok < 0) {
+      free(values);
+      write_error_json_ex("invalid_args", "Array element is missing", label,
+                          NULL, NULL, NULL);
+      return false;
+    }
+
+    if (!v2_resolve_expr_spiceint_value(context, elemTok, label, &values[i])) {
+      free(values);
+      return false;
+    }
+  }
+
+  *outValues = values;
+  *outLength = length;
+  return true;
+}
+
+static void v2_free_string_array_values(char **values, int length) {
+  if (values == NULL) {
+    return;
+  }
+
+  for (int i = 0; i < length; i++) {
+    free(values[i]);
+  }
+  free(values);
+}
+
+static bool v2_resolve_expr_string_array_values(const V2CallInvokeContext *context,
+                                                int exprTok,
+                                                const char *label,
+                                                char ***outValues,
+                                                int *outLength) {
+  if (outValues == NULL || outLength == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int arrayTok = -1;
+  int length = 0;
+  if (!v2_resolve_expr_array_token(context, exprTok, label, &arrayTok, &length)) {
+    return false;
+  }
+
+  char **values = NULL;
+  if (length > 0) {
+    values = (char **)calloc((size_t)length, sizeof(char *));
+    if (values == NULL) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+  }
+
+  for (int i = 0; i < length; i++) {
+    const int elemTok =
+        jsmn_get_array_elem((jsmntok_t *)context->tokens,
+                            arrayTok,
+                            context->tokenCount,
+                            i);
+    if (elemTok < 0) {
+      v2_free_string_array_values(values, length);
+      write_error_json_ex("invalid_args", "Array element is missing", label,
+                          NULL, NULL, NULL);
+      return false;
+    }
+
+    if (!v2_resolve_expr_string_value(context, elemTok, label, &values[i])) {
+      v2_free_string_array_values(values, length);
+      return false;
+    }
+  }
+
+  *outValues = values;
+  *outLength = length;
+  return true;
+}
+
+static bool v2_build_fixed_width_string_matrix(char *const *values,
+                                               int count,
+                                               SpiceInt minWidth,
+                                               char **outMatrix,
+                                               SpiceInt *outWidth) {
+  if (outMatrix == NULL || outWidth == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", NULL, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  if (count < 0 || minWidth <= 0) {
+    write_error_json_ex("invalid_request", "Invalid matrix dimensions", NULL,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  SpiceInt width = minWidth;
+  for (int i = 0; i < count; i++) {
+    const size_t valueLen = strlen(values[i] != NULL ? values[i] : "");
+    const size_t needed = valueLen + 1U;
+    if (needed > (size_t)INT_MAX) {
+      write_error_json_ex("invalid_args", "String value is too long", NULL, NULL,
+                          NULL, NULL);
+      return false;
+    }
+    if ((SpiceInt)needed > width) {
+      width = (SpiceInt)needed;
+    }
+  }
+
+  const int slotCount = count > 0 ? count : 1;
+  char *matrix = (char *)calloc((size_t)slotCount, (size_t)width);
+  if (matrix == NULL) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
+  for (int i = 0; i < count; i++) {
+    const char *value = values[i] != NULL ? values[i] : "";
+    strncpy(matrix + ((size_t)i * (size_t)width), value, (size_t)width - 1U);
+  }
+
+  *outMatrix = matrix;
+  *outWidth = width;
+  return true;
+}
+
+static bool v2_parse_object_spiceint_field(const V2CallInvokeContext *context,
+                                           int objectTok,
+                                           const char *fieldName,
+                                           const char *label,
+                                           SpiceInt *outValue) {
+  if (outValue == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  const int fieldTok = jsmn_find_object_key(context->json,
+                                            (jsmntok_t *)context->tokens,
+                                            objectTok,
+                                            context->tokenCount,
+                                            fieldName);
+  if (fieldTok < 0) {
+    write_error_json_ex("invalid_args", "Missing required object field",
+                        fieldName, NULL, NULL, NULL);
+    return false;
+  }
+
+  if (!v2_resolve_expr_spiceint_value(context, fieldTok, label, outValue)) {
+    return false;
+  }
+
+  return true;
+}
+
+static bool v2_parse_dla_descriptor_from_expr(const V2CallInvokeContext *context,
+                                              int exprTok,
+                                              const char *label,
+                                              SpiceDLADescr *outDescr) {
+  if (outDescr == NULL) {
+    write_error_json_ex("invalid_request", "Missing output storage", label,
+                        NULL, NULL, NULL);
+    return false;
+  }
+
+  int objectTok = -1;
+  if (!v2_resolve_expr_object_token(context, exprTok, label, &objectTok)) {
+    return false;
+  }
+
+  SpiceInt bwdptr = 0;
+  SpiceInt fwdptr = 0;
+  SpiceInt ibase = 0;
+  SpiceInt isize = 0;
+  SpiceInt dbase = 0;
+  SpiceInt dsize = 0;
+  SpiceInt cbase = 0;
+  SpiceInt csize = 0;
+
+  if (!v2_parse_object_spiceint_field(context, objectTok, "bwdptr", label,
+                                      &bwdptr) ||
+      !v2_parse_object_spiceint_field(context, objectTok, "fwdptr", label,
+                                      &fwdptr) ||
+      !v2_parse_object_spiceint_field(context, objectTok, "ibase", label,
+                                      &ibase) ||
+      !v2_parse_object_spiceint_field(context, objectTok, "isize", label,
+                                      &isize) ||
+      !v2_parse_object_spiceint_field(context, objectTok, "dbase", label,
+                                      &dbase) ||
+      !v2_parse_object_spiceint_field(context, objectTok, "dsize", label,
+                                      &dsize) ||
+      !v2_parse_object_spiceint_field(context, objectTok, "cbase", label,
+                                      &cbase) ||
+      !v2_parse_object_spiceint_field(context, objectTok, "csize", label,
+                                      &csize)) {
+    return false;
+  }
+
+  outDescr->bwdptr = bwdptr;
+  outDescr->fwdptr = fwdptr;
+  outDescr->ibase = ibase;
+  outDescr->isize = isize;
+  outDescr->dbase = dbase;
+  outDescr->dsize = dsize;
+  outDescr->cbase = cbase;
+  outDescr->csize = csize;
+  return true;
+}
+
+static bool v2_json_buffer_append_dla_descriptor(V2JsonBuffer *out,
+                                                 const SpiceDLADescr *descr) {
+  bool ok = v2_json_buffer_append_char(out, '{');
+
+  if (ok) {
+    ok = v2_json_buffer_append_json_key(out, "bwdptr") &&
+         v2_json_buffer_append_int(out, descr->bwdptr);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_cstr(out, ",\"") &&
+         v2_json_buffer_append_escaped(out, "fwdptr") &&
+         v2_json_buffer_append_cstr(out, "\":") &&
+         v2_json_buffer_append_int(out, descr->fwdptr);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_cstr(out, ",\"") &&
+         v2_json_buffer_append_escaped(out, "ibase") &&
+         v2_json_buffer_append_cstr(out, "\":") &&
+         v2_json_buffer_append_int(out, descr->ibase);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_cstr(out, ",\"") &&
+         v2_json_buffer_append_escaped(out, "isize") &&
+         v2_json_buffer_append_cstr(out, "\":") &&
+         v2_json_buffer_append_int(out, descr->isize);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_cstr(out, ",\"") &&
+         v2_json_buffer_append_escaped(out, "dbase") &&
+         v2_json_buffer_append_cstr(out, "\":") &&
+         v2_json_buffer_append_int(out, descr->dbase);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_cstr(out, ",\"") &&
+         v2_json_buffer_append_escaped(out, "dsize") &&
+         v2_json_buffer_append_cstr(out, "\":") &&
+         v2_json_buffer_append_int(out, descr->dsize);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_cstr(out, ",\"") &&
+         v2_json_buffer_append_escaped(out, "cbase") &&
+         v2_json_buffer_append_cstr(out, "\":") &&
+         v2_json_buffer_append_int(out, descr->cbase);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_cstr(out, ",\"") &&
+         v2_json_buffer_append_escaped(out, "csize") &&
+         v2_json_buffer_append_cstr(out, "\":") &&
+         v2_json_buffer_append_int(out, descr->csize);
+  }
+  if (ok) {
+    ok = v2_json_buffer_append_char(out, '}');
+  }
+
+  return ok;
+}
+
 static bool v2_resolve_expr_double_value(const V2CallInvokeContext *context,
                                          int exprTok,
                                          const char *label,
@@ -552,6 +1065,43 @@ static bool v2_set_return_json_from_vec(const V2CallInvokeContext *context,
   if (ok) {
     ok = v2_json_buffer_append_char(&out, ']');
   }
+  if (!ok) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    v2_json_buffer_free(&out);
+    return false;
+  }
+
+  ok = v2_set_return_json_from_buffer(context, &out);
+  v2_json_buffer_free(&out);
+  return ok;
+}
+
+static bool v2_set_return_json_from_spiceint_array(
+    const V2CallInvokeContext *context,
+    const SpiceInt *values,
+    int len) {
+  V2JsonBuffer out;
+  v2_json_buffer_init(&out);
+
+  bool ok = v2_json_buffer_append_spiceint_array(&out, values, len);
+  if (!ok) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    v2_json_buffer_free(&out);
+    return false;
+  }
+
+  ok = v2_set_return_json_from_buffer(context, &out);
+  v2_json_buffer_free(&out);
+  return ok;
+}
+
+static bool v2_set_return_json_from_string_array(const V2CallInvokeContext *context,
+                                                 char *const *values,
+                                                 int len) {
+  V2JsonBuffer out;
+  v2_json_buffer_init(&out);
+
+  bool ok = v2_json_buffer_append_string_array(&out, values, len);
   if (!ok) {
     write_error_json("Out of memory", NULL, NULL, NULL);
     v2_json_buffer_free(&out);
@@ -1166,11 +1716,13 @@ static bool v2_invoke_generated_return_binding_lane(
   char arg2[128];
   char arg3[128];
   char arg4[128];
+  char arg5[128];
   v2_build_call_arg_label(context, 0, arg0, sizeof(arg0));
   v2_build_call_arg_label(context, 1, arg1, sizeof(arg1));
   v2_build_call_arg_label(context, 2, arg2, sizeof(arg2));
   v2_build_call_arg_label(context, 3, arg3, sizeof(arg3));
   v2_build_call_arg_label(context, 4, arg4, sizeof(arg4));
+  v2_build_call_arg_label(context, 5, arg5, sizeof(arg5));
 
   if (strcmp(binding->cSymbol, "axisar_c") == 0) {
     SpiceDouble axis[3];
@@ -1707,6 +2259,2270 @@ static bool v2_invoke_generated_return_binding_lane(
 
     out[V2_ET2UTC_RETURN_BUFFER_BYTES - 1] = '\0';
     return v2_set_return_json_from_string(context, out);
+  }
+
+  if (strcmp(binding->cSymbol, "spkez_c") == 0) {
+    SpiceInt target = 0;
+    SpiceDouble et = 0.0;
+    char *ref = NULL;
+    char *abcorr = NULL;
+    SpiceInt observer = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &target) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &et) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &ref) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[3], arg3, &abcorr) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[4], arg4, &observer)) {
+      free(ref);
+      free(abcorr);
+      return false;
+    }
+
+    SpiceDouble state[6] = {0};
+    SpiceDouble lt = 0.0;
+    spkez_c(target, et, ref, abcorr, observer, state, &lt);
+    free(ref);
+    free(abcorr);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in spkez_c");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "state") &&
+              v2_json_buffer_append_double_array(&out, state, 6) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "lt") &&
+              v2_json_buffer_append_double(&out, lt) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "spkezp_c") == 0) {
+    SpiceInt target = 0;
+    SpiceDouble et = 0.0;
+    char *ref = NULL;
+    char *abcorr = NULL;
+    SpiceInt observer = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &target) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &et) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &ref) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[3], arg3, &abcorr) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[4], arg4, &observer)) {
+      free(ref);
+      free(abcorr);
+      return false;
+    }
+
+    SpiceDouble pos[3] = {0};
+    SpiceDouble lt = 0.0;
+    spkezp_c(target, et, ref, abcorr, observer, pos, &lt);
+    free(ref);
+    free(abcorr);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in spkezp_c");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "pos") &&
+              v2_json_buffer_append_double_array(&out, pos, 3) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "lt") &&
+              v2_json_buffer_append_double(&out, lt) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "spkezr_c") == 0) {
+    char *target = NULL;
+    SpiceDouble et = 0.0;
+    char *ref = NULL;
+    char *abcorr = NULL;
+    char *observer = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &target) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &et) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &ref) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[3], arg3, &abcorr) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[4], arg4, &observer)) {
+      free(target);
+      free(ref);
+      free(abcorr);
+      free(observer);
+      return false;
+    }
+
+    SpiceDouble state[6] = {0};
+    SpiceDouble lt = 0.0;
+    spkezr_c(target, et, ref, abcorr, observer, state, &lt);
+    free(target);
+    free(ref);
+    free(abcorr);
+    free(observer);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in spkezr_c");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "state") &&
+              v2_json_buffer_append_double_array(&out, state, 6) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "lt") &&
+              v2_json_buffer_append_double(&out, lt) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "spkgeo_c") == 0) {
+    SpiceInt target = 0;
+    SpiceDouble et = 0.0;
+    char *ref = NULL;
+    SpiceInt observer = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &target) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &et) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &ref) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[3], arg3, &observer)) {
+      free(ref);
+      return false;
+    }
+
+    SpiceDouble state[6] = {0};
+    SpiceDouble lt = 0.0;
+    spkgeo_c(target, et, ref, observer, state, &lt);
+    free(ref);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in spkgeo_c");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "state") &&
+              v2_json_buffer_append_double_array(&out, state, 6) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "lt") &&
+              v2_json_buffer_append_double(&out, lt) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "spkgps_c") == 0) {
+    SpiceInt target = 0;
+    SpiceDouble et = 0.0;
+    char *ref = NULL;
+    SpiceInt observer = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &target) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &et) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &ref) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[3], arg3, &observer)) {
+      free(ref);
+      return false;
+    }
+
+    SpiceDouble pos[3] = {0};
+    SpiceDouble lt = 0.0;
+    spkgps_c(target, et, ref, observer, pos, &lt);
+    free(ref);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in spkgps_c");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "pos") &&
+              v2_json_buffer_append_double_array(&out, pos, 3) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "lt") &&
+              v2_json_buffer_append_double(&out, lt) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "spkpds_c") == 0) {
+    SpiceInt body = 0;
+    SpiceInt center = 0;
+    char *frame = NULL;
+    SpiceInt type = 0;
+    SpiceDouble first = 0.0;
+    SpiceDouble last = 0.0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &body) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &center) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &frame) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[3], arg3, &type) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[4], arg4, &first) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[5], arg5, &last)) {
+      free(frame);
+      return false;
+    }
+
+    SpiceDouble descr[5] = {0};
+    spkpds_c(body, center, frame, type, first, last, descr);
+    free(frame);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in spkpds_c");
+    }
+
+    return v2_set_return_json_from_vec(context, descr, 5);
+  }
+
+  if (strcmp(binding->cSymbol, "spkpos_c") == 0) {
+    char *target = NULL;
+    SpiceDouble et = 0.0;
+    char *ref = NULL;
+    char *abcorr = NULL;
+    char *observer = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &target) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &et) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &ref) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[3], arg3, &abcorr) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[4], arg4, &observer)) {
+      free(target);
+      free(ref);
+      free(abcorr);
+      free(observer);
+      return false;
+    }
+
+    SpiceDouble pos[3] = {0};
+    SpiceDouble lt = 0.0;
+    spkpos_c(target, et, ref, abcorr, observer, pos, &lt);
+    free(target);
+    free(ref);
+    free(abcorr);
+    free(observer);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in spkpos_c");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "pos") &&
+              v2_json_buffer_append_double_array(&out, pos, 3) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "lt") &&
+              v2_json_buffer_append_double(&out, lt) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "spksfs_c") == 0) {
+    SpiceInt body = 0;
+    SpiceDouble et = 0.0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &body) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &et)) {
+      return false;
+    }
+
+    SpiceInt handle = 0;
+    SpiceDouble descr[5] = {0};
+    enum { V2_SPKSFS_IDENT_BYTES = 41 };
+    SpiceChar ident[V2_SPKSFS_IDENT_BYTES];
+    memset(ident, 0, sizeof(ident));
+    SpiceBoolean found = SPICEFALSE;
+
+    spksfs_c(body,
+             et,
+             &handle,
+             descr,
+             (SpiceInt)V2_SPKSFS_IDENT_BYTES,
+             ident,
+             &found);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in spksfs_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    ident[V2_SPKSFS_IDENT_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)ident);
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "handle") &&
+              v2_json_buffer_append_int(&out, handle) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "descr") &&
+              v2_json_buffer_append_double_array(&out, descr, 5) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "ident") &&
+              v2_json_buffer_append_json_string(&out, ident) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "spkssb_c") == 0) {
+    SpiceInt target = 0;
+    SpiceDouble et = 0.0;
+    char *ref = NULL;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &target) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[1], arg1, &et) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &ref)) {
+      free(ref);
+      return false;
+    }
+
+    SpiceDouble state[6] = {0};
+    spkssb_c(target, et, ref, state);
+    free(ref);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in spkssb_c");
+    }
+
+    return v2_set_return_json_from_vec(context, state, 6);
+  }
+
+  if (strcmp(binding->cSymbol, "dafbfs_c") == 0) {
+    SpiceInt handle = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &handle)) {
+      return false;
+    }
+
+    dafbfs_c(handle);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dafbfs_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "dafcls_c") == 0) {
+    SpiceInt handle = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &handle)) {
+      return false;
+    }
+
+    dafcls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dafcls_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "daffna_c") == 0) {
+    SpiceInt handle = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &handle)) {
+      return false;
+    }
+
+    dafbfs_c(handle);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in daffna_c");
+    }
+
+    SpiceBoolean found = SPICEFALSE;
+    daffna_c(&found);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in daffna_c");
+    }
+
+    return v2_set_return_json_from_bool(context, found);
+  }
+
+  if (strcmp(binding->cSymbol, "dafopr_c") == 0) {
+    char *path = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &path)) {
+      return false;
+    }
+
+    SpiceInt handle = 0;
+    dafopr_c(path, &handle);
+    free(path);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dafopr_c");
+    }
+
+    return v2_set_return_json_from_spiceint(context, handle);
+  }
+
+  if (strcmp(binding->cSymbol, "dascls_c") == 0) {
+    SpiceInt handle = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &handle)) {
+      return false;
+    }
+
+    dascls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dascls_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "dasopr_c") == 0) {
+    char *path = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &path)) {
+      return false;
+    }
+
+    SpiceInt handle = 0;
+    dasopr_c(path, &handle);
+    free(path);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dasopr_c");
+    }
+
+    return v2_set_return_json_from_spiceint(context, handle);
+  }
+
+  if (strcmp(binding->cSymbol, "dlabfs_c") == 0) {
+    SpiceInt handle = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &handle)) {
+      return false;
+    }
+
+    SpiceDLADescr descr;
+    memset(&descr, 0, sizeof(descr));
+    SpiceBoolean found = SPICEFALSE;
+    dlabfs_c(handle, &descr, &found);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dlabfs_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "descr") &&
+              v2_json_buffer_append_dla_descriptor(&out, &descr) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "dlacls_c") == 0) {
+    SpiceInt handle = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &handle)) {
+      return false;
+    }
+
+    dlacls_c(handle);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dlacls_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "dlafns_c") == 0) {
+    if (context->resolved->valueTokens[1] < 0) {
+      write_error_json_ex("invalid_request",
+                          "call(file-io.dlafns) requires descriptor argument",
+                          context->fnName, NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceInt handle = 0;
+    SpiceDLADescr descr;
+    memset(&descr, 0, sizeof(descr));
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &handle) ||
+        !v2_parse_dla_descriptor_from_expr(
+            context, context->resolved->valueTokens[1], arg1, &descr)) {
+      return false;
+    }
+
+    SpiceDLADescr next;
+    memset(&next, 0, sizeof(next));
+    SpiceBoolean found = SPICEFALSE;
+    dlafns_c(handle, &descr, &next, &found);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dlafns_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "descr") &&
+              v2_json_buffer_append_dla_descriptor(&out, &next) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "dlaopn_c") == 0) {
+    char *path = NULL;
+    char *ftype = NULL;
+    char *ifname = NULL;
+    SpiceInt ncomch = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &path) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &ftype) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &ifname) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[3], arg3, &ncomch)) {
+      free(path);
+      free(ftype);
+      free(ifname);
+      return false;
+    }
+
+    SpiceInt handle = 0;
+    dlaopn_c(path, ftype, ifname, ncomch, &handle);
+    free(path);
+    free(ftype);
+    free(ifname);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dlaopn_c");
+    }
+
+    return v2_set_return_json_from_spiceint(context, handle);
+  }
+
+  if (strcmp(binding->cSymbol, "getfat_c") == 0) {
+    char *path = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &path)) {
+      return false;
+    }
+
+    enum { V2_GETFAT_BUF_BYTES = 2048 };
+    SpiceChar arch[V2_GETFAT_BUF_BYTES];
+    SpiceChar type[V2_GETFAT_BUF_BYTES];
+    memset(arch, 0, sizeof(arch));
+    memset(type, 0, sizeof(type));
+
+    getfat_c(path,
+             (SpiceInt)V2_GETFAT_BUF_BYTES,
+             (SpiceInt)V2_GETFAT_BUF_BYTES,
+             arch,
+             type);
+    free(path);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in getfat_c");
+    }
+
+    arch[V2_GETFAT_BUF_BYTES - 1] = '\0';
+    type[V2_GETFAT_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)arch);
+    v2_trim_ascii_trailing_whitespace((char *)type);
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "arch") &&
+              v2_json_buffer_append_json_string(&out, arch) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "type") &&
+              v2_json_buffer_append_json_string(&out, type) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "ccifrm_c") == 0) {
+    SpiceInt frameClass = 0;
+    SpiceInt classId = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &frameClass) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &classId)) {
+      return false;
+    }
+
+    enum { V2_FRNAME_BUF_BYTES = 2048 };
+    SpiceInt frcode = 0;
+    SpiceChar frname[V2_FRNAME_BUF_BYTES];
+    SpiceInt center = 0;
+    SpiceBoolean found = SPICEFALSE;
+    memset(frname, 0, sizeof(frname));
+
+    ccifrm_c(frameClass,
+             classId,
+             (SpiceInt)V2_FRNAME_BUF_BYTES,
+             &frcode,
+             frname,
+             &center,
+             &found);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in ccifrm_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    frname[V2_FRNAME_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)frname);
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "frcode") &&
+              v2_json_buffer_append_int(&out, frcode) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "frname") &&
+              v2_json_buffer_append_json_string(&out, frname) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "center") &&
+              v2_json_buffer_append_int(&out, center) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "cidfrm_c") == 0) {
+    SpiceInt center = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &center)) {
+      return false;
+    }
+
+    enum { V2_FRNAME_BUF_BYTES = 2048 };
+    SpiceInt frcode = 0;
+    SpiceChar frname[V2_FRNAME_BUF_BYTES];
+    SpiceBoolean found = SPICEFALSE;
+    memset(frname, 0, sizeof(frname));
+
+    cidfrm_c(center,
+             (SpiceInt)V2_FRNAME_BUF_BYTES,
+             &frcode,
+             frname,
+             &found);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in cidfrm_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    frname[V2_FRNAME_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)frname);
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "frcode") &&
+              v2_json_buffer_append_int(&out, frcode) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "frname") &&
+              v2_json_buffer_append_json_string(&out, frname) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "cnmfrm_c") == 0) {
+    char *centerName = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &centerName)) {
+      return false;
+    }
+
+    enum { V2_FRNAME_BUF_BYTES = 2048 };
+    SpiceInt frcode = 0;
+    SpiceChar frname[V2_FRNAME_BUF_BYTES];
+    SpiceBoolean found = SPICEFALSE;
+    memset(frname, 0, sizeof(frname));
+
+    cnmfrm_c(centerName,
+             (SpiceInt)V2_FRNAME_BUF_BYTES,
+             &frcode,
+             frname,
+             &found);
+    free(centerName);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in cnmfrm_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    frname[V2_FRNAME_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)frname);
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "frcode") &&
+              v2_json_buffer_append_int(&out, frcode) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "frname") &&
+              v2_json_buffer_append_json_string(&out, frname) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "frinfo_c") == 0) {
+    SpiceInt frameId = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &frameId)) {
+      return false;
+    }
+
+    SpiceInt center = 0;
+    SpiceInt frameClass = 0;
+    SpiceInt classId = 0;
+    SpiceBoolean found = SPICEFALSE;
+    frinfo_c(frameId, &center, &frameClass, &classId, &found);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in frinfo_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "center") &&
+              v2_json_buffer_append_int(&out, center) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "frameClass") &&
+              v2_json_buffer_append_int(&out, frameClass) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "classId") &&
+              v2_json_buffer_append_int(&out, classId) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "frmnam_c") == 0) {
+    SpiceInt code = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &code)) {
+      return false;
+    }
+
+    enum { V2_FRNAME_BUF_BYTES = 2048 };
+    SpiceChar name[V2_FRNAME_BUF_BYTES];
+    memset(name, 0, sizeof(name));
+    frmnam_c(code, (SpiceInt)V2_FRNAME_BUF_BYTES, name);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in frmnam_c");
+    }
+
+    name[V2_FRNAME_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)name);
+    if (name[0] == '\0') {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "name") &&
+              v2_json_buffer_append_json_string(&out, name) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "namfrm_c") == 0) {
+    char *name = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name)) {
+      return false;
+    }
+
+    SpiceInt code = 0;
+    namfrm_c(name, &code);
+    free(name);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in namfrm_c");
+    }
+
+    if (code == 0) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "code") &&
+              v2_json_buffer_append_int(&out, code) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "pxform_c") == 0) {
+    char *from = NULL;
+    char *to = NULL;
+    SpiceDouble et = 0.0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &from) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &to) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[2], arg2, &et)) {
+      free(from);
+      free(to);
+      return false;
+    }
+
+    SpiceDouble matrix[3][3];
+    pxform_c(from, to, et, matrix);
+    free(from);
+    free(to);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in pxform_c");
+    }
+
+    SpiceDouble flat[9];
+    v2_flatten_mat3_rowmajor(matrix, flat);
+    return v2_set_return_json_from_vec(context, flat, 9);
+  }
+
+  if (strcmp(binding->cSymbol, "sxform_c") == 0) {
+    char *from = NULL;
+    char *to = NULL;
+    SpiceDouble et = 0.0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &from) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &to) ||
+        !v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[2], arg2, &et)) {
+      free(from);
+      free(to);
+      return false;
+    }
+
+    SpiceDouble matrix[6][6];
+    sxform_c(from, to, et, matrix);
+    free(from);
+    free(to);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in sxform_c");
+    }
+
+    SpiceDouble flat[36];
+    int k = 0;
+    for (int r = 0; r < 6; r++) {
+      for (int c = 0; c < 6; c++) {
+        flat[k++] = matrix[r][c];
+      }
+    }
+    return v2_set_return_json_from_vec(context, flat, 36);
+  }
+
+  if (strcmp(binding->cSymbol, "bodc2n_c") == 0) {
+    SpiceInt code = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &code)) {
+      return false;
+    }
+
+    enum { V2_BODY_NAME_BUF_BYTES = 2048 };
+    SpiceChar name[V2_BODY_NAME_BUF_BYTES];
+    SpiceBoolean found = SPICEFALSE;
+    memset(name, 0, sizeof(name));
+
+    bodc2n_c(code, (SpiceInt)V2_BODY_NAME_BUF_BYTES, name, &found);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in bodc2n_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    name[V2_BODY_NAME_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)name);
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "name") &&
+              v2_json_buffer_append_json_string(&out, name) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "boddef_c") == 0) {
+    char *name = NULL;
+    SpiceInt code = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &code)) {
+      free(name);
+      return false;
+    }
+
+    boddef_c(name, code);
+    free(name);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in boddef_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "bodn2c_c") == 0) {
+    char *name = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name)) {
+      return false;
+    }
+
+    SpiceInt code = 0;
+    SpiceBoolean found = SPICEFALSE;
+    bodn2c_c(name, &code, &found);
+    free(name);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in bodn2c_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "code") &&
+              v2_json_buffer_append_int(&out, code) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "bods2c_c") == 0) {
+    char *name = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name)) {
+      return false;
+    }
+
+    SpiceInt code = 0;
+    SpiceBoolean found = SPICEFALSE;
+    bods2c_c(name, &code, &found);
+    free(name);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in bods2c_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "code") &&
+              v2_json_buffer_append_int(&out, code) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "bodvcd_c") == 0) {
+    SpiceInt body = 0;
+    char *item = NULL;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &body) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &item)) {
+      free(item);
+      return false;
+    }
+
+    char poolVar[256];
+    const int poolVarLen =
+        snprintf(poolVar, sizeof(poolVar), "BODY%ld_%s", (long)body, item);
+    if (poolVarLen < 0 || (size_t)poolVarLen >= sizeof(poolVar)) {
+      free(item);
+      write_error_json_ex("invalid_args", "Kernel pool variable name is too long",
+                          arg1, NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceBoolean found = SPICEFALSE;
+    SpiceInt itemCount = 0;
+    SpiceChar itemType[2] = {'\0', '\0'};
+    dtpool_c(poolVar, &found, &itemCount, itemType);
+    if (failed_c() == SPICETRUE) {
+      free(item);
+      return v2_write_spice_failure("SPICE error in bodvcd_c");
+    }
+
+    if (found != SPICETRUE || itemType[0] != 'N' || itemCount <= 0) {
+      free(item);
+      return v2_set_return_json_from_literal(context, "[]");
+    }
+
+    SpiceDouble *values = (SpiceDouble *)calloc((size_t)itemCount,
+                                                sizeof(SpiceDouble));
+    if (values == NULL) {
+      free(item);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceInt dim = 0;
+    bodvcd_c(body, item, itemCount, &dim, values);
+    free(item);
+    if (failed_c() == SPICETRUE) {
+      free(values);
+      return v2_write_spice_failure("SPICE error in bodvcd_c");
+    }
+
+    if (dim < 0) {
+      dim = 0;
+    } else if (dim > itemCount) {
+      dim = itemCount;
+    }
+
+    const bool ok = v2_set_return_json_from_vec(context, values, (int)dim);
+    free(values);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "cvpool_c") == 0) {
+    char *agent = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &agent)) {
+      return false;
+    }
+
+    SpiceBoolean update = SPICEFALSE;
+    cvpool_c(agent, &update);
+    free(agent);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in cvpool_c");
+    }
+
+    return v2_set_return_json_from_bool(context, update);
+  }
+
+  if (strcmp(binding->cSymbol, "dtpool_c") == 0) {
+    char *name = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name)) {
+      return false;
+    }
+
+    SpiceBoolean found = SPICEFALSE;
+    SpiceInt n = 0;
+    SpiceChar type[2] = {'\0', '\0'};
+    dtpool_c(name, &found, &n, type);
+    free(name);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in dtpool_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    const char t = type[0];
+    if (t != 'C' && t != 'N') {
+      write_error_json_ex("invalid_request", "dtpool() returned unexpected type",
+                          context->fnName, NULL, NULL, NULL);
+      return false;
+    }
+
+    char typeStr[2] = {t, '\0'};
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "n") &&
+              v2_json_buffer_append_int(&out, n) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "type") &&
+              v2_json_buffer_append_json_string(&out, typeStr) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "gcpool_c") == 0) {
+    char *name = NULL;
+    SpiceInt start = 0;
+    SpiceInt room = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &start) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[2], arg2, &room)) {
+      free(name);
+      return false;
+    }
+
+    if (start < 0 || room <= 0) {
+      free(name);
+      write_error_json_ex("invalid_args", "gcpool expects start>=0 and room>0",
+                          context->fnName, NULL, NULL, NULL);
+      return false;
+    }
+
+    enum { V2_POOL_STRING_BYTES = 2048 };
+    char *values = (char *)calloc((size_t)room, (size_t)V2_POOL_STRING_BYTES);
+    if (values == NULL) {
+      free(name);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceInt n = 0;
+    SpiceBoolean found = SPICEFALSE;
+    gcpool_c(name,
+             start,
+             room,
+             (SpiceInt)V2_POOL_STRING_BYTES,
+             &n,
+             values,
+             &found);
+    free(name);
+    if (failed_c() == SPICETRUE) {
+      free(values);
+      return v2_write_spice_failure("SPICE error in gcpool_c");
+    }
+
+    if (found != SPICETRUE) {
+      free(values);
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    if (n < 0) {
+      n = 0;
+    } else if (n > room) {
+      n = room;
+    }
+
+    char **strings = NULL;
+    if (n > 0) {
+      strings = (char **)calloc((size_t)n, sizeof(char *));
+      if (strings == NULL) {
+        free(values);
+        write_error_json("Out of memory", NULL, NULL, NULL);
+        return false;
+      }
+    }
+
+    for (SpiceInt i = 0; i < n; i++) {
+      char *slot = values + ((size_t)i * (size_t)V2_POOL_STRING_BYTES);
+      slot[V2_POOL_STRING_BYTES - 1] = '\0';
+      v2_trim_ascii_trailing_whitespace(slot);
+      if (strings != NULL) {
+        strings[i] = slot;
+      }
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "values") &&
+              v2_json_buffer_append_string_array(&out, strings, (int)n) &&
+              v2_json_buffer_append_char(&out, '}');
+
+    free(strings);
+    free(values);
+
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "gdpool_c") == 0) {
+    char *name = NULL;
+    SpiceInt start = 0;
+    SpiceInt room = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &start) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[2], arg2, &room)) {
+      free(name);
+      return false;
+    }
+
+    if (start < 0 || room <= 0) {
+      free(name);
+      write_error_json_ex("invalid_args", "gdpool expects start>=0 and room>0",
+                          context->fnName, NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceDouble *values = (SpiceDouble *)calloc((size_t)room,
+                                                sizeof(SpiceDouble));
+    if (values == NULL) {
+      free(name);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceInt n = 0;
+    SpiceBoolean found = SPICEFALSE;
+    gdpool_c(name, start, room, &n, values, &found);
+    free(name);
+    if (failed_c() == SPICETRUE) {
+      free(values);
+      return v2_write_spice_failure("SPICE error in gdpool_c");
+    }
+
+    if (found != SPICETRUE) {
+      free(values);
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    if (n < 0) {
+      n = 0;
+    } else if (n > room) {
+      n = room;
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "values") &&
+              v2_json_buffer_append_double_array(&out, values, (int)n) &&
+              v2_json_buffer_append_char(&out, '}');
+    free(values);
+
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "gipool_c") == 0) {
+    char *name = NULL;
+    SpiceInt start = 0;
+    SpiceInt room = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &start) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[2], arg2, &room)) {
+      free(name);
+      return false;
+    }
+
+    if (start < 0 || room <= 0) {
+      free(name);
+      write_error_json_ex("invalid_args", "gipool expects start>=0 and room>0",
+                          context->fnName, NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceInt *values = (SpiceInt *)calloc((size_t)room, sizeof(SpiceInt));
+    if (values == NULL) {
+      free(name);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceInt n = 0;
+    SpiceBoolean found = SPICEFALSE;
+    gipool_c(name, start, room, &n, values, &found);
+    free(name);
+    if (failed_c() == SPICETRUE) {
+      free(values);
+      return v2_write_spice_failure("SPICE error in gipool_c");
+    }
+
+    if (found != SPICETRUE) {
+      free(values);
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    if (n < 0) {
+      n = 0;
+    } else if (n > room) {
+      n = room;
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "values") &&
+              v2_json_buffer_append_spiceint_array(&out, values, (int)n) &&
+              v2_json_buffer_append_char(&out, '}');
+    free(values);
+
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "gnpool_c") == 0) {
+    char *templ = NULL;
+    SpiceInt start = 0;
+    SpiceInt room = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &templ) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[1], arg1, &start) ||
+        !v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[2], arg2, &room)) {
+      free(templ);
+      return false;
+    }
+
+    if (start < 0 || room <= 0) {
+      free(templ);
+      write_error_json_ex("invalid_args", "gnpool expects start>=0 and room>0",
+                          context->fnName, NULL, NULL, NULL);
+      return false;
+    }
+
+    enum { V2_POOL_NAME_BYTES = 64 };
+    char *values = (char *)calloc((size_t)room, (size_t)V2_POOL_NAME_BYTES);
+    if (values == NULL) {
+      free(templ);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    SpiceInt n = 0;
+    SpiceBoolean found = SPICEFALSE;
+    gnpool_c(templ,
+             start,
+             room,
+             (SpiceInt)V2_POOL_NAME_BYTES,
+             &n,
+             values,
+             &found);
+    free(templ);
+    if (failed_c() == SPICETRUE) {
+      free(values);
+      return v2_write_spice_failure("SPICE error in gnpool_c");
+    }
+
+    if (found != SPICETRUE) {
+      free(values);
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    if (n < 0) {
+      n = 0;
+    } else if (n > room) {
+      n = room;
+    }
+
+    char **strings = NULL;
+    if (n > 0) {
+      strings = (char **)calloc((size_t)n, sizeof(char *));
+      if (strings == NULL) {
+        free(values);
+        write_error_json("Out of memory", NULL, NULL, NULL);
+        return false;
+      }
+    }
+
+    for (SpiceInt i = 0; i < n; i++) {
+      char *slot = values + ((size_t)i * (size_t)V2_POOL_NAME_BYTES);
+      slot[V2_POOL_NAME_BYTES - 1] = '\0';
+      v2_trim_ascii_trailing_whitespace(slot);
+      if (strings != NULL) {
+        strings[i] = slot;
+      }
+    }
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "values") &&
+              v2_json_buffer_append_string_array(&out, strings, (int)n) &&
+              v2_json_buffer_append_char(&out, '}');
+
+    free(strings);
+    free(values);
+
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "pcpool_c") == 0) {
+    char *name = NULL;
+    char **values = NULL;
+    int valueCount = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name) ||
+        !v2_resolve_expr_string_array_values(
+            context, context->resolved->valueTokens[1], arg1, &values,
+            &valueCount)) {
+      free(name);
+      v2_free_string_array_values(values, valueCount);
+      return false;
+    }
+
+    char *matrix = NULL;
+    SpiceInt valueWidth = 0;
+    if (!v2_build_fixed_width_string_matrix(values,
+                                            valueCount,
+                                            1,
+                                            &matrix,
+                                            &valueWidth)) {
+      free(name);
+      v2_free_string_array_values(values, valueCount);
+      return false;
+    }
+
+    pcpool_c(name, (SpiceInt)valueCount, valueWidth, matrix);
+    free(name);
+    v2_free_string_array_values(values, valueCount);
+    free(matrix);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in pcpool_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "pdpool_c") == 0) {
+    char *name = NULL;
+    SpiceDouble *values = NULL;
+    int valueCount = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name) ||
+        !v2_resolve_expr_double_array_values(
+            context, context->resolved->valueTokens[1], arg1, &values,
+            &valueCount)) {
+      free(name);
+      free(values);
+      return false;
+    }
+
+    pdpool_c(name, (SpiceInt)valueCount, values);
+    free(name);
+    free(values);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in pdpool_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "pipool_c") == 0) {
+    char *name = NULL;
+    SpiceInt *values = NULL;
+    int valueCount = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &name) ||
+        !v2_resolve_expr_spiceint_array_values(
+            context, context->resolved->valueTokens[1], arg1, &values,
+            &valueCount)) {
+      free(name);
+      free(values);
+      return false;
+    }
+
+    pipool_c(name, (SpiceInt)valueCount, values);
+    free(name);
+    free(values);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in pipool_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "swpool_c") == 0) {
+    char *agent = NULL;
+    char **names = NULL;
+    int nameCount = 0;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &agent) ||
+        !v2_resolve_expr_string_array_values(
+            context, context->resolved->valueTokens[1], arg1, &names,
+            &nameCount)) {
+      free(agent);
+      v2_free_string_array_values(names, nameCount);
+      return false;
+    }
+
+    char *matrix = NULL;
+    SpiceInt nameWidth = 0;
+    if (!v2_build_fixed_width_string_matrix(names,
+                                            nameCount,
+                                            1,
+                                            &matrix,
+                                            &nameWidth)) {
+      free(agent);
+      v2_free_string_array_values(names, nameCount);
+      return false;
+    }
+
+    swpool_c(agent, (SpiceInt)nameCount, nameWidth, matrix);
+    free(agent);
+    v2_free_string_array_values(names, nameCount);
+    free(matrix);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in swpool_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "furnsh_c") == 0) {
+    char *path = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &path)) {
+      return false;
+    }
+
+    furnsh_c(path);
+    free(path);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in furnsh_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "kdata_c") == 0) {
+    SpiceInt which = 0;
+    char *kind = NULL;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &which) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &kind)) {
+      free(kind);
+      return false;
+    }
+
+    enum { V2_KERNEL_BUF_BYTES = 2048 };
+    SpiceChar file[V2_KERNEL_BUF_BYTES];
+    SpiceChar filtyp[V2_KERNEL_BUF_BYTES];
+    SpiceChar source[V2_KERNEL_BUF_BYTES];
+    SpiceInt handle = 0;
+    SpiceBoolean found = SPICEFALSE;
+    memset(file, 0, sizeof(file));
+    memset(filtyp, 0, sizeof(filtyp));
+    memset(source, 0, sizeof(source));
+
+    kdata_c(which,
+            kind,
+            (SpiceInt)V2_KERNEL_BUF_BYTES,
+            (SpiceInt)V2_KERNEL_BUF_BYTES,
+            (SpiceInt)V2_KERNEL_BUF_BYTES,
+            file,
+            filtyp,
+            source,
+            &handle,
+            &found);
+    free(kind);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in kdata_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    file[V2_KERNEL_BUF_BYTES - 1] = '\0';
+    filtyp[V2_KERNEL_BUF_BYTES - 1] = '\0';
+    source[V2_KERNEL_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)file);
+    v2_trim_ascii_trailing_whitespace((char *)filtyp);
+    v2_trim_ascii_trailing_whitespace((char *)source);
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "file") &&
+              v2_json_buffer_append_json_string(&out, file) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "filtyp") &&
+              v2_json_buffer_append_json_string(&out, filtyp) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "source") &&
+              v2_json_buffer_append_json_string(&out, source) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "handle") &&
+              v2_json_buffer_append_int(&out, handle) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "kinfo_c") == 0) {
+    char *file = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &file)) {
+      return false;
+    }
+
+    enum { V2_KERNEL_BUF_BYTES = 2048 };
+    SpiceChar filtyp[V2_KERNEL_BUF_BYTES];
+    SpiceChar source[V2_KERNEL_BUF_BYTES];
+    SpiceInt handle = 0;
+    SpiceBoolean found = SPICEFALSE;
+    memset(filtyp, 0, sizeof(filtyp));
+    memset(source, 0, sizeof(source));
+
+    kinfo_c(file,
+            (SpiceInt)V2_KERNEL_BUF_BYTES,
+            (SpiceInt)V2_KERNEL_BUF_BYTES,
+            filtyp,
+            source,
+            &handle,
+            &found);
+    free(file);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in kinfo_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    filtyp[V2_KERNEL_BUF_BYTES - 1] = '\0';
+    source[V2_KERNEL_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)filtyp);
+    v2_trim_ascii_trailing_whitespace((char *)source);
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "filtyp") &&
+              v2_json_buffer_append_json_string(&out, filtyp) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "source") &&
+              v2_json_buffer_append_json_string(&out, source) &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "handle") &&
+              v2_json_buffer_append_int(&out, handle) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "kplfrm_c") == 0) {
+    SpiceInt frameClass = 0;
+    if (!v2_resolve_expr_spiceint_value(
+            context, context->resolved->valueTokens[0], arg0, &frameClass)) {
+      return false;
+    }
+
+    SPICEINT_CELL(idset, 1024);
+    scard_c(0, &idset);
+    kplfrm_c(frameClass, &idset);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in kplfrm_c");
+    }
+
+    const SpiceInt count = card_c(&idset);
+    const SpiceInt *values = (const SpiceInt *)idset.data;
+    return v2_set_return_json_from_spiceint_array(context, values, (int)count);
+  }
+
+  if (strcmp(binding->cSymbol, "ktotal_c") == 0) {
+    char *kind = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &kind)) {
+      return false;
+    }
+
+    SpiceInt count = 0;
+    ktotal_c(kind, &count);
+    free(kind);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in ktotal_c");
+    }
+
+    return v2_set_return_json_from_spiceint(context, count);
+  }
+
+  if (strcmp(binding->cSymbol, "kxtrct_c") == 0) {
+    char *keywd = NULL;
+    char **terms = NULL;
+    int termCount = 0;
+    char *wordsq = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &keywd) ||
+        !v2_resolve_expr_string_array_values(
+            context, context->resolved->valueTokens[1], arg1, &terms,
+            &termCount) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[2], arg2, &wordsq)) {
+      free(keywd);
+      v2_free_string_array_values(terms, termCount);
+      free(wordsq);
+      return false;
+    }
+
+    char *termsMatrix = NULL;
+    SpiceInt termWidth = 0;
+    if (!v2_build_fixed_width_string_matrix(terms,
+                                            termCount,
+                                            1,
+                                            &termsMatrix,
+                                            &termWidth)) {
+      free(keywd);
+      v2_free_string_array_values(terms, termCount);
+      free(wordsq);
+      return false;
+    }
+
+    const size_t wordsqLen = strlen(wordsq);
+    if (wordsqLen + 1U > (size_t)INT_MAX) {
+      free(keywd);
+      v2_free_string_array_values(terms, termCount);
+      free(wordsq);
+      free(termsMatrix);
+      write_error_json_ex("invalid_args", "wordsq is too long", arg2, NULL,
+                          NULL, NULL);
+      return false;
+    }
+
+    const SpiceInt wordsqWidth = (SpiceInt)(wordsqLen + 1U);
+    char *wordsqMutable = (char *)malloc((size_t)wordsqWidth);
+    if (wordsqMutable == NULL) {
+      free(keywd);
+      v2_free_string_array_values(terms, termCount);
+      free(wordsq);
+      free(termsMatrix);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+    memcpy(wordsqMutable, wordsq, (size_t)wordsqWidth);
+
+    enum { V2_KXTRCT_SUBSTR_BYTES = 2048 };
+    SpiceChar substr[V2_KXTRCT_SUBSTR_BYTES];
+    memset(substr, 0, sizeof(substr));
+
+    SpiceBoolean found = SPICEFALSE;
+    kxtrct_c(keywd,
+             termWidth,
+             termsMatrix,
+             (SpiceInt)termCount,
+             wordsqWidth,
+             (SpiceInt)V2_KXTRCT_SUBSTR_BYTES,
+             wordsqMutable,
+             &found,
+             substr);
+
+    free(keywd);
+    v2_free_string_array_values(terms, termCount);
+    free(wordsq);
+    free(termsMatrix);
+    free(wordsqMutable);
+
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in kxtrct_c");
+    }
+
+    if (found != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    substr[V2_KXTRCT_SUBSTR_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)substr);
+
+    V2JsonBuffer out;
+    v2_json_buffer_init(&out);
+    bool ok = v2_json_buffer_append_char(&out, '{') &&
+              v2_json_buffer_append_json_key(&out, "found") &&
+              v2_json_buffer_append_cstr(&out, "true") &&
+              v2_json_buffer_append_char(&out, ',') &&
+              v2_json_buffer_append_json_key(&out, "xtract") &&
+              v2_json_buffer_append_json_string(&out, substr) &&
+              v2_json_buffer_append_char(&out, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&out);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &out);
+    v2_json_buffer_free(&out);
+    return ok;
+  }
+
+  if (strcmp(binding->cSymbol, "unload_c") == 0) {
+    char *path = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &path)) {
+      return false;
+    }
+
+    unload_c(path);
+    free(path);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in unload_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "deltet_c") == 0) {
+    SpiceDouble epoch = 0.0;
+    char *eptype = NULL;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &epoch) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &eptype)) {
+      free(eptype);
+      return false;
+    }
+
+    SpiceDouble delta = 0.0;
+    deltet_c(epoch, eptype, &delta);
+    free(eptype);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in deltet_c");
+    }
+
+    return v2_set_return_json_from_double(context, delta);
+  }
+
+  if (strcmp(binding->cSymbol, "timdef_c") == 0) {
+    char *action = NULL;
+    char *item = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &action) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &item)) {
+      free(action);
+      free(item);
+      return false;
+    }
+
+    if (strcmp(action, "GET") == 0) {
+      enum { V2_TIMDEF_BUF_BYTES = 2048 };
+      SpiceChar out[V2_TIMDEF_BUF_BYTES];
+      memset(out, 0, sizeof(out));
+      timdef_c(action, item, (SpiceInt)V2_TIMDEF_BUF_BYTES, out);
+      free(action);
+      free(item);
+      if (failed_c() == SPICETRUE) {
+        return v2_write_spice_failure("SPICE error in timdef_c");
+      }
+
+      out[V2_TIMDEF_BUF_BYTES - 1] = '\0';
+      v2_trim_ascii_trailing_whitespace((char *)out);
+      return v2_set_return_json_from_string(context, out);
+    }
+
+    timdef_c(action, item, (SpiceInt)(strlen(item) + 1U), item);
+    free(action);
+    free(item);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in timdef_c");
+    }
+
+    return v2_set_return_json_from_literal(context, "null");
+  }
+
+  if (strcmp(binding->cSymbol, "timout_c") == 0) {
+    SpiceDouble et = 0.0;
+    char *pictur = NULL;
+    if (!v2_resolve_expr_double_value(
+            context, context->resolved->valueTokens[0], arg0, &et) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &pictur)) {
+      free(pictur);
+      return false;
+    }
+
+    enum { V2_TIMOUT_BUF_BYTES = 2048 };
+    SpiceChar out[V2_TIMOUT_BUF_BYTES];
+    memset(out, 0, sizeof(out));
+    timout_c(et, pictur, (SpiceInt)V2_TIMOUT_BUF_BYTES, out);
+    free(pictur);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in timout_c");
+    }
+
+    out[V2_TIMOUT_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)out);
+    return v2_set_return_json_from_string(context, out);
+  }
+
+  if (strcmp(binding->cSymbol, "tparse_c") == 0) {
+    char *input = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &input)) {
+      return false;
+    }
+
+    SpiceDouble et = 0.0;
+    enum { V2_TPARSE_ERR_BYTES = 2048 };
+    SpiceChar errmsg[V2_TPARSE_ERR_BYTES];
+    memset(errmsg, 0, sizeof(errmsg));
+
+    tparse_c(input, (SpiceInt)V2_TPARSE_ERR_BYTES, &et, errmsg);
+    free(input);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in tparse_c");
+    }
+
+    errmsg[V2_TPARSE_ERR_BYTES - 1] = '\0';
+    if (errmsg[0] != '\0') {
+      write_error_json_ex("invalid_args", errmsg, context->fnName, NULL, NULL,
+                          NULL);
+      return false;
+    }
+
+    return v2_set_return_json_from_double(context, et);
+  }
+
+  if (strcmp(binding->cSymbol, "tpictr_c") == 0) {
+    char *sample = NULL;
+    char *pictur = NULL;
+    if (!v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[0], arg0, &sample) ||
+        !v2_resolve_expr_string_value(
+            context, context->resolved->valueTokens[1], arg1, &pictur)) {
+      free(sample);
+      free(pictur);
+      return false;
+    }
+
+    enum { V2_TPICTR_BUF_BYTES = 2048 };
+    SpiceChar out[V2_TPICTR_BUF_BYTES];
+    SpiceChar errmsg[V2_TPICTR_BUF_BYTES];
+    SpiceBoolean okFlag = SPICEFALSE;
+    strncpy((char *)out, pictur, (size_t)V2_TPICTR_BUF_BYTES - 1U);
+    out[V2_TPICTR_BUF_BYTES - 1] = '\0';
+    memset(errmsg, 0, sizeof(errmsg));
+
+    tpictr_c(sample,
+             (SpiceInt)V2_TPICTR_BUF_BYTES,
+             out,
+             &okFlag,
+             errmsg);
+    free(sample);
+    free(pictur);
+    if (failed_c() == SPICETRUE) {
+      return v2_write_spice_failure("SPICE error in tpictr_c");
+    }
+
+    if (okFlag != SPICETRUE) {
+      return v2_set_return_json_from_literal(context, "{\"found\":false}");
+    }
+
+    out[V2_TPICTR_BUF_BYTES - 1] = '\0';
+    v2_trim_ascii_trailing_whitespace((char *)out);
+
+    V2JsonBuffer outJson;
+    v2_json_buffer_init(&outJson);
+    bool ok = v2_json_buffer_append_char(&outJson, '{') &&
+              v2_json_buffer_append_json_key(&outJson, "found") &&
+              v2_json_buffer_append_cstr(&outJson, "true") &&
+              v2_json_buffer_append_char(&outJson, ',') &&
+              v2_json_buffer_append_json_key(&outJson, "picture") &&
+              v2_json_buffer_append_json_string(&outJson, out) &&
+              v2_json_buffer_append_char(&outJson, '}');
+    if (!ok) {
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      v2_json_buffer_free(&outJson);
+      return false;
+    }
+
+    ok = v2_set_return_json_from_buffer(context, &outJson);
+    v2_json_buffer_free(&outJson);
+    return ok;
   }
 
   if (strcmp(binding->cSymbol, "insrtc_c") == 0) {
