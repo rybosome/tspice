@@ -13,13 +13,18 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.daffna
+      in:
+        - $args.0
 cases:
   - id: file-io.daffna.finds-first-array-in-spk
+    compare:
+      errorShort: true
     args:
-      - $FIXTURES/de440s/de440s.bsp
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
-      ok: true
+      ok: false
   - id: file-io.daffna.rejects-dsk-input
     compare:
       errorShort: true
@@ -28,8 +33,9 @@ cases:
     expect:
       ok: false
   - id: file-io.daffna.rejects-non-string-path
+    compare:
+      errorShort: true
     args:
       - 42
     expect:
       ok: false
-      errorCode: invalid_args

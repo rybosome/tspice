@@ -25,11 +25,11 @@ workflow:
       params:
         kind: int
         size: $args.size
-    - op: spiceCall
-      call: card_c
+    - op: call
       in:
         - $refs.cell
       as: card
+      fn: cells-windows.card
     - op: projectResult
       out:
         card: $refs.card

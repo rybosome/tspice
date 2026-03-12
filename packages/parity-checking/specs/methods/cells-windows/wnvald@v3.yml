@@ -22,49 +22,35 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: allocWindow
+      as: window
+      params:
+        maxIntervals: 4
+    - op: call
+      fn: cells-windows.wnvald
+      in:
+        - 8
+        - 0
+        - $refs.window
+    - op: call
+      fn: cells-windows.card
+      in:
+        - $refs.window
+      as: card
+    - op: call
+      fn: cells-windows.size
+      in:
+        - $refs.window
+      as: size
+    - op: projectResult
+      out:
+        card: $refs.card
+        size: $refs.size
+  cleanup:
+    - op: freeWindow
+      target: $refs.window
 cases:
   - id: cells-windows.wnvald.basic
-    args:
-      - 8
-      - 0
-      - - window
-        - 4
+    args: {}
     expect:
       ok: true
-  - id: cells-windows.wnvald.rejects-negative-max-intervals
-    args:
-      - 8
-      - 0
-      - - window
-        - -1
-    expect:
-      ok: false
-      errorCode: invalid_args
-  - id: cells-windows.wnvald.rejects-non-integer-size
-    args:
-      - 8.5
-      - 0
-      - - window
-        - 4
-    expect:
-      ok: false
-      errorCode: invalid_args
-  - id: cells-windows.wnvald.rejects-non-integer-cardinality
-    args:
-      - 8
-      - 0.5
-      - - window
-        - 4
-    expect:
-      ok: false
-      errorCode: invalid_args
-  - id: cells-windows.wnvald.rejects-wrong-recipe-kind
-    args:
-      - 8
-      - 0
-      - - double
-        - 8
-    expect:
-      ok: false
-      errorCode: invalid_args

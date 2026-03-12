@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseMethodSpec } from "../../src/dsl/schemaValidate.js";
+import { parseCrossCuttingSpec, parseMethodSpec } from "../../src/dsl/schemaValidate.js";
 
 describe("schema validation (v3)", () => {
   it("parses valid v3 method spec with workflow+cases", () => {
@@ -17,7 +17,7 @@ describe("schema validation (v3)", () => {
           canonicalMethod: "time.tkvrsn",
         },
         workflow: {
-          steps: [{ op: "callContract" }],
+          steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
         },
         cases: [
           {
@@ -29,7 +29,7 @@ describe("schema validation (v3)", () => {
     });
 
     expect(method.manifest.id).toBe("methods/time/spiceVersion@v3");
-    expect(method.workflow?.steps[0]?.op).toBe("callContract");
+    expect(method.workflow?.steps[0]?.op).toBe("call");
     expect(method.cases).toHaveLength(1);
   });
 
@@ -50,7 +50,7 @@ describe("schema validation (v3)", () => {
           {
             id: "default",
             workflow: {
-              steps: [{ op: "callContract" }],
+              steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
             },
             cases: [{ id: "ok", args: [] }],
           },
@@ -78,14 +78,14 @@ describe("schema validation (v3)", () => {
             canonicalMethod: "time.tkvrsn",
           },
           workflow: {
-            steps: [{ op: "callContract" }],
+            steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
           },
           cases: [{ id: "ok", args: [] }],
           suites: [
             {
               id: "dup",
               workflow: {
-                steps: [{ op: "callContract" }],
+                steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
               },
               cases: [{ id: "ok", args: [] }],
             },
@@ -144,7 +144,7 @@ describe("schema validation (v3)", () => {
             },
           },
           workflow: {
-            steps: [{ op: "callContract" }],
+            steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
           },
           cases: [{ id: "invalid", args: [] }],
         },
@@ -165,7 +165,7 @@ describe("schema validation (v3)", () => {
             canonicalMethod: "time.tkvrsn",
           },
           workflow: {
-            steps: [{ op: "callContract" }],
+            steps: [{ op: "call", fn: "time.tkvrsn", in: [] }],
           },
           cases: [
             {
@@ -281,4 +281,139 @@ describe("schema validation (v3)", () => {
     ).toThrow(/module imports are not allowed/);
   });
 
+  it("rejects legacy call op names and call sugar", () => {
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "specs/methods/time/invalid-spiceCall-op@v3.yml",
+        data: {
+          schemaVersion: 3,
+          manifest: {
+            id: "methods/time/invalid-spiceCall-op@v3",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
+          },
+          workflow: {
+            steps: [{ op: "spiceCall", fn: "time.tkvrsn", in: [] }],
+          },
+          cases: [{ id: "invalid", args: [] }],
+        },
+      }),
+    ).toThrow(/no longer supported/);
+
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "specs/methods/time/invalid-callContract-op@v3.yml",
+        data: {
+          schemaVersion: 3,
+          manifest: {
+            id: "methods/time/invalid-callContract-op@v3",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
+          },
+          workflow: {
+            steps: [{ op: "callContract", fn: "time.tkvrsn", in: [] }],
+          },
+          cases: [{ id: "invalid", args: [] }],
+        },
+      }),
+    ).toThrow(/no longer supported/);
+
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "specs/methods/time/invalid-call-sugar-op@v3.yml",
+        data: {
+          schemaVersion: 3,
+          manifest: {
+            id: "methods/time/invalid-call-sugar-op@v3",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
+          },
+          workflow: {
+            steps: [{ op: "call::time.tkvrsn", fn: "time.tkvrsn", in: [] }],
+          },
+          cases: [{ id: "invalid", args: [] }],
+        },
+      }),
+    ).toThrow(/removed call sugar/);
+  });
+
+  it("rejects call-step call key and missing fn", () => {
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "specs/methods/time/invalid-call-key@v3.yml",
+        data: {
+          schemaVersion: 3,
+          manifest: {
+            id: "methods/time/invalid-call-key@v3",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
+          },
+          workflow: {
+            steps: [{ op: "call", call: "time.tkvrsn", in: [] }],
+          },
+          cases: [{ id: "invalid", args: [] }],
+        },
+      }),
+    ).toThrow(/no longer supported/);
+
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "specs/methods/time/missing-call-fn@v3.yml",
+        data: {
+          schemaVersion: 3,
+          manifest: {
+            id: "methods/time/missing-call-fn@v3",
+            kind: "method",
+          },
+          contract: {
+            contractMethod: "time.tkvrsn",
+            canonicalMethod: "time.tkvrsn",
+          },
+          workflow: {
+            steps: [{ op: "call", in: [] }],
+          },
+          cases: [{ id: "invalid", args: [] }],
+        },
+      }),
+    ).toThrow(/\.fn/);
+  });
+
+  it("parses valid v3 cross-cutting spec", () => {
+    const spec = parseCrossCuttingSpec({
+      sourcePath: "specs/cross-cutting/native-protocol/sample@v3.yml",
+      data: {
+        schemaVersion: 3,
+        manifest: {
+          id: "native-protocol/strict-parsing@v3",
+          kind: "crossCuttingSpec",
+        },
+        cases: [
+          {
+            id: "rejects-trailing-bytes",
+            transport: "native",
+            rawRequest: '{"call":"time.str2et","args":["2020-01-01"]}garbage',
+            expect: {
+              ok: false,
+              errorCode: "invalid_request",
+            },
+          },
+        ],
+      },
+    });
+
+    expect(spec.manifest.id).toContain("strict-parsing@v3");
+    expect(spec.cases).toHaveLength(1);
+  });
 });

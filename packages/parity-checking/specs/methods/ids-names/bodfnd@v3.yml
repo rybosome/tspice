@@ -11,7 +11,11 @@ setup:
     - $FIXTURES/body399-char-foo.tpc
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: ids-names.bodfnd
+      in:
+        - $args.0
+        - $args.1
 cases:
   - id: bodfnd-char-typed-item
     args:

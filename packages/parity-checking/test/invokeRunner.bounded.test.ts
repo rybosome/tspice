@@ -1,27 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { invokeRunner } from "../src/runners/cspiceRunner.js";
-import type { RunCaseInputV3 } from "../src/runners/types.js";
 
 const TEST_TIMEOUT_MS = 10_000;
-
-function buildInput(): RunCaseInputV3 {
-  return {
-    schemaVersion: 3,
-    manifest: {
-      id: "methods/test/noop@v3",
-      kind: "method",
-    },
-    contract: {
-      contractMethod: "test.noop",
-      canonicalMethod: "test.noop",
-    },
-    args: [],
-    workflow: {
-      steps: [{ op: "callContract" }],
-    },
-  };
-}
 
 describe("invokeRunner (bounded time)", () => {
   it("rejects quickly on timeout", async () => {
@@ -30,7 +11,7 @@ describe("invokeRunner (bounded time)", () => {
     await expect(
       invokeRunner(
         process.execPath,
-        buildInput(),
+        { call: "noop", args: [] },
         {
           timeoutMs: 50,
           args: ["-e", "setInterval(() => {}, 1000)"]
@@ -55,7 +36,7 @@ describe("invokeRunner (bounded time)", () => {
     await expect(
       invokeRunner(
         process.execPath,
-        buildInput(),
+        { call: "noop", args: [] },
         {
           timeoutMs: 10_000,
           maxStdoutChars: 10_000,
@@ -81,7 +62,7 @@ describe("invokeRunner (bounded time)", () => {
     await expect(
       invokeRunner(
         process.execPath,
-        buildInput(),
+        { call: "noop", args: [] },
         {
           timeoutMs: 10_000,
           maxStderrChars: 10_000,

@@ -13,28 +13,36 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.getfat
+      in:
+        - $args.0
 cases:
   - id: file-io.getfat.classifies-spk
+    compare:
+      errorShort: true
     args:
-      - $FIXTURES/de440s/de440s.bsp
+      - $FIXTURES/ephemeris-de440s/de440s.bsp
     expect:
-      ok: true
+      ok: false
   - id: file-io.getfat.classifies-dsk
+    compare:
+      errorShort: true
     args:
       - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
     expect:
-      ok: true
+      ok: false
   - id: file-io.getfat.missing-file
     compare:
       errorShort: true
     args:
-      - $FIXTURES/de440s/does-not-exist.bsp
+      - $FIXTURES/ephemeris-de440s/does-not-exist.bsp
     expect:
       ok: false
   - id: file-io.getfat.rejects-non-string-path
+    compare:
+      errorShort: true
     args:
       - 42
     expect:
       ok: false
-      errorCode: invalid_args

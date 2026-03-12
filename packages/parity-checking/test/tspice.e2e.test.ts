@@ -13,10 +13,10 @@ describe("parity-checking method execution", () => {
   const status = getCspiceRunnerStatus();
   const maybeIt = status.ready ? it : it.skip;
 
-  maybeIt("executes str2et method spec parity", async () => {
+  maybeIt("executes tkvrsn method spec parity", async () => {
     const methodPath = path.resolve(
       path.dirname(fileURLToPath(import.meta.url)),
-      "../specs/methods/time/str2et@v3.yml",
+      "../specs/methods/time/tkvrsn@v3.yml",
     );
 
     const method = parseMethodSpec(await loadYamlFile(methodPath));
@@ -27,7 +27,7 @@ describe("parity-checking method execution", () => {
     try {
       const summary = await executeMethodSpecParity(method, { tspice, cspice });
       expect(summary.caseCount).toBeGreaterThan(0);
-      expect(summary.methodId).toBe("methods/time/str2et@v3");
+      expect(summary.methodId).toBe("methods/time/tkvrsn@v3");
     } finally {
       await tspice.dispose?.();
       await cspice.dispose?.();

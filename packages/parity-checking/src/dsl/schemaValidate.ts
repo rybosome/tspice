@@ -1,6 +1,12 @@
+import * as path from "node:path";
+
 import { ASSERT_OPERATORS, type AssertOperator } from "../assertOperators.js";
+import { expandFixturesMacroString, resolveKernelPaths } from "./parse.js";
 
 import type {
+  CrossCuttingSpecV3,
+  CrossCuttingCaseExpectation,
+  CrossCuttingCaseSpec,
   MethodCaseExpectation,
   MethodCaseSpecV3,
   MethodContractV3,
@@ -14,6 +20,7 @@ import type {
   ScenarioCompareAst,
   ScenarioSetupAst,
   ScenarioYamlFile,
+  WorkflowSpec,
 } from "./types.js";
 
 function formatValue(value: unknown): string {
@@ -107,38 +114,80 @@ function parseStringMap(value: unknown, label: string): Record<string, string> {
   return out;
 }
 
-function parseKernelEntry(value: unknown, label: string): string | { path: string; restrictToDir?: string } {
+function resolveKernelObjectPath(rawPath: string, sourceDir: string): string {
+  const expanded = expandFixturesMacroString(rawPath, sourceDir);
+  return path.isAbsolute(expanded) ? path.resolve(expanded) : path.resolve(sourceDir, expanded);
+}
+
+function parseKernelEntry(
+  value: unknown,
+  label: string,
+  sourceDir: string,
+): Array<string | { path: string; restrictToDir?: string }> {
   if (typeof value === "string") {
     if (value.trim() === "") {
       throw new TypeError(`${label} must be a non-empty string`);
     }
-    return value;
+    return resolveKernelPaths(value, sourceDir);
   }
 
   const obj = asRecord(value, label);
   ensureKnownKeys(obj, ["path", "restrictToDir"], label);
 
-  const out: { path: string; restrictToDir?: string } = {
-    path: asString(obj.path, `${label}.path`),
-  };
+  const kernelPath = resolveKernelObjectPath(asString(obj.path, `${label}.path`), sourceDir);
+  const restrictToDir =
+    obj.restrictToDir === undefined
+      ? undefined
+      : resolveKernelObjectPath(asString(obj.restrictToDir, `${label}.restrictToDir`), sourceDir);
 
-  if (obj.restrictToDir !== undefined) {
-    out.restrictToDir = asString(obj.restrictToDir, `${label}.restrictToDir`);
-  }
-
-  return out;
+  return [restrictToDir === undefined ? { path: kernelPath } : { path: kernelPath, restrictToDir }];
 }
 
-function parseSetupAst(value: unknown, label: string): ScenarioSetupAst {
+function parseSetupAst(value: unknown, label: string, sourceDir: string): ScenarioSetupAst {
   const obj = asRecord(value, label);
   ensureKnownKeys(obj, ["kernels"], label);
 
   const out: ScenarioSetupAst = {};
   if (obj.kernels !== undefined) {
-    const kernels = asArray(obj.kernels, `${label}.kernels`).map((entry, i) =>
-      parseKernelEntry(entry, `${label}.kernels[${i}]`),
+    const kernels = asArray(obj.kernels, `${label}.kernels`).flatMap((entry, i) =>
+      parseKernelEntry(entry, `${label}.kernels[${i}]`, sourceDir),
     );
     out.kernels = kernels;
+  }
+
+  return out;
+}
+
+/** Legacy workflow include parser (kept for historical workflow files). */
+export function parseWorkflowSpec(file: ScenarioYamlFile): WorkflowSpec {
+  const sourceDir = path.dirname(file.sourcePath);
+  const obj = asRecord(file.data, "workflow");
+  ensureKnownKeys(obj, ["id", "kind", "uses", "setup", "compareDefaults"], "workflow");
+
+  const id = asString(obj.id, "workflow.id");
+  const kind = asString(obj.kind, "workflow.kind");
+  if (kind !== "workflow") {
+    throw new TypeError(`workflow.kind must be \"workflow\" (got ${JSON.stringify(kind)})`);
+  }
+
+  const out: WorkflowSpec = {
+    id,
+    kind: "workflow",
+    meta: { sourcePath: file.sourcePath },
+  };
+
+  if (obj.uses !== undefined) {
+    out.uses = asArray(obj.uses, "workflow.uses").map((entry, i) =>
+      asString(entry, `workflow.uses[${i}]`),
+    );
+  }
+
+  if (obj.setup !== undefined) {
+    out.setup = parseSetupAst(obj.setup, "workflow.setup", sourceDir);
+  }
+
+  if (obj.compareDefaults !== undefined) {
+    out.compareDefaults = parseCompareAst(obj.compareDefaults, "workflow.compareDefaults");
   }
 
   return out;
@@ -155,7 +204,7 @@ function parseMethodCaseExpectation(value: unknown, label: string): MethodCaseEx
   return out;
 }
 
-function parseMethodCase(value: unknown, label: string): MethodCaseSpecV3 {
+function parseMethodCase(value: unknown, label: string, sourceDir: string): MethodCaseSpecV3 {
   const obj = asRecord(value, label);
   ensureKnownKeys(obj, ["id", "args", "setup", "compare", "expect"], label);
 
@@ -166,7 +215,7 @@ function parseMethodCase(value: unknown, label: string): MethodCaseSpecV3 {
   if (Object.prototype.hasOwnProperty.call(obj, "args")) {
     out.args = obj.args;
   }
-  if (obj.setup !== undefined) out.setup = parseSetupAst(obj.setup, `${label}.setup`);
+  if (obj.setup !== undefined) out.setup = parseSetupAst(obj.setup, `${label}.setup`, sourceDir);
   if (obj.compare !== undefined) out.compare = parseCompareAst(obj.compare, `${label}.compare`);
   if (obj.expect !== undefined) out.expect = parseMethodCaseExpectation(obj.expect, `${label}.expect`);
 
@@ -382,6 +431,14 @@ function parseStepCore(
   const obj = asRecord(value, label);
   const op = asString(obj.op, `${label}.op`);
 
+  if (op.startsWith("call::")) {
+    throw new TypeError(`${label}.op uses removed call sugar ${JSON.stringify(op)}; use op: \"call\" with fn`);
+  }
+
+  if (op === "spiceCall" || op === "callContract") {
+    throw new TypeError(`${label}.op ${JSON.stringify(op)} is no longer supported; use op: \"call\" with fn`);
+  }
+
   if (op === "withResource") {
     ensureKnownKeys(obj, ["op", "as", "acquire", "steps", "finally"], label);
 
@@ -523,29 +580,21 @@ function parseStepCore(
       };
     }
 
-    case "spiceCall": {
-      ensureKnownKeys(obj, ["op", "call", "in", "as", "out"], label);
+    case "call": {
+      if (Object.prototype.hasOwnProperty.call(obj, "call")) {
+        throw new TypeError(`${label}.call is no longer supported; use ${label}.fn`);
+      }
+
+      ensureKnownKeys(obj, ["op", "fn", "in", "as", "out"], label);
+
       return {
         steps: [
           {
-            op: "spiceCall",
-            call: asString(obj.call, `${label}.call`) as MethodWorkflowStepV3 extends { op: "spiceCall"; call: infer T } ? T : never,
+            op: "call",
+            fn: asString(obj.fn, `${label}.fn`),
             in: asArray(obj.in, `${label}.in`),
             ...(obj.as !== undefined ? { as: asString(obj.as, `${label}.as`) } : {}),
-            ...(obj.out !== undefined ? { out: asRecord(obj.out, `${label}.out`) as Record<string, string> } : {}),
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "callContract": {
-      ensureKnownKeys(obj, ["op", "call"], label);
-      return {
-        steps: [
-          {
-            op: "callContract",
-            ...(obj.call !== undefined ? { call: asString(obj.call, `${label}.call`) } : {}),
+            ...(obj.out !== undefined ? { out: parseStringMap(obj.out, `${label}.out`) } : {}),
           },
         ],
         cleanup: [],
@@ -757,7 +806,7 @@ function parseWorkflow(value: unknown, label: string): { steps: MethodWorkflowSt
   };
 }
 
-function parseMethodSuite(value: unknown, label: string): MethodSuiteSpecV3 {
+function parseMethodSuite(value: unknown, label: string, sourceDir: string): MethodSuiteSpecV3 {
   const obj = asRecord(value, label);
   ensureKnownKeys(obj, ["id", "setup", "defaults", "workflow", "cases"], label);
 
@@ -765,12 +814,12 @@ function parseMethodSuite(value: unknown, label: string): MethodSuiteSpecV3 {
     id: asString(obj.id, `${label}.id`),
     workflow: parseWorkflow(obj.workflow, `${label}.workflow`),
     cases: asArray(obj.cases, `${label}.cases`).map((entry, i) =>
-      parseMethodCase(entry, `${label}.cases[${i}]`),
+      parseMethodCase(entry, `${label}.cases[${i}]`, sourceDir),
     ),
   };
 
   if (obj.setup !== undefined) {
-    out.setup = parseSetupAst(obj.setup, `${label}.setup`);
+    out.setup = parseSetupAst(obj.setup, `${label}.setup`, sourceDir);
   }
 
   if (obj.defaults !== undefined) {
@@ -790,18 +839,23 @@ function assertCaseShapeForWorkflow(
   cases: MethodCaseSpecV3[],
   label: string,
 ): void {
-  const isCallContractOnly =
+  const isSingleCallWorkflow =
     workflow.steps.length === 1 &&
-    workflow.steps[0]?.op === "callContract";
+    workflow.steps[0]?.op === "call";
 
   for (const [index, scenarioCase] of cases.entries()) {
-    if (isCallContractOnly) {
+    if (isSingleCallWorkflow) {
       if (scenarioCase.args === undefined) {
         continue;
       }
 
-      if (!Array.isArray(scenarioCase.args)) {
-        throw new TypeError(`${label}[${index}].args must be an array when workflow uses callContract`);
+      const isObjectArgs =
+        typeof scenarioCase.args === "object" &&
+        scenarioCase.args !== null &&
+        !Array.isArray(scenarioCase.args);
+
+      if (!Array.isArray(scenarioCase.args) && !isObjectArgs) {
+        throw new TypeError(`${label}[${index}].args must be an array or object when workflow is a single call`);
       }
       continue;
     }
@@ -811,13 +865,14 @@ function assertCaseShapeForWorkflow(
     }
 
     if (typeof scenarioCase.args !== "object" || scenarioCase.args === null || Array.isArray(scenarioCase.args)) {
-      throw new TypeError(`${label}[${index}].args must be an object when workflow does not use callContract`);
+      throw new TypeError(`${label}[${index}].args must be an object when workflow is not a single call`);
     }
   }
 }
 
 /** Parses a methodV3 YAML document into a validated method spec AST. */
 export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
+  const sourceDir = path.dirname(file.sourcePath);
   const obj = asRecord(file.data, "methodV3");
   ensureKnownKeys(
     obj,
@@ -850,7 +905,7 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
   };
 
   if (obj.setup !== undefined) {
-    method.setup = parseSetupAst(obj.setup, "methodV3.setup");
+    method.setup = parseSetupAst(obj.setup, "methodV3.setup", sourceDir);
   }
 
   if (obj.defaults !== undefined) {
@@ -876,13 +931,13 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
 
     method.workflow = parseWorkflow(obj.workflow, "methodV3.workflow");
     method.cases = asArray(obj.cases, "methodV3.cases").map((entry, i) =>
-      parseMethodCase(entry, `methodV3.cases[${i}]`),
+      parseMethodCase(entry, `methodV3.cases[${i}]`, sourceDir),
     );
 
     assertCaseShapeForWorkflow(method.workflow, method.cases, "methodV3.cases");
   } else {
     const suites = asArray(obj.suites, "methodV3.suites").map((entry, i) =>
-      parseMethodSuite(entry, `methodV3.suites[${i}]`),
+      parseMethodSuite(entry, `methodV3.suites[${i}]`, sourceDir),
     );
     if (suites.length === 0) {
       throw new TypeError("methodV3.suites must be a non-empty array");
@@ -896,5 +951,63 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
   }
 
   return method;
+}
+
+function parseCrossCuttingCaseExpectation(value: unknown, label: string): CrossCuttingCaseExpectation {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["ok", "errorCode"], label);
+
+  return {
+    ok: asBoolean(obj.ok, `${label}.ok`),
+    ...(obj.errorCode !== undefined ? { errorCode: asString(obj.errorCode, `${label}.errorCode`) } : {}),
+  };
+}
+
+function parseCrossCuttingCase(value: unknown, label: string): CrossCuttingCaseSpec {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["id", "transport", "rawRequest", "expect"], label);
+
+  const transport = asString(obj.transport, `${label}.transport`);
+  if (transport !== "native") {
+    throw new TypeError(`${label}.transport must be \"native\" (got ${JSON.stringify(transport)})`);
+  }
+
+  return {
+    id: asString(obj.id, `${label}.id`),
+    transport: "native",
+    rawRequest: asString(obj.rawRequest, `${label}.rawRequest`),
+    expect: parseCrossCuttingCaseExpectation(obj.expect, `${label}.expect`),
+  };
+}
+
+/** Parses a crossCuttingV3 YAML document into a validated cross-cutting spec AST. */
+export function parseCrossCuttingSpec(file: ScenarioYamlFile): CrossCuttingSpecV3 {
+  const obj = asRecord(file.data, "crossCuttingV3");
+  ensureKnownKeys(obj, ["schemaVersion", "manifest", "cases"], "crossCuttingV3");
+
+  const schemaVersion = asFiniteNumber(obj.schemaVersion, "crossCuttingV3.schemaVersion");
+  if (!Number.isInteger(schemaVersion) || schemaVersion !== 3) {
+    throw new TypeError(`crossCuttingV3.schemaVersion must be 3 (got ${schemaVersion})`);
+  }
+
+  const manifest = asRecord(obj.manifest, "crossCuttingV3.manifest");
+  ensureKnownKeys(manifest, ["id", "kind"], "crossCuttingV3.manifest");
+
+  const kind = asString(manifest.kind, "crossCuttingV3.manifest.kind");
+  if (kind !== "crossCuttingSpec") {
+    throw new TypeError(`crossCuttingV3.manifest.kind must be \"crossCuttingSpec\" (got ${JSON.stringify(kind)})`);
+  }
+
+  return {
+    schemaVersion: 3,
+    manifest: {
+      id: asString(manifest.id, "crossCuttingV3.manifest.id"),
+      kind: "crossCuttingSpec",
+    },
+    cases: asArray(obj.cases, "crossCuttingV3.cases").map((entry, i) =>
+      parseCrossCuttingCase(entry, `crossCuttingV3.cases[${i}]`),
+    ),
+    meta: { sourcePath: file.sourcePath },
+  };
 }
 

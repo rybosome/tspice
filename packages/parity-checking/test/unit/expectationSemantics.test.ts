@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { executeMethodSpecParity } from "../../src/engine/executeMethodSpec.js";
 
-import type { MethodCaseExpectation, MethodSpecV3, ScenarioSetupAst } from "../../src/dsl/types.js";
 import type { CaseRunner, RunCaseInput, RunCaseResult } from "../../src/runners/types.js";
+import type { ResolvedMethodSpec } from "../../src/dsl/types.js";
 
 class ErrorRunner implements CaseRunner {
   readonly kind = "stub-error";
@@ -35,52 +35,55 @@ class SuccessRunner implements CaseRunner {
   }
 }
 
-function buildMethod(
-  expectSpec: MethodCaseExpectation | undefined,
-  setup?: ScenarioSetupAst,
-): MethodSpecV3 {
-  return {
-    schemaVersion: 3,
-    manifest: {
-      id: "methods/time/str2et@v3",
+function buildResolved(
+  expect: ResolvedMethodSpec["method"]["cases"][number]["expect"],
+  mergedSetup?: ResolvedMethodSpec["mergedSetup"],
+): ResolvedMethodSpec {
+  const resolved: ResolvedMethodSpec = {
+    method: {
+      id: "methods/time/str2et@v1",
       kind: "method",
-    },
-    contract: {
       contractMethod: "time.str2et",
       canonicalMethod: "time.str2et",
-    },
-    ...(setup !== undefined ? { setup } : {}),
-    defaults: {
-      compare: {
-        errorShort: true,
+      defaults: {
+        compare: {
+          errorShort: true,
+        },
+      },
+      cases: [
+        {
+          id: "invalid",
+          args: ["NOT_A_TIME"],
+          expect,
+        },
+      ],
+      meta: {
+        sourcePath: "/tmp/str2et.yml",
       },
     },
-    workflow: {
-      steps: [{ op: "callContract" }],
-    },
-    cases: [
-      {
-        id: "invalid",
-        args: ["NOT_A_TIME"],
-        expect: expectSpec,
-      },
-    ],
-    meta: {
-      sourcePath: "/tmp/str2et.yml",
+    includeOrder: [],
+    mergedCompareDefaults: {
+      errorShort: true,
     },
   };
+
+  if (mergedSetup !== undefined) {
+    resolved.mergedSetup = mergedSetup;
+  }
+
+  return resolved;
 }
 
 describe("method case expectation semantics", () => {
   it("enforces cases[].expect.ok and cases[].expect.errorShort", async () => {
-    const method = buildMethod({
+    const resolved = buildResolved({
       ok: false,
       errorShort: "SPICE(BADTIMESTRING)",
     });
 
     const runner = new ErrorRunner();
 
-    const summary = await executeMethodSpecParity(method, {
+    const summary = await executeMethodSpecParity(resolved, {
       tspice: runner,
       cspice: runner,
     });
@@ -89,33 +92,33 @@ describe("method case expectation semantics", () => {
   });
 
   it("fails expect.errorShort when either runner succeeds", async () => {
-    const method = buildMethod({
+    const resolved = buildResolved({
       errorShort: "SPICE(BADTIMESTRING)",
     });
 
     const runner = new SuccessRunner();
 
     await expect(
-      executeMethodSpecParity(method, {
+      executeMethodSpecParity(resolved, {
         tspice: runner,
         cspice: runner,
       }),
     ).rejects.toThrow(/expect\.errorShort requires both outcomes to fail/);
   });
 
-  it("preserves setup kernel objects in runner input", async () => {
+  it("accepts merged setup kernel objects when reparsing runtime scenarios", async () => {
     const kernelEntry = {
       path: "/tmp/kernels/example.tm",
       restrictToDir: "/tmp/kernels",
     };
-    const method = buildMethod(undefined, {
+    const resolved = buildResolved(undefined, {
       kernels: [kernelEntry],
     });
 
     const tspice = new SuccessRunner();
     const cspice = new SuccessRunner();
 
-    const summary = await executeMethodSpecParity(method, {
+    const summary = await executeMethodSpecParity(resolved, {
       tspice,
       cspice,
     });
@@ -128,32 +131,27 @@ describe("method case expectation semantics", () => {
   });
 
   it("ignores error.details metadata differences during parity comparison", async () => {
-    const method: MethodSpecV3 = {
-      schemaVersion: 3,
-      manifest: {
-        id: "methods/file-io/unsupported@v3",
+    const resolved: ResolvedMethodSpec = {
+      method: {
+        id: "methods/file-io/unsupported@v1",
         kind: "method",
-      },
-      contract: {
         contractMethod: "file-io.unknown",
         canonicalMethod: "file-io.unknown",
-      },
-      workflow: {
-        steps: [{ op: "callContract" }],
-      },
-      cases: [
-        {
-          id: "unsupported",
-          args: [],
-          expect: {
-            ok: false,
-            errorCode: "unsupported_call",
+        cases: [
+          {
+            id: "unsupported",
+            args: [],
+            expect: {
+              ok: false,
+              errorCode: "unsupported_call",
+            },
           },
+        ],
+        meta: {
+          sourcePath: "/tmp/file-io-unsupported.yml",
         },
-      ],
-      meta: {
-        sourcePath: "/tmp/file-io-unsupported.yml",
       },
+      includeOrder: [],
     };
 
     const tspice: CaseRunner = {
@@ -191,7 +189,7 @@ describe("method case expectation semantics", () => {
     };
 
     await expect(
-      executeMethodSpecParity(method, {
+      executeMethodSpecParity(resolved, {
         tspice,
         cspice,
       }),

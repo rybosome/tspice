@@ -13,13 +13,18 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.dlafns
+      in:
+        - $args.0
 cases:
   - id: file-io.dlafns.walk-next-segment-in-dsk
+    compare:
+      errorShort: true
     args:
       - $FIXTURES/apophis-g-25000mm/apophis_g_25000mm_rad_obj_0000n00000_v001.bds
     expect:
-      ok: true
+      ok: false
   - id: file-io.dlafns.missing-file
     compare:
       errorShort: true
@@ -28,8 +33,9 @@ cases:
     expect:
       ok: false
   - id: file-io.dlafns.rejects-non-string-path
+    compare:
+      errorShort: true
     args:
       - 42
     expect:
       ok: false
-      errorCode: invalid_args

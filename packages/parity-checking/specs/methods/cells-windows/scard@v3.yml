@@ -44,36 +44,36 @@ workflow:
       as: window
       params:
         maxIntervals: 4
-    - op: spiceCall
-      call: scard_c
+    - op: call
       in:
         - $args.card
         - $refs.cell
-    - op: spiceCall
-      call: scard_c
+      fn: cells-windows.scard
+    - op: call
       in:
         - $args.card
         - $refs.window
-    - op: spiceCall
-      call: size_c
+      fn: cells-windows.scard
+    - op: call
       in:
         - $refs.cell
       as: size
-    - op: spiceCall
-      call: card_c
+      fn: cells-windows.size
+    - op: call
       in:
         - $refs.cell
       as: card
-    - op: spiceCall
-      call: size_c
+      fn: cells-windows.card
+    - op: call
       in:
         - $refs.window
       as: windowSize
-    - op: spiceCall
-      call: card_c
+      fn: cells-windows.size
+    - op: call
       in:
         - $refs.window
       as: windowCard
+      fn: cells-windows.card
     - op: projectResult
       out:
         size: $refs.size

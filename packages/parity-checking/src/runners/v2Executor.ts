@@ -6,10 +6,26 @@ import * as path from "node:path";
 import type { SpiceBackend } from "@rybosome/tspice";
 
 import type {
-  RunCaseInputV3,
+  FunctionArgKind,
+  FunctionRegistryEntry,
+} from "../generated/functionRegistry.js";
+import {
+  lookupFunctionRegistryEntry,
+} from "../generated/functionRegistry.js";
+import {
+  lookupNativeCallDispatchEntry,
+} from "../generated/nativeCallDispatch.js";
+import type {
+  NativeAsSpiceIntBindingEntry,
+} from "../generated/nativeAsSpiceIntBindings.js";
+import {
+  lookupNativeAsSpiceIntBindingEntry,
+} from "../generated/nativeAsSpiceIntBindings.js";
+import type {
+  RunCaseInputV2,
   RunnerErrorReport,
-  V3WorkflowAssertOperator,
-  V3WorkflowStep,
+  V2WorkflowAssertOperator,
+  V2WorkflowStep,
 } from "./types.js";
 import { ASSERT_OPERATOR_NAMES_TEXT } from "../assertOperators.js";
 import { validateV2ContractResultOrThrow } from "./v2ContractResultValidation.js";
@@ -21,10 +37,10 @@ const SPICE_INT32_MAX = 2147483647;
 
 const DSK_MINIMAL_NV = 3;
 const DSK_MINIMAL_NP = 1;
-const DSK_MINIMAL_WORKSZ = 2048;
-const DSK_MINIMAL_VOXPSZ = 512;
-const DSK_MINIMAL_VOXLSZ = 1024;
-const DSK_MINIMAL_SPXISZ = 8192;
+const DSK_MINIMAL_WORKSZ = 100_000;
+const DSK_MINIMAL_VOXPSZ = 5_000;
+const DSK_MINIMAL_VOXLSZ = 5_000;
+const DSK_MINIMAL_SPXISZ = 200_000;
 
 const DSK_MINIMAL_VERTICES = [
   0, 0, 0,
@@ -40,6 +56,9 @@ const READ_VIRTUAL_OUTPUT_STATES = [
   0, 0, 0, 1, 0, 0,
   60, 0, 0, 1, 0, 0,
 ];
+
+const SHARED_RETURN_NATIVE_INVOKER = "v2_invoke_contract_return";
+const SHARED_AS_SPICE_INT_NATIVE_INVOKER = "v2_invoke_contract_as_spice_int";
 
 type CellHandle =
   | ReturnType<SpiceBackend["kit"]["newIntCell"]>
@@ -92,121 +111,12 @@ type FreedHandles = {
   das: Set<DasHandle>;
 };
 
-type CallContractExecutionContext = {
-  args: unknown[];
-  defaultCall: string;
-};
-
 type WasmVirtualOutputCleanupHooks = {
   __deleteVirtualFileForFileIo?: (path: string) => void;
 };
 
-type V2SpiceCallStep = Extract<V3WorkflowStep, { op: "spiceCall" }>;
-type V2SpiceCallName = V2SpiceCallStep["call"];
-type V2SpiceCallArgKind =
-  | "intExpr"
-  | "cellRef"
-  | "cellOrWindowRef"
-  | "pathExpr"
-  | "dasHandleRef"
-  | "dlaDescriptorRef";
-type V2SpiceCallOutputMode = "forbidden" | "asSpiceInt" | "asDskDescriptor" | "outNamedDskb02";
-
-type V2SpiceCallSpec = {
-  call: V2SpiceCallName;
-  arity: number;
-  argKinds: readonly V2SpiceCallArgKind[];
-  nonNegativeIntArgMask?: number;
-  outputMode: V2SpiceCallOutputMode;
-};
-
-const V2_SPICE_CALL_SPECS: readonly V2SpiceCallSpec[] = [
-  {
-    call: "card_c",
-    arity: 1,
-    argKinds: ["cellOrWindowRef"],
-    outputMode: "asSpiceInt",
-  },
-  {
-    call: "size_c",
-    arity: 1,
-    argKinds: ["cellOrWindowRef"],
-    outputMode: "asSpiceInt",
-  },
-  {
-    call: "scard_c",
-    arity: 2,
-    argKinds: ["intExpr", "cellOrWindowRef"],
-    nonNegativeIntArgMask: 1 << 0,
-    outputMode: "forbidden",
-  },
-  {
-    call: "ssize_c",
-    arity: 2,
-    argKinds: ["intExpr", "cellOrWindowRef"],
-    nonNegativeIntArgMask: 1 << 0,
-    outputMode: "forbidden",
-  },
-  {
-    call: "valid_c",
-    arity: 3,
-    argKinds: ["intExpr", "intExpr", "cellOrWindowRef"],
-    nonNegativeIntArgMask: (1 << 0) | (1 << 1),
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskobj_c",
-    arity: 2,
-    argKinds: ["pathExpr", "cellRef"],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dsksrf_c",
-    arity: 3,
-    argKinds: ["pathExpr", "intExpr", "cellRef"],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskgd_c",
-    arity: 2,
-    argKinds: ["dasHandleRef", "dlaDescriptorRef"],
-    outputMode: "asDskDescriptor",
-  },
-  {
-    call: "dskb02_c",
-    arity: 2,
-    argKinds: ["dasHandleRef", "dlaDescriptorRef"],
-    outputMode: "outNamedDskb02",
-  },
-  {
-    call: "dskmi2_c",
-    arity: 0,
-    argKinds: [],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskopn_c",
-    arity: 0,
-    argKinds: [],
-    outputMode: "forbidden",
-  },
-  {
-    call: "dskw02_c",
-    arity: 0,
-    argKinds: [],
-    outputMode: "forbidden",
-  },
-  {
-    call: "readVirtualOutput",
-    arity: 1,
-    argKinds: ["pathExpr"],
-    outputMode: "forbidden",
-  },
-];
-
-function lookupSpiceCallSpec(call: string): V2SpiceCallSpec | undefined {
-  return V2_SPICE_CALL_SPECS.find((spec) => spec.call === call);
-}
+type V2CallStep = Extract<V2WorkflowStep, { op: "call" }>;
+type V2CallArgKind = FunctionArgKind;
 
 function sanitizeTempTag(tag: string): string {
   const cleaned = tag
@@ -405,7 +315,7 @@ function asNonEmptyString(value: unknown, label: string): string {
   return value;
 }
 
-function normalizeAssertOperands(operandsRaw: unknown, operator: V3WorkflowAssertOperator): [unknown, unknown] {
+function normalizeAssertOperands(operandsRaw: unknown, operator: V2WorkflowAssertOperator): [unknown, unknown] {
   if (!Array.isArray(operandsRaw) || operandsRaw.length !== 2) {
     invalidRequest(`assert.test.${operator} must be a 2-item array`);
   }
@@ -414,8 +324,8 @@ function normalizeAssertOperands(operandsRaw: unknown, operator: V3WorkflowAsser
 }
 
 function extractAssertOperatorAndOperands(
-  test: Extract<V3WorkflowStep, { op: "assert" }>["test"],
-): { operator: V3WorkflowAssertOperator; operands: [unknown, unknown] } {
+  test: Extract<V2WorkflowStep, { op: "assert" }>["test"],
+): { operator: V2WorkflowAssertOperator; operands: [unknown, unknown] } {
   if (Object.keys(test).length !== 1) {
     invalidRequest("assert.test must define exactly one operator");
   }
@@ -502,7 +412,7 @@ function resolvePropertyPath(value: unknown, propertyPath: readonly string[], la
 
 function resolveExpression(
   expr: unknown,
-  args: Record<string, unknown>,
+  args: unknown,
   refs: Map<string, RefValue>,
   label: string,
 ): unknown {
@@ -516,11 +426,16 @@ function resolveExpression(
   }
 
   if (token.source === "args") {
-    if (!Object.prototype.hasOwnProperty.call(args, token.key)) {
+    if (typeof args !== "object" || args === null) {
+      invalidArgs(`${label} requires args object/array for ${formatValue(expr)}`);
+    }
+
+    const argsRecord = args as Record<string, unknown>;
+    if (!Object.prototype.hasOwnProperty.call(argsRecord, token.key)) {
       invalidArgs(`${label} references missing argument ${JSON.stringify(token.key)}`);
     }
 
-    return resolvePropertyPath(args[token.key], token.propertyPath, label);
+    return resolvePropertyPath(argsRecord[token.key], token.propertyPath, label);
   }
 
   const refValue = refs.get(token.key);
@@ -533,7 +448,7 @@ function resolveExpression(
 
 function resolveSpiceIntExpression(
   expr: unknown,
-  args: Record<string, unknown>,
+  args: unknown,
   refs: Map<string, RefValue>,
   label: string,
 ): number {
@@ -543,7 +458,7 @@ function resolveSpiceIntExpression(
 
 function resolveStringExpression(
   expr: unknown,
-  args: Record<string, unknown>,
+  args: unknown,
   refs: Map<string, RefValue>,
   label: string,
 ): string {
@@ -660,7 +575,7 @@ function resolveDlaDescriptorReference(
   return { name, value: ref.value };
 }
 
-function validateCaseArgs(input: RunCaseInputV3): Record<string, unknown> {
+function validateCaseArgs(input: RunCaseInputV2): Record<string, unknown> {
   const caseArgs = asRecord(input.args, "v2.args");
   const contractArgs = input.contract.args ?? [];
 
@@ -706,7 +621,7 @@ function validateCaseArgs(input: RunCaseInputV3): Record<string, unknown> {
   return validated;
 }
 
-function validateV2Envelope(input: RunCaseInputV3): void {
+function validateV2Envelope(input: RunCaseInputV2): void {
   if (input.schemaVersion !== 3) {
     invalidRequest(`executeV2CaseWithBackend expected schemaVersion=3 (got ${formatValue(input.schemaVersion)})`);
   }
@@ -721,48 +636,46 @@ function validateV2Envelope(input: RunCaseInputV3): void {
  *
  * Returns normalized/validated args for reuse by callers that continue execution.
  */
-export function validateV2CasePreflight(input: RunCaseInputV3): Record<string, unknown> {
+export function validateV2CasePreflight(input: RunCaseInputV2): Record<string, unknown> {
   validateV2Envelope(input);
+  if (input.args === undefined) {
+    return {};
+  }
+
+  if (Array.isArray(input.args)) {
+    return {};
+  }
 
   return validateCaseArgs(input);
 }
 
-function resolveCallContractMethodName(stepCall: unknown, defaultCall: string): string {
-  const resolvedCall = stepCall === undefined ? defaultCall : stepCall;
-  const call = asNonEmptyString(resolvedCall, "callContract.call").trim();
-  if (call.length === 0) {
-    invalidRequest("v3 callContract requires a non-empty call name");
-  }
-
-  const method = call.includes(".") ? call.slice(call.lastIndexOf(".") + 1) : call;
+function resolveBackendMethodName(contractMethod: string): string {
+  const trimmed = asNonEmptyString(contractMethod, "functionRegistry.impl.contractMethod").trim();
+  const method = trimmed.includes(".") ? trimmed.slice(trimmed.lastIndexOf(".") + 1) : trimmed;
   if (method.length === 0) {
-    invalidRequest("v3 callContract requires a non-empty backend method name");
+    invalidRequest(`Invalid function registry contract method ${JSON.stringify(contractMethod)}`);
   }
-
   return method;
 }
 
-async function executeCallContractStep(
+async function executeBackendMethodCall(
   backend: SpiceBackend,
-  step: Extract<V3WorkflowStep, { op: "callContract" }>,
-  context: CallContractExecutionContext,
+  spec: FunctionRegistryEntry,
+  fn: string,
+  callArgs: readonly unknown[],
 ): Promise<unknown> {
   const raw = getRawBackend(backend);
-  const method = resolveCallContractMethodName(step.call, context.defaultCall);
+  const method = resolveBackendMethodName(spec.impl.contractMethod);
   const maybeInvoker = (raw as unknown as Record<string, unknown>)[method];
 
   if (typeof maybeInvoker !== "function") {
-    unsupportedCall("Unsupported call", { call: step.call ?? context.defaultCall });
+    unsupportedCall("Unsupported call", { call: fn });
   }
 
-  return await (maybeInvoker as (...callArgs: unknown[]) => unknown).apply(raw, context.args);
+  return await (maybeInvoker as (...args: unknown[]) => unknown).apply(raw, [...callArgs]);
 }
 
-function hasCallContractStep(steps: V3WorkflowStep[]): boolean {
-  return steps.some((step) => step.op === "callContract");
-}
-
-function validateProjectedResult(projectedResult: unknown, input: RunCaseInputV3): void {
+function validateProjectedResult(projectedResult: unknown, input: RunCaseInputV2): void {
   if (input.contract.result === undefined) {
     return;
   }
@@ -772,7 +685,7 @@ function validateProjectedResult(projectedResult: unknown, input: RunCaseInputV3
 
 function projectResult(
   out: Record<string, unknown>,
-  args: Record<string, unknown>,
+  args: unknown,
   refs: Map<string, RefValue>,
 ): Record<string, unknown> {
   const projected: Record<string, unknown> = {};
@@ -786,7 +699,7 @@ function projectResult(
 
 function projectRefs(
   out: Record<string, unknown>,
-  args: Record<string, unknown>,
+  args: unknown,
   refs: Map<string, RefValue>,
 ): void {
   for (const [key, value] of Object.entries(out)) {
@@ -797,7 +710,7 @@ function projectRefs(
 
 function resolveSwitchCaseKey(
   expr: unknown,
-  args: Record<string, unknown>,
+  args: unknown,
   refs: Map<string, RefValue>,
   label: string,
 ): string {
@@ -825,46 +738,65 @@ function resolveSwitchCaseKey(
   invalidArgs(`${label} must resolve to string|integer|boolean|null (got ${formatValue(value)})`);
 }
 
-function validateSpiceCallArity(step: V2SpiceCallStep, expectedArity: number): void {
+function getRawCallTarget(step: V2CallStep): string {
+  const candidate = step.fn;
+  if (typeof candidate !== "string" || candidate.trim() === "") {
+    invalidRequest("call step requires non-empty string \"fn\"");
+  }
+
+  return candidate.trim();
+}
+
+function resolveCallTarget(step: V2CallStep, contractMethod: string): string {
+  const callTarget = getRawCallTarget(step);
+  if (callTarget === "self") {
+    const resolvedContractMethod = asNonEmptyString(contractMethod, "contract.contractMethod").trim();
+    return resolvedContractMethod;
+  }
+
+  return callTarget;
+}
+
+function validateCallArity(step: V2CallStep, callTarget: string, expectedArity: number): void {
   if (step.in.length !== expectedArity) {
     const plural = expectedArity === 1 ? "" : "s";
-    invalidRequest(`spiceCall ${step.call} expects ${expectedArity} input${plural}`);
+    invalidRequest(`call ${callTarget} expects ${expectedArity} input${plural}`);
   }
 }
 
-function requireSpiceCallOutputRef(step: V2SpiceCallStep): string {
+function requireCallOutputRef(step: V2CallStep, callTarget: string): string {
   const outputRef = (step as { as?: unknown }).as;
   if (outputRef === undefined) {
-    invalidArgs(`spiceCall ${step.call} requires an "as" output ref`);
+    invalidArgs(`call ${callTarget} requires an "as" output ref`);
   }
 
   if (typeof outputRef !== "string" || outputRef.trim() === "") {
-    invalidArgs(`spiceCall ${step.call} requires a non-empty string "as" output ref`);
+    invalidArgs(`call ${callTarget} requires a non-empty string "as" output ref`);
   }
 
   return outputRef;
 }
 
-function forbidSpiceCallOutputRef(step: V2SpiceCallStep): void {
+function forbidCallOutputRef(step: V2CallStep, callTarget: string): void {
   if ((step as { as?: unknown }).as !== undefined) {
-    invalidArgs(`spiceCall ${step.call} does not allow an "as" output ref`);
+    invalidArgs(`call ${callTarget} does not allow an "as" output ref`);
   }
 }
 
-function requireSpiceCallOutMap(step: V2SpiceCallStep): Record<string, string> {
+function requireCallOutMap(step: V2CallStep, callTarget: string): Record<string, string> {
   const rawOut = (step as { out?: unknown }).out;
   if (rawOut === undefined) {
-    invalidArgs(`spiceCall ${step.call} requires an "out" map`);
+    invalidArgs(`call ${callTarget} requires an "out" map`);
   }
 
   if (typeof rawOut !== "object" || rawOut === null || Array.isArray(rawOut)) {
-    invalidArgs(`spiceCall ${step.call} requires out to be an object map`);
+    invalidArgs(`call ${callTarget} requires out to be an object map`);
   }
 
   const mapped: Record<string, string> = {};
   for (const [name, rawTarget] of Object.entries(rawOut)) {
     if (typeof rawTarget !== "string" || rawTarget.trim() === "") {
-      invalidArgs(`spiceCall ${step.call}.out.${name} must be a non-empty string ref name`);
+      invalidArgs(`call ${callTarget}.out.${name} must be a non-empty string ref name`);
     }
     mapped[name] = rawTarget;
   }
@@ -872,23 +804,31 @@ function requireSpiceCallOutMap(step: V2SpiceCallStep): Record<string, string> {
   return mapped;
 }
 
-function forbidSpiceCallOutMap(step: V2SpiceCallStep): void {
+function forbidCallOutMap(step: V2CallStep, callTarget: string): void {
   if ((step as { out?: unknown }).out !== undefined) {
-    invalidArgs(`spiceCall ${step.call} does not allow an "out" map`);
+    invalidArgs(`call ${callTarget} does not allow an "out" map`);
   }
 }
 
-function resolveSpiceCallArg(
-  step: V2SpiceCallStep,
+function hasForbiddenOutputBindingPolicy(spec: FunctionRegistryEntry): boolean {
+  return spec.result.outputBindingPolicy === "forbidden";
+}
+
+function resolveCallArg(
+  step: V2CallStep,
+  callTarget: string,
   argIndex: number,
-  argKind: V2SpiceCallArgKind,
-  args: Record<string, unknown>,
+  argKind: V2CallArgKind,
+  args: unknown,
   refs: Map<string, RefValue>,
 ): unknown {
-  const label = `spiceCall(${step.call}).in[${argIndex}]`;
+  const label = `call(${callTarget}).in[${argIndex}]`;
   const expr = step.in[argIndex];
 
   switch (argKind) {
+    case "expr":
+      return resolveExpression(expr, args, refs, label);
+
     case "intExpr":
       return resolveSpiceIntExpression(expr, args, refs, label);
 
@@ -909,6 +849,9 @@ function resolveSpiceCallArg(
   }
 }
 
+// DSK-specific bespoke named-out lane kept intentionally isolated for PR #582.
+// TODO(parity-struct-capture): replace this whitelist path with generated generic
+// struct capture/output projection metadata in a follow-up issue.
 const DSKB02_NAMED_SPICE_INT_OUTPUTS = [
   "nv",
   "np",
@@ -942,10 +885,13 @@ function toNamedDskb02SpiceIntOutputs(bookkeeping: DskType2Bookkeeping): Dskb02N
   };
 }
 
-function requireDskb02NamedSpiceIntOutputKey(step: V2SpiceCallStep, outputName: string): Dskb02NamedSpiceIntOutputKey {
+function requireDskb02NamedSpiceIntOutputKey(
+  callTarget: string,
+  outputName: string,
+): Dskb02NamedSpiceIntOutputKey {
   if (!isDskb02NamedSpiceIntOutputKey(outputName)) {
     invalidArgs(
-      `spiceCall ${step.call}.out has unsupported key ${JSON.stringify(outputName)} (supported: ${DSKB02_NAMED_SPICE_INT_OUTPUTS.join(", ")})`,
+      `call ${callTarget}.out has unsupported key ${JSON.stringify(outputName)} (supported: ${DSKB02_NAMED_SPICE_INT_OUTPUTS.join(", ")})`,
     );
   }
 
@@ -953,7 +899,7 @@ function requireDskb02NamedSpiceIntOutputKey(step: V2SpiceCallStep, outputName: 
 }
 
 function applyNamedDskb02Outputs(
-  step: V2SpiceCallStep,
+  callTarget: string,
   outMap: Record<string, string>,
   bookkeeping: DskType2Bookkeeping,
   refs: Map<string, RefValue>,
@@ -961,8 +907,8 @@ function applyNamedDskb02Outputs(
   const namedOutputs = toNamedDskb02SpiceIntOutputs(bookkeeping);
 
   for (const [outputName, refName] of Object.entries(outMap)) {
-    const outputKey = requireDskb02NamedSpiceIntOutputKey(step, outputName);
-    const outputLabel = `spiceCall(${step.call}).out.${outputKey}`;
+    const outputKey = requireDskb02NamedSpiceIntOutputKey(callTarget, outputName);
+    const outputLabel = `call(${callTarget}).out.${outputKey}`;
 
     const value = asSpiceInt(namedOutputs[outputKey], outputLabel);
     defineRef(refs, refName, { kind: "int", value }, outputLabel);
@@ -1009,146 +955,201 @@ function writeVirtualOutputSpkFixture(backend: SpiceBackend, outputPath: string)
   }
 }
 
-function executeReadVirtualOutputCall(backend: SpiceBackend, outputPath: string): void {
-  const kit = getKitBackend(backend);
-  const output = {
-    kind: "virtual-output" as const,
-    path: outputPath,
-  };
-
-  const bytes = kit.readVirtualOutput(output);
-  if (!(bytes instanceof Uint8Array) || bytes.byteLength < 1) {
-    invalidRequest("spiceCall(readVirtualOutput) expected non-empty output bytes");
-  }
-}
-
-type V2SpiceCallInvokerContext = {
+type V2NativeCallInvokerContext = {
   backend: SpiceBackend;
   raw: SpiceBackend["raw"];
-  step: V2SpiceCallStep;
+  step: V2CallStep;
+  callTarget: string;
+  spec: FunctionRegistryEntry;
   resolvedArgs: readonly unknown[];
   outputRef: string | undefined;
   outMap: Record<string, string> | undefined;
   refs: Map<string, RefValue>;
 };
 
-type V2SpiceCallInvoker = (context: V2SpiceCallInvokerContext) => void;
+type V2NativeCallInvoker = (context: V2NativeCallInvokerContext) => void;
 
-const V2_SPICE_CALL_INVOKERS = {
-  card_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
-    const value = asSpiceInt(raw.card(resolvedArgs[0] as CellHandle | WindowHandle), `spiceCall(${step.call}).result`);
-    defineRef(refs, outputRef!, { kind: "int", value }, `spiceCall(${step.call}).as`);
-  },
-
-  size_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
-    const value = asSpiceInt(raw.size(resolvedArgs[0] as CellHandle | WindowHandle), `spiceCall(${step.call}).result`);
-    defineRef(refs, outputRef!, { kind: "int", value }, `spiceCall(${step.call}).as`);
-  },
-
-  scard_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.scard(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
-  },
-
-  ssize_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.ssize(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
-  },
-
-  valid_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.valid(resolvedArgs[0] as number, resolvedArgs[1] as number, resolvedArgs[2] as CellHandle | WindowHandle);
-  },
-
-  dskobj_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.dskobj(resolvedArgs[0] as string, resolvedArgs[1] as IntCellHandle);
-  },
-
-  dsksrf_c: ({ raw, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    raw.dsksrf(resolvedArgs[0] as string, resolvedArgs[1] as number, resolvedArgs[2] as IntCellHandle);
-  },
-
-  dskgd_c: ({ raw, step, resolvedArgs, outputRef, refs }: V2SpiceCallInvokerContext): void => {
-    const descriptor = raw.dskgd(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
-    defineRef(refs, outputRef!, { kind: "dskDescriptor", value: descriptor }, `spiceCall(${step.call}).as`);
-  },
-
-  dskb02_c: ({ raw, step, resolvedArgs, outMap, refs }: V2SpiceCallInvokerContext): void => {
-    const bookkeeping = raw.dskb02(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
-    applyNamedDskb02Outputs(step, outMap ?? {}, bookkeeping, refs);
-  },
-
-  readVirtualOutput: ({ backend, resolvedArgs }: V2SpiceCallInvokerContext): void => {
-    executeReadVirtualOutputCall(backend, resolvedArgs[0] as string);
-  },
-
-  dskopn_c: ({ backend, raw }: V2SpiceCallInvokerContext): void => {
-    const tempPath = buildTempPath(backend, "dskopn", ".bds");
-    let handle: DskOpenHandle | undefined;
-    let opError: unknown = undefined;
-
-    try {
-      handle = raw.dskopn(tempPath, "TSPICE", 0);
-    } catch (error) {
-      opError = error;
-    }
-
-    if (handle !== undefined) {
-      closeDasHandlePreserveError(raw, handle, opError);
-    }
-
-    unlinkPathBestEffort(backend, tempPath);
-
-    if (opError !== undefined) {
-      throw opError;
-    }
-  },
-
-  dskmi2_c: ({ raw, step }: V2SpiceCallInvokerContext): void => {
-    const spatial = raw.dskmi2(
-      DSK_MINIMAL_NV,
-      DSK_MINIMAL_VERTICES,
-      DSK_MINIMAL_NP,
-      DSK_MINIMAL_PLATES,
-      0.2,
-      5,
-      DSK_MINIMAL_WORKSZ,
-      DSK_MINIMAL_VOXPSZ,
-      DSK_MINIMAL_VOXLSZ,
-      true,
-      DSK_MINIMAL_SPXISZ,
-    );
-
-    if (spatial.spaixd.length < 1 || spatial.spaixi.length < 1) {
-      invalidRequest(`spiceCall(${step.call}) expected non-empty spatial index outputs`);
-    }
-  },
-
-  dskw02_c: ({ backend }: V2SpiceCallInvokerContext): void => {
-    const tempPath = buildTempPath(backend, "dskw02", ".bds");
-    try {
-      writeMinimalDskFile(backend, tempPath);
-    } finally {
-      unlinkPathBestEffort(backend, tempPath);
-    }
-  },
-} satisfies Record<V2SpiceCallName, V2SpiceCallInvoker>;
-
-function lookupSpiceCallInvoker(call: V2SpiceCallName): V2SpiceCallInvoker {
-  return V2_SPICE_CALL_INVOKERS[call];
-}
-
-function executeSpiceCallFromSpec(
-  backend: SpiceBackend,
-  step: V2SpiceCallStep,
-  args: Record<string, unknown>,
-  refs: Map<string, RefValue>,
-): void {
-  const spec = lookupSpiceCallSpec(step.call);
-  if (!spec) {
-    unsupportedCall(`Unsupported spiceCall op: ${step.call}`);
+function resolveNativeAsSpiceIntBinding(
+  callTarget: string,
+  spec: FunctionRegistryEntry,
+): NativeAsSpiceIntBindingEntry {
+  const binding = lookupNativeAsSpiceIntBindingEntry(spec.id);
+  if (!binding || binding.cSymbol !== spec.impl.cSymbol) {
+    unsupportedCall("Unsupported call", {
+      call: callTarget,
+      invoker: spec.impl.nativeInvoker,
+      cSymbol: spec.impl.cSymbol,
+    });
   }
 
-  validateSpiceCallArity(step, spec.arity);
+  return binding;
+}
+
+function resolveNativeAsSpiceIntRawInvoker(
+  raw: SpiceBackend["raw"],
+  binding: NativeAsSpiceIntBindingEntry,
+): ((handle: CellHandle | WindowHandle) => unknown) {
+  const candidate = Reflect.get(raw as object, binding.backendMethod);
+  if (typeof candidate !== "function") {
+    unsupportedCall("Unsupported call", {
+      id: binding.id,
+      cSymbol: binding.cSymbol,
+      backendMethod: binding.backendMethod,
+    });
+  }
+
+  return candidate as (handle: CellHandle | WindowHandle) => unknown;
+}
+
+function invokeAsSpiceIntFromGeneratedBinding(
+  raw: SpiceBackend["raw"],
+  callTarget: string,
+  spec: FunctionRegistryEntry,
+  handle: CellHandle | WindowHandle,
+): number {
+  const binding = resolveNativeAsSpiceIntBinding(callTarget, spec);
+
+  if (binding.kind !== "cellOrWindowRefToSpiceInt") {
+    unsupportedCall("Unsupported call", {
+      call: callTarget,
+      invoker: spec.impl.nativeInvoker,
+      cSymbol: spec.impl.cSymbol,
+      bindingKind: binding.kind,
+    });
+  }
+
+  const invoke = resolveNativeAsSpiceIntRawInvoker(raw, binding);
+  const value = invoke(handle);
+  return asSpiceInt(value, `call(${callTarget}).result`);
+}
+
+const V2_NATIVE_CALL_INVOKERS: Record<string, V2NativeCallInvoker> = {
+  v2_invoke_contract_as_spice_int: ({
+    raw,
+    callTarget,
+    spec,
+    resolvedArgs,
+    outputRef,
+    refs,
+  }: V2NativeCallInvokerContext): void => {
+    const handle = resolvedArgs[0] as CellHandle | WindowHandle;
+
+    const value = invokeAsSpiceIntFromGeneratedBinding(raw, callTarget, spec, handle);
+
+    defineRef(refs, outputRef!, { kind: "int", value }, `call(${callTarget}).as`);
+  },
+
+  v2_invoke_contract_forbidden: ({
+    raw,
+    callTarget,
+    spec,
+    resolvedArgs,
+  }: V2NativeCallInvokerContext): void => {
+    switch (spec.impl.cSymbol) {
+      case "scard_c":
+        raw.scard(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
+        return;
+      case "ssize_c":
+        raw.ssize(resolvedArgs[0] as number, resolvedArgs[1] as CellHandle | WindowHandle);
+        return;
+      case "valid_c":
+        raw.valid(
+          resolvedArgs[0] as number,
+          resolvedArgs[1] as number,
+          resolvedArgs[2] as CellHandle | WindowHandle,
+        );
+        return;
+      case "dskobj_c":
+        raw.dskobj(resolvedArgs[0] as string, resolvedArgs[1] as IntCellHandle);
+        return;
+      case "dsksrf_c":
+        raw.dsksrf(resolvedArgs[0] as string, resolvedArgs[1] as number, resolvedArgs[2] as IntCellHandle);
+        return;
+      default:
+        unsupportedCall("Unsupported call", {
+          call: callTarget,
+          invoker: spec.impl.nativeInvoker,
+          cSymbol: spec.impl.cSymbol,
+        });
+    }
+  },
+
+  v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_as_dsk_descriptor: ({
+    raw,
+    callTarget,
+    spec,
+    resolvedArgs,
+    outputRef,
+    refs,
+  }: V2NativeCallInvokerContext): void => {
+    // DSK descriptor projection is intentionally isolated in this bespoke lane.
+    // TODO(parity-struct-capture): migrate to generated struct output binding.
+    if (spec.impl.cSymbol !== "dskgd_c") {
+      unsupportedCall("Unsupported call", {
+        call: callTarget,
+        invoker: spec.impl.nativeInvoker,
+        cSymbol: spec.impl.cSymbol,
+      });
+    }
+    const descriptor = raw.dskgd(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
+    defineRef(refs, outputRef!, { kind: "dskDescriptor", value: descriptor }, `call(${callTarget}).as`);
+  },
+
+  v2_invoke_sig_das_handle_ref_dla_descriptor_ref_to_out_named_dskb02: ({
+    raw,
+    callTarget,
+    spec,
+    resolvedArgs,
+    outMap,
+    refs,
+  }: V2NativeCallInvokerContext): void => {
+    // DSK named multi-out remains intentionally isolated/deferred for now.
+    // TODO(parity-struct-capture): replace with generic generated multi-output wiring.
+    if (spec.impl.cSymbol !== "dskb02_c") {
+      unsupportedCall("Unsupported call", {
+        call: callTarget,
+        invoker: spec.impl.nativeInvoker,
+        cSymbol: spec.impl.cSymbol,
+      });
+    }
+    const bookkeeping = raw.dskb02(resolvedArgs[0] as DasHandle, resolvedArgs[1] as DlaDescriptor);
+    applyNamedDskb02Outputs(callTarget, outMap ?? {}, bookkeeping, refs);
+  },
+};
+
+function lookupNativeCallInvoker(invoker: string): V2NativeCallInvoker | undefined {
+  return V2_NATIVE_CALL_INVOKERS[invoker];
+}
+
+async function executeCallFromSpec(
+  backend: SpiceBackend,
+  step: V2CallStep,
+  contractMethod: string,
+  args: unknown,
+  refs: Map<string, RefValue>,
+): Promise<unknown | undefined> {
+  const callTarget = resolveCallTarget(step, contractMethod);
+  const spec = lookupFunctionRegistryEntry(callTarget);
+  if (!spec) {
+    unsupportedCall("Unsupported call", { call: callTarget });
+  }
+
+  const dispatchEntry = lookupNativeCallDispatchEntry(spec.id);
+  if (!dispatchEntry) {
+    unsupportedCall("Unsupported call", { call: callTarget, id: spec.id });
+  }
+
+  if (dispatchEntry.cSymbol !== spec.impl.cSymbol || dispatchEntry.invoker !== spec.impl.nativeInvoker) {
+    invalidRequest(`Generated native dispatch mismatch for call ${callTarget}`);
+  }
+
+  if (spec.result.mode === "asSpiceInt" && dispatchEntry.invoker !== SHARED_AS_SPICE_INT_NATIVE_INVOKER) {
+    invalidRequest(`Generated asSpiceInt dispatch mismatch for call ${callTarget}`);
+  }
+
+  validateCallArity(step, callTarget, spec.arity);
   const resolvedArgs = spec.argKinds.map((argKind, index) =>
-    resolveSpiceCallArg(step, index, argKind, args, refs),
+    resolveCallArg(step, callTarget, index, argKind, args, refs),
   );
 
   if (spec.nonNegativeIntArgMask !== undefined) {
@@ -1160,44 +1161,81 @@ function executeSpiceCallFromSpec(
 
       const value = resolvedArgs[i];
       if (typeof value !== "number" || value < 0) {
-        invalidArgs(`spiceCall(${step.call}).in[${i}] must be >= 0`);
+        invalidArgs(`call(${callTarget}).in[${i}] must be >= 0`);
       }
     }
   }
 
+  if (spec.result.delivery === "returnValue") {
+    if (spec.result.mode !== "return") {
+      invalidRequest(`Generated delivery mismatch for call ${callTarget}`);
+    }
+
+    forbidCallOutputRef(step, callTarget);
+    forbidCallOutMap(step, callTarget);
+
+    if (
+      dispatchEntry.invoker !== SHARED_RETURN_NATIVE_INVOKER
+    ) {
+      unsupportedCall("Unsupported call", { call: callTarget, invoker: dispatchEntry.invoker });
+    }
+
+    return await executeBackendMethodCall(backend, spec, callTarget, resolvedArgs);
+  }
+
+  if (spec.result.delivery === "none" && !hasForbiddenOutputBindingPolicy(spec)) {
+    invalidRequest(`Generated output binding policy mismatch for call ${callTarget}`);
+  }
+
+  const invokeSpiceCall = lookupNativeCallInvoker(dispatchEntry.invoker);
+  if (!invokeSpiceCall) {
+    unsupportedCall("Unsupported call", { call: callTarget, invoker: dispatchEntry.invoker });
+  }
+
+  if (spec.result.delivery !== "outArg" && spec.result.delivery !== "none") {
+    invalidRequest(`Unsupported generated delivery for call ${callTarget}: ${spec.result.delivery}`);
+  }
+
   const raw = getRawBackend(backend);
   const outputRef =
-    spec.outputMode === "asSpiceInt" || spec.outputMode === "asDskDescriptor"
-      ? requireSpiceCallOutputRef(step)
+    spec.result.delivery === "outArg" && (spec.result.mode === "asSpiceInt" || spec.result.mode === "asDskDescriptor")
+      ? requireCallOutputRef(step, callTarget)
       : undefined;
-  const outMap = spec.outputMode === "outNamedDskb02" ? requireSpiceCallOutMap(step) : undefined;
+  const outMap =
+    spec.result.delivery === "outArg" && spec.result.mode === "outNamedDskb02"
+      ? requireCallOutMap(step, callTarget)
+      : undefined;
 
-  if (spec.outputMode !== "asSpiceInt" && spec.outputMode !== "asDskDescriptor") {
-    forbidSpiceCallOutputRef(step);
-  }
-  if (spec.outputMode !== "outNamedDskb02") {
-    forbidSpiceCallOutMap(step);
-  }
-
-  const invokeSpiceCall = lookupSpiceCallInvoker(step.call);
-  if (!invokeSpiceCall) {
-    unsupportedCall(`Unsupported spiceCall op: ${step.call}`);
+  if (spec.result.delivery === "none") {
+    forbidCallOutputRef(step, callTarget);
+    forbidCallOutMap(step, callTarget);
+  } else {
+    if (spec.result.mode !== "asSpiceInt" && spec.result.mode !== "asDskDescriptor") {
+      forbidCallOutputRef(step, callTarget);
+    }
+    if (spec.result.mode !== "outNamedDskb02") {
+      forbidCallOutMap(step, callTarget);
+    }
   }
 
   invokeSpiceCall({
     backend,
     raw,
     step,
+    callTarget,
+    spec,
     resolvedArgs,
     outputRef,
     outMap,
     refs,
   });
+
+  return undefined;
 }
 
 function executeAssertStep(
-  step: Extract<V3WorkflowStep, { op: "assert" }>,
-  args: Record<string, unknown>,
+  step: Extract<V2WorkflowStep, { op: "assert" }>,
+  args: unknown,
   refs: Map<string, RefValue>,
 ): void {
   const { operator, operands } = extractAssertOperatorAndOperands(step.test);
@@ -1280,11 +1318,11 @@ function defineRef(refs: Map<string, RefValue>, name: string, value: RefValue, l
 
 async function executeStep(
   backend: SpiceBackend,
-  step: V3WorkflowStep,
-  args: Record<string, unknown>,
+  step: V2WorkflowStep,
+  contractMethod: string,
+  args: unknown,
   refs: Map<string, RefValue>,
   freedHandles: FreedHandles,
-  callContractContext?: CallContractExecutionContext,
 ): Promise<unknown | undefined> {
   const raw = getRawBackend(backend);
   const kit = getKitBackend(backend);
@@ -1397,9 +1435,8 @@ async function executeStep(
       return undefined;
     }
 
-    case "spiceCall": {
-      executeSpiceCallFromSpec(backend, step, args, refs);
-      return undefined;
+    case "call": {
+      return await executeCallFromSpec(backend, step, contractMethod, args, refs);
     }
 
     case "project": {
@@ -1425,10 +1462,10 @@ async function executeStep(
         const maybeResult = await executeStep(
           backend,
           branchStep,
+          contractMethod,
           args,
           refs,
           freedHandles,
-          callContractContext,
         );
         if (maybeResult !== undefined) {
           projectedResult = maybeResult;
@@ -1455,14 +1492,6 @@ async function executeStep(
     case "freeWindow": {
       freeWindowRef(backend, refs, freedHandles, step.target);
       return undefined;
-    }
-
-    case "callContract": {
-      if (!callContractContext) {
-        invalidRequest("callContract execution context is missing");
-      }
-
-      return await executeCallContractStep(backend, step, callContractContext);
     }
 
     case "script": {
@@ -1507,7 +1536,7 @@ export function asV2RunnerError(error: unknown): RunnerErrorReport {
 /** Execute a single v2 parity case against a concrete backend implementation. */
 export async function executeV2CaseWithBackend(
   backend: SpiceBackend,
-  input: RunCaseInputV3,
+  input: RunCaseInputV2,
 ): Promise<unknown> {
   validateV2Envelope(input);
 
@@ -1521,36 +1550,12 @@ export async function executeV2CaseWithBackend(
     das: new Set<DasHandle>(),
   };
 
-  const hasWorkflowCallContract = hasCallContractStep(input.workflow.steps);
-  const hasCleanupCallContract = hasCallContractStep(input.workflow.cleanup ?? []);
-
-  if (hasCleanupCallContract) {
-    invalidRequest("v3 callContract workflow must not define cleanup steps");
-  }
-
-  const isSingleCallContractWorkflow =
-    input.workflow.steps.length === 1 && input.workflow.steps[0]?.op === "callContract";
-
-  if (hasWorkflowCallContract && !isSingleCallContractWorkflow) {
-    invalidRequest("v3 callContract is only supported as a single-step workflow");
-  }
-
-  let callContractContext: CallContractExecutionContext | undefined;
-  let args: Record<string, unknown>;
-
-  if (isSingleCallContractWorkflow) {
-    if (!Array.isArray(input.args)) {
-      invalidArgs(`v3 callContract expects case args to be an array (got ${formatValue(input.args)})`);
-    }
-
-    callContractContext = {
-      args: input.args,
-      defaultCall: asNonEmptyString(input.contract.contractMethod, "contract.contractMethod"),
-    };
-    args = {};
-  } else {
-    args = validateCaseArgs(input);
-  }
+  const args: unknown =
+    input.args === undefined
+      ? {}
+      : Array.isArray(input.args)
+        ? input.args
+        : validateCaseArgs(input);
 
   let projectedResult: unknown = undefined;
   let hasProjectedResult = false;
@@ -1561,10 +1566,10 @@ export async function executeV2CaseWithBackend(
       const maybeResult = await executeStep(
         backend,
         step,
+        input.contract.contractMethod,
         args,
         refs,
         freedHandles,
-        callContractContext,
       );
       if (maybeResult !== undefined) {
         projectedResult = maybeResult;
@@ -1583,7 +1588,7 @@ export async function executeV2CaseWithBackend(
 
   for (const step of input.workflow.cleanup ?? []) {
     try {
-      await executeStep(backend, step, args, refs, freedHandles, callContractContext);
+      await executeStep(backend, step, input.contract.contractMethod, args, refs, freedHandles);
     } catch (cleanupError) {
       if (terminalError === undefined) {
         terminalError = cleanupError;

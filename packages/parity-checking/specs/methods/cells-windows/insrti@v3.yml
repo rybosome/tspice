@@ -7,15 +7,37 @@ contract:
   canonicalMethod: cells-windows.insrti
   result:
     type: object
-    properties: {}
+    required:
+      - card
+    properties:
+      card:
+        type: spiceInt
+        const: 1
 workflow:
   steps:
-    - op: callContract
+    - op: allocCell
+      as: cell
+      params:
+        kind: int
+        size: 8
+    - op: call
+      fn: cells-windows.insrti
+      in:
+        - 2
+        - $refs.cell
+    - op: call
+      fn: cells-windows.card
+      in:
+        - $refs.cell
+      as: card
+    - op: projectResult
+      out:
+        card: $refs.card
+  cleanup:
+    - op: freeCell
+      target: $refs.cell
 cases:
   - id: cells-windows.insrti.basic
-    args:
-      - 2
-      - - int
-        - 8
+    args: {}
     expect:
       ok: true

@@ -3,7 +3,7 @@
 `@rybosome/tspice-parity-checking` is the canonical parity owner for this repo.
 It owns:
 
-- parity method specs,
+- parity workflow + method specs,
 - pre-execution guard pipeline,
 - tspice/cspice parity runtime comparison,
 - generated parity catalogs.
@@ -28,8 +28,8 @@ Top-level shape:
 
 Workflow highlights:
 
-- `callContract` for direct contract-method invocation from case args
-- `spiceCall`, `project`, `projectResult`, `assert`, `switch`, etc. for explicit declarative flows
+- `call` for direct contract-method invocation from case args (single canonical invoke op)
+- `project`, `projectResult`, `assert`, `switch`, etc. for explicit declarative flows around call results
 - `withResource` is first-class for lifecycle scoping
   - low-level lifecycle steps (`dasOpen`, `dlaBeginForwardSearch`, `dasClose`, `unlink`) are rejected when authored directly outside `withResource`
 - `script` implies TypeScript (no `language` field). Script validation rejects module imports and direct network/fs access patterns.

@@ -10,11 +10,15 @@ setup:
     - $FIXTURES/kernel-pool-parity.tpc
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernel-pool.swpool
+      in:
+        - TSPICE_PARITY_AGENT
+        -
+          - TSPICE_PARITY_DOUBLE_VAR
+    - op: projectResult
+      out: {}
 cases:
   - id: swpool-watch
-    args:
-      - TSPICE_PARITY_AGENT
-      - - TSPICE_PARITY_DOUBLE_VAR
     expect:
       ok: true

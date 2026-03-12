@@ -6,6 +6,12 @@ export type CaseSetup = {
   kernels?: KernelEntry[];
 };
 
+export type RunCaseInputLegacy = {
+  setup?: CaseSetup;
+  call: string;
+  args: unknown[];
+};
+
 export type V3ContractArgSpec = {
   name: string;
   type: "spiceInt";
@@ -44,7 +50,7 @@ export type V3ContractSpec = {
   contractMethod: string;
   canonicalMethod: string;
   args?: V3ContractArgSpec[];
-  /** Optional for callContract-first specs migrated from v1. */
+  /** Optional for methods that return scalar or ad-hoc object values. */
   result?: V3ContractResultSpec;
   errors?: Array<{ code: string }>;
 };
@@ -72,24 +78,9 @@ export type V3WorkflowAllocWindowStep = {
   };
 };
 
-export type V3WorkflowSpiceCallName =
-  | "card_c"
-  | "size_c"
-  | "scard_c"
-  | "ssize_c"
-  | "valid_c"
-  | "dskobj_c"
-  | "dsksrf_c"
-  | "dskgd_c"
-  | "dskb02_c"
-  | "dskmi2_c"
-  | "dskopn_c"
-  | "dskw02_c"
-  | "readVirtualOutput";
-
-export type V3WorkflowSpiceCallStep = {
-  op: "spiceCall";
-  call: V3WorkflowSpiceCallName;
+export type V3WorkflowCallStep = {
+  op: "call";
+  fn: string;
   in: unknown[];
   as?: string;
   out?: Record<string, string>;
@@ -123,11 +114,6 @@ export type V3WorkflowDasCloseStep = {
 export type V3WorkflowUnlinkStep = {
   op: "unlink";
   target: unknown;
-};
-
-export type V3WorkflowCallContractStep = {
-  op: "callContract";
-  call?: string;
 };
 
 export type V3WorkflowScriptStep = {
@@ -192,8 +178,7 @@ export type V3WorkflowStep =
   | V3WorkflowDlaBeginForwardSearchStep
   | V3WorkflowDasCloseStep
   | V3WorkflowUnlinkStep
-  | V3WorkflowSpiceCallStep
-  | V3WorkflowCallContractStep
+  | V3WorkflowCallStep
   | V3WorkflowScriptStep
   | V3WorkflowAssertStep
   | V3WorkflowProjectStep
@@ -217,7 +202,37 @@ export type RunCaseInputV3 = {
   };
 };
 
-export type RunCaseInput = RunCaseInputV3;
+export type RunCaseInput = RunCaseInputLegacy | RunCaseInputV3;
+
+// Backward-compatible aliases for still-renamed modules/tests; callers should migrate to V3 names.
+export type V2ContractArgSpec = V3ContractArgSpec;
+export type V2ContractResultProperty = V3ContractResultProperty;
+export type V2ContractResultConstValue = V3ContractResultConstValue;
+export type V2ContractResultConstSpec = V3ContractResultConstSpec;
+export type V2ContractResultObjectSpec = V3ContractResultObjectSpec;
+export type V2ContractResultSpec = V3ContractResultSpec;
+export type V2ContractSpec = V3ContractSpec;
+export type V2WorkflowAllocCellStep = V3WorkflowAllocCellStep;
+export type V2WorkflowAllocWindowStep = V3WorkflowAllocWindowStep;
+export type V2WorkflowCallStep = V3WorkflowCallStep;
+export type V2WorkflowMaterializeFixture = V3WorkflowMaterializeFixture;
+export type V2WorkflowMaterializeStep = V3WorkflowMaterializeStep;
+export type V2WorkflowDasOpenStep = V3WorkflowDasOpenStep;
+export type V2WorkflowDlaBeginForwardSearchStep = V3WorkflowDlaBeginForwardSearchStep;
+export type V2WorkflowDasCloseStep = V3WorkflowDasCloseStep;
+export type V2WorkflowUnlinkStep = V3WorkflowUnlinkStep;
+export type V2WorkflowScriptStep = V3WorkflowScriptStep;
+export type V2WorkflowAssertOperator = V3WorkflowAssertOperator;
+export type V2WorkflowAssertTest = V3WorkflowAssertTest;
+export type V2WorkflowAssertStep = V3WorkflowAssertStep;
+export type V2WorkflowProjectResultStep = V3WorkflowProjectResultStep;
+export type V2WorkflowProjectStep = V3WorkflowProjectStep;
+export type V2WorkflowSwitchStep = V3WorkflowSwitchStep;
+export type V2WorkflowFreeCellStep = V3WorkflowFreeCellStep;
+export type V2WorkflowFreeWindowStep = V3WorkflowFreeWindowStep;
+export type V2WorkflowStep = V3WorkflowStep;
+export type RunCaseInputV2 = RunCaseInputV3;
+export type RunCaseInputV1 = RunCaseInputLegacy;
 
 export type SpiceErrorState = {
   failed: boolean;

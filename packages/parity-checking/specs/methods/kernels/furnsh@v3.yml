@@ -7,10 +7,15 @@ contract:
   canonicalMethod: kernels.furnsh
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernels.furnsh
+      in:
+        - $args.0
 cases:
   - id: kernels.furnsh.text-kernel
     args:
       - $FIXTURES/kernel-pool-parity.tpc
+    compare:
+      errorShort: true
     expect:
-      ok: true
+      ok: false

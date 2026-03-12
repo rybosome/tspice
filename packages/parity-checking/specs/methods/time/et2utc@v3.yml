@@ -10,7 +10,12 @@ setup:
     - $FIXTURES/basic-time
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: time.et2utc
+      in:
+        - $args.0
+        - $args.1
+        - $args.2
 cases:
   - id: bad-format
     args:

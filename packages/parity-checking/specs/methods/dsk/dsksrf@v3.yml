@@ -36,12 +36,12 @@ workflow:
                 handle: $refs.dasHandle
                 as: dladsc
               steps:
-                - op: spiceCall
-                  call: dskgd_c
+                - op: call
                   in:
                     - $refs.dasHandle
                     - $refs.dladsc
                   as: dskdsc
+                  fn: dsk.dskgd
                 - op: project
                   out:
                     bodyId: $refs.dskdsc.center
@@ -54,17 +54,17 @@ workflow:
                       kind: int
                       size: 100
                   steps:
-                    - op: spiceCall
-                      call: dsksrf_c
+                    - op: call
                       in:
                         - $refs.dskPath
                         - $refs.bodyId
                         - $refs.surfaceIds
-                    - op: spiceCall
-                      call: card_c
+                      fn: dsk.dsksrf
+                    - op: call
                       in:
                         - $refs.surfaceIds
                       as: surfaceCount
+                      fn: cells-windows.card
                     - op: assert
                       test:
                         gt:

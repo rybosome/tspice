@@ -44,14 +44,14 @@ workflow:
                 handle: $refs.dasHandle
                 as: dladsc
               steps:
-                - op: spiceCall
-                  call: dskb02_c
+                - op: call
                   in:
                     - $refs.dasHandle
                     - $refs.dladsc
                   out:
                     nv: nv
                     np: np
+                  fn: dsk.dskb02
                 - op: switch
                   on: $args.selector
                   cases:
