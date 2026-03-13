@@ -40,7 +40,7 @@ static int jsmn_parse_primitive(jsmn_parser *parser, const char *js,
         c == '}') {
       jsmntok_t *tok = jsmn_alloc_token(parser, tokens, num_tokens);
       if (tok == NULL) {
-        return -1;
+        return JSMN_ERROR_NOMEM;
       }
       jsmn_fill_token(tok, JSMN_PRIMITIVE, start, (int)parser->pos);
 #ifdef JSMN_PARENT_LINKS
@@ -50,14 +50,14 @@ static int jsmn_parse_primitive(jsmn_parser *parser, const char *js,
       return 0;
     }
     if (c < 32 || c == '"' || c == '\\') {
-      return -2;
+      return JSMN_ERROR_INVAL;
     }
   }
 
   // Reached end.
   jsmntok_t *tok = jsmn_alloc_token(parser, tokens, num_tokens);
   if (tok == NULL) {
-    return -1;
+    return JSMN_ERROR_NOMEM;
   }
   jsmn_fill_token(tok, JSMN_PRIMITIVE, start, (int)parser->pos);
 #ifdef JSMN_PARENT_LINKS
@@ -78,7 +78,7 @@ static int jsmn_parse_string(jsmn_parser *parser, const char *js, const size_t l
     if (c == '"') {
       jsmntok_t *tok = jsmn_alloc_token(parser, tokens, num_tokens);
       if (tok == NULL) {
-        return -1;
+        return JSMN_ERROR_NOMEM;
       }
       jsmn_fill_token(tok, JSMN_STRING, start + 1, (int)parser->pos);
 #ifdef JSMN_PARENT_LINKS
@@ -90,14 +90,14 @@ static int jsmn_parse_string(jsmn_parser *parser, const char *js, const size_t l
     if (c == '\\') {
       parser->pos++;
       if (parser->pos >= len) {
-        return -2;
+        return JSMN_ERROR_PART;
       }
       // Skip escaped char.
       continue;
     }
   }
 
-  return -2;
+  return JSMN_ERROR_PART;
 }
 
 int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
@@ -114,7 +114,7 @@ int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
     case '[':
       token = jsmn_alloc_token(parser, tokens, num_tokens);
       if (token == NULL) {
-        return -1;
+        return JSMN_ERROR_NOMEM;
       }
       if (parser->toksuper != -1) {
         tokens[parser->toksuper].size++;
@@ -149,12 +149,12 @@ int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
 #endif
             break;
           } else {
-            return -2;
+            return JSMN_ERROR_INVAL;
           }
         }
       }
       if (i == -1) {
-        return -2;
+        return JSMN_ERROR_INVAL;
       }
       break;
 
@@ -191,7 +191,7 @@ int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
   for (i = (int)parser->toknext - 1; i >= 0; i--) {
     // Unmatched opened object or array.
     if (tokens[i].start != -1 && tokens[i].end == -1) {
-      return -2;
+      return JSMN_ERROR_PART;
     }
   }
 
@@ -200,11 +200,17 @@ int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
 
 bool jsmn_token_streq(const char *json, const jsmntok_t *tok,
                              const char *s) {
+  return jsmn_token_streq_n(json, tok, s, strlen(s));
+}
+
+bool jsmn_token_streq_n(const char *json, const jsmntok_t *tok,
+                               const char *s, size_t sLen) {
   if (tok->type != JSMN_STRING) {
     return false;
   }
+
   const size_t len = (size_t)(tok->end - tok->start);
-  return strlen(s) == len && strncmp(json + tok->start, s, len) == 0;
+  return len == sLen && strncmp(json + tok->start, s, sLen) == 0;
 }
 
 // NOTE: This embedded jsmn variant increments `tok->size` once per *child token*.
@@ -258,9 +264,10 @@ int jsmn_skip_subtree(const jsmntok_t *tokens, const int index,
   return i;
 }
 
-int jsmn_find_object_key(const char *json, const jsmntok_t *tokens,
-                                const int objIndex, const char *key,
-                                const int tokenCount) {
+int jsmn_find_object_key_n(const char *json, const jsmntok_t *tokens,
+                                  const int objIndex, const char *key,
+                                  const size_t keyLen,
+                                  const int tokenCount) {
   if (objIndex < 0 || objIndex >= tokenCount) {
     return -1;
   }
@@ -285,7 +292,7 @@ int jsmn_find_object_key(const char *json, const jsmntok_t *tokens,
     if (valIndex >= tokenCount) {
       return -1;
     }
-    if (jsmn_token_streq(json, k, key)) {
+    if (jsmn_token_streq_n(json, k, key, keyLen)) {
       return valIndex;
     }
 
@@ -296,6 +303,13 @@ int jsmn_find_object_key(const char *json, const jsmntok_t *tokens,
   }
 
   return -1;
+}
+
+int jsmn_find_object_key(const char *json, const jsmntok_t *tokens,
+                                const int objIndex, const char *key,
+                                const int tokenCount) {
+  return jsmn_find_object_key_n(json, tokens, objIndex, key, strlen(key),
+                                tokenCount);
 }
 
 // Return index of array element `elemIndex` within array token at `arrayIndex`.

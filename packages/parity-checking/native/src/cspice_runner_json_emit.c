@@ -172,6 +172,7 @@ void write_generated_dispatch_unavailable_json(const char *lane,
 
   fputs("{\"ok\":false,\"error\":{", stdout);
   fputs("\"code\":\"generated_dispatch_unavailable\",", stdout);
+  fputs("\"message\":\"Generated dispatch unavailable\",", stdout);
   fputs("\"lane\":\"", stdout);
   json_print_escaped(laneValue);
   fputs("\",\"callId\":\"", stdout);

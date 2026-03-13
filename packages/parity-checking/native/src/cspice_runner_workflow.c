@@ -1,3 +1,5 @@
+#include <ctype.h>
+
 #include "cspice_runner_generated_dispatch_seam.h"
 #include "cspice_runner_json_emit.h"
 #include "cspice_runner_workflow.h"
@@ -97,23 +99,8 @@ static bool resolve_object_path_token(const char *json,
       return false;
     }
 
-    if (segmentLen > SIZE_MAX - 1U) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-      return false;
-    }
-
-    char *segment = (char *)malloc(segmentLen + 1U);
-    if (segment == NULL) {
-      write_error_json("Out of memory", NULL, NULL, NULL);
-      return false;
-    }
-
-    memcpy(segment, cursor, segmentLen);
-    segment[segmentLen] = '\0';
-
-    int nextTok =
-        jsmn_find_object_key(json, tokens, currentTok, segment, tokenCount);
-    free(segment);
+    int nextTok = jsmn_find_object_key_n(json, tokens, currentTok, cursor,
+                                         segmentLen, tokenCount);
 
     if (nextTok < 0 || nextTok >= tokenCount) {
       write_error_json_ex("invalid_args", "Reference path is missing property",
@@ -208,8 +195,8 @@ static bool resolve_step_fn(const char *json,
 
   if (strcmp(expr, "$refs") == 0 || strncmp(expr, "$refs.", 6) == 0) {
     write_error_json_ex("invalid_request",
-                        "workflow call fn references missing ref", label, NULL,
-                        NULL, NULL);
+                        "workflow call step fn does not support $refs in native canonical execution",
+                        label, NULL, NULL, NULL);
     free(expr);
     return false;
   }
@@ -218,11 +205,78 @@ static bool resolve_step_fn(const char *json,
   return true;
 }
 
+static bool resolve_step_input_token(const char *json,
+                                     const jsmntok_t *tokens,
+                                     int tokenCount,
+                                     int inTok,
+                                     int argsTok,
+                                     const char *label,
+                                     int *outTok) {
+  if (inTok < 0 || inTok >= tokenCount) {
+    write_error_json_ex("invalid_request",
+                        "workflow call step requires fn and in", label, NULL,
+                        NULL, NULL);
+    return false;
+  }
+
+  if (tokens[inTok].type != JSMN_STRING) {
+    *outTok = inTok;
+    return true;
+  }
+
+  char *expr = NULL;
+  if (!duplicate_json_string_or_error(json, &tokens[inTok], &expr)) {
+    return false;
+  }
+
+  if (strcmp(expr, "$args") == 0 || strncmp(expr, "$args.", 6) == 0) {
+    if (argsTok < 0 || argsTok >= tokenCount) {
+      write_error_json_ex("invalid_args",
+                          "workflow call input references missing args object",
+                          label, NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
+    const char *path = expr + 5;
+    int resolvedTok = argsTok;
+    if (path[0] == '.') {
+      if (!resolve_object_path_token(json, tokens, tokenCount, argsTok, path + 1,
+                                     label, &resolvedTok)) {
+        free(expr);
+        return false;
+      }
+    }
+
+    free(expr);
+    *outTok = resolvedTok;
+    return true;
+  }
+
+  if (strcmp(expr, "$refs") == 0 || strncmp(expr, "$refs.", 6) == 0) {
+    write_error_json_ex("invalid_request",
+                        "workflow call step in does not support $refs in native canonical execution",
+                        label, NULL, NULL, NULL);
+    free(expr);
+    return false;
+  }
+
+  free(expr);
+  *outTok = inTok;
+  return true;
+}
+
 static bool build_call_id(const char *manifestId,
                           int stepIndex,
                           char **outCallId) {
   char stepIndexBuf[32];
-  snprintf(stepIndexBuf, sizeof(stepIndexBuf), "%d", stepIndex + 1);
+  int stepLenWritten =
+      snprintf(stepIndexBuf, sizeof(stepIndexBuf), "%d", stepIndex + 1);
+  if (stepLenWritten < 0 ||
+      (size_t)stepLenWritten >= sizeof(stepIndexBuf)) {
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
 
   const size_t manifestLen = strlen(manifestId);
   const size_t stepLen = strlen(stepIndexBuf);
@@ -238,7 +292,14 @@ static bool build_call_id(const char *manifestId,
     return false;
   }
 
-  snprintf(callId, totalBytes, "%s::%s", manifestId, stepIndexBuf);
+  int callIdLen = snprintf(callId, totalBytes, "%s::%s", manifestId,
+                           stepIndexBuf);
+  if (callIdLen < 0 || (size_t)callIdLen >= totalBytes) {
+    free(callId);
+    write_error_json("Out of memory", NULL, NULL, NULL);
+    return false;
+  }
+
   *outCallId = callId;
   return true;
 }
@@ -325,12 +386,36 @@ bool execute_canonical_workflow_request(const char *json,
       return false;
     }
 
-    char label[64];
-    snprintf(label, sizeof(label), "workflow.steps[%d].fn", stepIndex);
+    char fnLabel[64];
+    int fnLabelLen =
+        snprintf(fnLabel, sizeof(fnLabel), "workflow.steps[%d].fn", stepIndex);
+    if (fnLabelLen < 0 || (size_t)fnLabelLen >= sizeof(fnLabel)) {
+      free(manifestId);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
 
     char *resolvedFn = NULL;
-    if (!resolve_step_fn(json, tokens, tokenCount, fnTok, argsTok, label,
+    if (!resolve_step_fn(json, tokens, tokenCount, fnTok, argsTok, fnLabel,
                          &resolvedFn)) {
+      free(manifestId);
+      return false;
+    }
+
+    char inLabel[64];
+    int inLabelLen =
+        snprintf(inLabel, sizeof(inLabel), "workflow.steps[%d].in", stepIndex);
+    if (inLabelLen < 0 || (size_t)inLabelLen >= sizeof(inLabel)) {
+      free(resolvedFn);
+      free(manifestId);
+      write_error_json("Out of memory", NULL, NULL, NULL);
+      return false;
+    }
+
+    int resolvedInTok = -1;
+    if (!resolve_step_input_token(json, tokens, tokenCount, inTok, argsTok,
+                                  inLabel, &resolvedInTok)) {
+      free(resolvedFn);
       free(manifestId);
       return false;
     }
@@ -349,7 +434,7 @@ bool execute_canonical_workflow_request(const char *json,
         .json = json,
         .tokens = tokens,
         .tokenCount = tokenCount,
-        .inputTok = inTok,
+        .inputTok = resolvedInTok,
     };
 
     bool ok = handoff_to_generated_dispatch_seam(&request);
