@@ -114,7 +114,7 @@ jobs:
         pnpm run fetch:cspice
 
         echo "[parity-proof] proof=disabled (non-gating)"
-        export PARITY_PROOF_NATIVE_V2=0
+        export PARITY_PROOF_NATIVE=0
         export TSPICE_PARITY_BACKEND=wasm
 
         # TODO(#594): restore hard-fail parity gating after the PR-0..PR-5
@@ -142,7 +142,7 @@ jobs:
         pnpm run fetch:cspice
 
         echo "[parity-proof] proof=native-v2"
-        export PARITY_PROOF_NATIVE_V2=1
+        export PARITY_PROOF_NATIVE=1
         unset TSPICE_PARITY_BACKEND
         pnpm test:verify
 
