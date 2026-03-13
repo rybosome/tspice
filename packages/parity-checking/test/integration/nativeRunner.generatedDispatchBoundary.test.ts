@@ -146,6 +146,110 @@ describe("native runner generated-dispatch seam boundary", () => {
     });
   });
 
+  it("rejects trailing-dot $args. for workflow fn references", () => {
+    const binaryPath = getBinaryPathOrSkip();
+    if (!binaryPath) {
+      return;
+    }
+
+    const request = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/time.str2et@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "time.str2et",
+        canonicalMethod: "time.str2et",
+      },
+      args: {
+        fn: "time.str2et",
+      },
+      workflow: {
+        steps: [
+          {
+            op: "call",
+            fn: "$args.",
+            in: "$args",
+          },
+        ],
+      },
+    };
+
+    const run = runNative(binaryPath, `${JSON.stringify(request)}\n`);
+
+    expect(run.error).toBeUndefined();
+    expect(run.status).toBe(1);
+
+    const parsed = JSON.parse(run.stdout) as {
+      ok: boolean;
+      error?: {
+        code?: string;
+        message?: string;
+        detail?: string;
+      };
+    };
+
+    expect(parsed.ok).toBe(false);
+    expect(parsed.error).toMatchObject({
+      code: "invalid_request",
+      message: "Invalid reference expression",
+      detail: "workflow.steps[0].fn",
+    });
+  });
+
+  it("rejects trailing-dot $args. for workflow input references", () => {
+    const binaryPath = getBinaryPathOrSkip();
+    if (!binaryPath) {
+      return;
+    }
+
+    const request = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/time.str2et@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "time.str2et",
+        canonicalMethod: "time.str2et",
+      },
+      args: {
+        fn: "time.str2et",
+      },
+      workflow: {
+        steps: [
+          {
+            op: "call",
+            fn: "$args.fn",
+            in: "$args.",
+          },
+        ],
+      },
+    };
+
+    const run = runNative(binaryPath, `${JSON.stringify(request)}\n`);
+
+    expect(run.error).toBeUndefined();
+    expect(run.status).toBe(1);
+
+    const parsed = JSON.parse(run.stdout) as {
+      ok: boolean;
+      error?: {
+        code?: string;
+        message?: string;
+        detail?: string;
+      };
+    };
+
+    expect(parsed.ok).toBe(false);
+    expect(parsed.error).toMatchObject({
+      code: "invalid_request",
+      message: "Invalid reference expression",
+      detail: "workflow.steps[0].in",
+    });
+  });
+
   it("uses explicit unsupported messaging for $refs workflow fn", () => {
     const binaryPath = getBinaryPathOrSkip();
     if (!binaryPath) {
