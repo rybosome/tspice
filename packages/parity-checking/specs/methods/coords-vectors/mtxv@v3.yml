@@ -11,7 +11,9 @@ defaults:
     tolRel: 1e-12
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: coords-vectors.mtxv
+      in: $args
 cases:
   - id: coords-vectors.mtxv
     args:

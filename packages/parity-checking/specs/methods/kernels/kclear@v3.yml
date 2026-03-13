@@ -7,7 +7,9 @@ contract:
   canonicalMethod: kernels.kclear
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernels.kclear
+      in: $args
 cases:
   - id: kernels.kclear
     args: []

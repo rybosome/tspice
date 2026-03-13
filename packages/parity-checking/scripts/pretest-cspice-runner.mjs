@@ -3,7 +3,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const PROOF_ENV = "PARITY_PROOF_NATIVE_V2";
+const PROOF_ENV = "PARITY_PROOF_NATIVE";
 
 function isCI() {
   const v = process.env.CI;

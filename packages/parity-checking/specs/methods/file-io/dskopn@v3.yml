@@ -14,12 +14,9 @@ contract:
         const: true
 workflow:
   steps:
-    - op: spiceCall
-      call: dskopn_c
-      in: []
-    - op: projectResult
-      out:
-        opened: true
+    - op: call
+      fn: file-io.dskopn
+      in: $args
 cases:
   - id: open-close-temp-dsk
     expect:

@@ -7,7 +7,9 @@ contract:
   canonicalMethod: kernels.kxtrct
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernels.kxtrct
+      in: $args
 cases:
   - id: kernels.kxtrct
     args:

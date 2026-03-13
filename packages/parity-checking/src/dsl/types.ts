@@ -1,5 +1,4 @@
 import type { CompareOptions } from "../compare/types.js";
-import type { AssertOperator } from "../assertOperators.js";
 
 /** AST shape for per-scenario compare options in YAML. */
 export type ScenarioCompareAst = CompareOptions & {
@@ -102,165 +101,22 @@ export type MethodContractV3 = {
   contractMethod: string;
   canonicalMethod: string;
   args?: MethodArgSpecV3[];
-  /** Optional for callContract-centric migrated specs. */
   result?: MethodResultSpecV3;
   errors?: MethodErrorSpecV3[];
 };
 
-export type MethodWorkflowOpAllocCellV3 = {
-  op: "allocCell";
-  as: string;
-  params:
-    | {
-        kind: "int" | "double";
-        size: unknown;
-      }
-    | {
-        kind: "char";
-        size: unknown;
-        length: unknown;
-      };
-};
-
-export type MethodWorkflowOpAllocWindowV3 = {
-  op: "allocWindow";
-  as: string;
-  params: {
-    maxIntervals: unknown;
-  };
-};
-
-export type MethodWorkflowSpiceCallNameV3 =
-  | "card_c"
-  | "size_c"
-  | "scard_c"
-  | "ssize_c"
-  | "valid_c"
-  | "dskobj_c"
-  | "dsksrf_c"
-  | "dskgd_c"
-  | "dskb02_c"
-  | "dskmi2_c"
-  | "dskopn_c"
-  | "dskw02_c"
-  | "readVirtualOutput";
-
-export type MethodWorkflowOpSpiceCallV3 = {
-  op: "spiceCall";
-  call: MethodWorkflowSpiceCallNameV3;
-  in: unknown[];
+export type MethodWorkflowOpCallV3 = {
+  op: "call";
+  fn: string;
+  in: unknown;
   as?: string;
   out?: Record<string, string>;
 };
 
-export type MethodWorkflowOpMaterializeV3 = {
-  op: "materialize";
-  fixture: "minimalDsk" | "virtualOutputSpk";
-  as: string;
-};
-
-export type MethodWorkflowOpDasOpenV3 = {
-  op: "dasOpen";
-  path: unknown;
-  as: string;
-};
-
-export type MethodWorkflowOpDlaBeginForwardSearchV3 = {
-  op: "dlaBeginForwardSearch";
-  handle: unknown;
-  as: string;
-};
-
-export type MethodWorkflowOpDasCloseV3 = {
-  op: "dasClose";
-  target: unknown;
-};
-
-export type MethodWorkflowOpUnlinkV3 = {
-  op: "unlink";
-  target: unknown;
-};
-
-export type MethodWorkflowOpCallContractV3 = {
-  op: "callContract";
-  call?: string;
-};
-
-export type MethodWorkflowOpScriptV3 = {
-  op: "script";
-  code: string;
-  in?: Record<string, unknown>;
-  as?: string;
-  out?: Record<string, string>;
-};
-
-export type MethodWorkflowAssertOperatorV3 = AssertOperator;
-
-export type MethodWorkflowAssertTestV3 =
-  | { eq: [unknown, unknown] }
-  | { ne: [unknown, unknown] }
-  | { gt: [unknown, unknown] }
-  | { gte: [unknown, unknown] }
-  | { lt: [unknown, unknown] }
-  | { lte: [unknown, unknown] };
-
-export type MethodWorkflowOpAssertV3 = {
-  op: "assert";
-  test: MethodWorkflowAssertTestV3;
-  error: {
-    code: string;
-    message: string;
-  };
-};
-
-export type MethodWorkflowOpProjectResultV3 = {
-  op: "projectResult";
-  out: Record<string, unknown>;
-};
-
-export type MethodWorkflowOpProjectV3 = {
-  op: "project";
-  out: Record<string, unknown>;
-};
-
-export type MethodWorkflowOpSwitchV3 = {
-  op: "switch";
-  on: unknown;
-  cases: Record<string, MethodWorkflowStepV3[]>;
-  default?: MethodWorkflowStepV3[];
-};
-
-export type MethodWorkflowOpFreeCellV3 = {
-  op: "freeCell";
-  target: unknown;
-};
-
-export type MethodWorkflowOpFreeWindowV3 = {
-  op: "freeWindow";
-  target: unknown;
-};
-
-export type MethodWorkflowStepV3 =
-  | MethodWorkflowOpAllocCellV3
-  | MethodWorkflowOpAllocWindowV3
-  | MethodWorkflowOpMaterializeV3
-  | MethodWorkflowOpDasOpenV3
-  | MethodWorkflowOpDlaBeginForwardSearchV3
-  | MethodWorkflowOpDasCloseV3
-  | MethodWorkflowOpUnlinkV3
-  | MethodWorkflowOpSpiceCallV3
-  | MethodWorkflowOpCallContractV3
-  | MethodWorkflowOpScriptV3
-  | MethodWorkflowOpAssertV3
-  | MethodWorkflowOpProjectV3
-  | MethodWorkflowOpSwitchV3
-  | MethodWorkflowOpProjectResultV3
-  | MethodWorkflowOpFreeCellV3
-  | MethodWorkflowOpFreeWindowV3;
+export type MethodWorkflowStepV3 = MethodWorkflowOpCallV3;
 
 export type MethodWorkflowV3 = {
   steps: MethodWorkflowStepV3[];
-  cleanup?: MethodWorkflowStepV3[];
 };
 
 export type MethodSuiteSpecV3 = {

@@ -7,7 +7,9 @@ contract:
   canonicalMethod: kernels.ktotal
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernels.ktotal
+      in: $args
 cases:
   - id: kernels.ktotal
     args:

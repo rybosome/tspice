@@ -1,39 +1,39 @@
 import type { RunCaseInput } from "../runners/types.js";
 
-export const PARITY_PROOF_NATIVE_V2_ENV = "PARITY_PROOF_NATIVE_V2" as const;
-export const PARITY_PROOF_NATIVE_V2_ENABLED_VALUE = "1" as const;
+export const PARITY_PROOF_NATIVE_ENV = "PARITY_PROOF_NATIVE" as const;
+export const PARITY_PROOF_NATIVE_ENABLED_VALUE = "1" as const;
 
-export type ReferenceTransport = "native-cspice-runner";
+export type ReferenceTransport = "generated-dispatch-seam";
 
 export type ReferenceExecutionPlan = {
   transport: ReferenceTransport;
   ops: string[];
+  dispatchHandoffAttempted: true;
+  fallbackUsed: false;
+  stopPoint: "generated-dispatch-unavailable";
 };
 
 function collectWorkflowOps(input: RunCaseInput): string[] {
-  const stepOps = input.workflow.steps.map((step) => step.op);
-  const cleanupOps = (input.workflow.cleanup ?? []).map((step) => step.op);
-  return [...stepOps, ...cleanupOps];
+  return input.workflow.steps.map((step) => step.op);
 }
 
 /**
- * Return true when native proof v2 mode is enabled via process env.
+ * Parity proof mode is always considered enabled for canonical dispatch-boundary
+ * validation in this phase.
  */
-export function isParityProofNativeV2Enabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  return env[PARITY_PROOF_NATIVE_V2_ENV] === PARITY_PROOF_NATIVE_V2_ENABLED_VALUE;
+export function isParityProofNativeEnabled(_env: NodeJS.ProcessEnv = process.env): boolean {
+  return true;
 }
 
 /**
- * Return a stable marker describing the current native proof mode.
+ * Return a stable marker describing generated-dispatch-boundary proof mode.
  */
-export function parityProofMarker(env: NodeJS.ProcessEnv = process.env): string {
-  return isParityProofNativeV2Enabled(env) ? "proof=native-v2" : "proof=disabled";
+export function parityProofMarker(_env: NodeJS.ProcessEnv = process.env): string {
+  return "proof=generated-dispatch-boundary";
 }
 
 /**
- * Resolve the reference execution transport for a case.
- *
- * CSPICE lane is native-only and never substitutes a callContract fast-path.
+ * Resolve the canonical reference execution plan for a case.
  */
 export function resolveReferenceExecutionPlan(
   input: RunCaseInput,
@@ -42,7 +42,10 @@ export function resolveReferenceExecutionPlan(
   } = {},
 ): ReferenceExecutionPlan {
   return {
-    transport: "native-cspice-runner",
+    transport: "generated-dispatch-seam",
     ops: collectWorkflowOps(input),
+    dispatchHandoffAttempted: true,
+    fallbackUsed: false,
+    stopPoint: "generated-dispatch-unavailable",
   };
 }

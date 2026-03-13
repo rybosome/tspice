@@ -1,5 +1,3 @@
-import { ASSERT_OPERATORS, type AssertOperator } from "../assertOperators.js";
-
 import type {
   MethodCaseExpectation,
   MethodCaseSpecV3,
@@ -91,8 +89,13 @@ function parseCompareAst(value: unknown, label: string): ScenarioCompareAst {
     out.tolRel = n;
   }
 
-  if (obj.angleWrapPi !== undefined) out.angleWrapPi = asBoolean(obj.angleWrapPi, `${label}.angleWrapPi`);
-  if (obj.errorShort !== undefined) out.errorShort = asBoolean(obj.errorShort, `${label}.errorShort`);
+  if (obj.angleWrapPi !== undefined) {
+    out.angleWrapPi = asBoolean(obj.angleWrapPi, `${label}.angleWrapPi`);
+  }
+  if (obj.errorShort !== undefined) {
+    out.errorShort = asBoolean(obj.errorShort, `${label}.errorShort`);
+  }
+
   return out;
 }
 
@@ -319,441 +322,61 @@ function parseMethodContract(value: unknown, label: string): MethodContractV3 {
   return out;
 }
 
-type LoweredWorkflow = {
-  steps: MethodWorkflowStepV3[];
-  cleanup: MethodWorkflowStepV3[];
-};
+function parseCallStep(value: unknown, label: string): MethodWorkflowStepV3 {
+  const obj = asRecord(value, label);
+  ensureKnownKeys(obj, ["op", "fn", "in", "as", "out"], label);
 
-function combineLowered(entries: LoweredWorkflow[]): LoweredWorkflow {
-  const out: LoweredWorkflow = { steps: [], cleanup: [] };
-  for (const entry of entries) {
-    out.steps.push(...entry.steps);
-    if (entry.cleanup.length > 0) {
-      out.cleanup = [...entry.cleanup, ...out.cleanup];
-    }
-  }
-  return out;
-}
-
-function parseAssertOperator(test: Record<string, unknown>, label: string): { operator: AssertOperator; operands: [unknown, unknown] } {
-  const keys = Object.keys(test);
-  if (keys.length !== 1) {
-    throw new TypeError(`${label} must define exactly one operator`);
+  const fn = asString(obj.fn, `${label}.fn`);
+  if (!Object.prototype.hasOwnProperty.call(obj, "in")) {
+    throw new TypeError(`${label}.in is required for op=call`);
   }
 
-  const operator = keys[0] as AssertOperator;
-  if (!ASSERT_OPERATORS.includes(operator)) {
-    throw new TypeError(`${label} operator must be one of: ${ASSERT_OPERATORS.join(", ")}`);
-  }
+  const asName = obj.as === undefined ? undefined : asString(obj.as, `${label}.as`);
+  const outMap = obj.out === undefined ? undefined : parseStringMap(obj.out, `${label}.out`);
 
-  const value = test[operator];
-  if (!Array.isArray(value) || value.length !== 2) {
-    throw new TypeError(`${label}.${operator} must be a 2-item array`);
+  if (asName !== undefined && outMap !== undefined) {
+    throw new TypeError(`${label} is ambiguous: define only one of call.as or call.out`);
   }
 
   return {
-    operator,
-    operands: [value[0], value[1]],
+    op: "call",
+    fn,
+    in: obj.in,
+    ...(asName === undefined ? {} : { as: asName }),
+    ...(outMap === undefined ? {} : { out: outMap }),
   };
 }
 
-function assertScriptSecurity(code: string, label: string): void {
-  const forbiddenPatterns: Array<[RegExp, string]> = [
-    [/\bimport\b/, "module imports are not allowed"],
-    [/\brequire\s*\(/, "CommonJS require is not allowed"],
-    [/\bfrom\s+['"][^'"]+['"]/, "module imports are not allowed"],
-    [/\bfs\b/, "direct fs access is not allowed"],
-    [/\bhttps?\b/, "network access is not allowed"],
-    [/\bnet\b/, "network access is not allowed"],
-  ];
-
-  for (const [pattern, message] of forbiddenPatterns) {
-    if (pattern.test(code)) {
-      throw new TypeError(`${label}.code rejected: ${message}`);
-    }
-  }
-}
-
-function parseStepCore(
-  value: unknown,
-  label: string,
-  options: { allowLifecycleOps: boolean },
-): LoweredWorkflow {
+function parseStep(value: unknown, label: string): MethodWorkflowStepV3 {
   const obj = asRecord(value, label);
   const op = asString(obj.op, `${label}.op`);
 
-  if (op === "withResource") {
-    ensureKnownKeys(obj, ["op", "as", "acquire", "steps", "finally"], label);
+  if (op === "call") {
+    return parseCallStep(obj, label);
+  }
 
-    const alias = asString(obj.as, `${label}.as`);
-
-    const acquireParsed = parseStepCore(obj.acquire, `${label}.acquire`, { allowLifecycleOps: true });
-    if (acquireParsed.steps.length !== 1 || acquireParsed.cleanup.length > 0) {
-      throw new TypeError(`${label}.acquire must lower to exactly one concrete step with no intrinsic cleanup`);
-    }
-
-    const acquire = acquireParsed.steps[0]!;
-    if ("as" in acquire) {
-      (acquire as { as: string }).as = alias;
-    } else {
-      throw new TypeError(`${label}.acquire step must support an \"as\" field`);
-    }
-
-    const nestedEntries = asArray(obj.steps, `${label}.steps`).map((entry, i) =>
-      parseStepCore(entry, `${label}.steps[${i}]`, { allowLifecycleOps: false }),
+  if (op === "spiceCall" || op === "callContract" || op === "withResource") {
+    throw new TypeError(
+      `${label}.op=${JSON.stringify(op)} is no longer supported; use canonical call steps { op: \"call\", fn, in, as?/out? }`,
     );
-    const nested = combineLowered(nestedEntries);
-
-    const finallyEntries = asArray(obj.finally, `${label}.finally`).map((entry, i) =>
-      parseStepCore(entry, `${label}.finally[${i}]`, { allowLifecycleOps: true }),
-    );
-    const finalLowered = combineLowered(finallyEntries);
-
-    return {
-      steps: [acquire, ...nested.steps],
-      cleanup: [...nested.cleanup, ...finalLowered.steps, ...finalLowered.cleanup],
-    };
   }
 
-  if (op === "script") {
-    ensureKnownKeys(obj, ["op", "as", "in", "out", "code", "language"], label);
-
-    if (Object.prototype.hasOwnProperty.call(obj, "language")) {
-      throw new TypeError(`${label}.language is not supported in v3 (script implies TypeScript)`);
-    }
-
-    const code = asString(obj.code, `${label}.code`);
-    assertScriptSecurity(code, label);
-
-    const scriptIn = obj.in === undefined ? undefined : asRecord(obj.in, `${label}.in`);
-    const scriptOut = obj.out === undefined ? undefined : parseStringMap(obj.out, `${label}.out`);
-
-    return {
-      steps: [
-        {
-          op: "script",
-          code,
-          ...(scriptIn === undefined ? {} : { in: scriptIn }),
-          ...(obj.as === undefined ? {} : { as: asString(obj.as, `${label}.as`) }),
-          ...(scriptOut === undefined ? {} : { out: scriptOut }),
-        },
-      ],
-      cleanup: [],
-    };
-  }
-
-  switch (op) {
-    case "allocCell": {
-      ensureKnownKeys(obj, ["op", "as", "params"], label);
-      const params = asRecord(obj.params, `${label}.params`);
-      const kind = asString(params.kind, `${label}.params.kind`);
-
-      if (kind === "int" || kind === "double") {
-        ensureKnownKeys(params, ["kind", "size"], `${label}.params`);
-        return {
-          steps: [
-            {
-              op: "allocCell",
-              as: asString(obj.as, `${label}.as`),
-              params: {
-                kind,
-                size: params.size,
-              },
-            },
-          ],
-          cleanup: [],
-        };
-      }
-
-      if (kind === "char") {
-        ensureKnownKeys(params, ["kind", "size", "length"], `${label}.params`);
-        return {
-          steps: [
-            {
-              op: "allocCell",
-              as: asString(obj.as, `${label}.as`),
-              params: {
-                kind,
-                size: params.size,
-                length: params.length,
-              },
-            },
-          ],
-          cleanup: [],
-        };
-      }
-
-      throw new TypeError(`${label}.params.kind must be one of: int, double, char`);
-    }
-
-    case "allocWindow": {
-      ensureKnownKeys(obj, ["op", "as", "params"], label);
-      const params = asRecord(obj.params, `${label}.params`);
-      ensureKnownKeys(params, ["maxIntervals"], `${label}.params`);
-      return {
-        steps: [
-          {
-            op: "allocWindow",
-            as: asString(obj.as, `${label}.as`),
-            params: {
-              maxIntervals: params.maxIntervals,
-            },
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "materialize": {
-      ensureKnownKeys(obj, ["op", "fixture", "as"], label);
-      const fixture = asString(obj.fixture, `${label}.fixture`);
-      if (fixture !== "minimalDsk" && fixture !== "virtualOutputSpk") {
-        throw new TypeError(`${label}.fixture must be one of: minimalDsk, virtualOutputSpk`);
-      }
-
-      return {
-        steps: [
-          {
-            op: "materialize",
-            fixture,
-            as: asString(obj.as, `${label}.as`),
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "spiceCall": {
-      ensureKnownKeys(obj, ["op", "call", "in", "as", "out"], label);
-      return {
-        steps: [
-          {
-            op: "spiceCall",
-            call: asString(obj.call, `${label}.call`) as MethodWorkflowStepV3 extends { op: "spiceCall"; call: infer T } ? T : never,
-            in: asArray(obj.in, `${label}.in`),
-            ...(obj.as !== undefined ? { as: asString(obj.as, `${label}.as`) } : {}),
-            ...(obj.out !== undefined ? { out: asRecord(obj.out, `${label}.out`) as Record<string, string> } : {}),
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "callContract": {
-      ensureKnownKeys(obj, ["op", "call"], label);
-      return {
-        steps: [
-          {
-            op: "callContract",
-            ...(obj.call !== undefined ? { call: asString(obj.call, `${label}.call`) } : {}),
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "assert": {
-      ensureKnownKeys(obj, ["op", "test", "error"], label);
-      const test = asRecord(obj.test, `${label}.test`);
-      const { operator, operands } = parseAssertOperator(test, `${label}.test`);
-      const error = asRecord(obj.error, `${label}.error`);
-      ensureKnownKeys(error, ["code", "message"], `${label}.error`);
-
-      return {
-        steps: [
-          {
-            op: "assert",
-            test: {
-              [operator]: operands,
-            } as MethodWorkflowStepV3 extends { op: "assert"; test: infer T } ? T : never,
-            error: {
-              code: asString(error.code, `${label}.error.code`),
-              message: asString(error.message, `${label}.error.message`),
-            },
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "projectResult": {
-      ensureKnownKeys(obj, ["op", "out"], label);
-      return {
-        steps: [
-          {
-            op: "projectResult",
-            out: asRecord(obj.out, `${label}.out`),
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "project": {
-      ensureKnownKeys(obj, ["op", "out"], label);
-      return {
-        steps: [
-          {
-            op: "project",
-            out: asRecord(obj.out, `${label}.out`),
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "switch": {
-      ensureKnownKeys(obj, ["op", "on", "cases", "default"], label);
-      const casesObj = asRecord(obj.cases, `${label}.cases`);
-      const parsedCases: Record<string, MethodWorkflowStepV3[]> = {};
-
-      for (const [caseKey, caseStepsValue] of Object.entries(casesObj)) {
-        const caseEntries = asArray(caseStepsValue, `${label}.cases.${caseKey}`);
-        const lowered = combineLowered(
-          caseEntries.map((entry, i) => parseStepCore(entry, `${label}.cases.${caseKey}[${i}]`, { allowLifecycleOps: false })),
-        );
-        if (lowered.cleanup.length > 0) {
-          throw new TypeError(`${label}.cases.${caseKey} contains withResource cleanup which is not supported inside switch branches`);
-        }
-        parsedCases[caseKey] = lowered.steps;
-      }
-
-      let parsedDefault: MethodWorkflowStepV3[] | undefined;
-      if (obj.default !== undefined) {
-        const defaultEntries = asArray(obj.default, `${label}.default`);
-        const loweredDefault = combineLowered(
-          defaultEntries.map((entry, i) => parseStepCore(entry, `${label}.default[${i}]`, { allowLifecycleOps: false })),
-        );
-        if (loweredDefault.cleanup.length > 0) {
-          throw new TypeError(`${label}.default contains withResource cleanup which is not supported inside switch branches`);
-        }
-        parsedDefault = loweredDefault.steps;
-      }
-
-      return {
-        steps: [
-          {
-            op: "switch",
-            on: obj.on,
-            cases: parsedCases,
-            ...(parsedDefault ? { default: parsedDefault } : {}),
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "freeCell": {
-      ensureKnownKeys(obj, ["op", "target"], label);
-      return {
-        steps: [
-          {
-            op: "freeCell",
-            target: obj.target,
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "freeWindow": {
-      ensureKnownKeys(obj, ["op", "target"], label);
-      return {
-        steps: [
-          {
-            op: "freeWindow",
-            target: obj.target,
-          },
-        ],
-        cleanup: [],
-      };
-    }
-
-    case "dasOpen":
-    case "dlaBeginForwardSearch":
-    case "dasClose":
-    case "unlink": {
-      if (!options.allowLifecycleOps) {
-        throw new TypeError(
-          `${label}.op=${JSON.stringify(op)} is not allowed in authored v3 workflows; use withResource instead`,
-        );
-      }
-
-      if (op === "dasOpen") {
-        ensureKnownKeys(obj, ["op", "path", "as"], label);
-        return {
-          steps: [
-            {
-              op,
-              path: obj.path,
-              as: asString(obj.as, `${label}.as`),
-            },
-          ],
-          cleanup: [],
-        };
-      }
-
-      if (op === "dlaBeginForwardSearch") {
-        ensureKnownKeys(obj, ["op", "handle", "as"], label);
-        return {
-          steps: [
-            {
-              op,
-              handle: obj.handle,
-              as: asString(obj.as, `${label}.as`),
-            },
-          ],
-          cleanup: [],
-        };
-      }
-
-      ensureKnownKeys(obj, ["op", "target"], label);
-      return {
-        steps: [
-          {
-            op,
-            target: obj.target,
-          } as Extract<MethodWorkflowStepV3, { op: "dasClose" | "unlink" }>,
-        ],
-        cleanup: [],
-      };
-    }
-
-    default:
-      throw new TypeError(`Unsupported workflow op: ${JSON.stringify(op)}`);
-  }
+  throw new TypeError(
+    `${label}.op=${JSON.stringify(op)} is not supported in canonical parity workflows; only op=\"call\" is allowed`,
+  );
 }
 
-function parseWorkflow(value: unknown, label: string): { steps: MethodWorkflowStepV3[]; cleanup?: MethodWorkflowStepV3[] } {
+function parseWorkflow(value: unknown, label: string): { steps: MethodWorkflowStepV3[] } {
   const obj = asRecord(value, label);
-  ensureKnownKeys(obj, ["steps", "cleanup"], label);
+  ensureKnownKeys(obj, ["steps"], label);
 
   const stepValues = asArray(obj.steps, `${label}.steps`);
   if (stepValues.length === 0) {
     throw new TypeError(`${label}.steps must be a non-empty array`);
   }
 
-  const loweredBody = combineLowered(
-    stepValues.map((entry, i) => parseStepCore(entry, `${label}.steps[${i}]`, { allowLifecycleOps: false })),
-  );
-
-  const explicitCleanup = obj.cleanup !== undefined
-    ? combineLowered(
-        asArray(obj.cleanup, `${label}.cleanup`).map((entry, i) =>
-          parseStepCore(entry, `${label}.cleanup[${i}]`, { allowLifecycleOps: false }),
-        ),
-      )
-    : { steps: [] as MethodWorkflowStepV3[], cleanup: [] as MethodWorkflowStepV3[] };
-
-  const cleanup = [
-    ...loweredBody.cleanup,
-    ...explicitCleanup.steps,
-    ...explicitCleanup.cleanup,
-  ];
-
   return {
-    steps: loweredBody.steps,
-    ...(cleanup.length > 0 ? { cleanup } : {}),
+    steps: stepValues.map((entry, i) => parseStep(entry, `${label}.steps[${i}]`)),
   };
 }
 
@@ -783,37 +406,6 @@ function parseMethodSuite(value: unknown, label: string): MethodSuiteSpecV3 {
   }
 
   return out;
-}
-
-function assertCaseShapeForWorkflow(
-  workflow: { steps: MethodWorkflowStepV3[] },
-  cases: MethodCaseSpecV3[],
-  label: string,
-): void {
-  const isCallContractOnly =
-    workflow.steps.length === 1 &&
-    workflow.steps[0]?.op === "callContract";
-
-  for (const [index, scenarioCase] of cases.entries()) {
-    if (isCallContractOnly) {
-      if (scenarioCase.args === undefined) {
-        continue;
-      }
-
-      if (!Array.isArray(scenarioCase.args)) {
-        throw new TypeError(`${label}[${index}].args must be an array when workflow uses callContract`);
-      }
-      continue;
-    }
-
-    if (scenarioCase.args === undefined) {
-      continue;
-    }
-
-    if (typeof scenarioCase.args !== "object" || scenarioCase.args === null || Array.isArray(scenarioCase.args)) {
-      throw new TypeError(`${label}[${index}].args must be an object when workflow does not use callContract`);
-    }
-  }
 }
 
 /** Parses a methodV3 YAML document into a validated method spec AST. */
@@ -878,8 +470,6 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
     method.cases = asArray(obj.cases, "methodV3.cases").map((entry, i) =>
       parseMethodCase(entry, `methodV3.cases[${i}]`),
     );
-
-    assertCaseShapeForWorkflow(method.workflow, method.cases, "methodV3.cases");
   } else {
     const suites = asArray(obj.suites, "methodV3.suites").map((entry, i) =>
       parseMethodSuite(entry, `methodV3.suites[${i}]`),
@@ -888,13 +478,8 @@ export function parseMethodSpec(file: ScenarioYamlFile): MethodSpecV3 {
       throw new TypeError("methodV3.suites must be a non-empty array");
     }
 
-    for (const [index, suite] of suites.entries()) {
-      assertCaseShapeForWorkflow(suite.workflow, suite.cases, `methodV3.suites[${index}].cases`);
-    }
-
     method.suites = suites;
   }
 
   return method;
 }
-

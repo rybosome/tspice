@@ -22,7 +22,9 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: cells-windows.wnvald
+      in: $args
 cases:
   - id: cells-windows.wnvald.basic
     args:

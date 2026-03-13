@@ -7,7 +7,9 @@ contract:
   canonicalMethod: kernels.kinfo
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernels.kinfo
+      in: $args
 cases:
   - id: kernels.kinfo
     args:

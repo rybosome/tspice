@@ -23,57 +23,9 @@ contract:
         type: spiceInt
 workflow:
   steps:
-    - op: withResource
-      as: dskPath
-      acquire:
-        op: materialize
-        fixture: minimalDsk
-        as: dskPath
-      steps:
-        - op: withResource
-          as: dasHandle
-          acquire:
-            op: dasOpen
-            path: $refs.dskPath
-            as: dasHandle
-          steps:
-            - op: withResource
-              as: dladsc
-              acquire:
-                op: dlaBeginForwardSearch
-                handle: $refs.dasHandle
-                as: dladsc
-              steps:
-                - op: spiceCall
-                  call: dskgd_c
-                  in:
-                    - $refs.dasHandle
-                    - $refs.dladsc
-                  as: dskdsc
-                - op: project
-                  out:
-                    surfce: $refs.dskdsc.surfce
-                    center: $refs.dskdsc.center
-                - op: switch
-                  on: $args.selector
-                  cases:
-                    "0":
-                      - op: projectResult
-                        out:
-                          selector: $args.selector
-                          value: $refs.surfce
-                    "1":
-                      - op: projectResult
-                        out:
-                          selector: $args.selector
-                          value: $refs.center
-              finally: []
-          finally:
-            - op: dasClose
-              target: $refs.dasHandle
-      finally:
-        - op: unlink
-          target: $refs.dskPath
+    - op: call
+      fn: dsk.dskgd
+      in: $args
 cases:
   - id: selector-surfce
     args:

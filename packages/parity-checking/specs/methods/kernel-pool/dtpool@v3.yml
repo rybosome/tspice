@@ -10,7 +10,9 @@ setup:
     - $FIXTURES/kernel-pool-parity.tpc
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernel-pool.dtpool
+      in: $args
 cases:
   - id: dtpool-char-var
     args:
