@@ -27,13 +27,24 @@ typedef struct {
   int toksuper;
 } jsmn_parser;
 
+enum {
+  JSMN_ERROR_NOMEM = -1,
+  JSMN_ERROR_INVAL = -2,
+  JSMN_ERROR_PART = -3,
+};
+
 void jsmn_init(jsmn_parser *parser);
 int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
                jsmntok_t *tokens, const unsigned int num_tokens);
 
 bool jsmn_token_streq(const char *json, const jsmntok_t *tok, const char *s);
+bool jsmn_token_streq_n(const char *json, const jsmntok_t *tok,
+                        const char *s, size_t sLen);
 int jsmn_object_pair_count(const jsmntok_t *t);
 int jsmn_skip_subtree(const jsmntok_t *tokens, int index, int tokenCount);
+int jsmn_find_object_key_n(const char *json, const jsmntok_t *tokens,
+                           int objIndex, const char *key, size_t keyLen,
+                           int tokenCount);
 int jsmn_find_object_key(const char *json, const jsmntok_t *tokens,
                          int objIndex, const char *key, int tokenCount);
 int jsmn_get_array_elem(const jsmntok_t *tokens, int arrayIndex,

@@ -77,7 +77,7 @@ int main(void) {
       break;
     }
 
-    if (parseErr == -1) {
+    if (parseErr == JSMN_ERROR_NOMEM) {
       int nextCapacity = tokenCapacity * 2;
       jsmntok_t *next =
           (jsmntok_t *)realloc(tokens, sizeof(jsmntok_t) * (size_t)nextCapacity);
@@ -92,8 +92,16 @@ int main(void) {
       continue;
     }
 
-    write_error_json_ex("invalid_request", "Invalid JSON", NULL, NULL, NULL,
-                        NULL);
+    if (parseErr == JSMN_ERROR_PART) {
+      write_error_json_ex("invalid_request", "Invalid JSON: incomplete payload",
+                          NULL, NULL, NULL, NULL);
+    } else if (parseErr == JSMN_ERROR_INVAL) {
+      write_error_json_ex("invalid_request", "Invalid JSON", NULL, NULL, NULL,
+                          NULL);
+    } else {
+      write_error_json_ex("invalid_request", "Invalid JSON", NULL, NULL, NULL,
+                          NULL);
+    }
 
     free(tokens);
     free(input);
