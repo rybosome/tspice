@@ -20,6 +20,13 @@ type ReferenceToken = {
 
 type CodedError = Error & { code?: RunnerValidationCode };
 
+const RESOLVE_INPUT_MAX_DEPTH = 50;
+const RESOLVE_INPUT_MAX_NODES = 10_000;
+
+type ResolveInputBudget = {
+  visitedNodes: number;
+};
+
 function formatValue(value: unknown): string {
   if (typeof value === "number") {
     if (Number.isNaN(value)) return "NaN";
@@ -153,20 +160,46 @@ function resolveReferenceExpression(
   return resolvePropertyPath(refValue, token.propertyPath, label);
 }
 
-function resolveInputValue(value: unknown, args: unknown, refs: ReadonlyMap<string, RefValue>, label: string): unknown {
+function enforceResolveInputBudget(label: string, depth: number, budget: ResolveInputBudget): void {
+  if (depth > RESOLVE_INPUT_MAX_DEPTH) {
+    invalidRequest(
+      `${label} is too deeply nested (max depth ${String(RESOLVE_INPUT_MAX_DEPTH)})`,
+    );
+  }
+
+  budget.visitedNodes += 1;
+  if (budget.visitedNodes > RESOLVE_INPUT_MAX_NODES) {
+    invalidRequest(
+      `${label} is too large to resolve safely (max nodes ${String(RESOLVE_INPUT_MAX_NODES)})`,
+    );
+  }
+}
+
+function resolveInputValue(
+  value: unknown,
+  args: unknown,
+  refs: ReadonlyMap<string, RefValue>,
+  label: string,
+  depth = 0,
+  budget: ResolveInputBudget = { visitedNodes: 0 },
+): unknown {
+  enforceResolveInputBudget(label, depth, budget);
+
   if (typeof value === "string") {
     return resolveReferenceExpression(value, args, refs, label);
   }
 
   if (Array.isArray(value)) {
-    return value.map((entry, index) => resolveInputValue(entry, args, refs, `${label}[${index}]`));
+    return value.map((entry, index) =>
+      resolveInputValue(entry, args, refs, `${label}[${index}]`, depth + 1, budget),
+    );
   }
 
   if (typeof value === "object" && value !== null) {
     const record = value as Record<string, unknown>;
     const out: Record<string, unknown> = {};
     for (const [key, entry] of Object.entries(record)) {
-      out[key] = resolveInputValue(entry, args, refs, `${label}.${key}`);
+      out[key] = resolveInputValue(entry, args, refs, `${label}.${key}`, depth + 1, budget);
     }
     return out;
   }
@@ -283,23 +316,25 @@ function executeCallStep(
 /**
  * Shared static validation for canonical case payloads before runner execution.
  */
-export function validateCasePreflight(input: RunCaseInputV3): void {
+export function validateCasePreflight(input: RunCaseInputV3): V3WorkflowCallStep[] {
   validateEnvelope(input);
 
-  for (const [index, step] of input.workflow.steps.entries()) {
-    validateCallStep(step, `workflow.steps[${index}]`);
-  }
+  return input.workflow.steps.map((step, index) =>
+    validateCallStep(step, `workflow.steps[${index}]`),
+  );
 }
 
+/**
+ * Execute one canonical call-workflow case against a selected dispatch lane.
+ */
 export function executeCanonicalWorkflowCase(lane: DispatchLane, input: RunCaseInputV3): unknown {
-  validateCasePreflight(input);
+  const steps = validateCasePreflight(input);
 
   const refs = new Map<string, RefValue>();
   const args = Object.prototype.hasOwnProperty.call(input, "args") ? input.args : undefined;
 
   let lastResult: unknown = undefined;
-  for (const [index, rawStep] of input.workflow.steps.entries()) {
-    const step = validateCallStep(rawStep, `workflow.steps[${index}]`);
+  for (const [index, step] of steps.entries()) {
     lastResult = executeCallStep(lane, input, step, index, args, refs);
   }
 

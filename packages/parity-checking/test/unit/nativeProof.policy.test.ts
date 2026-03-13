@@ -34,10 +34,8 @@ function baseCallInput(): RunCaseInputV3 {
 }
 
 describe("native proof policy (generated dispatch boundary mode)", () => {
-  it("is always enabled in canonical dispatch-boundary proof mode", () => {
-    expect(isParityProofNativeEnabled({ PARITY_PROOF_NATIVE: "1" })).toBe(true);
-    expect(isParityProofNativeEnabled({ PARITY_PROOF_NATIVE: "0" })).toBe(true);
-    expect(isParityProofNativeEnabled({})).toBe(true);
+  it("is unconditionally enabled in canonical dispatch-boundary proof mode", () => {
+    expect(isParityProofNativeEnabled()).toBe(true);
   });
 
   it("emits stable proof marker for generated-dispatch-boundary mode", () => {
