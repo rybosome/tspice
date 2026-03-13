@@ -157,6 +157,13 @@ static bool resolve_step_fn(const char *json,
     }
 
     const char *path = expr + 5;
+    if (path[0] == '.' && path[1] == '\0') {
+      write_error_json_ex("invalid_request", "Invalid reference expression",
+                          label, NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
     int resolvedTok = argsTok;
     if (path[0] == '.') {
       if (!resolve_object_path_token(json, tokens, tokenCount, argsTok, path + 1,
@@ -239,6 +246,13 @@ static bool resolve_step_input_token(const char *json,
     }
 
     const char *path = expr + 5;
+    if (path[0] == '.' && path[1] == '\0') {
+      write_error_json_ex("invalid_request", "Invalid reference expression",
+                          label, NULL, NULL, NULL);
+      free(expr);
+      return false;
+    }
+
     int resolvedTok = argsTok;
     if (path[0] == '.') {
       if (!resolve_object_path_token(json, tokens, tokenCount, argsTok, path + 1,
