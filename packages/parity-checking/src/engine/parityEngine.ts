@@ -8,7 +8,7 @@ import { executeMethodSpecParity } from "./executeMethodSpec.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateSchema } from "../guards/validateSchema.js";
 import { parityProofMarker } from "../proof/nativeProof.js";
-import { createCspiceRunner, getCspiceRunnerStatus } from "../runners/cspiceRunner.js";
+import { createCspiceRunner } from "../runners/cspiceRunner.js";
 import { createTspiceRunner } from "../runners/tspiceRunner.js";
 
 import { methodSpecId } from "../dsl/types.js";
@@ -170,11 +170,6 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
   validateSchema(specs);
 
   const completeness = validateCompleteness(specs.methods);
-
-  const status = getCspiceRunnerStatus();
-  if (!status.ready) {
-    throw new Error(`Required cspice lane unavailable: ${status.hint}`);
-  }
 
   const failingCases: string[] = [];
   const proofReferenceRecords: MethodProofReferenceRecord[] = [];

@@ -17,6 +17,9 @@ export type GeneratedDispatchProof = {
   stopPoint: typeof GENERATED_DISPATCH_UNAVAILABLE_REASON;
 };
 
+/**
+ * Normalized error emitted by the canonical generated-dispatch seam boundary.
+ */
 export class GeneratedDispatchBoundaryError extends Error {
   readonly code = GENERATED_DISPATCH_UNAVAILABLE_CODE;
   readonly lane: DispatchLane;
@@ -42,6 +45,9 @@ export type GeneratedDispatchRequest = {
   input: unknown;
 };
 
+/**
+ * Machine-readable proof marker describing fail-closed seam behavior.
+ */
 export function generatedDispatchProofMarker(): GeneratedDispatchProof {
   return {
     dispatchHandoffAttempted: true,
@@ -56,12 +62,12 @@ export function generatedDispatchProofMarker(): GeneratedDispatchProof {
  * The generated dispatch implementation is intentionally unavailable in this
  * phase; this function always fails closed with a normalized boundary error.
  */
-export function handoffToGeneratedDispatchSeam(_request: GeneratedDispatchRequest): never {
+export function handoffToGeneratedDispatchSeam(request: GeneratedDispatchRequest): unknown {
   throw new GeneratedDispatchBoundaryError({
-    lane: _request.lane,
-    callId: _request.callId,
+    lane: request.lane,
+    callId: request.callId,
     details: {
-      fn: _request.fn,
+      fn: request.fn,
       ...generatedDispatchProofMarker(),
     },
   });

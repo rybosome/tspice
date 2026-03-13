@@ -1,8 +1,5 @@
 import type { RunCaseInput } from "../runners/types.js";
 
-export const PARITY_PROOF_NATIVE_ENV = "PARITY_PROOF_NATIVE" as const;
-export const PARITY_PROOF_NATIVE_ENABLED_VALUE = "1" as const;
-
 export type ReferenceTransport = "generated-dispatch-seam";
 
 export type ReferenceExecutionPlan = {
@@ -18,17 +15,17 @@ function collectWorkflowOps(input: RunCaseInput): string[] {
 }
 
 /**
- * Parity proof mode is always considered enabled for canonical dispatch-boundary
- * validation in this phase.
+ * Parity proof mode is unconditionally enabled in canonical
+ * dispatch-boundary validation.
  */
-export function isParityProofNativeEnabled(_env: NodeJS.ProcessEnv = process.env): boolean {
+export function isParityProofNativeEnabled(): boolean {
   return true;
 }
 
 /**
  * Return a stable marker describing generated-dispatch-boundary proof mode.
  */
-export function parityProofMarker(_env: NodeJS.ProcessEnv = process.env): string {
+export function parityProofMarker(): string {
   return "proof=generated-dispatch-boundary";
 }
 
