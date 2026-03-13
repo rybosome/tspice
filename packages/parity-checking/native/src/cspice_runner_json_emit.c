@@ -161,3 +161,27 @@ void write_error_json(const char *message, const char *spiceShort,
                              const char *spiceLong, const char *spiceTrace) {
   write_error_json_ex(NULL, message, NULL, spiceShort, spiceLong, spiceTrace);
 }
+
+void write_generated_dispatch_unavailable_json(const char *lane,
+                                               const char *callId,
+                                               const char *fn) {
+  const char *laneValue = (lane != NULL && lane[0] != '\0') ? lane : "cspice";
+  const char *callIdValue =
+      (callId != NULL && callId[0] != '\0') ? callId : "unknown::0";
+  const char *fnValue = (fn != NULL) ? fn : "";
+
+  fputs("{\"ok\":false,\"error\":{", stdout);
+  fputs("\"code\":\"generated_dispatch_unavailable\",", stdout);
+  fputs("\"lane\":\"", stdout);
+  json_print_escaped(laneValue);
+  fputs("\",\"callId\":\"", stdout);
+  json_print_escaped(callIdValue);
+  fputs("\",\"reason\":\"generated-dispatch-unavailable\",", stdout);
+  fputs("\"details\":{", stdout);
+  fputs("\"dispatchHandoffAttempted\":true,", stdout);
+  fputs("\"fallbackUsed\":false,", stdout);
+  fputs("\"stopPoint\":\"generated-dispatch-unavailable\",", stdout);
+  fputs("\"fn\":\"", stdout);
+  json_print_escaped(fnValue);
+  fputs("\"}}}\n", stdout);
+}
