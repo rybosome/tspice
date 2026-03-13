@@ -115,6 +115,14 @@ int main(void) {
     goto done;
   }
 
+  if (jsmn_skip_subtree(tokens, 0, tokenCount) != tokenCount) {
+    write_error_json_ex("invalid_request",
+                        "Invalid JSON: trailing top-level tokens", NULL, NULL,
+                        NULL, NULL);
+    exitCode = 1;
+    goto done;
+  }
+
   int setupTok = jsmn_find_object_key(input, tokens, 0, "setup", tokenCount);
   int schemaVersionTok =
       jsmn_find_object_key(input, tokens, 0, "schemaVersion", tokenCount);
