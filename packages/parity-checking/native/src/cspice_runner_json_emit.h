@@ -20,5 +20,8 @@ void write_error_json_ex(const char *code, const char *message,
                          const char *spiceLong, const char *spiceTrace);
 void write_error_json(const char *message, const char *spiceShort,
                       const char *spiceLong, const char *spiceTrace);
+void write_generated_dispatch_unavailable_json(const char *lane,
+                                               const char *callId,
+                                               const char *fn);
 
 #endif
