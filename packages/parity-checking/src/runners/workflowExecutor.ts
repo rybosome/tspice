@@ -152,10 +152,11 @@ function resolveReferenceExpression(
     invalidRequest(`${label} references malformed ref expression ${JSON.stringify(expr)}`);
   }
 
-  const refValue = refs.get(token.key);
-  if (refValue === undefined) {
+  if (!refs.has(token.key)) {
     invalidRequest(`${label} references missing ref ${JSON.stringify(token.key)}`);
   }
+
+  const refValue = refs.get(token.key);
 
   return resolvePropertyPath(refValue, token.propertyPath, label);
 }
