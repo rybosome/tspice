@@ -224,4 +224,54 @@ describe("native runner generated-dispatch seam boundary", () => {
       message: "Invalid JSON: incomplete payload",
     });
   });
+
+  it("rejects trailing top-level JSON tokens after the request object", () => {
+    const binaryPath = getBinaryPathOrSkip();
+    if (!binaryPath) {
+      return;
+    }
+
+    const request = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/time.str2et@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "time.str2et",
+        canonicalMethod: "time.str2et",
+      },
+      args: {
+        fn: "time.str2et",
+      },
+      workflow: {
+        steps: [
+          {
+            op: "call",
+            fn: "$args.fn",
+            in: "$args",
+          },
+        ],
+      },
+    };
+
+    const run = runNative(binaryPath, `${JSON.stringify(request)}\ntrue`);
+
+    expect(run.error).toBeUndefined();
+    expect(run.status).toBe(1);
+
+    const parsed = JSON.parse(run.stdout) as {
+      ok: boolean;
+      error?: {
+        code?: string;
+        message?: string;
+      };
+    };
+
+    expect(parsed.ok).toBe(false);
+    expect(parsed.error).toMatchObject({
+      code: "invalid_request",
+      message: "Invalid JSON: trailing top-level tokens",
+    });
+  });
 });
