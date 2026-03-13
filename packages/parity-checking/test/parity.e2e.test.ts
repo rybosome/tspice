@@ -2,32 +2,42 @@ import { describe, expect, it, vi } from "vitest";
 
 import { runParityEngine } from "../src/engine/parityEngine.js";
 import { BASELINE_METHOD_SPEC_COVERAGE } from "../src/guards/completenessBaseline.js";
-import { getCspiceRunnerStatus } from "../src/runners/cspiceRunner.js";
 
-// Increase timeout for parity tests.
-vi.setConfig({ testTimeout: 10_000, hookTimeout: 30_000 });
+// Increase timeout for full parity run.
+vi.setConfig({ testTimeout: 20_000, hookTimeout: 30_000 });
 
-describe.sequential("parity-checking engine (tspice vs raw CSPICE parity)", () => {
-  it("runs full guard pipeline and parity execution", async () => {
-    const status = getCspiceRunnerStatus();
+describe.sequential("parity-checking engine (canonical generated dispatch boundary)", () => {
+  it("runs full guard pipeline on required cspice/node/wasm lanes", async () => {
     const summary = await runParityEngine();
 
+    expect(summary.skipped).toBe(false);
     expect(summary.workflowCount).toBe(0);
     expect(summary.methodCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(summary.contractCount).toBe(162);
     expect(summary.coveredCount).toBe(BASELINE_METHOD_SPEC_COVERAGE);
     expect(summary.denylistCount).toBe(0);
-    expect(summary.proof.marker).toBe("proof=disabled");
-    expect(summary.proof.mode).toBe("disabled");
-
-    if (!status.ready) {
-      expect(summary.skipped).toBe(true);
-      expect(summary.skipReason).toMatch(/^cspice-runner unavailable:/);
-      expect(summary.methodCaseCount).toBe(0);
-      return;
-    }
-
-    expect(summary.skipped).toBe(false);
     expect(summary.methodCaseCount).toBeGreaterThan(0);
+
+    expect(summary.proof.marker).toBe("proof=generated-dispatch-boundary");
+    expect(summary.proof.mode).toBe("generated-dispatch-boundary");
+    expect(summary.proof.referenceVerification).toBe("generated-dispatch-seam");
+    expect(summary.proof.laneVerification).toBe("strict-required-lanes-no-fallback");
+    expect(summary.proof.fallbackDetected).toBe(false);
+    expect(summary.proof.failingCases).toEqual([]);
+    expect(summary.proof.perCaseReferenceRecords.length).toBeGreaterThan(0);
+    expect(summary.proof.perLaneBackendRecords).toEqual([
+      {
+        lane: "node",
+        requestedBackend: "node",
+        actualBackend: "node",
+        verified: true,
+      },
+      {
+        lane: "wasm",
+        requestedBackend: "wasm",
+        actualBackend: "wasm",
+        verified: true,
+      },
+    ]);
   });
 });

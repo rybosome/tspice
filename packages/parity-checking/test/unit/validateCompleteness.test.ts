@@ -51,7 +51,13 @@ function makeMethodSpecs(canonicalMethods: string[]): AnyMethodSpec[] {
       canonicalMethod,
     },
     workflow: {
-      steps: [{ op: "callContract" }],
+      steps: [
+        {
+          op: "call",
+          fn: canonicalMethod,
+          in: "$args",
+        },
+      ],
     },
     cases: [{ id: `case-${index}`, args: [] }],
     meta: {

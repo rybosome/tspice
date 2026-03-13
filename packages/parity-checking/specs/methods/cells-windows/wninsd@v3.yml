@@ -19,7 +19,9 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: cells-windows.wninsd
+      in: $args
 cases:
   - id: cells-windows.wninsd.basic
     args:

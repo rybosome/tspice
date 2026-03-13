@@ -4,14 +4,10 @@ import { fileURLToPath } from "node:url";
 import { discoverYamlFiles } from "../dsl/discoverYamlFiles.js";
 import { loadYamlFile } from "../dsl/loadYaml.js";
 import { parseMethodSpec } from "../dsl/schemaValidate.js";
-import { executeMethodSpecParityV2 } from "./executeMethodSpecV2.js";
+import { executeMethodSpecParity } from "./executeMethodSpec.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateSchema } from "../guards/validateSchema.js";
-import {
-  PARITY_PROOF_NATIVE_V2_ENV,
-  isParityProofNativeV2Enabled,
-  parityProofMarker,
-} from "../proof/nativeProof.js";
+import { parityProofMarker } from "../proof/nativeProof.js";
 import { createCspiceRunner, getCspiceRunnerStatus } from "../runners/cspiceRunner.js";
 import { createTspiceRunner } from "../runners/tspiceRunner.js";
 
@@ -45,16 +41,13 @@ function extractFailingCaseId(error: unknown): string | undefined {
 
 async function loadParitySpecs(): Promise<LoadedParitySpecs> {
   const root = packageRoot();
-
   const methodFiles = discoverYamlFiles(path.join(root, "specs", "methods"));
 
   const methods = (
     await Promise.all(methodFiles.map(async (filePath) => parseMethodSpec(await loadYamlFile(filePath))))
   ).sort((a, b) => stableSort(methodSpecId(a), methodSpecId(b)));
 
-  return {
-    methods,
-  };
+  return { methods };
 }
 
 type ProofLane = "node" | "wasm";
@@ -68,9 +61,9 @@ export type ParityProofLaneBackendRecord = {
 
 export type ParityProofSummary = {
   marker: string;
-  mode: "disabled" | "native-v2";
-  referenceVerification: "disabled" | "native-cspice-runner";
-  laneVerification: "disabled" | "strict-requested-equals-actual";
+  mode: "generated-dispatch-boundary";
+  referenceVerification: "generated-dispatch-seam";
+  laneVerification: "strict-required-lanes-no-fallback";
   exceptions: string[];
   fallbackDetected: boolean;
   failingCases: string[];
@@ -89,20 +82,6 @@ export type ParityEngineSummary = {
   methodCaseCount: number;
   proof: ParityProofSummary;
 };
-
-function buildDisabledProofSummary(): ParityProofSummary {
-  return {
-    marker: "proof=disabled",
-    mode: "disabled",
-    referenceVerification: "disabled",
-    laneVerification: "disabled",
-    exceptions: [],
-    fallbackDetected: false,
-    failingCases: [],
-    perCaseReferenceRecords: [],
-    perLaneBackendRecords: [],
-  };
-}
 
 function backendFromRunnerKind(kind: string): ProofLane | undefined {
   if (kind === "tspice(node)") {
@@ -123,25 +102,25 @@ function verifyProofLaneRunner(lane: ProofLane, runner: CaseRunner): ParityProof
 
   if (requestedBackend !== lane) {
     throw new Error(
-      `Proof lane ${lane} requested backend mismatch: expected requested=${lane}, got ${requestedBackend}`,
+      `Lane ${lane} requested backend mismatch: expected requested=${lane}, got ${requestedBackend}`,
     );
   }
 
   if (!actualBackend) {
     throw new Error(
-      `Proof lane ${lane} could not determine actual backend from runner kind=${JSON.stringify(runner.kind)}`,
+      `Lane ${lane} could not determine actual backend from runner kind=${JSON.stringify(runner.kind)}`,
     );
   }
 
   if (fallbackDetected) {
     throw new Error(
-      `Proof lane ${lane} detected backend fallback (requested=${requestedBackend}, actual=${actualBackend})`,
+      `Lane ${lane} detected backend fallback (requested=${requestedBackend}, actual=${actualBackend})`,
     );
   }
 
   if (actualBackend !== lane) {
     throw new Error(
-      `Proof lane ${lane} backend mismatch: requested=${requestedBackend}, actual=${actualBackend}`,
+      `Lane ${lane} backend mismatch: requested=${requestedBackend}, actual=${actualBackend}`,
     );
   }
 
@@ -167,22 +146,6 @@ function dedupeProofReferenceRecords(
 }
 
 async function withRunners<T>(
-  fn: (runners: { tspice: CaseRunner; cspice: CaseRunner }) => Promise<T>,
-): Promise<T> {
-  let tspice: CaseRunner | undefined;
-  let cspice: CaseRunner | undefined;
-
-  try {
-    tspice = await createTspiceRunner();
-    cspice = await createCspiceRunner();
-
-    return await fn({ tspice, cspice });
-  } finally {
-    await Promise.allSettled([tspice?.dispose?.(), cspice?.dispose?.()]);
-  }
-}
-
-async function withProofRunners<T>(
   fn: (runners: { node: CaseRunner; wasm: CaseRunner; cspice: CaseRunner }) => Promise<T>,
 ): Promise<T> {
   let node: CaseRunner | undefined;
@@ -208,123 +171,41 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
 
   const completeness = validateCompleteness(specs.methods);
 
-  const proofEnabled = isParityProofNativeV2Enabled();
-  const proofDisabledSummary = buildDisabledProofSummary();
-
   const status = getCspiceRunnerStatus();
   if (!status.ready) {
-    if (proofEnabled) {
-      throw new Error(
-        `cspice-runner unavailable in proof mode (${PARITY_PROOF_NATIVE_V2_ENV}=1): ${status.hint}`,
-      );
-    }
-
-    return {
-      skipped: true,
-      skipReason: `cspice-runner unavailable: ${status.hint}`,
-      workflowCount: 0,
-      methodCount: specs.methods.length,
-      contractCount: completeness.contractCount,
-      coveredCount: completeness.coveredCount,
-      denylistCount: completeness.denylistCount,
-      methodCaseCount: 0,
-      proof: proofDisabledSummary,
-    };
-  }
-
-  if (!proofEnabled) {
-    const paritySummary = await withRunners(async (runners) => {
-      let methodCaseCount = 0;
-      for (const method of specs.methods) {
-        const summary = await executeMethodSpecParityV2(method, runners);
-        methodCaseCount += summary.caseCount;
-      }
-
-      return {
-        skipped: false,
-        workflowCount: 0,
-        methodCount: specs.methods.length,
-        contractCount: completeness.contractCount,
-        coveredCount: completeness.coveredCount,
-        denylistCount: completeness.denylistCount,
-        methodCaseCount,
-      };
-    });
-
-    return {
-      ...paritySummary,
-      proof: proofDisabledSummary,
-    };
+    throw new Error(`Required cspice lane unavailable: ${status.hint}`);
   }
 
   const failingCases: string[] = [];
   const proofReferenceRecords: MethodProofReferenceRecord[] = [];
   const proofLaneBackendRecords: ParityProofLaneBackendRecord[] = [];
 
-  let paritySummary:
-    | Omit<ParityEngineSummary, "proof">
-    | undefined;
+  let methodCaseCount = 0;
 
-  try {
-    paritySummary = await withProofRunners(async (runners) => {
-      proofLaneBackendRecords.push(verifyProofLaneRunner("node", runners.node));
-      proofLaneBackendRecords.push(verifyProofLaneRunner("wasm", runners.wasm));
+  await withRunners(async (runners) => {
+    proofLaneBackendRecords.push(verifyProofLaneRunner("node", runners.node));
+    proofLaneBackendRecords.push(verifyProofLaneRunner("wasm", runners.wasm));
 
-      let methodCaseCount = 0;
-      for (const method of specs.methods) {
-        try {
-          const nodeSummary = await executeMethodSpecParityV2(method, {
-            tspice: runners.node,
-            cspice: runners.cspice,
-          });
+    for (const method of specs.methods) {
+      try {
+        const summary = await executeMethodSpecParity(method, {
+          cspice: runners.cspice,
+          node: runners.node,
+          wasm: runners.wasm,
+        });
 
-          const wasmSummary = await executeMethodSpecParityV2(method, {
-            tspice: runners.wasm,
-            cspice: runners.cspice,
-          });
-
-          if (nodeSummary.caseCount !== wasmSummary.caseCount) {
-            throw new Error(
-              `Proof lane case-count mismatch for ${method.manifest.id}: node=${nodeSummary.caseCount} wasm=${wasmSummary.caseCount}`,
-            );
-          }
-
-          methodCaseCount += nodeSummary.caseCount;
-          proofReferenceRecords.push(...(nodeSummary.proofReferenceRecords ?? []));
-          proofReferenceRecords.push(...(wasmSummary.proofReferenceRecords ?? []));
-        } catch (error) {
-          const failingCaseId = extractFailingCaseId(error);
-          failingCases.push(
-            failingCaseId ? `${method.manifest.id}:${failingCaseId}` : method.manifest.id,
-          );
-          throw new Error(
-            `Method proof execution failed for ${method.manifest.id}: ${formatErrorMessage(error)}`,
-            { cause: error instanceof Error ? error : undefined },
-          );
-        }
+        methodCaseCount += summary.caseCount;
+        proofReferenceRecords.push(...(summary.proofReferenceRecords ?? []));
+      } catch (error) {
+        const failingCaseId = extractFailingCaseId(error);
+        failingCases.push(failingCaseId ? `${method.manifest.id}:${failingCaseId}` : method.manifest.id);
+        throw new Error(
+          `Method parity execution failed for ${method.manifest.id}: ${formatErrorMessage(error)}`,
+          { cause: error instanceof Error ? error : undefined },
+        );
       }
-
-      return {
-        skipped: false,
-        workflowCount: 0,
-        methodCount: specs.methods.length,
-        contractCount: completeness.contractCount,
-        coveredCount: completeness.coveredCount,
-        denylistCount: completeness.denylistCount,
-        methodCaseCount,
-      };
-    });
-  } catch (error) {
-    const failed = failingCases.length > 0 ? ` failingCases=${failingCases.join(",")}` : "";
-    throw new Error(
-      `Proof parity execution failed (${parityProofMarker()})${failed}: ${formatErrorMessage(error)}`,
-      { cause: error instanceof Error ? error : undefined },
-    );
-  }
-
-  if (!paritySummary) {
-    throw new Error("Proof parity execution did not produce a summary");
-  }
+    }
+  });
 
   const dedupedReferenceRecords = dedupeProofReferenceRecords(proofReferenceRecords);
   const fallbackDetected = proofLaneBackendRecords.some(
@@ -332,12 +213,18 @@ export async function runParityEngine(): Promise<ParityEngineSummary> {
   );
 
   return {
-    ...paritySummary,
+    skipped: false,
+    workflowCount: 0,
+    methodCount: specs.methods.length,
+    contractCount: completeness.contractCount,
+    coveredCount: completeness.coveredCount,
+    denylistCount: completeness.denylistCount,
+    methodCaseCount,
     proof: {
       marker: parityProofMarker(),
-      mode: "native-v2",
-      referenceVerification: "native-cspice-runner",
-      laneVerification: "strict-requested-equals-actual",
+      mode: "generated-dispatch-boundary",
+      referenceVerification: "generated-dispatch-seam",
+      laneVerification: "strict-required-lanes-no-fallback",
       exceptions: [],
       fallbackDetected,
       failingCases,

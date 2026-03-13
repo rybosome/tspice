@@ -14,7 +14,9 @@ defaults:
     tolRel: 1e-12
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: frames.frinfo
+      in: $args
 cases:
   - id: frinfo-j2000
     args:

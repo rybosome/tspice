@@ -14,7 +14,9 @@ defaults:
     tolRel: 1e-12
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: frames.namfrm
+      in: $args
 cases:
   - id: namfrm-b1950
     args:

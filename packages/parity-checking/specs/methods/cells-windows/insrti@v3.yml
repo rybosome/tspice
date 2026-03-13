@@ -10,7 +10,9 @@ contract:
     properties: {}
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: cells-windows.insrti
+      in: $args
 cases:
   - id: cells-windows.insrti.basic
     args:

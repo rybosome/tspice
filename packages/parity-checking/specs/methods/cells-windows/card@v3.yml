@@ -20,22 +20,9 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: allocCell
-      as: cell
-      params:
-        kind: int
-        size: $args.size
-    - op: spiceCall
-      call: card_c
-      in:
-        - $refs.cell
-      as: card
-    - op: projectResult
-      out:
-        card: $refs.card
-  cleanup:
-    - op: freeCell
-      target: $refs.cell
+    - op: call
+      fn: cells-windows.card
+      in: $args
 cases:
   - id: basic
     args:

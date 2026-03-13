@@ -14,12 +14,9 @@ contract:
         const: true
 workflow:
   steps:
-    - op: spiceCall
-      call: dskmi2_c
-      in: []
-    - op: projectResult
-      out:
-        computedSpatialIndex: true
+    - op: call
+      fn: file-io.dskmi2
+      in: $args
 cases:
   - id: minimal-triangle-index
     expect:

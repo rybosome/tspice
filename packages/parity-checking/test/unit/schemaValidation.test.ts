@@ -2,283 +2,104 @@ import { describe, expect, it } from "vitest";
 
 import { parseMethodSpec } from "../../src/dsl/schemaValidate.js";
 
-describe("schema validation (v3)", () => {
-  it("parses valid v3 method spec with workflow+cases", () => {
-    const method = parseMethodSpec({
-      sourcePath: "specs/methods/time/spiceVersion@v3.yml",
-      data: {
-        schemaVersion: 3,
-        manifest: {
-          id: "methods/time/spiceVersion@v3",
-          kind: "method",
+function baseSpec(): Record<string, unknown> {
+  return {
+    schemaVersion: 3,
+    manifest: {
+      id: "methods/time/str2et@v3",
+      kind: "method",
+    },
+    contract: {
+      contractMethod: "time.str2et",
+      canonicalMethod: "time.str2et",
+    },
+    workflow: {
+      steps: [
+        {
+          op: "call",
+          fn: "time.str2et",
+          in: "$args",
         },
-        contract: {
-          contractMethod: "time.tkvrsn",
-          canonicalMethod: "time.tkvrsn",
-        },
-        workflow: {
-          steps: [{ op: "callContract" }],
-        },
-        cases: [
-          {
-            id: "toolkit",
-            args: [],
-          },
-        ],
+      ],
+    },
+    cases: [
+      {
+        id: "basic",
+        args: ["2010-01-01T00:00:00"],
       },
+    ],
+  };
+}
+
+describe("schema validation (canonical call workflow)", () => {
+  it("parses canonical call steps with fn + in", () => {
+    const parsed = parseMethodSpec({
+      sourcePath: "specs/methods/time/str2et@v3.yml",
+      data: baseSpec(),
     });
 
-    expect(method.manifest.id).toBe("methods/time/spiceVersion@v3");
-    expect(method.workflow?.steps[0]?.op).toBe("callContract");
-    expect(method.cases).toHaveLength(1);
-  });
-
-  it("parses valid v3 method spec with suites[]", () => {
-    const method = parseMethodSpec({
-      sourcePath: "specs/methods/time/suites-sample@v3.yml",
-      data: {
-        schemaVersion: 3,
-        manifest: {
-          id: "methods/time/suites-sample@v3",
-          kind: "method",
-        },
-        contract: {
-          contractMethod: "time.tkvrsn",
-          canonicalMethod: "time.tkvrsn",
-        },
-        suites: [
-          {
-            id: "default",
-            workflow: {
-              steps: [{ op: "callContract" }],
-            },
-            cases: [{ id: "ok", args: [] }],
-          },
-        ],
+    expect(parsed.workflow?.steps).toEqual([
+      {
+        op: "call",
+        fn: "time.str2et",
+        in: "$args",
       },
-    });
-
-    expect(method.suites).toHaveLength(1);
-    expect(method.workflow).toBeUndefined();
-    expect(method.cases).toBeUndefined();
+    ]);
   });
 
-  it("rejects methods that define both workflow and suites", () => {
-    expect(() =>
-      parseMethodSpec({
-        sourcePath: "specs/methods/time/invalid-both@v3.yml",
-        data: {
-          schemaVersion: 3,
-          manifest: {
-            id: "methods/time/invalid-both@v3",
-            kind: "method",
-          },
-          contract: {
-            contractMethod: "time.tkvrsn",
-            canonicalMethod: "time.tkvrsn",
-          },
-          workflow: {
-            steps: [{ op: "callContract" }],
-          },
-          cases: [{ id: "ok", args: [] }],
-          suites: [
-            {
-              id: "dup",
-              workflow: {
-                steps: [{ op: "callContract" }],
-              },
-              cases: [{ id: "ok", args: [] }],
-            },
-          ],
-        },
-      }),
-    ).toThrow(/exactly one of workflow\/cases or suites\[\]/);
+  it("rejects legacy call authored forms", () => {
+    const legacyOps = ["callContract", "spiceCall", "withResource"] as const;
+
+    for (const op of legacyOps) {
+      const input = baseSpec();
+      (input.workflow as { steps: unknown[] }).steps = [{ op }];
+
+      expect(() =>
+        parseMethodSpec({
+          sourcePath: `specs/methods/time/${op}@v3.yml`,
+          data: input,
+        }),
+      ).toThrow(/no longer supported/);
+    }
   });
 
-  it("rejects authored lifecycle ops outside withResource", () => {
-    expect(() =>
-      parseMethodSpec({
-        sourcePath: "specs/methods/dsk/invalid-lifecycle@v3.yml",
-        data: {
-          schemaVersion: 3,
-          manifest: {
-            id: "methods/dsk/invalid-lifecycle@v3",
-            kind: "method",
-          },
-          contract: {
-            contractMethod: "dsk.dskgd",
-            canonicalMethod: "dsk.dskgd",
-          },
-          workflow: {
-            steps: [
-              {
-                op: "dasOpen",
-                path: "$refs.path",
-                as: "handle",
-              },
-            ],
-          },
-          cases: [{ id: "invalid", args: {} }],
-        },
-      }),
-    ).toThrow(/use withResource instead/);
-  });
-
-  it("rejects negative compare tolerances at schema-parse time", () => {
-    expect(() =>
-      parseMethodSpec({
-        sourcePath: "specs/methods/time/invalid-tol-abs@v3.yml",
-        data: {
-          schemaVersion: 3,
-          manifest: {
-            id: "methods/time/invalid-tol-abs@v3",
-            kind: "method",
-          },
-          contract: {
-            contractMethod: "time.tkvrsn",
-            canonicalMethod: "time.tkvrsn",
-          },
-          defaults: {
-            compare: {
-              tolAbs: -1,
-            },
-          },
-          workflow: {
-            steps: [{ op: "callContract" }],
-          },
-          cases: [{ id: "invalid", args: [] }],
-        },
-      }),
-    ).toThrow(/tolAbs must be >= 0/);
+  it("hard-fails incomplete or ambiguous call definitions", () => {
+    const missingFn = baseSpec();
+    (missingFn.workflow as { steps: unknown[] }).steps = [{ op: "call", in: "$args" }];
 
     expect(() =>
       parseMethodSpec({
-        sourcePath: "specs/methods/time/invalid-tol-rel@v3.yml",
-        data: {
-          schemaVersion: 3,
-          manifest: {
-            id: "methods/time/invalid-tol-rel@v3",
-            kind: "method",
-          },
-          contract: {
-            contractMethod: "time.tkvrsn",
-            canonicalMethod: "time.tkvrsn",
-          },
-          workflow: {
-            steps: [{ op: "callContract" }],
-          },
-          cases: [
-            {
-              id: "invalid",
-              args: [],
-              compare: {
-                tolRel: -0.25,
-              },
-            },
-          ],
-        },
+        sourcePath: "specs/methods/time/missing-fn@v3.yml",
+        data: missingFn,
       }),
-    ).toThrow(/tolRel must be >= 0/);
-  });
+    ).toThrow(/\.fn/);
 
-  it("preserves script step semantics in parsed workflow AST", () => {
-    const method = parseMethodSpec({
-      sourcePath: "specs/methods/time/script-ast@v3.yml",
-      data: {
-        schemaVersion: 3,
-        manifest: {
-          id: "methods/time/script-ast@v3",
-          kind: "method",
-        },
-        contract: {
-          contractMethod: "time.tkvrsn",
-          canonicalMethod: "time.tkvrsn",
-        },
-        workflow: {
-          steps: [
-            {
-              op: "script",
-              in: {
-                value: "$args.value",
-              },
-              code: "return { doubled: value * 2 };",
-              as: "rawScriptResult",
-              out: {
-                doubled: "doubledRef",
-              },
-            },
-          ],
-        },
-        cases: [{ id: "ok", args: { value: 2 } }],
+    const missingIn = baseSpec();
+    (missingIn.workflow as { steps: unknown[] }).steps = [{ op: "call", fn: "time.str2et" }];
+
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "specs/methods/time/missing-in@v3.yml",
+        data: missingIn,
+      }),
+    ).toThrow(/\.in is required/);
+
+    const ambiguous = baseSpec();
+    (ambiguous.workflow as { steps: unknown[] }).steps = [
+      {
+        op: "call",
+        fn: "time.str2et",
+        in: "$args",
+        as: "result",
+        out: { et: "et" },
       },
-    });
-
-    expect(method.workflow?.steps[0]).toEqual({
-      op: "script",
-      in: {
-        value: "$args.value",
-      },
-      code: "return { doubled: value * 2 };",
-      as: "rawScriptResult",
-      out: {
-        doubled: "doubledRef",
-      },
-    });
-  });
-
-  it("rejects script.language and disallowed script imports", () => {
-    expect(() =>
-      parseMethodSpec({
-        sourcePath: "specs/methods/time/invalid-script-language@v3.yml",
-        data: {
-          schemaVersion: 3,
-          manifest: {
-            id: "methods/time/invalid-script-language@v3",
-            kind: "method",
-          },
-          contract: {
-            contractMethod: "time.tkvrsn",
-            canonicalMethod: "time.tkvrsn",
-          },
-          workflow: {
-            steps: [
-              {
-                op: "script",
-                language: "javascript",
-                code: "return 1;",
-              },
-            ],
-          },
-          cases: [{ id: "invalid", args: {} }],
-        },
-      }),
-    ).toThrow(/script implies TypeScript/);
+    ];
 
     expect(() =>
       parseMethodSpec({
-        sourcePath: "specs/methods/time/invalid-script-import@v3.yml",
-        data: {
-          schemaVersion: 3,
-          manifest: {
-            id: "methods/time/invalid-script-import@v3",
-            kind: "method",
-          },
-          contract: {
-            contractMethod: "time.tkvrsn",
-            canonicalMethod: "time.tkvrsn",
-          },
-          workflow: {
-            steps: [
-              {
-                op: "script",
-                code: "import fs from 'node:fs'; return 1;",
-              },
-            ],
-          },
-          cases: [{ id: "invalid", args: {} }],
-        },
+        sourcePath: "specs/methods/time/ambiguous@v3.yml",
+        data: ambiguous,
       }),
-    ).toThrow(/module imports are not allowed/);
+    ).toThrow(/ambiguous/);
   });
-
 });

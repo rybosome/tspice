@@ -14,7 +14,9 @@ defaults:
     tolRel: 1e-12
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: time.tparse
+      in: $args
 cases:
   - id: time.tparse
     args:

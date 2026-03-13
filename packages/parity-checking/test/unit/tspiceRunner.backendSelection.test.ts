@@ -1,44 +1,35 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-const toSyncMock = vi.fn();
+import { createTspiceRunner } from "../../src/runners/tspiceRunner.js";
+import {
+  GENERATED_DISPATCH_UNAVAILABLE_CODE,
+  GENERATED_DISPATCH_UNAVAILABLE_REASON,
+} from "../../src/runners/generatedDispatchSeam.js";
 
-vi.mock("@rybosome/tspice", () => ({
-  spiceClients: {
-    toSync: toSyncMock,
-  },
-}));
-
-type BackendKind = "node" | "wasm";
-
-function createClient(kind: BackendKind) {
-  return {
-    spice: {
-      raw: {
-        kind,
-        kclear: vi.fn(),
-        reset: vi.fn(),
-      },
-      kit: {},
+describe("createTspiceRunner (canonical dispatch boundary mode)", () => {
+  const baseInput = {
+    schemaVersion: 3 as const,
+    manifest: {
+      id: "methods/time/str2et@v3",
+      kind: "method" as const,
+    },
+    contract: {
+      contractMethod: "time.str2et",
+      canonicalMethod: "time.str2et",
+    },
+    args: ["2010-01-01T00:00:00"],
+    workflow: {
+      steps: [
+        {
+          op: "call" as const,
+          fn: "time.str2et",
+          in: "$args",
+        },
+      ],
     },
   };
-}
 
-describe("createTspiceRunner backend selection", () => {
-  beforeEach(() => {
-    vi.resetModules();
-    toSyncMock.mockReset();
-  });
-
-  it("records requested===actual backend metadata for explicit node lane", async () => {
-    toSyncMock.mockImplementation(async ({ backend }: { backend: BackendKind }) => {
-      if (backend !== "node") {
-        throw new Error(`unexpected backend request: ${backend}`);
-      }
-
-      return createClient("node");
-    });
-
-    const { createTspiceRunner } = await import("../../src/runners/tspiceRunner.js");
+  it("records requested===actual metadata for explicit node lane", async () => {
     const runner = await createTspiceRunner({ backend: "node" });
 
     expect(runner.kind).toBe("tspice(node)");
@@ -48,44 +39,35 @@ describe("createTspiceRunner backend selection", () => {
       fallbackDetected: false,
     });
 
-    await runner.dispose?.();
+    const out = await runner.runCase(baseInput);
+    expect(out.ok).toBe(false);
+    if (out.ok) return;
+
+    expect(out.error.code).toBe(GENERATED_DISPATCH_UNAVAILABLE_CODE);
+    expect(out.error.reason).toBe(GENERATED_DISPATCH_UNAVAILABLE_REASON);
+    expect(out.error.lane).toBe("node");
+    expect(out.error.callId).toBe("methods/time/str2et@v3::1");
   });
 
-  it("flags fallback when auto mode falls back from node to wasm", async () => {
-    toSyncMock.mockImplementation(async ({ backend }: { backend: BackendKind }) => {
-      if (backend === "node") {
-        throw new Error("Cannot find module '@rybosome/tspice-native-linux-x64-gnu'");
-      }
-
-      return createClient("wasm");
-    });
-
-    const { createTspiceRunner } = await import("../../src/runners/tspiceRunner.js");
-    const runner = await createTspiceRunner({ backend: "auto" });
+  it("records requested===actual metadata for explicit wasm lane", async () => {
+    const runner = await createTspiceRunner({ backend: "wasm" });
 
     expect(runner.kind).toBe("tspice(wasm)");
     expect(runner.backendMetadata).toEqual({
-      requestedBackend: "auto",
+      requestedBackend: "wasm",
       actualBackend: "wasm",
-      fallbackDetected: true,
+      fallbackDetected: false,
     });
-
-    await runner.dispose?.();
   });
 
-  it("throws when the reported backend does not match the requested explicit lane", async () => {
-    toSyncMock.mockImplementation(async ({ backend }: { backend: BackendKind }) => {
-      if (backend !== "node") {
-        throw new Error(`unexpected backend request: ${backend}`);
-      }
+  it("defaults auto lane to node without fallback", async () => {
+    const runner = await createTspiceRunner({ backend: "auto" });
 
-      return createClient("wasm");
+    expect(runner.kind).toBe("tspice(node)");
+    expect(runner.backendMetadata).toEqual({
+      requestedBackend: "auto",
+      actualBackend: "node",
+      fallbackDetected: false,
     });
-
-    const { createTspiceRunner } = await import("../../src/runners/tspiceRunner.js");
-
-    await expect(createTspiceRunner({ backend: "node" })).rejects.toThrow(
-      /requested=node but spice client reported "wasm"|backend mismatch/,
-    );
   });
 });

@@ -13,7 +13,9 @@ contract:
     - code: spice_error
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: file-io.dafcls
+      in: $args
 cases:
   - id: file-io.dafcls.opens-and-closes-spk
     args:

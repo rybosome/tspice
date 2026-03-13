@@ -10,7 +10,9 @@ setup:
     - $FIXTURES/kernel-pool-parity.tpc
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernel-pool.cvpool
+      in: $args
 cases:
   - id: cvpool-check
     args:

@@ -7,7 +7,9 @@ contract:
   canonicalMethod: kernels.kplfrm
 workflow:
   steps:
-    - op: callContract
+    - op: call
+      fn: kernels.kplfrm
+      in: $args
 cases:
   - id: kernels.kplfrm
     args:

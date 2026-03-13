@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  isParityProofNativeV2Enabled,
+  isParityProofNativeEnabled,
+  parityProofMarker,
   resolveReferenceExecutionPlan,
 } from "../../src/proof/nativeProof.js";
 
 import type { RunCaseInputV3 } from "../../src/runners/types.js";
 
-function baseCallContractInput(): RunCaseInputV3 {
+function baseCallInput(): RunCaseInputV3 {
   return {
     schemaVersion: 3,
     manifest: {
@@ -21,65 +22,37 @@ function baseCallContractInput(): RunCaseInputV3 {
     },
     args: ["TOOLKIT"],
     workflow: {
-      steps: [{ op: "callContract" }],
+      steps: [
+        {
+          op: "call",
+          fn: "time.tkvrsn",
+          in: "$args",
+        },
+      ],
     },
   };
 }
 
-describe("native proof policy", () => {
-  it("treats PARITY_PROOF_NATIVE_V2 as a strict gate (exactly '1')", () => {
-    expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "1" })).toBe(true);
-    expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "0" })).toBe(false);
-    expect(isParityProofNativeV2Enabled({ PARITY_PROOF_NATIVE_V2: "true" })).toBe(false);
-    expect(isParityProofNativeV2Enabled({})).toBe(false);
+describe("native proof policy (generated dispatch boundary mode)", () => {
+  it("is always enabled in canonical dispatch-boundary proof mode", () => {
+    expect(isParityProofNativeEnabled({ PARITY_PROOF_NATIVE: "1" })).toBe(true);
+    expect(isParityProofNativeEnabled({ PARITY_PROOF_NATIVE: "0" })).toBe(true);
+    expect(isParityProofNativeEnabled({})).toBe(true);
   });
 
-  it("keeps callContract workflows on native reference transport in non-proof mode", () => {
-    const plan = resolveReferenceExecutionPlan(baseCallContractInput(), {
-      proofMode: false,
-    });
-
-    expect(plan.transport).toBe("native-cspice-runner");
-    expect(plan.ops).toEqual(["callContract"]);
+  it("emits stable proof marker for generated-dispatch-boundary mode", () => {
+    expect(parityProofMarker()).toBe("proof=generated-dispatch-boundary");
   });
 
-  it("keeps callContract workflows on native reference transport in proof mode", () => {
-    const plan = resolveReferenceExecutionPlan(baseCallContractInput(), {
-      proofMode: true,
+  it("returns machine-readable generated dispatch proof plan", () => {
+    const plan = resolveReferenceExecutionPlan(baseCallInput(), { proofMode: true });
+
+    expect(plan).toEqual({
+      transport: "generated-dispatch-seam",
+      ops: ["call"],
+      dispatchHandoffAttempted: true,
+      fallbackUsed: false,
+      stopPoint: "generated-dispatch-unavailable",
     });
-
-    expect(plan.transport).toBe("native-cspice-runner");
-    expect(plan.ops).toEqual(["callContract"]);
-  });
-
-  it("does not allow legacy exception methods to re-enable fast-path transport", () => {
-    const input = baseCallContractInput();
-    input.workflow.steps = [{ op: "callContract", call: "dskgd_c" }];
-
-    const plan = resolveReferenceExecutionPlan(input, {
-      proofMode: true,
-    });
-
-    expect(plan.transport).toBe("native-cspice-runner");
-    expect(plan.ops).toEqual(["callContract"]);
-  });
-
-  it("keeps non-callContract workflows on native reference transport in proof mode", () => {
-    const input = baseCallContractInput();
-    input.workflow.steps = [
-      {
-        op: "projectResult",
-        out: {
-          ok: 1,
-        },
-      },
-    ];
-
-    const plan = resolveReferenceExecutionPlan(input, {
-      proofMode: true,
-    });
-
-    expect(plan.transport).toBe("native-cspice-runner");
-    expect(plan.ops).toEqual(["projectResult"]);
   });
 });
