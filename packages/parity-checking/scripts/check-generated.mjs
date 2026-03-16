@@ -11,8 +11,11 @@ const packageRoot = path.resolve(scriptDir, "..");
 
 const generatedFiles = [
   "packages/parity-checking/catalogs/contract-methods.json",
+  "packages/parity-checking/catalogs/function-registry.json",
   "packages/parity-checking/catalogs/parity-denylist.json",
-  "packages/parity-checking/catalogs/parity-denylist.ts",
+  "packages/parity-checking/src/runners/generatedDispatchTable.generated.ts",
+  "packages/parity-checking/native/src/cspice_runner_generated_dispatch_table.h",
+  "packages/parity-checking/native/src/cspice_runner_generated_dispatch_table.c",
 ];
 
 function run(command, args, options = {}) {

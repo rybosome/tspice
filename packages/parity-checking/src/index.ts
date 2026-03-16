@@ -18,4 +18,5 @@ export { compareValues } from "./compare/compare.js";
 export { formatMismatchReport } from "./compare/report.js";
 
 export { readContractCatalog } from "./generated/readContractCatalog.js";
+export { readFunctionRegistry } from "./generated/readFunctionRegistry.js";
 export { readParityDenylist } from "./generated/readParityDenylist.js";

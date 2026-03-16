@@ -17,12 +17,16 @@ bool handoff_to_generated_dispatch_seam(
     lane = "cspice";
   }
 
+  const CspiceGeneratedDispatchTableEntry *entry =
+      cspice_generated_dispatch_lookup(request->fn);
+
   // Reserved for future generated-dispatch handoff payload usage.
   (void)request->json;
   (void)request->tokens;
   (void)request->tokenCount;
   (void)request->inputTok;
 
-  write_generated_dispatch_unavailable_json(lane, request->callId, request->fn);
+  write_generated_dispatch_unavailable_json(lane, request->callId, request->fn,
+                                            entry != NULL);
   return false;
 }

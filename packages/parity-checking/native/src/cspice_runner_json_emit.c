@@ -164,7 +164,8 @@ void write_error_json(const char *message, const char *spiceShort,
 
 void write_generated_dispatch_unavailable_json(const char *lane,
                                                const char *callId,
-                                               const char *fn) {
+                                               const char *fn,
+                                               bool registryMatched) {
   const char *laneValue = (lane != NULL && lane[0] != '\0') ? lane : "cspice";
   const char *callIdValue =
       (callId != NULL && callId[0] != '\0') ? callId : "unknown::0";
@@ -182,6 +183,8 @@ void write_generated_dispatch_unavailable_json(const char *lane,
   fputs("\"dispatchHandoffAttempted\":true,", stdout);
   fputs("\"fallbackUsed\":false,", stdout);
   fputs("\"stopPoint\":\"generated-dispatch-unavailable\",", stdout);
+  fputs("\"registryMatched\":", stdout);
+  fputs(registryMatched ? "true," : "false,", stdout);
   fputs("\"fn\":\"", stdout);
   json_print_escaped(fnValue);
   fputs("\"}}}\n", stdout);

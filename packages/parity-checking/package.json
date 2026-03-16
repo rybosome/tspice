@@ -17,8 +17,10 @@
     "pretypecheck": "pnpm -w turbo run build --filter=@rybosome/tspice",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "generate:contract-catalog": "tsx ./scripts/generate-contract-catalog.ts",
+    "generate:function-registry": "tsx ./scripts/generate-function-registry.ts",
+    "generate:dispatch-artifacts": "tsx ./scripts/generate-dispatch-artifacts.ts",
     "generate:denylist": "tsx ./scripts/generate-parity-denylist.ts",
-    "generate:catalogs": "pnpm run generate:contract-catalog && pnpm run generate:denylist",
+    "generate:catalogs": "pnpm run generate:contract-catalog && pnpm run generate:function-registry && pnpm run generate:denylist && pnpm run generate:dispatch-artifacts",
     "check:generated": "node ./scripts/check-generated.mjs",
     "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && pnpm run check:generated && node ./scripts/pretest-cspice-runner.mjs",
     "test": "vitest run"

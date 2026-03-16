@@ -47,6 +47,8 @@ describe("canonical call-step dispatch boundary", () => {
       dispatchHandoffAttempted: true,
       fallbackUsed: false,
       stopPoint: GENERATED_DISPATCH_UNAVAILABLE_REASON,
+      registryMatched: true,
+      behaviorClass: "input-mapping-scalar-output",
     });
   });
 
@@ -80,5 +82,6 @@ describe("canonical call-step dispatch boundary", () => {
     expect(out.error.code).toBe(GENERATED_DISPATCH_UNAVAILABLE_CODE);
     expect(out.error.reason).toBe(GENERATED_DISPATCH_UNAVAILABLE_REASON);
     expect(out.error.details?.fallbackUsed).toBe(false);
+    expect(out.error.details?.registryMatched).toBe(false);
   });
 });

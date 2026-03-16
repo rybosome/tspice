@@ -1,0 +1,7 @@
+key: time.str2et
+input:
+  utc: $.in[0]
+output:
+  value:
+    from: return
+    type: spiceDouble

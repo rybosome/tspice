@@ -451,6 +451,7 @@ bool execute_canonical_workflow_request(const char *json,
         .inputTok = resolvedInTok,
     };
 
+    // Canonical path: handoff through generated dispatch seam/table only.
     bool ok = handoff_to_generated_dispatch_seam(&request);
     free(callId);
     free(resolvedFn);

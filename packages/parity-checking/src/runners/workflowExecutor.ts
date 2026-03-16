@@ -300,18 +300,24 @@ function executeCallStep(
     invalidRequest(`workflow.steps[${stepIndex}].fn must resolve to a non-empty string`);
   }
 
+  const callFn = fnResolved;
+
   const callInputResolved = resolveInputValue(step.in, args, refs, `workflow.steps[${stepIndex}].in`);
 
-  const callId = `${input.manifest.id}::${stepIndex + 1}`;
+  const callId = buildCallId(input.manifest.id, stepIndex);
   const result = handoffToGeneratedDispatchSeam({
     lane,
     callId,
-    fn: fnResolved,
+    fn: callFn,
     input: callInputResolved,
   });
 
   applyCallOutputs(step, result, refs, `workflow.steps[${stepIndex}]`);
   return result;
+}
+
+function buildCallId(manifestId: string, stepIndex: number): string {
+  return `${manifestId}::${stepIndex + 1}`;
 }
 
 /**

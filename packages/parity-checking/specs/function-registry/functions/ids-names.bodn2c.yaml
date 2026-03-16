@@ -1,0 +1,7 @@
+key: ids-names.bodn2c
+input:
+  name: $.in[0]
+output:
+  payload:
+    found: out.found
+    code: out.code

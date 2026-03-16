@@ -90,6 +90,7 @@ describe("native runner generated-dispatch seam boundary", () => {
       dispatchHandoffAttempted: true,
       fallbackUsed: false,
       stopPoint: GENERATED_DISPATCH_UNAVAILABLE_REASON,
+      registryMatched: true,
       fn: "time.str2et",
     });
   });

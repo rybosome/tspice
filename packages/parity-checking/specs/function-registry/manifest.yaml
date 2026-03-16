@@ -1,0 +1,14 @@
+dslVersion: 1
+functions:
+  - key: ephemeris.spkezr
+    file: ephemeris.spkezr.yaml
+  - key: file-io.dskmi2
+    file: file-io.dskmi2.yaml
+  - key: frames.ccifrm
+    file: frames.ccifrm.yaml
+  - key: geometry.occult
+    file: geometry.occult.yaml
+  - key: ids-names.bodn2c
+    file: ids-names.bodn2c.yaml
+  - key: time.str2et
+    file: time.str2et.yaml

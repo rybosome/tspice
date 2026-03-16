@@ -1,0 +1,15 @@
+key: geometry.occult
+input:
+  target1: $.in[0]
+  shape1: $.in[1]
+  frame1: $.in[2]
+  target2: $.in[3]
+  shape2: $.in[4]
+  frame2: $.in[5]
+  abcorr: $.in[6]
+  observer: $.in[7]
+  et: $.in[8]
+output:
+  value:
+    from: out.occultationCode
+    type: spiceInt

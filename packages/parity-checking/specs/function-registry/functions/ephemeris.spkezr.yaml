@@ -1,0 +1,11 @@
+key: ephemeris.spkezr
+input:
+  target: $.in[0]
+  et: $.in[1]
+  frame: $.in[2]
+  abcorr: $.in[3]
+  observer: $.in[4]
+output:
+  payload:
+    state: out.state
+    lightTime: out.lightTime
