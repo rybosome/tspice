@@ -5,7 +5,7 @@
 TypeScript-first access to NASA’s SPICE geometry toolkit — in **Node.js** and the **browser** (via WebAssembly).
 
 - **Docs:** https://rybosome.github.io/tspice
-- **Live demo (WebGL + WASM):** https://orrery-c4f.pages.dev/
+- **Live demo (WebGL + WASM):** https://orrery.ryboso.me/
 - **Canonical Orrery repo:** https://github.com/rybosome/orrery
 
 ![tspice solar system (orrery) screenshot](docs/images/orrery-earth-lighting.png)
