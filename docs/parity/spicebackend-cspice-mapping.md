@@ -60,17 +60,16 @@ These tolerances are a reasonable *starting point*; tighten/loosen as needed for
 These are useful when writing tests/fixtures for stateful routines (time conversions, ephemeris, body constants, etc.).
 
 - LSK (leapseconds):
-  - `apps/orrery/public/kernels/naif/naif0012.tls`
   - `packages/tspice/test/fixtures/kernels/naif0012.tls`
-- PCK (planetary constants, text):
-  - `apps/orrery/public/kernels/naif/pck00011.tpc`
-- SPK (ephemeris):
-  - `apps/orrery/public/kernels/naif/de432s.bsp`
+  - `packages/tspice/test/fixtures/kernels/basic-time/naif0012.tls`
 - SCLK (spacecraft clock, text):
   - `packages/tspice/test/fixtures/kernels/cook_01.tsc`
 - Meta-kernel placeholders:
   - `packages/backend-node/test/fixtures/minimal.tm`
   - `packages/backend-wasm/test/fixtures/minimal.tm`
+
+For browser/demo-oriented PCK/SPK examples, see the standalone Orrery repo:
+`https://github.com/rybosome/orrery/tree/main/public/kernels/naif`.
 
 ### Kernel types not currently present (suggested NAIF/mission kernels)
 

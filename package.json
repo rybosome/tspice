@@ -18,7 +18,7 @@
     "check:native:required": "pnpm run fetch:cspice && pnpm -C packages/backend-node run build:native && pnpm run stage:native-platform && pnpm run build && pnpm run typecheck && pnpm run test:required",
     "check:versions": "node scripts/verify-native-package-versions.mjs",
     "fetch:cspice": "node scripts/fetch-cspice.mjs",
-    "format:check": "pnpm -C apps/orrery run format:check",
+    "format:check": "pnpm -r --if-present format:check",
     "lint": "pnpm run lint:jsdoc && pnpm -r --if-present lint",
     "stage:native-platform": "node scripts/stage-native-platform.mjs",
     "test": "turbo run test",
