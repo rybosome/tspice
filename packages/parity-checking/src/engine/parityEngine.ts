@@ -1,29 +1,13 @@
-import * as path from "node:path";
-import { fileURLToPath } from "node:url";
-
-import { discoverYamlFiles } from "../dsl/discoverYamlFiles.js";
-import { loadYamlFile } from "../dsl/loadYaml.js";
-import { parseMethodSpec } from "../dsl/schemaValidate.js";
 import { executeMethodSpecParity } from "./executeMethodSpec.js";
+import { loadParitySpecs } from "./loadParitySpecs.js";
 import { validateCompleteness } from "../guards/validateCompleteness.js";
 import { validateSchema } from "../guards/validateSchema.js";
 import { parityProofMarker } from "../proof/nativeProof.js";
 import { createCspiceRunner } from "../runners/cspiceRunner.js";
 import { createTspiceRunner } from "../runners/tspiceRunner.js";
 
-import { methodSpecId } from "../dsl/types.js";
-import type { LoadedParitySpecs } from "../dsl/types.js";
 import type { MethodProofReferenceRecord } from "./executeMethodSpec.js";
 import type { CaseRunner } from "../runners/types.js";
-
-function packageRoot(): string {
-  const here = path.dirname(fileURLToPath(import.meta.url));
-  return path.resolve(here, "..", "..");
-}
-
-function stableSort(a: string, b: string): number {
-  return a < b ? -1 : a > b ? 1 : 0;
-}
 
 function formatErrorMessage(error: unknown): string {
   if (error instanceof Error) {
@@ -37,17 +21,6 @@ function extractFailingCaseId(error: unknown): string | undefined {
   const message = formatErrorMessage(error);
   const match = message.match(/\bcase=([^\s:]+)/);
   return match?.[1];
-}
-
-async function loadParitySpecs(): Promise<LoadedParitySpecs> {
-  const root = packageRoot();
-  const methodFiles = discoverYamlFiles(path.join(root, "specs", "methods"));
-
-  const methods = (
-    await Promise.all(methodFiles.map(async (filePath) => parseMethodSpec(await loadYamlFile(filePath))))
-  ).sort((a, b) => stableSort(methodSpecId(a), methodSpecId(b)));
-
-  return { methods };
 }
 
 type ProofLane = "node" | "wasm";

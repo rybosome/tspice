@@ -1,4 +1,4 @@
-export type FunctionRegistryInputMap = Record<string, string>;
+export type FunctionRegistryInputArray = string[];
 
 export type FunctionRegistryOutputValueSpec = {
   from: "return" | `out.${string}`;
@@ -32,22 +32,14 @@ export type FunctionRegistryBufferSpec =
 
 export type FunctionRegistryFunctionSpec = {
   key: string;
-  input: FunctionRegistryInputMap;
+  input: FunctionRegistryInputArray;
   output?: FunctionRegistryOutputSpec;
   buffers?: Record<string, FunctionRegistryBufferSpec>;
 };
 
-export type FunctionRegistryManifestEntry = {
-  key: string;
-  file: string;
-};
-
-export type FunctionRegistryManifest = {
-  dslVersion: 1;
-  functions: FunctionRegistryManifestEntry[];
-};
-
-export type FunctionRegistryCatalog = {
+export type FunctionRegistrySource = {
   dslVersion: 1;
   functions: FunctionRegistryFunctionSpec[];
 };
+
+export type FunctionRegistryCatalog = FunctionRegistrySource;

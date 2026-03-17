@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { parseFunctionRegistryCatalog } from "../src/dsl/functionRegistryValidate.js";
 
 import type {
+  FunctionRegistryBufferSpec,
   FunctionRegistryCatalog,
   FunctionRegistryFunctionSpec,
 } from "../src/dsl/functionRegistryTypes.js";
@@ -45,8 +46,16 @@ function readFunctionRegistryCatalog(): FunctionRegistryCatalog {
   return parseFunctionRegistryCatalog(parsed);
 }
 
+function isStringBufferSpec(bufferSpec: FunctionRegistryBufferSpec): boolean {
+  if (bufferSpec.elementType !== undefined) {
+    return bufferSpec.elementType === "char";
+  }
+
+  return "bytes" in bufferSpec;
+}
+
 function classifyBehaviorClass(spec: FunctionRegistryFunctionSpec): GeneratedDispatchBehaviorClass {
-  if (spec.buffers && Object.keys(spec.buffers).length > 0) {
+  if (spec.buffers && Object.values(spec.buffers).some((bufferSpec) => isStringBufferSpec(bufferSpec))) {
     return "string-buffer-bounds";
   }
 
@@ -75,7 +84,7 @@ function classifyBehaviorClass(spec: FunctionRegistryFunctionSpec): GeneratedDis
 function canonicalizeEntry(spec: FunctionRegistryFunctionSpec): GeneratedDispatchArtifactEntry {
   return {
     key: spec.key,
-    input: { ...spec.input },
+    input: [...spec.input],
     ...(spec.output === undefined ? {} : { output: { ...spec.output } }),
     ...(spec.buffers === undefined ? {} : { buffers: { ...spec.buffers } }),
     implemented: false,
@@ -116,6 +125,7 @@ function renderGeneratedTs(entries: GeneratedDispatchArtifactEntry[]): string {
     "  GENERATED_DISPATCH_TABLE.map((entry) => [entry.key, entry]),",
     ");",
     "",
+    "/** Lookup generated dispatch metadata by canonical function key. */",
     "export function lookupGeneratedDispatchTableEntry(fn: string): GeneratedDispatchTableEntry | null {",
     "  return GENERATED_DISPATCH_LOOKUP.get(fn) ?? null;",
     "}",

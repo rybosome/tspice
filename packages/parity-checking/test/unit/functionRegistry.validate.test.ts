@@ -2,65 +2,77 @@ import { describe, expect, it } from "vitest";
 
 import {
   parseFunctionRegistryCatalog,
-  parseFunctionRegistryFunction,
-  parseFunctionRegistryManifest,
+  parseFunctionRegistrySource,
 } from "../../src/dsl/functionRegistryValidate.js";
 
 describe("function registry DSL validation", () => {
   it("accepts canonical input -> output -> buffers ordering", () => {
-    const parsed = parseFunctionRegistryFunction({
-      sourcePath: "specs/function-registry/functions/time.str2et.yaml",
+    const parsed = parseFunctionRegistrySource({
+      sourcePath: "specs/function-registry/function-registry.yaml",
       data: {
-        key: "time.str2et",
-        input: {
-          utc: "$.in[0]",
-        },
-        output: {
-          value: {
-            from: "return",
-            type: "spiceDouble",
+        dslVersion: 1,
+        functions: [
+          {
+            key: "time.str2et",
+            input: ["utc"],
+            output: {
+              value: {
+                from: "return",
+                type: "spiceDouble",
+              },
+            },
+            buffers: {
+              scratch: {
+                lengthFrom: "$.in[1]",
+                elementType: "spiceDouble",
+              },
+            },
           },
-        },
-        buffers: {
-          scratch: {
-            lengthFrom: "$.in[1]",
-            elementType: "spiceDouble",
-          },
-        },
+        ],
       },
     });
 
     expect(parsed).toEqual({
-      key: "time.str2et",
-      input: { utc: "$.in[0]" },
-      output: {
-        value: {
-          from: "return",
-          type: "spiceDouble",
+      dslVersion: 1,
+      functions: [
+        {
+          key: "time.str2et",
+          input: ["utc"],
+          output: {
+            value: {
+              from: "return",
+              type: "spiceDouble",
+            },
+          },
+          buffers: {
+            scratch: {
+              lengthFrom: "$.in[1]",
+              elementType: "spiceDouble",
+            },
+          },
         },
-      },
-      buffers: {
-        scratch: {
-          lengthFrom: "$.in[1]",
-          elementType: "spiceDouble",
-        },
-      },
+      ],
     });
   });
 
   it("rejects unknown keys", () => {
     expect(() =>
-      parseFunctionRegistryFunction({
-        sourcePath: "specs/function-registry/functions/time.str2et.yaml",
+      parseFunctionRegistrySource({
+        sourcePath: "specs/function-registry/function-registry.yaml",
         data: {
-          key: "time.str2et",
-          input: {},
-          output: {
-            value: {
-              from: "return",
+          dslVersion: 1,
+          functions: [
+            {
+              key: "time.str2et",
+              input: ["utc"],
+              output: {
+                value: {
+                  from: "return",
+                },
+              },
+              aliases: ["str2et"],
             },
-          },
-          aliases: ["str2et"],
+          ],
         },
       }),
     ).toThrow(/unknown key/);
@@ -68,41 +80,64 @@ describe("function registry DSL validation", () => {
 
   it("rejects wrong canonical field order", () => {
     expect(() =>
-      parseFunctionRegistryFunction({
-        sourcePath: "specs/function-registry/functions/frames.ccifrm.yaml",
+      parseFunctionRegistrySource({
+        sourcePath: "specs/function-registry/function-registry.yaml",
         data: {
-          key: "frames.ccifrm",
-          buffers: {
-            frameName: {
-              bytes: { min: 64, max: 1025 },
+          dslVersion: 1,
+          functions: [
+            {
+              key: "frames.ccifrm",
+              buffers: {
+                frameName: {
+                  bytes: { min: 64, max: 1025 },
+                },
+              },
+              output: {
+                payload: {
+                  frameName: "out.frameName",
+                },
+              },
+              input: ["classId"],
             },
-          },
-          output: {
-            payload: {
-              frameName: "out.frameName",
-            },
-          },
-          input: {
-            classId: "$.in[0]",
-          },
+          ],
         },
       }),
     ).toThrow(/canonical field order input -> output -> buffers/);
   });
 
+  it("rejects duplicate input argument names", () => {
+    expect(() =>
+      parseFunctionRegistrySource({
+        sourcePath: "specs/function-registry/function-registry.yaml",
+        data: {
+          dslVersion: 1,
+          functions: [
+            {
+              key: "time.str2et",
+              input: ["utc", "utc"],
+            },
+          ],
+        },
+      }),
+    ).toThrow(/duplicate argument name/);
+  });
+
   it("rejects ambiguous output shape", () => {
     expect(() =>
-      parseFunctionRegistryFunction({
-        sourcePath: "specs/function-registry/functions/ids-names.bodn2c.yaml",
+      parseFunctionRegistrySource({
+        sourcePath: "specs/function-registry/function-registry.yaml",
         data: {
-          key: "ids-names.bodn2c",
-          input: {
-            name: "$.in[0]",
-          },
-          output: {
-            value: { from: "out.code" },
-            payload: { found: "out.found" },
-          },
+          dslVersion: 1,
+          functions: [
+            {
+              key: "ids-names.bodn2c",
+              input: ["name"],
+              output: {
+                value: { from: "out.code" },
+                payload: { found: "out.found" },
+              },
+            },
+          ],
         },
       }),
     ).toThrow(/exactly one of output.value or output.payload/);
@@ -110,50 +145,53 @@ describe("function registry DSL validation", () => {
 
   it("rejects invalid bytes bounds", () => {
     expect(() =>
-      parseFunctionRegistryFunction({
-        sourcePath: "specs/function-registry/functions/frames.ccifrm.yaml",
+      parseFunctionRegistrySource({
+        sourcePath: "specs/function-registry/function-registry.yaml",
         data: {
-          key: "frames.ccifrm",
-          input: {
-            classId: "$.in[0]",
-          },
-          output: {
-            payload: {
-              frameName: "out.frameName",
-            },
-          },
-          buffers: {
-            frameName: {
-              bytes: {
-                min: 2048,
-                max: 1025,
+          dslVersion: 1,
+          functions: [
+            {
+              key: "frames.ccifrm",
+              input: ["classId"],
+              output: {
+                payload: {
+                  frameName: "out.frameName",
+                },
+              },
+              buffers: {
+                frameName: {
+                  bytes: {
+                    min: 2048,
+                    max: 1025,
+                  },
+                },
               },
             },
-          },
+          ],
         },
       }),
     ).toThrow(/bytes\.min must be <= bytes\.max/);
   });
 
-  it("validates manifest and generated catalog shapes", () => {
-    const manifest = parseFunctionRegistryManifest({
-      sourcePath: "specs/function-registry/manifest.yaml",
+  it("validates canonical source and generated catalog shapes", () => {
+    const source = parseFunctionRegistrySource({
+      sourcePath: "specs/function-registry/function-registry.yaml",
       data: {
         dslVersion: 1,
         functions: [
           {
             key: "time.str2et",
-            file: "time.str2et.yaml",
+            input: ["utc"],
           },
         ],
       },
     });
 
-    expect(manifest.dslVersion).toBe(1);
-    expect(manifest.functions).toEqual([
+    expect(source.dslVersion).toBe(1);
+    expect(source.functions).toEqual([
       {
         key: "time.str2et",
-        file: "time.str2et.yaml",
+        input: ["utc"],
       },
     ]);
 
@@ -162,9 +200,7 @@ describe("function registry DSL validation", () => {
       functions: [
         {
           key: "time.str2et",
-          input: {
-            utc: "$.in[0]",
-          },
+          input: ["utc"],
           output: {
             value: {
               from: "return",

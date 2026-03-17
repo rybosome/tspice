@@ -12,8 +12,7 @@ It owns:
 ## Layout
 
 - `specs/methods/**` — parity method specs (`schemaVersion: 3`, `manifest.kind: method`)
-- `specs/function-registry/manifest.yaml` — function-registry source index
-- `specs/function-registry/functions/*.yaml` — per-function registry metadata
+- `specs/function-registry/function-registry.yaml` — canonical function-registry source
 - `catalogs/contract-methods.json` — generated canonical contract surface inventory
 - `catalogs/function-registry.json` — generated dispatch metadata catalog
 - `catalogs/parity-denylist.json` — generated denylist (v3 baseline remains empty)
@@ -29,8 +28,10 @@ See: `docs/parity/function-registry-dsl.md`.
 Core rules:
 
 - strict key validation,
+- ordered `input` argument arrays,
 - canonical function object field order: `input`, then `output`, then `buffers`,
-- deterministic generation and stable sort by function key.
+- deterministic generation and stable sort by function key,
+- parity-coverage lock against the harness method source (`specs/methods/**`).
 
 ## Canonical generated-dispatch seam contract
 

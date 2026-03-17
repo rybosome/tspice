@@ -1,67 +1,52 @@
 # Function registry DSL (`dslVersion: 1`)
 
-`packages/parity-checking/specs/function-registry` is the source of truth for generated dispatch metadata.
+`packages/parity-checking/specs/function-registry/function-registry.yaml` is the single source of truth for generated dispatch metadata.
 
-## Layout
+Generated output: `packages/parity-checking/catalogs/function-registry.json`.
 
-- `manifest.yaml` — index of function files
-- `functions/*.yaml` — one YAML document per canonical function key
-- generated output: `packages/parity-checking/catalogs/function-registry.json`
-
-## Manifest format
+## Source format
 
 ```yaml
 dslVersion: 1
 functions:
   - key: ephemeris.spkezr
-    file: ephemeris.spkezr.yaml
+    input:
+      - target
+      - et
+      - frame
+      - abcorr
+      - observer
+    output:
+      payload:
+        state: out.state
+        lightTime: out.lightTime
   - key: time.str2et
-    file: time.str2et.yaml
+    input:
+      - utc
+    output:
+      value:
+        from: return
+        type: spiceDouble
 ```
 
 Rules:
 
 - `dslVersion` must be `1`.
-- `functions` is a non-empty array.
-- every entry is `{ key, file }` with strict keys.
-- duplicate keys are rejected.
+- `functions` must be a non-empty array.
+- duplicate function `key` values are rejected.
+- canonical function object field order is enforced: `input`, then `output`, then `buffers` (`key` is always first).
 
-## Function file format
+## `input`
 
-Canonical top-level field order is enforced:
+`input` is an ordered array of argument names.
 
-1. `input`
-2. `output`
-3. `buffers`
+- each entry must be a non-empty string,
+- names must be unique per function,
+- empty arrays are allowed for nullary calls.
 
-(`key` is always first.)
+When canonical parameter names are unavailable, positional names (`arg0`, `arg1`, …) are used.
 
-```yaml
-key: ephemeris.spkezr
-input:
-  target: $.in[0]
-  et: $.in[1]
-  frame: $.in[2]
-  abcorr: $.in[3]
-  observer: $.in[4]
-output:
-  payload:
-    state: out.state
-    lightTime: out.lightTime
-buffers:
-  state:
-    lengthFrom: $.in[5]
-    elementType: spiceDouble
-```
-
-### `input`
-
-`input` is a map of named arguments to source expressions.
-
-- keys: non-empty strings
-- values: non-empty strings
-
-### `output`
+## `output`
 
 `output` is optional. If present, define exactly one of:
 
@@ -86,7 +71,7 @@ output:
     code: out.code
 ```
 
-### `buffers`
+## `buffers`
 
 `buffers` is optional. Each buffer uses exactly one sizing mode:
 
@@ -115,9 +100,14 @@ Rules:
 - `lengthFrom` must be a non-empty expression string.
 - optional `elementType` must be a non-empty string.
 
-## Determinism
+## Determinism + parity coverage lock
 
 Generation is deterministic and sorted by canonical `key`.
+
+`generate:function-registry` also enforces an invariant against the parity harness source (`specs/methods/**`):
+
+- no missing parity-tested methods,
+- no extra registry methods.
 
 Regenerate + verify:
 

@@ -2,9 +2,8 @@ import type {
   FunctionRegistryBufferSpec,
   FunctionRegistryCatalog,
   FunctionRegistryFunctionSpec,
-  FunctionRegistryManifest,
-  FunctionRegistryManifestEntry,
   FunctionRegistryOutputSpec,
+  FunctionRegistrySource,
 } from "./functionRegistryTypes.js";
 import type { ScenarioYamlFile } from "./types.js";
 
@@ -89,6 +88,25 @@ function parseExpressionMap(value: unknown, label: string): Record<string, strin
 
     out[key] = asNonEmptyString(entry, `${label}.${key}`);
   }
+
+  return out;
+}
+
+function parseInputArray(value: unknown, label: string): string[] {
+  const entries = asArray(value, label);
+  const out: string[] = [];
+  const seen = new Set<string>();
+
+  entries.forEach((entry, index) => {
+    const name = asNonEmptyString(entry, `${label}[${index}]`);
+
+    if (seen.has(name)) {
+      throw new TypeError(`${label} contains duplicate argument name ${JSON.stringify(name)}`);
+    }
+
+    seen.add(name);
+    out.push(name);
+  });
 
   return out;
 }
@@ -222,7 +240,7 @@ function parseFunctionSpec(value: unknown, label: string): FunctionRegistryFunct
 
   const out: FunctionRegistryFunctionSpec = {
     key: asNonEmptyString(record.key, `${label}.key`),
-    input: parseExpressionMap(record.input, `${label}.input`),
+    input: parseInputArray(record.input, `${label}.input`),
   };
 
   if (record.output !== undefined) {
@@ -236,81 +254,43 @@ function parseFunctionSpec(value: unknown, label: string): FunctionRegistryFunct
   return out;
 }
 
-function parseManifestEntry(value: unknown, label: string): FunctionRegistryManifestEntry {
-  const record = asRecord(value, label);
-  ensureKnownKeys(record, ["key", "file"], label);
+function parseRegistryDocument(data: unknown, label: "functionRegistrySource" | "functionRegistryCatalog") {
+  const record = asRecord(data, label);
+  ensureKnownKeys(record, ["dslVersion", "functions"], label);
 
-  return {
-    key: asNonEmptyString(record.key, `${label}.key`),
-    file: asNonEmptyString(record.file, `${label}.file`),
-  };
-}
-
-/** Parse and validate `specs/function-registry/manifest.yaml`. */
-export function parseFunctionRegistryManifest(file: ScenarioYamlFile): FunctionRegistryManifest {
-  const record = asRecord(file.data, "functionRegistryManifest");
-  ensureKnownKeys(record, ["dslVersion", "functions"], "functionRegistryManifest");
-
-  const dslVersion = asPositiveInteger(record.dslVersion, "functionRegistryManifest.dslVersion");
+  const dslVersion = asPositiveInteger(record.dslVersion, `${label}.dslVersion`);
   if (dslVersion !== 1) {
-    throw new TypeError(
-      `functionRegistryManifest.dslVersion must be 1 (got ${formatValue(record.dslVersion)})`,
-    );
+    throw new TypeError(`${label}.dslVersion must be 1 (got ${formatValue(record.dslVersion)})`);
   }
 
-  const functionEntries = asArray(record.functions, "functionRegistryManifest.functions").map(
-    (entry, index) => parseManifestEntry(entry, `functionRegistryManifest.functions[${index}]`),
+  const functions = asArray(record.functions, `${label}.functions`).map((entry, index) =>
+    parseFunctionSpec(entry, `${label}.functions[${index}]`),
   );
 
-  if (functionEntries.length === 0) {
-    throw new TypeError("functionRegistryManifest.functions must be a non-empty array");
+  if (functions.length === 0) {
+    throw new TypeError(`${label}.functions must be a non-empty array`);
   }
 
   const seenKeys = new Set<string>();
-  for (const entry of functionEntries) {
-    if (seenKeys.has(entry.key)) {
-      throw new TypeError(`functionRegistryManifest.functions has duplicate key ${JSON.stringify(entry.key)}`);
+  for (const fn of functions) {
+    if (seenKeys.has(fn.key)) {
+      throw new TypeError(`${label}.functions has duplicate key ${JSON.stringify(fn.key)}`);
     }
-    seenKeys.add(entry.key);
+    seenKeys.add(fn.key);
   }
 
   return {
-    dslVersion: 1,
-    functions: functionEntries,
+    dslVersion: 1 as const,
+    functions,
   };
 }
 
-/** Parse and validate one function YAML entry in `specs/function-registry/functions/*.yaml`. */
-export function parseFunctionRegistryFunction(file: ScenarioYamlFile): FunctionRegistryFunctionSpec {
-  return parseFunctionSpec(file.data, `functionRegistryFunction(${file.sourcePath})`);
+/** Parse and validate canonical `specs/function-registry/function-registry.yaml`. */
+export function parseFunctionRegistrySource(file: ScenarioYamlFile): FunctionRegistrySource {
+  return parseRegistryDocument(file.data, "functionRegistrySource");
 }
 
 /** Parse and validate generated `catalogs/function-registry.json`. */
 export function parseFunctionRegistryCatalog(data: unknown): FunctionRegistryCatalog {
-  const record = asRecord(data, "functionRegistryCatalog");
-  ensureKnownKeys(record, ["dslVersion", "functions"], "functionRegistryCatalog");
-
-  const dslVersion = asPositiveInteger(record.dslVersion, "functionRegistryCatalog.dslVersion");
-  if (dslVersion !== 1) {
-    throw new TypeError(
-      `functionRegistryCatalog.dslVersion must be 1 (got ${formatValue(record.dslVersion)})`,
-    );
-  }
-
-  const functions = asArray(record.functions, "functionRegistryCatalog.functions").map(
-    (entry, index) => parseFunctionSpec(entry, `functionRegistryCatalog.functions[${index}]`),
-  );
-
-  const seen = new Set<string>();
-  for (const fn of functions) {
-    if (seen.has(fn.key)) {
-      throw new TypeError(`functionRegistryCatalog.functions has duplicate key ${JSON.stringify(fn.key)}`);
-    }
-    seen.add(fn.key);
-  }
-
-  return {
-    dslVersion: 1,
-    functions,
-  };
+  return parseRegistryDocument(data, "functionRegistryCatalog");
 }

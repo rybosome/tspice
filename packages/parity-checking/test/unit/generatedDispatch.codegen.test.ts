@@ -53,12 +53,13 @@ describe("generated dispatch codegen", () => {
 
     expect(tableKeys).toEqual(registryKeys);
 
-    const classes = new Set(GENERATED_DISPATCH_TABLE.map((entry) => entry.behaviorClass));
-    expect(classes.has("input-mapping-scalar-output")).toBe(true);
-    expect(classes.has("out-params-structured-payload")).toBe(true);
-    expect(classes.has("integer-return-split")).toBe(true);
-    expect(classes.has("complex-return-form")).toBe(true);
-    expect(classes.has("string-buffer-bounds")).toBe(true);
+    const dskmi2 = lookupGeneratedDispatchTableEntry("file-io.dskmi2");
+    expect(dskmi2).not.toBeNull();
+    expect(dskmi2?.behaviorClass).toBe("out-params-structured-payload");
+
+    const ccifrm = lookupGeneratedDispatchTableEntry("frames.ccifrm");
+    expect(ccifrm).not.toBeNull();
+    expect(ccifrm?.behaviorClass).toBe("string-buffer-bounds");
   });
 
   it("provides lookup coverage for modeled vs unmodeled functions", () => {

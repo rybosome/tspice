@@ -2,14 +2,280 @@
   "dslVersion": 1,
   "functions": [
     {
+      "key": "cells-windows.card",
+      "input": [
+        "size"
+      ]
+    },
+    {
+      "key": "cells-windows.insrtc",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "cells-windows.insrtd",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "cells-windows.insrti",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "cells-windows.scard",
+      "input": [
+        "size",
+        "card"
+      ]
+    },
+    {
+      "key": "cells-windows.size",
+      "input": [
+        "size"
+      ]
+    },
+    {
+      "key": "cells-windows.ssize",
+      "input": [
+        "allocSize",
+        "newSize"
+      ]
+    },
+    {
+      "key": "cells-windows.valid",
+      "input": [
+        "allocSize",
+        "size",
+        "n"
+      ]
+    },
+    {
+      "key": "cells-windows.wncard",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "cells-windows.wnfetd",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "cells-windows.wninsd",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "cells-windows.wnvald",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "coords-vectors.axisar",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "coords-vectors.georec",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2",
+        "arg3",
+        "arg4"
+      ]
+    },
+    {
+      "key": "coords-vectors.latrec",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "coords-vectors.mtxv",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "coords-vectors.mxm",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "coords-vectors.mxv",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "coords-vectors.recgeo",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "coords-vectors.reclat",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "coords-vectors.recsph",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "coords-vectors.rotate",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "coords-vectors.rotmat",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "coords-vectors.sphrec",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "coords-vectors.vadd",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "coords-vectors.vcrss",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "coords-vectors.vdot",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "coords-vectors.vhat",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "coords-vectors.vminus",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "coords-vectors.vnorm",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "coords-vectors.vscl",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "coords-vectors.vsub",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "dsk.dskb02",
+      "input": [
+        "selector"
+      ]
+    },
+    {
+      "key": "dsk.dskgd",
+      "input": [
+        "selector"
+      ]
+    },
+    {
+      "key": "dsk.dskobj",
+      "input": []
+    },
+    {
+      "key": "dsk.dsksrf",
+      "input": []
+    },
+    {
+      "key": "ephemeris.spkez",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2",
+        "arg3",
+        "arg4"
+      ]
+    },
+    {
+      "key": "ephemeris.spkezp",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2",
+        "arg3",
+        "arg4"
+      ]
+    },
+    {
       "key": "ephemeris.spkezr",
-      "input": {
-        "target": "$.in[0]",
-        "et": "$.in[1]",
-        "frame": "$.in[2]",
-        "abcorr": "$.in[3]",
-        "observer": "$.in[4]"
-      },
+      "input": [
+        "target",
+        "et",
+        "frame",
+        "abcorr",
+        "observer"
+      ],
       "output": {
         "payload": {
           "state": "out.state",
@@ -18,12 +284,129 @@
       }
     },
     {
+      "key": "ephemeris.spkgeo",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2",
+        "arg3"
+      ]
+    },
+    {
+      "key": "ephemeris.spkgps",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2",
+        "arg3"
+      ]
+    },
+    {
+      "key": "ephemeris.spkpds",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2",
+        "arg3",
+        "arg4",
+        "arg5"
+      ]
+    },
+    {
+      "key": "ephemeris.spkpos",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2",
+        "arg3",
+        "arg4"
+      ]
+    },
+    {
+      "key": "ephemeris.spksfs",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "ephemeris.spkssb",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "file-io.dafbfs",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.dafcls",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.daffna",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.dafopr",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.dascls",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.dasopr",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.dlabfs",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.dlacls",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.dlafns",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.dlaopn",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2",
+        "arg3"
+      ]
+    },
+    {
       "key": "file-io.dskmi2",
-      "input": {
-        "handle": "$.in[0]",
-        "dladsc": "$.in[1]",
-        "room": "$.in[2]"
-      },
+      "input": [
+        "handle",
+        "dladsc",
+        "room"
+      ],
       "output": {
         "payload": {
           "spaixd": "out.spaixd",
@@ -38,11 +421,31 @@
       }
     },
     {
+      "key": "file-io.dskopn",
+      "input": []
+    },
+    {
+      "key": "file-io.dskw02",
+      "input": []
+    },
+    {
+      "key": "file-io.exists",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "file-io.getfat",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
       "key": "frames.ccifrm",
-      "input": {
-        "frameClass": "$.in[0]",
-        "classId": "$.in[1]"
-      },
+      "input": [
+        "frameClass",
+        "classId"
+      ],
       "output": {
         "payload": {
           "found": "out.found",
@@ -62,30 +465,82 @@
       }
     },
     {
-      "key": "geometry.occult",
-      "input": {
-        "target1": "$.in[0]",
-        "shape1": "$.in[1]",
-        "frame1": "$.in[2]",
-        "target2": "$.in[3]",
-        "shape2": "$.in[4]",
-        "frame2": "$.in[5]",
-        "abcorr": "$.in[6]",
-        "observer": "$.in[7]",
-        "et": "$.in[8]"
-      },
-      "output": {
-        "value": {
-          "from": "out.occultationCode",
-          "type": "spiceInt"
-        }
-      }
+      "key": "frames.cidfrm",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "frames.cnmfrm",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "frames.frinfo",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "frames.frmnam",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "frames.namfrm",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "frames.pxform",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "frames.sxform",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "ids-names.bodc2n",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "ids-names.bodc2s",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "ids-names.boddef",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "ids-names.bodfnd",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
     },
     {
       "key": "ids-names.bodn2c",
-      "input": {
-        "name": "$.in[0]"
-      },
+      "input": [
+        "name"
+      ],
       "output": {
         "payload": {
           "found": "out.found",
@@ -94,16 +549,212 @@
       }
     },
     {
+      "key": "ids-names.bods2c",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "ids-names.bodvar",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "kernel-pool.cvpool",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "kernel-pool.dtpool",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "kernel-pool.expool",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "kernel-pool.gcpool",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "kernel-pool.gdpool",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "kernel-pool.gipool",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "kernel-pool.gnpool",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "kernel-pool.pcpool",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "kernel-pool.pdpool",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "kernel-pool.pipool",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "kernel-pool.swpool",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "kernels.furnsh",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "kernels.kclear",
+      "input": []
+    },
+    {
+      "key": "kernels.kdata",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "kernels.kinfo",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "kernels.kplfrm",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "kernels.ktotal",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "kernels.kxtrct",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
+      "key": "kernels.unload",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "time.deltet",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "time.et2utc",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
+    },
+    {
       "key": "time.str2et",
-      "input": {
-        "utc": "$.in[0]"
-      },
+      "input": [
+        "utc"
+      ],
       "output": {
         "value": {
           "from": "return",
           "type": "spiceDouble"
         }
       }
+    },
+    {
+      "key": "time.timdef",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "time.timout",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "time.tkvrsn",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "time.tparse",
+      "input": [
+        "arg0"
+      ]
+    },
+    {
+      "key": "time.tpictr",
+      "input": [
+        "arg0",
+        "arg1"
+      ]
+    },
+    {
+      "key": "time.unitim",
+      "input": [
+        "arg0",
+        "arg1",
+        "arg2"
+      ]
     }
   ]
 }
