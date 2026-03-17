@@ -63,9 +63,21 @@ describe("generated dispatch codegen", () => {
   });
 
   it("provides lookup coverage for modeled vs unmodeled functions", () => {
-    const modeled = lookupGeneratedDispatchTableEntry("time.str2et");
+    const modeled = lookupGeneratedDispatchTableEntry("coords-vectors.vdot");
     expect(modeled).not.toBeNull();
-    expect(modeled?.implemented).toBe(false);
+    expect(modeled?.implemented).toBe(true);
+    expect(modeled?.executable).toEqual({
+      ts: {
+        method: "vdot",
+      },
+      native: {
+        handler: "generated_dispatch_coords_vectors_vdot",
+      },
+    });
+
+    const unimplemented = lookupGeneratedDispatchTableEntry("time.str2et");
+    expect(unimplemented).not.toBeNull();
+    expect(unimplemented?.implemented).toBe(false);
 
     const unmodeled = lookupGeneratedDispatchTableEntry("time.__unmodeled__");
     expect(unmodeled).toBeNull();

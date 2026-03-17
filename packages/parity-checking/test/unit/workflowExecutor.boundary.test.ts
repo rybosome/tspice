@@ -8,7 +8,7 @@ import { createCspiceRunner, getCspiceRunnerStatus } from "../../src/runners/csp
 import { createTspiceRunner } from "../../src/runners/tspiceRunner.js";
 
 describe("canonical call-step dispatch boundary", () => {
-  function buildInput(fn: string) {
+  function buildInput(fn: string, args: unknown = [1, 2, 3]) {
     return {
       schemaVersion: 3 as const,
       manifest: {
@@ -19,7 +19,7 @@ describe("canonical call-step dispatch boundary", () => {
         contractMethod: fn,
         canonicalMethod: fn,
       },
-      args: [1, 2, 3],
+      args,
       workflow: {
         steps: [
           {
@@ -31,6 +31,36 @@ describe("canonical call-step dispatch boundary", () => {
       },
     };
   }
+
+  it("routes implemented TS call-step entries through generated callable dispatch", async () => {
+    const runner = await createTspiceRunner({ backend: "node" });
+    const out = await runner.runCase(
+      buildInput("coords-vectors.vdot", [
+        [1, 2, 3],
+        [4, 5, 6],
+      ]),
+    );
+
+    expect(out).toEqual({
+      ok: true,
+      result: 32,
+    });
+  });
+
+  it("routes implemented cspice lane call-step entries through generated callable dispatch", async () => {
+    const runner = await createCspiceRunner();
+    const out = await runner.runCase(
+      buildInput("coords-vectors.vadd", [
+        [1, 2, 3],
+        [4, 5, 6],
+      ]),
+    );
+
+    expect(out).toEqual({
+      ok: true,
+      result: [5, 7, 9],
+    });
+  });
 
   it("uses one TS call-step path and fails closed at generated-dispatch boundary", async () => {
     const runner = await createTspiceRunner({ backend: "node" });

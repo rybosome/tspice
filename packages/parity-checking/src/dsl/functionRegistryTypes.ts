@@ -30,11 +30,41 @@ export type FunctionRegistryBufferSpec =
       elementType?: string;
     };
 
-export type FunctionRegistryFunctionSpec = {
+export type FunctionRegistryBehaviorClass =
+  | "input-mapping-scalar-output"
+  | "out-params-structured-payload"
+  | "integer-return-split"
+  | "complex-return-form"
+  | "string-buffer-bounds";
+
+export type FunctionRegistryExecutableSpec = {
+  ts: {
+    method: string;
+  };
+  native: {
+    handler: string;
+  };
+};
+
+export type FunctionRegistryFunctionShape = {
   key: string;
   input: FunctionRegistryInputArray;
   output?: FunctionRegistryOutputSpec;
   buffers?: Record<string, FunctionRegistryBufferSpec>;
+};
+
+export type FunctionRegistryFunctionSpec = FunctionRegistryFunctionShape & {
+  behaviorClass?: FunctionRegistryBehaviorClass;
+  implemented?: boolean;
+  executable?: FunctionRegistryExecutableSpec;
+  overrideReason?: string;
+};
+
+export type NormalizedFunctionRegistryFunctionSpec = FunctionRegistryFunctionShape & {
+  behaviorClass: FunctionRegistryBehaviorClass;
+  implemented: boolean;
+  executable?: FunctionRegistryExecutableSpec;
+  overrideReason?: string;
 };
 
 export type FunctionRegistrySource = {
@@ -42,4 +72,12 @@ export type FunctionRegistrySource = {
   functions: FunctionRegistryFunctionSpec[];
 };
 
-export type FunctionRegistryCatalog = FunctionRegistrySource;
+export type FunctionRegistryCatalog = {
+  dslVersion: 1;
+  functions: NormalizedFunctionRegistryFunctionSpec[];
+};
+
+export type FunctionRegistryNormalizationDiagnostics = {
+  missingKeys: string[];
+  extraKeys: string[];
+};

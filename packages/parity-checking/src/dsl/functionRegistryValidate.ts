@@ -1,9 +1,16 @@
+import {
+  FUNCTION_REGISTRY_BEHAVIOR_CLASSES,
+  isBehaviorClassCompatibleWithShape,
+  isFunctionRegistryBehaviorClass,
+} from "./functionRegistryBehaviorClass.js";
 import type {
   FunctionRegistryBufferSpec,
   FunctionRegistryCatalog,
+  FunctionRegistryExecutableSpec,
   FunctionRegistryFunctionSpec,
   FunctionRegistryOutputSpec,
   FunctionRegistrySource,
+  NormalizedFunctionRegistryFunctionSpec,
 } from "./functionRegistryTypes.js";
 import type { ScenarioYamlFile } from "./types.js";
 
@@ -39,6 +46,13 @@ function asNonEmptyString(value: unknown, label: string): string {
 function asPositiveInteger(value: unknown, label: string): number {
   if (typeof value !== "number" || !Number.isInteger(value) || value <= 0) {
     throw new TypeError(`${label} must be a positive integer (got ${formatValue(value)})`);
+  }
+  return value;
+}
+
+function asBoolean(value: unknown, label: string): boolean {
+  if (typeof value !== "boolean") {
+    throw new TypeError(`${label} must be a boolean (got ${formatValue(value)})`);
   }
   return value;
 }
@@ -233,10 +247,66 @@ function parseBuffers(value: unknown, label: string): Record<string, FunctionReg
   return out;
 }
 
-function parseFunctionSpec(value: unknown, label: string): FunctionRegistryFunctionSpec {
+function parseExecutable(value: unknown, label: string): FunctionRegistryExecutableSpec {
   const record = asRecord(value, label);
-  ensureKnownKeys(record, ["key", "input", "output", "buffers"], label);
-  ensureRelativeFieldOrder(record, ["input", "output", "buffers"], label);
+  ensureKnownKeys(record, ["ts", "native"], label);
+
+  const tsRecord = asRecord(record.ts, `${label}.ts`);
+  ensureKnownKeys(tsRecord, ["method"], `${label}.ts`);
+
+  const nativeRecord = asRecord(record.native, `${label}.native`);
+  ensureKnownKeys(nativeRecord, ["handler"], `${label}.native`);
+
+  return {
+    ts: {
+      method: asNonEmptyString(tsRecord.method, `${label}.ts.method`),
+    },
+    native: {
+      handler: asNonEmptyString(nativeRecord.handler, `${label}.native.handler`),
+    },
+  };
+}
+
+function parseBehaviorClass(
+  value: unknown,
+  label: string,
+): NonNullable<FunctionRegistryFunctionSpec["behaviorClass"]> {
+  const behaviorClass = asNonEmptyString(value, label);
+  if (!isFunctionRegistryBehaviorClass(behaviorClass)) {
+    throw new TypeError(
+      `${label} has unknown behavior class ${JSON.stringify(behaviorClass)} (allowed: ${FUNCTION_REGISTRY_BEHAVIOR_CLASSES.map((entry) => JSON.stringify(entry)).join(", ")})`,
+    );
+  }
+  return behaviorClass;
+}
+
+function parseFunctionSpec(
+  value: unknown,
+  label: string,
+  options: {
+    normalized: boolean;
+  },
+): FunctionRegistryFunctionSpec | NormalizedFunctionRegistryFunctionSpec {
+  const record = asRecord(value, label);
+  ensureKnownKeys(
+    record,
+    [
+      "key",
+      "input",
+      "output",
+      "buffers",
+      "behaviorClass",
+      "implemented",
+      "executable",
+      "overrideReason",
+    ],
+    label,
+  );
+  ensureRelativeFieldOrder(
+    record,
+    ["input", "output", "buffers", "behaviorClass", "implemented", "executable", "overrideReason"],
+    label,
+  );
 
   const out: FunctionRegistryFunctionSpec = {
     key: asNonEmptyString(record.key, `${label}.key`),
@@ -251,10 +321,59 @@ function parseFunctionSpec(value: unknown, label: string): FunctionRegistryFunct
     out.buffers = parseBuffers(record.buffers, `${label}.buffers`);
   }
 
+  if (record.behaviorClass !== undefined) {
+    out.behaviorClass = parseBehaviorClass(record.behaviorClass, `${label}.behaviorClass`);
+    if (!isBehaviorClassCompatibleWithShape(out.behaviorClass, out)) {
+      throw new TypeError(
+        `${label}.behaviorClass=${JSON.stringify(out.behaviorClass)} is incompatible with function shape`,
+      );
+    }
+  }
+
+  if (record.overrideReason !== undefined) {
+    out.overrideReason = asNonEmptyString(record.overrideReason, `${label}.overrideReason`);
+  }
+
+  if (record.implemented !== undefined) {
+    out.implemented = asBoolean(record.implemented, `${label}.implemented`);
+  }
+
+  if (record.executable !== undefined) {
+    out.executable = parseExecutable(record.executable, `${label}.executable`);
+  }
+
+  const implemented = out.implemented;
+  if (implemented === true && out.executable === undefined) {
+    throw new TypeError(
+      `${label}.implemented=true requires executable.ts.method and executable.native.handler metadata`,
+    );
+  }
+
+  if (implemented !== true && out.executable !== undefined) {
+    throw new TypeError(
+      `${label}.implemented=false must not define executable metadata (set implemented: true to enable callable dispatch)`,
+    );
+  }
+
+  if (options.normalized) {
+    if (out.behaviorClass === undefined) {
+      throw new TypeError(`${label}.behaviorClass is required in generated function-registry catalog`);
+    }
+
+    if (implemented === undefined) {
+      throw new TypeError(`${label}.implemented is required in generated function-registry catalog`);
+    }
+
+    return out as NormalizedFunctionRegistryFunctionSpec;
+  }
+
   return out;
 }
 
-function parseRegistryDocument(data: unknown, label: "functionRegistrySource" | "functionRegistryCatalog") {
+function parseRegistryDocument(
+  data: unknown,
+  label: "functionRegistrySource" | "functionRegistryCatalog",
+): FunctionRegistrySource | FunctionRegistryCatalog {
   const record = asRecord(data, label);
   ensureKnownKeys(record, ["dslVersion", "functions"], label);
 
@@ -263,8 +382,9 @@ function parseRegistryDocument(data: unknown, label: "functionRegistrySource" | 
     throw new TypeError(`${label}.dslVersion must be 1 (got ${formatValue(record.dslVersion)})`);
   }
 
+  const normalized = label === "functionRegistryCatalog";
   const functions = asArray(record.functions, `${label}.functions`).map((entry, index) =>
-    parseFunctionSpec(entry, `${label}.functions[${index}]`),
+    parseFunctionSpec(entry, `${label}.functions[${index}]`, { normalized }),
   );
 
   if (functions.length === 0) {
@@ -282,15 +402,15 @@ function parseRegistryDocument(data: unknown, label: "functionRegistrySource" | 
   return {
     dslVersion: 1 as const,
     functions,
-  };
+  } as FunctionRegistrySource | FunctionRegistryCatalog;
 }
 
 /** Parse and validate canonical `specs/function-registry/function-registry.yaml`. */
 export function parseFunctionRegistrySource(file: ScenarioYamlFile): FunctionRegistrySource {
-  return parseRegistryDocument(file.data, "functionRegistrySource");
+  return parseRegistryDocument(file.data, "functionRegistrySource") as FunctionRegistrySource;
 }
 
 /** Parse and validate generated `catalogs/function-registry.json`. */
 export function parseFunctionRegistryCatalog(data: unknown): FunctionRegistryCatalog {
-  return parseRegistryDocument(data, "functionRegistryCatalog");
+  return parseRegistryDocument(data, "functionRegistryCatalog") as FunctionRegistryCatalog;
 }

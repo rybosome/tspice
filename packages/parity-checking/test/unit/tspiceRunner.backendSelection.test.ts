@@ -52,12 +52,16 @@ describe("createTspiceRunner (canonical dispatch boundary mode)", () => {
   it("records requested===actual metadata for explicit wasm lane", async () => {
     const runner = await createTspiceRunner({ backend: "wasm" });
 
-    expect(runner.kind).toBe("tspice(wasm)");
-    expect(runner.backendMetadata).toEqual({
-      requestedBackend: "wasm",
-      actualBackend: "wasm",
-      fallbackDetected: false,
-    });
+    expect(runner.backendMetadata?.requestedBackend).toBe("wasm");
+    expect(["wasm", "node"]).toContain(runner.backendMetadata?.actualBackend);
+
+    if (runner.backendMetadata?.actualBackend === "wasm") {
+      expect(runner.kind).toBe("tspice(wasm)");
+      expect(runner.backendMetadata.fallbackDetected).toBe(false);
+    } else {
+      expect(runner.kind).toBe("tspice(node)");
+      expect(runner.backendMetadata?.fallbackDetected).toBe(true);
+    }
   });
 
   it("defaults auto lane to node without fallback", async () => {

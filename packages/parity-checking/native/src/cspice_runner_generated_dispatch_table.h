@@ -15,6 +15,7 @@ typedef struct {
   const char *fn;
   bool implemented;
   CspiceGeneratedDispatchBehaviorClass behaviorClass;
+  const char *nativeHandler;
 } CspiceGeneratedDispatchTableEntry;
 
 extern const CspiceGeneratedDispatchTableEntry CSPICE_GENERATED_DISPATCH_TABLE[];

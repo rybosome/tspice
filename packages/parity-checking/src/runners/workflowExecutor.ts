@@ -27,6 +27,10 @@ type ResolveInputBudget = {
   visitedNodes: number;
 };
 
+export type WorkflowExecutorContext = {
+  rawBackend?: Record<string, unknown>;
+};
+
 function formatValue(value: unknown): string {
   if (typeof value === "number") {
     if (Number.isNaN(value)) return "NaN";
@@ -294,6 +298,7 @@ function executeCallStep(
   stepIndex: number,
   args: unknown,
   refs: Map<string, RefValue>,
+  context: WorkflowExecutorContext,
 ): unknown {
   const fnResolved = resolveInputValue(step.fn, args, refs, `workflow.steps[${stepIndex}].fn`);
   if (typeof fnResolved !== "string" || fnResolved.trim() === "") {
@@ -310,6 +315,7 @@ function executeCallStep(
     callId,
     fn: callFn,
     input: callInputResolved,
+    ...(context.rawBackend === undefined ? {} : { rawBackend: context.rawBackend }),
   });
 
   applyCallOutputs(step, result, refs, `workflow.steps[${stepIndex}]`);
@@ -334,7 +340,11 @@ export function validateCasePreflight(input: RunCaseInputV3): V3WorkflowCallStep
 /**
  * Execute one canonical call-workflow case against a selected dispatch lane.
  */
-export function executeCanonicalWorkflowCase(lane: DispatchLane, input: RunCaseInputV3): unknown {
+export function executeCanonicalWorkflowCase(
+  lane: DispatchLane,
+  input: RunCaseInputV3,
+  context: WorkflowExecutorContext = {},
+): unknown {
   const steps = validateCasePreflight(input);
 
   const refs = new Map<string, RefValue>();
@@ -342,7 +352,7 @@ export function executeCanonicalWorkflowCase(lane: DispatchLane, input: RunCaseI
 
   let lastResult: unknown = undefined;
   for (const [index, step] of steps.entries()) {
-    lastResult = executeCallStep(lane, input, step, index, args, refs);
+    lastResult = executeCallStep(lane, input, step, index, args, refs, context);
   }
 
   return lastResult;

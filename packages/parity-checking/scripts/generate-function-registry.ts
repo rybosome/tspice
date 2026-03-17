@@ -4,14 +4,13 @@ import { fileURLToPath } from "node:url";
 
 import { parse as parseYaml } from "yaml";
 
-import { methodCanonicalMethod } from "../src/dsl/types.js";
-import { loadParitySpecs } from "../src/engine/loadParitySpecs.js";
+import { normalizeFunctionRegistrySource } from "../src/dsl/functionRegistryNormalize.js";
 import { parseFunctionRegistrySource } from "../src/dsl/functionRegistryValidate.js";
 
 import type {
   FunctionRegistryBufferSpec,
   FunctionRegistryCatalog,
-  FunctionRegistryFunctionSpec,
+  NormalizedFunctionRegistryFunctionSpec,
 } from "../src/dsl/functionRegistryTypes.js";
 
 function stableSort(a: string, b: string): number {
@@ -22,6 +21,7 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(scriptDir, "..");
 
 const sourcePath = path.resolve(packageRoot, "specs/function-registry/function-registry.yaml");
+const contractCatalogPath = path.resolve(packageRoot, "catalogs/contract-methods.json");
 const outputPath = path.resolve(packageRoot, "catalogs/function-registry.json");
 
 function readYamlFile(filePath: string): { sourcePath: string; text: string; data: unknown } {
@@ -31,6 +31,23 @@ function readYamlFile(filePath: string): { sourcePath: string; text: string; dat
     text,
     data: parseYaml(text),
   };
+}
+
+function readContractMethodCatalog(filePath: string): string[] {
+  const raw = fs.readFileSync(filePath, "utf8");
+  const parsed = JSON.parse(raw) as unknown;
+
+  if (!Array.isArray(parsed)) {
+    throw new TypeError(`Contract method catalog must be a string[] at ${filePath}`);
+  }
+
+  return parsed.map((entry, index) => {
+    if (typeof entry !== "string" || entry.trim() === "") {
+      throw new TypeError(`Contract method catalog entry at index ${index} must be a non-empty string`);
+    }
+
+    return entry;
+  });
 }
 
 function canonicalizeBufferSpec(spec: FunctionRegistryBufferSpec): FunctionRegistryBufferSpec {
@@ -47,7 +64,9 @@ function canonicalizeBufferSpec(spec: FunctionRegistryBufferSpec): FunctionRegis
   };
 }
 
-function canonicalizeFunctionSpec(spec: FunctionRegistryFunctionSpec): FunctionRegistryFunctionSpec {
+function canonicalizeFunctionSpec(
+  spec: NormalizedFunctionRegistryFunctionSpec,
+): NormalizedFunctionRegistryFunctionSpec {
   return {
     key: spec.key,
     input: [...spec.input],
@@ -80,32 +99,21 @@ function canonicalizeFunctionSpec(spec: FunctionRegistryFunctionSpec): FunctionR
             ]),
           ),
         }),
-  };
-}
-
-function assertNoDuplicateKeys(functions: FunctionRegistryFunctionSpec[]): void {
-  const seenKeys = new Set<string>();
-  for (const fn of functions) {
-    if (seenKeys.has(fn.key)) {
-      throw new TypeError(
-        `functionRegistrySource.functions contains duplicate key ${JSON.stringify(fn.key)}. Remove duplicates from specs/function-registry/function-registry.yaml.`,
-      );
-    }
-    seenKeys.add(fn.key);
-  }
-}
-
-function buildCatalog(): FunctionRegistryCatalog {
-  const source = parseFunctionRegistrySource(readYamlFile(sourcePath));
-
-  const functions = source.functions.map((entry) => canonicalizeFunctionSpec(entry));
-  assertNoDuplicateKeys(functions);
-
-  const sortedFunctions = [...functions].sort((a, b) => stableSort(a.key, b.key));
-
-  return {
-    dslVersion: source.dslVersion,
-    functions: sortedFunctions,
+    behaviorClass: spec.behaviorClass,
+    implemented: spec.implemented,
+    ...(spec.executable === undefined
+      ? {}
+      : {
+          executable: {
+            ts: {
+              method: spec.executable.ts.method,
+            },
+            native: {
+              handler: spec.executable.native.handler,
+            },
+          },
+        }),
+    ...(spec.overrideReason === undefined ? {} : { overrideReason: spec.overrideReason }),
   };
 }
 
@@ -115,35 +123,47 @@ function joinPreview(values: string[]): string {
   return `${preview.join(", ")}${suffix}`;
 }
 
-async function assertParityCoverageInvariant(catalog: FunctionRegistryCatalog): Promise<void> {
-  const specs = await loadParitySpecs();
-  const parityMethods = [...new Set(specs.methods.map((method) => methodCanonicalMethod(method)))].sort(
-    (a, b) => stableSort(a, b),
-  );
+function buildCatalog(): { catalog: FunctionRegistryCatalog; diagnostics: { missingKeys: string[]; extraKeys: string[] } } {
+  const source = parseFunctionRegistrySource(readYamlFile(sourcePath));
+  const contractMethodKeys = readContractMethodCatalog(contractCatalogPath);
 
-  const paritySet = new Set(parityMethods);
-  const registryKeys = catalog.functions.map((fn) => fn.key);
-  const registrySet = new Set(registryKeys);
+  const { catalog, diagnostics } = normalizeFunctionRegistrySource(source, contractMethodKeys);
 
-  const missing = parityMethods.filter((key) => !registrySet.has(key));
-  const extra = registryKeys.filter((key) => !paritySet.has(key));
+  const sortedFunctions = [...catalog.functions]
+    .sort((a, b) => stableSort(a.key, b.key))
+    .map((entry) => canonicalizeFunctionSpec(entry));
 
-  if (missing.length > 0 || extra.length > 0) {
-    throw new Error(
-      `Function registry coverage mismatch vs parity-tested methods: missing=${missing.length}, extra=${extra.length}. ` +
-        `Missing sample: [${joinPreview(missing)}]. Extra sample: [${joinPreview(extra)}].`,
-    );
-  }
+  return {
+    catalog: {
+      dslVersion: catalog.dslVersion,
+      functions: sortedFunctions,
+    },
+    diagnostics,
+  };
 }
 
 async function main(): Promise<void> {
-  const catalog = buildCatalog();
-  await assertParityCoverageInvariant(catalog);
+  const { catalog, diagnostics } = buildCatalog();
 
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
 
   console.log(`[parity-checking] wrote function registry (${catalog.functions.length}) -> ${outputPath}`);
+
+  if (diagnostics.missingKeys.length > 0) {
+    console.warn(
+      `[parity-checking] function-registry source is missing ${diagnostics.missingKeys.length} contract key(s). ` +
+        `Auto-filled with implemented:false defaults. Missing sample: [${joinPreview(diagnostics.missingKeys)}].`,
+    );
+  }
+
+  if (diagnostics.extraKeys.length > 0) {
+    // This should already hard-fail in normalization, but keep a defensive log shape.
+    console.warn(
+      `[parity-checking] function-registry source has ${diagnostics.extraKeys.length} extra key(s). ` +
+        `Extra sample: [${joinPreview(diagnostics.extraKeys)}].`,
+    );
+  }
 }
 
 await main();

@@ -1,6 +1,6 @@
 # Function registry DSL (`dslVersion: 1`)
 
-`packages/parity-checking/specs/function-registry/function-registry.yaml` is the single source of truth for generated dispatch metadata.
+`packages/parity-checking/specs/function-registry/function-registry.yaml` is the source of truth for generated dispatch behavior.
 
 Generated output: `packages/parity-checking/catalogs/function-registry.json`.
 
@@ -9,24 +9,20 @@ Generated output: `packages/parity-checking/catalogs/function-registry.json`.
 ```yaml
 dslVersion: 1
 functions:
-  - key: ephemeris.spkezr
+  - key: coords-vectors.vdot
     input:
-      - target
-      - et
-      - frame
-      - abcorr
-      - observer
-    output:
-      payload:
-        state: out.state
-        lightTime: out.lightTime
+      - arg0
+      - arg1
+    implemented: true
+    executable:
+      ts:
+        method: vdot
+      native:
+        handler: generated_dispatch_coords_vectors_vdot
+
   - key: time.str2et
     input:
       - utc
-    output:
-      value:
-        from: return
-        type: spiceDouble
 ```
 
 Rules:
@@ -34,17 +30,30 @@ Rules:
 - `dslVersion` must be `1`.
 - `functions` must be a non-empty array.
 - duplicate function `key` values are rejected.
-- canonical function object field order is enforced: `input`, then `output`, then `buffers` (`key` is always first).
+- strict key validation (unknown keys hard-fail).
+- canonical field order is enforced:
+  - `input` -> `output` -> `buffers` -> `behaviorClass` -> `implemented` -> `executable` -> `overrideReason`
+  - (`key` remains first)
+
+## Normalization layer (code-owned defaults)
+
+Generation applies a normalization pass before writing `catalogs/function-registry.json`:
+
+- `implemented` defaults to `false`.
+- `behaviorClass` defaults from shape conventions.
+- `catalogs/contract-methods.json` is treated as the canonical key inventory.
+- Source keys missing from contract inventory hard-fail.
+- Contract keys missing from source are auto-filled as `implemented: false` stubs with `input: []`.
+
+Missing/extra reconciliation diagnostics are emitted during generation so drift is actionable.
 
 ## `input`
 
-`input` is an ordered array of argument names.
+`input` is an ordered argument-name array.
 
 - each entry must be a non-empty string,
 - names must be unique per function,
-- empty arrays are allowed for nullary calls.
-
-When canonical parameter names are unavailable, positional names (`arg0`, `arg1`, …) are used.
+- empty arrays are allowed.
 
 ## `output`
 
@@ -59,7 +68,7 @@ When canonical parameter names are unavailable, positional names (`arg0`, `arg1`
 output:
   value:
     from: return        # or out.<name>
-    type: spiceDouble   # optional type tag
+    type: spiceDouble   # optional
 ```
 
 `payload`:
@@ -73,10 +82,10 @@ output:
 
 ## `buffers`
 
-`buffers` is optional. Each buffer uses exactly one sizing mode:
+`buffers` is optional. Each buffer must use exactly one sizing mode:
 
-- fixed bytes: `bytes { min, max }`
-- dynamic length: `lengthFrom`
+- fixed bytes (`bytes: { min, max }`)
+- dynamic (`lengthFrom`)
 
 ```yaml
 buffers:
@@ -87,29 +96,79 @@ buffers:
     elementType: char
 ```
 
+## Behavior classes
+
+Allowed values:
+
+- `input-mapping-scalar-output`
+- `out-params-structured-payload`
+- `integer-return-split`
+- `complex-return-form`
+- `string-buffer-bounds`
+
+Validation hard-fails for:
+
+- unknown behavior class,
+- behavior class incompatible with function shape,
+- override without `overrideReason`.
+
+### Overrides
+
+Set `behaviorClass` only when overriding the code-owned default. If you override, you must include `overrideReason`.
+
 ```yaml
-buffers:
-  spaixi:
-    lengthFrom: $.in[2]
-    elementType: spiceInt
+- key: frames.ccifrm
+  input: [frameClass, classId]
+  buffers:
+    frameName:
+      bytes: { min: 64, max: 1025 }
+      elementType: char
+  behaviorClass: input-mapping-scalar-output
+  overrideReason: staged rollout keeps this entry in scalar class
 ```
 
-Rules:
+## Implemented-gating + executable metadata
 
-- `bytes.min` / `bytes.max` must be positive integers with `min <= max`.
-- `lengthFrom` must be a non-empty expression string.
-- optional `elementType` must be a non-empty string.
+`implemented` controls whether canonical dispatch may execute the entry.
 
-## Determinism + parity coverage lock
+- `implemented: false`
+  - must not include `executable`
+  - remains strict fail-closed at the generated seam
+- `implemented: true`
+  - requires executable metadata:
 
-Generation is deterministic and sorted by canonical `key`.
+```yaml
+implemented: true
+executable:
+  ts:
+    method: vdot
+  native:
+    handler: generated_dispatch_coords_vectors_vdot
+```
 
-`generate:function-registry` also enforces an invariant against the parity harness source (`specs/methods/**`):
+Validation hard-fails for:
 
-- no missing parity-tested methods,
-- no extra registry methods.
+- `implemented: true` without executable metadata,
+- callable metadata on non-implemented entries.
 
-Regenerate + verify:
+## Determinism + drift checks
+
+Generation is deterministic and key-sorted.
+
+Recommended flow:
 
 - `pnpm -C packages/parity-checking generate:catalogs`
 - `pnpm -C packages/parity-checking check:generated`
+
+`check:generated` regenerates catalogs/artifacts and fails when tracked generated files drift.
+
+## Promotion path (`implemented: false` -> `true`)
+
+1. Update DSL entry (`input`/`output`/`buffers` + behavior class override if needed).
+2. Set `implemented: true`.
+3. Provide `executable.ts.method` + `executable.native.handler`.
+4. Regenerate catalogs/artifacts.
+5. Add/refresh tests for:
+   - callable success paths (TS + native),
+   - strict fail-closed behavior for unimplemented/missing entries,
+   - codegen determinism + drift checks.

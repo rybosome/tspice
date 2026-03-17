@@ -57,6 +57,33 @@ function requestForFn(fn: string): Record<string, unknown> {
   };
 }
 
+function requestForVectorFn(fn: string, payload: unknown): Record<string, unknown> {
+  return {
+    schemaVersion: 3,
+    manifest: {
+      id: `methods/${fn}@v3`,
+      kind: "method",
+    },
+    contract: {
+      contractMethod: fn,
+      canonicalMethod: fn,
+    },
+    args: {
+      fn,
+      payload,
+    },
+    workflow: {
+      steps: [
+        {
+          op: "call",
+          fn: "$args.fn",
+          in: "$args.payload",
+        },
+      ],
+    },
+  };
+}
+
 describe("native generated dispatch registry handoff", () => {
   it("marks registryMatched=true for modeled functions", () => {
     const binaryPath = getBinaryPathOrSkip();
@@ -124,5 +151,67 @@ describe("native generated dispatch registry handoff", () => {
       registryMatched: false,
       fn: "time.__unmodeled__",
     });
+  });
+
+  it("executes implemented coords-vectors.vdot through native generated dispatch", () => {
+    const binaryPath = getBinaryPathOrSkip();
+    if (!binaryPath) {
+      return;
+    }
+
+    const run = runNative(
+      binaryPath,
+      requestForVectorFn("coords-vectors.vdot", [
+        [1, 2, 3],
+        [4, 5, 6],
+      ]),
+    );
+
+    expect(run.error).toBeUndefined();
+    expect(run.status).toBe(0);
+
+    const parsed = JSON.parse(run.stdout) as {
+      ok: boolean;
+      result?: unknown;
+      error?: {
+        code?: string;
+        message?: string;
+      };
+    };
+
+    expect(parsed.ok).toBe(true);
+    expect(parsed.result).toBe(32);
+    expect(parsed.error).toBeUndefined();
+  });
+
+  it("executes implemented coords-vectors.vadd through native generated dispatch", () => {
+    const binaryPath = getBinaryPathOrSkip();
+    if (!binaryPath) {
+      return;
+    }
+
+    const run = runNative(
+      binaryPath,
+      requestForVectorFn("coords-vectors.vadd", [
+        [1, 2, 3],
+        [4, 5, 6],
+      ]),
+    );
+
+    expect(run.error).toBeUndefined();
+    expect(run.status).toBe(0);
+
+    const parsed = JSON.parse(run.stdout) as {
+      ok: boolean;
+      result?: unknown;
+      error?: {
+        code?: string;
+        message?: string;
+      };
+    };
+
+    expect(parsed.ok).toBe(true);
+    expect(parsed.result).toEqual([5, 7, 9]);
+    expect(parsed.error).toBeUndefined();
   });
 });

@@ -2,6 +2,11 @@ import {
   asRunnerError,
   executeCanonicalWorkflowCase,
 } from "./workflowExecutor.js";
+import {
+  type DispatchBackend,
+  createNodeLikeDispatchBackend,
+  createWasmDispatchBackend,
+} from "./backendDispatchFactory.js";
 
 import type {
   CaseRunner,
@@ -39,17 +44,23 @@ function resolveBackend(requested: TspiceParityBackend): {
   return { requested, actual: "node", fallbackDetected: false };
 }
 
+async function createDispatchBackend(actual: "node" | "wasm"): Promise<DispatchBackend> {
+  if (actual === "node") {
+    return createNodeLikeDispatchBackend();
+  }
+
+  return createWasmDispatchBackend();
+}
+
 /**
  * Create a CaseRunner for tspice lane intent (node or wasm).
- *
- * In canonical generated-dispatch mode, execution fails closed at the dispatch
- * seam before any backend call is attempted.
  */
 export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}): Promise<CaseRunner> {
   const requested =
     options.backend ?? parseBackendEnv(process.env.TSPICE_PARITY_BACKEND) ?? "auto";
 
   const { actual, fallbackDetected } = resolveBackend(requested);
+  const backend = await createDispatchBackend(actual);
 
   return {
     kind: `tspice(${actual})`,
@@ -61,13 +72,19 @@ export async function createTspiceRunner(options: CreateTspiceRunnerOptions = {}
 
     async runCase(input: RunCaseInput): Promise<RunCaseResult> {
       try {
-        const result = executeCanonicalWorkflowCase(actual, input);
+        const result = executeCanonicalWorkflowCase(actual, input, {
+          rawBackend: backend.raw as unknown as Record<string, unknown>,
+        });
         return { ok: true, result };
       } catch (error) {
         const report = asRunnerError(error);
         report.spice = { failed: false };
         return { ok: false, error: report };
       }
+    },
+
+    dispose(): void {
+      // No explicit disposal contract on backend instances yet.
     },
   };
 }

@@ -6,6 +6,7 @@ import {
   asRunnerError,
   executeCanonicalWorkflowCase,
 } from "./workflowExecutor.js";
+import { createNodeLikeDispatchBackend } from "./backendDispatchFactory.js";
 
 import type {
   CaseRunner,
@@ -54,7 +55,8 @@ export function readCspiceRunnerBuildState(): CspiceRunnerBuildState | null {
 }
 
 /**
- * Canonical generated-dispatch mode does not depend on a native runner binary.
+ * Canonical generated-dispatch mode does not depend on a native runner binary
+ * for parity execution (native seam behavior is covered by integration tests).
  */
 export function isCspiceRunnerAvailable(): boolean {
   return true;
@@ -72,20 +74,34 @@ export function getCspiceRunnerStatus(): { ready: boolean; hint: string; statePa
   };
 }
 
-/** Create a CaseRunner that executes canonical call steps on cspice lane intent. */
+/**
+ * Create a CaseRunner for cspice reference-lane intent.
+ *
+ * Implemented generated-dispatch entries execute through the canonical callable
+ * binding against a node-backed raw contract surface, while unimplemented or
+ * missing entries remain strict fail-closed at the generated-dispatch seam.
+ */
 export async function createCspiceRunner(): Promise<CaseRunner> {
+  const backend = await createNodeLikeDispatchBackend();
+
   return {
     kind: "cspice(raw)",
 
     async runCase(input: RunCaseInput): Promise<RunCaseResult> {
       try {
-        const result = executeCanonicalWorkflowCase("cspice", input);
+        const result = executeCanonicalWorkflowCase("cspice", input, {
+          rawBackend: backend.raw as unknown as Record<string, unknown>,
+        });
         return { ok: true, result };
       } catch (error) {
         const report = asRunnerError(error);
         report.spice = { failed: false };
         return { ok: false, error: report };
       }
+    },
+
+    dispose(): void {
+      // No explicit disposal contract on createSpice() clients yet.
     },
   };
 }

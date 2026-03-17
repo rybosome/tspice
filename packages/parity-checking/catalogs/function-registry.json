@@ -5,48 +5,62 @@
       "key": "cells-windows.card",
       "input": [
         "size"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.insrtc",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.insrtd",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.insrti",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.scard",
       "input": [
         "size",
         "card"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.size",
       "input": [
         "size"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.ssize",
       "input": [
         "allocSize",
         "newSize"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.valid",
@@ -54,20 +68,26 @@
         "allocSize",
         "size",
         "n"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.wncard",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.wnfetd",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.wninsd",
@@ -75,7 +95,9 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "cells-windows.wnvald",
@@ -83,14 +105,18 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.axisar",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.georec",
@@ -100,7 +126,9 @@
         "arg2",
         "arg3",
         "arg4"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.latrec",
@@ -108,28 +136,36 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.mtxv",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.mxm",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.mxv",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.recgeo",
@@ -137,26 +173,34 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.reclat",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.recsph",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.rotate",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.rotmat",
@@ -164,7 +208,9 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.sphrec",
@@ -172,80 +218,230 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.vadd",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": true,
+      "executable": {
+        "ts": {
+          "method": "vadd"
+        },
+        "native": {
+          "handler": "generated_dispatch_coords_vectors_vadd"
+        }
+      }
     },
     {
       "key": "coords-vectors.vcrss",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.vdot",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": true,
+      "executable": {
+        "ts": {
+          "method": "vdot"
+        },
+        "native": {
+          "handler": "generated_dispatch_coords_vectors_vdot"
+        }
+      }
     },
     {
       "key": "coords-vectors.vhat",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.vminus",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.vnorm",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.vscl",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "coords-vectors.vsub",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "dsk.dskb02",
       "input": [
         "selector"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "dsk.dskgd",
       "input": [
         "selector"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "dsk.dskobj",
-      "input": []
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "dsk.dsksrf",
-      "input": []
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekaclc",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekacld",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekacli",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekcls",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekffld",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekfind",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekgc",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekgd",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekgi",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekifld",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.eknseg",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekntab",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekopn",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekopr",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ekopw",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ek.ektnam",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ephemeris.spkcls",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ephemeris.spkcov",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ephemeris.spkez",
@@ -255,7 +451,9 @@
         "arg2",
         "arg3",
         "arg4"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ephemeris.spkezp",
@@ -265,7 +463,9 @@
         "arg2",
         "arg3",
         "arg4"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ephemeris.spkezr",
@@ -281,7 +481,9 @@
           "state": "out.state",
           "lightTime": "out.lightTime"
         }
-      }
+      },
+      "behaviorClass": "out-params-structured-payload",
+      "implemented": false
     },
     {
       "key": "ephemeris.spkgeo",
@@ -290,7 +492,9 @@
         "arg1",
         "arg2",
         "arg3"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ephemeris.spkgps",
@@ -299,7 +503,27 @@
         "arg1",
         "arg2",
         "arg3"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ephemeris.spkobj",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ephemeris.spkopa",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ephemeris.spkopn",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ephemeris.spkpds",
@@ -310,7 +534,9 @@
         "arg3",
         "arg4",
         "arg5"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ephemeris.spkpos",
@@ -320,14 +546,18 @@
         "arg2",
         "arg3",
         "arg4"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ephemeris.spksfs",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ephemeris.spkssb",
@@ -335,61 +565,135 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ephemeris.spkuds",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "ephemeris.spkw08",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "error.chkin",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "error.chkout",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "error.failed",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "error.getmsg",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "error.reset",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "error.setmsg",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "error.sigerr",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dafbfs",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dafcls",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.daffna",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dafopr",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dascls",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dasopr",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dlabfs",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dlacls",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dlafns",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dlaopn",
@@ -398,7 +702,9 @@
         "arg1",
         "arg2",
         "arg3"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dskmi2",
@@ -418,27 +724,37 @@
           "lengthFrom": "$.in[2]",
           "elementType": "spiceInt"
         }
-      }
+      },
+      "behaviorClass": "out-params-structured-payload",
+      "implemented": false
     },
     {
       "key": "file-io.dskopn",
-      "input": []
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.dskw02",
-      "input": []
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.exists",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "file-io.getfat",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "frames.ccifrm",
@@ -462,37 +778,85 @@
           },
           "elementType": "char"
         }
-      }
+      },
+      "behaviorClass": "string-buffer-bounds",
+      "implemented": false
     },
     {
       "key": "frames.cidfrm",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "frames.ckcov",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "frames.ckgp",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "frames.ckgpav",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "frames.cklpf",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "frames.ckobj",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "frames.ckupf",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "frames.cnmfrm",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "frames.frinfo",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "frames.frmnam",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "frames.namfrm",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "frames.pxform",
@@ -500,7 +864,9 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "frames.sxform",
@@ -508,33 +874,145 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry-gf.gfdist",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry-gf.gfrefn",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry-gf.gfrepf",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry-gf.gfrepi",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry-gf.gfsep",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry-gf.gfsstp",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry-gf.gfstep",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry-gf.gfstol",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry.illumf",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry.illumg",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry.ilumin",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry.nvc2pl",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry.occult",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry.pl2nvc",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry.sincpt",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry.subpnt",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "geometry.subslr",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ids-names.bodc2n",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ids-names.bodc2s",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ids-names.boddef",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ids-names.bodfnd",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ids-names.bodn2c",
@@ -546,38 +1024,50 @@
           "found": "out.found",
           "code": "out.code"
         }
-      }
+      },
+      "behaviorClass": "complex-return-form",
+      "implemented": false
     },
     {
       "key": "ids-names.bods2c",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "ids-names.bodvar",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.cvpool",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.dtpool",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.expool",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.gcpool",
@@ -585,7 +1075,9 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.gdpool",
@@ -593,7 +1085,9 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.gipool",
@@ -601,7 +1095,9 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.gnpool",
@@ -609,70 +1105,92 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.pcpool",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.pdpool",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.pipool",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernel-pool.swpool",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernels.furnsh",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernels.kclear",
-      "input": []
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernels.kdata",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernels.kinfo",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernels.kplfrm",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernels.ktotal",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernels.kxtrct",
@@ -680,20 +1198,26 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "kernels.unload",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "time.deltet",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "time.et2utc",
@@ -701,7 +1225,45 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "time.scdecd",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "time.sce2c",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "time.sce2s",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "time.scencd",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "time.scs2e",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
+    },
+    {
+      "key": "time.sct2e",
+      "input": [],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "time.str2et",
@@ -713,40 +1275,52 @@
           "from": "return",
           "type": "spiceDouble"
         }
-      }
+      },
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "time.timdef",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "time.timout",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "time.tkvrsn",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "time.tparse",
       "input": [
         "arg0"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "time.tpictr",
       "input": [
         "arg0",
         "arg1"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     },
     {
       "key": "time.unitim",
@@ -754,7 +1328,9 @@
         "arg0",
         "arg1",
         "arg2"
-      ]
+      ],
+      "behaviorClass": "input-mapping-scalar-output",
+      "implemented": false
     }
   ]
 }

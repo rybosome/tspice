@@ -9,7 +9,9 @@ typedef struct {
   const char *lane;
   const char *callId;
   const char *fn;
-  // Canonical request JSON + token context (for future generated handlers).
+  // Canonical request JSON + token context.
+  // `inputTok` is the resolved call input token after workflow `$args` path
+  // resolution (not a token-level workflow DSL expression).
   const char *json;
   const jsmntok_t *tokens;
   int tokenCount;

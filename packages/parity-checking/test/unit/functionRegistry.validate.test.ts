@@ -1,30 +1,28 @@
 import { describe, expect, it } from "vitest";
 
+import { normalizeFunctionRegistrySource } from "../../src/dsl/functionRegistryNormalize.js";
 import {
   parseFunctionRegistryCatalog,
   parseFunctionRegistrySource,
 } from "../../src/dsl/functionRegistryValidate.js";
 
 describe("function registry DSL validation", () => {
-  it("accepts canonical input -> output -> buffers ordering", () => {
+  it("accepts canonical input -> output -> buffers -> behaviorClass -> implemented -> executable ordering", () => {
     const parsed = parseFunctionRegistrySource({
       sourcePath: "specs/function-registry/function-registry.yaml",
       data: {
         dslVersion: 1,
         functions: [
           {
-            key: "time.str2et",
-            input: ["utc"],
-            output: {
-              value: {
-                from: "return",
-                type: "spiceDouble",
+            key: "coords-vectors.vdot",
+            input: ["arg0", "arg1"],
+            implemented: true,
+            executable: {
+              ts: {
+                method: "vdot",
               },
-            },
-            buffers: {
-              scratch: {
-                lengthFrom: "$.in[1]",
-                elementType: "spiceDouble",
+              native: {
+                handler: "generated_dispatch_coords_vectors_vdot",
               },
             },
           },
@@ -36,18 +34,15 @@ describe("function registry DSL validation", () => {
       dslVersion: 1,
       functions: [
         {
-          key: "time.str2et",
-          input: ["utc"],
-          output: {
-            value: {
-              from: "return",
-              type: "spiceDouble",
+          key: "coords-vectors.vdot",
+          input: ["arg0", "arg1"],
+          implemented: true,
+          executable: {
+            ts: {
+              method: "vdot",
             },
-          },
-          buffers: {
-            scratch: {
-              lengthFrom: "$.in[1]",
-              elementType: "spiceDouble",
+            native: {
+              handler: "generated_dispatch_coords_vectors_vdot",
             },
           },
         },
@@ -65,11 +60,6 @@ describe("function registry DSL validation", () => {
             {
               key: "time.str2et",
               input: ["utc"],
-              output: {
-                value: {
-                  from: "return",
-                },
-              },
               aliases: ["str2et"],
             },
           ],
@@ -86,26 +76,21 @@ describe("function registry DSL validation", () => {
           dslVersion: 1,
           functions: [
             {
-              key: "frames.ccifrm",
-              buffers: {
-                frameName: {
-                  bytes: { min: 64, max: 1025 },
-                },
+              key: "coords-vectors.vdot",
+              executable: {
+                ts: { method: "vdot" },
+                native: { handler: "generated_dispatch_coords_vectors_vdot" },
               },
-              output: {
-                payload: {
-                  frameName: "out.frameName",
-                },
-              },
-              input: ["classId"],
+              implemented: true,
+              input: ["arg0", "arg1"],
             },
           ],
         },
       }),
-    ).toThrow(/canonical field order input -> output -> buffers/);
+    ).toThrow(/canonical field order/);
   });
 
-  it("rejects duplicate input argument names", () => {
+  it("rejects unknown behavior class", () => {
     expect(() =>
       parseFunctionRegistrySource({
         sourcePath: "specs/function-registry/function-registry.yaml",
@@ -114,15 +99,16 @@ describe("function registry DSL validation", () => {
           functions: [
             {
               key: "time.str2et",
-              input: ["utc", "utc"],
+              input: ["utc"],
+              behaviorClass: "mystery-behavior",
             },
           ],
         },
       }),
-    ).toThrow(/duplicate argument name/);
+    ).toThrow(/unknown behavior class/);
   });
 
-  it("rejects ambiguous output shape", () => {
+  it("rejects incompatible behavior class and shape", () => {
     expect(() =>
       parseFunctionRegistrySource({
         sourcePath: "specs/function-registry/function-registry.yaml",
@@ -130,20 +116,17 @@ describe("function registry DSL validation", () => {
           dslVersion: 1,
           functions: [
             {
-              key: "ids-names.bodn2c",
-              input: ["name"],
-              output: {
-                value: { from: "out.code" },
-                payload: { found: "out.found" },
-              },
+              key: "time.str2et",
+              input: ["utc"],
+              behaviorClass: "out-params-structured-payload",
             },
           ],
         },
       }),
-    ).toThrow(/exactly one of output.value or output.payload/);
+    ).toThrow(/incompatible with function shape/);
   });
 
-  it("rejects invalid bytes bounds", () => {
+  it("rejects implemented:true without executable metadata", () => {
     expect(() =>
       parseFunctionRegistrySource({
         sourcePath: "specs/function-registry/function-registry.yaml",
@@ -151,60 +134,115 @@ describe("function registry DSL validation", () => {
           dslVersion: 1,
           functions: [
             {
-              key: "frames.ccifrm",
-              input: ["classId"],
-              output: {
-                payload: {
-                  frameName: "out.frameName",
+              key: "coords-vectors.vdot",
+              input: ["arg0", "arg1"],
+              implemented: true,
+            },
+          ],
+        },
+      }),
+    ).toThrow(/implemented=true requires executable/);
+  });
+
+  it("rejects executable metadata when implemented is false/omitted", () => {
+    expect(() =>
+      parseFunctionRegistrySource({
+        sourcePath: "specs/function-registry/function-registry.yaml",
+        data: {
+          dslVersion: 1,
+          functions: [
+            {
+              key: "coords-vectors.vdot",
+              input: ["arg0", "arg1"],
+              executable: {
+                ts: {
+                  method: "vdot",
                 },
-              },
-              buffers: {
-                frameName: {
-                  bytes: {
-                    min: 2048,
-                    max: 1025,
-                  },
+                native: {
+                  handler: "generated_dispatch_coords_vectors_vdot",
                 },
               },
             },
           ],
         },
       }),
-    ).toThrow(/bytes\.min must be <= bytes\.max/);
+    ).toThrow(/implemented=false must not define executable metadata/);
   });
 
-  it("validates canonical source and generated catalog shapes", () => {
+  it("normalization requires overrideReason when behaviorClass overrides default", () => {
     const source = parseFunctionRegistrySource({
       sourcePath: "specs/function-registry/function-registry.yaml",
       data: {
         dslVersion: 1,
         functions: [
           {
-            key: "time.str2et",
-            input: ["utc"],
+            key: "frames.ccifrm",
+            input: ["frameClass", "classId"],
+            buffers: {
+              frameName: {
+                bytes: {
+                  min: 64,
+                  max: 1025,
+                },
+                elementType: "char",
+              },
+            },
+            behaviorClass: "input-mapping-scalar-output",
           },
         ],
       },
     });
 
-    expect(source.dslVersion).toBe(1);
-    expect(source.functions).toEqual([
-      {
-        key: "time.str2et",
-        input: ["utc"],
-      },
-    ]);
+    expect(() => normalizeFunctionRegistrySource(source, ["frames.ccifrm"])).toThrow(
+      /override requires overrideReason/,
+    );
+  });
 
+  it("normalization rejects overrideReason without an actual override", () => {
+    const source = parseFunctionRegistrySource({
+      sourcePath: "specs/function-registry/function-registry.yaml",
+      data: {
+        dslVersion: 1,
+        functions: [
+          {
+            key: "frames.ccifrm",
+            input: ["frameClass", "classId"],
+            buffers: {
+              frameName: {
+                bytes: {
+                  min: 64,
+                  max: 1025,
+                },
+                elementType: "char",
+              },
+            },
+            behaviorClass: "string-buffer-bounds",
+            overrideReason: "not actually overriding default",
+          },
+        ],
+      },
+    });
+
+    expect(() => normalizeFunctionRegistrySource(source, ["frames.ccifrm"])).toThrow(
+      /overrideReason is only allowed when behaviorClass overrides/,
+    );
+  });
+
+  it("validates generated catalog shape for normalized fields", () => {
     const catalog = parseFunctionRegistryCatalog({
       dslVersion: 1,
       functions: [
         {
-          key: "time.str2et",
-          input: ["utc"],
-          output: {
-            value: {
-              from: "return",
-              type: "spiceDouble",
+          key: "coords-vectors.vdot",
+          input: ["arg0", "arg1"],
+          behaviorClass: "input-mapping-scalar-output",
+          implemented: true,
+          executable: {
+            ts: {
+              method: "vdot",
+            },
+            native: {
+              handler: "generated_dispatch_coords_vectors_vdot",
             },
           },
         },
@@ -212,6 +250,6 @@ describe("function registry DSL validation", () => {
     });
 
     expect(catalog.functions).toHaveLength(1);
-    expect(catalog.functions[0]?.key).toBe("time.str2et");
+    expect(catalog.functions[0]?.implemented).toBe(true);
   });
 });

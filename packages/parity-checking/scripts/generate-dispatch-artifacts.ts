@@ -5,22 +5,12 @@ import { fileURLToPath } from "node:url";
 import { parseFunctionRegistryCatalog } from "../src/dsl/functionRegistryValidate.js";
 
 import type {
-  FunctionRegistryBufferSpec,
+  FunctionRegistryBehaviorClass,
   FunctionRegistryCatalog,
-  FunctionRegistryFunctionSpec,
+  NormalizedFunctionRegistryFunctionSpec,
 } from "../src/dsl/functionRegistryTypes.js";
 
-type GeneratedDispatchBehaviorClass =
-  | "input-mapping-scalar-output"
-  | "out-params-structured-payload"
-  | "integer-return-split"
-  | "complex-return-form"
-  | "string-buffer-bounds";
-
-type GeneratedDispatchArtifactEntry = FunctionRegistryFunctionSpec & {
-  implemented: false;
-  behaviorClass: GeneratedDispatchBehaviorClass;
-};
+type GeneratedDispatchArtifactEntry = NormalizedFunctionRegistryFunctionSpec;
 
 function stableSort(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
@@ -46,78 +36,102 @@ function readFunctionRegistryCatalog(): FunctionRegistryCatalog {
   return parseFunctionRegistryCatalog(parsed);
 }
 
-function isStringBufferSpec(bufferSpec: FunctionRegistryBufferSpec): boolean {
-  if (bufferSpec.elementType !== undefined) {
-    return bufferSpec.elementType === "char";
-  }
-
-  return "bytes" in bufferSpec;
-}
-
-function classifyBehaviorClass(spec: FunctionRegistryFunctionSpec): GeneratedDispatchBehaviorClass {
-  if (spec.buffers && Object.values(spec.buffers).some((bufferSpec) => isStringBufferSpec(bufferSpec))) {
-    return "string-buffer-bounds";
-  }
-
-  if (spec.output && "payload" in spec.output) {
-    const payloadKeys = Object.keys(spec.output.payload);
-    const hasFoundField = payloadKeys.some((field) => field.toLowerCase() === "found");
-    if (hasFoundField) {
-      return "complex-return-form";
-    }
-
-    return "out-params-structured-payload";
-  }
-
-  if (
-    spec.output &&
-    "value" in spec.output &&
-    spec.output.value.from.startsWith("out.") &&
-    spec.output.value.type === "spiceInt"
-  ) {
-    return "integer-return-split";
-  }
-
-  return "input-mapping-scalar-output";
-}
-
-function canonicalizeEntry(spec: FunctionRegistryFunctionSpec): GeneratedDispatchArtifactEntry {
+function cloneEntry(entry: GeneratedDispatchArtifactEntry): GeneratedDispatchArtifactEntry {
   return {
-    key: spec.key,
-    input: [...spec.input],
-    ...(spec.output === undefined ? {} : { output: { ...spec.output } }),
-    ...(spec.buffers === undefined ? {} : { buffers: { ...spec.buffers } }),
-    implemented: false,
-    behaviorClass: classifyBehaviorClass(spec),
+    key: entry.key,
+    input: [...entry.input],
+    ...(entry.output === undefined
+      ? {}
+      : {
+          output:
+            "value" in entry.output
+              ? {
+                  value: {
+                    from: entry.output.value.from,
+                    ...(entry.output.value.type === undefined
+                      ? {}
+                      : {
+                          type: entry.output.value.type,
+                        }),
+                  },
+                }
+              : {
+                  payload: { ...entry.output.payload },
+                },
+        }),
+    ...(entry.buffers === undefined
+      ? {}
+      : {
+          buffers: Object.fromEntries(
+            Object.entries(entry.buffers).map(([bufferName, bufferSpec]) => [
+              bufferName,
+              "bytes" in bufferSpec
+                ? {
+                    bytes: { ...bufferSpec.bytes },
+                    ...(bufferSpec.elementType === undefined
+                      ? {}
+                      : {
+                          elementType: bufferSpec.elementType,
+                        }),
+                  }
+                : {
+                    lengthFrom: bufferSpec.lengthFrom,
+                    ...(bufferSpec.elementType === undefined
+                      ? {}
+                      : {
+                          elementType: bufferSpec.elementType,
+                        }),
+                  },
+            ]),
+          ),
+        }),
+    behaviorClass: entry.behaviorClass,
+    implemented: entry.implemented,
+    ...(entry.executable === undefined
+      ? {}
+      : {
+          executable: {
+            ts: {
+              method: entry.executable.ts.method,
+            },
+            native: {
+              handler: entry.executable.native.handler,
+            },
+          },
+        }),
+    ...(entry.overrideReason === undefined ? {} : { overrideReason: entry.overrideReason }),
   };
 }
 
 function buildEntries(catalog: FunctionRegistryCatalog): GeneratedDispatchArtifactEntry[] {
   return [...catalog.functions]
     .sort((a, b) => stableSort(a.key, b.key))
-    .map((spec) => canonicalizeEntry(spec));
+    .map((spec) => cloneEntry(spec));
 }
 
 function renderGeneratedTs(entries: GeneratedDispatchArtifactEntry[]): string {
   const tableJson = JSON.stringify(entries, null, 2);
+  const tsDispatchMethodLookup = Object.fromEntries(
+    entries
+      .filter((entry) => entry.implemented)
+      .map((entry) => [entry.key, entry.executable?.ts.method ?? null])
+      .filter((entry): entry is [string, string] => entry[1] !== null),
+  );
+
+  const tsDispatchMethodJson = JSON.stringify(tsDispatchMethodLookup, null, 2);
 
   return [
     "// Generated by: pnpm -C packages/parity-checking generate:dispatch-artifacts",
     "// Source catalog: packages/parity-checking/catalogs/function-registry.json",
     "",
-    'import type { FunctionRegistryFunctionSpec } from "../dsl/functionRegistryTypes.js";',
+    'import type {',
+    '  FunctionRegistryBehaviorClass,',
+    '  NormalizedFunctionRegistryFunctionSpec,',
+    '} from "../dsl/functionRegistryTypes.js";',
     "",
-    "export type GeneratedDispatchBehaviorClass =",
-    '  | "input-mapping-scalar-output"',
-    '  | "out-params-structured-payload"',
-    '  | "integer-return-split"',
-    '  | "complex-return-form"',
-    '  | "string-buffer-bounds";',
+    "export type GeneratedDispatchBehaviorClass = FunctionRegistryBehaviorClass;",
     "",
-    "export type GeneratedDispatchTableEntry = FunctionRegistryFunctionSpec & {",
-    "  implemented: false;",
-    "  behaviorClass: GeneratedDispatchBehaviorClass;",
-    "};",
+    "export type GeneratedDispatchTableEntry = NormalizedFunctionRegistryFunctionSpec;",
     "",
     `export const GENERATED_DISPATCH_TABLE = Object.freeze(${tableJson}) as readonly GeneratedDispatchTableEntry[];`,
     "",
@@ -125,9 +139,16 @@ function renderGeneratedTs(entries: GeneratedDispatchArtifactEntry[]): string {
     "  GENERATED_DISPATCH_TABLE.map((entry) => [entry.key, entry]),",
     ");",
     "",
+    `const GENERATED_TS_DISPATCH_METHODS = Object.freeze(${tsDispatchMethodJson}) as Readonly<Record<string, string>>;`,
+    "",
     "/** Lookup generated dispatch metadata by canonical function key. */",
     "export function lookupGeneratedDispatchTableEntry(fn: string): GeneratedDispatchTableEntry | null {",
     "  return GENERATED_DISPATCH_LOOKUP.get(fn) ?? null;",
+    "}",
+    "",
+    "/** Lookup generated TS callable method name for implemented functions. */",
+    "export function lookupGeneratedTsDispatchMethod(fn: string): string | null {",
+    "  return GENERATED_TS_DISPATCH_METHODS[fn] ?? null;",
     "}",
     "",
   ].join("\n");
@@ -152,6 +173,7 @@ function renderNativeHeader(): string {
     "  const char *fn;",
     "  bool implemented;",
     "  CspiceGeneratedDispatchBehaviorClass behaviorClass;",
+    "  const char *nativeHandler;",
     "} CspiceGeneratedDispatchTableEntry;",
     "",
     "extern const CspiceGeneratedDispatchTableEntry CSPICE_GENERATED_DISPATCH_TABLE[];",
@@ -164,7 +186,7 @@ function renderNativeHeader(): string {
   ].join("\n");
 }
 
-function nativeBehaviorEnum(behaviorClass: GeneratedDispatchBehaviorClass): string {
+function nativeBehaviorEnum(behaviorClass: FunctionRegistryBehaviorClass): string {
   if (behaviorClass === "input-mapping-scalar-output") {
     return "CSPICE_GEN_DISPATCH_BEHAVIOR_INPUT_MAPPING_SCALAR_OUTPUT";
   }
@@ -185,10 +207,15 @@ function nativeBehaviorEnum(behaviorClass: GeneratedDispatchBehaviorClass): stri
 }
 
 function renderNativeSource(entries: GeneratedDispatchArtifactEntry[]): string {
-  const tableLines = entries.map(
-    (entry) =>
-      `    { \"${entry.key}\", false, ${nativeBehaviorEnum(entry.behaviorClass)} },`,
-  );
+  const tableLines = entries.map((entry) => {
+    const implementedLiteral = entry.implemented ? "true" : "false";
+    const nativeHandlerLiteral =
+      entry.implemented && entry.executable !== undefined
+        ? `\"${entry.executable.native.handler}\"`
+        : "NULL";
+
+    return `    { \"${entry.key}\", ${implementedLiteral}, ${nativeBehaviorEnum(entry.behaviorClass)}, ${nativeHandlerLiteral} },`;
+  });
 
   return [
     "// Generated by: pnpm -C packages/parity-checking generate:dispatch-artifacts",

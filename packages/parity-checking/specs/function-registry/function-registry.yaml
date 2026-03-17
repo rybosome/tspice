@@ -105,6 +105,12 @@ functions:
     input:
       - arg0
       - arg1
+    implemented: true
+    executable:
+      ts:
+        method: vadd
+      native:
+        handler: generated_dispatch_coords_vectors_vadd
   - key: coords-vectors.vcrss
     input:
       - arg0
@@ -113,6 +119,12 @@ functions:
     input:
       - arg0
       - arg1
+    implemented: true
+    executable:
+      ts:
+        method: vdot
+      native:
+        handler: generated_dispatch_coords_vectors_vdot
   - key: coords-vectors.vhat
     input:
       - arg0

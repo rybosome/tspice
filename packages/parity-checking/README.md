@@ -29,9 +29,14 @@ Core rules:
 
 - strict key validation,
 - ordered `input` argument arrays,
-- canonical function object field order: `input`, then `output`, then `buffers`,
+- code-owned behavior-class defaults + optional overrides (`overrideReason` required on overrides),
+- canonical function object field order:
+  - `input` -> `output` -> `buffers` -> `behaviorClass` -> `implemented` -> `executable` -> `overrideReason`,
+- implemented-gating validation:
+  - `implemented: true` requires `executable.ts.method` + `executable.native.handler`,
+  - `implemented: false` must not include executable metadata,
 - deterministic generation and stable sort by function key,
-- parity-coverage lock against the harness method source (`specs/methods/**`).
+- reconciliation against canonical contract inventory (`catalogs/contract-methods.json`) with actionable missing/extra diagnostics.
 
 ## Canonical generated-dispatch seam contract
 
@@ -40,7 +45,7 @@ Canonical workflow execution always hands off through generated dispatch artifac
 - TS: `src/runners/generatedDispatchSeam.ts` + `src/runners/generatedDispatchTable.generated.ts`
 - native: `native/src/cspice_runner_generated_dispatch_seam.{h,c}` + generated table files
 
-When a function is unsupported or unmodeled, execution must fail closed with normalized boundary fields:
+When a function is unsupported, unmodeled, or not yet implemented, execution fails closed with normalized boundary fields:
 
 - `code: generated_dispatch_unavailable`
 - `reason: generated-dispatch-unavailable`
@@ -60,6 +65,20 @@ When a function is unsupported or unmodeled, execution must fail closed with nor
 - `pnpm -C packages/parity-checking test`
 
 `check:generated` regenerates catalogs/artifacts and fails if tracked generated files drift.
+
+## Implemented-gating promotion path
+
+To promote a function from metadata-only to callable dispatch:
+
+1. Add (or update) its DSL entry in `specs/function-registry/function-registry.yaml`.
+2. Set `implemented: true`.
+3. Add executable bindings:
+   - `executable.ts.method` for TS raw-backend dispatch
+   - `executable.native.handler` for native seam dispatch
+4. Run generation + drift checks:
+   - `pnpm -C packages/parity-checking generate:catalogs`
+   - `pnpm -C packages/parity-checking check:generated`
+5. Add/adjust TS + native tests for callable success and fail-closed boundaries.
 
 `test` runs the full guard pipeline before parity execution:
 
