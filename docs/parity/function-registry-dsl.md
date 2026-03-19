@@ -23,6 +23,12 @@ functions:
   - key: time.str2et
     input:
       - utc
+    implemented: true
+    executable:
+      ts:
+        method: str2et
+      native:
+        handler: generated_dispatch_time_str2et
 ```
 
 Rules:
@@ -163,6 +169,27 @@ Recommended flow:
 `check:generated` regenerates catalogs/artifacts and fails when tracked generated files drift.
 
 ## Promotion path (`implemented: false` -> `true`)
+
+### Method-selection criteria for low marshalling risk promotions
+
+Prefer functions that satisfy all of the following:
+
+1. Scalar-only inputs and scalar return values (`input-mapping-scalar-output`).
+2. No `output.payload` projection or `buffers` requirements.
+3. Single-call native seam implementation with straightforward JSON->CSPICE argument mapping.
+4. Existing method specs already cover both success and at least one representative failure path.
+
+This keeps generated dispatch promotion focused on metadata + seam routing, without introducing
+string-buffer or out-parameter marshalling complexity.
+
+### Slice-2 promoted family (time-domain low-risk scalars)
+
+- `time.str2et`
+- `time.tparse`
+- `time.deltet`
+- `time.unitim`
+
+Other modeled methods remain explicitly fail-closed until promoted.
 
 1. Update DSL entry (`input`/`output`/`buffers` + behavior class override if needed).
 2. Set `implemented: true`.

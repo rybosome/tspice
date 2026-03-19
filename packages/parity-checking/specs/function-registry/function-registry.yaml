@@ -413,6 +413,12 @@ functions:
     input:
       - arg0
       - arg1
+    implemented: true
+    executable:
+      ts:
+        method: deltet
+      native:
+        handler: generated_dispatch_time_deltet
   - key: time.et2utc
     input:
       - arg0
@@ -425,6 +431,12 @@ functions:
       value:
         from: return
         type: spiceDouble
+    implemented: true
+    executable:
+      ts:
+        method: str2et
+      native:
+        handler: generated_dispatch_time_str2et
   - key: time.timdef
     input:
       - arg0
@@ -439,6 +451,12 @@ functions:
   - key: time.tparse
     input:
       - arg0
+    implemented: true
+    executable:
+      ts:
+        method: tparse
+      native:
+        handler: generated_dispatch_time_tparse
   - key: time.tpictr
     input:
       - arg0
@@ -448,3 +466,9 @@ functions:
       - arg0
       - arg1
       - arg2
+    implemented: true
+    executable:
+      ts:
+        method: unitim
+      native:
+        handler: generated_dispatch_time_unitim

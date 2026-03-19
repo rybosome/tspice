@@ -40,15 +40,15 @@ describe("native runner generated-dispatch seam boundary", () => {
     const request = {
       schemaVersion: 3,
       manifest: {
-        id: "methods/time.str2et@v3",
+        id: "methods/time.et2utc@v3",
         kind: "method",
       },
       contract: {
-        contractMethod: "time.str2et",
-        canonicalMethod: "time.str2et",
+        contractMethod: "time.et2utc",
+        canonicalMethod: "time.et2utc",
       },
       args: {
-        fn: "time.str2et",
+        fn: "time.et2utc",
       },
       workflow: {
         steps: [
@@ -83,7 +83,7 @@ describe("native runner generated-dispatch seam boundary", () => {
       code: GENERATED_DISPATCH_UNAVAILABLE_CODE,
       message: "Generated dispatch unavailable",
       lane: "cspice",
-      callId: "methods/time.str2et@v3::1",
+      callId: "methods/time.et2utc@v3::1",
       reason: GENERATED_DISPATCH_UNAVAILABLE_REASON,
     });
     expect(parsed.error?.details).toMatchObject({
@@ -91,7 +91,7 @@ describe("native runner generated-dispatch seam boundary", () => {
       fallbackUsed: false,
       stopPoint: GENERATED_DISPATCH_UNAVAILABLE_REASON,
       registryMatched: true,
-      fn: "time.str2et",
+      fn: "time.et2utc",
     });
   });
 
@@ -104,15 +104,15 @@ describe("native runner generated-dispatch seam boundary", () => {
     const request = {
       schemaVersion: 3,
       manifest: {
-        id: "methods/time.str2et@v3",
+        id: "methods/time.et2utc@v3",
         kind: "method",
       },
       contract: {
-        contractMethod: "time.str2et",
-        canonicalMethod: "time.str2et",
+        contractMethod: "time.et2utc",
+        canonicalMethod: "time.et2utc",
       },
       args: {
-        fn: "time.str2et",
+        fn: "time.et2utc",
       },
       workflow: {
         steps: [
@@ -156,15 +156,15 @@ describe("native runner generated-dispatch seam boundary", () => {
     const request = {
       schemaVersion: 3,
       manifest: {
-        id: "methods/time.str2et@v3",
+        id: "methods/time.et2utc@v3",
         kind: "method",
       },
       contract: {
-        contractMethod: "time.str2et",
-        canonicalMethod: "time.str2et",
+        contractMethod: "time.et2utc",
+        canonicalMethod: "time.et2utc",
       },
       args: {
-        fn: "time.str2et",
+        fn: "time.et2utc",
       },
       workflow: {
         steps: [
@@ -208,15 +208,15 @@ describe("native runner generated-dispatch seam boundary", () => {
     const request = {
       schemaVersion: 3,
       manifest: {
-        id: "methods/time.str2et@v3",
+        id: "methods/time.et2utc@v3",
         kind: "method",
       },
       contract: {
-        contractMethod: "time.str2et",
-        canonicalMethod: "time.str2et",
+        contractMethod: "time.et2utc",
+        canonicalMethod: "time.et2utc",
       },
       args: {
-        fn: "time.str2et",
+        fn: "time.et2utc",
       },
       workflow: {
         steps: [
@@ -260,15 +260,15 @@ describe("native runner generated-dispatch seam boundary", () => {
     const request = {
       schemaVersion: 3,
       manifest: {
-        id: "methods/time.str2et@v3",
+        id: "methods/time.et2utc@v3",
         kind: "method",
       },
       contract: {
-        contractMethod: "time.str2et",
-        canonicalMethod: "time.str2et",
+        contractMethod: "time.et2utc",
+        canonicalMethod: "time.et2utc",
       },
       args: {
-        fn: "time.str2et",
+        fn: "time.et2utc",
       },
       workflow: {
         steps: [
@@ -339,15 +339,15 @@ describe("native runner generated-dispatch seam boundary", () => {
     const request = {
       schemaVersion: 3,
       manifest: {
-        id: "methods/time.str2et@v3",
+        id: "methods/time.et2utc@v3",
         kind: "method",
       },
       contract: {
-        contractMethod: "time.str2et",
-        canonicalMethod: "time.str2et",
+        contractMethod: "time.et2utc",
+        canonicalMethod: "time.et2utc",
       },
       args: {
-        fn: "time.str2et",
+        fn: "time.et2utc",
       },
       workflow: {
         steps: [

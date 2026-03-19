@@ -66,6 +66,55 @@ static bool parse_vec3_arg(const CspiceGeneratedDispatchRequest *request,
   return true;
 }
 
+static bool parse_double_arg(const CspiceGeneratedDispatchRequest *request,
+                             int valueTok,
+                             SpiceDouble *out,
+                             const char *detailLabel) {
+  if (jsmn_parse_double(request->json, &request->tokens[valueTok], out) !=
+      PARSE_OK) {
+    return write_invalid_args("generated dispatch expected a numeric argument",
+                              detailLabel);
+  }
+
+  return true;
+}
+
+static bool parse_string_arg(const CspiceGeneratedDispatchRequest *request,
+                             int valueTok,
+                             char **out,
+                             const char *detailLabel) {
+  if (valueTok < 0 || valueTok >= request->tokenCount) {
+    return write_invalid_request(
+        "generated dispatch input token is out of bounds", detailLabel);
+  }
+
+  if (request->tokens[valueTok].type != JSMN_STRING) {
+    return write_invalid_args("generated dispatch expected a string argument",
+                              detailLabel);
+  }
+
+  char detail[256];
+  detail[0] = '\0';
+
+  const jsmn_strdup_err_t duplicateStatus =
+      jsmn_strdup(request->json, &request->tokens[valueTok], out, detail,
+                  sizeof(detail));
+
+  if (duplicateStatus == JSMN_STRDUP_OK) {
+    return true;
+  }
+
+  if (duplicateStatus == JSMN_STRDUP_INVALID) {
+    write_error_json_ex("invalid_request", "Invalid JSON string escape",
+                        detail[0] != '\0' ? detail : detailLabel, NULL, NULL,
+                        NULL);
+    return false;
+  }
+
+  write_error_json("Out of memory", NULL, NULL, NULL);
+  return false;
+}
+
 static bool write_spice_error(const char *message) {
   char shortMsg[1841];
   char longMsg[1841];
@@ -150,6 +199,134 @@ static bool generated_dispatch_coords_vectors_vadd(
   return write_ok_vec3_result(sum);
 }
 
+static bool generated_dispatch_time_str2et(
+    const CspiceGeneratedDispatchRequest *request) {
+  int argTokens[1];
+  if (!resolve_input_array_tokens(request, 1, argTokens)) {
+    return false;
+  }
+
+  char *utc = NULL;
+  if (!parse_string_arg(request, argTokens[0], &utc,
+                        "time.str2et arg0 must be string")) {
+    return false;
+  }
+
+  SpiceDouble et = 0.0;
+  str2et_c(utc, &et);
+  free(utc);
+  utc = NULL;
+
+  if (failed_c() == SPICETRUE) {
+    return write_spice_error("SPICE error in time.str2et generated dispatch");
+  }
+
+  return write_ok_double_result(et);
+}
+
+static bool generated_dispatch_time_tparse(
+    const CspiceGeneratedDispatchRequest *request) {
+  int argTokens[1];
+  if (!resolve_input_array_tokens(request, 1, argTokens)) {
+    return false;
+  }
+
+  char *timstr = NULL;
+  if (!parse_string_arg(request, argTokens[0], &timstr,
+                        "time.tparse arg0 must be string")) {
+    return false;
+  }
+
+  SpiceDouble et = 0.0;
+  SpiceChar errmsg[2048];
+  errmsg[0] = '\0';
+
+  tparse_c(timstr, (SpiceInt)sizeof(errmsg), &et, errmsg);
+  free(timstr);
+  timstr = NULL;
+
+  if (failed_c() == SPICETRUE) {
+    return write_spice_error("SPICE error in time.tparse generated dispatch");
+  }
+
+  if (errmsg[0] != '\0') {
+    return write_invalid_args(
+        "generated dispatch time.tparse could not parse input", errmsg);
+  }
+
+  return write_ok_double_result(et);
+}
+
+static bool generated_dispatch_time_deltet(
+    const CspiceGeneratedDispatchRequest *request) {
+  int argTokens[2];
+  if (!resolve_input_array_tokens(request, 2, argTokens)) {
+    return false;
+  }
+
+  SpiceDouble epoch = 0.0;
+  if (!parse_double_arg(request, argTokens[0], &epoch,
+                        "time.deltet arg0 must be number")) {
+    return false;
+  }
+
+  char *eptype = NULL;
+  if (!parse_string_arg(request, argTokens[1], &eptype,
+                        "time.deltet arg1 must be string")) {
+    return false;
+  }
+
+  SpiceDouble delta = 0.0;
+  deltet_c(epoch, eptype, &delta);
+  free(eptype);
+  eptype = NULL;
+
+  if (failed_c() == SPICETRUE) {
+    return write_spice_error("SPICE error in time.deltet generated dispatch");
+  }
+
+  return write_ok_double_result(delta);
+}
+
+static bool generated_dispatch_time_unitim(
+    const CspiceGeneratedDispatchRequest *request) {
+  int argTokens[3];
+  if (!resolve_input_array_tokens(request, 3, argTokens)) {
+    return false;
+  }
+
+  SpiceDouble epoch = 0.0;
+  if (!parse_double_arg(request, argTokens[0], &epoch,
+                        "time.unitim arg0 must be number")) {
+    return false;
+  }
+
+  char *insys = NULL;
+  if (!parse_string_arg(request, argTokens[1], &insys,
+                        "time.unitim arg1 must be string")) {
+    return false;
+  }
+
+  char *outsys = NULL;
+  if (!parse_string_arg(request, argTokens[2], &outsys,
+                        "time.unitim arg2 must be string")) {
+    free(insys);
+    return false;
+  }
+
+  const SpiceDouble converted = unitim_c(epoch, insys, outsys);
+  free(insys);
+  insys = NULL;
+  free(outsys);
+  outsys = NULL;
+
+  if (failed_c() == SPICETRUE) {
+    return write_spice_error("SPICE error in time.unitim generated dispatch");
+  }
+
+  return write_ok_double_result(converted);
+}
+
 static CspiceGeneratedDispatchNativeInvoker resolve_native_handler(
     const char *nativeHandler) {
   if (nativeHandler == NULL || nativeHandler[0] == '\0') {
@@ -162,6 +339,22 @@ static CspiceGeneratedDispatchNativeInvoker resolve_native_handler(
 
   if (strcmp(nativeHandler, "generated_dispatch_coords_vectors_vdot") == 0) {
     return generated_dispatch_coords_vectors_vdot;
+  }
+
+  if (strcmp(nativeHandler, "generated_dispatch_time_deltet") == 0) {
+    return generated_dispatch_time_deltet;
+  }
+
+  if (strcmp(nativeHandler, "generated_dispatch_time_str2et") == 0) {
+    return generated_dispatch_time_str2et;
+  }
+
+  if (strcmp(nativeHandler, "generated_dispatch_time_tparse") == 0) {
+    return generated_dispatch_time_tparse;
+  }
+
+  if (strcmp(nativeHandler, "generated_dispatch_time_unitim") == 0) {
+    return generated_dispatch_time_unitim;
   }
 
   return NULL;

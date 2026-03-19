@@ -75,7 +75,44 @@ describe("generated dispatch codegen", () => {
       },
     });
 
-    const unimplemented = lookupGeneratedDispatchTableEntry("time.str2et");
+    const promotedTimeMethods = [
+      {
+        key: "time.str2et",
+        tsMethod: "str2et",
+        nativeHandler: "generated_dispatch_time_str2et",
+      },
+      {
+        key: "time.tparse",
+        tsMethod: "tparse",
+        nativeHandler: "generated_dispatch_time_tparse",
+      },
+      {
+        key: "time.deltet",
+        tsMethod: "deltet",
+        nativeHandler: "generated_dispatch_time_deltet",
+      },
+      {
+        key: "time.unitim",
+        tsMethod: "unitim",
+        nativeHandler: "generated_dispatch_time_unitim",
+      },
+    ] as const;
+
+    for (const method of promotedTimeMethods) {
+      const promoted = lookupGeneratedDispatchTableEntry(method.key);
+      expect(promoted).not.toBeNull();
+      expect(promoted?.implemented).toBe(true);
+      expect(promoted?.executable).toEqual({
+        ts: {
+          method: method.tsMethod,
+        },
+        native: {
+          handler: method.nativeHandler,
+        },
+      });
+    }
+
+    const unimplemented = lookupGeneratedDispatchTableEntry("time.et2utc");
     expect(unimplemented).not.toBeNull();
     expect(unimplemented?.implemented).toBe(false);
 

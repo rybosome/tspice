@@ -54,6 +54,24 @@ When a function is unsupported, unmodeled, or not yet implemented, execution fai
   - `fallbackUsed: false`
   - `stopPoint`
 
+## Current low-risk scalar promotions
+
+Promotion criteria used for low-risk generated-dispatch slices:
+
+1. Scalar arguments + scalar return (`input-mapping-scalar-output`).
+2. No dynamic buffers or out-parameter payload marshalling.
+3. Straightthrough TS/native executable bindings from generated metadata.
+4. Method-spec coverage includes success plus representative failures.
+
+Promoted methods in this cohort:
+
+- `time.str2et`
+- `time.tparse`
+- `time.deltet`
+- `time.unitim`
+
+Non-promoted modeled methods remain explicit fail-closed boundaries.
+
 ## Scripts
 
 - `pnpm -C packages/parity-checking generate:contract-catalog`

@@ -1227,7 +1227,15 @@ export const GENERATED_DISPATCH_TABLE = Object.freeze([
       "arg1"
     ],
     "behaviorClass": "input-mapping-scalar-output",
-    "implemented": false
+    "implemented": true,
+    "executable": {
+      "ts": {
+        "method": "deltet"
+      },
+      "native": {
+        "handler": "generated_dispatch_time_deltet"
+      }
+    }
   },
   {
     "key": "time.et2utc",
@@ -1287,7 +1295,15 @@ export const GENERATED_DISPATCH_TABLE = Object.freeze([
       }
     },
     "behaviorClass": "input-mapping-scalar-output",
-    "implemented": false
+    "implemented": true,
+    "executable": {
+      "ts": {
+        "method": "str2et"
+      },
+      "native": {
+        "handler": "generated_dispatch_time_str2et"
+      }
+    }
   },
   {
     "key": "time.timdef",
@@ -1321,7 +1337,15 @@ export const GENERATED_DISPATCH_TABLE = Object.freeze([
       "arg0"
     ],
     "behaviorClass": "input-mapping-scalar-output",
-    "implemented": false
+    "implemented": true,
+    "executable": {
+      "ts": {
+        "method": "tparse"
+      },
+      "native": {
+        "handler": "generated_dispatch_time_tparse"
+      }
+    }
   },
   {
     "key": "time.tpictr",
@@ -1340,7 +1364,15 @@ export const GENERATED_DISPATCH_TABLE = Object.freeze([
       "arg2"
     ],
     "behaviorClass": "input-mapping-scalar-output",
-    "implemented": false
+    "implemented": true,
+    "executable": {
+      "ts": {
+        "method": "unitim"
+      },
+      "native": {
+        "handler": "generated_dispatch_time_unitim"
+      }
+    }
   }
 ]) as readonly GeneratedDispatchTableEntry[];
 
@@ -1350,7 +1382,11 @@ const GENERATED_DISPATCH_LOOKUP = new Map<string, GeneratedDispatchTableEntry>(
 
 const GENERATED_TS_DISPATCH_METHODS = Object.freeze({
   "coords-vectors.vadd": "vadd",
-  "coords-vectors.vdot": "vdot"
+  "coords-vectors.vdot": "vdot",
+  "time.deltet": "deltet",
+  "time.str2et": "str2et",
+  "time.tparse": "tparse",
+  "time.unitim": "unitim"
 }) as Readonly<Record<string, string>>;
 
 /** Lookup generated dispatch metadata by canonical function key. */

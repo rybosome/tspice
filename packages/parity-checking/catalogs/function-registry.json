@@ -1217,7 +1217,15 @@
         "arg1"
       ],
       "behaviorClass": "input-mapping-scalar-output",
-      "implemented": false
+      "implemented": true,
+      "executable": {
+        "ts": {
+          "method": "deltet"
+        },
+        "native": {
+          "handler": "generated_dispatch_time_deltet"
+        }
+      }
     },
     {
       "key": "time.et2utc",
@@ -1277,7 +1285,15 @@
         }
       },
       "behaviorClass": "input-mapping-scalar-output",
-      "implemented": false
+      "implemented": true,
+      "executable": {
+        "ts": {
+          "method": "str2et"
+        },
+        "native": {
+          "handler": "generated_dispatch_time_str2et"
+        }
+      }
     },
     {
       "key": "time.timdef",
@@ -1311,7 +1327,15 @@
         "arg0"
       ],
       "behaviorClass": "input-mapping-scalar-output",
-      "implemented": false
+      "implemented": true,
+      "executable": {
+        "ts": {
+          "method": "tparse"
+        },
+        "native": {
+          "handler": "generated_dispatch_time_tparse"
+        }
+      }
     },
     {
       "key": "time.tpictr",
@@ -1330,7 +1354,15 @@
         "arg2"
       ],
       "behaviorClass": "input-mapping-scalar-output",
-      "implemented": false
+      "implemented": true,
+      "executable": {
+        "ts": {
+          "method": "unitim"
+        },
+        "native": {
+          "handler": "generated_dispatch_time_unitim"
+        }
+      }
     }
   ]
 }

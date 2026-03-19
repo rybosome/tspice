@@ -32,6 +32,32 @@ describe("canonical call-step dispatch boundary", () => {
     };
   }
 
+  it("routes promoted time.tparse through generated callable dispatch on TS lane", async () => {
+    const runner = await createTspiceRunner({ backend: "node" });
+    const out = await runner.runCase(buildInput("time.tparse", ["2000 JAN 01 12:00:00"]));
+
+    expect(out.ok).toBe(true);
+    if (!out.ok) {
+      return;
+    }
+
+    expect(typeof out.result).toBe("number");
+    expect(Number.isFinite(out.result as number)).toBe(true);
+  });
+
+  it("routes promoted time.tparse through generated callable dispatch on cspice lane", async () => {
+    const runner = await createCspiceRunner();
+    const out = await runner.runCase(buildInput("time.tparse", ["2000 JAN 01 12:00:00"]));
+
+    expect(out.ok).toBe(true);
+    if (!out.ok) {
+      return;
+    }
+
+    expect(typeof out.result).toBe("number");
+    expect(Number.isFinite(out.result as number)).toBe(true);
+  });
+
   it("routes implemented TS call-step entries through generated callable dispatch", async () => {
     const runner = await createTspiceRunner({ backend: "node" });
     const out = await runner.runCase(
@@ -64,7 +90,7 @@ describe("canonical call-step dispatch boundary", () => {
 
   it("uses one TS call-step path and fails closed at generated-dispatch boundary", async () => {
     const runner = await createTspiceRunner({ backend: "node" });
-    const out = await runner.runCase(buildInput("time.str2et"));
+    const out = await runner.runCase(buildInput("time.et2utc"));
 
     expect(out.ok).toBe(false);
     if (out.ok) return;
@@ -72,7 +98,7 @@ describe("canonical call-step dispatch boundary", () => {
     expect(out.error.code).toBe(GENERATED_DISPATCH_UNAVAILABLE_CODE);
     expect(out.error.reason).toBe(GENERATED_DISPATCH_UNAVAILABLE_REASON);
     expect(out.error.lane).toBe("node");
-    expect(out.error.callId).toBe("methods/time.str2et@v3::1");
+    expect(out.error.callId).toBe("methods/time.et2utc@v3::1");
     expect(out.error.details).toMatchObject({
       dispatchHandoffAttempted: true,
       fallbackUsed: false,
@@ -87,7 +113,7 @@ describe("canonical call-step dispatch boundary", () => {
     expect(status.ready).toBe(true);
 
     const runner = await createCspiceRunner();
-    const out = await runner.runCase(buildInput("time.str2et"));
+    const out = await runner.runCase(buildInput("time.et2utc"));
 
     expect(out.ok).toBe(false);
     if (out.ok) return;
@@ -95,7 +121,7 @@ describe("canonical call-step dispatch boundary", () => {
     expect(out.error).toMatchObject({
       code: GENERATED_DISPATCH_UNAVAILABLE_CODE,
       lane: "cspice",
-      callId: "methods/time.str2et@v3::1",
+      callId: "methods/time.et2utc@v3::1",
       reason: GENERATED_DISPATCH_UNAVAILABLE_REASON,
     });
   });
