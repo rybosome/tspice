@@ -75,9 +75,17 @@ describe("generated dispatch codegen", () => {
       },
     });
 
-    const unimplemented = lookupGeneratedDispatchTableEntry("time.str2et");
-    expect(unimplemented).not.toBeNull();
-    expect(unimplemented?.implemented).toBe(false);
+    const str2et = lookupGeneratedDispatchTableEntry("time.str2et");
+    expect(str2et).not.toBeNull();
+    expect(str2et?.implemented).toBe(true);
+    expect(str2et?.executable).toEqual({
+      ts: {
+        method: "str2et",
+      },
+      native: {
+        handler: "generated_dispatch_time_str2et",
+      },
+    });
 
     const unmodeled = lookupGeneratedDispatchTableEntry("time.__unmodeled__");
     expect(unmodeled).toBeNull();

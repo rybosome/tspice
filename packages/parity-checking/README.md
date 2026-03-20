@@ -80,6 +80,13 @@ To promote a function from metadata-only to callable dispatch:
    - `pnpm -C packages/parity-checking check:generated`
 5. Add/adjust TS + native tests for callable success and fail-closed boundaries.
 
+Slice 1 reference binding:
+
+- `time.str2et` is promoted to callable dispatch with:
+  - `executable.ts.method: str2et`
+  - `executable.native.handler: generated_dispatch_time_str2et`
+- Non-promoted methods remain fail-closed through the generated boundary.
+
 `test` runs the full guard pipeline before parity execution:
 
 1. schema validity,

@@ -34,12 +34,12 @@ function requestForFn(fn: string): Record<string, unknown> {
   return {
     schemaVersion: 3,
     manifest: {
-      id: "methods/time/str2et@v3",
+      id: `methods/${fn}@v3`,
       kind: "method",
     },
     contract: {
-      contractMethod: "time.str2et",
-      canonicalMethod: "time.str2et",
+      contractMethod: fn,
+      canonicalMethod: fn,
     },
     args: {
       fn,
@@ -91,7 +91,7 @@ describe("native generated dispatch registry handoff", () => {
       return;
     }
 
-    const run = runNative(binaryPath, requestForFn("time.str2et"));
+    const run = runNative(binaryPath, requestForFn("time.timdef"));
 
     expect(run.error).toBeUndefined();
     expect(run.status).toBe(1);
@@ -115,7 +115,7 @@ describe("native generated dispatch registry handoff", () => {
     });
     expect(parsed.error?.details).toMatchObject({
       registryMatched: true,
-      fn: "time.str2et",
+      fn: "time.timdef",
     });
   });
 
@@ -213,5 +213,57 @@ describe("native generated dispatch registry handoff", () => {
     expect(parsed.ok).toBe(true);
     expect(parsed.result).toEqual([5, 7, 9]);
     expect(parsed.error).toBeUndefined();
+  });
+
+  it("executes implemented time.str2et through native generated dispatch", () => {
+    const binaryPath = getBinaryPathOrSkip();
+    if (!binaryPath) {
+      return;
+    }
+
+    const run = runNative(binaryPath, requestForFn("time.str2et"));
+
+    expect(run.error).toBeUndefined();
+    expect(run.status).toBe(0);
+
+    const parsed = JSON.parse(run.stdout) as {
+      ok: boolean;
+      result?: unknown;
+      error?: {
+        code?: string;
+        message?: string;
+      };
+    };
+
+    expect(parsed.ok).toBe(true);
+    expect(typeof parsed.result).toBe("number");
+    expect(Number.isFinite(parsed.result as number)).toBe(true);
+    expect(parsed.error).toBeUndefined();
+  });
+
+  it("returns non-boundary errors for invalid time.str2et inputs", () => {
+    const binaryPath = getBinaryPathOrSkip();
+    if (!binaryPath) {
+      return;
+    }
+
+    const request = requestForFn("time.str2et");
+    (request.args as { payload: unknown[] }).payload = ["not a time"];
+    const run = runNative(binaryPath, request);
+
+    expect(run.error).toBeUndefined();
+    expect(run.status).toBe(1);
+
+    const parsed = JSON.parse(run.stdout) as {
+      ok: boolean;
+      error?: {
+        code?: string;
+        reason?: string;
+      };
+    };
+
+    expect(parsed.ok).toBe(false);
+    expect(parsed.error?.code).not.toBe(GENERATED_DISPATCH_UNAVAILABLE_CODE);
+    expect(parsed.error?.reason).not.toBe(GENERATED_DISPATCH_UNAVAILABLE_REASON);
   });
 });

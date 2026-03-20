@@ -1287,7 +1287,15 @@ export const GENERATED_DISPATCH_TABLE = Object.freeze([
       }
     },
     "behaviorClass": "input-mapping-scalar-output",
-    "implemented": false
+    "implemented": true,
+    "executable": {
+      "ts": {
+        "method": "str2et"
+      },
+      "native": {
+        "handler": "generated_dispatch_time_str2et"
+      }
+    }
   },
   {
     "key": "time.timdef",
@@ -1350,7 +1358,8 @@ const GENERATED_DISPATCH_LOOKUP = new Map<string, GeneratedDispatchTableEntry>(
 
 const GENERATED_TS_DISPATCH_METHODS = Object.freeze({
   "coords-vectors.vadd": "vadd",
-  "coords-vectors.vdot": "vdot"
+  "coords-vectors.vdot": "vdot",
+  "time.str2et": "str2et"
 }) as Readonly<Record<string, string>>;
 
 /** Lookup generated dispatch metadata by canonical function key. */

@@ -66,6 +66,42 @@ static bool parse_vec3_arg(const CspiceGeneratedDispatchRequest *request,
   return true;
 }
 
+static bool parse_string_arg(const CspiceGeneratedDispatchRequest *request,
+                             int valueTok,
+                             char **out,
+                             const char *detailLabel) {
+  if (valueTok < 0 || valueTok >= request->tokenCount) {
+    return write_invalid_request(
+        "generated dispatch string argument token is out of bounds",
+        request->fn);
+  }
+
+  if (request->tokens[valueTok].type != JSMN_STRING) {
+    return write_invalid_args("generated dispatch expected a string argument",
+                              detailLabel);
+  }
+
+  char detail[256];
+  detail[0] = '\0';
+
+  jsmn_strdup_err_t err =
+      jsmn_strdup(request->json, &request->tokens[valueTok], out, detail,
+                  sizeof(detail));
+
+  if (err == JSMN_STRDUP_OK) {
+    return true;
+  }
+
+  if (err == JSMN_STRDUP_INVALID) {
+    return write_invalid_request(
+        "generated dispatch string argument has invalid JSON escape",
+        detail[0] ? detail : detailLabel);
+  }
+
+  write_error_json("Out of memory", NULL, NULL, NULL);
+  return false;
+}
+
 static bool write_spice_error(const char *message) {
   char shortMsg[1841];
   char longMsg[1841];
@@ -150,6 +186,30 @@ static bool generated_dispatch_coords_vectors_vadd(
   return write_ok_vec3_result(sum);
 }
 
+static bool generated_dispatch_time_str2et(
+    const CspiceGeneratedDispatchRequest *request) {
+  int argTokens[1];
+  if (!resolve_input_array_tokens(request, 1, argTokens)) {
+    return false;
+  }
+
+  char *utc = NULL;
+  if (!parse_string_arg(request, argTokens[0], &utc,
+                        "time.str2et utc must be string")) {
+    return false;
+  }
+
+  SpiceDouble et = 0.0;
+  str2et_c(utc, &et);
+  free(utc);
+
+  if (failed_c() == SPICETRUE) {
+    return write_spice_error("SPICE error in time.str2et generated dispatch");
+  }
+
+  return write_ok_double_result(et);
+}
+
 static CspiceGeneratedDispatchNativeInvoker resolve_native_handler(
     const char *nativeHandler) {
   if (nativeHandler == NULL || nativeHandler[0] == '\0') {
@@ -162,6 +222,10 @@ static CspiceGeneratedDispatchNativeInvoker resolve_native_handler(
 
   if (strcmp(nativeHandler, "generated_dispatch_coords_vectors_vdot") == 0) {
     return generated_dispatch_coords_vectors_vdot;
+  }
+
+  if (strcmp(nativeHandler, "generated_dispatch_time_str2et") == 0) {
+    return generated_dispatch_time_str2et;
   }
 
   return NULL;

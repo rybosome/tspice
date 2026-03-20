@@ -10,19 +10,19 @@ describe("createTspiceRunner (canonical dispatch boundary mode)", () => {
   const baseInput = {
     schemaVersion: 3 as const,
     manifest: {
-      id: "methods/time/str2et@v3",
+      id: "methods/time/timdef@v3",
       kind: "method" as const,
     },
     contract: {
-      contractMethod: "time.str2et",
-      canonicalMethod: "time.str2et",
+      contractMethod: "time.timdef",
+      canonicalMethod: "time.timdef",
     },
     args: ["2010-01-01T00:00:00"],
     workflow: {
       steps: [
         {
           op: "call" as const,
-          fn: "time.str2et",
+          fn: "time.timdef",
           in: "$args",
         },
       ],
@@ -46,7 +46,7 @@ describe("createTspiceRunner (canonical dispatch boundary mode)", () => {
     expect(out.error.code).toBe(GENERATED_DISPATCH_UNAVAILABLE_CODE);
     expect(out.error.reason).toBe(GENERATED_DISPATCH_UNAVAILABLE_REASON);
     expect(out.error.lane).toBe("node");
-    expect(out.error.callId).toBe("methods/time/str2et@v3::1");
+    expect(out.error.callId).toBe("methods/time/timdef@v3::1");
   });
 
   it("records requested===actual metadata for explicit wasm lane", async () => {

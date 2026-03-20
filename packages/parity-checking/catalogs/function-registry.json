@@ -1277,7 +1277,15 @@
         }
       },
       "behaviorClass": "input-mapping-scalar-output",
-      "implemented": false
+      "implemented": true,
+      "executable": {
+        "ts": {
+          "method": "str2et"
+        },
+        "native": {
+          "handler": "generated_dispatch_time_str2et"
+        }
+      }
     },
     {
       "key": "time.timdef",

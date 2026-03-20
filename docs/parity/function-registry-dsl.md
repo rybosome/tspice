@@ -23,6 +23,16 @@ functions:
   - key: time.str2et
     input:
       - utc
+    output:
+      value:
+        from: return
+        type: spiceDouble
+    implemented: true
+    executable:
+      ts:
+        method: str2et
+      native:
+        handler: generated_dispatch_time_str2et
 ```
 
 Rules:
@@ -170,5 +180,11 @@ Recommended flow:
 4. Regenerate catalogs/artifacts.
 5. Add/refresh tests for:
    - callable success paths (TS + native),
+   - callable error paths for invalid inputs (TS + native lane-normalized),
    - strict fail-closed behavior for unimplemented/missing entries,
    - codegen determinism + drift checks.
+
+Current Slice 1 promotion reference:
+
+- `time.str2et` is executable with `executable.ts.method: str2et` and
+  `executable.native.handler: generated_dispatch_time_str2et`.
