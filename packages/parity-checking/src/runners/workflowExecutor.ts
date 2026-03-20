@@ -1,8 +1,15 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { resolveMetaKernelKernelsToLoad } from "../kernels/metaKernel.js";
 import {
   type DispatchLane,
   handoffToGeneratedDispatchSeam,
 } from "./generatedDispatchSeam.js";
 import type {
+  CaseSetup,
+  KernelEntry,
   RunCaseInputV3,
   RunnerErrorReport,
   V3WorkflowCallStep,
@@ -22,6 +29,8 @@ type CodedError = Error & { code?: RunnerValidationCode };
 
 const RESOLVE_INPUT_MAX_DEPTH = 50;
 const RESOLVE_INPUT_MAX_NODES = 10_000;
+const WORKSPACE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "..");
+const FIXTURES_ROOT = path.join(WORKSPACE_ROOT, "packages", "tspice", "test", "fixtures", "kernels");
 
 type ResolveInputBudget = {
   visitedNodes: number;
@@ -30,6 +39,117 @@ type ResolveInputBudget = {
 export type WorkflowExecutorContext = {
   rawBackend?: Record<string, unknown>;
 };
+
+function resolveKernelEntryPath(rawPath: string): string {
+  if (rawPath.startsWith("$FIXTURES/")) {
+    return path.resolve(FIXTURES_ROOT, rawPath.slice("$FIXTURES/".length));
+  }
+
+  if (path.isAbsolute(rawPath)) {
+    return path.resolve(rawPath);
+  }
+
+  return path.resolve(WORKSPACE_ROOT, rawPath);
+}
+
+function resolveKernelEntryMetaRestriction(entry: Extract<KernelEntry, { path: string }>): string | undefined {
+  if (entry.restrictToDir === undefined) {
+    return undefined;
+  }
+
+  return resolveKernelEntryPath(entry.restrictToDir);
+}
+
+function resolveKernelLoadPaths(entry: KernelEntry): string[] {
+  const kernelPath = resolveKernelEntryPath(typeof entry === "string" ? entry : entry.path);
+
+  let stats: fs.Stats;
+  try {
+    stats = fs.statSync(kernelPath);
+  } catch {
+    invalidArgs(`setup.kernels references missing path ${JSON.stringify(kernelPath)}`);
+  }
+
+  if (stats.isDirectory()) {
+    const metaKernelPath = path.join(kernelPath, `${path.basename(kernelPath)}.tm`);
+    if (!fs.existsSync(metaKernelPath)) {
+      invalidArgs(
+        `setup.kernels fixture directory ${JSON.stringify(kernelPath)} is missing expected meta-kernel ${JSON.stringify(path.basename(metaKernelPath))}`,
+      );
+    }
+
+    const metaKernelText = fs.readFileSync(metaKernelPath, "utf8");
+    const restrictToDir =
+      typeof entry === "string" ? undefined : resolveKernelEntryMetaRestriction(entry);
+
+    return resolveMetaKernelKernelsToLoad(metaKernelText, metaKernelPath, {
+      ...(restrictToDir === undefined ? {} : { restrictToDir }),
+    });
+  }
+
+  if (path.extname(kernelPath).toLowerCase() === ".tm") {
+    const metaKernelText = fs.readFileSync(kernelPath, "utf8");
+    const restrictToDir =
+      typeof entry === "string" ? undefined : resolveKernelEntryMetaRestriction(entry);
+
+    return resolveMetaKernelKernelsToLoad(metaKernelText, kernelPath, {
+      ...(restrictToDir === undefined ? {} : { restrictToDir }),
+    });
+  }
+
+  if (!stats.isFile()) {
+    invalidArgs(`setup.kernels path must resolve to a file or fixture-pack directory (got ${JSON.stringify(kernelPath)})`);
+  }
+
+  return [kernelPath];
+}
+
+function toVirtualKernelPath(kernelPath: string, index: number): string {
+  const rel = path.relative(WORKSPACE_ROOT, kernelPath);
+  const safeSegments = rel
+    .split(path.sep)
+    .filter((segment) => segment !== "" && segment !== "." && segment !== "..")
+    .map((segment) => segment.replace(/[^A-Za-z0-9._-]/g, "_"));
+
+  const safeRel = safeSegments.length > 0 ? safeSegments.join("/") : `kernel-${String(index + 1)}.bin`;
+  return `parity-fixtures/${safeRel}`;
+}
+
+function applyCaseSetup(setup: CaseSetup | undefined, context: WorkflowExecutorContext): void {
+  if (!setup?.kernels || setup.kernels.length === 0) {
+    return;
+  }
+
+  const rawBackend = context.rawBackend;
+  if (!rawBackend) {
+    invalidRequest("setup.kernels requires raw backend context");
+  }
+
+  const kclear = rawBackend.kclear;
+  const furnsh = rawBackend.furnsh;
+
+  if (typeof kclear !== "function" || typeof furnsh !== "function") {
+    invalidRequest("setup.kernels requires raw backend kclear() and furnsh() support");
+  }
+
+  kclear();
+
+  const expandedKernelPaths = setup.kernels.flatMap((entry) => resolveKernelLoadPaths(entry));
+
+  expandedKernelPaths.forEach((kernelPath, index) => {
+    let kernelBytes: Buffer;
+    try {
+      kernelBytes = fs.readFileSync(kernelPath);
+    } catch {
+      invalidArgs(`setup.kernels failed to read ${JSON.stringify(kernelPath)}`);
+    }
+
+    furnsh({
+      path: toVirtualKernelPath(kernelPath, index),
+      bytes: kernelBytes,
+    });
+  });
+}
 
 function formatValue(value: unknown): string {
   if (typeof value === "number") {
@@ -346,6 +466,7 @@ export function executeCanonicalWorkflowCase(
   context: WorkflowExecutorContext = {},
 ): unknown {
   const steps = validateCasePreflight(input);
+  applyCaseSetup(input.setup, context);
 
   const refs = new Map<string, RefValue>();
   const args = Object.prototype.hasOwnProperty.call(input, "args") ? input.args : undefined;

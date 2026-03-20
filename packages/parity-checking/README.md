@@ -44,6 +44,9 @@ Canonical workflow execution always hands off through generated dispatch artifac
 
 - TS: `src/runners/generatedDispatchSeam.ts` + `src/runners/generatedDispatchTable.generated.ts`
 - native: `native/src/cspice_runner_generated_dispatch_seam.{h,c}` + generated table files
+- `setup.kernels` is applied before call-step execution (including fixture-pack refs like
+  `$FIXTURES/basic-time`), so callable methods can prove success/error parity with deterministic
+  kernel state.
 
 When a function is unsupported, unmodeled, or not yet implemented, execution fails closed with normalized boundary fields:
 
