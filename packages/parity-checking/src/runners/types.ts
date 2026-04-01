@@ -50,8 +50,6 @@ export type V3WorkflowCallStep = {
   op: "call";
   fn: string;
   in: unknown;
-  as?: string;
-  out?: Record<string, string>;
 };
 
 export type V3WorkflowStep = V3WorkflowCallStep;

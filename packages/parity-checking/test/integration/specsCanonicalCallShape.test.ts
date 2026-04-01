@@ -38,6 +38,8 @@ describe("method specs migration: canonical call step only", () => {
       const text = fs.readFileSync(filePath, "utf8");
       expect(text).not.toMatch(/\bop:\s*(callContract|spiceCall|withResource)\b/);
       expect(text).toMatch(/\bop:\s*call\b/);
+      expect(text).not.toMatch(/^\s*as:\s/m);
+      expect(text).not.toMatch(/^\s*out:\s/m);
     }
   });
 });

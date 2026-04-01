@@ -28,11 +28,10 @@ Top-level shape:
 
 Workflow highlights:
 
-- `callContract` for direct contract-method invocation from case args
-- `spiceCall`, `project`, `projectResult`, `assert`, `switch`, etc. for explicit declarative flows
-- `withResource` is first-class for lifecycle scoping
-  - low-level lifecycle steps (`dasOpen`, `dlaBeginForwardSearch`, `dasClose`, `unlink`) are rejected when authored directly outside `withResource`
-- `script` implies TypeScript (no `language` field). Script validation rejects module imports and direct network/fs access patterns.
+- canonical call-step shape is `{ op: "call", fn, in }` only.
+- call-step `fn` and `in` support top-level string-token references for `$args` and `$args.<path>`.
+- `$refs` / `$refs.<path>` are rejected in canonical call-step execution.
+- reference substitution is not recursive for object/array payloads in `in`; only top-level call-step strings are resolved.
 
 ## Scripts
 

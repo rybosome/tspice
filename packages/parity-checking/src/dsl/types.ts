@@ -109,8 +109,6 @@ export type MethodWorkflowOpCallV3 = {
   op: "call";
   fn: string;
   in: unknown;
-  as?: string;
-  out?: Record<string, string>;
 };
 
 export type MethodWorkflowStepV3 = MethodWorkflowOpCallV3;
