@@ -10,22 +10,7 @@ import type {
 
 type RunnerValidationCode = "invalid_request" | "invalid_args";
 
-type RefValue = unknown;
-
-type ReferenceToken = {
-  source: "args" | "refs";
-  key: string | null;
-  propertyPath: string[];
-};
-
 type CodedError = Error & { code?: RunnerValidationCode };
-
-const RESOLVE_INPUT_MAX_DEPTH = 50;
-const RESOLVE_INPUT_MAX_NODES = 10_000;
-
-type ResolveInputBudget = {
-  visitedNodes: number;
-};
 
 function formatValue(value: unknown): string {
   if (typeof value === "number") {
@@ -69,34 +54,38 @@ function asNonEmptyString(value: unknown, label: string): string {
   return value;
 }
 
-function resolveReferenceToken(reference: string): ReferenceToken | null {
-  if (!reference.startsWith("$")) {
-    return null;
-  }
-
-  if (reference === "$args") {
-    return { source: "args", key: null, propertyPath: [] };
-  }
-
-  if (reference.startsWith("$args.")) {
-    const payload = reference.slice("$args.".length);
-    const [key, ...propertyPath] = payload.split(".");
-    if (!key || propertyPath.some((part) => part.trim() === "")) {
-      return null;
+function ensureKnownKeys(record: Record<string, unknown>, allowed: string[], label: string): void {
+  for (const key of Object.keys(record)) {
+    if (!allowed.includes(key)) {
+      const sortedAllowed = [...allowed].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+      invalidRequest(
+        `${label} has unknown key: ${JSON.stringify(key)} (allowed keys: ${sortedAllowed.map((k) => JSON.stringify(k)).join(", ")})`,
+      );
     }
-    return { source: "args", key, propertyPath };
+  }
+}
+
+function parseReferencePathSegments(reference: string, prefix: string): [string, ...string[]] {
+  const payload = reference.slice(prefix.length);
+  const segments = payload.split(".");
+
+  if (segments.length === 0 || segments.some((segment) => segment.trim() === "")) {
+    invalidRequest("Invalid reference expression");
   }
 
-  if (reference.startsWith("$refs.")) {
-    const payload = reference.slice("$refs.".length);
-    const [key, ...propertyPath] = payload.split(".");
-    if (!key || propertyPath.some((part) => part.trim() === "")) {
-      return null;
-    }
-    return { source: "refs", key, propertyPath };
+  return segments as [string, ...string[]];
+}
+
+function refsUnsupportedMessage(label: string): string {
+  if (label.endsWith(".fn")) {
+    return "workflow call step fn does not support $refs in native canonical execution";
   }
 
-  return null;
+  if (label.endsWith(".in")) {
+    return "workflow call step in does not support $refs in native canonical execution";
+  }
+
+  return `${label} does not support $refs in canonical execution`;
 }
 
 function resolvePropertyPath(value: unknown, propertyPath: readonly string[], label: string): unknown {
@@ -121,88 +110,34 @@ function resolvePropertyPath(value: unknown, propertyPath: readonly string[], la
   return current;
 }
 
-function resolveReferenceExpression(
-  expr: string,
-  args: unknown,
-  refs: ReadonlyMap<string, RefValue>,
-  label: string,
-): unknown {
-  const token = resolveReferenceToken(expr);
-  if (!token) {
-    return expr;
-  }
-
-  if (token.source === "args") {
-    if (token.key === null) {
-      return args;
-    }
-
-    if (typeof args !== "object" || args === null || Array.isArray(args)) {
-      invalidArgs(`${label} expected object args for reference ${JSON.stringify(expr)} (got ${formatValue(args)})`);
-    }
-
-    if (!Object.prototype.hasOwnProperty.call(args, token.key)) {
-      invalidArgs(`${label} references missing argument ${JSON.stringify(token.key)}`);
-    }
-
-    return resolvePropertyPath((args as Record<string, unknown>)[token.key], token.propertyPath, label);
-  }
-
-  if (token.key === null) {
-    invalidRequest(`${label} references malformed ref expression ${JSON.stringify(expr)}`);
-  }
-
-  if (!refs.has(token.key)) {
-    invalidRequest(`${label} references missing ref ${JSON.stringify(token.key)}`);
-  }
-
-  const refValue = refs.get(token.key);
-
-  return resolvePropertyPath(refValue, token.propertyPath, label);
-}
-
-function enforceResolveInputBudget(label: string, depth: number, budget: ResolveInputBudget): void {
-  if (depth > RESOLVE_INPUT_MAX_DEPTH) {
-    invalidRequest(
-      `${label} is too deeply nested (max depth ${String(RESOLVE_INPUT_MAX_DEPTH)})`,
-    );
-  }
-
-  budget.visitedNodes += 1;
-  if (budget.visitedNodes > RESOLVE_INPUT_MAX_NODES) {
-    invalidRequest(
-      `${label} is too large to resolve safely (max nodes ${String(RESOLVE_INPUT_MAX_NODES)})`,
-    );
-  }
-}
-
 function resolveInputValue(
   value: unknown,
   args: unknown,
-  refs: ReadonlyMap<string, RefValue>,
   label: string,
-  depth = 0,
-  budget: ResolveInputBudget = { visitedNodes: 0 },
 ): unknown {
-  enforceResolveInputBudget(label, depth, budget);
-
-  if (typeof value === "string") {
-    return resolveReferenceExpression(value, args, refs, label);
+  if (typeof value !== "string") {
+    return value;
   }
 
-  if (Array.isArray(value)) {
-    return value.map((entry, index) =>
-      resolveInputValue(entry, args, refs, `${label}[${index}]`, depth + 1, budget),
-    );
+  if (value === "$args") {
+    return args;
   }
 
-  if (typeof value === "object" && value !== null) {
-    const record = value as Record<string, unknown>;
-    const out: Record<string, unknown> = {};
-    for (const [key, entry] of Object.entries(record)) {
-      out[key] = resolveInputValue(entry, args, refs, `${label}.${key}`, depth + 1, budget);
+  if (value.startsWith("$args.")) {
+    if (typeof args !== "object" || args === null || Array.isArray(args)) {
+      invalidArgs(`${label} expected object args for reference ${JSON.stringify(value)} (got ${formatValue(args)})`);
     }
-    return out;
+
+    const [key, ...propertyPath] = parseReferencePathSegments(value, "$args.");
+    if (!Object.prototype.hasOwnProperty.call(args, key)) {
+      invalidArgs(`${label} references missing argument ${JSON.stringify(key)}`);
+    }
+
+    return resolvePropertyPath((args as Record<string, unknown>)[key], propertyPath, label);
+  }
+
+  if (value === "$refs" || value.startsWith("$refs.")) {
+    invalidRequest(refsUnsupportedMessage(label));
   }
 
   return value;
@@ -224,6 +159,8 @@ function validateEnvelope(input: RunCaseInputV3): void {
 
 function validateCallStep(step: unknown, label: string): V3WorkflowCallStep {
   const record = asRecord(step, label);
+  ensureKnownKeys(record, ["op", "fn", "in"], label);
+
   if (record.op !== "call") {
     invalidRequest(`${label}.op must be \"call\" (got ${formatValue(record.op)})`);
   }
@@ -233,58 +170,11 @@ function validateCallStep(step: unknown, label: string): V3WorkflowCallStep {
     invalidRequest(`${label}.in is required for op=call`);
   }
 
-  const asName =
-    Object.prototype.hasOwnProperty.call(record, "as") && record.as !== undefined
-      ? asNonEmptyString(record.as, `${label}.as`)
-      : undefined;
-
-  let out: Record<string, string> | undefined;
-  if (Object.prototype.hasOwnProperty.call(record, "out") && record.out !== undefined) {
-    const outObj = asRecord(record.out, `${label}.out`);
-    out = {};
-    for (const [key, value] of Object.entries(outObj)) {
-      out[key] = asNonEmptyString(value, `${label}.out.${key}`);
-    }
-  }
-
-  if (asName !== undefined && out !== undefined) {
-    invalidRequest(`${label} is ambiguous: define only one of call.as or call.out`);
-  }
-
   return {
     op: "call",
     fn,
     in: record.in,
-    ...(asName === undefined ? {} : { as: asName }),
-    ...(out === undefined ? {} : { out }),
   };
-}
-
-function applyCallOutputs(step: V3WorkflowCallStep, result: unknown, refs: Map<string, RefValue>, label: string): void {
-  if (step.as !== undefined) {
-    if (refs.has(step.as)) {
-      invalidRequest(`${label}.as defines duplicate ref ${JSON.stringify(step.as)}`);
-    }
-    refs.set(step.as, result);
-    return;
-  }
-
-  if (!step.out) {
-    return;
-  }
-
-  const resultRecord = asRecord(result, `${label}.result`);
-  for (const [outputKey, refName] of Object.entries(step.out)) {
-    if (!Object.prototype.hasOwnProperty.call(resultRecord, outputKey)) {
-      invalidRequest(`${label}.out references missing result key ${JSON.stringify(outputKey)}`);
-    }
-
-    if (refs.has(refName)) {
-      invalidRequest(`${label}.out defines duplicate ref ${JSON.stringify(refName)}`);
-    }
-
-    refs.set(refName, resultRecord[outputKey]);
-  }
 }
 
 function executeCallStep(
@@ -293,14 +183,13 @@ function executeCallStep(
   step: V3WorkflowCallStep,
   stepIndex: number,
   args: unknown,
-  refs: Map<string, RefValue>,
 ): unknown {
-  const fnResolved = resolveInputValue(step.fn, args, refs, `workflow.steps[${stepIndex}].fn`);
+  const fnResolved = resolveInputValue(step.fn, args, `workflow.steps[${stepIndex}].fn`);
   if (typeof fnResolved !== "string" || fnResolved.trim() === "") {
     invalidRequest(`workflow.steps[${stepIndex}].fn must resolve to a non-empty string`);
   }
 
-  const callInputResolved = resolveInputValue(step.in, args, refs, `workflow.steps[${stepIndex}].in`);
+  const callInputResolved = resolveInputValue(step.in, args, `workflow.steps[${stepIndex}].in`);
 
   const callId = `${input.manifest.id}::${stepIndex + 1}`;
   const result = handoffToGeneratedDispatchSeam({
@@ -309,8 +198,6 @@ function executeCallStep(
     fn: fnResolved,
     input: callInputResolved,
   });
-
-  applyCallOutputs(step, result, refs, `workflow.steps[${stepIndex}]`);
   return result;
 }
 
@@ -331,12 +218,11 @@ export function validateCasePreflight(input: RunCaseInputV3): V3WorkflowCallStep
 export function executeCanonicalWorkflowCase(lane: DispatchLane, input: RunCaseInputV3): unknown {
   const steps = validateCasePreflight(input);
 
-  const refs = new Map<string, RefValue>();
   const args = Object.prototype.hasOwnProperty.call(input, "args") ? input.args : undefined;
 
   let lastResult: unknown = undefined;
   for (const [index, step] of steps.entries()) {
-    lastResult = executeCallStep(lane, input, step, index, args, refs);
+    lastResult = executeCallStep(lane, input, step, index, args);
   }
 
   return lastResult;

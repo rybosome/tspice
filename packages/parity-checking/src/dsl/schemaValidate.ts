@@ -99,17 +99,6 @@ function parseCompareAst(value: unknown, label: string): ScenarioCompareAst {
   return out;
 }
 
-function parseStringMap(value: unknown, label: string): Record<string, string> {
-  const obj = asRecord(value, label);
-  const out: Record<string, string> = {};
-
-  for (const [key, entry] of Object.entries(obj)) {
-    out[key] = asString(entry, `${label}.${key}`);
-  }
-
-  return out;
-}
-
 function parseKernelEntry(value: unknown, label: string): string | { path: string; restrictToDir?: string } {
   if (typeof value === "string") {
     if (value.trim() === "") {
@@ -324,26 +313,17 @@ function parseMethodContract(value: unknown, label: string): MethodContractV3 {
 
 function parseCallStep(value: unknown, label: string): MethodWorkflowStepV3 {
   const obj = asRecord(value, label);
-  ensureKnownKeys(obj, ["op", "fn", "in", "as", "out"], label);
+  ensureKnownKeys(obj, ["op", "fn", "in"], label);
 
   const fn = asString(obj.fn, `${label}.fn`);
   if (!Object.prototype.hasOwnProperty.call(obj, "in")) {
     throw new TypeError(`${label}.in is required for op=call`);
   }
 
-  const asName = obj.as === undefined ? undefined : asString(obj.as, `${label}.as`);
-  const outMap = obj.out === undefined ? undefined : parseStringMap(obj.out, `${label}.out`);
-
-  if (asName !== undefined && outMap !== undefined) {
-    throw new TypeError(`${label} is ambiguous: define only one of call.as or call.out`);
-  }
-
   return {
     op: "call",
     fn,
     in: obj.in,
-    ...(asName === undefined ? {} : { as: asName }),
-    ...(outMap === undefined ? {} : { out: outMap }),
   };
 }
 
@@ -357,7 +337,7 @@ function parseStep(value: unknown, label: string): MethodWorkflowStepV3 {
 
   if (op === "spiceCall" || op === "callContract" || op === "withResource") {
     throw new TypeError(
-      `${label}.op=${JSON.stringify(op)} is no longer supported; use canonical call steps { op: \"call\", fn, in, as?/out? }`,
+      `${label}.op=${JSON.stringify(op)} is no longer supported; use canonical call steps { op: \"call\", fn, in }`,
     );
   }
 

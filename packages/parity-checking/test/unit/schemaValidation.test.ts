@@ -63,7 +63,7 @@ describe("schema validation (canonical call workflow)", () => {
     }
   });
 
-  it("hard-fails incomplete or ambiguous call definitions", () => {
+  it("hard-fails incomplete or unsupported call definitions", () => {
     const missingFn = baseSpec();
     (missingFn.workflow as { steps: unknown[] }).steps = [{ op: "call", in: "$args" }];
 
@@ -84,22 +84,38 @@ describe("schema validation (canonical call workflow)", () => {
       }),
     ).toThrow(/\.in is required/);
 
-    const ambiguous = baseSpec();
-    (ambiguous.workflow as { steps: unknown[] }).steps = [
+    const withAs = baseSpec();
+    (withAs.workflow as { steps: unknown[] }).steps = [
       {
         op: "call",
         fn: "time.str2et",
         in: "$args",
         as: "result",
+      },
+    ];
+
+    expect(() =>
+      parseMethodSpec({
+        sourcePath: "specs/methods/time/with-as@v3.yml",
+        data: withAs,
+      }),
+    ).toThrow(/unknown key: "as"/);
+
+    const withOut = baseSpec();
+    (withOut.workflow as { steps: unknown[] }).steps = [
+      {
+        op: "call",
+        fn: "time.str2et",
+        in: "$args",
         out: { et: "et" },
       },
     ];
 
     expect(() =>
       parseMethodSpec({
-        sourcePath: "specs/methods/time/ambiguous@v3.yml",
-        data: ambiguous,
+        sourcePath: "specs/methods/time/with-out@v3.yml",
+        data: withOut,
       }),
-    ).toThrow(/ambiguous/);
+    ).toThrow(/unknown key: "out"/);
   });
 });
