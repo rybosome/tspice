@@ -3,82 +3,153 @@ import { describe, expect, it } from "vitest";
 import {
   GENERATED_DISPATCH_UNAVAILABLE_CODE,
   GENERATED_DISPATCH_UNAVAILABLE_REASON,
+  promotedGeneratedDispatchMethods,
 } from "../../src/runners/generatedDispatchSeam.js";
-import { createCspiceRunner, getCspiceRunnerStatus } from "../../src/runners/cspiceRunner.js";
 import { createTspiceRunner } from "../../src/runners/tspiceRunner.js";
+import { executeCanonicalWorkflowCase } from "../../src/runners/workflowExecutor.js";
+
+import type { RunCaseInputV3 } from "../../src/runners/types.js";
+
+function buildInput(
+  fn: string,
+  args: unknown,
+  setupKernels?: string[],
+): RunCaseInputV3 {
+  return {
+    schemaVersion: 3,
+    manifest: {
+      id: `methods/${fn.replace(/\./g, "/")}@v3`,
+      kind: "method",
+    },
+    ...(setupKernels === undefined
+      ? {}
+      : {
+          setup: {
+            kernels: setupKernels,
+          },
+        }),
+    contract: {
+      contractMethod: fn,
+      canonicalMethod: fn,
+      errors: [],
+    },
+    args,
+    workflow: {
+      steps: [
+        {
+          op: "call",
+          fn,
+          in: "$args",
+        },
+      ],
+    },
+  };
+}
 
 describe("canonical call-step dispatch boundary", () => {
-  function buildInput(fn: string) {
-    return {
-      schemaVersion: 3 as const,
+  it("exposes the exact handwritten promotion set for slice #626 P1A", () => {
+    expect(promotedGeneratedDispatchMethods()).toEqual([
+      "time.str2et",
+      "time.et2utc",
+      "time.timdef",
+      "ids-names.bodn2c",
+      "coords-vectors.mxm",
+      "coords-vectors.recgeo",
+      "cells-windows.wninsd",
+      "cells-windows.wnfetd",
+      "kernel-pool.gcpool",
+      "kernels.furnsh",
+      "kernels.ktotal",
+      "kernels.kdata",
+      "kernels.kxtrct",
+      "ek.ekfind",
+      "ek.ekgc",
+    ]);
+  });
+
+  it("executes promoted dispatch for a handwritten method on wasm lane", async () => {
+    const runner = await createTspiceRunner({ backend: "wasm" });
+
+    try {
+      const out = await runner.runCase(
+        buildInput("time.str2et", ["2010-01-02T03:04:05"], ["$FIXTURES/basic-time"]),
+      );
+
+      expect(out.ok).toBe(true);
+      if (!out.ok) {
+        throw new Error("expected promoted dispatch case to succeed");
+      }
+
+      expect(typeof out.result).toBe("number");
+      expect(Number.isFinite(out.result as number)).toBe(true);
+    } finally {
+      await runner.dispose?.();
+    }
+  });
+
+  it("keeps non-promoted methods fail-closed with stable boundary markers", async () => {
+    const runner = await createTspiceRunner({ backend: "wasm" });
+
+    try {
+      const out = await runner.runCase(buildInput("time.tkvrsn", ["TOOLKIT"]));
+
+      expect(out.ok).toBe(false);
+      if (out.ok) {
+        throw new Error("expected fail-closed boundary outcome");
+      }
+
+      expect(out.error.code).toBe(GENERATED_DISPATCH_UNAVAILABLE_CODE);
+      expect(out.error.reason).toBe(GENERATED_DISPATCH_UNAVAILABLE_REASON);
+      expect(out.error.details).toMatchObject({
+        dispatchHandoffAttempted: true,
+        fallbackUsed: false,
+        stopPoint: GENERATED_DISPATCH_UNAVAILABLE_REASON,
+        fn: "time.tkvrsn",
+      });
+    } finally {
+      await runner.dispose?.();
+    }
+  });
+
+  it("preserves unmatched-method boundary behavior when fn resolves via args token", () => {
+    const input = {
+      schemaVersion: 3,
       manifest: {
-        id: `methods/${fn}@v3`,
-        kind: "method" as const,
+        id: "methods/time/str2et@v3",
+        kind: "method",
       },
       contract: {
-        contractMethod: fn,
-        canonicalMethod: fn,
+        contractMethod: "time.str2et",
+        canonicalMethod: "time.str2et",
+        errors: [],
       },
-      args: [1, 2, 3],
+      args: {
+        fn: "unknown.method",
+        payload: ["2010-01-01T00:00:00"],
+      },
       workflow: {
         steps: [
           {
-            op: "call" as const,
-            fn,
-            in: "$args",
+            op: "call",
+            fn: "$args.fn",
+            in: "$args.payload",
           },
         ],
       },
-    };
-  }
+    } satisfies RunCaseInputV3;
 
-  it("uses one TS call-step path and fails closed at generated-dispatch boundary", async () => {
-    const runner = await createTspiceRunner({ backend: "node" });
-    const out = await runner.runCase(buildInput("time.str2et"));
-
-    expect(out.ok).toBe(false);
-    if (out.ok) return;
-
-    expect(out.error.code).toBe(GENERATED_DISPATCH_UNAVAILABLE_CODE);
-    expect(out.error.reason).toBe(GENERATED_DISPATCH_UNAVAILABLE_REASON);
-    expect(out.error.lane).toBe("node");
-    expect(out.error.callId).toBe("methods/time.str2et@v3::1");
-    expect(out.error.details).toMatchObject({
-      dispatchHandoffAttempted: true,
-      fallbackUsed: false,
-      stopPoint: GENERATED_DISPATCH_UNAVAILABLE_REASON,
-    });
-  });
-
-  it("uses one native lane call-step path and fails closed with normalized boundary fields", async () => {
-    const status = getCspiceRunnerStatus();
-    expect(status.ready).toBe(true);
-
-    const runner = await createCspiceRunner();
-    const out = await runner.runCase(buildInput("time.str2et"));
-
-    expect(out.ok).toBe(false);
-    if (out.ok) return;
-
-    expect(out.error).toMatchObject({
-      code: GENERATED_DISPATCH_UNAVAILABLE_CODE,
-      lane: "cspice",
-      callId: "methods/time.str2et@v3::1",
-      reason: GENERATED_DISPATCH_UNAVAILABLE_REASON,
-    });
-  });
-
-  it("does not route through legacy manual wrapper/table dispatch aliases", async () => {
-    const runner = await createTspiceRunner({ backend: "wasm" });
-
-    // `bodn2c` used to be reachable via bespoke dispatch aliases.
-    const out = await runner.runCase(buildInput("bodn2c"));
-
-    expect(out.ok).toBe(false);
-    if (out.ok) return;
-
-    expect(out.error.code).toBe(GENERATED_DISPATCH_UNAVAILABLE_CODE);
-    expect(out.error.reason).toBe(GENERATED_DISPATCH_UNAVAILABLE_REASON);
-    expect(out.error.details?.fallbackUsed).toBe(false);
+    try {
+      executeCanonicalWorkflowCase("node", input);
+      throw new Error("expected executeCanonicalWorkflowCase to throw");
+    } catch (error) {
+      const withCode = error as Error & { code?: string; details?: Record<string, unknown> };
+      expect(withCode.code).toBe(GENERATED_DISPATCH_UNAVAILABLE_CODE);
+      expect(withCode.details).toMatchObject({
+        dispatchHandoffAttempted: true,
+        fallbackUsed: false,
+        stopPoint: GENERATED_DISPATCH_UNAVAILABLE_REASON,
+        fn: "unknown.method",
+      });
+    }
   });
 });

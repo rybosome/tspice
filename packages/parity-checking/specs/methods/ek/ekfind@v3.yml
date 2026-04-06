@@ -1,0 +1,21 @@
+schemaVersion: 3
+manifest:
+  id: methods/ek/ekfind@v3
+  kind: method
+contract:
+  contractMethod: ek.ekfind
+  canonicalMethod: ek.ekfind
+setup:
+  kernels:
+    - $FIXTURES/ek-minimal/ek-fixture.bes
+workflow:
+  steps:
+    - op: call
+      fn: ek.ekfind
+      in: $args
+cases:
+  - id: ek.ekfind.query
+    args:
+      - SELECT EVENT FROM CASSINI_NOISE_EVENTS WHERE EVENT = 'ISS_WAC_ShutterBladeBMove'
+    expect:
+      ok: true

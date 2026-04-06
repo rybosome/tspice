@@ -11,8 +11,9 @@ workflow:
       fn: kernels.furnsh
       in: $args
 cases:
-  - id: kernels.furnsh.text-kernel
+  - id: kernels.furnsh.text-kernel.bytes
     args:
-      - $FIXTURES/kernel-pool-parity.tpc
+      - path: $FIXTURES/kernel-pool-parity.tpc
+        bytes: $FIXTURES/kernel-pool-parity.tpc
     expect:
       ok: true

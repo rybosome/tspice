@@ -1,5 +1,7 @@
 import * as fs from "node:fs";
 import { spawnSync } from "node:child_process";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
@@ -30,8 +32,22 @@ function runNative(binaryPath: string, input: string) {
   });
 }
 
+const testDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(testDir, "../../../..");
+const basicTimeLskPath = path.join(
+  repoRoot,
+  "packages",
+  "tspice",
+  "test",
+  "fixtures",
+  "kernels",
+  "basic-time",
+  "naif0012.tls",
+);
+
+
 describe("native runner generated-dispatch seam boundary", () => {
-  it("emits the canonical fail-closed boundary payload", () => {
+  it("executes promoted dispatch methods through the native seam", () => {
     const binaryPath = getBinaryPathOrSkip();
     if (!binaryPath) {
       return;
@@ -43,18 +59,62 @@ describe("native runner generated-dispatch seam boundary", () => {
         id: "methods/time.str2et@v3",
         kind: "method",
       },
+      setup: {
+        kernels: [basicTimeLskPath],
+      },
       contract: {
         contractMethod: "time.str2et",
         canonicalMethod: "time.str2et",
       },
-      args: {
-        fn: "time.str2et",
-      },
+      args: ["2010-01-02T03:04:05"],
       workflow: {
         steps: [
           {
             op: "call",
-            fn: "$args.fn",
+            fn: "time.str2et",
+            in: "$args",
+          },
+        ],
+      },
+    };
+
+    const run = runNative(binaryPath, `${JSON.stringify(request)}\n`);
+
+    expect(run.error).toBeUndefined();
+    expect(run.status).toBe(0);
+
+    const parsed = JSON.parse(run.stdout) as {
+      ok: boolean;
+      result?: unknown;
+    };
+
+    expect(parsed.ok).toBe(true);
+    expect(typeof parsed.result).toBe("number");
+    expect(Number.isFinite(parsed.result)).toBe(true);
+  });
+
+  it("keeps non-promoted methods fail-closed with canonical boundary markers", () => {
+    const binaryPath = getBinaryPathOrSkip();
+    if (!binaryPath) {
+      return;
+    }
+
+    const request = {
+      schemaVersion: 3,
+      manifest: {
+        id: "methods/time.tkvrsn@v3",
+        kind: "method",
+      },
+      contract: {
+        contractMethod: "time.tkvrsn",
+        canonicalMethod: "time.tkvrsn",
+      },
+      args: ["TOOLKIT"],
+      workflow: {
+        steps: [
+          {
+            op: "call",
+            fn: "time.tkvrsn",
             in: "$args",
           },
         ],
@@ -83,14 +143,14 @@ describe("native runner generated-dispatch seam boundary", () => {
       code: GENERATED_DISPATCH_UNAVAILABLE_CODE,
       message: "Generated dispatch unavailable",
       lane: "cspice",
-      callId: "methods/time.str2et@v3::1",
+      callId: "methods/time.tkvrsn@v3::1",
       reason: GENERATED_DISPATCH_UNAVAILABLE_REASON,
     });
     expect(parsed.error?.details).toMatchObject({
       dispatchHandoffAttempted: true,
       fallbackUsed: false,
       stopPoint: GENERATED_DISPATCH_UNAVAILABLE_REASON,
-      fn: "time.str2et",
+      fn: "time.tkvrsn",
     });
   });
 

@@ -1,6 +1,9 @@
 import {
   type DispatchLane,
+  type GeneratedDispatchRuntimeContext,
   handoffToGeneratedDispatchSeam,
+  prepareGeneratedDispatchRuntime,
+  resetGeneratedDispatchRuntime,
 } from "./generatedDispatchSeam.js";
 import type {
   RunCaseInputV3,
@@ -183,6 +186,7 @@ function executeCallStep(
   step: V3WorkflowCallStep,
   stepIndex: number,
   args: unknown,
+  runtime: GeneratedDispatchRuntimeContext | undefined,
 ): unknown {
   const fnResolved = resolveInputValue(step.fn, args, `workflow.steps[${stepIndex}].fn`);
   if (typeof fnResolved !== "string" || fnResolved.trim() === "") {
@@ -192,12 +196,15 @@ function executeCallStep(
   const callInputResolved = resolveInputValue(step.in, args, `workflow.steps[${stepIndex}].in`);
 
   const callId = `${input.manifest.id}::${stepIndex + 1}`;
-  const result = handoffToGeneratedDispatchSeam({
+  const request = {
     lane,
     callId,
     fn: fnResolved,
     input: callInputResolved,
-  });
+    ...(runtime === undefined ? {} : { runtime }),
+  };
+
+  const result = handoffToGeneratedDispatchSeam(request);
   return result;
 }
 
@@ -216,16 +223,46 @@ export function validateCasePreflight(input: RunCaseInputV3): V3WorkflowCallStep
  * Execute one canonical call-workflow case against a selected dispatch lane.
  */
 export function executeCanonicalWorkflowCase(lane: DispatchLane, input: RunCaseInputV3): unknown {
+  return executeCanonicalWorkflowCaseWithRuntime(lane, input, undefined);
+}
+
+function executeCanonicalWorkflowCaseWithRuntime(
+  lane: DispatchLane,
+  input: RunCaseInputV3,
+  runtime: GeneratedDispatchRuntimeContext | undefined,
+): unknown {
   const steps = validateCasePreflight(input);
 
   const args = Object.prototype.hasOwnProperty.call(input, "args") ? input.args : undefined;
 
-  let lastResult: unknown = undefined;
-  for (const [index, step] of steps.entries()) {
-    lastResult = executeCallStep(lane, input, step, index, args);
+  if (runtime !== undefined) {
+    prepareGeneratedDispatchRuntime(runtime, input.setup);
   }
 
-  return lastResult;
+  try {
+    let lastResult: unknown = undefined;
+    for (const [index, step] of steps.entries()) {
+      lastResult = executeCallStep(lane, input, step, index, args, runtime);
+    }
+
+    return lastResult;
+  } finally {
+    if (runtime !== undefined) {
+      resetGeneratedDispatchRuntime(runtime);
+    }
+  }
+}
+
+/**
+* Execute one canonical call-workflow case against a selected dispatch lane,
+* using an explicit runtime context.
+*/
+export function executeCanonicalWorkflowCaseWithExplicitRuntime(
+  lane: DispatchLane,
+  input: RunCaseInputV3,
+  runtime: GeneratedDispatchRuntimeContext,
+): unknown {
+  return executeCanonicalWorkflowCaseWithRuntime(lane, input, runtime);
 }
 
 /** Convert any thrown value into a structured runner error report. */
