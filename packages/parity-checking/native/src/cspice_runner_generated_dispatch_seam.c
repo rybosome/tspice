@@ -13,7 +13,7 @@
 #define DISPATCH_EKGC_VALUE_MAX 4096
 
 typedef struct {
-  const generated_dispatch_request *request;
+  const CspiceGeneratedDispatchRequest *request;
   int argsTok;
 } dispatch_args;
 
@@ -32,14 +32,14 @@ static int write_spice_failure(const char *callLabel) {
   return 1;
 }
 
-static bool token_is_string(const generated_dispatch_request *request, int tokIndex) {
+static bool token_is_string(const CspiceGeneratedDispatchRequest *request, int tokIndex) {
   if (tokIndex < 0 || tokIndex >= request->tokenCount) {
     return false;
   }
   return request->tokens[tokIndex].type == JSMN_STRING;
 }
 
-static int expect_args_array(dispatch_args *out, const generated_dispatch_request *request, int expectedArity, const char *callLabel) {
+static int expect_args_array(dispatch_args *out, const CspiceGeneratedDispatchRequest *request, int expectedArity, const char *callLabel) {
   if (request == NULL || request->tokens == NULL) {
     return write_invalid_args("dispatch request is missing token data");
   }
@@ -151,7 +151,7 @@ static void json_print_string_value(const char *value) {
   fputc('"', stdout);
 }
 
-static int build_kind_query_from_token(const generated_dispatch_request *request,
+static int build_kind_query_from_token(const CspiceGeneratedDispatchRequest *request,
                                        int tokIndex,
                                        char **outQuery) {
   *outQuery = NULL;
@@ -347,7 +347,7 @@ static int parse_window_recipe_arg(const dispatch_args *args,
   return 0;
 }
 
-static int build_terms_buffer(const generated_dispatch_request *request,
+static int build_terms_buffer(const CspiceGeneratedDispatchRequest *request,
                               int termsTok,
                               char **outTerms,
                               SpiceInt *outTermlen,
@@ -428,7 +428,7 @@ cleanup:
   return status;
 }
 
-static int handle_time_str2et(const generated_dispatch_request *request) {
+static int handle_time_str2et(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 1, "time.str2et");
   if (status != 0) {
@@ -453,7 +453,7 @@ static int handle_time_str2et(const generated_dispatch_request *request) {
   return 0;
 }
 
-static int handle_time_et2utc(const generated_dispatch_request *request) {
+static int handle_time_et2utc(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 3, "time.et2utc");
   if (status != 0) {
@@ -490,7 +490,7 @@ static int handle_time_et2utc(const generated_dispatch_request *request) {
   return 0;
 }
 
-static int handle_time_timdef(const generated_dispatch_request *request) {
+static int handle_time_timdef(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, -1, "time.timdef");
   if (status != 0) {
@@ -570,7 +570,7 @@ static int handle_time_timdef(const generated_dispatch_request *request) {
   return write_invalid_args("time.timdef expects action to be GET or SET");
 }
 
-static int handle_ids_names_bodn2c(const generated_dispatch_request *request) {
+static int handle_ids_names_bodn2c(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 1, "ids-names.bodn2c");
   if (status != 0) {
@@ -602,7 +602,7 @@ static int handle_ids_names_bodn2c(const generated_dispatch_request *request) {
   return 0;
 }
 
-static int handle_coords_vectors_mxm(const generated_dispatch_request *request) {
+static int handle_coords_vectors_mxm(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 2, "coords-vectors.mxm");
   if (status != 0) {
@@ -635,7 +635,7 @@ static int handle_coords_vectors_mxm(const generated_dispatch_request *request) 
   return 0;
 }
 
-static int handle_coords_vectors_recgeo(const generated_dispatch_request *request) {
+static int handle_coords_vectors_recgeo(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 3, "coords-vectors.recgeo");
   if (status != 0) {
@@ -673,7 +673,7 @@ static int handle_coords_vectors_recgeo(const generated_dispatch_request *reques
   return 0;
 }
 
-static int handle_cells_windows_wninsd(const generated_dispatch_request *request) {
+static int handle_cells_windows_wninsd(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 3, "cells-windows.wninsd");
   if (status != 0) {
@@ -731,7 +731,7 @@ static int handle_cells_windows_wninsd(const generated_dispatch_request *request
   return 0;
 }
 
-static int handle_cells_windows_wnfetd(const generated_dispatch_request *request) {
+static int handle_cells_windows_wnfetd(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 2, "cells-windows.wnfetd");
   if (status != 0) {
@@ -787,7 +787,7 @@ static int handle_cells_windows_wnfetd(const generated_dispatch_request *request
   return 0;
 }
 
-static int handle_kernel_pool_gcpool(const generated_dispatch_request *request) {
+static int handle_kernel_pool_gcpool(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 3, "kernel-pool.gcpool");
   if (status != 0) {
@@ -869,7 +869,7 @@ static int handle_kernel_pool_gcpool(const generated_dispatch_request *request) 
   return 0;
 }
 
-static int parse_furnsh_source_path(const generated_dispatch_request *request,
+static int parse_furnsh_source_path(const CspiceGeneratedDispatchRequest *request,
                                     const dispatch_args *args,
                                     char **outPath) {
   *outPath = NULL;
@@ -909,7 +909,7 @@ static int parse_furnsh_source_path(const generated_dispatch_request *request,
   return 0;
 }
 
-static int handle_kernels_furnsh(const generated_dispatch_request *request) {
+static int handle_kernels_furnsh(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 1, "kernels.furnsh");
   if (status != 0) {
@@ -933,7 +933,7 @@ static int handle_kernels_furnsh(const generated_dispatch_request *request) {
   return 0;
 }
 
-static int handle_kernels_ktotal(const generated_dispatch_request *request) {
+static int handle_kernels_ktotal(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, -1, "kernels.ktotal");
   if (status != 0) {
@@ -965,7 +965,7 @@ static int handle_kernels_ktotal(const generated_dispatch_request *request) {
   return 0;
 }
 
-static int handle_kernels_kdata(const generated_dispatch_request *request) {
+static int handle_kernels_kdata(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, -1, "kernels.kdata");
   if (status != 0) {
@@ -1033,7 +1033,7 @@ static int handle_kernels_kdata(const generated_dispatch_request *request) {
   return 0;
 }
 
-static int handle_kernels_kxtrct(const generated_dispatch_request *request) {
+static int handle_kernels_kxtrct(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 3, "kernels.kxtrct");
   if (status != 0) {
@@ -1119,7 +1119,7 @@ cleanup:
   return status;
 }
 
-static int handle_ek_ekfind(const generated_dispatch_request *request) {
+static int handle_ek_ekfind(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 1, "ek.ekfind");
   if (status != 0) {
@@ -1155,7 +1155,7 @@ static int handle_ek_ekfind(const generated_dispatch_request *request) {
   return 0;
 }
 
-static int handle_ek_ekgc(const generated_dispatch_request *request) {
+static int handle_ek_ekgc(const CspiceGeneratedDispatchRequest *request) {
   dispatch_args args;
   int status = expect_args_array(&args, request, 3, "ek.ekgc");
   if (status != 0) {
@@ -1207,76 +1207,76 @@ static int handle_ek_ekgc(const generated_dispatch_request *request) {
   return 0;
 }
 
-int handoff_to_generated_dispatch_seam(const generated_dispatch_request *request) {
+bool handoff_to_generated_dispatch_seam(const CspiceGeneratedDispatchRequest *request) {
   if (request == NULL) {
     write_error_json_ex("invalid_request", "dispatch request is null", NULL, NULL, NULL, NULL);
-    return 1;
+    return false;
   }
 
   const char *fn = request->fn;
 
   if (fn != NULL) {
     if (strcmp(fn, "time.str2et") == 0) {
-      return handle_time_str2et(request);
+      return handle_time_str2et(request) == 0;
     }
 
     if (strcmp(fn, "time.et2utc") == 0) {
-      return handle_time_et2utc(request);
+      return handle_time_et2utc(request) == 0;
     }
 
     if (strcmp(fn, "time.timdef") == 0) {
-      return handle_time_timdef(request);
+      return handle_time_timdef(request) == 0;
     }
 
     if (strcmp(fn, "ids-names.bodn2c") == 0) {
-      return handle_ids_names_bodn2c(request);
+      return handle_ids_names_bodn2c(request) == 0;
     }
 
     if (strcmp(fn, "coords-vectors.mxm") == 0) {
-      return handle_coords_vectors_mxm(request);
+      return handle_coords_vectors_mxm(request) == 0;
     }
 
     if (strcmp(fn, "coords-vectors.recgeo") == 0) {
-      return handle_coords_vectors_recgeo(request);
+      return handle_coords_vectors_recgeo(request) == 0;
     }
 
     if (strcmp(fn, "cells-windows.wninsd") == 0) {
-      return handle_cells_windows_wninsd(request);
+      return handle_cells_windows_wninsd(request) == 0;
     }
 
     if (strcmp(fn, "cells-windows.wnfetd") == 0) {
-      return handle_cells_windows_wnfetd(request);
+      return handle_cells_windows_wnfetd(request) == 0;
     }
 
     if (strcmp(fn, "kernel-pool.gcpool") == 0) {
-      return handle_kernel_pool_gcpool(request);
+      return handle_kernel_pool_gcpool(request) == 0;
     }
 
     if (strcmp(fn, "kernels.furnsh") == 0) {
-      return handle_kernels_furnsh(request);
+      return handle_kernels_furnsh(request) == 0;
     }
 
     if (strcmp(fn, "kernels.ktotal") == 0) {
-      return handle_kernels_ktotal(request);
+      return handle_kernels_ktotal(request) == 0;
     }
 
     if (strcmp(fn, "kernels.kdata") == 0) {
-      return handle_kernels_kdata(request);
+      return handle_kernels_kdata(request) == 0;
     }
 
     if (strcmp(fn, "kernels.kxtrct") == 0) {
-      return handle_kernels_kxtrct(request);
+      return handle_kernels_kxtrct(request) == 0;
     }
 
     if (strcmp(fn, "ek.ekfind") == 0) {
-      return handle_ek_ekfind(request);
+      return handle_ek_ekfind(request) == 0;
     }
 
     if (strcmp(fn, "ek.ekgc") == 0) {
-      return handle_ek_ekgc(request);
+      return handle_ek_ekgc(request) == 0;
     }
   }
 
   write_generated_dispatch_unavailable_json(request->lane, request->callId, fn);
-  return 1;
+  return false;
 }
