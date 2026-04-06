@@ -254,9 +254,9 @@ function executeCanonicalWorkflowCaseWithRuntime(
 }
 
 /**
-* Execute one canonical call-workflow case against a selected dispatch lane,
-* using an explicit runtime context.
-*/
+ * Execute one canonical call-workflow case against a selected dispatch lane,
+ * using an explicit runtime context.
+ */
 export function executeCanonicalWorkflowCaseWithExplicitRuntime(
   lane: DispatchLane,
   input: RunCaseInputV3,

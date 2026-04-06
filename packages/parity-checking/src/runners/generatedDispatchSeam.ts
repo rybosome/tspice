@@ -40,10 +40,12 @@ export type PromotedGeneratedDispatchMethod = (typeof PROMOTED_METHODS)[number];
 
 const promotedMethodSet = new Set<string>(PROMOTED_METHODS);
 
+/** Return the canonical list of generated-dispatch methods promoted to handwritten execution. */
 export function promotedGeneratedDispatchMethods(): readonly PromotedGeneratedDispatchMethod[] {
   return PROMOTED_METHODS;
 }
 
+/** Check whether a function name is in the promoted generated-dispatch method set. */
 export function isPromotedGeneratedDispatchMethod(fn: string): fn is PromotedGeneratedDispatchMethod {
   return promotedMethodSet.has(fn);
 }
@@ -432,6 +434,7 @@ function isolateRuntimeCase(runtime: GeneratedDispatchRuntimeContext): void {
   }
 }
 
+/** Reset and load kernels needed for one generated-dispatch runtime case. */
 export function prepareGeneratedDispatchRuntime(
   runtime: GeneratedDispatchRuntimeContext,
   setup: CaseSetup | undefined,
@@ -445,6 +448,7 @@ export function prepareGeneratedDispatchRuntime(
   }
 }
 
+/** Reset generated-dispatch runtime state after one case completes. */
 export function resetGeneratedDispatchRuntime(runtime: GeneratedDispatchRuntimeContext): void {
   isolateRuntimeCase(runtime);
 }
