@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "cells-windows-insrtc-dedupe-success",
+    "description": "insrtc inserts into char set cell with de-dupe behavior",
+    "workflow": [
+      { "op": "cells-windows.insrtc", "cellId": "C_INSRTC", "item": "beta", "maxCardinality": 4, "length": 16 },
+      { "op": "cells-windows.insrtc", "cellId": "C_INSRTC", "item": "alpha" },
+      { "op": "cells-windows.insrtc", "cellId": "C_INSRTC", "item": "beta" },
+      { "op": "cells-windows.card", "targetKind": "char", "targetId": "C_INSRTC" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-insrtc-capacity-overflow-error",
+    "description": "Representative insrtc overflow error",
+    "workflow": [
+      { "op": "cells-windows.insrtc", "cellId": "C_INSRTC_ERR", "item": "a", "maxCardinality": 1, "length": 8 },
+      { "op": "cells-windows.insrtc", "cellId": "C_INSRTC_ERR", "item": "b" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

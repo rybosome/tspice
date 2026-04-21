@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "cells-windows-wncard-window-lifecycle-success",
+    "description": "Window lifecycle: insert, inspect, clear via scard, inspect",
+    "workflow": [
+      { "op": "cells-windows.wninsd", "windowId": "W_WNCARD", "left": 1, "right": 2, "maxIntervals": 6 },
+      { "op": "cells-windows.wninsd", "windowId": "W_WNCARD", "left": 5, "right": 6 },
+      { "op": "cells-windows.wncard", "windowId": "W_WNCARD" },
+      { "op": "cells-windows.wnfetd", "windowId": "W_WNCARD", "index": 0 },
+      { "op": "cells-windows.scard", "card": 0, "targetKind": "window", "targetId": "W_WNCARD" },
+      { "op": "cells-windows.wncard", "windowId": "W_WNCARD" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-wncard-missing-window-error",
+    "description": "Representative wncard missing-window error",
+    "workflow": [{ "op": "cells-windows.wncard", "windowId": "MISSING_WIN" }],
+    "expectation": { "kind": "error" }
+  }
+]
