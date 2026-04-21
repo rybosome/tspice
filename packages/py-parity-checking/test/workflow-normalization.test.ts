@@ -421,6 +421,48 @@ describe("workflow normalization", () => {
     });
   });
 
+  it("publishes generated ephemeris SPK paths via shared context for all consumers", () => {
+    const workflow: WorkflowStep[] = [
+      {
+        op: "ephemeris.spkopn",
+        file: "kernels/generated-output.bsp",
+        ifname: "PARITY",
+        ncomch: 0,
+        handleId: "H1",
+      },
+      {
+        op: "ephemeris.spkobj",
+        spk: "kernels/generated-output.bsp",
+        idsCellId: "IDS1",
+      },
+      {
+        op: "kernels.furnsh",
+        file: "kernels/generated-output.bsp",
+      },
+    ];
+
+    const normalized = normalizeWorkflow(workflow, "sidecar");
+
+    expect(normalized).toEqual([
+      {
+        op: "ephemeris.spkopn",
+        file: { kind: "scratch", rel: "generated-output.py-parity-0.bsp" },
+        ifname: "PARITY",
+        ncomch: 0,
+        handleId: "H1",
+      },
+      {
+        op: "ephemeris.spkobj",
+        spk: { kind: "scratch", rel: "generated-output.py-parity-0.bsp" },
+        idsCellId: "IDS1",
+      },
+      {
+        op: "kernels.furnsh",
+        file: { kind: "scratch", rel: "generated-output.py-parity-0.bsp" },
+      },
+    ]);
+  });
+
   it("keeps non-generated kernels.furnsh strings fixture-relative by default", () => {
     const workflow: WorkflowStep[] = [{ op: "kernels.furnsh", file: "kernels/naif0012.tls" }];
 

@@ -6,6 +6,7 @@ from .cells_windows import run_cells_windows_step
 from .coords_vectors import run_coords_vectors_step
 from .dsk import run_dsk_step
 from .ek import run_ek_step
+from .ephemeris import run_ephemeris_step
 from .error import run_error_step
 from .file_io import run_file_io_step
 from .frames import run_frames_step
@@ -50,6 +51,10 @@ def _run_step(
         return out
 
     out = run_error_step(step, context)
+    if out is not None:
+        return out
+
+    out = run_ephemeris_step(step, context)
     if out is not None:
         return out
 

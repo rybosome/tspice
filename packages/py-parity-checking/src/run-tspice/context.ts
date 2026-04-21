@@ -3,39 +3,42 @@ import type { Spice } from "@rybosome/tspice";
 
 import {
   createRunTspiceContext as createRunTspiceContextCore,
+  deleteSpkHandle,
   getOrCreateCharCell,
   getOrCreateDoubleCell,
+  getOrCreateEphemerisIntCell,
   getOrCreateIntCell,
   type EkSegmentState,
   getOrCreateWindow,
   registerFinalizer,
   requireCharCell,
   requireDoubleCell,
+  requireEphemerisIntCell,
   requireIntCell,
+  requireSpkHandle,
   requireWindow,
-  type RunTspiceContext as RuntimeRunTspiceContext,
+  setSpkHandle,
+  type RunTspiceContext,
 } from "../runtime/context.js";
 import { beforeCaseLifecycle, finalizeCaseLifecycle } from "../runtime/lifecycle.js";
 import { createCaseRuntimePaths } from "../runtime/path-ref.js";
-import { createEmptyWorkflowNormalizationMetadata } from "../workflow-normalization/index.js";
-import type { WorkflowNormalizationMetadata } from "../workflow-normalization/types.js";
 
-export type RunTspiceContext = RuntimeRunTspiceContext & {
-  normalization: {
-    metadata: WorkflowNormalizationMetadata;
-  };
-};
-
+export type { RunTspiceContext };
 export {
+  deleteSpkHandle,
   getOrCreateCharCell,
   getOrCreateDoubleCell,
+  getOrCreateEphemerisIntCell,
   getOrCreateIntCell,
   getOrCreateWindow,
   registerFinalizer,
   requireCharCell,
   requireDoubleCell,
+  requireEphemerisIntCell,
   requireIntCell,
+  requireSpkHandle,
   requireWindow,
+  setSpkHandle,
 };
 
 /** Track a newly opened EK handle by workflow-local ID. */
@@ -116,18 +119,11 @@ export function createRunTspiceContext(
   fixturesRoot: string,
   caseId: string,
 ): RunTspiceContext {
-  return {
-    ...createRunTspiceContextCore(spice, createCaseRuntimePaths(fixturesRoot, caseId)),
-    normalization: {
-      metadata: createEmptyWorkflowNormalizationMetadata(),
-    },
-  };
+  return createRunTspiceContextCore(spice, createCaseRuntimePaths(fixturesRoot, caseId));
 }
 
 /** Prepare tspice case lifecycle before running steps. */
 export const clearKernelState = beforeCaseLifecycle;
 
 /** Finalize tspice case lifecycle after running steps. */
-export function cleanupContext(context: RunTspiceContext): void {
-  finalizeCaseLifecycle(context);
-}
+export const cleanupContext = finalizeCaseLifecycle;
